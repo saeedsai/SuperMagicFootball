@@ -1,0 +1,16 @@
+{
+  "name": "Supermagic Football",
+  "version": "0.8.17-alpha",
+  "date": "2026-10-13",
+  "team_count": 216,
+  "roster_slots": 2592,
+  "requirements_total": 218,
+  "requirements_done": 38,
+  "requirements_partial": 120,
+  "requirements_missing": 60,
+  "node_suites_passed": 27,
+  "browser_inherited_passed": 19,
+  "browser_extra_passed": 8,
+  "final_impacted_browser_rerun_passed": 5,
+  "play_sha256": "e94844ffbcc046b8f1da216f9735f3cf65431073327ae80d60f7f73d3e6994d5"
+}

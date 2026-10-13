@@ -1,0 +1,116 @@
+[
+  {
+    "test": "tests/tactics_browser_qa.py",
+    "code": 0,
+    "secs": 4.6,
+    "tail": "v0.7.0 tactical browser desktop: PASS \u2022 menus/roles \u2022 pre-match \u2022 pause \u2022 saved team plans \u2022 visual badges\nv0.7.0 tactical browser mobile: PASS \u2022 menus/roles \u2022 pre-match \u2022 pause \u2022 saved team plans \u2022 visual badges\n"
+  },
+  {
+    "test": "tests/kits_browser_qa.py",
+    "code": 0,
+    "secs": 3.6,
+    "tail": "Kit browser desktop: PASS \u2022 2 kits \u2022 live preview \u2022 selected game colors \u2022 pause/resume\nKit browser mobile: PASS \u2022 2 kits \u2022 live preview \u2022 selected game colors \u2022 pause/resume\n"
+  },
+  {
+    "test": "tests/v060_qa.py",
+    "code": 0,
+    "secs": 5.1,
+    "tail": "v0.6 Chromium QA desktop PASS\nv0.6 Chromium QA mobile PASS\n"
+  },
+  {
+    "test": "tests/manager_v060.py",
+    "code": 0,
+    "secs": 4.5,
+    "tail": "Manager recruiting and contracts desktop PASS\nManager recruiting and contracts mobile PASS\n"
+  },
+  {
+    "test": "tests/save_filter_v060.py",
+    "code": 0,
+    "secs": 5.0,
+    "tail": "v0.6 offline Quick Match filters + JSON roundtrip DESKTOP PASS\nv0.6 offline Quick Match filters + JSON roundtrip MOBILE PASS\n"
+  },
+  {
+    "test": "tests/ai_browser_qa.py",
+    "code": 0,
+    "secs": 4.4,
+    "tail": "AI difficulty browser QA desktop: PASS \u00b7 settings, setup, paused live change, resume\nAI difficulty browser QA mobile: PASS \u00b7 settings, setup, paused live change, resume\n"
+  },
+  {
+    "test": "tests/stats_browser_qa.py",
+    "code": 0,
+    "secs": 3.9,
+    "tail": "Player stats browser desktop: PASS \u2022 squad ratings \u2022 GK attributes \u2022 live stamina HUD \u2022 pause/resume\nPlayer stats browser mobile: PASS \u2022 squad ratings \u2022 GK attributes \u2022 live stamina HUD \u2022 pause/resume\n"
+  },
+  {
+    "test": "tests/fitness_browser_qa.py",
+    "code": 0,
+    "secs": 3.7,
+    "tail": "v0.7.1 fitness browser desktop: PASS \u2022 paused substitution \u2022 1/3 limit \u2022 fitness indicators \u2022 no JS errors\nv0.7.1 fitness browser mobile: PASS \u2022 paused substitution \u2022 1/3 limit \u2022 fitness indicators \u2022 no JS errors\n"
+  },
+  {
+    "test": "tests/morale_browser_qa.py",
+    "code": 0,
+    "secs": 4.5,
+    "tail": "desktop PASS setup talk; halftime talk; no duplicate; match resume; goal and crying; no page errors\nmobile PASS setup talk; halftime talk; no duplicate; match resume; goal and crying; no page errors\n"
+  },
+  {
+    "test": "tests/abilities_browser_qa.py",
+    "code": 0,
+    "secs": 4.1,
+    "tail": "desktop PASS: keyboard/touch defensive action, stun, timed keeper action, rendered effects, no page exceptions\nmobile PASS: keyboard/touch defensive action, stun, timed keeper action, rendered effects, no page exceptions\n"
+  },
+  {
+    "test": "tests/aerial_browser_qa.py",
+    "code": 0,
+    "secs": 6.4,
+    "tail": "desktop PASS: hyperdash keyboard/touch, aerial heading, goalkeeper dive, no browser errors\nmobile PASS: hyperdash keyboard/touch, aerial heading, goalkeeper dive, no browser errors\n"
+  },
+  {
+    "test": "tests/team_combos_browser_qa.py",
+    "code": 0,
+    "secs": 3.8,
+    "tail": "desktop PASS: true keyboard/touch teammate combo and apex transforming shot, no page errors\nmobile PASS: true keyboard/touch teammate combo and apex transforming shot, no page errors\n"
+  },
+  {
+    "test": "tests/ai_combos_browser_qa.py",
+    "code": 0,
+    "secs": 3.3,
+    "tail": "desktop PASS AI teammate automatic combo and apex shot; no JavaScript errors\nmobile PASS AI teammate automatic combo and apex shot; no JavaScript errors\n"
+  },
+  {
+    "test": "tests/four_button_browser_qa.py",
+    "code": 0,
+    "secs": 4.0,
+    "tail": "desktop PASS actual keyboard/touch controls, four-button cross layout, double jump super, no super popup\nandroid PASS actual keyboard/touch controls, four-button cross layout, double jump super, no super popup\n"
+  },
+  {
+    "test": "tests/collisions_browser_qa.py",
+    "code": 0,
+    "secs": 2.6,
+    "tail": "desktop PASS physical symmetric pushback, stunned both, cooldown, 4 input buttons, no browser exceptions\nandroid PASS physical symmetric pushback, stunned both, cooldown, 4 input buttons, no browser exceptions\n"
+  },
+  {
+    "test": "tests/four_button_phase2_browser_qa.py",
+    "code": 0,
+    "secs": 3.8,
+    "tail": "desktop PASS: four-button HUD, bicycle shot, flying kick, keeper distribution, no page errors\nandroid PASS: four-button HUD, bicycle shot, flying kick, keeper distribution, no page errors\n"
+  },
+  {
+    "test": "tests/dribble_styles_browser_qa.py",
+    "code": 0,
+    "secs": 3.4,
+    "tail": "v0.8.7 browser PASS \u2014 real keyboard double-tap, genuine simulated Android touch double-tap, 4-button UI, style and game rendering\n"
+  },
+  {
+    "test": "tests/penalty_controls_browser_qa.py",
+    "code": 0,
+    "secs": 4.2,
+    "tail": "v0.8.10 BROWSER QA PASS: remapping, keyboard/touch PK movement and shots, cross-layout 4 buttons\n"
+  },
+  {
+    "test": "tests/home_dashboard_browser_qa.py",
+    "code": 0,
+    "secs": 6.0,
+    "tail": "desktop PASS \u2014 three organized sections, 14 unique actions, five roundtrips, layout, no page errors\nmobile PASS \u2014 three organized sections, 14 unique actions, five roundtrips, layout, no page errors\n"
+  }
+]

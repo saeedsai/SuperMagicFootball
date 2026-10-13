@@ -1,0 +1,38 @@
+[
+  {
+    "test": "tactics_browser_qa.py",
+    "status": "PASS",
+    "seconds": 6.15,
+    "details": "v0.7.0 tactical browser desktop: PASS \u2022 menus/roles \u2022 pre-match \u2022 pause \u2022 saved team plans \u2022 visual badges\nv0.7.0 tactical browser mobile: PASS \u2022 menus/roles \u2022 pre-match \u2022 pause \u2022 saved team plans \u2022 visual badges"
+  },
+  {
+    "test": "kits_browser_qa.py",
+    "status": "PASS",
+    "seconds": 4.64,
+    "details": "Kit browser desktop: PASS \u2022 2 kits \u2022 live preview \u2022 selected game colors \u2022 pause/resume\nKit browser mobile: PASS \u2022 2 kits \u2022 live preview \u2022 selected game colors \u2022 pause/resume"
+  },
+  {
+    "test": "v060_qa.py",
+    "status": "PASS",
+    "seconds": 5.63,
+    "details": "v0.6 Chromium QA desktop PASS\nv0.6 Chromium QA mobile PASS"
+  },
+  {
+    "test": "manager_v060.py",
+    "status": "PASS",
+    "seconds": 5.03,
+    "details": "Manager recruiting and contracts desktop PASS\nManager recruiting and contracts mobile PASS"
+  },
+  {
+    "test": "save_filter_v060.py",
+    "status": "PASS",
+    "seconds": 5.97,
+    "details": "v0.6 offline Quick Match filters + JSON roundtrip DESKTOP PASS\nv0.6 offline Quick Match filters + JSON roundtrip MOBILE PASS"
+  },
+  {
+    "test": "ai_browser_qa.py",
+    "status": "PASS",
+    "seconds": 5.41,
+    "details": "AI difficulty browser QA desktop: PASS \u00b7 settings, setup, paused live change, resume\nAI difficulty browser QA mobile: PASS \u00b7 settings, setup, paused live change, resume"
+  }
+]

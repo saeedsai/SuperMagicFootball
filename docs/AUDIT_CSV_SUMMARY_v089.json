@@ -1,0 +1,48 @@
+{
+  "audit_fault_rows": 9736,
+  "audit_unique_teams": 203,
+  "issue_types": {
+    "HEIGHT_CM_MISSING": 2364,
+    "ATTRIBUTE_FIELDS_EMPTY": 2364,
+    "APPEARANCE_NOT_REAL_WORLD_VERIFIED": 2364,
+    "NATIONAL_SELECTION_UNVERIFIED": 384,
+    "OVERALL_DIFF_EA_FC27": 40,
+    "POSITION_MISMATCH_VERIFIED": 121,
+    "MARKET_VALUE_MISMATCH_VERIFIED": 13,
+    "AGE_DIFF_EA_FC27": 21,
+    "ATTRIBUTE_DIFF_EA_FC27_PROXY": 15,
+    "NOT_ON_CURRENT_CLUB_SOURCE": 36,
+    "FICTIONAL_PLACEHOLDER": 1642,
+    "HISTORIC_HEIGHT_MISSING": 72,
+    "HISTORIC_APPEARANCE_UNVERIFIED": 72,
+    "HISTORIC_POSITION_MISMATCH": 46,
+    "SAME_PLAYER_AGE_CONFLICT": 127,
+    "SAME_PLAYER_OVR_SPREAD_GE8": 55
+  },
+  "severities": {
+    "medium": 7393,
+    "low": 384,
+    "high": 1847,
+    "critical": 112
+  },
+  "named_verification_rows": 806,
+  "position_change_proposals": 167,
+  "positions_with_source": 167,
+  "market_value_alignment_flags": 13,
+  "overall_alignment_flags": 40,
+  "missing_player_candidates": 296,
+  "missing_candidate_teams": 16,
+  "critical_missing_candidates": 113,
+  "staged_review_queue": 734,
+  "queue_categories": {
+    "rating_alignment_review": 40,
+    "position_review": 167,
+    "market_value_review": 13,
+    "candidate_to_add": 296,
+    "identity_age_consistency": 127,
+    "cross_team_overall_consistency": 55,
+    "club_membership_review": 36
+  },
+  "game_data_modified_from_audit": false,
+  "audit_run_as_of": "2026-10-13"
+}

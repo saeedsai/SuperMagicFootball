@@ -1,0 +1,5 @@
+
+> supermagic-football@0.8.15-alpha build
+> python tests/build.py
+
+Portable offline game created /mnt/data/Supermagic_Football_v0.8.15/play.html 1131080

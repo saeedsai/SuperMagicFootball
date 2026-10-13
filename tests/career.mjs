@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';
+import {TEAMS,SHOTS} from '../src/data.js';
+import {installExpansion,avatarFor} from '../src/expanded.js';
+import {createCareer,currentCareerFixture,advanceCareer,standings,nextSeason,purchase,upgradeFacility,trainPlayer} from '../src/career.js';
+installExpansion(TEAMS,SHOTS);
+assert.equal(TEAMS.length,83);
+for(const group of ['national26','club26','legends'])assert.equal(TEAMS.filter(t=>t.group===group).length,group==='legends'?6:32);
+for(const t of TEAMS.filter(t=>t.customRoster))assert.equal(t.customRoster.length,12,`${t.name} is not twelve`);
+const a=TEAMS.find(t=>t.name==='Arsenal'), national=TEAMS.find(t=>t.name==='Argentina');
+assert.equal(avatarFor(a.customRoster.find(p=>p.name==='David Raya')).style,avatarFor(TEAMS.find(t=>t.name==='Spain').customRoster.find(p=>p.name==='David Raya')).style,'Portrait must be consistent across teams');
+const career=createCareer(a.index,TEAMS);
+assert.equal(career.fixtures.length,14);
+assert.equal(career.fixtures.every(r=>r.length===4),true);
+assert.ok(currentCareerFixture(career));
+const initialCash=career.cash;
+trainPlayer(career,0); assert.ok(career.roster[0].xp>0);assert.ok(career.cash<initialCash);
+upgradeFacility(career,'academy');assert.equal(career.facilities.academy,2);
+const buyTeam=TEAMS.find(t=>t.name==='Real Madrid');
+let cash=career.cash;
+const join=purchase(career,TEAMS,buyTeam.index,0,11);
+assert.equal(career.roster.length,12);assert.equal(career.roster[11].name,join.name);assert.ok(career.cash<cash);
+for(let i=0;i<14;){const fx=currentCareerFixture(career);assert.ok(fx);advanceCareer(career,TEAMS,[3,1]);if(fx.kind==='league')i++;}
+assert.equal(career.week,14);assert.equal(standings(career).length,8);assert.equal(career.leagueFinished,true);assert.equal(career.cup.stage,3);assert.ok(career.cash>0);
+nextSeason(career);assert.equal(career.season,2);assert.equal(career.week,0);assert.equal(career.leagueFinished,false);
+console.log('Career tests: PASS • 83 teams • 12/team • 2026 caricatures • training • transfer • three cup rounds • 14 league rounds • new season');

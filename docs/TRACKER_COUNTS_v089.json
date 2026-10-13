@@ -1,0 +1,12 @@
+{
+  "total": 200,
+  "status": {
+    "Done": 27,
+    "Partial": 113,
+    "Missing": 60
+  },
+  "added": 16,
+  "UI_navigation": "partial",
+  "roster_game_changes": "none",
+  "bpw_game_changes": "none"
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "test": "control_reliability_browser_qa.py",
+    "code": 0,
+    "tail": "DESKTOP PASS: fast PASS taps, manual switch, steering auto-switch, Jump-run and four-button layout\nANDROID PASS: fast PASS taps, manual switch, steering auto-switch, Jump-run and four-button layout\n"
+  },
+  {
+    "test": "secondary_controls_browser_qa.py",
+    "code": 0,
+    "tail": "v0.8.14 BROWSER QA PASS: P2 remapping settings and input; defensive bicycle and 4 touch buttons (desktop/android)\n"
+  },
+  {
+    "test": "roster_browser_qa.py",
+    "code": 0,
+    "tail": "ROSTER BROWSER desktop: PASS \u2022 4 famous club squads \u2022 GK starter \u2022 lineup \u2022 match kickoff\nROSTER BROWSER simulated_android: PASS \u2022 4 famous club squads \u2022 GK starter \u2022 lineup \u2022 match kickoff\n"
+  },
+  {
+    "test": "character_art_browser_qa.py",
+    "code": 0,
+    "tail": "DESKTOP PASS: 13 silhouette gallery, match render, no browser errors\nANDROID PASS: 13 silhouette gallery, match render, no browser errors\n"
+  },
+  {
+    "test": "cartoon_identity_browser_qa.py",
+    "code": 0,
+    "tail": "desktop PASS: offline vector nations and clubs in setup and continental selector, selection refresh, no browser errors\nandroid PASS: offline vector nations and clubs in setup and continental selector, selection refresh, no browser errors\n"
+  },
+  {
+    "test": "fullscreen_brand_qa.py",
+    "code": 0,
+    "tail": " game/menu control | fullscreen/fallback | PWA metadata | no JS exceptions\nBRANDING & FULLSCREEN android-landscape: PASS | game/menu control | fullscreen/fallback | PWA metadata | no JS exceptions\nUNSUPPORTED FULLSCREEN FALLBACK: PASS | truthful install instructions | dismissible\nSAVE EXPORT & LEGACY IMPORT: PASS | new filename | old product accepted | existing storage prefix retained\nAll v0.7.2 browser QA completed\n"
+  },
+  {
+    "test": "special_levels_browser_qa.py",
+    "code": 0,
+    "tail": "DESKTOP PASS: shot level, active gameplay, preserved squad, no browser errors\nANDROID PASS: shot level, active gameplay, preserved squad, no browser errors\n"
+  },
+  {
+    "test": "active_pursuit_browser_qa.py",
+    "code": 0,
+    "tail": "DESKTOP PASS: {'press': True, 'shot': True, 'gkMode': 'short', 'scoreboard': True}\nANDROID PASS: {'press': True, 'shot': True, 'gkMode': 'short', 'scoreboard': True}\n"
+  }
+]

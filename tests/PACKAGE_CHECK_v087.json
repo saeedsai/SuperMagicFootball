@@ -1,0 +1,15 @@
+{
+  "version": "0.8.7",
+  "standalone_html_bytes": 276984,
+  "source_zip_bytes": 18030067,
+  "source_zip_files": 228,
+  "sha256_standalone": "e5f64ab09a2951ea12cf4cf220052e61784358061792ab49b16f633075025f2c",
+  "sha256_zip": "4fc28e2af60636c8f1ac456aab012045a3aa4b51000545323bf1f44044998d94",
+  "feature_statuses": {
+    "Done": 27,
+    "Partial": 109,
+    "Missing": 48
+  },
+  "zip_integrity": "pass",
+  "status": "pass"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Supermagic Football",
+  "short_name": "Supermagic",
+  "description": "Cartoon HD magical arcade soccer with national teams, clubs and tournaments",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "background_color": "#08182b",
+  "theme_color": "#08182b",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "id": "./",
+  "display_override": [
+    "fullscreen",
+    "standalone"
+  ],
+  "scope": "./"
+}

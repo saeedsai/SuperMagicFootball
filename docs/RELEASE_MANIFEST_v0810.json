@@ -1,0 +1,27 @@
+{
+  "version": "0.8.10-alpha",
+  "focus": "offline illustrated national flags and original club shields",
+  "teams": 216,
+  "clubs_with_original_shields": 165,
+  "other_teams_with_flag_or_stylized_banner": 51,
+  "source_files": 249,
+  "node_suites_passed": 19,
+  "browser_legacy_suites_passed_in_individual_batches": 19,
+  "browser_new_identity_suite_passed_desktop_and_mobile": true,
+  "roster_or_bpw_changes": false,
+  "tracked_features": 200,
+  "status_counts": {
+    "Done": 27,
+    "Partial": 114,
+    "Missing": 59
+  },
+  "files": {
+    "Supermagic_Football_v0.8.10_Play.html": {
+      "bytes": 298702,
+      "sha256": "6fa10fadd59dd655e34ca63838ea0696f510333d10bb67dd0f98d1c5c9825a41"
+    },
+    "Supermagic_Football_v0.8.10_Source.zip": {
+      "note": "Archive integrity verified using ZIP CRC; self-hash omitted to avoid self-reference."
+    }
+  }
+}

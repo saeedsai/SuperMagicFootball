@@ -1,0 +1,15 @@
+{
+  "version": "0.8.9-alpha",
+  "node_suites_passed": 18,
+  "browser_suites_passed": 19,
+  "source_zip_files": 234,
+  "play_html_bytes": 287393,
+  "zip_bytes": 18416563,
+  "tracker_rows": 200,
+  "roster_changes": false,
+  "bpw_changes": false,
+  "files": {
+    "Supermagic_Football_v0.8.9_Play.html": "3d2dfac25d8d0b3090145fe28d3487970d4d1b8d4ce3337a1fe8b950797fdf2d",
+    "Supermagic_Football_v0.8.9_Source.zip": "cf70a3cc972290cede62091b95d68ddd4101b8f2a5f48e778bc0178bad2e7489"
+  }
+}

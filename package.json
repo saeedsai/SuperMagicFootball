@@ -1,0 +1,13 @@
+{
+  "name": "supermagic-football",
+  "version": "0.8.17.1-alpha",
+  "private": true,
+  "type": "module",
+  "description": "Four-button combo priority and rapid-input hotfix on buffered input baseline",
+  "scripts": {
+    "test": "node tests/tactics_identity.mjs && node tests/kits_agility.mjs && node tests/simulation.mjs && node tests/career.mjs && node tests/continental.mjs && node tests/ai_difficulty.mjs && node tests/player_stats.mjs && node tests/fitness_substitutions.mjs && node tests/morale_reactions.mjs && node tests/defensive_abilities.mjs && node tests/aerial_mechanics.mjs && node tests/team_combos.mjs && node tests/ai_team_combos.mjs && node tests/four_button_controls.mjs && node tests/player_collisions.mjs && node tests/four_button_phase2.mjs && node tests/dribble_styles.mjs && node tests/penalty_controls.mjs && node tests/cartoon_identities.mjs && node tests/character_art.mjs && node tests/super_shot_reset.mjs && node tests/defensive_pursuit_pitch.mjs && node tests/secondary_controls.mjs && node tests/roster_reconciliation.mjs && node tests/active_pursuit_ground_shots.mjs && node tests/special_levels.mjs && node tests/control_reliability.mjs && node tests/combo_priority.mjs && node tests/input_buffer.mjs",
+    "build": "python tests/build.py",
+    "qa": "python tests/tactics_browser_qa.py && python tests/kits_browser_qa.py && python tests/v060_qa.py && python tests/manager_v060.py && python tests/save_filter_v060.py && python tests/ai_browser_qa.py && python tests/stats_browser_qa.py && python tests/fitness_browser_qa.py && python tests/morale_browser_qa.py && python tests/abilities_browser_qa.py && python tests/aerial_browser_qa.py && python tests/team_combos_browser_qa.py && python tests/ai_combos_browser_qa.py && python tests/four_button_browser_qa.py && python tests/collisions_browser_qa.py && python tests/four_button_phase2_browser_qa.py && python tests/dribble_styles_browser_qa.py && python tests/penalty_controls_browser_qa.py && python tests/home_dashboard_browser_qa.py",
+    "serve": "python -m http.server 8080"
+  }
+}

@@ -1,0 +1,217 @@
+﻿id,team,category,named,fictional,gk,df,mf,fw,named_1st6
+japan,Japan,arcade,12,0,2,3,4,3,6
+korea,Korea,arcade,0,12,2,3,4,3,0
+thailand,Thailand,arcade,0,12,2,3,4,3,0
+mongolia,Mongolia,arcade,0,12,2,3,4,3,0
+cameroon,Cameroon,arcade,0,12,2,3,4,3,0
+newguinea,New Guinea,arcade,0,12,2,3,4,3,0
+senegal,Senegal,arcade,0,12,2,3,4,3,0
+argentina,Argentina,arcade,0,12,2,3,4,3,0
+mexico,Mexico,arcade,0,12,2,3,4,3,0
+brazil,Brazil,arcade,0,12,2,3,4,3,0
+england,England,arcade,0,12,2,3,4,3,0
+germany,Germany,arcade,0,12,2,3,4,3,0
+italy,Italy,arcade,0,12,2,3,4,3,0
+national26_0,Spain,national26,12,0,2,3,4,3,6
+national26_1,Argentina,national26,12,0,2,3,4,3,6
+national26_2,France,national26,12,0,2,3,4,3,6
+national26_3,England,national26,12,0,2,3,4,3,6
+national26_4,Portugal,national26,11,1,2,3,4,3,6
+national26_5,Brazil,national26,12,0,2,3,4,3,6
+national26_6,Morocco,national26,11,1,2,3,4,3,6
+national26_7,Belgium,national26,12,0,2,3,4,3,6
+national26_8,Netherlands,national26,12,0,2,3,4,3,6
+national26_9,Mexico,national26,12,0,2,3,4,3,6
+national26_10,Colombia,national26,12,0,2,3,4,3,6
+national26_11,Switzerland,national26,12,0,2,3,4,3,6
+national26_12,Germany,national26,11,1,2,3,4,3,6
+national26_13,Croatia,national26,11,1,2,3,4,3,6
+national26_14,Italy,national26,12,0,2,3,4,3,6
+national26_15,United States,national26,11,1,2,3,4,3,6
+national26_16,Japan,national26,12,0,2,3,4,3,6
+national26_17,Senegal,national26,12,0,2,3,4,3,6
+national26_18,Norway,national26,12,0,2,3,4,3,6
+national26_19,Uruguay,national26,12,0,2,3,4,3,6
+national26_20,Denmark,national26,12,0,2,3,4,3,6
+national26_21,Austria,national26,12,0,2,3,4,3,6
+national26_22,Iran,national26,12,0,2,3,4,3,6
+national26_23,Ecuador,national26,12,0,2,3,4,3,6
+national26_24,Egypt,national26,12,0,2,3,4,3,6
+national26_25,Australia,national26,12,0,2,3,4,3,6
+national26_26,Canada,national26,12,0,2,3,4,3,6
+national26_27,Algeria,national26,12,0,2,3,4,3,6
+national26_28,Ivory Coast,national26,12,0,2,3,4,3,6
+national26_29,Nigeria,national26,12,0,2,3,4,3,6
+national26_30,Turkey,national26,11,1,2,3,4,3,6
+national26_31,South Korea,national26,12,0,2,3,4,3,6
+club26_0,Arsenal,club26,12,0,2,3,4,3,6
+club26_1,Bayern Munich,club26,12,0,2,3,4,3,6
+club26_2,Manchester City,club26,12,0,2,3,4,3,6
+club26_3,Paris Saint-Germain,club26,12,0,2,3,4,3,6
+club26_4,Barcelona,club26,12,0,2,3,4,3,6
+club26_5,Manchester United,club26,11,1,2,3,4,3,6
+club26_6,Aston Villa,club26,8,4,2,3,4,3,5
+club26_7,Real Madrid,club26,12,0,2,3,4,3,6
+club26_8,Inter Milan,club26,12,0,2,3,4,3,6
+club26_9,Liverpool,club26,12,0,2,3,4,3,6
+club26_10,Bournemouth,club26,6,6,2,3,4,3,4
+club26_11,Borussia Dortmund,club26,11,1,2,3,4,3,6
+club26_12,Brighton,club26,8,4,2,3,4,3,5
+club26_13,Newcastle United,club26,9,3,2,3,4,3,6
+club26_14,Sporting CP,club26,7,5,2,3,4,3,6
+club26_15,Brentford,club26,5,7,2,3,4,3,4
+club26_16,Benfica,club26,9,3,2,3,4,3,6
+club26_17,Nottingham Forest,club26,5,7,2,3,4,3,4
+club26_18,Chelsea,club26,12,0,2,3,4,3,6
+club26_19,Atlético Madrid,club26,12,0,2,3,4,3,6
+club26_20,Bayer Leverkusen,club26,6,6,2,3,4,3,5
+club26_21,Club Brugge,club26,6,6,2,3,4,3,5
+club26_22,Roma,club26,7,5,2,3,4,3,5
+club26_23,Fulham,club26,7,5,2,3,4,3,5
+club26_24,Crystal Palace,club26,8,4,2,3,4,3,5
+club26_25,Napoli,club26,12,0,2,3,4,3,6
+club26_26,Porto,club26,5,7,2,3,4,3,4
+club26_27,Everton,club26,6,6,2,3,4,3,6
+club26_28,Juventus,club26,10,2,2,3,4,3,6
+club26_29,Tottenham,club26,11,1,2,3,4,3,6
+club26_30,AC Milan,club26,12,0,2,3,4,3,6
+club26_31,Flamengo,club26,10,2,2,3,4,3,6
+legends_0,1998 France,legends,12,0,2,3,4,3,6
+legends_1,2002 Brazil,legends,11,1,2,3,4,3,6
+legends_2,2006 Italy,legends,12,0,2,3,4,3,6
+legends_3,2010 Spain,legends,12,0,2,3,4,3,6
+legends_4,2011 Barcelona,legends,11,1,2,3,4,3,6
+legends_5,2016 Real Madrid,legends,12,0,2,3,4,3,6
+cont_uefa_0,AEK Athens,continental,0,12,2,3,4,3,0
+cont_uefa_6,Bodø/Glimt,continental,0,12,2,3,4,3,0
+cont_uefa_9,Como,continental,0,12,2,3,4,3,0
+cont_uefa_10,Fenerbahçe,continental,4,8,2,3,4,3,3
+cont_uefa_11,Feyenoord,continental,2,10,2,3,4,3,2
+cont_uefa_12,Galatasaray,continental,4,8,2,3,4,3,3
+cont_uefa_14,LASK,continental,0,12,2,3,4,3,0
+cont_uefa_15,RB Leipzig,continental,0,12,2,3,4,3,0
+cont_uefa_16,Lens,continental,0,12,2,3,4,3,0
+cont_uefa_17,Lille,continental,0,12,2,3,4,3,0
+cont_uefa_24,PSV Eindhoven,continental,3,9,2,3,4,3,2
+cont_uefa_25,Real Betis,continental,0,12,2,3,4,3,0
+cont_uefa_28,Sabah FK,continental,0,12,2,3,4,3,0
+cont_uefa_29,Shakhtar Donetsk,continental,2,10,2,3,4,3,2
+cont_uefa_30,Slavia Prague,continental,0,12,2,3,4,3,0
+cont_uefa_31,Slovan Bratislava,continental,0,12,2,3,4,3,0
+cont_uefa_33,VfB Stuttgart,continental,0,12,2,3,4,3,0
+cont_uefa_34,Viking FK,continental,0,12,2,3,4,3,0
+cont_uefa_35,Villarreal,continental,3,9,2,3,4,3,2
+cont_afc_0,Al Ahli Saudi,continental,0,12,2,3,4,3,0
+cont_afc_1,Al Nassr,continental,7,5,2,3,4,3,6
+cont_afc_2,Al Hilal,continental,6,6,2,3,4,3,5
+cont_afc_3,Al Qadsiah,continental,0,12,2,3,4,3,0
+cont_afc_4,Al Ain,continental,0,12,2,3,4,3,0
+cont_afc_5,Shabab Al Ahli,continental,0,12,2,3,4,3,0
+cont_afc_6,Al Wasl,continental,0,12,2,3,4,3,0
+cont_afc_7,Al Sadd,continental,0,12,2,3,4,3,0
+cont_afc_8,Al Gharafa,continental,0,12,2,3,4,3,0
+cont_afc_9,Al Shamal,continental,0,12,2,3,4,3,0
+cont_afc_10,Esteghlal,continental,0,12,2,3,4,3,0
+cont_afc_11,Tractor SC,continental,0,12,2,3,4,3,0
+cont_afc_12,Neftchi Fergana,continental,0,12,2,3,4,3,0
+cont_afc_13,Al Quwa Al Jawiya,continental,0,12,2,3,4,3,0
+cont_afc_14,Al Ittihad,continental,4,8,2,3,4,3,3
+cont_afc_15,Pakhtakor,continental,0,12,2,3,4,3,0
+cont_afc_16,Kashima Antlers,continental,0,12,2,3,4,3,0
+cont_afc_17,Vissel Kobe,continental,0,12,2,3,4,3,0
+cont_afc_18,Kashiwa Reysol,continental,0,12,2,3,4,3,0
+cont_afc_19,Kyoto Sanga,continental,0,12,2,3,4,3,0
+cont_afc_20,Jeonbuk Hyundai Motors,continental,0,12,2,3,4,3,0
+cont_afc_21,Daejeon Hana Citizen,continental,0,12,2,3,4,3,0
+cont_afc_22,Pohang Steelers,continental,0,12,2,3,4,3,0
+cont_afc_23,Buriram United,continental,0,12,2,3,4,3,0
+cont_afc_24,Port FC,continental,0,12,2,3,4,3,0
+cont_afc_25,Ratchaburi,continental,0,12,2,3,4,3,0
+cont_afc_26,Shanghai Port,continental,0,12,2,3,4,3,0
+cont_afc_27,Beijing Guoan,continental,0,12,2,3,4,3,0
+cont_afc_28,Newcastle Jets,continental,0,12,2,3,4,3,0
+cont_afc_29,Johor Darul Ta'zim,continental,0,12,2,3,4,3,0
+cont_afc_30,Gamba Osaka,continental,0,12,2,3,4,3,0
+cont_afc_31,Công An Hà Nội,continental,0,12,2,3,4,3,0
+cont_caf_0,RS Berkane,continental,0,12,2,3,4,3,0
+cont_caf_1,Pyramids FC,continental,0,12,2,3,4,3,0
+cont_caf_2,Rivers United,continental,0,12,2,3,4,3,0
+cont_caf_3,Power Dynamos,continental,0,12,2,3,4,3,0
+cont_caf_4,Al Ahly,continental,4,8,2,3,4,3,4
+cont_caf_5,Young Africans,continental,0,12,2,3,4,3,0
+cont_caf_6,AS FAR Rabat,continental,0,12,2,3,4,3,0
+cont_caf_7,JS Kabylie,continental,0,12,2,3,4,3,0
+cont_caf_8,Mamelodi Sundowns,continental,0,12,2,3,4,3,0
+cont_caf_9,Al Hilal Omdurman,continental,0,12,2,3,4,3,0
+cont_caf_10,MC Alger,continental,0,12,2,3,4,3,0
+cont_caf_11,Saint Éloi Lupopo,continental,0,12,2,3,4,3,0
+cont_caf_12,Espérance de Tunis,continental,0,12,2,3,4,3,0
+cont_caf_13,Simba SC,continental,0,12,2,3,4,3,0
+cont_caf_14,Petro de Luanda,continental,0,12,2,3,4,3,0
+cont_caf_15,Stade Malien,continental,0,12,2,3,4,3,0
+cont_concacaf_0,Vancouver FC,continental,0,12,2,3,4,3,0
+cont_concacaf_1,Defence Force FC,continental,0,12,2,3,4,3,0
+cont_concacaf_2,O&M FC,continental,0,12,2,3,4,3,0
+cont_concacaf_3,Mount Pleasant FA,continental,0,12,2,3,4,3,0
+cont_concacaf_4,Club Olimpia,continental,0,12,2,3,4,3,0
+cont_concacaf_5,Xelajú MC,continental,0,12,2,3,4,3,0
+cont_concacaf_6,Cartaginés,continental,0,12,2,3,4,3,0
+cont_concacaf_7,Alajuelense,continental,0,12,2,3,4,3,0
+cont_concacaf_8,Real España,continental,0,12,2,3,4,3,0
+cont_concacaf_9,Sporting San Miguelito,continental,0,12,2,3,4,3,0
+cont_concacaf_10,Atlético Ottawa,continental,0,12,2,3,4,3,0
+cont_concacaf_11,Forge FC,continental,0,12,2,3,4,3,0
+cont_concacaf_12,LA Galaxy,continental,0,12,2,3,4,3,0
+cont_concacaf_13,Seattle Sounders,continental,0,12,2,3,4,3,0
+cont_concacaf_14,Monterrey,continental,0,12,2,3,4,3,0
+cont_concacaf_15,Club América,continental,0,12,2,3,4,3,0
+cont_concacaf_16,Cruz Azul,continental,0,12,2,3,4,3,0
+cont_concacaf_17,Toluca,continental,0,12,2,3,4,3,0
+cont_concacaf_18,Pumas UNAM,continental,0,12,2,3,4,3,0
+cont_concacaf_19,Tigres UANL,continental,0,12,2,3,4,3,0
+cont_concacaf_20,FC Cincinnati,continental,0,12,2,3,4,3,0
+cont_concacaf_21,Inter Miami,continental,5,7,2,3,4,3,4
+cont_concacaf_22,Los Angeles FC,continental,3,9,2,3,4,3,2
+cont_concacaf_23,Philadelphia Union,continental,0,12,2,3,4,3,0
+cont_concacaf_24,San Diego FC,continental,0,12,2,3,4,3,0
+cont_concacaf_25,Vancouver Whitecaps,continental,0,12,2,3,4,3,0
+cont_concacaf_26,Nashville SC,continental,0,12,2,3,4,3,0
+cont_conmebol_1,Palmeiras,continental,4,8,2,3,4,3,4
+cont_conmebol_2,Boca Juniors,continental,3,9,2,3,4,3,3
+cont_conmebol_3,Peñarol,continental,0,12,2,3,4,3,0
+cont_conmebol_4,Nacional,continental,0,12,2,3,4,3,0
+cont_conmebol_5,Liga de Quito,continental,0,12,2,3,4,3,0
+cont_conmebol_6,Fluminense,continental,0,12,2,3,4,3,0
+cont_conmebol_7,Independiente del Valle,continental,0,12,2,3,4,3,0
+cont_conmebol_8,Lanús,continental,0,12,2,3,4,3,0
+cont_conmebol_9,Libertad,continental,0,12,2,3,4,3,0
+cont_conmebol_10,Estudiantes de La Plata,continental,0,12,2,3,4,3,0
+cont_conmebol_11,Cerro Porteño,continental,0,12,2,3,4,3,0
+cont_conmebol_12,Corinthians,continental,0,12,2,3,4,3,0
+cont_conmebol_13,Bolívar,continental,0,12,2,3,4,3,0
+cont_conmebol_14,Cruzeiro,continental,0,12,2,3,4,3,0
+cont_conmebol_15,Universitario,continental,0,12,2,3,4,3,0
+cont_conmebol_16,Junior Barranquilla,continental,0,12,2,3,4,3,0
+cont_conmebol_17,Universidad Católica,continental,0,12,2,3,4,3,0
+cont_conmebol_18,Rosario Central,continental,0,12,2,3,4,3,0
+cont_conmebol_19,Independiente Santa Fe,continental,0,12,2,3,4,3,0
+cont_conmebol_20,Always Ready,continental,0,12,2,3,4,3,0
+cont_conmebol_21,Coquimbo Unido,continental,0,12,2,3,4,3,0
+cont_conmebol_22,Deportivo La Guaira,continental,0,12,2,3,4,3,0
+cont_conmebol_23,Cusco FC,continental,0,12,2,3,4,3,0
+cont_conmebol_24,Universidad Central,continental,0,12,2,3,4,3,0
+cont_conmebol_25,Platense,continental,0,12,2,3,4,3,0
+cont_conmebol_26,Independiente Rivadavia,continental,0,12,2,3,4,3,0
+cont_conmebol_27,Mirassol,continental,0,12,2,3,4,3,0
+cont_conmebol_28,Independiente Medellín,continental,0,12,2,3,4,3,0
+cont_conmebol_29,Deportes Tolima,continental,0,12,2,3,4,3,0
+cont_conmebol_30,Sporting Cristal,continental,0,12,2,3,4,3,0
+cont_conmebol_31,Barcelona SC,continental,0,12,2,3,4,3,0
+cont_ofc_0,Auckland City,continental,3,9,2,3,4,3,2
+cont_ofc_1,Central Coast FC,continental,0,12,2,3,4,3,0
+cont_ofc_2,AS Vénus,continental,0,12,2,3,4,3,0
+cont_ofc_3,AS Tiga Sport,continental,0,12,2,3,4,3,0
+cont_ofc_4,Rewa FC,continental,0,12,2,3,4,3,0
+cont_ofc_5,Lae City FC,continental,0,12,2,3,4,3,0
+cont_ofc_6,Galaxy FC,continental,0,12,2,3,4,3,0
+cont_ofc_7,Tupapa Maraerenga,continental,0,12,2,3,4,3,0
