@@ -1,0 +1,106 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.24.12-alpha",
+  "profile": "full",
+  "category": "node",
+  "shard": {
+    "index": 2,
+    "total": 8
+  },
+  "run_id": "master_full_node_s2of8_v082412_nodeseq_2",
+  "started_utc": "20261014T173648Z",
+  "scripts_requested": 9,
+  "cases_cataloged": 450,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "node",
+      "script": "simulation.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.116,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/simulation.mjs",
+      "output_tail": "Simulation tests: PASS • 12 unique Japanese shots • 13 teams • match physics • goal • PK mode"
+    },
+    {
+      "category": "node",
+      "script": "aerial_mechanics.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.136,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/aerial_mechanics.mjs",
+      "output_tail": "v0.8.1 AERIAL TEST PASS: hyperdash duration/cooldown/fatigue, timed heading, ordinary GK dives, save direction, old rare abilities"
+    },
+    {
+      "category": "node",
+      "script": "cartoon_identities.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.129,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/cartoon_identities.mjs",
+      "output_tail": "v0.8.10 CARTOON IDENTITIES PASS — 216 teams; 165 crests, 51 flags; offline deterministic SVG, safe fallback"
+    },
+    {
+      "category": "node",
+      "script": "control_reliability.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.14,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/control_reliability.mjs",
+      "output_tail": "v0.8.17 CONTROL RELIABILITY PASS — short/long/rapid passing, jump run/tap, manual switch grace, steering auto-switch"
+    },
+    {
+      "category": "node",
+      "script": "v08192_focus_keeper.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.119,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08192_focus_keeper.mjs",
+      "output_tail": "v0.8.19.2 FOCUS/KEEPER PASS: background queued inputs, disconnect, mirrored interception prediction, AI usage"
+    },
+    {
+      "category": "node",
+      "script": "v08201_barcelona_verified.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.17,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08201_barcelona_verified.mjs",
+      "output_tail": "v0.8.20.1 Barcelona curated 2026 squad and engine compatibility PASS"
+    },
+    {
+      "category": "node",
+      "script": "v08211_control_cancellation_balance.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.144,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08211_control_cancellation_balance.mjs",
+      "output_tail": "PASS v0.8.22: mixed keyboard/touch release, cancel hold Shoot/Pass, background abort, recovery, unified transforming and fatigue-costly super bicycle"
+    },
+    {
+      "category": "node",
+      "script": "v08242_keeper_tracking.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.159,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08242_keeper_tracking.mjs",
+      "output_tail": "PASS v0.8.24.3 goalkeeper difficulty/fatigue/shot-direction matrix: 120 fixtures"
+    },
+    {
+      "category": "node",
+      "script": "v082410_human_cpu_replay.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 7.845,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v082410_human_cpu_replay.mjs",
+      "output_tail": "PASS v0.8.24.10 complete regulation scripted controller replays {\"0\":{\"matches\":3,\"regulationGoalsHome\":5,\"regulationGoalsCPU\":0,\"savesByCPU\":34,\"kicksByHumanTeam\":35,\"possessionShareHuman\":0.262,\"endedInTiebreak\":0},\"1\":{\"matches\":3,\"regulationGoalsHome\":3,\"regulationGoalsCPU\":0,\"savesByCPU\":28,\"kicksByHumanTeam\":29,\"possessionShareHuman\":0.222,\"endedInTiebreak\":1},\"2\":{\"matches\":3,\"regulationGoalsHome\":0,\"regulationGoalsCPU\":0,\"savesByCPU\":19,\"kicksByHumanTeam\":21,\"possessionShareHuman\":0.234,\"endedInTiebreak\":3},\"3\":{\"matches\":3,\"regulationGoalsHome\":0,\"regulationGoalsCPU\":2,\"savesByCPU\":14,\"kicksByHumanTeam\":15,\"possessionShareHuman\":0.213,\"endedInTiebreak\":2},\"4\":{\"matches\":3,\"regulationGoalsHome\":0,\"regulationGoalsCPU\":3,\"savesByCPU\":12,\"kicksByHumanTeam\":15,\"possessionShareHuman\":0.172,\"endedInTiebreak\":1}}"
+    }
+  ],
+  "summary": {
+    "PASS": 9,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

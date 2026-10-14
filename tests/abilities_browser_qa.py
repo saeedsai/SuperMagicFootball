@@ -1,3 +1,4 @@
+from menu_test_routes import open_quick,open_settings
 """Current four-button defensive aerial ability and autonomous goalkeeper tests.
 Supersedes the old 'L/Special button' browser expectations, removed in v0.8.18.1.
 """
@@ -10,8 +11,8 @@ with sync_playwright() as pw:
   c=b.new_context(viewport={'width':1280 if not mobile else 844,'height':720 if not mobile else 390},is_mobile=mobile,has_touch=mobile)
   p=c.new_page();errors=[];p.on('pageerror',lambda error:errors.append(str(error)))
   p.set_content((root/'play.html').read_text(),wait_until='load')
-  p.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'")
-  p.locator('[data-action="quick"]').first.click();p.locator('[data-action="kickoff"]').first.click()
+  p.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
+  open_quick(p);p.locator('[data-action="kickoff"]').first.click()
   p.evaluate('''()=>{const sf=SupermagicFootball,g=sf.game,p=g.player(0,2),q=g.player(1,2);
    g.matchState='paused';g.cooldown=0;g.controlled[0]=2;g.driveAI=()=>{};
    g.ball.owner=q;q.x=1450;q.y=710;p.x=1380;p.y=710;p.cd=0;p.stun=0;p.fatigue=0;p.z=0;p.vz=0;p.abilityCd=0;

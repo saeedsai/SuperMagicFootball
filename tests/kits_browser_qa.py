@@ -1,3 +1,4 @@
+from menu_test_routes import open_quick,open_settings,open_feature
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 root=Path(__file__).resolve().parents[1]
@@ -9,12 +10,12 @@ with sync_playwright() as pw:
   page.on('pageerror',lambda e:issues.append(str(e)))
   page.evaluate("""() => {let data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}""")
   page.set_content((root/'play.html').read_text(),wait_until='load')
-  page.wait_for_function("window.NekketsuHD?.version==='0.8.22.1-alpha'")
-  assert page.evaluate('NekketsuHD.teams.length')==222
-  page.locator('[data-action="squad"]').first.click()
+  page.wait_for_function("window.NekketsuHD?.version==='0.8.24.12-alpha'")
+  assert page.evaluate('NekketsuHD.teams.length')==223
+  open_feature(page,'squad')
   assert 'AGI' in page.locator('.rosterCard').first.inner_text(), 'Agility must be visible in squad'
   page.locator('[data-action="home"]').first.click()
-  page.locator('[data-action="quick"]').first.click()
+  open_quick(page)
   assert page.locator('#homeKit').count()==1
   assert page.locator('#awayKit').count()==1
   assert page.locator('#homeKit').input_value()=='home'

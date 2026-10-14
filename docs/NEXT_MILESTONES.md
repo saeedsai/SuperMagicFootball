@@ -1,32 +1,24 @@
-# Supermagic Football — Overall Roadmap v0.8.22.1
-**14 October 2026.** Supersedes v0.8.22 active priorities. Historical roadmaps remain included for reference.
+# Supermagic Football — Active development roadmap
+Updated 14 October 2026. **Authoritative release: v0.8.24.12 Alpha.**
 
-## Shipped this iteration — urgent Super Shot control rework
-- Aerial: Jump → Dribble = regular bicycle, Jump → 2×Dribble = Super Bicycle; Jump → Shoot = regular head, Jump → 2×Shoot = Super Header.
-- Carrying ball: Jump → Shoot = elevated normal; second airborne Jump → Shoot = Super Shot.
-- Reuse original hold Dribble → Jump stationary loft as an aerial ball source.
-- Same special shot physics and transformed **ball** graphics for ground Super Shot, Super Header and Super Bicycle. No shoot ability → stronger ordinary untransformed move.
-- 0.32s tap window, cancellation guard, online/offline built-in controls Help update, 12 new acceptance cases; **357 total QA cases**.
-- **54 Node + 34 browser regression scripts passed**, browser in six bounded groups; physical devices still unverified.
+## Completed and preserved
+- v0.8.22.1–v0.8.23.2: four action buttons, aerial Super Attacks, original audio, six historical BPW World Cup teams and seventh All-Time Legendary 12.
+- v0.8.24–v0.8.24.6: goalkeeper fairness, movement and difficulty scope; v0.8.24.7: simplified five-category menu.
+- v0.8.24.8–v0.8.24.9: ground contact and ordinary shots, zero-human control ownership.
+- v0.8.24.10–v0.8.24.11: penalty sudden death/countertracking, complete scripted replays, goalkeeper collection eligibility, event-backed shot/pass/save telemetry.
+- **v0.8.24.12:** event-only shot release context with keeper position and defender pressure; 30 additional independently seeded team-policy full-match fixtures and deterministic test coverage.
 
-## Next milestones
-| Priority | Version | Objective / acceptance gate |
-|---|---|---|
-| P0 | **v0.8.22.2** if needed | Real iOS/Android, physical gamepad and double-tap accessibility trials; tuning of the 0.32s window, normal header/bicycle delay, Super Shot scoring against keepers |
-| P1 next | **v0.8.23 Audio** | License-cleared/original menu + halftime music, distinct goal/tackle/save/stun/Super Shot SFX, mute/volume, browser audio-unlock rules, offline tests |
-| P1 | **v0.8.24** | Goalkeeper diving and long-match balancing, player animation polish, mobile performance |
-| P1 | **v0.8.25** | BPW historical personality, signature moves and individual characters (no broad 2026 roster rebuild) |
-| Future | Tier/ability | Common/Silver/Gold/Star/Superstar based on *verified positional OVR*; Gold+ Super Shot OR five-level Super Defense, unique tricks/celebrations; enforce world rarity caps, BPW exceptions |
-| Future | Career | Age-based decline/improvement, five growth-potential categories, performance-based progression, reusable manager customization and constrained named appearance palettes |
-| Future | Visual/environment | 20+ famous stadiums, weather (wind, rain, lightning, tornado), improved grass/mud/players, 20–30 celebrations, 10–20 sad reactions, national-symbol changed-ball attacks |
-| Much later | Roster | Broad 2026 roster/FC ratings/value/appearance verification **remains deferred by user request** |
-| Later | Product | Competition depth, Career extensions, multiplayer and classic-game fidelity |
+## Priority after handover — v0.8.25: BPW historical individuality, with open QA hardening
+1. Add original cartoon identities, silhouette and celebration variety, safe animation timing and per-player expressions for the seven BPW teams. Preserve historical roster IDs and the All-Time Legendary 12 exact selection, roles and 98–99 LEG ratings. Do not infer authentic portraits where unverified.
+2. Extend the fairness evidence using stratified release pressure/shot distance, keeper movement, bounce/rebound sequences and multi-policy human-style strategies. Do not retune power or goalkeeper reach from small synthetic samples alone.
+3. Rerun complete Node/browser regression after each meaningful gameplay/UI change. Preserve reproducible machine-readable reports, hashes and test command instructions.
+4. Real physical Android/iOS, Safari/Firefox, gamepad and low-end hardware/audio persistence and performance remain unresolved; flag honestly rather than simulate certification.
 
-## Immutable design constraints
-- Four action buttons only: Pass/Shoot/Dribble/Jump, no separate Special, Swap, Sprint or goalkeeper dive.
-- Six formations only: 2-1-2, 1-2-2, 2-2-1, 1-3-1, 1-1-3, 3-1-1 (one GK + five outfield).
-- Jump-first airborne Pass crosses; Pass-first Jump never crosses. Hold Pass release lofts. Jump+direction held sprints. Dribble off-ball swaps.
-- Goalkeepers dive, catch and distribute automatically; six BPW mixed WC squads remain 1998/2002/2006/2010/2014/2018, with 72 nonrepeating tournament selections.
-- Position-specific OVR is rounded mean of exactly six role stats. Unverified Gold/Star/Superstar restrictions and Career growth remain inactive.
-- Historic 218-feature snapshot 41 Done / 120 Partial / 57 Missing is *not* a wholesale new audit. v0.8.22.1 is a control rework and neither invents nor increments historical feature-count completions.
-- 357 acceptance cases are documented but not all individually certified; automated scripts and physical hardware have different evidence status.
+## Later milestone — deferred Super Defense and Tricks
+Rare Star/Superstar GK/DF defensive powers with major fatigue, specialized MF/FW Super Shots, walls, stuns, magical/comedic tricks and counterplay; no fifth action button; see `SUPER_DEFENSE_AND_TRICKS_BACKLOG_v08241.md`.
+
+## Other deferred work
+Roster corrections postponed until much later. Career/competition expansion, stadium/weather and player creation should start only at their scheduled milestones.
+
+## Compatibility commitments
+Five menu headings in their approved order; four action buttons (Pass, Shoot, Dribble, Jump); six formations; stable saves and IDs; six BPW World Cup teams plus All-Time 12; Super Shot/Header/Bicycle combinations, audio, existing career and competitions. New features must not silently convert 'Coming Later' modes to friendly matches.

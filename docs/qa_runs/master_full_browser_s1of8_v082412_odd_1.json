@@ -1,0 +1,70 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.24.12-alpha",
+  "profile": "full",
+  "category": "browser",
+  "shard": {
+    "index": 1,
+    "total": 8
+  },
+  "run_id": "master_full_browser_s1of8_v082412_odd_1",
+  "started_utc": "20261014T173645Z",
+  "scripts_requested": 5,
+  "cases_cataloged": 450,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "browser",
+      "script": "kits_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 8.369,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/kits_browser_qa.py",
+      "output_tail": "Kit browser desktop: PASS • 2 kits • live preview • selected game colors • pause/resume\nKit browser mobile: PASS • 2 kits • live preview • selected game colors • pause/resume"
+    },
+    {
+      "category": "browser",
+      "script": "abilities_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 5.653,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/abilities_browser_qa.py",
+      "output_tail": "desktop PASS: four-button defensive aerial action and autonomous GK; removed Special binding not required\nsimulated-mobile PASS: four-button defensive aerial action and autonomous GK; removed Special binding not required"
+    },
+    {
+      "category": "browser",
+      "script": "penalty_controls_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 7.564,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/penalty_controls_browser_qa.py",
+      "output_tail": "v0.8.10 BROWSER QA PASS: remapping, keyboard/touch PK movement and shots, cross-layout 4 buttons"
+    },
+    {
+      "category": "browser",
+      "script": "master_ui_contracts.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 8.439,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/master_ui_contracts.py",
+      "output_tail": "PASS desktop four action buttons, home team selection, 6 formation faces, 12 roster portraits, OVR, no page errors\nPASS simulated Android four action buttons, home team selection, 6 formation faces, 12 roster portraits, OVR, no page errors"
+    },
+    {
+      "category": "browser",
+      "script": "rapid_controls_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 5.951,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/rapid_controls_browser_qa.py",
+      "output_tail": "desktop PASS: subframe Pass, action release, simultaneous button chords, manual switch, no page exceptions\nandroid PASS: subframe Pass, action release, simultaneous button chords, manual switch, no page exceptions"
+    }
+  ],
+  "summary": {
+    "PASS": 5,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

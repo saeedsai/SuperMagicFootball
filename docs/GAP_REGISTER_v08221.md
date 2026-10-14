@@ -1,14 +1,14 @@
-# v0.8.22.1 Active Gap Register
+> **CURRENT RELEASE v0.8.23.1:** See `GAP_REGISTER_v08231.md` and `NEXT_MILESTONES.md`. The user-prioritized seventh All-Time BPW team is now implemented. Historical gaps below are preserved for earlier baselines.
 
-| Priority | Gap / risk | Owner acceptance requirement | Status |
-|---|---|---|---|
-| P0 | Real Android/iOS double taps, input order and touch latency | Test old and revised controls on actual devices | Unverified |
-| P0 | Physical gamepad button queue, d-pad overlap | Hardware test on USB and Bluetooth controllers | Unverified |
-| P0 | One uninterrupted 34-script browser command / concurrency stability | Repeat full QA uninterrupted without timeout | Unverified; six bounded shards pass |
-| P1 | 0.32s single-tap contact delay | Human-playtest responsiveness, accessibility calibration | Open |
-| P1 | Shot goal/save ratios and keeper effect of unified specials | Seeded match calibration + user match testing | Open |
-| P1 | Audio / sound events and user volume controls | Offline/online audio unlocked from user gesture | Planned v0.8.23 |
-| P1 | Historical BPW ages, visuals, shot personalities | Source and art validation for 72 players | Partial; planned v0.8.25 |
-| Later | Gold/Star/Superstar ability, Super Defense rules | Verify stats before activating eligibility | Not implemented |
-| Later | Career growth, manager/editor and environment visuals | Implement against future QA cases | Not implemented |
-| Very late | General current-world roster verification | User explicitly deferred | Deferred |
+# Active gap register — updated v0.8.23
+
+| Priority | Issue | Status |
+|---|---|---|
+| P0 | Actual iOS/Android and gamepad double taps / 0.32-second responsiveness | Not certified |
+| P0 | Full uninterrupted 35-script browser suite | 35/35 passed in six bounded groups; uninterrupted single run unverified |
+| P1 | Audio persisted settings on normal-origin browser, true crossfades, live slider outputs, crowd ambience | Partial / next iteration |
+| P1 | Mobile audio latency/Safari autoplay/real speakers and headphones | Not certified |
+| P1 | Goal/keeper Super shot scoring rates | Requires human and seeded balancing |
+| P1 | BPW historical appearance/personality | Planned v0.8.25 |
+| Future | Ability tiers, five-level Super Defense, Career progression and stadiums | Deferred |
+| Very late | Broad 2026 roster audit | Explicitly deferred |

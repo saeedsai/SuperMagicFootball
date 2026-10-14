@@ -1,0 +1,40 @@
+{
+  "release": "0.8.23.2-alpha",
+  "date": "2026-10-14",
+  "cataloged_requirements": 383,
+  "individual_catalog_requirements_certified": 0,
+  "node_master_scripts": 57,
+  "node_master_pass": 57,
+  "node_npm_test_scripts": 56,
+  "browser_master_scripts": 37,
+  "browser_master_pass": 37,
+  "browser_shards": 6,
+  "node_report": "master_full_node_s0of1_v08232_final.json",
+  "browser_reports": [
+    "master_full_browser_s0of6_v08232_final.json",
+    "master_full_browser_s1of6_v08232_final.json",
+    "master_full_browser_s2of6_v08232_final.json",
+    "master_full_browser_s3of6_v08232_final.json",
+    "master_full_browser_s4of6_v08232_final.json",
+    "master_full_browser_s5of6_v08232_final.json"
+  ],
+  "browser_environment": "Headless Chromium desktop and simulated touch; script QA uses page.set_content where browser URL navigation disallowed",
+  "original_source_checks": [
+    "Original Web Audio motifs and deterministic crowd noise",
+    "Four buttons and six formations",
+    "Six original World Cup BPW teams + All-Time Legendary 12",
+    "Super Attack sequences and legacy saves"
+  ],
+  "known_environment_blockers": [
+    "ERR_BLOCKED_BY_ADMINISTRATOR blocks Chromium local HTTP and file page.goto navigation; normal-origin localStorage unverified",
+    "Physical Safari/iOS/Android/Bluetooth/USB gamepad and audible speaker quality unverified"
+  ],
+  "execution_note": "No 383 individual-case claim; 57 Node scripts and 37 browser scripts passed. Browser suite completed in six shards rather than one uninterrupted process.",
+  "all_executed_scripts_pass": true,
+  "outstanding_risks": [
+    "hardware audio/controls",
+    "browser-origin persistence",
+    "keeper balance and animation",
+    "historical cartoon likenesses"
+  ]
+}

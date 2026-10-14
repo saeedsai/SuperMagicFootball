@@ -1,0 +1,61 @@
+{
+  "version": "0.8.23-alpha",
+  "date": "2026-10-14",
+  "inherited_node": {
+    "passed": 54,
+    "total": 54
+  },
+  "master_contract": {
+    "passed": 1,
+    "total": 1
+  },
+  "audio_node": {
+    "passed": 1,
+    "total": 1
+  },
+  "browser_full_sharded": {
+    "passed": 35,
+    "total": 35,
+    "groups": [
+      {
+        "run": "master_full_browser_s0of6_v0823",
+        "passed": 6,
+        "requested": 6
+      },
+      {
+        "run": "master_full_browser_s1of6_v0823_retry",
+        "passed": 6,
+        "requested": 6
+      },
+      {
+        "run": "master_full_browser_s2of6_v0823",
+        "passed": 6,
+        "requested": 6
+      },
+      {
+        "run": "master_full_browser_s3of6_v0823_retry",
+        "passed": 6,
+        "requested": 6
+      },
+      {
+        "run": "master_full_browser_s4of6_v0823_retry",
+        "passed": 6,
+        "requested": 6
+      },
+      {
+        "run": "master_full_browser_s5of6_v0823",
+        "passed": 5,
+        "requested": 5
+      }
+    ]
+  },
+  "audio_browser_desktop": "PASS",
+  "audio_browser_simulated_touch": "PASS",
+  "acceptance_cases_cataloged": 365,
+  "acceptance_cases_individually_certified": 0,
+  "limits": [
+    "No uninterrupted full 35-script single browser command",
+    "No real iOS/Android/gamepad/Safari/Firefox",
+    "No normal-origin localStorage or actual audio quality/latency certification"
+  ]
+}

@@ -1,3 +1,4 @@
+from menu_test_routes import open_quick,open_settings,home
 from pathlib import Path
 import json
 from playwright.sync_api import sync_playwright
@@ -9,15 +10,15 @@ with sync_playwright() as pw:
   p=ctx.new_page();errors=[];p.on('pageerror',lambda e:errors.append(str(e)))
   p.set_content((root/'play.html').read_text(), wait_until='load')
   p.wait_for_timeout(300)
-  assert p.locator('[data-action="quick"]').count()==1
-  p.locator('[data-action="quick"]').click()
-  assert p.locator('#homeTeam option').count()==222
+  assert p.locator('[data-action="navQuick"]').count()==1
+  open_quick(p)
+  assert p.locator('#homeTeam option').count()==223
   p.locator('#homeGroup').select_option('CAF')
   assert p.locator('#homeTeam option').count()==16, p.locator('#homeTeam').inner_text()
   p.locator('#awayGroup').select_option('OFC')
   assert p.locator('#awayTeam option').count()==8
-  p.locator('[data-action="home"]').last.click()
-  p.locator('[data-action="settings"]').first.click()
+  home(p)
+  open_settings(p,'save')
   assert p.locator('[data-action="exportSave"]').count()==1
   with p.expect_download() as info:
    p.locator('[data-action="exportSave"]').click()
@@ -25,7 +26,7 @@ with sync_playwright() as pw:
   json_file=root/'tests'/('browser_export_mobile.json' if mobile else 'browser_export_desktop.json')
   download.save_as(str(json_file))
   data=json.loads(json_file.read_text())
-  assert data['version']=='0.8.22.1' and data['product']=='Supermagic Football'
+  assert data['version']=='0.8.24.12' and data['product']=='Supermagic Football'
   p.locator('[data-action="importSave"]').click()
   dialogs=[]
   p.on('dialog',lambda d: (dialogs.append(d.message),d.accept()))

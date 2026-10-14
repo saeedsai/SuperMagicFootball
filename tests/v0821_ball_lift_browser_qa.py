@@ -1,3 +1,4 @@
+from menu_test_routes import open_feature
 """Desktop and simulated-Android integration: two-stage four-button ball lift.
 This uses the real final standalone game engine and renderer but synthetic button
 states for determinism; physical multitouch hardware remains unverified.
@@ -12,9 +13,9 @@ with sync_playwright() as pw:
   ctx=browser.new_context(viewport={'width':1400,'height':850} if not touch else {'width':760,'height':412},has_touch=touch,is_mobile=touch)
   page=ctx.new_page();errors=[];page.on('pageerror',lambda exc:errors.append(str(exc)))
   page.set_content(html,wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'",timeout=20000)
+  page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=20000)
   assert sorted(page.locator('[data-act]').evaluate_all('els=>els.map(x=>x.dataset.act)'))==['dribble','jump','pass','shoot']
-  page.locator('[data-action="help"]').first.click()
+  open_feature(page,'help')
   help_text=page.locator('body').inner_text()
   assert 'Hold DRIBBLE 0.26s' in help_text and 'SUPER BICYCLE' in help_text.upper(),help_text[-500:]
   result=page.evaluate('''() => {

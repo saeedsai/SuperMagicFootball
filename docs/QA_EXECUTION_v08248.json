@@ -1,0 +1,62 @@
+{
+  "release": "0.8.24.8-alpha",
+  "date": "2026-10-14",
+  "node_npm_scripts_passed": 64,
+  "master_contract_passed": true,
+  "distinct_node_scripts_passed": 65,
+  "browser_scripts_passed": 40,
+  "browser_shards_completed": 8,
+  "browser_shard_results": [
+    {
+      "file": "master_full_browser_s0of8_v08248.json",
+      "pass": 5,
+      "all_passed": true
+    },
+    {
+      "file": "master_full_browser_s1of8_v08248.json",
+      "pass": 5,
+      "all_passed": true
+    },
+    {
+      "file": "master_full_browser_s2of8_v08248_retry.json",
+      "pass": 5,
+      "all_passed": true
+    },
+    {
+      "file": "master_full_browser_s3of8_v08248.json",
+      "pass": 5,
+      "all_passed": true
+    },
+    {
+      "file": "master_full_browser_s4of8_v08248.json",
+      "pass": 5,
+      "all_passed": true
+    },
+    {
+      "file": "master_full_browser_s5of8_v08248.json",
+      "pass": 5,
+      "all_passed": true
+    },
+    {
+      "file": "master_full_browser_s6of8_v08248.json",
+      "pass": 5,
+      "all_passed": true
+    },
+    {
+      "file": "master_full_browser_s7of8_v08248.json",
+      "pass": 5,
+      "all_passed": true
+    }
+  ],
+  "interrupted_run": "Initial shard 2 stopped after one passing script; a complete 5/5 rerun supersedes it. Kept for historical diagnostic only.",
+  "shot_fixtures": 500,
+  "ground_frame_tests": 3,
+  "master_qa_requirements_cataloged": 424,
+  "catalog_individually_executed": false,
+  "limitations": [
+    "Physical iOS/Android and gamepads not tested",
+    "Headless Chromium simulated-touch is not hardware input validation",
+    "Safari/Firefox and browser-origin audio preference persistence not certified",
+    "Controlled shots deliberately place keeper outside the shot lane; not human-vs-CPU win-rate or complete goalkeeper calibration"
+  ]
+}

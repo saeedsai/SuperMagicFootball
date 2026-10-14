@@ -1,0 +1,115 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.24.12-alpha",
+  "profile": "full",
+  "category": "node",
+  "shard": {
+    "index": 1,
+    "total": 8
+  },
+  "run_id": "master_full_node_s1of8_v082412_nodeseq_1",
+  "started_utc": "20261014T173645Z",
+  "scripts_requested": 10,
+  "cases_cataloged": 450,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "node",
+      "script": "kits_agility.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.082,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/kits_agility.mjs",
+      "output_tail": "v0.6.3 KITS & AGILITY PASS — 216 home/away pairs, chosen kits, distinct running speed, acceleration and turns"
+    },
+    {
+      "category": "node",
+      "script": "defensive_abilities.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.066,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/defensive_abilities.mjs",
+      "output_tail": "v0.8.0 DEFENSIVE/GK ABILITIES PASS: 2 field + 2 GK; collisions, stamina, cooldowns, keeper clearance, persistence, no-regression shots"
+    },
+    {
+      "category": "node",
+      "script": "penalty_controls.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.072,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/penalty_controls.mjs",
+      "output_tail": "v0.8.8 PENALTY & BINDING PASS — movement, dribble, keeper dive, shooting origin, safe profiles, real polling"
+    },
+    {
+      "category": "node",
+      "script": "special_levels.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.186,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/special_levels.mjs",
+      "output_tail": "v0.8.16 SPECIAL TIERS PASS — 2592 roster entries; 11 level-4 names; 4 level-5 names; impact, fatigue, defence, keeper, override and slow-shot invariants"
+    },
+    {
+      "category": "node",
+      "script": "v08191_input_queue.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.11,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08191_input_queue.mjs",
+      "output_tail": "v0.8.19.1 INPUT QUEUE PASS — 3 keyboard / 4 touch cycles, hold duration, sprint disambiguation, reset and remapping"
+    },
+    {
+      "category": "node",
+      "script": "v0820_roster_sources.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.081,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v0820_roster_sources.mjs",
+      "output_tail": "v0.8.20 verified Inter Miami roster PASS: 12 authentic names, ages, roles, stable IDs, game initialization"
+    },
+    {
+      "category": "node",
+      "script": "v0821_ball_lift_super_bicycle.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.084,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v0821_ball_lift_super_bicycle.mjs",
+      "output_tail": "PASS v0.8.21: hold-order lift, both teams, grounded carrier, airborne follow-up, unified special-power shot, no duplicates, invalid states, timeout and possession loss, ordinary bicycle preserved"
+    },
+    {
+      "category": "node",
+      "script": "v08241_moving_keeper.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.161,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08241_moving_keeper.mjs",
+      "output_tail": "PASS v0.8.24.3 moving-keeper forecast and 30/60/120Hz bounded integration: 96 fixtures"
+    },
+    {
+      "category": "node",
+      "script": "v08249_single_player_calibration.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 1.274,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08249_single_player_calibration.mjs",
+      "output_tail": "PASS single-player live-keeper CPU calibration {\"0\":{\"shots\":24,\"goals\":2,\"saves\":21,\"defenderReactions\":24},\"1\":{\"shots\":24,\"goals\":0,\"saves\":16,\"defenderReactions\":24},\"2\":{\"shots\":24,\"goals\":0,\"saves\":20,\"defenderReactions\":24},\"3\":{\"shots\":24,\"goals\":0,\"saves\":19,\"defenderReactions\":24},\"4\":{\"shots\":24,\"goals\":0,\"saves\":8,\"defenderReactions\":24}}"
+    },
+    {
+      "category": "node",
+      "script": "master_contracts.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.165,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/master_contracts.mjs",
+      "output_tail": "MASTER QA CONTRACTS PASS: 223 teams / 2,676 slots, 99 verified, 1,768 fictional; six formations, four action buttons, GK Diving migration, OVR purity, 450-case catalog, release/PWA version"
+    }
+  ],
+  "summary": {
+    "PASS": 10,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

@@ -1,0 +1,535 @@
+{
+  "release": "0.8.24.4",
+  "label": "Seeded AI-vs-AI full-engine scenarios; not player-facing difficulty proof",
+  "secondsPerHalf": 60,
+  "stepSeconds": 0.03333333333333333,
+  "fixtures": [
+    {
+      "home": 0,
+      "away": 9
+    },
+    {
+      "home": 9,
+      "away": 0
+    },
+    {
+      "home": 2,
+      "away": 7
+    }
+  ],
+  "results": [
+    {
+      "difficulty": 0,
+      "seed": 824440,
+      "home": 0,
+      "away": 9,
+      "ticks": 3602,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "saves": 10,
+      "events": {
+        "playerCollision": 301,
+        "tackleHit": 35,
+        "slideStart": 17,
+        "autoSwitch": 17,
+        "defenceSuper": 4,
+        "aiDetour": 10,
+        "dribbleTrick": 2,
+        "keeperCatch": 9,
+        "save": 10,
+        "kick": 11,
+        "keeperDistribution": 5,
+        "keeperDive": 5,
+        "halftime": 1,
+        "keeperRecovery": 1,
+        "penaltyStart": 1
+      },
+      "peakBallSpeed": 1029.016,
+      "finishedState": "penalty"
+    },
+    {
+      "difficulty": 0,
+      "seed": 824537,
+      "home": 9,
+      "away": 0,
+      "ticks": 3727,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "saves": 9,
+      "events": {
+        "playerCollision": 308,
+        "tackleHit": 37,
+        "defenceSuper": 5,
+        "slideStart": 29,
+        "autoSwitch": 20,
+        "kick": 10,
+        "save": 9,
+        "keeperDive": 5,
+        "keeperRecovery": 2,
+        "goal": 1,
+        "aiDetour": 3,
+        "keeperCatch": 7,
+        "keeperDistribution": 4,
+        "stoppageTime": 1,
+        "halftime": 1,
+        "finished": 1
+      },
+      "peakBallSpeed": 1154.076,
+      "finishedState": "finished"
+    },
+    {
+      "difficulty": 0,
+      "seed": 824634,
+      "home": 2,
+      "away": 7,
+      "ticks": 3602,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "saves": 14,
+      "events": {
+        "playerCollision": 297,
+        "slideStart": 22,
+        "tackleHit": 35,
+        "autoSwitch": 18,
+        "kick": 14,
+        "save": 14,
+        "keeperDive": 8,
+        "keeperRecovery": 3,
+        "keeperCatch": 11,
+        "keeperDistribution": 6,
+        "halftime": 1,
+        "dribbleTrick": 1,
+        "aiDetour": 4,
+        "penaltyStart": 1
+      },
+      "peakBallSpeed": 918.434,
+      "finishedState": "penalty"
+    },
+    {
+      "difficulty": 1,
+      "seed": 832359,
+      "home": 0,
+      "away": 9,
+      "ticks": 3702,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "saves": 12,
+      "events": {
+        "playerCollision": 301,
+        "slideStart": 18,
+        "aiDetour": 10,
+        "tackleHit": 41,
+        "autoSwitch": 23,
+        "defenceSuper": 9,
+        "kick": 14,
+        "save": 12,
+        "keeperDive": 9,
+        "keeperRecovery": 6,
+        "keeperCatch": 6,
+        "keeperDistribution": 3,
+        "goal": 1,
+        "halftime": 1,
+        "finished": 1
+      },
+      "peakBallSpeed": 1096.686,
+      "finishedState": "finished"
+    },
+    {
+      "difficulty": 1,
+      "seed": 832456,
+      "home": 9,
+      "away": 0,
+      "ticks": 3606,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "saves": 14,
+      "events": {
+        "playerCollision": 300,
+        "tackleHit": 29,
+        "defenceSuper": 7,
+        "slideStart": 20,
+        "aiDetour": 6,
+        "kick": 16,
+        "save": 14,
+        "keeperDive": 7,
+        "autoSwitch": 20,
+        "keeperRecovery": 1,
+        "keeperCatch": 13,
+        "keeperDistribution": 7,
+        "stoppageTime": 1,
+        "halftime": 1,
+        "penaltyStart": 1
+      },
+      "peakBallSpeed": 918.434,
+      "finishedState": "penalty"
+    },
+    {
+      "difficulty": 1,
+      "seed": 832553,
+      "home": 2,
+      "away": 7,
+      "ticks": 3602,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "saves": 15,
+      "events": {
+        "playerCollision": 294,
+        "tackleHit": 37,
+        "slideStart": 22,
+        "autoSwitch": 26,
+        "kick": 16,
+        "keeperCatch": 14,
+        "save": 15,
+        "keeperDive": 8,
+        "keeperDistribution": 7,
+        "halftime": 1,
+        "dribbleTrick": 1,
+        "aiDetour": 1,
+        "keeperRecovery": 1,
+        "penaltyStart": 1
+      },
+      "peakBallSpeed": 918.434,
+      "finishedState": "penalty"
+    },
+    {
+      "difficulty": 2,
+      "seed": 840278,
+      "home": 0,
+      "away": 9,
+      "ticks": 3702,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "saves": 11,
+      "events": {
+        "playerCollision": 313,
+        "tackleHit": 44,
+        "slideStart": 25,
+        "autoSwitch": 16,
+        "kick": 14,
+        "save": 11,
+        "keeperDive": 7,
+        "keeperRecovery": 3,
+        "goal": 1,
+        "aiDetour": 15,
+        "defenceSuper": 4,
+        "keeperCatch": 8,
+        "keeperDistribution": 4,
+        "halftime": 1,
+        "finished": 1
+      },
+      "peakBallSpeed": 1066.608,
+      "finishedState": "finished"
+    },
+    {
+      "difficulty": 2,
+      "seed": 840375,
+      "home": 9,
+      "away": 0,
+      "ticks": 3616,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "saves": 15,
+      "events": {
+        "playerCollision": 267,
+        "slideStart": 18,
+        "tackleHit": 33,
+        "defenceSuper": 7,
+        "kick": 17,
+        "save": 15,
+        "keeperDive": 10,
+        "autoSwitch": 13,
+        "keeperRecovery": 5,
+        "keeperCatch": 10,
+        "keeperDistribution": 5,
+        "aiDetour": 7,
+        "stoppageTime": 1,
+        "halftime": 1,
+        "dribbleTrick": 1,
+        "penaltyStart": 1
+      },
+      "peakBallSpeed": 1107.792,
+      "finishedState": "penalty"
+    },
+    {
+      "difficulty": 2,
+      "seed": 840472,
+      "home": 2,
+      "away": 7,
+      "ticks": 3602,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "saves": 11,
+      "events": {
+        "playerCollision": 329,
+        "tackleHit": 40,
+        "slideStart": 24,
+        "aiDetour": 13,
+        "kick": 12,
+        "autoSwitch": 19,
+        "save": 11,
+        "keeperDive": 6,
+        "keeperRecovery": 3,
+        "keeperCatch": 8,
+        "keeperDistribution": 5,
+        "halftime": 1,
+        "dribbleTrick": 1,
+        "penaltyStart": 1
+      },
+      "peakBallSpeed": 918.434,
+      "finishedState": "penalty"
+    },
+    {
+      "difficulty": 3,
+      "seed": 848197,
+      "home": 0,
+      "away": 9,
+      "ticks": 3602,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "saves": 9,
+      "events": {
+        "playerCollision": 305,
+        "tackleHit": 38,
+        "slideStart": 19,
+        "autoSwitch": 20,
+        "kick": 12,
+        "save": 9,
+        "keeperDive": 5,
+        "keeperRecovery": 2,
+        "defenceSuper": 4,
+        "keeperCatch": 7,
+        "keeperDistribution": 4,
+        "halftime": 1,
+        "aiDetour": 6,
+        "dribbleTrick": 1,
+        "keeperSuper": 1,
+        "penaltyStart": 1
+      },
+      "peakBallSpeed": 1005.633,
+      "finishedState": "penalty"
+    },
+    {
+      "difficulty": 3,
+      "seed": 848294,
+      "home": 9,
+      "away": 0,
+      "ticks": 3702,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "saves": 9,
+      "events": {
+        "playerCollision": 355,
+        "slideStart": 15,
+        "tackleHit": 36,
+        "autoSwitch": 18,
+        "kick": 10,
+        "save": 9,
+        "keeperDive": 5,
+        "keeperRecovery": 2,
+        "goal": 1,
+        "defenceSuper": 7,
+        "keeperCatch": 7,
+        "keeperDistribution": 4,
+        "halftime": 1,
+        "aiDetour": 12,
+        "finished": 1
+      },
+      "peakBallSpeed": 1156.706,
+      "finishedState": "finished"
+    },
+    {
+      "difficulty": 3,
+      "seed": 848391,
+      "home": 2,
+      "away": 7,
+      "ticks": 3625,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "saves": 10,
+      "events": {
+        "playerCollision": 325,
+        "tackleHit": 33,
+        "slideStart": 18,
+        "autoSwitch": 15,
+        "aiDetour": 4,
+        "kick": 11,
+        "keeperCatch": 9,
+        "save": 10,
+        "keeperDive": 5,
+        "keeperDistribution": 5,
+        "keeperRecovery": 1,
+        "stoppageTime": 1,
+        "halftime": 1,
+        "penaltyStart": 1
+      },
+      "peakBallSpeed": 918.434,
+      "finishedState": "penalty"
+    },
+    {
+      "difficulty": 4,
+      "seed": 856116,
+      "home": 0,
+      "away": 9,
+      "ticks": 3605,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "saves": 13,
+      "events": {
+        "playerCollision": 300,
+        "slideStart": 16,
+        "tackleHit": 37,
+        "defenceSuper": 4,
+        "autoSwitch": 21,
+        "kick": 14,
+        "save": 13,
+        "keeperDive": 9,
+        "keeperRecovery": 5,
+        "keeperCatch": 8,
+        "keeperDistribution": 4,
+        "aiDetour": 11,
+        "halftime": 1,
+        "stoppageTime": 1,
+        "penaltyStart": 1
+      },
+      "peakBallSpeed": 926.494,
+      "finishedState": "penalty"
+    },
+    {
+      "difficulty": 4,
+      "seed": 856213,
+      "home": 9,
+      "away": 0,
+      "ticks": 3602,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "saves": 11,
+      "events": {
+        "defenceSuper": 7,
+        "playerCollision": 293,
+        "slideStart": 30,
+        "tackleHit": 47,
+        "aiDetour": 3,
+        "autoSwitch": 19,
+        "kick": 13,
+        "save": 11,
+        "keeperDive": 7,
+        "keeperRecovery": 3,
+        "keeperCatch": 8,
+        "keeperDistribution": 4,
+        "halftime": 1,
+        "penaltyStart": 1
+      },
+      "peakBallSpeed": 959.908,
+      "finishedState": "penalty"
+    },
+    {
+      "difficulty": 4,
+      "seed": 856310,
+      "home": 2,
+      "away": 7,
+      "ticks": 3602,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "saves": 9,
+      "events": {
+        "playerCollision": 299,
+        "slideStart": 26,
+        "tackleHit": 44,
+        "autoSwitch": 16,
+        "kick": 9,
+        "save": 9,
+        "keeperDive": 6,
+        "keeperRecovery": 3,
+        "aiDetour": 7,
+        "keeperCatch": 6,
+        "keeperDistribution": 3,
+        "halftime": 1,
+        "penaltyStart": 1
+      },
+      "peakBallSpeed": 992.021,
+      "finishedState": "penalty"
+    }
+  ],
+  "byDifficulty": {
+    "0": {
+      "matches": 3,
+      "goals": 1,
+      "saves": 33,
+      "avgPeakBallSpeed": 1033.842
+    },
+    "1": {
+      "matches": 3,
+      "goals": 1,
+      "saves": 41,
+      "avgPeakBallSpeed": 977.851
+    },
+    "2": {
+      "matches": 3,
+      "goals": 1,
+      "saves": 37,
+      "avgPeakBallSpeed": 1030.945
+    },
+    "3": {
+      "matches": 3,
+      "goals": 1,
+      "saves": 28,
+      "avgPeakBallSpeed": 1026.924
+    },
+    "4": {
+      "matches": 3,
+      "goals": 0,
+      "saves": 33,
+      "avgPeakBallSpeed": 959.474
+    }
+  },
+  "limitations": [
+    "Three fixture pairs per difficulty are too few for statistical balance conclusions",
+    "All-AI play is not human-versus-CPU performance",
+    "Hardware and browser performance require separate testing"
+  ]
+}

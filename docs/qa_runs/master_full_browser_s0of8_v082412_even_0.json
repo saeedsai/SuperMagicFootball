@@ -1,0 +1,70 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.24.12-alpha",
+  "profile": "full",
+  "category": "browser",
+  "shard": {
+    "index": 0,
+    "total": 8
+  },
+  "run_id": "master_full_browser_s0of8_v082412_even_0",
+  "started_utc": "20261014T173645Z",
+  "scripts_requested": 5,
+  "cases_cataloged": 450,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "browser",
+      "script": "tactics_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 9.704,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/tactics_browser_qa.py",
+      "output_tail": "v0.7.0 tactical browser desktop: PASS • menus/roles • pre-match • pause • saved team plans • visual badges\nv0.7.0 tactical browser mobile: PASS • menus/roles • pre-match • pause • saved team plans • visual badges"
+    },
+    {
+      "category": "browser",
+      "script": "morale_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 7.567,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/morale_browser_qa.py",
+      "output_tail": "desktop PASS setup talk; halftime talk; no duplicate; match resume; goal and crying; no page errors\nmobile PASS setup talk; halftime talk; no duplicate; match resume; goal and crying; no page errors"
+    },
+    {
+      "category": "browser",
+      "script": "dribble_styles_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 4.957,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/dribble_styles_browser_qa.py",
+      "output_tail": "v0.8.7 browser PASS — real keyboard double-tap, genuine simulated Android touch double-tap, 4-button UI, style and game rendering"
+    },
+    {
+      "category": "browser",
+      "script": "v08205_rosters_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 9.365,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08205_rosters_browser_qa.py",
+      "output_tail": "PASS desktop 2026/27 Man City + Liverpool roster, shirt/DOB provenance, formation portraits, OVR\nPASS simulated Android 2026/27 Man City + Liverpool roster, shirt/DOB provenance, formation portraits, OVR"
+    },
+    {
+      "category": "browser",
+      "script": "v08193_ui_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 10.149,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08193_ui_browser_qa.py",
+      "output_tail": "desktop career region UEFA countries 16\ndesktop PASS career filters, flag/crest browsing, formation portraits and two formations\nmobile career region UEFA countries 16\nmobile PASS career filters, flag/crest browsing, formation portraits and two formations"
+    }
+  ],
+  "summary": {
+    "PASS": 5,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

@@ -1,0 +1,5 @@
+# Active and historical files — v0.8.24.12
+
+Editable runtime: `src/`, `index.html`, `style.css`, `package.json`. Standalone: `play.html`, generated via `npm run build`. Canonical handover: `HANDOVER_README.md`, `NEXT_CHAT_PROMPT.md`. Active documents: `docs/STATUS.md`, `docs/NEXT_MILESTONES.md`, `docs/GAP_REGISTER_v082412.md`, `docs/TEST_REPORT_v082412.md`, `docs/MATCH_RELEASE_CONTEXT_SPEC_v082412.md`, `docs/HUMAN_CPU_CONTEXT_REPLAYS_v082412.json`, `docs/MASTER_QA_TEST_CASES_v08221.csv`, and existing Super Attack / Super Defense/Tricks specs. Prior versions are historical evidence and must not override the current docs. Historical changelogs reside in `docs/history/changelogs/`.
+
+Exclude generated browser screenshots, export samples, transient `docs/qa_runs/` fragments and cache files from final ZIP; retain scripts and authored tests. The current regression evidence summary is retained in `docs/TEST_REPORT_v082412.md` and separately in `docs/QA_EXECUTION_v082412.json`. Regenerate SHA-256 manifest after the last source change.

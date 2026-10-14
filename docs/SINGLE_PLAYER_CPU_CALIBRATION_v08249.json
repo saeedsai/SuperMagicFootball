@@ -1,0 +1,2023 @@
+{
+  "release": "0.8.24.9",
+  "type": "Seeded controlled-player shots vs moving CPU keeper and defenders in full GameEngine.update",
+  "trials": [
+    {
+      "difficulty": 0,
+      "home": 0,
+      "away": 9,
+      "seed": 825470,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 0,
+      "away": 9,
+      "seed": 825483,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 0,
+      "away": 9,
+      "seed": 825496,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 0,
+      "away": 9,
+      "seed": 825509,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 0,
+      "away": 9,
+      "seed": 825750,
+      "distance": 850,
+      "steps": 81,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 0,
+      "away": 9,
+      "seed": 825763,
+      "distance": 850,
+      "steps": 77,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 0,
+      "away": 9,
+      "seed": 825776,
+      "distance": 850,
+      "steps": 58,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 0,
+      "away": 9,
+      "seed": 825789,
+      "distance": 850,
+      "steps": 59,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 9,
+      "away": 0,
+      "seed": 825587,
+      "distance": 570,
+      "steps": 28,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 9,
+      "away": 0,
+      "seed": 825600,
+      "distance": 570,
+      "steps": 29,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 9,
+      "away": 0,
+      "seed": 825613,
+      "distance": 570,
+      "steps": 28,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 9,
+      "away": 0,
+      "seed": 825626,
+      "distance": 570,
+      "steps": 28,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 9,
+      "away": 0,
+      "seed": 825867,
+      "distance": 850,
+      "steps": 68,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 9,
+      "away": 0,
+      "seed": 825880,
+      "distance": 850,
+      "steps": 57,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 9,
+      "away": 0,
+      "seed": 825893,
+      "distance": 850,
+      "steps": 83,
+      "goal": true,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "goal"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 9,
+      "away": 0,
+      "seed": 825906,
+      "distance": 850,
+      "steps": 82,
+      "goal": true,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "goal"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 2,
+      "away": 7,
+      "seed": 825704,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 2,
+      "away": 7,
+      "seed": 825717,
+      "distance": 570,
+      "steps": 29,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 2,
+      "away": 7,
+      "seed": 825730,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 0,
+      "home": 2,
+      "away": 7,
+      "seed": 825743,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 2,
+      "away": 7,
+      "seed": 825984,
+      "distance": 850,
+      "steps": 58,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 2,
+      "away": 7,
+      "seed": 825997,
+      "distance": 850,
+      "steps": 66,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 2,
+      "away": 7,
+      "seed": 826010,
+      "distance": 850,
+      "steps": 59,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 0,
+      "home": 2,
+      "away": 7,
+      "seed": 826023,
+      "distance": 850,
+      "steps": 59,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 0,
+      "away": 9,
+      "seed": 826483,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 0,
+      "away": 9,
+      "seed": 826496,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 0,
+      "away": 9,
+      "seed": 826509,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 0,
+      "away": 9,
+      "seed": 826522,
+      "distance": 570,
+      "steps": 29,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 0,
+      "away": 9,
+      "seed": 826763,
+      "distance": 850,
+      "steps": 42,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 1,
+      "home": 0,
+      "away": 9,
+      "seed": 826776,
+      "distance": 850,
+      "steps": 41,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 1,
+      "home": 0,
+      "away": 9,
+      "seed": 826789,
+      "distance": 850,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 1,
+      "home": 0,
+      "away": 9,
+      "seed": 826802,
+      "distance": 850,
+      "steps": 41,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 1,
+      "home": 9,
+      "away": 0,
+      "seed": 826600,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 1,
+      "home": 9,
+      "away": 0,
+      "seed": 826613,
+      "distance": 570,
+      "steps": 28,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 9,
+      "away": 0,
+      "seed": 826626,
+      "distance": 570,
+      "steps": 28,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 9,
+      "away": 0,
+      "seed": 826639,
+      "distance": 570,
+      "steps": 28,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 9,
+      "away": 0,
+      "seed": 826880,
+      "distance": 850,
+      "steps": 55,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 9,
+      "away": 0,
+      "seed": 826893,
+      "distance": 850,
+      "steps": 38,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 1,
+      "home": 9,
+      "away": 0,
+      "seed": 826906,
+      "distance": 850,
+      "steps": 55,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 9,
+      "away": 0,
+      "seed": 826919,
+      "distance": 850,
+      "steps": 38,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 1,
+      "home": 2,
+      "away": 7,
+      "seed": 826717,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 2,
+      "away": 7,
+      "seed": 826730,
+      "distance": 570,
+      "steps": 29,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 2,
+      "away": 7,
+      "seed": 826743,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 2,
+      "away": 7,
+      "seed": 826756,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 2,
+      "away": 7,
+      "seed": 826997,
+      "distance": 850,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 1,
+      "home": 2,
+      "away": 7,
+      "seed": 827010,
+      "distance": 850,
+      "steps": 58,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 2,
+      "away": 7,
+      "seed": 827023,
+      "distance": 850,
+      "steps": 57,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 1,
+      "home": 2,
+      "away": 7,
+      "seed": 827036,
+      "distance": 850,
+      "steps": 57,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 0,
+      "away": 9,
+      "seed": 827496,
+      "distance": 570,
+      "steps": 28,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 0,
+      "away": 9,
+      "seed": 827509,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "playerCollision",
+        "playerCollision"
+      ],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 2,
+      "home": 0,
+      "away": 9,
+      "seed": 827522,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 2,
+      "home": 0,
+      "away": 9,
+      "seed": 827535,
+      "distance": 570,
+      "steps": 29,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 0,
+      "away": 9,
+      "seed": 827776,
+      "distance": 850,
+      "steps": 59,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 0,
+      "away": 9,
+      "seed": 827789,
+      "distance": 850,
+      "steps": 59,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 0,
+      "away": 9,
+      "seed": 827802,
+      "distance": 850,
+      "steps": 58,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 0,
+      "away": 9,
+      "seed": 827815,
+      "distance": 850,
+      "steps": 60,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 9,
+      "away": 0,
+      "seed": 827613,
+      "distance": 570,
+      "steps": 28,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 9,
+      "away": 0,
+      "seed": 827626,
+      "distance": 570,
+      "steps": 29,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 9,
+      "away": 0,
+      "seed": 827639,
+      "distance": 570,
+      "steps": 26,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 9,
+      "away": 0,
+      "seed": 827652,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "playerCollision",
+        "playerCollision"
+      ],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 2,
+      "home": 9,
+      "away": 0,
+      "seed": 827893,
+      "distance": 850,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 2,
+      "home": 9,
+      "away": 0,
+      "seed": 827906,
+      "distance": 850,
+      "steps": 55,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 9,
+      "away": 0,
+      "seed": 827919,
+      "distance": 850,
+      "steps": 56,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 9,
+      "away": 0,
+      "seed": 827932,
+      "distance": 850,
+      "steps": 55,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 2,
+      "away": 7,
+      "seed": 827730,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 2,
+      "away": 7,
+      "seed": 827743,
+      "distance": 570,
+      "steps": 29,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 2,
+      "away": 7,
+      "seed": 827756,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 2,
+      "away": 7,
+      "seed": 827769,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 2,
+      "away": 7,
+      "seed": 828010,
+      "distance": 850,
+      "steps": 59,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 2,
+      "away": 7,
+      "seed": 828023,
+      "distance": 850,
+      "steps": 57,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 2,
+      "away": 7,
+      "seed": 828036,
+      "distance": 850,
+      "steps": 58,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 2,
+      "home": 2,
+      "away": 7,
+      "seed": 828049,
+      "distance": 850,
+      "steps": 59,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 0,
+      "away": 9,
+      "seed": 828509,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "playerCollision",
+        "playerCollision"
+      ],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 3,
+      "home": 0,
+      "away": 9,
+      "seed": 828522,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 0,
+      "away": 9,
+      "seed": 828535,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 0,
+      "away": 9,
+      "seed": 828548,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "playerCollision",
+        "playerCollision"
+      ],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 3,
+      "home": 0,
+      "away": 9,
+      "seed": 828789,
+      "distance": 850,
+      "steps": 59,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 0,
+      "away": 9,
+      "seed": 828802,
+      "distance": 850,
+      "steps": 58,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 0,
+      "away": 9,
+      "seed": 828815,
+      "distance": 850,
+      "steps": 60,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 0,
+      "away": 9,
+      "seed": 828828,
+      "distance": 850,
+      "steps": 59,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 9,
+      "away": 0,
+      "seed": 828626,
+      "distance": 570,
+      "steps": 29,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 9,
+      "away": 0,
+      "seed": 828639,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "playerCollision",
+        "playerCollision"
+      ],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 3,
+      "home": 9,
+      "away": 0,
+      "seed": 828652,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "playerCollision",
+        "playerCollision"
+      ],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 3,
+      "home": 9,
+      "away": 0,
+      "seed": 828665,
+      "distance": 570,
+      "steps": 28,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 9,
+      "away": 0,
+      "seed": 828906,
+      "distance": 850,
+      "steps": 55,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 9,
+      "away": 0,
+      "seed": 828919,
+      "distance": 850,
+      "steps": 56,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 9,
+      "away": 0,
+      "seed": 828932,
+      "distance": 850,
+      "steps": 55,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 9,
+      "away": 0,
+      "seed": 828945,
+      "distance": 850,
+      "steps": 56,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 2,
+      "away": 7,
+      "seed": 828743,
+      "distance": 570,
+      "steps": 33,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 2,
+      "away": 7,
+      "seed": 828756,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 2,
+      "away": 7,
+      "seed": 828769,
+      "distance": 570,
+      "steps": 30,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 2,
+      "away": 7,
+      "seed": 828782,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "playerCollision",
+        "playerCollision"
+      ],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 3,
+      "home": 2,
+      "away": 7,
+      "seed": 829023,
+      "distance": 850,
+      "steps": 60,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 2,
+      "away": 7,
+      "seed": 829036,
+      "distance": 850,
+      "steps": 58,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 2,
+      "away": 7,
+      "seed": 829049,
+      "distance": 850,
+      "steps": 59,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 3,
+      "home": 2,
+      "away": 7,
+      "seed": 829062,
+      "distance": 850,
+      "steps": 59,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 4,
+      "home": 0,
+      "away": 9,
+      "seed": 829522,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 0,
+      "away": 9,
+      "seed": 829535,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "playerCollision"
+      ],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 0,
+      "away": 9,
+      "seed": 829548,
+      "distance": 570,
+      "steps": 77,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "playerCollision",
+        "playerCollision",
+        "playerCollision"
+      ],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 0,
+      "away": 9,
+      "seed": 829561,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "playerCollision"
+      ],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 0,
+      "away": 9,
+      "seed": 829802,
+      "distance": 850,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 0,
+      "away": 9,
+      "seed": 829815,
+      "distance": 850,
+      "steps": 58,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 4,
+      "home": 0,
+      "away": 9,
+      "seed": 829828,
+      "distance": 850,
+      "steps": 59,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 4,
+      "home": 0,
+      "away": 9,
+      "seed": 829841,
+      "distance": 850,
+      "steps": 58,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 4,
+      "home": 9,
+      "away": 0,
+      "seed": 829639,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "playerCollision"
+      ],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 9,
+      "away": 0,
+      "seed": 829652,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "playerCollision"
+      ],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 9,
+      "away": 0,
+      "seed": 829665,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 9,
+      "away": 0,
+      "seed": 829678,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "playerCollision"
+      ],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 9,
+      "away": 0,
+      "seed": 829919,
+      "distance": 850,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 9,
+      "away": 0,
+      "seed": 829932,
+      "distance": 850,
+      "steps": 56,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 4,
+      "home": 9,
+      "away": 0,
+      "seed": 829945,
+      "distance": 850,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 9,
+      "away": 0,
+      "seed": 829958,
+      "distance": 850,
+      "steps": 39,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 2,
+      "away": 7,
+      "seed": 829756,
+      "distance": 570,
+      "steps": 28,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 4,
+      "home": 2,
+      "away": 7,
+      "seed": 829769,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "playerCollision"
+      ],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 2,
+      "away": 7,
+      "seed": 829782,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 2,
+      "away": 7,
+      "seed": 829795,
+      "distance": 570,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "playerCollision"
+      ],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 2,
+      "away": 7,
+      "seed": 830036,
+      "distance": 850,
+      "steps": 58,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 4,
+      "home": 2,
+      "away": 7,
+      "seed": 830049,
+      "distance": 850,
+      "steps": 58,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    },
+    {
+      "difficulty": 4,
+      "home": 2,
+      "away": 7,
+      "seed": 830062,
+      "distance": 850,
+      "steps": 31,
+      "goal": false,
+      "save": false,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [],
+      "ballOwnerTeam": 1
+    },
+    {
+      "difficulty": 4,
+      "home": 2,
+      "away": 7,
+      "seed": 830075,
+      "distance": 850,
+      "steps": 59,
+      "goal": false,
+      "save": true,
+      "keeperMoved": true,
+      "defenderMoved": true,
+      "events": [
+        "save",
+        "keeperDive"
+      ],
+      "ballOwnerTeam": null
+    }
+  ],
+  "stepsPerSecond": 60,
+  "goalkeeperFrozen": false,
+  "defendersFrozen": false,
+  "realHumanInput": false,
+  "byDifficulty": {
+    "0": {
+      "shots": 24,
+      "goals": 2,
+      "saves": 21,
+      "defenderReactions": 24
+    },
+    "1": {
+      "shots": 24,
+      "goals": 0,
+      "saves": 16,
+      "defenderReactions": 24
+    },
+    "2": {
+      "shots": 24,
+      "goals": 0,
+      "saves": 20,
+      "defenderReactions": 24
+    },
+    "3": {
+      "shots": 24,
+      "goals": 0,
+      "saves": 19,
+      "defenderReactions": 24
+    },
+    "4": {
+      "shots": 24,
+      "goals": 0,
+      "saves": 8,
+      "defenderReactions": 24
+    }
+  },
+  "limitations": [
+    "Controlled scripted shots, not real humans or whole match statistics",
+    "120 attempts / 24 per difficulty insufficient for dependable win-rate or save-probability claims",
+    "Team and shooter matchups affect variation; goalkeeper reactions are not isolated from defenders",
+    "Real controllers, browsers and cross-device performance are separate QA"
+  ]
+}

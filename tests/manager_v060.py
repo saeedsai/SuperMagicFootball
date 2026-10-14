@@ -1,3 +1,4 @@
+from menu_test_routes import open_feature
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 root=Path(__file__).resolve().parents[1]
@@ -7,7 +8,7 @@ with sync_playwright() as pw:
   ctx=browser.new_context(viewport={'width':845 if ismobile else 1440,'height':390 if ismobile else 900},is_mobile=ismobile,has_touch=ismobile)
   page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   page.set_content((root/'play.html').read_text());page.wait_for_timeout(400)
-  page.locator('[data-action=manager]').first.click()
+  open_feature(page,'manager')
   assert page.locator('#managerContinent option').count() >= 6
   assert page.locator('#managerCountry option').count() >= 1
   page.locator('#managerContinent').select_option('CAF')
@@ -26,7 +27,7 @@ with sync_playwright() as pw:
   page.locator('[data-action=careerSign0]').click()
   assert page.evaluate('NekketsuHD.getCareer().roster.length')==12
   assert page.evaluate('NekketsuHD.getCareer().roster.some(p=>p.id.startsWith("youth_"))')
-  page.locator('[data-action=manager]').first.click() if page.locator('[data-action=manager]').count() else None
+  open_feature(page,'manager') if page.locator('[data-action=manager]').count() else None
   page.locator('[data-action=careerSquad]').first.click()
   page.locator('[data-careerrenew="0"]').click()
   assert page.evaluate('NekketsuHD.getCareer().roster[0].contractYears')>=2

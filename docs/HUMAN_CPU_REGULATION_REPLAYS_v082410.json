@@ -1,0 +1,1027 @@
+{
+  "release": "0.8.24.10",
+  "testType": "Scripted four-action controller versus live CPU through both regulation halves",
+  "matchesCount": 15,
+  "fullRegulationMatches": 15,
+  "deterministicReplay": true,
+  "stepSeconds": 0.03333333333333333,
+  "byDifficulty": {
+    "0": {
+      "matches": 3,
+      "regulationGoalsHome": 5,
+      "regulationGoalsCPU": 0,
+      "savesByCPU": 34,
+      "kicksByHumanTeam": 35,
+      "possessionShareHuman": 0.262,
+      "endedInTiebreak": 0
+    },
+    "1": {
+      "matches": 3,
+      "regulationGoalsHome": 3,
+      "regulationGoalsCPU": 0,
+      "savesByCPU": 28,
+      "kicksByHumanTeam": 29,
+      "possessionShareHuman": 0.222,
+      "endedInTiebreak": 1
+    },
+    "2": {
+      "matches": 3,
+      "regulationGoalsHome": 0,
+      "regulationGoalsCPU": 0,
+      "savesByCPU": 19,
+      "kicksByHumanTeam": 21,
+      "possessionShareHuman": 0.234,
+      "endedInTiebreak": 3
+    },
+    "3": {
+      "matches": 3,
+      "regulationGoalsHome": 0,
+      "regulationGoalsCPU": 2,
+      "savesByCPU": 14,
+      "kicksByHumanTeam": 15,
+      "possessionShareHuman": 0.213,
+      "endedInTiebreak": 2
+    },
+    "4": {
+      "matches": 3,
+      "regulationGoalsHome": 0,
+      "regulationGoalsCPU": 3,
+      "savesByCPU": 12,
+      "kicksByHumanTeam": 15,
+      "possessionShareHuman": 0.172,
+      "endedInTiebreak": 1
+    }
+  },
+  "matches": [
+    {
+      "difficulty": 0,
+      "seed": 8241000,
+      "home": 0,
+      "away": 9,
+      "weather": "Clear",
+      "formation": "2-1-2",
+      "policy": "forward",
+      "secondsPerHalf": 36,
+      "frames": 2480,
+      "halftime": 1,
+      "regulationEnd": "finished",
+      "regulationScore": [
+        3,
+        0
+      ],
+      "finalScore": [
+        3,
+        0
+      ],
+      "penaltyTicks": 0,
+      "ownershipFrames": [
+        821,
+        105,
+        1554
+      ],
+      "kicks": {
+        "home": 11,
+        "away": 2
+      },
+      "saves": {
+        "home": 0,
+        "away": 9
+      },
+      "keeperRebounds": {
+        "home": 0,
+        "away": 7
+      },
+      "events": {
+        "slideStart": 9,
+        "tackleHit": 15,
+        "playerCollision": 137,
+        "dribble": 4,
+        "kick": 13,
+        "hyperdash": 4,
+        "save": 9,
+        "keeperDive": 8,
+        "keeperRecovery": 7,
+        "goal": 3,
+        "defenceSuper": 3,
+        "aiDetour": 1,
+        "keeperCatch": 2,
+        "keeperDistribution": 1,
+        "halftime": 1,
+        "stoppageTime": 1,
+        "finished": 1
+      },
+      "controlInputs": {
+        "shootHeldFrames": 38,
+        "passHeldFrames": 22
+      },
+      "transitions": 120
+    },
+    {
+      "difficulty": 0,
+      "seed": 8241791,
+      "home": 9,
+      "away": 0,
+      "weather": "Rain",
+      "formation": "1-2-2",
+      "policy": "passing",
+      "secondsPerHalf": 36,
+      "frames": 2260,
+      "halftime": 1,
+      "regulationEnd": "finished",
+      "regulationScore": [
+        1,
+        0
+      ],
+      "finalScore": [
+        1,
+        0
+      ],
+      "penaltyTicks": 0,
+      "ownershipFrames": [
+        596,
+        296,
+        1368
+      ],
+      "kicks": {
+        "home": 11,
+        "away": 2
+      },
+      "saves": {
+        "home": 0,
+        "away": 8
+      },
+      "keeperRebounds": {
+        "home": 0,
+        "away": 4
+      },
+      "events": {
+        "playerCollision": 134,
+        "tackleHit": 25,
+        "slideStart": 7,
+        "dribble": 1,
+        "kick": 13,
+        "autoSwitch": 2,
+        "keeperCatch": 4,
+        "save": 8,
+        "keeperDive": 6,
+        "keeperDistribution": 2,
+        "hyperdash": 3,
+        "keeperRecovery": 3,
+        "halftime": 1,
+        "defenceSuper": 1,
+        "goal": 1,
+        "finished": 1
+      },
+      "controlInputs": {
+        "shootHeldFrames": 35,
+        "passHeldFrames": 33
+      },
+      "transitions": 122
+    },
+    {
+      "difficulty": 0,
+      "seed": 8242582,
+      "home": 2,
+      "away": 7,
+      "weather": "Clear",
+      "formation": "3-1-1",
+      "policy": "wide",
+      "secondsPerHalf": 36,
+      "frames": 2260,
+      "halftime": 1,
+      "regulationEnd": "finished",
+      "regulationScore": [
+        1,
+        0
+      ],
+      "finalScore": [
+        1,
+        0
+      ],
+      "penaltyTicks": 0,
+      "ownershipFrames": [
+        420,
+        221,
+        1619
+      ],
+      "kicks": {
+        "home": 13,
+        "away": 8
+      },
+      "saves": {
+        "home": 0,
+        "away": 17
+      },
+      "keeperRebounds": {
+        "home": 0,
+        "away": 3
+      },
+      "events": {
+        "playerCollision": 127,
+        "tackleHit": 14,
+        "dribble": 2,
+        "kick": 21,
+        "save": 17,
+        "keeperDive": 10,
+        "keeperRecovery": 3,
+        "hyperdash": 7,
+        "slideStart": 4,
+        "keeperCatch": 14,
+        "keeperDistribution": 7,
+        "autoSwitch": 4,
+        "goal": 1,
+        "halftime": 1,
+        "aiDetour": 1,
+        "finished": 1
+      },
+      "controlInputs": {
+        "shootHeldFrames": 33,
+        "passHeldFrames": 28
+      },
+      "transitions": 116
+    },
+    {
+      "difficulty": 1,
+      "seed": 8241137,
+      "home": 0,
+      "away": 9,
+      "weather": "Clear",
+      "formation": "2-1-2",
+      "policy": "forward",
+      "secondsPerHalf": 36,
+      "frames": 2263,
+      "halftime": 1,
+      "regulationEnd": "finished",
+      "regulationScore": [
+        1,
+        0
+      ],
+      "finalScore": [
+        1,
+        0
+      ],
+      "penaltyTicks": 0,
+      "ownershipFrames": [
+        594,
+        154,
+        1515
+      ],
+      "kicks": {
+        "home": 11,
+        "away": 2
+      },
+      "saves": {
+        "home": 0,
+        "away": 9
+      },
+      "keeperRebounds": {
+        "home": 0,
+        "away": 7
+      },
+      "events": {
+        "slideStart": 14,
+        "playerCollision": 168,
+        "tackleHit": 21,
+        "dribble": 5,
+        "kick": 13,
+        "save": 9,
+        "keeperDive": 8,
+        "keeperRecovery": 6,
+        "stoppageTime": 1,
+        "substitution": 1,
+        "toast": 1,
+        "cpuSubstitution": 1,
+        "halftime": 1,
+        "goal": 1,
+        "autoSwitch": 1,
+        "hyperdash": 2,
+        "defenceSuper": 1,
+        "keeperCatch": 2,
+        "keeperDistribution": 1,
+        "finished": 1
+      },
+      "controlInputs": {
+        "shootHeldFrames": 41,
+        "passHeldFrames": 24
+      },
+      "transitions": 136
+    },
+    {
+      "difficulty": 1,
+      "seed": 8241928,
+      "home": 9,
+      "away": 0,
+      "weather": "Rain",
+      "formation": "1-2-2",
+      "policy": "passing",
+      "secondsPerHalf": 36,
+      "frames": 2360,
+      "halftime": 1,
+      "regulationEnd": "finished",
+      "regulationScore": [
+        2,
+        0
+      ],
+      "finalScore": [
+        2,
+        0
+      ],
+      "penaltyTicks": 0,
+      "ownershipFrames": [
+        476,
+        442,
+        1442
+      ],
+      "kicks": {
+        "home": 8,
+        "away": 3
+      },
+      "saves": {
+        "home": 0,
+        "away": 6
+      },
+      "keeperRebounds": {
+        "home": 0,
+        "away": 2
+      },
+      "events": {
+        "playerCollision": 173,
+        "slideStart": 14,
+        "defenceSuper": 1,
+        "tackleHit": 29,
+        "kick": 11,
+        "dribble": 2,
+        "keeperCatch": 4,
+        "save": 6,
+        "keeperDive": 4,
+        "keeperDistribution": 2,
+        "goal": 2,
+        "hyperdash": 4,
+        "autoSwitch": 2,
+        "keeperRecovery": 2,
+        "halftime": 1,
+        "finished": 1
+      },
+      "controlInputs": {
+        "shootHeldFrames": 25,
+        "passHeldFrames": 31
+      },
+      "transitions": 130
+    },
+    {
+      "difficulty": 1,
+      "seed": 8242719,
+      "home": 2,
+      "away": 7,
+      "weather": "Clear",
+      "formation": "3-1-1",
+      "policy": "wide",
+      "secondsPerHalf": 36,
+      "frames": 2160,
+      "halftime": 1,
+      "regulationEnd": "penalty",
+      "regulationScore": [
+        0,
+        0
+      ],
+      "finalScore": [
+        0,
+        0
+      ],
+      "penaltyTicks": 945,
+      "ownershipFrames": [
+        438,
+        262,
+        1460
+      ],
+      "kicks": {
+        "home": 10,
+        "away": 6
+      },
+      "saves": {
+        "home": 0,
+        "away": 13
+      },
+      "keeperRebounds": {
+        "home": 0,
+        "away": 2
+      },
+      "events": {
+        "playerCollision": 167,
+        "slideStart": 11,
+        "tackleHit": 23,
+        "dribble": 3,
+        "kick": 16,
+        "hyperdash": 4,
+        "save": 13,
+        "keeperDive": 8,
+        "keeperRecovery": 2,
+        "keeperCatch": 11,
+        "keeperDistribution": 6,
+        "teamLaunch": 1,
+        "aiComboSetup": 1,
+        "comboLanding": 1,
+        "autoSwitch": 3,
+        "halftime": 1,
+        "aiDetour": 1,
+        "penaltyStart": 1,
+        "penaltyKick": 10,
+        "finished": 1
+      },
+      "controlInputs": {
+        "shootHeldFrames": 44,
+        "passHeldFrames": 23
+      },
+      "transitions": 145
+    },
+    {
+      "difficulty": 2,
+      "seed": 8241274,
+      "home": 0,
+      "away": 9,
+      "weather": "Clear",
+      "formation": "2-1-2",
+      "policy": "forward",
+      "secondsPerHalf": 36,
+      "frames": 2160,
+      "halftime": 1,
+      "regulationEnd": "penalty",
+      "regulationScore": [
+        0,
+        0
+      ],
+      "finalScore": [
+        0,
+        0
+      ],
+      "penaltyTicks": 945,
+      "ownershipFrames": [
+        518,
+        479,
+        1163
+      ],
+      "kicks": {
+        "home": 5,
+        "away": 3
+      },
+      "saves": {
+        "home": 2,
+        "away": 3
+      },
+      "keeperRebounds": {
+        "home": 0,
+        "away": 3
+      },
+      "events": {
+        "slideStart": 16,
+        "playerCollision": 151,
+        "defenceSuper": 7,
+        "tackleHit": 23,
+        "dribble": 3,
+        "kick": 8,
+        "save": 5,
+        "keeperDive": 4,
+        "keeperRecovery": 3,
+        "hyperdash": 4,
+        "substitution": 1,
+        "toast": 1,
+        "cpuSubstitution": 1,
+        "halftime": 1,
+        "dribbleTrick": 1,
+        "keeperCatch": 2,
+        "keeperDistribution": 1,
+        "penaltyStart": 1,
+        "penaltyKick": 10,
+        "finished": 1
+      },
+      "controlInputs": {
+        "shootHeldFrames": 17,
+        "passHeldFrames": 26
+      },
+      "transitions": 128
+    },
+    {
+      "difficulty": 2,
+      "seed": 8242065,
+      "home": 9,
+      "away": 0,
+      "weather": "Rain",
+      "formation": "1-2-2",
+      "policy": "passing",
+      "secondsPerHalf": 36,
+      "frames": 2160,
+      "halftime": 1,
+      "regulationEnd": "penalty",
+      "regulationScore": [
+        0,
+        0
+      ],
+      "finalScore": [
+        0,
+        0
+      ],
+      "penaltyTicks": 827,
+      "ownershipFrames": [
+        478,
+        554,
+        1128
+      ],
+      "kicks": {
+        "home": 8,
+        "away": 3
+      },
+      "saves": {
+        "home": 0,
+        "away": 8
+      },
+      "keeperRebounds": {
+        "home": 0,
+        "away": 4
+      },
+      "events": {
+        "playerCollision": 139,
+        "slideStart": 12,
+        "tackleHit": 21,
+        "defenceSuper": 3,
+        "dribble": 3,
+        "kick": 11,
+        "save": 8,
+        "keeperDive": 6,
+        "keeperRecovery": 4,
+        "hyperdash": 6,
+        "aiDetour": 2,
+        "keeperCatch": 4,
+        "keeperDistribution": 2,
+        "autoSwitch": 2,
+        "substitution": 1,
+        "toast": 1,
+        "cpuSubstitution": 1,
+        "halftime": 1,
+        "dribbleTrick": 1,
+        "penaltyStart": 1,
+        "penaltyKick": 9,
+        "finished": 1
+      },
+      "controlInputs": {
+        "shootHeldFrames": 31,
+        "passHeldFrames": 29
+      },
+      "transitions": 122
+    },
+    {
+      "difficulty": 2,
+      "seed": 8242856,
+      "home": 2,
+      "away": 7,
+      "weather": "Clear",
+      "formation": "3-1-1",
+      "policy": "wide",
+      "secondsPerHalf": 36,
+      "frames": 2160,
+      "halftime": 1,
+      "regulationEnd": "penalty",
+      "regulationScore": [
+        0,
+        0
+      ],
+      "finalScore": [
+        0,
+        0
+      ],
+      "penaltyTicks": 1323,
+      "ownershipFrames": [
+        520,
+        460,
+        1180
+      ],
+      "kicks": {
+        "home": 8,
+        "away": 4
+      },
+      "saves": {
+        "home": 0,
+        "away": 8
+      },
+      "keeperRebounds": {
+        "home": 0,
+        "away": 3
+      },
+      "events": {
+        "playerCollision": 127,
+        "tackleHit": 24,
+        "slideStart": 15,
+        "kick": 12,
+        "save": 8,
+        "keeperDive": 5,
+        "keeperRecovery": 3,
+        "keeperCatch": 5,
+        "keeperDistribution": 3,
+        "hyperdash": 2,
+        "aiDetour": 1,
+        "halftime": 1,
+        "dribbleTrick": 1,
+        "autoSwitch": 2,
+        "dribble": 2,
+        "penaltyStart": 1,
+        "penaltyKick": 14,
+        "finished": 1
+      },
+      "controlInputs": {
+        "shootHeldFrames": 27,
+        "passHeldFrames": 23
+      },
+      "transitions": 137
+    },
+    {
+      "difficulty": 3,
+      "seed": 8241411,
+      "home": 0,
+      "away": 9,
+      "weather": "Clear",
+      "formation": "2-1-2",
+      "policy": "forward",
+      "secondsPerHalf": 36,
+      "frames": 2177,
+      "halftime": 1,
+      "regulationEnd": "penalty",
+      "regulationScore": [
+        0,
+        0
+      ],
+      "finalScore": [
+        0,
+        0
+      ],
+      "penaltyTicks": 1512,
+      "ownershipFrames": [
+        558,
+        653,
+        966
+      ],
+      "kicks": {
+        "home": 6,
+        "away": 2
+      },
+      "saves": {
+        "home": 0,
+        "away": 5
+      },
+      "keeperRebounds": {
+        "home": 0,
+        "away": 4
+      },
+      "events": {
+        "slideStart": 11,
+        "tackleHit": 21,
+        "playerCollision": 158,
+        "dribble": 1,
+        "kick": 8,
+        "save": 5,
+        "keeperDive": 4,
+        "hyperdash": 5,
+        "keeperRecovery": 4,
+        "keeperCatch": 1,
+        "keeperDistribution": 1,
+        "autoSwitch": 2,
+        "defenceSuper": 2,
+        "stoppageTime": 1,
+        "halftime": 1,
+        "penaltyStart": 1,
+        "penaltyKick": 16,
+        "finished": 1
+      },
+      "controlInputs": {
+        "shootHeldFrames": 18,
+        "passHeldFrames": 24
+      },
+      "transitions": 114
+    },
+    {
+      "difficulty": 3,
+      "seed": 8242202,
+      "home": 9,
+      "away": 0,
+      "weather": "Rain",
+      "formation": "1-2-2",
+      "policy": "passing",
+      "secondsPerHalf": 36,
+      "frames": 2365,
+      "halftime": 1,
+      "regulationEnd": "finished",
+      "regulationScore": [
+        0,
+        2
+      ],
+      "finalScore": [
+        0,
+        2
+      ],
+      "penaltyTicks": 0,
+      "ownershipFrames": [
+        409,
+        530,
+        1426
+      ],
+      "kicks": {
+        "home": 2,
+        "away": 6
+      },
+      "saves": {
+        "home": 4,
+        "away": 0
+      },
+      "keeperRebounds": {
+        "home": 2,
+        "away": 0
+      },
+      "events": {
+        "defenceSuper": 9,
+        "playerCollision": 249,
+        "tackleHit": 38,
+        "slideStart": 24,
+        "dribbleTrick": 4,
+        "kick": 8,
+        "save": 4,
+        "keeperDive": 3,
+        "keeperRecovery": 2,
+        "goal": 2,
+        "hyperdash": 4,
+        "dribble": 1,
+        "stoppageTime": 1,
+        "substitution": 1,
+        "toast": 1,
+        "cpuSubstitution": 1,
+        "halftime": 1,
+        "keeperCatch": 2,
+        "finished": 1
+      },
+      "controlInputs": {
+        "shootHeldFrames": 3,
+        "passHeldFrames": 30
+      },
+      "transitions": 165
+    },
+    {
+      "difficulty": 3,
+      "seed": 8242993,
+      "home": 2,
+      "away": 7,
+      "weather": "Clear",
+      "formation": "3-1-1",
+      "policy": "wide",
+      "secondsPerHalf": 36,
+      "frames": 2160,
+      "halftime": 1,
+      "regulationEnd": "penalty",
+      "regulationScore": [
+        0,
+        0
+      ],
+      "finalScore": [
+        0,
+        0
+      ],
+      "penaltyTicks": 756,
+      "ownershipFrames": [
+        463,
+        380,
+        1317
+      ],
+      "kicks": {
+        "home": 7,
+        "away": 7
+      },
+      "saves": {
+        "home": 0,
+        "away": 9
+      },
+      "keeperRebounds": {
+        "home": 0,
+        "away": 3
+      },
+      "events": {
+        "playerCollision": 118,
+        "tackleHit": 36,
+        "slideStart": 18,
+        "dribble": 2,
+        "kick": 14,
+        "save": 9,
+        "keeperDive": 6,
+        "keeperRecovery": 3,
+        "keeperCatch": 6,
+        "keeperDistribution": 3,
+        "hyperdash": 5,
+        "autoSwitch": 2,
+        "halftime": 1,
+        "dribbleTrick": 1,
+        "penaltyStart": 1,
+        "penaltyKick": 8,
+        "finished": 1
+      },
+      "controlInputs": {
+        "shootHeldFrames": 33,
+        "passHeldFrames": 23
+      },
+      "transitions": 158
+    },
+    {
+      "difficulty": 4,
+      "seed": 8241548,
+      "home": 0,
+      "away": 9,
+      "weather": "Clear",
+      "formation": "2-1-2",
+      "policy": "forward",
+      "secondsPerHalf": 36,
+      "frames": 2267,
+      "halftime": 1,
+      "regulationEnd": "finished",
+      "regulationScore": [
+        0,
+        1
+      ],
+      "finalScore": [
+        0,
+        1
+      ],
+      "penaltyTicks": 0,
+      "ownershipFrames": [
+        462,
+        469,
+        1336
+      ],
+      "kicks": {
+        "home": 1,
+        "away": 3
+      },
+      "saves": {
+        "home": 0,
+        "away": 0
+      },
+      "keeperRebounds": {
+        "home": 0,
+        "away": 0
+      },
+      "events": {
+        "slideStart": 22,
+        "playerCollision": 210,
+        "defenceSuper": 3,
+        "tackleHit": 37,
+        "kick": 4,
+        "hyperdash": 4,
+        "autoSwitch": 1,
+        "keeperSuper": 1,
+        "goal": 1,
+        "stoppageTime": 2,
+        "substitution": 1,
+        "toast": 1,
+        "cpuSubstitution": 1,
+        "halftime": 1,
+        "dribbleTrick": 1,
+        "aiDetour": 1,
+        "finished": 1
+      },
+      "controlInputs": {
+        "shootHeldFrames": 7,
+        "passHeldFrames": 25
+      },
+      "transitions": 178
+    },
+    {
+      "difficulty": 4,
+      "seed": 8242339,
+      "home": 9,
+      "away": 0,
+      "weather": "Rain",
+      "formation": "1-2-2",
+      "policy": "passing",
+      "secondsPerHalf": 36,
+      "frames": 2374,
+      "halftime": 1,
+      "regulationEnd": "finished",
+      "regulationScore": [
+        0,
+        2
+      ],
+      "finalScore": [
+        0,
+        2
+      ],
+      "penaltyTicks": 0,
+      "ownershipFrames": [
+        168,
+        504,
+        1702
+      ],
+      "kicks": {
+        "home": 5,
+        "away": 12
+      },
+      "saves": {
+        "home": 4,
+        "away": 6
+      },
+      "keeperRebounds": {
+        "home": 4,
+        "away": 2
+      },
+      "events": {
+        "playerCollision": 211,
+        "tackleHit": 29,
+        "slideStart": 20,
+        "kick": 17,
+        "dribbleTrick": 2,
+        "dribble": 2,
+        "defenceSuper": 7,
+        "hyperdash": 7,
+        "keeperCatch": 4,
+        "save": 10,
+        "keeperDive": 8,
+        "keeperDistribution": 2,
+        "keeperRecovery": 6,
+        "stoppageTime": 1,
+        "substitution": 1,
+        "toast": 1,
+        "cpuSubstitution": 1,
+        "halftime": 1,
+        "goal": 2,
+        "finished": 1
+      },
+      "controlInputs": {
+        "shootHeldFrames": 22,
+        "passHeldFrames": 33
+      },
+      "transitions": 144
+    },
+    {
+      "difficulty": 4,
+      "seed": 8243130,
+      "home": 2,
+      "away": 7,
+      "weather": "Clear",
+      "formation": "3-1-1",
+      "policy": "wide",
+      "secondsPerHalf": 36,
+      "frames": 2160,
+      "halftime": 1,
+      "regulationEnd": "penalty",
+      "regulationScore": [
+        0,
+        0
+      ],
+      "finalScore": [
+        0,
+        0
+      ],
+      "penaltyTicks": 756,
+      "ownershipFrames": [
+        542,
+        348,
+        1270
+      ],
+      "kicks": {
+        "home": 9,
+        "away": 6
+      },
+      "saves": {
+        "home": 1,
+        "away": 6
+      },
+      "keeperRebounds": {
+        "home": 1,
+        "away": 3
+      },
+      "events": {
+        "tackleHit": 32,
+        "playerCollision": 136,
+        "slideStart": 20,
+        "hyperdash": 6,
+        "dribbleTrick": 5,
+        "kick": 15,
+        "autoSwitch": 5,
+        "save": 7,
+        "keeperDive": 5,
+        "keeperRecovery": 4,
+        "dribble": 2,
+        "keeperCatch": 3,
+        "keeperDistribution": 2,
+        "halftime": 1,
+        "penaltyStart": 1,
+        "penaltyKick": 8,
+        "finished": 1
+      },
+      "controlInputs": {
+        "shootHeldFrames": 25,
+        "passHeldFrames": 22
+      },
+      "transitions": 152
+    }
+  ],
+  "limitations": [
+    "Scripted policy is not a human player; match statistics are not human win rates",
+    "Three fixtures per difficulty are far too few for statistical claims or retuning",
+    "Tied regulation scores are followed by in-engine penalty shootouts and recorded separately",
+    "Kick events count all kicks, not exclusively shots; use only as activity indicators",
+    "Performance on physical gamepads and phones is not tested"
+  ]
+}

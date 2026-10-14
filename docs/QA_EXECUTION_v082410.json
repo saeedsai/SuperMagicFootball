@@ -1,0 +1,193 @@
+{
+  "release": "0.8.24.10-alpha",
+  "node_npm_test": {
+    "status": "PASS",
+    "scripts": 68
+  },
+  "node_master_contract": {
+    "status": "PASS",
+    "scripts": 1
+  },
+  "chromium": {
+    "status": "PASS",
+    "scripts": 40,
+    "unique": 40,
+    "groups": 8,
+    "shards": [
+      {
+        "index": 0,
+        "requested": 5,
+        "summary": {
+          "PASS": 5,
+          "FAIL": 0,
+          "TIMEOUT": 0,
+          "ERROR": 0,
+          "NOT_EXECUTED": 0,
+          "ALL_REQUESTED_PASSED": true
+        },
+        "json": "master_full_browser_s0of8_v082410_release.json",
+        "scripts": [
+          "tactics_browser_qa.py",
+          "morale_browser_qa.py",
+          "dribble_styles_browser_qa.py",
+          "v08205_rosters_browser_qa.py",
+          "v08193_ui_browser_qa.py"
+        ]
+      },
+      {
+        "index": 1,
+        "requested": 5,
+        "summary": {
+          "PASS": 5,
+          "FAIL": 0,
+          "TIMEOUT": 0,
+          "ERROR": 0,
+          "NOT_EXECUTED": 0,
+          "ALL_REQUESTED_PASSED": true
+        },
+        "json": "master_full_browser_s1of8_v082410_release.json",
+        "scripts": [
+          "kits_browser_qa.py",
+          "abilities_browser_qa.py",
+          "penalty_controls_browser_qa.py",
+          "master_ui_contracts.py",
+          "rapid_controls_browser_qa.py"
+        ]
+      },
+      {
+        "index": 2,
+        "requested": 5,
+        "summary": {
+          "PASS": 5,
+          "FAIL": 0,
+          "TIMEOUT": 0,
+          "ERROR": 0,
+          "NOT_EXECUTED": 0,
+          "ALL_REQUESTED_PASSED": true
+        },
+        "json": "master_full_browser_s2of8_v082410_release.json",
+        "scripts": [
+          "v060_qa.py",
+          "aerial_browser_qa.py",
+          "home_dashboard_browser_qa.py",
+          "v08203_rosters_browser_qa.py",
+          "v0821_ball_lift_browser_qa.py"
+        ]
+      },
+      {
+        "index": 3,
+        "requested": 5,
+        "summary": {
+          "PASS": 5,
+          "FAIL": 0,
+          "TIMEOUT": 0,
+          "ERROR": 0,
+          "NOT_EXECUTED": 0,
+          "ALL_REQUESTED_PASSED": true
+        },
+        "json": "master_full_browser_s3of8_v082410_release.json",
+        "scripts": [
+          "manager_v060.py",
+          "team_combos_browser_qa.py",
+          "v08232_audio_storage_browser_qa.py",
+          "v08202_rosters_browser_qa.py",
+          "v08211_input_cancel_browser_qa.py"
+        ]
+      },
+      {
+        "index": 4,
+        "requested": 5,
+        "summary": {
+          "PASS": 5,
+          "FAIL": 0,
+          "TIMEOUT": 0,
+          "ERROR": 0,
+          "NOT_EXECUTED": 0,
+          "ALL_REQUESTED_PASSED": true
+        },
+        "json": "master_full_browser_s4of8_v082410_release.json",
+        "scripts": [
+          "save_filter_v060.py",
+          "ai_combos_browser_qa.py",
+          "v0823_audio_browser_qa.py",
+          "v08195_overall_browser_qa.py",
+          "v0822_bpw_world_cups_browser_qa.py"
+        ]
+      },
+      {
+        "index": 5,
+        "requested": 5,
+        "summary": {
+          "PASS": 5,
+          "FAIL": 0,
+          "TIMEOUT": 0,
+          "ERROR": 0,
+          "NOT_EXECUTED": 0,
+          "ALL_REQUESTED_PASSED": true
+        },
+        "json": "master_full_browser_s5of8_v082410_release.json",
+        "scripts": [
+          "ai_browser_qa.py",
+          "four_button_browser_qa.py",
+          "v08231_bpw_alltime_browser_qa.py",
+          "control_reliability_browser_qa.py",
+          "v08221_aerial_super_browser_qa.py"
+        ]
+      },
+      {
+        "index": 6,
+        "requested": 5,
+        "summary": {
+          "PASS": 5,
+          "FAIL": 0,
+          "TIMEOUT": 0,
+          "ERROR": 0,
+          "NOT_EXECUTED": 0,
+          "ALL_REQUESTED_PASSED": true
+        },
+        "json": "master_full_browser_s6of8_v082410_release.json",
+        "scripts": [
+          "stats_browser_qa.py",
+          "collisions_browser_qa.py",
+          "v0824_keeper_browser_qa.py",
+          "combo_priority_browser_qa.py",
+          "v08247_menu_browser_qa.py"
+        ]
+      },
+      {
+        "index": 7,
+        "requested": 5,
+        "summary": {
+          "PASS": 5,
+          "FAIL": 0,
+          "TIMEOUT": 0,
+          "ERROR": 0,
+          "NOT_EXECUTED": 0,
+          "ALL_REQUESTED_PASSED": true
+        },
+        "json": "master_full_browser_s7of8_v082410_release.json",
+        "scripts": [
+          "fitness_browser_qa.py",
+          "four_button_phase2_browser_qa.py",
+          "v08206_identity_browser_qa.py",
+          "v08196_keeper_browser_qa.py",
+          "v08247_menu_input_browser_qa.py"
+        ]
+      }
+    ]
+  },
+  "new_test_replays": {
+    "completed_matches": 15,
+    "repeat_seed_consistent": true,
+    "regulation_draws_to_penalty": 7
+  },
+  "qa_catalog_documented": 438,
+  "real_human_device_certified": false,
+  "all_qa_catalog_cases_executed": false,
+  "notes": [
+    "69 Node scripts in total includes one separately run master contract",
+    "Scripted controller is not human input/hardware certification",
+    "38 older browser scripts plus two v0.8.24.7 menu scripts = 40 currently discovered; actual inventory comes from runner",
+    "8 completed Chromium shards are distinct script sets; no failed/timeout scripts in final evidence"
+  ]
+}

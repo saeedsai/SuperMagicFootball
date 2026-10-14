@@ -1,0 +1,297 @@
+{
+  "release": "0.8.19.7",
+  "description": "Deterministic GK shot-lane calibration and full AI match simulation. Not measured human gameplay save rate.",
+  "trialCount": 1320,
+  "results": [
+    {
+      "team": 0,
+      "group": "rookie",
+      "shot": "ordinary",
+      "saves": 23,
+      "goals": 32,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 0,
+      "group": "rookie",
+      "shot": "fast",
+      "saves": 19,
+      "goals": 36,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 0,
+      "group": "rookie",
+      "shot": "zigzag_super5",
+      "saves": 16,
+      "goals": 38,
+      "other": 1,
+      "attempts": 55
+    },
+    {
+      "team": 0,
+      "group": "mid",
+      "shot": "ordinary",
+      "saves": 41,
+      "goals": 14,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 0,
+      "group": "mid",
+      "shot": "fast",
+      "saves": 35,
+      "goals": 20,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 0,
+      "group": "mid",
+      "shot": "zigzag_super5",
+      "saves": 26,
+      "goals": 28,
+      "other": 1,
+      "attempts": 55
+    },
+    {
+      "team": 0,
+      "group": "elite",
+      "shot": "ordinary",
+      "saves": 47,
+      "goals": 8,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 0,
+      "group": "elite",
+      "shot": "fast",
+      "saves": 47,
+      "goals": 8,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 0,
+      "group": "elite",
+      "shot": "zigzag_super5",
+      "saves": 43,
+      "goals": 11,
+      "other": 1,
+      "attempts": 55
+    },
+    {
+      "team": 0,
+      "group": "elite_tired",
+      "shot": "ordinary",
+      "saves": 39,
+      "goals": 16,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 0,
+      "group": "elite_tired",
+      "shot": "fast",
+      "saves": 39,
+      "goals": 16,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 0,
+      "group": "elite_tired",
+      "shot": "zigzag_super5",
+      "saves": 36,
+      "goals": 18,
+      "other": 1,
+      "attempts": 55
+    },
+    {
+      "team": 1,
+      "group": "rookie",
+      "shot": "ordinary",
+      "saves": 23,
+      "goals": 32,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 1,
+      "group": "rookie",
+      "shot": "fast",
+      "saves": 19,
+      "goals": 36,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 1,
+      "group": "rookie",
+      "shot": "zigzag_super5",
+      "saves": 16,
+      "goals": 38,
+      "other": 1,
+      "attempts": 55
+    },
+    {
+      "team": 1,
+      "group": "mid",
+      "shot": "ordinary",
+      "saves": 41,
+      "goals": 14,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 1,
+      "group": "mid",
+      "shot": "fast",
+      "saves": 35,
+      "goals": 20,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 1,
+      "group": "mid",
+      "shot": "zigzag_super5",
+      "saves": 26,
+      "goals": 28,
+      "other": 1,
+      "attempts": 55
+    },
+    {
+      "team": 1,
+      "group": "elite",
+      "shot": "ordinary",
+      "saves": 47,
+      "goals": 8,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 1,
+      "group": "elite",
+      "shot": "fast",
+      "saves": 47,
+      "goals": 8,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 1,
+      "group": "elite",
+      "shot": "zigzag_super5",
+      "saves": 43,
+      "goals": 11,
+      "other": 1,
+      "attempts": 55
+    },
+    {
+      "team": 1,
+      "group": "elite_tired",
+      "shot": "ordinary",
+      "saves": 39,
+      "goals": 16,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 1,
+      "group": "elite_tired",
+      "shot": "fast",
+      "saves": 39,
+      "goals": 16,
+      "other": 0,
+      "attempts": 55
+    },
+    {
+      "team": 1,
+      "group": "elite_tired",
+      "shot": "zigzag_super5",
+      "saves": 36,
+      "goals": 18,
+      "other": 1,
+      "attempts": 55
+    }
+  ],
+  "matches": [
+    {
+      "match": 1,
+      "frames": 2100,
+      "half": 2,
+      "state": "penalty",
+      "score": [
+        0,
+        0
+      ],
+      "events": {
+        "goal": 0,
+        "save": 0,
+        "keeperDive": 0,
+        "keeperCatch": 0,
+        "keeperDistribution": 0,
+        "keeperRecovery": 0
+      }
+    },
+    {
+      "match": 2,
+      "frames": 2100,
+      "half": 2,
+      "state": "penalty",
+      "score": [
+        0,
+        0
+      ],
+      "events": {
+        "goal": 0,
+        "save": 1,
+        "keeperDive": 1,
+        "keeperCatch": 0,
+        "keeperDistribution": 0,
+        "keeperRecovery": 1
+      }
+    },
+    {
+      "match": 3,
+      "frames": 2100,
+      "half": 2,
+      "state": "penalty",
+      "score": [
+        0,
+        0
+      ],
+      "events": {
+        "goal": 0,
+        "save": 1,
+        "keeperDive": 1,
+        "keeperCatch": 0,
+        "keeperDistribution": 0,
+        "keeperRecovery": 1
+      }
+    },
+    {
+      "match": 4,
+      "frames": 2100,
+      "half": 2,
+      "state": "penalty",
+      "score": [
+        0,
+        0
+      ],
+      "events": {
+        "goal": 0,
+        "save": 2,
+        "keeperDive": 2,
+        "keeperCatch": 0,
+        "keeperDistribution": 0,
+        "keeperRecovery": 2
+      }
+    }
+  ]
+}

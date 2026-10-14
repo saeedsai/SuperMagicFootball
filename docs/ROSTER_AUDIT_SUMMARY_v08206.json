@@ -1,0 +1,29 @@
+{
+  "auditedAt": "2026-10-14",
+  "version": "0.8.20.6",
+  "teamCount": 216,
+  "playerSlots": 2592,
+  "explicitFictional": 1768,
+  "clubRoleVerified": 99,
+  "shirtVerified": 99,
+  "ageVerified": 99,
+  "statsVerified": 0,
+  "appearanceVerified": 0,
+  "roleConflicts": 28,
+  "sourceVerifiedTeams": [
+    "Arsenal",
+    "Bayern Munich",
+    "Manchester City",
+    "Paris Saint-Germain",
+    "Barcelona",
+    "Real Madrid",
+    "Liverpool",
+    "Inter Miami"
+  ],
+  "notes": [
+    "Only club and role membership verified for 99 player slots (eight fully verified clubs plus three LAFC players); stats, transfer values, appearances remain provisional.",
+    "The 12-player format is a gameplay choice, not the complete official club registration list.",
+    "Repeated identities across national teams must be canonicalized before player-tier population limits can be enforced."
+  ],
+  "unverifiedClubRole": 2493
+}

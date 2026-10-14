@@ -1,0 +1,106 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.24.12-alpha",
+  "profile": "full",
+  "category": "node",
+  "shard": {
+    "index": 7,
+    "total": 8
+  },
+  "run_id": "master_full_node_s7of8_v082412_nodeseq_7",
+  "started_utc": "20261014T173734Z",
+  "scripts_requested": 9,
+  "cases_cataloged": 450,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "node",
+      "script": "fitness_substitutions.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.107,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/fitness_substitutions.mjs",
+      "output_tail": "v0.7.1 FITNESS & SUBSTITUTIONS PASS — distinct action costs, permanent three-sub limit, no re-entry, fatigue ledger, halftime recovery, CPU swap, career fitness"
+    },
+    {
+      "category": "node",
+      "script": "four_button_phase2.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.107,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/four_button_phase2.mjs",
+      "output_tail": "v0.8.6 FOUR BUTTON PHASE 2 PASS: bicycle, flying kick, defensive priority, trick, GK distribution, AI detour, old special"
+    },
+    {
+      "category": "node",
+      "script": "roster_reconciliation.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.169,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/roster_reconciliation.mjs",
+      "output_tail": "v0.8.14 ROSTER RECONCILIATION PASS: 216 clubs, 2592 players, positions, default lineups, star retention, engine start"
+    },
+    {
+      "category": "node",
+      "script": "v08181_four_buttons_keeper.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.094,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08181_four_buttons_keeper.mjs",
+      "output_tail": "v0.8.18.1 FOUR-ACTION INPUT / CROSS ORDER / AUTONOMOUS KEEPER / SAFE CLEARANCES: PASS"
+    },
+    {
+      "category": "node",
+      "script": "v08196_keeper_prediction.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.083,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08196_keeper_prediction.mjs",
+      "output_tail": "v0.8.19.6 GK PASS: renamed/migrated attribute; mirrored nonlinear trajectory predictions, projected positioning, skill scaling, reaction and animated dive state"
+    },
+    {
+      "category": "node",
+      "script": "v08206_lafc_roles.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.088,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08206_lafc_roles.mjs",
+      "output_tail": "PASS LAFC 2026: Son out of goal and back to FW, real second GK, 3 verified DOB/shirt/roles, save IDs preserved"
+    },
+    {
+      "category": "node",
+      "script": "v08232_audio_reliability.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.399,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08232_audio_reliability.mjs",
+      "output_tail": "PASS v0.8.23.2 audio reliability: no autoplay, scene music crossfade, crowd volume and loop, mute/unmute, suspend/resume, cleanup, preference sanitation and touch lifecycle"
+    },
+    {
+      "category": "node",
+      "script": "v08248_ordinary_shot_range.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 1.078,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08248_ordinary_shot_range.mjs",
+      "output_tail": "PASS ordinary shot range / CPU policy {\"release\":\"0.8.24.9\",\"label\":\"Controlled real-engine shot flight to open keeper lane; NOT real human win-rate, CPU full match or physical hardware\",\"fixtures\":500,\"groundBallFrameTests\":[{\"hz\":30,\"vx\":214.57785559335966,\"vy\":42.91557111867193,\"x\":2142.1835520148657,\"y\":918.4367104029732},{\"hz\":60,\"vx\":214.5778555933598,\"vy\":42.91557111867194,\"x\":2139.7882671507623,\"y\":917.9576534301523},{\"hz\":120,\"vx\":214.57785559336,\"vy\":42.91557111867201,\"x\":2138.5948164151437,\"y\":917.7189632830289}],\"shots\":380,\"passes\":120,\"goalCountsByDifficulty\":{\"0\":16,\"1\":18,\"2\":19,\"3\":20,\"4\":20},\"mediumRangeGoalCount\":251,\"limitations\":[\"Keeper is held away from the shot path to isolate ball-flight drag\",\"Does not establish human-vs-CPU score fairness or real moving-GK save percentages\",\"CPU difficulty changes aiming, but these shots are controlled open-lane probes\",\"Hardware input, sound, and FPS must be separately validated\"]}"
+    },
+    {
+      "category": "node",
+      "script": "v082412_release_context.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.035,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v082412_release_context.mjs",
+      "output_tail": "PASS v0.8.24.12 release-pressure context, inertness, mirroring, and legacy compatibility"
+    }
+  ],
+  "summary": {
+    "PASS": 9,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

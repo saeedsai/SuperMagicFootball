@@ -1,3 +1,4 @@
+from menu_test_routes import open_quick,open_settings
 """Real Chromium input edge QA: sub-frame taps, overlapping touch buttons, quick Pass/Switch."""
 from pathlib import Path
 from playwright.sync_api import sync_playwright
@@ -10,8 +11,8 @@ with sync_playwright() as pw:
         context=browser.new_context(viewport={'width':view[0],'height':view[1]},is_mobile=mobile,has_touch=mobile)
         page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
         page.set_content(markup,wait_until='load')
-        page.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'")
-        page.locator('[data-action="quick"]').first.click()
+        page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
+        open_quick(page)
         page.locator('[data-action="kickoff"]').first.click()
         assert page.locator('#touchButtons [data-act]').count()==4
         page.evaluate('''()=>{let g=SupermagicFootball.game;g.matchState='paused';g.cooldown=0;g.input.reset();g.input.keys.clear();g.input.keyPending.clear();g.input.touchPending.clear();g.input.touchButtons.clear();g.input.touchPointers.clear();}''')

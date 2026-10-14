@@ -1,0 +1,106 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.24.12-alpha",
+  "profile": "full",
+  "category": "node",
+  "shard": {
+    "index": 6,
+    "total": 8
+  },
+  "run_id": "master_full_node_s6of8_v082412_nodeseq_6",
+  "started_utc": "20261014T173716Z",
+  "scripts_requested": 9,
+  "cases_cataloged": 450,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "node",
+      "script": "player_stats.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.185,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/player_stats.mjs",
+      "output_tail": "Player stats: PASS • 216x12 stat coverage • fatigue/rest/halftime • strength/aggression/defence • kick/accuracy • passing • GK • save compatibility\nPlayer stats career growth: PASS • positional development updates expanded ratings"
+    },
+    {
+      "category": "node",
+      "script": "player_collisions.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.277,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/player_collisions.mjs",
+      "output_tail": "v0.8.5 COLLISIONS PASS: symmetric pushback, short stun, cooldown, ball drops, teammate spacing, airborne separation, zero-distance safety, long simulation"
+    },
+    {
+      "category": "node",
+      "script": "secondary_controls.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.082,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/secondary_controls.mjs",
+      "output_tail": "v0.8.12 SECONDARY CONTROLS PASS: old saves, P2 keyboard/gamepad isolation, double-jump defense, keeper dive"
+    },
+    {
+      "category": "node",
+      "script": "v0818_regressions.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.097,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v0818_regressions.mjs",
+      "output_tail": "v0.8.18 REGRESSIONS PASS: moving/running slides, contact, ordinary tackle, bounded attacking stoppage, super-shot launch/stat resistance, held/tapped jump and cross priority"
+    },
+    {
+      "category": "node",
+      "script": "v08195_overall.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.079,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08195_overall.mjs",
+      "output_tail": "v0.8.19.5 POSITION OVERALL PASS: equal six-attribute means for GK/DF/MF/FW; ratings remain independent; no formation or match mutation"
+    },
+    {
+      "category": "node",
+      "script": "v08206_canonical_identity.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.248,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08206_canonical_identity.mjs",
+      "output_tail": "PASS v0.8.20.6: canonical DOB identity, conservative candidate grouping, 99 safe identities, 25 real-name role conflicts, 3 placeholder collisions, 0 mutations"
+    },
+    {
+      "category": "node",
+      "script": "v0823_audio.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.061,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v0823_audio.mjs",
+      "output_tail": "PASS v0.8.23 audio: gesture gate, event mapping, mute, volumes, cues, scenes, standalone and controls"
+    },
+    {
+      "category": "node",
+      "script": "v08246_cpu_difficulty_scope.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.091,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08246_cpu_difficulty_scope.mjs",
+      "output_tail": "PASS v0.8.24.6 CPU-difficulty calibration policy: 15 scenario fixtures, 5 single-player CPU aim profiles; AI-vs-AI is Normal by design"
+    },
+    {
+      "category": "node",
+      "script": "v082411_opportunity_replay.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 15.933,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v082411_opportunity_replay.mjs",
+      "output_tail": "PASS v0.8.24.11 expanded 45-match opportunity-aware controller replay {\"0\":{\"matches\":9,\"regulationGoalsHome\":10,\"regulationGoalsCPU\":0,\"savesByCPU\":65,\"kicksByHumanTeam\":78,\"possessionShareHuman\":0.252,\"endedInTiebreak\":4,\"attempts\":94,\"shots\":74,\"passes\":20,\"keeperSavesLinked\":53,\"defenderInterceptions\":1},\"1\":{\"matches\":9,\"regulationGoalsHome\":5,\"regulationGoalsCPU\":0,\"savesByCPU\":89,\"kicksByHumanTeam\":87,\"possessionShareHuman\":0.232,\"endedInTiebreak\":5,\"attempts\":118,\"shots\":85,\"passes\":33,\"keeperSavesLinked\":64,\"defenderInterceptions\":6},\"2\":{\"matches\":9,\"regulationGoalsHome\":0,\"regulationGoalsCPU\":0,\"savesByCPU\":64,\"kicksByHumanTeam\":54,\"possessionShareHuman\":0.18,\"endedInTiebreak\":9,\"attempts\":88,\"shots\":57,\"passes\":31,\"keeperSavesLinked\":49,\"defenderInterceptions\":6},\"3\":{\"matches\":9,\"regulationGoalsHome\":2,\"regulationGoalsCPU\":3,\"savesByCPU\":40,\"kicksByHumanTeam\":46,\"possessionShareHuman\":0.181,\"endedInTiebreak\":7,\"attempts\":102,\"shots\":60,\"passes\":42,\"keeperSavesLinked\":42,\"defenderInterceptions\":5},\"4\":{\"matches\":9,\"regulationGoalsHome\":0,\"regulationGoalsCPU\":6,\"savesByCPU\":28,\"kicksByHumanTeam\":43,\"possessionShareHuman\":0.15,\"endedInTiebreak\":5,\"attempts\":124,\"shots\":71,\"passes\":53,\"keeperSavesLinked\":50,\"defenderInterceptions\":10}}"
+    }
+  ],
+  "summary": {
+    "PASS": 9,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

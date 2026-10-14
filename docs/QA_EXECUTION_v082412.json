@@ -1,0 +1,50 @@
+{
+  "release": "0.8.24.12-alpha",
+  "testTimeUTC": "2026-10-14T17:41:09+00:00",
+  "suites": {
+    "node": {
+      "uniqueScriptCount": 74,
+      "uniquePassingScripts": 74,
+      "expectedScripts": 74,
+      "failedNames": {},
+      "completedExecutions": 83,
+      "recordFiles": [
+        "master_full_node_s0of4_082412_node0.json",
+        "master_full_node_s1of8_v082412_nodeseq_1.json",
+        "master_full_node_s2of8_v082412_nodeseq_2.json",
+        "master_full_node_s3of8_v082412_nodeseq_3.json",
+        "master_full_node_s4of8_v082412_nodeseq_4.json",
+        "master_full_node_s5of8_v082412_nodeseq_5.json",
+        "master_full_node_s6of8_v082412_nodeseq_6.json",
+        "master_full_node_s7of8_v082412_nodeseq_7.json"
+      ],
+      "success": true
+    },
+    "browser": {
+      "uniqueScriptCount": 40,
+      "uniquePassingScripts": 40,
+      "expectedScripts": 40,
+      "failedNames": {},
+      "completedExecutions": 40,
+      "recordFiles": [
+        "master_full_browser_s0of8_v082412_even_0.json",
+        "master_full_browser_s1of8_v082412_odd_1.json",
+        "master_full_browser_s2of8_v082412_even_2.json",
+        "master_full_browser_s3of8_v082412_odd_3.json",
+        "master_full_browser_s4of8_v082412_even_4.json",
+        "master_full_browser_s5of8_v082412_odd_5.json",
+        "master_full_browser_s6of8_v082412_even_6.json",
+        "master_full_browser_s7of8_v082412_odd_7.json"
+      ],
+      "success": true
+    }
+  },
+  "limitations": [
+    "Initial chained npm test run exceeded the execution time limit; all 74 unique scripts were subsequently executed successfully via bounded independent batches, including the two new suites.",
+    "Chromium desktop and simulated-touch scripts do not certify physical phones/gamepads, Safari or Firefox.",
+    "No human-play balance certification; all expanded matches are deterministic scripted policies.",
+    "Telemetry pressure thresholds are qualitative world-coordinate buckets, not expected-goal estimates."
+  ],
+  "standaloneBuild": "npm run build completed",
+  "qaRequirementCatalog": 450
+}

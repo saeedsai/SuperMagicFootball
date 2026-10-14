@@ -1,3 +1,4 @@
+from menu_test_routes import open_quick,open_settings
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 p=Path(__file__).resolve().parents[1]
@@ -11,15 +12,15 @@ with sync_playwright() as pw:
   # This does NOT verify real disk persistence after reopening the browser.
   page.evaluate("""() => {let data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}""")
   page.set_content((p/'play.html').read_text(),wait_until='load')
-  page.wait_for_function('window.NekketsuHD?.version==="0.8.22.1-alpha"')
+  page.wait_for_function('window.NekketsuHD?.version==="0.8.24.12-alpha"')
   assert page.evaluate('NekketsuHD.aiLevels.length')==5
-  page.locator('[data-action="settings"]').first.click()
+  open_settings(page,'game')
   assert page.locator('#difficulty option').count()==5
   page.locator('#difficulty').select_option('0')
   assert 'Rookie CPU' in page.locator('#difficultyHint').inner_text()
   page.screenshot(path=str(p/'tests'/f'ai_settings_{name}.png'))
   page.locator('[data-action="saveSettings"]').click()
-  page.locator('[data-action="quick"]').first.click()
+  open_quick(page)
   assert page.locator('#matchDifficulty').input_value()=='0'
   page.locator('#matchDifficulty').select_option('4')
   assert page.evaluate('NekketsuHD.game.options.difficulty')==4

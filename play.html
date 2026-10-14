@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/><meta name="theme-color" content="#08182b"/><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/><meta name="apple-mobile-web-app-title" content="Supermagic Football"/><meta name="mobile-web-app-capable" content="yes"/><meta name="description" content="Independent browser-native HD arcade soccer game. No emulator or ROM needed."/><link rel="apple-touch-icon" href="icon-180.png"/><title>SUPERMAGIC FOOTBALL · v0.8.19.4 · CARTOON SOCCER</title><style>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/><meta name="theme-color" content="#08182b"/><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/><meta name="apple-mobile-web-app-title" content="Supermagic Football"/><meta name="mobile-web-app-capable" content="yes"/><meta name="description" content="Independent browser-native HD arcade soccer game. No emulator or ROM needed."/><link rel="apple-touch-icon" href="icon-180.png"/><title>SUPERMAGIC FOOTBALL · v0.8.24 · CARTOON SOCCER</title><style>
 :root{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#eefaff;background:#08182b;font-synthesis:none;--gold:#ffd66a;--ice:#9ee7ff;--ink:#0c1b2c}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;touch-action:none}#app{position:relative;width:100%;height:100dvh;overflow:hidden;background:#081b20}canvas{position:absolute;inset:0;width:100%;height:100%;display:block}.hidden{display:none!important}button,select,input{font:inherit}button{cursor:pointer}button:focus-visible,select:focus-visible{outline:3px solid #5fe7f0;outline-offset:3px}.menu{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;z-index:3;overflow:auto;touch-action:pan-y;background:radial-gradient(circle at 68% 32%,#142c5290,transparent 65%),linear-gradient(130deg,#06132ce8,#091c2eac)}.menu.blank{pointer-events:none;background:transparent}.menubox{width:min(1060px,96%);max-height:96%;overflow:auto;touch-action:pan-y;padding:24px;border-radius:18px;background:linear-gradient(150deg,#0b213aef,#081320f5);border:2px solid #76b5d454;box-shadow:0 20px 90px #000b,inset 0 1px #ffffff20}.topline{font-size:11px;letter-spacing:5px;font-weight:950;color:#82d4fa}.heading{font-size:clamp(30px,4.3vw,57px);line-height:1;letter-spacing:-2px;font-weight:1000;color:#fff;text-shadow:0 4px #1b7f90,0 7px #000;margin:10px 0 6px}.heading em{color:var(--gold);font-style:normal}.subtitle{color:#b8d3e9;margin:0 0 20px;font-size:14px}.menuGrid{display:grid;grid-template-columns:1.25fr .75fr;gap:20px}.panel{background:#08263acc;border:1px solid #7dd6ed39;border-radius:13px;padding:16px;min-width:0}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.space{justify-content:space-between}.stack{display:flex;flex-direction:column;gap:10px}.btn{border:1px solid #96d5f055;border-radius:10px;padding:12px 16px;font-size:14px;font-weight:850;color:#eafaff;background:linear-gradient(#25546c,#15344c);box-shadow:inset 0 1px #ffffff25;transition:transform .12s,background .12s}.btn:hover{background:#326986}.btn:active{transform:translateY(2px)}.btn.gold{color:#242414;background:linear-gradient(#ffe18a,#edb64e);border-color:#ffdf7c;box-shadow:0 4px #aa742c}.btn.gold:hover{background:#ffdb74}.btn.minor{background:#20304391}.btn.fill{width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;padding:15px 18px}.btn .ico{font-size:24px;margin-right:14px}.btn small{font-weight:500;color:#b4d5eb;font-size:11px}.btn .arrow{color:var(--gold);margin-left:auto}.poster{min-height:290px;position:relative;overflow:hidden;background:linear-gradient(135deg,#235c38,#17482f);border-radius:12px;border:4px solid #32614c}.poster:before{content:'';position:absolute;inset:10px;border:3px solid #d3f3dd88;border-radius:3px}.poster:after{content:'';position:absolute;left:50%;top:0;bottom:0;border-left:3px solid #d3f3dd65}.posterTitle{position:absolute;left:16px;bottom:14px;text-shadow:0 2px #000;font-size:19px;font-weight:1000}.posterBall{position:absolute;right:16%;top:30%;font-size:64px;filter:drop-shadow(5px 9px 1px #0007)}.posterGuy{position:absolute;left:14%;top:18%;font-size:90px;filter:drop-shadow(8px 7px 0 #0005);transform:rotate(-12deg)}.badge{font-size:11px;letter-spacing:2px;color:#9ee5fb;font-weight:900}.pill{padding:5px 9px;border:1px solid #8fa7b644;border-radius:100px;background:#163e52;color:#e5ffff;font-size:11px}.twoCol{display:grid;grid-template-columns:1fr 1fr;gap:12px}.tripleCol{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.fieldLabel{display:block;color:#93c9d6;font-size:11px;font-weight:850;text-transform:uppercase;letter-spacing:1px;margin:8px 0}.choice{width:100%;padding:11px 12px;background:#102e45;color:#fff;border:1px solid #5289a4;border-radius:8px}.titleSmall{font-size:20px;color:var(--gold);font-weight:900;margin:4px 0 12px}.muted{color:#9cb4c9;font-size:13px;line-height:1.5}.stat{display:flex;justify-content:space-between;border-bottom:1px solid #ffffff16;padding:8px 0}.stat strong{color:#ffdc7b}.roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:8px;max-height:280px;overflow:auto;touch-action:pan-y}.rosterCard{border:1px solid #ffffff21;border-radius:8px;padding:9px;background:#102e43;display:flex;gap:9px;align-items:center}.portrait{width:38px;height:42px;border-radius:8px;background:#eda96c;display:grid;place-items:center;font-size:26px}.rosterName{font-weight:900}.rosterMeta{font-size:10px;color:#a2d6ef}.lineupRow{display:grid;grid-template-columns:42px 1fr 1fr;align-items:center;gap:8px;margin:6px 0}.bar{background:#143041;height:6px;border-radius:99px;overflow:hidden}.bar>i{background:linear-gradient(90deg,#6bd7b9,#fff08a);display:block;height:100%}.hud{z-index:2;position:absolute;inset:0 0 auto;pointer-events:none;display:flex;align-items:start;justify-content:space-between;gap:15px;padding:10px 16px;background:linear-gradient(#071621eb,#07162183,transparent)}.scoregroup{display:flex;align-items:center;gap:12px;font-size:12px;font-weight:1000;text-shadow:0 2px #000}.scoregroup>span:first-child,.scoregroup>span:last-child{background:#fff2;color:#fff;border:1px solid #fff5;border-radius:4px;padding:7px}.scoregroup strong{font-size:29px;color:white;background:#102437;border:1px solid #ffffff2b;border-radius:9px;padding:0 16px}.scoregroup strong span{color:var(--gold)}.hudright{display:flex;gap:12px;align-items:center;font-size:13px;font-weight:900;letter-spacing:1px}.hudright span{padding:9px;border-radius:6px;background:#09263899}.hud button{pointer-events:auto;background:#26475e;color:#fff;border:1px solid #8badbd;border-radius:8px;padding:6px 10px}#playerTag{position:absolute;top:64px;left:12px;font-weight:850;color:#fff6b6;font-size:13px;text-shadow:0 2px #000}.toast{position:absolute;top:85px;left:50%;transform:translateX(-50%);font-size:clamp(14px,2.5vw,27px);font-weight:1000;letter-spacing:2px;padding:14px 25px;text-align:center;border-radius:12px;background:#071626e8;border:1px solid #ffdb67;color:#ffdd81;text-shadow:0 2px #000;min-width:200px}.mobile{z-index:2;position:absolute;inset:auto 0 2px;pointer-events:none;height:170px}#joyZone{position:absolute;bottom:10px;left:10px;width:156px;height:156px;pointer-events:auto;touch-action:none}#joyStick{position:absolute;left:14px;top:14px;width:128px;height:128px;border:3px solid #dbf5fd70;border-radius:50%;background:#0a273366;backdrop-filter:blur(4px)}#joyKnob{position:absolute;left:39px;top:39px;width:45px;height:45px;border:2px solid #fff9;border-radius:50%;background:#c5f6ed99}#touchButtons{position:absolute;right:12px;bottom:12px;display:grid;grid-template-columns:repeat(3,66px);grid-template-rows:repeat(2,64px);gap:7px;pointer-events:auto;touch-action:none}.round{border:2px solid #fff8;color:#fff;font-weight:1000;font-size:10px;border-radius:45%;background:#263e56bb;box-shadow:0 4px 0 #0004;touch-action:none}.round.shoot{background:#e25b56df}.round.pass{background:#538acfe8}.round.special{background:#f0bf55e8;color:#1e2329}.round.jump{background:#569986d9}.round.switch{background:#9067b5d9}.round.sprint{background:#546876df}.round.active{filter:brightness(1.55);transform:scale(.96)}.rotate{z-index:5;position:absolute;inset:0;background:#071b2aee;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:14px;padding:30px}.rotate>div{font-size:68px;color:var(--gold)}.rotate strong{font-size:23px}.rotate span{color:#a8d6e5;max-width:300px}.rotate button{padding:12px 20px;border:1px solid white;border-radius:8px;background:#ffcf62;font-weight:900}.copyright{margin-top:12px;color:#7f97a8;font-size:10px}.miniTable{width:100%;border-collapse:collapse;font-size:12px}.miniTable th,.miniTable td{padding:8px;border-bottom:1px solid #ffffff25;text-align:left}.miniTable td:last-child,.miniTable th:last-child{text-align:right}.scroll{overflow:auto;touch-action:pan-y;max-height:52vh}@media(max-width:650px){.menubox{padding:12px}.menuGrid,.twoCol,.tripleCol{grid-template-columns:1fr}.menuGrid>.panel:last-child{display:none}.heading{font-size:31px}.menu{align-items:start}.subtitle{font-size:12px}.hud{padding:5px}.scoregroup{gap:5px;font-size:10px}.scoregroup strong{font-size:17px;padding:5px}.hudright{gap:3px;font-size:10px}.hudright span{padding:5px}#weatherHud{display:none}#playerTag{top:45px;font-size:11px}#touchButtons{grid-template-columns:repeat(3,50px);grid-template-rows:repeat(2,51px)}#joyZone{bottom:4px;left:2px;transform:scale(.7);transform-origin:bottom left}.mobile{height:120px}}@media(hover:none) and (pointer:coarse){.mobile:not(.hidden){display:block}}
 
 /* HD CARTOON ARCADE VISUAL REVISION 0.4 */
@@ -199,6 +199,38 @@ html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%;min-height:100%
 /* Additional vertical clearance for three players in the same formation line. */
 @media(min-width:651px){.formationPitch{height:284px}}
 
+/* v0.8.24.7 — five-category main navigation. Keep all preexisting match and editor CSS. */
+.simplifiedHome{grid-template-columns:minmax(0,1.25fr) minmax(260px,.75fr);align-items:start;gap:16px}
+.simplifiedHome .homeDirectory{gap:12px}
+.navList{display:grid;grid-template-columns:1fr;gap:9px;margin:10px 0 14px}
+.navChoice.btn{display:flex;align-items:center;width:100%;min-height:62px;gap:14px;text-align:left;padding:11px 15px;background:linear-gradient(112deg,#19465a,#103247);border-color:#4f97a7;color:#f3fdff;box-shadow:inset 0 1px #ffffff20}
+.navChoice:hover,.navChoice:focus-visible{background:linear-gradient(112deg,#286978,#1a5061);border-color:#f3d17e;outline-offset:2px}
+.navChoice .navIcon{flex:0 0 39px;width:39px;height:39px;display:grid;place-items:center;border-radius:11px;background:#2b6980;font-size:23px;line-height:1}
+.navChoice .navCopy{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.navChoice .navCopy strong{font-size:clamp(14px,1.45vw,18px);font-weight:950;line-height:1.2}
+.navChoice .navCopy small{font-size:12px;line-height:1.35;font-weight:500;color:#c4dfe6;overflow-wrap:anywhere}
+.navChoice .navStatus{font-size:18px;font-weight:950;color:#ffe4a0;min-width:40px;text-align:right;flex:none}
+.navChoice.navLater .navStatus,.navMainList .navChoice[data-action=navOnline] .navStatus{font-size:10px;min-width:90px;color:#c6d3d8;letter-spacing:.6px}
+.navChoice.navLater{background:linear-gradient(112deg,#1e3649,#152d40);border-color:#547487}
+.navChoice.navLater .navIcon{background:#43556b}
+.navFooter{gap:9px;margin-top:6px;justify-content:flex-start}
+.navFooter .btn{min-height:42px;font-size:11px;letter-spacing:.3px}
+.navScreen{max-width:760px;margin:auto;min-width:0}
+.navHeader{align-items:start;margin-bottom:15px}
+.navHeader .heading{font-size:clamp(25px,4vw,42px);letter-spacing:-.8px}
+.navHeader .subtitle{margin:8px 0 0}
+.navBack.btn{min-height:44px}
+.navSettingsFields{max-width:720px;margin:auto;padding:18px}
+.navSettingsFields .choice{max-width:100%}
+.navSettingsFields .navSaveRow{margin-top:18px}
+.navSettingsFields input[type=range]{accent-color:#f3ce71;min-height:32px}
+.navInfo{text-align:center;padding:28px 18px}
+.navInfo h2{color:#d5e2e7;letter-spacing:2px;font-size:17px}
+.menu .menubox{scrollbar-gutter:stable;overflow-x:hidden;max-width:calc(100vw - 18px)}
+@media(max-width:700px){.simplifiedHome{grid-template-columns:1fr}.simplifiedHome>.posterPanel{display:none}.navChoice.btn{min-height:58px;padding:9px 11px}.navChoice .navCopy strong{font-size:14px}.navChoice .navCopy small{font-size:11px}.navFooter{flex-wrap:wrap}.navHeader{gap:8px}.navHeader .heading{font-size:27px}.menubox{padding:14px}}
+@media(max-height:520px){.simplifiedHome{grid-template-columns:1fr}.simplifiedHome>.posterPanel{display:none}.navList{gap:6px}.navChoice.btn{min-height:48px;padding:6px 9px}.navChoice .navIcon{width:30px;height:30px;flex-basis:30px;font-size:18px}.homeMasthead{margin-bottom:6px}.navScreen .navList{margin:6px 0}}
+@media(prefers-reduced-motion:reduce){.navChoice,.navChoice.btn,.btn{transition:none!important}.navChoice:active{transform:none}}
+
 </style></head><body>
 <div id="app"><canvas id="field" aria-label="Supermagic Football playable soccer field"></canvas>
 <div id="menu" class="menu" aria-live="polite"></div>
@@ -206,6 +238,164 @@ html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%;min-height:100%
 <div id="mobile" class="mobile hidden"><div id="joyZone"><div id="joyStick"><div id="joyKnob"></div></div></div><div id="touchButtons" aria-label="Four context-sensitive actions"><button data-act="jump" class="round jump" aria-label="Jump or run">JUMP</button><button data-act="pass" class="round pass" aria-label="Pass or tackle">PASS</button><button data-act="shoot" class="round shoot" aria-label="Shoot or slide tackle">SHOOT</button><button data-act="dribble" class="round dribble" aria-label="Dribble or switch player">DRIBBLE</button></div></div>
 <div id="fullscreenHelp" class="fullscreenHelp hidden" role="dialog" aria-modal="true" aria-labelledby="fullscreenHelpTitle"><div class="fullscreenHelpCard"><h2 id="fullscreenHelpTitle">FULLSCREEN ON YOUR DEVICE</h2><p id="fullscreenHelpText">Use landscape mode for the best view.</p><button type="button" id="fullscreenHelpClose">GOT IT</button></div></div><div id="rotate" class="rotate hidden"><div>↻</div><strong>LANDSCAPE RECOMMENDED</strong><span>Rotate your phone for a full-size soccer field. The game is still playable vertically.</span><button id="dismissRotate">PLAY ANYWAY</button></div>
 </div><script type="module">
+const AUDIO=(()=>{// v0.8.23.2 module (retained in v0.8.24) — Original procedural music, SFX and crowd texture. No licensed samples or downloads.
+// A user gesture is mandatory before AudioContext creation. All nodes are cleaned up on mute/dispose.
+const AUDIO_DEFAULTS=Object.freeze({mute:false,master:70,music:45,sfx:75,ui:50,ambience:25});
+const AUDIO_CUES=Object.freeze({kick:'kick',save:'save',keeperCatch:'save',goal:'goal',tackleHit:'tackle',slideStart:'slide',superShotLaunch:'stun',superShotKnockback:'stun',defenceSuper:'super',flipKick:'super',halftime:'halftime',finished:'finished',penaltyKick:'kick',lightning:'stun'});
+const clamp=(v,fallback)=>{if(v===null||v===''||!Number.isFinite(Number(v)))return fallback;return Math.min(100,Math.max(0,Number(v)))};
+function sanitizeAudioOptions(v={}){
+ if(!v||typeof v!=='object'||Array.isArray(v))v={};
+ return Object.fromEntries(Object.entries(AUDIO_DEFAULTS).map(([k,d])=>k==='mute'?[k,v[k]===true||v[k]==='true'||v[k]===1]:[k,clamp(v[k]??d,d)]));
+}
+const MUSIC={menu:[261.63,329.63,392,523.25,392,329.63,293.66,349.23],halftime:[392,440,523,440,349,392,330,392]};
+const FADE_SECONDS=.85;
+class ArcadeAudio{
+ constructor(settings={},contextFactory=null){
+  this.settings=sanitizeAudioOptions(settings);this.factory=contextFactory;this.ctx=null;
+  this.unlocked=false;this.scene='silent';this.interval=null;this.noteIndex=0;this.last=new Map();
+  this.visibilityPaused=false;this.voice=null;this.retiring=new Set();this.ambienceNode=null;this.ambienceGain=null;
+ }
+ _gain(param,value,seconds=0){
+  const t=this.ctx?.currentTime??0;
+  try{param.cancelScheduledValues?.(t);param.setValueAtTime?.(param.value??0,t);
+   if(seconds>0&&param.linearRampToValueAtTime)param.linearRampToValueAtTime(value,t+seconds);
+   else param.setValueAtTime?.(value,t);
+  }catch{try{param.value=value}catch{}}
+ }
+ _audible(kind){return !this.settings.mute&&!this.visibilityPaused&&(this.settings.master>0)&&(this.settings[kind]>0)}
+ configure(options){
+  const previous=this.settings;this.settings=sanitizeAudioOptions(options);
+  if(this.settings.mute||this.settings.music===0||this.settings.master===0)this.stopMusic(false);
+  else if(this.unlocked&&!this.visibilityPaused&&!this.voice)this.startMusic();
+  if(this.settings.mute||this.settings.master===0||this.settings.ambience===0)this.stopAmbience();
+  else if(this.unlocked&&this.scene==='match'&&!this.visibilityPaused)this.startAmbience();
+  else this._updateAmbience();
+  // Volume changes take effect on the next music note and on the currently playing crowd bus.
+  return previous.mute!==this.settings.mute;
+ }
+ unlock(){
+  try{
+   const C=this.factory||(typeof window!=='undefined'&&(window.AudioContext||window.webkitAudioContext));
+   if(!C)return false;
+   if(this.ctx?.state==='closed'){this.ctx=null;this.unlocked=false}
+   this.ctx??=new C();this.unlocked=true;
+   // Safari can reject resume outside a user gesture. Swallow rejection and retry on subsequent gestures.
+   if(this.ctx.state!=='running')this.ctx.resume?.()?.catch?.(()=>{});
+   if(!this.visibilityPaused){if(!this.voice)this.startMusic();if(this.scene==='match')this.startAmbience()}
+   return true;
+  }catch{return false}
+ }
+ tone(freq,duration=.12,kind='sfx',wave='sine',delay=0,bus=null){
+  if(!this.ctx||!this.unlocked||!this._audible(kind))return;
+  const amplitude=(this.settings.master/100)*(this.settings[kind]/100)*.085;
+  try{
+   const start=this.ctx.currentTime+delay,osc=this.ctx.createOscillator(),gain=this.ctx.createGain();
+   osc.type=wave;osc.frequency.setValueAtTime(freq,start);
+   gain.gain.setValueAtTime(Math.max(.00001,amplitude),start);
+   gain.gain.exponentialRampToValueAtTime(.00001,start+duration);
+   osc.connect(gain);gain.connect(bus||this.ctx.destination);osc.start(start);osc.stop(start+duration+.005);
+  }catch{}
+ }
+ cue(event){
+  const type=typeof event==='string'?event:event?.type;
+  const cue=type==='kick'&&event?.super?'super':type==='flipKick'&&!event?.special?'kick':AUDIO_CUES[type]||type;
+  if(!cue||!this._audible(cue==='ui'||cue==='halftime'||cue==='finished'?'ui':'sfx')||!this.unlocked||!this.ctx)return;
+  const now=this.ctx.currentTime;
+  if(this.last.has(cue)&&now-this.last.get(cue)<(cue==='kick'?.07:.17))return;
+  this.last.set(cue,now);
+  switch(cue){
+   case 'kick':this.tone(230,.11);break;
+   case 'save':this.tone(340,.15);this.tone(190,.21,'sfx','triangle',.08);break;
+   case 'goal':[523,659,784,1046].forEach((f,i)=>this.tone(f,.27,'sfx','triangle',i*.095));break;
+   case 'tackle':this.tone(130,.16,'sfx','sawtooth');break;
+   case 'slide':this.tone(110,.08);break;
+   case 'stun':this.tone(95,.3,'sfx','sawtooth');break;
+   case 'super':[392,587,784].forEach((f,i)=>this.tone(f,.22,'sfx','triangle',i*.065));break;
+   case 'halftime':[392,494,587].forEach((f,i)=>this.tone(f,.25,'ui','triangle',i*.12));break;
+   case 'finished':[587,494,392].forEach((f,i)=>this.tone(f,.28,'ui','triangle',i*.13));break;
+   case 'ui':this.tone(630,.055,'ui');break;
+  }
+ }
+ _release(voice,fade){
+  if(!voice)return;
+  if(this.interval===voice.interval)this.interval=null;
+  if(voice.timer)clearTimeout(voice.timer);
+  if(fade&&this.ctx&&this.ctx.state!=='closed'){
+   this._gain(voice.bus.gain,0,FADE_SECONDS);
+   this.retiring.add(voice);
+   voice.timer=setTimeout(()=>{clearInterval(voice.interval);this.retiring.delete(voice);voice.bus.disconnect?.()},(FADE_SECONDS+.07)*1000);
+   voice.timer?.unref?.();
+  }else{clearInterval(voice.interval);this.retiring.delete(voice);this._gain(voice.bus.gain,0);voice.bus.disconnect?.()}
+ }
+ sceneChange(scene){
+  if(this.scene===scene)return;
+  const old=this.scene;this.scene=scene;
+  this.stopMusic(old in MUSIC && scene in MUSIC && this._audible('music'));
+  if(this.scene!=='match')this.stopAmbience();
+  if(this.unlocked&&!this.visibilityPaused&&!this.settings.mute){this.startMusic();if(this.scene==='match')this.startAmbience()}
+ }
+ startMusic(){
+  if(this.voice||!this.unlocked||!this.ctx||!this._audible('music')||!(this.scene in MUSIC)||this.ctx.state==='closed')return;
+  const bus=this.ctx.createGain();bus.gain.value=0;bus.connect(this.ctx.destination);
+  this._gain(bus.gain,1,FADE_SECONDS);
+  const voice={bus,scene:this.scene,interval:null,timer:null,n:0};this.voice=voice;this.noteIndex=0;
+  const theme=MUSIC[this.scene];const step=()=>{
+   if(this.visibilityPaused||(this.voice!==voice&&!this.retiring.has(voice)))return;
+   const n=voice.n++%theme.length;this.noteIndex=voice.n;
+   this.tone(theme[n],.19,'music','triangle',0,bus);
+   if(n%4===0)this.tone(theme[n]/2,.38,'music','sine',0,bus);
+  };
+  step();voice.interval=setInterval(step,this.scene==='halftime'?310:230);voice.interval?.unref?.();this.interval=voice.interval;
+ }
+ stopMusic(fade=false){
+  if(this.voice){const old=this.voice;this.voice=null;this._release(old,fade)}
+  for(const old of [...this.retiring])if(!fade){this._release(old,false)}
+  this.interval=null;
+ }
+ _updateAmbience(){
+  if(!this.ambienceGain||!this.ctx)return;
+  const amount=this._audible('ambience')&&this.scene==='match'?.027*(this.settings.master/100)*(this.settings.ambience/100):0;
+  this._gain(this.ambienceGain.gain,amount,.15);
+ }
+ startAmbience(){
+  if(!this.unlocked||!this.ctx||this.scene!=='match'||!this._audible('ambience')||this.ctx.state==='closed')return;
+  if(this.ambienceNode){this._updateAmbience();return}
+  try{
+   // Two seconds of seeded soft crowd hiss: no external media, pseudo-random with fixed seed.
+   const rate=this.ctx.sampleRate||44100,buffer=this.ctx.createBuffer(1,Math.ceil(rate*2),rate),samples=buffer.getChannelData(0);
+   let seed=0x5F3759DF;for(let i=0;i<samples.length;i++){
+    seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+    samples[i]=((seed/4294967296)*2-1)*.65;
+   }
+   const src=this.ctx.createBufferSource(),filter=this.ctx.createBiquadFilter(),gain=this.ctx.createGain();
+   src.buffer=buffer;src.loop=true;filter.type='lowpass';filter.frequency.value=690;
+   gain.gain.value=0;src.connect(filter);filter.connect(gain);gain.connect(this.ctx.destination);
+   this.ambienceNode=src;this.ambienceGain=gain;src.start();this._updateAmbience();
+  }catch{this.stopAmbience()}
+ }
+ stopAmbience(){
+  const source=this.ambienceNode,gain=this.ambienceGain;this.ambienceNode=null;this.ambienceGain=null;
+  try{source?.stop?.()}catch{}try{source?.disconnect?.()}catch{}try{gain?.disconnect?.()}catch{}
+ }
+ suspend(){
+  this.visibilityPaused=true;
+  this.stopMusic(false);this.stopAmbience();
+  try{this.ctx?.suspend?.()?.catch?.(()=>{})}catch{}
+ }
+ resume(){
+  this.visibilityPaused=false;
+  if(!this.unlocked)return;
+  try{this.ctx?.resume?.()?.catch?.(()=>{})}catch{}
+  this.startMusic();if(this.scene==='match')this.startAmbience();
+ }
+ dispose(){
+  this.stopMusic(false);this.stopAmbience();this.unlocked=false;
+  try{this.ctx?.close?.()?.catch?.(()=>{})}catch{}
+  this.ctx=null;this.scene='silent';this.last.clear();
+ }
+}
+
+return {ArcadeAudio,AUDIO_DEFAULTS};})();
 const DRIBBLES=(()=>{// v0.8.7: ten gameplay-distinct dribble archetypes. Original remake moves.
 // Stable identity selection is based on the person's name, so club/national versions
 // use the same style. An explicit, valid roster dribbleType always takes precedence.
@@ -1026,9 +1216,9 @@ return {JAPAN_ROSTER,TEAMS,rosterFor,SHOTS,FORMATIONS,DEFAULT_LINEUP,DEFAULT_OPT
 const IDENTITY=(()=>{// Original, procedural club shields. Offline country flags use the ISO region emoji sequence;
 // exact glyph appearance depends on operating-system emoji font. These are NOT licensed club crests.
 const toTwo={ENG:'GB',SCO:'GB',WAL:'GB',GER:'DE',ESP:'ES',ITA:'IT',FRA:'FR',POR:'PT',NED:'NL',BEL:'BE',AUT:'AT',GRE:'GR',TUR:'TR',NOR:'NO',CZE:'CZ',SVK:'SK',AZE:'AZ',UKR:'UA',KSA:'SA',UAE:'AE',QAT:'QA',IRN:'IR',UZB:'UZ',IRQ:'IQ',JPN:'JP',KOR:'KR',THA:'TH',CHN:'CN',AUS:'AU',MAS:'MY',VNM:'VN',MAR:'MA',EGY:'EG',NGA:'NG',ZAM:'ZM',TAN:'TZ',ALG:'DZ',RSA:'ZA',SDN:'SD',COD:'CD',TUN:'TN',ANG:'AO',MLI:'ML',CAN:'CA',TRI:'TT',DOM:'DO',JAM:'JM',HON:'HN',GUA:'GT',CRC:'CR',PAN:'PA',USA:'US',MEX:'MX',BRA:'BR',ARG:'AR',URU:'UY',ECU:'EC',PAR:'PY',BOL:'BO',PER:'PE',COL:'CO',CHI:'CL',VEN:'VE',NZL:'NZ',SOL:'SB',TAH:'PF',NCL:'NC',FIJ:'FJ',PNG:'PG',VAN:'VU',COK:'CK',SWI:'CH',SWZ:'CH'};
-function countryCode(team){if(team.group==='bpw_worldcup')return null;const v=(team.flag||'').toUpperCase();return v.length===2?v:toTwo[v]||null}
+function countryCode(team){if((team.group==='bpw_worldcup'||team.group==='bpw_alltime'))return null;const v=(team.flag||'').toUpperCase();return v.length===2?v:toTwo[v]||null}
 function countryFlag(team){const c=countryCode(team);return c&&/^[A-Z]{2}$/.test(c)?String.fromCodePoint(...[...c].map(x=>127397+x.charCodeAt(0))):'🌐'}
-function isClub(team){return team.group==='bpw_worldcup'||team.group==='club26'||team.group==='continental'||team.id?.startsWith('club_')}
+function isClub(team){return (team.group==='bpw_worldcup'||team.group==='bpw_alltime')||team.group==='club26'||team.group==='continental'||team.id?.startsWith('club_')}
 // v0.8.10 cartoon identity system. No network, licensed brand art, or platform emoji rendering.
 // Flags are simplified artistic interpretations of national flags, not official vector reproductions.
 const safeColor=(value,fallback='#325a80')=>/^#[0-9a-f]{6}$/i.test(value||'')?value:fallback;
@@ -1874,6 +2064,61 @@ function installBPWWorldCups(TEAMS,SHOTS,avatarFor){
 }
 
 return {BPW_YEARS,BPW_SELECTIONS,historicalPersonKey,installBPWWorldCups};})();
+const BPWALLTIME=(()=>{const {historicalPersonKey}=BPW;/** BPW All-Time Legendary 12 — user-curated editorial arcade selection.
+ * Distinct from all six tournament-specific BPW World Cup squads.
+ * `legendaryRating` is the requested card rating, not a verified FIFA/EA
+ * number or the calculated six-stat positional OVR. No fabricated ages,
+ * researched appearance traits, or historical tournament membership.
+ * Append after the original six BPW teams to preserve older numeric IDs.
+ */
+
+const BPW_ALLTIME_ID='bpw_alltime_legendary_12';
+// [name, nationality, position, user-specified legendary rating]
+const BPW_ALLTIME_SELECTION=Object.freeze([
+ ['Lev Yashin','SU','GK',99],
+ ['Gianluigi Buffon','IT','GK',98],
+ ['Franz Beckenbauer','DE','DF',99],
+ ['Paolo Maldini','IT','DF',99],
+ ['Sergio Ramos','ES','DF',98],
+ ['Diego Maradona','AR','MF',99],
+ ['Zinedine Zidane','FR','MF',99],
+ ['Johan Cruyff','NL','MF',99],
+ ['Lionel Messi','AR','MF',99],
+ ['Pelé','BR','FW',99],
+ ['Cristiano Ronaldo','PT','FW',99],
+ ['Ronaldo Nazário','BR','FW',99]
+].map(row=>Object.freeze(row)));
+function installBPWAllTime(teams,shots,avatarFor){
+ const existing=teams.find(t=>t.id===BPW_ALLTIME_ID);
+ if(existing)return existing;
+ const shotKey='comet';
+ if(!shots[shotKey]||!shots.target)throw new Error('Required legacy shot definitions missing');
+ const roster=BPW_ALLTIME_SELECTION.map(([name,nationality,role,legendaryRating],i)=>{
+  const rating=legendaryRating;
+  const shot=role==='GK'?'target':shotKey;
+  const identity=historicalPersonKey(name);
+  const p={id:`${BPW_ALLTIME_ID}_${i}`,name,nationality,role,num:i+1,
+   rating,legendaryRating,ratingSource:'user-selected legendary arcade rating; not EA/FIFA or six-stat OVR',
+   power:Math.round(rating*.64+8),shoot:Math.round(rating*.30+3),defense:Math.round(rating*.30+3),
+   speed:role==='GK'||role==='DF'?'B':'A',shot,shotName:shots[shot].name,
+   skill:'All-Time Legend',level:1,xp:0,fictional:false,
+   historicalPersonKey:identity,variantOf:identity,
+   source:'User-approved BPW All-Time Legendary 12, 2026-10-14',
+   rosterVerification:'user_editorial_alltime',
+   appearanceVerification:'not independently verified; generated arcade portrait',
+   specialTierStatus:'future classification not activated'};
+  if(avatarFor)p.avatar=avatarFor(p);
+  return p;
+ });
+ const team={id:BPW_ALLTIME_ID,index:teams.length,name:'BPW All-Time Legendary 12',
+  group:'bpw_alltime',flag:'ALL',primary:'#38285e',secondary:'#e9c766',trim:'#f2f0ff',
+  shot:shotKey,rank:99,rosterPrecision:'user-curated all-time editorial selection',
+  customRoster:roster};
+ teams.push(team);
+ return team;
+}
+
+return {BPW_ALLTIME_ID,BPW_ALLTIME_SELECTION,installBPWAllTime};})();
 const CONTINENTAL=(()=>{// 2026-10-13 verified continental participants; identity and roster are separate.
 // Africa uses verified 2025/26 group stage because 2026/27 group stage not confirmed yet.
 // Participants are REAL clubs; generated youth prospects (where needed) are explicitly fictional.
@@ -2331,6 +2576,21 @@ function keeperReactionReach(keeper, ball){
 // Keepers cannot instantly dive again after a save. Better GK Skill and GK
 // Diving shorten recovery, while accumulated fatigue lengthens it. This affects
 // actual match play and is separate from the shorter rendered landing motion.
+// v0.8.24: A rare automatic keeper ability is considered ONCE per incoming
+// transformed shot, only when a live threat is already inside ability range.
+// Do not repeatedly roll its probability at 30/60/120 FPS: that made the same
+// shot much more likely to trigger a supernatural save on faster devices.
+function keeperAutoSuperEligible(keeper,ball){
+ if(!keeper?.keeper||!ball?.shot||ball.owner||ball.shot.keeperAutoConsidered)return false;
+ if(ball.attacker!==1-keeper.t)return false;
+ const toward=keeper.t===0?-1:1;
+ if(!Number.isFinite(ball.vx)||ball.vx*toward<=100)return false;
+ if(!Number.isFinite(ball.y)||ball.y<WORLD.goalTop-80||ball.y>WORLD.goalBottom+80)return false;
+ const move=keeperAbility(keeper.src);
+ if(!abilityReady(keeper,move))return false;
+ const modifiers=levelModifiers(abilityLevel(keeper,'keeper'));
+ return keeperInReach(keeper,ball,{...move,reachX:move.reachX*modifiers.reach,reachY:move.reachY*modifiers.reach});
+}
 function keeperDiveRecoverySeconds(keeper){
  const skill=stat(keeper,'gkSkill'),diving=stat(keeper,'gkDiving');
  const fatigue=clamp(keeper?.fatigue||0,0,1);
@@ -2426,11 +2686,11 @@ class GameEngine{
  halftimeRecovery(){for(const p of this.players)this.fatigueLedger[p.t][p.src.id]=p.fatigue;for(let t=0;t<2;t++)for(const src of this.rosters[t])this.fatigueLedger[t][src.id]=Math.max(0,(this.fatigueLedger[t][src.id]??initialFatigue(src))-.13);for(const p of this.players){p.fatigue=this.fatigueLedger[p.t][p.src.id];p.stun=0;}}
  autoSubstituteCpu(){if(this.humans!==1||this.substitutionsUsed[1]>=this.maxSubstitutions)return false;const t=1,next=recommendSubstitute(this.teamPlans[t],this.rosters[t],this.fatigueLedger[t],this.subbedOut[t]);if(!next)return false;const lineup=this.lineups[t].slice(),slot=lineup.indexOf(next.out);if(slot<1)return false;lineup[slot]=next.in;const roles=['captain','penalty','freeKick','corner'];const plan={...this.teamPlans[t],lineup};for(const role of roles)if(plan[role]===next.out)plan[role]=next.in;this.applyPlan(t,plan);this.emit('cpuSubstitution',{team:t,out:this.rosters[t][next.out].name,in:this.rosters[t][next.in].name});return true;}
  getFitnessReport(team=0){return this.rosters[team].map(src=>{const fatigue=this.fatigueLedger[team][src.id]??initialFatigue(src),seconds=this.playerSeconds[team][src.id]||0;return {id:src.id,fatigue,seconds,condition:matchCondition(src.condition??100,fatigue,seconds),stamina:stat(src,'stamina'),subbedOut:this.subbedOut[team].has(src.id)};});}
- inControl(t){return t===0||t===1&&this.humans>=2}
+ inControl(t){return (t===0&&this.humans>=1)||(t===1&&this.humans>=2)}
  hostOfBall(){return this.ball.owner}
  toast(msg){this.emit('toast',{message:msg})}
  resetKickoff(which=0){this.spawnPlayers();this.ball={x:MID,y:F.y+F.h*.5,z:0,vx:0,vy:0,vz:0,owner:null,shot:null,trail:[],age:0,power:0,canCollect:0,targetY:0,attacker:-1};const starter=this.player(which,3);starter.x=MID+(which===0?-26:26);starter.y=F.y+F.h*.5;this.take(starter);this.controlled[0]=3;this.controlled[1]=3;this.cooldown=.9;}
- take(p){for(const q of this.players){q.aerialComboAction=null;q.aerialComboTimer=0;q.aerialComboTaps=0;}if(this.ball.liftOwner){this.ball.liftOwner.ballLiftWindow=0;this.ball.liftOwner.ballLiftLock=false;this.ball.liftOwner=null;}if(this.inControl(p.t)&&!p.keeper)this.controlled[p.t]=p.i;if(p.keeper)p.keeperHold=0;let b=this.ball;b.owner=p;b.x=p.x+p.face*17;b.y=p.y+10;b.z=0;b.vx=b.vy=b.vz=0;b.shot=null;b.age=0;b.canCollect=0;}
+ take(p){for(const q of this.players){q.aerialComboAction=null;q.aerialComboTimer=0;q.aerialComboTaps=0;}if(this.ball.liftOwner){this.ball.liftOwner.ballLiftWindow=0;this.ball.liftOwner.ballLiftLock=false;this.ball.liftOwner=null;}if(this.inControl(p.t)&&!p.keeper)this.controlled[p.t]=p.i;if(p.keeper)p.keeperHold=0;let b=this.ball;b.owner=p;b.x=p.x+p.face*17;b.y=p.y+10;b.z=0;b.vx=b.vy=b.vz=0;b.shot=null;b.ordinaryShot=false;b.age=0;b.canCollect=0;}
  // Goalkeepers hold a clean catch briefly and then autonomously distribute.
  // This transition is distinct from a rebound and never requires another button.
  keeperCollect(p,source='loose'){
@@ -2446,7 +2706,7 @@ class GameEngine{
  const superFromJump=!!opts.shot&&p.z>60;
  b.z=superFromJump?Math.min(62,opts.z||34):Math.max(p.z,opts.z||13);
  b.vz=superFromJump?-Math.max(28,Math.min(125,p.z*.48)):opts.vz||0;
- b.shot=opts.shot||null;b.power=opts.power||p.src.shoot;b.attacker=p.t;b.canCollect=.17;b.trail=[];b.age=0;b.shooter=p.src.name;b.targetY=opts.aimY??null;p.action=opts.shot?'super':opts.pass?'pass':'kick';p.actionTimer=opts.shot?.6:.30;p.cd=.28;this.spendStamina(p,opts.shot?'super':opts.pass?'pass':'shoot');this.emit('kick',{player:p,super:!!opts.shot});if(opts.shot){this.shake=.19;this.flash=.23;this.burst(b.x,b.y,opts.shot.color,22)}else this.burst(b.x,b.y,'#fff',6);
+ b.shot=opts.shot||null;b.ordinaryShot=!!opts.ordinaryShot;b.power=opts.power||p.src.shoot;b.attacker=p.t;b.canCollect=.17;b.trail=[];b.age=0;b.shooter=p.src.name;b.targetY=opts.aimY??null;p.action=opts.shot?'super':opts.pass?'pass':'kick';p.actionTimer=opts.shot?.6:.30;p.cd=.28;this.spendStamina(p,opts.shot?'super':opts.pass?'pass':'shoot');this.emit('kick',{player:p,super:!!opts.shot,kind:opts.pass?'pass':opts.shot?'superShot':opts.ordinaryShot?'shot':'clearance',origin:{x:b.x,y:b.y,z:b.z},targetY:b.targetY});if(opts.shot){this.shake=.19;this.flash=.23;this.burst(b.x,b.y,opts.shot.color,22)}else this.burst(b.x,b.y,'#fff',6);
  }
  shoot(p,special=false,alternate=false,charged=0){if(this.ball.owner!==p)return false;const equipped=!!(p.src.superAbility?.type==='shoot'&&p.src.shot);const enhanced=!!special&&!equipped;special=!!special&&equipped&&p.specialCd<=0;const t=p.t,dir=t===0?1:-1,goalY=(WORLD.goalTop+WORLD.goalBottom)/2;const spread=shotError(p,!this.inControl(p.t)?aiTuning(this.cpuLevel(p)).aimError:18)/moraleFactor(p.morale);
  const accuracy=stat(p,'shootAccuracy'),skill=clamp((accuracy-1)/99,0,1);
@@ -2479,7 +2739,7 @@ class GameEngine{
   aim=(Math.random()<.5?WORLD.goalTop:WORLD.goalBottom)+(Math.random()<.5?-1:1)*(35+Math.random()*95);
  }
  aim=clamp(aim,WORLD.goalTop-155,WORLD.goalBottom+155);
- const dx=(t===0?F.x+F.w:F.x)-p.x,dy=aim-p.y;const magnitude=Math.hypot(dx,dy);if(special){let spec=SHOTS[p.src.shot]||SHOTS.nuts;this.freeBall(p,dx,dy,850*spec.speed*shotVelocityModifier(p.src.shot,abilityLevel(p,'shot'))*(.72+stat(p,'shootPower')*.004)*endurance(p)*moraleFactor(p.morale),{shot:{...spec,level:abilityLevel(p,'shot'),id:p.src.shot,phase:0,startY:p.y,direction:dir,aimY:aim,alternate},power:((stat(p,'shootPower')*.59+9)*spec.impact*endurance(p)+18)*levelModifiers(abilityLevel(p,'shot')).power,z:29,vz:alternate?190:45,aimY:aim});p.specialCd=3.4;}else{let speed=(450+stat(p,'shootPower')*4.0)*(1+Math.min(1.2,charged)*.32)*(enhanced?1.32:1)*endurance(p)*moraleFactor(p.morale)*(alternate?(.82+stat(p,'heading')*.003):1);this.freeBall(p,dx,dy,speed,{power:stat(p,'shootPower')*.64*endurance(p)*(enhanced?1.45:1),z:p.z+14,vz:alternate?160:Math.random()*90,aimY:aim})}return true;}
+ const dx=(t===0?F.x+F.w:F.x)-p.x,dy=aim-p.y;const magnitude=Math.hypot(dx,dy);if(special){let spec=SHOTS[p.src.shot]||SHOTS.nuts;this.freeBall(p,dx,dy,850*spec.speed*shotVelocityModifier(p.src.shot,abilityLevel(p,'shot'))*(.72+stat(p,'shootPower')*.004)*endurance(p)*moraleFactor(p.morale),{shot:{...spec,level:abilityLevel(p,'shot'),id:p.src.shot,phase:0,startY:p.y,direction:dir,aimY:aim,alternate},power:((stat(p,'shootPower')*.59+9)*spec.impact*endurance(p)+18)*levelModifiers(abilityLevel(p,'shot')).power,z:29,vz:alternate?190:45,aimY:aim});p.specialCd=3.4;}else{let speed=(450+stat(p,'shootPower')*4.0)*(1+Math.min(1.2,charged)*.32)*(enhanced?1.32:1)*endurance(p)*moraleFactor(p.morale)*(alternate?(.82+stat(p,'heading')*.003):1);this.freeBall(p,dx,dy,speed,{power:stat(p,'shootPower')*.64*endurance(p)*(enhanced?1.45:1),z:p.z+14,vz:alternate?160:Math.random()*90,aimY:aim,ordinaryShot:true})}return true;}
  pass(p,long=false,cross=false){
  const mates=this.players.filter(q=>q.t===p.t&&q!==p&&!q.stun&&(!q.keeper||p.keeper));
  if(!mates.length)return;
@@ -2558,7 +2818,7 @@ class GameEngine{
   const heading=stat(p,'heading'),accuracy=stat(p,'shootAccuracy');
   const aimY=goalY+(Math.random()-.5)*(100-accuracy)*2.3;
   const vec=norm(toGoal-p.x,aimY-p.y),speed=(390+heading*4.8)*endurance(p)*moraleFactor(p.morale);
-  b.owner=null;b.shot=null;b.vx=vec.x*speed;b.vy=vec.y*speed;b.vz=130+heading*.65;
+  b.owner=null;b.shot=null;b.ordinaryShot=false;b.vx=vec.x*speed;b.vy=vec.y*speed;b.vz=130+heading*.65;
   b.z=Math.max(b.z,p.z+55);b.power=heading*.57;b.attacker=p.t;b.shooter=p.src.name;b.age=0;b.canCollect=.22;b.trail=[];
   p.action='header';p.actionTimer=.5;p.cd=.42;this.spendStamina(p,'header');
   this.burst(b.x,b.y,'#fff1a0',14);this.emit('header',{team:p.t,player:p.src.name,heading});return true;
@@ -2584,7 +2844,7 @@ class GameEngine{
   const force=Math.hypot(b.vx,b.vy)/50+(b.power||0),saveQuality=24+skill*.55+diving*.28;
   // Even a strong shot can be deflected; high-quality keepers catch slower shots.
   if(force<saveQuality*.62){this.keeperCollect(p,'dive');this.emit('save',{player:p,saveType:'dive'});}
-  else {b.owner=null;b.shot=null;b.vx=sign*(290+skill*4.1);b.vy=dy*4+Math.sign(dy||1)*115;b.vz=150+diving*.6;b.power=0;b.attacker=p.t;b.age=0;b.trail=[];b.canCollect=.32;this.emit('save',{player:p,saveType:'dive',deflected:true});}
+  else {b.owner=null;b.shot=null;b.ordinaryShot=false;b.vx=sign*(290+skill*4.1);b.vy=dy*4+Math.sign(dy||1)*115;b.vz=150+diving*.6;b.power=0;b.attacker=p.t;b.age=0;b.trail=[];b.canCollect=.32;this.emit('save',{player:p,saveType:'dive',deflected:true});}
   this.spendStamina(p,'keeperDive');this.burst(p.x,p.y,'#ccf9ff',16);
   this.emit('keeperDive',{team:p.t,player:p.src.name,manual});return true;
  }
@@ -3093,7 +3353,7 @@ class GameEngine{
   return true;
  }
  updatePlayers(dt){const b=this.ball;
- for(let t=0;t<(this.humans>=2?2:1);t++)this.autoSwitch(t,dt);
+ for(let t=0;t<Math.min(2,this.humans);t++)this.autoSwitch(t,dt);
  // Snapshot controllers: an in-frame swap must not make the next player consume the same tap.
  const selectedAtStart=this.controlled.slice();
  for(let p of this.players){this.playerSeconds[p.t][p.src.id]=(this.playerSeconds[p.t][p.src.id]||0)+dt;p.anim+=dt;p.cd=Math.max(0,p.cd-dt);p.invuln=Math.max(0,p.invuln-dt);p.specialCd=Math.max(0,p.specialCd-dt);p.abilityCd=Math.max(0,(p.abilityCd||0)-dt);p.abilityFx=Math.max(0,(p.abilityFx||0)-dt);p.dashCooldown=Math.max(0,(p.dashCooldown||0)-dt);p.diveCooldown=Math.max(0,(p.diveCooldown||0)-dt);p.comboCooldown=Math.max(0,(p.comboCooldown||0)-dt);p.contactCooldown=Math.max(0,(p.contactCooldown||0)-dt);p.trickCd=Math.max(0,(p.trickCd||0)-dt);p.trickGuard=Math.max(0,(p.trickGuard||0)-dt);p.trickFx=Math.max(0,(p.trickFx||0)-dt);p.comboWindow=Math.max(0,(p.comboWindow||0)-dt);
@@ -3118,7 +3378,7 @@ class GameEngine{
   p.action='slide';p.actionTimer=Math.max(p.actionTimer,p.slideTimer+.08);
   this.staminaTick(p,dt,.7);continue;
  }
- const controlled=(p.t===0||p.t===1&&this.humans>=2)&&p.i===selectedAtStart[p.t];p.controlled=controlled;
+ const controlled=this.inControl(p.t)&&p.i===selectedAtStart[p.t];p.controlled=controlled;
  if(controlled){let s=this.input.state[p.t]||{},dx=s.x||0,dy=s.y||0;
   // A lost touch pointer, app switch or focus change ABORTS a gesture; it is
   // not a deliberate release. Clear buffered charge/hold state before the
@@ -3348,8 +3608,25 @@ class GameEngine{
  if(s.behavior==='warp'){b.vy+=Math.sin(b.age*19)*500*dt}
  if(s.behavior==='lightning'){b.vy+=Math.sin(b.age*30)*380*dt}
  }
- b.vx+=this.wind.x*dt*.24;b.vy+=this.wind.y*dt*.24;b.x+=b.vx*dt;b.y+=b.vy*dt;b.z+=b.vz*dt;b.vz-=500*dt;if(b.z<0){b.z=0;b.vz=Math.abs(b.vz)*(.3+(this.terrain==='Grass'?.15:.05));b.vx*=this.condition==='Wet'?.80:.96;b.vy*=.92;if(Math.abs(b.vz)<47)b.vz=0}
- if(!b.shot){let friction=this.terrain==='Sand'?.94:this.condition==='Wet'?.96:.986;b.vx*=Math.pow(friction,dt*60);b.vy*=Math.pow(friction,dt*60)}
+ b.vx+=this.wind.x*dt*.24;b.vy+=this.wind.y*dt*.24;b.x+=b.vx*dt;b.y+=b.vy*dt;
+ // A resting ball is NOT a fresh ground impact each frame. The old floor
+ // branch multiplied its velocity by .96 (and .92 sideways) every update,
+ // unintentionally doubling rolling drag at 120Hz versus 60Hz.
+ const airborneBeforeStep=b.z>0||b.vz<0;
+ b.z+=b.vz*dt;b.vz-=500*dt;
+ if(b.z<=0){b.z=0;
+  if(airborneBeforeStep){
+   b.vz=Math.abs(b.vz)*(.3+(this.terrain==='Grass'?.15:.05));
+   b.vx*=this.condition==='Wet'?.80:.96;b.vy*=.92;
+   if(Math.abs(b.vz)<47)b.vz=0;
+  }else b.vz=0;
+ }
+ if(!b.shot){
+  // A struck, non-super ball retains momentum long enough for a credible
+  // medium-range shot. Passes/keeper clearances and late loose-ball rolling
+  // retain their pre-existing drag; special shots keep their own physics.
+  const inFlight=b.ordinaryShot&&b.power>5&&b.age<1.8;
+  let friction=inFlight?(this.terrain==='Sand'?.992:this.condition==='Wet'?.994:.996):this.terrain==='Sand'?.94:this.condition==='Wet'?.96:.986;b.vx*=Math.pow(friction,dt*60);b.vy*=Math.pow(friction,dt*60)}
  if(b.shot||Math.hypot(b.vx,b.vy)>190){b.trail.push({x:b.x,y:b.y,z:b.z});if(b.trail.length>22)b.trail.shift()}
  if(b.y<F.y+3){b.y=F.y+3;b.vy=Math.abs(b.vy)*.65}if(b.y>F.y+F.h-3){b.y=F.y+F.h-3;b.vy=-Math.abs(b.vy)*.65}
  // Swept saves resolve before the ball crosses the goal line, including on
@@ -3360,14 +3637,20 @@ class GameEngine{
  // quality still determines whether the catch succeeds or gets deflected.
  if(b.attacker>=0&&!b.owner){const keeper=this.player(1-b.attacker,0);
   if(keeper){
-   if(b.shot&&Math.random()<.14&&this.activateKeeperSuper(keeper,false)){} // rare automatic super save
-   else this.tryKeeperDive(keeper,false);
+   // One 14% opportunity per threatening transformed shot, independent of FPS.
+   // A failed roll falls through to the ordinary dive; success has its own cooldown.
+   let superSaved=false;
+   if(keeperAutoSuperEligible(keeper,b)){
+    b.shot.keeperAutoConsidered=true;
+    if(Math.random()<.14)superSaved=this.activateKeeperSuper(keeper,false);
+   }
+   if(!superSaved)this.tryKeeperDive(keeper,false);
   }
  }
  // Scoring: ball must cross the appropriate end line between goalposts, below crossbar.
  if(b.x<F.x+5||b.x>F.x+F.w-5){let scoring=t=>{this.score[t]++;this.shake=.45;this.flash=.2;this.burst(b.x,b.y,'#ffdf79',60);const scorers=this.players.filter(p=>p.t===t).sort((p,q)=>distance(p,b)-distance(q,b));this.goalHero=b.attacker===t&&b.shooter?b.shooter:scorers[0]?.src?.name||this.getTeam(t).name;this.pendingKickoff={scorer:t,hero:this.goalHero};this.celebration=3.3;this.onGoalMorale(t);this.ball.owner=null;this.ball.vx=this.ball.vy=this.ball.vz=0;this.emit('goal',{team:t,hero:this.goalHero,score:this.score.slice()});this.cooldown=3.3};if(b.y>WORLD.goalTop&&b.y<WORLD.goalBottom&&b.z<125){scoring(b.x>F.x+F.w-5?0:1);return}b.x=clamp(b.x,F.x+6,F.x+F.w-6);b.vx*=-.72;b.vy*=.95}
  if(b.canCollect>0)return;
- const byDistance=this.players.filter(p=>p.stun<=0).map(p=>({p,d:Math.hypot(p.x-b.x,p.y-b.y)})).sort((a,c)=>a.d-c.d);for(let {p,d} of byDistance){if(d> (p.keeper?(26+stat(p,'gkSkill')*.18)*(1-.18*p.fatigue):27)||b.z>(p.keeper?(63+stat(p,'gkDiving')*1.12)*(1-.15*p.fatigue):45))break;if(b.shot){let force=b.power + Math.hypot(b.vx,b.vy)/50,def=stat(p,'defence')*.38+stat(p,'strength')*.10+(p.keeper?stat(p,'gkSkill')*.40:0);if(force>def+(p.keeper?14:0)&&Math.random()<clamp((force-def)/90,.02,.94)){
+ const byDistance=this.players.filter(p=>p.stun<=0).map(p=>({p,d:Math.hypot(p.x-b.x,p.y-b.y)})).sort((a,c)=>a.d-c.d);for(let {p,d} of byDistance){if(d> (p.keeper?(26+stat(p,'gkSkill')*.18)*(1-.18*p.fatigue):27)||b.z>(p.keeper?(63+stat(p,'gkDiving')*1.12)*(1-.15*p.fatigue):45))continue;if(b.shot){let force=b.power + Math.hypot(b.vx,b.vy)/50,def=stat(p,'defence')*.38+stat(p,'strength')*.10+(p.keeper?stat(p,'gkSkill')*.40:0);if(force>def+(p.keeper?14:0)&&Math.random()<clamp((force-def)/90,.02,.94)){
   const level=b.shot?clamp(Number(b.shot.level)||1,1,5):0;
   const impact=b.shot&&!p.keeper?superShotKnockback(force,level,stat(p,'strength')):0;
   p.stun=Math.max(p.stun,clamp(.35+impact*.58,.4,1.4));p.action='hurt';p.actionTimer=p.stun;
@@ -3389,7 +3672,7 @@ class GameEngine{
  updatePK(dt){
   if(this.matchState!=='penalty')return;dt=Math.min(.04,dt);this.input.poll(this.humans>=2);
   const pk=this.pk,at=pk.turn%2,defender=1-at,cy=(WORLD.goalTop+WORLD.goalBottom)/2,spot=F.x+F.w*.76;
-  const controlledShooter=at===0||this.humans>=2,shooter=controlledShooter?this.input.state[at]||{}:null;
+  const controlledShooter=this.inControl(at),shooter=controlledShooter?this.input.state[at]||{}:null;
   const keeper=null; // penalty goalkeeper reads the shot automatically on either team
   pk.diveBoost=Math.max(0,(pk.diveBoost||0)-dt);pk.diveCooldown=Math.max(0,(pk.diveCooldown||0)-dt);
   if(pk.ready>0){pk.ready-=dt;return}
@@ -3398,12 +3681,17 @@ class GameEngine{
    pk.ballX=pk.startX+(F.x+F.w-pk.startX)*fraction;
    pk.ballY=pk.startY+(pk.shotTargetY-pk.startY)*fraction;
    if(keeper){if(this.input.just(defender,'jump')&&pk.diveCooldown<=0){pk.diveBoost=.38;pk.diveCooldown=.8;this.emit('penaltyDive',{team:defender});}pk.saveY=clamp(pk.saveY+(keeper.y||0)*(pk.diveBoost>0?550:240)*dt,WORLD.goalTop+10,WORLD.goalBottom-10)}
-   else {const botGK=this.player(defender,0);pk.saveY+=(pk.shotTargetY-pk.saveY)*dt*(.8+(botGK?stat(botGK,'gkSkill')/100:0)+aiTuning(this.options.difficulty??2).keeperRead*3.5);}
+   else { /* v0.8.24.10: keep the goalkeeper's shot-time commitment; no omniscient mid-flight tracking. */ }
    if(pk.shotTimer<=0){
     const success=Math.abs(pk.shotTargetY-pk.saveY)>31;
     pk.kicks[at].push(success);this.emit('penaltyKick',{team:at,goal:success});pk.turn++;
     const totals=pk.kicks.map(a=>a.filter(Boolean).length),remaining=pk.kicks.map(a=>Math.max(0,5-a.length));
-    const canDecide=(pk.kicks[0].length>=5&&pk.kicks[1].length>=5&&totals[0]!==totals[1])||(pk.kicks[0].length>=3&&pk.kicks[1].length>=3&&(totals[0]>totals[1]+remaining[1]||totals[1]>totals[0]+remaining[0]));
+    // First five: allow a mathematically clinched shootout. After five,
+    // sudden-death must finish a COMPLETE pair of attempts before deciding.
+    const n0=pk.kicks[0].length,n1=pk.kicks[1].length;
+    const clinchedWithinFive=n0<=5&&n1<=5&&(totals[0]>totals[1]+remaining[1]||totals[1]>totals[0]+remaining[0]);
+    const completedSuddenDeathPair=n0>=5&&n1>=5&&n0===n1&&totals[0]!==totals[1];
+    const canDecide=clinchedWithinFive||completedSuddenDeathPair;
     if(canDecide){this.matchState='finished';const score=pk.afterDraw?this.score.slice():totals.slice();if(!pk.afterDraw)this.score=totals.slice();this.emit('finished',{score,penalties:true,pkScore:totals,winner:totals[0]>totals[1]?0:1});return}
     pk.shotTimer=0;pk.ready=1.25;pk.timer=8;pk.aim=cy;pk.saveY=cy;pk.ballY=cy;pk.ballX=spot;pk.startX=spot;pk.startY=cy;pk.dribbles=0;pk.diveBoost=0;pk.diveCooldown=0;pk.stage='ready';
    }return;
@@ -3762,6 +4050,13 @@ class Renderer{
     ctx.fillStyle='#e6ffff';ellipse(ctx,-32,-78+sign*13,12,9,'#e6ffff');ellipse(ctx,32,-78+sign*13,12,9,'#e6ffff');
     ctx.restore();
   }
+ if(p.action==='keeperRecover'){
+  // Fading ground-contact ripple makes the landing legible at reduced scale.
+  const remaining=Math.min(1,Math.max(0,(p.actionTimer||0)/.34));
+  ctx.save();ctx.globalAlpha=.38*remaining;ctx.strokeStyle='#a7d9f1';ctx.lineWidth=3;
+  ctx.beginPath();ctx.ellipse(0,0,27+21*(1-remaining),9+9*(1-remaining),0,0,PI*2);ctx.stroke();
+  ctx.restore();
+ }
  if(['keeperCatch','keeperDiveCatch','keeperThrow','keeperPunt'].includes(p.action)){
   ctx.save();ctx.textAlign='center';ctx.font='900 19px Arial';ctx.fillStyle=['keeperCatch','keeperDiveCatch'].includes(p.action)?'#beffec':'#ffe6a1';
   ctx.fillText(['keeperCatch','keeperDiveCatch'].includes(p.action)?'CAUGHT!':p.action==='keeperThrow'?'THROW!':'PUNT!',0,-151);
@@ -3823,7 +4118,9 @@ function random(seed,a,b){return a+((Math.sin(seed*122.4)*49833)%1+1)%1*(b-a)}
 function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
 
 return {Renderer};})();
-(()=>{const {JAPAN_ROSTER,TEAMS,rosterFor,SHOTS,DEFAULT_OPTIONS,DEFAULT_LINEUP,WEATHER,TERRAIN,CONDITIONS,FORMATIONS}=DATA;const {Input}=INPUT;const {TEAM_TALKS,moodLabel}=MORALE;const {AI_LEVELS,aiTuning}=AI;const {withStats,NUMERIC_STATS,overallForPosition}=STATS;const {abilityLevel}=SPECIALS;const {kitFor,KIT_CHOICES}=KITS;const {teamIdentity,countryFlag,countryCode,isClub}=IDENTITY;const {careerClubIds,clubRegion,clubCountry,countryName,availableRegions,availableCountries,clubsInCountry}=CLUBFILTERS;const {defaultPlan,safePlan,validatePlan,ATTACK_STYLES,DEFENCE_STYLES}=TACTICS;const {GameEngine}=ENGINE;const {Renderer}=RENDER;const {installExpansion,avatarFor}=EXPANDED;const {installBPWWorldCups,BPW_YEARS}=BPW;const {CONTINENTS,SIX_TOP_BY_CONTINENT,installContinentalClubs}=CONTINENTAL;const {createTournament,tournamentCurrent,tournamentAdvance,tournamentStandings,tournamentProgress,validateTournament}=TOURNAMENTS;const {createCareer,currentCareerFixture,advanceCareer,standings,nextSeason,purchase,upgradeFacility,trainPlayer,scoutAcademy,signAcademy,renewContract,recoverPlayer,careerCoverage,recordMatchFitness}=CAREER;
+(()=>{const {ArcadeAudio,AUDIO_DEFAULTS}=AUDIO;const {JAPAN_ROSTER,TEAMS,rosterFor,SHOTS,DEFAULT_OPTIONS,DEFAULT_LINEUP,WEATHER,TERRAIN,CONDITIONS,FORMATIONS}=DATA;const {Input}=INPUT;const {TEAM_TALKS,moodLabel}=MORALE;const {AI_LEVELS,aiTuning}=AI;const {withStats,NUMERIC_STATS,overallForPosition}=STATS;const {abilityLevel}=SPECIALS;const {kitFor,KIT_CHOICES}=KITS;const {teamIdentity,countryFlag,countryCode,isClub}=IDENTITY;const {careerClubIds,clubRegion,clubCountry,countryName,availableRegions,availableCountries,clubsInCountry}=CLUBFILTERS;const {defaultPlan,safePlan,validatePlan,ATTACK_STYLES,DEFENCE_STYLES}=TACTICS;const {GameEngine}=ENGINE;const {Renderer}=RENDER;const {installExpansion,avatarFor}=EXPANDED;const {installBPWWorldCups,BPW_YEARS}=BPW;const {installBPWAllTime}=BPWALLTIME;const {CONTINENTS,SIX_TOP_BY_CONTINENT,installContinentalClubs}=CONTINENTAL;const {createTournament,tournamentCurrent,tournamentAdvance,tournamentStandings,tournamentProgress,validateTournament}=TOURNAMENTS;const {createCareer,currentCareerFixture,advanceCareer,standings,nextSeason,purchase,upgradeFacility,trainPlayer,scoutAcademy,signAcademy,renewContract,recoverPlayer,careerCoverage,recordMatchFitness}=CAREER;
+
+
 
 
 
@@ -3847,9 +4144,10 @@ const CONTINENTAL_TEAMS=installContinentalClubs(TEAMS,SHOTS);
 for(const team of TEAMS)if(team.customRoster)team.customRoster=rosterFor(team.index).map(withStats);
 const clubs=store.get('customClubs',[]);
 for(const club of clubs){if(club&&String(club.id||'').startsWith('club_')&&typeof club.name==='string'&&/^#[0-9a-fA-F]{6}$/.test(club.primary||'')&&Array.isArray(club.customRoster)&&club.customRoster.length===12){club.index=TEAMS.length;TEAMS.push(club)}}
-// Insert the six new BPW teams after existing user clubs so old custom-club
-// numeric team indexes remain stable across this release.
+// Append after loaded user clubs: six original World Cup BPW indexes and
+// all legacy saved-team indices remain stable; the all-time squad is last.
 installBPWWorldCups(TEAMS,SHOTS,avatarFor);
+installBPWAllTime(TEAMS,SHOTS,avatarFor);
 let career=store.get('managerCareer',null);
 // Migrate pre-0.6 custom-club index saves: v0.5 appended user clubs at index 83.
 if(career&&!career.saveSchema&&clubs.length){const oldToNew=id=>Number.isInteger(id)&&id>=83&&id<83+clubs.length?(TEAMS.findIndex(t=>t.id===clubs[id-83].id)):id;
@@ -3864,6 +4162,7 @@ const kitSelections=(()=>{const k=store.get('kitSelections',null);return Array.i
 let preTalkChoices=['none','none'];let home=0,away=9,homeCategory='all',awayCategory='all',mode='quick',humans=1,formation=opt.formation||'2-1-2',lineup=store.get('lineup',DEFAULT_LINEUP.slice()), edits=store.get('edits',{}),screen='home';
 let teamPlans=store.get('teamPlans',{}),squadContext='home',squadSide=0;
 let league=store.get('league',{played:0,wins:0,draws:0,losses:0,points:0,playoff:0,stage:'qualifier',games:[]});
+const audio=new ArcadeAudio({...AUDIO_DEFAULTS,...store.get('audioOptions',{}),...(opt.sfx===false?{mute:true}:{})});
 const game=new GameEngine(opt,input),menu=$('menu'),hud=$('hud'),touch=$('mobile');
 const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const button=(name,act,cls='')=>`<button class="btn ${cls}" data-action="${act}">${name}</button>`;
@@ -3879,37 +4178,117 @@ function updateTeamPickerIcon(id){const target=$(id+'Identity'),team=TEAMS[Numbe
 function fillTeamBrowser(id){const select=$(id),panel=$(id+'Browse'),out=$(id+'Results');if(!select||!panel||!out)return;const query=($(id+'Search')?.value||'').trim().toLocaleLowerCase();const available=[...select.options].filter(o=>o.value!==''&&TEAMS[Number(o.value)]).map(o=>Number(o.value));const matching=available.filter(i=>!query||`${TEAMS[i].name} ${countryName(clubCountry(TEAMS[i]),TEAMS)} ${clubCountry(TEAMS[i])}`.toLocaleLowerCase().includes(query));const first=matching.slice(0,60);out.innerHTML=first.map(i=>`<button type="button" class="teamPickItem ${String(i)===select.value?'selected':''}" role="option" aria-selected="${String(i)===select.value}" data-pick-team="${id}" data-team-id="${i}">${teamIdentity(TEAMS[i])}<span>${escapeHTML(TEAMS[i].name)}<small>${escapeHTML(countryName(clubCountry(TEAMS[i]),TEAMS))}</small></span></button>`).join('')||'<p class="muted">No matching teams</p>';if(matching.length>60)out.innerHTML+=`<p class="muted">Showing 60 of ${matching.length}. Type to narrow your search.</p>`;}
 function showTeamBrowser(id){const target=$(id+'Browse'),toggle=menu.querySelector(`[data-team-browse="${id}"]`);if(!target)return;const open=target.classList.contains('hidden');menu.querySelectorAll('.teamBrowsePanel').forEach(x=>x.classList.add('hidden'));menu.querySelectorAll('[data-team-browse]').forEach(x=>x.setAttribute('aria-expanded','false'));if(open){target.classList.remove('hidden');if(toggle)toggle.setAttribute('aria-expanded','true');fillTeamBrowser(id);$(id+'Search')?.focus();}}
 
-const nations=()=>TEAMS.map((t,i)=>[i,`[${t.group==='bpw_worldcup'?'WC':countryCode(t)||'FC'}] ${t.group==='national26'?'NAT ':t.group==='club26'?'CLB ':t.group==='continental'?'CUP ':t.group==='bpw_worldcup'?'BPW WC ':t.group==='legends'?'LEG ':'ARC '}${t.name} (${t.rank})`]);
-const categoryOptions=[['all',`ALL ${TEAMS.length} TEAMS`],['arcade','1993 ARCADE TEAMS'],['national26','2026 NATIONAL TEAMS'],['club26','2026 FEATURED GLOBAL CLUBS'],['UEFA','EUROPE CHAMPIONS'],['AFC','ASIA CHAMPIONS'],['CAF','AFRICA CHAMPIONS'],['CONCACAF','NORTH AMERICA CHAMPIONS'],['CONMEBOL','SOUTH AMERICA CHAMPIONS'],['OFC','OCEANIA CHAMPIONS'],['legends','LEGENDARY TEAMS'],['bpw_worldcup','BPW WORLD CUP ALL-STARS (1998–2018)']];
-const filteredNations=cat=>nations().filter(([i])=>cat==='all'||cat==='arcade'&&TEAMS[i].group===undefined||cat==='club26'&&TEAMS[i].group==='club26'||cat==='national26'&&TEAMS[i].group==='national26'||cat==='legends'&&TEAMS[i].group==='legends'||cat==='bpw_worldcup'&&TEAMS[i].group==='bpw_worldcup'||['UEFA','AFC','CAF','CONCACAF','CONMEBOL','OFC'].includes(cat)&&TEAMS[i].continent===cat);
+const nations=()=>TEAMS.map((t,i)=>[i,`[${t.group==='bpw_worldcup'?'WC':t.group==='bpw_alltime'?'AT':countryCode(t)||'FC'}] ${t.group==='national26'?'NAT ':t.group==='club26'?'CLB ':t.group==='continental'?'CUP ':t.group==='bpw_worldcup'?'BPW WC ':t.group==='bpw_alltime'?'BPW LEG ':t.group==='legends'?'LEG ':'ARC '}${t.name} (${t.rank})`]);
+const categoryOptions=[['all',`ALL ${TEAMS.length} TEAMS`],['arcade','1993 ARCADE TEAMS'],['national26','2026 NATIONAL TEAMS'],['club26','2026 FEATURED GLOBAL CLUBS'],['UEFA','EUROPE CHAMPIONS'],['AFC','ASIA CHAMPIONS'],['CAF','AFRICA CHAMPIONS'],['CONCACAF','NORTH AMERICA CHAMPIONS'],['CONMEBOL','SOUTH AMERICA CHAMPIONS'],['OFC','OCEANIA CHAMPIONS'],['legends','LEGENDARY TEAMS'],['bpw_worldcup','BPW WORLD CUP ALL-STARS (1998–2018)'],['bpw_alltime','BPW ALL-TIME LEGENDARY 12 ★']];
+const filteredNations=cat=>nations().filter(([i])=>cat==='all'||cat==='arcade'&&TEAMS[i].group===undefined||cat==='club26'&&TEAMS[i].group==='club26'||cat==='national26'&&TEAMS[i].group==='national26'||cat==='legends'&&TEAMS[i].group==='legends'||cat==='bpw_worldcup'&&TEAMS[i].group==='bpw_worldcup'||cat==='bpw_alltime'&&TEAMS[i].group==='bpw_alltime'||['UEFA','AFC','CAF','CONCACAF','CONMEBOL','OFC'].includes(cat)&&TEAMS[i].continent===cat);
 const roster=i=>(edits[TEAMS[i].id]||rosterFor(i)).map(withStats);
 const playerOVR=(p,position=p?.role)=>overallForPosition(p,position);
 const planFor=i=>safePlan(teamPlans[TEAMS[i].id],roster(i),i);
 const identity=i=>teamIdentity(TEAMS[i]);
 const menuVisible=()=>!menu.classList.contains('hidden');
-const closeMenu=()=>{menu.classList.add('hidden');hud.classList.remove('hidden');touch.classList.toggle('hidden',!matchMedia('(pointer:coarse)').matches)};
-const show=(html,id='home')=>{screen=id;menu.classList.remove('hidden','blank');menu.innerHTML=`<div class="menubox"><div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>${html}<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div></div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
-function page(title,subtitle,body,returnAction='home'){show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER • VERSION 0.8.22.1</div><h1 class="heading">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title)}
+const closeMenu=()=>{input.cancelAll();audio.sceneChange('match');menu.classList.add('hidden');hud.classList.remove('hidden');touch.classList.toggle('hidden',!matchMedia('(pointer:coarse)').matches)};
+const show=(html,id='home')=>{audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');menu.innerHTML=`<div class="menubox"><div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>${html}<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div></div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
+function page(title,subtitle,body,returnAction='home'){if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER • VERSION 0.8.24.12</div><h1 class="heading">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title)}
+// v0.8.24.7 — Menu handoff: five primary categories, no new gameplay modes.
+// Existing action handlers, saves, teams and engine remain the authority.
+const menuParents={
+ 'nav-quick':'home','nav-device':'navQuick','nav-online':'home','nav-career':'home',
+ 'nav-cups':'home','nav-international':'navCups','nav-clubs':'navCups',
+ 'nav-settings':'home','nav-settings-game':'navSettings','nav-settings-graphics':'navSettings',
+ 'nav-settings-sound':'navSettings','nav-customize':'navSettings','nav-input':'navSettings',
+ 'nav-saves':'navSettings','nav-about':'home','nav-later':'navCups'
+};
+const navFocusMap={};let menuBackAction='home',menuEntryReturn='home';
+const navItem=(label,act,description='',availability='active',icon='⚽')=>({label,act,description,availability,icon});
+function menuChoices(id,title,subtitle,entries,back='home',extra=''){
+ menuBackAction=back;
+ const cards=entries.map((e,i)=>`<button type="button" class="btn navChoice ${e.availability==='later'?'navLater':''}" data-action="${escapeHTML(e.act)}" ${i===0?'data-default-focus="true"':''} aria-label="${escapeHTML(e.label+(e.availability==='later'?' coming later':''))}"><span class="navIcon" aria-hidden="true">${e.icon}</span><span class="navCopy"><strong>${escapeHTML(e.label)}</strong><small>${escapeHTML(e.description)}</small></span><span class="navStatus">${e.availability==='later'?'COMING LATER':'›'}</span></button>`).join('');
+ show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL · 0.8.24.12</div><h1 class="heading">${escapeHTML(title)}</h1><p class="subtitle">${escapeHTML(subtitle)}</p></div>${button('← BACK',back,'minor navBack')}</div><div class="navList">${cards}</div>${extra}</div>`,id);
+ // Restore the selected item in its parent after returning; do not steal focus from clicks.
+ if(navFocusMap[id]){const match=menu.querySelector(`[data-action="${navFocusMap[id]}"]`);if(match){match.focus({preventScroll:true});return;}}
+ menu.querySelector('.navChoice')?.focus({preventScroll:true});
+}
+const comingLater=(title,description,back='navCups')=>{
+ menuBackAction=back;
+ page(title,'Planned feature — not available in this version.',`<div class="panel navInfo"><h2>COMING LATER</h2><p>${escapeHTML(description)}</p><p>No substitute gameplay is launched. Existing saves are unchanged.</p>${button('← BACK',back,'gold')}</div>`,back);
+};
+function showQuickMenu(){menuChoices('nav-quick','QUICK MATCH','Play on one device, practice, or explore planned local multiplayer.',[
+ navItem('On Device','navOnDevice','Single-player, two-player, penalties and training.','active','🎮'),
+ navItem('Local Network','laterLAN','Devices connected over your local network.','later','📡')],'home');}
+function showOnDevice(){menuChoices('nav-device','ON DEVICE','Use the existing playable match setups.',[
+ navItem('Single Player vs CPU','quick','Existing team, kit and match setup.','active','⚽'),
+ navItem('Two Players · Same Device','versus','Play a local head-to-head match.','active','🎮'),
+ navItem('Penalty Shootout','pk','Standalone penalty challenge.','active','🥅'),
+ navItem('Training Arena','training','Practice the four action buttons and combinations.','active','💥')],'navQuick');}
+function showOnlineMenu(){menuChoices('nav-online','ONLINE','Future network modes — not playable in this build.',[
+ navItem('Online Match','laterOnlineMatch','Compete over the internet.','later','🌐'),
+ navItem('Ultimate Team','laterUltimate','Collect and develop your own squad.','later','⭐'),
+ navItem('Online Career','laterOnlineCareer','Shared career experience.','later','💼'),
+ navItem('Online Cup / League','laterOnlineCup','Multiplayer competitive tournaments.','later','🏆')],'home');}
+function showCareerMenu(){menuChoices('nav-career','CAREER','Continue your existing manager career or manage your club.',[
+ ...(career?[navItem('Continue Career','manager',`Season ${career.season} · ${TEAMS[career.club]?.name||'Saved career'}`,'active','▶')]:[]),
+ navItem(career?'Start a New Career':'New Career','navNewCareer',career?'Replaces the current career after confirmation.':'Select a club and begin a career.','active','⭐'),
+ navItem('Career Management','manager','Squad, transfers, scouting, facilities and fixtures.','active','💼'),
+ navItem('Manage Career Saves','navSaveManagement','Export or import a save backup.','active','💾')],'home');}
+function showCupsMenu(){menuChoices('nav-cups','LEAGUES & CUPS','Choose an existing competition or explore planned tournaments.',[
+ navItem('International','navInternational','World Cup and future national cups.','active','🌍'),
+ navItem('Clubs','navClubs','Existing continental championships and future leagues.','active','🏆'),
+ navItem('World League · Arcade','league','The original playable World League challenge.','active','⚽'),
+ navItem('Custom Cup','laterCustomCup','Design a custom knockout tournament.','later','➕'),
+ navItem('Custom League','laterCustomLeague','Design a custom league season.','later','➕')],'home');}
+function showInternationalMenu(){menuChoices('nav-international','INTERNATIONAL','National tournaments planned for future versions.',[
+ navItem('World Cup','laterWorldCup','A complete World Cup tournament is not yet implemented.','later','🌐'),
+ navItem('Asian Cup','laterAsian','Asian national competition.','later','🌏'),
+ navItem('Euro','laterEuro','European national competition.','later','🇪🇺'),
+ navItem('Copa América','laterCopa','South American national competition.','later','🌎'),
+ navItem('Africa Cup','laterAfrica','African national competition.','later','🌍'),
+ navItem('CONCACAF Cup','laterConcacaf','North and Central American national competition.','later','🏆')],'navCups');}
+function showClubCompetitionsMenu(){menuChoices('nav-clubs','CLUB COMPETITIONS','Existing continental championships are playable; named leagues remain planned.',[
+ navItem('Continental Championships · Six','continents','Playable confederation competitions with fixtures and progression.','active','🏆'),
+ navItem('Champions League','laterChampions','Planned branded tournament; use existing continental championships separately.','later','⭐'),
+ navItem('Europa League','laterEuropa','Future European cup.','later','🏆'),
+ navItem('Premier League','laterPremier','Future domestic league.','later','🏴'),
+ navItem('Serie A','laterSerie','Future Italian league.','later','🇮🇹'),
+ navItem('Bundesliga','laterBundes','Future German league.','later','🇩🇪'),
+ navItem('La Liga','laterLaLiga','Future Spanish league.','later','🇪🇸'),
+ navItem('Ligue 1 · France','laterLigue1','Future French league.','later','🇫🇷')],'navCups');}
+function showSettingsMenu(){menuChoices('nav-settings','SETTINGS','Adjust the game and manage your saved creations.',[
+ navItem('Game Settings','navGameSettings','Difficulty, pace, duration, weather and pitch.','active','⚽'),
+ navItem('Graphics','navGraphics','Camera, player names and fullscreen.','active','🖥'),
+ navItem('Sound','navSound','Music, sound effects, crowd and mute.','active','🔊'),
+ navItem('Player & Team Customization','navCustomization','Player studio, create club, squad tactics and roster editor.','active','🎨'),
+ navItem('Input Settings','navInput','Keyboard and gamepad mappings, touch controls reference.','active','🎮'),
+ navItem('Save Management','navSaveManagement','Export or import compatible saves.','active','💾'),
+ navItem('How to Play','help','Four-button controls and combo guide.','active','📖')],'home');}
+function showCustomizationMenu(){menuChoices('nav-customize','PLAYER & TEAM CUSTOMIZATION','Every existing team-management tool is still available.',[
+ navItem('Player Studio','playerStudio','Edit player cartoon appearance.','active','🎨'),
+ navItem('Create a Club','clubs','Design clubs and kits for matches.','active','🏟'),
+ navItem('Roster Editor','editor','Edit 12-player team attributes.','active','🧩'),
+ navItem('Squad & Tactics','squad','Lineups, formations and player instructions.','active','👥'),
+ navItem('Super Shot Encyclopedia','gallery','Explore available Super Shots.','active','✨')],'navSettings');}
+function showInputMenu(){menuChoices('nav-input','INPUT SETTINGS','The game always uses four actions: Pass, Shoot, Dribble and Jump.',[
+ navItem('Keyboard & Gamepad Mappings','controls','Remap both local players.','active','🎮'),
+ navItem('Touch Controls & Combos','help','View the existing touch layout and combo reference.','active','👆')],'navSettings');}
+function showSaveMenu(parent='navSettings'){menuChoices('nav-saves','SAVE MANAGEMENT','Safely back up or restore local progress.',[
+ navItem('Export All Saves','exportSave','Download a JSON backup without changing progress.','active','⬇'),
+ navItem('Import Save','importSave','Requires explicit confirmation before replacing progress.','active','⬆')],parent,`<input id="saveImportFile" type="file" accept=".json,application/json" class="hidden" aria-label="Import saved game"/>`);}
+function showAbout(){page('ABOUT SUPERMAGIC FOOTBALL','Original offline cartoon arcade football.',`<div class="panel"><p>Alpha v0.8.24.12 · Independent football game with original graphics and audio.</p><p class="muted">Four action buttons · ${TEAMS.length} teams · saved locally on your device.</p>${button('← MAIN MENU','home','gold')}</div>`,'home');}
 function showHome(){
- show(`<header class="homeMasthead"><div><div class="topline">ARCADE FOOTBALL REIMAGINED · ORIGINAL HD ENGINE</div>
- <h1 class="heading logoHeading">SUPERMAGIC <em>FOOTBALL</em></h1>
- <p class="subtitle">FAST-ACCESS GAME HUB · ${TEAMS.length} TEAMS · ${TEAMS.length*12} PLAYERS · SIX CONTINENTAL CUPS</p></div>
- <span class="homeVersion" aria-label="Game version 0.8.22.1">ALPHA 0.8.22.1</span></header>
- <div class="homeQuickStats" aria-label="Game contents"><span><strong>${TEAMS.length}</strong> TEAMS</span><span><strong>6</strong> CONTINENTS</span><span><strong>12</strong> PLAYERS / TEAM</span><span><strong>4</strong> ACTION BUTTONS</span></div>
- <div class="menuGrid homeDashboard"><main class="homeDirectory" aria-label="Game modes and management">
- <section class="homeSection" aria-labelledby="homePlayHeading"><div class="homeSectionHead"><span class="sectionEmblem" aria-hidden="true">⚽</span><div><h2 id="homePlayHeading">PLAY FOOTBALL</h2><p>Start playing immediately or challenge a friend</p></div></div>
- ${button('⚽ &nbsp; QUICK MATCH <span class="arrow">➜</span>','quick','gold fill huge homeHeroAction')}
- <div class="homeActionGrid">${button('🎮 &nbsp; TWO-PLAYER VERSUS','versus','homeTile')}${button('🥅 &nbsp; PENALTY CHALLENGE','pk','homeTile')}${button('💥 &nbsp; TRAINING ARENA','training','homeTile')}</div></section>
- <section class="homeSection" aria-labelledby="homeChampHeading"><div class="homeSectionHead"><span class="sectionEmblem" aria-hidden="true">🏆</span><div><h2 id="homeChampHeading">CHAMPIONSHIPS & CAREER</h2><p>Play continental cups, build a club, chase a trophy</p></div></div>
- <div class="homeActionGrid">${button('🌐 &nbsp; CONTINENTAL CUPS','continents','homeTile')}${button('💼 &nbsp; MANAGER CAREER','manager','homeTile')}${button('🏆 &nbsp; WORLD LEAGUE','league','homeTile')}</div></section>
- <section class="homeSection" aria-labelledby="homeManageHeading"><div class="homeSectionHead"><span class="sectionEmblem" aria-hidden="true">🛠</span><div><h2 id="homeManageHeading">TEAM & GAME STUDIO</h2><p>Manage squads, practice moves, customize and configure</p></div></div>
- <div class="homeActionGrid homeTools">${button('👥 &nbsp; SQUAD / TACTICS','squad','homeTile')}${button('🎨 &nbsp; PLAYER STUDIO','playerStudio','homeTile')}${button('🏟 &nbsp; CREATE CLUB','clubs','homeTile')}${button('🧩 &nbsp; ROSTER EDITOR','editor','homeTile')}${button('✨ &nbsp; SHOT ENCYCLOPEDIA','gallery','homeTile')}${button('⚙ &nbsp; SETTINGS','settings','homeTile')}${button('🎮 &nbsp; HOW TO PLAY','help','homeTile')}</div></section>
- <p class="muted note homeFootnote">Original HD game engine, no emulator required. Work in progress: player likenesses, real-world rosters and historical gameplay are not yet complete.</p>
- </main><aside class="panel posterPanel" aria-label="Supermagic Football animated preview"><div class="poster newPoster"><div class="posterSun"></div><div class="posterLines"></div><canvas id="posterCanvas" width="480" height="360" aria-label="Animated cartoon soccer player"></canvas><div class="posterBall">✦</div><div class="posterTitle">BIG PERSONALITY.<br><span>BIGGER PLAY.</span></div></div>
- <div class="posterStats"><span>01 <b>12 JAPAN STARS</b></span><span>02 <b>${TEAMS.length} TEAMS</b></span><span>03 <b>TRANSFORMING SHOTS</b></span></div>
- <div class="row badges"><span class="pill">PC / PHONE</span><span class="pill">FOUR-BUTTON</span><span class="pill">LOCAL VERSUS</span><span class="pill">OFFLINE</span></div>
- <div class="homeStarterTip"><strong>NEW HERE?</strong><p>Try Quick Match, or open How to Play to learn the four contextual actions. Your current career and club saves stay available.</p></div></aside></div>`, 'home');
- drawPoster();
+ menuBackAction='home';menuEntryReturn='home';
+ show(`<header class="homeMasthead"><div><div class="topline">ARCADE FOOTBALL · SUPER SHOTS · YOUR FOOTBALL UNIVERSE</div><h1 class="heading logoHeading">SUPERMAGIC <em>FOOTBALL</em></h1><p class="subtitle">Pick a mode. All original gameplay and editing tools remain accessible.</p></div><span class="homeVersion">ALPHA 0.8.24.12</span></header>
+ <div class="menuGrid homeDashboard simplifiedHome"><main class="homeDirectory" aria-label="Five game categories">
+ <div class="navList navMainList">
+ ${[
+ navItem('Quick Match','navQuick','Play locally or enter training.','active','⚽'),
+ navItem('Online','navOnline','Online modes planned for later.','later','🌐'),
+ navItem('Career','navCareer','Manage a team and its season.','active','★'),
+ navItem('Leagues & Cups','navCups','World League, continental cups and upcoming competitions.','active','🏆'),
+ navItem('Settings','navSettings','Game, graphics, sound, controls and customization.','active','⚙')
+ ].map(e=>`<button type="button" class="btn navChoice" data-action="${e.act}"><span class="navIcon" aria-hidden="true">${e.icon}</span><span class="navCopy"><strong>${e.label}</strong><small>${e.description}</small></span><span class="navStatus">${e.availability==='later'?'LATER':'›'}</span></button>`).join('')}
+ </div><div class="row navFooter">${career?button('▶ CONTINUE CAREER','manager','minor'):''}${button('⛶ FULLSCREEN','fullscreen','minor')}${button('CREDITS / ABOUT','navAbout','minor')}</div>
+ <p class="muted homeFootnote">${TEAMS.length} teams · 12 players per team · six formations · four action buttons · playable offline.</p></main>
+ <aside class="panel posterPanel" aria-label="Supermagic Football preview"><div class="poster newPoster"><div class="posterSun"></div><div class="posterLines"></div><canvas id="posterCanvas" width="480" height="360" aria-label="Animated football preview"></canvas><div class="posterBall">✦</div><div class="posterTitle">BIG PERSONALITY.<br><span>BIGGER PLAY.</span></div></div><div class="posterStats"><span>01 <b>PLAY OFFLINE</b></span><span>02 <b>${TEAMS.length} TEAMS</b></span><span>03 <b>FOUR ACTION BUTTONS</b></span></div></aside></div>`,'home');
+ drawPoster();const focus=menu.querySelector(`[data-action="${navFocusMap.home||'navQuick'}"]`)||menu.querySelector('.navChoice');focus?.focus({preventScroll:true});
 }
 function drawPoster(){let canvas=$('posterCanvas');if(!canvas)return;let cx=canvas.getContext('2d');let t=performance.now()/1000;cx.clearRect(0,0,canvas.width,canvas.height);
  const p=game.player(0,3);if(!p)return;
@@ -4036,7 +4415,7 @@ function showSquad(side=0,origin='home'){
  const team=TEAMS[index],players=origin==='pause'?game.rosters[side]:roster(index);
  const plan=origin==='pause'?safePlan(game.teamPlans[side],players,index):planFor(index);
  const order=['GK','DF','DF','MF','FW','FW'];
- const memberOptions=players.map((p,i)=>[i,`#${p.num} ${p.name} · ${p.role} · OVR ${playerOVR(p)}`]);
+ const memberOptions=players.map((p,i)=>[i,`#${p.num} ${p.name} · ${p.role} · OVR ${playerOVR(p)}${p.legendaryRating?` · LEG ${p.legendaryRating}`:''}`]);
  const fieldPlayerOptions=plan.lineup.map(i=>memberOptions[i]);
  const roleOptions=players.map((p,i)=>[i,`${plan.lineup.includes(i)?'●':'○'} #${p.num} ${p.name}`]);
  page('TEAM COMMAND CENTER',`${team.name} — edit formation, starting six, captain, set pieces and tactics ${origin==='pause'?'while the game is paused':'before kickoff'}.`,
@@ -4046,14 +4425,14 @@ function showSquad(side=0,origin='home'){
  <h3 class="titleSmall">LEADERSHIP & SET PIECES</h3><div class="tacticsGrid">${[['captain','CAPTAIN'],['penalty','PENALTY KICKS'],['freeKick','FREE KICKS'],['corner','CORNERS']].map(([key,label])=>`<div>${field(label,'role_'+key,key==='captain'?fieldPlayerOptions:roleOptions,plan[key])}</div>`).join('')}</div>
  <h3 class="titleSmall">TEAM INSTRUCTIONS</h3><div class="tacticsGrid"><div>${field('ATTACKING STYLE','attackStyle',ATTACK_STYLES.map(v=>[v,v]),plan.attack)}</div><div>${field('DEFENSIVE STYLE','defenceStyle',DEFENCE_STYLES.map(v=>[v,v]),plan.defence)}</div></div>
  <p class="muted">Possession prioritizes passes; Direct pushes forward and shoots earlier. High Press closes down faster; Deep Block holds positions. Captain boosts team passing slightly. Penalty taker accuracy affects shootouts. Free-kick/corner roles are saved, but those restart mechanics are not yet playable.</p>
- <div class="row">${button('✓ SAVE TACTICS','saveSquad','gold')}${button('RESTORE DEFAULT','resetSquad')}${button('← BACK',origin==='setup'?'returnSetup':origin==='pause'?'returnPause':'home')}</div></div><div class="panel"><h3 class="titleSmall">12-PLAYER ROSTER · POSITION OVR</h3><div class="roster">${players.map((p,i)=>`<div class="rosterCard ${plan.lineup.includes(i)?'startingPlayer':''}"><canvas class="portrait playerFaceCanvas" width="80" height="88" data-squad-avatar="${i}" role="img" aria-label="Cartoon face of ${escapeHTML(p.name)}"></canvas><div><div class="rosterName">${plan.lineup.includes(i)?'● STARTING ':'○ BENCH '}#${p.num} ${escapeHTML(p.name)}</div><div class="rosterMeta"><span class="ovrBadge" title="Calculated from six ${p.role} attributes">${p.role} OVR ${playerOVR(p)}</span> · ${origin==='pause'?`FIT ${Math.round(100*(1-(game.fatigueLedger[side][p.id]??0)))}% · `:`CON ${p.condition??100}% · `}STA ${p.stamina} · DEF ${p.defence} · SPD ${p.speedRating} · AGI ${p.agility} · DRB ${p.dribbling}</div><div class="rosterMeta">SHOT ${p.shootPower}/${p.shootAccuracy} · HEAD ${p.heading} · PASS ${p.passing} · CROSS ${p.crossing} · STYLE ${escapeHTML(p.dribbleType||'sideStep')}</div><div class="rosterMeta">${p.role==='GK'?`GK DIVING ${p.gkDiving} · GK SKILL ${p.gkSkill} · `:''}ABILITY ${escapeHTML(p.superAbility?.name||'NONE')} · SUPER SHOT LV${abilityLevel(p,'shot')} · DEF LV${p.superAbility?.type==='defence'?abilityLevel(p,'defence'):'—'} · GK LV${p.gkSuperAbility?abilityLevel(p,'keeper'):'—'}</div></div></div>`).join('')}</div></div></div>`,origin==='setup'?'returnSetup':origin==='pause'?'returnPause':'home');
+ <div class="row">${button('✓ SAVE TACTICS','saveSquad','gold')}${button('RESTORE DEFAULT','resetSquad')}${button('← BACK',origin==='setup'?'returnSetup':origin==='pause'?'returnPause':'home')}</div></div><div class="panel"><h3 class="titleSmall">12-PLAYER ROSTER · POSITION OVR</h3><div class="roster">${players.map((p,i)=>`<div class="rosterCard ${plan.lineup.includes(i)?'startingPlayer':''}"><canvas class="portrait playerFaceCanvas" width="80" height="88" data-squad-avatar="${i}" role="img" aria-label="Cartoon face of ${escapeHTML(p.name)}"></canvas><div><div class="rosterName">${plan.lineup.includes(i)?'● STARTING ':'○ BENCH '}#${p.num} ${escapeHTML(p.name)}</div><div class="rosterMeta"><span class="ovrBadge" title="Calculated from six ${p.role} attributes">${p.role} OVR ${playerOVR(p)}</span>${p.legendaryRating?` · <span class="ovrBadge" title="User-selected all-time legendary card rating (not the calculated position OVR)">LEG ${p.legendaryRating}</span>`:''} · ${origin==='pause'?`FIT ${Math.round(100*(1-(game.fatigueLedger[side][p.id]??0)))}% · `:`CON ${p.condition??100}% · `}STA ${p.stamina} · DEF ${p.defence} · SPD ${p.speedRating} · AGI ${p.agility} · DRB ${p.dribbling}</div><div class="rosterMeta">SHOT ${p.shootPower}/${p.shootAccuracy} · HEAD ${p.heading} · PASS ${p.passing} · CROSS ${p.crossing} · STYLE ${escapeHTML(p.dribbleType||'sideStep')}</div><div class="rosterMeta">${p.role==='GK'?`GK DIVING ${p.gkDiving} · GK SKILL ${p.gkSkill} · `:''}ABILITY ${escapeHTML(p.superAbility?.name||'NONE')} · SUPER SHOT LV${abilityLevel(p,'shot')} · DEF LV${p.superAbility?.type==='defence'?abilityLevel(p,'defence'):'—'} · GK LV${p.gkSuperAbility?abilityLevel(p,'keeper'):'—'}</div></div></div>`).join('')}</div></div></div>`,origin==='setup'?'returnSetup':origin==='pause'?'returnPause':'home');
  refreshFormationPreview();
 }
 function drawTeamFace(canvas,player,teamIndex){if(!canvas||!player)return;const ctx=canvas.getContext('2d');if(!ctx)return;ctx.clearRect(0,0,canvas.width,canvas.height);const gradient=ctx.createLinearGradient(0,0,0,canvas.height);gradient.addColorStop(0,'#347885');gradient.addColorStop(1,'#102d44');ctx.fillStyle=gradient;ctx.fillRect(0,0,canvas.width,canvas.height);ctx.save();ctx.translate(canvas.width/2,canvas.height*1.26);const z=Math.min(canvas.width/108,canvas.height/98)*1.08;ctx.scale(z,z);renderer.drawPlayer(ctx,{...game.player(0,3),src:player,team:0,i:0,x:0,y:0,z:0,t:0,face:1,dx:0,dy:0,anim:0,action:'idle',controlled:false},{getTeam:()=>TEAMS[teamIndex],options:{showNames:false}});ctx.restore();}
 function refreshFormationPreview(){const board=$('formationPitch');if(!board)return;const teamIndex=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;const players=squadContext==='pause'?game.rosters[squadSide]:roster(teamIndex);const key=$('formation')?.value||'2-1-2';const labels={'2-1-2':['GK','DF','DF','MF','FW','FW'],'1-2-2':['GK','DF','MF','MF','FW','FW'],'2-2-1':['GK','DF','DF','MF','MF','FW'],'1-3-1':['GK','DF','MF','MF','MF','FW'],'1-1-3':['GK','DF','MF','FW','FW','FW'],'3-1-1':['GK','DF','DF','DF','MF','FW']}[key]||['GK','DF','DF','MF','FW','FW'];menu.querySelectorAll('.lineupRow>strong').forEach((node,i)=>node.textContent=labels[i]||'MF');const positions=FORMATIONS[key]||FORMATIONS['2-1-2'];const slots=Array.from({length:6},(_,i)=>Number($('pos'+i)?.value));menu.querySelectorAll('[data-lineup-ovr]').forEach((badge,i)=>{badge.textContent='OVR '+playerOVR(players[slots[i]],labels[i]);badge.title='Calculated for '+labels[i]+' position';});board.innerHTML=positions.map((pos,i)=>`<div class="formationSlot" style="left:${Math.round(pos.x*100)}%;top:${Math.round(pos.y*100)}%" title="${escapeHTML(players[slots[i]]?.name||'Player')}"><canvas width="86" height="90" data-formation-avatar="${slots[i]}" aria-label="${escapeHTML(players[slots[i]]?.name||'Player')} face" role="img"></canvas><small>${escapeHTML((players[slots[i]]?.name||'Player').split(' ').slice(-1)[0])}</small><span class="formationOvr" aria-label="${labels[i]} overall rating ${playerOVR(players[slots[i]],labels[i])}">${labels[i]} ${playerOVR(players[slots[i]],labels[i])}</span></div>`).join('');menu.querySelectorAll('[data-squad-avatar],[data-formation-avatar]').forEach(canvas=>{const j=Number(canvas.dataset.squadAvatar??canvas.dataset.formationAvatar);drawTeamFace(canvas,players[j],teamIndex)});}
 
-function exportSave(){const keys=['customClubs','managerCareer','continentalRun','options','league','lineup','edits','teamPlans','controllerBindings','kitSelections'];const data={product:'Supermagic Football',version:'0.8.22.1',exportedAt:new Date().toISOString(),data:Object.fromEntries(keys.map(k=>[k,store.get(k,null)]))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='Supermagic_Football_Save_'+new Date().toISOString().slice(0,10)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),3000)}
-async function importSave(file){try{if(!file||file.size>5_000_000)throw Error('Save file missing or larger than 5MB');const parsed=JSON.parse(await file.text());if(!['Supermagic Football','Nekketsu Legends HD'].includes(parsed.product)||!parsed.data||typeof parsed.data!=='object')throw Error('Not a Supermagic Football save file');const allow=['customClubs','managerCareer','continentalRun','options','league','lineup','edits','teamPlans','controllerBindings','kitSelections'];if(!confirm('Importing this save will REPLACE local progress on this device. Continue?'))return;for(const key of allow){if(Object.hasOwn(parsed.data,key)&&parsed.data[key]!==null)store.put(key,parsed.data[key]);}alert('Save imported. Game will reload to apply the new progress.');location.reload()}catch(e){alert('Could not import save: '+e.message)}}
+function exportSave(){const keys=['customClubs','managerCareer','continentalRun','options','league','lineup','edits','teamPlans','controllerBindings','kitSelections','audioOptions'];const data={product:'Supermagic Football',version:'0.8.24.12',exportedAt:new Date().toISOString(),data:Object.fromEntries(keys.map(k=>[k,store.get(k,null)]))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='Supermagic_Football_Save_'+new Date().toISOString().slice(0,10)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),3000)}
+async function importSave(file){try{if(!file||file.size>5_000_000)throw Error('Save file missing or larger than 5MB');const parsed=JSON.parse(await file.text());if(!['Supermagic Football','Nekketsu Legends HD'].includes(parsed.product)||!parsed.data||typeof parsed.data!=='object')throw Error('Not a Supermagic Football save file');const allow=['customClubs','managerCareer','continentalRun','options','league','lineup','edits','teamPlans','controllerBindings','kitSelections','audioOptions'];if(!confirm('Importing this save will REPLACE local progress on this device. Continue?'))return;for(const key of allow){if(Object.hasOwn(parsed.data,key)&&parsed.data[key]!==null)store.put(key,parsed.data[key]);}alert('Save imported. Game will reload to apply the new progress.');location.reload()}catch(e){alert('Could not import save: '+e.message)}}
 
 function showControls(){
  const bindings=input.getBindings(),codes=['KeyJ','KeyK','KeyI','KeyL','KeyQ','KeyE','KeyF','KeyG','KeyH','KeyU','KeyO','Space','Digit1','Digit2','Numpad0','Numpad1','Numpad2','Numpad3','NumpadDecimal','ControlRight','Comma','Period','Slash'];
@@ -4063,7 +4442,15 @@ function showControls(){
  const padFields=(suffix,values)=>actions.map((a,i)=>field(a.toUpperCase(),'bindPad'+suffix+i,Array.from({length:8},(_,n)=>[n,'BUTTON '+n+(n===0?' / A':n===1?' / B':n===2?' / X':n===3?' / Y':'')]),values[i])).join('');
  page('CONTROLLER MAPPING','Each player can remap four actions separately. The phone touchscreen stays a fixed four-button cross.',`<div class="twoCol"><div class="panel"><h3 class="titleSmall">PLAYER 1 · KEYBOARD</h3>${keyFields('',bindings.keyboard)}<h3 class="titleSmall">PLAYER 1 · GAMEPAD</h3>${padFields('',bindings.gamepad)}</div><div class="panel"><h3 class="titleSmall">PLAYER 2 · KEYBOARD</h3>${keyFields('2',bindings.keyboard2)}<h3 class="titleSmall">PLAYER 2 · GAMEPAD</h3>${padFields('2',bindings.gamepad2)}<p class="muted">Keys cannot overlap between players. Movement directions remain fixed. Connect two controllers for local versus.</p></div></div><div class="row">${button('SAVE BINDINGS','saveBindings','gold')}${button('RESTORE DEFAULTS','resetBindings')}${button('BACK TO SETTINGS','settings')}</div>`,'settings');
 }
-function showSettings(){page('SETTINGS','Stored in your browser; use the HD view for high-resolution vector graphics.',`<div class="twoCol"><div class="panel">${field('CPU DIFFICULTY','difficulty',aiChoices(),opt.difficulty)}${difficultyHint()}${field('MATCH PACE','gameSpeed',[[0.8,'Relaxed / 80%'],[1,'Normal / 100%'],[1.15,'Fast / 115%']],opt.gameSpeed||1)}${field('HALF LENGTH','settingsDuration',[60,120,180,300].map(v=>[v,v+' sec']),opt.halfSeconds)}${field('WEATHER','settingsWeather',WEATHER.map(v=>[v,v]),opt.weather)}${field('TERRAIN','settingsTerrain',TERRAIN.map(v=>[v,v]),opt.terrain)}${field('CONDITION','settingsCondition',CONDITIONS.map(v=>[v,v]),opt.condition)}</div><div class="panel">${field('CAMERA','camera',[['Follow','Follow the ball'],['Wide','Wide center view']],opt.camera)}${field('SHOW PLAYER NAMES','showNames',[['true','Yes'],['false','No']],String(opt.showNames))}${field('SOUND','sfx',[['true','On'],['false','Off']],String(opt.sfx))}<p class="muted">On Android, tap FULLSCREEN and rotate to landscape. On iPhone, use Safari Share → Add to Home Screen, then launch the installed game for the largest standalone display. Fullscreen and orientation locking are browser-dependent.</p><p class="muted">Browser support varies for Bluetooth gamepads. Connect the controller before opening a match and press one button to activate it.</p></div></div><div class="row" style="margin-top:15px">${button('✓ SAVE SETTINGS','saveSettings','gold')}${button('⬇ EXPORT ALL SAVES','exportSave')}${button('⬆ IMPORT SAVE','importSave')}${button('🎮 REMAP CONTROLS','controls')}<input id="saveImportFile" type="file" accept=".json,application/json" class="hidden" aria-label="Import saved game"/></div>`)}
+function showSettingsSection(section){
+ const opts={
+ game:{id:'nav-settings-game',title:'GAME SETTINGS',subtitle:'CPU, match rules and environment.',fields:`${field('CPU DIFFICULTY','difficulty',aiChoices(),opt.difficulty)}${difficultyHint()}${field('MATCH PACE','gameSpeed',[[0.8,'Relaxed / 80%'],[1,'Normal / 100%'],[1.15,'Fast / 115%']],opt.gameSpeed||1)}${field('HALF LENGTH','settingsDuration',[60,120,180,300].map(v=>[v,v+' sec']),opt.halfSeconds)}${field('WEATHER','settingsWeather',WEATHER.map(v=>[v,v]),opt.weather)}${field('TERRAIN','settingsTerrain',TERRAIN.map(v=>[v,v]),opt.terrain)}${field('CONDITION','settingsCondition',CONDITIONS.map(v=>[v,v]),opt.condition)}`},
+ graphics:{id:'nav-settings-graphics',title:'GRAPHICS',subtitle:'Camera and display settings.',fields:`${field('CAMERA','camera',[['Follow','Follow the ball'],['Wide','Wide center view']],opt.camera)}${field('SHOW PLAYER NAMES','showNames',[['true','Yes'],['false','No']],String(opt.showNames))}<div class="row">${button('⛶ TOGGLE FULLSCREEN','fullscreen','minor')}</div><p class="muted">Fullscreen and screen rotation support depends on your browser and device. Visual effects remain built into the game.</p>`},
+ sound:{id:'nav-settings-sound',title:'SOUND',subtitle:'Original offline music, sound effects and crowd.',fields:`${field('MASTER MUTE','audioMute',[['false','Sound on'],['true','Mute all']],String(audio.settings.mute))}${['master','music','sfx','ui','ambience'].map(k=>`<label class="fieldLabel" for="audio_${k}">${k.toUpperCase()} VOLUME <output id="audio_${k}Value">${audio.settings[k]}%</output></label><input type="range" id="audio_${k}" min="0" max="100" step="5" value="${audio.settings[k]}" aria-label="${k} volume" style="width:100%"/>`).join('')}<p class="muted">Audio begins after interacting with the page. No internet or external samples needed.</p>`}
+ };
+ const cfg=opts[section];if(!cfg)return showSettingsMenu();const back=menuEntryReturn==='returnPause'?'returnPause':'navSettings';menuBackAction=back;
+ show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL · SETTINGS</div><h1 class="heading">${cfg.title}</h1><p class="subtitle">${cfg.subtitle}</p></div>${button('← BACK',back,'minor')}</div><div class="panel navSettingsFields">${cfg.fields}<div class="row navSaveRow">${button('✓ SAVE CHANGES','saveSettings','gold')}</div></div></div>`,cfg.id);
+}
 function showHelp(){page('CONTROLS','Exactly four football action buttons: Pass, Shoot, Dribble and Jump.',`<div class="twoCol"><div class="panel"><h3 class="titleSmall">PLAYER 1</h3>${[['Move','WASD / arrow keys in one-player mode / left stick'],['PASS','K / gamepad B'],['SHOOT','J / gamepad A'],['DRIBBLE','I / gamepad X'],['JUMP','Space / gamepad Y'],['Pause (menu only)','Esc / P / controller Start']].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}</div><div class="panel"><h3 class="titleSmall">PLAYER 2</h3>${[['Move','Arrow keys or keypad 8-4-5-6 / second left stick'],['PASS','Period / gamepad B'],['SHOOT','Comma / gamepad A'],['DRIBBLE','Keypad Decimal / gamepad X'],['JUMP','Right Ctrl / gamepad Y']].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}<p class="muted">There are NO separate Special, Switch, Sprint or goalkeeper-dive buttons. Goalkeepers defend and dive automatically. Remap the same four actions in Settings → Remap Controls.</p></div></div>
 <div class="twoCol" style="margin-top:18px"><div class="panel"><h3 class="titleSmall">WHEN YOU HAVE THE BALL</h3>${[['Tap PASS','Short pass'],['Hold PASS, then release','Long high pass / lofted ball'],['First JUMP; while airborne press PASS','Cross (sequence matters)'],['PASS first, then JUMP','NOT a cross. PASS release determines the pass; JUMP remains a jump'],['Tap SHOOT','Normal shot'],['Hold SHOOT, then release','Charged shot'],['JUMP then SHOOT while carrying','Elevated normal shot'],['Double JUMP then SHOOT while carrying','Super Shot (or stronger normal shot without ability)'],['Tap DRIBBLE','Dribble dash'],['Double tap DRIBBLE','Personal trick'],['JUMP then DRIBBLE near a loose aerial ball','Normal bicycle kick'],['JUMP then two DRIBBLE taps near an aerial ball','Super Bicycle (same special power and ball visuals as Super Shot)'],['JUMP then SHOOT near a loose aerial ball','Normal header'],['JUMP then two SHOOT taps near an aerial ball','Super Header (same power and ball visuals as Super Shot)'],['Hold DRIBBLE 0.26s, then press JUMP','Lift ball above player without jumping'],['Release DRIBBLE; JUMP, then tap DRIBBLE twice','Super Bicycle from lifted ball; non-specialists use boosted ordinary shot'],['Tap JUMP','Jump / jump again while airborne'],['Hold JUMP + direction','Run with ball (no jump on a long hold)']].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}</div><div class="panel"><h3 class="titleSmall">WHEN YOU DO NOT HAVE THE BALL</h3>${[['Tap PASS','Standing tackle'],['Hold PASS','Chase opponent'],['Tap SHOOT','Travelling slide tackle'],['Tap DRIBBLE','Change controlled player'],['Tap JUMP','Jump'],['Hold JUMP + direction','Sprint while defending'],['JUMP + SHOOT','Defensive flying kick'],['Second JUMP, then SHOOT','Defensive bicycle kick'],['Goalkeeper','Autonomously positions, dives and saves'],['Goalkeeper holding ball; safe teammates','Short accurate distribution'],['Goalkeeper under pressure / blocked pass','Automatic long clearance']].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}</div></div>
 <p class="muted">Removed from active human controls: teammate launch → flip kick, reverse-order PASS+JUMP cross, manual goalkeeper dive, separate Special, Switch and Sprint actions. Now playable: Hold Dribble then Jump for a stationary loft; release Dribble, Jump, then tap Dribble twice near the airborne ball to execute Super Bicycle. Super Shot, Super Header and Super Bicycle share power and transformation effects for eligible players.</p>`)}
@@ -4105,7 +4492,7 @@ function drawCustomizer(){const canvas=$('customPortrait');if(!canvas)return;con
 function saveAppearance(){const source=career&&home===career.club?career.roster:roster(home);source[avatarIndex].appearance=getAppearance();if(career&&home===career.club){career.roster=source;saveCareer();showCareerSquad()}else{edits[TEAMS[home].id]=source;store.put('edits',edits);showPlayerStudio(avatarIndex)} }
 function paintAvatars(){menu.querySelectorAll('[data-avatar]').forEach(canvas=>{const i=+canvas.dataset.avatar,p=career?.roster?.[i];if(!p)return;const ctx=canvas.getContext('2d');ctx.clearRect(0,0,100,108);ctx.fillStyle='#1b5460';ctx.fillRect(0,0,100,108);ctx.save();ctx.translate(49,124);ctx.scale(.93,.93);renderer.drawPlayer(ctx,{...game.player(0,3),src:p,t:0,i,face:1,x:0,y:0,z:0,anim:0,dx:0,dy:0,action:'idle',controlled:false},{getTeam:()=>TEAMS[career.club],options:{showNames:false}});ctx.restore()})}
 
-function pause(){game.matchState='paused';page('PAUSED','Resume or change the computer opponent difficulty without restarting.',`<div class="panel">${field('CPU DIFFICULTY (LIVE)','liveDifficulty',aiChoices(),opt.difficulty)}${difficultyHint()}<p class="muted">Changes apply immediately on the next AI decision. In local 2-player Versus this does not affect either human.</p></div><div class="row">${button('▶ RESUME','resume','gold')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('EXIT MATCH','quit')}</div>`)}
+function pause(){game.matchState='paused';page('PAUSED','Resume or change the computer opponent difficulty without restarting.',`<div class="panel">${field('CPU DIFFICULTY (LIVE)','liveDifficulty',aiChoices(),opt.difficulty)}${difficultyHint()}<p class="muted">Changes apply immediately on the next AI decision. In local 2-player Versus this does not affect either human.</p></div><div class="row">${button('▶ RESUME','resume','gold')}${button('RESTART MATCH','confirmRestart')}${button('SETTINGS','navSound')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('RETURN TO MAIN MENU','confirmQuit')}</div>`)}
 function halftime(){game.matchState='paused';page('HALF TIME',`${TEAMS[home].name} ${game.score[0]} : ${game.score[1]} ${TEAMS[away].name}`,`<div class="panel"><h3 class="titleSmall">SECOND HALF STRATEGY</h3><p class="muted">Players have recovered some stamina, not all. CPU teams may make an automatic substitution. Use the command center for up to three substitutions; bench fatigue is remembered.</p><h3 class="titleSmall">🗣 HALF-TIME MANAGER TALK</h3><p class="muted">Talks can boost or reduce individual morale. One talk per team per halftime.</p><div class="tacticsGrid">${field('HOME TALK','halfTalkHome',Object.entries(TEAM_TALKS).map(([k,v])=>[k,v.name]),'encourage')}${humans>=2?field('AWAY TALK','halfTalkAway',Object.entries(TEAM_TALKS).map(([k,v])=>[k,v.name]),'focus'):''}</div><p class="muted">HOME MOOD: ${Math.round(game.teamMorale(0))}% · AWAY MOOD: ${Math.round(game.teamMorale(1))}%</p><div class="row">${!game.talksUsed[0].halftime?button('SPEAK TO HOME TEAM','talkHalfHome','gold'):''}${humans>=2&&!game.talksUsed[1].halftime?button('SPEAK TO AWAY TEAM','talkHalfAway'):''}</div><div class="row">${button('▶ SECOND HALF','resume','gold')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('ADJUST CPU LEVEL','cpuPause')}</div></div>`)}
 function fulltime(ev){game.matchState='finished';let [a,b]=ev.score,win=a>b;if(mode==='league'){
  league.played++;league.wins+=a>b?1:0;league.draws+=a===b?1:0;league.losses+=a<b?1:0;league.points+=a>b?5:a===b?2:0;league.games.unshift({team:TEAMS[away].name,a,b});league.games=league.games.slice(0,80);
@@ -4114,9 +4501,20 @@ function fulltime(ev){game.matchState='finished';let [a,b]=ev.score,win=a>b;if(m
  if(mode==='career'&&career){recordMatchFitness(career,game.getFitnessReport(0));const outcome=advanceCareer(career,TEAMS,ev.score,ev.penalties?ev.winner:null);store.put('managerCareer',career);page('CAREER MATCH RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="titleSmall">${outcome.kind.toUpperCase()} • ${outcome.win?'WIN!':a===b?'DRAW':'DEFEAT'}</div><div class="megaScore">${a} : ${b}</div><p>Club cash: €${(career.cash/1000000).toFixed(1)}m • Current week ${career.week+1}</p>${button('CONTINUE MANAGER CAREER','manager','gold')}</div>`);return;}
  page('FULL TIME',`${win?'VICTORY!':a===b?'DRAW MATCH':'DEFEAT'}${ev.penalties?' • ON PENALTIES':''}`,`<div class="panel" style="text-align:center"><div class="badge">MATCH RESULT</div><div style="font-size:70px;color:#ffe17a;font-weight:1000">${a} : ${b}</div><p>${TEAMS[home].name} vs ${TEAMS[away].name}</p><div class="row" style="justify-content:center">${button('↻ REMATCH','kickoff','gold')}${mode==='league'?button('🏆 LEAGUE','league'):button('MAIN MENU','home')}</div></div>`)}
 function toast(message,duration=1600){let n=$('gameToast');n.textContent=message;n.classList.remove('hidden');toastTime=performance.now()+duration}
-let toastTime=0;const sound={audio:null,play(hz,secs=.12){if(!opt.sfx)return;try{this.audio=this.audio||new (window.AudioContext||window.webkitAudioContext)();let o=this.audio.createOscillator(),v=this.audio.createGain();o.type='square';o.frequency.value=hz;v.gain.setValueAtTime(.025,this.audio.currentTime);v.gain.exponentialRampToValueAtTime(.0001,this.audio.currentTime+secs);o.connect(v).connect(this.audio.destination);o.start();o.stop(this.audio.currentTime+secs)}catch{}}};
-game.onEvent=e=>{if(e.type==='kick')sound.play(e.super?820:480);if(e.type==='save')sound.play(300);if(e.type==='toast')toast(e.message,1800);if(e.type==='goal'){$('gameToast').classList.add('hidden');toastTime=0;sound.play(920,.4)}if(e.type==='penaltyStart')toast('PENALTY SHOOTOUT',1500);if(e.type==='penaltyKick')toast(e.goal?'GOAL!':'SAVE!',1300);if(e.type==='pause')pause();if(e.type==='halftime')halftime();if(e.type==='finished')fulltime(e)};
-function action(a){if(a==='home'||a==='quit'){game.matchState='none';showHome()}
+let toastTime=0;
+game.onEvent=e=>{audio.cue(e);if(e.type==='toast')toast(e.message,1800);if(e.type==='goal'){$('gameToast').classList.add('hidden');toastTime=0}if(e.type==='penaltyStart')toast('PENALTY SHOOTOUT',1500);if(e.type==='penaltyKick')toast(e.goal?'GOAL!':'SAVE!',1300);if(e.type==='pause')pause();if(e.type==='halftime')halftime();if(e.type==='finished')fulltime(e)};
+function action(a){audio.cue('ui');
+ const navTarget=menu.querySelector('[data-action="'+a+'"]');if(navTarget&&a!=='home'&&a!=='quit')navFocusMap[screen]=a;
+ if(['quick','versus','pk','training','manager','league','continents','clubs','playerStudio','editor','gallery','squad','help','controls'].includes(a)&&screen.startsWith('nav-'))menuEntryReturn=({
+ 'nav-device':'navOnDevice','nav-career':'navCareer','nav-cups':'navCups','nav-clubs':'navClubs','nav-settings':'navSettings','nav-customize':'navCustomization','nav-input':'navInput','nav-saves':'navSaveManagement'
+ })[screen]||'home';
+ if(a==='confirmQuit'){if(confirm('Leave this match and return to the main menu? Match progress will be lost.')){game.matchState='none';showHome();}}else if(a==='confirmRestart'){if(confirm('Restart the match from kickoff? Current match progress will be lost.'))start();}
+ else if(a==='navQuick')showQuickMenu();else if(a==='navOnDevice')showOnDevice();else if(a==='navOnline')showOnlineMenu();else if(a==='navCareer')showCareerMenu();else if(a==='navCups')showCupsMenu();else if(a==='navInternational')showInternationalMenu();else if(a==='navClubs')showClubCompetitionsMenu();else if(a==='navSettings'||a==='settings')showSettingsMenu();else if(a==='navCustomization')showCustomizationMenu();else if(a==='navInput')showInputMenu();else if(a==='navSaveManagement')showSaveMenu(screen==='nav-career'?'navCareer':'navSettings');
+ else if(a==='navGameSettings')showSettingsSection('game');else if(a==='navGraphics')showSettingsSection('graphics');else if(a==='navSound'){if(game.matchState==='paused'&&screen==='PAUSED')menuEntryReturn='returnPause';showSettingsSection('sound');}
+ else if(a==='navAbout')showAbout();
+ else if(a==='navNewCareer'){if(career&&!confirm('Start a new career? Your current manager career will be replaced. Export a backup first if needed.'))return;career=null;store.put('managerCareer',null);showManager();}
+ else if(a.startsWith('later')){const labels={laterLAN:'Local Network',laterOnlineMatch:'Online Match',laterUltimate:'Ultimate Team',laterOnlineCareer:'Online Career',laterOnlineCup:'Online Cup / League',laterWorldCup:'World Cup',laterAsian:'Asian Cup',laterEuro:'Euro',laterCopa:'Copa América',laterAfrica:'Africa Cup',laterConcacaf:'CONCACAF Cup',laterChampions:'Champions League',laterEuropa:'Europa League',laterPremier:'Premier League',laterSerie:'Serie A',laterBundes:'Bundesliga',laterLaLiga:'La Liga',laterLigue1:'Ligue 1',laterCustomCup:'Custom Cup',laterCustomLeague:'Custom League'};const parent=a==='laterLAN'?'navQuick':a.startsWith('laterOnline')||a==='laterUltimate'?'navOnline':['laterWorldCup','laterAsian','laterEuro','laterCopa','laterAfrica','laterConcacaf'].includes(a)?'navInternational':['laterCustomCup','laterCustomLeague'].includes(a)?'navCups':'navClubs';comingLater(labels[a]||'Coming Later','This feature is on the roadmap but is not yet playable.',parent);}
+ else if(a==='home'||a==='quit'){game.matchState='none';showHome()}
  else if(a==='continents')showContinents();else if(a.startsWith('continentPick_'))showContinentSetup(a.slice(14));else if(a==='continentStart')startContinent();else if(a==='continentContinue')showTournament();else if(a==='continentKickoff')continentKickoff();else if(a==='continentBye')continentBye();
  else if(a==='manager')showManager();else if(a==='startManager'){const v=+$('managerClub').value;career=createCareer(v,TEAMS);career.saveSchema=2;career.clubId=TEAMS[v].id;store.put('managerCareer',career);showManager()}
  else if(a==='careerPlay')careerPlay();else if(a==='careerSeason'){if(career){nextSeason(career);store.put('managerCareer',career);showManager()}}
@@ -4127,7 +4525,7 @@ function action(a){if(a==='home'||a==='quit'){game.matchState='none';showHome()}
  else if(a==='quick'||a==='versus'||a==='training')showSetup(a);
  else if(a==='league')showLeague();else if(a==='gallery')showGallery();else if(a==='clubs')showClubs();else if(a==='saveClub')saveNewClub();else if(a.startsWith('selectClub')){home=+a.slice(10);away=home===away?0:away;showSetup('quick')}else if(a.startsWith('deleteClub'))deleteClub(+a.slice(10));else if(a==='pk'){mode='pk';showSetup('pk')}
  else if(a==='leagueKickoff'){mode='league';start()}
- else if(a==='kickoff')start();else if(a==='squad')showSquad(0,game.matchState==='paused'?'pause':'home');else if(a==='prepHome')showSquad(0,'setup');else if(a==='prepAway')showSquad(1,'setup');else if(a==='tacticHome')showSquad(0,'pause');else if(a==='tacticAway'&&humans>=2)showSquad(1,'pause');else if(a==='returnSetup')showSetup(mode);else if(a==='returnPause')pause();else if(a==='settings')showSettings();else if(a==='controls')showControls();else if(a==='saveBindings'){const profile={keyboard:Array.from({length:4},(_,i)=>$('bindKey'+i).value),gamepad:Array.from({length:4},(_,i)=>+$('bindPad'+i).value),keyboard2:Array.from({length:4},(_,i)=>$('bindKey2'+i).value),gamepad2:Array.from({length:4},(_,i)=>+$('bindPad2'+i).value)};if(input.setBindings(profile)){store.put('controllerBindings',input.getBindings());showSettings();}else alert('Each player needs four unique keys and buttons. Keyboard keys cannot overlap across players.');}else if(a==='resetBindings'){input.setBindings({keyboard:['KeyK','KeyJ','KeyI','Space'],gamepad:[1,0,2,3],keyboard2:['Period','Comma','NumpadDecimal','ControlRight'],gamepad2:[1,0,2,3]});store.put('controllerBindings',input.getBindings());showControls();}else if(a==='help')showHelp();else if(a==='editor')showEditor();
+ else if(a==='kickoff')start();else if(a==='squad')showSquad(0,game.matchState==='paused'?'pause':'home');else if(a==='prepHome')showSquad(0,'setup');else if(a==='prepAway')showSquad(1,'setup');else if(a==='tacticHome')showSquad(0,'pause');else if(a==='tacticAway'&&humans>=2)showSquad(1,'pause');else if(a==='returnSetup')showSetup(mode);else if(a==='returnPause'){menuEntryReturn='home';pause();}else if(a==='controls')showControls();else if(a==='saveBindings'){const profile={keyboard:Array.from({length:4},(_,i)=>$('bindKey'+i).value),gamepad:Array.from({length:4},(_,i)=>+$('bindPad'+i).value),keyboard2:Array.from({length:4},(_,i)=>$('bindKey2'+i).value),gamepad2:Array.from({length:4},(_,i)=>+$('bindPad2'+i).value)};if(input.setBindings(profile)){store.put('controllerBindings',input.getBindings());showInputMenu();}else alert('Each player needs four unique keys and buttons. Keyboard keys cannot overlap across players.');}else if(a==='resetBindings'){input.setBindings({keyboard:['KeyK','KeyJ','KeyI','Space'],gamepad:[1,0,2,3],keyboard2:['Period','Comma','NumpadDecimal','ControlRight'],gamepad2:[1,0,2,3]});store.put('controllerBindings',input.getBindings());showControls();}else if(a==='help')showHelp();else if(a==='editor')showEditor();
  else if(a==='talkHalfHome'||a==='talkHalfAway'){const side=a==='talkHalfHome'?0:1;try{const response=game.applyTeamTalk(side,$(side?'halfTalkAway':'halfTalkHome')?.value||'encourage','halftime');halftime();toast(`${response.positive} INSPIRED · ${response.backfires} UPSET · TEAM MOOD ${response.morale}%`)}catch(err){alert(err.message)}}
  else if(a==='fullscreen')toggleFullscreen();else if(a==='cpuPause')pause();else if(a==='resume'){game.matchState=game.pk?'penalty':'play';closeMenu()}
  else if(a==='saveSquad'){
@@ -4145,7 +4543,16 @@ function action(a){if(a==='home'||a==='quit'){game.matchState='none';showHome()}
   const replacement=defaultPlan(ix,roster(ix));try{if(squadContext==='pause')game.applyPlan(squadSide,replacement);teamPlans[TEAMS[ix].id]=replacement;store.put('teamPlans',teamPlans);if(squadContext==='pause')pause();else showSquad(squadSide,squadContext);}catch(e){alert(e.message)}
  }
  else if(a==='exportSave')exportSave();else if(a==='importSave')$('saveImportFile')?.click();
- else if(a==='saveSettings'){Object.assign(opt,{difficulty:+$('difficulty').value,halfSeconds:+$('settingsDuration').value,gameSpeed:+$('gameSpeed').value,weather:$('settingsWeather').value,terrain:$('settingsTerrain').value,condition:$('settingsCondition').value,camera:$('camera').value,showNames:$('showNames').value==='true',sfx:$('sfx').value==='true'});store.put('options',opt);showHome()}
+ else if(a==='saveSettings'){
+  const get=id=>$(id)?.value;
+  const changes={};for(const [id,key,cast] of [['difficulty','difficulty',Number],['settingsDuration','halfSeconds',Number],['gameSpeed','gameSpeed',Number],['settingsWeather','weather',String],['settingsTerrain','terrain',String],['settingsCondition','condition',String],['camera','camera',String],['showNames','showNames',v=>v==='true']]){if(get(id)!==undefined)changes[key]=cast(get(id));}
+  Object.assign(opt,changes);
+  const values={};for(const k of ['master','music','sfx','ui','ambience'])if(get('audio_'+k)!==undefined)values[k]=+get('audio_'+k);
+  if(get('audioMute')!==undefined)values.mute=get('audioMute')==='true';
+  audio.configure(values);opt.sfx=!audio.settings.mute;
+  game.options.difficulty=opt.difficulty;
+  store.put('audioOptions',audio.settings);store.put('options',opt);if(menuEntryReturn==='returnPause'){menuEntryReturn='home';pause();}else showSettingsMenu();
+ }
  else if(a==='clearLeague'){if(confirm('Reset all league wins and fixture results?')){league={played:0,wins:0,draws:0,losses:0,points:0,playoff:0,stage:'qualifier',games:[]};store.put('league',league);showLeague()}}
  else if(a==='importRoster'){try{let list=JSON.parse($('jsonRoster').value);if(!Array.isArray(list)||list.length!==12)throw Error('Need an array of 12 players');for(let p of list){if(!p.name||!['GK','DF','MF','FW'].includes(p.role)||!SHOTS[p.shot]||!['A','B','C','D'].includes(p.speed)||!Number.isFinite(+p.shoot)||!Number.isFinite(+p.power)||!Number.isFinite(+p.defense))throw Error('Invalid player record '+p.name)}edits[TEAMS[home].id]=list;store.put('edits',edits);showEditor();toast('ROSTER SAVED')}catch(e){alert('Cannot import roster: '+e.message)}}
  else if(a==='exportRoster'){let blob=new Blob([$('jsonRoster').value],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=TEAMS[home].id+'_players.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),800)}
@@ -4199,6 +4606,33 @@ if(screen.orientation?.addEventListener)screen.orientation.addEventListener('cha
 $('fullscreenMatch').addEventListener('click',toggleFullscreen);
 $('fullscreenHelpClose').addEventListener('click',()=>$('fullscreenHelp').classList.add('hidden'));
 
+// Menu-only focus navigation; input handling inside matches remains unchanged.
+const primaryNavScreens=new Set(['home','nav-quick','nav-device','nav-online','nav-career','nav-cups','nav-international','nav-clubs','nav-settings','nav-customize','nav-input','nav-saves','nav-settings-game','nav-settings-graphics','nav-settings-sound']);
+const menuButtons=()=>[...menu.querySelectorAll('.navChoice')].filter(el=>!el.disabled&&el.offsetParent!==null);
+function navigateMenu(direction){const items=menuButtons();if(!items.length)return;const index=items.indexOf(document.activeElement);const next=items[(index+direction+items.length)%items.length];next.focus({preventScroll:true});next.scrollIntoView({block:'nearest',behavior:'instant'});}
+function backFromMenu(){const back=screen==='nav-settings-sound'&&menuEntryReturn==='returnPause'?'returnPause':screen==='nav-saves'?menuBackAction:menuParents[screen]||menuBackAction||'home';if(screen==='home')return;action(back);}
+document.addEventListener('keydown',e=>{
+ if(!menuVisible())return;
+ if(e.target?.matches?.('input,select,textarea,[contenteditable="true"]'))return;
+ if(e.code==='Escape'||e.code==='Backspace'){
+  if(['PAUSED','HALF TIME'].includes(screen)){e.preventDefault();if(screen==='PAUSED')action('resume');return;}
+  e.preventDefault();backFromMenu();input.cancelAll();return;
+ }
+ if(primaryNavScreens.has(screen)){
+  if(e.code==='ArrowDown'||e.code==='ArrowUp'){e.preventDefault();navigateMenu(e.code==='ArrowDown'?1:-1);}
+  else if((e.code==='Enter'||e.code==='Space')&&document.activeElement?.matches?.('.navChoice')){e.preventDefault();document.activeElement.click();}
+ }
+});
+let lastPadNav=0,padWas={};
+function pollMenuPad(now){
+ if(!menuVisible()){padWas={};return;}const pad=navigator.getGamepads?.()?.[0];if(!pad)return;
+ const pressed=i=>Boolean(pad.buttons?.[i]?.pressed);
+ const down=pressed(13)||(pad.axes?.[1]||0)>.55,up=pressed(12)||(pad.axes?.[1]||0)<-.55;
+ if(primaryNavScreens.has(screen)&&now-lastPadNav>180&&down!==up&&(down||up)){navigateMenu(down?1:-1);lastPadNav=now;}
+ if(pressed(0)&&!padWas.a){const selected=document.activeElement?.matches?.('.navChoice')?document.activeElement:menuButtons()[0];selected?.click();}
+ if(pressed(1)&&!padWas.b)backFromMenu();
+ padWas={a:pressed(0),b:pressed(1)};
+}
 menu.addEventListener('change',e=>{if(e.target.id==='saveImportFile'){importSave(e.target.files?.[0]);}});
 menu.addEventListener('input',e=>{if(e.target.dataset.teamSearch){fillTeamBrowser(e.target.dataset.teamSearch);return;}if(e.target.id?.startsWith('face_'))drawCustomizer()});
 menu.addEventListener('change',e=>{if(/^pos[0-5]$/.test(e.target.id)){const choiceEl=$('role_captain');if(!choiceEl)return;const current=+choiceEl.value;const ix=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;const players=squadContext==='pause'?game.rosters[squadSide]:roster(ix);const slots=Array.from({length:6},(_,i)=>+$('pos'+i).value);choiceEl.innerHTML=slots.map(i=>`<option value="${i}" ${i===current?'selected':''}>#${players[i].num} ${escapeHTML(players[i].name)}</option>`).join('');if(!slots.includes(current))choiceEl.value=String(slots[1]||slots[0]);refreshFormationPreview();}});
@@ -4209,9 +4643,19 @@ menu.addEventListener('change',e=>{if(e.target.id==='difficulty'){const hint=$('
 $('pauseBtn').addEventListener('click',()=>{if(['play','penalty'].includes(game.matchState))pause()});
 $('dismissRotate').addEventListener('click',()=>{$('rotate').classList.add('hidden');rotateDismissed=true});let rotateDismissed=false;function checkRotate(){let should=!rotateDismissed&&!menuVisible()&&matchMedia('(pointer:coarse)').matches&&innerHeight>innerWidth*1.12;$('rotate').classList.toggle('hidden',!should)}
 let last=performance.now(),uiT=0;
-function frame(now){let dt=Math.min(.05,(now-last)/1000||.016);last=now;if(game.matchState==='play')game.update(dt);else if(game.matchState==='penalty')game.updatePK(dt);renderer.frame(game,dt,menuVisible());if(screen==='home'&&menuVisible())drawPoster();uiT-=dt;if(uiT<=0){uiT=.1;if(!menuVisible())drawHUD()}if(toastTime&&now>toastTime){$('gameToast').classList.add('hidden');toastTime=0}checkRotate();requestAnimationFrame(frame)}
-game.init({home,away,options:opt});game.matchState='none';window.NekketsuHD={version:'0.8.22.1-alpha',game,renderer,input,teams:TEAMS,shots:SHOTS,aiLevels:AI_LEVELS,rosterFor,getCareer:()=>career,getContinental:()=>continentalRun,confederations:CONTINENTS,continentalMapping:CONTINENTAL_TEAMS,kitsFor:team=>KIT_CHOICES.map(k=>kitFor(team,k)),getKitChoices:()=>kitSelections.slice(),getTeamPlan:i=>planFor(i),getMorale:team=>game.teamMorale(team)};window.SupermagicFootball=window.NekketsuHD;showHome();requestAnimationFrame(frame);
+function frame(now){pollMenuPad(now);let dt=Math.min(.05,(now-last)/1000||.016);last=now;if(game.matchState==='play')game.update(dt);else if(game.matchState==='penalty')game.updatePK(dt);renderer.frame(game,dt,menuVisible());if(screen==='home'&&menuVisible())drawPoster();uiT-=dt;if(uiT<=0){uiT=.1;if(!menuVisible())drawHUD()}if(toastTime&&now>toastTime){$('gameToast').classList.add('hidden');toastTime=0}checkRotate();requestAnimationFrame(frame)}
+game.init({home,away,options:opt});game.matchState='none';window.NekketsuHD={audio,version:'0.8.24.12-alpha',game,renderer,input,teams:TEAMS,shots:SHOTS,aiLevels:AI_LEVELS,rosterFor,getCareer:()=>career,getContinental:()=>continentalRun,confederations:CONTINENTS,continentalMapping:CONTINENTAL_TEAMS,kitsFor:team=>KIT_CHOICES.map(k=>kitFor(team,k)),getKitChoices:()=>kitSelections.slice(),getTeamPlan:i=>planFor(i),getMorale:team=>game.teamMorale(team)};window.SupermagicFootball=window.NekketsuHD;showHome();requestAnimationFrame(frame);
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+// Browser audio can only be unlocked by a deliberate user gesture.
+document.addEventListener('pointerdown',()=>audio.unlock(),{passive:true});
+document.addEventListener('keydown',()=>audio.unlock());
+// iOS Safari can require touchstart rather than pointerdown to resume Web Audio.
+document.addEventListener('touchstart',()=>audio.unlock(),{passive:true});
+menu.addEventListener('input',e=>{if(e.target?.matches?.('input[id^=audio_]')){const output=$(e.target.id+'Value');if(output)output.textContent=e.target.value+'%'}});
+document.addEventListener('visibilitychange',()=>document.hidden?audio.suspend():audio.resume());
+window.addEventListener('pagehide',()=>audio.suspend());
+window.addEventListener('pageshow',()=>{if(!document.hidden)audio.resume()});
 
 })();
 </script></body></html>

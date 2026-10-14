@@ -1,0 +1,26 @@
+[
+  {
+    "shard": 0,
+    "tail": "FAIL    browser tactics_browser_qa.py                      33.4s\n"
+  },
+  {
+    "shard": 1,
+    "tail": ""
+  },
+  {
+    "shard": 2,
+    "tail": "PASS    browser v060_qa.py                                 15.0s\n"
+  },
+  {
+    "shard": 3,
+    "tail": "PASS    browser manager_v060.py                            14.6s\n"
+  },
+  {
+    "shard": 4,
+    "tail": "FAIL    browser save_filter_v060.py                         7.7s\n"
+  },
+  {
+    "shard": 5,
+    "tail": ""
+  }
+]

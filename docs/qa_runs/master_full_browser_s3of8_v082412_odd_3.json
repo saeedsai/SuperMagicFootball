@@ -1,0 +1,70 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.24.12-alpha",
+  "profile": "full",
+  "category": "browser",
+  "shard": {
+    "index": 3,
+    "total": 8
+  },
+  "run_id": "master_full_browser_s3of8_v082412_odd_3",
+  "started_utc": "20261014T173722Z",
+  "scripts_requested": 5,
+  "cases_cataloged": 450,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "browser",
+      "script": "manager_v060.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 7.532,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/manager_v060.py",
+      "output_tail": "Manager recruiting and contracts desktop PASS\nManager recruiting and contracts mobile PASS"
+    },
+    {
+      "category": "browser",
+      "script": "team_combos_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 4.682,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/team_combos_browser_qa.py",
+      "output_tail": "desktop PASS: simultaneous Pass+Jump never launches, airborne Jump-then-Pass crosses, four-button contract\nsimulated-mobile PASS: simultaneous Pass+Jump never launches, airborne Jump-then-Pass crosses, four-button contract"
+    },
+    {
+      "category": "browser",
+      "script": "v08232_audio_storage_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 7.059,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08232_audio_storage_browser_qa.py",
+      "output_tail": "PASS simulated browser storage desktop rehydration, mute and legacy sound migration, crowd audio nodes, lifecycle, four actions\nPASS simulated browser storage touch rehydration, mute and legacy sound migration, crowd audio nodes, lifecycle, four actions"
+    },
+    {
+      "category": "browser",
+      "script": "v08202_rosters_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 8.01,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08202_rosters_browser_qa.py",
+      "output_tail": "desktop PASS Real Madrid and Arsenal 2026/27 names, shirts, ages, formation faces & OVR\nsimulated Android PASS Real Madrid and Arsenal 2026/27 names, shirts, ages, formation faces & OVR"
+    },
+    {
+      "category": "browser",
+      "script": "v08211_input_cancel_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 3.12,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08211_input_cancel_browser_qa.py",
+      "output_tail": "PASS Desktop Chromium : canceled held Shoot/Pass, mixed source release, four action buttons\nPASS Simulated Android : canceled held Shoot/Pass, mixed source release, four action buttons"
+    }
+  ],
+  "summary": {
+    "PASS": 5,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

@@ -10,7 +10,7 @@ with sync_playwright() as pw:
   browser=pw.chromium.launch(executable_path=shutil.which('chromium') or None,headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
   context=browser.new_context(viewport={'width':1360,'height':800} if not touch else {'width':720,'height':400},is_mobile=touch,has_touch=touch)
   page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
-  page.set_content(html,wait_until='load');page.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'",timeout=20000)
+  page.set_content(html,wait_until='load');page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=20000)
   result=page.evaluate('''() => {
    const {game:g,input:i}=SupermagicFootball;
    g.init({home:0,away:9,options:{...g.options,weather:'Clear'}});

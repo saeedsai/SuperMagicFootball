@@ -1,0 +1,70 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.24.12-alpha",
+  "profile": "full",
+  "category": "browser",
+  "shard": {
+    "index": 7,
+    "total": 8
+  },
+  "run_id": "master_full_browser_s7of8_v082412_odd_7",
+  "started_utc": "20261014T173822Z",
+  "scripts_requested": 5,
+  "cases_cataloged": 450,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "browser",
+      "script": "fitness_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 6.61,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/fitness_browser_qa.py",
+      "output_tail": "v0.7.1 fitness browser desktop: PASS • paused substitution • 1/3 limit • fitness indicators • no JS errors\nv0.7.1 fitness browser mobile: PASS • paused substitution • 1/3 limit • fitness indicators • no JS errors"
+    },
+    {
+      "category": "browser",
+      "script": "four_button_phase2_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 5.307,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/four_button_phase2_browser_qa.py",
+      "output_tail": "desktop PASS: four-button HUD, bicycle shot, flying kick, keeper distribution, no page errors\nandroid PASS: four-button HUD, bicycle shot, flying kick, keeper distribution, no page errors"
+    },
+    {
+      "category": "browser",
+      "script": "v08206_identity_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 3.146,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08206_identity_browser_qa.py",
+      "output_tail": "PASS desktop verified person IDs, conservative national-team link, four-button controls\nPASS simulated Android verified person IDs, conservative national-team link, four-button controls"
+    },
+    {
+      "category": "browser",
+      "script": "v08196_keeper_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 4.844,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08196_keeper_browser_qa.py",
+      "output_tail": "desktop PASS: GK Diving UI, migrated stat, 2 goalkeeper directional diving catches, action-button contract\nsimulated-android PASS: GK Diving UI, migrated stat, 2 goalkeeper directional diving catches, action-button contract"
+    },
+    {
+      "category": "browser",
+      "script": "v08247_menu_input_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 4.18,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08247_menu_input_browser_qa.py",
+      "output_tail": "PASS menu keyboard Back / focus, simulated gamepad A/B, match quit confirmation, pause->sound->resume"
+    }
+  ],
+  "summary": {
+    "PASS": 5,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

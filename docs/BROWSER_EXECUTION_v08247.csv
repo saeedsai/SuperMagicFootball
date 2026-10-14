@@ -1,0 +1,41 @@
+script,category,device_scope,status,release,notes
+tactics_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+kits_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v060_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+manager_v060.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+save_filter_v060.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Sequential test / targeted rerun; no physical device
+ai_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+stats_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+fitness_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+morale_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+abilities_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+aerial_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+team_combos_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+ai_combos_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+four_button_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+collisions_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+four_button_phase2_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+dribble_styles_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+penalty_controls_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Sequential test / targeted rerun; no physical device
+home_dashboard_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v08232_audio_storage_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v0823_audio_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v08231_bpw_alltime_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v0824_keeper_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v08206_identity_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v08205_rosters_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+master_ui_contracts.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v08203_rosters_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v08202_rosters_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v08195_overall_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Sequential test / targeted rerun; no physical device
+control_reliability_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+combo_priority_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v08196_keeper_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v08193_ui_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Sequential test / targeted rerun; no physical device
+rapid_controls_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v0821_ball_lift_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v08211_input_cancel_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v0822_bpw_world_cups_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v08221_aerial_super_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v08247_menu_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution
+v08247_menu_input_browser_qa.py,Chromium browser,Desktop and/or simulated touch depending on script,PASS,0.8.24.7-alpha,Completed browser execution

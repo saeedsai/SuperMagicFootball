@@ -1,0 +1,70 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.24.12-alpha",
+  "profile": "full",
+  "category": "browser",
+  "shard": {
+    "index": 2,
+    "total": 8
+  },
+  "run_id": "master_full_browser_s2of8_v082412_even_2",
+  "started_utc": "20261014T173728Z",
+  "scripts_requested": 5,
+  "cases_cataloged": 450,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "browser",
+      "script": "v060_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 7.822,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v060_qa.py",
+      "output_tail": "v0.6 Chromium QA desktop PASS\nv0.6 Chromium QA mobile PASS"
+    },
+    {
+      "category": "browser",
+      "script": "aerial_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 8.41,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/aerial_browser_qa.py",
+      "output_tail": "desktop PASS: hyperdash keyboard/touch, aerial heading, goalkeeper dive, no browser errors\nmobile PASS: hyperdash keyboard/touch, aerial heading, goalkeeper dive, no browser errors"
+    },
+    {
+      "category": "browser",
+      "script": "home_dashboard_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 5.847,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/home_dashboard_browser_qa.py",
+      "output_tail": "desktop PASS five primary categories, navigation, Quick Match and Settings, no overflow/errors\nmobile PASS five primary categories, navigation, Quick Match and Settings, no overflow/errors"
+    },
+    {
+      "category": "browser",
+      "script": "v08203_rosters_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 8.315,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08203_rosters_browser_qa.py",
+      "output_tail": "desktop PASS Bayern and PSG: 2026/27 roster, shirts, DOB, formation portraits, and OVR\nsimulated Android PASS Bayern and PSG: 2026/27 roster, shirts, DOB, formation portraits, and OVR"
+    },
+    {
+      "category": "browser",
+      "script": "v0821_ball_lift_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 4.853,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v0821_ball_lift_browser_qa.py",
+      "output_tail": "PASS Desktop Chromium: 4 actions, How to Play, held lift, airborne follow-up, unified transforming special shot\nPASS Simulated Android touch: 4 actions, How to Play, held lift, airborne follow-up, unified transforming special shot"
+    }
+  ],
+  "summary": {
+    "PASS": 5,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

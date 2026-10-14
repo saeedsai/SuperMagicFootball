@@ -196,3 +196,35 @@ html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%;min-height:100%
 @media(max-width:650px){.formationPitch{height:230px}.formationSlot canvas{flex-basis:37px}}
 /* Additional vertical clearance for three players in the same formation line. */
 @media(min-width:651px){.formationPitch{height:284px}}
+
+/* v0.8.24.7 — five-category main navigation. Keep all preexisting match and editor CSS. */
+.simplifiedHome{grid-template-columns:minmax(0,1.25fr) minmax(260px,.75fr);align-items:start;gap:16px}
+.simplifiedHome .homeDirectory{gap:12px}
+.navList{display:grid;grid-template-columns:1fr;gap:9px;margin:10px 0 14px}
+.navChoice.btn{display:flex;align-items:center;width:100%;min-height:62px;gap:14px;text-align:left;padding:11px 15px;background:linear-gradient(112deg,#19465a,#103247);border-color:#4f97a7;color:#f3fdff;box-shadow:inset 0 1px #ffffff20}
+.navChoice:hover,.navChoice:focus-visible{background:linear-gradient(112deg,#286978,#1a5061);border-color:#f3d17e;outline-offset:2px}
+.navChoice .navIcon{flex:0 0 39px;width:39px;height:39px;display:grid;place-items:center;border-radius:11px;background:#2b6980;font-size:23px;line-height:1}
+.navChoice .navCopy{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.navChoice .navCopy strong{font-size:clamp(14px,1.45vw,18px);font-weight:950;line-height:1.2}
+.navChoice .navCopy small{font-size:12px;line-height:1.35;font-weight:500;color:#c4dfe6;overflow-wrap:anywhere}
+.navChoice .navStatus{font-size:18px;font-weight:950;color:#ffe4a0;min-width:40px;text-align:right;flex:none}
+.navChoice.navLater .navStatus,.navMainList .navChoice[data-action=navOnline] .navStatus{font-size:10px;min-width:90px;color:#c6d3d8;letter-spacing:.6px}
+.navChoice.navLater{background:linear-gradient(112deg,#1e3649,#152d40);border-color:#547487}
+.navChoice.navLater .navIcon{background:#43556b}
+.navFooter{gap:9px;margin-top:6px;justify-content:flex-start}
+.navFooter .btn{min-height:42px;font-size:11px;letter-spacing:.3px}
+.navScreen{max-width:760px;margin:auto;min-width:0}
+.navHeader{align-items:start;margin-bottom:15px}
+.navHeader .heading{font-size:clamp(25px,4vw,42px);letter-spacing:-.8px}
+.navHeader .subtitle{margin:8px 0 0}
+.navBack.btn{min-height:44px}
+.navSettingsFields{max-width:720px;margin:auto;padding:18px}
+.navSettingsFields .choice{max-width:100%}
+.navSettingsFields .navSaveRow{margin-top:18px}
+.navSettingsFields input[type=range]{accent-color:#f3ce71;min-height:32px}
+.navInfo{text-align:center;padding:28px 18px}
+.navInfo h2{color:#d5e2e7;letter-spacing:2px;font-size:17px}
+.menu .menubox{scrollbar-gutter:stable;overflow-x:hidden;max-width:calc(100vw - 18px)}
+@media(max-width:700px){.simplifiedHome{grid-template-columns:1fr}.simplifiedHome>.posterPanel{display:none}.navChoice.btn{min-height:58px;padding:9px 11px}.navChoice .navCopy strong{font-size:14px}.navChoice .navCopy small{font-size:11px}.navFooter{flex-wrap:wrap}.navHeader{gap:8px}.navHeader .heading{font-size:27px}.menubox{padding:14px}}
+@media(max-height:520px){.simplifiedHome{grid-template-columns:1fr}.simplifiedHome>.posterPanel{display:none}.navList{gap:6px}.navChoice.btn{min-height:48px;padding:6px 9px}.navChoice .navIcon{width:30px;height:30px;flex-basis:30px;font-size:18px}.homeMasthead{margin-bottom:6px}.navScreen .navList{margin:6px 0}}
+@media(prefers-reduced-motion:reduce){.navChoice,.navChoice.btn,.btn{transition:none!important}.navChoice:active{transform:none}}

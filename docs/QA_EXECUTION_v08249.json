@@ -1,0 +1,153 @@
+{
+  "release": "0.8.24.9-alpha",
+  "timestampUtc": "2026-10-14T16:32:24.934337+00:00",
+  "node": {
+    "npmScriptCount": 66,
+    "passed": 66,
+    "failed": 0,
+    "masterContractPassed": true,
+    "totalDistinctScripts": 67,
+    "log": "Completed /mnt/data/smf_08249_node_final.log; summarized in docs/TEST_REPORT_v08249.md"
+  },
+  "browser": {
+    "requested": 40,
+    "passed": 40,
+    "failed": 0,
+    "timeout": 0,
+    "unexecuted": 0,
+    "sequentialShards": 8,
+    "shards": [
+      {
+        "shard": 0,
+        "file": "qa_runs/master_full_browser_s0of8_v08249.json",
+        "passed": 5,
+        "scripts": [
+          "tactics_browser_qa.py",
+          "morale_browser_qa.py",
+          "dribble_styles_browser_qa.py",
+          "v08205_rosters_browser_qa.py",
+          "v08193_ui_browser_qa.py"
+        ],
+        "totalSeconds": 29.76
+      },
+      {
+        "shard": 1,
+        "file": "qa_runs/master_full_browser_s1of8_v08249.json",
+        "passed": 5,
+        "scripts": [
+          "kits_browser_qa.py",
+          "abilities_browser_qa.py",
+          "penalty_controls_browser_qa.py",
+          "master_ui_contracts.py",
+          "rapid_controls_browser_qa.py"
+        ],
+        "totalSeconds": 23.46
+      },
+      {
+        "shard": 2,
+        "file": "qa_runs/master_full_browser_s2of8_v08249_rerun.json",
+        "passed": 5,
+        "scripts": [
+          "v060_qa.py",
+          "aerial_browser_qa.py",
+          "home_dashboard_browser_qa.py",
+          "v08203_rosters_browser_qa.py",
+          "v0821_ball_lift_browser_qa.py"
+        ],
+        "totalSeconds": 29.07
+      },
+      {
+        "shard": 3,
+        "file": "qa_runs/master_full_browser_s3of8_v08249.json",
+        "passed": 5,
+        "scripts": [
+          "manager_v060.py",
+          "team_combos_browser_qa.py",
+          "v08232_audio_storage_browser_qa.py",
+          "v08202_rosters_browser_qa.py",
+          "v08211_input_cancel_browser_qa.py"
+        ],
+        "totalSeconds": 23.92
+      },
+      {
+        "shard": 4,
+        "file": "qa_runs/master_full_browser_s4of8_v08249.json",
+        "passed": 5,
+        "scripts": [
+          "save_filter_v060.py",
+          "ai_combos_browser_qa.py",
+          "v0823_audio_browser_qa.py",
+          "v08195_overall_browser_qa.py",
+          "v0822_bpw_world_cups_browser_qa.py"
+        ],
+        "totalSeconds": 25.98
+      },
+      {
+        "shard": 5,
+        "file": "qa_runs/master_full_browser_s5of8_v08249.json",
+        "passed": 5,
+        "scripts": [
+          "ai_browser_qa.py",
+          "four_button_browser_qa.py",
+          "v08231_bpw_alltime_browser_qa.py",
+          "control_reliability_browser_qa.py",
+          "v08221_aerial_super_browser_qa.py"
+        ],
+        "totalSeconds": 21.64
+      },
+      {
+        "shard": 6,
+        "file": "qa_runs/master_full_browser_s6of8_v08249.json",
+        "passed": 5,
+        "scripts": [
+          "stats_browser_qa.py",
+          "collisions_browser_qa.py",
+          "v0824_keeper_browser_qa.py",
+          "combo_priority_browser_qa.py",
+          "v08247_menu_browser_qa.py"
+        ],
+        "totalSeconds": 26.61
+      },
+      {
+        "shard": 7,
+        "file": "qa_runs/master_full_browser_s7of8_v08249.json",
+        "passed": 5,
+        "scripts": [
+          "fitness_browser_qa.py",
+          "four_button_phase2_browser_qa.py",
+          "v08206_identity_browser_qa.py",
+          "v08196_keeper_browser_qa.py",
+          "v08247_menu_input_browser_qa.py"
+        ],
+        "totalSeconds": 18.46
+      }
+    ],
+    "note": "One initially interrupted shard 2 run, completed separately with five passes; only the successful complete rerun is included in final counts."
+  },
+  "newScenarioTests": {
+    "zeroHumanModes": 3,
+    "singlePlayerScriptedShots": 120,
+    "shotsPerDifficulty": 24,
+    "goalsPerDifficulty": {
+      "0": 2,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0
+    },
+    "saveEventsPerDifficulty": {
+      "0": 21,
+      "1": 16,
+      "2": 20,
+      "3": 19,
+      "4": 8
+    }
+  },
+  "requirementsCatalogDocumented": 430,
+  "individuallyCertifiedRequirements": null,
+  "open": [
+    "Real human players and full-match win rates not tested",
+    "Small scripted-shot sample cannot validate CPU difficulty balance",
+    "Physical devices/Safari/Firefox not tested"
+  ]
+}

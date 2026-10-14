@@ -1,24 +1,11 @@
-# Supermagic Football — Clean Handover v0.8.22.1 Alpha
+# Supermagic Football — v0.8.24.12 Alpha
 
-**Current baseline: v0.8.22.1 (14 October 2026)**. This is a stripped, self-contained development package, not an old release archive.
+Single-player and offline-capable original cartoon arcade football game. **Current authoritative source:** `src/`, `index.html`, `style.css`; `play.html` is a generated standalone file. All active development documentation is under `docs/`.
 
-Start with **`HANDOVER_README.md`**, then **`NEXT_CHAT_PROMPT.md`**. The current overall roadmap is `docs/NEXT_MILESTONES.md` and acceptance catalog is `docs/MASTER_QA_TEST_CASES_v08221.csv`.
+**Gameplay contract:** exactly four action buttons; five organized top-level menu sections; six approved formations; six BPW historical World Cup teams plus seventh BPW All-Time Legendary 12, with existing saves/roster IDs stable. Super Shot/Header/Bicycle controls, audio, quick match, career and competition implementations remain intact. Some menu entries are Coming Later and do not pretend to work.
 
-## Run
-- Open `play.html` in a recent browser to play offline.
-- `npm run build` regenerates the single-file portable game from `src/` and `style.css`.
-- `npm test` runs the current inherited Node gameplay regression chain (54 scripts).
-- `node tests/master_contracts.mjs` verifies metadata and the 357-case catalog contract.
-- Browser tests require Python Playwright and a locally available Chromium. To avoid timeouts, execute six sequential bounded shards, one at a time (see handover guide).
+**Build:** `npm run build` (requires Python 3). **Node regression:** `npm test` followed by `node tests/master_contracts.mjs`. **Browser regression:** use `python tests/run_master_suite.py --profile full --category browser`, or divide into eight `--shard-count 8 --shard-index N` groups to avoid process timeouts. Each group records honest PASS/FAIL/TIMEOUT/NOT EXECUTED results.
 
-## Included
-- `src/` all editable engine, UI, team, roster, BPW, save and control modules.
-- `index.html`, `style.css`, `play.html`, PWA manifest, icons and service worker.
-- `tests/` executable Node and browser tests plus master QA runner and build script; no generated screenshots or old upgrade scripts.
-- `docs/` only current test catalog, current QA evidence, roadmap, important active/future feature specifications and essential requirement trackers.
-- Latest changelog/test report and a handover plan; no historical release artifacts, old audit snapshots or development logs.
+**Current addition:** optional `src/match_telemetry.js` release-context observations and 30 diverse scripted full-match fixtures alongside the earlier 45. See `docs/MATCH_RELEASE_CONTEXT_SPEC_v082412.md` and `docs/TEST_REPORT_v082412.md`. No goalkeeper or Super Shot power retuning in this release. Physical-device testing is open.
 
-## Release limitations
-54/54 Node and 34/34 distinct browser scripts passed in the original v0.8.22.1 release. Browser results were collected in six bounded shards, not a single uninterrupted run. 357 documented acceptance cases **are not** 357 individually executed tests. Physical Android, iOS, gamepad and Safari/Firefox certification remain open.
-
-2026 roster cleanup is **explicitly deferred**. Next major milestone: **v0.8.23 original/license-cleared music and sound effects**.
+**Handover to another chat:** read `HANDOVER_README.md`, then paste `NEXT_CHAT_PROMPT.md`. Preserve the future Super Defense and Tricks backlog and delayed roster-correction work.

@@ -1,0 +1,70 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.24.12-alpha",
+  "profile": "full",
+  "category": "browser",
+  "shard": {
+    "index": 6,
+    "total": 8
+  },
+  "run_id": "master_full_browser_s6of8_v082412_even_6",
+  "started_utc": "20261014T173838Z",
+  "scripts_requested": 5,
+  "cases_cataloged": 450,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "browser",
+      "script": "stats_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 6.495,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/stats_browser_qa.py",
+      "output_tail": "Player stats browser desktop: PASS • squad ratings • GK attributes • live stamina HUD • pause/resume\nPlayer stats browser mobile: PASS • squad ratings • GK attributes • live stamina HUD • pause/resume"
+    },
+    {
+      "category": "browser",
+      "script": "collisions_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 3.604,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/collisions_browser_qa.py",
+      "output_tail": "desktop PASS physical symmetric pushback, stunned both, cooldown, 4 input buttons, no browser exceptions\nandroid PASS physical symmetric pushback, stunned both, cooldown, 4 input buttons, no browser exceptions"
+    },
+    {
+      "category": "browser",
+      "script": "v0824_keeper_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 3.417,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v0824_keeper_browser_qa.py",
+      "output_tail": "PASS v0.8.24 keeper browser desktop one per-shot check, recovery pose, four buttons\nPASS v0.8.24 keeper browser simulated-touch one per-shot check, recovery pose, four buttons"
+    },
+    {
+      "category": "browser",
+      "script": "combo_priority_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 3.838,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/combo_priority_browser_qa.py",
+      "output_tail": "DESKTOP PASS: Jump-first aerial cross only, Pass-first ordinary Pass, bicycle, no JS errors\nANDROID PASS: Jump-first aerial cross only, Pass-first ordinary Pass, bicycle, no JS errors"
+    },
+    {
+      "category": "browser",
+      "script": "v08247_menu_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 9.972,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08247_menu_browser_qa.py",
+      "output_tail": "desktop PASS menu hierarchy, routes, existing capabilities, placeholders, settings, no errors\nportrait PASS menu hierarchy, routes, existing capabilities, placeholders, settings, no errors\nlandscape PASS menu hierarchy, routes, existing capabilities, placeholders, settings, no errors"
+    }
+  ],
+  "summary": {
+    "PASS": 5,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

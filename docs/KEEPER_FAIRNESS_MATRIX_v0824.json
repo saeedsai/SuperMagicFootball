@@ -1,0 +1,1515 @@
+{
+  "version": "0.8.24",
+  "trialCount": 3450,
+  "profileCount": 5,
+  "description": "Mirrored fixed-lane synthetic goalkeeper coverage; all five difficulties (GK held fixed). Not real-game save probability.",
+  "autoSuperRule": "One 14% consideration per incoming transformed shot when eligible, never per frame",
+  "rows": [
+    {
+      "difficulty": 0,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "ordinary",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "fast",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "super_straight_1",
+      "saves": 7,
+      "goals": 16,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "super_zigzag_3",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "super_zigzag_5",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "ordinary",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "fast",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "super_straight_1",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "super_zigzag_3",
+      "saves": 20,
+      "goals": 3,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "super_zigzag_5",
+      "saves": 18,
+      "goals": 5,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "ordinary",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "fast",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "super_straight_1",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_3",
+      "saves": 16,
+      "goals": 7,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_5",
+      "saves": 14,
+      "goals": 9,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "ordinary",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "fast",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "super_straight_1",
+      "saves": 7,
+      "goals": 16,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "super_zigzag_3",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "super_zigzag_5",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "ordinary",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "fast",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "super_straight_1",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "super_zigzag_3",
+      "saves": 20,
+      "goals": 3,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "super_zigzag_5",
+      "saves": 18,
+      "goals": 5,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "ordinary",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "fast",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "super_straight_1",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_3",
+      "saves": 16,
+      "goals": 7,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 0,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_5",
+      "saves": 14,
+      "goals": 9,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "ordinary",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "fast",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "super_straight_1",
+      "saves": 7,
+      "goals": 16,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "super_zigzag_3",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "super_zigzag_5",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "ordinary",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "fast",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "super_straight_1",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "super_zigzag_3",
+      "saves": 20,
+      "goals": 3,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "super_zigzag_5",
+      "saves": 18,
+      "goals": 5,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "ordinary",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "fast",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "super_straight_1",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_3",
+      "saves": 16,
+      "goals": 7,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_5",
+      "saves": 14,
+      "goals": 9,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "ordinary",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "fast",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "super_straight_1",
+      "saves": 7,
+      "goals": 16,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "super_zigzag_3",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "super_zigzag_5",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "ordinary",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "fast",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "super_straight_1",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "super_zigzag_3",
+      "saves": 20,
+      "goals": 3,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "super_zigzag_5",
+      "saves": 18,
+      "goals": 5,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "ordinary",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "fast",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "super_straight_1",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_3",
+      "saves": 16,
+      "goals": 7,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 1,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_5",
+      "saves": 14,
+      "goals": 9,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "ordinary",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "fast",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "super_straight_1",
+      "saves": 7,
+      "goals": 16,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "super_zigzag_3",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "super_zigzag_5",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "ordinary",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "fast",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "super_straight_1",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "super_zigzag_3",
+      "saves": 20,
+      "goals": 3,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "super_zigzag_5",
+      "saves": 18,
+      "goals": 5,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "ordinary",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "fast",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "super_straight_1",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_3",
+      "saves": 16,
+      "goals": 7,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_5",
+      "saves": 14,
+      "goals": 9,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "ordinary",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "fast",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "super_straight_1",
+      "saves": 7,
+      "goals": 16,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "super_zigzag_3",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "super_zigzag_5",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "ordinary",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "fast",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "super_straight_1",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "super_zigzag_3",
+      "saves": 20,
+      "goals": 3,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "super_zigzag_5",
+      "saves": 18,
+      "goals": 5,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "ordinary",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "fast",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "super_straight_1",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_3",
+      "saves": 16,
+      "goals": 7,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 2,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_5",
+      "saves": 14,
+      "goals": 9,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "ordinary",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "fast",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "super_straight_1",
+      "saves": 7,
+      "goals": 16,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "super_zigzag_3",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "super_zigzag_5",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "ordinary",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "fast",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "super_straight_1",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "super_zigzag_3",
+      "saves": 20,
+      "goals": 3,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "super_zigzag_5",
+      "saves": 18,
+      "goals": 5,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "ordinary",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "fast",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "super_straight_1",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_3",
+      "saves": 16,
+      "goals": 7,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_5",
+      "saves": 14,
+      "goals": 9,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "ordinary",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "fast",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "super_straight_1",
+      "saves": 7,
+      "goals": 16,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "super_zigzag_3",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "super_zigzag_5",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "ordinary",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "fast",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "super_straight_1",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "super_zigzag_3",
+      "saves": 20,
+      "goals": 3,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "super_zigzag_5",
+      "saves": 18,
+      "goals": 5,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "ordinary",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "fast",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "super_straight_1",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_3",
+      "saves": 16,
+      "goals": 7,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 3,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_5",
+      "saves": 14,
+      "goals": 9,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "ordinary",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "fast",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "super_straight_1",
+      "saves": 7,
+      "goals": 16,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "super_zigzag_3",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 0,
+      "keeper": "rookie",
+      "shot": "super_zigzag_5",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "ordinary",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "fast",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "super_straight_1",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "super_zigzag_3",
+      "saves": 20,
+      "goals": 3,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 0,
+      "keeper": "elite",
+      "shot": "super_zigzag_5",
+      "saves": 18,
+      "goals": 5,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "ordinary",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "fast",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "super_straight_1",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_3",
+      "saves": 16,
+      "goals": 7,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 0,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_5",
+      "saves": 14,
+      "goals": 9,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "ordinary",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "fast",
+      "saves": 9,
+      "goals": 14,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "super_straight_1",
+      "saves": 7,
+      "goals": 16,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "super_zigzag_3",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 1,
+      "keeper": "rookie",
+      "shot": "super_zigzag_5",
+      "saves": 6,
+      "goals": 17,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "ordinary",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "fast",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "super_straight_1",
+      "saves": 19,
+      "goals": 4,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "super_zigzag_3",
+      "saves": 20,
+      "goals": 3,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 1,
+      "keeper": "elite",
+      "shot": "super_zigzag_5",
+      "saves": 18,
+      "goals": 5,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "ordinary",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "fast",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "super_straight_1",
+      "saves": 15,
+      "goals": 8,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_3",
+      "saves": 16,
+      "goals": 7,
+      "other": 0,
+      "n": 23
+    },
+    {
+      "difficulty": 4,
+      "team": 1,
+      "keeper": "elite_tired",
+      "shot": "super_zigzag_5",
+      "saves": 14,
+      "goals": 9,
+      "other": 0,
+      "n": 23
+    }
+  ],
+  "frameBenchmark": {
+    "simulatedFrames": 1801,
+    "secondsSimulated": 30.016666666666666,
+    "wallMs": 387,
+    "environment": "Node headless (not device FPS)"
+  }
+}

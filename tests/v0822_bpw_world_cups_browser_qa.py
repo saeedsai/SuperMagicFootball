@@ -1,3 +1,4 @@
+from menu_test_routes import open_quick,open_settings
 """Real standalone HTML: BPW category, portraits, home/away startup and save index compatibility.
 Desktop Chromium and simulated Android context; not a physical hardware certificate.
 """
@@ -11,7 +12,7 @@ with sync_playwright() as pw:
   context=browser.new_context(viewport={'width':1400,'height':840} if not mobile else {'width':780,'height':410},is_mobile=mobile,has_touch=mobile)
   page=context.new_page();errors=[];page.on('pageerror',lambda exc:errors.append(str(exc)))
   page.set_content(markup,wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'",timeout=25000)
+  page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=25000)
   data=page.evaluate('''() => {
    const teams=SupermagicFootball.teams;
    const selected=teams.filter(t=>t.group==='bpw_worldcup');
@@ -21,11 +22,11 @@ with sync_playwright() as pw:
     flags:selected.map(t=>t.flag),actions:[...document.querySelectorAll('[data-act]')].map(x=>x.dataset.act).sort(),
     historical:teams.filter(t=>t.group==='legends').length};
   }''')
-  assert data['count']==222,(label,data)
+  assert data['count']==223,(label,data)
   assert data['years']==[1998,2002,2006,2010,2014,2018],(label,data)
   assert data['counts']==[12]*6 and data['historical']==6
   assert data['actions']==['dribble','jump','pass','shoot']
-  page.locator('[data-action="quick"]').first.click()
+  open_quick(page)
   page.locator('#homeGroup').select_option('bpw_worldcup')
   home_names=page.locator('#homeTeam option').all_text_contents()
   assert len(home_names)==6 and any('1998' in s for s in home_names),(label,home_names)
@@ -63,14 +64,14 @@ with sync_playwright() as pw:
     data.legend_customClubs=JSON.stringify([club]);
   }""")
   saved.set_content(markup,wait_until='load')
-  saved.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'",timeout=25000)
+  saved.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=25000)
   positions=saved.evaluate("""() => {
     const teams=SupermagicFootball.teams;
     return {total:teams.length,saved:teams.find(t=>t.id==='club_existing')?.index,
       firstBPW:teams.find(t=>t.id==='bpw_wc_1998')?.index};
   }""")
-  assert positions=={'total':223,'saved':216,'firstBPW':217},(label,positions)
+  assert positions=={'total':224,'saved':216,'firstBPW':217},(label,positions)
   saved.close()
   assert not errors,(label,errors)
-  print('PASS',label,'222 teams, six BPW historical mixed squads, home/away filters, player portraits and kickoff',flush=True)
+  print('PASS',label,'223 teams, six BPW historical mixed squads, home/away filters, player portraits and kickoff',flush=True)
   context.close();browser.close()

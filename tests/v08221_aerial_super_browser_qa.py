@@ -1,3 +1,4 @@
+from menu_test_routes import open_feature
 """v0.8.22.1 browser QA: packaged game, real input adapter state,
 reworked aerial attacks and grounded double-jump, desktop + simulated Android.
 Not a physical-device certification.
@@ -53,9 +54,9 @@ with sync_playwright() as pw:
    ctx=browser.new_context(viewport={'width':1380,'height':820} if not mobile else {'width':740,'height':410},is_mobile=mobile,has_touch=mobile)
    page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
    page.set_content(markup,wait_until='load')
-   page.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'",timeout=20000)
+   page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=20000)
    assert sorted(page.locator('[data-act]').evaluate_all('(els)=>els.map(x=>x.dataset.act)'))==['dribble','jump','pass','shoot']
-   page.locator('[data-action="help"]').first.click()
+   open_feature(page,'help')
    helptext=page.locator('body').inner_text()
    for phrase in ['Super Header','Super Bicycle','Double JUMP','two DRIBBLE']:
     assert phrase.lower() in helptext.lower(),(name,phrase)

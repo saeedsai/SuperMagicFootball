@@ -1,0 +1,225 @@
+{
+  "release": "0.8.24.3",
+  "type": "Seeded full-engine AI-vs-AI short-match smoke/calibration, NOT human match win-rate or physical device certification",
+  "secondsPerHalf": 18,
+  "stepSeconds": 0.03333333333333333,
+  "matches": [
+    {
+      "difficulty": 0,
+      "seed": 824301,
+      "ticks": 1080,
+      "halftime": 1,
+      "matchState": "penalty",
+      "score": [
+        0,
+        0
+      ],
+      "counts": {
+        "goal": 0,
+        "save": 0,
+        "keeperDive": 0,
+        "keeperCatch": 0,
+        "keeperDistribution": 0,
+        "keeperRecovery": 0
+      }
+    },
+    {
+      "difficulty": 0,
+      "seed": 824302,
+      "ticks": 1080,
+      "halftime": 1,
+      "matchState": "penalty",
+      "score": [
+        0,
+        0
+      ],
+      "counts": {
+        "goal": 0,
+        "save": 0,
+        "keeperDive": 0,
+        "keeperCatch": 0,
+        "keeperDistribution": 0,
+        "keeperRecovery": 0
+      }
+    },
+    {
+      "difficulty": 1,
+      "seed": 824301,
+      "ticks": 1080,
+      "halftime": 1,
+      "matchState": "penalty",
+      "score": [
+        0,
+        0
+      ],
+      "counts": {
+        "goal": 0,
+        "save": 0,
+        "keeperDive": 0,
+        "keeperCatch": 0,
+        "keeperDistribution": 0,
+        "keeperRecovery": 0
+      }
+    },
+    {
+      "difficulty": 1,
+      "seed": 824302,
+      "ticks": 1080,
+      "halftime": 1,
+      "matchState": "penalty",
+      "score": [
+        0,
+        0
+      ],
+      "counts": {
+        "goal": 0,
+        "save": 0,
+        "keeperDive": 0,
+        "keeperCatch": 0,
+        "keeperDistribution": 0,
+        "keeperRecovery": 0
+      }
+    },
+    {
+      "difficulty": 2,
+      "seed": 824301,
+      "ticks": 1080,
+      "halftime": 1,
+      "matchState": "penalty",
+      "score": [
+        0,
+        0
+      ],
+      "counts": {
+        "goal": 0,
+        "save": 0,
+        "keeperDive": 0,
+        "keeperCatch": 0,
+        "keeperDistribution": 0,
+        "keeperRecovery": 0
+      }
+    },
+    {
+      "difficulty": 2,
+      "seed": 824302,
+      "ticks": 1080,
+      "halftime": 1,
+      "matchState": "penalty",
+      "score": [
+        0,
+        0
+      ],
+      "counts": {
+        "goal": 0,
+        "save": 0,
+        "keeperDive": 0,
+        "keeperCatch": 0,
+        "keeperDistribution": 0,
+        "keeperRecovery": 0
+      }
+    },
+    {
+      "difficulty": 3,
+      "seed": 824301,
+      "ticks": 1080,
+      "halftime": 1,
+      "matchState": "penalty",
+      "score": [
+        0,
+        0
+      ],
+      "counts": {
+        "goal": 0,
+        "save": 0,
+        "keeperDive": 0,
+        "keeperCatch": 0,
+        "keeperDistribution": 0,
+        "keeperRecovery": 0
+      }
+    },
+    {
+      "difficulty": 3,
+      "seed": 824302,
+      "ticks": 1080,
+      "halftime": 1,
+      "matchState": "penalty",
+      "score": [
+        0,
+        0
+      ],
+      "counts": {
+        "goal": 0,
+        "save": 0,
+        "keeperDive": 0,
+        "keeperCatch": 0,
+        "keeperDistribution": 0,
+        "keeperRecovery": 0
+      }
+    },
+    {
+      "difficulty": 4,
+      "seed": 824301,
+      "ticks": 1080,
+      "halftime": 1,
+      "matchState": "penalty",
+      "score": [
+        0,
+        0
+      ],
+      "counts": {
+        "goal": 0,
+        "save": 0,
+        "keeperDive": 0,
+        "keeperCatch": 0,
+        "keeperDistribution": 0,
+        "keeperRecovery": 0
+      }
+    },
+    {
+      "difficulty": 4,
+      "seed": 824302,
+      "ticks": 1080,
+      "halftime": 1,
+      "matchState": "penalty",
+      "score": [
+        0,
+        0
+      ],
+      "counts": {
+        "goal": 0,
+        "save": 0,
+        "keeperDive": 0,
+        "keeperCatch": 0,
+        "keeperDistribution": 0,
+        "keeperRecovery": 0
+      }
+    }
+  ],
+  "byDifficulty": {
+    "0": {
+      "matches": 2,
+      "goals": 0,
+      "saves": 0
+    },
+    "1": {
+      "matches": 2,
+      "goals": 0,
+      "saves": 0
+    },
+    "2": {
+      "matches": 2,
+      "goals": 0,
+      "saves": 0
+    },
+    "3": {
+      "matches": 2,
+      "goals": 0,
+      "saves": 0
+    },
+    "4": {
+      "matches": 2,
+      "goals": 0,
+      "saves": 0
+    }
+  }
+}

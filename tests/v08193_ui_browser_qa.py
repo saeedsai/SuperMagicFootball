@@ -1,3 +1,4 @@
+from menu_test_routes import open_quick,open_settings,open_feature,home
 from pathlib import Path
 import shutil
 from playwright.sync_api import sync_playwright
@@ -8,8 +9,8 @@ with sync_playwright() as pw:
   context=browser.new_context(viewport={'width':1400,'height':850} if device=='desktop' else {'width':720,'height':390},has_touch=device=='mobile',is_mobile=device=='mobile')
   page=context.new_page();errors=[]
   page.on('pageerror',lambda err:errors.append(str(err)))
-  page.set_content(p.read_text(),wait_until='load');page.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'")
-  page.locator('[data-action="manager"]').first.click()
+  page.set_content(p.read_text(),wait_until='load');page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
+  open_feature(page,'manager')
   assert page.locator('#managerContinent').count()==1
   assert page.locator('#managerCountry').count()==1
   region=page.locator('#managerContinent').input_value(); print(device,'career region',region,'countries',page.locator('#managerCountry option').count())
@@ -24,15 +25,15 @@ with sync_playwright() as pw:
   first=page.locator('#managerClubResults [data-pick-team]').first
   picked=first.get_attribute('data-team-id');first.click()
   assert page.locator('#managerClub').input_value()==picked
-  page.locator('[data-action="home"]').first.click()
-  page.locator('[data-action="continents"]').first.click()
+  home(page)
+  open_feature(page,'continents')
   page.locator('[data-action="continentPick_UEFA"]').first.click()
   assert page.locator('[data-team-browse="continentClub"]').count()==1
   page.locator('[data-team-browse="continentClub"]').click()
   assert page.locator('#continentClubResults .teamIdentity').count()>0
-  page.locator("[data-action=continents]").first.click()
-  page.locator('[data-action="home"]').first.click()
-  page.locator('[data-action="quick"]').first.click()
+  open_feature(page,'continents')
+  home(page)
+  open_quick(page)
   page.locator('[data-team-browse="homeTeam"]').click()
   assert page.locator('#homeTeamResults .teamIdentity').count()>0
   page.locator('#homeTeamSearch').fill('Japan')

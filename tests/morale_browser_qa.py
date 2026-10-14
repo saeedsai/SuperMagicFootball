@@ -1,3 +1,4 @@
+from menu_test_routes import open_quick,open_settings
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 root=Path(__file__).resolve().parents[1]
@@ -9,9 +10,9 @@ with sync_playwright() as pw:
   page.on('pageerror',lambda e:errors.append(str(e)))
   page.evaluate("""() => {let data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}""")
   page.set_content((root/'play.html').read_text(),wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'")
+  page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
   assert page.locator('h1').first.inner_text().upper().find('SUPERMAGIC')>=0,errors
-  page.locator('[data-action="quick"]').first.click()
+  open_quick(page)
   assert page.locator('#preTalkHome option').count()==5
   page.locator('#preTalkHome').select_option('joke')
   page.locator('#preTalkAway').select_option('focus')

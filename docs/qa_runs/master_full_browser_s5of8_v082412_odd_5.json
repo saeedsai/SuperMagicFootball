@@ -1,0 +1,70 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.24.12-alpha",
+  "profile": "full",
+  "category": "browser",
+  "shard": {
+    "index": 5,
+    "total": 8
+  },
+  "run_id": "master_full_browser_s5of8_v082412_odd_5",
+  "started_utc": "20261014T173753Z",
+  "scripts_requested": 5,
+  "cases_cataloged": 450,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "browser",
+      "script": "ai_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 7.038,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/ai_browser_qa.py",
+      "output_tail": "AI difficulty browser QA desktop: PASS · settings, setup, paused live change, resume\nAI difficulty browser QA mobile: PASS · settings, setup, paused live change, resume"
+    },
+    {
+      "category": "browser",
+      "script": "four_button_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 5.983,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/four_button_browser_qa.py",
+      "output_tail": "desktop PASS actual keyboard/touch controls, four-button cross layout, double jump super, no super popup\nandroid PASS actual keyboard/touch controls, four-button cross layout, double jump super, no super popup"
+    },
+    {
+      "category": "browser",
+      "script": "v08231_bpw_alltime_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 5.899,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08231_bpw_alltime_browser_qa.py",
+      "output_tail": "PASS all-time browser desktop selection, twelve portraits, six formation faces, seventh BPW, four controls\nPASS all-time browser simulated touch selection, twelve portraits, six formation faces, seventh BPW, four controls"
+    },
+    {
+      "category": "browser",
+      "script": "control_reliability_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 4.803,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/control_reliability_browser_qa.py",
+      "output_tail": "DESKTOP PASS: fast PASS taps, manual switch, steering auto-switch, Jump-run and four-button layout\nANDROID PASS: fast PASS taps, manual switch, steering auto-switch, Jump-run and four-button layout"
+    },
+    {
+      "category": "browser",
+      "script": "v08221_aerial_super_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 4.288,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08221_aerial_super_browser_qa.py",
+      "output_tail": "PASS Desktop Chromium: 9 normal/super aerial and grounded shot scenarios, specialist fallback, control help, 4 buttons\nPASS Simulated Android: 9 normal/super aerial and grounded shot scenarios, specialist fallback, control help, 4 buttons"
+    }
+  ],
+  "summary": {
+    "PASS": 5,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

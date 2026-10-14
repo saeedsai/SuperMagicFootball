@@ -1,0 +1,106 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.24.12-alpha",
+  "profile": "full",
+  "category": "node",
+  "shard": {
+    "index": 4,
+    "total": 8
+  },
+  "run_id": "master_full_node_s4of8_v082412_nodeseq_4",
+  "started_utc": "20261014T173702Z",
+  "scripts_requested": 9,
+  "cases_cataloged": 450,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "node",
+      "script": "continental.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.153,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/continental.mjs",
+      "output_tail": "Verified UEFA 2026/27 36 clubs, completed all 36 solo campaigns\nVerified AFC 2026/27 32 clubs, completed all 32 solo campaigns\nVerified CAF 2025/26 confirmed 16 clubs, completed all 16 solo campaigns\nVerified CONCACAF 2026 confirmed 27 clubs, completed all 27 solo campaigns\nVerified CONMEBOL 2026 confirmed 32 clubs, completed all 32 solo campaigns\nVerified OFC 2026 confirmed 8 clubs, completed all 8 solo campaigns\nContinental tournament full-season test: PASS; total selectable teams 216"
+    },
+    {
+      "category": "node",
+      "script": "ai_team_combos.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.119,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/ai_team_combos.mjs",
+      "output_tail": "v0.8.3 AI COMBO PASS: all 5 profiles, auto setup, apex shots, cooldown, distance gates, support runs, human control safety"
+    },
+    {
+      "category": "node",
+      "script": "super_shot_reset.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.105,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/super_shot_reset.mjs",
+      "output_tail": "Super-shot transformation reset: passed"
+    },
+    {
+      "category": "node",
+      "script": "input_buffer.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.056,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/input_buffer.mjs",
+      "output_tail": "INPUT BUFFER PASS: keyboard/touch quick taps, simultaneous buttons, held keys, multi-pointer, joystick handoff, blur cleanup"
+    },
+    {
+      "category": "node",
+      "script": "v08193_ui_navigation.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.173,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08193_ui_navigation.mjs",
+      "output_tail": "v0.8.19.3 UI NAV PASS: 165 manager clubs, 165 unique country/continent memberships, six 6-player formation presets"
+    },
+    {
+      "category": "node",
+      "script": "v08203_bayern_psg_verified.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.106,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08203_bayern_psg_verified.mjs",
+      "output_tail": "v0.8.20.4 verified Bayern and PSG: 24 names, roles, shirts, ages, stable IDs and match startup PASS"
+    },
+    {
+      "category": "node",
+      "script": "v08221_aerial_super_rework.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.127,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08221_aerial_super_rework.mjs",
+      "output_tail": "PASS v0.8.22.1: six input variants, both directions, two taps, single-tap timeout, double jump, non-specialists, unified special shot physics/graphics, cancellation, no repeated shots"
+    },
+    {
+      "category": "node",
+      "script": "v08244_match_matrix.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 8.666,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08244_match_matrix.mjs",
+      "output_tail": "PASS v0.8.24.6 AI-vs-AI neutral-policy match matrix {\"0\":{\"matches\":3,\"goals\":2,\"saves\":14,\"avgPeakBallSpeed\":1031.991},\"1\":{\"matches\":3,\"goals\":0,\"saves\":14,\"avgPeakBallSpeed\":803.627},\"2\":{\"matches\":3,\"goals\":0,\"saves\":13,\"avgPeakBallSpeed\":921.449},\"3\":{\"matches\":3,\"goals\":1,\"saves\":8,\"avgPeakBallSpeed\":905.325},\"4\":{\"matches\":3,\"goals\":1,\"saves\":19,\"avgPeakBallSpeed\":1004.331}}"
+    },
+    {
+      "category": "node",
+      "script": "v082411_keeper_collection.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.104,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v082411_keeper_collection.mjs",
+      "output_tail": "PASS v0.8.24.11 goalkeeper/outfield collection candidate eligibility (4 scenarios)"
+    }
+  ],
+  "summary": {
+    "PASS": 9,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

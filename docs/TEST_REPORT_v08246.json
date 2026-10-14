@@ -1,0 +1,92 @@
+{
+  "release": "0.8.24.6-alpha",
+  "date": "2026-10-14",
+  "node": {
+    "expected": 64,
+    "passed": 64,
+    "failed": 0,
+    "report": "docs/qa_runs/master_full_node_s0of1_v08246release_final.json"
+  },
+  "browser": {
+    "expected": 38,
+    "passed": 38,
+    "failed_after_rerun": 0,
+    "initial_flaky_failure": "four_button_phase2_browser_qa.py simulated Android missing flyingKick event before stable touch state",
+    "affected_script_rerun": "3 individual desktop/Android repetitions passed; entire 6-script shard 3 rerun passed",
+    "completed_shards": 6,
+    "scripts": [
+      "tactics_browser_qa.py",
+      "stats_browser_qa.py",
+      "ai_combos_browser_qa.py",
+      "home_dashboard_browser_qa.py",
+      "v08205_rosters_browser_qa.py",
+      "combo_priority_browser_qa.py",
+      "v0822_bpw_world_cups_browser_qa.py",
+      "kits_browser_qa.py",
+      "fitness_browser_qa.py",
+      "four_button_browser_qa.py",
+      "v08232_audio_storage_browser_qa.py",
+      "master_ui_contracts.py",
+      "v08196_keeper_browser_qa.py",
+      "v08221_aerial_super_browser_qa.py",
+      "v060_qa.py",
+      "morale_browser_qa.py",
+      "collisions_browser_qa.py",
+      "v0823_audio_browser_qa.py",
+      "v08203_rosters_browser_qa.py",
+      "v08193_ui_browser_qa.py",
+      "manager_v060.py",
+      "abilities_browser_qa.py",
+      "four_button_phase2_browser_qa.py",
+      "v08231_bpw_alltime_browser_qa.py",
+      "v08202_rosters_browser_qa.py",
+      "rapid_controls_browser_qa.py",
+      "save_filter_v060.py",
+      "aerial_browser_qa.py",
+      "dribble_styles_browser_qa.py",
+      "v0824_keeper_browser_qa.py",
+      "v08195_overall_browser_qa.py",
+      "v0821_ball_lift_browser_qa.py",
+      "ai_browser_qa.py",
+      "team_combos_browser_qa.py",
+      "penalty_controls_browser_qa.py",
+      "v08206_identity_browser_qa.py",
+      "control_reliability_browser_qa.py",
+      "v08211_input_cancel_browser_qa.py"
+    ],
+    "shard_report_paths": [
+      "docs/qa_runs/master_full_browser_s0of6_v08246final_s0.json",
+      "docs/qa_runs/master_full_browser_s1of6_v08246final_s1.json",
+      "docs/qa_runs/master_full_browser_s2of6_v08246final_s2.json",
+      "docs/qa_runs/master_full_browser_s3of6_v08246final_fixed_s3.json",
+      "docs/qa_runs/master_full_browser_s4of6_v08246final_s4.json",
+      "docs/qa_runs/master_full_browser_s5of6_v08246final_s5.json"
+    ],
+    "original_failed_shard": "docs/qa_runs/master_full_browser_s3of6_v08246final_s3.json"
+  },
+  "cpu_scope": {
+    "test": "tests/v08246_cpu_difficulty_scope.mjs",
+    "scenarios": 15,
+    "passed": 15,
+    "finding": "humans=0 AI-vs-AI always Normal, humans=1 CPU team receives difficulty; all 5 deterministic aim targets distinct",
+    "gameplay_physics_modified": false
+  },
+  "qa_catalog": {
+    "total_requirements": 405,
+    "new_entries": 3,
+    "individually_certified": 3,
+    "note": "Script counts are not individual acceptance-case execution counts."
+  },
+  "package": {
+    "zip_integrity": null,
+    "standalone_matches_archive": null
+  },
+  "remaining": [
+    "Representative single-player vs CPU goal/save distributions",
+    "Physical iOS/Android gamepads and audio",
+    "Safari/Firefox and real-origin audio settings reload",
+    "Low-end mobile performance",
+    "Historical BPW identity and signature animations",
+    "Future Super Defense/Tricks; roster audit postponed"
+  ]
+}

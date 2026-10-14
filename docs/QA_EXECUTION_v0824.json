@@ -1,0 +1,30 @@
+{
+  "release": "0.8.24-alpha",
+  "date": "2026-10-14",
+  "node_scripts": {
+    "pass": 58,
+    "fail": 0,
+    "reports": [
+      "qa_runs/master_full_node_s0of1_v0824_final.json"
+    ]
+  },
+  "browser_scripts": {
+    "pass": 38,
+    "fail": 0,
+    "shards": 6,
+    "reports": [
+      "qa_runs/master_full_browser_s0of6_v0824_final.json",
+      "qa_runs/master_full_browser_s1of6_v0824_final.json",
+      "qa_runs/master_full_browser_s2of6_v0824_final.json",
+      "qa_runs/master_full_browser_s3of6_v0824_final.json",
+      "qa_runs/master_full_browser_s4of6_v0824_final.json",
+      "qa_runs/master_full_browser_s5of6_v0824_final.json"
+    ]
+  },
+  "synthetic_shot_trials": 3450,
+  "catalog_documented_cases": 389,
+  "catalog_individually_certified": 0,
+  "hardware_qa": "NOT_RUN",
+  "real_origin_persistence": "BLOCKED",
+  "note": "Script counts are not individual assertions and shot trials are not real match save percentages."
+}

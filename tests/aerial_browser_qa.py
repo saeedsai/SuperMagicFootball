@@ -1,3 +1,4 @@
+from menu_test_routes import open_quick,open_settings
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 root=Path(__file__).resolve().parents[1]
@@ -9,8 +10,8 @@ with sync_playwright() as pw:
         page.on('pageerror',lambda e:errors.append(str(e)))
         page.evaluate("""() => {const m={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>m[k]??null,setItem:(k,v)=>m[k]=String(v),removeItem:k=>delete m[k]}})}""")
         page.set_content((root/'play.html').read_text(),wait_until='load')
-        page.wait_for_function('window.SupermagicFootball?.version==="0.8.22.1-alpha"')
-        page.locator('[data-action="quick"]').first.click()
+        page.wait_for_function('window.SupermagicFootball?.version==="0.8.24.12-alpha"')
+        open_quick(page)
         page.locator('[data-action="kickoff"]').first.click()
         assert page.evaluate('SupermagicFootball.game.matchState')=='play',errors
         # Test hyperdash via the FOUR-button hold-Jump + movement gesture.

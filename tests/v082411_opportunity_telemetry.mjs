@@ -1,0 +1,25 @@
+/** Sidecar telemetry must never invent goals/saves or treat passes as shots. */
+import assert from 'node:assert/strict';
+import {MatchOpportunityTracker} from '../src/match_telemetry.js';
+const p=t=>({t,keeper:false});
+const tracker=new MatchOpportunityTracker(),game={ball:{owner:null}};
+tracker.onEvent({type:'kick',player:p(0),kind:'pass',origin:{x:1,y:2,z:0}});
+tracker.observe(game);game.ball.owner=p(0);tracker.observe(game);
+assert.equal(tracker.attempts[0].outcome,'pass_completed');
+game.ball.owner=null;
+tracker.onEvent({type:'kick',player:p(0),kind:'shot',origin:{x:3,y:4,z:0}});tracker.observe(game);
+tracker.onEvent({type:'save',player:p(1),saveType:'dive',deflected:true});
+assert.equal(tracker.attempts[1].outcome,'keeper_deflection');assert.equal(tracker.attempts[1].deflected,true);
+tracker.onEvent({type:'kick',player:p(0),kind:'superShot'});tracker.onEvent({type:'goal',team:0});
+assert.equal(tracker.attempts[2].outcome,'goal');
+tracker.onEvent({type:'kick',player:p(1),kind:'shot'});game.ball.owner=p(0);tracker.observe(game);
+assert.equal(tracker.attempts[3].outcome,'defender_interception');
+tracker.onEvent({type:'kick',player:p(0),kind:'shot'});tracker.onEvent({type:'kick',player:p(0),kind:'pass'});
+assert.equal(tracker.attempts[4].outcome,'superseded');
+tracker.onEvent({type:'halftime'});assert.equal(tracker.attempts[5].outcome,'period_end');
+tracker.onEvent({type:'save',player:p(1)});assert.equal(tracker.unlinkedSaves,1);
+const report=tracker.finalize();
+assert.equal(report.attempts,6);assert.equal(report.byKind.shot.total,3);assert.equal(report.byKind.pass.total,2);
+assert.equal(report.counts.goal,1);assert.equal(report.counts.keeper_deflection,1);
+assert.equal(report.byKind.pass.outcomes.keeper_deflection,undefined);
+console.log('PASS v0.8.24.11 opportunity telemetry classification and event attribution');

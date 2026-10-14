@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';
+import {ArcadeAudio,AUDIO_DEFAULTS,AUDIO_CUES,sanitizeAudioOptions} from '../src/audio.js';
+import {readFileSync} from 'node:fs';
+const source=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const build=readFileSync(new URL('../play.html',import.meta.url),'utf8');
+assert.equal(sanitizeAudioOptions({master:200,music:-5}).master,100);
+assert.equal(sanitizeAudioOptions({music:-5}).music,0);
+assert.equal(sanitizeAudioOptions({mute:true}).mute,true);
+let count=0;
+class MockCtx{constructor(){this.currentTime=1;this.destination={};this.state='running'}resume(){this.state='running'}suspend(){this.state='suspended'}createOscillator(){return {frequency:{setValueAtTime(){}},connect(){},start(){count++},stop(){},type:''}}createGain(){return {gain:{setValueAtTime(){},exponentialRampToValueAtTime(){}},connect(){}}}}
+const a=new ArcadeAudio({},MockCtx);
+assert.equal(count,0,'No autoplay before a deliberate gesture');
+assert(a.unlock());
+a.cue({type:'goal'});assert.equal(count,4);
+a.cue({type:'goal'});assert.equal(count,4,'Goal event rate limit');
+a.configure({...AUDIO_DEFAULTS,mute:true});a.cue('kick');assert.equal(count,4,'Muted sound must stay silent');
+a.configure({...AUDIO_DEFAULTS,master:0});a.cue('save');assert.equal(count,4,'Zero master volume must stay silent');
+a.configure({...AUDIO_DEFAULTS});a.cue('tackleHit');assert(count>4);const beforeSuper=count;a.cue({type:'kick',super:true});assert(count>=beforeSuper+3,'Special kick receives triple-note Super cue');
+a.sceneChange('menu');assert(a.interval!==null,'Menu score loops');a.sceneChange('match');assert.equal(a.interval,null,'No gameplay music leaks');a.sceneChange('halftime');assert(a.interval!==null,'Halftime music loops');a.dispose();
+for(const type of ['goal','save','tackleHit','superShotLaunch','defenceSuper','flipKick','halftime','finished'])assert(AUDIO_CUES[type],type);
+for(const key of ['audioMute','audio_${k}','master','music','sfx','ui','ambience'])assert(source.includes(key),`Settings ${key}`);
+assert(source.includes("document.addEventListener('pointerdown'"));assert(source.includes('audio.cue(e)'));
+assert(build.includes('class ArcadeAudio'));assert(html.includes('data-act="jump"'));
+console.log('PASS v0.8.23 audio: gesture gate, event mapping, mute, volumes, cues, scenes, standalone and controls');

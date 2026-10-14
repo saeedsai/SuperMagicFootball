@@ -1,0 +1,70 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.24.12-alpha",
+  "profile": "full",
+  "category": "browser",
+  "shard": {
+    "index": 4,
+    "total": 8
+  },
+  "run_id": "master_full_browser_s4of8_v082412_even_4",
+  "started_utc": "20261014T173804Z",
+  "scripts_requested": 5,
+  "cases_cataloged": 450,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "browser",
+      "script": "save_filter_v060.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 7.986,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/save_filter_v060.py",
+      "output_tail": "v0.6 offline Quick Match filters + JSON roundtrip DESKTOP PASS\nv0.6 offline Quick Match filters + JSON roundtrip MOBILE PASS"
+    },
+    {
+      "category": "browser",
+      "script": "ai_combos_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 5.233,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/ai_combos_browser_qa.py",
+      "output_tail": "desktop PASS AI teammate automatic combo and apex shot; no JavaScript errors\nmobile PASS AI teammate automatic combo and apex shot; no JavaScript errors"
+    },
+    {
+      "category": "browser",
+      "script": "v0823_audio_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 5.045,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v0823_audio_browser_qa.py",
+      "output_tail": "PASS audio desktop mute, sliders, in-session values, no errors (origin storage unavailable)\nPASS audio touch mute, sliders, in-session values, no errors (origin storage unavailable)"
+    },
+    {
+      "category": "browser",
+      "script": "v08195_overall_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 8.699,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08195_overall_browser_qa.py",
+      "output_tail": "desktop PASS: 12 roster OVRS, 6 positional lineup ratings, 6 formation portrait ratings, formation/selection changes\nsimulated Android touch PASS: 12 roster OVRS, 6 positional lineup ratings, 6 formation portrait ratings, formation/selection changes"
+    },
+    {
+      "category": "browser",
+      "script": "v0822_bpw_world_cups_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 6.129,
+      "command": "/opt/pyvenv/bin/python /mnt/data/smf_082412_dev/Supermagic_Football/tests/v0822_bpw_world_cups_browser_qa.py",
+      "output_tail": "PASS desktop 223 teams, six BPW historical mixed squads, home/away filters, player portraits and kickoff\nPASS simulated Android 223 teams, six BPW historical mixed squads, home/away filters, player portraits and kickoff"
+    }
+  ],
+  "summary": {
+    "PASS": 5,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

@@ -1,3 +1,4 @@
+from menu_test_routes import open_feature
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 p=Path(__file__).resolve().parents[1]
@@ -8,9 +9,9 @@ with sync_playwright() as pw:
   page=ctx.new_page();errors=[]
   page.on('pageerror',lambda e:errors.append(str(e)))
   page.set_content((p/'play.html').read_text(),wait_until='load');page.wait_for_timeout(450)
-  assert page.evaluate('NekketsuHD.teams.length')==222,errors
+  assert page.evaluate('NekketsuHD.teams.length')==223,errors
   assert page.evaluate('NekketsuHD.confederations.length')==6
-  page.locator('[data-action="continents"]').first.click()
+  open_feature(page,'continents')
   assert page.locator('.confedCard').count()==6, page.locator('#menu').inner_text()[:500]
   page.screenshot(path=str(p/'tests'/('continents_mobile.png' if ismobile else 'continents.png')))
   page.locator('[data-action="continentPick_UEFA"]').first.click()

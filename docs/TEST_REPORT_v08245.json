@@ -1,0 +1,42 @@
+{
+  "release": "v0.8.24.5 Alpha",
+  "node": {
+    "PASS": 63,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  },
+  "browser": {
+    "distinct_scripts_passed": 13,
+    "expected_full_suite": 38,
+    "unverified": 25,
+    "full_suite_certified": false,
+    "passed_scripts": [
+      "ai_combos_browser_qa.py",
+      "combo_priority_browser_qa.py",
+      "four_button_browser_qa.py",
+      "home_dashboard_browser_qa.py",
+      "master_ui_contracts.py",
+      "save_filter_v060.py",
+      "stats_browser_qa.py",
+      "tactics_browser_qa.py",
+      "v08205_rosters_browser_qa.py",
+      "v08221_aerial_super_browser_qa.py",
+      "v0822_bpw_world_cups_browser_qa.py",
+      "v08231_bpw_alltime_browser_qa.py",
+      "v08232_audio_storage_browser_qa.py"
+    ]
+  },
+  "confirmed_defects_fixed": [
+    "Stale v0.8.24.3 browser initialization expectations against newer game builds",
+    "Outdated exported-save version assertion",
+    "Release filename reference mismatch in Node runner"
+  ],
+  "limitations": [
+    "Not all browser regression scripts finished within execution window",
+    "Calibration sample remains too sparse for physics retuning",
+    "Physical mobile/gamepad and real-origin storage have not been certified"
+  ]
+}

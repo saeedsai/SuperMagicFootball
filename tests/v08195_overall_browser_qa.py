@@ -1,3 +1,4 @@
+from menu_test_routes import open_quick,open_settings,open_feature,home
 from pathlib import Path
 import shutil
 from playwright.sync_api import sync_playwright
@@ -7,8 +8,8 @@ with sync_playwright() as pw:
   browser=pw.chromium.launch(executable_path=shutil.which('chromium') or None,headless=True,args=['--no-sandbox'])
   ctx=browser.new_context(viewport={'width':1400,'height':850} if device=='desktop' else {'width':760,'height':400},has_touch=device!='desktop',is_mobile=device!='desktop')
   page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
-  page.set_content(p.read_text(),wait_until='load');page.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'")
-  page.locator('[data-action="quick"]').first.click();page.locator('[data-action="prepHome"]').first.click()
+  page.set_content(p.read_text(),wait_until='load');page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
+  open_quick(page);page.locator('[data-action="prepHome"]').first.click()
   assert page.locator('.rosterCard .ovrBadge').count()==12,'roster has 12 derived natural-position overall ratings'
   assert page.locator('.positionOvr').count()==6,'every lineup row shows an OVR'
   assert page.locator('.formationOvr').count()==6,'every formation portrait has an OVR'
@@ -28,8 +29,8 @@ with sync_playwright() as pw:
    assert page.locator('[data-lineup-ovr="4"]').inner_text().startswith('OVR ')
    assert page.locator('.formationOvr').nth(4).inner_text().startswith('MF ')
   page.locator('[data-action="returnSetup"]').first.click()
-  page.locator('[data-action="home"]').first.click()
-  page.locator('[data-action="manager"]').first.click()
+  home(page)
+  open_feature(page,'manager')
   # Starting career from configured continent/country also reaches derived OVR roster.
   assert page.locator('#managerClub').count()==1
   assert page.locator('[data-action="startManager"]').count()==1

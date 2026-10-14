@@ -20,8 +20,10 @@ pkg=json.loads((ROOT/'package.json').read_text())
 node_scripts=re.findall(r'node\s+tests/([\w-]+\.mjs)',pkg['scripts']['test'])
 node_scripts += ['master_contracts.mjs']
 browser_scripts=re.findall(r'python\s+tests/([\w-]+\.py)',pkg['scripts']['qa'])
-browser_extras=['v08206_identity_browser_qa.py','v08205_rosters_browser_qa.py','master_ui_contracts.py','v08203_rosters_browser_qa.py','v08202_rosters_browser_qa.py','v08195_overall_browser_qa.py','control_reliability_browser_qa.py','combo_priority_browser_qa.py','v08196_keeper_browser_qa.py','v08193_ui_browser_qa.py','rapid_controls_browser_qa.py','v0821_ball_lift_browser_qa.py','v08211_input_cancel_browser_qa.py','v0822_bpw_world_cups_browser_qa.py','v08221_aerial_super_browser_qa.py']
-assert len(node_scripts)==54,(len(node_scripts),node_scripts)
+browser_extras=['v08232_audio_storage_browser_qa.py','v0823_audio_browser_qa.py','v08231_bpw_alltime_browser_qa.py','v0824_keeper_browser_qa.py','v08206_identity_browser_qa.py','v08205_rosters_browser_qa.py','master_ui_contracts.py','v08203_rosters_browser_qa.py','v08202_rosters_browser_qa.py','v08195_overall_browser_qa.py','control_reliability_browser_qa.py','combo_priority_browser_qa.py','v08196_keeper_browser_qa.py','v08193_ui_browser_qa.py','rapid_controls_browser_qa.py','v0821_ball_lift_browser_qa.py','v08211_input_cancel_browser_qa.py','v0822_bpw_world_cups_browser_qa.py','v08221_aerial_super_browser_qa.py','v08247_menu_browser_qa.py','v08247_menu_input_browser_qa.py']
+assert len(node_scripts)>=72,(len(node_scripts),node_scripts)
+assert len(set(node_scripts))==len(node_scripts),'duplicate node suite entries'
+assert all((TESTS/name).is_file() for name in node_scripts),'missing node scripts'
 assert len(browser_scripts)==19
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--profile',choices=['smoke','full'],default='smoke')
@@ -35,8 +37,8 @@ parser.add_argument('--tag',default='')
 args=parser.parse_args()
 if args.shard_count<1 or not 0<=args.shard_index<args.shard_count:parser.error('Invalid shard')
 if args.profile=='smoke':
- node_scripts=[x for x in node_scripts if x in {'simulation.mjs','career.mjs','four_button_controls.mjs','combo_priority.mjs','input_buffer.mjs','v08196_keeper_prediction.mjs','v08195_overall.mjs','v08203_bayern_psg_verified.mjs','v08206_canonical_identity.mjs','master_contracts.mjs','v0822_bpw_world_cups.mjs','v0821_ball_lift_super_bicycle.mjs','v08211_control_cancellation_balance.mjs','v08221_aerial_super_rework.mjs'}]
- browser_scripts=['master_ui_contracts.py','four_button_browser_qa.py','v0822_bpw_world_cups_browser_qa.py','home_dashboard_browser_qa.py','v08221_aerial_super_browser_qa.py']
+ node_scripts=[x for x in node_scripts if x in {'simulation.mjs','career.mjs','four_button_controls.mjs','combo_priority.mjs','input_buffer.mjs','v08196_keeper_prediction.mjs','v08195_overall.mjs','v08203_bayern_psg_verified.mjs','v08206_canonical_identity.mjs','master_contracts.mjs','v0822_bpw_world_cups.mjs','v08231_bpw_alltime.mjs','v08232_audio_reliability.mjs','v0823_audio.mjs','v0821_ball_lift_super_bicycle.mjs','v08211_control_cancellation_balance.mjs','v08221_aerial_super_rework.mjs','v0824_keeper_fairness.mjs','v08241_moving_keeper.mjs'}]
+ browser_scripts=['v08232_audio_storage_browser_qa.py','master_ui_contracts.py','four_button_browser_qa.py','v0822_bpw_world_cups_browser_qa.py','v08231_bpw_alltime_browser_qa.py','home_dashboard_browser_qa.py','v08221_aerial_super_browser_qa.py','v08247_menu_browser_qa.py','v08247_menu_input_browser_qa.py']
 else:
  browser_scripts+=browser_extras
 commands=[]
@@ -52,13 +54,13 @@ now=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ')
 tag=''.join(ch for ch in args.tag if ch.isalnum() or ch in '_-')[:40]
 base=f'master_{args.profile}_{args.category}_s{args.shard_index}of{args.shard_count}_{tag or now}'
 json_file=OUTPUT/(base+'.json');md_file=OUTPUT/(base+'.md')
-meta={'suite':'Supermagic Football Master QA','release':'0.8.22.1','profile':args.profile,'category':args.category,'shard':{'index':args.shard_index,'total':args.shard_count},'run_id':base,'started_utc':now,'scripts_requested':len(commands),'cases_cataloged':357,'cases_individually_certified':0,'results':[]}
+meta={'suite':'Supermagic Football Master QA','release':pkg['version'],'profile':args.profile,'category':args.category,'shard':{'index':args.shard_index,'total':args.shard_count},'run_id':base,'started_utc':now,'scripts_requested':len(commands),'cases_cataloged':len((ROOT/'docs'/'MASTER_QA_TEST_CASES_v08221.csv').read_text(encoding='utf8').splitlines())-1,'cases_individually_certified':0,'results':[]}
 def save():
  meta['summary']={k:sum(r['status']==k for r in meta['results']) for k in ['PASS','FAIL','TIMEOUT','ERROR']}
  meta['summary']['NOT_EXECUTED']=len(commands)-len(meta['results'])
  meta['summary']['ALL_REQUESTED_PASSED']=len(meta['results'])==len(commands) and all(r['status']=='PASS' for r in meta['results'])
  json_file.write_text(json.dumps(meta,indent=2,ensure_ascii=False)+'\n')
- lines=[f'# Regression run — {base}',f'**Release:** {meta["release"]}; **profile:** {args.profile}; **shard:** {args.shard_index+1}/{args.shard_count}',f'**Scripts requested:** {len(commands)}; **passed:** {meta["summary"]["PASS"]}; **failed:** {meta["summary"]["FAIL"]}; **timed out:** {meta["summary"]["TIMEOUT"]}; **not executed:** {meta["summary"]["NOT_EXECUTED"]}.','', '> Script-level results are not 357 individual requirement certifications. Future requirements are unimplemented.','', '| Category | Executable script | Result | Seconds |','|---|---|---|---:|']
+ lines=[f'# Regression run — {base}',f'**Release:** {meta["release"]}; **profile:** {args.profile}; **shard:** {args.shard_index+1}/{args.shard_count}',f'**Scripts requested:** {len(commands)}; **passed:** {meta["summary"]["PASS"]}; **failed:** {meta["summary"]["FAIL"]}; **timed out:** {meta["summary"]["TIMEOUT"]}; **not executed:** {meta["summary"]["NOT_EXECUTED"]}.','', '> Script-level results are not individual requirement certifications. Future requirements are unimplemented.','', '| Category | Executable script | Result | Seconds |','|---|---|---|---:|']
  for r in meta['results']:lines.append(f'| {r["category"]} | `{r["script"]}` | {r["status"]} | {r["seconds"]:.1f} |')
  md_file.write_text('\n'.join(lines)+'\n')
 for cat,name,command in commands:

@@ -1,0 +1,116 @@
+{
+  "release": "0.8.24.11-alpha",
+  "node": {
+    "npm_test_scripts": 71,
+    "master_contract": 1,
+    "passed": 72,
+    "failed": 0
+  },
+  "browser": {
+    "requested": 40,
+    "passed": 40,
+    "failed": 0,
+    "timed_out": 0,
+    "not_executed": 0,
+    "evidence": "docs/qa_runs/master_full_browser_s0of1_v082411_full.json"
+  },
+  "controlled": {
+    "keeper_reach_fixtures": 4,
+    "telemetry_synthetic_cases": 6,
+    "replays": 45,
+    "reproducibility": "pass",
+    "attempts": 526,
+    "ordinary_shots": 324,
+    "super_shots": 23,
+    "passes": 179,
+    "outcomes": {
+      "keeper_deflection": 168,
+      "goal": 26,
+      "teammate_recovery": 25,
+      "keeper_save": 90,
+      "pass_completed": 87,
+      "period_end": 17,
+      "pass_intercepted": 85,
+      "defender_interception": 28
+    },
+    "by_difficulty": {
+      "0": {
+        "matches": 9,
+        "regulationGoalsHome": 10,
+        "regulationGoalsCPU": 0,
+        "savesByCPU": 65,
+        "kicksByHumanTeam": 78,
+        "possessionShareHuman": 0.252,
+        "endedInTiebreak": 4,
+        "attempts": 94,
+        "shots": 74,
+        "passes": 20,
+        "keeperSavesLinked": 53,
+        "defenderInterceptions": 1
+      },
+      "1": {
+        "matches": 9,
+        "regulationGoalsHome": 5,
+        "regulationGoalsCPU": 0,
+        "savesByCPU": 89,
+        "kicksByHumanTeam": 87,
+        "possessionShareHuman": 0.232,
+        "endedInTiebreak": 5,
+        "attempts": 118,
+        "shots": 85,
+        "passes": 33,
+        "keeperSavesLinked": 64,
+        "defenderInterceptions": 6
+      },
+      "2": {
+        "matches": 9,
+        "regulationGoalsHome": 0,
+        "regulationGoalsCPU": 0,
+        "savesByCPU": 64,
+        "kicksByHumanTeam": 54,
+        "possessionShareHuman": 0.18,
+        "endedInTiebreak": 9,
+        "attempts": 88,
+        "shots": 57,
+        "passes": 31,
+        "keeperSavesLinked": 49,
+        "defenderInterceptions": 6
+      },
+      "3": {
+        "matches": 9,
+        "regulationGoalsHome": 2,
+        "regulationGoalsCPU": 3,
+        "savesByCPU": 40,
+        "kicksByHumanTeam": 46,
+        "possessionShareHuman": 0.181,
+        "endedInTiebreak": 7,
+        "attempts": 102,
+        "shots": 60,
+        "passes": 42,
+        "keeperSavesLinked": 42,
+        "defenderInterceptions": 5
+      },
+      "4": {
+        "matches": 9,
+        "regulationGoalsHome": 0,
+        "regulationGoalsCPU": 6,
+        "savesByCPU": 28,
+        "kicksByHumanTeam": 43,
+        "possessionShareHuman": 0.15,
+        "endedInTiebreak": 5,
+        "attempts": 124,
+        "shots": 71,
+        "passes": 53,
+        "keeperSavesLinked": 50,
+        "defenderInterceptions": 10
+      }
+    }
+  },
+  "catalog_documented": 444,
+  "limitations": [
+    "No physical iPhone, Android or real gamepad certification",
+    "Scripted policy is not a human; 9 runs per difficulty are not representative human win rate estimates",
+    "Cross-browser Safari/Firefox and true audio browser origin still unverified",
+    "Browser tests executed in Chromium headless and simulated touch, not real devices"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "release": "0.8.24.1",
+  "node": {
+    "PASS": 59,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  },
+  "browser_runs": [
+    {
+      "file": "master_full_browser_s0of6_v08241_final.json",
+      "summary": {
+        "PASS": 0,
+        "FAIL": 1,
+        "TIMEOUT": 0,
+        "ERROR": 0,
+        "NOT_EXECUTED": 6,
+        "ALL_REQUESTED_PASSED": false
+      }
+    },
+    {
+      "file": "master_full_browser_s0of6_v08241_pass.json",
+      "summary": {
+        "PASS": 6,
+        "FAIL": 0,
+        "TIMEOUT": 0,
+        "ERROR": 0,
+        "NOT_EXECUTED": 1,
+        "ALL_REQUESTED_PASSED": false
+      }
+    }
+  ],
+  "catalog_requirements": 395,
+  "new_deterministic_fixtures": 96,
+  "limitations": [
+    "Browser complete suite unverified",
+    "Physical phone and gamepad unavailable",
+    "Real-match moving keeper distributions not certified"
+  ]
+}

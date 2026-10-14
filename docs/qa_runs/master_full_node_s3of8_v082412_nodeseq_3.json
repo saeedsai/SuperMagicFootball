@@ -1,0 +1,106 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.24.12-alpha",
+  "profile": "full",
+  "category": "node",
+  "shard": {
+    "index": 3,
+    "total": 8
+  },
+  "run_id": "master_full_node_s3of8_v082412_nodeseq_3",
+  "started_utc": "20261014T173658Z",
+  "scripts_requested": 9,
+  "cases_cataloged": 450,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "node",
+      "script": "career.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.097,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/career.mjs",
+      "output_tail": "Career tests: PASS • 83 teams • 12/team • 2026 caricatures • training • transfer • three cup rounds • 14 league rounds • new season"
+    },
+    {
+      "category": "node",
+      "script": "team_combos.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.092,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/team_combos.mjs",
+      "output_tail": "v0.8.2 TEAM COMBOS PASS: launch eligibility, stamina, cooldown continuity, apex special, mistimed flip, solo flip, landing collision, normal jump"
+    },
+    {
+      "category": "node",
+      "script": "character_art.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.117,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/character_art.mjs",
+      "output_tail": "v0.8.14 CHARACTER ART PASS: 5 faces, 13 hairstyles, 20 eyes, 20 brows, 6 noses, 8 lips, 20 render combinations, 400 deterministic identity records"
+    },
+    {
+      "category": "node",
+      "script": "combo_priority.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.14,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/combo_priority.mjs",
+      "output_tail": "COMBO PRIORITY PASS: directional Jump-first cross, reverse-order not cross, no double action, bicycle"
+    },
+    {
+      "category": "node",
+      "script": "v08193_input_stress.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.048,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08193_input_stress.mjs",
+      "output_tail": "v0.8.19.3 INPUT STRESS PASS: 12 ordered taps, 100-tap cap, canceled held touch, lost capture, mixed input sources"
+    },
+    {
+      "category": "node",
+      "script": "v08202_madrid_arsenal_verified.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.117,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08202_madrid_arsenal_verified.mjs",
+      "output_tail": "v0.8.20.2 verified Real Madrid + Arsenal: 24 names, roles, DOB, age, kit number, OVR, engine, stable quota PASS"
+    },
+    {
+      "category": "node",
+      "script": "v0822_bpw_world_cups.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.162,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v0822_bpw_world_cups.mjs",
+      "output_tail": "PASS BPW 1998–2018: 6 mixed squads, 72 unique real tournament players, role quotas, original identities, gameplay boot both ends, save IDs"
+    },
+    {
+      "category": "node",
+      "script": "v08243_full_match_calibration.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 1.905,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08243_full_match_calibration.mjs",
+      "output_tail": "PASS v0.8.24.3 full-match calibration {\"0\":{\"matches\":2,\"goals\":0,\"saves\":0},\"1\":{\"matches\":2,\"goals\":0,\"saves\":0},\"2\":{\"matches\":2,\"goals\":0,\"saves\":0},\"3\":{\"matches\":2,\"goals\":0,\"saves\":0},\"4\":{\"matches\":2,\"goals\":0,\"saves\":0}}"
+    },
+    {
+      "category": "node",
+      "script": "v082410_penalty_fairness.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.082,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v082410_penalty_fairness.mjs",
+      "output_tail": "PASS v0.8.24.10 committed goalkeeper lane and fair sudden-death pairs"
+    }
+  ],
+  "summary": {
+    "PASS": 9,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

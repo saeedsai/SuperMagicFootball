@@ -1,3 +1,4 @@
+from menu_test_routes import open_quick,open_settings
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 root=Path(__file__).resolve().parents[1]
@@ -8,8 +9,8 @@ with sync_playwright() as pw:
   page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   page.evaluate('''()=>{let data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}''')
   page.set_content((root/'play.html').read_text(),wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'")
-  page.locator('[data-action="quick"]').first.click();page.locator('[data-action="kickoff"]').first.click()
+  page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
+  open_quick(page);page.locator('[data-action="kickoff"]').first.click()
   assert page.locator('#touchButtons button[data-act]').count()==4
   result=page.evaluate('''()=>{
    const g=SupermagicFootball.game,a=g.player(0,3),b=g.player(1,3);

@@ -1,8 +1,8 @@
 {
-  "total": 357,
+  "total": 389,
   "historical": 218,
   "backlog": 28,
-  "crosscutting": 69,
+  "crosscutting": 93,
   "new_verified_roster_cases": 2,
   "new_identity_cases": 3,
   "new_ball_lift_cases": 8,
@@ -48,7 +48,7 @@
     "Stadium": 1,
     "Progression": 6,
     "Roster research": 2,
-    "Historical BPW": 11,
+    "Historical BPW": 21,
     "Dribble and tricks": 2,
     "Data migration": 1,
     "GK defense": 1,
@@ -60,11 +60,30 @@
     "GAME": 8,
     "TEAM": 15,
     "RELEASE": 6,
-    "Aerial Super Shot Rework": 12
+    "Aerial Super Shot Rework": 12,
+    "Audio": 8,
+    "Audio reliability": 8,
+    "Goalkeeper balance": 6
   },
   "by_execution": {
-    "NOT_EXECUTED_INDIVIDUALLY": 329,
-    "NOT_APPLICABLE_FEATURE_NOT_SHIPPED": 28
+    "NOT_EXECUTED_INDIVIDUALLY": 353,
+    "NOT_APPLICABLE_FEATURE_NOT_SHIPPED": 28,
+    "AUTOMATED_SCRIPT_PASS_PENDING_HARDWARE": 8
   },
-  "meaning": "Cataloged != executed; RELATED_SCRIPT_ONLY indicates discoverability, not certified requirement coverage."
+  "meaning": "Cataloged != executed; RELATED_SCRIPT_ONLY indicates discoverability, not certified requirement coverage.",
+  "total_cases": 419,
+  "note_v0823": "Eight audio acceptance cases appended; script-level QA does not certify individual cases.",
+  "audio_v0823": 8,
+  "new_alltime_bpw_cases": 10,
+  "audio_reliability_v08232": 8,
+  "note_v08232": "Eight audio reliability acceptance cases added. Per-script regression PASS is not proof of each individual catalog case. Storage simulated: real-origin navigation was blocked.",
+  "keeper_fairness_v0824": 6,
+  "note_v0824": "Six goalkeeper coverage and automatic-super eligibility requirements added. Script passes do not individually certify all catalog cases.",
+  "menu_navigation_v08247": 14,
+  "note_v08247": "Fourteen menu acceptance cases added. 389 historical case summary remains a historical baseline; current catalog is larger. Automated script pass is not per-case hardware certification.",
+  "active_release": "0.8.24.10-alpha",
+  "active_catalog_total": 438,
+  "additional_cases_since_historical_total": 49,
+  "new_082410_penalty_and_replay_cases": 8,
+  "note_082410": "438 catalog items total, but executable regression counts are separate. Seven automated related cases and one open human/device requirement."
 }

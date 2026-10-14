@@ -1,0 +1,44 @@
+{
+  "release": "0.8.24.9",
+  "label": "Controlled real-engine shot flight to open keeper lane; NOT real human win-rate, CPU full match or physical hardware",
+  "fixtures": 500,
+  "groundBallFrameTests": [
+    {
+      "hz": 30,
+      "vx": 214.57785559335966,
+      "vy": 42.91557111867193,
+      "x": 2142.1835520148657,
+      "y": 918.4367104029732
+    },
+    {
+      "hz": 60,
+      "vx": 214.5778555933598,
+      "vy": 42.91557111867194,
+      "x": 2139.7882671507623,
+      "y": 917.9576534301523
+    },
+    {
+      "hz": 120,
+      "vx": 214.57785559336,
+      "vy": 42.91557111867201,
+      "x": 2138.5948164151437,
+      "y": 917.7189632830289
+    }
+  ],
+  "shots": 380,
+  "passes": 120,
+  "goalCountsByDifficulty": {
+    "0": 16,
+    "1": 18,
+    "2": 19,
+    "3": 20,
+    "4": 20
+  },
+  "mediumRangeGoalCount": 251,
+  "limitations": [
+    "Keeper is held away from the shot path to isolate ball-flight drag",
+    "Does not establish human-vs-CPU score fairness or real moving-GK save percentages",
+    "CPU difficulty changes aiming, but these shots are controlled open-lane probes",
+    "Hardware input, sound, and FPS must be separately validated"
+  ]
+}

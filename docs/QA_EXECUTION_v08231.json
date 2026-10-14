@@ -1,0 +1,36 @@
+{
+  "release": "0.8.23.1-alpha",
+  "date": "2026-10-14",
+  "npm_test_count": 54,
+  "npm_test_status": "PASS",
+  "master_node_count": 55,
+  "master_node_status": "PASS",
+  "master_browser_count": 36,
+  "master_browser_status": "PASS",
+  "browser_shards": 6,
+  "audio_node": "PASS separately via npm run test:audio",
+  "master_contract": "PASS (also in Node master suite)",
+  "qa_cases_cataloged": 375,
+  "qa_cases_individually_certified": 0,
+  "hardware_certified": false,
+  "browser_engines_certified": [
+    "Chromium desktop headless",
+    "Chromium simulated touch"
+  ],
+  "limitations": [
+    "No real Android/iOS/physical gamepad QA",
+    "No Firefox/Safari QA",
+    "Normal browser origin localStorage not certified",
+    "No true music crossfade or crowd ambience",
+    "No single uninterrupted browser full-suite proof"
+  ],
+  "raw_evidence": [
+    "qa_runs/master_full_node_s0of1_v08231_final.json",
+    "qa_runs/master_full_browser_s0of6_v08231_final.json",
+    "qa_runs/master_full_browser_s1of6_v08231_final.json",
+    "qa_runs/master_full_browser_s2of6_v08231_final.json",
+    "qa_runs/master_full_browser_s3of6_v08231_final.json",
+    "qa_runs/master_full_browser_s4of6_v08231_final.json",
+    "qa_runs/master_full_browser_s5of6_v08231_final.json"
+  ]
+}

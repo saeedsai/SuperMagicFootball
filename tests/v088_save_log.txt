@@ -1,2 +1,0 @@
-v0.6 offline Quick Match filters + JSON roundtrip DESKTOP PASS
-v0.6 offline Quick Match filters + JSON roundtrip MOBILE PASS

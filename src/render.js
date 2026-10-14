@@ -327,6 +327,13 @@ export class Renderer{
     ctx.fillStyle='#e6ffff';ellipse(ctx,-32,-78+sign*13,12,9,'#e6ffff');ellipse(ctx,32,-78+sign*13,12,9,'#e6ffff');
     ctx.restore();
   }
+ if(p.action==='keeperRecover'){
+  // Fading ground-contact ripple makes the landing legible at reduced scale.
+  const remaining=Math.min(1,Math.max(0,(p.actionTimer||0)/.34));
+  ctx.save();ctx.globalAlpha=.38*remaining;ctx.strokeStyle='#a7d9f1';ctx.lineWidth=3;
+  ctx.beginPath();ctx.ellipse(0,0,27+21*(1-remaining),9+9*(1-remaining),0,0,PI*2);ctx.stroke();
+  ctx.restore();
+ }
  if(['keeperCatch','keeperDiveCatch','keeperThrow','keeperPunt'].includes(p.action)){
   ctx.save();ctx.textAlign='center';ctx.font='900 19px Arial';ctx.fillStyle=['keeperCatch','keeperDiveCatch'].includes(p.action)?'#beffec':'#ffe6a1';
   ctx.fillText(['keeperCatch','keeperDiveCatch'].includes(p.action)?'CAUGHT!':p.action==='keeperThrow'?'THROW!':'PUNT!',0,-151);

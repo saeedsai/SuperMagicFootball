@@ -1,3 +1,4 @@
+from menu_test_routes import open_quick,open_settings
 """Real keyboard/CDP touch control chords against the portable browser game."""
 from pathlib import Path
 import shutil
@@ -11,8 +12,8 @@ with sync_playwright() as pw:
   context=browser.new_context(viewport={'width':view[0],'height':view[1]},is_mobile=mobile,has_touch=mobile)
   page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   page.set_content((root/'play.html').read_text(),wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'")
-  page.locator('[data-action="quick"]').first.click();page.locator('[data-action="kickoff"]').first.click()
+  page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
+  open_quick(page);page.locator('[data-action="kickoff"]').first.click()
   assert page.locator('#touchButtons [data-act]').count()==4
   page.evaluate(setup_js)
   if mobile:

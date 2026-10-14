@@ -1,0 +1,106 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.24.12-alpha",
+  "profile": "full",
+  "category": "node",
+  "shard": {
+    "index": 5,
+    "total": 8
+  },
+  "run_id": "master_full_node_s5of8_v082412_nodeseq_5",
+  "started_utc": "20261014T173713Z",
+  "scripts_requested": 9,
+  "cases_cataloged": 450,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "node",
+      "script": "ai_difficulty.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 1.676,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/ai_difficulty.mjs",
+      "output_tail": "AI difficulty: PASS • 5 separate profiles • Rookie zero bug fixed • speed/reaction/accuracy • all-level stability"
+    },
+    {
+      "category": "node",
+      "script": "four_button_controls.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.099,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/four_button_controls.mjs",
+      "output_tail": "v0.8.4 FOUR BUTTON CONTROLS PASS: no super popups, keeper-aware aim, dribble/switch, auto-switch, double jump super, cross, pass tap"
+    },
+    {
+      "category": "node",
+      "script": "defensive_pursuit_pitch.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.084,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/defensive_pursuit_pitch.mjs",
+      "output_tail": "v0.8.11.2 PITCH/PRESS/SPRINT/FATIGUE PASSED"
+    },
+    {
+      "category": "node",
+      "script": "fixing_issues.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.335,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/fixing_issues.mjs",
+      "output_tail": "FIXING ISSUES PASS: goalkeeper-aware aim both ends, 3 accuracy levels, miss distributions, blocker lanes, strength-based tackle stun and recovery"
+    },
+    {
+      "category": "node",
+      "script": "v08194_keeper_balance.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.098,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08194_keeper_balance.mjs",
+      "output_tail": "v0.8.19.4 GK BALANCE PASS: swept saves both goal directions; wide/high/away misses; skill, speed, super level and fatigue response\nDETERMINISTIC KEEPER-LANE COVERAGE (not real match save %) {\"weakCoverage\":0.3442622950819672,\"strongCoverage\":0.7704918032786885,\"slowCoverage\":0.639344262295082,\"fastCoverage\":0.5081967213114754}"
+    },
+    {
+      "category": "node",
+      "script": "v08205_manchester_liverpool_verified.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.102,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08205_manchester_liverpool_verified.mjs",
+      "output_tail": "v0.8.20.5 source-verified Liverpool and Man City: 24 players, roles, shirts, DOB, stable IDs, formation & match startup PASS"
+    },
+    {
+      "category": "node",
+      "script": "v08231_bpw_alltime.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.094,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08231_bpw_alltime.mjs",
+      "output_tail": "PASS v0.8.23.1 all-time: all 12 exact player/name/country/role/card-rating entries, formation, match both sides, team indexes and idempotence"
+    },
+    {
+      "category": "node",
+      "script": "v08245_release_alignment.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.038,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v08245_release_alignment.mjs",
+      "output_tail": "PASS release/browser alignment 0.8.24.12-alpha 45 checks"
+    },
+    {
+      "category": "node",
+      "script": "v082411_opportunity_telemetry.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.033,
+      "command": "node /mnt/data/smf_082412_dev/Supermagic_Football/tests/v082411_opportunity_telemetry.mjs",
+      "output_tail": "PASS v0.8.24.11 opportunity telemetry classification and event attribution"
+    }
+  ],
+  "summary": {
+    "PASS": 9,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}
