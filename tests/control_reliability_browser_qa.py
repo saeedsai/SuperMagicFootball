@@ -10,7 +10,7 @@ with sync_playwright() as pw:
         ctx=browser.new_context(viewport={'width':w,'height':h},is_mobile=mobile,has_touch=mobile,device_scale_factor=1)
         page=ctx.new_page();errors=[];page.on('pageerror',lambda e: errors.append(str(e)))
         page.set_content(html,wait_until='load')
-        page.wait_for_function("window.SupermagicFootball?.version==='0.8.17.1-alpha'")
+        page.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'")
         page.locator('[data-action="quick"]').first.click()
         page.locator('[data-action="kickoff"]').first.click()
         assert page.locator('#touchButtons [data-act]').count()==4

@@ -5,7 +5,7 @@ import {abilityLevel} from './special_levels.js';
 const cap=(v)=>Math.max(1,Math.min(100,Math.round(Number(v)||1)));
 const speedGrades={A:88,B:75,C:62,D:48};
 const hash=s=>[...String(s||'')].reduce((h,c)=>Math.imul(h^c.charCodeAt(0),16777619)>>>0,2166136261);
-export const NUMERIC_STATS=['stamina','strength','aggression','defence','speedRating','agility','dribbling','shootPower','shootAccuracy','heading','passing','crossing','gkJump','gkSkill'];
+export const NUMERIC_STATS=['stamina','strength','aggression','defence','speedRating','agility','dribbling','shootPower','shootAccuracy','heading','passing','crossing','gkDiving','gkSkill'];
 export function withStats(player){
  const p={...player},r=p.role||'MF',seed=hash(p.id||p.name),off=(n)=>(seed>>>n)%11-5;
  const overall=Number.isFinite(+p.rating)?+p.rating:68;
@@ -26,9 +26,13 @@ export function withStats(player){
   heading:Math.round(overall*.66+16+(r==='FW'?10:0)+off(6)),
   passing:Math.round(overall*.78+13+(r==='MF'?7:0)+off(7)),
   crossing:Math.round(overall*.67+13+(r==='MF'?8:0)+off(9)),
-  gkJump:r==='GK'?Math.round(overall*.8+13+off(10)):18,
+  gkDiving:r==='GK'?Math.round(overall*.8+13+off(10)):18,
   gkSkill:r==='GK'?Math.round(overall*.85+9+off(11)):12,
  };
+ // Backwards compatibility: pre-v0.8.19.6 rosters and save imports used gkJump.
+ // Canonical persisted/exported attribute and UI name is now gkDiving.
+ if(!Number.isFinite(+p.gkDiving) && Number.isFinite(+p.gkJump))p.gkDiving=+p.gkJump;
+ delete p.gkJump;
  for(const key of NUMERIC_STATS)p[key]=cap(Number.isFinite(+p[key])?+p[key]:defaults[key]);
  p.dribbleType=assignedDribbleType(p);
  // Only listed, special characters retain defensive powers. No fictional unique
@@ -40,6 +44,22 @@ export function withStats(player){
  p.superDefenceLevel=abilityLevel(p,'defence');
  p.gkSuperLevel=abilityLevel(p,'keeper');
  return p;
+}
+// Display-only position overall: the rounded arithmetic mean of six relevant
+// independent 1–100 attributes. Kept separate from legacy rating, which is
+// still used by career finances, special levels, and original data generation.
+export const POSITION_OVR_STATS=Object.freeze({
+ GK:Object.freeze(['gkSkill','gkDiving','agility','strength','passing','stamina']),
+ DF:Object.freeze(['defence','strength','aggression','speedRating','heading','stamina']),
+ MF:Object.freeze(['passing','crossing','dribbling','agility','stamina','speedRating']),
+ FW:Object.freeze(['shootAccuracy','shootPower','dribbling','speedRating','agility','heading'])
+});
+export function overallForPosition(player,position=player?.role){
+ const role=Object.hasOwn(POSITION_OVR_STATS,position)?position:'MF';
+ const source=player?.src||player||{};
+ const attributes=withStats(source);
+ const values=POSITION_OVR_STATS[role].map(key=>attributes[key]);
+ return Math.round(values.reduce((sum,value)=>sum+value,0)/values.length);
 }
 export const stat=(p,key)=>withStats(p.src||p)[key];
 export const endurance=(p)=>Math.max(.52,1-.47*Math.max(0,Math.min(1,p.fatigue||0)));

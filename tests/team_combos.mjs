@@ -15,7 +15,8 @@ const g2=make(),jumper=g2.player(0,3),donor=g2.player(0,4),ball=g2.ball;
 ball.owner=null;jumper.x=1400;jumper.y=650;donor.x=1460;donor.y=650;donor.cd=0;donor.z=0;
 jumper.fatigue=0;donor.fatigue=0;
 input.held=(t,a)=>a==='pass';
-g2.command(jumper,'jump');assert.equal(jumper.comboActive,true,'hold Pass + Jump launches together');
+g2.command(jumper,'jump');assert.equal(jumper.comboActive,false,'human Pass + Jump no longer auto-launches');
+jumper.z=0;jumper.vz=0;jumper.cd=0;assert.equal(g2.tryTeammateLaunch(jumper),true,'legacy AI team launch remains internally available');
 const fatigueBefore=jumper.fatigue;
 // Near the apex, transforming super shot retains its underlying original character profile.
 jumper.z=218;jumper.vz=100;jumper.cd=0;ball.owner=null;ball.x=jumper.x+22;ball.y=jumper.y;ball.z=230;ball.attacker=1;

@@ -30,7 +30,7 @@ function setup(){control.state=[{},{}];control.pulse={};const g=new GameEngine({
  const near=g.players.find(q=>q.t===0&&!q.keeper&&q!==p);near.x=2990;near.y=670;
  assert.equal(g.autoSwitch(0,.15),false,'auto-switch is delayed, preventing sudden control jumps');
  assert.equal(g.autoSwitch(0,.5),true);assert.equal(g.controlled[0],near.i);
- g.controlled[0]=3;control.state[0]={sprint:1};assert.equal(g.autoSwitch(0),false,'sprinting manual control is respected');
+ g.controlled[0]=3;control.state[0]={jump:1};assert.equal(g.autoSwitch(0),false,'held Jump defending is respected as sprint');
 }
 {
  const g=setup(),p=g.player(0,3);g.take(p);p.fatigue=0;
@@ -40,8 +40,10 @@ function setup(){control.state=[{},{}];control.pulse={};const g=new GameEngine({
 }
 {
  const g=setup(),p=g.player(0,3);g.take(p);p.cd=0;
- control.state[0]={pass:1,jump:1,x:0,y:0};control.pulse={jump:true};g.updatePlayers(.016);
- assert.ok(g.ball.owner===null&&g.ball.vz>190,'holding Pass + pressing Jump crosses the ball');
+ control.state[0]={jump:1,x:0,y:0};control.pulse={jump:true};g.updatePlayers(.016);
+ control.state[0]={jump:0,x:0,y:0};control.pulse={};g.updatePlayers(.016);
+ control.state[0]={pass:1,x:0,y:0};control.pulse={pass:true};g.updatePlayers(.016);
+ assert.ok(g.ball.owner===null&&g.ball.vz>190,'Jump then airborne Pass crosses the ball');
 }
 {
  const g=setup(),p=g.player(0,3);g.take(p);

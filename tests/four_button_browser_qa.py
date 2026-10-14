@@ -9,7 +9,7 @@ with sync_playwright() as pw:
   page.on('pageerror',lambda e:errors.append(str(e)))
   page.evaluate("""()=>{const data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}""")
   page.set_content((p/'play.html').read_text(),wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.17.1-alpha'")
+  page.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'")
   page.locator('[data-action="quick"]').first.click()
   page.locator('[data-action="kickoff"]').first.click()
   assert page.evaluate('SupermagicFootball.game.matchState')=='play'

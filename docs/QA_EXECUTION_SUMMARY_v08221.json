@@ -1,0 +1,33 @@
+{
+  "release": "0.8.22.1-alpha",
+  "node": {
+    "unique_scripts": 54,
+    "pass": 54,
+    "fail": 0,
+    "timeout": 0
+  },
+  "browser": {
+    "unique_scripts": 34,
+    "pass": 34,
+    "fail": 0,
+    "timeout": 0,
+    "execution": "6 separate shards"
+  },
+  "documented_acceptance_cases": 357,
+  "individual_acceptance_certifications": 0,
+  "hardware_tested": false,
+  "browser_shard_evidence": [
+    "master_full_browser_s0of6_v08221_release_final.json",
+    "master_full_browser_s1of6_v08221_release.json",
+    "master_full_browser_s2of6_v08221_release.json",
+    "master_full_browser_s3of6_v08221_release.json",
+    "master_full_browser_s4of6_v08221_release_final.json",
+    "master_full_browser_s5of6_v08221_release.json"
+  ],
+  "node_evidence": "master_full_node_s0of1_v08221_release.json",
+  "observed_pre_final_issues": [
+    "Concurrent long browser run exceeded execution window; final individual shards all passed",
+    "Older aerial-browser fixture omitted Jump state and assumed immediate single-tap header; updated to valid Jump state and 320ms tap window",
+    "Earlier simulation test assumed defensive-specialized player always has shoot transformation; corrected assertion"
+  ]
+}

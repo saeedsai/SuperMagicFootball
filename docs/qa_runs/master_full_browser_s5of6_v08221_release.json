@@ -1,0 +1,70 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.22.1",
+  "profile": "full",
+  "category": "browser",
+  "shard": {
+    "index": 5,
+    "total": 6
+  },
+  "run_id": "master_full_browser_s5of6_v08221_release",
+  "started_utc": "20261014T115447Z",
+  "scripts_requested": 5,
+  "cases_cataloged": 357,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "browser",
+      "script": "ai_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 4.784,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/ai_browser_qa.py",
+      "output_tail": "AI difficulty browser QA desktop: PASS · settings, setup, paused live change, resume\nAI difficulty browser QA mobile: PASS · settings, setup, paused live change, resume"
+    },
+    {
+      "category": "browser",
+      "script": "team_combos_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 2.866,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/team_combos_browser_qa.py",
+      "output_tail": "desktop PASS: simultaneous Pass+Jump never launches, airborne Jump-then-Pass crosses, four-button contract\nsimulated-mobile PASS: simultaneous Pass+Jump never launches, airborne Jump-then-Pass crosses, four-button contract"
+    },
+    {
+      "category": "browser",
+      "script": "penalty_controls_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 4.376,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/penalty_controls_browser_qa.py",
+      "output_tail": "v0.8.10 BROWSER QA PASS: remapping, keyboard/touch PK movement and shots, cross-layout 4 buttons"
+    },
+    {
+      "category": "browser",
+      "script": "v08202_rosters_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 5.9,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/v08202_rosters_browser_qa.py",
+      "output_tail": "desktop PASS Real Madrid and Arsenal 2026/27 names, shirts, ages, formation faces & OVR\nsimulated Android PASS Real Madrid and Arsenal 2026/27 names, shirts, ages, formation faces & OVR"
+    },
+    {
+      "category": "browser",
+      "script": "rapid_controls_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 3.585,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/rapid_controls_browser_qa.py",
+      "output_tail": "desktop PASS: subframe Pass, action release, simultaneous button chords, manual switch, no page exceptions\nandroid PASS: subframe Pass, action release, simultaneous button chords, manual switch, no page exceptions"
+    }
+  ],
+  "summary": {
+    "PASS": 5,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.22.1",
+  "profile": "full",
+  "category": "browser",
+  "shard": {
+    "index": 3,
+    "total": 6
+  },
+  "run_id": "master_full_browser_s3of6_v08221_release",
+  "started_utc": "20261014T115241Z",
+  "scripts_requested": 6,
+  "cases_cataloged": 357,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "browser",
+      "script": "manager_v060.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 5.037,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/manager_v060.py",
+      "output_tail": "Manager recruiting and contracts desktop PASS\nManager recruiting and contracts mobile PASS"
+    },
+    {
+      "category": "browser",
+      "script": "abilities_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 2.97,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/abilities_browser_qa.py",
+      "output_tail": "desktop PASS: four-button defensive aerial action and autonomous GK; removed Special binding not required\nsimulated-mobile PASS: four-button defensive aerial action and autonomous GK; removed Special binding not required"
+    },
+    {
+      "category": "browser",
+      "script": "four_button_phase2_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 4.227,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/four_button_phase2_browser_qa.py",
+      "output_tail": "desktop PASS: four-button HUD, bicycle shot, flying kick, keeper distribution, no page errors\nandroid PASS: four-button HUD, bicycle shot, flying kick, keeper distribution, no page errors"
+    },
+    {
+      "category": "browser",
+      "script": "master_ui_contracts.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 5.502,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/master_ui_contracts.py",
+      "output_tail": "PASS desktop four action buttons, home team selection, 6 formation faces, 12 roster portraits, OVR, no page errors\nPASS simulated Android four action buttons, home team selection, 6 formation faces, 12 roster portraits, OVR, no page errors"
+    },
+    {
+      "category": "browser",
+      "script": "v08196_keeper_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 3.59,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/v08196_keeper_browser_qa.py",
+      "output_tail": "desktop PASS: GK Diving UI, migrated stat, 2 goalkeeper directional diving catches, action-button contract\nsimulated-android PASS: GK Diving UI, migrated stat, 2 goalkeeper directional diving catches, action-button contract"
+    },
+    {
+      "category": "browser",
+      "script": "v08221_aerial_super_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 2.978,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/v08221_aerial_super_browser_qa.py",
+      "output_tail": "PASS Desktop Chromium: 9 normal/super aerial and grounded shot scenarios, specialist fallback, control help, 4 buttons\nPASS Simulated Android: 9 normal/super aerial and grounded shot scenarios, specialist fallback, control help, 4 buttons"
+    }
+  ],
+  "summary": {
+    "PASS": 6,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

@@ -10,7 +10,7 @@ with sync_playwright() as p:
   page=browser.new_page(**config)
   errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
   page.set_content(markup,wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.17.1-alpha'",timeout=12000)
+  page.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'",timeout=12000)
   assert page.locator('section.homeSection').count()==3
   assert page.locator('.homeMasthead').count()==1
   for action in actions:

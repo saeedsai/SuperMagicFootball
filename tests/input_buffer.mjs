@@ -16,16 +16,16 @@ globalThis.document={querySelector:s=>elements.get(s.replace('#','')),querySelec
 Object.defineProperty(globalThis,'navigator',{configurable:true,value:{getGamepads:()=>[]}});
 const input=new Input();const emit=(type,code)=>handlers.get(type)?.({code,target:{},preventDefault(){}});
 // Key press/release between animation polls is buffered exactly once.
-emit('keydown','KeyK');emit('keyup','KeyK');input.poll();assert(input.just(0,'pass'));assert(input.held(0,'pass'));input.poll();assert(!input.held(0,'pass'));assert(!input.just(0,'pass'));
+emit('keydown','KeyK');emit('keyup','KeyK');input.poll();assert(input.just(0,'pass'));assert(input.held(0,'pass'));assert(input.released(0,'pass'),'subframe key release should be visible on the same poll');input.poll();assert(!input.held(0,'pass'));assert(!input.just(0,'pass'));
 // Continuous key hold stays held across polls, not retriggered each frame.
-emit('keydown','Space');input.poll();assert(input.just(0,'jump'));input.poll();assert(input.held(0,'jump')&&!input.just(0,'jump'));emit('keyup','Space');input.poll();assert(!input.held(0,'jump'));
+emit('keydown','Space');input.poll();assert(input.just(0,'jump'));input.poll();assert(input.held(0,'jump')&&!input.just(0,'jump'));emit('keyup','Space');input.poll();assert(!input.held(0,'jump'));assert(input.released(0,'jump'));
 // Two simultaneous touches survive same-frame taps in correct action channels.
 const press=(k,id)=>elements.get(k).emit('pointerdown',id),release=(k,id)=>elements.get(k).emit('pointerup',id);
-press('jump',1);press('shoot',2);release('jump',1);release('shoot',2);input.poll();assert(input.just(0,'jump')&&input.just(0,'shoot'));input.poll();assert(!input.held(0,'jump')&&!input.held(0,'shoot'));
+press('jump',1);press('shoot',2);release('jump',1);release('shoot',2);input.poll();assert(input.just(0,'jump')&&input.just(0,'shoot'));assert(input.released(0,'jump')&&input.released(0,'shoot'));input.poll();assert(!input.held(0,'jump')&&!input.held(0,'shoot'));
 // Quick dribble taps remain visible with a poll between taps.
 press('dribble',3);release('dribble',3);input.poll();assert(input.just(0,'dribble'));input.poll();press('dribble',4);release('dribble',4);input.poll();assert(input.just(0,'dribble'));
 // Two pointers on one action: releasing one does not drop the other.
-press('pass',5);input.poll();press('pass',6);release('pass',5);input.poll();assert(input.held(0,'pass'));release('pass',6);input.poll();assert(!input.held(0,'pass'));
+press('pass',5);input.poll();press('pass',6);release('pass',5);input.poll();assert(input.held(0,'pass')&&!input.released(0,'pass'));release('pass',6);input.poll();assert(!input.held(0,'pass')&&input.released(0,'pass'));
 // Joystick pointer release cannot cancel another active joystick pointer.
 const joy=elements.get('joyZone');joy.emit('pointerdown',7,120,75);joy.emit('pointerdown',8,20,75);joy.emit('pointerup',7,120,75);assert(input.touch.x<0,'remaining joystick pointer must still steer');joy.emit('pointerup',8,20,75);assert.equal(input.touch.x,0);
 // Blur clears queued events so they cannot surprise the player upon focus return.

@@ -8,7 +8,11 @@ with sync_playwright() as pw:
   page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   page.set_content((root/'play.html').read_text());page.wait_for_timeout(400)
   page.locator('[data-action=manager]').first.click()
-  assert page.locator('#managerClub option').count() > 100
+  assert page.locator('#managerContinent option').count() >= 6
+  assert page.locator('#managerCountry option').count() >= 1
+  page.locator('#managerContinent').select_option('CAF')
+  page.locator('#managerCountry').select_option('RSA')
+  assert 1 <= page.locator('#managerClub option').count() < 100
   # Test African team chosen from newly added participant list.
   index=page.evaluate('NekketsuHD.teams.find(t=>t.name==="Mamelodi Sundowns").index')
   page.locator('#managerClub').select_option(str(index))

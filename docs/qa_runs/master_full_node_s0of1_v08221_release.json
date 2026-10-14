@@ -1,0 +1,511 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.22.1",
+  "profile": "full",
+  "category": "node",
+  "shard": {
+    "index": 0,
+    "total": 1
+  },
+  "run_id": "master_full_node_s0of1_v08221_release",
+  "started_utc": "20261014T115724Z",
+  "scripts_requested": 54,
+  "cases_cataloged": 357,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "node",
+      "script": "tactics_identity.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.091,
+      "command": "node /mnt/data/work_v08221/tests/tactics_identity.mjs",
+      "output_tail": "v0.7.0 TACTICS & IDENTITY PASS — all 216 team identities, roles, substitution, settings, invalid input safeguards"
+    },
+    {
+      "category": "node",
+      "script": "kits_agility.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.084,
+      "command": "node /mnt/data/work_v08221/tests/kits_agility.mjs",
+      "output_tail": "v0.6.3 KITS & AGILITY PASS — 216 home/away pairs, chosen kits, distinct running speed, acceleration and turns"
+    },
+    {
+      "category": "node",
+      "script": "simulation.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.071,
+      "command": "node /mnt/data/work_v08221/tests/simulation.mjs",
+      "output_tail": "Simulation tests: PASS • 12 unique Japanese shots • 13 teams • match physics • goal • PK mode"
+    },
+    {
+      "category": "node",
+      "script": "career.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.07,
+      "command": "node /mnt/data/work_v08221/tests/career.mjs",
+      "output_tail": "Career tests: PASS • 83 teams • 12/team • 2026 caricatures • training • transfer • three cup rounds • 14 league rounds • new season"
+    },
+    {
+      "category": "node",
+      "script": "continental.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.107,
+      "command": "node /mnt/data/work_v08221/tests/continental.mjs",
+      "output_tail": "Verified UEFA 2026/27 36 clubs, completed all 36 solo campaigns\nVerified AFC 2026/27 32 clubs, completed all 32 solo campaigns\nVerified CAF 2025/26 confirmed 16 clubs, completed all 16 solo campaigns\nVerified CONCACAF 2026 confirmed 27 clubs, completed all 27 solo campaigns\nVerified CONMEBOL 2026 confirmed 32 clubs, completed all 32 solo campaigns\nVerified OFC 2026 confirmed 8 clubs, completed all 8 solo campaigns\nContinental tournament full-season test: PASS; total selectable teams 216"
+    },
+    {
+      "category": "node",
+      "script": "ai_difficulty.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 1.151,
+      "command": "node /mnt/data/work_v08221/tests/ai_difficulty.mjs",
+      "output_tail": "AI difficulty: PASS • 5 separate profiles • Rookie zero bug fixed • speed/reaction/accuracy • all-level stability"
+    },
+    {
+      "category": "node",
+      "script": "player_stats.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.115,
+      "command": "node /mnt/data/work_v08221/tests/player_stats.mjs",
+      "output_tail": "Player stats: PASS • 216x12 stat coverage • fatigue/rest/halftime • strength/aggression/defence • kick/accuracy • passing • GK • save compatibility\nPlayer stats career growth: PASS • positional development updates expanded ratings"
+    },
+    {
+      "category": "node",
+      "script": "fitness_substitutions.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.074,
+      "command": "node /mnt/data/work_v08221/tests/fitness_substitutions.mjs",
+      "output_tail": "v0.7.1 FITNESS & SUBSTITUTIONS PASS — distinct action costs, permanent three-sub limit, no re-entry, fatigue ledger, halftime recovery, CPU swap, career fitness"
+    },
+    {
+      "category": "node",
+      "script": "morale_reactions.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.085,
+      "command": "node /mnt/data/work_v08221/tests/morale_reactions.mjs",
+      "output_tail": "v0.7.3 MORALE/REACTIONS PASS • reactions/backfires • speed • scoring/crying • persistence • half-time limits • 216 teams preserved"
+    },
+    {
+      "category": "node",
+      "script": "defensive_abilities.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.065,
+      "command": "node /mnt/data/work_v08221/tests/defensive_abilities.mjs",
+      "output_tail": "v0.8.0 DEFENSIVE/GK ABILITIES PASS: 2 field + 2 GK; collisions, stamina, cooldowns, keeper clearance, persistence, no-regression shots"
+    },
+    {
+      "category": "node",
+      "script": "aerial_mechanics.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.08,
+      "command": "node /mnt/data/work_v08221/tests/aerial_mechanics.mjs",
+      "output_tail": "v0.8.1 AERIAL TEST PASS: hyperdash duration/cooldown/fatigue, timed heading, ordinary GK dives, save direction, old rare abilities"
+    },
+    {
+      "category": "node",
+      "script": "team_combos.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.065,
+      "command": "node /mnt/data/work_v08221/tests/team_combos.mjs",
+      "output_tail": "v0.8.2 TEAM COMBOS PASS: launch eligibility, stamina, cooldown continuity, apex special, mistimed flip, solo flip, landing collision, normal jump"
+    },
+    {
+      "category": "node",
+      "script": "ai_team_combos.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.068,
+      "command": "node /mnt/data/work_v08221/tests/ai_team_combos.mjs",
+      "output_tail": "v0.8.3 AI COMBO PASS: all 5 profiles, auto setup, apex shots, cooldown, distance gates, support runs, human control safety"
+    },
+    {
+      "category": "node",
+      "script": "four_button_controls.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.07,
+      "command": "node /mnt/data/work_v08221/tests/four_button_controls.mjs",
+      "output_tail": "v0.8.4 FOUR BUTTON CONTROLS PASS: no super popups, keeper-aware aim, dribble/switch, auto-switch, double jump super, cross, pass tap"
+    },
+    {
+      "category": "node",
+      "script": "player_collisions.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.202,
+      "command": "node /mnt/data/work_v08221/tests/player_collisions.mjs",
+      "output_tail": "v0.8.5 COLLISIONS PASS: symmetric pushback, short stun, cooldown, ball drops, teammate spacing, airborne separation, zero-distance safety, long simulation"
+    },
+    {
+      "category": "node",
+      "script": "four_button_phase2.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.074,
+      "command": "node /mnt/data/work_v08221/tests/four_button_phase2.mjs",
+      "output_tail": "v0.8.6 FOUR BUTTON PHASE 2 PASS: bicycle, flying kick, defensive priority, trick, GK distribution, AI detour, old special"
+    },
+    {
+      "category": "node",
+      "script": "dribble_styles.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.126,
+      "command": "node /mnt/data/work_v08221/tests/dribble_styles.mjs",
+      "output_tail": "v0.8.7 DRIBBLE STYLES PASS — 216 teams, 2592 players, 10 profiles, stamina/cooldowns, defensive counters, AI, identity stability"
+    },
+    {
+      "category": "node",
+      "script": "penalty_controls.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.078,
+      "command": "node /mnt/data/work_v08221/tests/penalty_controls.mjs",
+      "output_tail": "v0.8.8 PENALTY & BINDING PASS — movement, dribble, keeper dive, shooting origin, safe profiles, real polling"
+    },
+    {
+      "category": "node",
+      "script": "cartoon_identities.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.074,
+      "command": "node /mnt/data/work_v08221/tests/cartoon_identities.mjs",
+      "output_tail": "v0.8.10 CARTOON IDENTITIES PASS — 216 teams; 165 crests, 51 flags; offline deterministic SVG, safe fallback"
+    },
+    {
+      "category": "node",
+      "script": "character_art.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.074,
+      "command": "node /mnt/data/work_v08221/tests/character_art.mjs",
+      "output_tail": "v0.8.14 CHARACTER ART PASS: 5 faces, 13 hairstyles, 20 eyes, 20 brows, 6 noses, 8 lips, 20 render combinations, 400 deterministic identity records"
+    },
+    {
+      "category": "node",
+      "script": "super_shot_reset.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.068,
+      "command": "node /mnt/data/work_v08221/tests/super_shot_reset.mjs",
+      "output_tail": "Super-shot transformation reset: passed"
+    },
+    {
+      "category": "node",
+      "script": "defensive_pursuit_pitch.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.062,
+      "command": "node /mnt/data/work_v08221/tests/defensive_pursuit_pitch.mjs",
+      "output_tail": "v0.8.11.2 PITCH/PRESS/SPRINT/FATIGUE PASSED"
+    },
+    {
+      "category": "node",
+      "script": "secondary_controls.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.073,
+      "command": "node /mnt/data/work_v08221/tests/secondary_controls.mjs",
+      "output_tail": "v0.8.12 SECONDARY CONTROLS PASS: old saves, P2 keyboard/gamepad isolation, double-jump defense, keeper dive"
+    },
+    {
+      "category": "node",
+      "script": "roster_reconciliation.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.11,
+      "command": "node /mnt/data/work_v08221/tests/roster_reconciliation.mjs",
+      "output_tail": "v0.8.14 ROSTER RECONCILIATION PASS: 216 clubs, 2592 players, positions, default lineups, star retention, engine start"
+    },
+    {
+      "category": "node",
+      "script": "active_pursuit_ground_shots.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.067,
+      "command": "node /mnt/data/work_v08221/tests/active_pursuit_ground_shots.mjs",
+      "output_tail": "v0.8.15 ACTIVE AI / GK DISTRIBUTION / AIRBORNE SUPER TRAJECTORY PASS"
+    },
+    {
+      "category": "node",
+      "script": "special_levels.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.111,
+      "command": "node /mnt/data/work_v08221/tests/special_levels.mjs",
+      "output_tail": "v0.8.16 SPECIAL TIERS PASS — 2592 roster entries; 11 level-4 names; 4 level-5 names; impact, fatigue, defence, keeper, override and slow-shot invariants"
+    },
+    {
+      "category": "node",
+      "script": "control_reliability.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.08,
+      "command": "node /mnt/data/work_v08221/tests/control_reliability.mjs",
+      "output_tail": "v0.8.17 CONTROL RELIABILITY PASS — short/long/rapid passing, jump run/tap, manual switch grace, steering auto-switch"
+    },
+    {
+      "category": "node",
+      "script": "combo_priority.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.097,
+      "command": "node /mnt/data/work_v08221/tests/combo_priority.mjs",
+      "output_tail": "COMBO PRIORITY PASS: directional Jump-first cross, reverse-order not cross, no double action, bicycle"
+    },
+    {
+      "category": "node",
+      "script": "input_buffer.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.034,
+      "command": "node /mnt/data/work_v08221/tests/input_buffer.mjs",
+      "output_tail": "INPUT BUFFER PASS: keyboard/touch quick taps, simultaneous buttons, held keys, multi-pointer, joystick handoff, blur cleanup"
+    },
+    {
+      "category": "node",
+      "script": "fixing_issues.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.274,
+      "command": "node /mnt/data/work_v08221/tests/fixing_issues.mjs",
+      "output_tail": "FIXING ISSUES PASS: goalkeeper-aware aim both ends, 3 accuracy levels, miss distributions, blocker lanes, strength-based tackle stun and recovery"
+    },
+    {
+      "category": "node",
+      "script": "v0818_regressions.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.079,
+      "command": "node /mnt/data/work_v08221/tests/v0818_regressions.mjs",
+      "output_tail": "v0.8.18 REGRESSIONS PASS: moving/running slides, contact, ordinary tackle, bounded attacking stoppage, super-shot launch/stat resistance, held/tapped jump and cross priority"
+    },
+    {
+      "category": "node",
+      "script": "v08181_four_buttons_keeper.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.077,
+      "command": "node /mnt/data/work_v08221/tests/v08181_four_buttons_keeper.mjs",
+      "output_tail": "v0.8.18.1 FOUR-ACTION INPUT / CROSS ORDER / AUTONOMOUS KEEPER / SAFE CLEARANCES: PASS"
+    },
+    {
+      "category": "node",
+      "script": "v0819_goalkeeper.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.065,
+      "command": "node /mnt/data/work_v08221/tests/v0819_goalkeeper.mjs",
+      "output_tail": "v0.8.19 GOALKEEPERS: catches/throws/punts/pressure/blocked lanes/auto saves both teams: PASS"
+    },
+    {
+      "category": "node",
+      "script": "v08191_input_queue.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.072,
+      "command": "node /mnt/data/work_v08221/tests/v08191_input_queue.mjs",
+      "output_tail": "v0.8.19.1 INPUT QUEUE PASS — 3 keyboard / 4 touch cycles, hold duration, sprint disambiguation, reset and remapping"
+    },
+    {
+      "category": "node",
+      "script": "v08192_focus_keeper.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.066,
+      "command": "node /mnt/data/work_v08221/tests/v08192_focus_keeper.mjs",
+      "output_tail": "v0.8.19.2 FOCUS/KEEPER PASS: background queued inputs, disconnect, mirrored interception prediction, AI usage"
+    },
+    {
+      "category": "node",
+      "script": "v08193_input_stress.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.031,
+      "command": "node /mnt/data/work_v08221/tests/v08193_input_stress.mjs",
+      "output_tail": "v0.8.19.3 INPUT STRESS PASS: 12 ordered taps, 100-tap cap, canceled held touch, lost capture, mixed input sources"
+    },
+    {
+      "category": "node",
+      "script": "v08193_ui_navigation.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.111,
+      "command": "node /mnt/data/work_v08221/tests/v08193_ui_navigation.mjs",
+      "output_tail": "v0.8.19.3 UI NAV PASS: 165 manager clubs, 165 unique country/continent memberships, six 6-player formation presets"
+    },
+    {
+      "category": "node",
+      "script": "v08194_keeper_balance.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.067,
+      "command": "node /mnt/data/work_v08221/tests/v08194_keeper_balance.mjs",
+      "output_tail": "v0.8.19.4 GK BALANCE PASS: swept saves both goal directions; wide/high/away misses; skill, speed, super level and fatigue response\nDETERMINISTIC KEEPER-LANE COVERAGE (not real match save %) {\"weakCoverage\":0.3442622950819672,\"strongCoverage\":0.7704918032786885,\"slowCoverage\":0.639344262295082,\"fastCoverage\":0.5081967213114754}"
+    },
+    {
+      "category": "node",
+      "script": "v08195_overall.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.066,
+      "command": "node /mnt/data/work_v08221/tests/v08195_overall.mjs",
+      "output_tail": "v0.8.19.5 POSITION OVERALL PASS: equal six-attribute means for GK/DF/MF/FW; ratings remain independent; no formation or match mutation"
+    },
+    {
+      "category": "node",
+      "script": "v08196_keeper_prediction.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.065,
+      "command": "node /mnt/data/work_v08221/tests/v08196_keeper_prediction.mjs",
+      "output_tail": "v0.8.19.6 GK PASS: renamed/migrated attribute; mirrored nonlinear trajectory predictions, projected positioning, skill scaling, reaction and animated dive state"
+    },
+    {
+      "category": "node",
+      "script": "v08197_keeper_sessions.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 1.446,
+      "command": "node /mnt/data/work_v08221/tests/v08197_keeper_sessions.mjs",
+      "output_tail": "v0.8.19.7 KEEPER SESSION QA PASS {\"trials\":1320,\"matches\":4,\"scores\":[[0,0],[0,0],[0,1],[0,2]],\"totals\":{\"goal\":3,\"save\":21,\"keeperDive\":12,\"keeperCatch\":14,\"keeperDistribution\":9,\"keeperRecovery\":7}}"
+    },
+    {
+      "category": "node",
+      "script": "v0820_roster_sources.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.085,
+      "command": "node /mnt/data/work_v08221/tests/v0820_roster_sources.mjs",
+      "output_tail": "v0.8.20 verified Inter Miami roster PASS: 12 authentic names, ages, roles, stable IDs, game initialization"
+    },
+    {
+      "category": "node",
+      "script": "v08201_barcelona_verified.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.075,
+      "command": "node /mnt/data/work_v08221/tests/v08201_barcelona_verified.mjs",
+      "output_tail": "v0.8.20.1 Barcelona curated 2026 squad and engine compatibility PASS"
+    },
+    {
+      "category": "node",
+      "script": "v08202_madrid_arsenal_verified.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.088,
+      "command": "node /mnt/data/work_v08221/tests/v08202_madrid_arsenal_verified.mjs",
+      "output_tail": "v0.8.20.2 verified Real Madrid + Arsenal: 24 names, roles, DOB, age, kit number, OVR, engine, stable quota PASS"
+    },
+    {
+      "category": "node",
+      "script": "v08203_bayern_psg_verified.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.088,
+      "command": "node /mnt/data/work_v08221/tests/v08203_bayern_psg_verified.mjs",
+      "output_tail": "v0.8.20.4 verified Bayern and PSG: 24 names, roles, shirts, ages, stable IDs and match startup PASS"
+    },
+    {
+      "category": "node",
+      "script": "v08205_manchester_liverpool_verified.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.073,
+      "command": "node /mnt/data/work_v08221/tests/v08205_manchester_liverpool_verified.mjs",
+      "output_tail": "v0.8.20.5 source-verified Liverpool and Man City: 24 players, roles, shirts, DOB, stable IDs, formation & match startup PASS"
+    },
+    {
+      "category": "node",
+      "script": "v08206_canonical_identity.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.133,
+      "command": "node /mnt/data/work_v08221/tests/v08206_canonical_identity.mjs",
+      "output_tail": "PASS v0.8.20.6: canonical DOB identity, conservative candidate grouping, 99 safe identities, 25 real-name role conflicts, 3 placeholder collisions, 0 mutations"
+    },
+    {
+      "category": "node",
+      "script": "v08206_lafc_roles.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.077,
+      "command": "node /mnt/data/work_v08221/tests/v08206_lafc_roles.mjs",
+      "output_tail": "PASS LAFC 2026: Son out of goal and back to FW, real second GK, 3 verified DOB/shirt/roles, save IDs preserved"
+    },
+    {
+      "category": "node",
+      "script": "v08206_roster_inventory.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.083,
+      "command": "node /mnt/data/work_v08221/tests/v08206_roster_inventory.mjs",
+      "output_tail": "ROSTER AUDIT v0.8.20.6 {\"auditedAt\":\"2026-10-14\",\"version\":\"0.8.20.6\",\"teamCount\":216,\"playerSlots\":2592,\"explicitFictional\":1768,\"clubRoleVerified\":99,\"shirtVerified\":99,\"ageVerified\":99,\"statsVerified\":0,\"appearanceVerified\":0,\"roleConflicts\":28,\"sourceVerifiedTeams\":[\"Arsenal\",\"Bayern Munich\",\"Manchester City\",\"Paris Saint-Germain\",\"Barcelona\",\"Real Madrid\",\"Liverpool\",\"Inter Miami\"],\"notes\":[\"Only club and role membership verified for 99 player slots (eight fully verified clubs plus three LAFC players); stats, transfer values, appearances remain provisional.\",\"The 12-player format is a gameplay choice, not the complete official club registration list.\",\"Repeated identities across national teams must be canonicalized before player-tier population limits can be enforced.\"],\"unverifiedClubRole\":2493}"
+    },
+    {
+      "category": "node",
+      "script": "v0821_ball_lift_super_bicycle.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.083,
+      "command": "node /mnt/data/work_v08221/tests/v0821_ball_lift_super_bicycle.mjs",
+      "output_tail": "PASS v0.8.21: hold-order lift, both teams, grounded carrier, airborne follow-up, unified special-power shot, no duplicates, invalid states, timeout and possession loss, ordinary bicycle preserved"
+    },
+    {
+      "category": "node",
+      "script": "v08211_control_cancellation_balance.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.076,
+      "command": "node /mnt/data/work_v08221/tests/v08211_control_cancellation_balance.mjs",
+      "output_tail": "PASS v0.8.22: mixed keyboard/touch release, cancel hold Shoot/Pass, background abort, recovery, unified transforming and fatigue-costly super bicycle"
+    },
+    {
+      "category": "node",
+      "script": "v0822_bpw_world_cups.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.084,
+      "command": "node /mnt/data/work_v08221/tests/v0822_bpw_world_cups.mjs",
+      "output_tail": "PASS BPW 1998–2018: 6 mixed squads, 72 unique real tournament players, role quotas, original identities, gameplay boot both ends, save IDs"
+    },
+    {
+      "category": "node",
+      "script": "v08221_aerial_super_rework.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.085,
+      "command": "node /mnt/data/work_v08221/tests/v08221_aerial_super_rework.mjs",
+      "output_tail": "PASS v0.8.22.1: six input variants, both directions, two taps, single-tap timeout, double jump, non-specialists, unified special shot physics/graphics, cancellation, no repeated shots"
+    },
+    {
+      "category": "node",
+      "script": "master_contracts.mjs",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 0.107,
+      "command": "node /mnt/data/work_v08221/tests/master_contracts.mjs",
+      "output_tail": "MASTER QA CONTRACTS PASS: 222 teams / 2,664 slots, 99 verified, 1,768 fictional; six formations, four action buttons, GK Diving migration, OVR purity, 357-case catalog, release/PWA version"
+    }
+  ],
+  "summary": {
+    "PASS": 54,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

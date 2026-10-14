@@ -1,3 +1,4 @@
+import {canonicalPersonId} from './player_identity_registry.js';
 import {ROSTER_CORRECTIONS} from './roster_corrections.js';
 // Nekketsu-inspired HD arcade soccer remake: editable data layer.
 // Original Japanese roster stats and shot *names* from Falanx's GameFAQs guide.
@@ -33,11 +34,15 @@ export const TEAMS=[
 ].map(([id,name,flag,primary,secondary,trim,shot,rank],index)=>({id,index,name,flag,primary,secondary,trim,shot,rank}));
 const FIRST=['Ryu','Min','Pao','Bat','Kofi','Mako','Diop','Leo','Diego','Rafa','Jack','Lukas','Marco'];
 const LAST=['Kato','Park','Chan','Bataar','Nono','Tari','Faye','Rossi','Silva','Santos','Mason','Fischer','Ricci'];
+// Canonical person ID is an additional, non-destructive reference. The old slot
+// ID remains the key used by saves and Career/tactics. Unverified slots do not
+// receive a guessed person ID, even if their names match known players.
+function safeRosterCopy(players){return players.map(p=>{const personId=canonicalPersonId(p);return personId?{...p,canonicalId:personId}:{...p};});}
 export function rosterFor(teamIndex){
  const patch=ROSTER_CORRECTIONS[TEAMS[teamIndex]?.id];
- if(patch)return patch.map(p=>({...p}));
- if(TEAMS[teamIndex]?.customRoster)return TEAMS[teamIndex].customRoster.map(x=>({...x}));
- if(teamIndex===0)return JAPAN_ROSTER.map(x=>({...x}));
+ if(patch)return safeRosterCopy(patch);
+ if(TEAMS[teamIndex]?.customRoster)return safeRosterCopy(TEAMS[teamIndex].customRoster);
+ if(teamIndex===0)return safeRosterCopy(JAPAN_ROSTER);
  const t=TEAMS[teamIndex],base=t.rank;
  return Array.from({length:12},(_,i)=>{const role=i===0||i===11?'GK':i<4?'DF':i<7?'MF':'FW';const num=[1,2,3,4,5,6,7,8,9,10,11,12][i];return {id:t.id+'_'+i,name:i===0?`${FIRST[teamIndex]} ${LAST[teamIndex]}`:`${['Ari','Dan','Ben','Kai','Ren','Rio','Tao','Neo','Ken','Ayo','Sol'][i-1]} ${LAST[teamIndex]}`,role,num,power:Math.round((base*.62+i*4)%29+35),shoot:Math.round((base*.18+i*3)%15+14),defense:Math.round((base*.17+i*2)%16+14),speed:['B','C','A','B','C','B','A'][i%7],shot:t.shot,shotName:t.shot.charAt(0).toUpperCase()+t.shot.slice(1)+' Shot',skill:'Team Power',level:1,xp:0,fictional:true}});
 }
@@ -70,7 +75,12 @@ export const FORMATIONS={
  '2-1-2':[{x:.08,y:.5},{x:.28,y:.27},{x:.28,y:.73},{x:.48,y:.5},{x:.70,y:.27},{x:.70,y:.73}],
  '1-2-2':[{x:.08,y:.5},{x:.26,y:.5},{x:.47,y:.28},{x:.47,y:.72},{x:.71,y:.27},{x:.71,y:.73}],
  '2-2-1':[{x:.08,y:.5},{x:.3,y:.25},{x:.3,y:.75},{x:.55,y:.3},{x:.55,y:.7},{x:.75,y:.5}],
- '1-3-1':[{x:.08,y:.5},{x:.27,y:.5},{x:.48,y:.23},{x:.48,y:.5},{x:.48,y:.77},{x:.74,y:.5}]
+ '1-3-1':[{x:.08,y:.5},{x:.27,y:.5},{x:.48,y:.23},{x:.48,y:.5},{x:.48,y:.77},{x:.74,y:.5}],
+ // Each formation specifies exactly five outfield players, plus the goalkeeper.
+ // 1-1-3: one defender, one midfielder and three forwards.
+ '1-1-3':[{x:.08,y:.5},{x:.29,y:.5},{x:.52,y:.5},{x:.76,y:.23},{x:.76,y:.5},{x:.76,y:.77}],
+ // 3-1-1: three defenders, one midfielder and one forward.
+ '3-1-1':[{x:.08,y:.5},{x:.29,y:.23},{x:.29,y:.5},{x:.29,y:.77},{x:.53,y:.5},{x:.76,y:.5}]
 };
 export const DEFAULT_LINEUP=[5,3,4,0,1,2];
 export const DEFAULT_OPTIONS={difficulty:2,halfSeconds:120,weather:'Random',terrain:'Classic',condition:'Good',formation:'2-1-2',music:true,sfx:true,showNames:true,filter:'HD',camera:'Follow',team:0,opponent:9,gameSpeed:1,aiStyle:'Balanced'};

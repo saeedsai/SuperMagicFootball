@@ -1,28 +1,32 @@
-# Supermagic Football — Living Development Roadmap v0.8.17.1
+# Supermagic Football — Overall Roadmap v0.8.22.1
+**14 October 2026.** Supersedes v0.8.22 active priorities. Historical roadmaps remain included for reference.
 
-**Current tested baseline:** v0.8.17.1, 13 October 2026. **218 tracked requirements: 39 Done / 120 Partial / 59 Missing**, preserving all previous requests (including #217 and #218).
+## Shipped this iteration — urgent Super Shot control rework
+- Aerial: Jump → Dribble = regular bicycle, Jump → 2×Dribble = Super Bicycle; Jump → Shoot = regular head, Jump → 2×Shoot = Super Header.
+- Carrying ball: Jump → Shoot = elevated normal; second airborne Jump → Shoot = Super Shot.
+- Reuse original hold Dribble → Jump stationary loft as an aerial ball source.
+- Same special shot physics and transformed **ball** graphics for ground Super Shot, Super Header and Super Bicycle. No shoot ability → stronger ordinary untransformed move.
+- 0.32s tap window, cancellation guard, online/offline built-in controls Help update, 12 new acceptance cases; **357 total QA cases**.
+- **54 Node + 34 browser regression scripts passed**, browser in six bounded groups; physical devices still unverified.
 
-## Just completed — priority input fixes
-
-- v0.8.17 control reliability: Pass, hold-Jump run, Switch, auto-switch.
-- v0.8.16.2 robust rapid input merged: buffered keyboard/real touch events, multi-pointer continuity and joystick handoff.
-- v0.8.17.1 contextual chord correctness: Pass+Jump and Jump+Pass single cross; Jump+Dribble single bicycle; short Jump/tap and hold-Jump run compatibility.
-- 29/29 Node suites, all 19 inherited browser regressions by completed reruns, and focused desktop/simulated-Android control tests passed.
-
-## Next focused milestones
-
-| Priority | Increment | Acceptance criteria |
+## Next milestones
+| Priority | Version | Objective / acceptance gate |
 |---|---|---|
-| P0 | **v0.8.18 — goalkeeper catch, throw and contextual distribution** | Deterministic catch possession/animation, short pass to nearest teammate, long punt to forwards, press-under-threat decision; focused 4-button and AI tests |
-| P0 | v0.8.19 — curated cartoon player identities | Flagship clubs/national stars, labels/presets, funny face and kit polish, reviewed screenshots |
-| P0 | v0.8.20 — verified roster correction batch 2 | Source-backed first-team memberships; 12/team 2 GK / 3 DF / 4 MF / 3 FW preserved, high-value/star review and stable IDs |
-| P1 | A later staged control increment | **#217 Hold Dribble+Jump** pop ball overhead without jumping; **#218 follow-up Jump+Shoot** strong untransformed bicycle; timing/cooldown/fatigue and existing tap bicycle priority tests |
-| P1 | Expanded special-ability catalog | 30–40 unique super shots, 20+ super defenses, 10+ rare GK moves, five-tier levels, unique visuals and AI |
-| P1 | Advanced player creation | 20+ faces, 20+ hair, 10+ facial hair, heights 155–210 cm, reusable player IDs and unique elite faces |
-| P1 | International competitions and national expansion | +48 top countries incl. Italy, World Cup, continental national cups, verified rosters |
-| P1 | Seven BPW era squads | 1998, 2002, 2006, 2010, 2016, 2020 and 2026; 12 per squad and no BPW-era player repetition |
-| P2 | Career/online/full Nintendo feel | Manager growth, new competitions, online, source-based gag mechanics, physical-controller validation |
+| P0 | **v0.8.22.2** if needed | Real iOS/Android, physical gamepad and double-tap accessibility trials; tuning of the 0.32s window, normal header/bicycle delay, Super Shot scoring against keepers |
+| P1 next | **v0.8.23 Audio** | License-cleared/original menu + halftime music, distinct goal/tackle/save/stun/Super Shot SFX, mute/volume, browser audio-unlock rules, offline tests |
+| P1 | **v0.8.24** | Goalkeeper diving and long-match balancing, player animation polish, mobile performance |
+| P1 | **v0.8.25** | BPW historical personality, signature moves and individual characters (no broad 2026 roster rebuild) |
+| Future | Tier/ability | Common/Silver/Gold/Star/Superstar based on *verified positional OVR*; Gold+ Super Shot OR five-level Super Defense, unique tricks/celebrations; enforce world rarity caps, BPW exceptions |
+| Future | Career | Age-based decline/improvement, five growth-potential categories, performance-based progression, reusable manager customization and constrained named appearance palettes |
+| Future | Visual/environment | 20+ famous stadiums, weather (wind, rain, lightning, tornado), improved grass/mud/players, 20–30 celebrations, 10–20 sad reactions, national-symbol changed-ball attacks |
+| Much later | Roster | Broad 2026 roster/FC ratings/value/appearance verification **remains deferred by user request** |
+| Later | Product | Competition depth, Career extensions, multiplayer and classic-game fidelity |
 
-## Development discipline
-
-One bounded milestone at a time. Each build updates the source, completed tests and inherited regressions, feature tracker, remaining-gap register, specification, changelog, README and versioned standalone HTML/source ZIP. A simulated Android browser is **not** physical-device certification.
+## Immutable design constraints
+- Four action buttons only: Pass/Shoot/Dribble/Jump, no separate Special, Swap, Sprint or goalkeeper dive.
+- Six formations only: 2-1-2, 1-2-2, 2-2-1, 1-3-1, 1-1-3, 3-1-1 (one GK + five outfield).
+- Jump-first airborne Pass crosses; Pass-first Jump never crosses. Hold Pass release lofts. Jump+direction held sprints. Dribble off-ball swaps.
+- Goalkeepers dive, catch and distribute automatically; six BPW mixed WC squads remain 1998/2002/2006/2010/2014/2018, with 72 nonrepeating tournament selections.
+- Position-specific OVR is rounded mean of exactly six role stats. Unverified Gold/Star/Superstar restrictions and Career growth remain inactive.
+- Historic 218-feature snapshot 41 Done / 120 Partial / 57 Missing is *not* a wholesale new audit. v0.8.22.1 is a control rework and neither invents nor increments historical feature-count completions.
+- 357 acceptance cases are documented but not all individually certified; automated scripts and physical hardware have different evidence status.

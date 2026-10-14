@@ -176,3 +176,23 @@ html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%;min-height:100%
 .miniTable .teamIdentity{vertical-align:middle;min-height:19px;min-width:28px;gap:2px}
 .miniTable .teamIdentity .flagGraphic{width:23px;height:17px}
 .miniTable .teamIdentity .crestGraphic{width:18px;height:22px}
+
+/* 0.8.19.3 UI: visual team pickers, continent/country filtering, cartoon faces on formation pitch */
+.managerRegionSelector{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end}.teamPickTools{display:flex;align-items:center;gap:12px;padding:5px 0 11px;flex-wrap:wrap}.teamPickTools .teamIdentity{background:#0d3649;border:1px solid #5a94a3;border-radius:6px;padding:3px}.teamBrowseToggle{font-size:11px!important;min-height:35px}.teamBrowsePanel{margin:4px 0 12px;padding:9px;border:1px solid #8bc1c37a;border-radius:10px;background:#102d3f}.teamBrowsePanel.hidden{display:none!important}.teamBrowseSearch{width:100%;border:1px solid #80bbc8;border-radius:7px;background:#061b2b;color:white;font-size:14px;padding:11px;margin:4px 0 9px}.teamBrowseResults{max-height:250px;overflow-y:auto;touch-action:pan-y;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:6px}.teamPickItem{display:flex;align-items:center;gap:9px;text-align:left;min-height:55px;padding:6px;background:#19394c;border:1px solid #42768b;border-radius:7px;color:#f6f5e4;cursor:pointer}.teamPickItem:hover,.teamPickItem:focus-visible,.teamPickItem.selected{border-color:#ffdf83;background:#2c5061}.teamPickItem>span:last-child{min-width:0;overflow-wrap:anywhere;font-size:12px;font-weight:800}.teamPickItem small{display:block;color:#a6d6dc;font-size:10px;margin-top:3px}.teamPickItem .teamIdentity{transform:scale(.8);transform-origin:center;min-width:54px}
+.formationPitch{position:relative;height:190px;margin:10px 5px 14px;border:2px solid #c6edc587;border-radius:11px;background:repeating-linear-gradient(90deg,#246944,#246944 35px,#2c7749 35px,#2c7749 70px);overflow:hidden}.formationPitch:before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:2px solid #ecffde85}.formationPitch:after{content:"";position:absolute;width:45px;height:45px;border:2px solid #edffdb80;border-radius:100%;left:50%;top:50%;transform:translate(-50%,-50%)}.formationSlot{position:absolute;z-index:1;display:flex;flex-direction:column;align-items:center;transform:translate(-50%,-50%);gap:0;max-width:80px;pointer-events:none}.formationSlot canvas{width:48px;height:47px;border:2px solid #ffebae;border-radius:50%;background:#1b4955;object-fit:cover}.formationSlot small{display:block;padding:1px 4px;background:#092b3bd9;border-radius:5px;color:#fff4cb;font-size:10px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;max-width:90px}.rosterCard .playerFaceCanvas{width:49px;height:52px;border:1px solid #edcb74;border-radius:8px;flex:none;background:#265869}.lineupRow{grid-template-columns:34px minmax(0,1fr) 42px}.lineupRow .choice{min-width:0;width:100%}
+@media(max-width:650px){.managerRegionSelector{grid-template-columns:1fr}.teamBrowseResults{grid-template-columns:1fr 1fr}.formationPitch{height:170px}.formationSlot canvas{width:38px;height:37px}.formationSlot small{font-size:9px;max-width:55px}}
+/* Earlier team-card styling absolutely positioned .portrait; face canvases must remain in the roster layout. */
+.rosterCard .portrait.playerFaceCanvas{position:static;left:auto;top:auto;transform:none;display:block;flex:0 0 49px}
+
+/* Position-based, stat-derived overall ratings: roster, lineup and portrait pitch. */
+.ovrBadge,.positionOvr,.formationOvr{display:inline-block;background:#153e56;border:1px solid #d6bf75;border-radius:6px;color:#fff1b7;font-weight:900;letter-spacing:.1px;white-space:nowrap}
+.ovrBadge{padding:1px 6px;font-size:11px}.positionOvr{padding:4px 5px;font-size:11px;text-align:center}.formationOvr{padding:1px 5px;font-size:10px;background:#082b38ea;border-color:#8cdecc;color:#fff5c7}
+.lineupRow{grid-template-columns:34px minmax(0,1fr) 73px}
+.formationSlot{gap:1px;max-width:88px}.formationSlot small{max-width:88px}
+@media(max-width:650px){.formationOvr{font-size:9px;padding:0 3px}.formationSlot{max-width:59px}.positionOvr{font-size:10px;padding:3px 1px}.lineupRow{grid-template-columns:27px minmax(0,1fr) 63px}}
+/* Canvas artwork is not an overlay: keep portrait, name and rating stacked legibly. */
+.formationPitch{height:262px}
+.formationSlot canvas{position:static;inset:auto;display:block;flex:0 0 47px}
+@media(max-width:650px){.formationPitch{height:230px}.formationSlot canvas{flex-basis:37px}}
+/* Additional vertical clearance for three players in the same formation line. */
+@media(min-width:651px){.formationPitch{height:284px}}

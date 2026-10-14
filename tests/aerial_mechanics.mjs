@@ -21,9 +21,10 @@ r.fatigue=0;r.z=0;r.dashCooldown=0;
 g.take(defender);defender.x=2300;defender.y=300;
 // Isolate sprint mechanics from the newly physical, separately tested collision system.
 for(const opponent of g.players.filter(p=>p.t===1)){opponent.x=2750;opponent.y=350+opponent.i*75;}
-input.state[0]={x:1,y:0,sprint:1};
+g.cooldown=0;
+input.state[0]={x:1,y:0,jump:1};
 for(let i=0;i<36;i++)g.update(.02);
-assert.ok(r.dashCooldown>3.0,'sprinting plus moving should activate hyperdash');
+assert.ok(r.dashCooldown>3.0,'holding Jump plus moving while defending activates hyperdash');
 // Air heading depends on timed overlap in three dimensions, not any shoot press.
 const g2=make(),h=g2.player(0,3),b=g2.ball;
 b.owner=null;b.attacker=1;b.shot=null;h.stun=0;h.cd=0;
@@ -46,7 +47,7 @@ const ball=g3.ball;keeper.x=WORLD.field.x+WORLD.field.w-35;keeper.y=680;
 ball.owner=null;ball.attacker=0;ball.shot=null;ball.x=keeper.x-92;ball.y=keeper.y+40;ball.z=75;ball.vx=680;ball.vy=12;ball.vz=0;ball.power=125;
 keeper.diveCooldown=0;keeper.fatigue=0;
 assert.equal(g3.tryKeeperDive(keeper,true),true);
-assert.equal(keeper.action,'keeperDive');assert.ok(keeper.diveCooldown>2);
+assert.equal(keeper.action,'keeperDive');assert.ok(keeper.diveCooldown>=1.45&&keeper.diveCooldown<=2.85,'bounded skill-dependent goalkeeper recovery');
 assert.equal(ball.attacker,1,'successful dive deflects shot in favor of goalkeeper team');
 assert.ok(ball.vx<0,'goalkeeper deflection travels out of own goal');
 assert.equal(g3.tryKeeperDive(keeper,true),false,'dive cannot be spammed');

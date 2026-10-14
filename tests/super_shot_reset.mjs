@@ -4,7 +4,7 @@ import {DEFAULT_OPTIONS} from '../src/data.js';
 const input={state:[{},{}],poll(){},just(){return false}};
 const g=new GameEngine({...DEFAULT_OPTIONS,weather:'Clear'},input);
 g.init({home:0,away:9,options:{...DEFAULT_OPTIONS,weather:'Clear'}});
-const p=g.players.find(x=>!x.keeper&&x.t===0);
+const p=g.players.find(x=>!x.keeper&&x.t===0&&x.src.superAbility?.type==='shoot');
 g.take(p);g.shoot(p,true);
 assert.ok(g.ball.shot,'super shot starts transformed');
 assert.equal(g.ball.age,0);

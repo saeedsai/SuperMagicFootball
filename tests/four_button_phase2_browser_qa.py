@@ -7,7 +7,7 @@ with sync_playwright() as pw:
   ctx=browser.new_context(viewport={'width':w,'height':h},is_mobile=mobile,has_touch=mobile)
   page=ctx.new_page(); errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   page.evaluate("""()=>{let db={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>db[k]||null,setItem:(k,v)=>db[k]=String(v),removeItem:k=>delete db[k]}})}""")
-  page.set_content((root/'play.html').read_text(),wait_until='load');page.wait_for_function("window.SupermagicFootball?.version==='0.8.17.1-alpha'")
+  page.set_content((root/'play.html').read_text(),wait_until='load');page.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'")
   page.locator('[data-action="quick"]').first.click();page.locator('[data-action="kickoff"]').first.click()
   assert page.locator('#touchButtons [data-act]').count()==4
   page.evaluate('''()=>{let g=SupermagicFootball.game,p=g.player(0,3);g.cooldown=0;g.events=[];g.input.keys.clear();g.input.touchButtons.clear();g.input.reset();g.clock=6;p.x=900;p.y=680;p.cd=0;p.stun=0;p.fatigue=0;p.z=0;p.vz=0;for(let q of g.players)if(q!==p){q.x=2300+q.i*70;q.y=850;}g.take(p);g.controlled[0]=p.i;}''')

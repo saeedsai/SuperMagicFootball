@@ -11,7 +11,7 @@ with sync_playwright() as pw:
   # This does NOT verify real disk persistence after reopening the browser.
   page.evaluate("""() => {let data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}""")
   page.set_content((p/'play.html').read_text(),wait_until='load')
-  page.wait_for_function('window.NekketsuHD?.version==="0.8.17.1-alpha"')
+  page.wait_for_function('window.NekketsuHD?.version==="0.8.22.1-alpha"')
   assert page.evaluate('NekketsuHD.aiLevels.length')==5
   page.locator('[data-action="settings"]').first.click()
   assert page.locator('#difficulty option').count()==5

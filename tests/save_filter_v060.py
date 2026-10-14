@@ -11,7 +11,7 @@ with sync_playwright() as pw:
   p.wait_for_timeout(300)
   assert p.locator('[data-action="quick"]').count()==1
   p.locator('[data-action="quick"]').click()
-  assert p.locator('#homeTeam option').count()==216
+  assert p.locator('#homeTeam option').count()==222
   p.locator('#homeGroup').select_option('CAF')
   assert p.locator('#homeTeam option').count()==16, p.locator('#homeTeam').inner_text()
   p.locator('#awayGroup').select_option('OFC')
@@ -25,7 +25,7 @@ with sync_playwright() as pw:
   json_file=root/'tests'/('browser_export_mobile.json' if mobile else 'browser_export_desktop.json')
   download.save_as(str(json_file))
   data=json.loads(json_file.read_text())
-  assert data['version']=='0.8.17.1' and data['product']=='Supermagic Football'
+  assert data['version']=='0.8.22.1' and data['product']=='Supermagic Football'
   p.locator('[data-action="importSave"]').click()
   dialogs=[]
   p.on('dialog',lambda d: (dialogs.append(d.message),d.accept()))

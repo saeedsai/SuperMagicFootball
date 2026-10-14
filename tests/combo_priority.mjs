@@ -4,20 +4,23 @@ import {DEFAULT_OPTIONS} from '../src/data.js';
 const input={state:[{},{}],pulse:{},held(t,k){return !!this.state[t]?.[k]},just(t,k){return !!this.pulse[k]}};
 const step=(g,s,pressed={})=>{input.state[0]={x:0,y:0,...s};input.pulse=pressed;g.updatePlayers(.016)};
 const setup=()=>{input.state=[{},{}];input.pulse={};let g=new GameEngine({...DEFAULT_OPTIONS,weather:'Clear'},input);g.init({home:0,away:9,options:{...DEFAULT_OPTIONS,weather:'Clear'}});g.cooldown=0;let p=g.player(0,3);g.take(p);g.controlled[0]=p.i;p.cd=0;p.stun=0;for(const q of g.players)if(q!==p){q.x=q.t?3050:680;q.y=q.i*65+270;}return {g,p};};
-// Both orders produce a single cross, not a normal pass followed by a jump.
-for(const order of ['pass-first','jump-first','simultaneous']){
+// Strict sequence: jump, leave the ground, THEN press Pass for a cross.
+{
+ const {g,p}=setup();step(g,{jump:1},{jump:true});step(g,{});assert(p.z>0,'tap Jump must lift player');
+ step(g,{pass:1},{pass:true});assert.equal(g.ball.owner,null,'airborne Pass releases the ball');
+ assert(g.ball.vz>=240,'Jump-first airborne Pass must be an elevated cross');
+ assert.equal(g.events.filter(e=>e.type==='kick').length,1,'only one cross occurs');
+ step(g,{});assert.equal(g.events.filter(e=>e.type==='kick').length,1,'Pass release cannot double cross');
+}
+// Pass-first and simultaneous chords are NEVER crosses or teammate launches.
+for(const order of ['pass-first','simultaneous']){
  const {g,p}=setup();
  if(order==='pass-first')step(g,{pass:1},{pass:true});
- if(order==='jump-first')step(g,{jump:1},{jump:true});
- step(g,{pass:1,jump:1},order==='pass-first'?{jump:true}:order==='jump-first'?{pass:true}:{pass:true,jump:true});
- assert.equal(g.ball.owner,null,order+' must release ball');
- assert(g.ball.vz>=220,order+' must send an elevated cross, not ground pass');
- assert.equal(p.z,0,order+' must not cause a player jump');
- const initial=g.ball.vz;
- step(g,{pass:1,jump:1});
- assert.equal(g.ball.vz,initial,order+' cannot repeat while held');
- step(g,{});
- assert.equal(p.z,0,order+' must not fire a delayed jump when released');
+ step(g,{pass:1,jump:1},order==='pass-first'?{jump:true}:{pass:true,jump:true});
+ assert.equal(g.ball.owner,p,order+' must keep possession until Pass release');
+ assert.equal(g.events.filter(e=>e.type==='teamLaunch').length,0,order+' must never team launch');
+ step(g,{});assert.equal(g.ball.owner,null,order+' still executes its normal short Pass');
+ assert(g.ball.vz<245,order+' cannot fire a cross');
 }
 // A normal tap remains a pass; holding jump alone accelerates and never launches a cross.
 {
@@ -40,4 +43,4 @@ for(const order of ['dribble-first','jump-first','simultaneous']){
  const count=g.events.filter(e=>e.type==='bicycleShot').length;
  step(g,{jump:1,dribble:1});assert.equal(g.events.filter(e=>e.type==='bicycleShot').length,count,order+' must fire once');
 }
-console.log('COMBO PRIORITY PASS: order-independent cross/bicycle, no double action, old pass & sprint');
+console.log('COMBO PRIORITY PASS: directional Jump-first cross, reverse-order not cross, no double action, bicycle');

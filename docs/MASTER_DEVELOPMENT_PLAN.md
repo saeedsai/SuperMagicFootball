@@ -1,3 +1,7 @@
+> **ACTIVE PLAN OVERRIDE (14 October 2026 — v0.8.21):** Systematic 2026 roster correction, official ratings and bulk identity reconciliation are deferred until a much later, user-approved phase. The next active features are new four-button ball lift / super bicycle (delivered), BPW World Cup all-star teams (planned), and audio. Refer to `NEXT_MILESTONES.md`, `STATUS.md`, `GAP_REGISTER_v0821.md` and `TEST_REPORT_v0821.md`; the older paragraphs below are preserved as historical context.
+
+> **CURRENT ACTIVE RELEASE NOTE — v0.8.19.3 (14 October 2026):** This is a historical master plan; current priorities and status live in `NEXT_MILESTONES.md`, `STATUS.md`, `GAP_REGISTER_v08193.md` and `TEST_REPORT_v08193.md`. Latest code focuses on low-frame-rate four-button controls and touch cancellation, not full feature completion. BPW teams are SIX historical FIFA World Cup years 1998/2002/2006/2010/2014/2018, mixed players worldwide.
+
 > **Current canonical roadmap:** `NEXT_MILESTONES.md` (v0.8.15). This document is retained as a historical master plan. `FEATURE_MATRIX_216_ITEMS.csv` preserves all prior requirements and appends eight new records.
 
 > **v0.8.3 milestone:** NPC teammate launch coordination, predicted aerial target and difficulty-based apex timing implemented and regression-tested. Stale chase auto-tackle fixed. Next: staged player creator. Original frame parity still unverified.
@@ -230,3 +234,39 @@ Main-menu navigation redesign phase 1 delivered; all preexisting actions and con
 ## v0.8.10 addendum — cartoon team identities (13 October 2026)
 
 All 216 current teams have offline vector identity artwork. 165 receive original club shields, 51 receive stylized flag artwork; symbols show in setup, standings, scoreboard, club lists. This is a partial completion of interface requirements, not verified official flags or crests. Roster/BPW corrections remain deferred. See `NEXT_MILESTONES.md` and `TEST_REPORT_v0810.md`.
+
+
+## Milestone v0.8.17.2 — Issue-first correction (13 October 2026)
+
+User-priority overrides: FIX-001 and FIX-002 control input-edge reliability, FIX-003 keeper-aware shot scoring/accuracy randomness, FIX-004 target Strength-dependent tackle stun. Code + tests delivered in v0.8.17.2, full acceptance pending physical controller trials. Node suites 30/30; browser target tests desktop/emulated Android PASS; full inherited browser chain timed out, but all 19 scripts passed individually, with two initial simulated-touch flaky failures. Continue v0.8.18 GK catch/distribution, followed by flagship cartoon likeness, sourced 2026 rosters, and requests #217–218 (ball lift + follow-on bicycle). Roadmap of record: `NEXT_MILESTONES.md`; gap record: `GAP_REGISTER_v08172.md`; current status `STATUS.md`; snapshot tracker remains 218 rows.
+
+
+## 2026-10-13 v0.8.18 superseding decisions
+
+- BPW means **six worldwide mixed World Cup all-star teams** for **1998, 2002, 2006, 2010, 2014, 2018**, drawn from actual outstanding players of each tournament rather than any single club/nation. Previous seven-team/off-year interpretation is superseded. See `BPW_WORLD_CUP_SIX_SQUADS_BACKLOG_SPEC.md`.
+- Slide travel, conditional bounded stoppage, super-shot knockback/occasional airborne impacts, and tap/hold conflict work are the current gameplay increment; audio/music is planned in `AUDIO_MUSIC_PRODUCTION_PLAN_v0818.md`.
+- Gameplay integration is source tested; physical-controller QA, soundtrack composition, authoritative historical roster research, high-impact animations and goalkeeper catch polish are still pending.
+
+---
+
+## v0.8.18.1 Control and goalkeeper clarification (2026-10-13)
+
+Current gameplay has exactly four action inputs (Pass, Shoot, Dribble, Jump), not separate Super/Switch/Sprint or goalkeeper-dive controls. Crosses are triggered **only** by Jump followed by an airborne Pass; Pass-first combinations do not cross. Holding Pass then releasing makes a lofted long pass. Human teammate-assisted launch from Pass+Jump is removed, while legacy AI internals may remain for backward compatibility. Goalkeepers automatically dive and defend on both teams and clear long if an opponent is close or a short passing lane is unsafe. Live canonical spec: `COMPLETE_COMBINATION_REFERENCE_v08181.md`; remaining goalkeeper catch/throw/punt animation work follows in the current `NEXT_MILESTONES.md`. The six BPW all-star World Cup years remain 1998, 2002, 2006, 2010, 2014 and 2018, to be researched and implemented later.
+
+
+### October 14, 2026 active UI implementation addendum (v0.8.19.3)
+
+The current Career creation UI filters continent → country → club. All six regional confederations are supported, rather than scrolling an unfiltered club list. Team selections in quick/versus/cups and related management screens have a searchable visual country flag and original club crest interface alongside keyboard-accessible native selects. Squad management renders actual procedural player faces on cards and six active formation positions. 1-3-1 remains; the corrected 1-1-3 and 3-1-1 presets each have five outfield players plus one goalkeeper. The incorrectly interpreted 1-1-3-3-1-1 adaptation has been removed. See `TEAM_SELECTION_FORMATIONS_UI_SPEC_v08193.md` and `NEXT_MILESTONES.md` for implemented scope, risk, and next steps. Historical matrix counts are not silently adjusted.
+
+
+---
+
+## 2026-10-14 addendum — calculated position overall (v0.8.19.5)
+
+New request implemented as active ticket **OVR-01**: display a player's rounded equal-weight average of six relevant 1–100 stats for each of GK, DF, MF and FW. Team Management roster uses natural role; formation lineup and portrait pitch use assigned role; Career/scouting/market use natural role. Existing raw ratings and simulation/economy are preserved. See `POSITION_OVR_SPEC_v08195.md`. Real-world rating validation and physical-device accessibility remain open. Continue with v0.8.19.6 goalkeeper refinement, then 2026 rosters/art, ball lift, six BPW World Cup squads, and audio. Historical feature tracker counts are not advanced without re-audit.
+
+
+## Addendum — 14 October 2026: graphics, rarity tiers, and source integrity (v0.8.20)
+New user-approved **future backlog**, not implemented in v0.8.20: 20–30 unique goal celebrations, 10–20 crying/sad reactions, better cartoon player animation and faces, enhanced grass/mud/pitch/weather systems (rain/wind/tornado/lightning), 20 famous stadiums with ground aesthetics, and more whimsical/symbolic Super Shot transformations. Tier policy: primary-role OVR Common 1–69, Silver 70–79, Gold 80–90, Star 91–95, Superstar 96–100. Only Gold+ Super Shots/unique celebrations; level caps Gold 2, Star 3, Superstar 5; at most 69 Stars and 29 Superstars globally excluding BPW, counting unique real-world players not squad duplicates. Existing data and abilities must undergo external-rating research and migration before these restrictions can become active.
+
+Precise source and acceptance criteria: `ART_WEATHER_STADIUM_AND_TIERS_BACKLOG_v0820.md` and `FEATURE_BACKLOG_V0820.csv`. The active iteration proceeds through official 2026 roster verification before this graphics and tiers scope. Initial verified club: Inter Miami; see `ROSTER_SOURCES_VERIFIED_v0820.md`. Historical 218-feature matrix intentionally retained.

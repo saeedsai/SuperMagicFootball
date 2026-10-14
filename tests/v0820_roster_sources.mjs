@@ -1,0 +1,38 @@
+import assert from 'node:assert/strict';
+import {TEAMS,SHOTS,rosterFor} from '../src/data.js';
+import {installExpansion} from '../src/expanded.js';
+import {installContinentalClubs} from '../src/continental.js';
+import {safePlan,validatePlan} from '../src/tactics.js';
+import {GameEngine} from '../src/engine.js';
+import {DEFAULT_OPTIONS} from '../src/data.js';
+installExpansion(TEAMS,SHOTS);installContinentalClubs(TEAMS,SHOTS);
+assert.equal(TEAMS.length,216);
+const t=TEAMS.find(t=>t.name==='Inter Miami'&&t.group==='continental');
+assert.ok(t);
+const squad=rosterFor(t.index), roles={GK:0,DF:0,MF:0,FW:0};
+assert.equal(squad.length,12);
+assert.equal(new Set(squad.map(p=>p.id)).size,12);
+assert.equal(new Set(squad.map(p=>p.num)).size,12);
+assert.equal(squad.find(p=>p.name==='Lionel Messi').age,39);
+assert.equal(squad.find(p=>p.name==='Luis Suárez').age,39);
+assert.equal(squad.find(p=>p.name==='Rodrigo De Paul').age,32);
+for(const p of squad){
+  assert.ok(p.role in roles,`Invalid role: ${p.name}`);roles[p.role]++;
+  assert.equal(p.fictional,false,`Placeholder remains: ${p.name}`);
+  assert.equal(p.rosterVerification,'verified_club_role');
+  assert.equal(p.statsVerified,false);assert.equal(p.appearanceVerified,false);
+  assert.ok(p.age>=18&&p.age<=45);
+  assert.match(p.birthDate,/^\d{4}-\d{2}-\d{2}$/);
+}
+assert.deepEqual(roles,{GK:2,DF:3,MF:4,FW:3});
+for(const n of ['Lionel Messi','Luis Suárez','Rodrigo De Paul','Dayne St. Clair','Rocco Ríos Novo','Maximiliano Falcón','Micael','Gonzalo Luján','Yannick Bright','Matías Galarza','Telasco Segovia','Germán Berterame']) assert.ok(squad.some(p=>p.name===n),n);
+for(const n of ['Jordi Alba','Sergio Busquets']) assert.ok(!squad.some(p=>p.name===n),`${n} retired`);
+for(const p of squad) assert.equal(rosterFor(t.index).find(x=>x.id===p.id).name,p.name);
+const plan=safePlan(null,squad,t.index);assert.deepEqual(validatePlan(plan,squad,t.index),plan);
+const input={state:[{},{}],poll(){},just(){return false}};
+const game=new GameEngine({...DEFAULT_OPTIONS,weather:'Clear'},input);
+game.init({home:t.index,away:9,options:{...DEFAULT_OPTIONS,weather:'Clear'}});
+assert.equal(game.rosters[0].length,12);
+assert.equal(game.player(0,0).src.role,'GK');
+assert.ok(game.rosters[0].some(p=>p.name==='Lionel Messi'));
+console.log('v0.8.20 verified Inter Miami roster PASS: 12 authentic names, ages, roles, stable IDs, game initialization');

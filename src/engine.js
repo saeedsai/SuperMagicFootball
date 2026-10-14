@@ -10,18 +10,123 @@ import {fieldAbility,keeperAbility,abilityReady,keeperInReach} from './abilities
 import {abilityLevel,levelModifiers,shotVelocityModifier} from './special_levels.js';
 export const WORLD={w:3640,h:1530,field:{x:150,y:155,w:3340,h:1220},goalTop:620,goalBottom:910,goalDepth:76};
 export const SUPER_SHOT_TRANSFORM_SECONDS=1.65;
+export const BALL_LIFT_HOLD_SECONDS=.26;
+export const BALL_LIFT_WINDOW_SECONDS=1.55;
+export const SUPER_BICYCLE_SPEED_CAP=1550; // Retained for legacy imports; unified specials use normal Super Shot power.
+export const AERIAL_DOUBLE_TAP_SECONDS=.32;
 const F=WORLD.field, MID=F.x+F.w/2, CX=(t)=>t===0?F.x:F.x+F.w;
 const clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));const norm=(x,y)=>{let d=Math.hypot(x,y)||1;return {x:x/d,y:y/d}};
 function randomBetween(a,b){return a+Math.random()*(b-a)}
 function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+// Strength is the victim's resistance, not the attacker's. Bounded to prevent control lockouts.
+export function tackleStunDuration(strength,slide=false,impact=.4){
+ const base=(slide?.68:.53)+Math.max(0,impact-.4)*.30;
+ return clamp(base*(1.35-.007*clamp(strength,1,100)),.22,1.05);
+}
+
+// Added time is capped, and only an imminent attack in the final third may prolong play.
+export function attackingStoppage(ball, field=WORLD.field){
+ const carrier=ball?.owner;
+ if(!carrier||![0,1].includes(carrier.t))return false;
+ const progress=carrier.t===0?(carrier.x-field.x)/field.w:(field.x+field.w-carrier.x)/field.w;
+ return progress>=.68 && carrier.stun<=0;
+}
+// Higher super-shot level and velocity increase knockback; victim Strength resists it.
+export function superShotKnockback(power,level,strength){
+ const pressure=Math.max(0,(power-72)/75)+clamp(level,0,5)*.16-clamp(strength,1,100)*.008;
+ return clamp(pressure,0,3);
+}
+
+// Position toward where an incoming shot will cross the keeper's depth,
+// rather than blindly following its current y. Both goal directions are mirrored.
+// Prediction is capped to avoid unfair 'teleporting' response to distant shots.
+// Deterministic short-horizon replay of the same curved / zigzagging / homing shot
+// acceleration used in updateBall. Never mutates live ball or the shot's phase.
+// We intentionally predict only up to the keeper plane (max 0.95 s): no clairvoyance
+// about rebounds, collision outcomes, or supernatural random teleports.
+export function predictKeeperShot(keeper,ball,horizon=.95){
+ if(!keeper||!ball||ball.owner)return null;
+ const toward=keeper.t===0?-1:1;
+ if((ball.vx||0)*toward<=100)return null;
+ const frame=1/90,maxTime=clamp(horizon,0,.95);
+ const v={x:ball.x,y:ball.y,z:ball.z||0,vx:ball.vx,vy:ball.vy||0,vz:ball.vz||0,age:ball.age||0};
+ const shot=ball.shot?{...ball.shot}:null;
+ if(!Number.isFinite(v.x)||!Number.isFinite(v.y)||!Number.isFinite(v.vx)||!Number.isFinite(v.vy))return null;
+ for(let time=0;time<maxTime;time+=frame){
+  const dt=Math.min(frame,maxTime-time),old={...v};v.age+=dt;
+  if(shot&&v.age<SUPER_SHOT_TRANSFORM_SECONDS){
+   const s=shot;
+   if(s.behavior==='curve')v.vy+=(Math.sin(v.age*3.2)*180+(s.direction||0)*100)*dt;
+   if(s.behavior==='swim'||s.behavior==='zigzag')v.vy+=Math.sin(v.age*(s.behavior==='swim'?18:11))*840*dt;
+   if(s.behavior==='spiral'){v.vy+=Math.sin(v.age*28)*640*dt;v.vz+=Math.cos(v.age*21)*130*dt;}
+   if(s.behavior==='ricochet')v.vy+=Math.sin(v.age*17)*420*dt;
+   if(s.behavior==='homing')v.vy+=clamp(((s.aimY??v.y)-v.y)*1.2,-220,220)*dt;
+   if(s.behavior==='clone')v.vy+=Math.sin(v.age*20)*250*dt;
+   if(s.behavior==='burrow'){if(v.age>.12)v.z=Math.max(3,Math.min(v.z,9));v.vz=0;}
+   if(s.behavior==='warp')v.vy+=Math.sin(v.age*19)*500*dt;
+   if(s.behavior==='lightning')v.vy+=Math.sin(v.age*30)*380*dt;
+  }
+  v.x+=v.vx*dt;v.y+=v.vy*dt;v.z+=v.vz*dt;v.vz-=500*dt;
+  if(v.z<0){v.z=0;v.vz=Math.abs(v.vz)*.45;if(Math.abs(v.vz)<47)v.vz=0;}
+  if(v.y<WORLD.field.y+3){v.y=WORLD.field.y+3;v.vy=Math.abs(v.vy)*.65;}
+  if(v.y>WORLD.field.y+WORLD.field.h-3){v.y=WORLD.field.y+WORLD.field.h-3;v.vy=-Math.abs(v.vy)*.65;}
+  if((keeper.x-old.x)*(keeper.x-v.x)<=0){
+   const fraction=clamp((keeper.x-old.x)/(v.x-old.x||1),0,1);
+   return {y:old.y+(v.y-old.y)*fraction,z:old.z+(v.z-old.z)*fraction,time:time+dt*fraction,behavior:shot?.behavior||'normal'};
+  }
+ }
+ return null;
+}
+// Predicted near-future destination is blended with observed lane. Keeper Skill
+// and GK Diving improve anticipation, whereas nonlinear/high-level special shots
+// reduce confidence. The goalkeeper must still physically move into the lane.
+export function predictedKeeperLane(keeper,ball,read=0){
+ const low=WORLD.goalTop+15,high=WORLD.goalBottom-15;
+ const observed=clamp((ball?.y??(low+high)/2)+(ball?.vy||0)*clamp(read,0,.3),low,high);
+ if(!keeper||!ball||ball.owner||ball.attacker===keeper.t)return observed;
+ const projected=predictKeeperShot(keeper,ball);
+ if(!projected)return observed;
+ const skill=stat(keeper,'gkSkill'),diving=stat(keeper,'gkDiving');
+ const level=ball.shot?clamp(Number(ball.shot.level)||1,1,5):0;
+ const erratic=['zigzag','swim','warp','lightning','spiral','ricochet','clone'].includes(projected.behavior);
+ const reliability=clamp(.30+skill*.004+diving*.0015-level*.032-(erratic?.14:0)-(keeper.fatigue||0)*.10,.17,.79);
+ return clamp(observed*(1-reliability)+clamp(projected.y,low,high)*reliability,low,high);
+}
+// A keeper has less time to reach wide angles against very fast/super shots.
+// GK Skill and GK Diving extend reach; fatigue and shot velocity reduce it.
+// The calculation is deterministic so save-rate tests can compare equivalent shots.
+export function keeperReactionReach(keeper, ball){
+ const skill=stat(keeper,'gkSkill'),diving=stat(keeper,'gkDiving');
+ const speed=Math.hypot(ball?.vx||0,ball?.vy||0);
+ const level=ball?.shot?clamp(Number(ball.shot.level)||1,1,5):0;
+ const fatigue=clamp(keeper?.fatigue||0,0,1);
+ // Erratic nonlinear super shots cannot be defended with the same anticipation
+ // as a predictable straight shot, even at equivalent nominal power/level.
+ const behavior=ball?.shot?.behavior;
+ const nonlinearPenalty=['zigzag','swim','warp','lightning','spiral','ricochet','clone'].includes(behavior)?.075:(behavior==='curve'||behavior==='homing'?.025:0);
+ const response=clamp(.98+(skill-55)*.0025+(diving-55)*.002-Math.max(0,speed-450)*.00011-level*.035-nonlinearPenalty-fatigue*.13,.54,1.08);
+ // A bounded lateral save radius leaves a real corner target even against elite
+ // keepers. Fatigue also reduces the cap, so an exhausted star is not immune
+ // to normal shots just because the uncapped reach was above the goal width.
+ const lateralCap=116-22*fatigue;
+ return {x:(105+diving*1.35)*(.85+response*.15),y:Math.min(lateralCap,(36+diving*.92+skill*.16)*response),z:(45+diving*1.7),response};
+}
+// Keepers cannot instantly dive again after a save. Better GK Skill and GK
+// Diving shorten recovery, while accumulated fatigue lengthens it. This affects
+// actual match play and is separate from the shorter rendered landing motion.
+export function keeperDiveRecoverySeconds(keeper){
+ const skill=stat(keeper,'gkSkill'),diving=stat(keeper,'gkDiving');
+ const fatigue=clamp(keeper?.fatigue||0,0,1);
+ return clamp(2.05+(55-skill)*.003+(55-diving)*.004+fatigue*.62,1.45,2.85);
+}
 export class GameEngine{
- constructor(options={},input){this.options=options;this.input=input;this.events=[];this.mode='quick';this.matchState='none';this.teamIds=[0,9];this.rosters=[[],[]];this.lineups=[DEFAULT_LINEUP.slice(),[0,1,2,3,5,9]];this.formation=['2-1-2','2-1-2'];this.teamPlans=[];this.controlled=[3,3,0,0];this.humans=1;this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=120;this.players=[];this.ball={};this.particles=[];this.shake=0;this.flash=0;this.weather='Clear';this.terrain='Grass';this.condition='Good';this.wind={x:0,y:0};this.stormTimer=0;this.tornado=null;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.pk=null;this.matchSerial=0;this.fatigueLedger=[{},{}];this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.maxSubstitutions=MAX_SUBSTITUTIONS;this.moraleLedger=[{},{}];this.talksUsed=[{},{ }];this.celebrationStyle=0;this.onEvent=()=>{};this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];}
+ constructor(options={},input){this.options=options;this.input=input;this.events=[];this.mode='quick';this.matchState='none';this.teamIds=[0,9];this.rosters=[[],[]];this.lineups=[DEFAULT_LINEUP.slice(),[0,1,2,3,5,9]];this.formation=['2-1-2','2-1-2'];this.teamPlans=[];this.controlled=[3,3,0,0];this.humans=1;this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=120;this.players=[];this.ball={};this.particles=[];this.shake=0;this.flash=0;this.weather='Clear';this.terrain='Grass';this.condition='Good';this.wind={x:0,y:0};this.stormTimer=0;this.tornado=null;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.pk=null;this.matchSerial=0;this.fatigueLedger=[{},{}];this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.maxSubstitutions=MAX_SUBSTITUTIONS;this.moraleLedger=[{},{}];this.talksUsed=[{},{ }];this.celebrationStyle=0;this.onEvent=()=>{};this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.stoppageWindow=0;this.stoppageAnnounced=false;}
  emit(type,data={}){const ev={type,...data};this.events.push(ev);this.onEvent(ev)}
  init({home=0,away=9,mode='quick',humans=1,rosters,formations,lineups,plans,options=this.options}={}){
- this.options=options;this.mode=mode;this.humans=humans;this.teamIds=[home,away];this.rosters=(rosters||[rosterFor(home),rosterFor(away)]).map(team=>team.map(withStats));this.lineups=lineups||[home===0?DEFAULT_LINEUP.slice():[0,1,2,3,5,9],away===0?DEFAULT_LINEUP.slice():[0,1,2,3,5,9]];this.formation=formations||[options.formation||'2-1-2','2-1-2'];this.teamPlans=[0,1].map(t=>safePlan(plans?.[t]||{formation:this.formation[t],lineup:this.lineups[t]},this.rosters[t],t===0?home:away));this.formation=this.teamPlans.map(p=>p.formation);this.lineups=this.teamPlans.map(p=>p.lineup.slice());this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=options.halfSeconds||120;this.weather=options.weather==='Random'?['Clear','Rain','Wind','Storm','Tornado'][Math.floor(Math.random()*5)]:options.weather||'Clear';this.terrain=options.terrain||'Grass';this.condition=options.condition||'Good';this.wind={x:0,y:0};this.ball={x:MID,y:F.y+F.h*.5,z:0,vx:0,vy:0,vz:0,owner:null,shot:null,trail:[],age:0,power:0,canCollect:0,targetY:0,attacker:-1};this.players=[];this.particles=[];this.events=[];this.controlled=[3,3,0,0];this.shake=0;this.flash=0;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.stormTimer=2;this.tornado=null;this.pk=null;this.matchSerial++;this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.fatigueLedger=this.rosters.map(roster=>Object.fromEntries(roster.map(p=>[p.id,initialFatigue(p)])));this.moraleLedger=this.rosters.map(roster=>Object.fromEntries(roster.map(p=>[p.id,clampMorale(p.morale??55)])));this.talksUsed=[{},{}];this.celebrationStyle=0;this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.spawnPlayers();this.resetKickoff(0);this.matchState='play';this.emit('start',{mode});}
+ this.options=options;this.mode=mode;this.humans=humans;this.teamIds=[home,away];this.rosters=(rosters||[rosterFor(home),rosterFor(away)]).map(team=>team.map(withStats));this.lineups=lineups||[home===0?DEFAULT_LINEUP.slice():[0,1,2,3,5,9],away===0?DEFAULT_LINEUP.slice():[0,1,2,3,5,9]];this.formation=formations||[options.formation||'2-1-2','2-1-2'];this.teamPlans=[0,1].map(t=>safePlan(plans?.[t]||{formation:this.formation[t],lineup:this.lineups[t]},this.rosters[t],t===0?home:away));this.formation=this.teamPlans.map(p=>p.formation);this.lineups=this.teamPlans.map(p=>p.lineup.slice());this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=options.halfSeconds||120;this.weather=options.weather==='Random'?['Clear','Rain','Wind','Storm','Tornado'][Math.floor(Math.random()*5)]:options.weather||'Clear';this.terrain=options.terrain||'Grass';this.condition=options.condition||'Good';this.wind={x:0,y:0};this.ball={x:MID,y:F.y+F.h*.5,z:0,vx:0,vy:0,vz:0,owner:null,shot:null,trail:[],age:0,power:0,canCollect:0,targetY:0,attacker:-1};this.players=[];this.particles=[];this.events=[];this.controlled=[3,3,0,0];this.shake=0;this.flash=0;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.stormTimer=2;this.tornado=null;this.pk=null;this.matchSerial++;this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.stoppageWindow=0;this.stoppageAnnounced=false;this.fatigueLedger=this.rosters.map(roster=>Object.fromEntries(roster.map(p=>[p.id,initialFatigue(p)])));this.moraleLedger=this.rosters.map(roster=>Object.fromEntries(roster.map(p=>[p.id,clampMorale(p.morale??55)])));this.talksUsed=[{},{}];this.celebrationStyle=0;this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.spawnPlayers();this.resetKickoff(0);this.matchState='play';this.emit('start',{mode});}
  spawnPlayers(){const old=new Map(this.players.map(p=>[`${p.t}:${p.src.id}`,{fatigue:p.fatigue,stun:p.stun,morale:p.morale,cryTimer:p.cryTimer,abilityCd:p.abilityCd,dashCooldown:p.dashCooldown,diveCooldown:p.diveCooldown,comboCooldown:p.comboCooldown,contactCooldown:p.contactCooldown, trickCd:p.trickCd, trickGuard:p.trickGuard}]));this.players=[];for(let t=0;t<2;t++)for(let i=0;i<6;i++){
  const src=this.rosters[t][this.lineups[t][i]],home=FORMATIONS[this.formation[t]][i];let x=F.x+(t===0?home.x:1-home.x)*F.w,y=F.y+home.y*F.h;
- this.players.push({t,i,src,x,y,homeX:x,homeY:y,face:t===0?1:-1,dx:0,dy:0,z:0,vz:0,jumpCount:0,jumpHold:0,jumpTapPending:false,stun:0,anim:0,action:'idle',actionTimer:0,invuln:0,fatigue:old.get(`${t}:${src.id}`)?.fatigue??this.fatigueLedger[t][src.id]??initialFatigue(src),moveVX:0,moveVY:0,morale:old.get(`${t}:${src.id}`)?.morale??this.moraleLedger[t][src.id]??55,cryTimer:old.get(`${t}:${src.id}`)?.cryTimer??0,abilityCd:old.get(`${t}:${src.id}`)?.abilityCd??0,abilityFx:0,dashTimer:0,sprintCharge:0,dashCooldown:old.get(`${t}:${src.id}`)?.dashCooldown??0,diveCooldown:old.get(`${t}:${src.id}`)?.diveCooldown??0,comboCooldown:old.get(`${t}:${src.id}`)?.comboCooldown??0,contactCooldown:old.get(`${t}:${src.id}`)?.contactCooldown??0,trickCd:old.get(`${t}:${src.id}`)?.trickCd??0,trickGuard:old.get(`${t}:${src.id}`)?.trickGuard??0,trickFx:0,trickStyleId:null,comboWindow:0,comboActive:false,assistBy:null,assistFx:0,cd:0,specialCd:0,controlled:false,keeper:i===0,down:false,charge:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,aiComboGoal:null});}
+ this.players.push({t,i,src,x,y,homeX:x,homeY:y,face:t===0?1:-1,dx:0,dy:0,z:0,vz:0,jumpCount:0,jumpHold:0,jumpTapPending:false,dribbleHold:0,ballLiftWindow:0,ballLiftLock:false,aerialComboAction:null,aerialComboTimer:0,aerialComboTaps:0,stun:0,anim:0,action:'idle',actionTimer:0,invuln:0,fatigue:old.get(`${t}:${src.id}`)?.fatigue??this.fatigueLedger[t][src.id]??initialFatigue(src),moveVX:0,moveVY:0,morale:old.get(`${t}:${src.id}`)?.morale??this.moraleLedger[t][src.id]??55,cryTimer:old.get(`${t}:${src.id}`)?.cryTimer??0,abilityCd:old.get(`${t}:${src.id}`)?.abilityCd??0,abilityFx:0,dashTimer:0,sprintCharge:0,dashCooldown:old.get(`${t}:${src.id}`)?.dashCooldown??0,keeperHold:0,diveDy:0,diveDx:0,diveElapsed:0,diveCooldown:old.get(`${t}:${src.id}`)?.diveCooldown??0,comboCooldown:old.get(`${t}:${src.id}`)?.comboCooldown??0,contactCooldown:old.get(`${t}:${src.id}`)?.contactCooldown??0,trickCd:old.get(`${t}:${src.id}`)?.trickCd??0,trickGuard:old.get(`${t}:${src.id}`)?.trickGuard??0,trickFx:0,trickStyleId:null,comboWindow:0,comboActive:false,assistBy:null,assistFx:0,cd:0,specialCd:0,controlled:false,keeper:i===0,down:false,charge:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,aiComboGoal:null});}
  }
  applyPlan(t,raw){
   if(t!==0&&t!==1)throw Error('Invalid team');
@@ -43,7 +148,7 @@ export class GameEngine{
    const pos=FORMATIONS[next.formation][i],targetX=F.x+(t===0?pos.x:1-pos.x)*F.w,targetY=F.y+pos.y*F.h;
    if(p.src.id!==src.id){
     if(this.ball.owner===p){this.ball.owner=null;this.ball.vx=0;this.ball.vy=0;this.ball.canCollect=.3;}
-    p.src=src;p.fatigue=kept?.fatigue??this.fatigueLedger[t][src.id]??initialFatigue(src);p.morale=kept?.morale??this.moraleLedger[t][src.id]??55;p.cryTimer=kept?.cryTimer??0;p.abilityCd=kept?.abilityCd??0;p.abilityFx=0;p.dashTimer=0;p.sprintCharge=0;p.dashCooldown=kept?.dashCooldown??0;p.diveCooldown=kept?.diveCooldown??0;p.comboCooldown=kept?.comboCooldown??0;p.contactCooldown=kept?.contactCooldown??0;p.trickCd=kept?.trickCd??0;p.trickGuard=kept?.trickGuard??0;p.trickFx=0;p.trickStyleId=null;p.comboWindow=0;p.comboActive=false;p.assistBy=null;p.assistFx=0;p.stun=0;p.cd=0;p.charge=0;
+    p.src=src;p.keeperHold=0;p.diveDy=0;p.diveDx=0;p.diveElapsed=0;p.fatigue=kept?.fatigue??this.fatigueLedger[t][src.id]??initialFatigue(src);p.morale=kept?.morale??this.moraleLedger[t][src.id]??55;p.cryTimer=kept?.cryTimer??0;p.abilityCd=kept?.abilityCd??0;p.abilityFx=0;p.dashTimer=0;p.sprintCharge=0;p.dashCooldown=kept?.dashCooldown??0;p.diveCooldown=kept?.diveCooldown??0;p.comboCooldown=kept?.comboCooldown??0;p.contactCooldown=kept?.contactCooldown??0;p.trickCd=kept?.trickCd??0;p.trickGuard=kept?.trickGuard??0;p.trickFx=0;p.trickStyleId=null;p.comboWindow=0;p.comboActive=false;p.assistBy=null;p.assistFx=0;p.stun=0;p.cd=0;p.charge=0;
    }
    p.homeX=targetX;p.homeY=targetY;p.keeper=i===0;
    // New players join near their assigned position; old ones keep moving to new positions.
@@ -108,25 +213,56 @@ export class GameEngine{
  hostOfBall(){return this.ball.owner}
  toast(msg){this.emit('toast',{message:msg})}
  resetKickoff(which=0){this.spawnPlayers();this.ball={x:MID,y:F.y+F.h*.5,z:0,vx:0,vy:0,vz:0,owner:null,shot:null,trail:[],age:0,power:0,canCollect:0,targetY:0,attacker:-1};const starter=this.player(which,3);starter.x=MID+(which===0?-26:26);starter.y=F.y+F.h*.5;this.take(starter);this.controlled[0]=3;this.controlled[1]=3;this.cooldown=.9;}
- take(p){if(this.inControl(p.t)&&!p.keeper)this.controlled[p.t]=p.i;let b=this.ball;b.owner=p;b.x=p.x+p.face*17;b.y=p.y+10;b.z=0;b.vx=b.vy=b.vz=0;b.shot=null;b.age=0;b.canCollect=0;}
+ take(p){for(const q of this.players){q.aerialComboAction=null;q.aerialComboTimer=0;q.aerialComboTaps=0;}if(this.ball.liftOwner){this.ball.liftOwner.ballLiftWindow=0;this.ball.liftOwner.ballLiftLock=false;this.ball.liftOwner=null;}if(this.inControl(p.t)&&!p.keeper)this.controlled[p.t]=p.i;if(p.keeper)p.keeperHold=0;let b=this.ball;b.owner=p;b.x=p.x+p.face*17;b.y=p.y+10;b.z=0;b.vx=b.vy=b.vz=0;b.shot=null;b.age=0;b.canCollect=0;}
+ // Goalkeepers hold a clean catch briefly and then autonomously distribute.
+ // This transition is distinct from a rebound and never requires another button.
+ keeperCollect(p,source='loose'){
+  if(!p?.keeper||p.stun>0)return false;
+  this.take(p);
+  p.action=source==='dive'?'keeperDiveCatch':'keeperCatch';p.actionTimer=source==='dive'?.60:.46;p.keeperHold=0;
+  this.emit('keeperCatch',{team:p.t,player:p.src.name,source});
+  return true;
+ }
  freeBall(p,dx,dy,speed=500,opts={}){
  const b=this.ball,v=norm(dx,dy);speed*=this.options.gameSpeed||1;b.owner=null;b.x=p.x+p.face*21;b.y=p.y-5;b.vx=v.x*speed;b.vy=v.y*speed;// Airborne transformed shots must descend into the goal mouth rather than
  // retaining the jump's original height. Ordinary aerial kicks remain lofted.
  const superFromJump=!!opts.shot&&p.z>60;
  b.z=superFromJump?Math.min(62,opts.z||34):Math.max(p.z,opts.z||13);
  b.vz=superFromJump?-Math.max(28,Math.min(125,p.z*.48)):opts.vz||0;
- b.shot=opts.shot||null;b.power=opts.power||p.src.shoot;b.attacker=p.t;b.canCollect=.17;b.trail=[];b.age=0;b.shooter=p.src.name;p.action=opts.shot?'super':opts.pass?'pass':'kick';p.actionTimer=opts.shot?.6:.30;p.cd=.28;this.spendStamina(p,opts.shot?'super':opts.pass?'pass':'shoot');this.emit('kick',{player:p,super:!!opts.shot});if(opts.shot){this.shake=.19;this.flash=.23;this.burst(b.x,b.y,opts.shot.color,22)}else this.burst(b.x,b.y,'#fff',6);
+ b.shot=opts.shot||null;b.power=opts.power||p.src.shoot;b.attacker=p.t;b.canCollect=.17;b.trail=[];b.age=0;b.shooter=p.src.name;b.targetY=opts.aimY??null;p.action=opts.shot?'super':opts.pass?'pass':'kick';p.actionTimer=opts.shot?.6:.30;p.cd=.28;this.spendStamina(p,opts.shot?'super':opts.pass?'pass':'shoot');this.emit('kick',{player:p,super:!!opts.shot});if(opts.shot){this.shake=.19;this.flash=.23;this.burst(b.x,b.y,opts.shot.color,22)}else this.burst(b.x,b.y,'#fff',6);
  }
- shoot(p,special=false,alternate=false,charged=0){if(this.ball.owner!==p)return;if(special&&p.specialCd>0)return;const t=p.t,dir=t===0?1:-1,goalY=(WORLD.goalTop+WORLD.goalBottom)/2;const spread=shotError(p,!this.inControl(p.t)?aiTuning(this.cpuLevel(p)).aimError:18)/moraleFactor(p.morale);
+ shoot(p,special=false,alternate=false,charged=0){if(this.ball.owner!==p)return false;const equipped=!!(p.src.superAbility?.type==='shoot'&&p.src.shot);const enhanced=!!special&&!equipped;special=!!special&&equipped&&p.specialCd<=0;const t=p.t,dir=t===0?1:-1,goalY=(WORLD.goalTop+WORLD.goalBottom)/2;const spread=shotError(p,!this.inControl(p.t)?aiTuning(this.cpuLevel(p)).aimError:18)/moraleFactor(p.morale);
+ const accuracy=stat(p,'shootAccuracy'),skill=clamp((accuracy-1)/99,0,1);
  const keeper=this.players.find(q=>q.t!==t&&q.keeper);
- const accuracy=stat(p,'shootAccuracy'),goalHeight=WORLD.goalBottom-WORLD.goalTop;
- // High precision identifies the farther open corner; poor precision is noisy.
- const openTop=WORLD.goalTop+goalHeight*.19,openBottom=WORLD.goalBottom-goalHeight*.19;
- const corner=keeper?(Math.abs(keeper.y-openTop)>Math.abs(keeper.y-openBottom)?openTop:openBottom):goalY;
- const intelligence=clamp((accuracy-20)/80,0,1);
- const ideal=goalY+(corner-goalY)*intelligence+(p.dy||0)*30*(1-intelligence);
- const noise=spread*(1.35-intelligence*.75)+(100-accuracy)*.62;
- let aim=clamp(ideal+(Math.random()-.5)*noise*2,WORLD.goalTop-95,WORLD.goalBottom+95);const dx=(t===0?F.x+F.w:F.x)-p.x,dy=aim-p.y;const magnitude=Math.hypot(dx,dy);if(special){let spec=SHOTS[p.src.shot]||SHOTS.nuts;this.freeBall(p,dx,dy,850*spec.speed*shotVelocityModifier(p.src.shot,abilityLevel(p,'shot'))*(.72+stat(p,'shootPower')*.004)*endurance(p)*moraleFactor(p.morale),{shot:{...spec,id:p.src.shot,phase:0,startY:p.y,direction:dir,aimY:aim,alternate},power:((stat(p,'shootPower')*.59+9)*spec.impact*endurance(p)+18)*levelModifiers(abilityLevel(p,'shot')).power,z:29,vz:alternate?190:45});p.specialCd=3.4;}else{let speed=(450+stat(p,'shootPower')*4.0)*(1+Math.min(1.2,charged)*.32)*endurance(p)*moraleFactor(p.morale)*(alternate?(.82+stat(p,'heading')*.003):1);this.freeBall(p,dx,dy,speed,{power:stat(p,'shootPower')*.64*endurance(p),z:p.z+14,vz:alternate?160:Math.random()*90})}}
+ // Compare goalmouth lanes, including their likely crossing points past a blocker.
+ // An elite finisher strongly prefers a free lane; an inaccurate one may guess.
+ const margin=33,goalSpan=WORLD.goalBottom-WORLD.goalTop;
+ const candidates=Array.from({length:7},(_,i)=>WORLD.goalTop+margin+i*(goalSpan-2*margin)/6);
+ const goalX=t===0?F.x+F.w:F.x;
+ const blockers=this.players.filter(q=>q.t!==t&&!q.keeper&&q.stun<=0);
+ const laneScore=y=>{
+  const keeperGap=keeper?Math.abs(y-keeper.y):goalSpan*.5;
+  let score=keeperGap*1.4-(Math.abs(y-goalY)*.07);
+  for(const q of blockers){const progress=(q.x-p.x)/(goalX-p.x||1);
+   if(progress<=.04||progress>=.99)continue;
+   const projectedY=p.y+(y-p.y)*progress;
+   const clearance=Math.abs(q.y-projectedY);
+   if(clearance<85)score-=(85-clearance)*(1.1+progress*.5);
+  }
+  return score;
+ };
+ const ranked=candidates.slice().sort((a,b)=>laneScore(b)-laneScore(a));
+ const readsOpenLane=Math.random()<(.13+skill*.83);
+ const chosen=readsOpenLane?ranked[0]:candidates[Math.floor(Math.random()*candidates.length)];
+ const error=(100-accuracy)*1.00+spread*(1.30-skill*.75);
+ // Direction still permits some manual steering without always forcing shots center.
+ let aim=chosen+(Math.random()-.5)*error*2+(p.dy||0)*(1-skill)*24;
+ // Poor aim genuinely misses the mouth sometimes instead of being clamped on target.
+ if(Math.random()<Math.pow(1-skill,2)*.18){
+  aim=(Math.random()<.5?WORLD.goalTop:WORLD.goalBottom)+(Math.random()<.5?-1:1)*(35+Math.random()*95);
+ }
+ aim=clamp(aim,WORLD.goalTop-155,WORLD.goalBottom+155);
+ const dx=(t===0?F.x+F.w:F.x)-p.x,dy=aim-p.y;const magnitude=Math.hypot(dx,dy);if(special){let spec=SHOTS[p.src.shot]||SHOTS.nuts;this.freeBall(p,dx,dy,850*spec.speed*shotVelocityModifier(p.src.shot,abilityLevel(p,'shot'))*(.72+stat(p,'shootPower')*.004)*endurance(p)*moraleFactor(p.morale),{shot:{...spec,level:abilityLevel(p,'shot'),id:p.src.shot,phase:0,startY:p.y,direction:dir,aimY:aim,alternate},power:((stat(p,'shootPower')*.59+9)*spec.impact*endurance(p)+18)*levelModifiers(abilityLevel(p,'shot')).power,z:29,vz:alternate?190:45,aimY:aim});p.specialCd=3.4;}else{let speed=(450+stat(p,'shootPower')*4.0)*(1+Math.min(1.2,charged)*.32)*(enhanced?1.32:1)*endurance(p)*moraleFactor(p.morale)*(alternate?(.82+stat(p,'heading')*.003):1);this.freeBall(p,dx,dy,speed,{power:stat(p,'shootPower')*.64*endurance(p)*(enhanced?1.45:1),z:p.z+14,vz:alternate?160:Math.random()*90,aimY:aim})}return true;}
  pass(p,long=false,cross=false){
  const mates=this.players.filter(q=>q.t===p.t&&q!==p&&!q.stun&&(!q.keeper||p.keeper));
  if(!mates.length)return;
@@ -211,26 +347,53 @@ export class GameEngine{
   this.burst(b.x,b.y,'#fff1a0',14);this.emit('header',{team:p.t,player:p.src.name,heading});return true;
  }
  // Ordinary goalkeeper dives, separate from rare supernatural goalkeeper saves.
- // Direction and reach depend on keeper jumping and skill attributes.
+ // Direction and reach depend on GK Diving and GK Skill attributes.
  tryKeeperDive(p,manual=false){
   const b=this.ball;
   if(!p?.keeper||p.stun>0||p.diveCooldown>0||b.owner||b.attacker!==1-p.t)return false;
-  const jump=stat(p,'gkJump'),skill=stat(p,'gkSkill');
-  const reachX=105+jump*1.35,reachY=48+jump*1.08;
+  const diving=stat(p,'gkDiving'),skill=stat(p,'gkSkill');
+  const reach=keeperReactionReach(p,b);
   const dx=b.x-p.x,dy=b.y-p.y;
-  if(Math.abs(dx)>reachX||Math.abs(dy)>reachY||b.z>(45+jump*1.7))return false;
+  if(Math.abs(dx)>reach.x||Math.abs(dy)>reach.y||b.z>reach.z)return false;
   // Reject shots already travelling away from the goalkeeper.
   if(b.vx*(p.t===0?1:-1)>0)return false;
-  p.diveCooldown=2.4;p.action='keeperDive';p.actionTimer=.64;p.z=Math.max(12,p.z);
+  p.diveCooldown=keeperDiveRecoverySeconds(p);p.action='keeperDive';p.actionTimer=.64;p.z=Math.max(12,p.z);
+  // The actual contact direction and animation motion come from the shot lane.
+  p.diveDy=clamp(dy/Math.max(1,reach.y),-1,1);p.diveDx=clamp(dx/Math.max(1,reach.x),-1,1);
+  p.diveElapsed=0;
   p.x=clamp(p.x+clamp(dx,-58,58),F.x+12,F.x+F.w-12);
   p.y=clamp(p.y+clamp(dy,-64,64),F.y+12,F.y+F.h-12);
   const sign=p.t===0?1:-1;
-  const force=Math.hypot(b.vx,b.vy)/50+(b.power||0),saveQuality=24+skill*.55+jump*.28;
+  const force=Math.hypot(b.vx,b.vy)/50+(b.power||0),saveQuality=24+skill*.55+diving*.28;
   // Even a strong shot can be deflected; high-quality keepers catch slower shots.
-  if(force<saveQuality*.62){this.take(p);this.emit('save',{player:p,type:'dive'});}
-  else {b.owner=null;b.shot=null;b.vx=sign*(290+skill*4.1);b.vy=dy*4+Math.sign(dy||1)*115;b.vz=150+jump*.6;b.power=0;b.attacker=p.t;b.age=0;b.trail=[];b.canCollect=.32;this.emit('save',{player:p,type:'dive',deflected:true});}
+  if(force<saveQuality*.62){this.keeperCollect(p,'dive');this.emit('save',{player:p,saveType:'dive'});}
+  else {b.owner=null;b.shot=null;b.vx=sign*(290+skill*4.1);b.vy=dy*4+Math.sign(dy||1)*115;b.vz=150+diving*.6;b.power=0;b.attacker=p.t;b.age=0;b.trail=[];b.canCollect=.32;this.emit('save',{player:p,saveType:'dive',deflected:true});}
   this.spendStamina(p,'keeperDive');this.burst(p.x,p.y,'#ccf9ff',16);
   this.emit('keeperDive',{team:p.t,player:p.src.name,manual});return true;
+ }
+ // Detect high-speed shots that cross the keeper's plane in a single frame.
+ // Without a swept check, a fast ball may pass from outside dive range to behind
+ // the goal line between polls, bypassing both the dive and contact checks.
+ trySweptKeeperDive(previous){
+  const b=this.ball;
+  if(b.owner||![0,1].includes(b.attacker))return false;
+  const keeper=this.player(1-b.attacker,0);
+  if(!keeper||keeper.diveCooldown>0||keeper.stun>0)return false;
+  const toward=keeper.t===0?-1:1;
+  if(b.vx*toward<=0)return false;
+  const dx=b.x-previous.x;
+  if(!dx||dx*toward<=0)return false;
+  const fraction=(keeper.x-previous.x)/dx;
+  if(fraction<0||fraction>1)return false;
+  const atY=previous.y+(b.y-previous.y)*fraction;
+  const atZ=previous.z+(b.z-previous.z)*fraction;
+  // Do not dive at shots that will clearly miss well outside the goal mouth.
+  if(atY<WORLD.goalTop-80||atY>WORLD.goalBottom+80)return false;
+  const end={x:b.x,y:b.y,z:b.z};
+  b.x=keeper.x;b.y=atY;b.z=Math.max(0,atZ);
+  if(this.tryKeeperDive(keeper,false))return true;
+  b.x=end.x;b.y=end.y;b.z=end.z;
+  return false;
  }
  requestKeeperDive(team){return this.tryKeeperDive(this.player(team,0),true);}
  jump(p){
@@ -240,8 +403,43 @@ export class GameEngine{
   this.spendStamina(p,'jump');p.z=2;p.vz=420;p.jumpCount=1;p.action='jump';p.actionTimer=.5;return true;
  }
 
- tackle(p,slide=false){if(p.cd>0||p.stun>0)return;p.cd=.57;this.spendStamina(p,slide?'slide':'tackle');p.action=slide?'slide':'punch';p.actionTimer=.4;const target=this.players.filter(q=>q.t!==p.t&&!q.stun).sort((a,b)=>distance(p,a)-distance(p,b))[0];let dir=target?norm(target.x-p.x,target.y-p.y):{x:p.face,y:0};p.x+=dir.x*(slide?26:16);p.y+=dir.y*(slide?26:16);
- if(target&&distance(p,target)<(slide?83:62)&&target.invuln<=0&&!target.keeper&&Math.random()<Math.min(.96,contest(p,target,slide).knockChance*moraleFactor(p.morale)/moraleFactor(target.morale)*(1-Math.min(.57,(target.trickGuard||0)*(1+stat(target,'dribbling')/200))))){target.stun=(slide?.63:.47)+contest(p,target,slide).duration*.35;target.action='hurt';target.actionTimer=.55;target.invuln=1.1;target.x+=dir.x*36;target.y+=dir.y*21;this.burst(target.x,target.y,'#ffdf81',11);this.shake=.12;if(this.ball.owner===target){this.ball.owner=null;this.ball.x=target.x;this.ball.y=target.y;this.ball.z=23;this.ball.vx=dir.x*150;this.ball.vy=dir.y*150;this.ball.vz=115;this.ball.canCollect=.15;}}
+ // Resolve impact only at the actual player's location, including while a slide travels.
+ slideContact(p){
+  const targets=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&q.invuln<=0&&distance(p,q)<64)
+   .sort((a,b)=>(this.ball.owner===b?1:0)-(this.ball.owner===a?1:0)||distance(p,a)-distance(p,b));
+  const q=targets[0];if(!q)return false;
+  const c=contest(p,q,true),odds=Math.min(.96,c.knockChance*moraleFactor(p.morale)/moraleFactor(q.morale)*(1-Math.min(.57,(q.trickGuard||0)*(1+stat(q,'dribbling')/200))));
+  if(Math.random()>=odds)return false;
+  const dir=norm(q.x-p.x,q.y-p.y);
+  q.stun=tackleStunDuration(stat(q,'strength'),true,c.duration);q.action='hurt';q.actionTimer=Math.max(q.actionTimer||0,q.stun);q.invuln=1.1;
+  q.x+=dir.x*36;q.y+=dir.y*21;this.burst(q.x,q.y,'#ffdf81',11);this.shake=.12;
+  this.emit('tackleHit',{team:p.t,victim:q.src.name,stun:q.stun,slide:true});
+  if(this.ball.owner===q){this.ball.owner=null;this.ball.x=q.x;this.ball.y=q.y;this.ball.z=23;this.ball.vx=dir.x*150;this.ball.vy=dir.y*150;this.ball.vz=115;this.ball.canCollect=.15;}
+  p.slideTimer=0;return true;
+ }
+ tackle(p,slide=false){
+  if(p.cd>0||p.stun>0)return false;
+  this.spendStamina(p,slide?'slide':'tackle');p.cd=slide?.68:.57;p.action=slide?'slide':'punch';p.actionTimer=slide?.48:.4;
+  const near=this.players.filter(q=>q.t!==p.t&&!q.keeper&&!q.stun);
+  const owner=this.ball.owner?.t!==p.t?this.ball.owner:null;
+  const target=owner&&distance(p,owner)<280?owner:near.sort((a,b)=>distance(p,a)-distance(p,b))[0];
+  const dir=target?norm(target.x-p.x,target.y-p.y):norm(p.dx||p.face,p.dy||0);
+  if(slide){
+   // A slide is a timed physical dash rather than a 26-unit teleport. Run-up speed matters.
+   const running=Math.hypot(p.moveVX||0,p.moveVY||0)>this.playerSpeed(p)*.65 || p.dashTimer>0 || p.sprintCharge>.1;
+   p.slideTimer=running?.46:.34;p.slideSpeed=(running?585:395)*(0.85+stat(p,'speedRating')/600);
+   p.slideDX=dir.x;p.slideDY=dir.y;p.moveVX=0;p.moveVY=0;
+   this.emit('slideStart',{team:p.t,player:p.src.name,running,reach:Math.round(p.slideTimer*p.slideSpeed)});
+   this.slideContact(p);return true;
+  }
+  p.x+=dir.x*16;p.y+=dir.y*16;
+  if(target&&distance(p,target)<62&&target.invuln<=0&&Math.random()<Math.min(.96,contest(p,target,false).knockChance*moraleFactor(p.morale)/moraleFactor(target.morale))){
+   target.stun=tackleStunDuration(stat(target,'strength'),false,contest(p,target,false).duration);target.action='hurt';target.actionTimer=target.stun;target.invuln=1.1;
+   target.x+=dir.x*36;target.y+=dir.y*21;this.burst(target.x,target.y,'#ffdf81',11);this.shake=.12;
+   this.emit('tackleHit',{team:p.t,victim:target.src.name,stun:target.stun,slide:false});
+   if(this.ball.owner===target){this.ball.owner=null;this.ball.x=target.x;this.ball.y=target.y;this.ball.z=23;this.ball.vx=dir.x*150;this.ball.vy=dir.y*150;this.ball.vz=115;this.ball.canCollect=.15;}
+  }
+  return true;
  }
  // Defensive abilities are only available to explicitly assigned characters.
  activateDefence(p){
@@ -304,6 +502,85 @@ export class GameEngine{
   this.spendStamina(p,'bicycle');this.burst(p.x,p.y,'#d9a7ff',15);
   this.emit('bicycleShot',{team:p.t,player:p.src.name,speed:ballSpeed});return true;
  }
+ // Deliberately held Dribble, THEN Jump: lift the standard football over the
+ // carrier's head without jumping. A quick Jump+Dribble still uses tryBicycleShot.
+ // The prior Dribble tap can have started a dash; only this precise follow-up
+ // is permitted to interrupt its cooldown. No fifth action button is needed.
+ tryBallLift(p){
+  if(!p||p.keeper||p.stun>0||p.fatigue>.94||p.z>0||this.ball.owner!==p||p.ballLiftLock)return false;
+  if((p.dribbleHold||0)<BALL_LIFT_HOLD_SECONDS)return false;
+  const b=this.ball;
+  b.owner=null;b.liftOwner=p;b.shot=null;b.x=p.x+p.face*14;b.y=p.y;
+  b.z=112;b.vx=0;b.vy=0;b.vz=215;b.power=0;b.attacker=-1;b.shooter=null;
+  b.age=0;b.canCollect=.24;b.trail=[];b.targetY=null;
+  p.ballLiftWindow=BALL_LIFT_WINDOW_SECONDS;p.ballLiftLock=true;
+  p.cd=.16;p.jumpTapPending=false;p.jumpHold=0;p.charge=0;
+  p.action='ballLift';p.actionTimer=.44;
+  this.spendStamina(p,'dribble');this.burst(p.x,p.y,'#b8eeff',14);
+  this.emit('ballLift',{team:p.t,player:p.src.name,seconds:BALL_LIFT_WINDOW_SECONDS});
+  return true;
+ }
+ // Revised v0.8.22.1 action grammar. Any nearby loose *aerial* ball works:
+ // after Jump, one Dribble => regular bicycle; two Dribble => Super Bicycle;
+ // one Shoot => regular header; two Shoot => Super Header.
+ // First tap is deferred for a bounded interval so the second tap can upgrade it.
+ aerialBallInReach(p){
+  const b=this.ball;
+  return !!p&&!p.keeper&&p.stun<=0&&p.z>0&&p.jumpCount>0&&!b.owner&&
+    b.z>=30&&b.z<=330&&distance(p,b)<=125&&Math.abs(b.z-(p.z+42))<=160;
+ }
+ // Grounded, loose-ball and aerial special strikes share shoot()'s exact
+ // transformed shot parameters, speed, power and original ball animation.
+ // Missing shoot specialization means stronger ordinary contact with NO shape.
+ tryAerialStrike(p,kind,superAttempt=false){
+  if(!this.aerialBallInReach(p))return false;
+  const b=this.ball;
+  if(p.cd>0&&!(b.liftOwner===p&&p.ballLiftWindow>0))return false;
+  b.liftOwner=null;p.ballLiftWindow=0;p.ballLiftLock=false;
+  if(superAttempt){
+   const hasSuper=!!(p.src.superAbility?.type==='shoot'&&p.src.shot)&&p.specialCd<=0;
+   b.owner=p;
+   this.shoot(p,true,false);
+   p.action=kind==='header'?'superHead':'superBicycle';p.actionTimer=.70;
+   p.cd=Math.max(p.cd,.64);
+   // Both moves use exactly the same shot transformation data as Super Shot.
+   if(kind==='header')this.emit('superHeadShot',{team:p.t,player:p.src.name,transformed:hasSuper});
+   else this.emit('superBicycleShot',{team:p.t,player:p.src.name,transformed:hasSuper});
+   return true;
+  }
+  if(kind==='header'){
+   // Earlier Jump primes the airborne contact. The initial tap is only
+   // committed when the double-tap window expires.
+   return this.tryHeader(p);
+  }
+  b.owner=p;const worked=this.tryBicycleShot(p);
+  if(!worked)b.owner=null;
+  return worked;
+ }
+ // Direct API retained for compatibility; no longer requires a proprietary
+ // lift window or produces a different super-shot power/shape.
+ trySuperBicycle(p){return this.tryAerialStrike(p,'bicycle',true);}
+ queueAerialTap(p,kind){
+  if(!this.aerialBallInReach(p))return false;
+  if(p.aerialComboAction===kind&&p.aerialComboTimer>0){
+   p.aerialComboAction=null;p.aerialComboTimer=0;p.aerialComboTaps=0;
+   this.tryAerialStrike(p,kind,true);
+  }else{
+   p.aerialComboAction=kind;p.aerialComboTimer=AERIAL_DOUBLE_TAP_SECONDS;p.aerialComboTaps=1;
+  }
+  return true;
+ }
+ resolveAerialTap(p,dt){
+  if(!p.aerialComboAction)return;
+  if(!this.aerialBallInReach(p)){
+   p.aerialComboAction=null;p.aerialComboTimer=0;p.aerialComboTaps=0;return;
+  }
+  p.aerialComboTimer=Math.max(0,p.aerialComboTimer-dt);
+  if(!p.aerialComboTimer){
+   const kind=p.aerialComboAction;p.aerialComboAction=null;p.aerialComboTaps=0;
+   this.tryAerialStrike(p,kind,false);
+  }
+ }
  // Without possession, Jump+Shoot uses a flying kick, unless a rare super defence
  // or ordinary aerial ball interception is available. The attacker and defender
  // are both affected by strength/aggression and collision immunity.
@@ -361,32 +638,74 @@ export class GameEngine{
   this.emit('dribbleTrick',{team:p.t,player:p.src.name,style:style.id,name:style.name,success,ai:byAI});
   return true;
  }
- // Goalkeeper distribution always chooses an on-field non-GK teammate, otherwise
- // punts to a safe forward lane. This also prevents keeper possession deadlocks.
+ // Safety is evaluated at release time; a marked teammate or a defender on
+ // the passing line must never be treated as a safe short-throw receiver.
+ keeperPassingLane(p,q){
+  const opponents=this.players.filter(o=>o.t!==p.t&&!o.keeper&&o.stun<=0);
+  const dx=q.x-p.x,dy=q.y-p.y,length=Math.hypot(dx,dy)||1;
+  const endpoint=Math.min(...opponents.map(o=>distance(q,o)),9999);
+  const interception=Math.min(...opponents.map(o=>{
+   const u=clamp(((o.x-p.x)*dx+(o.y-p.y)*dy)/(length*length),0,1);
+   return Math.hypot(o.x-(p.x+u*dx),o.y-(p.y+u*dy));
+  }),9999);
+  return {endpoint,interception,clear:endpoint>145&&interception>95};
+ }
+ // Find an open, advancing clearance corridor instead of punting directly
+ // toward a marked teammate/opponent. Aimed empty turf is always an option.
+ keeperClearanceTarget(p,scored,opponents){
+  const dir=p.t===0?1:-1;
+  const candidates=[];
+  const midfield=F.x+F.w*.5;
+  for(const v of scored){
+   if(v.q.x*dir<=p.x*dir+175)continue;
+   const d=distance(p,v.q);
+   const safe=Math.min(v.safe.endpoint,v.safe.interception*1.5);
+   candidates.push({x:v.q.x,y:v.q.y,receiver:v.q,score:safe*1.5+d*.05+(v.q.x-p.x)*dir*.14});
+  }
+  // Prefer a corridor that makes forward progress while staying away from defenders.
+  for(const factor of [.50,.67,.82])for(const lane of [.22,.50,.78]){
+   const x=p.t===0?F.x+F.w*factor:F.x+F.w*(1-factor);
+   const y=F.y+F.h*lane;
+   const safety=Math.min(...opponents.map(o=>Math.hypot(o.x-x,o.y-y)),9999);
+   const path=this.keeperPassingLane(p,{x,y});
+   candidates.push({x,y,receiver:null,score:safety*.85+path.interception*.30+(x-p.x)*dir*.12});
+  }
+  candidates.sort((a,b)=>b.score-a.score);
+  const best=candidates[0];
+  return best&&best.score>0?best:{x:midfield+dir*F.w*.15,y:F.y+F.h*.5,receiver:null};
+ }
  distributeKeeper(p,mode='auto'){
   if(!p?.keeper||this.ball.owner!==p||p.stun>0)return false;
   const dir=p.t===0?1:-1;
   const mates=this.players.filter(q=>q.t===p.t&&!q.keeper&&q.stun<=0);
-  const nearest=mates.slice().sort((a,b)=>distance(p,a)-distance(p,b))[0]||null;
-  const forwards=mates.slice().sort((a,b)=>((b.x-a.x)*dir)||distance(p,a)-distance(p,b));
-  const forward=forwards[0]||nearest;
-  const pressured=this.players.some(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&distance(p,q)<180);
-  const long=mode==='long'||(mode==='auto'&&(pressured||!nearest||distance(p,nearest)>930));
-  const target=long?forward:nearest;
-  if(target){const quality=stat(p,'passing');const miss=(100-quality)*(long?1.2:.55);
-   const ex=(Math.random()-.5)*miss,ey=(Math.random()-.5)*miss;
-   this.freeBall(p,target.x-p.x+ex+(target.moveVX||0)*(long?.35:.18),target.y-p.y+ey+(target.moveVY||0)*.18,
-    long?690+quality*1.4:450+quality*1.9,{power:long?16:8,z:long?29:18,vz:long?215:80,pass:true});
-  }else this.freeBall(p,dir,0,690,{power:12,z:23,vz:175,pass:true});
+  const opponents=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0);
+  const pressured=opponents.some(q=>distance(p,q)<330);
+  const scored=mates.map(q=>({q,safe:this.keeperPassingLane(p,q)}));
+  const shortOptions=scored.filter(v=>v.safe.clear&&distance(p,v.q)<900)
+    .sort((a,b)=>distance(p,a.q)-distance(p,b.q));
+  const shortAllowed=mode!=='long'&&!pressured&&shortOptions.length>0;
+  const long=!shortAllowed;
+  const option=long?this.keeperClearanceTarget(p,scored,opponents):{
+   x:shortOptions[0].q.x,y:shortOptions[0].q.y,receiver:shortOptions[0].q};
+  const target=option.receiver;
+  const quality=stat(p,'passing');
+  const error=(100-quality)*(long?1.2:.55);
+  const ex=(Math.random()-.5)*error,ey=(Math.random()-.5)*error;
+  this.freeBall(p,option.x-p.x+ex+(target?.moveVX||0)*(long?.34:.17),
+   option.y-p.y+ey+(target?.moveVY||0)*.17,
+   long?855+quality*1.3:390+quality*1.2,
+   {power:long?17:6,z:long?36:46,vz:long?315:45,pass:true});
   p.keeperHold=0;
-  this.emit('keeperDistribution',{team:p.t,player:p.src.name,target:target?.src?.name||null,mode:long?'long':'short'});
+  p.action=long?'keeperPunt':'keeperThrow';p.actionTimer=long?.64:.48;
+  this.emit('keeperDistribution',{team:p.t,player:p.src.name,target:target?.src?.name||null,
+   mode:long?'long':'short',pressured,emptySpace:long&&!target});
   return true;
  }
 
  command(p,a){if(a==='dribble'){this.dribble(p);return}if(a==='shoot'){if(this.tryFlipKick(p,false)||this.tryHeader(p))return;const mate=this.hostOfBall();if(mate&&mate.t===p.t&&mate!==p){if(mate.keeper)this.distributeKeeper(mate,'long');else this.shoot(mate,false)}else if(this.ball.owner===p){if(p.keeper)this.distributeKeeper(p,'long');else this.shoot(p,false,p.z>65)}else this.tackle(p,true)}
  if(a==='pass'){const mate=this.hostOfBall();if(mate&&mate.t===p.t&&mate!==p){if(mate.keeper)this.distributeKeeper(mate,'short');else this.pass(mate);}else if(this.ball.owner===p){if(p.keeper)this.distributeKeeper(p,'short');else this.pass(p);}else {if(distance(p,this.ball)<140)this.tackle(p,true);else{p.chase=1.8;p.action='sprint';p.actionTimer=.3}}}
  if(a==='special'){if(this.tryFlipKick(p,true))return;const mate=this.hostOfBall();if(mate&&mate.t===p.t&&mate!==p)this.shoot(mate,true);else if(this.ball.owner===p)this.shoot(p,true,p.z>60);else if(!this.requestKeeperSuper(p.t)&&!this.activateDefence(p))this.tackle(p,true)}
- if(a==='jump'){if(!this.requestKeeperDive(p.t)){const wantsAssist=this.inControl(p.t)&&!!this.input.held?.(p.t,'pass');if(!wantsAssist||!this.tryTeammateLaunch(p))this.jump(p);}}
+ if(a==='jump')this.jump(p);
  }
  autoSwitch(t,dt=.016){
   if(!this.inControl(t)||this.ball.owner?.t===t||this.matchState!=='play'){this.autoSwitchAccum[t]=0;return false;}
@@ -395,7 +714,7 @@ export class GameEngine{
   const input=this.input.state[t]||{};
   // Preserve intentional chases and aerial moves, but DO NOT disable automatic
   // selection merely because a player steers the joystick while defending.
-  if(!selected||selected.z>15||selected.comboActive||selected.dashTimer>0||input.sprint||input.pass||selected.chase>0){this.autoSwitchAccum[t]=0;return false;}
+  if(!selected||selected.z>15||selected.comboActive||selected.ballLiftWindow>0||selected.dashTimer>0||input.jump||input.pass||selected.chase>0){this.autoSwitchAccum[t]=0;return false;}
   const d=distance(selected,ball);
   const candidates=this.players.filter(q=>q.t===t&&!q.keeper&&q.stun<=0&&q.z<=15);
   candidates.sort((a,b)=>distance(a,ball)-distance(b,ball));
@@ -415,7 +734,14 @@ export class GameEngine{
    for(const p of this.players){p.anim+=dt;if(p.t===this.pendingKickoff?.scorer){p.action='celebrate';p.actionTimer=.25}else{p.action='cry';p.actionTimer=.25;p.cryTimer=this.celebration;}}
    if(this.celebration===0&&this.pendingKickoff){const k=this.pendingKickoff;this.pendingKickoff=null;this.resetKickoff(1-k.scorer);}return}
  this.clock+=dt;this.cooldown=Math.max(0,this.cooldown-dt);this.shake=Math.max(0,this.shake-dt*2.5);this.flash=Math.max(0,this.flash-dt*2);this.stormTimer-=dt;this.updateWeather(dt);if(this.input.just(0,'pause')||this.input.just(1,'pause')){this.matchState='paused';this.emit('pause');return}
- if(this.clock>=this.matchSeconds){if(this.half===1){this.half=2;this.clock=0;this.halftimeRecovery();this.resetKickoff(1);this.matchState='paused';this.autoSubstituteCpu();this.emit('halftime')}else if(this.score[0]===this.score[1]&&this.mode!=='training'){this.startPK(true)}else{this.matchState='finished';this.emit('finished',{score:this.score.slice()})}return}
+ if(this.clock>=this.matchSeconds){
+  const maxExtra=clamp(this.matchSeconds*.065,2.5,10);
+  if(!this.stoppageAnnounced){this.stoppageWindow=attackingStoppage(this.ball)?maxExtra:0;this.stoppageAnnounced=true;
+   if(this.stoppageWindow>0)this.emit('stoppageTime',{half:this.half,maxSeconds:maxExtra});}
+  if(this.clock<this.matchSeconds+this.stoppageWindow && attackingStoppage(this.ball)){
+   // The attacking chance is still alive, but must finish at the hard cap.
+  }else{this.stoppageWindow=0;
+  if(this.half===1){this.half=2;this.clock=0;this.stoppageAnnounced=false;this.stoppageWindow=0;this.halftimeRecovery();this.resetKickoff(1);this.matchState='paused';this.autoSubstituteCpu();this.emit('halftime')}else if(this.score[0]===this.score[1]&&this.mode!=='training'){this.startPK(true)}else{this.matchState='finished';this.emit('finished',{score:this.score.slice()})}return}}
  this.coordinateAiCombos(dt);this.manualSwitchGrace=this.manualSwitchGrace.map(v=>Math.max(0,v-dt));this.updatePlayers(dt);this.resolvePlayerContacts(dt);this.updateBall(dt);this.updateEffects(dt);
  }
  // v0.8.5 grounded player collision: unlike tackle/special attacks this is an
@@ -553,49 +879,91 @@ export class GameEngine{
  for(let t=0;t<(this.humans>=2?2:1);t++)this.autoSwitch(t,dt);
  // Snapshot controllers: an in-frame swap must not make the next player consume the same tap.
  const selectedAtStart=this.controlled.slice();
- for(let p of this.players){this.playerSeconds[p.t][p.src.id]=(this.playerSeconds[p.t][p.src.id]||0)+dt;p.anim+=dt;p.cd=Math.max(0,p.cd-dt);p.invuln=Math.max(0,p.invuln-dt);p.specialCd=Math.max(0,p.specialCd-dt);p.abilityCd=Math.max(0,(p.abilityCd||0)-dt);p.abilityFx=Math.max(0,(p.abilityFx||0)-dt);p.dashCooldown=Math.max(0,(p.dashCooldown||0)-dt);p.diveCooldown=Math.max(0,(p.diveCooldown||0)-dt);p.comboCooldown=Math.max(0,(p.comboCooldown||0)-dt);p.contactCooldown=Math.max(0,(p.contactCooldown||0)-dt);p.trickCd=Math.max(0,(p.trickCd||0)-dt);p.trickGuard=Math.max(0,(p.trickGuard||0)-dt);p.trickFx=Math.max(0,(p.trickFx||0)-dt);p.comboWindow=Math.max(0,(p.comboWindow||0)-dt);p.assistFx=Math.max(0,(p.assistFx||0)-dt);p.dashTimer=Math.max(0,(p.dashTimer||0)-dt);p.actionTimer=Math.max(0,p.actionTimer-dt);p.cryTimer=Math.max(0,(p.cryTimer||0)-dt);if(p.actionTimer===0&&p.action!=='idle')p.action='idle';if(p.z>0||p.vz>0){p.z+=p.vz*dt;p.vz-=1080*dt;if(p.z<=0){const wasCombo=p.comboActive;p.z=0;p.vz=0;p.jumpCount=0;if(wasCombo)this.landCombo(p)}}
- if(p.stun>0){p.stun-=dt;p.moveVX=0;p.moveVY=0;this.staminaTick(p,dt,0);continue}
+ for(let p of this.players){this.playerSeconds[p.t][p.src.id]=(this.playerSeconds[p.t][p.src.id]||0)+dt;p.anim+=dt;p.cd=Math.max(0,p.cd-dt);p.invuln=Math.max(0,p.invuln-dt);p.specialCd=Math.max(0,p.specialCd-dt);p.abilityCd=Math.max(0,(p.abilityCd||0)-dt);p.abilityFx=Math.max(0,(p.abilityFx||0)-dt);p.dashCooldown=Math.max(0,(p.dashCooldown||0)-dt);p.diveCooldown=Math.max(0,(p.diveCooldown||0)-dt);p.comboCooldown=Math.max(0,(p.comboCooldown||0)-dt);p.contactCooldown=Math.max(0,(p.contactCooldown||0)-dt);p.trickCd=Math.max(0,(p.trickCd||0)-dt);p.trickGuard=Math.max(0,(p.trickGuard||0)-dt);p.trickFx=Math.max(0,(p.trickFx||0)-dt);p.comboWindow=Math.max(0,(p.comboWindow||0)-dt);
+  p.ballLiftWindow=Math.max(0,(p.ballLiftWindow||0)-dt);
+  this.resolveAerialTap(p,dt);
+  if(!p.ballLiftWindow&&this.ball.liftOwner===p)this.ball.liftOwner=null;p.assistFx=Math.max(0,(p.assistFx||0)-dt);p.dashTimer=Math.max(0,(p.dashTimer||0)-dt);p.actionTimer=Math.max(0,p.actionTimer-dt);if(p.keeper&&['keeperDive','keeperDiveCatch'].includes(p.action))p.diveElapsed=Math.min(.7,(p.diveElapsed||0)+dt);p.cryTimer=Math.max(0,(p.cryTimer||0)-dt);if(p.actionTimer===0&&p.action!=='idle'){
+   if(p.keeper&&p.action==='keeperDive'&&p.diveCooldown>0){
+    p.action='keeperRecover';p.actionTimer=.34;p.z=0;
+    this.emit('keeperRecovery',{team:p.t,player:p.src.name,secondsRemaining:p.diveCooldown});
+   }else p.action='idle';
+  }if(p.z>0||p.vz>0){p.z+=p.vz*dt;p.vz-=1080*dt;if(p.z<=0){const wasCombo=p.comboActive;p.z=0;p.vz=0;p.jumpCount=0;if(wasCombo)this.landCombo(p)}}
+ if(p.stun>0){p.stun-=dt;p.slideTimer=0;p.moveVX=0;p.moveVY=0;this.staminaTick(p,dt,0);continue}
+ if((p.slideTimer||0)>0){
+  const step=Math.min(dt,p.slideTimer);p.slideTimer=Math.max(0,p.slideTimer-step);
+  // Small swept increments prevent tunnelling through nearby ball carriers at low FPS.
+  for(let distanceLeft=p.slideSpeed*step;distanceLeft>0;distanceLeft-=Math.min(18,distanceLeft)){
+   const stride=Math.min(18,distanceLeft);p.x=clamp(p.x+p.slideDX*stride,F.x+22,F.x+F.w-22);
+   p.y=clamp(p.y+p.slideDY*stride,F.y+23,F.y+F.h-23);
+   if(this.slideContact(p))break;
+  }
+  p.moveVX=p.slideDX*p.slideSpeed;p.moveVY=p.slideDY*p.slideSpeed;
+  p.action='slide';p.actionTimer=Math.max(p.actionTimer,p.slideTimer+.08);
+  this.staminaTick(p,dt,.7);continue;
+ }
  const controlled=(p.t===0||p.t===1&&this.humans>=2)&&p.i===selectedAtStart[p.t];p.controlled=controlled;
- if(controlled){let s=this.input.state[p.t]||{},dx=s.x||0,dy=s.y||0;p.dx=dx;p.dy=dy;const elapsedJump=p.jumpHold||0;p.jumpHold=s.jump?elapsedJump+dt:0;const defensiveSprint=this.ball.owner!==p&&!!s.jump;const running=s.sprint||defensiveSprint||(this.ball.owner===p&&p.jumpHold>.16);let spd=this.playerSpeed(p)*(running?1.37:1)*(p.dashTimer>0?1.7:1)*(.88+p.src.power*.0015)*(this.terrain==='Sand'?.69:1)*(this.condition==='Wet'?.86:1);
+ if(controlled){let s=this.input.state[p.t]||{},dx=s.x||0,dy=s.y||0;
+  // A lost touch pointer, app switch or focus change ABORTS a gesture; it is
+  // not a deliberate release. Clear buffered charge/hold state before the
+  // ordinary release paths can fire a phantom shot, pass or delayed Jump.
+  if(this.input.canceled?.(p.t,'shoot')){p.charge=0;p.comboShotHeld=false;}
+  if(this.input.canceled?.(p.t,'pass')){p.passHold=0;p.passUsed=false;p.chase=0;}
+  if(this.input.canceled?.(p.t,'jump')){p.jumpHold=0;p.jumpTapPending=false;}
+  if(this.input.canceled?.(p.t,'dribble')){p.dribbleHold=0;p.ballLiftLock=false;}
+  p.dx=dx;p.dy=dy;const elapsedJump=Math.max(p.jumpHold||0,this.input.tapDuration?.(p.t,'jump')||0);
+  p.dribbleHold=s.dribble?Math.max(p.dribbleHold||0,this.input.tapDuration?.(p.t,'dribble')||0)+dt:0;
+  if(!s.dribble)p.ballLiftLock=false;
+  p.jumpHold=s.jump?elapsedJump+dt:0;const defensiveSprint=this.ball.owner!==p&&!!s.jump;const running=defensiveSprint||(this.ball.owner===p&&p.jumpHold>.16);let spd=this.playerSpeed(p)*(running?1.37:1)*(p.dashTimer>0?1.7:1)*(.88+p.src.power*.0015)*(this.terrain==='Sand'?.69:1)*(this.condition==='Wet'?.86:1);
  if((p.chase||0)>0&&this.ball.owner!==p&&p.z<=0){p.chase=Math.max(0,p.chase-dt);const target=this.ball.owner||this.ball,dist=Math.hypot(target.x-p.x,target.y-p.y);if(dist>57){dx=(target.x-p.x)/dist;dy=(target.y-p.y)/dist;}else if(p.cd<=0&&(!this.ball.owner||this.ball.owner.t!==p.t)){this.tackle(p,false);p.chase=0}}else p.chase=0;
  // Sustained movement + sprint is deliberate to prevent accidental hyperdash.
  if(running&&Math.hypot(dx,dy)>.52&&this.ball.owner!==p){p.sprintCharge=(p.sprintCharge||0)+dt;if(p.sprintCharge>.56)this.triggerHyperdash(p);}else p.sprintCharge=0;
  this.moveAgile(p,dx,dy,spd,dt);if(p.dashTimer>0){p.action='hyperdash';p.actionTimer=.17;}
  if(Math.abs(p.dx)>.04)p.face=p.dx>0?1:-1;this.staminaTick(p,dt,Math.hypot(dx,dy)>.14?(p.dashTimer>0?1.7:running?1.0:.45):0);if(this.cooldown===0){
-  // Resolve simultaneous button chords before their constituent tap/release actions.
-  // Either press order must yield one cross or bicycle, never two actions.
-  if(!s.pass||!s.jump)p.crossChordLatched=false;
+  // Cross is SEQUENTIAL: jump first, become airborne, THEN press Pass.
+  // Pass first + Jump is never a cross, and can still finish as a long pass.
   if(!s.dribble||!s.jump)p.bicycleChordLatched=false;
-  const crossChord=this.ball.owner===p&&s.pass&&s.jump&&!p.crossChordLatched&&
-    (this.input.just(p.t,'pass')||this.input.just(p.t,'jump'));
-  if(crossChord){this.pass(p,false,true);p.crossChordLatched=true;p.passUsed=true;p.passHold=0;p.jumpTapPending=false;}
-  const bicycleChord=this.ball.owner===p&&s.jump&&s.dribble&&!p.bicycleChordLatched&&
+  const aerialCross=this.ball.owner===p&&p.z>0&&this.input.just(p.t,'pass');
+  if(aerialCross){this.pass(p,true,true);p.passUsed=true;p.passHold=0;p.jumpTapPending=false;}
+  const liftChord=this.ball.owner===p&&s.jump&&s.dribble&&this.input.just(p.t,'jump')&&
+    p.dribbleHold>=BALL_LIFT_HOLD_SECONDS;
+  const liftFired=liftChord&&this.tryBallLift(p);
+  const bicycleChord=!liftFired&&this.ball.owner===p&&s.jump&&s.dribble&&!p.bicycleChordLatched&&
     (this.input.just(p.t,'dribble')||this.input.just(p.t,'jump'));
   const bicycleFired=bicycleChord&&this.tryBicycleShot(p);
   if(bicycleFired){p.bicycleChordLatched=true;p.jumpTapPending=false;p.dribbleTapAt=-10;}
-  if(this.input.just(p.t,'switch'))this.swap(p.t);
+  // Once the lifted ball is loose, a new Jump begins the aerial sequence.
+  if(p.ballLiftWindow>0&&this.ball.liftOwner===p&&this.input.just(p.t,'jump')&&!s.dribble){
+   p.jumpTapPending=false;if(p.z<=0)this.jump(p);
+  }
   const shootDown=this.input.just(p.t,'shoot');
-  const shotCombo=shootDown&&(s.jump||p.z>20)&&(this.ball.owner===p||this.ball.owner?.t!==p.t);
+  // Airborne loose-ball contacts take precedence over defensive kick, swap,
+  // charge and any legacy assisted flip, and consume each individual tap.
+  const aerialShoot=shootDown&&this.aerialBallInReach(p)&&this.queueAerialTap(p,'header');
+  const aerialDribble=this.input.just(p.t,'dribble')&&this.aerialBallInReach(p)&&this.queueAerialTap(p,'bicycle');
+  const shotCombo=!liftFired&&!aerialShoot&&shootDown&&(s.jump||p.z>20)&&
+    (this.ball.owner===p||this.ball.owner?.t!==p.t);
   if(shotCombo){
-   if(this.ball.owner===p){this.shoot(p,p.jumpCount>=2,p.z>18);}
-   else if(!this.tryFlipKick(p,true)&&!this.tryHeader(p)&&!this.requestKeeperSuper(p.t)&&!(p.keeper&&this.tryKeeperDive(p,true))&&!this.activateDefence(p))this.tryFlyingKick(p,p.jumpCount>=2&&p.z>10);
+   p.jumpTapPending=false;
+   if(s.pass)p.passUsed=true;
+   if(this.ball.owner===p){this.shoot(p,p.jumpCount>=2&&p.z>10,p.z>18);}
+   else if(!this.tryFlipKick(p,false)&&!this.requestKeeperSuper(p.t)&&!(p.keeper&&this.tryKeeperDive(p,true))&&!this.activateDefence(p))this.tryFlyingKick(p,p.jumpCount>=2&&p.z>10);
    p.charge=0;p.comboShotHeld=true;
   }
-  else if(this.ball.owner===p && s.shoot&&!p.comboShotHeld){p.charge=Math.min(1.2,(p.charge||0)+dt);p.action='windup';p.actionTimer=.1;}
+  else if(!liftFired&&!aerialShoot&&this.ball.owner===p&&s.shoot&&!p.comboShotHeld){p.charge=Math.min(1.2,(p.charge||0)+dt);p.action='windup';p.actionTimer=.1;}
   else if(p.charge>0){if(this.ball.owner===p)this.shoot(p,false,p.z>65,p.charge);p.charge=0;}
   if(!s.shoot)p.comboShotHeld=false;
-  // A fast Shoot tap can start and finish between two input polls.
-  if(shootDown&&this.ball.owner===p&&!s.shoot&&!shotCombo)this.shoot(p,false,p.z>65);
-  if(shootDown&&this.ball.owner!==p&&!shotCombo)this.command(p,'shoot');
+  if(shootDown&&s.pass)p.passUsed=true;
+  if(shootDown&&!liftFired&&!aerialShoot&&this.ball.owner===p&&!s.shoot&&!shotCombo)this.shoot(p,p.jumpCount>=2&&p.z>10,p.z>18,Math.min(1.2,this.input.tapDuration?.(p.t,'shoot')||0));
+  if(shootDown&&!aerialShoot&&!liftFired&&this.ball.owner!==p&&!shotCombo&&this.ball.liftOwner!==p)this.command(p,'shoot');
   // Four-button PASS is contextual: short tap, longer aerial pass, or defensive chase.
-  if(s.pass&&!p.crossChordLatched){p.passHold=(p.passHold||0)+dt;
+  if(s.pass&&!aerialCross&&!this.input.released?.(p.t,'pass')){p.passHold=(p.passHold||0)+dt;
    if(this.ball.owner!==p&&!(this.ball.owner?.t===p.t&&this.ball.owner.keeper)&&p.passHold>.24){p.chase=Math.max(p.chase||0,0.36);p.passUsed=true;}}
   else if((p.passHold||0)>0||this.input.released?.(p.t,'pass')){
-   if(!p.passUsed){if(this.ball.owner===p){if(p.keeper)this.distributeKeeper(p);else this.pass(p,p.passHold>.24,false);}else if(this.ball.owner?.t===p.t&&this.ball.owner.keeper)this.distributeKeeper(this.ball.owner);else this.tackle(p,false);}
+   if(!p.passUsed){if(this.ball.owner===p){if(p.keeper)this.distributeKeeper(p,Math.max(p.passHold,this.input.tapDuration?.(p.t,'pass')||0)>.24?'long':'short');else this.pass(p,Math.max(p.passHold,this.input.tapDuration?.(p.t,'pass')||0)>.24,false);}else if(this.ball.owner?.t===p.t&&this.ball.owner.keeper)this.distributeKeeper(this.ball.owner);else this.tackle(p,false);}
    p.passHold=0;p.passUsed=false;
   }
   const dribbleDown=this.input.just(p.t,'dribble');
-  if(dribbleDown&&!bicycleFired){
+  if(dribbleDown&&!aerialDribble&&!bicycleFired&&!liftFired&&!s.shoot&&!s.pass){
    if(s.jump&&this.ball.owner===p){this.tryBicycleShot(p);p.dribbleTapAt=-10;}
    else if(this.ball.owner===p&&this.clock-(p.dribbleTapAt??-10)<.30){
     if(!this.tryDribbleTrick(p))this.dribble(p);
@@ -606,18 +974,25 @@ export class GameEngine{
   const bicycleFromJump=bicycleFired;
   // A moving ball carrier holds Jump to sprint; a short tap still jumps.
   // Defer the ordinary jump until release to distinguish the two gestures.
-  if(this.input.just(p.t,'jump')&&this.ball.owner===p&&!s.pass&&!s.shoot&&!s.dribble&&p.z<=0)p.jumpTapPending=true;
-  let tapJumpResolved=false;
-  if(this.input.released?.(p.t,'jump')&&p.jumpTapPending){if(elapsedJump<.18&&!s.pass&&!s.shoot&&!s.dribble){this.jump(p);tapJumpResolved=true;}p.jumpTapPending=false;}
-  if(!s.jump&&p.jumpTapPending&&!this.input.just(p.t,'jump')){if(elapsedJump>0&&elapsedJump<.18&&!s.pass&&!s.shoot&&!s.dribble){this.jump(p);tapJumpResolved=true;}p.jumpTapPending=false;}
-
-  for(let a of ['special','jump'])if(this.input.just(p.t,a)){
-   if(a==='jump'&&(bicycleFromJump||p.crossChordLatched||p.jumpTapPending||tapJumpResolved))continue;
-   if(a==='jump'&&this.ball.owner!==p&&!p.keeper&&!s.shoot&&!s.pass){this.requestKeeperDive(p.t);continue;} // defensive Jump sprints; keeper may dive
-   if(a==='jump'&&s.pass&&this.ball.owner===p){this.pass(p,false,true);p.passUsed=true;continue;}
-   if(a==='jump'&&s.pass&&this.ball.owner!==p)p.passUsed=true;
-   this.command(p,a);
+  if(this.input.just(p.t,'jump')&&!p.keeper&&!s.pass&&!s.shoot&&!s.dribble&&p.z<=0&&p.ballLiftWindow<=0){
+   p.jumpTapPending=true;
   }
+  let tapJumpResolved=false;
+  if(this.input.released?.(p.t,'jump')&&p.jumpTapPending){if(elapsedJump<.18&&!s.pass&&!s.shoot&&!s.dribble){tapJumpResolved=this.jump(p);}p.jumpTapPending=false;}
+  if(!s.jump&&p.jumpTapPending&&!this.input.just(p.t,'jump')){if(elapsedJump>0&&elapsedJump<.18&&!s.pass&&!s.shoot&&!s.dribble){tapJumpResolved=this.jump(p);}p.jumpTapPending=false;}
+
+  // A second JUMP while airborne must still work without a fifth action key.
+  // It is distinct from a grounded tap/hold and from the Jump+Dribble bicycle.
+  if(this.input.just(p.t,'jump')&&p.z>10&&!s.shoot&&!s.dribble&&!bicycleFromJump&&p.ballLiftWindow<=0){
+   p.jumpTapPending=false;
+   this.jump(p);
+  }
+  // Pass held before Jump never transforms into a cross or teammate launch.
+  if(this.input.just(p.t,'jump')&&s.pass&&p.z<=10&&!bicycleFromJump&&!tapJumpResolved){
+   p.jumpTapPending=false;
+   if(p.z<=0)this.jump(p);
+  }
+  // No independent Special / Sprint / Switch gameplay buttons exist.
  }
  }else this.driveAI(p,dt);
  p.x=clamp(p.x,F.x+22,F.x+F.w-22);p.y=clamp(p.y,F.y+23,F.y+F.h-23);
@@ -635,7 +1010,7 @@ export class GameEngine{
   const styleSpeed=t===1?(aiStyle==='Aggressive'?1.09:aiStyle==='Defensive'?.96:1):1;
   if(p.keeper&&owner===p){
    p.keeperHold=(p.keeperHold||0)+dt;
-   if(p.keeperHold>=.65&&p.cd<=0){this.distributeKeeper(p);return;}
+   if(p.cd<=0&&(p.keeperHold>=.65||this.players.some(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&distance(p,q)<340))){this.distributeKeeper(p);return;}
   }else if(p.keeper){p.keeperHold=0;}
   if(this.driveAiCombo(p,dt,ai))return;
   const speed=this.playerSpeed(p)*ai.speed*styleSpeed*(this.terrain==='Sand'?.75:1);
@@ -662,7 +1037,7 @@ export class GameEngine{
    if(p.keeper){
     const side=t===0?F.x+34:F.x+F.w-34;
     tx=side;
-    ty=clamp(b.y+(b.vy||0)*ai.keeperRead,WORLD.goalTop+15,WORLD.goalBottom-15);
+    ty=predictedKeeperLane(p,b,ai.keeperRead);
     if(!owner&&Math.abs(b.x-side)<175)tx=clamp(bx,side-35,side+35);
     if(owner===p&&p.cd<=0&&p.keeperHold>.30)this.distributeKeeper(p);
    }else if(owner===p){
@@ -736,6 +1111,7 @@ export class GameEngine{
   if(d>8){const step=Math.min(speed,d/Math.max(dt,.001));this.moveAgile(p,dx/d,dy/d,step,dt);if(Math.abs(p.dx)>.04)p.face=p.dx>0?1:-1}else this.moveAgile(p,0,0,speed,dt);this.staminaTick(p,dt,d>8?(this.teamPlans[t]?.defence==='High Press'&&owner?.t!==t ? .69 : .46):0);
  }
  updateBall(dt){let b=this.ball;if(b.owner){const p=b.owner;b.x=p.x+p.face*17;b.y=p.y+12;b.z=p.z+12+((p.trickFx||0)>0?((dribbleStyle(p.trickStyleId).loft||0)*Math.min(1,p.trickFx*2)):0);if(p.stun>0){b.owner=null;b.vx=p.face*115;b.vy=0;b.vz=130;b.canCollect=.2;}return}
+ const previousBall={x:b.x,y:b.y,z:b.z};
  b.canCollect=Math.max(0,b.canCollect-dt);b.age+=dt;
  // A super-shot transformation lasts only for its active window. A loose ball
  // must never stay a fish/banana/etc. forever if nobody collects it.
@@ -759,19 +1135,33 @@ export class GameEngine{
  if(!b.shot){let friction=this.terrain==='Sand'?.94:this.condition==='Wet'?.96:.986;b.vx*=Math.pow(friction,dt*60);b.vy*=Math.pow(friction,dt*60)}
  if(b.shot||Math.hypot(b.vx,b.vy)>190){b.trail.push({x:b.x,y:b.y,z:b.z});if(b.trail.length>22)b.trail.shift()}
  if(b.y<F.y+3){b.y=F.y+3;b.vy=Math.abs(b.vy)*.65}if(b.y>F.y+F.h-3){b.y=F.y+F.h-3;b.vy=-Math.abs(b.vy)*.65}
- // All keepers can perform an ordinary dive; high difficulty reacts earlier.
- if(b.attacker>=0&&!b.owner){const keeper=this.player(1-b.attacker,0);if(keeper&&!this.inControl(keeper.t)){
-   const ai=aiTuning(this.cpuLevel(keeper));const chance=(.08+stat(keeper,'gkSkill')*.004+ai.keeperRead*.21)*dt*24;
-   if(Math.random()<chance)this.tryKeeperDive(keeper,false);
- }}
- // Active keeper abilities: computer GKs may react to dangerous incoming super shots.
- if(b.shot&&b.attacker>=0){const keeper=this.player(1-b.attacker,0);if(keeper&&(!this.inControl(keeper.t)||Math.random()<.035)){const chance=this.inControl(keeper.t)?.13:Math.min(.78,.12+stat(keeper,'gkSkill')*.006+aiTuning(this.cpuLevel(keeper)).keeperRead*.3);if(Math.random()<chance*dt*20)this.activateKeeperSuper(keeper,false);}}
+ // Swept saves resolve before the ball crosses the goal line, including on
+ // throttled/slow frames. Ordinary proximity dives still handle slower shots.
+ if(this.trySweptKeeperDive(previousBall))return;
+ // Every keeper is autonomous, including for a human-controlled team.
+ // React deterministically once an on-target shot enters a keeper's save radius;
+ // quality still determines whether the catch succeeds or gets deflected.
+ if(b.attacker>=0&&!b.owner){const keeper=this.player(1-b.attacker,0);
+  if(keeper){
+   if(b.shot&&Math.random()<.14&&this.activateKeeperSuper(keeper,false)){} // rare automatic super save
+   else this.tryKeeperDive(keeper,false);
+  }
+ }
  // Scoring: ball must cross the appropriate end line between goalposts, below crossbar.
  if(b.x<F.x+5||b.x>F.x+F.w-5){let scoring=t=>{this.score[t]++;this.shake=.45;this.flash=.2;this.burst(b.x,b.y,'#ffdf79',60);const scorers=this.players.filter(p=>p.t===t).sort((p,q)=>distance(p,b)-distance(q,b));this.goalHero=b.attacker===t&&b.shooter?b.shooter:scorers[0]?.src?.name||this.getTeam(t).name;this.pendingKickoff={scorer:t,hero:this.goalHero};this.celebration=3.3;this.onGoalMorale(t);this.ball.owner=null;this.ball.vx=this.ball.vy=this.ball.vz=0;this.emit('goal',{team:t,hero:this.goalHero,score:this.score.slice()});this.cooldown=3.3};if(b.y>WORLD.goalTop&&b.y<WORLD.goalBottom&&b.z<125){scoring(b.x>F.x+F.w-5?0:1);return}b.x=clamp(b.x,F.x+6,F.x+F.w-6);b.vx*=-.72;b.vy*=.95}
  if(b.canCollect>0)return;
- const byDistance=this.players.filter(p=>p.stun<=0).map(p=>({p,d:Math.hypot(p.x-b.x,p.y-b.y)})).sort((a,c)=>a.d-c.d);for(let {p,d} of byDistance){if(d> (p.keeper?(26+stat(p,'gkSkill')*.18)*(1-.18*p.fatigue):27)||b.z>(p.keeper?(63+stat(p,'gkJump')*1.12)*(1-.15*p.fatigue):45))break;if(b.shot){let force=b.power + Math.hypot(b.vx,b.vy)/50,def=stat(p,'defence')*.38+stat(p,'strength')*.10+(p.keeper?stat(p,'gkSkill')*.40:0);if(force>def+(p.keeper?14:0)&&Math.random()<clamp((force-def)/90,.02,.94)){p.stun=.8;p.action='hurt';p.actionTimer=.65;this.burst(p.x,p.y,'#ffffaa',17);b.vx*=.68;b.vy*=1.1;this.shake=.15;continue}if(!p.keeper&&Math.random()<.5){p.stun=.4;continue}}
+ const byDistance=this.players.filter(p=>p.stun<=0).map(p=>({p,d:Math.hypot(p.x-b.x,p.y-b.y)})).sort((a,c)=>a.d-c.d);for(let {p,d} of byDistance){if(d> (p.keeper?(26+stat(p,'gkSkill')*.18)*(1-.18*p.fatigue):27)||b.z>(p.keeper?(63+stat(p,'gkDiving')*1.12)*(1-.15*p.fatigue):45))break;if(b.shot){let force=b.power + Math.hypot(b.vx,b.vy)/50,def=stat(p,'defence')*.38+stat(p,'strength')*.10+(p.keeper?stat(p,'gkSkill')*.40:0);if(force>def+(p.keeper?14:0)&&Math.random()<clamp((force-def)/90,.02,.94)){
+  const level=b.shot?clamp(Number(b.shot.level)||1,1,5):0;
+  const impact=b.shot&&!p.keeper?superShotKnockback(force,level,stat(p,'strength')):0;
+  p.stun=Math.max(p.stun,clamp(.35+impact*.58,.4,1.4));p.action='hurt';p.actionTimer=p.stun;
+  if(impact>.17){const direction=norm(b.vx||p.face,b.vy||0);p.x=clamp(p.x+direction.x*impact*48,F.x+22,F.x+F.w-22);p.y=clamp(p.y+direction.y*impact*32,F.y+23,F.y+F.h-23);
+   if(impact>.65&&Math.random()<clamp((impact-.3)*.65,0,.8)){p.z=Math.max(p.z,12);p.vz=clamp(130+impact*220,135,500);p.action='launched';this.emit('superShotLaunch',{player:p.src.name,team:p.t,impact,level});}
+   else this.emit('superShotKnockback',{player:p.src.name,team:p.t,impact,level});
+  }
+  this.burst(p.x,p.y,'#ffffaa',17);b.vx*=.68;b.vy*=1.1;this.shake=.15;continue;
+ }if(!p.keeper&&Math.random()<.5){p.stun=.4;continue}}
  if(p.keeper&&b.attacker===p.t&&Math.hypot(b.vx,b.vy)>480)continue;
- this.take(p);if(p.keeper)this.emit('save',{player:p});break;
+ if(p.keeper){this.keeperCollect(p,'loose');this.emit('save',{player:p,saveType:'catch'});}else this.take(p);break;
  }
  }
  burst(x,y,color,count=10){for(let i=0;i<count;i++){let a=Math.random()*Math.PI*2,spd=randomBetween(35,210);this.particles.push({x,y,z:randomBetween(3,80),vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,vz:randomBetween(10,150),life:randomBetween(.25,.8),max:.8,color,r:randomBetween(2,6)})}}
@@ -783,7 +1173,7 @@ export class GameEngine{
   if(this.matchState!=='penalty')return;dt=Math.min(.04,dt);this.input.poll(this.humans>=2);
   const pk=this.pk,at=pk.turn%2,defender=1-at,cy=(WORLD.goalTop+WORLD.goalBottom)/2,spot=F.x+F.w*.76;
   const controlledShooter=at===0||this.humans>=2,shooter=controlledShooter?this.input.state[at]||{}:null;
-  const controlledKeeper=defender===0||this.humans>=2,keeper=controlledKeeper?this.input.state[defender]||{}:null;
+  const keeper=null; // penalty goalkeeper reads the shot automatically on either team
   pk.diveBoost=Math.max(0,(pk.diveBoost||0)-dt);pk.diveCooldown=Math.max(0,(pk.diveCooldown||0)-dt);
   if(pk.ready>0){pk.ready-=dt;return}
   if(pk.shotTimer>0){
@@ -814,12 +1204,12 @@ export class GameEngine{
   if(controlledShooter)pk.aim=clamp(pk.aim+(shooter.y||0)*100*dt,WORLD.goalTop+9,WORLD.goalBottom-9);
   else pk.aim=clamp(pk.aim+(Math.sin(pk.timer*2.3)*110)*dt,WORLD.goalTop+9,WORLD.goalBottom-9);
   if(keeper)pk.saveY=clamp(pk.saveY+(keeper.y||0)*(pk.diveBoost>0?440:175)*dt,WORLD.goalTop+9,WORLD.goalBottom-9);
-  if(!controlledShooter&&pk.timer<6.2||controlledShooter&&(this.input.just(at,'shoot')||this.input.just(at,'special'))||pk.timer<=0){
+  if(!controlledShooter&&pk.timer<6.2||controlledShooter&&(this.input.just(at,'shoot'))||pk.timer<=0){
    const brain=aiTuning(this.options.difficulty??2);
    const aimBand=40+brain.id*14;
    const taker=this.rosters[at][this.teamPlans[at]?.penalty??4]||this.player(at,4)?.src;const error=(100-(taker?.shootAccuracy||65))*.33;pk.shotTargetY=controlledShooter?clamp(pk.aim+randomBetween(-error,error),WORLD.goalTop+10,WORLD.goalBottom-10):clamp(cy+randomBetween(-aimBand,aimBand)+randomBetween(-error,error),WORLD.goalTop+10,WORLD.goalBottom-10);
    // An expert CPU keeper reads the shooter; Rookie guesses farther away.
-   if(!controlledKeeper){const miss=95-brain.keeperRead*165;pk.saveY=clamp(pk.shotTargetY+randomBetween(-miss,miss),WORLD.goalTop+10,WORLD.goalBottom-10)}
+   {const gk=this.player(defender,0),skill=stat(gk,'gkSkill');const miss=Math.max(14,95-skill*.65-brain.keeperRead*32);pk.saveY=clamp(pk.shotTargetY+randomBetween(-miss,miss),WORLD.goalTop+10,WORLD.goalBottom-10)}
    pk.startX=pk.ballX;pk.startY=pk.ballY;pk.shotTimer=pk.shotMax;pk.stage='shooting';this.burst(pk.ballX,pk.ballY,'#ffe284',10)
   }
  }

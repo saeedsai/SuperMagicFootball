@@ -12,11 +12,11 @@ pulses[0]={dribble:true};game.updatePK(.04);
 assert.equal(game.pk.dribbles,1);assert.ok(game.events.some(e=>e.type==='penaltyDribble'));
 for(let i=0;i<20;i++)game.updatePK(.04);
 assert.ok(game.pk.ballX<=px+150+1e-9,'Penalty dribble must stay near the mark');
-// GK jump is a bounded reactive dive, not an automatic save.
+// The keeper automatically guards shots; Jump is no longer a manual dive button.
 state[1]={y:-1,jump:1};pulses[1]={jump:true};game.updatePK(.04);
-assert.ok(game.pk.diveBoost>0);assert.ok(game.events.some(e=>e.type==='penaltyDive'));
-const startY=game.pk.saveY; pulses[1]={};game.updatePK(.04);
-assert.ok(game.pk.saveY<startY,'Keeper dive accelerates repositioning');
+assert.equal(game.pk.diveBoost,0,'no extra goalkeeper control exists');
+assert(!game.events.some(e=>e.type==='penaltyDive'),'manual penalty dive command is removed');
+state[1]={};pulses[1]={};
 // Shooter's current position must anchor the shot rather than resetting to the mark.
 state[0]={x:0,y:0,shoot:1};pulses[0]={shoot:true};game.updatePK(.04);
 assert.equal(game.pk.stage,'shooting');assert.equal(game.pk.startX,game.pk.ballX);

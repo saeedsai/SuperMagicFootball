@@ -8,7 +8,7 @@ with sync_playwright() as pw:
   page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   page.evaluate("""()=>{const data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}""")
   page.set_content((root/'play.html').read_text(),wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.17.1-alpha'")
+  page.wait_for_function("window.SupermagicFootball?.version==='0.8.22.1-alpha'")
   page.locator('[data-action="quick"]').first.click();page.locator('[data-action="kickoff"]').first.click()
   assert page.locator('#touchButtons button[data-act]').count()==4
   page.evaluate('''()=>{let g=SupermagicFootball.game,p=g.player(0,3);g.cooldown=0;g.clock=5;g.events=[];g.input.keys.clear();g.input.touchButtons.clear();g.input.reset();p.x=1500;p.y=680;p.face=1;p.dx=1;p.dy=0;p.cd=0;p.trickCd=0;p.fatigue=0;p.stun=0;p.z=0;p.vz=0;p.src.dribbleType='rainbow';p.src.dribbling=96;for(let q of g.players)if(q!==p){q.x=2600+q.i*55;q.y=1050;}g.take(p);g.controlled[0]=p.i;}''')

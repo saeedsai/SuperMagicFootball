@@ -1,9 +1,9 @@
 // Original, procedural club shields. Offline country flags use the ISO region emoji sequence;
 // exact glyph appearance depends on operating-system emoji font. These are NOT licensed club crests.
 const toTwo={ENG:'GB',SCO:'GB',WAL:'GB',GER:'DE',ESP:'ES',ITA:'IT',FRA:'FR',POR:'PT',NED:'NL',BEL:'BE',AUT:'AT',GRE:'GR',TUR:'TR',NOR:'NO',CZE:'CZ',SVK:'SK',AZE:'AZ',UKR:'UA',KSA:'SA',UAE:'AE',QAT:'QA',IRN:'IR',UZB:'UZ',IRQ:'IQ',JPN:'JP',KOR:'KR',THA:'TH',CHN:'CN',AUS:'AU',MAS:'MY',VNM:'VN',MAR:'MA',EGY:'EG',NGA:'NG',ZAM:'ZM',TAN:'TZ',ALG:'DZ',RSA:'ZA',SDN:'SD',COD:'CD',TUN:'TN',ANG:'AO',MLI:'ML',CAN:'CA',TRI:'TT',DOM:'DO',JAM:'JM',HON:'HN',GUA:'GT',CRC:'CR',PAN:'PA',USA:'US',MEX:'MX',BRA:'BR',ARG:'AR',URU:'UY',ECU:'EC',PAR:'PY',BOL:'BO',PER:'PE',COL:'CO',CHI:'CL',VEN:'VE',NZL:'NZ',SOL:'SB',TAH:'PF',NCL:'NC',FIJ:'FJ',PNG:'PG',VAN:'VU',COK:'CK',SWI:'CH',SWZ:'CH'};
-export function countryCode(team){const v=(team.flag||'').toUpperCase();return v.length===2?v:toTwo[v]||null}
+export function countryCode(team){if(team.group==='bpw_worldcup')return null;const v=(team.flag||'').toUpperCase();return v.length===2?v:toTwo[v]||null}
 export function countryFlag(team){const c=countryCode(team);return c&&/^[A-Z]{2}$/.test(c)?String.fromCodePoint(...[...c].map(x=>127397+x.charCodeAt(0))):'🌐'}
-export function isClub(team){return team.group==='club26'||team.group==='continental'||team.id?.startsWith('club_')}
+export function isClub(team){return team.group==='bpw_worldcup'||team.group==='club26'||team.group==='continental'||team.id?.startsWith('club_')}
 // v0.8.10 cartoon identity system. No network, licensed brand art, or platform emoji rendering.
 // Flags are simplified artistic interpretations of national flags, not official vector reproductions.
 const safeColor=(value,fallback='#325a80')=>/^#[0-9a-f]{6}$/i.test(value||'')?value:fallback;

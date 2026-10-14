@@ -12,7 +12,7 @@ function add(c,a,b,sa,sb){const x=c.table[a],y=c.table[b];for(const q of [x,y])q
 // Keep new v0.6.2 attributes aligned with player growth. Old careers lacking
 // explicit ratings still derive from legacy values at game initialization.
 function growAttributes(p,focused=false){
- const keys=(p.role==='GK'?['gkSkill','gkJump','stamina','strength']:p.role==='DF'?['defence','strength','aggression','stamina']:p.role==='MF'?['passing','crossing','stamina','speedRating','agility','dribbling']:['shootPower','shootAccuracy','heading','speedRating','agility','dribbling']);
+ const keys=(p.role==='GK'?['gkSkill','gkDiving','stamina','strength']:p.role==='DF'?['defence','strength','aggression','stamina']:p.role==='MF'?['passing','crossing','stamina','speedRating','agility','dribbling']:['shootPower','shootAccuracy','heading','speedRating','agility','dribbling']);
  const target=focused?[...keys,'stamina']:keys;
  for(const key of target)if(Number.isFinite(+p[key]))p[key]=Math.min(100,Math.round(+p[key]+1));
 }

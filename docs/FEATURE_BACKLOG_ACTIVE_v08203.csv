@@ -1,0 +1,29 @@
+id,workstream,requirement,acceptance_criteria,priority,status
+ART-CELE-01,Character expression,20–30 distinct goal celebrations,20–30 visually distinct body/face sequences; character-specific assignment; random variants avoid repetition,P1,Planned
+ART-SAD-01,Character expression,10–20 sad/crying reactions,10–20 sequences for goals conceded and full-time losses; facial expressions and personality variations,P1,Planned
+ART-PLAYER-01,Graphics,Higher-quality player sprites and motion,"More detailed but readable cartoon likenesses; walk, sprint, dribble, dive, fall, tackle, transition animation",P1,Planned
+ART-PITCH-01,Graphics,"Grass, mud, pitch texture and deterioration","Multiple surface textures, believable wetness, mud and wear; gameplay readability preserved",P1,Planned
+WEATHER-01,Weather,Improved rain and wind,"Layered visual effects, field material changes and measured ball/footing physics",P1,Planned
+WEATHER-02,Weather,Tornado and lightning events,Weather-specific cinematic/arcade feedback and bounded gameplay effects; contrast and flashing accessibility controls,P2,Planned
+SHOT-VFX-01,Super Shot visual,More unique ball-shape transformations,"Animals, fruit, items, objects, shapes and humorous transformations with quality VFX; powers balanced",P1,Planned
+SHOT-VFX-02,Super Shot visual,Country-inspired thematic transformations,Optional nationality-inspired symbols only when contextually researched and respectful; avoid stereotyped auto-assignment,P2,Planned
+STADIUM-01,Stadium,20 visually distinct famous stadiums,"Research 20 recognized stadiums, pitch look/surface characteristics and stadium ambience; review rights and assets",P1,Planned
+RATING-TIER-01,Progression,Five OVR tiers and exact boundaries,"Superstar 96–100, Star 91–95, Gold 80–90, Silver 70–79, Common 1–69; primary position OVR",P0,Planned
+RATING-TIER-02,Progression,Super Shot OR Super Defense entitlement and tier level caps,"Exactly one of shot, defense or none; both categories capped: Gold max 2, Star max 3, Superstar max 5, Silver/Common neither; legacy saves migrated safely",P0,Planned
+RATING-TIER-03,Progression,Unique celebration eligibility,Only Gold or higher can have a uniquely assigned celebration; generic reactions for everyone,P1,Planned
+RATING-TIER-04,Progression,Rare Star/Superstar population,Across unique real-world player identities excluding BPW: 0–69 Star; 0–29 Superstar; BPW exempt,P0,Planned
+RATING-TIER-05,Roster research,Source-backed Star and Superstar selection,"EA SPORTS FC ratings, official competition/team profiles and reputable performance data with dated provenance; no arbitrary boosts",Later,Deferred - user requested roster freeze
+RATING-TIER-06,Roster research,Reconcile stats and OVR with classification,"Audit and refine relevant 1–100 stats per player; validate 2026 club, canonical identity, primary role, source quality",Later,Deferred - user requested roster freeze
+BPW-TIER-01,Historical BPW,BPW elite-team exception,"Six BPW teams 1998, 2002, 2006, 2010, 2014, 2018 may have many Stars/Superstars; count elite cap only outside BPW",P1,Planned
+RATING-TIER-07,Progression,Super Defense levels 1–5,Five functional Super Defense levels with tier caps and counterplay; default saves/tackles remain accessible,P1,Planned
+RATING-TIER-08,Progression,Mutually exclusive specializations,No player simultaneously owns Super Shot and Super Defense; validate all squads and saves,P0,Planned
+RATING-TIER-09,Dribble and tricks,Gold+ unique dribble and trick eligibility,"Gold, Star and Superstar may receive unique dribble/trick; regular dribble still works for all",P1,Planned
+RATING-TIER-10,Dribble and tricks,Silver/Common standard dribble without tricks,Silver and Common use basic shared dribble and never trigger an individualized trick,P1,Planned
+RATING-TIER-11,Data migration,Special and trick legacy save compatibility,Old saved player abilities/levels are migrated with clear policy after validated 2026 tiers; no silent invalidation,P0,Planned
+RATING-TIER-12,GK defense,Goalkeeper defense-special policy,"Decide how GK Super Defense levels coexist with fully automatic ordinary diving and saves, no new buttons",P1,Planned
+FCUST-01,Customization,Curated natural skin/hair/eye palettes,Replace unlimited RGB choices with inclusively diverse labeled swatches; safe legacy color migration and touch/keyboard preview,P2,Planned
+FCUST-02,Customization,"Meaningful names for cosmetic shapes, styles, sizes and accessories","Every selectable option has descriptive title/label, preview, accessible input and saved translation key",P2,Planned
+FMGR-01,Career / avatar,Customizable manager appearance using player customization,"Reusable editor and avatar renderer, manager data stored separately and save/import works",P2,Planned
+FAGE-01,Career progression,Visible player age and age-dependent improvement/decline,"Verified DOB where available, position-aware ageing across seasons, legacy-save compatibility",P2,Planned
+FGROW-01,Career progression,Five ordered player growth potential categories,"Very Low/Low/Normal/High/Exceptional, per canonical player, backed by balance tests",P2,Planned
+FGROW-02,Career progression,"Match-performance, age and potential dependent player growth","Gradual deterministic-capped growth and regression accounting for minutes, training, form and fatigue",P2,Planned

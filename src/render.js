@@ -209,7 +209,7 @@ export class Renderer{
   const run=moving?Math.sin(p.anim*17+p.i*.35):0;
   const av={...avatarFor(p.src),...(p.src.appearance||{})};
   const variant=av.style%13;
-  const kick=['kick','super','celebrate','defenceSuper','keeperSuper','header','hyperdash','keeperDive','comboJump','assistBoost','flipKick','comboSuper','comboLand','bicycle','flyingKick','defensiveBicycle','dribbleTrick'].includes(p.action);
+  const kick=['kick','super','celebrate','defenceSuper','keeperSuper','header','hyperdash','keeperDive','keeperDiveCatch','keeperCatch','keeperThrow','keeperPunt','comboJump','assistBoost','flipKick','comboSuper','comboLand','bicycle','ballLift','superBicycle','superHead','flyingKick','defensiveBicycle','dribbleTrick'].includes(p.action);
   const isHurt=p.action==='hurt'||p.stun>.2;const isCrying=p.action==='cry'||(p.cryTimer||0)>.05;
   const sliding=p.action==='slide';
   const skin=av.skin, dark='#222033', hair=av.hair;
@@ -222,7 +222,17 @@ export class Renderer{
   if(p.controlled){ctx.strokeStyle=p.t===0?'#ffe675':'#74f2ff';ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(0,5,28,12,0,0,PI*2);ctx.stroke();ellipse(ctx,0,5,21,6,'#061d2855')}
   ctx.translate(0,-(p.z||0)-Math.abs(run)*2+(1-stature)*12);
   ctx.scale((.77+((av.face%5)*.011))*build,(.78+((av.style%3)*.018))*stature);ctx.scale(p.face||1,1);
-  if(sliding){ctx.translate(3,12);ctx.rotate(-.44)}if(p.action==='keeperDive'){ctx.translate((p.face||1)*20,4);ctx.rotate((p.face||1)*.54)}if(p.action==='bicycle')ctx.rotate(-p.face*.64);if(p.action==='flyingKick')ctx.rotate(-p.face*.28);if(p.action==='defensiveBicycle')ctx.rotate(-p.face*.76);
+  if(sliding){ctx.translate(3,12);ctx.rotate(-.44)}if(p.action==='keeperRecover'){
+   // Short grounded landing/recovery pose before returning to the standing stance.
+   const progress=Math.min(1,Math.max(0,(p.actionTimer||0)/.34));
+   ctx.translate(0,5*progress+(p.diveDy||0)*7*progress);
+   ctx.rotate((p.diveDy||0)*.30*progress);
+  }
+  if(p.action==='keeperDive'||p.action==='keeperDiveCatch'){
+   const progress=Math.min(1,(p.diveElapsed||0)/.60),sweep=Math.sin(progress*Math.PI*.85);
+   ctx.translate((p.face||1)*(12+24*progress),(p.diveDy||0)*(10+37*sweep)+3);
+   ctx.rotate((p.diveDy||0)*(.24+.63*sweep)+(p.face||1)*.24*sweep);
+  }if(p.action==='ballLift')ctx.translate(0,-8);if(p.action==='superHead')ctx.translate(0,-18);if(p.action==='superBicycle')ctx.rotate(-p.face*.90);if(p.action==='bicycle')ctx.rotate(-p.face*.64);if(p.action==='flyingKick')ctx.rotate(-p.face*.28);if(p.action==='defensiveBicycle')ctx.rotate(-p.face*.76);
   if(kick)ctx.rotate(-.045);
   const stride=(p.action==='celebrate'?Math.sin(this.time*11+p.i):run)*12;
   // Legs and footwear with clearly separated stepping animation.
@@ -304,9 +314,25 @@ export class Renderer{
  if(p.comboActive&&p.comboWindow>0&&p.z>=145&&Math.abs(p.vz)<=260){ctx.save();ctx.textAlign='center';ctx.font='900 20px Arial';ctx.fillStyle='#e8ff83';ctx.strokeStyle='#163527';ctx.lineWidth=5;ctx.strokeText('✦ APEX — SUPER!',0,-170);ctx.fillText('✦ APEX — SUPER!',0,-170);ctx.restore();}
  if(p.action==='flipKick'||p.action==='comboSuper'){ctx.save();ctx.textAlign='center';ctx.font='900 25px Arial';ctx.fillStyle=p.action==='comboSuper'?'#fef47a':'#e3c8ff';ctx.fillText(p.action==='comboSuper'?'COMBO SUPER!':'FLIP KICK!',0,-145);ctx.restore();}
  if(p.action==='dribbleTrick'&&p.trickFx>0){const s=dribbleStyle(p.trickStyleId);ctx.save();ctx.strokeStyle=s.color;ctx.globalAlpha=Math.min(1,p.trickFx*1.6);ctx.lineWidth=5;for(let k=0;k<3;k++){ctx.beginPath();ctx.arc(-p.face*(12+k*13),-26,14+k*8,0,Math.PI*1.35);ctx.stroke()}ctx.fillStyle=s.color;ctx.textAlign='center';ctx.font='900 16px Arial';ctx.fillText(s.name.toUpperCase(),0,-158);ctx.restore();}
- if(['bicycle','flyingKick','defensiveBicycle','dribbleTrick'].includes(p.action)){ctx.save();ctx.font='900 20px Arial';ctx.textAlign='center';ctx.fillStyle=p.action==='bicycle'?'#e8b8ff':['flyingKick','defensiveBicycle'].includes(p.action)?'#ffe3a8':'#9ff4dc';ctx.fillText(p.action==='bicycle'?'BICYCLE!':p.action==='flyingKick'?'FLYING KICK!':p.action==='defensiveBicycle'?'AIR SPIN!':'✦',0,-144);ctx.restore();}
+ if(['bicycle','ballLift','superBicycle','superHead','flyingKick','defensiveBicycle','dribbleTrick'].includes(p.action)){ctx.save();ctx.font='900 20px Arial';ctx.textAlign='center';ctx.fillStyle=p.action==='bicycle'?'#e8b8ff':['flyingKick','defensiveBicycle'].includes(p.action)?'#ffe3a8':'#9ff4dc';ctx.fillText(p.action==='ballLift'?'BALL LIFT!':p.action==='superHead'?'SUPER HEADER!':p.action==='superBicycle'?'SUPER BICYCLE!':p.action==='bicycle'?'BICYCLE!':p.action==='flyingKick'?'FLYING KICK!':p.action==='defensiveBicycle'?'AIR SPIN!':'✦',0,-144);ctx.restore();}
  if(p.action==='comboLand'){ctx.save();ctx.strokeStyle='#f5ce5f';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,3,62,0,PI*2);ctx.stroke();ctx.restore();}
- if(p.action==='keeperDive'){ctx.save();ctx.globalAlpha=.85;ctx.strokeStyle='#b8f6ff';ctx.lineWidth=5;ctx.beginPath();ctx.arc(0,-42,63,0,PI*2);ctx.stroke();ctx.restore()}
+ if(['keeperDive','keeperDiveCatch'].includes(p.action)){
+    // Motion streaks, extended gloves, and a directional reach, rather than
+    // the previous fixed blue ring for every goalkeeper save.
+    const t=Math.min(1,(p.diveElapsed||0)/.60);
+    ctx.save();ctx.globalAlpha=Math.max(.15,.85-t*.55);
+    ctx.lineCap='round';ctx.strokeStyle='#c7f5ff';ctx.lineWidth=6;
+    const sign=Math.sign(p.diveDy||1);
+    for(let n=0;n<3;n++){ctx.beginPath();ctx.moveTo(-55-n*12,-28+sign*n*7);ctx.lineTo(-28-n*7,-46+sign*22);ctx.stroke();}
+    ctx.fillStyle='#e6ffff';ellipse(ctx,-32,-78+sign*13,12,9,'#e6ffff');ellipse(ctx,32,-78+sign*13,12,9,'#e6ffff');
+    ctx.restore();
+  }
+ if(['keeperCatch','keeperDiveCatch','keeperThrow','keeperPunt'].includes(p.action)){
+  ctx.save();ctx.textAlign='center';ctx.font='900 19px Arial';ctx.fillStyle=['keeperCatch','keeperDiveCatch'].includes(p.action)?'#beffec':'#ffe6a1';
+  ctx.fillText(['keeperCatch','keeperDiveCatch'].includes(p.action)?'CAUGHT!':p.action==='keeperThrow'?'THROW!':'PUNT!',0,-151);
+  if(['keeperCatch','keeperDiveCatch'].includes(p.action)){ctx.strokeStyle='#adfff0';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,-55,40,0,PI*2);ctx.stroke();}
+  ctx.restore();
+ }
  if((p.abilityFx||0)>0){const glow=p.action==='keeperSuper'?'#91ecff':'#ffde82';ctx.save();ctx.globalAlpha=.85;ctx.strokeStyle=glow;ctx.lineWidth=5;for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(0,-45,45+i*22+(1-p.abilityFx)*55,0,PI*2);ctx.stroke()}ctx.font='900 20px sans-serif';ctx.fillStyle=glow;ctx.textAlign='center';ctx.fillText(p.action==='keeperSuper'?'★ SAVE!':'★ POWER!',0,-143);ctx.restore()}
   if(p.action==='super'){ctx.globalAlpha=.7;ctx.strokeStyle=team.secondary;ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,-74,47+Math.sin(this.time*20)*5,0,PI*2);ctx.stroke();ctx.globalAlpha=1}
   if(game.options.showNames&&p.controlled){ctx.save();ctx.scale(p.face||1,1);rr(ctx,-41,-127,82,17,8,'#0a233deb','#b4eff5a8');ctx.fillStyle='#fff6bb';ctx.textAlign='center';ctx.font='900 11px Arial';ctx.fillText(p.src.name.toUpperCase().slice(0,12),0,-114);ctx.restore()}

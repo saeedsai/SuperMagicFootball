@@ -9,10 +9,10 @@ with sync_playwright() as pw:
   page.on('pageerror',lambda e:issues.append(str(e)))
   page.evaluate("""() => {let data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}""")
   page.set_content((root/'play.html').read_text(),wait_until='load')
-  page.wait_for_function('window.NekketsuHD?.version==="0.8.17.1-alpha"')
+  page.wait_for_function('window.NekketsuHD?.version==="0.8.22.1-alpha"')
   page.locator('[data-action="squad"]').first.click()
   assert 'STA' in page.locator('.rosterCard').first.inner_text(), 'Squad must display stamina'
-  assert 'GK JUMP' in page.locator('.roster').inner_text(),'Goalkeeper jump must be on roster'
+  assert 'GK DIVING' in page.locator('.roster').inner_text(),'Goalkeeper jump must be on roster'
   page.screenshot(path=str(root/'tests'/f'stats_roster_{name}.png'))
   page.locator('[data-action="home"]').first.click()
   page.locator('[data-action="quick"]').first.click()

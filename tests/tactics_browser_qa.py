@@ -8,8 +8,8 @@ with sync_playwright() as p:
    page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
    page.evaluate("""() => {let data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}""")
    page.set_content((root/'play.html').read_text(),wait_until='load')
-   page.wait_for_function("window.NekketsuHD?.version==='0.8.17.1-alpha'")
-   assert page.evaluate('NekketsuHD.teams.length')==216
+   page.wait_for_function("window.NekketsuHD?.version==='0.8.22.1-alpha'")
+   assert page.evaluate('NekketsuHD.teams.length')==222
    page.locator('[data-action="quick"]').first.click()
    assert page.locator('.nationCard .teamIdentity').count()==2
    page.locator('#homeTeam').select_option('0')

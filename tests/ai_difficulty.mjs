@@ -43,28 +43,22 @@ for(let i=1;i<5;i++)assert.ok(speeds[i]>speeds[i-1],`CPU speed does not rise: ${
  assert.equal(nr.aiTarget.y,beforeN,'Rookie must retain last seen keeper target until reaction window');
  assert.notEqual(er.aiTarget.y,beforeE,'Expert must update keeper target faster');
 }
-// Normal shot power is unchanged by difficulty; CPU shot aim becomes more precise.
+// CPU aim error remains lower at harder levels for an otherwise identical shooter.
+// The target is keeper-aware; do not compare against the old hardcoded center/corner.
 {
  const prev=Math.random;
- Math.random=()=>0; // largest miss in any symmetric error range
+ Math.random=()=>.72; // equal lane selection, deterministic positive execution noise
  try{
-  const kickY=[];
+  const deviations=[];
   for(let lvl=0;lvl<5;lvl++){
    const g=match(lvl),p=g.player(1,3);
    p.x=WORLD.field.x+WORLD.field.w*.1;p.y=(WORLD.goalTop+WORLD.goalBottom)/2;p.dy=0;
    g.take(p);g.shoot(p,false);
-   // Measure miss from the tactical open corner, not from the goal centre:
-   // accurate players intentionally avoid the goalkeeper now.
-   const keeper=g.players.find(q=>q.t!==p.t&&q.keeper);
-   const top=WORLD.goalTop+(WORLD.goalBottom-WORLD.goalTop)*.19;
-   const bottom=WORLD.goalBottom-(WORLD.goalBottom-WORLD.goalTop)*.19;
-   const corner=Math.abs(keeper.y-top)>Math.abs(keeper.y-bottom)?top:bottom;
-   const accuracy=p.src.shootAccuracy;
-   const ideal=(WORLD.goalTop+WORLD.goalBottom)/2+(corner-(WORLD.goalTop+WORLD.goalBottom)/2)*Math.max(0,Math.min(1,(accuracy-20)/80));
-   const projected=p.y+(g.ball.vy/g.ball.vx)*((WORLD.field.x-p.x));
-   kickY.push(Math.abs(projected-ideal));
+   const span=WORLD.goalBottom-WORLD.goalTop-66;
+   const chosen=WORLD.goalTop+33+5*span/6; // seeded lane index 5
+   deviations.push(Math.abs(g.ball.targetY-chosen));
   }
-  for(let i=1;i<5;i++)assert.ok(kickY[i]<kickY[i-1],`CPU accuracy did not improve: ${kickY}`);
+  for(let i=1;i<5;i++)assert.ok(deviations[i]<deviations[i-1],`CPU aim spread did not improve: ${deviations}`);
  }finally{Math.random=prev}
 }
 // Running all five variants must remain finite; simulated matches must not crash.

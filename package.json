@@ -1,13 +1,31 @@
 {
   "name": "supermagic-football",
-  "version": "0.8.17.1-alpha",
+  "version": "0.8.22.1-alpha",
   "private": true,
   "type": "module",
-  "description": "Four-button combo priority and rapid-input hotfix on buffered input baseline",
+  "description": "Unified aerial Super Shot/Super Head/Super Bicycle with grounded double-jump shot, updated button-order semantics and regression tests",
   "scripts": {
-    "test": "node tests/tactics_identity.mjs && node tests/kits_agility.mjs && node tests/simulation.mjs && node tests/career.mjs && node tests/continental.mjs && node tests/ai_difficulty.mjs && node tests/player_stats.mjs && node tests/fitness_substitutions.mjs && node tests/morale_reactions.mjs && node tests/defensive_abilities.mjs && node tests/aerial_mechanics.mjs && node tests/team_combos.mjs && node tests/ai_team_combos.mjs && node tests/four_button_controls.mjs && node tests/player_collisions.mjs && node tests/four_button_phase2.mjs && node tests/dribble_styles.mjs && node tests/penalty_controls.mjs && node tests/cartoon_identities.mjs && node tests/character_art.mjs && node tests/super_shot_reset.mjs && node tests/defensive_pursuit_pitch.mjs && node tests/secondary_controls.mjs && node tests/roster_reconciliation.mjs && node tests/active_pursuit_ground_shots.mjs && node tests/special_levels.mjs && node tests/control_reliability.mjs && node tests/combo_priority.mjs && node tests/input_buffer.mjs",
+    "test": "node tests/tactics_identity.mjs && node tests/kits_agility.mjs && node tests/simulation.mjs && node tests/career.mjs && node tests/continental.mjs && node tests/ai_difficulty.mjs && node tests/player_stats.mjs && node tests/fitness_substitutions.mjs && node tests/morale_reactions.mjs && node tests/defensive_abilities.mjs && node tests/aerial_mechanics.mjs && node tests/team_combos.mjs && node tests/ai_team_combos.mjs && node tests/four_button_controls.mjs && node tests/player_collisions.mjs && node tests/four_button_phase2.mjs && node tests/dribble_styles.mjs && node tests/penalty_controls.mjs && node tests/cartoon_identities.mjs && node tests/character_art.mjs && node tests/super_shot_reset.mjs && node tests/defensive_pursuit_pitch.mjs && node tests/secondary_controls.mjs && node tests/roster_reconciliation.mjs && node tests/active_pursuit_ground_shots.mjs && node tests/special_levels.mjs && node tests/control_reliability.mjs && node tests/combo_priority.mjs && node tests/input_buffer.mjs && node tests/fixing_issues.mjs && node tests/v0818_regressions.mjs && node tests/v08181_four_buttons_keeper.mjs && node tests/v0819_goalkeeper.mjs && node tests/v08191_input_queue.mjs && node tests/v08192_focus_keeper.mjs && node tests/v08193_input_stress.mjs && node tests/v08193_ui_navigation.mjs && node tests/v08194_keeper_balance.mjs && node tests/v08195_overall.mjs && node tests/v08196_keeper_prediction.mjs && node tests/v08197_keeper_sessions.mjs && node tests/v0820_roster_sources.mjs && node tests/v08201_barcelona_verified.mjs && node tests/v08202_madrid_arsenal_verified.mjs && node tests/v08203_bayern_psg_verified.mjs && node tests/v08205_manchester_liverpool_verified.mjs && node tests/v08206_canonical_identity.mjs && node tests/v08206_lafc_roles.mjs && node tests/v08206_roster_inventory.mjs && node tests/v0821_ball_lift_super_bicycle.mjs && node tests/v08211_control_cancellation_balance.mjs && node tests/v0822_bpw_world_cups.mjs && node tests/v08221_aerial_super_rework.mjs",
     "build": "python tests/build.py",
     "qa": "python tests/tactics_browser_qa.py && python tests/kits_browser_qa.py && python tests/v060_qa.py && python tests/manager_v060.py && python tests/save_filter_v060.py && python tests/ai_browser_qa.py && python tests/stats_browser_qa.py && python tests/fitness_browser_qa.py && python tests/morale_browser_qa.py && python tests/abilities_browser_qa.py && python tests/aerial_browser_qa.py && python tests/team_combos_browser_qa.py && python tests/ai_combos_browser_qa.py && python tests/four_button_browser_qa.py && python tests/collisions_browser_qa.py && python tests/four_button_phase2_browser_qa.py && python tests/dribble_styles_browser_qa.py && python tests/penalty_controls_browser_qa.py && python tests/home_dashboard_browser_qa.py",
-    "serve": "python -m http.server 8080"
+    "serve": "python -m http.server 8080",
+    "qa:input": "python tests/v08191_browser_qa.py && python tests/rapid_controls_browser_qa.py && python tests/combo_priority_browser_qa.py",
+    "qa:ui": "python tests/v08193_ui_browser_qa.py",
+    "qa:overall": "python tests/v08195_overall_browser_qa.py",
+    "qa:keeper": "python tests/v08194_keeper_browser_qa.py && python tests/v08196_keeper_browser_qa.py && python tests/v08197_keeper_browser_qa.py",
+    "audit:rosters": "node tests/v08206_roster_inventory.mjs",
+    "test:master": "node tests/master_contracts.mjs",
+    "qa:master": "python tests/master_ui_contracts.py",
+    "qa:catalog": "python tests/generate_master_qa.py",
+    "qa:regression": "python tests/run_master_suite.py --profile full",
+    "qa:smoke": "python tests/run_master_suite.py --profile smoke",
+    "qa:roster:08205": "python tests/v08205_rosters_browser_qa.py",
+    "audit:identity": "node tests/v08206_identity_audit.mjs",
+    "qa:identity": "python tests/v08206_identity_browser_qa.py",
+    "qa:lafc": "python tests/v08206_identity_browser_qa.py",
+    "qa:balllift": "python tests/v0821_ball_lift_browser_qa.py",
+    "qa:inputcancel": "python tests/v08211_input_cancel_browser_qa.py",
+    "qa:bpw": "python tests/v0822_bpw_world_cups_browser_qa.py",
+    "qa:aerial:08221": "python tests/v08221_aerial_super_browser_qa.py"
   }
 }

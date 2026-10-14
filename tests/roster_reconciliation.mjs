@@ -28,14 +28,14 @@ const names=(name,group)=>rosterFor(by(name,group).index).map(p=>p.name);
 for(const [team,group,stars] of [
  ['Real Madrid','club26',['Kylian Mbappé','Vinícius Júnior','Jude Bellingham']],
  ['Barcelona','club26',['Lamine Yamal','Raphinha','Pedri']],
- ['Manchester City','club26',['Erling Haaland','Rodri']],
+ ['Manchester City','club26',['Erling Haaland','Rayan Cherki','Phil Foden']],
  ['Arsenal','club26',['Bukayo Saka','Martin Ødegaard']],
  ['AC Milan','club26',['Mike Maignan','Fikayo Tomori','Luka Modrić']],
  ['Inter Miami','continental',['Lionel Messi','Luis Suárez']]
 ])for(const star of stars)assert.ok(names(team,group).includes(star),`${team} should include ${star}`);
 const positions=(team,group)=>Object.fromEntries(rosterFor(by(team,group).index).map(p=>[p.name,p.role]));
 assert.equal(positions('AC Milan','club26')['Mike Maignan'],'GK');
-assert.equal(positions('Manchester City','club26')['Rodri'],'MF');
+assert.equal(positions('Manchester City','club26')['Rayan Cherki'],'MF');
 assert.equal(positions('Manchester City','club26')['Erling Haaland'],'FW');
 assert.equal(positions('Inter Miami','continental')['Luis Suárez'],'FW');
 assert.equal(positions('Inter Miami','continental')['Rodrigo De Paul'],'MF');

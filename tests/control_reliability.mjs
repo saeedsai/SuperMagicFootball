@@ -61,3 +61,22 @@ function set(s={},down={},up={}){input.state[0]=s;input.down=down;input.up=up;}
  assert.equal(g.controlled[0],near.i);
 }
 console.log('v0.8.17 CONTROL RELIABILITY PASS — short/long/rapid passing, jump run/tap, manual switch grace, steering auto-switch');
+
+// Very short tapped Jump while defending now jumps; long hold remains defensive sprint.
+{
+ const g=make(),p=g.player(0,3);g.ball.owner=g.player(1,3);g.controlled[0]=p.i;
+ set({x:1,jump:1},{jump:true});g.updatePlayers(.016);
+ assert.equal(p.jumpCount,0,'defensive Jump should defer until tap vs hold is known');
+ set({x:1},{},{jump:true});g.updatePlayers(.016);
+ assert.equal(p.jumpCount,1,'defensive short Jump should never be silently ignored');
+}
+
+// Goalkeeper no longer requires a human Jump command to defend.
+{
+ const g=make(),keeper=g.player(0,0),b=g.ball;
+ g.humans=2;g.ball.owner=null;keeper.x=190;keeper.y=670;keeper.diveCooldown=keeper.stun=0;
+ b.x=keeper.x+80;b.y=keeper.y+8;b.z=45;b.vx=-90;b.vy=0;b.vz=0;b.attacker=1;b.canCollect=.7;b.power=65;
+ set({},{},{});g.updateBall(.001);
+ assert(keeper.diveCooldown>0,'keeper must dive autonomously for human-controlled team');
+ assert(g.events.some(e=>e.type==='keeperDive'&&!e.manual));
+}

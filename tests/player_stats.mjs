@@ -65,7 +65,7 @@ const origRandom=Math.random;try{Math.random=()=>0;
  assert.notEqual(a.ball.vy,b.ball.vy,'Passing should change trajectory');
 }finally{Math.random=origRandom;}
 // Two GK attributes independently change goalkeeper reach; stronger keeper catches higher shots.
-assert.ok(63+withStats({role:'GK',gkJump:95}).gkJump*1.12>63+withStats({role:'GK',gkJump:20}).gkJump*1.12);
+assert.ok(63+withStats({role:'GK',gkDiving:95}).gkDiving*1.12>63+withStats({role:'GK',gkDiving:20}).gkDiving*1.12);
 assert.ok(26+withStats({role:'GK',gkSkill:95}).gkSkill*.18>26+withStats({role:'GK',gkSkill:20}).gkSkill*.18);
 console.log('Player stats: PASS • 216x12 stat coverage • fatigue/rest/halftime • strength/aggression/defence • kick/accuracy • passing • GK • save compatibility');
 // Explicit numeric ratings must progress in careers alongside the legacy fields.

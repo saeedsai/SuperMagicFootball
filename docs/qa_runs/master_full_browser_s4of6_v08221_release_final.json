@@ -1,0 +1,70 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.22.1",
+  "profile": "full",
+  "category": "browser",
+  "shard": {
+    "index": 4,
+    "total": 6
+  },
+  "run_id": "master_full_browser_s4of6_v08221_release_final",
+  "started_utc": "20261014T115524Z",
+  "scripts_requested": 5,
+  "cases_cataloged": 357,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "browser",
+      "script": "save_filter_v060.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 5.794,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/save_filter_v060.py",
+      "output_tail": "v0.6 offline Quick Match filters + JSON roundtrip DESKTOP PASS\nv0.6 offline Quick Match filters + JSON roundtrip MOBILE PASS"
+    },
+    {
+      "category": "browser",
+      "script": "aerial_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 7.398,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/aerial_browser_qa.py",
+      "output_tail": "desktop PASS: hyperdash keyboard/touch, aerial heading, goalkeeper dive, no browser errors\nmobile PASS: hyperdash keyboard/touch, aerial heading, goalkeeper dive, no browser errors"
+    },
+    {
+      "category": "browser",
+      "script": "dribble_styles_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 3.765,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/dribble_styles_browser_qa.py",
+      "output_tail": "v0.8.7 browser PASS — real keyboard double-tap, genuine simulated Android touch double-tap, 4-button UI, style and game rendering"
+    },
+    {
+      "category": "browser",
+      "script": "v08203_rosters_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 6.104,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/v08203_rosters_browser_qa.py",
+      "output_tail": "desktop PASS Bayern and PSG: 2026/27 roster, shirts, DOB, formation portraits, and OVR\nsimulated Android PASS Bayern and PSG: 2026/27 roster, shirts, DOB, formation portraits, and OVR"
+    },
+    {
+      "category": "browser",
+      "script": "v08193_ui_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 7.128,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/v08193_ui_browser_qa.py",
+      "output_tail": "desktop career region UEFA countries 16\ndesktop PASS career filters, flag/crest browsing, formation portraits and two formations\nmobile career region UEFA countries 16\nmobile PASS career filters, flag/crest browsing, formation portraits and two formations"
+    }
+  ],
+  "summary": {
+    "PASS": 5,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

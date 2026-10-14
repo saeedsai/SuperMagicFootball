@@ -1,0 +1,79 @@
+{
+  "suite": "Supermagic Football Master QA",
+  "release": "0.8.22.1",
+  "profile": "full",
+  "category": "browser",
+  "shard": {
+    "index": 0,
+    "total": 6
+  },
+  "run_id": "master_full_browser_s0of6_v08221_release_final",
+  "started_utc": "20261014T115605Z",
+  "scripts_requested": 6,
+  "cases_cataloged": 357,
+  "cases_individually_certified": 0,
+  "results": [
+    {
+      "category": "browser",
+      "script": "tactics_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 5.706,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/tactics_browser_qa.py",
+      "output_tail": "v0.7.0 tactical browser desktop: PASS • menus/roles • pre-match • pause • saved team plans • visual badges\nv0.7.0 tactical browser mobile: PASS • menus/roles • pre-match • pause • saved team plans • visual badges"
+    },
+    {
+      "category": "browser",
+      "script": "stats_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 4.689,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/stats_browser_qa.py",
+      "output_tail": "Player stats browser desktop: PASS • squad ratings • GK attributes • live stamina HUD • pause/resume\nPlayer stats browser mobile: PASS • squad ratings • GK attributes • live stamina HUD • pause/resume"
+    },
+    {
+      "category": "browser",
+      "script": "ai_combos_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 3.506,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/ai_combos_browser_qa.py",
+      "output_tail": "desktop PASS AI teammate automatic combo and apex shot; no JavaScript errors\nmobile PASS AI teammate automatic combo and apex shot; no JavaScript errors"
+    },
+    {
+      "category": "browser",
+      "script": "home_dashboard_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 5.882,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/home_dashboard_browser_qa.py",
+      "output_tail": "desktop PASS — three organized sections, 14 unique actions, five roundtrips, layout, no page errors\nmobile PASS — three organized sections, 14 unique actions, five roundtrips, layout, no page errors"
+    },
+    {
+      "category": "browser",
+      "script": "v08195_overall_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 6.114,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/v08195_overall_browser_qa.py",
+      "output_tail": "desktop PASS: 12 roster OVRS, 6 positional lineup ratings, 6 formation portrait ratings, formation/selection changes\nsimulated Android touch PASS: 12 roster OVRS, 6 positional lineup ratings, 6 formation portrait ratings, formation/selection changes"
+    },
+    {
+      "category": "browser",
+      "script": "v0821_ball_lift_browser_qa.py",
+      "status": "PASS",
+      "return_code": 0,
+      "seconds": 3.204,
+      "command": "/opt/pyvenv/bin/python /mnt/data/work_v08221/tests/v0821_ball_lift_browser_qa.py",
+      "output_tail": "PASS Desktop Chromium: 4 actions, How to Play, held lift, airborne follow-up, unified transforming special shot\nPASS Simulated Android touch: 4 actions, How to Play, held lift, airborne follow-up, unified transforming special shot"
+    }
+  ],
+  "summary": {
+    "PASS": 6,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "ERROR": 0,
+    "NOT_EXECUTED": 0,
+    "ALL_REQUESTED_PASSED": true
+  }
+}

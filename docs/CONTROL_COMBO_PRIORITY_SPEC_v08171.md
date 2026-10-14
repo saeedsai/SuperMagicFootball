@@ -1,3 +1,5 @@
+> **Historical specification.** For the current four-button mapping, Jump-then-Pass cross, automatic goalkeeper defense and removed extra action buttons see `COMPLETE_COMBINATION_REFERENCE_v08181.md`.
+
 # v0.8.17.1 — Four-Button Combination Priority and Input Reliability
 
 ## Scope
