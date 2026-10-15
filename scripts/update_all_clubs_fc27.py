@@ -242,7 +242,14 @@ def main():
     ap.add_argument("--skip-wikipedia",action="store_true")
     args=ap.parse_args()
     rows=list(csv.DictReader(io.StringIO(fetch(URL).decode("utf-8-sig"))))
-    men=[r for r in rows if "women" not in (r.get("gender") or "").lower()]
+    # Public snapshot includes FC Women's players under some identical club
+    # names (Arsenal, Chelsea, Barcelona, etc.). Never mix women's and men's squads.
+    def mens_record(r):
+        gender=(r.get("gender") or "").strip().lower()
+        league=(r.get("league") or "").strip().lower()
+        return gender not in {"female","f","woman","women","women's football","w"} and \
+               not any(label in league for label in ("women","female","femenin","frauenliga"))
+    men=[r for r in rows if mens_record(r)]
     byclub=collections.defaultdict(list)
     for row in men:
         if not row.get("club"):continue
