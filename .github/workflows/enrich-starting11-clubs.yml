@@ -1,5 +1,5 @@
 name: Enrich Verified First-Squad Club Roster Gaps
-# Rerun: persist reordered first-team starters even when no new slot was added.
+# Rerun: tolerate transient incomplete HTTP responses and persist starter rankings.
 on:
   push:
     branches: [dev]
