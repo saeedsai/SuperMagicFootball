@@ -12,6 +12,31 @@ from update_all_clubs_fc27 import ROOT,clean,stats,generated_number,QUOTAS
 CURATED = {
  # Dated first-team positions are sourced; OVRs below are medium-level *editorial*
  # approximations, never attributed to EA/FC27.
+ "cont_ofc_4": {
+   "GK":[("Epeli Loaniceva",69,1)],
+   "DF":[("Samuela Ibo Kautoga",69,4),("Calvin Ohasio",69,2),("Kavaia Rawaqa",68,3)],
+   "MF":[("Patrick Joseph",70,6),("Ramzan Khan",69,8),("Rahul Krishna",72,10),("Epeli Valevou",68,14)],
+   "FW":[("Norman Ngahu",72,9)],
+   "source":"https://www.national-football-teams.com/club/809/2026_2/Rewa_Fc.html [2026 season]"
+ },
+ "cont_ofc_2": {
+   "DF":[("Ricky Aitamai",70,3),("Marama Amau",69,4),("Tefai Faehau-Heitaa",68,5)],
+   "MF":[("Stanley Atani",72,10),("Tauhiti Keck",72,8),("Kitin Maro",69,7),("Yann Pennequin Le Bras",69,6)],
+   "FW":[("Patrick Tepa",69,9)],
+   "source":"https://www.national-football-teams.com/club/2517/2026_1/As_Venus_Mahina.html [2026/27 season]"
+ },
+ "cont_concacaf_4": {
+   "GK":[("Edrick Menjívar",74,1)],
+   "DF":[("Clinton Bennett",70,4),("José García",71,3),("Kevin Güity",70,2)],
+   "MF":[("Jorge Álvarez",73,6),("Edwin Rodríguez",76,10),("Jack Jean-Baptiste",72,8)],
+   "FW":[("Yustin Arboleda",74,9),("Jorge Benguché",75,11),("Michaell Chirinos",76,7)],
+   "source":"https://www.national-football-teams.com/club/1127/2026_1/Olimpia_Tegucigalpa.html [2026/27 Honduras]"
+ },
+ "cont_concacaf_1": {
+   "GK":[("Christopher Biggette",70,1),("Jabari St. Hillaire",69,12)],
+   "DF":[("Sheldon Bateau",75,4),("Isaiah Garcia",72,2)],
+   "source":"https://national-football-teams.com/club/2552/2026/Defence_Force_Mucurapo.html [2026/27 Trinidad and Tobago]"
+ },
  "cont_ofc_5": {
    "GK":[("Charles Lepani",68,1),("Ronald Warisan",70,16)],
    "DF":[("Alwin Komolong",71,4),("Felix Komolong",70,5),("Charles Hayes",67,3)],
