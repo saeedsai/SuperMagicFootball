@@ -31,7 +31,7 @@ test('all six formations, four gameplay controls and five main menu categories r
 
 test('offline shell cache revision matches current build without altering saved progress',()=>{
  const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
- assert.match(sw,/smf-082533-pitch-length20-v1/);
+ assert.match(sw,/smf-082533-concept-hero-demo-v1/);
  assert.match(sw,/MODULES\.map/);assert.match(sw,/players\//);
  assert.match(sw,/event\.request\.method!=='GET'/);
  assert.match(js,/version:'0\.8\.25\.32',exportedAt/);

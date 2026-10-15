@@ -56,6 +56,22 @@ for(const club of clubs){if(club&&String(club.id||'').startsWith('club_')&&typeo
 for(const entry of GAME_ASSETS.teams.slice(216))TEAMS.push({
  ...entry,index:TEAMS.length,customRoster:GAME_ASSETS.rosters[entry.id]
 });
+// A single literal illustrated character model in every position; original teams remain unchanged.
+const CONCEPT_DEMO_ID='demo_concept_royals';
+const CONCEPT_DEMO_ROLES=['GK','GK','DF','DF','DF','MF','MF','MF','MF','FW','FW','FW'];
+const CONCEPT_DEMO_NUMBERS=[1,12,2,3,4,5,6,7,8,9,10,11];
+const CONCEPT_DEMO_ROSTER=CONCEPT_DEMO_ROLES.map((role,i)=>({
+ id:CONCEPT_DEMO_ID+'_'+i,name:'Concept Hero '+String(i+1).padStart(2,'0'),role,
+ num:CONCEPT_DEMO_NUMBERS[i],power:72,shoot:40,defense:42,speed:'A',
+ shot:'omega',shotName:'Concept Magic Shot',skill:'Illustrated Prototype',
+ level:1,xp:0,renderModel:'concept_hero',
+ appearance:{renderModel:'concept_hero',style:1,face:0,beard:0,accessory:0,
+ skin:'#e9b18b',hair:'#78422b',body:2,stature:2,exaggeration:1}
+}));
+TEAMS.push({id:CONCEPT_DEMO_ID,index:TEAMS.length,name:'Concept Royals FC',
+ group:'concept_demo',flag:'CRF',primary:'#1262d4',secondary:'#f4f5f7',
+ trim:'#f1bb46',rank:84,shot:'omega',customRoster:CONCEPT_DEMO_ROSTER});
+
 let career=store.get('managerCareer',null);
 // Migrate pre-0.6 custom-club index saves: v0.5 appended user clubs at index 83.
 if(career&&!career.saveSchema&&clubs.length){const oldToNew=id=>Number.isInteger(id)&&id>=83&&id<83+clubs.length?(TEAMS.findIndex(t=>t.id===clubs[id-83].id)):id;
@@ -122,12 +138,14 @@ const comingLater=(title,description,back='navCups')=>{
 };
 function showQuickMenu(){menuChoices('nav-quick','QUICK MATCH','Play on one device, practice, or explore planned local multiplayer.',[
  navItem('On Device','navOnDevice','Single-player, two-player, penalties and training.','active','🎮'),
- navItem('Local Network','laterLAN','Devices connected over your local network.','later','📡')],'home');}
+ navItem('Local Network','laterLAN','Devices connected over your local network.','later','📡'),
+ navItem('★ PLAY CONCEPT ROYALS FC','conceptDemo','Play the original illustrated character model as a complete team.','active','🎨')],'home');}
 function showOnDevice(){menuChoices('nav-device','ON DEVICE','Use the existing playable match setups.',[
  navItem('Single Player vs CPU','quick','Existing team, kit and match setup.','active','⚽'),
  navItem('Two Players · Same Device','versus','Play a local head-to-head match.','active','🎮'),
  navItem('Penalty Shootout','pk','Standalone penalty challenge.','active','🥅'),
- navItem('Training Arena','training','Practice the four action buttons and combinations.','active','💥')],'navQuick');}
+ navItem('Training Arena','training','Practice the four action buttons and combinations.','active','💥'),
+ navItem('CONCEPT PLAYER DEMO','conceptDemo','Play all twelve slots as the one illustrated model.','active','🎨')],'navQuick');}
 function showOnlineMenu(){menuChoices('nav-online','ONLINE','Future network modes — not playable in this build.',[
  navItem('Online Match','laterOnlineMatch','Compete over the internet.','later','🌐'),
  navItem('Ultimate Team','laterUltimate','Collect and develop your own squad.','later','⭐'),
@@ -688,6 +706,7 @@ function action(a){audio.cue('ui');
  }
  else if(a==='studioLeft')studioRotate(-1);else if(a==='studioRight')studioRotate(1);else if(a==='studioSpin'){studioSpin=!studioSpin;const btn=menu.querySelector('[data-action=studioSpin]');if(btn)btn.textContent=studioSpin?'■ STOP TURN':'↻ AUTO ROTATE';drawCustomizer()}
  else if(a==='playerStudio')showPlayerStudio();else if(a.startsWith('editPlayer'))showPlayerStudio(+a.slice(10));else if(a==='saveAppearance')saveAppearance();else if(a==='randomizeFace'){const el=$('face_style');if(el){for(const k of ['style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo']){const node=$('face_'+k);node.value=Math.floor(Math.random()*node.options.length)}const skinNode=$('face_skin'),hairNode=$('face_hair');if(skinNode)skinNode.value=NATURAL_SKIN_TONES[Math.floor(Math.random()*NATURAL_SKIN_TONES.length)][0];if(hairNode)hairNode.value=NATURAL_HAIR_COLORS[Math.floor(Math.random()*NATURAL_HAIR_COLORS.length)][0];drawCustomizer()}}
+ else if(a==='conceptDemo'){home=TEAMS.findIndex(t=>t.id===CONCEPT_DEMO_ID);away=0;homeCategory='all';showSetup('quick');}
  else if(a==='quick'||a==='versus'||a==='training')showSetup(a);
  else if(a==='setupRules')showSetupExtras('rules');else if(a==='setupAppearance')showSetupExtras('appearance');else if(a==='setupTactics')showSetupExtras('tactics');
  else if(a==='league')showLeague();else if(a==='gallery')showGallery();else if(a==='clubs')showClubs();else if(a==='saveClub')saveNewClub();else if(a.startsWith('selectClub')){home=+a.slice(10);away=home===away?0:away;showSetup('quick')}else if(a.startsWith('deleteClub'))deleteClub(+a.slice(10));else if(a==='pk'){mode='pk';showSetup('pk')}

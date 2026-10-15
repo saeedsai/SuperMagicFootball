@@ -7,7 +7,7 @@ this output retains their independent deterministic physics/graphics coverage.
 from pathlib import Path
 import json,re,base64
 root=Path(__file__).resolve().parents[1]
-order=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','input','visualfeel','shotfeel','engine','bpwpersonality','artpose','characterart','render','ui']
+order=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','input','visualfeel','shotfeel','engine','bpwpersonality','artpose','characterart','concepthero','render','ui']
 groups=['arcade','national26','club26','legends','continental','bpw_worldcup','bpw_alltime']
 load=lambda path:json.loads((root/'data'/path).read_text())
 players={g:load(f'players/{g}.json') for g in groups}
@@ -16,6 +16,8 @@ assets={'teams':load('teams.json'),'rosters':rosters,'players':players,'mechanic
 for t in assets['teams']:
  assert len(rosters[t['id']])==12,(t['id'],'bad roster')
 code=['// Generated test harness - never hand edit.\nconst GAME_ASSETS='+json.dumps(assets,ensure_ascii=False,separators=(',',':'))+';\n']
+concept_atlas=base64.b64encode((root/'assets/concept_hero/hero_atlas.webp').read_bytes()).decode('ascii')
+code.append('const CONCEPT_HERO_INLINE='+json.dumps(concept_atlas)+';\n')
 for name in order:
  s=(root/'src/modules'/f'{name}.js').read_text()
  s=re.sub(r'^import \{[A-Z_]+\} from .*?;\n','',s,flags=re.M)
