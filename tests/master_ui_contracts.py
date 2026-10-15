@@ -17,6 +17,7 @@ with sync_playwright() as pw:
   assert len(p.evaluate('SupermagicFootball.teams'))==223
   open_quick(p)
   assert p.locator('select#homeTeam').count()==1
+  p.locator('[data-action="setupTactics"]').click()
   p.locator('[data-action="prepHome"]').first.click()
   assert p.locator('.formationSlot canvas').count()==6
   assert p.locator('.playerFaceCanvas').count()==12
