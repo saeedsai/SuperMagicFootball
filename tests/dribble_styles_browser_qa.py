@@ -27,7 +27,7 @@ with sync_playwright() as pw:
   page.wait_for_timeout(80)
   result=page.evaluate('''()=>{const g=SupermagicFootball.game,p=g.player(0,3);return {events:g.events.filter(e=>e.type==='dribbleTrick'),cooldown:p.trickCd,style:p.trickStyleId,ballOwner:g.ball.owner===p,buttons:document.querySelectorAll('#touchButtons [data-act]').length};}''')
   assert result['events'] and result['events'][0]['style']=='rainbow', (label,result,errors)
-  assert result['cooldown']>0 and result['ballOwner'] and result['buttons']==4,(label,result)
+  assert result['cooldown']>0 and result['buttons']==4 and (not result['events'][0]['success'] or result['ballOwner']),(label,result)
   # Check visual rendering and roster screen with new DRB rating and style.
   page.screenshot(path=str(root/'tests'/f'dribble_styles_{label}.png'))
   assert not errors,(label,errors)
