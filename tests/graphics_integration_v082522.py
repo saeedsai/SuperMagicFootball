@@ -68,7 +68,8 @@ with sync_playwright() as w:
     const env=SupermagicFootball,p=env.game.players.find(v=>v&&!v.keeper&&!/Salah|Messi|Benzema|Giroud|Modrić|Alisson|Ramos|Bruno Fernandes|Lautaro|Donnarumma|Maignan/i.test(v.src.name));
     const vs=[[0,1],[.707,.707],[1,0],[.707,-.707],[0,-1],[-.707,-.707],[-1,0],[-.707,.707]];const c=document.createElement('canvas');c.width=250;c.height=250;const x=c.getContext('2d',{willReadFrequently:true});
     function sig(dx,dy,beard){x.clearRect(0,0,250,250);env.renderer.drawPlayer(x,{...p,x:125,y:175,dx,dy,visualFacing:null,action:'idle',z:0,anim:0,src:{...p.src,appearance:{...p.src.appearance,beard}}},{getTeam:()=>env.game.getTeam(p.t),options:{showNames:false}});const d=x.getImageData(0,0,250,250).data;let h=0;for(let k=0;k<d.length;k+=8)h=(Math.imul(h,31)+d[k]+d[k+1]*3+d[k+2]*5+d[k+3]*11)>>>0;return h;}
-    return vs.every(([dx,dy])=>sig(dx,dy,0)!==sig(dx,dy,3));
+    const checked=vs.map(([dx,dy],view)=>({view,beardVisible:sig(dx,dy,0)!==sig(dx,dy,3)}));
+    return {ok:checked.every(item=>item.beardVisible),checked};
   }"""))
   run('tattoos are visible on the character across gameplay angles',mode,lambda:p.evaluate("""() => {
     const e=SupermagicFootball,p=e.game.players.find(v=>v&&!v.keeper);const views=[[0,1],[1,0],[.7,.7],[0,-1]];
