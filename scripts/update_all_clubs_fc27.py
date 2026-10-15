@@ -164,6 +164,66 @@ def wiki_squad(name):
             if len(unique)>=5 and sum(q["role"]=="GK" for q in unique.values())>=1:return list(unique.values()),url
     except Exception as exc:return [],"wiki unavailable: "+str(exc)[:100]
     return [],"no current squad listing"
+def sportsdb_role(value):
+    p=str(value or "").lower().replace("-"," ").strip()
+    if not p or p=="manager" or "coach" in p:return None
+    if "goalkeep" in p or p in ("gk","keeper"):return "GK"
+    if any(v in p for v in ("defend","back","centre half","center half","sweeper")):return "DF"
+    if "wing" in p or any(v in p for v in ("striker","forward","attacker")):return "FW"
+    if any(v in p for v in ("midfield","playmaker","midfielder")):return "MF"
+    return None
+def sportsdb_squad(label,club_id):
+    """Independent roster service, medium-level editorial ratings, never claimed EA."""
+    prefix=club_id.split("_")[1].upper() if club_id.startswith("cont_") else "UEFA"
+    bases={"UEFA":75,"AFC":73,"CAF":72,"CONCACAF":73,"CONMEBOL":75,"OFC":68}
+    base=bases.get(prefix,73)
+    variants=[label,ALIASES.get(label,label)]
+    if label.endswith(" FC"):variants.append(label[:-3])
+    if label.endswith(" SC"):variants.append(label[:-3])
+    if label=="Bodø/Glimt":variants+=["Bodo Glimt","Bodo/Glimt","FK Bodo/Glimt"]
+    last=""
+    for variant in dict.fromkeys(variants):
+        try:
+            url="https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t="+urllib.parse.quote(variant)
+            data=json.loads(fetch(url)); options=data.get("teams") or []
+            normalized=clean(label)
+            def matching_team(t):
+                if t.get("strSport") not in ("Soccer","Football"):return False
+                value=clean(t.get("strTeam",""))
+                if not value or any(q in t.get("strTeam","").lower() for q in (" ii"," u18"," u19"," u21"," women"," reserves")):return False
+                short=lambda x:re.sub(r"(footballclub|fc|cf|sc|ac|fk|afc|club)$","",x)
+                return value==normalized or short(value)==short(normalized) or value==clean(variant)
+            club=next((t for t in options if matching_team(t)),None)
+            if not club:continue
+            api="https://www.thesportsdb.com/api/v1/json/3/lookup_all_players.php?id="+str(club["idTeam"])
+            players=json.loads(fetch(api)).get("player") or []
+            result=[]
+            for p in players:
+                role=sportsdb_role(p.get("strPosition"))
+                name=(p.get("strPlayer") or "").strip()
+                if not role or len(name)<4 or name.lower() in ("unknown","tbd"):continue
+                try:num=int(p.get("strNumber") or 99)
+                except (TypeError,ValueError):num=99
+                # Lower shirt numbers are prioritized when no verified overall exists.
+                ovr=max(65,min(79,base+(2 if num<=11 else 0 if num<=25 else -1)
+                                +(2 if role=="FW" else 1 if role=="MF" else 0)))
+                dob=(p.get("dateBorn") or "").strip()
+                try:
+                    y,m,d=[int(k) for k in dob.split("-")[:3]]
+                    age=2026-y-((10,15)<(m,d))
+                except (ValueError,TypeError):dob=None;age=None
+                result.append({"name":name,"role":role,"rating":ovr,
+                    "sourceKind":"SPORTSDB","birthDate":dob,"age":age,
+                    "nation":p.get("strNationality") or None,"pos":p.get("strPosition"),
+                    "number":num if num in range(1,100) else None,
+                    "stats":stats({"overall_rating":str(ovr)},role)})
+            unique={}
+            for p in result:unique.setdefault(clean(p["name"]),p)
+            result=list(unique.values())
+            if result:
+                return result,"https://www.thesportsdb.com/team/"+str(club["idTeam"])
+        except Exception as e:last=str(e)[:100]
+    return [],"SportsDB unavailable: "+last if last else "No matching club roster"
 def match_club(name,byclub):
     wanted=ALIASES.get(name,name)
     key=clean(wanted)
@@ -214,6 +274,18 @@ def main():
             elif not args.skip_wikipedia:
                 candidates,src=wiki_squad(label)
                 if candidates:origin="WIKIPEDIA_EDITORIAL_OVR"
+                # Many AFC/CAF/CONCACAF/OFC clubs have no FC27 roster or
+                # fully structured Wikipedia table. Use independent club lists.
+                supplemental,secondary=sportsdb_squad(label,club_id)
+                if supplemental:
+                    if not candidates:
+                        candidates,src=supplemental,secondary
+                        origin="SPORTSDB_EDITORIAL_OVR"
+                    else:
+                        seen={clean(c["name"]) for c in candidates}
+                        candidates+=[c for c in supplemental if clean(c["name"]) not in seen]
+                        src=src+"; "+secondary
+                        origin="WIKIPEDIA_AND_SPORTSDB_EDITORIAL_OVR"
             groups={k:[] for k in QUOTAS}
             for p in candidates:
                 for role in p.get("eligibleRoles",[p["role"]]):
@@ -272,6 +344,7 @@ def main():
                         "rosterVerification":(slot.get("rosterVerification") if is_same and slot.get("rosterVerification")=="verified_club_role"
                                                 else "fc27_position_club" if p["sourceKind"]=="FC27" else "editorial"),
                         "shirtVerified":bool(is_same and slot.get("shirtVerified")),
+                        "sourceClubMatch":origin,
                         "ageVerified":bool(p.get("birthDate") and origin=="FC27"),
                         "sourceSnapshot":"2026-09-12" if origin=="FC27" else "2026-10-15"})
                     if is_same and slot.get("canonicalId") and slot.get("birthDate")==p.get("birthDate"):updated["canonicalId"]=slot["canonicalId"]
