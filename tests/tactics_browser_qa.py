@@ -14,6 +14,7 @@ with sync_playwright() as p:
    open_quick(page)
    assert page.locator('.nationCard .teamIdentity').count()==2
    page.locator('#homeTeam').select_option('0')
+   page.locator('[data-action="setupTactics"]').click()
    page.locator('[data-action="prepHome"]').click()
    assert page.locator('#role_captain').count()==1
    assert page.locator('#role_penalty').count()==1
