@@ -1,5 +1,5 @@
 name: Full Club FC27 Source Coverage Audit
-# Verify current wiki player roster rows and FC27 alternate positions.
+# Verify sourced non-FC27 squads and positional placeholders before release.
 on:
   push:
     branches: [dev]
