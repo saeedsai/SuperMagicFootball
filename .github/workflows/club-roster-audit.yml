@@ -1,5 +1,5 @@
 name: Full Club FC27 Source Coverage Audit
-# Position groups include FC27 alternate positions where eligible.
+# Verify current wiki player roster rows and FC27 alternate positions.
 on:
   push:
     branches: [dev]
