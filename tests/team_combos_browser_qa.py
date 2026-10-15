@@ -16,12 +16,15 @@ with sync_playwright() as pw:
   open_quick(page);page.locator('[data-action="kickoff"]').first.click()
   result=page.evaluate('''()=>{
    const g=SupermagicFootball.game,p=g.player(0,3),b=g.ball;
-   g.matchState='paused';g.cooldown=0;g.driveAI=()=>{};g.controlled[0]=3;
-   p.cd=0;p.stun=0;p.fatigue=0;p.z=0;p.vz=0;g.take(p);
+   // Pin this contract to a one-human match; mobile UI preferences differ from desktop.
+   g.matchState='paused';g.cooldown=0;g.humans=1;g.driveAI=()=>{};
+   g.controlled[0]=p.i;g.manualSwitchGrace[0]=1;g.input.reset();
+   p.cd=0;p.stun=0;p.fatigue=0;p.z=0;p.vz=0;p.slideTimer=0;p.passHold=0;p.passUsed=false;p.chase=0;g.take(p);
+   if(!g.inControl(0)||g.controlled[0]!==p.i)throw Error('Test setup missing human ownership');
    g.input.state[0]={x:0,y:0,pass:1,jump:1};g.input.pressed[0]={pass:true,jump:true};g.input.releases[0]={};g.updatePlayers(.016);
    const noLaunch=!g.events.some(e=>e.type==='teamLaunch')&&b.owner===p;
    // Use an already airborne player and a fresh Pass-down edge (the real cross contract).
-   g.take(p);p.z=90;p.vz=25;p.cd=0;g.cooldown=0;
+   g.take(p);g.input.reset();p.z=90;p.vz=25;p.cd=0;g.cooldown=0;p.passUsed=false;p.passHold=0;
    g.input.state[0]={x:0,y:0,pass:1};g.input.pressed[0]={pass:true};g.input.releases[0]={};
    g.updatePlayers(.016);
    return {noLaunch,cross:b.owner===null&&b.vz>=240,kicks:g.events.filter(e=>e.type==='kick').length};

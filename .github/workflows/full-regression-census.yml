@@ -18,6 +18,7 @@ on:
       - 'tests/test_parallel_data_merge.py'
       - 'docs/PARALLEL_DATA_MERGE_GUIDE.md'
       - 'tests/club26_fc27_roster.mjs'
+      - 'tests/team_combos_browser_qa.py'
       - 'docs/AGENT_INTEGRATION_QA_20261015.md'
   workflow_dispatch:
 concurrency:
