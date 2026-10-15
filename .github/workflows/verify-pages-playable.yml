@@ -1,5 +1,5 @@
 name: Verify Deployed PC and Touch Game
-# Recheck live GitHub Pages after 165-club FC27 and editorial source corrections.
+# Confirm deployed 165 fully named club squads and match boot on desktop and simulated touch.
 on:
   push:
     branches: [dev]
