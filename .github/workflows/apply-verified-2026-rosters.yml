@@ -1,4 +1,5 @@
 name: Apply Verified 2026 Squad Gap Fixes
+# Include independently cited 2026/27 Young Africans and Al Hilal positional selections.
 on:
   push:
     branches: [dev]
