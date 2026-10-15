@@ -2,7 +2,7 @@
   "kind": "procedural-canvas-art",
   "format": "JavaScript Canvas2D routines plus JSON palettes/presets (no exported static sprite sheets)",
   "sourceModules": {
-    "playerHeadHairBeard": "src/modules/characterart.js",
+    "playerHeadHairBeard": "src/modules/characterart.js (Character Art III)",
     "bodyAnimations": "src/modules/characterart.js + src/modules/artpose.js",
     "personalityAnimation": "src/modules/bpwpersonality.js",
     "matchRenderer": "src/modules/render.js -> src/modules/characterart.js",
@@ -46,5 +46,5 @@
     "special shot particles and trails",
     "keeper actions"
   ],
-  "note": "Production eight-direction procedural character renderer is src/modules/characterart.js. src/modules/render.js owns match integration and legacy fallback routines; reference concept boards are not game sprites. Preserves appearance schema, ID ordering and gameplay hitboxes."
+  "note": "Character Art III: custom five-projection, eight-facing dimensional cartoon Canvas renderer, natural hair and skin palettes, no unintended accessories. Existing saves and gameplay unchanged."
 }

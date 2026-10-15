@@ -45,7 +45,7 @@ test('offline caching and inline browser test fixture both load new art module',
  const sw=fs.readFileSync(path.resolve(__dirname,'../sw.js'),'utf8');
  assert.match(build,/'artpose','characterart','render'/);
  assert.match(sw,/'artpose','characterart','render'/);
- assert.match(sw,/smf-082532-characterart-v2/);
+ assert.match(sw,/smf-082532-characterart-v3/);
 });
 test('production integration remains in match renderer',()=>{
  const source=fs.readFileSync(path.resolve(__dirname,'../src/modules/render.js'),'utf8');
