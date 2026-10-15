@@ -43,13 +43,9 @@ CURATED = {
    "GK":[("Noppol Lakhonphon",72,1)],
    "MF":[("Thanawat Suengchitthawon",75,8)],
    "FW":[("Jordan Gele",75,11)],
-   "source":"https://www.ballthai.com/ราชบุรี-ประกาศรายชื่อ-28-นักเตะ-ลุยศึก-t1-ฤดูกาล-2026-27/ [2026/27 27-player registered squad]"
+   "source":"https://www.transfermarkt.co.uk/ratchaburi-mitr-phol-fc/kader/verein/35387 [2026/27 squad, corroborated by August 2026 Thai registration]"
  },
- "cont_concacaf_4": {
-   "GK":[("Onan Rodríguez",70,22)],
-   "MF":[("Pedro González",71,18)],
-   "source":"https://m.aiscore.com/team-cd-olimpia/527r3iep19h87ev/squad [2026/27 squad]"
- },
+
  "cont_caf_11": {
    "GK":[("Simon Omossola",74,30),("Esdras Kabamba",70,1)],
    "DF":[("John Nekadio",71,3),("Christopher Sumbu",70,4),("Joseph Douhadji",70,6)],
@@ -121,9 +117,9 @@ CURATED = {
    "source":"https://www.national-football-teams.com/club/2517/2026_1/As_Venus_Mahina.html [2026/27 season]"
  },
  "cont_concacaf_4": {
-   "GK":[("Edrick Menjívar",74,1)],
+   "GK":[("Edrick Menjívar",74,1),("Onan Rodríguez",70,22)],
    "DF":[("Clinton Bennett",70,4),("José García",71,3),("Kevin Güity",70,2)],
-   "MF":[("Jorge Álvarez",73,6),("Edwin Rodríguez",76,10),("Jack Jean-Baptiste",72,8)],
+   "MF":[("Jorge Álvarez",73,6),("Edwin Rodríguez",76,10),("Jack Jean-Baptiste",72,8),("Pedro González",71,18)],
    "FW":[("Yustin Arboleda",74,9),("Jorge Benguché",75,11),("Michaell Chirinos",76,7)],
    "source":"https://www.national-football-teams.com/club/1127/2026_1/Olimpia_Tegucigalpa.html [2026/27 Honduras]"
  },
