@@ -16,7 +16,7 @@ const pkg=JSON.parse(read('../package.json'));
 const release=pkg.version;
 const ui=read('../src/modules/ui.js'),sw=read('../sw.js');
 assert.equal(release,'0.8.25.32','expected current modular release');
-assert(sw.includes("smf-"+release.replaceAll('.','').slice(1)),'PWA cache names current release');
+assert(sw.includes("smf-"+release.replaceAll('.','')),'PWA cache names current release');
 assert(sw.includes('./src/modules/bpw.js'),'offline PWA caches current BPW module');
 assert(ui.includes("version:'"+release+"-integrated'"),'game exports modular version');
 assert(ui.includes("version:'"+release+"'"),'save exports release version');
