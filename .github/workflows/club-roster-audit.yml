@@ -1,4 +1,5 @@
 name: Full Club FC27 Source Coverage Audit
+# Position groups include FC27 alternate positions where eligible.
 on:
   push:
     branches: [dev]
