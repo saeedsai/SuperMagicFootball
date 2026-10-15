@@ -19,7 +19,7 @@ test('modular game engine derives both goals, midfield and formations from share
  const source=read('src/modules/engine.js');
  assert.match(source,/const WORLD=GAME_ASSETS\.mechanics\.world/);
  assert.match(source,/const F=WORLD\.field,\s*MID=F\.x\+F\.w\/2/);
- assert.match(source,/const CX=\(t\)=>t===0\?F\.x:F\.x\+F\.w/);
+ assert.match(source,/CX=\(t\)=>t===0\?F\.x:F\.x\+F\.w/);
  assert.match(source,/F\.x\+\(t===0\?home\.x:1-home\.x\)\*F\.w/);
  assert.match(source,/x:MID,y:F\.y\+F\.h\*\.5/);
 });
