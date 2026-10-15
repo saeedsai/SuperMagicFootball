@@ -28,7 +28,7 @@ with sync_playwright() as pw:
   page.locator('#awayKit').select_option('home')
   assert page.evaluate("NekketsuHD.getKitChoices().join(',')")=='away,home'
   page.screenshot(path=str(root/'tests'/f'kits_setup_{name}.png'))
-  page.locator('[data-action="returnSetup"]').click()
+  page.locator('[data-action="returnSetup"]').last.click()
   assert page.locator('#homeKitCaption').inner_text().endswith('AWAY KIT')
   page.locator('[data-action="kickoff"]').first.click()
   assert page.evaluate('NekketsuHD.game.matchState')=='play'
