@@ -1,0 +1,50 @@
+name: Verify FC27 Top Players Across All Clubs
+on:
+  push:
+    branches: [dev]
+    paths: ['.github/workflows/verify-fc27-top-players.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          persist-credentials: true
+      - name: Audit all club player positions from third-party FC27 snapshot
+        id: audit
+        continue-on-error: true
+        run: python3 scripts/audit_all_club_selection.py
+      - name: Validate player and runtime roster synchronization
+        run: |
+          python3 scripts/validate_data.py
+          node tests/all_club_fc27_rosters.mjs
+          node tests/club26_fc27_roster.mjs
+      - name: Archive positional audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-club-fc27-positional-audit
+          path: |
+            docs/CLUB_FC27_POSITIONAL_AUDIT_20261015.json
+            docs/CLUB_FC27_POSITIONAL_AUDIT_20261015.md
+          retention-days: 30
+      - name: Commit positional audit report to dev
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CLUB_FC27_POSITIONAL_AUDIT_20261015.*
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "docs: report independently audited top-ranked FC27 players across clubs"
+          for retry in 1 2 3; do
+            git pull --rebase origin dev && git push origin HEAD:dev && exit 0
+            sleep 3
+          done
+          exit 1
+      - name: Enforce no missed top-rated FC27 player
+        if: steps.audit.outcome == 'failure'
+        run: exit 1
