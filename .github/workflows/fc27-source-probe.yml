@@ -11,29 +11,19 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - name: Check alternate club squad API where FC27 has no players
+      - run: python3 -m pip install --user beautifulsoup4
+      - name: Inspect Wikipedia search and squad heading parse
         run: |
           python3 - <<'PY'
-          import urllib.request,urllib.parse,json
-          for club in ['Al Ahly','Bodø/Glimt','Auckland City','Rewa FC','Palmeiras','Johor Darul Tazim']:
-              url='https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t='+urllib.parse.quote(club)
-              try:
-                  req=urllib.request.Request(url,headers={'User-Agent':'SuperMagicFootballRosterAuditor/1.0'})
-                  data=json.loads(urllib.request.urlopen(req,timeout=15).read())
-                  teams=[(t.get('idTeam'),t.get('strTeam'),t.get('strSport')) for t in (data.get('teams') or [])]
-                  print('TEAM',club,teams[:5],flush=True)
-                  if teams:
-                      u='https://www.thesportsdb.com/api/v1/json/3/lookup_all_players.php?id='+teams[0][0]
-                      resp=json.loads(urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'SuperMagicFootballRosterAuditor/1.0'}),timeout=15).read())
-                      print('PLAYERS',club,[(x.get('strPlayer'),x.get('strPosition'),x.get('strNumber')) for x in (resp.get('player') or [])[:13]],flush=True)
-              except Exception as e:print('ERROR',club,str(e),flush=True)
-          PY
-      - name: Debug wiki squad extraction
-        run: |
-          python3 -m pip install --user beautifulsoup4
-          python3 - <<'PY'
-          from scripts.update_all_clubs_fc27 import wiki_squad
-          for team in ['Al Ahly','Palmeiras','Bodø/Glimt','AEK Athens']:
-              items,reason=wiki_squad(team)
-              print('WIKI',team,'COUNT',len(items),'RESULT',reason,'NAMES',[(x['name'],x['role']) for x in items[:9]],flush=True)
+          import urllib.request,urllib.parse,json,re
+          from bs4 import BeautifulSoup
+          for name in ['Al Ahly','AEK Athens','Auckland City','Palmeiras','Rewa FC']:
+              u='https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch='+urllib.parse.quote(name+' football club current squad')+'&srlimit=4&format=json'
+              titles=json.loads(urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'SuperMagicFootballRosterAuditor/1.0'}),timeout=10).read()).get('query',{}).get('search',[])
+              print('SEARCH',name,[x['title'] for x in titles])
+              for t in titles[:3]:
+                  url='https://en.wikipedia.org/wiki/'+urllib.parse.quote(t['title'].replace(' ','_'))
+                  soup=BeautifulSoup(urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'SuperMagicFootballRosterAuditor/1.0'}),timeout=10).read(),'html.parser')
+                  heads=[(h.get_text(' ',strip=True),bool(h.find_next('table')),str((h.find_next('table') or {}).get('class',''))) for h in soup.select('h2,h3,h4') if any(k in h.get_text(' ',strip=True).lower() for k in ('current squad','first-team squad','first team','players'))]
+                  print('HEAD',t['title'],heads[:6],flush=True)
           PY
