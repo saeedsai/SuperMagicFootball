@@ -1,5 +1,5 @@
 name: Enrich Verified First-Squad Club Roster Gaps
-# Rerun: prioritize documented first-team starts over shirt-number order.
+# Rerun: persist reordered first-team starters even when no new slot was added.
 on:
   push:
     branches: [dev]
