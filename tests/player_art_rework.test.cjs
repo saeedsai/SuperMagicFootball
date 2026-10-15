@@ -52,3 +52,47 @@ test('production integration remains in match renderer',()=>{
  assert.match(source,/import\s+\{CHARACTER_ART\}\s+from\s+["']\.\/characterart\.js["']/);
  assert.match(source,/CHARACTER_ART\.draw\(ctx,p,av,team,view,/);
 });
+
+test('all 13 hair styles have independent authored paths in each principal view',async()=>{
+ const {CHARACTER_ART:art}=await modPromise;
+ for(const kind of ['front','quarterFront','side','quarterBack','back']){
+  const signatures=[];
+  for(let style=0;style<13;style++){
+   const {c,counts}=fakeCanvas(),out=[];let path=[];
+   for(const op of ['moveTo','lineTo','quadraticCurveTo','bezierCurveTo']){
+    c[op]=(...args)=>path.push([op,...args]);
+   }
+   c.beginPath=()=>{path=[]};
+   c.fill=()=>out.push(['fill',c.fillStyle,path]);
+   c.stroke=()=>out.push(['stroke',c.strokeStyle,path]);
+   const av={face:2,style,beard:0,skin:'#dca27f',hair:'#503a2b',eyes:8,brows:4,nose:2,lips:1};
+   art.draw(c,player,av,team,{kind,side:1},{skin:av.skin,hair:av.hair,headScale:1});
+   assert.equal(counts().saves,0);
+   signatures.push(JSON.stringify(out));
+  }
+  assert.equal(new Set(signatures).size,13,kind+' must show 13 distinct hairstyles');
+ }
+});
+test('the full beard is jaw-fitted across every face type including rear-facing',async()=>{
+ const {CHARACTER_ART:art}=await modPromise;
+ for(const kind of ['front','quarterFront','side','quarterBack','back']){
+  for(let face=0;face<5;face++){
+   function trace(beard){
+    let path=[],ops=[];
+    const {c,counts}=fakeCanvas();
+    for(const op of ['moveTo','lineTo','quadraticCurveTo','bezierCurveTo']){
+     c[op]=(...args)=>path.push([op,...args]);
+    }
+    c.beginPath=()=>{path=[]};
+    c.fill=()=>ops.push(['fill',c.fillStyle,path]);
+    c.stroke=()=>ops.push(['stroke',c.strokeStyle,path]);
+    const av={face,style:1,beard,skin:'#dca27f',hair:'#503a2b',eyes:8,brows:4,nose:2,lips:1};
+    art.draw(c,player,av,team,{kind,side:1},{skin:av.skin,hair:av.hair,headScale:1});
+    assert.equal(counts().saves,0);
+    return JSON.stringify(ops);
+   }
+   assert.notEqual(trace(0),trace(3),kind+' face '+face+' full beard differs from clean-shaven');
+   if(kind==='back')assert.equal(trace(0),trace(4),'moustache must not show through rear cranium');
+  }
+ }
+});
