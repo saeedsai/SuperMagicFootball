@@ -3,7 +3,7 @@ name: Verify Deployed PC and Touch Game
 on:
   push:
     branches: [dev]
-    paths: ['.github/workflows/verify-pages-playable.yml']
+    paths: ['.github/workflows/verify-pages-playable.yml', 'data/mechanics/gameplay.json']
   workflow_dispatch:
 permissions:
   contents: read
@@ -43,8 +43,12 @@ jobs:
               assert page.locator('[data-action="kickoff"]').count()==1,(kind,'kickoff absent')
               page.locator('[data-action="kickoff"]').first.click()
               assert page.evaluate('SupermagicFootball.game.matchState')=='play',(kind,'match failed to boot')
+              center=page.evaluate('SupermagicFootball.game.player(0,3).x')
+              assert abs(center-1254.4)<0.02,(kind,'new 20% pitch kickoff center mismatch',center)
+              right_keeper=page.evaluate('SupermagicFootball.game.player(1,0).x')
+              assert right_keeper>2070,(kind,'away goal failed to move after field extension',right_keeper)
               assert not errors,(kind,errors)
-              print('DEPLOYED_SMOKE_PASS',kind,'200 OK, menus, team selection, kickoff and match active',flush=True)
+              print('DEPLOYED_SMOKE_PASS',kind,'200 OK, menus, team selection, kickoff, +20% field and match active',flush=True)
               page.close()
             browser.close()
           PY
