@@ -1,0 +1,522 @@
+{
+  "bpwSelections": {
+    "1998": [
+      [
+        "Fabien Barthez",
+        "GK",
+        "FR",
+        26
+      ],
+      [
+        "José Luis Chilavert",
+        "GK",
+        "PY",
+        32
+      ],
+      [
+        "Lilian Thuram",
+        "DF",
+        "FR",
+        26
+      ],
+      [
+        "Marcel Desailly",
+        "DF",
+        "FR",
+        29
+      ],
+      [
+        "Frank de Boer",
+        "DF",
+        "NL",
+        27
+      ],
+      [
+        "Zinedine Zidane",
+        "MF",
+        "FR",
+        25
+      ],
+      [
+        "Edgar Davids",
+        "MF",
+        "NL",
+        24
+      ],
+      [
+        "Dunga",
+        "MF",
+        "BR",
+        34
+      ],
+      [
+        "Michael Laudrup",
+        "MF",
+        "DK",
+        33
+      ],
+      [
+        "Davor Šuker",
+        "FW",
+        "HR",
+        30
+      ],
+      [
+        "Dennis Bergkamp",
+        "FW",
+        "NL",
+        28
+      ],
+      [
+        "Ronaldo Nazário",
+        "FW",
+        "BR",
+        21
+      ]
+    ],
+    "2002": [
+      [
+        "Oliver Kahn",
+        "GK",
+        "DE",
+        32
+      ],
+      [
+        "Rüştü Reçber",
+        "GK",
+        "TR",
+        29
+      ],
+      [
+        "Roberto Carlos",
+        "DF",
+        "BR",
+        29
+      ],
+      [
+        "Hong Myung-bo",
+        "DF",
+        "KR",
+        33
+      ],
+      [
+        "Sol Campbell",
+        "DF",
+        "GB",
+        27
+      ],
+      [
+        "Michael Ballack",
+        "MF",
+        "DE",
+        25
+      ],
+      [
+        "Hasan Şaş",
+        "MF",
+        "TR",
+        25
+      ],
+      [
+        "Yoo Sang-chul",
+        "MF",
+        "KR",
+        30
+      ],
+      [
+        "Claudio Reyna",
+        "MF",
+        "US",
+        28
+      ],
+      [
+        "Rivaldo",
+        "FW",
+        "BR",
+        30
+      ],
+      [
+        "Ronaldinho",
+        "FW",
+        "BR",
+        22
+      ],
+      [
+        "El Hadji Diouf",
+        "FW",
+        "SN",
+        21
+      ]
+    ],
+    "2006": [
+      [
+        "Gianluigi Buffon",
+        "GK",
+        "IT",
+        28
+      ],
+      [
+        "Ricardo Pereira",
+        "GK",
+        "PT",
+        30
+      ],
+      [
+        "Fabio Cannavaro",
+        "DF",
+        "IT",
+        32
+      ],
+      [
+        "Philipp Lahm",
+        "DF",
+        "DE",
+        22
+      ],
+      [
+        "Gianluca Zambrotta",
+        "DF",
+        "IT",
+        29
+      ],
+      [
+        "Andrea Pirlo",
+        "MF",
+        "IT",
+        27
+      ],
+      [
+        "Gennaro Gattuso",
+        "MF",
+        "IT",
+        28
+      ],
+      [
+        "Maniche",
+        "MF",
+        "PT",
+        28
+      ],
+      [
+        "Patrick Vieira",
+        "MF",
+        "FR",
+        30
+      ],
+      [
+        "Miroslav Klose",
+        "FW",
+        "DE",
+        28
+      ],
+      [
+        "Thierry Henry",
+        "FW",
+        "FR",
+        28
+      ],
+      [
+        "Hernán Crespo",
+        "FW",
+        "AR",
+        30
+      ]
+    ],
+    "2010": [
+      [
+        "Iker Casillas",
+        "GK",
+        "ES",
+        29
+      ],
+      [
+        "Maarten Stekelenburg",
+        "GK",
+        "NL",
+        27
+      ],
+      [
+        "Carles Puyol",
+        "DF",
+        "ES",
+        32
+      ],
+      [
+        "Sergio Ramos",
+        "DF",
+        "ES",
+        24
+      ],
+      [
+        "Maicon",
+        "DF",
+        "BR",
+        28
+      ],
+      [
+        "Xavi Hernández",
+        "MF",
+        "ES",
+        30
+      ],
+      [
+        "Bastian Schweinsteiger",
+        "MF",
+        "DE",
+        25
+      ],
+      [
+        "Wesley Sneijder",
+        "MF",
+        "NL",
+        26
+      ],
+      [
+        "Andrés Iniesta",
+        "MF",
+        "ES",
+        26
+      ],
+      [
+        "David Villa",
+        "FW",
+        "ES",
+        28
+      ],
+      [
+        "Diego Forlán",
+        "FW",
+        "UY",
+        31
+      ],
+      [
+        "Thomas Müller",
+        "FW",
+        "DE",
+        20
+      ]
+    ],
+    "2014": [
+      [
+        "Manuel Neuer",
+        "GK",
+        "DE",
+        28
+      ],
+      [
+        "Keylor Navas",
+        "GK",
+        "CR",
+        27
+      ],
+      [
+        "Mats Hummels",
+        "DF",
+        "DE",
+        25
+      ],
+      [
+        "David Luiz",
+        "DF",
+        "BR",
+        27
+      ],
+      [
+        "Thiago Silva",
+        "DF",
+        "BR",
+        29
+      ],
+      [
+        "Toni Kroos",
+        "MF",
+        "DE",
+        24
+      ],
+      [
+        "James Rodríguez",
+        "MF",
+        "CO",
+        22
+      ],
+      [
+        "Ángel Di María",
+        "MF",
+        "AR",
+        26
+      ],
+      [
+        "Javier Mascherano",
+        "MF",
+        "AR",
+        30
+      ],
+      [
+        "Neymar",
+        "FW",
+        "BR",
+        22
+      ],
+      [
+        "Lionel Messi",
+        "FW",
+        "AR",
+        27
+      ],
+      [
+        "Arjen Robben",
+        "FW",
+        "NL",
+        30
+      ]
+    ],
+    "2018": [
+      [
+        "Thibaut Courtois",
+        "GK",
+        "BE",
+        26
+      ],
+      [
+        "Hugo Lloris",
+        "GK",
+        "FR",
+        31
+      ],
+      [
+        "Raphaël Varane",
+        "DF",
+        "FR",
+        25
+      ],
+      [
+        "Diego Godín",
+        "DF",
+        "UY",
+        32
+      ],
+      [
+        "Yerry Mina",
+        "DF",
+        "CO",
+        23
+      ],
+      [
+        "Luka Modrić",
+        "MF",
+        "HR",
+        32
+      ],
+      [
+        "Kevin De Bruyne",
+        "MF",
+        "BE",
+        27
+      ],
+      [
+        "Philippe Coutinho",
+        "MF",
+        "BR",
+        26
+      ],
+      [
+        "Paul Pogba",
+        "MF",
+        "FR",
+        25
+      ],
+      [
+        "Harry Kane",
+        "FW",
+        "GB",
+        24
+      ],
+      [
+        "Kylian Mbappé",
+        "FW",
+        "FR",
+        19
+      ],
+      [
+        "Antoine Griezmann",
+        "FW",
+        "FR",
+        27
+      ]
+    ]
+  },
+  "bpwAllTimeSelections": [
+    [
+      "Lev Yashin",
+      "SU",
+      "GK",
+      99
+    ],
+    [
+      "Gianluigi Buffon",
+      "IT",
+      "GK",
+      98
+    ],
+    [
+      "Franz Beckenbauer",
+      "DE",
+      "DF",
+      99
+    ],
+    [
+      "Paolo Maldini",
+      "IT",
+      "DF",
+      99
+    ],
+    [
+      "Sergio Ramos",
+      "ES",
+      "DF",
+      98
+    ],
+    [
+      "Diego Maradona",
+      "AR",
+      "MF",
+      99
+    ],
+    [
+      "Zinedine Zidane",
+      "FR",
+      "MF",
+      99
+    ],
+    [
+      "Johan Cruyff",
+      "NL",
+      "MF",
+      99
+    ],
+    [
+      "Lionel Messi",
+      "AR",
+      "MF",
+      99
+    ],
+    [
+      "Pelé",
+      "BR",
+      "FW",
+      99
+    ],
+    [
+      "Cristiano Ronaldo",
+      "PT",
+      "FW",
+      99
+    ],
+    [
+      "Ronaldo Nazário",
+      "BR",
+      "FW",
+      99
+    ]
+  ]
+}

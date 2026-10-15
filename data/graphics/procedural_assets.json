@@ -1,0 +1,236 @@
+{
+  "skinTones": [
+    [
+      "#f4d3bf",
+      "Porcelain"
+    ],
+    [
+      "#efc4a7",
+      "Fair Beige"
+    ],
+    [
+      "#e6b394",
+      "Warm Peach"
+    ],
+    [
+      "#dca27f",
+      "Golden Tan"
+    ],
+    [
+      "#cf916d",
+      "Honey Brown"
+    ],
+    [
+      "#bd815b",
+      "Warm Bronze"
+    ],
+    [
+      "#ab7458",
+      "Medium Brown"
+    ],
+    [
+      "#996345",
+      "Deep Brown"
+    ],
+    [
+      "#8c593f",
+      "Rich Umber"
+    ],
+    [
+      "#7a4d38",
+      "Espresso"
+    ]
+  ],
+  "hairColors": [
+    [
+      "#141b27",
+      "Blue Black"
+    ],
+    [
+      "#202125",
+      "Natural Black"
+    ],
+    [
+      "#2c2421",
+      "Dark Brown"
+    ],
+    [
+      "#503a2b",
+      "Chestnut"
+    ],
+    [
+      "#78563b",
+      "Walnut"
+    ],
+    [
+      "#9a7652",
+      "Light Brown"
+    ],
+    [
+      "#b88b57",
+      "Dark Blonde"
+    ],
+    [
+      "#dab96b",
+      "Golden Blonde"
+    ],
+    [
+      "#e7c36f",
+      "Sand Blonde"
+    ],
+    [
+      "#b6492d",
+      "Auburn"
+    ]
+  ],
+  "studioAssetLabels": {
+    "style": [
+      "Crew Cut",
+      "Classic Short",
+      "Buzz Cut",
+      "Center Part",
+      "Faux Hawk",
+      "Brush Up",
+      "Long Sweep",
+      "Long Curtain",
+      "Headband",
+      "Flat Top",
+      "Side Pony",
+      "Curly Volume",
+      "Textured Crop"
+    ],
+    "face": [
+      "Balanced Oval",
+      "Wide Jaw",
+      "Slim Chin",
+      "Strong Square",
+      "Round Soft"
+    ],
+    "eyes": [
+      "Calm Round",
+      "Focused Almond",
+      "Soft Round",
+      "Narrow Sharp",
+      "Wide Open",
+      "Slanted Intense",
+      "Sporty Almond",
+      "Vertical Alert",
+      "Relaxed Low Lid",
+      "Tall Oval",
+      "Curious Tall",
+      "Half-Lid",
+      "Lean Almond",
+      "Upturned Sharp",
+      "Hero Open",
+      "Flat Wide",
+      "Broad Oval",
+      "Thin Tall",
+      "Diagonal Focus",
+      "Compact Round"
+    ],
+    "brows": [
+      "Classic Arc",
+      "Angled Lift",
+      "Soft Triangle",
+      "Descending Edge",
+      "Flat Calm",
+      "Sharp Peak",
+      "Straight Thick",
+      "Low Straight",
+      "Tapered Arch",
+      "Outer Lift",
+      "Rising Tail",
+      "Inner Peak",
+      "Rounded Flat",
+      "Aggressive Arc",
+      "Soft Sweep",
+      "Heavy Flat",
+      "Dense Straight",
+      "Pointed Rise",
+      "Outer Drop",
+      "Deep Arch"
+    ],
+    "eyeColor": [
+      "Dark Brown",
+      "Brown",
+      "Blue Grey",
+      "Green",
+      "Hazel Violet",
+      "Amber"
+    ],
+    "nose": [
+      "Small Button",
+      "Classic Bridge",
+      "Rounded Tip",
+      "Sharp Angle",
+      "Wide Bridge",
+      "Long Bridge"
+    ],
+    "lips": [
+      "Soft Line",
+      "Cupid Full",
+      "Crooked Smile",
+      "Half Smile",
+      "Full Lip",
+      "Pout",
+      "Double Curve",
+      "Pinched Smile"
+    ],
+    "body": [
+      "Lean",
+      "Athletic",
+      "Balanced",
+      "Strong",
+      "Powerhouse"
+    ],
+    "stature": [
+      "Short",
+      "Compact",
+      "Average",
+      "Tall",
+      "Very Tall"
+    ],
+    "exaggeration": [
+      "Natural",
+      "Stylised",
+      "Arcade Hero"
+    ],
+    "beard": [
+      "Clean Shave",
+      "Stubble",
+      "Short Beard",
+      "Full Beard",
+      "Moustache"
+    ],
+    "accessory": [
+      "None",
+      "Headband",
+      "Earrings",
+      "Cheek Tape",
+      "Sports Glasses",
+      "Sweatband"
+    ],
+    "freckles": [
+      "None",
+      "Light",
+      "Speckled",
+      "Heavy"
+    ],
+    "scar": [
+      "None",
+      "Eyebrow",
+      "Cheek",
+      "Small Cut",
+      "Long Scar",
+      "Battle Mark"
+    ],
+    "tattoo": [
+      "None",
+      "Wrist Band",
+      "Forearm Stripe",
+      "Script",
+      "Tribal",
+      "Sleeve Accent"
+    ]
+  }
+}

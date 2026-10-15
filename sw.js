@@ -1,5 +1,15 @@
-const KEY='supermagic-football-v082412';
-const RES=["./","./index.html","./play.html","./style.css","./src/abilities.js","./src/ai.js","./src/career.js","./src/club_filters.js","./src/continental.js","./src/data.js","./src/dribbles.js","./src/engine.js","./src/expanded.js","./src/bpw_world_cups.js","./src/bpw_alltime.js","./src/fitness.js","./src/identity.js","./src/input.js","./src/kits.js","./src/main.js","./src/audio.js","./src/morale.js","./src/render.js","./src/roster_corrections.js","./src/player_identity_registry.js","./src/special_levels.js","./src/stats.js","./src/tactics.js","./src/tournaments.js","./icon.svg","./icon-180.png","./icon-192.png","./icon-512.png","./manifest.webmanifest"];
-self.addEventListener('install',event=>event.waitUntil(caches.open(KEY).then(c=>c.addAll(RES)).then(()=>self.skipWaiting())));
-self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>(k.startsWith('nekketsu-legends-hd-')||k.startsWith('supermagic-football-'))&&k!==KEY).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',event=>{if(event.request.method==='GET'&&new URL(event.request.url).origin===location.origin)event.respondWith(caches.match(event.request).then(r=>r||fetch(event.request)))});
+// v0.8.25.30 modular offline shell; versioned when any data or runtime module changes.
+const CACHE='smf-082530-modular-v1';
+const MODULES=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','input','visualfeel','shotfeel','engine','bpwpersonality','artpose','render','ui'];
+const DATA=['teams.json','mechanics/gameplay.json','graphics/procedural_assets.json','graphics/player_appearances.json','graphics/art_registry.json','editorial/historical_rosters.json','confederations.json','continental_mapping.json',...['arcade','national26','club26','legends','continental','bpw_worldcup','bpw_alltime'].map(g=>'players/'+g+'.json')];
+const CORE=['./index.html','./style.css','./icon-180.png','./src/main.js','./src/assets.js',...MODULES.map(m=>'./src/modules/'+m+'.js'),...DATA.map(d=>'./data/'+d)];
+self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
+self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('smf-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',event=>{
+ if(event.request.method!=='GET'||new URL(event.request.url).origin!==self.location.origin)return;
+ event.respondWith(fetch(event.request).then(response=>{
+  if(response.ok&&CORE.some(rel=>new URL(rel,self.registration.scope).href===event.request.url)){
+   const copy=response.clone();caches.open(CACHE).then(c=>c.put(event.request,copy)).catch(()=>{});
+  }return response;
+ }).catch(()=>caches.match(event.request).then(saved=>saved||Response.error())));
+});

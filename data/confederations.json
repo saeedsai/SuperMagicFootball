@@ -1,0 +1,62 @@
+[
+  {
+    "id": "UEFA",
+    "name": "European Champions League",
+    "season": "2026/27",
+    "region": "Europe",
+    "format": "league",
+    "clubs": "AEK Athens|Arsenal|Aston Villa|Atlético Madrid|Barcelona|Bayern Munich|Bodø/Glimt|Borussia Dortmund|Club Brugge|Como|Fenerbahçe|Feyenoord|Galatasaray|Inter Milan|LASK|RB Leipzig|Lens|Lille|Liverpool|Manchester City|Manchester United|Napoli|Paris Saint-Germain|Porto|PSV Eindhoven|Real Betis|Real Madrid|Roma|Sabah FK|Shakhtar Donetsk|Slavia Prague|Slovan Bratislava|Sporting CP|VfB Stuttgart|Viking FK|Villarreal",
+    "featured": "Real Madrid|Barcelona|Bayern Munich|Arsenal|Manchester City|Paris Saint-Germain",
+    "source": "https://www.uefa.com/uefachampionsleague/news/02a8-2171a88881a0-c70193b972c6-1000--meet-the-2026-27-champions-league-league-phase-teams/"
+  },
+  {
+    "id": "AFC",
+    "name": "Asian Champions League Elite",
+    "season": "2026/27",
+    "region": "Asia",
+    "format": "regional-league",
+    "clubs": "Al Ahli Saudi|Al Nassr|Al Hilal|Al Qadsiah|Al Ain|Shabab Al Ahli|Al Wasl|Al Sadd|Al Gharafa|Al Shamal|Esteghlal|Tractor SC|Neftchi Fergana|Al Quwa Al Jawiya|Al Ittihad|Pakhtakor|Kashima Antlers|Vissel Kobe|Kashiwa Reysol|Kyoto Sanga|Jeonbuk Hyundai Motors|Daejeon Hana Citizen|Pohang Steelers|Buriram United|Port FC|Ratchaburi|Shanghai Port|Beijing Guoan|Newcastle Jets|Johor Darul Ta'zim|Gamba Osaka|Công An Hà Nội",
+    "featured": "Al Hilal|Al Nassr|Al Ahli Saudi|Al Ittihad|Kashima Antlers|Vissel Kobe",
+    "source": "https://www.the-afc.com/en/club/afc_champions_league_elite.html/news/aclelite-contenders-assemble-expanded-league-stage-kick-off"
+  },
+  {
+    "id": "CAF",
+    "name": "African Champions League",
+    "season": "2025/26 confirmed",
+    "region": "Africa",
+    "format": "groups",
+    "clubs": "RS Berkane|Pyramids FC|Rivers United|Power Dynamos|Al Ahly|Young Africans|AS FAR Rabat|JS Kabylie|Mamelodi Sundowns|Al Hilal Omdurman|MC Alger|Saint Éloi Lupopo|Espérance de Tunis|Simba SC|Petro de Luanda|Stade Malien",
+    "featured": "Al Ahly|Pyramids FC|Mamelodi Sundowns|Espérance de Tunis|RS Berkane|AS FAR Rabat",
+    "source": "https://www.cafonline.com/caf-champions-league/news/everything-you-need-to-know-about-the-202526-totalenergies-caf-champions-league/"
+  },
+  {
+    "id": "CONCACAF",
+    "name": "North American Champions Cup",
+    "season": "2026 confirmed",
+    "region": "North & Central America",
+    "format": "knockout",
+    "clubs": "Vancouver FC|Defence Force FC|O&M FC|Mount Pleasant FA|Club Olimpia|Xelajú MC|Cartaginés|Alajuelense|Real España|Sporting San Miguelito|Atlético Ottawa|Forge FC|LA Galaxy|Seattle Sounders|Monterrey|Club América|Cruz Azul|Toluca|Pumas UNAM|Tigres UANL|FC Cincinnati|Inter Miami|Los Angeles FC|Philadelphia Union|San Diego FC|Vancouver Whitecaps|Nashville SC",
+    "featured": "Club América|Cruz Azul|Monterrey|Inter Miami|Tigres UANL|Los Angeles FC",
+    "source": "https://www.concacaf.com/news/concacaf-announces-2026-champions-cup-official-draw-pots-and-procedures"
+  },
+  {
+    "id": "CONMEBOL",
+    "name": "South American Libertadores",
+    "season": "2026 confirmed",
+    "region": "South America",
+    "format": "groups",
+    "clubs": "Flamengo|Palmeiras|Boca Juniors|Peñarol|Nacional|Liga de Quito|Fluminense|Independiente del Valle|Lanús|Libertad|Estudiantes de La Plata|Cerro Porteño|Corinthians|Bolívar|Cruzeiro|Universitario|Junior Barranquilla|Universidad Católica|Rosario Central|Independiente Santa Fe|Always Ready|Coquimbo Unido|Deportivo La Guaira|Cusco FC|Universidad Central|Platense|Independiente Rivadavia|Mirassol|Independiente Medellín|Deportes Tolima|Sporting Cristal|Barcelona SC",
+    "featured": "Flamengo|Palmeiras|Boca Juniors|Fluminense|Peñarol|Corinthians",
+    "source": "https://gol.conmebol.com/libertadores/en/news/sorteo-de-la-fase-de-grupos-de-la-conmebol-libertadores-2026-fecha-horario-clasificados"
+  },
+  {
+    "id": "OFC",
+    "name": "Oceania Champions League",
+    "season": "2026 confirmed",
+    "region": "Oceania",
+    "format": "short-groups",
+    "clubs": "Auckland City|Central Coast FC|AS Vénus|AS Tiga Sport|Rewa FC|Lae City FC|Galaxy FC|Tupapa Maraerenga",
+    "featured": "Auckland City|Central Coast FC|AS Vénus|AS Tiga Sport|Rewa FC|Lae City FC",
+    "source": "https://www.oceaniafootball.com/draw-confirmed-for-ofc-mens-champions-league-2026/"
+  }
+]

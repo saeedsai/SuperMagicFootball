@@ -1,0 +1,758 @@
+{
+  "world": {
+    "w": 2184,
+    "h": 1530,
+    "field": {
+      "x": 150,
+      "y": 155,
+      "w": 1884,
+      "h": 1220
+    },
+    "goalTop": 620,
+    "goalBottom": 910,
+    "goalDepth": 76
+  },
+  "dribbleStyles": [
+    {
+      "id": "sideStep",
+      "name": "Side Step",
+      "forward": 24,
+      "lateral": 43,
+      "turn": 0,
+      "evade": 0.27,
+      "stamina": 1,
+      "cooldown": 1.45,
+      "guard": 0.19,
+      "color": "#7beed3"
+    },
+    {
+      "id": "roulette",
+      "name": "Roulette",
+      "forward": 6,
+      "lateral": 55,
+      "turn": 0,
+      "evade": 0.48,
+      "stamina": 1.21,
+      "cooldown": 2.05,
+      "guard": 0.32,
+      "color": "#a9a3ff"
+    },
+    {
+      "id": "elastico",
+      "name": "Elastico",
+      "forward": 37,
+      "lateral": 39,
+      "turn": 0,
+      "evade": 0.36,
+      "stamina": 1.18,
+      "cooldown": 1.8,
+      "guard": 0.25,
+      "color": "#f1c5ff"
+    },
+    {
+      "id": "rainbow",
+      "name": "Rainbow Flick",
+      "forward": 32,
+      "lateral": 15,
+      "turn": 0,
+      "evade": 0.35,
+      "stamina": 1.52,
+      "cooldown": 2.4,
+      "guard": 0.25,
+      "color": "#ffe18e",
+      "loft": 48
+    },
+    {
+      "id": "swerve",
+      "name": "Body Swerve",
+      "forward": 43,
+      "lateral": 22,
+      "turn": 0,
+      "evade": 0.2,
+      "stamina": 0.9,
+      "cooldown": 1.35,
+      "guard": 0.15,
+      "color": "#f7b6a6"
+    },
+    {
+      "id": "dragBack",
+      "name": "Drag Back",
+      "forward": -31,
+      "lateral": 35,
+      "turn": -1,
+      "evade": 0.38,
+      "stamina": 1.05,
+      "cooldown": 1.7,
+      "guard": 0.27,
+      "color": "#9adfff"
+    },
+    {
+      "id": "heelFlick",
+      "name": "Heel Flick",
+      "forward": 39,
+      "lateral": 9,
+      "turn": 0,
+      "evade": 0.17,
+      "stamina": 1.08,
+      "cooldown": 1.4,
+      "guard": 0.18,
+      "color": "#f6d998",
+      "loft": 23
+    },
+    {
+      "id": "stepovers",
+      "name": "Stepovers",
+      "forward": 17,
+      "lateral": 33,
+      "turn": 0,
+      "evade": 0.44,
+      "stamina": 1.13,
+      "cooldown": 1.85,
+      "guard": 0.33,
+      "color": "#fbabed"
+    },
+    {
+      "id": "nutmeg",
+      "name": "Nutmeg",
+      "forward": 57,
+      "lateral": 0,
+      "turn": 0,
+      "evade": 0.12,
+      "stamina": 1.32,
+      "cooldown": 2.25,
+      "guard": 0.13,
+      "color": "#ffbe70",
+      "nutmeg": true
+    },
+    {
+      "id": "lightningCut",
+      "name": "Lightning Cut",
+      "forward": 59,
+      "lateral": 42,
+      "turn": 0,
+      "evade": 0.25,
+      "stamina": 1.5,
+      "cooldown": 2.3,
+      "guard": 0.21,
+      "color": "#a8faff"
+    }
+  ],
+  "formations": {
+    "2-1-2": [
+      {
+        "x": 0.08,
+        "y": 0.5
+      },
+      {
+        "x": 0.28,
+        "y": 0.27
+      },
+      {
+        "x": 0.28,
+        "y": 0.73
+      },
+      {
+        "x": 0.48,
+        "y": 0.5
+      },
+      {
+        "x": 0.7,
+        "y": 0.27
+      },
+      {
+        "x": 0.7,
+        "y": 0.73
+      }
+    ],
+    "1-2-2": [
+      {
+        "x": 0.08,
+        "y": 0.5
+      },
+      {
+        "x": 0.26,
+        "y": 0.5
+      },
+      {
+        "x": 0.47,
+        "y": 0.28
+      },
+      {
+        "x": 0.47,
+        "y": 0.72
+      },
+      {
+        "x": 0.71,
+        "y": 0.27
+      },
+      {
+        "x": 0.71,
+        "y": 0.73
+      }
+    ],
+    "2-2-1": [
+      {
+        "x": 0.08,
+        "y": 0.5
+      },
+      {
+        "x": 0.3,
+        "y": 0.25
+      },
+      {
+        "x": 0.3,
+        "y": 0.75
+      },
+      {
+        "x": 0.55,
+        "y": 0.3
+      },
+      {
+        "x": 0.55,
+        "y": 0.7
+      },
+      {
+        "x": 0.75,
+        "y": 0.5
+      }
+    ],
+    "1-3-1": [
+      {
+        "x": 0.08,
+        "y": 0.5
+      },
+      {
+        "x": 0.27,
+        "y": 0.5
+      },
+      {
+        "x": 0.48,
+        "y": 0.23
+      },
+      {
+        "x": 0.48,
+        "y": 0.5
+      },
+      {
+        "x": 0.48,
+        "y": 0.77
+      },
+      {
+        "x": 0.74,
+        "y": 0.5
+      }
+    ],
+    "1-1-3": [
+      {
+        "x": 0.08,
+        "y": 0.5
+      },
+      {
+        "x": 0.29,
+        "y": 0.5
+      },
+      {
+        "x": 0.52,
+        "y": 0.5
+      },
+      {
+        "x": 0.76,
+        "y": 0.23
+      },
+      {
+        "x": 0.76,
+        "y": 0.5
+      },
+      {
+        "x": 0.76,
+        "y": 0.77
+      }
+    ],
+    "3-1-1": [
+      {
+        "x": 0.08,
+        "y": 0.5
+      },
+      {
+        "x": 0.29,
+        "y": 0.23
+      },
+      {
+        "x": 0.29,
+        "y": 0.5
+      },
+      {
+        "x": 0.29,
+        "y": 0.77
+      },
+      {
+        "x": 0.53,
+        "y": 0.5
+      },
+      {
+        "x": 0.76,
+        "y": 0.5
+      }
+    ]
+  },
+  "defaultLineup": [
+    5,
+    3,
+    4,
+    0,
+    1,
+    2
+  ],
+  "defaultOptions": {
+    "difficulty": 2,
+    "halfSeconds": 120,
+    "weather": "Random",
+    "terrain": "Classic",
+    "condition": "Good",
+    "formation": "2-1-2",
+    "music": true,
+    "sfx": true,
+    "showNames": true,
+    "filter": "HD",
+    "camera": "Follow",
+    "team": 0,
+    "opponent": 9,
+    "gameSpeed": 1,
+    "ballModel": "classic",
+    "aiStyle": "Balanced"
+  },
+  "weather": [
+    "Clear",
+    "Rain",
+    "Wind",
+    "Storm",
+    "Tornado",
+    "Random"
+  ],
+  "terrain": [
+    "Classic",
+    "Grass",
+    "Dirt",
+    "Sand"
+  ],
+  "conditions": [
+    "Good",
+    "Patchy",
+    "Wet"
+  ],
+  "aiLevels": [
+    {
+      "id": 0,
+      "name": "Rookie",
+      "speed": 0.69,
+      "reaction": 0.78,
+      "anticipation": 0,
+      "aimError": 170,
+      "passRate": 0.08,
+      "shootRate": 0.45,
+      "superRate": 0.08,
+      "tackleRate": 0.23,
+      "pressure": 260,
+      "keeperRead": 0.02,
+      "comboAwareness": 0,
+      "comboTiming": 0
+    },
+    {
+      "id": 1,
+      "name": "Easy",
+      "speed": 0.78,
+      "reaction": 0.53,
+      "anticipation": 0.09,
+      "aimError": 115,
+      "passRate": 0.18,
+      "shootRate": 0.58,
+      "superRate": 0.14,
+      "tackleRate": 0.39,
+      "pressure": 365,
+      "keeperRead": 0.1,
+      "comboAwareness": 0.25,
+      "comboTiming": 0.35
+    },
+    {
+      "id": 2,
+      "name": "Normal",
+      "speed": 0.86,
+      "reaction": 0.32,
+      "anticipation": 0.18,
+      "aimError": 65,
+      "passRate": 0.3,
+      "shootRate": 0.72,
+      "superRate": 0.21,
+      "tackleRate": 0.54,
+      "pressure": 470,
+      "keeperRead": 0.23,
+      "comboAwareness": 0.55,
+      "comboTiming": 0.6
+    },
+    {
+      "id": 3,
+      "name": "Hard",
+      "speed": 0.95,
+      "reaction": 0.18,
+      "anticipation": 0.28,
+      "aimError": 33,
+      "passRate": 0.42,
+      "shootRate": 0.85,
+      "superRate": 0.29,
+      "tackleRate": 0.74,
+      "pressure": 590,
+      "keeperRead": 0.37,
+      "comboAwareness": 0.82,
+      "comboTiming": 0.82
+    },
+    {
+      "id": 4,
+      "name": "Expert",
+      "speed": 1.02,
+      "reaction": 0.09,
+      "anticipation": 0.4,
+      "aimError": 12,
+      "passRate": 0.55,
+      "shootRate": 0.96,
+      "superRate": 0.36,
+      "tackleRate": 0.91,
+      "pressure": 730,
+      "keeperRead": 0.49,
+      "comboAwareness": 1,
+      "comboTiming": 1
+    }
+  ],
+  "shotTypes": {
+    "nuts": {
+      "name": "Nuts Shot",
+      "color": "#ffc15f",
+      "trail": "#ed763c",
+      "behavior": "ricochet",
+      "speed": 1.18,
+      "impact": 1.35
+    },
+    "ninja": {
+      "name": "Ninja Shot",
+      "color": "#b29bfa",
+      "trail": "#7e68e9",
+      "behavior": "clone",
+      "speed": 1.37,
+      "impact": 1.08
+    },
+    "wheel": {
+      "name": "Wheelie Shot",
+      "color": "#e0ecff",
+      "trail": "#f8ce53",
+      "behavior": "spin",
+      "speed": 1.36,
+      "impact": 1.25
+    },
+    "mole": {
+      "name": "Princess Mole Shot",
+      "color": "#dc9a5d",
+      "trail": "#c07b55",
+      "behavior": "burrow",
+      "speed": 1.15,
+      "impact": 1.4
+    },
+    "cannon": {
+      "name": "Unstoppable Shot",
+      "color": "#ff9349",
+      "trail": "#ff463d",
+      "behavior": "blast",
+      "speed": 1.5,
+      "impact": 1.65
+    },
+    "mega": {
+      "name": "Mega Drive Shot",
+      "color": "#77fcf5",
+      "trail": "#42bde9",
+      "behavior": "lightning",
+      "speed": 1.48,
+      "impact": 1.65
+    },
+    "ghost": {
+      "name": "Bitter Shot",
+      "color": "#c6f2e7",
+      "trail": "#6bedcb",
+      "behavior": "phase",
+      "speed": 1.18,
+      "impact": 1.35
+    },
+    "target": {
+      "name": "Accurate Shot",
+      "color": "#ecf5a5",
+      "trail": "#eac044",
+      "behavior": "homing",
+      "speed": 1.26,
+      "impact": 1.34
+    },
+    "books": {
+      "name": "Boring Shot",
+      "color": "#f8d675",
+      "trail": "#f39f46",
+      "behavior": "zigzag",
+      "speed": 1.3,
+      "impact": 1.2
+    },
+    "fish": {
+      "name": "Tosa Moon Shot",
+      "color": "#61e3f4",
+      "trail": "#19a8cf",
+      "behavior": "swim",
+      "speed": 1.32,
+      "impact": 1.29
+    },
+    "banana": {
+      "name": "Banana Crocodile Shot",
+      "color": "#eaff70",
+      "trail": "#6cc744",
+      "behavior": "curve",
+      "speed": 1.28,
+      "impact": 1.35
+    },
+    "omega": {
+      "name": "Omega Drive Shot",
+      "color": "#de9eff",
+      "trail": "#6d6cfc",
+      "behavior": "warp",
+      "speed": 1.57,
+      "impact": 1.75
+    },
+    "tiger": {
+      "name": "Tiger Shot",
+      "color": "#f39e36",
+      "trail": "#f3562d",
+      "behavior": "blast",
+      "speed": 1.23,
+      "impact": 1.3
+    },
+    "elephant": {
+      "name": "Elephant Shot",
+      "color": "#afd2ea",
+      "trail": "#7da9cf",
+      "behavior": "spin",
+      "speed": 1.2,
+      "impact": 1.45
+    },
+    "horse": {
+      "name": "Horse Shot",
+      "color": "#d1a16c",
+      "trail": "#77523f",
+      "behavior": "ricochet",
+      "speed": 1.3,
+      "impact": 1.26
+    },
+    "lion": {
+      "name": "Lion Shot",
+      "color": "#ffad36",
+      "trail": "#e65a28",
+      "behavior": "blast",
+      "speed": 1.3,
+      "impact": 1.45
+    },
+    "bird": {
+      "name": "Bird Shot",
+      "color": "#d7def5",
+      "trail": "#9cc9e9",
+      "behavior": "swim",
+      "speed": 1.37,
+      "impact": 1.18
+    },
+    "serpent": {
+      "name": "Serpent Shot",
+      "color": "#a8e468",
+      "trail": "#51ba8e",
+      "behavior": "zigzag",
+      "speed": 1.21,
+      "impact": 1.33
+    },
+    "piranha": {
+      "name": "Piranha Shot",
+      "color": "#67d9f0",
+      "trail": "#1d9ee7",
+      "behavior": "swim",
+      "speed": 1.36,
+      "impact": 1.33
+    },
+    "cactus": {
+      "name": "Cactus Shot",
+      "color": "#95d884",
+      "trail": "#46b982",
+      "behavior": "spin",
+      "speed": 1.2,
+      "impact": 1.38
+    },
+    "comet": {
+      "name": "Comet Shot",
+      "color": "#ffb14d",
+      "trail": "#f77b5d",
+      "behavior": "blast",
+      "speed": 1.48,
+      "impact": 1.34
+    },
+    "eagle": {
+      "name": "Eagle Shot",
+      "color": "#b8cbf7",
+      "trail": "#7d84d7",
+      "behavior": "homing",
+      "speed": 1.47,
+      "impact": 1.32
+    },
+    "tornado": {
+      "name": "Tornado Shot",
+      "color": "#c5ecff",
+      "trail": "#91a1f1",
+      "behavior": "spiral",
+      "speed": 1.43,
+      "impact": 1.44
+    }
+  },
+  "defensiveAbilities": {
+    "drill": {
+      "id": "drill",
+      "name": "DRILL ATTACK",
+      "cooldown": 7.5,
+      "cost": 0.055,
+      "range": 170,
+      "radius": 46,
+      "stun": 1.1,
+      "color": "#ffde76"
+    },
+    "burst": {
+      "id": "burst",
+      "name": "SHOCK BURST",
+      "cooldown": 9,
+      "cost": 0.075,
+      "range": 0,
+      "radius": 126,
+      "stun": 0.8,
+      "color": "#a7fff0"
+    }
+  },
+  "keeperAbilities": {
+    "megaPalm": {
+      "id": "megaPalm",
+      "name": "MEGA PALM",
+      "cooldown": 9,
+      "cost": 0.065,
+      "reachX": 220,
+      "reachY": 130,
+      "power": 760,
+      "color": "#90f5ff"
+    },
+    "tornadoPunch": {
+      "id": "tornadoPunch",
+      "name": "TORNADO PUNCH",
+      "cooldown": 11,
+      "cost": 0.085,
+      "reachX": 260,
+      "reachY": 160,
+      "power": 910,
+      "color": "#fbd788"
+    }
+  },
+  "numericStats": [
+    "stamina",
+    "strength",
+    "aggression",
+    "defence",
+    "speedRating",
+    "agility",
+    "dribbling",
+    "shootPower",
+    "shootAccuracy",
+    "heading",
+    "passing",
+    "crossing",
+    "gkDiving",
+    "gkSkill"
+  ],
+  "positionOverallStats": {
+    "GK": [
+      "gkSkill",
+      "gkDiving",
+      "agility",
+      "strength",
+      "passing",
+      "stamina"
+    ],
+    "DF": [
+      "defence",
+      "strength",
+      "aggression",
+      "speedRating",
+      "heading",
+      "stamina"
+    ],
+    "MF": [
+      "passing",
+      "crossing",
+      "dribbling",
+      "agility",
+      "stamina",
+      "speedRating"
+    ],
+    "FW": [
+      "shootAccuracy",
+      "shootPower",
+      "dribbling",
+      "speedRating",
+      "agility",
+      "heading"
+    ]
+  },
+  "maxSubstitutions": 3,
+  "teamTalks": {
+    "none": {
+      "name": "No team talk",
+      "hint": "Preserve current morale"
+    },
+    "encourage": {
+      "name": "Believe in yourselves",
+      "hint": "Supports nervous players, may bore confident stars"
+    },
+    "challenge": {
+      "name": "Prove you deserve to win!",
+      "hint": "Motivates bold players; may overwhelm cautious ones"
+    },
+    "joke": {
+      "name": "Tell a ridiculous joke",
+      "hint": "Eases tension; disciplined players may dislike it"
+    },
+    "focus": {
+      "name": "Stay calm and follow the plan",
+      "hint": "Helps disciplined players; impulsive players may rebel"
+    }
+  },
+  "ballModels": [
+    {
+      "id": "classic",
+      "name": "Classic Black & White"
+    },
+    {
+      "id": "meteor",
+      "name": "Meteor Orange"
+    },
+    {
+      "id": "ice",
+      "name": "Ice Crystal"
+    },
+    {
+      "id": "gold",
+      "name": "Golden Star"
+    },
+    {
+      "id": "retro",
+      "name": "Retro Leather"
+    }
+  ],
+  "maxSpecialLevel": 5,
+  "engineTiming": {
+    "superShotTransformSeconds": 1.65,
+    "ballLiftHoldSeconds": 0.26,
+    "ballLiftWindowSeconds": 1.55,
+    "superBicycleSpeedCap": 1550,
+    "aerialDoubleTapSeconds": 0.32
+  }
+}
