@@ -4886,14 +4886,14 @@
         "rating": 73
       },
       {
-        "name": "Al Baloushi",
-        "role": "MF",
-        "rating": 71
-      },
-      {
         "name": "Romero",
         "role": "MF",
-        "rating": 71
+        "rating": 72
+      },
+      {
+        "name": "Palacios",
+        "role": "MF",
+        "rating": 72
       },
       {
         "name": "Giorgos Giakoumakis",
@@ -4906,7 +4906,7 @@
         "rating": 74
       },
       {
-        "name": "Santos",
+        "name": "H. Rahimi",
         "role": "FW",
         "rating": 72
       }
@@ -5115,12 +5115,12 @@
     },
     "selected": [
       {
-        "name": "Al Sheeb",
+        "name": "Barsham",
         "role": "GK",
-        "rating": 69
+        "rating": 70
       },
       {
-        "name": "Barsham",
+        "name": "Al Sheeb",
         "role": "GK",
         "rating": 69
       },
@@ -5137,7 +5137,7 @@
       {
         "name": "Miguel",
         "role": "DF",
-        "rating": 70
+        "rating": 71
       },
       {
         "name": "Claudinho",
@@ -5205,10 +5205,10 @@
       {
         "name": "Ababacar",
         "role": "GK",
-        "rating": 69
+        "rating": 70
       },
       {
-        "name": "Kahiout",
+        "name": "Kone",
         "role": "GK",
         "rating": 69
       },
@@ -5223,9 +5223,9 @@
         "rating": 73
       },
       {
-        "name": "Fayez",
+        "name": "Sano",
         "role": "DF",
-        "rating": 70
+        "rating": 71
       },
       {
         "name": "Abdalla Yousif",
@@ -5253,14 +5253,14 @@
         "rating": 77
       },
       {
-        "name": "Muntari",
+        "name": "Magri",
         "role": "FW",
-        "rating": 72
+        "rating": 73
       },
       {
-        "name": "Coman",
+        "name": "Brahimi",
         "role": "FW",
-        "rating": 72
+        "rating": 73
       }
     ],
     "fictionalRemaining": 0,
@@ -5296,9 +5296,9 @@
         "rating": 72
       },
       {
-        "name": "Mohammed",
+        "name": "Seck",
         "role": "GK",
-        "rating": 69
+        "rating": 70
       },
       {
         "name": "Abdelkarim Hassan",
@@ -5313,7 +5313,7 @@
       {
         "name": "Marí",
         "role": "DF",
-        "rating": 70
+        "rating": 71
       },
       {
         "name": "Ahmed Sayyar",
@@ -5341,12 +5341,12 @@
         "rating": 74
       },
       {
-        "name": "M. Omar",
+        "name": "Saïd",
         "role": "FW",
-        "rating": 72
+        "rating": 73
       },
       {
-        "name": "Coulibaly",
+        "name": "Bounedjah",
         "role": "FW",
         "rating": 72
       }
@@ -5824,24 +5824,24 @@
         "rating": 72
       },
       {
-        "name": "Nazarov",
+        "name": "Kuvvatov",
         "role": "GK",
-        "rating": 69
+        "rating": 70
+      },
+      {
+        "name": "Abdumajidov",
+        "role": "DF",
+        "rating": 71
       },
       {
         "name": "Tahseen",
         "role": "DF",
-        "rating": 70
-      },
-      {
-        "name": "Pouraliganji",
-        "role": "DF",
-        "rating": 70
+        "rating": 71
       },
       {
         "name": "Nasrullayev",
         "role": "DF",
-        "rating": 70
+        "rating": 71
       },
       {
         "name": "Akmal Mozgovoy",
@@ -6000,9 +6000,9 @@
         "rating": 72
       },
       {
-        "name": "Arai",
+        "name": "Gonda",
         "role": "GK",
-        "rating": 69
+        "rating": 70
       },
       {
         "name": "Caetano",
@@ -6025,19 +6025,19 @@
         "rating": 73
       },
       {
-        "name": "Goke",
-        "role": "MF",
-        "rating": 71
-      },
-      {
-        "name": "Ohgihara",
-        "role": "MF",
-        "rating": 71
-      },
-      {
         "name": "Ideguchi",
         "role": "MF",
-        "rating": 71
+        "rating": 72
+      },
+      {
+        "name": "Goke",
+        "role": "MF",
+        "rating": 72
+      },
+      {
+        "name": "Kuwasaki",
+        "role": "MF",
+        "rating": 72
       },
       {
         "name": "Daiju Sasaki",
@@ -6090,7 +6090,7 @@
       {
         "name": "Kojima",
         "role": "GK",
-        "rating": 69
+        "rating": 70
       },
       {
         "name": "Hiromu Mitsumaru",
@@ -6135,12 +6135,12 @@
       {
         "name": "Endo",
         "role": "FW",
-        "rating": 72
+        "rating": 73
       },
       {
-        "name": "Hosoya",
+        "name": "Fujio",
         "role": "FW",
-        "rating": 72
+        "rating": 73
       }
     ],
     "fictionalRemaining": 0,
@@ -6191,9 +6191,9 @@
         "rating": 72
       },
       {
-        "name": "Nagata",
+        "name": "Sato",
         "role": "DF",
-        "rating": 70
+        "rating": 71
       },
       {
         "name": "Haruki Arai",
@@ -6221,14 +6221,14 @@
         "rating": 74
       },
       {
-        "name": "Okugawa",
-        "role": "FW",
-        "rating": 72
-      },
-      {
         "name": "Elias",
         "role": "FW",
-        "rating": 72
+        "rating": 73
+      },
+      {
+        "name": "Everton",
+        "role": "FW",
+        "rating": 73
       }
     ],
     "fictionalRemaining": 0,
@@ -6905,12 +6905,12 @@
         "rating": 74
       },
       {
-        "name": "Zhongguo",
+        "name": "Serginho",
         "role": "MF",
         "rating": 71
       },
       {
-        "name": "Serginho",
+        "name": "Xizhe",
         "role": "MF",
         "rating": 71
       },
@@ -8019,62 +8019,62 @@
     },
     "selected": [
       {
-        "name": "Onyango",
+        "name": "Williams",
         "role": "GK",
-        "rating": 69
+        "rating": 70
       },
       {
-        "name": "Pieterse",
+        "name": "Onyango",
         "role": "GK",
         "rating": 69
       },
       {
         "name": "Ndamane",
         "role": "DF",
-        "rating": 70
+        "rating": 71
       },
       {
-        "name": "Lunga",
+        "name": "Basadien",
         "role": "DF",
-        "rating": 70
+        "rating": 71
       },
       {
-        "name": "Modiba",
+        "name": "Morena",
         "role": "DF",
-        "rating": 70
+        "rating": 71
       },
       {
         "name": "T. Mokoena",
         "role": "MF",
-        "rating": 71
-      },
-      {
-        "name": "Santos",
-        "role": "MF",
-        "rating": 71
+        "rating": 72
       },
       {
         "name": "Allende",
         "role": "MF",
-        "rating": 71
-      },
-      {
-        "name": "Aubaas",
-        "role": "MF",
-        "rating": 71
-      },
-      {
-        "name": "Sales",
-        "role": "FW",
         "rating": 72
+      },
+      {
+        "name": "Mailula",
+        "role": "MF",
+        "rating": 72
+      },
+      {
+        "name": "Mthanti",
+        "role": "MF",
+        "rating": 72
+      },
+      {
+        "name": "Matthews",
+        "role": "FW",
+        "rating": 73
       },
       {
         "name": "León",
         "role": "FW",
-        "rating": 72
+        "rating": 73
       },
       {
-        "name": "Rayners",
+        "name": "Van Wyk",
         "role": "FW",
         "rating": 72
       }
@@ -8725,7 +8725,7 @@
       {
         "name": "Irving",
         "role": "GK",
-        "rating": 69
+        "rating": 70
       },
       {
         "name": "Regitnig",
@@ -8733,34 +8733,34 @@
         "rating": 69
       },
       {
-        "name": "Gee",
-        "role": "DF",
-        "rating": 70
-      },
-      {
         "name": "Doner",
         "role": "DF",
-        "rating": 70
+        "rating": 71
       },
       {
-        "name": "Ssewankambo",
+        "name": "Campagna",
         "role": "DF",
-        "rating": 70
+        "rating": 71
+      },
+      {
+        "name": "Bah",
+        "role": "DF",
+        "rating": 71
+      },
+      {
+        "name": "Polisi",
+        "role": "MF",
+        "rating": 72
       },
       {
         "name": "Pecile",
         "role": "MF",
-        "rating": 71
+        "rating": 72
       },
       {
         "name": "Toomey",
         "role": "MF",
-        "rating": 71
-      },
-      {
-        "name": "Ouattara",
-        "role": "MF",
-        "rating": 71
+        "rating": 72
       },
       {
         "name": "Lee",
@@ -8768,19 +8768,19 @@
         "rating": 71
       },
       {
-        "name": "Mousset",
+        "name": "Proctor",
         "role": "FW",
-        "rating": 72
+        "rating": 73
       },
       {
         "name": "Amissi",
         "role": "FW",
-        "rating": 72
+        "rating": 73
       },
       {
-        "name": "Traore",
+        "name": "Mousset",
         "role": "FW",
-        "rating": 72
+        "rating": 73
       }
     ],
     "fictionalRemaining": 0,
@@ -9603,54 +9603,54 @@
     },
     "selected": [
       {
+        "name": "Kalongo",
+        "role": "GK",
+        "rating": 70
+      },
+      {
         "name": "Crampton",
         "role": "GK",
         "rating": 69
       },
       {
-        "name": "Kalongo",
-        "role": "GK",
-        "rating": 69
-      },
-      {
-        "name": "Dunn-Johnson",
+        "name": "Arnaud",
         "role": "DF",
-        "rating": 70
-      },
-      {
-        "name": "Walker",
-        "role": "DF",
-        "rating": 70
-      },
-      {
-        "name": "Mbomio",
-        "role": "DF",
-        "rating": 70
-      },
-      {
-        "name": "Castro",
-        "role": "MF",
         "rating": 71
       },
       {
-        "name": "Aguilar",
-        "role": "MF",
+        "name": "Coulanges",
+        "role": "DF",
         "rating": 71
+      },
+      {
+        "name": "Kozlovskiy",
+        "role": "DF",
+        "rating": 71
+      },
+      {
+        "name": "Tabla",
+        "role": "MF",
+        "rating": 72
       },
       {
         "name": "Gutiérrez",
         "role": "MF",
-        "rating": 71
-      },
-      {
-        "name": "García",
-        "role": "MF",
-        "rating": 71
-      },
-      {
-        "name": "Escoto",
-        "role": "FW",
         "rating": 72
+      },
+      {
+        "name": "Aparicio",
+        "role": "MF",
+        "rating": 72
+      },
+      {
+        "name": "Habibullah",
+        "role": "MF",
+        "rating": 72
+      },
+      {
+        "name": "Chateau",
+        "role": "FW",
+        "rating": 73
       },
       {
         "name": "Assi",
@@ -9658,7 +9658,7 @@
         "rating": 72
       },
       {
-        "name": "Chateau",
+        "name": "Escoto",
         "role": "FW",
         "rating": 72
       }
@@ -9867,64 +9867,64 @@
     },
     "selected": [
       {
-        "name": "Frei",
-        "role": "GK",
-        "rating": 69
-      },
-      {
         "name": "Thomas",
         "role": "GK",
-        "rating": 69
+        "rating": 72
       },
       {
-        "name": "Sailor",
-        "role": "DF",
+        "name": "Frei",
+        "role": "GK",
         "rating": 70
       },
       {
         "name": "Tolo",
         "role": "DF",
-        "rating": 70
+        "rating": 73
+      },
+      {
+        "name": "Ragen",
+        "role": "DF",
+        "rating": 73
       },
       {
         "name": "Roldan",
         "role": "DF",
-        "rating": 70
-      },
-      {
-        "name": "C. Roldan",
-        "role": "MF",
-        "rating": 71
-      },
-      {
-        "name": "Clark",
-        "role": "MF",
-        "rating": 71
+        "rating": 73
       },
       {
         "name": "Rusnák",
         "role": "MF",
-        "rating": 71
+        "rating": 74
       },
       {
-        "name": "Morris",
+        "name": "Kossa-Rienzi",
         "role": "MF",
-        "rating": 71
+        "rating": 74
       },
       {
-        "name": "Joveljić",
-        "role": "FW",
-        "rating": 72
+        "name": "Brunell",
+        "role": "MF",
+        "rating": 74
       },
       {
-        "name": "de la Vega",
-        "role": "FW",
-        "rating": 72
+        "name": "C. Roldan",
+        "role": "MF",
+        "rating": 74
       },
       {
         "name": "Rothrock",
         "role": "FW",
-        "rating": 72
+        "rating": 75
+      },
+      {
+        "name": "Ferreira",
+        "role": "FW",
+        "rating": 75
+      },
+      {
+        "name": "Musovski",
+        "role": "FW",
+        "rating": 74
       }
     ],
     "fictionalRemaining": 0,
@@ -10226,7 +10226,7 @@
       {
         "name": "González",
         "role": "GK",
-        "rating": 69
+        "rating": 70
       },
       {
         "name": "Antonio Briseño Vázquez",
@@ -10249,19 +10249,19 @@
         "rating": 73
       },
       {
+        "name": "Vega",
+        "role": "MF",
+        "rating": 73
+      },
+      {
         "name": "Romero",
         "role": "MF",
-        "rating": 71
+        "rating": 73
       },
       {
-        "name": "Guzmán",
+        "name": "Angulo",
         "role": "MF",
-        "rating": 71
-      },
-      {
-        "name": "N. Castro",
-        "role": "MF",
-        "rating": 71
+        "rating": 73
       },
       {
         "name": "Alexis Vega",
@@ -10276,7 +10276,7 @@
       {
         "name": "Viñas",
         "role": "FW",
-        "rating": 72
+        "rating": 73
       }
     ],
     "fictionalRemaining": 0,
@@ -10749,62 +10749,62 @@
       {
         "name": "Blake",
         "role": "GK",
-        "rating": 69
+        "rating": 72
       },
       {
-        "name": "Marks",
+        "name": "Rick",
         "role": "GK",
-        "rating": 69
+        "rating": 71
       },
       {
-        "name": "Martínez",
+        "name": "Harriel",
         "role": "DF",
-        "rating": 70
+        "rating": 73
       },
       {
-        "name": "Larsen",
+        "name": "Westfield",
         "role": "DF",
-        "rating": 70
+        "rating": 73
       },
       {
-        "name": "Mbaïzo",
+        "name": "Wagner",
         "role": "DF",
-        "rating": 70
+        "rating": 72
       },
       {
         "name": "Lukić",
         "role": "MF",
-        "rating": 71
+        "rating": 74
+      },
+      {
+        "name": "Jean-Jacques",
+        "role": "MF",
+        "rating": 74
+      },
+      {
+        "name": "Vassilev",
+        "role": "MF",
+        "rating": 74
       },
       {
         "name": "C. Sullivan",
         "role": "MF",
-        "rating": 71
-      },
-      {
-        "name": "Bueno",
-        "role": "MF",
-        "rating": 71
-      },
-      {
-        "name": "Bedoya",
-        "role": "MF",
-        "rating": 71
-      },
-      {
-        "name": "Damiani",
-        "role": "FW",
-        "rating": 72
+        "rating": 74
       },
       {
         "name": "Iloski",
         "role": "FW",
-        "rating": 72
+        "rating": 75
+      },
+      {
+        "name": "Damiani",
+        "role": "FW",
+        "rating": 75
       },
       {
         "name": "Alladoh",
         "role": "FW",
-        "rating": 72
+        "rating": 74
       }
     ],
     "fictionalRemaining": 0,
@@ -10925,62 +10925,62 @@
       {
         "name": "Takaoka",
         "role": "GK",
-        "rating": 69
+        "rating": 72
       },
       {
-        "name": "Zendejas",
+        "name": "Boehmer",
         "role": "GK",
-        "rating": 69
+        "rating": 70
+      },
+      {
+        "name": "Blackmon",
+        "role": "DF",
+        "rating": 73
+      },
+      {
+        "name": "T. Johnson",
+        "role": "DF",
+        "rating": 73
       },
       {
         "name": "Laborda",
         "role": "DF",
-        "rating": 70
-      },
-      {
-        "name": "Adekugbe",
-        "role": "DF",
-        "rating": 70
-      },
-      {
-        "name": "Veselinović",
-        "role": "DF",
-        "rating": 70
-      },
-      {
-        "name": "Larraz",
-        "role": "MF",
-        "rating": 71
-      },
-      {
-        "name": "Sabbi",
-        "role": "MF",
-        "rating": 71
-      },
-      {
-        "name": "Cabrera",
-        "role": "MF",
-        "rating": 71
+        "rating": 73
       },
       {
         "name": "Cubas",
         "role": "MF",
-        "rating": 71
+        "rating": 74
       },
       {
-        "name": "Sabaly",
+        "name": "Badwal",
+        "role": "MF",
+        "rating": 74
+      },
+      {
+        "name": "Sabbi",
+        "role": "MF",
+        "rating": 74
+      },
+      {
+        "name": "Larraz",
+        "role": "MF",
+        "rating": 73
+      },
+      {
+        "name": "White",
         "role": "FW",
-        "rating": 72
+        "rating": 75
       },
       {
         "name": "Müller",
         "role": "FW",
-        "rating": 72
+        "rating": 75
       },
       {
-        "name": "Quiñonez",
+        "name": "Sabaly",
         "role": "FW",
-        "rating": 72
+        "rating": 74
       }
     ],
     "fictionalRemaining": 0,
@@ -12114,17 +12114,17 @@
       {
         "name": "Alberto",
         "role": "FW",
-        "rating": 72
+        "rating": 75
       },
       {
         "name": "Depay",
         "role": "FW",
-        "rating": 72
+        "rating": 74
       },
       {
-        "name": "Vitinho",
+        "name": "Raul",
         "role": "FW",
-        "rating": 72
+        "rating": 74
       }
     ],
     "fictionalRemaining": 0,
@@ -12507,47 +12507,47 @@
     },
     "selected": [
       {
+        "name": "Lara",
+        "role": "GK",
+        "rating": 70
+      },
+      {
         "name": "Gordillo",
         "role": "GK",
         "rating": 69
       },
       {
-        "name": "Lara",
-        "role": "GK",
-        "rating": 69
-      },
-      {
-        "name": "García",
+        "name": "Cangá",
         "role": "DF",
-        "rating": 70
-      },
-      {
-        "name": "Chancellor",
-        "role": "DF",
-        "rating": 70
-      },
-      {
-        "name": "Palacios",
-        "role": "DF",
-        "rating": 70
-      },
-      {
-        "name": "Cacciabue",
-        "role": "MF",
         "rating": 71
+      },
+      {
+        "name": "Medina",
+        "role": "DF",
+        "rating": 71
+      },
+      {
+        "name": "Valencia",
+        "role": "DF",
+        "rating": 70
       },
       {
         "name": "Clavijo",
         "role": "MF",
-        "rating": 71
+        "rating": 72
       },
       {
-        "name": "Martínez",
+        "name": "Díaz",
         "role": "MF",
-        "rating": 71
+        "rating": 72
       },
       {
-        "name": "Sevillano",
+        "name": "Mejía",
+        "role": "MF",
+        "rating": 72
+      },
+      {
+        "name": "Cacciabue",
         "role": "MF",
         "rating": 71
       },
@@ -13475,12 +13475,12 @@
     },
     "selected": [
       {
-        "name": "Ichazo",
+        "name": "Chaux",
         "role": "GK",
-        "rating": 69
+        "rating": 70
       },
       {
-        "name": "Chaux",
+        "name": "Ichazo",
         "role": "GK",
         "rating": 69
       },
@@ -13490,14 +13490,14 @@
         "rating": 74
       },
       {
-        "name": "Varela",
-        "role": "DF",
-        "rating": 70
-      },
-      {
         "name": "Mena",
         "role": "DF",
-        "rating": 70
+        "rating": 72
+      },
+      {
+        "name": "Varela",
+        "role": "DF",
+        "rating": 71
       },
       {
         "name": "Didier Moreno",
@@ -13532,7 +13532,7 @@
       {
         "name": "Medina",
         "role": "FW",
-        "rating": 72
+        "rating": 73
       }
     ],
     "fictionalRemaining": 0,
