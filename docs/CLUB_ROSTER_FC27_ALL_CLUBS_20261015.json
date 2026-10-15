@@ -7041,8 +7041,8 @@
   },
   "cont_afc_29": {
     "club": "Johor Darul Ta'zim",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Johor_Darul_Ta'zim_F.C.",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -7051,67 +7051,67 @@
     },
     "selected": [
       {
-        "name": "Johor Darul Ta'zim • Academy 1",
+        "name": "Christian Abad",
         "role": "GK",
-        "rating": 63
+        "rating": 71
       },
       {
-        "name": "Johor Darul Ta'zim • Academy 12",
+        "name": "Syihan Hazmi",
         "role": "GK",
-        "rating": 59
+        "rating": 70
       },
       {
-        "name": "Johor Darul Ta'zim • Academy 2",
+        "name": "Matthew Davies",
         "role": "DF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Johor Darul Ta'zim • Academy 3",
+        "name": "Shahrul Saad",
         "role": "DF",
-        "rating": 61
+        "rating": 72
       },
       {
-        "name": "Johor Darul Ta'zim • Academy 7",
+        "name": "Antonio Glauder",
         "role": "DF",
-        "rating": 57
+        "rating": 72
       },
       {
-        "name": "Johor Darul Ta'zim • Academy 8",
+        "name": "Afiq Fazail",
         "role": "MF",
-        "rating": 63
+        "rating": 73
       },
       {
-        "name": "Johor Darul Ta'zim • Academy 4",
+        "name": "Hong Wan",
         "role": "MF",
-        "rating": 60
+        "rating": 73
       },
       {
-        "name": "Johor Darul Ta'zim • Academy 5",
+        "name": "Hector Hevel",
         "role": "MF",
-        "rating": 59
+        "rating": 73
       },
       {
-        "name": "Johor Darul Ta'zim • Academy 6",
+        "name": "Arif Aiman",
         "role": "MF",
-        "rating": 58
+        "rating": 73
       },
       {
-        "name": "Johor Darul Ta'zim • Academy 9",
+        "name": "Shahab Zahedi",
         "role": "FW",
-        "rating": 62
+        "rating": 74
       },
       {
-        "name": "Johor Darul Ta'zim • Academy 10",
+        "name": "Bérgson",
         "role": "FW",
-        "rating": 61
+        "rating": 74
       },
       {
-        "name": "Johor Darul Ta'zim • Academy 11",
+        "name": "Jairo",
         "role": "FW",
-        "rating": 60
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Johor Darul Ta'zim • Academy 1",
       "Johor Darul Ta'zim • Academy 2",
@@ -7129,8 +7129,8 @@
   },
   "cont_afc_30": {
     "club": "Gamba Osaka",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Gamba_Osaka",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -7139,67 +7139,67 @@
     },
     "selected": [
       {
-        "name": "Gamba Osaka • Academy 1",
+        "name": "Masaaki Higashiguchi",
         "role": "GK",
         "rating": 71
       },
       {
-        "name": "Gamba Osaka • Academy 12",
+        "name": "Rui Araki",
         "role": "GK",
-        "rating": 67
-      },
-      {
-        "name": "Gamba Osaka • Academy 2",
-        "role": "DF",
         "rating": 70
       },
       {
-        "name": "Gamba Osaka • Academy 3",
+        "name": "Shota Fukuoka",
         "role": "DF",
-        "rating": 69
+        "rating": 72
       },
       {
-        "name": "Gamba Osaka • Academy 7",
+        "name": "Riku Handa",
         "role": "DF",
-        "rating": 65
+        "rating": 72
       },
       {
-        "name": "Gamba Osaka • Academy 8",
+        "name": "Shinnosuke Nakatani",
+        "role": "DF",
+        "rating": 72
+      },
+      {
+        "name": "Shu Kurata",
         "role": "MF",
-        "rating": 71
+        "rating": 73
       },
       {
-        "name": "Gamba Osaka • Academy 4",
+        "name": "Shuto Abe",
         "role": "MF",
-        "rating": 68
+        "rating": 72
       },
       {
-        "name": "Gamba Osaka • Academy 5",
+        "name": "Tokuma Suzuki",
         "role": "MF",
-        "rating": 67
+        "rating": 72
       },
       {
-        "name": "Gamba Osaka • Academy 6",
+        "name": "Eli Adams",
         "role": "MF",
-        "rating": 66
+        "rating": 72
       },
       {
-        "name": "Gamba Osaka • Academy 9",
+        "name": "Takashi Usami",
         "role": "FW",
-        "rating": 70
+        "rating": 74
       },
       {
-        "name": "Gamba Osaka • Academy 10",
+        "name": "Ryotaro Meshino",
         "role": "FW",
-        "rating": 69
+        "rating": 74
       },
       {
-        "name": "Gamba Osaka • Academy 11",
+        "name": "Daichi Hayashi",
         "role": "FW",
-        "rating": 68
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Gamba Osaka • Academy 1",
       "Gamba Osaka • Academy 2",
@@ -7217,8 +7217,8 @@
   },
   "cont_afc_31": {
     "club": "Công An Hà Nội",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Cong_An_Ha_Noi_FC",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -7227,67 +7227,67 @@
     },
     "selected": [
       {
-        "name": "Công An Hà Nội • Academy 1",
+        "name": "Nguyễn Filip",
         "role": "GK",
-        "rating": 69
+        "rating": 71
       },
       {
-        "name": "Công An Hà Nội • Academy 12",
+        "name": "Vũ Thành Vinh",
         "role": "GK",
-        "rating": 65
+        "rating": 70
       },
       {
-        "name": "Công An Hà Nội • Academy 2",
+        "name": "Vũ Đức Huy",
         "role": "DF",
-        "rating": 68
+        "rating": 72
       },
       {
-        "name": "Công An Hà Nội • Academy 3",
+        "name": "Phan Ngọc Tín",
         "role": "DF",
-        "rating": 67
+        "rating": 72
       },
       {
-        "name": "Công An Hà Nội • Academy 7",
+        "name": "Đoàn Văn Hậu",
         "role": "DF",
-        "rating": 63
+        "rating": 72
       },
       {
-        "name": "Công An Hà Nội • Academy 8",
+        "name": "Stefan Mauk",
         "role": "MF",
-        "rating": 69
+        "rating": 73
       },
       {
-        "name": "Công An Hà Nội • Academy 4",
+        "name": "Léo Artur",
         "role": "MF",
-        "rating": 66
+        "rating": 73
       },
       {
-        "name": "Công An Hà Nội • Academy 5",
+        "name": "Lê Phạm Thành Long",
         "role": "MF",
-        "rating": 65
+        "rating": 73
       },
       {
-        "name": "Công An Hà Nội • Academy 6",
+        "name": "Hoàng Văn Toản",
         "role": "MF",
-        "rating": 64
+        "rating": 72
       },
       {
-        "name": "Công An Hà Nội • Academy 9",
+        "name": "David Henen",
         "role": "FW",
-        "rating": 68
+        "rating": 74
       },
       {
-        "name": "Công An Hà Nội • Academy 10",
+        "name": "Nguyễn Đình Bắc",
         "role": "FW",
-        "rating": 67
+        "rating": 74
       },
       {
-        "name": "Công An Hà Nội • Academy 11",
+        "name": "Đinh Thanh Bình",
         "role": "FW",
-        "rating": 66
+        "rating": 73
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Công An Hà Nội • Academy 1",
       "Công An Hà Nội • Academy 2",
@@ -7305,8 +7305,8 @@
   },
   "cont_caf_0": {
     "club": "RS Berkane",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/RS_Berkane",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -7315,67 +7315,67 @@
     },
     "selected": [
       {
-        "name": "RS Berkane • Academy 1",
+        "name": "Munir Mohamedi",
         "role": "GK",
-        "rating": 76
-      },
-      {
-        "name": "RS Berkane • Academy 12",
-        "role": "GK",
-        "rating": 72
-      },
-      {
-        "name": "RS Berkane • Academy 2",
-        "role": "DF",
-        "rating": 75
-      },
-      {
-        "name": "RS Berkane • Academy 3",
-        "role": "DF",
-        "rating": 74
-      },
-      {
-        "name": "RS Berkane • Academy 7",
-        "role": "DF",
-        "rating": 70
-      },
-      {
-        "name": "RS Berkane • Academy 8",
-        "role": "MF",
-        "rating": 76
-      },
-      {
-        "name": "RS Berkane • Academy 4",
-        "role": "MF",
-        "rating": 73
-      },
-      {
-        "name": "RS Berkane • Academy 5",
-        "role": "MF",
-        "rating": 72
-      },
-      {
-        "name": "RS Berkane • Academy 6",
-        "role": "MF",
         "rating": 71
       },
       {
-        "name": "RS Berkane • Academy 9",
-        "role": "FW",
-        "rating": 75
+        "name": "Mehdi Miftah",
+        "role": "GK",
+        "rating": 70
       },
       {
-        "name": "RS Berkane • Academy 10",
+        "name": "Mohamed Aymen Sadil",
+        "role": "DF",
+        "rating": 72
+      },
+      {
+        "name": "Oussama Haddadi",
+        "role": "DF",
+        "rating": 72
+      },
+      {
+        "name": "Jamal Harkass",
+        "role": "DF",
+        "rating": 72
+      },
+      {
+        "name": "Youssef Aït Bennasser",
+        "role": "MF",
+        "rating": 73
+      },
+      {
+        "name": "Soumaila Sidibe",
+        "role": "MF",
+        "rating": 73
+      },
+      {
+        "name": "Ayoub Khairi",
+        "role": "MF",
+        "rating": 73
+      },
+      {
+        "name": "Rayane Aabid",
+        "role": "MF",
+        "rating": 72
+      },
+      {
+        "name": "Oussama Lamlioui",
         "role": "FW",
         "rating": 74
       },
       {
-        "name": "RS Berkane • Academy 11",
+        "name": "Ryan Mendes",
         "role": "FW",
-        "rating": 73
+        "rating": 74
+      },
+      {
+        "name": "Youssef Mehri",
+        "role": "FW",
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "RS Berkane • Academy 1",
       "RS Berkane • Academy 2",
@@ -7393,8 +7393,8 @@
   },
   "cont_caf_1": {
     "club": "Pyramids FC",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Pyramids_FC",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -7403,67 +7403,67 @@
     },
     "selected": [
       {
-        "name": "Pyramids FC • Academy 1",
+        "name": "Ahmed El Shenawy",
         "role": "GK",
-        "rating": 78
+        "rating": 71
       },
       {
-        "name": "Pyramids FC • Academy 12",
+        "name": "Mahmoud Gad",
         "role": "GK",
-        "rating": 78
+        "rating": 69
       },
       {
-        "name": "Pyramids FC • Academy 2",
+        "name": "Mahmoud Marei",
         "role": "DF",
-        "rating": 78
+        "rating": 72
       },
       {
-        "name": "Pyramids FC • Academy 3",
+        "name": "Ahmed Samy",
         "role": "DF",
-        "rating": 78
+        "rating": 72
       },
       {
-        "name": "Pyramids FC • Academy 7",
+        "name": "Ali Gabr",
         "role": "DF",
-        "rating": 78
+        "rating": 72
       },
       {
-        "name": "Pyramids FC • Academy 8",
+        "name": "Youssef Obama",
         "role": "MF",
-        "rating": 78
+        "rating": 73
       },
       {
-        "name": "Pyramids FC • Academy 4",
+        "name": "Mahmoud Saber",
         "role": "MF",
-        "rating": 78
+        "rating": 73
       },
       {
-        "name": "Pyramids FC • Academy 5",
+        "name": "Mohanad Lasheen",
         "role": "MF",
-        "rating": 78
+        "rating": 72
       },
       {
-        "name": "Pyramids FC • Academy 6",
+        "name": "Zalaka",
         "role": "MF",
-        "rating": 78
+        "rating": 72
       },
       {
-        "name": "Pyramids FC • Academy 9",
+        "name": "Ahmed Kader",
         "role": "FW",
-        "rating": 78
+        "rating": 74
       },
       {
-        "name": "Pyramids FC • Academy 10",
+        "name": "Mostafa Fathi",
         "role": "FW",
-        "rating": 78
+        "rating": 74
       },
       {
-        "name": "Pyramids FC • Academy 11",
+        "name": "Nadhir Benbouali",
         "role": "FW",
-        "rating": 78
+        "rating": 73
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Pyramids FC • Academy 1",
       "Pyramids FC • Academy 2",
@@ -7481,8 +7481,8 @@
   },
   "cont_caf_2": {
     "club": "Rivers United",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Rivers_United_F.C.",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -7491,67 +7491,67 @@
     },
     "selected": [
       {
-        "name": "Rivers United • Academy 1",
+        "name": "Victor Soshima",
         "role": "GK",
-        "rating": 64
+        "rating": 70
       },
       {
-        "name": "Rivers United • Academy 12",
+        "name": "Osagie Onisodumeya",
         "role": "GK",
-        "rating": 60
+        "rating": 69
       },
       {
-        "name": "Rivers United • Academy 2",
+        "name": "Muyiwa Fehintola",
         "role": "DF",
-        "rating": 63
+        "rating": 72
       },
       {
-        "name": "Rivers United • Academy 3",
+        "name": "Emmanuel Ampiah",
         "role": "DF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Rivers United • Academy 7",
+        "name": "John Uche Akubueze",
         "role": "DF",
-        "rating": 58
+        "rating": 72
       },
       {
-        "name": "Rivers United • Academy 8",
+        "name": "Ukeme Williams",
         "role": "MF",
-        "rating": 64
+        "rating": 73
       },
       {
-        "name": "Rivers United • Academy 4",
+        "name": "Shedrack Asiegbu",
         "role": "MF",
-        "rating": 61
+        "rating": 73
       },
       {
-        "name": "Rivers United • Academy 5",
+        "name": "Paul Onobi",
         "role": "MF",
-        "rating": 60
+        "rating": 72
       },
       {
-        "name": "Rivers United • Academy 6",
+        "name": "Farouk Mohammed",
         "role": "MF",
-        "rating": 59
+        "rating": 72
       },
       {
-        "name": "Rivers United • Academy 9",
+        "name": "Suleiman Abba",
         "role": "FW",
-        "rating": 63
+        "rating": 74
       },
       {
-        "name": "Rivers United • Academy 10",
+        "name": "Mark Gibson",
         "role": "FW",
-        "rating": 62
+        "rating": 74
       },
       {
-        "name": "Rivers United • Academy 11",
+        "name": "Alex Oyowah",
         "role": "FW",
-        "rating": 61
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Rivers United • Academy 1",
       "Rivers United • Academy 2",
@@ -7657,8 +7657,8 @@
   },
   "cont_caf_4": {
     "club": "Al Ahly",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Al_Ahly_SC",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -7672,9 +7672,9 @@
         "rating": 78
       },
       {
-        "name": "Al Ahly • Academy 12",
+        "name": "Mostafa Shobeir",
         "role": "GK",
-        "rating": 78
+        "rating": 69
       },
       {
         "name": "Emam Ashour",
@@ -7687,9 +7687,9 @@
         "rating": 78
       },
       {
-        "name": "Al Ahly • Academy 7",
+        "name": "Yassin Marei",
         "role": "DF",
-        "rating": 78
+        "rating": 72
       },
       {
         "name": "Mohamed Hany",
@@ -7697,37 +7697,37 @@
         "rating": 78
       },
       {
-        "name": "Al Ahly • Academy 8",
+        "name": "Ahmed Reda",
         "role": "MF",
-        "rating": 78
+        "rating": 73
       },
       {
-        "name": "Al Ahly • Academy 5",
+        "name": "Akram Tawfik",
         "role": "MF",
-        "rating": 78
+        "rating": 72
       },
       {
-        "name": "Al Ahly • Academy 6",
+        "name": "Marwan Attia",
         "role": "MF",
-        "rating": 78
+        "rating": 72
       },
       {
-        "name": "Al Ahly • Academy 9",
+        "name": "Taher Mohamed",
         "role": "FW",
-        "rating": 78
+        "rating": 74
       },
       {
-        "name": "Al Ahly • Academy 10",
+        "name": "Soufiane Benjdida",
         "role": "FW",
-        "rating": 78
+        "rating": 74
       },
       {
-        "name": "Al Ahly • Academy 11",
+        "name": "Monsef Bakrar",
         "role": "FW",
-        "rating": 78
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 8,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Mohamed El Shenawy",
       "Emam Ashour",
@@ -7833,8 +7833,8 @@
   },
   "cont_caf_6": {
     "club": "AS FAR Rabat",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/AS_FAR",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -7843,67 +7843,67 @@
     },
     "selected": [
       {
-        "name": "AS FAR Rabat • Academy 1",
+        "name": "Ayoub El Khayati",
         "role": "GK",
-        "rating": 74
+        "rating": 71
       },
       {
-        "name": "AS FAR Rabat • Academy 12",
+        "name": "Ahmed Reda Tagnaouti",
         "role": "GK",
         "rating": 70
       },
       {
-        "name": "AS FAR Rabat • Academy 2",
-        "role": "DF",
-        "rating": 73
-      },
-      {
-        "name": "AS FAR Rabat • Academy 3",
+        "name": "Tó Carneiro",
         "role": "DF",
         "rating": 72
       },
       {
-        "name": "AS FAR Rabat • Academy 7",
+        "name": "Fallou Mendy",
         "role": "DF",
-        "rating": 68
+        "rating": 72
       },
       {
-        "name": "AS FAR Rabat • Academy 8",
+        "name": "Marouane Louadni",
+        "role": "DF",
+        "rating": 71
+      },
+      {
+        "name": "Anas Bach",
         "role": "MF",
+        "rating": 73
+      },
+      {
+        "name": "Zineddine Derrag",
+        "role": "MF",
+        "rating": 73
+      },
+      {
+        "name": "Khalid Aït Ouarkhane",
+        "role": "MF",
+        "rating": 73
+      },
+      {
+        "name": "Merveil Ndockyt",
+        "role": "MF",
+        "rating": 72
+      },
+      {
+        "name": "Youssef El Fahli",
+        "role": "FW",
         "rating": 74
       },
       {
-        "name": "AS FAR Rabat • Academy 4",
-        "role": "MF",
-        "rating": 71
-      },
-      {
-        "name": "AS FAR Rabat • Academy 5",
-        "role": "MF",
-        "rating": 70
-      },
-      {
-        "name": "AS FAR Rabat • Academy 6",
-        "role": "MF",
-        "rating": 69
-      },
-      {
-        "name": "AS FAR Rabat • Academy 9",
+        "name": "Mouhcine Bouriga",
         "role": "FW",
-        "rating": 73
+        "rating": 74
       },
       {
-        "name": "AS FAR Rabat • Academy 10",
+        "name": "Ahmed Hammoudan",
         "role": "FW",
-        "rating": 72
-      },
-      {
-        "name": "AS FAR Rabat • Academy 11",
-        "role": "FW",
-        "rating": 71
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "AS FAR Rabat • Academy 1",
       "AS FAR Rabat • Academy 2",
@@ -7921,8 +7921,8 @@
   },
   "cont_caf_7": {
     "club": "JS Kabylie",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/JS_Kabylie",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -7931,67 +7931,67 @@
     },
     "selected": [
       {
-        "name": "JS Kabylie • Academy 1",
+        "name": "Alexis Guendouz",
         "role": "GK",
-        "rating": 64
+        "rating": 70
       },
       {
-        "name": "JS Kabylie • Academy 12",
+        "name": "Seif Benrabah",
         "role": "GK",
-        "rating": 60
+        "rating": 69
       },
       {
-        "name": "JS Kabylie • Academy 2",
+        "name": "Rami Bouaouiche",
         "role": "DF",
-        "rating": 63
+        "rating": 72
       },
       {
-        "name": "JS Kabylie • Academy 3",
+        "name": "Toufik Cherifi",
         "role": "DF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "JS Kabylie • Academy 7",
+        "name": "Aly Abeid",
         "role": "DF",
-        "rating": 58
+        "rating": 71
       },
       {
-        "name": "JS Kabylie • Academy 8",
+        "name": "Mostapha Bott",
         "role": "MF",
-        "rating": 64
+        "rating": 73
       },
       {
-        "name": "JS Kabylie • Academy 4",
+        "name": "Messala Merbah",
         "role": "MF",
-        "rating": 61
+        "rating": 73
       },
       {
-        "name": "JS Kabylie • Academy 5",
+        "name": "Josaphat Arthur Bada",
         "role": "MF",
-        "rating": 60
+        "rating": 73
       },
       {
-        "name": "JS Kabylie • Academy 6",
+        "name": "Badis Bouamama",
         "role": "MF",
-        "rating": 59
+        "rating": 73
       },
       {
-        "name": "JS Kabylie • Academy 9",
+        "name": "Mustapha Soukkou",
         "role": "FW",
-        "rating": 63
+        "rating": 74
       },
       {
-        "name": "JS Kabylie • Academy 10",
+        "name": "Billel Messaoudi",
         "role": "FW",
-        "rating": 62
+        "rating": 74
       },
       {
-        "name": "JS Kabylie • Academy 11",
+        "name": "Lahlou Akhrib",
         "role": "FW",
-        "rating": 61
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "JS Kabylie • Academy 1",
       "JS Kabylie • Academy 2",
@@ -8185,8 +8185,8 @@
   },
   "cont_caf_10": {
     "club": "MC Alger",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/MC_Alger",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -8195,67 +8195,67 @@
     },
     "selected": [
       {
-        "name": "MC Alger • Academy 1",
+        "name": "Abdelatif Ramdane",
         "role": "GK",
-        "rating": 68
+        "rating": 71
       },
       {
-        "name": "MC Alger • Academy 12",
+        "name": "Yassine Gourari Tebaa",
         "role": "GK",
-        "rating": 64
+        "rating": 70
       },
       {
-        "name": "MC Alger • Academy 2",
+        "name": "Yakoub Gassi",
         "role": "DF",
-        "rating": 67
+        "rating": 72
       },
       {
-        "name": "MC Alger • Academy 3",
+        "name": "Marwane Khelif",
         "role": "DF",
-        "rating": 66
+        "rating": 72
       },
       {
-        "name": "MC Alger • Academy 7",
+        "name": "Ayoub Abdellaoui",
         "role": "DF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "MC Alger • Academy 8",
+        "name": "Abdelouahab Satta",
         "role": "MF",
-        "rating": 68
+        "rating": 73
       },
       {
-        "name": "MC Alger • Academy 4",
+        "name": "Mohammed Benkhemassa",
         "role": "MF",
-        "rating": 65
+        "rating": 73
       },
       {
-        "name": "MC Alger • Academy 5",
+        "name": "Mohamed Zougrana",
         "role": "MF",
-        "rating": 64
+        "rating": 72
       },
       {
-        "name": "MC Alger • Academy 6",
+        "name": "Chahreddine Boukholda",
         "role": "MF",
-        "rating": 63
+        "rating": 72
       },
       {
-        "name": "MC Alger • Academy 9",
+        "name": "Sofiane Bayazid",
         "role": "FW",
-        "rating": 67
+        "rating": 74
       },
       {
-        "name": "MC Alger • Academy 10",
+        "name": "Zinedine Ferhat",
         "role": "FW",
-        "rating": 66
+        "rating": 74
       },
       {
-        "name": "MC Alger • Academy 11",
+        "name": "Ali Azaizeh",
         "role": "FW",
-        "rating": 65
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "MC Alger • Academy 1",
       "MC Alger • Academy 2",
@@ -8361,8 +8361,8 @@
   },
   "cont_caf_12": {
     "club": "Espérance de Tunis",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Esp%C3%A9rance_Sportive_de_Tunis",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -8371,67 +8371,67 @@
     },
     "selected": [
       {
-        "name": "Espérance de Tunis • Academy 1",
+        "name": "Amenallah Memmiche",
         "role": "GK",
-        "rating": 72
-      },
-      {
-        "name": "Espérance de Tunis • Academy 12",
-        "role": "GK",
-        "rating": 68
-      },
-      {
-        "name": "Espérance de Tunis • Academy 2",
-        "role": "DF",
         "rating": 71
       },
       {
-        "name": "Espérance de Tunis • Academy 3",
-        "role": "DF",
+        "name": "Montasser Essid",
+        "role": "GK",
         "rating": 70
       },
       {
-        "name": "Espérance de Tunis • Academy 7",
+        "name": "Mohamed Ben Ali",
         "role": "DF",
-        "rating": 66
+        "rating": 72
       },
       {
-        "name": "Espérance de Tunis • Academy 8",
+        "name": "Elies Araar",
+        "role": "DF",
+        "rating": 72
+      },
+      {
+        "name": "Marouane Sahraoui",
+        "role": "DF",
+        "rating": 72
+      },
+      {
+        "name": "Hamza Rafia",
+        "role": "MF",
+        "rating": 73
+      },
+      {
+        "name": "Khairi Meddaoui",
         "role": "MF",
         "rating": 72
       },
       {
-        "name": "Espérance de Tunis • Academy 4",
+        "name": "Khalil Guenichi",
         "role": "MF",
-        "rating": 69
+        "rating": 72
       },
       {
-        "name": "Espérance de Tunis • Academy 5",
+        "name": "Jesús Castillo",
         "role": "MF",
-        "rating": 68
+        "rating": 72
       },
       {
-        "name": "Espérance de Tunis • Academy 6",
-        "role": "MF",
-        "rating": 67
-      },
-      {
-        "name": "Espérance de Tunis • Academy 9",
+        "name": "Imad Faraj",
         "role": "FW",
-        "rating": 71
+        "rating": 74
       },
       {
-        "name": "Espérance de Tunis • Academy 10",
+        "name": "Florian Danho",
         "role": "FW",
-        "rating": 70
+        "rating": 74
       },
       {
-        "name": "Espérance de Tunis • Academy 11",
+        "name": "Lucas Ribeiro",
         "role": "FW",
-        "rating": 69
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Espérance de Tunis • Academy 1",
       "Espérance de Tunis • Academy 2",
@@ -8449,8 +8449,8 @@
   },
   "cont_caf_13": {
     "club": "Simba SC",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Simba_S.C.",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -8459,67 +8459,67 @@
     },
     "selected": [
       {
-        "name": "Simba SC • Academy 1",
+        "name": "Yakoub Suleiman Ali",
         "role": "GK",
-        "rating": 62
+        "rating": 70
       },
       {
-        "name": "Simba SC • Academy 12",
+        "name": "Hussein Abel",
         "role": "GK",
-        "rating": 58
+        "rating": 69
       },
       {
-        "name": "Simba SC • Academy 2",
+        "name": "Nickson Kibabage",
         "role": "DF",
-        "rating": 61
+        "rating": 72
       },
       {
-        "name": "Simba SC • Academy 3",
+        "name": "Vedastus Masinde",
         "role": "DF",
-        "rating": 60
+        "rating": 72
       },
       {
-        "name": "Simba SC • Academy 7",
+        "name": "Antony Mligo",
         "role": "DF",
-        "rating": 56
+        "rating": 72
       },
       {
-        "name": "Simba SC • Academy 8",
+        "name": "Morice Abraham",
         "role": "MF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Simba SC • Academy 4",
+        "name": "Yusuph Kagoma",
         "role": "MF",
-        "rating": 59
+        "rating": 72
       },
       {
-        "name": "Simba SC • Academy 5",
+        "name": "Hussein Semfuko",
         "role": "MF",
-        "rating": 58
+        "rating": 71
       },
       {
-        "name": "Simba SC • Academy 6",
+        "name": "Keletso Makgalwa",
         "role": "MF",
-        "rating": 57
+        "rating": 71
       },
       {
-        "name": "Simba SC • Academy 9",
+        "name": "Inno Loemba",
         "role": "FW",
-        "rating": 61
+        "rating": 74
       },
       {
-        "name": "Simba SC • Academy 10",
+        "name": "Mohammed Bajaber",
         "role": "FW",
-        "rating": 60
+        "rating": 73
       },
       {
-        "name": "Simba SC • Academy 11",
+        "name": "Clatous Chama",
         "role": "FW",
-        "rating": 59
+        "rating": 73
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Simba SC • Academy 1",
       "Simba SC • Academy 2",
@@ -8625,8 +8625,8 @@
   },
   "cont_caf_15": {
     "club": "Stade Malien",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Stade_Malien",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -8635,67 +8635,67 @@
     },
     "selected": [
       {
-        "name": "Stade Malien • Academy 1",
+        "name": "Mohamed Niare",
         "role": "GK",
-        "rating": 68
+        "rating": 71
       },
       {
-        "name": "Stade Malien • Academy 12",
+        "name": "Soumbeïla Diakité",
         "role": "GK",
-        "rating": 64
+        "rating": 70
       },
       {
-        "name": "Stade Malien • Academy 2",
+        "name": "Ismaila Simpara",
         "role": "DF",
-        "rating": 67
+        "rating": 72
       },
       {
-        "name": "Stade Malien • Academy 3",
+        "name": "Oumar Koné",
         "role": "DF",
-        "rating": 66
+        "rating": 72
       },
       {
-        "name": "Stade Malien • Academy 7",
+        "name": "Babou Fofana",
         "role": "DF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Stade Malien • Academy 8",
+        "name": "Sekou Konaté",
         "role": "MF",
-        "rating": 68
+        "rating": 73
       },
       {
-        "name": "Stade Malien • Academy 4",
+        "name": "Aly Desse Sissoko",
         "role": "MF",
-        "rating": 65
+        "rating": 72
       },
       {
-        "name": "Stade Malien • Academy 5",
+        "name": "Mahamadou Mady Fofana",
         "role": "MF",
-        "rating": 64
+        "rating": 72
       },
       {
-        "name": "Stade Malien • Academy 6",
+        "name": "Saeid Tajmiri",
         "role": "MF",
-        "rating": 63
+        "rating": 72
       },
       {
-        "name": "Stade Malien • Academy 9",
+        "name": "Moussa Koné",
         "role": "FW",
-        "rating": 67
+        "rating": 74
       },
       {
-        "name": "Stade Malien • Academy 10",
+        "name": "Mamadou Coulibaly",
         "role": "FW",
-        "rating": 66
+        "rating": 74
       },
       {
-        "name": "Stade Malien • Academy 11",
+        "name": "Moussakoye Diallo",
         "role": "FW",
-        "rating": 65
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Stade Malien • Academy 1",
       "Stade Malien • Academy 2",
@@ -8977,8 +8977,8 @@
   },
   "cont_concacaf_3": {
     "club": "Mount Pleasant FA",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Mount_Pleasant_Football_Academy",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -8987,67 +8987,67 @@
     },
     "selected": [
       {
-        "name": "Mount Pleasant FA • Academy 1",
+        "name": "Kemar Foster",
         "role": "GK",
-        "rating": 64
+        "rating": 69
       },
       {
-        "name": "Mount Pleasant FA • Academy 12",
+        "name": "Shaquan Davis",
         "role": "GK",
-        "rating": 60
+        "rating": 69
       },
       {
-        "name": "Mount Pleasant FA • Academy 2",
+        "name": "Romain Blake",
         "role": "DF",
-        "rating": 63
+        "rating": 72
       },
       {
-        "name": "Mount Pleasant FA • Academy 3",
+        "name": "Fitzroy Cummings",
         "role": "DF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Mount Pleasant FA • Academy 7",
+        "name": "Ricardo Thomas",
         "role": "DF",
-        "rating": 58
+        "rating": 72
       },
       {
-        "name": "Mount Pleasant FA • Academy 8",
+        "name": "Daniel Saint-Fleur",
         "role": "MF",
-        "rating": 64
+        "rating": 73
       },
       {
-        "name": "Mount Pleasant FA • Academy 4",
+        "name": "Nickalia Fuller",
         "role": "MF",
-        "rating": 61
+        "rating": 73
       },
       {
-        "name": "Mount Pleasant FA • Academy 5",
+        "name": "Kimoni Bailey",
         "role": "MF",
-        "rating": 60
+        "rating": 72
       },
       {
-        "name": "Mount Pleasant FA • Academy 6",
+        "name": "Jahshaun Anglin",
         "role": "MF",
-        "rating": 59
+        "rating": 72
       },
       {
-        "name": "Mount Pleasant FA • Academy 9",
+        "name": "Chevaughn Walsh",
         "role": "FW",
-        "rating": 63
+        "rating": 74
       },
       {
-        "name": "Mount Pleasant FA • Academy 10",
+        "name": "Daniel Green",
         "role": "FW",
-        "rating": 62
+        "rating": 74
       },
       {
-        "name": "Mount Pleasant FA • Academy 11",
+        "name": "Nicholas Nelson",
         "role": "FW",
-        "rating": 61
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Mount Pleasant FA • Academy 1",
       "Mount Pleasant FA • Academy 2",
@@ -9153,8 +9153,8 @@
   },
   "cont_concacaf_5": {
     "club": "Xelajú MC",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/CSD_Xelaj%C3%BA_MC",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -9163,67 +9163,67 @@
     },
     "selected": [
       {
-        "name": "Xelajú MC • Academy 1",
+        "name": "Rubén Darío Silva",
         "role": "GK",
-        "rating": 70
+        "rating": 71
       },
       {
-        "name": "Xelajú MC • Academy 12",
+        "name": "Estuardo Chang",
         "role": "GK",
-        "rating": 66
-      },
-      {
-        "name": "Xelajú MC • Academy 2",
-        "role": "DF",
         "rating": 69
       },
       {
-        "name": "Xelajú MC • Academy 3",
+        "name": "Ernesto Monreal",
         "role": "DF",
-        "rating": 68
+        "rating": 72
       },
       {
-        "name": "Xelajú MC • Academy 7",
+        "name": "Erick González",
         "role": "DF",
-        "rating": 64
+        "rating": 71
       },
       {
-        "name": "Xelajú MC • Academy 8",
+        "name": "Widvin Tebalan",
+        "role": "DF",
+        "rating": 71
+      },
+      {
+        "name": "Maynor de León",
         "role": "MF",
-        "rating": 70
+        "rating": 73
       },
       {
-        "name": "Xelajú MC • Academy 4",
+        "name": "Joshua Ubico",
         "role": "MF",
-        "rating": 67
+        "rating": 73
       },
       {
-        "name": "Xelajú MC • Academy 5",
+        "name": "Antonio López",
         "role": "MF",
-        "rating": 66
+        "rating": 73
       },
       {
-        "name": "Xelajú MC • Academy 6",
+        "name": "Juan Cardona",
         "role": "MF",
-        "rating": 65
+        "rating": 72
       },
       {
-        "name": "Xelajú MC • Academy 9",
+        "name": "Yilton Loboa",
         "role": "FW",
-        "rating": 69
+        "rating": 74
       },
       {
-        "name": "Xelajú MC • Academy 10",
+        "name": "Diego Casas",
         "role": "FW",
-        "rating": 68
+        "rating": 74
       },
       {
-        "name": "Xelajú MC • Academy 11",
+        "name": "Steven Cárdenas",
         "role": "FW",
-        "rating": 67
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Xelajú MC • Academy 1",
       "Xelajú MC • Academy 2",
@@ -9241,8 +9241,8 @@
   },
   "cont_concacaf_6": {
     "club": "Cartaginés",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/C.S._Cartagin%C3%A9s",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -9251,67 +9251,67 @@
     },
     "selected": [
       {
-        "name": "Cartaginés • Academy 1",
+        "name": "Kevin Briceño",
         "role": "GK",
-        "rating": 68
+        "rating": 71
       },
       {
-        "name": "Cartaginés • Academy 12",
+        "name": "Christopher Moya",
         "role": "GK",
-        "rating": 64
+        "rating": 69
       },
       {
-        "name": "Cartaginés • Academy 2",
+        "name": "Randal Cordero",
         "role": "DF",
-        "rating": 67
+        "rating": 72
       },
       {
-        "name": "Cartaginés • Academy 3",
+        "name": "Fernán Faerrón",
         "role": "DF",
-        "rating": 66
+        "rating": 72
       },
       {
-        "name": "Cartaginés • Academy 7",
+        "name": "Luis Olivas",
         "role": "DF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Cartaginés • Academy 8",
+        "name": "Claudio Montero",
         "role": "MF",
-        "rating": 68
+        "rating": 73
       },
       {
-        "name": "Cartaginés • Academy 4",
+        "name": "Douglas López",
         "role": "MF",
-        "rating": 65
+        "rating": 73
       },
       {
-        "name": "Cartaginés • Academy 5",
+        "name": "Leonardo Alfaro",
         "role": "MF",
-        "rating": 64
+        "rating": 73
       },
       {
-        "name": "Cartaginés • Academy 6",
+        "name": "Andrés Rodríguez",
         "role": "MF",
-        "rating": 63
+        "rating": 72
       },
       {
-        "name": "Cartaginés • Academy 9",
+        "name": "Manuel Morán",
         "role": "FW",
-        "rating": 67
+        "rating": 74
       },
       {
-        "name": "Cartaginés • Academy 10",
+        "name": "José González",
         "role": "FW",
-        "rating": 66
+        "rating": 74
       },
       {
-        "name": "Cartaginés • Academy 11",
+        "name": "Juan Carlos Gaete",
         "role": "FW",
-        "rating": 65
+        "rating": 73
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Cartaginés • Academy 1",
       "Cartaginés • Academy 2",
@@ -9329,8 +9329,8 @@
   },
   "cont_concacaf_7": {
     "club": "Alajuelense",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/L.D._Alajuelense",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -9339,67 +9339,67 @@
     },
     "selected": [
       {
-        "name": "Alajuelense • Academy 1",
+        "name": "Bayron Mora",
         "role": "GK",
-        "rating": 66
+        "rating": 71
       },
       {
-        "name": "Alajuelense • Academy 12",
+        "name": "Washington Ortega",
         "role": "GK",
-        "rating": 62
+        "rating": 70
       },
       {
-        "name": "Alajuelense • Academy 2",
+        "name": "Deylan Paz",
         "role": "DF",
-        "rating": 65
+        "rating": 72
       },
       {
-        "name": "Alajuelense • Academy 3",
+        "name": "Guillermo Villalobos",
         "role": "DF",
-        "rating": 64
+        "rating": 72
       },
       {
-        "name": "Alajuelense • Academy 7",
+        "name": "Alexis Gamboa",
         "role": "DF",
-        "rating": 60
+        "rating": 71
       },
       {
-        "name": "Alajuelense • Academy 8",
+        "name": "Celso Borges",
         "role": "MF",
-        "rating": 66
+        "rating": 73
       },
       {
-        "name": "Alajuelense • Academy 4",
+        "name": "Malcom Pilone",
         "role": "MF",
-        "rating": 63
+        "rating": 73
       },
       {
-        "name": "Alajuelense • Academy 5",
+        "name": "Roan Wilson",
         "role": "MF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Alajuelense • Academy 6",
+        "name": "Deylan Aguilar",
         "role": "MF",
-        "rating": 61
+        "rating": 71
       },
       {
-        "name": "Alajuelense • Academy 9",
+        "name": "Anthony Hernández",
         "role": "FW",
-        "rating": 65
+        "rating": 74
       },
       {
-        "name": "Alajuelense • Academy 10",
+        "name": "Ángel Zaldívar",
         "role": "FW",
-        "rating": 64
+        "rating": 74
       },
       {
-        "name": "Alajuelense • Academy 11",
+        "name": "Juanpi",
         "role": "FW",
-        "rating": 63
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Alajuelense • Academy 1",
       "Alajuelense • Academy 2",
@@ -9417,8 +9417,8 @@
   },
   "cont_concacaf_8": {
     "club": "Real España",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Real_C.D._Espa%C3%B1a",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -9427,67 +9427,67 @@
     },
     "selected": [
       {
-        "name": "Real España • Academy 1",
+        "name": "Luis López",
         "role": "GK",
-        "rating": 64
+        "rating": 70
       },
       {
-        "name": "Real España • Academy 12",
+        "name": "Roberto López",
         "role": "GK",
-        "rating": 60
+        "rating": 70
       },
       {
-        "name": "Real España • Academy 2",
+        "name": "Juan Capeluto",
         "role": "DF",
-        "rating": 63
+        "rating": 72
       },
       {
-        "name": "Real España • Academy 3",
+        "name": "Franklin Flores",
         "role": "DF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Real España • Academy 7",
+        "name": "Dixon Ramírez",
         "role": "DF",
-        "rating": 58
+        "rating": 71
       },
       {
-        "name": "Real España • Academy 8",
+        "name": "Devron García",
         "role": "MF",
-        "rating": 64
+        "rating": 73
       },
       {
-        "name": "Real España • Academy 4",
+        "name": "Gonzalo Ritacco",
         "role": "MF",
-        "rating": 61
+        "rating": 73
       },
       {
-        "name": "Real España • Academy 5",
+        "name": "Anthony García",
         "role": "MF",
-        "rating": 60
+        "rating": 73
       },
       {
-        "name": "Real España • Academy 6",
+        "name": "Jhow Benavídez",
         "role": "MF",
-        "rating": 59
+        "rating": 73
       },
       {
-        "name": "Real España • Academy 9",
+        "name": "Eddie Hernández",
         "role": "FW",
-        "rating": 63
+        "rating": 74
       },
       {
-        "name": "Real España • Academy 10",
+        "name": "Exon Arzú",
         "role": "FW",
-        "rating": 62
+        "rating": 73
       },
       {
-        "name": "Real España • Academy 11",
+        "name": "Darixon Vuelto",
         "role": "FW",
-        "rating": 61
+        "rating": 73
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Real España • Academy 1",
       "Real España • Academy 2",
@@ -9505,8 +9505,8 @@
   },
   "cont_concacaf_9": {
     "club": "Sporting San Miguelito",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Sporting_San_Miguelito",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -9515,44 +9515,44 @@
     },
     "selected": [
       {
-        "name": "Sporting San Miguelito • Academy 1",
+        "name": "Kevin Mosquera",
         "role": "GK",
-        "rating": 62
+        "rating": 71
       },
       {
-        "name": "Sporting San Miguelito • Academy 12",
+        "name": "Marcos de Leon",
         "role": "GK",
-        "rating": 58
+        "rating": 70
       },
       {
-        "name": "Sporting San Miguelito • Academy 2",
+        "name": "Kevin Galvan",
         "role": "DF",
-        "rating": 61
+        "rating": 72
       },
       {
-        "name": "Sporting San Miguelito • Academy 3",
+        "name": "Alexis Cedeno",
         "role": "DF",
-        "rating": 60
+        "rating": 71
       },
       {
-        "name": "Sporting San Miguelito • Academy 7",
+        "name": "Rigoberto Nino",
         "role": "DF",
-        "rating": 56
+        "rating": 71
       },
       {
-        "name": "Sporting San Miguelito • Academy 8",
+        "name": "Kadir Hurtado",
         "role": "MF",
-        "rating": 62
+        "rating": 73
       },
       {
-        "name": "Sporting San Miguelito • Academy 4",
+        "name": "Emerson Giron",
         "role": "MF",
-        "rating": 59
+        "rating": 73
       },
       {
-        "name": "Sporting San Miguelito • Academy 5",
+        "name": "Julio Betancourt",
         "role": "MF",
-        "rating": 58
+        "rating": 71
       },
       {
         "name": "Sporting San Miguelito • Academy 6",
@@ -9560,9 +9560,9 @@
         "rating": 57
       },
       {
-        "name": "Sporting San Miguelito • Academy 9",
+        "name": "Adan Henricks",
         "role": "FW",
-        "rating": 61
+        "rating": 74
       },
       {
         "name": "Sporting San Miguelito • Academy 10",
@@ -9575,7 +9575,7 @@
         "rating": 59
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 3,
     "oldNames": [
       "Sporting San Miguelito • Academy 1",
       "Sporting San Miguelito • Academy 2",
@@ -10385,8 +10385,8 @@
   },
   "cont_concacaf_19": {
     "club": "Tigres UANL",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Tigres_UANL",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -10395,67 +10395,67 @@
     },
     "selected": [
       {
-        "name": "Tigres UANL • Academy 1",
+        "name": "Nahuel Guzmán",
+        "role": "GK",
+        "rating": 71
+      },
+      {
+        "name": "Antonio Carrera",
         "role": "GK",
         "rating": 70
       },
       {
-        "name": "Tigres UANL • Academy 12",
-        "role": "GK",
-        "rating": 66
-      },
-      {
-        "name": "Tigres UANL • Academy 2",
+        "name": "Francisco Reyes",
         "role": "DF",
-        "rating": 69
+        "rating": 72
       },
       {
-        "name": "Tigres UANL • Academy 3",
+        "name": "Marco Farfan",
         "role": "DF",
-        "rating": 68
+        "rating": 72
       },
       {
-        "name": "Tigres UANL • Academy 7",
+        "name": "Jesús Garza",
         "role": "DF",
-        "rating": 64
+        "rating": 71
       },
       {
-        "name": "Tigres UANL • Academy 8",
+        "name": "César Araújo",
         "role": "MF",
-        "rating": 70
+        "rating": 73
       },
       {
-        "name": "Tigres UANL • Academy 4",
+        "name": "Juan Vigón",
         "role": "MF",
-        "rating": 67
+        "rating": 73
       },
       {
-        "name": "Tigres UANL • Academy 5",
+        "name": "Fernando Gorriarán",
         "role": "MF",
-        "rating": 66
+        "rating": 73
       },
       {
-        "name": "Tigres UANL • Academy 6",
+        "name": "Juan Brunetta",
         "role": "MF",
-        "rating": 65
+        "rating": 73
       },
       {
-        "name": "Tigres UANL • Academy 9",
+        "name": "Emiliano Gómez",
         "role": "FW",
-        "rating": 69
+        "rating": 74
       },
       {
-        "name": "Tigres UANL • Academy 10",
+        "name": "Rodrigo Aguirre",
         "role": "FW",
-        "rating": 68
+        "rating": 73
       },
       {
-        "name": "Tigres UANL • Academy 11",
+        "name": "Ricardo Monreal",
         "role": "FW",
-        "rating": 67
+        "rating": 73
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Tigres UANL • Academy 1",
       "Tigres UANL • Academy 2",
@@ -11089,8 +11089,8 @@
   },
   "cont_conmebol_1": {
     "club": "Palmeiras",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/SE_Palmeiras",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -11104,9 +11104,9 @@
         "rating": 78
       },
       {
-        "name": "Palmeiras • Academy 12",
+        "name": "Carlos Miguel",
         "role": "GK",
-        "rating": 78
+        "rating": 71
       },
       {
         "name": "Gustavo Gómez",
@@ -11119,9 +11119,9 @@
         "rating": 78
       },
       {
-        "name": "Palmeiras • Academy 7",
+        "name": "Alexander Barboza",
         "role": "DF",
-        "rating": 78
+        "rating": 72
       },
       {
         "name": "José Manuel López",
@@ -11129,37 +11129,37 @@
         "rating": 78
       },
       {
-        "name": "Palmeiras • Academy 8",
+        "name": "Felipe Anderson",
         "role": "MF",
-        "rating": 78
+        "rating": 73
       },
       {
-        "name": "Palmeiras • Academy 5",
+        "name": "Andreas Pereira",
         "role": "MF",
-        "rating": 78
+        "rating": 73
       },
       {
-        "name": "Palmeiras • Academy 6",
+        "name": "Marlon Freitas",
         "role": "MF",
-        "rating": 78
+        "rating": 72
       },
       {
-        "name": "Palmeiras • Academy 9",
+        "name": "Vitor Roque",
         "role": "FW",
-        "rating": 78
+        "rating": 74
       },
       {
-        "name": "Palmeiras • Academy 10",
+        "name": "Paulinho",
         "role": "FW",
-        "rating": 78
+        "rating": 74
       },
       {
-        "name": "Palmeiras • Academy 11",
+        "name": "Jhon Arias",
         "role": "FW",
-        "rating": 78
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 8,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Weverton",
       "Gustavo Gómez",
@@ -11441,8 +11441,8 @@
   },
   "cont_conmebol_5": {
     "club": "Liga de Quito",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/L.D.U._Quito",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -11451,67 +11451,67 @@
     },
     "selected": [
       {
-        "name": "Liga de Quito • Academy 1",
+        "name": "Gonzalo Valle",
         "role": "GK",
+        "rating": 71
+      },
+      {
+        "name": "Alexis Villa",
+        "role": "GK",
+        "rating": 70
+      },
+      {
+        "name": "Richard Mina",
+        "role": "DF",
         "rating": 72
       },
       {
-        "name": "Liga de Quito • Academy 12",
-        "role": "GK",
-        "rating": 68
+        "name": "Ricardo Adé",
+        "role": "DF",
+        "rating": 72
       },
       {
-        "name": "Liga de Quito • Academy 2",
+        "name": "José Quintero",
         "role": "DF",
         "rating": 71
       },
       {
-        "name": "Liga de Quito • Academy 3",
-        "role": "DF",
-        "rating": 70
+        "name": "Sebastián González",
+        "role": "MF",
+        "rating": 73
       },
       {
-        "name": "Liga de Quito • Academy 7",
-        "role": "DF",
-        "rating": 66
+        "name": "Jesús Pretell",
+        "role": "MF",
+        "rating": 73
       },
       {
-        "name": "Liga de Quito • Academy 8",
+        "name": "Gabriel Villamíl",
         "role": "MF",
         "rating": 72
       },
       {
-        "name": "Liga de Quito • Academy 4",
+        "name": "Fernando Cornejo",
         "role": "MF",
-        "rating": 69
+        "rating": 72
       },
       {
-        "name": "Liga de Quito • Academy 5",
-        "role": "MF",
-        "rating": 68
-      },
-      {
-        "name": "Liga de Quito • Academy 6",
-        "role": "MF",
-        "rating": 67
-      },
-      {
-        "name": "Liga de Quito • Academy 9",
+        "name": "Rodney Redes",
         "role": "FW",
-        "rating": 71
+        "rating": 74
       },
       {
-        "name": "Liga de Quito • Academy 10",
+        "name": "Jeison Medina",
         "role": "FW",
-        "rating": 70
+        "rating": 74
       },
       {
-        "name": "Liga de Quito • Academy 11",
+        "name": "Alexander Alvarado",
         "role": "FW",
-        "rating": 69
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Liga de Quito • Academy 1",
       "Liga de Quito • Academy 2",
@@ -11529,8 +11529,8 @@
   },
   "cont_conmebol_6": {
     "club": "Fluminense",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Fluminense_FC",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -11539,67 +11539,67 @@
     },
     "selected": [
       {
-        "name": "Fluminense • Academy 1",
+        "name": "Fábio",
         "role": "GK",
-        "rating": 78
+        "rating": 71
       },
       {
-        "name": "Fluminense • Academy 12",
+        "name": "Marcelo Pitaluga",
         "role": "GK",
-        "rating": 74
+        "rating": 69
       },
       {
-        "name": "Fluminense • Academy 2",
-        "role": "DF",
-        "rating": 77
-      },
-      {
-        "name": "Fluminense • Academy 3",
-        "role": "DF",
-        "rating": 76
-      },
-      {
-        "name": "Fluminense • Academy 7",
+        "name": "Samuel Xavier",
         "role": "DF",
         "rating": 72
       },
       {
-        "name": "Fluminense • Academy 8",
-        "role": "MF",
-        "rating": 78
+        "name": "Thiago Silva",
+        "role": "DF",
+        "rating": 72
       },
       {
-        "name": "Fluminense • Academy 4",
-        "role": "MF",
-        "rating": 75
+        "name": "Ignácio",
+        "role": "DF",
+        "rating": 72
       },
       {
-        "name": "Fluminense • Academy 5",
-        "role": "MF",
-        "rating": 74
-      },
-      {
-        "name": "Fluminense • Academy 6",
+        "name": "Matheus Martinelli",
         "role": "MF",
         "rating": 73
       },
       {
-        "name": "Fluminense • Academy 9",
-        "role": "FW",
-        "rating": 77
+        "name": "Ganso",
+        "role": "MF",
+        "rating": 73
       },
       {
-        "name": "Fluminense • Academy 10",
-        "role": "FW",
-        "rating": 76
+        "name": "Jefferson Savarino",
+        "role": "MF",
+        "rating": 73
       },
       {
-        "name": "Fluminense • Academy 11",
+        "name": "Nonato",
+        "role": "MF",
+        "rating": 72
+      },
+      {
+        "name": "Hulk",
         "role": "FW",
-        "rating": 75
+        "rating": 74
+      },
+      {
+        "name": "John Kennedy",
+        "role": "FW",
+        "rating": 74
+      },
+      {
+        "name": "Germán Cano",
+        "role": "FW",
+        "rating": 73
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Fluminense • Academy 1",
       "Fluminense • Academy 2",
@@ -11617,8 +11617,8 @@
   },
   "cont_conmebol_7": {
     "club": "Independiente del Valle",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Independiente_del_Valle",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -11627,67 +11627,67 @@
     },
     "selected": [
       {
-        "name": "Independiente del Valle • Academy 1",
+        "name": "Aldair Quintana",
         "role": "GK",
-        "rating": 68
+        "rating": 71
       },
       {
-        "name": "Independiente del Valle • Academy 12",
+        "name": "Eduardo Bores",
         "role": "GK",
-        "rating": 64
+        "rating": 70
       },
       {
-        "name": "Independiente del Valle • Academy 2",
+        "name": "Luis Zárate",
         "role": "DF",
-        "rating": 67
+        "rating": 72
       },
       {
-        "name": "Independiente del Valle • Academy 3",
+        "name": "Jhon Espinoza",
         "role": "DF",
-        "rating": 66
+        "rating": 72
       },
       {
-        "name": "Independiente del Valle • Academy 7",
+        "name": "Richard Schunke",
         "role": "DF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Independiente del Valle • Academy 8",
+        "name": "Jordy Alcívar",
         "role": "MF",
-        "rating": 68
+        "rating": 73
       },
       {
-        "name": "Independiente del Valle • Academy 4",
+        "name": "Patrik Mercado",
         "role": "MF",
-        "rating": 65
+        "rating": 73
       },
       {
-        "name": "Independiente del Valle • Academy 5",
+        "name": "Youri Ochoa",
         "role": "MF",
-        "rating": 64
+        "rating": 73
       },
       {
-        "name": "Independiente del Valle • Academy 6",
+        "name": "Junior Sornoza",
         "role": "MF",
-        "rating": 63
+        "rating": 73
       },
       {
-        "name": "Independiente del Valle • Academy 9",
+        "name": "Charly González",
         "role": "FW",
-        "rating": 67
+        "rating": 74
       },
       {
-        "name": "Independiente del Valle • Academy 10",
+        "name": "Matías Perelló",
         "role": "FW",
-        "rating": 66
+        "rating": 74
       },
       {
-        "name": "Independiente del Valle • Academy 11",
+        "name": "Aron Rodríguez",
         "role": "FW",
-        "rating": 65
+        "rating": 73
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Independiente del Valle • Academy 1",
       "Independiente del Valle • Academy 2",
@@ -11881,8 +11881,8 @@
   },
   "cont_conmebol_10": {
     "club": "Estudiantes de La Plata",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Estudiantes_de_La_Plata",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -11891,67 +11891,67 @@
     },
     "selected": [
       {
-        "name": "Estudiantes de La Plata • Academy 1",
+        "name": "Fabricio Iacovich",
         "role": "GK",
+        "rating": 71
+      },
+      {
+        "name": "Rodrigo Borzone",
+        "role": "GK",
+        "rating": 70
+      },
+      {
+        "name": "Santiago Núñez",
+        "role": "DF",
         "rating": 72
       },
       {
-        "name": "Estudiantes de La Plata • Academy 12",
-        "role": "GK",
-        "rating": 68
-      },
-      {
-        "name": "Estudiantes de La Plata • Academy 2",
+        "name": "Gastón Benedetti",
         "role": "DF",
         "rating": 71
       },
       {
-        "name": "Estudiantes de La Plata • Academy 3",
+        "name": "Leandro González Pírez",
         "role": "DF",
-        "rating": 70
+        "rating": 71
       },
       {
-        "name": "Estudiantes de La Plata • Academy 7",
-        "role": "DF",
-        "rating": 66
+        "name": "José Sosa",
+        "role": "MF",
+        "rating": 73
       },
       {
-        "name": "Estudiantes de La Plata • Academy 8",
+        "name": "Gabriel Neves",
+        "role": "MF",
+        "rating": 73
+      },
+      {
+        "name": "Ezequiel Piovi",
         "role": "MF",
         "rating": 72
       },
       {
-        "name": "Estudiantes de La Plata • Academy 4",
+        "name": "Alexis Castro",
         "role": "MF",
-        "rating": 69
+        "rating": 72
       },
       {
-        "name": "Estudiantes de La Plata • Academy 5",
-        "role": "MF",
-        "rating": 68
-      },
-      {
-        "name": "Estudiantes de La Plata • Academy 6",
-        "role": "MF",
-        "rating": 67
-      },
-      {
-        "name": "Estudiantes de La Plata • Academy 9",
+        "name": "Guido Carrillo",
         "role": "FW",
-        "rating": 71
+        "rating": 74
       },
       {
-        "name": "Estudiantes de La Plata • Academy 10",
+        "name": "Tiago Palacios",
         "role": "FW",
-        "rating": 70
+        "rating": 74
       },
       {
-        "name": "Estudiantes de La Plata • Academy 11",
+        "name": "Joaquín Tobio Burgos",
         "role": "FW",
-        "rating": 69
+        "rating": 73
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Estudiantes de La Plata • Academy 1",
       "Estudiantes de La Plata • Academy 2",
@@ -12233,8 +12233,8 @@
   },
   "cont_conmebol_14": {
     "club": "Cruzeiro",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Cruzeiro_Esporte_Clube",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -12243,67 +12243,67 @@
     },
     "selected": [
       {
-        "name": "Cruzeiro • Academy 1",
+        "name": "Cássio",
         "role": "GK",
-        "rating": 64
+        "rating": 71
       },
       {
-        "name": "Cruzeiro • Academy 12",
+        "name": "Marcelo Eráclito",
         "role": "GK",
-        "rating": 60
+        "rating": 70
       },
       {
-        "name": "Cruzeiro • Academy 2",
+        "name": "Kauã Moraes",
         "role": "DF",
-        "rating": 63
+        "rating": 72
       },
       {
-        "name": "Cruzeiro • Academy 3",
+        "name": "Matías Viña",
         "role": "DF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Cruzeiro • Academy 7",
+        "name": "William",
         "role": "DF",
-        "rating": 58
+        "rating": 71
       },
       {
-        "name": "Cruzeiro • Academy 8",
+        "name": "Zé Lucas",
         "role": "MF",
-        "rating": 64
+        "rating": 73
       },
       {
-        "name": "Cruzeiro • Academy 4",
+        "name": "Matheus Henrique",
         "role": "MF",
-        "rating": 61
+        "rating": 73
       },
       {
-        "name": "Cruzeiro • Academy 5",
+        "name": "Gerson",
         "role": "MF",
-        "rating": 60
+        "rating": 73
       },
       {
-        "name": "Cruzeiro • Academy 6",
+        "name": "Matheus Pereira",
         "role": "MF",
-        "rating": 59
+        "rating": 73
       },
       {
-        "name": "Cruzeiro • Academy 9",
+        "name": "Bruno Rodrigues",
         "role": "FW",
-        "rating": 63
+        "rating": 74
       },
       {
-        "name": "Cruzeiro • Academy 10",
+        "name": "Marquinhos",
         "role": "FW",
-        "rating": 62
+        "rating": 74
       },
       {
-        "name": "Cruzeiro • Academy 11",
+        "name": "Luis Sinisterra",
         "role": "FW",
-        "rating": 61
+        "rating": 73
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Cruzeiro • Academy 1",
       "Cruzeiro • Academy 2",
@@ -12409,8 +12409,8 @@
   },
   "cont_conmebol_16": {
     "club": "Junior Barranquilla",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Atl%C3%A9tico_Junior",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -12419,67 +12419,67 @@
     },
     "selected": [
       {
-        "name": "Junior Barranquilla • Academy 1",
+        "name": "Mauro Silveira",
+        "role": "GK",
+        "rating": 71
+      },
+      {
+        "name": "Jaime Acosta",
         "role": "GK",
         "rating": 70
       },
       {
-        "name": "Junior Barranquilla • Academy 12",
-        "role": "GK",
-        "rating": 66
-      },
-      {
-        "name": "Junior Barranquilla • Academy 2",
+        "name": "Edwin Herrera",
         "role": "DF",
-        "rating": 69
+        "rating": 72
       },
       {
-        "name": "Junior Barranquilla • Academy 3",
+        "name": "Daniel Rivera",
         "role": "DF",
-        "rating": 68
+        "rating": 72
       },
       {
-        "name": "Junior Barranquilla • Academy 7",
+        "name": "Carlos Pérez",
         "role": "DF",
-        "rating": 64
+        "rating": 71
       },
       {
-        "name": "Junior Barranquilla • Academy 8",
+        "name": "Dilan Villarreal",
         "role": "MF",
-        "rating": 70
+        "rating": 73
       },
       {
-        "name": "Junior Barranquilla • Academy 4",
+        "name": "Harold Rivera",
         "role": "MF",
-        "rating": 67
+        "rating": 73
       },
       {
-        "name": "Junior Barranquilla • Academy 5",
+        "name": "Juan David Ríos",
         "role": "MF",
-        "rating": 66
+        "rating": 72
       },
       {
-        "name": "Junior Barranquilla • Academy 6",
+        "name": "Jannenson Sarmiento",
         "role": "MF",
-        "rating": 65
+        "rating": 72
       },
       {
-        "name": "Junior Barranquilla • Academy 9",
+        "name": "Yimmi Chará",
         "role": "FW",
-        "rating": 69
+        "rating": 74
       },
       {
-        "name": "Junior Barranquilla • Academy 10",
+        "name": "Guillermo Paiva",
         "role": "FW",
-        "rating": 68
+        "rating": 74
       },
       {
-        "name": "Junior Barranquilla • Academy 11",
+        "name": "Luis Muriel",
         "role": "FW",
-        "rating": 67
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Junior Barranquilla • Academy 1",
       "Junior Barranquilla • Academy 2",
@@ -12937,8 +12937,8 @@
   },
   "cont_conmebol_22": {
     "club": "Deportivo La Guaira",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Deportivo_La_Guaira",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -12947,67 +12947,67 @@
     },
     "selected": [
       {
-        "name": "Deportivo La Guaira • Academy 1",
+        "name": "Cristopher Varela",
         "role": "GK",
-        "rating": 68
+        "rating": 71
       },
       {
-        "name": "Deportivo La Guaira • Academy 12",
+        "name": "Jorge Sánchez",
         "role": "GK",
-        "rating": 64
+        "rating": 70
       },
       {
-        "name": "Deportivo La Guaira • Academy 2",
+        "name": "Martín Gianoli",
         "role": "DF",
-        "rating": 67
+        "rating": 72
       },
       {
-        "name": "Deportivo La Guaira • Academy 3",
+        "name": "Brayan Morales",
         "role": "DF",
-        "rating": 66
+        "rating": 72
       },
       {
-        "name": "Deportivo La Guaira • Academy 7",
+        "name": "Carlos Rivero",
         "role": "DF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Deportivo La Guaira • Academy 8",
+        "name": "Carlos Faya",
         "role": "MF",
-        "rating": 68
+        "rating": 73
       },
       {
-        "name": "Deportivo La Guaira • Academy 4",
+        "name": "Cesar Da Silva",
         "role": "MF",
-        "rating": 65
+        "rating": 73
       },
       {
-        "name": "Deportivo La Guaira • Academy 5",
+        "name": "Juan Castellanos",
         "role": "MF",
-        "rating": 64
+        "rating": 73
       },
       {
-        "name": "Deportivo La Guaira • Academy 6",
+        "name": "Rommell Ibarra",
         "role": "MF",
-        "rating": 63
+        "rating": 72
       },
       {
-        "name": "Deportivo La Guaira • Academy 9",
+        "name": "José Meza",
         "role": "FW",
-        "rating": 67
+        "rating": 74
       },
       {
-        "name": "Deportivo La Guaira • Academy 10",
+        "name": "Anthony Uribe",
         "role": "FW",
-        "rating": 66
+        "rating": 74
       },
       {
-        "name": "Deportivo La Guaira • Academy 11",
+        "name": "Jesús Vargas",
         "role": "FW",
-        "rating": 65
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Deportivo La Guaira • Academy 1",
       "Deportivo La Guaira • Academy 2",
@@ -13289,8 +13289,8 @@
   },
   "cont_conmebol_26": {
     "club": "Independiente Rivadavia",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Independiente_Rivadavia",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -13299,67 +13299,67 @@
     },
     "selected": [
       {
-        "name": "Independiente Rivadavia • Academy 1",
+        "name": "Ramiro Macagno",
         "role": "GK",
         "rating": 70
       },
       {
-        "name": "Independiente Rivadavia • Academy 12",
+        "name": "Emmanuel Gómez Riga",
         "role": "GK",
-        "rating": 66
-      },
-      {
-        "name": "Independiente Rivadavia • Academy 2",
-        "role": "DF",
-        "rating": 69
-      },
-      {
-        "name": "Independiente Rivadavia • Academy 3",
-        "role": "DF",
-        "rating": 68
-      },
-      {
-        "name": "Independiente Rivadavia • Academy 7",
-        "role": "DF",
-        "rating": 64
-      },
-      {
-        "name": "Independiente Rivadavia • Academy 8",
-        "role": "MF",
         "rating": 70
       },
       {
-        "name": "Independiente Rivadavia • Academy 4",
+        "name": "Leonard Costa",
+        "role": "DF",
+        "rating": 72
+      },
+      {
+        "name": "Juan Elordi",
+        "role": "DF",
+        "rating": 72
+      },
+      {
+        "name": "Santiago Cena",
+        "role": "DF",
+        "rating": 72
+      },
+      {
+        "name": "Tomás Bottari",
         "role": "MF",
-        "rating": 67
+        "rating": 73
       },
       {
-        "name": "Independiente Rivadavia • Academy 5",
+        "name": "Leonel Bucca",
         "role": "MF",
-        "rating": 66
+        "rating": 73
       },
       {
-        "name": "Independiente Rivadavia • Academy 6",
+        "name": "Matías Fernández",
         "role": "MF",
-        "rating": 65
+        "rating": 73
       },
       {
-        "name": "Independiente Rivadavia • Academy 9",
-        "role": "FW",
-        "rating": 69
+        "name": "Gonzalo Ríos",
+        "role": "MF",
+        "rating": 73
       },
       {
-        "name": "Independiente Rivadavia • Academy 10",
+        "name": "Victorio Ramis",
         "role": "FW",
-        "rating": 68
+        "rating": 74
       },
       {
-        "name": "Independiente Rivadavia • Academy 11",
+        "name": "Álex Arce",
         "role": "FW",
-        "rating": 67
+        "rating": 74
+      },
+      {
+        "name": "Maximiliano Salas",
+        "role": "FW",
+        "rating": 73
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Independiente Rivadavia • Academy 1",
       "Independiente Rivadavia • Academy 2",
@@ -13377,8 +13377,8 @@
   },
   "cont_conmebol_27": {
     "club": "Mirassol",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Mirassol_Futebol_Clube",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -13387,67 +13387,67 @@
     },
     "selected": [
       {
-        "name": "Mirassol • Academy 1",
+        "name": "Georgemy",
         "role": "GK",
-        "rating": 68
+        "rating": 71
       },
       {
-        "name": "Mirassol • Academy 12",
+        "name": "Walter",
         "role": "GK",
-        "rating": 64
+        "rating": 70
       },
       {
-        "name": "Mirassol • Academy 2",
+        "name": "Lucas Oliveira",
         "role": "DF",
-        "rating": 67
+        "rating": 72
       },
       {
-        "name": "Mirassol • Academy 3",
+        "name": "Willian Machado",
         "role": "DF",
-        "rating": 66
+        "rating": 72
       },
       {
-        "name": "Mirassol • Academy 7",
+        "name": "Reinaldo",
         "role": "DF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Mirassol • Academy 8",
+        "name": "Japa",
         "role": "MF",
-        "rating": 68
+        "rating": 73
       },
       {
-        "name": "Mirassol • Academy 4",
+        "name": "Shaylon",
         "role": "MF",
-        "rating": 65
+        "rating": 73
       },
       {
-        "name": "Mirassol • Academy 5",
+        "name": "Denilson",
         "role": "MF",
-        "rating": 64
+        "rating": 73
       },
       {
-        "name": "Mirassol • Academy 6",
+        "name": "Chico Kim",
         "role": "MF",
-        "rating": 63
+        "rating": 73
       },
       {
-        "name": "Mirassol • Academy 9",
+        "name": "Zé Roberto",
         "role": "FW",
-        "rating": 67
+        "rating": 74
       },
       {
-        "name": "Mirassol • Academy 10",
+        "name": "Negueba",
         "role": "FW",
-        "rating": 66
+        "rating": 74
       },
       {
-        "name": "Mirassol • Academy 11",
+        "name": "Gustavo Silva",
         "role": "FW",
-        "rating": 65
+        "rating": 73
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Mirassol • Academy 1",
       "Mirassol • Academy 2",
@@ -13817,8 +13817,8 @@
   },
   "cont_ofc_0": {
     "club": "Auckland City",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Auckland_City_FC",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -13827,29 +13827,29 @@
     },
     "selected": [
       {
-        "name": "Auckland City • Academy 12",
+        "name": "Lewis Caunter",
         "role": "GK",
-        "rating": 75
+        "rating": 71
       },
       {
-        "name": "Auckland City • Academy 5",
+        "name": "Areya Prasad",
         "role": "GK",
-        "rating": 75
+        "rating": 70
       },
       {
-        "name": "Auckland City • Academy 7",
+        "name": "Adam Mitchell",
         "role": "DF",
-        "rating": 73
+        "rating": 72
       },
       {
-        "name": "Auckland City • Academy 11",
+        "name": "Christian Gray",
         "role": "DF",
-        "rating": 76
+        "rating": 72
       },
       {
-        "name": "Auckland City • Academy 6",
+        "name": "Nathan Rostron",
         "role": "DF",
-        "rating": 74
+        "rating": 72
       },
       {
         "name": "Cam Howieson",
@@ -13862,14 +13862,14 @@
         "rating": 77
       },
       {
-        "name": "Auckland City • Academy 8",
+        "name": "Mario Ilich",
         "role": "MF",
-        "rating": 78
+        "rating": 73
       },
       {
-        "name": "Auckland City • Academy 4",
+        "name": "Fergus Gillion",
         "role": "MF",
-        "rating": 76
+        "rating": 72
       },
       {
         "name": "Angus Kilkolly",
@@ -13877,17 +13877,17 @@
         "rating": 78
       },
       {
-        "name": "Auckland City • Academy 9",
+        "name": "Kieren Richards",
         "role": "FW",
-        "rating": 78
+        "rating": 74
       },
       {
-        "name": "Auckland City • Academy 10",
+        "name": "Michal Doudera",
         "role": "FW",
-        "rating": 77
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 9,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Auckland City • Academy 12",
       "Auckland City • Academy 7",
@@ -13905,8 +13905,8 @@
   },
   "cont_ofc_1": {
     "club": "Central Coast FC",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Central_Coast_FC",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -13915,67 +13915,67 @@
     },
     "selected": [
       {
-        "name": "Central Coast FC • Academy 1",
+        "name": "Zayd Husain",
         "role": "GK",
-        "rating": 67
+        "rating": 71
       },
       {
-        "name": "Central Coast FC • Academy 12",
+        "name": "Steven Grimmett",
         "role": "GK",
-        "rating": 63
+        "rating": 69
       },
       {
-        "name": "Central Coast FC • Academy 2",
+        "name": "Michael Singh",
         "role": "DF",
-        "rating": 66
+        "rating": 72
       },
       {
-        "name": "Central Coast FC • Academy 3",
+        "name": "Connor Gallen",
         "role": "DF",
-        "rating": 65
+        "rating": 72
       },
       {
-        "name": "Central Coast FC • Academy 7",
+        "name": "Ben Waller",
         "role": "DF",
-        "rating": 61
+        "rating": 72
       },
       {
-        "name": "Central Coast FC • Academy 8",
+        "name": "Daniel McFarlane",
         "role": "MF",
-        "rating": 67
+        "rating": 73
       },
       {
-        "name": "Central Coast FC • Academy 4",
+        "name": "Yuki Morikawa",
         "role": "MF",
-        "rating": 64
+        "rating": 73
       },
       {
-        "name": "Central Coast FC • Academy 5",
+        "name": "Bret Sibanda",
         "role": "MF",
-        "rating": 63
+        "rating": 73
       },
       {
-        "name": "Central Coast FC • Academy 6",
+        "name": "Cayleb Murray",
         "role": "MF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Central Coast FC • Academy 9",
+        "name": "Cade Mapu",
         "role": "FW",
-        "rating": 66
+        "rating": 74
       },
       {
-        "name": "Central Coast FC • Academy 10",
+        "name": "Euan McEvoy-Folland",
         "role": "FW",
-        "rating": 65
+        "rating": 73
       },
       {
-        "name": "Central Coast FC • Academy 11",
+        "name": "Ben Flakus",
         "role": "FW",
-        "rating": 64
+        "rating": 73
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Central Coast FC • Academy 1",
       "Central Coast FC • Academy 2",
@@ -14345,8 +14345,8 @@
   },
   "cont_ofc_6": {
     "club": "Galaxy FC",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+DIRECT_WIKIPEDIA",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Galaxy_FC",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -14355,67 +14355,67 @@
     },
     "selected": [
       {
-        "name": "Galaxy FC • Academy 1",
+        "name": "Joshua Willie",
         "role": "GK",
-        "rating": 59
+        "rating": 71
       },
       {
-        "name": "Galaxy FC • Academy 12",
+        "name": "Francis Aiviji",
         "role": "GK",
-        "rating": 55
+        "rating": 69
       },
       {
-        "name": "Galaxy FC • Academy 2",
+        "name": "Jacob Karaelulu",
         "role": "DF",
-        "rating": 58
+        "rating": 72
       },
       {
-        "name": "Galaxy FC • Academy 3",
+        "name": "Goshen Donna",
         "role": "DF",
-        "rating": 57
+        "rating": 72
       },
       {
-        "name": "Galaxy FC • Academy 7",
+        "name": "Lency Philip",
         "role": "DF",
-        "rating": 53
+        "rating": 72
       },
       {
-        "name": "Galaxy FC • Academy 8",
+        "name": "Dondy Kileteir",
         "role": "MF",
-        "rating": 59
+        "rating": 73
       },
       {
-        "name": "Galaxy FC • Academy 4",
+        "name": "Jayson Timatua",
         "role": "MF",
-        "rating": 56
+        "rating": 73
       },
       {
-        "name": "Galaxy FC • Academy 5",
+        "name": "Bong Kalo",
         "role": "MF",
-        "rating": 55
+        "rating": 73
       },
       {
-        "name": "Galaxy FC • Academy 6",
+        "name": "Roberson",
         "role": "MF",
-        "rating": 54
+        "rating": 72
       },
       {
-        "name": "Galaxy FC • Academy 9",
+        "name": "Vira Jack",
         "role": "FW",
-        "rating": 58
+        "rating": 74
       },
       {
-        "name": "Galaxy FC • Academy 10",
+        "name": "Andre Batick",
         "role": "FW",
-        "rating": 57
+        "rating": 74
       },
       {
-        "name": "Galaxy FC • Academy 11",
+        "name": "Anthony Peli",
         "role": "FW",
-        "rating": 56
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Galaxy FC • Academy 1",
       "Galaxy FC • Academy 2",
