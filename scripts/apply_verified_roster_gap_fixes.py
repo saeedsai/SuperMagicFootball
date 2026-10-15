@@ -26,6 +26,17 @@ CURATED = {
    "FW":[("Teaonui Tehau",75,10)],
    "source":"https://www.cavpo.com/2017/01/Tahiti.Squad.html [Tahiti callups with Vénus affiliation 2026-05-29]"
  },
+ "cont_concacaf_1": {
+   "DF":[("Shirwin Noel",70,33)],
+   "MF":[("Rivaldo Coryat",72,13),("Justin Sadoo",70,21),("Kevon Goddard",71,6),("Keilon Burnett-Acevedo",69,34)],
+   "FW":[("Kathon St. Hillaire",75,9),("Jelani Félix",73,11),("Darius Ollivierra",71,17)],
+   "source":"https://inside-caribbean-football.vercel.app/clubs/defence-force-trinidad-tobago [2026/27 squad]"
+ },
+ "cont_ofc_4": {
+   "GK":[("James Do'oro",72,1)],
+   "FW":[("Merrill Nand",71,9),("Don Keana",70,10)],
+   "source":"https://footballoceania.com/2026/08/08/oceania-champions-league-everything-you-need-to-know/amp/ [Aug 2026 tournament roster]"
+ },
  "cont_afc_11": {
    "GK":[("Adib Zarei",70,49)],
    "MF":[("Odildzhon Khamrobekov",76,21),("Igor Postonjski",75,8),("Tibor Halilović",74,7),("Seyed Mehdi Hosseini",72,6)],
