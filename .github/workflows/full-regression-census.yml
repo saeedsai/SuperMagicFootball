@@ -1,5 +1,5 @@
 name: Full Regression Census
-# Verify all 165 named clubs and modernized historical release contracts, plus browser gameplay.
+# Final source-ranked FC27 positional club and corrected LAFC Unicode regression certification.
 # Archived browser version expectations are synchronized to the actual modular version in the disposable checkout.
 on:
   push:
