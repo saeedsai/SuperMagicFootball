@@ -1,5 +1,5 @@
 name: Apply Verified 2026 Squad Gap Fixes
-# Apply official Neftchi, Tractor and Dominican O&M roster references with positional ratings.
+# Apply sourced Al Quwa, Sporting San Miguelito and AS Venus squad additions as well.
 on:
   push:
     branches: [dev]
