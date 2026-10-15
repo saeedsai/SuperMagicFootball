@@ -4841,8 +4841,8 @@
   },
   "cont_afc_4": {
     "club": "Al Ain",
-    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD+STARTING11_2026_27",
-    "source": "https://www.thesportsdb.com/team/137832; https://www.transfermarkt.co.uk/al-ain-fc/kader/verein/2150/saison_id/2026; https://starting11.com/al-ain/squad",
+    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD+STARTING11_2026_27+INDEPENDENT_2026_SQUAD",
+    "source": "https://www.thesportsdb.com/team/137832; https://www.transfermarkt.co.uk/al-ain-fc/kader/verein/2150/saison_id/2026; https://starting11.com/al-ain/squad; https://www.transfermarkt.co.uk/al-ain-fc/kader/verein/2150/saison_id/2026",
     "found": {
       "GK": 0,
       "DF": 6,
@@ -5897,8 +5897,8 @@
   },
   "cont_afc_16": {
     "club": "Kashima Antlers",
-    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD",
-    "source": "https://www.thesportsdb.com/team/137707; https://en.wikipedia.org/wiki/2026_Kashima_Antlers_season",
+    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD+INDEPENDENT_2026_SQUAD",
+    "source": "https://www.thesportsdb.com/team/137707; https://en.wikipedia.org/wiki/2026_Kashima_Antlers_season; https://en.wikipedia.org/wiki/2026_Kashima_Antlers_season",
     "found": {
       "GK": 0,
       "DF": 3,
@@ -7745,8 +7745,8 @@
   },
   "cont_caf_5": {
     "club": "Young Africans",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+INDEPENDENT_2026_SQUAD",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://www.national-football-teams.com/club/2528/2026_1/Young_Africans_Dar_Es_Salaam.html [2026/27]",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -7755,67 +7755,67 @@
     },
     "selected": [
       {
-        "name": "Young Africans • Academy 1",
+        "name": "Djigui Diarra",
+        "role": "GK",
+        "rating": 77
+      },
+      {
+        "name": "Hussein Masalanga",
         "role": "GK",
         "rating": 68
       },
       {
-        "name": "Young Africans • Academy 12",
-        "role": "GK",
-        "rating": 64
-      },
-      {
-        "name": "Young Africans • Academy 2",
+        "name": "Issaka Boka",
         "role": "DF",
-        "rating": 67
+        "rating": 72
       },
       {
-        "name": "Young Africans • Academy 3",
+        "name": "Ibrahim Abdallah Hamad",
         "role": "DF",
-        "rating": 66
+        "rating": 73
       },
       {
-        "name": "Young Africans • Academy 7",
+        "name": "Dickson Job",
         "role": "DF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Young Africans • Academy 8",
+        "name": "Duke Abuya",
         "role": "MF",
-        "rating": 68
+        "rating": 73
       },
       {
-        "name": "Young Africans • Academy 4",
+        "name": "Mudathir Yahya",
         "role": "MF",
-        "rating": 65
+        "rating": 75
       },
       {
-        "name": "Young Africans • Academy 5",
+        "name": "Lassine Kouma",
         "role": "MF",
-        "rating": 64
+        "rating": 72
       },
       {
-        "name": "Young Africans • Academy 6",
+        "name": "Pacôme Zouzoua",
         "role": "MF",
-        "rating": 63
+        "rating": 74
       },
       {
-        "name": "Young Africans • Academy 9",
+        "name": "Peter Shalulile",
         "role": "FW",
-        "rating": 67
+        "rating": 78
       },
       {
-        "name": "Young Africans • Academy 10",
+        "name": "Prince Dube",
         "role": "FW",
-        "rating": 66
+        "rating": 75
       },
       {
-        "name": "Young Africans • Academy 11",
+        "name": "Clement Mzize",
         "role": "FW",
-        "rating": 65
+        "rating": 74
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Young Africans • Academy 1",
       "Young Africans • Academy 2",
@@ -8097,8 +8097,8 @@
   },
   "cont_caf_9": {
     "club": "Al Hilal Omdurman",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+INDEPENDENT_2026_SQUAD",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://newikis.com/en/Al_Hilal_Club_(Omdurman) [squad dated 2026-08-22]",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -8107,67 +8107,67 @@
     },
     "selected": [
       {
-        "name": "Al Hilal Omdurman • Academy 1",
+        "name": "Farid Ouédraogo",
         "role": "GK",
-        "rating": 60
+        "rating": 76
       },
       {
-        "name": "Al Hilal Omdurman • Academy 12",
+        "name": "Muhamed Madani",
         "role": "GK",
-        "rating": 56
+        "rating": 68
       },
       {
-        "name": "Al Hilal Omdurman • Academy 2",
+        "name": "Mamudu Kamaradin",
         "role": "DF",
-        "rating": 59
+        "rating": 72
       },
       {
-        "name": "Al Hilal Omdurman • Academy 3",
+        "name": "Mustafa Karshoum",
         "role": "DF",
-        "rating": 58
+        "rating": 73
       },
       {
-        "name": "Al Hilal Omdurman • Academy 7",
+        "name": "Altayeb Abdelrazeg",
         "role": "DF",
-        "rating": 54
+        "rating": 69
       },
       {
-        "name": "Al Hilal Omdurman • Academy 8",
+        "name": "Abdel Raouf",
         "role": "MF",
-        "rating": 60
+        "rating": 75
       },
       {
-        "name": "Al Hilal Omdurman • Academy 4",
+        "name": "Salah Adel",
         "role": "MF",
-        "rating": 57
+        "rating": 72
       },
       {
-        "name": "Al Hilal Omdurman • Academy 5",
+        "name": "Madicke Kane",
         "role": "MF",
-        "rating": 56
+        "rating": 70
       },
       {
-        "name": "Al Hilal Omdurman • Academy 6",
+        "name": "Walieldin Khedr",
         "role": "MF",
-        "rating": 55
+        "rating": 70
       },
       {
-        "name": "Al Hilal Omdurman • Academy 9",
+        "name": "Muhamed Abdelrahman",
         "role": "FW",
-        "rating": 59
+        "rating": 77
       },
       {
-        "name": "Al Hilal Omdurman • Academy 10",
+        "name": "Yaser Muzmel",
         "role": "FW",
-        "rating": 58
+        "rating": 74
       },
       {
-        "name": "Al Hilal Omdurman • Academy 11",
+        "name": "Sunday Adetunji",
         "role": "FW",
-        "rating": 57
+        "rating": 73
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Al Hilal Omdurman • Academy 1",
       "Al Hilal Omdurman • Academy 2",
@@ -12057,8 +12057,8 @@
   },
   "cont_conmebol_12": {
     "club": "Corinthians",
-    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD+STARTING11_2026_27",
-    "source": "https://www.thesportsdb.com/team/134284; https://gol.conmebol.com/libertadores/en/news/corinthians-2026-conmebol-libertadores-results-squad-and-schedule; https://starting11.com/corinthians/squad",
+    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD+STARTING11_2026_27+INDEPENDENT_2026_SQUAD",
+    "source": "https://www.thesportsdb.com/team/134284; https://gol.conmebol.com/libertadores/en/news/corinthians-2026-conmebol-libertadores-results-squad-and-schedule; https://starting11.com/corinthians/squad; https://gol.conmebol.com/libertadores/en/news/corinthians-2026-conmebol-libertadores-results-squad-and-schedule",
     "found": {
       "GK": 1,
       "DF": 3,
@@ -13025,8 +13025,8 @@
   },
   "cont_conmebol_23": {
     "club": "Cusco FC",
-    "origin": "FC27+INDEPENDENT_2026_SQUAD",
-    "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv; https://starting11.com/cusco/squad",
+    "origin": "FC27+INDEPENDENT_2026_SQUAD+INDEPENDENT_2026_SQUAD",
+    "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv; https://starting11.com/cusco/squad; https://starting11.com/cusco/squad",
     "found": {
       "GK": 1,
       "DF": 7,
