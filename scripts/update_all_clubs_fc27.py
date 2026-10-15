@@ -421,7 +421,7 @@ def main():
         # Retaining them would silently undo selected players at runtime and
         # in several cases throw on intentionally replaced old slot IDs.
         final=(source[:start]+json.dumps(registry,ensure_ascii=False,separators=(",",":"))+
-               ";\\n// 2026-10-15: one-time club mappings consolidated into the source-labeled registry.\\n")
+               ";\n// 2026-10-15: one-time club mappings consolidated into the source-labeled registry.\n")
         root.write_text(final)
     return 0
 if __name__=="__main__":
