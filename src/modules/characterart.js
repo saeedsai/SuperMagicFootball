@@ -271,8 +271,14 @@ const CHARACTER_ART=(()=>{
    oval(c,x,y,.65,.65,rgba(tint(skin,-.43),.65));
   }}
   const scar=index(av.scar,6);
-  if(scar){const x=kind==='front'?(scar%2?16:-17):17;
-   line(c,[[x,scar===1?-5:14],[x+3,scar===1?4:23]],rgba('#8e4740',.58),1.2);
+  if(scar){
+   // Five visually distinct and position-stable scar motifs, never on the rear skull.
+   const x=kind==='front'?0:8,ink=rgba('#954b43',.65),shine=rgba('#f8e0be',.35);
+   if(scar===1){line(c,[[x+16,-7],[x+21,4]],ink,1.4);line(c,[[x+15,-7],[x+20,3]],shine,.7);}
+   else if(scar===2){line(c,[[x-17,14],[x-14,19]],ink,1.25);}
+   else if(scar===3){line(c,[[x+12,14],[x+18,13]],ink,1.7);line(c,[[x+12,15],[x+18,14]],shine,.7);}
+   else if(scar===4){line(c,[[x-14,5],[x-11,14],[x-8,24]],ink,1.45);}
+   else{line(c,[[x+9,12],[x+19,23]],ink,1.5);line(c,[[x+18,13],[x+11,23]],ink,1.35);}
   }
  }
  function head(c,p,av,view,opt){
@@ -361,8 +367,27 @@ const CHARACTER_ART=(()=>{
   line(c,[[elbow[0]-sign*3,elbow[1]+2],[elbow[0]+sign*3,elbow[1]+3]],trim,2);
   line(c,[elbow,wrist],near?tint(skin,.13):tint(skin,-.20),10,dark);
   line(c,[[elbow[0]+sign*2,elbow[1]+5],[wrist[0]-sign*1,wrist[1]-3]],rgba('#ffffff',.12),2);
-  if(index(opt.avatarTattoo,6)&&near){
-   line(c,[[elbow[0]+sign*1,elbow[1]+6],[elbow[0]+sign*5,elbow[1]+10]],tint(skin,-.39),1.3);
+  const tattoo=index(opt.avatarTattoo,6);
+  if(tattoo&&near){
+   // Forearm ink tracks the elbow/wrist geometry in all projections and poses.
+   const a=[elbow[0]*.52+wrist[0]*.48,elbow[1]*.52+wrist[1]*.48],
+         ink=rgba('#263d45',.68),hi=rgba('#ffffff',.19),cx=a[0],cy=a[1];
+   if(tattoo===1){ // wrist wrap
+    line(c,[[wrist[0]-4,wrist[1]-5],[wrist[0]+4,wrist[1]-4]],ink,2.4);
+   }else if(tattoo===2){ // double forearm stripes
+    line(c,[[cx-4,cy-3],[cx+4,cy-2]],ink,1.9);
+    line(c,[[cx-4,cy+2],[cx+4,cy+3]],ink,1.7);
+   }else if(tattoo===3){ // running script
+    line(c,[[cx-4,cy-3],[cx-1,cy-5],[cx+1,cy-2],[cx+4,cy-4],[cx+2,cy+1],[cx-3,cy+2]],ink,1.15);
+    oval(c,cx+3,cy+3,.65,.7,ink);
+   }else if(tattoo===4){ // geometric/tribal
+    line(c,[[cx,cy-5],[cx+4,cy],[cx,cy+5],[cx-4,cy],[cx,cy-5]],ink,1.8);
+    line(c,[[cx-4,cy],[cx+4,cy]],ink,1.4);
+   }else if(tattoo===5){ // sleeve panels
+    patch(c,p=>{p.moveTo(cx-5,cy-5);p.lineTo(cx+4,cy-3);p.lineTo(cx+5,cy+4);p.lineTo(cx-4,cy+5)},rgba('#243847',.44),null);
+    line(c,[[cx-4,cy+4],[cx+4,cy-3]],hi,1.1);
+    line(c,[[cx-2,cy-4],[cx+5,cy+2]],ink,1.2);
+   }
   }
   const glove=p.keeper?'#f1eee0':near?tint(skin,.10):skin;
   oval(c,wrist[0],wrist[1],6.3,7.3,glove,dark,1.8);
