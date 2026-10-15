@@ -1,5 +1,5 @@
 name: Apply Verified 2026 Squad Gap Fixes
-# Add cited 2026/27 Defence Force and OFC Rewa entries, preserving 2/3/4/3 quotas.
+# Apply merged first-team positional sources without duplicate club dictionary overrides.
 on:
   push:
     branches: [dev]
