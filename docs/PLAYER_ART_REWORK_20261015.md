@@ -30,3 +30,6 @@ The graphics matrix in the new Node test can be run without loading the full mat
 - `scripts/build.py` now concatenates `characterart.js` before `render.js` in the inherited browser test fixture.
 - `sw.js` now precaches `src/modules/characterart.js` and uses a new cache name, preventing the offline web app from serving a shell missing the new import.
 - `tests/player_art_rework.test.cjs` covers 1,625 face × beard × hair × projection combinations and an additional 2,880 keeper/accessory/mouth/mirrored-side sample renders.
+
+## Regression maintenance — GitHub Actions
+The first cache-integration CI run identified two outdated test assertions, not renderer failures. `tests/action_flow.test.cjs` and `tests/performance_tuning_v082531.test.cjs` still expected the previous `smf-082532-modular-v1` cache key; they are updated to verify the new `smf-082532-characterart-v2` key. Results must be refreshed from the next CI run, rather than copied from earlier releases.
