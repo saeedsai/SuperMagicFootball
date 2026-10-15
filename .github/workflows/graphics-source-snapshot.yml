@@ -1,0 +1,23 @@
+name: Graphics Dev Source Snapshot
+on:
+  push:
+    branches: [dev]
+    paths: ['.github/workflows/graphics-source-snapshot.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Export exact complete git tree
+        run: |
+          mkdir -p /tmp/smf-source
+          git archive --format=tar HEAD | gzip -9 > /tmp/smf-source/dev-tree.tar.gz
+          git rev-parse HEAD > /tmp/smf-source/source-commit.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: graphics-development-source
+          path: /tmp/smf-source/
+          retention-days: 5
