@@ -4841,8 +4841,8 @@
   },
   "cont_afc_4": {
     "club": "Al Ain",
-    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD+STARTING11_2026_27+INDEPENDENT_2026_SQUAD",
-    "source": "https://www.thesportsdb.com/team/137832; https://www.transfermarkt.co.uk/al-ain-fc/kader/verein/2150/saison_id/2026; https://starting11.com/al-ain/squad; https://www.transfermarkt.co.uk/al-ain-fc/kader/verein/2150/saison_id/2026",
+    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD+STARTING11_2026_27+INDEPENDENT_2026_SQUAD+INDEPENDENT_2026_SQUAD",
+    "source": "https://www.thesportsdb.com/team/137832; https://www.transfermarkt.co.uk/al-ain-fc/kader/verein/2150/saison_id/2026; https://starting11.com/al-ain/squad; https://www.transfermarkt.co.uk/al-ain-fc/kader/verein/2150/saison_id/2026; https://www.transfermarkt.co.uk/al-ain-fc/kader/verein/2150/saison_id/2026",
     "found": {
       "GK": 0,
       "DF": 6,
@@ -5897,8 +5897,8 @@
   },
   "cont_afc_16": {
     "club": "Kashima Antlers",
-    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD+INDEPENDENT_2026_SQUAD",
-    "source": "https://www.thesportsdb.com/team/137707; https://en.wikipedia.org/wiki/2026_Kashima_Antlers_season; https://en.wikipedia.org/wiki/2026_Kashima_Antlers_season",
+    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD+INDEPENDENT_2026_SQUAD+INDEPENDENT_2026_SQUAD",
+    "source": "https://www.thesportsdb.com/team/137707; https://en.wikipedia.org/wiki/2026_Kashima_Antlers_season; https://en.wikipedia.org/wiki/2026_Kashima_Antlers_season; https://en.wikipedia.org/wiki/2026_Kashima_Antlers_season",
     "found": {
       "GK": 0,
       "DF": 3,
@@ -7569,8 +7569,8 @@
   },
   "cont_caf_3": {
     "club": "Power Dynamos",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+INDEPENDENT_2026_SQUAD",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://www.national-football-teams.com/club/2763/2026/Power_Dynamos_Kitwe.html [2026/27]",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -7579,67 +7579,67 @@
     },
     "selected": [
       {
-        "name": "Power Dynamos • Academy 1",
+        "name": "Lawrence Mulenga",
         "role": "GK",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Power Dynamos • Academy 12",
+        "name": "Willard Mwanza",
         "role": "GK",
-        "rating": 58
+        "rating": 69
       },
       {
-        "name": "Power Dynamos • Academy 2",
+        "name": "Dominic Chanda",
         "role": "DF",
-        "rating": 61
+        "rating": 72
       },
       {
-        "name": "Power Dynamos • Academy 3",
+        "name": "Kondwani Chiboni",
         "role": "DF",
-        "rating": 60
+        "rating": 69
       },
       {
-        "name": "Power Dynamos • Academy 7",
+        "name": "Aaron Katebe",
         "role": "DF",
-        "rating": 56
+        "rating": 70
       },
       {
-        "name": "Power Dynamos • Academy 8",
+        "name": "Owen Tembo",
         "role": "MF",
-        "rating": 62
+        "rating": 73
       },
       {
-        "name": "Power Dynamos • Academy 4",
+        "name": "Frederick Mulambia",
         "role": "MF",
-        "rating": 59
+        "rating": 70
       },
       {
-        "name": "Power Dynamos • Academy 5",
+        "name": "Prince Mumba",
         "role": "MF",
-        "rating": 58
+        "rating": 69
       },
       {
-        "name": "Power Dynamos • Academy 6",
+        "name": "Salulani Phiri",
         "role": "MF",
-        "rating": 57
+        "rating": 69
       },
       {
-        "name": "Power Dynamos • Academy 9",
+        "name": "Ismaël Ankobo",
         "role": "FW",
-        "rating": 61
+        "rating": 72
       },
       {
-        "name": "Power Dynamos • Academy 10",
+        "name": "Austin Muwowo",
         "role": "FW",
-        "rating": 60
+        "rating": 72
       },
       {
-        "name": "Power Dynamos • Academy 11",
+        "name": "Moses Shumah",
         "role": "FW",
-        "rating": 59
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Power Dynamos • Academy 1",
       "Power Dynamos • Academy 2",
@@ -7745,8 +7745,8 @@
   },
   "cont_caf_5": {
     "club": "Young Africans",
-    "origin": "NOT_IN_FC27+INDEPENDENT_2026_SQUAD",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://www.national-football-teams.com/club/2528/2026_1/Young_Africans_Dar_Es_Salaam.html [2026/27]",
+    "origin": "NOT_IN_FC27+INDEPENDENT_2026_SQUAD+INDEPENDENT_2026_SQUAD",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://www.national-football-teams.com/club/2528/2026_1/Young_Africans_Dar_Es_Salaam.html [2026/27]; https://www.national-football-teams.com/club/2528/2026_1/Young_Africans_Dar_Es_Salaam.html [2026/27]",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -8097,8 +8097,8 @@
   },
   "cont_caf_9": {
     "club": "Al Hilal Omdurman",
-    "origin": "NOT_IN_FC27+INDEPENDENT_2026_SQUAD",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://newikis.com/en/Al_Hilal_Club_(Omdurman) [squad dated 2026-08-22]",
+    "origin": "NOT_IN_FC27+INDEPENDENT_2026_SQUAD+INDEPENDENT_2026_SQUAD",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://newikis.com/en/Al_Hilal_Club_(Omdurman) [squad dated 2026-08-22]; https://newikis.com/en/Al_Hilal_Club_(Omdurman) [squad dated 2026-08-22]",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -8537,8 +8537,8 @@
   },
   "cont_caf_14": {
     "club": "Petro de Luanda",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+INDEPENDENT_2026_SQUAD",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://supersport.com/football/team/b2471a32-de20-4b49-8e93-3d16c3b7ab20/squad [2026 squad listing]",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -8547,67 +8547,67 @@
     },
     "selected": [
       {
-        "name": "Petro de Luanda • Academy 1",
+        "name": "Hugo Marques",
         "role": "GK",
-        "rating": 60
+        "rating": 76
       },
       {
-        "name": "Petro de Luanda • Academy 12",
+        "name": "Augusto Mualucano",
         "role": "GK",
-        "rating": 56
+        "rating": 68
       },
       {
-        "name": "Petro de Luanda • Academy 2",
+        "name": "Joel Odair Pinto Neves",
         "role": "DF",
-        "rating": 59
+        "rating": 72
       },
       {
-        "name": "Petro de Luanda • Academy 3",
+        "name": "Rúben Constantino Adérito",
         "role": "DF",
-        "rating": 58
+        "rating": 71
       },
       {
-        "name": "Petro de Luanda • Academy 7",
+        "name": "Pedro Manuel da Mota Pinto",
         "role": "DF",
-        "rating": 54
+        "rating": 71
       },
       {
-        "name": "Petro de Luanda • Academy 8",
+        "name": "Pedro Miguel Santos Aparício",
         "role": "MF",
-        "rating": 60
+        "rating": 74
       },
       {
-        "name": "Petro de Luanda • Academy 4",
+        "name": "Benny",
         "role": "MF",
-        "rating": 57
+        "rating": 71
       },
       {
-        "name": "Petro de Luanda • Academy 5",
+        "name": "Jorge Javier Moreira Pereira",
         "role": "MF",
-        "rating": 56
+        "rating": 72
       },
       {
-        "name": "Petro de Luanda • Academy 6",
+        "name": "Walter Monteiro",
         "role": "MF",
-        "rating": 55
+        "rating": 69
       },
       {
-        "name": "Petro de Luanda • Academy 9",
+        "name": "Tiago Azulão",
         "role": "FW",
-        "rating": 59
+        "rating": 75
       },
       {
-        "name": "Petro de Luanda • Academy 10",
+        "name": "Jonathan Toro",
         "role": "FW",
-        "rating": 58
+        "rating": 74
       },
       {
-        "name": "Petro de Luanda • Academy 11",
+        "name": "Tomás Morais Costa",
         "role": "FW",
-        "rating": 57
+        "rating": 73
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Petro de Luanda • Academy 1",
       "Petro de Luanda • Academy 2",
@@ -8801,8 +8801,8 @@
   },
   "cont_concacaf_1": {
     "club": "Defence Force FC",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+INDEPENDENT_2026_SQUAD",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://national-football-teams.com/club/2552/2026/Defence_Force_Mucurapo.html [2026/27 Trinidad and Tobago]",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -8811,24 +8811,24 @@
     },
     "selected": [
       {
-        "name": "Defence Force FC • Academy 1",
+        "name": "Christopher Biggette",
         "role": "GK",
-        "rating": 68
+        "rating": 70
       },
       {
-        "name": "Defence Force FC • Academy 12",
+        "name": "Jabari St. Hillaire",
         "role": "GK",
-        "rating": 64
+        "rating": 69
       },
       {
-        "name": "Defence Force FC • Academy 2",
+        "name": "Sheldon Bateau",
         "role": "DF",
-        "rating": 67
+        "rating": 75
       },
       {
-        "name": "Defence Force FC • Academy 3",
+        "name": "Isaiah Garcia",
         "role": "DF",
-        "rating": 66
+        "rating": 72
       },
       {
         "name": "Defence Force FC • Academy 7",
@@ -8871,7 +8871,7 @@
         "rating": 65
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 8,
     "oldNames": [
       "Defence Force FC • Academy 1",
       "Defence Force FC • Academy 2",
@@ -9065,8 +9065,8 @@
   },
   "cont_concacaf_4": {
     "club": "Club Olimpia",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+INDEPENDENT_2026_SQUAD",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://www.national-football-teams.com/club/1127/2026_1/Olimpia_Tegucigalpa.html [2026/27 Honduras]",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -9075,9 +9075,9 @@
     },
     "selected": [
       {
-        "name": "Club Olimpia • Academy 1",
+        "name": "Edrick Menjívar",
         "role": "GK",
-        "rating": 62
+        "rating": 74
       },
       {
         "name": "Club Olimpia • Academy 12",
@@ -9085,34 +9085,34 @@
         "rating": 58
       },
       {
-        "name": "Club Olimpia • Academy 2",
+        "name": "Clinton Bennett",
         "role": "DF",
-        "rating": 61
+        "rating": 70
       },
       {
-        "name": "Club Olimpia • Academy 3",
+        "name": "José García",
         "role": "DF",
-        "rating": 60
+        "rating": 71
       },
       {
-        "name": "Club Olimpia • Academy 7",
+        "name": "Kevin Güity",
         "role": "DF",
-        "rating": 56
+        "rating": 70
       },
       {
-        "name": "Club Olimpia • Academy 8",
+        "name": "Jorge Álvarez",
         "role": "MF",
-        "rating": 62
+        "rating": 73
       },
       {
-        "name": "Club Olimpia • Academy 4",
+        "name": "Edwin Rodríguez",
         "role": "MF",
-        "rating": 59
+        "rating": 76
       },
       {
-        "name": "Club Olimpia • Academy 5",
+        "name": "Jack Jean-Baptiste",
         "role": "MF",
-        "rating": 58
+        "rating": 72
       },
       {
         "name": "Club Olimpia • Academy 6",
@@ -9120,22 +9120,22 @@
         "rating": 57
       },
       {
-        "name": "Club Olimpia • Academy 9",
+        "name": "Yustin Arboleda",
         "role": "FW",
-        "rating": 61
+        "rating": 74
       },
       {
-        "name": "Club Olimpia • Academy 10",
+        "name": "Jorge Benguché",
         "role": "FW",
-        "rating": 60
+        "rating": 75
       },
       {
-        "name": "Club Olimpia • Academy 11",
+        "name": "Michaell Chirinos",
         "role": "FW",
-        "rating": 59
+        "rating": 76
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 2,
     "oldNames": [
       "Club Olimpia • Academy 1",
       "Club Olimpia • Academy 2",
@@ -12057,8 +12057,8 @@
   },
   "cont_conmebol_12": {
     "club": "Corinthians",
-    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD+STARTING11_2026_27+INDEPENDENT_2026_SQUAD",
-    "source": "https://www.thesportsdb.com/team/134284; https://gol.conmebol.com/libertadores/en/news/corinthians-2026-conmebol-libertadores-results-squad-and-schedule; https://starting11.com/corinthians/squad; https://gol.conmebol.com/libertadores/en/news/corinthians-2026-conmebol-libertadores-results-squad-and-schedule",
+    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD+STARTING11_2026_27+INDEPENDENT_2026_SQUAD+INDEPENDENT_2026_SQUAD",
+    "source": "https://www.thesportsdb.com/team/134284; https://gol.conmebol.com/libertadores/en/news/corinthians-2026-conmebol-libertadores-results-squad-and-schedule; https://starting11.com/corinthians/squad; https://gol.conmebol.com/libertadores/en/news/corinthians-2026-conmebol-libertadores-results-squad-and-schedule; https://gol.conmebol.com/libertadores/en/news/corinthians-2026-conmebol-libertadores-results-squad-and-schedule",
     "found": {
       "GK": 1,
       "DF": 3,
@@ -13025,8 +13025,8 @@
   },
   "cont_conmebol_23": {
     "club": "Cusco FC",
-    "origin": "FC27+INDEPENDENT_2026_SQUAD+INDEPENDENT_2026_SQUAD",
-    "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv; https://starting11.com/cusco/squad; https://starting11.com/cusco/squad",
+    "origin": "FC27+INDEPENDENT_2026_SQUAD+INDEPENDENT_2026_SQUAD+INDEPENDENT_2026_SQUAD",
+    "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv; https://starting11.com/cusco/squad; https://starting11.com/cusco/squad; https://starting11.com/cusco/squad",
     "found": {
       "GK": 1,
       "DF": 7,
@@ -13993,8 +13993,8 @@
   },
   "cont_ofc_2": {
     "club": "AS Vénus",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+INDEPENDENT_2026_SQUAD",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://www.national-football-teams.com/club/2517/2026_1/As_Venus_Mahina.html [2026/27 season]",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -14013,44 +14013,44 @@
         "rating": 61
       },
       {
-        "name": "AS Vénus • Academy 2",
+        "name": "Ricky Aitamai",
         "role": "DF",
-        "rating": 64
+        "rating": 70
       },
       {
-        "name": "AS Vénus • Academy 3",
+        "name": "Marama Amau",
         "role": "DF",
-        "rating": 63
+        "rating": 69
       },
       {
-        "name": "AS Vénus • Academy 7",
+        "name": "Tefai Faehau-Heitaa",
         "role": "DF",
-        "rating": 59
+        "rating": 68
       },
       {
-        "name": "AS Vénus • Academy 8",
+        "name": "Stanley Atani",
         "role": "MF",
-        "rating": 65
+        "rating": 72
       },
       {
-        "name": "AS Vénus • Academy 4",
+        "name": "Tauhiti Keck",
         "role": "MF",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "AS Vénus • Academy 5",
+        "name": "Kitin Maro",
         "role": "MF",
-        "rating": 61
+        "rating": 69
       },
       {
-        "name": "AS Vénus • Academy 6",
+        "name": "Yann Pennequin Le Bras",
         "role": "MF",
-        "rating": 60
+        "rating": 69
       },
       {
-        "name": "AS Vénus • Academy 9",
+        "name": "Patrick Tepa",
         "role": "FW",
-        "rating": 64
+        "rating": 69
       },
       {
         "name": "AS Vénus • Academy 10",
@@ -14063,7 +14063,7 @@
         "rating": 62
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 4,
     "oldNames": [
       "AS Vénus • Academy 1",
       "AS Vénus • Academy 2",
@@ -14169,8 +14169,8 @@
   },
   "cont_ofc_4": {
     "club": "Rewa FC",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+INDEPENDENT_2026_SQUAD",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://www.national-football-teams.com/club/809/2026_2/Rewa_Fc.html [2026 season]",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -14179,9 +14179,9 @@
     },
     "selected": [
       {
-        "name": "Rewa FC • Academy 1",
+        "name": "Epeli Loaniceva",
         "role": "GK",
-        "rating": 61
+        "rating": 69
       },
       {
         "name": "Rewa FC • Academy 12",
@@ -14189,44 +14189,44 @@
         "rating": 57
       },
       {
-        "name": "Rewa FC • Academy 2",
+        "name": "Samuela Ibo Kautoga",
         "role": "DF",
-        "rating": 60
+        "rating": 69
       },
       {
-        "name": "Rewa FC • Academy 3",
+        "name": "Calvin Ohasio",
         "role": "DF",
-        "rating": 59
+        "rating": 69
       },
       {
-        "name": "Rewa FC • Academy 7",
+        "name": "Kavaia Rawaqa",
         "role": "DF",
-        "rating": 55
+        "rating": 68
       },
       {
-        "name": "Rewa FC • Academy 8",
+        "name": "Patrick Joseph",
         "role": "MF",
-        "rating": 61
+        "rating": 70
       },
       {
-        "name": "Rewa FC • Academy 4",
+        "name": "Ramzan Khan",
         "role": "MF",
-        "rating": 58
+        "rating": 69
       },
       {
-        "name": "Rewa FC • Academy 5",
+        "name": "Rahul Krishna",
         "role": "MF",
-        "rating": 57
+        "rating": 72
       },
       {
-        "name": "Rewa FC • Academy 6",
+        "name": "Epeli Valevou",
         "role": "MF",
-        "rating": 56
+        "rating": 68
       },
       {
-        "name": "Rewa FC • Academy 9",
+        "name": "Norman Ngahu",
         "role": "FW",
-        "rating": 60
+        "rating": 72
       },
       {
         "name": "Rewa FC • Academy 10",
@@ -14239,7 +14239,7 @@
         "rating": 58
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 3,
     "oldNames": [
       "Rewa FC • Academy 1",
       "Rewa FC • Academy 2",
@@ -14257,8 +14257,8 @@
   },
   "cont_ofc_5": {
     "club": "Lae City FC",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+INDEPENDENT_2026_SQUAD",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://www.national-football-teams.com/club/27268/2026_2/Lae_City.html [2026 season]",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -14267,67 +14267,67 @@
     },
     "selected": [
       {
-        "name": "Lae City FC • Academy 1",
+        "name": "Charles Lepani",
         "role": "GK",
-        "rating": 69
-      },
-      {
-        "name": "Lae City FC • Academy 12",
-        "role": "GK",
-        "rating": 65
-      },
-      {
-        "name": "Lae City FC • Academy 2",
-        "role": "DF",
         "rating": 68
       },
       {
-        "name": "Lae City FC • Academy 3",
+        "name": "Ronald Warisan",
+        "role": "GK",
+        "rating": 70
+      },
+      {
+        "name": "Alwin Komolong",
+        "role": "DF",
+        "rating": 71
+      },
+      {
+        "name": "Felix Komolong",
+        "role": "DF",
+        "rating": 70
+      },
+      {
+        "name": "Charles Hayes",
         "role": "DF",
         "rating": 67
       },
       {
-        "name": "Lae City FC • Academy 7",
-        "role": "DF",
-        "rating": 63
-      },
-      {
-        "name": "Lae City FC • Academy 8",
+        "name": "Abraham Allen",
         "role": "MF",
         "rating": 69
       },
       {
-        "name": "Lae City FC • Academy 4",
+        "name": "Obert Bika",
         "role": "MF",
-        "rating": 66
+        "rating": 68
       },
       {
-        "name": "Lae City FC • Academy 5",
+        "name": "Solomon Kamake",
         "role": "MF",
-        "rating": 65
+        "rating": 68
       },
       {
-        "name": "Lae City FC • Academy 6",
+        "name": "Jacob Sabua",
         "role": "MF",
-        "rating": 64
+        "rating": 70
       },
       {
-        "name": "Lae City FC • Academy 9",
+        "name": "Jonathan Allen",
+        "role": "FW",
+        "rating": 69
+      },
+      {
+        "name": "Mathew David",
         "role": "FW",
         "rating": 68
       },
       {
-        "name": "Lae City FC • Academy 10",
+        "name": "Stahl Gubag",
         "role": "FW",
         "rating": 67
-      },
-      {
-        "name": "Lae City FC • Academy 11",
-        "role": "FW",
-        "rating": 66
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Lae City FC • Academy 1",
       "Lae City FC • Academy 2",
