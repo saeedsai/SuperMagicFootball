@@ -18,7 +18,7 @@ with sync_playwright() as pw:
   page.locator('#preTalkHome').select_option('joke')
   page.locator('#preTalkAway').select_option('focus')
   page.screenshot(path=str(root/'tests'/f'morale_setup_{device}.png'))
-  page.locator('[data-action="returnSetup"]').click()
+  page.locator('[data-action="returnSetup"]').last.click()
   page.locator('[data-action="kickoff"]').click()
   assert page.evaluate('SupermagicFootball.game.talksUsed[0].pregame')
   assert page.evaluate('SupermagicFootball.game.talksUsed[1].pregame')
