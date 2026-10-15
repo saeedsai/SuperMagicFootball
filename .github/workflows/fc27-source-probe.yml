@@ -11,31 +11,20 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - run: python3 -m pip install --user beautifulsoup4
-      - name: Check fallback player tables and Wikipedia search endpoints
+      - name: Check alternate club squad API where FC27 has no players
         run: |
           python3 - <<'PY'
-          import urllib.request,urllib.parse
-          from bs4 import BeautifulSoup
-          urls=[
-            'https://en.wikipedia.org/wiki/Al-Ahly_SC',
-            'https://en.wikipedia.org/wiki/Al_Nassr_FC',
-            'https://en.wikipedia.org/wiki/AEK_Athens_F.C.',
-            'https://en.wikipedia.org/wiki/Mamelodi_Sundowns_F.C.',
-            'https://en.wikipedia.org/wiki/Sport_Club_Corinthians_Paulista',
-            'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=Al+Ahly+football&format=json',
-            'https://en.wikipedia.org/w/rest.php/v1/search/page?q=Al%20Ahly%20football&limit=3',
-          ]
-          for u in urls:
+          import urllib.request,urllib.parse,json
+          for club in ['Al Ahly','Bodø/Glimt','Auckland City','Rewa FC','Palmeiras','Johor Darul Tazim']:
+              url='https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t='+urllib.parse.quote(club)
               try:
-                  req=urllib.request.Request(u,headers={'User-Agent':'SuperMagicFootballRosterAuditor/1.0 (github.com/saeedsai/SuperMagicFootball)'})
-                  data=urllib.request.urlopen(req,timeout=14).read()
-                  soup=BeautifulSoup(data,'html.parser')
-                  print('URL',u,'OK',len(data),'TITLE',soup.title.get_text() if soup.title else '',flush=True)
-                  print('HEADINGS',[h.get_text(' ',strip=True) for h in soup.select('h2,h3') if 'squad' in h.get_text(' ',strip=True).lower()][:5],flush=True)
-                  for h in soup.select('h2,h3'):
-                      if 'squad' not in h.get_text(' ',strip=True).lower():continue
-                      t=h.find_next('table')
-                      if t:print('TABLE',[(tr.get_text(' ',strip=True))[:90] for tr in t.select('tr')[:5]],flush=True)
-              except Exception as e:print('ERROR',u,str(e),flush=True)
+                  req=urllib.request.Request(url,headers={'User-Agent':'SuperMagicFootballRosterAuditor/1.0'})
+                  data=json.loads(urllib.request.urlopen(req,timeout=15).read())
+                  teams=[(t.get('idTeam'),t.get('strTeam'),t.get('strSport')) for t in (data.get('teams') or [])]
+                  print('TEAM',club,teams[:5],flush=True)
+                  if teams:
+                      u='https://www.thesportsdb.com/api/v1/json/3/lookup_all_players.php?id='+teams[0][0]
+                      resp=json.loads(urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'SuperMagicFootballRosterAuditor/1.0'}),timeout=15).read())
+                      print('PLAYERS',club,[(x.get('strPlayer'),x.get('strPosition'),x.get('strNumber')) for x in (resp.get('player') or [])[:13]],flush=True)
+              except Exception as e:print('ERROR',club,str(e),flush=True)
           PY
