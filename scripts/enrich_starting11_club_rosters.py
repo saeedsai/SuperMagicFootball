@@ -147,7 +147,7 @@ def main():
         assert len({p["num"] for p in squad})==12,team_id+" duplicate shirt numbers"
         print("STARTING11",team_id,record["club"],"source",url,"replaced",replacements,
               "remaining",record["fictionalRemaining"],flush=True)
-    if added:
+    if added or found:
         js_path=ROOT/"src/roster_corrections.js"
         source=js_path.read_text()
         start=source.index("{",source.index("export const ROSTER_CORRECTIONS ="))
