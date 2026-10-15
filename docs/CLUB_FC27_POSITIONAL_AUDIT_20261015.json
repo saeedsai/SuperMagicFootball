@@ -1,0 +1,501 @@
+{
+  "clubs": 165,
+  "positions": 1980,
+  "fc27Clubs": 82,
+  "missingClubs": 44,
+  "missingSlots": 342,
+  "uncapturedTopCandidates": 0,
+  "rosterGaps": [
+    {
+      "teamId": "cont_afc_4",
+      "team": "Al Ain",
+      "missing": 5,
+      "missingRoles": {
+        "GK": 2,
+        "MF": 2,
+        "FW": 1
+      },
+      "source": "https://www.thesportsdb.com/team/137832"
+    },
+    {
+      "teamId": "cont_afc_7",
+      "team": "Al Sadd",
+      "missing": 3,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 1
+      },
+      "source": "https://www.thesportsdb.com/team/137648"
+    },
+    {
+      "teamId": "cont_afc_8",
+      "team": "Al Gharafa",
+      "missing": 5,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 1,
+        "FW": 2
+      },
+      "source": "https://www.thesportsdb.com/team/138029"
+    },
+    {
+      "teamId": "cont_afc_9",
+      "team": "Al Shamal",
+      "missing": 4,
+      "missingRoles": {
+        "GK": 1,
+        "DF": 1,
+        "FW": 2
+      },
+      "source": "https://www.thesportsdb.com/team/141174"
+    },
+    {
+      "teamId": "cont_afc_11",
+      "team": "Tractor SC",
+      "missing": 5,
+      "missingRoles": {
+        "GK": 1,
+        "MF": 4
+      },
+      "source": "https://www.thesportsdb.com/team/139162"
+    },
+    {
+      "teamId": "cont_afc_12",
+      "team": "Neftchi Fergana",
+      "missing": 6,
+      "missingRoles": {
+        "GK": 1,
+        "MF": 3,
+        "FW": 2
+      },
+      "source": "https://www.thesportsdb.com/team/145007"
+    },
+    {
+      "teamId": "cont_afc_13",
+      "team": "Al Quwa Al Jawiya",
+      "missing": 9,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 2,
+        "MF": 2,
+        "FW": 3
+      },
+      "source": "https://www.thesportsdb.com/team/141296"
+    },
+    {
+      "teamId": "cont_afc_15",
+      "team": "Pakhtakor",
+      "missing": 4,
+      "missingRoles": {
+        "GK": 1,
+        "DF": 3
+      },
+      "source": "https://www.thesportsdb.com/team/139020"
+    },
+    {
+      "teamId": "cont_afc_16",
+      "team": "Kashima Antlers",
+      "missing": 2,
+      "missingRoles": {
+        "GK": 2
+      },
+      "source": "https://www.thesportsdb.com/team/137707"
+    },
+    {
+      "teamId": "cont_afc_17",
+      "team": "Vissel Kobe",
+      "missing": 4,
+      "missingRoles": {
+        "GK": 1,
+        "MF": 3
+      },
+      "source": "https://www.thesportsdb.com/team/137717"
+    },
+    {
+      "teamId": "cont_afc_18",
+      "team": "Kashiwa Reysol",
+      "missing": 3,
+      "missingRoles": {
+        "GK": 1,
+        "FW": 2
+      },
+      "source": "https://www.thesportsdb.com/team/137708"
+    },
+    {
+      "teamId": "cont_afc_19",
+      "team": "Kyoto Sanga",
+      "missing": 3,
+      "missingRoles": {
+        "DF": 1,
+        "FW": 2
+      },
+      "source": "https://www.thesportsdb.com/team/139888"
+    },
+    {
+      "teamId": "cont_afc_24",
+      "team": "Port FC",
+      "missing": 4,
+      "missingRoles": {
+        "GK": 1,
+        "FW": 3
+      },
+      "source": "https://www.thesportsdb.com/team/139221"
+    },
+    {
+      "teamId": "cont_afc_25",
+      "team": "Ratchaburi",
+      "missing": 3,
+      "missingRoles": {
+        "GK": 1,
+        "MF": 1,
+        "FW": 1
+      },
+      "source": "https://www.thesportsdb.com/team/139217"
+    },
+    {
+      "teamId": "cont_afc_26",
+      "team": "Shanghai Port",
+      "missing": 4,
+      "missingRoles": {
+        "GK": 1,
+        "DF": 2,
+        "MF": 1
+      },
+      "source": "https://www.thesportsdb.com/team/134640"
+    },
+    {
+      "teamId": "cont_afc_27",
+      "team": "Beijing Guoan",
+      "missing": 3,
+      "missingRoles": {
+        "MF": 3
+      },
+      "source": "https://www.thesportsdb.com/team/134635"
+    },
+    {
+      "teamId": "cont_caf_3",
+      "team": "Power Dynamos",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_caf_5",
+      "team": "Young Africans",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_caf_8",
+      "team": "Mamelodi Sundowns",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_caf_9",
+      "team": "Al Hilal Omdurman",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_caf_11",
+      "team": "Saint Éloi Lupopo",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_caf_14",
+      "team": "Petro de Luanda",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_concacaf_0",
+      "team": "Vancouver FC",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_concacaf_1",
+      "team": "Defence Force FC",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_concacaf_2",
+      "team": "O&M FC",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_concacaf_4",
+      "team": "Club Olimpia",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_concacaf_9",
+      "team": "Sporting San Miguelito",
+      "missing": 3,
+      "missingRoles": {
+        "MF": 1,
+        "FW": 2
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://en.wikipedia.org/wiki/Sporting_San_Miguelito"
+    },
+    {
+      "teamId": "cont_concacaf_10",
+      "team": "Atlético Ottawa",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_concacaf_11",
+      "team": "Forge FC",
+      "missing": 2,
+      "missingRoles": {
+        "MF": 1,
+        "FW": 1
+      },
+      "source": "https://www.thesportsdb.com/team/139321"
+    },
+    {
+      "teamId": "cont_concacaf_13",
+      "team": "Seattle Sounders",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_concacaf_17",
+      "team": "Toluca",
+      "missing": 5,
+      "missingRoles": {
+        "GK": 1,
+        "MF": 3,
+        "FW": 1
+      },
+      "source": "https://www.thesportsdb.com/team/134204"
+    },
+    {
+      "teamId": "cont_concacaf_23",
+      "team": "Philadelphia Union",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_concacaf_25",
+      "team": "Vancouver Whitecaps",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_conmebol_12",
+      "team": "Corinthians",
+      "missing": 4,
+      "missingRoles": {
+        "GK": 1,
+        "FW": 3
+      },
+      "source": "https://www.thesportsdb.com/team/134284"
+    },
+    {
+      "teamId": "cont_conmebol_17",
+      "team": "Universidad Católica",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_conmebol_19",
+      "team": "Independiente Santa Fe",
+      "missing": 3,
+      "missingRoles": {
+        "GK": 1,
+        "FW": 2
+      },
+      "source": "https://www.thesportsdb.com/team/137621"
+    },
+    {
+      "teamId": "cont_conmebol_23",
+      "team": "Cusco FC",
+      "missing": 1,
+      "missingRoles": {
+        "GK": 1
+      },
+      "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv"
+    },
+    {
+      "teamId": "cont_conmebol_24",
+      "team": "Universidad Central",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_conmebol_28",
+      "team": "Independiente Medellín",
+      "missing": 5,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 2,
+        "FW": 1
+      },
+      "source": "https://www.thesportsdb.com/team/137613"
+    },
+    {
+      "teamId": "cont_ofc_2",
+      "team": "AS Vénus",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_ofc_3",
+      "team": "AS Tiga Sport",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_ofc_4",
+      "team": "Rewa FC",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_ofc_5",
+      "team": "Lae City FC",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    },
+    {
+      "teamId": "cont_ofc_7",
+      "team": "Tupapa Maraerenga",
+      "missing": 12,
+      "missingRoles": {
+        "GK": 2,
+        "DF": 3,
+        "MF": 4,
+        "FW": 3
+      },
+      "source": "wiki unavailable: HTTP Error 429: Too Many Requests"
+    }
+  ],
+  "topOmissions": [],
+  "fc27Input": "Third-party September 2026 snapshot; not independently certified as EA official"
+}
