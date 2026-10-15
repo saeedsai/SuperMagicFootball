@@ -1,5 +1,5 @@
 name: Apply Source-Checked FC27 Club Rosters
-# Second staging pass with corrected JavaScript registry serialization.
+# Third staging pass with corrected source-label graphics contract.
 on:
   push:
     branches: [dev]
