@@ -1,5 +1,5 @@
 name: Apply Verified 2026 Squad Gap Fixes
-# Apply sourced Al Quwa, Sporting San Miguelito and AS Venus squad additions as well.
+# Add cited 2026/27 Defence Force and OFC Rewa entries, preserving 2/3/4/3 quotas.
 on:
   push:
     branches: [dev]
