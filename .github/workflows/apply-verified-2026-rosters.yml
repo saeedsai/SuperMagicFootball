@@ -1,5 +1,5 @@
 name: Apply Verified 2026 Squad Gap Fixes
-# Apply merged first-team positional sources without duplicate club dictionary overrides.
+# Finalize all 165 position-capped clubs from 2026/27 sources, including OFC August 2026 tournament registration.
 on:
   push:
     branches: [dev]
