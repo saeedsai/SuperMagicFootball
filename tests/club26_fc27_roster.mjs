@@ -1,31 +1,30 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {ROSTER_CORRECTIONS} from '../src/roster_corrections.js';
-const clubData = JSON.parse(readFileSync(new URL('../data/players/club26.json', import.meta.url), 'utf8'));
+const data=JSON.parse(readFileSync(new URL('../data/players/club26.json', import.meta.url),'utf8'));
 const quota={GK:2,DF:3,MF:4,FW:3};
-let players=0,fc27=0,provisional=0;
-assert.equal(Object.keys(clubData).length,32);
-for(const [club,roster] of Object.entries(clubData)){
- assert.equal(roster.length,12,club+' must have exactly 12 players');
- assert.deepEqual(roster,ROSTER_CORRECTIONS[club],club+' game/runtime roster mismatch');
- assert.equal(new Set(roster.map(p=>p.id)).size,12,club+' duplicate IDs');
- assert.equal(new Set(roster.map(p=>p.name)).size,12,club+' duplicate names');
- const counts={GK:0,DF:0,MF:0,FW:0};
- for(const player of roster){
-  assert.equal(player.fictional,false,club+' has a fictional player');
-  assert.ok(Object.hasOwn(counts,player.role));
-  counts[player.role]++;players++;
-  for(const field of ['rating','power','shoot','defense']){
-   assert.ok(Number.isFinite(player[field])&&player[field]>=1&&player[field]<=100,club+' invalid '+field);
-  }
-  assert.ok(['A','B','C','D'].includes(player.speed),club+' speed invalid');
-  if(player.ratingSource?.startsWith('FC27'))fc27++;
-  if(player.ratingSource?.startsWith('Editorial'))provisional++;
+let fc27=0,editorial=0,roles=0;
+assert.equal(Object.keys(data).length,32);
+for(const [club,squad] of Object.entries(data)){
+ assert.equal(squad.length,12,club+' squad length');
+ assert.deepEqual(ROSTER_CORRECTIONS[club],squad,club+' runtime/data mismatch');
+ assert.equal(new Set(squad.map(p=>p.id)).size,12,club+' duplicate id');
+ assert.equal(new Set(squad.map(p=>p.name.normalize('NFKD').toLowerCase())).size,12,club+' duplicate name');
+ assert.deepEqual(Object.fromEntries(Object.keys(quota).map(k=>[k,squad.filter(p=>p.role===k).length])),quota,club+' quota');
+ for(const p of squad){
+  roles++;
+  assert.equal(p.fictional,false,club+' must contain a named real player');
+  assert(p.name?.trim(),club+' missing name');
+  assert(Number.isInteger(p.rating)&&p.rating>=1&&p.rating<=100,club+' invalid overall');
+  for(const f of ['power','shoot','defense'])assert(Number.isFinite(p[f])&&p[f]>=1&&p[f]<=100,club+' invalid '+f);
+  assert(['A','B','C','D'].includes(p.speed),club+' invalid speed');
+  const source=p.ratingSource||'';
+  if(source.startsWith('FC27')){fc27++;assert(p.fc27Id,'FC27 player must have source ID');}
+  else if(source.startsWith('Editorial')){editorial++;assert(!p.fc27Id,'editorial rating must not falsely claim FC27 ID');}
+  else throw Error(club+' unclassified rating source for '+p.name);
  }
- assert.deepEqual(counts,quota,club+' positional quota mismatch');
 }
-assert.equal(players,384);
-assert.equal(fc27,290);
-assert.equal(provisional,94);
-assert.equal(fc27+provisional,players,'all club rating sources must be classified');
-console.log('Club26 FC27 roster regression PASS — 32 clubs, 384 players, no fictional slots, data/runtime identical');
+assert.equal(roles,384);
+assert(fc27>=300,'expected broad FC27 coverage among licensed clubs');
+assert.equal(fc27+editorial,roles);
+console.log('PASS club26: 32 clubs, 384 player slots, 2/3/4/3, source-classified, runtime and data identical; FC27',fc27,'editorial',editorial);
