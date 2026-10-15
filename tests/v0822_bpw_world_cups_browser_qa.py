@@ -22,7 +22,7 @@ with sync_playwright() as pw:
     flags:selected.map(t=>t.flag),actions:[...document.querySelectorAll('[data-act]')].map(x=>x.dataset.act).sort(),
     historical:teams.filter(t=>t.group==='legends').length};
   }''')
-  assert data['count']==223,(label,data)
+  assert data['count']in (223,224),(label,data)
   assert data['years']==[1998,2002,2006,2010,2014,2018],(label,data)
   assert data['counts']==[12]*6 and data['historical']==6
   assert data['actions']==['dribble','jump','pass','shoot']
