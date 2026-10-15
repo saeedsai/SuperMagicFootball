@@ -1,14 +1,13 @@
-# Gap register — v0.8.25.32
+# Gap register — integrated multi-agent development, 15 October 2026
 
-| Priority | Area | Current status and next action |
-|---|---|---|
-| HIGH | Named player likeness and facial details | Directional eight-view contact sheet exists and hair style pixels are distinct rear 13/13. Continue artist review for real character likeness, ear/hair overlap and beard contour combinations. |
-| HIGH | Graphics accessory compatibility | Full automated drawing sweep passes but artistic and collision margin issues can be subtle. Test all accessory choices at different head scales. |
-| HIGH | Remaining hard-coded gameplay constants | v31 moved seven selected coefficients; more pass/contact/keeper tunables remain JS. Use bounded, documented JSON keys and parity tests. |
-| MEDIUM | Independent JSON patch merges | Seven player shards enable parallel work; current validator checks team/role/player invariants but does not identify all conflicting edits. |
-| MEDIUM | Career training/club editor experience | Preserve current career and custom club saves. Expand validation and coach feedback, without changing player IDs. |
-| RESOLVED | Three rear hairstyles indistinguishable | Styles 0, 9, 12 previously had same rear pixel signature because common rear overlay covered their distinguishing details. Style-specific visible crown marks now yield 13/13 unique rear signatures on desktop and touch simulations. |
-| RESOLVED | Eight-way simultaneous Studio comparison absent | New optional gallery displays all eight head/body views with live appearance edits, without changing unsaved form values or persistent saves. |
-| FAR FUTURE (not current blocker) | Hosted-origin saved-state/refresh and external interactive verification | Owner explicitly deferred former v32 Hosting/Saves initiative. Only existing GitHub Actions deployment results can be checked here. |
-| FAR FUTURE (not current blocker) | Physical Android/iOS test, FPS optimization, PWA/offline | Owner explicitly deferred former v35 Mobile initiative. |
-| LONG RANGE | Worldwide roster accuracy, Super Defense, Tricks, network modes | Outside approved current scope. |
+| Priority | Domain | Status / next action |
+| --- | --- | --- |
+| HIGH | Graphics resemblance and projections | Character-art v2 and previous eight-view fixes are live. Continue visually reviewing named-player shape/hair/beard/accessory/face combinations, with automated contact sheets and human artistic QA. |
+| HIGH | Gameplay mechanics configuration | Seven coefficients previously moved to JSON; many pass, collision, and keeper scalars remain JS. Extract them carefully with valid bounds and unchanged default match outcomes. |
+| MEDIUM | Parallel JSON edit conflicts | **Foundational protection delivered:** new three-way semantic merge checker detects competing edits and stable ID/order changes before merge. Remaining: reviewed editor-specific previews and CI integration with agent PRs. |
+| MEDIUM | Roster source verification | Club26 384 named entries, 290 agent FC27-comparison ratings and 94 editorial/provisional; transfer registration, authenticity and exact EA FC27 stats require independent verification. |
+| MEDIUM | Career and tactics usability | Improve available squad maintenance and coaching hints without migrating IDs or save schema. |
+| RESOLVED | Duplicate rear hairstyle silhouettes / Studio simultaneous preview | Earlier Studio pass ensured 13/13 rear hairstyles distinguishable and eight-view editor gallery remains. |
+| FAR FUTURE | Hosted browser/saves/restart/PWA | Owner explicitly deferred exhaustive hosting/saves and real-origin process-restart persistence. Routine GitHub deployments still checked. |
+| FAR FUTURE | Physical mobile devices and FPS | iOS/Android physical-device UX, offline installation and performance certification deferred by owner. |
+| LONG RANGE | Worldwide rosters, Super Defense, Tricks, network | No scope change until rescheduled. |

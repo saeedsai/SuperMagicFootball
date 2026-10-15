@@ -1,13 +1,11 @@
-# Supermagic Football — current development status v0.8.25.32
+# SuperMagic Football development status — multi-agent integration
 
-Authoritative base: GitHub `dev` commit `d44cb954554e344bcc02e1b8f582c2e8b21a68a8` (v0.8.25.31). Development remains modular: root `index.html` plus `src/`, `data/`, `style.css`, `sw.js`. No standalone root `play.html` needed.
+As of **15 October 2026**, `dev` remains the authoritative modular application (`index.html` + `src/` + `data/`). Graphics character-art v2, 32 Club26 reconciled teams and the eight-view comparison UI are integrated through the existing commit ancestry; no cherry-pick or history rewrite is required. The inspected starting head for this focused iteration was `a42ce51cc1cee1c276a90b260a3e05e6285526e1`.
 
-**New requirement delivered:** The Player Studio **COMPARE ALL 8 VIEWS** control displays an eight-image grid reflecting hairstyle, face shape, beard and accessories as the editor changes. It is off by default, uses a cached idle pose, preserves uncommitted editor controls, and changes no gameplay or saved data. Live player customization continues to use prior save formats and keys.
+**New integration tooling:** `scripts/parallel_data_merge.py` checks separate agents' team, player and graphics edits against a shared ancestor; merges non-overlapping field edits; refuses conflicting edits, ID/order drift and missing team rosters; and writes only to an explicitly separate empty output folder. The 11 new Python unit tests exercise those contracts, including the CLI and conflict report. This does **not** change the live game or player data.
 
-**Graphics bug fixed:** Straight-behind variants for hairstyles 0, 9, 12 were pixel-identical (11/13 unique). Adding visible rear-crown details after the generic hair overlay raised uniqueness to **13/13** across desktop/simulated touch. All eight views and 5 face families continue to render.
+**QA:** Refer to `docs/PARALLEL_DEVELOPMENT_QA_20261015.md` and the exact integration commit's GitHub Actions run for current pass/fail. Earlier 129/129 script regression and 32 active Node checks passed on `8f4817fe`, but are historical; do not misattribute them to newer agent commits. All new changes must pass the complete regression census and current Pages workflow.
 
-**Regression:** 146/146 Node assertions, all 20 inherited Chromium suites, 9 modular loading checks, 11 performance recovery checks, 18 new Studio gallery checks, 24/24 complete seeded matches; zero FAIL or TIMEOUT in executed suites. 19/19 graphics integration checks and its 12,096-case sweep passed. See `TEST_REPORT_v082532.md`, `QA_CATALOG_v082532.csv` and `QA_SUMMARY_v082532.json`.
+**Protected:** 223 teams / 2,676 players (12 each), stable team and player IDs, seven BPW squads, 2GK/3DF/4MF/3FW, four action buttons, five main menu groups, six formations, existing save keys and graphics option indices.
 
-**Deferred per owner:** exhaustive hosting/reload/saved profile certification and physical mobile FPS/PWA/offline testing have moved to FAR FUTURE, not next-five milestones. Routine GitHub publish-status checks remain. Hosted interactive browser testing was not executable in this environment; do not confuse successful GitHub Actions builds with it.
-
-**Protected:** 223 built-in teams, 2,676 players (12/team), BPW squads and player IDs, 2GK/3DF/4MF/3FW, four action buttons, five nav groups and six formations, career save schema and gameplay physics unchanged.
+**Known gaps:** visual likeness remains subjective, some FC27 comparisons/editorial ratings lack independent source verification, additional gameplay constants remain in JS, and further editor conflict review is still needed. Full hosted-play/save-restart checks and physical-device/PWA/FPS work are **far future**, not milestone blockers.

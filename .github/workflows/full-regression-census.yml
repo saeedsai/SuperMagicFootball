@@ -14,6 +14,9 @@ on:
       - 'src/modules/expanded.js'
       - 'data/graphics/**'
       - 'tests/club26_player_graphics_integration.test.cjs'
+      - 'scripts/parallel_data_merge.py'
+      - 'tests/test_parallel_data_merge.py'
+      - 'docs/PARALLEL_DATA_MERGE_GUIDE.md'
       - 'tests/club26_fc27_roster.mjs'
       - 'docs/AGENT_INTEGRATION_QA_20261015.md'
   workflow_dispatch:
@@ -33,6 +36,8 @@ jobs:
         run: python3 scripts/validate_data.py
       - name: Build current playable test fixture
         run: python3 scripts/build.py
+      - name: Regression — three-way JSON agent merge safeguards
+        run: python3 -m unittest discover -s tests -p 'test_parallel_data_merge.py' -v
       - name: Execute active Node contract tests
         run: node --test tests/*.test.cjs
       - name: Execute current Club26/FC27 roster contracts

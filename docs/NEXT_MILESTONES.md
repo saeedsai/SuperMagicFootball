@@ -1,21 +1,23 @@
-# Five-iteration development plan after v0.8.25.32
+# SuperMagic Football — five-iteration development plan (multi-agent integrated)
 
-Source of truth: GitHub `dev`; integrate only after independent QA and seeded full-match regression. Preserve 223 built-in teams, 2,676 players, seven BPW squads, 12 players per team (2 GK, 3 DF, 4 MF, 3 FW), ID/index order, existing careers/saves, exactly four action buttons, five top-level navigation groups and six formations.
+**Source of truth:** latest `dev` branch, and exact git commit on which every QA run executes. As of 15 October 2026, concurrent roster and graphics agents had already integrated their changes into `dev`; their subsequent FC27 source-probing and comparison-image commits must not be overwritten. Preserve 223 teams, 2,676 players, seven BPW squads, all persistent IDs and stable team indices, 2GK/3DF/4MF/3FW, five main menu groups, four action buttons, six formations, and existing save schema.
 
-| Version | Priority | Requirements and acceptance |
+| Next iteration | Focus | Implementation and acceptance |
 |---|---|---|
-| **v0.8.25.33** | Graphics refinement | Curated named-player hair/beard/face and accessories across all eight directions; comparison gallery visual QC; inspect contact sheets, avoid overlapping skin/face; preserve full 12,096-draw sweep. |
-| **v0.8.25.34** | Gameplay JSON extraction | Move bounded pass/contact/keeper variables to `data/mechanics/gameplay.json`; validate schema and match outcomes; 24 full matches and mechanical suites. |
-| **v0.8.25.35** | Gameplay animations | Improve passing follow-through, goalkeeper recovery and first touch animations with deterministic view-specific QA; no physics changes without measured evidence. |
-| **v0.8.25.36** | Editor/data integrity | Add conflict detection and merge diagnostics for concurrently edited team, player and graphics JSON; preserve player IDs and exact roster quota. |
-| **v0.8.25.37** | Career UX and AI | Enhance available career squad maintenance and tactical coaching hints; acceptance includes formation and saved-state compatibility tests. |
+| **v0.8.25.33** | Player graphics quality | Named-player front/side/three-quarter/rear visual QC using live contact sheets; resolve hair, beard, face, accessory overlap and expression issues; render entire real-player matrix and Chromium art suite. |
+| **v0.8.25.34** | Gameplay JSON parameters | Add bounded, documented pass/contact/keeper tuning keys; preserve previous defaults; validate schema, effects and 24 seeded complete matches. |
+| **v0.8.25.35** | Gameplay animation | Improve keeper recovery, first touch, passing and action follow-through, including directional frame consistency; maintain current collision and ball physics unless calibrated separately. |
+| **v0.8.25.36** | Parallel data/editor integration | **Foundational three-way conflict checker delivered early**: extend it with proposed-diff summaries and cross-graphics editor validation, then implement reviewed merges without ID/index drift. |
+| **v0.8.25.37** | Career, roster and tactical coaching UX | Better squad maintenance and tactical feedback without breaking user-created clubs or saves; new UI and regression acceptance. |
 
-## Far-future backlog — explicitly postponed by project owner
+## Current integration/QA hygiene
 
-These are **removed from the next five iterations**. Do not bring them back as milestone blockers without a new request.
+Run `scripts/parallel_data_merge.py` with three checkout trees when multiple agents edit the same JSON, follow [PARALLEL_DATA_MERGE_GUIDE.md](PARALLEL_DATA_MERGE_GUIDE.md), and require GitHub `Modular Game Dev QA` and `Full Regression Census` green on the exact integrated commit. Do not force-push or cherry-pick changes already in current `dev`. Old docs, QA evidence and agent workflow files are historical or independently owned: clean only proven-unused artifacts.
 
-- **Hosting and saves** (formerly planned v0.8.25.32): exhaustive live Pages browser gameplay, refresh/restart, import/export and persistent profile certification. Routine GitHub source and CI/Pages status checks remain part of normal release hygiene, but are not a feature milestone.
-- **Physical mobile and offline/PWA** (formerly planned v0.8.25.35): iOS/Android device testing, real FPS optimization, offline install and service-worker certification.
-- Other long-range programs: editorial worldwide rosters, Super Defense, Tricks, multiplayer/LAN/network. Retain specifications until explicitly scheduled.
+## Far-future backlog — owner-deferred
 
-Every iteration must include a playable modular `index.html` plus `src/` and `data/`, Node regression, all inherited Chromium suites, seeded matches, new feature tests, honest PASS/FAIL/NOT EXECUTED reporting, and docs/source committed to `dev`. GitHub Pages may serve the `dev` branch according to repository settings; do not claim interactive remote verification unless actually performed.
+- Complete GitHub Pages interactive gameplay, refresh/import/export and browser-process save persistence certification.
+- Physical Android/iOS devices, performance/FPS tuning on devices, offline/PWA and install certification.
+- Worldwide team roster research, Super Defense, Tricks and multiplayer/network architecture, until explicitly rescheduled.
+
+Routine GitHub Pages build/deployment reporting continues, but is **not** a substitute for real browser interaction and is **not** a development priority.
