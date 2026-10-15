@@ -96,3 +96,26 @@ test('the full beard is jaw-fitted across every face type including rear-facing'
   }
  }
 });
+
+test('all player studio art choices draw unique instructions wherever visible',async()=>{
+ const {CHARACTER_ART:art}=await modPromise;
+ const counts={face:5,style:13,eyes:20,brows:20,eyeColor:6,nose:6,lips:8,beard:5,accessory:6,freckles:4,scar:6,tattoo:6};
+ const defaults={face:0,style:1,eyes:0,brows:0,eyeColor:0,nose:0,lips:0,beard:0,accessory:0,freckles:0,scar:0,tattoo:0,skin:'#dca27f',hair:'#503a2b'};
+ for(const [field,count] of Object.entries(counts)){
+  const traces=new Set();
+  for(let index=0;index<count;index++){
+   const {c,counts:state}=fakeCanvas();
+   const log=[];let path=[];
+   const commands=['moveTo','lineTo','quadraticCurveTo','bezierCurveTo','ellipse','roundRect'];
+   for(const command of commands)c[command]=(...args)=>path.push([command,...args]);
+   c.beginPath=()=>{path=[]};
+   c.fill=()=>log.push(['fill',c.fillStyle,path]);
+   c.stroke=()=>log.push(['stroke',c.strokeStyle,path]);
+   const av={...defaults,[field]:index};
+   art.draw(c,player,av,team,{kind:'front',side:1},{skin:av.skin,hair:av.hair,headScale:1});
+   assert.equal(state().saves,0,field+' '+index);
+   traces.add(JSON.stringify(log));
+  }
+  assert.equal(traces.size,count,field+' '+count+' selected options need distinct graphics');
+ }
+});
