@@ -12,7 +12,6 @@ const CHARACTER_ART=(()=>{
  const patch=(c,fn,fill,stroke='#26303c',width=1.8)=>{c.beginPath();fn(c);c.closePath();c.fillStyle=fill;c.fill();if(stroke){c.lineJoin='round';c.lineWidth=width;c.strokeStyle=stroke;c.stroke()}};
  const oval=(c,x,y,rx,ry,fill,stroke=null,w=1)=>patch(c,p=>p.ellipse(x,y,Math.max(.2,rx),Math.max(.2,ry),0,0,TAU),fill,stroke,w);
  const grad=(c,x0,y0,x1,y1,stops)=>{const g=c.createLinearGradient(x0,y0,x1,y1);for(const [n,color] of stops)g.addColorStop(n,color);return g};
- const SKINS=Object.freeze([1,1.06,.96,1.11,1.02]);
  const FACES=Object.freeze([{w:27,chin:34,jaw:21},{w:30,chin:33,jaw:27},{w:25,chin:37,jaw:17},{w:30,chin:35,jaw:28},{w:27,chin:39,jaw:21}]);
  const EYES=Object.freeze(['#3e2a22','#5b3a24','#4f6d8c','#588a69','#7a6e9c','#8b6a34']);
  const headSpecs=av=>FACES[index(av.face,5)];
@@ -166,6 +165,11 @@ const CHARACTER_ART=(()=>{
   if(s===3||s===7)line(c,[[0,top+4],[0,-15]],deep,1.5);
   line(c,[[-w+9,top+18],[-12,top+11],[2,top+9],[w-9,top+16]],rgba(shine,.52),1.5);
   c.restore();
+  // Hair option 8 is a real wraparound headband, not a duplicate textured crop.
+  if(s===8){const bandY=rear?-16:-16.5;
+   patch(c,p=>{p.moveTo(-w+2,bandY-5);p.quadraticCurveTo(0,bandY-8,w-2,bandY-5);p.lineTo(w-3,bandY+.5);p.quadraticCurveTo(0,bandY-2,-w+3,bandY+.5)},'#edece4',dark,1.1);
+   line(c,[[-w+7,bandY-3],[w-7,bandY-4]],rgba('#ffffff',.7),1.1);
+  }
   if(s===10||s===6){
    const x=rear?28:side?-27:31;oval(c,x,-18,10,7,deep,dark,1.3);
    oval(c,x+3,-20,6,5,hair,dark,.8);
@@ -175,7 +179,26 @@ const CHARACTER_ART=(()=>{
   const type=index(av.beard,5);if(!type)return;
   const h=tint(hair,-.25),dark=tint(hair,-.44),stubble=rgba(dark,.31),full=type===3;
   const edge=g.jaw,chin=g.chin;
-  if(kind==='back')return; // Back of a head must never grow a detached moustache.
+  if(kind==='back'){
+   // Profile-following sideburns are visible beside the neck from behind.
+   // Mouth and moustache remain completely occluded by the cranium.
+   if(type===4)return;
+   const sideX=g.w-3,visible=type===3?4.1:type===2?2.9:1.5;
+   for(const sign of [-1,1]){
+    const outer=sign*(sideX+visible),inner=sign*(sideX-visible*.45);
+    if(type===1){
+     line(c,[[outer,12],[outer-sign*.3,19],[inner,chin-8]],stubble,1.5);
+    }else{
+     patch(c,p=>{p.moveTo(sign*(sideX-2),10);
+      p.quadraticCurveTo(outer+sign*1.8,15,outer,22);
+      p.quadraticCurveTo(outer-sign*2,chin-7,inner,chin-4);
+      p.quadraticCurveTo(sign*(sideX-4),chin-10,sign*(sideX-5),16);
+     },full?dark:h,dark,1.05);
+     if(full)line(c,[[outer-sign*.6,18],[inner,chin-5]],rgba(tint(hair,.10),.45),1);
+    }
+   }
+   return;
+  }
   if(kind==='quarterBack'){
    if(type===2||type===3)patch(c,p=>{p.moveTo(23,8);p.quadraticCurveTo(33,15,21,chin-2);p.quadraticCurveTo(15,chin-8,19,14)},full?dark:h,null);
    return;
@@ -248,6 +271,8 @@ const CHARACTER_ART=(()=>{
    else{oval(c,-g.w,8,10,22,tint(hair,-.24),dark,1.4);oval(c,g.w,8,10,22,tint(hair,-.24),dark,1.4);}
   }
   renderSkin(c,kind,av,skin,dark);
+  // Layer beards behind lips so full beards no longer paint across mouths.
+  beard(c,kind,av,skin,hair,g);
   if(facingFront){
    if(kind==='front'){
     brow(c,-12,-1,av.brows,hair);brow(c,12,-1,av.brows,hair);
@@ -268,7 +293,6 @@ const CHARACTER_ART=(()=>{
     lips(c,20,25,av.lips??av.mouth,skin,'side',opt.hurt||opt.cry);
    }
   }
-  beard(c,kind,av,skin,hair,g);
   hairGeometry(c,av.style,kind,g,hair,dark);
   details(c,kind,av,skin,g);
   headAccessories(c,kind,av,skin,hair,g);
@@ -357,10 +381,9 @@ const CHARACTER_ART=(()=>{
   if(!c||!p||!team)return;
   const v=geometry[view?.kind]?view:{kind:'side',side:1};
   const skin=hex(opt.skin||av.skin||'#c69c7d'),main=hex(team.primary||'#3478bc'),secondary=hex(team.secondary||'#f3e8d1'),trim=hex(team.trim||secondary);
-  const dark=opt.dark||'#263044',run=clamp(opt.run,-1,1),behind=v.kind==='back'||v.kind==='quarterBack';
+  const dark=opt.dark||'#263044',run=clamp(opt.run,-1,1);
   const nearKit=secondary;
   c.save();
-  const facing=v.kind==='side'?1:v.kind.startsWith('quarter')?1:0;
   leg(c,-1,v,skin,nearKit,trim,nearKit,dark,run,p,opt,false);
   leg(c,1,v,skin,nearKit,trim,nearKit,dark,run,p,opt,true);
   shorts(c,v,nearKit,trim,dark);
