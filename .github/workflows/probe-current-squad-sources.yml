@@ -1,4 +1,5 @@
 name: Probe Additional 2026 Club Squad Sources
+# Follow-up: inspect player table markup before using source data.
 on:
   push:
     branches: [dev]
