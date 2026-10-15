@@ -1,4 +1,5 @@
 name: Verify Deployed PC and Touch Game
+# Recheck live GitHub Pages after 165-club FC27 and editorial source corrections.
 on:
   push:
     branches: [dev]
