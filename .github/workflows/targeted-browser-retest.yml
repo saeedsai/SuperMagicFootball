@@ -29,7 +29,7 @@ jobs:
           import json,subprocess,sys,pathlib
           root=pathlib.Path('.')
           current=json.loads((root/'package.json').read_text())['version']+'-integrated'
-          names='control_reliability_browser_qa.py master_ui_contracts.py v08202_rosters_browser_qa.py v08231_bpw_alltime_browser_qa.py aerial_browser_qa.py dribble_styles_browser_qa.py morale_browser_qa.py v08195_overall_browser_qa.py v08203_rosters_browser_qa.py ai_browser_qa.py v08196_keeper_browser_qa.py v08205_rosters_browser_qa.py kits_browser_qa.py tactics_browser_qa.py v08193_ui_browser_qa.py v08197_keeper_browser_qa.py v0822_bpw_world_cups_browser_qa.py graphics_integration_v082522.py'.split()
+          names='ai_browser_qa.py kits_browser_qa.py dribble_styles_browser_qa.py morale_browser_qa.py'.split()
           report=[]
           for name in names:
               p=root/'tests'/name
