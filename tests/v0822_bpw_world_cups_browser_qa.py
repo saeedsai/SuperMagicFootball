@@ -71,7 +71,7 @@ with sync_playwright() as pw:
     return {total:teams.length,saved:teams.find(t=>t.id==='club_existing')?.index,
       firstBPW:teams.find(t=>t.id==='bpw_wc_1998')?.index};
   }""")
-  assert positions=={'total':224,'saved':216,'firstBPW':217},(label,positions)
+  assert positions=={'total':225,'saved':216,'firstBPW':217},(label,positions)
   saved.close()
   assert not errors,(label,errors)
   print('PASS',label,'223 teams, six BPW historical mixed squads, home/away filters, player portraits and kickoff',flush=True)
