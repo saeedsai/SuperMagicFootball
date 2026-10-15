@@ -21,10 +21,12 @@ with sync_playwright() as pw:
   page.screenshot(path=str(p/'tests'/f'ai_settings_{name}.png'))
   page.locator('[data-action="saveSettings"]').click()
   open_quick(page)
+  page.locator('[data-action="setupRules"]').click()
   assert page.locator('#matchDifficulty').input_value()=='0'
   page.locator('#matchDifficulty').select_option('4')
   assert page.evaluate('NekketsuHD.game.options.difficulty')==4
   page.screenshot(path=str(p/'tests'/f'ai_setup_{name}.png'))
+  page.locator('[data-action="returnSetup"]').click()
   page.locator('[data-action="kickoff"]').click()
   assert page.evaluate('NekketsuHD.game.matchState')=='play'
   page.locator('#pauseBtn').click(force=True)
