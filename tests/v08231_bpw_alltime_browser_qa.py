@@ -28,6 +28,7 @@ with sync_playwright() as pw:
   page.locator('#awayGroup').select_option('all')
   page.locator('#homeGroup').select_option('bpw_alltime')
   page.locator('#homeTeam').select_option('222')
+  page.locator('[data-action="setupTactics"]').click()
   page.locator('[data-action="prepHome"]').first.click()
   assert page.locator('.formationSlot canvas').count()==6
   assert page.locator('.playerFaceCanvas').count()==12
