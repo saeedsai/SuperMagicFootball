@@ -40,6 +40,13 @@ test('appearance presets, mirroring, kit changes, accessories and keeper actions
   }
  }
 });
+test('offline caching and inline browser test fixture both load new art module',()=>{
+ const build=fs.readFileSync(path.resolve(__dirname,'../scripts/build.py'),'utf8');
+ const sw=fs.readFileSync(path.resolve(__dirname,'../sw.js'),'utf8');
+ assert.match(build,/'artpose','characterart','render'/);
+ assert.match(sw,/'artpose','characterart','render'/);
+ assert.match(sw,/smf-082532-characterart-v2/);
+});
 test('production integration remains in match renderer',()=>{
  const source=fs.readFileSync(path.resolve(__dirname,'../src/modules/render.js'),'utf8');
  assert.match(source,/import\s+\{CHARACTER_ART\}\s+from\s+["']\.\/characterart\.js["']/);

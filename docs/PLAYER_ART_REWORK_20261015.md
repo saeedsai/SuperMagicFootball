@@ -25,3 +25,8 @@ This is a substantial production renderer upgrade but not a completed hand-illus
 
 ## Testing honesty
 The graphics matrix in the new Node test can be run without loading the full match. Until Node/Chromium runners execute against the new commit, do not mark visual tests as passed or claim pixel-perfect matching.
+
+## Deployment integration
+- `scripts/build.py` now concatenates `characterart.js` before `render.js` in the inherited browser test fixture.
+- `sw.js` now precaches `src/modules/characterart.js` and uses a new cache name, preventing the offline web app from serving a shell missing the new import.
+- `tests/player_art_rework.test.cjs` covers 1,625 face × beard × hair × projection combinations and an additional 2,880 keeper/accessory/mouth/mirrored-side sample renders.
