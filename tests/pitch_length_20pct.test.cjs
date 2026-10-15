@@ -39,7 +39,7 @@ test('gameplay options, rosters and player index schema stay untouched by this g
 });
 test('updated offline shell version includes the new mechanics file',()=>{
  const sw=read('sw.js');
- assert.match(sw,/smf-082533-pitch-length20-v1/);
+ assert.match(sw,/smf-082533-concept-hero-demo-v1/);
  assert.match(sw,/mechanics\/gameplay\.json/);
  assert.match(sw,/characterart/);
 });
