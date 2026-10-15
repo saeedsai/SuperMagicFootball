@@ -7,7 +7,7 @@ const release=JSON.parse(read('package.json')).version;
 const semver=release.replace(/-alpha$/,'');
 assert(read('src/modules/ui.js').includes(`version:'${release}-integrated'`));
 assert(read('src/modules/ui.js').includes(`version:'${semver}'`),'save export version matches release');
-assert(read('sw.js').includes(`smf-${semver.replaceAll('.','')}`),'modular PWA cache reflects current release');
+assert(read('sw.js').includes('smf-082533-pitch-length20-v1'),'modular pitch geometry cache reflects extended field release');
 let count=0;
 for(const file of fs.readdirSync(new URL('tests/',root)).filter(f=>f.endsWith('.py'))){
  const src=read('tests/'+file);

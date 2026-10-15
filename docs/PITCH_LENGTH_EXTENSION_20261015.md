@@ -23,3 +23,16 @@ Full QA status: **pending exact-commit GitHub CI** at authoring time. See GitHub
 ## Adjacent defect found during roster-agent regression
 
 Modern source-backed clubs sort goalkeepers together, but the historical numeric starting lineup can put their second keeper into a defender's role. Updated modular and legacy tactics `defaultPlan()` to fall back to an exact GK/DF/DF/MF/FW/FW selection when historical slot order no longer fits. `validatePlan()` now rejects two active goalkeepers; `safePlan()` recovers without altering saved player IDs. Four new active Node contracts validate the default active six across all **223 teams** and protect player positions. Explicit user selections that already contain a proper keeper and five outfield players remain supported. See exact-commit CI evidence.
+
+## Actual QA evidence and regression limitations
+
+**Verified** on GitHub CI:
+- The modular source/data validator and active Node suite passed after the pitch change and again after the goalkeeper default-lineup correction.
+- The five pitch-geometry Node contracts and new Chromium `pitch_length_browser_qa.py` pass (desktop and simulated touch).
+- GitHub Pages deployment succeeded for the longer pitch.
+- Public hosted game smoke on commit `bb3301123df9044a81055862f45d59c8f699dd09` verified HTTP 200, 223 teams, menus, kickoff, live match start and +20% field geometry on desktop and simulated touch: [run 38807466858](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38807466858).
+- The new role-aware default lineup suite passes under active Node QA; intended to protect one GK and five positional outfield players for all 223 squads.
+
+**Known historical census failures** (do not treat as solved merely because active CI passed): a preceding exact-commit full regression on `d8f35c8` recorded 76/86 Node scripts and 43/47 browser scripts passing, with ten Node and four browser failures largely in archived 2026 roster/identity tests. Those historic snapshots assert old DOB formatting, canonical identity provenance, verified shirt fields or particular historical lineups; other agents have since updated the player datasets. Two obsolete PWA cache-name assertions have been refreshed, and the default starting-lineup bug fixed, but remaining historical roster source contracts require verified fixture migration and source-backed reconciliation. See [Full Regression Census 38806367060](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38806367060). Newer runs must be checked per exact SHA before citing final counts.
+
+**Not certified:** independent EA FC27 identity/attribute accuracy for all clubs, true physical Android/iOS, save persistence across browser restart and fully deterministic match scores. These remain source/owner-dependent items, not hidden PASS results.

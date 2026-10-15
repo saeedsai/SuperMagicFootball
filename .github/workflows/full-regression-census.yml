@@ -14,6 +14,8 @@ on:
       - 'src/modules/tactics.js'
       - 'src/tactics.js'
       - 'tests/default_lineup_roster_qa.test.cjs'
+      - 'tests/master_contracts.mjs'
+      - 'tests/v08245_release_alignment.mjs'
       - 'data/mechanics/gameplay.json'
       - 'sw.js'
       - 'scripts/validate_data.py'
