@@ -319,7 +319,8 @@
     "opponent": 9,
     "gameSpeed": 1,
     "ballModel": "classic",
-    "aiStyle": "Balanced"
+    "aiStyle": "Balanced",
+    "showPerformance": false
   },
   "weather": [
     "Clear",
@@ -754,5 +755,14 @@
     "ballLiftWindowSeconds": 1.55,
     "superBicycleSpeedCap": 1550,
     "aerialDoubleTapSeconds": 0.32
+  },
+  "engineBalance": {
+    "attackingStoppageProgress": 0.68,
+    "superKnockbackReferencePower": 72,
+    "superKnockbackPowerSpan": 75,
+    "superKnockbackLevelFactor": 0.16,
+    "superKnockbackStrengthFactor": 0.008,
+    "superKnockbackMax": 3,
+    "keeperPredictionMaxSeconds": 0.95
   }
 }

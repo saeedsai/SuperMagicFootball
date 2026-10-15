@@ -1,0 +1,15 @@
+{
+  "version": "0.8.25.31",
+  "baselineGithubMain": "34dd3d367997b76ac4030f564db3b8e75f76ee21",
+  "nodeAssertions": 143,
+  "inheritedBrowserSuites": 20,
+  "modularBrowserCases": 9,
+  "newBrowserCases": 11,
+  "fullMatchReplays": 24,
+  "errors": 0,
+  "timeouts": 0,
+  "notExecuted": 4,
+  "catalogRows": 211,
+  "catalogPass": 207,
+  "gitHubPagesDevHosted": "NOT VERIFIED"
+}

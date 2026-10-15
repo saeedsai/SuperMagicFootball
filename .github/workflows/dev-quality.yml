@@ -1,0 +1,21 @@
+name: Modular Game Dev QA
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  source-and-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate all JSON datasets
+        run: python3 scripts/validate_data.py
+      - name: Regenerate test-only browser fixture
+        run: python3 scripts/build.py
+      - name: Execute Node regression suite
+        run: node --test tests/*.test.cjs
+      - name: Compile Python browser regression scripts
+        run: python3 -m compileall -q scripts tests

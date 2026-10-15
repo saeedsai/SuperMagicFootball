@@ -71,7 +71,7 @@ let preTalkChoices=['none','none'];let home=0,away=9,homeCategory='all',awayCate
 let teamPlans=store.get('teamPlans',{}),squadContext='home',squadSide=0;
 let league=store.get('league',{played:0,wins:0,draws:0,losses:0,points:0,playoff:0,stage:'qualifier',games:[]});
 const audio=new ArcadeAudio({...AUDIO_DEFAULTS,...store.get('audioOptions',{}),...(opt.sfx===false?{mute:true}:{})});
-const game=new GameEngine(opt,input),menu=$('menu'),hud=$('hud'),touch=$('mobile');
+const game=new GameEngine(opt,input),menu=$('menu'),hud=$('hud'),touch=$('mobile'),perfHud=$('perfHud');
 const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const button=(name,act,cls='')=>`<button class="btn ${cls}" data-action="${act}">${name}</button>`;
 const choice=(id,values,selected)=>`<select id="${id}" class="choice">${values.map(([key,name])=>`<option value="${escapeHTML(key)}" ${String(key)===String(selected)?'selected':''}>${escapeHTML(name)}</option>`).join('')}</select>`;
@@ -96,7 +96,7 @@ const identity=i=>teamIdentity(TEAMS[i]);
 const menuVisible=()=>!menu.classList.contains('hidden');
 const closeMenu=()=>{input.cancelAll();audio.sceneChange('match');menu.classList.add('hidden');hud.classList.remove('hidden');touch.classList.toggle('hidden',!matchMedia('(pointer:coarse)').matches)};
 const show=(html,id='home')=>{audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');menu.innerHTML=`<div class="menubox"><div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>${html}<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div></div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
-function page(title,subtitle,body,returnAction='home'){if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER • VERSION 0.8.25.30</div><h1 class="heading">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title)}
+function page(title,subtitle,body,returnAction='home'){if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER • VERSION 0.8.25.31</div><h1 class="heading">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title)}
 // v0.8.24.7 — Menu handoff: five primary categories, no new gameplay modes.
 // Existing action handlers, saves, teams and engine remain the authority.
 const menuParents={
@@ -111,7 +111,7 @@ const navItem=(label,act,description='',availability='active',icon='⚽')=>({lab
 function menuChoices(id,title,subtitle,entries,back='home',extra=''){
  menuBackAction=back;
  const cards=entries.map((e,i)=>`<button type="button" class="btn navChoice ${e.availability==='later'?'navLater':''}" data-action="${escapeHTML(e.act)}" ${i===0?'data-default-focus="true"':''} aria-label="${escapeHTML(e.label+(e.availability==='later'?' coming later':''))}"><span class="navIcon" aria-hidden="true">${e.icon}</span><span class="navCopy"><strong>${escapeHTML(e.label)}</strong><small>${escapeHTML(e.description)}</small></span><span class="navStatus">${e.availability==='later'?'COMING LATER':'›'}</span></button>`).join('');
- show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL · 0.8.25.22</div><h1 class="heading">${escapeHTML(title)}</h1><p class="subtitle">${escapeHTML(subtitle)}</p></div>${button('← BACK',back,'minor navBack')}</div><div class="navList">${cards}</div>${extra}</div>`,id);
+ show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL · 0.8.25.31</div><h1 class="heading">${escapeHTML(title)}</h1><p class="subtitle">${escapeHTML(subtitle)}</p></div>${button('← BACK',back,'minor navBack')}</div><div class="navList">${cards}</div>${extra}</div>`,id);
  // Restore the selected item in its parent after returning; do not steal focus from clicks.
  if(navFocusMap[id]){const match=menu.querySelector(`[data-action="${navFocusMap[id]}"]`);if(match){match.focus({preventScroll:true});return;}}
  menu.querySelector('.navChoice')?.focus({preventScroll:true});
@@ -183,7 +183,7 @@ function showSaveMenu(parent='navSettings'){menuChoices('nav-saves','SAVE MANAGE
 function showAbout(){page('ABOUT SUPERMAGIC FOOTBALL','Original offline cartoon arcade football.',`<div class="panel"><p>Alpha v0.8.25.30 · Independent football game with original graphics and audio.</p><p class="muted">Four action buttons · ${TEAMS.length} teams · saved locally on your device.</p>${button('← MAIN MENU','home','gold')}</div>`,'home');}
 function showHome(){
  menuBackAction='home';menuEntryReturn='home';
- show(`<header class="homeMasthead"><div><div class="topline">ARCADE FOOTBALL · SUPER SHOTS · YOUR FOOTBALL UNIVERSE</div><h1 class="heading logoHeading">SUPERMAGIC <em>FOOTBALL</em></h1><p class="subtitle">Pick a mode. All original gameplay and editing tools remain accessible.</p></div><span class="homeVersion">GRAPHICS 0.8.25.30</span></header>
+ show(`<header class="homeMasthead"><div><div class="topline">ARCADE FOOTBALL · SUPER SHOTS · YOUR FOOTBALL UNIVERSE</div><h1 class="heading logoHeading">SUPERMAGIC <em>FOOTBALL</em></h1><p class="subtitle">Pick a mode. All original gameplay and editing tools remain accessible.</p></div><span class="homeVersion">GRAPHICS 0.8.25.31</span></header>
  <div class="menuGrid homeDashboard simplifiedHome"><main class="homeDirectory" aria-label="Five game categories">
  <div class="navList navMainList">
  ${[
@@ -455,7 +455,7 @@ function commitSaveImport(changes,storage){
  }
  return changes.length;
 }
-function exportSave(){const keys=SAVE_KEYS;const data={product:'Supermagic Football',version:'0.8.25.30',exportedAt:new Date().toISOString(),data:Object.fromEntries(keys.map(k=>[k,store.get(k,null)]))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='Supermagic_Football_Save_'+new Date().toISOString().slice(0,10)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),3000)}
+function exportSave(){const keys=SAVE_KEYS;const data={product:'Supermagic Football',version:'0.8.25.31',exportedAt:new Date().toISOString(),data:Object.fromEntries(keys.map(k=>[k,store.get(k,null)]))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='Supermagic_Football_Save_'+new Date().toISOString().slice(0,10)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),3000)}
 async function importSave(file){try{
  if(!file||file.size>5_000_000)throw Error('Save file missing or larger than 5MB');
  const changes=validateSaveImport(JSON.parse(await file.text()));
@@ -475,7 +475,7 @@ function showControls(){
 function showSettingsSection(section){
  const opts={
  game:{id:'nav-settings-game',title:'GAME SETTINGS',subtitle:'CPU, match rules and environment.',fields:`${field('CPU DIFFICULTY','difficulty',aiChoices(),opt.difficulty)}${difficultyHint()}${field('MATCH PACE','gameSpeed',[[0.8,'Relaxed / 80%'],[1,'Normal / 100%'],[1.15,'Fast / 115%']],opt.gameSpeed||1)}${field('HALF LENGTH','settingsDuration',[60,120,180,300].map(v=>[v,v+' sec']),opt.halfSeconds)}${field('WEATHER','settingsWeather',WEATHER.map(v=>[v,v]),opt.weather)}${field('TERRAIN','settingsTerrain',TERRAIN.map(v=>[v,v]),opt.terrain)}${field('CONDITION','settingsCondition',CONDITIONS.map(v=>[v,v]),opt.condition)}`},
- graphics:{id:'nav-settings-graphics',title:'GRAPHICS',subtitle:'Camera and display settings.',fields:`${field('CAMERA','camera',[['Follow','Follow the ball'],['Wide','Wide center view']],opt.camera)}${field('BALL DESIGN','ballModel',VISUALFEEL.BALL_MODELS.map(v=>[v.id,v.name]),opt.ballModel)}<canvas id="ballPreview" class="ballPreview" width="100" height="76" aria-label="Preview of selected match ball"></canvas>${field('SHOW PLAYER NAMES','showNames',[['true','Yes'],['false','No']],String(opt.showNames))}<div class="row">${button('⛶ TOGGLE FULLSCREEN','fullscreen','minor')}</div><p class="muted">Fullscreen and screen rotation support depends on your browser and device. Visual effects remain built into the game.</p>`},
+ graphics:{id:'nav-settings-graphics',title:'GRAPHICS',subtitle:'Camera and display settings.',fields:`${field('CAMERA','camera',[['Follow','Follow the ball'],['Wide','Wide center view']],opt.camera)}${field('BALL DESIGN','ballModel',VISUALFEEL.BALL_MODELS.map(v=>[v.id,v.name]),opt.ballModel)}<canvas id="ballPreview" class="ballPreview" width="100" height="76" aria-label="Preview of selected match ball"></canvas>${field('SHOW PLAYER NAMES','showNames',[['true','Yes'],['false','No']],String(opt.showNames))}${field('PERFORMANCE HUD','showPerformance',[['false','Off (default)'],['true','Show live FPS / frame time']],String(opt.showPerformance===true))}<div class="row">${button('⛶ TOGGLE FULLSCREEN','fullscreen','minor')}</div><p class="muted">Fullscreen and screen rotation support depends on your browser and device. Visual effects remain built into the game.</p>`},
  sound:{id:'nav-settings-sound',title:'SOUND',subtitle:'Original offline music, sound effects and crowd.',fields:`${field('MASTER MUTE','audioMute',[['false','Sound on'],['true','Mute all']],String(audio.settings.mute))}${['master','music','sfx','ui','ambience'].map(k=>`<label class="fieldLabel" for="audio_${k}">${k.toUpperCase()} VOLUME <output id="audio_${k}Value">${audio.settings[k]}%</output></label><input type="range" id="audio_${k}" min="0" max="100" step="5" value="${audio.settings[k]}" aria-label="${k} volume" style="width:100%"/>`).join('')}<p class="muted">Audio begins after interacting with the page. No internet or external samples needed.</p>`}
  };
  const cfg=opts[section];if(!cfg)return showSettingsMenu();const back=menuEntryReturn==='returnPause'?'returnPause':'navSettings';menuBackAction=back;
@@ -673,7 +673,7 @@ function action(a){audio.cue('ui');
  else if(a==='exportSave')exportSave();else if(a==='importSave')$('saveImportFile')?.click();
  else if(a==='saveSettings'){
   const get=id=>$(id)?.value;
-  const changes={};for(const [id,key,cast] of [['difficulty','difficulty',Number],['settingsDuration','halfSeconds',Number],['gameSpeed','gameSpeed',Number],['settingsWeather','weather',String],['settingsTerrain','terrain',String],['settingsCondition','condition',String],['camera','camera',String],['ballModel','ballModel',VISUALFEEL.validBallModel],['showNames','showNames',v=>v==='true']]){if(get(id)!==undefined)changes[key]=cast(get(id));}
+  const changes={};for(const [id,key,cast] of [['difficulty','difficulty',Number],['settingsDuration','halfSeconds',Number],['gameSpeed','gameSpeed',Number],['settingsWeather','weather',String],['settingsTerrain','terrain',String],['settingsCondition','condition',String],['camera','camera',String],['ballModel','ballModel',VISUALFEEL.validBallModel],['showNames','showNames',v=>v==='true'],['showPerformance','showPerformance',v=>v==='true']]){if(get(id)!==undefined)changes[key]=cast(get(id));}
   Object.assign(opt,changes);
   const values={};for(const k of ['master','music','sfx','ui','ambience'])if(get('audio_'+k)!==undefined)values[k]=+get('audio_'+k);
   if(get('audioMute')!==undefined)values.mute=get('audioMute')==='true';
@@ -775,9 +775,19 @@ menu.addEventListener('change',e=>{const id=e.target.id;switch(id){case 'manager
 menu.addEventListener('change',e=>{if(e.target.id==='difficulty'){const hint=$('difficultyHint');if(hint)hint.textContent=aiTuning(+e.target.value).name+' CPU: reaction, shot accuracy, passing, pressure and keeper response all scale by difficulty. Human players are unaffected.';}});
 $('pauseBtn').addEventListener('click',()=>{if(['play','penalty'].includes(game.matchState))pause()});
 $('dismissRotate').addEventListener('click',()=>{$('rotate').classList.add('hidden');rotateDismissed=true});let rotateDismissed=false;function checkRotate(){let should=!rotateDismissed&&!menuVisible()&&matchMedia('(pointer:coarse)').matches&&innerHeight>innerWidth*1.12;$('rotate').classList.toggle('hidden',!should)}
-let last=performance.now(),uiT=0;
-function frame(now){pollMenuPad(now);let dt=Math.min(.05,Math.max(0,(now-last)/1000||.016));last=now;if(game.matchState==='play')game.update(dt);else if(game.matchState==='penalty')game.updatePK(dt);renderer.frame(game,dt,menuVisible());if(screen==='home'&&menuVisible())drawPoster();uiT-=dt;if(uiT<=0){uiT=.1;if(!menuVisible())drawHUD()}if(toastTime&&now>toastTime){$('gameToast').classList.add('hidden');toastTime=0}checkRotate();requestAnimationFrame(frame)}
-game.init({home,away,options:opt});game.matchState='none';window.NekketsuHD={audio,version:'0.8.25.30-integrated',game,renderer,input,teams:TEAMS,shots:SHOTS,aiLevels:AI_LEVELS,rosterFor,getCareer:()=>career,getContinental:()=>continentalRun,confederations:CONTINENTS,continentalMapping:CONTINENTAL_TEAMS,kitsFor:team=>KIT_CHOICES.map(k=>kitFor(team,k)),getKitChoices:()=>kitSelections.slice(),getTeamPlan:i=>planFor(i),getMorale:team=>game.teamMorale(team)};window.NekketsuHD.ballModels=VISUALFEEL.BALL_MODELS;window.NekketsuHD.facingView=VISUALFEEL.facingView;window.NekketsuHD.impactStun=VISUALFEEL.impactStun;window.NekketsuHD.rollDelta=VISUALFEEL.rollDelta;window.NekketsuHD.personalityFor=p=>BPWPERSONALITY.profileFor(p);window.NekketsuHD.personalityMotion=(p,params)=>BPWPERSONALITY.sampleMotion(BPWPERSONALITY.profileFor(p),params);window.SupermagicFootball=window.NekketsuHD;window.SupermagicFootball.portraitFit=portraitFit;window.SupermagicFootball.studio={directions:STUDIO_DIRS,getDirection:()=>studioDirection,rotate:studioRotate,getAction:()=>studioAction,fitKeeperPose:drawFittedKeeperStudioPose};showHome();requestAnimationFrame(frame);
+let last=performance.now(),uiT=0,perfSamples=0,perfElapsed=0;
+function updatePerformanceHUD(now,rawDelta){
+ const active=opt.showPerformance===true&&['play','penalty'].includes(game.matchState)&&!menuVisible();
+ perfHud.classList.toggle('hidden',!active);
+ if(!active){perfSamples=0;perfElapsed=0;return}
+ if(rawDelta>0&&rawDelta<1000){perfSamples++;perfElapsed+=rawDelta;}
+ if(perfElapsed>=500){const fps=1000*perfSamples/perfElapsed;
+  perfHud.textContent=`FPS ${fps.toFixed(0)} · ${(perfElapsed/perfSamples).toFixed(1)} ms`;
+  perfSamples=0;perfElapsed=0;
+ }
+}
+function frame(now){pollMenuPad(now);const rawDelta=now-last;let dt=Math.min(.05,Math.max(0,rawDelta/1000||.016));last=now;updatePerformanceHUD(now,rawDelta);if(game.matchState==='play')game.update(dt);else if(game.matchState==='penalty')game.updatePK(dt);renderer.frame(game,dt,menuVisible());if(screen==='home'&&menuVisible())drawPoster();uiT-=dt;if(uiT<=0){uiT=.1;if(!menuVisible())drawHUD()}if(toastTime&&now>toastTime){$('gameToast').classList.add('hidden');toastTime=0}checkRotate();requestAnimationFrame(frame)}
+game.init({home,away,options:opt});game.matchState='none';window.NekketsuHD={audio,version:'0.8.25.31-integrated',game,renderer,input,teams:TEAMS,shots:SHOTS,aiLevels:AI_LEVELS,rosterFor,getCareer:()=>career,getContinental:()=>continentalRun,confederations:CONTINENTS,continentalMapping:CONTINENTAL_TEAMS,kitsFor:team=>KIT_CHOICES.map(k=>kitFor(team,k)),getKitChoices:()=>kitSelections.slice(),getTeamPlan:i=>planFor(i),getMorale:team=>game.teamMorale(team)};window.NekketsuHD.ballModels=VISUALFEEL.BALL_MODELS;window.NekketsuHD.facingView=VISUALFEEL.facingView;window.NekketsuHD.impactStun=VISUALFEEL.impactStun;window.NekketsuHD.rollDelta=VISUALFEEL.rollDelta;window.NekketsuHD.personalityFor=p=>BPWPERSONALITY.profileFor(p);window.NekketsuHD.personalityMotion=(p,params)=>BPWPERSONALITY.sampleMotion(BPWPERSONALITY.profileFor(p),params);window.SupermagicFootball=window.NekketsuHD;window.SupermagicFootball.portraitFit=portraitFit;window.SupermagicFootball.studio={directions:STUDIO_DIRS,getDirection:()=>studioDirection,rotate:studioRotate,getAction:()=>studioAction,fitKeeperPose:drawFittedKeeperStudioPose};showHome();requestAnimationFrame(frame);
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
 // Browser audio can only be unlocked by a deliberate user gesture.

@@ -24,6 +24,8 @@ const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP
 
 
 const WORLD=GAME_ASSETS.mechanics.world;
+// v0.8.25.31: conservative JSON-backed gameplay tuning; defaults reproduce 0.8.25.30 exactly.
+const ENGINE_BALANCE=GAME_ASSETS.mechanics.engineBalance;
 // 105:68 real-football proportions
 const SUPER_SHOT_TRANSFORM_SECONDS=GAME_ASSETS.mechanics.engineTiming.superShotTransformSeconds;
 const BALL_LIFT_HOLD_SECONDS=GAME_ASSETS.mechanics.engineTiming.ballLiftHoldSeconds;
@@ -44,12 +46,14 @@ function attackingStoppage(ball, field=WORLD.field){
  const carrier=ball?.owner;
  if(!carrier||![0,1].includes(carrier.t))return false;
  const progress=carrier.t===0?(carrier.x-field.x)/field.w:(field.x+field.w-carrier.x)/field.w;
- return progress>=.68 && carrier.stun<=0;
+ return progress>=ENGINE_BALANCE.attackingStoppageProgress && carrier.stun<=0;
 }
 // Higher super-shot level and velocity increase knockback; victim Strength resists it.
 function superShotKnockback(power,level,strength){
- const pressure=Math.max(0,(power-72)/75)+clamp(level,0,5)*.16-clamp(strength,1,100)*.008;
- return clamp(pressure,0,3);
+ const pressure=Math.max(0,(power-ENGINE_BALANCE.superKnockbackReferencePower)/ENGINE_BALANCE.superKnockbackPowerSpan)
+  +clamp(level,0,5)*ENGINE_BALANCE.superKnockbackLevelFactor
+  -clamp(strength,1,100)*ENGINE_BALANCE.superKnockbackStrengthFactor;
+ return clamp(pressure,0,ENGINE_BALANCE.superKnockbackMax);
 }
 
 // v0.8.25.1: release-only observation for quality/rebound audits. This function
@@ -92,11 +96,11 @@ function shotReleaseSnapshot(shooter,ball,actors,kind){
 // acceleration used in updateBall. Never mutates live ball or the shot's phase.
 // We intentionally predict only up to the keeper plane (max 0.95 s): no clairvoyance
 // about rebounds, collision outcomes, or supernatural random teleports.
-function predictKeeperShot(keeper,ball,horizon=.95){
+function predictKeeperShot(keeper,ball,horizon=ENGINE_BALANCE.keeperPredictionMaxSeconds){
  if(!keeper||!ball||ball.owner)return null;
  const toward=keeper.t===0?-1:1;
  if((ball.vx||0)*toward<=100)return null;
- const frame=1/90,maxTime=clamp(horizon,0,.95);
+ const frame=1/90,maxTime=clamp(horizon,0,ENGINE_BALANCE.keeperPredictionMaxSeconds);
  const v={x:ball.x,y:ball.y,z:ball.z||0,vx:ball.vx,vy:ball.vy||0,vz:ball.vz||0,age:ball.age||0};
  const shot=ball.shot?{...ball.shot}:null;
  if(!Number.isFinite(v.x)||!Number.isFinite(v.y)||!Number.isFinite(v.vx)||!Number.isFinite(v.vy))return null;

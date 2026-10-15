@@ -1,0 +1,213 @@
+<PARSED TEXT FOR SHEET: 1 / 1 TABS
+TAB NAME: docs__QA_CATALOG_v082531.csv>index,test_id,group,case,status,notes
+0,NODE-001,Node assertion,pass release routes possession through team carrier even if manual selection lags,PASS,
+1,NODE-002,Node assertion,short pass tap during restart cooldown is temporarily queued and canceled safely,PASS,
+2,NODE-003,Node assertion,"pre-match primary screen has kickoff and three advanced submenus, no sprawling rule controls",PASS,
+3,NODE-004,Node assertion,"all six formations, four gameplay controls and five main menu categories remain",PASS,
+4,NODE-005,Node assertion,offline shell cache revision matches current build without altering saved progress,PASS,
+5,NODE-006,Node assertion,"turn smoothing is bounded, periodic and frame-rate independent",PASS,
+6,NODE-007,Node assertion,heading easing behaves safely at frame drops and zero delta,PASS,
+7,NODE-008,Node assertion,support foot remains planted while swing leg lifts smoothly,PASS,
+8,NODE-009,Node assertion,fall recovery crouch bends knee without altering support foot state,PASS,
+9,NODE-010,Node assertion,live facing cache excludes deterministic portrait and Studio snapshots,PASS,
+10,NODE-011,Node assertion,animation changes remain outside ENGINE ball physics and player stamina,PASS,
+11,NODE-012,Node assertion,post-mutation storage throw restores failing section as well as earlier writes,PASS,
+12,NODE-013,Node assertion,silent setItem no-op triggers failure instead of false successful import,PASS,
+13,NODE-014,Node assertion,failure while rolling back is explicitly disclosed,PASS,
+14,NODE-015,Node assertion,save import retains validated order and restores missing keys on failing write,PASS,
+15,NODE-016,Node assertion,observer lifecycle flushes all transitions without adding gameplay input mechanics,PASS,
+16,NODE-017,Node assertion,"five distinct selectable, safe ball designs",PASS,
+17,NODE-018,Node assertion,"rolling angle is based on ground distance, not frame rate",PASS,
+18,NODE-019,Node assertion,front / back / three-quarter / side are chosen from movement vectors,PASS,
+19,NODE-020,Node assertion,stun grows with contact force and decreases with recipient strength,PASS,
+20,NODE-021,Node assertion,strong critical hits last longer but cannot lock the player indefinitely,PASS,
+21,NODE-022,Node assertion,saved option and pre-match / graphics selectors use same ball model,PASS,
+22,NODE-023,Node assertion,every major impact type is now strength-dependent,PASS,
+23,NODE-024,Node assertion,all five beard-fit families have valid and distinctive outline anchors,PASS,
+24,NODE-025,Node assertion,beard colour uses chosen natural hair hue for stubble rather than fixed dark grey,PASS,
+25,NODE-026,Node assertion,"clean shave is respected for all names, including players with preset facial hair",PASS,
+26,NODE-027,Node assertion,custom beard selection still propagates through the face-shape-aware renderer,PASS,
+27,NODE-028,Node assertion,beard renderer preserves all five directions without changing match engine physics,PASS,
+28,NODE-029,Node assertion,hair tint clamps opacity and handles malformed colours safely,PASS,
+29,NODE-030,Node assertion,beard face profiles cover all five face shapes with distinct jaw and chin fits,PASS,
+30,NODE-031,Node assertion,round and square faces receive visibly different beard geometry,PASS,
+31,NODE-032,Node assertion,renderer passes the selected face shape into beard rendering across views,PASS,
+32,NODE-033,Node assertion,"beard shaping is view-aware and authored for front, side and both three-quarter projections",PASS,
+33,NODE-034,Node assertion,all five face profiles have distinct jaw / chin / cheek contours,PASS,
+34,NODE-035,Node assertion,face projection is normalized for old imported appearances,PASS,
+35,NODE-036,Node assertion,oblique silhouettes use selected face shape in all three side/back families,PASS,
+36,NODE-037,Node assertion,all 13 rear haircuts retain conditional silhouette art with no gameplay changes,PASS,
+37,NODE-038,Node assertion,Studio save uses stable old storage keys and confirms durable write,PASS,
+38,NODE-039,Node assertion,new articulated renderer replaces legacy procedural body and exposes all views,PASS,
+39,NODE-040,Node assertion,profile eyes and facial identities use curated natural artwork,PASS,
+40,NODE-041,Node assertion,"facial hair is centralized across front, quarter, side, and back projections",PASS,
+41,NODE-042,Node assertion,back and rear-quarter faces suppress front expressions,PASS,
+42,NODE-043,Node assertion,physics and gameplay code remains separated from graphics,PASS,
+43,NODE-044,Node assertion,close shooting chance is higher than speculative midfield shooting,PASS,
+44,NODE-045,Node assertion,pressure reduces early shoot opportunity but cannot induce impossible values,PASS,
+45,NODE-046,Node assertion,"good finishers consider good chances more often, not automatically score",PASS,
+46,NODE-047,Node assertion,very short incoming time reduces lateral reach but preserves shot-height and skill terms,PASS,
+47,NODE-048,Node assertion,"no independent fifth action, extra formations or removed BPW identity data",PASS,
+48,NODE-049,Node assertion,planted-foot settle converges to stance at stop and is frame-step consistent,PASS,
+49,NODE-050,Node assertion,start acceleration has bounded gait amplitude and invalid input is safe,PASS,
+50,NODE-051,Node assertion,receiving brace varies smoothly with defender pressure but is visual only,PASS,
+51,NODE-052,Node assertion,keeper release has distinct throw and punt choreography,PASS,
+52,NODE-053,Node assertion,"new state is rendering-only, keeper attributes and ball launch unchanged",PASS,
+53,NODE-054,Node assertion,field length shortens to real 105:68 pitch ratio without reducing pitch width,PASS,
+54,NODE-055,Node assertion,continuous exertion and action fatigue are both lower than v0.8.25.11 baseline,PASS,
+55,NODE-056,Node assertion,halftime keeps the inherited 40% accumulated-fatigue refund,PASS,
+56,NODE-057,Node assertion,"better shooting power increases speed, heavy fatigue decreases speed",PASS,
+57,NODE-058,Node assertion,"normal and super shots lose velocity over distance, independent of frame rate",PASS,
+58,NODE-059,Node assertion,keeper-aware aiming values empty lanes and high accuracy,PASS,
+59,NODE-060,Node assertion,directed pass chooses a teammate aligned with requested direction,PASS,
+60,NODE-061,Node assertion,"repeated shot contacts lose energy, and transformed shot can become normal",PASS,
+61,NODE-062,Node assertion,"short range ordinary shots can cause knockouts, and collision is swept for fast shots",PASS,
+62,NODE-063,Node assertion,"no fifth gameplay button, preserved three accepted drawing views and six formations",PASS,
+63,NODE-064,Node assertion,integrated renderer uses the premium articulated body and authored directional head,PASS,
+64,NODE-065,Node assertion,curated natural skin and hair palettes are exported for the player studio,PASS,
+65,NODE-066,Node assertion,all 8 directional studio views include front/back and both sides/quarters,PASS,
+66,NODE-067,Node assertion,beard renderer has distinct branches for every requested major viewpoint,PASS,
+67,NODE-068,Node assertion,tattoos are backed by rendered marks on arms and player-studio controls,PASS,
+68,NODE-069,Node assertion,fixed Player Studio selectors are in menu module and no duplicate declaration remains,PASS,
+69,NODE-070,Node assertion,merged build exposes current version without stale Player Studio tagline,PASS,
+70,NODE-071,Node assertion,build remains single-file/offline compatible with embedded styling,PASS,
+71,NODE-072,Node assertion,legacy/current save sections import without forcing missing fields,PASS,
+72,NODE-073,Node assertion,corrupt JSON envelope or malformed fields rejected before writes,PASS,
+73,NODE-074,Node assertion,legacy branded save accepted with valid options and kit selections,PASS,
+74,NODE-075,Node assertion,storage write failure rolls back previous changes; no false success,PASS,
+75,NODE-076,Node assertion,"unknown keys ignored, no usable section rejected",PASS,
+76,NODE-077,Node assertion,"shot release captures projected lane obstruction, not proximity alone",PASS,
+77,NODE-078,Node assertion,"observer adds no new shooting power, goalkeeper constants or gameplay action buttons",PASS,
+78,NODE-079,Node assertion,a keeper must not automatically deflect a ball merely entering the wide dive rectangle,PASS,
+79,NODE-080,Node assertion,swept save detection still checks the keeper plane when frames skip across it,PASS,
+80,NODE-081,Node assertion,"goal-mouth boundaries, ratings and explicit keeper-save telemetry stay intact",PASS,
+81,NODE-082,Node assertion,special keeper penetration mechanics and Super Shot impact decay remain separate,PASS,
+82,NODE-083,Node assertion,dive and caught-dive end at exact recovery starting pose for all directions,PASS,
+83,NODE-084,Node assertion,landing animation eases to neutral without reversing direction,PASS,
+84,NODE-085,Node assertion,keeper dive pose is finite and bounded even with invalid frame inputs,PASS,
+85,NODE-086,Node assertion,live renderer uses the same keeper pose function for dive and recovery,PASS,
+86,NODE-087,Node assertion,diving catches finish with landing animation when possession retained,PASS,
+87,NODE-088,Node assertion,glove contact cue requires real keeper possession and is preview-free,PASS,
+88,NODE-089,Node assertion,keeper attributes and shot/goal rules remain physically separate,PASS,
+89,NODE-090,Node assertion,"all team records externalized, stable and without roster duplication",PASS,
+90,NODE-091,Node assertion,all 2676 player records are independently editable JSON without ID collisions inside teams,PASS,
+91,NODE-092,Node assertion,all roster quotas preserved from original game,PASS,
+92,NODE-093,Node assertion,"AI, special shots and formation definitions are JSON-backed, not locked in JS",PASS,
+93,NODE-094,Node assertion,animation timing variables resolve to externally editable mechanics entries,PASS,
+94,NODE-095,Node assertion,graphic renderers and per-player presets separated from roster payload,PASS,
+95,NODE-096,Node assertion,browser boot requests modular files and validates roster completeness,PASS,
+96,NODE-097,Node assertion,modular service-worker shell includes all runtime modules and data shards,PASS,
+97,NODE-098,Node assertion,"manual pass honors explicit two-dimensional input vector, independent of attack side",PASS,
+98,NODE-099,Node assertion,"tap pass nearest teammate is Euclidean distance, not forward bias",PASS,
+99,NODE-100,Node assertion,held pass has bounded duration-scaling while AI retains legacy aiming,PASS,
+100,NODE-101,Node assertion,Jump then Pass is sequential lofted cross and never a fifth button,PASS,
+101,NODE-102,Node assertion,friendly possession at release rescues held pass consumed by temporary interception,PASS,
+102,NODE-103,Node assertion,slide tackle has running/standing distance budget independent of animation duration,PASS,
+103,NODE-104,Node assertion,offensive dribble and personal tricks obey common two-second cooldown,PASS,
+104,NODE-105,Node assertion,"dribble personality moves remain accessible on first press near a defender, defensive switch unaffected",PASS,
+105,NODE-106,Node assertion,performance HUD defaults off without changing existing saves,PASS,
+106,NODE-107,Node assertion,existing four action buttons and six formations remain intact,PASS,
+107,NODE-108,Node assertion,new engine balance keys preserve previous physics defaults,PASS,
+108,NODE-109,Node assertion,loader recovers gracefully when hosted JSON fails,PASS,
+109,NODE-110,Node assertion,service worker cache version rotates after source/data update,PASS,
+110,NODE-111,Node assertion,all-time player names/positions and user LEG cards exactly preserved,PASS,
+111,NODE-112,Node assertion,BPW squad years/size/role quota unique and stable,PASS,
+112,NODE-113,Node assertion,"all 84 BPW slots get valid immutable personality, with no gameplay data changes",PASS,
+113,NODE-114,Node assertion,same historical person gets same archetype in multiple BPW contexts,PASS,
+114,NODE-115,Node assertion,ordinary/non-BPW players retain neutral motion and never receive personality,PASS,
+115,NODE-116,Node assertion,"all profiles move visibly and remain finite/bounded in idle, running, celebration, Super attacks",PASS,
+116,NODE-117,Node assertion,profiles have diverse gestures and different microtiming even with matching archetypes,PASS,
+117,NODE-118,Node assertion,"exactly six formations, four touch actions and preserves Super sequence symbols",PASS,
+118,NODE-119,Node assertion,existing goalkeeper/shoot logic module is untouched aside from version and UI,PASS,
+119,NODE-120,Node assertion,four visible gameplay action names remain fixed while contextual handlers survive,PASS,
+120,NODE-121,Node assertion,diagonals map to restored high-quality three-quarter views,PASS,
+121,NODE-122,Node assertion,idle stamina recovery remains meaningful over ten seconds and stronger than light activity,PASS,
+122,NODE-123,Node assertion,halftime recovery rule is a 40 percent fatigue refund,PASS,
+123,NODE-124,Node assertion,renderer is now a six-direction atlas with dedicated three-quarter branches,PASS,
+124,NODE-125,Node assertion,"front, back, side and three-quarter remain the available facing categories",PASS,
+125,NODE-126,Node assertion,small portraits keep player origin and shoes inside the canvas,PASS,
+126,NODE-127,Node assertion,"extreme hairstyle, taller player and aerial keeper pose receive extra framing margin",PASS,
+127,NODE-128,Node assertion,all small-avatar and Player Studio paths use shared framing instead of offscreen coordinates,PASS,
+128,NODE-129,Node assertion,keeper dive receives explicit reaching arms and distinct catching gloves,PASS,
+129,NODE-130,Node assertion,"pass ownership switches only after actual possession, never at release",PASS,
+130,NODE-131,Node assertion,each pass has a single first-touch lifecycle with event and cleared metadata,PASS,
+131,NODE-132,Node assertion,pass and active strike sweep account for fast moving contact and height,PASS,
+132,NODE-133,Node assertion,receive / slide poses and dribble indicator are purely visual,PASS,
+133,NODE-134,Node assertion,in-flight human passes prevent surprise auto-switch and stale loose passes expire,PASS,
+134,NODE-135,Node assertion,"snapshot records defender proximity and goalkeeper lane, never stunned or friendly defenders",PASS,
+135,NODE-136,Node assertion,"snapshot is nonmutating, immutable and JSON serializable",PASS,
+136,NODE-137,Node assertion,defenders absent and keeper absent yield explicit nulls; opposite attack mirrored,PASS,
+137,NODE-138,Node assertion,snapshot reads no randomness and has no gameplay-altering assignments,PASS,
+138,NODE-139,Node assertion,standalone builder embeds icon and exact gameplay module,PASS,
+139,NODE-140,Node assertion,stadium background is rendered into persistent canvas cache,PASS,
+140,NODE-141,Node assertion,frame-rate-independent camera ease is bounded and composable,PASS,
+141,NODE-142,Node assertion,visual pass and dash streaks are confined to renderer,PASS,
+142,NODE-143,Node assertion,standalone build remains synced to source,PASS,
+143,BROWSER-001,Inherited browser suite,action_controls,PASS,full suite; per-case detail in qa_runs_v082531
+144,BROWSER-002,Inherited browser suite,animation_motion_v082523,PASS,full suite; per-case detail in qa_runs_v082531
+145,BROWSER-003,Inherited browser suite,art_quality_v082522,PASS,full suite; per-case detail in qa_runs_v082531
+146,BROWSER-004,Inherited browser suite,ball_views_knockouts,PASS,full suite; per-case detail in qa_runs_v082531
+147,BROWSER-005,Inherited browser suite,beard_customization_v082528,PASS,full suite; per-case detail in qa_runs_v082531
+148,BROWSER-006,Inherited browser suite,browser_regression,PASS,full suite; per-case detail in qa_runs_v082531
+149,BROWSER-007,Inherited browser suite,character_identity_persistence_v082529,PASS,full suite; per-case detail in qa_runs_v082531
+150,BROWSER-008,Inherited browser suite,controlled_shots,PASS,full suite; per-case detail in qa_runs_v082531
+151,BROWSER-009,Inherited browser suite,directional_art_regression,PASS,full suite; per-case detail in qa_runs_v082531
+152,BROWSER-010,Inherited browser suite,finishing_quality_v082514,PASS,full suite; per-case detail in qa_runs_v082531
+153,BROWSER-011,Inherited browser suite,first_touch_distribution_v082526,PASS,full suite; per-case detail in qa_runs_v082531
+154,BROWSER-012,Inherited browser suite,football_mechanics_v082512,PASS,full suite; per-case detail in qa_runs_v082531
+155,BROWSER-013,Inherited browser suite,graphics_integration_v082522,PASS,full suite; per-case detail in qa_runs_v082531
+156,BROWSER-014,Inherited browser suite,keeper_contact_geometry_v082514,PASS,full suite; per-case detail in qa_runs_v082531
+157,BROWSER-015,Inherited browser suite,keeper_live_transition_v082525,PASS,full suite; per-case detail in qa_runs_v082531
+158,BROWSER-016,Inherited browser suite,keeper_preview_v082524,PASS,full suite; per-case detail in qa_runs_v082531
+159,BROWSER-017,Inherited browser suite,passing_and_moves,PASS,full suite; per-case detail in qa_runs_v082531
+160,BROWSER-018,Inherited browser suite,player_art_fatigue_quality,PASS,full suite; per-case detail in qa_runs_v082531
+161,BROWSER-019,Inherited browser suite,reception_switching,PASS,full suite; per-case detail in qa_runs_v082531
+162,BROWSER-020,Inherited browser suite,visual_framing_v082522,PASS,full suite; per-case detail in qa_runs_v082531
+163,PERF-01,New Chromium case,desktop default OFF; exactly four actions,PASS,
+164,PERF-02,New Chromium case,desktop FPS option exists,PASS,
+165,PERF-03,New Chromium case,desktop live FPS and ms/frame while playing,PASS,
+166,PERF-04,New Chromium case,desktop performance overlay hidden when paused,PASS,
+167,PERF-05,New Chromium case,desktop no uncaught errors,PASS,
+168,PERF-06,New Chromium case,mobile-touch default OFF; exactly four actions,PASS,
+169,PERF-07,New Chromium case,mobile-touch FPS option exists,PASS,
+170,PERF-08,New Chromium case,mobile-touch live FPS and ms/frame while playing,PASS,
+171,PERF-09,New Chromium case,mobile-touch performance overlay hidden when paused,PASS,
+172,PERF-10,New Chromium case,mobile-touch no uncaught errors,PASS,
+173,PERF-11,New Chromium case,broken JSON offers retry button and cause,PASS,
+174,MODULAR-01,Modular browser case,modular integration case 1,PASS,See qa_runs_v082530/modular_browser_integration.json
+175,MODULAR-02,Modular browser case,modular integration case 2,PASS,See qa_runs_v082530/modular_browser_integration.json
+176,MODULAR-03,Modular browser case,modular integration case 3,PASS,See qa_runs_v082530/modular_browser_integration.json
+177,MODULAR-04,Modular browser case,modular integration case 4,PASS,See qa_runs_v082530/modular_browser_integration.json
+178,MODULAR-05,Modular browser case,modular integration case 5,PASS,See qa_runs_v082530/modular_browser_integration.json
+179,MODULAR-06,Modular browser case,modular integration case 6,PASS,See qa_runs_v082530/modular_browser_integration.json
+180,MODULAR-07,Modular browser case,modular integration case 7,PASS,See qa_runs_v082530/modular_browser_integration.json
+181,MODULAR-08,Modular browser case,modular integration case 8,PASS,See qa_runs_v082530/modular_browser_integration.json
+182,MODULAR-09,Modular browser case,modular integration case 9,PASS,See qa_runs_v082530/modular_browser_integration.json
+183,MATCH-01,Full seeded replay,seeded complete match 1,PASS,See scripted-match log
+184,MATCH-02,Full seeded replay,seeded complete match 2,PASS,See scripted-match log
+185,MATCH-03,Full seeded replay,seeded complete match 3,PASS,See scripted-match log
+186,MATCH-04,Full seeded replay,seeded complete match 4,PASS,See scripted-match log
+187,MATCH-05,Full seeded replay,seeded complete match 5,PASS,See scripted-match log
+188,MATCH-06,Full seeded replay,seeded complete match 6,PASS,See scripted-match log
+189,MATCH-07,Full seeded replay,seeded complete match 7,PASS,See scripted-match log
+190,MATCH-08,Full seeded replay,seeded complete match 8,PASS,See scripted-match log
+191,MATCH-09,Full seeded replay,seeded complete match 9,PASS,See scripted-match log
+192,MATCH-10,Full seeded replay,seeded complete match 10,PASS,See scripted-match log
+193,MATCH-11,Full seeded replay,seeded complete match 11,PASS,See scripted-match log
+194,MATCH-12,Full seeded replay,seeded complete match 12,PASS,See scripted-match log
+195,MATCH-13,Full seeded replay,seeded complete match 13,PASS,See scripted-match log
+196,MATCH-14,Full seeded replay,seeded complete match 14,PASS,See scripted-match log
+197,MATCH-15,Full seeded replay,seeded complete match 15,PASS,See scripted-match log
+198,MATCH-16,Full seeded replay,seeded complete match 16,PASS,See scripted-match log
+199,MATCH-17,Full seeded replay,seeded complete match 17,PASS,See scripted-match log
+200,MATCH-18,Full seeded replay,seeded complete match 18,PASS,See scripted-match log
+201,MATCH-19,Full seeded replay,seeded complete match 19,PASS,See scripted-match log
+202,MATCH-20,Full seeded replay,seeded complete match 20,PASS,See scripted-match log
+203,MATCH-21,Full seeded replay,seeded complete match 21,PASS,See scripted-match log
+204,MATCH-22,Full seeded replay,seeded complete match 22,PASS,See scripted-match log
+205,MATCH-23,Full seeded replay,seeded complete match 23,PASS,See scripted-match log
+206,MATCH-24,Full seeded replay,seeded complete match 24,PASS,See scripted-match log
+207,EXT-01,External/platform,Live dev GitHub Pages URL from real phone and PC,NOT EXECUTED,Requires hosted site or real device
+208,EXT-02,External/platform,Real-origin browser restart/save import,NOT EXECUTED,Requires hosted site or real device
+209,EXT-03,External/platform,Offline PWA install and offline continuation,NOT EXECUTED,Requires hosted site or real device
+210,EXT-04,External/platform,Physical device gamepad and touch,NOT EXECUTED,Requires hosted site or real device

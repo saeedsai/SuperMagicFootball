@@ -1,5 +1,13 @@
-# Current Supermagic Football status — v0.8.24.12 Alpha
+# Supermagic Football — CURRENT STATUS v0.8.25.31 (development branch)
 
-This release has the established five-category responsive menu, seven BPW teams (six World Cup plus All-Time Legendary 12), six formations and exactly four action buttons. v0.8.24.12 expands non-invasive release-position, goalkeeper-lane and defender-pressure diagnostics and runs 30 additional diverse scripted-controller matches. **This is diagnostic progress, not proof of human gameplay balance or a gameplay-power adjustment.**
+This is a continuation of the v0.8.25.30 modular game, based on GitHub commit `34dd3d3` (main/dev before update). Development changes are isolated on `dev`. The base roster, gameplay physics defaults, 223 team indices, 2,676 players, 7 BPW squads, four action buttons, six formations and five main menu sections are unchanged.
 
-Read the current `NEXT_MILESTONES.md`, `GAP_REGISTER_v082412.md`, `MATCH_RELEASE_CONTEXT_SPEC_v082412.md` and `TEST_REPORT_v082412.md`. Historical docs remain historical. For next-chat transition, begin with `HANDOVER_README.md` and `NEXT_CHAT_PROMPT.md`.
+**New feature:** Optional Performance HUD in Settings → Graphics shows live FPS and mean frame time over 500 ms during a match. Default OFF; menu/touch controls are unaffected, option stored with standard `legend_options` key. Game works without a HUD.
+
+**Bugs/gaps resolved:** Hosted JSON fetch failures present retry instructions and a reload button; seven bounded physics tunables have moved from engine JS to `data/mechanics/gameplay.json` with previous coefficients as defaults; service worker cache version bumped. Older assertions fixed and new validation added.
+
+**QA:** 143 Node tests, 20 inherited Chromium acceptance suites, 9 modular integration cases, 11 new performance/recovery Chromium cases and 24 deterministic match replays passed. All runnable tests 0 fail/timeout. Hosted Pages and actual device/browser-restart validation still outstanding. See `TEST_REPORT_v082531.md` and `QA_CATALOG_v082531.csv`.
+
+**Playing:** A web server must serve `index.html`, `src/`, `data/`, `style.css`, `sw.js` as one rooted application. Github Pages URL is NOT asserted live. See `GITHUB_PAGES_SETUP.md` in repository root for branch source selection; `dev` is not production until published.
+
+**Do not implement without approved milestone:** worldwide roster revision, Super Defense, Tricks or LAN/online.
