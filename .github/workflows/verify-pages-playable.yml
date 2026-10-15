@@ -32,9 +32,19 @@ jobs:
               page=browser.new_page(**opts)
               errors=[]
               page.on('pageerror',lambda exc:errors.append(str(exc)))
-              response=page.goto(url,wait_until='domcontentloaded',timeout=40000)
-              assert response and response.status==200,(kind,'Page HTTP',response.status if response else None)
-              page.wait_for_function('!!window.SupermagicFootball && window.SupermagicFootball.teams?.length===223',timeout=40000)
+              # Allow transient Pages CDN delays without treating an unbooted game as PASS.
+              ready=False
+              for attempt in range(3):
+                try:
+                  response=page.goto(url,wait_until='domcontentloaded',timeout=60000)
+                  assert response and response.status==200,(kind,'Page HTTP',response.status if response else None)
+                  page.wait_for_function('!!window.SupermagicFootball && window.SupermagicFootball.teams?.length===223',timeout=60000)
+                  ready=True
+                  break
+                except Exception as exc:
+                  print('DEPLOYED_RETRY',kind,attempt+1,str(exc)[:220],flush=True)
+                  page.wait_for_timeout(1500)
+              assert ready,(kind,'deployed game did not initialize after retries')
               print('DEPLOYED',kind,'VERSION',page.evaluate('SupermagicFootball.version'),'TEAMS',page.evaluate('SupermagicFootball.teams.length'),flush=True)
               page.locator('[data-action="navQuick"]').first.click()
               page.locator('[data-action="navOnDevice"]').first.click()
