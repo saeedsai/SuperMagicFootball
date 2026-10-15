@@ -43,7 +43,7 @@ with sync_playwright() as pw:
         page.screenshot(path=str(root/'tests'/f'aerial_heading_{kind}.png'))
         # Keeper dive is automatic: extra Jump input must NOT be necessary while a shot approaches.
         # Allow a realistic reaction window long enough for asynchronous mobile touch dispatch.
-        page.evaluate("""()=>{const g=SupermagicFootball.game,k=g.player(0,0),b=g.ball;g.cooldown=0;g.input.keys.clear();g.input.touchButtons.clear();g.input.reset();const human=g.player(0,3);human.stun=0;human.cd=0;human.x=900;human.y=630;for(const other of g.players)if(other!==human&&other!==k){other.x=2550+other.i*35;other.y=870;}g.controlled[0]=3;k.x=190;k.y=670;k.diveCooldown=0;k.stun=0;b.owner=null;b.attacker=1;b.x=k.x+80;b.y=k.y+10;b.z=50;b.vx=-75;b.vy=0;b.vz=0;b.shot=null;b.power=140;b.canCollect=.7;}""")
+        page.evaluate("""()=>{const g=SupermagicFootball.game,k=g.player(0,0),b=g.ball;g.cooldown=0;g.input.keys.clear();g.input.touchButtons.clear();g.input.reset();const human=g.player(0,3);human.stun=0;human.cd=0;human.x=900;human.y=630;for(const other of g.players)if(other!==human&&other!==k){other.x=2550+other.i*35;other.y=870;}g.controlled[0]=3;k.x=190;k.y=670;k.diveCooldown=0;k.stun=0;b.owner=null;b.attacker=1;b.x=k.x+25;b.y=k.y+10;b.z=50;b.vx=-650;b.vy=0;b.vz=0;b.shot=null;b.power=140;b.canCollect=.7;}""")
         if mobile:
             rect=page.locator('[data-act="jump"]').bounding_box();x=rect['x']+rect['width']/2;y=rect['y']+rect['height']/2
             cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'id':4,'x':x,'y':y}]})
