@@ -1,4 +1,5 @@
 name: Full Regression Census
+# Audits 81 Node scripts and 46 browser scripts; historical startup strings are migrated in the disposable test checkout.
 on:
   push:
     branches: [dev]
