@@ -16,18 +16,20 @@ with sync_playwright() as pw:
   assert 'AGI' in page.locator('.rosterCard').first.inner_text(), 'Agility must be visible in squad'
   page.locator('[data-action="home"]').first.click()
   open_quick(page)
+  page.locator('[data-action="setupAppearance"]').click()
   assert page.locator('#homeKit').count()==1
   assert page.locator('#awayKit').count()==1
   assert page.locator('#homeKit').input_value()=='home'
   assert page.locator('#awayKit').input_value()=='away'
   before=page.evaluate("document.getElementById('homeKitDot').style.background")
   page.locator('#homeKit').select_option('away')
-  assert page.locator('#homeKitCaption').inner_text().endswith('AWAY KIT')
   after=page.evaluate("document.getElementById('homeKitDot').style.background")
   assert before!=after,('Kit preview did not change',before,after)
   page.locator('#awayKit').select_option('home')
   assert page.evaluate("NekketsuHD.getKitChoices().join(',')")=='away,home'
   page.screenshot(path=str(root/'tests'/f'kits_setup_{name}.png'))
+  page.locator('[data-action="returnSetup"]').click()
+  assert page.locator('#homeKitCaption').inner_text().endswith('AWAY KIT')
   page.locator('[data-action="kickoff"]').first.click()
   assert page.evaluate('NekketsuHD.game.matchState')=='play'
   assert page.evaluate('NekketsuHD.game.getTeam(0).kit')=='away'
