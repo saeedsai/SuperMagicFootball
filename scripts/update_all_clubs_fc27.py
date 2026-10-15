@@ -131,14 +131,18 @@ def wiki_squad(name):
         found=json.loads(fetch(api)).get("query",{}).get("search",[])
         for hit in found[:3]:
             title=hit["title"]
-            if not any(w in title.lower() for w in [name.lower().split()[0],clean(name)[:5]]):continue
+            if any(w in title.lower() for w in ["(women)","(benghazi)","history of"," in international football"]):continue
+            if not any(w in clean(title) for w in [clean(name),clean(name).removesuffix("fc"),clean(name).removesuffix("sc")] if len(w)>4):continue
             url="https://en.wikipedia.org/wiki/"+urllib.parse.quote(title.replace(" ","_"))
             soup=BeautifulSoup(fetch(url),"html.parser")
             rows=[]
             for head in soup.select("h2,h3,h4"):
-                if not re.search(r"^(current squad|first.team squad|players|squad|first team)$",head.get_text(" ",strip=True),re.I):continue
+                if not re.search(r"(?:current squad|first.team squad|first team|^squad$)",head.get_text(" ",strip=True),re.I):continue
                 nxt=head.find_next("table")
-                if not nxt or "wikitable" not in " ".join(nxt.get("class",[])):continue
+                if not nxt:continue
+                # Since the 2026 Wikipedia HTML migration, many current-squad
+                # player tables no longer carry the `wikitable` CSS class.
+                # Trust the named 'Current squad' section, not table styling.
                 for tr in nxt.select("tr"):
                     td=tr.find_all(["td","th"],recursive=False)
                     if len(td)<3:continue
