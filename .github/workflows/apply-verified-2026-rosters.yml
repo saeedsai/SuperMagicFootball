@@ -1,5 +1,5 @@
 name: Apply Verified 2026 Squad Gap Fixes
-# Include independently cited 2026/27 Young Africans and Al Hilal positional selections.
+# Include dated 2026/27 African, Oceanian, and CONCACAF 2026 positional selections.
 on:
   push:
     branches: [dev]
