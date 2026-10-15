@@ -1,4 +1,5 @@
 name: Full Regression Census
+# Recheck all 165 source-backed 2026 club rosters and game features.
 # Full 2026 roster + player graphics integration regression on current dev revision.
 # Archived browser version expectations are synchronized to the actual modular version in the disposable checkout.
 on:
