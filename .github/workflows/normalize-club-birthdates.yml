@@ -1,0 +1,36 @@
+name: Normalize FC27 Club Player Dates
+on:
+  push:
+    branches: [dev]
+    paths: ['.github/workflows/normalize-club-birthdates.yml']
+permissions:
+  contents: write
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          persist-credentials: true
+      - name: Normalize source date-of-birth formats
+        run: python3 scripts/normalize_club_birthdates.py
+      - name: Validate roster quotas and runtime parity
+        run: |
+          python3 scripts/validate_data.py
+          node tests/all_club_fc27_rosters.mjs
+          node tests/club26_fc27_roster.mjs
+          python3 scripts/build.py
+          node --test tests/*.test.cjs
+      - name: Commit data correction to dev
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/players/club26.json data/players/continental.json src/roster_corrections.js
+          if git diff --cached --quiet; then echo 'No invalid source dates'; exit 0; fi
+          git commit -m "fix(data): normalize sourced club birth dates without altering ratings or identities"
+          for retry in 1 2 3; do
+            git pull --rebase origin dev && git push origin HEAD:dev && exit 0
+            sleep 3
+          done
+          exit 1
