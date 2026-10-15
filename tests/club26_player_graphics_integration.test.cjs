@@ -47,15 +47,16 @@ test('club26 database equals runtime roster and every rating source is labelled'
    roles[p.role]++;
    assert.ok(Number.isFinite(p.rating),p.id+' missing rating');
    assert.ok(Number.isFinite(p.power)&&Number.isFinite(p.shoot)&&Number.isFinite(p.defense),p.id+' invalid gameplay ratings');
-   if(p.ratingSource==='FC27 comparison verified 2026-10-15')ratings.fc27++;
-   else if(p.ratingSource==='Editorial provisional; FC27 OVR not confirmed')ratings.provisional++;
+   if(p.ratingSource?.startsWith('FC27')){ratings.fc27++;assert(p.fc27Id,p.id+' missing sourced FC27 ID');}
+   else if(p.ratingSource?.startsWith('Editorial'))ratings.provisional++;
    else assert.fail(p.id+' missing or unexpected ratingSource: '+String(p.ratingSource));
    total++;
   }
   assert.deepEqual(roles,{GK:2,DF:3,MF:4,FW:3},club+' role quota');
  }
  assert.equal(total,384);
- assert.deepEqual(ratings,{fc27:290,provisional:94});
+ assert.equal(ratings.fc27+ratings.provisional,384);
+ assert(ratings.fc27>=300,'FC27 source should cover most licensed club players');
 });
 test('all 384 Club26 player records render in five physical projections using live avatar resolution',async()=>{
  const {CHARACTER_ART:art}=await import(pathToFileURL(path.join(root,'src/modules/characterart.js')).href);
