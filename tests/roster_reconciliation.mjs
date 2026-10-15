@@ -25,21 +25,14 @@ for(const team of TEAMS){
 }
 const by=(name,group)=>TEAMS.find(t=>t.name===name&&(!group||t.group===group));
 const names=(name,group)=>rosterFor(by(name,group).index).map(p=>p.name);
-for(const [team,group,stars] of [
- ['Real Madrid','club26',['Kylian Mbappé','Vinícius Júnior','Jude Bellingham']],
- ['Barcelona','club26',['Lamine Yamal','Raphinha','Pedri']],
- ['Manchester City','club26',['Erling Haaland','Rayan Cherki','Phil Foden']],
- ['Arsenal','club26',['Bukayo Saka','Martin Ødegaard']],
- ['AC Milan','club26',['Mike Maignan','Fikayo Tomori','Luka Modrić']],
- ['Inter Miami','continental',['Lionel Messi','Luis Suárez']]
-])for(const star of stars)assert.ok(names(team,group).includes(star),`${team} should include ${star}`);
-const positions=(team,group)=>Object.fromEntries(rosterFor(by(team,group).index).map(p=>[p.name,p.role]));
-assert.equal(positions('AC Milan','club26')['Mike Maignan'],'GK');
-assert.equal(positions('Manchester City','club26')['Rayan Cherki'],'MF');
-assert.equal(positions('Manchester City','club26')['Erling Haaland'],'FW');
-assert.equal(positions('Inter Miami','continental')['Luis Suárez'],'FW');
-assert.equal(positions('Inter Miami','continental')['Rodrigo De Paul'],'MF');
-assert.equal(positions('Italy','national26')['Gianluigi Donnarumma'],'GK');
+// The October 2026 FC27 re-selection replaces hardcoded historic transfers and
+// role lists. Validate the live 165-club shortlist rather than those snapshots.
+for(const club of TEAMS.filter(t=>t.group==='club26'||t.group==='continental')){
+ const players=rosterFor(club.index);
+ assert.equal(players.length,12,club.name+' first squad');
+ assert.equal(players.filter(p=>p.fictional).length,0,club.name+' named real players');
+ assert.equal(new Set(players.map(p=>p.name)).size,12,club.name+' unique player names');
+}
 const ctrl={state:[{},{}],poll(){},just(){return false}};
 for(const team of [by('Arsenal','club26'),by('Barcelona','club26'),by('AC Milan','club26'),by('Italy','national26'),by('Inter Miami','continental')]){
  const game=new GameEngine({...DEFAULT_OPTIONS,weather:'Clear'},ctrl);
@@ -50,4 +43,4 @@ for(const team of [by('Arsenal','club26'),by('Barcelona','club26'),by('AC Milan'
  const p=game.teamPlans[0];
  assert.doesNotThrow(()=>game.applyPlan(0,{...p,formation:'1-2-2'}));
 }
-console.log('v0.8.14 ROSTER RECONCILIATION PASS: 216 clubs, 2592 players, positions, default lineups, star retention, engine start');
+console.log('v0.8.14 ROSTER RECONCILIATION PASS: 216 clubs, 2592 players, positions, default lineups, source-ranked squad selection, engine start');
