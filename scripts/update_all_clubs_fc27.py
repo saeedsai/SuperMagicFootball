@@ -157,12 +157,17 @@ def wiki_squad(name):
                         role=POS.get(block[1].get_text(" ",strip=True).upper())
                         if not role:continue
                         named=block[3].get_text(" ",strip=True)
-                        named=re.sub(r"\\s*\\([^)]*(?:captain|loan|vice)[^)]*\\)","",named,flags=re.I).strip()
-                        named=re.sub(r"\\s*\\[\\d+\\]","",named).strip()
+                        named=re.sub(r"\s*\([^)]*\)","",named).strip()
+                        named=re.sub(r"\s*\[\d+\]","",named).strip()
                         if not named or len(named)<4 or any(k in named.lower() for k in ["national","football","association"]):continue
-                        rows.append({"name":named,"role":role,"rating":min(76,72 if role=="GK" else 73),
-                                 "sourceKind":"WIKIPEDIA","source":url,"age":None,"birthDate":None,
-                                 "nation":None,"pos":role,"stats":stats({"overall_rating":"73"},role)})
+                        number_text=block[0].get_text(" ",strip=True)
+                        match=re.search(r"\b\d{1,2}\b",number_text)
+                        shirt=int(match.group(0)) if match else None
+                        rank_bonus=2 if shirt and shirt<=11 else 1 if shirt and shirt<=25 else 0
+                        rating=min(78,(72 if role=="GK" else 73 if role=="DF" else 74 if role=="MF" else 75)+rank_bonus)
+                        rows.append({"name":named,"role":role,"rating":rating,
+                                 "number":shirt,"sourceKind":"WIKIPEDIA","source":url,"age":None,"birthDate":None,
+                                 "nation":None,"pos":role,"stats":stats({"overall_rating":str(rating)},role)})
             unique={}
             for q in rows:unique.setdefault(clean(q["name"]),q)
             if len(unique)>=5 and sum(q["role"]=="GK" for q in unique.values())>=1:return list(unique.values()),url
@@ -368,7 +373,7 @@ def main():
                     if p.get("height"):updated["height"]=p["height"]
                     if p.get("fcId"):updated["fc27Id"]=p["fcId"]
                     if p.get("pos"):updated["fc27Position"]=p["pos"]
-                    updated["num"]=generated_number(taken_nums,slot.get("num") if is_same else None)
+                    updated["num"]=generated_number(taken_nums,p.get("number") or (slot.get("num") if is_same else None))
                     taken_nums.add(updated["num"])
                     created.append(updated)
             # Gaps remain explicit and keep their unverified in-game players.
