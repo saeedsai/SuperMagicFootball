@@ -18,6 +18,7 @@ with sync_playwright() as pw:
    assert not any(p['statsVerified'] or p['appearanceVerified'] for p in squad['players']),club
    open_quick(page)
    page.locator('select#homeTeam').select_option(str(squad['index']))
+   page.locator('[data-action="setupTactics"]').click()
    page.locator('[data-action="prepHome"]').first.click()
    assert page.get_by_text(star).count()>0,(device,club,star)
    assert page.locator('.formationSlot canvas').count()==6,(device,club)
