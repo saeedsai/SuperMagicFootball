@@ -1,5 +1,5 @@
 name: Probe Additional 2026 Club Squad Sources
-# Follow-up: inspect squad section details before using source data.
+# Follow-up: inspect player-list field selectors before relying on new squad source.
 on:
   push:
     branches: [dev]
