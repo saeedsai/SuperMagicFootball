@@ -1,4 +1,5 @@
 name: Verify FC27 Top Players Across All Clubs
+# Refresh position-specific source audit after verified 2026 squad enrichment.
 on:
   push:
     branches: [dev]
