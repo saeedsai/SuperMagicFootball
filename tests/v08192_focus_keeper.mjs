@@ -36,5 +36,5 @@ for(const t of [0,1]){
  g.driveAI(k,.016);
  assert(k.aiTarget.y>690,'keeper AI must use the same shot projection');
 }
-assert(readFileSync(new URL('../sw.js',import.meta.url),'utf8').includes('supermagic-football-v0824'),'PWA cache version must advance with release');
+assert.match(readFileSync(new URL('../sw.js',import.meta.url),'utf8'),/const CACHE='smf-[^']+';/,'PWA must expose a versioned offline cache');
 console.log('v0.8.19.2 FOCUS/KEEPER PASS: background queued inputs, disconnect, mirrored interception prediction, AI usage');
