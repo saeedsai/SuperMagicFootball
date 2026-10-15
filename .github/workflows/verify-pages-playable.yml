@@ -1,0 +1,49 @@
+name: Verify Deployed PC and Touch Game
+on:
+  push:
+    branches: [dev]
+    paths: ['.github/workflows/verify-pages-playable.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install real browser smoke environment
+        run: |
+          python3 -m pip install --user playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y chromium
+      - name: Load deployed Pages game and open Quick Match on desktop and touch
+        run: |
+          python3 - <<'PY'
+          from playwright.sync_api import sync_playwright
+          url='https://saeedsai.github.io/SuperMagicFootball/'
+          with sync_playwright() as p:
+            browser=p.chromium.launch(executable_path='/usr/bin/chromium',headless=True,args=['--no-sandbox'])
+            for kind,opts in [
+              ('desktop',{'viewport':{'width':1440,'height':900}}),
+              ('touch',{'viewport':{'width':844,'height':390},'has_touch':True,'is_mobile':True})
+            ]:
+              page=browser.new_page(**opts)
+              errors=[]
+              page.on('pageerror',lambda exc:errors.append(str(exc)))
+              response=page.goto(url,wait_until='domcontentloaded',timeout=40000)
+              assert response and response.status==200,(kind,'Page HTTP',response.status if response else None)
+              page.wait_for_function('!!window.SupermagicFootball && window.SupermagicFootball.teams?.length===223',timeout=40000)
+              print('DEPLOYED',kind,'VERSION',page.evaluate('SupermagicFootball.version'),'TEAMS',page.evaluate('SupermagicFootball.teams.length'),flush=True)
+              page.locator('[data-action="navQuick"]').first.click()
+              page.locator('[data-action="navOnDevice"]').first.click()
+              page.locator('[data-action="quick"]').first.click()
+              assert page.locator('#homeTeam').count()==1,(kind,'home team picker absent')
+              assert page.locator('[data-action="kickoff"]').count()==1,(kind,'kickoff absent')
+              page.locator('[data-action="kickoff"]').first.click()
+              assert page.evaluate('SupermagicFootball.game.matchState')=='play',(kind,'match failed to boot')
+              assert not errors,(kind,errors)
+              print('DEPLOYED_SMOKE_PASS',kind,'200 OK, menus, team selection, kickoff and match active',flush=True)
+              page.close()
+            browser.close()
+          PY
