@@ -95,16 +95,33 @@ const CHARACTER_ART=(()=>{
   line(c,[[x-5*scale,y+1+bend],[x,y-2.7*scale+rise],[x+5.5*scale,y+bend*.7]],h,(1.8+(k%4)*.2)*scale);
  }
  function nose(c,x,y,style,skin,angle){
-  const kind=index(style,6),wide=(kind===2||kind===4)?1.28:.9;
-  const contour=tint(skin,-.29);
+  // All six profile silhouettes are authored separately, not just two width presets.
+  const k=index(style,6),contour=tint(skin,-.35),highlight=tint(skin,.21),base=tint(skin,-.12);
+  c.save();c.translate(x,y);
   if(angle==='front'){
-   oval(c,x,y+2,3.6*wide,2.25,tint(skin,-.09));
-   line(c,[[x-2*wide,y+2],[x,y+3],[x+2.7*wide,y+2]],contour,.95);
-   oval(c,x-2.0*wide,y+2.6,.55,.4,contour);oval(c,x+2.0*wide,y+2.6,.55,.4,contour);
+   const rx=[2.7,3.0,4.9,3.4,5.8,3.5][k],ry=[1.7,2.0,2.5,1.5,2.8,1.7][k];
+   if(k===1||k===5)line(c,[[0,-5-(k===5?2:0)],[1,-1],[.3,1.2]],rgba(contour,.64),k===5?1.3:1.05);
+   if(k===3)line(c,[[-2.7,-.7],[1.7,1.9],[4,-.8]],contour,1.4);
+   if(k===4)line(c,[[-3.9,.2],[-3.3,3]],rgba(contour,.5),1.2);
+   oval(c,.4,2,rx,ry,k===2?base:tint(skin,-.06));
+   oval(c,-1,1,rx*.38,ry*.34,rgba('#ffffff',.11));
+   const wing=k===0?1.7:k===1?2.2:k===2?3.6:k===3?2.5:k===4?4.8:2.1;
+   oval(c,-wing,3,.56,.46,contour);oval(c,wing,3,.56,.46,contour);
+   if(k===2||k===4)line(c,[[-wing,3.7],[0,4.2],[wing,3.7]],rgba(contour,.58),.75);
   }else{
-   patch(c,p=>{p.moveTo(x-3.8,y-5);p.quadraticCurveTo(x+1.3,y-1,x+3*wide,y+1);p.quadraticCurveTo(x+6*wide,y+4,x+2,y+5);p.lineTo(x-1,y+3)},tint(skin,.07),null);
-   line(c,[[x+1,y+4],[x+3*wide,y+4.3]],contour,1.15);
+   const height=[3.3,4.6,3.0,5.1,3.8,7.3][k],
+         projection=[3.0,3.8,5.1,4.1,6.5,3.8][k],
+         peak=[.5,1.3,2.1,-.9,1.8,1.1][k];
+   patch(c,p=>{p.moveTo(-3.2,-height);p.quadraticCurveTo(.8,-height*.65,2,-1.4);
+    p.quadraticCurveTo(2.2+projection*.65,peak,projection+2.5,2.8);
+    p.quadraticCurveTo(projection+3.5,4.4,1.7,5.1);
+    p.quadraticCurveTo(-1,3.1,-3.2,1.8)
+   },tint(skin,.06),null);
+   line(c,[[1.5,4.4],[projection+1.4,4.2]],contour,k===3?1.55:1.05);
+   if(k===2||k===4)oval(c,projection+1.5,3,1.4,1.0,base);
+   if(k===5)line(c,[[0,-6],[-.2,1.2],[2.5,4]],rgba(contour,.58),.9);
   }
+  c.restore();
  }
  function lips(c,x,y,style,skin,angle,hurt=false){
   const k=index(style,8),lip=tint(skin,-.45),inner='#773a45';
