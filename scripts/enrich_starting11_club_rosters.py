@@ -63,9 +63,9 @@ def fetch_club(name):
                 # Collect starts directly from mobile responsive stat column.
                 mobile=item.select_one("div.md\\:hidden")
                 text=item.get_text(" ",strip=True)
-                match=re.search(r"(\\d+)\\s*st(?:\\s|$)",text)
+                match=re.search(r"(\d+)\s*st(?:\s|$)",text)
                 starts=int(match.group(1)) if match else 0
-                apps=re.search(r"(\\d+)\\s*apps",text)
+                apps=re.search(r"(\d+)\s*apps",text)
                 apps_count=int(apps.group(1)) if apps else 0
                 badge=item.find("span",attrs={"aria-hidden":"true"})
                 try:shirt=int(badge.get_text(" ",strip=True))
