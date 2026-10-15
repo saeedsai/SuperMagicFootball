@@ -1,5 +1,5 @@
 name: Apply Verified 2026 Squad Gap Fixes
-# Enrich also 2026 AFC clubs, Forge FC, and Independiente Santa Fe from cited first-team sources.
+# Apply official Neftchi, Tractor and Dominican O&M roster references with positional ratings.
 on:
   push:
     branches: [dev]
