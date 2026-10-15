@@ -91,7 +91,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Playwright and system Chromium
         run: |
-          python3 -m pip install --user playwright
+          python3 -m pip install --user playwright pillow
           sudo apt-get update -qq
           sudo apt-get install -y chromium
       - name: Build browser fixture for old and current suites
