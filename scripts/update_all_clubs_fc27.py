@@ -336,7 +336,7 @@ def main():
                         "statsVerified","ratingSource","nation","nationality","height",
                         "position","fictional","fc27Id","fc27Position","sourceSnapshot")}
                     updated.update({"name":p["name"],"role":role,"rating":p["rating"],"fictional":bool(p.get("fictional",False)),
-                        **p["stats"],"ratingSource":("FC27 EA-derived snapshot 2026-09-12" if p["sourceKind"]=="FC27"
+                        **p["stats"],"ratingSource":("FC27 third-party dataset snapshot 2026-09-12" if p["sourceKind"]=="FC27"
                                       else "Editorial fallback (not FC27 verified)"),
                         "source":src if origin!="FC27" else URL,
                         "statsVerified":False,
@@ -400,7 +400,12 @@ def main():
     if args.apply:
         for file,data in group_data.items():
             (ROOT/file).write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n")
-        final=source[:start]+json.dumps(registry,ensure_ascii=False,separators=(",",":"))+source[start+end:]
+        # This game's historical one-off JavaScript roster migrations are
+        # superseded by the unified, source-labeled club rosters written above.
+        # Retaining them would silently undo selected players at runtime and
+        # in several cases throw on intentionally replaced old slot IDs.
+        final=(source[:start]+json.dumps(registry,ensure_ascii=False,separators=(",",":"))+
+               ";\\n// 2026-10-15: one-time club mappings consolidated into the source-labeled registry.\\n")
         root.write_text(final)
     return 0
 if __name__=="__main__":
