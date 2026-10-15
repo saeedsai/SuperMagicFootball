@@ -1,0 +1,28 @@
+PASS desktop held Pass releases a long pass 
+PASS desktop short tap Pass produces an actual ball release 
+PASS desktop pass pressed during kickoff lock plays once lock ends 
+PASS desktop Pass finds teammate owner if selected player is different 
+PASS desktop Pass distributes a friendly goalkeeper possession 
+PASS desktop Shoot launches shot when carrying ball 
+PASS desktop Dribble executes first feint tap 
+PASS desktop Jump executes ground tap 
+PASS desktop defensive Pass does not fire offensive pass 
+PASS desktop focus loss or pointer cancel never manufactures a pass 
+PASS desktop virtual gamepad pass mapped action 
+PASS desktop virtual gamepad shoot mapped action 
+PASS desktop virtual gamepad dribble mapped action 
+PASS desktop virtual gamepad jump mapped action 
+PASS desktop local second-player keyboard Pass mapping works 
+PASS desktop no uncaught browser errors 
+PASS touch-simulated held Pass releases a long pass 
+PASS touch-simulated short tap Pass produces an actual ball release 
+PASS touch-simulated pass pressed during kickoff lock plays once lock ends 
+PASS touch-simulated Pass finds teammate owner if selected player is different 
+PASS touch-simulated Pass distributes a friendly goalkeeper possession 
+PASS touch-simulated Shoot launches shot when carrying ball 
+PASS touch-simulated Dribble executes first feint tap 
+PASS touch-simulated Jump executes ground tap 
+PASS touch-simulated defensive Pass does not fire offensive pass 
+PASS touch-simulated focus loss or pointer cancel never manufactures a pass 
+PASS touch-simulated no uncaught browser errors 
+RESULT: {'PASS': 27, 'FAIL': 0, 'TIMEOUT': 0, 'NOT EXECUTED': 0}

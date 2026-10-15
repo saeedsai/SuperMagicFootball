@@ -1,0 +1,8 @@
+PASS desktop framed portraits: 14 historical players, 8 views, 7 poses, 3 sizes 
+PASS desktop portrait-fit safety across extreme hair and stature settings 
+PASS desktop no uncaught browser errors 
+PASS desktop manual visual review artifact for hair and rear-quarter framing 
+PASS simulated-touch framed portraits: 14 historical players, 8 views, 7 poses, 3 sizes 
+PASS simulated-touch portrait-fit safety across extreme hair and stature settings 
+PASS simulated-touch no uncaught browser errors 
+TOTAL {'PASS': 7, 'FAIL': 0, 'TIMEOUT': 0}

@@ -96,7 +96,7 @@ const identity=i=>teamIdentity(TEAMS[i]);
 const menuVisible=()=>!menu.classList.contains('hidden');
 const closeMenu=()=>{input.cancelAll();audio.sceneChange('match');menu.classList.add('hidden');hud.classList.remove('hidden');touch.classList.toggle('hidden',!matchMedia('(pointer:coarse)').matches)};
 const show=(html,id='home')=>{audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');menu.innerHTML=`<div class="menubox"><div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>${html}<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div></div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
-function page(title,subtitle,body,returnAction='home'){if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER • VERSION 0.8.25.31</div><h1 class="heading">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title)}
+function page(title,subtitle,body,returnAction='home'){if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER • VERSION 0.8.25.32</div><h1 class="heading">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title)}
 // v0.8.24.7 — Menu handoff: five primary categories, no new gameplay modes.
 // Existing action handlers, saves, teams and engine remain the authority.
 const menuParents={
@@ -111,7 +111,7 @@ const navItem=(label,act,description='',availability='active',icon='⚽')=>({lab
 function menuChoices(id,title,subtitle,entries,back='home',extra=''){
  menuBackAction=back;
  const cards=entries.map((e,i)=>`<button type="button" class="btn navChoice ${e.availability==='later'?'navLater':''}" data-action="${escapeHTML(e.act)}" ${i===0?'data-default-focus="true"':''} aria-label="${escapeHTML(e.label+(e.availability==='later'?' coming later':''))}"><span class="navIcon" aria-hidden="true">${e.icon}</span><span class="navCopy"><strong>${escapeHTML(e.label)}</strong><small>${escapeHTML(e.description)}</small></span><span class="navStatus">${e.availability==='later'?'COMING LATER':'›'}</span></button>`).join('');
- show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL · 0.8.25.31</div><h1 class="heading">${escapeHTML(title)}</h1><p class="subtitle">${escapeHTML(subtitle)}</p></div>${button('← BACK',back,'minor navBack')}</div><div class="navList">${cards}</div>${extra}</div>`,id);
+ show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL · 0.8.25.32</div><h1 class="heading">${escapeHTML(title)}</h1><p class="subtitle">${escapeHTML(subtitle)}</p></div>${button('← BACK',back,'minor navBack')}</div><div class="navList">${cards}</div>${extra}</div>`,id);
  // Restore the selected item in its parent after returning; do not steal focus from clicks.
  if(navFocusMap[id]){const match=menu.querySelector(`[data-action="${navFocusMap[id]}"]`);if(match){match.focus({preventScroll:true});return;}}
  menu.querySelector('.navChoice')?.focus({preventScroll:true});
@@ -183,7 +183,7 @@ function showSaveMenu(parent='navSettings'){menuChoices('nav-saves','SAVE MANAGE
 function showAbout(){page('ABOUT SUPERMAGIC FOOTBALL','Original offline cartoon arcade football.',`<div class="panel"><p>Alpha v0.8.25.30 · Independent football game with original graphics and audio.</p><p class="muted">Four action buttons · ${TEAMS.length} teams · saved locally on your device.</p>${button('← MAIN MENU','home','gold')}</div>`,'home');}
 function showHome(){
  menuBackAction='home';menuEntryReturn='home';
- show(`<header class="homeMasthead"><div><div class="topline">ARCADE FOOTBALL · SUPER SHOTS · YOUR FOOTBALL UNIVERSE</div><h1 class="heading logoHeading">SUPERMAGIC <em>FOOTBALL</em></h1><p class="subtitle">Pick a mode. All original gameplay and editing tools remain accessible.</p></div><span class="homeVersion">GRAPHICS 0.8.25.31</span></header>
+ show(`<header class="homeMasthead"><div><div class="topline">ARCADE FOOTBALL · SUPER SHOTS · YOUR FOOTBALL UNIVERSE</div><h1 class="heading logoHeading">SUPERMAGIC <em>FOOTBALL</em></h1><p class="subtitle">Pick a mode. All original gameplay and editing tools remain accessible.</p></div><span class="homeVersion">GRAPHICS 0.8.25.32</span></header>
  <div class="menuGrid homeDashboard simplifiedHome"><main class="homeDirectory" aria-label="Five game categories">
  <div class="navList navMainList">
  ${[
@@ -455,7 +455,7 @@ function commitSaveImport(changes,storage){
  }
  return changes.length;
 }
-function exportSave(){const keys=SAVE_KEYS;const data={product:'Supermagic Football',version:'0.8.25.31',exportedAt:new Date().toISOString(),data:Object.fromEntries(keys.map(k=>[k,store.get(k,null)]))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='Supermagic_Football_Save_'+new Date().toISOString().slice(0,10)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),3000)}
+function exportSave(){const keys=SAVE_KEYS;const data={product:'Supermagic Football',version:'0.8.25.32',exportedAt:new Date().toISOString(),data:Object.fromEntries(keys.map(k=>[k,store.get(k,null)]))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='Supermagic_Football_Save_'+new Date().toISOString().slice(0,10)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),3000)}
 async function importSave(file){try{
  if(!file||file.size>5_000_000)throw Error('Save file missing or larger than 5MB');
  const changes=validateSaveImport(JSON.parse(await file.text()));
@@ -538,11 +538,39 @@ function studioColorOptions(list,selected){
  return studioOptionTags(values,selected);
 }
 
-let studioDirection=0,studioAction='idle',studioSpin=false,studioDragX=null;
+let studioDirection=0,studioAction='idle',studioSpin=false,studioDragX=null,studioGalleryOpen=false,studioGallerySignature='';
 setInterval(studioAnimationFrame,1150);
 setInterval(()=>{if(screen==='PLAYER CUSTOMIZATION' && $('customPortrait') && studioAction!=='idle')drawCustomizer()},90);
 function studioRotate(step){studioDirection=((studioDirection+step)%8+8)%8;const label=$('customAngleLabel');if(label)label.textContent=STUDIO_DIRS[studioDirection].label;drawCustomizer()}
 function studioAnimationFrame(){if(!studioSpin||!$('customPortrait')||screen!=='PLAYER CUSTOMIZATION')return;studioDirection=(studioDirection+1)%8;drawCustomizer();}
+function studioEightViewMarkup(){
+ return `<section id="studioEightViewGallery" class="studioEightViewGallery" aria-label="Eight-direction player appearance gallery">${STUDIO_DIRS.map((dir,i)=>`<figure class="studioEightViewItem"><canvas data-studio-view="${i}" width="144" height="152" role="img" aria-label="${escapeHTML(dir.label)} appearance"></canvas><figcaption>${escapeHTML(dir.label)}</figcaption></figure>`).join('')}</section>`;
+}
+// 0.8.25.32: Optional, non-interactive eight-view contact sheet for the selected
+// Studio appearance. Idle frames are deterministic even while rotating/animating
+// the large preview; update the sheet only when the edited character changes.
+function drawStudioEightViewGallery(player,appearance){
+ const root=$('studioEightViewGallery');if(!studioGalleryOpen||!root||!player)return;
+ const signature=JSON.stringify([home,avatarIndex,player.name,appearance]);
+ if(signature===studioGallerySignature&&root.querySelectorAll('canvas').length===8)return;
+ studioGallerySignature=signature;
+ const gameView={getTeam:()=>TEAMS[home],options:{showNames:false},celebrationStyle:0};
+ const template=game.player(0,3)||{i:3,team:0};
+ const fit=portraitFit(144,152,appearance,'idle');
+ for(let i=0;i<STUDIO_DIRS.length;i++){
+  const canvas=root.querySelector('canvas[data-studio-view="'+i+'"]');if(!canvas)continue;
+  const ctx=canvas.getContext('2d');if(!ctx)continue;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const gr=ctx.createLinearGradient(0,0,144,152);
+  gr.addColorStop(0,'#27666e');gr.addColorStop(1,'#102b3e');ctx.fillStyle=gr;ctx.fillRect(0,0,144,152);
+  const dir=STUDIO_DIRS[i];
+  const dummy={...template,x:0,y:0,z:0,t:0,i:avatarIndex,src:{...player,appearance},
+   keeper:player.role==='GK',face:dir.view.side,dx:dir.dx,dy:dir.dy,
+   visualFacing:dir.view,anim:0,action:'idle',controlled:false,preview:true,stun:0,cryTimer:0};
+  ctx.save();ctx.translate(fit.x,fit.y);ctx.scale(fit.scale,fit.scale);
+  renderer.drawPlayer(ctx,dummy,gameView);ctx.restore();
+ }
+}
 
 function showPlayerStudio(index=0){avatarIndex=Math.max(0,Math.min(11,Number(index)||0));const squad=career&&home===career.club?career.roster:roster(home);const player=squad[avatarIndex];if(!player){showHome();return;}const av={...avatarFor(player),...(player.appearance||{})};
  const colorControls=`<label>SKIN COLOR<select class="choice" id="face_skin">${studioColorOptions(NATURAL_SKIN_TONES,av.skin)}</select></label><label>HAIR COLOR<select class="choice" id="face_hair">${studioColorOptions(NATURAL_HAIR_COLORS,av.hair)}</select></label>`;
@@ -550,7 +578,8 @@ function showPlayerStudio(index=0){avatarIndex=Math.max(0,Math.min(11,Number(ind
   ['style','HAIRSTYLE'],['face','FACE SHAPE'],['eyes','EYE SHAPE'],['brows','EYEBROWS'],['eyeColor','EYE COLOR'],['nose','NOSE'],['lips','LIPS'],
   ['body','BUILD'],['stature','HEIGHT STYLE'],['exaggeration','FUNNY SCALE'],['beard','FACIAL HAIR'],['accessory','ACCESSORY'],['freckles','FRECKLES'],['scar','SCARS'],['tattoo','TATTOOS']
  ].map(([id,name])=>`<label>${name}<select class="choice" id="face_${id}">${studioNumberOptions(id,av[id]??0)}</select></label>`).join('');
- page('PLAYER CUSTOMIZATION','Every player has a persistent, editable HD caricature. Modify facial structure, funny exaggeration, hair, expressions and personal details.',`<div class="twoCol"><div class="panel">${career?'':teamField('SELECT TEAM','customTeam',nations(),home)}${field('PLAYER','customPlayer',squad.map((p,i)=>[i,`#${p.num} ${p.name}`]),avatarIndex)}<div class="characterStage"><canvas id="customPortrait" width="300" height="260" role="img" aria-label="Rotatable player preview"></canvas><div class="row studioRotateControls"><button type="button" class="btn" data-action="studioLeft" aria-label="Rotate character left 45 degrees">◀ ROTATE</button><strong id="customAngleLabel">${STUDIO_DIRS[studioDirection].label}</strong><button type="button" class="btn" data-action="studioRight" aria-label="Rotate character right 45 degrees">ROTATE ▶</button></div><p class="muted" style="margin:0">Drag the player horizontally to turn • eight views</p><div class="row studioMotionControls"><label class="fieldLabel" for="customPose">PREVIEW MOTION</label><select id="customPose" class="choice">${STUDIO_ACTIONS.map(a=>`<option value="${a}" ${a===studioAction?'selected':''}>${a.toUpperCase()}</option>`).join('')}</select><button type="button" class="btn" data-action="studioSpin">${studioSpin?'■ STOP TURN':'↻ AUTO ROTATE'}</button></div><div>${escapeHTML(player.name)} · ${player.role}<p>${escapeHTML(player.shotName||'Super shot')}</p></div></div><div class="row">${button('✓ SAVE CHARACTER','saveAppearance','gold')}${button('RANDOMIZE FACE','randomizeFace')}</div></div><div class="panel"><div class="avatarControls">${colorControls}${assetControls}</div><p class="muted">Customization now uses curated natural skin and hair palettes, exposes every hairstyle and face asset used by the renderer, and adds tattoo choices so the editor matches the drawable character system.</p></div></div>`,career?'careerSquad':'home');drawCustomizer();}
+ studioGallerySignature='';
+ page('PLAYER CUSTOMIZATION','Every player has a persistent, editable HD caricature. Modify facial structure, funny exaggeration, hair, expressions and personal details.',`<div class="twoCol"><div class="panel">${career?'':teamField('SELECT TEAM','customTeam',nations(),home)}${field('PLAYER','customPlayer',squad.map((p,i)=>[i,`#${p.num} ${p.name}`]),avatarIndex)}<div class="characterStage"><canvas id="customPortrait" width="300" height="260" role="img" aria-label="Rotatable player preview"></canvas><div class="row studioRotateControls"><button type="button" class="btn" data-action="studioLeft" aria-label="Rotate character left 45 degrees">◀ ROTATE</button><strong id="customAngleLabel">${STUDIO_DIRS[studioDirection].label}</strong><button type="button" class="btn" data-action="studioRight" aria-label="Rotate character right 45 degrees">ROTATE ▶</button></div><p class="muted" style="margin:0">Drag the player horizontally to turn • eight views</p><div class="row studioMotionControls"><label class="fieldLabel" for="customPose">PREVIEW MOTION</label><select id="customPose" class="choice">${STUDIO_ACTIONS.map(a=>`<option value="${a}" ${a===studioAction?'selected':''}>${a.toUpperCase()}</option>`).join('')}</select><button type="button" class="btn" data-action="studioSpin">${studioSpin?'■ STOP TURN':'↻ AUTO ROTATE'}</button></div><div>${escapeHTML(player.name)} · ${player.role}<p>${escapeHTML(player.shotName||'Super shot')}</p></div></div><div class="row">${button(studioGalleryOpen?'HIDE 8-VIEW GALLERY':'COMPARE ALL 8 VIEWS','studioGalleryToggle')}</div>${studioGalleryOpen?studioEightViewMarkup():''}<div class="row">${button('✓ SAVE CHARACTER','saveAppearance','gold')}${button('RANDOMIZE FACE','randomizeFace')}</div></div><div class="panel"><div class="avatarControls">${colorControls}${assetControls}</div><p class="muted">Customization now uses curated natural skin and hair palettes, exposes every hairstyle and face asset used by the renderer, and adds tattoo choices so the editor matches the drawable character system.</p></div></div>`,career?'careerSquad':'home');drawCustomizer();}
 function getAppearance(){const numeric=['style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo'];return Object.fromEntries(['skin','hair',...numeric].map(k=>[k,k==='skin'||k==='hair'?$('face_'+k).value:+$('face_'+k).value]))}
 function drawCustomizer(){
  const canvas=$('customPortrait');if(!canvas)return;
@@ -575,6 +604,7 @@ function drawCustomizer(){
   renderer.drawPlayer(ctx,dummy,previewGame);ctx.restore();
  }
  const label=$('customAngleLabel');if(label)label.textContent=dir.label;
+ drawStudioEightViewGallery(p,appearance);
 }
 // Character saves must confirm durable storage before the editor says the value
 // was saved. Keep the exact legacy `legend_edits` / `legend_managerCareer` JSON
@@ -647,6 +677,15 @@ function action(a){audio.cue('ui');
  else if(a==='careerScout')showCareerScout();else if(a==='careerScoutNew')tryCareerScout();else if(a.startsWith('careerSign'))tryCareerSign(+a.slice(10));
  else if(a==='careerMarket')showCareerMarket();else if(a==='careerSquad')showCareerSquad();else if(a==='careerBuy')careerBuy();
  else if(a==='careerTrain')careerTrain();else if(a.startsWith('facility_')){try{upgradeFacility(career,a.slice(9));store.put('managerCareer',career);showManager()}catch(e){alert(e.message)}}
+ else if(a==='studioGalleryToggle'){
+  // Preserve *unsaved* Player Studio form controls when showing a comparison.
+  // Reconstructing the Studio menu here would silently discard edits.
+  studioGalleryOpen=!studioGalleryOpen;studioGallerySignature='';
+  if(studioGalleryOpen){navTarget?.parentElement?.insertAdjacentHTML('afterend',studioEightViewMarkup());}
+  else $('studioEightViewGallery')?.remove();
+  if(navTarget)navTarget.textContent=studioGalleryOpen?'HIDE 8-VIEW GALLERY':'COMPARE ALL 8 VIEWS';
+  drawCustomizer();
+ }
  else if(a==='studioLeft')studioRotate(-1);else if(a==='studioRight')studioRotate(1);else if(a==='studioSpin'){studioSpin=!studioSpin;const btn=menu.querySelector('[data-action=studioSpin]');if(btn)btn.textContent=studioSpin?'■ STOP TURN':'↻ AUTO ROTATE';drawCustomizer()}
  else if(a==='playerStudio')showPlayerStudio();else if(a.startsWith('editPlayer'))showPlayerStudio(+a.slice(10));else if(a==='saveAppearance')saveAppearance();else if(a==='randomizeFace'){const el=$('face_style');if(el){for(const k of ['style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo']){const node=$('face_'+k);node.value=Math.floor(Math.random()*node.options.length)}const skinNode=$('face_skin'),hairNode=$('face_hair');if(skinNode)skinNode.value=NATURAL_SKIN_TONES[Math.floor(Math.random()*NATURAL_SKIN_TONES.length)][0];if(hairNode)hairNode.value=NATURAL_HAIR_COLORS[Math.floor(Math.random()*NATURAL_HAIR_COLORS.length)][0];drawCustomizer()}}
  else if(a==='quick'||a==='versus'||a==='training')showSetup(a);
@@ -787,7 +826,7 @@ function updatePerformanceHUD(now,rawDelta){
  }
 }
 function frame(now){pollMenuPad(now);const rawDelta=now-last;let dt=Math.min(.05,Math.max(0,rawDelta/1000||.016));last=now;updatePerformanceHUD(now,rawDelta);if(game.matchState==='play')game.update(dt);else if(game.matchState==='penalty')game.updatePK(dt);renderer.frame(game,dt,menuVisible());if(screen==='home'&&menuVisible())drawPoster();uiT-=dt;if(uiT<=0){uiT=.1;if(!menuVisible())drawHUD()}if(toastTime&&now>toastTime){$('gameToast').classList.add('hidden');toastTime=0}checkRotate();requestAnimationFrame(frame)}
-game.init({home,away,options:opt});game.matchState='none';window.NekketsuHD={audio,version:'0.8.25.31-integrated',game,renderer,input,teams:TEAMS,shots:SHOTS,aiLevels:AI_LEVELS,rosterFor,getCareer:()=>career,getContinental:()=>continentalRun,confederations:CONTINENTS,continentalMapping:CONTINENTAL_TEAMS,kitsFor:team=>KIT_CHOICES.map(k=>kitFor(team,k)),getKitChoices:()=>kitSelections.slice(),getTeamPlan:i=>planFor(i),getMorale:team=>game.teamMorale(team)};window.NekketsuHD.ballModels=VISUALFEEL.BALL_MODELS;window.NekketsuHD.facingView=VISUALFEEL.facingView;window.NekketsuHD.impactStun=VISUALFEEL.impactStun;window.NekketsuHD.rollDelta=VISUALFEEL.rollDelta;window.NekketsuHD.personalityFor=p=>BPWPERSONALITY.profileFor(p);window.NekketsuHD.personalityMotion=(p,params)=>BPWPERSONALITY.sampleMotion(BPWPERSONALITY.profileFor(p),params);window.SupermagicFootball=window.NekketsuHD;window.SupermagicFootball.portraitFit=portraitFit;window.SupermagicFootball.studio={directions:STUDIO_DIRS,getDirection:()=>studioDirection,rotate:studioRotate,getAction:()=>studioAction,fitKeeperPose:drawFittedKeeperStudioPose};showHome();requestAnimationFrame(frame);
+game.init({home,away,options:opt});game.matchState='none';window.NekketsuHD={audio,version:'0.8.25.32-integrated',game,renderer,input,teams:TEAMS,shots:SHOTS,aiLevels:AI_LEVELS,rosterFor,getCareer:()=>career,getContinental:()=>continentalRun,confederations:CONTINENTS,continentalMapping:CONTINENTAL_TEAMS,kitsFor:team=>KIT_CHOICES.map(k=>kitFor(team,k)),getKitChoices:()=>kitSelections.slice(),getTeamPlan:i=>planFor(i),getMorale:team=>game.teamMorale(team)};window.NekketsuHD.ballModels=VISUALFEEL.BALL_MODELS;window.NekketsuHD.facingView=VISUALFEEL.facingView;window.NekketsuHD.impactStun=VISUALFEEL.impactStun;window.NekketsuHD.rollDelta=VISUALFEEL.rollDelta;window.NekketsuHD.personalityFor=p=>BPWPERSONALITY.profileFor(p);window.NekketsuHD.personalityMotion=(p,params)=>BPWPERSONALITY.sampleMotion(BPWPERSONALITY.profileFor(p),params);window.SupermagicFootball=window.NekketsuHD;window.SupermagicFootball.portraitFit=portraitFit;window.SupermagicFootball.studio={directions:STUDIO_DIRS,getDirection:()=>studioDirection,rotate:studioRotate,getAction:()=>studioAction,fitKeeperPose:drawFittedKeeperStudioPose};showHome();requestAnimationFrame(frame);
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
 // Browser audio can only be unlocked by a deliberate user gesture.

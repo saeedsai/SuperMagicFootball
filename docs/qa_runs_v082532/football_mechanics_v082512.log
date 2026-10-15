@@ -1,0 +1,19 @@
+desktop pitch proportions and preserved vertical width PASS
+desktop directional human pass tracks teammate in chosen direction PASS
+desktop normal shot targets keeper-free goal lane at high accuracy PASS
+desktop ordinary point-blank strike stuns but continues past contact PASS
+desktop super shot launches close target and weakens on contact PASS
+desktop powerful point-blank super shot throws goalkeeper while continuing PASS
+desktop three consecutive super-shot impacts exhaust transformation PASS
+desktop previous stamina halftime refund preserved PASS
+desktop no uncaught browser errors PASS
+touch-simulated pitch proportions and preserved vertical width PASS
+touch-simulated directional human pass tracks teammate in chosen direction PASS
+touch-simulated normal shot targets keeper-free goal lane at high accuracy PASS
+touch-simulated ordinary point-blank strike stuns but continues past contact PASS
+touch-simulated super shot launches close target and weakens on contact PASS
+touch-simulated powerful point-blank super shot throws goalkeeper while continuing PASS
+touch-simulated three consecutive super-shot impacts exhaust transformation PASS
+touch-simulated previous stamina halftime refund preserved PASS
+touch-simulated no uncaught browser errors PASS
+{'PASS': 18, 'FAIL': 0, 'TIMEOUT': 0}

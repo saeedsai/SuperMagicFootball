@@ -28,6 +28,6 @@ test('loader recovers gracefully when hosted JSON fails',()=>{
  assert.match(src,/location\.protocol==='file:'/);
 });
 test('service worker cache version rotates after source/data update',()=>{
- assert.match(get('sw.js'),/smf-082531-modular-v1/);
+ assert.match(get('sw.js'),/smf-082532-modular-v1/);
  assert.match(get('sw.js'),/mechanics\/gameplay\.json/);
 });

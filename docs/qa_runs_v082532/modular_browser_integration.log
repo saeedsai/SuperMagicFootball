@@ -1,0 +1,10 @@
+PASS baseline-desktop runtime JSON teams, stable indexes and rosters 
+PASS baseline-desktop external JSON edits propagate to game 
+PASS baseline-desktop graphics renders all eight real views 
+PASS baseline-desktop complete match using imported modules 
+PASS baseline-desktop no uncaught JS errors 
+PASS edited-json-touch runtime JSON teams, stable indexes and rosters 
+PASS edited-json-touch external JSON edits propagate to game 
+PASS edited-json-touch graphics renders all eight real views 
+PASS edited-json-touch no uncaught JS errors 
+SUMMARY {'PASS': 9, 'FAIL': 0, 'TIMEOUT': 0, 'NOT EXECUTED': 0}

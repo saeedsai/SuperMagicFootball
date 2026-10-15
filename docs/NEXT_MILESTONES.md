@@ -1,13 +1,21 @@
-# Plan — next five iterations after v0.8.25.31
+# Five-iteration development plan after v0.8.25.32
 
-Each iteration requires: retain 223 team indices and 12 slots each; 2GK/3DF/4MF/3FW; stable player IDs, saves and BPW squads; four game actions, five main sections, six formations; new tests, data validation, seeded 24 matches, updated docs; commit only to agreed integration branch.
+Source of truth: GitHub `dev`; integrate only after independent QA and seeded full-match regression. Preserve 223 built-in teams, 2,676 players, seven BPW squads, 12 players per team (2 GK, 3 DF, 4 MF, 3 FW), ID/index order, existing careers/saves, exactly four action buttons, five top-level navigation groups and six formations.
 
-| Version | Focus | Acceptance gates |
+| Version | Priority | Requirements and acceptance |
 |---|---|---|
-| **0.8.25.32** | GitHub Pages/dev preview and real-origin save/reload hardening | Host/HTTPS URL launches on PC and phones; refresh, save import/export and browser process restart verified; eliminate Pages settings failure. |
-| **0.8.25.33** | Graphics quality: 8-direction named player art, hairstyle silhouettes, facial hair intersections | Record 8-view contact sheets for curated players × poses; fix verified clips/overlaps; no decrease in 12,096 case sweep. |
-| **0.8.25.34** | Controlled gameplay tuning extraction: pass/contact/keeper tunables | Move tested subsystem coefficients to bounded JSON; defaults reproduce previous outcomes; 24 full matches + controlled mechanical suites PASS. |
-| **0.8.25.35** | Physical mobile QA, performance and offline/PWA | Run iOS/Android landscape, background/resume, service worker offline and 30/60 FPS profiles; optimize proven bottlenecks. |
-| **0.8.25.36** | Career/save robustness and parallel roster merge contracts | Validate legacy career, creator clubs and shared JSON patches; schema migration tests and conflict diagnostics; no player/roster corruption. |
+| **v0.8.25.33** | Graphics refinement | Curated named-player hair/beard/face and accessories across all eight directions; comparison gallery visual QC; inspect contact sheets, avoid overlapping skin/face; preserve full 12,096-draw sweep. |
+| **v0.8.25.34** | Gameplay JSON extraction | Move bounded pass/contact/keeper variables to `data/mechanics/gameplay.json`; validate schema and match outcomes; 24 full matches and mechanical suites. |
+| **v0.8.25.35** | Gameplay animations | Improve passing follow-through, goalkeeper recovery and first touch animations with deterministic view-specific QA; no physics changes without measured evidence. |
+| **v0.8.25.36** | Editor/data integrity | Add conflict detection and merge diagnostics for concurrently edited team, player and graphics JSON; preserve player IDs and exact roster quota. |
+| **v0.8.25.37** | Career UX and AI | Enhance available career squad maintenance and tactical coaching hints; acceptance includes formation and saved-state compatibility tests. |
 
-Longer-term retained: expand visual likeness quality, goalkeeper transitions, gamepad accessibility, league UX and editorial data only when approved. Worldwide roster verification, Super Defense, Tricks and LAN/online are deferred.
+## Far-future backlog — explicitly postponed by project owner
+
+These are **removed from the next five iterations**. Do not bring them back as milestone blockers without a new request.
+
+- **Hosting and saves** (formerly planned v0.8.25.32): exhaustive live Pages browser gameplay, refresh/restart, import/export and persistent profile certification. Routine GitHub source and CI/Pages status checks remain part of normal release hygiene, but are not a feature milestone.
+- **Physical mobile and offline/PWA** (formerly planned v0.8.25.35): iOS/Android device testing, real FPS optimization, offline install and service-worker certification.
+- Other long-range programs: editorial worldwide rosters, Super Defense, Tricks, multiplayer/LAN/network. Retain specifications until explicitly scheduled.
+
+Every iteration must include a playable modular `index.html` plus `src/` and `data/`, Node regression, all inherited Chromium suites, seeded matches, new feature tests, honest PASS/FAIL/NOT EXECUTED reporting, and docs/source committed to `dev`. GitHub Pages may serve the `dev` branch according to repository settings; do not claim interactive remote verification unless actually performed.

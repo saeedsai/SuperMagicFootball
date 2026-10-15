@@ -1,4 +1,4 @@
-# Supermagic Football · v0.8.25.31 · Modular source project
+# Supermagic Football · v0.8.25.32 · Modular source project
 
 This is a **continuation of v0.8.25.29**, which itself derives from the v0.8.25.28 handover. The game has NOT been recreated. Player IDs, team ordering, formation choices, controls, game modes, saved-progress keys and gameplay formulas are retained. The authoritative playable version now consists of **multiple JavaScript modules and JSON data files**; `index.html` loads those files at runtime.
 
@@ -55,10 +55,16 @@ Other inherited Chromium scripts in `tests/*.py` continue to run after generatin
 - Procedural graphics are **code** in the renderer modules, not an invented bitmap database. JSON stores editable palettes, options, and presets.
 - Worldwide roster re-verification, Super Defense, Tricks and network modes remain deferred.
 
-## Development branch update — v0.8.25.31 (2026-10-15)
+## Development branch update — v0.8.25.32 (2026-10-15)
 
 Development started from GitHub commit `34dd3d3`. Changes live on `dev`; main remains the previous v0.8.25.30 release. New feature: **Graphics → Performance HUD** with rolling FPS and average frame-time readouts on phone and desktop; enabled/disabled in standard settings, default OFF. Also moved seven previously hard-coded tuning constants to JSON without changing defaults, and improved failed JSON-loading recovery with a Retry button.
 
 Run `python3 scripts/validate_data.py && python3 scripts/build.py && node --test tests/*.test.cjs`. For browser checks run `python3 tests/modular_browser_integration.py`, `python3 tests/performance_loader_browser_v082531.py`, and `python3 tests/scripted_match_replays.py` after installing Playwright/Chromium. Details: `docs/TEST_REPORT_v082531.md`.
 
 **Important: GitHub Pages builds a selected branch, not every branch at once.** To publish the dev version on GitHub Pages, set **Settings → Pages → Deploy from a branch → dev / (root)**. This changes which branch is live. You can instead retain main live and use a separate host for dev. Do not assume `https://saeedsai.github.io/SuperMagicFootball/` is the dev build until a real deployment and browser check succeeds.
+
+## v0.8.25.32 graphics release
+
+Open **Settings → Player Customization → Player Studio**, then select **COMPARE ALL 8 VIEWS**. The optional gallery shows the currently edited character from every direction, including separate rear crown styles for all 13 haircuts. Toggle without losing unsaved appearance values; click **SAVE CHARACTER** to persist changes. The default Studio view and all gameplay controls are unchanged.
+
+For this iteration's coverage and five-step plan, see [docs/TEST_REPORT_v082532.md](docs/TEST_REPORT_v082532.md), [docs/NEXT_MILESTONES.md](docs/NEXT_MILESTONES.md) and [docs/GAP_REGISTER_v082532.md](docs/GAP_REGISTER_v082532.md). Hosting/save-restart and physical mobile/PWA certification are **far-future**, not scheduled in the next five releases.

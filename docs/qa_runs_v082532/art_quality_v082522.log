@@ -1,0 +1,8 @@
+PASS desktop all 13 hairstyles have distinct side and rear-3/4 head renderings 
+PASS desktop tight frame 108 players × 8 directions × 4 actions 
+PASS desktop no page JavaScript exceptions 
+PASS desktop 13-style readable visual inspection sheet 
+PASS simulated-touch all 13 hairstyles have distinct side and rear-3/4 head renderings 
+PASS simulated-touch tight frame 108 players × 8 directions × 4 actions 
+PASS simulated-touch no page JavaScript exceptions 
+RESULT {'PASS': 7, 'FAIL': 0, 'TIMEOUT': 0}

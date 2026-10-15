@@ -1,3 +1,10 @@
+## v0.8.25.32 — eight-view Studio gallery and rear hairstyle fix (2026-10-15)
+- Implemented optional compare-all-eight-views gallery in Player Customization; cached idle portraits update with unsaved visual controls without mutating save data.
+- Corrected hair drawing order: 3 visually identical straight-back hairstyles now have unique realistic crown marks; distinct count 11/13 → 13/13, all other view families preserved.
+- Added 3 Node and 18 Chromium cases with face/hair and form-preservation assertions; refreshed graphics contact sheet.
+- Completed 146 Node, 20 inherited browser suites, 9 modular, 11 loader/performance, 18 new gallery and 24 full scripted matches, all PASS in executed suites. Historical and physical/hosted checks NOT EXECUTED.
+- Updated current status, test catalog, gap register, plan. Moved requested hosting/save and physical mobile/PWA initiatives to FAR FUTURE.
+
 ## v0.8.25.30 — 2026-10-15 — JSON and ES module parallel development split
 
 - Split inherited `src/game.js` into 28 independently editable JavaScript modules with async `src/assets.js` JSON bootstrap and playable multi-file `index.html`.

@@ -186,6 +186,26 @@ function drawBackHair(ctx,style,hair,dark,width){
  if(v===1||v===3||v===6||v===12){artStroke(ctx,[[-11,-22],[1,-25],[14,-19]],1.5,artTint(hair,.16),hair,0);}
  artStroke(ctx,[[-width*.54,14],[-10,23],[9,23],[width*.50,15]],1.4,dark,dark,0);
 }
+// Three short styles used to collapse to identical rear pixels: the common
+// nape ellipse was painted *over* their distinguishing crown details.
+// Draw identifying hair texture on the visible upper rear cap, not on the skin.
+// These marks are drawn after the nape overlay, using the selected natural hair shade.
+function studioRearCrownIdentity(ctx,style,hair,dark){
+ const v=((Number(style)||0)%13+13)%13;
+ const light=artTint(hair,.26),shadow=artTint(hair,-.27);
+ if(v===0){ // textured crop: asymmetrical, upward-brushed locks
+  artStroke(ctx,[[-17,-18],[-12,-29],[-7,-23],[-2,-30],[4,-23]],1.65,light,hair,0);
+  artStroke(ctx,[[7,-24],[14,-28],[19,-20]],1.3,shadow,hair,0);
+ }else if(v===9){ // geometric flat-top: deliberately horizontal crown seam
+  artStroke(ctx,[[-17,-24],[-15,-29],[14,-29],[17,-24]],2,shadow,hair,0);
+  artStroke(ctx,[[-12,-21],[12,-21]],1.55,light,hair,0);
+ }else if(v===12){ // close-cut buzz: fine follicles rather than full locks
+  for(let row=0;row<3;row++)for(let col=-3;col<=3;col++){
+   const x=col*5.1+(row%2)*2.2,y=-27+row*5.5+Math.abs(col)*.3;
+   artStroke(ctx,[[x,y],[x+1.1,y+1.4]],.8,row%2?light:shadow,hair,0);
+  }
+ }
+}
 function drawLips(ctx,style,color='#7b3639'){
  switch(((style%8)+8)%8){
   case 0: artStroke(ctx,[[-5,22],[0,24],[6,22]],2.5,color,color,0);break;
@@ -482,7 +502,7 @@ function artHead(ctx,p,av,team,view,opt){
   artStroke(ctx,[[-14,7],[-6,14],[4,14]],1.8,hairDim,hair,0);artStroke(ctx,[[18,-11],[24,-4]],1.7,'#ffffff23',hair,0);
   artStroke(ctx,[[13,19],[18,20]],1.05,shade,shade,0);
  }else{ // back
-  drawBackHair(ctx,av.style,hair,dark,width+1);artEllipse(ctx,0,-17,23,15,hair,dark,2.1);artStroke(ctx,[[-20,-13],[-11,-22],[3,-23],[18,-14]],1.9,hairLight,hair,0);
+  drawBackHair(ctx,av.style,hair,dark,width+1);artEllipse(ctx,0,-17,23,15,hair,dark,2.1);artStroke(ctx,[[-20,-13],[-11,-22],[3,-23],[18,-14]],1.9,hairLight,hair,0);studioRearCrownIdentity(ctx,av.style,hair,dark);
   if((av.style%13)===7||(av.style%13)===11){artEllipse(ctx,-25,12,8,15,hair,dark,2);artEllipse(ctx,25,12,8,15,hair,dark,2);} artStroke(ctx,[[-12,26],[0,28],[11,25]],2,shade,skin,0);
  }
  drawBeardByView(ctx,front?'front':qfront?'quarterFront':side?'side':qback?'quarterBack':'back',beardStyle,hair,av.face??0,p.src.name||'');

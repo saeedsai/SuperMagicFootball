@@ -33,12 +33,12 @@ test('fixed Player Studio selectors are in menu module and no duplicate declarat
  assert.ok(src.indexOf('function studioColorOptions(')>src.indexOf('const STUDIO_DIRS='));
 });
 test('merged build exposes current version without stale Player Studio tagline',()=>{
- assert.match(src,/version:'0\.8\.25\.31-integrated'/);
- assert.match(src,/GRAPHICS 0\.8\.25\.31/);
- assert.match(src,/VERSION 0\.8\.25\.31/);
+ assert.match(src,/version:'0\.8\.25\.32-integrated'/);
+ assert.match(src,/GRAPHICS 0\.8\.25\.32/);
+ assert.match(src,/VERSION 0\.8\.25\.32/);
  assert.ok(!src.includes('GRAPHICS 0.8.25.19'));
  assert.ok(!src.includes('VERSION 0.8.25.14'));
- assert.ok(html.includes('0.8.25.31-integrated'));
+ assert.ok(html.includes('0.8.25.32-integrated'));
 });
 test('build remains single-file/offline compatible with embedded styling',()=>{
  assert.ok(html.includes('<style>')&&html.includes('<script type="module">'));

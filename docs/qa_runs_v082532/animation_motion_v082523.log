@@ -1,0 +1,11 @@
+PASS desktop actual live-player turning renders with eased heading at 30/60 FPS 
+PASS desktop previews keep deterministic views independent of live turn cache 
+PASS desktop keeper dive, catch and recover have distinct render poses 
+PASS desktop different actions render in portraits without clipping 
+PASS desktop no uncaught javascript errors 
+PASS simulated-touch actual live-player turning renders with eased heading at 30/60 FPS 
+PASS simulated-touch previews keep deterministic views independent of live turn cache 
+PASS simulated-touch keeper dive, catch and recover have distinct render poses 
+PASS simulated-touch different actions render in portraits without clipping 
+PASS simulated-touch no uncaught javascript errors 
+RESULT {'PASS': 10, 'FAIL': 0, 'TIMEOUT': 0}

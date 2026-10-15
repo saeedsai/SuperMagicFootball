@@ -1,0 +1,11 @@
+desktop far-out ball cannot trigger a premature goalkeeper dive PASS
+desktop already-aligned keeper still stops an incoming close normal shot PASS
+desktop close-range attacking AI considers a clear scoring opportunity before a pressure pass PASS
+desktop remote midfield ball carrier is not forced to shoot by closer-range logic PASS
+desktop no uncaught browser exceptions PASS
+simulated-touch far-out ball cannot trigger a premature goalkeeper dive PASS
+simulated-touch already-aligned keeper still stops an incoming close normal shot PASS
+simulated-touch close-range attacking AI considers a clear scoring opportunity before a pressure pass PASS
+simulated-touch remote midfield ball carrier is not forced to shoot by closer-range logic PASS
+simulated-touch no uncaught browser exceptions PASS
+{'PASS': 10, 'FAIL': 0, 'TIMEOUT': 0}

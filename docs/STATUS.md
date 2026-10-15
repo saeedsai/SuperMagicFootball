@@ -1,13 +1,13 @@
-# Supermagic Football — CURRENT STATUS v0.8.25.31 (development branch)
+# Supermagic Football — current development status v0.8.25.32
 
-This is a continuation of the v0.8.25.30 modular game, based on GitHub commit `34dd3d3` (main/dev before update). Development changes are isolated on `dev`. The base roster, gameplay physics defaults, 223 team indices, 2,676 players, 7 BPW squads, four action buttons, six formations and five main menu sections are unchanged.
+Authoritative base: GitHub `dev` commit `d44cb954554e344bcc02e1b8f582c2e8b21a68a8` (v0.8.25.31). Development remains modular: root `index.html` plus `src/`, `data/`, `style.css`, `sw.js`. No standalone root `play.html` needed.
 
-**New feature:** Optional Performance HUD in Settings → Graphics shows live FPS and mean frame time over 500 ms during a match. Default OFF; menu/touch controls are unaffected, option stored with standard `legend_options` key. Game works without a HUD.
+**New requirement delivered:** The Player Studio **COMPARE ALL 8 VIEWS** control displays an eight-image grid reflecting hairstyle, face shape, beard and accessories as the editor changes. It is off by default, uses a cached idle pose, preserves uncommitted editor controls, and changes no gameplay or saved data. Live player customization continues to use prior save formats and keys.
 
-**Bugs/gaps resolved:** Hosted JSON fetch failures present retry instructions and a reload button; seven bounded physics tunables have moved from engine JS to `data/mechanics/gameplay.json` with previous coefficients as defaults; service worker cache version bumped. Older assertions fixed and new validation added.
+**Graphics bug fixed:** Straight-behind variants for hairstyles 0, 9, 12 were pixel-identical (11/13 unique). Adding visible rear-crown details after the generic hair overlay raised uniqueness to **13/13** across desktop/simulated touch. All eight views and 5 face families continue to render.
 
-**QA:** 143 Node tests, 20 inherited Chromium acceptance suites, 9 modular integration cases, 11 new performance/recovery Chromium cases and 24 deterministic match replays passed. All runnable tests 0 fail/timeout. Hosted Pages and actual device/browser-restart validation still outstanding. See `TEST_REPORT_v082531.md` and `QA_CATALOG_v082531.csv`.
+**Regression:** 146/146 Node assertions, all 20 inherited Chromium suites, 9 modular loading checks, 11 performance recovery checks, 18 new Studio gallery checks, 24/24 complete seeded matches; zero FAIL or TIMEOUT in executed suites. 19/19 graphics integration checks and its 12,096-case sweep passed. See `TEST_REPORT_v082532.md`, `QA_CATALOG_v082532.csv` and `QA_SUMMARY_v082532.json`.
 
-**Playing:** A web server must serve `index.html`, `src/`, `data/`, `style.css`, `sw.js` as one rooted application. Github Pages URL is NOT asserted live. See `GITHUB_PAGES_SETUP.md` in repository root for branch source selection; `dev` is not production until published.
+**Deferred per owner:** exhaustive hosting/reload/saved profile certification and physical mobile FPS/PWA/offline testing have moved to FAR FUTURE, not next-five milestones. Routine GitHub publish-status checks remain. Hosted interactive browser testing was not executable in this environment; do not confuse successful GitHub Actions builds with it.
 
-**Do not implement without approved milestone:** worldwide roster revision, Super Defense, Tricks or LAN/online.
+**Protected:** 223 built-in teams, 2,676 players (12/team), BPW squads and player IDs, 2GK/3DF/4MF/3FW, four action buttons, five nav groups and six formations, career save schema and gameplay physics unchanged.

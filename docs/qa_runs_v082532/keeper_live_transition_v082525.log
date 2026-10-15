@@ -1,0 +1,10 @@
+PASS desktop diving catch transitions to landing with real possession 
+PASS desktop keeper dive and recovery drawings are distinct and remain within frame in eight directions 
+PASS desktop visual-only keeper catch cue is absent in Player Studio and appears on actual catch 
+PASS desktop no uncaught browser exceptions 
+PASS desktop live goalkeeper pose contact sheet generated 
+PASS simulated-touch diving catch transitions to landing with real possession 
+PASS simulated-touch keeper dive and recovery drawings are distinct and remain within frame in eight directions 
+PASS simulated-touch visual-only keeper catch cue is absent in Player Studio and appears on actual catch 
+PASS simulated-touch no uncaught browser exceptions 
+RESULT {'PASS': 9, 'FAIL': 0, 'TIMEOUT': 0}
