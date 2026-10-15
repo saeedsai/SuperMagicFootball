@@ -12,6 +12,20 @@ from update_all_clubs_fc27 import ROOT,clean,stats,generated_number,QUOTAS
 CURATED = {
  # Dated first-team positions are sourced; OVRs below are medium-level *editorial*
  # approximations, never attributed to EA/FC27.
+ "cont_afc_13": {
+   "MF":[("Daniel Ajibola",74,44)],
+   "source":"https://www.transfermarkt.co.uk/al-quwa-al-jawiya/kader/verein/23805/saison_id/2026/plus/1 [2026/27 midfield]"
+ },
+ "cont_concacaf_9": {
+   "MF":[("Leslie Heráldez",71,6)],
+   "FW":[("Oldemar Castillo",73,30),("Adrian Bethancourt",70,20)],
+   "source":"https://sportingsm.com/ ; https://www.transfermarkt.co.uk/sporting-san-miguelito/kader/verein/1708/saison_id/2026/plus/1"
+ },
+ "cont_ofc_2": {
+   "GK":[("Tevaearai Tamatai",70,1)],
+   "FW":[("Teaonui Tehau",75,10)],
+   "source":"https://www.cavpo.com/2017/01/Tahiti.Squad.html [Tahiti callups with Vénus affiliation 2026-05-29]"
+ },
  "cont_afc_11": {
    "GK":[("Adib Zarei",70,49)],
    "MF":[("Odildzhon Khamrobekov",76,21),("Igor Postonjski",75,8),("Tibor Halilović",74,7),("Seyed Mehdi Hosseini",72,6)],
