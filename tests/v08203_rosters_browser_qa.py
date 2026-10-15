@@ -15,7 +15,7 @@ with sync_playwright() as pw:
    squad=page.evaluate('''name => {const t=SupermagicFootball.teams.find(t=>t.name===name&&t.id.startsWith('club26_'));return {index:t.index,players:SupermagicFootball.rosterFor(t.index)};}''',club)
    assert len(squad['players'])==12,club
    assert len(set(p['num'] for p in squad['players']))==12,club
-   assert all(p['rosterVerification']=='verified_club_role' and p['shirtVerified'] and p['ageVerified'] for p in squad['players']),club
+   assert all(not p.get('fictional') and p.get('ratingSource','').startswith('FC27') for p in squad['players']),club
    assert not any(p['statsVerified'] or p['appearanceVerified'] for p in squad['players']),club
    assert next(p for p in squad['players'] if p['name']==player)['num']==expected_shirt
    open_quick(page)
