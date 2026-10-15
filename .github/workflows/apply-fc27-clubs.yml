@@ -1,0 +1,48 @@
+name: Apply Source-Checked FC27 Club Rosters
+on:
+  push:
+    branches: [dev]
+    paths: ['.github/workflows/apply-fc27-clubs.yml']
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          persist-credentials: true
+      - name: Install squad reference parser
+        run: python3 -m pip install --user beautifulsoup4
+      - name: Generate all 165 twelve-player club squads from cited sources
+        run: python3 scripts/update_all_clubs_fc27.py --apply
+      - name: Validate every team and structural role quota
+        run: python3 scripts/validate_data.py
+      - name: Check game-runtime roster parity, sources and top-player selection
+        run: |
+          node tests/all_club_fc27_rosters.mjs
+          node tests/club26_fc27_roster.mjs
+      - name: Build browser game and execute current Node contracts
+        run: |
+          python3 scripts/build.py
+          node --test tests/*.test.cjs
+          python3 -m compileall -q scripts tests
+      - name: Preserve audited full roster selections
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: staged-165-club-fc27-audit
+          path: docs/CLUB_ROSTER_FC27_ALL_CLUBS_20261015.json
+          retention-days: 30
+      - name: Commit and push all synchronized game and audit files to dev
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/players/club26.json data/players/continental.json src/roster_corrections.js docs/CLUB_ROSTER_FC27_ALL_CLUBS_20261015.json
+          git diff --cached --check
+          if git diff --cached --quiet; then echo 'Nothing changed'; else
+            git commit -m "data: refresh all 165 clubs from FC27 and source-labeled fallback rosters"
+            git push origin HEAD:dev
+          fi
