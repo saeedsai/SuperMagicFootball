@@ -3,7 +3,7 @@
 Source: third-party September 2026 FC27 dataset; editorial fallbacks are *not* EA ratings.
 
 - Clubs: 165; roster slots: 1980
-- FC27-sourced clubs: 81
+- FC27-sourced clubs: 82
 - Clubs with unresolved names: 23; unresolved slots: 207
 - Uncaptured highest-rated candidates from matched source clubs: 0
 
