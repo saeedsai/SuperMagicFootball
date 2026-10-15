@@ -4841,8 +4841,8 @@
   },
   "cont_afc_4": {
     "club": "Al Ain",
-    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD",
-    "source": "https://www.thesportsdb.com/team/137832; https://www.transfermarkt.co.uk/al-ain-fc/kader/verein/2150/saison_id/2026",
+    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD+STARTING11_2026_27",
+    "source": "https://www.thesportsdb.com/team/137832; https://www.transfermarkt.co.uk/al-ain-fc/kader/verein/2150/saison_id/2026; https://starting11.com/al-ain/squad",
     "found": {
       "GK": 0,
       "DF": 6,
@@ -4886,14 +4886,14 @@
         "rating": 73
       },
       {
-        "name": "Al Ain • Academy 8",
+        "name": "Al Baloushi",
         "role": "MF",
-        "rating": 78
+        "rating": 71
       },
       {
-        "name": "Al Ain • Academy 4",
+        "name": "Romero",
         "role": "MF",
-        "rating": 78
+        "rating": 71
       },
       {
         "name": "Giorgos Giakoumakis",
@@ -4906,12 +4906,12 @@
         "rating": 74
       },
       {
-        "name": "Al Ain • Academy 9",
+        "name": "Santos",
         "role": "FW",
-        "rating": 78
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 3,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Al Ain • Academy 1",
       "Al Ain • Academy 2",
@@ -5105,8 +5105,8 @@
   },
   "cont_afc_7": {
     "club": "Al Sadd",
-    "origin": "SPORTSDB_EDITORIAL_OVR",
-    "source": "https://www.thesportsdb.com/team/137648",
+    "origin": "SPORTSDB_EDITORIAL_OVR+STARTING11_2026_27",
+    "source": "https://www.thesportsdb.com/team/137648; https://starting11.com/al-sadd/squad",
     "found": {
       "GK": 0,
       "DF": 2,
@@ -5115,14 +5115,14 @@
     },
     "selected": [
       {
-        "name": "Al Sadd • Academy 1",
+        "name": "Al Sheeb",
         "role": "GK",
-        "rating": 67
+        "rating": 69
       },
       {
-        "name": "Al Sadd • Academy 12",
+        "name": "Barsham",
         "role": "GK",
-        "rating": 63
+        "rating": 69
       },
       {
         "name": "Boualem Khoukhi",
@@ -5135,9 +5135,9 @@
         "rating": 72
       },
       {
-        "name": "Al Sadd • Academy 2",
+        "name": "Miguel",
         "role": "DF",
-        "rating": 66
+        "rating": 70
       },
       {
         "name": "Claudinho",
@@ -5175,7 +5175,7 @@
         "rating": 74
       }
     ],
-    "fictionalRemaining": 3,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Al Sadd • Academy 1",
       "Al Sadd • Academy 2",
@@ -5193,8 +5193,8 @@
   },
   "cont_afc_8": {
     "club": "Al Gharafa",
-    "origin": "SPORTSDB_EDITORIAL_OVR",
-    "source": "https://www.thesportsdb.com/team/138029",
+    "origin": "SPORTSDB_EDITORIAL_OVR+STARTING11_2026_27",
+    "source": "https://www.thesportsdb.com/team/138029; https://starting11.com/al-gharafa/squad",
     "found": {
       "GK": 0,
       "DF": 2,
@@ -5203,14 +5203,14 @@
     },
     "selected": [
       {
-        "name": "Al Gharafa • Academy 1",
+        "name": "Ababacar",
         "role": "GK",
-        "rating": 65
+        "rating": 69
       },
       {
-        "name": "Al Gharafa • Academy 12",
+        "name": "Kahiout",
         "role": "GK",
-        "rating": 61
+        "rating": 69
       },
       {
         "name": "Dame Traoré",
@@ -5223,9 +5223,9 @@
         "rating": 73
       },
       {
-        "name": "Al Gharafa • Academy 2",
+        "name": "Fayez",
         "role": "DF",
-        "rating": 64
+        "rating": 70
       },
       {
         "name": "Abdalla Yousif",
@@ -5253,17 +5253,17 @@
         "rating": 77
       },
       {
-        "name": "Al Gharafa • Academy 9",
+        "name": "Muntari",
         "role": "FW",
-        "rating": 64
+        "rating": 72
       },
       {
-        "name": "Al Gharafa • Academy 10",
+        "name": "Coman",
         "role": "FW",
-        "rating": 63
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 5,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Al Gharafa • Academy 1",
       "Al Gharafa • Academy 2",
@@ -5281,8 +5281,8 @@
   },
   "cont_afc_9": {
     "club": "Al Shamal",
-    "origin": "SPORTSDB_EDITORIAL_OVR",
-    "source": "https://www.thesportsdb.com/team/141174",
+    "origin": "SPORTSDB_EDITORIAL_OVR+STARTING11_2026_27",
+    "source": "https://www.thesportsdb.com/team/141174; https://starting11.com/al-shamal/squad",
     "found": {
       "GK": 1,
       "DF": 2,
@@ -5296,9 +5296,9 @@
         "rating": 72
       },
       {
-        "name": "Al Shamal • Academy 1",
+        "name": "Mohammed",
         "role": "GK",
-        "rating": 63
+        "rating": 69
       },
       {
         "name": "Abdelkarim Hassan",
@@ -5311,9 +5311,9 @@
         "rating": 72
       },
       {
-        "name": "Al Shamal • Academy 2",
+        "name": "Marí",
         "role": "DF",
-        "rating": 62
+        "rating": 70
       },
       {
         "name": "Ahmed Sayyar",
@@ -5341,17 +5341,17 @@
         "rating": 74
       },
       {
-        "name": "Al Shamal • Academy 9",
+        "name": "M. Omar",
         "role": "FW",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Al Shamal • Academy 10",
+        "name": "Coulibaly",
         "role": "FW",
-        "rating": 61
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 4,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Al Shamal • Academy 1",
       "Al Shamal • Academy 2",
@@ -5809,8 +5809,8 @@
   },
   "cont_afc_15": {
     "club": "Pakhtakor",
-    "origin": "SPORTSDB_EDITORIAL_OVR",
-    "source": "https://www.thesportsdb.com/team/139020",
+    "origin": "SPORTSDB_EDITORIAL_OVR+STARTING11_2026_27",
+    "source": "https://www.thesportsdb.com/team/139020; https://starting11.com/pakhtakor/squad",
     "found": {
       "GK": 1,
       "DF": 0,
@@ -5824,24 +5824,24 @@
         "rating": 72
       },
       {
-        "name": "Pakhtakor • Academy 1",
+        "name": "Nazarov",
         "role": "GK",
-        "rating": 71
+        "rating": 69
       },
       {
-        "name": "Pakhtakor • Academy 2",
+        "name": "Tahseen",
         "role": "DF",
         "rating": 70
       },
       {
-        "name": "Pakhtakor • Academy 3",
+        "name": "Pouraliganji",
         "role": "DF",
-        "rating": 69
+        "rating": 70
       },
       {
-        "name": "Pakhtakor • Academy 7",
+        "name": "Nasrullayev",
         "role": "DF",
-        "rating": 65
+        "rating": 70
       },
       {
         "name": "Akmal Mozgovoy",
@@ -5879,7 +5879,7 @@
         "rating": 74
       }
     ],
-    "fictionalRemaining": 4,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Pakhtakor • Academy 1",
       "Pakhtakor • Academy 2",
@@ -5985,8 +5985,8 @@
   },
   "cont_afc_17": {
     "club": "Vissel Kobe",
-    "origin": "SPORTSDB_EDITORIAL_OVR",
-    "source": "https://www.thesportsdb.com/team/137717",
+    "origin": "SPORTSDB_EDITORIAL_OVR+STARTING11_2026_27",
+    "source": "https://www.thesportsdb.com/team/137717; https://starting11.com/vissel-kobe/squad",
     "found": {
       "GK": 1,
       "DF": 4,
@@ -6000,9 +6000,9 @@
         "rating": 72
       },
       {
-        "name": "Vissel Kobe • Academy 1",
+        "name": "Arai",
         "role": "GK",
-        "rating": 75
+        "rating": 69
       },
       {
         "name": "Caetano",
@@ -6025,17 +6025,17 @@
         "rating": 73
       },
       {
-        "name": "Vissel Kobe • Academy 8",
+        "name": "Goke",
         "role": "MF",
-        "rating": 75
+        "rating": 71
       },
       {
-        "name": "Vissel Kobe • Academy 4",
+        "name": "Ohgihara",
         "role": "MF",
-        "rating": 72
+        "rating": 71
       },
       {
-        "name": "Vissel Kobe • Academy 5",
+        "name": "Ideguchi",
         "role": "MF",
         "rating": 71
       },
@@ -6055,7 +6055,7 @@
         "rating": 74
       }
     ],
-    "fictionalRemaining": 4,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Vissel Kobe • Academy 1",
       "Vissel Kobe • Academy 2",
@@ -6073,8 +6073,8 @@
   },
   "cont_afc_18": {
     "club": "Kashiwa Reysol",
-    "origin": "SPORTSDB_EDITORIAL_OVR",
-    "source": "https://www.thesportsdb.com/team/137708",
+    "origin": "SPORTSDB_EDITORIAL_OVR+STARTING11_2026_27",
+    "source": "https://www.thesportsdb.com/team/137708; https://starting11.com/kashiwa-reysol/squad",
     "found": {
       "GK": 1,
       "DF": 3,
@@ -6088,9 +6088,9 @@
         "rating": 72
       },
       {
-        "name": "Kashiwa Reysol • Academy 1",
+        "name": "Kojima",
         "role": "GK",
-        "rating": 65
+        "rating": 69
       },
       {
         "name": "Hiromu Mitsumaru",
@@ -6133,17 +6133,17 @@
         "rating": 77
       },
       {
-        "name": "Kashiwa Reysol • Academy 9",
+        "name": "Endo",
         "role": "FW",
-        "rating": 64
+        "rating": 72
       },
       {
-        "name": "Kashiwa Reysol • Academy 10",
+        "name": "Hosoya",
         "role": "FW",
-        "rating": 63
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 3,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Kashiwa Reysol • Academy 1",
       "Kashiwa Reysol • Academy 2",
@@ -6161,8 +6161,8 @@
   },
   "cont_afc_19": {
     "club": "Kyoto Sanga",
-    "origin": "SPORTSDB_EDITORIAL_OVR",
-    "source": "https://www.thesportsdb.com/team/139888",
+    "origin": "SPORTSDB_EDITORIAL_OVR+STARTING11_2026_27",
+    "source": "https://www.thesportsdb.com/team/139888; https://starting11.com/kyoto-sanga/squad",
     "found": {
       "GK": 2,
       "DF": 2,
@@ -6191,9 +6191,9 @@
         "rating": 72
       },
       {
-        "name": "Kyoto Sanga • Academy 2",
+        "name": "Nagata",
         "role": "DF",
-        "rating": 62
+        "rating": 70
       },
       {
         "name": "Haruki Arai",
@@ -6221,17 +6221,17 @@
         "rating": 74
       },
       {
-        "name": "Kyoto Sanga • Academy 9",
+        "name": "Okugawa",
         "role": "FW",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Kyoto Sanga • Academy 10",
+        "name": "Elias",
         "role": "FW",
-        "rating": 61
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 3,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Kyoto Sanga • Academy 1",
       "Kyoto Sanga • Academy 2",
@@ -6865,8 +6865,8 @@
   },
   "cont_afc_27": {
     "club": "Beijing Guoan",
-    "origin": "SPORTSDB_EDITORIAL_OVR",
-    "source": "https://www.thesportsdb.com/team/134635",
+    "origin": "SPORTSDB_EDITORIAL_OVR+STARTING11_2026_27",
+    "source": "https://www.thesportsdb.com/team/134635; https://starting11.com/beijing-guoan/squad",
     "found": {
       "GK": 2,
       "DF": 4,
@@ -6905,19 +6905,19 @@
         "rating": 74
       },
       {
-        "name": "Beijing Guoan • Academy 8",
+        "name": "Zhongguo",
         "role": "MF",
-        "rating": 67
+        "rating": 71
       },
       {
-        "name": "Beijing Guoan • Academy 4",
+        "name": "Serginho",
         "role": "MF",
-        "rating": 64
+        "rating": 71
       },
       {
-        "name": "Beijing Guoan • Academy 5",
+        "name": "Konte",
         "role": "MF",
-        "rating": 63
+        "rating": 71
       },
       {
         "name": "Hao Fang",
@@ -6935,7 +6935,7 @@
         "rating": 74
       }
     ],
-    "fictionalRemaining": 3,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Beijing Guoan • Academy 1",
       "Beijing Guoan • Academy 2",
@@ -8009,8 +8009,8 @@
   },
   "cont_caf_8": {
     "club": "Mamelodi Sundowns",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+STARTING11_2026_27",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://starting11.com/mamelodi-sundowns/squad",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -8019,67 +8019,67 @@
     },
     "selected": [
       {
-        "name": "Mamelodi Sundowns • Academy 1",
+        "name": "Onyango",
         "role": "GK",
-        "rating": 78
+        "rating": 69
       },
       {
-        "name": "Mamelodi Sundowns • Academy 12",
+        "name": "Pieterse",
         "role": "GK",
-        "rating": 78
+        "rating": 69
       },
       {
-        "name": "Mamelodi Sundowns • Academy 2",
+        "name": "Ndamane",
         "role": "DF",
-        "rating": 78
+        "rating": 70
       },
       {
-        "name": "Mamelodi Sundowns • Academy 3",
+        "name": "Lunga",
         "role": "DF",
-        "rating": 78
+        "rating": 70
       },
       {
-        "name": "Mamelodi Sundowns • Academy 7",
+        "name": "Modiba",
         "role": "DF",
-        "rating": 78
+        "rating": 70
       },
       {
-        "name": "Mamelodi Sundowns • Academy 8",
+        "name": "T. Mokoena",
         "role": "MF",
-        "rating": 78
+        "rating": 71
       },
       {
-        "name": "Mamelodi Sundowns • Academy 4",
+        "name": "Santos",
         "role": "MF",
-        "rating": 78
+        "rating": 71
       },
       {
-        "name": "Mamelodi Sundowns • Academy 5",
+        "name": "Allende",
         "role": "MF",
-        "rating": 78
+        "rating": 71
       },
       {
-        "name": "Mamelodi Sundowns • Academy 6",
+        "name": "Aubaas",
         "role": "MF",
-        "rating": 78
+        "rating": 71
       },
       {
-        "name": "Mamelodi Sundowns • Academy 9",
+        "name": "Sales",
         "role": "FW",
-        "rating": 78
+        "rating": 72
       },
       {
-        "name": "Mamelodi Sundowns • Academy 10",
+        "name": "León",
         "role": "FW",
-        "rating": 78
+        "rating": 72
       },
       {
-        "name": "Mamelodi Sundowns • Academy 11",
+        "name": "Rayners",
         "role": "FW",
-        "rating": 78
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Mamelodi Sundowns • Academy 1",
       "Mamelodi Sundowns • Academy 2",
@@ -8713,8 +8713,8 @@
   },
   "cont_concacaf_0": {
     "club": "Vancouver FC",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+STARTING11_2026_27",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://starting11.com/vancouver-fc/squad",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -8723,67 +8723,67 @@
     },
     "selected": [
       {
-        "name": "Vancouver FC • Academy 1",
+        "name": "Irving",
         "role": "GK",
-        "rating": 70
-      },
-      {
-        "name": "Vancouver FC • Academy 12",
-        "role": "GK",
-        "rating": 66
-      },
-      {
-        "name": "Vancouver FC • Academy 2",
-        "role": "DF",
         "rating": 69
       },
       {
-        "name": "Vancouver FC • Academy 3",
-        "role": "DF",
-        "rating": 68
-      },
-      {
-        "name": "Vancouver FC • Academy 7",
-        "role": "DF",
-        "rating": 64
-      },
-      {
-        "name": "Vancouver FC • Academy 8",
-        "role": "MF",
-        "rating": 70
-      },
-      {
-        "name": "Vancouver FC • Academy 4",
-        "role": "MF",
-        "rating": 67
-      },
-      {
-        "name": "Vancouver FC • Academy 5",
-        "role": "MF",
-        "rating": 66
-      },
-      {
-        "name": "Vancouver FC • Academy 6",
-        "role": "MF",
-        "rating": 65
-      },
-      {
-        "name": "Vancouver FC • Academy 9",
-        "role": "FW",
+        "name": "Regitnig",
+        "role": "GK",
         "rating": 69
       },
       {
-        "name": "Vancouver FC • Academy 10",
-        "role": "FW",
-        "rating": 68
+        "name": "Gee",
+        "role": "DF",
+        "rating": 70
       },
       {
-        "name": "Vancouver FC • Academy 11",
+        "name": "Doner",
+        "role": "DF",
+        "rating": 70
+      },
+      {
+        "name": "Ssewankambo",
+        "role": "DF",
+        "rating": 70
+      },
+      {
+        "name": "Pecile",
+        "role": "MF",
+        "rating": 71
+      },
+      {
+        "name": "Toomey",
+        "role": "MF",
+        "rating": 71
+      },
+      {
+        "name": "Ouattara",
+        "role": "MF",
+        "rating": 71
+      },
+      {
+        "name": "Lee",
+        "role": "MF",
+        "rating": 71
+      },
+      {
+        "name": "Mousset",
         "role": "FW",
-        "rating": 67
+        "rating": 72
+      },
+      {
+        "name": "Amissi",
+        "role": "FW",
+        "rating": 72
+      },
+      {
+        "name": "Traore",
+        "role": "FW",
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Vancouver FC • Academy 1",
       "Vancouver FC • Academy 2",
@@ -9593,8 +9593,8 @@
   },
   "cont_concacaf_10": {
     "club": "Atlético Ottawa",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+STARTING11_2026_27",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://starting11.com/atletico-ottawa/squad",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -9603,67 +9603,67 @@
     },
     "selected": [
       {
-        "name": "Atlético Ottawa • Academy 1",
+        "name": "Crampton",
         "role": "GK",
-        "rating": 70
-      },
-      {
-        "name": "Atlético Ottawa • Academy 12",
-        "role": "GK",
-        "rating": 66
-      },
-      {
-        "name": "Atlético Ottawa • Academy 2",
-        "role": "DF",
         "rating": 69
       },
       {
-        "name": "Atlético Ottawa • Academy 3",
-        "role": "DF",
-        "rating": 68
-      },
-      {
-        "name": "Atlético Ottawa • Academy 7",
-        "role": "DF",
-        "rating": 64
-      },
-      {
-        "name": "Atlético Ottawa • Academy 8",
-        "role": "MF",
-        "rating": 70
-      },
-      {
-        "name": "Atlético Ottawa • Academy 4",
-        "role": "MF",
-        "rating": 67
-      },
-      {
-        "name": "Atlético Ottawa • Academy 5",
-        "role": "MF",
-        "rating": 66
-      },
-      {
-        "name": "Atlético Ottawa • Academy 6",
-        "role": "MF",
-        "rating": 65
-      },
-      {
-        "name": "Atlético Ottawa • Academy 9",
-        "role": "FW",
+        "name": "Kalongo",
+        "role": "GK",
         "rating": 69
       },
       {
-        "name": "Atlético Ottawa • Academy 10",
-        "role": "FW",
-        "rating": 68
+        "name": "Dunn-Johnson",
+        "role": "DF",
+        "rating": 70
       },
       {
-        "name": "Atlético Ottawa • Academy 11",
+        "name": "Walker",
+        "role": "DF",
+        "rating": 70
+      },
+      {
+        "name": "Mbomio",
+        "role": "DF",
+        "rating": 70
+      },
+      {
+        "name": "Castro",
+        "role": "MF",
+        "rating": 71
+      },
+      {
+        "name": "Aguilar",
+        "role": "MF",
+        "rating": 71
+      },
+      {
+        "name": "Gutiérrez",
+        "role": "MF",
+        "rating": 71
+      },
+      {
+        "name": "García",
+        "role": "MF",
+        "rating": 71
+      },
+      {
+        "name": "Escoto",
         "role": "FW",
-        "rating": 67
+        "rating": 72
+      },
+      {
+        "name": "Assi",
+        "role": "FW",
+        "rating": 72
+      },
+      {
+        "name": "Chateau",
+        "role": "FW",
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Atlético Ottawa • Academy 1",
       "Atlético Ottawa • Academy 2",
@@ -9857,8 +9857,8 @@
   },
   "cont_concacaf_13": {
     "club": "Seattle Sounders",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+STARTING11_2026_27",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://starting11.com/seattle-sounders/squad",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -9867,67 +9867,67 @@
     },
     "selected": [
       {
-        "name": "Seattle Sounders • Academy 1",
+        "name": "Frei",
         "role": "GK",
-        "rating": 64
+        "rating": 69
       },
       {
-        "name": "Seattle Sounders • Academy 12",
+        "name": "Thomas",
         "role": "GK",
-        "rating": 60
+        "rating": 69
       },
       {
-        "name": "Seattle Sounders • Academy 2",
+        "name": "Sailor",
         "role": "DF",
-        "rating": 63
+        "rating": 70
       },
       {
-        "name": "Seattle Sounders • Academy 3",
+        "name": "Tolo",
         "role": "DF",
-        "rating": 62
+        "rating": 70
       },
       {
-        "name": "Seattle Sounders • Academy 7",
+        "name": "Roldan",
         "role": "DF",
-        "rating": 58
+        "rating": 70
       },
       {
-        "name": "Seattle Sounders • Academy 8",
+        "name": "C. Roldan",
         "role": "MF",
-        "rating": 64
+        "rating": 71
       },
       {
-        "name": "Seattle Sounders • Academy 4",
+        "name": "Clark",
         "role": "MF",
-        "rating": 61
+        "rating": 71
       },
       {
-        "name": "Seattle Sounders • Academy 5",
+        "name": "Rusnák",
         "role": "MF",
-        "rating": 60
+        "rating": 71
       },
       {
-        "name": "Seattle Sounders • Academy 6",
+        "name": "Morris",
         "role": "MF",
-        "rating": 59
+        "rating": 71
       },
       {
-        "name": "Seattle Sounders • Academy 9",
+        "name": "Joveljić",
         "role": "FW",
-        "rating": 63
+        "rating": 72
       },
       {
-        "name": "Seattle Sounders • Academy 10",
+        "name": "de la Vega",
         "role": "FW",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Seattle Sounders • Academy 11",
+        "name": "Rothrock",
         "role": "FW",
-        "rating": 61
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Seattle Sounders • Academy 1",
       "Seattle Sounders • Academy 2",
@@ -10209,8 +10209,8 @@
   },
   "cont_concacaf_17": {
     "club": "Toluca",
-    "origin": "SPORTSDB_EDITORIAL_OVR",
-    "source": "https://www.thesportsdb.com/team/134204",
+    "origin": "SPORTSDB_EDITORIAL_OVR+STARTING11_2026_27",
+    "source": "https://www.thesportsdb.com/team/134204; https://starting11.com/toluca/squad",
     "found": {
       "GK": 1,
       "DF": 6,
@@ -10224,9 +10224,9 @@
         "rating": 72
       },
       {
-        "name": "Toluca • Academy 1",
+        "name": "González",
         "role": "GK",
-        "rating": 66
+        "rating": 69
       },
       {
         "name": "Antonio Briseño Vázquez",
@@ -10249,19 +10249,19 @@
         "rating": 73
       },
       {
-        "name": "Toluca • Academy 8",
+        "name": "Romero",
         "role": "MF",
-        "rating": 66
+        "rating": 71
       },
       {
-        "name": "Toluca • Academy 4",
+        "name": "Guzmán",
         "role": "MF",
-        "rating": 63
+        "rating": 71
       },
       {
-        "name": "Toluca • Academy 5",
+        "name": "N. Castro",
         "role": "MF",
-        "rating": 62
+        "rating": 71
       },
       {
         "name": "Alexis Vega",
@@ -10274,12 +10274,12 @@
         "rating": 74
       },
       {
-        "name": "Toluca • Academy 9",
+        "name": "Viñas",
         "role": "FW",
-        "rating": 65
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 5,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Toluca • Academy 1",
       "Toluca • Academy 2",
@@ -10737,8 +10737,8 @@
   },
   "cont_concacaf_23": {
     "club": "Philadelphia Union",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+STARTING11_2026_27",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://starting11.com/philadelphia-union/squad",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -10747,67 +10747,67 @@
     },
     "selected": [
       {
-        "name": "Philadelphia Union • Academy 1",
+        "name": "Blake",
         "role": "GK",
-        "rating": 64
+        "rating": 69
       },
       {
-        "name": "Philadelphia Union • Academy 12",
+        "name": "Marks",
         "role": "GK",
-        "rating": 60
+        "rating": 69
       },
       {
-        "name": "Philadelphia Union • Academy 2",
+        "name": "Martínez",
         "role": "DF",
-        "rating": 63
+        "rating": 70
       },
       {
-        "name": "Philadelphia Union • Academy 3",
+        "name": "Larsen",
         "role": "DF",
-        "rating": 62
+        "rating": 70
       },
       {
-        "name": "Philadelphia Union • Academy 7",
+        "name": "Mbaïzo",
         "role": "DF",
-        "rating": 58
+        "rating": 70
       },
       {
-        "name": "Philadelphia Union • Academy 8",
+        "name": "Lukić",
         "role": "MF",
-        "rating": 64
+        "rating": 71
       },
       {
-        "name": "Philadelphia Union • Academy 4",
+        "name": "C. Sullivan",
         "role": "MF",
-        "rating": 61
+        "rating": 71
       },
       {
-        "name": "Philadelphia Union • Academy 5",
+        "name": "Bueno",
         "role": "MF",
-        "rating": 60
+        "rating": 71
       },
       {
-        "name": "Philadelphia Union • Academy 6",
+        "name": "Bedoya",
         "role": "MF",
-        "rating": 59
+        "rating": 71
       },
       {
-        "name": "Philadelphia Union • Academy 9",
+        "name": "Damiani",
         "role": "FW",
-        "rating": 63
+        "rating": 72
       },
       {
-        "name": "Philadelphia Union • Academy 10",
+        "name": "Iloski",
         "role": "FW",
-        "rating": 62
+        "rating": 72
       },
       {
-        "name": "Philadelphia Union • Academy 11",
+        "name": "Alladoh",
         "role": "FW",
-        "rating": 61
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Philadelphia Union • Academy 1",
       "Philadelphia Union • Academy 2",
@@ -10913,8 +10913,8 @@
   },
   "cont_concacaf_25": {
     "club": "Vancouver Whitecaps",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+STARTING11_2026_27",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://starting11.com/vancouver-whitecaps/squad",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -10923,67 +10923,67 @@
     },
     "selected": [
       {
-        "name": "Vancouver Whitecaps • Academy 1",
+        "name": "Takaoka",
         "role": "GK",
-        "rating": 70
-      },
-      {
-        "name": "Vancouver Whitecaps • Academy 12",
-        "role": "GK",
-        "rating": 66
-      },
-      {
-        "name": "Vancouver Whitecaps • Academy 2",
-        "role": "DF",
         "rating": 69
       },
       {
-        "name": "Vancouver Whitecaps • Academy 3",
-        "role": "DF",
-        "rating": 68
-      },
-      {
-        "name": "Vancouver Whitecaps • Academy 7",
-        "role": "DF",
-        "rating": 64
-      },
-      {
-        "name": "Vancouver Whitecaps • Academy 8",
-        "role": "MF",
-        "rating": 70
-      },
-      {
-        "name": "Vancouver Whitecaps • Academy 4",
-        "role": "MF",
-        "rating": 67
-      },
-      {
-        "name": "Vancouver Whitecaps • Academy 5",
-        "role": "MF",
-        "rating": 66
-      },
-      {
-        "name": "Vancouver Whitecaps • Academy 6",
-        "role": "MF",
-        "rating": 65
-      },
-      {
-        "name": "Vancouver Whitecaps • Academy 9",
-        "role": "FW",
+        "name": "Zendejas",
+        "role": "GK",
         "rating": 69
       },
       {
-        "name": "Vancouver Whitecaps • Academy 10",
-        "role": "FW",
-        "rating": 68
+        "name": "Laborda",
+        "role": "DF",
+        "rating": 70
       },
       {
-        "name": "Vancouver Whitecaps • Academy 11",
+        "name": "Adekugbe",
+        "role": "DF",
+        "rating": 70
+      },
+      {
+        "name": "Veselinović",
+        "role": "DF",
+        "rating": 70
+      },
+      {
+        "name": "Larraz",
+        "role": "MF",
+        "rating": 71
+      },
+      {
+        "name": "Sabbi",
+        "role": "MF",
+        "rating": 71
+      },
+      {
+        "name": "Cabrera",
+        "role": "MF",
+        "rating": 71
+      },
+      {
+        "name": "Cubas",
+        "role": "MF",
+        "rating": 71
+      },
+      {
+        "name": "Sabaly",
         "role": "FW",
-        "rating": 67
+        "rating": 72
+      },
+      {
+        "name": "Müller",
+        "role": "FW",
+        "rating": 72
+      },
+      {
+        "name": "Quiñonez",
+        "role": "FW",
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Vancouver Whitecaps • Academy 1",
       "Vancouver Whitecaps • Academy 2",
@@ -12057,8 +12057,8 @@
   },
   "cont_conmebol_12": {
     "club": "Corinthians",
-    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD",
-    "source": "https://www.thesportsdb.com/team/134284; https://gol.conmebol.com/libertadores/en/news/corinthians-2026-conmebol-libertadores-results-squad-and-schedule",
+    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD+STARTING11_2026_27",
+    "source": "https://www.thesportsdb.com/team/134284; https://gol.conmebol.com/libertadores/en/news/corinthians-2026-conmebol-libertadores-results-squad-and-schedule; https://starting11.com/corinthians/squad",
     "found": {
       "GK": 1,
       "DF": 3,
@@ -12112,22 +12112,22 @@
         "rating": 75
       },
       {
-        "name": "Corinthians • Academy 9",
+        "name": "Alberto",
         "role": "FW",
-        "rating": 75
+        "rating": 72
       },
       {
-        "name": "Corinthians • Academy 10",
+        "name": "Depay",
         "role": "FW",
-        "rating": 74
+        "rating": 72
       },
       {
-        "name": "Corinthians • Academy 11",
+        "name": "Vitinho",
         "role": "FW",
-        "rating": 73
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 3,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Corinthians • Academy 1",
       "Corinthians • Academy 2",
@@ -12497,8 +12497,8 @@
   },
   "cont_conmebol_17": {
     "club": "Universidad Católica",
-    "origin": "NOT_IN_FC27",
-    "source": "wiki unavailable: HTTP Error 429: Too Many Requests",
+    "origin": "NOT_IN_FC27+STARTING11_2026_27",
+    "source": "wiki unavailable: HTTP Error 429: Too Many Requests; https://starting11.com/universidad-catolica/squad",
     "found": {
       "GK": 0,
       "DF": 0,
@@ -12507,67 +12507,67 @@
     },
     "selected": [
       {
-        "name": "Universidad Católica • Academy 1",
+        "name": "Gordillo",
         "role": "GK",
-        "rating": 68
+        "rating": 69
       },
       {
-        "name": "Universidad Católica • Academy 12",
+        "name": "Lara",
         "role": "GK",
-        "rating": 64
+        "rating": 69
       },
       {
-        "name": "Universidad Católica • Academy 2",
+        "name": "García",
         "role": "DF",
-        "rating": 67
+        "rating": 70
       },
       {
-        "name": "Universidad Católica • Academy 3",
+        "name": "Chancellor",
         "role": "DF",
-        "rating": 66
+        "rating": 70
       },
       {
-        "name": "Universidad Católica • Academy 7",
+        "name": "Palacios",
         "role": "DF",
-        "rating": 62
+        "rating": 70
       },
       {
-        "name": "Universidad Católica • Academy 8",
+        "name": "Cacciabue",
         "role": "MF",
-        "rating": 68
+        "rating": 71
       },
       {
-        "name": "Universidad Católica • Academy 4",
+        "name": "Clavijo",
         "role": "MF",
-        "rating": 65
+        "rating": 71
       },
       {
-        "name": "Universidad Católica • Academy 5",
+        "name": "Martínez",
         "role": "MF",
-        "rating": 64
+        "rating": 71
       },
       {
-        "name": "Universidad Católica • Academy 6",
+        "name": "Sevillano",
         "role": "MF",
-        "rating": 63
+        "rating": 71
       },
       {
-        "name": "Universidad Católica • Academy 9",
+        "name": "Fajardo",
         "role": "FW",
-        "rating": 67
+        "rating": 72
       },
       {
-        "name": "Universidad Católica • Academy 10",
+        "name": "Londoño",
         "role": "FW",
-        "rating": 66
+        "rating": 72
       },
       {
-        "name": "Universidad Católica • Academy 11",
+        "name": "Evans",
         "role": "FW",
-        "rating": 65
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 12,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Universidad Católica • Academy 1",
       "Universidad Católica • Academy 2",
@@ -13465,8 +13465,8 @@
   },
   "cont_conmebol_28": {
     "club": "Independiente Medellín",
-    "origin": "SPORTSDB_EDITORIAL_OVR",
-    "source": "https://www.thesportsdb.com/team/137613",
+    "origin": "SPORTSDB_EDITORIAL_OVR+STARTING11_2026_27",
+    "source": "https://www.thesportsdb.com/team/137613; https://starting11.com/independiente-medellin/squad",
     "found": {
       "GK": 0,
       "DF": 1,
@@ -13475,14 +13475,14 @@
     },
     "selected": [
       {
-        "name": "Independiente Medellín • Academy 1",
+        "name": "Ichazo",
         "role": "GK",
-        "rating": 66
+        "rating": 69
       },
       {
-        "name": "Independiente Medellín • Academy 12",
+        "name": "Chaux",
         "role": "GK",
-        "rating": 62
+        "rating": 69
       },
       {
         "name": "Daniel Londoño Castañeda",
@@ -13490,14 +13490,14 @@
         "rating": 74
       },
       {
-        "name": "Independiente Medellín • Academy 2",
+        "name": "Varela",
         "role": "DF",
-        "rating": 65
+        "rating": 70
       },
       {
-        "name": "Independiente Medellín • Academy 3",
+        "name": "Mena",
         "role": "DF",
-        "rating": 64
+        "rating": 70
       },
       {
         "name": "Didier Moreno",
@@ -13530,12 +13530,12 @@
         "rating": 76
       },
       {
-        "name": "Independiente Medellín • Academy 9",
+        "name": "Medina",
         "role": "FW",
-        "rating": 65
+        "rating": 72
       }
     ],
-    "fictionalRemaining": 5,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Independiente Medellín • Academy 1",
       "Independiente Medellín • Academy 2",
