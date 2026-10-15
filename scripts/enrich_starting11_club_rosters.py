@@ -94,7 +94,7 @@ def main():
     audits=json.loads(audit_path.read_text())
     added=0;visited=0;found=0
     for team_id,record in audits.items():
-        if team_id not in data or not record.get("fictionalRemaining"):continue
+        if team_id not in data or (not record.get("fictionalRemaining") and "+STARTING11_2026_27" not in record.get("origin","")):continue
         if record["origin"]=="FC27":continue
         visited+=1
         squad=data[team_id]
@@ -102,21 +102,24 @@ def main():
         if not options:
             print("STARTING11_UNAVAILABLE",team_id,record["club"],reason,flush=True)
             continue
-        occupied={clean(p["name"]) for p in squad if not p.get("fictional")}
-        original_names={p["name"] for p in squad if not p.get("fictional")}
-        taken={p["num"] for p in squad if p.get("num") is not None}
+        def sourced_here(p):
+            return p.get("ratingSource","").startswith("Editorial position/2026 starts estimate")
+        occupied={clean(p["name"]) for p in squad if not p.get("fictional") and not sourced_here(p)}
+        targets=[p for p in squad if p.get("fictional") or sourced_here(p)]
+        taken={p["num"] for p in squad if p not in targets and p.get("num") is not None}
         replacements=0
         for role in QUOTAS:
             pool=sorted((p for p in options if p["role"]==role),
                         key=lambda p:(-p["starts"],-p["apps"],p["num"] is None,p["num"] or 99,clean(p["name"])))
-            for slot in [p for p in squad if p["role"]==role and p.get("fictional")]:
+            for slot in [p for p in targets if p["role"]==role]:
                 candidate=next((p for p in pool if not equivalent(p["name"],occupied)),None)
                 if candidate is None:continue
                 name=candidate["name"]
                 # Explicit, position-based editorial mid-level OVR; never EA.
                 position_base={"GK":69,"DF":70,"MF":71,"FW":72}[role]
                 rating=max(65,min(79,position_base+(3 if candidate["starts"]>=20 else 2 if candidate["starts"]>=8 else 1 if candidate["starts"]>=3 else 0)))
-                taken.discard(slot.get("num"))
+                was_fictional=bool(slot.get("fictional"))
+                old_name=slot["name"]
                 number=generated_number(taken,candidate["num"])
                 taken.add(number)
                 slot.update({"name":name,"role":role,"num":number,"rating":rating,
@@ -129,11 +132,14 @@ def main():
                     **stats({"overall_rating":str(rating)},role)})
                 for key in ("fc27Id","birthDate","canonicalId","height","nation","age"):slot.pop(key,None)
                 occupied.add(clean(name))
-                replacements+=1;added+=1
+                if was_fictional:added+=1
+                if old_name!=name:replacements+=1
         if replacements:
             found+=1
-            record["source"]=str(record.get("source") or "")+"; "+url
-            record["origin"]+="+STARTING11_2026_27"
+            if url not in str(record.get("source") or ""):
+                record["source"]=str(record.get("source") or "")+"; "+url
+            if "+STARTING11_2026_27" not in record["origin"]:
+                record["origin"]+="+STARTING11_2026_27"
             record["selected"]=[{"name":p["name"],"role":p["role"],"rating":p["rating"]} for p in squad]
             record["fictionalRemaining"]=sum(bool(p.get("fictional")) for p in squad)
         assert len(squad)==12 and collections.Counter(p["role"] for p in squad)==QUOTAS
