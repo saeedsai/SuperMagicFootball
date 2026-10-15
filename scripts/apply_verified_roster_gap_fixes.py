@@ -12,6 +12,24 @@ from update_all_clubs_fc27 import ROOT,clean,stats,generated_number,QUOTAS
 CURATED = {
  # Dated first-team positions are sourced; OVRs below are medium-level *editorial*
  # approximations, never attributed to EA/FC27.
+ "cont_afc_11": {
+   "GK":[("Adib Zarei",70,49)],
+   "MF":[("Odildzhon Khamrobekov",76,21),("Igor Postonjski",75,8),("Tibor Halilović",74,7),("Seyed Mehdi Hosseini",72,6)],
+   "source":"https://www.transfermarkt.com/tractor-fc/kader/verein/12935/saison_id/2026/plus/1 [2026/27 squad]"
+ },
+ "cont_afc_12": {
+   "GK":[("Abdulmo'min Nurmuxammadov",69,13)],
+   "MF":[("Ikromjon Aliboev",75,5),("Vladimir Jovovic",75,8),("Abrorbek Ismoilov",72,7)],
+   "FW":[("Stipe Peritsa",74,18),("Nurbek Sarsenbayev",71,27)],
+   "source":"https://fcneftchi.uz/en/teams/main-squad [official 2026 first team]"
+ },
+ "cont_concacaf_2": {
+   "GK":[("Omry Bello",70,1),("Iraitz Gelbentzu",68,13)],
+   "DF":[("Yoan Melo",70,2),("Julen Olasagasti",70,3),("José Matos",70,26)],
+   "MF":[("Jon Trincado",69,5),("Josué Báez",72,7),("Isaac Báez",72,10),("Gabriel Castillo",70,22)],
+   "FW":[("Frantzety Herard",70,9),("Diego Santoni",69,28),("Ronaldinho Caicedo",70,32)],
+   "source":"https://www.livescore.com/en/football/team/om-fc/147418/squad/ [2026 first-team positions]"
+ },
  "cont_caf_11": {
    "GK":[("Simon Omossola",74,30),("Esdras Kabamba",70,1)],
    "DF":[("John Nekadio",71,3),("Christopher Sumbu",70,4),("Joseph Douhadji",70,6)],
