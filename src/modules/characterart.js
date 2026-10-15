@@ -91,8 +91,9 @@ const CHARACTER_ART=(()=>{
  }
  function brow(c,x,y,style,hair,scale=1){
   const k=index(style,20),bend=(k%5-2)*.75,rise=((k>>2)%4-1.5)*.62;
+  const tail=(Math.floor(k/5)-1.5)*.62,arch=(k%3-1)*.2;
   const h=tint(hair,-.40);
-  line(c,[[x-5*scale,y+1+bend],[x,y-2.7*scale+rise],[x+5.5*scale,y+bend*.7]],h,(1.8+(k%4)*.2)*scale);
+  line(c,[[x-5*scale,y+1+bend],[x,y-2.7*scale+rise+arch],[x+5.5*scale,y+bend*.7+tail]],h,(1.8+(k%4)*.2)*scale);
  }
  function nose(c,x,y,style,skin,angle){
   // All six profile silhouettes are authored separately, not just two width presets.
