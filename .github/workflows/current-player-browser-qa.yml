@@ -1,0 +1,48 @@
+name: Current Player Graphics and Identity Browser QA
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/current-player-browser-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  current-browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Chromium and Playwright
+        run: |
+          python3 -m pip install --user playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y chromium
+      - name: Prepare current modular game and legacy report paths
+        run: |
+          python3 scripts/build.py
+          mkdir -p docs/qa_runs_v082530
+          mkdir -p docs/qa_runs_current
+      - name: Character identity and graphics integration tests
+        id: verify
+        shell: bash
+        run: |
+          set +e
+          python3 tests/character_identity_persistence_v082529.py > docs/qa_runs_current/identity.log 2>&1
+          identity=$?
+          cat docs/qa_runs_current/identity.log
+          python3 tests/graphics_integration_v082522.py > docs/qa_runs_current/graphics.log 2>&1
+          graphics=$?
+          cat docs/qa_runs_current/graphics.log
+          echo "identity_exit=$identity"
+          echo "graphics_exit=$graphics"
+          if [ "$identity" -ne 0 ] || [ "$graphics" -ne 0 ]; then exit 1; fi
+      - name: Save exact per-case browser reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: current-browser-qa-reports
+          path: |
+            docs/qa_runs_v082530/
+            docs/qa_runs_current/
+          retention-days: 30
