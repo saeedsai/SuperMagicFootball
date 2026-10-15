@@ -29,7 +29,7 @@ jobs:
           import json,subprocess,sys,pathlib
           root=pathlib.Path('.')
           current=json.loads((root/'package.json').read_text())['version']+'-integrated'
-          names='ai_browser_qa.py kits_browser_qa.py dribble_styles_browser_qa.py morale_browser_qa.py'.split()
+          names='dribble_styles_browser_qa.py morale_browser_qa.py'.split()
           report=[]
           for name in names:
               p=root/'tests'/name
