@@ -12,31 +12,15 @@ from update_all_clubs_fc27 import ROOT,clean,stats,generated_number,QUOTAS
 CURATED = {
  # Dated first-team positions are sourced; OVRs below are medium-level *editorial*
  # approximations, never attributed to EA/FC27.
- "cont_afc_13": {
-   "MF":[("Daniel Ajibola",74,44)],
-   "source":"https://www.transfermarkt.co.uk/al-quwa-al-jawiya/kader/verein/23805/saison_id/2026/plus/1 [2026/27 midfield]"
- },
+
  "cont_concacaf_9": {
    "MF":[("Leslie Heráldez",71,6)],
    "FW":[("Oldemar Castillo",73,30),("Adrian Bethancourt",70,20)],
    "source":"https://sportingsm.com/ ; https://www.transfermarkt.co.uk/sporting-san-miguelito/kader/verein/1708/saison_id/2026/plus/1"
  },
- "cont_ofc_2": {
-   "GK":[("Tevaearai Tamatai",70,1)],
-   "FW":[("Teaonui Tehau",75,10)],
-   "source":"https://www.cavpo.com/2017/01/Tahiti.Squad.html [Tahiti callups with Vénus affiliation 2026-05-29]"
- },
- "cont_concacaf_1": {
-   "DF":[("Shirwin Noel",70,33)],
-   "MF":[("Rivaldo Coryat",72,13),("Justin Sadoo",70,21),("Kevon Goddard",71,6),("Keilon Burnett-Acevedo",69,34)],
-   "FW":[("Kathon St. Hillaire",75,9),("Jelani Félix",73,11),("Darius Ollivierra",71,17)],
-   "source":"https://inside-caribbean-football.vercel.app/clubs/defence-force-trinidad-tobago [2026/27 squad]"
- },
- "cont_ofc_4": {
-   "GK":[("James Do'oro",72,1)],
-   "FW":[("Merrill Nand",71,9),("Don Keana",70,10)],
-   "source":"https://footballoceania.com/2026/08/08/oceania-champions-league-everything-you-need-to-know/amp/ [Aug 2026 tournament roster]"
- },
+
+
+
  "cont_afc_11": {
    "GK":[("Adib Zarei",70,49)],
    "MF":[("Odildzhon Khamrobekov",76,21),("Igor Postonjski",75,8),("Tibor Halilović",74,7),("Seyed Mehdi Hosseini",72,6)],
@@ -86,7 +70,7 @@ CURATED = {
  "cont_afc_13": {
    "GK":[("Mohammed Salih",74,20),("Mohammed Raheem Ziyadi",70,31)],
    "DF":[("Edmilson Dove",75,6),("Ruslan Hanoon",71,2)],
-   "MF":[("Saad Abdul-Amir Al-Zirjawi",74,8)],
+   "MF":[("Saad Abdul-Amir Al-Zirjawi",74,8),("Daniel Ajibola",74,44)],
    "FW":[("Haythem Jouini",75,9),("Eid Al-Rashidi",74,11),("Anthony Okpotu",74,19)],
    "source":"https://www.transfermarkt.com/al-quwa-al-jawiya/kader/verein/23805/saison_id/2026 [26/27]"
  },
@@ -112,16 +96,17 @@ CURATED = {
    "source":"https://gol.conmebol.com/sudamericana/en/news/independiente-santa-fe-en-la-conmebol-sudamericana-2026-resultados-plantel-y-calendario [official 2026 squad]"
  },
  "cont_ofc_4": {
-   "GK":[("Epeli Loaniceva",69,1)],
+   "GK":[("Epeli Loaniceva",69,1),("James Do'oro",72,1)],
    "DF":[("Samuela Ibo Kautoga",69,4),("Calvin Ohasio",69,2),("Kavaia Rawaqa",68,3)],
    "MF":[("Patrick Joseph",70,6),("Ramzan Khan",69,8),("Rahul Krishna",72,10),("Epeli Valevou",68,14)],
-   "FW":[("Norman Ngahu",72,9)],
+   "FW":[("Norman Ngahu",72,9),("Merrill Nand",71,9),("Don Keana",70,10)],
    "source":"https://www.national-football-teams.com/club/809/2026_2/Rewa_Fc.html [2026 season]"
  },
  "cont_ofc_2": {
    "DF":[("Ricky Aitamai",70,3),("Marama Amau",69,4),("Tefai Faehau-Heitaa",68,5)],
    "MF":[("Stanley Atani",72,10),("Tauhiti Keck",72,8),("Kitin Maro",69,7),("Yann Pennequin Le Bras",69,6)],
-   "FW":[("Patrick Tepa",69,9)],
+   "FW":[("Patrick Tepa",69,9),("Teaonui Tehau",75,10)],
+   "GK":[("Tevaearai Tamatai",70,1)],
    "source":"https://www.national-football-teams.com/club/2517/2026_1/As_Venus_Mahina.html [2026/27 season]"
  },
  "cont_concacaf_4": {
@@ -133,7 +118,9 @@ CURATED = {
  },
  "cont_concacaf_1": {
    "GK":[("Christopher Biggette",70,1),("Jabari St. Hillaire",69,12)],
-   "DF":[("Sheldon Bateau",75,4),("Isaiah Garcia",72,2)],
+   "DF":[("Sheldon Bateau",75,4),("Isaiah Garcia",72,2),("Shirwin Noel",70,33)],
+   "MF":[("Rivaldo Coryat",72,13),("Justin Sadoo",70,21),("Kevon Goddard",71,6),("Keilon Burnett-Acevedo",69,34)],
+   "FW":[("Kathon St. Hillaire",75,9),("Jelani Félix",73,11),("Darius Ollivierra",71,17)],
    "source":"https://national-football-teams.com/club/2552/2026/Defence_Force_Mucurapo.html [2026/27 Trinidad and Tobago]"
  },
  "cont_ofc_5": {
