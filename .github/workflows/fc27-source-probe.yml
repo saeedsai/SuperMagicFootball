@@ -1,0 +1,33 @@
+name: Probe FC27 Club Source
+on:
+  push:
+    branches: [dev]
+    paths: ['.github/workflows/fc27-source-probe.yml']
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe FC27 squad pages and parse tables
+        run: |
+          python3 -m pip install --user beautifulsoup4
+          python3 - <<'PY'
+          import urllib.request
+          from bs4 import BeautifulSoup
+          for slug in ['arsenal','as-roma','leverkusen']:
+              url='https://www.fccareer.ai/teams/'+slug
+              req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'})
+              html=urllib.request.urlopen(req,timeout=25).read().decode('utf-8')
+              soup=BeautifulSoup(html,'html.parser')
+              tables=soup.select('table')
+              print('RESULT',slug,'bytes',len(html),'tables',len(tables),'headers',[[th.get_text(' ',strip=True) for th in table.select('th')][:9] for table in tables][:3],flush=True)
+              for table in tables[:1]:
+                  for tr in table.select('tr')[:8]:
+                      print('ROW',[td.get_text(' ',strip=True) for td in tr.select('td')],flush=True)
+          url='https://www.fccareer.ai/teams'
+          doc=BeautifulSoup(urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'}),timeout=25).read(),'html.parser')
+          print('TEAM LINKS',[(a.get('href'),a.get_text(' ',strip=True)[:65]) for a in doc.select('a[href^="/teams/"]')[:12]])
+          PY
