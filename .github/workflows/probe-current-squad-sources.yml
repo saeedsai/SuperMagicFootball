@@ -1,0 +1,16 @@
+name: Probe Additional 2026 Club Squad Sources
+on:
+  push:
+    branches: [dev]
+    paths: ['.github/workflows/probe-current-squad-sources.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install --user beautifulsoup4
+      - run: python3 scripts/probe_current_squad_sources.py
