@@ -28,3 +28,7 @@ The initial full census of integration commit `5e85d31cc22337ebe1671634f37d4a5a8
 ## Follow-up: concurrent-agent roster snapshot vs source-ID contracts
 
 A subsequent roster-agent test commit (`976221d37e1f`) introduced an assertion requiring `fc27Id` for all 290 historical FC27-comparison entries, despite those records having no individual IDs. It also required 300 FC27 entries when the current JSON contained 290 FC27-comparison and 94 editorial/provisional records. CI preflight failed before Chromium could execute. The Club26 test has been corrected to (1) retain 290 previously documented FC27-comparison entries, (2) classify all 384 entries, (3) validate nonblank identifiers *when supplied*, and (4) maintain 32 × 12, positions, player-IDs and JSON/runtime parity. Missing historical source IDs remain a real provenance gap, not manufactured values. Full regression CI concurrency is changed to queue new commits rather than cancelling an ongoing same-branch census, since other agents push simultaneously.
+
+## Geometry requirement — 20% longer playable field
+
+Added `tests/pitch_length_20pct.test.cjs` and `tests/pitch_length_browser_qa.py` to verify exact 20% longitudinal expansion, original transverse geometry and matching engine/renderer/camera bounds. This is separate from the legacy `src/engine.js` historical fixture. Engine values are taken exclusively from `data/mechanics/gameplay.json`. GitHub regression results must be evaluated on the **exact field-change commit**, never copied from older census runs.

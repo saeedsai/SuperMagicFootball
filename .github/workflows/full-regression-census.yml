@@ -1,5 +1,4 @@
 name: Full Regression Census
-# Recheck all 165 source-backed 2026 club rosters and game features.
 # Full 2026 roster + player graphics integration regression on current dev revision.
 # Archived browser version expectations are synchronized to the actual modular version in the disposable checkout.
 on:
@@ -12,6 +11,12 @@ on:
       - 'src/roster_corrections.js'
       - 'src/modules/characterart.js'
       - 'src/modules/render.js'
+      - 'data/mechanics/gameplay.json'
+      - 'sw.js'
+      - 'scripts/validate_data.py'
+      - 'tests/pitch_length_20pct.test.cjs'
+      - 'tests/pitch_length_browser_qa.py'
+      - 'docs/PITCH_LENGTH_EXTENSION_20261015.md'
       - 'src/modules/expanded.js'
       - 'data/graphics/**'
       - 'tests/club26_player_graphics_integration.test.cjs'

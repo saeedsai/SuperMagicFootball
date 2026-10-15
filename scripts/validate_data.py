@@ -27,6 +27,13 @@ for i,t in enumerate(team):
  require(all(x.get('id') and x.get('name') for x in p),f'{tid}: blank player identity')
  require(owners.get(tid)==(t.get('group') or 'arcade'),f'{tid}: wrong data shard')
 mechanics=get('mechanics/gameplay.json');graphics=get('graphics/procedural_assets.json')
+# Playable modular pitch: +20% in length only. Original width and equal goal margins retained.
+world=mechanics.get('world',{})
+pitch=world.get('field',{})
+require(isinstance(pitch.get('w'),(int,float)) and math.isclose(pitch['w'],1884*1.20,abs_tol=1e-8), 'Playable pitch must be exactly 20% longer than 1884')
+require(isinstance(world.get('w'),(int,float)) and math.isclose(world['w'],pitch.get('w',0)+2*pitch.get('x',0),abs_tol=1e-8), 'World must retain symmetric left/right goal margins')
+require(pitch.get('x')==150 and pitch.get('y')==155 and pitch.get('h')==1220,'Pitch offset and width must remain unchanged')
+require(world.get('h')==1530 and world.get('goalTop')==620 and world.get('goalBottom')==910 and world.get('goalDepth')==76,'Goal geometry must remain unchanged')
 balance=mechanics.get('engineBalance',{})
 bounds={'attackingStoppageProgress':(0.50,0.90),'superKnockbackReferencePower':(30,140),'superKnockbackPowerSpan':(1,250),'superKnockbackLevelFactor':(0,0.7),'superKnockbackStrengthFactor':(0,0.05),'superKnockbackMax':(0.5,8),'keeperPredictionMaxSeconds':(0.25,1.5)}
 for key,(minimum,maximum) in bounds.items():

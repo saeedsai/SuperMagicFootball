@@ -17,3 +17,8 @@ Baseline: latest inspected GitHub `dev` SHA `d44cb954554e344bcc02e1b8f582c2e8b21
 - Deferred: complete real-world roster database audits, Super Defense, Tricks, LAN/online.
 
 See `NEXT_MILESTONES.md` for five iterations, `GAP_REGISTER_v082532.md` for open gaps and `TEST_REPORT_v082532.md` for verified regression evidence.
+## Owner-requested pitch extension — implemented in this cycle
+
+- Field length increased precisely from 1,884 to 2,260.8 world units (+20%). Width stays 1,220; match world width grows 2,184 → 2,560.8 so left/right margins stay equal.
+- All normal kickoff, formation, goal and renderer references use the JSON world. Added Node and Chromium regression; world dimension invariant also validates in CI. No alteration to player/squad data, save schema or physics multipliers.
+- Next iterations remain graphics polish, gameplay JSON extraction, match animation, concurrent editing validation, career/tactics; physical mobile/PWA and exhaustive hosting/persistence certification remain far-future.

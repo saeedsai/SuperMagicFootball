@@ -21,3 +21,6 @@ Run `scripts/parallel_data_merge.py` with three checkout trees when multiple age
 - Worldwide team roster research, Super Defense, Tricks and multiplayer/network architecture, until explicitly rescheduled.
 
 Routine GitHub Pages build/deployment reporting continues, but is **not** a substitute for real browser interaction and is **not** a development priority.
+## Pitch dimension requirement fulfilled (15 October 2026)
+
+One new owner-requested requirement: increase the playable field length **20%** while keeping pitch width, goal mouth size, world end margins and gameplay controls stable. Implemented in `data/mechanics/gameplay.json` with new geometry, browser camera and Node contract checks. Next five graphics/mechanics/animation/parallel-data/career priorities above stay intact; near-term hosting/restart persistence and physical mobile/PWA certification remain owner-deferred.
