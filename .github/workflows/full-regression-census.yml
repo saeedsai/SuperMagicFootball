@@ -4,10 +4,11 @@ on:
     branches: [dev]
     paths:
       - '.github/workflows/full-regression-census.yml'
-      - 'tests/**'
-      - 'src/**'
-      - 'data/**'
+      - 'tests/full_regression_runner.py'
   workflow_dispatch:
+concurrency:
+  group: full-regression-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 
