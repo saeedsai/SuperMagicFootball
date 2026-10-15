@@ -28,3 +28,12 @@ jobs:
                       print('PLAYERS',club,[(x.get('strPlayer'),x.get('strPosition'),x.get('strNumber')) for x in (resp.get('player') or [])[:13]],flush=True)
               except Exception as e:print('ERROR',club,str(e),flush=True)
           PY
+      - name: Debug wiki squad extraction
+        run: |
+          python3 -m pip install --user beautifulsoup4
+          python3 - <<'PY'
+          from scripts.update_all_clubs_fc27 import wiki_squad
+          for team in ['Al Ahly','Palmeiras','Bodø/Glimt','AEK Athens']:
+              items,reason=wiki_squad(team)
+              print('WIKI',team,'COUNT',len(items),'RESULT',reason,'NAMES',[(x['name'],x['role']) for x in items[:9]],flush=True)
+          PY
