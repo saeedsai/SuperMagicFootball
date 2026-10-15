@@ -4,7 +4,9 @@ on:
     branches: [dev]
     paths:
       - '.github/workflows/full-regression-census.yml'
-      - 'tests/full_regression_runner.py'
+      - 'tests/**'
+      - 'src/**'
+      - 'data/**'
   workflow_dispatch:
 permissions:
   contents: read
