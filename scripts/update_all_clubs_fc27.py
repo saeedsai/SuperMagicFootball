@@ -23,7 +23,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 URL = "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv"
 QUOTAS = {"GK":2,"DF":3,"MF":4,"FW":3}
-POS = {"GK":"GK","CB":"DF","LB":"DF","RB":"DF","LWB":"DF","RWB":"DF",
+POS = {"GK":"GK","DF":"DF","MF":"MF","FW":"FW","CB":"DF","LB":"DF","RB":"DF","LWB":"DF","RWB":"DF",
        "CDM":"MF","CM":"MF","CAM":"MF","LM":"MF","RM":"MF",
        "ST":"FW","CF":"FW","LW":"FW","RW":"FW","LF":"FW","RF":"FW"}
 ALIASES = {
@@ -145,17 +145,23 @@ def wiki_squad(name):
                     t=[c.get_text(" ",strip=True) for c in td]
                     role=POS.get(next((v.upper() for v in t[:4] if v.upper() in POS),""))
                     if not role:continue
-                    # Typical Wikipedia squad: No | Pos | Nation | Player
-                    named=next((a.get_text(" ",strip=True) for c in td for a in c.find_all("a",href=True) 
-                                if len(a.get_text(" ",strip=True))>=5 and a.get("href","").startswith("/wiki/")
-                                and not re.fullmatch(r"[A-Z]{2,3}",a.get_text(" ",strip=True))),"")
-                    if not named or any(k in named.lower() for k in ["national","football","association"]):continue
-                    rows.append({"name":named,"role":role,"rating":min(76,72 if role=="GK" else 73),
+                    # Wikipedia table: No | Pos | Nation | Player. Some
+                    # articles present two such blocks next to one another.
+                    for offset in range(0,len(td),4):
+                        block=td[offset:offset+4]
+                        if len(block)<4:continue
+                        role=POS.get(block[1].get_text(" ",strip=True).upper())
+                        if not role:continue
+                        named=block[3].get_text(" ",strip=True)
+                        named=re.sub(r"\\s*\\([^)]*(?:captain|loan|vice)[^)]*\\)","",named,flags=re.I).strip()
+                        named=re.sub(r"\\s*\\[\\d+\\]","",named).strip()
+                        if not named or len(named)<4 or any(k in named.lower() for k in ["national","football","association"]):continue
+                        rows.append({"name":named,"role":role,"rating":min(76,72 if role=="GK" else 73),
                                  "sourceKind":"WIKIPEDIA","source":url,"age":None,"birthDate":None,
                                  "nation":None,"pos":role,"stats":stats({"overall_rating":"73"},role)})
             unique={}
             for q in rows:unique.setdefault(clean(q["name"]),q)
-            if len(unique)>=9 and sum(q["role"]=="GK" for q in unique.values())>=2:return list(unique.values()),url
+            if len(unique)>=5 and sum(q["role"]=="GK" for q in unique.values())>=1:return list(unique.values()),url
     except Exception as exc:return [],"wiki unavailable: "+str(exc)[:100]
     return [],"no current squad listing"
 def match_club(name,byclub):
