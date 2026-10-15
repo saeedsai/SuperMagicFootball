@@ -54,3 +54,7 @@ Other inherited Chromium scripts in `tests/*.py` continue to run after generatin
 - Parameter extraction is **partial**: gameplay.json is an active runtime configuration, but fine-grained numeric formulas remain in their dedicated engine modules. `data/mechanics/source_numeric_inventory.json` lists candidates for future extraction; editing that audit file has no runtime effect.
 - Procedural graphics are **code** in the renderer modules, not an invented bitmap database. JSON stores editable palettes, options, and presets.
 - Worldwide roster re-verification, Super Defense, Tricks and network modes remain deferred.
+
+## Mobile play via GitHub Pages
+
+The repository's GitHub Pages publishing mode is **Deploy from a branch**, branch `main`, folder `/(root)`. This needs to be selected once in **Settings → Pages**, then GitHub publishes the already-committed static site automatically. The former failing custom GitHub Actions workflow was removed. See [GITHUB_PAGES_SETUP.md](GITHUB_PAGES_SETUP.md) for setup and troubleshooting.

@@ -1,13 +1,19 @@
-# Playing Supermagic Football on a phone via GitHub Pages
+# Publish Supermagic Football using GitHub Pages (branch source)
 
-1. Upload the **contents** of this folder to the root of your repository's `main` branch so `index.html` lives in the repository root.
-2. In GitHub, open **Settings → Pages**. Under **Build and deployment**, choose **GitHub Actions** as the source.
-3. Go to **Actions → Publish Supermagic Football** and confirm the latest workflow succeeded; use **Run workflow** if no run occurred automatically.
-4. Open `https://saeedsai.github.io/SuperMagicFootball/` in Safari (iOS) or Chrome (Android). This is the expected URL, not a verified live deployment URL.
-5. Landscape mode is recommended. Once serving over HTTPS, browser-local saves and service worker capabilities can be tested on a real origin.
+**Required one-time action in your GitHub account**
 
-The site is a static ES-module app: `index.html`, `style.css`, `src/`, `data/` and `sw.js` must remain together. No backend or build step is required. Do not just upload the ZIP into the repository; extract and commit the files.
+The game has already been committed to the root of the public repository `saeedsai/SuperMagicFootball`. There is no build step; the root `index.html` loads `src/`, `data/`, and `style.css` as static files.
 
-## GitHub connector access
+1. Open https://github.com/saeedsai/SuperMagicFootball/settings/pages while signed in.
+2. Under **Build and deployment → Source**, choose **Deploy from a branch** (NOT GitHub Actions).
+3. Set **Branch = main** and **Folder = /(root)**, then select **Save**.
+4. Open the repository's **Actions** tab and check the **pages-build-deployment** run, or return to Settings → Pages to check for **Visit site**.
+5. After GitHub confirms publication, open https://saeedsai.github.io/SuperMagicFootball/ on your phone and use landscape orientation.
 
-To let ChatGPT publish automatically: go to GitHub → Settings → Applications → Installed GitHub Apps, select the ChatGPT GitHub app, choose **Configure** and grant it access to the `saeedsai/SuperMagicFootball` repository. This app was connected to the `saeedsai` account but initially only had `saeedsai/MYMMORPG` available. After access is granted, ask ChatGPT to retry the upload.
+The earlier custom workflow failed in `actions/configure-pages@v5` because the Pages site had not been initialized. That workflow was removed to avoid repeated errors; **GitHub automatically generates its Pages deployment run after you select the branch publishing source**.
+
+If you still see the *Get Pages site failed* error, you are viewing an old run from the removed workflow. Check the latest `pages-build-deployment` instead.
+
+If there is no new deployment after saving, return to Settings → Pages and confirm **Deploy from a branch / main / /(root)**. GitHub Pages must be enabled in repository settings; committing the files alone does not enable it. If a deployment fails, open that specific run for the new error.
+
+No downloads or local server are needed after Pages has published the site. The site is publicly accessible because the repository is public.
