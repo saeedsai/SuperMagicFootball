@@ -6,6 +6,21 @@ const DEFENCE_STYLES=['Balanced','High Press','Deep Block'];
 const ROLES=['captain','penalty','freeKick','corner'];
 function defaultPlan(teamIndex=0,roster=null){
  const lineup=teamIndex===0?DEFAULT_LINEUP.slice():[0,1,2,3,5,9];
+ // Source-backed squads can place both goalkeepers in slots 0 and 1.
+ // For the default 2-1-2 formation select ONE keeper, two defenders,
+ // one midfielder and two forwards by role. Preserve IDs, rosters and
+ // previously valid original default lineups.
+ if(roster?.length){
+  const desired=['GK','DF','DF','MF','FW','FW'];
+  if(desired.some((role,i)=>roster[lineup[i]]?.role!==role)){
+   const selected=new Set();
+   for(let i=0;i<desired.length;i++){
+    const index=roster.findIndex((p,j)=>p.role===desired[i]&&!selected.has(j));
+    if(index<0)throw Error('Roster missing default formation role '+desired[i]);
+    lineup[i]=index;selected.add(index);
+   }
+  }
+ }
  // Some historical national/club rosters are not sorted with a GK at index 0.
  // Retain all stable save IDs, but dynamically put an actual GK in formation slot 0.
  if(roster?.length && roster[lineup[0]]?.role!=='GK'){
@@ -24,6 +39,7 @@ function validatePlan(plan,roster,teamIndex=0){
  if(!FORMATIONS[p.formation])throw Error('Unknown formation');
  if(!Array.isArray(p.lineup)||p.lineup.length!==6||p.lineup.some(i=>!Number.isInteger(i)||i<0||i>=roster.length)||new Set(p.lineup).size!==6)throw Error('Choose six different valid players');
  if(roster[p.lineup[0]]?.role!=='GK')throw Error('First position needs a goalkeeper');
+ if(p.lineup.slice(1).some(i=>roster[i]?.role==='GK'))throw Error('Only one goalkeeper is allowed in an active lineup');
  for(const key of ROLES)if(!Number.isInteger(p[key])||p[key]<0||p[key]>=roster.length)throw Error('Invalid '+key+' player');
  if(!p.lineup.includes(p.captain))throw Error('Captain must be on the field');
  if(!ATTACK_STYLES.includes(p.attack)||!DEFENCE_STYLES.includes(p.defence))throw Error('Unknown tactical style');

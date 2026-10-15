@@ -20,3 +20,6 @@ Run `python3 scripts/validate_data.py`, `python3 scripts/build.py`, `node --test
 - Physical Android/iOS certification, true hosted-browser interaction and save-restart persistence remain explicitly far future by owner's request.
 
 Full QA status: **pending exact-commit GitHub CI** at authoring time. See GitHub Actions for result and rerun record.
+## Adjacent defect found during roster-agent regression
+
+Modern source-backed clubs sort goalkeepers together, but the historical numeric starting lineup can put their second keeper into a defender's role. Updated modular and legacy tactics `defaultPlan()` to fall back to an exact GK/DF/DF/MF/FW/FW selection when historical slot order no longer fits. `validatePlan()` now rejects two active goalkeepers; `safePlan()` recovers without altering saved player IDs. Four new active Node contracts validate the default active six across all **223 teams** and protect player positions. Explicit user selections that already contain a proper keeper and five outfield players remain supported. See exact-commit CI evidence.
