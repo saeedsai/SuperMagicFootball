@@ -1,0 +1,78 @@
+name: Full Regression Census
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/full-regression-census.yml'
+      - 'tests/full_regression_runner.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate all roster and mechanics JSON
+        run: python3 scripts/validate_data.py
+      - name: Build current playable test fixture
+        run: python3 scripts/build.py
+      - name: Execute active Node contract tests
+        run: node --test tests/*.test.cjs
+      - name: Execute current Club26/FC27 roster contracts
+        run: node tests/club26_fc27_roster.mjs
+      - name: Compile Python tests
+        run: python3 -m compileall -q scripts tests
+
+  node-regression:
+    runs-on: ubuntu-latest
+    needs: preflight
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build test fixture
+        run: python3 scripts/build.py
+      - name: Run all historical and current Node executable tests
+        run: python3 tests/full_regression_runner.py --category node --shard-index ${{ matrix.shard }} --shard-count 4 --timeout-seconds 35
+      - name: Upload exact test results even when checks fail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-regression-node-${{ matrix.shard }}
+          path: docs/qa_runs_full_regression/*
+          retention-days: 30
+
+  browser-regression:
+    runs-on: ubuntu-latest
+    needs: preflight
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Playwright and system Chromium
+        run: |
+          python3 -m pip install --user playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y chromium
+      - name: Build browser fixture for old and current suites
+        run: |
+          python3 scripts/build.py
+          cp tests/.generated/play.html play.html
+      - name: Run all discovered browser regression scripts
+        run: python3 tests/full_regression_runner.py --category browser --shard-index ${{ matrix.shard }} --shard-count 4 --timeout-seconds 75
+      - name: Upload exact test results even when checks fail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-regression-browser-${{ matrix.shard }}
+          path: docs/qa_runs_full_regression/*
+          retention-days: 30
