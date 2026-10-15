@@ -12,18 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 -m pip install --user beautifulsoup4
-      - name: Inspect Wikipedia search and squad heading parse
+      - name: Validate current squad wiki parser on five clubs
         run: |
           python3 - <<'PY'
-          import urllib.request,urllib.parse,json,re
-          from bs4 import BeautifulSoup
-          for name in ['Al Ahly','AEK Athens','Auckland City','Palmeiras','Rewa FC']:
-              u='https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch='+urllib.parse.quote(name+' football club current squad')+'&srlimit=4&format=json'
-              titles=json.loads(urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'SuperMagicFootballRosterAuditor/1.0'}),timeout=10).read()).get('query',{}).get('search',[])
-              print('SEARCH',name,[x['title'] for x in titles])
-              for t in titles[:3]:
-                  url='https://en.wikipedia.org/wiki/'+urllib.parse.quote(t['title'].replace(' ','_'))
-                  soup=BeautifulSoup(urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'SuperMagicFootballRosterAuditor/1.0'}),timeout=10).read(),'html.parser')
-                  heads=[(h.get_text(' ',strip=True),bool(h.find_next('table')),str((h.find_next('table') or {}).get('class',''))) for h in soup.select('h2,h3,h4') if any(k in h.get_text(' ',strip=True).lower() for k in ('current squad','first-team squad','first team','players'))]
-                  print('HEAD',t['title'],heads[:6],flush=True)
+          from scripts.update_all_clubs_fc27 import wiki_squad
+          for name in ['Al Ahly','AEK Athens','Auckland City','Palmeiras','Bodø/Glimt']:
+              players,url=wiki_squad(name)
+              print('WIKI',name,'COUNT',len(players),'SOURCE',url,'PLAYERS',[(x['name'],x['role']) for x in players[:12]],flush=True)
           PY
