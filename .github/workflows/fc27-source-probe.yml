@@ -11,23 +11,23 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - name: Probe FC27 squad pages and parse tables
+      - name: Check public FC27 data CSV and wiki fallbacks
+        shell: bash
         run: |
-          python3 -m pip install --user beautifulsoup4
           python3 - <<'PY'
-          import urllib.request
-          from bs4 import BeautifulSoup
-          for slug in ['arsenal','as-roma','leverkusen']:
-              url='https://www.fccareer.ai/teams/'+slug
-              req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'})
-              html=urllib.request.urlopen(req,timeout=25).read().decode('utf-8')
-              soup=BeautifulSoup(html,'html.parser')
-              tables=soup.select('table')
-              print('RESULT',slug,'bytes',len(html),'tables',len(tables),'headers',[[th.get_text(' ',strip=True) for th in table.select('th')][:9] for table in tables][:3],flush=True)
-              for table in tables[:1]:
-                  for tr in table.select('tr')[:8]:
-                      print('ROW',[td.get_text(' ',strip=True) for td in tr.select('td')],flush=True)
-          url='https://www.fccareer.ai/teams'
-          doc=BeautifulSoup(urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'}),timeout=25).read(),'html.parser')
-          print('TEAM LINKS',[(a.get('href'),a.get_text(' ',strip=True)[:65]) for a in doc.select('a[href^="/teams/"]')[:12]])
+          import urllib.request,urllib.error,csv,io,collections
+          url='https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv'
+          for link in [url,'https://en.wikipedia.org/wiki/AEK_Athens_F.C.','https://www.fccareer.ai/teams/arsenal']:
+              try:
+                  req=urllib.request.Request(link,headers={'User-Agent':'SuperMagicFootballRosterAuditor/1.0 (contact: github.com/saeedsai/SuperMagicFootball)','Accept':'text/html, text/csv'})
+                  data=urllib.request.urlopen(req,timeout=25).read()
+                  print('FETCH',link,'OK',len(data),data[:100],flush=True)
+                  if link==url:
+                      rdr=csv.DictReader(io.StringIO(data.decode('utf-8-sig')))
+                      print('FIELDS',rdr.fieldnames,flush=True)
+                      rows=list(rdr)
+                      print('PLAYERS',len(rows),'ARSENAL',[(r.get('common_name'),r.get('last_name'),r.get('position'),r.get('overall_rating')) for r in rows if r.get('club')=='Arsenal'][:10],flush=True)
+                      clubs=collections.Counter(r.get('club') for r in rows if r.get('gender')!="Women's Football")
+                      print('CLUBS',clubs.most_common(30),flush=True)
+              except Exception as exc:print('FAILED',link,str(exc),flush=True)
           PY
