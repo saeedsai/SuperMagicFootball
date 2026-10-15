@@ -48,7 +48,7 @@ def audit():
                     source_issues.append({"teamId":team_id,"team":team["name"],"role":role,
                         "unselectedBest":options[0]["name"],"ovr":options[0]["rating"]})
     status={"clubs":len(report),"positions":sum(len(x["selected"]) for x in report.values()),
-            "fc27Clubs":sum(x["origin"]=="FC27" for x in report.values()),
+            "fc27Clubs":sum(x["origin"].startswith("FC27") for x in report.values()),
             "missingClubs":len(missing),"missingSlots":sum(x["missing"] for x in missing),
             "uncapturedTopCandidates":len(source_issues),
             "rosterGaps":missing,"topOmissions":source_issues,
