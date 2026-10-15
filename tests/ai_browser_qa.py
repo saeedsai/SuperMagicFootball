@@ -26,7 +26,7 @@ with sync_playwright() as pw:
   page.locator('#matchDifficulty').select_option('4')
   assert page.evaluate('NekketsuHD.game.options.difficulty')==4
   page.screenshot(path=str(p/'tests'/f'ai_setup_{name}.png'))
-  page.locator('[data-action="returnSetup"]').click()
+  page.locator('[data-action="returnSetup"]').last.click()
   page.locator('[data-action="kickoff"]').click()
   assert page.evaluate('NekketsuHD.game.matchState')=='play'
   page.locator('#pauseBtn').click(force=True)
