@@ -4841,8 +4841,8 @@
   },
   "cont_afc_4": {
     "club": "Al Ain",
-    "origin": "SPORTSDB_EDITORIAL_OVR",
-    "source": "https://www.thesportsdb.com/team/137832",
+    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD",
+    "source": "https://www.thesportsdb.com/team/137832; https://www.transfermarkt.co.uk/al-ain-fc/kader/verein/2150/saison_id/2026",
     "found": {
       "GK": 0,
       "DF": 6,
@@ -4851,14 +4851,14 @@
     },
     "selected": [
       {
-        "name": "Al Ain • Academy 1",
+        "name": "Khalid Eisa",
         "role": "GK",
-        "rating": 78
+        "rating": 76
       },
       {
-        "name": "Al Ain • Academy 12",
+        "name": "Mohammed Bu Senda",
         "role": "GK",
-        "rating": 78
+        "rating": 70
       },
       {
         "name": "Bandar Al Ahbabi",
@@ -4911,7 +4911,7 @@
         "rating": 78
       }
     ],
-    "fictionalRemaining": 5,
+    "fictionalRemaining": 3,
     "oldNames": [
       "Al Ain • Academy 1",
       "Al Ain • Academy 2",
@@ -5897,8 +5897,8 @@
   },
   "cont_afc_16": {
     "club": "Kashima Antlers",
-    "origin": "SPORTSDB_EDITORIAL_OVR",
-    "source": "https://www.thesportsdb.com/team/137707",
+    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD",
+    "source": "https://www.thesportsdb.com/team/137707; https://en.wikipedia.org/wiki/2026_Kashima_Antlers_season",
     "found": {
       "GK": 0,
       "DF": 3,
@@ -5907,14 +5907,14 @@
     },
     "selected": [
       {
-        "name": "Kashima Antlers • Academy 1",
+        "name": "Tomoki Hayakawa",
         "role": "GK",
-        "rating": 78
+        "rating": 76
       },
       {
-        "name": "Kashima Antlers • Academy 12",
+        "name": "Taiki Yamada",
         "role": "GK",
-        "rating": 78
+        "rating": 71
       },
       {
         "name": "Ikuma Sekigawa",
@@ -5967,7 +5967,7 @@
         "rating": 74
       }
     ],
-    "fictionalRemaining": 2,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Kashima Antlers • Academy 1",
       "Kashima Antlers • Academy 2",
@@ -12057,8 +12057,8 @@
   },
   "cont_conmebol_12": {
     "club": "Corinthians",
-    "origin": "SPORTSDB_EDITORIAL_OVR",
-    "source": "https://www.thesportsdb.com/team/134284",
+    "origin": "SPORTSDB_EDITORIAL_OVR+INDEPENDENT_2026_SQUAD",
+    "source": "https://www.thesportsdb.com/team/134284; https://gol.conmebol.com/libertadores/en/news/corinthians-2026-conmebol-libertadores-results-squad-and-schedule",
     "found": {
       "GK": 1,
       "DF": 3,
@@ -12072,9 +12072,9 @@
         "rating": 74
       },
       {
-        "name": "Corinthians • Academy 1",
+        "name": "Hugo de Souza",
         "role": "GK",
-        "rating": 76
+        "rating": 78
       },
       {
         "name": "André Ramalho",
@@ -12127,7 +12127,7 @@
         "rating": 73
       }
     ],
-    "fictionalRemaining": 4,
+    "fictionalRemaining": 3,
     "oldNames": [
       "Corinthians • Academy 1",
       "Corinthians • Academy 2",
@@ -13025,8 +13025,8 @@
   },
   "cont_conmebol_23": {
     "club": "Cusco FC",
-    "origin": "FC27",
-    "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+    "origin": "FC27+INDEPENDENT_2026_SQUAD",
+    "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv; https://starting11.com/cusco/squad",
     "found": {
       "GK": 1,
       "DF": 7,
@@ -13040,9 +13040,9 @@
         "rating": 69
       },
       {
-        "name": "Cusco FC • Academy 1",
+        "name": "Rodolfo Anderson",
         "role": "GK",
-        "rating": 66
+        "rating": 69
       },
       {
         "name": "Aldair Fuentes",
@@ -13095,7 +13095,7 @@
         "rating": 67
       }
     ],
-    "fictionalRemaining": 1,
+    "fictionalRemaining": 0,
     "oldNames": [
       "Cusco FC • Academy 1",
       "Cusco FC • Academy 2",
