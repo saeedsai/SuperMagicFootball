@@ -68,11 +68,11 @@ CURATED = {
    "source":"https://www.transfermarkt.com/universidad-central-de-venezuela/kader/verein/43146 [2026 squad]"
  },
  "cont_ofc_3": {
-   "GK":[("Thomas Schmidt",67,21)],
-   "DF":[("Henri Wélépane",67,3),("Morgan Mathelon",68,6)],
-   "MF":[("Shene Wélépane",69,12)],
-   "FW":[("Pierre Iékawé",67,14)],
-   "source":"https://www.cavpo.com/2017/01/New.Caledonia.Squad.html [national list dated 2026-05-29 with Tiga Sport affiliations]"
+   "GK":[("Thomas Schmidt",67,21),("Raphaël Genton",68,16)],
+   "DF":[("Henri Wélépane",67,3),("Morgan Mathelon",68,6),("Josué Welepane",70,4)],
+   "MF":[("Shene Wélépane",69,12),("Gutacene Wadra",69,7),("Antoine Simane",69,10),("Kuane Wawalaha",68,13)],
+   "FW":[("Pierre Iékawé",67,14),("Willy Read",70,9),("Jean-Yves Saiko",72,19)],
+   "source":"https://footballoceania.com/2026/08/08/oceania-champions-league-everything-you-need-to-know/amp/ [2026 OFC Men’s Champions League registered squad; role and shirt]"
  },
  "cont_afc_13": {
    "GK":[("Mohammed Salih",74,20),("Mohammed Raheem Ziyadi",70,31)],
@@ -112,9 +112,9 @@ CURATED = {
  "cont_ofc_2": {
    "DF":[("Ricky Aitamai",70,3),("Marama Amau",69,4),("Tefai Faehau-Heitaa",68,5)],
    "MF":[("Stanley Atani",72,10),("Tauhiti Keck",72,8),("Kitin Maro",69,7),("Yann Pennequin Le Bras",69,6)],
-   "FW":[("Patrick Tepa",69,9),("Teaonui Tehau",75,10)],
-   "GK":[("Tevaearai Tamatai",70,1)],
-   "source":"https://www.national-football-teams.com/club/2517/2026_1/As_Venus_Mahina.html [2026/27 season]"
+   "FW":[("Patrick Tepa",69,9),("Teaonui Tehau",75,10),("Germain Haewegene",73,10)],
+   "GK":[("Tevaearai Tamatai",70,1),("Herehau Reichart",69,22)],
+   "source":"https://footballoceania.com/2026/08/08/oceania-champions-league-everything-you-need-to-know/amp/ [2026 OFC Men’s Champions League registered squad; role and shirt]"
  },
  "cont_concacaf_4": {
    "GK":[("Edrick Menjívar",74,1),("Onan Rodríguez",70,22)],
