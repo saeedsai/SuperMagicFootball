@@ -12,6 +12,13 @@ from update_all_clubs_fc27 import ROOT,clean,stats,generated_number,QUOTAS
 CURATED = {
  # Dated first-team positions are sourced; OVRs below are medium-level *editorial*
  # approximations, never attributed to EA/FC27.
+ "cont_ofc_5": {
+   "GK":[("Charles Lepani",68,1),("Ronald Warisan",70,16)],
+   "DF":[("Alwin Komolong",71,4),("Felix Komolong",70,5),("Charles Hayes",67,3)],
+   "MF":[("Abraham Allen",69,6),("Obert Bika",68,8),("Solomon Kamake",68,10),("Jacob Sabua",70,12)],
+   "FW":[("Jonathan Allen",69,9),("Mathew David",68,11),("Stahl Gubag",67,7)],
+   "source":"https://www.national-football-teams.com/club/27268/2026_2/Lae_City.html [2026 season]"
+ },
  "cont_caf_3": {
    "GK":[("Lawrence Mulenga",72,1),("Willard Mwanza",69,16)],
    "DF":[("Dominic Chanda",72,3),("Kondwani Chiboni",69,5),("Aaron Katebe",70,14)],
