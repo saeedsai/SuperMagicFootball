@@ -34,7 +34,7 @@
         "defending": 43,
         "physicality": 75
       },
-      "birthDate": "19-03-1995",
+      "birthDate": "1995-03-19",
       "nation": "Albania",
       "fc27Id": "212151",
       "fc27Position": "GK"
@@ -73,7 +73,7 @@
         "defending": 50,
         "physicality": 75
       },
-      "birthDate": "19-08-1991",
+      "birthDate": "1991-08-19",
       "nation": "Italy",
       "fc27Id": "210358",
       "fc27Position": "GK"
@@ -112,7 +112,7 @@
         "defending": 77,
         "physicality": 87
       },
-      "birthDate": "27-11-1997",
+      "birthDate": "1997-11-27",
       "nation": "Cameroon",
       "fc27Id": "228732",
       "fc27Position": "CB"
@@ -151,7 +151,7 @@
         "defending": 76,
         "physicality": 80
       },
-      "birthDate": "20-09-1999",
+      "birthDate": "1999-09-20",
       "nation": "Portugal",
       "fc27Id": "263897",
       "fc27Position": "CB"
@@ -190,7 +190,7 @@
         "defending": 72,
         "physicality": 76
       },
-      "birthDate": "23-08-1997",
+      "birthDate": "1997-08-23",
       "nation": "Greece",
       "fc27Id": "255541",
       "fc27Position": "RB"
@@ -229,7 +229,7 @@
         "defending": 69,
         "physicality": 73
       },
-      "birthDate": "22-12-1998",
+      "birthDate": "1998-12-22",
       "nation": "Finland",
       "fc27Id": "232446",
       "fc27Position": "CM"
@@ -268,7 +268,7 @@
         "defending": 60,
         "physicality": 69
       },
-      "birthDate": "17-01-1998",
+      "birthDate": "1998-01-17",
       "nation": "Croatia",
       "fc27Id": "244261",
       "fc27Position": "CAM"
@@ -307,7 +307,7 @@
         "defending": 30,
         "physicality": 70
       },
-      "birthDate": "03-08-1996",
+      "birthDate": "1996-08-03",
       "nation": "Ukraine",
       "fc27Id": "237055",
       "fc27Position": "RM"
@@ -346,7 +346,7 @@
         "defending": 67,
         "physicality": 74
       },
-      "birthDate": "23-05-1996",
+      "birthDate": "1996-05-23",
       "nation": "Romania",
       "fc27Id": "235813",
       "fc27Position": "CM"
@@ -385,7 +385,7 @@
         "defending": 32,
         "physicality": 74
       },
-      "birthDate": "25-10-1994",
+      "birthDate": "1994-10-25",
       "nation": "Hungary",
       "fc27Id": "236510",
       "fc27Position": "ST"
@@ -424,7 +424,7 @@
         "defending": 33,
         "physicality": 73
       },
-      "birthDate": "23-12-1997",
+      "birthDate": "1997-12-23",
       "nation": "Serbia",
       "fc27Id": "232432",
       "fc27Position": "ST"
@@ -463,7 +463,7 @@
         "defending": 58,
         "physicality": 70
       },
-      "birthDate": "20-09-1998",
+      "birthDate": "1998-09-20",
       "nation": "Mauritania",
       "fc27Id": "239028",
       "fc27Position": "LM"
@@ -854,7 +854,7 @@
         "defending": 53,
         "physicality": 78
       },
-      "birthDate": "18-01-1997",
+      "birthDate": "1997-01-18",
       "nation": "Indonesia",
       "fc27Id": "228413",
       "fc27Position": "GK"
@@ -893,7 +893,7 @@
         "defending": 49,
         "physicality": 76
       },
-      "birthDate": "08-06-1995",
+      "birthDate": "1995-06-08",
       "nation": "France",
       "fc27Id": "225149",
       "fc27Position": "GK"
@@ -932,7 +932,7 @@
         "defending": 81,
         "physicality": 78
       },
-      "birthDate": "05-07-1999",
+      "birthDate": "1999-07-05",
       "nation": "England",
       "fc27Id": "230918",
       "fc27Position": "CB"
@@ -971,7 +971,7 @@
         "defending": 71,
         "physicality": 59
       },
-      "birthDate": "03-06-2002",
+      "birthDate": "2002-06-03",
       "nation": "Brazil",
       "fc27Id": "259075",
       "fc27Position": "RB"
@@ -1010,7 +1010,7 @@
         "defending": 78,
         "physicality": 73
       },
-      "birthDate": "06-01-2005",
+      "birthDate": "2005-01-06",
       "nation": "Spain",
       "fc27Id": "70966",
       "fc27Position": "CB"
@@ -1049,7 +1049,7 @@
         "defending": 77,
         "physicality": 76
       },
-      "birthDate": "07-10-1994",
+      "birthDate": "1994-10-07",
       "nation": "Spain",
       "fc27Id": "242201",
       "fc27Position": "CM"
@@ -1088,7 +1088,7 @@
         "defending": 75,
         "physicality": 59
       },
-      "birthDate": "09-06-2001",
+      "birthDate": "2001-06-09",
       "nation": "France",
       "fc27Id": "254579",
       "fc27Position": "CDM"
@@ -1127,7 +1127,7 @@
         "defending": 75,
         "physicality": 63
       },
-      "birthDate": "15-02-2000",
+      "birthDate": "2000-02-15",
       "nation": "France",
       "fc27Id": "246646",
       "fc27Position": "CDM"
@@ -1166,7 +1166,7 @@
         "defending": 75,
         "physicality": 62
       },
-      "birthDate": "07-01-2003",
+      "birthDate": "2003-01-07",
       "nation": "Argentina",
       "fc27Id": "267991",
       "fc27Position": "CDM"
@@ -1205,7 +1205,7 @@
         "defending": 54,
         "physicality": 68
       },
-      "birthDate": "08-09-2004",
+      "birthDate": "2004-09-08",
       "nation": "Argentina",
       "fc27Id": "277846",
       "fc27Position": "CAM"
@@ -1244,7 +1244,7 @@
         "defending": 62,
         "physicality": 58
       },
-      "birthDate": "16-02-2003",
+      "birthDate": "2003-02-16",
       "nation": "Croatia",
       "fc27Id": "262842",
       "fc27Position": "CAM"
@@ -1283,7 +1283,7 @@
         "defending": 32,
         "physicality": 74
       },
-      "birthDate": "23-10-1992",
+      "birthDate": "1992-10-23",
       "nation": "Spain",
       "fc27Id": "201153",
       "fc27Position": "ST"
@@ -1325,7 +1325,7 @@
         "defending": 64,
         "physicality": 83
       },
-      "birthDate": "17-08-1993",
+      "birthDate": "1993-08-17",
       "nation": "Brazil",
       "fc27Id": "210257",
       "fc27Position": "GK"
@@ -1364,7 +1364,7 @@
         "defending": 56,
         "physicality": 78
       },
-      "birthDate": "09-01-1995",
+      "birthDate": "1995-01-09",
       "nation": "Croatia",
       "fc27Id": "241671",
       "fc27Position": "GK"
@@ -1404,7 +1404,7 @@
         "defending": 83,
         "physicality": 82
       },
-      "birthDate": "11-02-1995",
+      "birthDate": "1995-02-11",
       "nation": "Slovakia",
       "fc27Id": "232363",
       "fc27Position": "CB"
@@ -1443,7 +1443,7 @@
         "defending": 82,
         "physicality": 71
       },
-      "birthDate": "18-02-1995",
+      "birthDate": "1995-02-18",
       "nation": "Holland",
       "fc27Id": "208920",
       "fc27Position": "CB"
@@ -1482,7 +1482,7 @@
         "defending": 79,
         "physicality": 69
       },
-      "birthDate": "15-03-1993",
+      "birthDate": "1993-03-15",
       "nation": "Brazil",
       "fc27Id": "219693",
       "fc27Position": "CB"
@@ -1521,7 +1521,7 @@
         "defending": 83,
         "physicality": 79
       },
-      "birthDate": "29-03-1991",
+      "birthDate": "1991-03-29",
       "nation": "France",
       "fc27Id": "215914",
       "fc27Position": "CDM"
@@ -1560,7 +1560,7 @@
         "defending": 44,
         "physicality": 63
       },
-      "birthDate": "21-01-1996",
+      "birthDate": "1996-01-21",
       "nation": "Spain",
       "fc27Id": "220834",
       "fc27Position": "CAM"
@@ -1599,7 +1599,7 @@
         "defending": 40,
         "physicality": 73
       },
-      "birthDate": "01-02-1994",
+      "birthDate": "1994-02-01",
       "nation": "Brazil",
       "fc27Id": "212523",
       "fc27Position": "CAM"
@@ -1638,7 +1638,7 @@
         "defending": 77,
         "physicality": 79
       },
-      "birthDate": "14-04-1999",
+      "birthDate": "1999-04-14",
       "nation": "France",
       "fc27Id": "236496",
       "fc27Position": "CDM"
@@ -1677,7 +1677,7 @@
         "defending": 37,
         "physicality": 63
       },
-      "birthDate": "01-10-2001",
+      "birthDate": "2001-10-01",
       "nation": "England",
       "fc27Id": "246147",
       "fc27Position": "RM"
@@ -1716,7 +1716,7 @@
         "defending": 41,
         "physicality": 78
       },
-      "birthDate": "13-05-1993",
+      "birthDate": "1993-05-13",
       "nation": "Belgium",
       "fc27Id": "192505",
       "fc27Position": "ST"
@@ -1755,7 +1755,7 @@
         "defending": 33,
         "physicality": 83
       },
-      "birthDate": "24-04-1994",
+      "birthDate": "1994-04-24",
       "nation": "Kosovo",
       "fc27Id": "223710",
       "fc27Position": "ST"
@@ -1796,7 +1796,7 @@
         "defending": 31,
         "physicality": 69
       },
-      "birthDate": "15-03-2003",
+      "birthDate": "2003-03-15",
       "nation": "Germany",
       "fc27Id": "262931",
       "fc27Position": "GK"
@@ -1835,7 +1835,7 @@
         "defending": 46,
         "physicality": 62
       },
-      "birthDate": "15-07-1996",
+      "birthDate": "1996-07-15",
       "nation": "Republic of Ireland",
       "fc27Id": "229114",
       "fc27Position": "GK"
@@ -1874,7 +1874,7 @@
         "defending": 79,
         "physicality": 78
       },
-      "birthDate": "05-02-1997",
+      "birthDate": "1997-02-05",
       "nation": "Japan",
       "fc27Id": "246826",
       "fc27Position": "CB"
@@ -1913,7 +1913,7 @@
         "defending": 71,
         "physicality": 75
       },
-      "birthDate": "02-06-2006",
+      "birthDate": "2006-06-02",
       "nation": "Holland",
       "fc27Id": "271266",
       "fc27Position": "RB"
@@ -1952,7 +1952,7 @@
         "defending": 69,
         "physicality": 80
       },
-      "birthDate": "29-10-2002",
+      "birthDate": "2002-10-29",
       "nation": "Australia",
       "fc27Id": "260521",
       "fc27Position": "LB"
@@ -1991,7 +1991,7 @@
         "defending": 62,
         "physicality": 75
       },
-      "birthDate": "04-10-2003",
+      "birthDate": "2003-10-04",
       "nation": "Holland",
       "fc27Id": "262221",
       "fc27Position": "CM"
@@ -2030,7 +2030,7 @@
         "defending": 43,
         "physicality": 70
       },
-      "birthDate": "12-11-2001",
+      "birthDate": "2001-11-12",
       "nation": "Holland",
       "fc27Id": "244728",
       "fc27Position": "CAM"
@@ -2069,7 +2069,7 @@
         "defending": 74,
         "physicality": 68
       },
-      "birthDate": "20-05-2002",
+      "birthDate": "2002-05-20",
       "nation": "Morocco",
       "fc27Id": "263603",
       "fc27Position": "CDM"
@@ -2108,7 +2108,7 @@
         "defending": 72,
         "physicality": 78
       },
-      "birthDate": "16-09-1998",
+      "birthDate": "1998-09-16",
       "nation": "Belgium",
       "fc27Id": "244889",
       "fc27Position": "CDM"
@@ -2147,7 +2147,7 @@
         "defending": 30,
         "physicality": 73
       },
-      "birthDate": "28-08-1998",
+      "birthDate": "1998-08-28",
       "nation": "Japan",
       "fc27Id": "252162",
       "fc27Position": "ST"
@@ -2186,7 +2186,7 @@
         "defending": 31,
         "physicality": 61
       },
-      "birthDate": "11-02-2002",
+      "birthDate": "2002-02-11",
       "nation": "Algeria",
       "fc27Id": "70726",
       "fc27Position": "RW"
@@ -2225,7 +2225,7 @@
         "defending": 36,
         "physicality": 61
       },
-      "birthDate": "01-06-2000",
+      "birthDate": "2000-06-01",
       "nation": "Denmark",
       "fc27Id": "257920",
       "fc27Position": "ST"
@@ -2266,7 +2266,7 @@
         "defending": 54,
         "physicality": 80
       },
-      "birthDate": "05-04-1996",
+      "birthDate": "1996-04-05",
       "nation": "Turkey",
       "fc27Id": "226300",
       "fc27Position": "GK"
@@ -2305,7 +2305,7 @@
         "defending": 57,
         "physicality": 70
       },
-      "birthDate": "25-06-1991",
+      "birthDate": "1991-06-25",
       "nation": "Turkey",
       "fc27Id": "211908",
       "fc27Position": "GK"
@@ -2344,7 +2344,7 @@
         "defending": 80,
         "physicality": 86
       },
-      "birthDate": "12-06-1996",
+      "birthDate": "1996-06-12",
       "nation": "Colombia",
       "fc27Id": "220793",
       "fc27Position": "CB"
@@ -2383,7 +2383,7 @@
         "defending": 79,
         "physicality": 85
       },
-      "birthDate": "07-09-1994",
+      "birthDate": "1994-09-07",
       "nation": "Turkey",
       "fc27Id": "229905",
       "fc27Position": "CB"
@@ -2422,7 +2422,7 @@
         "defending": 75,
         "physicality": 77
       },
-      "birthDate": "22-05-1997",
+      "birthDate": "1997-05-22",
       "nation": "Hungary",
       "fc27Id": "234171",
       "fc27Position": "RB"
@@ -2462,7 +2462,7 @@
         "defending": 78,
         "physicality": 76
       },
-      "birthDate": "11-02-1996",
+      "birthDate": "1996-02-11",
       "nation": "Uruguay",
       "fc27Id": "223959",
       "fc27Position": "CDM"
@@ -2501,7 +2501,7 @@
         "defending": 68,
         "physicality": 76
       },
-      "birthDate": "26-06-1999",
+      "birthDate": "1999-06-26",
       "nation": "Brazil",
       "fc27Id": "270571",
       "fc27Position": "CM"
@@ -2540,7 +2540,7 @@
         "defending": 46,
         "physicality": 58
       },
-      "birthDate": "07-07-2000",
+      "birthDate": "2000-07-07",
       "nation": "Turkey",
       "fc27Id": "239892",
       "fc27Position": "CAM"
@@ -2579,7 +2579,7 @@
         "defending": 69,
         "physicality": 64
       },
-      "birthDate": "24-10-1990",
+      "birthDate": "1990-10-24",
       "nation": "Germany",
       "fc27Id": "186942",
       "fc27Position": "CM"
@@ -2619,7 +2619,7 @@
         "defending": 51,
         "physicality": 86
       },
-      "birthDate": "29-12-1998",
+      "birthDate": "1998-12-29",
       "nation": "Nigeria",
       "fc27Id": "232293",
       "fc27Position": "ST"
@@ -2659,7 +2659,7 @@
         "defending": 69,
         "physicality": 86
       },
-      "birthDate": "23-05-2000",
+      "birthDate": "2000-05-23",
       "nation": "Turkey",
       "fc27Id": "263205",
       "fc27Position": "LM"
@@ -2698,7 +2698,7 @@
         "defending": 29,
         "physicality": 65
       },
-      "birthDate": "11-01-1996",
+      "birthDate": "1996-01-11",
       "nation": "Germany",
       "fc27Id": "222492",
       "fc27Position": "RM"
@@ -2739,7 +2739,7 @@
         "defending": 46,
         "physicality": 67
       },
-      "birthDate": "30-04-2004",
+      "birthDate": "2004-04-30",
       "nation": "Austria",
       "fc27Id": "262944",
       "fc27Position": "GK"
@@ -2778,7 +2778,7 @@
         "defending": 36,
         "physicality": 64
       },
-      "birthDate": "19-05-1997",
+      "birthDate": "1997-05-19",
       "nation": "Austria",
       "fc27Id": "223868",
       "fc27Position": "GK"
@@ -2817,7 +2817,7 @@
         "defending": 70,
         "physicality": 79
       },
-      "birthDate": "16-10-1998",
+      "birthDate": "1998-10-16",
       "nation": "Panama",
       "fc27Id": "252873",
       "fc27Position": "CB"
@@ -2856,7 +2856,7 @@
         "defending": 72,
         "physicality": 77
       },
-      "birthDate": "06-11-2002",
+      "birthDate": "2002-11-06",
       "nation": "Brazil",
       "fc27Id": "273935",
       "fc27Position": "CB"
@@ -2895,7 +2895,7 @@
         "defending": 69,
         "physicality": 76
       },
-      "birthDate": "31-12-2001",
+      "birthDate": "2001-12-31",
       "nation": "Holland",
       "fc27Id": "271658",
       "fc27Position": "CB"
@@ -2934,7 +2934,7 @@
         "defending": 61,
         "physicality": 63
       },
-      "birthDate": "22-08-1996",
+      "birthDate": "1996-08-22",
       "nation": "Austria",
       "fc27Id": "213301",
       "fc27Position": "CM"
@@ -2973,7 +2973,7 @@
         "defending": 66,
         "physicality": 72
       },
-      "birthDate": "14-07-1999",
+      "birthDate": "1999-07-14",
       "nation": "Croatia",
       "fc27Id": "243525",
       "fc27Position": "CM"
@@ -3012,7 +3012,7 @@
         "defending": 64,
         "physicality": 74
       },
-      "birthDate": "07-11-1999",
+      "birthDate": "1999-11-07",
       "nation": "Denmark",
       "fc27Id": "247782",
       "fc27Position": "RM"
@@ -3051,7 +3051,7 @@
         "defending": 26,
         "physicality": 60
       },
-      "birthDate": "05-01-2003",
+      "birthDate": "2003-01-05",
       "nation": "Czech Republic",
       "fc27Id": "269512",
       "fc27Position": "CAM"
@@ -3090,7 +3090,7 @@
         "defending": 39,
         "physicality": 67
       },
-      "birthDate": "05-02-2002",
+      "birthDate": "2002-02-05",
       "nation": "Nigeria",
       "fc27Id": "271092",
       "fc27Position": "ST"
@@ -3129,7 +3129,7 @@
         "defending": 30,
         "physicality": 79
       },
-      "birthDate": "30-09-1998",
+      "birthDate": "1998-09-30",
       "nation": "United States",
       "fc27Id": "263702",
       "fc27Position": "ST"
@@ -3168,7 +3168,7 @@
         "defending": 61,
         "physicality": 71
       },
-      "birthDate": "22-01-2002",
+      "birthDate": "2002-01-22",
       "nation": "United States",
       "fc27Id": "242628",
       "fc27Position": "LB"
@@ -3209,7 +3209,7 @@
         "defending": 55,
         "physicality": 76
       },
-      "birthDate": "26-02-2002",
+      "birthDate": "2002-02-26",
       "nation": "Belgium",
       "fc27Id": "242879",
       "fc27Position": "GK"
@@ -3248,7 +3248,7 @@
         "defending": 45,
         "physicality": 73
       },
-      "birthDate": "10-09-1990",
+      "birthDate": "1990-09-10",
       "nation": "Norway",
       "fc27Id": "185427",
       "fc27Position": "GK"
@@ -3287,7 +3287,7 @@
         "defending": 76,
         "physicality": 79
       },
-      "birthDate": "22-04-1998",
+      "birthDate": "1998-04-22",
       "nation": "Germany",
       "fc27Id": "236703",
       "fc27Position": "LB"
@@ -3326,7 +3326,7 @@
         "defending": 86,
         "physicality": 83
       },
-      "birthDate": "03-11-1992",
+      "birthDate": "1992-11-03",
       "nation": "Hungary",
       "fc27Id": "204638",
       "fc27Position": "CB"
@@ -3365,7 +3365,7 @@
         "defending": 82,
         "physicality": 76
       },
-      "birthDate": "17-12-2002",
+      "birthDate": "2002-12-17",
       "nation": "France",
       "fc27Id": "262138",
       "fc27Position": "CB"
@@ -3404,7 +3404,7 @@
         "defending": 80,
         "physicality": 79
       },
-      "birthDate": "04-05-2001",
+      "birthDate": "2001-05-04",
       "nation": "Austria",
       "fc27Id": "257876",
       "fc27Position": "CDM"
@@ -3443,7 +3443,7 @@
         "defending": 77,
         "physicality": 70
       },
-      "birthDate": "23-02-1997",
+      "birthDate": "1997-02-23",
       "nation": "Germany",
       "fc27Id": "228579",
       "fc27Position": "RB"
@@ -3482,7 +3482,7 @@
         "defending": 37,
         "physicality": 81
       },
-      "birthDate": "08-02-2002",
+      "birthDate": "2002-02-08",
       "nation": "Brazil",
       "fc27Id": "73398",
       "fc27Position": "ST"
@@ -3521,7 +3521,7 @@
         "defending": 32,
         "physicality": 64
       },
-      "birthDate": "31-05-2004",
+      "birthDate": "2004-05-31",
       "nation": "Germany",
       "fc27Id": "272612",
       "fc27Position": "CAM"
@@ -3560,7 +3560,7 @@
         "defending": 57,
         "physicality": 68
       },
-      "birthDate": "01-08-1999",
+      "birthDate": "1999-08-01",
       "nation": "Austria",
       "fc27Id": "242187",
       "fc27Position": "CAM"
@@ -3599,7 +3599,7 @@
         "defending": 75,
         "physicality": 76
       },
-      "birthDate": "08-04-1998",
+      "birthDate": "1998-04-08",
       "nation": "Germany",
       "fc27Id": "240709",
       "fc27Position": "RB"
@@ -3638,7 +3638,7 @@
         "defending": 42,
         "physicality": 64
       },
-      "birthDate": "17-04-2005",
+      "birthDate": "2005-04-17",
       "nation": "Norway",
       "fc27Id": "262863",
       "fc27Position": "LW"
@@ -3679,7 +3679,7 @@
         "defending": 39,
         "physicality": 78
       },
-      "birthDate": "02-12-2004",
+      "birthDate": "2004-12-02",
       "nation": "France",
       "fc27Id": "271918",
       "fc27Position": "GK"
@@ -3718,7 +3718,7 @@
         "defending": 47,
         "physicality": 71
       },
-      "birthDate": "05-08-1990",
+      "birthDate": "1990-08-05",
       "nation": "France",
       "fc27Id": "199721",
       "fc27Position": "GK"
@@ -3757,7 +3757,7 @@
         "defending": 79,
         "physicality": 84
       },
-      "birthDate": "20-03-1996",
+      "birthDate": "1996-03-20",
       "nation": "France",
       "fc27Id": "229236",
       "fc27Position": "LB"
@@ -3796,7 +3796,7 @@
         "defending": 77,
         "physicality": 79
       },
-      "birthDate": "31-03-2004",
+      "birthDate": "2004-03-31",
       "nation": "Austria",
       "fc27Id": "270997",
       "fc27Position": "CB"
@@ -3835,7 +3835,7 @@
         "defending": 77,
         "physicality": 80
       },
-      "birthDate": "14-03-2005",
+      "birthDate": "2005-03-14",
       "nation": "France",
       "fc27Id": "75320",
       "fc27Position": "CB"
@@ -3874,7 +3874,7 @@
         "defending": 75,
         "physicality": 75
       },
-      "birthDate": "26-04-1993",
+      "birthDate": "1993-04-26",
       "nation": "France",
       "fc27Id": "223597",
       "fc27Position": "RB"
@@ -3913,7 +3913,7 @@
         "defending": 71,
         "physicality": 68
       },
-      "birthDate": "31-01-1998",
+      "birthDate": "1998-01-31",
       "nation": "Mali",
       "fc27Id": "238463",
       "fc27Position": "CM"
@@ -3952,7 +3952,7 @@
         "defending": 53,
         "physicality": 67
       },
-      "birthDate": "29-03-1993",
+      "birthDate": "1993-03-29",
       "nation": "Belgium",
       "fc27Id": "203486",
       "fc27Position": "CAM"
@@ -3991,7 +3991,7 @@
         "defending": 50,
         "physicality": 71
       },
-      "birthDate": "25-10-1990",
+      "birthDate": "1990-10-25",
       "nation": "France",
       "fc27Id": "227232",
       "fc27Position": "ST"
@@ -4030,7 +4030,7 @@
         "defending": 46,
         "physicality": 68
       },
-      "birthDate": "26-01-1993",
+      "birthDate": "1993-01-26",
       "nation": "France",
       "fc27Id": "204970",
       "fc27Position": "RW"
@@ -4069,7 +4069,7 @@
         "defending": 45,
         "physicality": 73
       },
-      "birthDate": "16-01-1998",
+      "birthDate": "1998-01-16",
       "nation": "France",
       "fc27Id": "233866",
       "fc27Position": "ST"
@@ -4108,7 +4108,7 @@
         "defending": 71,
         "physicality": 71
       },
-      "birthDate": "18-07-1999",
+      "birthDate": "1999-07-18",
       "nation": "Saudi Arabia",
       "fc27Id": "246688",
       "fc27Position": "RB"
@@ -4149,7 +4149,7 @@
         "defending": 44,
         "physicality": 79
       },
-      "birthDate": "25-05-2000",
+      "birthDate": "2000-05-25",
       "nation": "Turkey",
       "fc27Id": "239254",
       "fc27Position": "GK"
@@ -4188,7 +4188,7 @@
         "defending": 55,
         "physicality": 72
       },
-      "birthDate": "11-03-1998",
+      "birthDate": "1998-03-11",
       "nation": "Belgium",
       "fc27Id": "237525",
       "fc27Position": "GK"
@@ -4227,7 +4227,7 @@
         "defending": 78,
         "physicality": 81
       },
-      "birthDate": "09-08-1999",
+      "birthDate": "1999-08-09",
       "nation": "Brazil",
       "fc27Id": "269493",
       "fc27Position": "CB"
@@ -4266,7 +4266,7 @@
         "defending": 72,
         "physicality": 72
       },
-      "birthDate": "22-09-1997",
+      "birthDate": "1997-09-22",
       "nation": "France",
       "fc27Id": "231318",
       "fc27Position": "LB"
@@ -4305,7 +4305,7 @@
         "defending": 77,
         "physicality": 78
       },
-      "birthDate": "10-06-2003",
+      "birthDate": "2003-06-10",
       "nation": "Belgium",
       "fc27Id": "262071",
       "fc27Position": "CB"
@@ -4344,7 +4344,7 @@
         "defending": 75,
         "physicality": 76
       },
-      "birthDate": "02-10-2007",
+      "birthDate": "2007-10-02",
       "nation": "Morocco",
       "fc27Id": "278901",
       "fc27Position": "CDM"
@@ -4383,7 +4383,7 @@
         "defending": 79,
         "physicality": 83
       },
-      "birthDate": "03-08-1990",
+      "birthDate": "1990-08-03",
       "nation": "France",
       "fc27Id": "190674",
       "fc27Position": "CDM"
@@ -4422,7 +4422,7 @@
         "defending": 71,
         "physicality": 73
       },
-      "birthDate": "24-11-1994",
+      "birthDate": "1994-11-24",
       "nation": "Algeria",
       "fc27Id": "213296",
       "fc27Position": "CDM"
@@ -4461,7 +4461,7 @@
         "defending": 34,
         "physicality": 76
       },
-      "birthDate": "02-11-2002",
+      "birthDate": "2002-11-02",
       "nation": "Morocco",
       "fc27Id": "73449",
       "fc27Position": "ST"
@@ -4500,7 +4500,7 @@
         "defending": 43,
         "physicality": 76
       },
-      "birthDate": "03-02-2005",
+      "birthDate": "2005-02-03",
       "nation": "Belgium",
       "fc27Id": "276048",
       "fc27Position": "ST"
@@ -4539,7 +4539,7 @@
         "defending": 57,
         "physicality": 70
       },
-      "birthDate": "10-04-2003",
+      "birthDate": "2003-04-10",
       "nation": "Iceland",
       "fc27Id": "262088",
       "fc27Position": "CAM"
@@ -4578,7 +4578,7 @@
         "defending": 41,
         "physicality": 76
       },
-      "birthDate": "30-09-1986",
+      "birthDate": "1986-09-30",
       "nation": "France",
       "fc27Id": "178509",
       "fc27Position": "ST"
@@ -4619,7 +4619,7 @@
         "defending": 30,
         "physicality": 77
       },
-      "birthDate": "17-05-2000",
+      "birthDate": "2000-05-17",
       "nation": "Czech Republic",
       "fc27Id": "242948",
       "fc27Position": "GK"
@@ -4658,7 +4658,7 @@
         "defending": 50,
         "physicality": 73
       },
-      "birthDate": "01-08-1995",
+      "birthDate": "1995-08-01",
       "nation": "Holland",
       "fc27Id": "224241",
       "fc27Position": "GK"
@@ -4697,7 +4697,7 @@
         "defending": 76,
         "physicality": 60
       },
-      "birthDate": "06-05-1999",
+      "birthDate": "1999-05-06",
       "nation": "Brazil",
       "fc27Id": "241509",
       "fc27Position": "LB"
@@ -4736,7 +4736,7 @@
         "defending": 81,
         "physicality": 74
       },
-      "birthDate": "12-01-1997",
+      "birthDate": "1997-01-12",
       "nation": "Holland",
       "fc27Id": "235149",
       "fc27Position": "CB"
@@ -4775,7 +4775,7 @@
         "defending": 72,
         "physicality": 75
       },
-      "birthDate": "03-11-2000",
+      "birthDate": "2000-11-03",
       "nation": "United States",
       "fc27Id": "251804",
       "fc27Position": "RB"
@@ -4814,7 +4814,7 @@
         "defending": 78,
         "physicality": 77
       },
-      "birthDate": "18-07-2000",
+      "birthDate": "2000-07-18",
       "nation": "Holland",
       "fc27Id": "241187",
       "fc27Position": "CB"
@@ -4853,7 +4853,7 @@
         "defending": 70,
         "physicality": 68
       },
-      "birthDate": "25-09-2003",
+      "birthDate": "2003-09-25",
       "nation": "Japan",
       "fc27Id": "277809",
       "fc27Position": "CM"
@@ -4892,7 +4892,7 @@
         "defending": 65,
         "physicality": 73
       },
-      "birthDate": "09-03-2000",
+      "birthDate": "2000-03-09",
       "nation": "Holland",
       "fc27Id": "254789",
       "fc27Position": "CAM"
@@ -4931,7 +4931,7 @@
         "defending": 38,
         "physicality": 69
       },
-      "birthDate": "10-03-1993",
+      "birthDate": "1993-03-10",
       "nation": "France",
       "fc27Id": "206467",
       "fc27Position": "ST"
@@ -4970,7 +4970,7 @@
         "defending": 68,
         "physicality": 77
       },
-      "birthDate": "02-02-1989",
+      "birthDate": "1989-02-02",
       "nation": "Croatia",
       "fc27Id": "181458",
       "fc27Position": "LW"
@@ -5009,7 +5009,7 @@
         "defending": 46,
         "physicality": 73
       },
-      "birthDate": "09-01-2003",
+      "birthDate": "2003-01-09",
       "nation": "United States",
       "fc27Id": "251223",
       "fc27Position": "ST"
@@ -5048,7 +5048,7 @@
         "defending": 65,
         "physicality": 76
       },
-      "birthDate": "22-12-1997",
+      "birthDate": "1997-12-22",
       "nation": "Holland",
       "fc27Id": "235663",
       "fc27Position": "CAM"
@@ -5089,7 +5089,7 @@
         "defending": 41,
         "physicality": 77
       },
-      "birthDate": "25-07-1997",
+      "birthDate": "1997-07-25",
       "nation": "Spain",
       "fc27Id": "246657",
       "fc27Position": "GK"
@@ -5128,7 +5128,7 @@
         "defending": 43,
         "physicality": 75
       },
-      "birthDate": "28-10-1998",
+      "birthDate": "1998-10-28",
       "nation": "Spain",
       "fc27Id": "258534",
       "fc27Position": "GK"
@@ -5167,7 +5167,7 @@
         "defending": 80,
         "physicality": 76
       },
-      "birthDate": "15-01-1991",
+      "birthDate": "1991-01-15",
       "nation": "Spain",
       "fc27Id": "198141",
       "fc27Position": "CB"
@@ -5206,7 +5206,7 @@
         "defending": 81,
         "physicality": 76
       },
-      "birthDate": "16-08-1993",
+      "birthDate": "1993-08-16",
       "nation": "Spain",
       "fc27Id": "212602",
       "fc27Position": "CB"
@@ -5245,7 +5245,7 @@
         "defending": 79,
         "physicality": 80
       },
-      "birthDate": "06-02-2001",
+      "birthDate": "2001-02-06",
       "nation": "Brazil",
       "fc27Id": "277537",
       "fc27Position": "CB"
@@ -5284,7 +5284,7 @@
         "defending": 59,
         "physicality": 60
       },
-      "birthDate": "21-04-1992",
+      "birthDate": "1992-04-21",
       "nation": "Spain",
       "fc27Id": "197781",
       "fc27Position": "CAM"
@@ -5323,7 +5323,7 @@
         "defending": 74,
         "physicality": 72
       },
-      "birthDate": "22-02-1996",
+      "birthDate": "1996-02-22",
       "nation": "Spain",
       "fc27Id": "226456",
       "fc27Position": "CM"
@@ -5362,7 +5362,7 @@
         "defending": 67,
         "physicality": 68
       },
-      "birthDate": "09-04-1996",
+      "birthDate": "1996-04-09",
       "nation": "Argentina",
       "fc27Id": "226226",
       "fc27Position": "CAM"
@@ -5401,7 +5401,7 @@
         "defending": 76,
         "physicality": 73
       },
-      "birthDate": "26-11-1996",
+      "birthDate": "1996-11-26",
       "nation": "Spain",
       "fc27Id": "235945",
       "fc27Position": "CDM"
@@ -5440,7 +5440,7 @@
         "defending": 37,
         "physicality": 70
       },
-      "birthDate": "17-12-2001",
+      "birthDate": "2001-12-17",
       "nation": "Morocco",
       "fc27Id": "264432",
       "fc27Position": "LW"
@@ -5479,7 +5479,7 @@
         "defending": 48,
         "physicality": 71
       },
-      "birthDate": "24-02-2000",
+      "birthDate": "2000-02-24",
       "nation": "Brazil",
       "fc27Id": "255475",
       "fc27Position": "RW"
@@ -5518,7 +5518,7 @@
         "defending": 45,
         "physicality": 78
       },
-      "birthDate": "20-04-1999",
+      "birthDate": "1999-04-20",
       "nation": "Colombia",
       "fc27Id": "237034",
       "fc27Position": "ST"
@@ -5909,7 +5909,7 @@
         "defending": 48,
         "physicality": 77
       },
-      "birthDate": "30-01-1999",
+      "birthDate": "1999-01-30",
       "nation": "Ukraine",
       "fc27Id": "265628",
       "fc27Position": "GK"
@@ -5948,7 +5948,7 @@
         "defending": 36,
         "physicality": 69
       },
-      "birthDate": "07-08-2002",
+      "birthDate": "2002-08-07",
       "nation": "Ukraine",
       "fc27Id": "72917",
       "fc27Position": "GK"
@@ -5987,7 +5987,7 @@
         "defending": 78,
         "physicality": 76
       },
-      "birthDate": "02-05-1996",
+      "birthDate": "1996-05-02",
       "nation": "Ukraine",
       "fc27Id": "229528",
       "fc27Position": "CB"
@@ -6026,7 +6026,7 @@
         "defending": 76,
         "physicality": 74
       },
-      "birthDate": "27-02-1999",
+      "birthDate": "1999-02-27",
       "nation": "Ukraine",
       "fc27Id": "248698",
       "fc27Position": "CB"
@@ -6065,7 +6065,7 @@
         "defending": 68,
         "physicality": 64
       },
-      "birthDate": "02-06-1992",
+      "birthDate": "1992-06-02",
       "nation": "Ukraine",
       "fc27Id": "237109",
       "fc27Position": "RB"
@@ -6104,7 +6104,7 @@
         "defending": 62,
         "physicality": 63
       },
-      "birthDate": "06-10-2000",
+      "birthDate": "2000-10-06",
       "nation": "Ukraine",
       "fc27Id": "274732",
       "fc27Position": "CM"
@@ -6143,7 +6143,7 @@
         "defending": 66,
         "physicality": 65
       },
-      "birthDate": "11-07-2002",
+      "birthDate": "2002-07-11",
       "nation": "Brazil",
       "fc27Id": "277193",
       "fc27Position": "LB"
@@ -6182,7 +6182,7 @@
         "defending": 29,
         "physicality": 75
       },
-      "birthDate": "12-01-2001",
+      "birthDate": "2001-01-12",
       "nation": "Burkina Faso",
       "fc27Id": "246728",
       "fc27Position": "ST"
@@ -6221,7 +6221,7 @@
         "defending": 66,
         "physicality": 66
       },
-      "birthDate": "23-02-2004",
+      "birthDate": "2004-02-23",
       "nation": "Brazil",
       "fc27Id": "268411",
       "fc27Position": "RB"
@@ -6260,7 +6260,7 @@
         "defending": 42,
         "physicality": 54
       },
-      "birthDate": "13-04-1998",
+      "birthDate": "1998-04-13",
       "nation": "Brazil",
       "fc27Id": "255472",
       "fc27Position": "RM"
@@ -6299,7 +6299,7 @@
         "defending": 29,
         "physicality": 64
       },
-      "birthDate": "24-11-2003",
+      "birthDate": "2003-11-24",
       "nation": "Nigeria",
       "fc27Id": "83057",
       "fc27Position": "RW"
@@ -6338,7 +6338,7 @@
         "defending": 39,
         "physicality": 72
       },
-      "birthDate": "28-03-2006",
+      "birthDate": "2006-03-28",
       "nation": "Brazil",
       "fc27Id": "77760",
       "fc27Position": "ST"
@@ -6379,7 +6379,7 @@
         "defending": 42,
         "physicality": 74
       },
-      "birthDate": "13-07-2001",
+      "birthDate": "2001-07-13",
       "nation": "Czech Republic",
       "fc27Id": "252179",
       "fc27Position": "GK"
@@ -6418,7 +6418,7 @@
         "defending": 36,
         "physicality": 74
       },
-      "birthDate": "27-04-1996",
+      "birthDate": "1996-04-27",
       "nation": "Czech Republic",
       "fc27Id": "221909",
       "fc27Position": "GK"
@@ -6457,7 +6457,7 @@
         "defending": 76,
         "physicality": 80
       },
-      "birthDate": "01-03-2003",
+      "birthDate": "2003-03-01",
       "nation": "Czech Republic",
       "fc27Id": "73456",
       "fc27Position": "CB"
@@ -6496,7 +6496,7 @@
         "defending": 77,
         "physicality": 75
       },
-      "birthDate": "08-11-2000",
+      "birthDate": "2000-11-08",
       "nation": "Czech Republic",
       "fc27Id": "255687",
       "fc27Position": "CB"
@@ -6535,7 +6535,7 @@
         "defending": 75,
         "physicality": 80
       },
-      "birthDate": "31-03-1993",
+      "birthDate": "1993-03-31",
       "nation": "Czech Republic",
       "fc27Id": "251116",
       "fc27Position": "CB"
@@ -6574,7 +6574,7 @@
         "defending": 73,
         "physicality": 79
       },
-      "birthDate": "31-05-1999",
+      "birthDate": "1999-05-31",
       "nation": "Czech Republic",
       "fc27Id": "245209",
       "fc27Position": "CDM"
@@ -6613,7 +6613,7 @@
         "defending": 65,
         "physicality": 67
       },
-      "birthDate": "31-05-1998",
+      "birthDate": "1998-05-31",
       "nation": "Czech Republic",
       "fc27Id": "269509",
       "fc27Position": "RM"
@@ -6652,7 +6652,7 @@
         "defending": 70,
         "physicality": 74
       },
-      "birthDate": "20-01-2004",
+      "birthDate": "2004-01-20",
       "nation": "Nigeria",
       "fc27Id": "76098",
       "fc27Position": "CM"
@@ -6691,7 +6691,7 @@
         "defending": 69,
         "physicality": 75
       },
-      "birthDate": "07-08-2000",
+      "birthDate": "2000-08-07",
       "nation": "Czech Republic",
       "fc27Id": "267594",
       "fc27Position": "LB"
@@ -6730,7 +6730,7 @@
         "defending": 65,
         "physicality": 83
       },
-      "birthDate": "23-10-1996",
+      "birthDate": "1996-10-23",
       "nation": "Czech Republic",
       "fc27Id": "253727",
       "fc27Position": "CAM"
@@ -6769,7 +6769,7 @@
         "defending": 29,
         "physicality": 81
       },
-      "birthDate": "29-04-1999",
+      "birthDate": "1999-04-29",
       "nation": "Czech Republic",
       "fc27Id": "274906",
       "fc27Position": "ST"
@@ -6808,7 +6808,7 @@
         "defending": 32,
         "physicality": 88
       },
-      "birthDate": "26-01-1995",
+      "birthDate": "1995-01-26",
       "nation": "Czech Republic",
       "fc27Id": "244793",
       "fc27Position": "ST"
@@ -7193,7 +7193,7 @@
         "defending": 40,
         "physicality": 67
       },
-      "birthDate": "01-12-2005",
+      "birthDate": "2005-12-01",
       "nation": "Germany",
       "fc27Id": "271114",
       "fc27Position": "GK"
@@ -7232,7 +7232,7 @@
         "defending": 39,
         "physicality": 68
       },
-      "birthDate": "02-03-1995",
+      "birthDate": "1995-03-02",
       "nation": "Germany",
       "fc27Id": "223603",
       "fc27Position": "GK"
@@ -7271,7 +7271,7 @@
         "defending": 80,
         "physicality": 74
       },
-      "birthDate": "18-03-1997",
+      "birthDate": "1997-03-18",
       "nation": "Germany",
       "fc27Id": "227647",
       "fc27Position": "LB"
@@ -7310,7 +7310,7 @@
         "defending": 83,
         "physicality": 85
       },
-      "birthDate": "12-02-1998",
+      "birthDate": "1998-02-12",
       "nation": "Germany",
       "fc27Id": "239340",
       "fc27Position": "CB"
@@ -7349,7 +7349,7 @@
         "defending": 77,
         "physicality": 76
       },
-      "birthDate": "18-07-2001",
+      "birthDate": "2001-07-18",
       "nation": "Holland",
       "fc27Id": "251829",
       "fc27Position": "CB"
@@ -7388,7 +7388,7 @@
         "defending": 76,
         "physicality": 72
       },
-      "birthDate": "04-04-2001",
+      "birthDate": "2001-04-04",
       "nation": "Germany",
       "fc27Id": "250959",
       "fc27Position": "CDM"
@@ -7427,7 +7427,7 @@
         "defending": 51,
         "physicality": 58
       },
-      "birthDate": "09-01-1998",
+      "birthDate": "1998-01-09",
       "nation": "Germany",
       "fc27Id": "241925",
       "fc27Position": "LM"
@@ -7466,7 +7466,7 @@
         "defending": 46,
         "physicality": 76
       },
-      "birthDate": "26-02-2001",
+      "birthDate": "2001-02-26",
       "nation": "Germany",
       "fc27Id": "252448",
       "fc27Position": "RM"
@@ -7505,7 +7505,7 @@
         "defending": 75,
         "physicality": 79
       },
-      "birthDate": "09-01-1995",
+      "birthDate": "1995-01-09",
       "nation": "Germany",
       "fc27Id": "228595",
       "fc27Position": "CM"
@@ -7544,7 +7544,7 @@
         "defending": 33,
         "physicality": 81
       },
-      "birthDate": "19-07-1996",
+      "birthDate": "1996-07-19",
       "nation": "Germany",
       "fc27Id": "244176",
       "fc27Position": "ST"
@@ -7583,7 +7583,7 @@
         "defending": 42,
         "physicality": 78
       },
-      "birthDate": "25-03-1998",
+      "birthDate": "1998-03-25",
       "nation": "Bosnia and Herzegovina",
       "fc27Id": "238900",
       "fc27Position": "ST"
@@ -7622,7 +7622,7 @@
         "defending": 38,
         "physicality": 56
       },
-      "birthDate": "10-05-2004",
+      "birthDate": "2004-05-10",
       "nation": "Morocco",
       "fc27Id": "257504",
       "fc27Position": "CAM"
@@ -7663,7 +7663,7 @@
         "defending": 32,
         "physicality": 66
       },
-      "birthDate": "04-02-2002",
+      "birthDate": "2002-02-04",
       "nation": "Slovakia",
       "fc27Id": "83626",
       "fc27Position": "GK"
@@ -7702,7 +7702,7 @@
         "defending": 31,
         "physicality": 64
       },
-      "birthDate": "19-04-1991",
+      "birthDate": "1991-04-19",
       "nation": "Norway",
       "fc27Id": "186508",
       "fc27Position": "GK"
@@ -7741,7 +7741,7 @@
         "defending": 68,
         "physicality": 74
       },
-      "birthDate": "21-02-1994",
+      "birthDate": "1994-02-21",
       "nation": "Norway",
       "fc27Id": "209335",
       "fc27Position": "LB"
@@ -7780,7 +7780,7 @@
         "defending": 68,
         "physicality": 81
       },
-      "birthDate": "07-02-1999",
+      "birthDate": "1999-02-07",
       "nation": "Australia",
       "fc27Id": "247754",
       "fc27Position": "CB"
@@ -7819,7 +7819,7 @@
         "defending": 68,
         "physicality": 83
       },
-      "birthDate": "08-05-2003",
+      "birthDate": "2003-05-08",
       "nation": "Norway",
       "fc27Id": "256435",
       "fc27Position": "CB"
@@ -7858,7 +7858,7 @@
         "defending": 71,
         "physicality": 81
       },
-      "birthDate": "27-04-1999",
+      "birthDate": "1999-04-27",
       "nation": "New Zealand",
       "fc27Id": "254142",
       "fc27Position": "CDM"
@@ -7897,7 +7897,7 @@
         "defending": 68,
         "physicality": 79
       },
-      "birthDate": "22-04-2001",
+      "birthDate": "2001-04-22",
       "nation": "Norway",
       "fc27Id": "257072",
       "fc27Position": "RB"
@@ -7936,7 +7936,7 @@
         "defending": 65,
         "physicality": 77
       },
-      "birthDate": "09-01-2001",
+      "birthDate": "2001-01-09",
       "nation": "Norway",
       "fc27Id": "246100",
       "fc27Position": "CM"
@@ -7975,7 +7975,7 @@
         "defending": 60,
         "physicality": 73
       },
-      "birthDate": "26-05-2003",
+      "birthDate": "2003-05-26",
       "nation": "Norway",
       "fc27Id": "262860",
       "fc27Position": "CM"
@@ -8014,7 +8014,7 @@
         "defending": 57,
         "physicality": 83
       },
-      "birthDate": "02-12-1992",
+      "birthDate": "1992-12-02",
       "nation": "Norway",
       "fc27Id": "205214",
       "fc27Position": "RM"
@@ -8053,7 +8053,7 @@
         "defending": 36,
         "physicality": 76
       },
-      "birthDate": "02-12-1999",
+      "birthDate": "1999-12-02",
       "nation": "Denmark",
       "fc27Id": "245384",
       "fc27Position": "ST"
@@ -8092,7 +8092,7 @@
         "defending": 34,
         "physicality": 61
       },
-      "birthDate": "01-05-2005",
+      "birthDate": "2005-05-01",
       "nation": "Norway",
       "fc27Id": "271265",
       "fc27Position": "LM"
@@ -8133,7 +8133,7 @@
         "defending": 43,
         "physicality": 85
       },
-      "birthDate": "06-05-1990",
+      "birthDate": "1990-05-06",
       "nation": "Hungary",
       "fc27Id": "185122",
       "fc27Position": "GK"
@@ -8172,7 +8172,7 @@
         "defending": 30,
         "physicality": 78
       },
-      "birthDate": "14-01-2001",
+      "birthDate": "2001-01-14",
       "nation": "Brazil",
       "fc27Id": "258885",
       "fc27Position": "GK"
@@ -8211,7 +8211,7 @@
         "defending": 77,
         "physicality": 74
       },
-      "birthDate": "29-10-2001",
+      "birthDate": "2001-10-29",
       "nation": "Spain",
       "fc27Id": "270728",
       "fc27Position": "LB"
@@ -8250,7 +8250,7 @@
         "defending": 80,
         "physicality": 76
       },
-      "birthDate": "12-01-1998",
+      "birthDate": "1998-01-12",
       "nation": "Argentina",
       "fc27Id": "237221",
       "fc27Position": "CB"
@@ -8289,7 +8289,7 @@
         "defending": 75,
         "physicality": 75
       },
-      "birthDate": "08-07-1999",
+      "birthDate": "1999-07-08",
       "nation": "Spain",
       "fc27Id": "262402",
       "fc27Position": "LB"
@@ -8328,7 +8328,7 @@
         "defending": 78,
         "physicality": 82
       },
-      "birthDate": "24-01-1999",
+      "birthDate": "1999-01-24",
       "nation": "Senegal",
       "fc27Id": "241707",
       "fc27Position": "CM"
@@ -8367,7 +8367,7 @@
         "defending": 59,
         "physicality": 66
       },
-      "birthDate": "29-07-1993",
+      "birthDate": "1993-07-29",
       "nation": "Spain",
       "fc27Id": "215590",
       "fc27Position": "ST"
@@ -8406,7 +8406,7 @@
         "defending": 77,
         "physicality": 77
       },
-      "birthDate": "05-10-1996",
+      "birthDate": "1996-10-05",
       "nation": "Spain",
       "fc27Id": "235781",
       "fc27Position": "CM"
@@ -8445,7 +8445,7 @@
         "defending": 67,
         "physicality": 73
       },
-      "birthDate": "08-02-1999",
+      "birthDate": "1999-02-08",
       "nation": "Canada",
       "fc27Id": "246800",
       "fc27Position": "RM"
@@ -8484,7 +8484,7 @@
         "defending": 51,
         "physicality": 68
       },
-      "birthDate": "30-09-2003",
+      "birthDate": "2003-09-30",
       "nation": "Spain",
       "fc27Id": "264388",
       "fc27Position": "LM"
@@ -8523,7 +8523,7 @@
         "defending": 48,
         "physicality": 73
       },
-      "birthDate": "07-04-1992",
+      "birthDate": "1992-04-07",
       "nation": "Spain",
       "fc27Id": "208093",
       "fc27Position": "ST"
@@ -8562,7 +8562,7 @@
         "defending": 37,
         "physicality": 69
       },
-      "birthDate": "29-05-1995",
+      "birthDate": "1995-05-29",
       "nation": "Côte d'Ivoire",
       "fc27Id": "226110",
       "fc27Position": "RW"
@@ -8603,7 +8603,7 @@
         "defending": 34,
         "physicality": 80
       },
-      "birthDate": "01-03-1992",
+      "birthDate": "1992-03-01",
       "nation": "Senegal",
       "fc27Id": "234642",
       "fc27Position": "GK"
@@ -8642,7 +8642,7 @@
         "defending": 43,
         "physicality": 62
       },
-      "birthDate": "03-02-2001",
+      "birthDate": "2001-02-03",
       "nation": "Saudi Arabia",
       "fc27Id": "263867",
       "fc27Position": "GK"
@@ -8681,7 +8681,7 @@
         "defending": 83,
         "physicality": 86
       },
-      "birthDate": "23-11-1998",
+      "birthDate": "1998-11-23",
       "nation": "Brazil",
       "fc27Id": "247257",
       "fc27Position": "CB"
@@ -8720,7 +8720,7 @@
         "defending": 80,
         "physicality": 83
       },
-      "birthDate": "05-03-1998",
+      "birthDate": "1998-03-05",
       "nation": "Turkey",
       "fc27Id": "238160",
       "fc27Position": "CB"
@@ -8759,7 +8759,7 @@
         "defending": 67,
         "physicality": 77
       },
-      "birthDate": "01-10-1999",
+      "birthDate": "1999-10-01",
       "nation": "Saudi Arabia",
       "fc27Id": "242506",
       "fc27Position": "RB"
@@ -8798,7 +8798,7 @@
         "defending": 63,
         "physicality": 64
       },
-      "birthDate": "21-08-2000",
+      "birthDate": "2000-08-21",
       "nation": "Ukraine",
       "fc27Id": "255074",
       "fc27Position": "CAM"
@@ -8837,7 +8837,7 @@
         "defending": 72,
         "physicality": 72
       },
-      "birthDate": "25-08-2005",
+      "birthDate": "2005-08-25",
       "nation": "France",
       "fc27Id": "275137",
       "fc27Position": "CDM"
@@ -8876,7 +8876,7 @@
         "defending": 44,
         "physicality": 59
       },
-      "birthDate": "07-06-2000",
+      "birthDate": "2000-06-07",
       "nation": "Armenia",
       "fc27Id": "87127",
       "fc27Position": "CAM"
@@ -8915,7 +8915,7 @@
         "defending": 47,
         "physicality": 76
       },
-      "birthDate": "14-05-2000",
+      "birthDate": "2000-05-14",
       "nation": "Saudi Arabia",
       "fc27Id": "238545",
       "fc27Position": "ST"
@@ -8954,7 +8954,7 @@
         "defending": 52,
         "physicality": 84
       },
-      "birthDate": "16-03-1996",
+      "birthDate": "1996-03-16",
       "nation": "England",
       "fc27Id": "212228",
       "fc27Position": "ST"
@@ -8993,7 +8993,7 @@
         "defending": 40,
         "physicality": 72
       },
-      "birthDate": "29-12-1999",
+      "birthDate": "1999-12-29",
       "nation": "Portugal",
       "fc27Id": "244778",
       "fc27Position": "CAM"
@@ -9032,7 +9032,7 @@
         "defending": 45,
         "physicality": 70
       },
-      "birthDate": "22-10-1997",
+      "birthDate": "1997-10-22",
       "nation": "Brazil",
       "fc27Id": "239482",
       "fc27Position": "LM"
@@ -9073,7 +9073,7 @@
         "defending": 39,
         "physicality": 81
       },
-      "birthDate": "10-06-1999",
+      "birthDate": "1999-06-10",
       "nation": "Brazil",
       "fc27Id": "73562",
       "fc27Position": "GK"
@@ -9112,7 +9112,7 @@
         "defending": 47,
         "physicality": 65
       },
-      "birthDate": "10-05-2000",
+      "birthDate": "2000-05-10",
       "nation": "Saudi Arabia",
       "fc27Id": "255368",
       "fc27Position": "GK"
@@ -9151,7 +9151,7 @@
         "defending": 82,
         "physicality": 83
       },
-      "birthDate": "17-05-1991",
+      "birthDate": "1991-05-17",
       "nation": "Spain",
       "fc27Id": "204525",
       "fc27Position": "CB"
@@ -9191,7 +9191,7 @@
         "defending": 83,
         "physicality": 83
       },
-      "birthDate": "03-05-2000",
+      "birthDate": "2000-05-03",
       "nation": "France",
       "fc27Id": "243854",
       "fc27Position": "CB"
@@ -9230,7 +9230,7 @@
         "defending": 71,
         "physicality": 81
       },
-      "birthDate": "15-01-1997",
+      "birthDate": "1997-01-15",
       "nation": "Saudi Arabia",
       "fc27Id": "241197",
       "fc27Position": "CB"
@@ -9270,7 +9270,7 @@
         "defending": 44,
         "physicality": 75
       },
-      "birthDate": "10-04-1992",
+      "birthDate": "1992-04-10",
       "nation": "Senegal",
       "fc27Id": "208722",
       "fc27Position": "LM"
@@ -9309,7 +9309,7 @@
         "defending": 77,
         "physicality": 80
       },
-      "birthDate": "27-11-2000",
+      "birthDate": "2000-11-27",
       "nation": "Portugal",
       "fc27Id": "255566",
       "fc27Position": "CDM"
@@ -9348,7 +9348,7 @@
         "defending": 63,
         "physicality": 63
       },
-      "birthDate": "21-12-2004",
+      "birthDate": "2004-12-21",
       "nation": "Brazil",
       "fc27Id": "272829",
       "fc27Position": "CM"
@@ -9385,7 +9385,7 @@
         "defending": 66,
         "physicality": 74
       },
-      "birthDate": "16-09-1999",
+      "birthDate": "1999-09-16",
       "nation": "Saudi Arabia",
       "fc27Id": "254685",
       "fc27Position": "LB"
@@ -9425,7 +9425,7 @@
         "defending": 33,
         "physicality": 75
       },
-      "birthDate": "05-02-1985",
+      "birthDate": "1985-02-05",
       "nation": "Portugal",
       "fc27Id": "20801",
       "fc27Position": "ST"
@@ -9465,7 +9465,7 @@
         "defending": 45,
         "physicality": 71
       },
-      "birthDate": "10-11-1999",
+      "birthDate": "1999-11-10",
       "nation": "Portugal",
       "fc27Id": "242444",
       "fc27Position": "CAM"
@@ -9502,7 +9502,7 @@
         "defending": 30,
         "physicality": 64
       },
-      "birthDate": "13-06-1996",
+      "birthDate": "1996-06-13",
       "nation": "France",
       "fc27Id": "213345",
       "fc27Position": "RM"
@@ -9544,7 +9544,7 @@
         "defending": 38,
         "physicality": 81
       },
-      "birthDate": "05-04-1991",
+      "birthDate": "1991-04-05",
       "nation": "Morocco",
       "fc27Id": "209981",
       "fc27Position": "GK"
@@ -9583,7 +9583,7 @@
         "defending": 51,
         "physicality": 62
       },
-      "birthDate": "10-10-1991",
+      "birthDate": "1991-10-10",
       "nation": "Saudi Arabia",
       "fc27Id": "210923",
       "fc27Position": "GK"
@@ -9623,7 +9623,7 @@
         "defending": 78,
         "physicality": 80
       },
-      "birthDate": "13-03-1997",
+      "birthDate": "1997-03-13",
       "nation": "Portugal",
       "fc27Id": "224293",
       "fc27Position": "CDM"
@@ -9663,7 +9663,7 @@
         "defending": 82,
         "physicality": 83
       },
-      "birthDate": "20-06-1991",
+      "birthDate": "1991-06-20",
       "nation": "Senegal",
       "fc27Id": "201024",
       "fc27Position": "CB"
@@ -9702,7 +9702,7 @@
         "defending": 76,
         "physicality": 83
       },
-      "birthDate": "06-10-1997",
+      "birthDate": "1997-10-06",
       "nation": "France",
       "fc27Id": "232656",
       "fc27Position": "LB"
@@ -9741,7 +9741,7 @@
         "defending": 36,
         "physicality": 54
       },
-      "birthDate": "30-10-2001",
+      "birthDate": "2001-10-30",
       "nation": "Holland",
       "fc27Id": "251954",
       "fc27Position": "LM"
@@ -9780,7 +9780,7 @@
         "defending": 70,
         "physicality": 76
       },
-      "birthDate": "22-09-1994",
+      "birthDate": "1994-09-22",
       "nation": "Saudi Arabia",
       "fc27Id": "220075",
       "fc27Position": "CM"
@@ -9819,7 +9819,7 @@
         "defending": 48,
         "physicality": 64
       },
-      "birthDate": "17-10-1994",
+      "birthDate": "1994-10-17",
       "nation": "Saudi Arabia",
       "fc27Id": "225976",
       "fc27Position": "RM"
@@ -9858,7 +9858,7 @@
         "defending": 66,
         "physicality": 73
       },
-      "birthDate": "19-12-1998",
+      "birthDate": "1998-12-19",
       "nation": "Saudi Arabia",
       "fc27Id": "241938",
       "fc27Position": "CM"
@@ -9897,7 +9897,7 @@
         "defending": 77,
         "physicality": 89
       },
-      "birthDate": "27-02-1995",
+      "birthDate": "1995-02-27",
       "nation": "Serbia",
       "fc27Id": "223848",
       "fc27Position": "CM"
@@ -9936,7 +9936,7 @@
         "defending": 37,
         "physicality": 72
       },
-      "birthDate": "19-12-1987",
+      "birthDate": "1987-12-19",
       "nation": "France",
       "fc27Id": "165153",
       "fc27Position": "ST"
@@ -9975,7 +9975,7 @@
         "defending": 55,
         "physicality": 80
       },
-      "birthDate": "19-08-1991",
+      "birthDate": "1991-08-19",
       "nation": "Saudi Arabia",
       "fc27Id": "210602",
       "fc27Position": "LM"
@@ -10016,7 +10016,7 @@
         "defending": 45,
         "physicality": 83
       },
-      "birthDate": "25-06-1992",
+      "birthDate": "1992-06-25",
       "nation": "Belgium",
       "fc27Id": "192984",
       "fc27Position": "GK"
@@ -10055,7 +10055,7 @@
         "defending": 40,
         "physicality": 62
       },
-      "birthDate": "08-05-1991",
+      "birthDate": "1991-05-08",
       "nation": "Saudi Arabia",
       "fc27Id": "209027",
       "fc27Position": "GK"
@@ -10094,7 +10094,7 @@
         "defending": 80,
         "physicality": 79
       },
-      "birthDate": "18-01-1990",
+      "birthDate": "1990-01-18",
       "nation": "Spain",
       "fc27Id": "200724",
       "fc27Position": "CB"
@@ -10133,7 +10133,7 @@
         "defending": 74,
         "physicality": 83
       },
-      "birthDate": "28-12-1995",
+      "birthDate": "1995-12-28",
       "nation": "Uruguay",
       "fc27Id": "230965",
       "fc27Position": "CM"
@@ -10172,7 +10172,7 @@
         "defending": 70,
         "physicality": 72
       },
-      "birthDate": "19-10-2000",
+      "birthDate": "2000-10-19",
       "nation": "Morocco",
       "fc27Id": "262473",
       "fc27Position": "LB"
@@ -10211,7 +10211,7 @@
         "defending": 71,
         "physicality": 76
       },
-      "birthDate": "29-07-1998",
+      "birthDate": "1998-07-29",
       "nation": "Holland",
       "fc27Id": "240638",
       "fc27Position": "CM"
@@ -10250,7 +10250,7 @@
         "defending": 69,
         "physicality": 74
       },
-      "birthDate": "09-02-1995",
+      "birthDate": "1995-02-09",
       "nation": "Portugal",
       "fc27Id": "210411",
       "fc27Position": "CM"
@@ -10289,7 +10289,7 @@
         "defending": 75,
         "physicality": 74
       },
-      "birthDate": "08-09-1995",
+      "birthDate": "1995-09-08",
       "nation": "Germany",
       "fc27Id": "222028",
       "fc27Position": "CDM"
@@ -10328,7 +10328,7 @@
         "defending": 58,
         "physicality": 75
       },
-      "birthDate": "20-06-2003",
+      "birthDate": "2003-06-20",
       "nation": "Saudi Arabia",
       "fc27Id": "263824",
       "fc27Position": "CM"
@@ -10367,7 +10367,7 @@
         "defending": 37,
         "physicality": 82
       },
-      "birthDate": "24-03-1997",
+      "birthDate": "1997-03-24",
       "nation": "Mexico",
       "fc27Id": "234579",
       "fc27Position": "ST"
@@ -10406,7 +10406,7 @@
         "defending": 36,
         "physicality": 77
       },
-      "birthDate": "29-04-1999",
+      "birthDate": "1999-04-29",
       "nation": "Italy",
       "fc27Id": "241850",
       "fc27Position": "ST"
@@ -10445,7 +10445,7 @@
         "defending": 34,
         "physicality": 69
       },
-      "birthDate": "14-12-2004",
+      "birthDate": "2004-12-14",
       "nation": "Ghana",
       "fc27Id": "274913",
       "fc27Position": "LM"
@@ -14019,7 +14019,7 @@
         "defending": 29,
         "physicality": 77
       },
-      "birthDate": "31-10-1995",
+      "birthDate": "1995-10-31",
       "nation": "Serbia",
       "fc27Id": "241727",
       "fc27Position": "GK"
@@ -14058,7 +14058,7 @@
         "defending": 21,
         "physicality": 53
       },
-      "birthDate": "24-09-2002",
+      "birthDate": "2002-09-24",
       "nation": "Saudi Arabia",
       "fc27Id": "279593",
       "fc27Position": "GK"
@@ -14097,7 +14097,7 @@
         "defending": 82,
         "physicality": 85
       },
-      "birthDate": "09-09-1991",
+      "birthDate": "1991-09-09",
       "nation": "Portugal",
       "fc27Id": "200888",
       "fc27Position": "CB"
@@ -14136,7 +14136,7 @@
         "defending": 71,
         "physicality": 81
       },
-      "birthDate": "02-02-2002",
+      "birthDate": "2002-02-02",
       "nation": "Senegal",
       "fc27Id": "259190",
       "fc27Position": "CDM"
@@ -14175,7 +14175,7 @@
         "defending": 66,
         "physicality": 71
       },
-      "birthDate": "12-03-1999",
+      "birthDate": "1999-03-12",
       "nation": "Saudi Arabia",
       "fc27Id": "242156",
       "fc27Position": "RB"
@@ -14214,7 +14214,7 @@
         "defending": 41,
         "physicality": 71
       },
-      "birthDate": "08-10-1997",
+      "birthDate": "1997-10-08",
       "nation": "Holland",
       "fc27Id": "225953",
       "fc27Position": "CAM"
@@ -14253,7 +14253,7 @@
         "defending": 57,
         "physicality": 61
       },
-      "birthDate": "21-11-2005",
+      "birthDate": "2005-11-21",
       "nation": "Portugal",
       "fc27Id": "263828",
       "fc27Position": "LM"
@@ -14292,7 +14292,7 @@
         "defending": 62,
         "physicality": 72
       },
-      "birthDate": "15-05-2004",
+      "birthDate": "2004-05-15",
       "nation": "Mali",
       "fc27Id": "270613",
       "fc27Position": "CM"
@@ -14331,7 +14331,7 @@
         "defending": 66,
         "physicality": 77
       },
-      "birthDate": "26-09-1992",
+      "birthDate": "1992-09-26",
       "nation": "Saudi Arabia",
       "fc27Id": "210843",
       "fc27Position": "LB"
@@ -14371,7 +14371,7 @@
         "defending": 44,
         "physicality": 59
       },
-      "birthDate": "07-07-1999",
+      "birthDate": "1999-07-07",
       "nation": "France",
       "fc27Id": "241852",
       "fc27Position": "RM"
@@ -14410,7 +14410,7 @@
         "defending": 35,
         "physicality": 81
       },
-      "birthDate": "01-06-1997",
+      "birthDate": "1997-06-01",
       "nation": "Morocco",
       "fc27Id": "235410",
       "fc27Position": "ST"
@@ -14449,7 +14449,7 @@
         "defending": 65,
         "physicality": 67
       },
-      "birthDate": "30-06-1998",
+      "birthDate": "1998-06-30",
       "nation": "Algeria",
       "fc27Id": "234906",
       "fc27Position": "CAM"
@@ -16312,7 +16312,7 @@
         "defending": 25,
         "physicality": 72
       },
-      "birthDate": "15-10-1997",
+      "birthDate": "1997-10-15",
       "nation": "Korea Republic",
       "fc27Id": "238570",
       "fc27Position": "GK"
@@ -16351,7 +16351,7 @@
         "defending": 29,
         "physicality": 56
       },
-      "birthDate": "06-12-1998",
+      "birthDate": "1998-12-06",
       "nation": "Korea Republic",
       "fc27Id": "255239",
       "fc27Position": "GK"
@@ -16390,7 +16390,7 @@
         "defending": 69,
         "physicality": 85
       },
-      "birthDate": "25-08-2001",
+      "birthDate": "2001-08-25",
       "nation": "Korea Republic",
       "fc27Id": "267401",
       "fc27Position": "CB"
@@ -16429,7 +16429,7 @@
         "defending": 68,
         "physicality": 77
       },
-      "birthDate": "20-09-1991",
+      "birthDate": "1991-09-20",
       "nation": "Korea Republic",
       "fc27Id": "222582",
       "fc27Position": "CB"
@@ -16468,7 +16468,7 @@
         "defending": 67,
         "physicality": 75
       },
-      "birthDate": "13-06-1994",
+      "birthDate": "1994-06-13",
       "nation": "Korea Republic",
       "fc27Id": "212912",
       "fc27Position": "CB"
@@ -16507,7 +16507,7 @@
         "defending": 52,
         "physicality": 70
       },
-      "birthDate": "24-02-1997",
+      "birthDate": "1997-02-24",
       "nation": "Korea Republic",
       "fc27Id": "227659",
       "fc27Position": "CM"
@@ -16546,7 +16546,7 @@
         "defending": 60,
         "physicality": 73
       },
-      "birthDate": "31-05-2004",
+      "birthDate": "2004-05-31",
       "nation": "Korea Republic",
       "fc27Id": "268895",
       "fc27Position": "CM"
@@ -16585,7 +16585,7 @@
         "defending": 39,
         "physicality": 65
       },
-      "birthDate": "01-02-1997",
+      "birthDate": "1997-02-01",
       "nation": "Korea Republic",
       "fc27Id": "243061",
       "fc27Position": "RM"
@@ -16624,7 +16624,7 @@
         "defending": 26,
         "physicality": 65
       },
-      "birthDate": "01-11-1996",
+      "birthDate": "1996-11-01",
       "nation": "Korea Republic",
       "fc27Id": "242821",
       "fc27Position": "LM"
@@ -16663,7 +16663,7 @@
         "defending": 41,
         "physicality": 64
       },
-      "birthDate": "06-01-1998",
+      "birthDate": "1998-01-06",
       "nation": "Korea Republic",
       "fc27Id": "232000",
       "fc27Position": "LW"
@@ -16702,7 +16702,7 @@
         "defending": 33,
         "physicality": 79
       },
-      "birthDate": "22-04-1996",
+      "birthDate": "1996-04-22",
       "nation": "Italy",
       "fc27Id": "262447",
       "fc27Position": "ST"
@@ -16741,7 +16741,7 @@
         "defending": 32,
         "physicality": 81
       },
-      "birthDate": "10-02-1996",
+      "birthDate": "1996-02-10",
       "nation": "Brazil",
       "fc27Id": "272992",
       "fc27Position": "ST"
@@ -16782,7 +16782,7 @@
         "defending": 45,
         "physicality": 72
       },
-      "birthDate": "30-08-1993",
+      "birthDate": "1993-08-30",
       "nation": "Korea Republic",
       "fc27Id": "210941",
       "fc27Position": "GK"
@@ -16821,7 +16821,7 @@
         "defending": 28,
         "physicality": 57
       },
-      "birthDate": "02-03-1995",
+      "birthDate": "1995-03-02",
       "nation": "Korea Republic",
       "fc27Id": "259255",
       "fc27Position": "GK"
@@ -16860,7 +16860,7 @@
         "defending": 68,
         "physicality": 79
       },
-      "birthDate": "26-12-1999",
+      "birthDate": "1999-12-26",
       "nation": "Korea Republic",
       "fc27Id": "260474",
       "fc27Position": "CM"
@@ -16899,7 +16899,7 @@
         "defending": 64,
         "physicality": 68
       },
-      "birthDate": "01-08-1995",
+      "birthDate": "1995-08-01",
       "nation": "Korea Republic",
       "fc27Id": "244800",
       "fc27Position": "RB"
@@ -16938,7 +16938,7 @@
         "defending": 30,
         "physicality": 79
       },
-      "birthDate": "20-10-1993",
+      "birthDate": "1993-10-20",
       "nation": "Sweden",
       "fc27Id": "256370",
       "fc27Position": "LM"
@@ -16977,7 +16977,7 @@
         "defending": 61,
         "physicality": 67
       },
-      "birthDate": "04-11-1993",
+      "birthDate": "1993-11-04",
       "nation": "Korea Republic",
       "fc27Id": "222052",
       "fc27Position": "LB"
@@ -17016,7 +17016,7 @@
         "defending": 64,
         "physicality": 74
       },
-      "birthDate": "12-01-2000",
+      "birthDate": "2000-01-12",
       "nation": "Brazil",
       "fc27Id": "263787",
       "fc27Position": "CM"
@@ -17055,7 +17055,7 @@
         "defending": 46,
         "physicality": 65
       },
-      "birthDate": "28-04-1994",
+      "birthDate": "1994-04-28",
       "nation": "Korea Republic",
       "fc27Id": "234276",
       "fc27Position": "RM"
@@ -17094,7 +17094,7 @@
         "defending": 31,
         "physicality": 55
       },
-      "birthDate": "25-02-1999",
+      "birthDate": "1999-02-25",
       "nation": "Brazil",
       "fc27Id": "258358",
       "fc27Position": "RM"
@@ -17133,7 +17133,7 @@
         "defending": 46,
         "physicality": 79
       },
-      "birthDate": "13-04-1990",
+      "birthDate": "1990-04-13",
       "nation": "Korea Republic",
       "fc27Id": "213189",
       "fc27Position": "ST"
@@ -17172,7 +17172,7 @@
         "defending": 48,
         "physicality": 56
       },
-      "birthDate": "22-06-1995",
+      "birthDate": "1995-06-22",
       "nation": "Korea Republic",
       "fc27Id": "237091",
       "fc27Position": "RW"
@@ -17211,7 +17211,7 @@
         "defending": 32,
         "physicality": 80
       },
-      "birthDate": "04-12-1996",
+      "birthDate": "1996-12-04",
       "nation": "Brazil",
       "fc27Id": "255686",
       "fc27Position": "ST"
@@ -17252,7 +17252,7 @@
         "defending": 26,
         "physicality": 66
       },
-      "birthDate": "22-04-1994",
+      "birthDate": "1994-04-22",
       "nation": "Korea Republic",
       "fc27Id": "233286",
       "fc27Position": "GK"
@@ -17291,7 +17291,7 @@
         "defending": 47,
         "physicality": 59
       },
-      "birthDate": "08-02-1992",
+      "birthDate": "1992-02-08",
       "nation": "Korea Republic",
       "fc27Id": "212915",
       "fc27Position": "GK"
@@ -17330,7 +17330,7 @@
         "defending": 68,
         "physicality": 80
       },
-      "birthDate": "17-01-1993",
+      "birthDate": "1993-01-17",
       "nation": "Korea Republic",
       "fc27Id": "227632",
       "fc27Position": "CB"
@@ -17369,7 +17369,7 @@
         "defending": 63,
         "physicality": 64
       },
-      "birthDate": "08-07-1999",
+      "birthDate": "1999-07-08",
       "nation": "Korea Republic",
       "fc27Id": "261078",
       "fc27Position": "LB"
@@ -17408,7 +17408,7 @@
         "defending": 68,
         "physicality": 73
       },
-      "birthDate": "27-01-1996",
+      "birthDate": "1996-01-27",
       "nation": "Korea Republic",
       "fc27Id": "256252",
       "fc27Position": "CB"
@@ -17447,7 +17447,7 @@
         "defending": 62,
         "physicality": 74
       },
-      "birthDate": "24-01-1989",
+      "birthDate": "1989-01-24",
       "nation": "Korea Republic",
       "fc27Id": "180283",
       "fc27Position": "CM"
@@ -17486,7 +17486,7 @@
         "defending": 24,
         "physicality": 80
       },
-      "birthDate": "21-06-1999",
+      "birthDate": "1999-06-21",
       "nation": "Brazil",
       "fc27Id": "274437",
       "fc27Position": "ST"
@@ -17525,7 +17525,7 @@
         "defending": 61,
         "physicality": 75
       },
-      "birthDate": "18-03-1987",
+      "birthDate": "1987-03-18",
       "nation": "Korea Republic",
       "fc27Id": "184901",
       "fc27Position": "RB"
@@ -17564,7 +17564,7 @@
         "defending": 60,
         "physicality": 66
       },
-      "birthDate": "07-11-1999",
+      "birthDate": "1999-11-07",
       "nation": "Japan",
       "fc27Id": "83628",
       "fc27Position": "CDM"
@@ -17603,7 +17603,7 @@
         "defending": 65,
         "physicality": 67
       },
-      "birthDate": "31-03-1989",
+      "birthDate": "1989-03-31",
       "nation": "Brazil",
       "fc27Id": "229343",
       "fc27Position": "LB"
@@ -17642,7 +17642,7 @@
         "defending": 35,
         "physicality": 57
       },
-      "birthDate": "05-11-1997",
+      "birthDate": "1997-11-05",
       "nation": "Brazil",
       "fc27Id": "261880",
       "fc27Position": "RM"
@@ -17681,7 +17681,7 @@
         "defending": 23,
         "physicality": 66
       },
-      "birthDate": "25-06-2001",
+      "birthDate": "2001-06-25",
       "nation": "Germany",
       "fc27Id": "78655",
       "fc27Position": "ST"
@@ -17722,7 +17722,7 @@
         "defending": 47,
         "physicality": 65
       },
-      "birthDate": "07-02-1990",
+      "birthDate": "1990-02-07",
       "nation": "Philippines",
       "fc27Id": "193186",
       "fc27Position": "GK"
@@ -17761,7 +17761,7 @@
         "defending": 43,
         "physicality": 57
       },
-      "birthDate": "04-02-1987",
+      "birthDate": "1987-02-04",
       "nation": "Thailand",
       "fc27Id": "218299",
       "fc27Position": "GK"
@@ -17800,7 +17800,7 @@
         "defending": 68,
         "physicality": 71
       },
-      "birthDate": "17-07-1995",
+      "birthDate": "1995-07-17",
       "nation": "Brazil",
       "fc27Id": "225597",
       "fc27Position": "LB"
@@ -17839,7 +17839,7 @@
         "defending": 65,
         "physicality": 59
       },
-      "birthDate": "06-02-1990",
+      "birthDate": "1990-02-06",
       "nation": "Thailand",
       "fc27Id": "242351",
       "fc27Position": "CM"
@@ -17878,7 +17878,7 @@
         "defending": 67,
         "physicality": 72
       },
-      "birthDate": "07-05-1993",
+      "birthDate": "1993-05-07",
       "nation": "Australia",
       "fc27Id": "233105",
       "fc27Position": "CB"
@@ -17917,7 +17917,7 @@
         "defending": 65,
         "physicality": 75
       },
-      "birthDate": "09-06-1993",
+      "birthDate": "1993-06-09",
       "nation": "Austria",
       "fc27Id": "221931",
       "fc27Position": "CM"
@@ -17956,7 +17956,7 @@
         "defending": 60,
         "physicality": 70
       },
-      "birthDate": "05-05-1992",
+      "birthDate": "1992-05-05",
       "nation": "Serbia",
       "fc27Id": "224600",
       "fc27Position": "CM"
@@ -17995,7 +17995,7 @@
         "defending": 56,
         "physicality": 68
       },
-      "birthDate": "16-04-1998",
+      "birthDate": "1998-04-16",
       "nation": "Brazil",
       "fc27Id": "263789",
       "fc27Position": "CM"
@@ -18034,7 +18034,7 @@
         "defending": 53,
         "physicality": 70
       },
-      "birthDate": "12-07-1993",
+      "birthDate": "1993-07-12",
       "nation": "Ghana",
       "fc27Id": "238569",
       "fc27Position": "RM"
@@ -18073,7 +18073,7 @@
         "defending": 29,
         "physicality": 66
       },
-      "birthDate": "09-01-1998",
+      "birthDate": "1998-01-09",
       "nation": "Brazil",
       "fc27Id": "256344",
       "fc27Position": "ST"
@@ -18112,7 +18112,7 @@
         "defending": 39,
         "physicality": 75
       },
-      "birthDate": "05-02-1992",
+      "birthDate": "1992-02-05",
       "nation": "Austria",
       "fc27Id": "201290",
       "fc27Position": "CAM"
@@ -18151,7 +18151,7 @@
         "defending": 44,
         "physicality": 66
       },
-      "birthDate": "10-07-1994",
+      "birthDate": "1994-07-10",
       "nation": "Brazil",
       "fc27Id": "207734",
       "fc27Position": "ST"
@@ -19646,7 +19646,7 @@
         "defending": 30,
         "physicality": 57
       },
-      "birthDate": "20-10-1999",
+      "birthDate": "1999-10-20",
       "nation": "Australia",
       "fc27Id": "239019",
       "fc27Position": "GK"
@@ -19685,7 +19685,7 @@
         "defending": 37,
         "physicality": 47
       },
-      "birthDate": "17-05-2006",
+      "birthDate": "2006-05-17",
       "nation": "Australia",
       "fc27Id": "76682",
       "fc27Position": "GK"
@@ -19724,7 +19724,7 @@
         "defending": 68,
         "physicality": 83
       },
-      "birthDate": "23-01-1994",
+      "birthDate": "1994-01-23",
       "nation": "Australia",
       "fc27Id": "209210",
       "fc27Position": "CB"
@@ -19763,7 +19763,7 @@
         "defending": 67,
         "physicality": 70
       },
-      "birthDate": "06-07-1992",
+      "birthDate": "1992-07-06",
       "nation": "Republic of Ireland",
       "fc27Id": "198624",
       "fc27Position": "CB"
@@ -19802,7 +19802,7 @@
         "defending": 56,
         "physicality": 64
       },
-      "birthDate": "19-12-2000",
+      "birthDate": "2000-12-19",
       "nation": "Australia",
       "fc27Id": "247836",
       "fc27Position": "LB"
@@ -19841,7 +19841,7 @@
         "defending": 59,
         "physicality": 73
       },
-      "birthDate": "16-01-1995",
+      "birthDate": "1995-01-16",
       "nation": "Australia",
       "fc27Id": "225757",
       "fc27Position": "CDM"
@@ -19880,7 +19880,7 @@
         "defending": 56,
         "physicality": 72
       },
-      "birthDate": "02-02-2001",
+      "birthDate": "2001-02-02",
       "nation": "Australia",
       "fc27Id": "259767",
       "fc27Position": "RM"
@@ -19919,7 +19919,7 @@
         "defending": 58,
         "physicality": 61
       },
-      "birthDate": "23-02-2005",
+      "birthDate": "2005-02-23",
       "nation": "Australia",
       "fc27Id": "264063",
       "fc27Position": "CM"
@@ -19958,7 +19958,7 @@
         "defending": 52,
         "physicality": 40
       },
-      "birthDate": "07-09-2007",
+      "birthDate": "2007-09-07",
       "nation": "Australia",
       "fc27Id": "74614",
       "fc27Position": "CM"
@@ -19997,7 +19997,7 @@
         "defending": 50,
         "physicality": 63
       },
-      "birthDate": "25-08-1992",
+      "birthDate": "1992-08-25",
       "nation": "England",
       "fc27Id": "221587",
       "fc27Position": "RM"
@@ -20036,7 +20036,7 @@
         "defending": 45,
         "physicality": 63
       },
-      "birthDate": "08-03-1995",
+      "birthDate": "1995-03-08",
       "nation": "England",
       "fc27Id": "212803",
       "fc27Position": "RM"
@@ -20075,7 +20075,7 @@
         "defending": 32,
         "physicality": 67
       },
-      "birthDate": "13-01-1996",
+      "birthDate": "1996-01-13",
       "nation": "Greece",
       "fc27Id": "222540",
       "fc27Position": "ST"
@@ -30628,7 +30628,7 @@
         "defending": 22,
         "physicality": 65
       },
-      "birthDate": "09-05-1997",
+      "birthDate": "1997-05-09",
       "nation": "United States",
       "fc27Id": "242703",
       "fc27Position": "GK"
@@ -30667,7 +30667,7 @@
         "defending": 25,
         "physicality": 62
       },
-      "birthDate": "25-10-2001",
+      "birthDate": "2001-10-25",
       "nation": "Serbia",
       "fc27Id": "275032",
       "fc27Position": "GK"
@@ -30706,7 +30706,7 @@
         "defending": 73,
         "physicality": 79
       },
-      "birthDate": "25-03-1994",
+      "birthDate": "1994-03-25",
       "nation": "Norway",
       "fc27Id": "233400",
       "fc27Position": "CB"
@@ -30745,7 +30745,7 @@
         "defending": 65,
         "physicality": 71
       },
-      "birthDate": "22-12-1993",
+      "birthDate": "1993-12-22",
       "nation": "Japan",
       "fc27Id": "233169",
       "fc27Position": "RB"
@@ -30784,7 +30784,7 @@
         "defending": 68,
         "physicality": 70
       },
-      "birthDate": "12-09-2001",
+      "birthDate": "2001-09-12",
       "nation": "United States",
       "fc27Id": "247038",
       "fc27Position": "CB"
@@ -30823,7 +30823,7 @@
         "defending": 52,
         "physicality": 61
       },
-      "birthDate": "31-05-1989",
+      "birthDate": "1989-05-31",
       "nation": "Germany",
       "fc27Id": "188350",
       "fc27Position": "CAM"
@@ -30862,7 +30862,7 @@
         "defending": 73,
         "physicality": 55
       },
-      "birthDate": "07-02-1992",
+      "birthDate": "1992-02-07",
       "nation": "Spain",
       "fc27Id": "199564",
       "fc27Position": "CDM"
@@ -30901,7 +30901,7 @@
         "defending": 50,
         "physicality": 52
       },
-      "birthDate": "20-08-1994",
+      "birthDate": "1994-08-20",
       "nation": "Germany",
       "fc27Id": "221797",
       "fc27Position": "CAM"
@@ -30940,7 +30940,7 @@
         "defending": 64,
         "physicality": 65
       },
-      "birthDate": "26-12-2003",
+      "birthDate": "2003-12-26",
       "nation": "Uruguay",
       "fc27Id": "70335",
       "fc27Position": "CDM"
@@ -30979,7 +30979,7 @@
         "defending": 41,
         "physicality": 49
       },
-      "birthDate": "30-07-1995",
+      "birthDate": "1995-07-30",
       "nation": "Mexico",
       "fc27Id": "221992",
       "fc27Position": "LW"
@@ -31018,7 +31018,7 @@
         "defending": 50,
         "physicality": 44
       },
-      "birthDate": "13-08-1999",
+      "birthDate": "1999-08-13",
       "nation": "Spain",
       "fc27Id": "242816",
       "fc27Position": "CM"
@@ -31057,7 +31057,7 @@
         "defending": 35,
         "physicality": 66
       },
-      "birthDate": "01-02-1998",
+      "birthDate": "1998-02-01",
       "nation": "Ghana",
       "fc27Id": "241162",
       "fc27Position": "LM"
@@ -31436,7 +31436,7 @@
         "defending": 41,
         "physicality": 72
       },
-      "birthDate": "15-09-1993",
+      "birthDate": "1993-09-15",
       "nation": "Mexico",
       "fc27Id": "216245",
       "fc27Position": "GK"
@@ -31475,7 +31475,7 @@
         "defending": 47,
         "physicality": 70
       },
-      "birthDate": "26-01-1991",
+      "birthDate": "1991-01-26",
       "nation": "Argentina",
       "fc27Id": "205849",
       "fc27Position": "GK"
@@ -31514,7 +31514,7 @@
         "defending": 75,
         "physicality": 80
       },
-      "birthDate": "07-03-2002",
+      "birthDate": "2002-03-07",
       "nation": "Mexico",
       "fc27Id": "255218",
       "fc27Position": "CB"
@@ -31553,7 +31553,7 @@
         "defending": 71,
         "physicality": 80
       },
-      "birthDate": "15-09-1995",
+      "birthDate": "1995-09-15",
       "nation": "Argentina",
       "fc27Id": "224796",
       "fc27Position": "CDM"
@@ -31592,7 +31592,7 @@
         "defending": 64,
         "physicality": 67
       },
-      "birthDate": "07-09-1998",
+      "birthDate": "1998-09-07",
       "nation": "Mexico",
       "fc27Id": "236537",
       "fc27Position": "LB"
@@ -31631,7 +31631,7 @@
         "defending": 73,
         "physicality": 71
       },
-      "birthDate": "24-03-1996",
+      "birthDate": "1996-03-24",
       "nation": "Mexico",
       "fc27Id": "224574",
       "fc27Position": "CAM"
@@ -31670,7 +31670,7 @@
         "defending": 34,
         "physicality": 57
       },
-      "birthDate": "05-03-1998",
+      "birthDate": "1998-03-05",
       "nation": "Uruguay",
       "fc27Id": "241907",
       "fc27Position": "CAM"
@@ -31709,7 +31709,7 @@
         "defending": 37,
         "physicality": 60
       },
-      "birthDate": "22-03-2000",
+      "birthDate": "2000-03-22",
       "nation": "Argentina",
       "fc27Id": "246423",
       "fc27Position": "LM"
@@ -31748,7 +31748,7 @@
         "defending": 70,
         "physicality": 67
       },
-      "birthDate": "21-03-2003",
+      "birthDate": "2003-03-21",
       "nation": "Mexico",
       "fc27Id": "255394",
       "fc27Position": "CDM"
@@ -31787,7 +31787,7 @@
         "defending": 44,
         "physicality": 78
       },
-      "birthDate": "07-02-1997",
+      "birthDate": "1997-02-07",
       "nation": "Belgium",
       "fc27Id": "233630",
       "fc27Position": "ST"
@@ -31826,7 +31826,7 @@
         "defending": 65,
         "physicality": 63
       },
-      "birthDate": "10-11-1994",
+      "birthDate": "1994-11-10",
       "nation": "Spain",
       "fc27Id": "208777",
       "fc27Position": "CM"
@@ -31865,7 +31865,7 @@
         "defending": 57,
         "physicality": 81
       },
-      "birthDate": "11-07-1994",
+      "birthDate": "1994-07-11",
       "nation": "Argentina",
       "fc27Id": "205632",
       "fc27Position": "LW"
@@ -31906,7 +31906,7 @@
         "defending": 25,
         "physicality": 77
       },
-      "birthDate": "02-03-1997",
+      "birthDate": "1997-03-02",
       "nation": "Mexico",
       "fc27Id": "232654",
       "fc27Position": "GK"
@@ -31945,7 +31945,7 @@
         "defending": 57,
         "physicality": 72
       },
-      "birthDate": "03-07-1987",
+      "birthDate": "1987-07-03",
       "nation": "Mexico",
       "fc27Id": "186098",
       "fc27Position": "GK"
@@ -31984,7 +31984,7 @@
         "defending": 76,
         "physicality": 77
       },
-      "birthDate": "23-05-2000",
+      "birthDate": "2000-05-23",
       "nation": "Mexico",
       "fc27Id": "252008",
       "fc27Position": "RB"
@@ -32023,7 +32023,7 @@
         "defending": 78,
         "physicality": 78
       },
-      "birthDate": "18-08-1999",
+      "birthDate": "1999-08-18",
       "nation": "Uruguay",
       "fc27Id": "253257",
       "fc27Position": "CB"
@@ -32062,7 +32062,7 @@
         "defending": 68,
         "physicality": 74
       },
-      "birthDate": "18-02-1993",
+      "birthDate": "1993-02-18",
       "nation": "Colombia",
       "fc27Id": "227153",
       "fc27Position": "LB"
@@ -32101,7 +32101,7 @@
         "defending": 44,
         "physicality": 64
       },
-      "birthDate": "19-06-1995",
+      "birthDate": "1995-06-19",
       "nation": "Brazil",
       "fc27Id": "234439",
       "fc27Position": "CAM"
@@ -32140,7 +32140,7 @@
         "defending": 64,
         "physicality": 65
       },
-      "birthDate": "26-02-2000",
+      "birthDate": "2000-02-26",
       "nation": "Mexico",
       "fc27Id": "246745",
       "fc27Position": "CM"
@@ -32179,7 +32179,7 @@
         "defending": 66,
         "physicality": 76
       },
-      "birthDate": "17-01-1998",
+      "birthDate": "1998-01-17",
       "nation": "Mexico",
       "fc27Id": "239617",
       "fc27Position": "CDM"
@@ -32218,7 +32218,7 @@
         "defending": 32,
         "physicality": 65
       },
-      "birthDate": "04-11-1997",
+      "birthDate": "1997-11-04",
       "nation": "Chile",
       "fc27Id": "225455",
       "fc27Position": "ST"
@@ -32257,7 +32257,7 @@
         "defending": 52,
         "physicality": 63
       },
-      "birthDate": "07-02-1998",
+      "birthDate": "1998-02-07",
       "nation": "United States",
       "fc27Id": "226579",
       "fc27Position": "RW"
@@ -32296,7 +32296,7 @@
         "defending": 33,
         "physicality": 56
       },
-      "birthDate": "20-05-2000",
+      "birthDate": "2000-05-20",
       "nation": "Uruguay",
       "fc27Id": "253061",
       "fc27Position": "LW"
@@ -32335,7 +32335,7 @@
         "defending": 70,
         "physicality": 72
       },
-      "birthDate": "27-09-1999",
+      "birthDate": "1999-09-27",
       "nation": "Mexico",
       "fc27Id": "235537",
       "fc27Position": "CM"
@@ -32376,7 +32376,7 @@
         "defending": 43,
         "physicality": 72
       },
-      "birthDate": "18-05-2000",
+      "birthDate": "2000-05-18",
       "nation": "Colombia",
       "fc27Id": "261417",
       "fc27Position": "GK"
@@ -32415,7 +32415,7 @@
         "defending": 53,
         "physicality": 73
       },
-      "birthDate": "27-01-1997",
+      "birthDate": "1997-01-27",
       "nation": "Mexico",
       "fc27Id": "252801",
       "fc27Position": "GK"
@@ -32454,7 +32454,7 @@
         "defending": 76,
         "physicality": 84
       },
-      "birthDate": "23-01-1997",
+      "birthDate": "1997-01-23",
       "nation": "Colombia",
       "fc27Id": "245810",
       "fc27Position": "CB"
@@ -32493,7 +32493,7 @@
         "defending": 78,
         "physicality": 76
       },
-      "birthDate": "08-05-2000",
+      "birthDate": "2000-05-08",
       "nation": "Mexico",
       "fc27Id": "257784",
       "fc27Position": "CDM"
@@ -32532,7 +32532,7 @@
         "defending": 72,
         "physicality": 75
       },
-      "birthDate": "08-09-1994",
+      "birthDate": "1994-09-08",
       "nation": "Argentina",
       "fc27Id": "219670",
       "fc27Position": "CB"
@@ -32571,7 +32571,7 @@
         "defending": 65,
         "physicality": 69
       },
-      "birthDate": "03-01-1997",
+      "birthDate": "1997-01-03",
       "nation": "Mexico",
       "fc27Id": "235389",
       "fc27Position": "CM"
@@ -32610,7 +32610,7 @@
         "defending": 65,
         "physicality": 69
       },
-      "birthDate": "09-11-1996",
+      "birthDate": "1996-11-09",
       "nation": "Argentina",
       "fc27Id": "247450",
       "fc27Position": "CM"
@@ -32649,7 +32649,7 @@
         "defending": 67,
         "physicality": 71
       },
-      "birthDate": "21-06-2000",
+      "birthDate": "2000-06-21",
       "nation": "Mexico",
       "fc27Id": "255111",
       "fc27Position": "CM"
@@ -32688,7 +32688,7 @@
         "defending": 53,
         "physicality": 58
       },
-      "birthDate": "18-11-2004",
+      "birthDate": "2004-11-18",
       "nation": "Argentina",
       "fc27Id": "258467",
       "fc27Position": "RM"
@@ -32727,7 +32727,7 @@
         "defending": 59,
         "physicality": 63
       },
-      "birthDate": "15-12-1998",
+      "birthDate": "1998-12-15",
       "nation": "Argentina",
       "fc27Id": "245354",
       "fc27Position": "CAM"
@@ -32766,7 +32766,7 @@
         "defending": 54,
         "physicality": 74
       },
-      "birthDate": "02-03-1997",
+      "birthDate": "1997-03-02",
       "nation": "Argentina",
       "fc27Id": "242571",
       "fc27Position": "LM"
@@ -32805,7 +32805,7 @@
         "defending": 48,
         "physicality": 78
       },
-      "birthDate": "13-05-1994",
+      "birthDate": "1994-05-13",
       "nation": "Uruguay",
       "fc27Id": "251611",
       "fc27Position": "ST"
@@ -33205,7 +33205,7 @@
         "defending": 54,
         "physicality": 80
       },
-      "birthDate": "15-12-1986",
+      "birthDate": "1986-12-15",
       "nation": "Costa Rica",
       "fc27Id": "193041",
       "fc27Position": "GK"
@@ -33244,7 +33244,7 @@
         "defending": 22,
         "physicality": 54
       },
-      "birthDate": "29-06-2005",
+      "birthDate": "2005-06-29",
       "nation": "Mexico",
       "fc27Id": "70719",
       "fc27Position": "GK"
@@ -33283,7 +33283,7 @@
         "defending": 64,
         "physicality": 69
       },
-      "birthDate": "06-03-1997",
+      "birthDate": "1997-03-06",
       "nation": "Colombia",
       "fc27Id": "228156",
       "fc27Position": "LB"
@@ -33322,7 +33322,7 @@
         "defending": 74,
         "physicality": 70
       },
-      "birthDate": "18-10-1995",
+      "birthDate": "1995-10-18",
       "nation": "Spain",
       "fc27Id": "226637",
       "fc27Position": "LB"
@@ -33361,7 +33361,7 @@
         "defending": 72,
         "physicality": 73
       },
-      "birthDate": "08-05-1997",
+      "birthDate": "1997-05-08",
       "nation": "Brazil",
       "fc27Id": "264840",
       "fc27Position": "CB"
@@ -33400,7 +33400,7 @@
         "defending": 73,
         "physicality": 67
       },
-      "birthDate": "09-03-2002",
+      "birthDate": "2002-03-09",
       "nation": "Ecuador",
       "fc27Id": "261222",
       "fc27Position": "CM"
@@ -33439,7 +33439,7 @@
         "defending": 59,
         "physicality": 70
       },
-      "birthDate": "28-11-1998",
+      "birthDate": "1998-11-28",
       "nation": "Panama",
       "fc27Id": "243544",
       "fc27Position": "CM"
@@ -33478,7 +33478,7 @@
         "defending": 59,
         "physicality": 68
       },
-      "birthDate": "19-08-1997",
+      "birthDate": "1997-08-19",
       "nation": "Mexico",
       "fc27Id": "239629",
       "fc27Position": "RM"
@@ -33517,7 +33517,7 @@
         "defending": 31,
         "physicality": 52
       },
-      "birthDate": "21-08-1997",
+      "birthDate": "1997-08-21",
       "nation": "Mexico",
       "fc27Id": "237997",
       "fc27Position": "RW"
@@ -33556,7 +33556,7 @@
         "defending": 35,
         "physicality": 77
       },
-      "birthDate": "15-03-1995",
+      "birthDate": "1995-03-15",
       "nation": "Mexico",
       "fc27Id": "221293",
       "fc27Position": "ST"
@@ -33595,7 +33595,7 @@
         "defending": 29,
         "physicality": 67
       },
-      "birthDate": "21-11-1996",
+      "birthDate": "1996-11-21",
       "nation": "Brazil",
       "fc27Id": "235371",
       "fc27Position": "ST"
@@ -33634,7 +33634,7 @@
         "defending": 24,
         "physicality": 53
       },
-      "birthDate": "17-03-1999",
+      "birthDate": "1999-03-17",
       "nation": "Paraguay",
       "fc27Id": "260139",
       "fc27Position": "ST"
@@ -34013,7 +34013,7 @@
         "defending": 21,
         "physicality": 74
       },
-      "birthDate": "14-09-2000",
+      "birthDate": "2000-09-14",
       "nation": "United States",
       "fc27Id": "266382",
       "fc27Position": "GK"
@@ -34052,7 +34052,7 @@
         "defending": 35,
         "physicality": 61
       },
-      "birthDate": "19-01-1996",
+      "birthDate": "1996-01-19",
       "nation": "United States",
       "fc27Id": "237399",
       "fc27Position": "GK"
@@ -34091,7 +34091,7 @@
         "defending": 71,
         "physicality": 79
       },
-      "birthDate": "14-03-1997",
+      "birthDate": "1997-03-14",
       "nation": "United States",
       "fc27Id": "237255",
       "fc27Position": "CB"
@@ -34130,7 +34130,7 @@
         "defending": 71,
         "physicality": 77
       },
-      "birthDate": "19-07-1995",
+      "birthDate": "1995-07-19",
       "nation": "United States",
       "fc27Id": "215565",
       "fc27Position": "CB"
@@ -34169,7 +34169,7 @@
         "defending": 73,
         "physicality": 74
       },
-      "birthDate": "29-11-1996",
+      "birthDate": "1996-11-29",
       "nation": "Nigeria",
       "fc27Id": "258881",
       "fc27Position": "CM"
@@ -34208,7 +34208,7 @@
         "defending": 62,
         "physicality": 66
       },
-      "birthDate": "11-08-2000",
+      "birthDate": "2000-08-11",
       "nation": "Ecuador",
       "fc27Id": "273969",
       "fc27Position": "LM"
@@ -34247,7 +34247,7 @@
         "defending": 24,
         "physicality": 45
       },
-      "birthDate": "02-04-2004",
+      "birthDate": "2004-04-02",
       "nation": "Venezuela",
       "fc27Id": "275515",
       "fc27Position": "RM"
@@ -34286,7 +34286,7 @@
         "defending": 62,
         "physicality": 73
       },
-      "birthDate": "09-01-1992",
+      "birthDate": "1992-01-09",
       "nation": "United States",
       "fc27Id": "247356",
       "fc27Position": "RB"
@@ -34325,7 +34325,7 @@
         "defending": 58,
         "physicality": 66
       },
-      "birthDate": "15-04-2004",
+      "birthDate": "2004-04-15",
       "nation": "Slovakia",
       "fc27Id": "81424",
       "fc27Position": "CDM"
@@ -34364,7 +34364,7 @@
         "defending": 66,
         "physicality": 71
       },
-      "birthDate": "09-06-1998",
+      "birthDate": "1998-06-09",
       "nation": "Brazil",
       "fc27Id": "234505",
       "fc27Position": "CAM"
@@ -34403,7 +34403,7 @@
         "defending": 29,
         "physicality": 83
       },
-      "birthDate": "30-11-2000",
+      "birthDate": "2000-11-30",
       "nation": "Togo",
       "fc27Id": "237254",
       "fc27Position": "ST"
@@ -34442,7 +34442,7 @@
         "defending": 69,
         "physicality": 77
       },
-      "birthDate": "11-03-1998",
+      "birthDate": "1998-03-11",
       "nation": "Czech Republic",
       "fc27Id": "244788",
       "fc27Position": "CM"
@@ -34858,7 +34858,7 @@
         "defending": 51,
         "physicality": 76
       },
-      "birthDate": "26-12-1986",
+      "birthDate": "1986-12-26",
       "nation": "France",
       "fc27Id": "167948",
       "fc27Position": "GK"
@@ -34898,7 +34898,7 @@
         "defending": 27,
         "physicality": 59
       },
-      "birthDate": "09-07-1999",
+      "birthDate": "1999-07-09",
       "nation": "Canada",
       "fc27Id": "248216",
       "fc27Position": "GK"
@@ -34937,7 +34937,7 @@
         "defending": 70,
         "physicality": 81
       },
-      "birthDate": "16-04-1991",
+      "birthDate": "1991-04-16",
       "nation": "United States",
       "fc27Id": "221488",
       "fc27Position": "LB"
@@ -34976,7 +34976,7 @@
         "defending": 69,
         "physicality": 80
       },
-      "birthDate": "25-03-1999",
+      "birthDate": "1999-03-25",
       "nation": "Scotland",
       "fc27Id": "240439",
       "fc27Position": "CB"
@@ -35015,7 +35015,7 @@
         "defending": 68,
         "physicality": 78
       },
-      "birthDate": "12-10-1992",
+      "birthDate": "1992-10-12",
       "nation": "United States",
       "fc27Id": "222123",
       "fc27Position": "CB"
@@ -35054,7 +35054,7 @@
         "defending": 69,
         "physicality": 70
       },
-      "birthDate": "16-05-1995",
+      "birthDate": "1995-05-16",
       "nation": "United States",
       "fc27Id": "208592",
       "fc27Position": "CDM"
@@ -35093,7 +35093,7 @@
         "defending": 56,
         "physicality": 70
       },
-      "birthDate": "04-01-1999",
+      "birthDate": "1999-01-04",
       "nation": "United States",
       "fc27Id": "240319",
       "fc27Position": "CM"
@@ -35132,7 +35132,7 @@
         "defending": 26,
         "physicality": 48
       },
-      "birthDate": "07-02-2006",
+      "birthDate": "2006-02-07",
       "nation": "Venezuela",
       "fc27Id": "272317",
       "fc27Position": "RW"
@@ -35171,7 +35171,7 @@
         "defending": 70,
         "physicality": 73
       },
-      "birthDate": "02-02-1997",
+      "birthDate": "1997-02-02",
       "nation": "Colombia",
       "fc27Id": "237245",
       "fc27Position": "CB"
@@ -35211,7 +35211,7 @@
         "defending": 41,
         "physicality": 74
       },
-      "birthDate": "08-07-1992",
+      "birthDate": "1992-07-08",
       "nation": "Korea Republic",
       "fc27Id": "200104",
       "fc27Position": "ST"
@@ -35251,7 +35251,7 @@
         "defending": 38,
         "physicality": 79
       },
-      "birthDate": "11-11-1994",
+      "birthDate": "1994-11-11",
       "nation": "Gabon",
       "fc27Id": "225951",
       "fc27Position": "LW"
@@ -35290,7 +35290,7 @@
         "defending": 27,
         "physicality": 66
       },
-      "birthDate": "17-02-2003",
+      "birthDate": "2003-02-17",
       "nation": "Germany",
       "fc27Id": "259162",
       "fc27Position": "ST"
@@ -35669,7 +35669,7 @@
         "defending": 22,
         "physicality": 60
       },
-      "birthDate": "28-09-2006",
+      "birthDate": "2006-09-28",
       "nation": "United States",
       "fc27Id": "279706",
       "fc27Position": "GK"
@@ -35708,7 +35708,7 @@
         "defending": 27,
         "physicality": 62
       },
-      "birthDate": "24-08-2000",
+      "birthDate": "2000-08-24",
       "nation": "Cape Verde Islands",
       "fc27Id": "267636",
       "fc27Position": "GK"
@@ -35747,7 +35747,7 @@
         "defending": 71,
         "physicality": 83
       },
-      "birthDate": "12-03-1993",
+      "birthDate": "1993-03-12",
       "nation": "Denmark",
       "fc27Id": "224067",
       "fc27Position": "CDM"
@@ -35786,7 +35786,7 @@
         "defending": 64,
         "physicality": 75
       },
-      "birthDate": "10-02-1990",
+      "birthDate": "1990-02-10",
       "nation": "Panama",
       "fc27Id": "217047",
       "fc27Position": "CM"
@@ -35825,7 +35825,7 @@
         "defending": 66,
         "physicality": 79
       },
-      "birthDate": "12-04-1997",
+      "birthDate": "1997-04-12",
       "nation": "Sweden",
       "fc27Id": "242199",
       "fc27Position": "CB"
@@ -35864,7 +35864,7 @@
         "defending": 38,
         "physicality": 64
       },
-      "birthDate": "18-06-1990",
+      "birthDate": "1990-06-18",
       "nation": "Norway",
       "fc27Id": "224874",
       "fc27Position": "LM"
@@ -35903,7 +35903,7 @@
         "defending": 55,
         "physicality": 65
       },
-      "birthDate": "30-09-1996",
+      "birthDate": "1996-09-30",
       "nation": "Scotland",
       "fc27Id": "221908",
       "fc27Position": "ST"
@@ -35942,7 +35942,7 @@
         "defending": 31,
         "physicality": 60
       },
-      "birthDate": "10-02-1999",
+      "birthDate": "1999-02-10",
       "nation": "Tunisia",
       "fc27Id": "263672",
       "fc27Position": "LM"
@@ -35981,7 +35981,7 @@
         "defending": 62,
         "physicality": 61
       },
-      "birthDate": "10-07-2006",
+      "birthDate": "2006-07-10",
       "nation": "United States",
       "fc27Id": "75236",
       "fc27Position": "LB"
@@ -36020,7 +36020,7 @@
         "defending": 41,
         "physicality": 65
       },
-      "birthDate": "02-05-1998",
+      "birthDate": "1998-05-02",
       "nation": "Denmark",
       "fc27Id": "236918",
       "fc27Position": "RW"
@@ -36059,7 +36059,7 @@
         "defending": 38,
         "physicality": 72
       },
-      "birthDate": "04-01-1996",
+      "birthDate": "1996-01-04",
       "nation": "Denmark",
       "fc27Id": "215247",
       "fc27Position": "ST"
@@ -36098,7 +36098,7 @@
         "defending": 58,
         "physicality": 82
       },
-      "birthDate": "18-08-1999",
+      "birthDate": "1999-08-18",
       "nation": "Finland",
       "fc27Id": "245685",
       "fc27Position": "CM"
@@ -36477,7 +36477,7 @@
         "defending": 20,
         "physicality": 66
       },
-      "birthDate": "24-08-2001",
+      "birthDate": "2001-08-24",
       "nation": "United States",
       "fc27Id": "261305",
       "fc27Position": "GK"
@@ -36516,7 +36516,7 @@
         "defending": 47,
         "physicality": 66
       },
-      "birthDate": "10-08-1988",
+      "birthDate": "1988-08-10",
       "nation": "United States",
       "fc27Id": "202215",
       "fc27Position": "GK"
@@ -36555,7 +36555,7 @@
         "defending": 74,
         "physicality": 66
       },
-      "birthDate": "16-03-1993",
+      "birthDate": "1993-03-16",
       "nation": "Honduras",
       "fc27Id": "198705",
       "fc27Position": "RB"
@@ -36594,7 +36594,7 @@
         "defending": 72,
         "physicality": 80
       },
-      "birthDate": "02-07-2001",
+      "birthDate": "2001-07-02",
       "nation": "Ghana",
       "fc27Id": "251905",
       "fc27Position": "CB"
@@ -36633,7 +36633,7 @@
         "defending": 65,
         "physicality": 70
       },
-      "birthDate": "27-08-1991",
+      "birthDate": "1991-08-27",
       "nation": "United States",
       "fc27Id": "221713",
       "fc27Position": "LB"
@@ -36672,7 +36672,7 @@
         "defending": 31,
         "physicality": 57
       },
-      "birthDate": "27-12-1999",
+      "birthDate": "1999-12-27",
       "nation": "Tunisia",
       "fc27Id": "274000",
       "fc27Position": "LW"
@@ -36711,7 +36711,7 @@
         "defending": 65,
         "physicality": 66
       },
-      "birthDate": "23-01-2001",
+      "birthDate": "2001-01-23",
       "nation": "Norway",
       "fc27Id": "252858",
       "fc27Position": "CDM"
@@ -36750,7 +36750,7 @@
         "defending": 41,
         "physicality": 69
       },
-      "birthDate": "24-07-2004",
+      "birthDate": "2004-07-24",
       "nation": "Costa Rica",
       "fc27Id": "75070",
       "fc27Position": "LW"
@@ -36789,7 +36789,7 @@
         "defending": 64,
         "physicality": 74
       },
-      "birthDate": "05-04-2002",
+      "birthDate": "2002-04-05",
       "nation": "Australia",
       "fc27Id": "261875",
       "fc27Position": "CDM"
@@ -36828,7 +36828,7 @@
         "defending": 44,
         "physicality": 62
       },
-      "birthDate": "21-03-1995",
+      "birthDate": "1995-03-21",
       "nation": "Germany",
       "fc27Id": "210021",
       "fc27Position": "CAM"
@@ -36867,7 +36867,7 @@
         "defending": 29,
         "physicality": 75
       },
-      "birthDate": "28-07-1998",
+      "birthDate": "1998-07-28",
       "nation": "England",
       "fc27Id": "234249",
       "fc27Position": "ST"
@@ -36906,7 +36906,7 @@
         "defending": 48,
         "physicality": 65
       },
-      "birthDate": "03-04-1995",
+      "birthDate": "1995-04-03",
       "nation": "Argentina",
       "fc27Id": "226385",
       "fc27Position": "RM"
@@ -37289,7 +37289,7 @@
         "defending": 43,
         "physicality": 75
       },
-      "birthDate": "29-03-1995",
+      "birthDate": "1995-03-29",
       "nation": "Colombia",
       "fc27Id": "229541",
       "fc27Position": "GK"
@@ -37328,7 +37328,7 @@
         "defending": 53,
         "physicality": 75
       },
-      "birthDate": "16-03-1988",
+      "birthDate": "1988-03-16",
       "nation": "Argentina",
       "fc27Id": "201095",
       "fc27Position": "GK"
@@ -37367,7 +37367,7 @@
         "defending": 69,
         "physicality": 77
       },
-      "birthDate": "19-02-1999",
+      "birthDate": "1999-02-19",
       "nation": "Argentina",
       "fc27Id": "257185",
       "fc27Position": "LB"
@@ -37406,7 +37406,7 @@
         "defending": 76,
         "physicality": 85
       },
-      "birthDate": "10-03-2004",
+      "birthDate": "2004-03-10",
       "nation": "Argentina",
       "fc27Id": "272723",
       "fc27Position": "CB"
@@ -37445,7 +37445,7 @@
         "defending": 72,
         "physicality": 80
       },
-      "birthDate": "19-12-1998",
+      "birthDate": "1998-12-19",
       "nation": "Uruguay",
       "fc27Id": "266844",
       "fc27Position": "RB"
@@ -37484,7 +37484,7 @@
         "defending": 74,
         "physicality": 81
       },
-      "birthDate": "29-06-1994",
+      "birthDate": "1994-06-29",
       "nation": "Argentina",
       "fc27Id": "207439",
       "fc27Position": "CM"
@@ -37523,7 +37523,7 @@
         "defending": 27,
         "physicality": 66
       },
-      "birthDate": "20-07-2000",
+      "birthDate": "2000-07-20",
       "nation": "Chile",
       "fc27Id": "242971",
       "fc27Position": "CAM"
@@ -37562,7 +37562,7 @@
         "defending": 71,
         "physicality": 76
       },
-      "birthDate": "17-05-1997",
+      "birthDate": "1997-05-17",
       "nation": "Argentina",
       "fc27Id": "258746",
       "fc27Position": "LM"
@@ -37601,7 +37601,7 @@
         "defending": 75,
         "physicality": 75
       },
-      "birthDate": "12-07-1991",
+      "birthDate": "1991-07-12",
       "nation": "Argentina",
       "fc27Id": "219576",
       "fc27Position": "CDM"
@@ -37640,7 +37640,7 @@
         "defending": 34,
         "physicality": 72
       },
-      "birthDate": "19-05-1996",
+      "birthDate": "1996-05-19",
       "nation": "Colombia",
       "fc27Id": "233959",
       "fc27Position": "ST"
@@ -37679,7 +37679,7 @@
         "defending": 73,
         "physicality": 76
       },
-      "birthDate": "25-02-1997",
+      "birthDate": "1997-02-25",
       "nation": "Argentina",
       "fc27Id": "232244",
       "fc27Position": "CDM"
@@ -37718,7 +37718,7 @@
         "defending": 30,
         "physicality": 57
       },
-      "birthDate": "24-04-2002",
+      "birthDate": "2002-04-24",
       "nation": "Argentina",
       "fc27Id": "260601",
       "fc27Position": "LW"
@@ -37759,7 +37759,7 @@
         "defending": 53,
         "physicality": 70
       },
-      "birthDate": "23-04-1993",
+      "birthDate": "1993-04-23",
       "nation": "Uruguay",
       "fc27Id": "253847",
       "fc27Position": "GK"
@@ -37798,7 +37798,7 @@
         "defending": 24,
         "physicality": 78
       },
-      "birthDate": "02-01-1988",
+      "birthDate": "1988-01-02",
       "nation": "Uruguay",
       "fc27Id": "227154",
       "fc27Position": "GK"
@@ -37837,7 +37837,7 @@
         "defending": 66,
         "physicality": 66
       },
-      "birthDate": "07-02-1993",
+      "birthDate": "1993-02-07",
       "nation": "Uruguay",
       "fc27Id": "213400",
       "fc27Position": "LB"
@@ -37876,7 +37876,7 @@
         "defending": 71,
         "physicality": 78
       },
-      "birthDate": "16-06-2000",
+      "birthDate": "2000-06-16",
       "nation": "Uruguay",
       "fc27Id": "274046",
       "fc27Position": "CB"
@@ -37915,7 +37915,7 @@
         "defending": 74,
         "physicality": 71
       },
-      "birthDate": "01-12-2004",
+      "birthDate": "2004-12-01",
       "nation": "Uruguay",
       "fc27Id": "274949",
       "fc27Position": "CB"
@@ -37954,7 +37954,7 @@
         "defending": 40,
         "physicality": 60
       },
-      "birthDate": "08-11-1998",
+      "birthDate": "1998-11-08",
       "nation": "Uruguay",
       "fc27Id": "252935",
       "fc27Position": "CAM"
@@ -37993,7 +37993,7 @@
         "defending": 68,
         "physicality": 74
       },
-      "birthDate": "10-07-1993",
+      "birthDate": "1993-07-10",
       "nation": "Uruguay",
       "fc27Id": "253275",
       "fc27Position": "CDM"
@@ -38032,7 +38032,7 @@
         "defending": 64,
         "physicality": 80
       },
-      "birthDate": "02-03-1998",
+      "birthDate": "1998-03-02",
       "nation": "Uruguay",
       "fc27Id": "253304",
       "fc27Position": "CM"
@@ -38071,7 +38071,7 @@
         "defending": 69,
         "physicality": 80
       },
-      "birthDate": "04-06-1995",
+      "birthDate": "1995-06-04",
       "nation": "Argentina",
       "fc27Id": "228838",
       "fc27Position": "CDM"
@@ -38110,7 +38110,7 @@
         "defending": 31,
         "physicality": 63
       },
-      "birthDate": "08-08-1990",
+      "birthDate": "1990-08-08",
       "nation": "Uruguay",
       "fc27Id": "188484",
       "fc27Position": "ST"
@@ -38149,7 +38149,7 @@
         "defending": 44,
         "physicality": 65
       },
-      "birthDate": "21-11-2002",
+      "birthDate": "2002-11-21",
       "nation": "Uruguay",
       "fc27Id": "254653",
       "fc27Position": "ST"
@@ -38188,7 +38188,7 @@
         "defending": 30,
         "physicality": 49
       },
-      "birthDate": "23-03-2004",
+      "birthDate": "2004-03-23",
       "nation": "Colombia",
       "fc27Id": "277517",
       "fc27Position": "LM"
@@ -38229,7 +38229,7 @@
         "defending": 48,
         "physicality": 69
       },
-      "birthDate": "04-07-1992",
+      "birthDate": "1992-07-04",
       "nation": "Argentina",
       "fc27Id": "217805",
       "fc27Position": "GK"
@@ -38268,7 +38268,7 @@
         "defending": 52,
         "physicality": 69
       },
-      "birthDate": "16-03-1991",
+      "birthDate": "1991-03-16",
       "nation": "Panama",
       "fc27Id": "202089",
       "fc27Position": "GK"
@@ -38307,7 +38307,7 @@
         "defending": 82,
         "physicality": 79
       },
-      "birthDate": "07-10-1990",
+      "birthDate": "1990-10-07",
       "nation": "Uruguay",
       "fc27Id": "197655",
       "fc27Position": "CB"
@@ -38346,7 +38346,7 @@
         "defending": 65,
         "physicality": 57
       },
-      "birthDate": "02-06-1995",
+      "birthDate": "1995-06-02",
       "nation": "Uruguay",
       "fc27Id": "242335",
       "fc27Position": "LB"
@@ -38385,7 +38385,7 @@
         "defending": 69,
         "physicality": 84
       },
-      "birthDate": "09-02-2001",
+      "birthDate": "2001-02-09",
       "nation": "Brazil",
       "fc27Id": "73128",
       "fc27Position": "CB"
@@ -38424,7 +38424,7 @@
         "defending": 65,
         "physicality": 69
       },
-      "birthDate": "10-03-1999",
+      "birthDate": "1999-03-10",
       "nation": "Uruguay",
       "fc27Id": "265766",
       "fc27Position": "CM"
@@ -38463,7 +38463,7 @@
         "defending": 70,
         "physicality": 78
       },
-      "birthDate": "02-04-1993",
+      "birthDate": "1993-04-02",
       "nation": "Argentina",
       "fc27Id": "203864",
       "fc27Position": "CM"
@@ -38502,7 +38502,7 @@
         "defending": 65,
         "physicality": 65
       },
-      "birthDate": "07-02-1998",
+      "birthDate": "1998-02-07",
       "nation": "Brazil",
       "fc27Id": "245319",
       "fc27Position": "CM"
@@ -38541,7 +38541,7 @@
         "defending": 66,
         "physicality": 67
       },
-      "birthDate": "08-05-1993",
+      "birthDate": "1993-05-08",
       "nation": "Uruguay",
       "fc27Id": "260208",
       "fc27Position": "CDM"
@@ -38580,7 +38580,7 @@
         "defending": 32,
         "physicality": 80
       },
-      "birthDate": "14-08-1996",
+      "birthDate": "1996-08-14",
       "nation": "Uruguay",
       "fc27Id": "239207",
       "fc27Position": "ST"
@@ -38619,7 +38619,7 @@
         "defending": 27,
         "physicality": 69
       },
-      "birthDate": "05-09-1997",
+      "birthDate": "1997-09-05",
       "nation": "Uruguay",
       "fc27Id": "267406",
       "fc27Position": "ST"
@@ -38658,7 +38658,7 @@
         "defending": 57,
         "physicality": 73
       },
-      "birthDate": "19-02-2001",
+      "birthDate": "2001-02-19",
       "nation": "Uruguay",
       "fc27Id": "264353",
       "fc27Position": "RM"
@@ -39713,7 +39713,7 @@
         "defending": 53,
         "physicality": 76
       },
-      "birthDate": "17-04-1993",
+      "birthDate": "1993-04-17",
       "nation": "Argentina",
       "fc27Id": "222418",
       "fc27Position": "GK"
@@ -39752,7 +39752,7 @@
         "defending": 46,
         "physicality": 74
       },
-      "birthDate": "11-06-1998",
+      "birthDate": "1998-06-11",
       "nation": "Argentina",
       "fc27Id": "256407",
       "fc27Position": "GK"
@@ -39791,7 +39791,7 @@
         "defending": 64,
         "physicality": 78
       },
-      "birthDate": "24-10-1993",
+      "birthDate": "1993-10-24",
       "nation": "Argentina",
       "fc27Id": "219174",
       "fc27Position": "LM"
@@ -39830,7 +39830,7 @@
         "defending": 74,
         "physicality": 82
       },
-      "birthDate": "03-11-1988",
+      "birthDate": "1988-11-03",
       "nation": "Argentina",
       "fc27Id": "214766",
       "fc27Position": "CB"
@@ -39869,7 +39869,7 @@
         "defending": 72,
         "physicality": 75
       },
-      "birthDate": "29-05-1998",
+      "birthDate": "1998-05-29",
       "nation": "Argentina",
       "fc27Id": "261262",
       "fc27Position": "LB"
@@ -39908,7 +39908,7 @@
         "defending": 68,
         "physicality": 74
       },
-      "birthDate": "30-05-1997",
+      "birthDate": "1997-05-30",
       "nation": "Argentina",
       "fc27Id": "236472",
       "fc27Position": "CDM"
@@ -39947,7 +39947,7 @@
         "defending": 71,
         "physicality": 68
       },
-      "birthDate": "05-04-2001",
+      "birthDate": "2001-04-05",
       "nation": "Argentina",
       "fc27Id": "264323",
       "fc27Position": "CDM"
@@ -39986,7 +39986,7 @@
         "defending": 55,
         "physicality": 56
       },
-      "birthDate": "25-07-2002",
+      "birthDate": "2002-07-25",
       "nation": "Argentina",
       "fc27Id": "272911",
       "fc27Position": "CAM"
@@ -40025,7 +40025,7 @@
         "defending": 65,
         "physicality": 65
       },
-      "birthDate": "12-03-1999",
+      "birthDate": "1999-03-12",
       "nation": "Chile",
       "fc27Id": "238320",
       "fc27Position": "RM"
@@ -40064,7 +40064,7 @@
         "defending": 53,
         "physicality": 67
       },
-      "birthDate": "25-06-1995",
+      "birthDate": "1995-06-25",
       "nation": "Argentina",
       "fc27Id": "235467",
       "fc27Position": "CAM"
@@ -40103,7 +40103,7 @@
         "defending": 54,
         "physicality": 66
       },
-      "birthDate": "13-07-1990",
+      "birthDate": "1990-07-13",
       "nation": "Argentina",
       "fc27Id": "190972",
       "fc27Position": "RM"
@@ -40142,7 +40142,7 @@
         "defending": 21,
         "physicality": 65
       },
-      "birthDate": "01-03-2003",
+      "birthDate": "2003-03-01",
       "nation": "Paraguay",
       "fc27Id": "274858",
       "fc27Position": "ST"
@@ -40183,7 +40183,7 @@
         "defending": 29,
         "physicality": 68
       },
-      "birthDate": "07-10-1998",
+      "birthDate": "1998-10-07",
       "nation": "Paraguay",
       "fc27Id": "256156",
       "fc27Position": "GK"
@@ -40222,7 +40222,7 @@
         "defending": 29,
         "physicality": 58
       },
-      "birthDate": "04-02-2003",
+      "birthDate": "2003-02-04",
       "nation": "Paraguay",
       "fc27Id": "261703",
       "fc27Position": "GK"
@@ -40261,7 +40261,7 @@
         "defending": 66,
         "physicality": 69
       },
-      "birthDate": "19-08-1997",
+      "birthDate": "1997-08-19",
       "nation": "Paraguay",
       "fc27Id": "253239",
       "fc27Position": "LB"
@@ -40300,7 +40300,7 @@
         "defending": 65,
         "physicality": 83
       },
-      "birthDate": "12-06-1995",
+      "birthDate": "1995-06-12",
       "nation": "Paraguay",
       "fc27Id": "259410",
       "fc27Position": "CDM"
@@ -40339,7 +40339,7 @@
         "defending": 65,
         "physicality": 74
       },
-      "birthDate": "30-04-1996",
+      "birthDate": "1996-04-30",
       "nation": "Paraguay",
       "fc27Id": "246914",
       "fc27Position": "RB"
@@ -40378,7 +40378,7 @@
         "defending": 46,
         "physicality": 64
       },
-      "birthDate": "17-05-1991",
+      "birthDate": "1991-05-17",
       "nation": "Argentina",
       "fc27Id": "216055",
       "fc27Position": "CAM"
@@ -40417,7 +40417,7 @@
         "defending": 56,
         "physicality": 58
       },
-      "birthDate": "13-09-1999",
+      "birthDate": "1999-09-13",
       "nation": "Paraguay",
       "fc27Id": "255436",
       "fc27Position": "CM"
@@ -40456,7 +40456,7 @@
         "defending": 36,
         "physicality": 61
       },
-      "birthDate": "16-04-2000",
+      "birthDate": "2000-04-16",
       "nation": "Paraguay",
       "fc27Id": "253240",
       "fc27Position": "RM"
@@ -40495,7 +40495,7 @@
         "defending": 69,
         "physicality": 65
       },
-      "birthDate": "09-04-1991",
+      "birthDate": "1991-04-09",
       "nation": "Paraguay",
       "fc27Id": "248868",
       "fc27Position": "CDM"
@@ -40534,7 +40534,7 @@
         "defending": 56,
         "physicality": 66
       },
-      "birthDate": "10-08-1990",
+      "birthDate": "1990-08-10",
       "nation": "Paraguay",
       "fc27Id": "204699",
       "fc27Position": "ST"
@@ -40573,7 +40573,7 @@
         "defending": 56,
         "physicality": 63
       },
-      "birthDate": "03-11-1995",
+      "birthDate": "1995-11-03",
       "nation": "Paraguay",
       "fc27Id": "237183",
       "fc27Position": "RW"
@@ -40612,7 +40612,7 @@
         "defending": 43,
         "physicality": 55
       },
-      "birthDate": "02-12-1997",
+      "birthDate": "1997-12-02",
       "nation": "Paraguay",
       "fc27Id": "248869",
       "fc27Position": "LM"
@@ -40991,7 +40991,7 @@
         "defending": 20,
         "physicality": 74
       },
-      "birthDate": "04-04-2000",
+      "birthDate": "2000-04-04",
       "nation": "Argentina",
       "fc27Id": "240796",
       "fc27Position": "GK"
@@ -41030,7 +41030,7 @@
         "defending": 44,
         "physicality": 65
       },
-      "birthDate": "29-03-1988",
+      "birthDate": "1988-03-29",
       "nation": "Paraguay",
       "fc27Id": "193241",
       "fc27Position": "GK"
@@ -41069,7 +41069,7 @@
         "defending": 72,
         "physicality": 78
       },
-      "birthDate": "17-04-1991",
+      "birthDate": "1991-04-17",
       "nation": "Paraguay",
       "fc27Id": "246696",
       "fc27Position": "CB"
@@ -41108,7 +41108,7 @@
         "defending": 66,
         "physicality": 69
       },
-      "birthDate": "03-02-1998",
+      "birthDate": "1998-02-03",
       "nation": "Paraguay",
       "fc27Id": "233476",
       "fc27Position": "LB"
@@ -41147,7 +41147,7 @@
         "defending": 71,
         "physicality": 81
       },
-      "birthDate": "27-06-1995",
+      "birthDate": "1995-06-27",
       "nation": "Argentina",
       "fc27Id": "232521",
       "fc27Position": "CB"
@@ -41186,7 +41186,7 @@
         "defending": 36,
         "physicality": 60
       },
-      "birthDate": "14-03-2000",
+      "birthDate": "2000-03-14",
       "nation": "Argentina",
       "fc27Id": "246145",
       "fc27Position": "LM"
@@ -41225,7 +41225,7 @@
         "defending": 23,
         "physicality": 71
       },
-      "birthDate": "29-12-1996",
+      "birthDate": "1996-12-29",
       "nation": "Argentina",
       "fc27Id": "221955",
       "fc27Position": "ST"
@@ -41264,7 +41264,7 @@
         "defending": 73,
         "physicality": 71
       },
-      "birthDate": "03-03-1999",
+      "birthDate": "1999-03-03",
       "nation": "Argentina",
       "fc27Id": "255333",
       "fc27Position": "CB"
@@ -41303,7 +41303,7 @@
         "defending": 68,
         "physicality": 78
       },
-      "birthDate": "22-01-1998",
+      "birthDate": "1998-01-22",
       "nation": "Paraguay",
       "fc27Id": "253251",
       "fc27Position": "CDM"
@@ -41342,7 +41342,7 @@
         "defending": 31,
         "physicality": 66
       },
-      "birthDate": "04-06-1993",
+      "birthDate": "1993-06-04",
       "nation": "Paraguay",
       "fc27Id": "199151",
       "fc27Position": "RW"
@@ -41381,7 +41381,7 @@
         "defending": 40,
         "physicality": 76
       },
-      "birthDate": "15-10-1988",
+      "birthDate": "1988-10-15",
       "nation": "Argentina",
       "fc27Id": "217809",
       "fc27Position": "ST"
@@ -41420,7 +41420,7 @@
         "defending": 44,
         "physicality": 68
       },
-      "birthDate": "11-08-1994",
+      "birthDate": "1994-08-11",
       "nation": "Paraguay",
       "fc27Id": "225878",
       "fc27Position": "LM"
@@ -41823,7 +41823,7 @@
         "defending": 34,
         "physicality": 75
       },
-      "birthDate": "17-03-1987",
+      "birthDate": "1987-03-17",
       "nation": "Bolivia",
       "fc27Id": "196885",
       "fc27Position": "GK"
@@ -41862,7 +41862,7 @@
         "defending": 30,
         "physicality": 64
       },
-      "birthDate": "05-10-1990",
+      "birthDate": "1990-10-05",
       "nation": "Bolivia",
       "fc27Id": "259930",
       "fc27Position": "GK"
@@ -41901,7 +41901,7 @@
         "defending": 66,
         "physicality": 73
       },
-      "birthDate": "10-03-1994",
+      "birthDate": "1994-03-10",
       "nation": "Bolivia",
       "fc27Id": "238375",
       "fc27Position": "LB"
@@ -41940,7 +41940,7 @@
         "defending": 67,
         "physicality": 72
       },
-      "birthDate": "28-09-1994",
+      "birthDate": "1994-09-28",
       "nation": "Ecuador",
       "fc27Id": "246406",
       "fc27Position": "CB"
@@ -41979,7 +41979,7 @@
         "defending": 68,
         "physicality": 70
       },
-      "birthDate": "28-03-1990",
+      "birthDate": "1990-03-28",
       "nation": "Argentina",
       "fc27Id": "226447",
       "fc27Position": "CB"
@@ -42018,7 +42018,7 @@
         "defending": 59,
         "physicality": 66
       },
-      "birthDate": "18-05-2002",
+      "birthDate": "2002-05-18",
       "nation": "Bolivia",
       "fc27Id": "274259",
       "fc27Position": "CM"
@@ -42057,7 +42057,7 @@
         "defending": 51,
         "physicality": 62
       },
-      "birthDate": "04-11-1994",
+      "birthDate": "1994-11-04",
       "nation": "Bolivia",
       "fc27Id": "253574",
       "fc27Position": "CM"
@@ -42096,7 +42096,7 @@
         "defending": 54,
         "physicality": 69
       },
-      "birthDate": "24-06-1996",
+      "birthDate": "1996-06-24",
       "nation": "Argentina",
       "fc27Id": "232709",
       "fc27Position": "RW"
@@ -42135,7 +42135,7 @@
         "defending": 68,
         "physicality": 72
       },
-      "birthDate": "02-07-1992",
+      "birthDate": "1992-07-02",
       "nation": "Bolivia",
       "fc27Id": "241131",
       "fc27Position": "CDM"
@@ -42174,7 +42174,7 @@
         "defending": 38,
         "physicality": 67
       },
-      "birthDate": "14-04-1987",
+      "birthDate": "1987-04-14",
       "nation": "Uruguay",
       "fc27Id": "215292",
       "fc27Position": "ST"
@@ -42213,7 +42213,7 @@
         "defending": 43,
         "physicality": 76
       },
-      "birthDate": "25-05-1992",
+      "birthDate": "1992-05-25",
       "nation": "Colombia",
       "fc27Id": "214354",
       "fc27Position": "ST"
@@ -42252,7 +42252,7 @@
         "defending": 29,
         "physicality": 35
       },
-      "birthDate": "04-05-1990",
+      "birthDate": "1990-05-04",
       "nation": "Argentina",
       "fc27Id": "207454",
       "fc27Position": "LW"
@@ -42631,7 +42631,7 @@
         "defending": 25,
         "physicality": 68
       },
-      "birthDate": "17-08-2001",
+      "birthDate": "2001-08-17",
       "nation": "Peru",
       "fc27Id": "259606",
       "fc27Position": "GK"
@@ -42670,7 +42670,7 @@
         "defending": 43,
         "physicality": 68
       },
-      "birthDate": "15-06-1996",
+      "birthDate": "1996-06-15",
       "nation": "Chile",
       "fc27Id": "229397",
       "fc27Position": "GK"
@@ -42709,7 +42709,7 @@
         "defending": 69,
         "physicality": 83
       },
-      "birthDate": "10-01-1992",
+      "birthDate": "1992-01-10",
       "nation": "Peru",
       "fc27Id": "236260",
       "fc27Position": "CB"
@@ -42748,7 +42748,7 @@
         "defending": 70,
         "physicality": 79
       },
-      "birthDate": "06-03-1994",
+      "birthDate": "1994-03-06",
       "nation": "Argentina",
       "fc27Id": "251225",
       "fc27Position": "RB"
@@ -42787,7 +42787,7 @@
         "defending": 72,
         "physicality": 78
       },
-      "birthDate": "20-11-1992",
+      "birthDate": "1992-11-20",
       "nation": "Paraguay",
       "fc27Id": "240138",
       "fc27Position": "CB"
@@ -42826,7 +42826,7 @@
         "defending": 60,
         "physicality": 63
       },
-      "birthDate": "27-05-1999",
+      "birthDate": "1999-05-27",
       "nation": "Peru",
       "fc27Id": "264796",
       "fc27Position": "CM"
@@ -42865,7 +42865,7 @@
         "defending": 65,
         "physicality": 63
       },
-      "birthDate": "30-04-2002",
+      "birthDate": "2002-04-30",
       "nation": "Peru",
       "fc27Id": "279076",
       "fc27Position": "LB"
@@ -42904,7 +42904,7 @@
         "defending": 44,
         "physicality": 55
       },
-      "birthDate": "17-04-1990",
+      "birthDate": "1990-04-17",
       "nation": "Argentina",
       "fc27Id": "245357",
       "fc27Position": "ST"
@@ -42943,7 +42943,7 @@
         "defending": 47,
         "physicality": 66
       },
-      "birthDate": "08-05-1997",
+      "birthDate": "1997-05-08",
       "nation": "Peru",
       "fc27Id": "265627",
       "fc27Position": "ST"
@@ -42982,7 +42982,7 @@
         "defending": 28,
         "physicality": 80
       },
-      "birthDate": "16-05-1996",
+      "birthDate": "1996-05-16",
       "nation": "Peru",
       "fc27Id": "259251",
       "fc27Position": "ST"
@@ -43021,7 +43021,7 @@
         "defending": 60,
         "physicality": 62
       },
-      "birthDate": "29-09-1994",
+      "birthDate": "1994-09-29",
       "nation": "Peru",
       "fc27Id": "223637",
       "fc27Position": "RM"
@@ -43060,7 +43060,7 @@
         "defending": 39,
         "physicality": 63
       },
-      "birthDate": "14-05-1994",
+      "birthDate": "1994-05-14",
       "nation": "Peru",
       "fc27Id": "210951",
       "fc27Position": "ST"
@@ -43777,7 +43777,7 @@
         "defending": 49,
         "physicality": 72
       },
-      "birthDate": "13-02-1993",
+      "birthDate": "1993-02-13",
       "nation": "Argentina",
       "fc27Id": "219522",
       "fc27Position": "GK"
@@ -43816,7 +43816,7 @@
         "defending": 45,
         "physicality": 67
       },
-      "birthDate": "28-02-1996",
+      "birthDate": "1996-02-28",
       "nation": "Argentina",
       "fc27Id": "215213",
       "fc27Position": "GK"
@@ -43855,7 +43855,7 @@
         "defending": 74,
         "physicality": 80
       },
-      "birthDate": "28-04-2001",
+      "birthDate": "2001-04-28",
       "nation": "Argentina",
       "fc27Id": "254695",
       "fc27Position": "CDM"
@@ -43894,7 +43894,7 @@
         "defending": 74,
         "physicality": 80
       },
-      "birthDate": "16-01-1995",
+      "birthDate": "1995-01-16",
       "nation": "Uruguay",
       "fc27Id": "248207",
       "fc27Position": "CB"
@@ -43933,7 +43933,7 @@
         "defending": 70,
         "physicality": 84
       },
-      "birthDate": "16-01-2001",
+      "birthDate": "2001-01-16",
       "nation": "Paraguay",
       "fc27Id": "263518",
       "fc27Position": "LB"
@@ -43972,7 +43972,7 @@
         "defending": 72,
         "physicality": 63
       },
-      "birthDate": "09-03-2000",
+      "birthDate": "2000-03-09",
       "nation": "Argentina",
       "fc27Id": "246335",
       "fc27Position": "CDM"
@@ -44011,7 +44011,7 @@
         "defending": 65,
         "physicality": 63
       },
-      "birthDate": "11-10-1991",
+      "birthDate": "1991-10-11",
       "nation": "Argentina",
       "fc27Id": "211269",
       "fc27Position": "CM"
@@ -44050,7 +44050,7 @@
         "defending": 69,
         "physicality": 70
       },
-      "birthDate": "05-11-2002",
+      "birthDate": "2002-11-05",
       "nation": "Chile",
       "fc27Id": "256441",
       "fc27Position": "CDM"
@@ -44089,7 +44089,7 @@
         "defending": 70,
         "physicality": 68
       },
-      "birthDate": "01-02-1997",
+      "birthDate": "1997-02-01",
       "nation": "Argentina",
       "fc27Id": "242482",
       "fc27Position": "RB"
@@ -44128,7 +44128,7 @@
         "defending": 43,
         "physicality": 62
       },
-      "birthDate": "14-02-1988",
+      "birthDate": "1988-02-14",
       "nation": "Argentina",
       "fc27Id": "183898",
       "fc27Position": "RW"
@@ -44167,7 +44167,7 @@
         "defending": 30,
         "physicality": 59
       },
-      "birthDate": "24-05-2000",
+      "birthDate": "2000-05-24",
       "nation": "Colombia",
       "fc27Id": "238230",
       "fc27Position": "LM"
@@ -44206,7 +44206,7 @@
         "defending": 49,
         "physicality": 79
       },
-      "birthDate": "16-01-1996",
+      "birthDate": "1996-01-16",
       "nation": "Argentina",
       "fc27Id": "238332",
       "fc27Position": "ST"
@@ -44612,7 +44612,7 @@
         "defending": 42,
         "physicality": 70
       },
-      "birthDate": "23-10-1989",
+      "birthDate": "1989-10-23",
       "nation": "Venezuela",
       "fc27Id": "217095",
       "fc27Position": "GK"
@@ -44651,7 +44651,7 @@
         "defending": 40,
         "physicality": 59
       },
-      "birthDate": "12-12-2003",
+      "birthDate": "2003-12-12",
       "nation": "Bolivia",
       "fc27Id": "71535",
       "fc27Position": "GK"
@@ -44690,7 +44690,7 @@
         "defending": 70,
         "physicality": 71
       },
-      "birthDate": "03-11-1998",
+      "birthDate": "1998-11-03",
       "nation": "Bolivia",
       "fc27Id": "253612",
       "fc27Position": "CB"
@@ -44729,7 +44729,7 @@
         "defending": 67,
         "physicality": 67
       },
-      "birthDate": "24-09-1992",
+      "birthDate": "1992-09-24",
       "nation": "Colombia",
       "fc27Id": "218731",
       "fc27Position": "CB"
@@ -44768,7 +44768,7 @@
         "defending": 57,
         "physicality": 48
       },
-      "birthDate": "22-11-2004",
+      "birthDate": "2004-11-22",
       "nation": "Bolivia",
       "fc27Id": "270581",
       "fc27Position": "RB"
@@ -44807,7 +44807,7 @@
         "defending": 63,
         "physicality": 58
       },
-      "birthDate": "15-03-1990",
+      "birthDate": "1990-03-15",
       "nation": "Bolivia",
       "fc27Id": "233569",
       "fc27Position": "CM"
@@ -44846,7 +44846,7 @@
         "defending": 64,
         "physicality": 70
       },
-      "birthDate": "06-04-2000",
+      "birthDate": "2000-04-06",
       "nation": "Bolivia",
       "fc27Id": "267457",
       "fc27Position": "CDM"
@@ -44885,7 +44885,7 @@
         "defending": 44,
         "physicality": 70
       },
-      "birthDate": "08-01-1988",
+      "birthDate": "1988-01-08",
       "nation": "Argentina",
       "fc27Id": "226659",
       "fc27Position": "RM"
@@ -44924,7 +44924,7 @@
         "defending": 32,
         "physicality": 43
       },
-      "birthDate": "18-10-2000",
+      "birthDate": "2000-10-18",
       "nation": "Bolivia",
       "fc27Id": "71341",
       "fc27Position": "CAM"
@@ -44963,7 +44963,7 @@
         "defending": 30,
         "physicality": 74
       },
-      "birthDate": "31-12-1988",
+      "birthDate": "1988-12-31",
       "nation": "Argentina",
       "fc27Id": "217201",
       "fc27Position": "ST"
@@ -45002,7 +45002,7 @@
         "defending": 34,
         "physicality": 64
       },
-      "birthDate": "23-06-1993",
+      "birthDate": "1993-06-23",
       "nation": "Bolivia",
       "fc27Id": "264708",
       "fc27Position": "ST"
@@ -45041,7 +45041,7 @@
         "defending": 34,
         "physicality": 43
       },
-      "birthDate": "02-02-2008",
+      "birthDate": "2008-02-02",
       "nation": "Bolivia",
       "fc27Id": "83498",
       "fc27Position": "LM"
@@ -45082,7 +45082,7 @@
         "defending": 49,
         "physicality": 65
       },
-      "birthDate": "08-05-1987",
+      "birthDate": "1987-05-08",
       "nation": "Chile",
       "fc27Id": "214703",
       "fc27Position": "GK"
@@ -45121,7 +45121,7 @@
         "defending": 25,
         "physicality": 61
       },
-      "birthDate": "29-02-2000",
+      "birthDate": "2000-02-29",
       "nation": "Chile",
       "fc27Id": "76301",
       "fc27Position": "GK"
@@ -45160,7 +45160,7 @@
         "defending": 65,
         "physicality": 73
       },
-      "birthDate": "27-09-1990",
+      "birthDate": "1990-09-27",
       "nation": "Chile",
       "fc27Id": "213591",
       "fc27Position": "LB"
@@ -45199,7 +45199,7 @@
         "defending": 70,
         "physicality": 72
       },
-      "birthDate": "14-07-1997",
+      "birthDate": "1997-07-14",
       "nation": "Chile",
       "fc27Id": "254989",
       "fc27Position": "CB"
@@ -45238,7 +45238,7 @@
         "defending": 69,
         "physicality": 75
       },
-      "birthDate": "25-01-1989",
+      "birthDate": "1989-01-25",
       "nation": "Uruguay",
       "fc27Id": "238837",
       "fc27Position": "CB"
@@ -45277,7 +45277,7 @@
         "defending": 68,
         "physicality": 78
       },
-      "birthDate": "12-06-1989",
+      "birthDate": "1989-06-12",
       "nation": "Argentina",
       "fc27Id": "229201",
       "fc27Position": "CM"
@@ -45316,7 +45316,7 @@
         "defending": 63,
         "physicality": 66
       },
-      "birthDate": "04-12-1999",
+      "birthDate": "1999-12-04",
       "nation": "Chile",
       "fc27Id": "71443",
       "fc27Position": "RB"
@@ -45355,7 +45355,7 @@
         "defending": 64,
         "physicality": 64
       },
-      "birthDate": "17-08-1997",
+      "birthDate": "1997-08-17",
       "nation": "Chile",
       "fc27Id": "248257",
       "fc27Position": "CDM"
@@ -45394,7 +45394,7 @@
         "defending": 33,
         "physicality": 62
       },
-      "birthDate": "24-10-1998",
+      "birthDate": "1998-10-24",
       "nation": "Paraguay",
       "fc27Id": "238815",
       "fc27Position": "RW"
@@ -45433,7 +45433,7 @@
         "defending": 55,
         "physicality": 76
       },
-      "birthDate": "04-06-1988",
+      "birthDate": "1988-06-04",
       "nation": "Argentina",
       "fc27Id": "184252",
       "fc27Position": "ST"
@@ -45472,7 +45472,7 @@
         "defending": 24,
         "physicality": 47
       },
-      "birthDate": "08-02-1997",
+      "birthDate": "1997-02-08",
       "nation": "Argentina",
       "fc27Id": "221661",
       "fc27Position": "CAM"
@@ -45511,7 +45511,7 @@
         "defending": 31,
         "physicality": 48
       },
-      "birthDate": "03-08-1999",
+      "birthDate": "1999-08-03",
       "nation": "Chile",
       "fc27Id": "248258",
       "fc27Position": "RW"
@@ -45890,7 +45890,7 @@
         "defending": 37,
         "physicality": 70
       },
-      "birthDate": "21-04-1998",
+      "birthDate": "1998-04-21",
       "nation": "Peru",
       "fc27Id": "259780",
       "fc27Position": "GK"
@@ -45957,7 +45957,7 @@
         "defending": 66,
         "physicality": 79
       },
-      "birthDate": "25-01-1998",
+      "birthDate": "1998-01-25",
       "nation": "Peru",
       "fc27Id": "253602",
       "fc27Position": "CB"
@@ -45996,7 +45996,7 @@
         "defending": 64,
         "physicality": 68
       },
-      "birthDate": "25-09-1992",
+      "birthDate": "1992-09-25",
       "nation": "Peru",
       "fc27Id": "213311",
       "fc27Position": "LB"
@@ -46035,7 +46035,7 @@
         "defending": 65,
         "physicality": 68
       },
-      "birthDate": "18-04-1996",
+      "birthDate": "1996-04-18",
       "nation": "Peru",
       "fc27Id": "254184",
       "fc27Position": "CDM"
@@ -46074,7 +46074,7 @@
         "defending": 51,
         "physicality": 61
       },
-      "birthDate": "06-05-1995",
+      "birthDate": "1995-05-06",
       "nation": "Argentina",
       "fc27Id": "225590",
       "fc27Position": "CAM"
@@ -46113,7 +46113,7 @@
         "defending": 63,
         "physicality": 59
       },
-      "birthDate": "31-08-2001",
+      "birthDate": "2001-08-31",
       "nation": "Peru",
       "fc27Id": "261970",
       "fc27Position": "CM"
@@ -46152,7 +46152,7 @@
         "defending": 23,
         "physicality": 40
       },
-      "birthDate": "24-01-1990",
+      "birthDate": "1990-01-24",
       "nation": "Argentina",
       "fc27Id": "232517",
       "fc27Position": "RM"
@@ -46191,7 +46191,7 @@
         "defending": 60,
         "physicality": 67
       },
-      "birthDate": "17-01-2000",
+      "birthDate": "2000-01-17",
       "nation": "Peru",
       "fc27Id": "265446",
       "fc27Position": "LB"
@@ -46230,7 +46230,7 @@
         "defending": 33,
         "physicality": 63
       },
-      "birthDate": "02-07-1992",
+      "birthDate": "1992-07-02",
       "nation": "Argentina",
       "fc27Id": "215356",
       "fc27Position": "ST"
@@ -46269,7 +46269,7 @@
         "defending": 52,
         "physicality": 61
       },
-      "birthDate": "01-06-1994",
+      "birthDate": "1994-06-01",
       "nation": "Argentina",
       "fc27Id": "223842",
       "fc27Position": "LM"
@@ -46308,7 +46308,7 @@
         "defending": 26,
         "physicality": 64
       },
-      "birthDate": "28-08-1987",
+      "birthDate": "1987-08-28",
       "nation": "Argentina",
       "fc27Id": "224161",
       "fc27Position": "ST"
@@ -46687,7 +46687,7 @@
         "defending": 49,
         "physicality": 71
       },
-      "birthDate": "09-10-1998",
+      "birthDate": "1998-10-09",
       "nation": "Argentina",
       "fc27Id": "246610",
       "fc27Position": "GK"
@@ -46726,7 +46726,7 @@
         "defending": 25,
         "physicality": 66
       },
-      "birthDate": "22-08-1996",
+      "birthDate": "1996-08-22",
       "nation": "Argentina",
       "fc27Id": "76483",
       "fc27Position": "GK"
@@ -46765,7 +46765,7 @@
         "defending": 75,
         "physicality": 80
       },
-      "birthDate": "15-06-1997",
+      "birthDate": "1997-06-15",
       "nation": "Argentina",
       "fc27Id": "264365",
       "fc27Position": "CB"
@@ -46804,7 +46804,7 @@
         "defending": 74,
         "physicality": 81
       },
-      "birthDate": "19-11-1988",
+      "birthDate": "1988-11-19",
       "nation": "Argentina",
       "fc27Id": "215054",
       "fc27Position": "CB"
@@ -46843,7 +46843,7 @@
         "defending": 63,
         "physicality": 71
       },
-      "birthDate": "20-09-1997",
+      "birthDate": "1997-09-20",
       "nation": "Argentina",
       "fc27Id": "237512",
       "fc27Position": "LM"
@@ -46882,7 +46882,7 @@
         "defending": 41,
         "physicality": 52
       },
-      "birthDate": "04-07-1995",
+      "birthDate": "1995-07-04",
       "nation": "Argentina",
       "fc27Id": "233372",
       "fc27Position": "CAM"
@@ -46921,7 +46921,7 @@
         "defending": 47,
         "physicality": 71
       },
-      "birthDate": "23-03-1995",
+      "birthDate": "1995-03-23",
       "nation": "Argentina",
       "fc27Id": "242002",
       "fc27Position": "RM"
@@ -46960,7 +46960,7 @@
         "defending": 65,
         "physicality": 74
       },
-      "birthDate": "28-02-1997",
+      "birthDate": "1997-02-28",
       "nation": "Argentina",
       "fc27Id": "235987",
       "fc27Position": "CM"
@@ -46999,7 +46999,7 @@
         "defending": 67,
         "physicality": 62
       },
-      "birthDate": "03-11-2001",
+      "birthDate": "2001-11-03",
       "nation": "Argentina",
       "fc27Id": "76488",
       "fc27Position": "CM"
@@ -47038,7 +47038,7 @@
         "defending": 25,
         "physicality": 53
       },
-      "birthDate": "01-10-1993",
+      "birthDate": "1993-10-01",
       "nation": "Uruguay",
       "fc27Id": "207715",
       "fc27Position": "ST"
@@ -47077,7 +47077,7 @@
         "defending": 60,
         "physicality": 73
       },
-      "birthDate": "19-02-2001",
+      "birthDate": "2001-02-19",
       "nation": "Argentina",
       "fc27Id": "263502",
       "fc27Position": "LM"
@@ -47116,7 +47116,7 @@
         "defending": 29,
         "physicality": 73
       },
-      "birthDate": "10-06-1996",
+      "birthDate": "1996-06-10",
       "nation": "Argentina",
       "fc27Id": "242019",
       "fc27Position": "ST"
@@ -48192,7 +48192,7 @@
         "defending": 49,
         "physicality": 69
       },
-      "birthDate": "01-08-1992",
+      "birthDate": "1992-08-01",
       "nation": "Brazil",
       "fc27Id": "207899",
       "fc27Position": "GK"
@@ -48231,7 +48231,7 @@
         "defending": 29,
         "physicality": 64
       },
-      "birthDate": "13-04-1995",
+      "birthDate": "1995-04-13",
       "nation": "Mexico",
       "fc27Id": "237695",
       "fc27Position": "GK"
@@ -48270,7 +48270,7 @@
         "defending": 67,
         "physicality": 60
       },
-      "birthDate": "05-04-1999",
+      "birthDate": "1999-04-05",
       "nation": "Colombia",
       "fc27Id": "252990",
       "fc27Position": "LB"
@@ -48309,7 +48309,7 @@
         "defending": 70,
         "physicality": 76
       },
-      "birthDate": "01-07-1996",
+      "birthDate": "1996-07-01",
       "nation": "Colombia",
       "fc27Id": "243004",
       "fc27Position": "CB"
@@ -48348,7 +48348,7 @@
         "defending": 71,
         "physicality": 74
       },
-      "birthDate": "10-05-1994",
+      "birthDate": "1994-05-10",
       "nation": "Venezuela",
       "fc27Id": "237297",
       "fc27Position": "CB"
@@ -48387,7 +48387,7 @@
         "defending": 72,
         "physicality": 79
       },
-      "birthDate": "02-12-1996",
+      "birthDate": "1996-12-02",
       "nation": "Colombia",
       "fc27Id": "225812",
       "fc27Position": "CDM"
@@ -48426,7 +48426,7 @@
         "defending": 72,
         "physicality": 72
       },
-      "birthDate": "06-10-1997",
+      "birthDate": "1997-10-06",
       "nation": "Colombia",
       "fc27Id": "235665",
       "fc27Position": "CDM"
@@ -48465,7 +48465,7 @@
         "defending": 63,
         "physicality": 75
       },
-      "birthDate": "26-05-1997",
+      "birthDate": "1997-05-26",
       "nation": "Colombia",
       "fc27Id": "243011",
       "fc27Position": "CDM"
@@ -48504,7 +48504,7 @@
         "defending": 65,
         "physicality": 75
       },
-      "birthDate": "18-09-1999",
+      "birthDate": "1999-09-18",
       "nation": "Colombia",
       "fc27Id": "255607",
       "fc27Position": "RB"
@@ -48543,7 +48543,7 @@
         "defending": 39,
         "physicality": 67
       },
-      "birthDate": "01-06-1999",
+      "birthDate": "1999-06-01",
       "nation": "Colombia",
       "fc27Id": "236604",
       "fc27Position": "ST"
@@ -48582,7 +48582,7 @@
         "defending": 31,
         "physicality": 65
       },
-      "birthDate": "16-01-1997",
+      "birthDate": "1997-01-16",
       "nation": "Colombia",
       "fc27Id": "232385",
       "fc27Position": "ST"
@@ -48621,7 +48621,7 @@
         "defending": 48,
         "physicality": 70
       },
-      "birthDate": "09-03-1995",
+      "birthDate": "1995-03-09",
       "nation": "Colombia",
       "fc27Id": "242339",
       "fc27Position": "ST"
@@ -48662,7 +48662,7 @@
         "defending": 27,
         "physicality": 68
       },
-      "birthDate": "24-01-2002",
+      "birthDate": "2002-01-24",
       "nation": "Peru",
       "fc27Id": "265786",
       "fc27Position": "GK"
@@ -48701,7 +48701,7 @@
         "defending": 41,
         "physicality": 64
       },
-      "birthDate": "28-01-1998",
+      "birthDate": "1998-01-28",
       "nation": "Peru",
       "fc27Id": "253629",
       "fc27Position": "GK"
@@ -48740,7 +48740,7 @@
         "defending": 66,
         "physicality": 71
       },
-      "birthDate": "29-08-1993",
+      "birthDate": "1993-08-29",
       "nation": "Brazil",
       "fc27Id": "83757",
       "fc27Position": "LB"
@@ -48779,7 +48779,7 @@
         "defending": 70,
         "physicality": 75
       },
-      "birthDate": "03-07-2001",
+      "birthDate": "2001-07-03",
       "nation": "Peru",
       "fc27Id": "261377",
       "fc27Position": "CB"
@@ -48818,7 +48818,7 @@
         "defending": 65,
         "physicality": 68
       },
-      "birthDate": "24-06-1994",
+      "birthDate": "1994-06-24",
       "nation": "Uruguay",
       "fc27Id": "231930",
       "fc27Position": "RB"
@@ -48857,7 +48857,7 @@
         "defending": 66,
         "physicality": 72
       },
-      "birthDate": "07-04-1990",
+      "birthDate": "1990-04-07",
       "nation": "Peru",
       "fc27Id": "204542",
       "fc27Position": "CM"
@@ -48896,7 +48896,7 @@
         "defending": 64,
         "physicality": 69
       },
-      "birthDate": "25-03-1999",
+      "birthDate": "1999-03-25",
       "nation": "Peru",
       "fc27Id": "253619",
       "fc27Position": "CM"
@@ -48935,7 +48935,7 @@
         "defending": 33,
         "physicality": 59
       },
-      "birthDate": "02-07-1990",
+      "birthDate": "1990-07-02",
       "nation": "Peru",
       "fc27Id": "196848",
       "fc27Position": "ST"
@@ -48974,7 +48974,7 @@
         "defending": 25,
         "physicality": 72
       },
-      "birthDate": "06-02-1998",
+      "birthDate": "1998-02-06",
       "nation": "Peru",
       "fc27Id": "254220",
       "fc27Position": "LW"
@@ -49013,7 +49013,7 @@
         "defending": 55,
         "physicality": 59
       },
-      "birthDate": "25-07-1999",
+      "birthDate": "1999-07-25",
       "nation": "Argentina",
       "fc27Id": "243731",
       "fc27Position": "RW"
@@ -49052,7 +49052,7 @@
         "defending": 37,
         "physicality": 42
       },
-      "birthDate": "09-02-2002",
+      "birthDate": "2002-02-09",
       "nation": "Colombia",
       "fc27Id": "247780",
       "fc27Position": "LM"
@@ -49091,7 +49091,7 @@
         "defending": 46,
         "physicality": 72
       },
-      "birthDate": "11-04-1984",
+      "birthDate": "1984-04-11",
       "nation": "Argentina",
       "fc27Id": "191856",
       "fc27Position": "ST"
@@ -49132,7 +49132,7 @@
         "defending": 34,
         "physicality": 73
       },
-      "birthDate": "20-10-1994",
+      "birthDate": "1994-10-20",
       "nation": "Venezuela",
       "fc27Id": "231596",
       "fc27Position": "GK"
@@ -49171,7 +49171,7 @@
         "defending": 27,
         "physicality": 59
       },
-      "birthDate": "27-04-2003",
+      "birthDate": "2003-04-27",
       "nation": "Ecuador",
       "fc27Id": "261407",
       "fc27Position": "GK"
@@ -49210,7 +49210,7 @@
         "defending": 73,
         "physicality": 71
       },
-      "birthDate": "09-04-1990",
+      "birthDate": "1990-04-09",
       "nation": "Paraguay",
       "fc27Id": "253245",
       "fc27Position": "CB"
@@ -49249,7 +49249,7 @@
         "defending": 64,
         "physicality": 67
       },
-      "birthDate": "18-12-1997",
+      "birthDate": "1997-12-18",
       "nation": "Ecuador",
       "fc27Id": "254238",
       "fc27Position": "RB"
@@ -49288,7 +49288,7 @@
         "defending": 70,
         "physicality": 71
       },
-      "birthDate": "18-03-2002",
+      "birthDate": "2002-03-18",
       "nation": "Ecuador",
       "fc27Id": "71243",
       "fc27Position": "CB"
@@ -49327,7 +49327,7 @@
         "defending": 68,
         "physicality": 76
       },
-      "birthDate": "28-05-1999",
+      "birthDate": "1999-05-28",
       "nation": "Ecuador",
       "fc27Id": "254172",
       "fc27Position": "CB"
@@ -49366,7 +49366,7 @@
         "defending": 64,
         "physicality": 73
       },
-      "birthDate": "11-06-1998",
+      "birthDate": "1998-06-11",
       "nation": "Ecuador",
       "fc27Id": "253223",
       "fc27Position": "CDM"
@@ -49405,7 +49405,7 @@
         "defending": 64,
         "physicality": 69
       },
-      "birthDate": "10-05-2001",
+      "birthDate": "2001-05-10",
       "nation": "Argentina",
       "fc27Id": "84326",
       "fc27Position": "CM"
@@ -49444,7 +49444,7 @@
         "defending": 50,
         "physicality": 57
       },
-      "birthDate": "05-09-1999",
+      "birthDate": "1999-09-05",
       "nation": "Ecuador",
       "fc27Id": "259905",
       "fc27Position": "LW"
@@ -49483,7 +49483,7 @@
         "defending": 33,
         "physicality": 65
       },
-      "birthDate": "17-05-1990",
+      "birthDate": "1990-05-17",
       "nation": "Argentina",
       "fc27Id": "215061",
       "fc27Position": "ST"
@@ -49522,7 +49522,7 @@
         "defending": 44,
         "physicality": 63
       },
-      "birthDate": "26-07-1994",
+      "birthDate": "1994-07-26",
       "nation": "Paraguay",
       "fc27Id": "215107",
       "fc27Position": "RM"
@@ -49561,7 +49561,7 @@
         "defending": 50,
         "physicality": 60
       },
-      "birthDate": "13-09-1997",
+      "birthDate": "1997-09-13",
       "nation": "Ecuador",
       "fc27Id": "255265",
       "fc27Position": "LM"
