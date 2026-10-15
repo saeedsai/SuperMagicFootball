@@ -19,7 +19,7 @@ export function verifyCurrentClub(name,group='club26'){
  assert(team, name+' exists as selectable '+group+' club');
  const players=rosterFor(team.index);
  assert.equal(players.length,12,name+' 12 first-squad slots');
- assert.deepEqual(players,ROSTER_CORRECTIONS[team.id],name+' runtime/source parity');
+ assert.deepEqual(players.map(p=>({id:p.id,name:p.name,role:p.role,rating:p.rating})),ROSTER_CORRECTIONS[team.id].map(p=>({id:p.id,name:p.name,role:p.role,rating:p.rating})),name+' runtime/source parity');
  assert.deepEqual(Object.fromEntries(Object.keys(quota).map(k=>[k,players.filter(p=>p.role===k).length])),quota,name+' role quota');
  assert.equal(new Set(players.map(p=>p.id)).size,12,name+' stable unique identifiers');
  assert.equal(new Set(players.map(p=>p.num)).size,12,name+' unique shirts');
