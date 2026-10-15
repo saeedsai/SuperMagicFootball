@@ -10,6 +10,22 @@ from update_all_clubs_fc27 import ROOT,clean,stats,generated_number,QUOTAS
 
 # Each entry is sourced independently from a dated 2026 roster, NOT FC27.
 CURATED = {
+ # Dated first-team positions are sourced; OVRs below are medium-level *editorial*
+ # approximations, never attributed to EA/FC27.
+ "cont_caf_9": {
+   "GK":[("Farid Ouédraogo",76,1),("Muhamed Madani",68,16)],
+   "DF":[("Mamudu Kamaradin",72,3),("Mustafa Karshoum",73,19),("Altayeb Abdelrazeg",69,4)],
+   "MF":[("Abdel Raouf",75,8),("Salah Adel",72,15),("Madicke Kane",70,18),("Walieldin Khedr",70,21)],
+   "FW":[("Muhamed Abdelrahman",77,10),("Yaser Muzmel",74,9),("Sunday Adetunji",73,31)],
+   "source":"https://newikis.com/en/Al_Hilal_Club_(Omdurman) [squad dated 2026-08-22]"
+ },
+ "cont_caf_5": {
+   "GK":[("Djigui Diarra",77,39),("Hussein Masalanga",68,22)],
+   "DF":[("Issaka Boka",72,23),("Ibrahim Abdallah Hamad",73,4),("Dickson Job",72,5)],
+   "MF":[("Duke Abuya",73,8),("Mudathir Yahya",75,10),("Lassine Kouma",72,16),("Pacôme Zouzoua",74,24)],
+   "FW":[("Peter Shalulile",78,9),("Prince Dube",75,11),("Clement Mzize",74,17)],
+   "source":"https://www.national-football-teams.com/club/2528/2026_1/Young_Africans_Dar_Es_Salaam.html [2026/27]"
+ },
  "cont_afc_16": {"GK": [
     ("Tomoki Hayakawa",76,1),("Taiki Yamada",71,21),("Yuji Kajikawa",69,29)],
    "source":"https://en.wikipedia.org/wiki/2026_Kashima_Antlers_season"},
