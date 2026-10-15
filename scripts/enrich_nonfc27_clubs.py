@@ -106,7 +106,7 @@ def main():
         options,url=wiki_players(record["club"])
         before=sum(bool(p.get("fictional")) for p in roster)
         existing={clean(p["name"]) for p in roster if not p.get("fictional")}
-        taken_nums={p["num"] for p in roster if not p.get("fictional") and isinstance(p.get("num"),int)}
+        taken_nums={p["num"] for p in roster if isinstance(p.get("num"),int)}
         choices={role:sorted([p for p in options if p["role"]==role],
                             key=lambda p:(-p["rating"],p["num"] or 99)) for role in QUOTAS}
         for old in roster:
@@ -123,7 +123,8 @@ def main():
                         "appearanceVerified":False,"fc27Position":role,**stats({"overall_rating":str(rating)},role)})
             for k in ("birthDate","canonicalId","fc27Id","height","nation"):old.pop(k,None)
             old.pop("age",None)
-            number=matched["num"] if matched["num"] not in taken_nums else None
+            taken_nums.discard(old.get("num"))
+            number=matched["num"] if matched["num"] not in taken_nums else old.get("num")
             old["num"]=generated_number(taken_nums,number)
             taken_nums.add(old["num"])
             updated+=1
