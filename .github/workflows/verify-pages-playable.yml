@@ -43,10 +43,19 @@ jobs:
               assert page.locator('[data-action="kickoff"]').count()==1,(kind,'kickoff absent')
               page.locator('[data-action="kickoff"]').first.click()
               assert page.evaluate('SupermagicFootball.game.matchState')=='play',(kind,'match failed to boot')
-              center=page.evaluate('SupermagicFootball.game.player(0,3).x')
-              assert abs(center-1254.4)<0.02,(kind,'new 20% pitch kickoff center mismatch',center)
-              right_keeper=page.evaluate('SupermagicFootball.game.player(1,0).x')
-              assert right_keeper>2070,(kind,'away goal failed to move after field extension',right_keeper)
+              # Reset kickoff in a paused match to avoid timing-dependent movement.
+              # This tests the exact loaded world geometry, not player position seconds later.
+              geometry=page.evaluate("""() => {
+                const g=SupermagicFootball.game;
+                const wasPlaying=g.matchState==='play';
+                g.matchState='paused';g.resetKickoff(0);
+                const midfield=g.player(0,3).x,keeper=g.player(1,0).x;
+                g.matchState='play';
+                return {wasPlaying,midfield,keeper};
+              }""")
+              assert geometry['wasPlaying'],(kind,'match did not enter play')
+              assert abs(geometry['midfield']-1254.4)<0.02,(kind,'20% kickoff geometry mismatch',geometry)
+              assert geometry['keeper']>2070,(kind,'away goal failed to move after field extension',geometry)
               assert not errors,(kind,errors)
               print('DEPLOYED_SMOKE_PASS',kind,'200 OK, menus, team selection, kickoff, +20% field and match active',flush=True)
               page.close()
