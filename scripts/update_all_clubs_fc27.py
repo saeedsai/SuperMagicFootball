@@ -1,0 +1,306 @@
+#!/usr/bin/env python3
+"""Refresh 165 actual club teams from the EA FC27 Sep 12 snapshot, with documented fallback.
+
+Source: LakshmiKanth11/EA_FC_ANALYSIS, data/players.csv, 2026-09-12.
+Fallback: current Wikipedia club-squad tables where they can be substantiated,
+plus an official CONMEBOL registration for Flamengo.
+No guessed name is labeled FC27 verified. Honors 2 GK / 3 DF / 4 MF / 3 FW.
+"""
+import argparse
+import collections
+import csv
+import datetime
+import difflib
+import io
+import json
+import re
+import time
+import unicodedata
+import urllib.parse
+import urllib.request
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+URL = "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv"
+QUOTAS = {"GK":2,"DF":3,"MF":4,"FW":3}
+POS = {"GK":"GK","CB":"DF","LB":"DF","RB":"DF","LWB":"DF","RWB":"DF",
+       "CDM":"MF","CM":"MF","CAM":"MF","LM":"MF","RM":"MF",
+       "ST":"FW","CF":"FW","LW":"FW","RW":"FW","LF":"FW","RF":"FW"}
+ALIASES = {
+    "Bayern Munich":"FC Bayern München", "Barcelona":"FC Barcelona",
+    "Paris Saint-Germain":"Paris SG", "Manchester United":"Man Utd",
+    "Inter Milan":"Lombardia FC", "AC Milan":"Milano FC",
+    "Bournemouth":"AFC Bournemouth", "Newcastle United":"Newcastle Utd",
+    "Nottingham Forest":"Nott'm Forest", "Atlético Madrid":"Atlético de Madrid",
+    "Atletico Madrid":"Atlético de Madrid", "Bayer Leverkusen":"Leverkusen",
+    "Roma":"AS Roma", "Napoli":"SSC Napoli", "Porto":"FC Porto",
+    "Benfica":"SL Benfica", "Tottenham":"Spurs", "Club Brugge":"Club Brugge",
+    "PSV Eindhoven":"PSV", "Lens":"RC Lens", "Lille":"LOSC Lille",
+    "Real Betis":"Real Betis", "Slavia Prague":"Slavia Praha",
+    "Shakhtar Donetsk":"Shakhtar Donetsk", "RB Leipzig":"RB Leipzig",
+    "VfB Stuttgart":"VfB Stuttgart", "Galatasaray":"Galatasaray",
+    "Fenerbahçe":"Fenerbahçe", "Como":"Como", "Feyenoord":"Feyenoord",
+    "Al Nassr":"Al Nassr", "Al Hilal":"Al Hilal", "Al Ittihad":"Al Ittihad",
+    "Al Ahli Saudi":"Al Ahli", "Vissel Kobe":"Vissel Kobe",
+    "Kashima Antlers":"Kashima Antlers",
+    "Jeonbuk Hyundai Motors":"Jeonbuk Hyundai",
+    "Daejeon Hana Citizen":"Daejeon Hana",
+    "Pohang Steelers":"Pohang Steelers",
+    "Shanghai Port":"Shanghai Port",
+    "Beijing Guoan":"Beijing Guoan",
+    "Kashiwa Reysol":"Kashiwa Reysol",
+    "Cruz Azul":"CF Cruz Azul",
+    "LAFC":"Los Angeles FC",
+    "Los Angeles FC":"LAFC",
+    "Club América":"Club América",
+    "Monterrey":"Monterrey", "Pumas UNAM":"Pumas",
+    "Villarreal":"Villarreal CF", "VfB Stuttgart":"VfB Stuttgart",
+    "Vélez Sarsfield":"Vélez Sarsfield",
+}
+FALLBACK_FLAMENGO = {
+    "GK":[("Agustín Rossi",77),("Andrew da Silva",70)],
+    "DF":[("Léo Pereira",78),("Léo Ortiz",77),("Alex Sandro",76)],
+    "MF":[("Giorgian de Arrascaeta",80),("Lucas Paquetá",79),
+          ("Jorginho",78),("Erick Pulgar",77)],
+    "FW":[("Pedro",80),("Samuel Lino",78),("Gonzalo Plata",76)]
+}
+FLAMENGO_SOURCE="https://gol.conmebol.com/libertadores/en/news/flamengo-2026-conmebol-libertadores-results-squad-and-schedule"
+HEADERS={"User-Agent":"SuperMagicFootballRosterAuditor/1.0 (github.com/saeedsai/SuperMagicFootball)",
+         "Accept":"text/html,text/csv,application/json"}
+def fetch(url):
+    req=urllib.request.Request(url,headers=HEADERS)
+    with urllib.request.urlopen(req,timeout=24) as response:return response.read()
+def norm(s):
+    s=unicodedata.normalize("NFKD",str(s or ""))
+    return re.sub(r"[^a-z0-9]","",s.lower().replace("ı","i") if isinstance(s,str) else "".join(c for c in s if not unicodedata.combining(c))).lower()
+def clean(s):
+    s=unicodedata.normalize("NFKD",str(s or ""))
+    return re.sub(r"[^a-z0-9]","", "".join(c for c in s if not unicodedata.combining(c)).lower())
+def display_name(row):
+    common=(row.get("common_name") or "").strip()
+    if common:return common
+    first=(row.get("first_name") or "").strip()
+    last=(row.get("last_name") or "").strip()
+    # Card records store short first names and sometimes multiword surname.
+    return (first+" "+last).strip()
+def stats(row,role):
+    def n(key,default): 
+        try:return int(float(row.get(key) or 0)) or default
+        except (TypeError,ValueError):return default
+    ovr=n("overall_rating",72)
+    if role=="GK":return {"power":max(35,min(75,round(ovr*.62+4))),
+                          "shoot":max(10,min(45,round(ovr*.21))),
+                          "defense":max(20,min(80,round(ovr*.55))),
+                          "speed":"A" if n("goalkeeping_reflexes",0)>=87 else "B"}
+    return {"power":max(35,min(76,round((ovr+n("physicality",ovr))*.33))),
+            "shoot":max(12,min(70,round(n("shooting",ovr)*.46+8))),
+            "defense":max(12,min(70,round(n("defending",ovr)*.47+8))),
+            "speed":"A" if n("pace",ovr)>=82 else "B" if n("pace",ovr)>=65 else "C"}
+def generated_number(taken,desired=None):
+    try:n=int(desired)
+    except (ValueError,TypeError):n=0
+    if n>0 and n<100 and n not in taken:return n
+    return next(i for i in range(1,100) if i not in taken)
+def make_candidate(r,kind="FC27"):
+    role=POS.get(r.get("position","").upper())
+    if not role:return None
+    name=display_name(r)
+    if not name:return None
+    try:ovr=int(r["overall_rating"])
+    except (ValueError,TypeError):return None
+    return {"name":name,"role":role,"rating":ovr,"age":int(r["age"]) if r.get("age","").isdigit() else None,
+            "birthDate":r.get("birthdate") or None,"nation":r.get("nationality") or None,
+            "height":int(r["height_cm"]) if r.get("height_cm","").isdigit() else None,
+            "fcId":r.get("player_id") or None,"pos":r.get("position") or None,
+            "stats":stats(r,role),"sourceKind":kind}
+def wiki_squad(name):
+    """Best-effort current-squad fallback; never use an arbitrary historical player table."""
+    try:
+        from bs4 import BeautifulSoup
+        query=urllib.parse.quote(name+" football club current squad")
+        api="https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+query+"&srlimit=4&format=json"
+        found=json.loads(fetch(api)).get("query",{}).get("search",[])
+        for hit in found[:3]:
+            title=hit["title"]
+            if not any(w in title.lower() for w in [name.lower().split()[0],clean(name)[:5]]):continue
+            url="https://en.wikipedia.org/wiki/"+urllib.parse.quote(title.replace(" ","_"))
+            soup=BeautifulSoup(fetch(url),"html.parser")
+            rows=[]
+            for head in soup.select("h2,h3,h4"):
+                if not re.search(r"^(current squad|first.team squad|players|squad|first team)$",head.get_text(" ",strip=True),re.I):continue
+                nxt=head.find_next("table")
+                if not nxt or "wikitable" not in " ".join(nxt.get("class",[])):continue
+                for tr in nxt.select("tr"):
+                    td=tr.find_all(["td","th"],recursive=False)
+                    if len(td)<3:continue
+                    t=[c.get_text(" ",strip=True) for c in td]
+                    role=POS.get(next((v.upper() for v in t[:4] if v.upper() in POS),""))
+                    if not role:continue
+                    # Typical Wikipedia squad: No | Pos | Nation | Player
+                    named=next((a.get_text(" ",strip=True) for c in td for a in c.find_all("a",href=True) 
+                                if len(a.get_text(" ",strip=True))>=5 and a.get("href","").startswith("/wiki/")
+                                and not re.fullmatch(r"[A-Z]{2,3}",a.get_text(" ",strip=True))),"")
+                    if not named or any(k in named.lower() for k in ["national","football","association"]):continue
+                    rows.append({"name":named,"role":role,"rating":min(76,72 if role=="GK" else 73),
+                                 "sourceKind":"WIKIPEDIA","source":url,"age":None,"birthDate":None,
+                                 "nation":None,"pos":role,"stats":stats({"overall_rating":"73"},role)})
+            unique={}
+            for q in rows:unique.setdefault(clean(q["name"]),q)
+            if len(unique)>=9 and sum(q["role"]=="GK" for q in unique.values())>=2:return list(unique.values()),url
+    except Exception as exc:return [],"wiki unavailable: "+str(exc)[:100]
+    return [],"no current squad listing"
+def match_club(name,byclub):
+    wanted=ALIASES.get(name,name)
+    key=clean(wanted)
+    if key in byclub:return key
+    # Avoid cross-club errors: allow only unambiguous, extremely close matches.
+    hits=difflib.get_close_matches(key,list(byclub),n=2,cutoff=.96)
+    if len(hits)==1:return hits[0]
+    return None
+def main():
+    ap=argparse.ArgumentParser()
+    ap.add_argument("--apply",action="store_true")
+    ap.add_argument("--skip-wikipedia",action="store_true")
+    args=ap.parse_args()
+    rows=list(csv.DictReader(io.StringIO(fetch(URL).decode("utf-8-sig"))))
+    men=[r for r in rows if "women" not in (r.get("gender") or "").lower()]
+    byclub=collections.defaultdict(list)
+    for row in men:
+        if not row.get("club"):continue
+        byclub[clean(row["club"])].append(row)
+    teams={t["id"]:t for t in json.loads((ROOT/"data/teams.json").read_text())}
+    group_data={p:json.loads((ROOT/p).read_text()) for p in
+                ["data/players/club26.json","data/players/continental.json"]}
+    root=(ROOT/"src/roster_corrections.js")
+    source=root.read_text()
+    start=source.index("{",source.index("export const ROSTER_CORRECTIONS ="))
+    registry,end=json.JSONDecoder().raw_decode(source[start:])
+    audit=[]
+    refs={}
+    changed=0
+    for file,data in group_data.items():
+        for club_id,old in data.items():
+            label=teams[club_id]["name"]
+            key=match_club(label,byclub)
+            origin="FC27" if key else "NOT_IN_FC27"
+            candidates=[]
+            src=URL
+            if key:
+                for row in byclub[key]:
+                    c=make_candidate(row)
+                    if c:candidates.append(c)
+            elif label=="Flamengo":
+                origin="OFFICIAL_ROSTER_EDITORIAL_OVR";src=FLAMENGO_SOURCE
+                for role,group in FALLBACK_FLAMENGO.items():
+                    for name,rating in group:
+                        candidates.append({"name":name,"role":role,"rating":rating,"age":None,
+                            "birthDate":None,"nation":None,"pos":role,"sourceKind":"EDITORIAL",
+                            "stats":stats({"overall_rating":str(rating)},role)})
+            elif not args.skip_wikipedia:
+                candidates,src=wiki_squad(label)
+                if candidates:origin="WIKIPEDIA_EDITORIAL_OVR"
+            groups={k:[] for k in QUOTAS}
+            for p in candidates:
+                if p["role"] in groups:groups[p["role"]].append(p)
+            for k in groups:
+                uniq={}
+                for p in sorted(groups[k],key=lambda p:(-p["rating"],clean(p["name"]))):
+                    uniq.setdefault(clean(p["name"]),p)
+                groups[k]=list(uniq.values())
+            selected={r:groups[r][:limit] for r,limit in QUOTAS.items()}
+            # Preserve all previously real / already sourced names when available
+            # if source is incomplete in a given positional group. Never invent a name.
+            keys={clean(p["name"]) for arr in selected.values() for p in arr}
+            for role,num in QUOTAS.items():
+                for q in old:
+                    if len(selected[role])>=num:break
+                    if q["role"]!=role or q.get("fictional") or clean(q["name"]) in keys:continue
+                    selected[role].append({"name":q["name"],"role":role,"rating":min(78,int(q.get("rating",73))),
+                        "age":q.get("age"),"birthDate":q.get("birthDate"),"nation":q.get("nation"),
+                        "sourceKind":"LEGACY_UNVERIFIED","pos":role,
+                        "stats":stats({"overall_rating":str(min(78,int(q.get("rating",73))))},role)})
+                    keys.add(clean(q["name"]))
+            used_ids=set()
+            used_slots=set()
+            taken_nums=set()
+            created=[]
+            for role,count in QUOTAS.items():
+                for p in selected[role]:
+                    name_key=clean(p["name"])
+                    slot=next((q for q in old if clean(q["name"])==name_key and q["id"] not in used_ids),None)
+                    if slot is None:slot=next((q for q in old if q["role"]==role and q["id"] not in used_ids),None)
+                    if slot is None:slot=next((q for q in old if q["id"] not in used_ids),None)
+                    if slot is None:raise AssertionError("no slot "+club_id)
+                    used_ids.add(slot["id"])
+                    is_same=clean(slot["name"])==name_key
+                    updated={k:v for k,v in slot.items() if k not in
+                        ("canonicalId","birthDate","verifiedAsOf","source","ageVerified",
+                        "rosterVerification","shirtVerified","appearanceVerified",
+                        "statsVerified","ratingSource","nation","nationality","height",
+                        "position","fictional","fc27Id","fc27Position","sourceSnapshot")}
+                    updated.update({"name":p["name"],"role":role,"rating":p["rating"],"fictional":False,
+                        **p["stats"],"ratingSource":("FC27 EA-derived snapshot 2026-09-12" if origin=="FC27"
+                                      else "Editorial fallback (not FC27 verified)"),
+                        "source":src if origin!="FC27" else URL,
+                        "statsVerified":False,
+                        "appearanceVerified":False,
+                        "rosterVerification":"fc27_position_club" if origin=="FC27" else "editorial",
+                        "shirtVerified":bool(is_same and slot.get("shirtVerified")),
+                        "ageVerified":bool(p.get("birthDate") and origin=="FC27"),
+                        "sourceSnapshot":"2026-09-12" if origin=="FC27" else "2026-10-15"})
+                    if p.get("age") is not None:updated["age"]=p["age"]
+                    elif not is_same:updated.pop("age",None)
+                    if p.get("birthDate"):updated["birthDate"]=p["birthDate"]
+                    elif is_same and slot.get("birthDate"):updated["birthDate"]=slot["birthDate"]
+                    if p.get("nation"):updated["nation"]=p["nation"]
+                    if p.get("height"):updated["height"]=p["height"]
+                    if p.get("fcId"):updated["fc27Id"]=p["fcId"]
+                    if p.get("pos"):updated["fc27Position"]=p["pos"]
+                    updated["num"]=generated_number(taken_nums,slot.get("num") if is_same else None)
+                    taken_nums.add(updated["num"])
+                    created.append(updated)
+            # Cannot certify full high-rated coverage when fewer than quota source candidates.
+            missing={role:QUOTAS[role]-len(selected[role]) for role in QUOTAS}
+            if any(missing.values()):
+                # Preserve remaining old slots without making claims of authentic players.
+                for role,n in missing.items():
+                    for q in old:
+                        if n==0:break
+                        if q["id"] in used_ids or q["role"]!=role:continue
+                        p=dict(q)
+                        p["num"]=generated_number(taken_nums,q.get("num"))
+                        taken_nums.add(p["num"]);created.append(p);used_ids.add(p["id"]);n-=1
+                    if n:raise RuntimeError("role slots unavailable "+club_id+" "+role)
+            if len(created)!=12:raise AssertionError((club_id,len(created)))
+            if collections.Counter(p["role"] for p in created)!=QUOTAS:raise AssertionError("quota "+club_id)
+            if len({p["id"] for p in created})!=12:raise AssertionError("ids "+club_id)
+            if len({clean(p["name"]) for p in created})!=12:raise AssertionError("names "+club_id)
+            if old!=created:changed+=1
+            data[club_id]=created
+            registry[club_id]=created
+            refs[club_id]={"club":label,"origin":origin,"source":src,
+                "found":{r:len(groups[r]) for r in QUOTAS},
+                "selected":[{"name":p["name"],"role":p["role"],"rating":p["rating"]} for p in created],
+                "fictionalRemaining":sum(p.get("fictional",False) for p in created),
+                "oldNames":[q["name"] for q in old]}
+            audit.append({"teamId":club_id,"club":label,"origin":origin,
+                "found":sum(len(groups[r]) for r in QUOTAS),
+                "fictionalRemaining":sum(p.get("fictional",False) for p in created),
+                "replaced":sum(p["name"] not in [q["name"] for q in old] for p in created)})
+            print("CLUB",club_id,label,origin,
+                  "found",sum(len(groups[r]) for r in QUOTAS),
+                  "remaining-fictional",audit[-1]["fictionalRemaining"],flush=True)
+    total=sum(r["fictionalRemaining"] for r in audit)
+    sources=collections.Counter(r["origin"] for r in audit)
+    print("AUDIT SUMMARY",json.dumps({"clubs":len(audit),"changed":changed,
+        "origin":sources,"fictionalRemaining":total}),flush=True)
+    out=ROOT/"docs"/"CLUB_ROSTER_FC27_ALL_CLUBS_20261015.json"
+    out.write_text(json.dumps(refs,indent=2,ensure_ascii=False)+"\n")
+    if args.apply:
+        for file,data in group_data.items():
+            (ROOT/file).write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n")
+        final=source[:start]+json.dumps(registry,ensure_ascii=False,separators=(",",":"))+source[start+end:]
+        root.write_text(final)
+    return 0
+if __name__=="__main__":
+    raise SystemExit(main())
