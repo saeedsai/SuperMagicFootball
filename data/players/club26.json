@@ -8903,7 +8903,8 @@
       "rating": 75,
       "value": 25947000,
       "fictional": false,
-      "source": "World Cup affiliation sample; academy stand-ins flagged"
+      "source": "World Cup affiliation sample; academy stand-ins flagged",
+      "ratingSource": "Editorial provisional; FC27 OVR not confirmed"
     },
     {
       "id": "club26_31_1",
@@ -8923,7 +8924,8 @@
       "rating": 78,
       "value": 31212000,
       "fictional": false,
-      "source": "World Cup affiliation sample; academy stand-ins flagged"
+      "source": "World Cup affiliation sample; academy stand-ins flagged",
+      "ratingSource": "Editorial provisional; FC27 OVR not confirmed"
     },
     {
       "id": "club26_31_6",
@@ -8943,7 +8945,8 @@
       "rating": 75,
       "value": 25947000,
       "fictional": false,
-      "source": "World Cup affiliation sample; academy stand-ins flagged"
+      "source": "World Cup affiliation sample; academy stand-ins flagged",
+      "ratingSource": "Editorial provisional; FC27 OVR not confirmed"
     },
     {
       "id": "club26_31_8",
@@ -8963,7 +8966,8 @@
       "rating": 74,
       "value": 24300000,
       "fictional": false,
-      "source": "World Cup affiliation sample; academy stand-ins flagged"
+      "source": "World Cup affiliation sample; academy stand-ins flagged",
+      "ratingSource": "Editorial provisional; FC27 OVR not confirmed"
     },
     {
       "id": "club26_31_4",
@@ -9005,7 +9009,8 @@
       "rating": 79,
       "value": 33075000,
       "fictional": false,
-      "source": "World Cup affiliation sample; academy stand-ins flagged"
+      "source": "World Cup affiliation sample; academy stand-ins flagged",
+      "ratingSource": "Editorial provisional; FC27 OVR not confirmed"
     },
     {
       "id": "club26_31_2",
@@ -9025,7 +9030,8 @@
       "rating": 74,
       "value": 24300000,
       "fictional": false,
-      "source": "World Cup affiliation sample; academy stand-ins flagged"
+      "source": "World Cup affiliation sample; academy stand-ins flagged",
+      "ratingSource": "Editorial provisional; FC27 OVR not confirmed"
     },
     {
       "id": "club26_31_3",
@@ -9045,7 +9051,8 @@
       "rating": 70,
       "value": 18252000,
       "fictional": false,
-      "source": "World Cup affiliation sample; academy stand-ins flagged"
+      "source": "World Cup affiliation sample; academy stand-ins flagged",
+      "ratingSource": "Editorial provisional; FC27 OVR not confirmed"
     },
     {
       "id": "club26_31_11",
@@ -9088,7 +9095,8 @@
       "rating": 70,
       "value": 18252000,
       "fictional": false,
-      "source": "World Cup affiliation sample; academy stand-ins flagged"
+      "source": "World Cup affiliation sample; academy stand-ins flagged",
+      "ratingSource": "Editorial provisional; FC27 OVR not confirmed"
     },
     {
       "id": "club26_31_10",
@@ -9130,7 +9138,8 @@
       "xp": 0,
       "shot": "eagle",
       "shotName": "Eagle Shot",
-      "age": 24
+      "age": 24,
+      "ratingSource": "Editorial provisional; FC27 OVR not confirmed"
     }
   ]
 }

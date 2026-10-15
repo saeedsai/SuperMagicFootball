@@ -26,5 +26,6 @@ for(const [club,roster] of Object.entries(clubData)){
 }
 assert.equal(players,384);
 assert.equal(fc27,290);
-assert.equal(provisional,85);
+assert.equal(provisional,94);
+assert.equal(fc27+provisional,players,'all club rating sources must be classified');
 console.log('Club26 FC27 roster regression PASS — 32 clubs, 384 players, no fictional slots, data/runtime identical');
