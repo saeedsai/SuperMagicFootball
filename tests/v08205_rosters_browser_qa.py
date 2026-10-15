@@ -21,7 +21,7 @@ with sync_playwright() as pw:
    assert next(p for p in squad['players'] if p['name']==star)['num']==shirt
    open_quick(page)
    page.locator('select#homeTeam').select_option(str(squad['index']))
-   page.locator('[data-action="prepHome"]').first.click()
+   page.locator('[data-action="setupTactics"]').click();page.locator('[data-action="prepHome"]').first.click()
    assert page.get_by_text(star).count()>0,(mode,club,star)
    assert page.locator('.formationSlot canvas').count()==6,(mode,club)
    assert page.locator('.playerFaceCanvas').count()==12,(mode,club)
