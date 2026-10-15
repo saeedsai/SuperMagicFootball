@@ -2,10 +2,10 @@
   "kind": "procedural-canvas-art",
   "format": "JavaScript Canvas2D routines plus JSON palettes/presets (no exported static sprite sheets)",
   "sourceModules": {
-    "playerHeadHairBeard": "src/modules/render.js",
-    "bodyAnimations": "src/modules/artpose.js",
+    "playerHeadHairBeard": "src/modules/characterart.js",
+    "bodyAnimations": "src/modules/characterart.js + src/modules/artpose.js",
     "personalityAnimation": "src/modules/bpwpersonality.js",
-    "matchRenderer": "src/modules/render.js",
+    "matchRenderer": "src/modules/render.js -> src/modules/characterart.js",
     "teamFlagsAndCrests": "src/modules/identity.js"
   },
   "presets": "data/graphics/procedural_assets.json",
@@ -46,5 +46,5 @@
     "special shot particles and trails",
     "keeper actions"
   ],
-  "note": "Original renderer code defines procedural meshes/paths and remains the source of truth; this index identifies editors/owners. No hidden raster pack exists."
+  "note": "Production eight-direction procedural character renderer is src/modules/characterart.js. src/modules/render.js owns match integration and legacy fallback routines; reference concept boards are not game sprites. Preserves appearance schema, ID ordering and gameplay hitboxes."
 }

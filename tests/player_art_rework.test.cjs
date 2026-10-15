@@ -1,0 +1,47 @@
+// Appearance combination smoke tests for production Canvas2D character-art renderer.
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const {pathToFileURL}=require('node:url');
+let modPromise=import(pathToFileURL(path.resolve(__dirname,'../src/modules/characterart.js')).href);
+function fakeCanvas(){
+ let saves=0,errors=0,draws=0;
+ const c={createLinearGradient(){return {addColorStop(n,col){assert.ok(n>=0&&n<=1);assert.equal(typeof col,'string')}}},
+ save(){saves++},restore(){saves--;assert.ok(saves>=0,'unbalanced restore')},
+ beginPath(){draws++},moveTo(){},lineTo(){},quadraticCurveTo(){},bezierCurveTo(){},ellipse(x,y,rx,ry){for(const n of [x,y,rx,ry])assert.ok(Number.isFinite(n));},roundRect(){},fill(){},stroke(){},closePath(){},clip(){},
+ translate(x,y){assert.ok(Number.isFinite(x)&&Number.isFinite(y))},rotate(x){assert.ok(Number.isFinite(x))},scale(x,y){assert.ok(Number.isFinite(x)&&Number.isFinite(y))},fillText(){},strokeText(){}};
+ return {c,counts:()=>({saves,errors,draws})};
+}
+const team={primary:'#2769c0',secondary:'#f5f2e8',trim:'#ffc14b'};
+const player={src:{num:10},action:'idle',keeper:false};
+test('eight projections and representative face/beard/hair combinations do not throw',async()=>{
+ const {CHARACTER_ART:art}=await modPromise;
+ const views=['front','quarterFront','side','quarterBack','back'];
+ let total=0;
+ for(let f=0;f<5;f++)for(let b=0;b<5;b++)for(let h=0;h<13;h++)for(const kind of views){
+   const {c,counts}=fakeCanvas();
+   const av={face:f,beard:b,style:h,eyes:(f*5+h)%20,brows:(h*2)%20,eyeColor:h%6,nose:(f+h)%6,lips:(b+h)%8,skin:'#af7957',hair:'#503a2b',accessory:(f+h)%6};
+   art.draw(c,player,av,team,{kind,side:1},{skin:av.skin,hair:av.hair,headScale:1,run:0});
+   assert.equal(counts().saves,0,kind+' save/restore');
+   assert.ok(counts().draws>20,kind+' draws');
+   total++;
+ }
+ assert.equal(total,1625);
+});
+test('appearance presets, mirroring, kit changes, accessories and keeper actions',async()=>{
+ const {CHARACTER_ART:art}=await modPromise;
+ for(const kind of ['front','quarterFront','side','quarterBack','back']){
+  for(const dir of [-1,1])for(let a=0;a<6;a++)for(let n=0;n<6;n++)for(let mouth=0;mouth<8;mouth++){
+   const av={face:n%5,beard:a%5,style:n,eyes:a,eyeColor:n%6,brows:a,nose:n,lips:mouth,accessory:a,skin:'#7a4d38',hair:'#202125'};
+   const {c,counts}=fakeCanvas();
+   art.draw(c,{src:{num:1},keeper:true,action:'keeperDiveCatch'},av,{primary:'#1c9b65',secondary:'#f3ece0',trim:'#e7b03f'},{kind,side:dir},{skin:av.skin,hair:av.hair,headScale:1,run:.6,kick:true,sliding:true});
+   assert.equal(counts().saves,0);
+  }
+ }
+});
+test('production integration remains in match renderer',()=>{
+ const source=fs.readFileSync(path.resolve(__dirname,'../src/modules/render.js'),'utf8');
+ assert.match(source,/import\s+\{CHARACTER_ART\}\s+from\s+["']\.\/characterart\.js["']/);
+ assert.match(source,/CHARACTER_ART\.draw\(ctx,p,av,team,view,/);
+});
