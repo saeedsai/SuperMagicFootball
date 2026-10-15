@@ -14,3 +14,8 @@ for slug in ['mamelodi-sundowns','seattle-sounders','al-gharafa','power-dynamos'
   print('SQUAD_PROBE',slug,'bytes',len(raw),'title',title,'goalkeeperSection',text[txtpos:txtpos+500],flush=True)
   print('SQUAD_HTML_SAMPLE',slug,raw[raw.find('Goalkeepers')-100:raw.find('Goalkeepers')+1600][:1750],flush=True)
  except Exception as e:print('SQUAD_PROBE_ERROR',slug,str(e),flush=True)
+
+  for heading in soup.find_all(id=re.compile('squad-(gk|def|mid|fwd)'))[:4]:
+   print('SQUAD_SECTION',slug,heading.get('id'),heading.name,str(heading)[:2300],flush=True)
+  for table in soup.find_all('table')[:5]:
+   print('SQUAD_TABLE',slug,str(table)[:2200],flush=True)
