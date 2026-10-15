@@ -1,0 +1,36 @@
+name: Real Player Art Before-After Contact Sheets
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/player-art-before-after.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare-game-renderers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Chromium, Playwright and Pillow
+        run: |
+          python3 -m pip install --user playwright pillow
+          sudo apt-get update -qq
+          sudo apt-get install -y chromium
+      - name: Build exact pre-rework baseline and current game fixtures
+        run: |
+          git worktree add --detach /tmp/smf-before-graphics 50c839aa5e8947176f00105dabab9582816823d9
+          python3 /tmp/smf-before-graphics/scripts/build.py
+          python3 scripts/build.py
+      - name: Capture actual game art for the same five players in five views
+        run: python3 tests/render_art_before_after.py /tmp/smf-before-graphics
+      - name: Upload visual comparison screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-player-art-before-after
+          path: docs/qa_runs_current/before_after_player_art/
+          retention-days: 30
