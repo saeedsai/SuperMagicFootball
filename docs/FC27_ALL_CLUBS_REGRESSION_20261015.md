@@ -30,14 +30,18 @@
 
 **Modular Game Dev QA: PASS** on source/test commits through [GitHub Actions](https://github.com/saeedsai/SuperMagicFootball/actions). Game build and current contracts pass; historical fixed-2026 tests were revised to validate the new current FC27 positional source instead of superseded 2026 names and signatures.
 
-**Expanded historical Node/browser regression:** [Full Regression Census](https://github.com/saeedsai/SuperMagicFootball/actions/workflows/full-regression-census.yml). Earlier first rerun caught old-date formats, old squad verification flags, added Concept Hero team count, missing Pillow dependency and outdated PWA cache key. Specific causes have been addressed in source, tests and CI. The latest run outcome should be consulted rather than treating a previously incomplete or failed run as certified green.
+**Expanded historical Node/browser regression:** Four full Node script shards PASS, and browser test shards remain under verification: [Full Regression Census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38811487843). The workflow result must be reviewed before calling the historical browser suite green.
+
+**Original expanded regression:** [Full Regression Census](https://github.com/saeedsai/SuperMagicFootball/actions/workflows/full-regression-census.yml). Earlier first rerun caught old-date formats, old squad verification flags, added Concept Hero team count, missing Pillow dependency and outdated PWA cache key. Specific causes have been addressed in source, tests and CI. The latest run outcome should be consulted rather than treating a previously incomplete or failed run as certified green.
 
 ## Deployment
 
 - GitHub Pages build/deploy has completed successfully for an updated source revision: [deployment](https://github.com/saeedsai/SuperMagicFootball/actions).
 - Live game: https://saeedsai.github.io/SuperMagicFootball/
 - Headless desktop and simulated-touch browser acceptance workflow: [Verify Deployed PC and Touch Game](https://github.com/saeedsai/SuperMagicFootball/actions/workflows/verify-pages-playable.yml).
-- A previous hosted browser readiness test falsely required 223 teams, whereas runtime now exposes 224 including a Concept Hero team. Fixed to accept 223–224 and explicitly require menu navigation, kickoff, match-active state and extended 20%-longer pitch. Deployment should not be marked interactive-PASS without a successful smoke run.
+- **Hosted interactive test PASS:** [live PC and simulated-touch smoke run](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38811611294) succeeded: HTTP 200, 224-team boot, menu navigation, Quick Match kickoff, game running, and 20%-extended pitch.
+- GitHub Pages deployment for this report revision also **SUCCESS**: [Pages build and deployment](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38811792360).
+- The previous 223-team readiness assertion was corrected to account for the new 224th Concept Hero team.
 
 ## Remaining uncertainties
 
