@@ -4,6 +4,11 @@ on:
     branches: [dev]
     paths:
       - '.github/workflows/current-player-browser-qa.yml'
+      - 'src/modules/characterart.js'
+      - 'src/modules/render.js'
+      - 'tests/player_art_rework.test.cjs'
+      - 'tests/player_art_directional_qa.py'
+      - 'tests/graphics_integration_v082522.py'
   workflow_dispatch:
 permissions:
   contents: read
@@ -34,9 +39,17 @@ jobs:
           python3 tests/graphics_integration_v082522.py > docs/qa_runs_current/graphics.log 2>&1
           graphics=$?
           cat docs/qa_runs_current/graphics.log
+          python3 tests/player_art_directional_qa.py > docs/qa_runs_current/directional.log 2>&1
+          directional=$?
+          cat docs/qa_runs_current/directional.log
+          node --test tests/player_art_rework.test.cjs > docs/qa_runs_current/art_node.log 2>&1
+          artnode=$?
+          cat docs/qa_runs_current/art_node.log
+          echo "directional_exit=$directional"
+          echo "art_node_exit=$artnode"
           echo "identity_exit=$identity"
           echo "graphics_exit=$graphics"
-          if [ "$identity" -ne 0 ] || [ "$graphics" -ne 0 ]; then exit 1; fi
+          if [ "$identity" -ne 0 ] || [ "$graphics" -ne 0 ] || [ "$directional" -ne 0 ] || [ "$artnode" -ne 0 ]; then exit 1; fi
       - name: Save exact per-case browser reports
         if: always()
         uses: actions/upload-artifact@v4
