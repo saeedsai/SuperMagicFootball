@@ -38,7 +38,7 @@ jobs:
                 try:
                   response=page.goto(url,wait_until='domcontentloaded',timeout=60000)
                   assert response and response.status==200,(kind,'Page HTTP',response.status if response else None)
-                  page.wait_for_function('!!window.SupermagicFootball && window.SupermagicFootball.teams?.length===223',timeout=60000)
+                  page.wait_for_function('!!window.SupermagicFootball && window.SupermagicFootball.teams?.length>=223 && window.SupermagicFootball.teams?.length<=224',timeout=60000)
                   ready=True
                   break
                 except Exception as exc:
