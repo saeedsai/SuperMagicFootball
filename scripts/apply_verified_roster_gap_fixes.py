@@ -12,6 +12,34 @@ from update_all_clubs_fc27 import ROOT,clean,stats,generated_number,QUOTAS
 CURATED = {
  # Dated first-team positions are sourced; OVRs below are medium-level *editorial*
  # approximations, never attributed to EA/FC27.
+ "cont_caf_11": {
+   "GK":[("Simon Omossola",74,30),("Esdras Kabamba",70,1)],
+   "DF":[("John Nekadio",71,3),("Christopher Sumbu",70,4),("Joseph Douhadji",70,6)],
+   "MF":[("Jean Benoît Tukumbane",72,5),("Glody Mambembe",71,8),("Miché Mika",70,27),("Basiala Amongo",70,16)],
+   "FW":[("Ramos Kashala Wanet",72,40),("Ravel Djoumekou",73,9),("Henoc Molia",69,23)],
+   "source":"https://www.transfermarkt.com/fc-saint-eloi-lupopo/kader/verein/22838 [2026/27 squad]"
+ },
+ "cont_ofc_7": {
+   "GK":[("Moana Rakei",68,1),("Emmett Connolly",66,20)],
+   "DF":[("John Noovao",68,5),("Shane Tuteru",67,12),("Oscar Wichman",67,15)],
+   "MF":[("Grover Harmon",70,3),("Ngametua Tuakana",68,6),("Joshua Galletly",68,7),("Kima Webb",69,10)],
+   "FW":[("Geoffrey Strickland",69,8),("Campbell Best",70,9),("Daniel Bunch",70,16)],
+   "source":"https://demo.arkanet.co.za/content/wikipedia_en_all_maxi_2026-02/Tupapa_Maraerenga_F.C. [current squad February 2026; subsequent registrations not confirmed]"
+ },
+ "cont_conmebol_24": {
+   "GK":[("Giancarlo Schiavone",72,13),("Carlos González",68,12)],
+   "DF":[("Alfonso Simarra",72,19),("Kendrys Silva",70,2),("Daniel Carrillo",70,27)],
+   "MF":[("Francisco Solé",74,6),("Carlos Cermeño",72,57),("Alexander González",71,30),("Vicente Rodríguez",70,17)],
+   "FW":[("Samuel Sosa",76,10),("Jovanny Bolívar",75,11),("Juan Camilo Zapata",73,8)],
+   "source":"https://www.transfermarkt.com/universidad-central-de-venezuela/kader/verein/43146 [2026 squad]"
+ },
+ "cont_ofc_3": {
+   "GK":[("Thomas Schmidt",67,21)],
+   "DF":[("Henri Wélépane",67,3),("Morgan Mathelon",68,6)],
+   "MF":[("Shene Wélépane",69,12)],
+   "FW":[("Pierre Iékawé",67,14)],
+   "source":"https://www.cavpo.com/2017/01/New.Caledonia.Squad.html [national list dated 2026-05-29 with Tiga Sport affiliations]"
+ },
  "cont_afc_13": {
    "GK":[("Mohammed Salih",74,20),("Mohammed Raheem Ziyadi",70,31)],
    "DF":[("Edmilson Dove",75,6),("Ruslan Hanoon",71,2)],
