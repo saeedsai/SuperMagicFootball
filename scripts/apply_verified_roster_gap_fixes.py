@@ -39,6 +39,17 @@ CURATED = {
    "FW":[("Frantzety Herard",70,9),("Diego Santoni",69,28),("Ronaldinho Caicedo",70,32)],
    "source":"https://www.livescore.com/en/football/team/om-fc/147418/squad/ [2026 first-team positions]"
  },
+ "cont_afc_25": {
+   "GK":[("Noppol Lakhonphon",72,1)],
+   "MF":[("Thanawat Suengchitthawon",75,8)],
+   "FW":[("Jordan Gele",75,11)],
+   "source":"https://www.ballthai.com/ราชบุรี-ประกาศรายชื่อ-28-นักเตะ-ลุยศึก-t1-ฤดูกาล-2026-27/ [2026/27 27-player registered squad]"
+ },
+ "cont_concacaf_4": {
+   "GK":[("Onan Rodríguez",70,22)],
+   "MF":[("Pedro González",71,18)],
+   "source":"https://m.aiscore.com/team-cd-olimpia/527r3iep19h87ev/squad [2026/27 squad]"
+ },
  "cont_caf_11": {
    "GK":[("Simon Omossola",74,30),("Esdras Kabamba",70,1)],
    "DF":[("John Nekadio",71,3),("Christopher Sumbu",70,4),("Joseph Douhadji",70,6)],
