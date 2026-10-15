@@ -1,5 +1,5 @@
 name: Full Club FC27 Source Coverage Audit
-# Verify sourced non-FC27 squads and positional placeholders before release.
+# Scan alternate positions, verified FC27 club snapshots and independent non-FC27 squads.
 on:
   push:
     branches: [dev]
