@@ -108,10 +108,19 @@ def make_candidate(r,kind="FC27"):
     if not name:return None
     try:ovr=int(r["overall_rating"])
     except (ValueError,TypeError):return None
-    return {"name":name,"role":role,"rating":ovr,"age":int(r["age"]) if r.get("age","").isdigit() else None,
-            "birthDate":r.get("birthdate") or None,"nation":r.get("nationality") or None,
+    dob=r.get("birthdate") or ""
+    age=None
+    if re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}",dob):
+        year,month,day=map(int,dob.split("-"))
+        age=2026-year-((10,15)<(month,day))
+    extra=re.split(r"[ ,/]+",r.get("alternate_positions") or "")
+    eligible={role}|{POS[p] for p in extra if p in POS}
+    return {"name":name,"role":role,"eligibleRoles":sorted(eligible),
+            "rating":ovr,"age":age,
+            "birthDate":dob or None,"nation":r.get("nationality") or None,
             "height":int(r["height_cm"]) if r.get("height_cm","").isdigit() else None,
             "fcId":r.get("player_id") or None,"pos":r.get("position") or None,
+            "fc27FaceStats":{key:int(r[key]) for key in ["pace","shooting","passing","dribbling","defending","physicality"] if (r.get(key) or "").isdigit()},
             "stats":stats(r,role),"sourceKind":kind}
 def wiki_squad(name):
     """Best-effort current-squad fallback; never use an arbitrary historical player table."""
@@ -201,25 +210,35 @@ def main():
                 if candidates:origin="WIKIPEDIA_EDITORIAL_OVR"
             groups={k:[] for k in QUOTAS}
             for p in candidates:
-                if p["role"] in groups:groups[p["role"]].append(p)
-            for k in groups:
-                uniq={}
-                for p in sorted(groups[k],key=lambda p:(-p["rating"],clean(p["name"]))):
-                    uniq.setdefault(clean(p["name"]),p)
-                groups[k]=list(uniq.values())
-            selected={r:groups[r][:limit] for r,limit in QUOTAS.items()}
-            # Preserve all previously real / already sourced names when available
-            # if source is incomplete in a given positional group. Never invent a name.
-            keys={clean(p["name"]) for arr in selected.values() for p in arr}
+                for role in p.get("eligibleRoles",[p["role"]]):
+                    if role in groups:groups[role].append(p)
+            for role in groups:
+                dedup={}
+                for p in sorted(groups[role],
+                                key=lambda p:(-p["rating"],p["role"]!=role,clean(p["name"]))):
+                    dedup.setdefault(clean(p["name"]),p)
+                groups[role]=list(dedup.values())
+            selected={r:[] for r in QUOTAS}
+            used_names=set()
+            # Scarce positions first; allow verified alternate position assignments.
+            for role in ("GK","DF","FW","MF"):
+                for p in groups[role]:
+                    if len(selected[role])>=QUOTAS[role]:break
+                    if clean(p["name"]) in used_names:continue
+                    selected[role].append(dict(p,assignedRole=role))
+                    used_names.add(clean(p["name"]))
             for role,num in QUOTAS.items():
                 for q in old:
                     if len(selected[role])>=num:break
-                    if q["role"]!=role or q.get("fictional") or clean(q["name"]) in keys:continue
-                    selected[role].append({"name":q["name"],"role":role,"rating":min(78,int(q.get("rating",73))),
-                        "age":q.get("age"),"birthDate":q.get("birthDate"),"nation":q.get("nation"),
-                        "sourceKind":"LEGACY_UNVERIFIED","pos":role,
-                        "stats":stats({"overall_rating":str(min(78,int(q.get("rating",73))))},role)})
-                    keys.add(clean(q["name"]))
+                    if q["role"]!=role or clean(q["name"]) in used_names:continue
+                    fallback_ovr=min(78,int(q.get("rating",73)))
+                    selected[role].append({"name":q["name"],"role":role,"assignedRole":role,
+                        "rating":fallback_ovr,"age":q.get("age"),
+                        "birthDate":q.get("birthDate"),"nation":q.get("nation"),
+                        "fictional":q.get("fictional",True),
+                        "sourceKind":"LEGACY_UNVERIFIED" if not q.get("fictional") else "LEGACY_PLACEHOLDER",
+                        "pos":role,"stats":stats({"overall_rating":str(fallback_ovr)},role)})
+                    used_names.add(clean(q["name"]))
             used_ids=set()
             used_slots=set()
             taken_nums=set()
@@ -238,16 +257,19 @@ def main():
                         "rosterVerification","shirtVerified","appearanceVerified",
                         "statsVerified","ratingSource","nation","nationality","height",
                         "position","fictional","fc27Id","fc27Position","sourceSnapshot")}
-                    updated.update({"name":p["name"],"role":role,"rating":p["rating"],"fictional":False,
-                        **p["stats"],"ratingSource":("FC27 EA-derived snapshot 2026-09-12" if origin=="FC27"
+                    updated.update({"name":p["name"],"role":role,"rating":p["rating"],"fictional":bool(p.get("fictional",False)),
+                        **p["stats"],"ratingSource":("FC27 EA-derived snapshot 2026-09-12" if p["sourceKind"]=="FC27"
                                       else "Editorial fallback (not FC27 verified)"),
                         "source":src if origin!="FC27" else URL,
                         "statsVerified":False,
                         "appearanceVerified":False,
-                        "rosterVerification":"fc27_position_club" if origin=="FC27" else "editorial",
+                        "rosterVerification":(slot.get("rosterVerification") if is_same and slot.get("rosterVerification")=="verified_club_role"
+                                                else "fc27_position_club" if p["sourceKind"]=="FC27" else "editorial"),
                         "shirtVerified":bool(is_same and slot.get("shirtVerified")),
                         "ageVerified":bool(p.get("birthDate") and origin=="FC27"),
                         "sourceSnapshot":"2026-09-12" if origin=="FC27" else "2026-10-15"})
+                    if is_same and slot.get("canonicalId") and slot.get("birthDate")==p.get("birthDate"):updated["canonicalId"]=slot["canonicalId"]
+                    if p.get("fc27FaceStats"):updated["fc27FaceStats"]=p["fc27FaceStats"]
                     if p.get("age") is not None:updated["age"]=p["age"]
                     elif not is_same:updated.pop("age",None)
                     if p.get("birthDate"):updated["birthDate"]=p["birthDate"]
@@ -259,7 +281,7 @@ def main():
                     updated["num"]=generated_number(taken_nums,slot.get("num") if is_same else None)
                     taken_nums.add(updated["num"])
                     created.append(updated)
-            # Cannot certify full high-rated coverage when fewer than quota source candidates.
+            # Gaps remain explicit and keep their unverified in-game players.
             missing={role:QUOTAS[role]-len(selected[role]) for role in QUOTAS}
             if any(missing.values()):
                 # Preserve remaining old slots without making claims of authentic players.
