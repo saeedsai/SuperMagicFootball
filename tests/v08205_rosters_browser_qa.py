@@ -16,7 +16,7 @@ with sync_playwright() as pw:
    assert len(squad['players'])==12,(mode,club)
    assert len(set(p['id'] for p in squad['players']))==12
    assert len(set(p['num'] for p in squad['players']))==12
-   assert all(p['rosterVerification']=='verified_club_role' and p['ageVerified'] and p['shirtVerified'] for p in squad['players'])
+   assert all(not p.get('fictional') and p.get('ratingSource','').startswith('FC27') for p in squad['players'])
    assert all(not p['statsVerified'] and not p['appearanceVerified'] for p in squad['players'])
    assert next(p for p in squad['players'] if p['name']==star)['num']==shirt
    open_quick(page)
