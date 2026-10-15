@@ -6,6 +6,7 @@ assigns FC27 ratings to unknown players. Source has first-team matches/starts.
 """
 import collections
 import json
+import http.client
 import re
 import unicodedata
 import urllib.error
@@ -76,7 +77,7 @@ def fetch_club(name):
         # Avoid accepting a dubious page with only a few youth-team players.
         if len(records)<6:return [],url,"Insufficient documented first-team players"
         return records,url,"OK"
-    except (urllib.error.URLError,TimeoutError,ValueError) as exc:
+    except (urllib.error.URLError,TimeoutError,ValueError,http.client.IncompleteRead,ConnectionError,ConnectionResetError) as exc:
         return [],url,type(exc).__name__+": "+str(exc)[:80]
 
 def equivalent(name,existing):
