@@ -12,6 +12,34 @@ from update_all_clubs_fc27 import ROOT,clean,stats,generated_number,QUOTAS
 CURATED = {
  # Dated first-team positions are sourced; OVRs below are medium-level *editorial*
  # approximations, never attributed to EA/FC27.
+ "cont_afc_13": {
+   "GK":[("Mohammed Salih",74,20),("Mohammed Raheem Ziyadi",70,31)],
+   "DF":[("Edmilson Dove",75,6),("Ruslan Hanoon",71,2)],
+   "MF":[("Saad Abdul-Amir Al-Zirjawi",74,8)],
+   "FW":[("Haythem Jouini",75,9),("Eid Al-Rashidi",74,11),("Anthony Okpotu",74,19)],
+   "source":"https://www.transfermarkt.com/al-quwa-al-jawiya/kader/verein/23805/saison_id/2026 [26/27]"
+ },
+ "cont_afc_24": {
+   "GK":[("Michael Falkesgaard",74,1)],
+   "FW":[("Teerasak Poeiphimai",75,9),("Jude Soonsup-Bell",74,11),("Athit Berg",71,17)],
+   "source":"https://www.national-football-teams.com/club/18173/2026_1/Port_Fc_Bangkok.html [26/27]"
+ },
+ "cont_afc_26": {
+   "GK":[("Chen Wei",69,12)],
+   "DF":[("Tyias Browning",76,3),("Wei Zhen",73,13)],
+   "MF":[("Kodjo Aziangbe",72,6)],
+   "source":"https://en.wikipedia.org/wiki/2026_Shanghai_Port_F.C._season [2026 squad]; https://www.national-football-teams.com/app.php/club/27992/2026/Shanghai_Port.html"
+ },
+ "cont_concacaf_11": {
+   "MF":[("Kyle Bekker",74,10)],
+   "FW":[("Lucas Cavallini",76,9)],
+   "source":"https://www.national-football-teams.com/club/23567/2026_2/Forge_Fc_Hamilton.html [2026 season]"
+ },
+ "cont_conmebol_19": {
+   "GK":[("Weibmar Asprilla",69,12)],
+   "FW":[("Franco Fagúndez",75,9),("Hugo Rodallega",73,11)],
+   "source":"https://gol.conmebol.com/sudamericana/en/news/independiente-santa-fe-en-la-conmebol-sudamericana-2026-resultados-plantel-y-calendario [official 2026 squad]"
+ },
  "cont_ofc_4": {
    "GK":[("Epeli Loaniceva",69,1)],
    "DF":[("Samuela Ibo Kautoga",69,4),("Calvin Ohasio",69,2),("Kavaia Rawaqa",68,3)],
