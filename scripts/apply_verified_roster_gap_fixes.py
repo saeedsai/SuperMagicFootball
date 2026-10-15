@@ -12,6 +12,20 @@ from update_all_clubs_fc27 import ROOT,clean,stats,generated_number,QUOTAS
 CURATED = {
  # Dated first-team positions are sourced; OVRs below are medium-level *editorial*
  # approximations, never attributed to EA/FC27.
+ "cont_caf_3": {
+   "GK":[("Lawrence Mulenga",72,1),("Willard Mwanza",69,16)],
+   "DF":[("Dominic Chanda",72,3),("Kondwani Chiboni",69,5),("Aaron Katebe",70,14)],
+   "MF":[("Owen Tembo",73,10),("Frederick Mulambia",70,8),("Prince Mumba",69,6),("Salulani Phiri",69,18)],
+   "FW":[("Ismaël Ankobo",72,11),("Austin Muwowo",72,7),("Moses Shumah",72,9)],
+   "source":"https://www.national-football-teams.com/club/2763/2026/Power_Dynamos_Kitwe.html [2026/27]"
+ },
+ "cont_caf_14": {
+   "GK":[("Hugo Marques",76,1),("Augusto Mualucano",68,22)],
+   "DF":[("Joel Odair Pinto Neves",72,2),("Rúben Constantino Adérito",71,4),("Pedro Manuel da Mota Pinto",71,13)],
+   "MF":[("Pedro Miguel Santos Aparício",74,10),("Benny",71,12),("Jorge Javier Moreira Pereira",72,20),("Walter Monteiro",69,35)],
+   "FW":[("Tiago Azulão",75,26),("Jonathan Toro",74,8),("Tomás Morais Costa",73,11)],
+   "source":"https://supersport.com/football/team/b2471a32-de20-4b49-8e93-3d16c3b7ab20/squad [2026 squad listing]"
+ },
  "cont_caf_9": {
    "GK":[("Farid Ouédraogo",76,1),("Muhamed Madani",68,16)],
    "DF":[("Mamudu Kamaradin",72,3),("Mustafa Karshoum",73,19),("Altayeb Abdelrazeg",69,4)],
