@@ -64,7 +64,8 @@ with sync_playwright() as pw:
   assert set(data['status']['authoredViews'])=={'front','back'} and not data['status']['error']
   assert data['status']['faceLoaded'] and 'face_front_front' in data['status']['authoredParts']
   assert data['status']['armLoaded'] and 'arm_near_front' in data['status']['authoredParts']
-  assert data['status']['frontArmStrideEnabled'] and diff('frontRunA','frontRunB')>200
+  front_run_changed=diff('frontRunA','frontRunB')
+  assert data['status']['frontArmStrideEnabled'] and front_run_changed>200,front_run_changed
   # Independent raw SVG alpha check in the same Chromium browser that paints the game.
   source=base64.b64encode((ROOT/'assets/characters/concept_modular_v1/source/face_front_front.svg').read_bytes()).decode('ascii')
   face_alpha=page.evaluate("""async svg => {
@@ -113,7 +114,7 @@ with sync_playwright() as pw:
   for key,img in images.items():img.save(OUT/(device+'_'+key+'.png'))
   page.screenshot(path=str(OUT/(device+'_actual_match.png')))
   results[device]={'status':'PASS','front_changed_pixels':front_changed,'back_changed_pixels':back_changed,
-    'side_legacy_identical':True,'back_run_phases_distinct':True,'page_errors':errors,'front_face_loaded':True,'transparent_face_alpha':True,'front_arm_loaded':True,'arm_transparent':True,'front_arm_frames_distinct':True}
+    'side_legacy_identical':True,'back_run_phases_distinct':True,'page_errors':errors,'front_face_loaded':True,'transparent_face_alpha':True,'front_arm_loaded':True,'arm_transparent':True,'front_arm_frames_distinct':True,'front_run_changed_pixels':front_run_changed}
   context.close()
  browser.close()
 (OUT/'qa_report.json').write_text(json.dumps(results,indent=2))
