@@ -2,7 +2,7 @@
 const AUDIO=(()=>{// v0.8.23.2 module (retained in v0.8.24) — Original procedural music, SFX and crowd texture. No licensed samples or downloads.
 // A user gesture is mandatory before AudioContext creation. All nodes are cleaned up on mute/dispose.
 const AUDIO_DEFAULTS=Object.freeze({mute:false,master:70,music:45,sfx:75,ui:50,ambience:25});
-const AUDIO_CUES=Object.freeze({kick:'kick',save:'save',keeperCatch:'save',goal:'goal',tackleHit:'tackle',slideStart:'slide',superShotLaunch:'stun',superShotKnockback:'stun',defenceSuper:'super',flipKick:'super',halftime:'halftime',finished:'finished',penaltyKick:'kick',lightning:'stun'});
+const AUDIO_CUES=Object.freeze({kick:'kick',save:'save',keeperCatch:'save',goal:'goal',tackleHit:'tackle',slideStart:'slide',superShotLaunch:'stun',superShotKnockback:'stun',defenceSuper:'super',flipKick:'super',halftime:'halftime',finished:'finished',penaltyKick:'kick',penaltyStart:'penaltyStart',penaltyDive:'penaltyDive',lightning:'stun'});
 const clamp=(v,fallback)=>{if(v===null||v===''||!Number.isFinite(Number(v)))return fallback;return Math.min(100,Math.max(0,Number(v)))};
 function sanitizeAudioOptions(v={}){
  if(!v||typeof v!=='object'||Array.isArray(v))v={};
@@ -59,13 +59,22 @@ class ArcadeAudio{
  }
  cue(event){
   const type=typeof event==='string'?event:event?.type;
-  const cue=type==='kick'&&event?.super?'super':type==='flipKick'&&!event?.special?'kick':AUDIO_CUES[type]||type;
-  if(!cue||!this._audible(cue==='ui'||cue==='halftime'||cue==='finished'?'ui':'sfx')||!this.unlocked||!this.ctx)return;
+  // A resolved penalty uses a distinct success/save sound. String-only legacy
+  // calls and malformed events retain the historic ordinary kick cue.
+  const cue=type==='penaltyKick'&&typeof event?.goal==='boolean'?
+   (event.goal?'penaltyGoal':'penaltySave'):
+   type==='kick'&&event?.super?'super':type==='flipKick'&&!event?.special?'kick':AUDIO_CUES[type]||type;
+  if(!cue||!this._audible(cue==='ui'||cue==='halftime'||cue==='finished'||cue==='penaltyStart'?'ui':'sfx')||!this.unlocked||!this.ctx)return;
   const now=this.ctx.currentTime;
   if(this.last.has(cue)&&now-this.last.get(cue)<(cue==='kick'?.07:.17))return;
   this.last.set(cue,now);
   switch(cue){
    case 'kick':this.tone(230,.11);break;
+   // Procedural penalty tones reuse the existing sound buses, mute and limits.
+   case 'penaltyStart':[330,440].forEach((f,i)=>this.tone(f,.14,'ui','triangle',i*.09));break;
+   case 'penaltyDive':this.tone(165,.12,'sfx','sawtooth');break;
+   case 'penaltyGoal':[587,740,880].forEach((f,i)=>this.tone(f,.22,'sfx','triangle',i*.09));break;
+   case 'penaltySave':[392,294,220].forEach((f,i)=>this.tone(f,.20,'sfx','triangle',i*.085));break;
    case 'save':this.tone(340,.15);this.tone(190,.21,'sfx','triangle',.08);break;
    case 'goal':[523,659,784,1046].forEach((f,i)=>this.tone(f,.27,'sfx','triangle',i*.095));break;
    case 'tackle':this.tone(130,.16,'sfx','sawtooth');break;
