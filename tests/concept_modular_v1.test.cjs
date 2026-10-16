@@ -57,3 +57,12 @@ test('new face paints below hair only after safe image loading, six-view fallbac
  assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_FACE_INLINE/);
  assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_ARM_INLINE/);
 });
+
+test('C01 near-arm gait is a small visual-only transformation, not new gameplay motion',()=>{
+ const art=read('src/modules/conceptmodular.js');
+ assert.match(art,/const ax=\(90-56\)\*ratio,ay=-LOGICAL_HEIGHT\+6\+126\*ratio/);
+ assert.match(art,/const armStride=Math\.abs\(phase\)>\.07\?-phase\*\.035:0/);
+ assert.match(art,/ctx\.translate\(ax,ay\);ctx\.rotate\(armStride\);ctx\.translate\(-ax,-ay\)/);
+ assert.ok(!/engine\.|p\.x\s*=|p\.y\s*=|p\.dx\s*=/.test(art),'Graphics must not mutate gameplay motion');
+ assert.match(read('sw.js'),/smf-082538-concept-front-hair-v1-rear-v2-face-v3-arm-v4/);
+});
