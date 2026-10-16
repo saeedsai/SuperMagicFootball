@@ -20,7 +20,7 @@ BRANCH = "dev"
 PREFIX = "docs/agent_coordination/claims"
 STATIC_LOCKS = {
     "graphics-renderer", "gameplay-engine", "ui-controls",
-    "integration-tooling", "qa-framework", "release-infra",
+    "integration-tooling", "qa-framework", "release-infra", "project-context",
 }
 DYNAMIC_LOCK = re.compile(r"roster-(club|national)-[a-z0-9][a-z0-9_-]{0,63}$")
 OWNER_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{2,100}$")
