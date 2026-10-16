@@ -38,3 +38,33 @@ No generated game fixtures, older seed tests, concept assets or historical QA re
 **Next five iterations:** (1) triage exact-source eight-shard census and measure any mirrored AI save/goal asymmetry; (2) targeted goalkeeper corner/warp/ricochet physical fairness changes *only if* backed by evidence and a fresh gameplay claim; (3) finish eight-direction keeper glove grip/distribution under a graphics lock; (4) improve passing/first-touch animation and source-aware player/graphics provenance in disjoint owned scopes; (5) enhance halftime/career coaching and physical-device/PWA offline acceptance, without changing existing saved games.
 
 **Final code SHA, CI and host results:** to be appended after verification.
+
+
+## Completed regression certification and real-AI outcome evidence
+
+**Source integration:** existing monitored browser script updated in [`80c02e8c`](https://github.com/saeedsai/SuperMagicFootball/commit/80c02e8c4726900ff858d3e2202ba7c32a8e08c5); new Node regression bridge in [`37192dd1`](https://github.com/saeedsai/SuperMagicFootball/commit/37192dd1aa3d3827dd8da3642c46c2b03291f42e), specialist handover in [`b7c51643`](https://github.com/saeedsai/SuperMagicFootball/commit/b7c516437f04b526a68d70ace87197f9a14498fe). Concurrent CI/roster/graphics/UI commits were retained.
+
+[**Full Regression Census #38903547925**](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38903547925) **SUCCESS** on descendant SHA `f4cbf72baa50b73a706c05c38f479aa09486d94c`, containing the complete unchanged new keeper tests. Preflight roster/data validator, game fixture builder and active **118/118 Node contracts** passed. The four historical Node shards passed **118/118** (30+30+29+29); the four Chromium shards passed **63/63** (16+16+16+15). **Total 181/181 PASS, no failure, timeout, ERROR or NOT_RUN.** Archived test discovery remained intact. The actual keeper browser case ran in browser shard 0, **PASS in 3.81 seconds**.
+
+The raw browser JSON artifact `full-regression-browser-0` for this exact run records the two independent devices:
+
+| Metric | Desktop Chromium | Simulated mobile touch |
+|---|---:|---:|
+| Legacy ball-only contact cases / unique conditions | 144 / 72 | 144 / 72 |
+| Legacy real keeper saves / goals / unresolved | 34 / 36 / 2 | 34 / 36 / 2 |
+| Legacy duplicate save events | 0 | 0 |
+| **Added live-AI cases / unique conditions** | **96 / 48** | **96 / 48** |
+| Real live-AI saves | **26** | **26** |
+| Actual goals | **10** | **10** |
+| Unresolved attempts | **12** | **12** |
+| Live-AI keeper calls in the unique cohort | 1,628 | 1,628 |
+| Cases where keeper physically moved | 48 / 48 | 48 / 48 |
+| Mirrored outcome mismatches | **0** | **0** |
+
+**Interpretation:** The live-AI numbers use a different set of conditions than the original 72 ball-only ones; do **not** compare their raw proportions as proof that keeper AI makes saves more or less often. Two deterministic near-corner aim lanes and one zigzag Super behavior cannot establish all-skill-level or human-vs-CPU parity. Continue with broader sampled seeds, nonlinear behaviors, pressure, fatigue and club keeper attributes before proposing any movement or save tuning.
+
+[**Deployed hosted game smoke #38891468528 — latest rerun**](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528) **SUCCESS**: live public GitHub Pages **HTTP 200**, version `0.8.25.32-integrated`, **224 runtime teams**, menus, selection, kickoff and active gameplay on real desktop Chromium and simulated touch Chromium. This does not certify a physical Android/iPhone, Safari or installable PWA offline restart.
+
+**Cleanup review:** latest tracked Git tree contains zero tracked `__pycache__`, `.pyc`, `node_modules`, `.generated`, `.tmp`, `.bak`, `.swp` or `.DS_Store` candidates. Historical QA and concept assets remain necessary, so no unrelated file deletions were made.
+
+**Handover:** This small keeper-testing requirement is accepted. Once this report and roadmap checkpoint are pushed, release exclusive gameplay-engine ownership. Next owner must re-read claims and only then select real-AI multi-seed/trajectory balance tuning, if evidence requires it. No other agent's CI, graphics, UI, roster, gameplay settings or game-save files were modified.
