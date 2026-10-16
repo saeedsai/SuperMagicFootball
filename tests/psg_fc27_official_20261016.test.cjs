@@ -39,6 +39,12 @@ test('PSG named one-player transfer and field-level metadata ledger remain consi
  assert.equal(changes.length,1);assert.equal(changes[0].slot,9);
  assert.deepEqual(changes[0].previous,{name:'Bradley Barcola',overall:85});
  assert.deepEqual(changes[0].current,{name:'Warren Zaïre-Emery',overall:83});
+ assert.equal(changes[0].ratingProvenance,'fc27_third_party_unofficial','legacy history enum describes original snapshot');
+ assert.equal(changes[0].officialRatingVerification.score,83,'EA official rating proven separately');
+ assert.deepEqual(changes[0].officialRatingVerification.face,[79,71,78,81,79,85]);
+ assert.match(changes[0].officialRatingVerification.source,/^https:\/\/www\.ea\.com\/games\/ea-sports-fc\/ratings\/player-ratings\/warren-zaire-emery\/270673$/);
+ assert.equal(l.currentAuditBlobSha.length,40,'immutable PSG audit fingerprint maintained');
+
  assert.equal(l.summary.changedSlots,l.playerChanges.length);
  assert.equal(l.currentRosterSnapshot.club26_3.players[8].name,'Warren Zaïre-Emery');
  const m=load('docs/PLAYER_METADATA_BATCHES_20261016.json').batches.find(b=>b.id==='CLUB-20261016-PSG-FC27-VERIFICATION-1');
