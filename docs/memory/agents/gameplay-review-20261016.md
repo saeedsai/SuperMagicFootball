@@ -1,34 +1,36 @@
-# Gameplay review and regression checkpoint
+# Gameplay engine — this chat's concise handover
 
 **Agent ID:** `gameplay-review-20261016`  
 **Updated:** 2026-10-16  
-**Specialist handover:** [QA penalty shootout lifecycle](../../QA_PENALTY_SHOOTOUT_LIFECYCLE_20261016.md)
+**Specialist:** [manual local penalty keeper](../../GAMEPLAY_PENALTY_KEEPER_CONTROL_20261016.md)
 
 ## Mission
 
-Incrementally improve actual football gameplay and remaining large features without modifying another agent's live GitHub-owned scope. Preserve IDs, 2GK/3DF/4MF/3FW rosters, six formations, exactly four actions, save compatibility, and graphic fallbacks.
+Deliver small, test-backed football gameplay improvements from latest `dev` with exclusive scope, without interrupting simultaneous agents. Preserve four actions, six formations, team/player IDs, roster distribution, saved career/lineups and renderer parity.
 
 ## Current checkpoint
 
-Completed `QA-PENALTY-SUDDEN-DEATH-RUNTIME` under a SHA-verified `qa-framework` claim. Added two focused regression scripts that execute **actual modular penalty engine methods** in Node and drive the playable Quick Match in Chromium (desktop/simulated-touch), plus source-discovery contract. Covered first-five early clinch, full sixth/seventh sudden-death pair, both possible winners, tied regulation-score preservation and unchanged controls/squads.
+**New gameplay mechanic shipped to `dev`:** two-human penalty defending goalkeeper uses its own movement and Jump/dive input, alternates both sides and keeps shot-time human save position instead of being overridden by automatic keeper reads. One-human penalty GK CPU read remains unchanged. No UI, input, normal-match physical AI, graphics, game data, fixtures or CI altered.
 
-New files: `tests/penalty_shootout_lifecycle.test.cjs`, `tests/penalty_shootout_lifecycle_browser_qa.py`, `docs/QA_PENALTY_SHOOTOUT_LIFECYCLE_20261016.md`; narrow `tests/master_contracts.mjs` assertion and `docs/NEXT_MILESTONES.md` addition. No game code/UI/physics/graphics/roster changes. No tracked files were removed without proof of safe dependency cleanup.
+Code [`d0adf651`](https://github.com/saeedsai/SuperMagicFootball/commit/d0adf651e7af4b5f2fdff7b9d61d148e4098edb6); Node tests [`0a20dba1`](https://github.com/saeedsai/SuperMagicFootball/commit/0a20dba1415f0a3012bf229dbce0cb75240f0450), corrected marginal save test [`c61631b8`](https://github.com/saeedsai/SuperMagicFootball/commit/c61631b81920c100eba773eddc7ff3889bcb6f0a); browser test [`0e9cfeff`](https://github.com/saeedsai/SuperMagicFootball/commit/0e9cfeff9eee4344bd5c7169d09ea081003b9edb). Specialist document `docs/GAMEPLAY_PENALTY_KEEPER_CONTROL_20261016.md`; roadmap note in `docs/NEXT_MILESTONES.md`. No cleanup deletion without provenance checks.
 
 ## Next smallest action
 
-At next session re-read latest `dev`, current locks and this file only; do not read other agent memories. Ask rightful memory owner to resolve [CI blocker #8](https://github.com/saeedsai/SuperMagicFootball/issues/8) and then get exact-source 4+4 full regression, desktop/simulated-touch penalty browser and hosted match smoke. If any new PK regression truly fails, update only claimed test or obtain engine lock for runtime fix. Under a **fresh exclusive gameplay lock**, deliver small bounded [human PK GK control feature #5](https://github.com/saeedsai/SuperMagicFootball/issues/5). After that: pressure-aware first-touch passes, goalkeeper grip/distribution, career coaching, original/local mode parity.
+**Before coding:** reread current `dev`, claims, this file (not other agent files) and new specialist QA. Full census is blocked because `project_memory_contract.test.cjs` rejects a separately owned `gameplay-pk-20261016` identity. Its **own chat/project-context owner** must repair that, not this chat. After repair, run full 4 Node+4 Chromium census, specifically `tests/penalty_keeper_control_browser_qa.py` on desktop and simulated touch, and hosted public game smoke; fix any newly exposed behavioral regression under a fresh proper claim. Do not assert browser acceptance until real results.
+
+Then in separate sessions: PVP penalty keeper timing/fps fair-save calibration, pressure-aware first-touch teammate pass cushioning, graphics keeper glove/release, tactical career UX and original-mode parity.
 
 ## Ownership and exclusions
 
-The `qa-framework` claim belongs to owner `gameplay-review-20261016-gpt6-pkqa` for this regression, to release at checkpoint; never retain or hijack another owner's gameplay-engine, UI-controls, graphics, project-context or roster lock. Your own memory file may be revised; every other chat's file is off-limits.
+Session owner: `gameplay-review-20261016-gpt6-pkkeeper-r3`; owned `gameplay-engine` exclusive lock during change, **release after checkpoint**. `ui-controls` was active under a different session when checked; no changes to `src/modules/ui.js`, `src/modules/input.js`, art, roster or another agent memory. Existing P2 keyboard/gamepad controls work without added second touchscreen joystick.
 
 ## Evidence
 
-- [Node fix/source `d1292c8f`](https://github.com/saeedsai/SuperMagicFootball/commit/d1292c8f478e034bd0e9ffa499e8dceb09f3ebae): [Modular QA #38914495445](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914495445) 158/159 active Node PASS, all **six new PK tests passed**, one unrelated memory contract failure.
-- [Full regression #38914650232](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914650232) 164/165 Node preflight, Chromium and historical shards skipped due other agent `game-developer-6` memory identity mismatch. Browser test and new hosted game **not certified**.
-- [Census trigger `21f32120`](https://github.com/saeedsai/SuperMagicFootball/commit/21f32120882791402c2e9f72ff07ebd3b429fbe3); [QA issue #8](https://github.com/saeedsai/SuperMagicFootball/issues/8) asks owner to repair memory registration.
-- Historical public game: https://saeedsai.github.io/SuperMagicFootball/; prior hosted browser smoke succeeded but **not rerun in this chat**. Physical phones and offline/PWA verification remain open.
+- [Modular QA #38945791129](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38945791129) exact browser-test code: **193/194 Node pass including 8 new keeper cases**, one unrelated agent memory contract failure. [Issue #8](https://github.com/saeedsai/SuperMagicFootball/issues/8) updated for current owner identity (old dev6 failure was fixed).
+- [Full regression #38946268700](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946268700) latest checked full attempt **failed**, 4+4 shards not green; do not report the browser feature as tested.
+- Historic accepted pre-feature [full census #38925059080](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925059080); later Pages successful but current exact head and interactive phone verification still unproven.
+- Public game https://saeedsai.github.io/SuperMagicFootball/; link was not interactively navigable via this chat's external access. Physical handsets and offline PWA not tested.
 
 ## Cleanup
 
-Keep under 4 KiB; replace these notes with latest evidence on next checkpoint, do not append chat history. Do not delete archived QA, concept artwork, source provenance or another agent's files; no validated safe obsolete-file deletion in this batch.
+Replace old evidence rather than append transcripts; retain archived QA/art/source files unless dependency and owned scope audit proves removable. Keep this checkpoint below 4 KiB.
