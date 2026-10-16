@@ -58,3 +58,19 @@ These new telemetry cohorts are not a statistical sample or a claim of balanced 
 ### Handover and claim release
 
 Scoped owner: `keeper-cohort-20261016-gpt6-chat6`, lock `gameplay-engine`; all source/tests/documentation changes were committed on current `dev` using non-force, compare/refresh integration. After exact gate capture, release the lock with this document. Do not delete historical tests or other agents' assets; no unused tracked scratch files were identified as safe to delete.
+
+
+## Final exact-source Full Regression Census result — release handover
+
+**Feature code SHA:** `eee6b3ed322ddca0f291310da7f3b06cfd255d85`. [Full Regression Census #38897958209](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38897958209) finished **FAILURE overall**: **110/110 Node scripts PASS** (28+27+27+28); **56/59 Chromium scripts PASS** (14/15, 14/15, 14/15, 14/14); combined **166/169 executable scripts PASS, 3 FAIL, 0 ERROR, 0 TIMEOUT, 0 NOT_RUN**. Preflight was green. The new keeper source/test was not among the failures and [Modular QA #38897958330](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38897958330) passed **95/95 active Node** and 17/17 data-merge tests.
+
+**Three independent browser failures on the exact commit:**
+1. `concept_modular_browser_qa.py`: painted concept front-head region assertion exceeded limit, observed 133 vs expected below 123 (graphics-renderer scope).
+2. `halftime_coach_browser_qa.py`: halftime UI browser integration assertion failed (ui-controls scope, inspect workflow log).
+3. `control_reliability_browser_qa.py`: simulated Android switch selection remained index 3, no switch events and no grace window (UI/gameplay controls scope, pre-existing intermittent acceptance).
+
+None is caused by the read-only `MatchOpportunityTracker` code changed here. They were left to their active/next appropriate owners; fixing them would require claiming other scopes and would risk concurrent agents' source. **Do not call this exact-source full regression green.** A later full regression after the owning agents' corrections may certify descendant commits, but it is separate evidence.
+
+**Live game after deployment:** [hosted PC/touch smoke #38891468528](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528), most recent checked rerun, **SUCCESS**: public GitHub Pages HTTP 200, menus, team selection, kickoff and active match on desktop Chromium and simulated touch. Physical iPhone/Android devices remain uncertified.
+
+**Next developer action:** check latest `dev` head/claim registry before starting; resolve independent Chromium gates under the appropriate graphic/UI/controls ownership. Afterwards run a seeded real-AI/nonlinear Super Shot keeper fair-goal cohort using the new release diagnostics. The new target-offset/fatigue/pressure classifications are accepted by active Node QA but do not themselves assert goalkeeper competitive balance. Keep archives and historical QA evidence; no tracked deletion was justified in this small telemetry-only release. Release the `gameplay-engine` claim with this handover once pushed.
