@@ -3,7 +3,7 @@
   "lock_key": "integration-tooling",
   "feature_id": "ART-C01-FAR-ARM-FIXTURE",
   "owner": "graphics-update-c01-far-arm-20261016-gpt6-r1",
-  "status": "active",
+  "status": "released",
   "scope": "Only scripts/build.py embedding far-arm illustration as one new test-fixture constant. No other tools or merge/data code.",
   "base_sha": "89342d3fd5c683cf8d242e20322bdbe75ca23a17",
   "created_at": "2026-10-16",
@@ -16,9 +16,9 @@
     "tests/concept_modular_live_qa.py",
     "Full Regression Census"
   ],
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md; C01_FAR_ARM_BATCH_20261016.md; source f0fea598; graphics #38913908449 PASS 147/147; hosted #38914486909 PASS; full blocked by unrelated project-memory identity contract",
   "previous_handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md and docs/concept_character_pipeline/C01_FACE_FRONT_CHECKPOINT_20261016.md; source a8553002, art QA #38899003730, hosted #38899003632, full census #38899003690 attempt 2 all PASS",
   "released_at": "2026-10-16",
-  "outcome": "completed_c01_experimental_painted_near_arm_and_safe_low_amplitude_stride",
+  "outcome": "completed_far_arm_illustrated_art_and_reciprocal_run_overlay",
   "integrated_commit": "6a706776ed8d5eb842635496f2c3036a038b3937"
 }
