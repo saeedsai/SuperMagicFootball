@@ -2675,7 +2675,7 @@
       "club": "Manchester City",
       "playersChanged": 12,
       "fieldsChanged": 63,
-      "status": "integrated_active_qa_171_of_171_pass_pages_deployed_historical_browser_pending",
+      "status": "fully_regression_verified_171_active_130_historical_node_71_browser_pages_success",
       "changes": [
         {
           "playerId": "club26_2_0",
@@ -3143,8 +3143,29 @@
           },
           "historicalCensus": {
             "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074",
-            "status_at_handover": "four_node_shards_passed_browser_running",
-            "headSha": "34604826aa552e493885c12870cdbf9bc6b662cf"
+            "conclusion": "success",
+            "headSha": "34604826aa552e493885c12870cdbf9bc6b662cf",
+            "preflight": "passed",
+            "historicalNode": {
+              "passed": 130,
+              "failed": 0,
+              "shards": [
+                32,
+                33,
+                32,
+                33
+              ]
+            },
+            "chromiumBrowser": {
+              "passed": 71,
+              "failed": 0,
+              "shards": [
+                17,
+                18,
+                18,
+                18
+              ]
+            }
           },
           "hostedPhysicalMobileAndPCInteraction": "not_independently_verified"
         }
