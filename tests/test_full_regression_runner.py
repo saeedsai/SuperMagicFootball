@@ -90,6 +90,8 @@ class RegressionRunnerSafetyTests(unittest.TestCase):
         data = json.loads((self.root / "artifacts" / "browser_shard_1_of_1.json").read_text())
         self.assertEqual(data["discovered"], 1)
         self.assertEqual(data["requested"], 1)
+        self.assertEqual(data["discovered_scripts"], ["a_browser_qa.py"])
+        self.assertEqual(data["selected_scripts"], ["a_browser_qa.py"])
         self.assertEqual(data["summary"], {
             "PASS": 1, "FAIL": 0, "TIMEOUT": 0, "ERROR": 0, "NOT_RUN": 0
         })
@@ -121,6 +123,8 @@ class RegressionRunnerSafetyTests(unittest.TestCase):
         report = json.loads((self.root / "artifacts" / "browser_shard_1_of_2.json").read_text())
         self.assertEqual(report["discovered"], 2)
         self.assertEqual(report["requested"], 1)
+        self.assertEqual(report["discovered_scripts"], ["a_browser_qa.py", "b_browser_qa.py"])
+        self.assertEqual(report["selected_scripts"], ["a_browser_qa.py"])
         self.assertEqual(report["summary"]["PASS"], 1)
 
 
