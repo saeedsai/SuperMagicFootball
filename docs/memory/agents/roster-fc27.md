@@ -10,10 +10,13 @@ One exclusively claimed club at a time: official EA FC 27 ratings/face attribute
 - Previous Arsenal `club26_0` and Bayern `club26_1` batches already complete; do not redo their data. Refer to their separate handovers.
 
 ## Next smallest action
-After verifying the City source/test SHA and GitHub CI, record precise pass/fail/deployment status in City handover and **release** City claim. Next club PSG `club26_3` only after rereading live `dev` and reserving its club lock; then Barcelona `club26_4`, Manchester United `club26_5`, Real Madrid `club26_7`, and one verified unclaimed next club.
+Manchester City data and QA handover are complete; its lock has been released at end of batch. Next club PSG `club26_3` only after rereading live `dev` and reserving its club lock; then Barcelona `club26_4`, Manchester United `club26_5`, Real Madrid `club26_7`, and one verified unclaimed next club.
 
 ## Ownership and exclusions
-Only `roster-club-club26_2` is owned for this batch. Read only the `roster-fc27` agent memory and shared memory. Shared memory/admin docs and other agent memory are off limits. Retain all 2GK-3DF-4MF-3FW roster contract invariants.
+No ongoing club ownership is implied by this memory; City club lock is released after source, test and handover commits. Read only the `roster-fc27` agent memory and shared memory. Shared memory/admin docs and other agent memory are off limits. Retain all 2GK-3DF-4MF-3FW roster contract invariants.
+
+## Actual QA checkpoint
+The integrated Manchester City tests passed 3/3 and active Node suite 169/170; the only failure was unrelated project-memory identity mismatch for game-developer-6, [issue #8](https://github.com/saeedsai/SuperMagicFootball/issues/8). Full historical Node/browser regression skipped after preflight; exact Pages hosted mobile/PC interaction unverified. [City handover](../../CLUB_PLAYER_METADATA_MAN_CITY_20261016.md) is authoritative.
 
 ## Evidence
 Official EA cards: https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10
