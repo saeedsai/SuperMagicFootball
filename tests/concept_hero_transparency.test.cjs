@@ -17,3 +17,5 @@ test('matte cleaning uses precise interleg seed points and preserves the white k
  assert.match(s,/lossless=True/);
  assert.doesNotMatch(s,/remove_all_white|white_to_transparent/);
 });
+
+// ASSET_REBUILD_VERIFIED: rerun all QA after the cleaned WebP atlas binary is committed.
