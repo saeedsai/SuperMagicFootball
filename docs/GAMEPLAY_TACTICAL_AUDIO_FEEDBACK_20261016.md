@@ -41,3 +41,13 @@ Run (1) active Node QA, Python merge and coordination safeguards; (2) complete 4
 5. Continue direction-safe ball receive/pass/keeper glove animation and true offline/physical-device certification.
 
 **Final test evidence:** to be appended after current CI verification.
+
+## First integrated release checkpoint (16 October 2026)
+
+- Feature source `7f670f9c7466efb825985e4373d966d9ad653492`; Node tests `53eed91e95c2437d3b8bcf6f1c0bd0a66edec5a7`; playable Chromium desktop/touch tests `551e76f3923ffeeda420aaaff0dd11d7797651bb`; docs `65935922188c9def261e1499158817eec40e6750`; roadmap `6b0b737e5630657a0d01160220bd30622a79d0cf`.
+- [Modular Game Dev QA #38960659164](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960659164): **SUCCESS** with **228/228 Node tests**, including **6/6 new tactical-audio tests**, and existing Python data-merge, coordination, build and roster checks. [#38960714350](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960714350) descendant QA also **SUCCESS**. Automatic About per-commit SHA and stable bundled version are unchanged; the existing About/version regression is included in passing Node suite.
+- [Full Regression Census #38960642802](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960642802) on `3395c6cf` descendant containing the new source and both tests had **IN_PROGRESS** at this checkpoint: preflight and all 4 historical Node shards passed, Chromium browser shards still running. The new `tactical_audio_feedback_browser_qa.py` must be verified as PASS from its actual job logs; neither physical mobile audio output nor actual speakers are certified by recorded WebAudio oscillator parameters.
+- Hosted game: https://saeedsai.github.io/SuperMagicFootball/ . General live desktop/simulated-touch Quick Match [#38891468528 attempt 14](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528) was **SUCCESS** before this session's final deployment; a fresh rerun was requested. A Pages deploy may be cancelled by fast concurrent pushes; claim only an actually successful deployment run for the feature descendant. 
+- No irrelevant existing test, player-data or art files removed (referenced/ownership risk). Feature owner releases audio-feedback with explicit pending browser gate if needed.
+
+**Next owner action:** inspect Full Regression Census #38960642802 Chromium shard where `tactical_audio_feedback_browser_qa.py` runs; fix any reproducible own-scope issue after fresh claim, then verify public hosted PC/touch game and sound faders. GameEngine first-touch and Career scouting are separately active and must not be edited.
