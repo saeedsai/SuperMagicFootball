@@ -52,3 +52,7 @@ Test cases cover: independently edited FC27-style rating and height with source 
 5. **Career/tactics/first-touch polish:** Separately claim UI or graphics to improve substitution feedback and passing/reception visuals without altering saves/controls.
 
 Handover: release `integration-tooling` after publishing this checkpoint and leave the full eight-shard run pending if it has not completed.
+
+### Full regression intermediate evidence
+
+[Full Regression Census #38903065643](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38903065643) has completed its data preflight and all **four Node script shards PASS: 117/117** (30+29+29+29), with no failure, timeout, error or nonexecution. The four independent Chromium shards were still running when this checkpoint was finalized, so the **eight-shard aggregate is not yet certified**. This run is tied to source/guide commit `d7a2acc6e73aea11b2feceedf2d300b6e550fdfe`, not the latest concurrently advancing dev commit.
