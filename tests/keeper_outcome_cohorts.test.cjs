@@ -49,6 +49,9 @@ test('edge targets and tired keepers separate contacts, real deflections and goa
  assert.equal(r.byTargetOffsetBand.wide.goals,1);
  assert.equal(r.byKeeperFatigueBand.moderate.deflections,1);
  assert.equal(r.byKeeperFatigueBand.tired.goals,1);
+ assert.equal(r.byReleasePressureBand.close.deflections,1);
+ assert.equal(r.byReleasePressureBand.open.goals,1);
+ assert.equal(Object.values(r.byReleasePressureBand).reduce((sum,v)=>sum+v.shots,0),r.shots);
  assert.equal(r.byTargetOffsetBand.stretch.saves,0,'deflection is not a caught save');
  assert.equal(r.byTargetOffsetBand.wide.contacted,0);
 });

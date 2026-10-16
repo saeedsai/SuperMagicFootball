@@ -37,3 +37,7 @@ New contracts: mirrored defended goal sides; authentic shot/deflection/goal outc
 5. Add halftime/career substitution suitability/coaching feedback without changing stored lineups automatically.
 
 Long-term: full traditional game-mode parity, physical iOS/Android tests, PWA/offline/restart persistence, broad FC27 player source validation, Super Defense/Tricks and multiplayer. Do not delete historical QA reports, sourced player data, graphics assets or archived regression scripts. Existing `.gitignore` excludes transient artifacts; cleanup is deliberately conservative while concurrent claims are active.
+
+## Additional pressure-dependent outcome cohorts
+
+The same event-backed `keeperCalibration` also includes `byReleasePressureBand` for the already-captured release-time defensive pressure (`close`, `medium`, `open`, `no_active_defender`, `unobserved`). Each partition reports the same authentic goals, catches, deflections and unresolved counts. All five bins together contain exactly the real ordinary/Super Shot denominator; a missing or invalid pressure band stays unobserved. This complements `shotReleasePressureCounts` without changing its format or counting animation intent as a save. Fatigue and target-distance measurements are binned at the existing two-decimal release-snapshot precision. New Node tests assert mirrored pressure samples and partition sums. No engine/roster/graphics/CI change.

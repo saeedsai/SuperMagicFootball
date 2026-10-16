@@ -145,7 +145,11 @@ export class MatchOpportunityTracker {
    // Counts, not estimated keeper save probabilities; absent metadata stays
    // explicitly unobserved so bins always total the actual shot denominator.
    byTargetOffsetBand:grouped(targetBand,['near','stretch','wide','unobserved']),
-   byKeeperFatigueBand:grouped(fatigueBand,['rested','moderate','tired','unobserved'])
+   byKeeperFatigueBand:grouped(fatigueBand,['rested','moderate','tired','unobserved']),
+   byReleasePressureBand:grouped(a=>{
+    const pressure=a.releaseContext?.pressureBand;
+    return ['close','medium','open','no_active_defender'].includes(pressure)?pressure:'unobserved';
+   },['close','medium','open','no_active_defender','unobserved'])
   };
   return {attempts:this.attempts.length,counts,byKind,shotReleasePressureCounts:contextCounts,
    keeperCalibration,events:{...this.events},unlinkedSaves:this.unlinkedSaves,
