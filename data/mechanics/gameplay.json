@@ -757,6 +757,7 @@
     "aerialDoubleTapSeconds": 0.32
   },
   "physicsTuning": {
+    "superShot": {"speedMultiplier": 0.96, "fatigueMultiplier": 1.08},
     "passSpeed": {
       "base": 445,
       "qualityMultiplier": 2.6,

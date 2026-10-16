@@ -2,6 +2,8 @@
 // Gameplay remains unchanged at the documented defaults in mechanics/gameplay.json.
 const PHYSICSBALANCE=(()=>{
  const BOUNDS=Object.freeze({
+  'superShot.speedMultiplier':[.85,1],
+  'superShot.fatigueMultiplier':[1,1.35],
   'passSpeed.base':[300,650],
   'passSpeed.qualityMultiplier':[0,5],
   'passSpeed.max':[700,1600],
@@ -28,6 +30,8 @@ const PHYSICSBALANCE=(()=>{
   if(result.passSpeed.max<result.passSpeed.base)throw Error('physicsTuning.passSpeed.max must be >= base');
   return Object.freeze(Object.fromEntries(Object.entries(result).map(([k,v])=>[k,Object.freeze(v)])));
  }
+ function superShotSpeedMultiplier(settings){return settings.superShot.speedMultiplier;}
+ function superShotFatigueMultiplier(settings){return settings.superShot.fatigueMultiplier;}
  function passLaunchSpeed(quality,longScale,settings){
   const p=settings.passSpeed;
   return Math.min(p.max,(p.base+quality*p.qualityMultiplier)*longScale);
@@ -38,6 +42,6 @@ const PHYSICSBALANCE=(()=>{
    (p.referenceSkill-skill)*p.skillCoefficient+
    (p.referenceSkill-diving)*p.divingCoefficient+fatigue*p.fatigueCoefficient));
  }
- return {BOUNDS,validatePhysicsTuning,passLaunchSpeed,keeperDiveCooldown};
+ return {BOUNDS,validatePhysicsTuning,passLaunchSpeed,keeperDiveCooldown,superShotSpeedMultiplier,superShotFatigueMultiplier};
 })();
 export {PHYSICSBALANCE};

@@ -27,7 +27,7 @@ const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP
 const WORLD=GAME_ASSETS.mechanics.world;
 // v0.8.25.31: conservative JSON-backed gameplay tuning; defaults reproduce 0.8.25.30 exactly.
 const ENGINE_BALANCE=GAME_ASSETS.mechanics.engineBalance;
-const {validatePhysicsTuning,passLaunchSpeed,keeperDiveCooldown}=PHYSICSBALANCE;
+const {validatePhysicsTuning,passLaunchSpeed,keeperDiveCooldown,superShotSpeedMultiplier,superShotFatigueMultiplier}=PHYSICSBALANCE;
 const PHYSICS_TUNING=validatePhysicsTuning(GAME_ASSETS.mechanics.physicsTuning);
 // 105:68 real-football proportions
 const SUPER_SHOT_TRANSFORM_SECONDS=GAME_ASSETS.mechanics.engineTiming.superShotTransformSeconds;
@@ -322,7 +322,7 @@ class GameEngine{
  }
 
  staminaTick(p,dt,intensity=0){p.fatigue=fatigueTick(p.fatigue,stat(p,'stamina'),dt,intensity);this.fatigueLedger[p.t][p.src.id]=p.fatigue;}
- spendStamina(p,kind){const levelKind=kind==='super'||kind==='comboSuper'?'shot':kind==='defenceSuper'?'defence':kind==='keeperSuper'?'keeper':null;const multiplier=levelKind?levelModifiers(abilityLevel(p,levelKind)).fatigue:1;p.fatigue=actionFatigue(p.fatigue,stat(p,'stamina'),kind,multiplier);this.fatigueLedger[p.t][p.src.id]=p.fatigue;}
+ spendStamina(p,kind){const levelKind=kind==='super'||kind==='comboSuper'?'shot':kind==='defenceSuper'?'defence':kind==='keeperSuper'?'keeper':null;const multiplier=(levelKind?levelModifiers(abilityLevel(p,levelKind)).fatigue:1)*(['super','comboSuper'].includes(kind)?superShotFatigueMultiplier(PHYSICS_TUNING):1);p.fatigue=actionFatigue(p.fatigue,stat(p,'stamina'),kind,multiplier);this.fatigueLedger[p.t][p.src.id]=p.fatigue;}
  halftimeRecovery(){
   for(const p of this.players)this.fatigueLedger[p.t][p.src.id]=p.fatigue;
   // v0.8.25.12: halftime restores 40% of accumulated fatigue instead of a flat amount.
@@ -403,7 +403,7 @@ class GameEngine{
   aim=(Math.random()<.5?WORLD.goalTop:WORLD.goalBottom)+(Math.random()<.5?-1:1)*(35+Math.random()*95);
  }
  aim=clamp(aim,WORLD.goalTop-155,WORLD.goalBottom+155);
- const dx=(t===0?F.x+F.w:F.x)-p.x,dy=aim-p.y;const magnitude=Math.hypot(dx,dy);if(special){let spec=SHOTS[p.src.shot]||SHOTS.nuts;this.freeBall(p,dx,dy,850*spec.speed*shotVelocityModifier(p.src.shot,abilityLevel(p,'shot'))*SHOTFEEL.launchPower(stat(p,'shootPower'),p.fatigue,true)*moraleFactor(p.morale),{shot:{...spec,level:abilityLevel(p,'shot'),id:p.src.shot,phase:0,startY:p.y,direction:dir,aimY:aim,alternate},power:((stat(p,'shootPower')*.75+13)*spec.impact*(.98-.27*p.fatigue)+18)*levelModifiers(abilityLevel(p,'shot')).power,z:29,vz:alternate?190:45,aimY:aim});p.specialCd=3.4;}else{let speed=(450+stat(p,'shootPower')*4.0)*(1+Math.min(1.2,charged)*.32)*(enhanced?1.32:1)*SHOTFEEL.launchPower(stat(p,'shootPower'),p.fatigue,false)*moraleFactor(p.morale)*(alternate?(.82+stat(p,'heading')*.003):1);this.freeBall(p,dx,dy,speed,{power:stat(p,'shootPower')*.81*(1-.30*p.fatigue)*(enhanced?1.45:1),z:p.z+14,vz:alternate?160:Math.random()*90,aimY:aim,ordinaryShot:true})}return true;}
+ const dx=(t===0?F.x+F.w:F.x)-p.x,dy=aim-p.y;const magnitude=Math.hypot(dx,dy);if(special){let spec=SHOTS[p.src.shot]||SHOTS.nuts;this.freeBall(p,dx,dy,850*spec.speed*superShotSpeedMultiplier(PHYSICS_TUNING)*shotVelocityModifier(p.src.shot,abilityLevel(p,'shot'))*SHOTFEEL.launchPower(stat(p,'shootPower'),p.fatigue,true)*moraleFactor(p.morale),{shot:{...spec,level:abilityLevel(p,'shot'),id:p.src.shot,phase:0,startY:p.y,direction:dir,aimY:aim,alternate},power:((stat(p,'shootPower')*.75+13)*spec.impact*(.98-.27*p.fatigue)+18)*levelModifiers(abilityLevel(p,'shot')).power,z:29,vz:alternate?190:45,aimY:aim});p.specialCd=3.4;}else{let speed=(450+stat(p,'shootPower')*4.0)*(1+Math.min(1.2,charged)*.32)*(enhanced?1.32:1)*SHOTFEEL.launchPower(stat(p,'shootPower'),p.fatigue,false)*moraleFactor(p.morale)*(alternate?(.82+stat(p,'heading')*.003):1);this.freeBall(p,dx,dy,speed,{power:stat(p,'shootPower')*.81*(1-.30*p.fatigue)*(enhanced?1.45:1),z:p.z+14,vz:alternate?160:Math.random()*90,aimY:aim,ordinaryShot:true})}return true;}
  // v0.8.25.12: a direction is an explicit kick vector, not a target preference.
  // With no direction, quick PASS always selects the nearest available teammate.
  // AI retains the historic advancing-player selection (opts.human is false).
@@ -1139,13 +1139,14 @@ class GameEngine{
  for(let p of this.players){this.playerSeconds[p.t][p.src.id]=(this.playerSeconds[p.t][p.src.id]||0)+dt;p.anim+=dt;p.cd=Math.max(0,p.cd-dt);p.invuln=Math.max(0,p.invuln-dt);p.specialCd=Math.max(0,p.specialCd-dt);p.abilityCd=Math.max(0,(p.abilityCd||0)-dt);p.abilityFx=Math.max(0,(p.abilityFx||0)-dt);p.dashCooldown=Math.max(0,(p.dashCooldown||0)-dt);p.diveCooldown=Math.max(0,(p.diveCooldown||0)-dt);p.comboCooldown=Math.max(0,(p.comboCooldown||0)-dt);p.contactCooldown=Math.max(0,(p.contactCooldown||0)-dt);p.trickCd=Math.max(0,(p.trickCd||0)-dt);p.dribbleCooldown=Math.max(0,(p.dribbleCooldown||0)-dt);p.trickGuard=Math.max(0,(p.trickGuard||0)-dt);p.trickFx=Math.max(0,(p.trickFx||0)-dt);p.firstTouchFx=Math.max(0,(p.firstTouchFx||0)-dt);p.comboWindow=Math.max(0,(p.comboWindow||0)-dt);
   p.ballLiftWindow=Math.max(0,(p.ballLiftWindow||0)-dt);
   this.resolveAerialTap(p,dt);
-  if(!p.ballLiftWindow&&this.ball.liftOwner===p)this.ball.liftOwner=null;p.assistFx=Math.max(0,(p.assistFx||0)-dt);p.dashTimer=Math.max(0,(p.dashTimer||0)-dt);p.actionTimer=Math.max(0,p.actionTimer-dt);if(p.keeper&&['keeperDive','keeperDiveCatch'].includes(p.action))p.diveElapsed=Math.min(.7,(p.diveElapsed||0)+dt);p.cryTimer=Math.max(0,(p.cryTimer||0)-dt);if(p.actionTimer===0&&p.action!=='idle'){
+  if(!p.ballLiftWindow&&this.ball.liftOwner===p)this.ball.liftOwner=null;p.assistFx=Math.max(0,(p.assistFx||0)-dt);p.dashTimer=Math.max(0,(p.dashTimer||0)-dt);p.actionTimer=Math.max(0,p.actionTimer-dt);if(p.keeper&&['keeperDive','keeperDiveCatch'].includes(p.action))p.diveElapsed=Math.min(.7,(p.diveElapsed||0)+dt);p.cryTimer=Math.max(0,(p.cryTimer||0)-dt);if(p.actionTimer===0&&p.action!=='idle'&&p.action!=='keeperHold'){
    if(p.keeper&&((p.action==='keeperDive'&&p.diveCooldown>0)||
         (p.action==='keeperDiveCatch'&&this.ball.owner===p))){
     // Also finish a caught dive with a visible landing instead of snapping upright.
     p.action='keeperRecover';p.actionTimer=.34;p.z=0;
     this.emit('keeperRecovery',{team:p.t,player:p.src.name,secondsRemaining:p.diveCooldown});
-   }else p.action='idle';
+   }else if(p.keeper&&this.ball.owner===p){p.action='keeperHold';p.actionTimer=0;}
+   else p.action='idle';
   }if(p.z>0||p.vz>0){p.z+=p.vz*dt;p.vz-=1080*dt;if(p.z<=0){const wasCombo=p.comboActive;p.z=0;p.vz=0;p.jumpCount=0;if(wasCombo)this.landCombo(p)}}
  if(p.stun>0){p.stun-=dt;p.slideTimer=0;p.slideRemaining=0;p.moveVX=0;p.moveVY=0;this.staminaTick(p,dt,0);continue}
  if((p.slideTimer||0)>0){
@@ -1285,7 +1286,7 @@ class GameEngine{
   const styleSpeed=t===1?(aiStyle==='Aggressive'?1.09:aiStyle==='Defensive'?.96:1):1;
   if(p.keeper&&owner===p){
    p.keeperHold=(p.keeperHold||0)+dt;
-   if(p.cd<=0&&(p.keeperHold>=.65||this.players.some(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&distance(p,q)<340))){this.distributeKeeper(p);return;}
+   if(p.cd<=0&&(p.keeperHold>=1.35||(p.keeperHold>=.28&&this.players.some(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&distance(p,q)<210)))){this.distributeKeeper(p);return;}
   }else if(p.keeper){p.keeperHold=0;}
   if(this.driveAiCombo(p,dt,ai))return;
   const speed=this.playerSpeed(p)*ai.speed*styleSpeed*(this.terrain==='Sand'?.75:1);
@@ -1314,7 +1315,7 @@ class GameEngine{
     tx=side;
     ty=predictedKeeperLane(p,b,ai.keeperRead);
     if(!owner&&Math.abs(b.x-side)<175)tx=clamp(bx,side-35,side+35);
-    if(owner===p&&p.cd<=0&&p.keeperHold>.30)this.distributeKeeper(p);
+    if(owner===p&&p.cd<=0&&p.keeperHold>.95)this.distributeKeeper(p);
    }else if(owner===p){
     tx=clamp(p.x+dir*(180+ai.anticipation*210)*tactical.advance,F.x+100,F.x+F.w-100);
     ty=goalY+(p.y-goalY)*.38;
@@ -1393,7 +1394,10 @@ class GameEngine{
  updateBall(dt){let b=this.ball;
   if(this._shotAudit&&b.age>5)this._auditOutcome('unresolved',{reason:'flightAge'});
   if(this._reboundAudit&&b.age>6){this.emit('reboundUnresolved',{auditId:this._reboundAudit.id,reason:'looseBallAge'});this._reboundAudit=null;}
-  if(b.owner){const spinX=b.x,spinY=b.y;const p=b.owner;b.x=p.x+p.face*17;b.y=p.y+12;b.z=p.z+12+((p.trickFx||0)>0?((dribbleStyle(p.trickStyleId).loft||0)*Math.min(1,p.trickFx*2)):0);if(p.stun>0){b.owner=null;b.vx=p.face*115;b.vy=0;b.vz=130;b.canCollect=.2;}b.rollAngle=((b.rollAngle||0)+rollDelta(b.x-spinX,b.y-spinY))%(Math.PI*2);return}
+  if(b.owner){const spinX=b.x,spinY=b.y;const p=b.owner;
+  // A keeper in possession visibly carries the ball at glove height.
+  b.x=p.x+p.face*(p.keeper?8:17);b.y=p.y+(p.keeper?8:12);
+  b.z=p.keeper?p.z+82:p.z+12+((p.trickFx||0)>0?((dribbleStyle(p.trickStyleId).loft||0)*Math.min(1,p.trickFx*2)):0);if(p.stun>0){b.owner=null;b.vx=p.face*115;b.vy=0;b.vz=130;b.canCollect=.2;}b.rollAngle=((b.rollAngle||0)+rollDelta(b.x-spinX,b.y-spinY))%(Math.PI*2);return}
  const previousBall={x:b.x,y:b.y,z:b.z};
  b.canCollect=Math.max(0,b.canCollect-dt);b.age+=dt;
  // A prolonged loose ball is no longer a direct pass reception. Keep the

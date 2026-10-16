@@ -42,7 +42,8 @@ for key,(minimum,maximum) in bounds.items():
 # Independent mechanics editor contract: all coefficients are finite and safe for live math.
 physics=mechanics.get('physicsTuning',{})
 physics_bounds={
- 'passSpeed':{'base':(300,650),'qualityMultiplier':(0,5),'max':(700,1600)},
+ 'superShot':{'speedMultiplier':(.85,1),'fatigueMultiplier':(1,1.35)},
+  'passSpeed':{'base':(300,650),'qualityMultiplier':(0,5),'max':(700,1600)},
  'keeperDiveRecovery':{'baseSeconds':(1,3.5),'referenceSkill':(40,70),'skillCoefficient':(0,.02),'divingCoefficient':(0,.02),'fatigueCoefficient':(0,1.5),'minSeconds':(.8,2),'maxSeconds':(2,4)}
 }
 require(isinstance(physics,dict),'physicsTuning must be an object')
