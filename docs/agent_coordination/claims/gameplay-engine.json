@@ -3,7 +3,7 @@
   "lock_key": "gameplay-engine",
   "feature_id": "GAMEPLAY-PK-HUMAN-GOALKEEPER",
   "owner": "gameplay-review-20261016-gpt6-pkkeeper-r3",
-  "status": "active",
+  "status": "released",
   "scope": "Only src/modules/engine.js GameEngine.updatePK local Versus human defending keeper read/steer/dive using existing movement and jump input, automatic keeper retained in one-human modes; tests/penalty_keeper_control.test.cjs and tests/penalty_keeper_control_browser_qa.py; docs/GAMEPLAY_PENALTY_KEEPER_CONTROL_20261016.md; short docs/NEXT_MILESTONES.md checkpoint and own docs/memory/agents/gameplay-review-20261016.md. No UI, input, renderer, graphics, roster, saved game schema, physics outside shootout, shared QA runners, CI, scripts or build.",
   "base_sha": "33d66d07c3a4dd9b525d0158acc324088dc4fee4",
   "created_at": "2026-10-16",
@@ -15,6 +15,9 @@
     "Full Regression Census 4+4 sharded",
     "hosted PC/touch smoke"
   ],
-  "handover": "docs/GAMEPLAY_PENALTY_KEEPER_CONTROL_20261016.md",
-  "related_issue": "https://github.com/saeedsai/SuperMagicFootball/issues/5"
+  "handover": "docs/GAMEPLAY_PENALTY_KEEPER_CONTROL_20261016.md; docs/memory/agents/gameplay-review-20261016.md; source d0adf651; QA https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946505072; full pending https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946504996",
+  "related_issue": "https://github.com/saeedsai/SuperMagicFootball/issues/5",
+  "released_at": "2026-10-16",
+  "outcome": "Shipped two-human goalkeeper control in shootouts; 8 new Node tests pass, integrated standard Node QA 200/200 green; full Chromium census pending.",
+  "final_checkpoint_commit": "aff7952fe11b35c2892179c2108054f6dd4edd79"
 }
