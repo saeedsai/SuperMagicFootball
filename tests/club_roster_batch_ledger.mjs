@@ -43,35 +43,52 @@ for(const [id,entry] of Object.entries(audit)){
  players+=12;
 }
 assert.equal(players,1980);
-assert.equal(ledger.playerChanges.length,207,'expected 207 recorded replacements from the original 2026-10-15 audit');
+const historyBySlot=new Map(),byBatch=new Map(),clubs=new Set();
+const ids=new Set(ledger.batches.map(x=>x.id));
+assert.equal(ids.size,ledger.batches.length,'Batch IDs must be unique');
+for(const change of ledger.playerChanges){
+ assert(ids.has(change.batchId),change.batchId+' unknown');
+ assert(change.slot>=1&&change.slot<=12,change.clubId+' invalid slot');
+ const key=change.clubId+'#'+change.slot;
+ const earlier=historyBySlot.get(key);
+ if(earlier){
+  assert.deepEqual(change.previous,earlier.current,key+' history chain has a gap');
+  assert.equal(change.previousRole??earlier.role,earlier.role,key+' previous role mismatch');
+ }
+ assert(change.previous.name!==change.current.name||
+    change.previous.overall!==change.current.overall||
+    (change.previousRole??change.role)!==change.role,
+    key+' no-op change');
+ const initial=change.batchId.startsWith('CLUB-20261015-');
+ if(initial){
+  assert(!earlier,key+' initial batch has duplicate player slot');
+  assert(change.previous.name.includes('Academy'),key+' initial player not fictional');
+  assert.equal(change.changeType,'academy_placeholder_replaced');
+  assert.equal(change.ratingProvenance,'editorial_estimate_not_EA_FC27');
+ }
+ assert(['editorial_estimate_not_EA_FC27','fc27_third_party_unofficial'].includes(change.ratingProvenance));
+ assert(ledger.clubSourceEvidence[change.clubId]?.sourceReferences?.length,key+' missing cited club sources');
+ historyBySlot.set(key,change);
+ byBatch.set(change.batchId,(byBatch.get(change.batchId)||0)+1);
+ clubs.add(change.clubId);
+}
+const initial=ledger.playerChanges.filter(x=>x.batchId.startsWith('CLUB-20261015-'));
+assert.equal(initial.length,207,'the original 207 replacements must never disappear');
+for(const [key,last] of historyBySlot){
+ const p=ledger.currentRosterSnapshot[last.clubId].players[last.slot-1];
+ assert.deepEqual({name:p.name,overall:p.rating},{name:last.current.name,overall:last.current.overall},key+' latest player differs from history');
+ assert.equal(p.role,last.role,key+' latest role differs');
+ const game=ROSTER_CORRECTIONS[last.clubId][last.slot-1];
+ assert.equal(game.name,p.name);assert.equal(game.rating,p.rating);
+ assert.equal(game.fictional,false);
+ assert(game.ratingSource?.startsWith('Editorial')||game.ratingSource?.startsWith('FC27'),key+' rating provenance');
+ assert(game.source&&typeof game.source==='string',key+' missing player-source URL');
+}
 assert.equal(ledger.summary.changedSlots,ledger.playerChanges.length);
-const seen=new Set(),byRegion=new Map(),clubs=new Set(),batchIds=new Set(ledger.batches.map(b=>b.id));
-for(const row of ledger.playerChanges){
- assert(batchIds.has(row.batchId),row.batchId+' missing batch');
- assert(row.slot>=1&&row.slot<=12,row.clubId+' invalid slot');
- const key=row.clubId+'#'+row.slot;
- assert(!seen.has(key),'duplicate history entry in original 207-player batch: '+key);seen.add(key);
- const player=ledger.currentRosterSnapshot[row.clubId]?.players[row.slot-1];
- assert(player,row.clubId+' missing current slot');
- assert.deepEqual({name:player.name,overall:player.rating},{name:row.current.name,overall:row.current.overall},key+' player identity changed without ledger update');
- assert.equal(player.role,row.role,key+' role changed');
- assert(row.previous.name.includes('Academy'),key+' was not a placeholder');
- assert(!row.current.name.includes('Academy'),key+' replacement still fictional');
- assert.equal(row.changeType,'academy_placeholder_replaced');
- assert.equal(row.ratingProvenance,'editorial_estimate_not_EA_FC27');
- const live=ROSTER_CORRECTIONS[row.clubId][row.slot-1];
- assert.equal(live.fictional,false,key+' runtime fictional');
- assert(live.ratingSource.startsWith('Editorial'),key+' expected editorial provenance');
- assert(!live.fc27Id,key+' fake FC27 ID');
- assert(live.source&&typeof live.source==='string',key+' source URL missing in player record');
- assert(ledger.clubSourceEvidence[row.clubId]?.sourceReferences?.length,key+' evidence URLs missing');
- const b=ledger.batches.find(v=>v.id===row.batchId);
- byRegion.set(b.id,(byRegion.get(b.id)||0)+1);clubs.add(row.clubId);
-}
-assert.equal(clubs.size,23,'changed clubs must be tracked');
-assert.equal(ledger.summary.changedClubs,23);
+assert.equal(ledger.summary.changedClubs,clubs.size);
 for(const b of ledger.batches){
- assert.equal(byRegion.get(b.id),b.changedSlots,b.id+' batch player count drift');
- assert.deepEqual([...new Set(ledger.playerChanges.filter(p=>p.batchId===b.id).map(p=>p.clubId))].sort(),b.affectedClubIds,b.id+' club list');
+ assert.equal(byBatch.get(b.id),b.changedSlots,b.id+' count differs from recorded history');
+ const teams=[...new Set(ledger.playerChanges.filter(x=>x.batchId===b.id).map(x=>x.clubId))].sort();
+ assert.deepEqual(b.affectedClubIds,teams,b.id+' team list');
 }
-console.log('PASS: 165 clubs, 1,980 current players; 207 old-to-new replacements in 5 regional batches; stable roles, editorial provenance, source refs, blob SHA and no forgotten audit edits');
+console.log('PASS 165 clubs / 1,980 current player snapshots / 207 baseline replacements + '+(ledger.playerChanges.length-207)+' subsequent recorded edits / '+ledger.batches.length+' immutable batches; source, role, audit SHA and history chain valid');
