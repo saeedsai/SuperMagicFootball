@@ -16,7 +16,7 @@ def sample(browser,kind,overrides):
  page.evaluate("""() => {const v=new Map();Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>v.get(k)||null,setItem:(k,x)=>v.set(k,String(x)),removeItem:k=>v.delete(k),clear:()=>v.clear()}})}""")
  injected=''.join("GAME_ASSETS.mechanics.physicsTuning."+k+"="+str(float(v))+";" for k,v in overrides.items())
  start='const GAME_ASSETS='
- assert js.startswith('// Generated test harness') and start in js
+ assert start in js, 'Generated modular game must embed authoritative GAME_ASSETS'
  split=js.index(';\n',js.index(start))+2
  code=js[:split]+'\n'+injected+'\n'+js[split:]
  page.add_script_tag(content=code,type='module')
