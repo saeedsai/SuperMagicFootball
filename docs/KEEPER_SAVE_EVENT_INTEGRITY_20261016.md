@@ -25,3 +25,14 @@ Do not delete historical logs, graphics work products or roster data owned by ot
 ## Exact-source CI isolation while concurrent art integration runs
 
 The first integrated source/data QA for this checkpoint stopped at **three unrelated concept-character art contract assertions** (raster reference / offline fixture expectations), and did not run the sharded browser census. A narrow [Keeper Save Event Integrity workflow](../.github/workflows/keeper-save-integrity.yml) therefore now runs real `scripts/build.py`, the new Node event contract and its headless desktop/touch browser acceptance without requiring unrelated art-matrix tests to complete first. The full regression gate is **still required**; this focused workflow does not replace it. Concurrent graphics/roster agent edits are not modified.
+
+
+## Independent keeper correction verification (16 October 2026)
+
+- Source fix: [`f62d688`](https://github.com/saeedsai/SuperMagicFootball/commit/f62d68871a6ce3c36f67dc68990d1a16bd19e712), carried forward into subsequent non-keeper `dev` commits.
+- New dedicated CI workflow: [`173d76f`](https://github.com/saeedsai/SuperMagicFootball/commit/173d76f71a797e22ec17b87ead2bf19445aa46fa); its [exact-head run #38885906247](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38885906247) **PASSED**: game fixture build, 1/1 keeper save-event Node contract, desktop **18/18** and simulated-touch **18/18** in-engine cases (36/36 browser checks across 30/60/120 FPS). No physical device was used.
+- The graphics agent subsequently fixed the initial unrelated preflight failures; [integrated Modular QA #38886071884](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886071884) **PASSED**, with **73/73 active Node** and **17/17 merge** cases.
+- [Integrated Full Regression Census #38886072121](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886072121), on descendant `55c4a21a`, had **101/101 historical Node scripts PASS** across four shards at last check. Four Chromium shards were **in progress**; do not infer complete 150+ script green status until their actual results are inspected. Any new commit can change exact-commit results.
+- The gameplay-fix commit's [hosted PC/touch smoke #38885745096](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38885745096) passed, with successful Quick Match kickoff on both simulated devices. Subsequent Pages deployments should be verified with their own branch head; physical-phone certification remains deferred.
+
+**Remaining limitation:** this corrects event labels, not necessarily the statistical goalkeeper save rate. The separate physical-lunge changes were authored by another developer. Avoid altering those changes or claiming their performance until the full regressions and seed-cohort evaluations pass.
