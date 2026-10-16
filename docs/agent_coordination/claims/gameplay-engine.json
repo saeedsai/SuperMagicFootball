@@ -1,0 +1,18 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "gameplay-engine",
+  "feature_id": "GK-LUNGE-FAIRNESS",
+  "owner": "gameplay-keeper-lunge-fairness-20261016-session4-gpt6",
+  "status": "active",
+  "scope": "Bounded gameplay engine keeper lateral-lunge fairness: src/modules/engine.js only for a small defect correction; new keeper-only regression tests, dedicated docs/keeper handover and roadmap addendum. No graphics, UI, rosters, generated assets, QA framework, workflows, sw.js, shared configuration or unrelated cleanup.",
+  "base_sha": "a41926787b914fa239cdb4c1809a9d7dc9c3567b",
+  "created_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
+  "tests": [
+    "new keeper-only Node and real-engine browser acceptance",
+    "existing seeded keeper/browser matrix",
+    "existing full regression (CI as already configured)",
+    "Pages desktop/touch smoke"
+  ],
+  "handover": "docs/KEEPER_LUNGE_FAIRNESS_HANDOVER_20261016.md"
+}
