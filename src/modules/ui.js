@@ -90,7 +90,7 @@ const opt={...DEFAULT_OPTIONS,...store.get('options',{})};opt.ballModel=VISUALFE
 input.setBindings(store.get('controllerBindings',input.getBindings()));
 const kitSelections=(()=>{const k=store.get('kitSelections',null);return Array.isArray(k)?[k[0]==='away'?'away':'home',k[1]==='home'?'home':'away']:['home','away'];})();
 let preTalkChoices=['none','none'];let home=0,away=9,homeCategory='all',awayCategory='all',mode='quick',humans=1,formation=opt.formation||'2-1-2',lineup=store.get('lineup',DEFAULT_LINEUP.slice()), edits=store.get('edits',{}),screen='home';
-let teamPlans=store.get('teamPlans',{}),squadContext='home',squadSide=0;
+let teamPlans=store.get('teamPlans',{}),squadContext='home',squadSide=0,squadReturnAtHalf=false;
 let league=store.get('league',{played:0,wins:0,draws:0,losses:0,points:0,playoff:0,stage:'qualifier',games:[]});
 const audio=new ArcadeAudio({...AUDIO_DEFAULTS,...store.get('audioOptions',{}),...(opt.sfx===false?{mute:true}:{})});
 const game=new GameEngine(opt,input),menu=$('menu'),hud=$('hud'),touch=$('mobile'),perfHud=$('perfHud');
@@ -407,6 +407,7 @@ function lineupRoleFitGuidance(players,slots,positions){
   ' Advice only; no changes are applied until SAVE TACTICS.';
 }
 function showSquad(side=0,origin='home'){
+ squadReturnAtHalf=origin==='pause'&&screen==='HALF TIME';
  squadSide=side;squadContext=origin;
  const index=origin==='pause'?game.teamIds[side]:side===0?home:away;
  const team=TEAMS[index],players=origin==='pause'?game.rosters[side]:roster(index);
@@ -717,6 +718,8 @@ function saveAppearance(){
 }
 function paintAvatars(){menu.querySelectorAll('[data-avatar]').forEach(canvas=>{const i=+canvas.dataset.avatar,p=career?.roster?.[i];if(!p)return;const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#1b5460';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.save();const fit=portraitFit(canvas.width,canvas.height,p.appearance||{});ctx.translate(fit.x,fit.y);ctx.scale(fit.scale,fit.scale);renderer.drawPlayer(ctx,{...game.player(0,3),src:p,t:0,i,face:1,x:0,y:0,z:0,anim:0,dx:0,dy:0,action:'idle',controlled:false,preview:true},{getTeam:()=>TEAMS[career.club],options:{showNames:false}});ctx.restore()})}
 
+// Preserve the halftime team-talk opportunity after inspecting or saving live tactics.
+function returnFromPauseTactics(){if(squadReturnAtHalf&&game.matchState==='paused')halftime();else pause();}
 function pause(){game.matchState='paused';page('PAUSED','Resume or change the computer opponent difficulty without restarting.',`<div class="panel">${field('CPU DIFFICULTY (LIVE)','liveDifficulty',aiChoices(),opt.difficulty)}${difficultyHint()}<p class="muted">Changes apply immediately on the next AI decision. In local 2-player Versus this does not affect either human.</p></div><div class="row">${button('▶ RESUME','resume','gold')}${button('RESTART MATCH','confirmRestart')}${button('SETTINGS','navSound')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('RETURN TO MAIN MENU','confirmQuit')}</div>`)}
 // Read-only halftime guidance. Decisions remain with the user.
 function halftimeCoachAdvice(game,side){
@@ -813,7 +816,7 @@ function action(a){audio.cue('ui');
  else if(a==='setupRules')showSetupExtras('rules');else if(a==='setupAppearance')showSetupExtras('appearance');else if(a==='setupTactics')showSetupExtras('tactics');
  else if(a==='league')showLeague();else if(a==='gallery')showGallery();else if(a==='clubs')showClubs();else if(a==='saveClub')saveNewClub();else if(a.startsWith('selectClub')){home=+a.slice(10);away=home===away?0:away;showSetup('quick')}else if(a.startsWith('deleteClub'))deleteClub(+a.slice(10));else if(a==='pk'){mode='pk';showSetup('pk')}
  else if(a==='leagueKickoff'){mode='league';start()}
- else if(a==='kickoff')start();else if(a==='squad')showSquad(0,game.matchState==='paused'?'pause':'home');else if(a==='prepHome')showSquad(0,'setup');else if(a==='prepAway')showSquad(1,'setup');else if(a==='tacticHome')showSquad(0,'pause');else if(a==='tacticAway'&&humans>=2)showSquad(1,'pause');else if(a==='returnSetup')showSetup(mode);else if(a==='returnPause'){menuEntryReturn='home';pause();}else if(a==='controls')showControls();else if(a==='saveBindings'){const profile={keyboard:Array.from({length:4},(_,i)=>$('bindKey'+i).value),gamepad:Array.from({length:4},(_,i)=>+$('bindPad'+i).value),keyboard2:Array.from({length:4},(_,i)=>$('bindKey2'+i).value),gamepad2:Array.from({length:4},(_,i)=>+$('bindPad2'+i).value)};if(input.setBindings(profile)){store.put('controllerBindings',input.getBindings());showInputMenu();}else alert('Each player needs four unique keys and buttons. Keyboard keys cannot overlap across players.');}else if(a==='resetBindings'){input.setBindings({keyboard:['KeyK','KeyJ','KeyI','Space'],gamepad:[1,0,2,3],keyboard2:['Period','Comma','NumpadDecimal','ControlRight'],gamepad2:[1,0,2,3]});store.put('controllerBindings',input.getBindings());showControls();}else if(a==='help')showHelp();else if(a==='editor')showEditor();
+ else if(a==='kickoff')start();else if(a==='squad')showSquad(0,game.matchState==='paused'?'pause':'home');else if(a==='prepHome')showSquad(0,'setup');else if(a==='prepAway')showSquad(1,'setup');else if(a==='tacticHome')showSquad(0,'pause');else if(a==='tacticAway'&&humans>=2)showSquad(1,'pause');else if(a==='returnSetup')showSetup(mode);else if(a==='returnPause'){menuEntryReturn='home';if(screen==='TEAM COMMAND CENTER'&&squadContext==='pause')returnFromPauseTactics();else pause();}else if(a==='controls')showControls();else if(a==='saveBindings'){const profile={keyboard:Array.from({length:4},(_,i)=>$('bindKey'+i).value),gamepad:Array.from({length:4},(_,i)=>+$('bindPad'+i).value),keyboard2:Array.from({length:4},(_,i)=>$('bindKey2'+i).value),gamepad2:Array.from({length:4},(_,i)=>+$('bindPad2'+i).value)};if(input.setBindings(profile)){store.put('controllerBindings',input.getBindings());showInputMenu();}else alert('Each player needs four unique keys and buttons. Keyboard keys cannot overlap across players.');}else if(a==='resetBindings'){input.setBindings({keyboard:['KeyK','KeyJ','KeyI','Space'],gamepad:[1,0,2,3],keyboard2:['Period','Comma','NumpadDecimal','ControlRight'],gamepad2:[1,0,2,3]});store.put('controllerBindings',input.getBindings());showControls();}else if(a==='help')showHelp();else if(a==='editor')showEditor();
  else if(a==='talkHalfHome'||a==='talkHalfAway'){const side=a==='talkHalfHome'?0:1;try{const response=game.applyTeamTalk(side,$(side?'halfTalkAway':'halfTalkHome')?.value||'encourage','halftime');halftime();toast(`${response.positive} INSPIRED · ${response.backfires} UPSET · TEAM MOOD ${response.morale}%`)}catch(err){alert(err.message)}}
  else if(a==='fullscreen')toggleFullscreen();else if(a==='cpuPause')pause();else if(a==='resume'){game.matchState=game.pk?'penalty':'play';closeMenu()}
  else if(a==='saveSquad'){
@@ -823,12 +826,12 @@ function action(a){audio.cue('ui');
   try{const plan=validatePlan(raw,players,ix);
    if(squadContext==='pause')game.applyPlan(squadSide,plan);
    teamPlans[TEAMS[ix].id]=plan;store.put('teamPlans',teamPlans);
-   if(squadContext==='pause')pause();else if(squadContext==='setup')showSetup(mode);else showHome();
+   if(squadContext==='pause')returnFromPauseTactics();else if(squadContext==='setup')showSetup(mode);else showHome();
   }catch(e){alert(e.message)}
  }
  else if(a==='resetSquad'){
   const ix=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;
-  const replacement=defaultPlan(ix,roster(ix));try{if(squadContext==='pause')game.applyPlan(squadSide,replacement);teamPlans[TEAMS[ix].id]=replacement;store.put('teamPlans',teamPlans);if(squadContext==='pause')pause();else showSquad(squadSide,squadContext);}catch(e){alert(e.message)}
+  const replacement=defaultPlan(ix,roster(ix));try{if(squadContext==='pause')game.applyPlan(squadSide,replacement);teamPlans[TEAMS[ix].id]=replacement;store.put('teamPlans',teamPlans);if(squadContext==='pause')returnFromPauseTactics();else showSquad(squadSide,squadContext);}catch(e){alert(e.message)}
  }
  else if(a==='exportSave')exportSave();else if(a==='importSave')$('saveImportFile')?.click();
  else if(a==='saveSettings'){
@@ -898,7 +901,7 @@ $('fullscreenHelpClose').addEventListener('click',()=>$('fullscreenHelp').classL
 const primaryNavScreens=new Set(['home','nav-quick','nav-device','nav-online','nav-career','nav-cups','nav-international','nav-clubs','nav-settings','nav-customize','nav-input','nav-saves','nav-settings-game','nav-settings-graphics','nav-settings-sound']);
 const menuButtons=()=>[...menu.querySelectorAll('.navChoice')].filter(el=>!el.disabled&&el.offsetParent!==null);
 function navigateMenu(direction){const items=menuButtons();if(!items.length)return;const index=items.indexOf(document.activeElement);const next=items[(index+direction+items.length)%items.length];next.focus({preventScroll:true});next.scrollIntoView({block:'nearest',behavior:'instant'});}
-function backFromMenu(){if(['MATCH RULES','KITS & TEAM TALKS','TEAM TACTICS'].includes(screen)){action('returnSetup');return;}const back=screen==='nav-settings-sound'&&menuEntryReturn==='returnPause'?'returnPause':screen==='nav-saves'?menuBackAction:menuParents[screen]||menuBackAction||'home';if(screen==='home')return;action(back);}
+function backFromMenu(){if(screen==='TEAM COMMAND CENTER'){action(squadContext==='pause'?'returnPause':squadContext==='setup'?'returnSetup':'home');return;}if(['MATCH RULES','KITS & TEAM TALKS','TEAM TACTICS'].includes(screen)){action('returnSetup');return;}const back=screen==='nav-settings-sound'&&menuEntryReturn==='returnPause'?'returnPause':screen==='nav-saves'?menuBackAction:menuParents[screen]||menuBackAction||'home';if(screen==='home')return;action(back);}
 document.addEventListener('keydown',e=>{
  if(!menuVisible())return;
  if(e.target?.matches?.('input,select,textarea,[contenteditable="true"]'))return;
