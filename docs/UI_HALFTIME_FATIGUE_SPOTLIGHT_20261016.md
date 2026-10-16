@@ -34,3 +34,17 @@ The next unblocked task is to certify the latest regression result. National tea
 ## Integration and final handover
 
 Implementation commit, test outcomes, hosted smoke and release metadata to be appended after CI. Claim must be released even for a partial handover.
+
+## Integrated test report and current checkpoint — 16 October 2026
+
+**Delivered implementation on GitHub `dev`:** [`b23eed0743ca5ed2f181e2ded23d92682e1b9513`](https://github.com/saeedsai/SuperMagicFootball/commit/b23eed0743ca5ed2f181e2ded23d92682e1b9513). This was rebased from the initial prepared commit after another agent advanced the branch, using an expected-head non-force ref update. The complete patch contains one isolated `src/modules/ui.js` helper, 5 new Node contracts, a desktop/emulated-touch Chromium acceptance, and roadmap/documentation. The feature remains present in subsequent shared `dev` commits.
+
+**Passed, exact feature source:** [Modular Game Dev QA #38900390556](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38900390556) on `b23eed07` **SUCCESS**: **104/104 active Node subtests passed**, 0 failed. All five new fatigue-spotlight contracts passed, including malicious-name escaping, current lineup/bench exclusion, team isolation, threshold and absence of game/save side effects; **17/17 Python merge** and **8/8 feature-claim protocol** tests passed. Modular fixture build and data preflight completed.
+
+**Full census:** [#38900391708](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38900391708) on `b23eed07` was **CANCELLED** by concurrent `dev` updates. No exact-source eight-shard full-regression green can be claimed. A later descendant [#38900429370](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38900429370) was **IN_PROGRESS** when this checkpoint was written; inspect all four Node and four Chromium shard results, especially `halftime_fatigue_spotlight_browser_qa.py`, to complete certification. The earlier baseline [171/171 full regression #38898721461](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38898721461) predates this feature.
+
+**Hosted game:** recent descendant [Pages build/deployment #38900441679](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38900441679) **SUCCESS**. [Live desktop/emulated-touch smoke #38891468528 (attempt 5)](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528) was **running** at report time; prior attempts passed. The generic live check verifies menus, team selection, kickoff, active match and +20% field in desktop/touch Chromium, not physical mobile devices or this new halftime display specifically.
+
+**Open integration gaps:** pending all-shard post-feature census, fresh hosted smoke and physical handset/browser/PWA restarts. The separate national-data workflow trigger issue [#2](https://github.com/saeedsai/SuperMagicFootball/issues/2) belongs to the **actively held release-infra** lock; concept graphics similarly has an active graphics/rendering claim. Do not alter these other owners' files or delete historical QA/artifacts.
+
+**End-of-batch handover:** release the `ui-controls` claim under owner `ui-halftime-fatigue-20261016-gpt6-session8` with this document. Next chat begins by refreshing `AGENTS.md`, coordination registry and claims, then checks the newer Full Regression Census and only claims a further unfinished UI requirement if the lock is free.
