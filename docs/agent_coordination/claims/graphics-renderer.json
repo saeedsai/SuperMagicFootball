@@ -3,7 +3,7 @@
   "lock_key": "graphics-renderer",
   "feature_id": "ART-C01-FAR-ARM-QA-SIGNOFF-DOCS",
   "owner": "graphics-update-c01-far-arm-regression-20261016-gpt6-r2",
-  "status": "active",
+  "status": "released",
   "scope": "Only update graphics specialist tracker, current handover, C01 far-arm batch report and this chat's graphics-update memory to record later full 9/9 regression, no code, art, tests or unrelated docs.",
   "base_sha": "d53d064377b162c343eb352367c0e45ca8dbb625",
   "created_at": "2026-10-16",
@@ -16,7 +16,7 @@
     "tests/concept_modular_live_qa.py",
     "Full Regression Census"
   ],
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md; C01_FAR_ARM_BATCH_20261016.md; source f0fea598; graphics #38913908449 PASS; live #38914486909 PASS; full census #38915344074 9/9 PASS.",
   "released_at": "2026-10-16",
-  "outcome": "completed_far_arm_illustrated_art_and_reciprocal_run_overlay"
+  "outcome": "recorded_successful_9_of_9_full_census_for_c01_far_arm_unchanged_code"
 }
