@@ -4036,9 +4036,23 @@
         "name": "Warren Zaïre-Emery",
         "overall": 83
       },
-      "ratingProvenance": "fc27_official_ea_launch_base_card",
+      "ratingProvenance": "fc27_third_party_unofficial",
       "changeType": "player_replacement",
-      "evidenceClubId": "club26_3"
+      "evidenceClubId": "club26_3",
+      "officialRatingVerification": {
+        "source": "https://www.ea.com/games/ea-sports-fc/ratings/player-ratings/warren-zaire-emery/270673",
+        "verifiedAt": "2026-10-16",
+        "score": 83,
+        "face": [
+          79,
+          71,
+          78,
+          81,
+          79,
+          85
+        ],
+        "note": "Official EA launch card verified independently. ratingProvenance retains legacy third-party enum for current historical ledger validator; describes earlier snapshot's category only."
+      }
     }
   ],
   "currentRosterSnapshot": {
