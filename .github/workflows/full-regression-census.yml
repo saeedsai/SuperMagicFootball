@@ -21,6 +21,7 @@ on:
       - 'src/modules/engine.js'
       - 'tests/keeper_dive_intent.test.cjs'
       - 'tests/keeper_dive_intent_browser_qa.py'
+      - 'tests/aerial_browser_qa.py'
       - 'tests/physics_tuning_v082534.test.cjs'
       - 'tests/physics_tuning_browser_qa.py'
       - 'tests/super_keeper_balance_browser_qa.py'
