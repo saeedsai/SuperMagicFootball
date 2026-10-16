@@ -1,21 +1,21 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "graphics-renderer",
-  "feature_id": "ART-C01-FACE",
-  "owner": "graphics-c01-face-20261016-1354-gpt6",
-  "status": "released",
-  "scope": "One illustrated editable front face SVG plus manifest, opt-in conceptmodular.js painter ordering, graphics-only validator and dedicated browser/Node tests, specialist progress/handover. No changes to gameplay, UI, data, render.js, existing concept hero or procedural player renderer.",
-  "base_sha": "b5e59a275f53366ef56afea25f1a6bb13efdbaea",
-  "created_at": "2026-10-16T13:54+02:00",
-  "renewed_at": "2026-10-16T13:54+02:00",
+  "feature_id": "ART-C01-NEAR-ARM",
+  "owner": "graphics-c01-near-arm-20261016-gpt6-s12",
+  "status": "active",
+  "scope": "ONE painted editable right-of-image front near-arm illustration + shoulder pivot & small gait swing in conceptmodular.js; rig metadata; graphics-specific unit/actual game browser/hosted tests; specialist docs only. No engine, data, UI, other graphics or shared QA runner.",
+  "base_sha": "b7c516437f04b526a68d70ace87197f9a14498fe",
+  "created_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
   "tests": [
-    "scripts/validate_concept_modular.py",
+    "python3 scripts/validate_concept_modular.py",
     "node --test tests/*.test.cjs",
-    "tests/concept_modular_browser_qa.py",
-    "tests/concept_modular_live_qa.py",
-    "full regression census"
+    "python3 tests/concept_modular_browser_qa.py",
+    "python3 tests/concept_modular_live_qa.py",
+    "Full Regression Census"
   ],
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md and docs/concept_character_pipeline/C01_FACE_FRONT_CHECKPOINT_20261016.md; source a8553002, art QA #38899003730, hosted #38899003632, full census #38899003690 attempt 2 all PASS",
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
   "released_at": "2026-10-16",
   "outcome": "completed_c01_experimental_illustrated_front_face"
 }
