@@ -78,7 +78,7 @@ All 165 club slots are populated, but additional review is warranted for **2026/
 
 ## Identity-only correction checkpoint — 16 October 2026
 
-- **Batch:** `CLUB-20261016-AVL-METADATA-1` (Aston Villa, `club26_6`), five players and **11 verified attribute-level edits**: five verified ages (four corrected and one newly populated), five new centimetre heights, and two nationality display normalizations.
+- **Batch:** `CLUB-20261016-AVL-METADATA-1` (Aston Villa, `club26_6`), five players and **12 verified attribute-level edits**: five verified ages (four corrected and one newly populated), five new centimetre heights, and two nationality display normalizations.
 - **Immutable evidence:** [player metadata correction log](PLAYER_METADATA_BATCHES_20261016.json). Both `data/players/club26.json` and `src/roster_corrections.js` were updated. Ages use 2026-10-16 as reference, rather than an arbitrary source snapshot age.
 - **Sources:** [UEFA Aston Villa current squad](https://www.uefa.com/nationalassociations/teams/52683/squad/), [Premier League player biographies](https://www.premierleague.com/en/players), [Transfermarkt 2026/27 detailed squad](https://www.transfermarkt.de/aston-villa/kader/verein/405/saison_id/2026/plus/1).
 - **Selection invariants:** No names, FC27 identifiers, roles, ratings, 12-slot squads or team IDs were changed; the existing 207 name/OVR-replacement records and audit fingerprint remain intact. This is a separate **metadata-only batch** and must **not** be misrepresented as a newly selected-player batch.
@@ -91,3 +91,17 @@ All 165 club slots are populated, but additional review is warranted for **2026/
 3. UEFA clubs: source-backed nationality and height fields, preserving current FC27 shortlists.
 4. Continental confederations: verify dated current-club registration, physical fields and editorial rating provenance.
 5. Reconcile role/OVR selection against confirmed official FC27 if available; test 165 clubs, full regression and hosted desktop/touch.
+
+
+## Metadata batch 2 — Brighton / 2026-10-16
+
+**Checkpoint:** `CLUB-20261016-BHA-METADATA-1`. The existing Aston Villa batch is preserved unchanged; `club26_12` Brighton is the second club to receive dedicated metadata corrections, following the user-requested small-batch process.
+
+- Edited only player metadata for the 12 *existing* Brighton squad slots in `data/players/club26.json` and their exact `src/roster_corrections.js` runtime copies: 44 field changes on 12 players. The permanent per-field audit is in `docs/PLAYER_METADATA_BATCHES_20261016.json`.
+- Applied ISO birth-date-derived ages at **2026-10-16**; corrected incorrect/absent age fields, real 2026/27 shirt numbers, two Dutch nationality labels, sourced height measurements and verified official shirt flags. No player name, role, OVR, FC27 IDs, face stats, power/shoot/defense/speed, formation, engine, UI or match logic was changed.
+- Authoritative roster and shirt-number evidence: [Brighton 20 August 2026 announcement](https://www.brightonandhovealbion.com/media-article/mft-news-kit-numbers-premier-league-2026-27-season-august-2026), [Premier League 22 September 2026 squad register](https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season); [2026/27 player birth-date register](https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html); [individual player physical attributes](https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027).
+- **Unresolved registration conflict (DO NOT mark Brighton fully verified):** Carlos Baleba appears in Brighton's 20 August squad as #17 but in Manchester United's 22 September league listing as #20. His Brighton-game entry remains in its original slot until the separate, source-ranked replacement can be selected and the immutable name/role/OVR ledger advanced. Recorded explicitly in metadata checkpoint. The non-transfer player selection and third-party FC27 OVR need independent review.
+- **Unresolved height difference:** Mats Wieffer is 188 cm in an older Premier League player profile and 189 cm in a contemporary StatMuse listing; retain unknown rather than guess.
+- **CI gates:** `node --test tests/brighton_player_metadata_20261016.test.cjs`, `node tests/all_club_fc27_rosters.mjs`, `node tests/club_roster_batch_ledger.mjs`, `python3 scripts/validate_data.py`, Node/Chromium regression, and GitHub Pages desktop/touch smoke. No historical artifact removal while tests and other agents reference those files.
+- **Future small batches:** (1) Brighton name/club/position and Baleba transfer resolution using the original immutable squad ledger; (2) Dortmund age/physical evidence; (3) Napoli; (4) Everton; (5) Inter Milan. Re-fetch the new `dev` head before every commit.
+

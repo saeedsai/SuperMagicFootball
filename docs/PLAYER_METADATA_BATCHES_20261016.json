@@ -115,6 +115,341 @@
         "The 1,980-slot audit and immutable name/role/overall change ledger are unaffected by metadata-only corrections.",
         "Unchanged FC27 numbers are unofficial third-party figures, not EA-verified."
       ]
+    },
+    {
+      "id": "CLUB-20261016-BHA-METADATA-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "0fb54e76e7a262b4995fbe125a4b65e5e0afe819",
+      "clubId": "club26_12",
+      "club": "Brighton",
+      "playersChanged": 12,
+      "fieldsChanged": 44,
+      "status": "pending_ci_regression",
+      "changes": [
+        {
+          "playerId": "club26_12_0",
+          "name": "Bart Verbruggen",
+          "rosterSlot": 1,
+          "fields": {
+            "nation": {
+              "previous": "Holland",
+              "current": "Netherlands",
+              "source": "https://www.premierleague.com/en/players/489639/bart-verbruggen/career"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 193,
+              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
+            },
+            "age": {
+              "previous": 22,
+              "current": 24,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_11",
+          "name": "Jason Steele",
+          "rosterSlot": 2,
+          "fields": {
+            "num": {
+              "previous": 12,
+              "current": 23,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 190,
+              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
+            },
+            "age": {
+              "previous": 33,
+              "current": 36,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_1",
+          "name": "Luka Vušković",
+          "rosterSlot": 3,
+          "fields": {
+            "num": {
+              "previous": 2,
+              "current": 44,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 193,
+              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
+            },
+            "age": {
+              "previous": null,
+              "current": 19,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_5",
+          "name": "Ferdi Kadıoğlu",
+          "rosterSlot": 4,
+          "fields": {
+            "num": {
+              "previous": 6,
+              "current": 24,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 173,
+              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_2",
+          "name": "Mats Wieffer",
+          "rosterSlot": 5,
+          "fields": {
+            "num": {
+              "previous": 3,
+              "current": 27,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "nation": {
+              "previous": "Holland",
+              "current": "Netherlands",
+              "source": "https://www.premierleague.com/en/players/489639/bart-verbruggen/career"
+            },
+            "age": {
+              "previous": 24,
+              "current": 26,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_8",
+          "name": "Carlos Baleba",
+          "rosterSlot": 6,
+          "fields": {
+            "num": {
+              "previous": 9,
+              "current": 17,
+              "source": "https://www.brightonandhovealbion.com/media-article/mft-news-kit-numbers-premier-league-2026-27-season-august-2026"
+            },
+            "age": {
+              "previous": 30,
+              "current": 22,
+              "source": "https://www.transfermarkt.de/brighton-amp-hove-albion/kader/verein/1237/saison_id/2026/plus/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_7",
+          "name": "Pascal Groß",
+          "rosterSlot": 7,
+          "fields": {
+            "num": {
+              "previous": 8,
+              "current": 13,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 181,
+              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
+            },
+            "age": {
+              "previous": 29,
+              "current": 35,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_3",
+          "name": "Yasin Ayari",
+          "rosterSlot": 8,
+          "fields": {
+            "num": {
+              "previous": 4,
+              "current": 26,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 172,
+              "source": "https://www.premierleague.com/en/players/509416/yasin-ayari/overview"
+            },
+            "age": {
+              "previous": 25,
+              "current": 23,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_6",
+          "name": "Diego Gómez",
+          "rosterSlot": 9,
+          "fields": {
+            "num": {
+              "previous": 7,
+              "current": 25,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
+            },
+            "age": {
+              "previous": 28,
+              "current": 23,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_10",
+          "name": "Kaoru Mitoma",
+          "rosterSlot": 10,
+          "fields": {
+            "num": {
+              "previous": 11,
+              "current": 7,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://www.premierleague.com/players/117732/Kaoru%20Mitoma/stats"
+            },
+            "age": {
+              "previous": 32,
+              "current": 29,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_9",
+          "name": "Yankuba Minteh",
+          "rosterSlot": 11,
+          "fields": {
+            "num": {
+              "previous": 10,
+              "current": 11,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": 31,
+              "current": 22,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_4",
+          "name": "Georginio Rutter",
+          "rosterSlot": 12,
+          "fields": {
+            "num": {
+              "previous": 5,
+              "current": 10,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 182,
+              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
+            },
+            "age": {
+              "previous": null,
+              "current": 24,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        }
+      ],
+      "knownRegistrationConflicts": [
+        {
+          "playerId": "club26_12_8",
+          "playerName": "Carlos Baleba",
+          "recordedClub": "Brighton",
+          "latestLeagueListingClub": "Manchester United",
+          "latestLeagueListingShirtNumber": 20,
+          "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season",
+          "status": "unresolved_requires_sourced_2GK_3DF_4MF_3FW_squad_reselection",
+          "caveat": "Club's 2026-08-20 list named Baleba #17; Premier League 2026-09-22 list names him at Manchester United #20. Do not treat a corrected former Brighton jersey as proof of current Brighton registration. Requires a separate name/OVR/position change with immutable player-selection audit."
+        }
+      ],
+      "notes": [
+        "Date of birth values are supported by dated player references; age is calculated at 2026-10-16.",
+        "2026/27 squad shirts from Brighton's August listing and the Premier League's September 22 listing. Baleba #17 is historic club listing, not current registration.",
+        "Height values use club-specific 2026/27 player record for each name. Mats Wieffer's conflicting 188cm (Premier League historic page) vs 189cm (StatMuse) is intentionally not changed.",
+        "Club/rating/position and team-selection corrections must be made separately with the immutable name/role/OVR selection ledger.",
+        "Do not claim FC27 overall ratings are independently licensed; originals are unchanged."
+      ]
     }
   ]
 }
