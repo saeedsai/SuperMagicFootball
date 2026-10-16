@@ -28,3 +28,17 @@ Now only **real positive substitutions** emit a substitution event. The existing
 5. Triage original penalty human-keeper participation and classic mode parity; leave remote multiplayer and full physical mobile/PWA certification deferred.
 
 Do not delete versioned QA reports, graphics provenance, archived test fixtures or templates without dependency inspection and a green complete census. No cleanup deletions in this isolated engine patch.
+
+## Exact-source regression outcome — accepted
+
+**Gameplay source:** [`be78c92baef19231062190969454e5dee16c1736`](https://github.com/saeedsai/SuperMagicFootball/commit/be78c92baef19231062190969454e5dee16c1736).
+
+- [Modular Game Dev QA #38913600436](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913600436): **SUCCESS**, 146/146 active Node subtests including four new `applyPlan` event checks, 20/20 merge tests, 10/10 feature-claim checks, 165 roster and JSON validation PASS, Python regression compilation PASS.
+- [Full Regression Census #38913600419](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913600419): **COMPLETED SUCCESS, 192/192 scripts** — 125/125 historical/current Node scripts across four shards (32+31+31+31) and 67/67 actual Chromium scripts across four shards (17+17+16+17); zero failures, errors, timeouts or not-run scripts. The new `tactics_event_integrity_browser_qa.py` ran in 5.39 seconds in Chromium shard 3 with both desktop and simulated touch accepted.
+- [Keeper Save Event Integrity #38913600270](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913600270): **SUCCESS** on the gameplay source; no goalkeeper mechanics changes.
+- [Hosted PC/simulated-touch game smoke #38913600226](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913600226): **SUCCESS**, active match launched on the public Pages URL in desktop and emulated mobile touch Chromium. This smoke tests general public gameplay, **not the specific zero-count event on the deployed artifact**.
+- [Pages deploy for this source #38913599737](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913599737): was still **in progress at signoff** due to concurrent pushes. It must not be reported as a successful exact-source deploy until its conclusion is confirmed. Subsequent published descendants require an ancestry check. Physical phones, PWA offline/update/restart and Safari/Firefox remain untested.
+
+### Release checkpoint
+
+Acceptance for Issue #7's source regression criteria is complete. Shared `gameplay-engine` lock may be released after this QA handover; no new `tacticsChanged` listener contract, source mechanics tuning, squad changes or cleanup deletions were introduced. Next game-changing batch needs a new independent claim.
