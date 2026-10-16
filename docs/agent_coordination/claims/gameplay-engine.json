@@ -3,7 +3,7 @@
   "lock_key": "gameplay-engine",
   "feature_id": "GK-LUNGE-FAIRNESS",
   "owner": "gameplay-keeper-lunge-fairness-20261016-session4-gpt6",
-  "status": "active",
+  "status": "released",
   "scope": "Bounded gameplay engine keeper lateral-lunge fairness: src/modules/engine.js only for a small defect correction; new keeper-only regression tests, dedicated docs/keeper handover and roadmap addendum. No graphics, UI, rosters, generated assets, QA framework, workflows, sw.js, shared configuration or unrelated cleanup.",
   "base_sha": "a41926787b914fa239cdb4c1809a9d7dc9c3567b",
   "created_at": "2026-10-16",
@@ -14,5 +14,9 @@
     "existing full regression (CI as already configured)",
     "Pages desktop/touch smoke"
   ],
-  "handover": "docs/KEEPER_LUNGE_FAIRNESS_HANDOVER_20261016.md"
+  "handover": "docs/KEEPER_LUNGE_FAIRNESS_HANDOVER_20261016.md — commit 28ef5501c3bf3342542d444928284b0ef09b75da; QA c0e7132f 160/161, GitHub issue #1",
+  "released_at": "2026-10-16",
+  "outcome": "completed_with_out_of_scope_ui_regression_open",
+  "last_verified_runtime_commit": "c0e7132fd4c0e42ac16425d7ba55365c5c717a68",
+  "open_issue": "https://github.com/saeedsai/SuperMagicFootball/issues/1"
 }
