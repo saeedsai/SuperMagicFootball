@@ -2247,7 +2247,7 @@
       "club": "Bayern Munich",
       "playersChanged": 12,
       "fieldsChanged": 57,
-      "status": "pending_ci_regression",
+      "status": "source_qa_pass_134_active_full_census_cancelled_pages_cancelled",
       "changes": [
         {
           "playerId": "club26_1_0",
@@ -2636,7 +2636,36 @@
         "Game uses Joshua Kimmich as DF and Ismael Saibari as MF as constrained roles; EA has CDM and CAM card respectively.",
         "FootballSquads physical measurements may differ from other providers; source-linked rather than claiming uniquely authoritative height."
       ],
-      "invariant": "12 stable IDs, players, roles, ratings and 72 official face attributes unchanged; all other clubs untouched"
+      "invariant": "12 stable IDs, players, roles, ratings and 72 official face attributes unchanged; all other clubs untouched",
+      "ciEvidence": {
+        "sourceSha": "6c396a98023ec36ddc59caa6453346ebd57c7253",
+        "testSha": "3bc2db27d529b6cd1bad024b4b538698f5feae1f",
+        "modularQA": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904974985",
+          "conclusion": "success",
+          "activeNodePassed": 134,
+          "activeNodeFailed": 0,
+          "clubRosterValidation": "passed"
+        },
+        "earlierSourceQA": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904697279",
+          "conclusion": "failure",
+          "unrelatedHalftimeContractFailure": true
+        },
+        "fullRegression": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904696936",
+          "conclusion": "cancelled_not_tested"
+        },
+        "laterIntegratedFullRegression": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905117786",
+          "conclusion": "cancelled_not_tested"
+        },
+        "pages": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904975262",
+          "conclusion": "cancelled_not_deployed"
+        },
+        "physicalHostedPhonePc": "not_independently_verified"
+      }
     }
   ]
 }
