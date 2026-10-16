@@ -337,7 +337,7 @@
     "eightAuthoredDirections": "not_started",
     "allAnimations": "not_started",
     "fullStudioCatalog": "not_started",
-    "exactCommitFullRegression": "not_started",
+    "exactCommitFullRegression": "verified_for_experimental_source_not_final_production_art_approval",
     "deployedModularModel": "not_started"
   },
   "documentPaths": [
@@ -396,7 +396,7 @@
       "moduleHttp": 200,
       "errors": 0
     },
-    "fullRegressionLatest": "a8553002 census https://github.com/saeedsai/SuperMagicFootball/actions/runs/38899003690: preflight/4 Node/2 browser passed; browser2 gameplay combo failed, browser3 snapcraft install 408; failed shards retry requested",
+    "fullRegressionLatest": "PASS exact source commit a85530023a4883fb751c44b466ebcf6f5522d10d, attempt 2: https://github.com/saeedsai/SuperMagicFootball/actions/runs/38899003690; recovered initial team-combo flake and Snapcraft HTTP 408",
     "frontFace": {
       "componentId": "face_front_001",
       "asset": "assets/characters/concept_modular_v1/source/face_front_front.svg",
@@ -453,7 +453,8 @@
       "artQARun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38899003730",
       "liveQARun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38899003632",
       "fullRegressionRun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38899003690",
-      "fullRegressionStatus": "FAIL on initial attempt: browser shard 2 preexisting combo gameplay expectation, browser shard 3 Chromium snapcraft HTTP 408; failed shards retried. Preflight, Node 4/4 and browser 0,1 passed"
+      "fullRegressionStatus": "PASS full nine-job census after two failed browser shards were retried: preflight, all four Node shards and all four browser shards green at source SHA a8553002",
+      "fullRegressionAttempt": 2
     }
   }
 }
