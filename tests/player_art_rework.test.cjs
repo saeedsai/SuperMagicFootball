@@ -45,7 +45,7 @@ test('offline caching and inline browser test fixture both load new art module',
  const sw=fs.readFileSync(path.resolve(__dirname,'../sw.js'),'utf8');
  assert.match(build,/'artpose','characterart','concepthero','render'/);
  assert.match(sw,/'artpose','characterart','concepthero','render'/);
- assert.match(sw,/smf-082536-keeper-anticipation-v1/);
+ assert.match(sw,/smf-082537-keeper-lateral-lunge-v1/);
 });
 test('production integration remains in match renderer',()=>{
  const source=fs.readFileSync(path.resolve(__dirname,'../src/modules/render.js'),'utf8');
