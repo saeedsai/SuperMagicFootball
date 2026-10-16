@@ -3,7 +3,7 @@
   "lock_key": "ui-controls",
   "feature_id": "UI-HALFTIME-COACH-QA",
   "owner": "ui-halftime-coach-browser-fix-20261016-1408-gpt6b",
-  "status": "active",
+  "status": "released",
   "scope": "UI halftime QA correction only: atomic paused-state and authoritative moraleLedger setup in tests/halftime_coach_browser_qa.py; one explanatory ledger-read comment in src/modules/ui.js (triggers full regression); docs/UI_HALFTIME_COACH_20261016.md handover. No engine, graphics, rosters, cache, CI workflow or other tests.",
   "base_sha": "a3f8849ffd4cbe9e4995e788a5733869fe2b907a",
   "created_at": "2026-10-16T14:08+02:00",
@@ -13,8 +13,8 @@
     "Modular Game Dev QA",
     "hosted desktop/touch smoke"
   ],
-  "handover": "docs/UI_HALFTIME_COACH_20261016.md — follow-up Chromium fixture correction",
-  "released_at": "2026-10-16T14:06+02:00",
-  "outcome": "implemented_node95_green_full_chromium_pending",
-  "final_source_commit": "d43258b67899f281f82282ad53578f5ef2584c96"
+  "handover": "docs/UI_HALFTIME_COACH_20261016.md — #38898721496 active QA 97/97 PASS, full census #38898721461 pending, live Pages desktop/touch smoke #38891468528 attempt3 PASS",
+  "released_at": "2026-10-16T14:12+02:00",
+  "outcome": "corrected_browser_fixture_node97_pass_full_census_pending",
+  "final_source_commit": "d9c7274c265ecb88d4269cf2e8d6b014c5fbf947"
 }
