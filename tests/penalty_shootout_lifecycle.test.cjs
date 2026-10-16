@@ -11,7 +11,7 @@ const src=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8'
 const a=src.indexOf(' startPK(afterDraw=false){');
 const b=src.indexOf('\n}\n\nreturn {GameEngine,WORLD}',a);
 assert(a>=0&&b>a,'current playable GameEngine penalty methods must be present');
-const methods=vm.runInNewContext('({'+src.slice(a,b)+'})',{
+const methods=vm.runInNewContext('({'+src.slice(a,b).replace('\n updatePK(dt){',',\n updatePK(dt){')+'})',{
  WORLD:{goalTop:530,goalBottom:910},
  F:{x:100,w:2200},
  clamp:(n,lo,hi)=>Math.max(lo,Math.min(hi,n)),
