@@ -35,6 +35,10 @@ Every new or resumed chat must use the memory bootstrap in [docs/memory/README.m
 
 5. Confirm the new remote JSON reads `"status": "active"` with *your exact owner ID and feature ID*. If it does not, **STOP**. Add a tracking issue or handover with scoped files, test plan and base SHA. A branch name alone is not a claim.
 
+### About version at each commit (all agents)
+
+Every commit must be identifiable from **Credits / About** by its current `dev` Git SHA. Preserve the separate bundle release version; don't label a remotely fetched Git SHA as the deployed build. Follow [version policy](../VERSIONING_POLICY.md); run the contract tests and include the exact commit SHA and observed About revision in your handover. A feature claim does **not** authorize edits to `src/modules/ui.js` or release infrastructure owned by another agent.
+
 ### While implementing
 
 - Continue in **small separately tested checkpoints**; append changed paths / impacted IDs / results to your area-specific progress ledger. Source code edits should be on an agent branch where possible; rebase/cherry-pick only reviewed changes onto refreshed `dev`. The lock record itself lives on `dev`.

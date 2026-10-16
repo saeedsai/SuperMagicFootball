@@ -18,6 +18,10 @@
 - **QA/releases:** [QA release record](../QA_RELEASE_v082534_20261016.md), current GitHub Actions, and [hosted play instructions](../../GITHUB_PAGES_SETUP.md).
 - **Documentation map:** [docs index](../README.md); [historical-file policy](../ARCHIVE_AND_ACTIVE_FILES.md).
 
+## Mandatory About version rule
+
+**Every Git commit has a unique About-menu development revision:** every agent must retain and verify the per-visit GitHub `dev` commit SHA under **Credits / About**, alongside the stable game-bundle release version. Commit SHA is the per-commit revision, not proof that the same code is live on Pages; never overwrite another agent's UI scope just to bump a string. Before publishing, run the [version policy QA](../VERSIONING_POLICY.md), check the live commit SHA, and report it in the handover.
+
 ## Shared risks and working decisions
 
 - Many independent chats write to `dev`; an absent lock or a stale checkpoint does not prove a feature is unowned. Respect exact team IDs and shared-file ownership; reconcile the head before pushing.

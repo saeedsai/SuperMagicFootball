@@ -9,6 +9,10 @@ This folder is a **short handover layer**, not a new code authority, long-term t
 - Each agent **reads and edits only its own** `agents/<id>.md`. An agent's existing feature lock authorizes its own checkpoint updates; it never authorizes another agent's memory. All other agent files are off limits for reading, searching, summarization, or edits.
 - **Security limitation:** the GitHub repo cannot grant file-specific access to independent chats sharing repository credentials. This is an operational rule only. Do not put secrets, private user data or confidential chat contents into any repository memory. For technical isolation, use separately permissioned repositories or private scoped storage.
 
+## Mandatory per-commit About revision
+
+All agents must follow [versioning policy](../VERSIONING_POLICY.md) on **every commit**, not merely major feature releases. The About screen must keep its on-open `dev` commit SHA and stable bundle version clearly distinct. Do not modify another agent's UI/release-owned file; verify existing About tests and report the SHA with your QA checkpoint.
+
 ## Start session: 1–2 minute protocol
 
 1. Use the latest remote `dev` HEAD; do not load the entire repository into ChatGPT context.

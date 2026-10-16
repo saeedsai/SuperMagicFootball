@@ -8,6 +8,14 @@ Before loading specialist plans or old chat history, read **[memory instructions
 
 **Limit:** GitHub repository permissions do not isolate files per ChatGPT chat. The own-file rule is cooperative, not an access-control guarantee; shared memory must contain no secrets. Existing chats must be explicitly told to adopt this process at their next message. For hard privacy, separate repositories or credential-scoped storage are required.
 
+## Required version identification in About — EVERY commit
+
+**Every agent, every commit to `dev` (including small gameplay, roster, graphics, documentation and QA commits):** the in-game **Credits / About** must provide a **unique, current Git development revision** identifying that commit. The existing About screen retrieves the latest `dev` commit SHA each time it opens; **never remove, hard-code or freeze that revision**. Preserve the distinct visible `GAME BUNDLE` release version. Do not mistake a newly fetched `dev` SHA for proof that GitHub Pages already deployed it.
+
+**Before finishing a commit:** confirm About revision tests are covered (`node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs`) and report the pushed full SHA plus the About version/revision behavior. **If the commit introduces/changes a release's human-readable version**, coordinate the change with the current `ui-controls` and `release-infra` owners, update all canonical version references consistently, and test About on the integrated build; **do not edit `src/modules/ui.js` or shared version strings under another agent's active lock**. Git SHA is the automatic per-commit identifier; do not require concurrent agents to race bumping SemVer for housekeeping commits.
+
+See [mandatory versioning rules](docs/VERSIONING_POLICY.md) for definitions, offline/deployment caveats and the checklist. If the About revision is stale, absent or reports an unrelated deployed commit, treat it as a release/QA issue rather than silently claiming the version was updated.
+
 ## Mandatory start gate
 
 1. Fetch the **latest** `dev` HEAD, [roadmap](docs/NEXT_MILESTONES.md), relevant specialist handover/tracker and any active GitHub issues/PRs. Previous work may have landed since your last message.
