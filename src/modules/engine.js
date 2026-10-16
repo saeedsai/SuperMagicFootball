@@ -12,6 +12,7 @@ import {AI} from "./ai.js";
 import {BPW} from "./bpw.js";
 import {VISUALFEEL} from "./visualfeel.js";
 import {SHOTFEEL} from "./shotfeel.js";
+import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
 const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,defensivePressers}=AI;const {withStats,stat,endurance,contest,shotError}=STATS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition}=FITNESS;
 
@@ -26,6 +27,8 @@ const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP
 const WORLD=GAME_ASSETS.mechanics.world;
 // v0.8.25.31: conservative JSON-backed gameplay tuning; defaults reproduce 0.8.25.30 exactly.
 const ENGINE_BALANCE=GAME_ASSETS.mechanics.engineBalance;
+const {validatePhysicsTuning,passLaunchSpeed,keeperDiveCooldown}=PHYSICSBALANCE;
+const PHYSICS_TUNING=validatePhysicsTuning(GAME_ASSETS.mechanics.physicsTuning);
 // 105:68 real-football proportions
 const SUPER_SHOT_TRANSFORM_SECONDS=GAME_ASSETS.mechanics.engineTiming.superShotTransformSeconds;
 const BALL_LIFT_HOLD_SECONDS=GAME_ASSETS.mechanics.engineTiming.ballLiftHoldSeconds;
@@ -192,7 +195,7 @@ function keeperAutoSuperEligible(keeper,ball){
 function keeperDiveRecoverySeconds(keeper){
  const skill=stat(keeper,'gkSkill'),diving=stat(keeper,'gkDiving');
  const fatigue=clamp(keeper?.fatigue||0,0,1);
- return clamp(2.05+(55-skill)*.003+(55-diving)*.004+fatigue*.62,1.45,2.85);
+ return keeperDiveCooldown(skill,diving,fatigue,PHYSICS_TUNING);
 }
 class GameEngine{
  constructor(options={},input){this.options=options;this.input=input;this.events=[];this.mode='quick';this.matchState='none';this.teamIds=[0,9];this.rosters=[[],[]];this.lineups=[DEFAULT_LINEUP.slice(),[0,1,2,3,5,9]];this.formation=['2-1-2','2-1-2'];this.teamPlans=[];this.controlled=[3,3,0,0];this.humans=1;this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=120;this.players=[];this.ball={};this.particles=[];this.shake=0;this.flash=0;this.weather='Clear';this.terrain='Grass';this.condition='Good';this.wind={x:0,y:0};this.stormTimer=0;this.tornado=null;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.pk=null;this.matchSerial=0;this.fatigueLedger=[{},{}];this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.maxSubstitutions=MAX_SUBSTITUTIONS;this.moraleLedger=[{},{}];this.talksUsed=[{},{ }];this.celebrationStyle=0;this.onEvent=()=>{};this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.stoppageWindow=0;this.stoppageAnnounced=false;this._shotAudit=null;this._reboundAudit=null;this._shotAuditNext=0;}
@@ -439,7 +442,7 @@ class GameEngine{
    aimX=target.x-p.x+(target.dx||0)*(long?150:opts.human?65:90)+ex;
    aimY=target.y-p.y+(target.dy||0)*(long?150:opts.human?65:90)+ey;
   }
-  const speed=Math.min(1250,(445+quality*2.6)*longScale);
+  const speed=passLaunchSpeed(quality,longScale,PHYSICS_TUNING);
   this.freeBall(p,aimX,aimY,speed,{power:5,z:p.z+8,vz:cross?245:long?160:!opts.human&&wide?105:65,pass:true});
   this.ball.passTarget=target?.src.id||null;
   this.emit('passIntent',{team:p.t,player:p.src.id,mode:kind,holdSeconds:hold,

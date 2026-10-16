@@ -71,3 +71,7 @@ For this iteration's coverage and five-step plan, see [docs/TEST_REPORT_v082532.
 ## Integrating JSON edits from simultaneous agents
 
 Use `python3 scripts/parallel_data_merge.py --base <common-ancestor-checkout> --ours <agent-a-checkout> --theirs <agent-b-checkout> --check` to locate conflicts in teams, players, appearance and mechanics JSON before integration. Disjoint fields are combined by player ID; conflicting fields, protected roster/ID ordering changes, and deletion-versus-modification are reported rather than silently accepted. Review [the parallel-data merge guide](docs/PARALLEL_DATA_MERGE_GUIDE.md), then run all CI gates before pushing `dev`. The script does not change the playable game or verify external FC27 ratings.
+
+## Editable pass and goalkeeper balance (v0.8.25.34, 2026-10-16)
+
+The playable `src/modules/engine.js` now loads two bounded groups from `data/mechanics/gameplay.json`: `physicsTuning.passSpeed` and `physicsTuning.keeperDiveRecovery`. All coefficients retain the previous values until explicitly edited; the pure helper is in `src/modules/physicsbalance.js`. Incorrect types, out-of-range values and inconsistent min/base/max settings fail startup rather than silently destabilizing the match. See [ENGINE_PHYSICS_TUNING_20261016.md](docs/ENGINE_PHYSICS_TUNING_20261016.md) for keys, ranges, regression tests and editing instructions. QA fixtures and the service-worker module registry include the helper; this keeps the project independently editable by multiple agents. Historical roster and player-art source assets are unchanged.

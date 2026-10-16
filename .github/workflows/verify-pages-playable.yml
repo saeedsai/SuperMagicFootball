@@ -3,7 +3,7 @@ name: Verify Deployed PC and Touch Game
 on:
   push:
     branches: [dev]
-    paths: ['.github/workflows/verify-pages-playable.yml', 'data/mechanics/gameplay.json']
+    paths: ['.github/workflows/verify-pages-playable.yml', 'data/mechanics/gameplay.json', 'src/modules/physicsbalance.js', 'src/modules/engine.js']
   workflow_dispatch:
 permissions:
   contents: read
@@ -66,6 +66,14 @@ jobs:
               assert geometry['wasPlaying'],(kind,'match did not enter play')
               assert abs(geometry['midfield']-1254.4)<0.02,(kind,'20% kickoff geometry mismatch',geometry)
               assert geometry['keeper']>2070,(kind,'away goal failed to move after field extension',geometry)
+              # Verify the deployed JSON really includes this release's independent
+              # pass/keeper coefficients; an older cached Pages revision is not a pass.
+              tuning=page.evaluate("""async () => {
+                const r=await fetch('./data/mechanics/gameplay.json',{cache:'no-store'});
+                if(!r.ok)throw Error('Mechanics HTTP '+r.status);
+                return (await r.json()).physicsTuning;
+              }""")
+              assert tuning and tuning['passSpeed']['base']==445 and tuning['keeperDiveRecovery']['baseSeconds']==2.05,(kind,'old deployment or missing physics tuning',tuning)
               assert not errors,(kind,errors)
               print('DEPLOYED_SMOKE_PASS',kind,'200 OK, menus, team selection, kickoff, +20% field and match active',flush=True)
               page.close()

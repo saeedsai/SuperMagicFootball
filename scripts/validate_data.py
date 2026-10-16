@@ -39,6 +39,26 @@ bounds={'attackingStoppageProgress':(0.50,0.90),'superKnockbackReferencePower':(
 for key,(minimum,maximum) in bounds.items():
  value=balance.get(key)
  require(isinstance(value,(float,int)) and math.isfinite(value) and minimum<=value<=maximum,f'Out of range engineBalance.{key}: {value}')
+# Independent mechanics editor contract: all coefficients are finite and safe for live math.
+physics=mechanics.get('physicsTuning',{})
+physics_bounds={
+ 'passSpeed':{'base':(300,650),'qualityMultiplier':(0,5),'max':(700,1600)},
+ 'keeperDiveRecovery':{'baseSeconds':(1,3.5),'referenceSkill':(40,70),'skillCoefficient':(0,.02),'divingCoefficient':(0,.02),'fatigueCoefficient':(0,1.5),'minSeconds':(.8,2),'maxSeconds':(2,4)}
+}
+require(isinstance(physics,dict),'physicsTuning must be an object')
+for group,options in physics_bounds.items():
+ values=physics.get(group,{}) if isinstance(physics,dict) else {}
+ require(isinstance(values,dict),f'physicsTuning.{group} must be an object')
+ if not isinstance(values,dict):continue
+ for key,(lower,upper) in options.items():
+  value=values.get(key)
+  require(type(value) in (float,int) and math.isfinite(value) and lower<=value<=upper,f'physicsTuning.{group}.{key} out of bounds: {value}')
+passes=physics.get('passSpeed',{}) if isinstance(physics,dict) else {}
+keeper=physics.get('keeperDiveRecovery',{}) if isinstance(physics,dict) else {}
+if isinstance(passes,dict) and all(type(passes.get(k)) in (float,int) for k in ('base','max')):
+ require(passes['max']>=passes['base'],'passSpeed.max must be >= base')
+if isinstance(keeper,dict) and all(type(keeper.get(k)) in (float,int) for k in ('minSeconds','baseSeconds','maxSeconds')):
+ require(keeper['minSeconds']<=keeper['baseSeconds']<=keeper['maxSeconds'],'keeperDiveRecovery min <= base <= max')
 require(mechanics['defaultOptions'].get('showPerformance') is False,'Performance HUD must default off')
 require(len(mechanics.get('formations',{}))==6,'Need exactly six formations')
 for k,slots in mechanics.get('formations',{}).items():require(len(slots)==6 and all(0<=v[c]<=1 for v in slots for c in ('x','y')),f'Bad formation {k}')

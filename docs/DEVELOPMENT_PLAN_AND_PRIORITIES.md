@@ -22,3 +22,9 @@ See `NEXT_MILESTONES.md` for five iterations, `GAP_REGISTER_v082532.md` for open
 - Field length increased precisely from 1,884 to 2,260.8 world units (+20%). Width stays 1,220; match world width grows 2,184 → 2,560.8 so left/right margins stay equal.
 - All normal kickoff, formation, goal and renderer references use the JSON world. Added Node and Chromium regression; world dimension invariant also validates in CI. No alteration to player/squad data, save schema or physics multipliers.
 - Next iterations remain graphics polish, gameplay JSON extraction, match animation, concurrent editing validation, career/tactics; physical mobile/PWA and exhaustive hosting/persistence certification remain far-future.
+
+## v0.8.25.34 — completed on 16 October 2026
+- Created independently owned `src/modules/physicsbalance.js`; bounded pure-function pass-speed and keeper-recovery calculations, validated against current JSON values.
+- Moved 10 previously hard-coded coefficients to `physicsTuning` while retaining their exact old gameplay defaults. Rotated cache and updated modular fixture build order.
+- Added unit parity/editability/invalid-input tests, browser desktop/touch pass and keeper tests, and a fresh full-regression CI trigger. Existing physical-device/Pages persistence scope remains far future.
+- Next five active iterations: animation → parallel editing safeguards → career/tactics UX → player art refinement → further validated mechanics controls.

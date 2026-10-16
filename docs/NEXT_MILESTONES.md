@@ -1,14 +1,16 @@
-# SuperMagic Football — five-iteration development plan (multi-agent integrated)
+# SuperMagic Football — next five iterations after JSON mechanics release (16 October 2026)
 
 **Source of truth:** latest `dev` branch, and exact git commit on which every QA run executes. As of 15 October 2026, concurrent roster and graphics agents had already integrated their changes into `dev`; their subsequent FC27 source-probing and comparison-image commits must not be overwritten. Preserve 223 teams, 2,676 players, seven BPW squads, all persistent IDs and stable team indices, 2GK/3DF/4MF/3FW, five main menu groups, four action buttons, six formations, and existing save schema.
 
 | Next iteration | Focus | Implementation and acceptance |
 |---|---|---|
-| **v0.8.25.33** | Player graphics quality | Named-player front/side/three-quarter/rear visual QC using live contact sheets; resolve hair, beard, face, accessory overlap and expression issues; render entire real-player matrix and Chromium art suite. |
-| **v0.8.25.34** | Gameplay JSON parameters | Add bounded, documented pass/contact/keeper tuning keys; preserve previous defaults; validate schema, effects and 24 seeded complete matches. |
-| **v0.8.25.35** | Gameplay animation | Improve keeper recovery, first touch, passing and action follow-through, including directional frame consistency; maintain current collision and ball physics unless calibrated separately. |
-| **v0.8.25.36** | Parallel data/editor integration | **Foundational three-way conflict checker delivered early**: extend it with proposed-diff summaries and cross-graphics editor validation, then implement reviewed merges without ID/index drift. |
-| **v0.8.25.37** | Career, roster and tactical coaching UX | Better squad maintenance and tactical feedback without breaking user-created clubs or saves; new UI and regression acceptance. |
+| **v0.8.25.35** | Gameplay animations | Refine keeper landing/recovery pose, ball reception and pass follow-through across eight directions, without changing match physics. |
+| **v0.8.25.36** | Parallel data/editor integration | Add dry-run diffs, conflict reports and graphics preset cross-checks to the three-way merge workflow. |
+| **v0.8.25.37** | Career and tactics UX | Improve squad maintenance, substitution feedback and AI tactical recommendations while protecting legacy saves. |
+| **v0.8.25.38** | Player graphics refinement | Named-player identity review, hair/beard/accessory overlap, and source-verified character art comparison. |
+| **v0.8.25.39** | Advanced mechanics configuration | Extract bounded first-touch, player-contact and goalkeeper reach tuning with default parity and seeded match calibration. |
+
+**Delivered this iteration — v0.8.25.34:** the modular engine now loads and validates editable `physicsTuning.passSpeed` (base, quality multiplier, ceiling) and `physicsTuning.keeperDiveRecovery` (base, stat/fatigue coefficients, min/max). These use the historical defaults unchanged. See [ENGINE_PHYSICS_TUNING_20261016.md](ENGINE_PHYSICS_TUNING_20261016.md). The 20% field extension and concurrent 2026 player/graphics work are retained.
 
 ## Current integration/QA hygiene
 

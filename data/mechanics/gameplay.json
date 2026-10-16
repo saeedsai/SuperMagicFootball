@@ -756,6 +756,22 @@
     "superBicycleSpeedCap": 1550,
     "aerialDoubleTapSeconds": 0.32
   },
+  "physicsTuning": {
+    "passSpeed": {
+      "base": 445,
+      "qualityMultiplier": 2.6,
+      "max": 1250
+    },
+    "keeperDiveRecovery": {
+      "baseSeconds": 2.05,
+      "referenceSkill": 55,
+      "skillCoefficient": 0.003,
+      "divingCoefficient": 0.004,
+      "fatigueCoefficient": 0.62,
+      "minSeconds": 1.45,
+      "maxSeconds": 2.85
+    }
+  },
   "engineBalance": {
     "attackingStoppageProgress": 0.68,
     "superKnockbackReferencePower": 72,

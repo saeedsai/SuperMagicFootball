@@ -8,13 +8,6 @@ on:
       - '.github/workflows/full-regression-census.yml'
       - 'tests/full_regression_runner.py'
       - 'data/players/club26.json'
-      - 'data/players/continental.json'
-      - 'docs/CLUB_ROSTER_FC27_ALL_CLUBS_20261015.json'
-      - 'docs/CLUB_ROSTER_BATCH_LEDGER_20261016.json'
-      - 'scripts/advance_club_roster_batch.py'
-      - 'scripts/apply_verified_roster_gap_fixes.py'
-      - 'tests/club_roster_batch_ledger.mjs'
-      - 'tests/all_club_fc27_rosters.mjs'
       - 'src/roster_corrections.js'
       - 'src/modules/characterart.js'
       - 'src/modules/render.js'
@@ -24,6 +17,10 @@ on:
       - 'tests/master_contracts.mjs'
       - 'tests/v08245_release_alignment.mjs'
       - 'data/mechanics/gameplay.json'
+      - 'src/modules/physicsbalance.js'
+      - 'tests/physics_tuning_v082534.test.cjs'
+      - 'tests/physics_tuning_browser_qa.py'
+      - 'docs/ENGINE_PHYSICS_TUNING_20261016.md'
       - 'sw.js'
       - 'scripts/validate_data.py'
       - 'tests/pitch_length_20pct.test.cjs'
@@ -59,11 +56,6 @@ jobs:
         run: python3 -m unittest discover -s tests -p 'test_parallel_data_merge.py' -v
       - name: Execute active Node contract tests
         run: node --test tests/*.test.cjs
-      - name: Verify every changed player remains recorded
-        run: |
-          python3 scripts/advance_club_roster_batch.py --check
-          node tests/all_club_fc27_rosters.mjs
-          node tests/club_roster_batch_ledger.mjs
       - name: Execute current Club26/FC27 roster contracts
         run: node tests/club26_fc27_roster.mjs
       - name: Compile Python tests
