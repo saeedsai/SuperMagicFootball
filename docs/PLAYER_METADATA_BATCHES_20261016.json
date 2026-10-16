@@ -2666,6 +2666,437 @@
         },
         "physicalHostedPhonePc": "not_independently_verified"
       }
+    },
+    {
+      "id": "CLUB-20261016-MCI-FC27-VERIFICATION-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "25c44e94bd051e591cc5346679222fd66f31917d",
+      "clubId": "club26_2",
+      "club": "Manchester City",
+      "playersChanged": 12,
+      "fieldsChanged": 63,
+      "status": "pending_ci_regression",
+      "changes": [
+        {
+          "playerId": "club26_2_0",
+          "name": "Gianluigi Donnarumma",
+          "rosterSlot": 1,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 196,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_gk_17",
+          "name": "Gerónimo Rulli",
+          "rosterSlot": 2,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 189,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_1",
+          "name": "Rúben Dias",
+          "rosterSlot": 3,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 187,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_audit_12",
+          "name": "Joško Gvardiol",
+          "rosterSlot": 4,
+          "fields": {
+            "num": {
+              "previous": 2,
+              "current": 24,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 24,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 185,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_audit_13",
+          "name": "Marc Guéhi",
+          "rosterSlot": 5,
+          "fields": {
+            "num": {
+              "previous": 4,
+              "current": 6,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 26,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 182,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_2",
+          "name": "Elliot Anderson",
+          "rosterSlot": 6,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 175,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_audit_16",
+          "name": "Phil Foden",
+          "rosterSlot": 7,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 171,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_8",
+          "name": "Jérémy Doku",
+          "rosterSlot": 8,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 179,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_audit_15",
+          "name": "Matheus Nunes",
+          "rosterSlot": 9,
+          "fields": {
+            "num": {
+              "previous": 6,
+              "current": 27,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_7",
+          "name": "Erling Haaland",
+          "rosterSlot": 10,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 195,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_audit_14",
+          "name": "Rayan Cherki",
+          "rosterSlot": 11,
+          "fields": {
+            "num": {
+              "previous": 7,
+              "current": 10,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 23,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 177,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_5",
+          "name": "Antoine Semenyo",
+          "rosterSlot": 12,
+          "fields": {
+            "num": {
+              "previous": 8,
+              "current": 42,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 26,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        }
+      ],
+      "officialFc27Audit": {
+        "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+        "playersMatched": 12,
+        "overallRatingsMatched": 12,
+        "headlineAttributesMatched": 72,
+        "ratingType": "Ultimate Team launch base-card",
+        "gameplayStatsUnchanged": true
+      },
+      "otherSources": {
+        "clubRegistration": "https://www.premierleague.com/en/news/4706139/see-all-the-202627-premier-league-squad-lists",
+        "shirtNumbers": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season",
+        "physicalAndDOB": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+      },
+      "knownCaveats": [
+        "EA FC 27 base cards exclude Ultimate Team promos and live-form player changes.",
+        "The playable roster uses a strict 2GK/3DF/4MF/3FW distribution: Jérémy Doku appears as MF although EA LW, Rayan Cherki as FW although EA RW, and Matheus Nunes as MF though EA RB.",
+        "EA six headline attributes are not the custom arcade power, shoot, defense and speed; those are deliberately unchanged.",
+        "FootballSquads 2026/27 heights may vary across other publications; retain named source provenance."
+      ],
+      "invariant": "12 stable IDs, names, club, nations, dates of birth, roles, ratings and EA headline attributes unchanged; non-City clubs untouched"
     }
   ]
 }
