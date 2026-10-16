@@ -105,3 +105,5 @@ All 165 club slots are populated, but additional review is warranted for **2026/
 - **CI gates:** `node --test tests/brighton_player_metadata_20261016.test.cjs`, `node tests/all_club_fc27_rosters.mjs`, `node tests/club_roster_batch_ledger.mjs`, `python3 scripts/validate_data.py`, Node/Chromium regression, and GitHub Pages desktop/touch smoke. No historical artifact removal while tests and other agents reference those files.
 - **Future small batches:** (1) Brighton name/club/position and Baleba transfer resolution using the original immutable squad ledger; (2) Dortmund age/physical evidence; (3) Napoli; (4) Everton; (5) Inter Milan. Re-fetch the new `dev` head before every commit.
 
+
+Source evidence caveat for Brighton: Jason Steele's height is 190 cm in FBref and StatMuse but 188 cm in Sky Sports and 185 cm in Soccerbase. A current-sourced 190 cm reading is stored, with conflict flagged for future manual confirmation. Age and nationality evidence in the player metadata ledger was refined without changing any player values.

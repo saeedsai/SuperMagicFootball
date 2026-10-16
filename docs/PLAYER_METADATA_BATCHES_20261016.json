@@ -166,12 +166,12 @@
             "heightCm": {
               "previous": null,
               "current": 190,
-              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
+              "source": "https://fbref.com/en/players/28300a16/Jason-Steele"
             },
             "age": {
               "previous": 33,
               "current": 36,
-              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+              "source": "https://fbref.com/en/players/28300a16/Jason-Steele"
             },
             "shirtVerified": {
               "previous": false,
@@ -242,7 +242,7 @@
             "nation": {
               "previous": "Holland",
               "current": "Netherlands",
-              "source": "https://www.premierleague.com/en/players/489639/bart-verbruggen/career"
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
             },
             "age": {
               "previous": 24,
@@ -421,7 +421,7 @@
             "age": {
               "previous": null,
               "current": 24,
-              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
             },
             "shirtVerified": {
               "previous": false,
@@ -448,7 +448,8 @@
         "2026/27 squad shirts from Brighton's August listing and the Premier League's September 22 listing. Baleba #17 is historic club listing, not current registration.",
         "Height values use club-specific 2026/27 player record for each name. Mats Wieffer's conflicting 188cm (Premier League historic page) vs 189cm (StatMuse) is intentionally not changed.",
         "Club/rating/position and team-selection corrections must be made separately with the immutable name/role/OVR selection ledger.",
-        "Do not claim FC27 overall ratings are independently licensed; originals are unchanged."
+        "Do not claim FC27 overall ratings are independently licensed; originals are unchanged.",
+        "Jason Steele heights conflict across public sources (FBref and StatMuse 190cm, Sky Sports 188cm, Soccerbase 185cm). 190cm is recorded as the FBref/StatMuse value, not independently certain; review before declaring exact height final."
       ]
     }
   ]
