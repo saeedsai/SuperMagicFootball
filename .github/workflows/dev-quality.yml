@@ -17,6 +17,10 @@ jobs:
         run: python3 scripts/build.py
       - name: Regression — three-way JSON agent merge safeguards
         run: python3 -m unittest discover -s tests -p 'test_parallel_data_merge.py' -v
+      - name: Verify all 165 club rosters and immutable change history
+        run: |
+          node tests/all_club_fc27_rosters.mjs
+          node tests/club_roster_batch_ledger.mjs
       - name: Execute Node regression suite
         run: node --test tests/*.test.cjs
       - name: Compile Python browser regression scripts
