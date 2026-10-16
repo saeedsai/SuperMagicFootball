@@ -54,7 +54,9 @@
         "tests/concept_modular_browser_qa.py",
         "assets/characters/concept_modular_v1/source/hair_back_back.svg",
         "tests/concept_modular_v1.test.cjs",
-        "tests/concept_modular_live_qa.py"
+        "tests/concept_modular_live_qa.py",
+        "assets/characters/concept_modular_v1/source/face_front_front.svg",
+        "scripts/validate_concept_modular.py"
       ],
       "evidence": [
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886177973",
@@ -65,9 +67,9 @@
         "docs/concept_character_pipeline/C01_REAR_HAIR_BATCH_20261016.md"
       ],
       "issues": [
-        "Only front and back hair overlays are independently editable; full head/face/torso/arms/legs not isolated",
-        "Six other world directions still require controlled legacy fallback",
-        "Full independent animation, studio variants, WebP derivatives and owner art signoff missing"
+        "Front face is an editable illustrated experimental overlay, not independently authored complete head across all views",
+        "Only two hair headings (front/back); six remaining headings still use original painted prototype",
+        "Original layered master source is unavailable; no animated brows/eyes/mouth, torso/arms/legs or owner visual approval"
       ]
     },
     {
@@ -314,7 +316,7 @@
       "identifier": "medium-honey-curls-moustache"
     }
   ],
-  "nextSmallTask": "ART-C01 after ownership check: align an independently editable front head/face layer with ear and neck pivots while preserving existing illustrated hero base; owner art signoff still required.",
+  "nextSmallTask": "C01: inspect new front-face real-game desktop/touch and four-background evidence, adjust eyebrow/eye/ear/hairline fit if owner review requires, then implement ONE separately animated painted front near/far arm pair while retaining original fallback.",
   "openRisks": [
     "Only one cloned literal concept character is available for all twelve demo slots",
     "Flattened five-view atlas has baked blue uniform and number 10",
@@ -322,7 +324,8 @@
     "Basic cutout leg swing is not fully animated arms, faces, specials or goalkeeper motion",
     "Editable component-layer art and provenance have not been validated for new modular renderer",
     "Source resolution/performance/atlas budget and in-game art quality require measured baseline and owner review",
-    "New back view only supplies a transparent hair overlay on the existing flattened back-body art; must not be counted as complete authored back view"
+    "New back view only supplies a transparent hair overlay on the existing flattened back-body art; must not be counted as complete authored back view",
+    "New front face is a transparently painted independent feature set over an existing flattened head/body, not a complete separated full head; no owner face-art approval."
   ],
   "releaseSignoff": {
     "ownerArtApproval": "not_started",
@@ -389,6 +392,35 @@
       "moduleHttp": 200,
       "errors": 0
     },
-    "fullRegressionLatest": "pending contemporary CI: https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468584; previously green https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886072121"
+    "fullRegressionLatest": "pending contemporary CI: https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468584; previously green https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886072121",
+    "frontFace": {
+      "componentId": "face_front_001",
+      "asset": "assets/characters/concept_modular_v1/source/face_front_front.svg",
+      "sourceCanvas": [
+        112,
+        265
+      ],
+      "independentGroups": [
+        "ears",
+        "head-skin",
+        "cheeks",
+        "eyebrows",
+        "eye-whites",
+        "irises",
+        "nose",
+        "mouth"
+      ],
+      "rendering": "experimental opt-in front view, over old painted body, below separate front hair",
+      "status": "implemented_pending_exact_commit_browser_validation_and_owner_review",
+      "dynamicExpression": false,
+      "productionApproved": false,
+      "initialImplementationCommit": "10ef810f16b08ddc869f5dbdb0da1e29bb99a22d",
+      "tests": [
+        "scripts/validate_concept_modular.py",
+        "tests/concept_modular_v1.test.cjs",
+        "tests/concept_modular_browser_qa.py",
+        "tests/concept_modular_live_qa.py"
+      ]
+    }
   }
 }
