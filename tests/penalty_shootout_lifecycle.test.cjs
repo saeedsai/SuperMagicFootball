@@ -43,7 +43,7 @@ test('standalone start creates two empty kick ledgers without changing match ide
  assert.deepEqual(Array.from(g.pk.kicks,side=>Array.from(side)),[[],[]]);
  assert.equal(g.pk.turn,0);assert.equal(g.pk.afterDraw,false);
  assert.equal(g.events.filter(e=>e.type==='penaltyStart').length,1);
- assert.deepEqual(g.score,[2,2]);
+ assert.deepEqual(Array.from(g.score),[2,2]);
 });
 test('after one attempt turn changes exactly once and resets shot-stage state',()=>{
  const g=create();kick(g,true);
@@ -59,7 +59,7 @@ test('first-five early clinch only when trailing side mathematically cannot catc
  kick(g,false);
  assert.equal(g.matchState,'finished');
  assert.deepEqual(Array.from(g.pk.kicks,side=>side.length),[3,3]);
- assert.deepEqual(g.score,[3,0]);
+ assert.deepEqual(Array.from(g.score),[3,0]);
  const fin=g.events.filter(e=>e.type==='finished');assert.equal(fin.length,1);
  assert.equal(fin[0].winner,0);assert.deepEqual(Array.from(fin[0].pkScore),[3,0]);
  assert.equal(g.events.filter(e=>e.type==='penaltyKick').length,6);
@@ -72,7 +72,7 @@ test('sudden death cannot end on one unmatched sixth kick, only on completed pai
  assert.equal(g.matchState,'penalty');
  assert.equal(g.pk.turn,11);assert.equal(g.events.filter(e=>e.type==='finished').length,0);
  kick(g,false);
- assert.equal(g.matchState,'finished');assert.deepEqual(g.score,[6,5]);
+ assert.equal(g.matchState,'finished');assert.deepEqual(Array.from(g.score),[6,5]);
  assert.equal(g.events.filter(e=>e.type==='finished').length,1);
 });
 test('after regulation draw the shootout decides winner without rewriting regulation score',()=>{
