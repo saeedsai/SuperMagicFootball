@@ -3,15 +3,18 @@
   "lock_key": "release-infra",
   "feature_id": "CI-AUDIO-FULL-CENSUS-PUSH-PATHS",
   "owner": "gameplay-audio-ci-20261016-2014-gpt6",
-  "status": "active",
+  "status": "released",
   "scope": "Only .github/workflows/full-regression-census.yml push path list add src/modules/audio.js, tests/dribble_trick_audio.test.cjs and tests/dribble_trick_audio_browser_qa.py, tests/penalty_audio_feedback.test.cjs, tests/penalty_audio_feedback_browser_qa.py; docs/GAMEPLAY_SKILL_SOUND_20261016.md and own docs/memory/agents/gameplay-pk-20261016.md. No CI job logic, gameplay, UI, graphic, roster, SW or other test/QA runner edits.",
   "base_sha": "a4839ee88b7f58b47e14e4cdb5012ef2ac072119",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
-  "handover": "docs/GAMEPLAY_SKILL_SOUND_20261016.md",
+  "handover": "docs/GAMEPLAY_SKILL_SOUND_20261016.md — workflow commits a74480c96d20570fc5c350958e3e7faaf1de3bcb and 50ba2479d455b7ab344bd043a6716e361eac5dae, memory identity fix 7a849a744719dec91342006ad581c074ef0dfcb2, docs 9b4dd862ca6101753e2f516ce42b8034c1444b37; Modular QA https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946505072; full census https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946504996",
   "tests": [
     "Workflow push triggers full census",
     "4 Node plus 4 Chromium shards on source containing dribble feature",
     "Browser script explicit PASS in shard logs"
-  ]
+  ],
+  "released_at": "2026-10-16",
+  "outcome": "Full 4Node+4Chromium regression push triggers added for modular audio and 4 audio Node/browser test files; exact source QA #38946505072 200/200 PASS, full census #38946504996 pending; no CI job logic changed",
+  "integrated_commit": "25438848611592d3563b2288cd6cbfc8c98bcdb0"
 }
