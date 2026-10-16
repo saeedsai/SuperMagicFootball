@@ -36,6 +36,8 @@ on:
       - 'src/modules/audio.js'
       - 'tests/dribble_trick_audio.test.cjs'
       - 'tests/dribble_trick_audio_browser_qa.py'
+      - 'tests/penalty_audio_feedback.test.cjs'
+      - 'tests/penalty_audio_feedback_browser_qa.py'
       - 'src/modules/engine.js'
       - 'tests/keeper_dive_intent.test.cjs'
       - 'src/match_telemetry.js'
