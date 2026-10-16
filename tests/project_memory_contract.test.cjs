@@ -45,7 +45,7 @@ test('one unique, short per-chat file per indexed agent with no unregistered ext
 test('memory policies distinguish actual ACL isolation from cooperative discipline', () => {
   const policy = read('docs/memory/README.md');
   const shared = read('docs/memory/SHARED.md');
-  assert.match(policy, /not.*access-control|not enforced read permissions|not GitHub-enforced per-file privacy/i);
+  assert.match(policy, /cannot grant file-specific access/i);
   assert.match(policy, /Do not.*another agent/i);
   assert.match(shared, /Git history/);
 });
