@@ -1,0 +1,17 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "qa-framework",
+  "feature_id": "QA-EMPTY-SHARD",
+  "owner": "qa-empty-shard-20261016-1255-gpt6",
+  "status": "active",
+  "scope": "QA-only: tests/full_regression_runner.py; new tests/test_full_regression_runner.py; dedicated docs/QA_EMPTY_SHARD_20261016.md and docs/qa handover. Guard against empty or invalid script-discovery/partition false-green. No shared runtime, graphics, roster, workflow or release configuration edits.",
+  "base_sha": "81d7a0fa8fbbdcda4d9f4c1bb3f2419f1b785e46",
+  "created_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
+  "tests": [
+    "python3 -m unittest discover -s tests -p test_full_regression_runner.py -v",
+    "python3 scripts/build.py",
+    "Full Regression Census on exact code commit"
+  ],
+  "handover": "docs/QA_EMPTY_SHARD_20261016.md"
+}
