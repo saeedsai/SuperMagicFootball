@@ -3,10 +3,12 @@
   "lock_key": "project-context",
   "feature_id": "CONTEXT-REGISTER-GK-CONTROL-CHAT",
   "owner": "pk-manual-20261016-2008-gpt6-registration",
-  "status": "active",
+  "status": "released",
   "scope": "Only docs/memory/AGENTS_INDEX.json registration and own docs/memory/agents/gameplay-pk-20261016.md. No other agent memory, shared file, gameplay files, other docs.",
   "base_sha": "2daf3543be9d6843c9f6b484fc0fd13b29e4bbb8",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
-  "handover": "docs/memory/agents/gameplay-pk-20261016.md"
+  "handover": "docs/memory/agents/gameplay-pk-20261016.md, index registration commit 074caa5cead314962c0cc5572fa3cf92ea1a67ce",
+  "released_at": "2026-10-16",
+  "outcome": "Unique chat file registered and indexed; no other agent memory touched"
 }
