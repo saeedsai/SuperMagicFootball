@@ -3,7 +3,7 @@
   "lock_key": "gameplay-engine",
   "feature_id": "GAMEPLAY-TEAM-COMBO-CI-CERTIFICATION",
   "owner": "gameplay-combo-ci-final-20261016-1433-gpt6",
-  "status": "active",
+  "status": "released",
   "scope": "Documentation-only final certification for already implemented GAMEPLAY-TEAM-COMBO-REGRESSION, limited to docs/GAMEPLAY_TEAM_COMBO_REGRESSION_20261016.md (append exact source CI proof, no code, UI, build or CI changes).",
   "base_sha": "e67f1086f76cbeb0ba7c69af3d6f639df4b59b15",
   "created_at": "2026-10-16T14:33+02:00",
@@ -13,7 +13,10 @@
     "Node 113/113 script PASS",
     "Chromium 62/62 script PASS including team_combos_browser_qa.py"
   ],
-  "handover": "docs/GAMEPLAY_TEAM_COMBO_REGRESSION_20261016.md",
+  "handover": "docs/GAMEPLAY_TEAM_COMBO_REGRESSION_20261016.md — QA source 78b48056e25108d1039cb4aeca326bfcd5935187; completed Full Regression Census https://github.com/saeedsai/SuperMagicFootball/actions/runs/38900429370; final evidence doc commit 032c731d63a81642be8fa00a0925adc9675502a5",
   "previous_feature": "GAMEPLAY-TEAM-COMBO-REGRESSION",
-  "previous_handover": "docs/GAMEPLAY_TEAM_COMBO_REGRESSION_20261016.md — implementation 78b48056e25108d1039cb4aeca326bfcd5935187; documentation 77d16228c26ff255e210cee4ad76b2998d90754b; Modular QA 38900429410 SUCCESS 104/104 active Node; Full Regression Census 38900429370 113/113 Node PASS, browser in progress, requires final results"
+  "previous_handover": "docs/GAMEPLAY_TEAM_COMBO_REGRESSION_20261016.md — implementation 78b48056e25108d1039cb4aeca326bfcd5935187; documentation 77d16228c26ff255e210cee4ad76b2998d90754b; Modular QA 38900429410 SUCCESS 104/104 active Node; Full Regression Census 38900429370 113/113 Node PASS, browser in progress, requires final results",
+  "released_at": "2026-10-16",
+  "outcome": "certified_175_of_175_exact_source_regression_pass; 113_node_62_chromium; deployed_physical_devices_not_verified",
+  "integrated_commit": "032c731d63a81642be8fa00a0925adc9675502a5"
 }
