@@ -52,3 +52,13 @@ No other agent's shared gameplay, art, roster, toolchain, QA harness or saved-ga
 - Tree cleanup audit: **620 tracked paths; zero tracked generated Python caches, Node modules, browser fixtures, Playwright reports, editor backup or swap files**. Existing historical QA data and graphics/roster provenance are retained by design.
 
 **Checkpoint:** CI feature complete and all executable regression tests green. After live smoke confirmation, release the exclusive `release-infra` claim; another agent can then work on PWA/mobile or other release tasks. Subsequent agents should reread the live claim and match their new test name to the tracked national glob convention.
+
+### Live hosted desktop and simulated-touch acceptance (after workflow fix)
+
+[GitHub Pages live smoke #38891468528, attempt 7](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528) **COMPLETED SUCCESS**. A fresh run after the released workflow/source change inspected the public `https://saeedsai.github.io/SuperMagicFootball/`:
+- **Desktop Chromium:** HTTP 200, menus/Quick Match team selection, kickoff and active match on the extended field — **PASS**.
+- **Simulated mobile touch Chromium:** same HTTP 200/menu/selection/kickoff/active play — **PASS**.
+- Runtime reported `0.8.25.32-integrated`, **224 teams** in both contexts.
+- The smoke validates the playable deployed UI, **not** physical Android/iPhone hardware, Safari/Firefox, offline PWA installation or the newly changed workflow semantics (those were separately certified by the source-based Node contract and full regression).
+
+**Owner handover is complete.** Release `release-infra` with this report and exact source SHA `067326766a647419529733897bf066ea05484758`, then allow future teams to claim disjoint release work. Issue #2 is closed.
