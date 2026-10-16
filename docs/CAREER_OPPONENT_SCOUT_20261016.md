@@ -57,3 +57,15 @@ python3 tests/career_opponent_scout_browser_qa.py
 3. Expand career tactical readiness into safe reserve availability and captain advice without changing saves or automatic lineups.
 4. Add proven direction-consistent keeper grip/release and first-touch animation under a fresh graphics claim.
 5. Complete original arcade mechanic parity, Android touch gesture/physical handset testing and offline PWA upgrades under their own ownership.
+
+## Exact-code browser acceptance — confirmed (16 October 2026)
+
+[Full Regression Census #38960061389](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960061389), at committed source `d33410af8306f493cfe72f04a244b18be16e702e`, completed **FAILURE overall** because of one *unrelated* newly added audio browser regression, **not because of career scouting**:
+
+- **New career test:** `PASS career_opponent_scout_browser_qa.py 7.50s`, browser shard 3, covering desktop and simulated-touch Chromium real manager creation, squad read-only checks, fitness warning and career kickoff. All 19/19 scripts in browser shard 3 passed.
+- **Full preflight:** PASS. **All four Node regression shards:** PASS. **Chromium:** 77/78 scripts PASS, 1/78 FAIL. Browser shards 0, 2, 3 each PASS; browser shard 1 19 PASS / 1 FAIL.
+- **Blocking unrelated test:** `pass_reception_audio_browser_qa.py` in browser shard 1, `Page.evaluate: Error: Game players unavailable`, despite 19 sibling browser cases passing. The `audio-feedback` claim belongs to a different agent. Tracked as [issue #16](https://github.com/saeedsai/SuperMagicFootball/issues/16); only its owning audio/QA agent should correct and rerun. No unrelated audio code or tests were edited here.
+- [Integrated Modular QA #38960248063](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960248063): **221/221 Node PASS** with the full specialist source, tests and roadmap.
+- The public GitHub Pages site remains at https://saeedsai.github.io/SuperMagicFootball/. The previous successful Pages deployment predates this specific feature, and the next feature-containing deployment was queued/in progress at last verification. **Do not claim exact hosted feature publication or a real handset test until the relevant deployment/hosted browser smoke finishes.** The game's About menu continues to fetch the online `dev` SHA per commit, independently of Pages.
+
+**Feature verdict:** read-only Manager Career scouting passed its own source, Node, real Chromium desktop and simulated-touch acceptance; the larger unrelated audio full-census gate remains red. Continue issue #16 and hosted release verification on latest integrated descendants. This update is docs-only under a separately claimed `ui-controls` QA-signoff lease; no code changes made.
