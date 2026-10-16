@@ -3,7 +3,7 @@
   "lock_key": "roster-club-club26_2",
   "feature_id": "CLUB26-MAN-CITY-FC27-QA-EVIDENCE-FINALIZATION-20261016",
   "owner": "roster-fc27-chat-20261016-city-b1",
-  "status": "active",
+  "status": "released",
   "scope": "Manchester City club26_2 handover/metadata ledger/own-memory only: reconcile successful integrated Modular QA and Pages, historical census evidence, release claim. No player data or runtime edits.",
   "base_sha": "6a8e955cab10215fa5b2ae60753c0ef1b2e7a9ef",
   "claimed_at": "2026-10-16",
@@ -25,5 +25,10 @@
   "audit_commit": "59e0e8549b34d405afc6f0f1fa5a7792204779e7",
   "ci_evidence": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914846855",
   "renewed_at": "2026-10-16",
-  "evidence_checkpoint": "full City source/data unchanged after initial release"
+  "evidence_checkpoint": "full City source/data unchanged after initial release",
+  "final_outcome": "12/12 EA FC27 OVR, 72/72 headline attributes, 63 metadata fields updated and source/runtime mirrored; exact City 3/3 tests; integrated 171/171 active Node; complete 130/130 historical Node plus 71/71 Chromium browser census; GitHub Pages deployed successfully. Physical-device hosted play unverified.",
+  "final_handover": "docs/CLUB_PLAYER_METADATA_MAN_CITY_20261016.md",
+  "final_qa": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915465084",
+  "final_full_regression": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074",
+  "final_pages": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915464957"
 }
