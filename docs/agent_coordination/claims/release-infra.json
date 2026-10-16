@@ -1,20 +1,21 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "release-infra",
-  "feature_id": "CI-NATIONAL-ROSTER-FULL-CENSUS-TRIGGERS",
-  "owner": "release-national-ci-20261016-1436-gpt6",
-  "status": "released",
-  "scope": "ONLY .github/workflows/full-regression-census.yml push.paths for national26 roster and national/spain metadata tests; a narrow release-trigger contract tests/national_roster_regression_trigger.test.cjs; docs/CI_NATIONAL_ROSTER_TRIGGER_20261016.md and small docs/NEXT_MILESTONES.md addendum. GitHub issue #2. No build, shared QA runner, gameplay, graphics, UI, roster/data or PWA/cache changes.",
-  "base_sha": "2c3e346090fa44562c34e4d5fb317c22ab550829",
-  "created_at": "2026-10-16T14:36:00+02:00",
-  "renewed_at": "2026-10-16T14:36:00+02:00",
+  "feature_id": "ART-C01-NEAR-ARM-CACHE",
+  "owner": "graphics-c01-near-arm-20261016-gpt6-s12",
+  "status": "active",
+  "scope": "Only sw.js cache bump and new SVG cache path for C01 near-arm. No workflows, Pages settings or unrelated release changes.",
+  "base_sha": "b7c516437f04b526a68d70ace87197f9a14498fe",
+  "created_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
   "tests": [
-    "Node isolated trigger path regression contract",
-    "full Node and Chromium regression census on exact source commit",
-    "Modular Game Dev QA",
-    "GitHub Pages hosted desktop/simulated touch smoke"
+    "python3 scripts/validate_concept_modular.py",
+    "node --test tests/*.test.cjs",
+    "python3 tests/concept_modular_browser_qa.py",
+    "python3 tests/concept_modular_live_qa.py",
+    "Full Regression Census"
   ],
-  "handover": "docs/CI_NATIONAL_ROSTER_TRIGGER_20261016.md — Full Regression Census #38902247781 177/177 PASS; hosted smoke #38891468528 attempt 7 SUCCESS; issue #2 closed",
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
   "released_at": "2026-10-16T14:48:00+02:00",
   "outcome": "completed_issue_2_closed_full_census_177_of_177_live_pc_touch_success",
   "final_source_commit": "067326766a647419529733897bf066ea05484758"
