@@ -153,7 +153,57 @@ def validate_appearance_references(merged, conflicts):
                                   'reason': 'graphics reference to unknown player'})
 
 
-def compare_directories(base_dir, ours_dir, theirs_dir, paths=DATA_FILES, change_report=None):
+# These are review signals, not source verification: a conflict-free merge can
+# still contain an editorial player edit unsupported by updated evidence.
+PLAYER_SOURCE_REVIEW_FIELDS = (
+    'name', 'role', 'num', 'nation', 'age', 'birthDate', 'heightCm',
+    'rating', 'fc27Id', 'fc27Position', 'fc27FaceStats',
+    'power', 'shoot', 'defense',
+)
+PLAYER_SOURCE_EVIDENCE_FIELDS = (
+    'source', 'ratingSource', 'sourceSnapshot', 'fc27OfficialCheckedAt',
+    'statsVerified', 'ageVerified', 'shirtVerified', 'rosterVerification',
+    'sourceClubMatch',
+)
+
+
+def collect_player_source_reviews(base, merged, location, results):
+    """Mark source-sensitive player edits for manual review without rejecting them.
+
+    Runs only for stable ID-preserving records: separate merge guards already
+    reject structural roster changes. Evidence *updates* are not evidence
+    *validity*; do not infer official source verification from this report.
+    """
+    if not isinstance(base, dict) or not isinstance(merged, dict):
+        return
+    for team_id, old_players in base.items():
+        new_players = merged.get(team_id)
+        if not records(old_players) or not records(new_players):
+            continue
+        if [p['id'] for p in old_players] != [p['id'] for p in new_players]:
+            continue
+        for before, after in zip(old_players, new_players):
+            changed = [key for key in PLAYER_SOURCE_REVIEW_FIELDS
+                       if before.get(key, _MISSING) != after.get(key, _MISSING)]
+            if not changed:
+                continue
+            evidence_changed = [key for key in PLAYER_SOURCE_EVIDENCE_FIELDS
+                                if before.get(key, _MISSING) != after.get(key, _MISSING)]
+            results.append({
+                'path': location + '/' + str(team_id) + '/id=' + before['id'],
+                'changedFields': changed,
+                'sourceMetadataChanged': evidence_changed,
+                'needsSourceReview': True,
+            })
+
+
+def source_review_summary(entries):
+    """Bound JSON report size while keeping the total number of review items."""
+    return {'count': len(entries), 'entries': entries[:25],
+            'truncated': len(entries) > 25}
+
+
+def compare_directories(base_dir, ours_dir, theirs_dir, paths=DATA_FILES, change_report=None, source_reviews=None):
     merged, conflicts = {}, []
     for rel in paths:
         objects = []
@@ -178,6 +228,8 @@ def compare_directories(base_dir, ours_dir, theirs_dir, paths=DATA_FILES, change
                                        'truncated': len(fields) > 25}
             if any(entry['count'] for entry in side_changes.values()):
                 change_report[rel] = side_changes
+        if source_reviews is not None and rel.startswith('data/players/'):
+            collect_player_source_reviews(objects[0], result, rel, source_reviews)
         if rel.startswith('data/players/') and isinstance(objects[0], dict) and isinstance(result, dict):
             if set(objects[0]) != set(result):
                 conflicts.append({'path': rel, 'reason': 'protected team roster IDs added/removed'})
@@ -203,12 +255,14 @@ def main(argv=None):
             parser.error('--report must be outside all three input source trees')
         if args.out and (report_path == args.out.resolve() or args.out.resolve() in report_path.parents):
             parser.error('--report must not be within the merged --out directory')
-    change_report = {}
+    change_report, source_reviews = {}, []
     merged, conflicts = compare_directories(args.base, args.ours, args.theirs,
-                                            change_report=change_report)
+                                            change_report=change_report,
+                                            source_reviews=source_reviews)
     result = {'status': 'CONFLICT' if conflicts else 'PASS', 'files': len(merged),
               'protectedFiles': list(DATA_FILES), 'conflictCount': len(conflicts),
-              'conflicts': conflicts, 'changeSummary': change_report}
+              'conflicts': conflicts, 'changeSummary': change_report,
+              'sourceReview': source_review_summary(source_reviews)}
     print(json.dumps(result, indent=2, ensure_ascii=False))
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)
