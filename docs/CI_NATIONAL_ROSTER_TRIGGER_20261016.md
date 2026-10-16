@@ -1,0 +1,40 @@
+# CI-NATIONAL-ROSTER-FULL-CENSUS-TRIGGERS — issue #2 resolution
+Date: 2026-10-16. Exclusive lock: `release-infra`; owner `release-national-ci-20261016-1436-gpt6`.
+Target branch: `dev`; starting integration base `6cc555a1865211b99014aad99ea9d0d3f7e040cc`.
+Implementation code/test checkpoint: [`067326766a647419529733897bf066ea05484758`](https://github.com/saeedsai/SuperMagicFootball/commit/067326766a647419529733897bf066ea05484758).
+
+## Problem and bounded delivery
+The Full Regression Census previously triggered on `data/players/club26.json` but not on `data/players/national26.json`. A Spain player age/height source correction thus ran the basic Modular QA but could **silently skip the full historical Node/Chromium regression** if no other eligible code file changed. This was independently tracked as [issue #2](https://github.com/saeedsai/SuperMagicFootball/issues/2).
+
+**Fixed:** five additional, small `on.push.paths` entries in `.github/workflows/full-regression-census.yml`:
+- `data/players/national26.json` — any national squad source edit launches full regression.
+- `tests/*national*.test.cjs` and `tests/*national*_browser_qa.py` — national-scope new/edited contracts launch full regression.
+- `tests/spain_*metadata*.test.cjs` and `tests/spain_*metadata*_browser_qa.py` — both existing Spain player batches' contracts and browser scripts launch full regression even when edited alone.
+
+**Verified compatibility:** all pre-existing `push.paths` (clubs, graphics, engine, service worker, tests, scripts) remain, `dev` branch filter remains, all preflight steps and four Node + four Chromium shard jobs remain. The full workflow is triggered by this very workflow edit. No gameplay, roster, graphics, UI, saved-game, worker cache, deployment, action buttons or QA runner logic was edited.
+
+## New executable regression
+`tests/national_roster_regression_trigger.test.cjs` reads the actual workflow from the checked-out repository and checks:
+1. `dev` push source-only national-team edits trigger full census; previous club/team and workflow triggers remain.
+2. Both Spain national metadata Node/Chromium scripts and future national-team-named Node/Chromium scripts trigger the workflow, including this contract itself.
+3. Documentation-only national-team handovers and unrelated legend roster edits **do not** trigger an expensive full census; no negating `!` globs or duplicate entries hide the requirement.
+
+This test runs in normal `node --test tests/*.test.cjs` and is automatically picked up by the historical Node census; its own name contains `national` to trigger when changed. Workflow `push.paths` globs are kept narrow; future scripts should use the `national` naming convention or explicitly register their tests.
+
+## Evidence and release acceptance
+- [Modular Game Dev QA #38902247893](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38902247893): **SUCCESS** on exact code/test source `06732676`; includes the new path-trigger contract and existing test suite.
+- [Full Regression Census #38902247781](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38902247781): workflow **automatically triggered** on the exact source `06732676`. Preflight **SUCCESS**, all four Node shards **SUCCESS**; final Chromium shard results should be explicitly recorded once complete, not assumed.
+- Publish/hosted PC and simulated-touch smoke should be checked separately, not inferred from CI build. Public URL: https://saeedsai.github.io/SuperMagicFootball/.
+- [Issue #2](https://github.com/saeedsai/SuperMagicFootball/issues/2) can close after a green full census, with a final comment including the source SHA and evidence.
+
+## Cleanup and concurrency
+No other agent's shared gameplay, art, roster, toolchain, QA harness or saved-game files were touched. All edits were made against the refreshed live `dev`; the feature claim was verified after acquisition. Review generated and backup artifacts for tracked garbage but **do not delete** historical test reports or graphics/roster provenance without confirming dependencies. A released `release-infra` lock will permit other independent release features.
+
+## Next five small iterations
+1. Confirm the full 8-shard green national-source census and live deployed desktop/touch smoke; close issue #2 and release this lock.
+2. Add a dedicated national-team metadata change/correctness guard for small future batches under the data/QA owners, preserving IDs and ratings.
+3. Source-check the next 2–3 Spain first-team ages/heights with official club/league records, separate Spain claim.
+4. Character/keeper direction-safe art, first touch and pass follow-through under graphics ownership.
+5. Real match keeper save-balance calibration and accessible halftime coaching under distinct engine/UI claims, with offline/PWA and physical-phone tests as separate certifications.
+
+**Outstanding longer-term gaps:** physical Android/iPhone and Safari device matrix; offline and PWA restart/update behavior; comprehensive FC27 and squad authenticity; complete graphics/arcade parity; network multiplayer.
