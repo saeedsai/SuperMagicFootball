@@ -34,3 +34,19 @@ The input/dribble-touch issue [#3](https://github.com/saeedsai/SuperMagicFootbal
 5. Deliver a save-compatible gameplay option or career progression mechanic after a new exclusive engine or UI claim; test desktop/touch and persistence.
 
 **Release evidence and result:** append after exact commit and CI.
+
+## Integrated QA checkpoint — 16 October 2026
+
+Delivered real engine halftime lifecycle coverage in:
+- [Node source test `1b4602e4`](https://github.com/saeedsai/SuperMagicFootball/commit/1b4602e46b47603391e93027575cc2cbd06bb271)
+- [Desktop/touch Chromium test `ef9e80e0`](https://github.com/saeedsai/SuperMagicFootball/commit/ef9e80e0c5260757021104e8368d7637f7d64134)
+- [Source-method indentation fix `ff33ad2a`](https://github.com/saeedsai/SuperMagicFootball/commit/ff33ad2aadb72c69f8acc09c40fdbbde9e948404)
+- [Master QA discovery/full-census trigger `983f9a43`](https://github.com/saeedsai/SuperMagicFootball/commit/983f9a432458946eaa5d4c1378ca3a87b8e79fe1)
+
+**Actual failures and resolution:** [Initial active QA #38904612015](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904612015) failed because the newly authored Node extractor incorrectly expected 2 leading spaces before `halftimeRecovery()`; the real method has 1. Updated the test extractor only, with no engine modifications. Subsequent [Modular QA #38904859187](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904859187) **passed 134/134 Node tests**, including all five new lifecycle checks.
+
+**Integrated regression after master QA change:** [Modular Game Dev QA #38905216439](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905216439) **SUCCESS**, 134/134 active Node tests, 20/20 Python merge safeguards and 10/10 feature-claim tests. The first triggered [Full Regression Census #38905117786](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905117786) was **cancelled by concurrent dev updates**, not a passing or failing full regression. Later [full census #38905216172](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905216172) was **COMPLETED/cancelled** at checkpoint. Check all 4 Node and 4 Chromium shards, especially the actual `halftime_match_lifecycle_browser_qa.py` desktop and emulated touch assertions.
+
+**Hosted game:** https://saeedsai.github.io/SuperMagicFootball/; the earlier [desktop/touch live smoke #38891468528](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528) passed, but this historical generic smoke does not certify the new half-time browser script or a physical phone. Current graphics and release agents can update Pages independently.
+
+**Unresolved:** full integrated Chromium run, physical Android/iOS and PWA/offline lifecycle remain uncertified. The separately owned `gameplay-engine`/keeper fairness and `ui-controls`/rainbow-dribble work must not be overwritten. No production mechanic, control UI, saves or rosters changed in this QA-only batch. No tracked historical/template file was proved safe to remove.
