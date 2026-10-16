@@ -31,3 +31,9 @@ Other major open requirements: classic-mode parity, complete player authenticity
 
 ## Exact-commit results
 Pending final workflow results; read GitHub Actions run and its eight shard logs before certifying this batch.
+
+### CI and hosted-game evidence collected during integration
+
+- **Exact gameplay+test source checkpoint:** [`c0e7132fd4c0e42ac16425d7ba55365c5c717a68`](https://github.com/saeedsai/SuperMagicFootball/commit/c0e7132fd4c0e42ac16425d7ba55365c5c717a68). Its [Full Regression Census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468584) passed preflight and all four Node shards: **104/104 Node executable test scripts PASS** (26 each), including the new keeper movement guard. Browser shards were still running at this intermediate checkpoint; their outcome is separately recorded after completion rather than assumed.
+- [GitHub Pages hosted PC and simulated-touch verification](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528) **SUCCESS**: both HTTP 200, menu navigation, team selection, kickoff, extended pitch geometry and active match. Runtime reported 224 teams and version 0.8.25.32-integrated. This hosted smoke does not claim physical phone hardware.
+- Runtime change is bounded to early-dive goalkeeper AI movement, not the server, service worker, art pipeline, save keys or roster. Any other agent's subsequent `dev` commit requires its own exact-commit checks and cannot inherit a green result by assumption.
