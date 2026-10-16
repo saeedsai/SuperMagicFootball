@@ -54,3 +54,7 @@ The next step after the existing visual early keeper dive was implemented in `sr
 ## 16 October 2026 — single bounded goalkeeper calibration step
 
 Added deterministic modular browser-replay acceptance covering mirrored keeper direction, corner scoring, normal/Super Shot class, high GK fatigue and frame-rate effects. The fixture uses the actual engine release/flight/contact functions and events; no gameplay coefficients were modified without validated evidence. Exact CI for `c95ce47` is authoritative. Subsequent plan: evaluate the measured misses, select at most one physical improvement, then keeper glove poses, pass receptions, concurrency reviews and career/tactics UX. Temporary build/test output is now ignored; earlier QA archives and other agents' source assets remain retained.
+
+### Keeper calibration regression checkpoint certified
+
+The reproducible real-engine browser matrix on `06c0b30b` passed all four Chromium shards (52/52) and all four Node shards (97/97) in [Full Regression Census #38883629200](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38883629200). Documentation and `.gitignore` hygiene were updated without deleting older releases or concurrent workstreams. Do not tune real keeper reach until the collected match-level evidence is evaluated. See `KEEPER_SEEDED_CALIBRATION_20261016.md`.

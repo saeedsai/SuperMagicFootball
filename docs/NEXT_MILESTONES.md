@@ -100,3 +100,7 @@ The next keeper calibration requirement is now covered by a deterministic, mirro
 5. Improve career/tactics substitution suggestions, lineup suitability and half-time feedback while retaining legacy saves.
 
 The old milestone table above is historical; this section is the current ordered plan. Defer physical iOS/Android, offline/PWA and online multiplayer certification as previously directed.
+
+## Release gate complete — seeded keeper scenario acceptance
+
+Verified `06c0b30b`: full [149/149 regression scripts passed](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38883629200), with 97 Node and 52 Chromium tests. The seed-mirrored modular browser calibration is now a reproducible acceptance fixture; it did **not** change save physics. The next five active iterations remain: (1) measured physical GK movement and corner fairness; (2) glove-grip/release animation; (3) first touch and pass animation; (4) source/provenance conflict review for parallel data agents; (5) squad/career/tactics usability. Keep physical-device and offline/PWA certification deferred as explicitly instructed.

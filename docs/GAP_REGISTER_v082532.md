@@ -49,3 +49,7 @@ The shot-linked diagnostic code checkpoint passed [147/147 full executable Node+
 ## 16 October 2026 — new keeper calibration QA coverage
 
 The open P0 calibration gap now has a seeded real-engine browser matrix in `tests/keeper_shot_calibration_browser_qa.py`, covering both goal directions, normal/Super Shot, three target lanes, high fatigue and 30/60/120Hz. Repeated scenarios and physical contact-depth invariants are assertion-backed. **Gap narrowed, not fully closed:** human-vs-CPU representative attempts, nonlinear Super Shot variants and actual GK movement/save-rate adjustments require additional evidence. The harness is a regression test, not a new keeper behavior or claim of increased saves.
+
+### QA acceptance update — 16 October 2026
+
+**Closed:** missing deterministic, mirrored, physical-kickoff goalkeeper flight/calibration acceptance coverage. The new modular browser script and 148 inherited/current tests (149 total) passed together in [exact-source CI #38883629200](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38883629200). **Still open:** physical keeper approach/actual save-rate calibration, mixed Super Shot families, true match-pressure outcomes, eight-direction glove art, and any raw duplicate `save` notification semantics. No goal/contact rules were widened in the test-only release.

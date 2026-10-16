@@ -34,3 +34,21 @@ No roster, physical art asset, controls, goal geometry, ability rarity, save for
 The first browser run exposed a **counting-assumption bug in the new test**: one physical keeper contact could yield more than one raw `save` notification in its event stream. A scoring attempt must be counted **once**, not once for every event notification. The calibrated matrix now retains raw notification count as `duplicateSaveEvents` for diagnosis, while `keeperSaves` records whether an attempt produced at least one save. Distinct physical contacts remain bounded by the original geometry; the test still rejects off-plane contact and a save lacking any keeper contact/ability evidence. This keeps the metric honest without silently changing the game engine. Both mirrored sides now start with **identical** seeded RNG streams, rather than different side-specific seeds.
 
 The first full-regression browser shard also showed a separately owned, intermittent simulated-mobile `team_combos_browser_qa.py` failure (`noLaunch=false, cross=false`). It is unrelated to keeper shots. This shard must pass on a clean rerun or receive a separately tested targeted fix before the complete census can be marked green.
+
+## Certified exact-source result — test fix and full regression
+
+The final code/test checkpoint is [`06c0b30b6503fabdc1af6d9a5c551ddccecc869f`](https://github.com/saeedsai/SuperMagicFootball/commit/06c0b30b6503fabdc1af6d9a5c551ddccecc869f), after the initial new-test assertion and seed-isolation issues were corrected. [Full Regression Census #38883629200](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38883629200) **COMPLETED SUCCESSFULLY**:
+
+| Gate | Verified result |
+| --- | --- |
+| Preflight | PASS |
+| Historical and current Node scripts | **97/97 PASS** (25 + 24 + 24 + 24) |
+| Historical and current Chromium scripts | **52/52 PASS** (13 + 13 + 13 + 13); includes new calibration script |
+| Total regression | **149/149 PASS**, 0 fail, 0 timeout, 0 error, 0 not-run |
+| [Modular Game Dev QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38883629330) | SUCCESS, including active Node, JSON and roster checks |
+| [GitHub Pages deployment](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38883630437) | SUCCESS for the test-code SHA; the playable runtime itself was not modified |
+| [Hosted Chromium PC and simulated-touch smoke](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38878886873) | Fresh successful rerun after deployment: HTTP 200, menus, Quick Match/team selection and active kickoff on both |
+
+The **initial** census [#38882883860](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38882883860) had two failed browser scripts: this new test assumed every physical keeper save creates only one raw `save` event, and an inherited mobile team-combo assertion intermittently failed. The new test now checks a **saved shot** once while reporting duplicate raw notifications separately; it still strictly enforces one physical contact and no phantom saves. The inherited mobile combo script passed unchanged in the final complete rerun. There are **no failed executable scripts in final run #38883629200**.
+
+**Limitations:** raw duplicate notification events remain measurable and deserve a separate audit before being interpreted as distinct saves. These controlled fixtures isolate shot/goalkeeper mechanics; they do not estimate representative human-vs-CPU match outcomes or justify widening keeper contact/goal geometry. Physical iOS/Android and offline/PWA certification remain deferred.
