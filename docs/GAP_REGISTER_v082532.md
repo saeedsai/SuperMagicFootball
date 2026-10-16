@@ -45,3 +45,7 @@ Do not delete historical evidence/test files just for a shorter tree; these are 
 ### Certified evidence for keeper measurement gap
 
 The shot-linked diagnostic code checkpoint passed [147/147 full executable Node+Chromium regression scripts](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38881038162) and [66/66 active Node tests](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38881038084). The missing *measurement capability* is closed; *increased real goalkeeper saves* remains open pending controlled live engine comparisons.
+
+## 16 October 2026 — new keeper calibration QA coverage
+
+The open P0 calibration gap now has a seeded real-engine browser matrix in `tests/keeper_shot_calibration_browser_qa.py`, covering both goal directions, normal/Super Shot, three target lanes, high fatigue and 30/60/120Hz. Repeated scenarios and physical contact-depth invariants are assertion-backed. **Gap narrowed, not fully closed:** human-vs-CPU representative attempts, nonlinear Super Shot variants and actual GK movement/save-rate adjustments require additional evidence. The harness is a regression test, not a new keeper behavior or claim of increased saves.

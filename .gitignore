@@ -1,0 +1,12 @@
+# Generated build/QA-only artifacts (the playable game is index.html + src + data).
+__pycache__/
+*.py[cod]
+.pytest_cache/
+tests/.generated/
+play.html
+docs/qa_runs_full_regression/
+playwright-report/
+test-results/
+node_modules/
+.coverage
+.DS_Store

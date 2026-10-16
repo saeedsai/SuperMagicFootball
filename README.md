@@ -104,3 +104,7 @@ The illustrated Concept Royals prototype remains an isolated, five-view image-ba
 
 
 Verification for keeper telemetry source checkpoint `b7d922aa`: [147/147 full executable regression scripts passed](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38881038162) (97 Node, 50 Chromium), plus [66/66 active Node and 17/17 merge tests](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38881038084). A later descendant [Pages deployment](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38881500991) succeeded. These are exact-code-commit QA and branch deployment records, not a substitute for real-phone tests.
+
+## Seeded keeper calibration (16 October 2026)
+
+Use `python3 scripts/build.py && python3 tests/keeper_shot_calibration_browser_qa.py` to replay mirrored normal/Super keeper shots on the **current playable modular engine** with controlled fatigue, lane and frame rate. It tests true physical keeper contacts and goals separately from anticipatory dive animations; counts are **not** real-world save rates. See `docs/KEEPER_SEEDED_CALIBRATION_20261016.md`. New `.gitignore` keeps generated browser fixtures, temporary reports and Python caches out of commits; historical QA evidence remains tracked. The public game remains https://saeedsai.github.io/SuperMagicFootball/.

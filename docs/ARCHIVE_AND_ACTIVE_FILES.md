@@ -47,3 +47,7 @@ New active acceptance scripts: `tests/keeper_dive_intent.test.cjs` and `tests/ke
 ## 16 October 2026 — cleanup inventory from telemetry integration
 
 New active diagnostic files are `src/match_telemetry.js` (already used by historic replay scripts), `tests/keeper_dive_telemetry.test.cjs` and `docs/KEEPER_DIVE_TELEMETRY_20261016.md`. The tracked tree was checked for `__pycache__`, `.pyc`, `tests/.generated/`, sample templates, and obvious scratch/backup files; none of those were tracked. The 24 existing historical `docs/qa_runs_v082532/*.log` records are deliberately preserved as QA evidence: deletion would be unrelated to the new functionality and may break audit trails. No new root-level template, generated cache or scratch file was introduced. Further cleanup should remove only demonstrated redundant files with green before/after census results and approval from their owning workstream.
+
+## 16 October 2026 — generated file hygiene
+
+Repository tree inspection found no tracked Python bytecode, Python cache directories, browser fixture `tests/.generated/`, temporary `play.html` or scratch backups. A new root `.gitignore` proactively excludes those transient outputs, `docs/qa_runs_full_regression/`, Playwright scratch reports and `node_modules/`. Existing 24 `docs/qa_runs_v082532/*.log` remain tracked deliberately as historical browser and art acceptance evidence; deleting them would erase earlier release comparisons and would require independent approval. No gameplay file or currently-owned roster/graphics file was cleaned in this checkpoint.

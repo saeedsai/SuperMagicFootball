@@ -87,3 +87,16 @@ Owner-deferred long-term scope: physical-device/PWA/offline/restart certificatio
 ### Verified keeper telemetry checkpoint
 
 The preceding telemetry feature checkpoint `b7d922aa` has now passed [full regression 147/147](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38881038162) (97 Node + 50 Chromium) and [active QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38881038084) (66 active Node tests). The five next milestones above remain the active plan: keeper calibration, held-ball glove animation, reception/pass follow-through, source-aware merge provenance, career/tactics UX. Source provenance, existing rules and physical-device deferred scope are unchanged.
+
+## 16 October 2026 — real-engine goalkeeper calibration matrix (bounded iteration)
+
+The next keeper calibration requirement is now covered by a deterministic, mirrorable **real modular browser-engine test**, `tests/keeper_shot_calibration_browser_qa.py`, with 144 seeded shots per desktop/touch context (3 frame rates × 2 directions × 2 shot kinds × 3 lanes × 2 fatigue settings × 2 repeats). The harness uses the playable `g.freeBall` and `g.updateBall` methods and checks real `save`, `goal`, `keeperDiveAttempt` and `keeperContact` events. It does not change reach, power, goalkeeper movement or human controls. See `KEEPER_SEEDED_CALIBRATION_20261016.md` and exact source-commit GitHub Actions for accepted results; do not claim improved goalkeeper saves from test-only changes.
+
+**Next five bounded iterations:**
+1. Evaluate measured saves versus missed anticipatory dives on full-engine seeded fixtures; make only one guarded approach/movement change if evidence supports it, preserving goal corner fairness.
+2. Animate eight-direction glove holding and ball release without changing possession mechanics.
+3. Improve ball reception/first touch and directional pass follow-through, with desktop/touch visual acceptance.
+4. Expand reviewed source/provenance conflicts for concurrent roster and graphics editors.
+5. Improve career/tactics substitution suggestions, lineup suitability and half-time feedback while retaining legacy saves.
+
+The old milestone table above is historical; this section is the current ordered plan. Defer physical iOS/Android, offline/PWA and online multiplayer certification as previously directed.
