@@ -3,7 +3,7 @@
   "lock_key": "gameplay-engine",
   "feature_id": "GK-LIVE-AI-CALIBRATION-QA",
   "owner": "keeper-live-ai-cohort-20261016-1445-gpt6",
-  "status": "active",
+  "status": "released",
   "scope": "One bounded seeded real-AI keeper shot fairness browser acceptance in tests/keeper_shot_calibration_browser_qa.py (existing captured geometry retained; new live AI cohort), new tests/keeper_live_ai_fairness.test.cjs static regression, dedicated docs/KEEPER_LIVE_AI_FAIRNESS_20261016.md and small docs/NEXT_MILESTONES.md checkpoint. No engine.js/physics/telemetry source, UI, art, roster, build, workflow/release/CI harness changes.",
   "base_sha": "9c951a08eb56220b09e92a79280a836f39d7d9bd",
   "created_at": "2026-10-16",
@@ -14,5 +14,11 @@
     "Modular Game Dev QA, Full Regression Census 4+4 shards via existing source test path trigger",
     "hosted PC/touch smoke"
   ],
-  "handover": "docs/KEEPER_LIVE_AI_FAIRNESS_20261016.md"
+  "handover": "docs/KEEPER_LIVE_AI_FAIRNESS_20261016.md — final QA report commit 777f867800fa4045b686ceee38e13aacf1fc0b2e and milestones abb602a20fbfd2f193b65cdc320071824a683430; full census https://github.com/saeedsai/SuperMagicFootball/actions/runs/38903547925; hosted smoke https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528",
+  "released_at": "2026-10-16",
+  "outcome": "completed; live AI keeper calibration 96 browser fixtures per device; full integrated 181/181 PASS; hosted PC and simulated touch PASS; no game engine changes",
+  "source_commits": [
+    "80c02e8c4726900ff858d3e2202ba7c32a8e08c5",
+    "37192dd1aa3d3827dd8da3642c46c2b03291f42e"
+  ]
 }
