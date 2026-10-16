@@ -117,3 +117,8 @@ The Brighton roster-data commit [cb6f24d](https://github.com/saeedsai/SuperMagic
 ## Batch 3 — Dortmund identity audit (CLUB-20261016-BVB-METADATA-1)
 
 The [Dortmund batch report](CLUB_PLAYER_METADATA_DORTMUND_20261016.md) documents 47 sourced age, height, shirt, and nationality metadata edits across 12 players. All non-player gameplay data, player selection, overall ratings and FC27 attributes were left unchanged. The official first-team registry reveals a forward/defender mismatch for Daniel Svensson, recorded as an **open roster-selection issue**, not silently fixed. New focused test: `tests/dortmund_player_metadata_20261016.test.cjs`. The next five independent steps are in the report; preserve older batch ledgers and avoid unrelated file removals.
+
+
+## Verified Dortmund batch checkpoint (2026-10-16)
+
+The metadata update in [commit 5fbac391](https://github.com/saeedsai/SuperMagicFootball/commit/5fbac39159069c0feba405f2c32c2f8d4bcb85f6) passed **62/62 active Node tests** and **146/146 full historical Node+Chromium script executions**, with zero test failures. The Pages deployment succeeded; no new physical-phone or exact hosted-page interactive smoke was performed. See [Dortmund verification](CLUB_PLAYER_METADATA_DORTMUND_20261016.md) and the third immutable metadata record. The known Daniel Svensson role discrepancy remains open as an explicit future roster-selection batch. Do not repeat completed metadata edits.

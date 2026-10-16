@@ -476,7 +476,7 @@
       "club": "Borussia Dortmund",
       "playersChanged": 12,
       "fieldsChanged": 47,
-      "status": "pending_ci_regression",
+      "status": "regression_verified",
       "sources": {
         "official2026SquadBirthdates": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund",
         "official2026ShirtNumbers": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html",
@@ -872,7 +872,38 @@
         "Birth dates checked against the German Football Association 2026/27 roster and age calculated as at 16 October 2026.",
         "Heights and nation supported by Bundesliga 2026/27 individual profiles. Shirt numbers from Borussia Dortmund's 20 August 2026 official list.",
         "Daniel Svensson appears as defender in the league data while occupying an FW slot in this game's 2GK/3DF/4MF/3FW restricted 12-player squad. Changes to selection must be separately sourced and change-ledgered."
-      ]
+      ],
+      "verification": {
+        "sourceCommit": "5fbac39159069c0feba405f2c32c2f8d4bcb85f6",
+        "sourceAsOf": "2026-10-16",
+        "activeNode": {
+          "pass": 62,
+          "fail": 0,
+          "run": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38879908095"
+        },
+        "historicalNode": {
+          "pass": 96,
+          "fail": 0,
+          "shards": 4
+        },
+        "historicalChromium": {
+          "pass": 50,
+          "fail": 0,
+          "shards": 4
+        },
+        "fullRegression": {
+          "pass": 146,
+          "fail": 0,
+          "timeout": 0,
+          "error": 0,
+          "run": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38879908317"
+        },
+        "deployment": {
+          "conclusion": "success",
+          "run": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38879907546"
+        },
+        "hostedInteractiveDeviceSmoke": "not independently tested on this exact source revision"
+      }
     }
   ]
 }

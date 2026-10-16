@@ -20,3 +20,24 @@
 5. **Inter Milan:** verify six stale ages, nationality, height, and third-party attribute provenance.
 
 Next worker: always read the **latest** `dev` head and both history ledgers before edits. The completed clubs' metadata batches are immutable checkpoints. If a parallel agent touches these files, reconcile the newest version and commit on top; never force-push. No out-of-scope cleanup or gameplay changes.
+
+
+## Verification checkpoint — Dortmund batch
+
+**Committed source revision:** [5fbac391](https://github.com/saeedsai/SuperMagicFootball/commit/5fbac39159069c0feba405f2c32c2f8d4bcb85f6)
+
+| Check | Outcome | GitHub Actions |
+|---|---|---|
+| Active Node contract / metadata suite | **62 PASS, 0 FAIL** | [Modular Game Dev QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38879908095) |
+| JSON validation, 165/165 club roster parity and 2/3/4/3 quotas | **PASS** | Same Modular QA run |
+| Historical Node executable regression | **96 PASS, 0 FAIL** (4 shards) | [Full Regression Census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38879908317) |
+| Historical Chromium executable regression | **50 PASS, 0 FAIL** (4 shards) | Same Full Regression Census |
+| Combined historical execution | **146 PASS, 0 FAIL, 0 TIMEOUT, 0 ERROR** | Same Full Regression Census |
+| GitHub Pages deployment of source commit | **SUCCESS** | [Pages deployment](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38879907546) |
+| Fresh public-hosted interactive test on physical phone and PC | **NOT VERIFIED** | Source-commit deployment and Chromium regression are not a device test |
+
+**Player-data-only invariants:** All non-Dortmund roster records, 12 Dortmund player IDs, rating/face stats and role quota stayed unchanged. The separate original 207-name-change ledger and 165-club selected roster fingerprint remain identical. Metadata batch #3 is fully recorded; previous Aston Villa/Brighton metadata batches are not rewritten.
+
+**Post-batch backlog snapshot:** 32 Club26 teams/384 players still have **101 mismatched populated ages**, **201 absent ages**, and **358 absent height values**; these are not whole-game counts. The Dortmund/Svensson defender-vs-forward discrepancy is retained as a named unresolved squad-selection requirement. Unofficial FC27 derived attributes were not changed or passed off as independently EA-certified.
+
+**Continuation:** Choose an *untouched* squad for the next small batch, check both immutable logs, source each changed field, update `data/players` and `src/roster_corrections.js` together, run the active/full regression and push only with expected SHA protection. Do not remove historical assets while concurrent development and tests depend on them.
