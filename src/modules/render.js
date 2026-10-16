@@ -535,6 +535,7 @@ function drawPremiumCharacter(ctx,p,av,team,view,opt){
  const main=team.primary||'#2c7eaa',contrast=team.secondary||'#f3e4b7',trim=team.trim||contrast;
  const light=artTint(main,.24),shade=artTint(main,-.32),contrastShade=artTint(contrast,-.24);
  const run=opt.run,action=p.action;
+ const passing=ARTPOSE.passFollowThrough(action,p.actionTimer);
  const active=action==='kick'||action==='super'||action==='flipKick'||action==='flyingKick'||action==='bicycle'||action==='superBicycle';
  const jumping=(p.z||0)>15||action==='jump'||action==='header'||action==='superHead';
  const actionStep=active?8:0;
@@ -548,7 +549,9 @@ function drawPremiumCharacter(ctx,p,av,team,view,opt){
   const brace=action==='receive'?ARTPOSE.receivePose(p.actionTimer,p.firstTouchPressure||0).brace:0;
   const release=p.keeper?ARTPOSE.keeperRelease(action,p.actionTimer):{punting:false,windup:0};
   const gait=ARTPOSE.gait(cycle,{side,quarter:q,active:(active&&sign===1)||(release.punting&&sign===1),sliding:opt.sliding&&sign===1,jumping,recovering:Math.max(landing,brace*.65)});
-  const stride=gait.stride, lift=gait.lift;
+  // The support leg stays grounded while the near boot follows through a pass.
+  const stride=gait.stride+(sign===1?passing.stride:0);
+  const lift=gait.lift+(sign===1?passing.lift:0);
   const knee=[cx+stride*.44,-8-lift*.43-gait.kneeBend*.16],ankle=[cx+stride*.84,-.2-lift+landing*3];
   artStroke(ctx,[[cx*.9,-17],knee],10.2,skinDim,dark,2);
   artStroke(ctx,[knee,ankle],8.8,p.keeper?'#fff0ba':contrast,dark,1.8);
@@ -749,7 +752,7 @@ class Renderer{
   const signatureMotion=personality?sampleMotion(personality,{time:this.time,anim:p.anim,action:p.action,moving}):null;
   const oscillator=Math.sin(p.anim*(17*(signatureMotion?.runRate||1))+p.i*.35);
   // Only real-time match players are smoothed; gallery/studio renders remain deterministic.
-  const gaitMoving=moving&&p.action!=='receive'&&!['keeperDive','keeperDiveCatch','keeperRecover'].includes(p.action);
+  const gaitMoving=moving&&p.action!=='receive'&&p.action!=='pass'&&!['keeperDive','keeperDiveCatch','keeperRecover'].includes(p.action);
   const run=this.inMatchDraw&&!p.preview?ARTPOSE.settleStride(this.poseCycles.get(p),oscillator,gaitMoving,this.frameDelta):gaitMoving?oscillator:0;
   if(this.inMatchDraw&&!p.preview)this.poseCycles.set(p,run);
   const av={...avatarFor(p.src),...(p.src.appearance||{})};
@@ -779,6 +782,10 @@ class Renderer{
    // Ease into a committed tackle and settle back when it stops.
    const pose=p.slideTimer>0?(.8+.2*remaining):clamp((p.actionTimer||0)/.18,0,1);
    ctx.translate(3*pose,12*pose);ctx.rotate(-.44*pose);
+  }
+  if(p.action==='pass'){
+   // Direction mirroring is already applied by ctx.scale(view.side,1).
+   ctx.rotate(ARTPOSE.passFollowThrough(p.action,p.actionTimer).lean);
   }
   if(p.action==='receive'){
    const reception=ARTPOSE.receivePose(p.actionTimer,p.firstTouchPressure||0);
