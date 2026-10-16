@@ -1,23 +1,18 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "audio-feedback",
-  "feature_id": "AUDIO-DRIBBLE-TRICK-OUTCOME",
-  "owner": "gameplay-skill-cue-20261016-2011-gpt6",
-  "status": "released",
-  "scope": "Only src/modules/audio.js outcome-dependent human dribbleTrick sound cue, new tests/dribble_trick_audio.test.cjs, new tests/dribble_trick_audio_browser_qa.py and docs/GAMEPLAY_SKILL_SOUND_20261016.md plus own docs/memory/agents/gameplay-pk-20261016.md. No engine, UI/input, dribble odds, graphics, roster, shared tests/CI/workflows/PWA/saves.",
-  "base_sha": "c61631b81920c100eba773eddc7ff3889bcb6f0a",
+  "feature_id": "AUDIO-PASS-RECEPTION-INTERCEPTION",
+  "owner": "gameplay-pass-receive-sfx-20261016-2203-gpt6",
+  "status": "active",
+  "scope": "Only src/modules/audio.js accurate friendly passReceived and opponent interception cue, tests/pass_reception_audio.test.cjs, tests/pass_reception_audio_browser_qa.py, docs/GAMEPLAY_PASS_RECEIVE_AUDIO_20261016.md and this chat's docs/memory/agents/gameplay-pk-20261016.md. No game engine/UI/render/inputs, files of other agents, physics, player data, saves, service worker or workflows.",
+  "base_sha": "f669ef3292fd3723e63f44048d00e67782867f64",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
-  "handover": "docs/GAMEPLAY_SKILL_SOUND_20261016.md — source 1e75fbf53c2bf9e44b4f15cf1998e3fed9e550ab; Node 1e0f951fe7966d8b1122954bec2bcfd8c1244182; browser a40b91c8e96a62a63bb141523fd46e119387cdb5; docs ae30ed128c41f050b2713ec91b32863b2563d123; own memory 4e63424cc5902e2d3cbfb3454527cde4cecd1593; Modular QA https://github.com/saeedsai/SuperMagicFootball/actions/runs/38945827694",
-  "acceptance": [
-    "Human successful dribble emits positive sound",
-    "Human failed dribble emits distinct low sound",
-    "AI tricks do not flood audio",
-    "legacy cues, pause/mute, cooldown unaffected",
-    "Node+Chromium regression green"
-  ],
-  "issue_related": "https://github.com/saeedsai/SuperMagicFootball/issues/3",
-  "released_at": "2026-10-16",
-  "outcome": "Human success and failure dribble-trick procedural SFX implemented, 6/6 Node PASS; full QA currently blocked by other agent's memory index; browser script committed, full Chromium pending",
-  "integrated_commit": "4e63424cc5902e2d3cbfb3454527cde4cecd1593"
+  "handover": "docs/GAMEPLAY_PASS_RECEIVE_AUDIO_20261016.md",
+  "tests": [
+    "6+ new Node pass-interception contracts",
+    "real desktop and touch Chromium browser event bridge",
+    "Modular QA and full 8-shard regression",
+    "versioning About contract"
+  ]
 }
