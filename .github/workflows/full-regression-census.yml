@@ -32,6 +32,10 @@ on:
       - 'tests/v08245_release_alignment.mjs'
       - 'data/mechanics/gameplay.json'
       - 'src/modules/physicsbalance.js'
+      # All playable dribble-trick outcome sounds are in the modular audio runtime.
+      - 'src/modules/audio.js'
+      - 'tests/dribble_trick_audio.test.cjs'
+      - 'tests/dribble_trick_audio_browser_qa.py'
       - 'src/modules/engine.js'
       - 'tests/keeper_dive_intent.test.cjs'
       - 'src/match_telemetry.js'
