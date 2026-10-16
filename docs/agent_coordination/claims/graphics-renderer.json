@@ -1,11 +1,11 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "graphics-renderer",
-  "feature_id": "ART-C01-FAR-ARM",
-  "owner": "graphics-update-c01-far-arm-20261016-gpt6-r1",
-  "status": "released",
-  "scope": "Only one independently editable far/front painted arm source under assets/characters/concept_modular_v1, associated rig manifest, src/modules/conceptmodular.js far-arm painter/small reciprocal gait, graphics-specific validator/tests/docs/provenance, own docs/memory/agents/graphics-update.md. No gameplay, roster, UI or main renderer.",
-  "base_sha": "89342d3fd5c683cf8d242e20322bdbe75ca23a17",
+  "feature_id": "ART-C01-FAR-ARM-QA-SIGNOFF-DOCS",
+  "owner": "graphics-update-c01-far-arm-regression-20261016-gpt6-r2",
+  "status": "active",
+  "scope": "Only update graphics specialist tracker, current handover, C01 far-arm batch report and this chat's graphics-update memory to record later full 9/9 regression, no code, art, tests or unrelated docs.",
+  "base_sha": "d53d064377b162c343eb352367c0e45ca8dbb625",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
   "tests": [
@@ -16,7 +16,7 @@
     "tests/concept_modular_live_qa.py",
     "Full Regression Census"
   ],
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md; C01_FAR_ARM_BATCH_20261016.md; source f0fea598; graphics #38913908449 PASS 147/147; hosted #38914486909 PASS; full blocked by unrelated project-memory identity contract",
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
   "released_at": "2026-10-16",
   "outcome": "completed_far_arm_illustrated_art_and_reciprocal_run_overlay"
 }
