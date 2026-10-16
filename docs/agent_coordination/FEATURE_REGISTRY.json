@@ -27,6 +27,10 @@
     {
       "key": "release-infra",
       "scope": "CI workflows, deployment, Pages, service worker and release verification"
+    },
+    {
+      "key": "project-context",
+      "scope": "Shared project memory, chat registry, onboarding docs, documentation navigation and memory validation. Does not include other agents' individual memory or specialist docs."
     }
   ],
   "dynamicLockKeyRules": [
@@ -118,6 +122,13 @@
       "lock_key": "release-infra",
       "plan": "GITHUB_PAGES_SETUP.md",
       "note": "Do not alter runtime unless additional relevant lock is held."
+    },
+    {
+      "feature_id": "CONTEXT-MEMORY",
+      "title": "Keep shared project context and documentation index compact and accurate",
+      "lock_key": "project-context",
+      "plan": "docs/memory/README.md",
+      "note": "Agent memory files belong to their own chat; no broad cross-agent inspection or edits."
     }
   ]
 }

@@ -2,6 +2,10 @@
 
 **Read [AGENTS.md](../../AGENTS.md) first.** Effective 2026-10-16. This is the shared start/checkpoint/release procedure for *every* SuperMagicFootball coding chat. Use **GitHub's current `dev` state**, not copies in chat or a local working tree.
 
+## Lean-memory protocol (required)
+
+Every new or resumed chat must use the memory bootstrap in [docs/memory/README.md](../memory/README.md): shared memory plus its **own** private-by-convention checkpoint only. Read the current GitHub claims as a separate live source of truth; do not copy lock status into permanent shared memory. An agent may maintain its own memory file as part of its own claimed feature scope; the `project-context` lock owns shared memory, agent-index structure and global onboarding changes. Do not reassign another session's agent file. This is a cooperative reading policy, **not** GitHub-enforced per-file privacy.
+
 ## Canonical records and priority
 
 - **Feature catalog:** [FEATURE_REGISTRY.json](FEATURE_REGISTRY.json) suggests bounded tasks and their exclusive lock keys. It is a list of *candidates*, **not** a declaration that an agent is free or a feature still needs work. The detailed roadmap/trackers are the authority on completeness.

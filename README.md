@@ -1,5 +1,7 @@
 > **MULTI-AGENT MANDATORY START GATE:** Before any coding/chat agent starts editing `dev`, read [AGENTS.md](AGENTS.md), review [feature ownership and active GitHub claims](docs/agent_coordination/README.md), and claim an unowned exclusive scope. Other agents may be working concurrently. No claim = no shared edits.
 
+> **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Current claims must still be checked on live `dev`. [Documentation index](docs/README.md).
+
 # Supermagic Football · v0.8.25.32 · Modular source project
 
 This is a **continuation of v0.8.25.29**, which itself derives from the v0.8.25.28 handover. The game has NOT been recreated. Player IDs, team ordering, formation choices, controls, game modes, saved-progress keys and gameplay formulas are retained. The authoritative playable version now consists of **multiple JavaScript modules and JSON data files**; `index.html` loads those files at runtime.

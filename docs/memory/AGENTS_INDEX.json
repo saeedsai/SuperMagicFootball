@@ -1,0 +1,52 @@
+{
+  "schema": "smf-chat-memory-index/1",
+  "updated": "2026-10-16",
+  "note": "Known project chats visible when bootstrapped. A chat absent from this list must register a distinct ID; IDs do not assert GitHub lock ownership.",
+  "agents": [
+    {
+      "id": "game-developer-2",
+      "label": "Continue Game Development 2",
+      "path": "docs/memory/agents/game-developer-2.md"
+    },
+    {
+      "id": "game-developer-3",
+      "label": "Game developer 3",
+      "path": "docs/memory/agents/game-developer-3.md"
+    },
+    {
+      "id": "game-developer-4",
+      "label": "Game developer 4",
+      "path": "docs/memory/agents/game-developer-4.md"
+    },
+    {
+      "id": "game-developer-5",
+      "label": "Developer 5",
+      "path": "docs/memory/agents/game-developer-5.md"
+    },
+    {
+      "id": "graphics-update",
+      "label": "Graphics update",
+      "path": "docs/memory/agents/graphics-update.md"
+    },
+    {
+      "id": "roster-review",
+      "label": "Review Player Database",
+      "path": "docs/memory/agents/roster-review.md"
+    },
+    {
+      "id": "roster-fc27",
+      "label": "FC27 player database",
+      "path": "docs/memory/agents/roster-fc27.md"
+    },
+    {
+      "id": "feature-ownership",
+      "label": "Feature ownership documentation",
+      "path": "docs/memory/agents/feature-ownership.md"
+    },
+    {
+      "id": "context-admin-20261016",
+      "label": "Context-management implementation",
+      "path": "docs/memory/agents/context-admin-20261016.md"
+    }
+  ]
+}

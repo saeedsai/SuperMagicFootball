@@ -2,6 +2,12 @@
 
 **STOP before changing code, tests, player data, artwork, or plans.** This file applies to all development chats and agents working on `dev`. Read the [shared coordination protocol](docs/agent_coordination/README.md) and [feature registry](docs/agent_coordination/FEATURE_REGISTRY.json) **before** choosing a task. Re-read the live GitHub files every session; cached conversation context is not a reservation.
 
+## Mandatory low-context memory bootstrap
+
+Before loading specialist plans or old chat history, read **[memory instructions](docs/memory/README.md)** and **[shared project memory](docs/memory/SHARED.md)**, then **only your own** `docs/memory/agents/<agent-id>.md` file (register a unique ID if your chat is missing). Do **not** open, search, summarize, or edit another chat's memory. Check live feature locks and latest `dev` separately; memory never establishes ownership or real-time state. At each checkpoint, replace stale notes in your own file with a short current handover, preserve links to evidence, and avoid loading previous transcripts.
+
+**Limit:** GitHub repository permissions do not isolate files per ChatGPT chat. The own-file rule is cooperative, not an access-control guarantee; shared memory must contain no secrets. Existing chats must be explicitly told to adopt this process at their next message. For hard privacy, separate repositories or credential-scoped storage are required.
+
 ## Mandatory start gate
 
 1. Fetch the **latest** `dev` HEAD, [roadmap](docs/NEXT_MILESTONES.md), relevant specialist handover/tracker and any active GitHub issues/PRs. Previous work may have landed since your last message.
