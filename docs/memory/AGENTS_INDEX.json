@@ -57,6 +57,11 @@
       "id": "game-developer-6",
       "label": "Developer 6 (gameplay/QA development)",
       "path": "docs/memory/agents/game-developer-6.md"
+    },
+    {
+      "id": "gameplay-pk-20261016",
+      "label": "Game developer — manual penalty keeper controls (current chat)",
+      "path": "docs/memory/agents/gameplay-pk-20261016.md"
     }
   ]
 }
