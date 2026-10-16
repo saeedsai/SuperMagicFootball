@@ -3,7 +3,7 @@
   "updated": "2026-10-16",
   "branch": "dev",
   "baselineAtPlanning": "82119108ca63dd510bd49bdf5c2083bed168a9a0",
-  "currentMilestone": "C00",
+  "currentMilestone": "C01",
   "programStatus": "in_progress",
   "lastVerifiedModularCommit": "2ff04b902ee894ffdb94e4029f97707ca1499799",
   "disclaimer": "Only independently layered illustrated concept_modular_v1 assets with evidence count as delivered; older procedural Studio options and one flat concept_hero are not modular variants.",
@@ -51,7 +51,10 @@
       "validatedFiles": [
         "assets/characters/concept_modular_v1/source/hair_front_front.svg",
         "src/modules/conceptmodular.js",
-        "tests/concept_modular_browser_qa.py"
+        "tests/concept_modular_browser_qa.py",
+        "assets/characters/concept_modular_v1/source/hair_back_back.svg",
+        "tests/concept_modular_v1.test.cjs",
+        "tests/concept_modular_live_qa.py"
       ],
       "evidence": [
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886177973",
@@ -59,8 +62,9 @@
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886824290"
       ],
       "issues": [
-        "One front hair overlay, no independent full head/torso/arms/legs",
-        "No authored seven other views or runtime WebP derivative"
+        "Only front and back hair overlays are independently editable; full head/face/torso/arms/legs not isolated",
+        "Six other world directions still require controlled legacy fallback",
+        "Full independent animation, studio variants, WebP derivatives and owner art signoff missing"
       ]
     },
     {
@@ -216,7 +220,7 @@
     "frontRight": "not_started",
     "right": "not_started",
     "backRight": "not_started",
-    "back": "not_started",
+    "back": "in_progress",
     "backLeft": "not_started",
     "left": "not_started",
     "frontLeft": "not_started"
@@ -307,14 +311,15 @@
       "identifier": "medium-honey-curls-moustache"
     }
   ],
-  "nextSmallTask": "C00/C01: inspect hosted vs fixture front-hair seam and alpha on grass/teal/light/dark, obtain owner signoff, then add one independently editable front head/hair-back layer.",
+  "nextSmallTask": "ART-C01: inspect real match rear-hair screenshots on grass/teal/light/dark and independent painted stroke registration; next isolate one independently editable front head/face layer, preserving legacy base.",
   "openRisks": [
     "Only one cloned literal concept character is available for all twelve demo slots",
     "Flattened five-view atlas has baked blue uniform and number 10",
     "Five source views mirrored into eight; mirror can invert asymmetric equipment and shirt numbers",
     "Basic cutout leg swing is not fully animated arms, faces, specials or goalkeeper motion",
     "Editable component-layer art and provenance have not been validated for new modular renderer",
-    "Source resolution/performance/atlas budget and in-game art quality require measured baseline and owner review"
+    "Source resolution/performance/atlas budget and in-game art quality require measured baseline and owner review",
+    "New back view only supplies a transparent hair overlay on the existing flattened back-body art; must not be counted as complete authored back view"
   ],
   "releaseSignoff": {
     "ownerArtApproval": "not_started",
@@ -359,6 +364,9 @@
     "livePageErrors": 0,
     "fullRegressionVerifiedAtCommit": "55c4a21a9089ae8b2ced2ed677bee82cd37eaf59",
     "fullRegressionWorkflow": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886072121",
-    "fullRegression": "PASS on earlier graphics-containing commit; exact final doc SHA not independently sharded"
+    "fullRegression": "PASS on earlier graphics-containing commit; exact final doc SHA not independently sharded",
+    "rearHairSource": "assets/characters/concept_modular_v1/source/hair_back_back.svg",
+    "rearHairStatus": "implemented_pending_exact_commit_CI",
+    "secondaryHairAnimation": "small gait-driven front/back hair sway, not articulated face/body"
   }
 }

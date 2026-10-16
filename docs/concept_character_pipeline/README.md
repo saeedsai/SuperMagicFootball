@@ -1,6 +1,6 @@
 # Concept-quality modular player graphics — document index
 
-**Created:** 16 October 2026. **Development branch:** dev. **Scope:** future illustrated player models, customization, animation, editor and QA. **Status:** first experimental front hair overlay in code, with opt-in rendering and pending art certification. See [IMPLEMENTATION_CHECKPOINT_20261016.md](IMPLEMENTATION_CHECKPOINT_20261016.md).
+**Created:** 16 October 2026. **Development branch:** dev. **Scope:** future illustrated player models, customization, animation, editor and QA. **Status:** experimental independently editable front and back painted hair overlays with a small secondary gait-driven sway, opt-in only, still awaiting full head/body rig and owner art certification. See [IMPLEMENTATION_CHECKPOINT_20261016.md](IMPLEMENTATION_CHECKPOINT_20261016.md).
 
 Read these documents in order:
 
