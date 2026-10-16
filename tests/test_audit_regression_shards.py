@@ -27,7 +27,8 @@ class ShardAuditTests(unittest.TestCase):
                     "discovered": len(names), "requested": len(selected),
                     "discovered_scripts": list(names), "selected_scripts": selected,
                     "commit": self.commit,
-                    "tests": [{"name": n, "status": "PASS", "return_code": 0} for n in selected],
+                    "tests": [{"name": n, "status": "PASS", "return_code": 0,
+                               "seconds": 0.01, "output_tail": ""} for n in selected],
                     "summary": {"PASS": len(selected), "FAIL": 0, "TIMEOUT": 0,
                                 "ERROR": 0, "NOT_RUN": 0}}
             self.write(category, i, data)
@@ -79,6 +80,25 @@ class ShardAuditTests(unittest.TestCase):
     def test_wrong_round_robin_assignment_is_rejected(self):
         self.mutate("node", 1, lambda d: d["selected_scripts"].append("one.test.cjs"))
         self.assert_rejected("selected_scripts differ")
+
+    def test_missing_seconds_refuses_false_green(self):
+        self.mutate("node", 0, lambda d: d["tests"][0].pop("seconds"))
+        self.assert_rejected("duration/output evidence")
+
+    def test_negative_or_nan_seconds_refuse_false_green(self):
+        for value in (-1, float("nan"), float("inf"), True, "0.0"):
+            with self.subTest(value=value):
+                self.create_category("node", ("one.test.cjs", "two.test.cjs", "three.mjs"))
+                self.mutate("node", 0, lambda d: d["tests"][0].update(seconds=value))
+                self.assert_rejected("duration/output evidence")
+
+    def test_missing_output_tail_refuses_false_green(self):
+        self.mutate("browser", 0, lambda d: d["tests"][0].pop("output_tail"))
+        self.assert_rejected("duration/output evidence")
+
+    def test_nonstring_output_tail_refuses_false_green(self):
+        self.mutate("browser", 1, lambda d: d["tests"][0].update(output_tail=["fake"]))
+        self.assert_rejected("duration/output evidence")
 
     def test_failed_execution_cannot_be_certified(self):
         self.mutate("browser", 0, lambda d: d["tests"][0].update(status="FAIL", return_code=1))
