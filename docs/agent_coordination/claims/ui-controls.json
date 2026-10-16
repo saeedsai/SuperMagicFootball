@@ -1,22 +1,19 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "ui-controls",
-  "feature_id": "UI-HALFTIME-FATIGUE-SPOTLIGHT",
-  "owner": "ui-halftime-fatigue-20261016-gpt6-session8",
-  "status": "released",
-  "scope": "Only src/modules/ui.js readonly halftime starter fitness shortlist (max 2, same side), tests/halftime_fatigue_spotlight.test.cjs, tests/halftime_fatigue_spotlight_browser_qa.py, docs/UI_HALFTIME_FATIGUE_SPOTLIGHT_20261016.md and small docs/NEXT_MILESTONES.md addendum. No changes to game engine, physics, roster, art, scripts, CI workflows, PWA, save keys or common QA harness.",
-  "base_sha": "fd76fcb2ddd0fe83566226d70c99b372d09b20ee",
+  "feature_id": "UI-HALFTIME-TACTICS-RETURN",
+  "owner": "ui-halftime-tactics-return-20261016-session10-gpt6",
+  "status": "active",
+  "scope": "Only src/modules/ui.js halftime-to-tactics return route on Back and Save, isolated tests/halftime_tactics_return.test.cjs and tests/halftime_tactics_return_browser_qa.py, docs/UI_HALFTIME_TACTICS_RETURN_20261016.md and small docs/NEXT_MILESTONES.md addendum; no gameplay engine, rosters, graphics, QA runners, release workflows, service worker or unrelated cleanup.",
+  "base_sha": "067326766a647419529733897bf066ea05484758",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
   "tests": [
-    "node --test tests/halftime_fatigue_spotlight.test.cjs",
+    "node --test tests/halftime_tactics_return.test.cjs",
     "node --test tests/*.test.cjs",
-    "python3 scripts/build.py && python3 tests/halftime_fatigue_spotlight_browser_qa.py",
-    "full regression census 4 Node + 4 Chromium",
-    "hosted PC/touch smoke"
+    "python3 scripts/build.py && python3 tests/halftime_tactics_return_browser_qa.py",
+    "Full Regression Census all Node and Chromium shards",
+    "hosted Pages desktop/touch smoke"
   ],
-  "handover": "docs/UI_HALFTIME_FATIGUE_SPOTLIGHT_20261016.md — commit b23eed0, Modular QA #38900390556 104/104 PASS, full eight-shard census descendant #38900429370 in progress; Pages #38900441679 success",
-  "released_at": "2026-10-16",
-  "outcome": "feature_implemented_active_node104_pass_full_chromium_census_in_progress",
-  "final_source_commit": "b23eed0743ca5ed2f181e2ded23d92682e1b9513"
+  "handover": "docs/UI_HALFTIME_TACTICS_RETURN_20261016.md"
 }
