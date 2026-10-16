@@ -1,23 +1,17 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "release-infra",
-  "feature_id": "ART-C01-FAR-ARM-CACHE",
-  "owner": "graphics-update-c01-far-arm-20261016-gpt6-r1",
-  "status": "released",
-  "scope": "Only sw.js versioned asset cache and new far-arm source entry. No workflow/deployment logic changes.",
-  "base_sha": "89342d3fd5c683cf8d242e20322bdbe75ca23a17",
+  "feature_id": "CI-AUDIO-FULL-CENSUS-PUSH-PATHS",
+  "owner": "gameplay-audio-ci-20261016-2014-gpt6",
+  "status": "active",
+  "scope": "Only .github/workflows/full-regression-census.yml push path list add src/modules/audio.js, tests/dribble_trick_audio.test.cjs and tests/dribble_trick_audio_browser_qa.py; docs/GAMEPLAY_SKILL_SOUND_20261016.md and own docs/memory/agents/gameplay-pk-20261016.md. No CI job logic, gameplay, UI, graphic, roster, SW or other test/QA runner edits.",
+  "base_sha": "a4839ee88b7f58b47e14e4cdb5012ef2ac072119",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
+  "handover": "docs/GAMEPLAY_SKILL_SOUND_20261016.md",
   "tests": [
-    "scripts/validate_concept_modular.py",
-    "scripts/build.py",
-    "node --test tests/*.test.cjs",
-    "tests/concept_modular_browser_qa.py",
-    "tests/concept_modular_live_qa.py",
-    "Full Regression Census"
-  ],
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md; C01_FAR_ARM_BATCH_20261016.md; source f0fea598; graphics #38913908449 PASS 147/147; hosted #38914486909 PASS; full blocked by unrelated project-memory identity contract",
-  "released_at": "2026-10-16",
-  "outcome": "completed_far_arm_illustrated_art_and_reciprocal_run_overlay",
-  "final_source_commit": "067326766a647419529733897bf066ea05484758"
+    "Workflow push triggers full census",
+    "4 Node plus 4 Chromium shards on source containing dribble feature",
+    "Browser script explicit PASS in shard logs"
+  ]
 }
