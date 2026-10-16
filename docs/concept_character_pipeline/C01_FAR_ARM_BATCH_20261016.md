@@ -38,3 +38,7 @@
 5. Author matching opposite leg with foot-plant loop, then stage a true quarter direction.
 
 **Legacy safeguards:** original 223 teams, player stats, formations, physics, controls, save values and ordinary procedural drawing not edited. Only the one opt-in preview character shows the new painted arm. C00/C01 remain in progress; full eight directions, player variety, independent bodies, complex moves, GK kits and Studio customization require later milestones.
+
+## Final integrated regression (9/9 PASS)
+
+[Full Regression Census #38915344074](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074) **SUCCESS** on integrated SHA `34604826aa552e493885c12870cdbf9bc6b662cf`: preflight + four Node + four browser jobs passed. The tested integrated commit contains the far-arm SVG/compositor/rig/fixture/cache unchanged from `f0fea598`. The earlier memory-contract preflight failure was later resolved by its owning agent. Owner art approval and physical-device verification remain pending.
