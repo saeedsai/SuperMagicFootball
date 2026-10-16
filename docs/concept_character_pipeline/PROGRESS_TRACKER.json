@@ -73,7 +73,8 @@
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905216121",
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904785529",
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904271767",
-        "docs/concept_character_pipeline/C01_NEAR_ARM_BATCH_20261016.md"
+        "docs/concept_character_pipeline/C01_NEAR_ARM_BATCH_20261016.md",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905337000"
       ],
       "issues": [
         "Only one front near-arm SVG overlays the existing baked original arm; no fully separately authored torso/opposite arm yet",
@@ -402,7 +403,7 @@
       "moduleHttp": 200,
       "errors": 0
     },
-    "fullRegressionLatest": "Pre-foreshortening arm fully green 9/9 attempt2 #38904271767; corrected source art desktop/touch QA #38905216121 PASS and hosted #38904785529 PASS; corrected full #38905216172 canceled by concurrent pushes; later integrated full #38905337000 pending",
+    "fullRegressionLatest": "PASS 9/9 at later integrated SHA 1decc48895a81ca3b2f87f84d49e478b0f736085 containing corrected source ff22abb3 unchanged: https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905337000",
     "frontFace": {
       "componentId": "face_front_001",
       "asset": "assets/characters/concept_modular_v1/source/face_front_front.svg",
@@ -551,7 +552,10 @@
         "correctedCurrentRun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905216172",
         "correctedCurrentStatus": "CANCELLED by concurrent pushes",
         "laterIntegratedRun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905337000",
-        "laterIntegratedStatus": "in progress as of checkpoint; recheck"
+        "laterIntegratedStatus": "PASS all nine jobs (preflight, four Node, four browser) in https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905337000",
+        "laterIntegratedContainsCorrectedArt": true,
+        "laterIntegratedSourceUnchanged": true,
+        "laterIntegratedCommit": "1decc48895a81ca3b2f87f84d49e478b0f736085"
       }
     }
   }
