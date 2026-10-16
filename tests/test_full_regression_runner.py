@@ -27,6 +27,7 @@ class RegressionRunnerSafetyTests(unittest.TestCase):
         self.addCleanup(self.sandbox.cleanup)
         self.root = Path(self.sandbox.name)
         (self.root / "tests").mkdir()
+        (self.root / "package.json").write_text('{"version":"0.8.25.32"}', encoding="utf8")
         self.root_patch = mock.patch.object(runner, "ROOT", self.root)
         self.tests_patch = mock.patch.object(runner, "TESTS", self.root / "tests")
         self.root_patch.start()
