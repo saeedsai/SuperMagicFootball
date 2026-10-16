@@ -1,19 +1,19 @@
-# Gameplay PK controls — current chat checkpoint
+# Gameplay skill sound — own chat memory
 
 ## Mission
-Implement bounded, tested two-human penalty goalkeeper steering and jump dive under live `gameplay-engine` ownership, preserving one-human AI and four buttons.
+Deliver one bounded playable-game feature per turn on fresh `dev`, respecting GitHub live feature locks.
 
 ## Current checkpoint
-2026-10-16: registered distinct chat identity; latest `dev` and shared ownership are authoritative, not this file.
+2026-10-16: Registered this chat under `gameplay-pk-20261016`. Another agent acquired `gameplay-engine` for human PK goalkeeper issue #5, so no engine edits made. Claimed independent `audio-feedback`: added real human dribble-trick success/failure procedural tones with CPU silence and original audio parity. Code `1e75fbf5`, six Node tests `1e0f951f`, playable desktop/touch acceptance source `a40b91c8`. [Handover](../../GAMEPLAY_SKILL_SOUND_20261016.md).
 
 ## Next smallest action
-Claim free gameplay-engine lock, inspect PK method and tests, add one playable control improvement with Node/browser acceptance.
+Release audio claim once handover integrated; independently claim `release-infra` *only if free* to add audio source/test triggers to full regression. Do not override preexisting `project-context` memory contract failure; route to its owner.
 
 ## Ownership and exclusions
-May edit only own checkpoint here. Never read or modify other agents' memory. No UI, graphics, roster, build or CI edits without their distinct claims.
+Read/write **only** this own memory file. Never read other agent memory. Keep `engine.js` and `ui.js` untouched while their keys belong to others.
 
 ## Evidence
-Feature evidence will be in a dedicated `docs/GAMEPLAY_PK_MANUAL_KEEPER_20261016.md` handover; links only after successful GitHub writes.
+[Modular QA #38945827694](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38945827694): all 6 new audio tests PASS, 193/194 Node (one external memory/index failure); 20 Python merge and 10 claim contracts PASS. Full Chromium and hosted speakers unverified at this checkpoint.
 
 ## Cleanup
-No unrelated historical QA, art or source files should be removed without proving them stale and unreferenced.
+No source/art/tests proven obsolete; preserve historical acceptance and existing .gitignore.
