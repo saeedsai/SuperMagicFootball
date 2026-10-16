@@ -3,7 +3,7 @@
   "lock_key": "graphics-renderer",
   "feature_id": "ART-C01-FACE",
   "owner": "graphics-c01-face-20261016-1354-gpt6",
-  "status": "active",
+  "status": "released",
   "scope": "One illustrated editable front face SVG plus manifest, opt-in conceptmodular.js painter ordering, graphics-only validator and dedicated browser/Node tests, specialist progress/handover. No changes to gameplay, UI, data, render.js, existing concept hero or procedural player renderer.",
   "base_sha": "b5e59a275f53366ef56afea25f1a6bb13efdbaea",
   "created_at": "2026-10-16T13:54+02:00",
@@ -15,7 +15,7 @@
     "tests/concept_modular_live_qa.py",
     "full regression census"
   ],
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md and docs/concept_character_pipeline/C01_FACE_FRONT_CHECKPOINT_20261016.md; source a8553002, art QA #38899003730, hosted #38899003632, full census #38899003690 attempt 2 all PASS",
   "released_at": "2026-10-16",
-  "outcome": "completed_experimental_rear_hair_small_batch"
+  "outcome": "completed_c01_experimental_illustrated_front_face"
 }
