@@ -24,3 +24,14 @@ The standard GitHub Modular Game Dev QA, full 4+4 Node/Chromium census and hoste
 
 ## Cleanup
 No unverified removal of historical assets, templates or QA logs. Retain generated-file exclusions and defer broader cleanup to an owner of the relevant directory.
+
+## Intermediate exact-source CI evidence (independently verifiable)
+
+- [Feature merge commit `c0b87bc8ab4ebef73beaa4cce68f59a777b47416`](https://github.com/saeedsai/SuperMagicFootball/commit/c0b87bc8ab4ebef73beaa4cce68f59a777b47416) — four scoped files; no UI, renderer, roster, saved-game or release-infrastructure changes. Each Git commit has a unique on-open About `dev` revision; bundle version is unchanged.
+- [Modular Game Dev QA #38959752554](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38959752554) **COMPLETED SUCCESS**: 215/215 active Node subtests, 20/20 Python merge, 10/10 claim checks, 165-club provenance audit/JSON and About/versioning guard tests passed.
+- [Keeper Save Event Integrity #38959752518](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38959752518) **SUCCESS**; no goalkeeper changes introduced.
+- Initial [hosted PC/simulated touch smoke #38959752463](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38959752463) **SUCCESS**, but ran before confirmed deployment of this gameplay commit; it cannot serve as final hosted feature acceptance.
+- Exact merge [Full Regression Census #38959752506](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38959752506) **CANCELLED** under parallel GitHub Actions concurrency. Follow-up [descendant 4+4 regression #38960061389](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960061389) has passed preflight and all four Node shards; browser shards and overall conclusion still require confirmation. At descendant commit `d33410af`, an ancestry comparison confirmed the feature is included and `src/modules/engine.js` unchanged.
+- Cleanup audit: 717 tracked paths at checkpoint, **zero** committed `__pycache__`, `node_modules`, `.generated`, `test-results`, `playwright-report`, `.pyc`, `.bak`, `.tmp` and editor swaps. Older QA reports intentionally retained because prior evidence refers to them.
+
+**Known release risk:** many other agents are pushing to shared `dev`, causing CI and Pages deployments to be cancelled by concurrency control. Do not assert a cancelled run passed or that the public Pages site contains this fix until a later successful descendant deployment plus browser smoke. Continue at next checkpoint from live claim, not archived memory.
