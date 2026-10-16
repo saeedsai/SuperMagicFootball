@@ -1,0 +1,16 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "integration-tooling",
+  "feature_id": "ART-C01",
+  "owner": "graphics-c01-front-hair-20261016-b",
+  "status": "active",
+  "scope": "ART-C01: limited scripts/build.py inline second SVG fixture embed only; no other tooling or data",
+  "base_sha": "8a1482dd1d4b491b9f941478eea820413a6679a3",
+  "created_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
+  "tests": [
+    "node --test tests/*.test.cjs",
+    "GitHub exact-commit graphics browser CI"
+  ],
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md"
+}
