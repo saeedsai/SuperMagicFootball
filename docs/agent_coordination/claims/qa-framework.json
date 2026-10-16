@@ -1,25 +1,17 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "qa-framework",
-  "feature_id": "QA-CLAIM-PROTOCOL-CI",
-  "owner": "qa-claim-cas-20261016-1421-gpt6",
-  "status": "released",
-  "scope": "Only tests/test_feature_claim.py for stale-sha fake client tests; new tests/feature_claim_protocol.test.cjs Node bridge so offline claim tests execute in existing Modular Dev QA / full Node census; new docs/QA_CLAIM_PROTOCOL_CI_20261016.md QA handover. No scripts/claim_feature.py, shared QA runner, scripts/build.py, CI workflows, release-infra, gameplay, graphics, roster, UI or shared docs files.",
-  "base_sha": "bfaf9c248269c7afc979835680240a7e59602c2d",
+  "feature_id": "QA-HALFTIME-MATCH-LIFECYCLE",
+  "owner": "qa-match-halftime-20261016-gpt6-session12",
+  "status": "active",
+  "scope": "Only new tests/halftime_match_lifecycle.test.cjs for authoritative halftime 40% fatigue recovery, one-time team-talk and no-duplicate recovery; tests/halftime_match_lifecycle_browser_qa.py for playable desktop and simulated touch half-to-second-half transition and fulltime; docs/QA_HALFTIME_MATCH_LIFECYCLE_20261016.md and narrow docs/NEXT_MILESTONES.md checkpoint. Do not modify src/modules/engine.js, input.js, UI, graphics, roster, common QA runner, scripts/build.py, workflows, deployment or any other agent's tests.",
+  "base_sha": "62c9790c7c2383dcbc2809b9625065a9293b3a52",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
   "tests": [
-    "python3 -m unittest discover -s tests -p test_feature_claim.py -v",
-    "node --test tests/feature_claim_protocol.test.cjs",
-    "Modular Game Dev QA active Node+merge",
-    "Full Regression Census historical Node and Chromium",
-    "hosted Pages desktop and simulated-touch smoke"
+    "Node actual helper contract tests/halftime_match_lifecycle.test.cjs",
+    "Full Regression Census 4xNode 4xChromium",
+    "Public Github Pages desktop/touch smoke"
   ],
-  "handover": "docs/QA_CLAIM_PROTOCOL_CI_20261016.md — code ccabbdcea4c0fc069e7cc36c8f762df7e59a2f22, 3e923e884d806847148c5966bab9b1612604ddd6, report 640b3668f0fcc57c13504289f2295f179eff837b; QA https://github.com/saeedsai/SuperMagicFootball/actions/runs/38900942712; live smoke https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528",
-  "released_at": "2026-10-16",
-  "outcome": "completed: 10 offline claim tests integrated in active Node CI; stale-CAS tests pass; 105/105 active Node, 17/17 Python merge; public PC+sim-touch success; exact-commit historical census pending selective path trigger",
-  "source_commits": [
-    "ccabbdcea4c0fc069e7cc36c8f762df7e59a2f22",
-    "3e923e884d806847148c5966bab9b1612604ddd6"
-  ]
+  "handover": "docs/QA_HALFTIME_MATCH_LIFECYCLE_20261016.md"
 }
