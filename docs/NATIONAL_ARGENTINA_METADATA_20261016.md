@@ -54,3 +54,9 @@ The preceding [active Modular QA #38915344073](https://github.com/saeedsai/Super
 **Hosted Pages gameplay:** verified separately in an explicitly triggered live desktop/touch smoke; see appended verification status below. Source-only roster correction is not physical-device or native Safari certification.
 
 The claimed scope is complete and can be released after the live Pages job outcome is recorded. All tracked roster identities, default tactics, arcade scores, source note fields and saved-game schemas remain preserved. Future work should source-check a new small Argentina batch under its own claim rather than re-editing this accepted one.
+
+### Live deployment verification — complete
+
+[Fresh public Pages smoke run #38891468528, most recent job `117023575914`](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528) **COMPLETED SUCCESS** on 16 Oct 2026 after the correction was on `dev`. Real hosted HTTP 200, version `0.8.25.32-integrated`, **224 teams**, menus, team selection, kickoff, extended pitch and active Quick Match confirmed on desktop Chromium and a touch-emulated mobile Chromium profile. **No physical Android handset/iPhone, Safari or offline PWA certification** was performed. The independent new Argentina browser test (full census above) certifies the actual two corrected players' metadata inside the current playable game.
+
+The current batch is ready to release. Old negative preflight runs are retained as evidence of the fixed own memory-contract identity oversight; no files belonging to another agent were modified.
