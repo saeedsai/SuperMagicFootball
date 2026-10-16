@@ -583,10 +583,48 @@ function showEditor(){page('PLAYER DATA EDITOR','Edit your own 12-player team ro
 
 const eur=n=>'€'+(n/1000000).toFixed(1)+'m';
 const saveCareer=()=>{if(career)store.put('managerCareer',career)};
+// Read-only pre-kickoff scouting. No AI odds, plan edits, or career writes.
+function careerOpponentScoutPanel(c,fx){
+ if(!fx||!Number.isInteger(fx.opponent)||!TEAMS[fx.opponent])return '';
+ const opponent=TEAMS[fx.opponent],oppRoster=roster(fx.opponent);
+ const starters=planFor(fx.opponent).lineup.map(i=>oppRoster[i]).filter(Boolean);
+ const average=role=>{
+  const vals=starters.filter(p=>p.role===role).map(p=>playerOVR(p,role)).filter(Number.isFinite);
+  return vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):null;
+ };
+ const attack=average('FW'),defence=average('DF'),keeper=average('GK');
+ const threat=starters.filter(p=>p.role!=='GK').map(p=>({p,ovr:playerOVR(p)}))
+  .filter(q=>Number.isFinite(q.ovr)).sort((a,b)=>b.ovr-a.ovr)[0];
+ const table=fx.kind==='league'?c.table?.[fx.opponent]:null;
+ const safe=x=>Number.isFinite(x)&&x>=0?Math.trunc(x):0;
+ const played=table?safe(table.p):0,wins=table?safe(table.w):0,draws=table?safe(table.d):0;
+ const record=table&&played?`${played} played · ${wins}W ${draws}D ${Math.max(0,played-wins-draws)}L`:'No league matches recorded';
+ const recommendation=attack!==null&&defence!==null&&attack>=defence+6
+  ?'Contain the forwards: consider Deep Block and Possession.'
+  :attack!==null&&defence!==null&&defence>=attack+6
+  ?'Break their back line: consider Direct attack and High Press.'
+  :'Balanced opponent: consider Possession and adapt to the match.';
+ const tired=(c.roster||[]).filter(p=>p&&(Number(p.condition)<60||Number(p.injuryWeeks)>0)).length;
+ const fitness=tired?`Your squad has ${tired} player${tired===1?'':'s'} below 60% fitness or injured. Review your starters before kickoff.`
+  :'No fitness warning below 60% in your current squad.';
+ const rating=n=>n===null?'–':escapeHTML(String(n));
+ const highlight=threat?`${escapeHTML(threat.p.name||'Player')} · ${escapeHTML(threat.p.role)} · OVR ${rating(threat.ovr)}`:'No outfield scouting data';
+ return `<section class="panel" id="careerOpponentScout" aria-label="Next opponent scouting report">
+  <h3 class="titleSmall">🔍 NEXT OPPONENT SCOUT</h3>
+  <p class="muted">Projected six-player lineup for ${escapeHTML(opponent.name)} · positional game ratings, not official match odds.</p>
+  <div class="stat"><strong>ATTACK / DEFENCE / KEEPER</strong><span>${rating(attack)} / ${rating(defence)} / ${rating(keeper)}</span></div>
+  <div class="stat"><strong>KEY OUTFIELD THREAT</strong><span>${highlight}</span></div>
+  <div class="stat"><strong>LEAGUE RECORD</strong><span>${escapeHTML(record)}</span></div>
+  <p class="muted"><strong>TACTICAL IDEA:</strong> ${recommendation}</p>
+  <p class="muted"><strong>SQUAD READINESS:</strong> ${fitness}</p>
+  <p class="muted">Scouting advice only. Adjust tactics or squad separately; no automatic changes or costs.</p>
+ </section>`;
+}
 function showManager(){if(!career){const regions=availableRegions(TEAMS);if(!regions.includes(managerRegion))managerRegion=regions[0]||'UEFA';const countries=availableCountries(TEAMS,managerRegion);if(!countries.includes(managerCountry))managerCountry=countries[0]||'';const choices=clubsInCountry(TEAMS,managerRegion,managerCountry);page('MANAGER CAREER','Choose continent → country → club, then build your twelve-player squad.',`<div class="panel"><div class="managerRegionSelector">${field('1. CONTINENT','managerContinent',regions.map(k=>[k,CONTINENTS.find(x=>x.id===k)?.region||k]),managerRegion)}${field('2. COUNTRY','managerCountry',countries.map(k=>[k,countryName(k,TEAMS)]),managerCountry)}</div>${teamField('3. CLUB','managerClub',choices.map(i=>[i,TEAMS[i].name]),choices[0])}<p class="muted">Select a continent and country to narrow the list. Browse Flags / Crests to see team graphics while choosing.</p><div class="row" style="margin-top:15px">${button('START MANAGER CAREER','startManager','gold')}${button('CONTINENTAL CUPS','continents')}</div></div>`);return;}
  const c=career,fx=currentCareerFixture(c),sorted=standings(c),place=sorted.findIndex(v=>v.id===c.club)+1;
  page('MANAGER CAREER',`Season ${c.season} · ${TEAMS[c.club].name} · 12 active players · League & knockout cup`,`<div class="row" style="margin:10px 0">${CONTINENTS.filter(co=>CONTINENTAL_TEAMS[co.id].includes(c.club)).map(co=>button('🏆 '+co.id+' CHAMPIONSHIP','continentPick_'+co.id,'gold')).join('')}</div><div class="careerTop"><div class="metric"><small>TRANSFER FUNDS</small><strong>${eur(c.cash)}</strong></div><div class="metric"><small>LEAGUE POSITION</small><strong>#${place} / 8</strong></div><div class="metric"><small>LEAGUE ROUND</small><strong>${c.week} / 14</strong></div><div class="metric"><small>CUP</small><strong>${c.cup.eliminated?'OUT':c.cup.stage===3?'🏆 WON':['QF','SF','FINAL'][c.cup.stage]}</strong></div></div>
  <div class="twoCol"><div class="panel"><h3 class="titleSmall">NEXT FIXTURE</h3><div class="fixture">${fx?`${fx.kind==='cup'?'🏆 '+fx.round:'🏟 LEAGUE WEEK '+fx.round}<br><strong>${TEAMS[c.club].name} <em>VS</em> ${TEAMS[fx.opponent].name}</strong>`:c.leagueFinished?'🏆 SEASON COMPLETE!':'No fixtures yet'}</div>
+ ${careerOpponentScoutPanel(c,fx)}
  <div class="row">${fx?button('▶ PLAY NEXT MATCH','careerPlay','gold'):button('↻ BEGIN NEW SEASON','careerSeason','gold')}${button('12-PLAYER SQUAD','careerSquad')}${button('TRANSFER MARKET','careerMarket')}${button('🔍 YOUTH ACADEMY','careerScout')}</div><hr><h3 class="titleSmall">CLUB FACILITIES</h3>
  ${Object.entries(c.facilities).map(([key,v])=>`<div class="facility"><span>🏟 ${key.toUpperCase()} LVL ${v}</span>${button('UPGRADE '+eur(v*12500000),'facility_'+key)}</div>`).join('')}
  <p class="muted">Academy scouts create fictional recruitable prospects with defined potential, and players have contract years and fitness. Wins generate income. Training improves player experience; upgraded training increases XP per match. Facilities and transfers persist in this browser.</p></div>
