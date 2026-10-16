@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Capture actual desktop/touch game screenshots and compare modular pixels to legacy."""
+"""Actual game browser captures: painted front and back hair, six-view fallback, run phases."""
 import base64,io,json
 from pathlib import Path
 from PIL import Image
@@ -17,14 +17,14 @@ with sync_playwright() as pw:
   context=browser.new_context(**opts)
   page=context.new_page()
   errors=[]
-  page.on('pageerror',lambda e:errors.append(str(e)))
+  page.on('pageerror',lambda exc:errors.append(str(exc)))
   page.goto('about:blank?conceptModularPreview=1')
   page.set_content(shell)
   page.add_script_tag(content=js,type='module')
   page.wait_for_function('!!window.SupermagicFootball',timeout=30000)
   counts=page.evaluate("""() => {const t=SupermagicFootball.teams.find(t=>t.id==='demo_concept_royals');return [SupermagicFootball.teams.length,t.customRoster.filter(p=>p.renderModel==='concept_modular_v1').length,t.customRoster.filter(p=>p.renderModel==='concept_hero').length]}""")
   assert counts==[224,1,11],counts
-  page.wait_for_function("!!window.SupermagicFootball?.conceptModularStatus?.().loaded",timeout=15000)
+  page.wait_for_function("window.SupermagicFootball?.conceptModularStatus?.().loaded",timeout=15000)
   page.locator('[data-action=navQuick]').first.click()
   page.locator('[data-action=conceptDemo]').first.click()
   page.locator('[data-action=kickoff]').first.click()
@@ -34,29 +34,39 @@ with sync_playwright() as pw:
     const e=SupermagicFootball,g=e.game,t=e.teams.find(x=>x.id==='demo_concept_royals');
     const p=g.players.find(x=>x.t===0&&x.src?.renderModel==='concept_modular_v1')||g.players.find(x=>x.t===0&&!x.keeper);
     const src=t.customRoster[9];
-    function draw(model,dy){
+    function draw(model,dx,dy,anim=0){
       const c=document.createElement('canvas');c.width=240;c.height=250;
       const x=c.getContext('2d',{willReadFrequently:true});x.translate(120,222);x.scale(1.5,1.5);
-      e.renderer.drawPlayer(x,{...p,x:0,y:0,z:0,dx:0,dy,face:1,visualFacing:null,controlled:false,preview:true,action:'idle',anim:0,src:{...src,renderModel:model,appearance:{...src.appearance,renderModel:model}}},
+      e.renderer.drawPlayer(x,{...p,i:0,x:0,y:0,z:0,dx,dy,anim,face:1,visualFacing:null,controlled:false,preview:true,action:'idle',src:{...src,renderModel:model,appearance:{...src.appearance,renderModel:model}}},
         {getTeam:()=>g.getTeam(0),options:{showNames:false}});
       return c.toDataURL('image/png');
     }
-    return {front:draw('concept_modular_v1',1),old:draw('concept_hero',1),back:draw('concept_modular_v1',-1),backOld:draw('concept_hero',-1),status:e.conceptModularStatus()};
+    return {front:draw('concept_modular_v1',0,1),frontOld:draw('concept_hero',0,1),
+      back:draw('concept_modular_v1',0,-1),backOld:draw('concept_hero',0,-1),
+      side:draw('concept_modular_v1',1,0),sideOld:draw('concept_hero',1,0),
+      backRunA:draw('concept_modular_v1',0,-1,.09),backRunB:draw('concept_modular_v1',0,-1,.27),
+      status:e.conceptModularStatus()};
   }""")
   def png(value):return Image.open(io.BytesIO(base64.b64decode(value.split(',',1)[1]))).convert('RGBA')
-  f,o,b,bo=[png(data[k]) for k in ('front','old','back','backOld')]
-  changed=sum(a!=z for a,z in zip(f.getdata(),o.getdata()))
-  assert changed>=80,('Hair must alter real game pixels',changed)
-  assert list(b.getdata())==list(bo.getdata()),'Incomplete back direction did not fall back'
+  images={key:png(value) for key,value in data.items() if key!='status'}
+  diff=lambda x,y:sum(a!=b for a,b in zip(images[x].getdata(),images[y].getdata()))
+  front_changed=diff('front','frontOld')
+  back_changed=diff('back','backOld')
+  assert front_changed>=80,('Front artwork not rendered',front_changed)
+  assert back_changed>=80,('New rear artwork not rendered',back_changed)
+  assert diff('side','sideOld')==0,'Unfinished side must preserve legacy renderer'
+  assert diff('backRunA','backRunB')>150,'Run stride frames must differ visibly'
+  assert set(data['status']['authoredViews'])=={'front','back'} and not data['status']['error']
   assert not errors,errors
-  # Four real render background checks; keep unmodified RGBA evidence as well.
-  for label,color in [('grass','#35884d'),('teal','#21636b'),('light','#e6eef3'),('dark','#111b2a')]:
-   composite=Image.new('RGBA',f.size,color)
-   composite.alpha_composite(f)
-   composite.convert('RGB').save(OUT/(device+'_front_on_'+label+'.png'))
-  f.save(OUT/(device+'_front_modular.png'));o.save(OUT/(device+'_front_legacy.png'))
+  for direction in ('front','back'):
+   for label,color in [('grass','#35884d'),('teal','#21636b'),('light','#e6eef3'),('dark','#111b2a')]:
+    composite=Image.new('RGBA',images[direction].size,color)
+    composite.alpha_composite(images[direction])
+    composite.convert('RGB').save(OUT/(device+'_'+direction+'_on_'+label+'.png'))
+  for key,img in images.items():img.save(OUT/(device+'_'+key+'.png'))
   page.screenshot(path=str(OUT/(device+'_actual_match.png')))
-  results[device]={'status':'PASS','front_changed_pixels':changed,'back_legacy_identical':True,'page_errors':errors}
+  results[device]={'status':'PASS','front_changed_pixels':front_changed,'back_changed_pixels':back_changed,
+    'side_legacy_identical':True,'back_run_phases_distinct':True,'page_errors':errors}
   context.close()
  browser.close()
 (OUT/'qa_report.json').write_text(json.dumps(results,indent=2))
