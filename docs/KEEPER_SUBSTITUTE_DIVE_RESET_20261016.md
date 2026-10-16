@@ -27,3 +27,15 @@ Dedicated `tests/keeper_substitute_dive_state.test.cjs` exercises the **actual e
 5. Revisit original-game special-move and match-rule parity with grounded acceptance scenarios; network and full device certification remain deferred.
 
 Coordination: feature `GK-SUB-DIVE-STATE-RESET`, lock `gameplay-engine`; this checkpoint does not overwrite the parallel touch input, modular concept art, QA harness, roster or context-memory workstreams.
+
+## Exact-source verification checkpoint
+
+**Gameplay source commit:** [`1decc48895a81ca3b2f87f84d49e478b0f736085`](https://github.com/saeedsai/SuperMagicFootball/commit/1decc48895a81ca3b2f87f84d49e478b0f736085). All tests below were scheduled against this exact commit rather than assumed from a previous release.
+
+- [Modular Game Dev QA #38905337012](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905337012): **SUCCESS** — 137/137 active Node subtests, including all three new goalkeeper replacement tests; 20/20 Python merge safety tests; 10/10 feature-claim tests; JSON, club roster and Python compilation steps PASS.
+- [Keeper Save Event Integrity #38905336953](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905336953): **SUCCESS** — real modular Chromium mirrored goalkeeper catch and save acceptance.
+- [Full Regression Census #38905337000](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905337000): **preflight PASS and 123/123 historical/current Node scripts PASS** across four shards (31 + 31 + 31 + 30). Four Chromium shards started and were **in progress at this checkpoint**; do not claim browser census success until the workflow conclusion is confirmed.
+- [Verify Deployed PC and Touch Game #38905336972](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905336972): **SUCCESS** — published site HTTP 200, desktop 1440×900 and emulated touch 844×390 launch menus, team selection and Quick Match with current baseline pitch/config. This hosted smoke is not proof that the new substitute-dive fix was deployed: the [Pages job for this exact source commit](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905336737) was cancelled after newer concurrent pushes.
+- Physical mobile devices, alternate browser engines and browser-restart save persistence were **not tested**.
+
+**Checkpoint outcome:** gameplay correction committed without modifying other agents' files; full Chromium census and exact-source Pages deployment remain external QA gates. Continue by checking those linked jobs before any gameplay tuning.

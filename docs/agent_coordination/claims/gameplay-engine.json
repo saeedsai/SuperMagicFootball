@@ -3,7 +3,7 @@
   "lock_key": "gameplay-engine",
   "feature_id": "GK-SUB-DIVE-STATE-RESET",
   "owner": "gameplay-keeper-substitute-20261016-gpt6-session",
-  "status": "active",
+  "status": "released",
   "scope": "Only src/modules/engine.js applyPlan replacement branch: clear pending keeper dive intent/cap and associated dive presentation state when a new player enters that slot; new dedicated tests/keeper_substitute_dive_state.test.cjs; dedicated docs/KEEPER_SUBSTITUTE_DIVE_RESET_20261016.md. No input/UI, art, roster data, physics tuning, shared tests/runners or workflows; preserve keeper contact, four controls and saves.",
   "base_sha": "09db59d34bc0459d5b03d86c665221a12bd9139b",
   "created_at": "2026-10-16",
@@ -13,5 +13,8 @@
     "node --test tests/*.test.cjs",
     "Full Regression Census and Modular Game Dev QA on exact commit"
   ],
-  "handover": "docs/KEEPER_SUBSTITUTE_DIVE_RESET_20261016.md"
+  "handover": "docs/KEEPER_SUBSTITUTE_DIVE_RESET_20261016.md; QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905337012 ; full browser https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905337000",
+  "released_at": "2026-10-16",
+  "outcome": "keeper substitution dive-state bug fixed; active Node 137/137 PASS, 123/123 historical Node PASS, 20/20 merge and 10/10 claims PASS, keeper event and hosted PC/touch smoke PASS; Chromium census in progress; exact Pages deployment cancelled on concurrent pushes",
+  "integrated_commit": "1decc48895a81ca3b2f87f84d49e478b0f736085"
 }
