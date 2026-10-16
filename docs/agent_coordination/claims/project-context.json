@@ -4,7 +4,7 @@
   "feature_id": "CONTEXT-MEMORY-V1",
   "owner": "context-admin-20261016-gpt6",
   "status": "active",
-  "scope": "Project context-memory protocol and onboarding: AGENTS.md, README.md start gate, docs/agent_coordination/README.md, FEATURE_REGISTRY.json, new docs/memory/** and docs/README.md, dedicated scripts/check_project_memory.py and tests/test_project_memory.py; only proven-safe redundant documentation deletion. No game runtime, rosters, art, QA infrastructure, CI workflows, or active specialist handovers.",
+  "scope": "Project context-memory protocol and onboarding: AGENTS.md, README.md start gate, docs/agent_coordination/README.md, FEATURE_REGISTRY.json, new docs/memory/** and docs/README.md, dedicated scripts/check_project_memory.py and tests/test_project_memory.py; only proven-safe redundant documentation deletion. No game runtime, rosters, art, QA infrastructure, CI workflows, or active specialist handovers. Follow-up QA compatibility: add the project-context key only to scripts/claim_feature.py STATIC_LOCKS and its focused claim tests; no claim algorithm changes.",
   "base_sha": "5953ba4e7aabe6e1b3c158b8e5e6299970ca5c77",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
