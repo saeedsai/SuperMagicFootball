@@ -43,3 +43,7 @@
 Dedicated `tests/psg_fc27_official_20261016.test.cjs` covers 12 official EA OVR and 72 face stats, team assignment, source/runtime parity, 12 DOB/height/ages, shirts, and two immutable ledgers. Run `python3 scripts/advance_club_roster_batch.py --check`, `python3 scripts/validate_data.py`, `node tests/all_club_fc27_rosters.mjs`, `node tests/club_roster_batch_ledger.mjs`, `node --test tests/*.test.cjs`, build, full historical Chromium regression. Record exact source SHA and issues without claiming unrun device checks.
 
 **Next five one-team batches**, subject to fresh ownership: Barcelona `club26_4`, Manchester United `club26_5`, Real Madrid `club26_7`, Liverpool `club26_9` (verify Barcola transfer and EA affiliation), Tottenham `club26_29`.
+
+## Bounded primary-club provenance follow-up
+
+An additional immutable batch `CLUB-20261016-PSG-CLUB-PROVENANCE-2` links PSG's own [2026/27 squad register](https://www.psg.fr/en/mens-football/squad/season/2026-2027) directly to Warren Zaïre-Emery's player record as `clubOfficialSource` and `clubOfficialCheckedAt`. These **two strictly PSG-only provenance fields** preserve all player IDs, EA ratings, custom arcade stats and non-PSG data; test cases assert both fields. This follow-up also triggers the Full Regression Census on the corrected post-ledger-compatible source SHA; record that workflow's result before claiming all-green.

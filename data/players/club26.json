@@ -1876,7 +1876,9 @@
       "fc27Position": "CM",
       "age": 20,
       "heightCm": 178,
-      "fc27OfficialCheckedAt": "2026-10-16"
+      "fc27OfficialCheckedAt": "2026-10-16",
+      "clubOfficialSource": "https://www.psg.fr/en/mens-football/squad/season/2026-2027",
+      "clubOfficialCheckedAt": "2026-10-16"
     },
     {
       "id": "club26_3_5",

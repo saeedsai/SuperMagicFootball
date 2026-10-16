@@ -3645,6 +3645,39 @@
         "Heights are from the selected 2026/27 FootballSquads biography, which may differ from other published physical measures."
       ],
       "invariant": "One role-preserving transfer replacement at fixed slot 9 and persistent ID; all other club roster identities, game engine and arcade stats unchanged."
+    },
+    {
+      "id": "CLUB-20261016-PSG-CLUB-PROVENANCE-2",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "53719fa195374368d4b704888877afe2bf58b126",
+      "clubId": "club26_3",
+      "club": "Paris Saint-Germain",
+      "playersChanged": 1,
+      "fieldsChanged": 2,
+      "status": "pending_ci_regression",
+      "changes": [
+        {
+          "playerId": "club26_3_audit_15",
+          "name": "Warren Zaïre-Emery",
+          "rosterSlot": 9,
+          "fields": {
+            "clubOfficialSource": {
+              "previous": null,
+              "current": "https://www.psg.fr/en/mens-football/squad/season/2026-2027",
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "clubOfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            }
+          }
+        }
+      ],
+      "sources": {
+        "officialPSG2026_27Squad": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+      },
+      "invariant": "Current-club primary-source URL attached to replaced player; exactly two provenance fields, no other data, role, rating or game mechanic changed."
     }
   ]
 }

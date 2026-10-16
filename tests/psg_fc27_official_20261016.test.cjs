@@ -21,6 +21,9 @@ test('PSG FC27 12 official OVR and 72 face stats plus stable slots and runtime m
  assert.equal(team[8].id,'club26_3_audit_15');
  assert.equal(team[8].name,'Warren Zaïre-Emery');assert.equal(team[8].fc27Id,'270673');
  assert.equal(team[8].fc27Position,'CM');assert.equal(team.some(p=>p.name==='Bradley Barcola'),false);
+ assert.equal(team[8].clubOfficialSource,'https://www.psg.fr/en/mens-football/squad/season/2026-2027');
+ assert.equal(team[8].clubOfficialCheckedAt,'2026-10-16');
+
 });
 test('PSG 2026-27 official shirts, DOB ages, nationalities and heights',()=>{
  const team=load('data/players/club26.json').club26_3;
