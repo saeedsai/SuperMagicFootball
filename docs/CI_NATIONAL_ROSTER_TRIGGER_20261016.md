@@ -38,3 +38,17 @@ No other agent's shared gameplay, art, roster, toolchain, QA harness or saved-ga
 5. Real match keeper save-balance calibration and accessible halftime coaching under distinct engine/UI claims, with offline/PWA and physical-phone tests as separate certifications.
 
 **Outstanding longer-term gaps:** physical Android/iPhone and Safari device matrix; offline and PWA restart/update behavior; comprehensive FC27 and squad authenticity; complete graphics/arcade parity; network multiplayer.
+
+## Final exact-source release gate — 16 October 2026
+
+[Full Regression Census #38902247781](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38902247781), triggered **automatically by the new workflow change** on exact source [`067326766a647419529733897bf066ea05484758`](https://github.com/saeedsai/SuperMagicFootball/commit/067326766a647419529733897bf066ea05484758), completed **SUCCESS**:
+- **Preflight PASS**, including live Node contract checks and current national/club data validation.
+- **Node: 29 + 29 + 28 + 29 = 115/115 scripts PASS**, with `national_roster_regression_trigger.test.cjs` passing in shard 0.
+- **Chromium: 16 + 16 + 15 + 15 = 62/62 scripts PASS**, all four shards green. Existing Spain metadata real-browser tests passed as part of full census.
+- **TOTAL 177/177 PASS, 0 FAIL, 0 TIMEOUT, 0 ERROR, 0 NOT_RUN**. This is exact-source regression certification, not physical device testing.
+- [Modular Game Dev QA #38902247893](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38902247893) **SUCCESS** on the same SHA.
+- [GitHub issue #2](https://github.com/saeedsai/SuperMagicFootball/issues/2) **closed as completed** after posting the final 177/177 evidence. The source/test trigger gap is no longer open.
+- GitHub Pages deployment workflows were not edited; [play the hosted game](https://saeedsai.github.io/SuperMagicFootball/). Hosted desktop/simulated-touch smoke is a separate acceptance gate and will be recorded in the final report after its currently running attempt.
+- Tree cleanup audit: **620 tracked paths; zero tracked generated Python caches, Node modules, browser fixtures, Playwright reports, editor backup or swap files**. Existing historical QA data and graphics/roster provenance are retained by design.
+
+**Checkpoint:** CI feature complete and all executable regression tests green. After live smoke confirmation, release the exclusive `release-infra` claim; another agent can then work on PWA/mobile or other release tasks. Subsequent agents should reread the live claim and match their new test name to the tracked national glob convention.
