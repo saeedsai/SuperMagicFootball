@@ -14,11 +14,12 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 22,
+      "age": 31,
       "rating": 97,
       "value": 75843000,
       "fictional": false,
-      "source": "2026 World Cup squad sample"
+      "source": "2026 World Cup squad sample",
+      "heightCm": 183
     },
     {
       "id": "national26_0_1",
@@ -239,7 +240,8 @@
       "xp": 0,
       "shot": "omega",
       "shotName": "Omega Drive Shot",
-      "age": 24
+      "age": 29,
+      "heightCm": 190
     }
   ],
   "national26_1": [
