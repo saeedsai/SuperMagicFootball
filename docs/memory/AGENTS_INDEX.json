@@ -52,6 +52,11 @@
       "id": "gameplay-review-20261016",
       "label": "Gameplay review and upgrade (new chat)",
       "path": "docs/memory/agents/gameplay-review-20261016.md"
+    },
+    {
+      "id": "game-developer-6",
+      "label": "Developer 6 (gameplay/QA development)",
+      "path": "docs/memory/agents/game-developer-6.md"
     }
   ]
 }
