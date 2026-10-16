@@ -1,20 +1,18 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "audio-feedback",
-  "feature_id": "AUDIO-PASS-RECEPTION-INTERCEPTION",
-  "owner": "gameplay-pass-receive-sfx-20261016-2203-gpt6",
-  "status": "released",
-  "scope": "Only src/modules/audio.js accurate friendly passReceived and opponent interception cue, tests/pass_reception_audio.test.cjs, tests/pass_reception_audio_browser_qa.py, docs/GAMEPLAY_PASS_RECEIVE_AUDIO_20261016.md and this chat's docs/memory/agents/gameplay-pk-20261016.md. No game engine/UI/render/inputs, files of other agents, physics, player data, saves, service worker or workflows.",
-  "base_sha": "f669ef3292fd3723e63f44048d00e67782867f64",
+  "feature_id": "AUDIO-COACHING-SUBSTITUTION-FEEDBACK",
+  "owner": "gameplay-tactical-audio-20261016-gpt6-s16",
+  "status": "active",
+  "scope": "ONLY src/modules/audio.js procedural teamTalk outcome (positive/backfires) and actual substitution count>0 sound feedback; new tests/tactical_audio_feedback.test.cjs, tests/tactical_audio_feedback_browser_qa.py; docs/GAMEPLAY_TACTICAL_AUDIO_FEEDBACK_20261016.md, concise docs/NEXT_MILESTONES.md note, own docs/memory/agents/gameplay-tactical-audio-20261016-gpt6-s16.md. No engine, UI/input, renderer, roster, save, shared test runner, release workflows, or other agents files.",
+  "base_sha": "b160d0e2bc0892e7b3afc3864a8a7db6702fbe50",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
-  "handover": "docs/GAMEPLAY_PASS_RECEIVE_AUDIO_20261016.md — source fabd49d4d7883be50324e57692f043d2aaa57abf, tests 3e51faa3e256c2e30eb1d6a08b91f331c1f43765 and d240b8e0f40da7486fd00b72b2d9d9f38c3f8aac, docs eb40122ad284cc9c87fd4abf3984c2cf3d468a48, own memory fe6acf91b0e8647d0cff19c29aa0709588d1cdd1, QA https://github.com/saeedsai/SuperMagicFootball/actions/runs/38959811902",
+  "handover": "docs/GAMEPLAY_TACTICAL_AUDIO_FEEDBACK_20261016.md",
   "tests": [
-    "6+ new Node pass-interception contracts",
-    "real desktop and touch Chromium browser event bridge",
-    "Modular QA and full 8-shard regression",
-    "versioning About contract"
-  ],
-  "released_at": "2026-10-16",
-  "outcome": "Pass-completion and interception original sound cues plus 7 green Node contracts and real browser test committed; exact-source Modular QA 215/215 PASS, full Chromium pending"
+    "node --test tests/tactical_audio_feedback.test.cjs",
+    "Modular Game Dev QA",
+    "Full Regression Census 4 Node+4 Chromium",
+    "Hosted Pages desktop/touch"
+  ]
 }
