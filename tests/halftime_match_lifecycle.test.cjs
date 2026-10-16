@@ -7,8 +7,8 @@ const vm=require('node:vm');
 // Exercise the exact recovery method shipped by the modular playable engine,
 // without introducing a second copy of its formula or touching engine source.
 const source=fs.readFileSync(path.resolve(__dirname,'../src/modules/engine.js'),'utf8');
-const start=source.indexOf('  halftimeRecovery(){');
-const end=source.indexOf('  autoSubstituteCpu(){',start);
+const start=source.indexOf(' halftimeRecovery(){');
+const end=source.indexOf(' autoSubstituteCpu(){',start);
 assert(start>=0&&end>start,'live engine has halftimeRecovery directly before autoSubstituteCpu');
 const recover=vm.runInNewContext('({'+source.slice(start,end)+'}).halftimeRecovery',
  {initialFatigue:src=>src.initial??0});
@@ -52,7 +52,7 @@ test('recovery does not change score, talks, substitution quota or persistent ID
  assert.equal(JSON.stringify({rosters:g.rosters,score:g.score,talks:g.talksUsed,subs:g.substitutionsUsed,half:g.half}),snapshot);
 });
 test('halftime recovery is invoked on first-half expiry before the UI is paused',()=>{
- const update=source.slice(source.indexOf('  update(dt){'),source.indexOf('  // v0.8.5 grounded player collision:'));
+ const update=source.slice(source.indexOf(' update(dt){'),source.indexOf(' // v0.8.5 grounded player collision:'));
  assert.match(update,/if\(this\.half===1\)\{this\.half=2;this\.clock=0;/);
  assert.match(update,/this\.halftimeRecovery\(\);this\.resetKickoff\(1\);this\.matchState='paused';/);
  assert.match(update,/this\.emit\('halftime'\)/);
