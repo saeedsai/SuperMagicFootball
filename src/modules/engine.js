@@ -1586,14 +1586,16 @@ class GameEngine{
   if(this.matchState!=='penalty')return;dt=Math.min(.04,dt);this.input.poll(this.humans>=2);
   const pk=this.pk,at=pk.turn%2,defender=1-at,cy=(WORLD.goalTop+WORLD.goalBottom)/2,spot=F.x+F.w*.76;
   const controlledShooter=this.inControl(at),shooter=controlledShooter?this.input.state[at]||{}:null;
-  const keeper=null; // penalty goalkeeper reads the shot automatically on either team
+  // Local two-player Versus: the defending human owns their keeper. Solo keeps the
+  // existing committed CPU guess; goalkeeper control never steals the shooter input.
+  const keeper=this.humans>=2&&this.inControl(defender)?this.input.state[defender]||{}:null;
   pk.diveBoost=Math.max(0,(pk.diveBoost||0)-dt);pk.diveCooldown=Math.max(0,(pk.diveCooldown||0)-dt);
   if(pk.ready>0){pk.ready-=dt;return}
   if(pk.shotTimer>0){
    pk.shotTimer-=dt;let fraction=clamp(1-pk.shotTimer/pk.shotMax,0,1);
    pk.ballX=pk.startX+(F.x+F.w-pk.startX)*fraction;
    pk.ballY=pk.startY+(pk.shotTargetY-pk.startY)*fraction;
-   if(keeper){if(this.input.just(defender,'jump')&&pk.diveCooldown<=0){pk.diveBoost=.38;pk.diveCooldown=.8;this.emit('penaltyDive',{team:defender});}pk.saveY=clamp(pk.saveY+(keeper.y||0)*(pk.diveBoost>0?550:240)*dt,WORLD.goalTop+10,WORLD.goalBottom-10)}
+   if(keeper){if(this.input.just(defender,'jump')&&pk.diveCooldown<=0){pk.diveBoost=.38;pk.diveCooldown=.8;this.emit('penaltyDive',{team:defender});}pk.saveY=clamp(pk.saveY+clamp(Number(keeper.y)||0,-1,1)*(pk.diveBoost>0?550:240)*dt,WORLD.goalTop+10,WORLD.goalBottom-10)}
    else { /* v0.8.24.10: keep the goalkeeper's shot-time commitment; no omniscient mid-flight tracking. */ }
    if(pk.shotTimer<=0){
     const success=Math.abs(pk.shotTargetY-pk.saveY)>31;
@@ -1621,7 +1623,7 @@ class GameEngine{
   if(keeper&&this.input.just(defender,'jump')&&pk.diveCooldown<=0){pk.diveBoost=.38;pk.diveCooldown=.8;this.emit('penaltyDive',{team:defender});}
   if(controlledShooter)pk.aim=clamp(pk.aim+(shooter.y||0)*100*dt,WORLD.goalTop+9,WORLD.goalBottom-9);
   else pk.aim=clamp(pk.aim+(Math.sin(pk.timer*2.3)*110)*dt,WORLD.goalTop+9,WORLD.goalBottom-9);
-  if(keeper)pk.saveY=clamp(pk.saveY+(keeper.y||0)*(pk.diveBoost>0?440:175)*dt,WORLD.goalTop+9,WORLD.goalBottom-9);
+  if(keeper)pk.saveY=clamp(pk.saveY+clamp(Number(keeper.y)||0,-1,1)*(pk.diveBoost>0?440:175)*dt,WORLD.goalTop+9,WORLD.goalBottom-9);
   if(!controlledShooter&&pk.timer<6.2||controlledShooter&&(this.input.just(at,'shoot'))||pk.timer<=0){
    const brain=aiTuning(this.options.difficulty??2);
    const aimBand=40+brain.id*14;
@@ -1632,7 +1634,7 @@ class GameEngine{
    // actual random target and some high-rated keepers had miss<31, giving a
    // guaranteed save on *every* penalty and potentially infinite sudden death.
    // This fix affects only shootout reads, not regular goalkeeper/shot physics.
-   {const gk=this.player(defender,0),skill=stat(gk,'gkSkill');const miss=Math.max(48,95-skill*.65-brain.keeperRead*32);pk.saveY=clamp(pk.aim+randomBetween(-miss,miss),WORLD.goalTop+10,WORLD.goalBottom-10)}
+   if(!keeper){const gk=this.player(defender,0),skill=stat(gk,'gkSkill');const miss=Math.max(48,95-skill*.65-brain.keeperRead*32);pk.saveY=clamp(pk.aim+randomBetween(-miss,miss),WORLD.goalTop+10,WORLD.goalBottom-10)}
    pk.startX=pk.ballX;pk.startY=pk.ballY;pk.shotTimer=pk.shotMax;pk.stage='shooting';this.burst(pk.ballX,pk.ballY,'#ffe284',10)
   }
  }
