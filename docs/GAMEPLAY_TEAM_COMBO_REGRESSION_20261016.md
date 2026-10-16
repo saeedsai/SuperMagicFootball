@@ -55,3 +55,25 @@ Long-term/open: full classic-mode parity and original character likeness, physic
 At release checkpoint, [Full Regression Census #38900429370](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38900429370) on `78b48056e25108d1039cb4aeca326bfcd5935187` had completed its preflight and **all four Node shards green: 113/113 script executions PASS** (29 + 28 + 28 + 28, zero FAIL/TIMEOUT/ERROR/NOT_RUN). All **four Chromium shards were still in progress**; the new 3-sequence browser test was *not yet proven to pass*. It is necessary for the next agent to inspect those exact browser shard logs, resolve or document the result, and then run the [cross-shard artifact auditor](../tests/audit_regression_shards.py). The fully passing prior [Full Regression Census #38899003690](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38899003690) finished after reruns and refers to an earlier commit, so is a historic baseline only.
 
 The same test-only change does not modify hosted gameplay. Direct public Pages retrieval was unavailable through the session; do not equate success of a repository push with physical phone or real hosted interaction. The active GitHub ownership lock must be released as a checkpoint to allow another gameplay developer to proceed without accidental scope conflicts.
+
+## Final completed exact-code regression certification
+
+**Status: PASS for implemented source commit `78b48056e25108d1039cb4aeca326bfcd5935187`.** [Full Regression Census run #38900429370](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38900429370) completed **SUCCESS** across all nine GitHub jobs (preflight, four Node shards, four Chromium shards).
+
+| Executed suite | Script PASS | FAIL | TIMEOUT | NOT_RUN |
+|---|---:|---:|---:|---:|
+| Node shards (29 + 28 + 28 + 28) | **113** | 0 | 0 | 0 |
+| Chromium shards (16 + 16 + 15 + 15) | **62** | 0 | 0 | 0 |
+| **Combined script-level census** | **175** | **0** | **0** | **0** |
+
+The affected `tests/team_combos_browser_qa.py` **PASS** in [Chromium shard 0 log](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38900429370) (4.54 seconds). It ran all isolated Pass+Jump input-order sequences against the generated portable browser game; there were no Python assertion failures. The associated legacy `combo_priority_browser_qa.py` and AI-only combo scripts also passed. This closes the **reproduced browser-test failure** at the exact source revision without changing game physics, input mappings, team/player data, or UI.
+
+The matching [Modular QA #38900429410](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38900429410) completed **SUCCESS** on the same source SHA: **104/104 active Node**, **17 Python merge contracts** and **8 claim tests**; data, roster, build and syntax checks passed.
+
+The earlier sections were written while Chromium jobs were running. This **final exact-SHA gate supersedes their pending status**. Later commits from concurrent agents are distinct revisions and require their own full acceptance before release claims are inherited.
+
+### Deployment / device verification still separate
+
+The production URL remains https://saeedsai.github.io/SuperMagicFootball/ . The Pages build/deployment system has successful runs for intervening `dev` commits, and earlier hosted desktop/simulated-touch interactive Quick Match smoke passed ([run #38891468528](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528)), but no **fresh, exact-commit live interactive** smoke was established for `78b48056` because the public Pages URL could not be opened from this session. Physical Android/iOS, offline/restart persistence, PWA install, graphics frame fidelity on hardware and multiplayer remain NOT TESTED. Do not convert a passing CI suite into claims of physical-device certification.
+
+**Ownership release:** the narrow original gameplay QA claim was released with checkpoint commit `e67f1086`. A separate, docs-only final-certification claim added these passing CI details; release that second lock immediately after verification. No historical tests or old assets were deleted: their references and future regression value remain relevant.
