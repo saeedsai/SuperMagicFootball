@@ -3,9 +3,14 @@
   "lock_key": "roster-club-club26_5",
   "feature_id": "CLUB26-MANUTD-FC27-METADATA-20261016-B1",
   "owner": "roster-fc27-chat-20261016-manutd-b1",
-  "status": "active",
+  "status": "released",
   "scope": "Manchester United club26_5 roster metadata only; data/players/club26.json and mirrored club26_5 in src/roster_corrections.js, new dedicated tests, per-player immutable audit batch, own agent memory and roster handover. No other players/gameplay/UI/CI.",
   "base_sha": "dad3d1a2499430b1612356e38e1149843f596bd5",
   "claimed_at": "2026-10-16",
-  "expires_at": "2026-10-17"
+  "expires_at": "2026-10-17",
+  "released_at": "2026-10-16",
+  "outcome": "12/12 official EA FC27 OVR, 72/72 face stats; 11 shirts, 12 ages, 12 heights; 83 metadata fields audited; 231/231 active Node, Pages success, historical census pending, hosted physical interactive smoke unverified.",
+  "handover": "docs/CLUB_PLAYER_METADATA_MAN_UTD_20261016.md",
+  "qa": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961471268",
+  "pages": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961487916"
 }
