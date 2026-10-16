@@ -913,7 +913,7 @@
       "club": "Napoli",
       "playersChanged": 12,
       "fieldsChanged": 49,
-      "status": "pending_ci_regression",
+      "status": "regression_verified",
       "sources": {
         "officialClubRegistration": "https://sscnapoli.it/en/team-2025-2026/",
         "uefa2026ListA": "https://sscnapoli.it/en/napoli-la-lista-uefa-per-la-league-phase-di-champions-league-2/",
@@ -1303,7 +1303,50 @@
         "Physical measurements from UEFA player profiles where available, otherwise StatMuse 2026/27. Conflicting heights documented rather than hidden.",
         "No player IDs, team IDs, club assignments, selected players, positions, overall ratings, FC27 face stats or game mechanics changed.",
         "No cleanup deletion performed: historical data, assets, and fixtures may be referenced by other agents and CI."
-      ]
+      ],
+      "verification": {
+        "sourceCommit": "8614494aff7ae56b579ab52145997df45f3fe434",
+        "date": "2026-10-16",
+        "dataValidator": "PASS",
+        "rosterCount": {
+          "clubs": 165,
+          "playerSlots": 1980,
+          "roles": "2GK 3DF 4MF 3FW",
+          "result": "PASS"
+        },
+        "activeNode": {
+          "pass": 67,
+          "fail": 0,
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38884726493"
+        },
+        "historicalNode": {
+          "pass": 98,
+          "fail": 0,
+          "timeout": 0,
+          "error": 0,
+          "shards": 4
+        },
+        "historicalChromium": {
+          "pass": 52,
+          "fail": 0,
+          "timeout": 0,
+          "error": 0,
+          "shards": 4
+        },
+        "fullRegression": {
+          "pass": 150,
+          "fail": 0,
+          "timeout": 0,
+          "error": 0,
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38884726513"
+        },
+        "pagesDeployment": {
+          "result": "SUCCESS",
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38884724808",
+          "deployedSite": "https://saeedsai.github.io/SuperMagicFootball/"
+        },
+        "hostedExactRevisionLiveInputTest": "not_verified_direct_hosted_testing_unavailable"
+      }
     }
   ]
 }

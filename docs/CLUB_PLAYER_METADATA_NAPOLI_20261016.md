@@ -5,7 +5,7 @@
 ## Changes strictly limited to player information
 
 - Fixed the twelve existing Napoli squad entries in `data/players/club26.json` and its byte-for-byte corresponding team in `src/roster_corrections.js`: **49 metadata corrections** across **12 players** (12 ages, 12 shirt numbers, 12 heights in centimetres, 12 shirt-verification flags, 1 nationality normalization).
-- Sources: [SSC Napoli UEFA List A as registered 2 September 2026](https://sscnapoli.it/en/napoli-la-lista-uefa-per-la-league-phase-di-champions-league-2/); [UEFA Champions League 2026/27 Napoli squad](https://www.uefa.com/uefachampionsleague/clubs/50136/squad/); [Napoli club first team](https://sscnapoli.it/en/team-2025-2026/); [StatMuse 2026/27 individual physical data table](https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027); individual UEFA player pages in the field-level [ledger](docs/PLAYER_METADATA_BATCHES_20261016.json).
+- Sources: [SSC Napoli UEFA List A as registered 2 September 2026](https://sscnapoli.it/en/napoli-la-lista-uefa-per-la-league-phase-di-champions-league-2/); [UEFA Champions League 2026/27 Napoli squad](https://www.uefa.com/uefachampionsleague/clubs/50136/squad/); [Napoli club first team](https://sscnapoli.it/en/team-2025-2026/); [StatMuse 2026/27 individual physical data table](https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027); individual UEFA player pages in the field-level [ledger](PLAYER_METADATA_BATCHES_20261016.json).
 - Age is computed from ISO date of birth at 2026-10-16; never copy StatMuse's forward-dated displayed ages without adjusting for birthdays.
 - Kept exactly **2 GK, 3 DF, 4 MF, 3 FW**. Every player ID, name, club allocation, positional role, OVR, underlying unofficial FC27 face stats, tactical data, engine/UI/control code and previous 165-club selection audit remained unchanged.
 - Created the permanent before/after source audit `docs/PLAYER_METADATA_BATCHES_20261016.json` with batch `CLUB-20261016-NAP-METADATA-1`; the two earlier verified metadata batch records and Aston Villa batch are left unchanged.
@@ -32,3 +32,27 @@ Pending at authoring: `python3 scripts/validate_data.py`, `node tests/all_club_f
 5. Remaining Club26 age checkpoint, then expand to continental clubs, tracking only untouched players by team and immutable batch ID.
 
 **Concurrency rule:** always fetch latest dev HEAD before writing, rebase only non-overlapping files and use expected SHA on `update_ref`. Do not delete old docs, tests, assets or templates unless confirmed unused by both build and other agents.
+
+## Final source-commit regression report
+
+All tests below executed on the **exact Napoli player source revision** [8614494](https://github.com/saeedsai/SuperMagicFootball/commit/8614494aff7ae56b579ab52145997df45f3fe434).
+
+| Test gate | Result | Direct evidence |
+|---|---|---|
+| JSON validation and source/runtime roster consistency | **PASS** | [Modular Game Dev QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38884726493) |
+| Full 165-club 1,980-slot and immutable 207 baseline replacement ledger | **PASS**, 2 GK / 3 DF / 4 MF / 3 FW | Same Modular QA |
+| Active Node test suite, including Napoli, Dortmund, Brighton and Aston Villa | **67 PASS / 0 FAIL** | Same Modular QA |
+| Historical executable Node regression (4 shards) | **98 PASS / 0 FAIL / 0 TIMEOUT / 0 ERROR** | [Full Regression Census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38884726513) |
+| Historical Chromium/browser executable regression (4 shards) | **52 PASS / 0 FAIL / 0 TIMEOUT / 0 ERROR** | Same Full Regression Census |
+| **Total historical executable regression scripts** | **150 PASS / 0 FAIL** | Same Full Regression Census |
+| GitHub Pages build + deployment | **SUCCESS** on the source commit | [Pages deployment](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38884724808) |
+| Direct live hosted PC/physical-phone interaction on exact commit | **NOT VERIFIED**; public page unavailable to independent web viewer | [Published game](https://saeedsai.github.io/SuperMagicFootball/) |
+
+The automated Chromium scripts operate against the game's compiled browser fixture and cannot be presented as a fresh physical-device or public-hosted click-through test. The Pages deploy job log explicitly records the published environment URL `https://saeedsai.github.io/SuperMagicFootball/` and deployed source SHA `8614494...`. No player-related regression was observed.
+
+### Remaining Club26 metadata audit after Napoli
+
+- Exactly **32 Club26 teams / 384 slots** in this current batch scope, not all 165 teams.
+- **93** populated age values inconsistent with 2026-10-16 birthdays, **197** missing ages, **346** missing heights, **13** legacy Netherlands/Holland spellings.
+- Completed metadata batches: Aston Villa, Brighton, Borussia Dortmund, Napoli. Preserve prior batch IDs and never repeat existing change records.
+- Known nonmetadata selection backlogs include Brighton Baleba club membership, Dortmund Svensson role and Napoli UEFA League Phase selection differences; handle in future *separate* immutable selection batches.
