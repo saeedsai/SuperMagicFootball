@@ -3,7 +3,7 @@
   "lock_key": "roster-club-club26_1",
   "feature_id": "CLUB26-BAYERN-FC27-OFFICIAL-METADATA-20261016-B1",
   "owner": "roster-fc27-chat-20261016-bayern-b1",
-  "status": "active",
+  "status": "released",
   "scope": "Bayern Munich club26_1 ONLY: official EA FC27 OVR and six-face-stat provenance, DFB 2026/27 jersey and birth-date backed ages, sourced physical height and nation verification. Change only club26_1 records in data/players/club26.json and matching src/roster_corrections.js, specialist per-field ledger, dedicated Bayern test/handover, and own roster-fc27 memory file. No game logic/UI/graphics/other clubs/CI/framework changes.",
   "base_sha": "22b67de184327bac6ef82b1a82b8b9043dbd8f85",
   "claimed_at": "2026-10-16",
@@ -15,5 +15,10 @@
     "FootballSquads 12 height checks",
     "Club26 source/runtime parity and immutable roster history",
     "Modular QA, Full Regression Census and Pages build"
-  ]
+  ],
+  "released_at": "2026-10-16",
+  "final_source_commit": "6c396a98023ec36ddc59caa6453346ebd57c7253",
+  "final_test_commit": "3bc2db27d529b6cd1bad024b4b538698f5feae1f",
+  "outcome": "bayern_12_official_fc27_ratings_and_72_attrs_verified_57_metadata_fields_corrected_active_QA_pass_full_census_pages_cancelled",
+  "handover": "docs/CLUB_PLAYER_METADATA_BAYERN_20261016.md — commit 6c396a9 + test 3bc2db2; 134/134 active Node success, Full Regression/Pages source runs cancelled due concurrent commits; physical hosted phone/PC not independently verified"
 }
