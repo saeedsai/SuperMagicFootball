@@ -16,6 +16,7 @@ test('C01 front face and both existing hair layers remain genuinely editable',()
  const arm=layers[2];
  assert.equal(arm.id,'arm_near_front_001');
  assert.deepEqual(arm.shoulder,[90,126]);assert.deepEqual(arm.pivot,[90,126]);
+ assert.deepEqual(arm.elbow,[102,164]);assert.deepEqual(arm.wrist,[104,174]);assert.deepEqual(arm.hand,[104,182]);
  assert.equal(arm.animation.rotationRadiansPerPhase,-.035);
  assert.equal(arm.animation.channel,'legacy_run_phase');
  assert.ok(arm.z>10&&arm.z<20);

@@ -32,13 +32,14 @@ for layer in layers:
                 for k,v in e.attrib.items() if k.endswith('href'))
  if layer['id']=='arm_near_front_001':
   assert layer['shoulder']==layer['pivot']==[90,126]
-  assert layer['elbow']==[102,171] and layer['wrist']==[104,187] and layer['hand']==[104,199]
+  assert layer['elbow']==[102,164] and layer['wrist']==[104,174] and layer['hand']==[104,182]
   assert layer['z']>10 and layer['z']<20
   anim=layer['animation']
   assert anim['channel']=='legacy_run_phase' and anim['rotationRadiansPerPhase']==-.035
   assert anim['rootOwner']=='Renderer' and anim['unfinishedOppositeArm'] is True
   groups={g.get('id') for g in root.findall('.//'+ns+'g')}
   assert set(layer['partGroups']).issubset(groups)
+  assert all(any(g.get('id')==gid and 'scale(1 .66)' in g.get('transform','') for g in root.findall('.//'+ns+'g')) for gid in ['near-upper-arm','near-forearm','near-wristband','near-hand'])
  if layer['id']=='face_front_001':
   assert layer['headCenter']==[56,78] and layer['neck']==[56,110]
   assert layer['ears']==[[21,81],[94,82]] and layer['pivot']==[56,99]

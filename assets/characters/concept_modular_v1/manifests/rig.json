@@ -168,21 +168,21 @@
       ],
       "elbow": [
         102,
-        171
+        164
       ],
       "wrist": [
         104,
-        187
+        174
       ],
       "hand": [
         104,
-        199
+        182
       ],
       "alphaBoundsEstimate": [
         82,
         118,
         112,
-        210
+        192
       ],
       "z": 14,
       "material": "painted_blue_royals_skin",
@@ -202,7 +202,8 @@
         "threshold": 0.07,
         "rootOwner": "Renderer",
         "unfinishedOppositeArm": true
-      }
+      },
+      "sourceAdjustment": "Source SVG lower-arm groups foreshortened about y=150; original leg/body and root coordinate system unchanged."
     },
     {
       "id": "hair_back_001",
