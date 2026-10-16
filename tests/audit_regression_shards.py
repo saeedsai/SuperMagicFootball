@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 import re
 import sys
@@ -103,6 +104,14 @@ def audit_reports(directory: Path, categories=CATEGORIES, expected_commit=None, 
                         type(test.get("return_code")) is int and test["return_code"] == 0
                         for test in executions),
                     f"{label}: a test failed, timed out or lacks successful exit evidence")
+            # PASS is not auditable unless each execution has valid measured
+            # duration and an actual output capture (which may be empty).
+            require(all(
+                type(test.get("seconds")) in (float, int) and
+                math.isfinite(test["seconds"]) and test["seconds"] >= 0 and
+                isinstance(test.get("output_tail"), str)
+                for test in executions
+            ), f"{label}: missing or invalid per-script duration/output evidence")
             summary = report.get("summary")
             require(isinstance(summary, dict) and
                     {k: summary.get(k) for k in STATUSES} ==
