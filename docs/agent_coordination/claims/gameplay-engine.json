@@ -3,7 +3,7 @@
   "lock_key": "gameplay-engine",
   "feature_id": "GK-OUTCOME-COHORTS",
   "owner": "keeper-cohort-20261016-gpt6-chat6",
-  "status": "active",
+  "status": "released",
   "scope": "Read-only goalkeeper shot outcome fairness calibration cohorts in src/match_telemetry.js and a new tests/keeper_outcome_cohorts.test.cjs, dedicated docs/KEEPER_OUTCOME_COHORTS_20261016.md and bounded roadmap addendum. No engine.js or physics, art, roster, UI, CI or QA framework changes.",
   "base_sha": "ff27a3afe99f8a82d4ba6efc40a4d5bfe0078668",
   "created_at": "2026-10-16",
@@ -15,5 +15,10 @@
     "Full Regression Census",
     "public Pages PC and touch smoke"
   ],
-  "handover": "docs/KEEPER_OUTCOME_COHORTS_20261016.md"
+  "handover": "docs/KEEPER_OUTCOME_COHORTS_20261016.md — source eee6b3ed322ddca0f291310da7f3b06cfd255d85; QA report 95868670afee9980d06d9446c557ffedb220cbba; full regression https://github.com/saeedsai/SuperMagicFootball/actions/runs/38897958209 (166/169; 3 independent browser failures)",
+  "released_at": "2026-10-16",
+  "outcome": "completed_readonly_cohort_diagnostics; active_95_node_pass; historical_110_node_pass; exact_browser_56_pass_3_out_of_scope_fail",
+  "source_commit": "eee6b3ed322ddca0f291310da7f3b06cfd255d85",
+  "qa_run": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38897958330",
+  "full_regression_run": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38897958209"
 }
