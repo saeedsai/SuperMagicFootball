@@ -84,3 +84,8 @@ assert.equal(csv.length,451,'444 cases plus header');
 const summary=JSON.parse(read('../docs/MASTER_QA_CATALOG_SUMMARY_v08221.json'));
 assert.deepEqual([summary.historical,summary.backlog,summary.crosscutting,summary.total],[218,28,93,389]);
 console.log('MASTER QA CONTRACTS PASS: 223 teams / 2,676 slots, '+verified+' source-verified, '+fictional+' fictional; six formations, four action buttons, GK Diving migration, OVR purity, 450-case catalog, modular release/PWA version');
+
+// Track the new actual-engine penalty regressions in the release census (not a claim of manual GK support).
+for (const file of ['penalty_shootout_lifecycle.test.cjs','penalty_shootout_lifecycle_browser_qa.py']) {
+ assert(fs.existsSync(new URL('./'+file,import.meta.url)),`PK regression missing from full census: ${file}`);
+}
