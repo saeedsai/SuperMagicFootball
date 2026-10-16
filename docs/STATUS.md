@@ -98,3 +98,7 @@ The first build's old intent-only static contract was too broad, because it scan
 ### Full keeper-integration QA certified — 16 October 2026
 
 The combined [Full Regression Census #38886072121](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886072121) passed **156/156 executable Node+Chromium scripts** (101 Node, 55 Chromium, 0 FAIL/ERROR/TIMEOUT/NOT_RUN) on `55c4a21a`, including the complementary single-save and rebound-catch corrections. [Dedicated keeper browser run #38885906247](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38885906247) passed 36/36 browser fixtures and 1/1 Node event contracts; [Modular QA #38886071884](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886071884) passed. No live player values/rosters, keeper hitbox/ball physics, save schema or four-button controls were changed in this event-correction workstream. Continue from `NEXT_KEEPER_HANDOVER_20261016.md`.
+
+## 16 October 2026 — keeper fairness telemetry cohorts
+
+Added release-time goalkeeper aim-offset and fatigue cohort classification to the read-only match diagnostic; no actual save/goal or gameplay physics changes. Dedicated source test `tests/keeper_outcome_cohorts.test.cjs`; see [keeper cohort QA handover](KEEPER_OUTCOME_COHORTS_20261016.md) for exact CI status and remaining real-AI sample gaps.
