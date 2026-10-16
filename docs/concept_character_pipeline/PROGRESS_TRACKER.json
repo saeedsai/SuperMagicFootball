@@ -5,7 +5,7 @@
   "baselineAtPlanning": "82119108ca63dd510bd49bdf5c2083bed168a9a0",
   "currentMilestone": "C01",
   "programStatus": "in_progress",
-  "lastVerifiedModularCommit": "8c956b32b6443f4a249cae71dc0493c857db0c75",
+  "lastVerifiedModularCommit": "a85530023a4883fb751c44b466ebcf6f5522d10d",
   "disclaimer": "Only independently layered illustrated concept_modular_v1 assets with evidence count as delivered; older procedural Studio options and one flat concept_hero are not modular variants.",
   "existingPrototype": {
     "playerModelId": "concept_hero",
@@ -47,7 +47,7 @@
       "id": "C01",
       "title": "One approved layered character, independently editable head/hair/torso/arms/legs",
       "status": "in_progress",
-      "checkedAtCommit": "8c956b32b6443f4a249cae71dc0493c857db0c75",
+      "checkedAtCommit": "a85530023a4883fb751c44b466ebcf6f5522d10d",
       "validatedFiles": [
         "assets/characters/concept_modular_v1/source/hair_front_front.svg",
         "src/modules/conceptmodular.js",
@@ -64,7 +64,11 @@
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886824290",
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891362873",
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891362560",
-        "docs/concept_character_pipeline/C01_REAR_HAIR_BATCH_20261016.md"
+        "docs/concept_character_pipeline/C01_REAR_HAIR_BATCH_20261016.md",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38899003730",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38899003632",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38899003851",
+        "docs/concept_character_pipeline/C01_FACE_FRONT_CHECKPOINT_20261016.md"
       ],
       "issues": [
         "Front face is an editable illustrated experimental overlay, not independently authored complete head across all views",
@@ -316,7 +320,7 @@
       "identifier": "medium-honey-curls-moustache"
     }
   ],
-  "nextSmallTask": "C01: inspect new front-face real-game desktop/touch and four-background evidence, adjust eyebrow/eye/ear/hairline fit if owner review requires, then implement ONE separately animated painted front near/far arm pair while retaining original fallback.",
+  "nextSmallTask": "C01 small next batch: inspect face/eyeline/headband/hairline at match size with owner; then independently author one editable near front arm with shoulder pivot and verify one controlled gait pose. Preserve legacy renderer and other dev changes.",
   "openRisks": [
     "Only one cloned literal concept character is available for all twelve demo slots",
     "Flattened five-view atlas has baked blue uniform and number 10",
@@ -392,7 +396,7 @@
       "moduleHttp": 200,
       "errors": 0
     },
-    "fullRegressionLatest": "pending contemporary CI: https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468584; previously green https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886072121",
+    "fullRegressionLatest": "a8553002 census https://github.com/saeedsai/SuperMagicFootball/actions/runs/38899003690: preflight/4 Node/2 browser passed; browser2 gameplay combo failed, browser3 snapcraft install 408; failed shards retry requested",
     "frontFace": {
       "componentId": "face_front_001",
       "asset": "assets/characters/concept_modular_v1/source/face_front_front.svg",
@@ -411,7 +415,7 @@
         "mouth"
       ],
       "rendering": "experimental opt-in front view, over old painted body, below separate front hair",
-      "status": "implemented_pending_exact_commit_browser_validation_and_owner_review",
+      "status": "verified_experimental_illustrated_front_layer_pending_owner_art_approval",
       "dynamicExpression": false,
       "productionApproved": false,
       "initialImplementationCommit": "10ef810f16b08ddc869f5dbdb0da1e29bb99a22d",
@@ -420,7 +424,36 @@
         "tests/concept_modular_v1.test.cjs",
         "tests/concept_modular_browser_qa.py",
         "tests/concept_modular_live_qa.py"
-      ]
+      ],
+      "lastVerifiedCommit": "a85530023a4883fb751c44b466ebcf6f5522d10d",
+      "assetValidation": "PASS 3 layered transparent editable components",
+      "nodeTests": {
+        "passed": 97,
+        "failed": 0
+      },
+      "desktop": {
+        "status": "PASS",
+        "frontChangedPixels": 3259,
+        "backChangedPixels": 2531,
+        "pageErrors": 0
+      },
+      "touch": {
+        "status": "PASS",
+        "frontChangedPixels": 3263,
+        "backChangedPixels": 2523,
+        "pageErrors": 0
+      },
+      "alpha": {
+        "inside": 4594,
+        "outside": 0,
+        "whiteMatte": 0
+      },
+      "sixDirectionsLegacyFallback": "PASS pixel-identical side benchmark",
+      "hosted": "PASS desktop and simulated-touch, face/hair/front/back source HTTP 200, one opt-in modular player, 0 page errors",
+      "artQARun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38899003730",
+      "liveQARun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38899003632",
+      "fullRegressionRun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38899003690",
+      "fullRegressionStatus": "FAIL on initial attempt: browser shard 2 preexisting combo gameplay expectation, browser shard 3 Chromium snapcraft HTTP 408; failed shards retried. Preflight, Node 4/4 and browser 0,1 passed"
     }
   }
 }
