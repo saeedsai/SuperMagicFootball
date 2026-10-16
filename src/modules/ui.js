@@ -363,6 +363,34 @@ function drawHUD(){let p=game.controlledPlayer(0),s=game.score;$('homeflag').inn
   $('playerTag').textContent=`#${p.src.num} ${p.src.name.toUpperCase()}  ·  ${(p.src.superAbility?.type==='defence'&&!game.ball.owner?p.src.superAbility.name:p.src.shotName).toUpperCase()}  · LV${abilityLevel(p,(p.src.superAbility?.type==='defence'&&!game.ball.owner)?'defence':'shot')}  ·  ${(p.src.superAbility?.type==='defence'&&!game.ball.owner?(p.abilityCd||0):p.specialCd)>0?'SUPER RECHARGING':'SUPER READY'}  ·  ${moodLabel(p.morale)} ${Math.round(p.morale)}%`;const staminaBar=$('staminaFill');if(staminaBar)staminaBar.style.width=Math.round(100*(1-(p.fatigue||0)))+'%';const staminaText=$('staminaText');if(staminaText)staminaText.textContent=`STAMINA ${Math.round(100*(1-(p.fatigue||0)))}%`;const meter=$('powerFill');if(meter)meter.style.width=Math.max(0,Math.min(100,100*Math.max(p.charge||0,game.input.held(p.t,'pass')?(p.passHold||0):0)/1.2))+'%';const superLabel=$('specialMeter');if(superLabel){let defensive=p.src.superAbility?.type==='defence'&&!game.ball.owner;let abilityCooldown=defensive?(p.abilityCd||0):p.specialCd;superLabel.textContent=(game.input.held(p.t,'pass')&&game.ball.owner?.t===p.t)?'PASS • HOLD TO EXTEND':defensive?(abilityCooldown>0?'DEF CD '+abilityCooldown.toFixed(1)+'s':'★ DEF READY'):(abilityCooldown>0?'RECHARGE '+abilityCooldown.toFixed(1)+'s':'★ READY');superLabel.classList.toggle('charging',abilityCooldown>0)}}}
 function showLeague(){home=0;mode='league';let list=[10,9,11,12];away=league.stage==='finals'?list[Math.min(league.playoff||0,3)]:(league.played%12)+1;
  page('WORLD LEAGUE','Win at least 16 games and accumulate 70 points to qualify for four championship finals.',`<div class="twoCol"><div class="panel"><div class="titleSmall">JAPAN • ${league.stage.toUpperCase()}</div><div class="tripleCol">${[['WINS',league.wins],['POINTS',league.points],['GAMES',league.played]].map(([a,b])=>`<div class="panel" style="text-align:center"><div class="badge">${a}</div><div style="font-size:34px;color:#ffdd76;font-weight:900">${b}</div></div>`).join('')}</div><p class="muted">Qualification: 16 wins / 70 points. Finals: ${league.playoff||0} / 4 victories.</p><div class="stat"><span>NEXT OPPONENT</span><strong>${TEAMS[away].name}</strong></div><div class="row" style="margin-top:15px">${league.stage==='champion'?'<strong>🏆 CUP WON — CHAMPIONS!</strong>':button('▶ NEXT MATCH','leagueKickoff','gold')}${button('RESET SEASON','clearLeague')}</div></div><div class="panel"><div class="titleSmall">MATCH HISTORY</div><div class="scroll"><table class="miniTable"><thead><tr><th>Opponent</th><th>Result</th></tr></thead><tbody>${(league.games||[]).slice(0,20).map(g=>`<tr><td>${escapeHTML(g.team)}</td><td>${g.a} - ${g.b}</td></tr>`).join('')||'<tr><td colspan="2">No results yet.</td></tr>'}</tbody></table></div></div></div>`)}
+// Read-only substitution hint: only GameEngine.applyPlan validates and commits swaps.
+function substitutionAdviceForPause(game,side,plan,players){
+ const remaining=Math.max(0,(game.maxSubstitutions??0)-(game.substitutionsUsed?.[side]??0));
+ const wrap=message=>`<div id="substitutionAdvice" class="panel" role="status" aria-label="Substitution advice"><strong>BENCH FITNESS REVIEW</strong><p class="muted">${message}</p></div>`;
+ if(!remaining)return wrap('All substitutions have been used. Keep the current lineup.');
+ const onField=new Set(plan.lineup),ledger=game.fatigueLedger?.[side]||{};
+ const unavailable=game.subbedOut?.[side]||new Set();
+ const fatigue=id=>Math.max(0,Math.min(1,Number.isFinite(ledger[id])?ledger[id]:0));
+ const matches=[];
+ for(let slot=0;slot<plan.lineup.length;slot++){
+  const starter=players[plan.lineup[slot]];
+  if(!starter)continue;
+  const tired=fatigue(starter.id);
+  if(tired<.40)continue;
+  for(let bench=0;bench<players.length;bench++){
+   const replacement=players[bench];
+   if(!replacement||onField.has(bench)||replacement.role!==starter.role||
+      (replacement.injuryWeeks||0)>0||unavailable.has(replacement.id))continue;
+   const fresh=fatigue(replacement.id);
+   if(tired-fresh<.20)continue;
+   matches.push({slot,bench,starter,replacement,tired,fresh,gain:tired-fresh});
+  }
+ }
+ matches.sort((a,b)=>b.gain-a.gain||a.slot-b.slot||a.bench-b.bench);
+ if(!matches.length)return wrap('No urgent eligible same-role swap. Review squad fitness before changing the lineup.');
+ const best=matches[0],fit=value=>Math.round(100*(1-value));
+ return wrap(`Suggested swap — slot ${best.slot+1} (${escapeHTML(best.starter.role)}): #${escapeHTML(String(best.starter.num))} ${escapeHTML(best.starter.name)} (FIT ${fit(best.tired)}%) → #${escapeHTML(String(best.replacement.num))} ${escapeHTML(best.replacement.name)} (FIT ${fit(best.fresh)}%). Select the bench player above and choose SAVE TACTICS to confirm. ${remaining} substitution${remaining===1?'':'s'} left.`);
+}
 function showSquad(side=0,origin='home'){
  squadSide=side;squadContext=origin;
  const index=origin==='pause'?game.teamIds[side]:side===0?home:away;
@@ -376,6 +404,7 @@ function showSquad(side=0,origin='home'){
  `<div class="squadHeader">${identity(index)}<strong>${escapeHTML(team.name)}</strong><span>${origin==='pause'?'LIVE TACTICS':'PREGAME PLAN'} · 6 ON FIELD / 6 BENCH</span></div><div class="twoCol"><div class="panel"><h3 class="titleSmall">FORMATION & LINEUP</h3>${field('FORMATION','formation',Object.keys(FORMATIONS).map(v=>[v,v]),plan.formation)}<div class="formationPitch" id="formationPitch" aria-label="Six-player formation with cartoon player faces"></div><p class="muted">OVR is the rounded mean of six position-relevant stats (1–100). Formation OVR is for the assigned position, not necessarily the player’s natural role. Five outfield players + goalkeeper.</p>
  ${plan.lineup.map((id,i)=>`<div class="lineupRow"><strong>${order[i]}</strong>${choice('pos'+i,(i===0?memberOptions.filter(([j])=>players[j].role==='GK'):memberOptions.filter(([j])=>players[j].role!=='GK')),id)}<span class="positionOvr" data-lineup-ovr="${i}" aria-label="Position overall rating">OVR ${playerOVR(players[id],order[i])}</span></div>`).join('')}
  <p class="muted">${origin==='pause'?`SUBSTITUTIONS: <b>${game.substitutionsUsed[side]} / ${game.maxSubstitutions}</b> used. Only ${game.maxSubstitutions} changes allowed; substituted-off players cannot return.`:'Before kickoff, choose any six starters. During play, use Pause to substitute up to three players.'} Substitutes enter with their own fitness; exhausted players lose speed, precision and tackling strength.</p>
+ ${origin==='pause'?substitutionAdviceForPause(game,side,plan,players):''}
  <h3 class="titleSmall">LEADERSHIP & SET PIECES</h3><div class="tacticsGrid">${[['captain','CAPTAIN'],['penalty','PENALTY KICKS'],['freeKick','FREE KICKS'],['corner','CORNERS']].map(([key,label])=>`<div>${field(label,'role_'+key,key==='captain'?fieldPlayerOptions:roleOptions,plan[key])}</div>`).join('')}</div>
  <h3 class="titleSmall">TEAM INSTRUCTIONS</h3><div class="tacticsGrid"><div>${field('ATTACKING STYLE','attackStyle',ATTACK_STYLES.map(v=>[v,v]),plan.attack)}</div><div>${field('DEFENSIVE STYLE','defenceStyle',DEFENCE_STYLES.map(v=>[v,v]),plan.defence)}</div></div>
  <p class="muted">Possession prioritizes passes; Direct pushes forward and shoots earlier. High Press closes down faster; Deep Block holds positions. Captain boosts team passing slightly. Penalty taker accuracy affects shootouts. Free-kick/corner roles are saved, but those restart mechanics are not yet playable.</p>
