@@ -159,6 +159,76 @@ class MergeContracts(unittest.TestCase):
             self.assertEqual(len(summary['paths']), 25)
             self.assertTrue(summary['truncated'])
 
+    def test_graphics_preset_must_reference_a_real_team_and_player(self):
+        # Both agents can merge a non-conflicting but invalid graphic key.
+        for invalid_key, reason in (('missing_player', 'unknown player'), ('missing_team', 'unknown team')):
+            with self.subTest(invalid_key=invalid_key), tempfile.TemporaryDirectory() as d:
+                root = Path(d)
+                contents = {
+                    'data/teams.json': [{'id': 'team1', 'index': 0}],
+                    'data/graphics/player_appearances.json': {'team1': {'p1': {'avatar': {'style': 0}}}},
+                }
+                for shard in ('arcade', 'national26', 'club26', 'legends',
+                              'continental', 'bpw_worldcup', 'bpw_alltime'):
+                    contents[f'data/players/{shard}.json'] = (
+                        {'team1': [{'id': 'p1'}]} if shard == 'arcade' else {})
+                for side in ('base', 'ours', 'theirs'):
+                    for rel, obj in contents.items():
+                        target = root / side / rel
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        target.write_text(json.dumps(obj))
+                bad = dict(contents['data/graphics/player_appearances.json'])
+                if invalid_key == 'missing_player':
+                    bad['team1'] = {'p1': {'avatar': {'style': 0}}, 'ghost': {'avatar': {'style': 2}}}
+                else:
+                    bad['removed_team'] = {'p1': {'avatar': {'style': 0}}}
+                art_path = root / 'ours/data/graphics/player_appearances.json'
+                art_path.write_text(json.dumps(bad))
+                merged, errors = compare_directories(root / 'base', root / 'ours', root / 'theirs',
+                                                     paths=tuple(contents))
+                self.assertTrue(any(reason in c['reason'] for c in errors), errors)
+                self.assertIn('data/graphics/player_appearances.json', merged)
+                self.assertTrue(any(c['path'].endswith('/ghost' if invalid_key == 'missing_player'
+                                                         else '/removed_team') for c in errors))
+
+    def test_valid_graphics_override_still_merges(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            contents = {'data/teams.json': [{'id': 'team1', 'index': 0}],
+                        'data/graphics/player_appearances.json': {'team1': {}}}
+            for shard in ('arcade', 'national26', 'club26', 'legends',
+                          'continental', 'bpw_worldcup', 'bpw_alltime'):
+                contents[f'data/players/{shard}.json'] = (
+                    {'team1': [{'id': 'p1'}]} if shard == 'arcade' else {})
+            for side in ('base', 'ours', 'theirs'):
+                for rel, obj in contents.items():
+                    dest = root / side / rel
+                    dest.parent.mkdir(parents=True, exist_ok=True)
+                    dest.write_text(json.dumps(obj))
+            (root / 'ours/data/graphics/player_appearances.json').write_text(
+                json.dumps({'team1': {'p1': {'avatar': {'style': 0}}}}))
+            merged, errors = compare_directories(root / 'base', root / 'ours', root / 'theirs',
+                                                 paths=tuple(contents))
+            self.assertEqual(errors, [])
+            self.assertIn('p1', merged['data/graphics/player_appearances.json']['team1'])
+
+    def test_report_destination_cannot_overwrite_any_source_data(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            for side in ('base', 'ours', 'theirs'):
+                path = root / side / 'data/teams.json'
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(json.dumps([{'id': 'team1', 'index': 0}]))
+            protected = root / 'ours/data/teams.json'
+            original = protected.read_bytes()
+            cmd = [sys.executable, str(ROOT / 'scripts/parallel_data_merge.py'),
+                   '--base', str(root / 'base'), '--ours', str(root / 'ours'),
+                   '--theirs', str(root / 'theirs'), '--check', '--report', str(protected)]
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn('--report must be outside', result.stderr)
+            self.assertEqual(protected.read_bytes(), original)
+
     def test_cli_writes_only_separate_output_and_prevents_overwrite(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)

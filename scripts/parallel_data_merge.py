@@ -110,6 +110,49 @@ def team_indices_preserved(base, merged, location, conflicts):
                               'merged': shown(new.get('index', _MISSING))})
 
 
+def validate_appearance_references(merged, conflicts):
+    """Reject dangling team/player art keys before merged JSON can be staged.
+
+    Subset-only comparisons intentionally skip this whole-dataset invariant; the
+    complete dataset is also validated by scripts/validate_data.py at release.
+    """
+    art_path = 'data/graphics/player_appearances.json'
+    required = ('data/teams.json', *(f'data/players/{group}.json' for group in SHARDS))
+    if art_path not in merged or any(path not in merged for path in required):
+        return
+    teams = merged['data/teams.json']
+    if not isinstance(teams, list):
+        return  # Structural JSON validation remains the data validator's job.
+    team_ids = {item['id'] for item in teams if isinstance(item, dict) and isinstance(item.get('id'), str)}
+    player_ids = {}
+    for group in SHARDS:
+        shard = merged[f'data/players/{group}.json']
+        if not isinstance(shard, dict):
+            return
+        for team_id, players in shard.items():
+            if not isinstance(players, list):
+                return
+            player_ids.setdefault(team_id, set()).update(
+                player['id'] for player in players
+                if isinstance(player, dict) and isinstance(player.get('id'), str))
+    appearances = merged[art_path]
+    if not isinstance(appearances, dict):
+        conflicts.append({'path': art_path, 'reason': 'graphics appearance catalog must be an object'})
+        return
+    for team_id, faces in appearances.items():
+        team_path = art_path + '/' + str(team_id)
+        if team_id not in team_ids or team_id not in player_ids:
+            conflicts.append({'path': team_path, 'reason': 'graphics reference to unknown team'})
+            continue
+        if not isinstance(faces, dict):
+            conflicts.append({'path': team_path, 'reason': 'graphics team appearance entries must be an object'})
+            continue
+        for player_id in faces:
+            if player_id not in player_ids[team_id]:
+                conflicts.append({'path': team_path + '/' + str(player_id),
+                                  'reason': 'graphics reference to unknown player'})
+
+
 def compare_directories(base_dir, ours_dir, theirs_dir, paths=DATA_FILES, change_report=None):
     merged, conflicts = {}, []
     for rel in paths:
@@ -139,6 +182,7 @@ def compare_directories(base_dir, ours_dir, theirs_dir, paths=DATA_FILES, change
             if set(objects[0]) != set(result):
                 conflicts.append({'path': rel, 'reason': 'protected team roster IDs added/removed'})
         merged[rel] = result
+    validate_appearance_references(merged, conflicts)
     return merged, conflicts
 
 
@@ -151,6 +195,14 @@ def main(argv=None):
     parser.add_argument('--report', type=Path, help='optional JSON QC report destination')
     parser.add_argument('--check', action='store_true', help='check-only; never write merged data')
     args = parser.parse_args(argv)
+    # A report path is a write: never allow it to overwrite an input checkout.
+    sources = [p.resolve() for p in (args.base, args.ours, args.theirs)]
+    if args.report:
+        report_path = args.report.resolve()
+        if any(report_path == source or source in report_path.parents for source in sources):
+            parser.error('--report must be outside all three input source trees')
+        if args.out and (report_path == args.out.resolve() or args.out.resolve() in report_path.parents):
+            parser.error('--report must not be within the merged --out directory')
     change_report = {}
     merged, conflicts = compare_directories(args.base, args.ours, args.theirs,
                                             change_report=change_report)

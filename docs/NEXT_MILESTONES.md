@@ -50,3 +50,7 @@ A small part of the planned **v0.8.25.36** parallel-agent integration work has b
 5. **v0.8.25.40 — career/tactics usability:** squad swaps, substitutions and coaching feedback without save migration.
 
 Named-player art and further physics coefficients stay in the backlog. Earlier numbering and achievements above are historical and retained for traceability.
+
+## 16 October 2026 — follow-on integration safety batch
+
+A bounded part of the future concurrency milestone is implemented ahead of schedule: three-way merges now reject graphics appearance records pointing to teams or players missing from the merged catalog, and `--report` is forbidden inside either input or merged-output trees. These are developer-side protections only; gameplay, source-backed rosters, artwork values, numeric indices and saves are unchanged. New Python contract coverage is included in the dev-quality and full-regression preflight. **Next five gameplay-facing iterations remain ordered as above**, beginning with actively diving goalkeepers. Full live-site device certification remains deferred and CI pass results must be tied to the new exact commit, not historical counts.
