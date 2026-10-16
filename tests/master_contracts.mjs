@@ -22,6 +22,12 @@ assert(ui.includes("version:'"+release+"-integrated'"),'game exports modular ver
 assert(ui.includes("version:'"+release+"'"),'save exports release version');
 assert(ui.includes('function substitutionAdviceForPause(')&&ui.includes("origin==='pause'?substitutionAdviceForPause(game,side,plan,players):''"),'paused command center shows validated read-only substitution guidance');
 assert(ui.includes('game.subbedOut?.[side]')&&ui.includes('replacement.injuryWeeks')&&ui.includes('onField.has(bench)'),'paused advice honors used and unavailable roster slots');
+// The real halftime mechanics acceptance must remain discoverable by Node
+// and Chromium shards, not merely listed in handover documentation.
+assert(read('../tests/halftime_match_lifecycle.test.cjs').includes('halftimeRecovery'),
+ 'active halftime recovery Node contract is included in full regression');
+assert(read('../tests/halftime_match_lifecycle_browser_qa.py').includes("g.update(.02)"),
+ 'playable halftime clock-boundary Chromium acceptance is included in full regression');
 assert.match(read('../index.html'),/data-act="pass"/);
 assert.deepEqual(REMAPPABLE_ACTIONS,['pass','shoot','dribble','jump']);
 for(const keys of ['keyboard','gamepad','keyboard2','gamepad2']) {
