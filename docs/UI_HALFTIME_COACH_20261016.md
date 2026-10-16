@@ -48,3 +48,9 @@ Follow-up UI polish adds `aria-live="polite"` on the home/away read-only coachin
 ### Next-session first action
 
 Check whether [#38898008498](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38898008498) and [hosted smoke attempt 3](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528) finished. Inspect named failing scripts if needed; obtain a **fresh** claim before editing. Keep the five planned future batches above unchanged, with goalkeeper balance/artwork handled by their own owners.
+
+## Browser assertion diagnosis and isolated fixture correction
+
+The [combined census #38897958209](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38897958209) found a **test-fixture setup defect** in `halftime_coach_browser_qa.py`: it changed `game.players[].morale` while the production `teamMorale()` correctly reads `game.moraleLedger`, and modified fatigue across separate browser evaluations while the active frame loop could refresh `game.fatigueLedger`. It correctly detected the mismatch and failed instead of falsely passing. The fixture now freezes game updates, seeds **both authoritative ledgers**, checks its preconditions, and opens the actual halftime menu synchronously in the same browser evaluation. The UI advisor itself correctly reads these live ledgers. A short UI-source comment documents that invariant and triggers exact-source Full Regression Census without altering production behavior.
+
+Other failures in that earlier census were outside this claim: concept front-face artwork escaped the head-only area in `concept_modular_browser_qa.py`, and simulated Android player switching failed in `control_reliability_browser_qa.py`. Preserve existing graphics/controls agent ownership; those are not fixed or passed by this test-only checkpoint. New post-fix browser results must be verified separately.

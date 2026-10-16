@@ -722,6 +722,7 @@ function pause(){game.matchState='paused';page('PAUSED','Resume or change the co
 function halftimeCoachAdvice(game,side){
  const scores=game.score||[0,0],delta=(scores[side]||0)-(scores[1-side]||0);
  const plan=game.teamPlans?.[side],lineup=game.lineups?.[side]||plan?.lineup||[];
+ // Engine-authoritative ledger values, not transient sprite fatigue/morale.
  const squad=game.rosters?.[side]||[],ledger=game.fatigueLedger?.[side]||{};
  const remaining=Math.max(0,(game.maxSubstitutions??0)-(game.substitutionsUsed?.[side]??0));
  let tired=0;

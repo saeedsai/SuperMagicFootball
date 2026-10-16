@@ -37,18 +37,28 @@ with sync_playwright() as pw:
         before = page.evaluate("""() => {
           const g=SupermagicFootball.game;
           const starter=g.rosters[0][g.lineups[0][1]];
+          // Freeze the match before seeding the test state: otherwise the
+          // animation frame can overwrite fatigueLedger between evaluations.
+          g.matchState='paused';
           g.score[0]=0;g.score[1]=2;
           g.fatigueLedger[0][starter.id]=.85;
+          // teamMorale() reads the authoritative ledger, not sprite morale.
+          for(const p of g.rosters[0])g.moraleLedger[0][p.id]=25;
           for(const p of g.players)if(p.t===0)p.morale=25;
           g.substitutionsUsed[0]=1;
-          return {plans:JSON.stringify(g.teamPlans),
+          if(g.teamMorale(0)!==25 || g.fatigueLedger[0][starter.id]<.8)
+            throw Error('Halftime test state was not initialized');
+          // Render halftime in the same JS turn as seeding, so no other tick
+          // can change the test values before the coach advice is measured.
+          const before={plans:JSON.stringify(g.teamPlans),
                   lineups:JSON.stringify(g.lineups),
                   used:JSON.stringify(g.substitutionsUsed),
                   store:localStorage.getItem('legend_teamPlans'),
                   actions:document.querySelectorAll('#touchButtons button[data-act]').length};
+          g.onEvent({type:'halftime'});
+          return before;
         }""")
         assert before['actions']==4, (device, before)
-        page.evaluate("SupermagicFootball.game.onEvent({type:'halftime'})")
         panel = page.locator('#halftimeCoachHome')
         assert panel.count()==1,(device,'missing halftime coaching advice')
         assert panel.get_attribute('role')=='status'
