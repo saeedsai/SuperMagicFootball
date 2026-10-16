@@ -43,8 +43,25 @@ def main():
     ap.add_argument("--timeout-seconds", type=int, default=55)
     ap.add_argument("--out-dir", default="docs/qa_runs_full_regression")
     args = ap.parse_args()
-    assert args.shard_count > 0 and 0 <= args.shard_index < args.shard_count
+    if args.shard_count < 1:
+        ap.error("--shard-count must be positive")
+    if not 0 <= args.shard_index < args.shard_count:
+        ap.error("--shard-index must be within --shard-count")
+    if args.timeout_seconds < 1:
+        ap.error("--timeout-seconds must be positive")
     all_scripts = selected_scripts(args.category)
+    if not all_scripts:
+        ap.error(f"no {args.category} scripts discovered; refusing a false-green census")
+    # An empty shard must never claim PASS just because its loop ran zero times.
+    if args.shard_count > len(all_scripts):
+        ap.error(
+            f"--shard-count {args.shard_count} exceeds {len(all_scripts)} "
+            f"discovered {args.category} scripts; empty shards are not certifiable"
+        )
+    scripts = [p for i, p in enumerate(all_scripts)
+               if i % args.shard_count == args.shard_index]
+    if not scripts:
+        ap.error(f"shard {args.shard_index} has no scripts; refusing a false-green census")
     # Archive browser suites still pin the legacy public version string.
     # Make *only their readiness expectations* reflect the real current game.
     # This modifies disposable CI checkout test files, never runtime code.
@@ -52,7 +69,7 @@ def main():
         release = json.loads((ROOT / "package.json").read_text())["version"]
         current_runtime = release + "-integrated"
         updated = []
-        for suite in all_scripts:
+        for suite in scripts:
             source = suite.read_text()
             if "0.8.24.12-alpha" in source:
                 # The historical app identifier still has a compatibility alias.
@@ -60,7 +77,6 @@ def main():
                 suite.write_text(source.replace("0.8.24.12-alpha", current_runtime))
                 updated.append(suite.name)
         print("LEGACY_TEST_READINESS_MIGRATED", len(updated), ", ".join(updated), flush=True)
-    scripts = [p for i,p in enumerate(all_scripts) if i % args.shard_count == args.shard_index]
     out_dir = ROOT / args.out_dir
     out_dir.mkdir(parents=True,exist_ok=True)
     (ROOT / 'docs' / 'qa_runs_v082530').mkdir(parents=True,exist_ok=True)
