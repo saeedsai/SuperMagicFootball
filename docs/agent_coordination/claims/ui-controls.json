@@ -1,23 +1,20 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "ui-controls",
-  "feature_id": "UI-TOUCH-DRIBBLE-PULSE-RELIABILITY",
-  "owner": "ui-touch-rainbow-20261016-gpt6-chat11",
-  "status": "released",
-  "scope": "Fix Android two-rapid-tap DRIBBLE touch input buffering and canceled gesture handling only in src/modules/input.js; new isolated tests/touch_dribble_pulse.test.cjs and dedicated tests/touch_dribble_pulse_browser_qa.py if safe; docs/UI_TOUCH_DRIBBLE_PULSE_20261016.md. No engine.js, physics, graphic/art, UI menu, roster, shared QA harness, CI or SW. No overlapping gameplay-engine claim.",
-  "base_sha": "06218cf3d2b6c34e93b6de2789da4689e57bd33e",
-  "created_at": "2026-10-16T15:14:00+02:00",
-  "renewed_at": "2026-10-16T15:14:00+02:00",
+  "feature_id": "UI-QUICK-LIVE-TACTICAL-CALLS",
+  "owner": "ui-quick-match-tactics-20261016-gpt6-s13",
+  "status": "active",
+  "scope": "src/modules/ui.js only: 4 one-tap live PAUSED/HALF TIME tactical calls via existing game.applyPlan; no engine/input/styles changes; 2 human teams supported; immutable existing plan fields & no persistent save; new Node and real desktop/touch browser acceptance, dedicated docs/UI_QUICK_LIVE_TACTICS_20261016.md, docs/NEXT_MILESTONES.md if free. No QA harness, workflow, game physics, rosters or art.",
+  "base_sha": "1192733f1ce0058b15afad881c5df2e8107a4e2f",
+  "created_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
+  "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/4",
+  "handover": "docs/UI_QUICK_LIVE_TACTICS_20261016.md",
   "tests": [
-    "node --test tests/touch_dribble_pulse.test.cjs",
-    "node --test tests/*.test.cjs",
-    "Full Regression Census 4xNode+4xChromium",
-    "hosted PC/touch Quick Match"
-  ],
-  "handover": "docs/UI_TOUCH_DRIBBLE_PULSE_20261016.md — input commit 0cd7d0a8, node 62c9790c, browser e4a63e41, documentation 2275f77c; Modular QA https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904229679 125/125; full regression https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904271767 attempt1 183/184, issue #3 open; targeted retry in progress",
-  "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/3",
-  "previous_handover": "docs/UI_HALFTIME_TACTICS_RETURN_20261016.md — source 66cf9402, exact-source QA #38902939162 116/116 PASS, 17 merge, 10 claim tests; Chromium full regression #38903065643 queued (earlier jobs cancelled by concurrent pushes)",
-  "released_at": "2026-10-16",
-  "outcome": "Delivered one new reliable Android rapid DRIBBLE re-press action edge, 4/4 Node tests, dedicated Chromium edge test PASS; Full Regression Census attempt1 183/184 PASS with original independent live rainbow issue #3 still failing, rerun attempt2 underway",
-  "integrated_commit": "2275f77c987c06d7641c9971ae043482edd9b4bb"
+    "desktop/mobile actual in-match four tactical states",
+    "game.tacticModifiers and AI reflect changes",
+    "no substitutions/lineup/save changes",
+    "full regression 4xNode 4xChromium",
+    "Pages smoke"
+  ]
 }
