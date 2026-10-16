@@ -27,7 +27,7 @@ GitHub workflows: [dedicated modular art](https://github.com/saeedsai/SuperMagic
 
 ## Pending/known risks
 
-Until exact-commit CI returns, pass/fail of new art is **not** certified. The source is an overlay and may need aesthetic fit/halo changes after screenshot review. Six angles still use the original; arms/face/body are not an independently editable rig; gait sway is deliberately subtle and cannot substitute for body animation; no per-character unique numbers or goalkeeper clothing; owner artwork approval outstanding. No unrelated files are deleted as other agents may own them.
+New artwork is VERIFIED only as an experimental playable overlay, not a completed production rig. The source is an overlay and may need aesthetic fit/halo changes after screenshot review. Six angles still use the original; arms/face/body are not an independently editable rig; gait sway is deliberately subtle and cannot substitute for body animation; no per-character unique numbers or goalkeeper clothing; owner artwork approval outstanding. No unrelated files are deleted as other agents may own them.
 
 ## Next five bounded iterations
 
@@ -36,3 +36,26 @@ Until exact-commit CI returns, pass/fail of new art is **not** certified. The so
 3. Extract one near/far arm pair for front view, then implement a modest real painted hand stride.
 4. Extract torso and separately editable leg/boot parts; verify planted feet and anchored idle/run loop in one view.
 5. Start first true front-right quarter illustrated head/hair and check mirrored crest and number fallback; progress toward eight independently drawn views.
+
+## Exact commit test report (recorded 16 October 2026)
+
+| Test/deployment gate | Outcome | Proof |
+|---|---|---|
+| Illustrated source/schema validator | PASS | [C01 art workflow](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891362873) |
+| Data validator and deterministic build | PASS | Same workflow |
+| Active Node suite | **76/76 PASS, 0 FAIL** | Same workflow |
+| Real match, desktop Chromium | PASS | 2,531 rear-view changed pixels, 1,455 front pixels |
+| Simulated touch Chromium | PASS | Same front/rear pixel changes; zero JS errors |
+| Original side projection unchanged | PASS | Pixel-identical old concept fallback |
+| Alternating running stride + secondary hair sway path | PASS for differing run frames; subtle hair deformation not yet independently visually signed off | Front/rear actual-match and run frames in workflow artifact |
+| Legacy full Concept Royals match/8 views | PASS desktop/touch | Same workflow |
+| New rear hair on four backgrounds | Evidence captured | Grass, teal, light and dark screenshot PNGs |
+| GitHub Pages live SVG/module HTTP 200 | PASS | [Hosted match smoke](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891362560) |
+| Hosted playable match desktop/touch | PASS | One opt-in modular player, original eleven others, no browser page errors |
+| General modular game CI | PASS on integrated `8c956b32` | [Modular Game Dev QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891362769) |
+| Full current sharded regression | **PENDING on later integrated commits**; prior all-green full census preceded this source change | [Latest running census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468584) |
+| Physical iOS/Android and owner art signoff | NOT RUN / pending | Requires devices and review |
+
+**Verified source checkpoint:** `8c956b32b6443f4a249cae71dc0493c857db0c75`. CI: [artifact/workflow](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891362873); [live-host workflow](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891362560). Match screenshots are real generated Canvas captures from the game and remain downloadable in GitHub Actions.
+
+**Scope hygiene:** No engine physics, roster/database, player stats, UI, numeric customization IDs or save format changes. Only isolated illustrated hair source, opt-in rendering, associated asset metadata, fixture/caching and graphics-specific tests/docs. Other agents' concurrent changes were retained without force pushes. Old graphics/roster samples were not deleted because their references and ownership are not proven obsolete. C00/C01 remain IN PROGRESS and all production variant counts remain ZERO until complete art and signoff.
