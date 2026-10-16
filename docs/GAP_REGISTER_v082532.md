@@ -27,3 +27,12 @@
 ## 16 October 2026 — concurrent graphics reference safeguard
 
 **Closed for complete three-way merges:** orphan `player_appearances.json` team/player references now cause a blocking merge conflict, checked against the combined seven-shard player dataset **after** independently edited fields are merged. **Closed:** `--check --report` can no longer overwrite a JSON file in any input checkout, and reports are kept outside merged output trees. New tests (17 total) and exact-commit full Node/Chromium regression (144 scripts) passed; see `QA_PARALLEL_GRAPHICS_REFERENCE_20261016.md`. **Still open:** provenance-aware source conflict decisions, graphics palette semantics/visual likeness, P0 active goalkeeper diving, eight-way glove holding animation and independently source-verified player data. Whole-dataset preflight still requires `scripts/validate_data.py`; the merge helper does not make an invalid source file valid.
+
+## Keeper diving visual-activity checkpoint — 16 October 2026
+
+| P0 | Autonomous dive attempt timing | **INITIAL IMPLEMENTATION:** predictive credible incoming corner shots can start the goalkeeper's existing directional dive animation prior to contact, even if ultimately unsaved; attempt is single per threat and gets a recovery pose. No physical lateral intercept increase, hitbox change or phantom save. Final acceptance requires exact-commit Chromium census and hosted checks. |
+| P0 | True save-rate and proactive movement | **OPEN:** unlike the new visual dive attempts, physically moving to new lanes, successful catch/deflect frequency and fair goal rates require symmetric seeded real-match benchmarks before tuning. |
+| P1 | Keeper grip and release visual | **OPEN:** caught ball at glove height exists; eight-direction hand/grip and safe distribution motion remain unimplemented. |
+| P1 | Comprehensive source-backed roster verification | **ONGOING BY OTHER AGENTS:** respect parallel Club26/National26 metadata snapshots and editor conflict reports. |
+
+Do not delete historical evidence/test files just for a shorter tree; these are used in CI and prior acceptance traces.

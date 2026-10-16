@@ -54,3 +54,18 @@ Named-player art and further physics coefficients stay in the backlog. Earlier n
 ## 16 October 2026 — follow-on integration safety batch
 
 A bounded part of the future concurrency milestone is implemented ahead of schedule: three-way merges now reject graphics appearance records pointing to teams or players missing from the merged catalog, and `--report` is forbidden inside either input or merged-output trees. These are developer-side protections only; gameplay, source-backed rosters, artwork values, numeric indices and saves are unchanged. New Python contract coverage is included in the dev-quality and full-regression preflight. **Next five gameplay-facing iterations remain ordered as above**, beginning with actively diving goalkeepers. Full live-site device certification remains deferred and CI pass results must be tied to the new exact commit, not historical counts.
+
+## Current focused checkpoint — keeper diving activity (16 October 2026)
+
+**Chosen P0 requirement:** make autonomous goalkeepers visibly commit to an incoming credible shot *before* the physical contact frame, including misses, rather than showing dive animation only on successful saves. The playable modular engine now records one `keeperDiveAttempt` event and invokes the existing directional dive/recovery pose when short-horizon prediction meets shot direction, reachable height, goalmouth and lateral guardrails. Anti-repeat intent cooldown, striker-facing checks and recovery clearing are implemented. The match ball and goalkeeper positions are **not teleported**, and only the pre-existing narrow depth-plane/swept contact paths can record a genuine save.
+
+**Acceptance not yet assumed:** run targeted browser 30/60/120Hz in both directions, current/legacy Node tests, full sharded regression and actual hosted PC/touch smoke on exact commits before calling the checkpoint QA-certified. This closes only the *visible early dive attempts* portion of the request. Increasing **actual keeper interception rate** needs subsequent measured movement/goal fairness tests; do not blanket widen keeper hitboxes.
+
+### Next five focused iterations following this checkpoint
+1. Collect seeded live dive-attempt versus keeper-contact telemetry, calibrate physical movement only after confirming a shortfall; preserve both goal directions and corner scoring.
+2. Finish goalkeeper hand-holding glove animation and ball distribution poses in eight directions.
+3. Refine ordinary first touch and pass follow-through using existing controls; add desktop/touch visual regression.
+4. Add source/provenance and appearance-reference checks to parallel editor and JSON merge reviews, without touching roster/graphics agents' files.
+5. Improve halftime/reserve substitutions, formation suitability and career tactical coaching hints with save-key compatibility.
+
+Other major roadmap domains (original parity, all modes, animated art production, new abilities and network play) remain in [REQUIREMENTS_REVIEW_20261016.md](REQUIREMENTS_REVIEW_20261016.md). Physical iOS/Android/PWA and exhaustive persistence certification stay owner-deferred.
