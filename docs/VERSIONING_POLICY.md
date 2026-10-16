@@ -26,3 +26,8 @@
 - Known gap: **exact deployed bundle SHA**, visible even offline, has not been built into the site by this policy-only change. This requires a coordinated `release-infra` + `ui-controls` feature, e.g., a deployment-time embedded revision manifest tested against GitHub Pages. Never bypass an active UI claim.
 
 The agent instructions/CI cover compliant agents, not arbitrary external pushes. For hard enforcement of release tagging or actual deployed build IDs, protect `dev` and require checks/PR review.
+
+## Tracked follow-ups
+
+- [Issue #12](https://github.com/saeedsai/SuperMagicFootball/issues/12): add a deployment-embedded SHA to identify **the exact running build**, separately from remote dev HEAD, after release/UI claims are available.
+- [Issue #13](https://github.com/saeedsai/SuperMagicFootball/issues/13): reconcile the pre-existing memory-agent identity test failure. The new version-policy tests pass; this separate failure kept the 2026-10-16 full Node CI run at 196/197.
