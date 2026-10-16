@@ -3,7 +3,7 @@
   "lock_key": "qa-framework",
   "feature_id": "QA-HALFTIME-MATCH-LIFECYCLE",
   "owner": "qa-match-halftime-20261016-gpt6-session12",
-  "status": "active",
+  "status": "released",
   "scope": "Own new tests/halftime_match_lifecycle.test.cjs and tests/halftime_match_lifecycle_browser_qa.py, add a narrow QA release-discovery assertion to tests/master_contracts.mjs so existing Full Regression Census fires on integrated source, docs/QA_HALFTIME_MATCH_LIFECYCLE_20261016.md and docs/NEXT_MILESTONES.md. No engine, input, UI, art, roster, shared runner, release workflow, service worker or other agent test edits.",
   "base_sha": "62c9790c7c2383dcbc2809b9625065a9293b3a52",
   "created_at": "2026-10-16",
@@ -13,5 +13,8 @@
     "Full Regression Census 4xNode 4xChromium",
     "Public Github Pages desktop/touch smoke"
   ],
-  "handover": "docs/QA_HALFTIME_MATCH_LIFECYCLE_20261016.md"
+  "handover": "docs/QA_HALFTIME_MATCH_LIFECYCLE_20261016.md — test 1b4602e4/ef9e80e0, extractor fix ff33ad2a, full trigger 983f9a43, QA #38905216439 134/134 PASS; Chromium census #38905216172 cancelled; next integrated 4x4 run needed",
+  "released_at": "2026-10-16",
+  "outcome": "halftime_lifecycle_node_134_of_134_pass_chromium_integration_pending",
+  "final_source_commit": "983f9a432458946eaa5d4c1378ca3a87b8e79fe1"
 }
