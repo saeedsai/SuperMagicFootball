@@ -21,3 +21,11 @@ Earlier full QA was blocked by concurrent graphics source assertions, unrelated 
 ## Cleanup / test procedures
 
 Keep `docs/qa_runs_v082532/` logs, the existing `tests/` executable legacy tests, all graphics references, and other agents' data; they are not demonstrably unused. The existing `.gitignore` already excludes cache/temporary outputs. No unrelated files were removed. Inspect `docs/KEEPER_SAVE_EVENT_INTEGRITY_20261016.md` and current branch `docs/NEXT_MILESTONES.md`. For a targeted rerun use the dedicated keeper workflow; for release acceptance use the complete full-regression and fresh production hosted smoke. Physical iOS/Android, offline/PWA and multiplayer remain owner-deferred.
+
+## Final integrated regression certification
+
+On [combined code checkpoint `55c4a21a`](https://github.com/saeedsai/SuperMagicFootball/commit/55c4a21a9089ae8b2ced2ed677bee82cd37eaf59), the [Full Regression Census #38886072121](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886072121) **COMPLETED SUCCESSFULLY** with **156/156 executable scripts passed**: Node **101/101** across four shards (26+25+25+25), Chromium **55/55** across four shards (14+14+14+13), with **zero FAIL, ERROR, TIMEOUT or NOT_RUN**. Preflight also passed. Source fix `f62d688` and isolated workflow `173d76f` are ancestors of this exact combined-code commit.
+
+The complementary [Keeper Save Event Integrity #38885906247](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38885906247) passed 1/1 Node contracts and 36/36 real-engine desktop/simulated-touch browser fixtures. [Modular Game Dev QA #38886071884](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886071884) passed 73/73 active Node tests and 17/17 Python merge tests. Earlier graphics-collaboration failures were fixed before this combined green run. These are concrete verified checkpoints; **physical iOS/Android devices were not certified**. Historical pre-fix saved event counts cannot be compared directly without deduplication.
+
+**Handover state:** The completed full regression replaces the earlier pending Chromium-gate status above. Next work should use the current head, not these dated SHAs, and continue with a single measured keeper/graphics requirement per iteration.

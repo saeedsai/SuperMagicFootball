@@ -127,3 +127,7 @@ The keeper's loose-ball catch no longer emits a second `save` after an earlier d
 5. **Career and tactics:** clearer safe lineup substitutes, formation-suitability feedback and halftime coaching preserving existing saves.
 
 Original gameplay-mode parity, player likenesses, physical iOS/Android and PWA/offline certification, Super Defense/Tricks and network play remain open/deferred in their existing roadmap categories.
+
+## 16 October 2026 — keeper event integrity final release gate
+
+A real shot's save is no longer double counted when the goalkeeper later catches their own deflected rebound. The [integrated full regression 156/156](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886072121) (101 Node + 55 Chromium) passed after the graphics agent's concurrent fixes. The **next five** remain: (1) seed-calibrated keeper positioning/goal and corner fairness using corrected shot-level counts; (2) keeper's eight-direction held-ball glove/distribution animation; (3) pass and reception motion polish; (4) source-aware parallel data/graphics provenance; (5) career/tactics substitution coaching feedback. Keep historic tests and other agents' assets; device/PWA and multiplayer certification remain deferred.
