@@ -36,3 +36,18 @@ The feature does not touch the engine, AI, ball, player source records, art, con
 ## Handover
 
 Scope: `src/modules/ui.js`, `tests/substitution_advice.test.cjs`, `tests/substitution_advice_browser_qa.py` and this document. No cleanup of unrelated historical/graphics files. Final code SHA, test links and claim release are to be recorded after the exact-source checks.
+
+## Verified integration QA checkpoint
+
+- Feature implementation: [9951b3b](https://github.com/saeedsai/SuperMagicFootball/commit/9951b3bae49d6b10197b1bb0b6f13492b36edc99).
+- UI contract and exact-census trigger: [e9c99b9](https://github.com/saeedsai/SuperMagicFootball/commit/e9c99b9d6e8ed4b8b1140262f03670666b5b7cdd).
+- [Modular Game Dev QA #38891495352](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891495352) **SUCCESS**: 81/81 active Node tests (including five new advice contracts), source/data validation and Python merge preflight.
+- [Full Regression Census #38891468584](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468584): **preflight and four Node shards PASS**. The four Chromium shards, including the new `substitution_advice_browser_qa.py`, were **still running at this documentation checkpoint**. Run #38891495276 on a newer commit was cancelled because of active concurrent pushes; cancelled is not PASS. **Overall regression remains unverified until complete browser results are available.**
+- [Deployed game desktop/touch smoke #38891468528](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528): **SUCCESS** on hosted `https://saeedsai.github.io/SuperMagicFootball/`. Chromium desktop and simulated touch each loaded version `0.8.25.32-integrated`, 224 teams, Quick Match menus, kickoff and active game; 20%-longer field invariant held. This does not certify physical phones or prove the new advice is visible on the host. Browser-specific acceptance runs in the Full Regression Census.
+- Multiple agents continued pushing graphics/QA changes to `dev` during this batch. No commits were force-pushed or other agents' source paths overwritten. The tested integrated source must always be identified by its own commit SHA; later branch heads may differ.
+
+### Paused checkpoint / follow-up
+
+1. Inspect the final four Chromium shard logs for the first completed **same-source** full regression containing `substitution_advice_browser_qa.py`. If it fails, isolate the browser acceptance issue under a new `ui-controls` claim; do not modify graphics/QA ownership.
+2. If the full regression is green, record totals and host deployment on the exact resulting SHA. If not, keep status explicitly pending/failed; do not present the previous 156-script historical green run as this release.
+3. Safely release `ui-controls` once this handover is saved so another agent can claim a different bounded UI requirement. No deletion of historical tests/docs was safe or needed in this batch.
