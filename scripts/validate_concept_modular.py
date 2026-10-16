@@ -9,8 +9,8 @@ assert m['authoredViews']==['front','back'] and len(set(m['viewIds']))==8
 assert m['fallbackModel']=='concept_hero' and m['logicalPlayerHeight']==141
 assert m['referenceCanvas']==[112,265]
 layers=[m['runtimeLayer'],*m['additionalLayers']]
-assert sorted(l['id'] for l in layers)==['face_front_001','hair_back_001','hair_front_001']
-assert [l['z'] for l in layers if l['view']=='front']==[20,10]
+assert sorted(l['id'] for l in layers)==['arm_near_front_001','face_front_001','hair_back_001','hair_front_001']
+assert [l['z'] for l in layers if l['view']=='front']==[20,10,14]
 for layer in layers:
  view=layer['view'];dims=[112,265] if view=='front' else [115,265]
  assert layer['noMirroring'] is True
@@ -30,6 +30,15 @@ for layer in layers:
  assert not root.findall('.//'+ns+'image') and not root.findall('./'+ns+'rect')
  assert not any('http:' in v or 'https:' in v for e in root.iter()
                 for k,v in e.attrib.items() if k.endswith('href'))
+ if layer['id']=='arm_near_front_001':
+  assert layer['shoulder']==layer['pivot']==[90,126]
+  assert layer['elbow']==[102,171] and layer['wrist']==[104,187] and layer['hand']==[104,199]
+  assert layer['z']>10 and layer['z']<20
+  anim=layer['animation']
+  assert anim['channel']=='legacy_run_phase' and anim['rotationRadiansPerPhase']==-.035
+  assert anim['rootOwner']=='Renderer' and anim['unfinishedOppositeArm'] is True
+  groups={g.get('id') for g in root.findall('.//'+ns+'g')}
+  assert set(layer['partGroups']).issubset(groups)
  if layer['id']=='face_front_001':
   assert layer['headCenter']==[56,78] and layer['neck']==[56,110]
   assert layer['ears']==[[21,81],[94,82]] and layer['pivot']==[56,99]
@@ -37,4 +46,4 @@ for layer in layers:
   groups={g.get('id') for g in root.findall('.//'+ns+'g')}
   assert set(layer['partGroups']).issubset(groups)
 assert (R/'manifests'/m['provenance']).is_file()
-print('CONCEPT_MODULAR_SOURCE_PASS 3 transparent editable layers, head pivots, face groups, original fallback')
+print('CONCEPT_MODULAR_SOURCE_PASS 4 transparent editable layers, face/shoulder pivots, isolated hand and face groups, original fallback')

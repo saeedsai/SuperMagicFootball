@@ -1,7 +1,7 @@
 {
   "schema": "smf-concept-modular/1",
   "id": "royals-hair-front-front-001",
-  "status": "experimental_front_face_and_two_hair_layers",
+  "status": "experimental_front_near_arm_face_and_two_hair_views",
   "baseFamily": "royals_base_a",
   "referenceCanvas": [
     112,
@@ -64,15 +64,16 @@
     "idle",
     "legacy_leg_run",
     "secondary_hair_sway_front_back",
-    "front_face_static_registers_to_hair_pivot"
+    "front_face_static_registers_to_hair_pivot",
+    "front_near_arm_small_counterstride_overlay"
   ],
   "unimplemented": [
+    "independent_opposite_front_arm_and_full_articulated_arm_cycle",
     "independent_full_head_with_side_and_back_profiles",
     "face_expressions_and_blink",
     "other_six_views",
     "hair_for_quarters_and_side",
     "torso",
-    "arms",
     "legs",
     "runtime_webp"
   ],
@@ -137,6 +138,71 @@
         "nose",
         "mouth"
       ]
+    },
+    {
+      "id": "arm_near_front_001",
+      "kind": "arm_near",
+      "view": "front",
+      "asset": "../source/arm_near_front.svg",
+      "sourceCanvas": [
+        112,
+        265
+      ],
+      "cropRect": [
+        0,
+        0,
+        112,
+        265
+      ],
+      "trimOffset": [
+        0,
+        0
+      ],
+      "pivot": [
+        90,
+        126
+      ],
+      "shoulder": [
+        90,
+        126
+      ],
+      "elbow": [
+        102,
+        171
+      ],
+      "wrist": [
+        104,
+        187
+      ],
+      "hand": [
+        104,
+        199
+      ],
+      "alphaBoundsEstimate": [
+        82,
+        118,
+        112,
+        210
+      ],
+      "z": 14,
+      "material": "painted_blue_royals_skin",
+      "noMirroring": true,
+      "partGroups": [
+        "near-sleeve",
+        "near-upper-arm",
+        "near-elbow-shadow",
+        "near-forearm",
+        "near-wristband",
+        "near-hand"
+      ],
+      "animation": {
+        "id": "front_near_arm_counterstride_001",
+        "channel": "legacy_run_phase",
+        "rotationRadiansPerPhase": -0.035,
+        "threshold": 0.07,
+        "rootOwner": "Renderer",
+        "unfinishedOppositeArm": true
+      }
     },
     {
       "id": "hair_back_001",
