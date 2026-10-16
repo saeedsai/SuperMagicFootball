@@ -54,3 +54,28 @@ Every CLI JSON response and `--report` file now includes `changeSummary`. For ea
 The complete three-way merge now cross-checks every merged `data/graphics/player_appearances.json` team/player key against the **merged** team catalog and all seven merged player shards. A dangling team or player appearance is a blocking conflict (with the exact artwork key path), even if the agents made independent, otherwise mergeable edits. Partial-file `compare_directories(..., paths=...)` calls skip this whole-dataset invariant; run the full default tool before staging any merged data. This complements, but does not replace, `scripts/validate_data.py`.
 
 `--report` must be outside the three input source trees and outside `--out`. This closes an overwrite risk where a seemingly read-only `--check --report` could previously replace an existing source JSON with a QC report. A rejected report path exits with CLI usage error code 2 **before** reading or writing the merge result. New isolated Python regressions cover dangling graphic team/player references, a valid appearance update and source-report overwrite rejection. Keep the owner-prioritized goalkeeper diving work in the separate gameplay workstream.
+
+## 16 October 2026 — sourced player field review flags (advisory)
+
+The three-way tool now emits a **`sourceReview`** section next to `changeSummary` in every command-line response and optional `--report` JSON file. For any merged `data/players/*.json` record whose stable player ID exists in both base and result, it lists **sensitive field changes** requiring human source review, including name, role, shirt number, nationality, DOB/age, height, rating, FC27 ID/position/face statistics and the gameplay power/shoot/defense attributes.
+
+Each review entry includes `path` (stable team and player IDs), `changedFields`, and `sourceMetadataChanged` (fields such as `source`, `ratingSource`, `sourceSnapshot`, `fc27OfficialCheckedAt` or verification annotations modified in the same record). The field `needsSourceReview: true` means **a reviewer should compare reliable FC27/club records**; it does **not** mean the supplied URL or changed metadata was checked or authenticated. Changes to presentation-only fields (e.g. `shotName`) do not themselves add review flags. The report counts all affected players but shows at most **25 entries**, with `truncated: true` when others remain.
+
+Example informational response fragment:
+
+```json
+{
+  "sourceReview": {
+    "count": 1,
+    "entries": [{
+      "path": "data/players/club26.json/club26_0/id=club26_0_0",
+      "changedFields": ["heightCm", "rating"],
+      "sourceMetadataChanged": ["source"],
+      "needsSourceReview": true
+    }],
+    "truncated": false
+  }
+}
+```
+
+**This is a review cue, not another merge blocker.** Existing conflicting edit detection, immutable team/player ID/ordering checks, graphics-reference validation, dry-run immutability and no-overwrite safeguards remain unchanged. No game or player data is automatically changed; editors must continue independently confirming FC27 values or trusted fallback sources. [Implementation and QA checkpoint](MERGE_SOURCE_REVIEW_HANDOVER_20261016.md).
