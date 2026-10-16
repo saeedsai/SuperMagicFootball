@@ -39,7 +39,7 @@ test('gameplay options, rosters and player index schema stay untouched by this g
 });
 test('updated offline shell version includes the new mechanics file',()=>{
  const sw=read('sw.js');
- assert.match(sw,/smf-082534-physics-tuning-v1/);
+ assert.match(sw,/smf-082535-super-keeper-hold-v1/);
  assert.match(sw,/mechanics\/gameplay\.json/);
  assert.match(sw,/characterart/);
 });
