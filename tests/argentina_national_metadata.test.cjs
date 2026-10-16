@@ -27,6 +27,12 @@ test('Argentina verified player DOBs and heights are correct on 2026-10-16',()=>
   assert.equal(p.fictional,false);
  }
 });
+test('age calculation respects birthdays instead of integer year subtraction',()=>{
+ assert.equal(ageAt('1987-06-24','2026-06-23'),38);
+ assert.equal(ageAt('1987-06-24','2026-06-24'),39);
+ assert.equal(ageAt('1992-09-02','2026-09-01'),33);
+ assert.equal(ageAt('1992-09-02','2026-09-02'),34);
+});
 test('Argentina roster composition and all 32 national squads remain stable',()=>{
  const argentina=teams.find(x=>x.id==='national26_1');
  assert.ok(argentina,'Argentina team remains selectable');
