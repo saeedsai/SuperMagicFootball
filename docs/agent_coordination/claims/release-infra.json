@@ -3,7 +3,7 @@
   "lock_key": "release-infra",
   "feature_id": "ART-C01-NEAR-ARM-CACHE",
   "owner": "graphics-c01-near-arm-20261016-gpt6-s12",
-  "status": "active",
+  "status": "released",
   "scope": "Only sw.js cache bump and new SVG cache path for C01 near-arm. No workflows, Pages settings or unrelated release changes.",
   "base_sha": "b7c516437f04b526a68d70ace87197f9a14498fe",
   "created_at": "2026-10-16",
@@ -15,8 +15,8 @@
     "python3 tests/concept_modular_live_qa.py",
     "Full Regression Census"
   ],
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
-  "released_at": "2026-10-16T14:48:00+02:00",
-  "outcome": "completed_issue_2_closed_full_census_177_of_177_live_pc_touch_success",
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md; report docs/concept_character_pipeline/C01_NEAR_ARM_BATCH_20261016.md; corrected art 336292ff; graphics+Node 134/134 #38905216121; hosted desktop/touch #38904785529; full 9/9 #38905337000 at descendant 1decc488",
+  "released_at": "2026-10-16",
+  "outcome": "completed_c01_experimental_painted_near_arm_and_safe_low_amplitude_stride",
   "final_source_commit": "067326766a647419529733897bf066ea05484758"
 }
