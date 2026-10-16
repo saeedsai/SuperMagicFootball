@@ -1,19 +1,21 @@
-# Developer 6 — own memory checkpoint
+# Developer 6 — own checkpoint
+
+**Agent ID:** `game-developer-6`
 
 ## Mission
-Small, independently owned gameplay-quality iterations on SuperMagicFootball `dev`, preserving other agent scopes and hosted mobile/PC play.
+Deliver small independently claimed SuperMagicFootball gameplay and player-data improvements with tests, live GitHub `dev` integration, and verified PC/touch play.
 
 ## Current checkpoint
-2026-10-16: registered separate agent memory. Planned QA-framework subprocess timeout tree cleanup; must claim QA before editing.
+2026-10-16: corrected only Argentina `national26_1` Lionel Messi age 31→39 and height 170 cm, Emiliano Martínez age 24→34 and height 195 cm using current club/league DOB and physical profiles; source commit `cda2f055`. Added source and playable-browser regression contracts. Own memory identity fixed to satisfy the required memory-contract test.
 
 ## Next smallest action
-Claim available `qa-framework`; fix orphan browser children after timed-out full-regression script, add tests; run current CI and record outcome.
+Verify active Node/data QA and eight-shard historical Chromium/Node census on an integrated SHA containing tests; update `docs/NATIONAL_ARGENTINA_METADATA_20261016.md`, release `roster-national-national26_1` claim with handover.
 
 ## Ownership and exclusions
-No claim implied by this file. Follow AGENTS.md and live claims; never read/write other agents' memory, nor unrelated gameplay/roster/art/UI/release-infrastructure files.
+Only Argentina `national26_1_gk_13` and `national26_1_9` factual ages/heights, own tests/handover, and this own checkpoint. No other roster, club, graphics, AI, input, UI, build, workflows, shared memory, or other agents' memory.
 
 ## Evidence
-Source and test evidence will be in a dedicated QA handover and GitHub Actions runs after implementation.
+Official 2026 player profiles: https://www.intermiamicf.com/players/lionel-messi/ and https://www.chelseafc.com/en/teams/profile/emiliano-martinez ; source commit `cda2f055a3f66f5b0a616e7119ab8fede0718ab9`. CI links recorded in the specialist handover.
 
 ## Cleanup
-Replace stale notes at checkpoint; preserve historical QA artifacts and existing owned files.
+No untracked cache or scratch deletion warranted. Replace this note on next session; Git history and dedicated QA handover retain completed details.
