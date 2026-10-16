@@ -69,3 +69,16 @@ A bounded part of the future concurrency milestone is implemented ahead of sched
 5. Improve halftime/reserve substitutions, formation suitability and career tactical coaching hints with save-key compatibility.
 
 Other major roadmap domains (original parity, all modes, animated art production, new abilities and network play) remain in [REQUIREMENTS_REVIEW_20261016.md](REQUIREMENTS_REVIEW_20261016.md). Physical iOS/Android/PWA and exhaustive persistence certification stay owner-deferred.
+
+## 16 October 2026 — keeper dive measurement checkpoint (post anticipatory intent)
+
+Delivered an isolated **shot-linked keeper calibration instrument**, following the earlier proactively animated goalkeeper dive. Optional `MatchOpportunityTracker` now distinguishes `keeperDiveAttempt` from `keeperContact`, counts mismatches and missed attempts, and reports regular/Super Shots and the two defending directions separately. Four new Node contract tests passed the active QA suite. This is **not** an increase in physical saving rate and does not widen contact geometry; that decision requires controlled seed-matched evidence. The work is in `src/match_telemetry.js`, `tests/keeper_dive_telemetry.test.cjs` and `docs/KEEPER_DIVE_TELEMETRY_20261016.md`. The source-only checkpoint is `b7d922aa`, with full regression evidence required before final release certification.
+
+### Five subsequent bounded iterations, in owner-priority order
+1. **Keeper calibration:** collect repeatable mirrored real-engine shots at multiple velocities and GK fatigue levels, compare event-linked intent/contact/goal frequencies and choose one bounded physical-approach adjustment *only if evidence warrants it*.
+2. **Keeper ball grip / distribution poses:** eight-direction glove holding, release and recovery visual QA, preserving physical ball possession and four controls.
+3. **Reception/pass animation:** first-touch and follow-through motion in all directional poses with desktop/touch regression and no speed/spread change.
+4. **Source-aware concurrent edits:** protect player identity provenance, audit custom graphics IDs and produce reviewed agent-conflict previews. Existing ID/index, report-path and dangling-appearance protections remain in place.
+5. **Career/tactics usability:** substitution feedback, squad role suitability, halftime coaching, and persisted-save compatibility with no schema migration.
+
+Owner-deferred long-term scope: physical-device/PWA/offline/restart certification, Super Defense/Tricks, multiplayer and exhaustive global roster source review. Preserve concurrent roster and art agents' files.

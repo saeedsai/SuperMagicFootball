@@ -47,3 +47,7 @@ After five iterations: expand original mode/cup parity and distinctive gameplay 
 
 ## Cleanup / archival safety
 The many `docs/GAP_REGISTER_*`, `TEST_REPORT_*`, previous matrix versions, QA run logs and source-scoped asset handovers are historical evidence or active regression inputs. `tests/.generated/` is created at build time and not a tracked replacement entry point. Do not remove historical, template-looking or another agent's files until a reference/CI dependency check and a successful full regression prove them safe. Only eliminate proven local transient files (untracked `__pycache__`, temp Playwright artifacts and generated fixtures), not repository provenance.
+
+## Owner-priority update — goalkeeper attempt/contact telemetry (16 October 2026)
+
+The modular game already emits early `keeperDiveAttempt` events separately from actual physical `keeperContact` events. The diagnostic `MatchOpportunityTracker` now links both events to the correct currently active ordinary or Super Shot, differentiates unmatched events and uses separate denominators for dive attempts, actual contact and match outcomes. This is an incrementally fulfilled QA/measuring requirement; **not** proof of increased goalkeeper intervention frequency or a finished P0 dive balance target. Follow `docs/KEEPER_DIVE_TELEMETRY_20261016.md` for test evidence and known limitations. Historical 218-item feature-matrix counts have **not** been silently rewritten from this telemetry-only improvement.

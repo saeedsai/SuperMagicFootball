@@ -36,3 +36,7 @@
 | P1 | Comprehensive source-backed roster verification | **ONGOING BY OTHER AGENTS:** respect parallel Club26/National26 metadata snapshots and editor conflict reports. |
 
 Do not delete historical evidence/test files just for a shorter tree; these are used in CI and prior acceptance traces.
+
+## 16 October 2026 — measured dive activity (not yet save-rate calibration)
+
+**Resolved:** optional event-based calibration can correlate a goalkeeper's anticipatory `keeperDiveAttempt` with its actual `keeperContact` within each real shot attempt, and reports both unmatched/missed categories. Ordinary and Super Shot counts and defending direction are separated; duplicate attempt frames count once per attempt. Four new tests and 66/66 active Node QA passed on source checkpoint `b7d922aa`; full Chromium historical regression was queued when this note was prepared. **Still open P0:** collect seeded mirrored *live match* goalie events, compare goal/save fairness, implement only a justified bounded keeper physical-approach change. **Still open P1:** held-ball glove grip/release in eight views. This instrumentation does not change visible match play. Other concurrent roster QA/source claims remain separately owned.
