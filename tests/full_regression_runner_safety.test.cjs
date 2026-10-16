@@ -16,6 +16,6 @@ test('regression census rejects empty shards and migrates only owned browser tes
  assert.equal(result.signal,null,'safety contract must not time out');
  assert.equal(result.status,0,
   'Python QA regression contracts failed:\\n'+result.stdout+'\\n'+result.stderr);
- assert.match(result.stderr,/Ran 6 tests/);
+ assert.match(result.stderr,/Ran 7 tests/);
  assert.match(result.stderr,/OK/);
 });
