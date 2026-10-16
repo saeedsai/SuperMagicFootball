@@ -9,7 +9,7 @@ html=fixture.split('<script type="module">',1)[0]+'</body></html>'
 js=fixture.split('<script type="module">',1)[1].split('</script>',1)[0]
 script=r"""() => {
  const g=SupermagicFootball.game, oldDrive=g.driveAI, samples=[];
- const field=SupermagicFootball.world.field;
+ const field=SupermagicFootball.world?.field||{x:150,w:2260.8};
  try {
   // Isolate the *extra* physical dive without conflating ordinary AI tracking.
   g.driveAI=()=>{};
