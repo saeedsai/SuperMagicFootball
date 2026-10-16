@@ -3,7 +3,7 @@
   "lock_key": "integration-tooling",
   "feature_id": "ART-C01-NEAR-ARM-BUILD",
   "owner": "graphics-c01-near-arm-20261016-gpt6-s12",
-  "status": "active",
+  "status": "released",
   "scope": "Only scripts/build.py to embed one new front near-arm SVG in deterministic fixture; no other tools, source verification, player/data or merge script changes.",
   "base_sha": "f4cbf72baa50b73a706c05c38f479aa09486d94c",
   "created_at": "2026-10-16",
@@ -14,9 +14,9 @@
     "node --test tests/*.test.cjs",
     "Full Regression Census on exact commit"
   ],
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md; report docs/concept_character_pipeline/C01_NEAR_ARM_BATCH_20261016.md; corrected art 336292ff; graphics+Node 134/134 #38905216121; hosted desktop/touch #38904785529; full 9/9 #38905337000 at descendant 1decc488",
   "previous_handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md and docs/concept_character_pipeline/C01_FACE_FRONT_CHECKPOINT_20261016.md; source a8553002, art QA #38899003730, hosted #38899003632, full census #38899003690 attempt 2 all PASS",
   "released_at": "2026-10-16",
-  "outcome": "source_sensitive_player_review_flags_delivered;20_merge_tests_and_116_active_Node_pass;117_historical_Node_pass;Chromium_pending",
+  "outcome": "completed_c01_experimental_painted_near_arm_and_safe_low_amplitude_stride",
   "integrated_commit": "6a706776ed8d5eb842635496f2c3036a038b3937"
 }
