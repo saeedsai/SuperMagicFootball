@@ -55,3 +55,12 @@ Scope: `src/modules/ui.js`, `tests/substitution_advice.test.cjs`, `tests/substit
 ## Focused Chromium selector hotfix checkpoint
 
 [Full Regression Census #38891468584](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468584) ran this feature's new `substitution_advice_browser_qa.py` and failed on a **test-only ambiguous locator**: the existing tactics screen legitimately contains two buttons with `data-action="returnPause"` (a screen toolbar Back and a bottom-row Back), so Playwright strict locator resolution rejected `.click()` without specifying one. The test now uses `.first.click()`, deliberately retaining both functional buttons and the actual game UI. No gameplay, save, roster, graphics or menu production code is changed by the hotfix. A companion release-contract assertion checks the existing advice ineligibility guards and re-triggers complete Full Regression Census on the new integrated SHA. Until that run completes, global Chromium regression status remains **not certified**. The original `81/81` Node pass and hosted PC/touch Quick Match success remain valid evidence on their exact source commits.
+
+### Retest submission and next-session exact run
+
+- The test-only hotfix landed in [commit `36ad78d`](https://github.com/saeedsai/SuperMagicFootball/commit/36ad78d06722467962e3c5dcea1b9870ed1cfa84).
+- [Modular Game Dev QA #38892003132](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38892003132) completed **SUCCESS** with current Node contracts, data checks and Python compile preflight.
+- [Full Regression Census #38892003186](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38892003186) was **pending** at handover. All four Chromium shards must finish on the matching commit, and any remaining failure must be classified from its script's error log. Do not present this queued run as PASS.
+- Live GitHub Pages browser smoke remains verified by [#38891468528](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528) on an ancestor containing the UI feature; the hotfix changes no playable runtime. Recheck hosting after newer concurrent Pages deployments.
+
+**Ownership at checkpoint:** the follow-up `UI-CAREER-RETEST` claim `ui-career-subfeedback-retest-20261016-gpt6b` is released after this handover. New work must acquire a fresh available claim before touching `ui-controls`.
