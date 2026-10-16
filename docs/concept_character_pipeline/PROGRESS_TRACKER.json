@@ -5,7 +5,7 @@
   "baselineAtPlanning": "82119108ca63dd510bd49bdf5c2083bed168a9a0",
   "currentMilestone": "C01",
   "programStatus": "in_progress",
-  "lastVerifiedModularCommit": "2ff04b902ee894ffdb94e4029f97707ca1499799",
+  "lastVerifiedModularCommit": "8c956b32b6443f4a249cae71dc0493c857db0c75",
   "disclaimer": "Only independently layered illustrated concept_modular_v1 assets with evidence count as delivered; older procedural Studio options and one flat concept_hero are not modular variants.",
   "existingPrototype": {
     "playerModelId": "concept_hero",
@@ -47,7 +47,7 @@
       "id": "C01",
       "title": "One approved layered character, independently editable head/hair/torso/arms/legs",
       "status": "in_progress",
-      "checkedAtCommit": "2ff04b902ee894ffdb94e4029f97707ca1499799",
+      "checkedAtCommit": "8c956b32b6443f4a249cae71dc0493c857db0c75",
       "validatedFiles": [
         "assets/characters/concept_modular_v1/source/hair_front_front.svg",
         "src/modules/conceptmodular.js",
@@ -59,7 +59,10 @@
       "evidence": [
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886177973",
         "docs/concept_character_pipeline/TEST_REPORT_C00_C01_20261016.md",
-        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886824290"
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886824290",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891362873",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891362560",
+        "docs/concept_character_pipeline/C01_REAR_HAIR_BATCH_20261016.md"
       ],
       "issues": [
         "Only front and back hair overlays are independently editable; full head/face/torso/arms/legs not isolated",
@@ -311,7 +314,7 @@
       "identifier": "medium-honey-curls-moustache"
     }
   ],
-  "nextSmallTask": "ART-C01: inspect real match rear-hair screenshots on grass/teal/light/dark and independent painted stroke registration; next isolate one independently editable front head/face layer, preserving legacy base.",
+  "nextSmallTask": "ART-C01 after ownership check: align an independently editable front head/face layer with ear and neck pivots while preserving existing illustrated hero base; owner art signoff still required.",
   "openRisks": [
     "Only one cloned literal concept character is available for all twelve demo slots",
     "Flattened five-view atlas has baked blue uniform and number 10",
@@ -349,7 +352,7 @@
       "desktop",
       "simulated-touch"
     ],
-    "frontChangedPixels": 1460,
+    "frontChangedPixels": 1455,
     "originalBackFallbackPixelIdentical": true,
     "hostedLiveVerification": "verified",
     "approvedForProduction": false,
@@ -366,7 +369,26 @@
     "fullRegressionWorkflow": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886072121",
     "fullRegression": "PASS on earlier graphics-containing commit; exact final doc SHA not independently sharded",
     "rearHairSource": "assets/characters/concept_modular_v1/source/hair_back_back.svg",
-    "rearHairStatus": "implemented_pending_exact_commit_CI",
-    "secondaryHairAnimation": "small gait-driven front/back hair sway, not articulated face/body"
+    "rearHairStatus": "verified_experimental_overlay_not_production_asset_family",
+    "secondaryHairAnimation": "small gait-driven front/back hair sway, not articulated face/body",
+    "rearHairVerifiedCommit": "8c956b32b6443f4a249cae71dc0493c857db0c75",
+    "rearHairQARun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891362873",
+    "rearHairHostedRun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891362560",
+    "rearHairViews": [
+      "back"
+    ],
+    "rearChangedPixels": 2531,
+    "latestNode": {
+      "passed": 76,
+      "failed": 0
+    },
+    "rearHosted": {
+      "desktop": "PASS",
+      "simulatedTouch": "PASS",
+      "svgHttp": 200,
+      "moduleHttp": 200,
+      "errors": 0
+    },
+    "fullRegressionLatest": "pending contemporary CI: https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468584; previously green https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886072121"
   }
 }
