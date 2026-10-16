@@ -1,21 +1,19 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "integration-tooling",
-  "feature_id": "ART-C01-FACE-PACK",
-  "owner": "graphics-c01-face-20261016-1354-gpt6",
-  "status": "released",
-  "scope": "Only scripts/build.py to inline new illustrated face SVG in existing QA fixture; no unrelated fixture tooling.",
-  "base_sha": "b5e59a275f53366ef56afea25f1a6bb13efdbaea",
-  "created_at": "2026-10-16T13:54+02:00",
-  "renewed_at": "2026-10-16T13:54+02:00",
+  "feature_id": "MERGE-SOURCE-REVIEW-FLAGS",
+  "owner": "merge-source-review-20261016-1507-gpt6",
+  "status": "active",
+  "scope": "Only scripts/parallel_data_merge.py source-sensitive player-diff review flag metadata (advisory, no automatic source attribution); tests/test_parallel_data_merge.py scoped regression; docs/PARALLEL_DATA_MERGE_GUIDE.md and dedicated docs/MERGE_SOURCE_REVIEW_HANDOVER_20261016.md. No runtime/rosters/graphics/CI workflows/other owners' files.",
+  "base_sha": "abe1fff31bd47fdcd37d2097ef65c6dc5ac525ae",
+  "created_at": "2026-10-16T15:07+02:00",
+  "renewed_at": "2026-10-16T15:07+02:00",
   "tests": [
-    "scripts/validate_concept_modular.py",
+    "python3 -m unittest discover -s tests -p test_parallel_data_merge.py -v",
+    "python3 scripts/validate_data.py",
     "node --test tests/*.test.cjs",
-    "tests/concept_modular_browser_qa.py",
-    "tests/concept_modular_live_qa.py",
-    "full regression census"
+    "Full Regression Census on exact commit"
   ],
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md and docs/concept_character_pipeline/C01_FACE_FRONT_CHECKPOINT_20261016.md; source a8553002, art QA #38899003730, hosted #38899003632, full census #38899003690 attempt 2 all PASS",
-  "released_at": "2026-10-16",
-  "outcome": "completed_c01_experimental_illustrated_front_face"
+  "handover": "docs/MERGE_SOURCE_REVIEW_HANDOVER_20261016.md",
+  "previous_handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md and docs/concept_character_pipeline/C01_FACE_FRONT_CHECKPOINT_20261016.md; source a8553002, art QA #38899003730, hosted #38899003632, full census #38899003690 attempt 2 all PASS"
 }
