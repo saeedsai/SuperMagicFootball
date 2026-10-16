@@ -1,21 +1,21 @@
-# Gameplay skill sound — own chat memory
+# Gameplay sound feature — own chat checkpoint
 
 **Agent ID:** `gameplay-pk-20261016`
 
 ## Mission
-Deliver one bounded playable-game feature per turn on fresh `dev`, respecting GitHub live feature locks.
+Deliver small in-game features on latest `dev` with explicit exclusive claims, full regressions and separate browser/deployment evidence.
 
 ## Current checkpoint
-2026-10-16: Registered this chat under `gameplay-pk-20261016`. Another agent acquired `gameplay-engine` for human PK goalkeeper issue #5, so no engine edits made. Claimed independent `audio-feedback`: added real human dribble-trick success/failure procedural tones with CPU silence and original audio parity. Code `1e75fbf5`, six Node tests `1e0f951f`, playable desktop/touch acceptance source `a40b91c8`. [Handover](../../GAMEPLAY_SKILL_SOUND_20261016.md).
+16 Oct 2026: A concurrent agent took human penalty goalkeeper feature #5 before this chat claimed engine, so no engine changes. Under `audio-feedback` claim delivered real human `dribbleTrick` success/failure cues (AI silent) in `src/modules/audio.js` with six tests and dedicated Chromium bridge. Source `1e75fbf5`, Node `1e0f951f`, browser `a40b91c8`. Audio claim released. Under separate `release-infra` claim added missing audio source/previous penalty audio and new script triggers to Full Regression Census in `50ba2479`.
 
 ## Next smallest action
-Audio ownership released; release-infra owned solely for missing full-census audio push paths. Correct own Agent ID header and inspect rerun full Chromium shards, then document final results and release infra.
+Check full run [#38946504996](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946504996) on `50ba2479` when available. Document actual Chromium outcome; if still queued, release current claim with this known limitation. Do not claim that browser/audio hardware passed without logs.
 
 ## Ownership and exclusions
-Read/write **only** this own memory file. Never read other agent memory. Keep `engine.js` and `ui.js` untouched while their keys belong to others.
+Read/write only this file. No other agent memory. Do not touch engine, UI/input, render, player data or shared QA harness without corresponding live claim.
 
 ## Evidence
-[Modular QA #38945827694](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38945827694): all 6 new audio tests PASS, 193/194 Node (the failure was this chat's missing identity header, now corrected); 20 Python merge and 10 claim contracts PASS. Full Chromium and hosted speakers unverified at this checkpoint.
+[Modular QA #38946505072](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946505072) SUCCESS: 200/200 active Node, all six new audio tests, 20/20 Python merge, 10/10 claim contracts, full roster/build validation. [Feature handover](../../GAMEPLAY_SKILL_SOUND_20261016.md). Direct hosted interaction and real phone speakers unverified.
 
 ## Cleanup
-No source/art/tests proven obsolete; preserve historical acceptance and existing .gitignore.
+No confirmed safe obsolete tracked files; retain historical tests, art, docs and IDs. Do not archive-delete under another owner.
