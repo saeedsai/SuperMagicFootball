@@ -1,0 +1,18 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "roster-club-club26_0",
+  "feature_id": "CLUB26-ARSENAL-FC27-OFFICIAL-METADATA-20261016-B1",
+  "owner": "roster-arsenal-20261016-gpt6-session1",
+  "status": "active",
+  "scope": "Arsenal club26_0 12-player official EA FC27 rating/face-stats source verification and bounded source-backed age/shirt/height metadata in data/players/club26.json and src/roster_corrections.js only; Arsenal-specific test and docs handover. No other club/selection/OVR/gameplay/UI/graphics/CI/shared tool edits.",
+  "base_dev_sha": "6613a6195347a553485fc0635b114d0137ff4e27",
+  "claimed_at": "2026-10-16",
+  "heartbeat_at": "2026-10-16",
+  "expires_at": "2026-10-17",
+  "tests": [
+    "Arsenal official EA FC27 ratings and face-stats exact contract",
+    "Arsenal 2026/27 Premier League shirt and DOB metadata",
+    "Data/runtime roster parity, immutable audit and all active Node tests",
+    "Full historical Node+Chromium regression and Pages build when CI available"
+  ]
+}
