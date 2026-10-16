@@ -2675,7 +2675,7 @@
       "club": "Manchester City",
       "playersChanged": 12,
       "fieldsChanged": 63,
-      "status": "pending_ci_regression",
+      "status": "city_source_qa_3_of_3_pass_full_regression_preflight_unrelated_memory_failure",
       "changes": [
         {
           "playerId": "club26_2_0",
@@ -3096,7 +3096,36 @@
         "EA six headline attributes are not the custom arcade power, shoot, defense and speed; those are deliberately unchanged.",
         "FootballSquads 2026/27 heights may vary across other publications; retain named source provenance."
       ],
-      "invariant": "12 stable IDs, names, club, nations, dates of birth, roles, ratings and EA headline attributes unchanged; non-City clubs untouched"
+      "invariant": "12 stable IDs, names, club, nations, dates of birth, roles, ratings and EA headline attributes unchanged; non-City clubs untouched",
+      "ciEvidence": {
+        "dataCommit": "4b9e4f56b7df85dd2599965a09000bd64e90a187",
+        "runtimeCommit": "ade18e359b1fb5263e7f444c3b70334d21cd7f28",
+        "testCommit": "e9a19bb27b931a939c482e69116770bdb797ab56",
+        "integratedRunCommit": "0cf1347c725a73d26a6d04504cb38ad4a273c709",
+        "sourceAndData": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914846855",
+          "conclusion": "failure_unrelated_project_memory_contract",
+          "nodePass": 169,
+          "nodeFail": 1,
+          "cityTestsPass": 3,
+          "cityTestsFail": 0,
+          "clubRosterAudit": "passed",
+          "unrelatedFailure": "wrong identity for game-developer-6",
+          "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/8"
+        },
+        "fullRegression": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914846852",
+          "conclusion": "failed_preflight",
+          "browser": "skipped",
+          "historicalNode": "skipped"
+        },
+        "pages": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914786259",
+          "conclusion": "cancelled"
+        },
+        "publicGame": "https://saeedsai.github.io/SuperMagicFootball/",
+        "desktopAndPhysicalMobileSmoke": "not_verified"
+      }
     }
   ]
 }
