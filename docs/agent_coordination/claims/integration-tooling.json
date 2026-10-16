@@ -3,7 +3,7 @@
   "lock_key": "integration-tooling",
   "feature_id": "ART-C01-FACE-PACK",
   "owner": "graphics-c01-face-20261016-1354-gpt6",
-  "status": "active",
+  "status": "released",
   "scope": "Only scripts/build.py to inline new illustrated face SVG in existing QA fixture; no unrelated fixture tooling.",
   "base_sha": "b5e59a275f53366ef56afea25f1a6bb13efdbaea",
   "created_at": "2026-10-16T13:54+02:00",
@@ -15,7 +15,7 @@
     "tests/concept_modular_live_qa.py",
     "full regression census"
   ],
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md and docs/concept_character_pipeline/C01_FACE_FRONT_CHECKPOINT_20261016.md; source a8553002, art QA #38899003730, hosted #38899003632, full census #38899003690 attempt 2 all PASS",
   "released_at": "2026-10-16",
-  "outcome": "completed_experimental_rear_hair_small_batch"
+  "outcome": "completed_c01_experimental_illustrated_front_face"
 }
