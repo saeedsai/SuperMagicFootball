@@ -1755,7 +1755,7 @@
       "club": "Arsenal",
       "playersChanged": 12,
       "fieldsChanged": 72,
-      "status": "pending_ci_regression",
+      "status": "source_qa_pass_browser_legacy_failure_handed_off",
       "changes": [
         {
           "playerId": "club26_0_0",
@@ -2214,7 +2214,30 @@
         "Height values from Premier League for Raya (183 cm) and Saliba (192 cm), 2026/27 FootballSquads list otherwise. 2026 FIFA World Cup sheet lists David Raya at 186 cm instead: disputed.",
         "Kepa FootballSquads 189 cm vs Transfermarkt 188 cm; keep review flag in handover."
       ],
-      "invariant": "Stable player IDs and positions, all 12 OVR, six EA headline attributes, game power/shoot/defense/speed, and all other teams unchanged."
+      "invariant": "Stable player IDs and positions, all 12 OVR, six EA headline attributes, game power/shoot/defense/speed, and all other teams unchanged.",
+      "ciEvidence": {
+        "sourceCommit": "2742eb81dbf442e870270ac39e8b2f3c97743451",
+        "modularQA": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38902601952",
+          "activeNodePass": 111,
+          "activeNodeFail": 0
+        },
+        "fullRegression": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38902601805",
+          "historicalNodePass": 116,
+          "historicalNodeFail": 0,
+          "browserPass": 61,
+          "browserFail": 1,
+          "failed": "dribble_styles_browser_qa.py: emulated Android rainbow double tap missing event",
+          "failedJobRetry": "cancelled_without_result"
+        },
+        "pages": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38902601296",
+          "conclusion": "success"
+        },
+        "liveDesktopAndPhysicalMobile": "not_verified",
+        "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/3"
+      }
     }
   ]
 }
