@@ -54,6 +54,10 @@ class ShardAuditTests(unittest.TestCase):
         self.assertEqual(result["categories"]["node"]["passed"], 3)
         self.assertEqual(result["categories"]["browser"]["passed"], 2)
 
+    def test_wrong_expected_shard_count_is_rejected(self):
+        with self.assertRaisesRegex(auditor.AuditError, "differs from expected"):
+            auditor.audit_reports(self.root, expected_shards=4)
+
     def test_missing_shard_is_not_green(self):
         self.path("browser", 1).unlink()
         self.assert_rejected("missing shard")
@@ -97,12 +101,14 @@ class ShardAuditTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(auditor.main(["--reports", str(self.root),
                                            "--expected-commit", self.commit,
+                                           "--expected-shards", "2",
                                            "--out", str(out)]), 0)
         self.assertEqual(json.loads(out.read_text())["status"], "PASS")
         out.unlink()
         self.path("node", 1).unlink()
         with contextlib.redirect_stderr(io.StringIO()):
             self.assertEqual(auditor.main(["--reports", str(self.root),
+                                           "--expected-shards", "2",
                                            "--out", str(out)]), 1)
         self.assertFalse(out.exists())
 
