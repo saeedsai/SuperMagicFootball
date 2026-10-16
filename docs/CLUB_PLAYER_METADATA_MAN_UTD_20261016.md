@@ -25,3 +25,11 @@ Verified 12/12 overall ratings and 72/72 six face attributes against [official E
 **QA evidence:** run dedicated `tests/man_utd_fc27_official_20261016.test.cjs`, active Node regression, full historical Node/browser shards, About versioning contract and Pages; record actual status after remote pushes.
 
 **Next five candidate batches:** Real Madrid `club26_7`; Liverpool `club26_9`; Tottenham `club26_29`; Chelsea `club26_18`; Atlético Madrid `club26_19`. Recheck latest locks and source status before selecting each.
+
+## Observed GitHub QA and deployment
+
+- Source commit [`08897b2`](https://github.com/saeedsai/SuperMagicFootball/commit/08897b2a4fc7c21cab80bffbf510d9d5cad38cbe); runtime [`b3e03c9`](https://github.com/saeedsai/SuperMagicFootball/commit/b3e03c940569ff03f6a8af43564769d6b0fe7580); tests [`4aa6209`](https://github.com/saeedsai/SuperMagicFootball/commit/4aa62095c254bf173b3470ab1b8db4de87cc0222).
+- [Modular QA #38961471268](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961471268) **SUCCESS: 231/231 active Node tests**, including three United tests, 165-club data/audit and About live `dev` revision tests.
+- [Pages #38961487916](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961487916) **SUCCESS**, public game https://saeedsai.github.io/SuperMagicFootball/ . This does not certify a fresh physical-phone/desktop interactive match, which was not independently exercised.
+- [Full historical regression #38961509601](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961509601) was **pending** at this checkpoint; no successful full Node/browser result may be inferred. Concurrent commits may cancel earlier run attempts.
+- About uses a dynamic latest-`dev` revision while the Pages bundle is a separately deployed SHA. No About/gameplay/UI/graphics/CI changes by this roster agent.
