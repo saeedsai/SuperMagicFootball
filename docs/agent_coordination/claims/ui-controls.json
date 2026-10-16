@@ -1,21 +1,19 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "ui-controls",
-  "feature_id": "UI-LINEUP-ROLE-FIT",
-  "owner": "ui-lineup-fit-20261016-1329-gpt6",
-  "status": "released",
-  "scope": "UI-only read-only natural-position assignment feedback in src/modules/ui.js; dedicated tests/lineup_role_fit_browser_qa.py and tests/lineup_role_fit.test.cjs; docs/UI_LINEUP_ROLE_FIT_20261016.md plus docs/NEXT_MILESTONES.md small checkpoint. No gameplay engine, graphics, rosters, shared QA harness, CI workflows, service worker or unrelated cleanup.",
-  "base_sha": "3face2973f4ae66e2576647425308968ea3312f3",
-  "created_at": "2026-10-16",
-  "renewed_at": "2026-10-16",
+  "feature_id": "UI-HALFTIME-COACH",
+  "owner": "ui-halftime-coach-20261016-1355-gpt6b",
+  "status": "active",
+  "scope": "UI-only read-only score/fitness-based coaching tips on existing HALF TIME screen in src/modules/ui.js; tests/halftime_coach_advice.test.cjs and tests/halftime_coach_browser_qa.py; dedicated docs/UI_HALFTIME_COACH_20261016.md and narrow docs/NEXT_MILESTONES.md addendum. No engine, roster, graphics, shared QA runner, CI workflows, service worker, build scripts or save schema.",
+  "base_sha": "d0cd38cc544d6d86be3a9f2a37236d01652ec925",
+  "created_at": "2026-10-16T13:55+02:00",
+  "renewed_at": "2026-10-16T13:55+02:00",
   "tests": [
-    "Node read-only contract",
-    "desktop and simulated-touch Chromium lineup role fit and persistence",
-    "full regression census on integrated SHA",
-    "hosted desktop/touch Quick Match"
+    "node --test tests/halftime_coach_advice.test.cjs",
+    "node --test tests/*.test.cjs",
+    "python3 scripts/build.py && python3 tests/halftime_coach_browser_qa.py",
+    "Full Regression Census exact integrated commit",
+    "hosted PC/touch smoke"
   ],
-  "handover": "docs/UI_LINEUP_ROLE_FIT_20261016.md — code 4e92f0b, test + full regression 120fbda5 (164/164), hosted smoke attempt 2, all verified",
-  "released_at": "2026-10-16",
-  "outcome": "completed",
-  "final_source_commit": "120fbda5a466ac9eae2b8143cb98944726f11f9b"
+  "handover": "docs/UI_HALFTIME_COACH_20261016.md"
 }
