@@ -1,0 +1,19 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "roster-club-club26_3",
+  "feature_id": "CLUB26-PSG-FC27-OFFICIAL-TRANSFER-20261016-B1",
+  "owner": "roster-fc27-chat-20261016-psg-b1",
+  "status": "active",
+  "scope": "Exactly PSG club26_3 only: replace out-transferred Bradley Barcola with current registered MF Warren Zaire-Emery maintaining slot ID and role, verify EA FC27 12 official OVR/six face stats, official PSG 2026/27 shirts and 2026/27 football biographies birthdates, ages, heights. Touch PSG records in data/players/club26.json and matching src/roster_corrections.js, club selection snapshot and immutable batch ledger, metadata batch, specific tests and specialist handover/own memory only. Do not modify other clubs or gameplay, art, CI, global tooling.",
+  "base_sha": "8ca145959773c572c1e2da85ce07abdf98ec8f34",
+  "claimed_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
+  "expires_at": "2026-10-17",
+  "tests": [
+    "EA FC27 12 OVR and 72 face stats match",
+    "PSG 2026/27 registration, shirts, nationality and ages",
+    "PSG metadata height and source/runtime parity",
+    "1 official transfer replacement in audited club roster history",
+    "active QA, full regression, deployed Pages"
+  ]
+}
