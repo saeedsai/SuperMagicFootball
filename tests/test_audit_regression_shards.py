@@ -77,6 +77,20 @@ class ShardAuditTests(unittest.TestCase):
         self.mutate("node", 0, lambda d: d["tests"].append(dict(d["tests"][0])))
         self.assert_rejected("missing, duplicated or misordered")
 
+    def test_unsafe_relative_script_path_cannot_be_certified(self):
+        for name in ("../outside.test.cjs", "nested/test.test.cjs", r"nested\\test.test.cjs"):
+            with self.subTest(name=name):
+                self.create_category("node", (name, "two.test.cjs", "three.mjs"))
+                self.assert_rejected("undiscoverable or unsafe filenames")
+
+    def test_wrong_node_script_extension_cannot_be_certified(self):
+        self.create_category("node", ("fake.js", "two.test.cjs", "three.mjs"))
+        self.assert_rejected("undiscoverable or unsafe filenames")
+
+    def test_python_script_not_selected_by_browser_discovery_is_rejected(self):
+        self.create_category("browser", ("unrelated.py", "beta_browser_qa.py"))
+        self.assert_rejected("undiscoverable or unsafe filenames")
+
     def test_wrong_round_robin_assignment_is_rejected(self):
         self.mutate("node", 1, lambda d: d["selected_scripts"].append("one.test.cjs"))
         self.assert_rejected("selected_scripts differ")
