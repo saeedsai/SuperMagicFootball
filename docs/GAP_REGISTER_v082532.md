@@ -57,3 +57,11 @@ The open P0 calibration gap now has a seeded real-engine browser matrix in `test
 ### 16 October 2026 — goalkeeper double counting
 
 **Fixed in engine event emission:** repeat `save` notifications on a keeper-recovered deflection, and loose non-shot catches misclassified as saves. Dedicated browser+Node regression added. **Open:** representative seeded save-rate fairness and keeper lateral movement certification; catching/holding glove visuals; physical-device acceptance.
+
+## 16 October 2026 — goalkeeper physical lunge milestone
+
+- **P0 — Partially closed:** after a valid `keeperDiveAttempt`, an AI goalkeeper now physically lunges up to 28 world units (less when tired), not merely animates. The old narrow X-plane contact check and actual save/goal scoring remain authoritative. A seeded engine-browser acceptance checks 30/60/120Hz, both defended goals, rested/tired and no phantom saves. See `KEEPER_PHYSICAL_LUNGE_20261016.md`.
+- **P0 — Open:** quantify actual post-lunge **save rate and corner-goal fairness** under organic varied match pressure/nonlinear Super Shots. The 288-shot previous fixed-position fixture did not model goalie movement and does not justify claiming higher game-wide keeper save percentage.
+- **P1 — Open:** complete eight-view glove grip, release and keeper distribution animation; current ball is held above foot height.
+- **P1 — Open:** visual reception and passing follow-through, source-aware concurrent asset/player merge checks and career/halftime guidance.
+- **Important integration:** a concurrently owned goalkeeper patch corrects duplicate save notifications on caught dives. Preserve its commits and re-run exact combined CI before concluding integration is clean.

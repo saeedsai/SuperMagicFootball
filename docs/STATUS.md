@@ -84,3 +84,9 @@ Fixed fall-through from successful physical keeper-dive catch into the generic s
 ## 16 October 2026 — goalkeeper event-integrity correction
 
 Corrected a real gameplay-event attribution defect where a deflected ball later caught by its own goalkeeper could register a second `save`. Keeper possession, catch animation/event, real diving interceptions and contact geometry are unchanged. New Node and browser tests cover both sides, three FPS and shot/rebound/non-shot collections. See `KEEPER_SAVE_EVENT_INTEGRITY_20261016.md` for exact CI and deferred real-match balance acceptance.
+
+## 16 October 2026 — physical goalkeeper lunge checkpoint
+
+Based on latest multi-agent `dev` rather than historical `src/engine.js`, `src/modules/engine.js` has a bounded *physical* lateral keeper movement for a credible, previously anticipated shot. The actual keeper's Y coordinate can change (per-attempt at most 28 world units, scaled by skill and fatigue), but the ball does not move until its normal tick; the existing depth-plane contact and swept save tests remain unchanged. Only CPU-controlled goalkeeper behavior is affected. New Node and desktop/simulated-touch browser tests check both goals, 30/60/120Hz and fatigue. Cache ID rotated for offline users. Other agent commits, player records and art are preserved.
+
+The first build's old intent-only static contract was too broad, because it scanned the newly added physical lunge method as though it were non-moving early intent. It is now focused on the **intent** method and supplemented with explicit physical-lunge bounds and no-save assertions. Exact-commit full census results still govern release certification, not historical 149/149 baseline. See [KEEPER_PHYSICAL_LUNGE_20261016.md](KEEPER_PHYSICAL_LUNGE_20261016.md).

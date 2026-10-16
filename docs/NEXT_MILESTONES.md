@@ -114,3 +114,16 @@ In the follow-up goalkeeper quality batch, a successful ordinary diving catch no
 ## 16 October 2026 — priority goalkeeper double-save bug fix
 
 The keeper's loose-ball catch no longer emits a second `save` after an earlier deflection, or mislabels a loose non-shot as a save. Physical interceptions, catch animation and controls remain unchanged. Next five: (1) calibrate seeded real-match keeper movement after correcting save-event denominators, (2) eight-view glove grip/distribution, (3) pass/first-touch animation, (4) source-aware agent editor merge review, (5) career/tactics substitutions and hints. See `KEEPER_SAVE_EVENT_INTEGRITY_20261016.md`.
+
+## 16 October 2026 — keeper's bounded physical lateral lunge
+
+**P0 initial movement delivered:** The live modular engine now applies a short, capped physical Y-axis keeper movement during a credible active `keeperDiveAttempt`, rather than a visual-only dive. Only autonomous goalkeepers lunge; a new shot projection is checked, fatigue limits travel and speed, and each attempt is capped at 28 game-world units. Physical contact remains narrow, with no ball teleport, free save, widened reach or keeper shot immunity. The prior mirrored seeded 149/149 QA is a baseline only; validate this source change in a fresh exact-commit census. New tests in `tests/keeper_physical_lunge.test.cjs` and `tests/keeper_physical_lunge_browser_qa.py` must pass at 30/60/120Hz in both attack directions and fatigued states. See [KEEPER_PHYSICAL_LUNGE_20261016.md](KEEPER_PHYSICAL_LUNGE_20261016.md).
+
+### Next five small milestones, after this movement checkpoint
+1. **Keeper balance verification:** run organic seeded human-v-CPU and nonlinear Super Shot replay cohorts; tune physical reach only if reproducible evidence supports it. Audit rare duplicate save event semantics after the parallel keeper-catch fix.
+2. **Eight-direction keeper ball hold and release:** improve glove grip and chest-height possession/throw/punt animation while maintaining ball-handling behavior and four controls.
+3. **Directional first touch, reception, pass follow-through:** readable animation transitions with untouched ball velocity; browser screenshots and fallback preservation.
+4. **Concurrent roster/graphics source review:** improve provenance checks and appearance reference validation in safe separate review tooling.
+5. **Career and tactics:** clearer safe lineup substitutes, formation-suitability feedback and halftime coaching preserving existing saves.
+
+Original gameplay-mode parity, player likenesses, physical iOS/Android and PWA/offline certification, Super Defense/Tricks and network play remain open/deferred in their existing roadmap categories.
