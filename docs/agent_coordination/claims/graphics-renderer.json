@@ -3,7 +3,7 @@
   "lock_key": "graphics-renderer",
   "feature_id": "ART-C01",
   "owner": "graphics-c01-front-hair-20261016-b",
-  "status": "active",
+  "status": "released",
   "scope": "C00/C01 one editable illustrated back-view hair layer + controlled painted legacy fallback. Assets, src/modules/conceptmodular.js, graphics-specific tests/docs/manifest; minimal scripts/build.py, sw.js and graphics QA workflow only after separate integration-tooling/release-infra claims. No engine, UI, physics, player data or unrelated cleanup.",
   "base_sha": "79a445ab2e377314ba75bb251f90fc9f6a1ceab2",
   "created_at": "2026-10-16",
@@ -14,5 +14,7 @@
     "python3 tests/concept_modular_browser_qa.py",
     "GitHub Actions exact-commit graphics QA"
   ],
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md"
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md — report docs/concept_character_pipeline/C01_REAR_HAIR_BATCH_20261016.md; art and hosted CI 8c956b32; latest report commit 02ac0ba0",
+  "released_at": "2026-10-16",
+  "outcome": "completed_experimental_rear_hair_small_batch"
 }
