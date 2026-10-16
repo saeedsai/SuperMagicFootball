@@ -87,7 +87,7 @@ test('human saves depend on actual positioning, not CPU prediction of shooter ai
 test('defender input determines a save instead of an otherwise identical goal',()=>{
  const kick=direction=>{
   const {g,states,events}=setup(2);
-  g.pk.shotTimer=.04;g.pk.shotMax=.8;g.pk.shotTargetY=cy+50;
+  g.pk.shotTimer=.04;g.pk.shotMax=.8;g.pk.shotTargetY=cy+36;
   states[1].y=direction;
   g.updatePK(.04);
   return {g,events};
