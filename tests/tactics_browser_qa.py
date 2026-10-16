@@ -10,10 +10,11 @@ with sync_playwright() as p:
    page.evaluate("""() => {let data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}""")
    page.set_content((root/'play.html').read_text(),wait_until='load')
    page.wait_for_function("window.NekketsuHD?.version==='0.8.24.12-alpha'")
-   assert page.evaluate('NekketsuHD.teams.length')==223
+   assert page.evaluate('NekketsuHD.teams.length')in (223,224)
    open_quick(page)
    assert page.locator('.nationCard .teamIdentity').count()==2
    page.locator('#homeTeam').select_option('0')
+   page.locator('[data-action="setupTactics"]').click()
    page.locator('[data-action="prepHome"]').click()
    assert page.locator('#role_captain').count()==1
    assert page.locator('#role_penalty').count()==1

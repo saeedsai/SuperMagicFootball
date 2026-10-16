@@ -1,0 +1,25 @@
+name: Full Club FC27 Source Coverage Audit
+# Scan alternate positions, verified FC27 club snapshots and independent non-FC27 squads.
+on:
+  push:
+    branches: [dev]
+    paths: ['.github/workflows/club-roster-audit.yml']
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install fallback parser
+        run: python3 -m pip install --user beautifulsoup4
+      - name: Scan all 165 club teams against public FC27 snapshot and roster sources
+        run: python3 scripts/update_all_clubs_fc27.py
+      - name: Archive full candidate selections and source provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fc27-all-club-source-audit
+          path: docs/CLUB_ROSTER_FC27_ALL_CLUBS_20261015.json
+          retention-days: 30

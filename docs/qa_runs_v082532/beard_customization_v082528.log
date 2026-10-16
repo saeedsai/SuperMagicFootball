@@ -1,0 +1,12 @@
+PASS desktop current release loads 
+PASS desktop full 5 face × 5 beard × 8 direction pixel-matrix and framing 
+PASS desktop named players respect Clean Shave without special-case forced beards 
+PASS desktop stubble and beard colour respond to natural hair palettes 
+PASS desktop browser runtime has no uncaught exceptions 
+PASS desktop representative five-view × all-face/all-beard human-review matrix 
+PASS simulated-touch current release loads 
+PASS simulated-touch full 5 face × 5 beard × 8 direction pixel-matrix and framing 
+PASS simulated-touch named players respect Clean Shave without special-case forced beards 
+PASS simulated-touch stubble and beard colour respond to natural hair palettes 
+PASS simulated-touch browser runtime has no uncaught exceptions 
+RESULT {'PASS': 11, 'FAIL': 0, 'TIMEOUT': 0}

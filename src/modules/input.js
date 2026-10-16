@@ -139,7 +139,16 @@ class Input{
    // a charged shot or long pass. Other live sources keep their own state.
    this.pressed[slot][k]=false;this.releases[slot][k]=false;nextPrev[k]=false;
   }else{
-   this.pressed[slot][k]=!!s[k]&&!this.prev[slot][k];
+   // A rapid touch DRIBBLE release and re-press can happen entirely between
+   // two animation frames. The previous frame still says "held", but this
+   // is a real second press edge (rainbow/other chained dribble gestures).
+   // Do not synthesize repeat edges for an uninterrupted hold or for two
+   // pointers still holding the same button. Completed taps use the pulse
+   // backlog above; this branch handles the new press that remains held.
+   const restartedTouchDribble=slot===0&&k==='dribble'&&
+     this.touchReleasePending.has(k)&&this.touchPending.has(k)&&
+     this.touchButtons.has(k);
+   this.pressed[slot][k]=!!s[k]&&(!this.prev[slot][k]||restartedTouchDribble);
    this.releases[slot][k]=!s[k]&&(releasedActions.has(k)||!!this.prev[slot][k]);
    if(this.releases[slot][k]&&!this.keys.size&&!(slot===0&&this.touchButtons.has(k)))nextPrev[k]=false;
   }

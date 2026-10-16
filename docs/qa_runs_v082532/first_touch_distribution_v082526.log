@@ -1,0 +1,11 @@
+PASS desktop on-field gait settles gradually rather than snapping on stop 
+PASS desktop receiver brace reflects pressure but does not alter ball ownership 
+PASS desktop throw, punt and catch use visually differentiated keeper poses across eight directions 
+PASS desktop keeper distribution remains functional, possession releases and correct action fires 
+PASS desktop no uncaught browser exceptions 
+PASS simulated-touch on-field gait settles gradually rather than snapping on stop 
+PASS simulated-touch receiver brace reflects pressure but does not alter ball ownership 
+PASS simulated-touch throw, punt and catch use visually differentiated keeper poses across eight directions 
+PASS simulated-touch keeper distribution remains functional, possession releases and correct action fires 
+PASS simulated-touch no uncaught browser exceptions 
+RESULT {'PASS': 10, 'FAIL': 0, 'TIMEOUT': 0}

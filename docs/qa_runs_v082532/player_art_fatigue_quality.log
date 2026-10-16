@@ -1,0 +1,9 @@
+PASS desktop diagonal mapping prefers restored three-quarter views 
+PASS desktop profile and quarter art renders distinct six-view signatures for a sample roster 
+PASS desktop halftime fatigue refund restores 40 percent in live engine 
+PASS desktop idle stamina recovery is stronger than light movement 
+PASS simulated-touch diagonal mapping prefers restored three-quarter views 
+PASS simulated-touch profile and quarter art renders distinct six-view signatures for a sample roster 
+PASS simulated-touch halftime fatigue refund restores 40 percent in live engine 
+PASS simulated-touch idle stamina recovery is stronger than light movement 
+{'PASS': 8, 'FAIL': 0, 'TIMEOUT': 0}

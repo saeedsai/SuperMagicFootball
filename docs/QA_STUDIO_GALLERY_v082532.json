@@ -1,0 +1,99 @@
+{
+  "version": "0.8.25.32",
+  "summary": {
+    "PASS": 18,
+    "FAIL": 0
+  },
+  "checks": [
+    {
+      "name": "desktop current modular game boots",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "desktop Studio navigation and closed-by-default gallery",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "desktop gallery opens with eight canvases without discarding unsaved edits",
+      "status": "PASS",
+      "detail": "{'ok': True, 'before': '4', 'selected': '10'}"
+    },
+    {
+      "name": "desktop all gallery views render nonblank directional artwork",
+      "status": "PASS",
+      "detail": "{'ok': True, 'signature': [1280999917, 3019010746, 3028942309, 1463530585, 3063088566, 1681911667, 3662178307, 954794492], 'empty': 0, 'clipped': 0}"
+    },
+    {
+      "name": "desktop all eight directions update when selected hairstyle changes",
+      "status": "PASS",
+      "detail": "{'ok': True, 'changedViews': 8}"
+    },
+    {
+      "name": "desktop gallery preview does not persist unsaved appearance",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "desktop rear hairstyle uniqueness: all thirteen styles distinguishable",
+      "status": "PASS",
+      "detail": "{'ok': True, 'unique': 13, 'edge': 0}"
+    },
+    {
+      "name": "desktop no uncaught JavaScript exceptions",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "desktop gallery closes without discarding unsaved edits",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "simulated-touch current modular game boots",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "simulated-touch Studio navigation and closed-by-default gallery",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "simulated-touch gallery opens with eight canvases without discarding unsaved edits",
+      "status": "PASS",
+      "detail": "{'ok': True, 'before': '4', 'selected': '10'}"
+    },
+    {
+      "name": "simulated-touch all gallery views render nonblank directional artwork",
+      "status": "PASS",
+      "detail": "{'ok': True, 'signature': [1280999917, 3019010746, 3028942309, 1463530585, 3063088566, 1681911667, 3662178307, 954794492], 'empty': 0, 'clipped': 0}"
+    },
+    {
+      "name": "simulated-touch all eight directions update when selected hairstyle changes",
+      "status": "PASS",
+      "detail": "{'ok': True, 'changedViews': 8}"
+    },
+    {
+      "name": "simulated-touch gallery preview does not persist unsaved appearance",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "simulated-touch rear hairstyle uniqueness: all thirteen styles distinguishable",
+      "status": "PASS",
+      "detail": "{'ok': True, 'unique': 13, 'edge': 0}"
+    },
+    {
+      "name": "simulated-touch no uncaught JavaScript exceptions",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "simulated-touch gallery closes without discarding unsaved edits",
+      "status": "PASS",
+      "detail": "True"
+    }
+  ]
+}

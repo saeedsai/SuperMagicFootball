@@ -1,0 +1,20 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "roster-club-club26_27",
+  "feature_id": "CLUB26-EVERTON-METADATA-20261016",
+  "owner": "roster-everton-20261016-gpt6-session5",
+  "status": "released",
+  "scope": "One small sourced age/identity and optional verified physical-data batch limited to club26_27 Everton in data/players/club26.json and corresponding club26_27 roster_corrections.js records; dedicated player metadata ledger/plan/test/handover files. No other clubs, selections, rating, FC27 gameplay attributes, mechanics, graphics, UI, CI or cleanup outside roster scope.",
+  "base_sha": "2ebb13fa9d6b1b3a30bd44ef8ff87d4c2073eac2",
+  "created_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
+  "tests": [
+    "roster source-runtime parity, immutable roster audit, date-of-birth ages",
+    "Modular Game Dev QA",
+    "Full Regression Census and Pages build"
+  ],
+  "handover": "docs/CLUB_PLAYER_METADATA_EVERTON_20261016.md — source commit dc9f46e16afa924ed19772bcd4b9c4bc464127e5; integrated 82/82 active Node and full historical pending",
+  "outcome": "completed_metadata_checkpoint_full_census_pending",
+  "released_at": "2026-10-16",
+  "final_source_commit": "dc9f46e16afa924ed19772bcd4b9c4bc464127e5"
+}

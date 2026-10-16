@@ -1,0 +1,36 @@
+name: Rebuild Transparent Concept Atlas
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'scripts/clean_concept_hero_atlas.py'
+      - '.github/workflows/rebuild-concept-atlas.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+      - name: Install image-processing library
+        run: python3 -m pip install --user pillow
+      - name: Remove only connected background islands between illustrated legs
+        run: python3 scripts/clean_concept_hero_atlas.py
+      - name: Verify cleaned atlas then commit the asset
+        run: |
+          git add assets/concept_hero/hero_atlas.webp
+          if git diff --cached --quiet; then echo "Atlas already cleaned"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "fix(art): remove opaque backdrop between concept player legs"
+          for attempt in 1 2 3; do
+            git fetch origin dev
+            git rebase origin/dev
+            if git push origin HEAD:dev; then exit 0; fi
+            sleep 2
+          done
+          exit 1

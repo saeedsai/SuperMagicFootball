@@ -1,0 +1,129 @@
+{
+  "summary": {
+    "PASS": 19,
+    "FAIL": 1,
+    "TIMEOUT": 0
+  },
+  "results": [
+    {
+      "suite": "action_controls.py",
+      "status": "PASS",
+      "seconds": 11.4,
+      "summary": "ed short tap Pass produces an actual ball release \nPASS touch-simulated pass pressed during kickoff lock plays once lock ends \nPASS touch-simulated Pass finds teammate owner if selected player is different \nPASS touch-simulated Pass distributes a friendly goalkeeper possession \nPASS touch-simulated Shoot launches shot when carrying ball \nPASS touch-simulated Dribble executes first feint tap \nPASS touch-simulated Jump executes ground tap \nPASS touch-simulated defensive Pass does not fire offensive pass \nPASS touch-simulated focus loss or pointer cancel never manufactures a pass \nPASS touch-simulated no uncaught browser errors \nRESULT: {'PASS': 27, 'FAIL': 0, 'TIMEOUT': 0, 'NOT EXECUTED': 0}\n\n"
+    },
+    {
+      "suite": "animation_motion_v082523.py",
+      "status": "PASS",
+      "seconds": 3.7,
+      "summary": "FPS \nPASS desktop previews keep deterministic views independent of live turn cache \nPASS desktop keeper dive, catch and recover have distinct render poses \nPASS desktop different actions render in portraits without clipping \nPASS desktop no uncaught javascript errors \nPASS simulated-touch actual live-player turning renders with eased heading at 30/60 FPS \nPASS simulated-touch previews keep deterministic views independent of live turn cache \nPASS simulated-touch keeper dive, catch and recover have distinct render poses \nPASS simulated-touch different actions render in portraits without clipping \nPASS simulated-touch no uncaught javascript errors \nRESULT {'PASS': 10, 'FAIL': 0, 'TIMEOUT': 0}\n\n"
+    },
+    {
+      "suite": "art_quality_v082522.py",
+      "status": "PASS",
+      "seconds": 10.4,
+      "summary": "PASS desktop all 13 hairstyles have distinct side and rear-3/4 head renderings \nPASS desktop tight frame 108 players \u00d7 8 directions \u00d7 4 actions \nPASS desktop no page JavaScript exceptions \nPASS desktop 13-style readable visual inspection sheet \nPASS simulated-touch all 13 hairstyles have distinct side and rear-3/4 head renderings \nPASS simulated-touch tight frame 108 players \u00d7 8 directions \u00d7 4 actions \nPASS simulated-touch no page JavaScript exceptions \nRESULT {'PASS': 7, 'FAIL': 0, 'TIMEOUT': 0}\n\n"
+    },
+    {
+      "suite": "ball_views_knockouts.py",
+      "status": "PASS",
+      "seconds": 3.0,
+      "summary": "PASS desktop view atlas categories \nPASS desktop front/back/3-quarter/left/right actually draw different sprites \nPASS desktop no browser errors \nPASS simulated-touch view atlas categories \nPASS simulated-touch front/back/3-quarter/left/right actually draw different sprites \nPASS simulated-touch no browser errors \n{'PASS': 6, 'FAIL': 0, 'TIMEOUT': 0}\n\n"
+    },
+    {
+      "suite": "beard_customization_v082528.py",
+      "status": "PASS",
+      "seconds": 4.7,
+      "summary": "ASS desktop named players respect Clean Shave without special-case forced beards \nPASS desktop stubble and beard colour respond to natural hair palettes \nPASS desktop browser runtime has no uncaught exceptions \nPASS desktop representative five-view \u00d7 all-face/all-beard human-review matrix \nPASS simulated-touch current release loads \nPASS simulated-touch full 5 face \u00d7 5 beard \u00d7 8 direction pixel-matrix and framing \nPASS simulated-touch named players respect Clean Shave without special-case forced beards \nPASS simulated-touch stubble and beard colour respond to natural hair palettes \nPASS simulated-touch browser runtime has no uncaught exceptions \nRESULT {'PASS': 11, 'FAIL': 0, 'TIMEOUT': 0}\n\n"
+    },
+    {
+      "suite": "browser_regression.py",
+      "status": "PASS",
+      "seconds": 17.7,
+      "summary": "{\"PASS\": 54, \"FAIL\": 0, \"TIMEOUT\": 0, \"NOT EXECUTED\": 3} FAILED: []\n\n"
+    },
+    {
+      "suite": "character_identity_persistence_v082529.py",
+      "status": "PASS",
+      "seconds": 7.5,
+      "summary": "+ 5-face + 13-hairstyle render matrix \nPASS simulated-touch Settings > Player Customization navigation \nPASS simulated-touch real Studio form saves named player complete appearance to storage API \nPASS simulated-touch no uncaught JS errors \nNOT EXECUTED hosted-origin page reload verification Localhost navigation blocked by browser administrator; injected DOM cannot certify persistent origin storage\nNOT EXECUTED real browser process restart persistence Requires accessible hosted origin and persistent browser profile\nNOT EXECUTED on-device storage / touch and controller No physical iOS, Android or connected controller available\nSUMMARY {'PASS': 13, 'FAIL': 0, 'TIMEOUT': 0, 'NOT EXECUTED': 3}\n\n"
+    },
+    {
+      "suite": "controlled_shots.py",
+      "status": "PASS",
+      "seconds": 3.0,
+      "summary": "udit transition reset\nControlled 18: PASS shot/rebound audit transition reboundReset\nControlled 19: PASS shot/rebound audit transition penalty\nControlled 20: PASS shot/rebound audit transition finished\nControlled 21: PASS shot/rebound audit transition nextMatch\nControlled 22: PASS shot/rebound audit transition firstRecovery\nControlled 23: PASS correlated outcome keeperCatch\nControlled 24: PASS correlated outcome defensiveRecovery\nControlled 25: PASS correlated outcome nextShot\nControlled 26: PASS correlated outcome superseded\nControlled 27: PASS correlated outcome looseBallAge\nControlled 28: PASS no uncaught browser errors\nCONTROLLED {'PASS': 28, 'FAIL': 0, 'TIMEOUT': 0, 'NOT EXECUTED': 0}\n\n"
+    },
+    {
+      "suite": "directional_art_regression.py",
+      "status": "PASS",
+      "seconds": 4.7,
+      "summary": "S desktop 84 historical players \u00d7 six approved directions \nPASS desktop front/quarter/side react to appearance settings while pure back blocks front-face leakage \nPASS desktop all approved-view drawings stay on-canvas across sample roster \nPASS desktop no uncaught browser errors \nPASS desktop representative directional contact sheet generated \nPASS simulated-touch 84 historical players \u00d7 six approved directions \nPASS simulated-touch front/quarter/side react to appearance settings while pure back blocks front-face leakage \nPASS simulated-touch all approved-view drawings stay on-canvas across sample roster \nPASS simulated-touch no uncaught browser errors \n{'PASS': 9, 'FAIL': 0, 'TIMEOUT': 0}\n\n"
+    },
+    {
+      "suite": "finishing_quality_v082514.py",
+      "status": "PASS",
+      "seconds": 3.0,
+      "summary": "mal shot PASS\ndesktop close-range attacking AI considers a clear scoring opportunity before a pressure pass PASS\ndesktop remote midfield ball carrier is not forced to shoot by closer-range logic PASS\ndesktop no uncaught browser exceptions PASS\nsimulated-touch far-out ball cannot trigger a premature goalkeeper dive PASS\nsimulated-touch already-aligned keeper still stops an incoming close normal shot PASS\nsimulated-touch close-range attacking AI considers a clear scoring opportunity before a pressure pass PASS\nsimulated-touch remote midfield ball carrier is not forced to shoot by closer-range logic PASS\nsimulated-touch no uncaught browser exceptions PASS\n{'PASS': 10, 'FAIL': 0, 'TIMEOUT': 0}\n\n"
+    },
+    {
+      "suite": "first_touch_distribution_v082526.py",
+      "status": "PASS",
+      "seconds": 3.2,
+      "summary": "ch use visually differentiated keeper poses across eight directions \nPASS desktop keeper distribution remains functional, possession releases and correct action fires \nPASS desktop no uncaught browser exceptions \nPASS simulated-touch on-field gait settles gradually rather than snapping on stop \nPASS simulated-touch receiver brace reflects pressure but does not alter ball ownership \nPASS simulated-touch throw, punt and catch use visually differentiated keeper poses across eight directions \nPASS simulated-touch keeper distribution remains functional, possession releases and correct action fires \nPASS simulated-touch no uncaught browser exceptions \nRESULT {'PASS': 10, 'FAIL': 0, 'TIMEOUT': 0}\n\n"
+    },
+    {
+      "suite": "football_mechanics_v082512.py",
+      "status": "PASS",
+      "seconds": 3.2,
+      "summary": "imulated pitch proportions and preserved vertical width PASS\ntouch-simulated directional human pass tracks teammate in chosen direction PASS\ntouch-simulated normal shot targets keeper-free goal lane at high accuracy PASS\ntouch-simulated ordinary point-blank strike stuns but continues past contact PASS\ntouch-simulated super shot launches close target and weakens on contact PASS\ntouch-simulated powerful point-blank super shot throws goalkeeper while continuing PASS\ntouch-simulated three consecutive super-shot impacts exhaust transformation PASS\ntouch-simulated previous stamina halftime refund preserved PASS\ntouch-simulated no uncaught browser errors PASS\n{'PASS': 18, 'FAIL': 0, 'TIMEOUT': 0}\n\n"
+    },
+    {
+      "suite": "graphics_integration_v082522.py",
+      "status": "FAIL",
+      "seconds": 27.8,
+      "summary": "W contact sheet \nFAIL simulated-touch game boot + updated version False\nPASS simulated-touch 12,096-case directional artwork sweep (layout subset) \nPASS simulated-touch beard changes remain visible across all eight view directions \nPASS simulated-touch tattoos are visible on the character across gameplay angles \nPASS simulated-touch Studio navigation opens from Settings/Customization \nPASS simulated-touch all 17 curated appearance selector families \nPASS simulated-touch rotate through 8 actual distinct studio previews \nPASS simulated-touch curated palette, hairstyle, beard and tattoo editing + save \nPASS simulated-touch no uncaught JS errors in customization \nRESULT {'PASS': 17, 'FAIL': 2}\n\n"
+    },
+    {
+      "suite": "keeper_contact_geometry_v082514.py",
+      "status": "PASS",
+      "seconds": 3.1,
+      "summary": "desktop swept keeper contact catches an aligned fast ball between physics frames PASS\ndesktop keeper depth threshold and free corner both remain finite PASS\ndesktop no uncaught JavaScript errors PASS\nsimulated-touch early wide-zone touch does not count as a real save PASS\nsimulated-touch keeper positioned near the true ball path can still save PASS\nsimulated-touch wide shot already at keeper X is not saved outside lateral reach PASS\nsimulated-touch swept keeper contact catches an aligned fast ball between physics frames PASS\nsimulated-touch keeper depth threshold and free corner both remain finite PASS\nsimulated-touch no uncaught JavaScript errors PASS\n{'PASS': 12, 'FAIL': 0, 'TIMEOUT': 0}\n\n"
+    },
+    {
+      "suite": "keeper_live_transition_v082525.py",
+      "status": "PASS",
+      "seconds": 3.7,
+      "summary": "S desktop keeper dive and recovery drawings are distinct and remain within frame in eight directions \nPASS desktop visual-only keeper catch cue is absent in Player Studio and appears on actual catch \nPASS desktop no uncaught browser exceptions \nPASS desktop live goalkeeper pose contact sheet generated \nPASS simulated-touch diving catch transitions to landing with real possession \nPASS simulated-touch keeper dive and recovery drawings are distinct and remain within frame in eight directions \nPASS simulated-touch visual-only keeper catch cue is absent in Player Studio and appears on actual catch \nPASS simulated-touch no uncaught browser exceptions \nRESULT {'PASS': 9, 'FAIL': 0, 'TIMEOUT': 0}\n\n"
+    },
+    {
+      "suite": "keeper_preview_v082524.py",
+      "status": "PASS",
+      "seconds": 3.9,
+      "summary": "PASS desktop goalkeeper poses fit all eight angles without clipping \nPASS desktop goalkeeper selection produces visible gloves and match-keeper art \nPASS desktop editor previews offer dive catch and recover actions \nPASS desktop no uncaught JS errors \nPASS desktop keeper review sheet created \nPASS simulated_touch goalkeeper poses fit all eight angles without clipping \nPASS simulated_touch goalkeeper selection produces visible gloves and match-keeper art \nPASS simulated_touch editor previews offer dive catch and recover actions \nPASS simulated_touch no uncaught JS errors \nRESULT {'PASS': 9, 'FAIL': 0, 'TIMEOUT': 0}\n\n"
+    },
+    {
+      "suite": "passing_and_moves.py",
+      "status": "PASS",
+      "seconds": 22.2,
+      "summary": "ASS touch Pass + up goes up: \nPASS touch Pass + down goes down: \nPASS touch Pass + left goes left: \nPASS touch Pass + right goes right: \nPASS touch Pass + diagonal sends ball diagonally: \nPASS touch held Pass release travels faster/farther than tap: \nPASS touch Jump then Pass launches lofted cross: \nPASS touch second Dribble within 2 seconds is blocked: \nPASS touch Dribble works again after 2 second cooldown: \nPASS touch defensive Dribble still switches controlled player: \nPASS touch running slide travel never exceeds 148 units: \nPASS touch standing slide travel never exceeds 104 units: \nPASS touch no browser exceptions: \nPASS MATRIX {'PASS': 28, 'FAIL': 0, 'TIMEOUT': 0, 'NOT EXECUTED': 0}\n\n"
+    },
+    {
+      "suite": "player_art_fatigue_quality.py",
+      "status": "PASS",
+      "seconds": 3.0,
+      "summary": "PASS desktop diagonal mapping prefers restored three-quarter views \nPASS desktop profile and quarter art renders distinct six-view signatures for a sample roster \nPASS desktop halftime fatigue refund restores 40 percent in live engine \nPASS desktop idle stamina recovery is stronger than light movement \nPASS simulated-touch diagonal mapping prefers restored three-quarter views \nPASS simulated-touch profile and quarter art renders distinct six-view signatures for a sample roster \nPASS simulated-touch halftime fatigue refund restores 40 percent in live engine \nPASS simulated-touch idle stamina recovery is stronger than light movement \n{'PASS': 8, 'FAIL': 0, 'TIMEOUT': 0}\n\n"
+    },
+    {
+      "suite": "reception_switching.py",
+      "status": "PASS",
+      "seconds": 4.7,
+      "summary": "ins control until a teammate has received \ntouch-simulated: PASS first touch hands control to real receiving teammate \ntouch-simulated: PASS opposition interception is attributed without friendly auto-switch \ntouch-simulated: PASS kickoff takeover does not create phantom pass receipt \ntouch-simulated: PASS fast ground pass can be swept through a receiver \ntouch-simulated: PASS flight lock prevents unintended automatic player selection \ntouch-simulated: PASS old loose passes expire without false reception \ntouch-simulated: PASS dribble countdown and visual reception with four action buttons \ntouch-simulated: PASS no uncaught JavaScript exceptions \nTOTAL {'PASS': 18, 'FAIL': 0, 'TIMEOUT': 0}\n\n"
+    },
+    {
+      "suite": "visual_framing_v082522.py",
+      "status": "PASS",
+      "seconds": 7.0,
+      "summary": "PASS desktop framed portraits: 14 historical players, 8 views, 7 poses, 3 sizes \nPASS desktop portrait-fit safety across extreme hair and stature settings \nPASS desktop no uncaught browser errors \nPASS desktop manual visual review artifact for hair and rear-quarter framing \nPASS simulated-touch framed portraits: 14 historical players, 8 views, 7 poses, 3 sizes \nPASS simulated-touch portrait-fit safety across extreme hair and stature settings \nPASS simulated-touch no uncaught browser errors \nTOTAL {'PASS': 7, 'FAIL': 0, 'TIMEOUT': 0}\n\n"
+    }
+  ]
+}

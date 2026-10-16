@@ -1,0 +1,4172 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Immutable per-field factual correction trail; complements (does not replace) the name/role/OVR squad ledger.",
+  "batches": [
+    {
+      "id": "CLUB-20261016-AVL-METADATA-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "bdc0290a7dd7f3c0310d922d6559d3e20a8749c5",
+      "clubId": "club26_6",
+      "club": "Aston Villa",
+      "playersChanged": 5,
+      "fieldsChanged": 12,
+      "status": "pending_ci_regression",
+      "changes": [
+        {
+          "playerId": "club26_6_0",
+          "name": "Emiliano Martínez",
+          "rosterSlot": 1,
+          "fields": {
+            "age": {
+              "previous": 22,
+              "current": 34,
+              "source": "https://www.uefa.com/nationalassociations/teams/52683/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 195,
+              "source": "https://www.premierleague.com/players/4245/Emiliano-Martinez/overview"
+            }
+          }
+        },
+        {
+          "playerId": "club26_6_11",
+          "name": "Marco Bizot",
+          "rosterSlot": 2,
+          "fields": {
+            "age": {
+              "previous": 33,
+              "current": 35,
+              "source": "https://www.uefa.com/nationalassociations/teams/52683/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 193,
+              "source": "https://www.transfermarkt.de/aston-villa/kader/verein/405/saison_id/2026/plus/1"
+            },
+            "nation": {
+              "previous": "Holland",
+              "current": "Netherlands",
+              "source": "https://www.uefa.com/nationalassociations/teams/52683/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_6_2",
+          "name": "Ian Maatsen",
+          "rosterSlot": 5,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://www.premierleague.com/players/51223/Juan-Familia-Castillo/overview"
+            },
+            "nation": {
+              "previous": "Holland",
+              "current": "Netherlands",
+              "source": "https://www.uefa.com/nationalassociations/teams/52683/squad/"
+            },
+            "age": {
+              "previous": null,
+              "current": 24,
+              "source": "https://www.uefa.com/nationalassociations/teams/52683/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_6_fill_MF_1",
+          "name": "Boubacar Kamara",
+          "rosterSlot": 6,
+          "fields": {
+            "age": {
+              "previous": 24,
+              "current": 26,
+              "source": "https://www.uefa.com/nationalassociations/teams/52683/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 184,
+              "source": "https://www.premierleague.com/players/25067/Thierry-Katsukunya/overview"
+            }
+          }
+        },
+        {
+          "playerId": "club26_6_5",
+          "name": "Amadou Onana",
+          "rosterSlot": 7,
+          "fields": {
+            "age": {
+              "previous": 27,
+              "current": 25,
+              "source": "https://www.uefa.com/nationalassociations/teams/52683/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 195,
+              "source": "https://www.premierleague.com/players/108096/Amadou-Onana"
+            }
+          }
+        }
+      ],
+      "notes": [
+        "Ages are derived from verified ISO birth dates at 2026-10-16; static ages will require scheduled refresh in later seasons.",
+        "heightCm uses centimetres; height is informational metadata and does not change the match physics, scaling or player overall.",
+        "2026/27 UEFA registrations and the Premier League squad may differ; no player-selection or squad-role changes attempted.",
+        "The 1,980-slot audit and immutable name/role/overall change ledger are unaffected by metadata-only corrections.",
+        "Unchanged FC27 numbers are unofficial third-party figures, not EA-verified."
+      ]
+    },
+    {
+      "id": "CLUB-20261016-BHA-METADATA-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "0fb54e76e7a262b4995fbe125a4b65e5e0afe819",
+      "clubId": "club26_12",
+      "club": "Brighton",
+      "playersChanged": 12,
+      "fieldsChanged": 44,
+      "status": "regression_verified",
+      "changes": [
+        {
+          "playerId": "club26_12_0",
+          "name": "Bart Verbruggen",
+          "rosterSlot": 1,
+          "fields": {
+            "nation": {
+              "previous": "Holland",
+              "current": "Netherlands",
+              "source": "https://www.premierleague.com/en/players/489639/bart-verbruggen/career"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 193,
+              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
+            },
+            "age": {
+              "previous": 22,
+              "current": 24,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_11",
+          "name": "Jason Steele",
+          "rosterSlot": 2,
+          "fields": {
+            "num": {
+              "previous": 12,
+              "current": 23,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 190,
+              "source": "https://fbref.com/en/players/28300a16/Jason-Steele"
+            },
+            "age": {
+              "previous": 33,
+              "current": 36,
+              "source": "https://fbref.com/en/players/28300a16/Jason-Steele"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_1",
+          "name": "Luka Vušković",
+          "rosterSlot": 3,
+          "fields": {
+            "num": {
+              "previous": 2,
+              "current": 44,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 193,
+              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
+            },
+            "age": {
+              "previous": null,
+              "current": 19,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_5",
+          "name": "Ferdi Kadıoğlu",
+          "rosterSlot": 4,
+          "fields": {
+            "num": {
+              "previous": 6,
+              "current": 24,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 173,
+              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_2",
+          "name": "Mats Wieffer",
+          "rosterSlot": 5,
+          "fields": {
+            "num": {
+              "previous": 3,
+              "current": 27,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "nation": {
+              "previous": "Holland",
+              "current": "Netherlands",
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "age": {
+              "previous": 24,
+              "current": 26,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_8",
+          "name": "Carlos Baleba",
+          "rosterSlot": 6,
+          "fields": {
+            "num": {
+              "previous": 9,
+              "current": 17,
+              "source": "https://www.brightonandhovealbion.com/media-article/mft-news-kit-numbers-premier-league-2026-27-season-august-2026"
+            },
+            "age": {
+              "previous": 30,
+              "current": 22,
+              "source": "https://www.transfermarkt.de/brighton-amp-hove-albion/kader/verein/1237/saison_id/2026/plus/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_7",
+          "name": "Pascal Groß",
+          "rosterSlot": 7,
+          "fields": {
+            "num": {
+              "previous": 8,
+              "current": 13,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 181,
+              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
+            },
+            "age": {
+              "previous": 29,
+              "current": 35,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_3",
+          "name": "Yasin Ayari",
+          "rosterSlot": 8,
+          "fields": {
+            "num": {
+              "previous": 4,
+              "current": 26,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 172,
+              "source": "https://www.premierleague.com/en/players/509416/yasin-ayari/overview"
+            },
+            "age": {
+              "previous": 25,
+              "current": 23,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_6",
+          "name": "Diego Gómez",
+          "rosterSlot": 9,
+          "fields": {
+            "num": {
+              "previous": 7,
+              "current": 25,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
+            },
+            "age": {
+              "previous": 28,
+              "current": 23,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_10",
+          "name": "Kaoru Mitoma",
+          "rosterSlot": 10,
+          "fields": {
+            "num": {
+              "previous": 11,
+              "current": 7,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://www.premierleague.com/players/117732/Kaoru%20Mitoma/stats"
+            },
+            "age": {
+              "previous": 32,
+              "current": 29,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_9",
+          "name": "Yankuba Minteh",
+          "rosterSlot": 11,
+          "fields": {
+            "num": {
+              "previous": 10,
+              "current": 11,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": 31,
+              "current": 22,
+              "source": "https://www.national-football-teams.com/club/703/2026_1/Brighton_Hove_Albion.html"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        },
+        {
+          "playerId": "club26_12_4",
+          "name": "Georginio Rutter",
+          "rosterSlot": 12,
+          "fields": {
+            "num": {
+              "previous": 5,
+              "current": 10,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 182,
+              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
+            },
+            "age": {
+              "previous": null,
+              "current": 24,
+              "source": "https://www.statmuse.com/fc/club/2026-27-brighton-%26-hove-albion-22/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            }
+          }
+        }
+      ],
+      "knownRegistrationConflicts": [
+        {
+          "playerId": "club26_12_8",
+          "playerName": "Carlos Baleba",
+          "recordedClub": "Brighton",
+          "latestLeagueListingClub": "Manchester United",
+          "latestLeagueListingShirtNumber": 20,
+          "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season",
+          "status": "unresolved_requires_sourced_2GK_3DF_4MF_3FW_squad_reselection",
+          "caveat": "Club's 2026-08-20 list named Baleba #17; Premier League 2026-09-22 list names him at Manchester United #20. Do not treat a corrected former Brighton jersey as proof of current Brighton registration. Requires a separate name/OVR/position change with immutable player-selection audit."
+        }
+      ],
+      "notes": [
+        "Date of birth values are supported by dated player references; age is calculated at 2026-10-16.",
+        "2026/27 squad shirts from Brighton's August listing and the Premier League's September 22 listing. Baleba #17 is historic club listing, not current registration.",
+        "Height values use club-specific 2026/27 player record for each name. Mats Wieffer's conflicting 188cm (Premier League historic page) vs 189cm (StatMuse) is intentionally not changed.",
+        "Club/rating/position and team-selection corrections must be made separately with the immutable name/role/OVR selection ledger.",
+        "Do not claim FC27 overall ratings are independently licensed; originals are unchanged.",
+        "Jason Steele heights conflict across public sources (FBref and StatMuse 190cm, Sky Sports 188cm, Soccerbase 185cm). 190cm is recorded as the FBref/StatMuse value, not independently certain; review before declaring exact height final."
+      ],
+      "verification": {
+        "sourceCommit": "cb6f24dc0bac9210ed78fa7ca83a240e432d941f",
+        "auditedDevHeadAtCertification": "adc52b5b9a04d95bc1b4160b377d232cccd578c1",
+        "activeNodePass": 59,
+        "activeNodeFail": 0,
+        "historicalNodePass": 94,
+        "historicalBrowserPass": 50,
+        "totalHistoricalPass": 144,
+        "totalHistoricalFail": 0,
+        "nodeQA": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38878411097",
+        "fullRegression": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38878411037",
+        "pagesSourceDeployment": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38878410705",
+        "pagesDocsDeployment": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38878755163",
+        "hostedLiveBrowserOnExactSourceCommit": "not_run",
+        "notes": "Source commit full regression 144/144 PASS; only documentation/provenance changes after it. GitHub Pages build/deploy PASS, but real hosted PC/mobile interaction on this exact version not independently verified."
+      }
+    },
+    {
+      "id": "CLUB-20261016-BVB-METADATA-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "64b1c0482b91dc98610dbf9857d4b3d8f0371c0b",
+      "clubId": "club26_11",
+      "club": "Borussia Dortmund",
+      "playersChanged": 12,
+      "fieldsChanged": 47,
+      "status": "regression_verified",
+      "sources": {
+        "official2026SquadBirthdates": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund",
+        "official2026ShirtNumbers": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html",
+        "individualBundesligaProfiles": [
+          {
+            "name": "Gregor Kobel",
+            "url": "https://www.bundesliga.com/en/player/gregor-kobel"
+          },
+          {
+            "name": "Alexander Meyer",
+            "url": "https://www.bundesliga.com/en/player/alexander-meyer"
+          },
+          {
+            "name": "Nico Schlotterbeck",
+            "url": "https://www.bundesliga.com/en/player/nico-schlotterbeck"
+          },
+          {
+            "name": "Waldemar Anton",
+            "url": "https://www.bundesliga.com/en/player/waldemar-anton"
+          },
+          {
+            "name": "Julian Ryerson",
+            "url": "https://www.bundesliga.com/en/player/julian-ryerson"
+          },
+          {
+            "name": "Felix Nmecha",
+            "url": "https://www.bundesliga.com/en/player/felix-nmecha"
+          },
+          {
+            "name": "Joey Veerman",
+            "url": "https://www.bundesliga.com/en/player/joey-veerman"
+          },
+          {
+            "name": "Marcel Sabitzer",
+            "url": "https://www.bundesliga.com/en/player/marcel-sabitzer"
+          },
+          {
+            "name": "Emre Can",
+            "url": "https://www.bundesliga.com/en/player/emre-can"
+          },
+          {
+            "name": "Serhou Guirassy",
+            "url": "https://www.bundesliga.com/en/player/serhou-guirassy"
+          },
+          {
+            "name": "Maximilian Beier",
+            "url": "https://www.bundesliga.com/en/player/maximilian-beier"
+          },
+          {
+            "name": "Daniel Svensson",
+            "url": "https://www.bundesliga.com/en/player/daniel-svensson"
+          }
+        ]
+      },
+      "changes": [
+        {
+          "playerId": "club26_11_0",
+          "name": "Gregor Kobel",
+          "rosterSlot": 1,
+          "fields": {
+            "age": {
+              "previous": 22,
+              "current": 28,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 195,
+              "source": "https://www.bundesliga.com/en/player/gregor-kobel"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_gk_12",
+          "name": "Alexander Meyer",
+          "rosterSlot": 2,
+          "fields": {
+            "num": {
+              "previous": 13,
+              "current": 33,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": 24,
+              "current": 35,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 195,
+              "source": "https://www.bundesliga.com/en/player/alexander-meyer"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_2",
+          "name": "Nico Schlotterbeck",
+          "rosterSlot": 3,
+          "fields": {
+            "num": {
+              "previous": 3,
+              "current": 4,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": 24,
+              "current": 26,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 191,
+              "source": "https://www.bundesliga.com/en/player/nico-schlotterbeck"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_1",
+          "name": "Waldemar Anton",
+          "rosterSlot": 4,
+          "fields": {
+            "num": {
+              "previous": 2,
+              "current": 3,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": 23,
+              "current": 30,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 189,
+              "source": "https://www.bundesliga.com/en/player/waldemar-anton"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_4",
+          "name": "Julian Ryerson",
+          "rosterSlot": 5,
+          "fields": {
+            "num": {
+              "previous": 5,
+              "current": 26,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": 26,
+              "current": 28,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://www.bundesliga.com/en/player/julian-ryerson"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_3",
+          "name": "Felix Nmecha",
+          "rosterSlot": 6,
+          "fields": {
+            "num": {
+              "previous": 4,
+              "current": 8,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": 25,
+              "current": 26,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 190,
+              "source": "https://www.bundesliga.com/en/player/felix-nmecha"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_8",
+          "name": "Joey Veerman",
+          "rosterSlot": 7,
+          "fields": {
+            "num": {
+              "previous": 6,
+              "current": 25,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 185,
+              "source": "https://www.bundesliga.com/en/player/joey-veerman"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "nation": {
+              "previous": "Holland",
+              "current": "Netherlands",
+              "source": "https://www.bundesliga.com/en/player/joey-veerman"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_5",
+          "name": "Marcel Sabitzer",
+          "rosterSlot": 8,
+          "fields": {
+            "num": {
+              "previous": 7,
+              "current": 20,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": 27,
+              "current": 32,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://www.bundesliga.com/en/player/marcel-sabitzer"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_11",
+          "name": "Emre Can",
+          "rosterSlot": 9,
+          "fields": {
+            "num": {
+              "previous": 8,
+              "current": 23,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": null,
+              "current": 32,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 186,
+              "source": "https://www.bundesliga.com/en/player/emre-can"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_10",
+          "name": "Serhou Guirassy",
+          "rosterSlot": 10,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 30,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 187,
+              "source": "https://www.bundesliga.com/en/player/serhou-guirassy"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_7",
+          "name": "Maximilian Beier",
+          "rosterSlot": 11,
+          "fields": {
+            "num": {
+              "previous": 10,
+              "current": 14,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": null,
+              "current": 23,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://www.bundesliga.com/en/player/maximilian-beier"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_6",
+          "name": "Daniel Svensson",
+          "rosterSlot": 12,
+          "fields": {
+            "num": {
+              "previous": 11,
+              "current": 24,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": 28,
+              "current": 24,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://www.bundesliga.com/en/player/daniel-svensson"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        }
+      ],
+      "remainingIssues": [
+        {
+          "playerId": "club26_11_6",
+          "player": "Daniel Svensson",
+          "gameRole": "FW",
+          "officialPosition": "DF",
+          "source": "https://www.bundesliga.com/en/player/daniel-svensson",
+          "status": "requires separate role-balanced replacement with immutable name/role/OVR history"
+        },
+        {
+          "category": "rating_and_face_stats",
+          "currentProvenance": "unofficial third-party FC27 September 2026",
+          "status": "not individually verified; no fictional EA scores or physical gameplay stats invented"
+        }
+      ],
+      "notes": [
+        "One team only; all original player IDs, club memberships in game, roles, overall ratings, FC27 face statistics, and gameplay parameters unchanged.",
+        "Birth dates checked against the German Football Association 2026/27 roster and age calculated as at 16 October 2026.",
+        "Heights and nation supported by Bundesliga 2026/27 individual profiles. Shirt numbers from Borussia Dortmund's 20 August 2026 official list.",
+        "Daniel Svensson appears as defender in the league data while occupying an FW slot in this game's 2GK/3DF/4MF/3FW restricted 12-player squad. Changes to selection must be separately sourced and change-ledgered."
+      ],
+      "verification": {
+        "sourceCommit": "5fbac39159069c0feba405f2c32c2f8d4bcb85f6",
+        "sourceAsOf": "2026-10-16",
+        "activeNode": {
+          "pass": 62,
+          "fail": 0,
+          "run": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38879908095"
+        },
+        "historicalNode": {
+          "pass": 96,
+          "fail": 0,
+          "shards": 4
+        },
+        "historicalChromium": {
+          "pass": 50,
+          "fail": 0,
+          "shards": 4
+        },
+        "fullRegression": {
+          "pass": 146,
+          "fail": 0,
+          "timeout": 0,
+          "error": 0,
+          "run": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38879908317"
+        },
+        "deployment": {
+          "conclusion": "success",
+          "run": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38879907546"
+        },
+        "hostedInteractiveDeviceSmoke": "not independently tested on this exact source revision"
+      }
+    },
+    {
+      "id": "CLUB-20261016-NAP-METADATA-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "5f722745886040ea19e87f79afe974a7a132d55e",
+      "clubId": "club26_25",
+      "club": "Napoli",
+      "playersChanged": 12,
+      "fieldsChanged": 49,
+      "status": "regression_verified",
+      "sources": {
+        "officialClubRegistration": "https://sscnapoli.it/en/team-2025-2026/",
+        "uefa2026ListA": "https://sscnapoli.it/en/napoli-la-lista-uefa-per-la-league-phase-di-champions-league-2/",
+        "uefaSquad": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/",
+        "secondaryHeightSource": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+      },
+      "changes": [
+        {
+          "playerId": "club26_25_audit_16",
+          "name": "Alex Meret",
+          "rosterSlot": 1,
+          "fields": {
+            "age": {
+              "previous": 24,
+              "current": 29,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250066753--alex-meret/"
+            },
+            "num": {
+              "previous": 29,
+              "current": 1,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 191,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_0",
+          "name": "Vanja Milinković-Savić",
+          "rosterSlot": 2,
+          "fields": {
+            "age": {
+              "previous": 22,
+              "current": 29,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250065792--vanja-milinkovic-savic/"
+            },
+            "num": {
+              "previous": 1,
+              "current": 32,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 202,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_audit_12",
+          "name": "Amir Rrahmani",
+          "rosterSlot": 3,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 32,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250059233--amir-rrahmani/"
+            },
+            "num": {
+              "previous": 2,
+              "current": 13,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 192,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250059233--amir-rrahmani/"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_5",
+          "name": "Giovanni Di Lorenzo",
+          "rosterSlot": 4,
+          "fields": {
+            "age": {
+              "previous": 27,
+              "current": 33,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250064229--giovanni-di-lorenzo/"
+            },
+            "num": {
+              "previous": 6,
+              "current": 22,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_4",
+          "name": "Alessandro Buongiorno",
+          "rosterSlot": 5,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://sscnapoli.it/en/team-2025-2026/"
+            },
+            "num": {
+              "previous": 3,
+              "current": 4,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 192,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_1",
+          "name": "Scott McTominay",
+          "rosterSlot": 6,
+          "fields": {
+            "age": {
+              "previous": 23,
+              "current": 29,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250088240--scott-mctominay/"
+            },
+            "num": {
+              "previous": 4,
+              "current": 8,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 193,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_2",
+          "name": "Kevin De Bruyne",
+          "rosterSlot": 7,
+          "fields": {
+            "age": {
+              "previous": 24,
+              "current": 35,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250008901--kevin-de-bruyne/"
+            },
+            "num": {
+              "previous": 5,
+              "current": 11,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 181,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250008901--kevin-de-bruyne/"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_6",
+          "name": "Stanislav Lobotka",
+          "rosterSlot": 8,
+          "fields": {
+            "age": {
+              "previous": 28,
+              "current": 31,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250055982--stanislav-lobotka/"
+            },
+            "num": {
+              "previous": 7,
+              "current": 68,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 170,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250055982--stanislav-lobotka/"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_3",
+          "name": "André-Franck Zambo Anguissa",
+          "rosterSlot": 9,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 30,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250086987--frank-anguissa/"
+            },
+            "num": {
+              "previous": 8,
+              "current": 99,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 184,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_audit_13",
+          "name": "David Neres",
+          "rosterSlot": 10,
+          "fields": {
+            "age": {
+              "previous": 24,
+              "current": 29,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250106648--david-neres/"
+            },
+            "num": {
+              "previous": 26,
+              "current": 7,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 177,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_audit_14",
+          "name": "Matteo Politano",
+          "rosterSlot": 11,
+          "fields": {
+            "age": {
+              "previous": 24,
+              "current": 33,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250050381--matteo-politano/"
+            },
+            "num": {
+              "previous": 27,
+              "current": 21,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 171,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250050381--matteo-politano/"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_audit_15",
+          "name": "Noa Lang",
+          "rosterSlot": 12,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250091165--noa-lang/"
+            },
+            "num": {
+              "previous": 9,
+              "current": 70,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 179,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "nation": {
+              "previous": "Holland",
+              "current": "Netherlands",
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250091165--noa-lang/"
+            }
+          }
+        }
+      ],
+      "knownIssues": [
+        {
+          "type": "Napoli UEFA List A difference",
+          "player": "Alessandro Buongiorno",
+          "note": "Included in Napoli club first-team page but absent from the 2 September 2026 UEFA Champions League League Phase list. Do not infer a transfer: competitions can have different registration. No roster-selection or overall edit until reconciling league registration.",
+          "sources": [
+            "https://sscnapoli.it/en/team-2025-2026/",
+            "https://sscnapoli.it/en/napoli-la-lista-uefa-per-la-league-phase-di-champions-league-2/",
+            "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+          ]
+        },
+        {
+          "type": "height disagreement",
+          "player": "Amir Rrahmani",
+          "note": "UEFA personal page states 192 cm while StatMuse 2026/27 lists 190 cm. Selected 192 cm from primary UEFA page.",
+          "sources": [
+            "https://www.uefa.com/uefachampionsleague/clubs/players/250059233--amir-rrahmani/",
+            "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+          ]
+        },
+        {
+          "type": "height disagreement",
+          "player": "Stanislav Lobotka",
+          "note": "UEFA says 170 cm; StatMuse says 171 cm. Selected 170 cm from UEFA.",
+          "sources": [
+            "https://www.uefa.com/uefachampionsleague/clubs/players/250055982--stanislav-lobotka/",
+            "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+          ]
+        },
+        {
+          "type": "height disagreement",
+          "player": "Matteo Politano",
+          "note": "UEFA says 171 cm; StatMuse says 169 cm. Selected 171 cm from UEFA.",
+          "sources": [
+            "https://www.uefa.com/uefachampionsleague/clubs/players/250050381--matteo-politano/",
+            "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+          ]
+        },
+        {
+          "type": "FC27 ratings/face attributes",
+          "note": "Unofficial third-party FC27 values remain unverified and unchanged; real match performance statistics cannot be directly converted to EA/FC27 face-stat ratings.",
+          "sources": [
+            "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+          ]
+        }
+      ],
+      "notes": [
+        "Ages derived from existing validated ISO DOB as of 2026-10-16; UEFA 2026/27 individual player profiles used to cross-check names/age, with Napoli club page for Buongiorno.",
+        "Corrected shirt numbers match 2 Sep 2026 Napoli official UEFA list and UEFA 2026/27 Champions League squad (Buongiorno #4 matches club team page).",
+        "Physical measurements from UEFA player profiles where available, otherwise StatMuse 2026/27. Conflicting heights documented rather than hidden.",
+        "No player IDs, team IDs, club assignments, selected players, positions, overall ratings, FC27 face stats or game mechanics changed.",
+        "No cleanup deletion performed: historical data, assets, and fixtures may be referenced by other agents and CI."
+      ],
+      "verification": {
+        "sourceCommit": "8614494aff7ae56b579ab52145997df45f3fe434",
+        "date": "2026-10-16",
+        "dataValidator": "PASS",
+        "rosterCount": {
+          "clubs": 165,
+          "playerSlots": 1980,
+          "roles": "2GK 3DF 4MF 3FW",
+          "result": "PASS"
+        },
+        "activeNode": {
+          "pass": 67,
+          "fail": 0,
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38884726493"
+        },
+        "historicalNode": {
+          "pass": 98,
+          "fail": 0,
+          "timeout": 0,
+          "error": 0,
+          "shards": 4
+        },
+        "historicalChromium": {
+          "pass": 52,
+          "fail": 0,
+          "timeout": 0,
+          "error": 0,
+          "shards": 4
+        },
+        "fullRegression": {
+          "pass": 150,
+          "fail": 0,
+          "timeout": 0,
+          "error": 0,
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38884726513"
+        },
+        "pagesDeployment": {
+          "result": "SUCCESS",
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38884724808",
+          "deployedSite": "https://saeedsai.github.io/SuperMagicFootball/"
+        },
+        "hostedExactRevisionLiveInputTest": "not_verified_direct_hosted_testing_unavailable"
+      }
+    },
+    {
+      "id": "CLUB-20261016-EVE-METADATA-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "dac2b5b788d4172f4ccc787c57c97e881ee2d67d",
+      "clubId": "club26_27",
+      "club": "Everton",
+      "playersChanged": 12,
+      "fieldsChanged": 22,
+      "status": "active_qa_verified_full_regression_not_completed",
+      "sourceMethod": "Personal DOB-derived age as of 2026-10-16, confirmed against England FA, Premier League and 2026/27 StatMuse player roster; record height only where the consulted source supplies an exact centimetre measurement.",
+      "changes": [
+        {
+          "playerId": "club26_27_0",
+          "name": "Jordan Pickford",
+          "rosterSlot": 1,
+          "fields": {
+            "age": {
+              "previous": 22,
+              "current": 32,
+              "source": "https://www.englandfootball.com/england/mens-senior-team/squad/Jordan-Pickford"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 185,
+              "source": "https://www.englandfootball.com/england/mens-senior-team/squad/Jordan-Pickford"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_11",
+          "name": "Mark Travers",
+          "rosterSlot": 2,
+          "fields": {
+            "age": {
+              "previous": 33,
+              "current": 27,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 191,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_6",
+          "name": "James Garner",
+          "rosterSlot": 3,
+          "fields": {
+            "age": {
+              "previous": 28,
+              "current": 25,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 182,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_4",
+          "name": "James Tarkowski",
+          "rosterSlot": 4,
+          "fields": {
+            "age": {
+              "previous": 26,
+              "current": 33,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 185,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_5",
+          "name": "Jarrad Branthwaite",
+          "rosterSlot": 5,
+          "fields": {
+            "age": {
+              "previous": 27,
+              "current": 24,
+              "source": "https://www.premierleague.com/players/66318/player/overview"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 195,
+              "source": "https://www.premierleague.com/players/66318/player/overview"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_8",
+          "name": "Kiernan Dewsbury-Hall",
+          "rosterSlot": 6,
+          "fields": {
+            "age": {
+              "previous": 30,
+              "current": 28,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_7",
+          "name": "Christian Nørgaard",
+          "rosterSlot": 7,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 32,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 185,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_9",
+          "name": "Hayden Hackney",
+          "rosterSlot": 8,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 24,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_1",
+          "name": "Vitaliy Mykolenko",
+          "rosterSlot": 9,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_3",
+          "name": "Iliman Ndiaye",
+          "rosterSlot": 10,
+          "fields": {
+            "age": {
+              "previous": 25,
+              "current": 26,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_10",
+          "name": "Brennan Johnson",
+          "rosterSlot": 11,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 25,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_2",
+          "name": "Beto",
+          "rosterSlot": 12,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://www.transfermarkt.co.uk/beto/profil/spieler/595809"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 194,
+              "source": "https://www.transfermarkt.co.uk/beto/profil/spieler/595809"
+            }
+          }
+        }
+      ],
+      "knownIssues": [
+        {
+          "type": "2026/27 club departure",
+          "player": "Beto",
+          "source": "https://www.reuters.com/sports/soccer/everton-striker-beto-completes-move-fiorentina-2026-09-01/",
+          "note": "Reuters reports permanent move to Fiorentina on 2026-09-01. Everton's current official player squad excludes Beto. This player remains in the game's immutable historical forward slot until a future independently sourced and role-balanced lineup-selection correction."
+        },
+        {
+          "type": "unconfirmed 2026/27 current club registration",
+          "player": "Iliman Ndiaye",
+          "source": "https://www.premierleague.com/en/clubs/11/news/squad",
+          "note": "Absent from Everton's October 2026 official Premier League squad listing. Do not assume current Everton membership; research his destination before roster replacement."
+        },
+        {
+          "type": "position mismatch",
+          "player": "James Garner",
+          "source": "https://www.premierleague.com/en/clubs/11/news/squad",
+          "note": "Premier League lists as midfielder, game assigns DF. Do not silently rewrite game role because 2GK/3DF/4MF/3FW must remain satisfied."
+        },
+        {
+          "type": "position mismatch",
+          "player": "Vitaliy Mykolenko",
+          "source": "https://www.premierleague.com/en/clubs/11/news/squad",
+          "note": "Premier League lists as defender, game assigns MF. Requires coordinated role-balanced selection batch."
+        },
+        {
+          "type": "shirt-number differences",
+          "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season",
+          "note": "Official 2026/27 jersey numbers differ from most game's historical 1-12 presentation numbers. Deliberately did not overwrite shirt numbers because game still includes Beto/Ndiaye and editing remaining numbers would cause collisions/false verified status."
+        },
+        {
+          "type": "height unknown",
+          "players": [
+            "Hayden Hackney",
+            "Brennan Johnson"
+          ],
+          "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027",
+          "note": "Exact heights for Hayden Hackney and Brennan Johnson were not displayed by the consulted 2026/27 roster page, so fields remain unset."
+        },
+        {
+          "type": "OVR and physical gameplay statistics",
+          "note": "FC27 estimates in the previous source roster are third-party and not independently EA-certified. Player OVR, pace, shooting and other gameplay attributes are untouched rather than guessed."
+        }
+      ],
+      "unchanged": [
+        "all 165 club memberships and lineups in game",
+        "all 1,980 player IDs and order",
+        "2 GK/3 DF/4 MF/3 FW role quotas",
+        "all OVR and FC27 face stats",
+        "player names/nationality and jersey numbers",
+        "all gameplay physics, controls, graphics, engine, UI, CSS, templates and CI workflows"
+      ],
+      "verification": {
+        "sourceCommit": "dc9f46e16afa924ed19772bcd4b9c4bc464127e5",
+        "scope": [
+          "12 Everton ages at 2026-10-16",
+          "10 measured Everton heights",
+          "all 165 original rosters selection unchanged"
+        ],
+        "dataValidation": "PASS",
+        "rosterCount": "165/165 clubs, 1980 slots, 2GK/3DF/4MF/3FW PASS",
+        "focusedTest": "PASS in integrated latest modular QA",
+        "integratedNodeRun": {
+          "pass": 82,
+          "fail": 0,
+          "commit": "709eeec167daf1a201dcba5bec6afee571623279",
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891827540"
+        },
+        "sourceCommitNodeRun": {
+          "pass": 81,
+          "fail": 1,
+          "failedTest": "QA framework's failing-script negative-path fixture; unrelated to Everton; later fixed by QA owner",
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891568735"
+        },
+        "fullHistoricalOnSourceCommit": {
+          "status": "cancelled_due_to_parallel_pushes",
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891568706"
+        },
+        "historicalOnIntegratedVersion": {
+          "status": "queued_at_checkpoint",
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891827523"
+        },
+        "pagesIntegratedDeployment": {
+          "status": "SUCCESS",
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891826819",
+          "site": "https://saeedsai.github.io/SuperMagicFootball/"
+        },
+        "exactLiveHostedDesktopTouch": "not_tested_on_Everton_source_revision"
+      }
+    },
+    {
+      "id": "CLUB-20261016-INT-METADATA-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "d0cd38cc544d6d86be3a9f2a37236d01652ec925",
+      "clubId": "club26_8",
+      "club": "Inter Milan",
+      "playersChanged": 5,
+      "fieldsChanged": 10,
+      "status": "pending_ci_regression",
+      "changes": [
+        {
+          "playerId": "club26_8_2",
+          "name": "Alessandro Bastoni",
+          "rosterSlot": 3,
+          "fields": {
+            "age": {
+              "previous": 24,
+              "current": 27,
+              "source": "https://www.inter.it/en/teams/first-team/player/alessandro-bastoni"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 190,
+              "source": "https://www.inter.it/en/teams/first-team/player/alessandro-bastoni"
+            }
+          }
+        },
+        {
+          "playerId": "club26_8_4",
+          "name": "Federico Dimarco",
+          "rosterSlot": 4,
+          "fields": {
+            "age": {
+              "previous": 26,
+              "current": 28,
+              "source": "https://www.inter.it/en/teams/first-team/player/federico-dimarco"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 175,
+              "source": "https://www.inter.it/en/teams/first-team/player/federico-dimarco"
+            }
+          }
+        },
+        {
+          "playerId": "club26_8_3",
+          "name": "Nicolò Barella",
+          "rosterSlot": 6,
+          "fields": {
+            "age": {
+              "previous": 25,
+              "current": 29,
+              "source": "https://www.inter.it/en/teams/first-team/player/nicolo-barella"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 175,
+              "source": "https://www.inter.it/en/teams/first-team/player/nicolo-barella"
+            }
+          }
+        },
+        {
+          "playerId": "club26_8_audit_16",
+          "name": "Piotr Zieliński",
+          "rosterSlot": 8,
+          "fields": {
+            "age": {
+              "previous": 24,
+              "current": 32,
+              "source": "https://www.inter.it/en/teams/first-team/player/piotr-zielinski"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://www.inter.it/en/teams/first-team/player/piotr-zielinski"
+            }
+          }
+        },
+        {
+          "playerId": "club26_8_1",
+          "name": "Lautaro Martínez",
+          "rosterSlot": 10,
+          "fields": {
+            "age": {
+              "previous": 23,
+              "current": 29,
+              "source": "https://www.inter.it/en/teams/first-team/player/lautaro-martinez"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 174,
+              "source": "https://www.inter.it/en/teams/first-team/player/lautaro-martinez"
+            }
+          }
+        }
+      ],
+      "notes": [
+        "Five entries verified against official Inter Milan player biographies, dated age 2026-10-16 and heights in cm.",
+        "Game shirt numbers remain unchanged, even where Inter official biographies show different numbers, because additional club roster selection and collision checks are needed.",
+        "Unchanged player IDs, names, squad roles, OVR, rating-source markers, gameplay face stats and all other club records.",
+        "Other Inter players and current 2026/27 registration for Ivan Provedel require a separate source-backed review."
+      ]
+    },
+    {
+      "id": "CLUB-20261016-ARS-FC27-VERIFICATION-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "2c3e346090fa44562c34e4d5fb317c22ab550829",
+      "clubId": "club26_0",
+      "club": "Arsenal",
+      "playersChanged": 12,
+      "fieldsChanged": 72,
+      "status": "source_qa_pass_browser_legacy_failure_handed_off",
+      "changes": [
+        {
+          "playerId": "club26_0_0",
+          "name": "David Raya",
+          "rosterSlot": 1,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://www.premierleague.com/players/7975/David-Raya-Martin/overview"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_gk_17",
+          "name": "Kepa",
+          "rosterSlot": 2,
+          "fields": {
+            "num": {
+              "previous": 2,
+              "current": 13,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 32,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 189,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_audit_12",
+          "name": "Gabriel",
+          "rosterSlot": 3,
+          "fields": {
+            "num": {
+              "previous": 3,
+              "current": 6,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 190,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_audit_13",
+          "name": "William Saliba",
+          "rosterSlot": 4,
+          "fields": {
+            "num": {
+              "previous": 4,
+              "current": 2,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 25,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 192,
+              "source": "https://www.premierleague.com/players/66204/stats"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_audit_14",
+          "name": "Ezri Konsa",
+          "rosterSlot": 5,
+          "fields": {
+            "num": {
+              "previous": 5,
+              "current": 15,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_5",
+          "name": "Declan Rice",
+          "rosterSlot": 6,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 185,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_7",
+          "name": "Bruno Guimarães",
+          "rosterSlot": 7,
+          "fields": {
+            "num": {
+              "previous": 6,
+              "current": 39,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 182,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_audit_16",
+          "name": "Martin Ødegaard",
+          "rosterSlot": 8,
+          "fields": {
+            "num": {
+              "previous": 7,
+              "current": 8,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 176,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_8",
+          "name": "Zubimendi",
+          "rosterSlot": 9,
+          "fields": {
+            "num": {
+              "previous": 8,
+              "current": 36,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_6",
+          "name": "Bukayo Saka",
+          "rosterSlot": 10,
+          "fields": {
+            "num": {
+              "previous": 9,
+              "current": 7,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_10",
+          "name": "Viktor Gyökeres",
+          "rosterSlot": 11,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 187,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_audit_15",
+          "name": "Eberechi Eze",
+          "rosterSlot": 12,
+          "fields": {
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 173,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        }
+      ],
+      "officialFc27Audit": {
+        "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+        "playersMatched": 12,
+        "overallRatingsMatched": 12,
+        "faceStatGroupsMatched": 72,
+        "gameplayStatsUnchanged": true,
+        "roleCaveat": "Eze EA FC27 CAM, game FW in constrained 2GK/3DF/4MF/3FW 12-player design"
+      },
+      "physicalDataCaveats": [
+        "Height values from Premier League for Raya (183 cm) and Saliba (192 cm), 2026/27 FootballSquads list otherwise. 2026 FIFA World Cup sheet lists David Raya at 186 cm instead: disputed.",
+        "Kepa FootballSquads 189 cm vs Transfermarkt 188 cm; keep review flag in handover."
+      ],
+      "invariant": "Stable player IDs and positions, all 12 OVR, six EA headline attributes, game power/shoot/defense/speed, and all other teams unchanged.",
+      "ciEvidence": {
+        "sourceCommit": "2742eb81dbf442e870270ac39e8b2f3c97743451",
+        "modularQA": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38902601952",
+          "activeNodePass": 111,
+          "activeNodeFail": 0
+        },
+        "fullRegression": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38902601805",
+          "historicalNodePass": 116,
+          "historicalNodeFail": 0,
+          "browserPass": 61,
+          "browserFail": 1,
+          "failed": "dribble_styles_browser_qa.py: emulated Android rainbow double tap missing event",
+          "failedJobRetry": "cancelled_without_result"
+        },
+        "pages": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38902601296",
+          "conclusion": "success"
+        },
+        "liveDesktopAndPhysicalMobile": "not_verified",
+        "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/3"
+      }
+    },
+    {
+      "id": "CLUB-20261016-FCB-FC27-VERIFICATION-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "b50e79194f1b56a811e696ef2498440f41261708",
+      "clubId": "club26_1",
+      "club": "Bayern Munich",
+      "playersChanged": 12,
+      "fieldsChanged": 57,
+      "status": "source_qa_pass_134_active_full_census_cancelled_pages_cancelled",
+      "changes": [
+        {
+          "playerId": "club26_1_0",
+          "name": "Manuel Neuer",
+          "rosterSlot": 1,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 192,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_audit_13",
+          "name": "Jonas Urbig",
+          "rosterSlot": 2,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 189,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_3",
+          "name": "Joshua Kimmich",
+          "rosterSlot": 3,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 176,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_5",
+          "name": "Dayot Upamecano",
+          "rosterSlot": 4,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 188,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_2",
+          "name": "Jonathan Tah",
+          "rosterSlot": 5,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 192,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_4",
+          "name": "Jamal Musiala",
+          "rosterSlot": 6,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 181,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_audit_14",
+          "name": "Konrad Laimer",
+          "rosterSlot": 7,
+          "fields": {
+            "num": {
+              "previous": 3,
+              "current": 27,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "age": {
+              "previous": null,
+              "current": 29,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 179,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_6",
+          "name": "Aleksandar Pavlović",
+          "rosterSlot": 8,
+          "fields": {
+            "num": {
+              "previous": 5,
+              "current": 45,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "age": {
+              "previous": null,
+              "current": 22,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 186,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_1",
+          "name": "Ismael Saibari",
+          "rosterSlot": 9,
+          "fields": {
+            "num": {
+              "previous": 7,
+              "current": 34,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "age": {
+              "previous": null,
+              "current": 25,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 185,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_8",
+          "name": "Harry Kane",
+          "rosterSlot": 10,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 188,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_audit_12",
+          "name": "Michael Olise",
+          "rosterSlot": 11,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 184,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_7",
+          "name": "Luis Díaz",
+          "rosterSlot": 12,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        }
+      ],
+      "officialFc27Audit": {
+        "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+        "playersMatched": 12,
+        "overallRatingsMatched": 12,
+        "headlineAttributesMatched": 72,
+        "ratingType": "Ultimate Team launch base-card",
+        "gameplayStatsUnchanged": true
+      },
+      "otherSources": {
+        "registration": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich",
+        "physicalData": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+      },
+      "knownCaveats": [
+        "FC 27 headline stats are not the game's editable arcade power/shoot/defense/speed values.",
+        "Game uses Joshua Kimmich as DF and Ismael Saibari as MF as constrained roles; EA has CDM and CAM card respectively.",
+        "FootballSquads physical measurements may differ from other providers; source-linked rather than claiming uniquely authoritative height."
+      ],
+      "invariant": "12 stable IDs, players, roles, ratings and 72 official face attributes unchanged; all other clubs untouched",
+      "ciEvidence": {
+        "sourceSha": "6c396a98023ec36ddc59caa6453346ebd57c7253",
+        "testSha": "3bc2db27d529b6cd1bad024b4b538698f5feae1f",
+        "modularQA": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904974985",
+          "conclusion": "success",
+          "activeNodePassed": 134,
+          "activeNodeFailed": 0,
+          "clubRosterValidation": "passed"
+        },
+        "earlierSourceQA": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904697279",
+          "conclusion": "failure",
+          "unrelatedHalftimeContractFailure": true
+        },
+        "fullRegression": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904696936",
+          "conclusion": "cancelled_not_tested"
+        },
+        "laterIntegratedFullRegression": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905117786",
+          "conclusion": "cancelled_not_tested"
+        },
+        "pages": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904975262",
+          "conclusion": "cancelled_not_deployed"
+        },
+        "physicalHostedPhonePc": "not_independently_verified"
+      }
+    },
+    {
+      "id": "CLUB-20261016-MCI-FC27-VERIFICATION-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "25c44e94bd051e591cc5346679222fd66f31917d",
+      "clubId": "club26_2",
+      "club": "Manchester City",
+      "playersChanged": 12,
+      "fieldsChanged": 63,
+      "status": "fully_regression_verified_171_active_130_historical_node_71_browser_pages_success",
+      "changes": [
+        {
+          "playerId": "club26_2_0",
+          "name": "Gianluigi Donnarumma",
+          "rosterSlot": 1,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 196,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_gk_17",
+          "name": "Gerónimo Rulli",
+          "rosterSlot": 2,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 189,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_1",
+          "name": "Rúben Dias",
+          "rosterSlot": 3,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 187,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_audit_12",
+          "name": "Joško Gvardiol",
+          "rosterSlot": 4,
+          "fields": {
+            "num": {
+              "previous": 2,
+              "current": 24,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 24,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 185,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_audit_13",
+          "name": "Marc Guéhi",
+          "rosterSlot": 5,
+          "fields": {
+            "num": {
+              "previous": 4,
+              "current": 6,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 26,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 182,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_2",
+          "name": "Elliot Anderson",
+          "rosterSlot": 6,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 175,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_audit_16",
+          "name": "Phil Foden",
+          "rosterSlot": 7,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 171,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_8",
+          "name": "Jérémy Doku",
+          "rosterSlot": 8,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 179,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_audit_15",
+          "name": "Matheus Nunes",
+          "rosterSlot": 9,
+          "fields": {
+            "num": {
+              "previous": 6,
+              "current": 27,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_7",
+          "name": "Erling Haaland",
+          "rosterSlot": 10,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 195,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_audit_14",
+          "name": "Rayan Cherki",
+          "rosterSlot": 11,
+          "fields": {
+            "num": {
+              "previous": 7,
+              "current": 10,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 23,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 177,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        },
+        {
+          "playerId": "club26_2_5",
+          "name": "Antoine Semenyo",
+          "rosterSlot": 12,
+          "fields": {
+            "num": {
+              "previous": 8,
+              "current": 42,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 26,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10"
+            }
+          }
+        }
+      ],
+      "officialFc27Audit": {
+        "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10",
+        "playersMatched": 12,
+        "overallRatingsMatched": 12,
+        "headlineAttributesMatched": 72,
+        "ratingType": "Ultimate Team launch base-card",
+        "gameplayStatsUnchanged": true
+      },
+      "otherSources": {
+        "clubRegistration": "https://www.premierleague.com/en/news/4706139/see-all-the-202627-premier-league-squad-lists",
+        "shirtNumbers": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season",
+        "physicalAndDOB": "https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm"
+      },
+      "knownCaveats": [
+        "EA FC 27 base cards exclude Ultimate Team promos and live-form player changes.",
+        "The playable roster uses a strict 2GK/3DF/4MF/3FW distribution: Jérémy Doku appears as MF although EA LW, Rayan Cherki as FW although EA RW, and Matheus Nunes as MF though EA RB.",
+        "EA six headline attributes are not the custom arcade power, shoot, defense and speed; those are deliberately unchanged.",
+        "FootballSquads 2026/27 heights may vary across other publications; retain named source provenance."
+      ],
+      "invariant": "12 stable IDs, names, club, nations, dates of birth, roles, ratings and EA headline attributes unchanged; non-City clubs untouched",
+      "ciEvidence": {
+        "dataCommit": "4b9e4f56b7df85dd2599965a09000bd64e90a187",
+        "runtimeCommit": "ade18e359b1fb5263e7f444c3b70334d21cd7f28",
+        "testCommit": "e9a19bb27b931a939c482e69116770bdb797ab56",
+        "integratedRunCommit": "0cf1347c725a73d26a6d04504cb38ad4a273c709",
+        "sourceAndData": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914846855",
+          "conclusion": "failure_unrelated_project_memory_contract",
+          "nodePass": 169,
+          "nodeFail": 1,
+          "cityTestsPass": 3,
+          "cityTestsFail": 0,
+          "clubRosterAudit": "passed",
+          "unrelatedFailure": "wrong identity for game-developer-6",
+          "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/8"
+        },
+        "fullRegression": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914846852",
+          "conclusion": "failed_preflight",
+          "browser": "skipped",
+          "historicalNode": "skipped"
+        },
+        "pages": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914786259",
+          "conclusion": "cancelled"
+        },
+        "publicGame": "https://saeedsai.github.io/SuperMagicFootball/",
+        "desktopAndPhysicalMobileSmoke": "not_verified",
+        "laterIntegratedGreen": {
+          "commit": "6fe944059b8634a4673d5e3f6d0addc2ef1a7884",
+          "modularQA": {
+            "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915465084",
+            "conclusion": "success",
+            "activeNodePass": 171,
+            "activeNodeFail": 0,
+            "cityTestsPass": 3,
+            "clubQuotaAudit": "passed"
+          },
+          "pages": {
+            "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915464957",
+            "conclusion": "success",
+            "build": "success",
+            "deploy": "success"
+          },
+          "historicalCensus": {
+            "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074",
+            "conclusion": "success",
+            "headSha": "34604826aa552e493885c12870cdbf9bc6b662cf",
+            "preflight": "passed",
+            "historicalNode": {
+              "passed": 130,
+              "failed": 0,
+              "shards": [
+                32,
+                33,
+                32,
+                33
+              ]
+            },
+            "chromiumBrowser": {
+              "passed": 71,
+              "failed": 0,
+              "shards": [
+                17,
+                18,
+                18,
+                18
+              ]
+            }
+          },
+          "hostedPhysicalMobileAndPCInteraction": "not_independently_verified"
+        }
+      }
+    },
+    {
+      "id": "CLUB-20261016-PSG-FC27-VERIFICATION-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "0e342259778b4705e305cde408253e64e1beb42f",
+      "clubId": "club26_3",
+      "club": "Paris Saint-Germain",
+      "playersChanged": 12,
+      "fieldsChanged": 67,
+      "status": "full_active_historical_node_browser_regression_verified_pages_deployed",
+      "changes": [
+        {
+          "playerId": "club26_3_audit_14",
+          "name": "Matvey Safonov",
+          "rosterSlot": 1,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 192,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_0",
+          "name": "Lucas Chevalier",
+          "rosterSlot": 2,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 192,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_1",
+          "name": "Nuno Mendes",
+          "rosterSlot": 3,
+          "fields": {
+            "num": {
+              "previous": 1,
+              "current": 25,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "age": {
+              "previous": null,
+              "current": 24,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 184,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_2",
+          "name": "Willian Pacho",
+          "rosterSlot": 4,
+          "fields": {
+            "num": {
+              "previous": 2,
+              "current": 51,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "age": {
+              "previous": null,
+              "current": 25,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 186,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_audit_12",
+          "name": "Achraf Hakimi",
+          "rosterSlot": 5,
+          "fields": {
+            "num": {
+              "previous": 3,
+              "current": 2,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_10",
+          "name": "Vitinha",
+          "rosterSlot": 6,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 172,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_9",
+          "name": "João Neves",
+          "rosterSlot": 7,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 174,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_4",
+          "name": "Fabián Ruiz",
+          "rosterSlot": 8,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 189,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_audit_15",
+          "name": "Warren Zaïre-Emery",
+          "rosterSlot": 9,
+          "fields": {
+            "name": {
+              "previous": "Bradley Barcola",
+              "current": "Warren Zaïre-Emery",
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "rating": {
+              "previous": 85,
+              "current": 83,
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27FaceStats": {
+              "previous": {
+                "pace": 92,
+                "shooting": 76,
+                "passing": 78,
+                "dribbling": 84,
+                "defending": 39,
+                "physicality": 67
+              },
+              "current": {
+                "pace": 79,
+                "shooting": 71,
+                "passing": 78,
+                "dribbling": 81,
+                "defending": 79,
+                "physicality": 85
+              },
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "birthDate": {
+              "previous": "2002-09-02",
+              "current": "2006-03-08",
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "fc27Id": {
+              "previous": "264652",
+              "current": "270673",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/player-ratings/warren-zaire-emery/270673"
+            },
+            "fc27Position": {
+              "previous": "LW",
+              "current": "CM",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "rosterVerification": {
+              "previous": "fc27_position_club",
+              "current": "verified_club_role",
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "num": {
+              "previous": 4,
+              "current": 33,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "age": {
+              "previous": null,
+              "current": 20,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_5",
+          "name": "Ousmane Dembélé",
+          "rosterSlot": 10,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_audit_13",
+          "name": "Khvicha Kvaratskhelia",
+          "rosterSlot": 11,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_6",
+          "name": "Désiré Doué",
+          "rosterSlot": 12,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 177,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        }
+      ],
+      "officialFc27Audit": {
+        "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+        "playersMatched": 12,
+        "overallRatingsMatched": 12,
+        "headlineAttributesMatched": 72,
+        "priorAndNewPlayerScoreChanges": [
+          {
+            "playerRemoved": "Bradley Barcola",
+            "oldOverall": 85,
+            "playerAdded": "Warren Zaïre-Emery",
+            "newOverall": 83
+          }
+        ],
+        "ratingType": "Ultimate Team launch base-card",
+        "gameEngineAndArcadeStatsUnchanged": true
+      },
+      "sources": {
+        "officialClub": "https://www.psg.fr/en/mens-football/squad/season/2026-2027",
+        "playerBiographies": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm",
+        "transfer": "https://www.reuters.com/sports/soccer/liverpool-bring-marquee-forward-signing-barcola-psg-2026-08-31/",
+        "ratings": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+      },
+      "knownCaveats": [
+        "The official EA FC27 base-card page still lists Bradley Barcola under Paris SG at launch, but PSG's 2026/27 club roster and independent transfer reporting confirm Liverpool in August 2026. We prioritize current real-world club membership.",
+        "Bradley Barcola is also present in the separate Liverpool club26_9 roster; Liverpool remains untouched and will require separate club claim.",
+        "Paris squad uses 2GK/3DF/4MF/3FW, so game MF and forward slot roles may differ from EA natural LW/RW on some existing members.",
+        "The game custom arcade power, shoot, defense, speed and value are intentionally retained, including slot 9 following replacement, to avoid gameplay balance changes.",
+        "Heights are from the selected 2026/27 FootballSquads biography, which may differ from other published physical measures."
+      ],
+      "invariant": "One role-preserving transfer replacement at fixed slot 9 and persistent ID; all other club roster identities, game engine and arcade stats unchanged.",
+      "ciEvidence": {
+        "sourceSha": "3f5cf46c6732a84955a9178a0b1988a34adf804c",
+        "active": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925059044",
+          "conclusion": "success",
+          "pass": 174,
+          "fail": 0,
+          "psgTests": 3
+        },
+        "full": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925059080",
+          "conclusion": "success",
+          "nodePassed": 131,
+          "nodeFailed": 0,
+          "browserPassed": 71,
+          "browserFailed": 0
+        },
+        "pages": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925057855",
+          "conclusion": "success"
+        },
+        "hostedPcPhysicalPhonePlay": "not_independently_verified"
+      }
+    },
+    {
+      "id": "CLUB-20261016-PSG-CLUB-PROVENANCE-2",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "53719fa195374368d4b704888877afe2bf58b126",
+      "clubId": "club26_3",
+      "club": "Paris Saint-Germain",
+      "playersChanged": 1,
+      "fieldsChanged": 2,
+      "status": "full_active_historical_node_browser_regression_verified_pages_deployed",
+      "changes": [
+        {
+          "playerId": "club26_3_audit_15",
+          "name": "Warren Zaïre-Emery",
+          "rosterSlot": 9,
+          "fields": {
+            "clubOfficialSource": {
+              "previous": null,
+              "current": "https://www.psg.fr/en/mens-football/squad/season/2026-2027",
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "clubOfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            }
+          }
+        }
+      ],
+      "sources": {
+        "officialPSG2026_27Squad": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+      },
+      "invariant": "Current-club primary-source URL attached to replaced player; exactly two provenance fields, no other data, role, rating or game mechanic changed.",
+      "ciEvidence": {
+        "sourceSha": "3f5cf46c6732a84955a9178a0b1988a34adf804c",
+        "active": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925059044",
+          "conclusion": "success",
+          "pass": 174,
+          "fail": 0,
+          "psgTests": 3
+        },
+        "full": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925059080",
+          "conclusion": "success",
+          "nodePassed": 131,
+          "nodeFailed": 0,
+          "browserPassed": 71,
+          "browserFailed": 0
+        },
+        "pages": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925057855",
+          "conclusion": "success"
+        },
+        "hostedPcPhysicalPhonePlay": "not_independently_verified"
+      }
+    },
+    {
+      "id": "CLUB-20261016-FCBAR-FC27-VERIFICATION-1",
+      "asOfDate": "2026-10-16",
+      "clubId": "club26_4",
+      "club": "Barcelona",
+      "playersChanged": 12,
+      "fieldsChanged": 63,
+      "status": "integrated_active_qa_pass_203_full_regression_pending_pages_not_certified",
+      "changes": [
+        {
+          "playerId": "club26_4_0",
+          "name": "Joan García",
+          "rosterSlot": 1,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_official_12",
+          "name": "Wojciech Szczęsny",
+          "rosterSlot": 2,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 195,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_9",
+          "name": "Pau Cubarsí",
+          "rosterSlot": 3,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 184,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_11",
+          "name": "Eric García",
+          "rosterSlot": 4,
+          "fields": {
+            "num": {
+              "previous": 2,
+              "current": 24,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "age": {
+              "previous": null,
+              "current": 25,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 182,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_official_13",
+          "name": "Jules Koundé",
+          "rosterSlot": 5,
+          "fields": {
+            "num": {
+              "previous": 3,
+              "current": 23,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_8",
+          "name": "Pedri",
+          "rosterSlot": 6,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 177,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_5",
+          "name": "Rodri",
+          "rosterSlot": 7,
+          "fields": {
+            "num": {
+              "previous": 4,
+              "current": 16,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "age": {
+              "previous": null,
+              "current": 30,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 190,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_2",
+          "name": "Frenkie de Jong",
+          "rosterSlot": 8,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 179,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_6",
+          "name": "Fermín",
+          "rosterSlot": 9,
+          "fields": {
+            "num": {
+              "previous": 6,
+              "current": 7,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "age": {
+              "previous": null,
+              "current": 23,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 176,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_7",
+          "name": "Lamine Yamal",
+          "rosterSlot": 10,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_1",
+          "name": "Raphinha",
+          "rosterSlot": 11,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 176,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_official_14",
+          "name": "Dani Olmo",
+          "rosterSlot": 12,
+          "fields": {
+            "num": {
+              "previous": 7,
+              "current": 20,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 179,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        }
+      ],
+      "officialFc27Audit": {
+        "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+        "playersMatched": 12,
+        "overallRatingsMatched": 12,
+        "headlineAttributesMatched": 72,
+        "ratingType": "Ultimate Team launch base-card",
+        "gameplayStatsUnchanged": true
+      },
+      "otherSources": {
+        "shirts": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured",
+        "heightsAndBirthdates": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+      },
+      "knownCaveats": [
+        "Secondary FootballSquads has an erroneous Raphinha birth month; retained 1996-12-14 supported by LaLiga; no DOB change.",
+        "EA FC27 positional card categories can differ from game 2GK/3DF/4MF/3FW constrained roles.",
+        "Sourced heights differ among providers; these measurements are FootballSquads 2026/27."
+      ],
+      "invariant": "12 stable names, IDs, player roles, OVR, FC27 face and arcade attributes unchanged; no other clubs edited.",
+      "ciEvidence": {
+        "modularQA": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946677603",
+          "conclusion": "success",
+          "passed": 203,
+          "failed": 0,
+          "clubTestsPassed": 3
+        },
+        "historicalRegression": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946504996",
+          "status": "pending_at_checkpoint"
+        },
+        "pages": "cancelled_or_pending_concurrent_writes",
+        "hostedDeviceSmoke": "not_verified"
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+Replay 1/24: PASS [0, 0] frames=3504 shots=3 duration_ms=480
+Replay 2/24: PASS [1, 1] frames=4720 shots=5 duration_ms=709
+Replay 3/24: PASS [0, 0] frames=5713 shots=6 duration_ms=749
+Replay 4/24: PASS [0, 1] frames=2829 shots=3 duration_ms=368
+Replay 5/24: PASS [1, 3] frames=4042 shots=5 duration_ms=505
+Replay 6/24: PASS [2, 0] frames=4748 shots=5 duration_ms=634
+Replay 7/24: PASS [0, 0] frames=3407 shots=2 duration_ms=363
+Replay 8/24: PASS [1, 0] frames=3739 shots=5 duration_ms=510
+Replay 9/24: PASS [0, 1] frames=4647 shots=5 duration_ms=607
+Replay 10/24: PASS [1, 0] frames=2829 shots=2 duration_ms=336
+Replay 11/24: PASS [0, 0] frames=4414 shots=1 duration_ms=500
+Replay 12/24: PASS [0, 1] frames=4647 shots=3 duration_ms=614
+Replay 13/24: PASS [1, 3] frames=7693 shots=8 duration_ms=1010
+Replay 14/24: PASS [0, 1] frames=9193 shots=10 duration_ms=1407
+Replay 15/24: PASS [0, 0] frames=11880 shots=9 duration_ms=1328
+Replay 16/24: PASS [0, 3] frames=13031 shots=15 duration_ms=1719
+Replay 17/24: PASS [0, 0] frames=8280 shots=9 duration_ms=992
+Replay 18/24: PASS [4, 0] frames=9496 shots=15 duration_ms=1217
+Replay 19/24: PASS [1, 3] frames=11314 shots=13 duration_ms=1527
+Replay 20/24: PASS [0, 9] frames=13637 shots=20 duration_ms=1715
+Replay 21/24: PASS [2, 4] frames=7880 shots=11 duration_ms=1097
+Replay 22/24: PASS [5, 1] frames=9698 shots=12 duration_ms=1361
+Replay 23/24: PASS [3, 0] frames=11213 shots=13 duration_ms=1442
+Replay 24/24: PASS [2, 3] frames=13233 shots=18 duration_ms=1759
+{"PASS": 24, "FAIL": 0, "TIMEOUT": 0, "NOT EXECUTED": 0} page errors []

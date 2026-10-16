@@ -1,0 +1,13 @@
+{
+  "clubs": 165,
+  "positions": 1980,
+  "fc27Clubs": 82,
+  "missingClubs": 0,
+  "missingSlots": 0,
+  "uncapturedTopCandidates": 0,
+  "rosterGaps": [],
+  "topOmissions": [],
+  "fc27Input": "Third-party September 2026 snapshot; not independently certified as EA official",
+  "auditNote": "Club positional top candidates previously audited; original FC27-ranked selections retained unchanged during sourced fallback enrichment.",
+  "sourceLabeledFallback": true
+}

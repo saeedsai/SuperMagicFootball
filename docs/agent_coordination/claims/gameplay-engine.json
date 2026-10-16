@@ -1,0 +1,19 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "gameplay-engine",
+  "feature_id": "GAMEPLAY-PRESSURE-FIRST-TOUCH-CONTROL",
+  "owner": "gameplay-firsttouch-20261016-gpt6-r4",
+  "status": "active",
+  "scope": "Only src/modules/engine.js targeted deterministic friendly ground-pass first-touch control/speed easing during <0.24 seconds, new tests/first_touch_control.test.cjs and tests/first_touch_control_browser_qa.py, docs/GAMEPLAY_PRESSURE_FIRST_TOUCH_20261016.md, own docs/memory/agents/gameplay-review-20261016.md and scoped docs/NEXT_MILESTONES.md note. Do not change UI/input/graphics/audio/rosters/saves, scripts/build.py, QA runners, shared docs memory, workflows, physics configuration or other agents' files.",
+  "base_sha": "15ad4f843f85298fe4e846ce1ba24a5aec678b81",
+  "created_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
+  "tests": [
+    "source-executed control timing/pressure scenarios and cancel on rebound",
+    "desktop and touch Quick Match, real friendly pass and receive, four-button invariant",
+    "node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
+    "Modular Game Dev QA and Full Regression Census 4+4",
+    "hosted public PC/simulated-touch smoke"
+  ],
+  "handover": "docs/GAMEPLAY_PRESSURE_FIRST_TOUCH_20261016.md"
+}

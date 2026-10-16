@@ -1,0 +1,20 @@
+PASS desktop game boot + updated version 
+PASS desktop 12,096-case directional artwork sweep (layout subset) 
+PASS desktop beard changes remain visible across all eight view directions 
+PASS desktop tattoos are visible on the character across gameplay angles 
+PASS desktop Studio navigation opens from Settings/Customization 
+PASS desktop all 17 curated appearance selector families 
+PASS desktop rotate through 8 actual distinct studio previews 
+PASS desktop curated palette, hairstyle, beard and tattoo editing + save 
+PASS desktop no uncaught JS errors in customization 
+PASS desktop independent readable BPW contact sheet 
+PASS simulated-touch game boot + updated version 
+PASS simulated-touch 12,096-case directional artwork sweep (layout subset) 
+PASS simulated-touch beard changes remain visible across all eight view directions 
+PASS simulated-touch tattoos are visible on the character across gameplay angles 
+PASS simulated-touch Studio navigation opens from Settings/Customization 
+PASS simulated-touch all 17 curated appearance selector families 
+PASS simulated-touch rotate through 8 actual distinct studio previews 
+PASS simulated-touch curated palette, hairstyle, beard and tattoo editing + save 
+PASS simulated-touch no uncaught JS errors in customization 
+RESULT {'PASS': 19, 'FAIL': 0}

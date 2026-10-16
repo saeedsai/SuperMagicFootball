@@ -1,0 +1,154 @@
+name: Full Regression Census
+# Final 165-club source-ranked FC27 certification, with 225 restored teams including Concept Hero.
+# Archived browser version expectations are synchronized to the actual modular version in the disposable checkout.
+on:
+  push:
+    branches: [dev, main]
+    paths:
+      - '.github/workflows/full-regression-census.yml'
+      - 'tests/full_regression_runner.py'
+      - 'data/players/club26.json'
+      # All national squads share one JSON shard; source and scoped test edits must launch the full census.
+      - 'data/players/national26.json'
+      - 'tests/*national*.test.cjs'
+      - 'tests/*national*_browser_qa.py'
+      - 'tests/spain_*metadata*.test.cjs'
+      - 'tests/spain_*metadata*_browser_qa.py'
+      - 'src/roster_corrections.js'
+      - 'src/modules/characterart.js'
+      - 'src/modules/conceptmodular.js'
+      - 'assets/characters/concept_modular_v1/**'
+      - 'tests/concept_modular_v1.test.cjs'
+      - 'tests/concept_modular_browser_qa.py'
+      - 'tests/concept_modular_live_qa.py'
+      - 'src/modules/render.js'
+      - 'src/modules/ui.js'
+      - 'tests/lineup_role_fit.test.cjs'
+      - 'tests/lineup_role_fit_browser_qa.py'
+      - 'src/modules/tactics.js'
+      - 'src/tactics.js'
+      - 'tests/default_lineup_roster_qa.test.cjs'
+      - 'tests/master_contracts.mjs'
+      - 'tests/v08245_release_alignment.mjs'
+      - 'data/mechanics/gameplay.json'
+      - 'src/modules/physicsbalance.js'
+      # All playable dribble-trick outcome sounds are in the modular audio runtime.
+      - 'src/modules/audio.js'
+      - 'tests/dribble_trick_audio.test.cjs'
+      - 'tests/dribble_trick_audio_browser_qa.py'
+      - 'tests/pass_reception_audio.test.cjs'
+      - 'tests/pass_reception_audio_browser_qa.py'
+      - 'tests/penalty_audio_feedback.test.cjs'
+      - 'tests/penalty_audio_feedback_browser_qa.py'
+      - 'src/modules/engine.js'
+      - 'tests/keeper_dive_intent.test.cjs'
+      - 'src/match_telemetry.js'
+      - 'tests/keeper_dive_telemetry.test.cjs'
+      - 'tests/keeper_dive_intent_browser_qa.py'
+      - 'tests/keeper_physical_lunge_browser_qa.py'
+      - 'tests/keeper_physical_lunge.test.cjs'
+      - 'tests/keeper_shot_calibration_browser_qa.py'
+      - 'tests/keeper_save_event_integrity.test.cjs'
+      - 'tests/keeper_save_event_integrity_browser_qa.py'
+      - 'tests/aerial_browser_qa.py'
+      - 'tests/physics_tuning_v082534.test.cjs'
+      - 'tests/physics_tuning_browser_qa.py'
+      - 'tests/super_keeper_balance_browser_qa.py'
+      - 'docs/ENGINE_PHYSICS_TUNING_20261016.md'
+      - 'sw.js'
+      - 'scripts/validate_data.py'
+      - 'tests/pitch_length_20pct.test.cjs'
+      - 'tests/pitch_length_browser_qa.py'
+      - 'docs/PITCH_LENGTH_EXTENSION_20261015.md'
+      - 'src/modules/expanded.js'
+      - 'data/graphics/**'
+      - 'tests/club26_player_graphics_integration.test.cjs'
+      - 'scripts/parallel_data_merge.py'
+      - 'tests/test_parallel_data_merge.py'
+      - 'docs/PARALLEL_DATA_MERGE_GUIDE.md'
+      - 'tests/club26_fc27_roster.mjs'
+      - 'tests/team_combos_browser_qa.py'
+      - 'docs/AGENT_INTEGRATION_QA_20261015.md'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: full-regression-${{ github.ref }}
+  cancel-in-progress: false
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate all roster and mechanics JSON
+        run: python3 scripts/validate_data.py
+      - name: Build current playable test fixture
+        run: python3 scripts/build.py
+      - name: Regression — three-way JSON agent merge safeguards
+        run: python3 -m unittest discover -s tests -p 'test_parallel_data_merge.py' -v
+      - name: Execute active Node contract tests
+        run: node --test tests/*.test.cjs
+      - name: Execute current Club26/FC27 roster contracts
+        run: node tests/club26_fc27_roster.mjs
+      - name: Compile Python tests
+        run: python3 -m compileall -q scripts tests
+
+  node-regression:
+    runs-on: ubuntu-latest
+    needs: preflight
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build test fixture
+        run: python3 scripts/build.py
+      - name: Run all historical and current Node executable tests
+        run: python3 tests/full_regression_runner.py --category node --shard-index ${{ matrix.shard }} --shard-count 4 --timeout-seconds 35
+      - name: Upload exact test results even when checks fail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-regression-node-${{ matrix.shard }}
+          path: docs/qa_runs_full_regression/*
+          retention-days: 30
+
+  browser-regression:
+    runs-on: ubuntu-latest
+    needs: preflight
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Playwright Chromium without snap dependency
+        run: |
+          python3 -m pip install --user playwright pillow
+          python3 -m playwright install --with-deps chromium
+          # Existing historical browser suites use /usr/bin/chromium.
+          # Point that path to the Playwright-managed compatible binary.
+          browser_path="$(python3 -c 'from playwright.sync_api import sync_playwright; p=sync_playwright().start(); print(p.chromium.executable_path); p.stop()')"
+          test -x "$browser_path"
+          sudo ln -sf "$browser_path" /usr/bin/chromium
+          /usr/bin/chromium --version
+      - name: Build browser fixture for old and current suites
+        run: |
+          python3 scripts/build.py
+          cp tests/.generated/play.html play.html
+      - name: Run all discovered browser regression scripts
+        run: python3 tests/full_regression_runner.py --category browser --shard-index ${{ matrix.shard }} --shard-count 4 --timeout-seconds 75
+      - name: Upload exact test results even when checks fail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-regression-browser-${{ matrix.shard }}
+          path: docs/qa_runs_full_regression/*
+          retention-days: 30

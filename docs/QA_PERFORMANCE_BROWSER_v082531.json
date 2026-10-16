@@ -1,0 +1,63 @@
+{
+  "summary": {
+    "PASS": 11,
+    "FAIL": 0
+  },
+  "checks": [
+    {
+      "case": "desktop default OFF; exactly four actions",
+      "status": "PASS",
+      "detail": "{'off': True, 'hidden': True, 'actions': 4}"
+    },
+    {
+      "case": "desktop FPS option exists",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "case": "desktop live FPS and ms/frame while playing",
+      "status": "PASS",
+      "detail": "{'visible': True, 'text': 'FPS 56 \u00b7 17.8 ms', 'actions': 4}"
+    },
+    {
+      "case": "desktop performance overlay hidden when paused",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "case": "desktop no uncaught errors",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "case": "mobile-touch default OFF; exactly four actions",
+      "status": "PASS",
+      "detail": "{'off': True, 'hidden': True, 'actions': 4}"
+    },
+    {
+      "case": "mobile-touch FPS option exists",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "case": "mobile-touch live FPS and ms/frame while playing",
+      "status": "PASS",
+      "detail": "{'visible': True, 'text': 'FPS 58 \u00b7 17.2 ms', 'actions': 4}"
+    },
+    {
+      "case": "mobile-touch performance overlay hidden when paused",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "case": "mobile-touch no uncaught errors",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "case": "broken JSON offers retry button and cause",
+      "status": "PASS",
+      "detail": ""
+    }
+  ]
+}

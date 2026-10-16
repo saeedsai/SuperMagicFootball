@@ -1,0 +1,24 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "graphics-renderer",
+  "feature_id": "ART-C01-ARM-GAIT-CONTINUITY",
+  "owner": "graphics-c01-arm-gait-20261016-gpt6-chat3",
+  "status": "active",
+  "scope": "C01 graphics-only small batch: smooth paired front arm visual gait near idle to remove hard 0.07 phase snap, preserve opposite arm pivots, and strengthen dedicated tests. Paths: src/modules/conceptmodular.js; tests/concept_modular_v1.test.cjs; optionally tests/concept_modular_browser_qa.py; docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md, PROGRESS_TRACKER.json, C01_ARM_GAIT_CONTINUITY_20261016.md; own docs/memory/agents/graphics-update.md. No gameplay/roster/UI/ordinary renderer/build/CI/SW or shared QA. Deployment acceptance follow-up only: tests/concept_modular_live_qa.py may assert hosted Pages module contains exact new arm-easing formula, no runtime changes.",
+  "base_sha": "cb8737f44ac7d7ad19a7300436ba2c180bacea40",
+  "created_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
+  "tests": [
+    "node --test tests/concept_modular_v1.test.cjs",
+    "node --test tests/*.test.cjs",
+    "python3 scripts/validate_concept_modular.py",
+    "python3 tests/concept_modular_browser_qa.py",
+    "Full Regression Census",
+    "GitHub Pages desktop/touch",
+    "hosted module source exact-version signature check"
+  ],
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
+  "released_at": "2026-10-16",
+  "outcome": "completed eight-direction ordinary pass follow-through visual gameplay; 200/200 active Node QA, 136/136 Node full census, 75/75 Chromium full census, public desktop/simulated-touch Quick Match smoke PASS; no physics, UI, roster or saves modified",
+  "final_source_commit": "0a72b58e715e7d142bb3b3c183f25b1ee255b40f"
+}

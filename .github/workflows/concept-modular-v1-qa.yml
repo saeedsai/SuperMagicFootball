@@ -1,0 +1,48 @@
+name: Concept Modular First Playable Layer QA
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'assets/characters/concept_modular_v1/**'
+      - 'src/modules/conceptmodular.js'
+      - 'src/modules/concepthero.js'
+      - 'src/modules/render.js'
+      - 'src/modules/ui.js'
+      - 'scripts/build.py'
+      - 'tests/concept_modular*'
+      - '.github/workflows/concept-modular-v1-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-game-art:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Chromium QA tools
+        run: |
+          python3 -m pip install --user playwright pillow
+          sudo apt-get update -qq
+          sudo apt-get install -y chromium
+      - name: Validate source, data, plan and build inline game
+        run: |
+          python3 scripts/validate_concept_modular.py
+          python3 scripts/verify_concept_graphics_docs.py
+          python3 scripts/validate_data.py
+          python3 scripts/build.py
+      - name: Active Node regression
+        run: node --test tests/*.test.cjs
+      - name: Real-game modular and existing concept browser regression
+        run: |
+          python3 tests/concept_modular_browser_qa.py
+          python3 tests/concept_hero_browser_qa.py
+      - name: Upload actual playable screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: concept-modular-real-game
+          path: |
+            docs/qa_runs_concept_modular/
+            docs/qa_runs_concept_hero/
+          retention-days: 30

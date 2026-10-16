@@ -1,0 +1,11 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "roster-club-club26_5",
+  "feature_id": "CLUB26-MANUTD-FC27-METADATA-20261016-B1",
+  "owner": "roster-fc27-chat-20261016-manutd-b1",
+  "status": "active",
+  "scope": "Manchester United club26_5 roster metadata only; data/players/club26.json and mirrored club26_5 in src/roster_corrections.js, new dedicated tests, per-player immutable audit batch, own agent memory and roster handover. No other players/gameplay/UI/CI.",
+  "base_sha": "dad3d1a2499430b1612356e38e1149843f596bd5",
+  "claimed_at": "2026-10-16",
+  "expires_at": "2026-10-17"
+}

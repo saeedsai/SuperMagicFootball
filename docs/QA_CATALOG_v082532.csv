@@ -1,0 +1,233 @@
+<PARSED TEXT FOR SHEET: 1 / 1 TABS
+TAB NAME: docs__QA_CATALOG_v082532.csv>index,test_id,group,case,status,notes
+0,NODE-001,Node regression,pass release routes possession through team carrier even if manual selection lags,PASS,node --test tests/*.test.cjs
+1,NODE-002,Node regression,short pass tap during restart cooldown is temporarily queued and canceled safely,PASS,node --test tests/*.test.cjs
+2,NODE-003,Node regression,"pre-match primary screen has kickoff and three advanced submenus, no sprawling rule controls",PASS,node --test tests/*.test.cjs
+3,NODE-004,Node regression,"all six formations, four gameplay controls and five main menu categories remain",PASS,node --test tests/*.test.cjs
+4,NODE-005,Node regression,offline shell cache revision matches current build without altering saved progress,PASS,node --test tests/*.test.cjs
+5,NODE-006,Node regression,"turn smoothing is bounded, periodic and frame-rate independent",PASS,node --test tests/*.test.cjs
+6,NODE-007,Node regression,heading easing behaves safely at frame drops and zero delta,PASS,node --test tests/*.test.cjs
+7,NODE-008,Node regression,support foot remains planted while swing leg lifts smoothly,PASS,node --test tests/*.test.cjs
+8,NODE-009,Node regression,fall recovery crouch bends knee without altering support foot state,PASS,node --test tests/*.test.cjs
+9,NODE-010,Node regression,live facing cache excludes deterministic portrait and Studio snapshots,PASS,node --test tests/*.test.cjs
+10,NODE-011,Node regression,animation changes remain outside ENGINE ball physics and player stamina,PASS,node --test tests/*.test.cjs
+11,NODE-012,Node regression,post-mutation storage throw restores failing section as well as earlier writes,PASS,node --test tests/*.test.cjs
+12,NODE-013,Node regression,silent setItem no-op triggers failure instead of false successful import,PASS,node --test tests/*.test.cjs
+13,NODE-014,Node regression,failure while rolling back is explicitly disclosed,PASS,node --test tests/*.test.cjs
+14,NODE-015,Node regression,save import retains validated order and restores missing keys on failing write,PASS,node --test tests/*.test.cjs
+15,NODE-016,Node regression,observer lifecycle flushes all transitions without adding gameplay input mechanics,PASS,node --test tests/*.test.cjs
+16,NODE-017,Node regression,"five distinct selectable, safe ball designs",PASS,node --test tests/*.test.cjs
+17,NODE-018,Node regression,"rolling angle is based on ground distance, not frame rate",PASS,node --test tests/*.test.cjs
+18,NODE-019,Node regression,front / back / three-quarter / side are chosen from movement vectors,PASS,node --test tests/*.test.cjs
+19,NODE-020,Node regression,stun grows with contact force and decreases with recipient strength,PASS,node --test tests/*.test.cjs
+20,NODE-021,Node regression,strong critical hits last longer but cannot lock the player indefinitely,PASS,node --test tests/*.test.cjs
+21,NODE-022,Node regression,saved option and pre-match / graphics selectors use same ball model,PASS,node --test tests/*.test.cjs
+22,NODE-023,Node regression,every major impact type is now strength-dependent,PASS,node --test tests/*.test.cjs
+23,NODE-024,Node regression,all five beard-fit families have valid and distinctive outline anchors,PASS,node --test tests/*.test.cjs
+24,NODE-025,Node regression,beard colour uses chosen natural hair hue for stubble rather than fixed dark grey,PASS,node --test tests/*.test.cjs
+25,NODE-026,Node regression,"clean shave is respected for all names, including players with preset facial hair",PASS,node --test tests/*.test.cjs
+26,NODE-027,Node regression,custom beard selection still propagates through the face-shape-aware renderer,PASS,node --test tests/*.test.cjs
+27,NODE-028,Node regression,beard renderer preserves all five directions without changing match engine physics,PASS,node --test tests/*.test.cjs
+28,NODE-029,Node regression,hair tint clamps opacity and handles malformed colours safely,PASS,node --test tests/*.test.cjs
+29,NODE-030,Node regression,beard face profiles cover all five face shapes with distinct jaw and chin fits,PASS,node --test tests/*.test.cjs
+30,NODE-031,Node regression,round and square faces receive visibly different beard geometry,PASS,node --test tests/*.test.cjs
+31,NODE-032,Node regression,renderer passes the selected face shape into beard rendering across views,PASS,node --test tests/*.test.cjs
+32,NODE-033,Node regression,"beard shaping is view-aware and authored for front, side and both three-quarter projections",PASS,node --test tests/*.test.cjs
+33,NODE-034,Node regression,all five face profiles have distinct jaw / chin / cheek contours,PASS,node --test tests/*.test.cjs
+34,NODE-035,Node regression,face projection is normalized for old imported appearances,PASS,node --test tests/*.test.cjs
+35,NODE-036,Node regression,oblique silhouettes use selected face shape in all three side/back families,PASS,node --test tests/*.test.cjs
+36,NODE-037,Node regression,all 13 rear haircuts retain conditional silhouette art with no gameplay changes,PASS,node --test tests/*.test.cjs
+37,NODE-038,Node regression,Studio save uses stable old storage keys and confirms durable write,PASS,node --test tests/*.test.cjs
+38,NODE-039,Node regression,new articulated renderer replaces legacy procedural body and exposes all views,PASS,node --test tests/*.test.cjs
+39,NODE-040,Node regression,profile eyes and facial identities use curated natural artwork,PASS,node --test tests/*.test.cjs
+40,NODE-041,Node regression,"facial hair is centralized across front, quarter, side, and back projections",PASS,node --test tests/*.test.cjs
+41,NODE-042,Node regression,back and rear-quarter faces suppress front expressions,PASS,node --test tests/*.test.cjs
+42,NODE-043,Node regression,physics and gameplay code remains separated from graphics,PASS,node --test tests/*.test.cjs
+43,NODE-044,Node regression,close shooting chance is higher than speculative midfield shooting,PASS,node --test tests/*.test.cjs
+44,NODE-045,Node regression,pressure reduces early shoot opportunity but cannot induce impossible values,PASS,node --test tests/*.test.cjs
+45,NODE-046,Node regression,"good finishers consider good chances more often, not automatically score",PASS,node --test tests/*.test.cjs
+46,NODE-047,Node regression,very short incoming time reduces lateral reach but preserves shot-height and skill terms,PASS,node --test tests/*.test.cjs
+47,NODE-048,Node regression,"no independent fifth action, extra formations or removed BPW identity data",PASS,node --test tests/*.test.cjs
+48,NODE-049,Node regression,planted-foot settle converges to stance at stop and is frame-step consistent,PASS,node --test tests/*.test.cjs
+49,NODE-050,Node regression,start acceleration has bounded gait amplitude and invalid input is safe,PASS,node --test tests/*.test.cjs
+50,NODE-051,Node regression,receiving brace varies smoothly with defender pressure but is visual only,PASS,node --test tests/*.test.cjs
+51,NODE-052,Node regression,keeper release has distinct throw and punt choreography,PASS,node --test tests/*.test.cjs
+52,NODE-053,Node regression,"new state is rendering-only, keeper attributes and ball launch unchanged",PASS,node --test tests/*.test.cjs
+53,NODE-054,Node regression,field length shortens to real 105:68 pitch ratio without reducing pitch width,PASS,node --test tests/*.test.cjs
+54,NODE-055,Node regression,continuous exertion and action fatigue are both lower than v0.8.25.11 baseline,PASS,node --test tests/*.test.cjs
+55,NODE-056,Node regression,halftime keeps the inherited 40% accumulated-fatigue refund,PASS,node --test tests/*.test.cjs
+56,NODE-057,Node regression,"better shooting power increases speed, heavy fatigue decreases speed",PASS,node --test tests/*.test.cjs
+57,NODE-058,Node regression,"normal and super shots lose velocity over distance, independent of frame rate",PASS,node --test tests/*.test.cjs
+58,NODE-059,Node regression,keeper-aware aiming values empty lanes and high accuracy,PASS,node --test tests/*.test.cjs
+59,NODE-060,Node regression,directed pass chooses a teammate aligned with requested direction,PASS,node --test tests/*.test.cjs
+60,NODE-061,Node regression,"repeated shot contacts lose energy, and transformed shot can become normal",PASS,node --test tests/*.test.cjs
+61,NODE-062,Node regression,"short range ordinary shots can cause knockouts, and collision is swept for fast shots",PASS,node --test tests/*.test.cjs
+62,NODE-063,Node regression,"no fifth gameplay button, preserved three accepted drawing views and six formations",PASS,node --test tests/*.test.cjs
+63,NODE-064,Node regression,integrated renderer uses the premium articulated body and authored directional head,PASS,node --test tests/*.test.cjs
+64,NODE-065,Node regression,curated natural skin and hair palettes are exported for the player studio,PASS,node --test tests/*.test.cjs
+65,NODE-066,Node regression,all 8 directional studio views include front/back and both sides/quarters,PASS,node --test tests/*.test.cjs
+66,NODE-067,Node regression,beard renderer has distinct branches for every requested major viewpoint,PASS,node --test tests/*.test.cjs
+67,NODE-068,Node regression,tattoos are backed by rendered marks on arms and player-studio controls,PASS,node --test tests/*.test.cjs
+68,NODE-069,Node regression,fixed Player Studio selectors are in menu module and no duplicate declaration remains,PASS,node --test tests/*.test.cjs
+69,NODE-070,Node regression,merged build exposes current version without stale Player Studio tagline,PASS,node --test tests/*.test.cjs
+70,NODE-071,Node regression,build remains single-file/offline compatible with embedded styling,PASS,node --test tests/*.test.cjs
+71,NODE-072,Node regression,legacy/current save sections import without forcing missing fields,PASS,node --test tests/*.test.cjs
+72,NODE-073,Node regression,corrupt JSON envelope or malformed fields rejected before writes,PASS,node --test tests/*.test.cjs
+73,NODE-074,Node regression,legacy branded save accepted with valid options and kit selections,PASS,node --test tests/*.test.cjs
+74,NODE-075,Node regression,storage write failure rolls back previous changes; no false success,PASS,node --test tests/*.test.cjs
+75,NODE-076,Node regression,"unknown keys ignored, no usable section rejected",PASS,node --test tests/*.test.cjs
+76,NODE-077,Node regression,"shot release captures projected lane obstruction, not proximity alone",PASS,node --test tests/*.test.cjs
+77,NODE-078,Node regression,"observer adds no new shooting power, goalkeeper constants or gameplay action buttons",PASS,node --test tests/*.test.cjs
+78,NODE-079,Node regression,a keeper must not automatically deflect a ball merely entering the wide dive rectangle,PASS,node --test tests/*.test.cjs
+79,NODE-080,Node regression,swept save detection still checks the keeper plane when frames skip across it,PASS,node --test tests/*.test.cjs
+80,NODE-081,Node regression,"goal-mouth boundaries, ratings and explicit keeper-save telemetry stay intact",PASS,node --test tests/*.test.cjs
+81,NODE-082,Node regression,special keeper penetration mechanics and Super Shot impact decay remain separate,PASS,node --test tests/*.test.cjs
+82,NODE-083,Node regression,dive and caught-dive end at exact recovery starting pose for all directions,PASS,node --test tests/*.test.cjs
+83,NODE-084,Node regression,landing animation eases to neutral without reversing direction,PASS,node --test tests/*.test.cjs
+84,NODE-085,Node regression,keeper dive pose is finite and bounded even with invalid frame inputs,PASS,node --test tests/*.test.cjs
+85,NODE-086,Node regression,live renderer uses the same keeper pose function for dive and recovery,PASS,node --test tests/*.test.cjs
+86,NODE-087,Node regression,diving catches finish with landing animation when possession retained,PASS,node --test tests/*.test.cjs
+87,NODE-088,Node regression,glove contact cue requires real keeper possession and is preview-free,PASS,node --test tests/*.test.cjs
+88,NODE-089,Node regression,keeper attributes and shot/goal rules remain physically separate,PASS,node --test tests/*.test.cjs
+89,NODE-090,Node regression,"all team records externalized, stable and without roster duplication",PASS,node --test tests/*.test.cjs
+90,NODE-091,Node regression,all 2676 player records are independently editable JSON without ID collisions inside teams,PASS,node --test tests/*.test.cjs
+91,NODE-092,Node regression,all roster quotas preserved from original game,PASS,node --test tests/*.test.cjs
+92,NODE-093,Node regression,"AI, special shots and formation definitions are JSON-backed, not locked in JS",PASS,node --test tests/*.test.cjs
+93,NODE-094,Node regression,animation timing variables resolve to externally editable mechanics entries,PASS,node --test tests/*.test.cjs
+94,NODE-095,Node regression,graphic renderers and per-player presets separated from roster payload,PASS,node --test tests/*.test.cjs
+95,NODE-096,Node regression,browser boot requests modular files and validates roster completeness,PASS,node --test tests/*.test.cjs
+96,NODE-097,Node regression,modular service-worker shell includes all runtime modules and data shards,PASS,node --test tests/*.test.cjs
+97,NODE-098,Node regression,"manual pass honors explicit two-dimensional input vector, independent of attack side",PASS,node --test tests/*.test.cjs
+98,NODE-099,Node regression,"tap pass nearest teammate is Euclidean distance, not forward bias",PASS,node --test tests/*.test.cjs
+99,NODE-100,Node regression,held pass has bounded duration-scaling while AI retains legacy aiming,PASS,node --test tests/*.test.cjs
+100,NODE-101,Node regression,Jump then Pass is sequential lofted cross and never a fifth button,PASS,node --test tests/*.test.cjs
+101,NODE-102,Node regression,friendly possession at release rescues held pass consumed by temporary interception,PASS,node --test tests/*.test.cjs
+102,NODE-103,Node regression,slide tackle has running/standing distance budget independent of animation duration,PASS,node --test tests/*.test.cjs
+103,NODE-104,Node regression,offensive dribble and personal tricks obey common two-second cooldown,PASS,node --test tests/*.test.cjs
+104,NODE-105,Node regression,"dribble personality moves remain accessible on first press near a defender, defensive switch unaffected",PASS,node --test tests/*.test.cjs
+105,NODE-106,Node regression,performance HUD defaults off without changing existing saves,PASS,node --test tests/*.test.cjs
+106,NODE-107,Node regression,existing four action buttons and six formations remain intact,PASS,node --test tests/*.test.cjs
+107,NODE-108,Node regression,new engine balance keys preserve previous physics defaults,PASS,node --test tests/*.test.cjs
+108,NODE-109,Node regression,loader recovers gracefully when hosted JSON fails,PASS,node --test tests/*.test.cjs
+109,NODE-110,Node regression,service worker cache version rotates after source/data update,PASS,node --test tests/*.test.cjs
+110,NODE-111,Node regression,all-time player names/positions and user LEG cards exactly preserved,PASS,node --test tests/*.test.cjs
+111,NODE-112,Node regression,BPW squad years/size/role quota unique and stable,PASS,node --test tests/*.test.cjs
+112,NODE-113,Node regression,"all 84 BPW slots get valid immutable personality, with no gameplay data changes",PASS,node --test tests/*.test.cjs
+113,NODE-114,Node regression,same historical person gets same archetype in multiple BPW contexts,PASS,node --test tests/*.test.cjs
+114,NODE-115,Node regression,ordinary/non-BPW players retain neutral motion and never receive personality,PASS,node --test tests/*.test.cjs
+115,NODE-116,Node regression,"all profiles move visibly and remain finite/bounded in idle, running, celebration, Super attacks",PASS,node --test tests/*.test.cjs
+116,NODE-117,Node regression,profiles have diverse gestures and different microtiming even with matching archetypes,PASS,node --test tests/*.test.cjs
+117,NODE-118,Node regression,"exactly six formations, four touch actions and preserves Super sequence symbols",PASS,node --test tests/*.test.cjs
+118,NODE-119,Node regression,existing goalkeeper/shoot logic module is untouched aside from version and UI,PASS,node --test tests/*.test.cjs
+119,NODE-120,Node regression,four visible gameplay action names remain fixed while contextual handlers survive,PASS,node --test tests/*.test.cjs
+120,NODE-121,Node regression,diagonals map to restored high-quality three-quarter views,PASS,node --test tests/*.test.cjs
+121,NODE-122,Node regression,idle stamina recovery remains meaningful over ten seconds and stronger than light activity,PASS,node --test tests/*.test.cjs
+122,NODE-123,Node regression,halftime recovery rule is a 40 percent fatigue refund,PASS,node --test tests/*.test.cjs
+123,NODE-124,Node regression,renderer is now a six-direction atlas with dedicated three-quarter branches,PASS,node --test tests/*.test.cjs
+124,NODE-125,Node regression,"front, back, side and three-quarter remain the available facing categories",PASS,node --test tests/*.test.cjs
+125,NODE-126,Node regression,small portraits keep player origin and shoes inside the canvas,PASS,node --test tests/*.test.cjs
+126,NODE-127,Node regression,"extreme hairstyle, taller player and aerial keeper pose receive extra framing margin",PASS,node --test tests/*.test.cjs
+127,NODE-128,Node regression,all small-avatar and Player Studio paths use shared framing instead of offscreen coordinates,PASS,node --test tests/*.test.cjs
+128,NODE-129,Node regression,keeper dive receives explicit reaching arms and distinct catching gloves,PASS,node --test tests/*.test.cjs
+129,NODE-130,Node regression,"pass ownership switches only after actual possession, never at release",PASS,node --test tests/*.test.cjs
+130,NODE-131,Node regression,each pass has a single first-touch lifecycle with event and cleared metadata,PASS,node --test tests/*.test.cjs
+131,NODE-132,Node regression,pass and active strike sweep account for fast moving contact and height,PASS,node --test tests/*.test.cjs
+132,NODE-133,Node regression,receive / slide poses and dribble indicator are purely visual,PASS,node --test tests/*.test.cjs
+133,NODE-134,Node regression,in-flight human passes prevent surprise auto-switch and stale loose passes expire,PASS,node --test tests/*.test.cjs
+134,NODE-135,Node regression,"snapshot records defender proximity and goalkeeper lane, never stunned or friendly defenders",PASS,node --test tests/*.test.cjs
+135,NODE-136,Node regression,"snapshot is nonmutating, immutable and JSON serializable",PASS,node --test tests/*.test.cjs
+136,NODE-137,Node regression,defenders absent and keeper absent yield explicit nulls; opposite attack mirrored,PASS,node --test tests/*.test.cjs
+137,NODE-138,Node regression,snapshot reads no randomness and has no gameplay-altering assignments,PASS,node --test tests/*.test.cjs
+138,NODE-139,Node regression,standalone builder embeds icon and exact gameplay module,PASS,node --test tests/*.test.cjs
+139,NODE-140,Node regression,stadium background is rendered into persistent canvas cache,PASS,node --test tests/*.test.cjs
+140,NODE-141,Node regression,frame-rate-independent camera ease is bounded and composable,PASS,node --test tests/*.test.cjs
+141,NODE-142,Node regression,visual pass and dash streaks are confined to renderer,PASS,node --test tests/*.test.cjs
+142,NODE-143,Node regression,standalone build remains synced to source,PASS,node --test tests/*.test.cjs
+143,NODE-144,Node regression,rear cap identity is painted after the generic rear ellipse that formerly hid 3 styles,PASS,node --test tests/*.test.cjs
+144,NODE-145,Node regression,eight-view gallery reuses the current studio direction contract and preserves unsaved edits,PASS,node --test tests/*.test.cjs
+145,NODE-146,Node regression,"gallery uses cached idle portraits without changing gameplay controls, storage or player data",PASS,node --test tests/*.test.cjs
+146,BROWSER-001,Inherited Chromium suite,action_controls,PASS,docs/qa_runs_v082532/action_controls.log
+147,BROWSER-002,Inherited Chromium suite,animation_motion_v082523,PASS,docs/qa_runs_v082532/animation_motion_v082523.log
+148,BROWSER-003,Inherited Chromium suite,art_quality_v082522,PASS,docs/qa_runs_v082532/art_quality_v082522.log
+149,BROWSER-004,Inherited Chromium suite,ball_views_knockouts,PASS,docs/qa_runs_v082532/ball_views_knockouts.log
+150,BROWSER-005,Inherited Chromium suite,beard_customization_v082528,PASS,docs/qa_runs_v082532/beard_customization_v082528.log
+151,BROWSER-006,Inherited Chromium suite,browser_regression,PASS,docs/qa_runs_v082532/browser_regression.log
+152,BROWSER-007,Inherited Chromium suite,character_identity_persistence_v082529,PASS,docs/qa_runs_v082532/character_identity_persistence_v082529.log
+153,BROWSER-008,Inherited Chromium suite,controlled_shots,PASS,docs/qa_runs_v082532/controlled_shots.log
+154,BROWSER-009,Inherited Chromium suite,directional_art_regression,PASS,docs/qa_runs_v082532/directional_art_regression.log
+155,BROWSER-010,Inherited Chromium suite,finishing_quality_v082514,PASS,docs/qa_runs_v082532/finishing_quality_v082514.log
+156,BROWSER-011,Inherited Chromium suite,first_touch_distribution_v082526,PASS,docs/qa_runs_v082532/first_touch_distribution_v082526.log
+157,BROWSER-012,Inherited Chromium suite,football_mechanics_v082512,PASS,docs/qa_runs_v082532/football_mechanics_v082512.log
+158,BROWSER-013,Inherited Chromium suite,graphics_integration_v082522,PASS,docs/qa_runs_v082532/graphics_integration_v082522.log
+159,BROWSER-014,Inherited Chromium suite,keeper_contact_geometry_v082514,PASS,docs/qa_runs_v082532/keeper_contact_geometry_v082514.log
+160,BROWSER-015,Inherited Chromium suite,keeper_live_transition_v082525,PASS,docs/qa_runs_v082532/keeper_live_transition_v082525.log
+161,BROWSER-016,Inherited Chromium suite,keeper_preview_v082524,PASS,docs/qa_runs_v082532/keeper_preview_v082524.log
+162,BROWSER-017,Inherited Chromium suite,passing_and_moves,PASS,docs/qa_runs_v082532/passing_and_moves.log
+163,BROWSER-018,Inherited Chromium suite,player_art_fatigue_quality,PASS,docs/qa_runs_v082532/player_art_fatigue_quality.log
+164,BROWSER-019,Inherited Chromium suite,reception_switching,PASS,docs/qa_runs_v082532/reception_switching.log
+165,BROWSER-020,Inherited Chromium suite,visual_framing_v082522,PASS,docs/qa_runs_v082532/visual_framing_v082522.log
+166,MODU-001,Modular Chromium,modular_browser_integration recorded case 1,PASS,Complete per-case results: docs/qa_runs_v082532/modular_browser_integration.log
+167,MODU-002,Modular Chromium,modular_browser_integration recorded case 2,PASS,Complete per-case results: docs/qa_runs_v082532/modular_browser_integration.log
+168,MODU-003,Modular Chromium,modular_browser_integration recorded case 3,PASS,Complete per-case results: docs/qa_runs_v082532/modular_browser_integration.log
+169,MODU-004,Modular Chromium,modular_browser_integration recorded case 4,PASS,Complete per-case results: docs/qa_runs_v082532/modular_browser_integration.log
+170,MODU-005,Modular Chromium,modular_browser_integration recorded case 5,PASS,Complete per-case results: docs/qa_runs_v082532/modular_browser_integration.log
+171,MODU-006,Modular Chromium,modular_browser_integration recorded case 6,PASS,Complete per-case results: docs/qa_runs_v082532/modular_browser_integration.log
+172,MODU-007,Modular Chromium,modular_browser_integration recorded case 7,PASS,Complete per-case results: docs/qa_runs_v082532/modular_browser_integration.log
+173,MODU-008,Modular Chromium,modular_browser_integration recorded case 8,PASS,Complete per-case results: docs/qa_runs_v082532/modular_browser_integration.log
+174,MODU-009,Modular Chromium,modular_browser_integration recorded case 9,PASS,Complete per-case results: docs/qa_runs_v082532/modular_browser_integration.log
+175,PERF-001,Performance/loading Chromium,performance_loader_browser_v082531 recorded case 1,PASS,Complete per-case results: docs/qa_runs_v082532/performance_loader_browser_v082531.log
+176,PERF-002,Performance/loading Chromium,performance_loader_browser_v082531 recorded case 2,PASS,Complete per-case results: docs/qa_runs_v082532/performance_loader_browser_v082531.log
+177,PERF-003,Performance/loading Chromium,performance_loader_browser_v082531 recorded case 3,PASS,Complete per-case results: docs/qa_runs_v082532/performance_loader_browser_v082531.log
+178,PERF-004,Performance/loading Chromium,performance_loader_browser_v082531 recorded case 4,PASS,Complete per-case results: docs/qa_runs_v082532/performance_loader_browser_v082531.log
+179,PERF-005,Performance/loading Chromium,performance_loader_browser_v082531 recorded case 5,PASS,Complete per-case results: docs/qa_runs_v082532/performance_loader_browser_v082531.log
+180,PERF-006,Performance/loading Chromium,performance_loader_browser_v082531 recorded case 6,PASS,Complete per-case results: docs/qa_runs_v082532/performance_loader_browser_v082531.log
+181,PERF-007,Performance/loading Chromium,performance_loader_browser_v082531 recorded case 7,PASS,Complete per-case results: docs/qa_runs_v082532/performance_loader_browser_v082531.log
+182,PERF-008,Performance/loading Chromium,performance_loader_browser_v082531 recorded case 8,PASS,Complete per-case results: docs/qa_runs_v082532/performance_loader_browser_v082531.log
+183,PERF-009,Performance/loading Chromium,performance_loader_browser_v082531 recorded case 9,PASS,Complete per-case results: docs/qa_runs_v082532/performance_loader_browser_v082531.log
+184,PERF-010,Performance/loading Chromium,performance_loader_browser_v082531 recorded case 10,PASS,Complete per-case results: docs/qa_runs_v082532/performance_loader_browser_v082531.log
+185,PERF-011,Performance/loading Chromium,performance_loader_browser_v082531 recorded case 11,PASS,Complete per-case results: docs/qa_runs_v082532/performance_loader_browser_v082531.log
+186,GALLERY-001,Studio graphics browser,desktop current modular game boots,PASS,True
+187,GALLERY-002,Studio graphics browser,desktop Studio navigation and closed-by-default gallery,PASS,True
+188,GALLERY-003,Studio graphics browser,desktop gallery opens with eight canvases without discarding unsaved edits,PASS,"{'ok': True, 'before': '4', 'selected': '10'}"
+189,GALLERY-004,Studio graphics browser,desktop all gallery views render nonblank directional artwork,PASS,"{'ok': True, 'signature': [1280999917, 3019010746, 3028942309, 1463530585, 3063088566, 1681911667, 3662178307, 954794492], 'empty': 0, 'clipped': 0}"
+190,GALLERY-005,Studio graphics browser,desktop all eight directions update when selected hairstyle changes,PASS,"{'ok': True, 'changedViews': 8}"
+191,GALLERY-006,Studio graphics browser,desktop gallery preview does not persist unsaved appearance,PASS,True
+192,GALLERY-007,Studio graphics browser,desktop rear hairstyle uniqueness: all thirteen styles distinguishable,PASS,"{'ok': True, 'unique': 13, 'edge': 0}"
+193,GALLERY-008,Studio graphics browser,desktop no uncaught JavaScript exceptions,PASS,True
+194,GALLERY-009,Studio graphics browser,desktop gallery closes without discarding unsaved edits,PASS,True
+195,GALLERY-010,Studio graphics browser,simulated-touch current modular game boots,PASS,True
+196,GALLERY-011,Studio graphics browser,simulated-touch Studio navigation and closed-by-default gallery,PASS,True
+197,GALLERY-012,Studio graphics browser,simulated-touch gallery opens with eight canvases without discarding unsaved edits,PASS,"{'ok': True, 'before': '4', 'selected': '10'}"
+198,GALLERY-013,Studio graphics browser,simulated-touch all gallery views render nonblank directional artwork,PASS,"{'ok': True, 'signature': [1280999917, 3019010746, 3028942309, 1463530585, 3063088566, 1681911667, 3662178307, 954794492], 'empty': 0, 'clipped': 0}"
+199,GALLERY-014,Studio graphics browser,simulated-touch all eight directions update when selected hairstyle changes,PASS,"{'ok': True, 'changedViews': 8}"
+200,GALLERY-015,Studio graphics browser,simulated-touch gallery preview does not persist unsaved appearance,PASS,True
+201,GALLERY-016,Studio graphics browser,simulated-touch rear hairstyle uniqueness: all thirteen styles distinguishable,PASS,"{'ok': True, 'unique': 13, 'edge': 0}"
+202,GALLERY-017,Studio graphics browser,simulated-touch no uncaught JavaScript exceptions,PASS,True
+203,GALLERY-018,Studio graphics browser,simulated-touch gallery closes without discarding unsaved edits,PASS,True
+204,MATCH-001,Seeded complete match,Full replay 1/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+205,MATCH-002,Seeded complete match,Full replay 2/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+206,MATCH-003,Seeded complete match,Full replay 3/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+207,MATCH-004,Seeded complete match,Full replay 4/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+208,MATCH-005,Seeded complete match,Full replay 5/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+209,MATCH-006,Seeded complete match,Full replay 6/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+210,MATCH-007,Seeded complete match,Full replay 7/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+211,MATCH-008,Seeded complete match,Full replay 8/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+212,MATCH-009,Seeded complete match,Full replay 9/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+213,MATCH-010,Seeded complete match,Full replay 10/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+214,MATCH-011,Seeded complete match,Full replay 11/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+215,MATCH-012,Seeded complete match,Full replay 12/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+216,MATCH-013,Seeded complete match,Full replay 13/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+217,MATCH-014,Seeded complete match,Full replay 14/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+218,MATCH-015,Seeded complete match,Full replay 15/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+219,MATCH-016,Seeded complete match,Full replay 16/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+220,MATCH-017,Seeded complete match,Full replay 17/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+221,MATCH-018,Seeded complete match,Full replay 18/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+222,MATCH-019,Seeded complete match,Full replay 19/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+223,MATCH-020,Seeded complete match,Full replay 20/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+224,MATCH-021,Seeded complete match,Full replay 21/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+225,MATCH-022,Seeded complete match,Full replay 22/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+226,MATCH-023,Seeded complete match,Full replay 23/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+227,MATCH-024,Seeded complete match,Full replay 24/24,PASS,docs/qa_runs_v082532/scripted_match_replays.log
+228,DEFERRED-001,Far-future platform verification,Real physical Android/iOS performance/PWA certification,NOT EXECUTED,User-directed far-future milestone; never counted as PASS
+229,DEFERRED-002,Far-future platform verification,Hosted browser restart/legacy-save persistence,NOT EXECUTED,User-directed far-future milestone; never counted as PASS
+230,DEFERRED-003,Far-future platform verification,Direct hosted Pages end-to-end interaction from external origin,NOT EXECUTED,User-directed far-future milestone; never counted as PASS

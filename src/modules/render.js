@@ -6,6 +6,9 @@ import {VISUALFEEL} from "./visualfeel.js";
 import {ENGINE} from "./engine.js";
 import {BPWPERSONALITY} from "./bpwpersonality.js";
 import {ARTPOSE} from "./artpose.js";
+import {CHARACTER_ART} from "./characterart.js";
+import {CONCEPT_HERO} from "./concepthero.js";
+import {CONCEPT_MODULAR} from "./conceptmodular.js";
 const RENDER=(()=>{const {WORLD}=ENGINE;const {TEAMS,SHOTS}=DATA;const {dribbleStyle}=DRIBBLES;const {avatarFor}=EXPANDED;const {profileFor,sampleMotion}=BPWPERSONALITY;
 
 
@@ -185,6 +188,26 @@ function drawBackHair(ctx,style,hair,dark,width){
  if(v===10){artEllipse(ctx,width*.87,15,6.4,9.2,hair,dark,1.3);artStroke(ctx,[[width*.72,9],[width*.87,21]],1.3,artTint(hair,.17),hair,0);}
  if(v===1||v===3||v===6||v===12){artStroke(ctx,[[-11,-22],[1,-25],[14,-19]],1.5,artTint(hair,.16),hair,0);}
  artStroke(ctx,[[-width*.54,14],[-10,23],[9,23],[width*.50,15]],1.4,dark,dark,0);
+}
+// Three short styles used to collapse to identical rear pixels: the common
+// nape ellipse was painted *over* their distinguishing crown details.
+// Draw identifying hair texture on the visible upper rear cap, not on the skin.
+// These marks are drawn after the nape overlay, using the selected natural hair shade.
+function studioRearCrownIdentity(ctx,style,hair,dark){
+ const v=((Number(style)||0)%13+13)%13;
+ const light=artTint(hair,.26),shadow=artTint(hair,-.27);
+ if(v===0){ // textured crop: asymmetrical, upward-brushed locks
+  artStroke(ctx,[[-17,-18],[-12,-29],[-7,-23],[-2,-30],[4,-23]],1.65,light,hair,0);
+  artStroke(ctx,[[7,-24],[14,-28],[19,-20]],1.3,shadow,hair,0);
+ }else if(v===9){ // geometric flat-top: deliberately horizontal crown seam
+  artStroke(ctx,[[-17,-24],[-15,-29],[14,-29],[17,-24]],2,shadow,hair,0);
+  artStroke(ctx,[[-12,-21],[12,-21]],1.55,light,hair,0);
+ }else if(v===12){ // close-cut buzz: fine follicles rather than full locks
+  for(let row=0;row<3;row++)for(let col=-3;col<=3;col++){
+   const x=col*5.1+(row%2)*2.2,y=-27+row*5.5+Math.abs(col)*.3;
+   artStroke(ctx,[[x,y],[x+1.1,y+1.4]],.8,row%2?light:shadow,hair,0);
+  }
+ }
 }
 function drawLips(ctx,style,color='#7b3639'){
  switch(((style%8)+8)%8){
@@ -482,7 +505,7 @@ function artHead(ctx,p,av,team,view,opt){
   artStroke(ctx,[[-14,7],[-6,14],[4,14]],1.8,hairDim,hair,0);artStroke(ctx,[[18,-11],[24,-4]],1.7,'#ffffff23',hair,0);
   artStroke(ctx,[[13,19],[18,20]],1.05,shade,shade,0);
  }else{ // back
-  drawBackHair(ctx,av.style,hair,dark,width+1);artEllipse(ctx,0,-17,23,15,hair,dark,2.1);artStroke(ctx,[[-20,-13],[-11,-22],[3,-23],[18,-14]],1.9,hairLight,hair,0);
+  drawBackHair(ctx,av.style,hair,dark,width+1);artEllipse(ctx,0,-17,23,15,hair,dark,2.1);artStroke(ctx,[[-20,-13],[-11,-22],[3,-23],[18,-14]],1.9,hairLight,hair,0);studioRearCrownIdentity(ctx,av.style,hair,dark);
   if((av.style%13)===7||(av.style%13)===11){artEllipse(ctx,-25,12,8,15,hair,dark,2);artEllipse(ctx,25,12,8,15,hair,dark,2);} artStroke(ctx,[[-12,26],[0,28],[11,25]],2,shade,skin,0);
  }
  drawBeardByView(ctx,front?'front':qfront?'quarterFront':side?'side':qback?'quarterBack':'back',beardStyle,hair,av.face??0,p.src.name||'');
@@ -512,6 +535,7 @@ function drawPremiumCharacter(ctx,p,av,team,view,opt){
  const main=team.primary||'#2c7eaa',contrast=team.secondary||'#f3e4b7',trim=team.trim||contrast;
  const light=artTint(main,.24),shade=artTint(main,-.32),contrastShade=artTint(contrast,-.24);
  const run=opt.run,action=p.action;
+ const passing=ARTPOSE.passFollowThrough(action,p.actionTimer);
  const active=action==='kick'||action==='super'||action==='flipKick'||action==='flyingKick'||action==='bicycle'||action==='superBicycle';
  const jumping=(p.z||0)>15||action==='jump'||action==='header'||action==='superHead';
  const actionStep=active?8:0;
@@ -525,7 +549,9 @@ function drawPremiumCharacter(ctx,p,av,team,view,opt){
   const brace=action==='receive'?ARTPOSE.receivePose(p.actionTimer,p.firstTouchPressure||0).brace:0;
   const release=p.keeper?ARTPOSE.keeperRelease(action,p.actionTimer):{punting:false,windup:0};
   const gait=ARTPOSE.gait(cycle,{side,quarter:q,active:(active&&sign===1)||(release.punting&&sign===1),sliding:opt.sliding&&sign===1,jumping,recovering:Math.max(landing,brace*.65)});
-  const stride=gait.stride, lift=gait.lift;
+  // The support leg stays grounded while the near boot follows through a pass.
+  const stride=gait.stride+(sign===1?passing.stride:0);
+  const lift=gait.lift+(sign===1?passing.lift:0);
   const knee=[cx+stride*.44,-8-lift*.43-gait.kneeBend*.16],ankle=[cx+stride*.84,-.2-lift+landing*3];
   artStroke(ctx,[[cx*.9,-17],knee],10.2,skinDim,dark,2);
   artStroke(ctx,[knee,ankle],8.8,p.keeper?'#fff0ba':contrast,dark,1.8);
@@ -726,7 +752,7 @@ class Renderer{
   const signatureMotion=personality?sampleMotion(personality,{time:this.time,anim:p.anim,action:p.action,moving}):null;
   const oscillator=Math.sin(p.anim*(17*(signatureMotion?.runRate||1))+p.i*.35);
   // Only real-time match players are smoothed; gallery/studio renders remain deterministic.
-  const gaitMoving=moving&&p.action!=='receive'&&!['keeperDive','keeperDiveCatch','keeperRecover'].includes(p.action);
+  const gaitMoving=moving&&p.action!=='receive'&&p.action!=='pass'&&!['keeperDive','keeperDiveCatch','keeperRecover'].includes(p.action);
   const run=this.inMatchDraw&&!p.preview?ARTPOSE.settleStride(this.poseCycles.get(p),oscillator,gaitMoving,this.frameDelta):gaitMoving?oscillator:0;
   if(this.inMatchDraw&&!p.preview)this.poseCycles.set(p,run);
   const av={...avatarFor(p.src),...(p.src.appearance||{})};
@@ -757,6 +783,10 @@ class Renderer{
    const pose=p.slideTimer>0?(.8+.2*remaining):clamp((p.actionTimer||0)/.18,0,1);
    ctx.translate(3*pose,12*pose);ctx.rotate(-.44*pose);
   }
+  if(p.action==='pass'){
+   // Direction mirroring is already applied by ctx.scale(view.side,1).
+   ctx.rotate(ARTPOSE.passFollowThrough(p.action,p.actionTimer).lean);
+  }
   if(p.action==='receive'){
    const reception=ARTPOSE.receivePose(p.actionTimer,p.firstTouchPressure||0);
    ctx.translate(0,reception.crouch);ctx.rotate((p.face||1)*reception.lean);
@@ -767,7 +797,7 @@ class Renderer{
   }if(p.action==='ballLift')ctx.translate(0,-8);if(p.action==='superHead')ctx.translate(0,-18);if(p.action==='superBicycle')ctx.rotate(-p.face*.90);if(p.action==='bicycle')ctx.rotate(-p.face*.64);if(p.action==='flyingKick')ctx.rotate(-p.face*.28);if(p.action==='defensiveBicycle')ctx.rotate(-p.face*.76);
   if(kick)ctx.rotate(-.045);
   // v0.8.25.15: articulated five-projection character rendering.
-  drawPremiumCharacter(ctx,p,av,team,view,{run,isHurt,isCrying,kick,sliding,skin,dark,hair,build,stature,headScale,lips,time:this.time,signatureMotion,celebrate:p.action==='celebrate',hurt:isHurt,cry:isCrying});
+  if(!CONCEPT_MODULAR.draw(ctx,p,view,{run,headScale})&&!CONCEPT_HERO.draw(ctx,p,view,{run,headScale}))CHARACTER_ART.draw(ctx,p,av,team,view,{run,isHurt,isCrying,kick,sliding,skin,dark,hair,build,stature,headScale,lips,time:this.time,signatureMotion,celebrate:p.action==='celebrate',hurt:isHurt,cry:isCrying});
  if(p.action==='hyperdash'){ctx.save();ctx.globalAlpha=.72;ctx.lineWidth=7;ctx.strokeStyle='#a0f0ff';for(let k=0;k<3;k++){ctx.beginPath();ctx.moveTo(-p.face*(38+k*22),-22-k*16);ctx.lineTo(-p.face*(72+k*21),-20-k*17);ctx.stroke()}ctx.restore()}
  if(p.action==='header'&&!p.preview){ctx.save();ctx.textAlign='center';ctx.fillStyle='#fff4a1';ctx.font='900 24px sans-serif';ctx.fillText('HEAD!',0,-139);ctx.restore()}
  if(!p.preview&&(p.action==='comboJump'||p.action==='assistBoost')){ctx.save();ctx.textAlign='center';ctx.font='900 22px Arial';ctx.fillStyle='#fff2a6';ctx.fillText(p.action==='assistBoost'?'BOOST!':'TEAM JUMP!',0,-146);ctx.lineWidth=4;ctx.strokeStyle='#ffdf84';ctx.beginPath();ctx.arc(0,-68,48,0,PI*2);ctx.stroke();ctx.restore();}
@@ -800,10 +830,10 @@ class Renderer{
   ctx.beginPath();ctx.ellipse(0,0,27+21*(1-remaining),9+9*(1-remaining),0,0,PI*2);ctx.stroke();
   ctx.restore();
  }
- if(!p.preview&&['keeperCatch','keeperDiveCatch','keeperThrow','keeperPunt'].includes(p.action)){
+ if(!p.preview&&['keeperCatch','keeperDiveCatch','keeperHold','keeperThrow','keeperPunt'].includes(p.action)){
   ctx.save();ctx.textAlign='center';ctx.font='900 19px Arial';ctx.fillStyle=['keeperCatch','keeperDiveCatch'].includes(p.action)?'#beffec':'#ffe6a1';
-  ctx.fillText(['keeperCatch','keeperDiveCatch'].includes(p.action)?'CAUGHT!':p.action==='keeperThrow'?'THROW!':'PUNT!',0,-151);
-  if(['keeperCatch','keeperDiveCatch'].includes(p.action)){ctx.strokeStyle='#adfff0';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,-55,40,0,PI*2);ctx.stroke();}
+  ctx.fillText(['keeperCatch','keeperDiveCatch'].includes(p.action)?'CAUGHT!':p.action==='keeperHold'?'HOLDING':p.action==='keeperThrow'?'THROW!':'PUNT!',0,-151);
+  if(['keeperCatch','keeperDiveCatch','keeperHold'].includes(p.action)){ctx.strokeStyle='#adfff0';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,-55,40,0,PI*2);ctx.stroke();}
   ctx.restore();
  }
  if(!p.preview&&(p.abilityFx||0)>0){const glow=p.action==='keeperSuper'?'#91ecff':'#ffde82';ctx.save();ctx.globalAlpha=.85;ctx.strokeStyle=glow;ctx.lineWidth=5;for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(0,-45,45+i*22+(1-p.abilityFx)*55,0,PI*2);ctx.stroke()}ctx.font='900 20px sans-serif';ctx.fillStyle=glow;ctx.textAlign='center';ctx.fillText(p.action==='keeperSuper'?'★ SAVE!':'★ POWER!',0,-143);ctx.restore()}

@@ -1,8 +1,8 @@
-// v0.8.25.30 modular offline shell; versioned when any data or runtime module changes.
-const CACHE='smf-082530-modular-v1';
-const MODULES=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','input','visualfeel','shotfeel','engine','bpwpersonality','artpose','render','ui'];
+// v0.8.25.32 modular offline shell; versioned when any data or runtime module changes.
+const CACHE='smf-082538-concept-front-hair-v1-rear-v2-face-v3-arm-v4-far-v5';
+const MODULES=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','input','visualfeel','shotfeel','physicsbalance','engine','bpwpersonality','artpose','characterart','concepthero','conceptmodular','render','ui'];
 const DATA=['teams.json','mechanics/gameplay.json','graphics/procedural_assets.json','graphics/player_appearances.json','graphics/art_registry.json','editorial/historical_rosters.json','confederations.json','continental_mapping.json',...['arcade','national26','club26','legends','continental','bpw_worldcup','bpw_alltime'].map(g=>'players/'+g+'.json')];
-const CORE=['./index.html','./style.css','./icon-180.png','./src/main.js','./src/assets.js',...MODULES.map(m=>'./src/modules/'+m+'.js'),...DATA.map(d=>'./data/'+d)];
+const CORE=['./index.html','./style.css','./icon-180.png','./src/main.js','./src/assets.js',...MODULES.map(m=>'./src/modules/'+m+'.js'),...DATA.map(d=>'./data/'+d),'./assets/concept_hero/hero_atlas.webp','./assets/characters/concept_modular_v1/source/hair_front_front.svg','./assets/characters/concept_modular_v1/source/hair_back_back.svg','./assets/characters/concept_modular_v1/source/face_front_front.svg','./assets/characters/concept_modular_v1/source/arm_near_front.svg','./assets/characters/concept_modular_v1/source/arm_far_front.svg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('smf-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{

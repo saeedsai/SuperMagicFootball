@@ -1,0 +1,27 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "roster-club-club26_8",
+  "feature_id": "CLUB-METADATA-INTER-20261016-B1",
+  "owner": "roster-inter-20261016-1353-gpt6",
+  "status": "released",
+  "scope": "Inter Milan club26_8 only; source-backed player age and height metadata, matching source/runtime, per-club audit, test and handover; no gameplay or ratings changes",
+  "base_sha": "5b8c0848aa2d21e793d4f4d7a2295285490c65b5",
+  "claimed_at": "2026-10-16T13:53:00+02:00",
+  "acceptance_tests": [
+    "node --test tests/inter_player_metadata_20261016.test.cjs",
+    "Modular Game Dev QA",
+    "Full Regression Census"
+  ],
+  "affected_paths": [
+    "data/players/club26.json",
+    "src/roster_corrections.js",
+    "docs/PLAYER_METADATA_BATCHES_20261016.json",
+    "docs/CLUB_ROSTER_BATCH_PLAN_20261016.md",
+    "docs/CLUB_PLAYER_METADATA_INTER_20261016.md",
+    "tests/inter_player_metadata_20261016.test.cjs"
+  ],
+  "released_at": "2026-10-16T14:03:00+02:00",
+  "outcome": "completed_metadata_checkpoint_full_regression_running",
+  "handover": "docs/CLUB_PLAYER_METADATA_INTER_20261016.md — source commit b8a38d975d667b4bd2fb0df5fbd30b087fa0ff71; active QA 85/85; Full Regression Census run 38897356019 in progress; Pages source deployment cancelled by newer concurrent run",
+  "last_commit": "b8a38d975d667b4bd2fb0df5fbd30b087fa0ff71"
+}

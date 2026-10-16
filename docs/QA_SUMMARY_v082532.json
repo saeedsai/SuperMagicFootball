@@ -1,0 +1,19 @@
+{
+  "version": "0.8.25.32",
+  "baselineGithubDev": "d44cb954554e344bcc02e1b8f582c2e8b21a68a8",
+  "nodeAssertions": 146,
+  "inheritedBrowserSuites": 20,
+  "modularBrowserCases": 9,
+  "performanceRecoveryBrowserCases": 11,
+  "newStudioGalleryBrowserCases": 18,
+  "scriptedFullMatches": 24,
+  "graphicsIntegrationCases": 19,
+  "rearHairStyleUniqueness": "13/13 (before: 11/13)",
+  "failed": 0,
+  "timedOut": 0,
+  "farFutureNotExecuted": 3,
+  "catalogRows": 231,
+  "catalogPass": 228,
+  "githubPagesHostInteraction": "NOT VERIFIED - browsing tool could not access github.io origin",
+  "githubPagesActionsBaseline": "Latest prior dev Pages run success before these changes"
+}

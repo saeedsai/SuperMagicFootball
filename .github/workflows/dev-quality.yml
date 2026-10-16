@@ -1,0 +1,30 @@
+name: Modular Game Dev QA
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  source-and-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate all JSON datasets
+        run: python3 scripts/validate_data.py
+      - name: Regenerate test-only browser fixture
+        run: python3 scripts/build.py
+      - name: Regression — three-way JSON agent merge safeguards
+        run: python3 -m unittest discover -s tests -p 'test_parallel_data_merge.py' -v
+      - name: Verify feature claim exclusivity and registry contracts
+        run: python3 -m unittest discover -s tests -p 'test_feature_claim.py' -v
+      - name: Verify all 165 club rosters and immutable change history
+        run: |
+          python3 scripts/advance_club_roster_batch.py --check
+          node tests/all_club_fc27_rosters.mjs
+          node tests/club_roster_batch_ledger.mjs
+      - name: Execute Node regression suite
+        run: node --test tests/*.test.cjs
+      - name: Compile Python browser regression scripts
+        run: python3 -m compileall -q scripts tests

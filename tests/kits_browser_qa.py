@@ -11,23 +11,25 @@ with sync_playwright() as pw:
   page.evaluate("""() => {let data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}""")
   page.set_content((root/'play.html').read_text(),wait_until='load')
   page.wait_for_function("window.NekketsuHD?.version==='0.8.24.12-alpha'")
-  assert page.evaluate('NekketsuHD.teams.length')==223
+  assert page.evaluate('NekketsuHD.teams.length')in (223,224)
   open_feature(page,'squad')
   assert 'AGI' in page.locator('.rosterCard').first.inner_text(), 'Agility must be visible in squad'
   page.locator('[data-action="home"]').first.click()
   open_quick(page)
+  page.locator('[data-action="setupAppearance"]').click()
   assert page.locator('#homeKit').count()==1
   assert page.locator('#awayKit').count()==1
   assert page.locator('#homeKit').input_value()=='home'
   assert page.locator('#awayKit').input_value()=='away'
   before=page.evaluate("document.getElementById('homeKitDot').style.background")
   page.locator('#homeKit').select_option('away')
-  assert page.locator('#homeKitCaption').inner_text().endswith('AWAY KIT')
   after=page.evaluate("document.getElementById('homeKitDot').style.background")
   assert before!=after,('Kit preview did not change',before,after)
   page.locator('#awayKit').select_option('home')
   assert page.evaluate("NekketsuHD.getKitChoices().join(',')")=='away,home'
   page.screenshot(path=str(root/'tests'/f'kits_setup_{name}.png'))
+  page.locator('[data-action="returnSetup"]').last.click()
+  assert page.locator('#homeKitCaption').inner_text().endswith('AWAY KIT')
   page.locator('[data-action="kickoff"]').first.click()
   assert page.evaluate('NekketsuHD.game.matchState')=='play'
   assert page.evaluate('NekketsuHD.game.getTeam(0).kit')=='away'

@@ -1,11 +1,11 @@
 {
   "world": {
-    "w": 2184,
+    "w": 2560.8,
     "h": 1530,
     "field": {
       "x": 150,
       "y": 155,
-      "w": 1884,
+      "w": 2260.8,
       "h": 1220
     },
     "goalTop": 620,
@@ -319,7 +319,8 @@
     "opponent": 9,
     "gameSpeed": 1,
     "ballModel": "classic",
-    "aiStyle": "Balanced"
+    "aiStyle": "Balanced",
+    "showPerformance": false
   },
   "weather": [
     "Clear",
@@ -754,5 +755,31 @@
     "ballLiftWindowSeconds": 1.55,
     "superBicycleSpeedCap": 1550,
     "aerialDoubleTapSeconds": 0.32
+  },
+  "physicsTuning": {
+    "superShot": {"speedMultiplier": 0.96, "fatigueMultiplier": 1.08},
+    "passSpeed": {
+      "base": 445,
+      "qualityMultiplier": 2.6,
+      "max": 1250
+    },
+    "keeperDiveRecovery": {
+      "baseSeconds": 2.05,
+      "referenceSkill": 55,
+      "skillCoefficient": 0.003,
+      "divingCoefficient": 0.004,
+      "fatigueCoefficient": 0.62,
+      "minSeconds": 1.45,
+      "maxSeconds": 2.85
+    }
+  },
+  "engineBalance": {
+    "attackingStoppageProgress": 0.68,
+    "superKnockbackReferencePower": 72,
+    "superKnockbackPowerSpan": 75,
+    "superKnockbackLevelFactor": 0.16,
+    "superKnockbackStrengthFactor": 0.008,
+    "superKnockbackMax": 3,
+    "keeperPredictionMaxSeconds": 0.95
   }
 }

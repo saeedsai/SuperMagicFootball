@@ -20,6 +20,7 @@ import {VISUALFEEL} from "./visualfeel.js";
 import {ENGINE} from "./engine.js";
 import {BPWPERSONALITY} from "./bpwpersonality.js";
 import {RENDER} from "./render.js";
+import {CONCEPT_MODULAR} from "./conceptmodular.js";
 import {GAME_ASSETS} from "../assets.js";
 (()=>{const {ArcadeAudio,AUDIO_DEFAULTS}=AUDIO;const {JAPAN_ROSTER,TEAMS,rosterFor,SHOTS,DEFAULT_OPTIONS,DEFAULT_LINEUP,WEATHER,TERRAIN,CONDITIONS,FORMATIONS}=DATA;const {Input}=INPUT;const {TEAM_TALKS,moodLabel}=MORALE;const {AI_LEVELS,aiTuning}=AI;const {withStats,NUMERIC_STATS,overallForPosition}=STATS;const {abilityLevel}=SPECIALS;const {kitFor,KIT_CHOICES}=KITS;const {teamIdentity,countryFlag,countryCode,isClub}=IDENTITY;const {careerClubIds,clubRegion,clubCountry,countryName,availableRegions,availableCountries,clubsInCountry}=CLUBFILTERS;const {defaultPlan,safePlan,validatePlan,ATTACK_STYLES,DEFENCE_STYLES}=TACTICS;const {GameEngine}=ENGINE;const {Renderer}=RENDER;const {installExpansion,avatarFor,NATURAL_SKIN_TONES,NATURAL_HAIR_COLORS,STUDIO_ASSET_LABELS}=EXPANDED;const {installBPWWorldCups,BPW_YEARS}=BPW;const {installBPWAllTime}=BPWALLTIME;const {CONTINENTS,SIX_TOP_BY_CONTINENT,installContinentalClubs}=CONTINENTAL;const {createTournament,tournamentCurrent,tournamentAdvance,tournamentStandings,tournamentProgress,validateTournament}=TOURNAMENTS;const {createCareer,currentCareerFixture,advanceCareer,standings,nextSeason,purchase,upgradeFacility,trainPlayer,scoutAcademy,signAcademy,renewContract,recoverPlayer,careerCoverage,recordMatchFitness}=CAREER;
 
@@ -56,6 +57,27 @@ for(const club of clubs){if(club&&String(club.id||'').startsWith('club_')&&typeo
 for(const entry of GAME_ASSETS.teams.slice(216))TEAMS.push({
  ...entry,index:TEAMS.length,customRoster:GAME_ASSETS.rosters[entry.id]
 });
+// A single literal illustrated character model in every position; original teams remain unchanged.
+const CONCEPT_DEMO_ID='demo_concept_royals';
+const CONCEPT_DEMO_ROLES=['GK','GK','DF','DF','DF','MF','MF','MF','MF','FW','FW','FW'];
+const CONCEPT_DEMO_NUMBERS=[1,12,2,3,4,5,6,7,8,9,10,11];
+const CONCEPT_DEMO_ROSTER=CONCEPT_DEMO_ROLES.map((role,i)=>({
+ id:CONCEPT_DEMO_ID+'_'+i,name:'Concept Hero '+String(i+1).padStart(2,'0'),role,
+ num:CONCEPT_DEMO_NUMBERS[i],power:72,shoot:40,defense:42,speed:'A',
+ shot:'omega',shotName:'Concept Magic Shot',skill:'Illustrated Prototype',
+ level:1,xp:0,renderModel:'concept_hero',
+ appearance:{renderModel:'concept_hero',style:1,face:0,beard:0,accessory:0,
+ skin:'#e9b18b',hair:'#78422b',body:2,stature:2,exaggeration:1}
+}));
+// Explicit one-player art-preview opt-in; default game and saved rosters are unchanged.
+if(typeof location!=='undefined'&&new URLSearchParams(location.search).has('conceptModularPreview')){
+ CONCEPT_DEMO_ROSTER[9].renderModel='concept_modular_v1';
+ CONCEPT_DEMO_ROSTER[9].appearance.renderModel='concept_modular_v1';
+}
+TEAMS.push({id:CONCEPT_DEMO_ID,index:TEAMS.length,name:'Concept Royals FC',
+ group:'concept_demo',flag:'CRF',primary:'#1262d4',secondary:'#f4f5f7',
+ trim:'#f1bb46',rank:84,shot:'omega',customRoster:CONCEPT_DEMO_ROSTER});
+
 let career=store.get('managerCareer',null);
 // Migrate pre-0.6 custom-club index saves: v0.5 appended user clubs at index 83.
 if(career&&!career.saveSchema&&clubs.length){const oldToNew=id=>Number.isInteger(id)&&id>=83&&id<83+clubs.length?(TEAMS.findIndex(t=>t.id===clubs[id-83].id)):id;
@@ -68,10 +90,10 @@ const opt={...DEFAULT_OPTIONS,...store.get('options',{})};opt.ballModel=VISUALFE
 input.setBindings(store.get('controllerBindings',input.getBindings()));
 const kitSelections=(()=>{const k=store.get('kitSelections',null);return Array.isArray(k)?[k[0]==='away'?'away':'home',k[1]==='home'?'home':'away']:['home','away'];})();
 let preTalkChoices=['none','none'];let home=0,away=9,homeCategory='all',awayCategory='all',mode='quick',humans=1,formation=opt.formation||'2-1-2',lineup=store.get('lineup',DEFAULT_LINEUP.slice()), edits=store.get('edits',{}),screen='home';
-let teamPlans=store.get('teamPlans',{}),squadContext='home',squadSide=0;
+let teamPlans=store.get('teamPlans',{}),squadContext='home',squadSide=0,squadReturnAtHalf=false;
 let league=store.get('league',{played:0,wins:0,draws:0,losses:0,points:0,playoff:0,stage:'qualifier',games:[]});
 const audio=new ArcadeAudio({...AUDIO_DEFAULTS,...store.get('audioOptions',{}),...(opt.sfx===false?{mute:true}:{})});
-const game=new GameEngine(opt,input),menu=$('menu'),hud=$('hud'),touch=$('mobile');
+const game=new GameEngine(opt,input),menu=$('menu'),hud=$('hud'),touch=$('mobile'),perfHud=$('perfHud');
 const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const button=(name,act,cls='')=>`<button class="btn ${cls}" data-action="${act}">${name}</button>`;
 const choice=(id,values,selected)=>`<select id="${id}" class="choice">${values.map(([key,name])=>`<option value="${escapeHTML(key)}" ${String(key)===String(selected)?'selected':''}>${escapeHTML(name)}</option>`).join('')}</select>`;
@@ -96,7 +118,7 @@ const identity=i=>teamIdentity(TEAMS[i]);
 const menuVisible=()=>!menu.classList.contains('hidden');
 const closeMenu=()=>{input.cancelAll();audio.sceneChange('match');menu.classList.add('hidden');hud.classList.remove('hidden');touch.classList.toggle('hidden',!matchMedia('(pointer:coarse)').matches)};
 const show=(html,id='home')=>{audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');menu.innerHTML=`<div class="menubox"><div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>${html}<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div></div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
-function page(title,subtitle,body,returnAction='home'){if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER • VERSION 0.8.25.30</div><h1 class="heading">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title)}
+function page(title,subtitle,body,returnAction='home'){if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER • VERSION 0.8.25.32</div><h1 class="heading">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title)}
 // v0.8.24.7 — Menu handoff: five primary categories, no new gameplay modes.
 // Existing action handlers, saves, teams and engine remain the authority.
 const menuParents={
@@ -111,7 +133,7 @@ const navItem=(label,act,description='',availability='active',icon='⚽')=>({lab
 function menuChoices(id,title,subtitle,entries,back='home',extra=''){
  menuBackAction=back;
  const cards=entries.map((e,i)=>`<button type="button" class="btn navChoice ${e.availability==='later'?'navLater':''}" data-action="${escapeHTML(e.act)}" ${i===0?'data-default-focus="true"':''} aria-label="${escapeHTML(e.label+(e.availability==='later'?' coming later':''))}"><span class="navIcon" aria-hidden="true">${e.icon}</span><span class="navCopy"><strong>${escapeHTML(e.label)}</strong><small>${escapeHTML(e.description)}</small></span><span class="navStatus">${e.availability==='later'?'COMING LATER':'›'}</span></button>`).join('');
- show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL · 0.8.25.22</div><h1 class="heading">${escapeHTML(title)}</h1><p class="subtitle">${escapeHTML(subtitle)}</p></div>${button('← BACK',back,'minor navBack')}</div><div class="navList">${cards}</div>${extra}</div>`,id);
+ show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL · 0.8.25.32</div><h1 class="heading">${escapeHTML(title)}</h1><p class="subtitle">${escapeHTML(subtitle)}</p></div>${button('← BACK',back,'minor navBack')}</div><div class="navList">${cards}</div>${extra}</div>`,id);
  // Restore the selected item in its parent after returning; do not steal focus from clicks.
  if(navFocusMap[id]){const match=menu.querySelector(`[data-action="${navFocusMap[id]}"]`);if(match){match.focus({preventScroll:true});return;}}
  menu.querySelector('.navChoice')?.focus({preventScroll:true});
@@ -122,12 +144,14 @@ const comingLater=(title,description,back='navCups')=>{
 };
 function showQuickMenu(){menuChoices('nav-quick','QUICK MATCH','Play on one device, practice, or explore planned local multiplayer.',[
  navItem('On Device','navOnDevice','Single-player, two-player, penalties and training.','active','🎮'),
- navItem('Local Network','laterLAN','Devices connected over your local network.','later','📡')],'home');}
+ navItem('Local Network','laterLAN','Devices connected over your local network.','later','📡'),
+ navItem('★ PLAY CONCEPT ROYALS FC','conceptDemo','Play the original illustrated character model as a complete team.','active','🎨')],'home');}
 function showOnDevice(){menuChoices('nav-device','ON DEVICE','Use the existing playable match setups.',[
  navItem('Single Player vs CPU','quick','Existing team, kit and match setup.','active','⚽'),
  navItem('Two Players · Same Device','versus','Play a local head-to-head match.','active','🎮'),
  navItem('Penalty Shootout','pk','Standalone penalty challenge.','active','🥅'),
- navItem('Training Arena','training','Practice the four action buttons and combinations.','active','💥')],'navQuick');}
+ navItem('Training Arena','training','Practice the four action buttons and combinations.','active','💥'),
+ navItem('CONCEPT PLAYER DEMO','conceptDemo','Play all twelve slots as the one illustrated model.','active','🎨')],'navQuick');}
 function showOnlineMenu(){menuChoices('nav-online','ONLINE','Future network modes — not playable in this build.',[
  navItem('Online Match','laterOnlineMatch','Compete over the internet.','later','🌐'),
  navItem('Ultimate Team','laterUltimate','Collect and develop your own squad.','later','⭐'),
@@ -180,10 +204,34 @@ function showInputMenu(){menuChoices('nav-input','INPUT SETTINGS','The game alwa
 function showSaveMenu(parent='navSettings'){menuChoices('nav-saves','SAVE MANAGEMENT','Safely back up or restore local progress.',[
  navItem('Export All Saves','exportSave','Download a JSON backup without changing progress.','active','⬇'),
  navItem('Import Save','importSave','Requires explicit confirmation before replacing progress.','active','⬆')],parent,`<input id="saveImportFile" type="file" accept=".json,application/json" class="hidden" aria-label="Import saved game"/>`);}
-function showAbout(){page('ABOUT SUPERMAGIC FOOTBALL','Original offline cartoon arcade football.',`<div class="panel"><p>Alpha v0.8.25.30 · Independent football game with original graphics and audio.</p><p class="muted">Four action buttons · ${TEAMS.length} teams · saved locally on your device.</p>${button('← MAIN MENU','home','gold')}</div>`,'home');}
+// Re-resolve the current development revision whenever About is opened. This
+// is the GitHub dev HEAD, not an unverified claim about deployed bundle bytes.
+// The game remains playable offline if the public GitHub API cannot be reached.
+async function refreshAboutDevRevision(node,request=fetch){
+ try{
+  const response=await request('https://api.github.com/repos/saeedsai/SuperMagicFootball/commits/dev',{cache:'no-store',headers:{Accept:'application/vnd.github+json'}});
+  if(!response.ok)throw Error('GitHub revision unavailable');
+  const result=await response.json(),sha=typeof result?.sha==='string'?result.sha:'';
+  if(!/^[a-f0-9]{40}$/i.test(sha))throw Error('Invalid revision');
+  if(!node.isConnected)return;
+  const link=document.createElement('a');
+  link.href='https://github.com/saeedsai/SuperMagicFootball/commit/'+sha.toLowerCase();
+  link.textContent='dev @ '+sha.slice(0,12);
+  link.target='_blank';link.rel='noopener noreferrer';
+  node.replaceChildren(link);
+ }catch(_error){
+  if(node.isConnected)node.textContent='Latest dev commit unavailable offline (game remains playable).';
+ }
+}
+function showAbout(){
+ const bundle=escapeHTML(window.SupermagicFootball?.version||'0.8.25.32-integrated');
+ page('ABOUT SUPERMAGIC FOOTBALL','Original offline cartoon arcade football.',`<div class="panel"><p id="aboutBundleVersion">GAME BUNDLE · ${bundle} · Independent football game with original graphics and audio.</p><p><strong>Developer: Saeed</strong> · <a href="mailto:saeedmsalehi1990@gmail.com">saeedmsalehi1990@gmail.com</a></p><p class="muted">Latest GitHub development commit (refreshes each About visit): <span id="aboutDevRevision" role="status" aria-live="polite">Checking latest dev commit online…</span></p><p class="muted">The commit above tracks the latest GitHub dev changes; GitHub Pages deployment can lag behind it. Four action buttons · ${TEAMS.length} teams · saved locally on your device.</p>${button('← MAIN MENU','home','gold')}</div>`,'home');
+ const revision=document.getElementById('aboutDevRevision');
+ if(revision)void refreshAboutDevRevision(revision);
+}
 function showHome(){
  menuBackAction='home';menuEntryReturn='home';
- show(`<header class="homeMasthead"><div><div class="topline">ARCADE FOOTBALL · SUPER SHOTS · YOUR FOOTBALL UNIVERSE</div><h1 class="heading logoHeading">SUPERMAGIC <em>FOOTBALL</em></h1><p class="subtitle">Pick a mode. All original gameplay and editing tools remain accessible.</p></div><span class="homeVersion">GRAPHICS 0.8.25.30</span></header>
+ show(`<header class="homeMasthead"><div><div class="topline">ARCADE FOOTBALL · SUPER SHOTS · YOUR FOOTBALL UNIVERSE</div><h1 class="heading logoHeading">SUPERMAGIC <em>FOOTBALL</em></h1><p class="subtitle">Pick a mode. All original gameplay and editing tools remain accessible.</p></div><span class="homeVersion">GRAPHICS 0.8.25.32</span></header>
  <div class="menuGrid homeDashboard simplifiedHome"><main class="homeDirectory" aria-label="Five game categories">
  <div class="navList navMainList">
  ${[
@@ -339,7 +387,51 @@ function drawHUD(){let p=game.controlledPlayer(0),s=game.score;$('homeflag').inn
   $('playerTag').textContent=`#${p.src.num} ${p.src.name.toUpperCase()}  ·  ${(p.src.superAbility?.type==='defence'&&!game.ball.owner?p.src.superAbility.name:p.src.shotName).toUpperCase()}  · LV${abilityLevel(p,(p.src.superAbility?.type==='defence'&&!game.ball.owner)?'defence':'shot')}  ·  ${(p.src.superAbility?.type==='defence'&&!game.ball.owner?(p.abilityCd||0):p.specialCd)>0?'SUPER RECHARGING':'SUPER READY'}  ·  ${moodLabel(p.morale)} ${Math.round(p.morale)}%`;const staminaBar=$('staminaFill');if(staminaBar)staminaBar.style.width=Math.round(100*(1-(p.fatigue||0)))+'%';const staminaText=$('staminaText');if(staminaText)staminaText.textContent=`STAMINA ${Math.round(100*(1-(p.fatigue||0)))}%`;const meter=$('powerFill');if(meter)meter.style.width=Math.max(0,Math.min(100,100*Math.max(p.charge||0,game.input.held(p.t,'pass')?(p.passHold||0):0)/1.2))+'%';const superLabel=$('specialMeter');if(superLabel){let defensive=p.src.superAbility?.type==='defence'&&!game.ball.owner;let abilityCooldown=defensive?(p.abilityCd||0):p.specialCd;superLabel.textContent=(game.input.held(p.t,'pass')&&game.ball.owner?.t===p.t)?'PASS • HOLD TO EXTEND':defensive?(abilityCooldown>0?'DEF CD '+abilityCooldown.toFixed(1)+'s':'★ DEF READY'):(abilityCooldown>0?'RECHARGE '+abilityCooldown.toFixed(1)+'s':'★ READY');superLabel.classList.toggle('charging',abilityCooldown>0)}}}
 function showLeague(){home=0;mode='league';let list=[10,9,11,12];away=league.stage==='finals'?list[Math.min(league.playoff||0,3)]:(league.played%12)+1;
  page('WORLD LEAGUE','Win at least 16 games and accumulate 70 points to qualify for four championship finals.',`<div class="twoCol"><div class="panel"><div class="titleSmall">JAPAN • ${league.stage.toUpperCase()}</div><div class="tripleCol">${[['WINS',league.wins],['POINTS',league.points],['GAMES',league.played]].map(([a,b])=>`<div class="panel" style="text-align:center"><div class="badge">${a}</div><div style="font-size:34px;color:#ffdd76;font-weight:900">${b}</div></div>`).join('')}</div><p class="muted">Qualification: 16 wins / 70 points. Finals: ${league.playoff||0} / 4 victories.</p><div class="stat"><span>NEXT OPPONENT</span><strong>${TEAMS[away].name}</strong></div><div class="row" style="margin-top:15px">${league.stage==='champion'?'<strong>🏆 CUP WON — CHAMPIONS!</strong>':button('▶ NEXT MATCH','leagueKickoff','gold')}${button('RESET SEASON','clearLeague')}</div></div><div class="panel"><div class="titleSmall">MATCH HISTORY</div><div class="scroll"><table class="miniTable"><thead><tr><th>Opponent</th><th>Result</th></tr></thead><tbody>${(league.games||[]).slice(0,20).map(g=>`<tr><td>${escapeHTML(g.team)}</td><td>${g.a} - ${g.b}</td></tr>`).join('')||'<tr><td colspan="2">No results yet.</td></tr>'}</tbody></table></div></div></div>`)}
+// Read-only substitution hint: only GameEngine.applyPlan validates and commits swaps.
+function substitutionAdviceForPause(game,side,plan,players){
+ const remaining=Math.max(0,(game.maxSubstitutions??0)-(game.substitutionsUsed?.[side]??0));
+ const wrap=message=>`<div id="substitutionAdvice" class="panel" role="status" aria-label="Substitution advice"><strong>BENCH FITNESS REVIEW</strong><p class="muted">${message}</p></div>`;
+ if(!remaining)return wrap('All substitutions have been used. Keep the current lineup.');
+ const onField=new Set(plan.lineup),ledger=game.fatigueLedger?.[side]||{};
+ const unavailable=game.subbedOut?.[side]||new Set();
+ const fatigue=id=>Math.max(0,Math.min(1,Number.isFinite(ledger[id])?ledger[id]:0));
+ const matches=[];
+ for(let slot=0;slot<plan.lineup.length;slot++){
+  const starter=players[plan.lineup[slot]];
+  if(!starter)continue;
+  const tired=fatigue(starter.id);
+  if(tired<.40)continue;
+  for(let bench=0;bench<players.length;bench++){
+   const replacement=players[bench];
+   if(!replacement||onField.has(bench)||replacement.role!==starter.role||
+      (replacement.injuryWeeks||0)>0||unavailable.has(replacement.id))continue;
+   const fresh=fatigue(replacement.id);
+   if(tired-fresh<.20)continue;
+   matches.push({slot,bench,starter,replacement,tired,fresh,gain:tired-fresh});
+  }
+ }
+ matches.sort((a,b)=>b.gain-a.gain||a.slot-b.slot||a.bench-b.bench);
+ if(!matches.length)return wrap('No urgent eligible same-role swap. Review squad fitness before changing the lineup.');
+ const best=matches[0],fit=value=>Math.round(100*(1-value));
+ return wrap(`Suggested swap — slot ${best.slot+1} (${escapeHTML(best.starter.role)}): #${escapeHTML(String(best.starter.num))} ${escapeHTML(best.starter.name)} (FIT ${fit(best.tired)}%) → #${escapeHTML(String(best.replacement.num))} ${escapeHTML(best.replacement.name)} (FIT ${fit(best.fresh)}%). Select the bench player above and choose SAVE TACTICS to confirm. ${remaining} substitution${remaining===1?'':'s'} left.`);
+}
+// Advisory only: changing preview selectors must never apply/swap players or save.
+function lineupRoleFitGuidance(players,slots,positions){
+ const mismatches=[];
+ let matched=0;
+ for(let i=0;i<positions.length;i++){
+  const player=players[slots[i]],assigned=positions[i];
+  if(player?.role===assigned){matched++;continue;}
+  const natural=player?.role||'unknown',name=player?.name||'unassigned';
+  mismatches.push('slot '+(i+1)+' ('+assigned+'): '+name+' naturally '+natural+
+   ' · position OVR '+playerOVR(player,assigned));
+ }
+ return 'LINEUP FIT '+matched+'/'+positions.length+' natural roles. '+
+  (mismatches.length?'Review '+mismatches.join('; ')+'.':'All starters fit their assigned roles.')+
+  ' Advice only; no changes are applied until SAVE TACTICS.';
+}
 function showSquad(side=0,origin='home'){
+ squadReturnAtHalf=origin==='pause'&&screen==='HALF TIME';
  squadSide=side;squadContext=origin;
  const index=origin==='pause'?game.teamIds[side]:side===0?home:away;
  const team=TEAMS[index],players=origin==='pause'?game.rosters[side]:roster(index);
@@ -351,7 +443,9 @@ function showSquad(side=0,origin='home'){
  page('TEAM COMMAND CENTER',`${team.name} — edit formation, starting six, captain, set pieces and tactics ${origin==='pause'?'while the game is paused':'before kickoff'}.`,
  `<div class="squadHeader">${identity(index)}<strong>${escapeHTML(team.name)}</strong><span>${origin==='pause'?'LIVE TACTICS':'PREGAME PLAN'} · 6 ON FIELD / 6 BENCH</span></div><div class="twoCol"><div class="panel"><h3 class="titleSmall">FORMATION & LINEUP</h3>${field('FORMATION','formation',Object.keys(FORMATIONS).map(v=>[v,v]),plan.formation)}<div class="formationPitch" id="formationPitch" aria-label="Six-player formation with cartoon player faces"></div><p class="muted">OVR is the rounded mean of six position-relevant stats (1–100). Formation OVR is for the assigned position, not necessarily the player’s natural role. Five outfield players + goalkeeper.</p>
  ${plan.lineup.map((id,i)=>`<div class="lineupRow"><strong>${order[i]}</strong>${choice('pos'+i,(i===0?memberOptions.filter(([j])=>players[j].role==='GK'):memberOptions.filter(([j])=>players[j].role!=='GK')),id)}<span class="positionOvr" data-lineup-ovr="${i}" aria-label="Position overall rating">OVR ${playerOVR(players[id],order[i])}</span></div>`).join('')}
+  <p id="lineupRoleFit" class="muted" role="status" aria-live="polite" aria-label="Lineup position fit guidance"></p>
  <p class="muted">${origin==='pause'?`SUBSTITUTIONS: <b>${game.substitutionsUsed[side]} / ${game.maxSubstitutions}</b> used. Only ${game.maxSubstitutions} changes allowed; substituted-off players cannot return.`:'Before kickoff, choose any six starters. During play, use Pause to substitute up to three players.'} Substitutes enter with their own fitness; exhausted players lose speed, precision and tackling strength.</p>
+ ${origin==='pause'?substitutionAdviceForPause(game,side,plan,players):''}
  <h3 class="titleSmall">LEADERSHIP & SET PIECES</h3><div class="tacticsGrid">${[['captain','CAPTAIN'],['penalty','PENALTY KICKS'],['freeKick','FREE KICKS'],['corner','CORNERS']].map(([key,label])=>`<div>${field(label,'role_'+key,key==='captain'?fieldPlayerOptions:roleOptions,plan[key])}</div>`).join('')}</div>
  <h3 class="titleSmall">TEAM INSTRUCTIONS</h3><div class="tacticsGrid"><div>${field('ATTACKING STYLE','attackStyle',ATTACK_STYLES.map(v=>[v,v]),plan.attack)}</div><div>${field('DEFENSIVE STYLE','defenceStyle',DEFENCE_STYLES.map(v=>[v,v]),plan.defence)}</div></div>
  <p class="muted">Possession prioritizes passes; Direct pushes forward and shoots earlier. High Press closes down faster; Deep Block holds positions. Captain boosts team passing slightly. Penalty taker accuracy affects shootouts. Free-kick/corner roles are saved, but those restart mechanics are not yet playable.</p>
@@ -404,7 +498,7 @@ function drawFittedKeeperStudioPose(ctx,width,height,player,team){
  return {scale,painted,bounds:[minX,minY,maxX,maxY]};
 }
 function drawTeamFace(canvas,player,teamIndex){if(!canvas||!player)return;const ctx=canvas.getContext('2d');if(!ctx)return;ctx.clearRect(0,0,canvas.width,canvas.height);const gradient=ctx.createLinearGradient(0,0,0,canvas.height);gradient.addColorStop(0,'#347885');gradient.addColorStop(1,'#102d44');ctx.fillStyle=gradient;ctx.fillRect(0,0,canvas.width,canvas.height);ctx.save();const fit=portraitFit(canvas.width,canvas.height,player.appearance||{});ctx.translate(fit.x,fit.y);ctx.scale(fit.scale,fit.scale);renderer.drawPlayer(ctx,{...game.player(0,3),src:player,team:0,i:0,x:0,y:0,z:0,t:0,face:1,dx:0,dy:0,anim:0,action:'idle',controlled:false,preview:true},{getTeam:()=>TEAMS[teamIndex],options:{showNames:false}});ctx.restore();}
-function refreshFormationPreview(){const board=$('formationPitch');if(!board)return;const teamIndex=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;const players=squadContext==='pause'?game.rosters[squadSide]:roster(teamIndex);const key=$('formation')?.value||'2-1-2';const labels={'2-1-2':['GK','DF','DF','MF','FW','FW'],'1-2-2':['GK','DF','MF','MF','FW','FW'],'2-2-1':['GK','DF','DF','MF','MF','FW'],'1-3-1':['GK','DF','MF','MF','MF','FW'],'1-1-3':['GK','DF','MF','FW','FW','FW'],'3-1-1':['GK','DF','DF','DF','MF','FW']}[key]||['GK','DF','DF','MF','FW','FW'];menu.querySelectorAll('.lineupRow>strong').forEach((node,i)=>node.textContent=labels[i]||'MF');const positions=FORMATIONS[key]||FORMATIONS['2-1-2'];const slots=Array.from({length:6},(_,i)=>Number($('pos'+i)?.value));menu.querySelectorAll('[data-lineup-ovr]').forEach((badge,i)=>{badge.textContent='OVR '+playerOVR(players[slots[i]],labels[i]);badge.title='Calculated for '+labels[i]+' position';});board.innerHTML=positions.map((pos,i)=>`<div class="formationSlot" style="left:${Math.round(pos.x*100)}%;top:${Math.round(pos.y*100)}%" title="${escapeHTML(players[slots[i]]?.name||'Player')}"><canvas width="86" height="90" data-formation-avatar="${slots[i]}" aria-label="${escapeHTML(players[slots[i]]?.name||'Player')} face" role="img"></canvas><small>${escapeHTML((players[slots[i]]?.name||'Player').split(' ').slice(-1)[0])}</small><span class="formationOvr" aria-label="${labels[i]} overall rating ${playerOVR(players[slots[i]],labels[i])}">${labels[i]} ${playerOVR(players[slots[i]],labels[i])}</span></div>`).join('');menu.querySelectorAll('[data-squad-avatar],[data-formation-avatar]').forEach(canvas=>{const j=Number(canvas.dataset.squadAvatar??canvas.dataset.formationAvatar);drawTeamFace(canvas,players[j],teamIndex)});}
+function refreshFormationPreview(){const board=$('formationPitch');if(!board)return;const teamIndex=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;const players=squadContext==='pause'?game.rosters[squadSide]:roster(teamIndex);const key=$('formation')?.value||'2-1-2';const labels={'2-1-2':['GK','DF','DF','MF','FW','FW'],'1-2-2':['GK','DF','MF','MF','FW','FW'],'2-2-1':['GK','DF','DF','MF','MF','FW'],'1-3-1':['GK','DF','MF','MF','MF','FW'],'1-1-3':['GK','DF','MF','FW','FW','FW'],'3-1-1':['GK','DF','DF','DF','MF','FW']}[key]||['GK','DF','DF','MF','FW','FW'];menu.querySelectorAll('.lineupRow>strong').forEach((node,i)=>node.textContent=labels[i]||'MF');const positions=FORMATIONS[key]||FORMATIONS['2-1-2'];const slots=Array.from({length:6},(_,i)=>Number($('pos'+i)?.value));menu.querySelectorAll('[data-lineup-ovr]').forEach((badge,i)=>{badge.textContent='OVR '+playerOVR(players[slots[i]],labels[i]);badge.title='Calculated for '+labels[i]+' position';});const guidance=$('lineupRoleFit');if(guidance)guidance.textContent=lineupRoleFitGuidance(players,slots,labels);board.innerHTML=positions.map((pos,i)=>`<div class="formationSlot" style="left:${Math.round(pos.x*100)}%;top:${Math.round(pos.y*100)}%" title="${escapeHTML(players[slots[i]]?.name||'Player')}"><canvas width="86" height="90" data-formation-avatar="${slots[i]}" aria-label="${escapeHTML(players[slots[i]]?.name||'Player')} face" role="img"></canvas><small>${escapeHTML((players[slots[i]]?.name||'Player').split(' ').slice(-1)[0])}</small><span class="formationOvr" aria-label="${labels[i]} overall rating ${playerOVR(players[slots[i]],labels[i])}">${labels[i]} ${playerOVR(players[slots[i]],labels[i])}</span></div>`).join('');menu.querySelectorAll('[data-squad-avatar],[data-formation-avatar]').forEach(canvas=>{const j=Number(canvas.dataset.squadAvatar??canvas.dataset.formationAvatar);drawTeamFace(canvas,players[j],teamIndex)});}
 
 const SAVE_KEYS=Object.freeze(['customClubs','managerCareer','continentalRun','options','league','lineup','edits','teamPlans','controllerBindings','kitSelections','audioOptions']);
 // Reject structurally corrupt imports before confirmation or any storage mutation.
@@ -455,7 +549,7 @@ function commitSaveImport(changes,storage){
  }
  return changes.length;
 }
-function exportSave(){const keys=SAVE_KEYS;const data={product:'Supermagic Football',version:'0.8.25.30',exportedAt:new Date().toISOString(),data:Object.fromEntries(keys.map(k=>[k,store.get(k,null)]))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='Supermagic_Football_Save_'+new Date().toISOString().slice(0,10)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),3000)}
+function exportSave(){const keys=SAVE_KEYS;const data={product:'Supermagic Football',version:'0.8.25.32',exportedAt:new Date().toISOString(),data:Object.fromEntries(keys.map(k=>[k,store.get(k,null)]))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='Supermagic_Football_Save_'+new Date().toISOString().slice(0,10)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),3000)}
 async function importSave(file){try{
  if(!file||file.size>5_000_000)throw Error('Save file missing or larger than 5MB');
  const changes=validateSaveImport(JSON.parse(await file.text()));
@@ -475,24 +569,62 @@ function showControls(){
 function showSettingsSection(section){
  const opts={
  game:{id:'nav-settings-game',title:'GAME SETTINGS',subtitle:'CPU, match rules and environment.',fields:`${field('CPU DIFFICULTY','difficulty',aiChoices(),opt.difficulty)}${difficultyHint()}${field('MATCH PACE','gameSpeed',[[0.8,'Relaxed / 80%'],[1,'Normal / 100%'],[1.15,'Fast / 115%']],opt.gameSpeed||1)}${field('HALF LENGTH','settingsDuration',[60,120,180,300].map(v=>[v,v+' sec']),opt.halfSeconds)}${field('WEATHER','settingsWeather',WEATHER.map(v=>[v,v]),opt.weather)}${field('TERRAIN','settingsTerrain',TERRAIN.map(v=>[v,v]),opt.terrain)}${field('CONDITION','settingsCondition',CONDITIONS.map(v=>[v,v]),opt.condition)}`},
- graphics:{id:'nav-settings-graphics',title:'GRAPHICS',subtitle:'Camera and display settings.',fields:`${field('CAMERA','camera',[['Follow','Follow the ball'],['Wide','Wide center view']],opt.camera)}${field('BALL DESIGN','ballModel',VISUALFEEL.BALL_MODELS.map(v=>[v.id,v.name]),opt.ballModel)}<canvas id="ballPreview" class="ballPreview" width="100" height="76" aria-label="Preview of selected match ball"></canvas>${field('SHOW PLAYER NAMES','showNames',[['true','Yes'],['false','No']],String(opt.showNames))}<div class="row">${button('⛶ TOGGLE FULLSCREEN','fullscreen','minor')}</div><p class="muted">Fullscreen and screen rotation support depends on your browser and device. Visual effects remain built into the game.</p>`},
+ graphics:{id:'nav-settings-graphics',title:'GRAPHICS',subtitle:'Camera and display settings.',fields:`${field('CAMERA','camera',[['Follow','Follow the ball'],['Wide','Wide center view']],opt.camera)}${field('BALL DESIGN','ballModel',VISUALFEEL.BALL_MODELS.map(v=>[v.id,v.name]),opt.ballModel)}<canvas id="ballPreview" class="ballPreview" width="100" height="76" aria-label="Preview of selected match ball"></canvas>${field('SHOW PLAYER NAMES','showNames',[['true','Yes'],['false','No']],String(opt.showNames))}${field('PERFORMANCE HUD','showPerformance',[['false','Off (default)'],['true','Show live FPS / frame time']],String(opt.showPerformance===true))}<div class="row">${button('⛶ TOGGLE FULLSCREEN','fullscreen','minor')}</div><p class="muted">Fullscreen and screen rotation support depends on your browser and device. Visual effects remain built into the game.</p>`},
  sound:{id:'nav-settings-sound',title:'SOUND',subtitle:'Original offline music, sound effects and crowd.',fields:`${field('MASTER MUTE','audioMute',[['false','Sound on'],['true','Mute all']],String(audio.settings.mute))}${['master','music','sfx','ui','ambience'].map(k=>`<label class="fieldLabel" for="audio_${k}">${k.toUpperCase()} VOLUME <output id="audio_${k}Value">${audio.settings[k]}%</output></label><input type="range" id="audio_${k}" min="0" max="100" step="5" value="${audio.settings[k]}" aria-label="${k} volume" style="width:100%"/>`).join('')}<p class="muted">Audio begins after interacting with the page. No internet or external samples needed.</p>`}
  };
  const cfg=opts[section];if(!cfg)return showSettingsMenu();const back=menuEntryReturn==='returnPause'?'returnPause':'navSettings';menuBackAction=back;
  show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL · SETTINGS</div><h1 class="heading">${cfg.title}</h1><p class="subtitle">${cfg.subtitle}</p></div>${button('← BACK',back,'minor')}</div><div class="panel navSettingsFields">${cfg.fields}<div class="row navSaveRow">${button('✓ SAVE CHANGES','saveSettings','gold')}</div></div></div>`,cfg.id);paintBallPreview();
 }
-function showHelp(){page('CONTROLS','Exactly four football action buttons: Pass, Shoot, Dribble and Jump.',`<div class="twoCol"><div class="panel"><h3 class="titleSmall">PLAYER 1</h3>${[['Move','WASD / arrow keys in one-player mode / left stick'],['PASS','K / gamepad B'],['SHOOT','J / gamepad A'],['DRIBBLE','I / gamepad X'],['JUMP','Space / gamepad Y'],['Pause (menu only)','Esc / P / controller Start']].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}</div><div class="panel"><h3 class="titleSmall">PLAYER 2</h3>${[['Move','Arrow keys or keypad 8-4-5-6 / second left stick'],['PASS','Period / gamepad B'],['SHOOT','Comma / gamepad A'],['DRIBBLE','Keypad Decimal / gamepad X'],['JUMP','Right Ctrl / gamepad Y']].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}<p class="muted">There are NO separate Special, Switch, Sprint or goalkeeper-dive buttons. Goalkeepers defend and dive automatically. Remap the same four actions in Settings → Remap Controls.</p></div></div>
+function showHelp(){page('CONTROLS','Exactly four football action buttons: Pass, Shoot, Dribble and Jump.',`<div class="twoCol"><div class="panel"><h3 class="titleSmall">PLAYER 1</h3>${[['Move','WASD / arrow keys in one-player mode / left stick'],['PASS','K / gamepad B'],['SHOOT','J / gamepad A'],['DRIBBLE','I / gamepad X'],['JUMP','Space / gamepad Y'],['Pause (menu only)','Esc / P / controller Start']].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}</div><div class="panel"><h3 class="titleSmall">PLAYER 2</h3>${[['Move','Arrow keys or keypad 8-4-5-6 / second left stick'],['PASS','Period / gamepad B'],['SHOOT','Comma / gamepad A'],['DRIBBLE','Keypad Decimal / gamepad X'],['JUMP','Right Ctrl / gamepad Y']].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}<p class="muted">There are NO separate Special, Switch, Sprint or goalkeeper-dive buttons. During normal matches goalkeepers defend automatically. In two-player penalty shootouts, the defending player steers the keeper and taps JUMP to dive. Remap the same four actions in Settings → Remap Controls.</p></div></div>
 <div class="twoCol" style="margin-top:18px"><div class="panel"><h3 class="titleSmall">WHEN YOU HAVE THE BALL</h3>${[['Tap PASS (no direction)','Pass to closest teammate'],['PASS + direction','Kick in that exact direction'],['Hold PASS, then release','Longer, faster pass (hold duration sets power)'],['First JUMP; while airborne press PASS','Cross (sequence matters)'],['PASS first, then JUMP','NOT a cross. PASS release determines the pass; JUMP remains a jump'],['Tap SHOOT','Normal shot'],['Hold SHOOT, then release','Charged shot'],['JUMP then SHOOT while carrying','Elevated normal shot'],['Double JUMP then SHOOT while carrying','Super Shot (or stronger normal shot without ability)'],['Tap DRIBBLE','Dribble dash'],['Dribble near an opponent','Automatic personal trick; both moves have 2s cooldown'],['JUMP then DRIBBLE near a loose aerial ball','Normal bicycle kick'],['JUMP then two DRIBBLE taps near an aerial ball','Super Bicycle (same special power and ball visuals as Super Shot)'],['JUMP then SHOOT near a loose aerial ball','Normal header'],['JUMP then two SHOOT taps near an aerial ball','Super Header (same power and ball visuals as Super Shot)'],['Hold DRIBBLE 0.26s, then press JUMP','Lift ball above player without jumping'],['Release DRIBBLE; JUMP, then tap DRIBBLE twice','Super Bicycle from lifted ball; non-specialists use boosted ordinary shot'],['Tap JUMP','Jump / jump again while airborne'],['Hold JUMP + direction','Run with ball (no jump on a long hold)']].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}</div><div class="panel"><h3 class="titleSmall">WHEN YOU DO NOT HAVE THE BALL</h3>${[['Tap PASS','Standing tackle'],['Hold PASS','Chase opponent'],['Tap SHOOT','Short bounded slide tackle (max 148 field units)'],['Tap DRIBBLE','Change controlled player'],['Tap JUMP','Jump'],['Hold JUMP + direction','Sprint while defending'],['JUMP + SHOOT','Defensive flying kick'],['Second JUMP, then SHOOT','Defensive bicycle kick'],['Goalkeeper','Autonomously positions, dives and saves'],['Goalkeeper holding ball; safe teammates','Short accurate distribution'],['Goalkeeper under pressure / blocked pass','Automatic long clearance']].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}</div></div>
-<p class="muted">Removed from active human controls: teammate launch → flip kick, reverse-order PASS+JUMP cross, manual goalkeeper dive, separate Special, Switch and Sprint actions. Now playable: Hold Dribble then Jump for a stationary loft; release Dribble, Jump, then tap Dribble twice near the airborne ball to execute Super Bicycle. Super Shot, Super Header and Super Bicycle share power and transformation effects for eligible players.</p>`)}
+<p class="muted">Removed from normal-match human controls: teammate launch → flip kick, reverse-order PASS+JUMP cross, separate goalkeeper-dive, Special, Switch and Sprint buttons. In two-player penalties the existing JUMP controls the keeper dive. Now playable: Hold Dribble then Jump for a stationary loft; release Dribble, Jump, then tap Dribble twice near the airborne ball to execute Super Bicycle. Super Shot, Super Header and Super Bicycle share power and transformation effects for eligible players.</p>`)}
 
 function showEditor(){page('PLAYER DATA EDITOR','Edit your own 12-player team roster in JSON. Every player can change shot and stats.',`<div class="twoCol"><div class="panel">${teamField('SELECT TEAM','editTeam',nations(),home)}<label class="fieldLabel">TEAM PLAYER DEFINITIONS</label><textarea id="jsonRoster" style="width:100%;height:280px;padding:12px;background:#061625;color:#c5eaff;border:1px solid #90bbcb;border-radius:9px;touch-action:pan-y" spellcheck="false">${escapeHTML(JSON.stringify(roster(home),null,2))}</textarea><div class="row" style="margin-top:12px">${button('✓ APPLY','importRoster','gold')}${button('⬇ EXPORT','exportRoster')}</div></div><div class="panel"><h3 class="titleSmall">EDITABLE ENGINE</h3><p class="muted">Individual player data includes the fourteen 1–100 ratings: stamina, strength, aggression, defence, speedRating, agility, dribbling, shootPower, shootAccuracy, heading, passing, crossing, gkDiving, gkSkill. dribbleType selects one of ten gameplay-distinct tricks. superAbility and gkSuperAbility hold optional unique move definitions. superShotLevel, superDefenceLevel and gkSuperLevel can explicitly override arcade strength tiers (1–5); top tiers are reserved for a small editorial star shortlist. Existing legacy power, shoot, defense, speed are retained for compatibility. The same engine is intended to support new clubs, abilities and growth later.</p><p class="muted">Available super shots: ${Object.keys(SHOTS).join(', ')}.</p><p class="muted">The source code is included in the ZIP for extensions. Online play, the career economy and custom competition designer are future work—not currently playable.</p></div></div>`)}
 
 const eur=n=>'€'+(n/1000000).toFixed(1)+'m';
 const saveCareer=()=>{if(career)store.put('managerCareer',career)};
+// Read-only pre-kickoff scouting. No AI odds, plan edits, or career writes.
+function careerOpponentScoutPanel(c,fx){
+ if(!fx||!Number.isInteger(fx.opponent)||!TEAMS[fx.opponent])return '';
+ const opponent=TEAMS[fx.opponent],oppRoster=roster(fx.opponent);
+ const starters=planFor(fx.opponent).lineup.map(i=>oppRoster[i]).filter(Boolean);
+ const average=role=>{
+  const vals=starters.filter(p=>p.role===role).map(p=>playerOVR(p,role)).filter(Number.isFinite);
+  return vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):null;
+ };
+ const attack=average('FW'),defence=average('DF'),keeper=average('GK');
+ const threat=starters.filter(p=>p.role!=='GK').map(p=>({p,ovr:playerOVR(p)}))
+  .filter(q=>Number.isFinite(q.ovr)).sort((a,b)=>b.ovr-a.ovr)[0];
+ const table=fx.kind==='league'?c.table?.[fx.opponent]:null;
+ const safe=x=>Number.isFinite(x)&&x>=0?Math.trunc(x):0;
+ const played=table?safe(table.p):0,wins=table?safe(table.w):0,draws=table?safe(table.d):0;
+ const record=table&&played?`${played} played · ${wins}W ${draws}D ${Math.max(0,played-wins-draws)}L`:'No league matches recorded';
+ const recommendation=attack!==null&&defence!==null&&attack>=defence+6
+  ?'Contain the forwards: consider Deep Block and Possession.'
+  :attack!==null&&defence!==null&&defence>=attack+6
+  ?'Break their back line: consider Direct attack and High Press.'
+  :'Balanced opponent: consider Possession and adapt to the match.';
+ const tired=(c.roster||[]).filter(p=>p&&(Number(p.condition)<60||Number(p.injuryWeeks)>0)).length;
+ const fitness=tired?`Your squad has ${tired} player${tired===1?'':'s'} below 60% fitness or injured. Review your starters before kickoff.`
+  :'No fitness warning below 60% in your current squad.';
+ const rating=n=>n===null?'–':escapeHTML(String(n));
+ const highlight=threat?`${escapeHTML(threat.p.name||'Player')} · ${escapeHTML(threat.p.role)} · OVR ${rating(threat.ovr)}`:'No outfield scouting data';
+ return `<section class="panel" id="careerOpponentScout" aria-label="Next opponent scouting report">
+  <h3 class="titleSmall">🔍 NEXT OPPONENT SCOUT</h3>
+  <p class="muted">Projected six-player lineup for ${escapeHTML(opponent.name)} · positional game ratings, not official match odds.</p>
+  <div class="stat"><strong>ATTACK / DEFENCE / KEEPER</strong><span>${rating(attack)} / ${rating(defence)} / ${rating(keeper)}</span></div>
+  <div class="stat"><strong>KEY OUTFIELD THREAT</strong><span>${highlight}</span></div>
+  <div class="stat"><strong>LEAGUE RECORD</strong><span>${escapeHTML(record)}</span></div>
+  <p class="muted"><strong>TACTICAL IDEA:</strong> ${recommendation}</p>
+  <p class="muted"><strong>SQUAD READINESS:</strong> ${fitness}</p>
+  <p class="muted">Scouting advice only. Adjust tactics or squad separately; no automatic changes or costs.</p>
+ </section>`;
+}
 function showManager(){if(!career){const regions=availableRegions(TEAMS);if(!regions.includes(managerRegion))managerRegion=regions[0]||'UEFA';const countries=availableCountries(TEAMS,managerRegion);if(!countries.includes(managerCountry))managerCountry=countries[0]||'';const choices=clubsInCountry(TEAMS,managerRegion,managerCountry);page('MANAGER CAREER','Choose continent → country → club, then build your twelve-player squad.',`<div class="panel"><div class="managerRegionSelector">${field('1. CONTINENT','managerContinent',regions.map(k=>[k,CONTINENTS.find(x=>x.id===k)?.region||k]),managerRegion)}${field('2. COUNTRY','managerCountry',countries.map(k=>[k,countryName(k,TEAMS)]),managerCountry)}</div>${teamField('3. CLUB','managerClub',choices.map(i=>[i,TEAMS[i].name]),choices[0])}<p class="muted">Select a continent and country to narrow the list. Browse Flags / Crests to see team graphics while choosing.</p><div class="row" style="margin-top:15px">${button('START MANAGER CAREER','startManager','gold')}${button('CONTINENTAL CUPS','continents')}</div></div>`);return;}
  const c=career,fx=currentCareerFixture(c),sorted=standings(c),place=sorted.findIndex(v=>v.id===c.club)+1;
  page('MANAGER CAREER',`Season ${c.season} · ${TEAMS[c.club].name} · 12 active players · League & knockout cup`,`<div class="row" style="margin:10px 0">${CONTINENTS.filter(co=>CONTINENTAL_TEAMS[co.id].includes(c.club)).map(co=>button('🏆 '+co.id+' CHAMPIONSHIP','continentPick_'+co.id,'gold')).join('')}</div><div class="careerTop"><div class="metric"><small>TRANSFER FUNDS</small><strong>${eur(c.cash)}</strong></div><div class="metric"><small>LEAGUE POSITION</small><strong>#${place} / 8</strong></div><div class="metric"><small>LEAGUE ROUND</small><strong>${c.week} / 14</strong></div><div class="metric"><small>CUP</small><strong>${c.cup.eliminated?'OUT':c.cup.stage===3?'🏆 WON':['QF','SF','FINAL'][c.cup.stage]}</strong></div></div>
  <div class="twoCol"><div class="panel"><h3 class="titleSmall">NEXT FIXTURE</h3><div class="fixture">${fx?`${fx.kind==='cup'?'🏆 '+fx.round:'🏟 LEAGUE WEEK '+fx.round}<br><strong>${TEAMS[c.club].name} <em>VS</em> ${TEAMS[fx.opponent].name}</strong>`:c.leagueFinished?'🏆 SEASON COMPLETE!':'No fixtures yet'}</div>
+ ${careerOpponentScoutPanel(c,fx)}
  <div class="row">${fx?button('▶ PLAY NEXT MATCH','careerPlay','gold'):button('↻ BEGIN NEW SEASON','careerSeason','gold')}${button('12-PLAYER SQUAD','careerSquad')}${button('TRANSFER MARKET','careerMarket')}${button('🔍 YOUTH ACADEMY','careerScout')}</div><hr><h3 class="titleSmall">CLUB FACILITIES</h3>
  ${Object.entries(c.facilities).map(([key,v])=>`<div class="facility"><span>🏟 ${key.toUpperCase()} LVL ${v}</span>${button('UPGRADE '+eur(v*12500000),'facility_'+key)}</div>`).join('')}
  <p class="muted">Academy scouts create fictional recruitable prospects with defined potential, and players have contract years and fitness. Wins generate income. Training improves player experience; upgraded training increases XP per match. Facilities and transfers persist in this browser.</p></div>
@@ -538,11 +670,39 @@ function studioColorOptions(list,selected){
  return studioOptionTags(values,selected);
 }
 
-let studioDirection=0,studioAction='idle',studioSpin=false,studioDragX=null;
+let studioDirection=0,studioAction='idle',studioSpin=false,studioDragX=null,studioGalleryOpen=false,studioGallerySignature='';
 setInterval(studioAnimationFrame,1150);
 setInterval(()=>{if(screen==='PLAYER CUSTOMIZATION' && $('customPortrait') && studioAction!=='idle')drawCustomizer()},90);
 function studioRotate(step){studioDirection=((studioDirection+step)%8+8)%8;const label=$('customAngleLabel');if(label)label.textContent=STUDIO_DIRS[studioDirection].label;drawCustomizer()}
 function studioAnimationFrame(){if(!studioSpin||!$('customPortrait')||screen!=='PLAYER CUSTOMIZATION')return;studioDirection=(studioDirection+1)%8;drawCustomizer();}
+function studioEightViewMarkup(){
+ return `<section id="studioEightViewGallery" class="studioEightViewGallery" aria-label="Eight-direction player appearance gallery">${STUDIO_DIRS.map((dir,i)=>`<figure class="studioEightViewItem"><canvas data-studio-view="${i}" width="144" height="152" role="img" aria-label="${escapeHTML(dir.label)} appearance"></canvas><figcaption>${escapeHTML(dir.label)}</figcaption></figure>`).join('')}</section>`;
+}
+// 0.8.25.32: Optional, non-interactive eight-view contact sheet for the selected
+// Studio appearance. Idle frames are deterministic even while rotating/animating
+// the large preview; update the sheet only when the edited character changes.
+function drawStudioEightViewGallery(player,appearance){
+ const root=$('studioEightViewGallery');if(!studioGalleryOpen||!root||!player)return;
+ const signature=JSON.stringify([home,avatarIndex,player.name,appearance]);
+ if(signature===studioGallerySignature&&root.querySelectorAll('canvas').length===8)return;
+ studioGallerySignature=signature;
+ const gameView={getTeam:()=>TEAMS[home],options:{showNames:false},celebrationStyle:0};
+ const template=game.player(0,3)||{i:3,team:0};
+ const fit=portraitFit(144,152,appearance,'idle');
+ for(let i=0;i<STUDIO_DIRS.length;i++){
+  const canvas=root.querySelector('canvas[data-studio-view="'+i+'"]');if(!canvas)continue;
+  const ctx=canvas.getContext('2d');if(!ctx)continue;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const gr=ctx.createLinearGradient(0,0,144,152);
+  gr.addColorStop(0,'#27666e');gr.addColorStop(1,'#102b3e');ctx.fillStyle=gr;ctx.fillRect(0,0,144,152);
+  const dir=STUDIO_DIRS[i];
+  const dummy={...template,x:0,y:0,z:0,t:0,i:avatarIndex,src:{...player,appearance},
+   keeper:player.role==='GK',face:dir.view.side,dx:dir.dx,dy:dir.dy,
+   visualFacing:dir.view,anim:0,action:'idle',controlled:false,preview:true,stun:0,cryTimer:0};
+  ctx.save();ctx.translate(fit.x,fit.y);ctx.scale(fit.scale,fit.scale);
+  renderer.drawPlayer(ctx,dummy,gameView);ctx.restore();
+ }
+}
 
 function showPlayerStudio(index=0){avatarIndex=Math.max(0,Math.min(11,Number(index)||0));const squad=career&&home===career.club?career.roster:roster(home);const player=squad[avatarIndex];if(!player){showHome();return;}const av={...avatarFor(player),...(player.appearance||{})};
  const colorControls=`<label>SKIN COLOR<select class="choice" id="face_skin">${studioColorOptions(NATURAL_SKIN_TONES,av.skin)}</select></label><label>HAIR COLOR<select class="choice" id="face_hair">${studioColorOptions(NATURAL_HAIR_COLORS,av.hair)}</select></label>`;
@@ -550,7 +710,8 @@ function showPlayerStudio(index=0){avatarIndex=Math.max(0,Math.min(11,Number(ind
   ['style','HAIRSTYLE'],['face','FACE SHAPE'],['eyes','EYE SHAPE'],['brows','EYEBROWS'],['eyeColor','EYE COLOR'],['nose','NOSE'],['lips','LIPS'],
   ['body','BUILD'],['stature','HEIGHT STYLE'],['exaggeration','FUNNY SCALE'],['beard','FACIAL HAIR'],['accessory','ACCESSORY'],['freckles','FRECKLES'],['scar','SCARS'],['tattoo','TATTOOS']
  ].map(([id,name])=>`<label>${name}<select class="choice" id="face_${id}">${studioNumberOptions(id,av[id]??0)}</select></label>`).join('');
- page('PLAYER CUSTOMIZATION','Every player has a persistent, editable HD caricature. Modify facial structure, funny exaggeration, hair, expressions and personal details.',`<div class="twoCol"><div class="panel">${career?'':teamField('SELECT TEAM','customTeam',nations(),home)}${field('PLAYER','customPlayer',squad.map((p,i)=>[i,`#${p.num} ${p.name}`]),avatarIndex)}<div class="characterStage"><canvas id="customPortrait" width="300" height="260" role="img" aria-label="Rotatable player preview"></canvas><div class="row studioRotateControls"><button type="button" class="btn" data-action="studioLeft" aria-label="Rotate character left 45 degrees">◀ ROTATE</button><strong id="customAngleLabel">${STUDIO_DIRS[studioDirection].label}</strong><button type="button" class="btn" data-action="studioRight" aria-label="Rotate character right 45 degrees">ROTATE ▶</button></div><p class="muted" style="margin:0">Drag the player horizontally to turn • eight views</p><div class="row studioMotionControls"><label class="fieldLabel" for="customPose">PREVIEW MOTION</label><select id="customPose" class="choice">${STUDIO_ACTIONS.map(a=>`<option value="${a}" ${a===studioAction?'selected':''}>${a.toUpperCase()}</option>`).join('')}</select><button type="button" class="btn" data-action="studioSpin">${studioSpin?'■ STOP TURN':'↻ AUTO ROTATE'}</button></div><div>${escapeHTML(player.name)} · ${player.role}<p>${escapeHTML(player.shotName||'Super shot')}</p></div></div><div class="row">${button('✓ SAVE CHARACTER','saveAppearance','gold')}${button('RANDOMIZE FACE','randomizeFace')}</div></div><div class="panel"><div class="avatarControls">${colorControls}${assetControls}</div><p class="muted">Customization now uses curated natural skin and hair palettes, exposes every hairstyle and face asset used by the renderer, and adds tattoo choices so the editor matches the drawable character system.</p></div></div>`,career?'careerSquad':'home');drawCustomizer();}
+ studioGallerySignature='';
+ page('PLAYER CUSTOMIZATION','Every player has a persistent, editable HD caricature. Modify facial structure, funny exaggeration, hair, expressions and personal details.',`<div class="twoCol"><div class="panel">${career?'':teamField('SELECT TEAM','customTeam',nations(),home)}${field('PLAYER','customPlayer',squad.map((p,i)=>[i,`#${p.num} ${p.name}`]),avatarIndex)}<div class="characterStage"><canvas id="customPortrait" width="300" height="260" role="img" aria-label="Rotatable player preview"></canvas><div class="row studioRotateControls"><button type="button" class="btn" data-action="studioLeft" aria-label="Rotate character left 45 degrees">◀ ROTATE</button><strong id="customAngleLabel">${STUDIO_DIRS[studioDirection].label}</strong><button type="button" class="btn" data-action="studioRight" aria-label="Rotate character right 45 degrees">ROTATE ▶</button></div><p class="muted" style="margin:0">Drag the player horizontally to turn • eight views</p><div class="row studioMotionControls"><label class="fieldLabel" for="customPose">PREVIEW MOTION</label><select id="customPose" class="choice">${STUDIO_ACTIONS.map(a=>`<option value="${a}" ${a===studioAction?'selected':''}>${a.toUpperCase()}</option>`).join('')}</select><button type="button" class="btn" data-action="studioSpin">${studioSpin?'■ STOP TURN':'↻ AUTO ROTATE'}</button></div><div>${escapeHTML(player.name)} · ${player.role}<p>${escapeHTML(player.shotName||'Super shot')}</p></div></div><div class="row">${button(studioGalleryOpen?'HIDE 8-VIEW GALLERY':'COMPARE ALL 8 VIEWS','studioGalleryToggle')}</div>${studioGalleryOpen?studioEightViewMarkup():''}<div class="row">${button('✓ SAVE CHARACTER','saveAppearance','gold')}${button('RANDOMIZE FACE','randomizeFace')}</div></div><div class="panel"><div class="avatarControls">${colorControls}${assetControls}</div><p class="muted">Customization now uses curated natural skin and hair palettes, exposes every hairstyle and face asset used by the renderer, and adds tattoo choices so the editor matches the drawable character system.</p></div></div>`,career?'careerSquad':'home');drawCustomizer();}
 function getAppearance(){const numeric=['style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo'];return Object.fromEntries(['skin','hair',...numeric].map(k=>[k,k==='skin'||k==='hair'?$('face_'+k).value:+$('face_'+k).value]))}
 function drawCustomizer(){
  const canvas=$('customPortrait');if(!canvas)return;
@@ -575,6 +736,7 @@ function drawCustomizer(){
   renderer.drawPlayer(ctx,dummy,previewGame);ctx.restore();
  }
  const label=$('customAngleLabel');if(label)label.textContent=dir.label;
+ drawStudioEightViewGallery(p,appearance);
 }
 // Character saves must confirm durable storage before the editor says the value
 // was saved. Keep the exact legacy `legend_edits` / `legend_managerCareer` JSON
@@ -618,14 +780,140 @@ function saveAppearance(){
 }
 function paintAvatars(){menu.querySelectorAll('[data-avatar]').forEach(canvas=>{const i=+canvas.dataset.avatar,p=career?.roster?.[i];if(!p)return;const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#1b5460';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.save();const fit=portraitFit(canvas.width,canvas.height,p.appearance||{});ctx.translate(fit.x,fit.y);ctx.scale(fit.scale,fit.scale);renderer.drawPlayer(ctx,{...game.player(0,3),src:p,t:0,i,face:1,x:0,y:0,z:0,anim:0,dx:0,dy:0,action:'idle',controlled:false,preview:true},{getTeam:()=>TEAMS[career.club],options:{showNames:false}});ctx.restore()})}
 
-function pause(){game.matchState='paused';page('PAUSED','Resume or change the computer opponent difficulty without restarting.',`<div class="panel">${field('CPU DIFFICULTY (LIVE)','liveDifficulty',aiChoices(),opt.difficulty)}${difficultyHint()}<p class="muted">Changes apply immediately on the next AI decision. In local 2-player Versus this does not affect either human.</p></div><div class="row">${button('▶ RESUME','resume','gold')}${button('RESTART MATCH','confirmRestart')}${button('SETTINGS','navSound')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('RETURN TO MAIN MENU','confirmQuit')}</div>`)}
-function halftime(){game.matchState='paused';page('HALF TIME',`${TEAMS[home].name} ${game.score[0]} : ${game.score[1]} ${TEAMS[away].name}`,`<div class="panel"><h3 class="titleSmall">SECOND HALF STRATEGY</h3><p class="muted">Players regain 40% of their accumulated fatigue for the second half, and resting off the ball slowly restores stamina during play. CPU teams may make an automatic substitution. Use the command center for up to three substitutions; bench fatigue is remembered.</p><h3 class="titleSmall">🗣 HALF-TIME MANAGER TALK</h3><p class="muted">Talks can boost or reduce individual morale. One talk per team per halftime.</p><div class="tacticsGrid">${field('HOME TALK','halfTalkHome',Object.entries(TEAM_TALKS).map(([k,v])=>[k,v.name]),'encourage')}${humans>=2?field('AWAY TALK','halfTalkAway',Object.entries(TEAM_TALKS).map(([k,v])=>[k,v.name]),'focus'):''}</div><p class="muted">HOME MOOD: ${Math.round(game.teamMorale(0))}% · AWAY MOOD: ${Math.round(game.teamMorale(1))}%</p><div class="row">${!game.talksUsed[0].halftime?button('SPEAK TO HOME TEAM','talkHalfHome','gold'):''}${humans>=2&&!game.talksUsed[1].halftime?button('SPEAK TO AWAY TEAM','talkHalfAway'):''}</div><div class="row">${button('▶ SECOND HALF','resume','gold')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('ADJUST CPU LEVEL','cpuPause')}</div></div>`)}
+// Preserve the halftime team-talk opportunity after inspecting or saving live tactics.
+// Four in-match quick tactical calls reuse existing gameplay AI modifiers and
+// applyPlan validation. They never change the persistent pre-match teamPlans.
+const QUICK_TACTICAL_CALLS={
+ attack:{attack:'Direct',defence:'High Press',label:'ATTACK'},
+ control:{attack:'Possession',defence:'Balanced',label:'CONTROL'},
+ defend:{attack:'Possession',defence:'Deep Block',label:'PROTECT LEAD'},
+ balanced:{attack:'Balanced',defence:'Balanced',label:'BALANCED'}
+};
+function quickTacticalPanel(side){
+ const label=side===0?'Home':'Away',plan=game.teamPlans?.[side]||{};
+ const styles=`${escapeHTML(plan.attack||'Balanced')} / ${escapeHTML(plan.defence||'Balanced')}`;
+ return `<section class="panel" id="quickTactical${label}" aria-label="${label} live quick tactical calls">
+ <h3 class="titleSmall">⚡ ${label.toUpperCase()} QUICK TACTICS</h3>
+ <p class="muted" role="status" id="quickTacticalStatus${label}">CURRENT: ${styles}. Match-only changes; lineup, substitutions and saved presets stay unchanged.</p>
+ <div class="row">${button('⚔ ATTACK','quickTactic'+label+'Attack')}${button('⚽ CONTROL','quickTactic'+label+'Control')}${button('🛡 PROTECT LEAD','quickTactic'+label+'Defend')}${button('↺ BALANCED','quickTactic'+label+'Balanced')}</div>
+ </section>`;
+}
+function quickTacticalCall(side,key){
+ if(!['PAUSED','HALF TIME'].includes(screen)||game.matchState!=='paused'||(side===1&&humans<2))return false;
+ const choice=QUICK_TACTICAL_CALLS[key],plan=game.teamPlans?.[side];
+ if(!choice||!plan)return false;
+ if(plan.attack===choice.attack&&plan.defence===choice.defence){
+  toast(`${side===0?'HOME':'AWAY'} ${choice.label} is already active`,1300);
+  return true;
+ }
+ try{
+  // Clone the authoritative in-match plan. Do not write the pre-game teamPlans
+  // or localStorage, and do not swap any selected player.
+  game.applyPlan(side,{...plan,attack:choice.attack,defence:choice.defence});
+  if(screen==='HALF TIME')halftime();else pause();
+  toast(`${side===0?'HOME':'AWAY'} ${choice.label} · ${choice.attack} / ${choice.defence}`,1900);
+  return true;
+ }catch(err){alert(err.message);return false;}
+}
+// Read-only live match moments. These come from the engine's existing event
+// stream; never create telemetry events or persist a history to user saves.
+function matchHighlightsPanel(game){
+ const allowed=new Set(['goal','save','dribbleTrick','substitution','teamTalk']);
+ const events=(Array.isArray(game?.events)?game.events:[])
+  .filter(ev=>ev&&allowed.has(ev.type)&&(ev.type!=='substitution'||Number(ev.count)>0))
+  .slice(-5).reverse();
+ const safe=value=>escapeHTML(String(value));
+ const describe=ev=>{
+  const team=ev.team??ev.player?.t;
+  const side=team===0?'HOME':team===1?'AWAY':'MATCH';
+  if(ev.type==='goal'){
+   const hero=typeof ev.hero==='string'?ev.hero:ev.hero?.src?.name||ev.hero?.name||'';
+   const score=Array.isArray(ev.score)&&ev.score.length===2&&ev.score.every(Number.isFinite)
+    ?' · '+ev.score.map(n=>Math.trunc(n)).join('–'):'';
+   return 'GOAL · '+side+(hero?' · '+safe(hero):'')+score;
+  }
+  if(ev.type==='save'){
+   const player=typeof ev.player==='string'?ev.player:ev.player?.src?.name||ev.player?.name||'';
+   const technique=typeof ev.saveType==='string'&&ev.saveType?' · '+safe(ev.saveType):'';
+   return 'KEEPER SAVE · '+side+(player?' · '+safe(player):'')+technique;
+  }
+  if(ev.type==='dribbleTrick'){
+   const player=typeof ev.player==='string'?ev.player:'';
+   const style=typeof ev.name==='string'?ev.name:typeof ev.style==='string'?ev.style:'';
+   const result=ev.success===true?' · SUCCESS':ev.success===false?' · BLOCKED':'';
+   return 'SKILL MOVE · '+side+(player?' · '+safe(player):'')+(style?' · '+safe(style):'')+result;
+  }
+  if(ev.type==='substitution'){
+   const n=Math.max(1,Math.trunc(Number(ev.count)));
+   return 'SUBSTITUTION · '+side+' · '+n+' player'+(n===1?'':'s');
+  }
+  return 'TEAM TALK · '+side+(typeof ev.choice==='string'?' · '+safe(ev.choice):'');
+ };
+ const content=events.length
+  ?'<ol class="muted">'+events.map(ev=>'<li>'+describe(ev)+'</li>').join('')+'</ol>'
+  :'<p class="muted">No major match moments recorded yet.</p>';
+ return '<section class="panel" id="matchHighlights" aria-label="Recent match events"><h3 class="titleSmall">MATCH EVENTS</h3>'+content+'</section>';
+}
+function returnFromPauseTactics(){if(squadReturnAtHalf&&game.matchState==='paused')halftime();else pause();}
+function pause(){game.matchState='paused';page('PAUSED','Resume or change the computer opponent difficulty without restarting.',`<div class="panel">${field('CPU DIFFICULTY (LIVE)','liveDifficulty',aiChoices(),opt.difficulty)}${difficultyHint()}<p class="muted">Changes apply immediately on the next AI decision. In local 2-player Versus this does not affect either human.</p></div>${matchHighlightsPanel(game)}<div class="row">${quickTacticalPanel(0)}${humans>=2?quickTacticalPanel(1):''}</div><div class="row">${button('▶ RESUME','resume','gold')}${button('RESTART MATCH','confirmRestart')}${button('SETTINGS','navSound')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('RETURN TO MAIN MENU','confirmQuit')}</div>`)}
+// Read-only halftime guidance. Decisions remain with the user.
+function halftimeCoachAdvice(game,side){
+ const scores=game.score||[0,0],delta=(scores[side]||0)-(scores[1-side]||0);
+ const plan=game.teamPlans?.[side],lineup=game.lineups?.[side]||plan?.lineup||[];
+ // Engine-authoritative ledger values, not transient sprite fatigue/morale.
+ const squad=game.rosters?.[side]||[],ledger=game.fatigueLedger?.[side]||{};
+ const remaining=Math.max(0,(game.maxSubstitutions??0)-(game.substitutionsUsed?.[side]??0));
+ let tired=0;
+ for(const index of lineup){
+  const player=squad[index];if(!player)continue;
+  const fatigue=Number(ledger[player.id]);
+  if(Number.isFinite(fatigue)&&fatigue>=.60)tired++;
+ }
+ const morale=typeof game.teamMorale==='function'?Math.round(game.teamMorale(side)):55;
+ const scoreTip=delta<0?'TRAILING: consider Direct attack and High Press to create chances.'
+  :delta>0?'LEADING: consider Possession and Deep Block to protect the advantage.'
+  :'LEVEL SCORE: consider Possession for control or Direct attack to chase a winner.';
+ const fitnessTip=tired&&remaining
+  ?`LOW FITNESS: ${tired} starter${tired===1?' is':'s are'} below 40% fitness. Check same-role bench options in TEAM TACTICS (${remaining} substitution${remaining===1?'':'s'} left).`
+  :remaining===0?'NO SUBSTITUTIONS LEFT: manage the remaining starters conservatively.'
+  :`BENCH: ${remaining} substitution${remaining===1?'':'s'} available; no starter below 40% fitness.`;
+ const moraleTip=morale<40
+  ?`LOW MORALE (${morale}%): consider a supportive team talk; individual player reactions vary.`
+  :`TEAM MORALE ${morale}%: choose a team talk suited to your squad; reactions vary.`;
+ return `${scoreTip} ${fitnessTip} ${moraleTip} Advice only — use TEAM TACTICS or SPEAK TO TEAM to apply changes.`;
+}
+// Read-only starter list: the same authoritative in-match fatigue ledger used
+// by the Command Center. Never inspect benched players or mutate roster data.
+function halftimeFatigueSpotlight(game,side){
+ const squad=game.rosters?.[side]||[],lineup=game.lineups?.[side]||game.teamPlans?.[side]?.lineup||[];
+ const ledger=game.fatigueLedger?.[side]||{},watches=[];
+ for(let slot=0;slot<lineup.length;slot++){
+  const player=squad[lineup[slot]];
+  if(!player)continue;
+  const fatigue=ledger[player.id];
+  if(!Number.isFinite(fatigue)||fatigue<.60)continue;
+  watches.push({player,slot,fatigue:Math.min(1,Math.max(0,fatigue))});
+ }
+ if(!watches.length)return '';
+ watches.sort((a,b)=>b.fatigue-a.fatigue||a.slot-b.slot);
+ const label=side===0?'Home':'Away';
+ const names=watches.slice(0,2).map(({player,fatigue})=>{
+  const shirt=player.num==null?'':`#${escapeHTML(String(player.num))} `;
+  return `${shirt}${escapeHTML(String(player.name||'Player'))} (${escapeHTML(String(player.role||'Player'))}, FIT ${Math.round((1-fatigue)*100)}%)`;
+ }).join(' · ');
+ const more=watches.length>2?` · +${watches.length-2} more`:'';
+ return `<p class="muted" id="halftimeFitness${label}" aria-label="${label} fatigued starters"><strong>FITNESS WATCH:</strong> ${names}${more}</p>`;
+}
+function halftimeCoachPanel(game,side){
+ return `<section class="panel" id="halftimeCoach${side===0?'Home':'Away'}" role="status" aria-live="polite" aria-label="${side===0?'Home':'Away'} halftime coaching advice"><h3 class="titleSmall">📋 ${side===0?'HOME':'AWAY'} COACHING NOTES</h3><p class="muted">${halftimeCoachAdvice(game,side)}</p>${halftimeFatigueSpotlight(game,side)}</section>`;
+}
+function halftime(){game.matchState='paused';page('HALF TIME',`${TEAMS[home].name} ${game.score[0]} : ${game.score[1]} ${TEAMS[away].name}`,`<div class="panel"><h3 class="titleSmall">SECOND HALF STRATEGY</h3>${halftimeCoachPanel(game,0)}${humans>=2?halftimeCoachPanel(game,1):''}${matchHighlightsPanel(game)}${quickTacticalPanel(0)}${humans>=2?quickTacticalPanel(1):''}<p class="muted">Players regain 40% of their accumulated fatigue for the second half, and resting off the ball slowly restores stamina during play. CPU teams may make an automatic substitution. Use the command center for up to three substitutions; bench fatigue is remembered.</p><h3 class="titleSmall">🗣 HALF-TIME MANAGER TALK</h3><p class="muted">Talks can boost or reduce individual morale. One talk per team per halftime.</p><div class="tacticsGrid">${field('HOME TALK','halfTalkHome',Object.entries(TEAM_TALKS).map(([k,v])=>[k,v.name]),'encourage')}${humans>=2?field('AWAY TALK','halfTalkAway',Object.entries(TEAM_TALKS).map(([k,v])=>[k,v.name]),'focus'):''}</div><p class="muted">HOME MOOD: ${Math.round(game.teamMorale(0))}% · AWAY MOOD: ${Math.round(game.teamMorale(1))}%</p><div class="row">${!game.talksUsed[0].halftime?button('SPEAK TO HOME TEAM','talkHalfHome','gold'):''}${humans>=2&&!game.talksUsed[1].halftime?button('SPEAK TO AWAY TEAM','talkHalfAway'):''}</div><div class="row">${button('▶ SECOND HALF','resume','gold')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('ADJUST CPU LEVEL','cpuPause')}</div></div>`)}
 function fulltime(ev){game.matchState='finished';let [a,b]=ev.score,win=a>b;if(mode==='league'){
  league.played++;league.wins+=a>b?1:0;league.draws+=a===b?1:0;league.losses+=a<b?1:0;league.points+=a>b?5:a===b?2:0;league.games.unshift({team:TEAMS[away].name,a,b});league.games=league.games.slice(0,80);
  if(league.stage==='qualifier'&&league.wins>=16&&league.points>=70)league.stage='finals';else if(league.stage==='finals'&&win){league.playoff=(league.playoff||0)+1;if(league.playoff>=4)league.stage='champion'}store.put('league',league)}
  if(mode==='continental'&&continentalRun){try{const result=tournamentAdvance(continentalRun,TEAMS,ev.score,ev.penalties?ev.winner:null);store.put('continentalRun',continentalRun);if(career?.club===continentalRun.club){career.cash+=Math.max(0,continentalRun.earned-(continentalRun.lastCareerAward||0));continentalRun.lastCareerAward=continentalRun.earned;store.put('continentalRun',continentalRun);store.put('managerCareer',career)}page('CONTINENTAL RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="badge">${escapeHTML(confed(continentalRun.compId).name)}</div><div class="megaScore">${a} : ${b}</div><p>${escapeHTML(tournamentProgress(continentalRun))} • ${continentalRun.earned/1000000}m prize earnings</p>${button('CONTINUE CHAMPIONSHIP','continentContinue','gold')}</div>`)}catch(e){alert('Competition update failed: '+e.message);showTournament()}return;}
  if(mode==='career'&&career){recordMatchFitness(career,game.getFitnessReport(0));const outcome=advanceCareer(career,TEAMS,ev.score,ev.penalties?ev.winner:null);store.put('managerCareer',career);page('CAREER MATCH RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="titleSmall">${outcome.kind.toUpperCase()} • ${outcome.win?'WIN!':a===b?'DRAW':'DEFEAT'}</div><div class="megaScore">${a} : ${b}</div><p>Club cash: €${(career.cash/1000000).toFixed(1)}m • Current week ${career.week+1}</p>${button('CONTINUE MANAGER CAREER','manager','gold')}</div>`);return;}
- page('FULL TIME',`${win?'VICTORY!':a===b?'DRAW MATCH':'DEFEAT'}${ev.penalties?' • ON PENALTIES':''}`,`<div class="panel" style="text-align:center"><div class="badge">MATCH RESULT</div><div style="font-size:70px;color:#ffe17a;font-weight:1000">${a} : ${b}</div><p>${TEAMS[home].name} vs ${TEAMS[away].name}</p><div class="row" style="justify-content:center">${button('↻ REMATCH','kickoff','gold')}${mode==='league'?button('🏆 LEAGUE','league'):button('MAIN MENU','home')}</div></div>`)}
+ page('FULL TIME',`${win?'VICTORY!':a===b?'DRAW MATCH':'DEFEAT'}${ev.penalties?' • ON PENALTIES':''}`,`<div class="panel" style="text-align:center"><div class="badge">MATCH RESULT</div><div style="font-size:70px;color:#ffe17a;font-weight:1000">${a} : ${b}</div><p>${TEAMS[home].name} vs ${TEAMS[away].name}</p>${matchHighlightsPanel(game)}<div class="row" style="justify-content:center">${button('↻ REMATCH','kickoff','gold')}${mode==='league'?button('🏆 LEAGUE','league'):button('MAIN MENU','home')}</div></div>`)}
 function toast(message,duration=1600){let n=$('gameToast');n.textContent=message;n.classList.remove('hidden');toastTime=performance.now()+duration}
 let toastTime=0;
 game.onEvent=e=>{audio.cue(e);if(e.type==='toast')toast(e.message,1800);if(e.type==='goal'){$('gameToast').classList.add('hidden');toastTime=0}if(e.type==='penaltyStart')toast('PENALTY SHOOTOUT',1500);if(e.type==='penaltyKick')toast(e.goal?'GOAL!':'SAVE!',1300);if(e.type==='pause')pause();if(e.type==='halftime')halftime();if(e.type==='finished')fulltime(e)};
@@ -647,13 +935,27 @@ function action(a){audio.cue('ui');
  else if(a==='careerScout')showCareerScout();else if(a==='careerScoutNew')tryCareerScout();else if(a.startsWith('careerSign'))tryCareerSign(+a.slice(10));
  else if(a==='careerMarket')showCareerMarket();else if(a==='careerSquad')showCareerSquad();else if(a==='careerBuy')careerBuy();
  else if(a==='careerTrain')careerTrain();else if(a.startsWith('facility_')){try{upgradeFacility(career,a.slice(9));store.put('managerCareer',career);showManager()}catch(e){alert(e.message)}}
+ else if(a==='studioGalleryToggle'){
+  // Preserve *unsaved* Player Studio form controls when showing a comparison.
+  // Reconstructing the Studio menu here would silently discard edits.
+  studioGalleryOpen=!studioGalleryOpen;studioGallerySignature='';
+  if(studioGalleryOpen){navTarget?.parentElement?.insertAdjacentHTML('afterend',studioEightViewMarkup());}
+  else $('studioEightViewGallery')?.remove();
+  if(navTarget)navTarget.textContent=studioGalleryOpen?'HIDE 8-VIEW GALLERY':'COMPARE ALL 8 VIEWS';
+  drawCustomizer();
+ }
  else if(a==='studioLeft')studioRotate(-1);else if(a==='studioRight')studioRotate(1);else if(a==='studioSpin'){studioSpin=!studioSpin;const btn=menu.querySelector('[data-action=studioSpin]');if(btn)btn.textContent=studioSpin?'■ STOP TURN':'↻ AUTO ROTATE';drawCustomizer()}
  else if(a==='playerStudio')showPlayerStudio();else if(a.startsWith('editPlayer'))showPlayerStudio(+a.slice(10));else if(a==='saveAppearance')saveAppearance();else if(a==='randomizeFace'){const el=$('face_style');if(el){for(const k of ['style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo']){const node=$('face_'+k);node.value=Math.floor(Math.random()*node.options.length)}const skinNode=$('face_skin'),hairNode=$('face_hair');if(skinNode)skinNode.value=NATURAL_SKIN_TONES[Math.floor(Math.random()*NATURAL_SKIN_TONES.length)][0];if(hairNode)hairNode.value=NATURAL_HAIR_COLORS[Math.floor(Math.random()*NATURAL_HAIR_COLORS.length)][0];drawCustomizer()}}
+ else if(a==='conceptDemo'){home=TEAMS.findIndex(t=>t.id===CONCEPT_DEMO_ID);away=0;homeCategory='all';showSetup('quick');}
  else if(a==='quick'||a==='versus'||a==='training')showSetup(a);
  else if(a==='setupRules')showSetupExtras('rules');else if(a==='setupAppearance')showSetupExtras('appearance');else if(a==='setupTactics')showSetupExtras('tactics');
  else if(a==='league')showLeague();else if(a==='gallery')showGallery();else if(a==='clubs')showClubs();else if(a==='saveClub')saveNewClub();else if(a.startsWith('selectClub')){home=+a.slice(10);away=home===away?0:away;showSetup('quick')}else if(a.startsWith('deleteClub'))deleteClub(+a.slice(10));else if(a==='pk'){mode='pk';showSetup('pk')}
  else if(a==='leagueKickoff'){mode='league';start()}
- else if(a==='kickoff')start();else if(a==='squad')showSquad(0,game.matchState==='paused'?'pause':'home');else if(a==='prepHome')showSquad(0,'setup');else if(a==='prepAway')showSquad(1,'setup');else if(a==='tacticHome')showSquad(0,'pause');else if(a==='tacticAway'&&humans>=2)showSquad(1,'pause');else if(a==='returnSetup')showSetup(mode);else if(a==='returnPause'){menuEntryReturn='home';pause();}else if(a==='controls')showControls();else if(a==='saveBindings'){const profile={keyboard:Array.from({length:4},(_,i)=>$('bindKey'+i).value),gamepad:Array.from({length:4},(_,i)=>+$('bindPad'+i).value),keyboard2:Array.from({length:4},(_,i)=>$('bindKey2'+i).value),gamepad2:Array.from({length:4},(_,i)=>+$('bindPad2'+i).value)};if(input.setBindings(profile)){store.put('controllerBindings',input.getBindings());showInputMenu();}else alert('Each player needs four unique keys and buttons. Keyboard keys cannot overlap across players.');}else if(a==='resetBindings'){input.setBindings({keyboard:['KeyK','KeyJ','KeyI','Space'],gamepad:[1,0,2,3],keyboard2:['Period','Comma','NumpadDecimal','ControlRight'],gamepad2:[1,0,2,3]});store.put('controllerBindings',input.getBindings());showControls();}else if(a==='help')showHelp();else if(a==='editor')showEditor();
+ else if(a==='kickoff')start();else if(a==='squad')showSquad(0,game.matchState==='paused'?'pause':'home');else if(a==='prepHome')showSquad(0,'setup');else if(a==='prepAway')showSquad(1,'setup');else if(a==='tacticHome')showSquad(0,'pause');else if(a==='tacticAway'&&humans>=2)showSquad(1,'pause');else if(a==='returnSetup')showSetup(mode);else if(a==='returnPause'){menuEntryReturn='home';if(screen==='TEAM COMMAND CENTER'&&squadContext==='pause')returnFromPauseTactics();else pause();}else if(a==='controls')showControls();else if(a==='saveBindings'){const profile={keyboard:Array.from({length:4},(_,i)=>$('bindKey'+i).value),gamepad:Array.from({length:4},(_,i)=>+$('bindPad'+i).value),keyboard2:Array.from({length:4},(_,i)=>$('bindKey2'+i).value),gamepad2:Array.from({length:4},(_,i)=>+$('bindPad2'+i).value)};if(input.setBindings(profile)){store.put('controllerBindings',input.getBindings());showInputMenu();}else alert('Each player needs four unique keys and buttons. Keyboard keys cannot overlap across players.');}else if(a==='resetBindings'){input.setBindings({keyboard:['KeyK','KeyJ','KeyI','Space'],gamepad:[1,0,2,3],keyboard2:['Period','Comma','NumpadDecimal','ControlRight'],gamepad2:[1,0,2,3]});store.put('controllerBindings',input.getBindings());showControls();}else if(a==='help')showHelp();else if(a==='editor')showEditor();
+ else if(/^quickTactic(Home|Away)(Attack|Control|Defend|Balanced)$/.test(a)){
+  const match=a.match(/^quickTactic(Home|Away)(Attack|Control|Defend|Balanced)$/);
+  quickTacticalCall(match[1]==='Home'?0:1,match[2].toLowerCase());
+ }
  else if(a==='talkHalfHome'||a==='talkHalfAway'){const side=a==='talkHalfHome'?0:1;try{const response=game.applyTeamTalk(side,$(side?'halfTalkAway':'halfTalkHome')?.value||'encourage','halftime');halftime();toast(`${response.positive} INSPIRED · ${response.backfires} UPSET · TEAM MOOD ${response.morale}%`)}catch(err){alert(err.message)}}
  else if(a==='fullscreen')toggleFullscreen();else if(a==='cpuPause')pause();else if(a==='resume'){game.matchState=game.pk?'penalty':'play';closeMenu()}
  else if(a==='saveSquad'){
@@ -663,17 +965,17 @@ function action(a){audio.cue('ui');
   try{const plan=validatePlan(raw,players,ix);
    if(squadContext==='pause')game.applyPlan(squadSide,plan);
    teamPlans[TEAMS[ix].id]=plan;store.put('teamPlans',teamPlans);
-   if(squadContext==='pause')pause();else if(squadContext==='setup')showSetup(mode);else showHome();
+   if(squadContext==='pause')returnFromPauseTactics();else if(squadContext==='setup')showSetup(mode);else showHome();
   }catch(e){alert(e.message)}
  }
  else if(a==='resetSquad'){
   const ix=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;
-  const replacement=defaultPlan(ix,roster(ix));try{if(squadContext==='pause')game.applyPlan(squadSide,replacement);teamPlans[TEAMS[ix].id]=replacement;store.put('teamPlans',teamPlans);if(squadContext==='pause')pause();else showSquad(squadSide,squadContext);}catch(e){alert(e.message)}
+  const replacement=defaultPlan(ix,roster(ix));try{if(squadContext==='pause')game.applyPlan(squadSide,replacement);teamPlans[TEAMS[ix].id]=replacement;store.put('teamPlans',teamPlans);if(squadContext==='pause')returnFromPauseTactics();else showSquad(squadSide,squadContext);}catch(e){alert(e.message)}
  }
  else if(a==='exportSave')exportSave();else if(a==='importSave')$('saveImportFile')?.click();
  else if(a==='saveSettings'){
   const get=id=>$(id)?.value;
-  const changes={};for(const [id,key,cast] of [['difficulty','difficulty',Number],['settingsDuration','halfSeconds',Number],['gameSpeed','gameSpeed',Number],['settingsWeather','weather',String],['settingsTerrain','terrain',String],['settingsCondition','condition',String],['camera','camera',String],['ballModel','ballModel',VISUALFEEL.validBallModel],['showNames','showNames',v=>v==='true']]){if(get(id)!==undefined)changes[key]=cast(get(id));}
+  const changes={};for(const [id,key,cast] of [['difficulty','difficulty',Number],['settingsDuration','halfSeconds',Number],['gameSpeed','gameSpeed',Number],['settingsWeather','weather',String],['settingsTerrain','terrain',String],['settingsCondition','condition',String],['camera','camera',String],['ballModel','ballModel',VISUALFEEL.validBallModel],['showNames','showNames',v=>v==='true'],['showPerformance','showPerformance',v=>v==='true']]){if(get(id)!==undefined)changes[key]=cast(get(id));}
   Object.assign(opt,changes);
   const values={};for(const k of ['master','music','sfx','ui','ambience'])if(get('audio_'+k)!==undefined)values[k]=+get('audio_'+k);
   if(get('audioMute')!==undefined)values.mute=get('audioMute')==='true';
@@ -738,7 +1040,7 @@ $('fullscreenHelpClose').addEventListener('click',()=>$('fullscreenHelp').classL
 const primaryNavScreens=new Set(['home','nav-quick','nav-device','nav-online','nav-career','nav-cups','nav-international','nav-clubs','nav-settings','nav-customize','nav-input','nav-saves','nav-settings-game','nav-settings-graphics','nav-settings-sound']);
 const menuButtons=()=>[...menu.querySelectorAll('.navChoice')].filter(el=>!el.disabled&&el.offsetParent!==null);
 function navigateMenu(direction){const items=menuButtons();if(!items.length)return;const index=items.indexOf(document.activeElement);const next=items[(index+direction+items.length)%items.length];next.focus({preventScroll:true});next.scrollIntoView({block:'nearest',behavior:'instant'});}
-function backFromMenu(){if(['MATCH RULES','KITS & TEAM TALKS','TEAM TACTICS'].includes(screen)){action('returnSetup');return;}const back=screen==='nav-settings-sound'&&menuEntryReturn==='returnPause'?'returnPause':screen==='nav-saves'?menuBackAction:menuParents[screen]||menuBackAction||'home';if(screen==='home')return;action(back);}
+function backFromMenu(){if(screen==='TEAM COMMAND CENTER'){action(squadContext==='pause'?'returnPause':squadContext==='setup'?'returnSetup':'home');return;}if(['MATCH RULES','KITS & TEAM TALKS','TEAM TACTICS'].includes(screen)){action('returnSetup');return;}const back=screen==='nav-settings-sound'&&menuEntryReturn==='returnPause'?'returnPause':screen==='nav-saves'?menuBackAction:menuParents[screen]||menuBackAction||'home';if(screen==='home')return;action(back);}
 document.addEventListener('keydown',e=>{
  if(!menuVisible())return;
  if(e.target?.matches?.('input,select,textarea,[contenteditable="true"]'))return;
@@ -775,9 +1077,19 @@ menu.addEventListener('change',e=>{const id=e.target.id;switch(id){case 'manager
 menu.addEventListener('change',e=>{if(e.target.id==='difficulty'){const hint=$('difficultyHint');if(hint)hint.textContent=aiTuning(+e.target.value).name+' CPU: reaction, shot accuracy, passing, pressure and keeper response all scale by difficulty. Human players are unaffected.';}});
 $('pauseBtn').addEventListener('click',()=>{if(['play','penalty'].includes(game.matchState))pause()});
 $('dismissRotate').addEventListener('click',()=>{$('rotate').classList.add('hidden');rotateDismissed=true});let rotateDismissed=false;function checkRotate(){let should=!rotateDismissed&&!menuVisible()&&matchMedia('(pointer:coarse)').matches&&innerHeight>innerWidth*1.12;$('rotate').classList.toggle('hidden',!should)}
-let last=performance.now(),uiT=0;
-function frame(now){pollMenuPad(now);let dt=Math.min(.05,Math.max(0,(now-last)/1000||.016));last=now;if(game.matchState==='play')game.update(dt);else if(game.matchState==='penalty')game.updatePK(dt);renderer.frame(game,dt,menuVisible());if(screen==='home'&&menuVisible())drawPoster();uiT-=dt;if(uiT<=0){uiT=.1;if(!menuVisible())drawHUD()}if(toastTime&&now>toastTime){$('gameToast').classList.add('hidden');toastTime=0}checkRotate();requestAnimationFrame(frame)}
-game.init({home,away,options:opt});game.matchState='none';window.NekketsuHD={audio,version:'0.8.25.30-integrated',game,renderer,input,teams:TEAMS,shots:SHOTS,aiLevels:AI_LEVELS,rosterFor,getCareer:()=>career,getContinental:()=>continentalRun,confederations:CONTINENTS,continentalMapping:CONTINENTAL_TEAMS,kitsFor:team=>KIT_CHOICES.map(k=>kitFor(team,k)),getKitChoices:()=>kitSelections.slice(),getTeamPlan:i=>planFor(i),getMorale:team=>game.teamMorale(team)};window.NekketsuHD.ballModels=VISUALFEEL.BALL_MODELS;window.NekketsuHD.facingView=VISUALFEEL.facingView;window.NekketsuHD.impactStun=VISUALFEEL.impactStun;window.NekketsuHD.rollDelta=VISUALFEEL.rollDelta;window.NekketsuHD.personalityFor=p=>BPWPERSONALITY.profileFor(p);window.NekketsuHD.personalityMotion=(p,params)=>BPWPERSONALITY.sampleMotion(BPWPERSONALITY.profileFor(p),params);window.SupermagicFootball=window.NekketsuHD;window.SupermagicFootball.portraitFit=portraitFit;window.SupermagicFootball.studio={directions:STUDIO_DIRS,getDirection:()=>studioDirection,rotate:studioRotate,getAction:()=>studioAction,fitKeeperPose:drawFittedKeeperStudioPose};showHome();requestAnimationFrame(frame);
+let last=performance.now(),uiT=0,perfSamples=0,perfElapsed=0;
+function updatePerformanceHUD(now,rawDelta){
+ const active=opt.showPerformance===true&&['play','penalty'].includes(game.matchState)&&!menuVisible();
+ perfHud.classList.toggle('hidden',!active);
+ if(!active){perfSamples=0;perfElapsed=0;return}
+ if(rawDelta>0&&rawDelta<1000){perfSamples++;perfElapsed+=rawDelta;}
+ if(perfElapsed>=500){const fps=1000*perfSamples/perfElapsed;
+  perfHud.textContent=`FPS ${fps.toFixed(0)} · ${(perfElapsed/perfSamples).toFixed(1)} ms`;
+  perfSamples=0;perfElapsed=0;
+ }
+}
+function frame(now){pollMenuPad(now);const rawDelta=now-last;let dt=Math.min(.05,Math.max(0,rawDelta/1000||.016));last=now;updatePerformanceHUD(now,rawDelta);if(game.matchState==='play')game.update(dt);else if(game.matchState==='penalty')game.updatePK(dt);renderer.frame(game,dt,menuVisible());if(screen==='home'&&menuVisible())drawPoster();uiT-=dt;if(uiT<=0){uiT=.1;if(!menuVisible())drawHUD()}if(toastTime&&now>toastTime){$('gameToast').classList.add('hidden');toastTime=0}checkRotate();requestAnimationFrame(frame)}
+game.init({home,away,options:opt});game.matchState='none';window.NekketsuHD={audio,version:'0.8.25.32-integrated',game,renderer,input,teams:TEAMS,shots:SHOTS,aiLevels:AI_LEVELS,rosterFor,getCareer:()=>career,getContinental:()=>continentalRun,confederations:CONTINENTS,continentalMapping:CONTINENTAL_TEAMS,kitsFor:team=>KIT_CHOICES.map(k=>kitFor(team,k)),getKitChoices:()=>kitSelections.slice(),getTeamPlan:i=>planFor(i),getMorale:team=>game.teamMorale(team)};window.NekketsuHD.ballModels=VISUALFEEL.BALL_MODELS;window.NekketsuHD.facingView=VISUALFEEL.facingView;window.NekketsuHD.impactStun=VISUALFEEL.impactStun;window.NekketsuHD.rollDelta=VISUALFEEL.rollDelta;window.NekketsuHD.personalityFor=p=>BPWPERSONALITY.profileFor(p);window.NekketsuHD.personalityMotion=(p,params)=>BPWPERSONALITY.sampleMotion(BPWPERSONALITY.profileFor(p),params);window.SupermagicFootball=window.NekketsuHD;window.SupermagicFootball.conceptModularStatus=CONCEPT_MODULAR.status;window.SupermagicFootball.portraitFit=portraitFit;window.SupermagicFootball.studio={directions:STUDIO_DIRS,getDirection:()=>studioDirection,rotate:studioRotate,getAction:()=>studioAction,fitKeeperPose:drawFittedKeeperStudioPose};showHome();requestAnimationFrame(frame);
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
 // Browser audio can only be unlocked by a deliberate user gesture.

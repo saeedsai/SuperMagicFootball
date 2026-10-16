@@ -1,0 +1,100 @@
+# FC27 club26 roster and rating update — 2026-10-15
+
+## Coverage
+- Scope: 32 Club26 teams; exactly 12 players (2 GK, 3 DF, 4 MF, 3 FW) per club.
+- 290 existing players have overall ratings transferred from the FC27 comparison prepared on 2026-10-15; gameplay power, shooting, defense and speed mapped proportionally to overall and playing position (these derived stats are NOT EA's underlying attributes).
+- 85 fictional academy players replaced by named real footballers while keeping persistent in-game slot IDs and role quotas.
+- 85 replacements have **provisional editorial overall ratings**, NOT verified FC27 ratings. Their club affiliation is editorial, not transfer registration verification. 0 placeholders could not be replaced with supported candidates.
+- No player was falsely marked as FC27-verified where source data was unavailable. Existing game super shots were retained.
+
+## Replacement list
+- club26_5 (GK): Manchester United • Academy GK 1 → Altay Bayındır
+- club26_6 (MF): Aston Villa • Academy MF 1 → Boubacar Kamara
+- club26_6 (FW): Academy Prospect 11 → Leon Bailey
+- club26_6 (FW): Academy Prospect 10 → Jadon Sancho
+- club26_6 (GK): Academy Prospect 12 → Marco Bizot
+- club26_10 (FW): Academy Prospect 11 → Evanilson
+- club26_10 (MF): Academy Prospect 9 → Alex Scott
+- club26_10 (MF): Academy Prospect 8 → Marcus Tavernier
+- club26_10 (FW): Academy Prospect 10 → David Brooks
+- club26_10 (FW): Bournemouth • Academy FW 1 → Enes Ünal
+- club26_10 (GK): Academy Prospect 12 → Will Dennis
+- club26_11 (MF): Academy Prospect 12 → Jobe Bellingham
+- club26_12 (MF): Academy Prospect 9 → Carlos Baleba
+- club26_12 (FW): Academy Prospect 11 → Kaoru Mitoma
+- club26_12 (FW): Academy Prospect 10 → Yankuba Minteh
+- club26_12 (GK): Academy Prospect 12 → Jason Steele
+- club26_13 (MF): Academy Prospect 11 → Joelinton
+- club26_13 (MF): Academy Prospect 10 → Lewis Miley
+- club26_13 (GK): Academy Prospect 12 → Aaron Ramsdale
+- club26_14 (MF): Academy Prospect 9 → Morten Hjulmand
+- club26_14 (MF): Academy Prospect 8 → Hidemasa Morita
+- club26_14 (MF): Academy Prospect 10 → Pedro Gonçalves
+- club26_14 (FW): Academy Prospect 11 → Geovany Quenda
+- club26_14 (GK): Academy Prospect 12 → João Virgínia
+- club26_15 (FW): Academy Prospect 6 → Kevin Schade
+- club26_15 (DF): Academy Prospect 7 → Nathan Collins
+- club26_15 (MF): Academy Prospect 9 → Mikkel Damsgaard
+- club26_15 (MF): Academy Prospect 8 → Yehor Yarmoliuk
+- club26_15 (FW): Academy Prospect 11 → Dango Ouattara
+- club26_15 (FW): Academy Prospect 10 → Callum Wilson
+- club26_15 (GK): Academy Prospect 12 → Hákon Valdimarsson
+- club26_16 (MF): Academy Prospect 9 → Leandro Barreiro
+- club26_16 (MF): Academy Prospect 10 → Orkun Kökçü
+- club26_16 (GK): Academy Prospect 12 → Samuel Soares
+- club26_17 (FW): Academy Prospect 6 → Igor Jesus
+- club26_17 (DF): Academy Prospect 7 → Murillo
+- club26_17 (MF): Academy Prospect 9 → Morgan Gibbs-White
+- club26_17 (MF): Academy Prospect 8 → Nicolás Domínguez
+- club26_17 (FW): Academy Prospect 11 → Omari Hutchinson
+- club26_17 (FW): Academy Prospect 10 → Callum Hudson-Odoi
+- club26_17 (GK): Academy Prospect 12 → Matz Sels
+- club26_20 (MF): Academy Prospect 9 → Aleix García
+- club26_20 (MF): Academy Prospect 8 → Robert Andrich
+- club26_20 (MF): Bayer Leverkusen • Academy MF 1 → Granit Xhaka
+- club26_20 (FW): Academy Prospect 11 → Ernest Poku
+- club26_20 (FW): Academy Prospect 10 → Martin Terrier
+- club26_20 (GK): Academy Prospect 12 → Janis Blaswich
+- club26_21 (DF): Academy Prospect 7 → Bjorn Meijer
+- club26_21 (MF): Academy Prospect 9 → Raphael Onyedika
+- club26_21 (MF): Academy Prospect 8 → Christos Tzolis
+- club26_21 (FW): Academy Prospect 11 → Romeo Vermant
+- club26_21 (FW): Academy Prospect 10 → Nicolo Tresoldi
+- club26_21 (GK): Academy Prospect 12 → Nordin Jackers
+- club26_22 (MF): Academy Prospect 9 → Lorenzo Pellegrini
+- club26_22 (MF): Academy Prospect 8 → Bryan Cristante
+- club26_22 (FW): Academy Prospect 11 → Matías Soulé
+- club26_22 (FW): Academy Prospect 10 → Artem Dovbyk
+- club26_22 (GK): Academy Prospect 12 → Pierluigi Gollini
+- club26_23 (MF): Academy Prospect 9 → Alex Iwobi
+- club26_23 (MF): Academy Prospect 8 → Andreas Pereira
+- club26_23 (FW): Academy Prospect 11 → Harry Wilson
+- club26_23 (FW): Academy Prospect 10 → Rodrigo Muniz
+- club26_23 (GK): Academy Prospect 12 → Benjamin Lecomte
+- club26_24 (MF): Crystal Palace • Academy MF 1 → Adam Wharton
+- club26_24 (FW): Academy Prospect 11 → Ismaïla Sarr
+- club26_24 (FW): Crystal Palace • Academy FW 1 → Brennan Johnson
+- club26_24 (GK): Academy Prospect 12 → Walter Benítez
+- club26_26 (FW): Academy Prospect 6 → Borja Sainz
+- club26_26 (DF): Academy Prospect 7 → Jan Bednarek
+- club26_26 (MF): Academy Prospect 9 → Alan Varela
+- club26_26 (MF): Academy Prospect 8 → Gabri Veiga
+- club26_26 (FW): Academy Prospect 11 → William Gomes
+- club26_26 (FW): Academy Prospect 10 → Pepê
+- club26_26 (GK): Academy Prospect 12 → Cláudio Ramos
+- club26_27 (MF): Academy Prospect 9 → Kiernan Dewsbury-Hall
+- club26_27 (DF): Academy Prospect 7 → James Garner
+- club26_27 (MF): Academy Prospect 8 → Tim Iroegbunam
+- club26_27 (MF): Academy Prospect 10 → Carlos Alcaraz
+- club26_27 (FW): Academy Prospect 11 → Thierno Barry
+- club26_27 (GK): Academy Prospect 12 → Mark Travers
+- club26_28 (MF): Academy Prospect 9 → Khéphren Thuram
+- club26_28 (MF): Academy Prospect 10 → Manuel Locatelli
+- club26_29 (FW): Academy Prospect 11 → Richarlison
+- club26_31 (MF): Academy Prospect 12 → Giorgian de Arrascaeta
+- club26_31 (FW): Academy Prospect 11 → Pedro
+
+## QA
+- Checked 32 x 12 roster count, unique names, exact 2/3/4/3 role quota in build script.
+- FC27 OVR coverage is incomplete; unverified values explicitly tagged editorial. No complete regression test suite executed in this action; run `npm test` on a checked-out dev branch.
+- IMPORTANT: Real-world club registrations are volatile. Some names may represent pre-transfer roster memberships; FC27 database confirmation and corrections are required before release.

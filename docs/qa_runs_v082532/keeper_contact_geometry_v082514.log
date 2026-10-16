@@ -1,0 +1,13 @@
+desktop early wide-zone touch does not count as a real save PASS
+desktop keeper positioned near the true ball path can still save PASS
+desktop wide shot already at keeper X is not saved outside lateral reach PASS
+desktop swept keeper contact catches an aligned fast ball between physics frames PASS
+desktop keeper depth threshold and free corner both remain finite PASS
+desktop no uncaught JavaScript errors PASS
+simulated-touch early wide-zone touch does not count as a real save PASS
+simulated-touch keeper positioned near the true ball path can still save PASS
+simulated-touch wide shot already at keeper X is not saved outside lateral reach PASS
+simulated-touch swept keeper contact catches an aligned fast ball between physics frames PASS
+simulated-touch keeper depth threshold and free corner both remain finite PASS
+simulated-touch no uncaught JavaScript errors PASS
+{'PASS': 12, 'FAIL': 0, 'TIMEOUT': 0}

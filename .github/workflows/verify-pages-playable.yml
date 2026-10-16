@@ -1,0 +1,81 @@
+name: Verify Deployed PC and Touch Game
+# Confirm deployed 165 fully named club squads and match boot on desktop and simulated touch.
+on:
+  push:
+    branches: [dev]
+    paths: ['.github/workflows/verify-pages-playable.yml', 'data/mechanics/gameplay.json', 'src/modules/physicsbalance.js', 'src/modules/engine.js']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install real browser smoke environment
+        run: |
+          python3 -m pip install --user playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y chromium
+      - name: Load deployed Pages game and open Quick Match on desktop and touch
+        run: |
+          python3 - <<'PY'
+          from playwright.sync_api import sync_playwright
+          url='https://saeedsai.github.io/SuperMagicFootball/'
+          with sync_playwright() as p:
+            browser=p.chromium.launch(executable_path='/usr/bin/chromium',headless=True,args=['--no-sandbox'])
+            for kind,opts in [
+              ('desktop',{'viewport':{'width':1440,'height':900}}),
+              ('touch',{'viewport':{'width':844,'height':390},'has_touch':True,'is_mobile':True})
+            ]:
+              page=browser.new_page(**opts)
+              errors=[]
+              page.on('pageerror',lambda exc:errors.append(str(exc)))
+              # Allow transient Pages CDN delays without treating an unbooted game as PASS.
+              ready=False
+              for attempt in range(3):
+                try:
+                  response=page.goto(url,wait_until='domcontentloaded',timeout=60000)
+                  assert response and response.status==200,(kind,'Page HTTP',response.status if response else None)
+                  page.wait_for_function('!!window.SupermagicFootball && window.SupermagicFootball.teams?.length>=223 && window.SupermagicFootball.teams?.length<=224',timeout=60000)
+                  ready=True
+                  break
+                except Exception as exc:
+                  print('DEPLOYED_RETRY',kind,attempt+1,str(exc)[:220],flush=True)
+                  page.wait_for_timeout(1500)
+              assert ready,(kind,'deployed game did not initialize after retries')
+              print('DEPLOYED',kind,'VERSION',page.evaluate('SupermagicFootball.version'),'TEAMS',page.evaluate('SupermagicFootball.teams.length'),flush=True)
+              page.locator('[data-action="navQuick"]').first.click()
+              page.locator('[data-action="navOnDevice"]').first.click()
+              page.locator('[data-action="quick"]').first.click()
+              assert page.locator('#homeTeam').count()==1,(kind,'home team picker absent')
+              assert page.locator('[data-action="kickoff"]').count()==1,(kind,'kickoff absent')
+              page.locator('[data-action="kickoff"]').first.click()
+              assert page.evaluate('SupermagicFootball.game.matchState')=='play',(kind,'match failed to boot')
+              # Reset kickoff in a paused match to avoid timing-dependent movement.
+              # This tests the exact loaded world geometry, not player position seconds later.
+              geometry=page.evaluate("""() => {
+                const g=SupermagicFootball.game;
+                const wasPlaying=g.matchState==='play';
+                g.matchState='paused';g.resetKickoff(0);
+                const midfield=g.player(0,3).x,keeper=g.player(1,0).x;
+                g.matchState='play';
+                return {wasPlaying,midfield,keeper};
+              }""")
+              assert geometry['wasPlaying'],(kind,'match did not enter play')
+              assert abs(geometry['midfield']-1254.4)<0.02,(kind,'20% kickoff geometry mismatch',geometry)
+              assert geometry['keeper']>2070,(kind,'away goal failed to move after field extension',geometry)
+              # Verify the deployed JSON really includes this release's independent
+              # pass/keeper coefficients; an older cached Pages revision is not a pass.
+              tuning=page.evaluate("""async () => {
+                const r=await fetch('./data/mechanics/gameplay.json',{cache:'no-store'});
+                if(!r.ok)throw Error('Mechanics HTTP '+r.status);
+                return (await r.json()).physicsTuning;
+              }""")
+              assert tuning and tuning['passSpeed']['base']==445 and tuning['keeperDiveRecovery']['baseSeconds']==2.05,(kind,'old deployment or missing physics tuning',tuning)
+              assert not errors,(kind,errors)
+              print('DEPLOYED_SMOKE_PASS',kind,'200 OK, menus, team selection, kickoff, +20% field and match active',flush=True)
+              page.close()
+            browser.close()
+          PY

@@ -1,0 +1,310 @@
+{
+  "schema": "smf-concept-modular/1",
+  "id": "royals-hair-front-front-001",
+  "status": "experimental_front_face_two_hairs_and_reciprocal_painted_arm_overlays",
+  "baseFamily": "royals_base_a",
+  "referenceCanvas": [
+    112,
+    265
+  ],
+  "logicalPlayerHeight": 141,
+  "authoringView": "front",
+  "viewIds": [
+    "front",
+    "frontRight",
+    "right",
+    "backRight",
+    "back",
+    "backLeft",
+    "left",
+    "frontLeft"
+  ],
+  "authoredViews": [
+    "front",
+    "back"
+  ],
+  "runtimeLayer": {
+    "id": "hair_front_001",
+    "kind": "hair_front",
+    "view": "front",
+    "asset": "../source/hair_front_front.svg",
+    "sourceCanvas": [
+      112,
+      265
+    ],
+    "cropRect": [
+      0,
+      0,
+      112,
+      265
+    ],
+    "trimOffset": [
+      0,
+      0
+    ],
+    "pivot": [
+      56,
+      56
+    ],
+    "alphaBoundsEstimate": [
+      8,
+      0,
+      104,
+      60
+    ],
+    "z": 20,
+    "material": "painted_chestnut",
+    "noMirroring": true
+  },
+  "fallbackModel": "concept_hero",
+  "compatibleBaseAtlas": "assets/concept_hero/hero_atlas.webp",
+  "provenance": "../references/PROVENANCE.md",
+  "ownerArtApproval": "pending",
+  "animationCoverage": [
+    "idle",
+    "legacy_leg_run",
+    "secondary_hair_sway_front_back",
+    "front_face_static_registers_to_hair_pivot",
+    "front_near_arm_small_counterstride_overlay",
+    "front_far_arm_small_reciprocal_counterstride_overlay"
+  ],
+  "unimplemented": [
+    "full_articulated_two_arm_cycle_and_torso_occlusion_pending",
+    "independent_full_head_with_side_and_back_profiles",
+    "face_expressions_and_blink",
+    "other_six_views",
+    "hair_for_quarters_and_side",
+    "torso",
+    "legs",
+    "runtime_webp"
+  ],
+  "additionalLayers": [
+    {
+      "id": "arm_far_front_001",
+      "kind": "arm_far",
+      "view": "front",
+      "asset": "../source/arm_far_front.svg",
+      "sourceCanvas": [
+        112,
+        265
+      ],
+      "cropRect": [
+        0,
+        0,
+        112,
+        265
+      ],
+      "trimOffset": [
+        0,
+        0
+      ],
+      "pivot": [
+        23,
+        126
+      ],
+      "shoulder": [
+        23,
+        126
+      ],
+      "elbow": [
+        14,
+        166
+      ],
+      "wrist": [
+        13,
+        180
+      ],
+      "hand": [
+        11,
+        189
+      ],
+      "alphaBoundsEstimate": [
+        2,
+        119,
+        32,
+        199
+      ],
+      "z": 8,
+      "material": "painted_blue_royals_skin",
+      "noMirroring": true,
+      "partGroups": [
+        "far-shoulder-and-sleeve",
+        "far-upper-arm",
+        "far-elbow-crease",
+        "far-forearm",
+        "far-wrist-tape",
+        "far-fist",
+        "far-edge-light"
+      ],
+      "animation": {
+        "id": "front_far_arm_reciprocal_001",
+        "channel": "legacy_run_phase",
+        "rotationRadiansPerPhase": 0.035,
+        "threshold": 0.07,
+        "rootOwner": "Renderer",
+        "oppositeId": "arm_near_front_001",
+        "legacyBodyUnderlay": true
+      }
+    },
+    {
+      "id": "face_front_001",
+      "kind": "face_front",
+      "view": "front",
+      "asset": "../source/face_front_front.svg",
+      "sourceCanvas": [
+        112,
+        265
+      ],
+      "cropRect": [
+        0,
+        0,
+        112,
+        265
+      ],
+      "trimOffset": [
+        0,
+        0
+      ],
+      "pivot": [
+        56,
+        99
+      ],
+      "alphaBoundsEstimate": [
+        13,
+        42,
+        103,
+        115
+      ],
+      "headCenter": [
+        56,
+        78
+      ],
+      "neck": [
+        56,
+        110
+      ],
+      "ears": [
+        [
+          21,
+          81
+        ],
+        [
+          94,
+          82
+        ]
+      ],
+      "z": 10,
+      "material": "painted_warm_skin",
+      "noMirroring": true,
+      "partGroups": [
+        "ears",
+        "head-skin",
+        "cheeks",
+        "eyebrows",
+        "eye-whites",
+        "irises",
+        "nose",
+        "mouth"
+      ]
+    },
+    {
+      "id": "arm_near_front_001",
+      "kind": "arm_near",
+      "view": "front",
+      "asset": "../source/arm_near_front.svg",
+      "sourceCanvas": [
+        112,
+        265
+      ],
+      "cropRect": [
+        0,
+        0,
+        112,
+        265
+      ],
+      "trimOffset": [
+        0,
+        0
+      ],
+      "pivot": [
+        90,
+        126
+      ],
+      "shoulder": [
+        90,
+        126
+      ],
+      "elbow": [
+        102,
+        164
+      ],
+      "wrist": [
+        104,
+        174
+      ],
+      "hand": [
+        104,
+        182
+      ],
+      "alphaBoundsEstimate": [
+        82,
+        118,
+        112,
+        192
+      ],
+      "z": 14,
+      "material": "painted_blue_royals_skin",
+      "noMirroring": true,
+      "partGroups": [
+        "near-sleeve",
+        "near-upper-arm",
+        "near-elbow-shadow",
+        "near-forearm",
+        "near-wristband",
+        "near-hand"
+      ],
+      "animation": {
+        "id": "front_near_arm_counterstride_001",
+        "channel": "legacy_run_phase",
+        "rotationRadiansPerPhase": -0.035,
+        "threshold": 0.07,
+        "rootOwner": "Renderer",
+        "unfinishedOppositeArm": true
+      },
+      "sourceAdjustment": "Source SVG lower-arm groups foreshortened about y=150; original leg/body and root coordinate system unchanged."
+    },
+    {
+      "id": "hair_back_001",
+      "kind": "hair_back",
+      "view": "back",
+      "asset": "../source/hair_back_back.svg",
+      "sourceCanvas": [
+        115,
+        265
+      ],
+      "cropRect": [
+        0,
+        0,
+        115,
+        265
+      ],
+      "trimOffset": [
+        0,
+        0
+      ],
+      "pivot": [
+        57,
+        60
+      ],
+      "alphaBoundsEstimate": [
+        8,
+        3,
+        105,
+        90
+      ],
+      "z": 20,
+      "material": "painted_chestnut",
+      "noMirroring": true
+    }
+  ]
+}

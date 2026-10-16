@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="265" viewBox="0 0 112 265" role="img" aria-label="Editable painted far front football arm">
+<title>Royals painted far-front arm and hand — C01 001</title>
+<desc>Independent transparent SVG opposing the front near arm. The painted sleeve, shoulder folds, upper arm, elbow, forearm, wrist tape and fist are individually editable; unchanged legacy figure remains below. Left-image shoulder pivot 23,126.</desc>
+<defs>
+<linearGradient id="royal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#69c1f2"/><stop offset=".18" stop-color="#2884c7"/><stop offset=".64" stop-color="#12569e"/><stop offset="1" stop-color="#093978"/></linearGradient>
+<linearGradient id="shadowBlue" x1="0" y1="0" x2=".85" y2="1"><stop stop-color="#245ea0"/><stop offset=".6" stop-color="#0d468e"/><stop offset="1" stop-color="#082d61"/></linearGradient>
+<linearGradient id="warmSkin" x1="0" y1="0" x2=".84" y2="1"><stop stop-color="#ffe3b7"/><stop offset=".32" stop-color="#f0c194"/><stop offset=".78" stop-color="#d8976e"/><stop offset="1" stop-color="#a86a50"/></linearGradient>
+<linearGradient id="forearm" x1=".1" y1="0" x2="1" y2="1"><stop stop-color="#ffe1ac"/><stop offset=".45" stop-color="#edb586"/><stop offset="1" stop-color="#b47757"/></linearGradient>
+<linearGradient id="tape" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f1e6cf"/><stop offset=".5" stop-color="#d9dfdd"/><stop offset="1" stop-color="#94b1bb"/></linearGradient>
+</defs>
+<g id="far-shoulder-and-sleeve" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M28 122C22 121 17 125 14 130C10 134 8 140 9 145C11 149 15 150 20 148C25 146 27 138 29 131Z" fill="url(#royal)" stroke="#143964" stroke-width="2"/>
+ <path d="M26 124C19 125 15 131 14 135" fill="none" stroke="#a4dbef" stroke-width="1.9" opacity=".8"/>
+ <path d="M16 134C15 139 14 142 13 145" fill="none" stroke="#16447a" stroke-width="1.55" opacity=".8"/>
+ <path d="M10 143C12 148 17 148 21 145" fill="none" stroke="#f8eee0" stroke-width="3"/>
+ <path d="M12 145C14 147 17 147 20 146" fill="none" stroke="#e4b844" stroke-width="1.2"/>
+ <path d="M24 123C27 124 29 127 29 130" fill="none" stroke="url(#shadowBlue)" stroke-width="1.55"/>
+</g>
+<g id="far-upper-arm" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M11 148C14 150 18 149 21 146C21 154 20 160 17 166C15 168 11 167 10 164C7 159 8 152 11 148Z" fill="url(#warmSkin)" stroke="#95664f" stroke-width="1.7"/>
+ <path d="M12 150C11 154 11 157 12 160" stroke="#ffe0b2" stroke-width="1.5" opacity=".8" fill="none"/>
+ <path d="M19 151C20 156 18 160 17 163" stroke="#b27657" stroke-width="1.15" opacity=".7" fill="none"/>
+ <path d="M9 156C8 160 11 165 13 166" stroke="#c28762" stroke-width="1.1" fill="none"/>
+</g>
+<g id="far-elbow-crease" stroke-linecap="round">
+ <path d="M10 162C13 166 15 166 18 163C18 167 16 170 14 171C11 171 10 169 10 166Z" fill="#ba805f" opacity=".52"/>
+ <path d="M11 164C13 167 16 167 18 164" fill="none" stroke="#f5c599" stroke-width="1.25"/>
+</g>
+<g id="far-forearm" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M11 167C14 169 17 169 18 166C18 172 18 177 17 180L15 183C11 184 8 181 8 178C8 174 9 170 11 167Z" fill="url(#forearm)" stroke="#a77356" stroke-width="1.65"/>
+ <path d="M11 170C10 173 11 178 12 180" fill="none" stroke="#ffe0af" stroke-width="1.4" opacity=".85"/>
+ <path d="M17 170C18 174 16 177 16 178" fill="none" stroke="#b67858" stroke-width="1.2" opacity=".7"/>
+ <path d="M9 178C11 182 15 182 17 179" fill="none" stroke="#d49773" stroke-width="1.25"/>
+</g>
+<g id="far-wrist-tape" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M8 177C11 180 15 181 18 177L18 183C15 186 11 186 8 183Z" fill="url(#tape)" stroke="#7b8e91" stroke-width="1.4"/>
+ <path d="M9 179C12 181 15 182 17 180" fill="none" stroke="#fffaf0" stroke-width="1.35"/>
+ <path d="M9 182C12 184 15 184 17 182" fill="none" stroke="#809da8" stroke-width="1.1"/>
+</g>
+<g id="far-fist" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M8 183C11 182 15 183 17 185C19 188 19 191 16 194C14 196 9 195 7 193C5 191 4 187 7 185Z" fill="url(#warmSkin)" stroke="#96664e" stroke-width="1.9"/>
+ <path d="M7 185C5 184 3 186 3 188C3 190 5 192 7 191L9 189Z" fill="#db9c76" stroke="#98674e" stroke-width="1.3"/>
+ <path d="M9 185C12 183 15 185 17 187" fill="none" stroke="#ffe0b7" stroke-width="1.4"/>
+ <path d="M9 191C11 193 14 194 17 191" fill="none" stroke="#b17d61" stroke-width="1.1"/>
+ <path d="M10 193L10 195M13 193L13 195" fill="none" stroke="#a66a52" stroke-width=".9"/>
+</g>
+<g id="far-edge-light" fill="none" stroke-linecap="round">
+ <path d="M24 127C21 130 20 132 19 134" stroke="#d0ecf5" stroke-width="1.1" opacity=".64"/>
+ <path d="M12 169C10 171 10 175 11 177" stroke="#ffe6b7" stroke-width="1" opacity=".68"/>
+</g>
+</svg>

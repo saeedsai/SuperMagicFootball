@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="265" viewBox="0 0 112 265" role="img" aria-label="Modular painted front-view near arm with sleeve, forearm and gloved hand">
+<title>Royals front near arm — painted component 001</title>
+<desc>Independently editable transparent right-of-image arm fitted to the approved 112 by 265 front character. Source pivot is the near shoulder at 90,126. The lower-arm assembly is foreshortened to match the approved compact game-scale silhouette, while each group stays independently editable. The original body remains underneath until separately layered torso artwork is approved.</desc>
+<defs>
+<linearGradient id="sleeve" x1="0" y1="0" x2="1" y2=".7"><stop stop-color="#48b5f4"/><stop offset=".18" stop-color="#1465ae"/><stop offset=".64" stop-color="#074c97"/><stop offset="1" stop-color="#073366"/></linearGradient>
+<linearGradient id="skin" x1="0" y1="0" x2=".85" y2="1"><stop stop-color="#ffdfb0"/><stop offset=".33" stop-color="#f0b47e"/><stop offset=".73" stop-color="#d18c62"/><stop offset="1" stop-color="#a86650"/></linearGradient>
+<linearGradient id="forearm" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#fbc99a"/><stop offset=".45" stop-color="#ecad78"/><stop offset="1" stop-color="#b57858"/></linearGradient>
+<linearGradient id="wrist" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3c9cde"/><stop offset=".55" stop-color="#136aaf"/><stop offset="1" stop-color="#073976"/></linearGradient>
+<linearGradient id="hand" x1=".1" y1="0" x2=".92" y2="1"><stop stop-color="#f6c494"/><stop offset=".6" stop-color="#df9b70"/><stop offset="1" stop-color="#b46e52"/></linearGradient>
+</defs>
+<g id="near-sleeve" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M84 121C90 120 98 124 102 129C107 135 110 144 107 149C101 154 95 151 91 148C88 142 84 136 84 130Z" fill="url(#sleeve)" stroke="#153755" stroke-width="2.4"/>
+ <path d="M87 124C95 125 100 131 103 139" fill="none" stroke="#81d5ff" stroke-width="2" opacity=".75"/>
+ <path d="M91 143C95 148 102 151 106 146" fill="none" stroke="#f3e6cd" stroke-width="4"/>
+ <path d="M94 145C98 148 102 150 107 147" fill="none" stroke="#f3b42b" stroke-width="1.75"/>
+ <path d="M86 128C89 131 91 133 91 136" fill="none" stroke="#052b66" stroke-width="1.6" opacity=".7"/>
+</g>
+<g id="near-upper-arm" transform="translate(0 51) scale(1 .66)" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M95 149C100 152 105 152 107 150C109 155 108 162 106 167L104 171C100 173 97 168 95 165L92 153Z" fill="url(#skin)" stroke="#99674f" stroke-width="1.8"/>
+ <path d="M96 154C98 160 99 162 100 164" fill="none" stroke="#ffe0af" stroke-width="1.6" opacity=".78"/>
+ <path d="M106 153C108 157 107 161 105 165" fill="none" stroke="#ac694e" stroke-width="1.2" opacity=".75"/>
+</g>
+<g id="near-elbow-shadow" transform="translate(0 51) scale(1 .66)" stroke-linecap="round">
+ <path d="M97 165C100 168 103 169 106 165C105 170 104 173 102 175L98 173Z" fill="#bf7955" opacity=".56"/>
+ <path d="M97 166C100 169 103 169 105 167" fill="none" stroke="#efb284" stroke-width="1.3"/>
+</g>
+<g id="near-forearm" transform="translate(0 51) scale(1 .66)" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M98 170C101 171 105 169 107 166C109 172 110 179 108 185L105 190C101 192 97 188 96 184L95 175Z" fill="url(#forearm)" stroke="#925c49" stroke-width="1.95"/>
+ <path d="M98 174C99 180 100 184 102 187" fill="none" stroke="#ffe1ae" stroke-width="1.7" opacity=".83"/>
+ <path d="M107 172C108 177 108 180 106 183" fill="none" stroke="#b46c50" stroke-width="1.2" opacity=".73"/>
+</g>
+<g id="near-wristband" transform="translate(0 51) scale(1 .66)" stroke-linejoin="round" stroke-linecap="round">
+ <path d="M97 181C101 184 107 184 109 180L110 188C108 192 102 194 98 190Z" fill="url(#wrist)" stroke="#173a6d" stroke-width="1.8"/>
+ <path d="M99 183C103 186 107 185 109 183" fill="none" stroke="#a6d5f5" stroke-width="1.4"/>
+ <path d="M99 188C102 190 107 190 109 187" fill="none" stroke="#0b345f" stroke-width="1.2"/>
+</g>
+<g id="near-hand" transform="translate(0 51) scale(1 .66)" stroke-linejoin="round" stroke-linecap="round">
+ <path d="M98 191C101 189 106 190 109 192C112 194 112 198 110 202C108 207 101 208 98 205C95 202 94 198 96 195Z" fill="url(#hand)" stroke="#805647" stroke-width="2"/>
+ <path d="M98 196C96 193 93 194 92 197C91 200 93 204 96 205L98 202Z" fill="#e9ae7e" stroke="#98614c" stroke-width="1.3"/>
+ <path d="M99 196C102 194 107 195 109 198" fill="none" stroke="#ffe0ad" stroke-width="1.6"/>
+ <path d="M99 202C103 205 107 204 110 201" fill="none" stroke="#b97b5d" stroke-width="1.4"/>
+ <path d="M101 203L100 205M104 204L104 206M107 203L108 205" fill="none" stroke="#a16a51" stroke-width="1.1" opacity=".8"/>
+</g>
+</svg>

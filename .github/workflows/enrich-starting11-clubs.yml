@@ -1,0 +1,42 @@
+name: Enrich Verified First-Squad Club Roster Gaps
+# Rerun: tolerate transient incomplete HTTP responses and persist starter rankings.
+on:
+  push:
+    branches: [dev]
+    paths: ['.github/workflows/enrich-starting11-clubs.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          persist-credentials: true
+      - run: python3 -m pip install --user beautifulsoup4
+      - name: Fill 2026 sourced vacant roles only
+        run: python3 scripts/enrich_starting11_club_rosters.py
+      - name: Validate all club rosters, FC27 source integrity and game build
+        run: |
+          python3 scripts/validate_data.py
+          node tests/all_club_fc27_rosters.mjs
+          node tests/club26_fc27_roster.mjs
+          python3 scripts/build.py
+          node --test tests/*.test.cjs
+          python3 -m compileall -q scripts tests
+      - name: Commit validated player selections into dev
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/players/continental.json src/roster_corrections.js docs/CLUB_ROSTER_FC27_ALL_CLUBS_20261015.json
+          git diff --cached --check
+          if git diff --cached --quiet; then echo 'No source-backed improvements found'; exit 0; fi
+          git commit -m "data: source 2026 first-squad players for unlicensed club gaps"
+          for retry in 1 2 3; do
+            git pull --rebase origin dev && git push origin HEAD:dev && exit 0
+            sleep 3
+          done
+          exit 1

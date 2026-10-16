@@ -46,13 +46,21 @@ const ARTPOSE=(()=>{
   const wave=Math.sin(Math.PI*remaining);
   return {crouch:(2.2+4.8*danger)*wave,lean:(.035+.085*danger)*wave,brace:danger*wave};
  }
+ // Visual follow-through on ordinary passes. Zero at release and at completion;
+ // only the kicking boot lifts, and the supporting boot stays planted.
+ function passFollowThrough(action,actionTimer){
+  if(action!=='pass')return {stride:0,lift:0,lean:0};
+  const remaining=clamp(Number(actionTimer)||0,0,.30)/.30;
+  const swing=Math.sin(Math.PI*(1-remaining));
+  return {stride:13*swing,lift:9*swing,lean:.095*swing};
+ }
  function keeperRelease(action,actionTimer){
   if(action!=='keeperThrow'&&action!=='keeperPunt')return {throwing:false,punting:false,windup:0,follow:0};
   const duration=action==='keeperPunt'?.64:.48;
   const progress=1-clamp((Number(actionTimer)||0)/duration,0,1);
   return {throwing:action==='keeperThrow',punting:action==='keeperPunt',windup:Math.sin(Math.PI*progress),follow:progress};
  }
- return Object.freeze({easeHeading,gait,keeperPose,settleStride,receivePose,keeperRelease});
+ return Object.freeze({easeHeading,gait,keeperPose,settleStride,receivePose,passFollowThrough,keeperRelease});
 })();
 
 export {ARTPOSE};

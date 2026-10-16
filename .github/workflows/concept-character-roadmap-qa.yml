@@ -1,0 +1,25 @@
+name: Concept Character Roadmap Docs QA
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'docs/concept_character_pipeline/**'
+      - 'scripts/verify_concept_graphics_docs.py'
+      - '.github/workflows/concept-character-roadmap-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  docs-and-runtime-baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate planned stages, family counts, document index and handover
+        run: python3 scripts/verify_concept_graphics_docs.py
+      - name: Verify unchanged authoritative player/team data
+        run: python3 scripts/validate_data.py
+      - name: Build deterministic modular test fixture
+        run: python3 scripts/build.py
+      - name: Active Node regression
+        run: node --test tests/*.test.cjs

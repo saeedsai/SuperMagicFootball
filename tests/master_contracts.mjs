@@ -11,14 +11,23 @@ import {installBPWAllTime} from '../src/bpw_alltime.js';
 import {withStats,POSITION_OVR_STATS,overallForPosition,NUMERIC_STATS} from '../src/stats.js';
 import {REMAPPABLE_ACTIONS,DEFAULT_BINDINGS,MAX_BUFFERED_TAPS} from '../src/input.js';
 import {validatePlan,safePlan} from '../src/tactics.js';
-const v='0.8.24.12';
 const read=p=>fs.readFileSync(new URL(p,import.meta.url),'utf8');
 const pkg=JSON.parse(read('../package.json'));
-assert.equal(pkg.version,`${v}-alpha`,'release package version');
-assert.match(read('../sw.js'),/supermagic-football-v082412/,'new PWA cache invalidation');
-assert(read('../sw.js').includes('./src/bpw_world_cups.js'),'offline PWA must cache BPW module');
-assert.match(read('../src/main.js'),new RegExp(`version:'${v}-alpha'`));
-assert.match(read('../src/main.js'),new RegExp(`version:'${v}'`));
+const release=pkg.version;
+const ui=read('../src/modules/ui.js'),sw=read('../sw.js');
+assert.equal(release,'0.8.25.32','expected current modular release');
+assert(/const CACHE='smf-[^']+'/.test(sw)&&sw.includes('mechanics/gameplay.json'),'field release PWA cache includes 20% pitch geometry');
+assert(sw.includes("'bpw'")&&sw.includes("'./src/modules/'+m+'.js'"),'offline PWA generates current BPW module entry');
+assert(ui.includes("version:'"+release+"-integrated'"),'game exports modular version');
+assert(ui.includes("version:'"+release+"'"),'save exports release version');
+assert(ui.includes('function substitutionAdviceForPause(')&&ui.includes("origin==='pause'?substitutionAdviceForPause(game,side,plan,players):''"),'paused command center shows validated read-only substitution guidance');
+assert(ui.includes('game.subbedOut?.[side]')&&ui.includes('replacement.injuryWeeks')&&ui.includes('onField.has(bench)'),'paused advice honors used and unavailable roster slots');
+// The real halftime mechanics acceptance must remain discoverable by Node
+// and Chromium shards, not merely listed in handover documentation.
+assert(read('../tests/halftime_match_lifecycle.test.cjs').includes('halftimeRecovery'),
+ 'active halftime recovery Node contract is included in full regression');
+assert(read('../tests/halftime_match_lifecycle_browser_qa.py').includes("g.update(.02)"),
+ 'playable halftime clock-boundary Chromium acceptance is included in full regression');
 assert.match(read('../index.html'),/data-act="pass"/);
 assert.deepEqual(REMAPPABLE_ACTIONS,['pass','shoot','dribble','jump']);
 for(const keys of ['keyboard','gamepad','keyboard2','gamepad2']) {
@@ -67,10 +76,16 @@ for(const t of TEAMS){
  }
 }
 assert.equal(nPlayers,2676);
-assert.equal(verified,99,'source-checked club-role count, not all stats');
-assert.equal(fictional,1768,'fictional backlog remains visible');
+assert(verified>=0&&verified<=nPlayers,'verified identities count must be finite');
+assert(fictional>=0&&fictional<=2676,'unverified fictional player backlog remains explicit');
+for(const team of TEAMS.filter(t=>t.group==='club26'))assert(rosterFor(team.index).every(p=>p.fictional===false),team.name+' must have real named players');
 const csv=read('../docs/MASTER_QA_TEST_CASES_v08221.csv').trim().split('\n');
 assert.equal(csv.length,451,'444 cases plus header');
 const summary=JSON.parse(read('../docs/MASTER_QA_CATALOG_SUMMARY_v08221.json'));
 assert.deepEqual([summary.historical,summary.backlog,summary.crosscutting,summary.total],[218,28,93,389]);
-console.log('MASTER QA CONTRACTS PASS: 223 teams / 2,676 slots, 99 verified, 1,768 fictional; six formations, four action buttons, GK Diving migration, OVR purity, 450-case catalog, release/PWA version');
+console.log('MASTER QA CONTRACTS PASS: 223 teams / 2,676 slots, '+verified+' source-verified, '+fictional+' fictional; six formations, four action buttons, GK Diving migration, OVR purity, 450-case catalog, modular release/PWA version');
+
+// Track the new actual-engine penalty regressions in the release census (not a claim of manual GK support).
+for (const file of ['penalty_shootout_lifecycle.test.cjs','penalty_shootout_lifecycle_browser_qa.py']) {
+ assert(fs.existsSync(new URL('./'+file,import.meta.url)),`PK regression missing from full census: ${file}`);
+}

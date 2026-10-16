@@ -1,0 +1,7 @@
+PASS desktop view atlas categories 
+PASS desktop front/back/3-quarter/left/right actually draw different sprites 
+PASS desktop no browser errors 
+PASS simulated-touch view atlas categories 
+PASS simulated-touch front/back/3-quarter/left/right actually draw different sprites 
+PASS simulated-touch no browser errors 
+{'PASS': 6, 'FAIL': 0, 'TIMEOUT': 0}

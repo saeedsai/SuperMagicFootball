@@ -46,8 +46,8 @@ const soundCount=stats.osc;audio.configure({...audio.settings,sfx:0});audio.cue(
 audio.configure({...audio.settings,music:0});assert.equal(audio.voice,null,'music zero stops scene timer');
 audio.configure({...audio.settings,music:60});assert(audio.voice,'music resumes with slider');
 audio.dispose();assert.equal(audio.ctx,null);assert.equal(audio.interval,null);assert.equal(audio.retiring.size,0);assert.equal(stats.crowds,stats.crowdsStopped,'crowd sources cleaned up');
-const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
-assert(main.includes("opt.sfx=!audio.settings.mute"),'legacy SFX option must follow explicit master mute');
+const main=readFileSync(new URL('../src/modules/ui.js',import.meta.url),'utf8');
+assert(main.includes("opt.sfx=!audio.settings.mute"),'SFX option must follow explicit master mute in current UI module');
 assert(main.includes("document.addEventListener('touchstart'"),'touch gesture unlock exists');
 assert(main.includes("window.addEventListener('pagehide'"),'page lifecycle pause exists');
 console.log('PASS v0.8.23.2 audio reliability: no autoplay, scene music crossfade, crowd volume and loop, mute/unmute, suspend/resume, cleanup, preference sanitation and touch lifecycle');

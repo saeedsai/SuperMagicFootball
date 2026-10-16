@@ -1,0 +1,10 @@
+PASS desktop goalkeeper poses fit all eight angles without clipping 
+PASS desktop goalkeeper selection produces visible gloves and match-keeper art 
+PASS desktop editor previews offer dive catch and recover actions 
+PASS desktop no uncaught JS errors 
+PASS desktop keeper review sheet created 
+PASS simulated_touch goalkeeper poses fit all eight angles without clipping 
+PASS simulated_touch goalkeeper selection produces visible gloves and match-keeper art 
+PASS simulated_touch editor previews offer dive catch and recover actions 
+PASS simulated_touch no uncaught JS errors 
+RESULT {'PASS': 9, 'FAIL': 0, 'TIMEOUT': 0}

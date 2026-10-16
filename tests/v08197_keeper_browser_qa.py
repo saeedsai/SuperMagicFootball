@@ -26,7 +26,7 @@ with sync_playwright() as pw:
      k.src={...k.src,gkSkill:skill,gkDiving:diving};
      k.x=team===0?240:3400;k.y=765;k.fatigue=fatigue;k.diveCooldown=0;k.stun=0;
      const b=g.ball;b.owner=null;b.attacker=1-team;
-     b.x=k.x-dir*55;b.y=k.y+29;b.z=12;
+     b.x=k.x-dir*35;b.y=k.y+29;b.z=12;
      b.vx=dir*850;b.vy=0;b.vz=0;b.power=110;b.shot=null;b.canCollect=.6;
      const success=g.tryKeeperDive(k);
      const initial=k.action,recovery=k.diveCooldown;

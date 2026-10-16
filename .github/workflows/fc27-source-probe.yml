@@ -1,0 +1,22 @@
+name: Probe FC27 Club Source
+on:
+  push:
+    branches: [dev]
+    paths: ['.github/workflows/fc27-source-probe.yml']
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install --user beautifulsoup4
+      - name: Validate current squad wiki parser on five clubs
+        run: |
+          python3 - <<'PY'
+          from scripts.update_all_clubs_fc27 import wiki_squad
+          for name in ['Al Ahly','AEK Athens','Auckland City','Palmeiras','Bodø/Glimt']:
+              players,url=wiki_squad(name)
+              print('WIKI',name,'COUNT',len(players),'SOURCE',url,'PLAYERS',[(x['name'],x['role']) for x in players[:12]],flush=True)
+          PY

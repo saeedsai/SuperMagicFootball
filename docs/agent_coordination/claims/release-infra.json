@@ -1,0 +1,20 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "release-infra",
+  "feature_id": "CI-PASS-RECEIVE-AUDIO-REGRESSION-TRIGGERS",
+  "owner": "gameplay-pass-receive-ci-20261016-2206-gpt6",
+  "status": "released",
+  "scope": "Only .github/workflows/full-regression-census.yml push paths for tests/pass_reception_audio.test.cjs and tests/pass_reception_audio_browser_qa.py; docs/GAMEPLAY_PASS_RECEIVE_AUDIO_20261016.md, own docs/memory/agents/gameplay-pk-20261016.md. No job logic, other triggers, engine/ui/input/graphics/roster/save or any test body.",
+  "base_sha": "b160d0e2bc0892e7b3afc3864a8a7db6702fbe50",
+  "created_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
+  "handover": "docs/GAMEPLAY_PASS_RECEIVE_AUDIO_20261016.md — workflow bdbb43b95250127a66c2413f12a5ab7887e816e6, docs 0e24fd6e7eaaa348c7f9e0494e83c2318c3dfbe1, own memory a83a3fb63b2114c3962ea3eee08bfd6ad788cc9d, QA https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960219146, Full Regression https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960219335",
+  "tests": [
+    "full Node/Chromium census triggered at source-containing SHA",
+    "Modular Game Dev QA",
+    "About version contracts"
+  ],
+  "released_at": "2026-10-16",
+  "outcome": "CI push trigger paths for new pass audio Node and Chromium test added; exact source Modular QA 221/221 success; full census #38960219335 queued at checkpoint, not certified yet",
+  "integrated_commit": "a83a3fb63b2114c3962ea3eee08bfd6ad788cc9d"
+}

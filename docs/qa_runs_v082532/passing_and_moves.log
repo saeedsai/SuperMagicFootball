@@ -1,0 +1,29 @@
+PASS desktop tap Pass selects nearest teammate and releases ball: 
+PASS desktop Pass + up goes up: 
+PASS desktop Pass + down goes down: 
+PASS desktop Pass + left goes left: 
+PASS desktop Pass + right goes right: 
+PASS desktop Pass + diagonal sends ball diagonally: 
+PASS desktop held Pass release travels faster/farther than tap: 
+PASS desktop Jump then Pass launches lofted cross: 
+PASS desktop second Dribble within 2 seconds is blocked: 
+PASS desktop Dribble works again after 2 second cooldown: 
+PASS desktop defensive Dribble still switches controlled player: 
+PASS desktop running slide travel never exceeds 148 units: 
+PASS desktop standing slide travel never exceeds 104 units: 
+PASS desktop no browser exceptions: 
+PASS touch tap Pass selects nearest teammate and releases ball: 
+PASS touch Pass + up goes up: 
+PASS touch Pass + down goes down: 
+PASS touch Pass + left goes left: 
+PASS touch Pass + right goes right: 
+PASS touch Pass + diagonal sends ball diagonally: 
+PASS touch held Pass release travels faster/farther than tap: 
+PASS touch Jump then Pass launches lofted cross: 
+PASS touch second Dribble within 2 seconds is blocked: 
+PASS touch Dribble works again after 2 second cooldown: 
+PASS touch defensive Dribble still switches controlled player: 
+PASS touch running slide travel never exceeds 148 units: 
+PASS touch standing slide travel never exceeds 104 units: 
+PASS touch no browser exceptions: 
+PASS MATRIX {'PASS': 28, 'FAIL': 0, 'TIMEOUT': 0, 'NOT EXECUTED': 0}

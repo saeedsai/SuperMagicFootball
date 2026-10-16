@@ -40,6 +40,7 @@ with sync_playwright() as pw:
   assert page.locator('#homeTeamResults [data-pick-team]').count()>=1
   page.locator('#homeTeamResults [data-pick-team]').first.click()
   assert page.locator('#homeTeamIdentity .flagGraphic').count()>0
+  page.locator('[data-action="setupTactics"]').click()
   page.locator('[data-action="prepHome"]').first.click()
   assert page.locator('.playerFaceCanvas').count()==12
   assert page.locator('.formationSlot canvas').count()==6

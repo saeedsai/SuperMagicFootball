@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import {ArcadeAudio,AUDIO_DEFAULTS,AUDIO_CUES,sanitizeAudioOptions} from '../src/audio.js';
 import {readFileSync} from 'node:fs';
-const source=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/modules/ui.js',import.meta.url),'utf8');
 const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
-const build=readFileSync(new URL('../play.html',import.meta.url),'utf8');
+const build=readFileSync(new URL('./.generated/play.html',import.meta.url),'utf8');
 assert.equal(sanitizeAudioOptions({master:200,music:-5}).master,100);
 assert.equal(sanitizeAudioOptions({music:-5}).music,0);
 assert.equal(sanitizeAudioOptions({mute:true}).mute,true);

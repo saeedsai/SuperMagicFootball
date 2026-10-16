@@ -31,6 +31,9 @@ export function shotReleaseContext(e,game){
   nearbyDefenders:defenders.filter(p=>dist(p,origin)<230).length,
   keeperDistance:keeperDistance===null?null:rounded(keeperDistance),
   keeperLateralOffset:keeperLateralOffset===null?null:rounded(keeperLateralOffset),
+  // Unlike the legacy fallback above, this is strictly an observed shot aim.
+  // Unknown aim cannot be assigned an apparent center/edge targeting bin.
+  keeperTargetOffset:keeper&&finite(e.targetY)?rounded(Math.abs(keeper.y-e.targetY)):null,
   keeperFatigue:keeper&&finite(keeper.fatigue)?rounded(keeper.fatigue):null,
   ballSpeed:speed===null?null:rounded(speed),
   releaseHeight:finite(origin.z)?rounded(origin.z):null
@@ -38,7 +41,7 @@ export function shotReleaseContext(e,game){
 }
 
 export class MatchOpportunityTracker {
- constructor(){this.attempts=[];this.active=null;this.events={};this.ownership=[0,0,0];this.possessionChanges=0;this.lastHolder=null;this.elapsed=0;this.unlinkedSaves=0;}
+ constructor(){this.attempts=[];this.active=null;this.events={};this.ownership=[0,0,0];this.possessionChanges=0;this.lastHolder=null;this.elapsed=0;this.unlinkedSaves=0;this.unlinkedKeeperDiveAttempts=0;this.unlinkedKeeperContacts=0;}
  onEvent(e,game=null){
   this.events[e.type]=(this.events[e.type]||0)+1;
   if(e.type==='kick'){
@@ -46,8 +49,30 @@ export class MatchOpportunityTracker {
    const team=e.player?.t;
    if(team!==0&&team!==1)return;
    const kind=['shot','superShot','pass','clearance'].includes(e.kind)?e.kind:'unknown_kick';
-   const attempt={id:this.attempts.length+1,team,kind,origin:e.origin?{...e.origin}:null,targetY:e.targetY??null,startedAt:Number(this.elapsed.toFixed(3)),outcome:null,saveType:null,deflected:false,elapsedFlight:null,releaseContext:shotReleaseContext(e,game)};
+   const attempt={id:this.attempts.length+1,team,kind,origin:e.origin?{...e.origin}:null,targetY:e.targetY??null,startedAt:Number(this.elapsed.toFixed(3)),outcome:null,saveType:null,deflected:false,elapsedFlight:null,releaseContext:shotReleaseContext(e,game),...(kind==='shot'||kind==='superShot'?{keeperDive:{attempted:false,contacted:false,keeperId:null,predictedSeconds:null,lateralAtAttempt:null,contactDepth:null,lateralAtContact:null}}:{})};
    this.attempts.push(attempt);this.active=attempt;
+  }
+  // Link early dive intent to a specific scoring attempt. A visual dive is NOT a save.
+  // The actual contact must be observed separately at the keeper's physical plane.
+  if(e.type==='keeperDiveAttempt'||e.type==='keeperContact'){
+   const a=this.active,isAttempt=e.type==='keeperDiveAttempt';
+   if(!a?.keeperDive||![0,1].includes(e.team)||e.team===a.team){
+    if(isAttempt)this.unlinkedKeeperDiveAttempts++;
+    else this.unlinkedKeeperContacts++;
+   }else{
+    const dive=a.keeperDive;
+    if(isAttempt){
+     dive.attempted=true;
+     if(typeof e.keeperId==='string')dive.keeperId=e.keeperId;
+     if(finite(e.predictedSeconds))dive.predictedSeconds=rounded(e.predictedSeconds);
+     if(finite(e.lateral))dive.lateralAtAttempt=rounded(e.lateral);
+    }else{
+     dive.contacted=true;
+     if(typeof e.keeperId==='string')dive.keeperId=e.keeperId;
+     if(finite(e.depth))dive.contactDepth=rounded(e.depth);
+     if(finite(e.lateral))dive.lateralAtContact=rounded(e.lateral);
+    }
+   }
   }
   if(e.type==='save'){
    if(this.active&&(this.active.kind==='shot'||this.active.kind==='superShot')&&e.player?.t===OPPOSITE(this.active.team)){
@@ -78,6 +103,57 @@ export class MatchOpportunityTracker {
   const shots=this.attempts.filter(a=>a.kind==='shot'||a.kind==='superShot');
   const contextCounts={close:0,medium:0,open:0,no_active_defender:0,unobserved:0};
   for(const a of shots)contextCounts[a.releaseContext?.pressureBand||'unobserved']++;
-  return {attempts:this.attempts.length,counts,byKind,shotReleasePressureCounts:contextCounts,events:{...this.events},unlinkedSaves:this.unlinkedSaves,ownershipFrames:this.ownership.slice(),possessionChanges:this.possessionChanges,records:this.attempts.map(a=>({...a}))};
+  // Read-only calibration: a pre-contact animation is not an interception.
+  const summarize=items=>({
+   shots:items.length,
+   attempted:items.filter(a=>a.keeperDive?.attempted).length,
+   contacted:items.filter(a=>a.keeperDive?.contacted).length,
+   attemptAndContact:items.filter(a=>a.keeperDive?.attempted&&a.keeperDive?.contacted).length,
+   attemptsWithoutContact:items.filter(a=>a.keeperDive?.attempted&&!a.keeperDive?.contacted).length,
+   contactsWithoutAttempt:items.filter(a=>!a.keeperDive?.attempted&&a.keeperDive?.contacted).length
+  });
+  // Fairness cohorts use *release-time observations*, not current goalkeeper
+  // position or an inferred save. These world-unit bands are descriptive only.
+  const targetBand=a=>{
+   const offset=a.releaseContext?.keeperTargetOffset;
+   if(!finite(offset)||offset<0)return 'unobserved';
+   return offset<65?'near':offset<145?'stretch':'wide';
+  };
+  const fatigueBand=a=>{
+   const fatigue=a.releaseContext?.keeperFatigue;
+   if(!finite(fatigue)||fatigue<0||fatigue>1)return 'unobserved';
+   return fatigue<.35?'rested':fatigue<.7?'moderate':'tired';
+  };
+  const outcomeSummary=items=>({
+   ...summarize(items),
+   goals:items.filter(a=>a.outcome==='goal').length,
+   saves:items.filter(a=>a.outcome==='keeper_save').length,
+   deflections:items.filter(a=>a.outcome==='keeper_deflection').length,
+   otherOrUnresolved:items.filter(a=>!['goal','keeper_save','keeper_deflection'].includes(a.outcome)).length
+  });
+  const grouped=(classifier,bands)=>Object.fromEntries(bands.map(band=>[
+   band,outcomeSummary(shots.filter(a=>classifier(a)===band))
+  ]));
+  const keeperCalibration={
+   ...summarize(shots),
+   unlinkedAttempts:this.unlinkedKeeperDiveAttempts,
+   unlinkedContacts:this.unlinkedKeeperContacts,
+   byShotKind:{shot:summarize(shots.filter(a=>a.kind==='shot')),
+    superShot:summarize(shots.filter(a=>a.kind==='superShot'))},
+   byDefendingTeam:{home:summarize(shots.filter(a=>a.team===1)),
+    away:summarize(shots.filter(a=>a.team===0))},
+   // Counts, not estimated keeper save probabilities; absent metadata stays
+   // explicitly unobserved so bins always total the actual shot denominator.
+   byTargetOffsetBand:grouped(targetBand,['near','stretch','wide','unobserved']),
+   byKeeperFatigueBand:grouped(fatigueBand,['rested','moderate','tired','unobserved']),
+   byReleasePressureBand:grouped(a=>{
+    const pressure=a.releaseContext?.pressureBand;
+    return ['close','medium','open','no_active_defender'].includes(pressure)?pressure:'unobserved';
+   },['close','medium','open','no_active_defender','unobserved'])
+  };
+  return {attempts:this.attempts.length,counts,byKind,shotReleasePressureCounts:contextCounts,
+   keeperCalibration,events:{...this.events},unlinkedSaves:this.unlinkedSaves,
+   ownershipFrames:this.ownership.slice(),possessionChanges:this.possessionChanges,
+   records:this.attempts.map(a=>({...a,keeperDive:a.keeperDive?{...a.keeperDive}:undefined}))};
  }
 }

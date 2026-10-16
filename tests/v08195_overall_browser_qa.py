@@ -9,7 +9,7 @@ with sync_playwright() as pw:
   ctx=browser.new_context(viewport={'width':1400,'height':850} if device=='desktop' else {'width':760,'height':400},has_touch=device!='desktop',is_mobile=device!='desktop')
   page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   page.set_content(p.read_text(),wait_until='load');page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
-  open_quick(page);page.locator('[data-action="prepHome"]').first.click()
+  open_quick(page);page.locator('[data-action="setupTactics"]').click();page.locator('[data-action="prepHome"]').first.click()
   assert page.locator('.rosterCard .ovrBadge').count()==12,'roster has 12 derived natural-position overall ratings'
   assert page.locator('.positionOvr').count()==6,'every lineup row shows an OVR'
   assert page.locator('.formationOvr').count()==6,'every formation portrait has an OVR'

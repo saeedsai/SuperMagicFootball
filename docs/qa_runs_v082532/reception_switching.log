@@ -1,0 +1,19 @@
+desktop: PASS pass retains control until a teammate has received 
+desktop: PASS first touch hands control to real receiving teammate 
+desktop: PASS opposition interception is attributed without friendly auto-switch 
+desktop: PASS kickoff takeover does not create phantom pass receipt 
+desktop: PASS fast ground pass can be swept through a receiver 
+desktop: PASS flight lock prevents unintended automatic player selection 
+desktop: PASS old loose passes expire without false reception 
+desktop: PASS dribble countdown and visual reception with four action buttons 
+desktop: PASS no uncaught JavaScript exceptions 
+touch-simulated: PASS pass retains control until a teammate has received 
+touch-simulated: PASS first touch hands control to real receiving teammate 
+touch-simulated: PASS opposition interception is attributed without friendly auto-switch 
+touch-simulated: PASS kickoff takeover does not create phantom pass receipt 
+touch-simulated: PASS fast ground pass can be swept through a receiver 
+touch-simulated: PASS flight lock prevents unintended automatic player selection 
+touch-simulated: PASS old loose passes expire without false reception 
+touch-simulated: PASS dribble countdown and visual reception with four action buttons 
+touch-simulated: PASS no uncaught JavaScript exceptions 
+TOTAL {'PASS': 18, 'FAIL': 0, 'TIMEOUT': 0}

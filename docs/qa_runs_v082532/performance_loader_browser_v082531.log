@@ -1,0 +1,12 @@
+PASS desktop default OFF; exactly four actions
+PASS desktop FPS option exists
+PASS desktop live FPS and ms/frame while playing
+PASS desktop performance overlay hidden when paused
+PASS desktop no uncaught errors
+PASS mobile-touch default OFF; exactly four actions
+PASS mobile-touch FPS option exists
+PASS mobile-touch live FPS and ms/frame while playing
+PASS mobile-touch performance overlay hidden when paused
+PASS mobile-touch no uncaught errors
+PASS broken JSON offers retry button and cause
+SUMMARY {'PASS': 11, 'FAIL': 0}

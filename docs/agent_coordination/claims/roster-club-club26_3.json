@@ -1,0 +1,29 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "roster-club-club26_3",
+  "feature_id": "CLUB26-PSG-FC27-OFFICIAL-TRANSFER-20261016-B1",
+  "owner": "roster-fc27-chat-20261016-psg-b1",
+  "status": "released",
+  "scope": "Exactly PSG club26_3 only: replace out-transferred Bradley Barcola with current registered MF Warren Zaire-Emery maintaining slot ID and role, verify EA FC27 12 official OVR/six face stats, official PSG 2026/27 shirts and 2026/27 football biographies birthdates, ages, heights. Touch PSG records in data/players/club26.json and matching src/roster_corrections.js, club selection snapshot and immutable batch ledger, metadata batch, specific tests and specialist handover/own memory only. Do not modify other clubs or gameplay, art, CI, global tooling.",
+  "base_sha": "8ca145959773c572c1e2da85ce07abdf98ec8f34",
+  "claimed_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
+  "expires_at": "2026-10-17",
+  "tests": [
+    "EA FC27 12 OVR and 72 face stats match",
+    "PSG 2026/27 registration, shirts, nationality and ages",
+    "PSG metadata height and source/runtime parity",
+    "1 official transfer replacement in audited club roster history",
+    "active QA, full regression, deployed Pages"
+  ],
+  "released_at": "2026-10-16",
+  "handover": "docs/CLUB_PLAYER_METADATA_PSG_20261016.md",
+  "source_commit": "a6c5d8649fb1b4d2e8ec8f9e70c607abc50de866",
+  "final_tested_source_sha": "3f5cf46c6732a84955a9178a0b1988a34adf804c",
+  "result": "PSG source transfer Barcola->Zaire-Emery, 12 official EA ratings/72 face, 4 shirts, 4 missing ages, 12 heights, 67+2 field changes; 174 active Node, 131 historical Node, 71 browser all green; successful Pages deploy; physical hosted phone/PC smoke not independently verified.",
+  "test_urls": [
+    "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925059044",
+    "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925059080",
+    "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925057855"
+  ]
+}
