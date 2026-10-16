@@ -10,6 +10,8 @@ const ea="https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-baye
 const names=["Manuel Neuer","Jonas Urbig","Joshua Kimmich","Dayot Upamecano","Jonathan Tah","Jamal Musiala","Konrad Laimer","Aleksandar Pavlović","Ismael Saibari","Harry Kane","Michael Olise","Luis Díaz"];
 const shirts=[1,40,6,2,4,10,27,45,34,9,17,14];
 const heights=[192,189,176,188,192,181,179,186,185,188,184,180];
+const nationalities=["Germany","Germany","Germany","France","Germany","Germany","Austria","Germany","Morocco","England","France","Colombia"];
+const birthdates=["1986-03-27","2003-08-08","1995-02-08","1998-10-27","1996-02-11","2003-02-26","1997-05-27","2004-05-03","2001-01-28","1993-07-28","2001-12-12","1997-01-13"];
 const expected=[[81,80,80,87,78,31,82],[79,79,76,85,79,32,77],[88,71,73,90,84,81,79],[87,80,45,65,75,86,83],[87,62,38,60,63,87,86],[87,79,81,79,90,62,65],[85,86,69,78,77,81,77],[83,66,68,82,82,79,79],[83,83,78,77,83,55,82],[90,62,94,83,82,49,83],[90,83,82,89,91,47,69],[88,82,82,83,87,44,74]];
 const ageAt=d=>{const [y,m,day]=d.split('-').map(Number);return 2026-y-(m>10||(m===10&&day>16)?1:0)};
 test('Bayern 12 official FC27 OVR, 72 face stats and source/runtime parity',async()=>{
@@ -35,6 +37,8 @@ test('Bayern 12 official FC27 OVR, 72 face stats and source/runtime parity',asyn
 test('Bayern DFB jerseys, DOB-derived ages, and FootballSquads physical heights',()=>{
  const players=data().club26_1;
  assert.deepEqual(players.map(p=>p.num),shirts);
+ assert.deepEqual(players.map(p=>p.birthDate),birthdates,'DFB 2026/27 birth-date registration');
+ assert.deepEqual(players.map(p=>p.nation),nationalities,'sourced Bayern nationality metadata');
  assert.equal(new Set(players.map(p=>p.num)).size,12);
  for(let n=0;n<12;n++){const p=players[n];assert.equal(p.shirtVerified,true,p.name+' DFB shirt verification');assert.equal(p.age,ageAt(p.birthDate),p.name+' current age');assert.equal(p.heightCm,heights[n],p.name+' height');}
  assert.equal(players.find(p=>p.name==='Konrad Laimer').num,27);
