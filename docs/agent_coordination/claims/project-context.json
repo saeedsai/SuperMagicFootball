@@ -1,25 +1,16 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "project-context",
-  "feature_id": "CONTEXT-MEMORY-V1",
-  "owner": "context-admin-20261016-gpt6",
-  "status": "released",
-  "scope": "Project context-memory protocol and onboarding: AGENTS.md, README.md start gate, docs/agent_coordination/README.md, FEATURE_REGISTRY.json, new docs/memory/** and docs/README.md, dedicated scripts/check_project_memory.py and tests/test_project_memory.py; only proven-safe redundant documentation deletion. No game runtime, rosters, art, QA infrastructure, CI workflows, or active specialist handovers. Follow-up QA compatibility: add the project-context key only to scripts/claim_feature.py STATIC_LOCKS and its focused claim tests; no claim algorithm changes.",
-  "base_sha": "5953ba4e7aabe6e1b3c158b8e5e6299970ca5c77",
+  "feature_id": "CONTEXT-GAMEPLAY-AGENT-CHECKPOINT",
+  "owner": "gameplay-review-20261016-gpt6-newchat",
+  "status": "active",
+  "scope": "Register only this new chat's ID in docs/memory/AGENTS_INDEX.json, create only docs/memory/agents/gameplay-review-20261016.md with concise audited gameplay/QA handover, and perform small documentation-index accuracy review if safely needed. No edits to shared memory, other agent files, global priorities, gameplay runtime, specialist roadmaps or specialist QA tests.",
+  "base_sha": "ef9e80e0c5260757021104e8368d7637f7d64134",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
   "tests": [
-    "python3 -m unittest discover -s tests -p test_project_memory.py -v",
-    "python3 scripts/check_project_memory.py",
-    "npm run test:node (if environment available)"
+    "project-memory contract on updated index",
+    "existing Modular Game Dev QA"
   ],
-  "handover": "docs/memory/agents/context-admin-20261016.md; docs/memory/README.md; CI https://github.com/saeedsai/SuperMagicFootball/actions/runs/38903891342",
-  "released_at": "2026-10-16",
-  "outcome": "Completed memory bootstrap and nine per-chat checkpoints, shared memory, index, docs navigation and CI memory-contract checks; 121/121 Node, 20/20 merge, 10/10 claim tests, roster/data/compile PASS at 9ede8af1ed4835e8e6544effc3a41e5697fd11b1; historical evidence retained (no independently proven safe tracked deletion).",
-  "source_commits": [
-    "e06a99b34e3e3c7fdece7883d497f892afd51fba",
-    "f7ffab493acb2d906286e6021b849050a47142e3",
-    "06218cf3d2b6c34e93b6de2789da4689e57bd33e",
-    "9ede8af1ed4835e8e6544effc3a41e5697fd11b1"
-  ]
+  "handover": "docs/memory/agents/gameplay-review-20261016.md"
 }
