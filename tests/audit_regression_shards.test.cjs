@@ -14,6 +14,6 @@ test('cross-shard regression auditor rejects silent missing and duplicate covera
   assert.equal(result.signal, null, 'cross-shard auditor test timed out');
   assert.equal(result.status, 0,
     `Python cross-shard tests failed:\n${result.stdout}\n${result.stderr}`);
-  assert.match(result.stderr, /Ran 13 tests/);
+  assert.match(result.stderr, /Ran 14 tests/);
   assert.match(result.stderr, /\bOK\b/);
 });
