@@ -112,3 +112,8 @@ Source evidence caveat for Brighton: Jason Steele's height is 190 cm in FBref an
 ## Batch 2 QA certification — 16 October 2026
 
 The Brighton roster-data commit [cb6f24d](https://github.com/saeedsai/SuperMagicFootball/commit/cb6f24dc0bac9210ed78fa7ca83a240e432d941f) passed **59/59 active Node tests** and **144/144 full historical regression scripts** (94 Node + 50 Chromium), with zero failures/timeouts/errors; both source and documentation-only GitHub Pages deployments succeeded. Full evidence: [Brighton metadata test report](CLUB_PLAYER_METADATA_QA_20261016.md). These green checks do **not** resolve the separately documented Carlos Baleba transfer inconsistency or prove a new hosted physical-device playback. The next isolated player correction is Brighton club-registration selection, followed by Dortmund, Napoli, Everton and Inter Milan.
+
+
+## Batch 3 — Dortmund identity audit (CLUB-20261016-BVB-METADATA-1)
+
+The [Dortmund batch report](CLUB_PLAYER_METADATA_DORTMUND_20261016.md) documents 47 sourced age, height, shirt, and nationality metadata edits across 12 players. All non-player gameplay data, player selection, overall ratings and FC27 attributes were left unchanged. The official first-team registry reveals a forward/defender mismatch for Daniel Svensson, recorded as an **open roster-selection issue**, not silently fixed. New focused test: `tests/dortmund_player_metadata_20261016.test.cjs`. The next five independent steps are in the report; preserve older batch ledgers and avoid unrelated file removals.

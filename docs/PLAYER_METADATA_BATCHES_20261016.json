@@ -467,6 +467,412 @@
         "hostedLiveBrowserOnExactSourceCommit": "not_run",
         "notes": "Source commit full regression 144/144 PASS; only documentation/provenance changes after it. GitHub Pages build/deploy PASS, but real hosted PC/mobile interaction on this exact version not independently verified."
       }
+    },
+    {
+      "id": "CLUB-20261016-BVB-METADATA-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "64b1c0482b91dc98610dbf9857d4b3d8f0371c0b",
+      "clubId": "club26_11",
+      "club": "Borussia Dortmund",
+      "playersChanged": 12,
+      "fieldsChanged": 47,
+      "status": "pending_ci_regression",
+      "sources": {
+        "official2026SquadBirthdates": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund",
+        "official2026ShirtNumbers": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html",
+        "individualBundesligaProfiles": [
+          {
+            "name": "Gregor Kobel",
+            "url": "https://www.bundesliga.com/en/player/gregor-kobel"
+          },
+          {
+            "name": "Alexander Meyer",
+            "url": "https://www.bundesliga.com/en/player/alexander-meyer"
+          },
+          {
+            "name": "Nico Schlotterbeck",
+            "url": "https://www.bundesliga.com/en/player/nico-schlotterbeck"
+          },
+          {
+            "name": "Waldemar Anton",
+            "url": "https://www.bundesliga.com/en/player/waldemar-anton"
+          },
+          {
+            "name": "Julian Ryerson",
+            "url": "https://www.bundesliga.com/en/player/julian-ryerson"
+          },
+          {
+            "name": "Felix Nmecha",
+            "url": "https://www.bundesliga.com/en/player/felix-nmecha"
+          },
+          {
+            "name": "Joey Veerman",
+            "url": "https://www.bundesliga.com/en/player/joey-veerman"
+          },
+          {
+            "name": "Marcel Sabitzer",
+            "url": "https://www.bundesliga.com/en/player/marcel-sabitzer"
+          },
+          {
+            "name": "Emre Can",
+            "url": "https://www.bundesliga.com/en/player/emre-can"
+          },
+          {
+            "name": "Serhou Guirassy",
+            "url": "https://www.bundesliga.com/en/player/serhou-guirassy"
+          },
+          {
+            "name": "Maximilian Beier",
+            "url": "https://www.bundesliga.com/en/player/maximilian-beier"
+          },
+          {
+            "name": "Daniel Svensson",
+            "url": "https://www.bundesliga.com/en/player/daniel-svensson"
+          }
+        ]
+      },
+      "changes": [
+        {
+          "playerId": "club26_11_0",
+          "name": "Gregor Kobel",
+          "rosterSlot": 1,
+          "fields": {
+            "age": {
+              "previous": 22,
+              "current": 28,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 195,
+              "source": "https://www.bundesliga.com/en/player/gregor-kobel"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_gk_12",
+          "name": "Alexander Meyer",
+          "rosterSlot": 2,
+          "fields": {
+            "num": {
+              "previous": 13,
+              "current": 33,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": 24,
+              "current": 35,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 195,
+              "source": "https://www.bundesliga.com/en/player/alexander-meyer"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_2",
+          "name": "Nico Schlotterbeck",
+          "rosterSlot": 3,
+          "fields": {
+            "num": {
+              "previous": 3,
+              "current": 4,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": 24,
+              "current": 26,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 191,
+              "source": "https://www.bundesliga.com/en/player/nico-schlotterbeck"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_1",
+          "name": "Waldemar Anton",
+          "rosterSlot": 4,
+          "fields": {
+            "num": {
+              "previous": 2,
+              "current": 3,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": 23,
+              "current": 30,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 189,
+              "source": "https://www.bundesliga.com/en/player/waldemar-anton"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_4",
+          "name": "Julian Ryerson",
+          "rosterSlot": 5,
+          "fields": {
+            "num": {
+              "previous": 5,
+              "current": 26,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": 26,
+              "current": 28,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://www.bundesliga.com/en/player/julian-ryerson"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_3",
+          "name": "Felix Nmecha",
+          "rosterSlot": 6,
+          "fields": {
+            "num": {
+              "previous": 4,
+              "current": 8,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": 25,
+              "current": 26,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 190,
+              "source": "https://www.bundesliga.com/en/player/felix-nmecha"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_8",
+          "name": "Joey Veerman",
+          "rosterSlot": 7,
+          "fields": {
+            "num": {
+              "previous": 6,
+              "current": 25,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 185,
+              "source": "https://www.bundesliga.com/en/player/joey-veerman"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "nation": {
+              "previous": "Holland",
+              "current": "Netherlands",
+              "source": "https://www.bundesliga.com/en/player/joey-veerman"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_5",
+          "name": "Marcel Sabitzer",
+          "rosterSlot": 8,
+          "fields": {
+            "num": {
+              "previous": 7,
+              "current": 20,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": 27,
+              "current": 32,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://www.bundesliga.com/en/player/marcel-sabitzer"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_11",
+          "name": "Emre Can",
+          "rosterSlot": 9,
+          "fields": {
+            "num": {
+              "previous": 8,
+              "current": 23,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": null,
+              "current": 32,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 186,
+              "source": "https://www.bundesliga.com/en/player/emre-can"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_10",
+          "name": "Serhou Guirassy",
+          "rosterSlot": 10,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 30,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 187,
+              "source": "https://www.bundesliga.com/en/player/serhou-guirassy"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_7",
+          "name": "Maximilian Beier",
+          "rosterSlot": 11,
+          "fields": {
+            "num": {
+              "previous": 10,
+              "current": 14,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": null,
+              "current": 23,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://www.bundesliga.com/en/player/maximilian-beier"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        },
+        {
+          "playerId": "club26_11_6",
+          "name": "Daniel Svensson",
+          "rosterSlot": 12,
+          "fields": {
+            "num": {
+              "previous": 11,
+              "current": 24,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            },
+            "age": {
+              "previous": 28,
+              "current": 24,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/borussia-dortmund"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://www.bundesliga.com/en/player/daniel-svensson"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.bvb.de/de/en/news/news-overview/news.html/2026/8/20/These-are-the-jersey-numbers-for-the-2026/27-season.html"
+            }
+          }
+        }
+      ],
+      "remainingIssues": [
+        {
+          "playerId": "club26_11_6",
+          "player": "Daniel Svensson",
+          "gameRole": "FW",
+          "officialPosition": "DF",
+          "source": "https://www.bundesliga.com/en/player/daniel-svensson",
+          "status": "requires separate role-balanced replacement with immutable name/role/OVR history"
+        },
+        {
+          "category": "rating_and_face_stats",
+          "currentProvenance": "unofficial third-party FC27 September 2026",
+          "status": "not individually verified; no fictional EA scores or physical gameplay stats invented"
+        }
+      ],
+      "notes": [
+        "One team only; all original player IDs, club memberships in game, roles, overall ratings, FC27 face statistics, and gameplay parameters unchanged.",
+        "Birth dates checked against the German Football Association 2026/27 roster and age calculated as at 16 October 2026.",
+        "Heights and nation supported by Bundesliga 2026/27 individual profiles. Shirt numbers from Borussia Dortmund's 20 August 2026 official list.",
+        "Daniel Svensson appears as defender in the league data while occupying an FW slot in this game's 2GK/3DF/4MF/3FW restricted 12-player squad. Changes to selection must be separately sourced and change-ledgered."
+      ]
     }
   ]
 }
