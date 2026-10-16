@@ -3724,6 +3724,434 @@
         },
         "hostedPcPhysicalPhonePlay": "not_independently_verified"
       }
+    },
+    {
+      "id": "CLUB-20261016-FCBAR-FC27-VERIFICATION-1",
+      "asOfDate": "2026-10-16",
+      "clubId": "club26_4",
+      "club": "Barcelona",
+      "playersChanged": 12,
+      "fieldsChanged": 63,
+      "status": "pending_ci",
+      "changes": [
+        {
+          "playerId": "club26_4_0",
+          "name": "Joan García",
+          "rosterSlot": 1,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_official_12",
+          "name": "Wojciech Szczęsny",
+          "rosterSlot": 2,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 195,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_9",
+          "name": "Pau Cubarsí",
+          "rosterSlot": 3,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 184,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_11",
+          "name": "Eric García",
+          "rosterSlot": 4,
+          "fields": {
+            "num": {
+              "previous": 2,
+              "current": 24,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "age": {
+              "previous": null,
+              "current": 25,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 182,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_official_13",
+          "name": "Jules Koundé",
+          "rosterSlot": 5,
+          "fields": {
+            "num": {
+              "previous": 3,
+              "current": 23,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_8",
+          "name": "Pedri",
+          "rosterSlot": 6,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 177,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_5",
+          "name": "Rodri",
+          "rosterSlot": 7,
+          "fields": {
+            "num": {
+              "previous": 4,
+              "current": 16,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "age": {
+              "previous": null,
+              "current": 30,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 190,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_2",
+          "name": "Frenkie de Jong",
+          "rosterSlot": 8,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 179,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_6",
+          "name": "Fermín",
+          "rosterSlot": 9,
+          "fields": {
+            "num": {
+              "previous": 6,
+              "current": 7,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "age": {
+              "previous": null,
+              "current": 23,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 176,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_7",
+          "name": "Lamine Yamal",
+          "rosterSlot": 10,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_1",
+          "name": "Raphinha",
+          "rosterSlot": 11,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 176,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        },
+        {
+          "playerId": "club26_4_official_14",
+          "name": "Dani Olmo",
+          "rosterSlot": 12,
+          "fields": {
+            "num": {
+              "previous": 7,
+              "current": 20,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured"
+            },
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 179,
+              "source": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241"
+            }
+          }
+        }
+      ],
+      "officialFc27Audit": {
+        "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241",
+        "playersMatched": 12,
+        "overallRatingsMatched": 12,
+        "headlineAttributesMatched": 72,
+        "ratingType": "Ultimate Team launch base-card",
+        "gameplayStatsUnchanged": true
+      },
+      "otherSources": {
+        "shirts": "https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured",
+        "heightsAndBirthdates": "https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm"
+      },
+      "knownCaveats": [
+        "Secondary FootballSquads has an erroneous Raphinha birth month; retained 1996-12-14 supported by LaLiga; no DOB change.",
+        "EA FC27 positional card categories can differ from game 2GK/3DF/4MF/3FW constrained roles.",
+        "Sourced heights differ among providers; these measurements are FootballSquads 2026/27."
+      ],
+      "invariant": "12 stable names, IDs, player roles, OVR, FC27 face and arcade attributes unchanged; no other clubs edited."
     }
   ]
 }
