@@ -33,11 +33,15 @@ const CONCEPT_MODULAR=(()=>{
   if(!CONCEPT_HERO.draw(ctx,p,view,{run}))return false;
   const ratio=LOGICAL_HEIGHT/HEIGHT,w=art.width*ratio;
   const phase=Math.max(-1,Math.min(1,Number.isFinite(run)?run:0));
+  // C01: smooth the first 18% of the run cycle so returning to idle never
+  // snaps the illustrated arms. Large strides and legacy timing stay identical.
+  const armBlend=Math.min(1,Math.abs(phase)/.18);
+  const armPhase=phase*armBlend*armBlend*(3-2*armBlend);
   if(kind==='front'){
    // Far arm first (behind the painted face, opposite arm and front fringe).
    // Existing run timing and root transform are owned by Renderer, not this layer.
    const fx=(23-56)*ratio,fy=-LOGICAL_HEIGHT+6+126*ratio;
-   const farArmStride=Math.abs(phase)>.07?phase*.035:0;
+   const farArmStride=armPhase*.035;
    ctx.save();ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
    ctx.translate(fx,fy);ctx.rotate(farArmStride);ctx.translate(-fx,-fy);
    ctx.drawImage(states.frontFarArm.image,-112*ratio/2,-LOGICAL_HEIGHT+6,112*ratio,LOGICAL_HEIGHT);
@@ -50,7 +54,7 @@ const CONCEPT_MODULAR=(()=>{
    // shoulder pivot. The baked original arm stays beneath pending torso extraction.
    // Use only the existing run phase; collision/action logic stays in Renderer.
    const ax=(90-56)*ratio,ay=-LOGICAL_HEIGHT+6+126*ratio;
-   const armStride=Math.abs(phase)>.07?-phase*.035:0;
+   const armStride=-armPhase*.035;
    ctx.save();ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
    ctx.translate(ax,ay);ctx.rotate(armStride);ctx.translate(-ax,-ay);
    ctx.drawImage(states.frontArm.image,-112*ratio/2,-LOGICAL_HEIGHT+6,112*ratio,LOGICAL_HEIGHT);

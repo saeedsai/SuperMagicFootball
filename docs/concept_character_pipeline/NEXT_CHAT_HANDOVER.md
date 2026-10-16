@@ -1,6 +1,6 @@
 # NEXT CHAT HANDOVER — Concept Character Pipeline
 
-**Updated:** 16 October 2026 | **Branch:** `dev` | **Stage:** C01 in progress, not approved for production. This replaces stacked historical interim notes with the current actionable checkpoint. All earlier reports and GitHub artifacts remain linked below; no historical assets were deleted.
+> **C01 visual arm-gait continuity batch (16 Oct 2026, source CI pending):** both independently drawn front arms now ease continuously through idle rather than jumping at ±0.07 run phase. Full ±0.18+ stride angle, the original flattened body and six unauthored-view fallback are unchanged. Executable Node compositor/pivot regression added. [Current bounded batch and acceptance gates](C01_ARM_GAIT_CONTINUITY_20261016.md). Pending exact-commit source/desktop/touch/full census and hosted validation; do not count as additional authored character parts or production approval. Next smallest task is a real-game collar/shoulder seam audit, one source fix at a time.\n\n**Updated:** 16 October 2026 | **Branch:** `dev` | **Stage:** C01 in progress, not approved for production. This replaces stacked historical interim notes with the current actionable checkpoint. All earlier reports and GitHub artifacts remain linked below; no historical assets were deleted.
 
 ## Bootstrap and ownership
 

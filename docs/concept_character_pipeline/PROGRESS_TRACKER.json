@@ -331,7 +331,7 @@
       "identifier": "medium-honey-curls-moustache"
     }
   ],
-  "nextSmallTask": "ART-C01 after new claim: review front collar/shoulder seams at real game scale; isolate one editable front torso/collar overlay and mask baked legacy-arm pixels before increasing reciprocal arm amplitude. Preserve original roster, physics, six-angle fallback.",
+  "nextSmallTask": "After confirming exact-commit CI and current graphics lock: inspect real-game front near/far shoulder and collar seams across idle and opposed run phases on grass, teal, light and dark. Correct one editable source seam only; then create isolated front torso. Do not modify gameplay or data.",
   "openRisks": [
     "Only one cloned literal concept character is available for all twelve demo slots",
     "Flattened five-view atlas has baked blue uniform and number 10",
@@ -644,6 +644,22 @@
       },
       "ownerApproval": "pending",
       "completeAssetFamily": false
+    },
+    "armGaitContinuity": {
+      "feature": "ART-C01-ARM-GAIT-CONTINUITY",
+      "source": "src/modules/conceptmodular.js",
+      "mode": "experimental_opt_in_front_only",
+      "visualOnly": true,
+      "easeRange": [
+        0,
+        0.18
+      ],
+      "fullPhasePreserved": true,
+      "oldCutoffDiscontinuityRemoved": true,
+      "status": "code_submitted_pending_exact_commit_CI",
+      "qa": "pending",
+      "ownerArtApproval": "pending",
+      "note": "Two existing arm assets; zero new authored variants. Side fallback and legacy underlay preserved."
     }
   }
 }
