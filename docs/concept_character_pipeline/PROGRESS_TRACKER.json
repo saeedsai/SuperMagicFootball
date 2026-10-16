@@ -56,7 +56,8 @@
         "tests/concept_modular_v1.test.cjs",
         "tests/concept_modular_live_qa.py",
         "assets/characters/concept_modular_v1/source/face_front_front.svg",
-        "scripts/validate_concept_modular.py"
+        "scripts/validate_concept_modular.py",
+        "assets/characters/concept_modular_v1/source/arm_near_front.svg"
       ],
       "evidence": [
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886177973",
@@ -71,9 +72,9 @@
         "docs/concept_character_pipeline/C01_FACE_FRONT_CHECKPOINT_20261016.md"
       ],
       "issues": [
-        "Front face is an editable illustrated experimental overlay, not independently authored complete head across all views",
-        "Only two hair headings (front/back); six remaining headings still use original painted prototype",
-        "Original layered master source is unavailable; no animated brows/eyes/mouth, torso/arms/legs or owner visual approval"
+        "Only one front near-arm SVG overlays the existing baked original arm; no fully separately authored torso/opposite arm yet",
+        "Front face, front/back hair and near arm still experimental; owner art approval, complete alternate views and full rig missing",
+        "Only one opt-in demo player has partial modular art; other player data and Studio unaffected"
       ]
     },
     {
@@ -320,7 +321,7 @@
       "identifier": "medium-honey-curls-moustache"
     }
   ],
-  "nextSmallTask": "C01 small next batch: inspect face/eyeline/headband/hairline at match size with owner; then independently author one editable near front arm with shoulder pivot and verify one controlled gait pose. Preserve legacy renderer and other dev changes.",
+  "nextSmallTask": "C01 next safe batch: after checking claims and latest dev, paint independently editable opposite front/far arm source and art pivot; then validate reciprocal arm swing against existing legs without changing gameplay or save data.",
   "openRisks": [
     "Only one cloned literal concept character is available for all twelve demo slots",
     "Flattened five-view atlas has baked blue uniform and number 10",
@@ -329,7 +330,8 @@
     "Editable component-layer art and provenance have not been validated for new modular renderer",
     "Source resolution/performance/atlas budget and in-game art quality require measured baseline and owner review",
     "New back view only supplies a transparent hair overlay on the existing flattened back-body art; must not be counted as complete authored back view",
-    "New front face is a transparently painted independent feature set over an existing flattened head/body, not a complete separated full head; no owner face-art approval."
+    "New front face is a transparently painted independent feature set over an existing flattened head/body, not a complete separated full head; no owner face-art approval.",
+    "Experiment: overlay arm over baked old static arm may show residual ghosting at large run poses; only low-amplitude motion until torso/body are independently authored."
   ],
   "releaseSignoff": {
     "ownerArtApproval": "not_started",
@@ -455,6 +457,53 @@
       "fullRegressionRun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38899003690",
       "fullRegressionStatus": "PASS full nine-job census after two failed browser shards were retried: preflight, all four Node shards and all four browser shards green at source SHA a8553002",
       "fullRegressionAttempt": 2
+    },
+    "frontNearArm": {
+      "componentId": "arm_near_front_001",
+      "asset": "assets/characters/concept_modular_v1/source/arm_near_front.svg",
+      "referenceCanvas": [
+        112,
+        265
+      ],
+      "editableGroups": [
+        "near-sleeve",
+        "near-upper-arm",
+        "near-elbow-shadow",
+        "near-forearm",
+        "near-wristband",
+        "near-hand"
+      ],
+      "shoulder": [
+        90,
+        126
+      ],
+      "elbow": [
+        102,
+        164
+      ],
+      "wrist": [
+        104,
+        174
+      ],
+      "hand": [
+        104,
+        182
+      ],
+      "sourceAdjustment": "Foreshortened painted lower-arm paths to fit original approved arm silhouette",
+      "renderer": "Opt-in front view only: legacy original body -> painted face -> near arm counter-stride -> hair. Legacy fallback for missing layer and six unfinished orientations.",
+      "visualOnly": {
+        "channel": "existing run phase",
+        "rotationRadiansPerPhase": -0.035,
+        "impactOnPhysics": false
+      },
+      "status": "implemented_pending_final_browser_QA_and_owner_review",
+      "baseArtCommit": "adb1a9827349fcbc5b77f3ce6ae4e2d850d9ac49",
+      "fitCorrectionCommit": "336292ffc7811b119e8f10f983a61fb5d1d591e1",
+      "qaCommit": "ff22abb3bd585cb52919ea35ee4d691e0eda52b5",
+      "pendingQARun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905216121",
+      "pendingFullRegression": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905216172",
+      "ownerArtApproval": "pending",
+      "productionEligible": false
     }
   }
 }

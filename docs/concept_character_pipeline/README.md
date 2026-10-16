@@ -1,6 +1,6 @@
 # Concept-quality modular player graphics — document index
 
-**Created:** 16 October 2026. **Development branch:** dev. **Scope:** future illustrated player models, customization, animation, editor and QA. **Status:** experimental front painted face plus front/back editable hair overlays in the opt-in playable character; full eight-view face, articulated head/body and owner art approval are still incomplete. See [IMPLEMENTATION_CHECKPOINT_20261016.md](IMPLEMENTATION_CHECKPOINT_20261016.md).
+**Created:** 16 October 2026. **Development branch:** dev. **Scope:** future illustrated player models, customization, animation, editor and QA. **Status:** experimental front face, front near-arm painted counter-stride and front/back editable hair overlays in one opt-in playable character; opposing arm, separate torso and legs, eight-view graphics and owner art approval are not complete. See [IMPLEMENTATION_CHECKPOINT_20261016.md](IMPLEMENTATION_CHECKPOINT_20261016.md).
 
 Read these documents in order:
 
