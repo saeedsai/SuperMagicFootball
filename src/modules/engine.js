@@ -1322,6 +1322,12 @@ class GameEngine{
  driveAI(p,dt){
   // Game difficulty is a behaviour preset, not an arcade game-speed multiplier.
   const b=this.ball, owner=b.owner, t=p.t, dir=t===0?1:-1;
+  // Only the bounded physical lunge may move a keeper during dive intent.
+  // Continuing ordinary AI tracking here bypasses the per-attempt 28-unit cap.
+  if(p.keeper&&p.diveIntentPending&&p.action==='keeperDive'){
+   p.moveVX=0;p.moveVY=0;p.dx=0;p.dy=0;
+   return;
+  }
   const ai=aiTuning(this.cpuLevel(p));
   const aiStyle=this.options.aiStyle||'Balanced';const tactical=tacticModifiers(this.teamPlans[t]||{attack:'Balanced',defence:'Balanced'});
   // Always reserve a real AI defender; the human-controlled player must not
