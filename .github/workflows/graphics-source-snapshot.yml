@@ -21,3 +21,4 @@ jobs:
           name: graphics-development-source
           path: /tmp/smf-source/
           retention-days: 5
+          if-no-files-found: error
