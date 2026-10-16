@@ -8,6 +8,7 @@ on:
       - 'src/modules/render.js'
       - 'src/modules/ui.js'
       - 'tests/concept_hero*'
+      - 'scripts/clean_concept_hero_atlas.py'
       - 'tests/pitch_length_20pct.test.cjs'
       - 'sw.js'
       - '.github/workflows/concept-hero-qa.yml'
@@ -33,6 +34,8 @@ jobs:
         run: node --test tests/*.test.cjs
       - name: Play Concept Royals FC in Chromium, verify sprites, capture screenshots
         run: python3 tests/concept_hero_browser_qa.py
+      - name: Verify all sprite transparency islands and alternate running strides
+        run: python3 tests/concept_hero_animation_qa.py
       - name: Retain actual game screenshot artifacts
         if: always()
         uses: actions/upload-artifact@v4
