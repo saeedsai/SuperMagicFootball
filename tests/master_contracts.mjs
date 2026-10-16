@@ -21,6 +21,7 @@ assert(sw.includes("'bpw'")&&sw.includes("'./src/modules/'+m+'.js'"),'offline PW
 assert(ui.includes("version:'"+release+"-integrated'"),'game exports modular version');
 assert(ui.includes("version:'"+release+"'"),'save exports release version');
 assert(ui.includes('function substitutionAdviceForPause(')&&ui.includes("origin==='pause'?substitutionAdviceForPause(game,side,plan,players):''"),'paused command center shows validated read-only substitution guidance');
+assert(ui.includes('game.subbedOut?.[side]')&&ui.includes('replacement.injuryWeeks')&&ui.includes('onField.has(bench)'),'paused advice honors used and unavailable roster slots');
 assert.match(read('../index.html'),/data-act="pass"/);
 assert.deepEqual(REMAPPABLE_ACTIONS,['pass','shoot','dribble','jump']);
 for(const keys of ['keyboard','gamepad','keyboard2','gamepad2']) {

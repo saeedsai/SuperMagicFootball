@@ -67,7 +67,7 @@ with sync_playwright() as pw:
           const g=SupermagicFootball.game;
           g.substitutionsUsed[0]=g.maxSubstitutions;
         }""")
-        page.locator('[data-action="returnPause"]').click()
+        page.locator('[data-action="returnPause"]').first.click()
         page.locator('[data-action="tacticHome"]').click()
         assert 'All substitutions have been used' in page.locator('#substitutionAdvice').inner_text()
         assert page.evaluate("JSON.stringify(SupermagicFootball.game.teamPlans[0].lineup)") == expected['lineup']
