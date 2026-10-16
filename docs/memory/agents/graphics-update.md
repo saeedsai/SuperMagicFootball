@@ -1,31 +1,21 @@
 # Agent memory — Graphics update
 
-**Agent ID:** `graphics-update`
-**Updated:** 2026-10-16
-**Status:** seeded from project-chat title; live progress and GitHub claim ownership not independently attested.
+**Agent ID:** `graphics-update` | **Updated:** 2026-10-16
 
 ## Mission
-
-Improve editable illustrated player assets and animation only; preserve procedural fallback and gameplay.
+Deliver editable illustrated player graphics and visual-only animations in bounded C00/C01 commits; do not modify gameplay, rosters, controls or saved data.
 
 ## Current checkpoint
-
-- No verified commit, active claim or passing test report is assigned to this specific chat in this memory.
-- Read the live `dev` and [specialist source](../../concept_character_pipeline/NEXT_CHAT_HANDOVER.md) before continuing; do not trust an old snapshot.
+Completed experimental far-front arm `assets/characters/concept_modular_v1/source/arm_far_front.svg` with separate painted sleeve/skin/wrist/fist; source [`f0fea598`](https://github.com/saeedsai/SuperMagicFootball/commit/f0fea598668803dbc2e54b9ad8f31e9f51cccd23). Both opt-in front arms now have tiny reciprocal shoulder swings; old hero underlay and six-direction fallback remain.
 
 ## Next smallest action
-
-- Read concept progress tracker and latest graphics lock; resume the next unfinished C00/C01-sized art task only if owned.
+Read latest `dev`, specialist [handover](../../concept_character_pipeline/NEXT_CHAT_HANDOVER.md) and `PROGRESS_TRACKER.json`; check/reclaim graphics lock. Audit shoulder seams, then extract **one painted front torso/collar** with occlusion, without changing engine.
 
 ## Ownership and exclusions
-
-- No feature lock is granted by this file. Read [live claims](../../agent_coordination/claims/) and claim one non-overlapping key; preserve other agents' paths.
-- Do not open or edit another agent's memory. Only this file and the common `SHARED.md` belong in the bootstrap context.
+Scoped graphics, test-fixture and cache claims released after checkpoint. Never rely on this file as a live claim. Do not inspect other agents' memories; protect game physics, IDs, data and UI.
 
 ## Evidence
-
-- Add exact code commit, tests run with pass/fail/not-run, link to relevant specialist handover only after verifying against GitHub.
+[Graphics/browser #38913908449](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913908449): 147/147 Node, desktop/touch and alpha PASS. [Hosted #38914486909](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914486909): desktop/touch game and SVG HTTP 200 PASS. Full [#38914777848](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914777848) FAILED unrelated memory identity preflight; not graphics-certified end-to-end. Owner art signoff pending.
 
 ## Cleanup
-
-- Replace stale notes and finished tasks at every checkpoint, never append transcripts, and keep this file under 4 KB.
+Latest checkpoint only; historical details in [C01 batch report](../../concept_character_pipeline/C01_FAR_ARM_BATCH_20261016.md). Old stale per-batch assumptions omitted.

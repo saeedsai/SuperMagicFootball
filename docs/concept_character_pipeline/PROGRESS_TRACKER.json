@@ -5,7 +5,7 @@
   "baselineAtPlanning": "82119108ca63dd510bd49bdf5c2083bed168a9a0",
   "currentMilestone": "C01",
   "programStatus": "in_progress",
-  "lastVerifiedModularCommit": "ff22abb3bd585cb52919ea35ee4d691e0eda52b5",
+  "lastVerifiedModularCommit": "f0fea598668803dbc2e54b9ad8f31e9f51cccd23",
   "disclaimer": "Only independently layered illustrated concept_modular_v1 assets with evidence count as delivered; older procedural Studio options and one flat concept_hero are not modular variants.",
   "existingPrototype": {
     "playerModelId": "concept_hero",
@@ -47,7 +47,7 @@
       "id": "C01",
       "title": "One approved layered character, independently editable head/hair/torso/arms/legs",
       "status": "in_progress",
-      "checkedAtCommit": "ff22abb3bd585cb52919ea35ee4d691e0eda52b5",
+      "checkedAtCommit": "f0fea598668803dbc2e54b9ad8f31e9f51cccd23",
       "validatedFiles": [
         "assets/characters/concept_modular_v1/source/hair_front_front.svg",
         "src/modules/conceptmodular.js",
@@ -57,7 +57,8 @@
         "tests/concept_modular_live_qa.py",
         "assets/characters/concept_modular_v1/source/face_front_front.svg",
         "scripts/validate_concept_modular.py",
-        "assets/characters/concept_modular_v1/source/arm_near_front.svg"
+        "assets/characters/concept_modular_v1/source/arm_near_front.svg",
+        "assets/characters/concept_modular_v1/source/arm_far_front.svg"
       ],
       "evidence": [
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886177973",
@@ -74,12 +75,15 @@
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904785529",
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904271767",
         "docs/concept_character_pipeline/C01_NEAR_ARM_BATCH_20261016.md",
-        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905337000"
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905337000",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913908449",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914486909",
+        "docs/concept_character_pipeline/C01_FAR_ARM_BATCH_20261016.md"
       ],
       "issues": [
-        "Only one front near-arm SVG overlays the existing baked original arm; no fully separately authored torso/opposite arm yet",
-        "Front face, front/back hair and near arm still experimental; owner art approval, complete alternate views and full rig missing",
-        "Only one opt-in demo player has partial modular art; other player data and Studio unaffected"
+        "Legacy original torso and static arm pixels remain beneath experimental front near and far arm overlays; larger movement may cause ghosting",
+        "Two independently editable painted arms are now present in front view only; full articulated torso/legs and six additional view directions are missing",
+        "Artist signoff, original layered master and physical-device verification outstanding; one demo player only"
       ]
     },
     {
@@ -326,7 +330,7 @@
       "identifier": "medium-honey-curls-moustache"
     }
   ],
-  "nextSmallTask": "ART-C01 next one small batch after current claim check: paint independently editable opposite front/far arm with source pivot, safe occlusion and reciprocal gait; verify actual game front/side fallback/desktop/touch and retain original body and saved data.",
+  "nextSmallTask": "ART-C01 after new claim: review front collar/shoulder seams at real game scale; isolate one editable front torso/collar overlay and mask baked legacy-arm pixels before increasing reciprocal arm amplitude. Preserve original roster, physics, six-angle fallback.",
   "openRisks": [
     "Only one cloned literal concept character is available for all twelve demo slots",
     "Flattened five-view atlas has baked blue uniform and number 10",
@@ -336,7 +340,9 @@
     "Source resolution/performance/atlas budget and in-game art quality require measured baseline and owner review",
     "New back view only supplies a transparent hair overlay on the existing flattened back-body art; must not be counted as complete authored back view",
     "New front face is a transparently painted independent feature set over an existing flattened head/body, not a complete separated full head; no owner face-art approval.",
-    "Experiment: overlay arm over baked old static arm may show residual ghosting at large run poses; only low-amplitude motion until torso/body are independently authored."
+    "Experiment: overlay arm over baked old static arm may show residual ghosting at large run poses; only low-amplitude motion until torso/body are independently authored.",
+    "Both new arm overlays paint over the unchanged flat torso; a full clean articulated arm cycle and occlusion masks are NOT delivered.",
+    "Full integrated regression for this batch is blocked by concurrently owned project-memory contract failure; targeted art + live Pages checks pass."
   ],
   "releaseSignoff": {
     "ownerArtApproval": "not_started",
@@ -403,7 +409,7 @@
       "moduleHttp": 200,
       "errors": 0
     },
-    "fullRegressionLatest": "PASS 9/9 at later integrated SHA 1decc48895a81ca3b2f87f84d49e478b0f736085 containing corrected source ff22abb3 unchanged: https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905337000",
+    "fullRegressionLatest": "C01 far arm targeted 147/147+desktop/touch PASS #38913908449, live Pages desktop/touch PASS #38914486909; full #38913908374 cancelled, subsequent #38914777848 FAILED project-memory identity assertion (unrelated owner) before browser shards.",
     "frontFace": {
       "componentId": "face_front_001",
       "asset": "assets/characters/concept_modular_v1/source/face_front_front.svg",
@@ -557,6 +563,84 @@
         "laterIntegratedSourceUnchanged": true,
         "laterIntegratedCommit": "1decc48895a81ca3b2f87f84d49e478b0f736085"
       }
+    },
+    "frontFarArm": {
+      "componentId": "arm_far_front_001",
+      "asset": "assets/characters/concept_modular_v1/source/arm_far_front.svg",
+      "sourceCommit": "7aa48f911e559dd5a4bc1b9a748a0c2b46651316",
+      "compositorAndTestCommit": "f0fea598668803dbc2e54b9ad8f31e9f51cccd23",
+      "canvas": [
+        112,
+        265
+      ],
+      "pivot": [
+        23,
+        126
+      ],
+      "elbow": [
+        14,
+        166
+      ],
+      "wrist": [
+        13,
+        180
+      ],
+      "hand": [
+        11,
+        189
+      ],
+      "editableGroups": [
+        "far-shoulder-and-sleeve",
+        "far-upper-arm",
+        "far-elbow-crease",
+        "far-forearm",
+        "far-wrist-tape",
+        "far-fist",
+        "far-edge-light"
+      ],
+      "frontOnly": true,
+      "visualAnimation": {
+        "channel": "existing_legacy_run_phase",
+        "rotationRadiansPerPhase": 0.035,
+        "opposesNearArm": -0.035,
+        "changesGameplay": false
+      },
+      "loadFailureFallback": "concept_hero",
+      "otherSixDirectionsFallback": "pixel_identical_original",
+      "status": "verified_experimental_overlay_not_complete_rig_or_approved_art",
+      "targetedQA": {
+        "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913908449",
+        "passedNode": 147,
+        "failedNode": 0,
+        "desktop": "PASS",
+        "simulatedTouch": "PASS",
+        "frontPixelDifference": 4266,
+        "frontRunPhasePixelDifference": 4109,
+        "rearChangedPixels": 2531,
+        "legacySidePixelIdentical": true,
+        "farArmOutsideAlpha": 0,
+        "browserErrors": 0
+      },
+      "hostedQA": {
+        "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914486909",
+        "sha": "f0858269cf8cf1419b8b78d25f0d7be21798eda1",
+        "desktop": "PASS",
+        "simulatedTouch": "PASS",
+        "httpSvg": 200,
+        "httpModule": 200,
+        "activeOptInPlayers": 1,
+        "legacyDemoPlayers": 11,
+        "browserErrors": 0,
+        "graphicsFilesUnchangedFrom": "f0fea598668803dbc2e54b9ad8f31e9f51cccd23"
+      },
+      "fullRegression": {
+        "sourceRun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913908374",
+        "sourceStatus": "cancelled_by_parallel_dev_commits",
+        "subsequentRun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914777848",
+        "subsequentStatus": "FAILED in unrelated project-memory identity preflight, no full 9-job PASS for this batch yet"
+      },
+      "ownerApproval": "pending",
+      "completeAssetFamily": false
     }
   }
 }
