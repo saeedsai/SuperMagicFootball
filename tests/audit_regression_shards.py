@@ -31,7 +31,7 @@ def natural_count(value, description: str) -> int:
     return value
 
 
-def audit_reports(directory: Path, categories=CATEGORIES, expected_commit=None) -> dict:
+def audit_reports(directory: Path, categories=CATEGORIES, expected_commit=None, expected_shards=None) -> dict:
     """Return validated coverage totals; raise on any missing/duplicate/stale report."""
     directory = Path(directory)
     require(directory.is_dir(), f"report directory not found: {directory}")
@@ -67,6 +67,9 @@ def audit_reports(directory: Path, categories=CATEGORIES, expected_commit=None) 
     for category, shards in grouped.items():
         require(shards, f"missing all {category} shard reports")
         count = next(iter(shards.values()))[1]["shard_count"]
+        if expected_shards is not None:
+            require(count == expected_shards,
+                    f"{category}: reported shard_count {count} differs from expected {expected_shards}")
         require(all(r["shard_count"] == count for _, r in shards.values()),
                 f"{category}: inconsistent shard counts")
         missing = sorted(set(range(count)) - set(shards))
@@ -130,11 +133,14 @@ def main(argv=None) -> int:
                         help="Directory of downloaded full-regression JSON shard artifacts")
     parser.add_argument("--category", choices=(*CATEGORIES, "all"), default="all")
     parser.add_argument("--expected-commit", help="Exact commit SHA expected for all shards")
+    parser.add_argument("--expected-shards", type=int, default=4,
+                        help="Expected shard count per category (GitHub workflow default: 4)")
     parser.add_argument("--out", type=Path, help="Optional JSON acceptance report (only written on PASS)")
     args = parser.parse_args(argv)
     categories = CATEGORIES if args.category == "all" else (args.category,)
     try:
-        result = audit_reports(args.reports, categories, args.expected_commit)
+        require(args.expected_shards > 0, "--expected-shards must be positive")
+        result = audit_reports(args.reports, categories, args.expected_commit, args.expected_shards)
         if args.out:
             args.out.parent.mkdir(parents=True, exist_ok=True)
             args.out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
