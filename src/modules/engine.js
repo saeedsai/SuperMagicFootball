@@ -278,7 +278,8 @@ class GameEngine{
    if(!kept){p.x=targetX;p.y=targetY;p.moveVX=p.moveVY=0;}
   }
   if(this.controlled[t]>=6||this.controlled[t]<0)this.controlled[t]=3;
-  this.emit('substitution',{team:t,count:changes.out.length,used:this.substitutionsUsed[t],max:this.maxSubstitutions});
+  // Tactical-style and formation-only changes are not player substitutions.
+  if(changes.out.length>0)this.emit('substitution',{team:t,count:changes.out.length,used:this.substitutionsUsed[t],max:this.maxSubstitutions});
   this.toast(TEAMS[this.teamIds[t]].name+' tactics updated'+(changes.out.length?' · '+this.substitutionsUsed[t]+'/'+this.maxSubstitutions+' subs':''));return next;
  }
  getTeam(t){return kitFor(TEAMS[this.teamIds[t]],this.options.kitChoices?.[t]|| (t===0?'home':'away'))}
