@@ -64,3 +64,11 @@ v0.8.25.24 release status, changelog and QA are retained under `docs/history/v08
 - Rotated service-worker cache; added five Node tests and eleven browser checks; updated inherited version expectations.
 - All 143 Node, 20 inherited Chromium suites, 9 modular checks, 11 new checks and 24 full-match replays pass. Live GitHub Pages dev delivery remains unverified pending site settings.
 - Added modular validator, builder, QA files and dev CI workflow; historic root packaging removed from dev only.
+## 16 October 2026 — keeper dive activity / conservative fairness checkpoint
+
+- **Added:** `src/modules/engine.js` `tryKeeperDiveIntent()`, enabling one visibly animated goalkeeper attempt for predicted incoming goalmouth/corner shots before contact, including misses. Added recovery and anti-repeat timer.
+- **Preserved:** the existing limited keeper contact depth, projected ball physics, rare one-shot keeper special probability, genuine contact/save events and ball possession. No input remapping, new action buttons, team/roster edits or save schema migration.
+- **Tests:** new structural Node tests and mirrored 30/60/120Hz desktop/touch Chromium acceptance; workflow triggers updated to include live keeper engine and new test scripts.
+- **Offline:** bumped service-worker cache identifier to `smf-082536-keeper-anticipation-v1`; synchronized six inherited pinned cache assertions.
+- **Planning:** audited 218 historical requirements, flagged 41 Done/120 Partial/57 Missing as historic labels, and reconciled the next five focused iterations in current authoritative docs.
+- **Outstanding:** physical keeper dive movement/true save rate changes require later controlled fairness calibration; full QA and live hosted check are verified only through separately timestamped exact-commit Actions evidence.
