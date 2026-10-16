@@ -1,0 +1,19 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "roster-club-club26_1",
+  "feature_id": "CLUB26-BAYERN-FC27-OFFICIAL-METADATA-20261016-B1",
+  "owner": "roster-fc27-chat-20261016-bayern-b1",
+  "status": "active",
+  "scope": "Bayern Munich club26_1 ONLY: official EA FC27 OVR and six-face-stat provenance, DFB 2026/27 jersey and birth-date backed ages, sourced physical height and nation verification. Change only club26_1 records in data/players/club26.json and matching src/roster_corrections.js, specialist per-field ledger, dedicated Bayern test/handover, and own roster-fc27 memory file. No game logic/UI/graphics/other clubs/CI/framework changes.",
+  "base_sha": "22b67de184327bac6ef82b1a82b8b9043dbd8f85",
+  "claimed_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
+  "expires_at": "2026-10-17",
+  "tests": [
+    "exact EA 12-player OVR + 72 headline attribute checks",
+    "DFB 2026/27 shirt/DOB + age test",
+    "FootballSquads 12 height checks",
+    "Club26 source/runtime parity and immutable roster history",
+    "Modular QA, Full Regression Census and Pages build"
+  ]
+}
