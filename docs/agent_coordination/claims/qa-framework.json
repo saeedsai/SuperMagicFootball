@@ -3,9 +3,11 @@
   "lock_key": "qa-framework",
   "feature_id": "QA-CENSUS-EVIDENCE-INTEGRITY",
   "owner": "qa-evidence-shape-20261016-gpt6-chat10",
-  "status": "active",
+  "status": "released",
   "scope": "Only tests/audit_regression_shards.py evidence validation, tests/test_audit_regression_shards.py negative tests, tests/audit_regression_shards.test.cjs count and docs/QA_CENSUS_EVIDENCE_INTEGRITY_20261016.md. Never edit gameplay, graphics, roster, UI, CI workflows, memory, QA shard runner.",
   "base_sha": "a4839ee88b7f58b47e14e4cdb5012ef2ac072119",
   "created_at": "2026-10-16",
-  "handover": "docs/QA_CENSUS_EVIDENCE_INTEGRITY_20261016.md"
+  "handover": "docs/QA_CENSUS_EVIDENCE_INTEGRITY_20261016.md — code e9268919711dc6714f4cbc4c968df2de2bda8816, QA https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946385367; roadmap 5142a936aa318e14ceeb854b4a060aa48a2f1e07",
+  "released_at": "2026-10-16",
+  "outcome": "completed QA auditor duration/output strict evidence; 18 Python tests and 197 active Node PASS; exact-SHA historical full census not verified"
 }
