@@ -3,7 +3,7 @@
   "lock_key": "ui-controls",
   "feature_id": "UI-CAREER-OPPONENT-SCOUT",
   "owner": "gameplay-review-20261016-gpt6-career-scout-r5",
-  "status": "active",
+  "status": "released",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
   "base_sha": "c5dc199323d4f927b10478a443d119fc55c9ae39",
@@ -15,5 +15,8 @@
     "python3 tests/career_opponent_scout_browser_qa.py",
     "Full Regression Census 4+4"
   ],
-  "handover": "docs/CAREER_OPPONENT_SCOUT_20261016.md"
+  "handover": "docs/CAREER_OPPONENT_SCOUT_20261016.md; docs/memory/agents/gameplay-review-20261016.md; Node https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960248063; full https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960061389",
+  "released_at": "2026-10-16",
+  "outcome": "Shipped read-only real Manager Career next-opponent scout report and fixed penalty keeper help; 6 new Node tests passed, full standard 221/221 on integrated dev; four Node census shards green, Chromium in progress at checkpoint; preserved saves, rosters, About live SHA.",
+  "checkpoint_head": "1d23bb5112e7777e6956698f1d78c0d9810862ca"
 }
