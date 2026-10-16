@@ -1,0 +1,35 @@
+name: Verify Live Modular Concept Hair Preview
+on:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/concept-modular-live-smoke.yml'
+      - 'tests/concept_modular_live_qa.py'
+      - 'assets/characters/concept_modular_v1/**'
+      - 'src/modules/conceptmodular.js'
+      - 'src/modules/ui.js'
+      - 'src/modules/render.js'
+      - 'sw.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  hosted-match:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Chromium and Playwright
+        run: |
+          python3 -m pip install --user playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y chromium
+      - name: Verify deployed SVG, JS, roster, real match on desktop and simulated touch
+        run: python3 tests/concept_modular_live_qa.py
+      - name: Keep real hosted screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hosted-concept-modular-gameplay
+          path: docs/qa_runs_live_concept_modular/
+          retention-days: 30

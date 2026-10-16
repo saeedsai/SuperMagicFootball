@@ -7,3 +7,7 @@ The visual is deliberately a layered hair **overlay** on the original artist-pai
 Run `python3 scripts/validate_concept_modular.py && python3 scripts/build.py && node --test tests/*.test.cjs && python3 tests/concept_modular_browser_qa.py`. Browser QA enters a real match on desktop and simulated touch, asserts new front pixels differ and the back fallback is unchanged, and captures actual game screenshots to `docs/qa_runs_concept_modular/` (GitHub Actions screenshot artifact). CI and owner visual review must be checked before claiming PASS or marking verified.
 
 Next bounded task: check exact-commit screenshots for fit/halos on grass, teal, white and dark; adjust the front source, then author matching isolated hair-back/head part. Do not expand gameplay or player databases.
+
+## Verified playable evidence
+
+[Exact-commit modular art QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886177973) passed: 73/73 Node tests, 1,460 changed front-view pixels, desktop and touch live Canvas test captures, pixel-identical back fallback, 0 browser page errors, and original concept demo regression. [Detailed test report](TEST_REPORT_C00_C01_20261016.md). Hosted experimental art smoke has its own workflow and must be verified separately.

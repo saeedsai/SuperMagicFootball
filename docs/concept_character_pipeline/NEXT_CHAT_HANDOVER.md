@@ -1,5 +1,7 @@
 # NEXT CHAT HANDOVER — Future Illustrated Concept Character System
 
+> **Exact-commit C00/C01 verified partial art, 16 October 2026:** [QA run 38886177973](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886177973) PASSED 73/73 Node tests plus executable desktop/touch illustration checks, 1,460 new front pixels, pixel-identical back fallback, original demo browser regression and actual match screenshots. See [TEST_REPORT_C00_C01_20261016.md](TEST_REPORT_C00_C01_20261016.md). **C00/C01 still in progress**, owner signoff and independent head/limbs remain missing. A new hosted opt-in smoke test is the next deployment gate. Do not rerun or count this one overlay as 12 completed characters.
+
 > **Updated C00/C01 handover (16 Oct):** the first editable illustrated front hair overlay, manifest, runtime preview and QA workflow are now committed as an experimental opt-in. See [IMPLEMENTATION_CHECKPOINT_20261016.md](IMPLEMENTATION_CHECKPOINT_20261016.md) and tracker. The legacy baseline text below predates this change; do not count the new overlay as a completed full rig. Check actual screenshots/CI before expanding.
 
 **Created:** 16 October 2026. **Project:** SuperMagicFootball. **Repository:** https://github.com/saeedsai/SuperMagicFootball. **Branch:** dev. **Planning status:** Complete; implementation of the future modular art bank has NOT begun. **Important:** immediately retrieve latest dev before taking action, because other developers commit concurrently.

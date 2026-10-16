@@ -5,7 +5,7 @@
   "baselineAtPlanning": "82119108ca63dd510bd49bdf5c2083bed168a9a0",
   "currentMilestone": "C00",
   "programStatus": "in_progress",
-  "lastVerifiedModularCommit": null,
+  "lastVerifiedModularCommit": "2ff04b902ee894ffdb94e4029f97707ca1499799",
   "disclaimer": "Only independently layered illustrated concept_modular_v1 assets with evidence count as delivered; older procedural Studio options and one flat concept_hero are not modular variants.",
   "existingPrototype": {
     "playerModelId": "concept_hero",
@@ -29,12 +29,15 @@
       "id": "C00",
       "title": "Freeze approved artwork source, reference comparison, alpha/rig contract and baseline tests",
       "status": "in_progress",
-      "checkedAtCommit": null,
+      "checkedAtCommit": "2ff04b902ee894ffdb94e4029f97707ca1499799",
       "validatedFiles": [
         "assets/characters/concept_modular_v1/references/PROVENANCE.md",
         "assets/characters/concept_modular_v1/manifests/rig.json"
       ],
-      "evidence": [],
+      "evidence": [
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886177973",
+        "scripts/validate_concept_modular.py"
+      ],
       "issues": [
         "Original layered painted source/rights record missing; owner approval pending"
       ]
@@ -43,13 +46,16 @@
       "id": "C01",
       "title": "One approved layered character, independently editable head/hair/torso/arms/legs",
       "status": "in_progress",
-      "checkedAtCommit": null,
+      "checkedAtCommit": "2ff04b902ee894ffdb94e4029f97707ca1499799",
       "validatedFiles": [
         "assets/characters/concept_modular_v1/source/hair_front_front.svg",
         "src/modules/conceptmodular.js",
         "tests/concept_modular_browser_qa.py"
       ],
-      "evidence": [],
+      "evidence": [
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886177973",
+        "docs/concept_character_pipeline/TEST_REPORT_C00_C01_20261016.md"
+      ],
       "issues": [
         "One front hair overlay, no independent full head/torso/arms/legs",
         "No authored seven other views or runtime WebP derivative"
@@ -299,7 +305,7 @@
       "identifier": "medium-honey-curls-moustache"
     }
   ],
-  "nextSmallTask": "C00/C01: inspect real-match exact-commit screenshot, improve front hair fitting and alpha on four backgrounds, then author matching editable head/hair-back component.",
+  "nextSmallTask": "C00/C01: validate hosted opt-in model and screenshot, visually inspect SVG hair seam/alpha on 4 backgrounds, then add only one independently editable head/hair-back piece.",
   "openRisks": [
     "Only one cloned literal concept character is available for all twelve demo slots",
     "Flattened five-view atlas has baked blue uniform and number 10",
@@ -325,5 +331,21 @@
     "ANIMATION_SPEC.md",
     "TEST_AND_RELEASE_PLAN.md",
     "NEXT_CHAT_HANDOVER.md"
-  ]
+  ],
+  "componentProofOfPlay": {
+    "id": "royals-hair-front-front-001",
+    "commit": "2ff04b902ee894ffdb94e4029f97707ca1499799",
+    "evidenceRun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886177973",
+    "passedNode": 73,
+    "failedNode": 0,
+    "actualBrowserSurfaces": [
+      "desktop",
+      "simulated-touch"
+    ],
+    "frontChangedPixels": 1460,
+    "originalBackFallbackPixelIdentical": true,
+    "hostedLiveVerification": "pending",
+    "approvedForProduction": false,
+    "completeAssetFamily": false
+  }
 }
