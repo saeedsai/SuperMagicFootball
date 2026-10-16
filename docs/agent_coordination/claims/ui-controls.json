@@ -1,21 +1,19 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "ui-controls",
-  "feature_id": "UI-ABOUT-LIVE-REVISION-DEVELOPER",
-  "owner": "ui-about-live-version-saeed-20261016-gpt6-s15",
-  "status": "released",
-  "scope": "ONLY src/modules/ui.js showAbout: display developer Saeed and user-provided mailto, live GitHub dev 40-hex commit revision on each About visit with offline/failure fallback and race-safe UI. Add new tests/about_revision.test.cjs and tests/about_revision_browser_qa.py, docs/UI_ABOUT_LIVE_VERSION_20261016.md and narrow docs/NEXT_MILESTONES.md checkpoint. No gameplay engine, renderer, input, rosters, release workflows, build scripts or other agent code. Automated git SHA is shown as dev revision (not falsely asserted to equal deployed bundle); existing stable bundle version remains.",
-  "base_sha": "a595db218949d25d16563291bc36d8db99589cd4",
+  "feature_id": "UI-CAREER-OPPONENT-SCOUT",
+  "owner": "gameplay-review-20261016-gpt6-career-scout-r5",
+  "status": "active",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
+  "base_sha": "c5dc199323d4f927b10478a443d119fc55c9ae39",
+  "scope": "Only src/modules/ui.js Career Manager NEXT FIXTURE read-only tactical opponent scout panel using actual fixture, opponent roster OVR/roles, league results and own roster condition; new tests/career_opponent_scout.test.cjs, tests/career_opponent_scout_browser_qa.py, specialist docs/CAREER_OPPONENT_SCOUT_20261016.md, narrow docs/NEXT_MILESTONES.md note and own docs/memory/agents/gameplay-review-20261016.md. May correct stale help copy describing penalty goalkeeper manual controls in src/modules/ui.js. No engine/input/physics, AI, graphics, roster/data, tactics plan mutation, save schemas, QA runner, build scripts, CI/workflows, release version/SW or shared project context.",
   "tests": [
-    "node --test tests/about_revision.test.cjs",
-    "Modular Game Dev QA full Node/data/coordination",
-    "Full Regression Census 4 Node and 4 Chromium",
-    "Hosted Pages PC/mobile smoke"
+    "node --test tests/career_opponent_scout.test.cjs",
+    "node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
+    "node --test tests/*.test.cjs",
+    "python3 tests/career_opponent_scout_browser_qa.py",
+    "Full Regression Census 4+4"
   ],
-  "handover": "docs/UI_ABOUT_LIVE_VERSION_20261016.md — UI 0deb9ac9; Node tests f3a1ea98, browser tests 09300649; 6/6 feature Node PASS, total 187/188 due external gameplay-pk chat memory issue #9; full census preflight blocked; Pages #38945844215 success; live PC/touch smoke #38891468528 attempt13 PASS; release after doc 008cc47b.",
-  "released_at": "2026-10-16",
-  "outcome": "about_credit_and_per_commit_github_dev_sha_delivered_6_node_pass_hosted_pc_touch_green_full_census_blocked_other_agents_memory_issue9",
-  "final_source_commit": "0deb9ac93449670c41ddf7263f78cb06fff5be78"
+  "handover": "docs/CAREER_OPPONENT_SCOUT_20261016.md"
 }
