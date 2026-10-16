@@ -16,6 +16,23 @@ import sys
 NAME = re.compile(r"^(node|browser)_shard_([1-9][0-9]*)_of_([1-9][0-9]*)\.json$")
 CATEGORIES = ("node", "browser")
 STATUSES = ("PASS", "FAIL", "TIMEOUT", "ERROR", "NOT_RUN")
+# Match the runner's exact top-level discovery rules; a fabricated report must
+# not certify paths that were never runnable in the census.
+EXTRA_BROWSER = frozenset({
+    "graphics_integration_v082522.py", "studio_eight_view_gallery_v082532.py",
+    "beard_customization_v082528.py", "character_identity_persistence_v082529.py",
+    "performance_loader_browser_v082531.py", "master_ui_contracts.py", "v060_qa.py",
+})
+VALID_BASENAME = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9_.-]*$")
+
+
+def discoverable_script(name: str, category: str) -> bool:
+    if not isinstance(name, str) or not VALID_BASENAME.fullmatch(name):
+        return False
+    if category == "node":
+        return name.endswith(".mjs") or name.endswith(".test.cjs")
+    return name.endswith(".py") and ("browser_qa" in name or name in EXTRA_BROWSER)
+
 
 
 class AuditError(ValueError):
@@ -81,6 +98,8 @@ def audit_reports(directory: Path, categories=CATEGORIES, expected_commit=None, 
                 all(isinstance(v, str) and v for v in reference) and
                 len(set(reference)) == len(reference),
                 f"{category}: discovered_scripts must contain unique nonempty names")
+        require(all(discoverable_script(script, category) for script in reference),
+                f"{category}: discovered_scripts contain undiscoverable or unsafe filenames")
         seen = set()
         for index, (label, report) in sorted(shards.items()):
             require(report.get("discovered_scripts") == reference,
