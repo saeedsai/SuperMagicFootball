@@ -36,7 +36,8 @@
       ],
       "evidence": [
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886177973",
-        "scripts/validate_concept_modular.py"
+        "scripts/validate_concept_modular.py",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886824290"
       ],
       "issues": [
         "Original layered painted source/rights record missing; owner approval pending"
@@ -54,7 +55,8 @@
       ],
       "evidence": [
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886177973",
-        "docs/concept_character_pipeline/TEST_REPORT_C00_C01_20261016.md"
+        "docs/concept_character_pipeline/TEST_REPORT_C00_C01_20261016.md",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886824290"
       ],
       "issues": [
         "One front hair overlay, no independent full head/torso/arms/legs",
@@ -305,7 +307,7 @@
       "identifier": "medium-honey-curls-moustache"
     }
   ],
-  "nextSmallTask": "C00/C01: validate hosted opt-in model and screenshot, visually inspect SVG hair seam/alpha on 4 backgrounds, then add only one independently editable head/hair-back piece.",
+  "nextSmallTask": "C00/C01: inspect hosted vs fixture front-hair seam and alpha on grass/teal/light/dark, obtain owner signoff, then add one independently editable front head/hair-back layer.",
   "openRisks": [
     "Only one cloned literal concept character is available for all twelve demo slots",
     "Flattened five-view atlas has baked blue uniform and number 10",
@@ -344,8 +346,19 @@
     ],
     "frontChangedPixels": 1460,
     "originalBackFallbackPixelIdentical": true,
-    "hostedLiveVerification": "pending",
+    "hostedLiveVerification": "verified",
     "approvedForProduction": false,
-    "completeAssetFamily": false
+    "completeAssetFamily": false,
+    "hostedVerifiedAtCommit": "dca9e1711643e7e37d2118f5a6ef4ae68cee800f",
+    "hostedWorkflow": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886824290",
+    "hostedArtifact": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886824290",
+    "liveSvgHTTP": 200,
+    "liveModuleHTTP": 200,
+    "liveDesktop": "PASS",
+    "liveSimulatedTouch": "PASS",
+    "livePageErrors": 0,
+    "fullRegressionVerifiedAtCommit": "55c4a21a9089ae8b2ced2ed677bee82cd37eaf59",
+    "fullRegressionWorkflow": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886072121",
+    "fullRegression": "PASS on earlier graphics-containing commit; exact final doc SHA not independently sharded"
   }
 }
