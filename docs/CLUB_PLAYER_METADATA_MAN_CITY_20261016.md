@@ -40,7 +40,7 @@
 
 Dedicated `tests/man_city_fc27_official_20261016.test.cjs` checks 12 OVR + 72 face stats, 12 league numbers, DOB/age, nationality, height, source/runtime mirror and field-level ledger. To run: `python3 scripts/validate_data.py`; `node --test tests/man_city_fc27_official_20261016.test.cjs`; `node --test tests/*.test.cjs`; roster history census and `python3 scripts/build.py`. Verify GitHub's **Modular Game Dev QA**, **Full Regression Census**, and Pages workflows by **exact source SHA**. Track unresolved/cancelled independently.
 
-Next five **separately claimed** suggested club batches: PSG `club26_3`, Barcelona `club26_4`, Manchester United `club26_5`, Real Madrid `club26_7`, and Tottenham `club26_9` (check live IDs/locks first).
+Next five **separately claimed** suggested club batches: PSG `club26_3`, Barcelona `club26_4`, Manchester United `club26_5`, Real Madrid `club26_7`, and Tottenham `club26_29` (check live claims first).
 
 ## Observed GitHub CI and deployment on integrated `dev`
 
