@@ -3,7 +3,7 @@
   "lock_key": "integration-tooling",
   "feature_id": "MERGE-SOURCE-REVIEW-FLAGS",
   "owner": "merge-source-review-20261016-1507-gpt6",
-  "status": "active",
+  "status": "released",
   "scope": "Only scripts/parallel_data_merge.py source-sensitive player-diff review flag metadata (advisory, no automatic source attribution); tests/test_parallel_data_merge.py scoped regression; docs/PARALLEL_DATA_MERGE_GUIDE.md and dedicated docs/MERGE_SOURCE_REVIEW_HANDOVER_20261016.md. No runtime/rosters/graphics/CI workflows/other owners' files.",
   "base_sha": "abe1fff31bd47fdcd37d2097ef65c6dc5ac525ae",
   "created_at": "2026-10-16T15:07+02:00",
@@ -14,6 +14,9 @@
     "node --test tests/*.test.cjs",
     "Full Regression Census on exact commit"
   ],
-  "handover": "docs/MERGE_SOURCE_REVIEW_HANDOVER_20261016.md",
-  "previous_handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md and docs/concept_character_pipeline/C01_FACE_FRONT_CHECKPOINT_20261016.md; source a8553002, art QA #38899003730, hosted #38899003632, full census #38899003690 attempt 2 all PASS"
+  "handover": "docs/MERGE_SOURCE_REVIEW_HANDOVER_20261016.md — code b9b5c875, tests 727f6abe, guide d7a2acc6, final report 6a706776; Modular QA #38903009633 success; Full Regression Census #38903065643 117/117 Node PASS, Chromium completion to inspect",
+  "previous_handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md and docs/concept_character_pipeline/C01_FACE_FRONT_CHECKPOINT_20261016.md; source a8553002, art QA #38899003730, hosted #38899003632, full census #38899003690 attempt 2 all PASS",
+  "released_at": "2026-10-16",
+  "outcome": "source_sensitive_player_review_flags_delivered;20_merge_tests_and_116_active_Node_pass;117_historical_Node_pass;Chromium_pending",
+  "integrated_commit": "6a706776ed8d5eb842635496f2c3036a038b3937"
 }
