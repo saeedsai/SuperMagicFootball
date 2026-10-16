@@ -49,3 +49,9 @@ If the pending census fails **this exact test**: inspect the new full state snap
 Long-term/open: full classic-mode parity and original character likeness, physical Android/iOS and PWA/offline/process-restart certification, complete FC27 world source validation, Super Defense/Tricks and multiplayer.
 
 **Handover:** read the exact linked full census results when its queue clears. Preserve other agents' active claims. Do not modify the shared `docs/NEXT_MILESTONES.md` during the separately active `ui-controls` documentation claim; this bounded feature record contains the current next-five plan instead.
+
+## Latest regression checkpoint (same exact source SHA)
+
+At release checkpoint, [Full Regression Census #38900429370](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38900429370) on `78b48056e25108d1039cb4aeca326bfcd5935187` had completed its preflight and **all four Node shards green: 113/113 script executions PASS** (29 + 28 + 28 + 28, zero FAIL/TIMEOUT/ERROR/NOT_RUN). All **four Chromium shards were still in progress**; the new 3-sequence browser test was *not yet proven to pass*. It is necessary for the next agent to inspect those exact browser shard logs, resolve or document the result, and then run the [cross-shard artifact auditor](../tests/audit_regression_shards.py). The fully passing prior [Full Regression Census #38899003690](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38899003690) finished after reruns and refers to an earlier commit, so is a historic baseline only.
+
+The same test-only change does not modify hosted gameplay. Direct public Pages retrieval was unavailable through the session; do not equate success of a repository push with physical phone or real hosted interaction. The active GitHub ownership lock must be released as a checkpoint to allow another gameplay developer to proceed without accidental scope conflicts.
