@@ -1,31 +1,23 @@
 # Agent memory — FC27 player database
 
-**Agent ID:** `roster-fc27`
-**Updated:** 2026-10-16
-**Status:** seeded from project-chat title; live progress and GitHub claim ownership not independently attested.
+**Agent ID:** `roster-fc27` | **Updated:** 2026-10-16
 
 ## Mission
-
-Prefer official FC27 ratings, using cited fallback sources for unavailable fields; make only roster/player metadata edits.
+Verify official EA FC 27 club player OVR/face stats and current real-world player details, in isolated claimed batches. Do not change gameplay, UI, art, other clubs, or CI infrastructure.
 
 ## Current checkpoint
-
-- No verified commit, active claim or passing test report is assigned to this specific chat in this memory.
-- Read the live `dev` and [specialist source](../../PLAYER_METADATA_BATCHES_20261016.json) before continuing; do not trust an old snapshot.
+- Small Bayern Munich `club26_1` 2026/27 OVR + 12 physical metadata / jersey batch. Claim: [roster-club-club26_1](../../agent_coordination/claims/roster-club-club26_1.json). New handover: [Bayern checkpoint](../../CLUB_PLAYER_METADATA_BAYERN_20261016.md).
+- Source of truth for exact commit/test status is the handover, not this memory.
+- Previous Arsenal batch is complete and logged in the immutable [player metadata ledger](../../PLAYER_METADATA_BATCHES_20261016.json); do not repeat it.
 
 ## Next smallest action
-
-- Check one live roster-club lock and match sourced values for its players.
+Check live `dev` and claims. If Bayern is delivered, select **Manchester City club26_2** only after reserving its free club-specific lock. Then PSG, Barcelona, Manchester United, Real Madrid as later separate batches.
 
 ## Ownership and exclusions
-
-- No feature lock is granted by this file. Read [live claims](../../agent_coordination/claims/) and claim one non-overlapping key; preserve other agents' paths.
-- Do not open or edit another agent's memory. Only this file and the common `SHARED.md` belong in the bootstrap context.
+Read `AGENTS.md`, shared memory and own file; never open other agents' memories. One club lock at a time. No unsolicited deletes or cleanups of QA evidence used by other agents.
 
 ## Evidence
-
-- Add exact code commit, tests run with pass/fail/not-run, link to relevant specialist handover only after verifying against GitHub.
+Official EA FC 27 Bayern ratings: https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21; DFB 2026/27 registration: https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich; FootballSquads physical biography: https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm. Actual CI and Pages URLs recorded in the separate handover when verified.
 
 ## Cleanup
-
-- Replace stale notes and finished tasks at every checkpoint, never append transcripts, and keep this file under 4 KB.
+Compact current status only; old chat transcripts and superseded source dates omitted.

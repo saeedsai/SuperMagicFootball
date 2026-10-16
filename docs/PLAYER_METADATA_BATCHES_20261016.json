@@ -2238,6 +2238,405 @@
         "liveDesktopAndPhysicalMobile": "not_verified",
         "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/3"
       }
+    },
+    {
+      "id": "CLUB-20261016-FCB-FC27-VERIFICATION-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "b50e79194f1b56a811e696ef2498440f41261708",
+      "clubId": "club26_1",
+      "club": "Bayern Munich",
+      "playersChanged": 12,
+      "fieldsChanged": 57,
+      "status": "pending_ci_regression",
+      "changes": [
+        {
+          "playerId": "club26_1_0",
+          "name": "Manuel Neuer",
+          "rosterSlot": 1,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 192,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_audit_13",
+          "name": "Jonas Urbig",
+          "rosterSlot": 2,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 189,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_3",
+          "name": "Joshua Kimmich",
+          "rosterSlot": 3,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 176,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_5",
+          "name": "Dayot Upamecano",
+          "rosterSlot": 4,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 188,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_2",
+          "name": "Jonathan Tah",
+          "rosterSlot": 5,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 192,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_4",
+          "name": "Jamal Musiala",
+          "rosterSlot": 6,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 181,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_audit_14",
+          "name": "Konrad Laimer",
+          "rosterSlot": 7,
+          "fields": {
+            "num": {
+              "previous": 3,
+              "current": 27,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "age": {
+              "previous": null,
+              "current": 29,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 179,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_6",
+          "name": "Aleksandar Pavlović",
+          "rosterSlot": 8,
+          "fields": {
+            "num": {
+              "previous": 5,
+              "current": 45,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "age": {
+              "previous": null,
+              "current": 22,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 186,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_1",
+          "name": "Ismael Saibari",
+          "rosterSlot": 9,
+          "fields": {
+            "num": {
+              "previous": 7,
+              "current": 34,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "age": {
+              "previous": null,
+              "current": 25,
+              "source": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 185,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_8",
+          "name": "Harry Kane",
+          "rosterSlot": 10,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 188,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_audit_12",
+          "name": "Michael Olise",
+          "rosterSlot": 11,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 184,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        },
+        {
+          "playerId": "club26_1_7",
+          "name": "Luis Díaz",
+          "rosterSlot": 12,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21"
+            }
+          }
+        }
+      ],
+      "officialFc27Audit": {
+        "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
+        "playersMatched": 12,
+        "overallRatingsMatched": 12,
+        "headlineAttributesMatched": 72,
+        "ratingType": "Ultimate Team launch base-card",
+        "gameplayStatsUnchanged": true
+      },
+      "otherSources": {
+        "registration": "https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich",
+        "physicalData": "https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm"
+      },
+      "knownCaveats": [
+        "FC 27 headline stats are not the game's editable arcade power/shoot/defense/speed values.",
+        "Game uses Joshua Kimmich as DF and Ismael Saibari as MF as constrained roles; EA has CDM and CAM card respectively.",
+        "FootballSquads physical measurements may differ from other providers; source-linked rather than claiming uniquely authoritative height."
+      ],
+      "invariant": "12 stable IDs, players, roles, ratings and 72 official face attributes unchanged; all other clubs untouched"
     }
   ]
 }

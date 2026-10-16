@@ -518,8 +518,8 @@
       "rating": 81,
       "value": 1037301,
       "fictional": false,
-      "ratingSource": "FC27 third-party dataset snapshot 2026-09-12",
-      "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+      "ratingSource": "FC27 official EA launch ratings, checked 2026-10-16",
+      "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
       "statsVerified": false,
       "appearanceVerified": false,
       "rosterVerification": "verified_club_role",
@@ -538,7 +538,9 @@
       "birthDate": "1986-03-27",
       "nation": "Germany",
       "fc27Id": "167495",
-      "fc27Position": "GK"
+      "fc27Position": "GK",
+      "heightCm": 192,
+      "fc27OfficialCheckedAt": "2026-10-16"
     },
     {
       "id": "club26_1_audit_13",
@@ -557,8 +559,8 @@
       "age": 23,
       "value": 915409,
       "fictional": false,
-      "ratingSource": "FC27 third-party dataset snapshot 2026-09-12",
-      "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+      "ratingSource": "FC27 official EA launch ratings, checked 2026-10-16",
+      "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
       "statsVerified": false,
       "appearanceVerified": false,
       "rosterVerification": "verified_club_role",
@@ -577,7 +579,9 @@
       "birthDate": "2003-08-08",
       "nation": "Germany",
       "fc27Id": "263887",
-      "fc27Position": "GK"
+      "fc27Position": "GK",
+      "heightCm": 189,
+      "fc27OfficialCheckedAt": "2026-10-16"
     },
     {
       "id": "club26_1_3",
@@ -597,8 +601,8 @@
       "rating": 88,
       "value": 1569977,
       "fictional": false,
-      "ratingSource": "FC27 third-party dataset snapshot 2026-09-12",
-      "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+      "ratingSource": "FC27 official EA launch ratings, checked 2026-10-16",
+      "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
       "statsVerified": false,
       "appearanceVerified": false,
       "rosterVerification": "verified_club_role",
@@ -617,7 +621,9 @@
       "birthDate": "1995-02-08",
       "nation": "Germany",
       "fc27Id": "212622",
-      "fc27Position": "CDM"
+      "fc27Position": "CDM",
+      "heightCm": 176,
+      "fc27OfficialCheckedAt": "2026-10-16"
     },
     {
       "id": "club26_1_5",
@@ -637,8 +643,8 @@
       "rating": 87,
       "value": 1482778,
       "fictional": false,
-      "ratingSource": "FC27 third-party dataset snapshot 2026-09-12",
-      "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+      "ratingSource": "FC27 official EA launch ratings, checked 2026-10-16",
+      "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
       "statsVerified": false,
       "appearanceVerified": false,
       "rosterVerification": "verified_club_role",
@@ -657,7 +663,9 @@
       "birthDate": "1998-10-27",
       "nation": "France",
       "fc27Id": "229558",
-      "fc27Position": "CB"
+      "fc27Position": "CB",
+      "heightCm": 188,
+      "fc27OfficialCheckedAt": "2026-10-16"
     },
     {
       "id": "club26_1_2",
@@ -677,8 +685,8 @@
       "rating": 87,
       "value": 1482778,
       "fictional": false,
-      "ratingSource": "FC27 third-party dataset snapshot 2026-09-12",
-      "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+      "ratingSource": "FC27 official EA launch ratings, checked 2026-10-16",
+      "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
       "statsVerified": false,
       "appearanceVerified": false,
       "rosterVerification": "verified_club_role",
@@ -697,7 +705,9 @@
       "birthDate": "1996-02-11",
       "nation": "Germany",
       "fc27Id": "213331",
-      "fc27Position": "CB"
+      "fc27Position": "CB",
+      "heightCm": 192,
+      "fc27OfficialCheckedAt": "2026-10-16"
     },
     {
       "id": "club26_1_4",
@@ -717,8 +727,8 @@
       "rating": 87,
       "value": 1482778,
       "fictional": false,
-      "ratingSource": "FC27 third-party dataset snapshot 2026-09-12",
-      "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+      "ratingSource": "FC27 official EA launch ratings, checked 2026-10-16",
+      "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
       "statsVerified": false,
       "appearanceVerified": false,
       "rosterVerification": "verified_club_role",
@@ -737,13 +747,15 @@
       "birthDate": "2003-02-26",
       "nation": "Germany",
       "fc27Id": "256790",
-      "fc27Position": "CAM"
+      "fc27Position": "CAM",
+      "heightCm": 181,
+      "fc27OfficialCheckedAt": "2026-10-16"
     },
     {
       "id": "club26_1_audit_14",
       "name": "Konrad Laimer",
       "role": "MF",
-      "num": 3,
+      "num": 27,
       "rating": 85,
       "power": 53,
       "shoot": 40,
@@ -755,12 +767,12 @@
       "shotName": "Piranha Shot",
       "value": 1171845,
       "fictional": false,
-      "ratingSource": "FC27 third-party dataset snapshot 2026-09-12",
-      "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+      "ratingSource": "FC27 official EA launch ratings, checked 2026-10-16",
+      "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
       "statsVerified": false,
       "appearanceVerified": false,
       "rosterVerification": "fc27_position_club",
-      "shirtVerified": false,
+      "shirtVerified": true,
       "sourceClubMatch": "FC27",
       "ageVerified": true,
       "sourceSnapshot": "2026-09-12",
@@ -775,13 +787,16 @@
       "birthDate": "1997-05-27",
       "nation": "Austria",
       "fc27Id": "225375",
-      "fc27Position": "RB"
+      "fc27Position": "RB",
+      "age": 29,
+      "heightCm": 179,
+      "fc27OfficialCheckedAt": "2026-10-16"
     },
     {
       "id": "club26_1_6",
       "name": "Aleksandar Pavlović",
       "role": "MF",
-      "num": 5,
+      "num": 45,
       "power": 53,
       "shoot": 39,
       "defense": 45,
@@ -794,12 +809,12 @@
       "rating": 83,
       "value": 915409,
       "fictional": false,
-      "ratingSource": "FC27 third-party dataset snapshot 2026-09-12",
-      "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+      "ratingSource": "FC27 official EA launch ratings, checked 2026-10-16",
+      "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
       "statsVerified": false,
       "appearanceVerified": false,
       "rosterVerification": "fc27_position_club",
-      "shirtVerified": false,
+      "shirtVerified": true,
       "sourceClubMatch": "FC27",
       "ageVerified": true,
       "sourceSnapshot": "2026-09-12",
@@ -814,13 +829,16 @@
       "birthDate": "2004-05-03",
       "nation": "Germany",
       "fc27Id": "275298",
-      "fc27Position": "CDM"
+      "fc27Position": "CDM",
+      "age": 22,
+      "heightCm": 186,
+      "fc27OfficialCheckedAt": "2026-10-16"
     },
     {
       "id": "club26_1_1",
       "name": "Ismael Saibari",
       "role": "MF",
-      "num": 7,
+      "num": 34,
       "power": 54,
       "shoot": 44,
       "defense": 34,
@@ -833,12 +851,12 @@
       "rating": 83,
       "value": 1171845,
       "fictional": false,
-      "ratingSource": "FC27 third-party dataset snapshot 2026-09-12",
-      "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+      "ratingSource": "FC27 official EA launch ratings, checked 2026-10-16",
+      "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
       "statsVerified": false,
       "appearanceVerified": false,
       "rosterVerification": "fc27_position_club",
-      "shirtVerified": false,
+      "shirtVerified": true,
       "sourceClubMatch": "FC27",
       "ageVerified": true,
       "sourceSnapshot": "2026-09-12",
@@ -853,7 +871,10 @@
       "birthDate": "2001-01-28",
       "nation": "Morocco",
       "fc27Id": "259480",
-      "fc27Position": "CAM"
+      "fc27Position": "CAM",
+      "age": 25,
+      "heightCm": 185,
+      "fc27OfficialCheckedAt": "2026-10-16"
     },
     {
       "id": "club26_1_8",
@@ -873,8 +894,8 @@
       "rating": 90,
       "value": 1756679,
       "fictional": false,
-      "ratingSource": "FC27 third-party dataset snapshot 2026-09-12",
-      "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+      "ratingSource": "FC27 official EA launch ratings, checked 2026-10-16",
+      "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
       "statsVerified": false,
       "appearanceVerified": false,
       "rosterVerification": "verified_club_role",
@@ -893,7 +914,9 @@
       "birthDate": "1993-07-28",
       "nation": "England",
       "fc27Id": "202126",
-      "fc27Position": "ST"
+      "fc27Position": "ST",
+      "heightCm": 188,
+      "fc27OfficialCheckedAt": "2026-10-16"
     },
     {
       "id": "club26_1_audit_12",
@@ -912,8 +935,8 @@
       "age": 24,
       "value": 1756679,
       "fictional": false,
-      "ratingSource": "FC27 third-party dataset snapshot 2026-09-12",
-      "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+      "ratingSource": "FC27 official EA launch ratings, checked 2026-10-16",
+      "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
       "statsVerified": false,
       "appearanceVerified": false,
       "rosterVerification": "verified_club_role",
@@ -932,7 +955,9 @@
       "birthDate": "2001-12-12",
       "nation": "France",
       "fc27Id": "247827",
-      "fc27Position": "RM"
+      "fc27Position": "RM",
+      "heightCm": 184,
+      "fc27OfficialCheckedAt": "2026-10-16"
     },
     {
       "id": "club26_1_7",
@@ -952,8 +977,8 @@
       "rating": 88,
       "value": 1569977,
       "fictional": false,
-      "ratingSource": "FC27 third-party dataset snapshot 2026-09-12",
-      "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+      "ratingSource": "FC27 official EA launch ratings, checked 2026-10-16",
+      "source": "https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21",
       "statsVerified": false,
       "appearanceVerified": false,
       "rosterVerification": "verified_club_role",
@@ -972,7 +997,9 @@
       "birthDate": "1997-01-13",
       "nation": "Colombia",
       "fc27Id": "241084",
-      "fc27Position": "LM"
+      "fc27Position": "LM",
+      "heightCm": 180,
+      "fc27OfficialCheckedAt": "2026-10-16"
     }
   ],
   "club26_2": [
