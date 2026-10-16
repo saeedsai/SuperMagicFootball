@@ -2675,7 +2675,7 @@
       "club": "Manchester City",
       "playersChanged": 12,
       "fieldsChanged": 63,
-      "status": "city_source_qa_3_of_3_pass_full_regression_preflight_unrelated_memory_failure",
+      "status": "integrated_active_qa_171_of_171_pass_pages_deployed_historical_browser_pending",
       "changes": [
         {
           "playerId": "club26_2_0",
@@ -3124,7 +3124,30 @@
           "conclusion": "cancelled"
         },
         "publicGame": "https://saeedsai.github.io/SuperMagicFootball/",
-        "desktopAndPhysicalMobileSmoke": "not_verified"
+        "desktopAndPhysicalMobileSmoke": "not_verified",
+        "laterIntegratedGreen": {
+          "commit": "6fe944059b8634a4673d5e3f6d0addc2ef1a7884",
+          "modularQA": {
+            "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915465084",
+            "conclusion": "success",
+            "activeNodePass": 171,
+            "activeNodeFail": 0,
+            "cityTestsPass": 3,
+            "clubQuotaAudit": "passed"
+          },
+          "pages": {
+            "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915464957",
+            "conclusion": "success",
+            "build": "success",
+            "deploy": "success"
+          },
+          "historicalCensus": {
+            "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074",
+            "status_at_handover": "four_node_shards_passed_browser_running",
+            "headSha": "34604826aa552e493885c12870cdbf9bc6b662cf"
+          },
+          "hostedPhysicalMobileAndPCInteraction": "not_independently_verified"
+        }
       }
     }
   ]
