@@ -1,22 +1,19 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "gameplay-engine",
-  "feature_id": "GK-LUNGE-FAIRNESS",
-  "owner": "gameplay-keeper-lunge-fairness-20261016-session4-gpt6",
-  "status": "released",
-  "scope": "Bounded gameplay engine keeper lateral-lunge fairness: src/modules/engine.js only for a small defect correction; new keeper-only regression tests, dedicated docs/keeper handover and roadmap addendum. No graphics, UI, rosters, generated assets, QA framework, workflows, sw.js, shared configuration or unrelated cleanup.",
-  "base_sha": "a41926787b914fa239cdb4c1809a9d7dc9c3567b",
+  "feature_id": "GK-OUTCOME-COHORTS",
+  "owner": "keeper-cohort-20261016-gpt6-chat6",
+  "status": "active",
+  "scope": "Read-only goalkeeper shot outcome fairness calibration cohorts in src/match_telemetry.js and a new tests/keeper_outcome_cohorts.test.cjs, dedicated docs/KEEPER_OUTCOME_COHORTS_20261016.md and bounded roadmap addendum. No engine.js or physics, art, roster, UI, CI or QA framework changes.",
+  "base_sha": "ff27a3afe99f8a82d4ba6efc40a4d5bfe0078668",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
   "tests": [
-    "new keeper-only Node and real-engine browser acceptance",
-    "existing seeded keeper/browser matrix",
-    "existing full regression (CI as already configured)",
-    "Pages desktop/touch smoke"
+    "node --test tests/keeper_outcome_cohorts.test.cjs",
+    "node --test tests/keeper_dive_telemetry.test.cjs",
+    "node tests/v082411_opportunity_telemetry.mjs",
+    "Full Regression Census",
+    "public Pages PC and touch smoke"
   ],
-  "handover": "docs/KEEPER_LUNGE_FAIRNESS_HANDOVER_20261016.md — commit 28ef5501c3bf3342542d444928284b0ef09b75da; QA c0e7132f 160/161, GitHub issue #1",
-  "released_at": "2026-10-16",
-  "outcome": "completed_with_out_of_scope_ui_regression_open",
-  "last_verified_runtime_commit": "c0e7132fd4c0e42ac16425d7ba55365c5c717a68",
-  "open_issue": "https://github.com/saeedsai/SuperMagicFootball/issues/1"
+  "handover": "docs/KEEPER_OUTCOME_COHORTS_20261016.md"
 }
