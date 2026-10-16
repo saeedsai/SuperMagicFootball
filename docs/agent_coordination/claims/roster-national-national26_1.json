@@ -3,7 +3,7 @@
   "lock_key": "roster-national-national26_1",
   "feature_id": "NATIONAL-ARGENTINA-MESSI-EMI-METADATA-B1",
   "owner": "dev6-argentina-national-gk-messi-20261016",
-  "status": "active",
+  "status": "released",
   "scope": "Correct factual 2026-10-16 age and primary-profile height for national26_1_9 Lionel Messi and national26_1_gk_13 Emiliano Martinez ONLY in data/players/national26.json. Add tests/argentina_national_metadata.test.cjs and tests/argentina_national_metadata_browser_qa.py; docs/NATIONAL_ARGENTINA_METADATA_20261016.md and a small additive docs/NEXT_MILESTONES.md checkpoint; own docs/memory/agents/game-developer-6.md checkpoint. No other players, other nations/clubs, roster_corrections, ratings/stats/roles/IDs, game engine, graphics, UI, QA harness, build or release infra changes.",
   "base_sha": "f0858269cf8cf1419b8b78d25f0d7be21798eda1",
   "claimed_at": "2026-10-16T14:10:00Z",
@@ -16,5 +16,9 @@
     "Full Regression Census 4+4 shards",
     "Pages desktop/touch smoke"
   ],
-  "handover": "docs/NATIONAL_ARGENTINA_METADATA_20261016.md"
+  "handover": "docs/NATIONAL_ARGENTINA_METADATA_20261016.md; source cda2f055a3f66f5b0a616e7119ab8fede0718ab9, final handover f62039f223a72bb0801dc84184e4a57c1b77729e; 201/201 https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074; hosted PC/touch https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528",
+  "released_at": "2026-10-16T14:30:00Z",
+  "outcome": "completed: Messi 39/170cm and Emiliano Martinez 34/195cm, 201/201 full Node+Chromium pass, 171/171 active Node pass; hosted desktop+touch smoke successful; no ratings/identity/saves change",
+  "source_commit": "cda2f055a3f66f5b0a616e7119ab8fede0718ab9",
+  "full_regression_run": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074"
 }
