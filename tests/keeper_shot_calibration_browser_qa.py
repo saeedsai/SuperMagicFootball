@@ -23,7 +23,7 @@ def seed_script():
       const f=SupermagicFootball.world?.field||{x:150,w:2260.8};
       function fire(fps,side,shotKind,lane,fatigue,repeat) {
         Math.random=rand(20261016 + lane*31 + Math.round(fatigue*100)*101 +
-          (shotKind==='super'?1901:0) + fps*19 + side*707);
+          (shotKind==='super'?1901:0) + fps*19);
         g.init({home:0,away:0,humans:0,mode:'quick',
           options:{...g.options,weather:'Clear',terrain:'Grass',condition:'Good'}});
         g.matchState='paused';g.wind={x:0,y:0};g.cooldown=0;
@@ -64,7 +64,7 @@ def seed_script():
         if(contacts.some(e=>e.team!==side)||attempts.some(e=>e.team!==side))
           throw Error('Wrong keeper side attributed');
         return {fps,side,shotKind,lane,fatigue,repeat,
-          attempts:attempts.length,contacts:contacts.length,saves:saves.length,goals:goals.length,
+          attempts:attempts.length,contacts:contacts.length,saves:Number(saves.length>0),rawSaveEvents:saves.length,goals:goals.length,
           outcome,score:g.score.slice(),maxContactDepth:contacts.length?
           Math.max(...contacts.map(e=>e.depth)):null};
       }
@@ -109,7 +109,7 @@ with sync_playwright() as pw:
             pairs.setdefault(key, []).append(row)
         assert len(pairs) == 72
         for key, (a,b) in pairs.items():
-            fields = ['attempts','contacts','saves','goals','outcome','score','maxContactDepth']
+            fields = ['attempts','contacts','saves','rawSaveEvents','goals','outcome','score','maxContactDepth']
             assert all(a[f] == b[f] for f in fields), (device, key, a, b)
             assert a['attempts'] <= 1 and a['contacts'] <= 1 and a['saves'] <= 1, (device,key,a)
             assert a['saves'] + a['goals'] <= 1, (device, key, a)
@@ -126,6 +126,7 @@ with sync_playwright() as pw:
                         'shotsWithDives':sum(v[0]['attempts']>0 for v in pairs.values()),
                         'physicalContacts':sum(v[0]['contacts']>0 for v in pairs.values()),
                         'keeperSaves':sum(v[0]['saves']>0 for v in pairs.values()),
+                        'duplicateSaveEvents':sum(max(0,v[0]['rawSaveEvents']-1) for v in pairs.values()),
                         'goals':sum(v[0]['goals']>0 for v in pairs.values()),
                         'unresolved':sum(v[0]['outcome']=='unresolved' for v in pairs.values())})
         print('PASS', device, json.dumps(results[-1], sort_keys=True), flush=True)

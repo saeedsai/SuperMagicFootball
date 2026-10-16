@@ -28,3 +28,9 @@ The complete `Full Regression Census` workflow discovers the new browser test an
 5. Enhance career/tactics substitution feedback without save migrations.
 
 No roster, physical art asset, controls, goal geometry, ability rarity, save format or player ratings are modified by this test-only iteration.
+
+## First regression feedback and correction
+
+The first browser run exposed a **counting-assumption bug in the new test**: one physical keeper contact could yield more than one raw `save` notification in its event stream. A scoring attempt must be counted **once**, not once for every event notification. The calibrated matrix now retains raw notification count as `duplicateSaveEvents` for diagnosis, while `keeperSaves` records whether an attempt produced at least one save. Distinct physical contacts remain bounded by the original geometry; the test still rejects off-plane contact and a save lacking any keeper contact/ability evidence. This keeps the metric honest without silently changing the game engine. Both mirrored sides now start with **identical** seeded RNG streams, rather than different side-specific seeds.
+
+The first full-regression browser shard also showed a separately owned, intermittent simulated-mobile `team_combos_browser_qa.py` failure (`noLaunch=false, cross=false`). It is unrelated to keeper shots. This shard must pass on a clean rerun or receive a separately tested targeted fix before the complete census can be marked green.
