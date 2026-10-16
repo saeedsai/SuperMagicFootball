@@ -55,6 +55,7 @@ test('open pass, enemy interception, aerial pass and keeper catch never trigger 
 test('actual moveAgile preserves normal speed in open space and temporarily reduces pressured carrier speed',()=>{
  const {g,p}=fixture();
  p.firstTouchControlTimer=.24;p.firstTouchPressure=1;
+ g.ball.owner=p;
  moveAgile.call(g,p,1,0,210,.016);
  const slowed=p.x-220;assert(slowed>0);
  const orig={...p,x:220,moveVX:0,moveVY:0,firstTouchControlTimer:0};
@@ -70,5 +71,6 @@ test('source runs timer down and resets on substitution without restricting four
  assert.match(src,/p\.firstTouchControlTimer=Math\.max\(0,\(p\.firstTouchControlTimer\|\|0\)-dt\)/);
  assert.match(src,/p\.firstTouchControlTimer=0;p\.firstTouchPressure=0;/);
  assert.match(src,/if\(this\.ball\.owner===p&&!p\.keeper&&\(p\.firstTouchControlTimer\|\|0\)>0\)/);
- assert.doesNotMatch(src.slice(src.indexOf('function firstTouchControlScale('),src.indexOf('function randomBetween(',src.indexOf('function firstTouchControlScale('))>0?src.indexOf('function randomBetween(',src.indexOf('function firstTouchControlScale(')):src.indexOf('function distance(',src.indexOf('function firstTouchControlScale('))),/\.vx\s*=|\.vy\s*=|Math\.random\(/);
+ const start=src.indexOf('function firstTouchControlScale('),end=src.indexOf('\n}',start);
+ assert.doesNotMatch(src.slice(start,end+2),/\.vx\s*=|\.vy\s*=|Math\.random\(/);
 });
