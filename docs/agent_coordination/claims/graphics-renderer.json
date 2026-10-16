@@ -3,7 +3,7 @@
   "lock_key": "graphics-renderer",
   "feature_id": "ART-C01-ARM-GAIT-CONTINUITY",
   "owner": "graphics-c01-arm-gait-20261016-gpt6-chat3",
-  "status": "active",
+  "status": "released",
   "scope": "C01 graphics-only small batch: smooth paired front arm visual gait near idle to remove hard 0.07 phase snap, preserve opposite arm pivots, and strengthen dedicated tests. Paths: src/modules/conceptmodular.js; tests/concept_modular_v1.test.cjs; optionally tests/concept_modular_browser_qa.py; docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md, PROGRESS_TRACKER.json, C01_ARM_GAIT_CONTINUITY_20261016.md; own docs/memory/agents/graphics-update.md. No gameplay/roster/UI/ordinary renderer/build/CI/SW or shared QA. Deployment acceptance follow-up only: tests/concept_modular_live_qa.py may assert hosted Pages module contains exact new arm-easing formula, no runtime changes.",
   "base_sha": "cb8737f44ac7d7ad19a7300436ba2c180bacea40",
   "created_at": "2026-10-16",
@@ -17,8 +17,9 @@
     "GitHub Pages desktop/touch",
     "hosted module source exact-version signature check"
   ],
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md; docs/concept_character_pipeline/C01_ARM_GAIT_CONTINUITY_20261016.md; source 3395c6cf; hosted test 2be32a64; art #38961042607 PASS; hosted #38961042443 PASS; full #38961042564 8/9 unrelated audio FAIL; issue #18",
   "released_at": "2026-10-16",
-  "outcome": "completed eight-direction ordinary pass follow-through visual gameplay; 200/200 active Node QA, 136/136 Node full census, 75/75 Chromium full census, public desktop/simulated-touch Quick Match smoke PASS; no physics, UI, roster or saves modified",
-  "final_source_commit": "0a72b58e715e7d142bb3b3c183f25b1ee255b40f"
+  "outcome": "completed_C01_continuous_visual_arm_stride_art_228_of_228_node_qa_desktop_touch_hosted_exact_source_PASS_full_census_8_of_9_unrelated_audio_browser_FAIL",
+  "final_source_commit": "3395c6cf7950c9ba4e9510504000649db7285e0e",
+  "final_validation_commit": "2be32a646124930a75a5941c0a4487273bb6a9a1"
 }
