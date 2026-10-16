@@ -124,7 +124,7 @@
       "club": "Brighton",
       "playersChanged": 12,
       "fieldsChanged": 44,
-      "status": "pending_ci_regression",
+      "status": "regression_verified",
       "changes": [
         {
           "playerId": "club26_12_0",
@@ -450,7 +450,23 @@
         "Club/rating/position and team-selection corrections must be made separately with the immutable name/role/OVR selection ledger.",
         "Do not claim FC27 overall ratings are independently licensed; originals are unchanged.",
         "Jason Steele heights conflict across public sources (FBref and StatMuse 190cm, Sky Sports 188cm, Soccerbase 185cm). 190cm is recorded as the FBref/StatMuse value, not independently certain; review before declaring exact height final."
-      ]
+      ],
+      "verification": {
+        "sourceCommit": "cb6f24dc0bac9210ed78fa7ca83a240e432d941f",
+        "auditedDevHeadAtCertification": "adc52b5b9a04d95bc1b4160b377d232cccd578c1",
+        "activeNodePass": 59,
+        "activeNodeFail": 0,
+        "historicalNodePass": 94,
+        "historicalBrowserPass": 50,
+        "totalHistoricalPass": 144,
+        "totalHistoricalFail": 0,
+        "nodeQA": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38878411097",
+        "fullRegression": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38878411037",
+        "pagesSourceDeployment": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38878410705",
+        "pagesDocsDeployment": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38878755163",
+        "hostedLiveBrowserOnExactSourceCommit": "not_run",
+        "notes": "Source commit full regression 144/144 PASS; only documentation/provenance changes after it. GitHub Pages build/deploy PASS, but real hosted PC/mobile interaction on this exact version not independently verified."
+      }
     }
   ]
 }

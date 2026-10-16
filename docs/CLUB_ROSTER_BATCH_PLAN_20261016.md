@@ -107,3 +107,8 @@ All 165 club slots are populated, but additional review is warranted for **2026/
 
 
 Source evidence caveat for Brighton: Jason Steele's height is 190 cm in FBref and StatMuse but 188 cm in Sky Sports and 185 cm in Soccerbase. A current-sourced 190 cm reading is stored, with conflict flagged for future manual confirmation. Age and nationality evidence in the player metadata ledger was refined without changing any player values.
+
+
+## Batch 2 QA certification — 16 October 2026
+
+The Brighton roster-data commit [cb6f24d](https://github.com/saeedsai/SuperMagicFootball/commit/cb6f24dc0bac9210ed78fa7ca83a240e432d941f) passed **59/59 active Node tests** and **144/144 full historical regression scripts** (94 Node + 50 Chromium), with zero failures/timeouts/errors; both source and documentation-only GitHub Pages deployments succeeded. Full evidence: [Brighton metadata test report](CLUB_PLAYER_METADATA_QA_20261016.md). These green checks do **not** resolve the separately documented Carlos Baleba transfer inconsistency or prove a new hosted physical-device playback. The next isolated player correction is Brighton club-registration selection, followed by Dortmund, Napoli, Everton and Inter Milan.
