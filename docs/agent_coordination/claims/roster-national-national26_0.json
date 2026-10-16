@@ -3,7 +3,7 @@
   "lock_key": "roster-national-national26_0",
   "feature_id": "NATIONAL-SPAIN-GK-METADATA-B2",
   "owner": "roster-spain-goalkeeper-metadata-20261016-gpt6-session9",
-  "status": "active",
+  "status": "released",
   "scope": "Exactly two Spain national26_0 goalkeeper records (David Raya, Unai Simon) within data/players/national26.json; dedicated Node + real playable Chromium tests, docs/NATIONAL_SPAIN_GOALKEEPER_METADATA_20261016.md, small docs/NEXT_MILESTONES.md addendum. No other Spain players or countries, any club, shared gameplay/graphics/roster corrections/UI/QA harness/CI/Pages changes.",
   "base_sha": "1d5361f6190a58bbb8553d1ed1e058f107f13c4b",
   "created_at": "2026-10-16",
@@ -18,5 +18,8 @@
     "Modular Game Dev QA + full census exact source",
     "hosted PC/touch smoke"
   ],
-  "handover": "docs/NATIONAL_SPAIN_GOALKEEPER_METADATA_20261016.md"
+  "handover": "docs/NATIONAL_SPAIN_GOALKEEPER_METADATA_20261016.md — source 8eda1a230bd6; Node eca765545cce; browser bfaf9c248269; QA 38900429370 175/175; smoke 38891468528 attempt 5; issue #2 remains open",
+  "released_at": "2026-10-16",
+  "outcome": "complete_full_regression_175_of_175_green_hosted_desktop_touch_green",
+  "final_source_commit": "78b48056e25108d1039cb4aeca326bfcd5935187"
 }
