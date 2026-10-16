@@ -20,6 +20,8 @@ concept_atlas=base64.b64encode((root/'assets/concept_hero/hero_atlas.webp').read
 code.append('const CONCEPT_HERO_INLINE='+json.dumps(concept_atlas)+';\n')
 modular_front=base64.b64encode((root/'assets/characters/concept_modular_v1/source/hair_front_front.svg').read_bytes()).decode('ascii')
 code.append('const CONCEPT_MODULAR_FRONT_INLINE='+json.dumps(modular_front)+';\n')
+modular_back=base64.b64encode((root/'assets/characters/concept_modular_v1/source/hair_back_back.svg').read_bytes()).decode('ascii')
+code.append('const CONCEPT_MODULAR_BACK_INLINE='+json.dumps(modular_back)+';\n')
 for name in order:
  s=(root/'src/modules'/f'{name}.js').read_text()
  s=re.sub(r'^import \{[A-Z_]+\} from .*?;\n','',s,flags=re.M)

@@ -1,7 +1,7 @@
 {
   "schema": "smf-concept-modular/1",
   "id": "royals-hair-front-front-001",
-  "status": "experimental_one_view",
+  "status": "experimental_two_hair_views",
   "baseFamily": "royals_base_a",
   "referenceCanvas": [
     112,
@@ -20,7 +20,8 @@
     "frontLeft"
   ],
   "authoredViews": [
-    "front"
+    "front",
+    "back"
   ],
   "runtimeLayer": {
     "id": "hair_front_001",
@@ -61,16 +62,52 @@
   "ownerArtApproval": "pending",
   "animationCoverage": [
     "idle",
-    "legacy_leg_run"
+    "legacy_leg_run",
+    "secondary_hair_sway_front_back"
   ],
   "unimplemented": [
-    "other_seven_views",
+    "other_six_views",
     "independent_head",
     "face",
-    "hair_back",
+    "hair_for_quarters_and_side",
     "torso",
     "arms",
     "legs",
     "runtime_webp"
+  ],
+  "additionalLayers": [
+    {
+      "id": "hair_back_001",
+      "kind": "hair_back",
+      "view": "back",
+      "asset": "../source/hair_back_back.svg",
+      "sourceCanvas": [
+        115,
+        265
+      ],
+      "cropRect": [
+        0,
+        0,
+        115,
+        265
+      ],
+      "trimOffset": [
+        0,
+        0
+      ],
+      "pivot": [
+        57,
+        60
+      ],
+      "alphaBoundsEstimate": [
+        8,
+        3,
+        105,
+        90
+      ],
+      "z": 20,
+      "material": "painted_chestnut",
+      "noMirroring": true
+    }
   ]
 }
