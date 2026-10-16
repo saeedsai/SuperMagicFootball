@@ -1,19 +1,17 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "ui-controls",
-  "feature_id": "UI-CAREER",
-  "owner": "ui-career-subfeedback-20261016-gpt6a",
-  "status": "released",
-  "scope": "Bounded UI-only career/tactics substitution feedback in src/modules/ui.js; tests/substitution_advice.test.cjs, tests/substitution_advice_browser_qa.py, one UI feature-presence assertion in tests/master_contracts.mjs to activate full legacy regression; dedicated docs handover. No engine, rosters, graphics, style.css, index.html, shared QA runner, build scripts or workflows. Save keys/four buttons unchanged.",
-  "base_sha": "a41926787b914fa239cdb4c1809a9d7dc9c3567b",
+  "feature_id": "UI-CAREER-RETEST",
+  "owner": "ui-career-subfeedback-retest-20261016-gpt6b",
+  "status": "active",
+  "scope": "Only tests/substitution_advice_browser_qa.py ambiguous Back button locator hotfix and dedicated docs/UI_CAREER_SUBSTITUTION_FEEDBACK_20261016.md QA follow-up; no shared runner, engine, graphics, rosters, UI.js or release workflow edits.",
+  "base_sha": "709eeec167daf1a201dcba5bec6afee571623279",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
   "tests": [
-    "node --test tests/*.test.cjs",
-    "python3 scripts/validate_data.py",
     "Full Regression Census exact commit",
-    "GitHub Pages hosted desktop/touch smoke",
-    "tests/master_contracts.mjs full-census trigger"
+    "node --test tests/*.test.cjs",
+    "hosted PC/touch smoke evidence"
   ],
   "handover": "docs/UI_CAREER_SUBSTITUTION_FEEDBACK_20261016.md — source 9951b3b, Node 81/81 PASS, hosted PC/touch PASS, browser shards pending",
   "released_at": "2026-10-16",
