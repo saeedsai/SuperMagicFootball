@@ -3732,7 +3732,7 @@
       "club": "Barcelona",
       "playersChanged": 12,
       "fieldsChanged": 63,
-      "status": "pending_ci",
+      "status": "integrated_active_qa_pass_203_full_regression_pending_pages_not_certified",
       "changes": [
         {
           "playerId": "club26_4_0",
@@ -4151,7 +4151,22 @@
         "EA FC27 positional card categories can differ from game 2GK/3DF/4MF/3FW constrained roles.",
         "Sourced heights differ among providers; these measurements are FootballSquads 2026/27."
       ],
-      "invariant": "12 stable names, IDs, player roles, OVR, FC27 face and arcade attributes unchanged; no other clubs edited."
+      "invariant": "12 stable names, IDs, player roles, OVR, FC27 face and arcade attributes unchanged; no other clubs edited.",
+      "ciEvidence": {
+        "modularQA": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946677603",
+          "conclusion": "success",
+          "passed": 203,
+          "failed": 0,
+          "clubTestsPassed": 3
+        },
+        "historicalRegression": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946504996",
+          "status": "pending_at_checkpoint"
+        },
+        "pages": "cancelled_or_pending_concurrent_writes",
+        "hostedDeviceSmoke": "not_verified"
+      }
     }
   ]
 }
