@@ -1,10 +1,10 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "roster-club-club26_2",
-  "feature_id": "CLUB26-MANCHESTER-CITY-FC27-OFFICIAL-METADATA-20261016-B1",
+  "feature_id": "CLUB26-MAN-CITY-FC27-QA-EVIDENCE-FINALIZATION-20261016",
   "owner": "roster-fc27-chat-20261016-city-b1",
-  "status": "released",
-  "scope": "Manchester City club26_2 ONLY: official EA FC 27 OVR/six face attributes, Premier League 2026/27 verified shirts, ages/nations/heights. Edit only club26_2 records in data/players/club26.json and matching src/roster_corrections.js, specialized metadata audit ledger, dedicated club tests/handover and own roster-fc27 memory; no gameplay, other club data, graphics, UI or CI changes.",
+  "status": "active",
+  "scope": "Manchester City club26_2 handover/metadata ledger/own-memory only: reconcile successful integrated Modular QA and Pages, historical census evidence, release claim. No player data or runtime edits.",
   "base_sha": "6a8e955cab10215fa5b2ae60753c0ef1b2e7a9ef",
   "claimed_at": "2026-10-16",
   "expires_at": "2026-10-17",
@@ -23,5 +23,7 @@
   "runtime_commit": "ade18e359b1fb5263e7f444c3b70334d21cd7f28",
   "test_commit": "e9a19bb27b931a939c482e69116770bdb797ab56",
   "audit_commit": "59e0e8549b34d405afc6f0f1fa5a7792204779e7",
-  "ci_evidence": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914846855"
+  "ci_evidence": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914846855",
+  "renewed_at": "2026-10-16",
+  "evidence_checkpoint": "full City source/data unchanged after initial release"
 }
