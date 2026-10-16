@@ -3,7 +3,7 @@
   "lock_key": "ui-controls",
   "feature_id": "UI-CAREER-OPPONENT-SCOUT-QA-SIGNOFF",
   "owner": "gameplay-review-20261016-gpt6-career-scout-r5-docs",
-  "status": "active",
+  "status": "released",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
   "base_sha": "6b0b737e5630657a0d01160220bd30622a79d0cf",
@@ -13,5 +13,8 @@
     "Check standard QA #38960248063 221/221",
     "Verify no claim overlap"
   ],
-  "handover": "docs/CAREER_OPPONENT_SCOUT_20261016.md; https://github.com/saeedsai/SuperMagicFootball/issues/16"
+  "handover": "docs/CAREER_OPPONENT_SCOUT_20261016.md; docs/memory/agents/gameplay-review-20261016.md; docs/NEXT_MILESTONES.md; https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960061389; https://github.com/saeedsai/SuperMagicFootball/issues/16",
+  "released_at": "2026-10-16",
+  "outcome": "Docs-only QA signoff: career_opponent_scout_browser_qa.py desktop/touch PASS 7.50s, full preflight + 4/4 Node PASS, 77/78 browser PASS. Only unrelated pass_reception_audio_browser_qa.py FAIL; GitHub issue #16 routed to audio owner. No runtime edits in signoff.",
+  "checkpoint_head": "2be32a646124930a75a5941c0a4487273bb6a9a1"
 }
