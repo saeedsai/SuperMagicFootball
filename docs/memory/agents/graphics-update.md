@@ -15,7 +15,7 @@ Read latest `dev`, specialist [handover](../../concept_character_pipeline/NEXT_C
 Scoped graphics, test-fixture and cache claims released after checkpoint. Never rely on this file as a live claim. Do not inspect other agents' memories; protect game physics, IDs, data and UI.
 
 ## Evidence
-[Graphics/browser #38913908449](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913908449): 147/147 Node, desktop/touch and alpha PASS. [Hosted #38914486909](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914486909): desktop/touch game and SVG HTTP 200 PASS. Full [#38914777848](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914777848) FAILED unrelated memory identity preflight; not graphics-certified end-to-end. Owner art signoff pending.
+[Graphics/browser #38913908449](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913908449): 147/147 Node, desktop/touch and alpha PASS. [Hosted #38914486909](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914486909): desktop/touch game and SVG HTTP 200 PASS. [Full integrated census #38915344074](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074) SUCCESS 9/9 on unchanged far-arm code; earlier unrelated project-memory preflight was fixed. Owner art signoff pending.
 
 ## Cleanup
 Latest checkpoint only; historical details in [C01 batch report](../../concept_character_pipeline/C01_FAR_ARM_BATCH_20261016.md). Old stale per-batch assumptions omitted.
