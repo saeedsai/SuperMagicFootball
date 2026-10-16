@@ -1,22 +1,20 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "gameplay-engine",
-  "feature_id": "GAMEPLAY-TACTICS-EVENT-INTEGRITY-ISSUE7",
-  "owner": "gameplay-review-20261016-gpt6-event-integrity",
-  "status": "released",
-  "scope": "Only src/modules/engine.js GameEngine.applyPlan tactical/substitution event semantics, new tests/tactics_event_integrity.test.cjs and tests/tactics_event_integrity_browser_qa.py and scoped docs/GAMEPLAY_TACTICS_EVENT_INTEGRITY_20261016.md; one concise milestone handover. No UI/input/graphics/roster/build/workflows/common regression harness edits. Close Issue #7 after exact-code Node+Chromium acceptance.",
-  "base_sha": "38121262b0086cdeb0da2e5624c05531a0d293aa",
+  "feature_id": "GAMEPLAY-PK-HUMAN-GOALKEEPER",
+  "owner": "gameplay-review-20261016-gpt6-pkkeeper-r3",
+  "status": "active",
+  "scope": "Only src/modules/engine.js GameEngine.updatePK local Versus human defending keeper read/steer/dive using existing movement and jump input, automatic keeper retained in one-human modes; tests/penalty_keeper_control.test.cjs and tests/penalty_keeper_control_browser_qa.py; docs/GAMEPLAY_PENALTY_KEEPER_CONTROL_20261016.md; short docs/NEXT_MILESTONES.md checkpoint and own docs/memory/agents/gameplay-review-20261016.md. No UI, input, renderer, graphics, roster, saved game schema, physics outside shootout, shared QA runners, CI, scripts or build.",
+  "base_sha": "33d66d07c3a4dd9b525d0158acc324088dc4fee4",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
   "tests": [
-    "new Node source-executed applyPlan semantics",
-    "desktop and emulated touch in-engine paused style changes and real substitutions",
-    "full regression census 4x Node 4x Chromium",
-    "hosted PC/touch Pages smoke"
+    "node --test tests/penalty_keeper_control.test.cjs",
+    "node --test tests/*.test.cjs",
+    "real desktop/simulated-touch browser penalty keeper acceptance",
+    "Full Regression Census 4+4 sharded",
+    "hosted PC/touch smoke"
   ],
-  "handover": "docs/GAMEPLAY_TACTICS_EVENT_INTEGRITY_20261016.md; https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913600419 (192/192); https://github.com/saeedsai/SuperMagicFootball/issues/7 (closed)",
-  "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/7",
-  "released_at": "2026-10-16",
-  "outcome": "completed Issue #7: real substitutions only, 146/146 active Node, 125/125 historical Node and 67/67 browser full-regression PASS, keeper integrity and hosted PC/touch smoke PASS; exact-source Pages deploy unconfirmed at claim release",
-  "final_source_commit": "be78c92baef19231062190969454e5dee16c1736"
+  "handover": "docs/GAMEPLAY_PENALTY_KEEPER_CONTROL_20261016.md",
+  "related_issue": "https://github.com/saeedsai/SuperMagicFootball/issues/5"
 }
