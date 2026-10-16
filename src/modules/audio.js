@@ -61,7 +61,12 @@ class ArcadeAudio{
   const type=typeof event==='string'?event:event?.type;
   // A resolved penalty uses a distinct success/save sound. String-only legacy
   // calls and malformed events retain the historic ordinary kick cue.
-  const cue=type==='penaltyKick'&&typeof event?.goal==='boolean'?
+  // Match engine reports human and CPU skill moves with an outcome flag.
+  // Sound only an actual human attempt: AI dribbling can happen many times
+  // per second and must never overwhelm the player's kick/keeper audio.
+  if(type==='dribbleTrick'&&(event?.ai!==false||typeof event?.success!=='boolean'))return;
+  const cue=type==='dribbleTrick'?(event.success?'skillSuccess':'skillMiss'):
+   type==='penaltyKick'&&typeof event?.goal==='boolean'?
    (event.goal?'penaltyGoal':'penaltySave'):
    type==='kick'&&event?.super?'super':type==='flipKick'&&!event?.special?'kick':AUDIO_CUES[type]||type;
   if(!cue||!this._audible(cue==='ui'||cue==='halftime'||cue==='finished'||cue==='penaltyStart'?'ui':'sfx')||!this.unlocked||!this.ctx)return;
@@ -75,6 +80,10 @@ class ArcadeAudio{
    case 'penaltyDive':this.tone(165,.12,'sfx','sawtooth');break;
    case 'penaltyGoal':[587,740,880].forEach((f,i)=>this.tone(f,.22,'sfx','triangle',i*.09));break;
    case 'penaltySave':[392,294,220].forEach((f,i)=>this.tone(f,.20,'sfx','triangle',i*.085));break;
+   // Bright rising flourish on a successful skill; lower soft warning when
+   // the defender disrupts it. Both are original oscillator-only SFX.
+   case 'skillSuccess':[440,659].forEach((f,i)=>this.tone(f,.12,'sfx','triangle',i*.07));break;
+   case 'skillMiss':this.tone(175,.14,'sfx','triangle');break;
    case 'save':this.tone(340,.15);this.tone(190,.21,'sfx','triangle',.08);break;
    case 'goal':[523,659,784,1046].forEach((f,i)=>this.tone(f,.27,'sfx','triangle',i*.095));break;
    case 'tackle':this.tone(130,.16,'sfx','sawtooth');break;
