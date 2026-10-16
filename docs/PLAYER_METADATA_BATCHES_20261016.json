@@ -1347,6 +1347,265 @@
         },
         "hostedExactRevisionLiveInputTest": "not_verified_direct_hosted_testing_unavailable"
       }
+    },
+    {
+      "id": "CLUB-20261016-EVE-METADATA-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "dac2b5b788d4172f4ccc787c57c97e881ee2d67d",
+      "clubId": "club26_27",
+      "club": "Everton",
+      "playersChanged": 12,
+      "fieldsChanged": 22,
+      "status": "pending_ci_regression",
+      "sourceMethod": "Personal DOB-derived age as of 2026-10-16, confirmed against England FA, Premier League and 2026/27 StatMuse player roster; record height only where the consulted source supplies an exact centimetre measurement.",
+      "changes": [
+        {
+          "playerId": "club26_27_0",
+          "name": "Jordan Pickford",
+          "rosterSlot": 1,
+          "fields": {
+            "age": {
+              "previous": 22,
+              "current": 32,
+              "source": "https://www.englandfootball.com/england/mens-senior-team/squad/Jordan-Pickford"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 185,
+              "source": "https://www.englandfootball.com/england/mens-senior-team/squad/Jordan-Pickford"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_11",
+          "name": "Mark Travers",
+          "rosterSlot": 2,
+          "fields": {
+            "age": {
+              "previous": 33,
+              "current": 27,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 191,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_6",
+          "name": "James Garner",
+          "rosterSlot": 3,
+          "fields": {
+            "age": {
+              "previous": 28,
+              "current": 25,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 182,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_4",
+          "name": "James Tarkowski",
+          "rosterSlot": 4,
+          "fields": {
+            "age": {
+              "previous": 26,
+              "current": 33,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 185,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_5",
+          "name": "Jarrad Branthwaite",
+          "rosterSlot": 5,
+          "fields": {
+            "age": {
+              "previous": 27,
+              "current": 24,
+              "source": "https://www.premierleague.com/players/66318/player/overview"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 195,
+              "source": "https://www.premierleague.com/players/66318/player/overview"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_8",
+          "name": "Kiernan Dewsbury-Hall",
+          "rosterSlot": 6,
+          "fields": {
+            "age": {
+              "previous": 30,
+              "current": 28,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_7",
+          "name": "Christian Nørgaard",
+          "rosterSlot": 7,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 32,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 185,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_9",
+          "name": "Hayden Hackney",
+          "rosterSlot": 8,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 24,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_1",
+          "name": "Vitaliy Mykolenko",
+          "rosterSlot": 9,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_3",
+          "name": "Iliman Ndiaye",
+          "rosterSlot": 10,
+          "fields": {
+            "age": {
+              "previous": 25,
+              "current": 26,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_10",
+          "name": "Brennan Johnson",
+          "rosterSlot": 11,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 25,
+              "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027"
+            }
+          }
+        },
+        {
+          "playerId": "club26_27_2",
+          "name": "Beto",
+          "rosterSlot": 12,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://www.transfermarkt.co.uk/beto/profil/spieler/595809"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 194,
+              "source": "https://www.transfermarkt.co.uk/beto/profil/spieler/595809"
+            }
+          }
+        }
+      ],
+      "knownIssues": [
+        {
+          "type": "2026/27 club departure",
+          "player": "Beto",
+          "source": "https://www.reuters.com/sports/soccer/everton-striker-beto-completes-move-fiorentina-2026-09-01/",
+          "note": "Reuters reports permanent move to Fiorentina on 2026-09-01. Everton's current official player squad excludes Beto. This player remains in the game's immutable historical forward slot until a future independently sourced and role-balanced lineup-selection correction."
+        },
+        {
+          "type": "unconfirmed 2026/27 current club registration",
+          "player": "Iliman Ndiaye",
+          "source": "https://www.premierleague.com/en/clubs/11/news/squad",
+          "note": "Absent from Everton's October 2026 official Premier League squad listing. Do not assume current Everton membership; research his destination before roster replacement."
+        },
+        {
+          "type": "position mismatch",
+          "player": "James Garner",
+          "source": "https://www.premierleague.com/en/clubs/11/news/squad",
+          "note": "Premier League lists as midfielder, game assigns DF. Do not silently rewrite game role because 2GK/3DF/4MF/3FW must remain satisfied."
+        },
+        {
+          "type": "position mismatch",
+          "player": "Vitaliy Mykolenko",
+          "source": "https://www.premierleague.com/en/clubs/11/news/squad",
+          "note": "Premier League lists as defender, game assigns MF. Requires coordinated role-balanced selection batch."
+        },
+        {
+          "type": "shirt-number differences",
+          "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season",
+          "note": "Official 2026/27 jersey numbers differ from most game's historical 1-12 presentation numbers. Deliberately did not overwrite shirt numbers because game still includes Beto/Ndiaye and editing remaining numbers would cause collisions/false verified status."
+        },
+        {
+          "type": "height unknown",
+          "players": [
+            "Hayden Hackney",
+            "Brennan Johnson"
+          ],
+          "source": "https://www.statmuse.com/fc/club/2026-27-everton-49/roster/2027",
+          "note": "Exact heights for Hayden Hackney and Brennan Johnson were not displayed by the consulted 2026/27 roster page, so fields remain unset."
+        },
+        {
+          "type": "OVR and physical gameplay statistics",
+          "note": "FC27 estimates in the previous source roster are third-party and not independently EA-certified. Player OVR, pace, shooting and other gameplay attributes are untouched rather than guessed."
+        }
+      ],
+      "unchanged": [
+        "all 165 club memberships and lineups in game",
+        "all 1,980 player IDs and order",
+        "2 GK/3 DF/4 MF/3 FW role quotas",
+        "all OVR and FC27 face stats",
+        "player names/nationality and jersey numbers",
+        "all gameplay physics, controls, graphics, engine, UI, CSS, templates and CI workflows"
+      ]
     }
   ]
 }

@@ -12845,7 +12845,7 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 22,
+      "age": 32,
       "rating": 85,
       "value": 1320002,
       "fictional": false,
@@ -12869,7 +12869,8 @@
       "birthDate": "1994-03-07",
       "nation": "England",
       "fc27Id": "204935",
-      "fc27Position": "GK"
+      "fc27Position": "GK",
+      "heightCm": 185
     },
     {
       "id": "club26_27_11",
@@ -12885,7 +12886,7 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 33,
+      "age": 27,
       "rating": 72,
       "value": 536749,
       "fictional": false,
@@ -12909,7 +12910,8 @@
       "birthDate": "1999-05-18",
       "nation": "Republic of Ireland",
       "fc27Id": "232284",
-      "fc27Position": "GK"
+      "fc27Position": "GK",
+      "heightCm": 191
     },
     {
       "id": "club26_27_6",
@@ -12925,7 +12927,7 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 28,
+      "age": 25,
       "rating": 82,
       "value": 536749,
       "fictional": false,
@@ -12949,7 +12951,8 @@
       "birthDate": "2001-03-13",
       "nation": "England",
       "fc27Id": "243657",
-      "fc27Position": "CDM"
+      "fc27Position": "CDM",
+      "heightCm": 182
     },
     {
       "id": "club26_27_4",
@@ -12965,7 +12968,7 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 26,
+      "age": 33,
       "rating": 80,
       "value": 974832,
       "fictional": false,
@@ -12989,7 +12992,8 @@
       "birthDate": "1992-11-19",
       "nation": "England",
       "fc27Id": "202695",
-      "fc27Position": "CB"
+      "fc27Position": "CB",
+      "heightCm": 185
     },
     {
       "id": "club26_27_5",
@@ -13005,7 +13009,7 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 27,
+      "age": 24,
       "rating": 79,
       "value": 915409,
       "fictional": false,
@@ -13029,7 +13033,8 @@
       "birthDate": "2002-06-27",
       "nation": "England",
       "fc27Id": "247649",
-      "fc27Position": "CB"
+      "fc27Position": "CB",
+      "heightCm": 195
     },
     {
       "id": "club26_27_8",
@@ -13045,7 +13050,7 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 30,
+      "age": 28,
       "rating": 81,
       "value": 536749,
       "fictional": false,
@@ -13069,7 +13074,8 @@
       "birthDate": "1998-09-06",
       "nation": "England",
       "fc27Id": "237386",
-      "fc27Position": "CAM"
+      "fc27Position": "CAM",
+      "heightCm": 178
     },
     {
       "id": "club26_27_7",
@@ -13108,7 +13114,9 @@
       "birthDate": "1994-03-10",
       "nation": "Denmark",
       "fc27Id": "210697",
-      "fc27Position": "CDM"
+      "fc27Position": "CDM",
+      "age": 32,
+      "heightCm": 185
     },
     {
       "id": "club26_27_9",
@@ -13147,7 +13155,8 @@
       "birthDate": "2002-06-26",
       "nation": "England",
       "fc27Id": "253054",
-      "fc27Position": "CM"
+      "fc27Position": "CM",
+      "age": 24
     },
     {
       "id": "club26_27_1",
@@ -13186,7 +13195,9 @@
       "birthDate": "1999-05-29",
       "nation": "Ukraine",
       "fc27Id": "244380",
-      "fc27Position": "LB"
+      "fc27Position": "LB",
+      "age": 27,
+      "heightCm": 180
     },
     {
       "id": "club26_27_3",
@@ -13202,7 +13213,7 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 25,
+      "age": 26,
       "rating": 82,
       "value": 1102933,
       "fictional": false,
@@ -13226,7 +13237,8 @@
       "birthDate": "2000-03-06",
       "nation": "Senegal",
       "fc27Id": "261188",
-      "fc27Position": "LM"
+      "fc27Position": "LM",
+      "heightCm": 180
     },
     {
       "id": "club26_27_10",
@@ -13265,7 +13277,8 @@
       "birthDate": "2001-05-23",
       "nation": "Wales",
       "fc27Id": "251421",
-      "fc27Position": "RW"
+      "fc27Position": "RW",
+      "age": 25
     },
     {
       "id": "club26_27_2",
@@ -13304,7 +13317,9 @@
       "birthDate": "1998-01-31",
       "nation": "Guinea-Bissau",
       "fc27Id": "251892",
-      "fc27Position": "ST"
+      "fc27Position": "ST",
+      "age": 28,
+      "heightCm": 194
     }
   ],
   "club26_28": [
