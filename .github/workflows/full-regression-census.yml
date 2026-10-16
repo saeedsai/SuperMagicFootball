@@ -69,6 +69,8 @@ on:
       - 'tests/club26_fc27_roster.mjs'
       - 'tests/team_combos_browser_qa.py'
       - 'docs/AGENT_INTEGRATION_QA_20261015.md'
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 concurrency:
   group: full-regression-${{ github.ref }}
