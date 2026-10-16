@@ -24,3 +24,9 @@ The [EA official FC27 Barcelona base-card table](https://www.ea.com/games/ea-spo
 Dedicated tests: `tests/barcelona_fc27_official_20261016.test.cjs`. Data and playable-runtime mirror must remain structurally equal for club26_4. The immutable per-field log is `docs/PLAYER_METADATA_BATCHES_20261016.json`. Physical device playthrough separate from GitHub Actions Pages deployment.
 
 Next five isolated club iterations: Manchester United `club26_5`, Real Madrid `club26_7`, Liverpool `club26_9`, Tottenham `club26_29`, Chelsea `club26_18`; check live locks each time.
+
+## Observed integrated QA and gaps
+
+- [Modular QA #38946677603](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946677603) **SUCCESS**, integrated commit `639b5068685a45ae033c177b4aa1a175500ec28a`: **203/203 active Node tests**, including all three Barcelona tests, 165 clubs / 1,980 player slots, and immutable roster history.
+- [Full Regression Census #38946504996](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946504996) was pending and Pages workflows mostly cancelled during concurrent pushes. Do not claim historical browser or phone/device tests passed.
+- Public game: https://saeedsai.github.io/SuperMagicFootball/ . Physical phone/PC hosted gameplay **not independently verified**. Only Barcelona records were changed, avoiding concurrent agents' shared-file changes.
