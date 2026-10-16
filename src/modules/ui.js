@@ -744,8 +744,30 @@ function halftimeCoachAdvice(game,side){
   :`TEAM MORALE ${morale}%: choose a team talk suited to your squad; reactions vary.`;
  return `${scoreTip} ${fitnessTip} ${moraleTip} Advice only — use TEAM TACTICS or SPEAK TO TEAM to apply changes.`;
 }
+// Read-only starter list: the same authoritative in-match fatigue ledger used
+// by the Command Center. Never inspect benched players or mutate roster data.
+function halftimeFatigueSpotlight(game,side){
+ const squad=game.rosters?.[side]||[],lineup=game.lineups?.[side]||game.teamPlans?.[side]?.lineup||[];
+ const ledger=game.fatigueLedger?.[side]||{},watches=[];
+ for(let slot=0;slot<lineup.length;slot++){
+  const player=squad[lineup[slot]];
+  if(!player)continue;
+  const fatigue=ledger[player.id];
+  if(!Number.isFinite(fatigue)||fatigue<.60)continue;
+  watches.push({player,slot,fatigue:Math.min(1,Math.max(0,fatigue))});
+ }
+ if(!watches.length)return '';
+ watches.sort((a,b)=>b.fatigue-a.fatigue||a.slot-b.slot);
+ const label=side===0?'Home':'Away';
+ const names=watches.slice(0,2).map(({player,fatigue})=>{
+  const shirt=player.num==null?'':`#${escapeHTML(String(player.num))} `;
+  return `${shirt}${escapeHTML(String(player.name||'Player'))} (${escapeHTML(String(player.role||'Player'))}, FIT ${Math.round((1-fatigue)*100)}%)`;
+ }).join(' · ');
+ const more=watches.length>2?` · +${watches.length-2} more`:'';
+ return `<p class="muted" id="halftimeFitness${label}" aria-label="${label} fatigued starters"><strong>FITNESS WATCH:</strong> ${names}${more}</p>`;
+}
 function halftimeCoachPanel(game,side){
- return `<section class="panel" id="halftimeCoach${side===0?'Home':'Away'}" role="status" aria-live="polite" aria-label="${side===0?'Home':'Away'} halftime coaching advice"><h3 class="titleSmall">📋 ${side===0?'HOME':'AWAY'} COACHING NOTES</h3><p class="muted">${halftimeCoachAdvice(game,side)}</p></section>`;
+ return `<section class="panel" id="halftimeCoach${side===0?'Home':'Away'}" role="status" aria-live="polite" aria-label="${side===0?'Home':'Away'} halftime coaching advice"><h3 class="titleSmall">📋 ${side===0?'HOME':'AWAY'} COACHING NOTES</h3><p class="muted">${halftimeCoachAdvice(game,side)}</p>${halftimeFatigueSpotlight(game,side)}</section>`;
 }
 function halftime(){game.matchState='paused';page('HALF TIME',`${TEAMS[home].name} ${game.score[0]} : ${game.score[1]} ${TEAMS[away].name}`,`<div class="panel"><h3 class="titleSmall">SECOND HALF STRATEGY</h3>${halftimeCoachPanel(game,0)}${humans>=2?halftimeCoachPanel(game,1):''}<p class="muted">Players regain 40% of their accumulated fatigue for the second half, and resting off the ball slowly restores stamina during play. CPU teams may make an automatic substitution. Use the command center for up to three substitutions; bench fatigue is remembered.</p><h3 class="titleSmall">🗣 HALF-TIME MANAGER TALK</h3><p class="muted">Talks can boost or reduce individual morale. One talk per team per halftime.</p><div class="tacticsGrid">${field('HOME TALK','halfTalkHome',Object.entries(TEAM_TALKS).map(([k,v])=>[k,v.name]),'encourage')}${humans>=2?field('AWAY TALK','halfTalkAway',Object.entries(TEAM_TALKS).map(([k,v])=>[k,v.name]),'focus'):''}</div><p class="muted">HOME MOOD: ${Math.round(game.teamMorale(0))}% · AWAY MOOD: ${Math.round(game.teamMorale(1))}%</p><div class="row">${!game.talksUsed[0].halftime?button('SPEAK TO HOME TEAM','talkHalfHome','gold'):''}${humans>=2&&!game.talksUsed[1].halftime?button('SPEAK TO AWAY TEAM','talkHalfAway'):''}</div><div class="row">${button('▶ SECOND HALF','resume','gold')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('ADJUST CPU LEVEL','cpuPause')}</div></div>`)}
 function fulltime(ev){game.matchState='finished';let [a,b]=ev.score,win=a>b;if(mode==='league'){
