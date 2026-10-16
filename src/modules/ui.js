@@ -204,7 +204,31 @@ function showInputMenu(){menuChoices('nav-input','INPUT SETTINGS','The game alwa
 function showSaveMenu(parent='navSettings'){menuChoices('nav-saves','SAVE MANAGEMENT','Safely back up or restore local progress.',[
  navItem('Export All Saves','exportSave','Download a JSON backup without changing progress.','active','⬇'),
  navItem('Import Save','importSave','Requires explicit confirmation before replacing progress.','active','⬆')],parent,`<input id="saveImportFile" type="file" accept=".json,application/json" class="hidden" aria-label="Import saved game"/>`);}
-function showAbout(){page('ABOUT SUPERMAGIC FOOTBALL','Original offline cartoon arcade football.',`<div class="panel"><p>Alpha v0.8.25.30 · Independent football game with original graphics and audio.</p><p class="muted">Four action buttons · ${TEAMS.length} teams · saved locally on your device.</p>${button('← MAIN MENU','home','gold')}</div>`,'home');}
+// Re-resolve the current development revision whenever About is opened. This
+// is the GitHub dev HEAD, not an unverified claim about deployed bundle bytes.
+// The game remains playable offline if the public GitHub API cannot be reached.
+async function refreshAboutDevRevision(node,request=fetch){
+ try{
+  const response=await request('https://api.github.com/repos/saeedsai/SuperMagicFootball/commits/dev',{cache:'no-store',headers:{Accept:'application/vnd.github+json'}});
+  if(!response.ok)throw Error('GitHub revision unavailable');
+  const result=await response.json(),sha=typeof result?.sha==='string'?result.sha:'';
+  if(!/^[a-f0-9]{40}$/i.test(sha))throw Error('Invalid revision');
+  if(!node.isConnected)return;
+  const link=document.createElement('a');
+  link.href='https://github.com/saeedsai/SuperMagicFootball/commit/'+sha.toLowerCase();
+  link.textContent='dev @ '+sha.slice(0,12);
+  link.target='_blank';link.rel='noopener noreferrer';
+  node.replaceChildren(link);
+ }catch(_error){
+  if(node.isConnected)node.textContent='Latest dev commit unavailable offline (game remains playable).';
+ }
+}
+function showAbout(){
+ const bundle=escapeHTML(window.SupermagicFootball?.version||'0.8.25.32-integrated');
+ page('ABOUT SUPERMAGIC FOOTBALL','Original offline cartoon arcade football.',`<div class="panel"><p id="aboutBundleVersion">GAME BUNDLE · ${bundle} · Independent football game with original graphics and audio.</p><p><strong>Developer: Saeed</strong> · <a href="mailto:saeedmsalehi1990@gmail.com">saeedmsalehi1990@gmail.com</a></p><p class="muted">Latest GitHub development commit (refreshes each About visit): <span id="aboutDevRevision" role="status" aria-live="polite">Checking latest dev commit online…</span></p><p class="muted">The commit above tracks the latest GitHub dev changes; GitHub Pages deployment can lag behind it. Four action buttons · ${TEAMS.length} teams · saved locally on your device.</p>${button('← MAIN MENU','home','gold')}</div>`,'home');
+ const revision=document.getElementById('aboutDevRevision');
+ if(revision)void refreshAboutDevRevision(revision);
+}
 function showHome(){
  menuBackAction='home';menuEntryReturn='home';
  show(`<header class="homeMasthead"><div><div class="topline">ARCADE FOOTBALL · SUPER SHOTS · YOUR FOOTBALL UNIVERSE</div><h1 class="heading logoHeading">SUPERMAGIC <em>FOOTBALL</em></h1><p class="subtitle">Pick a mode. All original gameplay and editing tools remain accessible.</p></div><span class="homeVersion">GRAPHICS 0.8.25.32</span></header>
