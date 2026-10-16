@@ -1356,7 +1356,7 @@
       "club": "Everton",
       "playersChanged": 12,
       "fieldsChanged": 22,
-      "status": "pending_ci_regression",
+      "status": "active_qa_verified_full_regression_not_completed",
       "sourceMethod": "Personal DOB-derived age as of 2026-10-16, confirmed against England FA, Premier League and 2026/27 StatMuse player roster; record height only where the consulted source supplies an exact centimetre measurement.",
       "changes": [
         {
@@ -1605,7 +1605,44 @@
         "all OVR and FC27 face stats",
         "player names/nationality and jersey numbers",
         "all gameplay physics, controls, graphics, engine, UI, CSS, templates and CI workflows"
-      ]
+      ],
+      "verification": {
+        "sourceCommit": "dc9f46e16afa924ed19772bcd4b9c4bc464127e5",
+        "scope": [
+          "12 Everton ages at 2026-10-16",
+          "10 measured Everton heights",
+          "all 165 original rosters selection unchanged"
+        ],
+        "dataValidation": "PASS",
+        "rosterCount": "165/165 clubs, 1980 slots, 2GK/3DF/4MF/3FW PASS",
+        "focusedTest": "PASS in integrated latest modular QA",
+        "integratedNodeRun": {
+          "pass": 82,
+          "fail": 0,
+          "commit": "709eeec167daf1a201dcba5bec6afee571623279",
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891827540"
+        },
+        "sourceCommitNodeRun": {
+          "pass": 81,
+          "fail": 1,
+          "failedTest": "QA framework's failing-script negative-path fixture; unrelated to Everton; later fixed by QA owner",
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891568735"
+        },
+        "fullHistoricalOnSourceCommit": {
+          "status": "cancelled_due_to_parallel_pushes",
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891568706"
+        },
+        "historicalOnIntegratedVersion": {
+          "status": "queued_at_checkpoint",
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891827523"
+        },
+        "pagesIntegratedDeployment": {
+          "status": "SUCCESS",
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891826819",
+          "site": "https://saeedsai.github.io/SuperMagicFootball/"
+        },
+        "exactLiveHostedDesktopTouch": "not_tested_on_Everton_source_revision"
+      }
     }
   ]
 }
