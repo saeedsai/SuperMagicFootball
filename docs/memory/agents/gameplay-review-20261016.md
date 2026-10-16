@@ -1,32 +1,15 @@
-# Gameplay review — concise agent handover
-
-**Agent ID:** `gameplay-review-20261016`
-**Updated:** 2026-10-16
-**Workstream:** gameplay and large remaining game features; single-session checkpoint, not shared project memory.
+# Gameplay review — agent checkpoint
+**Agent ID:** `gameplay-review-20261016` · **Updated:** 2026-10-16
 
 ## Mission
-
-Improve playable match mechanics and major missing gameplay features in small tested batches while preserving four actions, six formations, team/player IDs, saved progress, artist/roster work and each agent's active GitHub claim.
-
+Continue small playable game mechanics improvements without altering other agents' graphics, roster, saved-game, control or UI work.
 ## Current checkpoint
-
-Read the latest `dev` master plan, `NEXT_MILESTONES.md`, requirement review, claims, and live engine/UI contracts. Match-engine, input/UI and shared QA areas were already actively claimed by separate sessions; **no gameplay source, test or runtime was edited** here. Logged independently verified missing original-mode requirement: human goalkeeper control during penalty shootouts. Tracking issue: https://github.com/saeedsai/SuperMagicFootball/issues/5. Existing `updatePK` currently uses an automatic keeper (`const keeper=null`).
-
+Claim `gameplay-engine`, feature `GAMEPLAY-TACTICS-EVENT-INTEGRITY-ISSUE7`. A valid Pause/Half-Time style or formation change used to emit `substitution` count zero. Committed engine-only correction and new real-engine Node/desktop+simulated-touch Chromium acceptance at [`be78c92`](https://github.com/saeedsai/SuperMagicFootball/commit/be78c92baef19231062190969454e5dee16c1736). Modular QA #38913600436 SUCCESS (146/146 active Node, 20 merge and 10 claim tests); historical 125 Node scripts PASS. Full Chromium 4-shard census #38913600419 pending at checkpoint.
 ## Next smallest action
-
-At next turn re-read current GitHub `dev`, this memory and live locks; never infer unowned status from these notes. If relevant owners release their claims, request an exclusive gameplay scope and take one proven defect at a time: (1) close exact-commit keeper corner/fatigue fairness evidence gap; (2) add a tightly tested penalty keeper-control slice only with gameplay + any required input lock; (3) finish directional GK catch/distribution in coordination with graphics; (4) harden first-touch/pass follow-through and four-button parity; (5) improve halftime/career tactical UX once UI ownership is free. Keep long-term online play, Super Defense and major retro parity separately scoped.
-
+Verify census and hosted Pages desktop/touch, record exact source outcome, close [Issue #7](https://github.com/saeedsai/SuperMagicFootball/issues/7) after acceptance and release live gameplay claim. At next session re-read live locks; likely next engine task is bounded first-touch reception under active play.
 ## Ownership and exclusions
-
-This chat owns only its individual agent checkpoint while the short-lived `project-context` registration claim is active. Never open/edit another agent's memory. Gameplay-engine, UI-controls, QA-framework, graphics, release and rosters belong to their own live claims. Do not write global `SHARED.md` or specialist roadmap while those are occupied.
-
+Own [gameplay-engine](../../agent_coordination/claims/gameplay-engine.json) only for `src/modules/engine.js` event branch and new dedicated tests/docs. This own memory file is editable by the current chat; never access any other agent's memory. Exclude UI, graphics, rosters, all CI/shared test infrastructure and service worker.
 ## Evidence
-
-- Exact source `dev` QA on 2026-10-16: https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904328070 (successful, `b50e7919`); one later full eight-shard census https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904271767 was **in progress when checked**, not certified.
-- Pages deployment previously succeeded: https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904271466. Public URL: https://saeedsai.github.io/SuperMagicFootball/. This chat did not run a new interactive desktop/phone browser or physical device test. A Pages deploy is not a live gameplay test.
-- Open historical Android dribble touch regression https://github.com/saeedsai/SuperMagicFootball/issues/3 has a separate active UI owner; do not duplicate its fix.
-- No new game-code commit, test suite or release assertion in this handover. This checkpoint exists for traceable coordination and future restart only.
-
+[Specialist report](../../GAMEPLAY_TACTICS_EVENT_INTEGRITY_20261016.md), [Modular QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913600436), [full census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913600419), [hosted smoke](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913600226).
 ## Cleanup
-
-Keep this file under 4 KiB and replace stale details next checkpoint, not append history. No deleted files: archived reports, screenshots and dated plans have unknown downstream references; do not delete without dependency/ownership audit and tests.
+No historical files removed without reference audit. Replace stale QA status at next handover; memory is not ownership truth.
