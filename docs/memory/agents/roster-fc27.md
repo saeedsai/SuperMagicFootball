@@ -3,21 +3,21 @@
 **Agent ID:** `roster-fc27` | **Updated:** 2026-10-16
 
 ## Mission
-Verify official EA FC 27 club player OVR/face stats and current real-world player details, in isolated claimed batches. Do not change gameplay, UI, art, other clubs, or CI infrastructure.
+Verify official EA FC 27 ratings and real-world team/identity metadata, one exclusively claimed club at a time. Never alter gameplay, other teams, art, UI or QA framework.
 
 ## Current checkpoint
-- Small Bayern Munich `club26_1` 2026/27 OVR + 12 physical metadata / jersey batch. Claim: [roster-club-club26_1](../../agent_coordination/claims/roster-club-club26_1.json). New handover: [Bayern checkpoint](../../CLUB_PLAYER_METADATA_BAYERN_20261016.md).
-- Source of truth for exact commit/test status is the handover, not this memory.
-- Previous Arsenal batch is complete and logged in the immutable [player metadata ledger](../../PLAYER_METADATA_BATCHES_20261016.json); do not repeat it.
+- **Bayern club26_1 delivered:** [source commit `6c396a9`](https://github.com/saeedsai/SuperMagicFootball/commit/6c396a98023ec36ddc59caa6453346ebd57c7253), [test check `3bc2db2`](https://github.com/saeedsai/SuperMagicFootball/commit/3bc2db27d529b6cd1bad024b4b538698f5feae1f). 12 official EA OVR matched, 72 face values matched; 3 jersey changes, 3 age fills, 12 sourced heights, 57 field-level edits. Full [handover](../../CLUB_PLAYER_METADATA_BAYERN_20261016.md), immutable [metadata ledger](../../PLAYER_METADATA_BATCHES_20261016.json).
+- [Active Modular QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904974985): **134/134 Node tests PASS**, source/runtime parity and full club roster history passed. Original full historical Chromium/Node and Pages runs **cancelled by concurrent commits**, not certified. Fresh hosted phone and PC interaction not tested.
+- Earlier Arsenal club26_0 completed; do not repeat its checkpoint.
 
 ## Next smallest action
-Check live `dev` and claims. If Bayern is delivered, select **Manchester City club26_2** only after reserving its free club-specific lock. Then PSG, Barcelona, Manchester United, Real Madrid as later separate batches.
+Before further edits, reread latest GitHub `dev` and [active roster locks](../../agent_coordination/claims/). Next independent batch is Manchester City `club26_2`, then PSG `club26_3`, Barcelona `club26_4`, Manchester United `club26_5`, Real Madrid `club26_7`. Make one new claim for one small team.
 
 ## Ownership and exclusions
-Read `AGENTS.md`, shared memory and own file; never open other agents' memories. One club lock at a time. No unsolicited deletes or cleanups of QA evidence used by other agents.
+Bayern lock `roster-club-club26_1` must be released with evidence. Do not open or edit other agents' memory files; shared project memory is read-only to this agent. Preserve 2GK/3DF/4MF/3FW, all player IDs, save order, gameplay and unrelated docs.
 
 ## Evidence
-Official EA FC 27 Bayern ratings: https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21; DFB 2026/27 registration: https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich; FootballSquads physical biography: https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm. Actual CI and Pages URLs recorded in the separate handover when verified.
+Official EA Bayern FC 27 base cards: https://www.ea.com/nb/games/ea-sports-fc/ratings/teams-ratings/fc-bayern-munchen/21 ; DFB 2026/27: https://datencenter.dfb.de/en/competitions/bundesliga/seasons/2026-2027/teams/bayern-munich ; heights: https://footballsquads.co.uk/ger/2026-2027/bundes/bayern.htm .
 
 ## Cleanup
-Compact current status only; old chat transcripts and superseded source dates omitted.
+This is the only recent checkpoint, not a chat transcript. Remove stale assumptions and old test tallies on next edit.
