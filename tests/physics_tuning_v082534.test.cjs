@@ -60,7 +60,7 @@ test('actual playable engine and generated QA fixture load the one independent p
  assert.match(engine,/keeperDiveCooldown\(skill,diving,fatigue,PHYSICS_TUNING\)/);
  assert.match(build,/'physicsbalance','engine'/);
  assert.match(sw,/'physicsbalance','engine'/);
- assert.match(sw,/smf-082535-super-keeper-hold-v1/);
+ assert.match(sw,/smf-082536-keeper-anticipation-v1/);
  assert.equal(source('data/mechanics/gameplay.json').includes('"w": 2260.8'),true);
 });
 

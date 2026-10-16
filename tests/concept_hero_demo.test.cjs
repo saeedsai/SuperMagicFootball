@@ -24,7 +24,7 @@ test('exact reference sprites exist as valid WebP and are not rendered for exist
 });
 test('offline, modular imports and inline fixture contain the actual raster assets',()=>{
  const sw=text('sw.js'),build=text('scripts/build.py');
- assert.match(sw,/smf-082535-super-keeper-hold-v1/);
+ assert.match(sw,/smf-082536-keeper-anticipation-v1/);
  assert.match(sw,/assets\/concept_hero/);
  assert.match(build,/CONCEPT_HERO_INLINE/);
  assert.match(build,/'concepthero','render'/);
