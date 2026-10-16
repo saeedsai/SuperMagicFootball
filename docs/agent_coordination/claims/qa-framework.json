@@ -4,7 +4,7 @@
   "feature_id": "QA-PENALTY-SUDDEN-DEATH-RUNTIME",
   "owner": "gameplay-review-20261016-gpt6-pkqa",
   "status": "active",
-  "scope": "Only new tests/penalty_shootout_lifecycle.test.cjs and tests/penalty_shootout_lifecycle_browser_qa.py (real current modular source PK five-kick clinch, equal-score pair/sudden death and mirrored winner, no phantom keeper control); new dedicated docs/QA_PENALTY_SHOOTOUT_LIFECYCLE_20261016.md, concise NEXT_MILESTONES.md addendum and own docs/memory/agents/gameplay-review-20261016.md. No engine, UI, input, renderer, art, roster, tools, shared QA runner, CI workflows, other tests. This is QA coverage, NOT an implementation of human PK goalkeeping.",
+  "scope": "Only new tests/penalty_shootout_lifecycle.test.cjs and tests/penalty_shootout_lifecycle_browser_qa.py (real current modular source PK five-kick clinch, equal-score pair/sudden death and mirrored winner, no phantom keeper control); new dedicated docs/QA_PENALTY_SHOOTOUT_LIFECYCLE_20261016.md, concise NEXT_MILESTONES.md addendum and own docs/memory/agents/gameplay-review-20261016.md. No engine, UI, input, renderer, art, roster, tools, shared QA runner, CI workflows or unrelated tests. Includes one narrow discovery contract appended to tests/master_contracts.mjs to trigger exact-source Full Regression Census and require both new PK scripts exist. This is QA coverage, NOT an implementation of human PK goalkeeping.",
   "base_sha": "23b76a6feb7184aa634338535476abc58595f59c",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
