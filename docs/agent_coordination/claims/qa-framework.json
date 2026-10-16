@@ -1,23 +1,19 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "qa-framework",
-  "feature_id": "QA-SHARD-AUDIT",
-  "owner": "qa-shard-audit-20261016-1357-gpt6",
-  "status": "released",
-  "scope": "Independent cross-shard full regression manifest completeness and duplicate detector in new tests/audit_regression_shards.py and its isolated Python/Node contract tests; dedicated docs/QA_SHARD_CENSUS_AUDIT_20261016.md, QA area handover only. Do not edit gameplay, graphics, player/roster data, shared UI, CI workflows, release tooling or full_regression_runner.py.",
-  "base_sha": "b8a38d975d667b4bd2fb0df5fbd30b087fa0ff71",
-  "created_at": "2026-10-16T13:57+02:00",
-  "renewed_at": "2026-10-16T13:57+02:00",
+  "feature_id": "QA-CLAIM-PROTOCOL-CI",
+  "owner": "qa-claim-cas-20261016-1421-gpt6",
+  "status": "active",
+  "scope": "Only tests/test_feature_claim.py for stale-sha fake client tests; new tests/feature_claim_protocol.test.cjs Node bridge so offline claim tests execute in existing Modular Dev QA / full Node census; new docs/QA_CLAIM_PROTOCOL_CI_20261016.md QA handover. No scripts/claim_feature.py, shared QA runner, scripts/build.py, CI workflows, release-infra, gameplay, graphics, roster, UI or shared docs files.",
+  "base_sha": "bfaf9c248269c7afc979835680240a7e59602c2d",
+  "created_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
   "tests": [
-    "python3 -m unittest discover -s tests -p 'test_audit_regression_shards.py' -v",
-    "node --test tests/audit_regression_shards.test.cjs",
-    "node --test tests/*.test.cjs",
-    "GitHub Full Regression Census on exact integrated commit"
+    "python3 -m unittest discover -s tests -p test_feature_claim.py -v",
+    "node --test tests/feature_claim_protocol.test.cjs",
+    "Modular Game Dev QA active Node+merge",
+    "Full Regression Census historical Node and Chromium",
+    "hosted Pages desktop and simulated-touch smoke"
   ],
-  "handover": "docs/QA_SHARD_CENSUS_AUDIT_20261016.md — source/QA checkpoint 982eeb5f4fa767053e6a88126932e7ebaf52bb52; Modular Game Dev QA https://github.com/saeedsai/SuperMagicFootball/actions/runs/38898186310 (97 Node passed); full 8-shard audited run not yet verified",
-  "previous_released_outcome": "implemented_qa_guard_and_report_manifest; seven_tests_pass; 105_node_full_census_pass; controls_browser_rerun_pending",
-  "previous_handover": "docs/QA_EMPTY_SHARD_20261016.md — final QA/doc commit eb6f2c593f6613f58cb3c6e01956cf7367a208f0; source commit 709eeec167daf1a201dcba5bec6afee571623279; full census https://github.com/saeedsai/SuperMagicFootball/actions/runs/38892003186 (browser-2 rerun pending)",
-  "released_at": "2026-10-16",
-  "outcome": "completed_14_isolated_contracts_and_97_active_node_CI_pass;full_8_shard_live_audit_pending",
-  "integrated_commit": "982eeb5f4fa767053e6a88126932e7ebaf52bb52"
+  "handover": "docs/QA_CLAIM_PROTOCOL_CI_20261016.md"
 }
