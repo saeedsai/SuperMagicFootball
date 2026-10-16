@@ -1,0 +1,317 @@
+{
+  "schema": "smf-concept-modular-roadmap/1",
+  "updated": "2026-10-16",
+  "branch": "dev",
+  "baselineAtPlanning": "82119108ca63dd510bd49bdf5c2083bed168a9a0",
+  "currentMilestone": "C00",
+  "programStatus": "planned",
+  "lastVerifiedModularCommit": null,
+  "disclaimer": "Only independently layered illustrated concept_modular_v1 assets with evidence count as delivered; older procedural Studio options and one flat concept_hero are not modular variants.",
+  "existingPrototype": {
+    "playerModelId": "concept_hero",
+    "atlas": "assets/concept_hero/hero_atlas.webp",
+    "atlasSize": [
+      532,
+      265
+    ],
+    "baseIllustratedViews": 5,
+    "mirroredWorldDirections": 8,
+    "uniquePlayerAppearanceModels": 1,
+    "conceptRoyalsSlots": 12,
+    "armsAnimated": false,
+    "legCutoutRun": true,
+    "fullLayeredArt": false,
+    "shirtNumberBaked": true
+  },
+  "plannedModularModelId": "concept_modular_v1",
+  "milestones": [
+    {
+      "id": "C00",
+      "title": "Freeze approved artwork source, reference comparison, alpha/rig contract and baseline tests",
+      "status": "planned",
+      "checkedAtCommit": null,
+      "validatedFiles": [],
+      "evidence": [],
+      "issues": []
+    },
+    {
+      "id": "C01",
+      "title": "One approved layered character, independently editable head/hair/torso/arms/legs",
+      "status": "planned",
+      "checkedAtCommit": null,
+      "validatedFiles": [],
+      "evidence": [],
+      "issues": []
+    },
+    {
+      "id": "C02",
+      "title": "Author eight real hero directions with idle/run/turn/first kick",
+      "status": "planned",
+      "checkedAtCommit": null,
+      "validatedFiles": [],
+      "evidence": [],
+      "issues": []
+    },
+    {
+      "id": "C03",
+      "title": "Make twelve genuinely distinct Concept Royals characters and correct goalkeeper kit",
+      "status": "planned",
+      "checkedAtCommit": null,
+      "validatedFiles": [],
+      "evidence": [],
+      "issues": []
+    },
+    {
+      "id": "C04",
+      "title": "Face shapes, eyes, eyebrows, noses, ears and lips",
+      "status": "planned",
+      "checkedAtCommit": null,
+      "validatedFiles": [],
+      "evidence": [],
+      "issues": []
+    },
+    {
+      "id": "C05",
+      "title": "Hairstyles, hair/skin material palettes, facial hair",
+      "status": "planned",
+      "checkedAtCommit": null,
+      "validatedFiles": [],
+      "evidence": [],
+      "issues": []
+    },
+    {
+      "id": "C06",
+      "title": "Body heights/builds, clothes, boots and keeper uniforms",
+      "status": "planned",
+      "checkedAtCommit": null,
+      "validatedFiles": [],
+      "evidence": [],
+      "issues": []
+    },
+    {
+      "id": "C07",
+      "title": "Tattoos, accessories, scars, freckles, headwear and fitting",
+      "status": "planned",
+      "checkedAtCommit": null,
+      "validatedFiles": [],
+      "evidence": [],
+      "issues": []
+    },
+    {
+      "id": "C08",
+      "title": "Core animations and gameplay transitions",
+      "status": "planned",
+      "checkedAtCommit": null,
+      "validatedFiles": [],
+      "evidence": [],
+      "issues": []
+    },
+    {
+      "id": "C09",
+      "title": "Special moves, goalkeeper actions and expressions",
+      "status": "planned",
+      "checkedAtCommit": null,
+      "validatedFiles": [],
+      "evidence": [],
+      "issues": []
+    },
+    {
+      "id": "C10",
+      "title": "Full editable Studio appearance and save compatibility",
+      "status": "planned",
+      "checkedAtCommit": null,
+      "validatedFiles": [],
+      "evidence": [],
+      "issues": []
+    },
+    {
+      "id": "C11",
+      "title": "Performance, assets, cache and safe wider opt-in",
+      "status": "planned",
+      "checkedAtCommit": null,
+      "validatedFiles": [],
+      "evidence": [],
+      "issues": []
+    },
+    {
+      "id": "C12",
+      "title": "Complete production/regression/deployed art certification and owner signoff",
+      "status": "planned",
+      "checkedAtCommit": null,
+      "validatedFiles": [],
+      "evidence": [],
+      "issues": []
+    }
+  ],
+  "targetVariantCounts": {
+    "face": 16,
+    "eyes": 24,
+    "brows": 28,
+    "eyeColor": 12,
+    "nose": 16,
+    "lips": 16,
+    "style": 40,
+    "hairColor": 20,
+    "skinColor": 16,
+    "beard": 18,
+    "body": 8,
+    "stature": 9,
+    "exaggeration": 5,
+    "accessory": 28,
+    "freckles": 8,
+    "scar": 16,
+    "tattoo": 40
+  },
+  "verifiedModularVariantCounts": {
+    "face": 0,
+    "eyes": 0,
+    "brows": 0,
+    "eyeColor": 0,
+    "nose": 0,
+    "lips": 0,
+    "style": 0,
+    "hairColor": 0,
+    "skinColor": 0,
+    "beard": 0,
+    "body": 0,
+    "stature": 0,
+    "exaggeration": 0,
+    "accessory": 0,
+    "freckles": 0,
+    "scar": 0,
+    "tattoo": 0
+  },
+  "productionEightViews": [
+    "front",
+    "frontRight",
+    "right",
+    "backRight",
+    "back",
+    "backLeft",
+    "left",
+    "frontLeft"
+  ],
+  "authoredViewStatus": {
+    "front": "not_started",
+    "frontRight": "not_started",
+    "right": "not_started",
+    "backRight": "not_started",
+    "back": "not_started",
+    "backLeft": "not_started",
+    "left": "not_started",
+    "frontLeft": "not_started"
+  },
+  "animationGroups": [
+    "idleEmotion",
+    "walkRunSprintTurn",
+    "dribbleReceiveCarry",
+    "passesShots",
+    "defendSlideImpact",
+    "jumpHeaderAerial",
+    "superCombosTricks",
+    "celebrateHurtCry",
+    "goalkeeperDiveCatchRecover",
+    "goalkeeperHoldRelease"
+  ],
+  "completedAnimationGroups": {
+    "idleEmotion": "not_started",
+    "walkRunSprintTurn": "not_started",
+    "dribbleReceiveCarry": "not_started",
+    "passesShots": "not_started",
+    "defendSlideImpact": "not_started",
+    "jumpHeaderAerial": "not_started",
+    "superCombosTricks": "not_started",
+    "celebrateHurtCry": "not_started",
+    "goalkeeperDiveCatchRecover": "not_started",
+    "goalkeeperHoldRelease": "not_started"
+  },
+  "proposedFirstTeamSlots": [
+    {
+      "slot": 1,
+      "role": "GK",
+      "identifier": "square-chestnut"
+    },
+    {
+      "slot": 2,
+      "role": "GK",
+      "identifier": "deep-skin-close-crop"
+    },
+    {
+      "slot": 3,
+      "role": "DF",
+      "identifier": "dark-skin-curly"
+    },
+    {
+      "slot": 4,
+      "role": "DF",
+      "identifier": "olive-black-fade-beard"
+    },
+    {
+      "slot": 5,
+      "role": "DF",
+      "identifier": "fair-sandy-buzz"
+    },
+    {
+      "slot": 6,
+      "role": "MF",
+      "identifier": "brown-auburn-part"
+    },
+    {
+      "slot": 7,
+      "role": "MF",
+      "identifier": "fair-blond-waves"
+    },
+    {
+      "slot": 8,
+      "role": "MF",
+      "identifier": "tan-black-long-glasses"
+    },
+    {
+      "slot": 9,
+      "role": "MF",
+      "identifier": "dark-coiled"
+    },
+    {
+      "slot": 10,
+      "role": "FW",
+      "identifier": "warm-chestnut-captain"
+    },
+    {
+      "slot": 11,
+      "role": "FW",
+      "identifier": "brown-black-undercut-headband"
+    },
+    {
+      "slot": 12,
+      "role": "FW",
+      "identifier": "medium-honey-curls-moustache"
+    }
+  ],
+  "nextSmallTask": "C00: obtain or author accessible editable approved hero source and write ONE schema validator and ONE properly pivoted layered asset example before game-wide work.",
+  "openRisks": [
+    "Only one cloned literal concept character is available for all twelve demo slots",
+    "Flattened five-view atlas has baked blue uniform and number 10",
+    "Five source views mirrored into eight; mirror can invert asymmetric equipment and shirt numbers",
+    "Basic cutout leg swing is not fully animated arms, faces, specials or goalkeeper motion",
+    "Editable component-layer art and provenance have not been validated for new modular renderer",
+    "Source resolution/performance/atlas budget and in-game art quality require measured baseline and owner review"
+  ],
+  "releaseSignoff": {
+    "ownerArtApproval": "not_started",
+    "actualTwelveUniquePlayers": "not_started",
+    "eightAuthoredDirections": "not_started",
+    "allAnimations": "not_started",
+    "fullStudioCatalog": "not_started",
+    "exactCommitFullRegression": "not_started",
+    "deployedModularModel": "not_started"
+  },
+  "documentPaths": [
+    "README.md",
+    "MASTER_ROADMAP.md",
+    "ASSET_RIG_AND_RENDERING_SPEC.md",
+    "CUSTOMIZATION_AND_MODEL_CATALOG.md",
+    "ANIMATION_SPEC.md",
+    "TEST_AND_RELEASE_PLAN.md",
+    "NEXT_CHAT_HANDOVER.md"
+  ]
+}
