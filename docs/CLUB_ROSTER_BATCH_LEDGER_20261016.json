@@ -99,13 +99,19 @@
       "id": "CLUB-20261016-PSG-TRANSFER-1",
       "region": "UEFA",
       "description": "Replaced transferred Bradley Barcola (Liverpool) with PSG 2026/27 registered midfielder Warren Zaïre-Emery, official EA FC27 83",
-      "status": "pending_regression",
+      "status": "full_regression_verified",
       "affectedClubIds": [
         "club26_3"
       ],
       "changedSlots": 1,
       "recordedDate": "2026-10-16",
-      "verification": "Official PSG squad plus EA FC27 launch ratings and 2026/27 FootballSquads roster"
+      "verification": "Confirmed current PSG 2026/27 member Warren Zaïre-Emery with EA FC27 official 83; 174 active Node PASS, 131 historical Node PASS, 71 Chromium browser PASS; GitHub Pages success.",
+      "ciEvidence": {
+        "sourceSha": "3f5cf46c6732a84955a9178a0b1988a34adf804c",
+        "modularQa": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925059044",
+        "fullRegression": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925059080",
+        "pages": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925057855"
+      }
     }
   ],
   "clubSourceEvidence": {
