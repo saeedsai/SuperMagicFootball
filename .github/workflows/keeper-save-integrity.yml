@@ -1,0 +1,29 @@
+name: Keeper Save Event Integrity
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'src/modules/engine.js'
+      - 'tests/keeper_save_event_integrity.test.cjs'
+      - 'tests/keeper_save_event_integrity_browser_qa.py'
+      - '.github/workflows/keeper-save-integrity.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  keeper-event-correctness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build real modular game fixture
+        run: python3 scripts/build.py
+      - name: Check shot versus rebound save event contracts
+        run: node --test tests/keeper_save_event_integrity.test.cjs
+      - name: Install headless Chromium test runner
+        run: |
+          python3 -m pip install --user playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y chromium
+      - name: Run mirrored on-engine save/catch tests
+        run: python3 tests/keeper_save_event_integrity_browser_qa.py

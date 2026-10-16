@@ -21,3 +21,7 @@ The full CI regression census includes the new script and is triggered by all ed
 5. Career/tactics substitution guidance without save migration.
 
 Do not delete historical logs, graphics work products or roster data owned by other agents. Physical-device certification, offline PWA and multiplayer are deferred.
+
+## Exact-source CI isolation while concurrent art integration runs
+
+The first integrated source/data QA for this checkpoint stopped at **three unrelated concept-character art contract assertions** (raster reference / offline fixture expectations), and did not run the sharded browser census. A narrow [Keeper Save Event Integrity workflow](../.github/workflows/keeper-save-integrity.yml) therefore now runs real `scripts/build.py`, the new Node event contract and its headless desktop/touch browser acceptance without requiring unrelated art-matrix tests to complete first. The full regression gate is **still required**; this focused workflow does not replace it. Concurrent graphics/roster agent edits are not modified.
