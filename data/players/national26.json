@@ -94,11 +94,12 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 33,
+      "age": 23,
       "rating": 97,
       "value": 75843000,
       "fictional": false,
-      "source": "2026 World Cup squad sample"
+      "source": "2026 World Cup squad sample",
+      "heightCm": 174
     },
     {
       "id": "national26_0_5",
@@ -154,11 +155,12 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 30,
+      "age": 22,
       "rating": 97,
       "value": 75843000,
       "fictional": false,
-      "source": "2026 World Cup squad sample"
+      "source": "2026 World Cup squad sample",
+      "heightCm": 174
     },
     {
       "id": "national26_0_7",
