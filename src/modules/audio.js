@@ -65,13 +65,19 @@ class ArcadeAudio{
   // Sound only an actual human attempt: AI dribbling can happen many times
   // per second and must never overwhelm the player's kick/keeper audio.
   if(type==='dribbleTrick'&&(event?.ai!==false||typeof event?.success!=='boolean'))return;
-  const cue=type==='dribbleTrick'?(event.success?'skillSuccess':'skillMiss'):
+  // A received pass is successful only when the original named teammate gets
+  // it. Opponent catches have a different warning; accidental teammate picks
+  // up, stale/malformed payloads and ordinary loose balls stay silent.
+  if(type==='passReceived'&&(typeof event?.friendly!=='boolean'||typeof event?.accurate!=='boolean'))return;
+  const cue=type==='passReceived'?
+   (event.friendly?(event.accurate?'passComplete':null):'passIntercept'):
+   type==='dribbleTrick'?(event.success?'skillSuccess':'skillMiss'):
    type==='penaltyKick'&&typeof event?.goal==='boolean'?
    (event.goal?'penaltyGoal':'penaltySave'):
    type==='kick'&&event?.super?'super':type==='flipKick'&&!event?.special?'kick':AUDIO_CUES[type]||type;
   if(!cue||!this._audible(cue==='ui'||cue==='halftime'||cue==='finished'||cue==='penaltyStart'?'ui':'sfx')||!this.unlocked||!this.ctx)return;
   const now=this.ctx.currentTime;
-  if(this.last.has(cue)&&now-this.last.get(cue)<(cue==='kick'?.07:.17))return;
+  if(this.last.has(cue)&&now-this.last.get(cue)<(cue==='kick'?.07:cue==='passComplete'||cue==='passIntercept'?.30:.17))return;
   this.last.set(cue,now);
   switch(cue){
    case 'kick':this.tone(230,.11);break;
@@ -84,6 +90,10 @@ class ArcadeAudio{
    // the defender disrupts it. Both are original oscillator-only SFX.
    case 'skillSuccess':[440,659].forEach((f,i)=>this.tone(f,.12,'sfx','triangle',i*.07));break;
    case 'skillMiss':this.tone(175,.14,'sfx','triangle');break;
+   // Low-volume original oscillators distinguish a clean give-and-go from
+   // a defender collecting the pass. Existing SFX mute and unlock still apply.
+   case 'passComplete':[370,494].forEach((f,i)=>this.tone(f,.085,'sfx','sine',i*.045));break;
+   case 'passIntercept':[262,175].forEach((f,i)=>this.tone(f,.12,'sfx','triangle',i*.07));break;
    case 'save':this.tone(340,.15);this.tone(190,.21,'sfx','triangle',.08);break;
    case 'goal':[523,659,784,1046].forEach((f,i)=>this.tone(f,.27,'sfx','triangle',i*.095));break;
    case 'tackle':this.tone(130,.16,'sfx','sawtooth');break;
