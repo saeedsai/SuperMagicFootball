@@ -79,6 +79,34 @@ class FeatureLockTests(unittest.TestCase):
                           "art-chat-002", "New limited rig stage", now=T)
         self.assertEqual(record["owner"], "art-chat-002")
 
+    def test_stale_blob_sha_cannot_replace_an_active_owner(self):
+        record = self.claim()
+        _, current_sha = self.c.read_lock("graphics-renderer")
+        self.assertEqual(current_sha, "1")
+        forged = dict(record, owner="art-chat-002")
+        with self.assertRaisesRegex(fc.ClaimError, "stale blob SHA"):
+            self.c.write_lock("graphics-renderer", forged, "outdated", "claim")
+        self.assertEqual(self.c.read_lock("graphics-renderer")[0]["owner"], "art-chat-001")
+        self.assertEqual(fc.verify(self.c, "graphics-renderer", "art-chat-001"), record)
+
+    def test_released_claim_requires_fresh_blob_sha_before_reuse(self):
+        self.claim()
+        _, old_sha = self.c.read_lock("graphics-renderer")
+        fc.release(self.c, "graphics-renderer", "art-chat-001",
+                   "completed", "docs/release-handover.md", now=T)
+        released, released_sha = self.c.read_lock("graphics-renderer")
+        self.assertNotEqual(old_sha, released_sha)
+        with self.assertRaisesRegex(fc.ClaimError, "stale blob SHA"):
+            self.c.write_lock("graphics-renderer",
+                              dict(released, owner="art-chat-002", status="active"),
+                              old_sha, "claim")
+        self.assertEqual(self.c.read_lock("graphics-renderer")[0]["status"], "released")
+        reused = fc.claim(self.c, "graphics-renderer", "ART-C02",
+                          "art-chat-002", "New front illustration", now=T)
+        self.assertEqual(reused["owner"], "art-chat-002")
+        self.assertEqual(fc.verify(self.c, "graphics-renderer", "art-chat-002",
+                                   "ART-C02"), reused)
+
     def test_reject_unknown_lock_or_generic_owner(self):
         with self.assertRaises(fc.ClaimError):
             fc.claim(self.c, "../secrets", "ART-C01", "art-chat-001", "x", now=T)
