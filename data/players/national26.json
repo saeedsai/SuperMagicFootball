@@ -262,7 +262,8 @@
       "xp": 0,
       "shot": "piranha",
       "shotName": "Piranha Shot",
-      "age": 24
+      "age": 34,
+      "heightCm": 195
     },
     {
       "id": "national26_1_1",
@@ -358,11 +359,12 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 31,
+      "age": 39,
       "rating": 93,
       "value": 64827000,
       "fictional": false,
-      "source": "2026 World Cup squad sample"
+      "source": "2026 World Cup squad sample",
+      "heightCm": 170
     },
     {
       "id": "national26_1_6",
