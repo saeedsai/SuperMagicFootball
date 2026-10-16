@@ -656,10 +656,17 @@
       ],
       "fullPhasePreserved": true,
       "oldCutoffDiscontinuityRemoved": true,
-      "status": "code_submitted_pending_exact_commit_CI",
-      "qa": "pending",
+      "status": "verified_experimental_art_and_hosted_pending_nine_job_regression",
+      "qa": "PASS art/browser desktop+simulated touch; 228/228 Node, 0 page errors",
       "ownerArtApproval": "pending",
-      "note": "Two existing arm assets; zero new authored variants. Side fallback and legacy underlay preserved."
+      "note": "Two existing arm assets; zero new authored variants. Side fallback and legacy underlay preserved.",
+      "sourceCommit": "3395c6cf7950c9ba4e9510504000649db7285e0e",
+      "hostedTestCommit": "2be32a646124930a75a5941c0a4487273bb6a9a1",
+      "qaUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961042607",
+      "hosted": "PASS live PC/touch; exact armIdleBlend source true, SVG/JS HTTP 200, one modular player",
+      "hostedUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961042443",
+      "fullRegression": "In progress; separate non-graphics audio browser failure in earlier run",
+      "fullRegressionUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961042564"
     }
   }
 }
