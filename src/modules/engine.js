@@ -39,6 +39,15 @@ const F=WORLD.field, MID=F.x+F.w/2, CX=(t)=>t===0?F.x:F.x+F.w;
 const clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));const norm=(x,y)=>{let d=Math.hypot(x,y)||1;return {x:x/d,y:y/d}};
 function randomBetween(a,b){return a+Math.random()*(b-a)}
 function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+// A receiving outfielder briefly settles a pressured *friendly ground pass*.
+// Only maximum ground movement speed is affected; ball velocity, input, kick
+// timing, tackling and keeper contact are unchanged.
+function firstTouchControlScale(timer,pressure,skill){
+ const remain=clamp(Number.isFinite(timer)?timer:0,0,.24)/.24;
+ const danger=clamp(Number.isFinite(pressure)?pressure:0,0,1);
+ const control=clamp(Number.isFinite(skill)?skill:50,1,100)/100;
+ return 1-remain*danger*(.10+.22*(1-control));
+}
 // Tackle force is measured at contact. Only victim strength changes their resilience.
 function tackleStunDuration(strength,slide=false,impact=.4){
  return impactStun(slide?'slide':'tackle',Math.max(0,impact)*85,strength);
@@ -243,7 +252,7 @@ class GameEngine{
  this.options=options;this.mode=mode;this.humans=humans;this.teamIds=[home,away];this.rosters=(rosters||[rosterFor(home),rosterFor(away)]).map(team=>team.map(withStats));this.lineups=lineups||[home===0?DEFAULT_LINEUP.slice():[0,1,2,3,5,9],away===0?DEFAULT_LINEUP.slice():[0,1,2,3,5,9]];this.formation=formations||[options.formation||'2-1-2','2-1-2'];this.teamPlans=[0,1].map(t=>safePlan(plans?.[t]||{formation:this.formation[t],lineup:this.lineups[t]},this.rosters[t],t===0?home:away));this.formation=this.teamPlans.map(p=>p.formation);this.lineups=this.teamPlans.map(p=>p.lineup.slice());this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=options.halfSeconds||120;this.weather=options.weather==='Random'?['Clear','Rain','Wind','Storm','Tornado'][Math.floor(Math.random()*5)]:options.weather||'Clear';this.terrain=options.terrain||'Grass';this.condition=options.condition||'Good';this.wind={x:0,y:0};this.ball={x:MID,y:F.y+F.h*.5,z:0,vx:0,vy:0,vz:0,owner:null,shot:null,trail:[],age:0,power:0,canCollect:0,targetY:0,attacker:-1};this.players=[];this.particles=[];this.events=[];this.controlled=[3,3,0,0];this.shake=0;this.flash=0;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.stormTimer=2;this.tornado=null;this.pk=null;this.matchSerial++;this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.stoppageWindow=0;this.stoppageAnnounced=false;this._shotAudit=null;this._reboundAudit=null;this._shotAuditNext=0;this.fatigueLedger=this.rosters.map(roster=>Object.fromEntries(roster.map(p=>[p.id,initialFatigue(p)])));this.moraleLedger=this.rosters.map(roster=>Object.fromEntries(roster.map(p=>[p.id,clampMorale(p.morale??55)])));this.talksUsed=[{},{}];this.celebrationStyle=0;this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.spawnPlayers();this.resetKickoff(0);this.matchState='play';this.emit('start',{mode});}
  spawnPlayers(){const old=new Map(this.players.map(p=>[`${p.t}:${p.src.id}`,{fatigue:p.fatigue,stun:p.stun,morale:p.morale,cryTimer:p.cryTimer,abilityCd:p.abilityCd,dashCooldown:p.dashCooldown,diveCooldown:p.diveCooldown,comboCooldown:p.comboCooldown,contactCooldown:p.contactCooldown, trickCd:p.trickCd,dribbleCooldown:p.dribbleCooldown, trickGuard:p.trickGuard}]));this.players=[];for(let t=0;t<2;t++)for(let i=0;i<6;i++){
  const src=this.rosters[t][this.lineups[t][i]],home=FORMATIONS[this.formation[t]][i];let x=F.x+(t===0?home.x:1-home.x)*F.w,y=F.y+home.y*F.h;
- this.players.push({t,i,src,x,y,homeX:x,homeY:y,face:t===0?1:-1,dx:0,dy:0,z:0,vz:0,jumpCount:0,jumpHold:0,jumpTapPending:false,dribbleHold:0,ballLiftWindow:0,ballLiftLock:false,aerialComboAction:null,aerialComboTimer:0,aerialComboTaps:0,stun:0,anim:0,action:'idle',actionTimer:0,invuln:0,fatigue:old.get(`${t}:${src.id}`)?.fatigue??this.fatigueLedger[t][src.id]??initialFatigue(src),moveVX:0,moveVY:0,morale:old.get(`${t}:${src.id}`)?.morale??this.moraleLedger[t][src.id]??55,cryTimer:old.get(`${t}:${src.id}`)?.cryTimer??0,abilityCd:old.get(`${t}:${src.id}`)?.abilityCd??0,abilityFx:0,dashTimer:0,sprintCharge:0,dashCooldown:old.get(`${t}:${src.id}`)?.dashCooldown??0,keeperHold:0,diveDy:0,diveDx:0,diveElapsed:0,diveIntentCooldown:0,diveIntentPending:false,diveAdvanceTravel:0,diveCooldown:old.get(`${t}:${src.id}`)?.diveCooldown??0,comboCooldown:old.get(`${t}:${src.id}`)?.comboCooldown??0,contactCooldown:old.get(`${t}:${src.id}`)?.contactCooldown??0,trickCd:old.get(`${t}:${src.id}`)?.trickCd??0,dribbleCooldown:old.get(`${t}:${src.id}`)?.dribbleCooldown??0,trickGuard:old.get(`${t}:${src.id}`)?.trickGuard??0,trickFx:0,trickStyleId:null,firstTouchFx:0,comboWindow:0,comboActive:false,assistBy:null,assistFx:0,cd:0,specialCd:0,controlled:false,keeper:i===0,down:false,charge:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,aiComboGoal:null});}
+ this.players.push({t,i,src,x,y,homeX:x,homeY:y,face:t===0?1:-1,dx:0,dy:0,z:0,vz:0,jumpCount:0,jumpHold:0,jumpTapPending:false,dribbleHold:0,ballLiftWindow:0,ballLiftLock:false,aerialComboAction:null,aerialComboTimer:0,aerialComboTaps:0,stun:0,anim:0,action:'idle',actionTimer:0,invuln:0,fatigue:old.get(`${t}:${src.id}`)?.fatigue??this.fatigueLedger[t][src.id]??initialFatigue(src),moveVX:0,moveVY:0,morale:old.get(`${t}:${src.id}`)?.morale??this.moraleLedger[t][src.id]??55,cryTimer:old.get(`${t}:${src.id}`)?.cryTimer??0,abilityCd:old.get(`${t}:${src.id}`)?.abilityCd??0,abilityFx:0,dashTimer:0,sprintCharge:0,dashCooldown:old.get(`${t}:${src.id}`)?.dashCooldown??0,keeperHold:0,diveDy:0,diveDx:0,diveElapsed:0,diveIntentCooldown:0,diveIntentPending:false,diveAdvanceTravel:0,diveCooldown:old.get(`${t}:${src.id}`)?.diveCooldown??0,comboCooldown:old.get(`${t}:${src.id}`)?.comboCooldown??0,contactCooldown:old.get(`${t}:${src.id}`)?.contactCooldown??0,trickCd:old.get(`${t}:${src.id}`)?.trickCd??0,dribbleCooldown:old.get(`${t}:${src.id}`)?.dribbleCooldown??0,trickGuard:old.get(`${t}:${src.id}`)?.trickGuard??0,trickFx:0,trickStyleId:null,firstTouchFx:0,firstTouchControlTimer:0,comboWindow:0,comboActive:false,assistBy:null,assistFx:0,cd:0,specialCd:0,controlled:false,keeper:i===0,down:false,charge:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,aiComboGoal:null});}
  }
  applyPlan(t,raw){
   if(t!==0&&t!==1)throw Error('Invalid team');
@@ -271,7 +280,7 @@ class GameEngine{
      if(['keeperDive','keeperDiveCatch','keeperRecover'].includes(p.action)){
       p.action='idle';p.actionTimer=0;p.z=0;p.vz=0;
      }
-     p.fatigue=kept?.fatigue??this.fatigueLedger[t][src.id]??initialFatigue(src);p.morale=kept?.morale??this.moraleLedger[t][src.id]??55;p.cryTimer=kept?.cryTimer??0;p.abilityCd=kept?.abilityCd??0;p.abilityFx=0;p.dashTimer=0;p.sprintCharge=0;p.dashCooldown=kept?.dashCooldown??0;p.diveCooldown=kept?.diveCooldown??0;p.comboCooldown=kept?.comboCooldown??0;p.contactCooldown=kept?.contactCooldown??0;p.trickCd=kept?.trickCd??0;p.dribbleCooldown=kept?.dribbleCooldown??0;p.trickGuard=kept?.trickGuard??0;p.trickFx=0;p.trickStyleId=null;p.firstTouchFx=0;p.comboWindow=0;p.comboActive=false;p.assistBy=null;p.assistFx=0;p.stun=0;p.cd=0;p.charge=0;
+     p.fatigue=kept?.fatigue??this.fatigueLedger[t][src.id]??initialFatigue(src);p.morale=kept?.morale??this.moraleLedger[t][src.id]??55;p.cryTimer=kept?.cryTimer??0;p.abilityCd=kept?.abilityCd??0;p.abilityFx=0;p.dashTimer=0;p.sprintCharge=0;p.dashCooldown=kept?.dashCooldown??0;p.diveCooldown=kept?.diveCooldown??0;p.comboCooldown=kept?.comboCooldown??0;p.contactCooldown=kept?.contactCooldown??0;p.trickCd=kept?.trickCd??0;p.dribbleCooldown=kept?.dribbleCooldown??0;p.trickGuard=kept?.trickGuard??0;p.trickFx=0;p.trickStyleId=null;p.firstTouchFx=0;p.firstTouchControlTimer=0;p.firstTouchPressure=0;p.comboWindow=0;p.comboActive=false;p.assistBy=null;p.assistFx=0;p.stun=0;p.cd=0;p.charge=0;
    }
    p.homeX=targetX;p.homeY=targetY;p.keeper=i===0;
    // New players join near their assigned position; old ones keep moving to new positions.
@@ -317,6 +326,9 @@ class GameEngine{
  playerSpeed(p){return (191+stat(p,'speedRating')*1.24)*(this.options.gameSpeed||1)*endurance(p)*moraleFactor(p.morale)}
  // Speed rating controls top speed, agility controls acceleration, stopping and turns.
  moveAgile(p,dx,dy,maxSpeed,dt){
+  // Releasing/switching owners stops the trap immediately; no input lock.
+  if(this.ball.owner===p&&!p.keeper&&(p.firstTouchControlTimer||0)>0)
+   maxSpeed*=firstTouchControlScale(p.firstTouchControlTimer,p.firstTouchPressure,stat(p,'dribbling'));
   const mag=Math.hypot(dx,dy),n=mag>1?1/mag:1;
   const targetVX=dx*n*maxSpeed,targetVY=dy*n*maxSpeed;
   const turn=Math.max(0,Math.min(1,(3.0+stat(p,'agility')*.13)*dt));
@@ -345,17 +357,20 @@ class GameEngine{
  hostOfBall(){return this.ball.owner}
  toast(msg){this.emit('toast',{message:msg})}
  resetKickoff(which=0){this._closeShotAudits('kickoffReset');this.spawnPlayers();this.ball={x:MID,y:F.y+F.h*.5,z:0,vx:0,vy:0,vz:0,owner:null,shot:null,trail:[],age:0,power:0,canCollect:0,targetY:0,attacker:-1};const starter=this.player(which,3);starter.x=MID+(which===0?-26:26);starter.y=F.y+F.h*.5;this.take(starter);this.controlled[0]=3;this.controlled[1]=3;this.cooldown=.9;}
- take(p){this.ball.strike=null;const incoming=this.ball.pass===true&&this.ball.owner===null?{
+ take(p){this.ball.strike=null;p.firstTouchControlTimer=0;const incoming=this.ball.pass===true&&this.ball.owner===null?{
   from:this.ball.passFrom,team:this.ball.passTeam,target:this.ball.passTarget,
-  x:this.ball.x,y:this.ball.y,speed:Math.hypot(this.ball.vx||0,this.ball.vy||0)}:null;
+  x:this.ball.x,y:this.ball.y,height:this.ball.z,speed:Math.hypot(this.ball.vx||0,this.ball.vy||0)}:null;
   this._auditTake(p);for(const q of this.players){q.aerialComboAction=null;q.aerialComboTimer=0;q.aerialComboTaps=0;}if(this.ball.liftOwner){this.ball.liftOwner.ballLiftWindow=0;this.ball.liftOwner.ballLiftLock=false;this.ball.liftOwner=null;}if(this.inControl(p.t)&&!p.keeper)this.controlled[p.t]=p.i;if(p.keeper)p.keeperHold=0;let b=this.ball;b.owner=p;b.x=p.x+p.face*17;b.y=p.y+10;b.z=0;b.vx=b.vy=b.vz=0;b.shot=null;b.strike=null;b.ordinaryShot=false;b.age=0;b.canCollect=0;b.pass=false;b.passFrom=null;b.passTeam=null;b.passTarget=null;
   if(incoming){const friendly=incoming.team===p.t;
-   // Visual-only first-touch animation; no ball acceleration or goalkeeper tuning.
+   // Existing reception animation is visual; a short movement-only trap below
+   // now applies exclusively to friendly, low passes under nearby pressure.
    if(!p.keeper&&p.stun<=0){
     p.action='receive';p.actionTimer=.29;p.firstTouchFx=.35;
     // Visual-only brace: a nearby opponent makes the receiving stance more guarded.
     const nearest=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0).reduce((d,q)=>Math.min(d,distance(p,q)),Infinity);
     p.firstTouchPressure=clamp((135-nearest)/115,0,1);
+    if(friendly&&incoming.from!==p.src.id&&incoming.height<=24&&p.firstTouchPressure>0)
+     p.firstTouchControlTimer=.24;
    }
    this.emit('passReceived',{team:p.t,player:p.src.id,from:incoming.from,
     intendedTarget:incoming.target,accurate:incoming.target===p.src.id,friendly,
@@ -1187,7 +1202,7 @@ class GameEngine{
  for(let t=0;t<Math.min(2,this.humans);t++)this.autoSwitch(t,dt);
  // Snapshot controllers: an in-frame swap must not make the next player consume the same tap.
  const selectedAtStart=this.controlled.slice();
- for(let p of this.players){this.playerSeconds[p.t][p.src.id]=(this.playerSeconds[p.t][p.src.id]||0)+dt;p.anim+=dt;p.cd=Math.max(0,p.cd-dt);p.invuln=Math.max(0,p.invuln-dt);p.specialCd=Math.max(0,p.specialCd-dt);p.abilityCd=Math.max(0,(p.abilityCd||0)-dt);p.abilityFx=Math.max(0,(p.abilityFx||0)-dt);p.dashCooldown=Math.max(0,(p.dashCooldown||0)-dt);p.diveCooldown=Math.max(0,(p.diveCooldown||0)-dt);p.diveIntentCooldown=Math.max(0,(p.diveIntentCooldown||0)-dt);p.comboCooldown=Math.max(0,(p.comboCooldown||0)-dt);p.contactCooldown=Math.max(0,(p.contactCooldown||0)-dt);p.trickCd=Math.max(0,(p.trickCd||0)-dt);p.dribbleCooldown=Math.max(0,(p.dribbleCooldown||0)-dt);p.trickGuard=Math.max(0,(p.trickGuard||0)-dt);p.trickFx=Math.max(0,(p.trickFx||0)-dt);p.firstTouchFx=Math.max(0,(p.firstTouchFx||0)-dt);p.comboWindow=Math.max(0,(p.comboWindow||0)-dt);
+ for(let p of this.players){this.playerSeconds[p.t][p.src.id]=(this.playerSeconds[p.t][p.src.id]||0)+dt;p.anim+=dt;p.cd=Math.max(0,p.cd-dt);p.invuln=Math.max(0,p.invuln-dt);p.specialCd=Math.max(0,p.specialCd-dt);p.abilityCd=Math.max(0,(p.abilityCd||0)-dt);p.abilityFx=Math.max(0,(p.abilityFx||0)-dt);p.dashCooldown=Math.max(0,(p.dashCooldown||0)-dt);p.diveCooldown=Math.max(0,(p.diveCooldown||0)-dt);p.diveIntentCooldown=Math.max(0,(p.diveIntentCooldown||0)-dt);p.comboCooldown=Math.max(0,(p.comboCooldown||0)-dt);p.contactCooldown=Math.max(0,(p.contactCooldown||0)-dt);p.trickCd=Math.max(0,(p.trickCd||0)-dt);p.dribbleCooldown=Math.max(0,(p.dribbleCooldown||0)-dt);p.trickGuard=Math.max(0,(p.trickGuard||0)-dt);p.trickFx=Math.max(0,(p.trickFx||0)-dt);p.firstTouchFx=Math.max(0,(p.firstTouchFx||0)-dt);p.firstTouchControlTimer=Math.max(0,(p.firstTouchControlTimer||0)-dt);p.comboWindow=Math.max(0,(p.comboWindow||0)-dt);
   p.ballLiftWindow=Math.max(0,(p.ballLiftWindow||0)-dt);
   this.resolveAerialTap(p,dt);
   if(!p.ballLiftWindow&&this.ball.liftOwner===p)this.ball.liftOwner=null;p.assistFx=Math.max(0,(p.assistFx||0)-dt);p.dashTimer=Math.max(0,(p.dashTimer||0)-dt);p.actionTimer=Math.max(0,p.actionTimer-dt);if(p.keeper&&['keeperDive','keeperDiveCatch'].includes(p.action))p.diveElapsed=Math.min(.7,(p.diveElapsed||0)+dt);p.cryTimer=Math.max(0,(p.cryTimer||0)-dt);if(p.actionTimer===0&&p.action!=='idle'&&p.action!=='keeperHold'){
