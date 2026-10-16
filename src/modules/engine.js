@@ -1324,6 +1324,7 @@ class GameEngine{
   const b=this.ball, owner=b.owner, t=p.t, dir=t===0?1:-1;
   // Only the bounded physical lunge may move a keeper during dive intent.
   // Continuing ordinary AI tracking here bypasses the per-attempt 28-unit cap.
+  // Once diveIntentPending is cleared, this normal AI path is available again.
   if(p.keeper&&p.diveIntentPending&&p.action==='keeperDive'){
    p.moveVX=0;p.moveVY=0;p.dx=0;p.dy=0;
    return;
