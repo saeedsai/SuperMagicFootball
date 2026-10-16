@@ -1,18 +1,21 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "integration-tooling",
-  "feature_id": "ART-C01",
-  "owner": "graphics-c01-front-hair-20261016-b",
-  "status": "released",
-  "scope": "ART-C01: limited scripts/build.py inline second SVG fixture embed only; no other tooling or data",
-  "base_sha": "8a1482dd1d4b491b9f941478eea820413a6679a3",
-  "created_at": "2026-10-16",
-  "renewed_at": "2026-10-16",
+  "feature_id": "ART-C01-FACE-PACK",
+  "owner": "graphics-c01-face-20261016-1354-gpt6",
+  "status": "active",
+  "scope": "Only scripts/build.py to inline new illustrated face SVG in existing QA fixture; no unrelated fixture tooling.",
+  "base_sha": "b5e59a275f53366ef56afea25f1a6bb13efdbaea",
+  "created_at": "2026-10-16T13:54+02:00",
+  "renewed_at": "2026-10-16T13:54+02:00",
   "tests": [
+    "scripts/validate_concept_modular.py",
     "node --test tests/*.test.cjs",
-    "GitHub exact-commit graphics browser CI"
+    "tests/concept_modular_browser_qa.py",
+    "tests/concept_modular_live_qa.py",
+    "full regression census"
   ],
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md — report docs/concept_character_pipeline/C01_REAR_HAIR_BATCH_20261016.md; art and hosted CI 8c956b32; latest report commit 02ac0ba0",
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
   "released_at": "2026-10-16",
   "outcome": "completed_experimental_rear_hair_small_batch"
 }
