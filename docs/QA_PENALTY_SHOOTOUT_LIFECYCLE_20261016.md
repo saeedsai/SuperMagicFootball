@@ -44,3 +44,15 @@ python3 tests/full_regression_runner.py --category browser --shard-index 0 --sha
 5. Coordinate graphics-owner goalkeeper holds/distribution and first-touch/pass follow-through, then improve career coaching; preserve saved team IDs.
 
 **Cleanup:** no archive deletion without usage/references audit; no generated fixtures or binary assets added to source.
+
+## Tested integration checkpoint — 16 October 2026
+
+GitHub `dev` includes the two new tests and census-discovery guard:
+
+- Node core test committed in [25667525](https://github.com/saeedsai/SuperMagicFootball/commit/25667525dd89e7e9b34f08eb8aee7ba9d15062ed); browser test [f64b840f](https://github.com/saeedsai/SuperMagicFootball/commit/f64b840f326d9b324f1a6251d2c978d38ddd9eec).
+- Two test-harness defects found and corrected: concatenate current class methods with a comma inside the VM object ([0fed09c6](https://github.com/saeedsai/SuperMagicFootball/commit/0fed09c63c42a9ee4528870b7ddc4d0f712f73dd)); convert cross-realm numeric score arrays into local arrays for strict Node comparison ([d1292c8f](https://github.com/saeedsai/SuperMagicFootball/commit/d1292c8f478e034bd0e9ffa499e8dceb09f3ebae)). No match-engine changes.
+- Exact code [Modular QA #38914495445](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914495445): **158/159 Node tests passed**, including all six PK lifecycle tests. Sole failure is unrelated `project_memory_contract.test.cjs` for `game-developer-6` identity. Prior run before the new test also failed for this same memory contract. [Issue #8](https://github.com/saeedsai/SuperMagicFootball/issues/8) tracks its owner-only correction; do not inspect or edit another agent's memory.
+- `tests/master_contracts.mjs` now checks discovery of both new scripts and triggers the existing full regression on changed release-acceptance contracts ([21f32120](https://github.com/saeedsai/SuperMagicFootball/commit/21f32120882791402c2e9f72ff07ebd3b429fbe3)). [Full Regression Census #38914650232](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914650232) reported **164 passing / one unrelated memory failure** at preflight, so Node and Chromium shards were correctly skipped. **Do not claim 8/8 or hosted PC/mobile success from this run.**
+- The new Chromium browser script is present and discoverable, but was **not executed** because of the independent preflight failure. Public Pages deployment and physical mobile validation are not certified by this checkpoint.
+
+**Release handover:** after the separate memory owner repairs its contract, rerun the standard QA plus full 4+4 census on the integrated exact source, inspect the browser cohort output and provide hosted desktop/simulated-touch smoke evidence. If Chromium exposes an actual penalty failure, fix only the QA-owned script unless the gameplay-engine claim is obtained for a production fix. Keep Issue #5 open for manual PK goalkeeper control.
