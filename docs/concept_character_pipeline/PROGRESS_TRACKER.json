@@ -78,7 +78,8 @@
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38905337000",
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913908449",
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914486909",
-        "docs/concept_character_pipeline/C01_FAR_ARM_BATCH_20261016.md"
+        "docs/concept_character_pipeline/C01_FAR_ARM_BATCH_20261016.md",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074"
       ],
       "issues": [
         "Legacy original torso and static arm pixels remain beneath experimental front near and far arm overlays; larger movement may cause ghosting",
@@ -341,8 +342,7 @@
     "New back view only supplies a transparent hair overlay on the existing flattened back-body art; must not be counted as complete authored back view",
     "New front face is a transparently painted independent feature set over an existing flattened head/body, not a complete separated full head; no owner face-art approval.",
     "Experiment: overlay arm over baked old static arm may show residual ghosting at large run poses; only low-amplitude motion until torso/body are independently authored.",
-    "Both new arm overlays paint over the unchanged flat torso; a full clean articulated arm cycle and occlusion masks are NOT delivered.",
-    "Full integrated regression for this batch is blocked by concurrently owned project-memory contract failure; targeted art + live Pages checks pass."
+    "Both new arm overlays paint over the unchanged flat torso; a full clean articulated arm cycle and occlusion masks are NOT delivered."
   ],
   "releaseSignoff": {
     "ownerArtApproval": "not_started",
@@ -409,7 +409,7 @@
       "moduleHttp": 200,
       "errors": 0
     },
-    "fullRegressionLatest": "C01 far arm targeted 147/147+desktop/touch PASS #38913908449, live Pages desktop/touch PASS #38914486909; full #38913908374 cancelled, subsequent #38914777848 FAILED project-memory identity assertion (unrelated owner) before browser shards.",
+    "fullRegressionLatest": "SUCCESS 9/9 on unchanged far-arm source in integrated commit 34604826: https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074",
     "frontFace": {
       "componentId": "face_front_001",
       "asset": "assets/characters/concept_modular_v1/source/face_front_front.svg",
@@ -637,7 +637,10 @@
         "sourceRun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913908374",
         "sourceStatus": "cancelled_by_parallel_dev_commits",
         "subsequentRun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914777848",
-        "subsequentStatus": "FAILED in unrelated project-memory identity preflight, no full 9-job PASS for this batch yet"
+        "subsequentStatus": "FAILED in unrelated project-memory identity preflight, no full 9-job PASS for this batch yet",
+        "completedIntegratedRun": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074",
+        "completedIntegratedHead": "34604826aa552e493885c12870cdbf9bc6b662cf",
+        "completedIntegratedStatus": "SUCCESS 9/9: preflight, four Node shards, four Chromium browser shards; far-arm source unchanged"
       },
       "ownerApproval": "pending",
       "completeAssetFamily": false
