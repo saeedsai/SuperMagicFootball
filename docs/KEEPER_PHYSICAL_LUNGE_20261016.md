@@ -31,5 +31,16 @@ A concurrent goalkeeper agent corrected duplicate save notifications from diving
 
 Full physical Android/iOS browser matrix, offline/PWA installation performance, referee/classic parity and network play are still deferred or long-term. **No archived reports/templates were deleted**: old test scripts are discovered by current CI; local generated `tests/.generated` and Python cache files remain ignored transient output.
 
-## Final workflow results
-To be filled with an exact green `dev` source SHA, completed Node and browser shard totals, and post-deploy desktop/touch smoke. Never attach an older green run to the later live code if a concurrent agent has advanced `dev`.
+## Measured QA results, failures and checkpoint handover
+
+- **Actual code commit:** [`14c1c0621da6b838eb67235f773527057bf69320`](https://github.com/saeedsai/SuperMagicFootball/commit/14c1c0621da6b838eb67235f773527057bf69320).
+- **QA-source checkpoint** [`d54330220afdc0504ea21a488dcd060bb4dfa2a5`](https://github.com/saeedsai/SuperMagicFootball/commit/d54330220afdc0504ea21a488dcd060bb4dfa2a5), including a separate concurrent goalkeeper-catch duplicate-save fix. [Modular preflight in full census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38885583752): **PASS**; four Node regression shards **99/99 PASS** (24 + 25 + 25 + 25).
+- The initial full census on that SHA ran 53 Chromium scripts: **52 PASS, one FAIL** (shard 2: `dribble_styles_browser_qa.py` Android double-tap intermittently registered no rainbow-dribble event; desktop passed). Overall first attempt: **151 PASS / 152 scripts executed, 1 FAIL**, 0 errors/timeouts. It does **not** establish an all-green release. The new `keeper_physical_lunge_browser_qa.py` itself **PASSED** in browser shard 1 and both new Node subtests passed.
+- The earlier `keeper_dive_intent.test.cjs` failure was a historical test-slice boundary mismatch after adding the new movement routine, **fixed** on the QA checkpoint and now passes preflight and Node shards.
+- An isolated rerun of the failing full workflow was requested as **attempt 2**, still **pending** at the time of this document. See [full run 38885583752](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38885583752) and read its current attempt before asserting pass.
+- **Hosted interaction:** [deployed PC/touch smoke 38885745096](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38885745096) **SUCCESS** after movement implementation. Desktop and emulated mobile both received HTTP 200, opened menus, selected a team, kicked off play and confirmed +20% pitch geometry. This does not certify physical phone hardware or all subsequent agents' commits.
+- **Pages:** deployment [38885746365](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38885746365) **SUCCESS** after the lunge code and cache changes. Later source/docs pushes can cancel preceding intermediate runs.
+- **Concurrent graphics blocker:** after separate concept-art changes were added to `dev`, new Modular QA failed assertions around reference sprites and bundled art. This is an **independent art-workstream issue**, not the keeper-lunge unit test. Do not overwrite another agent's concept-renderer data without their branch coordination. Report this separately from the isolated 151/152 gameplay census.
+
+**Next checkpoint:** inspect full attempt 2 and newer integrated QA, fix reproducible Android touch gestures only if the isolated rerun confirms, preserve roster/art agents' files. Keep all historical scripts and original identifiers; no tracked files were deleted just to make the repository look clean.
+
