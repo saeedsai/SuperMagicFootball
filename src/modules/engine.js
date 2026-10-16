@@ -243,7 +243,7 @@ class GameEngine{
  this.options=options;this.mode=mode;this.humans=humans;this.teamIds=[home,away];this.rosters=(rosters||[rosterFor(home),rosterFor(away)]).map(team=>team.map(withStats));this.lineups=lineups||[home===0?DEFAULT_LINEUP.slice():[0,1,2,3,5,9],away===0?DEFAULT_LINEUP.slice():[0,1,2,3,5,9]];this.formation=formations||[options.formation||'2-1-2','2-1-2'];this.teamPlans=[0,1].map(t=>safePlan(plans?.[t]||{formation:this.formation[t],lineup:this.lineups[t]},this.rosters[t],t===0?home:away));this.formation=this.teamPlans.map(p=>p.formation);this.lineups=this.teamPlans.map(p=>p.lineup.slice());this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=options.halfSeconds||120;this.weather=options.weather==='Random'?['Clear','Rain','Wind','Storm','Tornado'][Math.floor(Math.random()*5)]:options.weather||'Clear';this.terrain=options.terrain||'Grass';this.condition=options.condition||'Good';this.wind={x:0,y:0};this.ball={x:MID,y:F.y+F.h*.5,z:0,vx:0,vy:0,vz:0,owner:null,shot:null,trail:[],age:0,power:0,canCollect:0,targetY:0,attacker:-1};this.players=[];this.particles=[];this.events=[];this.controlled=[3,3,0,0];this.shake=0;this.flash=0;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.stormTimer=2;this.tornado=null;this.pk=null;this.matchSerial++;this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.stoppageWindow=0;this.stoppageAnnounced=false;this._shotAudit=null;this._reboundAudit=null;this._shotAuditNext=0;this.fatigueLedger=this.rosters.map(roster=>Object.fromEntries(roster.map(p=>[p.id,initialFatigue(p)])));this.moraleLedger=this.rosters.map(roster=>Object.fromEntries(roster.map(p=>[p.id,clampMorale(p.morale??55)])));this.talksUsed=[{},{}];this.celebrationStyle=0;this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.spawnPlayers();this.resetKickoff(0);this.matchState='play';this.emit('start',{mode});}
  spawnPlayers(){const old=new Map(this.players.map(p=>[`${p.t}:${p.src.id}`,{fatigue:p.fatigue,stun:p.stun,morale:p.morale,cryTimer:p.cryTimer,abilityCd:p.abilityCd,dashCooldown:p.dashCooldown,diveCooldown:p.diveCooldown,comboCooldown:p.comboCooldown,contactCooldown:p.contactCooldown, trickCd:p.trickCd,dribbleCooldown:p.dribbleCooldown, trickGuard:p.trickGuard}]));this.players=[];for(let t=0;t<2;t++)for(let i=0;i<6;i++){
  const src=this.rosters[t][this.lineups[t][i]],home=FORMATIONS[this.formation[t]][i];let x=F.x+(t===0?home.x:1-home.x)*F.w,y=F.y+home.y*F.h;
- this.players.push({t,i,src,x,y,homeX:x,homeY:y,face:t===0?1:-1,dx:0,dy:0,z:0,vz:0,jumpCount:0,jumpHold:0,jumpTapPending:false,dribbleHold:0,ballLiftWindow:0,ballLiftLock:false,aerialComboAction:null,aerialComboTimer:0,aerialComboTaps:0,stun:0,anim:0,action:'idle',actionTimer:0,invuln:0,fatigue:old.get(`${t}:${src.id}`)?.fatigue??this.fatigueLedger[t][src.id]??initialFatigue(src),moveVX:0,moveVY:0,morale:old.get(`${t}:${src.id}`)?.morale??this.moraleLedger[t][src.id]??55,cryTimer:old.get(`${t}:${src.id}`)?.cryTimer??0,abilityCd:old.get(`${t}:${src.id}`)?.abilityCd??0,abilityFx:0,dashTimer:0,sprintCharge:0,dashCooldown:old.get(`${t}:${src.id}`)?.dashCooldown??0,keeperHold:0,diveDy:0,diveDx:0,diveElapsed:0,diveIntentCooldown:0,diveIntentPending:false,diveCooldown:old.get(`${t}:${src.id}`)?.diveCooldown??0,comboCooldown:old.get(`${t}:${src.id}`)?.comboCooldown??0,contactCooldown:old.get(`${t}:${src.id}`)?.contactCooldown??0,trickCd:old.get(`${t}:${src.id}`)?.trickCd??0,dribbleCooldown:old.get(`${t}:${src.id}`)?.dribbleCooldown??0,trickGuard:old.get(`${t}:${src.id}`)?.trickGuard??0,trickFx:0,trickStyleId:null,firstTouchFx:0,comboWindow:0,comboActive:false,assistBy:null,assistFx:0,cd:0,specialCd:0,controlled:false,keeper:i===0,down:false,charge:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,aiComboGoal:null});}
+ this.players.push({t,i,src,x,y,homeX:x,homeY:y,face:t===0?1:-1,dx:0,dy:0,z:0,vz:0,jumpCount:0,jumpHold:0,jumpTapPending:false,dribbleHold:0,ballLiftWindow:0,ballLiftLock:false,aerialComboAction:null,aerialComboTimer:0,aerialComboTaps:0,stun:0,anim:0,action:'idle',actionTimer:0,invuln:0,fatigue:old.get(`${t}:${src.id}`)?.fatigue??this.fatigueLedger[t][src.id]??initialFatigue(src),moveVX:0,moveVY:0,morale:old.get(`${t}:${src.id}`)?.morale??this.moraleLedger[t][src.id]??55,cryTimer:old.get(`${t}:${src.id}`)?.cryTimer??0,abilityCd:old.get(`${t}:${src.id}`)?.abilityCd??0,abilityFx:0,dashTimer:0,sprintCharge:0,dashCooldown:old.get(`${t}:${src.id}`)?.dashCooldown??0,keeperHold:0,diveDy:0,diveDx:0,diveElapsed:0,diveIntentCooldown:0,diveIntentPending:false,diveAdvanceTravel:0,diveCooldown:old.get(`${t}:${src.id}`)?.diveCooldown??0,comboCooldown:old.get(`${t}:${src.id}`)?.comboCooldown??0,contactCooldown:old.get(`${t}:${src.id}`)?.contactCooldown??0,trickCd:old.get(`${t}:${src.id}`)?.trickCd??0,dribbleCooldown:old.get(`${t}:${src.id}`)?.dribbleCooldown??0,trickGuard:old.get(`${t}:${src.id}`)?.trickGuard??0,trickFx:0,trickStyleId:null,firstTouchFx:0,comboWindow:0,comboActive:false,assistBy:null,assistFx:0,cd:0,specialCd:0,controlled:false,keeper:i===0,down:false,charge:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,aiComboGoal:null});}
  }
  applyPlan(t,raw){
   if(t!==0&&t!==1)throw Error('Invalid team');
@@ -563,13 +563,36 @@ class GameEngine{
      predicted.y<WORLD.goalTop-25||predicted.y>WORLD.goalBottom+25)return false;
   const lateral=predicted.y-p.y;
   if(Math.abs(lateral)<22||Math.abs(lateral)>Math.max(165,reach.y+72))return false;
-  p.diveIntentCooldown=1.25;p.diveIntentPending=true;
+  p.diveIntentCooldown=1.25;p.diveIntentPending=true;p.diveAdvanceTravel=0;
   p.action='keeperDive';p.actionTimer=.64;p.diveElapsed=0;
   p.diveDy=clamp(lateral/Math.max(1,reach.y),-1,1);
   p.diveDx=clamp((b.x-p.x)/Math.max(1,reach.x),-1,1);
   this.emit('keeperDiveAttempt',{team:p.t,keeperId:p.src.id,
     predictedSeconds:predicted.time,lateral:Math.abs(lateral),shotKind:b.strike?.kind||'normal'});
   return true;
+ }
+ // Physical but tightly bounded late lunge after a genuine early dive intent.
+ // It is NOT a save: keeper/ball contact remains in tryKeeperDive (or swept).
+ advanceKeeperDive(p,dt){
+  const b=this.ball;
+  if(!p?.keeper||!p.diveIntentPending||p.action!=='keeperDive'||
+     p.actionTimer<=.25||p.stun>0||p.diveCooldown>0||b.owner||b.attacker!==1-p.t||
+     !Number.isFinite(dt)||dt<=0||dt>.1)return 0;
+  const toward=p.t===0?-1:1,remaining=(p.x-b.x)*toward;
+  if(b.vx*toward<=160||remaining<=30||remaining>320||this.superBreakerApproaching(p,b))return 0;
+  const projected=predictKeeperShot(p,b);
+  if(!projected||projected.time<=.025||projected.time>.46||
+     projected.y<WORLD.goalTop-25||projected.y>WORLD.goalBottom+25)return 0;
+  const diving=stat(p,'gkDiving'),fatigue=clamp(p.fatigue||0,0,1);
+  const limit=Math.min(28,(9+diving*.22)*(1-fatigue*.55));
+  const available=Math.max(0,limit-(p.diveAdvanceTravel||0));
+  const lateral=projected.y-p.y;
+  if(available<.01||Math.abs(lateral)<3)return 0;
+  const step=Math.min(available,Math.abs(lateral),(105+diving*.75)*(1-fatigue*.55)*dt);
+  const next=clamp(p.y+Math.sign(lateral)*step,F.y+23,F.y+F.h-23);
+  const moved=Math.abs(next-p.y);
+  p.y=next;p.diveAdvanceTravel=(p.diveAdvanceTravel||0)+moved;
+  return moved;
  }
  tryKeeperDive(p,manual=false){
   const b=this.ball;
@@ -1292,6 +1315,7 @@ class GameEngine{
   // No independent Special / Sprint / Switch gameplay buttons exist.
  }
  }else this.driveAI(p,dt);
+ if(p.keeper&&!controlled)this.advanceKeeperDive(p,dt);
  p.x=clamp(p.x,F.x+22,F.x+F.w-22);p.y=clamp(p.y,F.y+23,F.y+F.h-23);
  }
  }
