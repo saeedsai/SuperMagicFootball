@@ -1,22 +1,11 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "qa-framework",
-  "feature_id": "QA-PENALTY-SUDDEN-DEATH-RUNTIME",
-  "owner": "gameplay-review-20261016-gpt6-pkqa",
-  "status": "released",
-  "scope": "Only new tests/penalty_shootout_lifecycle.test.cjs and tests/penalty_shootout_lifecycle_browser_qa.py (real current modular source PK five-kick clinch, equal-score pair/sudden death and mirrored winner, no phantom keeper control); new dedicated docs/QA_PENALTY_SHOOTOUT_LIFECYCLE_20261016.md, concise NEXT_MILESTONES.md addendum and own docs/memory/agents/gameplay-review-20261016.md. No engine, UI, input, renderer, art, roster, tools, shared QA runner, CI workflows or unrelated tests. Includes one narrow discovery contract appended to tests/master_contracts.mjs to trigger exact-source Full Regression Census and require both new PK scripts exist. This is QA coverage, NOT an implementation of human PK goalkeeping.",
-  "base_sha": "23b76a6feb7184aa634338535476abc58595f59c",
+  "feature_id": "QA-CENSUS-EVIDENCE-INTEGRITY",
+  "owner": "qa-evidence-shape-20261016-gpt6-chat10",
+  "status": "active",
+  "scope": "Only tests/audit_regression_shards.py evidence validation, tests/test_audit_regression_shards.py negative tests, tests/audit_regression_shards.test.cjs count and docs/QA_CENSUS_EVIDENCE_INTEGRITY_20261016.md. Never edit gameplay, graphics, roster, UI, CI workflows, memory, QA shard runner.",
+  "base_sha": "a4839ee88b7f58b47e14e4cdb5012ef2ac072119",
   "created_at": "2026-10-16",
-  "renewed_at": "2026-10-16",
-  "tests": [
-    "node --test tests/penalty_shootout_lifecycle.test.cjs",
-    "python3 scripts/build.py && python3 tests/penalty_shootout_lifecycle_browser_qa.py",
-    "Modular Game Dev QA source-and-data",
-    "Full Regression Census 8 shards"
-  ],
-  "handover": "docs/QA_PENALTY_SHOOTOUT_LIFECYCLE_20261016.md; docs/memory/agents/gameplay-review-20261016.md; evidence https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914495445; issue https://github.com/saeedsai/SuperMagicFootball/issues/8",
-  "related_issue": "https://github.com/saeedsai/SuperMagicFootball/issues/5",
-  "released_at": "2026-10-16",
-  "outcome": "shipped real-engine Node PK lifecycle acceptance and desktop/sim-touch browser regression script; six new Node checks pass, full census browser not certified due unrelated game-developer-6 memory identity preflight failure issue #8",
-  "final_checkpoint_commit": "acba1703db548f966f916c3e1c9293731769876a"
+  "handover": "docs/QA_CENSUS_EVIDENCE_INTEGRITY_20261016.md"
 }
