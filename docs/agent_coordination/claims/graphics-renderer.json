@@ -1,0 +1,18 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "graphics-renderer",
+  "feature_id": "ART-C01",
+  "owner": "graphics-c01-front-hair-20261016-b",
+  "status": "active",
+  "scope": "C00/C01 one-batch front painted hair fitting / limited idle hair animation using only editable source/hair_front_front.svg, src/modules/conceptmodular.js, targeted graphics tests and graphics tracker/handover; no player data, UI, game engine, build fixture, service worker or workflow changes",
+  "base_sha": "79a445ab2e377314ba75bb251f90fc9f6a1ceab2",
+  "created_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
+  "tests": [
+    "python3 scripts/validate_concept_modular.py",
+    "node --test tests/*.test.cjs",
+    "python3 tests/concept_modular_browser_qa.py",
+    "GitHub Actions exact-commit graphics QA"
+  ],
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md"
+}
