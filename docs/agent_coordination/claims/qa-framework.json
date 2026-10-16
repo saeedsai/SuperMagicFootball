@@ -3,7 +3,7 @@
   "lock_key": "qa-framework",
   "feature_id": "QA-MANIFEST-FILENAME-INTEGRITY",
   "owner": "qa-manifest-extensions-dev6-20261016-gpt6",
-  "status": "active",
+  "status": "released",
   "scope": "Only tests/audit_regression_shards.py, tests/test_audit_regression_shards.py, tests/audit_regression_shards.test.cjs if test-count assertion needs update; docs/QA_MANIFEST_FILENAME_INTEGRITY_20261016.md, own docs/memory/agents/game-developer-6.md, docs/NEXT_MILESTONES.md. Disallow spoofed script names in full-census manifests without changing game, runner, CI, graphics, rosters or other memory.",
   "base_sha": "03c3ff1f30e601922828966f86b7e5276d97e2bb",
   "claimed_at": "2026-10-16",
@@ -14,5 +14,7 @@
     "hosted Pages PC and touch smoke",
     "node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs"
   ],
-  "handover": "docs/QA_MANIFEST_FILENAME_INTEGRITY_20261016.md"
+  "handover": "docs/QA_MANIFEST_FILENAME_INTEGRITY_20261016.md — source commits fdd74bc8858b19c3e4d5100ed99c8aa1d5cecb21, f0a08de30c1e0a6430ff6c4dde16cf2120266a45, f305a4385e1174b0a8a66e4c3408482d996e97bb; modular QA https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961347691; hosted smoke https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528",
+  "released_at": "2026-10-16",
+  "outcome": "completed: auditor refuses unsafe/fabricated census manifest script identities, 21 Python contracts; 228/228 active QA on exact feature source and later 231/231 integrated; full 8-shard exact-code pending"
 }
