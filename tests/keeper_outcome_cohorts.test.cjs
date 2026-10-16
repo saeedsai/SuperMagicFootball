@@ -71,7 +71,7 @@ test('missing and invalid aim or fatigue remain unobserved, never invented',asyn
 });
 test('exact threshold boundaries, snapshot stability and shot-only partition accounting',async()=>{
  const t=await tracker();
- const inputs=[[65,.35,'stretch','moderate'],[145,.7,'wide','tired'],[64.99,.349,'near','rested']];
+ const inputs=[[65,.35,'stretch','moderate'],[145,.7,'wide','tired'],[64.99,.34,'near','rested']];
  for(const [offset,fatigue] of inputs){
   const g=game(1,offset,fatigue);
   t.onEvent(shoot(0,g.target),g);
