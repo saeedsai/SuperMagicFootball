@@ -16,7 +16,7 @@ Manchester City data and QA handover are complete; its lock has been released at
 No ongoing club ownership is implied by this memory; City club lock is released after source, test and handover commits. Read only the `roster-fc27` agent memory and shared memory. Shared memory/admin docs and other agent memory are off limits. Retain all 2GK-3DF-4MF-3FW roster contract invariants.
 
 ## Actual QA checkpoint
-The integrated Manchester City tests passed 3/3 and active Node suite 169/170; the only failure was unrelated project-memory identity mismatch for game-developer-6, [issue #8](https://github.com/saeedsai/SuperMagicFootball/issues/8). Full historical Node/browser regression skipped after preflight; exact Pages hosted mobile/PC interaction unverified. [City handover](../../CLUB_PLAYER_METADATA_MAN_CITY_20261016.md) is authoritative.
+Later integrated [Modular QA #38915465084](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915465084) passed **171/171 Node tests**, including all 3 City tests; earlier memory identity blocker #8 was resolved by another agent. [Pages #38915464957](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915464957) deployed successfully. A separate historical census [#38915344074](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074) passed all 4 Node shards, with browser shards still running at checkpoint. Live hosted mobile/PC gameplay remains unverified. [City handover](../../CLUB_PLAYER_METADATA_MAN_CITY_20261016.md) is authoritative.
 
 ## Evidence
 Official EA cards: https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10
