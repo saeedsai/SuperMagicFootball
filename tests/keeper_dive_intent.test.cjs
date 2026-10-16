@@ -4,7 +4,7 @@ const root=path.resolve(__dirname,'..');
 const source=p=>fs.readFileSync(path.join(root,p),'utf8');
 const engine=source('src/modules/engine.js');
 test('goalkeeper anticipatory dive does not expand save depth or teleport the ball',()=>{
- const intent=engine.slice(engine.indexOf(' tryKeeperDiveIntent(p){'),engine.indexOf(' tryKeeperDive(p,manual=false){'));
+ const intent=engine.slice(engine.indexOf(' tryKeeperDiveIntent(p){'),engine.indexOf(' advanceKeeperDive(p,dt){'));
  assert(intent.length>200,'keeper intent method exists');
  for(const fragment of ['predictKeeperShot(p,b)','keeperReactionReach(p,b)','keeperDiveAttempt','p.diveIntentCooldown=1.25','p.diveIntentPending=true']){
   assert(intent.includes(fragment),fragment);
