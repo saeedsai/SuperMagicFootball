@@ -38,7 +38,7 @@ const CONCEPT_HERO=(()=>{
   image.src=data?'data:image/webp;base64,'+data:new URL('../../assets/concept_hero/hero_atlas.webp',import.meta.url).href;
   if(image.complete&&image.naturalWidth>0)prepare();
  }
- function isConceptPlayer(p){return p?.src?.renderModel===ID||p?.src?.appearance?.renderModel===ID;}
+ function isConceptPlayer(p){const model=p?.src?.renderModel||p?.src?.appearance?.renderModel;return model===ID||model==='concept_modular_v1';}
  function draw(ctx,p,view,{run=0}={}){
   if(!isConceptPlayer(p))return false;
   if(!atlas.ready){preload();return false;}

@@ -1,5 +1,7 @@
 # NEXT CHAT HANDOVER — Future Illustrated Concept Character System
 
+> **Updated C00/C01 handover (16 Oct):** the first editable illustrated front hair overlay, manifest, runtime preview and QA workflow are now committed as an experimental opt-in. See [IMPLEMENTATION_CHECKPOINT_20261016.md](IMPLEMENTATION_CHECKPOINT_20261016.md) and tracker. The legacy baseline text below predates this change; do not count the new overlay as a completed full rig. Check actual screenshots/CI before expanding.
+
 **Created:** 16 October 2026. **Project:** SuperMagicFootball. **Repository:** https://github.com/saeedsai/SuperMagicFootball. **Branch:** dev. **Planning status:** Complete; implementation of the future modular art bank has NOT begun. **Important:** immediately retrieve latest dev before taking action, because other developers commit concurrently.
 
 ## Copy this request into the next ChatGPT conversation

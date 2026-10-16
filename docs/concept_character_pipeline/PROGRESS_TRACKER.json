@@ -4,7 +4,7 @@
   "branch": "dev",
   "baselineAtPlanning": "82119108ca63dd510bd49bdf5c2083bed168a9a0",
   "currentMilestone": "C00",
-  "programStatus": "planned",
+  "programStatus": "in_progress",
   "lastVerifiedModularCommit": null,
   "disclaimer": "Only independently layered illustrated concept_modular_v1 assets with evidence count as delivered; older procedural Studio options and one flat concept_hero are not modular variants.",
   "existingPrototype": {
@@ -28,20 +28,32 @@
     {
       "id": "C00",
       "title": "Freeze approved artwork source, reference comparison, alpha/rig contract and baseline tests",
-      "status": "planned",
+      "status": "in_progress",
       "checkedAtCommit": null,
-      "validatedFiles": [],
+      "validatedFiles": [
+        "assets/characters/concept_modular_v1/references/PROVENANCE.md",
+        "assets/characters/concept_modular_v1/manifests/rig.json"
+      ],
       "evidence": [],
-      "issues": []
+      "issues": [
+        "Original layered painted source/rights record missing; owner approval pending"
+      ]
     },
     {
       "id": "C01",
       "title": "One approved layered character, independently editable head/hair/torso/arms/legs",
-      "status": "planned",
+      "status": "in_progress",
       "checkedAtCommit": null,
-      "validatedFiles": [],
+      "validatedFiles": [
+        "assets/characters/concept_modular_v1/source/hair_front_front.svg",
+        "src/modules/conceptmodular.js",
+        "tests/concept_modular_browser_qa.py"
+      ],
       "evidence": [],
-      "issues": []
+      "issues": [
+        "One front hair overlay, no independent full head/torso/arms/legs",
+        "No authored seven other views or runtime WebP derivative"
+      ]
     },
     {
       "id": "C02",
@@ -192,7 +204,7 @@
     "frontLeft"
   ],
   "authoredViewStatus": {
-    "front": "not_started",
+    "front": "in_progress",
     "frontRight": "not_started",
     "right": "not_started",
     "backRight": "not_started",
@@ -287,7 +299,7 @@
       "identifier": "medium-honey-curls-moustache"
     }
   ],
-  "nextSmallTask": "C00: obtain or author accessible editable approved hero source and write ONE schema validator and ONE properly pivoted layered asset example before game-wide work.",
+  "nextSmallTask": "C00/C01: inspect real-match exact-commit screenshot, improve front hair fitting and alpha on four backgrounds, then author matching editable head/hair-back component.",
   "openRisks": [
     "Only one cloned literal concept character is available for all twelve demo slots",
     "Flattened five-view atlas has baked blue uniform and number 10",

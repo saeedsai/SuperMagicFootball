@@ -1,6 +1,6 @@
 # Concept-quality modular player graphics — document index
 
-**Created:** 16 October 2026. **Development branch:** dev. **Scope:** future illustrated player models, customization, animation, editor and QA. **Status:** documentation only.
+**Created:** 16 October 2026. **Development branch:** dev. **Scope:** future illustrated player models, customization, animation, editor and QA. **Status:** first experimental front hair overlay in code, with opt-in rendering and pending art certification. See [IMPLEMENTATION_CHECKPOINT_20261016.md](IMPLEMENTATION_CHECKPOINT_20261016.md).
 
 Read these documents in order:
 

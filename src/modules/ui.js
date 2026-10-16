@@ -68,6 +68,11 @@ const CONCEPT_DEMO_ROSTER=CONCEPT_DEMO_ROLES.map((role,i)=>({
  appearance:{renderModel:'concept_hero',style:1,face:0,beard:0,accessory:0,
  skin:'#e9b18b',hair:'#78422b',body:2,stature:2,exaggeration:1}
 }));
+// Explicit one-player art-preview opt-in; default game and saved rosters are unchanged.
+if(typeof location!=='undefined'&&new URLSearchParams(location.search).has('conceptModularPreview')){
+ CONCEPT_DEMO_ROSTER[9].renderModel='concept_modular_v1';
+ CONCEPT_DEMO_ROSTER[9].appearance.renderModel='concept_modular_v1';
+}
 TEAMS.push({id:CONCEPT_DEMO_ID,index:TEAMS.length,name:'Concept Royals FC',
  group:'concept_demo',flag:'CRF',primary:'#1262d4',secondary:'#f4f5f7',
  trim:'#f1bb46',rank:84,shot:'omega',customRoster:CONCEPT_DEMO_ROSTER});

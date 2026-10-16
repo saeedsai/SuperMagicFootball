@@ -1,0 +1,76 @@
+{
+  "schema": "smf-concept-modular/1",
+  "id": "royals-hair-front-front-001",
+  "status": "experimental_one_view",
+  "baseFamily": "royals_base_a",
+  "referenceCanvas": [
+    112,
+    265
+  ],
+  "logicalPlayerHeight": 141,
+  "authoringView": "front",
+  "viewIds": [
+    "front",
+    "frontRight",
+    "right",
+    "backRight",
+    "back",
+    "backLeft",
+    "left",
+    "frontLeft"
+  ],
+  "authoredViews": [
+    "front"
+  ],
+  "runtimeLayer": {
+    "id": "hair_front_001",
+    "kind": "hair_front",
+    "view": "front",
+    "asset": "../source/hair_front_front.svg",
+    "sourceCanvas": [
+      112,
+      265
+    ],
+    "cropRect": [
+      0,
+      0,
+      112,
+      265
+    ],
+    "trimOffset": [
+      0,
+      0
+    ],
+    "pivot": [
+      56,
+      56
+    ],
+    "alphaBoundsEstimate": [
+      8,
+      0,
+      104,
+      60
+    ],
+    "z": 20,
+    "material": "painted_chestnut",
+    "noMirroring": true
+  },
+  "fallbackModel": "concept_hero",
+  "compatibleBaseAtlas": "assets/concept_hero/hero_atlas.webp",
+  "provenance": "../references/PROVENANCE.md",
+  "ownerArtApproval": "pending",
+  "animationCoverage": [
+    "idle",
+    "legacy_leg_run"
+  ],
+  "unimplemented": [
+    "other_seven_views",
+    "independent_head",
+    "face",
+    "hair_back",
+    "torso",
+    "arms",
+    "legs",
+    "runtime_webp"
+  ]
+}
