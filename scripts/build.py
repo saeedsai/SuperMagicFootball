@@ -22,6 +22,8 @@ modular_front=base64.b64encode((root/'assets/characters/concept_modular_v1/sourc
 code.append('const CONCEPT_MODULAR_FRONT_INLINE='+json.dumps(modular_front)+';\n')
 modular_back=base64.b64encode((root/'assets/characters/concept_modular_v1/source/hair_back_back.svg').read_bytes()).decode('ascii')
 code.append('const CONCEPT_MODULAR_BACK_INLINE='+json.dumps(modular_back)+';\n')
+modular_face=base64.b64encode((root/'assets/characters/concept_modular_v1/source/face_front_front.svg').read_bytes()).decode('ascii')
+code.append('const CONCEPT_MODULAR_FACE_INLINE='+json.dumps(modular_face)+';\n')
 for name in order:
  s=(root/'src/modules'/f'{name}.js').read_text()
  s=re.sub(r'^import \{[A-Z_]+\} from .*?;\n','',s,flags=re.M)

@@ -1,7 +1,7 @@
 {
   "schema": "smf-concept-modular/1",
   "id": "royals-hair-front-front-001",
-  "status": "experimental_two_hair_views",
+  "status": "experimental_front_face_and_two_hair_layers",
   "baseFamily": "royals_base_a",
   "referenceCanvas": [
     112,
@@ -63,12 +63,13 @@
   "animationCoverage": [
     "idle",
     "legacy_leg_run",
-    "secondary_hair_sway_front_back"
+    "secondary_hair_sway_front_back",
+    "front_face_static_registers_to_hair_pivot"
   ],
   "unimplemented": [
+    "independent_full_head_with_side_and_back_profiles",
+    "face_expressions_and_blink",
     "other_six_views",
-    "independent_head",
-    "face",
     "hair_for_quarters_and_side",
     "torso",
     "arms",
@@ -76,6 +77,67 @@
     "runtime_webp"
   ],
   "additionalLayers": [
+    {
+      "id": "face_front_001",
+      "kind": "face_front",
+      "view": "front",
+      "asset": "../source/face_front_front.svg",
+      "sourceCanvas": [
+        112,
+        265
+      ],
+      "cropRect": [
+        0,
+        0,
+        112,
+        265
+      ],
+      "trimOffset": [
+        0,
+        0
+      ],
+      "pivot": [
+        56,
+        99
+      ],
+      "alphaBoundsEstimate": [
+        13,
+        42,
+        103,
+        115
+      ],
+      "headCenter": [
+        56,
+        78
+      ],
+      "neck": [
+        56,
+        110
+      ],
+      "ears": [
+        [
+          21,
+          81
+        ],
+        [
+          94,
+          82
+        ]
+      ],
+      "z": 10,
+      "material": "painted_warm_skin",
+      "noMirroring": true,
+      "partGroups": [
+        "ears",
+        "head-skin",
+        "cheeks",
+        "eyebrows",
+        "eye-whites",
+        "irises",
+        "nose",
+        "mouth"
+      ]
+    },
     {
       "id": "hair_back_001",
       "kind": "hair_back",

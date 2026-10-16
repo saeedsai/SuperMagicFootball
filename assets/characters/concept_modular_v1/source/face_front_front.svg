@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="265" viewBox="0 0 112 265" role="img" aria-label="Independently editable painted front face of the Concept Royals prototype">
+<title>Royals painted front head and expression — C01 face component 001</title>
+<desc>Transparent shaded facial illustration on the original 112 by 265 atlas coordinates, with distinct editable ears, skin, brows, eyes, nose, cheeks and mouth. Painted hair is a separate overlying layer.</desc>
+<defs>
+ <linearGradient id="skin" x1="0" y1="0" x2=".89" y2="1"><stop stop-color="#ffe0a4"/><stop offset=".34" stop-color="#efb87d"/><stop offset=".76" stop-color="#cc865b"/><stop offset="1" stop-color="#b56b4d"/></linearGradient>
+ <linearGradient id="temple" x1="0" y1="0" x2="1" y2=".9"><stop stop-color="#a86649"/><stop offset=".6" stop-color="#d99768"/><stop offset="1" stop-color="#edb47e"/></linearGradient>
+ <linearGradient id="cheek" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eeae7b"/><stop offset="1" stop-color="#c77759"/></linearGradient>
+ <radialGradient id="eye" cx=".35" cy=".3" r=".85"><stop stop-color="#fffbec"/><stop offset=".75" stop-color="#f4e7d0"/><stop offset="1" stop-color="#dbc5aa"/></radialGradient>
+ <radialGradient id="iris" cx=".3" cy=".25" r=".88"><stop stop-color="#a6683c"/><stop offset=".54" stop-color="#71452e"/><stop offset="1" stop-color="#342b29"/></radialGradient>
+ <linearGradient id="lip" x1="0" y1="0" x2=".2" y2="1"><stop stop-color="#9a4c43"/><stop offset="1" stop-color="#783938"/></linearGradient>
+</defs>
+<g id="ears" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M27 75C23 67 17 68 16 74C13 80 17 92 24 95C28 96 32 92 31 87Z" fill="url(#temple)" stroke="#7c5041" stroke-width="2"/>
+ <path d="M87 76C92 69 97 71 99 77C103 86 97 96 91 96C87 94 85 90 85 85Z" fill="url(#temple)" stroke="#7b4b3e" stroke-width="2"/>
+ <path d="M23 76C19 74 19 81 22 86C25 90 27 86 25 84M94 78C98 81 96 87 92 90" fill="none" stroke="#aa6250" stroke-width="2.6"/>
+ <path d="M21 75C20 80 21 81 23 82M95 77C96 80 96 82 94 84" fill="none" stroke="#f7cb98" stroke-width="1.7"/>
+</g>
+<g id="head-skin" stroke-linejoin="round" stroke-linecap="round">
+ <path d="M28 55C33 46 43 43 55 44C71 42 81 47 86 57C92 69 91 86 84 98C77 109 66 114 56 114C42 113 34 106 28 97C21 85 22 68 28 55Z" fill="url(#skin)" stroke="#6e463c" stroke-width="2.4"/>
+ <path d="M29 61C34 54 39 52 45 50C35 63 33 81 37 94C32 90 29 82 28 76Z" fill="#b96e53" opacity=".28"/>
+ <path d="M79 52C89 62 89 77 85 89C84 98 76 105 69 108C78 95 79 72 79 52Z" fill="#a86249" opacity=".27"/>
+ <path d="M41 104C49 110 64 111 73 104C67 112 61 114 56 114C50 114 45 111 41 104Z" fill="#ac6e54" opacity=".27"/>
+ <path d="M34 56C43 47 54 46 61 46" fill="none" stroke="#ffe2ab" stroke-width="2.5" opacity=".78"/>
+ <path d="M30 81C29 89 33 97 38 100M83 92C80 99 76 103 72 106" fill="none" stroke="#f9d298" stroke-width="1.6" opacity=".8"/>
+</g>
+<g id="cheeks" stroke-linecap="round">
+ <path d="M29 84C34 80 43 82 46 88C40 97 32 95 29 90Z" fill="url(#cheek)" opacity=".35"/>
+ <path d="M68 87C73 81 81 80 85 86C83 94 75 97 68 92Z" fill="url(#cheek)" opacity=".31"/>
+ <path d="M34 87C37 85 40 85 43 87M72 87C76 85 79 85 81 86" fill="none" stroke="#f6bd8a" stroke-width="1.4" opacity=".75"/>
+</g>
+<g id="eyebrows" fill="none" stroke="#4a2c2a" stroke-linecap="round">
+ <path d="M34 60C38 54 45 54 51 58" stroke-width="4.7"/>
+ <path d="M65 58C71 53 79 54 83 60" stroke-width="4.7"/>
+ <path d="M36 57C42 54 46 55 50 57M67 57C73 54 78 56 81 59" stroke="#966046" stroke-width="1.3"/>
+</g>
+<g id="eye-whites" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M33 72C33 64 38 61 44 61C51 62 53 68 53 74C52 82 49 85 44 85C37 85 33 79 33 72Z" fill="url(#eye)" stroke="#432f30" stroke-width="2.5"/>
+ <path d="M64 73C63 65 68 61 74 61C81 61 84 67 84 74C84 82 80 85 74 85C68 85 64 81 64 73Z" fill="url(#eye)" stroke="#432f30" stroke-width="2.5"/>
+ <path d="M35 67C37 62 44 60 49 64M66 67C69 61 77 61 81 66" fill="none" stroke="#6a4036" stroke-width="1.2"/>
+</g>
+<g id="irises" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M41 67C46 65 49 68 49 74C49 80 46 82 43 81C39 80 38 74 41 67Z" fill="url(#iris)" stroke="#402b29" stroke-width="1"/>
+ <path d="M71 67C75 64 79 68 79 74C79 80 76 82 73 81C69 80 69 73 71 67Z" fill="url(#iris)" stroke="#402b29" stroke-width="1"/>
+ <path d="M44 69C47 69 48 72 47 76C47 79 44 80 43 78C41 75 42 71 44 69Z" fill="#221e22"/>
+ <path d="M74 69C77 69 78 72 77 76C77 79 75 80 73 78C71 76 72 71 74 69Z" fill="#221e22"/>
+ <path d="M41 69C42 68 43 68 44 68M71 69C72 67 74 67 75 68" fill="none" stroke="#fff8df" stroke-width="2.5"/>
+ <path d="M47 77L48 76M77 77L78 76" stroke="#d3aa85" stroke-width="1.2"/>
+</g>
+<g id="nose" stroke-linejoin="round" stroke-linecap="round">
+ <path d="M56 74C55 78 54 83 54 87C56 90 60 90 62 88" fill="none" stroke="#b56b50" stroke-width="2.4"/>
+ <path d="M54 86C54 90 57 92 61 90C63 89 63 87 62 86" fill="#ecae7c" opacity=".82"/>
+ <path d="M55 87C57 89 59 89 61 88" fill="none" stroke="#995b49" stroke-width="1.3"/>
+ <path d="M56 82C56 79 58 77 59 77" fill="none" stroke="#ffe1a8" stroke-width="1.5"/>
+</g>
+<g id="mouth" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M44 95C48 98 53 99 57 99C62 99 68 98 72 94C69 103 63 106 57 106C51 106 46 102 44 95Z" fill="url(#lip)" stroke="#7c473e" stroke-width="1.2"/>
+ <path d="M47 97C52 99 63 100 69 97C66 101 52 103 47 97Z" fill="#fff5df"/>
+ <path d="M50 104C55 107 61 107 66 104" fill="none" stroke="#d58a70" stroke-width="1.5"/>
+ <path d="M45 95C43 95 42 94 41 92M72 94C74 94 75 92 76 91" fill="none" stroke="#a45f50" stroke-width="1.4"/>
+</g>
+<g id="subtle-finish" fill="none" stroke-linecap="round">
+ <path d="M36 94C37 96 39 97 42 98M75 99C78 97 80 95 80 93" stroke="#ffd59d" stroke-width="1.7" opacity=".78"/>
+ <path d="M49 109C53 110 60 111 63 109" stroke="#ffd19f" stroke-width="1.1" opacity=".65"/>
+</g>
+</svg>
