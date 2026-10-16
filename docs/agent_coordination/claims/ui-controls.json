@@ -3,7 +3,7 @@
   "lock_key": "ui-controls",
   "feature_id": "UI-CAREER",
   "owner": "ui-career-subfeedback-20261016-gpt6a",
-  "status": "active",
+  "status": "released",
   "scope": "Bounded UI-only career/tactics substitution feedback in src/modules/ui.js; tests/substitution_advice.test.cjs, tests/substitution_advice_browser_qa.py, one UI feature-presence assertion in tests/master_contracts.mjs to activate full legacy regression; dedicated docs handover. No engine, rosters, graphics, style.css, index.html, shared QA runner, build scripts or workflows. Save keys/four buttons unchanged.",
   "base_sha": "a41926787b914fa239cdb4c1809a9d7dc9c3567b",
   "created_at": "2026-10-16",
@@ -15,5 +15,8 @@
     "GitHub Pages hosted desktop/touch smoke",
     "tests/master_contracts.mjs full-census trigger"
   ],
-  "handover": "docs/UI_CAREER_SUBSTITUTION_FEEDBACK_20261016.md"
+  "handover": "docs/UI_CAREER_SUBSTITUTION_FEEDBACK_20261016.md — source 9951b3b, Node 81/81 PASS, hosted PC/touch PASS, browser shards pending",
+  "released_at": "2026-10-16",
+  "outcome": "checkpoint_delivered_pending_full_browser_census",
+  "integrated_commit": "e9c99b9d6e8ed4b8b1140262f03670666b5b7cdd"
 }
