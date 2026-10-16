@@ -64,3 +64,15 @@ python3 tests/full_regression_runner.py --category browser --shard-index 0 --sha
 5. Continue directional glove/release and first-touch/pass animations under graphics owner, then improve coaching, career and classic-mode parity. Physical iOS/Android touch, full PWA offline upgrade and network multiplayer remain separately scoped.
 
 **File cleanup:** no archived historical QA or art assets deleted without a dependency audit. No generated screenshots/fixtures committed. Reuse the repository's existing game input and browser fixtures rather than adding templates.
+## Later integrated QA recovery — 16 October 2026
+
+The separately owned project-memory identity contract was corrected by a concurrent agent after the initial failing source run; do not interpret the earlier 193/194 result as a continuing failure at this checkpoint.
+
+- [Modular Game Dev QA #38946440516](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946440516) on integrated commit `b6a767e02`: **200/200 Node PASS, zero failures**, includes all eight new real-engine keeper-control subtests.
+- [Modular Game Dev QA #38946505072](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946505072) on a later descendant `50ba2479`: **200/200 Node PASS, zero failures**.
+- [GitHub Pages deployment #38945949774](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38945949774) **SUCCESS** at descendant `5d9f72193` (compare GitHub history: the gameplay engine commit `d0adf651` is an ancestor, 17 commits behind). This confirms the hosted bundle includes the committed control logic, **not** that physical mobile or the specific new Versus browser test was executed.
+- [Full Regression Census #38946504996](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946504996) at descendant `50ba2479` was **queued/pending when checked**; no full eight-shard or newly added browser test result was asserted. Existing [earlier full census #38925059080](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925059080) succeeded **before** this gameplay change and cannot certify it.
+- Repository tree audit on current `dev`: **707 tracked paths** checked for generated/cache/temp categories; no tracked `__pycache__`, `.generated`, `node_modules`, `dist`, `coverage`, `playwright-report`, `.pyc`, `.bak`, `.tmp` or `.swp` detected. No unrelated historical test/graphics/provenance file was deleted.
+- After the memory contract fix, [issue #8](https://github.com/saeedsai/SuperMagicFootball/issues/8) is ready for owner-confirmed closure; Issue #5 should remain open until full Chromium and hosted two-human penalty acceptance are actually observed.
+
+**Final integration outcome for this batch:** runtime change and both regression scripts committed, 200/200 standard Node regression green, a descendant Pages deploy succeeded, full multi-browser game release not yet certified on the new feature.
