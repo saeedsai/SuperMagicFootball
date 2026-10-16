@@ -18,16 +18,16 @@ test('exact reference sprites exist as valid WebP and are not rendered for exist
  assert.equal(file.toString('ascii',0,4),'RIFF');
  assert.equal(file.toString('ascii',8,12),'WEBP');
  const art=text('src/modules/concepthero.js');
- assert.match(art,/p\?\.src\?\.renderModel===ID/);
+ assert.match(art,/model===ID\|\|model==='concept_modular_v1'/);
  assert.match(art,/ctx\.drawImage\(atlas\.image/);
- assert.match(text('src/modules/render.js'),/if\(!CONCEPT_HERO\.draw\(ctx,p,view,/);
+ assert.match(text('src/modules/render.js'),/!CONCEPT_MODULAR\.draw\(ctx,p,view,[\s\S]*&&!CONCEPT_HERO\.draw\(ctx,p,view,/);
 });
 test('offline, modular imports and inline fixture contain the actual raster assets',()=>{
  const sw=text('sw.js'),build=text('scripts/build.py');
- assert.match(sw,/smf-082537-keeper-lateral-lunge-v1/);
+ assert.match(sw,/smf-082538-concept-front-hair-v1/);
  assert.match(sw,/assets\/concept_hero/);
  assert.match(build,/CONCEPT_HERO_INLINE/);
- assert.match(build,/'concepthero','render'/);
+ assert.match(build,/'concepthero','conceptmodular','render'/);
  const fixture=text('tests/.generated/game.js');
  assert.match(fixture,/data:image\/webp;base64/);
 });

@@ -24,7 +24,7 @@ with sync_playwright() as pw:
   page.wait_for_function('!!window.SupermagicFootball',timeout=30000)
   counts=page.evaluate("""() => {const t=SupermagicFootball.teams.find(t=>t.id==='demo_concept_royals');return [SupermagicFootball.teams.length,t.customRoster.filter(p=>p.renderModel==='concept_modular_v1').length,t.customRoster.filter(p=>p.renderModel==='concept_hero').length]}""")
   assert counts==[224,1,11],counts
-  page.wait_for_function("typeof CONCEPT_MODULAR!=='undefined' && CONCEPT_MODULAR.status().loaded",timeout=15000)
+  page.wait_for_function("!!window.SupermagicFootball?.conceptModularStatus?.().loaded",timeout=15000)
   page.locator('[data-action=navQuick]').first.click()
   page.locator('[data-action=conceptDemo]').first.click()
   page.locator('[data-action=kickoff]').first.click()
@@ -41,7 +41,7 @@ with sync_playwright() as pw:
         {getTeam:()=>g.getTeam(0),options:{showNames:false}});
       return c.toDataURL('image/png');
     }
-    return {front:draw('concept_modular_v1',1),old:draw('concept_hero',1),back:draw('concept_modular_v1',-1),backOld:draw('concept_hero',-1),status:CONCEPT_MODULAR.status()};
+    return {front:draw('concept_modular_v1',1),old:draw('concept_hero',1),back:draw('concept_modular_v1',-1),backOld:draw('concept_hero',-1),status:e.conceptModularStatus()};
   }""")
   def png(value):return Image.open(io.BytesIO(base64.b64decode(value.split(',',1)[1]))).convert('RGBA')
   f,o,b,bo=[png(data[k]) for k in ('front','old','back','backOld')]
