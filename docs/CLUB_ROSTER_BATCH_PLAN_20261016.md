@@ -74,3 +74,20 @@ All 165 club slots are populated, but additional review is warranted for **2026/
 - [GitHub Pages playable game](https://saeedsai.github.io/SuperMagicFootball/)
 
 **Batch status as of the recorded snapshot:** All 207 replacements have been applied to `dev` with automated roster-source/runtime parity checks. An editorial rating is not a sourced EA rating and geographic grouping is not itself a proof of current club registration.
+
+
+## Identity-only correction checkpoint — 16 October 2026
+
+- **Batch:** `CLUB-20261016-AVL-METADATA-1` (Aston Villa, `club26_6`), five players and **11 verified attribute-level edits**: four corrected ages, five new centimetre heights, and two nationality display normalizations.
+- **Immutable evidence:** [player metadata correction log](PLAYER_METADATA_BATCHES_20261016.json). Both `data/players/club26.json` and `src/roster_corrections.js` were updated. Ages use 2026-10-16 as reference, rather than an arbitrary source snapshot age.
+- **Sources:** [UEFA Aston Villa current squad](https://www.uefa.com/nationalassociations/teams/52683/squad/), [Premier League player biographies](https://www.premierleague.com/en/players), [Transfermarkt 2026/27 detailed squad](https://www.transfermarkt.de/aston-villa/kader/verein/405/saison_id/2026/plus/1).
+- **Selection invariants:** No names, FC27 identifiers, roles, ratings, 12-slot squads or team IDs were changed; the existing 207 name/OVR-replacement records and audit fingerprint remain intact. This is a separate **metadata-only batch** and must **not** be misrepresented as a newly selected-player batch.
+- **Known follow-up:** The source age-check identified 122 stale populated age values in the 32 Club26 teams at the 2026-10-16 reference date. After this batch, 118 remain outside Aston Villa; absent ages and height values also need staged source checks. The 2026/27 club registration and shirt-number discrepancies, including Villa, require a separate, sourced selection review. Do not bulk edit unverified FC27 overall ratings.
+- **Regression gate:** `node --test tests/club_player_identity_20261016.test.cjs`, `node tests/all_club_fc27_rosters.mjs`, `node tests/club_roster_batch_ledger.mjs`, `python3 scripts/validate_data.py`, full Node/Chromium CI, and hosted deployment must be checked on the resulting commit before marking the batch CI-verified.
+
+### Identity audit next five iterations
+1. Club26 age verification: Manchester United, Aston Villa remaining empty fields, and nearby high-confidence birth dates.
+2. Remaining Club26 high-error teams: verify dates and repair stale ages in small tracked club sets.
+3. UEFA clubs: source-backed nationality and height fields, preserving current FC27 shortlists.
+4. Continental confederations: verify dated current-club registration, physical fields and editorial rating provenance.
+5. Reconcile role/OVR selection against confirmed official FC27 if available; test 165 clubs, full regression and hosted desktop/touch.

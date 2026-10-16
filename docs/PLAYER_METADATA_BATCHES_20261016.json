@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Immutable per-field factual correction trail; complements (does not replace) the name/role/OVR squad ledger.",
+  "batches": [
+    {
+      "id": "CLUB-20261016-AVL-METADATA-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "bdc0290a7dd7f3c0310d922d6559d3e20a8749c5",
+      "clubId": "club26_6",
+      "club": "Aston Villa",
+      "playersChanged": 5,
+      "fieldsChanged": 11,
+      "status": "pending_ci_regression",
+      "changes": [
+        {
+          "playerId": "club26_6_0",
+          "name": "Emiliano Martínez",
+          "rosterSlot": 1,
+          "fields": {
+            "age": {
+              "previous": 22,
+              "current": 34,
+              "source": "https://www.uefa.com/nationalassociations/teams/52683/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 195,
+              "source": "https://www.premierleague.com/players/4245/Emiliano-Martinez/overview"
+            }
+          }
+        },
+        {
+          "playerId": "club26_6_11",
+          "name": "Marco Bizot",
+          "rosterSlot": 2,
+          "fields": {
+            "age": {
+              "previous": 33,
+              "current": 35,
+              "source": "https://www.uefa.com/nationalassociations/teams/52683/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 193,
+              "source": "https://www.transfermarkt.de/aston-villa/kader/verein/405/saison_id/2026/plus/1"
+            },
+            "nation": {
+              "previous": "Holland",
+              "current": "Netherlands",
+              "source": "https://www.uefa.com/nationalassociations/teams/52683/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_6_2",
+          "name": "Ian Maatsen",
+          "rosterSlot": 5,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://www.premierleague.com/players/51223/Juan-Familia-Castillo/overview"
+            },
+            "nation": {
+              "previous": "Holland",
+              "current": "Netherlands",
+              "source": "https://www.uefa.com/nationalassociations/teams/52683/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_6_fill_MF_1",
+          "name": "Boubacar Kamara",
+          "rosterSlot": 6,
+          "fields": {
+            "age": {
+              "previous": 24,
+              "current": 26,
+              "source": "https://www.uefa.com/nationalassociations/teams/52683/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 184,
+              "source": "https://www.premierleague.com/players/25067/Thierry-Katsukunya/overview"
+            }
+          }
+        },
+        {
+          "playerId": "club26_6_5",
+          "name": "Amadou Onana",
+          "rosterSlot": 7,
+          "fields": {
+            "age": {
+              "previous": 27,
+              "current": 25,
+              "source": "https://www.uefa.com/nationalassociations/teams/52683/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 195,
+              "source": "https://www.premierleague.com/players/108096/Amadou-Onana"
+            }
+          }
+        }
+      ],
+      "notes": [
+        "Ages are derived from verified ISO birth dates at 2026-10-16; static ages will require scheduled refresh in later seasons.",
+        "heightCm uses centimetres; height is informational metadata and does not change the match physics, scaling or player overall.",
+        "2026/27 UEFA registrations and the Premier League squad may differ; no player-selection or squad-role changes attempted.",
+        "The 1,980-slot audit and immutable name/role/overall change ledger are unaffected by metadata-only corrections.",
+        "Unchanged FC27 numbers are unofficial third-party figures, not EA-verified."
+      ]
+    }
+  ]
+}

@@ -2846,7 +2846,7 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 22,
+      "age": 34,
       "rating": 85,
       "value": 1320002,
       "fictional": false,
@@ -2870,7 +2870,8 @@
       "birthDate": "1992-09-02",
       "nation": "Argentina",
       "fc27Id": "202811",
-      "fc27Position": "GK"
+      "fc27Position": "GK",
+      "heightCm": 195
     },
     {
       "id": "club26_6_11",
@@ -2886,7 +2887,7 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 33,
+      "age": 35,
       "rating": 77,
       "value": 536749,
       "fictional": false,
@@ -2908,9 +2909,10 @@
         "physicality": 78
       },
       "birthDate": "1991-03-10",
-      "nation": "Holland",
+      "nation": "Netherlands",
       "fc27Id": "200110",
-      "fc27Position": "GK"
+      "fc27Position": "GK",
+      "heightCm": 193
     },
     {
       "id": "club26_6_1",
@@ -3025,9 +3027,10 @@
         "physicality": 63
       },
       "birthDate": "2002-03-10",
-      "nation": "Holland",
+      "nation": "Netherlands",
       "fc27Id": "248465",
-      "fc27Position": "LB"
+      "fc27Position": "LB",
+      "heightCm": 178
     },
     {
       "id": "club26_6_fill_MF_1",
@@ -3043,7 +3046,7 @@
       "rating": 84,
       "shot": "target",
       "shotName": "Accurate Shot",
-      "age": 24,
+      "age": 26,
       "skill": "Arcade Technique",
       "value": 616729,
       "fictional": false,
@@ -3067,7 +3070,8 @@
       "birthDate": "1999-11-23",
       "nation": "France",
       "fc27Id": "236987",
-      "fc27Position": "CDM"
+      "fc27Position": "CDM",
+      "heightCm": 184
     },
     {
       "id": "club26_6_5",
@@ -3083,7 +3087,7 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 27,
+      "age": 25,
       "rating": 81,
       "value": 1037301,
       "fictional": false,
@@ -3107,7 +3111,8 @@
       "birthDate": "2001-08-16",
       "nation": "Belgium",
       "fc27Id": "257057",
-      "fc27Position": "CDM"
+      "fc27Position": "CDM",
+      "heightCm": 195
     },
     {
       "id": "club26_6_8",
