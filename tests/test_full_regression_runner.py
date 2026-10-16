@@ -96,6 +96,18 @@ class RegressionRunnerSafetyTests(unittest.TestCase):
         self.assertEqual(data["tests"][0]["name"], "a_browser_qa.py")
         self.assertIn("PASS", output)
 
+    def test_failing_script_is_never_marked_pass(self):
+        self.new_script("broken_browser_qa.py", "import sys; print('EXPECTED_FAILURE'); sys.exit(17)\\n")
+        code, out, err = self.run_runner("browser")
+        self.assertEqual(code, 1, err)
+        data = json.loads((self.root / "artifacts" / "browser_shard_1_of_1.json").read_text())
+        self.assertEqual(data["requested"], 1)
+        self.assertEqual(data["summary"]["PASS"], 0)
+        self.assertEqual(data["summary"]["FAIL"], 1)
+        self.assertEqual(data["summary"]["NOT_RUN"], 0)
+        self.assertEqual(data["tests"][0]["return_code"], 17)
+        self.assertIn("FAIL", out)
+
     def test_browser_migration_changes_only_assigned_shard(self):
         (self.root / "package.json").write_text('{"version":"0.8.25.32"}')
         a = self.new_script("a_browser_qa.py", "# 0.8.24.12-alpha\nprint('ONE')\n")
