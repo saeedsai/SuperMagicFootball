@@ -4,7 +4,7 @@
   "feature_id": "UI-CAREER-RETEST",
   "owner": "ui-career-subfeedback-retest-20261016-gpt6b",
   "status": "active",
-  "scope": "Only tests/substitution_advice_browser_qa.py ambiguous Back button locator hotfix and dedicated docs/UI_CAREER_SUBSTITUTION_FEEDBACK_20261016.md QA follow-up; no shared runner, engine, graphics, rosters, UI.js or release workflow edits.",
+  "scope": "UI-CAREER test-only retest: tests/substitution_advice_browser_qa.py ambiguous Back selector; one additional UI feature assertion in tests/master_contracts.mjs to run Full Regression Census; own docs/UI_CAREER_SUBSTITUTION_FEEDBACK_20261016.md. No engine, UI.js, graphics, rosters, common runner, release workflow edits.",
   "base_sha": "709eeec167daf1a201dcba5bec6afee571623279",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
