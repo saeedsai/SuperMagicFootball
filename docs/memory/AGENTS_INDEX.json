@@ -62,6 +62,11 @@
       "id": "gameplay-pk-20261016",
       "label": "Game developer — manual penalty keeper controls (current chat)",
       "path": "docs/memory/agents/gameplay-pk-20261016.md"
+    },
+    {
+      "id": "gameplay-tactical-audio-20261016-gpt6-s16",
+      "label": "Game Developer — Tactical Gameplay Audio",
+      "path": "docs/memory/agents/gameplay-tactical-audio-20261016-gpt6-s16.md"
     }
   ]
 }
