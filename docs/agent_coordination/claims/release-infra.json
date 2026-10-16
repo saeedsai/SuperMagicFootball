@@ -1,22 +1,18 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "release-infra",
-  "feature_id": "ART-C01-FACE-CACHE",
-  "owner": "graphics-c01-face-20261016-1354-gpt6",
-  "status": "released",
-  "scope": "Only sw.js version rotation and caching new SVG; if necessary art-specific workflow. No deployment logic changes.",
-  "base_sha": "b5e59a275f53366ef56afea25f1a6bb13efdbaea",
-  "created_at": "2026-10-16T13:54+02:00",
-  "renewed_at": "2026-10-16T13:54+02:00",
+  "feature_id": "CI-NATIONAL-ROSTER-FULL-CENSUS-TRIGGERS",
+  "owner": "release-national-ci-20261016-1436-gpt6",
+  "status": "active",
+  "scope": "ONLY .github/workflows/full-regression-census.yml push.paths for national26 roster and national/spain metadata tests; a narrow release-trigger contract tests/national_roster_regression_trigger.test.cjs; docs/CI_NATIONAL_ROSTER_TRIGGER_20261016.md and small docs/NEXT_MILESTONES.md addendum. GitHub issue #2. No build, shared QA runner, gameplay, graphics, UI, roster/data or PWA/cache changes.",
+  "base_sha": "2c3e346090fa44562c34e4d5fb317c22ab550829",
+  "created_at": "2026-10-16T14:36:00+02:00",
+  "renewed_at": "2026-10-16T14:36:00+02:00",
   "tests": [
-    "scripts/validate_concept_modular.py",
-    "node --test tests/*.test.cjs",
-    "tests/concept_modular_browser_qa.py",
-    "tests/concept_modular_live_qa.py",
-    "full regression census"
+    "Node isolated trigger path regression contract",
+    "full Node and Chromium regression census on exact source commit",
+    "Modular Game Dev QA",
+    "GitHub Pages hosted desktop/simulated touch smoke"
   ],
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md and docs/concept_character_pipeline/C01_FACE_FRONT_CHECKPOINT_20261016.md; source a8553002, art QA #38899003730, hosted #38899003632, full census #38899003690 attempt 2 all PASS",
-  "released_at": "2026-10-16",
-  "outcome": "completed_c01_experimental_illustrated_front_face",
-  "final_source_commit": "120fbda5a466ac9eae2b8143cb98944726f11f9b"
+  "handover": "docs/CI_NATIONAL_ROSTER_TRIGGER_20261016.md"
 }
