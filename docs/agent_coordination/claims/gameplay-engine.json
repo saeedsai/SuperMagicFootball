@@ -1,23 +1,19 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "gameplay-engine",
-  "feature_id": "GAMEPLAY-PK-HUMAN-GOALKEEPER",
-  "owner": "gameplay-review-20261016-gpt6-pkkeeper-r3",
-  "status": "released",
-  "scope": "Only src/modules/engine.js GameEngine.updatePK local Versus human defending keeper read/steer/dive using existing movement and jump input, automatic keeper retained in one-human modes; tests/penalty_keeper_control.test.cjs and tests/penalty_keeper_control_browser_qa.py; docs/GAMEPLAY_PENALTY_KEEPER_CONTROL_20261016.md; short docs/NEXT_MILESTONES.md checkpoint and own docs/memory/agents/gameplay-review-20261016.md. No UI, input, renderer, graphics, roster, saved game schema, physics outside shootout, shared QA runners, CI, scripts or build.",
-  "base_sha": "33d66d07c3a4dd9b525d0158acc324088dc4fee4",
+  "feature_id": "GAMEPLAY-PRESSURE-FIRST-TOUCH-CONTROL",
+  "owner": "gameplay-firsttouch-20261016-gpt6-r4",
+  "status": "active",
+  "scope": "Only src/modules/engine.js targeted deterministic friendly ground-pass first-touch control/speed easing during <0.24 seconds, new tests/first_touch_control.test.cjs and tests/first_touch_control_browser_qa.py, docs/GAMEPLAY_PRESSURE_FIRST_TOUCH_20261016.md, own docs/memory/agents/gameplay-review-20261016.md and scoped docs/NEXT_MILESTONES.md note. Do not change UI/input/graphics/audio/rosters/saves, scripts/build.py, QA runners, shared docs memory, workflows, physics configuration or other agents' files.",
+  "base_sha": "15ad4f843f85298fe4e846ce1ba24a5aec678b81",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
   "tests": [
-    "node --test tests/penalty_keeper_control.test.cjs",
-    "node --test tests/*.test.cjs",
-    "real desktop/simulated-touch browser penalty keeper acceptance",
-    "Full Regression Census 4+4 sharded",
-    "hosted PC/touch smoke"
+    "source-executed control timing/pressure scenarios and cancel on rebound",
+    "desktop and touch Quick Match, real friendly pass and receive, four-button invariant",
+    "node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
+    "Modular Game Dev QA and Full Regression Census 4+4",
+    "hosted public PC/simulated-touch smoke"
   ],
-  "handover": "docs/GAMEPLAY_PENALTY_KEEPER_CONTROL_20261016.md; docs/memory/agents/gameplay-review-20261016.md; source d0adf651; QA https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946505072; full pending https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946504996",
-  "related_issue": "https://github.com/saeedsai/SuperMagicFootball/issues/5",
-  "released_at": "2026-10-16",
-  "outcome": "Shipped two-human goalkeeper control in shootouts; 8 new Node tests pass, integrated standard Node QA 200/200 green; full Chromium census pending.",
-  "final_checkpoint_commit": "aff7952fe11b35c2892179c2108054f6dd4edd79"
+  "handover": "docs/GAMEPLAY_PRESSURE_FIRST_TOUCH_20261016.md"
 }
