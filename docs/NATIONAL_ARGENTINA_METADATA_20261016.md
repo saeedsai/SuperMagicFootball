@@ -44,3 +44,13 @@ Only `data/players/national26.json`, the two new Argentina-specific tests, this 
 ## Release handover
 
 Source edit: [`cda2f055`](https://github.com/saeedsai/SuperMagicFootball/commit/cda2f055a3f66f5b0a616e7119ab8fede0718ab9). Source test: [`cf82d82e`](https://github.com/saeedsai/SuperMagicFootball/commit/cf82d82e42265be4ccd97715a9962e690cfe04bc); playable browser contract [`0cf1347c`](https://github.com/saeedsai/SuperMagicFootball/commit/0cf1347c725a73d26a6d04504cb38ad4a273c709). Birthday boundary [`34604826`](https://github.com/saeedsai/SuperMagicFootball/commit/34604826aa552e493885c12870cdbf9bc6b662cf). All out-of-scope competitor changes preserved. Append final full-regression and hosted-game results here before claim release.
+
+## Completed eight-shard acceptance
+
+[Full Regression Census **#38915344074**](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074) finished **SUCCESS** on exact source `34604826aa552e493885c12870cdbf9bc6b662cf` including both Argentina tests, memory-identity correction, and birthday thresholds. Validator/build/preflight passed; all **130/130 historical Node scripts** passed (33 + 33 + 32 + 32) and all **71/71 Chromium scripts** passed (18 + 18 + 18 + 17), totaling **201/201 PASS** with **zero FAIL, TIMEOUT, ERROR, NOT_RUN**. `argentina_national_metadata_browser_qa.py` passed in browser shard 0 (**1.89 seconds**) on desktop and simulated touch, checking real `rosterFor` and `GameEngine` Quick Match source equality, identity and role quotas.
+
+The preceding [active Modular QA #38915344073](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344073) passed **171/171** Node contracts, including birthday-boundary tests and the formerly failing own memory-contract identity assertion. Subsequent concurrent commits should be checked independently; this certifies the listed source SHA, not all possible later heads.
+
+**Hosted Pages gameplay:** verified separately in an explicitly triggered live desktop/touch smoke; see appended verification status below. Source-only roster correction is not physical-device or native Safari certification.
+
+The claimed scope is complete and can be released after the live Pages job outcome is recorded. All tracked roster identities, default tactics, arcade scores, source note fields and saved-game schemas remain preserved. Future work should source-check a new small Argentina batch under its own claim rather than re-editing this accepted one.
