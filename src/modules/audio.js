@@ -65,22 +65,33 @@ class ArcadeAudio{
   // Sound only an actual human attempt: AI dribbling can happen many times
   // per second and must never overwhelm the player's kick/keeper audio.
   if(type==='dribbleTrick'&&(event?.ai!==false||typeof event?.success!=='boolean'))return;
+  // Confirm only genuine player substitutions, never tactical-only edits.
+  if(type==='substitution'&&(!Number.isInteger(event?.count)||event.count<1||event.count>12))return;
+  // Real team-talk events contain the nonnegative outcome counters.
+  if(type==='teamTalk'&&(!Number.isInteger(event?.positive)||!Number.isInteger(event?.backfires)||
+     event.positive<0||event.backfires<0||event.positive>12||event.backfires>12))return;
   // A received pass is successful only when the original named teammate gets
   // it. Opponent catches have a different warning; accidental teammate picks
   // up, stale/malformed payloads and ordinary loose balls stay silent.
   if(type==='passReceived'&&(typeof event?.friendly!=='boolean'||typeof event?.accurate!=='boolean'))return;
-  const cue=type==='passReceived'?
+  const cue=type==='teamTalk'?(event.positive>event.backfires?'coachBoost':event.backfires>event.positive?'coachWarning':'coachNeutral'):
+   type==='passReceived'?
    (event.friendly?(event.accurate?'passComplete':null):'passIntercept'):
    type==='dribbleTrick'?(event.success?'skillSuccess':'skillMiss'):
    type==='penaltyKick'&&typeof event?.goal==='boolean'?
    (event.goal?'penaltyGoal':'penaltySave'):
    type==='kick'&&event?.super?'super':type==='flipKick'&&!event?.special?'kick':AUDIO_CUES[type]||type;
-  if(!cue||!this._audible(cue==='ui'||cue==='halftime'||cue==='finished'||cue==='penaltyStart'?'ui':'sfx')||!this.unlocked||!this.ctx)return;
+  if(!cue||!this._audible(['ui','halftime','finished','penaltyStart','coachBoost','coachWarning','coachNeutral','substitution'].includes(cue)?'ui':'sfx')||!this.unlocked||!this.ctx)return;
   const now=this.ctx.currentTime;
   if(this.last.has(cue)&&now-this.last.get(cue)<(cue==='kick'?.07:cue==='passComplete'||cue==='passIntercept'?.30:.17))return;
   this.last.set(cue,now);
   switch(cue){
    case 'kick':this.tone(230,.11);break;
+   // Procedural sounds use the existing UI fader and existing cue throttle.
+   case 'substitution':[330,494].forEach((f,i)=>this.tone(f,.14,'ui','triangle',i*.07));break;
+   case 'coachBoost':[440,554,659].forEach((f,i)=>this.tone(f,.16,'ui','triangle',i*.075));break;
+   case 'coachWarning':[294,220].forEach((f,i)=>this.tone(f,.18,'ui','triangle',i*.09));break;
+   case 'coachNeutral':this.tone(392,.13,'ui','triangle');break;
    // Procedural penalty tones reuse the existing sound buses, mute and limits.
    case 'penaltyStart':[330,440].forEach((f,i)=>this.tone(f,.14,'ui','triangle',i*.09));break;
    case 'penaltyDive':this.tone(165,.12,'sfx','sawtooth');break;
