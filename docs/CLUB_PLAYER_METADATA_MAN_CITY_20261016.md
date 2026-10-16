@@ -51,3 +51,11 @@ Next five **separately claimed** suggested club batches: PSG `club26_3`, Barcelo
 - The delivered ratings are official EA Ultimate Team **launch base cards**; 12 / 12 overall and 72 / 72 face attributes needed no numerical edits. Five shirt numbers, five shirt-verification flags, five missing ages, twelve heights and 36 provenance field edits account for the **63 per-player field changes**.
 
 **Handoff**: Manchester City player work finished; release `roster-club-club26_2`. Only after checking the latest claims, reserve PSG `club26_3` for the next independently verifiable club. The memory identity failure is an existing unrelated QA blocker; allow its owner to resolve issue #8 before asserting all-green regression and Pages deployment.
+
+## Later integrated CI success (supersedes initial memory blocker)
+
+- On integrated `dev` SHA **`6fe944059b8634a4673d5e3f6d0addc2ef1a7884`**, the [Modular Game Dev QA run #38915465084](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915465084) completed **SUCCESS: 171/171 active Node tests passed, 0 failed**. This includes all **3 Manchester City tests**, all 165-club squad quotas, and immutable roster-history validation.
+- The earlier wrong-memory-identity failure was repaired by another agent (not by the City roster owner); prior failed run logs remain historical evidence only.
+- The same integrated SHA's [GitHub Pages build and deployment #38915464957](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915464957) completed **SUCCESS** (build, deploy and status report all green). Public URL: https://saeedsai.github.io/SuperMagicFootball/ .
+- [Full Regression Census #38915344074](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074) used a separate **earlier** integrated SHA `34604826aa552e493885c12870cdbf9bc6b662cf`, passed its preflight and all **four historical Node shards**; at this checkpoint, its four Chromium browser shards were **still in progress**. This is not an all-green historical browser certification until the run finishes.
+- A live public URL fetch from this environment was unavailable. Successful GitHub Pages deployment is evidence that the hosted build was deployed, **not** an independently observed touchscreen/PC interactive match or physical-phone playthrough.
