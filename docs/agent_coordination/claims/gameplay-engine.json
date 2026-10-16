@@ -4,15 +4,15 @@
   "feature_id": "GK-LIVE-AI-CALIBRATION-QA",
   "owner": "keeper-live-ai-cohort-20261016-1445-gpt6",
   "status": "active",
-  "scope": "One bounded seeded real-AI keeper shot fairness browser acceptance, new tests/keeper_live_ai_fairness_browser_qa.py and static test tests/keeper_live_ai_fairness.test.cjs, dedicated docs/KEEPER_LIVE_AI_FAIRNESS_20261016.md. No engine.js or physics, UI, graphics, roster, source integration, workflow/release/CI harness changes.",
+  "scope": "One bounded seeded real-AI keeper shot fairness browser acceptance in tests/keeper_shot_calibration_browser_qa.py (existing captured geometry retained; new live AI cohort), new tests/keeper_live_ai_fairness.test.cjs static regression, dedicated docs/KEEPER_LIVE_AI_FAIRNESS_20261016.md and small docs/NEXT_MILESTONES.md checkpoint. No engine.js/physics/telemetry source, UI, art, roster, build, workflow/release/CI harness changes.",
   "base_sha": "9c951a08eb56220b09e92a79280a836f39d7d9bd",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
   "tests": [
-    "Node static contract test keeper_live_ai_fairness.test.cjs",
-    "real playable Chromium desktop/touch 30/60/120Hz mirrored fatigue/normal/nonlinear Super Shot scenarios",
-    "Modular Game Dev QA plus full historical regression",
-    "public Pages game desktop/simulated-touch smoke"
+    "Node source test keeper_live_ai_fairness.test.cjs",
+    "existing browser geometry 144 fixtures/device plus real keeper-AI 30/60/120Hz mirrored, rested/tired, ordinary/zigzag Super cases on desktop/touch",
+    "Modular Game Dev QA, Full Regression Census 4+4 shards via existing source test path trigger",
+    "hosted PC/touch smoke"
   ],
   "handover": "docs/KEEPER_LIVE_AI_FAIRNESS_20261016.md"
 }
