@@ -175,3 +175,10 @@ Source [dc9f46e](https://github.com/saeedsai/SuperMagicFootball/commit/dc9f46e16
 - Official EA FC27 confirms 12/12 overall and 72/72 face attributes unchanged. Barcelona's 2026/27 club register corrected five shirts; five ages and 12 heights populated.
 - Immutable `CLUB-20261016-FCBAR-FC27-VERIFICATION-1` tracks 63 changed metadata fields; see [Barcelona handover](CLUB_PLAYER_METADATA_BARCELONA_20261016.md) and `tests/barcelona_fc27_official_20261016.test.cjs`. No other squads or game mechanics changed.
 - Next five independent clubs: Manchester United `club26_5`, Real Madrid `club26_7`, Liverpool `club26_9`, Tottenham `club26_29`, Chelsea `club26_18`.
+
+
+## Manchester United FC 27 player metadata verification — 2026-10-16
+
+- New isolated club-specific batch `CLUB-20261016-MUN-FC27-VERIFICATION-1`: official EA launch 12/12 OVR and 72/72 six-face attributes matched; 11 shirts corrected, 12 ages corrected or filled, and 12 heights filled from the official 2026/27 Manchester United squad-number list and 2026/27 FootballSquads biographies.
+- **83 per-player field changes** including verified shirts and official rating-source links; stable identities, all roles and arcade gameplay stats protected. `data/players/club26.json` / matching `src/roster_corrections.js` records agree. Full per-field audit in `PLAYER_METADATA_BATCHES_20261016.json`; dedicated three tests in `tests/man_utd_fc27_official_20261016.test.cjs`.
+- [Manchester United QA and handover](CLUB_PLAYER_METADATA_MAN_UTD_20261016.md) documents actual CI / Pages outcome. Next five separately reserved candidates: Real Madrid `club26_7`, Liverpool `club26_9`, Tottenham `club26_29`, Chelsea `club26_18`, Atlético Madrid `club26_19`. Check live claims before claiming.

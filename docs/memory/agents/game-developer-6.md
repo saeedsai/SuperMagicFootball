@@ -1,21 +1,21 @@
 # Developer 6 — own checkpoint
 
-**Agent ID:** `game-developer-6`
+**Agent ID:** `game-developer-6`. **Updated:** 2026-10-16.
 
 ## Mission
-Small claimed SuperMagicFootball improvements with reliable current `dev` source tests, regressions, and public desktop/touch play; preserve all other agents' features.
+Small claimed SuperMagicFootball feature/QA batches from current `dev`; prevent false-green regressions, avoid others' locks, validate hosted desktop/touch.
 
 ## Current checkpoint
-2026-10-16: finished `NATIONAL-ARGENTINA-MESSI-EMI-METADATA-B1` under `roster-national-national26_1`: Messi age 39/170cm, Emiliano Martínez age 34/195cm. Player IDs, ratings, roles, shirts, and saves unchanged. Corrected initial own-memory identity omission after CI identified it. Source `cda2f055`, new Node and live browser tests, specialist plan and full handover on `dev`. No unrelated file cleanup warranted.
+Implemented `QA-MANIFEST-FILENAME-INTEGRITY`: cross-shard auditor now rejects unsafe path/traversal/undiscoverable script names (root Node `*.mjs`/`*.test.cjs` or known browser suites). Three new Python tests, bridge updated to assert 21 tests. No runtime changes or deletion.
 
 ## Next smallest action
-At next prompt reread `dev` and all feature claims before taking a fresh unowned feature. Priorities: real human goalkeeper input during penalty shootouts (needs engine/UI owner), Android dribble event reliability, or next sourced Argentina DOB/height batch after new reservation.
+After exact-code full 4+4 census and live Pages verification, inspect new unowned feature. Use a fresh exclusive GitHub claim before editing; prioritise Android/penalty-keeper reliability or disjoint measurable QA if gameplay is occupied.
 
 ## Ownership and exclusions
-Current Argentina batch complete, release required; this file does not reserve future work. Never edit others' memory or claimed graphics, UI, engine, CI, club data, or shared files without corresponding locks.
+This QA framework claim is being released with [handover](../../QA_MANIFEST_FILENAME_INTEGRITY_20261016.md). Never edit others' agent memory or the claimed gameplay, UI, graphics, audio, roster or release infrastructure; shared memory is managed separately.
 
 ## Evidence
-[Specialist source/QA handover](../../NATIONAL_ARGENTINA_METADATA_20261016.md); [full 201/201 Node/Chromium census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074); [171/171 active QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344073); [public desktop and simulated touch smoke](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528). Primary clubs: https://www.intermiamicf.com/players/lionel-messi/ and https://www.chelseafc.com/en/teams/profile/emiliano-martinez .
+[Full handover](../../QA_MANIFEST_FILENAME_INTEGRITY_20261016.md); [active Modular QA on feature source 228/228 PASS](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961347691). Exact full census for feature SHA not yet certified. Older roster/keeper checkpoint evidence remains in Git history.
 
 ## Cleanup
-No tracked node_modules, pycache, temporary or generated files found. Keep historical QA evidence and independent agent assets. Replace stale details next iteration.
+No safely disposable generated, temporary, legacy-test or graphics files identified. Do not remove historical QA artifacts without a verified dependency search.

@@ -4167,6 +4167,555 @@
         "pages": "cancelled_or_pending_concurrent_writes",
         "hostedDeviceSmoke": "not_verified"
       }
+    },
+    {
+      "id": "CLUB-20261016-MUN-FC27-VERIFICATION-1",
+      "clubId": "club26_5",
+      "club": "Manchester United",
+      "asOfDate": "2026-10-16",
+      "playersChanged": 12,
+      "fieldsChanged": 83,
+      "status": "active_qa_231_pass_pages_deployed_full_historical_pending",
+      "changes": [
+        {
+          "playerId": "club26_5_0",
+          "name": "Senne Lammens",
+          "rosterSlot": 1,
+          "fields": {
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "age": {
+              "previous": 22,
+              "current": 24,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 193,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            }
+          }
+        },
+        {
+          "playerId": "club26_5_fill_GK_1",
+          "name": "Karl Darlow",
+          "rosterSlot": 2,
+          "fields": {
+            "num": {
+              "previous": 2,
+              "current": 12,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "age": {
+              "previous": null,
+              "current": 36,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 185,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            }
+          }
+        },
+        {
+          "playerId": "club26_5_audit_12",
+          "name": "Harry Maguire",
+          "rosterSlot": 3,
+          "fields": {
+            "num": {
+              "previous": 3,
+              "current": 5,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "age": {
+              "previous": null,
+              "current": 33,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 188,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            }
+          }
+        },
+        {
+          "playerId": "club26_5_audit_13",
+          "name": "Lisandro Martínez",
+          "rosterSlot": 4,
+          "fields": {
+            "num": {
+              "previous": 4,
+              "current": 6,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            }
+          }
+        },
+        {
+          "playerId": "club26_5_11",
+          "name": "Matthijs de Ligt",
+          "rosterSlot": 5,
+          "fields": {
+            "num": {
+              "previous": 5,
+              "current": 4,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 187,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            }
+          }
+        },
+        {
+          "playerId": "club26_5_9",
+          "name": "Bruno Fernandes",
+          "rosterSlot": 6,
+          "fields": {
+            "num": {
+              "previous": 10,
+              "current": 8,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "age": {
+              "previous": 31,
+              "current": 32,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 179,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            }
+          }
+        },
+        {
+          "playerId": "club26_5_1",
+          "name": "Youri Tielemans",
+          "rosterSlot": 7,
+          "fields": {
+            "num": {
+              "previous": 6,
+              "current": 18,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "age": {
+              "previous": null,
+              "current": 29,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 176,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            }
+          }
+        },
+        {
+          "playerId": "club26_5_10",
+          "name": "Marcus Rashford",
+          "rosterSlot": 8,
+          "fields": {
+            "num": {
+              "previous": 7,
+              "current": 9,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            }
+          }
+        },
+        {
+          "playerId": "club26_5_6",
+          "name": "Kobbie Mainoo",
+          "rosterSlot": 9,
+          "fields": {
+            "num": {
+              "previous": 8,
+              "current": 37,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "age": {
+              "previous": null,
+              "current": 21,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 175,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            }
+          }
+        },
+        {
+          "playerId": "club26_5_audit_15",
+          "name": "Bryan Mbeumo",
+          "rosterSlot": 10,
+          "fields": {
+            "num": {
+              "previous": 28,
+              "current": 19,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "age": {
+              "previous": 24,
+              "current": 27,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 171,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            }
+          }
+        },
+        {
+          "playerId": "club26_5_audit_14",
+          "name": "Matheus Cunha",
+          "rosterSlot": 11,
+          "fields": {
+            "num": {
+              "previous": 9,
+              "current": 10,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 184,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            }
+          }
+        },
+        {
+          "playerId": "club26_5_5",
+          "name": "Benjamin Šeško",
+          "rosterSlot": 12,
+          "fields": {
+            "num": {
+              "previous": 11,
+              "current": 30,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers"
+            },
+            "age": {
+              "previous": null,
+              "current": 23,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 194,
+              "source": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11"
+            }
+          }
+        }
+      ],
+      "officialFc27Audit": {
+        "source": "https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11",
+        "playersMatched": 12,
+        "overallRatingsMatched": 12,
+        "headlineAttributesMatched": 72,
+        "gameplayStatsUnchanged": true
+      },
+      "otherSources": {
+        "shirtNumbers": "https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers",
+        "physicalAndDOB": "https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm"
+      },
+      "knownCaveats": [
+        "The game's fixed 2 GK 3 DF 4 MF 3 FW roles are unchanged; EA labels Rashford LW.",
+        "Holland legacy nationality code retained unchanged for Matthijs de Ligt; normalize only in a separate, reviewed schema change.",
+        "Ages reflect 2026-10-16; some pre-existing ages were inconsistent with DOB."
+      ],
+      "invariant": "Only Manchester United club26_5 editable metadata and rating provenance changed; no player identities, roles, six EA attributes, OVR or arcade physics changed.",
+      "ciEvidence": {
+        "sourceCommit": "08897b2a4fc7c21cab80bffbf510d9d5cad38cbe",
+        "runtimeCommit": "b3e03c940569ff03f6a8af43564769d6b0fe7580",
+        "testCommit": "4aa62095c254bf173b3470ab1b8db4de87cc0222",
+        "activeQA": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961471268",
+          "status": "success",
+          "nodePass": 231,
+          "nodeFail": 0,
+          "unitedTestPass": 3,
+          "aboutRevisionContract": "passed"
+        },
+        "pages": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961487916",
+          "status": "success"
+        },
+        "historical": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961509601",
+          "status": "pending_at_checkpoint"
+        },
+        "physicalAndHostedInteractiveSmoke": "not_independently_verified"
+      }
     }
   ]
 }

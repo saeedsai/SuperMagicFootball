@@ -3,7 +3,7 @@
   "lock_key": "gameplay-engine",
   "feature_id": "GAMEPLAY-PRESSURE-FIRST-TOUCH-CONTROL",
   "owner": "gameplay-firsttouch-20261016-gpt6-r4",
-  "status": "active",
+  "status": "released",
   "scope": "Only src/modules/engine.js targeted deterministic friendly ground-pass first-touch control/speed easing during <0.24 seconds, new tests/first_touch_control.test.cjs and tests/first_touch_control_browser_qa.py, docs/GAMEPLAY_PRESSURE_FIRST_TOUCH_20261016.md, own docs/memory/agents/gameplay-review-20261016.md and scoped docs/NEXT_MILESTONES.md note. Do not change UI/input/graphics/audio/rosters/saves, scripts/build.py, QA runners, shared docs memory, workflows, physics configuration or other agents' files.",
   "base_sha": "15ad4f843f85298fe4e846ce1ba24a5aec678b81",
   "created_at": "2026-10-16",
@@ -15,5 +15,8 @@
     "Modular Game Dev QA and Full Regression Census 4+4",
     "hosted public PC/simulated-touch smoke"
   ],
-  "handover": "docs/GAMEPLAY_PRESSURE_FIRST_TOUCH_20261016.md"
+  "handover": "docs/GAMEPLAY_PRESSURE_FIRST_TOUCH_20261016.md; https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960061389 (217/218), https://github.com/saeedsai/SuperMagicFootball/issues/17",
+  "released_at": "2026-10-16",
+  "outcome": "Scoped gameplay first-touch pressure settling merged in c0b87bc8; Modular QA 215/215 PASS; new Node and desktop/simulated-touch browser tests PASS; descendant full census 217/218, unrelated post-merge audio fixture fail Issue #17; hosted PC/touch general smoke PASS but updated feature deployment not separately verified",
+  "final_source_commit": "c0b87bc8ab4ebef73beaa4cce68f59a777b47416"
 }

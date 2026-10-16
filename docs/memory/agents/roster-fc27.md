@@ -3,20 +3,19 @@
 **Agent ID:** `roster-fc27` | **Updated:** 2026-10-16
 
 ## Mission
-Verify each claimed club's official EA FC27 12 overall scores and 72 headline attributes; supplement age, shirt and height from club/league biographies. Never change unrelated game code or team squads.
+Use one live claimed club at a time to source-check EA FC 27 launch overall ratings/headline attributes and current player metadata; never change gameplay/UI/art, other teams, global memory or shared CI.
 
 ## Current checkpoint
-- Barcelona `club26_4` source/runtime/immutable ledger and three tests committed to `dev`. Official EA 12/12 OVR and 72/72 face stats match; 5 corrected shirts, 5 added ages, 12 heights, 63 provenance/metadata changes. [Barcelona handover](../../CLUB_PLAYER_METADATA_BARCELONA_20261016.md) and [audit](../../PLAYER_METADATA_BATCHES_20261016.json).
-- Prior Arsenal, Bayern, Manchester City and PSG already completed; no repeats. Exact CI status in Barcelona handover, not inferred from old memory.
+Manchester United `club26_5`: 12 EA overall and 72 headline attributes match; 11 shirts, 12 ages, 12 heights, 83 source-backed metadata field updates. [Manchester United handover](../../CLUB_PLAYER_METADATA_MAN_UTD_20261016.md) and [immutable metadata ledger](../../PLAYER_METADATA_BATCHES_20261016.json). Previous Arsenal, Bayern, Man City, PSG, Barcelona complete.
 
 ## Next smallest action
-After recording test evidence, release Barcelona `roster-club-club26_4` claim. Re-read latest dev and claim Manchester United `club26_5`, then Real Madrid `club26_7`, Liverpool `club26_9`, Tottenham `club26_29`, Chelsea `club26_18`.
+Check Manchester United live `dev` CI, historical browser regression and About revision contract, record accurate evidence in handover, release `roster-club-club26_5`; next Real Madrid `club26_7` after checking live claims.
 
 ## Ownership and exclusions
-No entitlement from memory; live claim only. Don't read other agents' memory or modify game engine, UI, visuals, common CI or other club squads.
+Only Manchester United is in current scope; exclusive per-club lock needed. Do not open other agents' memory. Leave all game physics, unrelated code, release files and QA infrastructure unchanged.
 
 ## Evidence
-[EA](https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/fc-barcelona/241), [FC Barcelona shirt list](https://www.fcbarcelona.com/en/football/first-team/news/4570894/202627-first-team-jersey-numbers-confirmed/featured), [biographies](https://footballsquads.co.uk/spain/2026-2027/laliga/barce.htm).
+Official EA: https://www.ea.com/da/games/ea-sports-fc/ratings/teams-ratings/man-utd/11; club shirts: https://www.manutd.com/en/news/confirmed-our-2026-27-squad-numbers; physical biography: https://footballsquads.co.uk/eng/2026-2027/engprem/manutd.htm. Exact CI claims belong in specialist handover.
 
 ## Cleanup
-Short current checkpoint, no stale head claim.
+This short file replaces old session notes; preserve longer work history in source control.

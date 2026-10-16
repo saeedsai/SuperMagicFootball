@@ -656,10 +656,18 @@
       ],
       "fullPhasePreserved": true,
       "oldCutoffDiscontinuityRemoved": true,
-      "status": "code_submitted_pending_exact_commit_CI",
-      "qa": "pending",
+      "status": "verified_experimental_art_and_hosted_full_census_blocked_by_unrelated_audio_qa",
+      "qa": "PASS art/browser desktop+simulated touch; 228/228 Node, 0 page errors",
       "ownerArtApproval": "pending",
-      "note": "Two existing arm assets; zero new authored variants. Side fallback and legacy underlay preserved."
+      "note": "Two existing arm assets; zero new authored variants. Side fallback and legacy underlay preserved.",
+      "sourceCommit": "3395c6cf7950c9ba4e9510504000649db7285e0e",
+      "hostedTestCommit": "2be32a646124930a75a5941c0a4487273bb6a9a1",
+      "qaUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961042607",
+      "hosted": "PASS live PC/touch; exact armIdleBlend source true, SVG/JS HTTP 200, one modular player",
+      "hostedUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961042443",
+      "fullRegression": "FAIL 8/9 jobs: preflight + 4/4 Node + 3/4 Chromium PASS; Chromium browser-regression (1) FAIL pass_reception_audio_browser_qa.py: Game players unavailable. No graphics test fails.",
+      "fullRegressionUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961042564",
+      "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/18"
     }
   }
 }
