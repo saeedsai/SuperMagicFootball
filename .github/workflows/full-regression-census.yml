@@ -129,11 +129,16 @@ jobs:
         shard: [0, 1, 2, 3]
     steps:
       - uses: actions/checkout@v4
-      - name: Install Playwright and system Chromium
+      - name: Install Playwright Chromium without snap dependency
         run: |
           python3 -m pip install --user playwright pillow
-          sudo apt-get update -qq
-          sudo apt-get install -y chromium
+          python3 -m playwright install --with-deps chromium
+          # Existing historical browser suites use /usr/bin/chromium.
+          # Point that path to the Playwright-managed compatible binary.
+          browser_path="$(python3 -c 'from playwright.sync_api import sync_playwright; p=sync_playwright().start(); print(p.chromium.executable_path); p.stop()')"
+          test -x "$browser_path"
+          sudo ln -sf "$browser_path" /usr/bin/chromium
+          /usr/bin/chromium --version
       - name: Build browser fixture for old and current suites
         run: |
           python3 scripts/build.py
