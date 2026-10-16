@@ -23,6 +23,7 @@ on:
       - 'src/match_telemetry.js'
       - 'tests/keeper_dive_telemetry.test.cjs'
       - 'tests/keeper_dive_intent_browser_qa.py'
+      - 'tests/keeper_shot_calibration_browser_qa.py'
       - 'tests/aerial_browser_qa.py'
       - 'tests/physics_tuning_v082534.test.cjs'
       - 'tests/physics_tuning_browser_qa.py'
