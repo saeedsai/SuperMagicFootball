@@ -1,14 +1,12 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "project-context",
-  "feature_id": "CONTEXT-DEV6-MEMORY-REGISTRATION",
-  "owner": "dev6-register-20261016-gpt6",
-  "status": "released",
-  "scope": "Only add unique game-developer-6 entry to docs/memory/AGENTS_INDEX.json and own docs/memory/agents/game-developer-6.md checkpoint, nothing in shared memory or other agent files; release after verification.",
-  "base_sha": "f0fea598668803dbc2e54b9ad8f31e9f51cccd23",
-  "claimed_at": "2026-10-16T14:10:00Z",
-  "heartbeat_at": "2026-10-16T14:10:00Z",
-  "handover": "docs/memory/agents/game-developer-6.md registered via AGENTS_INDEX.json; commit 3119f3847618699a9f08fca43e235b0aab42c875",
-  "outcome": "completed",
-  "released_at": "2026-10-16T14:12:00Z"
+  "feature_id": "CONTEXT-REGISTER-GK-CONTROL-CHAT",
+  "owner": "pk-manual-20261016-2008-gpt6-registration",
+  "status": "active",
+  "scope": "Only docs/memory/AGENTS_INDEX.json registration and own docs/memory/agents/gameplay-pk-20261016.md. No other agent memory, shared file, gameplay files, other docs.",
+  "base_sha": "2daf3543be9d6843c9f6b484fc0fd13b29e4bbb8",
+  "created_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
+  "handover": "docs/memory/agents/gameplay-pk-20261016.md"
 }
