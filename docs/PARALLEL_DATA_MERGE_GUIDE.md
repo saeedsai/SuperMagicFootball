@@ -43,3 +43,8 @@ The tool never writes to any input tree, and refuses to overwrite a nonempty out
 5. Push to `dev` without `--force`; GitHub Actions must pass. Do not alter unrelated agents' graphics/rosters or the historical evidence folder during cleanup.
 
 **Not a substitute for real-world verification:** labels such as `FC27 comparison verified` describe sources reported by other agents; the merge tool cannot verify player transfers, statistical provenance or real facial likenesses. Offline/PWA, real mobile, and browser-restart save certification remain owner-deferred.
+## 16 October 2026 — safer numerical references and dry-run previews
+
+The checker now **rejects a team numeric `index` change** even when an agent preserves the team's string `id` and its array position. This includes the case where both agents independently make the same invalid edit. Team index is used in saved progress and selection mappings; a deliberate migration requires a separately reviewed schema change, not an automatic data merge.
+
+Every CLI JSON response and `--report` file now includes `changeSummary`. For each edited protected file it records separate `ours`, `theirs` and `merged` change **counts** and up to 25 precise stable-ID-based `paths`; `truncated: true` means further paths exist. Structural list changes appear as a single array path. The summary is informational, never permission to override `conflicts`; `--check` still writes no merged data. New Python regression tests cover unilateral/mutual index changes, independent edits, output immutability and preview truncation. These changes affect tooling only; no game or roster JSON was edited.

@@ -97,6 +97,68 @@ class MergeContracts(unittest.TestCase):
         self.assertEqual(result, end)
         self.assertEqual(errors, [])
 
+    def test_team_indices_cannot_change_even_if_team_ids_and_order_are_stable(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            original = [{'id': 'team1', 'index': 0, 'name': 'Original'}]
+            for side in ('base', 'ours', 'theirs'):
+                target = root / side / 'data/teams.json'
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(json.dumps(original))
+            # A unilateral numeric-index edit used to bypass the ID/order check.
+            (root / 'ours/data/teams.json').write_text(
+                json.dumps([{'id': 'team1', 'index': 17, 'name': 'Original'}]))
+            _, errors = compare_directories(root / 'base', root / 'ours', root / 'theirs',
+                                            paths=('data/teams.json',))
+            self.assertTrue(any(c['path'].endswith('/id=team1/index')
+                                and c['reason'] == 'protected team index changed' for c in errors))
+            # The same invalid change on both branches must also be blocked.
+            (root / 'theirs/data/teams.json').write_text(
+                (root / 'ours/data/teams.json').read_text())
+            _, errors = compare_directories(root / 'base', root / 'ours', root / 'theirs',
+                                            paths=('data/teams.json',))
+            self.assertTrue(any(c['reason'] == 'protected team index changed' for c in errors))
+
+    def test_dry_run_report_shows_disjoint_agent_edits_by_stable_id(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            original = [{'id': 'team1', 'index': 0, 'name': 'Old', 'rank': 50}]
+            ours = [{'id': 'team1', 'index': 0, 'name': 'New', 'rank': 50}]
+            theirs = [{'id': 'team1', 'index': 0, 'name': 'Old', 'rank': 55}]
+            for side, value in (('base', original), ('ours', ours), ('theirs', theirs)):
+                target = root / side / 'data/teams.json'
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(json.dumps(value))
+            changes = {}
+            merged, errors = compare_directories(root / 'base', root / 'ours', root / 'theirs',
+                                                 paths=('data/teams.json',), change_report=changes)
+            self.assertEqual(errors, [])
+            summary = changes['data/teams.json']
+            self.assertEqual(summary['ours']['paths'], ['data/teams.json/id=team1/name'])
+            self.assertEqual(summary['theirs']['paths'], ['data/teams.json/id=team1/rank'])
+            self.assertEqual(summary['merged']['count'], 2)
+            self.assertEqual(merged['data/teams.json'][0]['rank'], 55)
+            self.assertFalse((root / 'output').exists())
+
+    def test_dry_run_summary_is_capped_at_25_paths_but_counts_all(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            before = {f'key{i}': 0 for i in range(40)}
+            after = {f'key{i}': 1 for i in range(40)}
+            for side, value in (('base', before), ('ours', after), ('theirs', before)):
+                target = root / side / 'data/mechanics/gameplay.json'
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(json.dumps(value))
+            changes = {}
+            _, errors = compare_directories(root / 'base', root / 'ours', root / 'theirs',
+                                            paths=('data/mechanics/gameplay.json',),
+                                            change_report=changes)
+            self.assertEqual(errors, [])
+            summary = changes['data/mechanics/gameplay.json']['ours']
+            self.assertEqual(summary['count'], 40)
+            self.assertEqual(len(summary['paths']), 25)
+            self.assertTrue(summary['truncated'])
+
     def test_cli_writes_only_separate_output_and_prevents_overwrite(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
@@ -115,6 +177,9 @@ class MergeContracts(unittest.TestCase):
                    '--theirs', str(root / 'theirs'), '--out', str(root / 'result')]
             result = subprocess.run(cmd, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            changes = json.loads(result.stdout)['changeSummary']['data/teams.json']
+            self.assertEqual(changes['ours']['paths'], ['data/teams.json/id=team1/name'])
+            self.assertEqual(changes['theirs']['count'], 0)
             self.assertEqual(json.loads((root / 'result/data/teams.json').read_text())[0]['name'], 'Updated')
             second = subprocess.run(cmd, capture_output=True, text=True)
             self.assertNotEqual(second.returncode, 0)

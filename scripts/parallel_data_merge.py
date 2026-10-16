@@ -77,7 +77,40 @@ def ids_preserved(base, merged, location, conflicts):
             ids_preserved(base[key], merged[key], location + '/' + str(key), conflicts)
 
 
-def compare_directories(base_dir, ours_dir, theirs_dir, paths=DATA_FILES):
+def changed_fields(before, after, location):
+    """List semantic changed paths, respecting stable team/player IDs."""
+    if before == after:
+        return []
+    if isinstance(before, dict) and isinstance(after, dict):
+        paths = []
+        for key in sorted(before.keys() | after.keys()):
+            paths.extend(changed_fields(before.get(key, _MISSING), after.get(key, _MISSING),
+                                        location + '/' + str(key)))
+        return paths
+    if records(before) and records(after):
+        if [item['id'] for item in before] == [item['id'] for item in after]:
+            paths = []
+            for original, updated in zip(before, after):
+                paths.extend(changed_fields(original, updated, location + '/id=' + original['id']))
+            return paths
+    return [location]
+
+
+def team_indices_preserved(base, merged, location, conflicts):
+    """Stable numeric team indices protect existing saves and team selection."""
+    if not (records(base) and records(merged)):
+        return  # ids_preserved already reports structural changes.
+    updated = {item['id']: item for item in merged}
+    for original in base:
+        new = updated.get(original['id'])
+        if new is not None and new.get('index', _MISSING) != original.get('index', _MISSING):
+            conflicts.append({'path': location + '/id=' + original['id'] + '/index',
+                              'reason': 'protected team index changed',
+                              'base': shown(original.get('index', _MISSING)),
+                              'merged': shown(new.get('index', _MISSING))})
+
+
+def compare_directories(base_dir, ours_dir, theirs_dir, paths=DATA_FILES, change_report=None):
     merged, conflicts = {}, []
     for rel in paths:
         objects = []
@@ -92,6 +125,16 @@ def compare_directories(base_dir, ours_dir, theirs_dir, paths=DATA_FILES):
             continue
         result = merge(*objects, location=rel, conflicts=conflicts)
         ids_preserved(objects[0], result, rel, conflicts)
+        if rel == 'data/teams.json':
+            team_indices_preserved(objects[0], result, rel, conflicts)
+        if change_report is not None:
+            side_changes = {}
+            for label, value in (('ours', objects[1]), ('theirs', objects[2]), ('merged', result)):
+                fields = changed_fields(objects[0], value, rel)
+                side_changes[label] = {'count': len(fields), 'paths': fields[:25],
+                                       'truncated': len(fields) > 25}
+            if any(entry['count'] for entry in side_changes.values()):
+                change_report[rel] = side_changes
         if rel.startswith('data/players/') and isinstance(objects[0], dict) and isinstance(result, dict):
             if set(objects[0]) != set(result):
                 conflicts.append({'path': rel, 'reason': 'protected team roster IDs added/removed'})
@@ -108,9 +151,12 @@ def main(argv=None):
     parser.add_argument('--report', type=Path, help='optional JSON QC report destination')
     parser.add_argument('--check', action='store_true', help='check-only; never write merged data')
     args = parser.parse_args(argv)
-    merged, conflicts = compare_directories(args.base, args.ours, args.theirs)
+    change_report = {}
+    merged, conflicts = compare_directories(args.base, args.ours, args.theirs,
+                                            change_report=change_report)
     result = {'status': 'CONFLICT' if conflicts else 'PASS', 'files': len(merged),
-              'protectedFiles': list(DATA_FILES), 'conflictCount': len(conflicts), 'conflicts': conflicts}
+              'protectedFiles': list(DATA_FILES), 'conflictCount': len(conflicts),
+              'conflicts': conflicts, 'changeSummary': change_report}
     print(json.dumps(result, indent=2, ensure_ascii=False))
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)

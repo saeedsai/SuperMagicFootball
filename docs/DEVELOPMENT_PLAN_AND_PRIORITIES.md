@@ -28,3 +28,7 @@ See `NEXT_MILESTONES.md` for five iterations, `GAP_REGISTER_v082532.md` for open
 - Moved 10 previously hard-coded coefficients to `physicsTuning` while retaining their exact old gameplay defaults. Rotated cache and updated modular fixture build order.
 - Added unit parity/editability/invalid-input tests, browser desktop/touch pass and keeper tests, and a fresh full-regression CI trigger. Existing physical-device/Pages persistence scope remains far future.
 - Next five active iterations: animation → parallel editing safeguards → career/tactics UX → player art refinement → further validated mechanics controls.
+
+## 16 October 2026 — parallel-edit index guard and preview
+
+Closed a reproducible merge-safety gap: a same-ID, same-order `data/teams.json` edit could change a numeric team `index`, even though UI and saves rely on the index remaining stable. The three-way JSON checker now blocks unilateral and matching two-sided index rewrites, and adds bounded, per-agent and merged field-change summaries to CLI dry-run reports. Three targeted Python regressions plus the current Python and full Node/Chromium CI are required to release. This tools-only requirement is a partial early delivery of milestone v0.8.25.36; planned game animations and parallel-editor integration remain open.

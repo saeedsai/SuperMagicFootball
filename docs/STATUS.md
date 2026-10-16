@@ -17,3 +17,7 @@ The current `dev` build builds upon commit `800b91715bf6baec024e7793807fcead2f6a
 
 ## Verified v0.8.25.34 release QA (2026-10-16)
 Full Regression Census **140/140 executable scripts passed** (91 Node, 49 Chromium, zero fail/timeout) on `8b288817b9037eb1fd9bda86dd620717a429142b`; modular QA passed **53/53 active subtests**. The Concept Hero playable QA and GitHub Pages deployment are green. See [QA_RELEASE_v082534_20261016.md](QA_RELEASE_v082534_20261016.md). The only browser failure from an earlier attempt was a test-fixture whitespace assumption, corrected before the successful census. Desktop/simulated-touch hosted playback was verified by GitHub Actions; real physical-device certification remains far future.
+
+## 16 October 2026 — focused merge-safety checkpoint
+
+For concurrent dev-branch agents, `scripts/parallel_data_merge.py` now refuses to change the stable numerical `data/teams.json[*].index` (including identical edits on both branches) and emits field-level `changeSummary` previews, capped at 25 sample paths per side/file. The behavior is covered by three additional Python regressions; existing merge contracts remain intact. This checkpoint edits only integration tooling, regression tests and current plan documentation. It does not modify running gameplay, player identities, 2026/27 squad selections, deployed assets or saved-game schemas. Exact-commit CI and published-site verification must be checked independently; do not attribute earlier release QA totals to this update.
