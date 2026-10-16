@@ -1511,6 +1511,10 @@ class GameEngine{
    }
   }
  }
+ // A successful ordinary keeper dive can take possession above. Stop this
+ // frame before the fallback loose-ball collector re-catches that same ball:
+ // it would duplicate the save event and replace the dive-catch animation.
+ if(b.owner)return;
  // Scoring: ball must cross the appropriate end line between goalposts, below crossbar.
  if(b.x<F.x+5||b.x>F.x+F.w-5){let scoring=t=>{this.score[t]++;this.shake=.45;this.flash=.2;this.burst(b.x,b.y,'#ffdf79',60);const scorers=this.players.filter(p=>p.t===t).sort((p,q)=>distance(p,b)-distance(q,b));this.goalHero=b.attacker===t&&b.shooter?b.shooter:scorers[0]?.src?.name||this.getTeam(t).name;this.pendingKickoff={scorer:t,hero:this.goalHero};this.celebration=3.3;this.onGoalMorale(t);this.ball.owner=null;this.ball.strike=null;this.ball.vx=this.ball.vy=this.ball.vz=0;this.emit('goal',{team:t,hero:this.goalHero,score:this.score.slice()});this.cooldown=3.3};if(b.y>WORLD.goalTop&&b.y<WORLD.goalBottom&&b.z<125){scoring(b.x>F.x+F.w-5?0:1);return}b.x=clamp(b.x,F.x+6,F.x+F.w-6);b.vx*=-.72;b.vy*=.95}
  if(b.canCollect>0)return;

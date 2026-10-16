@@ -112,6 +112,7 @@ with sync_playwright() as pw:
             fields = ['attempts','contacts','saves','rawSaveEvents','goals','outcome','score','maxContactDepth']
             assert all(a[f] == b[f] for f in fields), (device, key, a, b)
             assert a['attempts'] <= 1 and a['contacts'] <= 1 and a['saves'] <= 1, (device,key,a)
+            assert a['rawSaveEvents'] <= 1, (device, 'duplicate physical save notification', key, a)
             assert a['saves'] + a['goals'] <= 1, (device, key, a)
         # Mirrored same-team keeper inputs should not inherently favor either end.
         for fps in (30,60,120):

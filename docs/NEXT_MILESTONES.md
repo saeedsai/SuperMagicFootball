@@ -104,3 +104,9 @@ The old milestone table above is historical; this section is the current ordered
 ## Release gate complete — seeded keeper scenario acceptance
 
 Verified `06c0b30b`: full [149/149 regression scripts passed](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38883629200), with 97 Node and 52 Chromium tests. The seed-mirrored modular browser calibration is now a reproducible acceptance fixture; it did **not** change save physics. The next five active iterations remain: (1) measured physical GK movement and corner fairness; (2) glove-grip/release animation; (3) first touch and pass animation; (4) source/provenance conflict review for parallel data agents; (5) squad/career/tactics usability. Keep physical-device and offline/PWA certification deferred as explicitly instructed.
+
+## 16 October 2026 — bounded duplicate keeper-save correction
+
+In the follow-up goalkeeper quality batch, a successful ordinary diving catch now ends `updateBall` processing for that frame before the generic loose-ball proximity collector. This prevents duplicated `save`/`keeperCatch` events and keeps the already assigned `keeperDiveCatch` pose. The 144-fixture-per-device seeded calibration test now asserts one raw save event per shot. No reach/geometry, goalkeeper movement coefficients, abilities or roster edits. Exact CI result: `docs/KEEPER_SINGLE_SAVE_QA_20261016.md`.
+
+**Five next small iterations:** (1) characterize organic CPU-vs-human save gaps from representative fixtures before changing approach/reach; (2) eight-direction glove holding/release artwork (graphics agent coordination); (3) first-touch and pass follow-through visual polish; (4) provenance-aware review of parallel editor merges; (5) career/substitution tactical feedback with save compatibility.
