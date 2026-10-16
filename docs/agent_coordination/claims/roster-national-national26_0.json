@@ -3,7 +3,7 @@
   "lock_key": "roster-national-national26_0",
   "feature_id": "NATIONAL-SPAIN-AGE-HEIGHT-B1",
   "owner": "roster-spain-birthdates-20261016-gpt6-01",
-  "status": "active",
+  "status": "released",
   "scope": "Only national26_0 Spain records for Pedri and Gavi, immutable player IDs/names/roles/ratings/lineup positions retained in data/players/national26.json; dedicated tests/spain_national_metadata_20261016.test.cjs and tests/spain_national_metadata_browser_qa.py, docs/NATIONAL_SPAIN_METADATA_20261016.md, narrow docs/NEXT_MILESTONES.md addendum. No club26 data, source roster_corrections.js, engine, UI, graphics, common QA harness, build, CI/workflows/PWA or other national teams.",
   "base_sha": "94af2d2f587b5153b0259ada9fde0d767b94628c",
   "created_at": "2026-10-16",
@@ -18,5 +18,8 @@
     "Modular Game Dev QA, build/validate data, full regression and Pages deployment",
     "PC/touch deployed smoke"
   ],
-  "handover": "docs/NATIONAL_SPAIN_METADATA_20261016.md"
+  "handover": "docs/NATIONAL_SPAIN_METADATA_20261016.md — source a025f175, tests 4e86d4cd and 07809e10, final doc 7a42b48, full census 38898721461 171/171, hosted smoke 38891468528 attempt 4, CI trigger issue #2 open",
+  "released_at": "2026-10-16",
+  "outcome": "completed_exact_integrated_regression_171_of_171",
+  "final_source_commit": "d9c7274c265ecb88d4269cf2e8d6b014c5fbf947"
 }
