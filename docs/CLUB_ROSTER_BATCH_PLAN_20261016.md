@@ -78,7 +78,7 @@ All 165 club slots are populated, but additional review is warranted for **2026/
 
 ## Identity-only correction checkpoint — 16 October 2026
 
-- **Batch:** `CLUB-20261016-AVL-METADATA-1` (Aston Villa, `club26_6`), five players and **11 verified attribute-level edits**: four corrected ages, five new centimetre heights, and two nationality display normalizations.
+- **Batch:** `CLUB-20261016-AVL-METADATA-1` (Aston Villa, `club26_6`), five players and **11 verified attribute-level edits**: five verified ages (four corrected and one newly populated), five new centimetre heights, and two nationality display normalizations.
 - **Immutable evidence:** [player metadata correction log](PLAYER_METADATA_BATCHES_20261016.json). Both `data/players/club26.json` and `src/roster_corrections.js` were updated. Ages use 2026-10-16 as reference, rather than an arbitrary source snapshot age.
 - **Sources:** [UEFA Aston Villa current squad](https://www.uefa.com/nationalassociations/teams/52683/squad/), [Premier League player biographies](https://www.premierleague.com/en/players), [Transfermarkt 2026/27 detailed squad](https://www.transfermarkt.de/aston-villa/kader/verein/405/saison_id/2026/plus/1).
 - **Selection invariants:** No names, FC27 identifiers, roles, ratings, 12-slot squads or team IDs were changed; the existing 207 name/OVR-replacement records and audit fingerprint remain intact. This is a separate **metadata-only batch** and must **not** be misrepresented as a newly selected-player batch.

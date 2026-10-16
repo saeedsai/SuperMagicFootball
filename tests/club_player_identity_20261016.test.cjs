@@ -22,7 +22,7 @@ test('Aston Villa verified metadata and runtime exactly match',async()=>{
  assert.deepEqual(squad.map(p=>({name:p.name,role:p.role,rating:p.rating})),audit.club26_6.selected);
  assert.deepEqual(Object.fromEntries(['GK','DF','MF','FW'].map(r=>[r,squad.filter(p=>p.role===r).length])),{GK:2,DF:3,MF:4,FW:3});
  assert.equal(ledger.batches[0].playersChanged,5);
- assert.equal(ledger.batches[0].fieldsChanged,11);
+ assert.equal(ledger.batches[0].fieldsChanged,12);
  for(const [id,name,age,heightCm,nation] of expected){
   const p=squad.find(x=>x.id===id);
   assert(p&&p.name===name,name+' stable identity');

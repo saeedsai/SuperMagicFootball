@@ -9,7 +9,7 @@
       "clubId": "club26_6",
       "club": "Aston Villa",
       "playersChanged": 5,
-      "fieldsChanged": 11,
+      "fieldsChanged": 12,
       "status": "pending_ci_regression",
       "changes": [
         {
@@ -64,6 +64,11 @@
             "nation": {
               "previous": "Holland",
               "current": "Netherlands",
+              "source": "https://www.uefa.com/nationalassociations/teams/52683/squad/"
+            },
+            "age": {
+              "previous": null,
+              "current": 24,
               "source": "https://www.uefa.com/nationalassociations/teams/52683/squad/"
             }
           }
