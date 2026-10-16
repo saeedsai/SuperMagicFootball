@@ -3,7 +3,7 @@
   "lock_key": "graphics-renderer",
   "feature_id": "ART-GAMEPLAY-PASS-FOLLOW-THROUGH",
   "owner": "gameplay-pass-pose-20261016-gpt6-r1",
-  "status": "active",
+  "status": "released",
   "scope": "Only src/modules/artpose.js new finite safe pass follow-through visual easing and src/modules/render.js ordinary pass action lean/near boot kick (all view headings); new tests/pass_follow_through.test.cjs and tests/pass_follow_through_browser_qa.py; new docs/GAMEPLAY_PASS_FOLLOW_THROUGH_20261016.md. No engine/physics, input, UI, concept illustration assets, team/roster/save, shared runner/build/CI/service worker, other agent memories or global roadmap.",
   "base_sha": "a40b91c8e96a62a63bb141523fd46e119387cdb5",
   "created_at": "2026-10-16",
@@ -15,5 +15,8 @@
     "Full Regression Census 4+4 shards",
     "hosted Pages desktop/touch smoke"
   ],
-  "handover": "docs/GAMEPLAY_PASS_FOLLOW_THROUGH_20261016.md"
+  "handover": "docs/GAMEPLAY_PASS_FOLLOW_THROUGH_20261016.md; https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946410219 (211/211); https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913600226 (hosted attempt 3)",
+  "released_at": "2026-10-16",
+  "outcome": "completed eight-direction ordinary pass follow-through visual gameplay; 200/200 active Node QA, 136/136 Node full census, 75/75 Chromium full census, public desktop/simulated-touch Quick Match smoke PASS; no physics, UI, roster or saves modified",
+  "final_source_commit": "0a72b58e715e7d142bb3b3c183f25b1ee255b40f"
 }
