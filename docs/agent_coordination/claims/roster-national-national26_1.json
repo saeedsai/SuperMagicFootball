@@ -4,7 +4,7 @@
   "feature_id": "NATIONAL-ARGENTINA-MESSI-EMI-METADATA-B1",
   "owner": "dev6-argentina-national-gk-messi-20261016",
   "status": "active",
-  "scope": "Correct factual 2026-10-16 age and primary-profile height for national26_1_9 Lionel Messi and national26_1_gk_13 Emiliano Martinez ONLY in data/players/national26.json. Add tests/argentina_national_metadata.test.cjs and tests/argentina_national_metadata_browser_qa.py; docs/NATIONAL_ARGENTINA_METADATA_20261016.md; own docs/memory/agents/game-developer-6.md checkpoint. No other players, other nations/clubs, roster_corrections, ratings/stats/roles/IDs, game engine, graphics, UI, QA harness, build or release infra changes.",
+  "scope": "Correct factual 2026-10-16 age and primary-profile height for national26_1_9 Lionel Messi and national26_1_gk_13 Emiliano Martinez ONLY in data/players/national26.json. Add tests/argentina_national_metadata.test.cjs and tests/argentina_national_metadata_browser_qa.py; docs/NATIONAL_ARGENTINA_METADATA_20261016.md and a small additive docs/NEXT_MILESTONES.md checkpoint; own docs/memory/agents/game-developer-6.md checkpoint. No other players, other nations/clubs, roster_corrections, ratings/stats/roles/IDs, game engine, graphics, UI, QA harness, build or release infra changes.",
   "base_sha": "f0858269cf8cf1419b8b78d25f0d7be21798eda1",
   "claimed_at": "2026-10-16T14:10:00Z",
   "heartbeat_at": "2026-10-16T14:10:00Z",
