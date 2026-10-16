@@ -1,0 +1,123 @@
+{
+  "schema": "smf-feature-registry/1",
+  "updated": "2026-10-16",
+  "source_branch": "dev",
+  "important": "Candidate work only. A candidate is not automatically unowned or incomplete. Inspect active GitHub claims, latest handovers and issues/PRs before claiming.",
+  "staticLockKeys": [
+    {
+      "key": "graphics-renderer",
+      "scope": "Concept rig, procedural player graphics, animation rendering, render.js, graphical character assets"
+    },
+    {
+      "key": "gameplay-engine",
+      "scope": "Playable match physics, AI, goalkeeper, mechanics, engine.js and shared gameplay configuration"
+    },
+    {
+      "key": "ui-controls",
+      "scope": "Screens, menus, input, Studio interfaces, ui.js, style.css, index.html"
+    },
+    {
+      "key": "integration-tooling",
+      "scope": "Three-way data merge, source validation, batch application scripts, compatibility fixture builder"
+    },
+    {
+      "key": "qa-framework",
+      "scope": "Regression test harness, common QA runners and reusable browser/Node test infrastructure"
+    },
+    {
+      "key": "release-infra",
+      "scope": "CI workflows, deployment, Pages, service worker and release verification"
+    }
+  ],
+  "dynamicLockKeyRules": [
+    {
+      "pattern": "roster-club-<stable-team-id>",
+      "scope": "Exactly one named club: lineup selection, player metadata, ratings and roster audit",
+      "example": "roster-club-cont_uefa_1"
+    },
+    {
+      "pattern": "roster-national-<stable-team-id>",
+      "scope": "Exactly one named national team: names, positions, statistics, rating or call-up updates",
+      "example": "roster-national-nat_eur_1"
+    }
+  ],
+  "candidates": [
+    {
+      "feature_id": "ART-C01",
+      "title": "Next small editable illustrated layer and concept rig checkpoint",
+      "lock_key": "graphics-renderer",
+      "plan": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
+      "note": "C00/C01 already in progress in roadmap: verify latest commit and whether a pre-protocol art agent is active."
+    },
+    {
+      "feature_id": "GK-VISUAL",
+      "title": "Keeper grip/recovery and direction-safe visual pose batch",
+      "lock_key": "graphics-renderer",
+      "plan": "docs/NEXT_MILESTONES.md",
+      "note": "Coordinate any engine file changes separately under gameplay-engine."
+    },
+    {
+      "feature_id": "GK-CALIBRATION",
+      "title": "Seeded real-contact goalkeeper calibration in a bounded gameplay batch",
+      "lock_key": "gameplay-engine",
+      "plan": "docs/NEXT_MILESTONES.md",
+      "note": "Read latest keeper QA; many earlier dive features already delivered."
+    },
+    {
+      "feature_id": "MECH-EXTRACTION",
+      "title": "One bounded mechanics JSON extraction with default parity",
+      "lock_key": "gameplay-engine",
+      "plan": "docs/NEXT_MILESTONES.md",
+      "note": "Shared engine code, do not overlap goalkeeper owner."
+    },
+    {
+      "feature_id": "UI-CAREER",
+      "title": "Career/squad substitution feedback in one UI batch",
+      "lock_key": "ui-controls",
+      "plan": "docs/NEXT_MILESTONES.md",
+      "note": "If changing playable tactics engine also needs gameplay-engine."
+    },
+    {
+      "feature_id": "MERGE-TOOL",
+      "title": "Extend safe ID-aware three-way data merge checks",
+      "lock_key": "integration-tooling",
+      "plan": "docs/PARALLEL_DATA_MERGE_GUIDE.md",
+      "note": "Do not alter another roster owner's data."
+    },
+    {
+      "feature_id": "QA-SMOKE",
+      "title": "One independent regression smoke/checkpoint harness improvement",
+      "lock_key": "qa-framework",
+      "plan": "docs/QA_PARALLEL_MERGE_CHECKPOINT_20261016.md",
+      "note": "Claim release-infra additionally if changing workflows."
+    },
+    {
+      "feature_id": "CLUB-FIRST-XI",
+      "title": "One club's sourced FC27/fallback positional first team",
+      "lock_key_template": "roster-club-<stable-team-id>",
+      "plan": "docs/CLUB_ROSTER_BATCH_PLAN_20261016.md",
+      "note": "Use a concrete club ID in feature ID and claim; same lock for club metadata."
+    },
+    {
+      "feature_id": "CLUB-METADATA",
+      "title": "One club's source-backed player heights/ages/numbers",
+      "lock_key_template": "roster-club-<stable-team-id>",
+      "plan": "docs/PLAYER_METADATA_BATCHES_20261016.json",
+      "note": "Use same per-club lock as lineup edits."
+    },
+    {
+      "feature_id": "NATIONAL-CALLUP",
+      "title": "One national team's real-player position-constrained call-up",
+      "lock_key_template": "roster-national-<stable-team-id>",
+      "plan": "docs/MASTER_DEVELOPMENT_PLAN.md",
+      "note": "Check active selection/roster tasks and identity preservation."
+    },
+    {
+      "feature_id": "PAGES-QA",
+      "title": "Verified release/deployment workflow maintenance",
+      "lock_key": "release-infra",
+      "plan": "GITHUB_PAGES_SETUP.md",
+      "note": "Do not alter runtime unless additional relevant lock is held."
+    }
+  ]
+}
