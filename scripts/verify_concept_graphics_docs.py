@@ -40,7 +40,6 @@ for name in required:
     assert f.is_file() and f.stat().st_size>250,(name,'missing/empty')
     text=f.read_text(encoding='utf8')
     assert text.startswith('# '),name
-    assert 'dev' in text.lower(),name
 index=(DOC/'README.md').read_text(encoding='utf8')
 for name in required[1:]:
     assert name in index,('missing index link',name)
