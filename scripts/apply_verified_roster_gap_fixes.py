@@ -212,8 +212,15 @@ def main():
     assert len({p["num"] for p in roster})==12
     report[team_id]["selected"]=[{"name":p["name"],"role":p["role"],"rating":p["rating"]} for p in roster]
     report[team_id]["fictionalRemaining"]=sum(bool(p.get("fictional")) for p in roster)
-    report[team_id]["origin"]+="+INDEPENDENT_2026_SQUAD"
-    report[team_id]["source"]=str(report[team_id].get("source") or "")+"; "+record["source"]
+    # Idempotent provenance: repeat executions must not fabricate extra batches.
+    origin_parts=[s for s in str(report[team_id].get("origin") or "").split("+") if s]
+    if "INDEPENDENT_2026_SQUAD" not in origin_parts:
+        origin_parts.append("INDEPENDENT_2026_SQUAD")
+    report[team_id]["origin"]="+".join(dict.fromkeys(origin_parts))
+    source_parts=[s.strip() for s in str(report[team_id].get("source") or "").split(";") if s.strip()]
+    next_source=record["source"].strip()
+    if next_source not in source_parts:source_parts.append(next_source)
+    report[team_id]["source"]="; ".join(dict.fromkeys(source_parts))
     print("CURATED",team_id,report[team_id]["club"],"remaining",report[team_id]["fictionalRemaining"])
  js_path=ROOT/"src/roster_corrections.js"
  content=js_path.read_text()
