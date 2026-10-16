@@ -145,3 +145,9 @@ Source [dc9f46e](https://github.com/saeedsai/SuperMagicFootball/commit/dc9f46e16
 ## Batch 6 — Inter Milan small sourced metadata checkpoint (CLUB-20261016-INT-METADATA-1)
 
 [Inter metadata handover](CLUB_PLAYER_METADATA_INTER_20261016.md): five players' official age and centimetre height verified directly on Inter.it; 10 field-level edits tracked in `PLAYER_METADATA_BATCHES_20261016.json`. Player selection, shirt numbers, ratings and game attributes unchanged. Exclusive `roster-club-club26_8` claim acquired before edit; release after test/report. Test `tests/inter_player_metadata_20261016.test.cjs`. Remaining Inter keeper/registration and shirt-number issues require separate review. Next five are recorded in handover.
+
+## 2026-10-16 — Arsenal official EA FC 27 launch rating + 2026/27 physical metadata checkpoint
+
+- Owner: `roster-arsenal-20261016-gpt6-session1`; exclusive lock: `roster-club-club26_0`. Corrected eight jerseys and eight missing ages; recorded 12 sourced centimetre heights and official EA rating links, with 12/12 OVR and 72/72 face stats already matching. No OVR, role, gameplay stat or other-club edits.
+- Immutable per-field batch: `CLUB-20261016-ARS-FC27-VERIFICATION-1` in `PLAYER_METADATA_BATCHES_20261016.json`; handover: [Arsenal official 2026/27 FC27 metadata](CLUB_PLAYER_METADATA_ARSENAL_20261016.md). Continue from latest dev after claim release; do not repeat Arsenal unless resolving specifically documented conflicts.
+- Next five bounded candidates: Bayern `club26_1`, Manchester City `club26_2`, PSG `club26_3`, Barcelona `club26_4`, Manchester United `club26_5`; check active claims and team handovers before selection. Official EA team page first, club/league registration for number and age, reputable physical sources for height.

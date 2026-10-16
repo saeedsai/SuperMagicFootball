@@ -1746,6 +1746,475 @@
         "Unchanged player IDs, names, squad roles, OVR, rating-source markers, gameplay face stats and all other club records.",
         "Other Inter players and current 2026/27 registration for Ivan Provedel require a separate source-backed review."
       ]
+    },
+    {
+      "id": "CLUB-20261016-ARS-FC27-VERIFICATION-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "2c3e346090fa44562c34e4d5fb317c22ab550829",
+      "clubId": "club26_0",
+      "club": "Arsenal",
+      "playersChanged": 12,
+      "fieldsChanged": 72,
+      "status": "pending_ci_regression",
+      "changes": [
+        {
+          "playerId": "club26_0_0",
+          "name": "David Raya",
+          "rosterSlot": 1,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://www.premierleague.com/players/7975/David-Raya-Martin/overview"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_gk_17",
+          "name": "Kepa",
+          "rosterSlot": 2,
+          "fields": {
+            "num": {
+              "previous": 2,
+              "current": 13,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 32,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 189,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_audit_12",
+          "name": "Gabriel",
+          "rosterSlot": 3,
+          "fields": {
+            "num": {
+              "previous": 3,
+              "current": 6,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 190,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_audit_13",
+          "name": "William Saliba",
+          "rosterSlot": 4,
+          "fields": {
+            "num": {
+              "previous": 4,
+              "current": 2,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 25,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 192,
+              "source": "https://www.premierleague.com/players/66204/stats"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_audit_14",
+          "name": "Ezri Konsa",
+          "rosterSlot": 5,
+          "fields": {
+            "num": {
+              "previous": 5,
+              "current": 15,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_5",
+          "name": "Declan Rice",
+          "rosterSlot": 6,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 185,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_7",
+          "name": "Bruno Guimarães",
+          "rosterSlot": 7,
+          "fields": {
+            "num": {
+              "previous": 6,
+              "current": 39,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 182,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_audit_16",
+          "name": "Martin Ødegaard",
+          "rosterSlot": 8,
+          "fields": {
+            "num": {
+              "previous": 7,
+              "current": 8,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 176,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_8",
+          "name": "Zubimendi",
+          "rosterSlot": 9,
+          "fields": {
+            "num": {
+              "previous": 8,
+              "current": 36,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_6",
+          "name": "Bukayo Saka",
+          "rosterSlot": 10,
+          "fields": {
+            "num": {
+              "previous": 9,
+              "current": 7,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_10",
+          "name": "Viktor Gyökeres",
+          "rosterSlot": 11,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 187,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        },
+        {
+          "playerId": "club26_0_audit_15",
+          "name": "Eberechi Eze",
+          "rosterSlot": 12,
+          "fields": {
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season"
+            },
+            "age": {
+              "previous": null,
+              "current": 28,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 173,
+              "source": "https://www.footballsquads.co.uk/eng/2026-2027/engprem/arsenal.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1"
+            }
+          }
+        }
+      ],
+      "officialFc27Audit": {
+        "source": "https://www.ea.com/sv/games/ea-sports-fc/ratings/teams-ratings/arsenal/1",
+        "playersMatched": 12,
+        "overallRatingsMatched": 12,
+        "faceStatGroupsMatched": 72,
+        "gameplayStatsUnchanged": true,
+        "roleCaveat": "Eze EA FC27 CAM, game FW in constrained 2GK/3DF/4MF/3FW 12-player design"
+      },
+      "physicalDataCaveats": [
+        "Height values from Premier League for Raya (183 cm) and Saliba (192 cm), 2026/27 FootballSquads list otherwise. 2026 FIFA World Cup sheet lists David Raya at 186 cm instead: disputed.",
+        "Kepa FootballSquads 189 cm vs Transfermarkt 188 cm; keep review flag in handover."
+      ],
+      "invariant": "Stable player IDs and positions, all 12 OVR, six EA headline attributes, game power/shoot/defense/speed, and all other teams unchanged."
     }
   ]
 }
