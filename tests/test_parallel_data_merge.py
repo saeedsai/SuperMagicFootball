@@ -229,6 +229,62 @@ class MergeContracts(unittest.TestCase):
             self.assertIn('--report must be outside', result.stderr)
             self.assertEqual(protected.read_bytes(), original)
 
+    def test_source_sensitive_player_edits_flag_manual_review_with_metadata_context(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            rel = 'data/players/club26.json'
+            old = {'club26_0': [{'id': 'p1', 'name': 'Player', 'rating': 81,
+                                 'heightCm': 179, 'source': 'https://example.com/old'}]}
+            ours = {'club26_0': [dict(old['club26_0'][0], rating=83,
+                                   source='https://example.com/new')]}
+            theirs = {'club26_0': [dict(old['club26_0'][0], heightCm=182)]}
+            for label, value in (('base', old), ('ours', ours), ('theirs', theirs)):
+                p = root / label / rel
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(json.dumps(value))
+            reviews = []
+            merged, conflicts = compare_directories(
+                root / 'base', root / 'ours', root / 'theirs',
+                paths=(rel,), source_reviews=reviews)
+            self.assertEqual(conflicts, [])
+            self.assertEqual(merged[rel]['club26_0'][0]['rating'], 83)
+            self.assertEqual(merged[rel]['club26_0'][0]['heightCm'], 182)
+            self.assertEqual(len(reviews), 1)
+            flag = reviews[0]
+            self.assertEqual(flag['path'], rel + '/club26_0/id=p1')
+            self.assertEqual(flag['changedFields'], ['heightCm', 'rating'])
+            self.assertEqual(flag['sourceMetadataChanged'], ['source'])
+            self.assertTrue(flag['needsSourceReview'])
+            # An updated URL is not interpreted as *verified* by this tool.
+            self.assertEqual(merged[rel]['club26_0'][0]['source'], 'https://example.com/new')
+
+    def test_source_review_flags_unproven_rating_but_ignores_cosmetic_player_edits(self):
+        from parallel_data_merge import collect_player_source_reviews
+        before = {'team': [{'id': 'p1', 'rating': 80, 'shotName': 'Classic'}]}
+        after = {'team': [{'id': 'p1', 'rating': 84, 'shotName': 'Revised'}]}
+        findings = []
+        collect_player_source_reviews(before, after, 'data/players/club26.json', findings)
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0]['changedFields'], ['rating'])
+        self.assertEqual(findings[0]['sourceMetadataChanged'], [])
+        collect_player_source_reviews(before,
+                                      {'team': [{'id': 'p1', 'rating': 80,
+                                                 'shotName': 'Revised'}]},
+                                      'data/players/club26.json', findings)
+        self.assertEqual(len(findings), 1)
+
+    def test_source_review_report_caps_examples_without_losing_total(self):
+        from parallel_data_merge import collect_player_source_reviews, source_review_summary
+        originals = {'team': [{'id': f'p{i}', 'age': 20} for i in range(30)]}
+        edited = {'team': [{'id': f'p{i}', 'age': 21} for i in range(30)]}
+        findings = []
+        collect_player_source_reviews(originals, edited, 'data/players/club26.json', findings)
+        summary = source_review_summary(findings)
+        self.assertEqual(summary['count'], 30)
+        self.assertEqual(len(summary['entries']), 25)
+        self.assertTrue(summary['truncated'])
+        self.assertEqual(summary['entries'][0]['changedFields'], ['age'])
+
     def test_cli_writes_only_separate_output_and_prevents_overwrite(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
