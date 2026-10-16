@@ -47,7 +47,8 @@ test('malformed, unsafe, NaN and internally inconsistent JSON are rejected befor
   ['passSpeed','max',Infinity],['passSpeed','qualityMultiplier',NaN],
   ['passSpeed','base',-200],['passSpeed','base','445'],
   ['keeperDiveRecovery','skillCoefficient',-.1],
-  ['keeperDiveRecovery','maxSeconds',1.2]
+  ['keeperDiveRecovery','maxSeconds',1.2],
+  ['superShot','speedMultiplier',1.2],['superShot','fatigueMultiplier',.5]
  ])assert.throws(()=>validatePhysicsTuning({...tuning,[group]:{...tuning[group],[key]:value}}),/physicsTuning/);
  assert.throws(()=>validatePhysicsTuning({...tuning,keeperDiveRecovery:{...tuning.keeperDiveRecovery,minSeconds:1.7,baseSeconds:1.6}}),/min <= base <= max/);
 });
@@ -59,6 +60,24 @@ test('actual playable engine and generated QA fixture load the one independent p
  assert.match(engine,/keeperDiveCooldown\(skill,diving,fatigue,PHYSICS_TUNING\)/);
  assert.match(build,/'physicsbalance','engine'/);
  assert.match(sw,/'physicsbalance','engine'/);
- assert.match(sw,/smf-082534-physics-tuning-v1/);
+ assert.match(sw,/smf-082535-super-keeper-hold-v1/);
  assert.equal(source('data/mechanics/gameplay.json').includes('"w": 2260.8'),true);
+});
+
+test('Super Shot speed and stamina cost are slightly adjusted and safely configurable',async()=>{
+ const {validatePhysicsTuning,superShotSpeedMultiplier,superShotFatigueMultiplier}=await load();
+ const cfg=validatePhysicsTuning(tuning);
+ assert.equal(superShotSpeedMultiplier(cfg),.96);
+ assert.equal(superShotFatigueMultiplier(cfg),1.08);
+ assert.equal(superShotSpeedMultiplier(validatePhysicsTuning({...tuning,superShot:{...tuning.superShot,speedMultiplier:.99}})),.99);
+ assert.throws(()=>validatePhysicsTuning({...tuning,superShot:{...tuning.superShot,fatigueMultiplier:2}}),/physicsTuning.superShot.fatigueMultiplier/);
+ assert.match(source('src/modules/engine.js'),/850\*spec\.speed\*superShotSpeedMultiplier\(PHYSICS_TUNING\)/);
+ assert.match(source('src/modules/engine.js'),/superShotFatigueMultiplier\(PHYSICS_TUNING\)/);
+});
+test('keeper catches are held at glove height until distribution',()=>{
+ const engine=source('src/modules/engine.js');
+ assert.match(engine,/b\.z=p\.keeper\?p\.z\+82/);
+ assert.match(engine,/keeperHold>=1\.35/);
+ assert.match(engine,/p\.action='keeperHold'/);
+ assert.match(source('src/modules/render.js'),/HOLDING/);
 });

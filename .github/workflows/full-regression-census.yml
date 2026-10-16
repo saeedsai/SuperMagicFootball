@@ -20,6 +20,7 @@ on:
       - 'src/modules/physicsbalance.js'
       - 'tests/physics_tuning_v082534.test.cjs'
       - 'tests/physics_tuning_browser_qa.py'
+      - 'tests/super_keeper_balance_browser_qa.py'
       - 'docs/ENGINE_PHYSICS_TUNING_20261016.md'
       - 'sw.js'
       - 'scripts/validate_data.py'
