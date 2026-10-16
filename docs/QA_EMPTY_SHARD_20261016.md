@@ -34,3 +34,7 @@ The existing active `node --test tests/*.test.cjs` and historic Node regression 
 ### Integrated checkpoint and next regression step
 
 A separately scheduled exact-source Modular QA check on commit `e29c766c` proved the **six-case safety suite passes** through the Node bridge (`ok ... regression census rejects empty shards ...`). That same integrated run had **two unrelated graphics contract failures** while another agent was editing illustrated character layers. This was not a false-green regression or a new runner failure. Once the graphics agent's subsequent Modular QA became green, a seventh negative-path test was added to explicitly check a failing executable script is recorded as `FAIL` with exit code 1, never as `PASS`; the Node bridge now expects seven tests. A new full regression census on the final code commit must complete before calling this release certified. Do not change any graphics/CI source while separate locks are held.
+
+### Auditable shard manifest addition
+
+The report now includes `discovered_scripts` (the complete ordered list per category) and `selected_scripts` (the ordered list actually assigned to the current shard). Existing `discovered`, `requested`, `tests` and `summary` properties remain compatible. This lets a post-run auditor verify the union of all shards and detect silent gaps, rather than relying solely on counters. The isolated seven-case Python suite checks both the single-shard manifest and two-shard assignment; its Node bridge executes in regular Modular QA. CI status on final commit must be checked separately.
