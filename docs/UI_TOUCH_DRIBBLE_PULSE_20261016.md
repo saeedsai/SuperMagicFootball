@@ -68,3 +68,17 @@ For full historical coverage use the [Full Regression Census](https://github.com
 5. **Device and delivery:** verify real-phone touch double taps, desktop keyboard/gamepad parity, offline/PWA restart save persistence and Pages deployed SHA; preserve ongoing FC27 metadata validation under per-team locks.
 
 **Handover:** this was exclusively an input-layer patch under `ui-controls`, with an independent `gameplay-engine` specialist active concurrently. The immediate next step is the exact-current-source Chromium reproduction and issue #3 triage; do not change dribble physics through this claim. Release the claim after the docs/CI checkpoint is committed and verified.
+
+## Exact descendant full-regression checkpoint and open defect
+
+An independent graphics-agent commit triggered the enumerated [Full Regression Census #38904271767](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38904271767) on descendant SHA `22b67de184327bac6ef82b1a82b8b9043dbd8f85`. GitHub commit comparison verified this descends from the actual input/browser-test source `e4a63e41` with only unrelated graphic-reference test/doc changes.
+
+**Verified actual browser acceptance:** `touch_dribble_pulse_browser_qa.py` **PASS** on Chromium browser shard 2 (4.70 seconds), including genuine Android CDP press/release/repress between explicit polls and desktop keyboard edges. The original `dribble_styles_browser_qa.py` in browser shard 3, however, **FAILS on simulated Android**, with `{'events': [], 'cooldown': 0, 'style': None, 'ballOwner': False, 'buttons': 4}` at line 29. The desktop branch passed. This is the same pre-existing open [issue #3](https://github.com/saeedsai/SuperMagicFootball/issues/3) and demonstrates that **the targeted input edge fix does not by itself resolve the complete live match rainbow-dribble regression**.
+
+Four Node historical shards **PASS 120/120 scripts** (30 each). Chromium shards 0 and 2 **PASS 16/16 each**, shard 3 **15 PASS / 1 FAIL**, and shard 1 was still in progress at this documentation checkpoint. The overall regression cannot be marked green. Read its final exact-source run and failed job log for the remaining browser total before closing acceptance.
+
+The failing test loses ball ownership during a pressured live match; whether that is a gameplay possession/timing race, missed engine action, or test setup variability is **not yet established**. Changing `src/modules/engine.js`, dribble skill odds or goalkeeper/AI movement requires a separately acquired `gameplay-engine` claim, currently held by another agent. Do not silence the failing assertion, artificially force success or close issue #3.
+
+GitHub Pages [deployment #38903978245](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38903978245) **SUCCESS** for exact input-source commit `0cd7d0a8`, but a deployment job is not interactive hosted or physical-phone certification. The public game link remains https://saeedsai.github.io/SuperMagicFootball/; direct page access was unavailable through this session.
+
+**Next handover action:** reproduce issue #3 with trace of per-frame `controlled[0]`, `input.just(0,'dribble')`, `ball.owner`, `p.cd`, `p.trickCd`, defender distance and first dribble event in both platforms; distinguish valid ball loss from missing input. A gameplay owner can then decide if actual mechanic needs protection against premature control loss or if the existing test setup is nondeterministic. Preserve this input-layer reliability improvement and its new passing Chromium test.
