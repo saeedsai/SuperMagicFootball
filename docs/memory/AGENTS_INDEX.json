@@ -47,6 +47,11 @@
       "id": "context-admin-20261016",
       "label": "Context-management implementation",
       "path": "docs/memory/agents/context-admin-20261016.md"
+    },
+    {
+      "id": "gameplay-review-20261016",
+      "label": "Gameplay review and upgrade (new chat)",
+      "path": "docs/memory/agents/gameplay-review-20261016.md"
     }
   ]
 }
