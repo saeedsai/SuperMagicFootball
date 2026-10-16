@@ -740,6 +740,10 @@ function quickTacticalCall(side,key){
  if(!['PAUSED','HALF TIME'].includes(screen)||game.matchState!=='paused'||(side===1&&humans<2))return false;
  const choice=QUICK_TACTICAL_CALLS[key],plan=game.teamPlans?.[side];
  if(!choice||!plan)return false;
+ if(plan.attack===choice.attack&&plan.defence===choice.defence){
+  toast(`${side===0?'HOME':'AWAY'} ${choice.label} is already active`,1300);
+  return true;
+ }
  try{
   // Clone the authoritative in-match plan. Do not write the pre-game teamPlans
   // or localStorage, and do not swap any selected player.

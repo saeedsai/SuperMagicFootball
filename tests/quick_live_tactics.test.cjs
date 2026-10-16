@@ -41,6 +41,13 @@ test('four real tactics preset calls change only existing attack and defence',()
  assert.equal(x.game.teamPlans[1].attack,'Balanced','CPU tactics unchanged');
  assert.doesNotMatch(block,/store\.put\(|localStorage\.(?:setItem|removeItem|clear)\(|substitutionsUsed\s*\+\+|\.lineup\s*=/);
 });
+test('calling already active tactical style is an idempotent, no-substitution action',()=>{
+ const x=make();
+ assert.equal(x.call(0,'balanced'),true);
+ assert.equal(x.store.calls,0,'must not call applyPlan on no-op');
+ assert.equal(x.store.change,0,'must not reconstruct pause menu');
+ assert.equal(x.game.teamPlans[0].attack,'Balanced');
+});
 test('commands reject active play, invalid menu, CPU side and unknown actions',()=>{
  const x=make('PAUSED',1);
  for(const [screen,state,side,key] of [
