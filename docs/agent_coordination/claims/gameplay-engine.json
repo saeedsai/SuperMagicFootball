@@ -3,7 +3,7 @@
   "lock_key": "gameplay-engine",
   "feature_id": "GAMEPLAY-TACTICS-EVENT-INTEGRITY-ISSUE7",
   "owner": "gameplay-review-20261016-gpt6-event-integrity",
-  "status": "active",
+  "status": "released",
   "scope": "Only src/modules/engine.js GameEngine.applyPlan tactical/substitution event semantics, new tests/tactics_event_integrity.test.cjs and tests/tactics_event_integrity_browser_qa.py and scoped docs/GAMEPLAY_TACTICS_EVENT_INTEGRITY_20261016.md; one concise milestone handover. No UI/input/graphics/roster/build/workflows/common regression harness edits. Close Issue #7 after exact-code Node+Chromium acceptance.",
   "base_sha": "38121262b0086cdeb0da2e5624c05531a0d293aa",
   "created_at": "2026-10-16",
@@ -14,6 +14,9 @@
     "full regression census 4x Node 4x Chromium",
     "hosted PC/touch Pages smoke"
   ],
-  "handover": "docs/GAMEPLAY_TACTICS_EVENT_INTEGRITY_20261016.md",
-  "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/7"
+  "handover": "docs/GAMEPLAY_TACTICS_EVENT_INTEGRITY_20261016.md; https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913600419 (192/192); https://github.com/saeedsai/SuperMagicFootball/issues/7 (closed)",
+  "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/7",
+  "released_at": "2026-10-16",
+  "outcome": "completed Issue #7: real substitutions only, 146/146 active Node, 125/125 historical Node and 67/67 browser full-regression PASS, keeper integrity and hosted PC/touch smoke PASS; exact-source Pages deploy unconfirmed at claim release",
+  "final_source_commit": "be78c92baef19231062190969454e5dee16c1736"
 }
