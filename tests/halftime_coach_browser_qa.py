@@ -52,6 +52,7 @@ with sync_playwright() as pw:
         panel = page.locator('#halftimeCoachHome')
         assert panel.count()==1,(device,'missing halftime coaching advice')
         assert panel.get_attribute('role')=='status'
+        assert panel.get_attribute('aria-live')=='polite', (device, 'accessible live guidance')
         text = panel.inner_text()
         assert 'TRAILING' in text and 'Direct attack' in text, (device,text)
         assert 'LOW FITNESS' in text and '1 starter' in text, (device,text)

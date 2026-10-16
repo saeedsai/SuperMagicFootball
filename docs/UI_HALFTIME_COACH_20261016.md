@@ -30,3 +30,7 @@ Work is limited to `src/modules/ui.js`, the two dedicated tests, `docs/NEXT_MILE
 ## Handover and release gates
 
 Record source SHA, new test evidence, full-regression run URL and actual browser outcome before releasing claim. If CI is not finished, leave it pending and release with a precise follow-up. No automatic takeover of occupied locks.
+
+## Accessibility and restarted regression checkpoint
+
+Follow-up UI polish adds `aria-live="polite"` on the home/away read-only coaching panels. The real desktop/touch acceptance now asserts that accessibility contract without changing player state. Full regression #38897704140 on preceding combined graphics/telemetry commit `cb3e1eee` was **blocked at preflight by an unrelated telemetry threshold test**; none of its browser shards executed. Independently, a newer descendant [Modular Game Dev QA #38897728842](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38897728842) passed **95/95 active Node tests** including five new halftime contracts, 17/17 merge tests and 8/8 claim protocol tests. The new UI-only accessibility edit re-triggers Full Regression Census on the newly integrated source; its result must be checked before certification.
