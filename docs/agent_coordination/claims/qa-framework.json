@@ -1,21 +1,20 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "qa-framework",
-  "feature_id": "QA-EMPTY-SHARD",
-  "owner": "qa-empty-shard-20261016-1255-gpt6",
-  "status": "released",
-  "scope": "QA-only: tests/full_regression_runner.py, tests/test_full_regression_runner.py, tests/full_regression_runner_safety.test.cjs (Node bridge to run Python test in existing CI), docs/QA_EMPTY_SHARD_20261016.md. Guard empty discovery/shard false-green; isolate browser legacy test migration. No shared engine, roster, graphics, CI workflows, release scripts or integration tooling.",
-  "base_sha": "81d7a0fa8fbbdcda4d9f4c1bb3f2419f1b785e46",
-  "created_at": "2026-10-16",
-  "renewed_at": "2026-10-16",
+  "feature_id": "QA-SHARD-AUDIT",
+  "owner": "qa-shard-audit-20261016-1357-gpt6",
+  "status": "active",
+  "scope": "Independent cross-shard full regression manifest completeness and duplicate detector in new tests/audit_regression_shards.py and its isolated Python/Node contract tests; dedicated docs/QA_SHARD_CENSUS_AUDIT_20261016.md, QA area handover only. Do not edit gameplay, graphics, player/roster data, shared UI, CI workflows, release tooling or full_regression_runner.py.",
+  "base_sha": "b8a38d975d667b4bd2fb0df5fbd30b087fa0ff71",
+  "created_at": "2026-10-16T13:57+02:00",
+  "renewed_at": "2026-10-16T13:57+02:00",
   "tests": [
-    "python3 -m unittest discover -s tests -p test_full_regression_runner.py -v",
-    "python3 scripts/build.py",
-    "Full Regression Census on exact code commit",
-    "node --test tests/full_regression_runner_safety.test.cjs"
+    "python3 -m unittest discover -s tests -p 'test_audit_regression_shards.py' -v",
+    "node --test tests/audit_regression_shards.test.cjs",
+    "node --test tests/*.test.cjs",
+    "GitHub Full Regression Census on exact integrated commit"
   ],
-  "handover": "docs/QA_EMPTY_SHARD_20261016.md — final QA/doc commit eb6f2c593f6613f58cb3c6e01956cf7367a208f0; source commit 709eeec167daf1a201dcba5bec6afee571623279; full census https://github.com/saeedsai/SuperMagicFootball/actions/runs/38892003186 (browser-2 rerun pending)",
-  "outcome": "implemented_qa_guard_and_report_manifest; seven_tests_pass; 105_node_full_census_pass; controls_browser_rerun_pending",
-  "released_at": "2026-10-16",
-  "integrated_commit": "eb6f2c593f6613f58cb3c6e01956cf7367a208f0"
+  "handover": "docs/QA_SHARD_CENSUS_AUDIT_20261016.md",
+  "previous_released_outcome": "implemented_qa_guard_and_report_manifest; seven_tests_pass; 105_node_full_census_pass; controls_browser_rerun_pending",
+  "previous_handover": "docs/QA_EMPTY_SHARD_20261016.md — final QA/doc commit eb6f2c593f6613f58cb3c6e01956cf7367a208f0; source commit 709eeec167daf1a201dcba5bec6afee571623279; full census https://github.com/saeedsai/SuperMagicFootball/actions/runs/38892003186 (browser-2 rerun pending)"
 }
