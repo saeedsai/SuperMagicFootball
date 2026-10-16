@@ -82,3 +82,8 @@ Delivered an isolated **shot-linked keeper calibration instrument**, following t
 5. **Career/tactics usability:** substitution feedback, squad role suitability, halftime coaching, and persisted-save compatibility with no schema migration.
 
 Owner-deferred long-term scope: physical-device/PWA/offline/restart certification, Super Defense/Tricks, multiplayer and exhaustive global roster source review. Preserve concurrent roster and art agents' files.
+
+
+### Verified keeper telemetry checkpoint
+
+The preceding telemetry feature checkpoint `b7d922aa` has now passed [full regression 147/147](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38881038162) (97 Node + 50 Chromium) and [active QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38881038084) (66 active Node tests). The five next milestones above remain the active plan: keeper calibration, held-ball glove animation, reception/pass follow-through, source-aware merge provenance, career/tactics UX. Source provenance, existing rules and physical-device deferred scope are unchanged.

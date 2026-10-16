@@ -42,3 +42,12 @@ Five follow-ups: (1) mirrored seeded live keeper outcome telemetry and conservat
 ## Cleanup and concurrent-agent policy
 
 No roster data, saved game state, animation atlases, immutable club ledgers or historical CI artifacts were deleted. Root remains limited to playable shell, platform helpers and original historical hashes; historical manifest snapshots are not current certifications. All writes into `dev` use non-force, expected-head updates to preserve concurrent agents' commits.
+
+
+## Final exact-source regression certification
+
+The previously queued [Full Regression Census #38881038162](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38881038162) **completed successfully on code checkpoint `b7d922aa`**. All 8 script shards were green: Node **97/97** (25 + 24 + 24 + 24); Chromium **50/50** (13 + 13 + 13 + 13); **147/147 total**, with **0 FAIL, 0 ERROR, 0 TIMEOUT, 0 NOT_RUN**. Preflight also passed. [Modular QA #38881038084](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38881038084) separately passed 66/66 active Node tests, 17/17 merge tests, JSON validation and roster quotas.
+
+The checkpoint's own Pages build was cancelled as other agents pushed, but its code is included in the later successful [Pages deployment #38881500991](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38881500991) at descendant SHA `506c3e8f`. This is deployment evidence, **not** physical phone certification. The prior successful [hosted desktop/touch test #38878886873](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38878886873) was re-requested as a fresh rerun after this deployment; consult its current attempt for live interactive verification. The runtime application itself was unmodified by this diagnostic checkpoint.
+
+**Scope and remaining gap:** matched keeper intents and contacts are diagnostic counts, not goalkeeper physical reach or game-balance adjustments; no claim of increased actual save frequency. Next iteration requires mirrored seeded engine benchmarks and bounded movement calibration.

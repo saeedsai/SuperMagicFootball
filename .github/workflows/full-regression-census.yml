@@ -22,7 +22,6 @@ on:
       - 'tests/keeper_dive_intent.test.cjs'
       - 'src/match_telemetry.js'
       - 'tests/keeper_dive_telemetry.test.cjs'
-      - 'docs/KEEPER_DIVE_TELEMETRY_20261016.md'
       - 'tests/keeper_dive_intent_browser_qa.py'
       - 'tests/aerial_browser_qa.py'
       - 'tests/physics_tuning_v082534.test.cjs'
