@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="115" height="265" viewBox="0 0 115 265" role="img" aria-label="Editable illustrated rear hair">
+<title>Royals painted chestnut nape and back hair — rear component 001</title>
+<desc>Transparent painted hair overlay over the approved back-view 115x265 character, with independently editable crown, nape and strand shapes.</desc>
+<defs>
+<linearGradient id="root" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#b48154"/><stop offset=".3" stop-color="#815037"/><stop offset=".75" stop-color="#4d3229"/><stop offset="1" stop-color="#2e2427"/></linearGradient>
+<linearGradient id="crown" x1="0" y1="0" x2=".85" y2="1"><stop stop-color="#e0a56d"/><stop offset=".32" stop-color="#a57149"/><stop offset=".78" stop-color="#66422f"/><stop offset="1" stop-color="#422b29"/></linearGradient>
+<linearGradient id="nape" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9c603c"/><stop offset=".5" stop-color="#62402e"/><stop offset="1" stop-color="#342727"/></linearGradient>
+</defs>
+<g id="hair-back-mass" stroke-linecap="round" stroke-linejoin="round">
+<path d="M12 45C9 34 15 22 26 21C30 10 40 8 48 13C56 4 67 6 72 14C83 9 95 17 96 29C105 35 103 47 98 58C96 70 88 78 76 84C61 89 47 89 34 82C21 75 15 63 12 45Z" fill="url(#root)" stroke="#332626" stroke-width="2.5" opacity=".77"/>
+<path d="M24 65C38 75 52 77 66 75C80 73 89 65 95 57C92 71 83 83 73 87C57 93 43 90 31 81C27 77 25 70 24 65Z" fill="url(#nape)" stroke="#382828" stroke-width="1.6" opacity=".84"/>
+<path d="M18 38C16 27 25 20 36 24C36 13 49 11 57 18C67 10 79 16 81 24C92 22 98 34 95 42C87 36 80 40 75 47C62 42 54 47 44 52C33 45 25 43 18 38Z" fill="url(#crown)" stroke="#4a302a" stroke-width="2" opacity=".86"/>
+</g>
+<g id="hair-back-locks" stroke-linecap="round" stroke-linejoin="round">
+<path d="M19 40C26 30 35 29 42 32C38 39 42 45 47 50C37 51 28 46 22 46Z" fill="#98623f" stroke="#513329" stroke-width="1.8" opacity=".83"/>
+<path d="M39 30C44 18 55 16 63 22C65 28 62 36 56 42C53 33 49 30 39 30Z" fill="url(#crown)" stroke="#52342a" stroke-width="1.9" opacity=".9"/>
+<path d="M65 24C73 17 84 22 84 31C90 35 83 44 77 48C72 38 66 33 65 24Z" fill="url(#crown)" stroke="#4a302a" stroke-width="1.8" opacity=".85"/>
+<path d="M33 48C40 52 48 53 55 51C56 57 52 64 45 68C38 65 33 56 33 48Z" fill="#704730" stroke="#382928" stroke-width="1.7" opacity=".79"/>
+<path d="M55 51C67 48 74 51 82 56C77 64 69 71 61 70C60 61 57 56 55 51Z" fill="url(#nape)" stroke="#3d2928" stroke-width="1.7" opacity=".8"/>
+<path d="M17 48C22 55 26 60 31 64C28 68 26 70 23 69C19 64 16 57 17 48Z" fill="#4c3028" stroke="#342628" stroke-width="1.5"/>
+<path d="M90 49C95 52 97 58 93 64C89 70 86 71 83 70C88 61 90 56 90 49Z" fill="#59372b" stroke="#312326" stroke-width="1.5"/>
+<path d="M38 73C46 78 59 79 68 76C69 81 64 86 58 86C51 87 42 82 38 73Z" fill="url(#nape)" stroke="#382727" stroke-width="1.3" opacity=".83"/>
+</g>
+<g id="hair-back-highlights" fill="none" stroke-linecap="round">
+<path d="M25 29C31 23 38 25 42 27M45 25C51 17 57 18 60 23M70 22C77 19 82 24 84 29" stroke="#f0b579" stroke-width="2.4" opacity=".69"/>
+<path d="M27 40C31 38 35 38 39 42M47 35C52 31 57 30 62 34M76 37C82 32 87 35 89 40" stroke="#d3925d" stroke-width="2.1" opacity=".67"/>
+<path d="M29 54C34 60 40 62 45 64M62 63C70 64 78 58 80 54M43 78C51 82 59 83 68 79" stroke="#b7784c" stroke-width="1.9" opacity=".58"/>
+<path d="M23 45C28 47 31 51 33 55M53 47C56 46 60 45 65 46M82 49C87 45 91 47 93 50" stroke="#382a29" stroke-width="1.7" opacity=".77"/>
+<path d="M37 29C43 26 48 30 50 33M62 28C68 26 72 29 74 33M43 72C49 75 56 76 64 72" stroke="#e7a56d" stroke-width="1.2" opacity=".64"/>
+</g></svg>
