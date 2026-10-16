@@ -3170,6 +3170,481 @@
           "hostedPhysicalMobileAndPCInteraction": "not_independently_verified"
         }
       }
+    },
+    {
+      "id": "CLUB-20261016-PSG-FC27-VERIFICATION-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "0e342259778b4705e305cde408253e64e1beb42f",
+      "clubId": "club26_3",
+      "club": "Paris Saint-Germain",
+      "playersChanged": 12,
+      "fieldsChanged": 67,
+      "status": "pending_ci_regression",
+      "changes": [
+        {
+          "playerId": "club26_3_audit_14",
+          "name": "Matvey Safonov",
+          "rosterSlot": 1,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 192,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_0",
+          "name": "Lucas Chevalier",
+          "rosterSlot": 2,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 192,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_1",
+          "name": "Nuno Mendes",
+          "rosterSlot": 3,
+          "fields": {
+            "num": {
+              "previous": 1,
+              "current": 25,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "age": {
+              "previous": null,
+              "current": 24,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 184,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_2",
+          "name": "Willian Pacho",
+          "rosterSlot": 4,
+          "fields": {
+            "num": {
+              "previous": 2,
+              "current": 51,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "age": {
+              "previous": null,
+              "current": 25,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 186,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_audit_12",
+          "name": "Achraf Hakimi",
+          "rosterSlot": 5,
+          "fields": {
+            "num": {
+              "previous": 3,
+              "current": 2,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_10",
+          "name": "Vitinha",
+          "rosterSlot": 6,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 172,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_9",
+          "name": "João Neves",
+          "rosterSlot": 7,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 174,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_4",
+          "name": "Fabián Ruiz",
+          "rosterSlot": 8,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 189,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_audit_15",
+          "name": "Warren Zaïre-Emery",
+          "rosterSlot": 9,
+          "fields": {
+            "name": {
+              "previous": "Bradley Barcola",
+              "current": "Warren Zaïre-Emery",
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "rating": {
+              "previous": 85,
+              "current": 83,
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27FaceStats": {
+              "previous": {
+                "pace": 92,
+                "shooting": 76,
+                "passing": 78,
+                "dribbling": 84,
+                "defending": 39,
+                "physicality": 67
+              },
+              "current": {
+                "pace": 79,
+                "shooting": 71,
+                "passing": 78,
+                "dribbling": 81,
+                "defending": 79,
+                "physicality": 85
+              },
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "birthDate": {
+              "previous": "2002-09-02",
+              "current": "2006-03-08",
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "fc27Id": {
+              "previous": "264652",
+              "current": "270673",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/player-ratings/warren-zaire-emery/270673"
+            },
+            "fc27Position": {
+              "previous": "LW",
+              "current": "CM",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "rosterVerification": {
+              "previous": "fc27_position_club",
+              "current": "verified_club_role",
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "num": {
+              "previous": 4,
+              "current": 33,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
+            },
+            "age": {
+              "previous": null,
+              "current": 20,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_5",
+          "name": "Ousmane Dembélé",
+          "rosterSlot": 10,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 178,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_audit_13",
+          "name": "Khvicha Kvaratskhelia",
+          "rosterSlot": 11,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        },
+        {
+          "playerId": "club26_3_6",
+          "name": "Désiré Doué",
+          "rosterSlot": 12,
+          "fields": {
+            "heightCm": {
+              "previous": null,
+              "current": 177,
+              "source": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm"
+            },
+            "ratingSource": {
+              "previous": "FC27 third-party dataset snapshot 2026-09-12",
+              "current": "FC27 official EA launch ratings, checked 2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "source": {
+              "previous": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+              "current": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            },
+            "fc27OfficialCheckedAt": {
+              "previous": null,
+              "current": "2026-10-16",
+              "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+            }
+          }
+        }
+      ],
+      "officialFc27Audit": {
+        "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+        "playersMatched": 12,
+        "overallRatingsMatched": 12,
+        "headlineAttributesMatched": 72,
+        "priorAndNewPlayerScoreChanges": [
+          {
+            "playerRemoved": "Bradley Barcola",
+            "oldOverall": 85,
+            "playerAdded": "Warren Zaïre-Emery",
+            "newOverall": 83
+          }
+        ],
+        "ratingType": "Ultimate Team launch base-card",
+        "gameEngineAndArcadeStatsUnchanged": true
+      },
+      "sources": {
+        "officialClub": "https://www.psg.fr/en/mens-football/squad/season/2026-2027",
+        "playerBiographies": "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm",
+        "transfer": "https://www.reuters.com/sports/soccer/liverpool-bring-marquee-forward-signing-barcola-psg-2026-08-31/",
+        "ratings": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73"
+      },
+      "knownCaveats": [
+        "The official EA FC27 base-card page still lists Bradley Barcola under Paris SG at launch, but PSG's 2026/27 club roster and independent transfer reporting confirm Liverpool in August 2026. We prioritize current real-world club membership.",
+        "Bradley Barcola is also present in the separate Liverpool club26_9 roster; Liverpool remains untouched and will require separate club claim.",
+        "Paris squad uses 2GK/3DF/4MF/3FW, so game MF and forward slot roles may differ from EA natural LW/RW on some existing members.",
+        "The game custom arcade power, shoot, defense, speed and value are intentionally retained, including slot 9 following replacement, to avoid gameplay balance changes.",
+        "Heights are from the selected 2026/27 FootballSquads biography, which may differ from other published physical measures."
+      ],
+      "invariant": "One role-preserving transfer replacement at fixed slot 9 and persistent ID; all other club roster identities, game engine and arcade stats unchanged."
     }
   ]
 }

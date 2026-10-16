@@ -5,13 +5,13 @@
   "branch": "dev",
   "baselineCommit": "7795f086fdc276c15e36bc76e842b5f83a3ffb22",
   "baselineAuditBlobSha": "be7e07db4f7bd44b1ae7ad02f06cb9a8ffbf1500",
-  "trackedSnapshotCommit": "800b91715bf6baec024e7793807fcead2f6a0d49",
-  "currentAuditBlobSha": "81abb9b7f957966d437644c3dcb989920e07cdec",
+  "trackedSnapshotCommit": "0e342259778b4705e305cde408253e64e1beb42f",
+  "currentAuditBlobSha": "6b8aeca4e0f7c7ecff0a8d42116d0f7487bc994a",
   "summary": {
     "clubs": 165,
     "slots": 1980,
-    "changedSlots": 207,
-    "changedClubs": 23,
+    "changedSlots": 208,
+    "changedClubs": 24,
     "noAcademyPlayers": true,
     "quota": {
       "GK": 2,
@@ -94,6 +94,18 @@
       ],
       "changedSlots": 60,
       "verification": "source-labeled editorial first-team fallback; not licensed FC27 verification"
+    },
+    {
+      "id": "CLUB-20261016-PSG-TRANSFER-1",
+      "region": "UEFA",
+      "description": "Replaced transferred Bradley Barcola (Liverpool) with PSG 2026/27 registered midfielder Warren Zaïre-Emery, official EA FC27 83",
+      "status": "pending_regression",
+      "affectedClubIds": [
+        "club26_3"
+      ],
+      "changedSlots": 1,
+      "recordedDate": "2026-10-16",
+      "verification": "Official PSG squad plus EA FC27 launch ratings and 2026/27 FootballSquads roster"
     }
   ],
   "clubSourceEvidence": {
@@ -269,6 +281,16 @@
       "origin": "NOT_IN_FC27+INDEPENDENT_2026_SQUAD",
       "sourceReferences": [
         "https://demo.arkanet.co.za/content/wikipedia_en_all_maxi_2026-02/Tupapa_Maraerenga_F.C. [current squad February 2026"
+      ]
+    },
+    "club26_3": {
+      "club": "Paris Saint-Germain",
+      "origin": "FC27 official PSG 2026-27",
+      "sourceReferences": [
+        "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73",
+        "https://www.psg.fr/en/mens-football/squad/season/2026-2027",
+        "https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm",
+        "https://www.reuters.com/sports/soccer/liverpool-bring-marquee-forward-signing-barcola-psg-2026-08-31/"
       ]
     }
   },
@@ -3998,6 +4020,25 @@
       "ratingProvenance": "editorial_estimate_not_EA_FC27",
       "changeType": "academy_placeholder_replaced",
       "evidenceClubId": "cont_ofc_7"
+    },
+    {
+      "batchId": "CLUB-20261016-PSG-TRANSFER-1",
+      "clubId": "club26_3",
+      "club": "Paris Saint-Germain",
+      "slot": 9,
+      "role": "MF",
+      "previousRole": "MF",
+      "previous": {
+        "name": "Bradley Barcola",
+        "overall": 85
+      },
+      "current": {
+        "name": "Warren Zaïre-Emery",
+        "overall": 83
+      },
+      "ratingProvenance": "fc27_official_ea_launch_base_card",
+      "changeType": "player_replacement",
+      "evidenceClubId": "club26_3"
     }
   ],
   "currentRosterSnapshot": {
@@ -4240,9 +4281,9 @@
           "rating": 86
         },
         {
-          "name": "Bradley Barcola",
+          "name": "Warren Zaïre-Emery",
           "role": "MF",
-          "rating": 85
+          "rating": 83
         },
         {
           "name": "Ousmane Dembélé",

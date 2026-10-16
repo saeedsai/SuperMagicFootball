@@ -3,26 +3,24 @@
 **Agent ID:** `roster-fc27` | **Updated:** 2026-10-16
 
 ## Mission
-One exclusively claimed club at a time: official EA FC 27 ratings/face attributes plus accurate player DOB/age/nation/height and verified shirt number. Do not change match gameplay, UI, graphics or other clubs.
+Verify official EA FC27 ratings and real-world club player data, one club under its own live GitHub claim at a time. Preserve other clubs, persistent IDs, game mechanics, art, CI and save format.
 
 ## Current checkpoint
-- Manchester City `club26_2`: official FC 27 launch 12 OVR / 72 face attributes matched. Five shirts corrected, five missing ages and twelve heights filled; all roster slots and gameplay stats unchanged. [City handover](../../CLUB_PLAYER_METADATA_MAN_CITY_20261016.md); source audit [metadata batches](../../PLAYER_METADATA_BATCHES_20261016.json); [claim](../../agent_coordination/claims/roster-club-club26_2.json).
-- Previous Arsenal `club26_0` and Bayern `club26_1` batches already complete; do not redo their data. Refer to their separate handovers.
+- **PSG `club26_3`**: [handover](../../CLUB_PLAYER_METADATA_PSG_20261016.md), [immutable roster ledger](../../CLUB_ROSTER_BATCH_LEDGER_20261016.json), [player metadata audit](../../PLAYER_METADATA_BATCHES_20261016.json); [live claim](../../agent_coordination/claims/roster-club-club26_3.json).
+- PSG FC27: current 12/12 official ratings, 72/72 face stats verified. Transfer correction Bradley Barcola (Liverpool) → Warren Zaïre-Emery (PSG) at unchanged slot ID; 12 heights, DOB/age, shirt provenance updated, custom arcade mechanics untouched.
+- Arsenal, Bayern, City club26_0/1/2 previously delivered, do not revisit without a new separate claim. Live CI and Pages outcomes belong in the PSG handover, not stale memory assumptions.
 
 ## Next smallest action
-Manchester City data and QA handover are complete; its lock has been released at end of batch. Next club PSG `club26_3` only after rereading live `dev` and reserving its club lock; then Barcelona `club26_4`, Manchester United `club26_5`, Real Madrid `club26_7`, and one verified unclaimed next club.
+Verify PSG exact source commit via GitHub active/full QA, record results honestly, release PSG claim. Then separately claim Barcelona `club26_4`, Man United `club26_5`, Real Madrid `club26_7`, Liverpool `club26_9` (Barcola), Tottenham `club26_29`.
 
 ## Ownership and exclusions
-No ongoing club ownership is implied by this memory; City club lock is released after source, test and handover commits. Read only the `roster-fc27` agent memory and shared memory. Shared memory/admin docs and other agent memory are off limits. Retain all 2GK-3DF-4MF-3FW roster contract invariants.
-
-## Actual QA checkpoint
-Later integrated [Modular QA #38915465084](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915465084) passed **171/171 Node tests**, including all 3 City tests; earlier memory identity blocker #8 was resolved by another agent. [Pages #38915464957](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915464957) deployed successfully. The [full regression census #38915344074](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074) completed **SUCCESS: 130/130 historical Node scripts and 71/71 Chromium browser scripts** across four shards each. Live hosted mobile/PC gameplay remains unverified. [City handover](../../CLUB_PLAYER_METADATA_MAN_CITY_20261016.md) is authoritative.
+PSG only; all unrelated agents' memories, shared context, engine, UI, art, other clubs out of scope. Strict squad quotas 2GK/3DF/4MF/3FW. Always inspect latest `dev` and live claims before editing.
 
 ## Evidence
-Official EA cards: https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/manchester-city/10
-PL shirt numbers: https://www.premierleague.com/en/news/4725682/all-20-premier-league-clubs-squad-numbers-for-202627-season
-Official PL player registrations: https://www.premierleague.com/en/news/4706139/see-all-the-202627-premier-league-squad-lists
-Dated 2026/27 biography: https://footballsquads.co.uk/eng/2026-2027/engprem/mancity.htm
+EA FC27 Paris SG: https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73
+PSG official season squad: https://www.psg.fr/en/mens-football/squad/season/2026-2027
+French Ligue 1 physical biographies: https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm
+Barcola transfer: https://www.reuters.com/sports/soccer/liverpool-bring-marquee-forward-signing-barcola-psg-2026-08-31/
 
 ## Cleanup
-Keep this as the single live checkpoint, not an append-only transcript or guessed CI success.
+Keep only current batch checkpoint; full history is in GitHub ledger/commits.

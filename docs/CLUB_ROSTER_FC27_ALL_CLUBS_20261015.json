@@ -266,7 +266,7 @@
   "club26_3": {
     "club": "Paris Saint-Germain",
     "origin": "FC27",
-    "source": "https://raw.githubusercontent.com/LakshmiKanth11/EA_FC_ANALYSIS/main/EA_FC_PLAYERS_DATASET_AND_%20DASHBOARD/data/players.csv",
+    "source": "https://www.ea.com/games/ea-sports-fc/ratings/teams-ratings/paris-sg/73;https://www.psg.fr/en/mens-football/squad/season/2026-2027;https://footballsquads.co.uk/france/2026-2027/ligue1/psg.htm;https://www.reuters.com/sports/soccer/liverpool-bring-marquee-forward-signing-barcola-psg-2026-08-31/",
     "found": {
       "GK": 3,
       "DF": 11,
@@ -315,9 +315,9 @@
         "rating": 86
       },
       {
-        "name": "Bradley Barcola",
+        "name": "Warren Zaïre-Emery",
         "role": "MF",
-        "rating": 85
+        "rating": 83
       },
       {
         "name": "Ousmane Dembélé",
