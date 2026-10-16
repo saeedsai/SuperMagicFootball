@@ -1,24 +1,17 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "gameplay-engine",
-  "feature_id": "GK-LIVE-AI-CALIBRATION-QA",
-  "owner": "keeper-live-ai-cohort-20261016-1445-gpt6",
-  "status": "released",
-  "scope": "One bounded seeded real-AI keeper shot fairness browser acceptance in tests/keeper_shot_calibration_browser_qa.py (existing captured geometry retained; new live AI cohort), new tests/keeper_live_ai_fairness.test.cjs static regression, dedicated docs/KEEPER_LIVE_AI_FAIRNESS_20261016.md and small docs/NEXT_MILESTONES.md checkpoint. No engine.js/physics/telemetry source, UI, art, roster, build, workflow/release/CI harness changes.",
-  "base_sha": "9c951a08eb56220b09e92a79280a836f39d7d9bd",
+  "feature_id": "GK-SUB-DIVE-STATE-RESET",
+  "owner": "gameplay-keeper-substitute-20261016-gpt6-session",
+  "status": "active",
+  "scope": "Only src/modules/engine.js applyPlan replacement branch: clear pending keeper dive intent/cap and associated dive presentation state when a new player enters that slot; new dedicated tests/keeper_substitute_dive_state.test.cjs; dedicated docs/KEEPER_SUBSTITUTE_DIVE_RESET_20261016.md. No input/UI, art, roster data, physics tuning, shared tests/runners or workflows; preserve keeper contact, four controls and saves.",
+  "base_sha": "09db59d34bc0459d5b03d86c665221a12bd9139b",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
   "tests": [
-    "Node source test keeper_live_ai_fairness.test.cjs",
-    "existing browser geometry 144 fixtures/device plus real keeper-AI 30/60/120Hz mirrored, rested/tired, ordinary/zigzag Super cases on desktop/touch",
-    "Modular Game Dev QA, Full Regression Census 4+4 shards via existing source test path trigger",
-    "hosted PC/touch smoke"
+    "node --test tests/keeper_substitute_dive_state.test.cjs",
+    "node --test tests/*.test.cjs",
+    "Full Regression Census and Modular Game Dev QA on exact commit"
   ],
-  "handover": "docs/KEEPER_LIVE_AI_FAIRNESS_20261016.md — final QA report commit 777f867800fa4045b686ceee38e13aacf1fc0b2e and milestones abb602a20fbfd2f193b65cdc320071824a683430; full census https://github.com/saeedsai/SuperMagicFootball/actions/runs/38903547925; hosted smoke https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528",
-  "released_at": "2026-10-16",
-  "outcome": "completed; live AI keeper calibration 96 browser fixtures per device; full integrated 181/181 PASS; hosted PC and simulated touch PASS; no game engine changes",
-  "source_commits": [
-    "80c02e8c4726900ff858d3e2202ba7c32a8e08c5",
-    "37192dd1aa3d3827dd8da3642c46c2b03291f42e"
-  ]
+  "handover": "docs/KEEPER_SUBSTITUTE_DIVE_RESET_20261016.md"
 }
