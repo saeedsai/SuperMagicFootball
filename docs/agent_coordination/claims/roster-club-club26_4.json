@@ -3,9 +3,13 @@
   "lock_key": "roster-club-club26_4",
   "feature_id": "CLUB26-BARCELONA-FC27-OFFICIAL-METADATA-20261016-B1",
   "owner": "roster-fc27-chat-20261016-barca-b1",
-  "status": "active",
+  "status": "released",
   "scope": "Barcelona club26_4 player details only (official FC27 ratings, club jersey, ages and heights); its own tests, batch ledger/handover and roster-fc27 memory. Excludes gameplay/other clubs/graphics/CI.",
   "base_sha": "b1e37217cfd24016135027a42d42cf171346646c",
   "claimed_at": "2026-10-16",
-  "expires_at": "2026-10-17"
+  "expires_at": "2026-10-17",
+  "released_at": "2026-10-16",
+  "outcome": "Barcelona EA FC27 12/12 OVR and 72/72 face stats matched; five shirts corrected, 5 ages, 12 heights, 63 audited player fields, active 203/203 Node tests PASS, full historical regression and hosted device smoke not yet verified.",
+  "handover": "docs/CLUB_PLAYER_METADATA_BARCELONA_20261016.md",
+  "qa_run": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946677603"
 }
