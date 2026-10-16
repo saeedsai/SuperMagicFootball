@@ -55,3 +55,15 @@ python3 tests/dribble_trick_audio_browser_qa.py
 5. Continue one bounded career/tactical feature and directional player-receive animations under their owners; certify offline/PWA cache update and save compatibility.
 
 **Checkpoint:** release the `audio-feedback` claim once this report and own agent memory are committed. Treat any full-census job that ran before browser commit `d240b8e0` as **not** evidence of browser acceptance.
+
+## Integration and release-trigger checkpoint (supersedes earlier pending CI figures)
+
+Under a **separately verified exclusive `release-infra` claim**, a four-line-compatible workflow push-path extension was implemented on [`bdbb43b9`](https://github.com/saeedsai/SuperMagicFootball/commit/bdbb43b95250127a66c2413f12a5ab7887e816e6). The only changed CI path was `.github/workflows/full-regression-census.yml`: two additions for `tests/pass_reception_audio.test.cjs` and `tests/pass_reception_audio_browser_qa.py`. The runtime audio source `src/modules/audio.js` was already an allowed trigger. No scheduling, shard count, job body, deployment, caching or test runner changed.
+
+[**Modular Game Dev QA #38960219146**](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960219146) **SUCCESS** on exact SHA `bdbb43b95250127a66c2413f12a5ab7887e816e6`: **221/221 active Node contracts passed**, including seven pass-audio contracts, 20/20 Python merge contracts, 10/10 claim protocol tests, 165-club 1,980-slot validations, JSON and fixture compile. The About/versioning Node contracts were included in the same suite. A [Full Regression Census #38960219335](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960219335) was **triggered on that same source but remained PENDING when last observed**. No 4 Node + 4 Chromium shard result was available, and the new browser script was not falsely certified PASS.
+
+GitHub Pages publishes to https://saeedsai.github.io/SuperMagicFootball/ ; a direct external `web` read of that URL failed. Pages workflow success (if subsequently observed) does not prove this precise new test or real device speaker playback. Historical successful hosted desktop/touch smoke is separate and older evidence.
+
+The current game displays a separate **bundle release version** and fetches **latest `dev` commit SHA in About each visit**, so every pushed code/doc change is identifiable online. This revision is not the deployed-bundle SHA and does not establish which commit is currently hosted.
+
+**Do not delete** historical acceptance/art/source ledger files: no tracked file was proven redundant in this feature scope. Updated only this chat's own memory. This is an explicit pause/checkpoint with the browser gate still open.
