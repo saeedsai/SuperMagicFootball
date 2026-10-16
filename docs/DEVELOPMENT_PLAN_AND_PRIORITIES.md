@@ -32,3 +32,9 @@ See `NEXT_MILESTONES.md` for five iterations, `GAP_REGISTER_v082532.md` for open
 ## 16 October 2026 — parallel-edit index guard and preview
 
 Closed a reproducible merge-safety gap: a same-ID, same-order `data/teams.json` edit could change a numeric team `index`, even though UI and saves rely on the index remaining stable. The three-way JSON checker now blocks unilateral and matching two-sided index rewrites, and adds bounded, per-agent and merged field-change summaries to CLI dry-run reports. Three targeted Python regressions plus the current Python and full Node/Chromium CI are required to release. This tools-only requirement is a partial early delivery of milestone v0.8.25.36; planned game animations and parallel-editor integration remain open.
+
+## Gameplay-request priorities added 16 October 2026
+
+The owner has explicitly prioritized: (1) slightly lower Super Shot speed and slightly higher fatigue cost, (2) more active goalkeeper diving and (3) holding a caught ball in the goalkeeper's hands. This iteration delivers the first item as a 4% launch-speed reduction and 8% nominal cost increase via bounded JSON, and an initial hand-catch/hold feature using existing possession and distribution. Keepers' ordinary dive activity is **not yet tuned**; it is the next highest-priority iteration because prior fairness fixes restricted contact to near the keeper's real depth plane. Use seeded and mirrored gameplay, not wider early-hitboxes. See `docs/SUPER_SHOT_KEEPER_HANDS_20261016.md`.
+
+Deliver one or two small changes per iteration; take checkpoints between commits; recheck latest `dev` immediately before applying each batch; run preflight, full Node and Chromium census, exact-commit GitHub Pages deploy and hosted desktop/touch smoke; report actual checks not historical totals.

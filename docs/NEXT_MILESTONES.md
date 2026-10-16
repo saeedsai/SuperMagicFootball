@@ -34,3 +34,19 @@ Historical roster snapshots can fail because the new source imports changed birt
 ## 16 October 2026 — early parallel-merge safety checkpoint
 
 A small part of the planned **v0.8.25.36** parallel-agent integration work has been implemented early: protected numeric team-index invariants and concise `--check` / `--report` field-diff previews in `scripts/parallel_data_merge.py`. This is not completion of v0.8.25.36's editor/provenance UI or cross-checks. Keep the five planned iterations in the table above, with animation still first. No player roster, visual art, runtime mechanics or save schema modifications were made in this checkpoint.
+
+## New owner priorities: Super Shot fairness and goalkeeper behavior (16 October 2026)
+
+- **P0 — Super Shot fairness: delivered as a first conservative balance pass.** `physicsTuning.superShot.speedMultiplier=0.96` slows Super Shot launches by 4%; `fatigueMultiplier=1.08` makes Super Shot and combo-Super exertion 8% more costly. They retain the former normal-shot and pass paths. Calibrate special-level goal/save rates later rather than declaring overall fairness solved by one edit.
+- **P0 — Make goalkeeper dive more actively: OPEN.** In the next focused gameplay iteration, add real approach-phase dive intent and/or shorter verified readiness latency, while preserving the small contact-depth window, swept contact and goalkeeper-vs-corner fairness. Use mirrored seeded ordinary/super shot and fatigue benchmark fixtures before selecting parameters.
+- **P0 — Allow goalkeeper to hold the ball in their hands: FIRST CAPABILITY DELIVERED.** Real catches retain ball possession, with the ball rendered at glove/chest height (instead of foot height), a visible `keeperHold` state and deliberately longer short carry before AI distribution; pressure triggers a quicker throw/punt. Further full eight-view glove-grip animation, tactical holding, and human distribution UX are OPEN follow-ups.
+
+### Revised next five bounded iterations (owner priorities supersede older ordering)
+
+1. **v0.8.25.36 — active keeper dives:** collect keeper dive triggers/latency, make a narrow bounded change, add mirrored save/corner and fatigue regression.
+2. **v0.8.25.37 — keeper glove poses:** consistent goalkeeper ball holding and release animation in eight directions, graphics regression on desktop/touch.
+3. **v0.8.25.38 — reception and pass follow-through:** advance existing motion without altering pitch physics.
+4. **v0.8.25.39 — concurrency safeguards:** dry-run source/provenance conflict and appearance-reference validation.
+5. **v0.8.25.40 — career/tactics usability:** squad swaps, substitutions and coaching feedback without save migration.
+
+Named-player art and further physics coefficients stay in the backlog. Earlier numbering and achievements above are historical and retained for traceability.

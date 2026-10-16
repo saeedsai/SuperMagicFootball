@@ -17,3 +17,9 @@
 ## 16 October 2026 — merge safety gap adjustment
 
 **Resolved:** the three-way merge now rejects same-ID, same-order numeric team-index drift even if both agents agree, and produces bounded per-side, stable-ID field-diff previews in `changeSummary`. See `docs/QA_PARALLEL_MERGE_CHECKPOINT_20261016.md`. **Still open:** integration of source/provenance-aware editor reviews and appearance-preset referential checks into the merge workflow. The change did not alter 2026 player rosters or visual likeness; those independent gaps remain.
+
+## Owner-prioritized goalkeeper and Super Shot gaps (16 October 2026)
+
+| P0 | Super Shot fairness | Initial 4% slower launch and +8% fatigue implemented; verify match-level goal/save fairness on seeded replays and both attack directions. |
+| P0 | More frequent goalkeeper dives | **OPEN**: instrument candidate/actual dives, tune approach phase after mirrored corner/save benchmark; don't reintroduce the old early-contact bug. |
+| P0 | Keeper can hold ball in hands | **PARTIALLY CLOSED**: actual possessed ball is positioned at glove height during a brief hold; CPU can release safely and clears sooner under pressure. Still needs full eight-direction finger/glove grip and player-driven holding UX. |
