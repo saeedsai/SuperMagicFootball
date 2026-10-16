@@ -1,17 +1,21 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "release-infra",
-  "feature_id": "UI-LINEUP-ROLE-FIT-CI",
-  "owner": "ui-lineup-fit-20261016-1329-gpt6",
-  "status": "released",
-  "scope": "ONLY .github/workflows/full-regression-census.yml push paths: add src/modules/ui.js and tests/lineup_role_fit.test.cjs plus tests/lineup_role_fit_browser_qa.py; no other workflow logic, service worker, deployment or runtime edits.",
-  "base_sha": "7b57dfc31eaddebae881bba93e1b8c2f141d69d8",
-  "created_at": "2026-10-16",
-  "renewed_at": "2026-10-16",
+  "feature_id": "ART-C01-FACE-CACHE",
+  "owner": "graphics-c01-face-20261016-1354-gpt6",
+  "status": "active",
+  "scope": "Only sw.js version rotation and caching new SVG; if necessary art-specific workflow. No deployment logic changes.",
+  "base_sha": "b5e59a275f53366ef56afea25f1a6bb13efdbaea",
+  "created_at": "2026-10-16T13:54+02:00",
+  "renewed_at": "2026-10-16T13:54+02:00",
   "tests": [
-    "Full Regression Census exact-commit 4 Node + 4 Chromium shards"
+    "scripts/validate_concept_modular.py",
+    "node --test tests/*.test.cjs",
+    "tests/concept_modular_browser_qa.py",
+    "tests/concept_modular_live_qa.py",
+    "full regression census"
   ],
-  "handover": "docs/UI_LINEUP_ROLE_FIT_20261016.md — source 120fbda5, full census #38894875189 164/164 PASS, hosted smoke attempt 2 PASS",
+  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
   "released_at": "2026-10-16",
   "outcome": "completed",
   "final_source_commit": "120fbda5a466ac9eae2b8143cb98944726f11f9b"
