@@ -904,6 +904,406 @@
         },
         "hostedInteractiveDeviceSmoke": "not independently tested on this exact source revision"
       }
+    },
+    {
+      "id": "CLUB-20261016-NAP-METADATA-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "5f722745886040ea19e87f79afe974a7a132d55e",
+      "clubId": "club26_25",
+      "club": "Napoli",
+      "playersChanged": 12,
+      "fieldsChanged": 49,
+      "status": "pending_ci_regression",
+      "sources": {
+        "officialClubRegistration": "https://sscnapoli.it/en/team-2025-2026/",
+        "uefa2026ListA": "https://sscnapoli.it/en/napoli-la-lista-uefa-per-la-league-phase-di-champions-league-2/",
+        "uefaSquad": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/",
+        "secondaryHeightSource": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+      },
+      "changes": [
+        {
+          "playerId": "club26_25_audit_16",
+          "name": "Alex Meret",
+          "rosterSlot": 1,
+          "fields": {
+            "age": {
+              "previous": 24,
+              "current": 29,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250066753--alex-meret/"
+            },
+            "num": {
+              "previous": 29,
+              "current": 1,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 191,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_0",
+          "name": "Vanja Milinković-Savić",
+          "rosterSlot": 2,
+          "fields": {
+            "age": {
+              "previous": 22,
+              "current": 29,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250065792--vanja-milinkovic-savic/"
+            },
+            "num": {
+              "previous": 1,
+              "current": 32,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 202,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_audit_12",
+          "name": "Amir Rrahmani",
+          "rosterSlot": 3,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 32,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250059233--amir-rrahmani/"
+            },
+            "num": {
+              "previous": 2,
+              "current": 13,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 192,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250059233--amir-rrahmani/"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_5",
+          "name": "Giovanni Di Lorenzo",
+          "rosterSlot": 4,
+          "fields": {
+            "age": {
+              "previous": 27,
+              "current": 33,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250064229--giovanni-di-lorenzo/"
+            },
+            "num": {
+              "previous": 6,
+              "current": 22,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 183,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_4",
+          "name": "Alessandro Buongiorno",
+          "rosterSlot": 5,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://sscnapoli.it/en/team-2025-2026/"
+            },
+            "num": {
+              "previous": 3,
+              "current": 4,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 192,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_1",
+          "name": "Scott McTominay",
+          "rosterSlot": 6,
+          "fields": {
+            "age": {
+              "previous": 23,
+              "current": 29,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250088240--scott-mctominay/"
+            },
+            "num": {
+              "previous": 4,
+              "current": 8,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 193,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_2",
+          "name": "Kevin De Bruyne",
+          "rosterSlot": 7,
+          "fields": {
+            "age": {
+              "previous": 24,
+              "current": 35,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250008901--kevin-de-bruyne/"
+            },
+            "num": {
+              "previous": 5,
+              "current": 11,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 181,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250008901--kevin-de-bruyne/"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_6",
+          "name": "Stanislav Lobotka",
+          "rosterSlot": 8,
+          "fields": {
+            "age": {
+              "previous": 28,
+              "current": 31,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250055982--stanislav-lobotka/"
+            },
+            "num": {
+              "previous": 7,
+              "current": 68,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 170,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250055982--stanislav-lobotka/"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_3",
+          "name": "André-Franck Zambo Anguissa",
+          "rosterSlot": 9,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 30,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250086987--frank-anguissa/"
+            },
+            "num": {
+              "previous": 8,
+              "current": 99,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 184,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_audit_13",
+          "name": "David Neres",
+          "rosterSlot": 10,
+          "fields": {
+            "age": {
+              "previous": 24,
+              "current": 29,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250106648--david-neres/"
+            },
+            "num": {
+              "previous": 26,
+              "current": 7,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 177,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_audit_14",
+          "name": "Matteo Politano",
+          "rosterSlot": 11,
+          "fields": {
+            "age": {
+              "previous": 24,
+              "current": 33,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250050381--matteo-politano/"
+            },
+            "num": {
+              "previous": 27,
+              "current": 21,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 171,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250050381--matteo-politano/"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            }
+          }
+        },
+        {
+          "playerId": "club26_25_audit_15",
+          "name": "Noa Lang",
+          "rosterSlot": 12,
+          "fields": {
+            "age": {
+              "previous": null,
+              "current": 27,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250091165--noa-lang/"
+            },
+            "num": {
+              "previous": 9,
+              "current": 70,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 179,
+              "source": "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+            },
+            "shirtVerified": {
+              "previous": false,
+              "current": true,
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+            },
+            "nation": {
+              "previous": "Holland",
+              "current": "Netherlands",
+              "source": "https://www.uefa.com/uefachampionsleague/clubs/players/250091165--noa-lang/"
+            }
+          }
+        }
+      ],
+      "knownIssues": [
+        {
+          "type": "Napoli UEFA List A difference",
+          "player": "Alessandro Buongiorno",
+          "note": "Included in Napoli club first-team page but absent from the 2 September 2026 UEFA Champions League League Phase list. Do not infer a transfer: competitions can have different registration. No roster-selection or overall edit until reconciling league registration.",
+          "sources": [
+            "https://sscnapoli.it/en/team-2025-2026/",
+            "https://sscnapoli.it/en/napoli-la-lista-uefa-per-la-league-phase-di-champions-league-2/",
+            "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+          ]
+        },
+        {
+          "type": "height disagreement",
+          "player": "Amir Rrahmani",
+          "note": "UEFA personal page states 192 cm while StatMuse 2026/27 lists 190 cm. Selected 192 cm from primary UEFA page.",
+          "sources": [
+            "https://www.uefa.com/uefachampionsleague/clubs/players/250059233--amir-rrahmani/",
+            "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+          ]
+        },
+        {
+          "type": "height disagreement",
+          "player": "Stanislav Lobotka",
+          "note": "UEFA says 170 cm; StatMuse says 171 cm. Selected 170 cm from UEFA.",
+          "sources": [
+            "https://www.uefa.com/uefachampionsleague/clubs/players/250055982--stanislav-lobotka/",
+            "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+          ]
+        },
+        {
+          "type": "height disagreement",
+          "player": "Matteo Politano",
+          "note": "UEFA says 171 cm; StatMuse says 169 cm. Selected 171 cm from UEFA.",
+          "sources": [
+            "https://www.uefa.com/uefachampionsleague/clubs/players/250050381--matteo-politano/",
+            "https://www.statmuse.com/fc/club/2026-27-napoli-268/roster/2027"
+          ]
+        },
+        {
+          "type": "FC27 ratings/face attributes",
+          "note": "Unofficial third-party FC27 values remain unverified and unchanged; real match performance statistics cannot be directly converted to EA/FC27 face-stat ratings.",
+          "sources": [
+            "https://www.uefa.com/uefachampionsleague/clubs/50136/squad/"
+          ]
+        }
+      ],
+      "notes": [
+        "Ages derived from existing validated ISO DOB as of 2026-10-16; UEFA 2026/27 individual player profiles used to cross-check names/age, with Napoli club page for Buongiorno.",
+        "Corrected shirt numbers match 2 Sep 2026 Napoli official UEFA list and UEFA 2026/27 Champions League squad (Buongiorno #4 matches club team page).",
+        "Physical measurements from UEFA player profiles where available, otherwise StatMuse 2026/27. Conflicting heights documented rather than hidden.",
+        "No player IDs, team IDs, club assignments, selected players, positions, overall ratings, FC27 face stats or game mechanics changed.",
+        "No cleanup deletion performed: historical data, assets, and fixtures may be referenced by other agents and CI."
+      ]
     }
   ]
 }

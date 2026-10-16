@@ -122,3 +122,8 @@ The [Dortmund batch report](CLUB_PLAYER_METADATA_DORTMUND_20261016.md) documents
 ## Verified Dortmund batch checkpoint (2026-10-16)
 
 The metadata update in [commit 5fbac391](https://github.com/saeedsai/SuperMagicFootball/commit/5fbac39159069c0feba405f2c32c2f8d4bcb85f6) passed **62/62 active Node tests** and **146/146 full historical Node+Chromium script executions**, with zero test failures. The Pages deployment succeeded; no new physical-phone or exact hosted-page interactive smoke was performed. See [Dortmund verification](CLUB_PLAYER_METADATA_DORTMUND_20261016.md) and the third immutable metadata record. The known Daniel Svensson role discrepancy remains open as an explicit future roster-selection batch. Do not repeat completed metadata edits.
+
+
+## Batch 4 — Napoli metadata checkpoint (CLUB-20261016-NAP-METADATA-1)
+
+The [Napoli player metadata report](CLUB_PLAYER_METADATA_NAPOLI_20261016.md) and `docs/PLAYER_METADATA_BATCHES_20261016.json` capture 49 sourced metadata corrections on 12 Napoli players, using 2026/27 Napoli/UEFA registration and individual physical data. All 165-club name/role/rating history and gameplay code remain unchanged. Test: `tests/napoli_player_metadata_20261016.test.cjs`. Conflict notes: Buongiorno appears in Napoli's club squad but not its 2 September UEFA League Phase list, and Rrahmani, Lobotka and Politano have source-specific height differences. Mark batch complete only after checking CI and Pages statuses. Next five: Brighton registration, Dortmund position, Everton metadata, Inter metadata, remaining Club26-to-continental audit.
