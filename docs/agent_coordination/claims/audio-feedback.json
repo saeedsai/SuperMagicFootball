@@ -1,20 +1,18 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "audio-feedback",
-  "feature_id": "AUDIO-PENALTY-CI-HANDOVER",
-  "owner": "audio-penalty-cert-20261016-gpt6-session14",
-  "status": "released",
-  "scope": "Docs-only acceptance finalization for already shipped penalty audio feature, exclusively docs/AUDIO_PENALTY_FEEDBACK_20261016.md. No source, UI, engine, audio, tests, shared roadmap, CI or memories.",
-  "base_sha": "f34f95dd4393ea9e0c2c212e33ead63cc28e364f",
+  "feature_id": "AUDIO-PENALTY-FINAL-REGRESSION-CERT",
+  "owner": "audio-penalty-regression-final-20261016-gpt6-session14",
+  "status": "active",
+  "scope": "Docs-only final acceptance addendum for AUDIO-PENALTY-OUTCOME-CUES: exclusively docs/AUDIO_PENALTY_FEEDBACK_20261016.md. Do not change audio, game engine, tests, UI, shared plans, workflows or memory.",
+  "base_sha": "c8dbfa832d1aa50f9016f3cd216fb378e563a7b8",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
   "tests": [
-    "Modular QA #38915451226 171/171 success",
-    "Full Regression Census #38915344074 status and browser audio script evidence"
+    "Full Regression Census #38915344074 SUCCESS 201/201 (130 Node + 71 Chromium)",
+    "Modular QA #38915451226 SUCCESS 171/171",
+    "Pages 38915464957 SUCCESS for containing source"
   ],
-  "handover": "docs/AUDIO_PENALTY_FEEDBACK_20261016.md — audio feature 59ee8b59; tests d0be65de / 3175c0f5; docs acceptance 033f56b20ffe228208251cb28768c2aa4b02a9bd; Modular QA #38915451226 171/171 SUCCESS; Full Regression Census #38915344074 4 Node shards PASS, Chromium pending",
-  "previous_feature": "AUDIO-PENALTY-OUTCOME-CUES",
-  "released_at": "2026-10-16",
-  "outcome": "accepted_exact_source_green_modular_qa_171_of_171; all_audio_unit_contracts_pass; full_chromium_pending",
-  "integrated_commit": "033f56b20ffe228208251cb28768c2aa4b02a9bd"
+  "handover": "docs/AUDIO_PENALTY_FEEDBACK_20261016.md",
+  "previous_handover": "docs/AUDIO_PENALTY_FEEDBACK_20261016.md — audio feature 59ee8b59; tests d0be65de / 3175c0f5; docs acceptance 033f56b20ffe228208251cb28768c2aa4b02a9bd; Modular QA #38915451226 171/171 SUCCESS; Full Regression Census #38915344074 4 Node shards PASS, Chromium pending"
 }
