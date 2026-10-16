@@ -62,3 +62,9 @@ python3 -m unittest discover -s tests -p test_parallel_data_merge.py -v
 5. **Playable delivery:** Certify the production Pages desktop + simulated-touch Quick Match, goal/save sound scheduling, physical device speakers and gesture/audio resume, saved-game stability and PWA offline/restart behavior. Existing shot-telemetry/keeper fairness and sourced FC27 data verification continue under separate specialist claims.
 
 **Checkpoint and coordination:** This one owned audio-only feature can be released after the source, tests and this handover are committed. It does not claim that exact-source full regression or new-hosted interaction passed when they did not. Retain the original match and audio tests for historical parity.
+
+### Latest tested integration and owner handoff (final checkpoint)
+
+[Modular Game Dev QA #38914959661](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914959661) on report commit `d854f1960c36ed9bee4b057083a807bc23c40420` ran **170 active Node tests: 169 PASS / 1 FAIL**. All six penalty-audio tests passed. The sole failing assertion was the existing project-memory identity/index contract, now explicitly tracked as [issue #8](https://github.com/saeedsai/SuperMagicFootball/issues/8), with a source-SHA evidence comment for its `project-context` owner. No one in this audio feature edited the shared memory or global index. 20 Python merge tests and 10 feature claim protocol tests were also successful.
+
+A full Chromium acceptance on this exact source, production speaker audio, physical Android/iPhone and offline/PWA still need separate QA once the memory blocker is repaired. Any full regression currently failing at preflight is not proof the new browser test failed. Preserve separate gameplay-engine and UI feature claims.
