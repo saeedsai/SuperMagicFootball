@@ -8,6 +8,12 @@ on:
       - '.github/workflows/full-regression-census.yml'
       - 'tests/full_regression_runner.py'
       - 'data/players/club26.json'
+      # All national squads share one JSON shard; source and scoped test edits must launch the full census.
+      - 'data/players/national26.json'
+      - 'tests/*national*.test.cjs'
+      - 'tests/*national*_browser_qa.py'
+      - 'tests/spain_*metadata*.test.cjs'
+      - 'tests/spain_*metadata*_browser_qa.py'
       - 'src/roster_corrections.js'
       - 'src/modules/characterart.js'
       - 'src/modules/conceptmodular.js'
