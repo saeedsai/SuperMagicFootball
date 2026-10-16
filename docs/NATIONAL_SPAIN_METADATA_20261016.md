@@ -36,3 +36,9 @@ The **other ten Spain player ages** remain unverified; their existing values mig
 
 ## Handover / lock release
 After final QA records, release `roster-national-national26_0` with this file as link and exact commit SHA. Another agent must re-read `AGENTS.md`, coordination rules and current lock before continuing Spain.
+
+## CI verification checkpoint (16 October 2026, later integrated SHA)
+- [Full Regression Census #38898721461](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38898721461), source `d9c7274c265ecb88d4269cf2e8d6b014c5fbf947` (descendant of Spain metadata and new tests): preflight **PASS**, all four Node shards **111/111 PASS** (28+28+27+28), including `spain_national_metadata_20261016.test.cjs`. The four browser shards were **in progress** at first reporting, so the test suite is **not yet certified 100%**; check exact run outcome before claiming it.
+- [Hosted live desktop/touch smoke #38891468528, attempt 4](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528): **SUCCESS**, desktop and simulated-touch both HTTP 200, menus, teams, kickoff, extended pitch and active match (224 teams). Not physical devices. Public URL: https://saeedsai.github.io/SuperMagicFootball/.
+- [GitHub issue #2](https://github.com/saeedsai/SuperMagicFootball/issues/2) tracks missing national-team source/test paths in full-census push triggers. This is out of scope while the separate `release-infra` claim is active. The full census above was triggered by a concurrent eligible graphics-source change.
+- Repository tree audit found **no tracked** `__pycache__`, `.generated`, `node_modules`, Playwright report, `.pyc`, `.tmp`, `.bak`, or editor swap files. Existing historical tests and graphics provenance are needed; do not delete them.
