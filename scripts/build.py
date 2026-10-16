@@ -26,6 +26,8 @@ modular_face=base64.b64encode((root/'assets/characters/concept_modular_v1/source
 code.append('const CONCEPT_MODULAR_FACE_INLINE='+json.dumps(modular_face)+';\n')
 modular_arm=base64.b64encode((root/'assets/characters/concept_modular_v1/source/arm_near_front.svg').read_bytes()).decode('ascii')
 code.append('const CONCEPT_MODULAR_ARM_INLINE='+json.dumps(modular_arm)+';\n')
+modular_far_arm=base64.b64encode((root/'assets/characters/concept_modular_v1/source/arm_far_front.svg').read_bytes()).decode('ascii')
+code.append('const CONCEPT_MODULAR_FAR_ARM_INLINE='+json.dumps(modular_far_arm)+';\n')
 for name in order:
  s=(root/'src/modules'/f'{name}.js').read_text()
  s=re.sub(r'^import \{[A-Z_]+\} from .*?;\n','',s,flags=re.M)

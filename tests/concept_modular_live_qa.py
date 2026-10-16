@@ -28,21 +28,24 @@ with sync_playwright() as pw:
       const rear=await fetch('./assets/characters/concept_modular_v1/source/hair_back_back.svg?no-cache='+Date.now(),{cache:'no-store'});
       const face=await fetch('./assets/characters/concept_modular_v1/source/face_front_front.svg?no-cache='+Date.now(),{cache:'no-store'});
       const arm=await fetch('./assets/characters/concept_modular_v1/source/arm_near_front.svg?no-cache='+Date.now(),{cache:'no-store'});
+      const farArm=await fetch('./assets/characters/concept_modular_v1/source/arm_far_front.svg?no-cache='+Date.now(),{cache:'no-store'});
       return {status:e.conceptModularStatus(),teams:e.teams.length,
         modular:c?.customRoster.filter(p=>p.renderModel==='concept_modular_v1').length,
         old:c?.customRoster.filter(p=>p.renderModel==='concept_hero').length,
-        svgStatus:asset.status,rearSvgStatus:rear.status,faceSvgStatus:face.status,armSvgStatus:arm.status,moduleStatus:source.status,
+        svgStatus:asset.status,rearSvgStatus:rear.status,faceSvgStatus:face.status,armSvgStatus:arm.status,farArmSvgStatus:farArm.status,moduleStatus:source.status,
         svg:asset.ok?(await asset.text()).includes('Royals painted swept chestnut fringe'):false,
         module:source.ok?(await source.text()).includes('concept_modular_v1'):false,
         rearSvg:rear.ok?(await rear.text()).includes('Royals painted chestnut nape and back hair'):false,
         faceSvg:face.ok?(await face.text()).includes('Royals painted front head and expression'):false,
-        armSvg:arm.ok?(await arm.text()).includes('Royals front near arm'):false};
+        armSvg:arm.ok?(await arm.text()).includes('Royals front near arm'):false,
+        farArmSvg:farArm.ok?(await farArm.text()).includes('Royals painted far-front arm and hand'):false};
     }""")
     assert info['teams']==224 and info['modular']==1 and info['old']==11,info
-    assert info['svgStatus']==200 and info['rearSvgStatus']==200 and info['faceSvgStatus']==200 and info['armSvgStatus']==200 and info['moduleStatus']==200 and info['svg'] and info['rearSvg'] and info['faceSvg'] and info['armSvg'] and info['module'],info
+    assert info['svgStatus']==200 and info['rearSvgStatus']==200 and info['faceSvgStatus']==200 and info['armSvgStatus']==200 and info['farArmSvgStatus']==200 and info['moduleStatus']==200 and info['svg'] and info['rearSvg'] and info['faceSvg'] and info['armSvg'] and info['farArmSvg'] and info['module'],info
     assert set(info['status']['authoredViews'])=={'front','back'},info
     assert info['status']['faceLoaded'] and 'face_front_front' in info['status']['authoredParts'],info
     assert info['status']['armLoaded'] and 'arm_near_front' in info['status']['authoredParts'],info
+    assert info['status']['farArmLoaded'] and 'arm_far_front' in info['status']['authoredParts'],info
     assert info['status']['loaded'] and not info['status']['error'],info
     break
    except Exception as e:

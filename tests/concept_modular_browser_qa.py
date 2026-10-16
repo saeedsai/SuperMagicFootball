@@ -64,6 +64,8 @@ with sync_playwright() as pw:
   assert set(data['status']['authoredViews'])=={'front','back'} and not data['status']['error']
   assert data['status']['faceLoaded'] and 'face_front_front' in data['status']['authoredParts']
   assert data['status']['armLoaded'] and 'arm_near_front' in data['status']['authoredParts']
+  assert data['status']['farArmLoaded'] and 'arm_far_front' in data['status']['authoredParts']
+  assert data['status']['reciprocalArmsEnabled']
   front_run_changed=diff('frontRunA','frontRunB')
   assert data['status']['frontArmStrideEnabled'] and front_run_changed>200,front_run_changed
   # Independent raw SVG alpha check in the same Chromium browser that paints the game.
@@ -104,6 +106,22 @@ with sync_playwright() as pw:
   assert arm_evidence['inside']>250 and arm_evidence['outside']==0,arm_evidence
   assert arm_evidence['white']==0,arm_evidence
   (OUT/(device+'_arm_source_alpha.json')).write_text(json.dumps(arm_evidence,indent=2))
+  far_arm_source=base64.b64encode((ROOT/'assets/characters/concept_modular_v1/source/arm_far_front.svg').read_bytes()).decode('ascii')
+  far_alpha=page.evaluate("""async svg => {
+    const img=new Image();img.src='data:image/svg+xml;base64,'+svg;await img.decode();
+    const c=document.createElement('canvas');c.width=112;c.height=265;
+    const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(img,0,0);
+    const p=g.getImageData(0,0,112,265).data;let inside=0,outside=0,white=0;
+    for(let y=0;y<265;y++)for(let x=0;x<112;x++){
+     const i=(y*112+x)*4,a=p[i+3];
+     if(a&&y>=116&&y<=202&&x<=35)inside++;
+     else if(a)outside++;
+     if(a&&p[i]>250&&p[i+1]>250&&p[i+2]>250)white++;
+    }
+    return {inside,outside,white};
+  }""",far_arm_source)
+  assert far_alpha['inside']>250 and far_alpha['outside']==0 and far_alpha['white']==0,far_alpha
+  (OUT/(device+'_far_arm_source_alpha.json')).write_text(json.dumps(far_alpha,indent=2))
   (OUT/(device+'_face_alpha.json')).write_text(json.dumps(face_alpha,indent=2))
   assert not errors,errors
   for direction in ('front','back'):
@@ -114,7 +132,7 @@ with sync_playwright() as pw:
   for key,img in images.items():img.save(OUT/(device+'_'+key+'.png'))
   page.screenshot(path=str(OUT/(device+'_actual_match.png')))
   results[device]={'status':'PASS','front_changed_pixels':front_changed,'back_changed_pixels':back_changed,
-    'side_legacy_identical':True,'back_run_phases_distinct':True,'page_errors':errors,'front_face_loaded':True,'transparent_face_alpha':True,'front_arm_loaded':True,'arm_transparent':True,'front_arm_frames_distinct':True,'front_run_changed_pixels':front_run_changed}
+    'side_legacy_identical':True,'back_run_phases_distinct':True,'page_errors':errors,'front_face_loaded':True,'transparent_face_alpha':True,'front_arm_loaded':True,'arm_transparent':True,'front_arm_frames_distinct':True,'front_run_changed_pixels':front_run_changed,'far_arm_loaded':True,'far_arm_transparent':True,'reciprocal_arm_animation':True}
   context.close()
  browser.close()
 (OUT/'qa_report.json').write_text(json.dumps(results,indent=2))

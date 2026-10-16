@@ -1,7 +1,7 @@
 {
   "schema": "smf-concept-modular/1",
   "id": "royals-hair-front-front-001",
-  "status": "experimental_front_near_arm_face_and_two_hair_views",
+  "status": "experimental_front_face_two_hairs_and_reciprocal_painted_arm_overlays",
   "baseFamily": "royals_base_a",
   "referenceCanvas": [
     112,
@@ -65,10 +65,11 @@
     "legacy_leg_run",
     "secondary_hair_sway_front_back",
     "front_face_static_registers_to_hair_pivot",
-    "front_near_arm_small_counterstride_overlay"
+    "front_near_arm_small_counterstride_overlay",
+    "front_far_arm_small_reciprocal_counterstride_overlay"
   ],
   "unimplemented": [
-    "independent_opposite_front_arm_and_full_articulated_arm_cycle",
+    "full_articulated_two_arm_cycle_and_torso_occlusion_pending",
     "independent_full_head_with_side_and_back_profiles",
     "face_expressions_and_blink",
     "other_six_views",
@@ -78,6 +79,73 @@
     "runtime_webp"
   ],
   "additionalLayers": [
+    {
+      "id": "arm_far_front_001",
+      "kind": "arm_far",
+      "view": "front",
+      "asset": "../source/arm_far_front.svg",
+      "sourceCanvas": [
+        112,
+        265
+      ],
+      "cropRect": [
+        0,
+        0,
+        112,
+        265
+      ],
+      "trimOffset": [
+        0,
+        0
+      ],
+      "pivot": [
+        23,
+        126
+      ],
+      "shoulder": [
+        23,
+        126
+      ],
+      "elbow": [
+        14,
+        166
+      ],
+      "wrist": [
+        13,
+        180
+      ],
+      "hand": [
+        11,
+        189
+      ],
+      "alphaBoundsEstimate": [
+        2,
+        119,
+        32,
+        199
+      ],
+      "z": 8,
+      "material": "painted_blue_royals_skin",
+      "noMirroring": true,
+      "partGroups": [
+        "far-shoulder-and-sleeve",
+        "far-upper-arm",
+        "far-elbow-crease",
+        "far-forearm",
+        "far-wrist-tape",
+        "far-fist",
+        "far-edge-light"
+      ],
+      "animation": {
+        "id": "front_far_arm_reciprocal_001",
+        "channel": "legacy_run_phase",
+        "rotationRadiansPerPhase": 0.035,
+        "threshold": 0.07,
+        "rootOwner": "Renderer",
+        "oppositeId": "arm_near_front_001",
+        "legacyBodyUnderlay": true
+      }
+    },
     {
       "id": "face_front_001",
       "kind": "face_front",

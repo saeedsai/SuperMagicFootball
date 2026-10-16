@@ -9,8 +9,8 @@ assert m['authoredViews']==['front','back'] and len(set(m['viewIds']))==8
 assert m['fallbackModel']=='concept_hero' and m['logicalPlayerHeight']==141
 assert m['referenceCanvas']==[112,265]
 layers=[m['runtimeLayer'],*m['additionalLayers']]
-assert sorted(l['id'] for l in layers)==['arm_near_front_001','face_front_001','hair_back_001','hair_front_001']
-assert [l['z'] for l in layers if l['view']=='front']==[20,10,14]
+assert sorted(l['id'] for l in layers)==['arm_far_front_001','arm_near_front_001','face_front_001','hair_back_001','hair_front_001']
+assert [l['z'] for l in layers if l['view']=='front']==[20,8,10,14]
 for layer in layers:
  view=layer['view'];dims=[112,265] if view=='front' else [115,265]
  assert layer['noMirroring'] is True
@@ -30,6 +30,15 @@ for layer in layers:
  assert not root.findall('.//'+ns+'image') and not root.findall('./'+ns+'rect')
  assert not any('http:' in v or 'https:' in v for e in root.iter()
                 for k,v in e.attrib.items() if k.endswith('href'))
+ if layer['id']=='arm_far_front_001':
+  assert layer['kind']=='arm_far' and layer['shoulder']==layer['pivot']==[23,126]
+  assert layer['elbow']==[14,166] and layer['wrist']==[13,180] and layer['hand']==[11,189]
+  assert layer['z']<10 and layer['animation']['channel']=='legacy_run_phase'
+  assert layer['animation']['rotationRadiansPerPhase']==.035
+  assert layer['animation']['oppositeId']=='arm_near_front_001'
+  assert layer['animation']['rootOwner']=='Renderer'
+  groups={g.get('id') for g in root.findall('.//'+ns+'g')}
+  assert set(layer['partGroups']).issubset(groups)
  if layer['id']=='arm_near_front_001':
   assert layer['shoulder']==layer['pivot']==[90,126]
   assert layer['elbow']==[102,164] and layer['wrist']==[104,174] and layer['hand']==[104,182]
@@ -47,4 +56,4 @@ for layer in layers:
   groups={g.get('id') for g in root.findall('.//'+ns+'g')}
   assert set(layer['partGroups']).issubset(groups)
 assert (R/'manifests'/m['provenance']).is_file()
-print('CONCEPT_MODULAR_SOURCE_PASS 4 transparent editable layers, face/shoulder pivots, isolated hand and face groups, original fallback')
+print('CONCEPT_MODULAR_SOURCE_PASS 5 transparent editable layers, reciprocal shoulder pivots, distinct hands and face groups, original fallback')
