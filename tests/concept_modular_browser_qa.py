@@ -49,6 +49,11 @@ with sync_playwright() as pw:
   assert changed>=80,('Hair must alter real game pixels',changed)
   assert list(b.getdata())==list(bo.getdata()),'Incomplete back direction did not fall back'
   assert not errors,errors
+  # Four real render background checks; keep unmodified RGBA evidence as well.
+  for label,color in [('grass','#35884d'),('teal','#21636b'),('light','#e6eef3'),('dark','#111b2a')]:
+   composite=Image.new('RGBA',f.size,color)
+   composite.alpha_composite(f)
+   composite.convert('RGB').save(OUT/(device+'_front_on_'+label+'.png'))
   f.save(OUT/(device+'_front_modular.png'));o.save(OUT/(device+'_front_legacy.png'))
   page.screenshot(path=str(OUT/(device+'_actual_match.png')))
   results[device]={'status':'PASS','front_changed_pixels':changed,'back_legacy_identical':True,'page_errors':errors}
