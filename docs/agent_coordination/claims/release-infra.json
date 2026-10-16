@@ -4,7 +4,7 @@
   "feature_id": "CI-AUDIO-FULL-CENSUS-PUSH-PATHS",
   "owner": "gameplay-audio-ci-20261016-2014-gpt6",
   "status": "active",
-  "scope": "Only .github/workflows/full-regression-census.yml push path list add src/modules/audio.js, tests/dribble_trick_audio.test.cjs and tests/dribble_trick_audio_browser_qa.py; docs/GAMEPLAY_SKILL_SOUND_20261016.md and own docs/memory/agents/gameplay-pk-20261016.md. No CI job logic, gameplay, UI, graphic, roster, SW or other test/QA runner edits.",
+  "scope": "Only .github/workflows/full-regression-census.yml push path list add src/modules/audio.js, tests/dribble_trick_audio.test.cjs and tests/dribble_trick_audio_browser_qa.py, tests/penalty_audio_feedback.test.cjs, tests/penalty_audio_feedback_browser_qa.py; docs/GAMEPLAY_SKILL_SOUND_20261016.md and own docs/memory/agents/gameplay-pk-20261016.md. No CI job logic, gameplay, UI, graphic, roster, SW or other test/QA runner edits.",
   "base_sha": "a4839ee88b7f58b47e14e4cdb5012ef2ac072119",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
