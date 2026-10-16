@@ -1,22 +1,20 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "ui-controls",
-  "feature_id": "UI-HALFTIME-TACTICS-RETURN",
-  "owner": "ui-halftime-tactics-return-20261016-session10-gpt6",
-  "status": "released",
-  "scope": "Only src/modules/ui.js halftime-to-tactics return route on Back and Save, isolated tests/halftime_tactics_return.test.cjs and tests/halftime_tactics_return_browser_qa.py, docs/UI_HALFTIME_TACTICS_RETURN_20261016.md and small docs/NEXT_MILESTONES.md addendum; no gameplay engine, rosters, graphics, QA runners, release workflows, service worker or unrelated cleanup.",
-  "base_sha": "067326766a647419529733897bf066ea05484758",
-  "created_at": "2026-10-16",
-  "renewed_at": "2026-10-16",
+  "feature_id": "UI-TOUCH-DRIBBLE-PULSE-RELIABILITY",
+  "owner": "ui-touch-rainbow-20261016-gpt6-chat11",
+  "status": "active",
+  "scope": "Fix Android two-rapid-tap DRIBBLE touch input buffering and canceled gesture handling only in src/modules/input.js; new isolated tests/touch_dribble_pulse.test.cjs and dedicated tests/touch_dribble_pulse_browser_qa.py if safe; docs/UI_TOUCH_DRIBBLE_PULSE_20261016.md. No engine.js, physics, graphic/art, UI menu, roster, shared QA harness, CI or SW. No overlapping gameplay-engine claim.",
+  "base_sha": "06218cf3d2b6c34e93b6de2789da4689e57bd33e",
+  "created_at": "2026-10-16T15:14:00+02:00",
+  "renewed_at": "2026-10-16T15:14:00+02:00",
   "tests": [
-    "node --test tests/halftime_tactics_return.test.cjs",
+    "node --test tests/touch_dribble_pulse.test.cjs",
     "node --test tests/*.test.cjs",
-    "python3 scripts/build.py && python3 tests/halftime_tactics_return_browser_qa.py",
-    "Full Regression Census all Node and Chromium shards",
-    "hosted Pages desktop/touch smoke"
+    "Full Regression Census 4xNode+4xChromium",
+    "hosted PC/touch Quick Match"
   ],
-  "handover": "docs/UI_HALFTIME_TACTICS_RETURN_20261016.md — source 66cf9402, exact-source QA #38902939162 116/116 PASS, 17 merge, 10 claim tests; Chromium full regression #38903065643 queued (earlier jobs cancelled by concurrent pushes)",
-  "released_at": "2026-10-16",
-  "outcome": "implemented_half_time_route_active_116_116_green_browser_full_census_not_yet_certified",
-  "final_source_commit": "66cf9402cbe7ed7cb0e7373f9265e1c56dfbb750"
+  "handover": "docs/UI_TOUCH_DRIBBLE_PULSE_20261016.md",
+  "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/3",
+  "previous_handover": "docs/UI_HALFTIME_TACTICS_RETURN_20261016.md — source 66cf9402, exact-source QA #38902939162 116/116 PASS, 17 merge, 10 claim tests; Chromium full regression #38903065643 queued (earlier jobs cancelled by concurrent pushes)"
 }
