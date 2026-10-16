@@ -59,6 +59,14 @@ with sync_playwright() as pw:
         page.wait_for_function("!!window.SupermagicFootball?.game",timeout=60000)
         for action in ('navQuick','navOnDevice','quick','kickoff'):
             page.locator(f'[data-action="{action}"]').first.click()
+        # A click can return before the match is ready. Require a real six-a-side
+        # match rather than treating an uninitialized/empty roster as an audio bug.
+        page.wait_for_function("""() => {
+          const g=window.SupermagicFootball?.game;
+          return g?.matchState==='play' && g.players?.length===12 &&
+            g.players.filter(p=>p.t===0&&!p.keeper&&p.stun<=0).length>=2 &&
+            g.players.some(p=>p.t===1&&!p.keeper&&p.stun<=0);
+        }""",timeout=15000)
         result=page.evaluate(SCRIPT)
         assert result['state']=='play',(label,result)
         assert result['good']==[370,494],(label,'real accurate pass',result)
