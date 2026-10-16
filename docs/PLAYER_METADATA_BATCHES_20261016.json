@@ -3179,7 +3179,7 @@
       "club": "Paris Saint-Germain",
       "playersChanged": 12,
       "fieldsChanged": 67,
-      "status": "pending_ci_regression",
+      "status": "full_active_historical_node_browser_regression_verified_pages_deployed",
       "changes": [
         {
           "playerId": "club26_3_audit_14",
@@ -3644,7 +3644,30 @@
         "The game custom arcade power, shoot, defense, speed and value are intentionally retained, including slot 9 following replacement, to avoid gameplay balance changes.",
         "Heights are from the selected 2026/27 FootballSquads biography, which may differ from other published physical measures."
       ],
-      "invariant": "One role-preserving transfer replacement at fixed slot 9 and persistent ID; all other club roster identities, game engine and arcade stats unchanged."
+      "invariant": "One role-preserving transfer replacement at fixed slot 9 and persistent ID; all other club roster identities, game engine and arcade stats unchanged.",
+      "ciEvidence": {
+        "sourceSha": "3f5cf46c6732a84955a9178a0b1988a34adf804c",
+        "active": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925059044",
+          "conclusion": "success",
+          "pass": 174,
+          "fail": 0,
+          "psgTests": 3
+        },
+        "full": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925059080",
+          "conclusion": "success",
+          "nodePassed": 131,
+          "nodeFailed": 0,
+          "browserPassed": 71,
+          "browserFailed": 0
+        },
+        "pages": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925057855",
+          "conclusion": "success"
+        },
+        "hostedPcPhysicalPhonePlay": "not_independently_verified"
+      }
     },
     {
       "id": "CLUB-20261016-PSG-CLUB-PROVENANCE-2",
@@ -3654,7 +3677,7 @@
       "club": "Paris Saint-Germain",
       "playersChanged": 1,
       "fieldsChanged": 2,
-      "status": "pending_ci_regression",
+      "status": "full_active_historical_node_browser_regression_verified_pages_deployed",
       "changes": [
         {
           "playerId": "club26_3_audit_15",
@@ -3677,7 +3700,30 @@
       "sources": {
         "officialPSG2026_27Squad": "https://www.psg.fr/en/mens-football/squad/season/2026-2027"
       },
-      "invariant": "Current-club primary-source URL attached to replaced player; exactly two provenance fields, no other data, role, rating or game mechanic changed."
+      "invariant": "Current-club primary-source URL attached to replaced player; exactly two provenance fields, no other data, role, rating or game mechanic changed.",
+      "ciEvidence": {
+        "sourceSha": "3f5cf46c6732a84955a9178a0b1988a34adf804c",
+        "active": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925059044",
+          "conclusion": "success",
+          "pass": 174,
+          "fail": 0,
+          "psgTests": 3
+        },
+        "full": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925059080",
+          "conclusion": "success",
+          "nodePassed": 131,
+          "nodeFailed": 0,
+          "browserPassed": 71,
+          "browserFailed": 0
+        },
+        "pages": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38925057855",
+          "conclusion": "success"
+        },
+        "hostedPcPhysicalPhonePlay": "not_independently_verified"
+      }
     }
   ]
 }
