@@ -1,0 +1,11 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "roster-club-club26_4",
+  "feature_id": "CLUB26-BARCELONA-FC27-OFFICIAL-METADATA-20261016-B1",
+  "owner": "roster-fc27-chat-20261016-barca-b1",
+  "status": "active",
+  "scope": "Barcelona club26_4 player details only (official FC27 ratings, club jersey, ages and heights); its own tests, batch ledger/handover and roster-fc27 memory. Excludes gameplay/other clubs/graphics/CI.",
+  "base_sha": "b1e37217cfd24016135027a42d42cf171346646c",
+  "claimed_at": "2026-10-16",
+  "expires_at": "2026-10-17"
+}
