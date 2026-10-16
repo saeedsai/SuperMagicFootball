@@ -3,7 +3,7 @@
   "lock_key": "roster-club-club26_0",
   "feature_id": "CLUB26-ARSENAL-FC27-OFFICIAL-METADATA-20261016-B1",
   "owner": "roster-arsenal-20261016-gpt6-session1",
-  "status": "active",
+  "status": "released",
   "scope": "Arsenal club26_0 12-player official EA FC27 rating/face-stats source verification and bounded source-backed age/shirt/height metadata in data/players/club26.json and src/roster_corrections.js only; Arsenal-specific test and docs handover. No other club/selection/OVR/gameplay/UI/graphics/CI/shared tool edits.",
   "base_dev_sha": "6613a6195347a553485fc0635b114d0137ff4e27",
   "claimed_at": "2026-10-16",
@@ -14,5 +14,9 @@
     "Arsenal 2026/27 Premier League shirt and DOB metadata",
     "Data/runtime roster parity, immutable audit and all active Node tests",
     "Full historical Node+Chromium regression and Pages build when CI available"
-  ]
+  ],
+  "released_at": "2026-10-16",
+  "final_source_commit": "2742eb81dbf442e870270ac39e8b2f3c97743451",
+  "outcome": "arsenal_official_fc27_metadata_delivered_ci_legacy_dribble_failure_handed_off",
+  "handover": "docs/CLUB_PLAYER_METADATA_ARSENAL_20261016.md — source 2742eb81; 111/111 active Node, 116/116 historical Node, 61/62 Chromium one Android touch failure tracked #3; Pages success; interactive physical-device not verified"
 }
