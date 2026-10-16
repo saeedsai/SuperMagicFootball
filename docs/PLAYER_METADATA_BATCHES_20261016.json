@@ -1643,6 +1643,109 @@
         },
         "exactLiveHostedDesktopTouch": "not_tested_on_Everton_source_revision"
       }
+    },
+    {
+      "id": "CLUB-20261016-INT-METADATA-1",
+      "asOfDate": "2026-10-16",
+      "recordedFromDevCommit": "d0cd38cc544d6d86be3a9f2a37236d01652ec925",
+      "clubId": "club26_8",
+      "club": "Inter Milan",
+      "playersChanged": 5,
+      "fieldsChanged": 10,
+      "status": "pending_ci_regression",
+      "changes": [
+        {
+          "playerId": "club26_8_2",
+          "name": "Alessandro Bastoni",
+          "rosterSlot": 3,
+          "fields": {
+            "age": {
+              "previous": 24,
+              "current": 27,
+              "source": "https://www.inter.it/en/teams/first-team/player/alessandro-bastoni"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 190,
+              "source": "https://www.inter.it/en/teams/first-team/player/alessandro-bastoni"
+            }
+          }
+        },
+        {
+          "playerId": "club26_8_4",
+          "name": "Federico Dimarco",
+          "rosterSlot": 4,
+          "fields": {
+            "age": {
+              "previous": 26,
+              "current": 28,
+              "source": "https://www.inter.it/en/teams/first-team/player/federico-dimarco"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 175,
+              "source": "https://www.inter.it/en/teams/first-team/player/federico-dimarco"
+            }
+          }
+        },
+        {
+          "playerId": "club26_8_3",
+          "name": "Nicolò Barella",
+          "rosterSlot": 6,
+          "fields": {
+            "age": {
+              "previous": 25,
+              "current": 29,
+              "source": "https://www.inter.it/en/teams/first-team/player/nicolo-barella"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 175,
+              "source": "https://www.inter.it/en/teams/first-team/player/nicolo-barella"
+            }
+          }
+        },
+        {
+          "playerId": "club26_8_audit_16",
+          "name": "Piotr Zieliński",
+          "rosterSlot": 8,
+          "fields": {
+            "age": {
+              "previous": 24,
+              "current": 32,
+              "source": "https://www.inter.it/en/teams/first-team/player/piotr-zielinski"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 180,
+              "source": "https://www.inter.it/en/teams/first-team/player/piotr-zielinski"
+            }
+          }
+        },
+        {
+          "playerId": "club26_8_1",
+          "name": "Lautaro Martínez",
+          "rosterSlot": 10,
+          "fields": {
+            "age": {
+              "previous": 23,
+              "current": 29,
+              "source": "https://www.inter.it/en/teams/first-team/player/lautaro-martinez"
+            },
+            "heightCm": {
+              "previous": null,
+              "current": 174,
+              "source": "https://www.inter.it/en/teams/first-team/player/lautaro-martinez"
+            }
+          }
+        }
+      ],
+      "notes": [
+        "Five entries verified against official Inter Milan player biographies, dated age 2026-10-16 and heights in cm.",
+        "Game shirt numbers remain unchanged, even where Inter official biographies show different numbers, because additional club roster selection and collision checks are needed.",
+        "Unchanged player IDs, names, squad roles, OVR, rating-source markers, gameplay face stats and all other club records.",
+        "Other Inter players and current 2026/27 registration for Ivan Provedel require a separate source-backed review."
+      ]
     }
   ]
 }

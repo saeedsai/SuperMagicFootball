@@ -3871,7 +3871,7 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 24,
+      "age": 27,
       "rating": 86,
       "value": 1399497,
       "fictional": false,
@@ -3895,7 +3895,8 @@
       "birthDate": "1999-04-13",
       "nation": "Italy",
       "fc27Id": "237383",
-      "fc27Position": "CB"
+      "fc27Position": "CB",
+      "heightCm": 190
     },
     {
       "id": "club26_8_4",
@@ -3911,7 +3912,7 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 26,
+      "age": 28,
       "rating": 86,
       "value": 1399497,
       "fictional": false,
@@ -3935,7 +3936,8 @@
       "birthDate": "1997-11-10",
       "nation": "Italy",
       "fc27Id": "226268",
-      "fc27Position": "LB"
+      "fc27Position": "LB",
+      "heightCm": 175
     },
     {
       "id": "club26_8_7",
@@ -3990,7 +3992,7 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 25,
+      "age": 29,
       "rating": 87,
       "value": 1482778,
       "fictional": false,
@@ -4014,7 +4016,8 @@
       "birthDate": "1997-02-07",
       "nation": "Italy",
       "fc27Id": "224232",
-      "fc27Position": "CM"
+      "fc27Position": "CM",
+      "heightCm": 175
     },
     {
       "id": "club26_8_5",
@@ -4070,7 +4073,7 @@
       "xp": 0,
       "shot": "eagle",
       "shotName": "Eagle Shot",
-      "age": 24,
+      "age": 32,
       "value": 1102933,
       "fictional": false,
       "ratingSource": "FC27 third-party dataset snapshot 2026-09-12",
@@ -4093,7 +4096,8 @@
       "birthDate": "1994-05-20",
       "nation": "Poland",
       "fc27Id": "210406",
-      "fc27Position": "CM"
+      "fc27Position": "CM",
+      "heightCm": 180
     },
     {
       "id": "club26_8_audit_15",
@@ -4147,7 +4151,7 @@
       "skill": "2026 Arcade Technique",
       "level": 1,
       "xp": 0,
-      "age": 23,
+      "age": 29,
       "rating": 87,
       "value": 1482778,
       "fictional": false,
@@ -4171,7 +4175,8 @@
       "birthDate": "1997-08-22",
       "nation": "Argentina",
       "fc27Id": "231478",
-      "fc27Position": "ST"
+      "fc27Position": "ST",
+      "heightCm": 174
     },
     {
       "id": "club26_8_audit_12",
