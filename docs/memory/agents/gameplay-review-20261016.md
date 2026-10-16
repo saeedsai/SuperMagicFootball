@@ -17,7 +17,7 @@ Prior human PK goalkeeper batch in engine [`d0adf651`](https://github.com/saeeds
 
 ## Next smallest action
 
-Read fresh `dev`, all claims and **this memory only**; no other agent memory. Check [Full Census #38960061389](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960061389) and [#38960219335](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960219335) for **actual** `tests/career_opponent_scout_browser_qa.py` PC/touch results. Then check hosted real Manager Career kickoff using a deployment and browser smoke test. Fix any failure only under a fresh ownership lock. Never infer PC/mobile interaction from Pages deployment alone.
+Read fresh `dev`, all claims and **this memory only**; no other agent memory. [Full Census #38960061389](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960061389) confirmed **our real career_opponent_scout_browser_qa.py PASS** on desktop and simulated touch (7.50s); all 4 Node shards PASS, 77/78 Chromium PASS. Overall FAIL stems from unrelated `pass_reception_audio_browser_qa.py` (`Game players unavailable`), handed to active audio owner in [issue #16](https://github.com/saeedsai/SuperMagicFootball/issues/16). Next: verify a successful feature-descendant Pages deployment and hosted Manager Career kickoff; rerun full census after audio fix. Physical phone not yet tested.
 
 Next scoped features: inspect first-touch pressure balance after current engine agent releases, career bench advice, keeper visuals, Android rapid dribble, physical handset and PWA offline testing.
 
@@ -28,7 +28,7 @@ Next scoped features: inspect first-touch pressure balance after current engine 
 ## Evidence
 
 - [Modular QA #38960248063](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960248063): **221/221 Node PASS**, including six new scout and About/version tests.
-- [Full 4+4 census #38960061389](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960061389) preflight PASS and shards launched; final outcome was not verified.
+- [Full 4+4 census #38960061389](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960061389): PASS preflight + 4/4 Node; Chromium 77/78 PASS, 1 unrelated audio FAIL; own browser PASS.
 - Public https://saeedsai.github.io/SuperMagicFootball/ not navigable by this session's web reader; hosted interactive verification unconfirmed.
 - 717 tracked paths audited, no tracked `node_modules`, `__pycache__`, `.generated`, `dist`, `.pyc`, `.bak` or `.tmp` artifacts.
 
