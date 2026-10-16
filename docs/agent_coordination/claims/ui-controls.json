@@ -3,7 +3,7 @@
   "lock_key": "ui-controls",
   "feature_id": "UI-HALFTIME-TACTICS-RETURN",
   "owner": "ui-halftime-tactics-return-20261016-session10-gpt6",
-  "status": "active",
+  "status": "released",
   "scope": "Only src/modules/ui.js halftime-to-tactics return route on Back and Save, isolated tests/halftime_tactics_return.test.cjs and tests/halftime_tactics_return_browser_qa.py, docs/UI_HALFTIME_TACTICS_RETURN_20261016.md and small docs/NEXT_MILESTONES.md addendum; no gameplay engine, rosters, graphics, QA runners, release workflows, service worker or unrelated cleanup.",
   "base_sha": "067326766a647419529733897bf066ea05484758",
   "created_at": "2026-10-16",
@@ -15,5 +15,8 @@
     "Full Regression Census all Node and Chromium shards",
     "hosted Pages desktop/touch smoke"
   ],
-  "handover": "docs/UI_HALFTIME_TACTICS_RETURN_20261016.md"
+  "handover": "docs/UI_HALFTIME_TACTICS_RETURN_20261016.md — source 66cf9402, exact-source QA #38902939162 116/116 PASS, 17 merge, 10 claim tests; Chromium full regression #38903065643 queued (earlier jobs cancelled by concurrent pushes)",
+  "released_at": "2026-10-16",
+  "outcome": "implemented_half_time_route_active_116_116_green_browser_full_census_not_yet_certified",
+  "final_source_commit": "66cf9402cbe7ed7cb0e7373f9265e1c56dfbb750"
 }
