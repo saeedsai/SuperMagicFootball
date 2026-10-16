@@ -26,7 +26,11 @@ with sync_playwright() as pw:
             page.wait_for_timeout(1080)
             cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
         else:
-            page.keyboard.down('Space');page.keyboard.down('d');page.wait_for_timeout(720);page.keyboard.up('d');page.keyboard.up('Space')
+            # Wait for the simulated game's actual dash state, not a fixed wall-clock
+            # delay that can elapse while heavily loaded CI Chromium is stalled.
+            page.keyboard.down('Space');page.keyboard.down('d')
+            page.wait_for_function('SupermagicFootball.game.player(0,3).dashCooldown>2.5',timeout=5000)
+            page.keyboard.up('d');page.keyboard.up('Space')
         dash=page.evaluate('SupermagicFootball.game.player(0,3).dashCooldown')
         assert (dash>2.5 if not mobile else page.evaluate('SupermagicFootball.game.player(0,3).x')>1270+75),(kind,dash,errors)
         # Jump-first single SHOOT commits an ordinary header after the double-tap disambiguation window.
