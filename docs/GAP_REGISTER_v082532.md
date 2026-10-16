@@ -23,3 +23,7 @@
 | P0 | Super Shot fairness | Initial 4% slower launch and +8% fatigue implemented; verify match-level goal/save fairness on seeded replays and both attack directions. |
 | P0 | More frequent goalkeeper dives | **OPEN**: instrument candidate/actual dives, tune approach phase after mirrored corner/save benchmark; don't reintroduce the old early-contact bug. |
 | P0 | Keeper can hold ball in hands | **PARTIALLY CLOSED**: actual possessed ball is positioned at glove height during a brief hold; CPU can release safely and clears sooner under pressure. Still needs full eight-direction finger/glove grip and player-driven holding UX. |
+
+## 16 October 2026 — concurrent graphics reference safeguard
+
+**Closed for complete three-way merges:** orphan `player_appearances.json` team/player references now cause a blocking merge conflict, checked against the combined seven-shard player dataset **after** independently edited fields are merged. **Closed:** `--check --report` can no longer overwrite a JSON file in any input checkout, and reports are kept outside merged output trees. New tests (17 total) and exact-commit full Node/Chromium regression (144 scripts) passed; see `QA_PARALLEL_GRAPHICS_REFERENCE_20261016.md`. **Still open:** provenance-aware source conflict decisions, graphics palette semantics/visual likeness, P0 active goalkeeper diving, eight-way glove holding animation and independently source-verified player data. Whole-dataset preflight still requires `scripts/validate_data.py`; the merge helper does not make an invalid source file valid.

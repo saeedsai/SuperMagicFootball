@@ -31,3 +31,7 @@ Current checkpoint: code SHA `e5f3b3bd3870aca8f776127e02320b3a09b4a461`, full re
 ## 16 October 2026 — gameplay QA additions
 
 Retain active `tests/super_keeper_balance_browser_qa.py` and latest `docs/SUPER_SHOT_KEEPER_HANDS_20261016.md`; both reference authoritative modular code. Rotating the service-worker revision does not make legacy test scripts disposable: four version-pinned assertions needed updating. Root cache/manifest snapshots were **not deleted** or presented as current security manifests; cleanup waits for an owner-confirmed dependency audit and full regression.
+
+## October 16 graphics-reference cross-check / cleanup decision
+
+The live, actively maintained `scripts/parallel_data_merge.py` and `tests/test_parallel_data_merge.py` now perform whole-catalog graphics-reference checks and safeguard report destinations; see `docs/QA_PARALLEL_GRAPHICS_REFERENCE_20261016.md`. No legacy screenshots, archived test scripts or unrelated roster-agent ledger files were deleted: they remain part of the full regression census or other concurrent workstreams and deletion would risk losing evidence. Generated fixtures still belong under ignored `tests/.generated/`, not repository root. A future deletion requires a known-unused file inventory plus pre/post full regression; this checkpoint intentionally consists of source-safe additions rather than speculative cleanup.
