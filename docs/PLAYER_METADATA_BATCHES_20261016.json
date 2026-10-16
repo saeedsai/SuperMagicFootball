@@ -4175,7 +4175,7 @@
       "asOfDate": "2026-10-16",
       "playersChanged": 12,
       "fieldsChanged": 83,
-      "status": "pending_ci",
+      "status": "active_qa_231_pass_pages_deployed_full_historical_pending",
       "changes": [
         {
           "playerId": "club26_5_0",
@@ -4693,7 +4693,29 @@
         "Holland legacy nationality code retained unchanged for Matthijs de Ligt; normalize only in a separate, reviewed schema change.",
         "Ages reflect 2026-10-16; some pre-existing ages were inconsistent with DOB."
       ],
-      "invariant": "Only Manchester United club26_5 editable metadata and rating provenance changed; no player identities, roles, six EA attributes, OVR or arcade physics changed."
+      "invariant": "Only Manchester United club26_5 editable metadata and rating provenance changed; no player identities, roles, six EA attributes, OVR or arcade physics changed.",
+      "ciEvidence": {
+        "sourceCommit": "08897b2a4fc7c21cab80bffbf510d9d5cad38cbe",
+        "runtimeCommit": "b3e03c940569ff03f6a8af43564769d6b0fe7580",
+        "testCommit": "4aa62095c254bf173b3470ab1b8db4de87cc0222",
+        "activeQA": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961471268",
+          "status": "success",
+          "nodePass": 231,
+          "nodeFail": 0,
+          "unitedTestPass": 3,
+          "aboutRevisionContract": "passed"
+        },
+        "pages": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961487916",
+          "status": "success"
+        },
+        "historical": {
+          "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961509601",
+          "status": "pending_at_checkpoint"
+        },
+        "physicalAndHostedInteractiveSmoke": "not_independently_verified"
+      }
     }
   ]
 }
