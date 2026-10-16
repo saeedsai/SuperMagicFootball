@@ -45,3 +45,19 @@ Generated browser fixtures, Node dependencies, Python bytecode and screenshot sc
 5. UI/career owner refines substitution and halftime fitness coaching, followed by physical mobile and PWA smoke milestones.
 
 **Handover:** release this claim only after doc/tests/source are committed and final available QA evidence recorded; next agent re-reads live AGENTS/claims first.
+
+## Exact-source final QA certificate and deployed game smoke
+
+**Certified integrated source:** [`78b48056e25108d1039cb4aeca326bfcd5935187`](https://github.com/saeedsai/SuperMagicFootball/commit/78b48056e25108d1039cb4aeca326bfcd5935187), which contains both this batch's source and its new Node/Chromium tests plus other agents' earlier accepted commits.
+
+[Full Regression Census #38900429370](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38900429370) **COMPLETED SUCCESS**:
+- Preflight **PASS**.
+- Four Node shards: 29+28+28+28 = **113/113 PASS**. New `spain_goalkeeper_metadata_20261016.test.cjs` **PASS** in shard 1.
+- Four Chromium shards: 16+16+15+15 = **62/62 PASS**. New `spain_goalkeeper_metadata_browser_qa.py` **PASS** in shard 1, with real modular `rosterFor` and `game.init` checks in desktop/simulated touch.
+- **175/175 executable scripts PASS**; 0 failed, 0 error, 0 timeout, 0 not-run. This is script-level census evidence, not a claim of all historical features or physical handset certification.
+- [Modular Game Dev QA #38900408270](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38900408270) passed on the new browser-test SHA; later documentation-only and other agents' pushes are independently tracked.
+- [Hosted GitHub Pages desktop/touch smoke #38891468528, attempt 5](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528) **SUCCESS** after this batch's source change: public `https://saeedsai.github.io/SuperMagicFootball/` returns HTTP 200, menus and team selection work, Quick Match starts, and an active match plays on the extended field in both desktop and simulated-touch Chromium (224 runtime teams).
+- [Issue #2](https://github.com/saeedsai/SuperMagicFootball/issues/2) **remains open**; added a handover comment for both Spain metadata test batches. The `release-infra` ownership lock was active, so this batch did not edit CI workflow paths. The green census was triggered by a legitimate concurrent graphics-code push and contains our corrections.
+- **Cleanup audit:** 617 tracked paths, none in generated fixture, Python cache, Node dependency, Playwright scratch, or common backup/temp patterns. No unrelated graphics/roster/history files were deleted.
+
+**Status: complete.** Release the exclusive Spain national-team ownership claim with this certificate; next round must re-check current `dev` claims before touching any shared roster.
