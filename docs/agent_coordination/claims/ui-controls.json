@@ -1,20 +1,18 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "ui-controls",
-  "feature_id": "UI-CAREER-RETEST",
-  "owner": "ui-career-subfeedback-retest-20261016-gpt6b",
-  "status": "released",
-  "scope": "UI-CAREER test-only retest: tests/substitution_advice_browser_qa.py ambiguous Back selector; one additional UI feature assertion in tests/master_contracts.mjs to run Full Regression Census; own docs/UI_CAREER_SUBSTITUTION_FEEDBACK_20261016.md. No engine, UI.js, graphics, rosters, common runner, release workflow edits.",
-  "base_sha": "709eeec167daf1a201dcba5bec6afee571623279",
+  "feature_id": "UI-LINEUP-ROLE-FIT",
+  "owner": "ui-lineup-fit-20261016-1329-gpt6",
+  "status": "active",
+  "scope": "UI-only read-only natural-position assignment feedback in src/modules/ui.js; dedicated tests/lineup_role_fit_browser_qa.py and tests/lineup_role_fit.test.cjs; docs/UI_LINEUP_ROLE_FIT_20261016.md plus docs/NEXT_MILESTONES.md small checkpoint. No gameplay engine, graphics, rosters, shared QA harness, CI workflows, service worker or unrelated cleanup.",
+  "base_sha": "3face2973f4ae66e2576647425308968ea3312f3",
   "created_at": "2026-10-16",
   "renewed_at": "2026-10-16",
   "tests": [
-    "Full Regression Census exact commit",
-    "node --test tests/*.test.cjs",
-    "hosted PC/touch smoke evidence"
+    "Node read-only contract",
+    "desktop and simulated-touch Chromium lineup role fit and persistence",
+    "full regression census on integrated SHA",
+    "hosted desktop/touch Quick Match"
   ],
-  "handover": "docs/UI_CAREER_SUBSTITUTION_FEEDBACK_20261016.md — #38892003132 Node PASS, #38892003186 full Chromium pending, hosted smoke #38891468528 PASS",
-  "released_at": "2026-10-16",
-  "outcome": "test_hotfix_delivered_full_browser_census_pending",
-  "integrated_commit": "36ad78d06722467962e3c5dcea1b9870ed1cfa84"
+  "handover": "docs/UI_LINEUP_ROLE_FIT_20261016.md"
 }
