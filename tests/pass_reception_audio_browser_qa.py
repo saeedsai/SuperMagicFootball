@@ -17,8 +17,11 @@ SCRIPT = r"""() => {
    a.tone=(f)=>sounds.push(f);a.ctx={currentTime:11,state:'running'};
    a.unlocked=true;a.last=new Map();
    a.settings={...a.settings,mute:false,master:80,sfx:75};
-   const side0=g.players.filter(p=>p.t===0&&!p.keeper&&p.stun<=0);
-   const rival=g.players.find(p=>p.t===1&&!p.keeper&&p.stun<=0);
+   // The test directly invokes GameEngine.take() to verify audio, so stun
+   // eligibility is irrelevant here and varies naturally while a live match
+   // animates. Choose stable outfield team membership, not dynamic AI state.
+   const side0=g.players.filter(p=>p.t===0&&!p.keeper);
+   const rival=g.players.find(p=>p.t===1&&!p.keeper);
    if(side0.length<2||!rival)throw Error('Game players unavailable');
    const [target,teammate]=side0;
    const collect=(recipient)=>{
@@ -59,6 +62,7 @@ with sync_playwright() as pw:
         page.wait_for_function("!!window.SupermagicFootball?.game",timeout=60000)
         for action in ('navQuick','navOnDevice','quick','kickoff'):
             page.locator(f'[data-action="{action}"]').first.click()
+        page.wait_for_function('SupermagicFootball.game.players?.length===12',timeout=10000)
         result=page.evaluate(SCRIPT)
         assert result['state']=='play',(label,result)
         assert result['good']==[370,494],(label,'real accurate pass',result)
