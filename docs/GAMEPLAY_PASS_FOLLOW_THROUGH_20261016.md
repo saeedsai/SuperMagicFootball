@@ -25,3 +25,14 @@ Record exact-source Modular QA, 4+4 Full Regression Census and post-deploy hoste
 
 ## Cleanup
 Historic QA evidence and template/asset files are retained because existing workflows reference them. No unverified deletion, shared QA runner edit or source-backed roster alteration is in scope.
+
+## Exact-source completed QA checkpoint
+
+**Play code:** [PR #11, merge commit `0a72b58e715e7d142bb3b3c183f25b1ee255b40f`](https://github.com/saeedsai/SuperMagicFootball/commit/0a72b58e715e7d142bb3b3c183f25b1ee255b40f). The five-file change was merged onto the latest concurrent `dev` without force-pushing or modifying other agents' scopes.
+
+- [Modular Game Dev QA #38946410123](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946410123): **SUCCESS**; 200/200 active Node subtests, including new pass-pose checks; 20/20 Python parallel merge, 10/10 claim-protocol tests and source/roster validators passed.
+- [Full Regression Census #38946410219](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946410219): **COMPLETED SUCCESS, 211/211** — four Node shards of 34 scripts each = **136/136**, four Chromium shards of 19+19+19+18 = **75/75**, zero failures/timeouts/errors/not-run. The new `pass_follow_through_browser_qa.py` ran in 4.56 seconds, testing actual eight-direction pixel changes on desktop and simulated touch; four-button control and unchanged match score/identities validated.
+- Separate [Concept Hero QA #38946410109](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946410109), [Concept Modular QA #38946410145](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946410145), and [modular hair preview #38946410134](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946410134) all **SUCCESS** on the source commit.
+- The original Pages deployment for `0a72b58` was cancelled by later concurrent pushes. A later deployed descendant is required before claiming the pass feature is publicly present. A separate post-deploy desktop/simulated-touch Quick Match smoke is required and physical devices remain untested.
+
+**Integration hygiene:** No tracked scratch, data shards, obsolete test fixtures or templates were deleted, since no safe unused-path evidence justified deletion in this code-limited claim. Historical QA reports remain useful audit artifacts; global milestones and chat registries belong to independent owner scopes.
