@@ -86,7 +86,10 @@ def main():
     result = {
         "category": args.category, "shard": args.shard_index,
         "shard_count": args.shard_count, "discovered": len(all_scripts),
-        "requested": len(scripts), "run_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "requested": len(scripts),
+        "discovered_scripts": [p.name for p in all_scripts],
+        "selected_scripts": [p.name for p in scripts],
+        "run_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "commit": os.environ.get("GITHUB_SHA", "local"), "tests": []
     }
     def save():
