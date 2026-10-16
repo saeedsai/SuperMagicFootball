@@ -53,3 +53,7 @@ The open P0 calibration gap now has a seeded real-engine browser matrix in `test
 ### QA acceptance update — 16 October 2026
 
 **Closed:** missing deterministic, mirrored, physical-kickoff goalkeeper flight/calibration acceptance coverage. The new modular browser script and 148 inherited/current tests (149 total) passed together in [exact-source CI #38883629200](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38883629200). **Still open:** physical keeper approach/actual save-rate calibration, mixed Super Shot families, true match-pressure outcomes, eight-direction glove art, and any raw duplicate `save` notification semantics. No goal/contact rules were widened in the test-only release.
+
+### 16 October 2026 — goalkeeper double counting
+
+**Fixed in engine event emission:** repeat `save` notifications on a keeper-recovered deflection, and loose non-shot catches misclassified as saves. Dedicated browser+Node regression added. **Open:** representative seeded save-rate fairness and keeper lateral movement certification; catching/holding glove visuals; physical-device acceptance.

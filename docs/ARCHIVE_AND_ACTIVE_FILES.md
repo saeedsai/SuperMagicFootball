@@ -51,3 +51,7 @@ New active diagnostic files are `src/match_telemetry.js` (already used by histor
 ## 16 October 2026 — generated file hygiene
 
 Repository tree inspection found no tracked Python bytecode, Python cache directories, browser fixture `tests/.generated/`, temporary `play.html` or scratch backups. A new root `.gitignore` proactively excludes those transient outputs, `docs/qa_runs_full_regression/`, Playwright scratch reports and `node_modules/`. Existing 24 `docs/qa_runs_v082532/*.log` remain tracked deliberately as historical browser and art acceptance evidence; deleting them would erase earlier release comparisons and would require independent approval. No gameplay file or currently-owned roster/graphics file was cleaned in this checkpoint.
+
+### 16 October 2026 — cleanup during keeper event correction
+
+Inspected current integration paths; generated QA artifacts remain excluded by the existing `.gitignore`. Retained historical keeper calibration logs, roster files, graphics assets and older browser fixtures because they are active regression/audit evidence. New active browser+Node tests belong in `tests/`, and one canonical QA note in `docs/KEEPER_SAVE_EVENT_INTEGRITY_20261016.md`; no unrelated files were deleted.

@@ -80,3 +80,7 @@ The new browser calibration suite now passes [Full Regression Census #3888362920
 ## 16 October 2026 — single-save event and diving-catch pose protection
 
 Fixed fall-through from successful physical keeper-dive catch into the generic same-frame loose-ball collector. The latter could duplicate `save` and `keeperCatch` and replace `keeperDiveCatch` with the wrong pose despite holding the ball. An owned-ball exit now preserves first catch and original shot/goal/contact physics. Mirrored real-engine calibration browser coverage was extended to enforce at most one raw save notification per shot. See `KEEPER_SINGLE_SAVE_QA_20261016.md` for exact-run status; older regression counts do not certify the current branch.
+
+## 16 October 2026 — goalkeeper event-integrity correction
+
+Corrected a real gameplay-event attribution defect where a deflected ball later caught by its own goalkeeper could register a second `save`. Keeper possession, catch animation/event, real diving interceptions and contact geometry are unchanged. New Node and browser tests cover both sides, three FPS and shot/rebound/non-shot collections. See `KEEPER_SAVE_EVENT_INTEGRITY_20261016.md` for exact CI and deferred real-match balance acceptance.

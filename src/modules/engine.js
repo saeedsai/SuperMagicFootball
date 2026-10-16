@@ -1554,7 +1554,12 @@ class GameEngine{
   }
  }
  if(p.keeper&&b.attacker===p.t&&Math.hypot(b.vx,b.vy)>480)continue;
- if(p.keeper){this.keeperCollect(p,'loose');this.emit('save',{player:p,saveType:'catch'});}else this.take(p);break;
+ if(p.keeper){
+   // A previously deflected keeper rebound is a catch, NOT a second save.
+   // Capture origin before keeperCollect() clears the shot flags.
+   const liveOpposingShot=b.attacker===1-p.t&&!!(b.ordinaryShot||b.shot||b.strike);
+   if(this.keeperCollect(p,'loose')&&liveOpposingShot)this.emit('save',{player:p,saveType:'catch'});
+  }else this.take(p);break;
  }
  }
  burst(x,y,color,count=10){for(let i=0;i<count;i++){let a=Math.random()*Math.PI*2,spd=randomBetween(35,210);this.particles.push({x,y,z:randomBetween(3,80),vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,vz:randomBetween(10,150),life:randomBetween(.25,.8),max:.8,color,r:randomBetween(2,6)})}}

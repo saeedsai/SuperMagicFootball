@@ -110,3 +110,7 @@ Verified `06c0b30b`: full [149/149 regression scripts passed](https://github.com
 In the follow-up goalkeeper quality batch, a successful ordinary diving catch now ends `updateBall` processing for that frame before the generic loose-ball proximity collector. This prevents duplicated `save`/`keeperCatch` events and keeps the already assigned `keeperDiveCatch` pose. The 144-fixture-per-device seeded calibration test now asserts one raw save event per shot. No reach/geometry, goalkeeper movement coefficients, abilities or roster edits. Exact CI result: `docs/KEEPER_SINGLE_SAVE_QA_20261016.md`.
 
 **Five next small iterations:** (1) characterize organic CPU-vs-human save gaps from representative fixtures before changing approach/reach; (2) eight-direction glove holding/release artwork (graphics agent coordination); (3) first-touch and pass follow-through visual polish; (4) provenance-aware review of parallel editor merges; (5) career/substitution tactical feedback with save compatibility.
+
+## 16 October 2026 — priority goalkeeper double-save bug fix
+
+The keeper's loose-ball catch no longer emits a second `save` after an earlier deflection, or mislabels a loose non-shot as a save. Physical interceptions, catch animation and controls remain unchanged. Next five: (1) calibrate seeded real-match keeper movement after correcting save-event denominators, (2) eight-view glove grip/distribution, (3) pass/first-touch animation, (4) source-aware agent editor merge review, (5) career/tactics substitutions and hints. See `KEEPER_SAVE_EVENT_INTEGRITY_20261016.md`.

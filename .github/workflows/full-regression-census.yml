@@ -26,6 +26,8 @@ on:
       - 'tests/keeper_physical_lunge_browser_qa.py'
       - 'tests/keeper_physical_lunge.test.cjs'
       - 'tests/keeper_shot_calibration_browser_qa.py'
+      - 'tests/keeper_save_event_integrity.test.cjs'
+      - 'tests/keeper_save_event_integrity_browser_qa.py'
       - 'tests/aerial_browser_qa.py'
       - 'tests/physics_tuning_v082534.test.cjs'
       - 'tests/physics_tuning_browser_qa.py'
