@@ -7,7 +7,7 @@
 ## Current state
 
 - **165 clubs**, 12 players per club (**1,980 total**); **2 GK + 3 DF + 4 MF + 3 FW**.
-- **983** ratings tagged FC27, from an **unofficial September 2026 third-party dataset**.
+- **983** ratings in the original FC27-tagged snapshot: **48 individually checked against official EA FC 27 launch base cards** (Arsenal, Bayern, Manchester City, PSG), and **935 still relying on the September 2026 third-party dataset**. This is the 16 October 2026 live verification status, not the original immutable snapshot.
 - **997** source-backed real-player entries with **editorial game ratings** (not EA overall scores).
 - **Zero** fictional/academy slots in the 165 clubs at the recorded snapshot.
 - Game inventory outside these 165 club squads (national teams, legends, arcade teams, etc.) is a distinct scope and is not part of this club rating audit.
