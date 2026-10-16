@@ -1,13 +1,18 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "qa-framework",
-  "feature_id": "QA-CENSUS-EVIDENCE-INTEGRITY",
-  "owner": "qa-evidence-shape-20261016-gpt6-chat10",
-  "status": "released",
-  "scope": "Only tests/audit_regression_shards.py evidence validation, tests/test_audit_regression_shards.py negative tests, tests/audit_regression_shards.test.cjs count and docs/QA_CENSUS_EVIDENCE_INTEGRITY_20261016.md. Never edit gameplay, graphics, roster, UI, CI workflows, memory, QA shard runner.",
-  "base_sha": "a4839ee88b7f58b47e14e4cdb5012ef2ac072119",
-  "created_at": "2026-10-16",
-  "handover": "docs/QA_CENSUS_EVIDENCE_INTEGRITY_20261016.md — code e9268919711dc6714f4cbc4c968df2de2bda8816, QA https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946385367; roadmap 5142a936aa318e14ceeb854b4a060aa48a2f1e07",
-  "released_at": "2026-10-16",
-  "outcome": "completed QA auditor duration/output strict evidence; 18 Python tests and 197 active Node PASS; exact-SHA historical full census not verified"
+  "feature_id": "QA-MANIFEST-FILENAME-INTEGRITY",
+  "owner": "qa-manifest-extensions-dev6-20261016-gpt6",
+  "status": "active",
+  "scope": "Only tests/audit_regression_shards.py, tests/test_audit_regression_shards.py, tests/audit_regression_shards.test.cjs if test-count assertion needs update; docs/QA_MANIFEST_FILENAME_INTEGRITY_20261016.md, own docs/memory/agents/game-developer-6.md, docs/NEXT_MILESTONES.md. Disallow spoofed script names in full-census manifests without changing game, runner, CI, graphics, rosters or other memory.",
+  "base_sha": "03c3ff1f30e601922828966f86b7e5276d97e2bb",
+  "claimed_at": "2026-10-16",
+  "tests": [
+    "python3 -m unittest discover -s tests -p test_audit_regression_shards.py -v",
+    "node --test tests/*.test.cjs",
+    "full regression workflow evidence",
+    "hosted Pages PC and touch smoke",
+    "node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs"
+  ],
+  "handover": "docs/QA_MANIFEST_FILENAME_INTEGRITY_20261016.md"
 }
