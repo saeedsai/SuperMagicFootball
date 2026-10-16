@@ -1,0 +1,21 @@
+{
+  "schema": "smf-feature-claim/1",
+  "lock_key": "roster-national-national26_0",
+  "feature_id": "NATIONAL-SPAIN-AGE-HEIGHT-B1",
+  "owner": "roster-spain-birthdates-20261016-gpt6-01",
+  "status": "active",
+  "scope": "Only national26_0 Spain records for Pedri and Gavi, immutable player IDs/names/roles/ratings/lineup positions retained in data/players/national26.json; dedicated tests/spain_national_metadata_20261016.test.cjs, docs/NATIONAL_SPAIN_METADATA_20261016.md, narrow docs/NEXT_MILESTONES.md addendum. No club26 data, source roster_corrections.js, engine, UI, graphics, common QA harness, build, CI/workflows/PWA or other national teams.",
+  "base_sha": "94af2d2f587b5153b0259ada9fde0d767b94628c",
+  "created_at": "2026-10-16",
+  "renewed_at": "2026-10-16",
+  "source_references": [
+    "https://www.fcbarcelona.com/en/football/first-team/jugadors/70486/pedri",
+    "https://www.fcbarcelona.com/en/football/first-team/jugadors/116719/---------------gavi"
+  ],
+  "acceptance_tests": [
+    "Node source identity/national team unchanged, DOB ages as of 2026-10-16, sourced height",
+    "Modular Game Dev QA, build/validate data, full regression and Pages deployment",
+    "PC/touch deployed smoke"
+  ],
+  "handover": "docs/NATIONAL_SPAIN_METADATA_20261016.md"
+}
