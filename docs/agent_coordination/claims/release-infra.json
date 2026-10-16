@@ -3,7 +3,7 @@
   "lock_key": "release-infra",
   "feature_id": "CI-NATIONAL-ROSTER-FULL-CENSUS-TRIGGERS",
   "owner": "release-national-ci-20261016-1436-gpt6",
-  "status": "active",
+  "status": "released",
   "scope": "ONLY .github/workflows/full-regression-census.yml push.paths for national26 roster and national/spain metadata tests; a narrow release-trigger contract tests/national_roster_regression_trigger.test.cjs; docs/CI_NATIONAL_ROSTER_TRIGGER_20261016.md and small docs/NEXT_MILESTONES.md addendum. GitHub issue #2. No build, shared QA runner, gameplay, graphics, UI, roster/data or PWA/cache changes.",
   "base_sha": "2c3e346090fa44562c34e4d5fb317c22ab550829",
   "created_at": "2026-10-16T14:36:00+02:00",
@@ -14,5 +14,8 @@
     "Modular Game Dev QA",
     "GitHub Pages hosted desktop/simulated touch smoke"
   ],
-  "handover": "docs/CI_NATIONAL_ROSTER_TRIGGER_20261016.md"
+  "handover": "docs/CI_NATIONAL_ROSTER_TRIGGER_20261016.md — Full Regression Census #38902247781 177/177 PASS; hosted smoke #38891468528 attempt 7 SUCCESS; issue #2 closed",
+  "released_at": "2026-10-16T14:48:00+02:00",
+  "outcome": "completed_issue_2_closed_full_census_177_of_177_live_pc_touch_success",
+  "final_source_commit": "067326766a647419529733897bf066ea05484758"
 }
