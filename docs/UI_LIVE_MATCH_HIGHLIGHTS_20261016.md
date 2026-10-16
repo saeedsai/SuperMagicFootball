@@ -35,3 +35,19 @@ Use current `dev` base with SHA-checked exclusive lock. Run source Node test, al
 5. Expand save-safe career progression/tactical match guidance, with independent local two-human and actual handset tests.
 
 **Full regression and deployment evidence / final commit:** to be appended after CI.
+
+## Delivered commit and integrated CI checkpoint
+
+**Gameplay UI source and acceptance committed directly to latest moving `dev` (non-force; no conflicting paths):**
+- [`f0858269`](https://github.com/saeedsai/SuperMagicFootball/commit/f0858269cf8cf1419b8b78d25f0d7be21798eda1) — live menus and safe engine-event chronology.
+- [`1fdb59af`](https://github.com/saeedsai/SuperMagicFootball/commit/1fdb59afb41a810fc585a89980fbf7a4efe76d78) — six pure Node contract tests.
+- [`38287041`](https://github.com/saeedsai/SuperMagicFootball/commit/3828704182db9c7c8c0e6ddbe2f0ea417a8ff0d7) — actual Quick/Versus playable Chromium desktop and simulated-touch tests and screenshots.
+- [`931373fc`](https://github.com/saeedsai/SuperMagicFootball/commit/931373fc064cde2f5d0ddcea06d55342e3cc9e5e) — next-milestones plan; documentation format corrected in [`7b9c4b2b`](https://github.com/saeedsai/SuperMagicFootball/commit/7b9c4b2ba0f3573be7e59384d240d1cd3a9038e6).
+
+**Verification:** manually executed six standalone cases using the exact extracted live helper with real escape logic (empty, goal, save, zero-count filtering, hostile skill name, talk) — 6/6 passed with no mutation. In [Modular Game Dev QA #38915344073](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344073), descendant `34604826`, source/data and test build **SUCCESS**: **171/171 active Node tests**, including all six new test cases; 20/20 merge tests and 10/10 coordination tests also passed. Earlier integrated runs failed unrelated `club26_2` source/runtime metadata consistency and then [memory identity Issue #8](https://github.com/saeedsai/SuperMagicFootball/issues/8). Both were separate-agent scopes; subsequent 171-green QA confirms they no longer block that source.
+
+**Historical full regression:** [run #38915344074](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074) on descendant `34604826`, checked to contain the new feature AND Chromium script, was **IN_PROGRESS** when this report was written. Preflight and four Node shards passed; four browser shards remained in progress. Do **not** claim that `match_highlights_browser_qa.py` or the complete 8-shard census passed until jobs finish. Browser screenshot outputs are produced only when its test runs.
+
+**Hosted phone/PC:** [GitHub Pages](https://saeedsai.github.io/SuperMagicFootball/) is publicly linked and had a successful descendant Pages deployment [#38915464957](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915464957). Fresh live desktop + simulated-touch interaction re-run [#38891468528](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528) attempt **11**, **IN_PROGRESS** at report time. This generic hosted smoke checks menus, team selection, kickoff and live match, but **not the new Match Events panel specifically**; its explicit device/browser test is in the full census. Physical Android/iOS and offline/PWA reinstallation are not certified.
+
+**Owner handover and remaining gate:** Release `ui-controls` only after saving this exact code/QA report. For follow-up, inspect the complete Chromium shard result and fix a reproducible owned UI/browser-test error under a fresh claim; preserve unrelated engine Issue #7, roster identity changes, graphics and release files.
