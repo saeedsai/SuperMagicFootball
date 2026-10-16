@@ -13,3 +13,7 @@
 | LONG RANGE | Worldwide rosters, Super Defense, Tricks, network | No scope change until rescheduled. |
 ## 2026-10-16 mechanics extraction
 **Closed in this cycle:** editable bounded pass launch velocity coefficients and goalkeeper dive cooldown coefficients, with parity tests and runtime fail-fast validation. **Still open:** remaining inlined player contact, ball friction, keeper reaction/reach and pass error coefficients; baseline parity calibration on seed-matched match suites. FC27 provenance/graphics visual QC belong to parallel agents. Deferred as owner directed: physical Android/iOS PWA/FPS and exhaustive hosted restart/save recovery.
+
+## 16 October 2026 — merge safety gap adjustment
+
+**Resolved:** the three-way merge now rejects same-ID, same-order numeric team-index drift even if both agents agree, and produces bounded per-side, stable-ID field-diff previews in `changeSummary`. See `docs/QA_PARALLEL_MERGE_CHECKPOINT_20261016.md`. **Still open:** integration of source/provenance-aware editor reviews and appearance-preset referential checks into the merge workflow. The change did not alter 2026 player rosters or visual likeness; those independent gaps remain.

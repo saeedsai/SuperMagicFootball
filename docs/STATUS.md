@@ -21,3 +21,11 @@ Full Regression Census **140/140 executable scripts passed** (91 Node, 49 Chromi
 ## 16 October 2026 — focused merge-safety checkpoint
 
 For concurrent dev-branch agents, `scripts/parallel_data_merge.py` now refuses to change the stable numerical `data/teams.json[*].index` (including identical edits on both branches) and emits field-level `changeSummary` previews, capped at 25 sample paths per side/file. The behavior is covered by three additional Python regressions; existing merge contracts remain intact. This checkpoint edits only integration tooling, regression tests and current plan documentation. It does not modify running gameplay, player identities, 2026/27 squad selections, deployed assets or saved-game schemas. Exact-commit CI and published-site verification must be checked independently; do not attribute earlier release QA totals to this update.
+
+### Exact-commit release check — `e5f3b3b`
+
+- [Full Regression Census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38874249591): **140/140 executed scripts PASS** (91 Node, 49 Chromium; zero failures, errors, timeouts, not-run).
+- [Modular Game Dev QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38874249374): **SUCCESS**, including 14 merge safeguards tests, 53 Node active tests, JSON and 165-club roster audit.
+- [Pages deployment](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38874248930): **SUCCESS** on this SHA.
+- [Hosted desktop + touch workflow](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38862708843): fresh **SUCCESS** rerun after deployment, both environments received HTTP 200, opened menus and reached gameplay. Its workflow script comes from an earlier commit and tests the **current hosted URL**, not a checkout of `e5f3b3b`; the tested runtime assets are unchanged in this tools-only commit.
+- The active test evidence and archival preservation policy are documented in [QA_PARALLEL_MERGE_CHECKPOINT_20261016.md](QA_PARALLEL_MERGE_CHECKPOINT_20261016.md) and [ARCHIVE_AND_ACTIVE_FILES.md](ARCHIVE_AND_ACTIVE_FILES.md).
