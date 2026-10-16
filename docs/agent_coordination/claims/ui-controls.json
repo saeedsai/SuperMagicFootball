@@ -3,7 +3,7 @@
   "lock_key": "ui-controls",
   "feature_id": "UI-HALFTIME-COACH",
   "owner": "ui-halftime-coach-20261016-1355-gpt6b",
-  "status": "active",
+  "status": "released",
   "scope": "UI-only read-only score/fitness-based coaching tips on existing HALF TIME screen in src/modules/ui.js; tests/halftime_coach_advice.test.cjs and tests/halftime_coach_browser_qa.py; dedicated docs/UI_HALFTIME_COACH_20261016.md and narrow docs/NEXT_MILESTONES.md addendum. No engine, roster, graphics, shared QA runner, CI workflows, service worker, build scripts or save schema.",
   "base_sha": "d0cd38cc544d6d86be3a9f2a37236d01652ec925",
   "created_at": "2026-10-16T13:55+02:00",
@@ -15,5 +15,8 @@
     "Full Regression Census exact integrated commit",
     "hosted PC/touch smoke"
   ],
-  "handover": "docs/UI_HALFTIME_COACH_20261016.md"
+  "handover": "docs/UI_HALFTIME_COACH_20261016.md — feature 0b0739a, accessibility d43258b; 95/95 active Node PASS #38898008726; full browser #38898008498 pending; live smoke #38891468528 attempt 3 pending",
+  "released_at": "2026-10-16T14:06+02:00",
+  "outcome": "implemented_node95_green_full_chromium_pending",
+  "final_source_commit": "d43258b67899f281f82282ad53578f5ef2584c96"
 }
