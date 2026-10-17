@@ -1,20 +1,20 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "ui-controls",
-  "feature_id": "UI-CAREER-OPPONENT-SCOUT-QA-SIGNOFF",
-  "owner": "gameplay-review-20261016-gpt6-career-scout-r5-docs",
-  "status": "released",
-  "created_at": "2026-10-16",
-  "renewed_at": "2026-10-16",
-  "base_sha": "6b0b737e5630657a0d01160220bd30622a79d0cf",
-  "scope": "ONLY document exact Chromium pass and independent audio-test census failure in docs/CAREER_OPPONENT_SCOUT_20261016.md, a tiny docs/NEXT_MILESTONES.md addendum and own docs/memory/agents/gameplay-review-20261016.md; no runtime/UI/source/test/framework/other agent memory edits. Then release immediately.",
-  "tests": [
-    "Review run #38960061389 browser shard 3 PASS career_opponent_scout_browser_qa.py",
-    "Check standard QA #38960248063 221/221",
-    "Verify no claim overlap"
-  ],
-  "handover": "docs/CAREER_OPPONENT_SCOUT_20261016.md; docs/memory/agents/gameplay-review-20261016.md; docs/NEXT_MILESTONES.md; https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960061389; https://github.com/saeedsai/SuperMagicFootball/issues/16",
-  "released_at": "2026-10-16",
-  "outcome": "Docs-only QA signoff: career_opponent_scout_browser_qa.py desktop/touch PASS 7.50s, full preflight + 4/4 Node PASS, 77/78 browser PASS. Only unrelated pass_reception_audio_browser_qa.py FAIL; GitHub issue #16 routed to audio owner. No runtime edits in signoff.",
-  "checkpoint_head": "2be32a646124930a75a5941c0a4487273bb6a9a1"
+  "feature_id": "UI-PK-LIVE-ROUND-SCORECARD",
+  "owner": "gameplay-pk-scorecard-20261017-gpt6-s17",
+  "status": "active",
+  "scope": "Only src/modules/ui.js pure read-only penalty-scorecard in PAUSED and FULL TIME game menus (no engine/inputs), new tests/penalty_round_scorecard.test.cjs, new tests/penalty_round_scorecard_browser_qa.py, specialist docs/UI_PENALTY_ROUND_SCORECARD_20261017.md and this chat's own docs/memory/agents/gameplay-pk-20261016.md. Do not edit engine, graphics, careers, other UI methods outside pause/fulltime and isolated helper, other feature tests, CI/workflows, shared docs/memory.",
+  "base_sha": "f9c47bb9f21f8f65fc0bb7e143c1fb01ff3e1b16",
+  "created_at": "2026-10-17",
+  "renewed_at": "2026-10-17",
+  "handover": "docs/UI_PENALTY_ROUND_SCORECARD_20261017.md",
+  "acceptance": [
+    "completed-kick goal/miss progression read directly from pk.kicks",
+    "show next shooter in in-progress penalties, no guess when finished",
+    "retain regulations score and final penalty decision",
+    "no penalty scorecard in ordinary play",
+    "preserve existing four buttons, controls, saves",
+    "Node, Chromium, full regression + About tests"
+  ]
 }
