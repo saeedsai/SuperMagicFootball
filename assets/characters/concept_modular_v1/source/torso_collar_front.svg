@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="265" viewBox="0 0 112 265" role="img" aria-label="Editable painted front football jersey collar and shoulder seams">
+<title>Royals painted front collar and shoulder join — C01 001</title>
+<desc>Experimental transparent shoulder-seam and jersey neckline accent for the 112 by 265 original concept figure. Seven named editable groups; no baked body repaint, no white canvas and no change to original silhouette.</desc>
+<defs>
+ <linearGradient id="collarBlue" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#51b5ea"/><stop offset=".28" stop-color="#217ac3"/><stop offset=".7" stop-color="#0c5299"/><stop offset="1" stop-color="#082d62"/></linearGradient>
+ <linearGradient id="collarShade" x1=".1" y1="0" x2=".8" y2="1"><stop stop-color="#052d60"/><stop offset=".55" stop-color="#061e48"/><stop offset="1" stop-color="#144c86"/></linearGradient>
+ <linearGradient id="collarCloth" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#68bfe4"/><stop offset=".5" stop-color="#237dbd"/><stop offset="1" stop-color="#08396d"/></linearGradient>
+</defs>
+<g id="neckline-shadow" stroke-linejoin="round" stroke-linecap="round">
+ <path d="M41 109C47 112 51 114 56 114C62 114 67 111 72 109L76 124C70 130 64 133 56 134C48 133 42 130 36 124Z" fill="url(#collarShade)" stroke="#06355c" stroke-width="1.45"/>
+ <path d="M43 112Q56 125 69 112" fill="none" stroke="#0b1e42" stroke-width="2.1" opacity=".9"/>
+</g>
+<g id="collar-underlay" stroke-linejoin="round" stroke-linecap="round">
+ <path d="M37 119L42 110Q48 116 55 117L56 126Q44 127 37 123Z" fill="url(#collarBlue)" stroke="#092b60" stroke-width="1.3"/>
+ <path d="M75 119L70 110Q64 116 57 117L56 126Q68 127 75 123Z" fill="url(#collarBlue)" stroke="#092b60" stroke-width="1.3"/>
+ <path d="M42 112Q50 118 56 118Q63 118 70 112" fill="none" stroke="#9cdbfa" stroke-width="1.1" opacity=".76"/>
+</g>
+<g id="collar-left" stroke-linejoin="round" stroke-linecap="round">
+ <path d="M40 111L48 117L55 124L51 131L40 121Z" fill="url(#collarCloth)" stroke="#082d62" stroke-width="1.2"/>
+ <path d="M42 114L50 123" fill="none" stroke="#c0e8fa" stroke-width="1.25" opacity=".9"/>
+</g>
+<g id="collar-right" stroke-linejoin="round" stroke-linecap="round">
+ <path d="M72 111L64 117L57 124L61 131L72 121Z" fill="url(#collarCloth)" stroke="#082d62" stroke-width="1.2"/>
+ <path d="M70 114L62 123" fill="none" stroke="#c0e8fa" stroke-width="1.25" opacity=".82"/>
+</g>
+<g id="collar-center-tape" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M54 124L56 128L58 124L60 136L56 139L52 136Z" fill="#094b8e" stroke="#062f64" stroke-width="1"/>
+ <path d="M55 129L56 133L57 129" fill="none" stroke="#cdeaf5" stroke-width="1.05"/>
+ <path d="M53 136L56 137L59 136" fill="none" stroke="#f3cb68" stroke-width="1.25"/>
+</g>
+<g id="shoulder-seam-left" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M26 126C30 120 35 119 40 118" fill="none" stroke="#092f62" stroke-width="3"/>
+ <path d="M27 124C31 120 35 119 39 119" fill="none" stroke="#7ec8f0" stroke-width="1.4" opacity=".94"/>
+ <path d="M30 128C34 125 37 125 39 124" fill="none" stroke="#1a68a4" stroke-width="1.15"/>
+</g>
+<g id="shoulder-seam-right" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M72 118C77 119 82 120 86 126" fill="none" stroke="#092f62" stroke-width="3"/>
+ <path d="M73 119C78 119 82 120 85 124" fill="none" stroke="#7ec8f0" stroke-width="1.4" opacity=".94"/>
+ <path d="M73 124C77 125 80 125 83 128" fill="none" stroke="#1a68a4" stroke-width="1.15"/>
+</g>
+</svg>
