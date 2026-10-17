@@ -1,22 +1,19 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "gameplay-engine",
-  "feature_id": "GAMEPLAY-PRESSURE-FIRST-TOUCH-CONTROL",
-  "owner": "gameplay-firsttouch-20261016-gpt6-r4",
-  "status": "released",
-  "scope": "Only src/modules/engine.js targeted deterministic friendly ground-pass first-touch control/speed easing during <0.24 seconds, new tests/first_touch_control.test.cjs and tests/first_touch_control_browser_qa.py, docs/GAMEPLAY_PRESSURE_FIRST_TOUCH_20261016.md, own docs/memory/agents/gameplay-review-20261016.md and scoped docs/NEXT_MILESTONES.md note. Do not change UI/input/graphics/audio/rosters/saves, scripts/build.py, QA runners, shared docs memory, workflows, physics configuration or other agents' files.",
-  "base_sha": "15ad4f843f85298fe4e846ce1ba24a5aec678b81",
-  "created_at": "2026-10-16",
-  "renewed_at": "2026-10-16",
+  "feature_id": "GAMEPLAY-CPU-HALFTIME-TACTICAL-RESPONSE",
+  "owner": "gameplay-review-20261017-gpt6-cpu-halftime-r6",
+  "status": "active",
+  "created_at": "2026-10-17",
+  "renewed_at": "2026-10-17",
+  "base_sha": "f50f2343375890d9da9a2b1163c4bedf2d166918",
+  "scope": "Only src/modules/engine.js score-aware, deterministic CPU-side-half-time tactical adaptation and halftime integration (no substitutions or personnel changes); new tests/cpu_halftime_tactical_response.test.cjs and tests/cpu_halftime_tactical_response_browser_qa.py; new docs/GAMEPLAY_CPU_HALFTIME_TACTICS_20261017.md; small docs/NEXT_MILESTONES.md note and ONLY this chat docs/memory/agents/gameplay-review-20261016.md. No ui.js/input/graphics/audio/rosters/tactics.js/data, public saved teamPlans/save schema, QA runners, build, CI, PWA or other agent memory.",
   "tests": [
-    "source-executed control timing/pressure scenarios and cancel on rebound",
-    "desktop and touch Quick Match, real friendly pass and receive, four-button invariant",
+    "node --test tests/cpu_halftime_tactical_response.test.cjs",
     "node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
-    "Modular Game Dev QA and Full Regression Census 4+4",
-    "hosted public PC/simulated-touch smoke"
+    "Standard Node QA all tests",
+    "4+4 Full Regression Census",
+    "desktop/touch real halftime browser acceptance"
   ],
-  "handover": "docs/GAMEPLAY_PRESSURE_FIRST_TOUCH_20261016.md; https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960061389 (217/218), https://github.com/saeedsai/SuperMagicFootball/issues/17",
-  "released_at": "2026-10-16",
-  "outcome": "Scoped gameplay first-touch pressure settling merged in c0b87bc8; Modular QA 215/215 PASS; new Node and desktop/simulated-touch browser tests PASS; descendant full census 217/218, unrelated post-merge audio fixture fail Issue #17; hosted PC/touch general smoke PASS but updated feature deployment not separately verified",
-  "final_source_commit": "c0b87bc8ab4ebef73beaa4cce68f59a777b47416"
+  "handover": "docs/GAMEPLAY_CPU_HALFTIME_TACTICS_20261017.md"
 }
