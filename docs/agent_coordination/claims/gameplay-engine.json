@@ -3,7 +3,7 @@
   "lock_key": "gameplay-engine",
   "feature_id": "GAMEPLAY-CPU-HALFTIME-QA-SIGNOFF",
   "owner": "gameplay-review-20261017-gpt6-halftime-qa-r7",
-  "status": "active",
+  "status": "released",
   "created_at": "2026-10-17",
   "renewed_at": "2026-10-17",
   "base_sha": "3c58fc3462bf9e1b49de1aa241e05eeb0618eca4",
@@ -14,5 +14,8 @@
     "Confirm Pages success #39025675396 descends from original feature source",
     "Check latest standard Node only held by other graphics-agent memory issue #13"
   ],
-  "handover": "docs/GAMEPLAY_CPU_HALFTIME_TACTICS_20261017.md; docs/memory/agents/gameplay-review-20261016.md"
+  "handover": "docs/GAMEPLAY_CPU_HALFTIME_TACTICS_20261017.md; docs/NEXT_MILESTONES.md; docs/memory/agents/gameplay-review-20261016.md",
+  "released_at": "2026-10-17",
+  "checkpoint_head": "ecc7a25ebd34506a2df59a189e17e19a25bb158b",
+  "outcome": "Docs-only final QA signoff: CPU halftime feature confirmed Full Census #39025336514 8/8 shards and 80/80 Chromium script PASS including new desktop/touch browser test; Pages #39025675396 deployed a feature descendant. Later graphics-update missing ## Mission CI 261/262 handled under issue #13 by its own agent."
 }
