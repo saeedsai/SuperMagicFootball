@@ -3,10 +3,13 @@
   "lock_key": "release-infra",
   "feature_id": "CI-ABILITY-AUDIO-FULL-CENSUS-TRIGGER",
   "owner": "ability-audio-census-trigger-20261017-gpt6-s16-r3",
-  "status": "active",
+  "status": "released",
   "scope": "Only .github/workflows/full-regression-census.yml append new ability_action_audio.test.cjs and ability_action_audio_browser_qa.py push paths; optionally docs/GAMEPLAY_ABILITY_AUDIO_20261017.md and own memory handover. No CI job logic, source, gameplay/UI, tests, graphics, player data, save formats, other agents' memory or workflow paths.",
   "base_sha": "a6d15e076ef0377d6e66c8a9b368a286f4ec8405",
   "created_at": "2026-10-17",
   "renewed_at": "2026-10-17",
-  "handover": "docs/GAMEPLAY_ABILITY_AUDIO_20261017.md"
+  "handover": "docs/GAMEPLAY_ABILITY_AUDIO_20261017.md — full-regression paths include ability_action_audio.test.cjs and ability_action_audio_browser_qa.py; workflow #39026108990 preflight/4 Node PASS, Chromium underway. Modular QA #39025419637 256/256 PASS; hosted PC/touch smoke #38891468528 attempt16 PASS.",
+  "released_at": "2026-10-17",
+  "outcome": "census_push_trigger_for_ability_audio_added_preflight_and_4_node_shards_pass_browser_in_progress",
+  "final_source_commit": "465d0635b85d996e8f2d4f037e8d3f53d65d5712"
 }
