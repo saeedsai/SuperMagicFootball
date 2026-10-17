@@ -1,20 +1,12 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "audio-feedback",
-  "feature_id": "QA-ACTIVE-PASS-RECIPIENT-FIXTURE-RACE",
-  "owner": "gameplay-pass-audio-fixture-20261017-gpt6-s16-r4",
-  "status": "released",
-  "scope": "ONLY tests/pass_reception_audio_browser_qa.py: remove transient stun from acceptance actor selection and readiness predicate, preserve real g.take and passReceived assertions; scoped report docs/GAMEPLAY_ABILITY_AUDIO_20261017.md and own docs/memory/agents/gameplay-tactical-audio-20261016-gpt6-s16.md. No game engine, UI, audio.js, render, rosters, data, CI/shared runner, other agents' memory.",
-  "base_sha": "9411feec54939579b6b6eae8d7283f80ac932b78",
+  "feature_id": "AUDIO-ABILITY-FULL-CENSUS-GREEN-SIGNOFF",
+  "owner": "gameplay-ability-audio-signoff-20261017-gpt6-s16-r5",
+  "status": "active",
+  "scope": "Only append final exact 229/229 historical regression pass and hosted smoke to docs/GAMEPLAY_ABILITY_AUDIO_20261017.md, update own docs/memory/agents/gameplay-tactical-audio-20261016-gpt6-s16.md, close independently verified duplicate pass reception audio bugs issues #16 and #18 if issue detail matches. No runtime/source/test/workflow/graphics/roster/UI/other agents' memories.",
+  "base_sha": "60873927c891d507419937406cf0e2710d6e891c",
   "created_at": "2026-10-17",
   "renewed_at": "2026-10-17",
-  "handover": "docs/GAMEPLAY_ABILITY_AUDIO_20261017.md — gameplay audio b6408b7f; six Node c8e1b1ad; actual browser 89cb1081 PASS on #39026108990; old pass fixture c8cbbd43; Modular QA #39026496657 262/262 PASS; new 4xNode+4xChromium #39026496705 preflight and Node shards PASS, browsers running; hosted #38891468528 attempt17 running",
-  "tests": [
-    "Modular Game Dev QA",
-    "Full Regression Census 4+4",
-    "GitHub Pages PC/touch smoke"
-  ],
-  "released_at": "2026-10-17",
-  "outcome": "pass_reception_stun_race_test_only_fixed_262_node_pass_all_4_node_shards_browser_pending",
-  "final_source_commit": "c8cbbd435116f6d7d9aae959ec60beaee2d6d24b"
+  "handover": "docs/GAMEPLAY_ABILITY_AUDIO_20261017.md"
 }
