@@ -5,7 +5,7 @@
   "baselineAtPlanning": "82119108ca63dd510bd49bdf5c2083bed168a9a0",
   "currentMilestone": "C01",
   "programStatus": "in_progress",
-  "lastVerifiedModularCommit": "f0fea598668803dbc2e54b9ad8f31e9f51cccd23",
+  "lastVerifiedModularCommit": "b6408b7f5e76df6518d6124fdb4c0bd8833a23cb",
   "disclaimer": "Only independently layered illustrated concept_modular_v1 assets with evidence count as delivered; older procedural Studio options and one flat concept_hero are not modular variants.",
   "existingPrototype": {
     "playerModelId": "concept_hero",
@@ -47,7 +47,7 @@
       "id": "C01",
       "title": "One approved layered character, independently editable head/hair/torso/arms/legs",
       "status": "in_progress",
-      "checkedAtCommit": "f0fea598668803dbc2e54b9ad8f31e9f51cccd23",
+      "checkedAtCommit": "b6408b7f5e76df6518d6124fdb4c0bd8833a23cb",
       "validatedFiles": [
         "assets/characters/concept_modular_v1/source/hair_front_front.svg",
         "src/modules/conceptmodular.js",
@@ -81,7 +81,10 @@
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914486909",
         "docs/concept_character_pipeline/C01_FAR_ARM_BATCH_20261016.md",
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074",
-        "docs/concept_character_pipeline/C01_COLLAR_SEAM_BATCH_20261017.md"
+        "docs/concept_character_pipeline/C01_COLLAR_SEAM_BATCH_20261017.md",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025472933",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025261009",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025336514"
       ],
       "issues": [
         "Legacy original torso and static arm pixels remain beneath experimental front near and far arm overlays; larger movement may cause ghosting",
@@ -712,10 +715,33 @@
       "sourceValidator": "PASS at https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025260961",
       "hostedQA": "PASS desktop + simulated touch, collarLoaded true, 200 SVG+module, playable match at https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025261009",
       "activeNode": "241/242 PASS; unrelated cpu_halftime_tactical_response.test.cjs failure on first gate",
-      "focusedArtAndFullRegression": "Pending from re-ordered graphics QA and sharded census",
+      "focusedArtAndFullRegression": "Focused 7/7, full Node 256/256, actual Chromium desktop/touch PASS, full census 9/9 PASS on graphics-identical b6408b7f; later independent first-touch Node preflight failure",
       "productionEligible": false,
-      "status": "experimental_artist_signoff_pending",
-      "next": "Full original front torso and baked original arm mask not yet independently authored"
+      "status": "verified_experimental_art_desktop_touch_hosted_and_source_census_not_approved",
+      "next": "Full original front torso and baked original arm mask not yet independently authored",
+      "focusedAndFullNode": {
+        "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025472933",
+        "status": "PASS",
+        "focused": "7/7",
+        "activeNode": "256/256",
+        "desktop": "PASS",
+        "simulatedTouch": "PASS",
+        "collarAlpha": "PASS",
+        "sideFallback": "pixel_identical",
+        "frontPixelsDifferentFromLegacy": 4614,
+        "pageErrors": 0
+      },
+      "fullCensus": {
+        "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025336514",
+        "sha": "b6408b7f5e76df6518d6124fdb4c0bd8833a23cb",
+        "status": "PASS 9/9",
+        "criticalGraphicsFilesIdenticalToLaterDev": true
+      },
+      "latestIntegratedCI": {
+        "url": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025591186",
+        "status": "FAILED preflight unrelated first_touch_mirror_fps.test.cjs 261/262",
+        "shards": "SKIPPED"
+      }
     }
   }
 }
