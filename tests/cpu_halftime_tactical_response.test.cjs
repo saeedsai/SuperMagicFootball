@@ -71,7 +71,7 @@ test('repeated calls cannot double-announce the same adaptation',()=>{
  assert.equal(g.events.length,1);assert.equal(g.changes.length,1);
 });
 test('already-matched plan does not invoke applyPlan or emit phantom event',()=>{
- const {g}=setup([1,3]);g.teamPlans[1].attack='Direct';g.teamPlans[1].defence='High Press';
+ const {g}=setup([3,1]);g.teamPlans[1].attack='Direct';g.teamPlans[1].defence='High Press';
  assert.equal(g.autoAdaptCpuHalftime(),false);
  assert.equal(g.changes.length,0);assert.equal(g.events.length,0);
 });
