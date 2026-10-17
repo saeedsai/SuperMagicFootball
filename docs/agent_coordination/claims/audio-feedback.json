@@ -3,16 +3,19 @@
   "lock_key": "audio-feedback",
   "feature_id": "AUDIO-GAMEPLAY-HYPERDASH-TEAM-LAUNCH",
   "owner": "gameplay-ability-feedback-20261017-gpt6-s16-r2",
-  "status": "active",
+  "status": "released",
   "scope": "Only src/modules/audio.js procedural cues for existing hyperdash and teamLaunch gameplay events (finite/safe payload, mute/volume/UI standard safeguards); new tests/ability_action_audio.test.cjs and tests/ability_action_audio_browser_qa.py, docs/GAMEPLAY_ABILITY_AUDIO_20261017.md, own docs/memory/agents/gameplay-tactical-audio-20261016-gpt6-s16.md, small docs/NEXT_MILESTONES.md addendum. No engine, input/UI, renderer, roster/save data, physics, shared runners or CI.",
   "base_sha": "aca62bf67707f98a1ab7e9ce264553873c77f356",
   "created_at": "2026-10-17",
   "renewed_at": "2026-10-17",
-  "handover": "docs/GAMEPLAY_ABILITY_AUDIO_20261017.md",
+  "handover": "docs/GAMEPLAY_ABILITY_AUDIO_20261017.md — src b6408b7f, Node c8e1b1ad, Chromium 89cb1081; Modular QA #39025419637 256/256 PASS and 20/20 merge 10/10 coordination; Full census #39025740195 blocked by unrelated graphics-update memory ## Mission preflight; Pages #39025739854 success; hosted smoke #38891468528 attempt16 pending at release.",
   "tests": [
     "node --test tests/ability_action_audio.test.cjs tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
     "Modular Game Dev QA",
     "Full Regression Census 4 Node/4 Chromium",
     "Hosted GitHub Pages desktop and touch smoke"
-  ]
+  ],
+  "released_at": "2026-10-17",
+  "outcome": "hyperdash_teamlaunch_audio_delivered_6_feature_tests_256_node_pass_full_census_preflight_blocked_graphics_memory",
+  "final_source_commit": "b6408b7f5e76df6518d6124fdb4c0bd8833a23cb"
 }
