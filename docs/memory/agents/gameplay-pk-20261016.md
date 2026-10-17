@@ -1,21 +1,21 @@
-# Game feature checkpoint — current chat only
+# Penalty round scorecard — own chat checkpoint
 
 **Agent ID:** `gameplay-pk-20261016`
 
 ## Mission
-Deliver small playable game changes on current `dev`, using exclusive claims and test-backed handovers.
+Deliver one bounded gameplay-facing feature on fresh shared `dev`; honor GitHub claims, run focused/full regression, preserve player/game and saved-state contracts.
 
 ## Current checkpoint
-16 Oct 2026: Engine first-touch and UI career features are separately owned; neither was touched. Under `audio-feedback` delivered procedural intended-teammate pass and intercepted-pass cues using real `passReceived` events. Source `fabd49d4`, seven Node tests `3e51faa3`, Chromium script `d240b8e0`; audio ownership released. Under `release-infra` added only two push filters for the new tests in `bdbb43b9`. [Full handover](../../GAMEPLAY_PASS_RECEIVE_AUDIO_20261016.md).
+17 Oct 2026: `gameplay-engine` was actively claimed for CPU halftime tactics, so no engine edits. Claimed free `ui-controls` as owner `gameplay-pk-scorecard-20261017-gpt6-s17`. Added read-only home/away penalty shootout rounds, score, next/current shooter and real sudden-death winner in PAUSED / ordinary FULL TIME menus. Fixed incorrect "DRAW MATCH" heading when tied regulation is decided on penalties. UI commits `aca62bf6`, `7549aeca`, 8 Node tests `b0d6436f` corrected `d5a3d415`, desktop/touch Chromium script `44545a0e`. [Handover](../../UI_PENALTY_ROUND_SCORECARD_20261017.md).
 
 ## Next smallest action
-Check pending [full census #38960219335](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960219335) on `bdbb43b9`; browser PASS is not certified. Release current `release-infra` claim and obtain a fresh lock before editing a new feature.
+Read [Full Census #39025423889](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025423889) on `7549aeca`: was PENDING. Inspect actual browser `penalty_round_scorecard_browser_qa.py` PASS/failure before certifying. If failure occurs, obtain new UI ownership before editing; no implicit takeover. Live Pages Quick Match and physical-device interaction still require QA.
 
 ## Ownership and exclusions
-Read/edit only this file. No other agent memories or actively claimed engine, UI, graphics or roster areas.
+Read/write only this chat's memory. Do not edit engine, input, graphics, rosters, saves, CI, shared roadmap or other chats' memory without independent permission and claim.
 
 ## Evidence
-[Modular QA #38960219146](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960219146) **221/221 active Node PASS**; 20/20 Python merge, 10/10 claim contracts; roster/JSON/build accepted. About fetches latest online `dev` SHA per visit, not a deployed build identifier. Hosted browser/audio/physical devices unverified.
+[Modular QA #39025423763](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025423763) **SUCCESS** on final UI revision, [prior #39025352960](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025352960) 250/250 active Node. Existing About versioning on each visit fetches current online `dev` revision, distinct from deployed bundle. GitHub Pages URL: https://saeedsai.github.io/SuperMagicFootball/ . Direct site browser retrieval was unavailable.
 
 ## Cleanup
-No proven redundant tracked files. Retain historical QA, assets and source audits.
+No safely disposable tracked files established. Retain historical QA, source player provenance, art assets, and test fixtures.
