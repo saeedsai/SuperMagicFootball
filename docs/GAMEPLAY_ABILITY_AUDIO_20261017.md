@@ -60,3 +60,11 @@ A successful [Pages deployment #39025739854](https://github.com/saeedsai/SuperMa
 No original gameplay controls, engine, render/UI, saves, rosters or shared CI workflow were edited in this batch. No historical artifacts or templates were deleted without proof that they were unreferenced. The About menu keeps its online per-commit \`dev\` SHA and existing bundle version while keeping Saeed credited as developer.
 
 **Next-session gate:** Recheck latest \`dev\` and ownership; graphics owner repairs only its own memory contract; run exact-source full census, triage any new ability-audio browser failure under a fresh scoped lock, and retest hosted PC/touch.
+
+## Full regression trigger repair — 17 October 2026
+
+The standard `Full Regression Census` workflow originally included `src/modules/audio.js` and earlier pass/skill/penalty audio tests but **omitted the new `tests/ability_action_audio.test.cjs` and `tests/ability_action_audio_browser_qa.py` trigger paths**. In a separate, exclusive `release-infra` claim, added exactly these two push patterns without changing CI scripts, jobs, build tooling or runtime code: [CI path commit `465d0635`](https://github.com/saeedsai/SuperMagicFootball/commit/465d0635b85d996e8f2d4f037e8d3f53d65d5712).
+
+The repair directly launched [**Full Regression Census #39026108990**](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39026108990) on exact SHA `465d0635`. It was **IN_PROGRESS** at this checkpoint. All four Node + four Chromium shards including actual desktop/simulated-touch `ability_action_audio_browser_qa.py` must finish before overall certification. A successful earlier live [GitHub Pages desktop/touch smoke #38891468528 attempt 16](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528) verified playable menus/team selection/kickoff for **224 teams**, but did not listen to physical speakers or validate new ability sounds directly.
+
+Cross-agent preflight failure from `graphics-update` private memory `## Mission` was seen on earlier descendant [census #39025740195](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025740195); the following Modular QA checks recovered after separate owner changes, for example [#39026088763](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39026088763) **SUCCESS**. No other chat's memory or engine source was modified.

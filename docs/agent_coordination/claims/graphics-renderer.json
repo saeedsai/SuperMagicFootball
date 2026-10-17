@@ -3,7 +3,7 @@
   "lock_key": "graphics-renderer",
   "feature_id": "ART-C01-EDITABLE-COLLAR",
   "owner": "graphics-update-c01-collar-20261017-gpt6-s4",
-  "status": "active",
+  "status": "released",
   "scope": "Only one standalone editable front royal-blue collar/shoulder seam overlay in assets/characters/concept_modular_v1/source/torso_collar_front.svg, rig metadata, opt-in src/modules/conceptmodular.js loader/compositor, scripts/validate_concept_modular.py art contract, tests/concept_modular_v1.test.cjs and graphics-specific browser/hosted tests plus specialist docs/tracker and this chat's docs/memory/agents/graphics-update.md. NO engine, regular renderer, UI, rosters, game data, or unrelated features.",
   "base_sha": "6a63c93e25bd4411c104cd8d81c9bfd3996d1de0",
   "created_at": "2026-10-17",
@@ -16,9 +16,10 @@
     "tests/concept_modular_live_qa.py",
     "Full Regression Census"
   ],
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
-  "released_at": "2026-10-16",
-  "outcome": "completed_C01_continuous_visual_arm_stride_art_228_of_228_node_qa_desktop_touch_hosted_exact_source_PASS_full_census_8_of_9_unrelated_audio_browser_FAIL",
+  "handover": "docs/concept_character_pipeline/C01_COLLAR_SEAM_BATCH_20261017.md; docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md; art 231b7384; graphics #39025472933 PASS; hosted #39025261009 PASS; full #39025336514 PASS 9/9; latest docs #39025921460 PASS; issue #10 still open for independent torso",
+  "released_at": "2026-10-17",
+  "outcome": "C01 editable blue collar seam six-layer experimental graphics delivered; focused 7/7 Node+browser PASS; full Node 256/256 PASS; hosted Pages PC/touch PASS; full census 9/9 PASS on graphics-identical source; latest docs 262/262 PASS; artist approval/full torso pending",
   "final_source_commit": "3395c6cf7950c9ba4e9510504000649db7285e0e",
-  "final_validation_commit": "2be32a646124930a75a5941c0a4487273bb6a9a1"
+  "final_validation_commit": "2be32a646124930a75a5941c0a4487273bb6a9a1",
+  "final_art_commit": "231b7384ab4b6976240b3bed19187a9decbaeee4"
 }

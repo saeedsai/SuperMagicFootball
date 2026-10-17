@@ -1,23 +1,12 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "release-infra",
-  "feature_id": "ART-C01-COLLAR-OFFLINE-CACHE",
-  "owner": "graphics-update-c01-collar-20261017-gpt6-s4",
+  "feature_id": "CI-ABILITY-AUDIO-FULL-CENSUS-TRIGGER",
+  "owner": "ability-audio-census-trigger-20261017-gpt6-s16-r3",
   "status": "active",
-  "scope": "Only sw.js add collar SVG to offline cache asset array and bump cache ID. No other release logic. Also only .github/workflows/concept-modular-v1-qa.yml adjust graphics-specific QA ordering to run focused graphics Node/browser proof before the unchanged full Node gate, preserving failure reporting. No other workflows.",
-  "base_sha": "6a63c93e25bd4411c104cd8d81c9bfd3996d1de0",
+  "scope": "Only .github/workflows/full-regression-census.yml append new ability_action_audio.test.cjs and ability_action_audio_browser_qa.py push paths; optionally docs/GAMEPLAY_ABILITY_AUDIO_20261017.md and own memory handover. No CI job logic, source, gameplay/UI, tests, graphics, player data, save formats, other agents' memory or workflow paths.",
+  "base_sha": "a6d15e076ef0377d6e66c8a9b368a286f4ec8405",
   "created_at": "2026-10-17",
   "renewed_at": "2026-10-17",
-  "handover": "docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md",
-  "tests": [
-    "scripts/validate_concept_modular.py",
-    "scripts/build.py",
-    "node --test tests/*.test.cjs",
-    "tests/concept_modular_browser_qa.py",
-    "tests/concept_modular_live_qa.py",
-    "Full Regression Census"
-  ],
-  "released_at": "2026-10-16",
-  "outcome": "CI push trigger paths for new pass audio Node and Chromium test added; exact source Modular QA 221/221 success; full census #38960219335 queued at checkpoint, not certified yet",
-  "integrated_commit": "a83a3fb63b2114c3962ea3eee08bfd6ad788cc9d"
+  "handover": "docs/GAMEPLAY_ABILITY_AUDIO_20261017.md"
 }
