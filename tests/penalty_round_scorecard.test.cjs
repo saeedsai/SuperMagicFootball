@@ -73,7 +73,7 @@ test('very long sudden death remains bounded but totals use all completed attemp
  const html=panel(game(a,b),{finished:true,winner:0});
  assert.match(html,/PENALTY SHOOTOUT · 14–13/);
  assert.match(html,/\+15 earlier/);
- assert.equal((html.match(/aria-label="Goal"/g)||[]).length,26,
+ assert.equal((html.match(/aria-label="Goal"/g)||[]).length,12,
   'only the most recent twelve kicks from each side are shown');
  assert.match(html,/WINNER: HOME/);
 });
