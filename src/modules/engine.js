@@ -352,6 +352,19 @@ class GameEngine{
   for(const p of this.players){p.fatigue=this.fatigueLedger[p.t][p.src.id];p.stun=0;}
  }
  autoSubstituteCpu(){if(this.humans!==1||this.substitutionsUsed[1]>=this.maxSubstitutions)return false;const t=1,next=recommendSubstitute(this.teamPlans[t],this.rosters[t],this.fatigueLedger[t],this.subbedOut[t]);if(!next)return false;const lineup=this.lineups[t].slice(),slot=lineup.indexOf(next.out);if(slot<1)return false;lineup[slot]=next.in;const roles=['captain','penalty','freeKick','corner'];const plan={...this.teamPlans[t],lineup};for(const role of roles)if(plan[role]===next.out)plan[role]=next.in;this.applyPlan(t,plan);this.emit('cpuSubstitution',{team:t,out:this.rosters[t][next.out].name,in:this.rosters[t][next.in].name});return true;}
+ // CPU manager reacts once at half-time to the actual score. Never alter a human team,
+ // stored tactical presets, lineups, or substitution quotas. A drawn game stays neutral.
+ autoAdaptCpuHalftime(){
+  if(this.humans!==1||this.mode==='training'||this.half!==2||this.matchState!=='paused'||this.clock>.001)return false;
+  const plan=this.teamPlans?.[1],score=this.score;
+  if(!plan||!Array.isArray(score)||score.length<2||!score.every(Number.isFinite)||score[0]===score[1])return false;
+  const trailing=score[1]<score[0];
+  const attack=trailing?'Direct':'Possession',defence=trailing?'High Press':'Deep Block';
+  if(plan.attack===attack&&plan.defence===defence)return false;
+  this.applyPlan(1,{...plan,attack,defence});
+  this.emit('cpuTacticalShift',{team:1,attack,defence,reason:trailing?'trailing':'leading',score:score.slice()});
+  return true;
+ }
  getFitnessReport(team=0){return this.rosters[team].map(src=>{const fatigue=this.fatigueLedger[team][src.id]??initialFatigue(src),seconds=this.playerSeconds[team][src.id]||0;return {id:src.id,fatigue,seconds,condition:matchCondition(src.condition??100,fatigue,seconds),stamina:stat(src,'stamina'),subbedOut:this.subbedOut[team].has(src.id)};});}
  inControl(t){return (t===0&&this.humans>=1)||(t===1&&this.humans>=2)}
  hostOfBall(){return this.ball.owner}
@@ -1064,7 +1077,7 @@ class GameEngine{
   if(this.clock<this.matchSeconds+this.stoppageWindow && attackingStoppage(this.ball)){
    // The attacking chance is still alive, but must finish at the hard cap.
   }else{this.stoppageWindow=0;
-  if(this.half===1){this.half=2;this.clock=0;this.stoppageAnnounced=false;this.stoppageWindow=0;this.halftimeRecovery();this.resetKickoff(1);this.matchState='paused';this.autoSubstituteCpu();this.emit('halftime')}else if(this.score[0]===this.score[1]&&this.mode!=='training'){this.startPK(true)}else{this.matchState='finished';this.emit('finished',{score:this.score.slice()})}return}}
+  if(this.half===1){this.half=2;this.clock=0;this.stoppageAnnounced=false;this.stoppageWindow=0;this.halftimeRecovery();this.resetKickoff(1);this.matchState='paused';this.autoSubstituteCpu();this.autoAdaptCpuHalftime();this.emit('halftime')}else if(this.score[0]===this.score[1]&&this.mode!=='training'){this.startPK(true)}else{this.matchState='finished';this.emit('finished',{score:this.score.slice()})}return}}
  this.coordinateAiCombos(dt);this.manualSwitchGrace=this.manualSwitchGrace.map(v=>Math.max(0,v-dt));this.updatePlayers(dt);this.resolvePlayerContacts(dt);this.updateBall(dt);this.updateEffects(dt);
  }
  // v0.8.5 grounded player collision: unlike tackle/special attacks this is an

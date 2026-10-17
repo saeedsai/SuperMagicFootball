@@ -64,6 +64,7 @@ with sync_playwright() as pw:
   assert set(data['status']['authoredViews'])=={'front','back'} and not data['status']['error']
   assert data['status']['faceLoaded'] and 'face_front_front' in data['status']['authoredParts']
   assert data['status']['armLoaded'] and 'arm_near_front' in data['status']['authoredParts']
+  assert data['status']['collarLoaded'] and 'torso_collar_front' in data['status']['authoredParts']
   assert data['status']['farArmLoaded'] and 'arm_far_front' in data['status']['authoredParts']
   assert data['status']['reciprocalArmsEnabled']
   front_run_changed=diff('frontRunA','frontRunB')
@@ -121,6 +122,23 @@ with sync_playwright() as pw:
     return {inside,outside,white};
   }""",far_arm_source)
   assert far_alpha['inside']>250 and far_alpha['outside']==0 and far_alpha['white']==0,far_alpha
+  # Independently painted front collar must be alpha-clean and confined to the seam.
+  collar_source=base64.b64encode((ROOT/'assets/characters/concept_modular_v1/source/torso_collar_front.svg').read_bytes()).decode('ascii')
+  collar_alpha=page.evaluate("""async svg => {
+    const img=new Image();img.src='data:image/svg+xml;base64,'+svg;await img.decode();
+    const c=document.createElement('canvas');c.width=112;c.height=265;
+    const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(img,0,0);
+    const p=g.getImageData(0,0,112,265).data;let inside=0,outside=0;
+    for(let y=0;y<265;y++)for(let x=0;x<112;x++){
+      const a=p[(y*112+x)*4+3];
+      if(!a)continue;
+      if(x>=20&&x<=91&&y>=105&&y<=145)inside++;else outside++;
+    }
+    return {width:img.naturalWidth,height:img.naturalHeight,inside,outside};
+  }""",collar_source)
+  assert collar_alpha['width']==112 and collar_alpha['height']==265,collar_alpha
+  assert collar_alpha['inside']>200 and collar_alpha['outside']==0,collar_alpha
+  (OUT/(device+'_collar_source_alpha.json')).write_text(json.dumps(collar_alpha,indent=2))
   (OUT/(device+'_far_arm_source_alpha.json')).write_text(json.dumps(far_alpha,indent=2))
   (OUT/(device+'_face_alpha.json')).write_text(json.dumps(face_alpha,indent=2))
   assert not errors,errors

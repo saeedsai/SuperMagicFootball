@@ -854,8 +854,33 @@ function matchHighlightsPanel(game){
   :'<p class="muted">No major match moments recorded yet.</p>';
  return '<section class="panel" id="matchHighlights" aria-label="Recent match events"><h3 class="titleSmall">MATCH EVENTS</h3>'+content+'</section>';
 }
+// Read-only shootout history from the actual GameEngine.pk.kicks booleans.
+// Keep the regulation score untouched (draws can be decided on penalties).
+function penaltyRoundScorecard(game,{finished=false,winner=null}={}){
+ const pk=game?.pk,kicks=pk?.kicks;
+ if(!Array.isArray(kicks)||kicks.length!==2||!kicks.every(side=>Array.isArray(side)))return '';
+ // The engine stores booleans only. Reject malformed snapshots instead of
+ // presenting an invented goal/save sequence or allowing dynamic HTML.
+ if(kicks.some(side=>side.some(kick=>typeof kick!=='boolean')))return '';
+ const totals=kicks.map(side=>side.filter(Boolean).length);
+ const rows=kicks.map((side,t)=>{
+  const recent=side.slice(-12);
+  const omitted=side.length-recent.length;
+  const moments=recent.map((goal,i)=>'<span aria-label="'+(goal?'Goal':'Saved or missed')+'"> '+(goal?'●':'○')+' </span>').join('');
+  return '<p class="muted"><strong>'+(t===0?'HOME':'AWAY')+': '+totals[t]+' / '+side.length+
+   '</strong> · '+(omitted?'+'+omitted+' earlier · ':'')+(moments||'No kicks yet')+'</p>';
+ }).join('');
+ const completed=kicks[0].length+kicks[1].length;
+ const nextSide=completed%2===0?'HOME':'AWAY';
+ const live=finished?'':pk.shotTimer>0?'CURRENT KICK: '+nextSide:'NEXT KICK: '+nextSide;
+ const result=finished&&(winner===0||winner===1)?'WINNER: '+(winner===0?'HOME':'AWAY'):'';
+ const status=result||live;
+ return '<section class="panel" id="penaltyRoundScorecard" aria-label="Penalty shootout scorecard" role="region" aria-live="polite">'+
+  '<h3 class="titleSmall">🥅 PENALTY SHOOTOUT · '+totals[0]+'–'+totals[1]+'</h3>'+
+  rows+(status?'<p class="muted" role="status">'+status+'</p>':'')+'</section>';
+}
 function returnFromPauseTactics(){if(squadReturnAtHalf&&game.matchState==='paused')halftime();else pause();}
-function pause(){game.matchState='paused';page('PAUSED','Resume or change the computer opponent difficulty without restarting.',`<div class="panel">${field('CPU DIFFICULTY (LIVE)','liveDifficulty',aiChoices(),opt.difficulty)}${difficultyHint()}<p class="muted">Changes apply immediately on the next AI decision. In local 2-player Versus this does not affect either human.</p></div>${matchHighlightsPanel(game)}<div class="row">${quickTacticalPanel(0)}${humans>=2?quickTacticalPanel(1):''}</div><div class="row">${button('▶ RESUME','resume','gold')}${button('RESTART MATCH','confirmRestart')}${button('SETTINGS','navSound')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('RETURN TO MAIN MENU','confirmQuit')}</div>`)}
+function pause(){game.matchState='paused';page('PAUSED','Resume or change the computer opponent difficulty without restarting.',`<div class="panel">${field('CPU DIFFICULTY (LIVE)','liveDifficulty',aiChoices(),opt.difficulty)}${difficultyHint()}<p class="muted">Changes apply immediately on the next AI decision. In local 2-player Versus this does not affect either human.</p></div>${penaltyRoundScorecard(game)}${matchHighlightsPanel(game)}<div class="row">${quickTacticalPanel(0)}${humans>=2?quickTacticalPanel(1):''}</div><div class="row">${button('▶ RESUME','resume','gold')}${button('RESTART MATCH','confirmRestart')}${button('SETTINGS','navSound')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('RETURN TO MAIN MENU','confirmQuit')}</div>`)}
 // Read-only halftime guidance. Decisions remain with the user.
 function halftimeCoachAdvice(game,side){
  const scores=game.score||[0,0],delta=(scores[side]||0)-(scores[1-side]||0);
@@ -913,7 +938,7 @@ function fulltime(ev){game.matchState='finished';let [a,b]=ev.score,win=a>b;if(m
  if(league.stage==='qualifier'&&league.wins>=16&&league.points>=70)league.stage='finals';else if(league.stage==='finals'&&win){league.playoff=(league.playoff||0)+1;if(league.playoff>=4)league.stage='champion'}store.put('league',league)}
  if(mode==='continental'&&continentalRun){try{const result=tournamentAdvance(continentalRun,TEAMS,ev.score,ev.penalties?ev.winner:null);store.put('continentalRun',continentalRun);if(career?.club===continentalRun.club){career.cash+=Math.max(0,continentalRun.earned-(continentalRun.lastCareerAward||0));continentalRun.lastCareerAward=continentalRun.earned;store.put('continentalRun',continentalRun);store.put('managerCareer',career)}page('CONTINENTAL RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="badge">${escapeHTML(confed(continentalRun.compId).name)}</div><div class="megaScore">${a} : ${b}</div><p>${escapeHTML(tournamentProgress(continentalRun))} • ${continentalRun.earned/1000000}m prize earnings</p>${button('CONTINUE CHAMPIONSHIP','continentContinue','gold')}</div>`)}catch(e){alert('Competition update failed: '+e.message);showTournament()}return;}
  if(mode==='career'&&career){recordMatchFitness(career,game.getFitnessReport(0));const outcome=advanceCareer(career,TEAMS,ev.score,ev.penalties?ev.winner:null);store.put('managerCareer',career);page('CAREER MATCH RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="titleSmall">${outcome.kind.toUpperCase()} • ${outcome.win?'WIN!':a===b?'DRAW':'DEFEAT'}</div><div class="megaScore">${a} : ${b}</div><p>Club cash: €${(career.cash/1000000).toFixed(1)}m • Current week ${career.week+1}</p>${button('CONTINUE MANAGER CAREER','manager','gold')}</div>`);return;}
- page('FULL TIME',`${win?'VICTORY!':a===b?'DRAW MATCH':'DEFEAT'}${ev.penalties?' • ON PENALTIES':''}`,`<div class="panel" style="text-align:center"><div class="badge">MATCH RESULT</div><div style="font-size:70px;color:#ffe17a;font-weight:1000">${a} : ${b}</div><p>${TEAMS[home].name} vs ${TEAMS[away].name}</p>${matchHighlightsPanel(game)}<div class="row" style="justify-content:center">${button('↻ REMATCH','kickoff','gold')}${mode==='league'?button('🏆 LEAGUE','league'):button('MAIN MENU','home')}</div></div>`)}
+ page('FULL TIME',`${ev.penalties&&(ev.winner===0||ev.winner===1)?(ev.winner===0?'VICTORY!':'DEFEAT'):win?'VICTORY!':a===b?'DRAW MATCH':'DEFEAT'}${ev.penalties?' • ON PENALTIES':''}`,`<div class="panel" style="text-align:center"><div class="badge">MATCH RESULT</div><div style="font-size:70px;color:#ffe17a;font-weight:1000">${a} : ${b}</div><p>${TEAMS[home].name} vs ${TEAMS[away].name}</p>${ev.penalties?penaltyRoundScorecard(game,{finished:true,winner:ev.winner}):''}${matchHighlightsPanel(game)}<div class="row" style="justify-content:center">${button('↻ REMATCH','kickoff','gold')}${mode==='league'?button('🏆 LEAGUE','league'):button('MAIN MENU','home')}</div></div>`)}
 function toast(message,duration=1600){let n=$('gameToast');n.textContent=message;n.classList.remove('hidden');toastTime=performance.now()+duration}
 let toastTime=0;
 game.onEvent=e=>{audio.cue(e);if(e.type==='toast')toast(e.message,1800);if(e.type==='goal'){$('gameToast').classList.add('hidden');toastTime=0}if(e.type==='penaltyStart')toast('PENALTY SHOOTOUT',1500);if(e.type==='penaltyKick')toast(e.goal?'GOAL!':'SAVE!',1300);if(e.type==='pause')pause();if(e.type==='halftime')halftime();if(e.type==='finished')fulltime(e)};

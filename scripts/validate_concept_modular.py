@@ -9,8 +9,8 @@ assert m['authoredViews']==['front','back'] and len(set(m['viewIds']))==8
 assert m['fallbackModel']=='concept_hero' and m['logicalPlayerHeight']==141
 assert m['referenceCanvas']==[112,265]
 layers=[m['runtimeLayer'],*m['additionalLayers']]
-assert sorted(l['id'] for l in layers)==['arm_far_front_001','arm_near_front_001','face_front_001','hair_back_001','hair_front_001']
-assert [l['z'] for l in layers if l['view']=='front']==[20,8,10,14]
+assert sorted(l['id'] for l in layers)==['arm_far_front_001','arm_near_front_001','face_front_001','hair_back_001','hair_front_001','torso_collar_front_001']
+assert [l['z'] for l in layers if l['view']=='front']==[20,8,9,10,14]
 for layer in layers:
  view=layer['view'];dims=[112,265] if view=='front' else [115,265]
  assert layer['noMirroring'] is True
@@ -39,6 +39,13 @@ for layer in layers:
   assert layer['animation']['rootOwner']=='Renderer'
   groups={g.get('id') for g in root.findall('.//'+ns+'g')}
   assert set(layer['partGroups']).issubset(groups)
+ if layer['id']=='torso_collar_front_001':
+  assert layer['kind']=='torso_collar' and layer['view']=='front'
+  assert layer['pivot']==[56,122] and layer['neck']==[56,110] and layer['z']==9
+  assert layer['legacyBodyUnderlay'] is True and layer['alphaBoundsEstimate']==[23,107,89,144]
+  groups={g.get('id') for g in root.findall('.//'+ns+'g')}
+  assert set(layer['partGroups']).issubset(groups)
+  assert len(layer['partGroups'])>=7
  if layer['id']=='arm_near_front_001':
   assert layer['shoulder']==layer['pivot']==[90,126]
   assert layer['elbow']==[102,164] and layer['wrist']==[104,174] and layer['hand']==[104,182]
@@ -56,4 +63,4 @@ for layer in layers:
   groups={g.get('id') for g in root.findall('.//'+ns+'g')}
   assert set(layer['partGroups']).issubset(groups)
 assert (R/'manifests'/m['provenance']).is_file()
-print('CONCEPT_MODULAR_SOURCE_PASS 5 transparent editable layers, reciprocal shoulder pivots, distinct hands and face groups, original fallback')
+print('CONCEPT_MODULAR_SOURCE_PASS 6 transparent editable layers including separate front jersey collar, reciprocal shoulder pivots, distinct hands and face groups, original fallback')

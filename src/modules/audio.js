@@ -74,6 +74,10 @@ class ArcadeAudio{
   // it. Opponent catches have a different warning; accidental teammate picks
   // up, stale/malformed payloads and ordinary loose balls stay silent.
   if(type==='passReceived'&&(typeof event?.friendly!=='boolean'||typeof event?.accurate!=='boolean'))return;
+  // Existing gameplay ability events are emitted only upon successful activation.
+  // Ignore string-only/malformed calls; do not add an AI audio telemetry stream.
+  if((type==='hyperdash'||type==='teamLaunch')&&
+     (!(event?.team===0||event?.team===1)||typeof event?.player!=='string'||!event.player.trim()))return;
   const cue=type==='teamTalk'?(event.positive>event.backfires?'coachBoost':event.backfires>event.positive?'coachWarning':'coachNeutral'):
    type==='passReceived'?
    (event.friendly?(event.accurate?'passComplete':null):'passIntercept'):
@@ -83,10 +87,14 @@ class ArcadeAudio{
    type==='kick'&&event?.super?'super':type==='flipKick'&&!event?.special?'kick':AUDIO_CUES[type]||type;
   if(!cue||!this._audible(['ui','halftime','finished','penaltyStart','coachBoost','coachWarning','coachNeutral','substitution'].includes(cue)?'ui':'sfx')||!this.unlocked||!this.ctx)return;
   const now=this.ctx.currentTime;
-  if(this.last.has(cue)&&now-this.last.get(cue)<(cue==='kick'?.07:cue==='passComplete'||cue==='passIntercept'?.30:.17))return;
+  if(this.last.has(cue)&&now-this.last.get(cue)<(cue==='kick'?.07:cue==='hyperdash'?.40:cue==='teamLaunch'?.55:cue==='passComplete'||cue==='passIntercept'?.30:.17))return;
   this.last.set(cue,now);
   switch(cue){
    case 'kick':this.tone(230,.11);break;
+   // Gameplay ability readiness: quick dash acceleration and a rarer
+   // two-player launch get distinct original effects rather than UI bleeps.
+   case 'hyperdash':[196,294,392].forEach((f,i)=>this.tone(f,.105,'sfx','sawtooth',i*.048));break;
+   case 'teamLaunch':[392,494,659].forEach((f,i)=>this.tone(f,.15,'sfx','triangle',i*.067));break;
    // Procedural sounds use the existing UI fader and existing cue throttle.
    case 'substitution':[330,494].forEach((f,i)=>this.tone(f,.14,'ui','triangle',i*.07));break;
    case 'coachBoost':[440,554,659].forEach((f,i)=>this.tone(f,.16,'ui','triangle',i*.075));break;

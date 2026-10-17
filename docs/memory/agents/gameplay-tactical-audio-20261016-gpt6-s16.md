@@ -1,22 +1,22 @@
-# Game Developer — Tactical Gameplay Audio
+# Gameplay/audio developer checkpoint
 
 **Agent ID:** `gameplay-tactical-audio-20261016-gpt6-s16`
-**Updated:** 2026-10-16
+**Updated:** 2026-10-17
 
 ## Mission
-Scoped gameplay sound cues and their browser regression; preserve existing engine/UI controls and saves.
+Ship bounded game audio features and correct regression defects without changing another agent's mechanics or saves.
 
 ## Current checkpoint
-Added real substitutions and team-talk outcome tones, source [7f670f9c](https://github.com/saeedsai/SuperMagicFootball/commit/7f670f9c7466efb825985e4373d966d9ad653492), new Node [53eed91e](https://github.com/saeedsai/SuperMagicFootball/commit/53eed91e95c2437d3b8bcf6f1c0bd0a66edec5a7) and browser [551e76f3](https://github.com/saeedsai/SuperMagicFootball/commit/551e76f3923ffeeda420aaaff0dd11d7797651bb). Modular QA [#38960659164](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960659164) 228/228 Node PASS. [Full census #38960642802](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960642802): new tactical browser PASS; unrelated older pass audio browser failure from transient stun filter. Fixed only its fixture [c4cce2bf](https://github.com/saeedsai/SuperMagicFootball/commit/c4cce2bf044fecd2427d40745ae24d7f16b5c10f); new [full census #38961632510](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961632510) queued. Hosted game smoke #38891468528 attempt15 PASS desktop/touch.
+New original Hyperdash / Teammate Launch cues, sources [b6408b7f](https://github.com/saeedsai/SuperMagicFootball/commit/b6408b7f5e76df6518d6124fdb4c0bd8833a23cb); six Node contracts [c8e1b1ad](https://github.com/saeedsai/SuperMagicFootball/commit/c8e1b1adc5b2cc60ee425a76abf653387d54a707); real desktop/touch Chromium acceptance [89cb1081](https://github.com/saeedsai/SuperMagicFootball/commit/89cb1081afc1ee48877c97fb0cb3cfb6312db54f). [Modular QA #39025419637](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025419637) 256/256 Node PASS, 20 merge PASS, 10 coordination PASS. [Full census #39025740195](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025740195) **blocked by graphics agent memory heading**; Node and Chromium shards not executed. [Complete feature handover](../../GAMEPLAY_ABILITY_AUDIO_20261017.md).
 
 ## Next smallest action
-Confirm exact new full census 4xNode+4xChromium; fix genuine scoped reproducible failures under fresh claim, avoid repeating completed fixture.
+Check actual 4xNode/4xChromium after graphics owner's memory fix and direct browser test outcome, then hosted desktop/touch and actual smartphone speaker check. Do not redo finished source or tests.
 
 ## Ownership and exclusions
-`audio-feedback` released at handover. No engine, first-touch, Career UI, graphics, roster, save format, release workflow, other chats' memory.
+Audio-feedback claim released after this checkpoint. Engine/UI under others' active claims; no changes to gameplay physics, tactics, controls, saves, rosters, graphics, release workflows or any other agent's memory. About continues online per-commit SHA display.
 
 ## Evidence
-[Complete sound feature, scoped fixture fix, QA report](../../GAMEPLAY_TACTICAL_AUDIO_FEEDBACK_20261016.md); in-game About online current `dev` SHA identifies every commit without bumping bundle version.
+[QA source run](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025419637), [blocked 8-shard run](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025740195), [Pages](https://saeedsai.github.io/SuperMagicFootball/).
 
 ## Cleanup
-No safely unused historical assets/tests found; keep only newest QA status here and GitHub history as archive.
+No safely disposable historical graphics/tests/sprites discovered; Git history preserves earlier checkpoints.

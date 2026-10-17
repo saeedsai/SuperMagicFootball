@@ -29,25 +29,29 @@ with sync_playwright() as pw:
       const face=await fetch('./assets/characters/concept_modular_v1/source/face_front_front.svg?no-cache='+Date.now(),{cache:'no-store'});
       const arm=await fetch('./assets/characters/concept_modular_v1/source/arm_near_front.svg?no-cache='+Date.now(),{cache:'no-store'});
       const farArm=await fetch('./assets/characters/concept_modular_v1/source/arm_far_front.svg?no-cache='+Date.now(),{cache:'no-store'});
+      const collar=await fetch('./assets/characters/concept_modular_v1/source/torso_collar_front.svg?no-cache='+Date.now(),{cache:'no-store'});
       const moduleText=source.ok?await source.text():'';
       return {status:e.conceptModularStatus(),teams:e.teams.length,
         modular:c?.customRoster.filter(p=>p.renderModel==='concept_modular_v1').length,
         old:c?.customRoster.filter(p=>p.renderModel==='concept_hero').length,
-        svgStatus:asset.status,rearSvgStatus:rear.status,faceSvgStatus:face.status,armSvgStatus:arm.status,farArmSvgStatus:farArm.status,moduleStatus:source.status,
+        svgStatus:asset.status,rearSvgStatus:rear.status,faceSvgStatus:face.status,armSvgStatus:arm.status,farArmSvgStatus:farArm.status,collarSvgStatus:collar.status,moduleStatus:source.status,
         svg:asset.ok?(await asset.text()).includes('Royals painted swept chestnut fringe'):false,
         module:moduleText.includes('concept_modular_v1'),
         armIdleBlend:moduleText.includes('const armBlend=Math.min(1,Math.abs(phase)/.18);') && moduleText.includes('const armPhase=phase*armBlend*armBlend*(3-2*armBlend);'),
         rearSvg:rear.ok?(await rear.text()).includes('Royals painted chestnut nape and back hair'):false,
         faceSvg:face.ok?(await face.text()).includes('Royals painted front head and expression'):false,
         armSvg:arm.ok?(await arm.text()).includes('Royals front near arm'):false,
-        farArmSvg:farArm.ok?(await farArm.text()).includes('Royals painted far-front arm and hand'):false};
+        farArmSvg:farArm.ok?(await farArm.text()).includes('Royals painted far-front arm and hand'):false,
+        collarSvg:collar.ok?(await collar.text()).includes('Royals painted front collar and shoulder join'):false,
+        collarSource:moduleText.includes('CONCEPT_MODULAR_COLLAR_INLINE')&&moduleText.includes('states.frontCollar.image')};
     }""")
     assert info['teams']==224 and info['modular']==1 and info['old']==11,info
-    assert info['svgStatus']==200 and info['rearSvgStatus']==200 and info['faceSvgStatus']==200 and info['armSvgStatus']==200 and info['farArmSvgStatus']==200 and info['moduleStatus']==200 and info['svg'] and info['rearSvg'] and info['faceSvg'] and info['armSvg'] and info['farArmSvg'] and info['module'],info
+    assert info['svgStatus']==200 and info['rearSvgStatus']==200 and info['faceSvgStatus']==200 and info['armSvgStatus']==200 and info['farArmSvgStatus']==200 and info['collarSvgStatus']==200 and info['moduleStatus']==200 and info['svg'] and info['rearSvg'] and info['faceSvg'] and info['armSvg'] and info['farArmSvg'] and info['collarSvg'] and info['collarSource'] and info['module'],info
     assert info['armIdleBlend'],'Pages still serves an old visual arm-gait module: '+str(info)
     assert set(info['status']['authoredViews'])=={'front','back'},info
     assert info['status']['faceLoaded'] and 'face_front_front' in info['status']['authoredParts'],info
     assert info['status']['armLoaded'] and 'arm_near_front' in info['status']['authoredParts'],info
+    assert info['status']['collarLoaded'] and 'torso_collar_front' in info['status']['authoredParts'],info
     assert info['status']['farArmLoaded'] and 'arm_far_front' in info['status']['authoredParts'],info
     assert info['status']['loaded'] and not info['status']['error'],info
     break

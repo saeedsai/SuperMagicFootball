@@ -1,37 +1,36 @@
-# Gameplay development agent checkpoint
+# Gameplay development — this chat's checkpoint
 
 **Agent ID:** `gameplay-review-20261016`  
-**Updated:** 2026-10-16
+**Updated:** 2026-10-17
 
 ## Mission
 
-Deliver small football gameplay/career batches on live GitHub `dev`; preserve four buttons, six formations, team/player IDs, lineups, game balance, art and saves. Check locks and version policy first.
+Deliver small, verified playable football mechanics on latest `dev`, while respecting exclusive live claims. Preserve four input actions, six formations, player identity, careers/saves, graphics and other agents' files.
 
 ## Current checkpoint
 
-**Shipped UI-CAREER-OPPONENT-SCOUT** under `ui-controls` lock owner `gameplay-review-20261016-gpt6-career-scout-r5`: Manager Career now shows the opponent's projected six, FW/DF/GK positional OVR, top outfield threat, league record, adaptive tactical idea, and own career team's fitness/injury warning. This is read-only: no game/AI, save, lineup, team plan or money changes. HTML names escaped, cup/no recorded form acknowledged. Existing help text now identifies the prior manual goalkeeper JUMP/dive in two-player penalties.
+**Delivered:** CPU halftime score-aware tactics on single-player home-human / away-CPU matches. CPU **trailing** chooses Direct / High Press, **leading** Possession / Deep Block, **tied** retains its plan. It runs after the existing CPU automatic substitution, before the halftime UI, and emits `cpuTacticalShift`. Two-human Versus and training are excluded. It only changes existing validated in-match attack/defence; zero roster, captain, formation, substitute-count, career save or input changes.
 
-**Source:** [UI `55810795`](https://github.com/saeedsai/SuperMagicFootball/commit/55810795b550f505bf16c1a3fe9be24406921a93), [Node `0b9629a1`](https://github.com/saeedsai/SuperMagicFootball/commit/0b9629a1c398d672d24c594b6d72bd41ce4006af), [browser `8f8f3b6c`](https://github.com/saeedsai/SuperMagicFootball/commit/8f8f3b6c29b2d5d4e7572b1ee05347495cec4612), [help `d33410af`](https://github.com/saeedsai/SuperMagicFootball/commit/d33410af8306f493cfe72f04a244b18be16e702e). [Specialist report](../../CAREER_OPPONENT_SCOUT_20261016.md); [roadmap](../../NEXT_MILESTONES.md).
+Engine [`6b154814`](https://github.com/saeedsai/SuperMagicFootball/commit/6b154814c0b993f2b0c80678e8468b599390fa1a), ten Node cases [`070dd84d`](https://github.com/saeedsai/SuperMagicFootball/commit/070dd84d1cab791bfe428a41d5614e983b4148d5), real browser test [`e7e244a2`](https://github.com/saeedsai/SuperMagicFootball/commit/e7e244a2d1ce6467f7e54a664daa0d41eadd4d22), Node fixture fix [`6c89d15b`](https://github.com/saeedsai/SuperMagicFootball/commit/6c89d15be695701554767376a656c8760941b595); [full specialist QA and handover](../../GAMEPLAY_CPU_HALFTIME_TACTICS_20261017.md), [roadmap](../../NEXT_MILESTONES.md).
 
-Prior human PK goalkeeper batch in engine [`d0adf651`](https://github.com/saeedsai/SuperMagicFootball/commit/d0adf651e7af4b5f2fdff7b9d61d148e4098edb6), later [full regression #38946504996](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38946504996) completed SUCCESS.
+Prior completed features: two-human shootout goalkeeper steering/dive and real read-only Manager Career opponent scouting; their handovers remain linked from the roadmap, do not replay.
 
 ## Next smallest action
 
-Read fresh `dev`, all claims and **this memory only**; no other agent memory. [Full Census #38960061389](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960061389) confirmed **our real career_opponent_scout_browser_qa.py PASS** on desktop and simulated touch (7.50s); all 4 Node shards PASS, 77/78 Chromium PASS. Overall FAIL stems from unrelated `pass_reception_audio_browser_qa.py` (`Game players unavailable`), handed to active audio owner in [issue #16](https://github.com/saeedsai/SuperMagicFootball/issues/16). Next: verify a successful feature-descendant Pages deployment and hosted Manager Career kickoff; rerun full census after audio fix. Physical phone not yet tested.
+First fetch current `dev`, all live claims and **only this** memory file. [Full census #39025336514](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025336514) verified **complete PASS, 4/4 Node + 4/4 Chromium, 80/80 Chromium scripts**, including `cpu_halftime_tactical_response_browser_qa.py` desktop/simulated touch (13.74s). [Pages #39025675396](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025675396) SUCCESS at a feature-descendant SHA. Direct live interactive website check and real Android/iOS not performed.
 
-Next scoped features: inspect first-touch pressure balance after current engine agent releases, career bench advice, keeper visuals, Android rapid dribble, physical handset and PWA offline testing.
+**External current blocker**: newer [standard QA #39025675365](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025675365) 261/262 PASS with a single other-chat memory issue, `graphics-update: missing ## Mission`; reported in [issue #13 comment](https://github.com/saeedsai/SuperMagicFootball/issues/13#issuecomment-6232927974). The owning agent must fix it. No reading/editing their memory by this chat.
+
+Next independent gameplay batch: fair CPU tactical adjustment under score and keeper-pressure cohorts, or small career readiness improvement after checking fresh locks; other areas include Android touch double-tap #3, direction-safe art and PWA/handset QA.
 
 ## Ownership and exclusions
 
-`ui-controls` was claimed for this batch; **release with specialist report**. The `gameplay-engine` claim belongs to another first-touch agent. No edits to their engine, shared QA harness, CI, renderer, roster, other agent memory, release infra or SW. Preserve About per-commit GitHub `dev` SHA; distinct game bundle `0.8.25.32-integrated`.
+Initial feature lock `gameplay-engine` released after delivery. Short follow-up docs-only signoff lock `gameplay-review-20261017-gpt6-halftime-qa-r7` **release at handover**. Do not touch another agent's engine/UI/graphics/audio/shared memory, CI or workflow. About dynamically identifies each latest `dev` SHA while keeping bundle `0.8.25.32-integrated` distinct.
 
 ## Evidence
 
-- [Modular QA #38960248063](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960248063): **221/221 Node PASS**, including six new scout and About/version tests.
-- [Full 4+4 census #38960061389](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38960061389): PASS preflight + 4/4 Node; Chromium 77/78 PASS, 1 unrelated audio FAIL; own browser PASS.
-- Public https://saeedsai.github.io/SuperMagicFootball/ not navigable by this session's web reader; hosted interactive verification unconfirmed.
-- 717 tracked paths audited, no tracked `node_modules`, `__pycache__`, `.generated`, `dist`, `.pyc`, `.bak` or `.tmp` artifacts.
+[Integrated standard Node QA #39025434117](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025434117): **256/256 PASS** at accepted feature descendant. Full regression and Pages verified above. Later memory-only CI failure separate.
 
 ## Cleanup
 
-Replace stale details rather than append history. No unsafe archived report/art deletion.
+No safe stale build caches/templates identified in tracked tree. Keep archived art/QA references intact and this checkpoint below 4 KB.

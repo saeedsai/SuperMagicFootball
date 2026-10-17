@@ -1,6 +1,6 @@
 # Concept-quality modular player graphics — document index
 
-**Created:** 16 October 2026. **Development branch:** dev. **Scope:** future illustrated player models, customization, animation, editor and QA. **Status:** experimental front face, two reciprocal front painted arms, and front/back editable hair overlays on one opt-in playable character; painted torso and legs, eight-view production graphics and owner art approval remain incomplete. See [IMPLEMENTATION_CHECKPOINT_20261016.md](IMPLEMENTATION_CHECKPOINT_20261016.md).
+**Created:** 16 October 2026. **Updated:** 17 October 2026. **Development branch:** dev. **Scope:** future illustrated player models, customization, animation, editor and QA. **Status:** experimental front face, two reciprocal front painted arms, independent front collar/shoulder seams and front/back hair overlays on one opt-in playable character; painted torso and legs, eight-view production graphics and owner art approval remain incomplete. See [IMPLEMENTATION_CHECKPOINT_20261016.md](IMPLEMENTATION_CHECKPOINT_20261016.md).
 
 Read these documents in order:
 
@@ -22,3 +22,5 @@ Read these documents in order:
 **The approved illustrated concept image is an art direction reference, NOT a delivered set of editable, recolorable, eight-direction animated body pieces.** Future progress is defined by implemented game assets and captured actual-play screenshots, not a newly generated marketing/team picture.
 
 This is a parallel graphics workstream that supplements (does not replace) docs/MASTER_DEVELOPMENT_PLAN.md and docs/NEXT_MILESTONES.md. Other agents may update dev concurrently. Always inspect the latest branch state before work.
+
+Current small C01 graphics checkpoint: [editable collar seam artwork and QA report](C01_COLLAR_SEAM_BATCH_20261017.md). The collar is a separate transparent SVG, not a finished independent jersey/torso or human-approved eight-direction rig.
