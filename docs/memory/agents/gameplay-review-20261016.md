@@ -21,11 +21,11 @@ Refresh live `dev`, claims and **this** memory only. Read [Full Census #39025336
 
 ## Ownership and exclusions
 
-Active gameplay engine claim (until handover): `gameplay-review-20261017-gpt6-cpu-halftime-r6`; exact `src/modules/engine.js` halftime method plus dedicated tests and docs only. No UI, audio, graphics, CI, roster, service worker, global shared memory or other agents' files. In-game About uses automatic current online GitHub `dev` SHA per commit and stable human-readable bundle `0.8.25.32-integrated`.
+Game engine claim released after this handover (verify live status): `gameplay-review-20261017-gpt6-cpu-halftime-r6`; exact `src/modules/engine.js` halftime method plus dedicated tests and docs only. No UI, audio, graphics, CI, roster, service worker, global shared memory or other agents' files. In-game About uses automatic current online GitHub `dev` SHA per commit and stable human-readable bundle `0.8.25.32-integrated`.
 
 ## Evidence
 
-- [Modular QA #39025286524](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025286524): **242/242 Node PASS**, 0 FAIL after correcting our mismatched leading/trailing test; C01 collar graphics tests separately reconciled by art owner.
+- [Integrated Modular QA #39025434117](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025434117): **256/256 Node PASS**, 0 FAIL with game mechanic and version contracts; initial erroneous leading/trailing fixture and unrelated C01 collar test issues were corrected independently.
 - [Full Census #39025336514](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025336514): preflight + 4/4 Node shards PASS, Chromium pending. Do not invent browser PASS.
 - Public game https://saeedsai.github.io/SuperMagicFootball/; previous Pages green, but newest gameplay commit live hosting and physical Android/iOS not yet certified.
 
