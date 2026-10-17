@@ -38,6 +38,9 @@ on:
       - 'tests/dribble_trick_audio_browser_qa.py'
       - 'tests/pass_reception_audio.test.cjs'
       - 'tests/pass_reception_audio_browser_qa.py'
+      # Cooperative teammate-launch and Hyperdash gameplay sound acceptance.
+      - 'tests/ability_action_audio.test.cjs'
+      - 'tests/ability_action_audio_browser_qa.py'
       - 'tests/penalty_audio_feedback.test.cjs'
       - 'tests/penalty_audio_feedback_browser_qa.py'
       - 'src/modules/engine.js'
