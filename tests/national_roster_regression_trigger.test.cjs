@@ -13,8 +13,8 @@ const escape=s=>s.replace(/[|\\{}()[\]^$+?.]/g,'\\$&');
 const match=(glob,p)=>new RegExp('^'+glob.split('*').map(escape).join('[^/]*')+'$').test(p);
 const shouldTrigger=p=>patterns.some(glob=>match(glob,p));
 
-test('changing national roster source alone runs full regression census on dev',()=>{
- assert.match(push,/branches:\s*\[dev\]/);
+test('changing national roster source alone runs full regression census on dev and main',()=>{
+ assert.match(push,/branches:\s*\[dev,\s*main\]/);
  assert.ok(shouldTrigger('data/players/national26.json'),'source edits must run full regression');
  assert.ok(shouldTrigger('.github/workflows/full-regression-census.yml'),'workflow edits remain covered');
  assert.ok(shouldTrigger('data/players/club26.json'),'existing club roster trigger preserved');
