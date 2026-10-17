@@ -57,3 +57,11 @@ Tracked game/source/QA art history is retained because it is referenced by ongoi
 3. Add modest in-match CPU tactical adaptation only at appropriate stoppages under a new engine claim; no hidden boosts and preserve human control.
 4. Extend career coaching with healthy reserve suggestions and halftime scouting visibility under a separate UI claim.
 5. Verify GitHub Pages after the exact accepted commit, real handset touch controls, offline PWA and original arcade parity; improve compatible graphics under the graphics owner.
+
+## Integrated regression checkpoint (17 October 2026)
+
+[Modular Game Dev QA #39025434117](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025434117), including the engine feature, new tests, specialist roadmap and memory checkpoint, completed **256/256 Node PASS, zero failures**. This includes the standard About `dev` revision contract. This supersedes the earlier 242/242 Node result and the initial unrelated C01 collar and own fixture transient failures.
+
+[Full Regression Census #39025336514](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025336514) is on a **confirmed feature-descendant** source commit `b6408b7f5e`; preflight and **all four Node shards PASS**. The four Chromium shards were still **in progress at the last check**, so desktop/simulated-touch halftime gameplay and complete 4+4 acceptance must **not** be reported as certified until their per-script logs finish. An uncompleted later Pages deployment likewise cannot verify that the public PC/phone build includes this feature. The session's ordinary public web reader cannot open the public game, and physical Android/iOS hardware has not been tested.
+
+The only early failure requiring this agent's change was its own inconsistent leading/trailing test expectation, corrected in `6c89d15b`; the C01 art team resolved its contract failures separately. No unowned test or gameplay source was edited.
