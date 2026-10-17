@@ -17,8 +17,10 @@ SCRIPT = r"""() => {
    a.tone=(f)=>sounds.push(f);a.ctx={currentTime:11,state:'running'};
    a.unlocked=true;a.last=new Map();
    a.settings={...a.settings,mute:false,master:80,sfx:75};
-   const side0=g.players.filter(p=>p.t===0&&!p.keeper&&p.stun<=0);
-   const rival=g.players.find(p=>p.t===1&&!p.keeper&&p.stun<=0);
+   // This test invokes GameEngine.take directly; transient stun is unrelated
+   // to the reception audio contract and must not race frame-to-frame.
+   const side0=g.players.filter(p=>p.t===0&&!p.keeper);
+   const rival=g.players.find(p=>p.t===1&&!p.keeper);
    if(side0.length<2||!rival)throw Error('Game players unavailable');
    const [target,teammate]=side0;
    const collect=(recipient)=>{
@@ -64,8 +66,8 @@ with sync_playwright() as pw:
         page.wait_for_function("""() => {
           const g=window.SupermagicFootball?.game;
           return g?.matchState==='play' && g.players?.length===12 &&
-            g.players.filter(p=>p.t===0&&!p.keeper&&p.stun<=0).length>=2 &&
-            g.players.some(p=>p.t===1&&!p.keeper&&p.stun<=0);
+            g.players.filter(p=>p.t===0&&!p.keeper).length>=2 &&
+            g.players.some(p=>p.t===1&&!p.keeper);
         }""",timeout=15000)
         result=page.evaluate(SCRIPT)
         assert result['state']=='play',(label,result)
