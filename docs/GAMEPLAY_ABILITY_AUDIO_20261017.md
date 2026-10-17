@@ -46,3 +46,17 @@ No unreferenced-old-file cleanup was attempted: historical test, graphics, metad
 3. Add bounded defender-pressure passing error only with a fresh engine lock, calibrate both sides and current first-touch behavior.
 4. Triage issue #3 rapid touch Dribble and issue #5 keeper control on actual physical devices with separate owners.
 5. Complete exact deployed build version (#12), offline/PWA upgrade and save-safe Career progression while continuing character animation.
+
+## Final checkpoint — integrated CI blocked by separate memory contract
+
+The new sound feature and six Node tests were committed and validated in exact source [Modular Game Dev QA #39025419637](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025419637): **256/256 active Node tests PASS**, 20/20 merge tests and 10/10 coordination checks PASS. The new browser test was committed and discovered by the following census triggers, but **its successful desktop/touch outcome has NOT been verified**.
+
+The first triggered [Full Census #39025423889](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025423889) was cancelled during concurrent rapid commits. A later integrated [Full Census #39025740195](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025740195) **FAILED at preflight** because the *other agent's* private-by-convention \`graphics-update\` memory omitted the mandatory \`## Mission\` heading, according to \`tests/project_memory_contract.test.cjs\`; Node and Chromium census shards were **SKIPPED**. That is an unrelated project-context blocker and must be fixed only by the graphics memory owner. Historical first-touch physics test iterations also briefly failed on near-zero floating-point timer equality (1.38e-17 vs 0), another independently owned engine/test scope. Do not weaken assertions, silently report green, or edit those owners' files to hide the failures.
+
+Earlier [full census #38961632510](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961632510) is also not the new feature's certification: it predates the new cue and was red only from Snapcraft/Chromium installation HTTP 408 despite the other seven shards passing. A rerun of that failed infrastructure job was requested. To certify new audio, obtain a later **all-green 4-Node + 4-Chromium run** including \`ability_action_audio_browser_qa.py\`, then verify hosted gameplay on desktop/simulated touch.
+
+A successful [Pages deployment #39025739854](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025739854) was confirmed on a descendant with the sound feature. A newer hosted smoke [run #38891468528, attempt 16](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38891468528) was in progress at documentation time; this generic test proves menu/team/kickoff on PC and emulated touch when successful, **not audible speaker fidelity**. Real iOS/Android output is uncertified.
+
+No original gameplay controls, engine, render/UI, saves, rosters or shared CI workflow were edited in this batch. No historical artifacts or templates were deleted without proof that they were unreferenced. The About menu keeps its online per-commit \`dev\` SHA and existing bundle version while keeping Saeed credited as developer.
+
+**Next-session gate:** Recheck latest \`dev\` and ownership; graphics owner repairs only its own memory contract; run exact-source full census, triage any new ability-audio browser failure under a fresh scoped lock, and retest hosted PC/touch.
