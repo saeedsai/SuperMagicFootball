@@ -1,22 +1,18 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "gameplay-engine",
-  "feature_id": "GAMEPLAY-CPU-HALFTIME-TACTICAL-RESPONSE",
-  "owner": "gameplay-review-20261017-gpt6-cpu-halftime-r6",
-  "status": "released",
+  "feature_id": "GAMEPLAY-CPU-HALFTIME-QA-SIGNOFF",
+  "owner": "gameplay-review-20261017-gpt6-halftime-qa-r7",
+  "status": "active",
   "created_at": "2026-10-17",
   "renewed_at": "2026-10-17",
-  "base_sha": "f50f2343375890d9da9a2b1163c4bedf2d166918",
-  "scope": "Only src/modules/engine.js score-aware, deterministic CPU-side-half-time tactical adaptation and halftime integration (no substitutions or personnel changes); new tests/cpu_halftime_tactical_response.test.cjs and tests/cpu_halftime_tactical_response_browser_qa.py; new docs/GAMEPLAY_CPU_HALFTIME_TACTICS_20261017.md; small docs/NEXT_MILESTONES.md note and ONLY this chat docs/memory/agents/gameplay-review-20261016.md. No ui.js/input/graphics/audio/rosters/tactics.js/data, public saved teamPlans/save schema, QA runners, build, CI, PWA or other agent memory.",
+  "base_sha": "3c58fc3462bf9e1b49de1aa241e05eeb0618eca4",
+  "scope": "Docs-only final QA handover for delivered CPU halftime feature. Touch ONLY docs/GAMEPLAY_CPU_HALFTIME_TACTICS_20261017.md, a concise docs/NEXT_MILESTONES.md update, and own docs/memory/agents/gameplay-review-20261016.md. No src/modules/engine.js, tests, UI, audio, graphics, deployment, other agents' memory, shared docs context or workflows. Release immediately.",
   "tests": [
-    "node --test tests/cpu_halftime_tactical_response.test.cjs",
-    "node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
-    "Standard Node QA all tests",
-    "4+4 Full Regression Census",
-    "desktop/touch real halftime browser acceptance"
+    "Verify Full Regression Census #39025336514 preflight and 4 Node + 4 Chromium PASS",
+    "Check browser job logs show cpu_halftime_tactical_response_browser_qa.py PASS",
+    "Confirm Pages success #39025675396 descends from original feature source",
+    "Check latest standard Node only held by other graphics-agent memory issue #13"
   ],
-  "handover": "docs/GAMEPLAY_CPU_HALFTIME_TACTICS_20261017.md; docs/memory/agents/gameplay-review-20261016.md; https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025434117; https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025336514",
-  "released_at": "2026-10-17",
-  "final_checkpoint_commit": "3c2feb664feb6ce58f8146d1027c8c7aecc7380e",
-  "outcome": "Delivered deterministic score-aware CPU halftime tactical adjustment in solo matches; 10 new method-based Node tests; 256/256 integrated Node PASS, 4/4 full Node shards PASS, Chromium 2/4 complete PASS and 2/4 still running when checked; no save/formation/human changes."
+  "handover": "docs/GAMEPLAY_CPU_HALFTIME_TACTICS_20261017.md; docs/memory/agents/gameplay-review-20261016.md"
 }
