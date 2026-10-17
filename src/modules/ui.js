@@ -875,7 +875,7 @@ function penaltyRoundScorecard(game,{finished=false,winner=null}={}){
  const live=finished?'':pk.shotTimer>0?'CURRENT KICK: '+nextSide:'NEXT KICK: '+nextSide;
  const result=finished&&(winner===0||winner===1)?'WINNER: '+(winner===0?'HOME':'AWAY'):'';
  const status=result||live;
- return '<section class="panel" id="penaltyRoundScorecard" aria-label="Penalty shootout scorecard">'+
+ return '<section class="panel" id="penaltyRoundScorecard" aria-label="Penalty shootout scorecard" role="region" aria-live="polite">'+
   '<h3 class="titleSmall">🥅 PENALTY SHOOTOUT · '+totals[0]+'–'+totals[1]+'</h3>'+
   rows+(status?'<p class="muted" role="status">'+status+'</p>':'')+'</section>';
 }
