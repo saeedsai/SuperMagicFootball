@@ -1,7 +1,7 @@
 {
   "schema": "smf-concept-modular/1",
   "id": "royals-hair-front-front-001",
-  "status": "experimental_front_face_two_hairs_and_reciprocal_painted_arm_overlays",
+  "status": "experimental_front_face_two_hairs_reciprocal_painted_arms_and_editable_collar",
   "baseFamily": "royals_base_a",
   "referenceCanvas": [
     112,
@@ -66,7 +66,8 @@
     "secondary_hair_sway_front_back",
     "front_face_static_registers_to_hair_pivot",
     "front_near_arm_small_counterstride_overlay",
-    "front_far_arm_small_reciprocal_counterstride_overlay"
+    "front_far_arm_small_reciprocal_counterstride_overlay",
+    "painted_front_collar_follows_original_body_no_new_motion"
   ],
   "unimplemented": [
     "full_articulated_two_arm_cycle_and_torso_occlusion_pending",
@@ -74,7 +75,7 @@
     "face_expressions_and_blink",
     "other_six_views",
     "hair_for_quarters_and_side",
-    "torso",
+    "full_separate_torso_and_baked_arm_occlusion",
     "legs",
     "runtime_webp"
   ],
@@ -140,11 +141,59 @@
         "id": "front_far_arm_reciprocal_001",
         "channel": "legacy_run_phase",
         "rotationRadiansPerPhase": 0.035,
-        "threshold": 0.07,
         "rootOwner": "Renderer",
         "oppositeId": "arm_near_front_001",
-        "legacyBodyUnderlay": true
+        "legacyBodyUnderlay": true,
+        "easeInRunPhase": 0.18
       }
+    },
+    {
+      "id": "torso_collar_front_001",
+      "kind": "torso_collar",
+      "view": "front",
+      "asset": "../source/torso_collar_front.svg",
+      "sourceCanvas": [
+        112,
+        265
+      ],
+      "cropRect": [
+        0,
+        0,
+        112,
+        265
+      ],
+      "trimOffset": [
+        0,
+        0
+      ],
+      "pivot": [
+        56,
+        122
+      ],
+      "neck": [
+        56,
+        110
+      ],
+      "alphaBoundsEstimate": [
+        23,
+        107,
+        89,
+        144
+      ],
+      "z": 9,
+      "material": "painted_blue_royals_collar",
+      "noMirroring": true,
+      "partGroups": [
+        "neckline-shadow",
+        "collar-underlay",
+        "collar-left",
+        "collar-right",
+        "collar-center-tape",
+        "shoulder-seam-left",
+        "shoulder-seam-right"
+      ],
+      "legacyBodyUnderlay": true,
+      "notes": "Narrow illustrated neckline and shoulder seam only, not independent full torso; no opaque body replacement"
     },
     {
       "id": "face_front_001",
@@ -267,9 +316,9 @@
         "id": "front_near_arm_counterstride_001",
         "channel": "legacy_run_phase",
         "rotationRadiansPerPhase": -0.035,
-        "threshold": 0.07,
         "rootOwner": "Renderer",
-        "unfinishedOppositeArm": true
+        "unfinishedOppositeArm": true,
+        "easeInRunPhase": 0.18
       },
       "sourceAdjustment": "Source SVG lower-arm groups foreshortened about y=150; original leg/body and root coordinate system unchanged."
     },
