@@ -31,12 +31,14 @@ jobs:
           python3 scripts/verify_concept_graphics_docs.py
           python3 scripts/validate_data.py
           python3 scripts/build.py
-      - name: Active Node regression
-        run: node --test tests/*.test.cjs
+      - name: Focused modular graphic contracts
+        run: node --test tests/concept_modular_v1.test.cjs
       - name: Real-game modular and existing concept browser regression
         run: |
           python3 tests/concept_modular_browser_qa.py
           python3 tests/concept_hero_browser_qa.py
+      - name: Active Node regression
+        run: node --test tests/*.test.cjs
       - name: Upload actual playable screenshots
         if: always()
         uses: actions/upload-artifact@v4
