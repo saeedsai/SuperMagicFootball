@@ -1,6 +1,6 @@
 {
   "schema": "smf-concept-modular-roadmap/1",
-  "updated": "2026-10-16",
+  "updated": "2026-10-17",
   "branch": "dev",
   "baselineAtPlanning": "82119108ca63dd510bd49bdf5c2083bed168a9a0",
   "currentMilestone": "C01",
@@ -58,7 +58,8 @@
         "assets/characters/concept_modular_v1/source/face_front_front.svg",
         "scripts/validate_concept_modular.py",
         "assets/characters/concept_modular_v1/source/arm_near_front.svg",
-        "assets/characters/concept_modular_v1/source/arm_far_front.svg"
+        "assets/characters/concept_modular_v1/source/arm_far_front.svg",
+        "assets/characters/concept_modular_v1/source/torso_collar_front.svg"
       ],
       "evidence": [
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886177973",
@@ -79,7 +80,8 @@
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913908449",
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914486909",
         "docs/concept_character_pipeline/C01_FAR_ARM_BATCH_20261016.md",
-        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074"
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074",
+        "docs/concept_character_pipeline/C01_COLLAR_SEAM_BATCH_20261017.md"
       ],
       "issues": [
         "Legacy original torso and static arm pixels remain beneath experimental front near and far arm overlays; larger movement may cause ghosting",
@@ -331,7 +333,7 @@
       "identifier": "medium-honey-curls-moustache"
     }
   ],
-  "nextSmallTask": "After confirming exact-commit CI and current graphics lock: inspect real-game front near/far shoulder and collar seams across idle and opposed run phases on grass, teal, light and dark. Correct one editable source seam only; then create isolated front torso. Do not modify gameplay or data.",
+  "nextSmallTask": "After verifying the narrow 6th painted collar source and graphics regression, visually audit shoulder seams against original at idle/±stride on light/dark/teal/grass, then author ONE independent front torso/jersey panel and reversible baked-arm mask. Claim locks first; avoid all non-graphics source changes.",
   "openRisks": [
     "Only one cloned literal concept character is available for all twelve demo slots",
     "Flattened five-view atlas has baked blue uniform and number 10",
@@ -668,6 +670,52 @@
       "fullRegression": "FAIL 8/9 jobs: preflight + 4/4 Node + 3/4 Chromium PASS; Chromium browser-regression (1) FAIL pass_reception_audio_browser_qa.py: Game players unavailable. No graphics test fails.",
       "fullRegressionUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961042564",
       "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/18"
+    },
+    "frontCollar": {
+      "feature": "ART-C01-EDITABLE-COLLAR",
+      "componentId": "torso_collar_front_001",
+      "asset": "assets/characters/concept_modular_v1/source/torso_collar_front.svg",
+      "assetCommit": "231b7384ab4b6976240b3bed19187a9decbaeee4",
+      "sourceCanvas": [
+        112,
+        265
+      ],
+      "partGroups": [
+        "neckline-shadow",
+        "collar-underlay",
+        "collar-left",
+        "collar-right",
+        "collar-center-tape",
+        "shoulder-seam-left",
+        "shoulder-seam-right"
+      ],
+      "pivot": [
+        56,
+        122
+      ],
+      "neck": [
+        56,
+        110
+      ],
+      "z": 9,
+      "alphaBoundsEstimate": [
+        23,
+        107,
+        89,
+        144
+      ],
+      "frontOnly": true,
+      "originalTorsoIntact": true,
+      "physicsChanged": false,
+      "sourcePartCount": 6,
+      "artOwnerApproved": false,
+      "sourceValidator": "PASS at https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025260961",
+      "hostedQA": "PASS desktop + simulated touch, collarLoaded true, 200 SVG+module, playable match at https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025261009",
+      "activeNode": "241/242 PASS; unrelated cpu_halftime_tactical_response.test.cjs failure on first gate",
+      "focusedArtAndFullRegression": "Pending from re-ordered graphics QA and sharded census",
+      "productionEligible": false,
+      "status": "experimental_artist_signoff_pending",
+      "next": "Full original front torso and baked original arm mask not yet independently authored"
     }
   }
 }
