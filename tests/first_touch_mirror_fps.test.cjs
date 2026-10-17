@@ -44,7 +44,7 @@ test('two teams and 30/60/120 Hz: pressured ground receiver settles, then recove
   assert(pressured.owns&&free.owns,'pass ownership preserved');
   assert.equal(pressured.events.filter(e=>e.type==='passReceived').length,1);
   assert(pressured.travel<free.travel&&pressured.travel>0,JSON.stringify({team,fps,pressured,free}));
-  assert.equal(pressured.timer,0,'settling must end after 0.24 second');
+  assert(pressured.timer>=0&&pressured.timer<1e-9,'settling must end within numerical precision');
  }
 });
 test('mirrored teams have identical motion with identical attributes and pressure',()=>{

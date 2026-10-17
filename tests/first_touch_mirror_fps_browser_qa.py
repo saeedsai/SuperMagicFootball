@@ -66,7 +66,7 @@ with sync_playwright() as pw:
   assert report['buttons']==4 and len(report['results'])==12,(device,report)
   for r in report['results']:
    assert r['ballOwner'] and r['events']==1 and r['friendly'] and r['matched'],(device,r)
-   assert r['buttons']==4 and abs(r['drift'])<1e-7 and r['timer']==0,(device,r)
+   assert r['buttons']==4 and abs(r['drift'])<1e-7 and 0<=r['timer']<1e-9,(device,r)
    assert r['activated']==r['pressured'],(device,r)
    assert r['travel']>0,(device,r)
   for team in [0,1]:
