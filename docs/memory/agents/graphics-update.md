@@ -1,21 +1,18 @@
 # Agent memory — Graphics update
 
-**Agent ID:** `graphics-update` · **Updated:** 2026-10-16
+**Agent ID:** `graphics-update` · **Updated:** 2026-10-17
 
-## Mission
-Deliver bounded, source-authored player graphics/visual animation only. Keep game mechanics, rosters, controls, saves, ordinary renderer and other agents' scopes unchanged.
+## Scope
+Only concept-quality player artwork and visual-only animation; protect game physics, UI, rosters, saves and other agents. Read current `dev` and live claims before each batch.
 
-## Current checkpoint
-C01 experimental near/far arm pair already existed. This chat claimed `ART-C01-ARM-GAIT-CONTINUITY` and submitted a source-only change that smooths both arm swings for |run| under 0.18; ±0.18+ rotations are unchanged. Added an executing mock-Canvas regression; source artwork/rig metadata unchanged. **Art/browser and Pages verified** in their own exact source/test runs; nine-job census completed 8/9 green and 1 unrelated audio browser failure.
+## Current C01 checkpoint
+The previous experimental five-layer model gained a **sixth separately editable front collar/shoulder seam** `assets/characters/concept_modular_v1/source/torso_collar_front.svg`: 18 paths in seven named groups, rig at z=9 / pivot [56,122], composited between far arm and face with old torso still beneath. New art commit `231b7384`. QA fixture and SW cache include it; missing collar returns original hero fallback. No match mechanics or data changed.
 
-## Next smallest action
-Release the live graphics claim with the green art/hosted evidence and unrelated full-census audio blocker logged in issue #18. On next acquired claim, audit one painted shoulder/collar seam; front torso remains baked. Follow [batch report](../../concept_character_pipeline/C01_ARM_GAIT_CONTINUITY_20261016.md).
+## Evidence / caveat
+[Source validator QA #39025260961](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025260961) PASS six layers; initial active Node 241/242 due to unrelated CPU halftime tactic mismatch, preventing its browser stage. [Hosted desktop/touch #39025261009](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025261009) PASS `collarLoaded`, sixth SVG HTTP 200 and live opt-in match. Graphics-specific QA step order updated so focused Node and actual browser run before full Node; new run results must be checked before calling fully green. Full regression not certified. No artist signoff.
 
-## Ownership and exclusions
-Live graphics claim (check remote before any edit); unrelated project/UI/gameplay/QA locks do not transfer. Never read another chat's memory. [Shared graphics handover](../../concept_character_pipeline/NEXT_CHAT_HANDOVER.md).
+## Next smallest task
+Check and checkpoint focused art screenshot/canvas-alpha test, full suite and deployment. Release live three bounded locks after verified handover. Next separate batch: one painted front torso body panel to begin hiding baked old arms while preserving the original fallback. See [C01 report](../../concept_character_pipeline/C01_COLLAR_SEAM_BATCH_20261017.md), [handover](../../concept_character_pipeline/NEXT_CHAT_HANDOVER.md).
 
-## Evidence
-Previous far-arm source: `f0fea598`, [art QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38913908449) 147/147 Node and desktop/touch; [hosted](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38914486909) PASS, [full census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38915344074) 9/9 PASS. New [art/browser 38961042607](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961042607) PASS 228/228 Node and real desktop/touch. New [live 38961042443](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961042443) PASS exact armIdleBlend source + playable PC/touch. Full [38961042564](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38961042564) FAILED 8/9 green jobs; `pass_reception_audio_browser_qa.py` reported `Game players unavailable`, tracked in [issue #18](https://github.com/saeedsai/SuperMagicFootball/issues/18). Not a graphics regression. Historical runs verify the earlier five-layer baseline only.
-
-## Cleanup
-Current compact checkpoint only; Git history and specialist reports retain detailed provenance. No unsafe deletion.
+## Hygiene
+Keep only this current checkpoint, not long logs; never modify other agents' memory.
