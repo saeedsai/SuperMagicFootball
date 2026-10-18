@@ -24,3 +24,5 @@ Read these documents in order:
 This is a parallel graphics workstream that supplements (does not replace) docs/MASTER_DEVELOPMENT_PLAN.md and docs/NEXT_MILESTONES.md. Other agents may update dev concurrently. Always inspect the latest branch state before work.
 
 Current small C01 graphics checkpoint: [editable collar seam artwork and QA report](C01_COLLAR_SEAM_BATCH_20261017.md). The collar is a separate transparent SVG, not a finished independent jersey/torso or human-approved eight-direction rig.
+
+18 October C01 checkpoint: [first editable jersey torso (number 10), source, testing and next five iterations](C01_FRONT_JERSEY_BATCH_20261018.md). This experimental front-only part does not separate baked arms or complete eight painted directions.
