@@ -50,3 +50,11 @@ No old/template files were deleted: the historical tests, editable graphics, sou
 5. **P1:** One bounded Career/tactics feature, graphics keeper release/first-touch pose, About **deployed** SHA and offline PWA sound/cache with their respective ownership claims; preserve stable saves and all four buttons.
 
 **Coordination:** This owned slice can be released after the source, tests, report and small own-memory checkpoint are all written. Never edit other agents' active claims, shared roadmap or memory. Mark full regression failure as an integration blocker, not a defect conclusively attributed to keeper roll.
+
+## Green integrated source acceptance (supersedes historical red QA in preceding section)
+
+The unrelated Career and graphics validation failures from the initial commit were corrected by their owners. On source-containing commit `a32ce9ccb9314b02ffcaf4b76c1335fda802beae`, [**Modular Game Dev QA #39106042725**](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106042725) completed **SUCCESS — 283/283 active Node PASS, zero failures**, all nine `keeper_roll_distribution.test.cjs` cases green, 20 Python merge contracts PASS, 10 ownership/claim contracts PASS and source validation/roster/fixture compilation passed. Existing About/versioning contract tests are included in the full Node gate. This supersedes the earlier 264/277 red snapshot but does **not** retroactively make that original run green.
+
+[Full 4×Node + 4×Chromium Census #39106016620](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106016620) on containing source SHA `c179b69fd5175df5fbbfefc4662da52b238fab98` passed **preflight and all four Node shards**. At this checkpoint its four browser shards were still running. Full Chromium browser QA and exact target script `keeper_roll_distribution_browser_qa.py` must be read from actual final CI logs before claiming end-to-end acceptance. Other newer descendant censuses may be cancelled by continuous GitHub concurrent pushes; prefer the oldest source-containing run that completes for a reliable regression signal.
+
+The source change is deployed only when a verified Pages workflow on a descendant SHA completes. The historical public Pages URL is linked above; do not confuse GitHub's successful static upload with actual device gameplay/gesture acceptance.
