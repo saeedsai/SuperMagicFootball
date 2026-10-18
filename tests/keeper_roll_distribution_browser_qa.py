@@ -42,11 +42,19 @@ JS=r"""() => {
      forward:g.ball.vx*dir>0,events:events.map(e=>e.type)});
    // Fail-closed case: no safe teammate. Catch again, close the passing lane.
    g.keeperCollect(keeper,'loose');
-   const blocking=g.players.find(q=>q.t!==t&&!q.keeper);
-   blocking.x=ox+dir*205;blocking.y=oy+17;
+   // All active defenders close the corridor: do not rely on a random
+   // opening-match defender's stun/cooldown state.
+   for(const blocking of g.players.filter(q=>q.t!==t&&!q.keeper)){
+     blocking.x=ox+dir*205;blocking.y=oy+17;blocking.stun=0;
+   }
+   const lane=g.keeperPassingLane(keeper,target);
+   const heldBefore=g.ball.owner===keeper;
    const old=g.events.length;
    g.command(player,'dribble');
-   results[results.length-1].blocked=g.ball.owner===keeper&&g.events.length===old;
+   results[results.length-1].blocked=heldBefore&&!lane.clear&&
+     g.ball.owner===keeper&&g.events.length===old;
+   results[results.length-1].blockedTrace={heldBefore,lane,
+     heldAfter:g.ball.owner===keeper,additional:g.events.slice(old).map(e=>e.type)};
  }
  return {results,identityUnchanged:identity===JSON.stringify({
      teamIds:g.teamIds,rosters:g.rosters.map(r=>r.map(p=>p.id)),score:g.score}),
