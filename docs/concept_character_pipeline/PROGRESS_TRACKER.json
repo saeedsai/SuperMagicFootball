@@ -86,7 +86,9 @@
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025472933",
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025261009",
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025336514",
-        "docs/concept_character_pipeline/C01_FRONT_JERSEY_BATCH_20261018.md"
+        "docs/concept_character_pipeline/C01_FRONT_JERSEY_BATCH_20261018.md",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106049047",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106049102"
       ],
       "issues": [
         "Legacy original torso and static arm pixels remain beneath experimental front near and far arm overlays; larger movement may cause ghosting",
@@ -769,15 +771,20 @@
       "editablePathCount": 32,
       "editableGroupCount": 10,
       "sourcePartsTotal": 7,
-      "status": "code_integrated_acceptance_pending",
-      "sourceValidator": "pending",
-      "browser": "pending",
-      "hosted": "pending",
-      "fullRegression": "pending",
+      "status": "verified_experimental_art_and_hosted_full_census_pending_artist_signoff",
+      "sourceValidator": "PASS 7 editable SVG layers",
+      "browser": "PASS desktop+simulated-touch real game, 5957 front changed pixels, original side identical, no page errors",
+      "hosted": "PASS desktop+simulated touch, exact 7th source HTTP200, torsoLoaded true, active player",
+      "fullRegression": "IN PROGRESS preflight+4 Node PASS browser 4 pending",
       "originalBodyUnderlay": true,
       "occlusionComplete": false,
       "ownerArtApproval": "pending",
-      "productionEligible": false
+      "productionEligible": false,
+      "focusedNode": "PASS 8/8",
+      "activeNode": "PASS 283/283",
+      "graphicsQAUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106049047",
+      "hostedUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106049102",
+      "fullRegressionUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106207590"
     }
   }
 }
