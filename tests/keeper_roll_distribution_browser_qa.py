@@ -34,7 +34,7 @@ JS=r"""() => {
    const eventStart=g.events.length;
    g.command(player,'dribble');
    const events=g.events.slice(eventStart).filter(e=>e.type==='keeperDistribution'||e.type==='passIntent');
-   results.push({team:t,roll:events.length===2&&events[0].mode==='roll'&&
+   results.push({side:t,roll:events.length===2&&events[0].mode==='roll'&&
      events[1].mode==='roll'&&events[1].loft==='ground',
      target:g.ball.passTarget,expected:target.src.id,
      team:g.ball.passTeam,from:g.ball.passFrom,
@@ -72,9 +72,9 @@ with sync_playwright() as pw:
   assert data['buttons']==4 and data['identityUnchanged'],(label,data)
   for r in data['results']:
    assert r['roll'] and r['target']==r['expected'],(label,r)
-   assert r['owner'] and r['team']==r['team'] and r['z']<=15,(label,r)
+   assert r['owner'] and r['team']==r['side'] and r['z']<=15,(label,r)
    assert r['forward'] and r['blocked'],(label,r)
-  assert [r['team'] for r in data['results']]==[0,1],(label,data)
+  assert [r['side'] for r in data['results']]==[0,1],(label,data)
   assert not errors,(label,errors)
   print('KEEPER_ROLL_DISTRIBUTION_BROWSER_PASS',label,
    'P1/P2 safe rolling pass, guarded lane, untouched teams and four buttons',flush=True)
