@@ -7,7 +7,7 @@ const path=require('node:path');
 const vm=require('node:vm');
 const src=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
 const a=src.indexOf('function careerOpponentScoutPanel(c,fx){');
-const b=src.indexOf('\nfunction careerBenchReadinessPanel(c){',a);
+const b=src.indexOf('\n// Advisory only: project the same saved six the next match actually uses.',a);
 const manager=src.indexOf('\nfunction showManager(){',b);
 assert(a>0&&b>a,'career scout helper must belong to real modular UI');
 assert(src.slice(manager,manager+3600).includes('${careerOpponentScoutPanel(c,fx)}'),'live Manager fixture must display scouting');
