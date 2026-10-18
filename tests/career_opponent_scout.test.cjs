@@ -7,9 +7,10 @@ const path=require('node:path');
 const vm=require('node:vm');
 const src=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
 const a=src.indexOf('function careerOpponentScoutPanel(c,fx){');
-const b=src.indexOf('\nfunction showManager(){',a);
+const b=src.indexOf('\nfunction careerBenchReadinessPanel(c){',a);
+const manager=src.indexOf('\nfunction showManager(){',b);
 assert(a>0&&b>a,'career scout helper must belong to real modular UI');
-assert(src.slice(b,b+3600).includes('${careerOpponentScoutPanel(c,fx)}'),'live Manager fixture must display scouting');
+assert(src.slice(manager,manager+3600).includes('${careerOpponentScoutPanel(c,fx)}'),'live Manager fixture must display scouting');
 const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const squads={
  1:[{id:'g',role:'GK',name:'GK',ovr:72},{id:'d1',role:'DF',name:'Defender 1',ovr:55},
@@ -27,7 +28,7 @@ const state={rosterCalls:0,planCalls:0};
 const scout=vm.runInNewContext('('+src.slice(a,b)+')',{TEAMS,
  roster:i=>(state.rosterCalls++,squads[i]),
  planFor:i=>(state.planCalls++,{lineup:[0,1,2,3,4,5]}),
- playerOVR:p=>p.ovr,escapeHTML});
+ playerOVR:p=>p.ovr,escapeHTML,careerBenchReadinessPanel:()=>''});
 const career=()=>({club:0,roster:[{id:'x',condition:45},{id:'y',condition:80,injuryWeeks:2},{id:'z',condition:100}],
  table:{1:{p:5,w:3,d:1},2:{p:0,w:0,d:0},3:{p:2,w:0,d:2}},cash:9000000});
 test('no upcoming or invalid fixture renders nothing without reading opponent data',()=>{
