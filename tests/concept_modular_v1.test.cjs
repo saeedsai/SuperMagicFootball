@@ -5,7 +5,7 @@ test('C01 front face and both existing hair layers remain genuinely editable',()
  assert.equal(m.schema,'smf-concept-modular/1');
  assert.deepEqual(m.authoredViews,['front','back']);
  const layers=[m.runtimeLayer,...m.additionalLayers];
- assert.deepEqual(layers.map(l=>l.id),['hair_front_001','arm_far_front_001','torso_collar_front_001','face_front_001','arm_near_front_001','hair_back_001']);
+ assert.deepEqual(layers.map(l=>l.id),['hair_front_001','arm_far_front_001','torso_front_001','torso_collar_front_001','face_front_001','arm_near_front_001','hair_back_001']);
  for(const layer of layers){
   const name=layer.asset.split('/').pop(),svg=read('assets/characters/concept_modular_v1/source/'+name);
   assert.match(svg,/viewBox="0 0 (112|115) 265"/);
@@ -13,7 +13,19 @@ test('C01 front face and both existing hair layers remain genuinely editable',()
   assert.doesNotMatch(svg,/<image |<rect /);
   assert.equal(layer.noMirroring,true);
  }
- const collar=layers[2];
+ const torso=layers[2];
+ assert.equal(torso.id,'torso_front_001');
+ assert.equal(torso.kind,'torso');
+ assert.equal(torso.shirtNumber,'10');
+ assert.deepEqual(torso.pivot,[56,151]);
+ assert.deepEqual(torso.alphaBoundsEstimate,[24,118,89,195]);
+ assert.equal(torso.legacyBodyUnderlay,true);
+ assert.ok(torso.z>8&&torso.z<9);
+ const torsoSvg=read('assets/characters/concept_modular_v1/source/torso_front.svg');
+ for(const id of torso.partGroups)assert.ok(torsoSvg.includes('id="'+id+'"'),id);
+ assert.ok((torsoSvg.match(/<path /g)||[]).length>=28);
+ assert.doesNotMatch(torsoSvg,/<(?:rect|image)\s/i);
+ const collar=layers[3];
  assert.equal(collar.id,'torso_collar_front_001');
  assert.equal(collar.kind,'torso_collar');
  assert.deepEqual(collar.pivot,[56,122]);
@@ -29,7 +41,7 @@ test('C01 front face and both existing hair layers remain genuinely editable',()
  assert.deepEqual(far.pivot,[23,126]);assert.deepEqual(far.hand,[11,189]);
  assert.equal(far.animation.rotationRadiansPerPhase,.035);
  assert.equal(far.animation.oppositeId,'arm_near_front_001');
- const arm=layers[4];
+ const arm=layers[5];
  assert.equal(arm.id,'arm_near_front_001');
  assert.deepEqual(arm.shoulder,[90,126]);assert.deepEqual(arm.pivot,[90,126]);
  assert.deepEqual(arm.elbow,[102,164]);assert.deepEqual(arm.wrist,[104,174]);assert.deepEqual(arm.hand,[104,182]);
@@ -39,7 +51,7 @@ test('C01 front face and both existing hair layers remain genuinely editable',()
  const armSvg=read('assets/characters/concept_modular_v1/source/arm_near_front.svg');
  for(const part of ['near-sleeve','near-upper-arm','near-forearm','near-wristband','near-hand'])
   assert.ok(armSvg.includes('id="'+part+'"'));
- const face=layers[3];
+ const face=layers[4];
  assert.equal(face.z,10);assert.equal(m.runtimeLayer.z,20);
  assert.deepEqual(face.pivot,[56,99]);assert.deepEqual(face.headCenter,[56,78]);
  const svg=read('assets/characters/concept_modular_v1/source/face_front_front.svg');
@@ -60,15 +72,17 @@ test('new face paints below hair only after safe image loading, six-view fallbac
  assert.match(mod,/CONCEPT_MODULAR_ARM_INLINE/);
  assert.match(mod,/CONCEPT_MODULAR_FAR_ARM_INLINE/);
  assert.match(mod,/CONCEPT_MODULAR_COLLAR_INLINE/);
+ assert.match(mod,/CONCEPT_MODULAR_TORSO_INLINE/);
  assert.match(mod,/if\(!art\)return false/);
- assert.match(mod,/kind==='front'&&\(!states\.frontFace\?\.ready\|\|!states\.frontArm\?\.ready\|\|!states\.frontFarArm\?\.ready\|\|!states\.frontCollar\?\.ready\)/);
+ assert.match(mod,/kind==='front'&&\(!states\.frontFace\?\.ready\|\|!states\.frontArm\?\.ready\|\|!states\.frontFarArm\?\.ready\|\|!states\.frontCollar\?\.ready\|\|!states\.frontTorso\?\.ready\)/);
  assert.match(mod,/if\(!CONCEPT_HERO\.draw\(ctx,p,view,\{run\}\)\)return false/);
  const far=mod.indexOf('ctx.drawImage(states.frontFarArm.image');
+ const torsoDraw=mod.indexOf('ctx.drawImage(states.frontTorso.image');
  const collarDraw=mod.indexOf('ctx.drawImage(states.frontCollar.image');
  const face=mod.indexOf('ctx.drawImage(states.frontFace.image');
  const arm=mod.indexOf('ctx.drawImage(states.frontArm.image');
  const hair=mod.indexOf('ctx.drawImage(state.image');
- assert.ok(far>0&&far<collarDraw&&collarDraw<face&&face<arm&&arm<hair,'paint far arm behind face/near arm and both below hair');
+ assert.ok(far>0&&far<torsoDraw&&torsoDraw<collarDraw&&collarDraw<face&&face<arm&&arm<hair,'paint far arm behind face/near arm and both below hair');
  assert.match(mod,/const armStride=-armPhase\*\.035/);
  assert.match(mod,/ctx\.rotate\(sway\)/);
  assert.match(read('src/modules/render.js'),/CONCEPT_MODULAR\.draw\(ctx,p,view/);
@@ -77,10 +91,12 @@ test('new face paints below hair only after safe image loading, six-view fallbac
  assert.match(read('sw.js'),/arm_near_front\.svg/);
  assert.match(read('sw.js'),/arm_far_front\.svg/);
  assert.match(read('sw.js'),/torso_collar_front\.svg/);
+ assert.match(read('sw.js'),/torso_front\.svg/);
  assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_FACE_INLINE/);
  assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_ARM_INLINE/);
  assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_FAR_ARM_INLINE/);
  assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_COLLAR_INLINE/);
+ assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_TORSO_INLINE/);
 });
 
 test('C01 near-arm gait is a small visual-only transformation, not new gameplay motion',()=>{
@@ -125,7 +141,7 @@ test('C01 front arm strokes ease through idle without a phase threshold snap or 
  const sandbox={Image:LoadedImage,URL,CONCEPT_HERO:{draw:()=>true}};
  vm.runInNewContext(testSource,sandbox,{timeout:1500});
  const model=sandbox.__model;
- assert.equal(model.status().loaded,true,'all six authored prototype layers loaded');
+ assert.equal(model.status().loaded,true,'all seven authored prototype layers loaded');
  function turns(phase,kind='front'){
   const rotations=[];
   const ctx={save(){},restore(){},translate(){},drawImage(){},rotate(v){rotations.push(v);}};
@@ -170,4 +186,26 @@ test('C01 optional demo collar requires a valid image and does not change legacy
  assert.equal(scope.__mod.status().collarLoaded,false);
  assert.equal(scope.__mod.draw({save(){},restore(){}},{src:{renderModel:'concept_modular_v1'}},{kind:'front'}),false);
  assert.equal(scope.__mod.supports({src:{renderModel:'concept_hero'}}),false);
+});
+
+test('C01 painted jersey falls back without partial graphics if its source dimensions are wrong',()=>{
+ const vm=require('node:vm'),src=read('src/modules/conceptmodular.js')
+  .replace(/^import[^\n]*\n/m,'')
+  .replaceAll('import.meta.url',"'https://example.test/src/modules/conceptmodular.js'")
+  .replace(/^export .*$/m,'')+'\nglobalThis.__art=CONCEPT_MODULAR;';
+ let legacyCalls=0;
+ class CorruptTorso{
+  set src(uri){
+   this.naturalWidth=uri.includes('hair_back_back.svg')?115:112;
+   this.naturalHeight=uri.includes('torso_front.svg')?264:265;
+   if(this.onload)this.onload();
+  }
+ }
+ const sandbox={Image:CorruptTorso,URL,CONCEPT_HERO:{draw:()=>{legacyCalls++;return true;}}};
+ vm.runInNewContext(src,sandbox,{timeout:1500});
+ assert.equal(sandbox.__art.status().torsoLoaded,false);
+ assert.equal(sandbox.__art.status().loaded,false);
+ assert.equal(sandbox.__art.draw({},{src:{renderModel:'concept_modular_v1'}},{kind:'front'}),false);
+ assert.equal(legacyCalls,0,'must not paint a partial front head/body');
+ assert.equal(sandbox.__art.draw({},{src:{renderModel:'concept_modular_v1'}},{kind:'right'}),false);
 });
