@@ -1049,6 +1049,8 @@ class GameEngine{
    .filter(v=>v.safe.clear)
    .sort((a,b)=>distance(p,a.q)-distance(p,b.q));
   const receiver=candidates[0]?.q;
+  // Deliberately keep the catch if every lane is covered: do not fall back
+  // to a blind rollout, and do not consume an outfield dribble input.
   if(!receiver)return false;
   const quality=stat(p,'passing');
   const speed=300+quality*1.4;
