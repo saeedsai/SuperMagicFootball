@@ -1,21 +1,21 @@
 # Agent memory — Graphics update
 
-**Agent ID:** `graphics-update` · **Updated:** 2026-10-17
+**Agent ID:** `graphics-update` · **Updated:** 2026-10-18
 
 ## Mission
-Only concept painted art/visual animation. Protect physics, normal renderer, input, UI, player/roster/save data, and other agents.
+Graphics and visual-only animation on one opt-in Concept Royals character; never change physics, other player art, roster, UI, camera, saved data or other agents' scopes.
 
 ## Current checkpoint
-Added sixth independently editable front royal-blue neckline/shoulder seam SVG `source/torso_collar_front.svg` (18 paths, 7 groups, 112×265) to opt-in `concept_modular_v1`. New rig z=9 between far arm and face; original torso/number/leg-run underlay stays. Source `231b7384`, loader/compositor/inline QA fixture/offline cache updated. Missing/corrupt collar preserves original `concept_hero` fallback; other six angles unchanged.
-
-## Evidence
-[Graphics QA #39025472933](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025472933) PASS 7/7 focused + 256/256 full Node, desktop/touch real match, 8-view Concept Hero, alpha, no page errors. [Hosted #39025261009](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025261009) PASS collar SVG+JS HTTP 200 and active modular player PC/touch. [Full census #39025336514](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025336514) PASS all 9 jobs on `b6408b7f` with unchanged critical graphics files at later dev. A later unrelated [census #39025591186](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025591186) fails first-touch floating residue (`1.3877787807814457e-17` vs `0`) at 261/262 Node preflight; no graphical code implicated. Human art approval and physical phone verification still pending.
+Claimed GRAPHICS + fixture + offline-cache and added **seventh** source-authored front jersey torso `assets/characters/concept_modular_v1/source/torso_front.svg`, 32 paths/10 editable groups, reauthored jersey 10; rig z8.5 pivot [56,151]. Opt-in runtime draws below independent collar and over unchanged legacy body; damaged/missing torso safely reverts to base character. QA fixture and cache registered. Source art [`8eabd88e`](https://github.com/saeedsai/SuperMagicFootball/commit/8eabd88e4126ff9446ab21d4ee78e65914c55a62). **New graphics browser/hosted/full census are pending** until exact SHA results confirm.
 
 ## Next smallest action
-After releasing the three owned graphics/fixture/cache claims, future session must recheck locks/latest `dev`. Complete a visual four-background shoulder-seam audit, then add ONE independent full front jersey/torso overlay and tackle baked-arm occlusion in separate steps. Do not increase arm amplitude until mask is approved. [Batch report](../../concept_character_pipeline/C01_COLLAR_SEAM_BATCH_20261017.md), [live handover](../../concept_character_pipeline/NEXT_CHAT_HANDOVER.md).
+Read current C01 graphics QA and hosted Pages results; fix only owned graphics issues. Then release graphics, integration-tooling and release-infra locks. Next separate batch: inspect baked old arms/torso on grass, teal, light and dark and design reversible masking; do not delete old torso or expand gait range. [New batch report](../../concept_character_pipeline/C01_FRONT_JERSEY_BATCH_20261018.md).
 
 ## Ownership and exclusions
-Only this chat's `graphics-update` memory is editable within the current graphics claim. Live graphics, integration-tooling and release-infra claims must be verified before editing source; other agent memory, shared memory, gameplay, player data, UI and global CI are excluded.
+Our current session ID `graphics-update-c01-front-torso-20261018-gpt6-r5`; this file belongs to this graphics chat. Do not edit shared or another chat's memory; source file ownership is defined by live claims. Preserve About Git SHA revision behavior and original GAME BUNDLE version.
+
+## Evidence
+Historic six-layer source [graphics QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025472933) PASS 256/256 Node, full nine-job [census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025336514) PASS and [Pages live PC/touch](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025261009) PASS. Do not attribute old CI to the seventh part. Fresh [general QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106052005) PASS as initial seventh-part smoke, graphics-specific and deployment pending.
 
 ## Cleanup
-Compact current verified checkpoint only, no chat transcript. Never open another agent's memory.
+Compact current checkpoint only. Historical provenance/tests remain in docs and Git history; no unsafe deletions.
