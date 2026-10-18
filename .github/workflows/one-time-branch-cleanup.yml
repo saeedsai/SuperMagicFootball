@@ -1,5 +1,6 @@
 name: One-time branch consolidation cleanup
 
+# Release-only workflow: final synchronized release verified on 2026-10-18.
 # Release-only workflow: remove only already-merged branches after dev and main
 # point to the exact same tested merge commit. Delete this workflow afterwards.
 on:
