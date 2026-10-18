@@ -64,6 +64,7 @@ with sync_playwright() as pw:
   assert set(data['status']['authoredViews'])=={'front','back'} and not data['status']['error']
   assert data['status']['faceLoaded'] and 'face_front_front' in data['status']['authoredParts']
   assert data['status']['armLoaded'] and 'arm_near_front' in data['status']['authoredParts']
+  assert data['status']['torsoLoaded'] and 'torso_front' in data['status']['authoredParts']
   assert data['status']['collarLoaded'] and 'torso_collar_front' in data['status']['authoredParts']
   assert data['status']['farArmLoaded'] and 'arm_far_front' in data['status']['authoredParts']
   assert data['status']['reciprocalArmsEnabled']
@@ -139,6 +140,28 @@ with sync_playwright() as pw:
   assert collar_alpha['width']==112 and collar_alpha['height']==265,collar_alpha
   assert collar_alpha['inside']>200 and collar_alpha['outside']==0,collar_alpha
   (OUT/(device+'_collar_source_alpha.json')).write_text(json.dumps(collar_alpha,indent=2))
+  # Actual vector jersey source must have opaque shirt core, leg/head transparent,
+  # isolated alpha inside the torso bounds, and no rectangular white matte.
+  torso_source=base64.b64encode((ROOT/'assets/characters/concept_modular_v1/source/torso_front.svg').read_bytes()).decode('ascii')
+  torso_alpha=page.evaluate("""async svg => {
+    const img=new Image();img.src='data:image/svg+xml;base64,'+svg;await img.decode();
+    const c=document.createElement('canvas');c.width=112;c.height=265;
+    const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(img,0,0);
+    const p=g.getImageData(0,0,112,265).data;
+    let inside=0,outside=0,coreOpaque=0,outerTransparent=0;
+    for(let y=0;y<265;y++)for(let x=0;x<112;x++){
+      const i=(y*112+x)*4,a=p[i+3];
+      if(x>=44&&x<=68&&y>=144&&y<=184&&a>200)coreOpaque++;
+      if(x<=12&&y<=105&&a===0)outerTransparent++;
+      if(!a)continue;
+      if(x>=22&&x<=91&&y>=116&&y<=197)inside++;else outside++;
+    }
+    return {width:img.naturalWidth,height:img.naturalHeight,inside,outside,coreOpaque,outerTransparent};
+  }""",torso_source)
+  assert torso_alpha['width']==112 and torso_alpha['height']==265,torso_alpha
+  assert torso_alpha['inside']>1800 and torso_alpha['outside']==0,torso_alpha
+  assert torso_alpha['coreOpaque']>600 and torso_alpha['outerTransparent']>1100,torso_alpha
+  (OUT/(device+'_torso_source_alpha.json')).write_text(json.dumps(torso_alpha,indent=2))
   (OUT/(device+'_far_arm_source_alpha.json')).write_text(json.dumps(far_alpha,indent=2))
   (OUT/(device+'_face_alpha.json')).write_text(json.dumps(face_alpha,indent=2))
   assert not errors,errors
@@ -150,7 +173,7 @@ with sync_playwright() as pw:
   for key,img in images.items():img.save(OUT/(device+'_'+key+'.png'))
   page.screenshot(path=str(OUT/(device+'_actual_match.png')))
   results[device]={'status':'PASS','front_changed_pixels':front_changed,'back_changed_pixels':back_changed,
-    'side_legacy_identical':True,'back_run_phases_distinct':True,'page_errors':errors,'front_face_loaded':True,'transparent_face_alpha':True,'front_arm_loaded':True,'arm_transparent':True,'front_arm_frames_distinct':True,'front_run_changed_pixels':front_run_changed,'far_arm_loaded':True,'far_arm_transparent':True,'reciprocal_arm_animation':True}
+    'side_legacy_identical':True,'back_run_phases_distinct':True,'page_errors':errors,'front_face_loaded':True,'transparent_face_alpha':True,'front_arm_loaded':True,'arm_transparent':True,'front_arm_frames_distinct':True,'front_run_changed_pixels':front_run_changed,'far_arm_loaded':True,'far_arm_transparent':True,'reciprocal_arm_animation':True,'front_torso_loaded':True,'painted_torso_isolated':True}
   context.close()
  browser.close()
 (OUT/'qa_report.json').write_text(json.dumps(results,indent=2))

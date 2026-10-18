@@ -1,6 +1,6 @@
 {
   "schema": "smf-concept-modular-roadmap/1",
-  "updated": "2026-10-17",
+  "updated": "2026-10-18",
   "branch": "dev",
   "baselineAtPlanning": "82119108ca63dd510bd49bdf5c2083bed168a9a0",
   "currentMilestone": "C01",
@@ -59,7 +59,8 @@
         "scripts/validate_concept_modular.py",
         "assets/characters/concept_modular_v1/source/arm_near_front.svg",
         "assets/characters/concept_modular_v1/source/arm_far_front.svg",
-        "assets/characters/concept_modular_v1/source/torso_collar_front.svg"
+        "assets/characters/concept_modular_v1/source/torso_collar_front.svg",
+        "assets/characters/concept_modular_v1/source/torso_front.svg"
       ],
       "evidence": [
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886177973",
@@ -84,7 +85,10 @@
         "docs/concept_character_pipeline/C01_COLLAR_SEAM_BATCH_20261017.md",
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025472933",
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025261009",
-        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025336514"
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025336514",
+        "docs/concept_character_pipeline/C01_FRONT_JERSEY_BATCH_20261018.md",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106049047",
+        "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106049102"
       ],
       "issues": [
         "Legacy original torso and static arm pixels remain beneath experimental front near and far arm overlays; larger movement may cause ghosting",
@@ -336,7 +340,7 @@
       "identifier": "medium-honey-curls-moustache"
     }
   ],
-  "nextSmallTask": "After verifying the narrow 6th painted collar source and graphics regression, visually audit shoulder seams against original at idle/±stride on light/dark/teal/grass, then author ONE independent front torso/jersey panel and reversible baked-arm mask. Claim locks first; avoid all non-graphics source changes.",
+  "nextSmallTask": "After current C01 seventh front torso graphic QA and hosted Pages acceptance: inspect baked old arm exposure at ±run on four backgrounds, then claim a separate bounded safe occlusion mask; do not alter legacy side/back or match physics.",
   "openRisks": [
     "Only one cloned literal concept character is available for all twelve demo slots",
     "Flattened five-view atlas has baked blue uniform and number 10",
@@ -742,6 +746,45 @@
         "status": "FAILED preflight unrelated first_touch_mirror_fps.test.cjs 261/262",
         "shards": "SKIPPED"
       }
+    },
+    "frontTorso": {
+      "feature": "ART-C01-FIRST-FRONT-TORSO",
+      "source": "assets/characters/concept_modular_v1/source/torso_front.svg",
+      "artCommit": "8eabd88e4126ff9446ab21d4ee78e65914c55a62",
+      "componentId": "torso_front_001",
+      "sourceCanvas": [
+        112,
+        265
+      ],
+      "z": 8.5,
+      "pivot": [
+        56,
+        151
+      ],
+      "shirtNumber": "10",
+      "alphaBoundsEstimate": [
+        24,
+        118,
+        89,
+        195
+      ],
+      "editablePathCount": 32,
+      "editableGroupCount": 10,
+      "sourcePartsTotal": 7,
+      "status": "verified_experimental_art_and_hosted_full_census_pending_artist_signoff",
+      "sourceValidator": "PASS 7 editable SVG layers",
+      "browser": "PASS desktop+simulated-touch real game, 5957 front changed pixels, original side identical, no page errors",
+      "hosted": "PASS desktop+simulated touch, exact 7th source HTTP200, torsoLoaded true, active player",
+      "fullRegression": "IN PROGRESS preflight+4 Node PASS browser 4 pending",
+      "originalBodyUnderlay": true,
+      "occlusionComplete": false,
+      "ownerArtApproval": "pending",
+      "productionEligible": false,
+      "focusedNode": "PASS 8/8",
+      "activeNode": "PASS 283/283",
+      "graphicsQAUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106049047",
+      "hostedUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106049102",
+      "fullRegressionUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106207590"
     }
   }
 }

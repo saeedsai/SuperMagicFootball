@@ -1035,7 +1035,37 @@ class GameEngine{
   return true;
  }
 
- command(p,a){if(a==='dribble'){this.dribble(p);return}if(a==='shoot'){if(this.tryFlipKick(p,false)||this.tryHeader(p))return;const mate=this.hostOfBall();if(mate&&mate.t===p.t&&mate!==p){if(mate.keeper)this.distributeKeeper(mate,'long');else this.shoot(mate,false)}else if(this.ball.owner===p){if(p.keeper)this.distributeKeeper(p,'long');else this.shoot(p,false,p.z>65)}else this.tackle(p,true)}
+
+ // DRIBBLE while a human side's keeper holds a catch: a deliberate short,
+ // low roll to an open back-line outlet. PASS remains the ordinary throw and
+ // SHOOT the punt. No safe lane means retain possession for a later choice.
+ rollKeeper(p){
+  if(!p?.keeper||this.matchState!=='play'||this.ball.owner!==p||p.stun>0||!this.inControl(p.t))return false;
+  const forward=p.t===0?1:-1;
+  const candidates=this.players.filter(q=>q.t===p.t&&!q.keeper&&q.stun<=0&&q.z<=20&&
+   q!==p&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&
+   (q.x-p.x)*forward>70&&distance(p,q)>=120&&distance(p,q)<920)
+   .map(q=>({q,safe:this.keeperPassingLane(p,q)}))
+   .filter(v=>v.safe.clear)
+   .sort((a,b)=>distance(p,a.q)-distance(p,b.q));
+  const receiver=candidates[0]?.q;
+  // Deliberately keep the catch if every lane is covered: do not fall back
+  // to a blind rollout, and do not consume an outfield dribble input.
+  if(!receiver)return false;
+  const quality=stat(p,'passing');
+  const speed=300+quality*1.4;
+  this.freeBall(p,receiver.x-p.x,receiver.y-p.y,speed,{power:4,z:10,vz:0,pass:true});
+  this.ball.passTarget=receiver.src.id;
+  this.manualSwitchGrace[p.t]=Math.max(this.manualSwitchGrace[p.t]||0,1.25);
+  p.keeperHold=0;p.action='keeperThrow';p.actionTimer=.42;
+  this.emit('keeperDistribution',{team:p.t,player:p.src.name,target:receiver.src.name,
+   mode:'roll',pressured:false,emptySpace:false});
+  this.emit('passIntent',{team:p.t,player:p.src.id,mode:'roll',target:receiver.src.id,
+   speed,loft:'ground'});
+  return true;
+ }
+
+ command(p,a){if(a==='dribble'){const holder=this.hostOfBall();if(holder?.keeper&&holder.t===p.t&&this.inControl(p.t)){this.rollKeeper(holder);return;}this.dribble(p);return}if(a==='shoot'){if(this.tryFlipKick(p,false)||this.tryHeader(p))return;const mate=this.hostOfBall();if(mate&&mate.t===p.t&&mate!==p){if(mate.keeper)this.distributeKeeper(mate,'long');else this.shoot(mate,false)}else if(this.ball.owner===p){if(p.keeper)this.distributeKeeper(p,'long');else this.shoot(p,false,p.z>65)}else this.tackle(p,true)}
  if(a==='pass'){const mate=this.hostOfBall();if(mate&&mate.t===p.t){this.performTeamPass(p,false);}else {if(distance(p,this.ball)<140)this.tackle(p,true);else{p.chase=1.8;p.action='sprint';p.actionTimer=.3}}}
  if(a==='special'){if(this.tryFlipKick(p,true))return;const mate=this.hostOfBall();if(mate&&mate.t===p.t&&mate!==p)this.shoot(mate,true);else if(this.ball.owner===p)this.shoot(p,true,p.z>60);else if(!this.requestKeeperSuper(p.t)&&!this.activateDefence(p))this.tackle(p,true)}
  if(a==='jump')this.jump(p);

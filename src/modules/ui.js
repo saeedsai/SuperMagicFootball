@@ -618,7 +618,33 @@ function careerOpponentScoutPanel(c,fx){
   <p class="muted"><strong>TACTICAL IDEA:</strong> ${recommendation}</p>
   <p class="muted"><strong>SQUAD READINESS:</strong> ${fitness}</p>
   <p class="muted">Scouting advice only. Adjust tactics or squad separately; no automatic changes or costs.</p>
+  ${careerBenchReadinessPanel(c)}
  </section>`;
+}
+// Advisory only: project the same saved six the next match actually uses.
+// A reserve must match the starter's position, be uninjured and at least 60% fit.
+// Never update lineup, the career object, the plan, or a storage entry.
+function careerBenchReadinessPanel(c){
+ if(!Number.isInteger(c?.club)||!Array.isArray(c?.roster))return '';
+ const lineup=planFor(c.club)?.lineup;
+ if(!Array.isArray(lineup)||lineup.length!==6)return '';
+ const squad=c.roster,selected=new Set(lineup),reserved=new Set();
+ const fitness=p=>{const v=p?.condition==null?100:Number(p.condition);return Number.isFinite(v)?Math.max(0,Math.min(100,v)):0;};
+ const injured=p=>Number(p?.injuryWeeks)>0;
+ const needs=lineup.map((index,slot)=>({index,slot,p:squad[index]}))
+  .filter(x=>x.p&&(injured(x.p)||fitness(x.p)<60))
+  .sort((a,b)=>Number(injured(b.p))-Number(injured(a.p))||fitness(a.p)-fitness(b.p)||a.slot-b.slot);
+ if(!needs.length)return '<div id="careerBenchReadiness" aria-label="Pre-match bench recommendations"><p class="muted"><strong>STARTING SIX:</strong> All projected starters are available at 60% fitness or better. No replacements advised.</p></div>';
+ const rows=needs.slice(0,3).map(({p,slot})=>{
+  const candidates=squad.map((q,i)=>({q,i})).filter(({q,i})=>q&&!selected.has(i)&&!reserved.has(i)&&q.role===p.role&&!injured(q)&&fitness(q)>=60);
+  candidates.sort((a,b)=>fitness(b.q)-fitness(a.q)||playerOVR(b.q,b.q.role)-playerOVR(a.q,a.q.role)||a.i-b.i);
+  const pick=candidates[0];
+  if(pick)reserved.add(pick.i);
+  const label=`${escapeHTML(String(p.name||'Player'))} (${escapeHTML(String(p.role||'?'))}, ${injured(p)?'injured':`fitness ${Math.round(fitness(p))}%`})`;
+  const action=pick?`Consider ${escapeHTML(String(pick.q.name||'Reserve'))} (${Math.round(fitness(pick.q))}% fit) as a same-position reserve.`:'No healthy same-position reserve available.';
+  return `<p class="muted" data-bench-slot="${slot}"><strong>${label}</strong> — ${action}</p>`;
+ }).join('');
+ return `<div id="careerBenchReadiness" aria-label="Pre-match bench recommendations"><h3 class="titleSmall">🩺 BENCH READINESS</h3>${rows}${needs.length>3?`<p class="muted">+${needs.length-3} additional starters need review.</p>`:''}<p class="muted">Suggestions only: review your squad and tactics manually; your starting six is unchanged.</p></div>`;
 }
 function showManager(){if(!career){const regions=availableRegions(TEAMS);if(!regions.includes(managerRegion))managerRegion=regions[0]||'UEFA';const countries=availableCountries(TEAMS,managerRegion);if(!countries.includes(managerCountry))managerCountry=countries[0]||'';const choices=clubsInCountry(TEAMS,managerRegion,managerCountry);page('MANAGER CAREER','Choose continent → country → club, then build your twelve-player squad.',`<div class="panel"><div class="managerRegionSelector">${field('1. CONTINENT','managerContinent',regions.map(k=>[k,CONTINENTS.find(x=>x.id===k)?.region||k]),managerRegion)}${field('2. COUNTRY','managerCountry',countries.map(k=>[k,countryName(k,TEAMS)]),managerCountry)}</div>${teamField('3. CLUB','managerClub',choices.map(i=>[i,TEAMS[i].name]),choices[0])}<p class="muted">Select a continent and country to narrow the list. Browse Flags / Crests to see team graphics while choosing.</p><div class="row" style="margin-top:15px">${button('START MANAGER CAREER','startManager','gold')}${button('CONTINENTAL CUPS','continents')}</div></div>`);return;}
  const c=career,fx=currentCareerFixture(c),sorted=standings(c),place=sorted.findIndex(v=>v.id===c.club)+1;
