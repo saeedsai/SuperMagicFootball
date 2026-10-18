@@ -771,11 +771,11 @@
       "editablePathCount": 32,
       "editableGroupCount": 10,
       "sourcePartsTotal": 7,
-      "status": "verified_experimental_art_and_hosted_full_census_pending_artist_signoff",
+      "status": "verified_graphics_and_hosted_unrelated_census_keeper_roll_failure",
       "sourceValidator": "PASS 7 editable SVG layers",
       "browser": "PASS desktop+simulated-touch real game, 5957 front changed pixels, original side identical, no page errors",
       "hosted": "PASS desktop+simulated touch, exact 7th source HTTP200, torsoLoaded true, active player",
-      "fullRegression": "IN PROGRESS preflight+4 Node PASS browser 4 pending",
+      "fullRegression": "FAIL 8/9 jobs: preflight, all 4 Node, 3 Chromium pass; browser-regression (1) keeper_roll_distribution_browser_qa.py blocked false, 20/21 browser scripts pass; unrelated gameplay",
       "originalBodyUnderlay": true,
       "occlusionComplete": false,
       "ownerArtApproval": "pending",
@@ -784,7 +784,8 @@
       "activeNode": "PASS 283/283",
       "graphicsQAUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106049047",
       "hostedUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106049102",
-      "fullRegressionUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106207590"
+      "fullRegressionUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106207590",
+      "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/38"
     }
   }
 }
