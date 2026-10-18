@@ -43,10 +43,16 @@ JS=r"""() => {
    // Fail-closed case: no safe teammate. Catch again, close the passing lane.
    g.keeperCollect(keeper,'loose');
    const blocking=g.players.find(q=>q.t!==t&&!q.keeper);
-   blocking.x=ox+dir*205;blocking.y=oy+17;
+   blocking.x=ox+dir*205;blocking.y=oy+17;blocking.stun=0;blocking.z=0;
+   // This scripted lane must contain an active, grounded opposing defender.
+   // A stunned defender is deliberately ignored by the game's safety check.
+   const guard=g.keeperPassingLane(keeper,target);
    const old=g.events.length;
    g.command(player,'dribble');
    results[results.length-1].blocked=g.ball.owner===keeper&&g.events.length===old;
+   results[results.length-1].guard={clear:guard.clear,interception:guard.interception,
+     endpoint:guard.endpoint,owner:g.ball.owner?.src?.id||null,
+     emitted:g.events.slice(old).map(e=>e.type)};
  }
  return {results,identityUnchanged:identity===JSON.stringify({
      teamIds:g.teamIds,rosters:g.rosters.map(r=>r.map(p=>p.id)),score:g.score}),
@@ -73,7 +79,7 @@ with sync_playwright() as pw:
   for r in data['results']:
    assert r['roll'] and r['target']==r['expected'],(label,r)
    assert r['owner'] and r['team']==r['side'] and r['z']<=15,(label,r)
-   assert r['forward'] and r['blocked'],(label,r)
+   assert r['forward'] and not r['guard']['clear'] and r['blocked'],(label,r)
   assert [r['side'] for r in data['results']]==[0,1],(label,data)
   assert not errors,(label,errors)
   print('KEEPER_ROLL_DISTRIBUTION_BROWSER_PASS',label,
