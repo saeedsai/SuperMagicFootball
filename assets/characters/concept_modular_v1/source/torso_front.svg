@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="265" viewBox="0 0 112 265" role="img" aria-label="Editable Royals front jersey torso with painted number ten">
+<title>Royals painted front jersey torso number 10 — C01 source 001</title>
+<desc>New 112 by 265 transparent illustrated front torso fitted to the concept demo footballer; original body and shorts remain beneath. Independent cloth, sides, shadows, folds, and vector number ten, never a flattened poster.</desc>
+<defs>
+ <linearGradient id="jerseyRoyal" x1="0" y1="0" x2="1" y2="0.55"><stop stop-color="#07376d"/><stop offset=".20" stop-color="#1468ae"/><stop offset=".45" stop-color="#2a93cf"/><stop offset=".69" stop-color="#1676bb"/><stop offset="1" stop-color="#052e6d"/></linearGradient>
+ <linearGradient id="jerseyLeft" x1=".1" y1="0" x2=".92" y2="1"><stop stop-color="#154b94"/><stop offset=".48" stop-color="#0b427f"/><stop offset="1" stop-color="#061e48"/></linearGradient>
+ <linearGradient id="jerseyLight" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b4edfb" stop-opacity=".78"/><stop offset=".55" stop-color="#5eb7e4" stop-opacity=".45"/><stop offset="1" stop-color="#2f95d2" stop-opacity="0"/></linearGradient>
+ <linearGradient id="jerseyHem" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0a508d"/><stop offset=".58" stop-color="#06336b"/><stop offset="1" stop-color="#031b45"/></linearGradient>
+</defs>
+<g id="torso-outer-silhouette" stroke-linejoin="round" stroke-linecap="round">
+ <path d="M39 120C43 122 48 125 56 125C64 125 69 122 73 120C79 119 83 122 87 128C88 135 85 142 84 151C81 164 79 181 77 190C63 194 46 194 34 190C32 180 31 165 28 151C27 143 24 136 26 129C30 123 34 120 39 120Z" fill="url(#jerseyRoyal)" stroke="#072c5f" stroke-width="1.8"/>
+ <path d="M39 122Q56 132 73 122" fill="none" stroke="#03305f" stroke-width="1.4" opacity=".7"/>
+</g>
+<g id="torso-left-side" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M27 132C30 139 32 153 34 164L39 189L34 190C31 179 30 164 28 153C26 146 25 136 27 132Z" fill="url(#jerseyLeft)" opacity=".8"/>
+ <path d="M33 145Q35 164 38 180" fill="none" stroke="#72bfe5" stroke-width="1" opacity=".45"/>
+ <path d="M34 165Q35 179 37 186" fill="none" stroke="#042c60" stroke-width="1.3" opacity=".7"/>
+</g>
+<g id="torso-right-side" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M85 131Q82 145 80 156L75 189L77 190C80 179 82 164 84 151C87 142 88 136 85 131Z" fill="#062653" opacity=".7"/>
+ <path d="M80 148Q78 163 77 181" fill="none" stroke="#58abdd" stroke-width="1" opacity=".48"/>
+ <path d="M76 185L78 178" fill="none" stroke="#011a40" stroke-width="1.2" opacity=".7"/>
+</g>
+<g id="shoulder-cloth-left" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M39 120C34 120 29 124 27 130L31 136C35 132 41 128 46 126Z" fill="#0d4d91" stroke="#07305f" stroke-width=".85"/>
+ <path d="M30 126Q35 123 39 123" fill="none" stroke="#72c3eb" stroke-width="1.7" opacity=".8"/>
+ <path d="M31 131L37 127" fill="none" stroke="#f0cf73" stroke-width="1.05" opacity=".75"/>
+</g>
+<g id="shoulder-cloth-right" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M73 120C79 120 83 123 86 130L82 137C78 133 72 128 66 126Z" fill="#135c9f" stroke="#092d66" stroke-width=".9"/>
+ <path d="M74 123Q81 123 84 127" fill="none" stroke="#98d9f0" stroke-width="1.6" opacity=".65"/>
+ <path d="M80 129L84 133" fill="none" stroke="#e5c375" stroke-width="1.1" opacity=".76"/>
+</g>
+<g id="chest-light-and-panels" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M41 130C47 136 48 145 48 154L47 180C44 168 41 156 40 148Z" fill="url(#jerseyLight)" opacity=".5"/>
+ <path d="M70 131C74 136 75 148 72 163L68 181L69 150Z" fill="#073972" opacity=".4"/>
+ <path d="M49 134Q56 139 63 134" fill="none" stroke="#9bd6ef" stroke-width="1.3" opacity=".46"/>
+ <path d="M41 145Q44 149 44 154" fill="none" stroke="#8ccded" stroke-width="1.1" opacity=".58"/>
+ <path d="M68 145Q71 149 70 154" fill="none" stroke="#073a79" stroke-width="1.15" opacity=".68"/>
+</g>
+<g id="cloth-folds" fill="none" stroke-linecap="round">
+ <path d="M36 172Q40 167 43 177" stroke="#034077" stroke-width="1.5" opacity=".85"/>
+ <path d="M41 176Q46 173 48 184" stroke="#8ac9e5" stroke-width="1.1" opacity=".5"/>
+ <path d="M67 175Q74 169 77 175" stroke="#062b63" stroke-width="1.5" opacity=".82"/>
+ <path d="M61 186Q65 181 69 185" stroke="#8ac9e5" stroke-width="1" opacity=".55"/>
+ <path d="M54 181Q58 185 63 181" stroke="#0a4c89" stroke-width="1.2" opacity=".62"/>
+</g>
+<g id="shirt-number-ten" fill="#f9f1d8" stroke="#073663" stroke-width="1.25" stroke-linejoin="round">
+ <path d="M47 152L52 150L52 174L46 174L46 157L43 159L41 154Z"/>
+ <path d="M62 150C68 150 71 155 71 162C71 171 68 175 62 175C56 175 54 170 54 162C54 154 57 150 62 150ZM62 156C60 156 60 159 60 162C60 167 60 169 62 169C64 169 65 167 65 162C65 158 64 156 62 156Z" fill-rule="evenodd"/>
+ <path d="M49 153L49 171M61 153Q65 154 67 160" fill="none" stroke="#ffffff" stroke-width=".65" opacity=".65"/>
+</g>
+<g id="number-undershading" fill="none" stroke="#033469" stroke-linecap="round">
+ <path d="M44 177Q54 179 68 177" stroke-width="1.2" opacity=".53"/>
+ <path d="M52 178L52 181M63 178L64 181" stroke-width=".75" opacity=".52"/>
+</g>
+<g id="shirt-hem" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M34 187Q56 191 77 187L77 191Q56 195 34 191Z" fill="url(#jerseyHem)" stroke="#031f50" stroke-width="1"/>
+ <path d="M36 187Q57 190 75 187" fill="none" stroke="#a5d6e8" stroke-width=".85" opacity=".8"/>
+ <path d="M37 191Q56 193 74 190" fill="none" stroke="#021e43" stroke-width=".75" opacity=".6"/>
+</g>
+</svg>
