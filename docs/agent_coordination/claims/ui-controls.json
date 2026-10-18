@@ -1,23 +1,18 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "ui-controls",
-  "feature_id": "UI-PK-LIVE-ROUND-SCORECARD",
-  "owner": "gameplay-pk-scorecard-20261017-gpt6-s17",
-  "status": "released",
-  "scope": "Only src/modules/ui.js pure read-only penalty-scorecard in PAUSED and FULL TIME game menus (no engine/inputs), new tests/penalty_round_scorecard.test.cjs, new tests/penalty_round_scorecard_browser_qa.py, specialist docs/UI_PENALTY_ROUND_SCORECARD_20261017.md and this chat's own docs/memory/agents/gameplay-pk-20261016.md. Do not edit engine, graphics, careers, other UI methods outside pause/fulltime and isolated helper, other feature tests, CI/workflows, shared docs/memory.",
-  "base_sha": "f9c47bb9f21f8f65fc0bb7e143c1fb01ff3e1b16",
-  "created_at": "2026-10-17",
-  "renewed_at": "2026-10-17",
-  "handover": "docs/UI_PENALTY_ROUND_SCORECARD_20261017.md — feature UI aca62bf67707f98a1ab7e9ce264553873c77f356 and 7549aeca8393e966e0b5c115e3e9dcdc83285417; 8 Node test b0d6436fdc25253bec1ea2350d36e811ab4e2cc7 + fix d5a3d4155899654d6cbce0c0b60fecdf4a21d680; browser test 44545a0ed00a1e44a920d463b97f89c18f9bdaab; handover f18f8451ed61ee3d898612ae105ed8954bdce287; own memory 779020fa9ab9a378970f2df3b030d2a0ede6aa9b; Modular QA https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025423763; Full Census https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025423889",
-  "acceptance": [
-    "completed-kick goal/miss progression read directly from pk.kicks",
-    "show next shooter in in-progress penalties, no guess when finished",
-    "retain regulations score and final penalty decision",
-    "no penalty scorecard in ordinary play",
-    "preserve existing four buttons, controls, saves",
-    "Node, Chromium, full regression + About tests"
+  "feature_id": "UI-CAREER-BENCH-READINESS",
+  "owner": "gameplay-review-20261018-gpt6-career-bench-r8",
+  "status": "active",
+  "created_at": "2026-10-18",
+  "renewed_at": "2026-10-18",
+  "base_sha": "ea79c28bc84811488de7c13c88bd7a90cef67c63",
+  "scope": "Only src/modules/ui.js career pre-match read-only same-role bench readiness panel underneath existing scout, with injuries and fitness selection; tests/career_bench_readiness.test.cjs and tests/career_bench_readiness_browser_qa.py; docs/CAREER_BENCH_READINESS_20261018.md; bounded docs/NEXT_MILESTONES.md update; this chat's own docs/memory/agents/gameplay-review-20261016.md. No engine, input, graphics, audio, rosters, source data, saved career or tactical plan writes, QA runner, CI, build, service worker, release infra, cross-chat memory.",
+  "tests": [
+    "node --test tests/career_bench_readiness.test.cjs tests/career_opponent_scout.test.cjs tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
+    "standard Node full suite",
+    "4 Node+4 Chromium census",
+    "career_bench_readiness_browser_qa.py desktop simulated touch"
   ],
-  "released_at": "2026-10-17",
-  "outcome": "Delivered real-shootout rounds and winner UI with 8/8 focused Node PASS and complete active Modular QA SUCCESS; full 4Node+4Chromium census pending on final UI revision; hosted/physical device PK screen not independently verified",
-  "integrated_commit": "779020fa9ab9a378970f2df3b030d2a0ede6aa9b"
+  "handover": "docs/CAREER_BENCH_READINESS_20261018.md"
 }
