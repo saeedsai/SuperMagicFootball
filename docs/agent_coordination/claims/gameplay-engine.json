@@ -1,21 +1,20 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "gameplay-engine",
-  "feature_id": "GAMEPLAY-CPU-HALFTIME-QA-SIGNOFF",
-  "owner": "gameplay-review-20261017-gpt6-halftime-qa-r7",
-  "status": "released",
-  "created_at": "2026-10-17",
-  "renewed_at": "2026-10-17",
-  "base_sha": "3c58fc3462bf9e1b49de1aa241e05eeb0618eca4",
-  "scope": "Docs-only final QA handover for delivered CPU halftime feature. Touch ONLY docs/GAMEPLAY_CPU_HALFTIME_TACTICS_20261017.md, a concise docs/NEXT_MILESTONES.md update, and own docs/memory/agents/gameplay-review-20261016.md. No src/modules/engine.js, tests, UI, audio, graphics, deployment, other agents' memory, shared docs context or workflows. Release immediately.",
-  "tests": [
-    "Verify Full Regression Census #39025336514 preflight and 4 Node + 4 Chromium PASS",
-    "Check browser job logs show cpu_halftime_tactical_response_browser_qa.py PASS",
-    "Confirm Pages success #39025675396 descends from original feature source",
-    "Check latest standard Node only held by other graphics-agent memory issue #13"
-  ],
-  "handover": "docs/GAMEPLAY_CPU_HALFTIME_TACTICS_20261017.md; docs/NEXT_MILESTONES.md; docs/memory/agents/gameplay-review-20261016.md",
-  "released_at": "2026-10-17",
-  "checkpoint_head": "ecc7a25ebd34506a2df59a189e17e19a25bb158b",
-  "outcome": "Docs-only final QA signoff: CPU halftime feature confirmed Full Census #39025336514 8/8 shards and 80/80 Chromium script PASS including new desktop/touch browser test; Pages #39025675396 deployed a feature descendant. Later graphics-update missing ## Mission CI 261/262 handled under issue #13 by its own agent."
+  "feature_id": "GAMEPLAY-KEEPER-QUICK-ROLL",
+  "owner": "gameplay-keeper-roll-20261018-gpt6-chatpk-r8",
+  "status": "active",
+  "scope": "Only src/modules/engine.js one goalkeeper close-range low ground roll on DRIBBLE when keeper owns ball, existing freeBall/keeperPassingLane logic, no other physics or AI/PK code; new tests/keeper_roll_distribution.test.cjs and tests/keeper_roll_distribution_browser_qa.py, own docs/GAMEPLAY_KEEPER_ROLL_20261018.md and ONLY own docs/memory/agents/gameplay-pk-20261016.md. Do not touch active/other engine scope, roster, UI/input, graphics, audio, shared docs, CI, saves, SW.",
+  "base_sha": "82d51013d7ba033ec77aae0a60616365bd6df825",
+  "created_at": "2026-10-18",
+  "renewed_at": "2026-10-18",
+  "handover": "docs/GAMEPLAY_KEEPER_ROLL_20261018.md",
+  "acceptance": [
+    "Human goalkeeper with ball pressing DRIBBLE releases controlled low roll to nearest safe friendly outlet",
+    "Unsafe/out-of-range lanes do not fake a pass or surrender possession",
+    "ordinary dribble unchanged for nonkeeper",
+    "AI goalkeeper automatic distribution unchanged",
+    "two-team mirror, four controls, saves/roster fixed",
+    "target Node/browser CI and full regression incl About contract"
+  ]
 }
