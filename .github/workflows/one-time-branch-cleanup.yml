@@ -1,0 +1,64 @@
+name: One-time branch consolidation cleanup
+
+# Release-only workflow: remove only already-merged branches after dev and main
+# point to the exact same tested merge commit. Delete this workflow afterwards.
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-branch-cleanup.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  prune-merged-branches:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Verify exact dev/main sync and prune only contained branches
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="$GITHUB_REPOSITORY"
+          expected="$GITHUB_SHA"
+          # The release operator fast-forwards dev after merging the tested PR.
+          # Wait for it rather than deleting any refs in an unsynchronized repo.
+          for i in $(seq 1 24); do
+            main_sha=$(gh api "repos/$repo/git/ref/heads/main" --jq '.object.sha')
+            dev_sha=$(gh api "repos/$repo/git/ref/heads/dev" --jq '.object.sha')
+            if [[ "$main_sha" == "$expected" && "$dev_sha" == "$expected" ]]; then break; fi
+            sleep 5
+          done
+          if [[ "$main_sha" != "$expected" || "$dev_sha" != "$expected" ]]; then
+            echo "::error::Aborting prune: dev and main not both pinned to tested commit $expected (main=$main_sha, dev=$dev_sha)"
+            exit 1
+          fi
+
+          mapfile -t branches < <(gh api --paginate "repos/$repo/branches?per_page=100" --jq '.[] | select(.name != "main" and .name != "dev") | .name')
+          echo "Candidate obsolete branches: ${#branches[@]}"
+
+          # Preflight every candidate BEFORE deleting any refs.
+          for branch in "${branches[@]}"; do
+            [[ -z "$branch" ]] && continue
+            ahead=$(gh api "repos/$repo/compare/main...${branch}" --jq '.ahead_by')
+            protected=$(gh api "repos/$repo/branches/${branch}" --jq '.protected')
+            if [[ "$ahead" != "0" || "$protected" == "true" ]]; then
+              echo "::error::Refusing to delete $branch (unmerged commits=$ahead; protected=$protected)"
+              exit 1
+            fi
+          done
+
+          for branch in "${branches[@]}"; do
+            [[ -z "$branch" ]] && continue
+            echo "Deleting fully merged branch: $branch"
+            gh api --method DELETE "repos/$repo/git/refs/heads/$branch"
+          done
+          mapfile -t remaining < <(gh api --paginate "repos/$repo/branches?per_page=100" --jq '.[] | select(.name != "main" and .name != "dev") | .name')
+          if (( ${#remaining[@]} > 0 )); then
+            echo "::error::Remaining extra branches: ${remaining[*]}"
+            exit 1
+          fi
+          echo "BRANCH_PRUNE_SUCCESS removed=${#branches[@]} remaining=main,dev sha=$expected"
