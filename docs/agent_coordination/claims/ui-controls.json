@@ -7,7 +7,7 @@
   "created_at": "2026-10-18",
   "renewed_at": "2026-10-18",
   "base_sha": "ea79c28bc84811488de7c13c88bd7a90cef67c63",
-  "scope": "Only src/modules/ui.js career pre-match read-only same-role bench readiness panel underneath existing scout, with injuries and fitness selection; tests/career_bench_readiness.test.cjs and tests/career_bench_readiness_browser_qa.py; docs/CAREER_BENCH_READINESS_20261018.md; bounded docs/NEXT_MILESTONES.md update; this chat's own docs/memory/agents/gameplay-review-20261016.md. No engine, input, graphics, audio, rosters, source data, saved career or tactical plan writes, QA runner, CI, build, service worker, release infra, cross-chat memory.",
+  "scope": "Only src/modules/ui.js career pre-match read-only same-role bench readiness panel underneath existing scout, with injuries and fitness selection; tests/career_bench_readiness.test.cjs and tests/career_bench_readiness_browser_qa.py; strictly minimal compatibility tweak to this chat's previous tests/career_opponent_scout.test.cjs VM extraction boundary so it ignores the new separate helper; docs/CAREER_BENCH_READINESS_20261018.md; bounded docs/NEXT_MILESTONES.md update; this chat's own docs/memory/agents/gameplay-review-20261016.md. No engine, input, graphics, audio, rosters, source data, saved career or tactical plan writes, QA runner, CI, build, service worker, release infra, cross-chat memory.",
   "tests": [
     "node --test tests/career_bench_readiness.test.cjs tests/career_opponent_scout.test.cjs tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
     "standard Node full suite",
