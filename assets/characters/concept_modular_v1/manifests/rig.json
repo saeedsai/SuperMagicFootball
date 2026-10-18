@@ -1,7 +1,7 @@
 {
   "schema": "smf-concept-modular/1",
   "id": "royals-hair-front-front-001",
-  "status": "experimental_front_face_two_hairs_reciprocal_painted_arms_and_editable_collar",
+  "status": "experimental_front_face_two_hairs_two_arms_collar_and_first_independent_jersey_front",
   "baseFamily": "royals_base_a",
   "referenceCanvas": [
     112,
@@ -67,7 +67,8 @@
     "front_face_static_registers_to_hair_pivot",
     "front_near_arm_small_counterstride_overlay",
     "front_far_arm_small_reciprocal_counterstride_overlay",
-    "painted_front_collar_follows_original_body_no_new_motion"
+    "painted_front_collar_follows_original_body_no_new_motion",
+    "independently_painted_front_jersey_preserves_original_torso_underlay"
   ],
   "unimplemented": [
     "full_articulated_two_arm_cycle_and_torso_occlusion_pending",
@@ -75,7 +76,7 @@
     "face_expressions_and_blink",
     "other_six_views",
     "hair_for_quarters_and_side",
-    "full_separate_torso_and_baked_arm_occlusion",
+    "full_body_isolation_and_baked_arm_occlusion_remaining",
     "legs",
     "runtime_webp"
   ],
@@ -146,6 +147,58 @@
         "legacyBodyUnderlay": true,
         "easeInRunPhase": 0.18
       }
+    },
+    {
+      "id": "torso_front_001",
+      "kind": "torso",
+      "view": "front",
+      "asset": "../source/torso_front.svg",
+      "sourceCanvas": [
+        112,
+        265
+      ],
+      "cropRect": [
+        0,
+        0,
+        112,
+        265
+      ],
+      "trimOffset": [
+        0,
+        0
+      ],
+      "pivot": [
+        56,
+        151
+      ],
+      "chestCenter": [
+        56,
+        151
+      ],
+      "shirtNumber": "10",
+      "alphaBoundsEstimate": [
+        24,
+        118,
+        89,
+        195
+      ],
+      "z": 8.5,
+      "material": "royals_painted_blue_jersey",
+      "noMirroring": true,
+      "partGroups": [
+        "torso-outer-silhouette",
+        "torso-left-side",
+        "torso-right-side",
+        "shoulder-cloth-left",
+        "shoulder-cloth-right",
+        "chest-light-and-panels",
+        "cloth-folds",
+        "shirt-number-ten",
+        "number-undershading",
+        "shirt-hem"
+      ],
+      "legacyBodyUnderlay": true,
+      "notes": "First editable jersey front with preserved number ten; legacy arms, shorts and legs remain baked. Not yet a full independent character body."
     },
     {
       "id": "torso_collar_front_001",
