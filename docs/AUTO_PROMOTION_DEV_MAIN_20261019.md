@@ -42,3 +42,12 @@ The `hosted-pages-smoke` job checks public GitHub Pages HTML, JS and CSS availab
 **Important GitHub behavior:** a ref update made with the default `GITHUB_TOKEN` does **not** normally trigger another workflow's `push` event. The promotion job therefore explicitly dispatches Full Regression Census on `main` with `actions: write` (commit `7ddb58cb0601024269be3b7ff618a62a18840dce`). This produces a main QA + hosted Pages check if GitHub permissions allow it. It does **not** guarantee a Pages branch build will be triggered by the token-originated ref update; a separate Pages deployment workflow or an approved GitHub App token may be needed.
 
 **Still unverified:** native CI run result, real GitHub Pages release freshness, Actions write policy, protected-main update policy, physical phone. If any gate fails, the promotion job does not run. Do not claim end-to-end green until the exact SHA is independently observed in successful Actions jobs and hosted Pages.
+
+
+## 2026-10-19 follow-up — repaired skipped post-release verification
+
+**Issue found in workflow review:** The promotion job explicitly dispatches the workflow on `main` because the default `GITHUB_TOKEN` update does not fire ordinary push events, but `hosted-pages-smoke` previously had an `if` condition requiring `push` only. The dispatched verification run would therefore skip the hosted check.
+
+**Fix:** `hosted-pages-smoke` now runs on either `push` or `workflow_dispatch` to `main`. It checks out the exact `main` commit and retries hosted HTML, `src/main.js`, and `style.css` until all three SHA-256 hashes match the checked-out release files. Merely serving an old working Pages version no longer passes.
+
+**Limitation:** This is a **post-release** check, not a pre-release hosted gate. It can detect a stale deployment and fail the main workflow but cannot retroactively prevent the already-completed fast-forward. Full hosted gameplay on a physical phone remains unverified. GitHub Actions and Pages outcomes for this commit have not been observed; a real successful workflow run is still required.
