@@ -1,14 +1,13 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "project-context",
-  "feature_id": "CONTEXT-REGISTER-TACTICAL-AUDIO-CHAT",
-  "owner": "gameplay-tactical-audio-20261016-gpt6-s16",
-  "status": "released",
-  "scope": "ONLY append new unique chat entry to docs/memory/AGENTS_INDEX.json and create its own docs/memory/agents/gameplay-tactical-audio-20261016-gpt6-s16.md. No other agent memory, shared memory, source, UI or tests.",
-  "base_sha": "fabd49d4d7883be50324e57692f043d2aaa57abf",
-  "created_at": "2026-10-16",
-  "renewed_at": "2026-10-16",
-  "handover": "docs/memory/agents/gameplay-tactical-audio-20261016-gpt6-s16.md",
-  "released_at": "2026-10-16",
-  "outcome": "registered_unique_per_chat_memory_identity"
+  "feature_id": "CONTEXT-REGISTER-HOURLY-DEV",
+  "owner": "smf-hourly-dev-20261019",
+  "status": "active",
+  "scope": "Only docs/memory/AGENTS_INDEX.json and own docs/memory/agents/smf-hourly-dev-20261019.md to register this automation chat; no shared memory, other agents' memory, source or tests.",
+  "base_sha": "84e5c474bc5ca5b1a4080c600ac678c5cbab929b",
+  "created_at": "2026-10-19",
+  "renewed_at": "2026-10-19",
+  "handover": "docs/memory/agents/smf-hourly-dev-20261019.md",
+  "previous_handover": "docs/memory/agents/gameplay-tactical-audio-20261016-gpt6-s16.md"
 }
