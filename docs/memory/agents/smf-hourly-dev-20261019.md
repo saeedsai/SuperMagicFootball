@@ -23,3 +23,6 @@ Confirm hosted Pages deployment and exact-main asset parity; check current newes
 
 ## Cleanup
 No unrelated deletions; historical QA/artifact files are retained.
+
+## 19 October owner-priority plan reconciliation
+Owner requested Super Shots (zigzag and other distinct paths), new Super Defense, Tricks, major eight-view art and UX upgrade, and true LAN mode be advanced from deferred backlog. With confirmed exclusive `project-context` claim, created `docs/OWNER_PRIORITY_FEATURE_AUDIT_20261019.md` (30 partial/missing features, canonical 4-button controls, next 5 milestones) and prepended dated priority override to `docs/NEXT_MILESTONES.md`. This is documentation only, with no gameplay/UI/graphics/LAN implementation or physical-device QA. Historical 218-item statuses are not recalculated. Release project-context claim after verifying source. See GitHub Actions for exact source.
