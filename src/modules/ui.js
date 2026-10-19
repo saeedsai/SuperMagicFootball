@@ -587,6 +587,7 @@ const eur=n=>'€'+(n/1000000).toFixed(1)+'m';
 const saveCareer=()=>{if(career)store.put('managerCareer',career)};
 // Pre-match natural-role suitability: advisory only; no plan/roster/save writes.
 // Fixed starting-six slots reflect the game's existing six-player role assignment.
+// Keep this independent from the existing injury/fitness replacement report.
 function careerLineupRoleFitPanel(c){
  if(!Number.isInteger(c?.club)||!Array.isArray(c?.roster))return '';
  const lineup=planFor(c.club)?.lineup,slots=['GK','DF','DF','MF','FW','FW'];
