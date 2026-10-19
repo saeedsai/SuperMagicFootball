@@ -1,23 +1,17 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "gameplay-engine",
-  "feature_id": "GAMEPLAY-KEEPER-QUICK-ROLL",
-  "owner": "gameplay-keeper-roll-20261018-gpt6-chatpk-r8",
-  "status": "released",
-  "scope": "Only src/modules/engine.js one goalkeeper close-range low ground roll on DRIBBLE when keeper owns ball, existing freeBall/keeperPassingLane logic, no other physics or AI/PK code; new tests/keeper_roll_distribution.test.cjs and tests/keeper_roll_distribution_browser_qa.py, own docs/GAMEPLAY_KEEPER_ROLL_20261018.md and ONLY own docs/memory/agents/gameplay-pk-20261016.md. Do not touch active/other engine scope, roster, UI/input, graphics, audio, shared docs, CI, saves, SW.",
-  "base_sha": "82d51013d7ba033ec77aae0a60616365bd6df825",
-  "created_at": "2026-10-18",
-  "renewed_at": "2026-10-18",
-  "handover": "docs/GAMEPLAY_KEEPER_ROLL_20261018.md — source 182ed739097619a7c3aaacc68a0b4d57b7537741; nine tests 0a84dd4f8fb0e70f5f6219e6345dde911919072a; browser cc872e2276e106ab8bbb2399d3647d1aa149f804; browser blocker test repair df22a6eb520a834369ed29edb975fb885d522dfe; full 233/233 https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106391207; active QA https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106042725; hosted https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106391162",
+  "feature_id": "GAMEPLAY-KEEPER-SAFE-CLEARANCE",
+  "owner": "smf-hourly-dev-20261019",
+  "status": "active",
+  "scope": "One bounded keeper clearance safety fix in src/modules/engine.js, dedicated new Node regression, own agent memory and own specialist handover only; preserve four controls, rosters, UI, graphics, other agents' scopes",
+  "base_sha": "5e2f00c95acb8e9731291e0c992dabaf0bf375dd",
+  "created_at": "2026-10-19",
+  "renewed_at": "2026-10-19",
   "acceptance": [
-    "Human goalkeeper with ball pressing DRIBBLE releases controlled low roll to nearest safe friendly outlet",
-    "Unsafe/out-of-range lanes do not fake a pass or surrender possession",
-    "ordinary dribble unchanged for nonkeeper",
-    "AI goalkeeper automatic distribution unchanged",
-    "two-team mirror, four controls, saves/roster fixed",
-    "target Node/browser CI and full regression incl About contract"
-  ],
-  "released_at": "2026-10-18",
-  "outcome": "GAMEPLAY-KEEPER-QUICK-ROLL shipped and fully certified: 9/9 dedicated Node, 283/283 active Node, full historical 148 Node + 85 Chromium (233/233), real desktop/touch keeper-roll browser PASSED; deployed Pages descendant and hosted desktop/touch kickoff passed; physical phone/new hosted DRIBBLE execution not checked",
-  "integrated_commit": "753da771734979d049b27e4f9eb9278c5ea85959"
+    "Under pressure keeper clearance does not deliberately target an opponent",
+    "Unpressured existing keeper passing unchanged",
+    "Both teams and four-button inputs remain compatible",
+    "Targeted and full Node QA pass"
+  ]
 }
