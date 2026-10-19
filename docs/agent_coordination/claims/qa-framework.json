@@ -3,7 +3,7 @@
   "lock_key": "qa-framework",
   "feature_id": "QA-MOBILE-TOUCH-PULSE-RACE-20261019",
   "owner": "smf-hourly-dev-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Only tests/control_reliability_browser_qa.py: wait for dispatched touch pointer events before polling to avoid a CDP dispatch vs async browser event race, preserving real assertion and failure diagnostics; own docs/memory agent checkpoint. No game runtime changes or shared workflow changes.",
   "base_sha": "6f175097d58de112e391c2a1cdd99420a49df6ce",
   "created_at": "2026-10-19",
@@ -12,5 +12,8 @@
     "Keep desktop keyboard test unchanged",
     "Android waits for completed input pulse before engine poll rather than sleep",
     "Full browser regression census green on new exact dev SHA"
-  ]
+  ],
+  "released_at": "2026-10-19",
+  "outcome": "completed_browser_touch_race_harness_fixed_c14bfc_full_326_node_154_node_scripts_86_browser_pass",
+  "handover": "docs/memory/agents/smf-hourly-dev-20261019.md; https://github.com/saeedsai/SuperMagicFootball/actions/runs/39270055825"
 }
