@@ -1003,6 +1003,9 @@ class GameEngine{
    const y=F.y+F.h*lane;
    const safety=Math.min(...opponents.map(o=>Math.hypot(o.x-x,o.y-y)),9999);
    const path=this.keeperPassingLane(p,{x,y});
+   // Empty-space punts must also avoid obvious interception corridors.
+   // A distant open landing point is not safe if an opponent stands in the flight path.
+   if(!path.clear)continue;
    candidates.push({x,y,receiver:null,score:safety*.85+path.interception*.30+(x-p.x)*dir*.12});
   }
   candidates.sort((a,b)=>b.score-a.score);
