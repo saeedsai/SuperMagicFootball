@@ -3,9 +3,13 @@
   "lock_key": "qa-framework",
   "feature_id": "QA-RELEASE-GATE-CONTRACT",
   "owner": "smf-qa-release-contract-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Add standalone Node regression contract test for automatic release workflow: exact-head, full gates, no force, dispatch main and hosted hash checks; own claim. No workflow or gameplay edits.",
   "base_sha": "e1a801a7b28efab78f09e3a09dbdfa73a6eeb0b5",
   "created_at": "2026-10-19",
-  "renewed_at": "2026-10-19"
+  "renewed_at": "2026-10-19",
+  "released_at": "2026-10-19",
+  "outcome": "Added four Node contract tests for complete promotion dependencies, exact-head ancestry and non-force release, dispatched main hosted hash parity, and least-privilege permissions. Remote execution not yet confirmed.",
+  "integrated_commit": "2a8bfc76f90a4bef3f354c2c7686f038011bcb2c",
+  "handover": "tests/release_gate_contract.test.cjs"
 }
