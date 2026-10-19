@@ -3,7 +3,7 @@
   "lock_key": "qa-framework",
   "feature_id": "QA-UNRESTRICTED-CENSUS-PUSH-CONTRACT",
   "owner": "smf-release-watch-20261019-r1",
-  "status": "active",
+  "status": "released",
   "scope": "Fix only tests/national_roster_regression_trigger.test.cjs obsolete selective push.paths contract to reflect unconditional dev/main full QA; execute targeted Node test and inspect CI. No workflow, gameplay or roster changes.",
   "base_sha": "d2ff83bba36430a8b605fc183f7807957df428a6",
   "created_at": "2026-10-19",
@@ -12,5 +12,8 @@
     "Regression asserts dev/main push without paths filters",
     "Targeted Node test passes",
     "CI preflight no longer blocked by obsolete assertion"
-  ]
+  ],
+  "released_at": "2026-10-19",
+  "outcome": "Diagnosed CI failure: outdated tests/national_roster_regression_trigger.test.cjs requires push.paths, contradicting all-push policy. Attempted targeted fix but GitHub write was blocked by safety checks. No test file changed.",
+  "handover": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39245078610"
 }
