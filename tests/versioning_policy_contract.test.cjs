@@ -29,6 +29,9 @@ test('About retains GitHub dev SHA lookup on every visit and treats deployment s
   assert.match(about,/Latest GitHub development commit/);
   assert.match(about,/deployment can lag behind it/);
   assert.match(about,/GAME BUNDLE/);
+  assert.ok(about.includes("link.textContent='v'+String(bundle)+'+dev.'+sha.slice(0,12)"), 'About must expose unique visible version for every dev commit');
+  assert.match(about,/auto-versioned after every update/);
+  assert.match(about,/not necessarily the deployed build/);
   assert.match(about,/if\(revision\)void refreshAboutDevRevision\(revision\)/);
   assert.match(about,/unavailable offline/);
 });
