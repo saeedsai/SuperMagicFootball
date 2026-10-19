@@ -990,7 +990,9 @@ class GameEngine{
   const candidates=[];
   const midfield=F.x+F.w*.5;
   for(const v of scored){
-   if(v.q.x*dir<=p.x*dir+175)continue;
+   // A marked teammate or an intercepted route is never a clearance target.
+   // Unsafe teammates must not outscore an open patch of turf.
+   if(!v.safe.clear||v.q.x*dir<=p.x*dir+175)continue;
    const d=distance(p,v.q);
    const safe=Math.min(v.safe.endpoint,v.safe.interception*1.5);
    candidates.push({x:v.q.x,y:v.q.y,receiver:v.q,score:safe*1.5+d*.05+(v.q.x-p.x)*dir*.14});
