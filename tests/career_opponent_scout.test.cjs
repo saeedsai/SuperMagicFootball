@@ -28,7 +28,7 @@ const state={rosterCalls:0,planCalls:0};
 const scout=vm.runInNewContext('('+src.slice(a,b)+')',{TEAMS,
  roster:i=>(state.rosterCalls++,squads[i]),
  planFor:i=>(state.planCalls++,{lineup:[0,1,2,3,4,5]}),
- playerOVR:p=>p.ovr,escapeHTML,careerBenchReadinessPanel:()=>''});
+ playerOVR:p=>p.ovr,escapeHTML,careerBenchReadinessPanel:()=>'',careerLineupRoleFitPanel:()=>''});
 const career=()=>({club:0,roster:[{id:'x',condition:45},{id:'y',condition:80,injuryWeeks:2},{id:'z',condition:100}],
  table:{1:{p:5,w:3,d:1},2:{p:0,w:0,d:0},3:{p:2,w:0,d:2}},cash:9000000});
 test('no upcoming or invalid fixture renders nothing without reading opponent data',()=>{
