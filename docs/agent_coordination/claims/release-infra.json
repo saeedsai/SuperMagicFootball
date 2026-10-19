@@ -1,20 +1,11 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "release-infra",
-  "feature_id": "RELEASE-BROWSER-PREVIEW-GATE",
-  "owner": "smf-release-smoke-20261019",
-  "status": "released",
-  "scope": "Full Regression Census workflow: add real HTTP desktop/touch Playwright smoke as required pre-promotion gate; own release handover and claim. No gameplay, UI, roster or unrelated CI files.",
-  "base_sha": "a84aaa344f15da809072472ec03a9de077b29dee",
+  "feature_id": "RELEASE-MAIN-DISPATCH-SMOKE-FIX",
+  "owner": "smf-release-fix-20261019",
+  "status": "active",
+  "scope": "Only Full Regression Census workflow fix: hosted-pages-smoke must run for explicitly dispatched main workflow; add deployment freshness verification; own claim and handover.",
+  "base_sha": "d9a2838fbca850b28c7bf3296409b8971c7b532a",
   "created_at": "2026-10-19",
-  "renewed_at": "2026-10-19",
-  "acceptance": [
-    "Local HTTP game loads without page errors on desktop and simulated touch",
-    "Real Quick Match versus kickoff reaches play with four touch buttons",
-    "Promotion needs preview smoke as well as 9 regression jobs"
-  ],
-  "released_at": "2026-10-19",
-  "outcome": "Added desktop/touch HTTP Chromium preview smoke as pre-promotion gate; hosted Pages availability check on main workflow; explicit main dispatch after token-originated fast-forward. All source committed; no actual Actions or Pages green verification available.",
-  "handover": "docs/AUTO_PROMOTION_DEV_MAIN_20261019.md",
-  "integrated_commit": "37f91f4c450b856fc5174ba278300c11aad726fd"
+  "renewed_at": "2026-10-19"
 }
