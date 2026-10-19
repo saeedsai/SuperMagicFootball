@@ -585,6 +585,39 @@ function showEditor(){page('PLAYER DATA EDITOR','Edit your own 12-player team ro
 
 const eur=n=>'€'+(n/1000000).toFixed(1)+'m';
 const saveCareer=()=>{if(career)store.put('managerCareer',career)};
+// Pre-match natural-role suitability: advisory only; no plan/roster/save writes.
+// Fixed starting-six slots reflect the game's existing six-player role assignment.
+function careerLineupRoleFitPanel(c){
+ if(!Number.isInteger(c?.club)||!Array.isArray(c?.roster))return '';
+ const lineup=planFor(c.club)?.lineup,slots=['GK','DF','DF','MF','FW','FW'];
+ if(!Array.isArray(lineup)||lineup.length!==6||new Set(lineup).size!==6||
+  lineup.some(i=>!Number.isInteger(i)||i<0||!c.roster[i]))return '';
+ const squad=c.roster,selected=new Set(lineup),reserved=new Set();
+ const fitness=p=>{const n=p?.condition==null?100:Number(p.condition);return Number.isFinite(n)?Math.max(0,Math.min(100,n)):0;};
+ const mismatches=lineup.map((index,slot)=>({index,slot,expected:slots[slot],p:squad[index]}))
+  .filter(x=>x.p.role!==x.expected);
+ const matched=6-mismatches.length;
+ if(!mismatches.length)return '<div id="careerLineupRoleFit" aria-label="Starting lineup natural-position suitability"><p class="muted"><strong>ROLE FIT: 6/6</strong> natural positions. Your projected starting six matches its assigned roles.</p></div>';
+ const details=mismatches.slice(0,3).map(({p,slot,expected})=>{
+  const ready=squad.map((q,i)=>({q,i})).filter(({q,i})=>
+   q&&!selected.has(i)&&!reserved.has(i)&&q.role===expected&&
+   !(Number(q.injuryWeeks)>0)&&fitness(q)>=60);
+  ready.sort((a,b)=>fitness(b.q)-fitness(a.q)||
+   playerOVR(b.q,expected)-playerOVR(a.q,expected)||a.i-b.i);
+  const replacement=ready[0];
+  if(replacement)reserved.add(replacement.i);
+  const advice=replacement
+   ?`Consider ${escapeHTML(String(replacement.q.name||'Reserve'))} (${Math.round(fitness(replacement.q))}% fit) for the ${expected} role.`
+   :`No match-ready natural ${expected} reserve available.`;
+  return `<p class="muted" data-role-fit-slot="${slot}"><strong>Slot ${slot+1} ${expected}:</strong> ${escapeHTML(String(p.name||'Player'))} naturally plays ${escapeHTML(String(p.role||'?'))}. ${advice}</p>`;
+ }).join('');
+ return `<div id="careerLineupRoleFit" aria-label="Starting lineup natural-position suitability">
+  <h3 class="titleSmall">📋 STARTING SIX · ROLE FIT ${matched}/6</h3>
+  ${details}
+  ${mismatches.length>3?`<p class="muted">+${mismatches.length-3} additional role mismatches to review.</p>`:''}
+  <p class="muted">Natural-position advice only. Review Squad &amp; Tactics before kickoff; no automatic changes.</p>
+ </div>`;
+}
 // Read-only pre-kickoff scouting. No AI odds, plan edits, or career writes.
 function careerOpponentScoutPanel(c,fx){
  if(!fx||!Number.isInteger(fx.opponent)||!TEAMS[fx.opponent])return '';
@@ -621,6 +654,7 @@ function careerOpponentScoutPanel(c,fx){
   <p class="muted"><strong>SQUAD READINESS:</strong> ${fitness}</p>
   <p class="muted">Scouting advice only. Adjust tactics or squad separately; no automatic changes or costs.</p>
   ${careerBenchReadinessPanel(c)}
+  ${careerLineupRoleFitPanel(c)}
  </section>`;
 }
 // Advisory only: project the same saved six the next match actually uses.
