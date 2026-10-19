@@ -31,3 +31,14 @@ The GitHub connector confirmed commit `4a9b586cfbdc17da34b122f2bcfc375387b4b0c4`
 5. Continue gameplay improvements after full QA is green; coordinate separate gameplay claim.
 
 **Owner:** smf-auto-promotion-20261019; lock: release-infra; released after checkpoint.
+
+
+## 2026-10-19 follow-up — additional release gates
+
+The full census now has a `preview-smoke` job which serves the **real modular root over HTTP** and uses Playwright Chromium to navigate Quick Match → On Device → Versus → Kickoff on desktop and simulated touch. It asserts playable state, two teams, canvas and exactly four action buttons, and fails on JavaScript page errors. Promotion now depends on this job in addition to preflight and all eight regression shards. Source commit: `e5c0943cdd2208e9570bc8ddab71ca38d9bd2eca`.
+
+The `hosted-pages-smoke` job checks public GitHub Pages HTML, JS and CSS availability after a `main` workflow run, retrying for up to ~9 minutes. Source commit: `9a72c0be345f692adff3fb4288d8252e8b2324fb`. This check is **post-promotion**, not a pre-promotion gate, and checks availability rather than deployed commit provenance or full gameplay.
+
+**Important GitHub behavior:** a ref update made with the default `GITHUB_TOKEN` does **not** normally trigger another workflow's `push` event. The promotion job therefore explicitly dispatches Full Regression Census on `main` with `actions: write` (commit `7ddb58cb0601024269be3b7ff618a62a18840dce`). This produces a main QA + hosted Pages check if GitHub permissions allow it. It does **not** guarantee a Pages branch build will be triggered by the token-originated ref update; a separate Pages deployment workflow or an approved GitHub App token may be needed.
+
+**Still unverified:** native CI run result, real GitHub Pages release freshness, Actions write policy, protected-main update policy, physical phone. If any gate fails, the promotion job does not run. Do not claim end-to-end green until the exact SHA is independently observed in successful Actions jobs and hosted Pages.
