@@ -1,34 +1,32 @@
 # Gameplay / career feature chat checkpoint
 
 **Agent ID:** `gameplay-review-20261016`  
-**Updated:** 2026-10-18
+**Updated:** 2026-10-19
 
 ## Mission
 
-Improve playable gameplay and major game modes in small, exclusive, regression-backed `dev` batches. Preserve four controls, formations, exact player IDs, save format, art and other agents' changes.
+Deliver one small independent, regression-backed game update from live `dev` while respecting per-file multi-agent claims, saved squads, four controls and browser-playable game compatibility.
 
 ## Current checkpoint
 
-**Delivered UI-CAREER-BENCH-READINESS:** The Manager Career next-fixture opponent scout now shows **starting-six same-role reserve recommendations** for injured and below-60%-fit starters. Injuries take priority; only healthy unselected role-matched bench options are recommended, without duplicates; missing options are explicitly labelled. Advice only, no automatic substitutions, saved career or team plan writes. Escapes names, caps warnings to three, maintains 12-player identities.
+**UI-AUTO-VERSION-ABOUT:** The About screen now shows automatic unique combined update ID `v<BUNDLE>+dev.<12-char-Git-SHA>` and a clickable exact commit, refreshed on each visit. The stable `GAME BUNDLE` version remains visibly separate, and remote `dev` is explicitly **not** represented as the deployed Pages build. Each commit, including QA/docs, produces a new identifier without racing to edit hard-coded release versions.
 
-**Source:** [`3319e264`](https://github.com/saeedsai/SuperMagicFootball/commit/3319e2648958abc6243ff32fafc2bcad1fe813f5); [11 new Node cases `853dcd13`](https://github.com/saeedsai/SuperMagicFootball/commit/853dcd13b49ee6e9a4bc65628a82ac62698a57cb), [browser acceptance `7cf85e15`](https://github.com/saeedsai/SuperMagicFootball/commit/7cf85e15572041c7b8351101eeb8aee2fd0e30f6). Test harness integration corrections [`9d437ed1`](https://github.com/saeedsai/SuperMagicFootball/commit/9d437ed172027c4cc2b1ac2f9851831a35b5101d), [`90cf1058`](https://github.com/saeedsai/SuperMagicFootball/commit/90cf1058bd73654f5241d911bfb28d0f84225a0c), [`c179b69f`](https://github.com/saeedsai/SuperMagicFootball/commit/c179b69fd5175df5fbbfefc4662da52b238fab98); [handover](../../CAREER_BENCH_READINESS_20261018.md), [roadmap](../../NEXT_MILESTONES.md).
+Source: [`efde8650`](https://github.com/saeedsai/SuperMagicFootball/commit/efde865099d4a473c7df1fb00a6d39bc3932caca); tests [`7df63a22`](https://github.com/saeedsai/SuperMagicFootball/commit/7df63a221154ba087e90f05f4fa4bcee9910edaa), [`e37a2430`](https://github.com/saeedsai/SuperMagicFootball/commit/e37a2430a3c702d560a765706c12ad8065e54b7c); source comment + full census trigger [`b70a07aa`](https://github.com/saeedsai/SuperMagicFootball/commit/b70a07aa2582297d03ff58c8983bc8392fe7b339). Policy updated `docs/VERSIONING_POLICY.md`.
 
-Prior: two-human penalty goalkeeper controls, opponent scout and solo CPU score-aware halftime tactics already completed; retain their specialist reports.
+Earlier: Manager Career bench readiness [`3319e264`](https://github.com/saeedsai/SuperMagicFootball/commit/3319e2648958abc6243ff32fafc2bcad1fe813f5), opponent scouting and manual two-human penalty GK control already delivered; see own specialist handovers.
 
 ## Next smallest action
 
-Read current GitHub `dev`, active claims and **this file only**; never read/edit another chat's memory. [Modular QA #39106052005](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106052005) **283/283 Node PASS** including 11 new cases, About revision and previous scouting. [Full Census #39106016620](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106016620) completed **4/4 Node shards PASS; 84/85 browser PASS**: `career_bench_readiness_browser_qa.py` desktop/simulated touch **PASS 4.36s**. Sole fail unrelated keeper-roll `blocked:false` in [issue #38](https://github.com/saeedsai/SuperMagicFootball/issues/38), owned by another `gameplay-engine` agent. Later #39106045586 repeated this; newer #39106207590 was still running. Do not change another owner's engine/roll tests. [Pages #39105994538](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39105994538) SUCCESS at a GitHub-verified feature-descendant SHA. Physical Android/iOS and external live interactive click-through not certified.
-
-Next feature only after locks: opt-in lineup substitution, first-touch/GK calibration, Android dribble double-tap #3, classic competition/PWA.
+Check actual hosted Pages deployment and whether [issue #12](https://github.com/saeedsai/SuperMagicFootball/issues/12) (the *exact installed/deployed build commit*, even offline) has a coordinated release-infra owner. Don't change service worker or CI under another agent claim. Full census at [#39212131199](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39212131199) passed preflight and all four Node shards; at this checkpoint the four browser shards were still running. Re-check before quoting a complete result. [Issue #38](https://github.com/saeedsai/SuperMagicFootball/issues/38) tracked an unrelated keeper-roll browser regression.
 
 ## Ownership and exclusions
 
-Own `ui-controls` exclusive key `gameplay-review-20261018-gpt6-career-bench-r8` **release with handover**. Edited only `src/modules/ui.js`, new tests, prior same-chat scouting VM extractor and own specialist/roadmap/memory. Never touch active `gameplay-engine`, audio, art, data, another memory, shared QA, CI or service worker. About shows dynamic current `dev` SHA (distinct game bundle `0.8.25.32-integrated`).
+Current session `gameplay-review-20261019-gpt6-version-r9` claimed `ui-controls` solely for About revision label and its two specific tests, own memory, and canonical version-policy explanation. Release claim at finish. Did not edit engine, graphics, rosters, gameplay controls, QA harness, other chats' memory, build workflows or deployed site; `release-infra` not claimed.
 
 ## Evidence
 
-[Run #39106052005](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106052005) Node green; [run #39106016620](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106016620) feature browser green; [issue #38](https://github.com/saeedsai/SuperMagicFootball/issues/38) independent full-census blocker.
+[Modular QA #39212065960](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39212065960) **284/284 Node PASS** including new About version tests; [Modular QA #39212131066](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39212131066) SUCCESS at last About source commit. Full Census [#39212131199](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39212131199) was in progress. No physical-device or separate hosted-version interactive claim.
 
 ## Cleanup
 
-Checked current tracked source for generated/cache files; no safe stale files identified. Preserve historical QA/art provenance and keep this note below 4 KiB.
+No non-versioning game files changed or deleted; kept own memory concise and removed outdated lock assumptions. Git history retains past work.
