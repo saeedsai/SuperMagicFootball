@@ -1,26 +1,16 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "release-infra",
-  "feature_id": "ART-C01-TORSO-SW-CACHE",
-  "owner": "graphics-update-c01-front-torso-20261018-gpt6-r5",
-  "status": "released",
-  "scope": "Only sw.js append front-torso SVG to pre-cache and advance offline cache key. No CI workflow changes, release version/UI/other assets.",
-  "base_sha": "3319e2648958abc6243ff32fafc2bcad1fe813f5",
-  "created_at": "2026-10-18",
-  "renewed_at": "2026-10-18",
-  "handover": "docs/concept_character_pipeline/C01_FRONT_JERSEY_BATCH_20261018.md; docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md; source art commit 8eabd88e4126ff9446ab21d4ee78e65914c55a62; graphics #39106049047 PASS 8/8 focused, 283/283 Node and desktop/touch; hosted #39106049102 PASS; full census #39106207590 FAIL 8/9 unrelated keeper roll issue #38; release screenshot/real-phone owner approval pending; next separate task reversible old-arm occlusion",
-  "released_at": "2026-10-18",
-  "outcome": "C01 seventh SVG included in offline cache with unique version; live Pages verified SVG HTTP 200",
-  "final_source_commit": "465d0635b85d996e8f2d4f037e8d3f53d65d5712",
-  "tests": [
-    "python3 scripts/validate_concept_modular.py",
-    "python3 scripts/build.py",
-    "node --test tests/concept_modular_v1.test.cjs",
-    "node --test tests/*.test.cjs",
-    "python3 tests/concept_modular_browser_qa.py",
-    "python3 tests/concept_modular_live_qa.py",
-    "Full Regression Census",
-    "About revision tests"
-  ],
-  "final_art_commit": "8eabd88e4126ff9446ab21d4ee78e65914c55a62"
+  "feature_id": "CI-AUTOMATIC-FULL-REGRESSION",
+  "owner": "smf-autonomous-ci-20261019",
+  "status": "active",
+  "scope": "Only .github/workflows/full-regression-census.yml, own release QA handover, own claim. Enable full regression on every dev push and main PR; no main merge, no branch protection changes",
+  "base_sha": "28b610986ffb99e4bbea71d044b52cdfd8aa9294",
+  "created_at": "2026-10-19",
+  "renewed_at": "2026-10-19",
+  "acceptance": [
+    "Every push to dev triggers Full Regression Census without manual dispatch",
+    "All existing preflight and 4+4 shard tests preserved",
+    "No main merge without independently verified green checks"
+  ]
 }
