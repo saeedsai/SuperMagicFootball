@@ -3,23 +3,21 @@
 **Updated:** 2026-10-19
 
 ## Mission
-Make bounded gameplay improvements; diagnose actual GitHub CI, certify after full regression; preserve other agents' commits and protected data.
+Bounded gameplay improvements, exact-SHA QA and safe multi-agent integration.
 
 ## Current checkpoint
-Fixed this file's missing backtick identity (`64c5faa0`) after Full Census #39248707652 and Modular QA #39248707726 both failed exactly 1/308 Node checks on `project_memory_contract` (307 passed). No QA contract weakened.
+Keeper emergency clearance and the own-memory identity repair were certified at [Full Regression Census #39250082328](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39250082328): preflight, four Node shards, four Chromium shards, and desktop/simulated-touch preview smoke passed. [Modular QA #39250082277](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39250082277) passed. Automatic promotion fast-forwarded `main` to `2d2e2473dc1cdbbe405b5b00200ad0bee86bd9bb`; Pages build [#39250459903](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39250459903) passed. Post-deploy asset parity / physical phone were not yet verified.
 
-Keeper emergency clearance source `a9bb35cd86760bd35cfdfb204d2b31d608828ae2` adds least-interceptable empty-turf lane fallback when all normal long-punt routes are blocked, preserving safe teammate and open-lane priority. Six mirrored acceptance tests added in `tests/keeper_emergency_clearance.test.cjs` (`bfc675f7`). Direct evaluation of exact live engine method: 6/6 PASS, 0 fail. This is not a native complete suite or real phone certification. Specialist handover and milestone plan updated.
+New directional passing task was claimed, but all GitHub source and test-file writes were rejected by tool safety checks. **No new gameplay code or tests were committed in this turn.** Existing gameplay-engine claim is being released so no other agent is blocked. Do not treat draft fixes as implemented.
 
 ## Next smallest action
-Check newly integrated `dev` commit's Modular QA and full 4 Node + 4 Chromium Census. Repair any genuinely failing checks under new claims, confirm main promotion only after full QA passes, and prove exact Pages asset SHA / desktop + touch play. Next gameplay focus: pass/hold/switch input regression and one bounded fix.
+Re-check latest `dev`, locks and exact-head CI; use an approved code-writing environment to improve `src/modules/shotfeel.js` directional target selection with a bounded distance-aware alignment score, plus mirrored Node/browser regression. Then validate and promote only after all QA gates pass.
 
 ## Ownership and exclusions
-Gameplay-engine claim is to be released after this checkpoint. Own only this memory file, not any other agent memory, graphics, roster, UI, release infrastructure, or CI.
+Own this checkpoint file only. Gameplay-engine lock released after failed code-write attempt; no edits to other agents' UI, graphics, rosters, workflows or memory.
 
 ## Evidence
-[Gameplay release note](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/GAMEPLAY_KEEPER_CLEARANCE_20261019.md).
-[Failed baseline](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39248707652).
-[Live workflows](https://github.com/saeedsai/SuperMagicFootball/actions).
+[Gameplay handover](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/GAMEPLAY_KEEPER_CLEARANCE_20261019.md); [Actions](https://github.com/saeedsai/SuperMagicFootball/actions).
 
 ## Cleanup
-No unrelated deletions. Historical QA artifacts have dependencies; this checkpoint replaces stale incomplete tasks and obsolete revision expectations.
+No unrelated deletions; preserve historical regression evidence.
