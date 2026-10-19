@@ -1,21 +1,17 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "ui-controls",
-  "feature_id": "UI-CAREER-BENCH-READINESS",
-  "owner": "gameplay-review-20261018-gpt6-career-bench-r8",
-  "status": "released",
-  "created_at": "2026-10-18",
-  "renewed_at": "2026-10-18",
-  "base_sha": "ea79c28bc84811488de7c13c88bd7a90cef67c63",
-  "scope": "Only src/modules/ui.js career pre-match read-only same-role bench readiness panel underneath existing scout, with injuries and fitness selection; tests/career_bench_readiness.test.cjs and tests/career_bench_readiness_browser_qa.py; strictly minimal compatibility tweak to this chat's previous tests/career_opponent_scout.test.cjs VM extraction boundary so it ignores the new separate helper; docs/CAREER_BENCH_READINESS_20261018.md; bounded docs/NEXT_MILESTONES.md update; this chat's own docs/memory/agents/gameplay-review-20261016.md. No engine, input, graphics, audio, rosters, source data, saved career or tactical plan writes, QA runner, CI, build, service worker, release infra, cross-chat memory.",
+  "feature_id": "UI-AUTO-VERSION-ABOUT",
+  "owner": "gameplay-review-20261019-gpt6-version-r9",
+  "status": "active",
+  "created_at": "2026-10-19",
+  "renewed_at": "2026-10-19",
+  "base_sha": "b7b69b762325a623a60085d8881544430402f671",
+  "scope": "Only src/modules/ui.js refreshAboutDevRevision/three About labels; tests/about_revision.test.cjs and tests/versioning_policy_contract.test.cjs; existing docs/VERSIONING_POLICY.md policy explanation; this chat's own docs/memory/agents/gameplay-review-20261016.md. No release-infra, service worker, engine, assets, roster, game rules, other agent memory or shared docs.",
   "tests": [
-    "node --test tests/career_bench_readiness.test.cjs tests/career_opponent_scout.test.cjs tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
-    "standard Node full suite",
-    "4 Node+4 Chromium census",
-    "career_bench_readiness_browser_qa.py desktop simulated touch"
+    "node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
+    "Modular Game Dev QA Node suite",
+    "Full Regression Census existing browser tests"
   ],
-  "handover": "docs/CAREER_BENCH_READINESS_20261018.md; docs/NEXT_MILESTONES.md; docs/memory/agents/gameplay-review-20261016.md; https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106052005; https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106016620; https://github.com/saeedsai/SuperMagicFootball/issues/38",
-  "released_at": "2026-10-18",
-  "final_checkpoint_commit": "14c1025b2ac883ceaef8faa38d566bc2b335a80a",
-  "outcome": "Delivered read-only Career Manager same-role bench recommendations for low-fitness/injured projected starting-six players; 11 source-executed Node tests PASS, integrated 283/283 Node PASS; real desktop+simulated touch browser PASS; Pages deployment succeeded on descendant of feature. Full 4+4 census 4 Node shards PASS, 84/85 Chromium PASS: sole failure is separately owned keeper_roll_distribution_browser_qa.py, issue #38."
+  "handover": "docs/VERSIONING_POLICY.md"
 }
