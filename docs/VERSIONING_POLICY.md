@@ -5,9 +5,9 @@
 ## Two different identifiers (do not confuse them)
 
 1. **Game bundle version** (e.g., `0.8.25.32-integrated`): identifies the established playable release/bundle, save/export compatibility and semantic release milestone. This does **not** need to be manually incremented for unrelated documentation or tiny independent Git commits; change it as a coordinated **release change**, not as an unclaimed UI edit.
-2. **Per-commit development revision**: the full GitHub `dev` commit SHA uniquely identifies **every** commit, even if the human-readable version is unchanged. The existing **CREDITS / ABOUT** screen displays this as a linked 12-digit abbreviation, fetched with `cache:'no-store'` when the menu is visited. After every new commit, reopening About while online should fetch the new SHA. Never delete this feature, replace it with a hard-coded commit ID, or claim it identifies the already-deployed browser code.
+2. **Per-commit development revision**: the full GitHub `dev` commit SHA uniquely identifies **every** commit, even if the human-readable version is unchanged. The **CREDITS / ABOUT** screen now presents this as a visible combined version label, `v<BUNDLE>+dev.<12-char-SHA>` (for example `v0.8.25.32-integrated+dev.abcdef012345`), linking to the complete exact Git commit. The SHA is fetched with `cache:'no-store'` every time About opens; after every push, re-opening About online identifies that update. This auto-version label covers **all commits**, including docs/tests, without agents racing to edit a shared SemVer string. Never remove the mechanism, freeze the SHA, or claim the *remote* dev version is the already-deployed browser code.
 
-**Important:** if the GitHub Pages build is behind `dev`, About explicitly labels the SHA as **Latest GitHub development commit**, not as the current installed/deployed build. When offline or GitHub API is unavailable, the application retains its bundle version and shows a graceful "unavailable offline" status. Offline per-commit build verification will require a separately implemented **deployment-embedded revision**; do not pretend the online API provides that.
+**Important:** if the GitHub Pages build is behind `dev`, About explicitly labels its composite version as **Latest GitHub development commit · auto-versioned after every update**, **not** as the current installed/deployed build. When offline or GitHub API is unavailable, the application retains its bundle version and shows a graceful "unavailable offline" status. Offline per-commit build verification will require a separately implemented **deployment-embedded revision**; do not pretend the online API provides that.
 
 ## Required workflow for EVERY agent
 
@@ -21,8 +21,8 @@
 
 ## Regression contract and gap
 
-- `tests/about_revision.test.cjs` verifies the About UI's live SHA, on-revisit refresh, offline behavior and developer info.
-- `tests/versioning_policy_contract.test.cjs` verifies all-agent governance pointers and About's unique SHA retrieval contract. Both are picked up by the existing Node CI glob.
+- `tests/about_revision.test.cjs` verifies the About UI's live SHA, unique `v<BUNDLE>+dev.<SHA>` label, on-revisit refresh, offline behavior and developer info.
+- `tests/versioning_policy_contract.test.cjs` verifies all-agent governance pointers and enforces About's unique composite-version label + SHA retrieval contract. Both are picked up by the existing Node CI glob.
 - Known gap: **exact deployed bundle SHA**, visible even offline, has not been built into the site by this policy-only change. This requires a coordinated `release-infra` + `ui-controls` feature, e.g., a deployment-time embedded revision manifest tested against GitHub Pages. Never bypass an active UI claim.
 
 The agent instructions/CI cover compliant agents, not arbitrary external pushes. For hard enforcement of release tagging or actual deployed build IDs, protect `dev` and require checks/PR review.
