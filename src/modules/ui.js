@@ -216,7 +216,8 @@ async function refreshAboutDevRevision(node,request=fetch){
   if(!node.isConnected)return;
   const link=document.createElement('a');
   link.href='https://github.com/saeedsai/SuperMagicFootball/commit/'+sha.toLowerCase();
-  link.textContent='dev @ '+sha.slice(0,12);
+  const bundle=window.SupermagicFootball?.version||'0.8.25.32-integrated';
+  link.textContent='v'+String(bundle)+'+dev.'+sha.slice(0,12);
   link.target='_blank';link.rel='noopener noreferrer';
   node.replaceChildren(link);
  }catch(_error){
@@ -225,7 +226,7 @@ async function refreshAboutDevRevision(node,request=fetch){
 }
 function showAbout(){
  const bundle=escapeHTML(window.SupermagicFootball?.version||'0.8.25.32-integrated');
- page('ABOUT SUPERMAGIC FOOTBALL','Original offline cartoon arcade football.',`<div class="panel"><p id="aboutBundleVersion">GAME BUNDLE · ${bundle} · Independent football game with original graphics and audio.</p><p><strong>Developer: Saeed</strong> · <a href="mailto:saeedmsalehi1990@gmail.com">saeedmsalehi1990@gmail.com</a></p><p class="muted">Latest GitHub development commit (refreshes each About visit): <span id="aboutDevRevision" role="status" aria-live="polite">Checking latest dev commit online…</span></p><p class="muted">The commit above tracks the latest GitHub dev changes; GitHub Pages deployment can lag behind it. Four action buttons · ${TEAMS.length} teams · saved locally on your device.</p>${button('← MAIN MENU','home','gold')}</div>`,'home');
+ page('ABOUT SUPERMAGIC FOOTBALL','Original offline cartoon arcade football.',`<div class="panel"><p id="aboutBundleVersion">GAME BUNDLE · ${bundle} · Independent football game with original graphics and audio.</p><p><strong>Developer: Saeed</strong> · <a href="mailto:saeedmsalehi1990@gmail.com">saeedmsalehi1990@gmail.com</a></p><p class="muted">Latest GitHub development commit · auto-versioned after every update (not necessarily the deployed build): <span id="aboutDevRevision" role="status" aria-live="polite">Checking latest dev commit online…</span></p><p class="muted">The commit above tracks the latest GitHub dev changes; GitHub Pages deployment can lag behind it. Four action buttons · ${TEAMS.length} teams · saved locally on your device.</p>${button('← MAIN MENU','home','gold')}</div>`,'home');
  const revision=document.getElementById('aboutDevRevision');
  if(revision)void refreshAboutDevRevision(revision);
 }
