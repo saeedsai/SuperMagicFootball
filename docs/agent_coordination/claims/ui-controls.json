@@ -3,7 +3,7 @@
   "lock_key": "ui-controls",
   "feature_id": "UI-AUTO-VERSION-ABOUT",
   "owner": "gameplay-review-20261019-gpt6-version-r9",
-  "status": "active",
+  "status": "released",
   "created_at": "2026-10-19",
   "renewed_at": "2026-10-19",
   "base_sha": "b7b69b762325a623a60085d8881544430402f671",
@@ -13,5 +13,8 @@
     "Modular Game Dev QA Node suite",
     "Full Regression Census existing browser tests"
   ],
-  "handover": "docs/VERSIONING_POLICY.md"
+  "handover": "docs/VERSIONING_POLICY.md; docs/memory/agents/gameplay-review-20261016.md; https://github.com/saeedsai/SuperMagicFootball/actions/runs/39212131066; https://github.com/saeedsai/SuperMagicFootball/actions/runs/39212131199",
+  "released_at": "2026-10-19",
+  "outcome": "Per-commit visible About combined version v<BUNDLE>+dev.<SHA> and two Node test contracts updated, 284/284 Node PASS, full Node census 4/4 PASS with browser shards pending. Remote SHA is clearly not hosted version.",
+  "final_source_commit": "b70a07aa2582297d03ff58c8983bc8392fe7b339"
 }
