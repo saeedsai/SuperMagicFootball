@@ -988,6 +988,7 @@ class GameEngine{
  keeperClearanceTarget(p,scored,opponents){
   const dir=p.t===0?1:-1;
   const candidates=[];
+  const emergency=[];
   const midfield=F.x+F.w*.5;
   for(const v of scored){
    // A marked teammate or an intercepted route is never a clearance target.
@@ -1003,14 +1004,24 @@ class GameEngine{
    const y=F.y+F.h*lane;
    const safety=Math.min(...opponents.map(o=>Math.hypot(o.x-x,o.y-y)),9999);
    const path=this.keeperPassingLane(p,{x,y});
-   // Empty-space punts must also avoid obvious interception corridors.
-   // A distant open landing point is not safe if an opponent stands in the flight path.
-   if(!path.clear)continue;
+   // A seemingly empty landing point is unsafe when its flight corridor is intercepted.
+   if(!path.clear){
+    // When absolutely every lane is blocked, minimize interception danger
+    // instead of always punting down the same predictable central corridor.
+    // Cap outlier distances so no one metric can conceal an interception risk.
+    const riskScore=Math.min(path.interception,1000)*1.8+
+     Math.min(path.endpoint,1000)*.30+Math.min(safety,1000)*.15+
+     (x-p.x)*dir*.025;
+    emergency.push({x,y,receiver:null,score:riskScore});
+    continue;
+   }
    candidates.push({x,y,receiver:null,score:safety*.85+path.interception*.30+(x-p.x)*dir*.12});
   }
   candidates.sort((a,b)=>b.score-a.score);
   const best=candidates[0];
-  return best&&best.score>0?best:{x:midfield+dir*F.w*.15,y:F.y+F.h*.5,receiver:null};
+  if(best&&best.score>0)return best;
+  emergency.sort((a,b)=>b.score-a.score);
+  return emergency[0]||{x:midfield+dir*F.w*.15,y:F.y+F.h*.5,receiver:null};
  }
  distributeKeeper(p,mode='auto'){
   if(!p?.keeper||this.ball.owner!==p||p.stun>0)return false;
