@@ -3,23 +3,23 @@
 **Updated:** 2026-10-19
 
 ## Mission
-Resume bounded gameplay-first progress toward the agreed full feature scope, without overwriting concurrent agents. Work on latest dev, use explicit feature claims, require exact SHA QA before release.
+Ship small gameplay-first features and close CI regressions on latest GitHub dev; preserve multi-agent ownership, source identities and playable release.
 
 ## Current checkpoint
-Claim `GAMEPLAY-DIRECTIONAL-RECEIVER-RANKING-20261019` / lock `gameplay-engine` acquired successfully through the connected GitHub Contents API. The previous GitHub code-write blocker has been resolved: `src/modules/shotfeel.js` directional receiver scoring now uses alignment with a small range cost and excludes invalid or stunned target objects. Focused contract tests added at `tests/directional_pass_target_safety.test.cjs`. No changes to engine.js, UI, input, graphics, rosters, saves or CI.
+**Directional passing improvement delivered:** `src/modules/shotfeel.js` selects receiver using directional alignment plus modest distance cost; invalid, stunned or self-target receivers excluded, previous control/return contracts preserved. New `tests/directional_pass_target_safety.test.cjs` passed 12/12 native Node locally. Feature documentation: `docs/GAMEPLAY_KEEPER_CLEARANCE_20261019.md`. Source/test commits `7f852db` / `46cac9f`.
 
-Commits: source `7f852dbf2421d313355bb2665befc4c15b9a05d1`; tests `46cac9f6ce60c94c67b95ca7b109dc8afe2f9809`; specialist handover `15a61fe5a057e7a3c0c324d53c74723668e50e1d`. Local Node `12/12` PASS; source syntax PASS. [Modular QA exact docs SHA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39269053687) PASS. [Full Census exact docs SHA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39269053774) pending at time of checkpoint. Do not count historic CI as proof of this release. main/Pages must not advance without exact-head full regression + desktop/simulated-touch pass.
+**Browser regression repaired:** Full Census [#39269053774](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39269053774) found intermittent simulated-Android player switch failure (input event not seen before poll). Under `qa-framework` claim changed only `tests/control_reliability_browser_qa.py` to wait for the actual completed touch pulse; real switch behavior assertions remain enforced. Commit `c14bfc1472ee3795e3c95cf4bb0868afbd74a0af`.
+
+**Exact-source QA certified:** [Full Regression Census #39270055825](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39270055825) green: 326/326 Node preflight, 154/154 historical/current Node scripts (four shards), 86/86 Chromium browser scripts (four shards), actual modular desktop/simulated-touch HTTP kickoff, automatic dev-to-main fast-forward. Modular QA for c14 SHA [#39270055628](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39270055628) green. GitHub main advanced to `c14bfc1472ee3795e3c95cf4bb0868afbd74a0af`. Pages deployment / exact hosted asset parity **not yet certified in this checkpoint**; do not call this physical mobile device testing.
 
 ## Next smallest action
-Check newest dev and current live gameplay-engine claim; check Full Regression Census for the final SHA. If all checks are green and no other agent has advanced dev, coordinate the existing safe fast-forward dev-main workflow and verify Pages hashes and browser smoke. If CI fails, fix the exact failing test within owned scope, else hand off to its current owner.
-
-Next scoped mechanics priorities: real-match input/passing tests, keeper short pass under pressure, reception visuals (graphics claim), Career substitutions (UI claim), LAN two-peer design/prototype under separately scoped claim.
+Confirm hosted Pages deployment and exact-main asset parity; check current newest dev/main and fresh CI before claiming live status. Next bounded gameplay-first requirement: keeper short distribution under pressure, then aimable pass/live match reliability, reception follow-through graphics, Career substitutions, isolated LAN two-peer architecture. Use latest live owner claims, add focused test and full QA.
 
 ## Ownership and exclusions
-Own this agent memory file only. Current gameplay claim must be checked live every run; never infer continued ownership from this note. Do not edit agent index or shared memory under another claim. Do not touch others' UI, graphics, player database, workflows, release or QA harnesses without separate lock.
+`gameplay-engine` claim released with handover. `qa-framework` claim for the Android touch timing test should be released with this checkpoint. Own memory file only. Do not edit shared memory, agent index, engine.js, UI, graphics, roster/CI workflows without matching claimed ownership.
 
 ## Evidence
-[Directional gameplay handover](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/GAMEPLAY_KEEPER_CLEARANCE_20261019.md); [all Actions](https://github.com/saeedsai/SuperMagicFootball/actions).
+[Gameplay handover](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/GAMEPLAY_KEEPER_CLEARANCE_20261019.md), [GitHub Actions](https://github.com/saeedsai/SuperMagicFootball/actions).
 
 ## Cleanup
-Retain referenced old QA evidence and live asset files; no broad unrelated deletions.
+No unrelated deletions; historical QA/artifact files are retained.
