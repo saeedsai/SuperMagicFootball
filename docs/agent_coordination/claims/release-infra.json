@@ -3,7 +3,7 @@
   "lock_key": "release-infra",
   "feature_id": "CI-AUTOMATIC-FULL-REGRESSION",
   "owner": "smf-autonomous-ci-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Only .github/workflows/full-regression-census.yml, own release QA handover, own claim. Enable full regression on every dev push and main PR; no main merge, no branch protection changes",
   "base_sha": "28b610986ffb99e4bbea71d044b52cdfd8aa9294",
   "created_at": "2026-10-19",
@@ -12,5 +12,9 @@
     "Every push to dev triggers Full Regression Census without manual dispatch",
     "All existing preflight and 4+4 shard tests preserved",
     "No main merge without independently verified green checks"
-  ]
+  ],
+  "released_at": "2026-10-19",
+  "outcome": "Full regression now triggers automatically on every dev/main push; existing 4 Node + 4 Chromium shards preserved. No verified post-change CI results yet.",
+  "integrated_commit": "e4263a8dc97cd73e47210112bbe8bfae7add9b8e",
+  "handover": "docs/AUTOMATED_FULL_QA_20261019.md"
 }
