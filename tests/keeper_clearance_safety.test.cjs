@@ -10,7 +10,9 @@ const end=source.indexOf('\n distributeKeeper(p,mode=',start);
 assert(start>0&&end>start,'production keeper clearance methods missing');
 const F={x:0,y:0,w:1800,h:1200};
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
-const methods=vm.runInNewContext('({'+source.slice(start,end)+'})',{
+const extracted=source.slice(start,end).replace('\n keeperClearanceTarget(', '\n ,keeperClearanceTarget(');
+assert(extracted.includes(',keeperClearanceTarget('),'both production methods must be extracted');
+const methods=vm.runInNewContext('({'+extracted+'})',{
  F,distance,clamp:(v,min,max)=>Math.max(min,Math.min(max,v))
 });
 function fixture(t=0){
