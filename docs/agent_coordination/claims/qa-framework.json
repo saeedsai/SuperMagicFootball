@@ -1,22 +1,11 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "qa-framework",
-  "feature_id": "QA-FIRST-TOUCH-FPS-MIRROR-ACCEPTANCE",
-  "owner": "gameplay-review-20261017-gpt6-firsttouch-qa-r7",
-  "status": "released",
-  "scope": "Add tests/first_touch_mirror_fps.test.cjs and tests/first_touch_mirror_fps_browser_qa.py as independent acceptance of the existing production first-touch mechanic at 30/60/120fps, both teams, pressured/unpressured, stun/aerial/keeper exclusions and input parity; docs/GAMEPLAY_FIRST_TOUCH_FPS_MIRROR_20261017.md and concise milestone addendum. No gameplay engine, render, UI/input, audio, graphics, roster, save, build, scripts/test runner, CI/workflows, project or other agent memory modifications.",
-  "base_sha": "44545a0ed00a1e44a920d463b97f89c18f9bdaab",
-  "created_at": "2026-10-17",
-  "renewed_at": "2026-10-17",
-  "tests": [
-    "source evaluation 30/60/120 multi-step and side mirror",
-    "actual Chromium Quick Match desktop/touch game engine receptions, event and input integrity",
-    "About revision tests",
-    "Modular Game Dev QA; 4+4 Full Regression Census; hosted PC/touch smoke"
-  ],
-  "handover": "docs/GAMEPLAY_FIRST_TOUCH_FPS_MIRROR_20261017.md; issue #27 full Census trigger; issue #13 memory contract; https://github.com/saeedsai/SuperMagicFootball/actions/runs/39025635271",
-  "released_at": "2026-10-17",
-  "final_source_commit": "9a56bfc302aa75c969a2aca1441336a51e643eb0",
-  "final_test_fix_commit": "3c2feb664feb6ce58f8146d1027c8c7aecc7380e",
-  "outcome": "Existing live first-touch mechanic gained 30/60/120fps dual-side, pressure, control-skill, exclusion and mirrored acceptance: six Node cases PASS. Overall Modular QA 261/262 due to independently-owned graphics memory heading; new browser FPS script added but direct full Census missing workflow push trigger, tracked Issue #27. Hosted Pages desktop+simulated-touch Quick Match smoke SUCCESS after deployed descendant. No game source altered."
+  "feature_id": "QA-RELEASE-GATE-CONTRACT",
+  "owner": "smf-qa-release-contract-20261019",
+  "status": "active",
+  "scope": "Add standalone Node regression contract test for automatic release workflow: exact-head, full gates, no force, dispatch main and hosted hash checks; own claim. No workflow or gameplay edits.",
+  "base_sha": "e1a801a7b28efab78f09e3a09dbdfa73a6eeb0b5",
+  "created_at": "2026-10-19",
+  "renewed_at": "2026-10-19"
 }
