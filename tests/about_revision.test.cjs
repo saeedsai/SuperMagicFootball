@@ -94,7 +94,7 @@ test('About displays versioned commit label while keeping deployed bundle distin
  const [, ,html]=app.shown();
  assert.match(html,/auto-versioned after every update/);
  assert.match(html,/not necessarily the deployed build/);
- assert.match(html,/GAME BUNDLE · 0\\.8\\.25\\.32-integrated/);
+ assert.match(html,/GAME BUNDLE · 0\.8\.25\.32-integrated/);
  await app.api.refreshAboutDevRevision(app.node);
- assert.match(app.node.children[0].textContent,/^v0\\.8\\.25\\.32-integrated\\+dev\\.[a-f0-9]{12}$/);
+ assert.match(app.node.children[0].textContent,/^v0\.8\.25\.32-integrated\+dev\.[a-f0-9]{12}$/);
 });
