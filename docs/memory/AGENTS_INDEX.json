@@ -1,6 +1,6 @@
 {
   "schema": "smf-chat-memory-index/1",
-  "updated": "2026-10-16",
+  "updated": "2026-10-19",
   "note": "Known project chats visible when bootstrapped. A chat absent from this list must register a distinct ID; IDs do not assert GitHub lock ownership.",
   "agents": [
     {
@@ -67,6 +67,11 @@
       "id": "gameplay-tactical-audio-20261016-gpt6-s16",
       "label": "Game Developer — Tactical Gameplay Audio",
       "path": "docs/memory/agents/gameplay-tactical-audio-20261016-gpt6-s16.md"
+    },
+    {
+      "id": "smf-hourly-dev-20261019",
+      "label": "SuperMagicFootball hourly development",
+      "path": "docs/memory/agents/smf-hourly-dev-20261019.md"
     }
   ]
 }
