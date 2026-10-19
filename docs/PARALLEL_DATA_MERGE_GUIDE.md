@@ -79,3 +79,12 @@ Example informational response fragment:
 ```
 
 **This is a review cue, not another merge blocker.** Existing conflicting edit detection, immutable team/player ID/ordering checks, graphics-reference validation, dry-run immutability and no-overwrite safeguards remain unchanged. No game or player data is automatically changed; editors must continue independently confirming FC27 values or trusted fallback sources. [Implementation and QA checkpoint](MERGE_SOURCE_REVIEW_HANDOVER_20261016.md).
+
+
+## Optional strict player-source review gate (19 October 2026)
+
+When integrating external-agent edits to player identity, positions, ratings or other source-sensitive attributes, append `--require-source-review-clean` to the merge command. This opt-in flag returns exit code **1** and reports `status: SOURCE_REVIEW_REQUIRED` if any player edit is flagged in `sourceReview`, even when the semantic merge has zero conflicts. **No merged files are written** in that case, including with `--out`. It does not interpret changed URLs as verified evidence.
+
+Default behavior is unchanged: without the flag, a conflict-free merge still returns `PASS` with informational `sourceReview` entries. For legitimate reviewed changes, run the standard merge only after independent source verification and reviewer approval; the tool itself cannot certify FC27 data or source credibility.
+
+Regression: `python3 -m unittest discover -s tests -p 'test_parallel_merge_source_review_gate.py' -v` covers blocked output, unchanged default behavior, and clean strict-mode output.
