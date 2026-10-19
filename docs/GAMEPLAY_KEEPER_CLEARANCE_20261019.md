@@ -33,3 +33,9 @@ Source commit `03f93a71312299be6be58ac920e40dfb6790431c`; tests commit `f6f43f94
 5. Improve career substitutions/coaching feedback, then review LAN multiplayer architecture as a separately scoped major feature.
 
 No unrelated file cleanup: old QA evidence may be referenced by regressions.
+
+## Follow-up: open-turf flight corridor guard (19 October 2026)
+
+A keeper's long clearance previously considered an empty-turf landing point even if the route to that point was intercepted. `keeperClearanceTarget()` now excludes such candidates using the existing `keeperPassingLane().clear` result, while preserving safe teammate targets and the existing fallback when every candidate is blocked. This affects only long clearance target selection; input mappings, player data, physics, short throws and roll controls are unchanged.
+
+Regression added: `tests/keeper_clearance_corridor.test.cjs` (four mirrored Node cases: open landing corridor and safe receiver retention for both teams). Run `node --test tests/keeper_clearance_corridor.test.cjs tests/keeper_clearance_safety.test.cjs`, followed by full Node and Chromium census. A source commit and test commit are not evidence of successful CI or production deployment. Remaining edge case: all nine open-turf corridors blocked uses existing deterministic fallback and should be calibrated separately.
