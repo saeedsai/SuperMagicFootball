@@ -160,6 +160,7 @@ jobs:
     needs: [preflight, node-regression, browser-regression, preview-smoke]
     permissions:
       contents: write
+      actions: write
     timeout-minutes: 5
     steps:
       - name: Verify green QA, exact dev HEAD and fast-forward ancestry
@@ -190,6 +191,9 @@ jobs:
           gh api --method PATCH "repos/$GH_REPO/git/refs/heads/main" \
             -f sha="$CERTIFIED_SHA" -F force=false >/dev/null
           echo "Promoted QA-certified $CERTIFIED_SHA to main."
+          # GITHUB_TOKEN pushes do not trigger ordinary push workflows.
+          # Explicitly start the main verification run for hosted smoke evidence.
+          gh workflow run full-regression-census.yml --repo "$GH_REPO" --ref main
 
   # Check that GitHub Pages eventually serves the released game after main moves.
   # Pages branch deployments are asynchronous; retry rather than testing immediately.
