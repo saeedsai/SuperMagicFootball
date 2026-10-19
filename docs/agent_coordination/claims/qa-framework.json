@@ -1,15 +1,16 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "qa-framework",
-  "feature_id": "QA-RELEASE-GATE-CONTRACT",
-  "owner": "smf-qa-release-contract-20261019",
-  "status": "released",
-  "scope": "Add standalone Node regression contract test for automatic release workflow: exact-head, full gates, no force, dispatch main and hosted hash checks; own claim. No workflow or gameplay edits.",
-  "base_sha": "e1a801a7b28efab78f09e3a09dbdfa73a6eeb0b5",
+  "feature_id": "QA-UNRESTRICTED-CENSUS-PUSH-CONTRACT",
+  "owner": "smf-release-watch-20261019-r1",
+  "status": "active",
+  "scope": "Fix only tests/national_roster_regression_trigger.test.cjs obsolete selective push.paths contract to reflect unconditional dev/main full QA; execute targeted Node test and inspect CI. No workflow, gameplay or roster changes.",
+  "base_sha": "d2ff83bba36430a8b605fc183f7807957df428a6",
   "created_at": "2026-10-19",
   "renewed_at": "2026-10-19",
-  "released_at": "2026-10-19",
-  "outcome": "Added four Node contract tests for complete promotion dependencies, exact-head ancestry and non-force release, dispatched main hosted hash parity, and least-privilege permissions. Remote execution not yet confirmed.",
-  "integrated_commit": "2a8bfc76f90a4bef3f354c2c7686f038011bcb2c",
-  "handover": "tests/release_gate_contract.test.cjs"
+  "acceptance": [
+    "Regression asserts dev/main push without paths filters",
+    "Targeted Node test passes",
+    "CI preflight no longer blocked by obsolete assertion"
+  ]
 }
