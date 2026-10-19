@@ -1,22 +1,18 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "ui-controls",
-  "feature_id": "UI-CAREER-LINEUP-ROLE-FIT",
-  "owner": "gameplay-review-20261019-gpt6-role-fit-r10",
-  "status": "released",
+  "feature_id": "LAN-PEER-TWO-CLIENT-MVP-20261019",
+  "owner": "smf-hourly-dev-20261019",
+  "status": "active",
+  "scope": "Standalone WebRTC LAN proof-of-concept only: new lan_demo.html, src/modules/lanpeer.js, tests/lan_peer_proto.test.cjs, tests/lan_peer_proto_browser_qa.py, docs/LAN_PEER_MVP_20261019.md, and own docs/memory/agents/smf-hourly-dev-20261019.md. Does not edit index.html, src/modules/ui.js, style.css, src/modules/engine.js, existing controls/graphics/rosters, CI or other agents' memory. No claim of game Quick Match integration.",
+  "base_sha": "981ba0a65b2532e99e5058042249fe096f8d3619",
   "created_at": "2026-10-19",
   "renewed_at": "2026-10-19",
-  "base_sha": "6bf0b9429578f4088178e8c76a72f68d7a12eb56",
-  "scope": "Bounded read-only Manager Career projected-six natural-role suitability and match-ready bench replacement hints in src/modules/ui.js; new tests/career_role_fit.test.cjs and tests/career_role_fit_browser_qa.py; minimal own tests/career_opponent_scout.test.cjs injection; specialist docs/CAREER_ROLE_FIT_20261019.md; additive tail to docs/NEXT_MILESTONES.md; own docs/memory/agents/gameplay-review-20261016.md. No engine, roster, saves/plan writes, audio, graphics, CI or other memory.; fixes this same chat's last About-version change's stale browser expectation in tests/about_revision_browser_qa.py only; no About runtime changes.",
-  "tests": [
-    "node --test tests/career_role_fit.test.cjs tests/career_opponent_scout.test.cjs tests/career_bench_readiness.test.cjs tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
-    "Full Modular Node QA",
-    "Full 4+4 Census",
-    "Real Manager Career desktop/simulated-touch Chromium",
-    "tests/about_revision_browser_qa.py desktop and simulated touch"
-  ],
-  "released_at": "2026-10-19",
-  "final_source_commit": "a321d0387d29d9b4c26fa25a770ff779ecb1fccb",
-  "handover": "docs/CAREER_ROLE_FIT_20261019.md; docs/NEXT_MILESTONES.md; docs/memory/agents/gameplay-review-20261016.md; https://github.com/saeedsai/SuperMagicFootball/actions/runs/39224329760",
-  "outcome": "Read-only six-starter career role-fit panel with true eligible bench candidates and 10 Node + real desktop/touch browser tests, own prior About browser expectation corrected. Full exact-source regression #39224329760 green: 294 active Node, 149/149 Node scripts in 4 shards, 86/86 Chromium scripts in 4 shards. Main Pages still older; no physical device certification."
+  "acceptance": [
+    "Two independent browser contexts negotiate direct WebRTC peer connection with manual offer/answer (no relay service)",
+    "Authoritative host updates two players and ball, guest sends only bounded input, snapshots converge",
+    "Local Node protocol/state tests and real Chromium desktop/simulated-touch browser test",
+    "Standalone proof only; no change to existing four gameplay buttons or save schema",
+    "Full exact-dev SHA QA and About tests before claiming release readiness"
+  ]
 }
