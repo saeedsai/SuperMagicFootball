@@ -198,17 +198,21 @@ jobs:
   # Check that GitHub Pages eventually serves the released game after main moves.
   # Pages branch deployments are asynchronous; retry rather than testing immediately.
   hosted-pages-smoke:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
+      - uses: actions/checkout@v4
       - name: Wait for public game HTML and modular entrypoint
         shell: bash
         run: |
           python3 - <<'PY'
-          import time, urllib.request, urllib.error
+          import time, urllib.request, urllib.error, hashlib
+          from pathlib import Path
           root='https://saeedsai.github.io/SuperMagicFootball/'
           paths=('', 'src/main.js', 'style.css')
+          local_paths={'':'index.html', 'src/main.js':'src/main.js', 'style.css':'style.css'}
+          expected={path:hashlib.sha256(Path(local_paths[path]).read_bytes()).hexdigest() for path in paths}
           for attempt in range(36):
               try:
                   results={}
@@ -221,7 +225,9 @@ jobs:
                   assert b'SUPERMAGIC FOOTBALL' in results[''], 'Wrong HTML page'
                   assert b'id="field"' in results[''], 'Missing playable canvas'
                   assert b'type="module"' in results[''], 'Missing module entrypoint'
-                  print('HOSTED_PAGES_SMOKE_PASS',root,'HTML, JS and CSS served',flush=True)
+                  actual={path:hashlib.sha256(results[path]).hexdigest() for path in paths}
+                  assert actual==expected, 'Hosted Pages is stale versus checked-out main: '+str({p:(expected[p],actual[p]) for p in paths if expected[p]!=actual[p]})
+                  print('HOSTED_PAGES_SMOKE_PASS',root,'exact main HTML, JS and CSS bytes',flush=True)
                   break
               except Exception as exc:
                   if attempt==35: raise
