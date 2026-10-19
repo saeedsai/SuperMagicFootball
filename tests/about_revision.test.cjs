@@ -45,7 +45,7 @@ test('valid dev commit is linked, not confused with deployed bundle',async()=>{
  assert.equal(app.node.children.length,1);
  const link=app.node.children[0];
  assert.equal(link.href,'https://github.com/saeedsai/SuperMagicFootball/commit/'+SHA_A);
- assert.equal(link.textContent,'dev @ '+SHA_A.slice(0,12));
+ assert.equal(link.textContent,'v0.8.25.32-integrated+dev.'+SHA_A.slice(0,12));
  assert.equal(link.rel,'noopener noreferrer');
  assert.equal(link.target,'_blank');
  assert.equal(app.calls.length,1);
@@ -56,10 +56,11 @@ test('new About visits resolve a new commit after concurrent push',async()=>{
  let sha=SHA_A;
  const app=fixture(()=>({ok:true,json:async()=>({sha})}));
  await app.api.refreshAboutDevRevision(app.node);
- assert.equal(app.node.children[0].textContent,'dev @ '+SHA_A.slice(0,12));
+ assert.equal(app.node.children[0].textContent,'v0.8.25.32-integrated+dev.'+SHA_A.slice(0,12));
  sha=SHA_B;
  await app.api.refreshAboutDevRevision(app.node);
  assert.equal(app.node.children[0].href,'https://github.com/saeedsai/SuperMagicFootball/commit/'+SHA_B);
+ assert.equal(app.node.children[0].textContent,'v0.8.25.32-integrated+dev.'+SHA_B.slice(0,12));
  assert.equal(app.calls.length,2);
 });
 test('offline/API failure leaves About readable and does not throw',async()=>{
@@ -85,4 +86,15 @@ test('slow fetch never writes into detached About menu after user leaves',async(
  app.node.isConnected=false;resolve({ok:true,json:async()=>({sha:SHA_A})});await pending;
  assert.equal(app.node.children.length,0);
  assert.equal(app.node.textContent,'Checking');
+});
+
+test('About displays versioned commit label while keeping deployed bundle distinct',async()=>{
+ const app=fixture();
+ app.api.showAbout();
+ const [, ,html]=app.shown();
+ assert.match(html,/auto-versioned after every update/);
+ assert.match(html,/not necessarily the deployed build/);
+ assert.match(html,/GAME BUNDLE · 0\\.8\\.25\\.32-integrated/);
+ await app.api.refreshAboutDevRevision(app.node);
+ assert.match(app.node.children[0].textContent,/^v0\\.8\\.25\\.32-integrated\\+dev\\.[a-f0-9]{12}$/);
 });
