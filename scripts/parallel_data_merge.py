@@ -246,6 +246,8 @@ def main(argv=None):
     parser.add_argument('--out', type=Path, help='NEW EMPTY directory for merged data; never source tree')
     parser.add_argument('--report', type=Path, help='optional JSON QC report destination')
     parser.add_argument('--check', action='store_true', help='check-only; never write merged data')
+    parser.add_argument('--require-source-review-clean', action='store_true',
+                        help='fail closed when player edits need external source review; no staged output')
     args = parser.parse_args(argv)
     # A report path is a write: never allow it to overwrite an input checkout.
     sources = [p.resolve() for p in (args.base, args.ours, args.theirs)]
@@ -259,7 +261,8 @@ def main(argv=None):
     merged, conflicts = compare_directories(args.base, args.ours, args.theirs,
                                             change_report=change_report,
                                             source_reviews=source_reviews)
-    result = {'status': 'CONFLICT' if conflicts else 'PASS', 'files': len(merged),
+    pending_source_review = args.require_source_review_clean and bool(source_reviews)
+    result = {'status': 'CONFLICT' if conflicts else ('SOURCE_REVIEW_REQUIRED' if pending_source_review else 'PASS'), 'files': len(merged),
               'protectedFiles': list(DATA_FILES), 'conflictCount': len(conflicts),
               'conflicts': conflicts, 'changeSummary': change_report,
               'sourceReview': source_review_summary(source_reviews)}
@@ -267,7 +270,7 @@ def main(argv=None):
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(json.dumps(result, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
-    if conflicts:
+    if conflicts or pending_source_review:
         return 1
     if args.out and not args.check:
         out = args.out.resolve()
