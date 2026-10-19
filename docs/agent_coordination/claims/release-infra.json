@@ -3,9 +3,13 @@
   "lock_key": "release-infra",
   "feature_id": "RELEASE-MAIN-DISPATCH-SMOKE-FIX",
   "owner": "smf-release-fix-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Only Full Regression Census workflow fix: hosted-pages-smoke must run for explicitly dispatched main workflow; add deployment freshness verification; own claim and handover.",
   "base_sha": "d9a2838fbca850b28c7bf3296409b8971c7b532a",
   "created_at": "2026-10-19",
-  "renewed_at": "2026-10-19"
+  "renewed_at": "2026-10-19",
+  "released_at": "2026-10-19",
+  "outcome": "Fixed skipped hosted smoke on workflow_dispatch main; added SHA-256 parity against checked-out main HTML/JS/CSS. CI outcome not observed.",
+  "handover": "docs/AUTO_PROMOTION_DEV_MAIN_20261019.md",
+  "integrated_commit": "09db058781a86eda27638575a1a83868d91a9bbc"
 }
