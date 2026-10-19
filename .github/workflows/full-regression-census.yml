@@ -190,3 +190,37 @@ jobs:
           gh api --method PATCH "repos/$GH_REPO/git/refs/heads/main" \
             -f sha="$CERTIFIED_SHA" -F force=false >/dev/null
           echo "Promoted QA-certified $CERTIFIED_SHA to main."
+
+  # Check that GitHub Pages eventually serves the released game after main moves.
+  # Pages branch deployments are asynchronous; retry rather than testing immediately.
+  hosted-pages-smoke:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Wait for public game HTML and modular entrypoint
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import time, urllib.request, urllib.error
+          root='https://saeedsai.github.io/SuperMagicFootball/'
+          paths=('', 'src/main.js', 'style.css')
+          for attempt in range(36):
+              try:
+                  results={}
+                  for path in paths:
+                      request=urllib.request.Request(root+path,headers={'Cache-Control':'no-cache'})
+                      with urllib.request.urlopen(request,timeout=15) as response:
+                          data=response.read()
+                          assert response.status==200 and data,(path,response.status)
+                          results[path]=data
+                  assert b'SUPERMAGIC FOOTBALL' in results[''], 'Wrong HTML page'
+                  assert b'id="field"' in results[''], 'Missing playable canvas'
+                  assert b'type="module"' in results[''], 'Missing module entrypoint'
+                  print('HOSTED_PAGES_SMOKE_PASS',root,'HTML, JS and CSS served',flush=True)
+                  break
+              except Exception as exc:
+                  if attempt==35: raise
+                  print('Pages not ready',attempt+1,str(exc),flush=True)
+                  time.sleep(15)
+          PY
