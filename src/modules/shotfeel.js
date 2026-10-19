@@ -24,12 +24,21 @@ const SHOTFEEL=(()=>{
   return clamp((.12+near*.51+quality*.18)*congestion*(.72+clamp(Number(baseRate)||0,0,1)),.04,.90);
  }
  function teammateInDirection(from,mates,vector,maxDistance=1300){
-  const m=Math.hypot(vector?.x||0,vector?.y||0);if(m<.16)return null;
+  if(!Number.isFinite(from?.x)||!Number.isFinite(from?.y)||!Array.isArray(mates)||
+     !Number.isFinite(vector?.x)||!Number.isFinite(vector?.y)||
+     !Number.isFinite(maxDistance)||maxDistance<=28)return null;
+  const m=Math.hypot(vector.x,vector.y);if(m<.16)return null;
   const hx=vector.x/m,hy=vector.y/m;
-  return mates.map(q=>{const dx=q.x-from.x,dy=q.y-from.y,d=Math.hypot(dx,dy)||1;
-   return {q,d,alignment:(dx*hx+dy*hy)/d};
-  }).filter(v=>v.d>28&&v.d<maxDistance&&v.alignment>=.77)
-    .sort((a,b)=>b.alignment-a.alignment||a.d-b.d)[0]?.q||null;
+  // Alignment remains the main criterion; modest range cost avoids selecting
+  // a remote player over an almost equally aligned, reachable nearby option.
+  return mates.map(q=>{
+   if(!q||q===from||q.stun>0||!Number.isFinite(q.x)||!Number.isFinite(q.y))return null;
+   const dx=q.x-from.x,dy=q.y-from.y,d=Math.hypot(dx,dy);
+   if(d<=28||d>=maxDistance)return null;
+   const alignment=(dx*hx+dy*hy)/d;
+   if(alignment<.77)return null;
+   return {q,d,score:alignment-.18*(d/maxDistance)};
+  }).filter(Boolean).sort((a,b)=>b.score-a.score||a.d-b.d)[0]?.q||null;
  }
  return {launchPower,flightDrag,impactFactor,contactEnergy,lanePreference,aiFinishingPriority,teammateInDirection};
 })();
