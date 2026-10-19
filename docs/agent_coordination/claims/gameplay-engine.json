@@ -1,20 +1,11 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "gameplay-engine",
-  "feature_id": "GAMEPLAY-KEEPER-CLEARANCE-TEST-REPAIR",
+  "feature_id": "GAMEPLAY-KEEPER-CLEARANCE-CORRIDOR",
   "owner": "smf-hourly-dev-20261019",
-  "status": "released",
-  "scope": "Fix extraction syntax in own tests/keeper_clearance_safety.test.cjs and update own docs/GAMEPLAY_KEEPER_CLEARANCE_20261019.md plus own agent memory; no gameplay physics, roster, graphics, UI or other tests",
-  "base_sha": "10209a282190882ea4d401d551afc1cd41068876",
+  "status": "active",
+  "scope": "Small keeper long-clearance empty-turf lane safety improvement in engine.js, own focused tests and own gameplay handover/memory. No roster/UI/graphics/CI changes.",
+  "base_sha": "dc72745e2387c546a0ee47ce0011af4a363af0ad",
   "created_at": "2026-10-19",
-  "renewed_at": "2026-10-19",
-  "acceptance": [
-    "New six-case Node test parses two real engine methods correctly",
-    "All six mirrored safety cases pass in source-level checks",
-    "Preserve all other agent changes; do not merge without full QA"
-  ],
-  "released_at": "2026-10-19",
-  "outcome": "Fixed keeper clearance test method extraction syntax, committed test repair, 25/25 isolated V8 source-level checks passed (6 new keeper + 9 roll + 7 About + 3 policy). Native Node/Chromium CI and hosted Pages remain unverified.",
-  "integrated_commit": "b062d8456765a960b0ef924347c9353bc812ea97",
-  "handover": "docs/GAMEPLAY_KEEPER_CLEARANCE_20261019.md"
+  "renewed_at": "2026-10-19"
 }
