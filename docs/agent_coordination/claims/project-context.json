@@ -1,15 +1,17 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "project-context",
-  "feature_id": "CONTEXT-REGISTER-HOURLY-DEV",
+  "feature_id": "OWNER-PRIORITY-COMPREHENSIVE-PLAN-20261019",
   "owner": "smf-hourly-dev-20261019",
-  "status": "released",
-  "scope": "Only docs/memory/AGENTS_INDEX.json and own docs/memory/agents/smf-hourly-dev-20261019.md to register this automation chat; no shared memory, other agents' memory, source or tests.",
-  "base_sha": "84e5c474bc5ca5b1a4080c600ac678c5cbab929b",
+  "status": "active",
+  "scope": "Documentation-only owner request reconciliation. Create docs/OWNER_PRIORITY_FEATURE_AUDIT_20261019.md and prepend a dated priority override in docs/NEXT_MILESTONES.md, optionally update own memory docs/memory/agents/smf-hourly-dev-20261019.md; no changes to gameplay, UI, graphics, tests, rosters, infrastructure or other agents' docs.",
+  "base_sha": "0c32e44a0e38f221808e44deaa96857575ca629c",
   "created_at": "2026-10-19",
   "renewed_at": "2026-10-19",
-  "handover": "GitHub agent index write and cleanup blocked; new checkpoint file unindexed; require maintainer recovery",
-  "previous_handover": "docs/memory/agents/gameplay-tactical-audio-20261016-gpt6-s16.md",
-  "released_at": "2026-10-19",
-  "outcome": "blocked_index_write_no_gameplay_change"
+  "acceptance": [
+    "Capture 30 scoped missing/partial items and actual implemented foundations",
+    "Preserve authoritative four-button combos and distinguish deferred status superseded by owner",
+    "Prioritize special shots, defense, tricks, graphics, UI/UX and LAN in next milestones",
+    "Document evidence/verification status, non-overlapping agent scopes, gate acceptance"
+  ]
 }
