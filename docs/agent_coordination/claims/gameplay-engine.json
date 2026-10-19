@@ -3,7 +3,7 @@
   "lock_key": "gameplay-engine",
   "feature_id": "GAMEPLAY-KEEPER-SAFE-CLEARANCE",
   "owner": "smf-hourly-dev-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "One bounded keeper clearance safety fix in src/modules/engine.js, dedicated new Node regression, own agent memory and own specialist handover only; preserve four controls, rosters, UI, graphics, other agents' scopes",
   "base_sha": "5e2f00c95acb8e9731291e0c992dabaf0bf375dd",
   "created_at": "2026-10-19",
@@ -13,5 +13,9 @@
     "Unpressured existing keeper passing unchanged",
     "Both teams and four-button inputs remain compatible",
     "Targeted and full Node QA pass"
-  ]
+  ],
+  "released_at": "2026-10-19",
+  "outcome": "Source fix and six new Node tests committed, plus handover; CI/full regression/browser verification pending, not certified",
+  "integrated_commit": "e21341be1198c6e113bf535ac496d8e105dfff55",
+  "handover": "docs/GAMEPLAY_KEEPER_CLEARANCE_20261019.md"
 }
