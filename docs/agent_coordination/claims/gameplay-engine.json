@@ -3,7 +3,7 @@
   "lock_key": "gameplay-engine",
   "feature_id": "SHOT-ZIGZAG-TWO-PROFILES-20261019",
   "owner": "smf-hourly-dev-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Bounded nonlinear zigzag Super Shot physics in new src/modules/shotpaths.js, existing src/modules/engine.js and data/mechanics/gameplay.json (books/serpent parameters only); new tests/zigzag_profiles.test.cjs and tests/zigzag_profiles_browser_qa.py if possible; own docs/SHOT_ZIGZAG_PROFILES_20261019.md and own docs/memory/agents/smf-hourly-dev-20261019.md. No renderer, UI, rosters, workflows, other agent files.",
   "base_sha": "c5f96064f1b38687a0f984373b7b7b6bdd93b674",
   "created_at": "2026-10-19",
@@ -14,5 +14,8 @@
     "No new action button, save format or shot IDs",
     "Focused Node tests, browser desktop/simulated touch if possible, exact-head full CI",
     "Release lock and report unresolved acceptance gaps"
-  ]
+  ],
+  "released_at": "2026-10-19",
+  "outcome": "checkpoint_only_pure_zigzag_helper_committed_local_5_of_5_live_engine_and_tests_writes_blocked",
+  "handover": "src/modules/shotpaths.js @ e27b7759598827498591c1bb0a07274c98f1100a; local 5/5 isolated tests; live engine and test-file writes rejected by safety checks; no runtime integration"
 }
