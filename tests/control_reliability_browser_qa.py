@@ -24,6 +24,12 @@ with sync_playwright() as pw:
                 bb=page.locator('[data-act="'+action+'"]').bounding_box();x=bb['x']+bb['width']/2;y=bb['y']+bb['height']/2
                 cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'id':15,'x':x,'y':y}]})
                 cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
+                # CDP dispatch can resolve before the browser has run pointerup
+                # listeners. Wait for the real completed tap to reach Input,
+                # rather than falsely reporting a game-control failure.
+                page.wait_for_function(
+                    "(action) => (window.SupermagicFootball?.input?.touchPulsePending?.get(action)?.length || 0) > 0",
+                    arg=action, timeout=5000)
             else:
                 page.keyboard.down(key);page.keyboard.up(key)
         tap('pass','k')
