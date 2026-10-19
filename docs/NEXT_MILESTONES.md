@@ -375,3 +375,16 @@ Source and test handover: [CAREER_ROLE_FIT_20261019.md](CAREER_ROLE_FIT_20261019
 [Full Census #39224329760](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39224329760) **SUCCESS on source SHA `a321d0387d29d9b4c26fa25a770ff779ecb1fccb`**: preflight 294/294 Node PASS, **149/149 Node historical scripts** across four green shards and **86/86 Chromium historical scripts** across four green shards. Includes actual Manager Career natural-role fit (desktop and simulated touch), previous bench/scout, repaired About auto-version browser expectation and keeper-roll regression (now passing on this exact source). No physical-phone testing.
 
 The feature remains **dev-only**: `main` is still `b7b69b762325a623a60085d8881544430402f671` with older [Pages #39107049120](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39107049120) successful. A successful full regression on `dev` is not proof of a deployed build. Do not merge branches without explicit authorization. Next steps stay: (1) optional safe career swaps, (2) build/deployed SHA #12, (3) Android dribble #3 real-device reliability, (4) goalkeeper/pass art, (5) competition/original parity and PWA persistence.
+
+### 19 October 2026 — bounded goalkeeper emergency-clearance checkpoint
+
+The gameplay-engine iteration `GAMEPLAY-GK-EMERGENCY-CLEARANCE-20261019` changes only keeper long-clearance target choice when **every** normal candidate is obstructed: choose the least-interceptable of the nine forward areas, never default automatically to a predictable central lane. The source-level mirrored acceptance tests passed **6/6**; this is not yet an exact-head native full CI or browser certification. The own checkpoint identity was corrected after [Full Census #39248707652](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39248707652) showed one out of 308 Node tests failing on the memory contract. Do not bypass any QA failures or merge an unverified commit. [Gameplay handover](GAMEPLAY_KEEPER_CLEARANCE_20261019.md).
+
+**Next five short, independently locked iterations (re-evaluate live claims each time):**
+1. **QA + deployment gate:** verify all active Node cases, historical 4-shard Node and 4-shard Chromium Census, About revision contract, and desktop/simulated-touch live smoke against the exact integrated `dev` SHA; repair any new failure. Promotion only after all checks pass.
+2. **Gameplay passing and player switching:** reproduce tap/hold/directional pass and manual/auto swap on keyboard/touch/gamepad; deliver one small deterministic bug fix with regression, preserving four actions.
+3. **Goalkeeper calibration and defense:** seeded blocked-field/marked-receiver scenarios, keeper controlled during penalties if still incomplete (Issue #5); tune behavior without unfair teleportation or unsafe opponent passes.
+4. **Career + competition:** owner-scoped bench substitution persistence and league/cup progression edge-case QA; preserve save schema and the 12-player roster shape.
+5. **Visual fidelity + LAN readiness:** side/three-quarter face/beard animations under graphics lock; separately document LAN authoritative-state prototype and cross-platform input parity before any large multiplayer rollout.
+
+No automatic deletion of historical QA reports or checkpoint assets; remove only artifacts proven unreferenced by tests, handovers, and CI.
