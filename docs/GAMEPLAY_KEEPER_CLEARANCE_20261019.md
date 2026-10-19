@@ -49,3 +49,20 @@ Focused test `tests/keeper_emergency_clearance.test.cjs` adds **six** mirrored-t
 **CI root-cause repair:** the prior full census [39248707652](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39248707652) and Modular QA [39248707726](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39248707726) both reported 307/308 Node tests passed. Sole failure: `tests/project_memory_contract.test.cjs` rejected the missing inline-code backticks around the own memory `**Agent ID:**`. Fixed `docs/memory/agents/smf-hourly-dev-20261019.md` in source commit `64c5faa0e2c57a63df11232801046d8177794af4`; no test weakened, bypassed, or disabled.
 
 Next verification: exact-head full Native Node+Chromium QA; record run ID, test counts and hosted hash parity. Fix any new failing check before promotion, and do not claim GitHub Pages updated merely because `main` advanced. Clear-corridor compatibility tests: `tests/keeper_clearance_corridor.test.cjs`, `tests/keeper_clearance_safety.test.cjs`, `tests/keeper_emergency_clearance.test.cjs`; About/version regression: `tests/about_revision.test.cjs` and `tests/versioning_policy_contract.test.cjs`.
+
+## 19 October — directional passing receiver selection (next small gameplay batch)
+
+Feature ID `GAMEPLAY-DIRECTIONAL-RECEIVER-RANKING-20261019`, lock `gameplay-engine`, owner `smf-hourly-dev-20261019`.
+
+**Delivered on dev:** `src/modules/shotfeel.js` `teammateInDirection()` now retains the pre-existing 0.77 directional alignment gate but ranks remaining candidates by `alignment - 0.18 * (distance / maxDistance)`. This modest distance penalty avoids sending an ordinary aimed pass toward an extremely remote teammate when another well-aligned player is closer. The helper also rejects invalid/null/malformed data, self-targeting, stunned players and impossible distance ranges. It retains the exact existing object return contract; other shot feel helpers and directional input semantics are unchanged. This is a receiver-selection quality improvement, **not** proof that every on-device pass input or LAN scenario works.
+
+**Added regression:** `tests/directional_pass_target_safety.test.cjs` contains 12 Node cases: mirrored field direction, nearby versus remote alignment, strong alignment priority, rejection of players behind/outside pass cone/too near/too far, stun/malformed checks, invalid controller vector, stable ordering and preservation of other SHOTFEEL helpers. The source/test patch passed **12/12 native Node focused tests locally**, plus JavaScript syntax check in the isolated patch checkout. The integrated GitHub Actions result must be checked for the **final current dev SHA** before main promotion; a green prior SHA is insufficient.
+
+**Next five bounded iterations** (subject to latest ownership claims):
+1. Calibrate receiver ranking against actual live match passing with human and CPU mirrored tests; inspect hold/tap and contact timing if pass input still misfires.
+2. Improve goalkeeper short distribution under pressure and add interception-aware mirrored regression.
+3. Enhance reception/pass follow-through visual animation under graphics ownership.
+4. Improve substitutions and Career squad feedback under UI ownership without changing save schema.
+5. Create an independent, minimum two-peer LAN prototype proposal and transport contract before touching match synchronization or main.
+
+Do not delete historical QA reports or other agents' files; they are not assumed stale.
