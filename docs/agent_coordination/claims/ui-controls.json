@@ -7,11 +7,12 @@
   "created_at": "2026-10-19",
   "renewed_at": "2026-10-19",
   "base_sha": "6bf0b9429578f4088178e8c76a72f68d7a12eb56",
-  "scope": "Bounded read-only Manager Career projected-six natural-role suitability and match-ready bench replacement hints in src/modules/ui.js; new tests/career_role_fit.test.cjs and tests/career_role_fit_browser_qa.py; minimal own tests/career_opponent_scout.test.cjs injection; specialist docs/CAREER_ROLE_FIT_20261019.md; additive tail to docs/NEXT_MILESTONES.md; own docs/memory/agents/gameplay-review-20261016.md. No engine, roster, saves/plan writes, audio, graphics, CI or other memory.",
+  "scope": "Bounded read-only Manager Career projected-six natural-role suitability and match-ready bench replacement hints in src/modules/ui.js; new tests/career_role_fit.test.cjs and tests/career_role_fit_browser_qa.py; minimal own tests/career_opponent_scout.test.cjs injection; specialist docs/CAREER_ROLE_FIT_20261019.md; additive tail to docs/NEXT_MILESTONES.md; own docs/memory/agents/gameplay-review-20261016.md. No engine, roster, saves/plan writes, audio, graphics, CI or other memory.; fixes this same chat's last About-version change's stale browser expectation in tests/about_revision_browser_qa.py only; no About runtime changes.",
   "tests": [
     "node --test tests/career_role_fit.test.cjs tests/career_opponent_scout.test.cjs tests/career_bench_readiness.test.cjs tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
     "Full Modular Node QA",
     "Full 4+4 Census",
-    "Real Manager Career desktop/simulated-touch Chromium"
+    "Real Manager Career desktop/simulated-touch Chromium",
+    "tests/about_revision_browser_qa.py desktop and simulated touch"
   ]
 }
