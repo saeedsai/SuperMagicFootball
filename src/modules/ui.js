@@ -216,6 +216,7 @@ async function refreshAboutDevRevision(node,request=fetch){
   if(!node.isConnected)return;
   const link=document.createElement('a');
   link.href='https://github.com/saeedsai/SuperMagicFootball/commit/'+sha.toLowerCase();
+  // Every dev commit gets a new displayed version; this is NOT the deployed build ID.
   const bundle=window.SupermagicFootball?.version||'0.8.25.32-integrated';
   link.textContent='v'+String(bundle)+'+dev.'+sha.slice(0,12);
   link.target='_blank';link.rel='noopener noreferrer';
