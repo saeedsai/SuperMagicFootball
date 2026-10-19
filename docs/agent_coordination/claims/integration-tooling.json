@@ -3,9 +3,13 @@
   "lock_key": "integration-tooling",
   "feature_id": "MERGE-SOURCE-REVIEW-STRICT",
   "owner": "smf-integration-strict-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Bounded opt-in --require-source-review-clean CLI gate for parallel_data_merge.py; focused test in separate own tests file and merge guide addendum. No roster/gameplay/graphics/CI modifications.",
   "base_sha": "ac5da7782834c4d3052cab4ced215e72d269a456",
   "created_at": "2026-10-19",
-  "renewed_at": "2026-10-19"
+  "renewed_at": "2026-10-19",
+  "released_at": "2026-10-19",
+  "outcome": "Opt-in --require-source-review-clean flag implemented, three dedicated CLI regression tests and merge guide updated. CI execution not yet observed; no live roster edits.",
+  "integrated_commit": "3239555c82132cd78fb7f4887dbddacf3bc0cd9c",
+  "handover": "docs/PARALLEL_DATA_MERGE_GUIDE.md"
 }
