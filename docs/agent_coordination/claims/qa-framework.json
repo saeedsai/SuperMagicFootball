@@ -3,9 +3,13 @@
   "lock_key": "qa-framework",
   "feature_id": "QA-FIX-UNCONDITIONAL-PUSH-20261019",
   "owner": "smf-ci-repair-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Replace only obsolete tests/national_roster_regression_trigger.test.cjs path-filter assumptions with full dev/main unconditional push contract. No workflow or gameplay modifications.",
   "base_sha": "31ba39f61bafcc0f2d7235ff3e26aba677720e80",
   "created_at": "2026-10-19",
-  "renewed_at": "2026-10-19"
+  "renewed_at": "2026-10-19",
+  "released_at": "2026-10-19",
+  "outcome": "Replaced outdated path-filter assertions with unconditional dev/main push checks; 3 tests passed against matching workflow fixture locally; actual GitHub Actions QA pending.",
+  "integrated_commit": "612b4572e460f2e8e679060057f843f235e1c7d3",
+  "handover": "tests/national_roster_regression_trigger.test.cjs"
 }
