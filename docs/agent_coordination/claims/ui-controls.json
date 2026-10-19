@@ -1,20 +1,17 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "ui-controls",
-  "feature_id": "UI-AUTO-VERSION-ABOUT",
-  "owner": "gameplay-review-20261019-gpt6-version-r9",
-  "status": "released",
+  "feature_id": "UI-CAREER-LINEUP-ROLE-FIT",
+  "owner": "gameplay-review-20261019-gpt6-role-fit-r10",
+  "status": "active",
   "created_at": "2026-10-19",
   "renewed_at": "2026-10-19",
-  "base_sha": "b7b69b762325a623a60085d8881544430402f671",
-  "scope": "Only src/modules/ui.js refreshAboutDevRevision/three About labels; tests/about_revision.test.cjs and tests/versioning_policy_contract.test.cjs; existing docs/VERSIONING_POLICY.md policy explanation; this chat's own docs/memory/agents/gameplay-review-20261016.md. No release-infra, service worker, engine, assets, roster, game rules, other agent memory or shared docs.",
+  "base_sha": "6bf0b9429578f4088178e8c76a72f68d7a12eb56",
+  "scope": "Bounded read-only Manager Career projected-six natural-role suitability and match-ready bench replacement hints in src/modules/ui.js; new tests/career_role_fit.test.cjs and tests/career_role_fit_browser_qa.py; minimal own tests/career_opponent_scout.test.cjs injection; specialist docs/CAREER_ROLE_FIT_20261019.md; additive tail to docs/NEXT_MILESTONES.md; own docs/memory/agents/gameplay-review-20261016.md. No engine, roster, saves/plan writes, audio, graphics, CI or other memory.",
   "tests": [
-    "node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
-    "Modular Game Dev QA Node suite",
-    "Full Regression Census existing browser tests"
-  ],
-  "handover": "docs/VERSIONING_POLICY.md; docs/memory/agents/gameplay-review-20261016.md; https://github.com/saeedsai/SuperMagicFootball/actions/runs/39212131066; https://github.com/saeedsai/SuperMagicFootball/actions/runs/39212131199",
-  "released_at": "2026-10-19",
-  "outcome": "Per-commit visible About combined version v<BUNDLE>+dev.<SHA> and two Node test contracts updated, 284/284 Node PASS, full Node census 4/4 PASS with browser shards pending. Remote SHA is clearly not hosted version.",
-  "final_source_commit": "b70a07aa2582297d03ff58c8983bc8392fe7b339"
+    "node --test tests/career_role_fit.test.cjs tests/career_opponent_scout.test.cjs tests/career_bench_readiness.test.cjs tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
+    "Full Modular Node QA",
+    "Full 4+4 Census",
+    "Real Manager Career desktop/simulated-touch Chromium"
+  ]
 }
