@@ -31,12 +31,14 @@ with sync_playwright() as pw:
    assert 'Developer: Saeed' in page.locator('.menubox').inner_text()
    assert '0.8.25.32-integrated' in page.locator('#aboutBundleVersion').inner_text()
   visit()
-  page.wait_for_function("document.querySelector('#aboutDevRevision a')?.textContent?.startsWith('dev @ ')",timeout=20000)
+  page.wait_for_function("document.querySelector('#aboutDevRevision a')?.textContent?.startsWith('v0.8.25.32-integrated+dev.')",timeout=20000)
+  assert page.locator('#aboutDevRevision a').inner_text().endswith(SHA1[:12]),(label,'incorrect displayed commit version')
   assert page.locator('#aboutDevRevision a').get_attribute('href').endswith(SHA1)
   page.locator('[data-action="home"]').first.click()
   state['sha']=SHA2
   visit()
   page.wait_for_function("document.querySelector('#aboutDevRevision a')?.getAttribute('href')?.endsWith('"+SHA2+"')",timeout=20000)
+  assert page.locator('#aboutDevRevision a').inner_text().endswith(SHA2[:12]),(label,'new SHA label did not change')
   assert len(requests)==2,(label,'About must fetch latest on each visit',requests)
   page.locator('[data-action="home"]').first.click()
   state['fail']=True
