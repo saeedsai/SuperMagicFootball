@@ -3,9 +3,13 @@
   "lock_key": "release-infra",
   "feature_id": "RELEASE-TRIGGER-20261019",
   "owner": "smf-release-trigger-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Trigger existing full regression pipeline with a release documentation checkpoint commit; do not merge main or bypass QA.",
   "base_sha": "e19fe9bee9d269c5972792210bf495b4459e4483",
   "created_at": "2026-10-19",
-  "renewed_at": "2026-10-19"
+  "renewed_at": "2026-10-19",
+  "released_at": "2026-10-19",
+  "outcome": "New dev commits pushed to trigger existing push-based full QA automatically; success of GitHub Actions not independently verified.",
+  "integrated_commit": "7f24279363a132403d386a628e72001e6989416e",
+  "handover": "docs/AUTO_PROMOTION_DEV_MAIN_20261019.md"
 }
