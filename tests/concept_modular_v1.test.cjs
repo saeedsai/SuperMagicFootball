@@ -5,7 +5,7 @@ test('C01 front face and both existing hair layers remain genuinely editable',()
  assert.equal(m.schema,'smf-concept-modular/1');
  assert.deepEqual(m.authoredViews,['front','back']);
  const layers=[m.runtimeLayer,...m.additionalLayers];
- assert.deepEqual(layers.map(l=>l.id),['hair_front_001','arm_far_front_001','torso_front_001','torso_collar_front_001','face_front_001','arm_near_front_001','hair_back_001']);
+ assert.deepEqual(layers.map(l=>l.id),['hair_front_001','arm_far_front_001','torso_front_001','torso_collar_front_001','face_front_001','arm_near_front_001','hair_back_001','torso_back_001']);
  for(const layer of layers){
   const name=layer.asset.split('/').pop(),svg=read('assets/characters/concept_modular_v1/source/'+name);
   assert.match(svg,/viewBox="0 0 (112|115) 265"/);
@@ -25,6 +25,16 @@ test('C01 front face and both existing hair layers remain genuinely editable',()
  for(const id of torso.partGroups)assert.ok(torsoSvg.includes('id="'+id+'"'),id);
  assert.ok((torsoSvg.match(/<path /g)||[]).length>=28);
  assert.doesNotMatch(torsoSvg,/<(?:rect|image)\s/i);
+ const backTorso=layers.find(l=>l.id==='torso_back_001');
+ assert.equal(backTorso.kind,'torso');
+ assert.equal(backTorso.view,'back');
+ assert.equal(backTorso.shirtNumber,'10');
+ assert.deepEqual(backTorso.pivot,[57,152]);
+ assert.equal(backTorso.noMirroring,true);
+ assert.equal(backTorso.legacyBodyUnderlay,true);
+ const rearSvg=read('assets/characters/concept_modular_v1/source/torso_back.svg');
+ for(const group of backTorso.partGroups)assert.ok(rearSvg.includes('id="'+group+'"'),group);
+ assert.doesNotMatch(rearSvg,/<(?:rect|image)\s/i);
  const collar=layers[3];
  assert.equal(collar.id,'torso_collar_front_001');
  assert.equal(collar.kind,'torso_collar');
@@ -73,6 +83,11 @@ test('new face paints below hair only after safe image loading, six-view fallbac
  assert.match(mod,/CONCEPT_MODULAR_FAR_ARM_INLINE/);
  assert.match(mod,/CONCEPT_MODULAR_COLLAR_INLINE/);
  assert.match(mod,/CONCEPT_MODULAR_TORSO_INLINE/);
+ assert.match(mod,/CONCEPT_MODULAR_BACK_TORSO_INLINE/);
+ assert.match(mod,/states\.backTorso\.image/);
+ assert.match(mod,/backTorsoLoaded:ready\('backTorso'\)/);
+ assert.match(read('sw.js'),/torso_back\.svg/);
+ assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_BACK_TORSO_INLINE/);
  assert.match(mod,/if\(!art\)return false/);
  assert.match(mod,/kind==='front'&&\(!states\.frontFace\?\.ready\|\|!states\.frontArm\?\.ready\|\|!states\.frontFarArm\?\.ready\|\|!states\.frontCollar\?\.ready\|\|!states\.frontTorso\?\.ready\)/);
  assert.match(mod,/if\(!CONCEPT_HERO\.draw\(ctx,p,view,\{run\}\)\)return false/);
