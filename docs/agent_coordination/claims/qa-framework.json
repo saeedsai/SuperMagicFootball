@@ -3,7 +3,7 @@
   "lock_key": "qa-framework",
   "feature_id": "QA-ISSUE27-FIRST-TOUCH-CENSUS-ADMISSION-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Only new tests/census_first_touch_admission.test.cjs; Node contracts ensuring both first-touch FPS Node/Chromium tests are discovered and exactly once admitted to four shards, and Full Regression Census push on dev/main has no path filter. No changes to .github/workflows, tests/full_regression_runner.py, game source, or any existing test files; own memory checkpoint if permitted.",
   "base_sha": "771cf4419e381f284892047982eb9361eb8fb70e",
   "created_at": "2026-10-20",
@@ -13,5 +13,8 @@
     "Each belongs to exactly one of four shards and no duplicates",
     "Workflow push triggers dev and main with no paths exclusion",
     "Existing full Node+Chromium regression exact new SHA passes"
-  ]
+  ],
+  "released_at": "2026-10-20",
+  "outcome": "first_touch_discovery_and_four_shard_admission_functionally_verified_full_census_green_additional_guard_test_not_published",
+  "handover": "Full Regression #39487919601 exact SHA 28db5d20 PASS first_touch_mirror_fps.test.cjs Node and first_touch_mirror_fps_browser_qa.py Chromium 4 shards each, push on dev/main no path filters. The proposed tests/census_first_touch_admission.test.cjs safeguard was only local/failure-injected and NOT published due earlier rejected source write; archive available in previous QA checkpoint. No test/CI code claimed as delivered under this claim. Future separate claim may implement defense-in-depth, after exact-head CI/Pages checks."
 }
