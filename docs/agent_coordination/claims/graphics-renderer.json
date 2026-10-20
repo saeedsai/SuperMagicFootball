@@ -1,19 +1,16 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "graphics-renderer",
-  "feature_id": "ART-C01-REAR-FAR-ARM-AUTHORED-20261020",
+  "feature_id": "FIX-GRAPHICS-15-CONCEPT-DIRECTION-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "released",
-  "scope": "One bounded independent C01 source-art layer: create assets/characters/concept_modular_v1/source/arm_far_back.svg as transparent, editable, unmirrored original rear far arm matched to existing arm_near_back.svg and torso_back.svg. Source-only until runtime integration under appropriate additional locks; no changes to ui.js, engine.js, build.py, rig manifest, sw.js, rosters, gameplay, other agent memory or CI. Optional own docs/memory/agents/smf-hourly-dev-20261019.md checkpoint after source commit.",
-  "base_sha": "6039abe5c9ec249c6c565377bd95b8fbf4dd72cf",
+  "status": "active",
+  "scope": "Fix open issue #15 native left-facing Concept Hero side/quarter crops by applying only local concept-specific mirror in src/modules/concepthero.js. Add tests/concept_hero_direction_20261020.test.cjs, browser QA if independently possible, short docs/CONCEPT_HERO_DIRECTION_FIX_20261020.md, own memory checkpoint. Do not modify global render.js, engine.js, UI, source SVG, roster, CI, other agent memory, existing saved IDs. No code changes without confirmed lock.",
+  "base_sha": "833205077419631df3f002c401bb9f74cb5005a6",
   "created_at": "2026-10-20",
   "renewed_at": "2026-10-20",
   "acceptance": [
-    "SVG valid with 115x265 transparent canvas, no raster/image, no external resources, 12+ editable paths, unmirrored handedness and separated upper/lower arm/hand",
-    "Visual local PNG render reviewed against existing rear near arm; no white matte",
-    "Existing game unchanged; do not call runtime integrated until manifest/build/renderer/cache/test and browser gates complete"
-  ],
-  "released_at": "2026-10-20",
-  "outcome": "source_only_rear_far_arm_authored_not_integrated",
-  "handover": "Source SVG assets/characters/concept_modular_v1/source/arm_far_back.svg commit 4c8a2e0297918503d088e14472e9120744702b0d. Source validation: 25 editable paths, 7 groups, 115x265, transparent alpha bounds, no external images/mirroring; CairoSVG 3x visual preview reviewed. NOT wired into rig.json, conceptmodular.js, build.py, sw.js, tests; no playable graphic claimed. CI on exact source SHA was in progress at checkpoint; next claim must coordinate graphics + integration tooling + release infra to integrate and run desktop/touch+Pages QA."
+    "Both left/right side and quarter native left atlas orientation corrected without changing front/back",
+    "Both Concept Hero and modular fallback use correction; ordinary CHARACTER_ART unchanged",
+    "Focused Node test and actual desktop/simulated touch game browser direction verification, About version tests, exact SHA full regression and Pages hosted if available"
+  ]
 }
