@@ -3,7 +3,7 @@
   "lock_key": "gameplay-engine",
   "feature_id": "AI-DEFENSIVE-SUPPORT-LANE-20261019",
   "owner": "smf-hourly-dev-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Only src/modules/ai.js support defender selection for bounded cover lanes and new tests/ai_support_cover_20261019.test.cjs, optional docs/AI_SUPPORT_COVER_20261019.md, and own docs/memory/agents/smf-hourly-dev-20261019.md. No engine.js, graphics, UI, LAN, roster, release or other agents' files.",
   "base_sha": "833d6efa08dca525a3a73dde87bdc2ad4bf7ce31",
   "created_at": "2026-10-19",
@@ -14,5 +14,8 @@
     "Deterministic mirrored cases and human-control changes in focused Node tests",
     "Current game simulation calls helper; exact-head regression and About checks",
     "No change to four action buttons or saved player IDs"
-  ]
+  ],
+  "released_at": "2026-10-20",
+  "outcome": "checkpoint_completed_source_only_tests_not_committed",
+  "handover": "Source commit 28268f5a7b8b9e406552b95cbe7ad83b8557d4c0; GitHub Full Regression Census 39314589645 success; dedicated 12 Node/8 Chromium tests local only, not committed; owner checkpoint docs/memory/agents/smf-hourly-dev-20261019.md."
 }
