@@ -3,7 +3,7 @@
   "lock_key": "release-infra",
   "feature_id": "ART-C01-REAR-KIT-DETAIL-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Only sw.js cache entry and version for new C01 rear-jersey SVG asset; no workflow, Pages config, or other release changes.",
   "base_sha": "ca9b0e539fd7e7d9ee416f45aaed19e3ccab4b48",
   "created_at": "2026-10-20",
@@ -12,5 +12,8 @@
     "new layer present in source asset and runtime/inline browser fixture",
     "existing normal game unchanged",
     "exact-SHA full regression and browser QA"
-  ]
+  ],
+  "released_at": "2026-10-20",
+  "outcome": "c01_rear_jersey_source_test_docs_delivered_exact_full_census_pending",
+  "handover": "docs/concept_character_pipeline/C01_REAR_JERSEY_BATCH_20261020.md; tests/concept_modular_v1.test.cjs; scripts/validate_concept_modular.py; Modular QA #39401694462 green at graphics/memory source, Full Census recheck latest head"
 }
