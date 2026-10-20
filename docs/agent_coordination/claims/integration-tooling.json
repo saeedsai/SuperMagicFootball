@@ -3,7 +3,7 @@
   "lock_key": "integration-tooling",
   "feature_id": "ART-C01-REAR-KIT-DETAIL-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Only scripts/build.py new rear-jersey SVG inline fixture registration for C01 graphics; no merge tooling, roster, or other changes.",
   "base_sha": "c4ed7b11f198a3fef82352cac96828f38874f250",
   "created_at": "2026-10-20",
@@ -12,5 +12,8 @@
     "new layer present in source asset and runtime/inline browser fixture",
     "existing normal game unchanged",
     "exact-SHA full regression and browser QA"
-  ]
+  ],
+  "released_at": "2026-10-20",
+  "outcome": "c01_rear_jersey_source_test_docs_delivered_exact_full_census_pending",
+  "handover": "docs/concept_character_pipeline/C01_REAR_JERSEY_BATCH_20261020.md; tests/concept_modular_v1.test.cjs; scripts/validate_concept_modular.py; Modular QA #39401694462 green at graphics/memory source, Full Census recheck latest head"
 }
