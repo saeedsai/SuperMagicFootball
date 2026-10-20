@@ -1,15 +1,16 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "release-infra",
-  "feature_id": "RELEASE-TRIGGER-20261019",
-  "owner": "smf-release-trigger-20261019",
-  "status": "released",
-  "scope": "Trigger existing full regression pipeline with a release documentation checkpoint commit; do not merge main or bypass QA.",
-  "base_sha": "e19fe9bee9d269c5972792210bf495b4459e4483",
-  "created_at": "2026-10-19",
-  "renewed_at": "2026-10-19",
-  "released_at": "2026-10-19",
-  "outcome": "New dev commits pushed to trigger existing push-based full QA automatically; success of GitHub Actions not independently verified.",
-  "integrated_commit": "7f24279363a132403d386a628e72001e6989416e",
-  "handover": "docs/AUTO_PROMOTION_DEV_MAIN_20261019.md"
+  "feature_id": "ART-C01-REAR-KIT-DETAIL-20261020",
+  "owner": "smf-hourly-dev-20261019",
+  "status": "active",
+  "scope": "Only sw.js cache entry and version for new C01 rear-jersey SVG asset; no workflow, Pages config, or other release changes.",
+  "base_sha": "ca9b0e539fd7e7d9ee416f45aaed19e3ccab4b48",
+  "created_at": "2026-10-20",
+  "renewed_at": "2026-10-20",
+  "acceptance": [
+    "new layer present in source asset and runtime/inline browser fixture",
+    "existing normal game unchanged",
+    "exact-SHA full regression and browser QA"
+  ]
 }
