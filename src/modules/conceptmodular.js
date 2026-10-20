@@ -12,10 +12,11 @@ const CONCEPT_MODULAR=(()=>{
  const farArmArt={width:112,path:'arm_far_front.svg',inline:typeof CONCEPT_MODULAR_FAR_ARM_INLINE==='string'?CONCEPT_MODULAR_FAR_ARM_INLINE:null};
  const collarArt={width:112,path:'torso_collar_front.svg',inline:typeof CONCEPT_MODULAR_COLLAR_INLINE==='string'?CONCEPT_MODULAR_COLLAR_INLINE:null};
  const torsoArt={width:112,path:'torso_front.svg',inline:typeof CONCEPT_MODULAR_TORSO_INLINE==='string'?CONCEPT_MODULAR_TORSO_INLINE:null};
+ const backTorsoArt={width:115,path:'torso_back.svg',inline:typeof CONCEPT_MODULAR_BACK_TORSO_INLINE==='string'?CONCEPT_MODULAR_BACK_TORSO_INLINE:null};
  const states=Object.create(null);
  function preload(){
   if(typeof Image==='undefined')return;
-  for(const [kind,art] of [...Object.entries(viewArt),['frontFace',faceArt],['frontArm',armArt],['frontFarArm',farArmArt],['frontCollar',collarArt],['frontTorso',torsoArt]]){
+  for(const [kind,art] of [...Object.entries(viewArt),['frontFace',faceArt],['frontArm',armArt],['frontFarArm',farArmArt],['frontCollar',collarArt],['frontTorso',torsoArt],['backTorso',backTorsoArt]]){
    if(states[kind])continue;
    const state={image:new Image(),ready:false,error:false};states[kind]=state;
    state.image.onload=()=>{state.ready=state.image.naturalWidth===art.width&&state.image.naturalHeight===HEIGHT;state.error=!state.ready;};
@@ -31,7 +32,7 @@ const CONCEPT_MODULAR=(()=>{
   if(!art)return false; // All six unauthored quarter/side headings use the old renderer.
   const state=states[kind];
   // Never paint only part of the front modular head if face or hair is unavailable.
-  if(!state?.ready||(kind==='front'&&(!states.frontFace?.ready||!states.frontArm?.ready||!states.frontFarArm?.ready||!states.frontCollar?.ready||!states.frontTorso?.ready))){preload();return false;}
+  if(!state?.ready||(kind==='front'&&(!states.frontFace?.ready||!states.frontArm?.ready||!states.frontFarArm?.ready||!states.frontCollar?.ready||!states.frontTorso?.ready)||(kind==='back'&&!states.backTorso?.ready))){preload();return false;}
   if(!CONCEPT_HERO.draw(ctx,p,view,{run}))return false;
   const ratio=LOGICAL_HEIGHT/HEIGHT,w=art.width*ratio;
   const phase=Math.max(-1,Math.min(1,Number.isFinite(run)?run:0));
@@ -72,6 +73,13 @@ const CONCEPT_MODULAR=(()=>{
    ctx.drawImage(states.frontArm.image,-112*ratio/2,-LOGICAL_HEIGHT+6,112*ratio,LOGICAL_HEIGHT);
    ctx.restore();
   }
+  if(kind==='back'){
+   // Rear jersey is painted over the untouched legacy body, underneath rear hair.
+   // No mirrored text, new hitboxes or changes to the other six view fallbacks.
+   ctx.save();ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+   ctx.drawImage(states.backTorso.image,-115*ratio/2,-LOGICAL_HEIGHT+6,115*ratio,LOGICAL_HEIGHT);
+   ctx.restore();
+  }
   const pivot=kind==='front'?[56,56]:[57,60];
   const sway=Math.abs(phase)>.07?phase*.012:0;
   const px=(pivot[0]-art.width/2)*ratio,py=-LOGICAL_HEIGHT+6+pivot[1]*ratio;
@@ -83,11 +91,11 @@ const CONCEPT_MODULAR=(()=>{
  preload();
  function status(){
   const ready=kind=>!!states[kind]?.ready;
-  return {loaded:ready('front')&&ready('back')&&ready('frontFace')&&ready('frontArm')&&ready('frontFarArm')&&ready('frontCollar')&&ready('frontTorso'),
+  return {loaded:ready('front')&&ready('back')&&ready('frontFace')&&ready('frontArm')&&ready('frontFarArm')&&ready('frontCollar')&&ready('frontTorso')&&ready('backTorso'),
    error:Object.values(states).some(s=>s.error),
-   authoredViews:Object.keys(viewArt).filter(kind=>ready(kind)&&(kind!=='front'||(ready('frontFace')&&ready('frontArm')&&ready('frontFarArm')&&ready('frontCollar')&&ready('frontTorso')))),
-   authoredParts:['hair_front_front','hair_back_back',...(ready('frontFace')?['face_front_front']:[]),...(ready('frontArm')?['arm_near_front']:[]),...(ready('frontFarArm')?['arm_far_front']:[]),...(ready('frontCollar')?['torso_collar_front']:[]),...(ready('frontTorso')?['torso_front']:[])],
-   faceLoaded:ready('frontFace'),armLoaded:ready('frontArm'),farArmLoaded:ready('frontFarArm'),frontArmStrideEnabled:true,reciprocalArmsEnabled:true,collarLoaded:ready('frontCollar'),torsoLoaded:ready('frontTorso'),fallback:'concept_hero',hairSwayEnabled:true};
+   authoredViews:Object.keys(viewArt).filter(kind=>ready(kind)&&((kind==='back'?ready('backTorso'):kind!=='front'||(ready('frontFace')&&ready('frontArm')&&ready('frontFarArm')&&ready('frontCollar')&&ready('frontTorso'))))),
+   authoredParts:['hair_front_front','hair_back_back',...(ready('frontFace')?['face_front_front']:[]),...(ready('frontArm')?['arm_near_front']:[]),...(ready('frontFarArm')?['arm_far_front']:[]),...(ready('frontCollar')?['torso_collar_front']:[]),...(ready('frontTorso')?['torso_front']:[]),...(ready('backTorso')?['torso_back']:[])],
+   faceLoaded:ready('frontFace'),armLoaded:ready('frontArm'),farArmLoaded:ready('frontFarArm'),frontArmStrideEnabled:true,reciprocalArmsEnabled:true,collarLoaded:ready('frontCollar'),torsoLoaded:ready('frontTorso'),backTorsoLoaded:ready('backTorso'),fallback:'concept_hero',hairSwayEnabled:true};
  }
  return Object.freeze({id:ID,supports,preload,draw,status});
 })();
