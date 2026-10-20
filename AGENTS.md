@@ -16,7 +16,7 @@ Read `docs/memory/README.md`, `docs/memory/SHARED.md` and **only your own** `doc
 
 ## About / release identification
 
-Until a coordinated migration, preserve the existing current-dev Git SHA and separate bundle version in Credits/About. Run `node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs` on source changes and report exact commits and deployment evidence. The owner wants a user-facing four-number `0.9.0.0` only in About; implement that in a separate atomic UI/release/tests migration without breaking existing verification or showing a remote SHA as proof of deployed assets. See `docs/VERSIONING_POLICY.md`.
+On **every commit**, including documentation-only changes, preserve and verify the existing About per-commit revision contract. Until a coordinated migration, preserve the existing current-dev Git SHA and separate bundle version in Credits/About. Run `node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs` on source changes and report exact commits and deployment evidence. The owner wants a user-facing four-number `0.9.0.0` only in About; implement that in a separate atomic UI/release/tests migration without breaking existing verification or showing a remote SHA as proof of deployed assets. See `docs/VERSIONING_POLICY.md`.
 
 ## Policy scope
 
