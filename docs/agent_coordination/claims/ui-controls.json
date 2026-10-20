@@ -1,21 +1,17 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "ui-controls",
-  "feature_id": "FIX-UI-101-BACK-PARENT-CONSISTENCY-20261020",
+  "feature_id": "FIX-UI-102-REMOVE-HOME-DEV-BANNER-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "released",
-  "scope": "Small UI Back-route correction only: src/modules/ui.js page/nav Back behavior, tests/ui_back_routes_20261020.test.cjs, docs/UI_BACK_ROUTES_20261020.md and own docs/memory/agents/smf-hourly-dev-20261019.md. Preserve current About auto-SHA/change summaries and stable bundle; no version policy change, art, gameplay, roster, CI or other agent memory. Scoped compatibility update to tests/halftime_tactics_return.test.cjs because the previous static assertion hard-coded the superseded Home fallback; update must assert pause/setup and dynamic customization behavior (no relaxation). Add executable tests/ui_back_routes_browser_qa.py under this feature.",
-  "base_sha": "57c5cda49df18bdd2f0bec0925502a6d2d6638eb",
+  "status": "active",
+  "scope": "Only remove confusing 'DEV → ABOUT' and 'DEV VERSION IN ABOUT' display badges from the main menu and ordinary submenu toplines in src/modules/ui.js; add tests/ui_no_dev_banner_20261020.test.cjs and optionally existing real-browser UI nav QA and docs/UI_HOME_BANNER_20261020.md. Keep Credits/About accessible and preserve its live SHA + latest real commit + Recent Changes, all other UI flows and control/gameplay/save/roster invariants. No release/version system migrations or other agent memory changes.",
+  "base_sha": "3f10946281212bcb0a4d7754748706c3dd6250f6",
   "created_at": "2026-10-20",
   "renewed_at": "2026-10-20",
   "acceptance": [
-    "Visible Back button, Escape/Backspace and simulated gamepad B resolve to same parent",
-    "Customization→Player Studio/Clubs/Editor/Gallery/Squad return to Customization; Input→Controller Mapping returns to Input",
-    "Pause sound returns to pause; pre-match setup and squad contexts unchanged",
-    "Add targeted regression and verify existing About version tests and full CI",
-    "Legacy halftime source contract reflects dynamic squad Back while preserving exact pause/setup behavior"
-  ],
-  "released_at": "2026-10-20",
-  "outcome": "live_back_navigation_source_and_node_browser_tests_published_modular_QA_pass_exact_full_regression_pending",
-  "handover": "docs/UI_BACK_ROUTES_20261020.md; live source 14d7b6c3; new Node 6ff41af corrected 96ad27; historical halftime test updated 3847c664; browser 145cec63; docs 95887b9d; own memory a249c2fd. Modular QA success. Await final full census and hosted Pages before claiming production."
+    "Home and ordinary top-level submenus do not show any development/SHA/version banner text",
+    "Credits/About is accessible and still reports actual dev SHA/latest commit summaries",
+    "Desktop and simulated-touch browser show the clean menu and four unchanged action buttons",
+    "Exact integrated-SHA Modular QA and full census green"
+  ]
 }
