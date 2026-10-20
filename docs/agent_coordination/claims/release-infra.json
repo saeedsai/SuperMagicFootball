@@ -1,19 +1,17 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "release-infra",
-  "feature_id": "ART-C01-REAR-KIT-DETAIL-20261020",
+  "feature_id": "CI-ISSUE-27-FIRST-TOUCH-FPS-ADMISSION-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "released",
-  "scope": "Only sw.js cache entry and version for new C01 rear-jersey SVG asset; no workflow, Pages config, or other release changes.",
-  "base_sha": "ca9b0e539fd7e7d9ee416f45aaed19e3ccab4b48",
+  "status": "active",
+  "scope": "Only .github/workflows/full-regression-census.yml: explicit preflight assertion both first_touch_mirror_fps.test.cjs and first_touch_mirror_fps_browser_qa.py are included by tests/full_regression_runner.py discovery. No game source, UI, art, QA runner changes, save data, memory or other CI workflows. Close issue #27 only after exact-SHA full census green.",
+  "base_sha": "77d60a56e8a686ce1ab7414311419ca9e45eda53",
   "created_at": "2026-10-20",
   "renewed_at": "2026-10-20",
   "acceptance": [
-    "new layer present in source asset and runtime/inline browser fixture",
-    "existing normal game unchanged",
-    "exact-SHA full regression and browser QA"
-  ],
-  "released_at": "2026-10-20",
-  "outcome": "c01_rear_jersey_source_test_docs_delivered_exact_full_census_pending",
-  "handover": "docs/concept_character_pipeline/C01_REAR_JERSEY_BATCH_20261020.md; tests/concept_modular_v1.test.cjs; scripts/validate_concept_modular.py; Modular QA #39401694462 green at graphics/memory source, Full Census recheck latest head"
+    "Every dev/main push already triggers census independent of paths; verify",
+    "Both new first-touch Node and desktop/simulated-touch Chromium suites explicitly admitted",
+    "Full 4 Node + 4 Chromium shards and preview green at exact integrated SHA",
+    "No code or unrelated CI scope changes"
+  ]
 }
