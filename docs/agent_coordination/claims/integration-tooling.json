@@ -1,20 +1,16 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "integration-tooling",
-  "feature_id": "ART-8VIEW-SOURCE-COVERAGE-CHECK-20261020",
+  "feature_id": "SH01-BUILD-FIXTURE-IMPORT-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "released",
-  "scope": "One small independent authored-view manifest coverage audit: new scripts/report_authored_views.py and tests/test_report_authored_views.py plus a concise docs/ART_EIGHT_VIEW_COVERAGE_TOOL_20261020.md and own memory when permitted. Does not touch manifest/runtime artwork, gameplay, UI, saves, workflows, other agents' memories or legacy validator.",
-  "base_sha": "ada592804fe78d3c77b206dd8ec06d732fe37e0b",
+  "status": "active",
+  "scope": "Only scripts/build.py: add shotpaths to source module assembly in dependency order before engine so test-only inline fixture and real source both get SHOTPATHS. Add tests/shotpaths_build_integration_20261020.test.cjs and docs/SHOTPATHS_BUILD_HANDOVER_20261020.md plus own memory checkpoint. No engine changes, rosters, UI, CI workflow, service worker, other agents' memory.",
+  "base_sha": "4c24f5fafcf13b584c514452d535802bc8d4ec9a",
   "created_at": "2026-10-20",
   "renewed_at": "2026-10-20",
   "acceptance": [
-    "Report all 8 view IDs and distinguish genuinely authored source layers from fallback",
-    "Reject invalid manifest references or path traversal; missing six views is a planned state not a false green complete",
-    "Unit fixtures cover complete, incomplete, invalid, missing assets",
-    "No game runtime changes; existing exact-head CI unaffected"
-  ],
-  "released_at": "2026-10-20",
-  "outcome": "source_audit_script_and_seven_local_fixture_tests_delivered_modular_QA_green_full_census_pending",
-  "handover": "docs/ART_EIGHT_VIEW_COVERAGE_TOOL_20261020.md; tool 99ddf608, tests 76134055, docs b57a82db, own checkpoint e5668ce6; no gameplay/renderer/CI changes. Final full census exact head to be checked."
+    "Generated tests/.generated/game.js declares SHOTPATHS once and uses it in engine",
+    "Existing generator and generated fixture tests pass",
+    "Actual Chromium desktop/sim touch SH01 live test passes, 4+4 full census on same SHA"
+  ]
 }
