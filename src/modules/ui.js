@@ -15,6 +15,7 @@ import {BPWALLTIME} from "./bpwalltime.js";
 import {CONTINENTAL} from "./continental.js";
 import {TOURNAMENTS} from "./tournaments.js";
 import {CAREER} from "./career.js";
+import {CAREER_SLOTS} from "./career_slots.js";
 import {INPUT} from "./input.js";
 import {VISUALFEEL} from "./visualfeel.js";
 import {ENGINE} from "./engine.js";
@@ -78,11 +79,13 @@ TEAMS.push({id:CONCEPT_DEMO_ID,index:TEAMS.length,name:'Concept Royals FC',
  group:'concept_demo',flag:'CRF',primary:'#1262d4',secondary:'#f4f5f7',
  trim:'#f1bb46',rank:84,shot:'omega',customRoster:CONCEPT_DEMO_ROSTER});
 
+const careerSlots=CAREER_SLOTS.create(localStorage);
 let career=store.get('managerCareer',null);
 // Migrate pre-0.6 custom-club index saves: v0.5 appended user clubs at index 83.
 if(career&&!career.saveSchema&&clubs.length){const oldToNew=id=>Number.isInteger(id)&&id>=83&&id<83+clubs.length?(TEAMS.findIndex(t=>t.id===clubs[id-83].id)):id;
  if(career.club>=83&&career.club<83+clubs.length){career.club=oldToNew(career.club);career.members=career.members.map(oldToNew);career.fixtures=career.fixtures.map(r=>r.map(pair=>pair.map(oldToNew)));career.table=Object.fromEntries(Object.entries(career.table).map(([id,v])=>[oldToNew(+id),v]));career.history.forEach(r=>r.against=oldToNew(r.against));if(career.lastResult)career.lastResult.against=oldToNew(career.lastResult.against);career.saveSchema=2;store.put('managerCareer',career)}
 }
+if(!careerSlots.error){try{careerSlots.importLegacy(career);if(careerSlots.hasVault)career=careerSlots.activeCareer();}catch(error){console.warn('Career slot migration could not be saved:',error);}}
 let continentalRun=store.get('continentalRun',null);if(!validateTournament(continentalRun,TEAMS))continentalRun=null;
 let continentSelection='UEFA';
 let managerRegion='',managerCountry='';
@@ -161,7 +164,7 @@ function showCareerMenu(){menuChoices('nav-career','CAREER','Continue your exist
  ...(career?[navItem('Continue Career','manager',`Season ${career.season} · ${TEAMS[career.club]?.name||'Saved career'}`,'active','▶')]:[]),
  navItem(career?'Start a New Career':'New Career','navNewCareer',career?'Replaces the current career after confirmation.':'Select a club and begin a career.','active','⭐'),
  navItem('Career Management','manager','Squad, transfers, scouting, facilities and fixtures.','active','💼'),
- navItem('Manage Career Saves','navSaveManagement','Export or import a save backup.','active','💾')],'home');}
+ navItem('10 Career Save Slots','navCareerSlots','Save, load or delete independent manager careers.','active','💾')],'home');}
 function showCupsMenu(){menuChoices('nav-cups','LEAGUES & CUPS','Choose an existing competition or explore planned tournaments.',[
  navItem('International','navInternational','World Cup and future national cups.','active','🌍'),
  navItem('Clubs','navClubs','Existing continental championships and future leagues.','active','🏆'),
@@ -201,6 +204,10 @@ function showCustomizationMenu(){menuChoices('nav-customize','PLAYER & TEAM CUST
 function showInputMenu(){menuChoices('nav-input','INPUT SETTINGS','The game always uses four actions: Pass, Shoot, Dribble and Jump.',[
  navItem('Keyboard & Gamepad Mappings','controls','Remap both local players.','active','🎮'),
  navItem('Touch Controls & Combos','help','View the existing touch layout and combo reference.','active','👆')],'navSettings');}
+function showCareerSlots(){
+ const rows=careerSlots.list().map(s=>`<div class="panel"><h3 class="titleSmall">SLOT ${s.number}${s.active?' · ACTIVE':''}</h3><p>${s.occupied?`${escapeHTML(s.name)} · ${escapeHTML(TEAMS[s.club]?.name||'Unknown club')} · Season ${s.season} · Week ${s.week} · ${escapeHTML(new Date(s.savedAt).toLocaleString())}`:'Empty slot'}</p><div class="row">${career?button(s.occupied?'OVERWRITE':'SAVE HERE','careerSlotSave_'+s.number):''}${s.occupied?button('LOAD','careerSlotLoad_'+s.number)+button('DELETE','careerSlotDelete_'+s.number):''}</div></div>`).join('');
+ page('CAREER SAVE SLOTS','10 independent local slots. The active slot autosaves after career progress; overwrite and delete require confirmation.',`${careerSlots.error?`<p role="alert">Save storage is damaged: ${escapeHTML(careerSlots.error)}. Export a backup before recovery.</p>`:''}<div class="scroll">${rows}</div><p class="muted">Legacy single-save careers are copied into slot 1 without removing the old data. Use Settings → Save Management to export all slots.</p>`,'navCareer');
+}
 function showSaveMenu(parent='navSettings'){menuChoices('nav-saves','SAVE MANAGEMENT','Safely back up or restore local progress.',[
  navItem('Export All Saves','exportSave','Download a JSON backup without changing progress.','active','⬇'),
  navItem('Import Save','importSave','Requires explicit confirmation before replacing progress.','active','⬆')],parent,`<input id="saveImportFile" type="file" accept=".json,application/json" class="hidden" aria-label="Import saved game"/>`);}
@@ -540,7 +547,7 @@ function drawFittedKeeperStudioPose(ctx,width,height,player,team){
 function drawTeamFace(canvas,player,teamIndex){if(!canvas||!player)return;const ctx=canvas.getContext('2d');if(!ctx)return;ctx.clearRect(0,0,canvas.width,canvas.height);const gradient=ctx.createLinearGradient(0,0,0,canvas.height);gradient.addColorStop(0,'#347885');gradient.addColorStop(1,'#102d44');ctx.fillStyle=gradient;ctx.fillRect(0,0,canvas.width,canvas.height);ctx.save();const fit=portraitFit(canvas.width,canvas.height,player.appearance||{});ctx.translate(fit.x,fit.y);ctx.scale(fit.scale,fit.scale);renderer.drawPlayer(ctx,{...game.player(0,3),src:player,team:0,i:0,x:0,y:0,z:0,t:0,face:1,dx:0,dy:0,anim:0,action:'idle',controlled:false,preview:true},{getTeam:()=>TEAMS[teamIndex],options:{showNames:false}});ctx.restore();}
 function refreshFormationPreview(){const board=$('formationPitch');if(!board)return;const teamIndex=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;const players=squadContext==='pause'?game.rosters[squadSide]:roster(teamIndex);const key=$('formation')?.value||'2-1-2';const labels={'2-1-2':['GK','DF','DF','MF','FW','FW'],'1-2-2':['GK','DF','MF','MF','FW','FW'],'2-2-1':['GK','DF','DF','MF','MF','FW'],'1-3-1':['GK','DF','MF','MF','MF','FW'],'1-1-3':['GK','DF','MF','FW','FW','FW'],'3-1-1':['GK','DF','DF','DF','MF','FW']}[key]||['GK','DF','DF','MF','FW','FW'];menu.querySelectorAll('.lineupRow>strong').forEach((node,i)=>node.textContent=labels[i]||'MF');const positions=FORMATIONS[key]||FORMATIONS['2-1-2'];const slots=Array.from({length:6},(_,i)=>Number($('pos'+i)?.value));menu.querySelectorAll('[data-lineup-ovr]').forEach((badge,i)=>{badge.textContent='OVR '+playerOVR(players[slots[i]],labels[i]);badge.title='Calculated for '+labels[i]+' position';});const guidance=$('lineupRoleFit');if(guidance)guidance.textContent=lineupRoleFitGuidance(players,slots,labels);board.innerHTML=positions.map((pos,i)=>`<div class="formationSlot" style="left:${Math.round(pos.x*100)}%;top:${Math.round(pos.y*100)}%" title="${escapeHTML(players[slots[i]]?.name||'Player')}"><canvas width="86" height="90" data-formation-avatar="${slots[i]}" aria-label="${escapeHTML(players[slots[i]]?.name||'Player')} face" role="img"></canvas><small>${escapeHTML((players[slots[i]]?.name||'Player').split(' ').slice(-1)[0])}</small><span class="formationOvr" aria-label="${labels[i]} overall rating ${playerOVR(players[slots[i]],labels[i])}">${labels[i]} ${playerOVR(players[slots[i]],labels[i])}</span></div>`).join('');menu.querySelectorAll('[data-squad-avatar],[data-formation-avatar]').forEach(canvas=>{const j=Number(canvas.dataset.squadAvatar??canvas.dataset.formationAvatar);drawTeamFace(canvas,players[j],teamIndex)});}
 
-const SAVE_KEYS=Object.freeze(['customClubs','managerCareer','continentalRun','options','league','lineup','edits','teamPlans','controllerBindings','kitSelections','audioOptions']);
+const SAVE_KEYS=Object.freeze(['customClubs','managerCareer','careerSlots','continentalRun','options','league','lineup','edits','teamPlans','controllerBindings','kitSelections','audioOptions']);
 // Reject structurally corrupt imports before confirmation or any storage mutation.
 // Legacy and newer exports can omit keys. Null means 'preserve current value'.
 function validateSaveImport(payload){
@@ -555,7 +562,8 @@ function validateSaveImport(payload){
   if(key==='customClubs'&&(value.length>128||value.some(t=>!t||typeof t!=='object'||typeof t.id!=='string'||!t.id.startsWith('club_')||typeof t.name!=='string'||!Array.isArray(t.customRoster)||t.customRoster.length!==12)))throw Error('Invalid custom club data');
   if(key==='lineup'&&(value.length!==6||value.some(n=>!Number.isInteger(n)||n<0||n>10000)||new Set(value).size!==6))throw Error('Invalid lineup');
   if(key==='kitSelections'&&(value.length!==2||value.some(k=>k!=='home'&&k!=='away')))throw Error('Invalid kit selections');
-  if(key==='managerCareer'&&(!Number.isInteger(value.club)||!Array.isArray(value.members)||!Array.isArray(value.fixtures)||!Array.isArray(value.history)||!Array.isArray(value.roster)||value.roster.length!==12||!value.table||typeof value.table!=='object'||!value.facilities||typeof value.facilities!=='object'||!value.cup||typeof value.cup!=='object'||!Number.isFinite(value.cash)||!Number.isInteger(value.week)))throw Error('Invalid manager career');
+  if(key==='careerSlots'&&!CAREER_SLOTS.validVault(value))throw Error('Invalid Career save slots');
+   if(key==='managerCareer'&&(!Number.isInteger(value.club)||!Array.isArray(value.members)||!Array.isArray(value.fixtures)||!Array.isArray(value.history)||!Array.isArray(value.roster)||value.roster.length!==12||!value.table||typeof value.table!=='object'||!value.facilities||typeof value.facilities!=='object'||!value.cup||typeof value.cup!=='object'||!Number.isFinite(value.cash)||!Number.isInteger(value.week)))throw Error('Invalid manager career');
   if(key==='continentalRun'&&(!Array.isArray(value.participants)||!['league','knockout','finished'].includes(value.phase)))throw Error('Invalid continental cup');
   if(key==='league'&&(!Array.isArray(value.games)||!Number.isFinite(value.played)))throw Error('Invalid league history');
   changes.push([key,JSON.stringify(value)]);
@@ -622,7 +630,7 @@ function showHelp(){page('CONTROLS','Exactly four football action buttons: Pass,
 function showEditor(){page('PLAYER DATA EDITOR','Edit your own 12-player team roster in JSON. Every player can change shot and stats.',`<div class="twoCol"><div class="panel">${teamField('SELECT TEAM','editTeam',nations(),home)}<label class="fieldLabel">TEAM PLAYER DEFINITIONS</label><textarea id="jsonRoster" style="width:100%;height:280px;padding:12px;background:#061625;color:#c5eaff;border:1px solid #90bbcb;border-radius:9px;touch-action:pan-y" spellcheck="false">${escapeHTML(JSON.stringify(roster(home),null,2))}</textarea><div class="row" style="margin-top:12px">${button('✓ APPLY','importRoster','gold')}${button('⬇ EXPORT','exportRoster')}</div></div><div class="panel"><h3 class="titleSmall">EDITABLE ENGINE</h3><p class="muted">Individual player data includes the fourteen 1–100 ratings: stamina, strength, aggression, defence, speedRating, agility, dribbling, shootPower, shootAccuracy, heading, passing, crossing, gkDiving, gkSkill. dribbleType selects one of ten gameplay-distinct tricks. superAbility and gkSuperAbility hold optional unique move definitions. superShotLevel, superDefenceLevel and gkSuperLevel can explicitly override arcade strength tiers (1–5); top tiers are reserved for a small editorial star shortlist. Existing legacy power, shoot, defense, speed are retained for compatibility. The same engine is intended to support new clubs, abilities and growth later.</p><p class="muted">Available super shots: ${Object.keys(SHOTS).join(', ')}.</p><p class="muted">The source code is included in the ZIP for extensions. Online play, the career economy and custom competition designer are future work—not currently playable.</p></div></div>`)}
 
 const eur=n=>'€'+(n/1000000).toFixed(1)+'m';
-const saveCareer=()=>{if(career)store.put('managerCareer',career)};
+const saveCareer=()=>{if(!career)return;try{careerSlots.save(careerSlots.active,career);store.put('managerCareer',career);}catch(error){alert('Career autosave failed: '+error.message);}};
 // Pre-match natural-role suitability: advisory only; no plan/roster/save writes.
 // Fixed starting-six slots reflect the game's existing six-player role assignment.
 // Keep this independent from the existing injury/fitness replacement report.
@@ -872,7 +880,7 @@ function saveAppearance(){
  if(isCareer){
   const updated={...career,roster:source};
   if(!storeCharacterChanges('managerCareer',updated))return;
-  career=updated;showCareerSquad();
+  career=updated;saveCareer();showCareerSquad();
  }else{
   const updated={...edits,[TEAMS[home].id]:source};
   if(!storeCharacterChanges('edits',updated))return;
@@ -1037,8 +1045,8 @@ function halftime(){game.matchState='paused';page('HALF TIME',`${TEAMS[home].nam
 function fulltime(ev){game.matchState='finished';let [a,b]=ev.score,win=a>b;if(mode==='league'){
  league.played++;league.wins+=a>b?1:0;league.draws+=a===b?1:0;league.losses+=a<b?1:0;league.points+=a>b?5:a===b?2:0;league.games.unshift({team:TEAMS[away].name,a,b});league.games=league.games.slice(0,80);
  if(league.stage==='qualifier'&&league.wins>=16&&league.points>=70)league.stage='finals';else if(league.stage==='finals'&&win){league.playoff=(league.playoff||0)+1;if(league.playoff>=4)league.stage='champion'}store.put('league',league)}
- if(mode==='continental'&&continentalRun){try{const result=tournamentAdvance(continentalRun,TEAMS,ev.score,ev.penalties?ev.winner:null);store.put('continentalRun',continentalRun);if(career?.club===continentalRun.club){career.cash+=Math.max(0,continentalRun.earned-(continentalRun.lastCareerAward||0));continentalRun.lastCareerAward=continentalRun.earned;store.put('continentalRun',continentalRun);store.put('managerCareer',career)}page('CONTINENTAL RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="badge">${escapeHTML(confed(continentalRun.compId).name)}</div><div class="megaScore">${a} : ${b}</div><p>${escapeHTML(tournamentProgress(continentalRun))} • ${continentalRun.earned/1000000}m prize earnings</p>${button('CONTINUE CHAMPIONSHIP','continentContinue','gold')}</div>`)}catch(e){alert('Competition update failed: '+e.message);showTournament()}return;}
- if(mode==='career'&&career){recordMatchFitness(career,game.getFitnessReport(0));const outcome=advanceCareer(career,TEAMS,ev.score,ev.penalties?ev.winner:null);store.put('managerCareer',career);page('CAREER MATCH RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="titleSmall">${outcome.kind.toUpperCase()} • ${outcome.win?'WIN!':a===b?'DRAW':'DEFEAT'}</div><div class="megaScore">${a} : ${b}</div><p>Club cash: €${(career.cash/1000000).toFixed(1)}m • Current week ${career.week+1}</p>${button('CONTINUE MANAGER CAREER','manager','gold')}</div>`);return;}
+ if(mode==='continental'&&continentalRun){try{const result=tournamentAdvance(continentalRun,TEAMS,ev.score,ev.penalties?ev.winner:null);store.put('continentalRun',continentalRun);if(career?.club===continentalRun.club){career.cash+=Math.max(0,continentalRun.earned-(continentalRun.lastCareerAward||0));continentalRun.lastCareerAward=continentalRun.earned;store.put('continentalRun',continentalRun);saveCareer()}page('CONTINENTAL RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="badge">${escapeHTML(confed(continentalRun.compId).name)}</div><div class="megaScore">${a} : ${b}</div><p>${escapeHTML(tournamentProgress(continentalRun))} • ${continentalRun.earned/1000000}m prize earnings</p>${button('CONTINUE CHAMPIONSHIP','continentContinue','gold')}</div>`)}catch(e){alert('Competition update failed: '+e.message);showTournament()}return;}
+ if(mode==='career'&&career){recordMatchFitness(career,game.getFitnessReport(0));const outcome=advanceCareer(career,TEAMS,ev.score,ev.penalties?ev.winner:null);saveCareer();page('CAREER MATCH RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="titleSmall">${outcome.kind.toUpperCase()} • ${outcome.win?'WIN!':a===b?'DRAW':'DEFEAT'}</div><div class="megaScore">${a} : ${b}</div><p>Club cash: €${(career.cash/1000000).toFixed(1)}m • Current week ${career.week+1}</p>${button('CONTINUE MANAGER CAREER','manager','gold')}</div>`);return;}
  page('FULL TIME',`${ev.penalties&&(ev.winner===0||ev.winner===1)?(ev.winner===0?'VICTORY!':'DEFEAT'):win?'VICTORY!':a===b?'DRAW MATCH':'DEFEAT'}${ev.penalties?' • ON PENALTIES':''}`,`<div class="panel" style="text-align:center"><div class="badge">MATCH RESULT</div><div style="font-size:70px;color:#ffe17a;font-weight:1000">${a} : ${b}</div><p>${TEAMS[home].name} vs ${TEAMS[away].name}</p>${ev.penalties?penaltyRoundScorecard(game,{finished:true,winner:ev.winner}):''}${matchHighlightsPanel(game)}<div class="row" style="justify-content:center">${button('↻ REMATCH','kickoff','gold')}${mode==='league'?button('🏆 LEAGUE','league'):button('MAIN MENU','home')}</div></div>`)}
 function toast(message,duration=1600){let n=$('gameToast');n.textContent=message;n.classList.remove('hidden');toastTime=performance.now()+duration}
 let toastTime=0;
@@ -1049,18 +1057,18 @@ function action(a){audio.cue('ui');
  'nav-device':'navOnDevice','nav-career':'navCareer','nav-cups':'navCups','nav-clubs':'navClubs','nav-settings':'navSettings','nav-customize':'navCustomization','nav-input':'navInput','nav-saves':'navSaveManagement'
  })[screen]||'home';
  if(a==='confirmQuit'){if(confirm('Leave this match and return to the main menu? Match progress will be lost.')){game.matchState='none';showHome();}}else if(a==='confirmRestart'){if(confirm('Restart the match from kickoff? Current match progress will be lost.'))start();}
- else if(a==='navQuick')showQuickMenu();else if(a==='navOnDevice')showOnDevice();else if(a==='navOnline')showOnlineMenu();else if(a==='navCareer')showCareerMenu();else if(a==='navCups')showCupsMenu();else if(a==='navInternational')showInternationalMenu();else if(a==='navClubs')showClubCompetitionsMenu();else if(a==='navSettings'||a==='settings')showSettingsMenu();else if(a==='navCustomization')showCustomizationMenu();else if(a==='navInput')showInputMenu();else if(a==='navSaveManagement')showSaveMenu(screen==='nav-career'?'navCareer':'navSettings');
+ else if(a==='navQuick')showQuickMenu();else if(a==='navOnDevice')showOnDevice();else if(a==='navOnline')showOnlineMenu();else if(a==='navCareer')showCareerMenu();else if(a==='navCups')showCupsMenu();else if(a==='navInternational')showInternationalMenu();else if(a==='navClubs')showClubCompetitionsMenu();else if(a==='navSettings'||a==='settings')showSettingsMenu();else if(a==='navCustomization')showCustomizationMenu();else if(a==='navInput')showInputMenu();else if(a==='navSaveManagement')showSaveMenu('navSettings');else if(a==='navCareerSlots')showCareerSlots();
  else if(a==='navGameSettings')showSettingsSection('game');else if(a==='navGraphics')showSettingsSection('graphics');else if(a==='navSound'){if(game.matchState==='paused'&&screen==='PAUSED')menuEntryReturn='returnPause';showSettingsSection('sound');}
  else if(a==='navAbout')showAbout();
- else if(a==='navNewCareer'){if(career&&!confirm('Start a new career? Your current manager career will be replaced. Export a backup first if needed.'))return;career=null;store.put('managerCareer',null);showManager();}
+ else if(a==='navNewCareer'){career=null;showManager();}
  else if(a.startsWith('later')){const labels={laterLAN:'Local Network',laterOnlineMatch:'Online Match',laterUltimate:'Ultimate Team',laterOnlineCareer:'Online Career',laterOnlineCup:'Online Cup / League',laterWorldCup:'World Cup',laterAsian:'Asian Cup',laterEuro:'Euro',laterCopa:'Copa América',laterAfrica:'Africa Cup',laterConcacaf:'CONCACAF Cup',laterChampions:'Champions League',laterEuropa:'Europa League',laterPremier:'Premier League',laterSerie:'Serie A',laterBundes:'Bundesliga',laterLaLiga:'La Liga',laterLigue1:'Ligue 1',laterCustomCup:'Custom Cup',laterCustomLeague:'Custom League'};const parent=a==='laterLAN'?'navQuick':a.startsWith('laterOnline')||a==='laterUltimate'?'navOnline':['laterWorldCup','laterAsian','laterEuro','laterCopa','laterAfrica','laterConcacaf'].includes(a)?'navInternational':['laterCustomCup','laterCustomLeague'].includes(a)?'navCups':'navClubs';comingLater(labels[a]||'Coming Later','This feature is on the roadmap but is not yet playable.',parent);}
  else if(a==='home'||a==='quit'){game.matchState='none';showHome()}
  else if(a==='continents')showContinents();else if(a.startsWith('continentPick_'))showContinentSetup(a.slice(14));else if(a==='continentStart')startContinent();else if(a==='continentContinue')showTournament();else if(a==='continentKickoff')continentKickoff();else if(a==='continentBye')continentBye();
- else if(a==='manager')showManager();else if(a==='startManager'){const v=+$('managerClub').value;career=createCareer(v,TEAMS);career.saveSchema=2;career.clubId=TEAMS[v].id;store.put('managerCareer',career);showManager()}
- else if(a==='careerPlay')careerPlay();else if(a==='careerSeason'){if(career){nextSeason(career);store.put('managerCareer',career);showManager()}}
+ else if(a==='manager')showManager();else if(a==='startManager'){const v=+$('managerClub').value;const slot=careerSlots.firstEmpty()??careerSlots.active;if(careerSlots.list()[slot-1].occupied&&!confirm('All ten slots are full. Overwrite active Career slot '+slot+'?'))return;const fresh=createCareer(v,TEAMS);fresh.saveSchema=2;fresh.clubId=TEAMS[v].id;try{careerSlots.save(slot,fresh);career=fresh;store.put('managerCareer',career);showManager();}catch(error){alert('Could not create Career save: '+error.message);}}
+ else if(a==='careerPlay')careerPlay();else if(a==='careerSeason'){if(career){nextSeason(career);saveCareer();showManager()}}
  else if(a==='careerScout')showCareerScout();else if(a==='careerScoutNew')tryCareerScout();else if(a.startsWith('careerSign'))tryCareerSign(+a.slice(10));
  else if(a==='careerMarket')showCareerMarket();else if(a==='careerSquad')showCareerSquad();else if(a==='careerBuy')careerBuy();
- else if(a==='careerTrain')careerTrain();else if(a.startsWith('facility_')){try{upgradeFacility(career,a.slice(9));store.put('managerCareer',career);showManager()}catch(e){alert(e.message)}}
+ else if(a==='careerTrain')careerTrain();else if(a.startsWith('facility_')){try{upgradeFacility(career,a.slice(9));saveCareer();showManager()}catch(e){alert(e.message)}}
  else if(a==='studioGalleryToggle'){
   // Preserve *unsaved* Player Studio form controls when showing a comparison.
   // Reconstructing the Studio menu here would silently discard edits.
@@ -1098,7 +1106,10 @@ function action(a){audio.cue('ui');
   const ix=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;
   const replacement=defaultPlan(ix,roster(ix));try{if(squadContext==='pause')game.applyPlan(squadSide,replacement);teamPlans[TEAMS[ix].id]=replacement;store.put('teamPlans',teamPlans);if(squadContext==='pause')returnFromPauseTactics();else showSquad(squadSide,squadContext);}catch(e){alert(e.message)}
  }
- else if(a==='exportSave')exportSave();else if(a==='importSave')$('saveImportFile')?.click();
+ else if(a.startsWith('careerSlotSave_')){const n=Number(a.slice(15));if(!career)return showCareerSlots();const prior=careerSlots.list()[n-1];if(prior?.occupied&&!confirm('Overwrite Career slot '+n+'?'))return;try{const name=prompt('Career save name:',prior?.name||TEAMS[career.club]?.name||'Career '+n);if(name===null)return;careerSlots.save(n,career,name);store.put('managerCareer',career);showCareerSlots();}catch(error){alert(error.message)}}
+  else if(a.startsWith('careerSlotLoad_')){const n=Number(a.slice(15));if(career&&!confirm('Load Career slot '+n+'? Unsaved progress in the current career will be lost.'))return;try{career=careerSlots.load(n);store.put('managerCareer',career);showManager();}catch(error){alert(error.message)}}
+  else if(a.startsWith('careerSlotDelete_')){const n=Number(a.slice(17));if(!confirm('Permanently delete Career slot '+n+'? Export a backup first if needed.'))return;try{careerSlots.remove(n);if(careerSlots.active===n){career=null;store.put('managerCareer',null);}showCareerSlots();}catch(error){alert(error.message)}}
+  else if(a==='exportSave')exportSave();else if(a==='importSave')$('saveImportFile')?.click();
  else if(a==='saveSettings'){
   const get=id=>$(id)?.value;
   const changes={};for(const [id,key,cast] of [['difficulty','difficulty',Number],['settingsDuration','halfSeconds',Number],['gameSpeed','gameSpeed',Number],['settingsWeather','weather',String],['settingsTerrain','terrain',String],['settingsCondition','condition',String],['camera','camera',String],['ballModel','ballModel',VISUALFEEL.validBallModel],['showNames','showNames',v=>v==='true'],['showPerformance','showPerformance',v=>v==='true']]){if(get(id)!==undefined)changes[key]=cast(get(id));}
