@@ -1,20 +1,16 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "graphics-renderer",
-  "feature_id": "ART-C01-REAR-ARM-20261020",
-  "owner": "smf-hourly-dev-20261019",
-  "status": "released",
-  "scope": "One separately authored rear near-arm SVG, src/modules/conceptmodular.js rear arm loading/animation and fallback, rig manifest, dedicated tests and docs/concept_character_pipeline/C01_REAR_ARM_BATCH_20261020.md; own memory checkpoint. No gameplay, UI, roster, CI or unrelated art.",
-  "base_sha": "511188d5967159b2c9a66d6d7c953947cd971be1",
+  "feature_id": "ART-GRAPHICS-UI-VERSION-ASSERTION-20261020",
+  "owner": "smf-version-about-20261020",
+  "status": "active",
+  "scope": "Only tests/graphics_branch_integration.test.cjs outdated two version-caption assertions; update expected new prominent live development version in About without touching production artwork/renderer. Parallel ui-controls claim owns src/modules/ui.js and About tests.",
+  "base_sha": "c8461a65d86b15b719772af7502e9302039f8a68",
   "created_at": "2026-10-20",
   "renewed_at": "2026-10-20",
-  "tests": [
-    "node --test tests/concept_modular_v1.test.cjs",
-    "python3 scripts/validate_concept_modular.py",
-    "node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
-    "Full Regression Census and desktop/simulated-touch browser"
-  ],
-  "released_at": "2026-10-20",
-  "outcome": "source_only_checkpoint",
-  "handover": "New editable source arm_near_back.svg commit 0cbbad28ffa1480e7fc6b436404121f4f990a0a4; not wired to runtime; dedicated test/docs uploads rejected; pending integration-tooling and release-infra scope. Exact-commit CI pending."
+  "acceptance": [
+    "Keep build, version constant and graphics asset assertions",
+    "Replace only stale home/menu expectations with correct About links",
+    "Full Node+browser regression exact dev SHA"
+  ]
 }
