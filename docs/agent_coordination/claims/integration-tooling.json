@@ -1,15 +1,16 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "integration-tooling",
-  "feature_id": "MERGE-SOURCE-REVIEW-STRICT",
-  "owner": "smf-integration-strict-20261019",
-  "status": "released",
-  "scope": "Bounded opt-in --require-source-review-clean CLI gate for parallel_data_merge.py; focused test in separate own tests file and merge guide addendum. No roster/gameplay/graphics/CI modifications.",
-  "base_sha": "ac5da7782834c4d3052cab4ced215e72d269a456",
-  "created_at": "2026-10-19",
-  "renewed_at": "2026-10-19",
-  "released_at": "2026-10-19",
-  "outcome": "Opt-in --require-source-review-clean flag implemented, three dedicated CLI regression tests and merge guide updated. CI execution not yet observed; no live roster edits.",
-  "integrated_commit": "3239555c82132cd78fb7f4887dbddacf3bc0cd9c",
-  "handover": "docs/PARALLEL_DATA_MERGE_GUIDE.md"
+  "feature_id": "ART-C01-REAR-KIT-DETAIL-20261020",
+  "owner": "smf-hourly-dev-20261019",
+  "status": "active",
+  "scope": "Only scripts/build.py new rear-jersey SVG inline fixture registration for C01 graphics; no merge tooling, roster, or other changes.",
+  "base_sha": "c4ed7b11f198a3fef82352cac96828f38874f250",
+  "created_at": "2026-10-20",
+  "renewed_at": "2026-10-20",
+  "acceptance": [
+    "new layer present in source asset and runtime/inline browser fixture",
+    "existing normal game unchanged",
+    "exact-SHA full regression and browser QA"
+  ]
 }
