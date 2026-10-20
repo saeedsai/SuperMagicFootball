@@ -3,21 +3,21 @@
 **Updated:** 2026-10-20
 
 ## Mission
-Small, exclusive-lock increments toward playable zigzag/double-bend Super Shots, genuine authored eight-view characters, Super Defense, Tricks and two-client LAN; protect gameplay controls, team IDs and save compatibility.
+Deliver live owner-priority gameplay and UI in small signed-off GitHub `dev` increments, respecting four controls, squads/saves, exact-head 4+4 Chromium/Node regressions and Pages releases. User expressly authorized normal maintainer release/handoffs on 2026-10-20.
 
 ## Current checkpoint
-Current delivery **ART-8VIEW-SOURCE-COVERAGE-CHECK-20261020**, under a newly claimed and re-confirmed `integration-tooling` lock, started from `ada592804fe78d3c77b206dd8ec06d732fe37e0b`: committed a read-only authored-art coverage reporter at `99ddf608`, 7 fixture regressions at `76134055`, and handover at `b57a82db`. Seven of seven local Python tests and syntax compile passed; exact-head Modular QA passed; exact-head Full Regression Census was in progress at handover. Canonical manifest still declares only 2/8 genuinely authored views, front/back, with six side/quarter views falling back. **No new artwork or playable renderer change**.
+**FIX-UI-101 live source delivered** at `14d7b6c3c749ab6390366ad64fd9e2085c39debd` under re-confirmed own `ui-controls` lock: `page()` syncs visible Back with keyboard/gamepad route; customized squad entry no longer routes to Home; Controller Mapping Back returns to Input Settings. Focused Node test `tests/ui_back_routes_20261020.test.cjs`, legacy halftime compatibility update and real browser `tests/ui_back_routes_browser_qa.py` committed (latest browser commit `145cec63`), handover `docs/UI_BACK_ROUTES_20261020.md`. First CI attempts exposed our test template escaping and an older fixed-string assertion; both corrected. **Modular QA green at `3847c664` and at `145cec63`**. Full 4+4 exact-final-SHA CI and Pages must be verified; no physical phone test.
 
-Earlier `SH01` `src/modules/shotpaths.js` pure helper (`e27b775`) is NOT connected to live `engine.js`. A proposed integration write was rejected by connector safety; gameplay-engine claim remains ACTIVE under this agent and needs approved handoff/release. Earlier `FIX-UI-101` Back-route patch is offline only; `ui-controls` remains ACTIVE under this agent because source write was rejected. QA first-touch census protection was fixture-tested but source publication rejected; `qa-framework` and `release-infra` remain ACTIVE; do not bypass those rejected writes. Concept Hero direction source correction issue #15 was committed previously; `graphics-renderer` still ACTIVE pending authorized release. These locks are not indications of unfinished new code being live.
+Earlier ART-8VIEW reporting tool and 7 local unit tests delivered, latest 2 of 8 real authored views. Source-only `SHOTPATHS` pure helper remains unconnected to live `engine.js`, despite a 6/6 local test; no SH01 live flight delivered. Other own claims: `gameplay-engine` SH01, `qa-framework` issue #27, and `release-infra` issue #27 remain ACTIVE. A historic large-engine write had been safety rejected; no unauthorized bypass was used.
 
 ## Next smallest action
-Check exact-head 4+4 Node/Chromium Full Regression and Pages; release `integration-tooling` with docs/ART_EIGHT_VIEW_COVERAGE_TOOL_20261020.md handover. Request approved maintainer release of stranded overlapping claims; do not retry blocked source/release writes by alternate APIs. Under a truly free claim, pursue one real authored side/quarter art batch with graphics owner, then playable SH01 engine integration once authorized.
+Verify latest Back regression including real desktop/sim touch. Release UI lock with handover; re-claim freed UI lock for FIX-UI-102 (remove home dev/about banner) only. Integrate and validate each new gameplay increment with exact head and keep SHA-based About behavior pending coordinated `0.9.0.0` release migration.
 
 ## Ownership and exclusions
-Only this agent's memory file. No edits to other agents' memories, UI, engine, gameplay, CI, rosters or source art under the independent tooling scope. No force pushes; preserve About live-SHA until coordinated x.y.z.a version migration.
+Read/edit only this agent memory. Do not access other agents' memory or active independent audio scope. Never force-push; only promote green certified `dev` to `main`.
 
 ## Evidence
-[Art tool](https://github.com/saeedsai/SuperMagicFootball/blob/dev/scripts/report_authored_views.py), [7 tests](https://github.com/saeedsai/SuperMagicFootball/blob/dev/tests/test_report_authored_views.py), [handover](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/ART_EIGHT_VIEW_COVERAGE_TOOL_20261020.md), [CI](https://github.com/saeedsai/SuperMagicFootball/actions), [claims](https://github.com/saeedsai/SuperMagicFootball/tree/dev/docs/agent_coordination/claims).
+[UI source](https://github.com/saeedsai/SuperMagicFootball/blob/dev/src/modules/ui.js), [Back tests](https://github.com/saeedsai/SuperMagicFootball/blob/dev/tests/ui_back_routes_20261020.test.cjs), [browser QA](https://github.com/saeedsai/SuperMagicFootball/blob/dev/tests/ui_back_routes_browser_qa.py), [handover](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/UI_BACK_ROUTES_20261020.md), [Actions](https://github.com/saeedsai/SuperMagicFootball/actions).
 
 ## Cleanup
-Retired superseded graphics source-only history. No changed production gameplay/animation/saves and no physical-device QA claim. Hourly task remains enabled.
+Historical previously rejected source patches superseded by live reviewed correction. No team/player, saves, physics or release-version change in this batch.
