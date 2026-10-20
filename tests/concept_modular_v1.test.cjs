@@ -148,7 +148,7 @@ test('C01 front arm strokes ease through idle without a phase threshold snap or 
   .replace(/^export .*$/m,'')+'\nglobalThis.__model=CONCEPT_MODULAR;';
  class LoadedImage{
   set src(uri){
-   this.naturalWidth=uri.includes('hair_back_back.svg')?115:112;
+   this.naturalWidth=(uri.includes('hair_back_back.svg')||uri.includes('torso_back.svg'))?115:112;
    this.naturalHeight=265;
    if(this.onload)this.onload();
   }
@@ -156,7 +156,7 @@ test('C01 front arm strokes ease through idle without a phase threshold snap or 
  const sandbox={Image:LoadedImage,URL,CONCEPT_HERO:{draw:()=>true}};
  vm.runInNewContext(testSource,sandbox,{timeout:1500});
  const model=sandbox.__model;
- assert.equal(model.status().loaded,true,'all seven authored prototype layers loaded');
+ assert.equal(model.status().loaded,true,'all eight authored prototype layers loaded');
  function turns(phase,kind='front'){
   const rotations=[];
   const ctx={save(){},restore(){},translate(){},drawImage(){},rotate(v){rotations.push(v);}};
@@ -191,7 +191,7 @@ test('C01 optional demo collar requires a valid image and does not change legacy
   .replace(/^export .*$/m,'')+'\nglobalThis.__mod=CONCEPT_MODULAR;';
  class ImageMissingCollar{
   set src(uri){
-   this.naturalWidth=uri.includes('hair_back_back.svg')?115:112;
+   this.naturalWidth=(uri.includes('hair_back_back.svg')||uri.includes('torso_back.svg'))?115:112;
    this.naturalHeight=uri.includes('torso_collar_front.svg')?264:265;
    if(this.onload)this.onload();
   }
@@ -211,7 +211,7 @@ test('C01 painted jersey falls back without partial graphics if its source dimen
  let legacyCalls=0;
  class CorruptTorso{
   set src(uri){
-   this.naturalWidth=uri.includes('hair_back_back.svg')?115:112;
+   this.naturalWidth=(uri.includes('hair_back_back.svg')||uri.includes('torso_back.svg'))?115:112;
    this.naturalHeight=uri.includes('torso_front.svg')?264:265;
    if(this.onload)this.onload();
   }
