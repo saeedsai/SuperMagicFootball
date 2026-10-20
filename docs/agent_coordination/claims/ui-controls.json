@@ -3,7 +3,7 @@
   "lock_key": "ui-controls",
   "feature_id": "SAVE-101-CAREER-TEN-MANUAL-SLOTS-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "src/modules/ui.js Career save slot UI, storage and import/export validation; focused tests for Career slot contract; docs/CAREER_SAVE_SLOTS_20261020.md and own memory. No tournaments, engine, player/roster, graphics, CI, other agents' memory.",
   "base_sha": "e6da22538fcc95141e51f3a1c16fe8f2f2f0470a",
   "created_at": "2026-10-20",
@@ -13,5 +13,8 @@
     "legacy managerCareer autosave preserved",
     "corrupt slot rejection and export/import compatibility",
     "exact-head full 4 Node + 4 Chromium CI before main"
-  ]
+  ],
+  "released_at": "2026-10-20",
+  "outcome": "blocked_before_source_write_by_safety_checks_no_runtime_change",
+  "handover": "SAVE-101 design prepared for ten manual named Career slots, legacy managerCareer autosave, guarded save/load/delete and export; GitHub rejected attempted ui.js source update. No code was changed. Do not retry rejected write without safety review; choose an independent scope."
 }
