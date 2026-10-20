@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="115" height="265" viewBox="0 0 115 265" role="img" aria-label="Editable rear Royals jersey number ten">
+<title>Royals illustrated rear jersey — C01 independent back layer</title>
+<desc>Painted transparent rear shirt over opt-in concept hero. Separate seams, cloth volumes, shirt number and shadow groups. This does not replace the original animated torso and legs.</desc>
+<defs>
+ <linearGradient id="rearBase" x1="0" y1="0" x2="1" y2=".8"><stop stop-color="#082d61"/><stop offset=".23" stop-color="#1861a3"/><stop offset=".56" stop-color="#287db8"/><stop offset=".80" stop-color="#125795"/><stop offset="1" stop-color="#092b58"/></linearGradient>
+ <linearGradient id="rearFold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b4e6fb" stop-opacity=".45"/><stop offset=".5" stop-color="#63b3db" stop-opacity=".11"/><stop offset="1" stop-color="#031d4c" stop-opacity=".5"/></linearGradient>
+</defs>
+<g id="back-shirt-silhouette" stroke-linejoin="round">
+ <path d="M40 122Q47 125 57 126Q68 125 75 121L87 131Q86 143 83 153Q79 174 80 189Q58 195 34 190Q36 170 31 150Q28 139 29 132Z" fill="url(#rearBase)" stroke="#072649" stroke-width="2.3"/>
+ <path d="M34 135L39 124Q47 132 57 133Q67 132 77 124L84 134Q78 142 75 153Q72 174 76 188Q56 193 38 188Q42 165 37 151Z" fill="url(#rearFold)" opacity=".7"/>
+</g>
+<g id="back-shoulder-seams" fill="none" stroke-linecap="round">
+ <path d="M38 122Q45 131 57 132Q71 131 78 121" stroke="#62b4df" stroke-width="2.4"/>
+ <path d="M29 132Q35 129 40 128" stroke="#0a386f" stroke-width="3"/>
+ <path d="M75 127Q82 128 87 131" stroke="#093568" stroke-width="3"/>
+ <path d="M38 139Q34 149 37 159" stroke="#9cd7f0" stroke-opacity=".5" stroke-width="1.8"/>
+ <path d="M77 138Q80 147 77 160" stroke="#a1d2e7" stroke-opacity=".35" stroke-width="1.7"/>
+</g>
+<g id="back-collar-and-neck" fill="none" stroke-linecap="round">
+ <path d="M45 122Q57 128 69 121" stroke="#081a3b" stroke-width="5"/>
+ <path d="M46 122Q57 128 68 122" stroke="#8cc7e5" stroke-width="1.6"/>
+ <path d="M52 128L62 128" stroke="#175a91" stroke-width="1.4"/>
+</g>
+<g id="back-cloth-shading" fill="none" stroke-linecap="round">
+ <path d="M41 147Q45 157 41 171" stroke="#074079" stroke-width="2" opacity=".42"/>
+ <path d="M75 145Q69 158 75 175" stroke="#b4e8ff" stroke-width="1.5" opacity=".34"/>
+ <path d="M37 179Q57 185 77 179" stroke="#083467" stroke-width="2.2" opacity=".6"/>
+ <path d="M38 186Q58 190 77 186" stroke="#a3d6e8" stroke-width="1.6" opacity=".43"/>
+</g>
+<g id="back-number-shadow" fill="none" stroke="#062c57" stroke-width="5.4" stroke-linejoin="round" stroke-linecap="square" opacity=".85">
+ <path d="M47 150L47 174"/><path d="M41 155L47 150"/>
+ <path d="M58 154Q58 150 63 150L70 150Q74 150 74 154L74 170Q74 174 70 174L63 174Q58 174 58 170Z"/>
+</g>
+<g id="back-number-ten" fill="none" stroke="#f6efd6" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="square">
+ <path d="M47 150L47 174"/><path d="M41 155L47 150"/>
+ <path d="M58 154Q58 150 63 150L70 150Q74 150 74 154L74 170Q74 174 70 174L63 174Q58 174 58 170Z"/>
+</g>
+</svg>
