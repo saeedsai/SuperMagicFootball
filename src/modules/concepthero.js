@@ -47,6 +47,11 @@ const CONCEPT_HERO=(()=>{
   const h=141,w=sw*h/HEIGHT,gait=clamp(run),active=Math.abs(gait)>.07;
   ctx.save();
   ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+  // The Concept atlas paints its side and quarter profiles facing screen-left.
+  // The parent renderer already mirrors view.side for ordinary character art;
+  // reverse the native Concept profiles locally so rightward motion faces right.
+  // Front/back views and the global CHARACTER_ART orientation stay unchanged.
+  if(kind==='side'||kind==='quarterFront'||kind==='quarterBack')ctx.scale(-1,1);
   if(active&&atlas.parts[kind]){
    const parts=atlas.parts[kind],ratio=h/HEIGHT,split=sw/2;
    ctx.translate(-w/2,-h+6);ctx.scale(ratio,ratio);
