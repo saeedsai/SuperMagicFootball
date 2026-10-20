@@ -493,6 +493,8 @@
       "color": "#f8d675",
       "trail": "#f39f46",
       "behavior": "zigzag",
+      "zigzagAmplitude": 28,
+      "zigzagFrequency": 10,
       "speed": 1.3,
       "impact": 1.2
     },
@@ -565,6 +567,8 @@
       "color": "#a8e468",
       "trail": "#51ba8e",
       "behavior": "zigzag",
+      "zigzagAmplitude": 45,
+      "zigzagFrequency": 15,
       "speed": 1.21,
       "impact": 1.33
     },
