@@ -4,7 +4,7 @@
   "feature_id": "SH01-BUILD-FIXTURE-IMPORT-20261020",
   "owner": "smf-hourly-dev-20261019",
   "status": "active",
-  "scope": "Only scripts/build.py: add shotpaths to source module assembly in dependency order before engine so test-only inline fixture and real source both get SHOTPATHS. Add tests/shotpaths_build_integration_20261020.test.cjs and docs/SHOTPATHS_BUILD_HANDOVER_20261020.md plus own memory checkpoint. No engine changes, rosters, UI, CI workflow, service worker, other agents' memory.",
+  "scope": "Only scripts/build.py: add shotpaths to source module assembly in dependency order before engine so test-only inline fixture and real source both get SHOTPATHS. Add tests/shotpaths_build_integration_20261020.test.cjs and docs/SHOTPATHS_BUILD_HANDOVER_20261020.md plus own memory checkpoint. No engine changes, rosters, UI, CI workflow, service worker, other agents' memory. Strict compatibility refresh in tests/physics_tuning_v082534.test.cjs because it currently assumes engine immediately follows physicsbalance in build.py and sw.js; assert physicsbalance -> shotpaths -> engine while preserving all existing physics numerical invariants and SW cache-key check.",
   "base_sha": "4c24f5fafcf13b584c514452d535802bc8d4ec9a",
   "created_at": "2026-10-20",
   "renewed_at": "2026-10-20",
