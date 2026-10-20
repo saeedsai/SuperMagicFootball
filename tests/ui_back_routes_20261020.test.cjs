@@ -9,16 +9,16 @@ const page=section('function page(', '// v0.8.24.7');
 const nav=section('const menuParents=', 'const comingLater=');
 const back=section('function backFromMenu()', "document.addEventListener('keydown',");
 function harness(){
- const code=\`(()=>{let screen='home',squadContext='home',html='',calls=[];
+ const code=`(()=>{let screen='home',squadContext='home',html='',calls=[];
   const show=(markup,id='home')=>{html=markup;screen=id};
   const button=(label,action)=>'<button data-action="'+action+'">'+label+'</button>';
   const escapeHTML=v=>String(v);
   const menu={querySelector:()=>null};
   const action=a=>calls.push(a);
-  \${page}\n\${nav}\n\${back}
+  ${page}\n${nav}\n${back}
   return {page,menuChoices,backFromMenu,setEntry:a=>menuEntryReturn=a,
    setScreen:a=>screen=a,setSquad:a=>squadContext=a,setBack:a=>menuBackAction=a,
-   calls:()=>calls.slice(),clear:()=>calls=[],html:()=>html};})()\`;
+   calls:()=>calls.slice(),clear:()=>calls=[],html:()=>html};})()`;
  return vm.runInNewContext(code,{});
 }
 const last=h=>h.calls().at(-1);
