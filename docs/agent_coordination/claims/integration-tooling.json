@@ -1,19 +1,17 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "integration-tooling",
-  "feature_id": "ART-C01-REAR-KIT-DETAIL-20261020",
+  "feature_id": "ART-8VIEW-SOURCE-COVERAGE-CHECK-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "released",
-  "scope": "Only scripts/build.py new rear-jersey SVG inline fixture registration for C01 graphics; no merge tooling, roster, or other changes.",
-  "base_sha": "c4ed7b11f198a3fef82352cac96828f38874f250",
+  "status": "active",
+  "scope": "One small independent authored-view manifest coverage audit: new scripts/report_authored_views.py and tests/test_report_authored_views.py plus a concise docs/ART_EIGHT_VIEW_COVERAGE_TOOL_20261020.md and own memory when permitted. Does not touch manifest/runtime artwork, gameplay, UI, saves, workflows, other agents' memories or legacy validator.",
+  "base_sha": "ada592804fe78d3c77b206dd8ec06d732fe37e0b",
   "created_at": "2026-10-20",
   "renewed_at": "2026-10-20",
   "acceptance": [
-    "new layer present in source asset and runtime/inline browser fixture",
-    "existing normal game unchanged",
-    "exact-SHA full regression and browser QA"
-  ],
-  "released_at": "2026-10-20",
-  "outcome": "c01_rear_jersey_source_test_docs_delivered_exact_full_census_pending",
-  "handover": "docs/concept_character_pipeline/C01_REAR_JERSEY_BATCH_20261020.md; tests/concept_modular_v1.test.cjs; scripts/validate_concept_modular.py; Modular QA #39401694462 green at graphics/memory source, Full Census recheck latest head"
+    "Report all 8 view IDs and distinguish genuinely authored source layers from fallback",
+    "Reject invalid manifest references or path traversal; missing six views is a planned state not a false green complete",
+    "Unit fixtures cover complete, incomplete, invalid, missing assets",
+    "No game runtime changes; existing exact-head CI unaffected"
+  ]
 }
