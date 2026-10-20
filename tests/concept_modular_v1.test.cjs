@@ -148,6 +148,7 @@ test('C01 front arm strokes ease through idle without a phase threshold snap or 
   .replace(/^export .*$/m,'')+'\nglobalThis.__model=CONCEPT_MODULAR;';
  class LoadedImage{
   set src(uri){
+   this.path=uri;
    this.naturalWidth=(uri.includes('hair_back_back.svg')||uri.includes('torso_back.svg'))?115:112;
    this.naturalHeight=265;
    if(this.onload)this.onload();
@@ -158,10 +159,10 @@ test('C01 front arm strokes ease through idle without a phase threshold snap or 
  const model=sandbox.__model;
  assert.equal(model.status().loaded,true,'all eight authored prototype layers loaded');
  function turns(phase,kind='front'){
-  const rotations=[];
-  const ctx={save(){},restore(){},translate(){},drawImage(){},rotate(v){rotations.push(v);}};
+  const rotations=[],images=[];
+  const ctx={save(){},restore(){},translate(){},drawImage(image){images.push(image.path||'unknown');},rotate(v){rotations.push(v);}};
   const drawn=model.draw(ctx,{src:{renderModel:'concept_modular_v1'}},{kind},{run:phase});
-  return {drawn,rotations};
+  return {drawn,rotations,images};
  }
  assert.equal(turns(0).drawn,true);
  assert.deepEqual(turns(0).rotations,[0,-0,0]);
@@ -181,6 +182,9 @@ test('C01 front arm strokes ease through idle without a phase threshold snap or 
  assert.equal(turns(.6,'right').drawn,false,'unauthored side retains fallback');
  assert.equal(turns(.6,'back').drawn,true,'authored back still renders');
  assert.equal(turns(.6,'back').rotations.length,1,'no front arm drawn from behind');
+ assert.equal(turns(.6,'back').images.length,2,'back paints the new torso and back hair, no front-only art');
+ assert.match(turns(.6,'back').images[0],/torso_back\.svg/,'rear jersey is behind hair');
+ assert.match(turns(.6,'back').images[1],/hair_back_back\.svg/,'rear hair is topmost');
 });
 
 test('C01 optional demo collar requires a valid image and does not change legacy fallback',()=>{
