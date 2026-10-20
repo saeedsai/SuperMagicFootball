@@ -3,7 +3,7 @@
   "lock_key": "integration-tooling",
   "feature_id": "SH01-BUILD-FIXTURE-IMPORT-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Only scripts/build.py: add shotpaths to source module assembly in dependency order before engine so test-only inline fixture and real source both get SHOTPATHS. Add tests/shotpaths_build_integration_20261020.test.cjs and docs/SHOTPATHS_BUILD_HANDOVER_20261020.md plus own memory checkpoint. No engine changes, rosters, UI, CI workflow, service worker, other agents' memory. Strict compatibility refresh in tests/physics_tuning_v082534.test.cjs because it currently assumes engine immediately follows physicsbalance in build.py and sw.js; assert physicsbalance -> shotpaths -> engine while preserving all existing physics numerical invariants and SW cache-key check.",
   "base_sha": "4c24f5fafcf13b584c514452d535802bc8d4ec9a",
   "created_at": "2026-10-20",
@@ -12,5 +12,8 @@
     "Generated tests/.generated/game.js declares SHOTPATHS once and uses it in engine",
     "Existing generator and generated fixture tests pass",
     "Actual Chromium desktop/sim touch SH01 live test passes, 4+4 full census on same SHA"
-  ]
+  ],
+  "released_at": "2026-10-20",
+  "outcome": "sh01_test_harness_and_offline_module_registry_fixed_with_regression_proof_modular_QA_pass_full_census_pending",
+  "handover": "docs/SHOTPATHS_BUILD_HANDOVER_20261020.md; build.py 4b005307; test physics_tuning 28db5d20; new generated-fixture Node contract 1e5a8b71; docs 1e9e0a62; sw.js under own release-infra cb8a88cb. Modular QA #39487965490 green, final full 4+4 run and Pages pending. No engine/gameplay controls/rosters altered by tooling work."
 }
