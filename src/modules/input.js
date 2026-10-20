@@ -11,7 +11,7 @@ const GAMEPAD_BUTTONS={0:'shoot',1:'pass',2:'dribble',3:'jump',9:'pause'};
 const MAX_BUFFERED_TAPS=12;
 const deadzone=v=>Math.abs(v)<.16?0:Math.max(-1,Math.min(1,v));
 class Input{
- constructor(){this.keys=new Set();this.keyPending=new Set();this.keyReleasePending=new Set();this.keyPulsePending=new Map();this.keyDownTimes=new Map();this.touchPulsePending=new Map();this.touchDownTimes=new Map();this.pulseBacklog=Array.from({length:4},()=>({}));this.pulseDurations=Array.from({length:4},()=>({}));this.tapDurations=Array.from({length:4},()=>({}));this.touchPending=new Set();this.touchReleasePending=new Set();this.touchPointers=new Map();this.joyPointers=new Map();this.touchCanceled=new Set();this.globalCancelPending=false;this.canceledActions=Array.from({length:4},()=>({}));this.bindings=Object.fromEntries(Object.entries(DEFAULT_BINDINGS).map(([k,v])=>[k,v.slice()]));this.prev=[{}, {}, {}, {}];this.touch={x:0,y:0};this.touchButtons=new Set();this.gamepads=[];this.state=Array.from({length:4},()=>({}));this.pressed=Array.from({length:4},()=>({}));this.releases=Array.from({length:4},()=>({}));this.enabled=true;
+ constructor(){this.keys=new Set();this.keyPending=new Set();this.keyReleasePending=new Set();this.keyPulsePending=new Map();this.keyDownTimes=new Map();this.touchPulsePending=new Map();this.touchDownTimes=new Map();this.touchReplayHeldPending=new Set();this.touchReplayTapDurations=new Map();this.pulseBacklog=Array.from({length:4},()=>({}));this.pulseDurations=Array.from({length:4},()=>({}));this.tapDurations=Array.from({length:4},()=>({}));this.touchPending=new Set();this.touchReleasePending=new Set();this.touchPointers=new Map();this.joyPointers=new Map();this.touchCanceled=new Set();this.globalCancelPending=false;this.canceledActions=Array.from({length:4},()=>({}));this.bindings=Object.fromEntries(Object.entries(DEFAULT_BINDINGS).map(([k,v])=>[k,v.slice()]));this.prev=[{}, {}, {}, {}];this.touch={x:0,y:0};this.touchButtons=new Set();this.gamepads=[];this.state=Array.from({length:4},()=>({}));this.pressed=Array.from({length:4},()=>({}));this.releases=Array.from({length:4},()=>({}));this.enabled=true;
  const stopCodes=new Set(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','Tab']);
  window.addEventListener('keydown',e=>{if((e.target instanceof HTMLInputElement)||(e.target instanceof HTMLSelectElement))return;if(stopCodes.has(e.code))e.preventDefault();if(!this.keys.has(e.code)){this.keyPending.add(e.code);this.keyDownTimes.set(e.code,Number.isFinite(e.timeStamp)?e.timeStamp:Date.now());}this.keys.add(e.code)});
  window.addEventListener('keyup',e=>{if(this.keys.has(e.code)||this.keyPending.has(e.code)){this.keyReleasePending.add(e.code);if(this.keyPending.has(e.code)){const duration=Math.max(0,(Number.isFinite(e.timeStamp)?e.timeStamp:Date.now())-(this.keyDownTimes.get(e.code)||0));const arr=this.keyPulsePending.get(e.code)||[];arr.push(duration/1000);this.keyPulsePending.set(e.code,arr);}}this.keys.delete(e.code);this.keyDownTimes.delete(e.code)});window.addEventListener('blur',()=>this.cancelAll());
@@ -25,7 +25,7 @@ class Input{
  // Cancel every transient input state, including already buffered taps. Keep remappings.
  cancelAll(){
   this.keys.clear();this.keyPending.clear();this.keyReleasePending.clear();this.keyPulsePending.clear();this.keyDownTimes.clear();
-  this.touchPulsePending.clear();this.touchDownTimes.clear();this.touchCanceled.clear();this.touchButtons.clear();this.touchPending.clear();this.touchReleasePending.clear();
+  this.touchPulsePending.clear();this.touchDownTimes.clear();this.touchReplayHeldPending.clear();this.touchReplayTapDurations.clear();this.touchCanceled.clear();this.touchButtons.clear();this.touchPending.clear();this.touchReleasePending.clear();
   this.touchPointers.clear();this.joyPointers.clear();this.touch.x=this.touch.y=0;this.globalCancelPending=true;
   const knob=document.querySelector?.('#joyKnob');if(knob)knob.style.transform='translate(0,0)';
   document.querySelectorAll?.('[data-act]').forEach(b=>b.classList?.toggle('active',false));
@@ -70,7 +70,7 @@ class Input{
     }
     refresh();
    });
-   const off=e=>{if(this.touchPointers.get(e.pointerId)===act){this.touchPointers.delete(e.pointerId);if(![...this.touchPointers.values()].includes(act)){if(e.type&&e.type!=='pointerup'){this.touchPending.delete(act);this.touchDownTimes.delete(act);this.touchCanceled.add(act);refresh();return;}this.touchReleasePending.add(act);if(this.touchPending.has(act)){const duration=Math.max(0,(Number.isFinite(e.timeStamp)?e.timeStamp:Date.now())-(this.touchDownTimes.get(act)||0))/1000;const arr=this.touchPulsePending.get(act)||[];arr.push(duration);this.touchPulsePending.set(act,arr);}this.touchDownTimes.delete(act);}}refresh()};
+   const off=e=>{if(this.touchPointers.get(e.pointerId)===act){this.touchPointers.delete(e.pointerId);if(![...this.touchPointers.values()].includes(act)){if(e.type&&e.type!=='pointerup'){this.touchPending.delete(act);this.touchDownTimes.delete(act);this.touchReplayHeldPending.delete(act);this.touchReplayTapDurations.delete(act);this.touchCanceled.add(act);refresh();return;}this.touchReleasePending.add(act);if(this.touchPending.has(act)||this.touchReplayHeldPending.has(act)){const duration=Math.max(0,(Number.isFinite(e.timeStamp)?e.timeStamp:Date.now())-(this.touchDownTimes.get(act)||0))/1000;if(this.touchPending.has(act)){const arr=this.touchPulsePending.get(act)||[];arr.push(duration);this.touchPulsePending.set(act,arr);}else this.touchReplayTapDurations.set(act,duration);}this.touchDownTimes.delete(act);}}refresh()};
    for(const ev of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(ev,off);
   });
  }
@@ -124,6 +124,10 @@ class Input{
   // A completed tap gets one press+release pulse per poll. Remaining taps
   // replay on subsequent polls even when hardware was already released.
   if(queued){
+   // A completed tap can be followed by a NEW still-held touch before
+   // this poll. Replay the completed tap first and preserve the held
+   // press for a later poll instead of swallowing the second press edge.
+   if(slot===0&&k==='dribble'&&this.touchPending.has(k)&&this.touchButtons.has(k))this.touchReplayHeldPending.add(k);
    this.pulseBacklog[slot][k]=queued-1;
    const duration=this.pulseDurations[slot][k]?.shift()??0;
    this.tapDurations[slot][k]=duration;
@@ -135,6 +139,7 @@ class Input{
     return custom>=0?REMAPPABLE_ACTIONS[custom]===k:keys[code]===k;
    })||(slot===0&&this.touchButtons.has(k)));
   }else if(slot===0&&this.touchCanceled.has(k)&&!s[k]){
+   this.touchReplayHeldPending.delete(k);this.touchReplayTapDurations.delete(k);
    // Cancel/lost capture aborts a held gesture; do not commit its release as
    // a charged shot or long pass. Other live sources keep their own state.
    this.pressed[slot][k]=false;this.releases[slot][k]=false;nextPrev[k]=false;
@@ -148,9 +153,20 @@ class Input{
    const restartedTouchDribble=slot===0&&k==='dribble'&&
      this.touchReleasePending.has(k)&&this.touchPending.has(k)&&
      this.touchButtons.has(k);
-   this.pressed[slot][k]=!!s[k]&&(!this.prev[slot][k]||restartedTouchDribble);
-   this.releases[slot][k]=!s[k]&&(releasedActions.has(k)||!!this.prev[slot][k]);
-   if(this.releases[slot][k]&&!this.keys.size&&!(slot===0&&this.touchButtons.has(k)))nextPrev[k]=false;
+   const deferredTouchDribble=slot===0&&k==='dribble'&&this.touchReplayHeldPending.has(k);
+   if(deferredTouchDribble){
+    this.touchReplayHeldPending.delete(k);
+    this.pressed[slot][k]=true;
+    // If the new touch was released while earlier taps were replaying,
+    // deliver its own short press/release, not a phantom held control.
+    if(!s[k]){this.releases[slot][k]=true;s[k]=1;nextPrev[k]=false;this.tapDurations[slot][k]=this.touchReplayTapDurations.get(k)||0;}
+    else this.releases[slot][k]=false;
+    this.touchReplayTapDurations.delete(k);
+   }else{
+    this.pressed[slot][k]=!!s[k]&&(!this.prev[slot][k]||restartedTouchDribble);
+    this.releases[slot][k]=!s[k]&&(releasedActions.has(k)||!!this.prev[slot][k]);
+    if(this.releases[slot][k]&&!this.keys.size&&!(slot===0&&this.touchButtons.has(k)))nextPrev[k]=false;
+   }
   }
  }
  this.prev[slot]=nextPrev;this.state[slot]=s;}
@@ -161,7 +177,7 @@ class Input{
  released(i,a){return !!this.releases[i]?.[a]}
  tapDuration(i,a){return this.tapDurations[i]?.[a]??0}
  canceled(i,a){return !!this.canceledActions[i]?.[a]}
- reset(){this.prev=Array.from({length:4},()=>({}));this.releases=Array.from({length:4},()=>({}));this.pressed=Array.from({length:4},()=>({}));this.tapDurations=Array.from({length:4},()=>({}));this.pulseBacklog=Array.from({length:4},()=>({}));this.pulseDurations=Array.from({length:4},()=>({}));this.canceledActions=Array.from({length:4},()=>({}));}
+ reset(){this.prev=Array.from({length:4},()=>({}));this.releases=Array.from({length:4},()=>({}));this.pressed=Array.from({length:4},()=>({}));this.tapDurations=Array.from({length:4},()=>({}));this.pulseBacklog=Array.from({length:4},()=>({}));this.pulseDurations=Array.from({length:4},()=>({}));this.touchReplayHeldPending.clear();this.touchReplayTapDurations.clear();this.canceledActions=Array.from({length:4},()=>({}));}
 }
 
 return {Input};})();
