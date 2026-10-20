@@ -3,7 +3,7 @@
   "lock_key": "gameplay-engine",
   "feature_id": "SH01-ZIGZAG-LIVE-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Bounded SH01: src/modules/shotpaths.js, src/modules/engine.js zigzag live update and keeper prediction, data/mechanics/gameplay.json books/serpent profile fields, new tests/shotpaths_live_20261020.test.cjs, docs/SHOTPATHS_LIVE_20261020.md and own docs/memory/agents/smf-hourly-dev-20261019.md. No UI, art, rosters, CI or other agents' memory. Includes new read-only real-game desktop/simulated-touch Chromium QA tests/shotpaths_live_browser_qa.py for the SH01 owned flight physics; no renderer/input/runtime shared files beyond the original scope.",
   "base_sha": "6822d289ff7f8d2eb6bdeae89928f50b15417337",
   "created_at": "2026-10-20",
@@ -14,5 +14,8 @@
     "Full Regression Census exact integrated SHA",
     "Desktop and simulated touch browser game",
     "python3 scripts/build.py && python3 tests/shotpaths_live_browser_qa.py (real browser desktop and simulated touch)"
-  ]
+  ],
+  "released_at": "2026-10-20",
+  "outcome": "playable_books_serpent_zigzag_integrated_with_shared_keeper_prediction_and_cross_fps_tests_full_4node_4chromium_green_at_28db5d20_final_head_pages_pending",
+  "handover": "docs/SHOTPATHS_LIVE_20261020.md; source helper cf61b82b, live engine 3e25957c, configured profiles 8fa1a703, Node 4ba59d7a, Chromium 24e947bd, offline/build fix docs/SHOTPATHS_BUILD_HANDOVER_20261020.md; full regression exact 28db5d20 #39487919601 PASS preflight 351/351 Node subtests, 158/158 Node scripts, 89/89 Chromium scripts, desktop/sim touch preview. Later doc/claim commits are not the certified SHA; wait exact final head QA, main and Pages separately. No physical phone evidence."
 }
