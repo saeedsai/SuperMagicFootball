@@ -1,6 +1,6 @@
 {
   "schema": "smf-concept-modular-roadmap/1",
-  "updated": "2026-10-18",
+  "updated": "2026-10-20",
   "branch": "dev",
   "baselineAtPlanning": "82119108ca63dd510bd49bdf5c2083bed168a9a0",
   "currentMilestone": "C01",
@@ -60,7 +60,8 @@
         "assets/characters/concept_modular_v1/source/arm_near_front.svg",
         "assets/characters/concept_modular_v1/source/arm_far_front.svg",
         "assets/characters/concept_modular_v1/source/torso_collar_front.svg",
-        "assets/characters/concept_modular_v1/source/torso_front.svg"
+        "assets/characters/concept_modular_v1/source/torso_front.svg",
+        "assets/characters/concept_modular_v1/source/torso_back.svg"
       ],
       "evidence": [
         "https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886177973",
@@ -93,7 +94,8 @@
       "issues": [
         "Legacy original torso and static arm pixels remain beneath experimental front near and far arm overlays; larger movement may cause ghosting",
         "Two independently editable painted arms are now present in front view only; full articulated torso/legs and six additional view directions are missing",
-        "Artist signoff, original layered master and physical-device verification outstanding; one demo player only"
+        "Artist signoff, original layered master and physical-device verification outstanding; one demo player only",
+        "Rear opt-in painted jersey added to back view on 20 October 2026; owner visual signoff and exact-SHA final QA pending; front/rear still rely on legacy body with six unauthored side/quarter directions."
       ]
     },
     {
@@ -787,5 +789,6 @@
       "fullRegressionUrl": "https://github.com/saeedsai/SuperMagicFootball/actions/runs/39106207590",
       "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/38"
     }
-  }
+  },
+  "artworkOwnerPending": "Rear jersey C01 source exists, but C01 and 8-direction authored art remain incomplete, owner art signoff not obtained"
 }
