@@ -1,6 +1,6 @@
-> **MULTI-AGENT MANDATORY START GATE:** Before any coding/chat agent starts editing `dev`, read [AGENTS.md](AGENTS.md), review [feature ownership and active GitHub claims](docs/agent_coordination/README.md), and claim an unowned exclusive scope. Other agents may be working concurrently. No claim = no shared edits.
+> **SINGLE-DEVELOPER START GATE (owner directive 2026-10-20):** The sole ongoing developer is `smf-hourly-dev-20261019`. Read [AGENTS.md](AGENTS.md) and the [central coordination policy](docs/agent_coordination/README.md). Historical claims are retired, **not prerequisites for writing code**. Preserve existing work via latest-SHA checks and full CI.
 
-> **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Current claims must still be checked on live `dev`. [Documentation index](docs/README.md).
+> **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
 # Supermagic Football · v0.8.25.32 · Modular source project
 
@@ -21,7 +21,7 @@ Open **http://localhost:8000/index.html**. Windows: double-click `run_game_windo
 
 ## Project layout
 
-| Location | Purpose and parallel-edit ownership |
+| Location | Purpose (historical workstream labels) |
 |---|---|
 | `index.html`, `style.css` | Playable shell, menus, CSS; UI workstream |
 | `src/main.js`, `src/assets.js` | Async startup, file loading, JSON validation; integration workstream |
@@ -35,7 +35,7 @@ Open **http://localhost:8000/index.html**. Windows: double-click `run_game_windo
 | `data/editorial/historical_rosters.json`, `data/confederations.json`, `data/continental_mapping.json` | BPW historic selections, tournaments and their preserved membership-index mapping |
 | `tests/` and `docs/qa_runs_v082530/` | Regression suite and reproducible evidence; quality workstream |
 | `scripts/validate_data.py`, `scripts/build.py` | JSON integrity validation and generation of compatibility QA fixtures |
-| `docs/PARALLEL_DEVELOPMENT_GUIDE.md` | File-ownership, merge protocol and invariants for multiple development chats |
+| `docs/PARALLEL_DEVELOPMENT_GUIDE.md` | Historical multi-developer guide (superseded by [single-developer policy](AGENTS.md)) |
 
 ## Verify
 
