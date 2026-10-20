@@ -7,6 +7,7 @@ fixture=ROOT/'tests/.generated/play.html'
 assert fixture.exists(),'Build modular test fixture with python3 scripts/build.py'
 html=fixture.read_text(encoding='utf-8')
 URL='https://api.github.com/repos/saeedsai/SuperMagicFootball/commits/dev'
+HISTORY_URL='https://api.github.com/repos/saeedsai/SuperMagicFootball/commits?sha=dev&per_page=25'
 SHA1='1'*40
 SHA2='abcdef0123456789abcdef0123456789abcdef01'
 with sync_playwright() as pw:
@@ -20,8 +21,14 @@ with sync_playwright() as pw:
   def route_handler(route):
    requests.append(route.request.url)
    if state['fail']:route.fulfill(status=503,body='unavailable')
-   else:route.fulfill(status=200,content_type='application/json',body='{"sha":"'+state['sha']+'"}')
+   else:route.fulfill(status=200,content_type='application/json',body='{"sha":"'+state['sha']+'","commit":{"message":"feat(ui): update '+state['sha'][:8]+'"}}')
   page.route(URL,route_handler)
+  history_requests=[]
+  def history_handler(route):
+   history_requests.append(route.request.url)
+   if state['fail']:route.fulfill(status=503,body='unavailable')
+   else:route.fulfill(status=200,content_type='application/json',body='[{"sha":"'+SHA1+'","commit":{"message":"chore(coordination): acquire claim"}},{"sha":"'+SHA2+'","commit":{"message":"feat(shots): improved zigzag trajectory"}},{"sha":"'+SHA1+'","commit":{"message":"art(C01): rear jersey"}}]')
+  page.route(HISTORY_URL,history_handler)
   page.set_content(html,wait_until='load')
   page.wait_for_function('!!window.SupermagicFootball?.game',timeout=60000)
   def visit():
@@ -34,11 +41,17 @@ with sync_playwright() as pw:
   page.wait_for_function("document.querySelector('#aboutDevRevision a')?.textContent?.startsWith('v0.8.25.32-integrated+dev.')",timeout=20000)
   assert page.locator('#aboutDevRevision a').inner_text().endswith(SHA1[:12]),(label,'incorrect displayed commit version')
   assert page.locator('#aboutDevRevision a').get_attribute('href').endswith(SHA1)
+  page.wait_for_function("document.querySelector('#aboutLatestChange')?.textContent?.includes('update 11111111')",timeout=20000)
+  page.wait_for_function("document.querySelectorAll('#aboutRecentChanges li').length===2",timeout=20000)
+  assert 'improved zigzag trajectory' in page.locator('#aboutRecentChanges').inner_text()
+  assert 'rear jersey' in page.locator('#aboutRecentChanges').inner_text()
+  assert 'acquire claim' not in page.locator('#aboutRecentChanges').inner_text()
   page.locator('[data-action="home"]').first.click()
   state['sha']=SHA2
   visit()
   page.wait_for_function("document.querySelector('#aboutDevRevision a')?.getAttribute('href')?.endsWith('"+SHA2+"')",timeout=20000)
   assert page.locator('#aboutDevRevision a').inner_text().endswith(SHA2[:12]),(label,'new SHA label did not change')
+  page.wait_for_function("document.querySelector('#aboutLatestChange')?.textContent?.includes('update abcdef01')",timeout=20000)
   assert len(requests)==2,(label,'About must fetch latest on each visit',requests)
   page.locator('[data-action="home"]').first.click()
   state['fail']=True
@@ -46,11 +59,13 @@ with sync_playwright() as pw:
   page.wait_for_function("document.querySelector('#aboutDevRevision')?.textContent?.includes('unavailable offline')",timeout=20000)
   assert page.locator('a[href="mailto:saeedmsalehi1990@gmail.com"]').count()==1
   assert page.locator('#aboutDevRevision a').count()==0
+  page.wait_for_function("document.querySelector('#aboutRecentChanges')?.textContent?.includes('unavailable offline')",timeout=20000)
+  assert len(history_requests)==3,(label,history_requests)
   page.locator('[data-action="home"]').first.click()
   page.locator('[data-action="navQuick"]').first.click()
   assert page.locator('[data-action="navOnDevice"]').count()==1,(label,'game menu regression')
   assert page.locator('#touchButtons [data-act]').count()==4,(label,'four gameplay buttons')
   assert not errors,(label,errors)
-  print('ABOUT_LIVE_REVISION_PASS',label,'credit, dev commit refresh, secure link, offline fallback, game menus',flush=True)
+  print('ABOUT_LIVE_REVISION_PASS',label,'version refresh, recent changelog, offline fallback, game menus',flush=True)
   ctx.close()
  browser.close()
