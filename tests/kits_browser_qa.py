@@ -14,6 +14,11 @@ with sync_playwright() as pw:
   assert page.evaluate('NekketsuHD.teams.length')in (223,224)
   open_feature(page,'squad')
   assert 'AGI' in page.locator('.rosterCard').first.inner_text(), 'Agility must be visible in squad'
+  # The Squad screen's Back now goes through its real parents, not directly Home.
+  page.locator('[data-action="navCustomization"]').first.click()
+  assert page.locator('.navScreen .heading').inner_text()=='PLAYER & TEAM CUSTOMIZATION', (name,'customization parent')
+  page.locator('[data-action="navSettings"]').first.click()
+  assert page.locator('.navScreen .heading').inner_text()=='SETTINGS', (name,'settings parent')
   page.locator('[data-action="home"]').first.click()
   open_quick(page)
   page.locator('[data-action="setupAppearance"]').click()
