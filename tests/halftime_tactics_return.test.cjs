@@ -35,6 +35,6 @@ test('live Team Command Center captures entry origin and all return paths preser
 test('Escape/Backspace in Team Command Center follows the same return route',()=>{
  const block=source.slice(source.indexOf('function backFromMenu(){'),source.indexOf("document.addEventListener('keydown'",source.indexOf('function backFromMenu(){')));
  assert.match(block,/screen==='TEAM COMMAND CENTER'/);
- assert.match(block,/squadContext==='pause'\?'returnPause':squadContext==='setup'\?'returnSetup':'home'/);
+ assert.match(block,/squadContext==='pause'\?'returnPause':squadContext==='setup'\?'returnSetup':menuBackAction\|\|'home'/,'pause/setup remain hard priorities while other entry screens use the actual Back destination');
  assert.match(source,/if\(e.code==='Escape'\|\|e.code==='Backspace'\)/);
 });
