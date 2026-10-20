@@ -9,7 +9,7 @@ assert m['authoredViews']==['front','back'] and len(set(m['viewIds']))==8
 assert m['fallbackModel']=='concept_hero' and m['logicalPlayerHeight']==141
 assert m['referenceCanvas']==[112,265]
 layers=[m['runtimeLayer'],*m['additionalLayers']]
-assert sorted(l['id'] for l in layers)==['arm_far_front_001','arm_near_front_001','face_front_001','hair_back_001','hair_front_001','torso_collar_front_001','torso_front_001']
+assert sorted(l['id'] for l in layers)==['arm_far_front_001','arm_near_front_001','face_front_001','hair_back_001','hair_front_001','torso_back_001','torso_collar_front_001','torso_front_001']
 assert [l['z'] for l in layers if l['view']=='front']==[20,8,8.5,9,10,14]
 for layer in layers:
  view=layer['view'];dims=[112,265] if view=='front' else [115,265]
@@ -48,6 +48,14 @@ for layer in layers:
   groups={g.get('id') for g in root.findall('.//'+ns+'g')}
   assert set(layer['partGroups']).issubset(groups)
   assert len(root.findall('.//'+ns+'path'))>=28
+ if layer['id']=='torso_back_001':
+  assert layer['kind']=='torso' and layer['view']=='back'
+  assert layer['pivot']==layer['chestCenter']==[57,152] and layer['shirtNumber']=='10'
+  assert layer['alphaBoundsEstimate']==[28,120,88,196] and layer['z']==8.5
+  assert layer['legacyBodyUnderlay'] is True
+  assert len(layer['partGroups'])>=6
+  groups={g.get('id') for g in root.findall('.//'+ns+'g')}
+  assert set(layer['partGroups']).issubset(groups)
  if layer['id']=='torso_collar_front_001':
   assert layer['kind']=='torso_collar' and layer['view']=='front'
   assert layer['pivot']==[56,122] and layer['neck']==[56,110] and layer['z']==9
@@ -72,4 +80,4 @@ for layer in layers:
   groups={g.get('id') for g in root.findall('.//'+ns+'g')}
   assert set(layer['partGroups']).issubset(groups)
 assert (R/'manifests'/m['provenance']).is_file()
-print('CONCEPT_MODULAR_SOURCE_PASS 7 transparent editable layers with independent jersey front number 10, reciprocal shoulder pivots, distinct hands and face groups, original fallback')
+print('CONCEPT_MODULAR_SOURCE_PASS 8 transparent editable layers with independent front and rear jersey number 10, reciprocal shoulder pivots, distinct hands and face groups, original fallback')
