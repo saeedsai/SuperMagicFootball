@@ -7,7 +7,7 @@ this output retains their independent deterministic physics/graphics coverage.
 from pathlib import Path
 import json,re,base64
 root=Path(__file__).resolve().parents[1]
-order=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','input','visualfeel','shotfeel','physicsbalance','engine','bpwpersonality','artpose','characterart','concepthero','conceptmodular','render','ui']
+order=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','input','visualfeel','shotfeel','physicsbalance','shotpaths','engine','bpwpersonality','artpose','characterart','concepthero','conceptmodular','render','ui']
 groups=['arcade','national26','club26','legends','continental','bpw_worldcup','bpw_alltime']
 load=lambda path:json.loads((root/'data'/path).read_text())
 players={g:load(f'players/{g}.json') for g in groups}
