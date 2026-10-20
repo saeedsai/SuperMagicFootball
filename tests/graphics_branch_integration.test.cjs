@@ -32,10 +32,10 @@ test('fixed Player Studio selectors are in menu module and no duplicate declarat
  assert.equal((src.match(/function studioColorOptions\(/g)||[]).length,1);
  assert.ok(src.indexOf('function studioColorOptions(')>src.indexOf('const STUDIO_DIRS='));
 });
-test('merged build exposes current version without stale Player Studio tagline',()=>{
+test('merged build keeps bundle identity and points home/menu to current auto-version in About',()=>{
  assert.match(src,/version:'0\.8\.25\.32-integrated'/);
- assert.match(src,/GRAPHICS 0\.8\.25\.32/);
- assert.match(src,/VERSION 0\.8\.25\.32/);
+ assert.match(src,/LATEST DEV VERSION · SEE ABOUT/);
+ assert.match(src,/LIVE DEVELOPMENT VERSION IN ABOUT/);
  assert.ok(!src.includes('GRAPHICS 0.8.25.19'));
  assert.ok(!src.includes('VERSION 0.8.25.14'));
  assert.ok(html.includes('0.8.25.32-integrated'));
