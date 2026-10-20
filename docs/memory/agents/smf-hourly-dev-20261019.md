@@ -3,23 +3,23 @@
 **Updated:** 2026-10-20
 
 ## Mission
-Ship owner-priority fixes/features in small live GitHub `dev` commits with exclusive claims; preserve four buttons, rosters/saves, About traceability, exact-head full 4+4 regression and deployed Pages verification. User explicitly authorized maintainer-led coordination on 2026-10-20.
+Deliver owner-priority playable gameplay/UI increments with current GitHub `dev`, exclusive claims, full 4+4 Node/Chromium regression and hosted Pages certification. Owner authorized maintainer-led lock/handover recovery; never bypass a safety-rejected write or force push.
 
 ## Current checkpoint
-**FIX-UI-101 shipped to dev:** source `14d7b6c3` corrected visible vs keyboard/gamepad Back mismatch, customization-to-squad and Input-to-mapping routes; six new Node scenarios, legacy halftime compatibility update and live Chromium desktop/sim-touch test `tests/ui_back_routes_browser_qa.py`; handover `docs/UI_BACK_ROUTES_20261020.md`. Intermediate first CI failures (obsolete test source assertion, new test escaping) were corrected; subsequent Modular QA passed. `ui-controls` claim released at `3f109462`.
+**FIX-UI-101** live Back routes `14d7b6c3`, focused Node, legacy halftime adaptation and desktop/simulated touch Chromium `tests/ui_back_routes_browser_qa.py` (`145cec63`). Customization Squad returns to its real parent, and Controller Mapping returns to Input; dynamic keyboard/gamepad parity. Dedicated handover `docs/UI_BACK_ROUTES_20261020.md`, claim released `3f109462`.
 
-**FIX-UI-102 shipped to dev under new, re-confirmed `ui-controls` claim `559290b0`:** `src/modules/ui.js` commit `157100bd` removes confusing `DEV → ABOUT` Home pill and `DEV VERSION IN ABOUT` ordinary-menu headings. Five new Node tests `tests/ui_no_dev_banner_20261020.test.cjs` at `8e1e1956`, obsolete home-banner integration assertion updated at `d8e5f455`, handover `docs/UI_HOME_BANNER_20261020.md` at `5f5805b2`. About dynamic SHA/current commit summary and stable bundle remain unchanged. **Exact-head Full Regression and Pages checks still required**; do not claim all green before CI confirms.
+**FIX-UI-102** live banner cleanup `157100bd`; five Node checks and obsolete legacy graphics integration assertion corrected `d8e5f455`. About current Git SHA/actual commit summaries/Recent Changes preserved. Handover `docs/UI_HOME_BANNER_20261020.md`; claim released `3a6cdb74`. Initial direct-Home historical browser suites `stats_browser_qa.py` and `kits_browser_qa.py` blocked full CI (run #39485410157); under freshly claimed `ui-controls` FIX-UI-101-LEGACY-CHROMIUM-BACK-ROUTES-20261020, tests now navigate Squad → Customization → Settings → Home with assertions, commits `8c593af2` and `22e96c06`; handover `docs/UI_LEGACY_BROWSER_ROUTES_20261020.md` at `c667fa92`. No app behavior reverted.
 
-Earlier art-source audit delivered, two genuinely authored source views / eight, remaining six fallback. `SHOTPATHS` pure zigzag helper still NOT integrated into `engine.js`; gameplay-engine SH01 claim active under this agent. `qa-framework` and `release-infra` issue #27 claims also active under this agent; independent audio-feedback active under different owner.
+**SH01 LIVE gameplay** owned `gameplay-engine`: common analytic zigzag helper `cf61b82b`; actual ball + keeper preview integration `3e25957c`; Books amp 28/freq10 and Serpent amp45/freq15 `8fa1a703`; six Node tests `4ba59d7a`; Chromium real-playable simulated desktop/touch 12 scenarios per device `24e947bd`; docs `docs/SHOTPATHS_LIVE_20261020.md` at `3008c9f6`. Modular QA green at `24e947bd`. Full eight-shard run and new browser results/Pages **pending exact-head verification**. Do not misrepresent the 6/6 prior helper tests as separate live in-game certification.
 
 ## Next smallest action
-Release own `ui-controls` fix claim with documented handover; obtain exact-SHA green Full Census including browser route test and hosted Pages. Continue gameplay-engine SH01 live integration only with confirmed matching ownership and normal checked source writes; never bypass previous safety rejection through another API. After release, re-claim UI for save slots/customization as needed.
+Release UI and SH01 claims with handovers when current source/test status verified. Check exact-head 4+4 Full Regression including `shotpaths_live_browser_qa.py`, `kits_browser_qa.py`, `stats_browser_qa.py`; inspect and fix only own failures. Auto-promotion to main only after certified green; Pages verify separately. Resolve own issue #27 QA/release stranded claims via normal approved workflow. Next P0 after SH01: 10 Career slots or properly counterable Defense; aim for small scope.
 
 ## Ownership and exclusions
-Only this agent memory readable/editable. No other agents' memory, unauthorized audio scope, roster/team reorder, controller rebind, service-worker or About version change. Never force-push or promote untested SHA.
+Only this own memory file; do not read other agents' memory. `audio-feedback` belongs to another owner, untouched. Preserve user team/player IDs and saved data, four buttons and About revision until coordinated real `0.9.0.0` migration. No force push.
 
 ## Evidence
-[Back UI handover](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/UI_BACK_ROUTES_20261020.md), [home banner handover](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/UI_HOME_BANNER_20261020.md), [CI](https://github.com/saeedsai/SuperMagicFootball/actions), [claims](https://github.com/saeedsai/SuperMagicFootball/tree/dev/docs/agent_coordination/claims).
+[Full CI](https://github.com/saeedsai/SuperMagicFootball/actions), [UI Back](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/UI_BACK_ROUTES_20261020.md), [UI banner](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/UI_HOME_BANNER_20261020.md), [SH01 live](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/SHOTPATHS_LIVE_20261020.md), [claims](https://github.com/saeedsai/SuperMagicFootball/tree/dev/docs/agent_coordination/claims).
 
 ## Cleanup
-Remove stale prepatch-only blockers once integrated QA is green. No saved-data schema or actual SH01 feature shipped in these UI batches.
+Source delivered vs QA/deployment separated; newer test asserts actual screen parent rather than bypass. Six authored art views, defense, LAN, 10+10 slots and 0.9.0.0 still open.
