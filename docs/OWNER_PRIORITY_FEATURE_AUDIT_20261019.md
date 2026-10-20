@@ -1,3 +1,5 @@
+> **NEW OWNER REQUIREMENTS — 20 October 2026:** The additional [UI / About version `0.9.0.0` / 10 Career and 10 Cups save slots / illustrated menus / high-quality larger eight-view sprites / unique special animations / stat-and-ability customization UI requirements](OWNER_UI_ART_SAVES_VERSION_BACKLOG_20261020.md) are **active owner-requested backlog**, not implemented. They add 15 scoped issue IDs and supersede the previously planned public `+dev.<SHA>` display **when the coordinated version-system migration ships**. This historical 30-feature status inventory is unchanged.
+
 # SuperMagicFootball — owner-priority feature audit and delivery roadmap
 **Date:** 19 October 2026
 **Basis:** Live modular `dev` tree, `MASTER_DEVELOPMENT_PLAN.md`, `NEXT_MILESTONES.md`, `FEATURE_MATRIX_218_ITEMS.csv`, `REQUIREMENTS_REVIEW_20261016.md`, `SUPER_ATTACK_SEQUENCE_SPEC_v08221.md`, `SUPER_DEFENSE_AND_TRICKS_BACKLOG_v08241.md`, `GRAPHICS_AND_CUSTOMIZATION_SPEC_v082532.md`, `concept_character_pipeline/MASTER_ROADMAP.md`, menu handoff and active backlog. This is a scope/priority correction **not a code completion or test report**.
