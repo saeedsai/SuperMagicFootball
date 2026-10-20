@@ -1,27 +1,16 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "graphics-renderer",
-  "feature_id": "ART-C01-FIRST-FRONT-TORSO",
-  "owner": "graphics-update-c01-front-torso-20261018-gpt6-r5",
-  "status": "released",
-  "scope": "One hand-authored transparent front jersey torso SVG with number 10; opt-in conceptmodular loader/painter and rig manifest; graphics-only validator/tests/QA plus docs/concept_character_pipeline handover/progress/provenance and docs/memory/agents/graphics-update.md. Preserve original torso underlay; no game/UI/input/roster/camera/normal renderer.",
-  "base_sha": "3319e2648958abc6243ff32fafc2bcad1fe813f5",
-  "created_at": "2026-10-18",
-  "renewed_at": "2026-10-18",
-  "tests": [
-    "python3 scripts/validate_concept_modular.py",
-    "python3 scripts/build.py",
-    "node --test tests/concept_modular_v1.test.cjs",
-    "node --test tests/*.test.cjs",
-    "python3 tests/concept_modular_browser_qa.py",
-    "python3 tests/concept_modular_live_qa.py",
-    "Full Regression Census",
-    "About revision tests"
-  ],
-  "handover": "docs/concept_character_pipeline/C01_FRONT_JERSEY_BATCH_20261018.md; docs/concept_character_pipeline/NEXT_CHAT_HANDOVER.md; source art commit 8eabd88e4126ff9446ab21d4ee78e65914c55a62; graphics #39106049047 PASS 8/8 focused, 283/283 Node and desktop/touch; hosted #39106049102 PASS; full census #39106207590 FAIL 8/9 unrelated keeper roll issue #38; release screenshot/real-phone owner approval pending; next separate task reversible old-arm occlusion",
-  "released_at": "2026-10-18",
-  "outcome": "completed_first_painted_editable_front_jersey_number_10_seventh_layer_graphics_QA_8_of_8_283_of_283_hosted_PC_touch_PASS_full_census_8_of_9_unrelated_keeper_roll_browser_FAILURE",
-  "final_source_commit": "3395c6cf7950c9ba4e9510504000649db7285e0e",
-  "final_validation_commit": "2be32a646124930a75a5941c0a4487273bb6a9a1",
-  "final_art_commit": "8eabd88e4126ff9446ab21d4ee78e65914c55a62"
+  "feature_id": "ART-C01-REAR-KIT-DETAIL-20261020",
+  "owner": "smf-hourly-dev-20261019",
+  "status": "active",
+  "scope": "One bounded C01 authored SVG source and manifest/runtime integration of rear jersey detail ONLY, with dedicated tests and graphics handover. Do not change engine.js, UI, rosters, build workflows, or other agent memory. No generic full graphics rewrite.",
+  "base_sha": "18171e0f5187f7d9f7f5e15dc90168298ad73365",
+  "created_at": "2026-10-20",
+  "renewed_at": "2026-10-20",
+  "acceptance": [
+    "New independently editable rear kit layer rendered in opt-in prototype with existing fallback",
+    "No mirrored backwards shirt digits",
+    "Targeted graphics source and browser tests, exact-current CI"
+  ]
 }
