@@ -34,8 +34,8 @@ test('fixed Player Studio selectors are in menu module and no duplicate declarat
 });
 test('merged build keeps bundle identity and points home/menu to current auto-version in About',()=>{
  assert.match(src,/version:'0\.8\.25\.32-integrated'/);
- assert.match(src,/LATEST DEV VERSION · SEE ABOUT/);
- assert.match(src,/LIVE DEVELOPMENT VERSION IN ABOUT/);
+ assert.match(src,/DEV → ABOUT/);
+ assert.match(src,/DEV VERSION IN ABOUT/);
  assert.ok(!src.includes('GRAPHICS 0.8.25.19'));
  assert.ok(!src.includes('VERSION 0.8.25.14'));
  assert.ok(html.includes('0.8.25.32-integrated'));
