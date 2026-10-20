@@ -23,3 +23,12 @@ The path is a lateral double/multi-bend wiggle with a zero-offset, zero-lateral-
 4. Coordinate with graphics owner on per-ability art; keep shot movement and keeper forecast derived from shared helper.
 
 This is a **live flight integration**, not completion of the full 30-feature Super Shot catalog, finished eight-view art, Super Defense, Tricks, or LAN.
+
+## Integrated full regression evidence
+
+The first complete Full Regression Census after fixing both the SH01 inline browser module registration and the two stale Squad-to-Home browser tests **passed** at exact source SHA `28db5d20d6ebb8cc08e60b96bf659a11ddae012f`: [GitHub Actions #39487919601](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39487919601).
+- Preflight **351/351 Node subtests** passed, without skipped cases.
+- All **158/158 Node regression scripts** passed in four shards (40+40+39+39).
+- All **89/89 Chromium regression scripts** passed in four shards (23+22+22+22).
+- `shotpaths_live_browser_qa.py`, `first_touch_mirror_fps_browser_qa.py`, `stats_browser_qa.py` and `kits_browser_qa.py` explicitly passed. The browser SH01 test exercises 12 trajectory scenarios in each desktop and simulated-touch context; these are simulated devices, not physical hardware.
+- Preview smoke passed; fast-forward to `main` and live Pages must be checked at the final `dev` HEAD separately, because subsequent documentation and claim commits changed the SHA.
