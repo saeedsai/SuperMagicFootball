@@ -1,20 +1,16 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "ui-controls",
-  "feature_id": "FIX-UI-102-REMOVE-HOME-DEV-BANNER-20261020",
+  "feature_id": "FIX-UI-101-LEGACY-CHROMIUM-BACK-ROUTES-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "released",
-  "scope": "Only remove confusing 'DEV → ABOUT' and 'DEV VERSION IN ABOUT' display badges from the main menu and ordinary submenu toplines in src/modules/ui.js; add tests/ui_no_dev_banner_20261020.test.cjs and optionally existing real-browser UI nav QA and docs/UI_HOME_BANNER_20261020.md. Keep Credits/About accessible and preserve its live SHA + latest real commit + Recent Changes, all other UI flows and control/gameplay/save/roster invariants. No release/version system migrations or other agent memory changes. Includes targeted refresh of obsolete banner requirements in tests/graphics_branch_integration.test.cjs (currently tests exact 'DEV → ABOUT' and 'DEV VERSION IN ABOUT'); retain bundle identity and About revision traceability. No other graphics source/renderer changes.",
-  "base_sha": "3f10946281212bcb0a4d7754748706c3dd6250f6",
+  "status": "active",
+  "scope": "Only tests/stats_browser_qa.py and tests/kits_browser_qa.py: update obsolete direct Home navigation from Squad to exercise the actual three-level Back parent hierarchy established in FIX-UI-101; docs/UI_LEGACY_BROWSER_ROUTES_20261020.md and own agent memory checkpoint. No gameplay, runtime UI, graphics, team/player, save, CI or version modification.",
+  "base_sha": "24e947bd209fa8b9d57d2acb7a95614b4e16a3be",
   "created_at": "2026-10-20",
   "renewed_at": "2026-10-20",
   "acceptance": [
-    "Home and ordinary top-level submenus do not show any development/SHA/version banner text",
-    "Credits/About is accessible and still reports actual dev SHA/latest commit summaries",
-    "Desktop and simulated-touch browser show the clean menu and four unchanged action buttons",
-    "Exact integrated-SHA Modular QA and full census green"
-  ],
-  "released_at": "2026-10-20",
-  "outcome": "home_and_ordinary_menu_version_banners_removed_with_five_new_Node_tests_and_updated_legacy_contract_Modular_QA_green_full_regression_pending",
-  "handover": "docs/UI_HOME_BANNER_20261020.md; source 157100bd, new test 8e1e1956, legacy integration test d8e5f455, docs 5f5805b2, memory f0279d86; Modular QA #39485478824 PASS. Exact final 4+4 Full Census + hosted Pages to verify. About live dev SHA/latest summary unchanged."
+    "Both historical Chromium stats and kit browser suites navigate Squad → Customization → Settings → Home using visible buttons",
+    "All gameplay/kit/stat browser assertions retained",
+    "Exact integrated 4 Node+4 Chromium full regression and Pages only when certified"
+  ]
 }
