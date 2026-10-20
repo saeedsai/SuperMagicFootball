@@ -32,6 +32,8 @@ modular_collar=base64.b64encode((root/'assets/characters/concept_modular_v1/sour
 code.append('const CONCEPT_MODULAR_COLLAR_INLINE='+json.dumps(modular_collar)+';\n')
 modular_torso=base64.b64encode((root/'assets/characters/concept_modular_v1/source/torso_front.svg').read_bytes()).decode('ascii')
 code.append('const CONCEPT_MODULAR_TORSO_INLINE='+json.dumps(modular_torso)+';\n')
+modular_back_torso=base64.b64encode((root/'assets/characters/concept_modular_v1/source/torso_back.svg').read_bytes()).decode('ascii')
+code.append('const CONCEPT_MODULAR_BACK_TORSO_INLINE='+json.dumps(modular_back_torso)+';\n')
 for name in order:
  s=(root/'src/modules'/f'{name}.js').read_text()
  s=re.sub(r'^import \{[A-Z_]+\} from .*?;\n','',s,flags=re.M)
