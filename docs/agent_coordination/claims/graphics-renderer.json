@@ -3,7 +3,7 @@
   "lock_key": "graphics-renderer",
   "feature_id": "FIX-GRAPHICS-15-CONCEPT-DIRECTION-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Fix open issue #15 native left-facing Concept Hero side/quarter crops by applying only local concept-specific mirror in src/modules/concepthero.js. Add tests/concept_hero_direction_20261020.test.cjs, browser QA if independently possible, short docs/CONCEPT_HERO_DIRECTION_FIX_20261020.md, own memory checkpoint. Do not modify global render.js, engine.js, UI, source SVG, roster, CI, other agent memory, existing saved IDs. No code changes without confirmed lock.",
   "base_sha": "833205077419631df3f002c401bb9f74cb5005a6",
   "created_at": "2026-10-20",
@@ -12,5 +12,8 @@
     "Both left/right side and quarter native left atlas orientation corrected without changing front/back",
     "Both Concept Hero and modular fallback use correction; ordinary CHARACTER_ART unchanged",
     "Focused Node test and actual desktop/simulated touch game browser direction verification, About version tests, exact SHA full regression and Pages hosted if available"
-  ]
+  ],
+  "released_at": "2026-10-20",
+  "outcome": "concept_direction_source_fix_and_focused_tests_committed; exact_SHA_4node_4chromium_and_pages_green; issue15_kept_open_pending_real_player_direction_screenshot_validation",
+  "handover": "Source fix cc866a34fc03694ba6e69513bc2a39b2656c2c24, Node 4121094478b4abb108ca355cedf86ba663dbdb98, synthetic-atlas Chromium 77d60a56e8a686ce1ab7414311419ca9e45eda53; exact integrated SHA 3af516cdfa677988590ec9b1fe358d3001196ef1 Full Census https://github.com/saeedsai/SuperMagicFootball/actions/runs/39475174800 (155/155 Node scripts, 87/87 Chromium scripts, 334/334 preflight Node subtests, hosted Pages PASS). Browser direction fixture is synthetic atlas, NOT an actual playable-player directional screenshot; issue #15 remains open for that verification and owner visual approval. Do not alter engine/UI/other memory."
 }
