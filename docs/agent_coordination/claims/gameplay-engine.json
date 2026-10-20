@@ -4,7 +4,7 @@
   "feature_id": "SH01-ZIGZAG-LIVE-20261020",
   "owner": "smf-hourly-dev-20261019",
   "status": "active",
-  "scope": "Bounded SH01: src/modules/shotpaths.js, src/modules/engine.js zigzag live update and keeper prediction, data/mechanics/gameplay.json books/serpent profile fields, new tests/shotpaths_live_20261020.test.cjs, docs/SHOTPATHS_LIVE_20261020.md and own docs/memory/agents/smf-hourly-dev-20261019.md. No UI, art, rosters, CI or other agents' memory.",
+  "scope": "Bounded SH01: src/modules/shotpaths.js, src/modules/engine.js zigzag live update and keeper prediction, data/mechanics/gameplay.json books/serpent profile fields, new tests/shotpaths_live_20261020.test.cjs, docs/SHOTPATHS_LIVE_20261020.md and own docs/memory/agents/smf-hourly-dev-20261019.md. No UI, art, rosters, CI or other agents' memory. Includes new read-only real-game desktop/simulated-touch Chromium QA tests/shotpaths_live_browser_qa.py for the SH01 owned flight physics; no renderer/input/runtime shared files beyond the original scope.",
   "base_sha": "6822d289ff7f8d2eb6bdeae89928f50b15417337",
   "created_at": "2026-10-20",
   "renewed_at": "2026-10-20",
@@ -12,6 +12,7 @@
     "node --test tests/shotpaths_live_20261020.test.cjs",
     "node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
     "Full Regression Census exact integrated SHA",
-    "Desktop and simulated touch browser game"
+    "Desktop and simulated touch browser game",
+    "python3 scripts/build.py && python3 tests/shotpaths_live_browser_qa.py (real browser desktop and simulated touch)"
   ]
 }
