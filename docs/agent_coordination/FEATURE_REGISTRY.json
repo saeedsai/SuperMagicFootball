@@ -1,8 +1,8 @@
 {
   "schema": "smf-feature-registry/1",
-  "updated": "2026-10-16",
+  "updated": "2026-10-20",
   "source_branch": "dev",
-  "important": "Candidate work only. A candidate is not automatically unowned or incomplete. Inspect active GitHub claims, latest handovers and issues/PRs before claiming.",
+  "important": "Owner-authorized single-developer mode: legacy lock keys/candidates retained for history and old tests only. No feature lock claims/renewals/releases required; latest SHA and green QA still required.",
   "staticLockKeys": [
     {
       "key": "graphics-renderer",
@@ -130,5 +130,8 @@
       "plan": "docs/memory/README.md",
       "note": "Agent memory files belong to their own chat; no broad cross-agent inspection or edits."
     }
-  ]
+  ],
+  "development_mode": "single_developer",
+  "current_maintainer": "smf-hourly-dev-20261019",
+  "lock_enforcement": "retired"
 }

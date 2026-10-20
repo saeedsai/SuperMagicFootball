@@ -3,10 +3,13 @@
   "lock_key": "audio-feedback",
   "feature_id": "AUDIO-ABILITY-FULL-CENSUS-GREEN-SIGNOFF",
   "owner": "gameplay-ability-audio-signoff-20261017-gpt6-s16-r5",
-  "status": "active",
+  "status": "released",
   "scope": "Only append final exact 229/229 historical regression pass and hosted smoke to docs/GAMEPLAY_ABILITY_AUDIO_20261017.md, update own docs/memory/agents/gameplay-tactical-audio-20261016-gpt6-s16.md, close independently verified duplicate pass reception audio bugs issues #16 and #18 if issue detail matches. No runtime/source/test/workflow/graphics/roster/UI/other agents' memories.",
   "base_sha": "60873927c891d507419937406cf0e2710d6e891c",
   "created_at": "2026-10-17",
   "renewed_at": "2026-10-17",
-  "handover": "docs/GAMEPLAY_ABILITY_AUDIO_20261017.md"
+  "handover": "docs/GAMEPLAY_ABILITY_AUDIO_20261017.md; Owner reassigned future implementation to smf-hourly-dev-20261019. This claim is retired as a blocking reservation only. Original scope, provenance and any unfinished tasks preserved; no other agent memory edited.",
+  "released_at": "2026-10-20",
+  "outcome": "owner_directed_single_developer_migration_retired_reservation_no_feature_completion_asserted",
+  "migration_note": "Owner directed sole-developer workflow on 2026-10-20. Legacy lock semantics deprecated; previous work not overwritten."
 }

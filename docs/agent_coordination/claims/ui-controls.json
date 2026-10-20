@@ -3,7 +3,7 @@
   "lock_key": "ui-controls",
   "feature_id": "FIX-TOUCH-DRIBBLE-TAP-HOLD-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Only src/modules/input.js, tests/touch_dribble_pulse.test.cjs, docs/TOUCH_DRIBBLE_TAP_HOLD_20261020.md and own memory: preserve a pending second DRIBBLE press when a completed tap and a new held touch occur before one poll. No ui.js retry, engine, saves, rosters or other agents' files.",
   "base_sha": "08051aaf58ad7a90f8fa3e3b4f3a0efeceac38ec",
   "created_at": "2026-10-20",
@@ -12,5 +12,9 @@
     "Two distinct press edges for completed tap followed by held touch before poll",
     "No phantom third edge, cancel and multi-pointer behavior unchanged",
     "Full Node+Chromium 4+4 CI and Pages verification"
-  ]
+  ],
+  "released_at": "2026-10-20",
+  "outcome": "owner_directed_single_developer_migration_retired_reservation_no_feature_completion_asserted",
+  "handover": "Owner reassigned future implementation to smf-hourly-dev-20261019. This claim is retired as a blocking reservation only. Original scope, provenance and any unfinished tasks preserved; no other agent memory edited.",
+  "migration_note": "Owner directed sole-developer workflow on 2026-10-20. Legacy lock semantics deprecated; previous work not overwritten."
 }
