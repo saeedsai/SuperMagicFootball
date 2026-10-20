@@ -118,7 +118,7 @@ const identity=i=>teamIdentity(TEAMS[i]);
 const menuVisible=()=>!menu.classList.contains('hidden');
 const closeMenu=()=>{input.cancelAll();audio.sceneChange('match');menu.classList.add('hidden');hud.classList.remove('hidden');touch.classList.toggle('hidden',!matchMedia('(pointer:coarse)').matches)};
 const show=(html,id='home')=>{audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');menu.innerHTML=`<div class="menubox"><div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>${html}<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div></div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
-function page(title,subtitle,body,returnAction='home'){if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER • VERSION 0.8.25.32</div><h1 class="heading">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title)}
+function page(title,subtitle,body,returnAction='home'){if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER • LIVE DEVELOPMENT VERSION IN ABOUT</div><h1 class="heading">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title)}
 // v0.8.24.7 — Menu handoff: five primary categories, no new gameplay modes.
 // Existing action handlers, saves, teams and engine remain the authority.
 const menuParents={
@@ -133,7 +133,7 @@ const navItem=(label,act,description='',availability='active',icon='⚽')=>({lab
 function menuChoices(id,title,subtitle,entries,back='home',extra=''){
  menuBackAction=back;
  const cards=entries.map((e,i)=>`<button type="button" class="btn navChoice ${e.availability==='later'?'navLater':''}" data-action="${escapeHTML(e.act)}" ${i===0?'data-default-focus="true"':''} aria-label="${escapeHTML(e.label+(e.availability==='later'?' coming later':''))}"><span class="navIcon" aria-hidden="true">${e.icon}</span><span class="navCopy"><strong>${escapeHTML(e.label)}</strong><small>${escapeHTML(e.description)}</small></span><span class="navStatus">${e.availability==='later'?'COMING LATER':'›'}</span></button>`).join('');
- show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL · 0.8.25.32</div><h1 class="heading">${escapeHTML(title)}</h1><p class="subtitle">${escapeHTML(subtitle)}</p></div>${button('← BACK',back,'minor navBack')}</div><div class="navList">${cards}</div>${extra}</div>`,id);
+ show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL · LIVE DEVELOPMENT VERSION IN ABOUT</div><h1 class="heading">${escapeHTML(title)}</h1><p class="subtitle">${escapeHTML(subtitle)}</p></div>${button('← BACK',back,'minor navBack')}</div><div class="navList">${cards}</div>${extra}</div>`,id);
  // Restore the selected item in its parent after returning; do not steal focus from clicks.
  if(navFocusMap[id]){const match=menu.querySelector(`[data-action="${navFocusMap[id]}"]`);if(match){match.focus({preventScroll:true});return;}}
  menu.querySelector('.navChoice')?.focus({preventScroll:true});
@@ -204,9 +204,9 @@ function showInputMenu(){menuChoices('nav-input','INPUT SETTINGS','The game alwa
 function showSaveMenu(parent='navSettings'){menuChoices('nav-saves','SAVE MANAGEMENT','Safely back up or restore local progress.',[
  navItem('Export All Saves','exportSave','Download a JSON backup without changing progress.','active','⬇'),
  navItem('Import Save','importSave','Requires explicit confirmation before replacing progress.','active','⬆')],parent,`<input id="saveImportFile" type="file" accept=".json,application/json" class="hidden" aria-label="Import saved game"/>`);}
-// Re-resolve the current development revision whenever About is opened. This
-// is the GitHub dev HEAD, not an unverified claim about deployed bundle bytes.
-// The game remains playable offline if the public GitHub API cannot be reached.
+// About deliberately separates the stable playable bundle from the latest
+// GitHub dev revision. A new commit is automatically a new visible dev version;
+// recent meaningful changes come from commit subjects, not manually bumped tags.
 async function refreshAboutDevRevision(node,request=fetch){
  try{
   const response=await request('https://api.github.com/repos/saeedsai/SuperMagicFootball/commits/dev',{cache:'no-store',headers:{Accept:'application/vnd.github+json'}});
@@ -221,19 +221,55 @@ async function refreshAboutDevRevision(node,request=fetch){
   link.textContent='v'+String(bundle)+'+dev.'+sha.slice(0,12);
   link.target='_blank';link.rel='noopener noreferrer';
   node.replaceChildren(link);
+  const summary=document.getElementById('aboutLatestChange');
+  if(summary?.isConnected){
+   const message=typeof result?.commit?.message==='string'?result.commit.message.split('\n')[0].trim():'';
+   summary.textContent=message?message.slice(0,180):'No change description provided for this commit.';
+  }
  }catch(_error){
   if(node.isConnected)node.textContent='Latest dev commit unavailable offline (game remains playable).';
+  const summary=document.getElementById('aboutLatestChange');
+  if(summary?.isConnected)summary.textContent='Change summary unavailable offline.';
+ }
+}
+// Keep the recent history useful: omit lock bookkeeping, but never invent
+// completed features. Display GitHub's actual commit subjects as plain text.
+async function refreshAboutRecentChanges(node,request=fetch){
+ try{
+  const response=await request('https://api.github.com/repos/saeedsai/SuperMagicFootball/commits?sha=dev&per_page=25',{cache:'no-store',headers:{Accept:'application/vnd.github+json'}});
+  if(!response.ok)throw Error('GitHub history unavailable');
+  const commits=await response.json();
+  if(!Array.isArray(commits))throw Error('Unexpected history');
+  const meaningful=commits.map(item=>({
+   sha:typeof item?.sha==='string'?item.sha:'',
+   title:typeof item?.commit?.message==='string'?item.commit.message.split('\n')[0].trim():''
+  })).filter(item=>/^[a-f0-9]{40}$/i.test(item.sha)&&item.title&&!/^(chore\(coordination\)|docs\(memory\)|chore\(claims?\)):/i.test(item.title)).slice(0,5);
+  if(!node.isConnected)return;
+  if(!meaningful.length){node.textContent='No recent feature changes found.';return;}
+  const rows=meaningful.map(item=>{
+   const li=document.createElement('li'),link=document.createElement('a');
+   link.href='https://github.com/saeedsai/SuperMagicFootball/commit/'+item.sha.toLowerCase();
+   link.rel='noopener noreferrer';link.target='_blank';
+   link.textContent=item.title.slice(0,140);
+   li.appendChild(link);
+   return li;
+  });
+  node.replaceChildren(...rows);
+ }catch(_error){
+  if(node.isConnected)node.textContent='Recent change history unavailable offline.';
  }
 }
 function showAbout(){
  const bundle=escapeHTML(window.SupermagicFootball?.version||'0.8.25.32-integrated');
- page('ABOUT SUPERMAGIC FOOTBALL','Original offline cartoon arcade football.',`<div class="panel"><p id="aboutBundleVersion">GAME BUNDLE · ${bundle} · Independent football game with original graphics and audio.</p><p><strong>Developer: Saeed</strong> · <a href="mailto:saeedmsalehi1990@gmail.com">saeedmsalehi1990@gmail.com</a></p><p class="muted">Latest GitHub development commit · auto-versioned after every update (not necessarily the deployed build): <span id="aboutDevRevision" role="status" aria-live="polite">Checking latest dev commit online…</span></p><p class="muted">The commit above tracks the latest GitHub dev changes; GitHub Pages deployment can lag behind it. Four action buttons · ${TEAMS.length} teams · saved locally on your device.</p>${button('← MAIN MENU','home','gold')}</div>`,'home');
+ page('ABOUT SUPERMAGIC FOOTBALL','Original offline cartoon arcade football.',`<div class="panel"><h2>CURRENT DEVELOPMENT VERSION</h2><p><strong><span id="aboutDevRevision" role="status" aria-live="polite">Checking latest dev commit online…</span></strong></p><p class="muted">Latest GitHub development commit · auto-versioned after every update (not necessarily the deployed build).</p><p><strong>Latest commit:</strong> <span id="aboutLatestChange" aria-live="polite">Checking change summary…</span></p><h3>RECENT CHANGES</h3><ul id="aboutRecentChanges"><li>Checking recent updates…</li></ul><p id="aboutBundleVersion">GAME BUNDLE · ${bundle} · Independent football game with original graphics and audio.</p><p><strong>Developer: Saeed</strong> · <a href="mailto:saeedmsalehi1990@gmail.com">saeedmsalehi1990@gmail.com</a></p><p class="muted">The commit above tracks the latest GitHub dev changes; GitHub Pages deployment can lag behind it. Four action buttons · ${TEAMS.length} teams · saved locally on your device.</p>${button('← MAIN MENU','home','gold')}</div>`,'home');
  const revision=document.getElementById('aboutDevRevision');
  if(revision)void refreshAboutDevRevision(revision);
+ const recent=document.getElementById('aboutRecentChanges');
+ if(recent)void refreshAboutRecentChanges(recent);
 }
 function showHome(){
  menuBackAction='home';menuEntryReturn='home';
- show(`<header class="homeMasthead"><div><div class="topline">ARCADE FOOTBALL · SUPER SHOTS · YOUR FOOTBALL UNIVERSE</div><h1 class="heading logoHeading">SUPERMAGIC <em>FOOTBALL</em></h1><p class="subtitle">Pick a mode. All original gameplay and editing tools remain accessible.</p></div><span class="homeVersion">GRAPHICS 0.8.25.32</span></header>
+ show(`<header class="homeMasthead"><div><div class="topline">ARCADE FOOTBALL · SUPER SHOTS · YOUR FOOTBALL UNIVERSE</div><h1 class="heading logoHeading">SUPERMAGIC <em>FOOTBALL</em></h1><p class="subtitle">Pick a mode. All original gameplay and editing tools remain accessible.</p></div><span class="homeVersion">LATEST DEV VERSION · SEE ABOUT</span></header>
  <div class="menuGrid homeDashboard simplifiedHome"><main class="homeDirectory" aria-label="Five game categories">
  <div class="navList navMainList">
  ${[
