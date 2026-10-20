@@ -1,19 +1,17 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "graphics-renderer",
-  "feature_id": "ART-C01-REAR-KIT-DETAIL-20261020",
+  "feature_id": "ART-C01-REAR-ARM-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "released",
-  "scope": "One bounded C01 authored SVG source and manifest/runtime integration of rear jersey detail ONLY, with dedicated tests and graphics handover. Do not change engine.js, UI, rosters, build workflows, or other agent memory. No generic full graphics rewrite.",
-  "base_sha": "18171e0f5187f7d9f7f5e15dc90168298ad73365",
+  "status": "active",
+  "scope": "One separately authored rear near-arm SVG, src/modules/conceptmodular.js rear arm loading/animation and fallback, rig manifest, dedicated tests and docs/concept_character_pipeline/C01_REAR_ARM_BATCH_20261020.md; own memory checkpoint. No gameplay, UI, roster, CI or unrelated art.",
+  "base_sha": "511188d5967159b2c9a66d6d7c953947cd971be1",
   "created_at": "2026-10-20",
   "renewed_at": "2026-10-20",
-  "acceptance": [
-    "New independently editable rear kit layer rendered in opt-in prototype with existing fallback",
-    "No mirrored backwards shirt digits",
-    "Targeted graphics source and browser tests, exact-current CI"
-  ],
-  "released_at": "2026-10-20",
-  "outcome": "c01_rear_jersey_source_test_docs_delivered_exact_full_census_pending",
-  "handover": "docs/concept_character_pipeline/C01_REAR_JERSEY_BATCH_20261020.md; tests/concept_modular_v1.test.cjs; scripts/validate_concept_modular.py; Modular QA #39401694462 green at graphics/memory source, Full Census recheck latest head"
+  "tests": [
+    "node --test tests/concept_modular_v1.test.cjs",
+    "python3 scripts/validate_concept_modular.py",
+    "node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs",
+    "Full Regression Census and desktop/simulated-touch browser"
+  ]
 }
