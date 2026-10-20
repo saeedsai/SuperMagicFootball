@@ -3,23 +3,26 @@
 **Updated:** 2026-10-20
 
 ## Mission
-Deliver owner-priority playable gameplay/UI increments with current GitHub `dev`, exclusive claims, full 4+4 Node/Chromium regression and hosted Pages certification. Owner authorized maintainer-led lock/handover recovery; never bypass a safety-rejected write or force push.
+Ship playable owner-priority UI/gameplay from latest GitHub `dev` with exclusive locks, safe saves/rosters/four controls, exact 4+4 Node/Chromium regression, then green-only automatic promotion to main and hosted Pages verification. No force pushes or safety bypass.
 
 ## Current checkpoint
-**FIX-UI-101** live Back routes `14d7b6c3`, focused Node, legacy halftime adaptation and desktop/simulated touch Chromium `tests/ui_back_routes_browser_qa.py` (`145cec63`). Customization Squad returns to its real parent, and Controller Mapping returns to Input; dynamic keyboard/gamepad parity. Dedicated handover `docs/UI_BACK_ROUTES_20261020.md`, claim released `3f109462`.
+**P0 FIX-UI-101 live:** `src/modules/ui.js` `14d7b6c3` aligns visible Back with keyboard/gamepad; Squad respects Customization parent; Controller Mapping returns to Input. Six Node tests plus desktop/sim-touch `tests/ui_back_routes_browser_qa.py` `145cec63`; halftime compatibility; docs `docs/UI_BACK_ROUTES_20261020.md`. UI claim released `3f109462`.
+**P0 FIX-UI-102 live:** removed `DEV → ABOUT` home pill / ordinary menu dev hints `157100bd`; five Node tests `8e1e1956`, stale graphics test fixed `d8e5f455`, docs `docs/UI_HOME_BANNER_20261020.md`; UI claim released `3a6cdb74`. About live dev SHA/current commit and Recent Changes preserved.
+**Legacy browser regression fixed:** `stats_browser_qa.py` `8c593af2`, `kits_browser_qa.py` `22e96c06` now assert Squad → Customization → Settings → Home, original game assertions retained; docs `docs/UI_LEGACY_BROWSER_ROUTES_20261020.md`; UI claim released `4c24f5fa`.
+**SH01 playable zigzag:** analytic mirror/fade helper `cf61b82b`, real engine ball + matching GK prediction `3e25957c`, distinct Books 28/10 and Serpent 45/15 profiles `8fa1a703`; six Node cases `4ba59d7a`, Chromium real-game 12 cases each desktop/touch `24e947bd`. Missing browser fixture module fixed in `scripts/build.py` `4b005307`, offline `sw.js` cached new module `cb8a88cb`, legacy contract `28db5d20`, generated bundle regression `1e5a8b71`. Handover `docs/SHOTPATHS_LIVE_20261020.md` and `docs/SHOTPATHS_BUILD_HANDOVER_20261020.md`.
 
-**FIX-UI-102** live banner cleanup `157100bd`; five Node checks and obsolete legacy graphics integration assertion corrected `d8e5f455`. About current Git SHA/actual commit summaries/Recent Changes preserved. Handover `docs/UI_HOME_BANNER_20261020.md`; claim released `3a6cdb74`. Initial direct-Home historical browser suites `stats_browser_qa.py` and `kits_browser_qa.py` blocked full CI (run #39485410157); under freshly claimed `ui-controls` FIX-UI-101-LEGACY-CHROMIUM-BACK-ROUTES-20261020, tests now navigate Squad → Customization → Settings → Home with assertions, commits `8c593af2` and `22e96c06`; handover `docs/UI_LEGACY_BROWSER_ROUTES_20261020.md` at `c667fa92`. No app behavior reverted.
+**Certified code checkpoint:** SHA `28db5d20d6ebb8cc08e60b96bf659a11ddae012f`, [Full Census #39487919601](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39487919601) PASS 351/351 Node preflight subtests, 158/158 Node scripts, 89/89 Chromium scripts in 4+4, desktop/sim-touch preview. Specific SH01, first-touch FPS, stats and kits browser cases PASS. Later docs/claim commits NOT yet exact-head certified or Pages-proven. No physical device QA.
 
-**SH01 LIVE gameplay** owned `gameplay-engine`: common analytic zigzag helper `cf61b82b`; actual ball + keeper preview integration `3e25957c`; Books amp 28/freq10 and Serpent amp45/freq15 `8fa1a703`; six Node tests `4ba59d7a`; Chromium real-playable simulated desktop/touch 12 scenarios per device `24e947bd`; docs `docs/SHOTPATHS_LIVE_20261020.md` at `3008c9f6`. Modular QA green at `24e947bd`. Full eight-shard run and new browser results/Pages **pending exact-head verification**. Do not misrepresent the 6/6 prior helper tests as separate live in-game certification.
+Own locks all released: gameplay-engine `032d48b4`, integration-tooling `53c80246`, release-infra `efeb61f2`, qa-framework `4e02e670`, UI above. Issue #27 original missing CI trigger already resolved in workflow (all dev/main pushes, suites discovered); proposed extra static safeguard NOT published, issue still open. Other agent audio-feedback untouched.
 
 ## Next smallest action
-Release UI and SH01 claims with handovers when current source/test status verified. Check exact-head 4+4 Full Regression including `shotpaths_live_browser_qa.py`, `kits_browser_qa.py`, `stats_browser_qa.py`; inspect and fix only own failures. Auto-promotion to main only after certified green; Pages verify separately. Resolve own issue #27 QA/release stranded claims via normal approved workflow. Next P0 after SH01: 10 Career slots or properly counterable Defense; aim for small scope.
+Check latest `dev` SHA and exact final full 4+4 jobs; wait for green before main promotion and separate Pages hosted smoke. Correct only own CI failures. Then claim one small independent batch: 10 Career slots or counterable Super Defense. Six of eight authored visual character angles still absent.
 
 ## Ownership and exclusions
-Only this own memory file; do not read other agents' memory. `audio-feedback` belongs to another owner, untouched. Preserve user team/player IDs and saved data, four buttons and About revision until coordinated real `0.9.0.0` migration. No force push.
+Only own memory file; never read/edit other agent memory. Preserve team/player IDs, saves, four controls, dynamic About SHA/commit summary pending coordinated four-number `0.9.0.0` release migration; never falsely claim deployed SHA from fetched latest dev.
 
 ## Evidence
-[Full CI](https://github.com/saeedsai/SuperMagicFootball/actions), [UI Back](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/UI_BACK_ROUTES_20261020.md), [UI banner](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/UI_HOME_BANNER_20261020.md), [SH01 live](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/SHOTPATHS_LIVE_20261020.md), [claims](https://github.com/saeedsai/SuperMagicFootball/tree/dev/docs/agent_coordination/claims).
+[Full regression](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39487919601), [SH01](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/SHOTPATHS_LIVE_20261020.md), [Actions](https://github.com/saeedsai/SuperMagicFootball/actions).
 
 ## Cleanup
-Source delivered vs QA/deployment separated; newer test asserts actual screen parent rather than bypass. Six authored art views, defense, LAN, 10+10 slots and 0.9.0.0 still open.
+Synthetic SH01 helper checkpoint superseded by live integration. QA/Pages checked separately.
