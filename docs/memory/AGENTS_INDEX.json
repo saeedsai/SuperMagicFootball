@@ -1,6 +1,6 @@
 {
   "schema": "smf-chat-memory-index/1",
-  "updated": "2026-10-19",
+  "updated": "2026-10-20",
   "note": "Known project chats visible when bootstrapped. A chat absent from this list must register a distinct ID; IDs do not assert GitHub lock ownership.",
   "agents": [
     {
@@ -72,6 +72,11 @@
       "id": "smf-hourly-dev-20261019",
       "label": "SuperMagicFootball hourly development",
       "path": "docs/memory/agents/smf-hourly-dev-20261019.md"
+    },
+    {
+      "id": "smf-owner-backlog-20261020",
+      "label": "Owner UI / save slots / real version backlog (20 Oct)",
+      "path": "docs/memory/agents/smf-owner-backlog-20261020.md"
     }
   ]
 }
