@@ -1,7 +1,7 @@
 {
   "schema": "smf-concept-modular/1",
   "id": "royals-hair-front-front-001",
-  "status": "experimental_front_face_two_hairs_two_arms_collar_and_first_independent_jersey_front",
+  "status": "experimental_front_face_two_hairs_two_arms_collar_and_first_independent_front_rear_jerseys",
   "baseFamily": "royals_base_a",
   "referenceCanvas": [
     112,
@@ -68,7 +68,8 @@
     "front_near_arm_small_counterstride_overlay",
     "front_far_arm_small_reciprocal_counterstride_overlay",
     "painted_front_collar_follows_original_body_no_new_motion",
-    "independently_painted_front_jersey_preserves_original_torso_underlay"
+    "independently_painted_front_jersey_preserves_original_torso_underlay",
+    "independently_painted_rear_jersey_and_number_ten_over_original_back_underlay"
   ],
   "unimplemented": [
     "full_articulated_two_arm_cycle_and_torso_occlusion_pending",
@@ -407,6 +408,54 @@
       "z": 20,
       "material": "painted_chestnut",
       "noMirroring": true
+    },
+    {
+      "id": "torso_back_001",
+      "kind": "torso",
+      "view": "back",
+      "asset": "../source/torso_back.svg",
+      "sourceCanvas": [
+        115,
+        265
+      ],
+      "cropRect": [
+        0,
+        0,
+        115,
+        265
+      ],
+      "trimOffset": [
+        0,
+        0
+      ],
+      "pivot": [
+        57,
+        152
+      ],
+      "chestCenter": [
+        57,
+        152
+      ],
+      "shirtNumber": "10",
+      "alphaBoundsEstimate": [
+        28,
+        120,
+        88,
+        196
+      ],
+      "z": 8.5,
+      "material": "royals_painted_blue_jersey_rear",
+      "noMirroring": true,
+      "partGroups": [
+        "back-shirt-silhouette",
+        "back-shoulder-seams",
+        "back-collar-and-neck",
+        "back-cloth-shading",
+        "back-number-shadow",
+        "back-number-ten"
+      ],
+      "legacyBodyUnderlay": true,
+      "notes": "Independently editable jersey rear; aligned to approved rear 115x265 atlas under separate back hair overlay. Six side/quarter views remain fallback."
     }
   ]
 }
