@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="115" height="265" viewBox="0 0 115 265" role="img" aria-label="Editable rear near arm">
+<title>Royals C01 rear near arm</title>
+<desc>Transparent unmirrored source; shoulder 84,129, elbow 99,165, wrist 105,187, hand 108,197. Source-only artwork, not yet wired into the live rig.</desc>
+<defs>
+ <linearGradient id="sleeve" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#77c5e9"/><stop offset=".4" stop-color="#277eb9"/><stop offset="1" stop-color="#0b376b"/></linearGradient>
+ <linearGradient id="skin" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#f8c992"/><stop offset=".5" stop-color="#e5a36b"/><stop offset="1" stop-color="#97583e"/></linearGradient>
+</defs>
+<g id="rear-near-shoulder" stroke-linejoin="round">
+ <path d="M75 121Q82 123 88 129Q94 135 96 141L89 150Q84 144 80 139Z" fill="url(#sleeve)" stroke="#0a315f" stroke-width="2"/>
+ <path d="M78 125Q86 128 90 135L87 140Q82 131 78 129Z" fill="#a0dcf1" opacity=".38"/>
+ <path d="M87 134Q93 139 95 142L90 148Q88 143 85 140Z" fill="#0a396b" opacity=".55"/>
+</g>
+<g id="rear-near-sleeve-seam" fill="none" stroke-linecap="round">
+ <path d="M88 146Q92 147 95 141" stroke="#9bd8ef" stroke-width="1.5"/>
+ <path d="M86 143Q90 144 92 145" stroke="#10385c" stroke-width="1.8"/>
+</g>
+<g id="rear-near-upper-arm" stroke-linejoin="round">
+ <path d="M90 146Q95 144 98 149Q101 154 103 161L101 168Q98 170 95 167Q91 160 88 152Z" fill="url(#skin)" stroke="#844c37" stroke-width="1.7"/>
+ <path d="M91 149Q95 148 97 153Q99 157 100 161" fill="none" stroke="#ffe0ad" stroke-width="2.1" stroke-linecap="round" opacity=".67"/>
+ <path d="M99 154Q102 160 101 165" fill="none" stroke="#97583b" stroke-width="1.7" stroke-linecap="round" opacity=".65"/>
+</g>
+<g id="rear-near-elbow" stroke-linejoin="round">
+ <path d="M96 163Q101 161 103 166Q105 170 102 174L97 172Q95 169 96 163Z" fill="#c98a5b" stroke="#915537" stroke-width="1.2"/>
+ <path d="M98 166Q100 165 101 167" fill="none" stroke="#f5c38d" stroke-width="1.2" stroke-linecap="round"/>
+</g>
+<g id="rear-near-forearm" stroke-linejoin="round">
+ <path d="M98 171Q101 169 104 172Q106 176 108 184L107 189Q104 191 101 188Q99 181 97 175Z" fill="url(#skin)" stroke="#854b37" stroke-width="1.6"/>
+ <path d="M100 175Q103 178 104 184" fill="none" stroke="#ffd19b" stroke-width="1.6" stroke-linecap="round" opacity=".72"/>
+ <path d="M105 177Q107 183 107 186" fill="none" stroke="#a76546" stroke-width="1.4" stroke-linecap="round"/>
+</g>
+<g id="rear-near-wrist" stroke-linejoin="round">
+ <path d="M101 185Q104 186 108 184L110 190Q106 192 102 191Z" fill="#dbe7ed" stroke="#63849c" stroke-width="1.2"/>
+ <path d="M102 187Q106 188 108 186" fill="none" stroke="#ffffff" stroke-width="1.2" opacity=".85"/>
+</g>
+<g id="rear-near-hand" stroke-linejoin="round">
+ <path d="M103 190Q107 189 110 191L112 197Q112 201 109 202L105 200Q102 198 103 194Z" fill="url(#skin)" stroke="#7d4834" stroke-width="1.6"/>
+ <path d="M106 192Q109 194 110 197" fill="none" stroke="#ffdcaa" stroke-width="1.5" stroke-linecap="round"/>
+ <path d="M105 199Q109 200 111 199" fill="none" stroke="#a36446" stroke-width="1.1"/>
+</g>
+</svg>
