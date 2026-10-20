@@ -3,23 +3,23 @@
 **Updated:** 2026-10-20
 
 ## Mission
-Continue owner priorities in `docs/OWNER_PRIORITY_FEATURE_AUDIT_20261019.md`: playable nonlinear Super Shots, major eight-view graphics, Super Defense, Tricks/four-button controls and real LAN, with small owner-safe commits and exact-SHA validation. Keep the hourly task active even if one feature encounters a blocker.
+Continue owner priority audit: playable nonlinear Super Shots, eight-view authored characters, counterable Super Defense, Tricks and real two-client LAN. Small locked commits, exact-SHA QA, no force push. Recurring development remains active.
 
 ## Current checkpoint
-The two previously stranded own claims (`gameplay-engine` and `ui-controls`) were released safely with GitHub SHA-checked updates at `da4e7bc` and `18171e0`; no older lock was stolen. Previous live AI support improvement `28268f5` passed GitHub Full Regression Census #39314589645 and Modular QA #39314589415. Dedicated 12 Node + 8 isolated Chromium tests were local only, not on GitHub.
+Prior C01 rear jersey is integrated and certified at `6822d289ff7f8d2eb6bdeae89928f50b15417337`: Modular QA and Full Regression Census passed; main matched dev before this iteration. Earlier AI support fix at `28268f5` is deployed.
 
-**20 October C01 new art:** Under confirmed exclusive `graphics-renderer` and narrow `integration-tooling`/`release-infra` claims, committed `assets/characters/concept_modular_v1/source/torso_back.svg` as independent transparent rear jersey + manually vector-drawn number ten. Integrated in `src/modules/conceptmodular.js`, rig manifest, `scripts/build.py`, offline `sw.js`, source validator, rear draw-order Node tests and C01 specialist handover. Do not claim full 8-view character: only a single opt-in demo player, legacy body underlay and six directional fallbacks remain. Final current-SHA graphics, full Node/Chromium, hosted Pages checks **must be confirmed before main promotion**; owner visual signoff/physical phones untested.
+**SH01:** The pure `src/modules/shotpaths.js` helper (commit `e27b775`) is NOT connected to `src/modules/engine.js`. This run acquired/confirmed gameplay-engine lock at `511188d` and prepared a minimal engine patch for live ball plus keeper parity, but the large-file Contents API write was rejected by safety checks. No engine changes shipped. One release attempt for gameplay-engine claim was also rejected; **it may remain ACTIVE** and needs a documented maintainer-approved release. Do not retry blocked write through alternate APIs.
 
-**Earlier prototypes not yet shipped:** SH01 `src/modules/shotpaths.js` pure helper is committed `e27b775` but NOT wired into engine; standalone LAN lab passed 16/16 local Node and 4/4 mocked browser UI/SDP but was rejected by GitHub writes; real WebRTC two-client session was not established.
+**C01 graphics:** Under confirmed graphics lock, committed new transparent, 18-path, seven-group authored rear near-arm SVG at `0cbbad28ffa1480e7fc6b436404121f4f990a0a4`. This is **source-only**, not integrated into the runtime or manifest, and not owner-approved. Dedicated test/docs creation and integration-tooling/release-infra claims were rejected. Graphics lock was successfully released at `ec6898608944b63bc505bc5f4297be1d430ea06a`. Node Modular QA passed at source commit; exact-head full/browser checks pending. Existing game remains unchanged by new SVG.
 
 ## Next smallest action
-Re-fetch newest `dev` and all live claim files; inspect current source commit QA, repair any genuine C01 regression under owned scopes. If QA is green, record exact source SHA, release all three current claims with handover, verify actual main/Pages deployment. Then use a fresh claim for one small live gameplay Super Shot or Super Defense change; do not bypass previously rejected huge engine write.
+Re-read live claims and exact-SHA CI. Safely resolve own gameplay-engine stranded claim via normal maintainer-approved handoff. When released, integrate SH01 in a permitted small shared-engine patch and test 30/60/120 Hz and keeper prediction. Otherwise choose a free disjoint scope. For C01 rear arm, coordinate build.py, sw.js and validator ownership before wiring it into the actual opt-in renderer; test actual desktop/simulated-touch game and seek owner art approval. Never claim source-only art is shipped.
 
 ## Ownership and exclusions
-Own memory file only; other agents' memory, game engine, UI, rosters and unrelated docs untouched. Current C01 claims must be released after a safe handover. No force pushing; account for concurrent edits.
+Read/edit this agent memory only. Respect all active locks, especially gameplay-engine if stranded. Do not edit other agents' memory, rosters, UI, unrelated engine files, or CI without confirmed ownership.
 
 ## Evidence
-[Graphics checkpoint](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/concept_character_pipeline/C01_REAR_JERSEY_BATCH_20261020.md); [current CI runs](https://github.com/saeedsai/SuperMagicFootball/actions); [owner roadmap](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/OWNER_PRIORITY_FEATURE_AUDIT_20261019.md).
+[SH01 source](https://github.com/saeedsai/SuperMagicFootball/blob/dev/src/modules/shotpaths.js); [rear arm SVG](https://github.com/saeedsai/SuperMagicFootball/blob/dev/assets/characters/concept_modular_v1/source/arm_near_back.svg); [CI](https://github.com/saeedsai/SuperMagicFootball/actions); [owner audit](https://github.com/saeedsai/SuperMagicFootball/blob/dev/docs/OWNER_PRIORITY_FEATURE_AUDIT_20261019.md).
 
 ## Cleanup
-Preserve historical QA source/art and safe fallbacks; no wholesale deletion.
+No forced pushes or claim theft. No live SH01 or LAN certification. Do not disable the recurring task for one blocked file.
