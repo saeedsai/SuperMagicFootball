@@ -117,3 +117,52 @@ test('cancelled touch ends gesture without replay or phantom action', async t =>
   input.poll();
   assert.equal(input.just(0, 'dribble'), true, 'next deliberate press survives cancellation');
 });
+
+test('completed DRIBBLE tap followed by held re-press before first poll emits both edges', async t => {
+  const { input, touch } = await setup(t);
+  touch('pointerdown', 1, 100);
+  touch('pointerup', 1, 120);
+  touch('pointerdown', 2, 130);
+  input.poll();
+  assert.equal(input.just(0, 'dribble'), true, 'completed first tap');
+  assert.ok(input.tapDuration(0, 'dribble') > 0, 'first tap duration retained');
+  input.poll();
+  assert.equal(input.just(0, 'dribble'), true, 'second held touch must produce its own edge');
+  assert.equal(input.held(0, 'dribble'), true);
+  input.poll();
+  assert.equal(input.just(0, 'dribble'), false, 'hold must not auto-repeat');
+  touch('pointerup', 2, 200);
+  input.poll();
+  assert.equal(input.released(0, 'dribble'), true);
+  assert.equal(input.just(0, 'dribble'), false);
+});
+
+test('second DRIBBLE touch released before replay is one bounded pulse, not a stuck hold', async t => {
+  const { input, touch } = await setup(t);
+  touch('pointerdown', 1, 100);
+  touch('pointerup', 1, 120);
+  touch('pointerdown', 2, 130);
+  input.poll();
+  touch('pointerup', 2, 160);
+  input.poll();
+  assert.equal(input.just(0, 'dribble'), true, 'second tap is not lost');
+  assert.equal(input.released(0, 'dribble'), true);
+  assert.ok(input.tapDuration(0, 'dribble') > 0, 'second short tap has duration');
+  input.poll();
+  assert.equal(input.just(0, 'dribble'), false);
+  assert.equal(input.held(0, 'dribble'), false);
+});
+
+test('cancelling second DRIBBLE touch discards deferred edge without phantom tap', async t => {
+  const { input, touch } = await setup(t);
+  touch('pointerdown', 1, 100);
+  touch('pointerup', 1, 120);
+  touch('pointerdown', 2, 130);
+  input.poll();
+  touch('pointercancel', 2, 140);
+  input.poll();
+  assert.equal(input.just(0, 'dribble'), false);
+  assert.equal(input.canceled(0, 'dribble'), true);
+  input.poll();
+  assert.equal(input.just(0, 'dribble'), false);
+});
