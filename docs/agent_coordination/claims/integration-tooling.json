@@ -3,7 +3,7 @@
   "lock_key": "integration-tooling",
   "feature_id": "ART-8VIEW-SOURCE-COVERAGE-CHECK-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "One small independent authored-view manifest coverage audit: new scripts/report_authored_views.py and tests/test_report_authored_views.py plus a concise docs/ART_EIGHT_VIEW_COVERAGE_TOOL_20261020.md and own memory when permitted. Does not touch manifest/runtime artwork, gameplay, UI, saves, workflows, other agents' memories or legacy validator.",
   "base_sha": "ada592804fe78d3c77b206dd8ec06d732fe37e0b",
   "created_at": "2026-10-20",
@@ -13,5 +13,8 @@
     "Reject invalid manifest references or path traversal; missing six views is a planned state not a false green complete",
     "Unit fixtures cover complete, incomplete, invalid, missing assets",
     "No game runtime changes; existing exact-head CI unaffected"
-  ]
+  ],
+  "released_at": "2026-10-20",
+  "outcome": "source_audit_script_and_seven_local_fixture_tests_delivered_modular_QA_green_full_census_pending",
+  "handover": "docs/ART_EIGHT_VIEW_COVERAGE_TOOL_20261020.md; tool 99ddf608, tests 76134055, docs b57a82db, own checkpoint e5668ce6; no gameplay/renderer/CI changes. Final full census exact head to be checked."
 }
