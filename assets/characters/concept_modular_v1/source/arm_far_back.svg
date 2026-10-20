@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="115" height="265" viewBox="0 0 115 265" role="img" aria-label="Editable rear far arm of Royals footballer">
+<title>Royals C01 illustrated rear far arm</title>
+<desc>Transparent hand-authored rear-left far arm. Shoulder 31,129; elbow 15,164; wrist 9,185; hand 7,196. Seven editable groups. No mirrored source and no external assets. Source-only pending runtime integration.</desc>
+<defs>
+ <linearGradient id="farSleeve" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#81cce8"/><stop offset=".34" stop-color="#318dc5"/><stop offset=".74" stop-color="#165990"/><stop offset="1" stop-color="#092f61"/></linearGradient>
+ <linearGradient id="farSkin" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f7ce9b"/><stop offset=".48" stop-color="#dba16f"/><stop offset="1" stop-color="#965a40"/></linearGradient>
+ <linearGradient id="farTape" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff6e3"/><stop offset=".55" stop-color="#d7e4e9"/><stop offset="1" stop-color="#7296a6"/></linearGradient>
+</defs>
+<g id="rear-far-shoulder" stroke-linejoin="round">
+ <path d="M39 122Q32 122 26 127Q18 133 16 141L24 149Q30 144 33 138L39 133Z" fill="url(#farSleeve)" stroke="#0a315f" stroke-width="2"/>
+ <path d="M37 125Q29 127 24 133Q21 137 20 140" fill="none" stroke="#b0e2f2" stroke-width="1.7" stroke-linecap="round" opacity=".76"/>
+ <path d="M27 133Q24 138 22 145L25 148Q30 142 31 138Z" fill="#083e72" opacity=".5"/>
+ <path d="M34 125Q38 126 40 128" fill="none" stroke="#0c3c70" stroke-width="1.8" stroke-linecap="round"/>
+</g>
+<g id="rear-far-sleeve-seam" fill="none" stroke-linecap="round">
+ <path d="M16 141Q19 146 24 149" stroke="#e9f3e8" stroke-width="2.7"/>
+ <path d="M18 141Q21 144 24 145" stroke="#a5dced" stroke-width="1.25"/>
+ <path d="M18 144Q20 146 23 147" stroke="#124b79" stroke-width="1.3"/>
+</g>
+<g id="rear-far-upper-arm" stroke-linejoin="round">
+ <path d="M16 147Q20 149 24 149Q23 156 21 163Q19 168 15 168Q12 166 12 162Q12 155 16 147Z" fill="url(#farSkin)" stroke="#84503b" stroke-width="1.7"/>
+ <path d="M16 150Q14 155 15 160" fill="none" stroke="#ffe0b1" stroke-width="1.75" stroke-linecap="round" opacity=".78"/>
+ <path d="M22 151Q21 157 19 162" fill="none" stroke="#a26748" stroke-width="1.5" stroke-linecap="round" opacity=".67"/>
+ <path d="M13 159Q12 164 16 167" fill="none" stroke="#ba805e" stroke-width="1.1"/>
+</g>
+<g id="rear-far-elbow" stroke-linejoin="round">
+ <path d="M12 162Q16 166 21 163Q22 169 18 172Q14 174 12 170Z" fill="#c88b5f" stroke="#90563b" stroke-width="1.2"/>
+ <path d="M13 166Q16 169 19 166" fill="none" stroke="#f5c394" stroke-width="1.2" stroke-linecap="round"/>
+</g>
+<g id="rear-far-forearm" stroke-linejoin="round">
+ <path d="M13 170Q17 172 20 168Q18 176 16 184Q14 188 10 188Q7 186 8 182Q9 176 13 170Z" fill="url(#farSkin)" stroke="#84503a" stroke-width="1.65"/>
+ <path d="M13 173Q11 179 11 184" fill="none" stroke="#ffe2ae" stroke-width="1.65" stroke-linecap="round" opacity=".78"/>
+ <path d="M18 173Q16 179 15 183" fill="none" stroke="#9c6245" stroke-width="1.25" stroke-linecap="round" opacity=".7"/>
+ <path d="M9 182Q10 185 14 185" fill="none" stroke="#e8ae7c" stroke-width="1.15"/>
+</g>
+<g id="rear-far-wrist" stroke-linejoin="round">
+ <path d="M8 182Q11 185 16 183L15 189Q11 191 7 188Z" fill="url(#farTape)" stroke="#6c889b" stroke-width="1.2"/>
+ <path d="M8 184Q12 187 15 185" fill="none" stroke="#fff9e9" stroke-width="1.2" stroke-linecap="round"/>
+ <path d="M7 187Q11 189 15 187" fill="none" stroke="#8ba9b5" stroke-width="1"/>
+</g>
+<g id="rear-far-hand" stroke-linejoin="round">
+ <path d="M8 189Q12 188 15 190Q17 194 14 199Q12 202 8 201Q4 199 3 195Q3 192 8 189Z" fill="url(#farSkin)" stroke="#7f4934" stroke-width="1.65"/>
+ <path d="M6 191Q3 190 2 193Q1 196 4 198L7 196Z" fill="#d59a71" stroke="#8c573d" stroke-width="1.1"/>
+ <path d="M8 191Q11 190 13 192" fill="none" stroke="#ffe1b4" stroke-width="1.4" stroke-linecap="round"/>
+ <path d="M7 198Q10 200 13 198" fill="none" stroke="#a36348" stroke-width="1.1"/>
+ <path d="M8 200L8 202M11 200L11 202" fill="none" stroke="#a26449" stroke-width=".85"/>
+</g>
+</svg>
