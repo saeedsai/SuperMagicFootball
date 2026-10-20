@@ -1,20 +1,17 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "ui-controls",
-  "feature_id": "UI-VERSION-SUMMARY-AUTOMATIC-20261020",
-  "owner": "smf-version-about-20261020",
-  "status": "released",
-  "scope": "Only src/modules/ui.js About latest-dev SHA + safe commit-summary and recent meaningful change lines; small home/menu version caption fix; tests/about_revision.test.cjs and tests/about_revision_browser_qa.py; docs/ABOUT_CHANGELOG_20261020.md. No gameplay, art, rosters, main.js, package version, sw.js, deployment CI or other agents' memory.",
-  "base_sha": "11ae848a9ab2dccda0be84570b871ebd662b16e7",
+  "feature_id": "FIX-UI-101-BACK-PARENT-CONSISTENCY-20261020",
+  "owner": "smf-hourly-dev-20261019",
+  "status": "active",
+  "scope": "Small UI Back-route correction only: src/modules/ui.js page/nav Back behavior, tests/ui_back_routes_20261020.test.cjs, docs/UI_BACK_ROUTES_20261020.md and own docs/memory/agents/smf-hourly-dev-20261019.md. Preserve current About auto-SHA/change summaries and stable bundle; no version policy change, art, gameplay, roster, CI or other agent memory.",
+  "base_sha": "57c5cda49df18bdd2f0bec0925502a6d2d6638eb",
   "created_at": "2026-10-20",
   "renewed_at": "2026-10-20",
   "acceptance": [
-    "Every new dev commit auto changes visible About revision via full SHA",
-    "About shows latest commit summary safely, plus recent meaningful changes if available, with offline fallback",
-    "Stop static old version from masquerading as current development version on home/menu while preserving GAME BUNDLE semantics",
-    "About tests, full Node/Chromium regression and no stale Pages claim"
-  ],
-  "released_at": "2026-10-20",
-  "outcome": "completed_about_dev_revision_and_change_history_full_qa_green",
-  "handover": "docs/ABOUT_CHANGELOG_20261020.md; src/modules/ui.js; tests/about_revision.test.cjs; tests/about_revision_browser_qa.py; integrated source 6c2bcc1da542409bb803fd37b36cd8da90834d39; Full Regression Census #39413134835 green 329/329 Node,154/154 Node scripts,86/86 Chromium, desktop/simulated touch and auto main promotion; deployed hosted QA still pending"
+    "Visible Back button, Escape/Backspace and simulated gamepad B resolve to same parent",
+    "Customization→Player Studio/Clubs/Editor/Gallery/Squad return to Customization; Input→Controller Mapping returns to Input",
+    "Pause sound returns to pause; pre-match setup and squad contexts unchanged",
+    "Add targeted regression and verify existing About version tests and full CI"
+  ]
 }
