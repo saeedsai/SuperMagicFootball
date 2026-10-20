@@ -3,7 +3,7 @@
   "lock_key": "release-infra",
   "feature_id": "CI-ISSUE-27-FIRST-TOUCH-FPS-ADMISSION-20261020",
   "owner": "smf-hourly-dev-20261019",
-  "status": "active",
+  "status": "released",
   "scope": "Only .github/workflows/full-regression-census.yml: explicit preflight assertion both first_touch_mirror_fps.test.cjs and first_touch_mirror_fps_browser_qa.py are included by tests/full_regression_runner.py discovery. No game source, UI, art, QA runner changes, save data, memory or other CI workflows. Close issue #27 only after exact-SHA full census green. Owner-authorized SH01 P0 offline module compatibility addendum: only sw.js update MODULES list to cache ./src/modules/shotpaths.js and bump SW cache key so existing installations do not run incomplete cached engine/module pair. NO change to .github workflows under this SH01 addendum, no other modules/UI/data. Preserve original issue #27 as separate unfinished scope.",
   "base_sha": "77d60a56e8a686ce1ab7414311419ca9e45eda53",
   "created_at": "2026-10-20",
@@ -15,5 +15,8 @@
     "No code or unrelated CI scope changes",
     "Offline service worker precaches new shotpaths module and increments cache key",
     "Exact head CI then hosted Pages after certified promotion; no release while missing new module"
-  ]
+  ],
+  "released_at": "2026-10-20",
+  "outcome": "sh01_offline_cache_module_registered_and_versioned_first_touch_census_admitted_by_existing_broad_push_4plus4_proven_extra_preflight_safeguard_not_shipped",
+  "handover": "SH01 offline sw.js cache update cb8a88cb; tests/physics_tuning_v082534.test.cjs updated 28db5d20; docs/SHOTPATHS_BUILD_HANDOVER_20261020.md. Full Regression #39487919601 all eight shards green at source SHA 28db5d20, with first_touch_mirror_fps Node and Chromium present. Current .github/workflows/full-regression-census.yml already triggers every push on dev/main WITHOUT path filter; proposed additional explicit first-touch preflight assertion was never published after safety-rejected write. Keep issue #27 open for owner/maintainer final tracker disposition; no workflow write bypass. Exact-final SHA/PAGES unverified."
 }
