@@ -1,20 +1,17 @@
 {
   "schema": "smf-feature-claim/1",
   "lock_key": "project-context",
-  "feature_id": "OWNER-PRIORITY-COMPREHENSIVE-PLAN-20261019",
-  "owner": "smf-hourly-dev-20261019",
-  "status": "released",
-  "scope": "Documentation-only owner request reconciliation. Create docs/OWNER_PRIORITY_FEATURE_AUDIT_20261019.md and prepend a dated priority override in docs/NEXT_MILESTONES.md, optionally update own memory docs/memory/agents/smf-hourly-dev-20261019.md; no changes to gameplay, UI, graphics, tests, rosters, infrastructure or other agents' docs.",
-  "base_sha": "0c32e44a0e38f221808e44deaa96857575ca629c",
-  "created_at": "2026-10-19",
-  "renewed_at": "2026-10-19",
+  "feature_id": "OWNER-UI-ART-SAVES-REAL-VERSION-BACKLOG-20261020",
+  "owner": "smf-owner-backlog-20261020",
+  "status": "active",
+  "scope": "Documentation only: create docs/OWNER_UI_ART_SAVES_VERSION_BACKLOG_20261020.md; append short dated pointer in docs/OWNER_PRIORITY_FEATURE_AUDIT_20261019.md and docs/NEXT_MILESTONES.md; register this chat in docs/memory/AGENTS_INDEX.json and own docs/memory/agents/smf-owner-backlog-20261020.md. No runtime UI/version/save changes, graphics, CI, other agent memory or shared memory.",
+  "base_sha": "7370c734e7db5a577930be7218c77c8f94af3d44",
+  "created_at": "2026-10-20",
+  "renewed_at": "2026-10-20",
   "acceptance": [
-    "Capture 30 scoped missing/partial items and actual implemented foundations",
-    "Preserve authoritative four-button combos and distinguish deferred status superseded by owner",
-    "Prioritize special shots, defense, tricks, graphics, UI/UX and LAN in next milestones",
-    "Document evidence/verification status, non-overlapping agent scopes, gate acceptance"
-  ],
-  "released_at": "2026-10-19",
-  "outcome": "complete_documentation_only",
-  "handover": "docs/OWNER_PRIORITY_FEATURE_AUDIT_20261019.md; docs/NEXT_MILESTONES.md; docs/memory/agents/smf-hourly-dev-20261019.md"
+    "All 9 owner statements captured in actionable stable IDs with QA criteria",
+    "Four-number x.y.z.a rules starting 0.9.0.0, only displayed in About, internal git SHA retained for QA",
+    "Prioritize Back bug, misleading dev banner, Career/Cups 10 save slots, major graphics and visual editor",
+    "Do not mark planned code completed or modify active UI/gameplay/release owners"
+  ]
 }
