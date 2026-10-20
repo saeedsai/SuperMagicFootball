@@ -106,7 +106,7 @@ test('About displays versioned commit label while keeping deployed bundle distin
 
 test('About prints real latest commit subject and updates it on the next revision',async()=>{
  let sha=SHA_A, message='feat(gameplay): new zigzag shot';
- const app=fixture(()=>({ok:true,json:async()=>({sha,commit:{message:message+'\\nLonger body'}})}));
+ const app=fixture(()=>({ok:true,json:async()=>({sha,commit:{message:message+String.fromCharCode(10)+'Longer body'}})}));
  await app.api.refreshAboutDevRevision(app.node);
  assert.equal(app.summary.textContent,'feat(gameplay): new zigzag shot');
  sha=SHA_B;message='fix(ui): repair controls';
@@ -118,7 +118,7 @@ test('Recent changes show actual source summaries but omit coordination bookkeep
  const change=(sha,message)=>({sha,commit:{message}});
  const app=fixture({ok:true,json:async()=>[
   change(SHA_A,'chore(coordination): claim feature'),
-  change(SHA_B,'feat(shots): new zigzag flight\\nmore detail'),
+  change(SHA_B,'feat(shots): new zigzag flight'+String.fromCharCode(10)+'more detail'),
   change(SHA_A,'docs(memory): refresh private checkpoint'),
   change(SHA_B,'art(C01): rear arm')
  ]});
