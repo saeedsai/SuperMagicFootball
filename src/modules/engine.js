@@ -12,6 +12,7 @@ import {AI} from "./ai.js";
 import {BPW} from "./bpw.js";
 import {VISUALFEEL} from "./visualfeel.js";
 import {SHOTFEEL} from "./shotfeel.js";
+import {SHOTPATHS} from "./shotpaths.js";
 import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
 const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,defensivePressers}=AI;const {withStats,stat,endurance,contest,shotError}=STATS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition}=FITNESS;
@@ -118,10 +119,13 @@ function predictKeeperShot(keeper,ball,horizon=ENGINE_BALANCE.keeperPredictionMa
  if(!Number.isFinite(v.x)||!Number.isFinite(v.y)||!Number.isFinite(v.vx)||!Number.isFinite(v.vy))return null;
  for(let time=0;time<maxTime;time+=frame){
   const dt=Math.min(frame,maxTime-time),old={...v};v.age+=dt;
+  // Predict the same bounded zigzag displacement as the live ball; no separate
+  // invented goalkeeper trajectory or knowledge beyond the keeper plane.
+  if(shot?.behavior==='zigzag'){const turn=SHOTPATHS.zigzagStep(shot,v.age-dt,v.age);v.vy+=turn.deltaVy;v.y+=turn.correctionY;}
   if(shot&&v.age<SUPER_SHOT_TRANSFORM_SECONDS){
    const s=shot;
    if(s.behavior==='curve')v.vy+=(Math.sin(v.age*3.2)*180+(s.direction||0)*100)*dt;
-   if(s.behavior==='swim'||s.behavior==='zigzag')v.vy+=Math.sin(v.age*(s.behavior==='swim'?18:11))*840*dt;
+   if(s.behavior==='swim')v.vy+=Math.sin(v.age*18)*840*dt;
    if(s.behavior==='spiral'){v.vy+=Math.sin(v.age*28)*640*dt;v.vz+=Math.cos(v.age*21)*130*dt;}
    if(s.behavior==='ricochet')v.vy+=Math.sin(v.age*17)*420*dt;
    if(s.behavior==='homing')v.vy+=clamp(((s.aimY??v.y)-v.y)*1.2,-220,220)*dt;
@@ -1532,7 +1536,11 @@ class GameEngine{
   b.x=p.x+p.face*(p.keeper?8:17);b.y=p.y+(p.keeper?8:12);
   b.z=p.keeper?p.z+82:p.z+12+((p.trickFx||0)>0?((dribbleStyle(p.trickStyleId).loft||0)*Math.min(1,p.trickFx*2)):0);if(p.stun>0){b.owner=null;b.vx=p.face*115;b.vy=0;b.vz=130;b.canCollect=.2;}b.rollAngle=((b.rollAngle||0)+rollDelta(b.x-spinX,b.y-spinY))%(Math.PI*2);return}
  const previousBall={x:b.x,y:b.y,z:b.z};
+ const previousShotAge=b.age;
  b.canCollect=Math.max(0,b.canCollect-dt);b.age+=dt;
+ // Exact zigzag position/heading change, including the step that crosses the
+ // transformation end; use the same helper in keeper projection.
+ if(b.shot?.behavior==='zigzag'){const turn=SHOTPATHS.zigzagStep(b.shot,previousShotAge,b.age);b.vy+=turn.deltaVy;b.y+=turn.correctionY;}
  // A prolonged loose ball is no longer a direct pass reception. Keep the
  // audit bounded, without touching actual ball speed, gravity or possession.
  if(b.pass&&b.age>3){this.emit('passExpired',{from:b.passFrom,team:b.passTeam});
@@ -1547,7 +1555,7 @@ class GameEngine{
  }
  if(b.shot){const s=b.shot,phase=b.age*11;s.phase=phase;
  if(s.behavior==='curve'){b.vy+=Math.sin(b.age*3.2)*180*dt+(s.direction||0)*100*dt}
- if(s.behavior==='swim'||s.behavior==='zigzag'){b.vy+=Math.sin(b.age*(s.behavior==='swim'?18:11))*840*dt}
+ if(s.behavior==='swim'){b.vy+=Math.sin(b.age*18)*840*dt}
  if(s.behavior==='spiral'){b.vy+=Math.sin(b.age*28)*640*dt;b.vz+=Math.cos(b.age*21)*130*dt}
  if(s.behavior==='ricochet'){b.vy+=Math.sin(b.age*17)*420*dt}
  if(s.behavior==='homing'){b.vy+=clamp((s.aimY-b.y)*1.2,-220,220)*dt}
