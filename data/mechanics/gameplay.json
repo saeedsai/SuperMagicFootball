@@ -633,6 +633,17 @@
       "radius": 126,
       "stun": 0.8,
       "color": "#a7fff0"
+    },
+    "spinBumper": {
+      "id": "spinBumper",
+      "name": "SPINNING BUMPER",
+      "cooldown": 11,
+      "cost": 0.13,
+      "range": 0,
+      "radius": 116,
+      "push": 48,
+      "stun": 0.55,
+      "color": "#f8b8ff"
     }
   },
   "keeperAbilities": {
