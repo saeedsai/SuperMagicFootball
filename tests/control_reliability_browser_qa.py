@@ -32,6 +32,13 @@ with sync_playwright() as pw:
                     arg=action, timeout=5000)
             else:
                 page.keyboard.down(key);page.keyboard.up(key)
+                # Match the touch path: a keyboard tap is not ready until the
+                # real DOM listeners have queued the completed press/release.
+                # Waiting here preserves the gameplay assertion and prevents
+                # a Chromium dispatch race from looking like failed switching.
+                page.wait_for_function(
+                    "(code) => (window.SupermagicFootball?.input?.keyPulsePending?.get(code)?.length || 0) > 0",
+                    arg='Key'+key.upper(), timeout=5000)
         tap('pass','k')
         state=page.evaluate("""()=>{const {game:g,input}=SupermagicFootball;input.poll(false);const tap=input.just(0,'pass');g.updatePlayers(.016);input.poll(false);const release=!input.held(0,'pass');g.updatePlayers(.016);return {tap,release,owner:g.ball.owner?.src?.name||null}}""")
         assert state['tap'] and state['release'] and state['owner'] is None,(mode,'pass tap',state)
