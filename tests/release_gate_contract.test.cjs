@@ -52,3 +52,12 @@ test('write permission is scoped to promotion, never QA or browser tests', () =>
     assert.doesNotMatch(job(name), /contents: write|actions: write/);
   }
 });
+
+test('new commits cancel only obsolete same-branch census, never bypass required QA',()=>{
+ assert.match(workflow,/group: full-regression-\$\{\{ github\.ref \}\}/);
+ assert.match(workflow,/cancel-in-progress: true/);
+ const release=job('promote-dev-to-main');
+ assert.match(release,/needs:\s*\[preflight, node-regression, browser-regression, preview-smoke\]/);
+ assert.match(release,/CERTIFIED_SHA/);
+ assert.match(release,/-F force=false/);
+});
