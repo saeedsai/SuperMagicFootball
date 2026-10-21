@@ -33,8 +33,21 @@ function create(storage){
  const check=()=>{if(blocked)throw Error('Cup slots cannot be modified: '+blocked.message+'. Export a backup before recovery.');};
  const get=n=>{if(!slotNumber(n))throw Error('Cup slot must be 1–10');return state.slots[n-1];};
  function persist(next){check();if(!validVault(next))throw Error('Invalid Cup save-slot update');
-  const raw=JSON.stringify(next);storage.setItem(KEY,raw);
-  if(storage.getItem(KEY)!==raw)throw Error('Cup slots were not retained by storage');
+  const raw=JSON.stringify(next),previous=storage.getItem(KEY);
+  try{
+   storage.setItem(KEY,raw);
+   if(storage.getItem(KEY)!==raw)throw Error('Cup slots were not retained by storage');
+  }catch(error){
+   // Restore previous bytes even when a storage adapter writes before throwing.
+   try{
+    if(previous===null)storage.removeItem(KEY);else storage.setItem(KEY,previous);
+    if(storage.getItem(KEY)!==previous)throw Error('previous Cup save bytes were not restored');
+   }catch(rollbackError){
+    blocked=Error('Cup save rollback failed: '+rollbackError.message);
+    throw Error('Cup save failed and rollback failed: '+error.message+'; rollback: '+rollbackError.message);
+   }
+   throw error;
+  }
   state=next;exists=true;
  }
  function save(n,tournament,name){check();get(n);if(!validTournament(tournament))throw Error('Cannot save an invalid Cup campaign');
