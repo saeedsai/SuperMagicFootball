@@ -303,7 +303,7 @@ function showContinentSetup(id=continentSelection){const comp=confed(id);if(!com
  ${teamField('YOUR CLUB','continentClub',ids.map(i=>[i,`${TEAMS[i].topSix?'★ ':''}[${countryCode(TEAMS[i])||'CLB'}] ${TEAMS[i].name} • ${TEAMS[i].rank} OVR`]),defaultClub)}
  <p class="muted">★ marks six featured top clubs of this confederation. Selection does not change actual historical participation.</p>
  ${button('🏆 START NEW CHAMPIONSHIP','continentStart','gold')}
- <p class="muted" style="margin-top:12px">Starting a new tournament overwrites the previous continental save. Manager career is preserved.</p>
+ <p class="muted" style="margin-top:12px">A new championship uses the next empty Cup slot (up to ten). If all slots are full, confirm before replacing the active Cup save. Career saves stay separate.</p>
  <div class="stat"><strong>COMPETITION SYSTEM</strong><span>${{league:'36 teams · eight matches · playoffs · knockout','regional-league':'32 teams · East and West league phases · knockout',groups:'Group matches · top-two qualifiers · knockout','short-groups':'Two groups of four · semifinals · final',knockout:'27-team seeded knockout · five byes'}[comp.format]}</span></div>
  <div class="stat"><strong>ROSTER STATUS</strong><span>12 players each · placeholders explicitly labelled</span></div>
  </div><div class="panel"><h3 class="titleSmall">FEATURED CLUBS</h3><div class="continentClubList">${ids.filter(i=>TEAMS[i].topSix).map(i=>`<div class="clubRow">${identity(i)}<div><strong>${escapeHTML(TEAMS[i].name)}</strong><div class="rosterMeta">${escapeHTML(countryCode(TEAMS[i])||'CLB')} · ${TEAMS[i].rank} OVERALL · ${roster(i).filter(p=>p.fictional).length} academy stand-ins</div></div></div>`).join('')}</div></div></div>`, 'continents');
