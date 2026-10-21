@@ -85,3 +85,9 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - Source fix committed to `dev` at `86303bd488f30b0785c957b6df104bec4b497f9f`, `src/modules/cup_slots.js`: restore previous raw bytes after partial storage write, verify rollback and block further mutations on rollback failure. Source blob guard matched `d149b3f90d06223ec4e36eecaa8dbd74ed4e761d`.
 - Isolated focused tests passed 6/6; separate minimal smoke 1/1 passed. Repository test-file creation was rejected by platform safety checks, so no new regression test was committed. Exact-head Full Regression Census #39658711589 was running at inspection; Modular QA #39658711645 passed. Do not promote until exact-head 4+4 passes.
 - Next five: (1) complete exact-head CI; (2) add tests via authorized reviewable change; (3) browser verify ten Cup slots and storage failure; (4) green-only promotion and hosted smoke; (5) Player Studio abilities, Tricks, LAN and graphics.
+
+
+## 2026-10-21 — SAVE-102 rollback regression coverage
+- Added `tests/cup_storage_rollback.test.cjs` on `dev` commit `cf6f88713ee464acff7338ed18f438c9cc3e6488`.
+- Six focused Node tests passed locally against current `src/modules/cup_slots.js` content: after-write exceptions, silent mutation, rollback failure lockout, silent rollback corruption, all ten slots and legacy migration, and first-save failure.
+- Require exact-head full 4 Node + 4 Chromium and Modular QA success before main promotion. Preserve About-only 0.9.0.0 and saved-game compatibility.
