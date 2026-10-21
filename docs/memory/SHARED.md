@@ -13,7 +13,7 @@
 - **QA:** [single-developer log](../DEVELOPMENT_LOG_SINGLE_OWNER.md), GitHub Actions and [Pages](../../GITHUB_PAGES_SETUP.md).
 
 ## Mandatory About version rule
-On **every Git commit**, preserve the current per-visit GitHub `dev` SHA lookup in Credits/About and the separate Game bundle version. A remote SHA is not evidence of exact deployed assets. Follow [`docs/VERSIONING_POLICY.md`](../VERSIONING_POLICY.md); migrate all versioning/runtime/test assumptions together for owner's four-number 0.9.0.0 requirement.
+On **every Git commit**, preserve the About-only installed release version `0.9.0.0` and its offline notes from `src/modules/release.js`. Do not display a remote GitHub `dev` SHA or version banner outside About. Immutable commit SHAs stay internal to GitHub Actions/history; hosted Pages byte comparison verifies actual deployed content. Follow [`docs/VERSIONING_POLICY.md`](../VERSIONING_POLICY.md).
 
 ## Shared risks and working decisions
 - Other developer sessions should stop writing to the repository unless newly authorized; still reconcile any concurrent Git changes with the latest SHA. No force pushes or circumvented security checks.
