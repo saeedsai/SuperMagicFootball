@@ -1,19 +1,27 @@
 # SuperMagicFootball — sole developer checkpoint
-**Agent ID:** smf-hourly-dev-20261019
+**Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-10-21
 
-## Latest verified
-- Baseline dev/main: 2ec53cfed2b07eb5a2b1253847b92ba5b64a7823, previously green 4 Node + 4 Chromium + Modular QA; Pages deployed.
-- New dev test commit cf6f88713ee464acff7338ed18f438c9cc3e6488: six SAVE-102 rollback tests. Local six of six passed against fetched source module.
-- Central log updated at d09a6730fff02d3fc8b6d2e80681f0cfff3c0433. New exact-head CI pending; never promote on older green runs.
-- Preserve 0.9.0.0 About-only, 223 teams/2676 players, 6 formations, 4 buttons, offline and saves, Career slots and SD09.
+## Mission
+Sole authorized developer; preserve 0.9.0.0 About-only until coordinated release bump, offline saves, 223 teams/2676 players, six formations, four buttons, Career slots and SD09.
 
-## Five-step next plan
-1. Check latest dev/main exact SHAs and all exact-head CI runs; repair any red job with a reproducible focused test.
-2. Require four Node and four Chromium regression shards plus Modular QA green for same dev HEAD.
-3. Verify automatic protected promotion to main and Pages; compare hosted asset hashes and deployed revision.
-4. Add browser ten-Cup-slot save/load and restricted-origin tests, then Player Studio defensive ability increment.
-5. Continue four-button Tricks, LAN two-client verification and multi-view graphics in small tested changes.
+## Current checkpoint
+- Previously deployed main: `2ec53cfed2b07eb5a2b1253847b92ba5b64a7823`, full regression and Modular QA green, Pages successful.
+- New SAVE-102 test commit `cf6f88713ee464acff7338ed18f438c9cc3e6488` adds six regression cases, all passed on CI; development log updated at `d09a6730fff02d3fc8b6d2e80681f0cfff3c0433`.
+- CI at `3e53065fdce4bd434a4d42fb9fd67b43c3f221fa` failed only the per-agent memory identity contract. Repair restores required backtick ID and six required sections.
 
-## Rules
-Read AGENTS.md, shared docs and only this agent checkpoint each iteration. No force push, bypass, unsafe merges or invented deployment evidence. Update central log and this checkpoint. Diagnose legitimate write failures, prepare tested patch when blocked.
+## Next smallest action
+1. Confirm exact dev/main SHA and green preflight.
+2. Wait for four Node and four Chromium shards and Modular QA on same HEAD.
+3. Confirm protected main promotion and GitHub Pages, independently smoke hosted bytes.
+4. Add browser Cup ten-slot save/load and Player Studio defensive abilities.
+5. Continue four-button Tricks, two-client LAN, multi-view graphics in tested increments.
+
+## Ownership and exclusions
+Own only `docs/memory/agents/smf-hourly-dev-20261019.md`; do not read or change other agents' private notes. Do not force push, bypass safety or overwrite concurrent changes.
+
+## Evidence
+GitHub Actions Full Regression Census and Modular Game Dev QA at exact dev SHA; Pages deployment and hosted smoke required for release claims.
+
+## Cleanup
+Keep checkpoint under 4KiB; retain central development log as canonical long-term history.
