@@ -1,33 +1,27 @@
-# Mandatory version identification — every agent, every commit
+# SuperMagicFootball release/version policy — About-only 0.9.0.0
 
-**Status:** enforced as agent-start instruction and Node regression contract on `dev`. Applies to every chat/agent and every Git commit, including changes to assets, rosters, gameplay, QA, documentation and build metadata.
+**Effective 21 October 2026.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-## Two different identifiers (do not confuse them)
+## One authoritative player-facing release
 
-1. **Game bundle version** (e.g., `0.8.25.32-integrated`): identifies the established playable release/bundle, save/export compatibility and semantic release milestone. This does **not** need to be manually incremented for unrelated documentation or tiny independent Git commits; change it as a coordinated **release change**, not as an unclaimed UI edit.
-2. **Per-commit development revision**: the full GitHub `dev` commit SHA uniquely identifies **every** commit, even if the human-readable version is unchanged. The **CREDITS / ABOUT** screen now presents this as a visible combined version label, `v<BUNDLE>+dev.<12-char-SHA>` (for example `v0.8.25.32-integrated+dev.abcdef012345`), linking to the complete exact Git commit. The SHA is fetched with `cache:'no-store'` every time About opens; after every push, re-opening About online identifies that update. This auto-version label covers **all commits**, including docs/tests, without agents racing to edit a shared SemVer string. Never remove the mechanism, freeze the SHA, or claim the *remote* dev version is the already-deployed browser code.
+`src/modules/release.js` exports the immutable `RELEASE` record containing `version`, `date` and short human-readable `notes`. **The exact installed/offline game bundle identifies itself as `0.9.0.0` in Settings → Credits / About only.** It must never fetch or show the remote development branch's newest commit as if that were the player's installed version. The browser title/home and other menus have no version number. Credits and developer information remain accessible. `package.json` contains the matching release number; the game runtime and save-export label read `RELEASE.version`, while imported older save files and historical storage keys remain compatible. Offline service-worker precache explicitly includes the release module and is rotated for changed game bytes.
 
-**Important:** if the GitHub Pages build is behind `dev`, About explicitly labels its composite version as **Latest GitHub development commit · auto-versioned after every update**, **not** as the current installed/deployed build. When offline or GitHub API is unavailable, the application retains its bundle version and shows a graceful "unavailable offline" status. Offline per-commit build verification will require a separately implemented **deployment-embedded revision**; do not pretend the online API provides that.
+The four-field numbering is advanced **once for a player-facing release**, not for independent documentation commits. For subsequent releases increment the highest applicable category: `x` complete owner-accepted product milestone (not before 1.0 acceptance); `y` a major feature, reset `z,a`; `z` an existing feature's enhancement, reset `a`; `a` a correction/re-release. Release notes must describe shipped, verified changes, never aspirational plans.
 
-## Required workflow for EVERY agent
+## Internal per-commit traceability, not a user-visible version
 
-**Before work:** read root `AGENTS.md`, shared [memory](memory/SHARED.md), this policy and the live coordination claims. Confirm who holds `ui-controls` and `release-infra`. Never edit another owner's UI code to "bump" the version.
+Every Git commit changes its immutable GitHub SHA. The **Full Regression Census and Modular Game Dev QA** record the exact tested SHA and run IDs. CI must run the complete 4 Node + 4 Chromium shards, preflight and HTTP preview on the exact `dev` head, and automatically fast-forward `main` only if green and unchanged. Main's dispatched workflow runs hosted **GitHub Pages** smoke; the hosted comparison checks SHA-256 hashes of the checked-out main's HTML, JS and CSS against the actual public response. Pages deployment success and main hosted smoke are independent release evidence. This is the authoritative way to identify **the exact deployed bundle SHA internally**; do not conflate the live `dev` SHA, the human `0.9.0.0` version, or an earlier successful Pages deployment.
 
-**Before pushing:** keep the About commit-revision mechanism intact; run relevant gameplay tests plus the About version tests (`node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs`). If you change a human-readable release version, get the appropriate lock/handoff and keep runtime About, HTML title, package metadata, documentation and tests consistent without changing the save file schema accidentally.
+The release metadata stays embedded and readable offline. Exact per-commit SHA is available internally in GitHub Actions logs, Git commit records, and QA artifacts rather than displayed to players. Issue #12 remains a candidate for a future *build-embedded immutable revision manifest* for offline developer diagnostics; no false claim of offline Git SHA embedding is made by this release.
 
-**After pushing:** read the **new latest** `dev` SHA, show it in your report together with the current bundle version, and confirm that the online About screen links to the newest `dev` commit when reopened (or clearly report if browser/API verification was not run). Avoid claims that a commit is "on Pages" until its deployment run succeeds. Because commits themselves alter the SHA, use **GitHub commit metadata** as the automatic monotonically changing identity rather than manually committing a version file that all agents would conflict over.
+## Every-commit protocol
 
-**For docs/test-only commits:** the Git SHA changes automatically even when the semantic bundle release version does not. Report the revision without rewriting the game release version. This minimizes conflicts between concurrent agents.
+1. Read AGENTS.md, shared memory and only your own registered developer checkpoint; read exact latest `dev` and `main` SHAs.
+2. Preserve the canonical `RELEASE` import and About-only identity on **every commit**; do not silently bump the four-part bundle version for docs/tests.
+3. Validate relevant gameplay, About and release contracts; run `node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs`, generated test-fixture, Modular QA and full 4+4 Census.
+4. Do not publish red or incomplete CI, bypass GitHub security, overwrite concurrent changes or force-push. Verify Pages hosted byte hashes and playability before claiming a production release.
+5. Update human-readable release notes only for truly integrated and verified features. The Spinning Bumper remains an opt-in prototype, not a generally equipped new ability.
 
-## Regression contract and gap
+## Compatibility and remaining verification
 
-- `tests/about_revision.test.cjs` verifies the About UI's live SHA, unique `v<BUNDLE>+dev.<SHA>` label, on-revisit refresh, offline behavior and developer info.
-- `tests/versioning_policy_contract.test.cjs` verifies all-agent governance pointers and enforces About's unique composite-version label + SHA retrieval contract. Both are picked up by the existing Node CI glob.
-- Known gap: **exact deployed bundle SHA**, visible even offline, has not been built into the site by this policy-only change. This requires a coordinated `release-infra` + `ui-controls` feature, e.g., a deployment-time embedded revision manifest tested against GitHub Pages. Never bypass an active UI claim.
-
-The agent instructions/CI cover compliant agents, not arbitrary external pushes. For hard enforcement of release tagging or actual deployed build IDs, protect `dev` and require checks/PR review.
-
-## Tracked follow-ups
-
-- [Issue #12](https://github.com/saeedsai/SuperMagicFootball/issues/12): add a deployment-embedded SHA to identify **the exact running build**, separately from remote dev HEAD, after release/UI claims are available.
-- [Issue #13](https://github.com/saeedsai/SuperMagicFootball/issues/13): reconcile the pre-existing memory-agent identity test failure. The new version-policy tests pass; this separate failure kept the 2026-10-16 full Node CI run at 196/197.
+Saved data retains `legend_` storage keys, Career save vault, JSON sections and legacy import rules; `version` in downloaded backup metadata identifies the exporter and does not rewrite content schemas. Keep 223 team IDs, 2,676 player records, six formations, four gameplay buttons and offline service-worker support. Physical devices require separate real-device certification; simulated-touch browser QA alone is not that certification.
