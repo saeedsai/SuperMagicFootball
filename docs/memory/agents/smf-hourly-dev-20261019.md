@@ -18,7 +18,7 @@ Sole authorized developer; preserve 0.9.0.0 About-only until coordinated release
 5. Continue four-button Tricks, two-client LAN, multi-view graphics in tested increments.
 
 ## Ownership and exclusions
-Own only `docs/memory/agents/smf-hourly-dev-20261019.md`; do not read or change other agents' private notes. Do not force push, bypass safety or overwrite concurrent changes.
+Maintain only this agent's checkpoint; do not read or change other agents' private notes. Do not force push, bypass safety or overwrite concurrent changes.
 
 ## Evidence
 GitHub Actions Full Regression Census and Modular Game Dev QA at exact dev SHA; Pages deployment and hosted smoke required for release claims.
