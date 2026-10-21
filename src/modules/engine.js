@@ -781,8 +781,11 @@ class GameEngine{
  // Defensive abilities are only available to explicitly assigned characters.
  activateDefence(p){
   const move=fieldAbility(p.src);if(!abilityReady(p,move)||this.ball.owner===p||p.keeper)return false;
+  // Explicitly equipped level-3+ defenders only: no changes to existing squad loadouts.
+  if(move.id==='spinBumper'&&(p.src.role!=='DF'||abilityLevel(p,'defence')<3))return false;
   const opponents=this.players.filter(q=>q.t!==p.t&&q.stun<=0&&q.invuln<=0&&!q.keeper);
-  const targets=opponents.filter(q=>Math.hypot(p.x-q.x,p.y-q.y)<(move.id==='drill'?move.range:move.radius));
+  const targets=opponents.filter(q=>Math.hypot(p.x-q.x,p.y-q.y)<(move.id==='drill'?move.range:move.radius)&&
+   (move.id!=='spinBumper'||(q.z<=20&&(q.dashTimer||0)<=0))); // jump and dash counter the spinning pulse
   if(!targets.length)return false; // no wasted cooldown if no target is close
   const target=targets.sort((a,b)=>distance(p,a)-distance(p,b))[0];
   if(move.id==='drill'){
@@ -794,12 +797,14 @@ class GameEngine{
     const resistance=stat(q,'strength')*.40+stat(q,'defence')*.15;
     const force=stat(p,'aggression')*.42+stat(p,'defence')*.31+36;
     // Guaranteed stagger; strength/defence reduce stun duration.
-    q.stun=Math.max(q.stun,impactStun('defence',force*levelModifiers(abilityLevel(p,'defence')).stun,stat(q,'strength')));q.invuln=1.1;
+    const stagger=impactStun('defence',force*levelModifiers(abilityLevel(p,'defence')).stun,stat(q,'strength'));
+    q.stun=Math.max(q.stun,move.id==='spinBumper'?Math.min(.72,stagger):stagger);q.invuln=1.1;
     q.action='hurt';q.actionTimer=q.stun;
+    if(move.id==='spinBumper'){const away=norm(q.x-p.x,q.y-p.y);q.x=clamp(q.x+away.x*move.push,F.x+22,F.x+F.w-22);q.y=clamp(q.y+away.y*move.push,F.y+22,F.y+F.h-22);}
     if(this.ball.owner===q){this.ball.owner=null;this.ball.x=q.x;this.ball.y=q.y;this.ball.z=24;this.ball.vx=p.face*280;this.ball.vy=(q.y-p.y)*1.3;this.ball.vz=155;this.ball.canCollect=.23;}
   }
-  p.abilityCd=move.cooldown;p.cd=Math.max(p.cd,.55);p.abilityFx=.75;p.action='defenceSuper';p.actionTimer=.6;
-  this.spendStamina(p,'defenceSuper');this.burst(p.x,p.y,move.color,32);this.shake=.23;
+  p.abilityCd=move.cooldown;p.cd=Math.max(p.cd,.55);p.abilityFx=move.id==='spinBumper'?.95:.75;p.action='defenceSuper';p.actionTimer=move.id==='spinBumper'?.8:.6;
+  this.spendStamina(p,move.id==='spinBumper'?'spinBumper':'defenceSuper');this.burst(p.x,p.y,move.color,32);this.shake=.23;
   this.emit('defenceSuper',{team:p.t,player:p.src.name,id:move.id,level:abilityLevel(p,'defence'),hits:hits.length,cooldown:move.cooldown});return true;
  }
  activateKeeperSuper(p,manual=false){
