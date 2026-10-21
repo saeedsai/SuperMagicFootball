@@ -1,71 +1,49 @@
 #!/usr/bin/env python3
-"""About: developer credit, live new SHA per visit, offline fallback on desktop and touch."""
+"""0.9.0.0: About shows installed offline version and release notes, never a remote SHA."""
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+
 ROOT=Path(__file__).resolve().parents[1]
 fixture=ROOT/'tests/.generated/play.html'
-assert fixture.exists(),'Build modular test fixture with python3 scripts/build.py'
+assert fixture.exists(),'Build the modular test fixture with python3 scripts/build.py'
 html=fixture.read_text(encoding='utf-8')
-URL='https://api.github.com/repos/saeedsai/SuperMagicFootball/commits/dev'
-HISTORY_URL='https://api.github.com/repos/saeedsai/SuperMagicFootball/commits?sha=dev&per_page=25'
-SHA1='1'*40
-SHA2='abcdef0123456789abcdef0123456789abcdef01'
+
 with sync_playwright() as pw:
  browser=pw.chromium.launch(headless=True,executable_path='/usr/bin/chromium',
                             args=['--no-sandbox','--disable-dev-shm-usage'])
  for label,viewport,mobile in [('desktop',{'width':1280,'height':720},False),
-                                ('simulated-touch',{'width':844,'height':390},True)]:
+                               ('simulated-touch',{'width':844,'height':390},True)]:
   ctx=browser.new_context(viewport=viewport,is_mobile=mobile,has_touch=mobile)
-  page=ctx.new_page();errors=[];requests=[];state={'sha':SHA1,'fail':False}
+  page=ctx.new_page();errors=[];outbound=[]
   page.on('pageerror',lambda error:errors.append(str(error)))
-  def route_handler(route):
-   requests.append(route.request.url)
-   if state['fail']:route.fulfill(status=503,body='unavailable')
-   else:route.fulfill(status=200,content_type='application/json',body='{"sha":"'+state['sha']+'","commit":{"message":"feat(ui): update '+state['sha'][:8]+'"}}')
-  page.route(URL,route_handler)
-  history_requests=[]
-  def history_handler(route):
-   history_requests.append(route.request.url)
-   if state['fail']:route.fulfill(status=503,body='unavailable')
-   else:route.fulfill(status=200,content_type='application/json',body='[{"sha":"'+SHA1+'","commit":{"message":"chore(coordination): acquire claim"}},{"sha":"'+SHA2+'","commit":{"message":"feat(shots): improved zigzag trajectory"}},{"sha":"'+SHA1+'","commit":{"message":"art(C01): rear jersey"}}]')
-  page.route(HISTORY_URL,history_handler)
+  def reject_github(route):
+   outbound.append(route.request.url)
+   route.abort()
+  page.route('https://api.github.com/**',reject_github)
   page.set_content(html,wait_until='load')
   page.wait_for_function('!!window.SupermagicFootball?.game',timeout=60000)
-  def visit():
+  assert page.evaluate('SupermagicFootball.version')=='0.9.0.0'
+  assert page.locator('.homeMasthead').count()==1
+  assert '0.9.0.0' not in page.locator('.menubox').inner_text(),(label,'version leaked onto Home')
+  for visit in range(2):
    page.locator('[data-action="navAbout"]').first.click()
    assert page.locator('.heading').inner_text()=='ABOUT SUPERMAGIC FOOTBALL'
+   assert page.locator('#aboutBundleVersion').inner_text().strip()=='0.9.0.0'
+   assert '2026-10-21' in page.locator('.menubox').inner_text()
+   assert 'Career save slots' in page.locator('#aboutReleaseNotes').inner_text()
+   assert 'Spinning Bumper' in page.locator('#aboutReleaseNotes').inner_text()
    assert page.locator('a[href="mailto:saeedmsalehi1990@gmail.com"]').count()==1
-   assert 'Developer: Saeed' in page.locator('.menubox').inner_text()
-   assert '0.8.25.32-integrated' in page.locator('#aboutBundleVersion').inner_text()
-  visit()
-  page.wait_for_function("document.querySelector('#aboutDevRevision a')?.textContent?.startsWith('v0.8.25.32-integrated+dev.')",timeout=20000)
-  assert page.locator('#aboutDevRevision a').inner_text().endswith(SHA1[:12]),(label,'incorrect displayed commit version')
-  assert page.locator('#aboutDevRevision a').get_attribute('href').endswith(SHA1)
-  page.wait_for_function("document.querySelector('#aboutLatestChange')?.textContent?.includes('update 11111111')",timeout=20000)
-  page.wait_for_function("document.querySelectorAll('#aboutRecentChanges li').length===2",timeout=20000)
-  assert 'improved zigzag trajectory' in page.locator('#aboutRecentChanges').inner_text()
-  assert 'rear jersey' in page.locator('#aboutRecentChanges').inner_text()
-  assert 'acquire claim' not in page.locator('#aboutRecentChanges').inner_text()
-  page.locator('[data-action="home"]').first.click()
-  state['sha']=SHA2
-  visit()
-  page.wait_for_function("document.querySelector('#aboutDevRevision a')?.getAttribute('href')?.endsWith('"+SHA2+"')",timeout=20000)
-  assert page.locator('#aboutDevRevision a').inner_text().endswith(SHA2[:12]),(label,'new SHA label did not change')
-  page.wait_for_function("document.querySelector('#aboutLatestChange')?.textContent?.includes('update abcdef01')",timeout=20000)
-  assert len(requests)==2,(label,'About must fetch latest on each visit',requests)
-  page.locator('[data-action="home"]').first.click()
-  state['fail']=True
-  visit()
-  page.wait_for_function("document.querySelector('#aboutDevRevision')?.textContent?.includes('unavailable offline')",timeout=20000)
-  assert page.locator('a[href="mailto:saeedmsalehi1990@gmail.com"]').count()==1
-  assert page.locator('#aboutDevRevision a').count()==0
-  page.wait_for_function("document.querySelector('#aboutRecentChanges')?.textContent?.includes('unavailable offline')",timeout=20000)
-  assert len(history_requests)==3,(label,history_requests)
-  page.locator('[data-action="home"]').first.click()
+   assert page.locator('#aboutDevRevision').count()==0
+   assert page.locator('#aboutLatestChange').count()==0
+   assert page.locator('#aboutRecentChanges').count()==0
+   assert '0.8.25.32' not in page.locator('.menubox').inner_text()
+   assert '+dev.' not in page.locator('.menubox').inner_text()
+   page.locator('[data-action="home"]').first.click()
+  assert len(outbound)==0,(label,'About must not query remote dev branch',outbound)
   page.locator('[data-action="navQuick"]').first.click()
   assert page.locator('[data-action="navOnDevice"]').count()==1,(label,'game menu regression')
   assert page.locator('#touchButtons [data-act]').count()==4,(label,'four gameplay buttons')
   assert not errors,(label,errors)
-  print('ABOUT_LIVE_REVISION_PASS',label,'version refresh, recent changelog, offline fallback, game menus',flush=True)
+  print('ABOUT_0900_BROWSER_PASS',label,'installed version, offline notes, no SHA, safe menus',flush=True)
   ctx.close()
  browser.close()
