@@ -111,7 +111,7 @@ class RegressionRunnerSafetyTests(unittest.TestCase):
         self.assertIn("FAIL", out)
 
     def test_browser_migration_changes_only_assigned_shard(self):
-        (self.root / "package.json").write_text('{"version":"0.8.25.32"}')
+        (self.root / "package.json").write_text('{"version":"0.9.0.0"}')
         a = self.new_script("a_browser_qa.py", "# 0.8.24.12-alpha\nprint('ONE')\n")
         b = self.new_script("b_browser_qa.py", "# 0.8.24.12-alpha\nprint('TWO')\n")
         code, out, err = self.run_runner("browser", "--shard-index", "0", "--shard-count", "2")
