@@ -1,23 +1,21 @@
-# SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019`
+# SuperMagicFootball — sole developer checkpoint
+**Agent ID:** smf-hourly-dev-20261019
 **Updated:** 2026-10-21
 
 ## Mission
-Sole ongoing designer/developer; latest dev SHA; no legacy locks; mandatory 4 Node + 4 Chromium + hosted main/Pages green-only release. Read only own memory and shared docs. No force pushes or security bypasses.
+Sole designer/developer under AGENTS.md. No legacy feature locks. SHA-checked dev writes, exact-head 4 Node + 4 Chromium and Modular QA, green-only main promotion, Pages hosted smoke. No force push or bypass.
 
 ## Current checkpoint
-Baseline exact `dev`/`main`: `1b76c8e3a9f29a7dc197a9ca7fd32a5a3ec17242`. Dev Full Census #39559944380 passed 4+4 and auto-promoted; main Full Census #39560626200 passed all 4+4 and hosted SHA-256 Pages byte smoke; Pages workflow #39560625665 succeeded. Career SAVE-101 (10 slots) and SD09 opt-in Spinning Bumper are released on that pre-0.9 baseline.
-
-**Owner priority migration:** 0.9.0.0 bundled version defined in `src/modules/release.js`, used by UI About-only (offline human notes) and runtime/export, package.json, fixture build order and SW module/cache. Removed remote dev SHA and git changelog from player About; per-commit internal traceability stays in CI and hosted hash verification. Browser title/Home have no numeric version. Preserved original storage keys/schema, 223 teams/2676 players, 4 controls, six formations. Updated legacy QA tests to new approved version policy and authoritative docs/roadmap. Seven initial version-contract failures fixed; Modular QA at `b98fa2ca` passed. **Candidate still needs final exact-head 4+4 + automatic main promotion + hosted Pages verification**; do not claim deployed 0.9 until done.
+Verified dev/main at 1281597b29a40fcb970ba6da03cb40bef4437b50 (2026-10-21). Release 0.9.0.0 is About-only, authoritative src/modules/release.js. Preserve saves, offline, 223 teams/2676 players, four controls, six formations, Career 10 slots and opt-in SD09. SAVE-102 storage foundation src/modules/cup_slots.js committed; Cup UI/autosave is NOT integrated yet. Earlier attempts reported platform safety rejections; branch metadata shows dev/main unprotected, so do not blame feature locks or GitHub branch protection without an exact error.
 
 ## Next smallest action
-Check exact current dev/main, final Modular Game Dev QA and Full Regression Census. If any fail, read job log and repair legitimate issues, rerun exact new head. When full dev preflight+4+4+preview succeeds, verify non-force main promotion and *main* 4+4 hosted smoke + Pages deployment and live URL `https://saeedsai.github.io/SuperMagicFootball/`. Report exact verified SHAs/counts. Then continue SAVE-102 Cups slots, Studio abilities, Tricks, two-client LAN, graphics in small increments.
+Integrate SAVE-102 UI and legacy migration in a bounded increment. Fetch fresh dev SHA and all affected file blobs, add focused Node/browser tests, build fixture and offline cache, then exact-head CI 4+4 and Modular QA. Promote only after green and verify Pages independently.
 
 ## Ownership and exclusions
-One developer, historical locks retired; never read other agents' memory. No forced writes, bypassed safety, red CI or unverified deployment claims; keep install/offline behavior and About-only numeric version stable on docs commits.
+Read shared docs and only this private checkpoint. Do not edit others' private memory or historical claims. No security bypass, forced ref update, fabricated test results or unverified release.
 
 ## Evidence
-GitHub Actions dev #39559944380, main #39560626200, Pages #39560625665 (pre-0.9 baseline); `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` and `docs/VERSIONING_POLICY.md` current design. New release CI must be checked for **latest** source SHA.
+GitHub dev/main 1281597b29a40fcb970ba6da03cb40bef4437b50; earlier 0.9.0.0 release e78491fc58a44d49c7be7296adcda9e1dbe293b1. Inspect Actions for current exact-head outcomes.
 
 ## Cleanup
-Historical QA, claims and other agent memory retained for provenance. QA-only generated fixtures remain ignored; no speculative deletions.
+Preserve provenance and historical claims. Keep this checkpoint below 4 KiB.
