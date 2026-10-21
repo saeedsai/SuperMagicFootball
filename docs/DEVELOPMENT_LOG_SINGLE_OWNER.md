@@ -74,3 +74,9 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 3. Verify STUDIO-101 edited stats in live matches and phone/touch; add source-level QA if missing.
 4. Only on exact-head green 4+4 and Modular QA, promote safely to main; verify Pages and hosted bytes separately.
 5. Continue STUDIO-102 ability chooser, Tricks, LAN and higher-quality eight-view graphics with focused regression.
+
+### 2026-10-21 — STUDIO-101 browser acceptance and keyboard QA follow-up
+- Added actual desktop and simulated-touch Chromium Studio stat editor acceptance `tests/studio_stat_editor_browser_qa.py` (commit `33764e1c`): real navigation, 14 controls, invalid-value rejection, localStorage persistence, 12-player identity preservation and reopening. This test is committed, but its exact-head CI result remains to be observed.
+- The initial feature-source Full Census [#39608624437](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39608624437) passed preflight and all four Node shards, but Chromium shard 1 intermittently missed a queued keyboard switch tap in `control_reliability_browser_qa.py`; other prior Cup v060 failure no longer occurred. Added an explicit real DOM-listener completed-tap wait in the desktop test, mirroring its existing touch synchronization (commit `75b2b38f`). Did not remove or loosen the player-switch assertion.
+- Corrected obsolete Cup setup guidance claiming each new tournament destructively overwrote its predecessor; UI now explains next-empty-slot behavior (commit `4be8d500`).
+- **Still pending** full 4 Node+4 Chromium, latest Modular QA, exact-head production promotion and Pages smoke. Do not claim deployment on the basis of preceding successes. Review the newest Actions runs and repair red jobs before further features.
