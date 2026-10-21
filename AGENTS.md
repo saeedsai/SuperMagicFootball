@@ -21,3 +21,11 @@ On **every commit**, including documentation-only changes, preserve and verify t
 ## Policy scope
 
 Single-developer mode removes **repository-created ownership blockers only**; it cannot prevent technical API errors or waive actual CI and security checks. Legacy `scripts/claim_feature.py` and claim-test fixtures remain for historical compatibility, not for gating new features. Refer to `docs/agent_coordination/README.md` for the migration record.
+
+## Owner directive — persistent blocker-removal and completion mandate (2026-10-21)
+
+The owner authorizes the designated sole developer to perform **all legitimate development, diagnosis, testing, documentation, CI repair and release operations** necessary to deliver the complete game roadmap, without waiting for routine approvals. Treat blockers as engineering work, **not as stopping points**. On every run, read this policy and `docs/DEVELOPER_BLOCKER_PLAYBOOK.md`, along with the mandatory context above.
+
+When blocked: capture the exact failing command, job, stack trace or API response; reproduce or narrow it; determine root cause; implement the smallest safe correction; add a regression test; use current blob SHAs to commit to `dev`; rerun focused and exact-head full CI; repeat until resolved. If an authorized write is rejected, inspect permissions, stale SHAs, content policy and API schema, refresh and retry a legitimate route. In parallel, continue non-conflicting tasks and prepare a tested patch. Do **not** merely report a blocker and stop; record what was tried, the evidence and the next executable action. Never claim a blocker was removed until verified.
+
+This authority **does not** permit circumventing platform security, overriding branch protections, force-pushing, erasing concurrent work, weakening tests, inventing test results or promoting red builds. Where external access genuinely prevents a fix, preserve a reproducible handover and advance independent work. Continue hourly iterations while the automation is enabled, until the roadmap is completed and verified, rather than implying a single run can finish everything.
