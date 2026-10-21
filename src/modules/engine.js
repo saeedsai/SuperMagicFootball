@@ -345,7 +345,7 @@ class GameEngine{
  }
 
  staminaTick(p,dt,intensity=0){p.fatigue=fatigueTick(p.fatigue,stat(p,'stamina'),dt,intensity);this.fatigueLedger[p.t][p.src.id]=p.fatigue;}
- spendStamina(p,kind){const levelKind=kind==='super'||kind==='comboSuper'?'shot':kind==='defenceSuper'?'defence':kind==='keeperSuper'?'keeper':null;const multiplier=(levelKind?levelModifiers(abilityLevel(p,levelKind)).fatigue:1)*(['super','comboSuper'].includes(kind)?superShotFatigueMultiplier(PHYSICS_TUNING):1);p.fatigue=actionFatigue(p.fatigue,stat(p,'stamina'),kind,multiplier);this.fatigueLedger[p.t][p.src.id]=p.fatigue;}
+ spendStamina(p,kind){const levelKind=kind==='super'||kind==='comboSuper'?'shot':(kind==='defenceSuper'||kind==='spinBumper')?'defence':kind==='keeperSuper'?'keeper':null;const multiplier=(levelKind?levelModifiers(abilityLevel(p,levelKind)).fatigue:1)*(['super','comboSuper'].includes(kind)?superShotFatigueMultiplier(PHYSICS_TUNING):1);p.fatigue=actionFatigue(p.fatigue,stat(p,'stamina'),kind,multiplier);this.fatigueLedger[p.t][p.src.id]=p.fatigue;}
  halftimeRecovery(){
   for(const p of this.players)this.fatigueLedger[p.t][p.src.id]=p.fatigue;
   // v0.8.25.12: halftime restores 40% of accumulated fatigue instead of a flat amount.
