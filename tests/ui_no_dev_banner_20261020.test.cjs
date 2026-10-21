@@ -30,13 +30,13 @@ test('ordinary submenus never show dev version label',()=>{
  assert.match(menu,/SUPERMAGIC FOOTBALL/);
  assert.match(menu,/button\('← BACK',back/);
 });
-test('About retains dynamic dev SHA and real-commit summary functionality',()=>{
+test('About shows offline release notes without a remote dev SHA',()=>{
  const about=part('function showAbout(){', 'function showHome(){');
- assert.match(about,/aboutDevRevision/);
- assert.match(about,/CURRENT DEVELOPMENT VERSION/);
- assert.match(ui,/link\.textContent='v'\+String\(bundle\)\+'\+dev\.'/);
- assert.match(ui,/sha\.slice\(0,12\)/);
- assert.match(ui,/RECENT CHANGES|Recent Changes|Recent changes/);
+ assert.match(about,/aboutBundleVersion/);
+ assert.match(about,/aboutReleaseNotes/);
+ assert.match(ui,/RELEASE\.version/);
+ assert.doesNotMatch(ui,/sha\.slice\(0,12\)/);
+ assert.match(about,/WHAT'S NEW/);
 });
 test('four controls and gameplay-specific screens remain present',()=>{
  assert.match(ui,/const actions=\['pass','shoot','dribble','jump'\]/);
