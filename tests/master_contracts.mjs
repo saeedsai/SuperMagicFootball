@@ -15,11 +15,11 @@ const read=p=>fs.readFileSync(new URL(p,import.meta.url),'utf8');
 const pkg=JSON.parse(read('../package.json'));
 const release=pkg.version;
 const ui=read('../src/modules/ui.js'),sw=read('../sw.js');
-assert.equal(release,'0.8.25.32','expected current modular release');
+assert.equal(release,'0.9.0.0','expected current owner-approved release');
 assert(/const CACHE='smf-[^']+'/.test(sw)&&sw.includes('mechanics/gameplay.json'),'field release PWA cache includes 20% pitch geometry');
 assert(sw.includes("'bpw'")&&sw.includes("'./src/modules/'+m+'.js'"),'offline PWA generates current BPW module entry');
-assert(ui.includes("version:'"+release+"-integrated'"),'game exports modular version');
-assert(ui.includes("version:'"+release+"'"),'save exports release version');
+assert(read('../src/modules/release.js').includes("version:'"+release+"'"),'game release source agrees with package');
+assert(ui.includes('version:RELEASE.version,game')&&ui.includes('version:RELEASE.version,exportedAt'),'runtime and save exports share canonical release');
 assert(ui.includes('function substitutionAdviceForPause(')&&ui.includes("origin==='pause'?substitutionAdviceForPause(game,side,plan,players):''"),'paused command center shows validated read-only substitution guidance');
 assert(ui.includes('game.subbedOut?.[side]')&&ui.includes('replacement.injuryWeeks')&&ui.includes('onField.has(bench)'),'paused advice honors used and unavailable roster slots');
 // The real halftime mechanics acceptance must remain discoverable by Node
