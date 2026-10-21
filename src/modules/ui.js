@@ -16,6 +16,7 @@ import {CONTINENTAL} from "./continental.js";
 import {TOURNAMENTS} from "./tournaments.js";
 import {CAREER} from "./career.js";
 import {CAREER_SLOTS} from "./career_slots.js";
+import {RELEASE} from "./release.js";
 import {INPUT} from "./input.js";
 import {VISUALFEEL} from "./visualfeel.js";
 import {ENGINE} from "./engine.js";
@@ -212,68 +213,13 @@ function showCareerSlots(){
 function showSaveMenu(parent='navSettings'){menuChoices('nav-saves','SAVE MANAGEMENT','Safely back up or restore local progress.',[
  navItem('Export All Saves','exportSave','Download a JSON backup without changing progress.','active','⬇'),
  navItem('Import Save','importSave','Requires explicit confirmation before replacing progress.','active','⬆')],parent,`<input id="saveImportFile" type="file" accept=".json,application/json" class="hidden" aria-label="Import saved game"/>`);}
-// About deliberately separates the stable playable bundle from the latest
-// GitHub dev revision. A new commit is automatically a new visible dev version;
-// recent meaningful changes come from commit subjects, not manually bumped tags.
-async function refreshAboutDevRevision(node,request=fetch){
- try{
-  const response=await request('https://api.github.com/repos/saeedsai/SuperMagicFootball/commits/dev',{cache:'no-store',headers:{Accept:'application/vnd.github+json'}});
-  if(!response.ok)throw Error('GitHub revision unavailable');
-  const result=await response.json(),sha=typeof result?.sha==='string'?result.sha:'';
-  if(!/^[a-f0-9]{40}$/i.test(sha))throw Error('Invalid revision');
-  if(!node.isConnected)return;
-  const link=document.createElement('a');
-  link.href='https://github.com/saeedsai/SuperMagicFootball/commit/'+sha.toLowerCase();
-  // Every dev commit gets a new displayed version; this is NOT the deployed build ID.
-  const bundle=window.SupermagicFootball?.version||'0.8.25.32-integrated';
-  link.textContent='v'+String(bundle)+'+dev.'+sha.slice(0,12);
-  link.target='_blank';link.rel='noopener noreferrer';
-  node.replaceChildren(link);
-  const summary=document.getElementById('aboutLatestChange');
-  if(summary?.isConnected){
-   const message=typeof result?.commit?.message==='string'?result.commit.message.split('\n')[0].trim():'';
-   summary.textContent=message?message.slice(0,180):'No change description provided for this commit.';
-  }
- }catch(_error){
-  if(node.isConnected)node.textContent='Latest dev commit unavailable offline (game remains playable).';
-  const summary=document.getElementById('aboutLatestChange');
-  if(summary?.isConnected)summary.textContent='Change summary unavailable offline.';
- }
-}
-// Keep the recent history useful: omit lock bookkeeping, but never invent
-// completed features. Display GitHub's actual commit subjects as plain text.
-async function refreshAboutRecentChanges(node,request=fetch){
- try{
-  const response=await request('https://api.github.com/repos/saeedsai/SuperMagicFootball/commits?sha=dev&per_page=25',{cache:'no-store',headers:{Accept:'application/vnd.github+json'}});
-  if(!response.ok)throw Error('GitHub history unavailable');
-  const commits=await response.json();
-  if(!Array.isArray(commits))throw Error('Unexpected history');
-  const meaningful=commits.map(item=>({
-   sha:typeof item?.sha==='string'?item.sha:'',
-   title:typeof item?.commit?.message==='string'?item.commit.message.split('\n')[0].trim():''
-  })).filter(item=>/^[a-f0-9]{40}$/i.test(item.sha)&&item.title&&!/^(chore\(coordination\)|docs\(memory\)|chore\(claims?\)):/i.test(item.title)).slice(0,5);
-  if(!node.isConnected)return;
-  if(!meaningful.length){node.textContent='No recent feature changes found.';return;}
-  const rows=meaningful.map(item=>{
-   const li=document.createElement('li'),link=document.createElement('a');
-   link.href='https://github.com/saeedsai/SuperMagicFootball/commit/'+item.sha.toLowerCase();
-   link.rel='noopener noreferrer';link.target='_blank';
-   link.textContent=item.title.slice(0,140);
-   li.appendChild(link);
-   return li;
-  });
-  node.replaceChildren(...rows);
- }catch(_error){
-  if(node.isConnected)node.textContent='Recent change history unavailable offline.';
- }
-}
+// The installed bundle supplies the version and release notes, including offline.
+// Never substitute a remote dev commit for proof of the player's deployed game.
 function showAbout(){
- const bundle=escapeHTML(window.SupermagicFootball?.version||'0.8.25.32-integrated');
- page('ABOUT SUPERMAGIC FOOTBALL','Original offline cartoon arcade football.',`<div class="panel"><h2>CURRENT DEVELOPMENT VERSION</h2><p style="overflow-wrap:anywhere"><strong><span id="aboutDevRevision" role="status" aria-live="polite">Checking latest dev commit online…</span></strong></p><p class="muted">Latest GitHub development commit · auto-versioned after every update (not necessarily the deployed build).</p><p><strong>Latest commit:</strong> <span id="aboutLatestChange" aria-live="polite">Checking change summary…</span></p><h3>RECENT CHANGES</h3><ul id="aboutRecentChanges" style="overflow-wrap:anywhere"><li>Checking recent updates…</li></ul><p id="aboutBundleVersion">GAME BUNDLE · ${bundle} · Independent football game with original graphics and audio.</p><p><strong>Developer: Saeed</strong> · <a href="mailto:saeedmsalehi1990@gmail.com">saeedmsalehi1990@gmail.com</a></p><p class="muted">The commit above tracks the latest GitHub dev changes; GitHub Pages deployment can lag behind it. Four action buttons · ${TEAMS.length} teams · saved locally on your device.</p>${button('← MAIN MENU','home','gold')}</div>`,'home');
- const revision=document.getElementById('aboutDevRevision');
- if(revision)void refreshAboutDevRevision(revision);
- const recent=document.getElementById('aboutRecentChanges');
- if(recent)void refreshAboutRecentChanges(recent);
+ const bundle=escapeHTML(RELEASE.version),date=escapeHTML(RELEASE.date);
+ const notes=RELEASE.notes.map(note=>`<li>${escapeHTML(note)}</li>`).join('');
+ page('ABOUT SUPERMAGIC FOOTBALL','Original offline cartoon arcade football.',
+  `<div class="panel"><h2>GAME VERSION</h2><p id="aboutBundleVersion"><strong>${bundle}</strong></p><p class="muted">Release date · ${date}. This version is embedded in the game you opened and remains available offline.</p><h3>WHAT'S NEW</h3><ul id="aboutReleaseNotes">${notes}</ul><p><strong>Developer: Saeed</strong> · <a href="mailto:saeedmsalehi1990@gmail.com">saeedmsalehi1990@gmail.com</a></p><p class="muted">Four action buttons · ${TEAMS.length} teams · progress saved locally on your device.</p>${button('← MAIN MENU','home','gold')}</div>`,'home');
 }
 function showHome(){
  menuBackAction='home';menuEntryReturn='home';
@@ -598,7 +544,7 @@ function commitSaveImport(changes,storage){
  }
  return changes.length;
 }
-function exportSave(){const keys=SAVE_KEYS;const data={product:'Supermagic Football',version:'0.8.25.32',exportedAt:new Date().toISOString(),data:Object.fromEntries(keys.map(k=>[k,store.get(k,null)]))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='Supermagic_Football_Save_'+new Date().toISOString().slice(0,10)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),3000)}
+function exportSave(){const keys=SAVE_KEYS;const data={product:'Supermagic Football',version:RELEASE.version,exportedAt:new Date().toISOString(),data:Object.fromEntries(keys.map(k=>[k,store.get(k,null)]))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='Supermagic_Football_Save_'+new Date().toISOString().slice(0,10)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),3000)}
 async function importSave(file){try{
  if(!file||file.size>5_000_000)throw Error('Save file missing or larger than 5MB');
  const changes=validateSaveImport(JSON.parse(await file.text()));
@@ -1227,7 +1173,7 @@ function updatePerformanceHUD(now,rawDelta){
  }
 }
 function frame(now){pollMenuPad(now);const rawDelta=now-last;let dt=Math.min(.05,Math.max(0,rawDelta/1000||.016));last=now;updatePerformanceHUD(now,rawDelta);if(game.matchState==='play')game.update(dt);else if(game.matchState==='penalty')game.updatePK(dt);renderer.frame(game,dt,menuVisible());if(screen==='home'&&menuVisible())drawPoster();uiT-=dt;if(uiT<=0){uiT=.1;if(!menuVisible())drawHUD()}if(toastTime&&now>toastTime){$('gameToast').classList.add('hidden');toastTime=0}checkRotate();requestAnimationFrame(frame)}
-game.init({home,away,options:opt});game.matchState='none';window.NekketsuHD={audio,version:'0.8.25.32-integrated',game,renderer,input,teams:TEAMS,shots:SHOTS,aiLevels:AI_LEVELS,rosterFor,getCareer:()=>career,getContinental:()=>continentalRun,confederations:CONTINENTS,continentalMapping:CONTINENTAL_TEAMS,kitsFor:team=>KIT_CHOICES.map(k=>kitFor(team,k)),getKitChoices:()=>kitSelections.slice(),getTeamPlan:i=>planFor(i),getMorale:team=>game.teamMorale(team)};window.NekketsuHD.ballModels=VISUALFEEL.BALL_MODELS;window.NekketsuHD.facingView=VISUALFEEL.facingView;window.NekketsuHD.impactStun=VISUALFEEL.impactStun;window.NekketsuHD.rollDelta=VISUALFEEL.rollDelta;window.NekketsuHD.personalityFor=p=>BPWPERSONALITY.profileFor(p);window.NekketsuHD.personalityMotion=(p,params)=>BPWPERSONALITY.sampleMotion(BPWPERSONALITY.profileFor(p),params);window.SupermagicFootball=window.NekketsuHD;window.SupermagicFootball.conceptModularStatus=CONCEPT_MODULAR.status;window.SupermagicFootball.portraitFit=portraitFit;window.SupermagicFootball.studio={directions:STUDIO_DIRS,getDirection:()=>studioDirection,rotate:studioRotate,getAction:()=>studioAction,fitKeeperPose:drawFittedKeeperStudioPose};showHome();requestAnimationFrame(frame);
+game.init({home,away,options:opt});game.matchState='none';window.NekketsuHD={audio,version:RELEASE.version,game,renderer,input,teams:TEAMS,shots:SHOTS,aiLevels:AI_LEVELS,rosterFor,getCareer:()=>career,getContinental:()=>continentalRun,confederations:CONTINENTS,continentalMapping:CONTINENTAL_TEAMS,kitsFor:team=>KIT_CHOICES.map(k=>kitFor(team,k)),getKitChoices:()=>kitSelections.slice(),getTeamPlan:i=>planFor(i),getMorale:team=>game.teamMorale(team)};window.NekketsuHD.ballModels=VISUALFEEL.BALL_MODELS;window.NekketsuHD.facingView=VISUALFEEL.facingView;window.NekketsuHD.impactStun=VISUALFEEL.impactStun;window.NekketsuHD.rollDelta=VISUALFEEL.rollDelta;window.NekketsuHD.personalityFor=p=>BPWPERSONALITY.profileFor(p);window.NekketsuHD.personalityMotion=(p,params)=>BPWPERSONALITY.sampleMotion(BPWPERSONALITY.profileFor(p),params);window.SupermagicFootball=window.NekketsuHD;window.SupermagicFootball.conceptModularStatus=CONCEPT_MODULAR.status;window.SupermagicFootball.portraitFit=portraitFit;window.SupermagicFootball.studio={directions:STUDIO_DIRS,getDirection:()=>studioDirection,rotate:studioRotate,getAction:()=>studioAction,fitKeeperPose:drawFittedKeeperStudioPose};showHome();requestAnimationFrame(frame);
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
 // Browser audio can only be unlocked by a deliberate user gesture.
