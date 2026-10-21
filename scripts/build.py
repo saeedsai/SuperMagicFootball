@@ -40,6 +40,7 @@ for name in order:
  s=re.sub(r'^export \{[A-Z_]+\};\n','',s,flags=re.M)
  s=re.sub(r'^export const CAREER_SLOTS=', 'const CAREER_SLOTS=', s, flags=re.M)
  s=re.sub(r'^export const CUP_SLOTS=', 'const CUP_SLOTS=', s, flags=re.M)
+ s=re.sub(r'^export \\{CUP_SLOTS\\};\\n', '', s, flags=re.M)
  code.append(s)
 src='\n'.join(code)
 fixture=root/'tests/.generated';fixture.mkdir(exist_ok=True)
