@@ -3,23 +3,21 @@
 **Updated:** 2026-10-21
 
 ## Mission
-Sole ongoing developer, newest dev HEAD, no historical locks. Small gameplay increments; Node 4 + Chromium 4 + Pages green-only release.
+Sole ongoing designer/developer; latest dev SHA; no legacy locks; mandatory 4 Node + 4 Chromium + hosted main/Pages green-only release. Read only own memory and shared docs. No force pushes or security bypasses.
 
 ## Current checkpoint
-At start of 21 October SD09 iteration, both dev and main were `3705c92ffcb21c2c9c78bd33a9b2768a26d1fdba`. Green development Census #39551972569 certified 4 Node+4 Chromium, preview, promotion. Green main Census #39552365252 certified 4+4 and hosted Pages smoke; Pages #39552365389 green. Career SAVE-101 was therefore released. Keep source history for earlier Career integration fixes in central development log.
+Baseline exact `dev`/`main`: `1b76c8e3a9f29a7dc197a9ca7fd32a5a3ec17242`. Dev Full Census #39559944380 passed 4+4 and auto-promoted; main Full Census #39560626200 passed all 4+4 and hosted SHA-256 Pages byte smoke; Pages workflow #39560625665 succeeded. Career SAVE-101 (10 slots) and SD09 opt-in Spinning Bumper are released on that pre-0.9 baseline.
 
-New **SD09 opt-in spinning-bumper Super Defense** implemented in modular engine and gameplay JSON: 116 radius, 48 radial shove, <=.72s stun, 11s cooldown, high fatigue, jump/dash evasion and equipped level-3 DF eligibility. Four controls/rosters/saves unaffected. Node extracted-method tests and live Chromium desktop/simulated-touch QA scripts added; SW cache rotated, Career suffix contract made future-proof. See `docs/SPINNING_BUMPER_SD09_20261021.md`. This prototype is NOT broadly user-equipped; Player Studio chooser and bespoke animation still open. Docs and five-step plan updated. **New SD09 exact-head CI and Pages results pending**; do not promote red CI.
-
-CI retry note: full source Census on `aff72f53` passed 370/370 active Node contracts, 4 Node shards and preview, but 1 Chromium shard failed historical `four_button_phase2_browser_qa.py` on 1.8-second flying-kick wait (previous exact-feature Census had 90/90 browser scripts passing). Fixed deterministic test harness AI state and wait to 5 seconds in `168536a0`; recorded details in central log `7499db59`. New final 4+4 CI and Pages still require exact-head confirmation. Stale Census trigger issue #27 was closed after verifying first-touch FPS suite executes. No release unless green.
+**Owner priority migration:** 0.9.0.0 bundled version defined in `src/modules/release.js`, used by UI About-only (offline human notes) and runtime/export, package.json, fixture build order and SW module/cache. Removed remote dev SHA and git changelog from player About; per-commit internal traceability stays in CI and hosted hash verification. Browser title/Home have no numeric version. Preserved original storage keys/schema, 223 teams/2676 players, 4 controls, six formations. Updated legacy QA tests to new approved version policy and authoritative docs/roadmap. Seven initial version-contract failures fixed; Modular QA at `b98fa2ca` passed. **Candidate still needs final exact-head 4+4 + automatic main promotion + hosted Pages verification**; do not claim deployed 0.9 until done.
 
 ## Next smallest action
-Check exact latest dev/main and latest QA runs. Debug failed new Node/Chromium tests from actual logs; fix actual issue without weakening requirements. Once all 4+4 and preview pass, verify automatic dev→main fast-forward, main 4+4 hosted smoke and Pages build; only then count SD09 release. Next: 10 Cup/Tournament save slots; Studio move selector, trick, LAN, graphics; separate coordinated 0.9.0.0 About migration remains P0.
+Check exact current dev/main, final Modular Game Dev QA and Full Regression Census. If any fail, read job log and repair legitimate issues, rerun exact new head. When full dev preflight+4+4+preview succeeds, verify non-force main promotion and *main* 4+4 hosted smoke + Pages deployment and live URL `https://saeedsai.github.io/SuperMagicFootball/`. Report exact verified SHAs/counts. Then continue SAVE-102 Cups slots, Studio abilities, Tricks, two-client LAN, graphics in small increments.
 
 ## Ownership and exclusions
-Do not read other agents' private memory or claim stale locks. No forced refs, skipped security or red CI promotions. Preserve 223 teams / 2676 players, 2GK/3DF/4MF/3FW, six formations, four controls, save migration, offline behavior and About SHA until 0.9.0.0 migration.
+One developer, historical locks retired; never read other agents' memory. No forced writes, bypassed safety, red CI or unverified deployment claims; keep install/offline behavior and About-only numeric version stable on docs commits.
 
 ## Evidence
-GitHub Actions #39551972569 / #39552365252 / #39552365389 for released baseline. New current SD09 runs at https://github.com/saeedsai/SuperMagicFootball/actions?query=branch%3Adev .
+GitHub Actions dev #39559944380, main #39560626200, Pages #39560625665 (pre-0.9 baseline); `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` and `docs/VERSIONING_POLICY.md` current design. New release CI must be checked for **latest** source SHA.
 
 ## Cleanup
-No source, fixtures or unrelated agent memory removed. Historical claim files retained for provenance. Generated regression fixtures remain ignored.
+Historical QA, claims and other agent memory retained for provenance. QA-only generated fixtures remain ignored; no speculative deletions.
