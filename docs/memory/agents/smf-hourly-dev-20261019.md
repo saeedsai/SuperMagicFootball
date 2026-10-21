@@ -17,4 +17,7 @@ Check exact latest dev/main and latest QA runs. Debug failed new Node/Chromium t
 Do not read other agents' private memory or claim stale locks. No forced refs, skipped security or red CI promotions. Preserve 223 teams / 2676 players, 2GK/3DF/4MF/3FW, six formations, four controls, save migration, offline behavior and About SHA until 0.9.0.0 migration.
 
 ## Evidence
-GitHub Actions #39551972569 / #39552365252 / #39552365389 for released baseline. New current SD09 runs at https://github.com/saeedsai/SuperMagicFootball/actions?query=branch%3Adev . 
+GitHub Actions #39551972569 / #39552365252 / #39552365389 for released baseline. New current SD09 runs at https://github.com/saeedsai/SuperMagicFootball/actions?query=branch%3Adev .
+
+## Cleanup
+No source, fixtures or unrelated agent memory removed. Historical claim files retained for provenance. Generated regression fixtures remain ignored.
