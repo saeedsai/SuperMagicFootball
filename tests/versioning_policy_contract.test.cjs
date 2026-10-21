@@ -1,47 +1,48 @@
 'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
 
-const test = require('node:test');
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-const root = path.resolve(__dirname,'..');
-const read = rel => fs.readFileSync(path.join(root,rel),'utf8');
-
-test('every agent startup and shared memory mandate per-commit About revision', () => {
-  for (const p of ['AGENTS.md','docs/memory/SHARED.md','docs/memory/README.md','docs/agent_coordination/README.md']) {
-    const text = read(p);
-    assert.match(text, /About/i, `${p}: missing About reference`);
-    assert.match(text, /every commit|per-commit|Every Git commit/i, `${p}: missing all-commits rule`);
-    assert.match(text, /VERSIONING_POLICY\.md/, `${p}: missing canonical policy link`);
-  }
-  assert.match(read('docs/README.md'), /VERSIONING_POLICY\.md/);
+test('every startup protocol identifies bundled About version and internal commit audit',()=>{
+ for(const p of ['AGENTS.md','docs/memory/SHARED.md','docs/memory/README.md','docs/agent_coordination/README.md']){
+  const doc=read(p);
+  assert.match(doc,/About/i,p+' missing About');
+  assert.match(doc,/VERSIONING_POLICY\.md/,p+' missing canonical policy');
+  assert.match(doc,/commit|SHA/i,p+' missing internal commit audit');
+ }
+ assert.match(read('docs/README.md'),/VERSIONING_POLICY\.md/);
 });
-
-test('About retains GitHub dev SHA lookup on every visit and treats deployment separately', () => {
-  const source=read('src/modules/ui.js');
-  const start=source.indexOf('async function refreshAboutDevRevision(');
-  const end=source.indexOf('function showHome(){',start);
-  assert.ok(start>=0&&end>start,'About revision implementation was removed');
-  const about=source.slice(start,end);
-  assert.match(about,/api\.github\.com\/repos\/saeedsai\/SuperMagicFootball\/commits\/dev/);
-  assert.match(about,/cache:\s*['"]no-store['"]/);
-  assert.ok(about.includes('/^[a-f0-9]{40}$/i'), 'About must validate a full 40-character Git SHA');
-  assert.match(about,/Latest GitHub development commit/);
-  assert.match(about,/deployment can lag behind it/);
-  assert.match(about,/GAME BUNDLE/);
-  assert.ok(about.includes("link.textContent='v'+String(bundle)+'+dev.'+sha.slice(0,12)"), 'About must expose unique visible version for every dev commit');
-  assert.match(about,/auto-versioned after every update/);
-  assert.match(about,/not necessarily the deployed build/);
-  assert.match(about,/if\(revision\)void refreshAboutDevRevision\(revision\)/);
-  assert.match(about,/unavailable offline/);
+test('the only player-visible version is a bundled 4-field About label, not remote dev HEAD',()=>{
+ const ui=read('src/modules/ui.js'),release=read('src/modules/release.js');
+ const start=ui.indexOf('function showAbout(){'),end=ui.indexOf('function showHome(){',start);
+ assert.ok(start>0&&end>start);
+ const about=ui.slice(start,end);
+ assert.match(release,/version:'0\.9\.0\.0'/);
+ assert.match(about,/RELEASE\.version/);
+ assert.match(about,/aboutBundleVersion/);
+ assert.match(about,/aboutReleaseNotes/);
+ assert.doesNotMatch(about,/GitHub development commit|\+dev\.|aboutDevRevision|\bfetch\(/);
+ assert.doesNotMatch(ui,/https:\/\/api\.github\.com\/repos\/saeedsai\/SuperMagicFootball\/commits/);
+ assert.match(read('index.html'),/<title>SUPERMAGIC FOOTBALL · PLAY<\/title>/);
 });
-
-test('per-commit revision is not incorrectly presented as the deployed game bundle', () => {
-  const doc=read('docs/VERSIONING_POLICY.md');
-  assert.match(doc,/every Git commit|every new commit|every commit/i);
-  assert.match(doc,/Game bundle version/);
-  assert.match(doc,/Per-commit development revision/);
-  assert.match(doc,/offline/);
-  assert.match(doc,/GitHub Pages/);
-  assert.match(doc,/exact deployed bundle SHA/);
+test('release module, offline cache and fixture have matching runtime wiring',()=>{
+ const build=read('scripts/build.py'),sw=read('sw.js'),ui=read('src/modules/ui.js');
+ assert.match(ui,/import \{RELEASE\} from "\.\/release\.js"/);
+ assert.match(build,/'render','release','ui'/);
+ assert.match(sw,/'render','release','ui'/);
+ assert.match(sw,/release-0900-v1/);
+ assert.match(ui,/version:RELEASE\.version,game/);
+ assert.match(ui,/version:RELEASE\.version,exportedAt/);
+});
+test('internal exact SHA is preserved by GitHub release workflow, not displayed in About',()=>{
+ const flow=read('.github/workflows/full-regression-census.yml');
+ assert.match(flow,/CERTIFIED_SHA/);
+ assert.match(flow,/current_dev.*CERTIFIED_SHA/);
+ assert.match(flow,/hashlib\.sha256/);
+ assert.match(read('docs/VERSIONING_POLICY.md'),/GitHub Pages/);
+ assert.match(read('docs/VERSIONING_POLICY.md'),/internal/i);
+ assert.match(read('docs/VERSIONING_POLICY.md'),/0\.9\.0\.0/);
 });
