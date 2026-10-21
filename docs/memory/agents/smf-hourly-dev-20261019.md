@@ -3,19 +3,19 @@
 **Updated:** 2026-10-21
 
 ## Mission
-Sole designer/developer under AGENTS.md. No legacy feature locks. SHA-checked dev writes, exact-head 4 Node + 4 Chromium and Modular QA, green-only main promotion, Pages hosted smoke. No force push or bypass.
+Sole developer per AGENTS.md. Preserve four buttons, six formations, saves, 223 teams/2676 players, About-only 0.9.0.0, offline, Career 10 slots and SD09. No force push, bypass or unverified releases.
 
 ## Current checkpoint
-Verified dev/main at 1281597b29a40fcb970ba6da03cb40bef4437b50 (2026-10-21). Release 0.9.0.0 is About-only, authoritative src/modules/release.js. Preserve saves, offline, 223 teams/2676 players, four controls, six formations, Career 10 slots and opt-in SD09. SAVE-102 storage foundation src/modules/cup_slots.js committed; Cup UI/autosave is NOT integrated yet. Earlier attempts reported platform safety rejections; branch metadata shows dev/main unprotected, so do not blame feature locks or GitHub branch protection without an exact error.
+Baseline dev/main `7e90a40ca5ec0c991943ec2d86389093b85bd863` passed 4+4 Census, Modular and Concept QA; main Pages workflow `39594234058` passed. New dev SAVE-102 UI/autosave/backup `541bf69bc320b07550f9f55297cd7ed4589d8c35`, focused Node tests `87f866db7f3280e9fdc077540ae0198d813fb270`. Local JS syntax and 10-slot persistence smoke passed; Modular QA `39596972417` passed; full exact-head Census `39596972325` pending at writing. Main promotion not yet verified.
 
 ## Next smallest action
-Integrate SAVE-102 UI and legacy migration in a bounded increment. Fetch fresh dev SHA and all affected file blobs, add focused Node/browser tests, build fixture and offline cache, then exact-head CI 4+4 and Modular QA. Promote only after green and verify Pages independently.
+Read latest dev/main and CI; repair red jobs. Test Cup UI save/load/delete and match autosave on Chromium desktop/touch. Promote only green exact-head, verify Pages hosted smoke.
 
 ## Ownership and exclusions
-Read shared docs and only this private checkpoint. Do not edit others' private memory or historical claims. No security bypass, forced ref update, fabricated test results or unverified release.
+Read shared docs and only this checkpoint. Historical locks retired. Never edit other agents' memory, bypass GitHub validation or overwrite concurrent changes.
 
 ## Evidence
-GitHub dev/main 1281597b29a40fcb970ba6da03cb40bef4437b50; earlier 0.9.0.0 release e78491fc58a44d49c7be7296adcda9e1dbe293b1. Inspect Actions for current exact-head outcomes.
+Commits `541bf69b`, `87f866db`; GitHub Actions runs `39596972325` and `39596972417`. Central development-log write attempted but safety rejected; no claim it was saved.
 
 ## Cleanup
-Preserve provenance and historical claims. Keep this checkpoint below 4 KiB.
+Keep under 4 KiB. Five steps: exact-head CI; Cup browser QA; green release/Pages; Studio and Tricks; LAN and graphics.
