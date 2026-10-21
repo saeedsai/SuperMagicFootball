@@ -34,5 +34,5 @@ test('offline shell cache revision matches current build without altering saved 
  assert.match(sw,/smf-082538-concept-front-hair-v1/);
  assert.match(sw,/MODULES\.map/);assert.match(sw,/players\//);
  assert.match(sw,/event\.request\.method!=='GET'/);
- assert.match(js,/version:'0\.8\.25\.32',exportedAt/);
+ assert.match(js,/version:RELEASE\.version,exportedAt/);
 });
