@@ -43,7 +43,7 @@ with sync_playwright() as pw:
         state=page.evaluate("""()=>{const {game:g,input}=SupermagicFootball;input.poll(false);const tap=input.just(0,'pass');g.updatePlayers(.016);input.poll(false);const release=!input.held(0,'pass');g.updatePlayers(.016);return {tap,release,owner:g.ball.owner?.src?.name||null}}""")
         assert state['tap'] and state['release'] and state['owner'] is None,(mode,'pass tap',state)
         # Defensive Dribble is Switch and is consumed exactly once per frame.
-        page.evaluate("""()=>{let g=SupermagicFootball.game;g.ball.owner=g.player(1,3);g.controlled[0]=3;g.manualSwitchGrace[0]=0;g.cooldown=0;g.input.reset()}""")
+        page.evaluate("""()=>{let g=SupermagicFootball.game;g.ball.owner=g.player(1,3);g.controlled[0]=3;g.manualSwitchGrace[0]=0;g.cooldown=0;const p=g.player(0,3);p.stun=0;p.slideTimer=0;p.slideRemaining=0;p.cd=0;g.input.reset()}""")
         tap('dribble','i')
         state=page.evaluate("""()=>{let g=SupermagicFootball.game;g.input.poll(false);g.updatePlayers(.016);return {selected:g.controlled[0],events:g.events.filter(e=>e.type==='switch').length,grace:g.manualSwitchGrace[0]}}""")
         assert state['selected']!=3 and state['grace']>.3,(mode,'switch',state)
