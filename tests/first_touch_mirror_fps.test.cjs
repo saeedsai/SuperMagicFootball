@@ -80,5 +80,5 @@ test('ball, pass, physics, and about-version sources remain independent of accep
  assert.doesNotMatch(helper,/Math\.random|\.ball\.vx\s*=|\.ball\.vy\s*=/);
  assert.match(source,/p\.firstTouchControlTimer=Math\.max\(0,\(p\.firstTouchControlTimer\|\|0\)-dt\)/);
  const ui=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
- assert.match(ui,/api\.github\.com\/repos\/saeedsai\/SuperMagicFootball\/commits\/dev/);
+ assert.match(ui,/version:RELEASE\.version,game/); assert.doesNotMatch(ui,/api\.github\.com\/repos\/saeedsai\/SuperMagicFootball\/commits\/dev/);
 });
