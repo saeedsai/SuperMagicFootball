@@ -32,15 +32,15 @@ test('fixed Player Studio selectors are in menu module and no duplicate declarat
  assert.equal((src.match(/function studioColorOptions\(/g)||[]).length,1);
  assert.ok(src.indexOf('function studioColorOptions(')>src.indexOf('const STUDIO_DIRS='));
 });
-test('merged build keeps bundle identity, clean menus, and About auto-revision',()=>{
- assert.match(src,/version:'0\.8\.25\.32-integrated'/);
+test('merged build keeps bundle identity, clean menus, and About release notes',()=>{
+ assert.match(src,/version:RELEASE\.version,game/); assert.match(src,/const RELEASE=Object\.freeze/);
  assert.doesNotMatch(src,/DEV → ABOUT|DEV VERSION IN ABOUT/);
  assert.match(src,/CREDITS \/ ABOUT/);
- assert.match(src,/aboutDevRevision/);
- assert.match(src,/CURRENT DEVELOPMENT VERSION/);
+ assert.doesNotMatch(src,/aboutDevRevision/);
+ assert.match(src,/aboutBundleVersion/); assert.match(src,/aboutReleaseNotes/);
  assert.ok(!src.includes('GRAPHICS 0.8.25.19'));
  assert.ok(!src.includes('VERSION 0.8.25.14'));
- assert.ok(html.includes('0.8.25.32-integrated'));
+ assert.ok(html.includes("version:'0.9.0.0'"));
 });
 test('build remains single-file/offline compatible with embedded styling',()=>{
  assert.ok(html.includes('<style>')&&html.includes('<script type="module">'));
