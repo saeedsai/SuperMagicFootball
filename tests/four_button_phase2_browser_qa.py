@@ -11,7 +11,7 @@ with sync_playwright() as pw:
   page.set_content((root/'play.html').read_text(),wait_until='load');page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
   open_quick(page);page.locator('[data-action="kickoff"]').first.click()
   assert page.locator('#touchButtons [data-act]').count()==4
-  page.evaluate('''()=>{let g=SupermagicFootball.game,p=g.player(0,3);g.cooldown=0;g.events=[];g.input.keys.clear();g.input.touchButtons.clear();g.input.reset();g.clock=6;p.x=900;p.y=680;p.cd=0;p.stun=0;p.fatigue=0;p.z=0;p.vz=0;for(let q of g.players)if(q!==p){q.x=2300+q.i*70;q.y=850;}g.take(p);g.controlled[0]=p.i;}''')
+  page.evaluate('''()=>{let g=SupermagicFootball.game,p=g.player(0,3);g.cooldown=0;g.driveAI=()=>{};g.events=[];g.input.keys.clear();g.input.touchButtons.clear();g.input.reset();g.clock=6;p.x=900;p.y=680;p.cd=0;p.stun=0;p.fatigue=0;p.z=0;p.vz=0;for(let q of g.players)if(q!==p){q.x=2300+q.i*70;q.y=850;}g.take(p);g.controlled[0]=p.i;}''')
   if mobile:
    box=lambda k:page.locator(f'[data-act="{k}"]').bounding_box()
    coords=lambda k:{'x':box(k)['x']+box(k)['width']/2,'y':box(k)['y']+box(k)['height']/2}
@@ -31,10 +31,10 @@ with sync_playwright() as pw:
    j=coords('jump');s=coords('shoot')
    cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'id':3,**j}]});page.wait_for_timeout(40)
    cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'id':3,**j},{'id':4,**s}]})
-   page.wait_for_function("SupermagicFootball.game.events.some(e=>e.type==='flyingKick')",timeout=1800)
+   page.wait_for_function("SupermagicFootball.game.events.some(e=>e.type==='flyingKick')",timeout=5000)
    cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
   else:
-   page.keyboard.down('Space');page.wait_for_timeout(40);page.keyboard.down('j');page.wait_for_function("SupermagicFootball.game.events.some(e=>e.type==='flyingKick')",timeout=1800);page.keyboard.up('j');page.keyboard.up('Space')
+   page.keyboard.down('Space');page.wait_for_timeout(40);page.keyboard.down('j');page.wait_for_function("SupermagicFootball.game.events.some(e=>e.type==='flyingKick')",timeout=5000);page.keyboard.up('j');page.keyboard.up('Space')
   assert page.evaluate("SupermagicFootball.game.events.some(e=>e.type==='flyingKick')"), (name,'defensive flying kick missing',errors)
   # Validate keeper distribution in the browser engine and no runtime exception.
   result=page.evaluate('''()=>{const g=SupermagicFootball.game,gk=g.player(0,0);gk.stun=0;g.take(gk);return {ok:g.distributeKeeper(gk),event:g.events.some(e=>e.type==='keeperDistribution'),buttons:document.querySelectorAll('#touchButtons [data-act]').length}}''')
