@@ -211,8 +211,8 @@ jobs:
           import time, urllib.request, urllib.error, hashlib
           from pathlib import Path
           root='https://saeedsai.github.io/SuperMagicFootball/'
-          paths=('', 'src/main.js', 'style.css')
-          local_paths={'':'index.html', 'src/main.js':'src/main.js', 'style.css':'style.css'}
+          paths=('', 'src/main.js', 'style.css', 'src/modules/ui.js', 'src/modules/release.js')
+          local_paths={'':'index.html', 'src/main.js':'src/main.js', 'style.css':'style.css', 'src/modules/ui.js':'src/modules/ui.js', 'src/modules/release.js':'src/modules/release.js'}
           expected={path:hashlib.sha256(Path(local_paths[path]).read_bytes()).hexdigest() for path in paths}
           for attempt in range(36):
               try:
@@ -226,6 +226,7 @@ jobs:
                   assert b'SUPERMAGIC FOOTBALL' in results[''], 'Wrong HTML page'
                   assert b'id="field"' in results[''], 'Missing playable canvas'
                   assert b'type="module"' in results[''], 'Missing module entrypoint'
+                  assert b"version:'0.9.0.0'" in results['src/modules/release.js'], 'Hosted About release version is not 0.9.0.0'
                   actual={path:hashlib.sha256(results[path]).hexdigest() for path in paths}
                   assert actual==expected, 'Hosted Pages is stale versus checked-out main: '+str({p:(expected[p],actual[p]) for p in paths if expected[p]!=actual[p]})
                   print('HOSTED_PAGES_SMOKE_PASS',root,'exact main HTML, JS and CSS bytes',flush=True)
