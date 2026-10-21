@@ -55,3 +55,22 @@ test('SAVE-102 UI, autosave, import validation and offline fixture are wired',()
  assert.match(build,/['"]cup_slots['"]/);
  assert.match(sw,/['"]cup_slots['"]/);
 });
+
+test('SAVE-102 restricted storage permits Cup autosave flow in memory but never conceals quota failures',()=>{
+ const vm=require('node:vm'),ui=readFileSync('src/modules/ui.js','utf8');
+ const match=ui.match(/let cupSaveVolatile=false;[\s\S]*?(?=function startContinent\()/);
+ assert.ok(match,'use the real Cup write helper from the game UI');
+ let warnings=0,attempts=0,fail='Persistent storage unavailable';
+ const context={cupSlots:{save(){attempts++;if(fail)throw Error(fail);return {name:'saved'};}},console:{warn(){warnings++;}}};
+ vm.runInNewContext(match[0]+';globalThis.save=writeCupSlot;globalThis.volatile=()=>cupSaveVolatile;',context);
+ assert.equal(context.save(1,campaign(3),'Continental'),null,'initial Cup can begin without localStorage');
+ assert.equal(context.volatile(),true);
+ assert.equal(context.save(1,campaign(3)),null,'match-end Cup autosave must not abort the results screen');
+ assert.equal(attempts,2);
+ assert.equal(warnings,1,'warn once rather than on each match');
+ fail='QuotaExceededError';
+ assert.throws(()=>context.save(1,campaign(3)),/QuotaExceededError/,'full/failed storage must not silently discard Cup progress');
+ fail=null;
+ assert.equal(context.save(1,campaign(3)).name,'saved','a later recovered origin must write normally');
+ assert.equal(context.volatile(),false);
+});
