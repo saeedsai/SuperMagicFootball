@@ -14,7 +14,7 @@ The **live game** is described in [root README](../README.md). This index points
 | Purpose | Active entry point |
 | --- | --- |
 | Roadmap and gaps | [Next milestones](NEXT_MILESTONES.md), [development plan](DEVELOPMENT_PLAN_AND_PRIORITIES.md), [requirements review](REQUIREMENTS_REVIEW_20261016.md) |
-| Per-commit About version rule | [Versioning policy](VERSIONING_POLICY.md), [About implementation reference](UI_ABOUT_LIVE_VERSION_20261016.md) |
+| About-only release version and internal commit audit | [Versioning policy](VERSIONING_POLICY.md), [current release metadata](../src/modules/release.js); [historical About notes](UI_ABOUT_LIVE_VERSION_20261016.md) |
 | Central development and handovers | [Single-developer log](DEVELOPMENT_LOG_SINGLE_OWNER.md), [historical claims](agent_coordination/README.md), [safe data merge](PARALLEL_DATA_MERGE_GUIDE.md) |
 | Player database batches | [Club roster plan](CLUB_ROSTER_BATCH_PLAN_20261016.md), [ledger](CLUB_ROSTER_BATCH_LEDGER_20261016.json), [metadata batches](PLAYER_METADATA_BATCHES_20261016.json) |
 | Illustrated player artwork | [Concept pipeline](concept_character_pipeline/NEXT_CHAT_HANDOVER.md), [tracker](concept_character_pipeline/PROGRESS_TRACKER.json) |
