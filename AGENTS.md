@@ -16,7 +16,7 @@ Read `docs/memory/README.md`, `docs/memory/SHARED.md` and **only your own** `doc
 
 ## About / release identification
 
-On **every commit**, including documentation-only changes, preserve and verify the existing About per-commit revision contract. Until a coordinated migration, preserve the existing current-dev Git SHA and separate bundle version in Credits/About. Run `node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs` on source changes and report exact commits and deployment evidence. The owner wants a user-facing four-number `0.9.0.0` only in About; implement that in a separate atomic UI/release/tests migration without breaking existing verification or showing a remote SHA as proof of deployed assets. See `docs/VERSIONING_POLICY.md`.
+On **every commit**, including documentation-only changes, preserve and verify the owner-approved **About-only four-part installed bundle version**. `src/modules/release.js` is the authoritative source for `0.9.0.0`, release date and player-friendly notes; home, title and other menus must not show the version, raw SHA or remote dev commit. `package.json` must agree. Run `node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs` and full 4+4 exact-head regression. Keep full immutable Git SHAs **internally** in CI GitHub history and release audit; Pages hosted hash verification and actual deployment remain prerequisites for release claims. A documentation-only commit does **not** bump the player version. Follow `docs/VERSIONING_POLICY.md`.
 
 ## Policy scope
 
