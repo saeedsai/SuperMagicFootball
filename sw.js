@@ -1,4 +1,4 @@
-// v0.8.25.32 modular offline shell; versioned when any data or runtime module changes.
+// 0.9.0.0 modular offline shell; cache rotates whenever shipped runtime or data changes.
 const CACHE='smf-082538-concept-front-hair-v1-rear-v2-face-v3-arm-v4-far-v5-collar-v6-torso-v7-back-torso-v8-sh01-live-v1-career-slots-v1-sd09-spin-v1-release-0900-v1';
 const MODULES=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','career_slots','input','visualfeel','shotfeel','physicsbalance','shotpaths','engine','bpwpersonality','artpose','characterart','concepthero','conceptmodular','render','release','ui'];
 const DATA=['teams.json','mechanics/gameplay.json','graphics/procedural_assets.json','graphics/player_appearances.json','graphics/art_registry.json','editorial/historical_rosters.json','confederations.json','continental_mapping.json',...['arcade','national26','club26','legends','continental','bpw_worldcup','bpw_alltime'].map(g=>'players/'+g+'.json')];
