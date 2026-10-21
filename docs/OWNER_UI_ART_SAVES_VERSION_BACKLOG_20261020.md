@@ -1,4 +1,7 @@
 # SuperMagicFootball — Owner-directed UI, Versioning, Graphics and Save-Slot Backlog
+
+> **2026-10-21 progress overlay:** VER-101/102/103 implementation is now an **unreleased 0.9.0.0 candidate on `dev`**: a single bundled release record, installed/offline About-only version and player-readable notes; package, fixture, SW, archived QA and governance aligned. Mark Delivered only after exact-head full 4+4 CI, non-force promotion to `main`, hosted Pages byte smoke and actual deployment are verified. SAVE-101 Career 10 slots and the opt-in SD09 spinning-bumper prototype have prior source implementations; SAVE-102 Cups 10 slots, richer Studio choices, bespoke art and two-client LAN remain open. The historical October 20 planning text below is preserved as originally recorded.
+
 **Recorded:** 20 October 2026 · **Status:** PLANNED / not shipped · **Priority:** owner-directed additions to [30-feature audit](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md).
 
 This document records **all nine new owner requests** as independent, testable items. It **supersedes the previous plan to display a `+dev.<SHA>` string to players**. Existing runtime, save data, current bundle version and other agents' code are deliberately unchanged by this planning commit. The existing 30-item backlog remains valid; these are 15 additional/finer-grained items, with overlaps noted. None should be marked Done from a documentation-only change.
