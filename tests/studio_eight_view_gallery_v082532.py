@@ -25,7 +25,7 @@ with sync_playwright() as pw:
   page=ctx.new_page();page.set_default_timeout(30000)
   errors=[];page.on('pageerror',lambda exc:errors.append(str(exc)))
   page.set_content(html);page.evaluate('''() => {const values=new Map();Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>values.has(k)?values.get(k):null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k),clear:()=>values.clear()}})}''');page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball')
-  check(mode+' current modular game boots',lambda:page.evaluate("() => SupermagicFootball.version==='0.8.25.32-integrated'"))
+  check(mode+' current modular game boots',lambda:page.evaluate("() => SupermagicFootball.version==='0.9.0.0'"))
   def open_studio():
    for a in ['navSettings','navCustomization','playerStudio']:page.locator('[data-action="'+a+'"]').first.click()
    return page.locator('#customPortrait').count()==1
