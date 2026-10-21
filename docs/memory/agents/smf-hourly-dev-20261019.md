@@ -3,19 +3,19 @@
 **Updated:** 2026-10-21
 
 ## Mission
-Sole developer per AGENTS.md. Preserve four buttons, six formations, saves, 223 teams/2676 players, About-only 0.9.0.0, offline, Career 10 slots and SD09. No force push, bypass or unverified releases.
+Sole developer. Read AGENTS.md each run; diagnose and repair blockers rather than just reporting. Preserve 223 teams/2676 players, six formations, four actions, saved-game and offline compatibility, About-only 0.9.0.0, Career slots and opt-in SD09.
 
 ## Current checkpoint
-Baseline dev/main `7e90a40ca5ec0c991943ec2d86389093b85bd863` passed 4+4 Census, Modular and Concept QA; main Pages workflow `39594234058` passed. New dev SAVE-102 UI/autosave/backup `541bf69bc320b07550f9f55297cd7ed4589d8c35`, focused Node tests `87f866db7f3280e9fdc077540ae0198d813fb270`. Local JS syntax and 10-slot persistence smoke passed; Modular QA `39596972417` passed; full exact-head Census `39596972325` pending at writing. Main promotion not yet verified.
+Last verified production main `7e90a40ca5ec0c991943ec2d86389093b85bd863` green 4+4 and Pages workflow #39594234058. Dev baseline `e77cfc46` Full Census #39604967299 failed Chromium v060_qa.py (Cup result skipped when storage unavailable) and intermittent v08249_zero_human_control.mjs; 3/4 browser and 3/4 Node shards passed, Modular QA #39604967962 passed.
 
 ## Next smallest action
-Read latest dev/main and CI; repair red jobs. Test Cup UI save/load/delete and match autosave on Chromium desktop/touch. Promote only green exact-head, verify Pages hosted smoke.
+Check exact current dev/main SHA and Actions. Source fixes for Cup restricted-origin match autosave (`bc2584c7`) + focused test (`440f03ff`), AI test trajectory (`db5d4a46`), Studio 14-stat editor (`d5ac760f`) + tests (`5c69b6af`) are on dev. Central log updated (`b44bba89`). Verify current-head focused/4+4/Modular and real Cup/Studio desktop+touch; fix failures, promote only green, then hosted Pages smoke.
 
 ## Ownership and exclusions
-Read shared docs and only this checkpoint. Historical locks retired. Never edit other agents' memory, bypass GitHub validation or overwrite concurrent changes.
+No legacy claim gates. Read shared docs and only this private checkpoint. No force push, bypass or concurrent overwrite; don't claim unobserved tests or deployment.
 
 ## Evidence
-Commits `541bf69b`, `87f866db`; GitHub Actions runs `39596972325` and `39596972417`. Central development-log write attempted but safety rejected; no claim it was saved.
+CI baseline #39604967299 failure and Modular #39604967962 success. Latest source/test commits listed above. New exact-head CI runs were not yet visible when writing this note; green certification and deployment pending.
 
 ## Cleanup
-Keep under 4 KiB. Five steps: exact-head CI; Cup browser QA; green release/Pages; Studio and Tricks; LAN and graphics.
+<4KiB. Next five: CI repair; Cup browser reload and autosave; Studio live QA; green-only Pages release; Studio ability chooser, Tricks, LAN, graphics.
