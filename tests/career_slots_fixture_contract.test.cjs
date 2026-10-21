@@ -24,3 +24,10 @@ test('Career slots remains an ES module and is precached for offline play',()=>{
  assert.match(sw,/['"]career_slots['"]/,'service worker must cache the imported module');
  assert.match(sw,/const CACHE\s*=\s*['"][^'"]+career-slots-v1['"]/,'cache key must rotate after new module');
 });
+
+test('Career initialization handles browsers that deny localStorage',()=>{
+ const ui=read('src/modules/ui.js');
+ assert.match(ui,/const careerStorage=\(\(\)=>\{try\{return window\.localStorage\}catch\{/,'storage getter must be protected');
+ assert.match(ui,/CAREER_SLOTS\.create\(careerStorage\)/);
+ assert.match(ui,/setItem\(\)\{throw Error\('Persistent storage unavailable'\)\}/,'unavailable storage must not pretend writes succeeded');
+});
