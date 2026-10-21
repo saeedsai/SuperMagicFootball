@@ -67,7 +67,7 @@ def main():
     # This modifies disposable CI checkout test files, never runtime code.
     if args.category == "browser":
         release = json.loads((ROOT / "package.json").read_text())["version"]
-        current_runtime = release + "-integrated"
+        current_runtime = release
         updated = []
         for suite in scripts:
             source = suite.read_text()
