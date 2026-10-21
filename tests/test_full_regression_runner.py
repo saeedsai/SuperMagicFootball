@@ -27,7 +27,7 @@ class RegressionRunnerSafetyTests(unittest.TestCase):
         self.addCleanup(self.sandbox.cleanup)
         self.root = Path(self.sandbox.name)
         (self.root / "tests").mkdir()
-        (self.root / "package.json").write_text('{"version":"0.8.25.32"}', encoding="utf8")
+        (self.root / "package.json").write_text('{"version":"0.9.0.0"}', encoding="utf8")
         self.root_patch = mock.patch.object(runner, "ROOT", self.root)
         self.tests_patch = mock.patch.object(runner, "TESTS", self.root / "tests")
         self.root_patch.start()
@@ -117,7 +117,7 @@ class RegressionRunnerSafetyTests(unittest.TestCase):
         code, out, err = self.run_runner("browser", "--shard-index", "0", "--shard-count", "2")
         self.assertEqual(code, 0, err)
         self.assertIn("LEGACY_TEST_READINESS_MIGRATED 1 a_browser_qa.py", out)
-        self.assertIn("0.8.25.32-integrated", a.read_text())
+        self.assertIn("0.9.0.0", a.read_text())
         self.assertIn("0.8.24.12-alpha", b.read_text(),
                       "the other runner's shard must never rewrite this file")
         report = json.loads((self.root / "artifacts" / "browser_shard_1_of_2.json").read_text())
