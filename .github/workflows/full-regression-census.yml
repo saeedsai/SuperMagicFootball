@@ -11,7 +11,8 @@ on:
   workflow_dispatch:
 concurrency:
   group: full-regression-${{ github.ref }}
-  cancel-in-progress: false
+  # Newer exact-head releases supersede obsolete dev/main CI runs without skipping any shards.
+  cancel-in-progress: true
 permissions:
   contents: read
 
