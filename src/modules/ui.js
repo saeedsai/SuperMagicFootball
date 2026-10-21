@@ -308,13 +308,26 @@ function showContinentSetup(id=continentSelection){const comp=confed(id);if(!com
  <div class="stat"><strong>ROSTER STATUS</strong><span>12 players each · placeholders explicitly labelled</span></div>
  </div><div class="panel"><h3 class="titleSmall">FEATURED CLUBS</h3><div class="continentClubList">${ids.filter(i=>TEAMS[i].topSix).map(i=>`<div class="clubRow">${identity(i)}<div><strong>${escapeHTML(TEAMS[i].name)}</strong><div class="rosterMeta">${escapeHTML(countryCode(TEAMS[i])||'CLB')} · ${TEAMS[i].rank} OVERALL · ${roster(i).filter(p=>p.fictional).length} academy stand-ins</div></div></div>`).join('')}</div></div></div>`, 'continents');
 }
-function startContinent(){const value=+$('continentClub').value;try{const fresh=createTournament(continentSelection,value,TEAMS,CONTINENTAL_TEAMS);const slot=cupSlots.firstEmpty()??cupSlots.active;if(cupSlots.list()[slot-1].occupied&&!confirm('All ten Cup slots are full. Overwrite active Cup slot '+slot+'?'))return;try{cupSlots.save(slot,fresh,confed(fresh.compId)?.name||'Cup '+slot)}catch(error){if(!/Persistent storage unavailable/.test(String(error.message)))throw error;console.warn('Cup is playable without persistent saves:',error.message)}continentalRun=fresh;store.put('continentalRun',continentalRun);showTournament()}catch(e){alert('Could not start Cup: '+e.message)}}
-function saveCup(){if(!continentalRun)return;cupSlots.save(cupSlots.active,continentalRun);store.put('continentalRun',continentalRun)}
+// Browsers running a local QA fixture or privacy-restricted origin may forbid
+// persistent storage entirely. Allow a match to continue in memory, but never
+// swallow quota/corruption errors or pretend that an unsaved slot was retained.
+let cupSaveVolatile=false;
+function writeCupSlot(slot,tournament,name){
+ try{const result=cupSlots.save(slot,tournament,name);cupSaveVolatile=false;return result;}
+ catch(error){
+  if(!/Persistent storage unavailable/.test(String(error?.message)))throw error;
+  if(!cupSaveVolatile)console.warn('Cup progress is session-only: persistent storage unavailable.');
+  cupSaveVolatile=true;
+  return null;
+ }
+}
+function startContinent(){const value=+$('continentClub').value;try{const fresh=createTournament(continentSelection,value,TEAMS,CONTINENTAL_TEAMS);const slot=cupSlots.firstEmpty()??cupSlots.active;if(cupSlots.list()[slot-1].occupied&&!confirm('All ten Cup slots are full. Overwrite active Cup slot '+slot+'?'))return;writeCupSlot(slot,fresh,confed(fresh.compId)?.name||'Cup '+slot);continentalRun=fresh;store.put('continentalRun',continentalRun);showTournament()}catch(e){alert('Could not start Cup: '+e.message)}}
+function saveCup(){if(!continentalRun)return;writeCupSlot(cupSlots.active,continentalRun);store.put('continentalRun',continentalRun)}
 function showTournament(){if(!continentalRun)return showContinents();const t=continentalRun,c=confed(t.compId),fx=tournamentCurrent(t),my=TEAMS[t.club],rank=tournamentStandings(t),position=rank.findIndex(x=>x.id===t.club)+1;
  const standingsHTML=rank.slice(0,Math.min(36,rank.length)).map((p,i)=>`<tr class="${p.id===t.club?'myTeam':''}"><td>${i+1}</td><td>${teamIdentity(TEAMS[p.id])} ${escapeHTML(TEAMS[p.id].name)}</td><td>${p.p}</td><td>${p.w}</td><td>${p.d}</td><td>${p.l}</td><td>${p.gf-p.ga}</td><td>${p.pts}</td></tr>`).join('');
  page('CONTINENTAL CAMPAIGN',`${c.name} · ${c.season} · ${my.name}`,
  `<div class="careerTop"><div class="metric"><small>YOUR CLUB</small><strong>${escapeHTML(my.name)}</strong></div><div class="metric"><small>COMPETITION</small><strong>${c.id}</strong></div><div class="metric"><small>LEAGUE POSITION</small><strong>#${position}</strong></div><div class="metric"><small>PRIZE EARNINGS</small><strong>${eur(t.earned)}</strong></div></div>
- <div class="twoCol"><div class="panel"><div class="badge">${escapeHTML(tournamentProgress(t))}</div>
+ <div class="twoCol"><div class="panel">${cupSaveVolatile?'<p role="status" class="muted">Temporary Cup session: browser storage is unavailable. Progress will be lost when this page closes.</p>':''}<div class="badge">${escapeHTML(tournamentProgress(t))}</div>
  <div class="fixture"><span>${t.phase==='finished'?'🏁 CAMPAIGN COMPLETE':fx?.bye?'🟢 BYE — AUTO ADVANCE':'⚽ NEXT MATCH'}</span><strong>${t.phase==='finished'?(t.winner===t.club?'🏆 CONTINENTAL CHAMPIONS!':'ELIMINATED — TRY AGAIN'):fx?.bye?'Automatic qualification':`${escapeHTML(my.name)} VS ${escapeHTML(TEAMS[fx?.opponent]?.name||'TBD')}`}</strong></div>
  <div class="row">${t.phase==='finished'?button('↻ NEW CAMPAIGN','continentPick_'+t.compId,'gold'):fx?.bye?button('➜ ADVANCE THROUGH BYE','continentBye','gold'):button('▶ PLAY CHAMPIONSHIP MATCH','continentKickoff','gold')}${button('ALL CONTINENTS','continents','minor')}${button('SAVE SLOTS','navCupSlots','minor')}</div>
  <div class="stat"><strong>CONTINENT'S TOP SIX</strong><span>${c.featured.split('|').map(escapeHTML).join(', ')}</span></div><div class="scroll" style="max-height:190px;margin-top:12px">${t.history.slice(0,18).map(h=>`<div class="stat"><strong>${escapeHTML(h.stage||'MATCHDAY '+h.round||'MATCH')}</strong><span>${h.kind==='bye'?'BYE':(TEAMS[h.a]?.name||'')+' '+(h.scoreA??'')+'–'+(h.scoreB??'')+' '+(TEAMS[h.b]?.name||'')}</span></div>`).join('')||'<div class="muted">No completed fixtures yet.</div>'}</div>
