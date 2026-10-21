@@ -16,6 +16,7 @@ import {CONTINENTAL} from "./continental.js";
 import {TOURNAMENTS} from "./tournaments.js";
 import {CAREER} from "./career.js";
 import {CAREER_SLOTS} from "./career_slots.js";
+import {CUP_SLOTS} from "./cup_slots.js";
 import {RELEASE} from "./release.js";
 import {INPUT} from "./input.js";
 import {VISUALFEEL} from "./visualfeel.js";
@@ -89,6 +90,13 @@ if(career&&!career.saveSchema&&clubs.length){const oldToNew=id=>Number.isInteger
 }
 if(!careerSlots.error){try{careerSlots.importLegacy(career);if(careerSlots.hasVault)career=careerSlots.activeCareer();}catch(error){console.warn('Career slot migration could not be saved:',error);}}
 let continentalRun=store.get('continentalRun',null);if(!validateTournament(continentalRun,TEAMS))continentalRun=null;
+// SAVE-102: migrate existing Cup campaign without deleting the legacy save.
+const cupSlots=CUP_SLOTS.create(careerStorage);
+if(!cupSlots.error){try{
+ cupSlots.importLegacy(continentalRun);
+ if(cupSlots.hasVault){const saved=cupSlots.activeTournament();if(saved&&validateTournament(saved,TEAMS))continentalRun=saved;}
+}catch(error){console.warn('Cup slot migration could not be saved:',error);}}
+
 let continentSelection='UEFA';
 let managerRegion='',managerCountry='';
 const opt={...DEFAULT_OPTIONS,...store.get('options',{})};opt.ballModel=VISUALFEEL.validBallModel(opt.ballModel);
