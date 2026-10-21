@@ -41,7 +41,7 @@ test('hosted check runs for dispatched main and compares exact deployed bytes', 
   assert.match(hosted, /actions\/checkout@v4/);
   assert.match(hosted, /hashlib\.sha256/);
   assert.match(hosted, /actual==expected/);
-  assert.match(hosted, /0\\.9\\.0\\.0/);
+  assert.match(hosted, /0\.9\.0\.0/);
   for (const file of ['index.html', 'src/main.js', 'style.css', 'src/modules/ui.js', 'src/modules/release.js']) {
     assert.ok(hosted.includes(file), 'missing hosted file: ' + file);
   }
