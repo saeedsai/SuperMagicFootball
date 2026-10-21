@@ -75,6 +75,6 @@ test('source contains no scouting writes and current bundle/About versioning',()
  assert(!src.slice(a,b).includes('store.put('),'no save writes in scout');
  assert(!src.slice(a,b).includes('game.applyPlan('),'scout cannot change tactical style');
  assert(!src.slice(a,b).includes('career.cash='),'scout cannot spend transfer funds');
- assert(src.includes("version:'0.8.25.32-integrated'"),'maintain current game bundle');
- assert(src.includes('api.github.com/repos/saeedsai/SuperMagicFootball/commits/dev'),'keep About dev revision');
+ assert(src.includes('version:RELEASE.version,game'),'maintain the current 0.9.0.0 installed bundle');
+ assert(src.includes('aboutBundleVersion')&&!src.includes('api.github.com/repos/saeedsai/SuperMagicFootball/commits/dev'),'show installed About release without remote dev revision');
 });
