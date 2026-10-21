@@ -1,4 +1,5 @@
 // SAVE-102: independent, atomic, local-only Cup slots. Legacy save is never deleted during migration.
+const CUP_SLOTS=(()=>{
 const KEY='legend_cupSlots',COUNT=10;
 const clone=x=>JSON.parse(JSON.stringify(x));
 const slotNumber=n=>Number.isInteger(n)&&n>=1&&n<=COUNT;
@@ -60,4 +61,6 @@ function create(storage){
   activeTournament:()=>blocked?null:(get(state.active)?clone(get(state.active).tournament):null),
   save,load,remove,importLegacy};
 }
-export const CUP_SLOTS={create,validTournament,validVault};
+return {create,validTournament,validVault};
+})();
+export {CUP_SLOTS};
