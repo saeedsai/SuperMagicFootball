@@ -97,5 +97,5 @@ test('role evaluation is read-only and retains four-button and About contracts',
  const block=ui.slice(at,end);
  for(const dangerous of ['store.put(','saveCareer(','applyPlan(','localStorage.setItem('])assert(!block.includes(dangerous));
  assert.match(ui,/Four action buttons/);
- assert.match(ui,/api\.github\.com\/repos\/saeedsai\/SuperMagicFootball\/commits\/dev/);
+ assert.match(ui,/version:RELEASE\.version,game/); assert.doesNotMatch(ui,/api\.github\.com\/repos\/saeedsai\/SuperMagicFootball\/commits\/dev/);
 });
