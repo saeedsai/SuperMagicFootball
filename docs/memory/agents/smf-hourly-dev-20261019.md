@@ -1,21 +1,21 @@
 # SuperMagicFootball — hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-20
+**Updated:** 2026-10-21
 
 ## Mission
-Owner-designated sole ongoing developer. Incremental source improvements on canonical latest `dev`, focused tests and full exact-head 4 Node+4 Chromium census, green-only main promotion, separate Pages smoke. No feature-lock handshake.
+Owner-designated sole ongoing developer on latest `dev`. No legacy lock handshake. Incremental source, regression tests, green-only `main` and separately verified Pages smoke.
 
 ## Current checkpoint
-Single-dev ownership instructions `e839efb04`, About contract fix `4978ca2f`, registry/coordination/memory/retired last two claims `e7e610c8`. No other agent memory touched. DRIBBLE rapid touch re-press edge preserved in `src/modules/input.js` `61732fee`; three focused Node cases `506fe32b`. Modular Game Dev QA #39504673228 passed on `506fe32b`; full exact-head 4+4 Census #39504673124 still pending at writing. This handover/doc commit requires a new exact final SHA check. The original game and four controls retained. Previous deployed main baseline `e472a616`.
+Career SAVE-101 implementation exists in `dev` from `38b98566` and `08cc725b`. Its first Full Census #39514001176 failed Chromium 88/89 because inline fixture `scripts/build.py` omitted `career_slots.js`; the new module was also missing from `sw.js` offline precache. Fixed build order and classic-script export conversion in `c1b1b238`, offline module cache/key in `bf034340`, added contract tests in `e27a2835`, and logged root cause in `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md`. No security bypass; Contents API writes succeeded. These are dev-only changes until exact-head full CI and Pages verified.
 
 ## Next smallest action
-Check exact-head Full Regression Census, ensure 4+4 Node/Chromium shards, dev→main promotion, Pages deployment and hosted smoke. Diagnose any real failure; do not claim release until verified. Then ten Career save slots SAVE-101, avoiding reupload of huge UI files when a small modular source patch is feasible.
+Check exact current `dev` and `main` SHAs; inspect latest Full Regression Census all four Node and four Chromium shards and Concept Hero/Modular QA. If green, verify automatic dev→main promotion and Pages smoke. If red, inspect exact job log and fix real failure. Then implement 10 Cup/Tournament save slots in a small modular increment.
 
 ## Ownership and exclusions
-No legacy lock required. Preserve 223 teams/2676 players, six formations, 2GK/3DF/4MF/3FW squads, four buttons, existing saved games and offline UI. No force pushes, protection bypasses or untested main. Own memory only; legacy agent checkpoints excluded. Preserve About SHA until coordinated 0.9.0.0 migration.
+Do not read other agents' memory. Preserve 223 teams / 2676 players, four controls, six formations, squads and legacy saves. Never force push, bypass validation, overwrite unrelated work or promote untested code. About dev SHA stays until coordinated 0.9.0.0 migration.
 
 ## Evidence
-[Single-owner log](../../DEVELOPMENT_LOG_SINGLE_OWNER.md); [touch input handover](../../TOUCH_DRIBBLE_TAP_HOLD_20261020.md); [full QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39504673124); [modular QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39504673228).
+[CI root cause log](../../DEVELOPMENT_LOG_SINGLE_OWNER.md); [failing baseline](https://github.com/saeedsai/SuperMagicFootball/actions/runs/39514001176); [full CI](https://github.com/saeedsai/SuperMagicFootball/actions).
 
 ## Cleanup
-Old feature claims are historical only; their previous `status` was explicitly retired. Pending QA not called complete.
+Legacy claims remain historical. Test outcomes at latest code head must be checked rather than inherited from previous commits.
