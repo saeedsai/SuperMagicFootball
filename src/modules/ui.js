@@ -79,7 +79,8 @@ TEAMS.push({id:CONCEPT_DEMO_ID,index:TEAMS.length,name:'Concept Royals FC',
  group:'concept_demo',flag:'CRF',primary:'#1262d4',secondary:'#f4f5f7',
  trim:'#f1bb46',rank:84,shot:'omega',customRoster:CONCEPT_DEMO_ROSTER});
 
-const careerSlots=CAREER_SLOTS.create(localStorage);
+const careerStorage=(()=>{try{return window.localStorage}catch{return {getItem(){return null},setItem(){throw Error('Persistent storage unavailable')},removeItem(){throw Error('Persistent storage unavailable')}}}})();
+const careerSlots=CAREER_SLOTS.create(careerStorage);
 let career=store.get('managerCareer',null),creatingCareer=false;
 // Migrate pre-0.6 custom-club index saves: v0.5 appended user clubs at index 83.
 if(career&&!career.saveSchema&&clubs.length){const oldToNew=id=>Number.isInteger(id)&&id>=83&&id<83+clubs.length?(TEAMS.findIndex(t=>t.id===clubs[id-83].id)):id;
