@@ -4,9 +4,10 @@ import path from 'node:path';
 const root=new URL('../',import.meta.url);
 const read=p=>fs.readFileSync(new URL(p,root),'utf8');
 const release=JSON.parse(read('package.json')).version;
-const semver=release.replace(/-alpha$/,'');
-assert(read('src/modules/ui.js').includes(`version:'${release}-integrated'`));
-assert(read('src/modules/ui.js').includes(`version:'${semver}'`),'save export version matches release');
+assert(/^\\d+\\.\\d+\\.\\d+\\.\\d+$/.test(release),'release number uses four integer parts');
+assert(read('src/modules/release.js').includes(`version:'${release}'`),'bundled release matches package');
+assert(read('src/modules/ui.js').includes('version:RELEASE.version,game'),'runtime uses authoritative release');
+assert(read('src/modules/ui.js').includes('version:RELEASE.version,exportedAt'),'save export uses authoritative release');
 assert(/const CACHE='smf-[^']+'/.test(read('sw.js')),'modular pitch geometry cache reflects extended field release');
 let count=0;
 for(const file of fs.readdirSync(new URL('tests/',root)).filter(f=>f.endsWith('.py'))){
