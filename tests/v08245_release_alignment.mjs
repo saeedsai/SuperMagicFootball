@@ -4,7 +4,7 @@ import path from 'node:path';
 const root=new URL('../',import.meta.url);
 const read=p=>fs.readFileSync(new URL(p,root),'utf8');
 const release=JSON.parse(read('package.json')).version;
-assert(/^\\d+\\.\\d+\\.\\d+\\.\\d+$/.test(release),'release number uses four integer parts');
+assert(/^\d+\.\d+\.\d+\.\d+$/.test(release),'release number uses four integer parts');
 assert(read('src/modules/release.js').includes(`version:'${release}'`),'bundled release matches package');
 assert(read('src/modules/ui.js').includes('version:RELEASE.version,game'),'runtime uses authoritative release');
 assert(read('src/modules/ui.js').includes('version:RELEASE.version,exportedAt'),'save export uses authoritative release');
