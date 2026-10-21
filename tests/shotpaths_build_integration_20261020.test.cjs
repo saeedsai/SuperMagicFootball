@@ -22,7 +22,7 @@ test('real module import, offline precache and stale-cache eviction stay intact'
  const engine=source('src/modules/engine.js'),sw=source('sw.js');
  assert.match(engine,/import \{SHOTPATHS\} from "\.\/shotpaths\.js"/);
  assert.match(engine,/SHOTPATHS\.zigzagStep\(/);
- assert.match(sw,/const CACHE='[^']+-sh01-live-v1'/);
+ assert.match(sw,/const CACHE='[^']+-sh01-live-v1(?:-[^']+)?'/,'shotpaths cache version must survive future cache rotations');
  assert.match(sw,/const MODULES=\[/);
  assert.match(sw,/caches\.delete/);
 });
