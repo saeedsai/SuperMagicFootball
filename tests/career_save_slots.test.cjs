@@ -38,5 +38,5 @@ test('corruption and storage failure cannot destroy previous slots',async()=>{
  assert.equal(db.getItem('legend_careerSlots'),'{bad json');
 });
 test('Career slot controls, legacy mirror and backup wiring exist',()=>{
- for(const token of ['navCareerSlots','careerSlotSave_','careerSlotLoad_','careerSlotDelete_','CAREER_SLOTS.create(localStorage)','careerSlots.save(','careerSlots.load(','careerSlots.remove(','careerSlots','managerCareer'])assert.ok(ui.includes(token),token);
+ for(const token of ['navCareerSlots','careerSlotSave_','careerSlotLoad_','careerSlotDelete_','CAREER_SLOTS.create(careerStorage)','careerSlots.save(','careerSlots.load(','careerSlots.remove(','careerSlots','managerCareer'])assert.ok(ui.includes(token),token);
 });
