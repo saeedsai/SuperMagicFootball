@@ -46,3 +46,18 @@ test('internal exact SHA is preserved by GitHub release workflow, not displayed 
  assert.match(read('docs/VERSIONING_POLICY.md'),/internal/i);
  assert.match(read('docs/VERSIONING_POLICY.md'),/0\.9\.1\.0/);
 });
+
+test('every game release must update README version, dated summary and playable link',()=>{
+ const pkg=JSON.parse(read('package.json')),release=read('src/modules/release.js'),readme=read('README.md');
+ const version=pkg.version;
+ assert.match(version,/^\\d+\\.\\d+\\.\\d+\\.\\d+$/);
+ assert.ok(release.includes("version:'"+version+"'"),'About release must match package');
+ assert.ok(readme.includes('**'+version+' release ('),'README release banner must match package');
+ assert.ok(readme.includes('# Supermagic Football · v'+version+' ·'),'README heading must match package');
+ const summary=readme.match(/^> \\*\\*[^\\n]+ release \\([^\\n]+\\):\\*\\* ([^\\n]+)/m);
+ assert.ok(summary&&summary[1].length>=100,'README must summarize shipped changes');
+ assert.match(readme,/https:\\/\\/saeedsai\\.github\\.io\\/SuperMagicFootball\\//);
+ assert.match(read('AGENTS.md'),/Mandatory README release gate/);
+ assert.match(read('docs/VERSIONING_POLICY.md'),/Mandatory README changelog/);
+ assert.match(read('docs/memory/SHARED.md'),/Every player-facing game update must also update root/);
+});
