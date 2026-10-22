@@ -197,3 +197,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - Added selected-tier catalogue validation for explicit defensive ability equipment in `src/modules/abilities.js` (commit `77a52873`).
 - Updated package, About release module, service-worker cache, README, version policy and contract test to candidate 0.9.7.1.
 - Not certified: exact-head 4 Node + 4 Chromium and Modular QA not observed; main/Pages deployment not verified. Preserve four controls, roster and save schemas.
+
+## 2026-10-22 — Fatigue-aware dribbling candidate 0.9.8.0
+- Gameplay `src/modules/dribbles.js` commit `faa2ecc1`: defender fatigue reduces defensive contribution up to 18%, with 0–1 clamping; four buttons and save format unchanged.
+- Release metadata/README/offline cache/version contracts updated to 0.9.8.0; added `tests/dribble_fatigue_defence.test.cjs` commit `1c3de5a2`.
+- Local isolated numeric smoke passed; exact repository test and 4 Node + 4 Chromium shards, Modular QA, protected promotion and hosted Pages smoke NOT YET VERIFIED. This is a candidate, not deployed.
