@@ -313,3 +313,16 @@ html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%;min-height:100%
     transform:none!important;
   }
 }
+
+/* Shared ability badges: Player Studio previews and both team roster statistics. */
+.abilityGlyph{display:inline-flex;vertical-align:middle;align-items:center;justify-content:center;width:46px;height:46px;flex:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+.abilityGlyph svg{display:block;width:44px;height:44px;max-width:100%}
+.abilityGlyphEmpty{border:1px dashed #8496ab;border-radius:11px;color:#aab9ca;font-size:25px}
+.abilitySummary{display:flex;flex-wrap:wrap;gap:5px 9px;margin:6px 0;font-size:11px}
+.abilitySummaryEntry{display:inline-flex;align-items:center;gap:5px;padding:3px 5px;border:1px solid rgba(113,172,218,.3);border-radius:8px;background:rgba(7,22,46,.5);min-width:108px;max-width:175px}
+.abilitySummaryEntry .abilityGlyph{width:32px;height:32px}
+.abilitySummaryEntry .abilityGlyph svg{width:30px;height:30px}
+.abilitySummaryEntry strong{display:block;line-height:1.2;font-size:10px;color:#91d9ff}
+.abilitySummaryEntry small{display:block;line-height:1.25;font-size:10px;color:#ecf7ff;overflow-wrap:anywhere}
+#studioShotIcon,#studioDefIcon,#studioMagicIcon,#studioDribbleIcon{margin:6px 0 9px;min-height:46px}
+@media(max-width:560px){.abilitySummaryEntry{min-width:98px;max-width:150px}}
