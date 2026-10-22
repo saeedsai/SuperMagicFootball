@@ -6,6 +6,7 @@
 Sole authorized developer. Preserve About-only 0.9.0.0, 223 teams/2676 players, 2GK/3DF/4MF/3FW, six formations, four action buttons, offline save compatibility, Career 10 slots and SD09.
 
 ## Current checkpoint
+- SAVE-102 referential safe-load and UI dispatcher tests reached `dev` before this iteration. Cup save cards now include competition, stage, round/Complete, labeled saved time; source `c669386007e0fe0f185138cc2e2f77f98563e672`, tests `48e25107f972d1f8683d85250fa6c43b26967b59`, central log `d44c8bf50d26175a439bc3621a15457ca37f5234`. Full exact-head CI, automatic promotion and hosted smoke are not yet certified.
 - Starting baseline dev/main `755e5905089ff6427bb117d526c1e13f26ffdcb2` was green (Full Census #39677469499, Modular QA #39676866641).
 - Platform safety rejections previously blocked complete UI file write and branch ref update; exact safety rule is unknown. GitHub push access true, dev not protected, previous CI green. Standard SHA-checked single-file Contents operations now demonstrably succeed without bypass.
 - SAVE-102 commits: safe-load logic `e59d237444f66c156bc3e4cbd9fc6b164eb63477`, five tests `8473844229d8b8bae145ac1357b7ca6645f2841e`, UI validation-before-load `83e43bf0aae05199809845aab3d81f522252ca50`, three UI tests `44923bf6505d5335418fe698f29a6b420583e23b`.
