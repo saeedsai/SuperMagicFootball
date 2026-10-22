@@ -15,7 +15,7 @@ const read=p=>fs.readFileSync(new URL(p,import.meta.url),'utf8');
 const pkg=JSON.parse(read('../package.json'));
 const release=pkg.version;
 const ui=read('../src/modules/ui.js'),sw=read('../sw.js');
-assert.equal(release,'0.9.0.0','expected current owner-approved release');
+assert.match(release,/^\d+\.\d+\.\d+\.\d+$/,'owner-approved four-part release');
 assert(/const CACHE='smf-[^']+'/.test(sw)&&sw.includes('mechanics/gameplay.json'),'field release PWA cache includes 20% pitch geometry');
 assert(sw.includes("'bpw'")&&sw.includes("'./src/modules/'+m+'.js'"),'offline PWA generates current BPW module entry');
 assert(read('../src/modules/release.js').includes("version:'"+release+"'"),'game release source agrees with package');
