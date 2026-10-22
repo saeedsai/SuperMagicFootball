@@ -222,7 +222,7 @@ function showCareerSlots(){
 function showCupSlots(){
  const hasFree=cupSlots.list().some(slot=>!slot.occupied);
  const rows=cupSlots.list().map(s=>`<div class="panel"><h3 class="titleSmall">SLOT ${s.number}${s.active?' · ACTIVE':''}</h3><p>${s.occupied?`${escapeHTML(s.name)} · ${escapeHTML(s.compId||'Unknown competition')} · ${escapeHTML(TEAMS[s.club]?.name||'Unknown club')} · ${escapeHTML(s.phase)} · ${s.phase==='finished'?'Complete':'Round '+(s.roundIdx+1)} · Saved ${escapeHTML(new Date(s.savedAt).toLocaleString())}`:'Empty slot'}</p><div class="row">${continentalRun?button(s.occupied?'OVERWRITE':'SAVE HERE','cupSlotSave_'+s.number):''}${s.occupied?button('LOAD','cupSlotLoad_'+s.number)+(hasFree?button('COPY','cupSlotCopy_'+s.number):'')+button('DELETE','cupSlotDelete_'+s.number):''}</div></div>`).join('');
- page('CUP SAVE SLOTS','Ten independent continental championship slots. The active slot saves after every match or bye.',`${cupSlots.error?`<p role="alert">Cup save storage is damaged: ${escapeHTML(cupSlots.error)}. Export a backup before recovery.</p>`:''}<div class="scroll">${rows}</div><p class="muted">Existing single-save championships are copied into slot 1 without deleting their original data. Back up your slots in Settings → Save Management.</p>`,'navCups');
+ page('CUP SAVE SLOTS','Ten independent continental championship slots. The active slot saves after every match or bye.',`${cupSlots.error?`<p role="alert">Cup save storage is damaged: ${escapeHTML(cupSlots.error)}. Export a backup before recovery.</p>`:''}<div class="scroll">${rows}</div><p class="muted">Existing single-save championships are copied into slot 1 without deleting their original data. Back up your slots before importing another Cup vault.</p><div class="row">${button('EXPORT CUP BACKUP','cupBackupExport')}${button('IMPORT CUP BACKUP','cupBackupImport')}</div>`,'navCups');
 }
 function showSaveMenu(parent='navSettings'){menuChoices('nav-saves','SAVE MANAGEMENT','Safely back up or restore local progress.',[
  navItem('Export All Saves','exportSave','Download a JSON backup without changing progress.','active','⬇'),
@@ -1091,6 +1091,25 @@ function action(a){audio.cue('ui');
  else if(a==='resetSquad'){
   const ix=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;
   const replacement=defaultPlan(ix,roster(ix));try{if(squadContext==='pause')game.applyPlan(squadSide,replacement);teamPlans[TEAMS[ix].id]=replacement;store.put('teamPlans',teamPlans);if(squadContext==='pause')returnFromPauseTactics();else showSquad(squadSide,squadContext);}catch(e){alert(e.message)}
+ }
+ else if(a==='cupBackupExport'){try{
+ const blob=new Blob([cupSlots.exportBackup()],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');
+ link.href=url;link.download='Supermagic_Cup_Backup_'+new Date().toISOString().slice(0,10)+'.json';link.click();
+ setTimeout(()=>URL.revokeObjectURL(url),3000);
+ }catch(error){alert('Cup backup export failed: '+error.message)}}
+ else if(a==='cupBackupImport'){
+ const picker=document.createElement('input');picker.type='file';picker.accept='.json,application/json';
+ picker.onchange=async()=>{try{
+  const file=picker.files?.[0];if(!file)return;if(file.size>2000000)throw Error('Cup backup exceeds 2 MB');
+  const bytes=await file.text(),hasData=cupSlots.list().some(s=>s.occupied);
+  // Parse/validate before confirming a destructive replacement; no progress changes on rejection.
+  if(hasData&&!confirm('Replace ALL existing Cup save slots with this backup? Current Cup progress will be replaced. Export a backup first.'))return;
+  cupSlots.importBackup(bytes,{overwrite:hasData});
+  const restored=cupSlots.activeTournament();
+  if(restored&&!validateTournament(restored,TEAMS))throw Error('Imported Cup references unavailable teams; restore from your previous backup');
+  continentalRun=restored;store.put('continentalRun',continentalRun);showCupSlots();
+ }catch(error){alert('Cup backup import failed: '+error.message)}};
+ picker.click();
  }
  else if(a.startsWith('cupSlotSave_')){const n=Number(a.slice('cupSlotSave_'.length));if(!continentalRun)return showCupSlots();const prior=cupSlots.list()[n-1];if(prior?.occupied&&!confirm('Overwrite Cup slot '+n+'?'))return;try{const name=prompt('Cup save name:',prior?.name||confed(continentalRun.compId)?.name||'Cup '+n);if(name===null)return;cupSlots.save(n,continentalRun,name);store.put('continentalRun',continentalRun);showCupSlots()}catch(error){alert(error.message)}}
  else if(a.startsWith('cupSlotLoad_')){const n=Number(a.slice('cupSlotLoad_'.length));if(continentalRun&&!confirm('Load Cup slot '+n+'? The current Cup campaign will be replaced.'))return;try{const loaded=cupSlots.load(n,saved=>validateTournament(saved,TEAMS));continentalRun=loaded;store.put('continentalRun',continentalRun);showTournament()}catch(error){alert(error.message)}}
