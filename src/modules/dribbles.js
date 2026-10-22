@@ -49,7 +49,12 @@ function dribbleOdds(p,defender,style){
  // exhausted defenders lose that counter. Stat-only callers keep prior odds.
  const nutmegCounter=nutmegWindow&&spatial?Math.min(2,Math.max(0,((Number(defender.agility)||0)-70)/15))*proximity*(1-defenderFatigue):0;
  const nutmegBonus=nutmegWindow?Math.max(0,nutmegSkill*Math.max(0,nutmegTiming)*(1-attackerFatigue)-nutmegCounter):0;
- const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18)+readBonus-evasiveFootwork-nutmegBonus;
+ // Rainbow Flick lifts the ball: a fresh, close, actively closing defender with
+ // strong heading can read the aerial path. Stationary/retreating defenders,
+ // distant opponents and other dribble styles get no aerial counter bonus.
+ const rainbowCounter=style?.id==='rainbow'&&closing&&distance<100
+  ?Math.min(8,Math.max(0,((Number(defender.heading)||0)-55)/6))*proximity*(1-defenderFatigue):0;
+ const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18)+readBonus-evasiveFootwork-nutmegBonus+rainbowCounter;
  return Math.max(.12,Math.min(.95,.47+(offense-defense)/155+style.evade*.29));
 }
 
