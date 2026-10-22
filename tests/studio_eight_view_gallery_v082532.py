@@ -6,6 +6,7 @@ from pathlib import Path
 import json
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
+RELEASE_VERSION=json.loads((ROOT/'package.json').read_text())['version']
 source=(ROOT/'tests/.generated/play.html').read_text()
 html=source.split('<script type="module">',1)[0]+'</body></html>'
 js=source.split('<script type="module">',1)[1].split('</script>',1)[0]
@@ -25,7 +26,7 @@ with sync_playwright() as pw:
   page=ctx.new_page();page.set_default_timeout(30000)
   errors=[];page.on('pageerror',lambda exc:errors.append(str(exc)))
   page.set_content(html);page.evaluate('''() => {const values=new Map();Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>values.has(k)?values.get(k):null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k),clear:()=>values.clear()}})}''');page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball')
-  check(mode+' current modular game boots',lambda:page.evaluate("() => SupermagicFootball.version==='0.9.0.0'"))
+  check(mode+' current modular game boots',lambda:page.evaluate("version => SupermagicFootball.version===version",RELEASE_VERSION))
   def open_studio():
    for a in ['navSettings','navCustomization','playerStudio']:page.locator('[data-action="'+a+'"]').first.click()
    return page.locator('#customPortrait').count()==1
