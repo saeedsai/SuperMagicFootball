@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""0.9.0.0: About shows installed offline version and release notes, never a remote SHA."""
+"""0.9.1.0: About shows installed offline version and release notes, never a remote SHA."""
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -22,13 +22,13 @@ with sync_playwright() as pw:
   page.route('https://api.github.com/**',reject_github)
   page.set_content(html,wait_until='load')
   page.wait_for_function('!!window.SupermagicFootball?.game',timeout=60000)
-  assert page.evaluate('SupermagicFootball.version')=='0.9.0.0'
+  assert page.evaluate('SupermagicFootball.version')=='0.9.1.0'
   assert page.locator('.homeMasthead').count()==1
-  assert '0.9.0.0' not in page.locator('.menubox').inner_text(),(label,'version leaked onto Home')
+  assert '0.9.1.0' not in page.locator('.menubox').inner_text(),(label,'version leaked onto Home')
   for visit in range(2):
    page.locator('[data-action="navAbout"]').first.click()
    assert page.locator('.heading').inner_text()=='ABOUT SUPERMAGIC FOOTBALL'
-   assert page.locator('#aboutBundleVersion').inner_text().strip()=='0.9.0.0'
+   assert page.locator('#aboutBundleVersion').inner_text().strip()=='0.9.1.0'
    assert '2026-10-21' in page.locator('.menubox').inner_text()
    assert 'Career save slots' in page.locator('#aboutReleaseNotes').inner_text()
    assert 'Spinning Bumper' in page.locator('#aboutReleaseNotes').inner_text()
@@ -44,6 +44,6 @@ with sync_playwright() as pw:
   assert page.locator('[data-action="navOnDevice"]').count()==1,(label,'game menu regression')
   assert page.locator('#touchButtons [data-act]').count()==4,(label,'four gameplay buttons')
   assert not errors,(label,errors)
-  print('ABOUT_0900_BROWSER_PASS',label,'installed version, offline notes, no SHA, safe menus',flush=True)
+  print('ABOUT_0901_BROWSER_PASS',label,'installed version, offline notes, no SHA, safe menus',flush=True)
   ctx.close()
  browser.close()
