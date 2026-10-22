@@ -40,7 +40,8 @@ test('merged build keeps bundle identity, clean menus, and About release notes',
  assert.match(src,/aboutBundleVersion/); assert.match(src,/aboutReleaseNotes/);
  assert.ok(!src.includes('GRAPHICS 0.8.25.19'));
  assert.ok(!src.includes('VERSION 0.8.25.14'));
- assert.ok(html.includes("version:'0.9.0.0'"));
+ const releaseVersion=JSON.parse(fs.readFileSync(path.join(__dirname,'../package.json'),'utf8')).version;
+ assert.ok(html.includes("version:'"+releaseVersion+"'"));
 });
 test('build remains single-file/offline compatible with embedded styling',()=>{
  assert.ok(html.includes('<style>')&&html.includes('<script type="module">'));
