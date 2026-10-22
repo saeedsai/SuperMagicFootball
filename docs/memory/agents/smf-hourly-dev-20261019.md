@@ -35,3 +35,6 @@ Keep hourly development enabled. Use only existing `dev` for development and pro
 
 ## 2026-10-22 20:27 — live Nutmeg
 - Engine spatial duel wiring `056849cd`; test `c2a43a0b`; candidate v0.9.11.0 package/release/README/cache/contracts. Focused JS checks 5/5 pass; full Node/Chromium, Modular QA and hosted Pages pending. Continue Player Studio selector next. Do not bypass CI.
+
+## 2026-10-22 — Defender Nutmeg counter
+- Feature `6140a66f`, test `9d3bbde6`, v0.9.11.1 synchronized across package/release/README/sw/version contracts. Focused 4/4 JS checks pass. Full 4+4 CI, Modular QA, main promotion and Pages unverified; keep coding on dev.
