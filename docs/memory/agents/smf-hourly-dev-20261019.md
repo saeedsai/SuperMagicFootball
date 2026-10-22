@@ -40,3 +40,6 @@ Keep hourly development enabled. Use only existing `dev` for development and pro
 
 ## 2026-10-22 — Super Shot Studio
 - dc309400 adds MF/FW Super Shot choice, 1–5 tier, roster/Career persistence, keep/remove; candidate 0.9.13.0 metadata and contract updated through 3bad1384; focused test de517150. Exact-head CI, full browser regression, protected promotion, Pages byte smoke pending. Continue trick levels and shot integration validation.
+
+## 2026-10-22 — Trick level Studio
+- 328b7d83 bounded trick 1–5 duel bonus; d9f633de UI selector and persistence; 0.9.13.1 candidate metadata and test d1ac58b6. Exact-head full 4+4 QA, promotion and hosted smoke pending. Keep coding on dev.
