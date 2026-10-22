@@ -41,7 +41,11 @@ function dribbleOdds(p,defender,style){
  const spatial=Number.isFinite(dx)&&Number.isFinite(dy)&&Number.isFinite(vx)&&Number.isFinite(vy);
  const nutmegWindow=style?.nutmeg&&(spatial?(closing&&distance>=15&&distance<100):true);
  const nutmegSkill=Math.max(0,Math.min(5,((Number(p.dribbling)||0)-((Number(defender.defence)||0)*.65+(Number(defender.aggression)||0)*.35)*.7)/8));
- const nutmegBonus=nutmegWindow?nutmegSkill*(spatial?Math.min(1,(100-distance)/65):.55)*(1-attackerFatigue):0;
+ // The nutmeg is easiest at medium range, not directly on top of the rival.
+ // Fade both ends of the spatial timing window; legacy stat-only engine duels
+ // retain the established .55 factor until the engine exposes coordinates.
+ const nutmegTiming=spatial?Math.min(1,(distance-15)/20,(100-distance)/25):.55;
+ const nutmegBonus=nutmegWindow?nutmegSkill*Math.max(0,nutmegTiming)*(1-attackerFatigue):0;
  const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18)+readBonus-evasiveFootwork-nutmegBonus;
  return Math.max(.12,Math.min(.95,.47+(offense-defense)/155+style.evade*.29));
 }
