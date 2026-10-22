@@ -83,7 +83,7 @@ function create(storage){
   for(let i=0;i<payload.length;i++){checksum^=payload.charCodeAt(i);checksum=Math.imul(checksum,16777619)>>>0;}
   return JSON.stringify({format:'smf-cup-backup',version:1,payload,checksum:checksum.toString(16).padStart(8,'0')});
  }
- function importBackup(text,{overwrite=false,validator}={}){
+ function parseBackup(text,validator){
   check();
   if(typeof text!=='string'||text.length>2000000)throw Error('Cup backup must be text under 2 MB');
   let envelope;
@@ -99,6 +99,15 @@ function create(storage){
   if(!validVault(restored))throw Error('Invalid Cup backup slots or tournament data');
   if(validator!==undefined&&typeof validator!=='function')throw Error('Cup backup validator must be a function');
   if(validator&&restored.slots.some(slot=>slot&&!validator(clone(slot.tournament))))throw Error('Cup backup refers to unavailable teams');
+  return restored;
+ }
+ function inspectBackup(text,validator){
+  const restored=parseBackup(text,validator);
+  return {active:restored.active,occupied:restored.slots.filter(Boolean).length,
+   slots:restored.slots.flatMap((item,i)=>item?[{number:i+1,name:item.name,compId:item.tournament.compId,club:item.tournament.club}]:[])};
+ }
+ function importBackup(text,{overwrite=false,validator}={}){
+  const restored=parseBackup(text,validator);
   if(!overwrite&&state.slots.some(s=>s!==null))throw Error('Cup slots contain data; explicitly confirm overwrite');
   persist(clone(restored));
   return state.slots.filter(Boolean).length;
@@ -114,7 +123,7 @@ function create(storage){
    roundIdx:s?.tournament?.roundIdx??null,occupied:Boolean(s)})),
   firstEmpty:()=>{const i=state.slots.findIndex(s=>s===null);return i<0?null:i+1;},
   activeTournament:()=>blocked?null:(get(state.active)?clone(get(state.active).tournament):null),
-  save,load,duplicate,remove,importLegacy,exportBackup,importBackup};
+  save,load,duplicate,remove,importLegacy,exportBackup,inspectBackup,importBackup};
 }
 return {create,validTournament,validVault};
 })();
