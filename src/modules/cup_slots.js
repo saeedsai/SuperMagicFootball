@@ -62,6 +62,14 @@ function create(storage){
   if(validator&&!validator(clone(tournament)))throw Error('Cup save refers to unavailable teams');
   if(state.active!==n)persist({...state,active:n});return tournament;
  }
+ function duplicate(n){check();const source=get(n);if(!source)throw Error('Cup slot '+n+' is empty');
+  const index=state.slots.findIndex(s=>s===null);
+  if(index<0)throw Error('All ten Cup save slots are occupied');
+  const next=clone(state);
+  next.slots[index]={name:(source.name+' (copy)').slice(0,60),savedAt:new Date().toISOString(),tournament:clone(source.tournament)};
+  // Copying a campaign must neither overwrite another slot nor switch the active one.
+  persist(next);return index+1;
+ }
  function remove(n){check();if(!get(n))throw Error('Cup slot '+n+' is empty');
   const next=clone(state);next.slots[n-1]=null;persist(next);
  }
@@ -76,7 +84,7 @@ function create(storage){
    roundIdx:s?.tournament?.roundIdx??null,occupied:Boolean(s)})),
   firstEmpty:()=>{const i=state.slots.findIndex(s=>s===null);return i<0?null:i+1;},
   activeTournament:()=>blocked?null:(get(state.active)?clone(get(state.active).tournament):null),
-  save,load,remove,importLegacy};
+  save,load,duplicate,remove,importLegacy};
 }
 return {create,validTournament,validVault};
 })();
