@@ -192,3 +192,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 ## 2026-10-22 facing-aware Trick counterplay candidate v0.9.7.0
 - `e00db7c`: active defender's counterplay bonus now requires closing movement AND facing the ball carrier. A defender sprinting away no longer gets the bonus. Four existing action buttons and saves preserved.
 - `57fcf35`: regression contract updated for facing requirement. Release version/cache/README/contract files synchronized to 0.9.7.0; accumulated changes remain only in dev pending exact-head CI + protected main/Pages checks. Next: check green preflight, Modular QA, 4+4 shards and smoke; repair blockers; continue LAN MVP.
+
+## 2026-10-22 — Player Studio tier validation candidate 0.9.7.1
+- Added selected-tier catalogue validation for explicit defensive ability equipment in `src/modules/abilities.js` (commit `77a52873`).
+- Updated package, About release module, service-worker cache, README, version policy and contract test to candidate 0.9.7.1.
+- Not certified: exact-head 4 Node + 4 Chromium and Modular QA not observed; main/Pages deployment not verified. Preserve four controls, roster and save schemas.
