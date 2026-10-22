@@ -55,8 +55,12 @@ function create(storage){
   const next=clone(state);next.active=n;next.slots[n-1]={name:label,savedAt:new Date().toISOString(),tournament:clone(tournament)};
   persist(next);return clone(next.slots[n-1]);
  }
- function load(n){check();const slot=get(n);if(!slot)throw Error('Cup slot '+n+' is empty');
-  persist({...state,active:n});return clone(slot.tournament);
+ function load(n,validator){check();const slot=get(n);if(!slot)throw Error('Cup slot '+n+' is empty');
+  if(validator!==undefined&&typeof validator!=='function')throw Error('Cup load validator must be a function');
+  // Validate before changing the active slot. A validator cannot mutate saved or returned data.
+  const tournament=clone(slot.tournament);
+  if(validator&&!validator(clone(tournament)))throw Error('Cup save refers to unavailable teams');
+  if(state.active!==n)persist({...state,active:n});return tournament;
  }
  function remove(n){check();if(!get(n))throw Error('Cup slot '+n+' is empty');
   const next=clone(state);next.slots[n-1]=null;persist(next);
