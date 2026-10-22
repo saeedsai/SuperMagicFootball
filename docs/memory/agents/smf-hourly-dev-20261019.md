@@ -3,29 +3,26 @@
 **Updated:** 2026-10-22
 
 ## Mission
-Sole authorized developer. Preserve About-only 0.9.1.0, 223 teams/2676 players, 2GK/3DF/4MF/3FW, six formations, four action buttons, offline save compatibility, Career 10 slots and SD09.
+Sole authorized developer. Preserve About-only four-part installed version, 223 teams/2676 players, 2GK/3DF/4MF/3FW, six formations, four buttons, Career/Cup ten slots, offline compatibility and SD09.
 
 ## Current checkpoint
-- 2026-10-22 new Cup COPY into first empty slot, deep-copied with atomic persistence, no active selection change, implemented in `src/modules/cup_slots.js` + UI with `tests/cup_slot_duplicate.test.cjs`; version increment 0.9.1.0 in release/package/SW/hosted smoke. Red intermediate CI traced to stale graphics About version expectation; repaired with dynamic package version. Modular QA passed at `f7abbf9b3f6456faffee47c187c5c354c0413835` (#39742460454). Exact-head full 4+4, main and Pages require fresh verification.
-- SAVE-102 referential safe-load and UI dispatcher tests reached `dev` before this iteration. Cup save cards now include competition, stage, round/Complete, labeled saved time; source `c669386007e0fe0f185138cc2e2f77f98563e672`, tests `48e25107f972d1f8683d85250fa6c43b26967b59`, central log `d44c8bf50d26175a439bc3621a15457ca37f5234`. Full exact-head CI, automatic promotion and hosted smoke are not yet certified.
-- Starting baseline dev/main `755e5905089ff6427bb117d526c1e13f26ffdcb2` was green (Full Census #39677469499, Modular QA #39676866641).
-- Platform safety rejections previously blocked complete UI file write and branch ref update; exact safety rule is unknown. GitHub push access true, dev not protected, previous CI green. Standard SHA-checked single-file Contents operations now demonstrably succeed without bypass.
-- SAVE-102 commits: safe-load logic `e59d237444f66c156bc3e4cbd9fc6b164eb63477`, five tests `8473844229d8b8bae145ac1357b7ca6645f2841e`, UI validation-before-load `83e43bf0aae05199809845aab3d81f522252ca50`, three UI tests `44923bf6505d5335418fe698f29a6b420583e23b`.
-- Central log updated. Exact final SHA CI, main and Pages certification required before shipped claim.
+- Exact `dev` and `main` were both `d511362f74cfb4f0e93eaf5fdf28331d23091c3d` after green dev Census #39744415960 (4 Node + 4 Chromium, preflight, preview, promotion) and Modular QA #39744415918.
+- Pages deployment #39745059993 succeeded on same main SHA. Main Census #39745060373 hosted SHA-256 smoke, preflight, 4 Node shards succeeded; 4 Chromium shards were still running at last check.
+- Cup COPY 0.9.1.0 now promoted and hosted: first empty slot, no overwrite, unchanged active campaign; package/release/SW/notes synchronized. Do not advance version for docs-only commits.
+- A legitimate Contents API attempt to append the central development log was rejected by platform safety checks with no detailed decision trace; no bypass or force operation attempted.
 
 ## Next smallest action
-1. Re-fetch exact dev/main heads and examine red or running exact-head CI.
-2. Verify 5+3 focused SAVE-102 tests, version/About and all 4 Node+4 Chromium regression shards with Modular QA; correct legitimate failures.
-3. Promote to main only with green exact-head checks; no forced ref moves.
-4. Verify actual Pages deployment and independent hosted HTML/JS/CSS smoke.
-5. Next: Cup save export/import integrity, then Player Studio abilities, four-button Tricks, two-client LAN and graphics, with a version increment for every shipped game update.
+1. Re-fetch dev/main SHAs and final main 4+4 Census result; fix any red exact-head CI.
+2. Record 0.9.1.0 certification in central log using authorized, SHA-checked path only; preserve evidence if rejected.
+3. SAVE-103 Cup backup/import roundtrip, corruption and rollback tests; bump version only for player-facing update.
+4. Bounded Player Studio ability selector with eligibility and persistence tests.
+5. Counterable four-button Trick, then two-client LAN MVP and graphics in separate QA-certified increments.
 
 ## Ownership and exclusions
-Sole game development; never edit other agents' private memories, bypass platform safety, force push, overwrite concurrent changes or claim unverified deployment.
+Only own checkpoint may be edited. Never read/edit other agents' memories, bypass safety, force push, overwrite concurrent work or claim unverified results.
 
 ## Evidence
-- Release 0.9.1.0 QA repaired version-bound checks in master/graphics and browser beard, identity, gallery and About date suites by reading package/release metadata. Previous integrated run passed 4 Node and 3 browser shards; a stale About date failed the fourth. Final exact-head CI + Pages still required.
-Standard writes to dev succeeded with new blob SHAs. Modular QA on `83e43bf0aae05199809845aab3d81f522252ca50` passed (#39738067047). Final exact-head 4+4 results not yet certified at this checkpoint. The internal safety decision trace is unavailable.
+Dev Census #39744415960 success; Modular QA #39744415918 success; main Pages #39745059993 success; main Census #39745060373 hosted smoke success. Main browser regression pending when recorded.
 
 ## Cleanup
-Keep this checkpoint under 4KiB; longer history and blockers belong in the central development log.
+Keep this file under 4 KiB. Extended details and failures belong in central log.
