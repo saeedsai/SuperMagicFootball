@@ -33,6 +33,11 @@ function withStudioDefence(player,id,level){
  if(!['keep','none',...STUDIO_DEFENCE_IDS].includes(id))throw Error('Unknown defensive ability');
  if(id==='spinBumper'&&tier<3)throw Error('Spinning Bumper requires defence tier 3 or higher');
  const updated={...source,superDefenceLevel:tier};
+ if(id==='keep'&&updated.superAbility?.type==='defence'){
+  if(updated.superAbility.id==='spinBumper'&&tier<3)
+   throw Error('Spinning Bumper requires defence tier 3 or higher; choose another ability or remove it');
+  updated.superAbility={...updated.superAbility,level:tier};
+ }
  if(id==='none'&&updated.superAbility?.type==='defence')delete updated.superAbility;
  else if(STUDIO_DEFENCE_IDS.includes(id)){
   const prior=updated.superAbility?.type==='defence'&&updated.superAbility.id===id?updated.superAbility:{};
