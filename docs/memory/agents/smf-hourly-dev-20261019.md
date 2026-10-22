@@ -31,11 +31,13 @@ Only designated developer. Preserve 223 teams, 2676 players, 2 GK / 3 DF / 4 MF 
 Only edit this checkpoint, under 4 KiB; do not open other agents' memory.
 
 ## Evidence
-- Studio equipment UI `65b066e4`, 0.9.3.0 candidate package/release/README/SW + contract tests, UI test `a3d34ed9`, log `4f61387e`; CI full 4+4, Modular QA, protected main and Pages smoke not independently verified. Never claim deployed.
-- Studio read-only defence eligibility corrected for engine `.src` and high-rated unassigned DF with explicit-level precedence: `6b2cc2fd`, `d5e37287`; test contracts `ed0ced09`, `4593285b`; log `d9c0d348`. Latest full CI/Pages unknown.
 - 2026-10-22 next incremental Studio backend: read-only level-3 DF catalogue in `src/modules/abilities.js` commit `24e9f6c`; test source commit `8e86182`. No selectable UI/equipment yet, no player-facing release bump. CI unverified.
 - SAVE-103 preview core `26c4a94d`, UI `84039997`, focused test source `4f8a0b19`, release notes `2ad62412`, README `c391eb12`, newline UI fix `5cd8eb43`.
 Latest failed preflight: Full Regression Census 39752239767; specific checkpoint heading contract diagnosed from tests/project_memory_contract.test.cjs.
+
+
+## Unreleased work rule
+Keep building next feature on `dev` despite pending CI/main/Pages for prior features. Batch compatible dev increments and promote only later on exact-head green CI. Resolve blockers in parallel; never pause hourly development or create branches.
 
 ## Cleanup
 Keep checkpoint below 4 KiB, no other agents' memory access.
