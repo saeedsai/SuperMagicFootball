@@ -56,3 +56,19 @@ test('fresh closing defender reads better than equally skilled tired defender',(
  const tired=api.dribbleOdds(carrier,{...base,fatigue:1},styles[0]);
  assert.ok(fresh<tired);
 });
+
+test('agile dribblers counter nearby closing pressure',()=>{
+ const close={...defender,x:0,y:0,vx:10,vy:0,fatigue:0};
+ const agile={...attacker,x:50,y:0,agility:95};
+ const basic={...attacker,x:50,y:0,agility:65,dribbling:75+(95-65)*.43/.57};
+ // Matched baseline offense isolates the new agility-based sidestep.
+ assert.ok(api.dribbleOdds(agile,close,styles[0])>api.dribbleOdds(basic,close,styles[0]));
+});
+test('sidestep advantage disappears for distant or exhausted ball carriers',()=>{
+ const carrier={...attacker,x:50,y:0,agility:95};
+ const far={...defender,x:-300,y:0,vx:10,vy:0};
+ const close={...defender,x:0,y:0,vx:10,vy:0};
+ const equalBase={...carrier,agility:65,dribbling:75+30*.43/.57};
+ assert.ok(Math.abs(api.dribbleOdds(carrier,far,styles[0])-api.dribbleOdds(equalBase,far,styles[0]))<1e-10);
+ assert.ok(Math.abs(api.dribbleOdds({...carrier,fatigue:1},close,styles[0])-api.dribbleOdds({...equalBase,fatigue:1},close,styles[0]))<1e-10);
+});
