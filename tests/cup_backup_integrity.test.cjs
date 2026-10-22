@@ -67,6 +67,22 @@ test('SAVE-103 UI contains player-facing export/import and confirmation',()=>{
  assert.match(ui,/button\('EXPORT CUP BACKUP','cupBackupExport'\)/);
  assert.match(ui,/button\('IMPORT CUP BACKUP','cupBackupImport'\)/);
  assert.match(ui,/cupSlots\.exportBackup\(\)/);
- assert.match(ui,/cupSlots\.importBackup\(bytes,\{overwrite:hasData,validator:/);
- assert.match(ui,/confirm\('Replace ALL existing Cup save slots/);
+ assert.match(ui,/cupSlots\.inspectBackup\(bytes,validator\)/);
+ assert.match(ui,/cupSlots\.importBackup\(bytes,\{overwrite:hasData,validator\}\)/);
+ assert.match(ui,/confirm\('Import '\+preview\.occupied/);
+});
+
+test('SAVE-103 preview is validated and read-only',()=>{
+ const storage=memory(),src=api.create(memory()),dst=api.create(storage);
+ src.save(3,valid(),'preview');src.load(3);
+ const backup=src.exportBackup(),before=storage.getItem('legend_cupSlots');
+ const summary=dst.inspectBackup(backup,t=>t.club===1);
+ assert.equal(summary.active,3);
+ assert.equal(summary.occupied,1);
+ assert.equal(summary.slots[0].name,'preview');
+ assert.equal(storage.getItem('legend_cupSlots'),before);
+ assert.throws(()=>dst.inspectBackup(backup,()=>false),/unavailable teams/);
+ const tampered=JSON.parse(backup);tampered.payload=tampered.payload.replace('preview','tampered');
+ assert.throws(()=>dst.inspectBackup(JSON.stringify(tampered)),/integrity/);
+ assert.equal(storage.getItem('legend_cupSlots'),before);
 });
