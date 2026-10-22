@@ -12,7 +12,7 @@ const start=source.indexOf('function showAbout(){');
 const end=source.indexOf('function showHome(){',start);
 assert.ok(start>=0&&end>start,'the actual About screen remains part of the playable UI');
 const block=source.slice(start,end);
-function fixture(meta={version:'0.9.1.0',date:'2026-10-22',notes:['Career saves','Original soccer art']}){
+function fixture(meta={version:'0.9.2.0',date:'2026-10-22',notes:['Career saves','Original soccer art']}){
  let shown=null;
  const context={
   RELEASE:meta,
@@ -24,7 +24,7 @@ function fixture(meta={version:'0.9.1.0',date:'2026-10-22',notes:['Career saves'
  const api=vm.runInNewContext('(()=>{'+block+';return {showAbout};})()',context);
  return {api,shown:()=>shown};
 }
-test('About alone shows the installed four-field 0.9.1.0 release and date offline',()=>{
+test('About alone shows the installed four-field 0.9.2.0 release and date offline',()=>{
  const app=fixture();app.api.showAbout();
  const [title,subtitle,html]=app.shown();
  assert.equal(title,'ABOUT SUPERMAGIC FOOTBALL');
@@ -42,7 +42,7 @@ test('About alone shows the installed four-field 0.9.1.0 release and date offlin
  assert.doesNotMatch(html,/Latest GitHub development commit|CURRENT DEVELOPMENT VERSION|\+dev\.|aboutDevRevision|RECENT CHANGES/);
 });
 test('About escape-encodes release notes and version, never inserts user-shaped HTML',()=>{
- const app=fixture({version:'0.9.1.0',date:'2026-10-22',notes:['Career saves','<img src=x onerror=alert(1)>']});
+ const app=fixture({version:'0.9.2.0',date:'2026-10-22',notes:['Career saves','<img src=x onerror=alert(1)>']});
  app.api.showAbout();
  const html=app.shown()[2];
  assert.match(html,/&lt;img src=x onerror=alert\(1\)&gt;/);
@@ -50,7 +50,7 @@ test('About escape-encodes release notes and version, never inserts user-shaped 
 });
 test('bundled version is canonical across UI, offline metadata and package, without remote SHA',()=>{
  const pkg=JSON.parse(read('package.json'));
- assert.equal(pkg.version,'0.9.1.0');
+ assert.equal(pkg.version,'0.9.2.0');
  assert.match(releaseSource,/version:'0\.9\.1\.0'/);
  assert.match(source,/import \{RELEASE\} from "\.\/release\.js"/);
  assert.match(source,/version:RELEASE\.version,game/);
