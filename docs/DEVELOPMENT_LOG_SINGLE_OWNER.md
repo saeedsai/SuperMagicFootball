@@ -248,3 +248,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - Added 4 focused tests of the ten existing Player Studio dribble-equipment helper in `tests/studio_dribble_equipment.test.cjs`, commit `57f8a58d7ece9b1812a27de738a7bb8f6db7c9a7`: catalog count/IDs, immutable roster identity, role/style validation, deterministic assignment. Modular QA #39819403222 PASS and confirms tests 382–385. Full Census #39819403252 in progress when checked. No game-code change or version bump in this increment.
 - Attempted a small Player Studio UI selector integration using fresh `src/modules/ui.js` blob SHA and a standalone immutable equipment planner; both were rejected by OpenAI tool safety checks. No bypass attempted, no uncommitted source claimed. UI selector remains missing; future runs should retry only through authorized, accepted edits.
 - Next: certify current exact dev head; implement UI integration when permitted; add desktop/touch storage rollback tests; then continue counterable Tricks/LAN/graphics without changing the four-button or save schema.
+
+## 2026-10-22 20:27 — v0.9.11.0 live Nutmeg feature
+- Implemented spatial trick-duel inputs in `src/modules/engine.js` commit `056849cd`; added engine integration contract `c2a43a0b`.
+- Updated version, release notes, README, service worker cache and version contracts to candidate `0.9.11.0`.
+- Focused JS checks 5/5 pass (wiring, pressure, retreat and fatigue); full Node/Chromium 4+4, Modular QA, protected main and hosted Pages NOT verified.
