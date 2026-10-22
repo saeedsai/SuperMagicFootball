@@ -37,3 +37,6 @@ Keep hourly development enabled. Use only existing `dev` for development and pro
 - E
 ## 2026-10-23 — owner correction: FOUR distinct categories
 - Canonical docs/PLAYER_ABILITIES_CANONICAL.md. Trick = rare magic (banana/ice/fireball/freeze/scream/hide/teleport/bat), NOT dribble. Dribble style = nutmeg/rainbow/roulette etc. Neither has levels. Supershot/Superdefence rare elite only, not every player. UI separates both; magic catalogue selection is preview-only, NOT playable. Provisional elite rating>=90 or legacy equipped. Removed trick tier gameplay. Candidate 0.9.14.0, full CI/promotion pending.
+
+## 2026-10-23 — elite eligibility patch
+- Fixed missing/NaN rating bypass in Studio with shared `studioEliteEligible` and position OVR fallback, test a417e3b6. Candidate 0.9.14.1 metadata aligned. Four categories canonical, magic Trick selection preview only. Exact-head CI/promotion/Pages pending.
