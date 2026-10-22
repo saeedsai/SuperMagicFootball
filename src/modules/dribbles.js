@@ -40,6 +40,15 @@ function dribbleOdds(p,defender,style){
  return Math.max(.12,Math.min(.95,.47+(offense-defense)/155+style.evade*.29));
 }
 
-return {DRIBBLE_STYLES,dribbleStyle,assignedDribbleType,dribbleOdds};})();
+// Player Studio explicitly equips one of the ten existing dribble archetypes.
+// Keep the source immutable and preserve identity, roster order and save schema.
+function withStudioDribble(player,styleId){
+ const source=player?.src||player;
+ const role=String(source?.role||source?.position||'').toUpperCase();
+ if(!['DF','MF','FW'].includes(role))throw Error('Only outfield players can equip dribble styles');
+ if(typeof styleId!=='string'||!LOOKUP.has(styleId))throw Error('Unknown dribble style');
+ return {...source,dribbleType:styleId};
+}
+return {DRIBBLE_STYLES,dribbleStyle,assignedDribbleType,dribbleOdds,withStudioDribble};})();
 
 export {DRIBBLES};
