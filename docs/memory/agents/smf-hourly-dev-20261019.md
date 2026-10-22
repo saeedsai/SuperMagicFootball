@@ -40,3 +40,6 @@ Keep hourly development enabled. Use only existing `dev` for development and pro
 
 ## 2026-10-23 — elite eligibility patch
 - Fixed missing/NaN rating bypass in Studio with shared `studioEliteEligible` and position OVR fallback, test a417e3b6. Candidate 0.9.14.1 metadata aligned. Four categories canonical, magic Trick selection preview only. Exact-head CI/promotion/Pages pending.
+
+## 2026-10-23 — four-category ability icons (0.9.15.0 candidate)
+- Shared `src/modules/ability-icons.js` has unique SVG badges for 23 shot, 3 defence, 8 planned magical Tricks, 10 dribbles. UI live previews + Team Command Center and Manager Squad stats. `tests/ability_icons_contract.test.cjs`; initial test expectation fixed; Modular QA #39865514093 success on 6ed0c981, later keep-current fix 69acecdd. Exact-head full CI, main/Pages need verification. Trick mechanics still planned.
