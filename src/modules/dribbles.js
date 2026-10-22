@@ -13,7 +13,9 @@ function assignedDribbleType(player){
  return DRIBBLE_STYLES[stableHash(player?.name||player?.id||'rookie')%DRIBBLE_STYLES.length].id;
 }
 function dribbleOdds(p,defender,style){
- const offense=(p.dribbling*.57+p.agility*.43)*(1-(p.fatigue||0)*.28);
+ // Clamp fatigue before applying the attacker's stamina penalty, matching defender bounds.
+ const attackerFatigue=Math.max(0,Math.min(1,Number(p.fatigue)||0));
+ const offense=(p.dribbling*.57+p.agility*.43)*(1-attackerFatigue*.28);
  // Tired defenders are less effective at reading an attacker; the penalty is bounded.
  const defenderFatigue=Math.max(0,Math.min(1,Number(defender.fatigue)||0));
  const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18);
