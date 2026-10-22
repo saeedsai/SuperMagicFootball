@@ -807,9 +807,9 @@ function showPlayerStudio(index=0){avatarIndex=Math.max(0,Math.min(11,Number(ind
   ['style','HAIRSTYLE'],['face','FACE SHAPE'],['eyes','EYE SHAPE'],['brows','EYEBROWS'],['eyeColor','EYE COLOR'],['nose','NOSE'],['lips','LIPS'],
   ['body','BUILD'],['stature','HEIGHT STYLE'],['exaggeration','FUNNY SCALE'],['beard','FACIAL HAIR'],['accessory','ACCESSORY'],['freckles','FRECKLES'],['scar','SCARS'],['tattoo','TATTOOS']
  ].map(([id,name])=>`<label>${name}<select class="choice" id="face_${id}">${studioNumberOptions(id,av[id]??0)}</select></label>`).join('');
- const defenceChoices=ABILITIES.studioDefenceChoices(player);
+ const defenceChoices=Number(player.rating)>=90||player.superAbility?.type==='defence'?ABILITIES.studioDefenceChoices(player):[];
  const defenceSelector=player.role==='DF'? `<div class="panel"><h3>SUPER DEFENCE</h3><p class="muted">Only eligible defenders can equip available defence abilities. No extra action button is added.</p><label>DEFENCE TIER<select class="choice" id="studioDefTier">${[1,2,3,4,5].map(n=>`<option value="${n}" ${n===SPECIALS.abilityLevel(player,'defence')?'selected':''}>${n}</option>`).join('')}</select></label><label>ABILITY<select class="choice" id="studioDefAbility"><option value="keep">KEEP CURRENT</option><option value="none">REMOVE DEFENCE</option>${defenceChoices.map(a=>`<option value="${escapeHTML(a.id)}">${escapeHTML(a.name)}</option>`).join('')}</select></label><div class="row">${button('SAVE DEFENCE ABILITY','saveStudioDefence')}</div></div>`:'';
- const shotSelector=['MF','FW'].includes(player.role)?`<div class="panel"><h3>SUPER SHOT</h3><label>SHOT LEVEL<select class="choice" id="studioShotTier">${[1,2,3,4,5].map(n=>`<option value="${n}" ${n===SPECIALS.abilityLevel(player,'shot')?'selected':''}>${n}</option>`).join('')}</select></label><label>SHOT TYPE<select class="choice" id="studioShotAbility"><option value="keep">KEEP CURRENT</option><option value="none">REMOVE SUPER SHOT</option>${Object.entries(SHOTS).map(([id,shot])=>`<option value="${escapeHTML(id)}" ${id===player.shot?'selected':''}>${escapeHTML(shot.name||id)}</option>`).join('')}</select></label><div class="row">${button('SAVE SUPER SHOT','saveStudioShot')}</div></div>`:'';
+ const shotSelector=['MF','FW'].includes(player.role)?`<div class="panel"><h3>SUPER SHOT</h3><label>SHOT LEVEL<select class="choice" id="studioShotTier">${[1,2,3,4,5].map(n=>`<option value="${n}" ${n===SPECIALS.abilityLevel(player,'shot')?'selected':''}>${n}</option>`).join('')}</select></label><label>SHOT TYPE<select class="choice" id="studioShotAbility"><option value="keep">KEEP CURRENT</option><option value="none">REMOVE SUPER SHOT</option>${(Number(player.rating)>=90||player.superAbility?.type==='shoot'?Object.entries(SHOTS):[]).map(([id,shot])=>`<option value="${escapeHTML(id)}" ${id===player.shot?'selected':''}>${escapeHTML(shot.name||id)}</option>`).join('')}</select></label><div class="row">${button('SAVE SUPER SHOT','saveStudioShot')}</div></div>`:'';
  const dribbleSelector=player.role!=='GK'?`<div class="panel"><h3>DRIBBLE STYLE</h3><p class="muted">Normal ball-control style; no levels and not a magic Trick.</p><label>STYLE<select class="choice" id="studioDribble">${DRIBBLES.DRIBBLE_STYLES.map(a=>`<option value="${escapeHTML(a.id)}" ${a.id===DRIBBLES.assignedDribbleType(player)?'selected':''}>${escapeHTML(a.name||a.id)}</option>`).join('')}</select></label><div class="row">${button('SAVE DRIBBLE STYLE','saveStudioTrick')}</div></div>`:'';
  const magicSelector=player.role!=='GK'?`<div class="panel"><h3>TRICK — RARE MAGIC</h3><p class="muted">Tricks are rare elite abilities, distinct from dribble styles. Magic gameplay is under development; choosing a planned trick does not activate it in matches yet.</p><label>TRICK<select class="choice" id="studioMagic"><option value="none">NONE</option>${(Number(player.rating)>=90||player.magicTrick?STUDIO_MAGIC_TRICKS:[]).map(a=>`<option value="${a.id}" ${player.magicTrick===a.id?'selected':''}>${a.name} (planned)</option>`).join('')}</select></label><div class="row">${button('SAVE TRICK SELECTION','saveStudioMagic')}</div></div>`:'';
  studioGallerySignature='';
@@ -817,7 +817,7 @@ function showPlayerStudio(index=0){avatarIndex=Math.max(0,Math.min(11,Number(ind
  const tierSelect=$('studioDefTier'),abilitySelect=$('studioDefAbility');
  if(tierSelect&&abilitySelect)tierSelect.onchange=()=>{
   const previous=abilitySelect.value;
-  const available=ABILITIES.studioDefenceChoices(player,Number(tierSelect.value));
+  const available=Number(player.rating)>=90||player.superAbility?.type==='defence'?ABILITIES.studioDefenceChoices(player,Number(tierSelect.value)):[];
   abilitySelect.innerHTML='<option value="keep">KEEP CURRENT</option><option value="none">REMOVE DEFENCE</option>'+available.map(a=>`<option value="${escapeHTML(a.id)}">${escapeHTML(a.name)}</option>`).join('');
   if([...abilitySelect.options].some(o=>o.value===previous))abilitySelect.value=previous;
  };
@@ -879,6 +879,7 @@ function saveStudioShot(){
   const source=isCareer?career.roster.map(p=>({...p})):roster(home);
   const player=source?.[avatarIndex],id=$('studioShotAbility')?.value,tier=Number($('studioShotTier')?.value);
   if(!player||!['MF','FW'].includes(player.role))throw Error('Only midfielders and forwards can equip Super Shots');
+  if(id!=='keep'&&id!=='none'&&Number(player.rating)<90&&player.superAbility?.type!=='shoot')throw Error('Super Shots are reserved for elite players');
   if(!Number.isInteger(tier)||tier<1||tier>5)throw Error('Super Shot level must be 1–5');
   if(!id||!['keep','none'].includes(id)&&!Object.hasOwn(SHOTS,id))throw Error('Unknown Super Shot');
   const updated={...player,superShotLevel:tier};
@@ -934,6 +935,7 @@ function saveStudioDefence(){
   if(!source?.[avatarIndex])throw Error('No selected player');
   const ability=$('studioDefAbility')?.value,tier=Number($('studioDefTier')?.value);
   if(!ability)throw Error('Select a defender ability');
+  if(ability!=='keep'&&ability!=='none'&&Number(source[avatarIndex].rating)<90&&source[avatarIndex].superAbility?.type!=='defence')throw Error('Super Defence is reserved for elite players');
   if(ability!=='keep'&&ability!=='none'&&!ABILITIES.studioDefenceChoices(source[avatarIndex],tier).some(a=>a.id===ability))
    throw Error('This defender is not eligible for that ability');
   source[avatarIndex]=ABILITIES.withStudioDefence(source[avatarIndex],ability,tier);
