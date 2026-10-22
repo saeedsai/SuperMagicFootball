@@ -237,3 +237,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - Re-evaluated exact `src/modules/dribbles.js` GitHub blob `1d053ccb`: corrected spatial edge/sweet-spot assertions pass; 15/100 units zero advantage, 50 units highest among sampled distances. This is focused JS evaluation, NOT full CI.
 - Historic Full Regression Census #39779762177: preflight + 4 Node + 4 browser + preview successful, hosted Pages cancelled, promote skipped; historical run does NOT certify current dev.
 - Current dev ahead of main; automated exact-head push workflow configured. Latest complete run/Modular QA/main/Pages not verified. Never promote unverified head; continue dev on existing branch.
+
+## 2026-10-22 — CI recovery
+- Repaired stale About test version in `84bfee4f` and own memory heading contract in `f5719c09`.
+- PR exact-head Full Regression Census `39811463569` and Modular QA `39811463516`: SUCCESS. Preflight, four Node shards, four Chromium shards and preview passed.
+- Verified `main` and `dev` both at `f5719c09f2581182b696d23a9a577a30e03cf76c` after the green runs. Hosted Pages byte check not independently verified here.
