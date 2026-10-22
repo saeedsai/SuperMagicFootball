@@ -81,3 +81,12 @@ test('dribble styles have no levels or level-based duel bonus',()=>{
  const rival={defence:70,aggression:70,fatigue:0};
  assert.equal(DRIBBLES.dribbleOdds({...chosen,trickLevel:5},rival,style),DRIBBLES.dribbleOdds({...chosen,trickLevel:1},rival,style));
 });
+
+test('Rare super abilities require elite eligibility without revoking legacy equipped players',()=>{
+ const ui=fs.readFileSync('src/modules/ui.js','utf8');
+ assert.match(ui,/Super Shots are reserved for elite players/);
+ assert.match(ui,/Super Defence is reserved for elite players/);
+ assert.match(ui,/Tricks are reserved for elite players/);
+ assert.match(ui,/player\.superAbility\?\.type==='shoot'/);
+ assert.match(ui,/player\.superAbility\?\.type==='defence'/);
+});
