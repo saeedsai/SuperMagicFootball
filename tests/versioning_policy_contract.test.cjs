@@ -31,8 +31,8 @@ test('the only player-visible version is a bundled 4-field About label, not remo
 test('release module, offline cache and fixture have matching runtime wiring',()=>{
  const build=read('scripts/build.py'),sw=read('sw.js'),ui=read('src/modules/ui.js');
  assert.match(ui,/import \{RELEASE\} from "\.\/release\.js"/);
- assert.match(build,/'render','release','ui'/);
- assert.match(sw,/'render','release','ui'/);
+ assert.match(build,/'render','release','ability-icons','ui'/);
+ assert.match(sw,/'render','release','ability-icons','ui'/);
  assert.match(sw,/release-090150-v1/);
  assert.match(ui,/version:RELEASE\.version,game/);
  assert.match(ui,/version:RELEASE\.version,exportedAt/);
