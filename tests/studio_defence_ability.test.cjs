@@ -56,3 +56,14 @@ test('STUDIO-102 uses existing defensive ability catalogue and four-button runti
  assert.ok(ui.includes('import {ABILITIES} from "./abilities.js"')||!ui.includes('saveStudioDefence'),
   'UI wiring must import the canonical module');
 });
+
+test('Studio menu wires defender equipment with safe persisted updates',()=>{
+ const ui=fs.readFileSync('src/modules/ui.js','utf8');
+ assert.match(ui,/import \{ABILITIES\} from "\.\/abilities\.js"/);
+ assert.match(ui,/function saveStudioDefence\(\)/);
+ assert.match(ui,/ABILITIES\.studioDefenceChoices\(source\[avatarIndex\]\)/);
+ assert.match(ui,/ABILITIES\.withStudioDefence\(source\[avatarIndex\],ability,tier\)/);
+ assert.match(ui,/storeCharacterChanges\('edits',updated\)/);
+ assert.match(ui,/storeCharacterChanges\('managerCareer',updated\)/);
+ assert.match(ui,/a==='saveStudioDefence'\)saveStudioDefence\(\)/);
+});
