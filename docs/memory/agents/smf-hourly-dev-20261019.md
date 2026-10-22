@@ -3,26 +3,21 @@
 **Updated:** 2026-10-22
 
 ## Mission
-Sole authorized developer. Preserve About-only four-part installed version, 223 teams/2676 players, 2GK/3DF/4MF/3FW, six formations, four buttons, Career/Cup ten slots, offline compatibility and SD09.
+Sole authorized developer. Preserve About-only four-part version, 223 teams/2676 players, 2GK/3DF/4MF/3FW, six formations, four buttons, Career/Cup ten slots, offline compatibility and SD09.
 
-## Current checkpoint
-- Exact `dev` and `main` were both `d511362f74cfb4f0e93eaf5fdf28331d23091c3d` after green dev Census #39744415960 (4 Node + 4 Chromium, preflight, preview, promotion) and Modular QA #39744415918.
-- Pages deployment #39745059993 succeeded on same main SHA. Main Census #39745060373 hosted SHA-256 smoke, preflight, 4 Node shards succeeded; 4 Chromium shards were still running at last check.
-- Cup COPY 0.9.1.0 now promoted and hosted: first empty slot, no overwrite, unchanged active campaign; package/release/SW/notes synchronized. Do not advance version for docs-only commits.
-- A legitimate Contents API attempt to append the central development log was rejected by platform safety checks with no detailed decision trace; no bypass or force operation attempted.
+## Latest development
+- Previous certified 0.9.1.0 release had green main Full Census #39745060373 (preflight, hosted smoke, 4 Node, 4 Chromium). Pages #39745059993 succeeded.
+- Subsequent release-policy commits include `ee9215166dc1d4bcc54bd9b6d3fd97c55408f848` repairing README contract test syntax; current CI and exact head still require independent verification.
+- SAVE-103 backup **core only** committed on dev in `af72dca4fdcad14c6648292741f58d5016575fe0`: JSON envelope, integrity checksum, strict validation, explicit overwrite, existing atomic storage rollback.
+- SAVE-103 regression test source committed in `cd4b5930dfb9c91a9ba60d9495483d7da71e476e`. No completed CI or hosted deployment is claimed for these commits.
+- Version remains 0.9.1.0 until a fully tested player-facing UI update has a coordinated increment. Do not represent backend-only SAVE-103 as released.
 
-## Next smallest action
-1. Re-fetch dev/main SHAs and final main 4+4 Census result; fix any red exact-head CI.
-2. Record 0.9.1.0 certification in central log using authorized, SHA-checked path only; preserve evidence if rejected.
-3. SAVE-103 Cup backup/import roundtrip, corruption and rollback tests; bump version only for player-facing update.
-4. Bounded Player Studio ability selector with eligibility and persistence tests.
-5. Counterable four-button Trick, then two-client LAN MVP and graphics in separate QA-certified increments.
+## Next five steps
+1. Fetch exact dev/main heads and CI; fix any red Node/Chromium/Modular QA, especially SAVE-103 tests.
+2. Add safe Cup SAVE-103 UI export/download and explicit import/overwrite confirmation; validate browser/desktop/touch; bump the installed four-part version and README/release/SW together.
+3. Re-run all 4 Node and 4 Chromium shards plus Modular QA; promote only on green exact-head gate; verify main and Pages SHA-256 smoke.
+4. Player Studio ability selector with eligibility, persistence and defensive counterplay.
+5. Four-button Trick, then 2-client LAN and graphics in separate increments.
 
-## Ownership and exclusions
-Only own checkpoint may be edited. Never read/edit other agents' memories, bypass safety, force push, overwrite concurrent work or claim unverified results.
-
-## Evidence
-Dev Census #39744415960 success; Modular QA #39744415918 success; main Pages #39745059993 success; main Census #39745060373 hosted smoke success. Main browser regression pending when recorded.
-
-## Cleanup
-Keep this file under 4 KiB. Extended details and failures belong in central log.
+## Ownership and cleanup
+Only edit this checkpoint; do not read other agents' memories. No force push, security bypass, unverified QA claims, or concurrent overwrite. Keep under 4 KiB.
