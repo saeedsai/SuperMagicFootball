@@ -959,7 +959,11 @@ class GameEngine{
   // Counterplay: a defender actively closing toward the ball carrier can read
   // the trick. Standing still or moving away does not receive this bonus.
   const closing=close&&((rival.dx||0)*(p.x-rival.x)+(rival.dy||0)*(p.y-rival.y))>0.22*Math.max(1,distance(p,rival));
-  const readBonus=closing?Math.min(.24,.07+stat(rival,'defence')*.0017):0;
+  // A moving defender must actually face the carrier to read their feet.
+  // Side-on runs remain a weaker read; a turned-away sprint does not counter.
+  const towardCarrier=rival?norm(p.x-rival.x,p.y-rival.y):{x:0,y:0};
+  const facing=close&&((rival.face||1)*towardCarrier.x)>=.15;
+  const readBonus=closing&&facing?Math.min(.24,.07+stat(rival,'defence')*.0017):0;
   const success=!threat||Math.random()<Math.max(.08,dribbleOdds(skill,threat,style)-readBonus);
   // Face/movement determines forward axis. Escape toward the side *away* from
   // the closest defender, so style-specific movement is purposeful, not random.
