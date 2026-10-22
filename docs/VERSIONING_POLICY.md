@@ -14,6 +14,10 @@ Every Git commit changes its immutable GitHub SHA. The **Full Regression Census 
 
 The release metadata stays embedded and readable offline. Exact per-commit SHA is available internally in GitHub Actions logs, Git commit records, and QA artifacts rather than displayed to players. Issue #12 remains a candidate for a future *build-embedded immutable revision manifest* for offline developer diagnostics; no false claim of offline Git SHA embedding is made by this release.
 
+## Mandatory README changelog on every game update
+
+For **every player-facing game update**, in the same release increment update the root `README.md` with (1) the new four-part version in both the release banner and project heading, (2) the release date, (3) a clear concise summary of newly shipped features, improvements and fixes, (4) save/offline compatibility notes when relevant, and (5) a valid live-game link. Keep this aligned with `src/modules/release.js`, `package.json`, the rotated offline cache and About release notes. **Treat a missing/stale README version or update summary as a release blocker**, not optional documentation. Update the release-contract tests to enforce these README requirements. Documentation-only commits do not require a version bump.
+
 ## Every-commit protocol
 
 1. Read AGENTS.md, shared memory and only your own registered developer checkpoint; read exact latest `dev` and `main` SHAs.
