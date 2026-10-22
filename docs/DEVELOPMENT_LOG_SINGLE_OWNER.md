@@ -283,3 +283,7 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - Canonical specification `docs/PLAYER_ABILITIES_CANONICAL.md`: four separate categories, only rare elite players equip Super Shot, Super Defence or magical Trick; neither Trick nor Dribble Style has levels.
 - Removed erroneous trick tier bonus; Studio now separates magic Trick (selection only, NOT playable yet) from Dribble Style. Provisional eligibility rating>=90 or legacy-equipped; no automatic grants.
 - Candidate 0.9.14.0 synchronized version metadata, README, cache and tests. Exact-head 4+4 CI and protected deployment pending.
+
+## 2026-10-23 — elite rating eligibility patch 0.9.14.1
+- Studio shared `studioEliteEligible` uses valid explicit rating or position OVR fallback; prevents undefined/NaN bypass of rare Super Shot, Super Defence and Trick equipment.
+- Test `a417e3b6`, release metadata/README/cache/contract aligned. Exact-head full 4+4 QA and protected main promotion/Pages smoke pending. Magic Trick gameplay remains unimplemented.
