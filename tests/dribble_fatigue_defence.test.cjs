@@ -102,3 +102,15 @@ test('live trick engine supplies spatial motion and fatigue to dribble duel',()=
  assert.match(engine,/const skill=\{dribbling:stat\(p,'dribbling'\),agility:stat\(p,'agility'\),fatigue:p\.fatigue,x:p\.x,y:p\.y\}/);
  assert.match(engine,/const threat=close\?\{defence:stat\(rival,'defence'\),aggression:stat\(rival,'aggression'\),fatigue:rival\.fatigue,x:rival\.x,y:rival\.y,vx:rival\.dx\|\|0,vy:rival\.dy\|\|0\}/);
 });
+
+test('agile fresh defenders counter spatial Nutmeg, but fatigue weakens the counter',()=>{
+ const carrier={...attacker,dribbling:95,agility:75,x:0,y:0};
+ const rival={...defender,defence:65,aggression:65,x:50,y:0,vx:-5,vy:0};
+ const nutmeg={...styles[0],nutmeg:true};
+ const baseline={...rival,agility:70,fatigue:0};
+ const alert={...rival,agility:100,fatigue:0};
+ const exhausted={...rival,agility:100,fatigue:1};
+ const bonus=(d)=>api.dribbleOdds(carrier,d,nutmeg)-api.dribbleOdds(carrier,d,styles[0]);
+ assert.ok(bonus(alert)<bonus(baseline));
+ assert.ok(Math.abs(bonus(exhausted)-bonus({...baseline,fatigue:1}))<1e-10);
+});
