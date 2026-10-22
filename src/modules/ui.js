@@ -1104,9 +1104,8 @@ function action(a){audio.cue('ui');
   const bytes=await file.text(),hasData=cupSlots.list().some(s=>s.occupied);
   // Parse/validate before confirming a destructive replacement; no progress changes on rejection.
   if(hasData&&!confirm('Replace ALL existing Cup save slots with this backup? Current Cup progress will be replaced. Export a backup first.'))return;
-  cupSlots.importBackup(bytes,{overwrite:hasData});
+  cupSlots.importBackup(bytes,{overwrite:hasData,validator:saved=>validateTournament(saved,TEAMS)});
   const restored=cupSlots.activeTournament();
-  if(restored&&!validateTournament(restored,TEAMS))throw Error('Imported Cup references unavailable teams; restore from your previous backup');
   continentalRun=restored;store.put('continentalRun',continentalRun);showCupSlots();
  }catch(error){alert('Cup backup import failed: '+error.message)}};
  picker.click();
