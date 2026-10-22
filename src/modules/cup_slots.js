@@ -83,7 +83,7 @@ function create(storage){
   for(let i=0;i<payload.length;i++){checksum^=payload.charCodeAt(i);checksum=Math.imul(checksum,16777619)>>>0;}
   return JSON.stringify({format:'smf-cup-backup',version:1,payload,checksum:checksum.toString(16).padStart(8,'0')});
  }
- function importBackup(text,{overwrite=false}={}){
+ function importBackup(text,{overwrite=false,validator}={}){
   check();
   if(typeof text!=='string'||text.length>2000000)throw Error('Cup backup must be text under 2 MB');
   let envelope;
@@ -97,6 +97,8 @@ function create(storage){
   let restored;
   try{restored=JSON.parse(envelope.payload);}catch{throw Error('Cup backup payload is not JSON');}
   if(!validVault(restored))throw Error('Invalid Cup backup slots or tournament data');
+  if(validator!==undefined&&typeof validator!=='function')throw Error('Cup backup validator must be a function');
+  if(validator&&restored.slots.some(slot=>slot&&!validator(clone(slot.tournament))))throw Error('Cup backup refers to unavailable teams');
   if(!overwrite&&state.slots.some(s=>s!==null))throw Error('Cup slots contain data; explicitly confirm overwrite');
   persist(clone(restored));
   return state.slots.filter(Boolean).length;
