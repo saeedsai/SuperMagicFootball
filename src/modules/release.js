@@ -6,7 +6,7 @@ const RELEASE=Object.freeze({
  notes:Object.freeze([
   '10 independent Career save slots, including legacy career migration and backup support.',
   'New opt-in Spinning Bumper defender ability prototype with jump and dash counters.',
-  'Cup tournaments support ten safe slots, non-destructive duplication, and checked backup export/import with explicit overwrite confirmation.',
+  'Cup tournaments support ten safe slots, non-destructive duplication, and checked backup export/import and a read-only slot preview before explicit overwrite confirmation.',
   'Improved touch input, match stability, offline caching and regression coverage.'
  ])
 });
