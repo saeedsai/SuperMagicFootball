@@ -1105,9 +1105,9 @@ function action(a){audio.cue('ui');
   // Validate and inspect before confirmation; no progress changes on rejection.
   const validator=saved=>validateTournament(saved,TEAMS);
   const preview=cupSlots.inspectBackup(bytes,validator);
-  const names=preview.slots.map(s=>'Slot '+s.number+': '+s.name+' ('+s.compId+')').join('\\n');
+  const names=preview.slots.map(s=>'Slot '+s.number+': '+s.name+' ('+s.compId+')').join('\n');
   const warning=hasData?'This will REPLACE all existing Cup slots. Export a backup first.':'No existing Cup slots will be overwritten.';
-  if(!confirm('Import '+preview.occupied+' Cup slots? Active slot: '+preview.active+'\\n'+names+'\\n'+warning))return;
+  if(!confirm('Import '+preview.occupied+' Cup slots? Active slot: '+preview.active+'\n'+names+'\n'+warning))return;
   cupSlots.importBackup(bytes,{overwrite:hasData,validator});
   const restored=cupSlots.activeTournament();
   continentalRun=restored;store.put('continentalRun',continentalRun);showCupSlots();
