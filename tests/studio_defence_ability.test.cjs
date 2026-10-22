@@ -61,9 +61,20 @@ test('Studio menu wires defender equipment with safe persisted updates',()=>{
  const ui=fs.readFileSync('src/modules/ui.js','utf8');
  assert.match(ui,/import \{ABILITIES\} from "\.\/abilities\.js"/);
  assert.match(ui,/function saveStudioDefence\(\)/);
- assert.match(ui,/ABILITIES\.studioDefenceChoices\(source\[avatarIndex\]\)/);
+ assert.match(ui,/ABILITIES\.studioDefenceChoices\(source\[avatarIndex\],tier\)/);
  assert.match(ui,/ABILITIES\.withStudioDefence\(source\[avatarIndex\],ability,tier\)/);
  assert.match(ui,/storeCharacterChanges\('edits',updated\)/);
  assert.match(ui,/storeCharacterChanges\('managerCareer',updated\)/);
  assert.match(ui,/a==='saveStudioDefence'\)saveStudioDefence\(\)/);
+});
+
+test('Studio ability catalogue refreshes when selected tier changes',()=>{
+ const ui=fs.readFileSync('src/modules/ui.js','utf8');
+ assert.match(ui,/tierSelect\.onchange=/);
+ assert.match(ui,/studioDefenceChoices\(player,Number\(tierSelect\.value\)\)/);
+ assert.match(ui,/studioDefenceChoices\(source\[avatarIndex\],tier\)/);
+ const low=ABILITIES.studioDefenceChoices({role:'DF',rating:80},2).map(a=>a.id);
+ const high=ABILITIES.studioDefenceChoices({role:'DF',rating:80},3).map(a=>a.id);
+ assert.ok(!low.includes('spinBumper'));
+ assert.ok(high.includes('spinBumper'));
 });
