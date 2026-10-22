@@ -20,7 +20,7 @@ test('Team ability summary represents all four distinct categories and unequippe
  const p={role:'FW',shot:'cannon',superAbility:{type:'shoot',id:'cannon'},magicTrick:'ice',dribbleType:'rainbow'};
  const html=ICONS.summary(p,gameplay.shotTypes,gameplay.defensiveAbilities,dribbles,tricks);
  for(const label of ['SUPER SHOT','SUPER DEFENCE','TRICK','DRIBBLE STYLE'])assert.ok(html.includes(label));
- for(const phrase of ['Cannon','Ice','Rainbow'])assert.match(html,new RegExp(phrase,'i'));
+ for(const phrase of [gameplay.shotTypes.cannon.name,'ice','Rainbow'])assert.match(html,new RegExp(phrase,'i'));
  const ordinary=ICONS.summary({role:'DF'},gameplay.shotTypes,gameplay.defensiveAbilities,dribbles,tricks);
  assert.match(ordinary,/None \(planned\)/);
  assert.doesNotMatch(ordinary,/Cannon Shot/);
