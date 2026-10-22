@@ -27,6 +27,7 @@ Only designated developer. Preserve 223 teams, 2676 players, 2 GK / 3 DF / 4 MF 
 Only edit this checkpoint, under 4 KiB; do not open other agents' memory.
 
 ## Evidence
+- Studio read-only defence eligibility corrected for engine `.src` and high-rated unassigned DF with explicit-level precedence: `6b2cc2fd`, `d5e37287`; test contracts `ed0ced09`, `4593285b`; log `d9c0d348`. Latest full CI/Pages unknown.
 - 2026-10-22 next incremental Studio backend: read-only level-3 DF catalogue in `src/modules/abilities.js` commit `24e9f6c`; test source commit `8e86182`. No selectable UI/equipment yet, no player-facing release bump. CI unverified.
 - 2026-10-22 SAVE-103 input-size hardening `690cb849`, regression source `a0f311b`; central log `0062a92e`. No new 4+4/Modular QA or main/Pages proof available from this connector.
 - 2026-10-22 repaired required own-memory headings: commit `1bfd85b5adf6686cbddb303763f1b9e7c6154a28`.
