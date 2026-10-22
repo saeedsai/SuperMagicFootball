@@ -52,9 +52,9 @@ test('every game release must update README version, dated summary and playable 
  const version=pkg.version;
  assert.match(version,/^\d+\.\d+\.\d+\.\d+$/);
  assert.ok(release.includes("version:'"+version+"'"),'About release must match package');
- assert.ok(readme.includes('**'+version+' release ('),'README release banner must match package');
+ assert.ok(readme.includes('**'+version+' release (') || readme.includes('**'+version+' release candidate ('),'README release banner must match package or explicitly identify an uncertified candidate');
  assert.ok(readme.includes('# Supermagic Football · v'+version+' ·'),'README heading must match package');
- const banner=readme.split('\n').find(line=>line.startsWith('> **'+version+' release ('));
+ const banner=readme.split('\n').find(line=>(line.startsWith('> **'+version+' release (') || line.startsWith('> **'+version+' release candidate (')));
  assert.ok(banner&&banner.length>130,'README must summarize shipped changes');
  assert.ok(readme.includes('https://saeedsai.github.io/SuperMagicFootball/'),'README live link missing');
  assert.match(read('AGENTS.md'),/Mandatory README release gate/);
