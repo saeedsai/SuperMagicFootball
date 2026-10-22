@@ -41,7 +41,10 @@ test('hosted check runs for dispatched main and compares exact deployed bytes', 
   assert.match(hosted, /actions\/checkout@v4/);
   assert.match(hosted, /hashlib\.sha256/);
   assert.match(hosted, /actual==expected/);
-  assert.match(hosted, /0\.9\.1\.0/);
+  assert.match(hosted, /local_release=Path\('src\/modules\/release\.js'\)\.read_bytes\(\)/);
+  assert.match(hosted, /matched=re\.search/);
+  assert.match(hosted, /matched\.group\(0\) in results/);
+  assert.doesNotMatch(hosted, /Hosted About release version is not 0\.9\.1\.0/);
   for (const file of ['index.html', 'src/main.js', 'style.css', 'src/modules/ui.js', 'src/modules/release.js']) {
     assert.ok(hosted.includes(file), 'missing hosted file: ' + file);
   }
