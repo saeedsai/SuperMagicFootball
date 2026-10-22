@@ -13,6 +13,8 @@ function assignedDribbleType(player){
  return DRIBBLE_STYLES[stableHash(player?.name||player?.id||'rookie')%DRIBBLE_STYLES.length].id;
 }
 function dribbleOdds(p,defender,style){
+ const trickLevel=Number(p?.src?.trickLevel??p?.trickLevel);
+ const tier=Number.isInteger(trickLevel)&&trickLevel>=1&&trickLevel<=5?trickLevel:1;
  // Clamp fatigue before applying the attacker's stamina penalty, matching defender bounds.
  const attackerFatigue=Math.max(0,Math.min(1,Number(p.fatigue)||0));
  const offense=(p.dribbling*.57+p.agility*.43)*(1-attackerFatigue*.28);
@@ -56,17 +58,19 @@ function dribbleOdds(p,defender,style){
   ?Math.min(8,Math.max(0,((Number(defender.defence)||0)-55)/6))*proximity*(1-defenderFatigue)
     *Math.min(1,Math.hypot(vx,vy)/4):0;
  const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18)+readBonus-evasiveFootwork-nutmegBonus+rainbowCounter;
- return Math.max(.12,Math.min(.95,.47+(offense-defense)/155+style.evade*.29));
+ return Math.max(.12,Math.min(.95,.47+(offense-defense)/155+style.evade*.29+(tier-1)*.0075));
 }
 
 // Player Studio explicitly equips one of the ten existing dribble archetypes.
 // Keep the source immutable and preserve identity, roster order and save schema.
-function withStudioDribble(player,styleId){
+function withStudioDribble(player,styleId,level){
  const source=player?.src||player;
  const role=String(source?.role||source?.position||'').toUpperCase();
  if(!['DF','MF','FW'].includes(role))throw Error('Only outfield players can equip dribble styles');
  if(typeof styleId!=='string'||!LOOKUP.has(styleId))throw Error('Unknown dribble style');
- return {...source,dribbleType:styleId};
+ const tier=level===undefined?(source.trickLevel??1):Number(level);
+ if(!Number.isInteger(Number(tier))||Number(tier)<1||Number(tier)>5)throw Error('Trick level must be 1–5');
+ return {...source,dribbleType:styleId,trickLevel:Number(tier)};
 }
 return {DRIBBLE_STYLES,dribbleStyle,assignedDribbleType,dribbleOdds,withStudioDribble};})();
 
