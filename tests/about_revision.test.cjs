@@ -50,8 +50,8 @@ test('About escape-encodes release notes and version, never inserts user-shaped 
 });
 test('bundled version is canonical across UI, offline metadata and package, without remote SHA',()=>{
  const pkg=JSON.parse(read('package.json'));
- assert.equal(pkg.version,'0.9.7.0');
- assert.match(releaseSource,/version:'0\.9\.7\.0'/);
+ assert.match(pkg.version,/^\d+\.\d+\.\d+\.\d+$/);
+ assert.ok(releaseSource.includes("version:'"+pkg.version+"'"),'About bundle must match package version');
  assert.match(source,/import \{RELEASE\} from "\.\/release\.js"/);
  assert.match(source,/version:RELEASE\.version,game/);
  assert.match(source,/version:RELEASE\.version,exportedAt/);
