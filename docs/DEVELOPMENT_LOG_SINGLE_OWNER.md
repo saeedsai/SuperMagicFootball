@@ -202,3 +202,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - Gameplay `src/modules/dribbles.js` commit `faa2ecc1`: defender fatigue reduces defensive contribution up to 18%, with 0–1 clamping; four buttons and save format unchanged.
 - Release metadata/README/offline cache/version contracts updated to 0.9.8.0; added `tests/dribble_fatigue_defence.test.cjs` commit `1c3de5a2`.
 - Local isolated numeric smoke passed; exact repository test and 4 Node + 4 Chromium shards, Modular QA, protected promotion and hosted Pages smoke NOT YET VERIFIED. This is a candidate, not deployed.
+
+## 2026-10-22 — Dribbling fatigue bound candidate 0.9.8.1
+- `src/modules/dribbles.js`: clamp attacker fatigue to [0,1] before applying the existing 28% maximum stamina penalty; commit `4eef2223`.
+- Regression test extended for negative/excessive fatigue; version, About notes, README, offline cache and policy updated.
+- Await exact-head full 4 Node + 4 Chromium and Modular QA, protected main promotion and hosted Pages byte smoke; do not claim production release.
