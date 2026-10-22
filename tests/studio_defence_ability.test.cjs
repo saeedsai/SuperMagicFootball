@@ -12,8 +12,8 @@ const ABILITIES=vm.runInNewContext(source+'\nABILITIES;',{
 });
 const player=(role='DF')=>({id:'stable-1',role,appearance:{style:2},superAbility:{type:'shoot',id:'fire'},gkSuperAbility:{type:'defence',id:'megaPalm'}});
 test('STUDIO-102 exposes defender moves without enabling keeper or attacker selection',()=>{
- assert.deepEqual(ABILITIES.studioDefenceChoices({role:'GK'}),[]);
- assert.deepEqual(ABILITIES.studioDefenceChoices({role:'FW'}),[]);
+ assert.deepEqual(Array.from(ABILITIES.studioDefenceChoices({role:'GK'})),[]);
+ assert.deepEqual(Array.from(ABILITIES.studioDefenceChoices({role:'FW'})),[]);
  const ids=ABILITIES.studioDefenceChoices(player()).map(x=>x.id);
  assert.ok(ids.includes('spinBumper'));
  assert.ok(ids.every(id=>mechanics.defensiveAbilities[id]));
