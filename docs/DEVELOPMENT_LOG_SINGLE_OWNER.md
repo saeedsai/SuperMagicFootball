@@ -269,3 +269,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - Candidate 0.9.12.0 synchronized package, release, README, service-worker cache, policy, version tests.
 - `15712a02`: focused UI wiring and persistence-path test. Earlier exact-head 2b59a1f7 Modular QA PASS; Full Census pending. Newer dev head needs independent exact-head full verification; no production deployment claim.
 - Next: Super Shot/Defence/Trick levels, live behavior, CI and hosted Pages byte smoke.
+
+## 2026-10-22 — Super Shot selection
+- `dc309400`: MF/FW Studio Super Shot choice and 1–5 tier with keep/remove; save in Career and edited roster. No extra buttons or save schema migration.
+- 0.9.13.0 candidate release metadata, README, cache and contract synchronized; focused UI test `de517150`.
+- Exact-head Node/Chromium 4+4, Modular QA, protected promotion and hosted Pages byte smoke still require certification. Continue trick level design and gameplay validation.
