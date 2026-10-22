@@ -23,3 +23,9 @@ test('odds remain within the original gameplay caps',()=>{
  assert.ok(api.dribbleOdds(attacker,{...defender,fatigue:1},styles[0])<=.95);
  assert.ok(api.dribbleOdds(attacker,{...defender,fatigue:1},styles[0])>=.12);
 });
+
+test('attacker fatigue is clamped for dribble odds',()=>{
+ assert.equal(api.dribbleOdds({...attacker,fatigue:1},defender,styles[0]),api.dribbleOdds({...attacker,fatigue:100},defender,styles[0]));
+ assert.equal(api.dribbleOdds({...attacker,fatigue:0},defender,styles[0]),api.dribbleOdds({...attacker,fatigue:-10},defender,styles[0]));
+ assert.ok(api.dribbleOdds({...attacker,fatigue:1},defender,styles[0])<api.dribbleOdds({...attacker,fatigue:0},defender,styles[0]));
+});
