@@ -2,51 +2,22 @@
 **Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-10-22
 
-## Mission
-## Highest-priority owner directives
-**"NEVER STOP HOURLY DEVELOPMENT FOR ANY REASON"**
-**"RESOLVE ANY BLOCKER AND CONTINUE DEVELOPMENT"**
-Keep the recurring hourly task enabled. Diagnose and repair blockers; if a specific step cannot be safely completed, preserve progress and continue another useful dev-only step. Never bypass security or green-CI promotion rules.
+## Standing owner rules
+Keep hourly development enabled. Use only existing `dev` for development and protected green promotion to `main`; no branches, force pushes, permission bypass or skipped CI. Resolve blockers, preserve checkpoints and continue safe increments. Own only this agent memory. Keep it below 4 KiB.
 
+## Invariants
+223 teams/2676 players, 12-player 2GK/3DF/4MF/3FW squads, six formations, four buttons, offline/save compatibility, Career/Cup ten slots and SD09. Four-field version appears only in Settings → Credits / About; sync package, release module, README, cache and tests for game changes.
 
-## Safety and invariants
-Only designated developer. Preserve 223 teams, 2676 players, 2 GK / 3 DF / 4 MF / 3 FW, six formations, four action buttons, Career/Cup ten slots, offline saves, SD09 and About-only four-field version. Never bypass safety, overwrite concurrent commits, or force-push.
+## Current state
+- Latest known `main`: `22cda39a93162407cff4c40547c219bfee62edac`. At 2026-10-22 18:05 local, `dev` was 83 commits ahead, zero behind. Candidate 0.9.10.1, not certified or deployed.
+- Last repaired test: `6db970115b86feda2eb940f61d57e600d63944d2` adds missing defender y to spatial Nutmeg test. Exact source JS evaluation verified 15/100 zero and 50-unit sweet spot.
+- Central QA log checkpoint `c6d7921aaa96e3542003879c6d98dc3fac077283`.
+- Historical Full Regression Census run 39779762177: preflight + four Node + four browser + preview success, promotion skipped, hosted Pages cancelled. Does NOT certify latest dev.
+- Current run attempted Player Studio ten-style UI with existing guarded save path; `src/modules/ui.js` update rejected by OpenAI safety checks. Separate bounded gameplay counterplay change to `src/modules/dribbles.js` was also rejected. Do not bypass safety. Read-only connector operations succeed. No new code commit this run yet.
 
-## Current checkpoint
-### Latest development: Cup SAVE-103
-- Cup export/import transport on dev, with checksum, validated vault, explicit overwrite and rollback: `af72dca`, `0573935`. Imported team availability is checked *before* persistence.
-- Cup UI buttons + file chooser/download + overwrite confirmation: `c103c69` and `77fb508`.
-- Release candidate now labeled **0.9.2.0** via package, release module, README, offline service worker, About and version contracts. Last cache SHA `db20fd0`; UI tests + validation `e3b830a9460a1243954195a3350f8be9e3ceb645`.
-- **NOT CERTIFIED/NOT DEPLOYED**: connector combined statuses empty and PR workflow search returned no runs for test commit. Node/Chromium shards, Modular QA, dev→main promotion, main/Pages hosted SHA-256 smoke not verified. No release claim.
-
-## Next smallest action
-### Next five steps
-1. Obtain exact current dev/main SHA and current CI results (connector search may lag); diagnose any red builds and repair tests with fresh blob SHAs.
-2. Run focused Cup backup, About/version tests, all 4 Node + 4 Chromium shards, Modular QA; verify UI desktop/mobile and save rollback.
-3. Only promote exact green head; confirm main SHA and hosted Pages SHA-256 bytes; keep 0.9.2.0 as a candidate until then.
-4. Implement bounded Player Studio ability selector and persistence; separate release after gates.
-5. Add a counterable four-button Trick, then LAN two-client MVP and graphics independently.
-
-## Ownership and exclusions
-Only edit this checkpoint, under 4 KiB; do not open other agents' memory.
-
-## Evidence
-- 2026-10-22 next incremental Studio backend: read-only level-3 DF catalogue in `src/modules/abilities.js` commit `24e9f6c`; test source commit `8e86182`. No selectable UI/equipment yet, no player-facing release bump. CI unverified.
-- SAVE-103 preview core `26c4a94d`, UI `84039997`, focused test source `4f8a0b19`, release notes `2ad62412`, README `c391eb12`, newline UI fix `5cd8eb43`.
-Latest failed preflight: Full Regression Census 39752239767; specific checkpoint heading contract diagnosed from tests/project_memory_contract.test.cjs.
-
-
-## Unreleased work rule
-Keep building next feature on `dev` despite pending CI/main/Pages for prior features. Batch compatible dev increments and promote only later on exact-head green CI. Resolve blockers in parallel; never pause hourly development or create branches.
-
-
-## 2026-10-22 current Nutmeg checkpoint
-- Dev: Studio dribble helper `bf1f22fc` (UI not wired), Nutmeg timing `d19e47b9`, documentation `9fe17006`, offline cache `d4eae824`.
-- Exact Git blob `4297a30eee28e1fd7affa3a34083151baca672b1` matched local mirror; focused Node tests 12/12 passed. Full CI/Modular QA/Pages unverified.
-- Tool safety checks rejected updates to UI, regression test, release notes, README and central log. Do not bypass. Keep candidate 0.9.10.0 unpromoted; next retry authorized documentation/test integration and then full green CI.
-
-## Cleanup
-Keep checkpoint below 4 KiB, no other agents' memory access.
-
-## Permanent branch instruction
-Never create any new branch. All source, test and documentation work must be committed exclusively to `dev`; `main` is only for green protected release promotion. Allowed permanent branches: `dev` and `main`. Do not use temporary work/feature branches.
+## Next five
+1. Inspect exact dev SHA and current CI/Modular QA; repair failures safely.
+2. Retry authorized small Player Studio integration on a future run if write gate permits.
+3. Add focused Node/browser regression for Studio selector and save rollback.
+4. Certify exact head with preflight, 4 Node, 4 Chromium, Modular QA and preview; promote only green.
+5. Verify exact main/Pages byte smoke, continue trick/LAN/graphics increments regardless of pending release.
