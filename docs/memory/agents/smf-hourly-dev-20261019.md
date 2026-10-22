@@ -21,6 +21,8 @@ Sole authorized developer; preserve 0.9.0.0 About-only until coordinated release
 Maintain only this agent's checkpoint; do not read or change other agents' private notes. Do not force push, bypass safety or overwrite concurrent changes.
 
 ## Evidence
+- 2026-10-22 safety-write investigation: dev/main both `755e5905089ff6427bb117d526c1e13f26ffdcb2`; owner-access metadata reports push=true and dev protected=false. Prior platform safety rejections occurred on both Contents API update and non-force ref update, so GitHub permissions, a stale SHA, or a red CI job are not established causes. Do not retry identical blocked actions or circumvent safety controls. Request a platform decision trace via support if persistent; keep patches reviewable and run full exact-head CI only after an authorized commit.
+
 GitHub Actions Full Regression Census and Modular Game Dev QA at exact dev SHA; Pages deployment and hosted smoke required for release claims.
 
 ## Cleanup
