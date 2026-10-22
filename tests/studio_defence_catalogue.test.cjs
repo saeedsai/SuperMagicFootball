@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const source=fs.readFileSync('src/modules/abilities.js','utf8');
 test('Studio defence catalogue remains bounded and read-only',()=>{
- assert.match(source,/function studioDefenceChoices\(player\)/);
+ assert.match(source,/function studioDefenceChoices\(player,selectedTier\)/);
  assert.match(source,/role!=='DF'/);
  assert.match(source,/abilityLevel\(player,'defence'\)/);
  assert.match(source,/level>=3/);
