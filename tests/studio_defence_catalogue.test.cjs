@@ -12,5 +12,5 @@ test('Studio defence catalogue remains bounded and read-only',()=>{
  assert.match(source,/player\?\.src\|\|player/);
  assert.match(source,/id==='spinBumper'/);
  assert.match(source,/return \{DEFENCE_MOVES,KEEPER_MOVES,studioDefenceChoices/);
- assert.doesNotMatch(source.slice(source.indexOf('function studioDefenceChoices'),source.indexOf('function fieldAbility')),/localStorage|\.push\(|\.superAbility\s*=/);
+ assert.doesNotMatch(source.slice(source.indexOf('function studioDefenceChoices'),source.indexOf('// Integrated from work/studio-defence-ability-20261022')),/localStorage|\.push\(|\.superAbility\s*=/);
 });
