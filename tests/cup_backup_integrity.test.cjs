@@ -52,3 +52,21 @@ test('SAVE-103 import rolls back partial storage write and preserves active in-m
  assert.equal(storage.getItem('legend_cupSlots'),before);
  assert.equal(cup.list().filter(x=>x.occupied).length,0);
 });
+
+test('SAVE-103 validator rejects unknown team references before committing',()=>{
+ const storage=memory(),target=api.create(storage),source=api.create(memory());
+ source.save(1,valid(),'external');
+ const before=storage.getItem('legend_cupSlots');
+ assert.throws(()=>target.importBackup(source.exportBackup(),{validator:()=>false}),/unavailable teams/);
+ assert.equal(storage.getItem('legend_cupSlots'),before);
+ assert.equal(target.list().filter(slot=>slot.occupied).length,0);
+ assert.equal(target.importBackup(source.exportBackup(),{validator:cup=>cup.club===1}),1);
+});
+test('SAVE-103 UI contains player-facing export/import and confirmation',()=>{
+ const ui=fs.readFileSync('src/modules/ui.js','utf8');
+ assert.match(ui,/button\('EXPORT CUP BACKUP','cupBackupExport'\)/);
+ assert.match(ui,/button\('IMPORT CUP BACKUP','cupBackupImport'\)/);
+ assert.match(ui,/cupSlots\.exportBackup\(\)/);
+ assert.match(ui,/cupSlots\.importBackup\(bytes,\{overwrite:hasData,validator:/);
+ assert.match(ui,/confirm\('Replace ALL existing Cup save slots/);
+});
