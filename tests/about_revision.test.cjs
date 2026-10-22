@@ -29,7 +29,7 @@ test('About alone shows the installed four-field 0.9.1.0 release and date offlin
  const [title,subtitle,html]=app.shown();
  assert.equal(title,'ABOUT SUPERMAGIC FOOTBALL');
  assert.match(subtitle,/offline cartoon arcade football/);
- assert.match(html,/id="aboutBundleVersion"><strong>0\.9\.0\.0<\/strong>/);
+ assert.match(html,/id="aboutBundleVersion"><strong>0\.9\.1\.0<\/strong>/);
  assert.match(html,/Release date · 2026-10-22/);
  assert.match(html,/available offline/);
  assert.match(html,/id="aboutReleaseNotes"/);
@@ -51,16 +51,16 @@ test('About escape-encodes release notes and version, never inserts user-shaped 
 test('bundled version is canonical across UI, offline metadata and package, without remote SHA',()=>{
  const pkg=JSON.parse(read('package.json'));
  assert.equal(pkg.version,'0.9.1.0');
- assert.match(releaseSource,/version:'0\.9\.0\.0'/);
+ assert.match(releaseSource,/version:'0\.9\.1\.0'/);
  assert.match(source,/import \{RELEASE\} from "\.\/release\.js"/);
  assert.match(source,/version:RELEASE\.version,game/);
  assert.match(source,/version:RELEASE\.version,exportedAt/);
  assert.doesNotMatch(source,/https:\/\/api\.github\.com\/repos\/saeedsai\/SuperMagicFootball\/commits/);
- assert.doesNotMatch(read('index.html'),/<title>[^<]*0\.9\.0\.0/);
+ assert.doesNotMatch(read('index.html'),/<title>[^<]*0\.9\.1\.0/);
  assert.doesNotMatch(read('index.html'),/<title>[^<]*0\.8\.25\.32/);
 });
 test('About release identity is local and requires no browser network, storage or fetch',()=>{
  assert.doesNotMatch(block,/\bfetch\s*\(|\blocalStorage\b|aboutRecentChanges|aboutLatestChange/);
  const app=fixture();assert.doesNotThrow(()=>app.api.showAbout());
- assert.equal(app.shown()[2].match(/0\.9\.0\.0/g).length,1);
+ assert.equal(app.shown()[2].match(/0\.9\.1\.0/g).length,1);
 });
