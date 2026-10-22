@@ -258,3 +258,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - Feature commit `6140a66f`: agile defenders counter spatial Nutmeg in closing range, stamina weakens counter; retreating and out-of-range unaffected.
 - Regression commit `9d3bbde6`; release metadata, package, README, offline cache and version contracts updated.
 - Focused JS smoke 4/4 PASS; full 4 Node + 4 Chromium, Modular QA, protected promotion and Pages smoke not yet verified.
+
+## 2026-10-22 — Rainbow Flick speed-sensitive counterplay
+- New gameplay `118e0b34`: closing defender speed scales Rainbow Flick anticipation; no new button or save schema.
+- Candidate 0.9.11.2 metadata synchronized in package, release, README, offline cache, policy and version tests; focused regression added `ded6d2e4`.
+- Exact-head 4 Node + 4 Chromium, Modular QA and hosted byte smoke not yet verified. No production claim. Continue next feature on dev independently.
