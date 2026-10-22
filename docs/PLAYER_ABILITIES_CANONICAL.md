@@ -11,3 +11,8 @@
 **Controls:** Exactly Pass, Shoot, Dribble, Jump. Trick input must be distinct from normal dribble-style selection, preserve existing combinations and be counterable. **Compatibility:** retain old saves, tolerate obsolete `trickLevel` fields without using them, preserve player IDs and roster composition.
 
 **Implementation status at this checkpoint:** Prior 0.9.13.1 incorrectly conflated Trick with Dribble Style and added an unwanted 1–5 Trick tier. Correct that UI and remove dribble tier gameplay modifier. A separate Trick category must be added; catalogue and gameplay mechanics can be released in small tested increments. Do not claim unimplemented magical moves are playable.
+
+## Shared ability icon contract — 2026-10-23
+- `src/modules/ability-icons.js` draws one unique, accessible inline SVG icon per existing catalogue item: 23 Super Shot ball designs, 3 Super Defence, 8 planned magical Trick, 10 regular Dribble Style.
+- Player Customization previews the selected icon immediately. Team Command Center and Career Manager Squad display the same badge and label on player stat cards. No new control, gameplay change or save-schema change. None is shown explicitly for unequipped rare abilities; magical Trick icons **do not mean the move is playable yet**.
+- Keep all four categories conceptually distinct. Add a unique icon as part of every future ability/style catalogue addition; maintain `tests/ability_icons_contract.test.cjs` coverage.
