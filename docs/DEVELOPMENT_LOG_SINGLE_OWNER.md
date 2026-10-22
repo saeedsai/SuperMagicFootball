@@ -221,3 +221,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 ## 2026-10-22 — Owner-requested future audio/music roadmap
 - Added `docs/AUDIO_MUSIC_EXPANSION_PLAN.md` with multi-song menus, halftime, finals/boss, match, and SFX event coverage, candidate free libraries, per-asset license verification, implementation phases and acceptance criteria (`ef3dce05`).
 - Linked from README (`95f46f61`). Planning only: no audio assets downloaded, no new game audio implemented, no release version bump needed.
+
+## 2026-10-22 — Agile dribbler sidestep feature v0.9.10.0 candidate
+- Gameplay `src/modules/dribbles.js` commit `94aeccde`: agile ball carriers (agility above 65) gain up to four effective points against closing defenders within 180 units; stamina reduces the sidestep, and far/stationary defenders do not trigger it.
+- Added baseline-matched agility/distance/stamina regression cases (`f90972c8`); updated About, package, README, service-worker cache, version tests and version policy to v0.9.10.0.
+- Not yet certified: full 4 Node + 4 Chromium CI and Modular QA; protected main promotion and Pages smoke unverified. Do not call deployed.
