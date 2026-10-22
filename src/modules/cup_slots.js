@@ -89,7 +89,7 @@ function create(storage){
   let envelope;
   try{envelope=JSON.parse(text);}catch{throw Error('Invalid Cup backup JSON');}
   if(!envelope||envelope.format!=='smf-cup-backup'||envelope.version!==1||
-   typeof envelope.payload!=='string'||!/^[0-9a-f]{8}$/.test(envelope.checksum||''))
+   typeof envelope.payload!=='string'||envelope.payload.length>2000000||!/^[0-9a-f]{8}$/.test(envelope.checksum||''))
    throw Error('Unsupported Cup backup format');
   let checksum=2166136261;
   for(let i=0;i<envelope.payload.length;i++){checksum^=envelope.payload.charCodeAt(i);checksum=Math.imul(checksum,16777619)>>>0;}
