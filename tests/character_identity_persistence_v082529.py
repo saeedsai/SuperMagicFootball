@@ -6,6 +6,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
 import json
 ROOT=Path(__file__).resolve().parents[1]
+RELEASE_VERSION=json.loads((ROOT/'package.json').read_text())['version']
 s=(ROOT/'tests/.generated/play.html').read_text()
 html=s.split('<script type="module">',1)[0]+'</body></html>'
 js=s.split('<script type="module">',1)[1].split('</script>',1)[0]
@@ -28,7 +29,7 @@ with sync_playwright() as pw:
  for mode,options in [('desktop',{'viewport':{'width':1280,'height':840}}),('simulated-touch',{'viewport':{'width':844,'height':390},'is_mobile':True,'has_touch':True})]:
   ctx=browser.new_context(**options);p=ctx.new_page();p.set_default_timeout(20000);errs=[];p.on('pageerror',lambda ex:errs.append(str(ex)))
   p.set_content(html);p.evaluate(MEMORY);p.add_script_tag(content=js,type='module');p.wait_for_function('!!window.SupermagicFootball')
-  check(mode+' generated QA fixture boots with modular JSON records',lambda:p.evaluate("() => SupermagicFootball.version==='0.9.0.0'"))
+  check(mode+' generated QA fixture boots with modular JSON records',lambda:p.evaluate("version => SupermagicFootball.version===version",RELEASE_VERSION))
   check(mode+' all seven BPW squads preserved',lambda:p.evaluate('''() => {const e=SupermagicFootball,b=e.teams.filter(t=>t.group==='bpw_worldcup'||t.group==='bpw_alltime');return {ok:b.length===7&&b.every(t=>e.rosterFor(t.index).length===12),count:b.length}}'''))
   def matrix():
    return p.evaluate(r'''dirs => {
