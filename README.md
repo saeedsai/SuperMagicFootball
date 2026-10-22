@@ -123,3 +123,7 @@ The seeded keeper calibration was certified in [Full Regression Census #38883629
 ## Goalkeeper save-event accuracy checkpoint
 
 The live goalkeeper now counts a loose-ball collection as a `save` only when it stops an opposing active shot. Collecting an already-deflected rebound still catches the ball but does not double count the earlier save. The keeper's original physical contact plane, shot flight, ball ownership and player controls are unchanged. See [keeper integrity QA](docs/KEEPER_SAVE_EVENT_INTEGRITY_20261016.md) and [next developer handover](docs/NEXT_KEEPER_HANDOVER_20261016.md). The source correction passed [36 targeted real-engine browser fixtures](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38885906247), then [156/156 integrated full regression scripts](https://github.com/saeedsai/SuperMagicFootball/actions/runs/38886072121). Physical devices remain unverified.
+
+
+### Future audio and music expansion (planned, not implemented)
+A dedicated [Audio & Music Expansion Plan](docs/AUDIO_MUSIC_EXPANSION_PLAN.md) covers menu and halftime playlists, tournament finals/boss themes, in-match music, UI navigation sounds, tackles, passes, shots, super moves, crowds and whistles. Candidate free/CC0 libraries are documented with per-asset licensing and QA gates. No new audio files are shipped by this planning change.
