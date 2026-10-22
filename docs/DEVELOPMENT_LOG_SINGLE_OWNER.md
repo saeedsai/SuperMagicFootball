@@ -188,3 +188,7 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 ## 2026-10-22 Trick counterplay 0.9.6.0 development candidate
 - `09360934`: active closing defender reduces attacker trick success chance by a capped 0.24, using defender motion toward carrier; passive/retreating defenders have no bonus. Existing double-Dribble control, cooldown, stamina and saves preserved. `074c60d0`: source regression contract.
 - Synchronized candidate 0.9.6.0 in package, release.js, README, sw.js and version contracts. Latest push workflow runs #39784522288 (Full Regression) and #39784522114 (Modular QA) not yet completed at this checkpoint; no deployment claim. Continue features on dev without waiting for main/Pages.
+
+## 2026-10-22 facing-aware Trick counterplay candidate v0.9.7.0
+- `e00db7c`: active defender's counterplay bonus now requires closing movement AND facing the ball carrier. A defender sprinting away no longer gets the bonus. Four existing action buttons and saves preserved.
+- `57fcf35`: regression contract updated for facing requirement. Release version/cache/README/contract files synchronized to 0.9.7.0; accumulated changes remain only in dev pending exact-head CI + protected main/Pages checks. Next: check green preflight, Modular QA, 4+4 shards and smoke; repair blockers; continue LAN MVP.
