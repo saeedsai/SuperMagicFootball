@@ -231,3 +231,9 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - Gameplay commit `dbc4c30e`: spatial nutmeg attempts now have a sweet spot around 35–75 units; edge range 15/100 yields no extra nutmeg advantage. Stat-only match-engine callers retain existing .55 bonus for compatibility.
 - Regression case commit `600868e2`; release, README, cache and version contracts synchronized to 0.9.10.1.
 - Full CI/Modular QA, exact green dev promotion and hosted Pages byte smoke not verified; candidate only. Continue dev increments without bypassing gates.
+
+## 2026-10-22 — Nutmeg timing test repair and release gate
+- Found deterministic false test failure: spatial Nutmeg test rival omitted `y`, so spatial=false and all distances used the stat-only .55 fallback. Fixed fixture with `y:0` in commit `6db97011`.
+- Re-evaluated exact `src/modules/dribbles.js` GitHub blob `1d053ccb`: corrected spatial edge/sweet-spot assertions pass; 15/100 units zero advantage, 50 units highest among sampled distances. This is focused JS evaluation, NOT full CI.
+- Historic Full Regression Census #39779762177: preflight + 4 Node + 4 browser + preview successful, hosted Pages cancelled, promote skipped; historical run does NOT certify current dev.
+- Current dev ahead of main; automated exact-head push workflow configured. Latest complete run/Modular QA/main/Pages not verified. Never promote unverified head; continue dev on existing branch.
