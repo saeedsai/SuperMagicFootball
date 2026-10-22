@@ -39,6 +39,12 @@ Latest failed preflight: Full Regression Census 39752239767; specific checkpoint
 ## Unreleased work rule
 Keep building next feature on `dev` despite pending CI/main/Pages for prior features. Batch compatible dev increments and promote only later on exact-head green CI. Resolve blockers in parallel; never pause hourly development or create branches.
 
+
+## 2026-10-22 current Nutmeg checkpoint
+- Dev: Studio dribble helper `bf1f22fc` (UI not wired), Nutmeg timing `d19e47b9`, documentation `9fe17006`, offline cache `d4eae824`.
+- Exact Git blob `4297a30eee28e1fd7affa3a34083151baca672b1` matched local mirror; focused Node tests 12/12 passed. Full CI/Modular QA/Pages unverified.
+- Tool safety checks rejected updates to UI, regression test, release notes, README and central log. Do not bypass. Keep candidate 0.9.10.0 unpromoted; next retry authorized documentation/test integration and then full green CI.
+
 ## Cleanup
 Keep checkpoint below 4 KiB, no other agents' memory access.
 
