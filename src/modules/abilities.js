@@ -20,11 +20,29 @@ function studioDefenceChoices(player){
  return Object.keys(DEFENCE_MOVES).filter(id=>id==='spinBumper' || id===source?.superAbility?.id)
   .map(id=>({id,name:String(DEFENCE_MOVES[id]?.name||id),minLevel:3}));
 }
+// Integrated from work/studio-defence-ability-20261022: pure, explicit Studio equipment.
+const STUDIO_DEFENCE_IDS=Object.freeze(['drill','burst','spinBumper'].filter(id=>DEFENCE_MOVES[id]));
+function withStudioDefence(player,id,level){
+ const source=player?.src||player;
+ if(!source||String(source.role||source.position||'').toUpperCase()!=='DF')
+  throw Error('Only defenders can equip defensive abilities');
+ const tier=Number(level);
+ if(!Number.isInteger(tier)||tier<1||tier>5)throw Error('Defence tier must be a whole number from 1 to 5');
+ if(!['keep','none',...STUDIO_DEFENCE_IDS].includes(id))throw Error('Unknown defensive ability');
+ if(id==='spinBumper'&&tier<3)throw Error('Spinning Bumper requires defence tier 3 or higher');
+ const updated={...source,superDefenceLevel:tier};
+ if(id==='none'&&updated.superAbility?.type==='defence')delete updated.superAbility;
+ else if(STUDIO_DEFENCE_IDS.includes(id)){
+  const prior=updated.superAbility?.type==='defence'&&updated.superAbility.id===id?updated.superAbility:{};
+  updated.superAbility={...prior,type:'defence',id,name:DEFENCE_MOVES[id].name,level:tier};
+ }
+ return updated;
+}
 function fieldAbility(player){const a=player?.superAbility;return a?.type==='defence' ? DEFENCE_MOVES[a.id]??null : null;}
 function keeperAbility(player){const a=player?.gkSuperAbility;return a?.type==='defence' ? KEEPER_MOVES[a.id]??null : null;}
 function abilityReady(player,ability){return !!(ability&&player&&player.stun<=0&&(player.abilityCd||0)<=0&&(player.fatigue||0)+ability.cost*levelModifiers(abilityLevel(player,player.keeper?'keeper':'defence')).fatigue<=.98);}
 function keeperInReach(keeper,ball,move){return !!(keeper&&ball&&!ball.owner&&move&&ball.attacker!==keeper.t&&Math.abs(ball.x-keeper.x)<=move.reachX&&Math.abs(ball.y-keeper.y)<=move.reachY&&ball.z<=210);}
 
-return {DEFENCE_MOVES,KEEPER_MOVES,studioDefenceChoices,fieldAbility,keeperAbility,abilityReady,keeperInReach};})();
+return {DEFENCE_MOVES,KEEPER_MOVES,studioDefenceChoices,withStudioDefence,fieldAbility,keeperAbility,abilityReady,keeperInReach};})();
 
 export {ABILITIES};
