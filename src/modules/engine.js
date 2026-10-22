@@ -956,7 +956,11 @@ class GameEngine{
   const rival=opponents[0],close=!!rival&&distance(p,rival)<105;
   const skill={dribbling:stat(p,'dribbling'),agility:stat(p,'agility'),fatigue:p.fatigue};
   const threat=close?{defence:stat(rival,'defence'),aggression:stat(rival,'aggression')}:null;
-  const success=!threat||Math.random()<dribbleOdds(skill,threat,style);
+  // Counterplay: a defender actively closing toward the ball carrier can read
+  // the trick. Standing still or moving away does not receive this bonus.
+  const closing=close&&((rival.dx||0)*(p.x-rival.x)+(rival.dy||0)*(p.y-rival.y))>0.22*Math.max(1,distance(p,rival));
+  const readBonus=closing?Math.min(.24,.07+stat(rival,'defence')*.0017):0;
+  const success=!threat||Math.random()<Math.max(.08,dribbleOdds(skill,threat,style)-readBonus);
   // Face/movement determines forward axis. Escape toward the side *away* from
   // the closest defender, so style-specific movement is purposeful, not random.
   const forward=norm(p.dx||p.face,p.dy||0),lateral={x:-forward.y,y:forward.x};
