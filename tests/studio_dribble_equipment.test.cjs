@@ -48,3 +48,14 @@ test('Rainbow Flick counter grows with approach speed, not retreat',()=>{
  assert.ok(fast<slow,'fast approach must counter more strongly');
  assert.ok(slow<retreat,'retreating defender must not receive aerial counter');
 });
+
+test('Player Studio exposes trick selector and save handler without a fifth button',()=>{
+ const ui=fs.readFileSync('src/modules/ui.js','utf8');
+ assert.match(ui,/id="studioTrick"/);
+ assert.match(ui,/DRIBBLES\.DRIBBLE_STYLES\.map/);
+ assert.match(ui,/function saveStudioTrick\(\)/);
+ assert.match(ui,/DRIBBLES\.withStudioDribble\(source\[avatarIndex\]/);
+ assert.match(ui,/storeCharacterChanges\('edits',updated\)/);
+ assert.match(ui,/storeCharacterChanges\('managerCareer',updated\)/);
+ assert.match(ui,/a==='saveStudioTrick'\)saveStudioTrick\(\)/);
+});
