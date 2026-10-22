@@ -14,7 +14,9 @@ function assignedDribbleType(player){
 }
 function dribbleOdds(p,defender,style){
  const offense=(p.dribbling*.57+p.agility*.43)*(1-(p.fatigue||0)*.28);
- const defense=defender.defence*.67+defender.aggression*.33;
+ // Tired defenders are less effective at reading an attacker; the penalty is bounded.
+ const defenderFatigue=Math.max(0,Math.min(1,Number(defender.fatigue)||0));
+ const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18);
  return Math.max(.12,Math.min(.95,.47+(offense-defense)/155+style.evade*.29));
 }
 
