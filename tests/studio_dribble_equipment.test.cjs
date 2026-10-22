@@ -59,3 +59,14 @@ test('Player Studio exposes trick selector and save handler without a fifth butt
  assert.match(ui,/storeCharacterChanges\('managerCareer',updated\)/);
  assert.match(ui,/a==='saveStudioTrick'\)saveStudioTrick\(\)/);
 });
+
+test('Player Studio Super Shot selection validates levels and persists Career and roster edits',()=>{
+ const ui=fs.readFileSync('src/modules/ui.js','utf8');
+ assert.match(ui,/id="studioShotTier"/);
+ assert.match(ui,/id="studioShotAbility"/);
+ assert.match(ui,/function saveStudioShot\(\)/);
+ assert.match(ui,/Object\.entries\(SHOTS\)/);
+ assert.match(ui,/superShotLevel:tier/);
+ assert.match(ui,/updated\.superAbility=\{type:'shoot',id,name:updated\.shotName,level:tier\}/);
+ assert.match(ui,/a==='saveStudioShot'\)saveStudioShot\(\)/);
+});
