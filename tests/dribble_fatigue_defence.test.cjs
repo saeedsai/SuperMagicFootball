@@ -48,3 +48,11 @@ test('closing bonus fades beyond pressure radius',()=>{
  assert.ok(api.dribbleOdds(near,chaser,styles[0])<api.dribbleOdds(near,still,styles[0]));
  assert.equal(api.dribbleOdds(far,chaser,styles[0]),api.dribbleOdds(far,still,styles[0]));
 });
+
+test('fresh closing defender reads better than equally skilled tired defender',()=>{
+ const carrier={...attacker,x:50,y:0};
+ const base={...defender,x:0,y:0,vx:10,vy:0};
+ const fresh=api.dribbleOdds(carrier,{...base,fatigue:0},styles[0]);
+ const tired=api.dribbleOdds(carrier,{...base,fatigue:1},styles[0]);
+ assert.ok(fresh<tired);
+});
