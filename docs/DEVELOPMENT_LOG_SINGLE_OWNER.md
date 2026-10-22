@@ -287,3 +287,7 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 ## 2026-10-23 — elite rating eligibility patch 0.9.14.1
 - Studio shared `studioEliteEligible` uses valid explicit rating or position OVR fallback; prevents undefined/NaN bypass of rare Super Shot, Super Defence and Trick equipment.
 - Test `a417e3b6`, release metadata/README/cache/contract aligned. Exact-head full 4+4 QA and protected main promotion/Pages smoke pending. Magic Trick gameplay remains unimplemented.
+
+## 2026-10-23 — shared ability icons candidate 0.9.15.0
+- Implemented visual-only `src/modules/ability-icons.js` with unique SVG icon for every 23 shot/3 defence/8 magic Trick/10 dribble IDs. Same icon in Player Studio live preview, Team Command Center roster stats and Career Manager Squad stat cards. Styles in `style.css`.
+- Test `tests/ability_icons_contract.test.cjs` covers all catalogue IDs and both team views. Initial Modular QA failure: stale test expected 'Cannon' but configured label for cannon ID is 'Unstoppable Shot'; corrected in `6ed0c981`. Modular QA `39865514093` PASS on `6ed0c981`. Later keep-current fix `69acecdd` requires exact-head recertification. Full Census/main promotion/Pages smoke pending. No magical trick gameplay shipped.
