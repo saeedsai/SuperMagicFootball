@@ -2,22 +2,22 @@
 **Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-10-22
 
-## Mission
-Sole authorized developer. Preserve About-only four-part version, 223 teams/2676 players, 2GK/3DF/4MF/3FW, six formations, four buttons, Career/Cup ten slots, offline compatibility and SD09.
+## Safety and invariants
+Only designated developer. Preserve 223 teams, 2676 players, 2 GK / 3 DF / 4 MF / 3 FW, six formations, four action buttons, Career/Cup ten slots, offline saves, SD09 and About-only four-field version. Never bypass safety, overwrite concurrent commits, or force-push.
 
-## Latest development
-- Previous certified 0.9.1.0 release had green main Full Census #39745060373 (preflight, hosted smoke, 4 Node, 4 Chromium). Pages #39745059993 succeeded.
-- Subsequent release-policy commits include `ee9215166dc1d4bcc54bd9b6d3fd97c55408f848` repairing README contract test syntax; current CI and exact head still require independent verification.
-- SAVE-103 backup **core only** committed on dev in `af72dca4fdcad14c6648292741f58d5016575fe0`: JSON envelope, integrity checksum, strict validation, explicit overwrite, existing atomic storage rollback.
-- SAVE-103 regression test source committed in `cd4b5930dfb9c91a9ba60d9495483d7da71e476e`. No completed CI or hosted deployment is claimed for these commits.
-- Version remains 0.9.1.0 until a fully tested player-facing UI update has a coordinated increment. Do not represent backend-only SAVE-103 as released.
+## Latest development: Cup SAVE-103
+- Earlier 0.9.1.0 Pages #39745059993 and main Full Census #39745060373 (4 Node/4 Chromium) were green; these **do not** certify current 0.9.2.0 candidate.
+- Cup export/import transport on dev, with checksum, validated vault, explicit overwrite and rollback: `af72dca`, `0573935`. Imported team availability is checked *before* persistence.
+- Cup UI buttons + file chooser/download + overwrite confirmation: `c103c69` and `77fb508`.
+- Release candidate now labeled **0.9.2.0** via package, release module, README, offline service worker, About and version contracts. Last cache SHA `db20fd0`; UI tests + validation `e3b830a9460a1243954195a3350f8be9e3ceb645`.
+- **NOT CERTIFIED/NOT DEPLOYED**: connector combined statuses empty and PR workflow search returned no runs for test commit. Node/Chromium shards, Modular QA, dev→main promotion, main/Pages hosted SHA-256 smoke not verified. No release claim.
 
 ## Next five steps
-1. Fetch exact dev/main heads and CI; fix any red Node/Chromium/Modular QA, especially SAVE-103 tests.
-2. Add safe Cup SAVE-103 UI export/download and explicit import/overwrite confirmation; validate browser/desktop/touch; bump the installed four-part version and README/release/SW together.
-3. Re-run all 4 Node and 4 Chromium shards plus Modular QA; promote only on green exact-head gate; verify main and Pages SHA-256 smoke.
-4. Player Studio ability selector with eligibility, persistence and defensive counterplay.
-5. Four-button Trick, then 2-client LAN and graphics in separate increments.
+1. Obtain exact current dev/main SHA and current CI results (connector search may lag); diagnose any red builds and repair tests with fresh blob SHAs.
+2. Run focused Cup backup, About/version tests, all 4 Node + 4 Chromium shards, Modular QA; verify UI desktop/mobile and save rollback.
+3. Only promote exact green head; confirm main SHA and hosted Pages SHA-256 bytes; keep 0.9.2.0 as a candidate until then.
+4. Implement bounded Player Studio ability selector and persistence; separate release after gates.
+5. Add a counterable four-button Trick, then LAN two-client MVP and graphics independently.
 
-## Ownership and cleanup
-Only edit this checkpoint; do not read other agents' memories. No force push, security bypass, unverified QA claims, or concurrent overwrite. Keep under 4 KiB.
+## Ownership
+Only edit this checkpoint, under 4 KiB; do not open other agents' memory.
