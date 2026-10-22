@@ -1,45 +1,29 @@
 # SuperMagicFootball — sole developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-22
+**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23
 
 ## Mission
-## Standing owner rules
-Keep hourly development enabled. Use only existing `dev` for development and protected green promotion to `main`; no branches, force pushes, permission bypass or skipped CI. Resolve blockers, preserve checkpoints and continue safe increments. Own only this agent memory. Keep it below 4 KiB.
-
-## Invariants
-223 teams/2676 players, 12-player 2GK/3DF/4MF/3FW squads, six formations, four buttons, offline/save compatibility, Career/Cup ten slots and SD09. Four-field version appears only in Settings → Credits / About; sync package, release module, README, cache and tests for game changes.
+Continue hourly work directly on existing dev even while CI/deployment is pending. Repair blockers and preserve checkpoints. No other branches, force push, security bypass or red promotion.
 
 ## Current checkpoint
-## Evidence
-- Candidate 0.9.10.1: Full Census `39811463569` and Modular QA `39811463516` PASS on `f5719c09`. Main advanced to exact `f5719c09f2581182b696d23a9a577a30e03cf76c`. Pages byte smoke still unverified; later dev log `c758d522` is not certified.
-- Last repaired test: `6db970115b86feda2eb940f61d57e600d63944d2` adds missing defender y to spatial Nutmeg test. Exact source JS evaluation verified 15/100 zero and 50-unit sweet spot.
-- Central QA log checkpoint `c6d7921aaa96e3542003879c6d98dc3fac077283`.
-- Historical Full Regression Census run 39779762177: preflight + four Node + four browser + preview success, promotion skipped, hosted Pages cancelled. Does NOT certify latest dev.
-- Player Studio ten-style UI and separate trick counterplay code writes were blocked by tool safety checks. No bypass. Added equipment regression `ab90f3b`, fixed stale About contract `84bfee4f`, restored own memory headings `f5719c09`.
+- Baseline dev/main `b08e886b1d0cdc433f0c6fb87007adac463fc370` (0.9.15.1); Full Census #39866603928 PASS, Modular QA #39866604048 PASS, Pages deployment #39867872562 PASS. Main hosted smoke #39867872780 was still running.
+- Candidate 0.9.16.0: Rainbow Flick defensive aerial read requires facing carrier; missing facing retains old odds. New focused Node regression and release metadata/README/SW/test alignment. Full exact-head CI not yet certified.
+- Four separate categories: rare Super Shot, rare Super Defence, planned magical Trick (no levels; not playable), normal level-free Dribble Style. Icons are visual only.
 
 ## Next smallest action
+Verify 4 Node + 4 Chromium and Modular QA on exact candidate head; fix failures and keep coding next increment even if release pending.
+
 ## Next five
-1. Inspect exact dev SHA and current CI/Modular QA; repair failures safely.
-2. Retry authorized small Player Studio integration on a future run if write gate permits.
-3. Add focused Node/browser regression for Studio selector and save rollback.
-4. Certify exact head with preflight, 4 Node, 4 Chromium, Modular QA and preview; promote only green.
-5. Verify exact main/Pages byte smoke, continue trick/LAN/graphics increments regardless of pending release.
+1. Diagnose candidate exact-head CI failures or certify green.
+2. Implement next bounded Studio/magic-Trick feature on dev.
+3. Add focused gameplay and browser tests preserving saves.
+4. Verify protected main promotion, Pages build and hosted byte smoke.
+5. Begin host-authoritative two-browser LAN lobby; continue eight-view art audit.
 
 ## Ownership and exclusions
+Only own agent memory; preserve 223 teams, 2676 players, 12-player squad ratios, six formations, four controls, ten Career/Cup slots, SD09 and offline/save compatibility.
+
+## Evidence
+No unobserved CI or deployment claims. GitHub SHA and workflow evidence must be checked after this commit.
+
 ## Cleanup
-
-## 2026-10-22 19:01 checkpoint
-- Verified exact main `817b5344` and hosted Pages byte smoke: main Census #39815030557 and Pages #39815030719 PASS.
-- Studio trick-equipment test commit `57f8a58d`; four new tests passed Modular QA #39819403222. Full Census #39819403252 pending at inspection. No player-facing change.
-- Studio UI implementation still blocked; central log records details.
-
-## 2026-10-22 20:27 — live Nutmeg
-- E
-## 2026-10-23 — owner correction: FOUR distinct categories
-- Canonical docs/PLAYER_ABILITIES_CANONICAL.md. Trick = rare magic (banana/ice/fireball/freeze/scream/hide/teleport/bat), NOT dribble. Dribble style = nutmeg/rainbow/roulette etc. Neither has levels. Supershot/Superdefence rare elite only, not every player. UI separates both; magic catalogue selection is preview-only, NOT playable. Provisional elite rating>=90 or legacy equipped. Removed trick tier gameplay. Candidate 0.9.14.0, full CI/promotion pending.
-
-## 2026-10-23 — elite eligibility patch
-- Fixed missing/NaN rating bypass in Studio with shared `studioEliteEligible` and position OVR fallback, test a417e3b6. Candidate 0.9.14.1 metadata aligned. Four categories canonical, magic Trick selection preview only. Exact-head CI/promotion/Pages pending.
-
-## 2026-10-23 — four-category ability icons (0.9.15.0 candidate)
-- Shared `src/modules/ability-icons.js` has unique SVG badges for 23 shot, 3 defence, 8 planned magical Tricks, 10 dribbles. UI live previews + Team Command Center and Manager Squad stats. `tests/ability_icons_contract.test.cjs`; initial test expectation fixed; Modular QA #39865514093 success on 6ed0c981, later keep-current fix 69acecdd. Exact-head full CI, main/Pages need verification. Trick mechanics still planned.
+No additional branches or data migrations.

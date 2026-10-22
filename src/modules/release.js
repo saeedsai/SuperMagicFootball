@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.15.1',
- date:'2026-10-22',
+ version:'0.9.16.0',
+ date:'2026-10-23',
  notes:Object.freeze([
+  'Rainbow Flick aerial anticipation now requires a closing defender facing the ball carrier; back-turned runners cannot read the loft.',
   'Fixed the legacy browser-test fixture and offline cache to include the shared ability icon module.',
   'Player Studio and team roster stats now share distinctive badges for every Super Shot, Super Defence, Magic Trick and Dribble Style.',
   'Elite ability eligibility now handles missing or invalid player ratings safely.',

@@ -52,7 +52,10 @@ function dribbleOdds(p,defender,style){
  // Rainbow Flick lifts the ball: a fresh, close, actively closing defender with
  // strong defensive awareness can read the aerial path. Stationary/retreating defenders,
  // distant opponents and other dribble styles get no aerial counter bonus.
- const rainbowCounter=style?.id==='rainbow'&&closing&&distance<100
+ // Rainbow aerial reads require a closing defender facing the carrier.
+ // Unknown/legacy facing retains the historical stat-only behavior.
+ const facingRainbow=!Number.isFinite(Number(defender.face))||Number(defender.face)===0||Number(defender.face)*dx>0;
+ const rainbowCounter=style?.id==='rainbow'&&closing&&distance<100&&facingRainbow
   ?Math.min(8,Math.max(0,((Number(defender.defence)||0)-55)/6))*proximity*(1-defenderFatigue)
     *Math.min(1,Math.hypot(vx,vy)/4):0;
  const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18)+readBonus-evasiveFootwork-nutmegBonus+rainbowCounter;
