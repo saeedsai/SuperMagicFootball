@@ -4,6 +4,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 import json, time
 ROOT=Path(__file__).resolve().parents[1]
+RELEASE_VERSION=json.loads((ROOT/'package.json').read_text())['version']
 DOC=ROOT/'docs'; DOC.mkdir(exist_ok=True)
 s=(ROOT/'tests/.generated/play.html').read_text()
 html=s.split('<script type="module">',1)[0]+'</body></html>'
@@ -62,7 +63,7 @@ with sync_playwright() as w:
   context=browser.new_context(**context_args)
   p=context.new_page();p.set_default_timeout(8000);errors=[];p.on('pageerror',lambda exc:errors.append(str(exc)))
   p.set_content(html);p.add_script_tag(content=script,type='module');p.wait_for_function('!!window.SupermagicFootball')
-  run('game boot + updated version',mode,lambda:p.evaluate("() => window.SupermagicFootball.version==='0.9.0.0'"))
+  run('game boot + updated version',mode,lambda:p.evaluate("version => window.SupermagicFootball.version===version",RELEASE_VERSION))
   run('12,096-case directional artwork sweep (layout subset)',mode,lambda:p.evaluate(PAINT_SWEEP))
   run('beard changes remain visible across all eight view directions',mode,lambda:p.evaluate("""() => {
     const env=SupermagicFootball,p=env.game.players.find(v=>v&&!v.keeper&&!/Salah|Messi|Benzema|Giroud|Modrić|Alisson|Ramos|Bruno Fernandes|Lautaro|Donnarumma|Maignan/i.test(v.src.name));
