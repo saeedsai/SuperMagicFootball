@@ -10,7 +10,9 @@ test('actively closing defenders read trick with bounded bonus',()=>{
  assert.match(body,/const closing=close/);
  assert.match(body,/rival\.dx/);
  assert.match(body,/rival\.dy/);
- assert.match(body,/readBonus=closing\?Math\.min\(\.24/);
+ assert.match(body,/const facing=close/);
+ assert.match(body,/rival\.face/);
+ assert.match(body,/readBonus=closing&&facing\?Math\.min\(\.24/);
  assert.match(body,/Math\.max\(\.08,dribbleOdds\(skill,threat,style\)-readBonus\)/);
  assert.match(body,/const success=!threat/);
 });
