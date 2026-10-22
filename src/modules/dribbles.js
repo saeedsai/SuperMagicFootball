@@ -45,7 +45,10 @@ function dribbleOdds(p,defender,style){
  // Fade both ends of the spatial timing window; legacy stat-only engine duels
  // retain the established .55 factor until the engine exposes coordinates.
  const nutmegTiming=spatial?Math.min(1,(distance-15)/20,(100-distance)/25):.55;
- const nutmegBonus=nutmegWindow?nutmegSkill*Math.max(0,nutmegTiming)*(1-attackerFatigue):0;
+ // Agile defenders can anticipate a spatial nutmeg while closing in;
+ // exhausted defenders lose that counter. Stat-only callers keep prior odds.
+ const nutmegCounter=nutmegWindow&&spatial?Math.min(2,Math.max(0,((Number(defender.agility)||0)-70)/15))*proximity*(1-defenderFatigue):0;
+ const nutmegBonus=nutmegWindow?Math.max(0,nutmegSkill*Math.max(0,nutmegTiming)*(1-attackerFatigue)-nutmegCounter):0;
  const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18)+readBonus-evasiveFootwork-nutmegBonus;
  return Math.max(.12,Math.min(.95,.47+(offense-defense)/155+style.evade*.29));
 }
