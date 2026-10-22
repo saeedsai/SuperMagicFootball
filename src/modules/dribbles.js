@@ -28,7 +28,9 @@ function dribbleOdds(p,defender,style){
  // Outside the close-pressure radius the bonus tapers to zero.
  const distance=closing?Math.hypot(dx,dy):Infinity;
  const proximity=closing?Math.max(0,Math.min(1,(180-distance)/120)):0;
- const readBonus=closing?Math.min(5,Math.hypot(vx,vy)*.4)*proximity:0;
+ // Fatigued defenders cannot sustain the same close-pressure reading bonus.
+ const freshness=1-defenderFatigue*.35;
+ const readBonus=closing?Math.min(5,Math.hypot(vx,vy)*.4)*proximity*freshness:0;
  const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18)+readBonus;
  return Math.max(.12,Math.min(.95,.47+(offense-defense)/155+style.evade*.29));
 }
