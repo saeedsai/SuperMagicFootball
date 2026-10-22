@@ -37,3 +37,14 @@ test('style assignment remains deterministic and explicit selection takes priori
  const equipped=DRIBBLES.withStudioDribble(a,DRIBBLES.DRIBBLE_STYLES[9].id);
  assert.equal(DRIBBLES.assignedDribbleType(equipped),DRIBBLES.DRIBBLE_STYLES[9].id);
 });
+
+test('Rainbow Flick counter grows with approach speed, not retreat',()=>{
+ const style={id:'rainbow',evade:0};
+ const attacker={x:100,y:0,dribbling:75,agility:75,fatigue:0};
+ const defender={x:50,y:0,defence:90,aggression:65,agility:80,fatigue:0,vy:0};
+ const slow=DRIBBLES.dribbleOdds(attacker,{...defender,vx:1},style);
+ const fast=DRIBBLES.dribbleOdds(attacker,{...defender,vx:6},style);
+ const retreat=DRIBBLES.dribbleOdds(attacker,{...defender,vx:-6},style);
+ assert.ok(fast<slow,'fast approach must counter more strongly');
+ assert.ok(slow<retreat,'retreating defender must not receive aerial counter');
+});
