@@ -73,6 +73,34 @@ function create(storage){
  function remove(n){check();if(!get(n))throw Error('Cup slot '+n+' is empty');
   const next=clone(state);next.slots[n-1]=null;persist(next);
  }
+
+ // SAVE-103 backup transport deliberately changes no save schema or stored slot on export.
+ // The backup payload is checked before any imported data is committed.
+ function exportBackup(){
+  check();
+  const payload=JSON.stringify(state);
+  let checksum=2166136261;
+  for(let i=0;i<payload.length;i++){checksum^=payload.charCodeAt(i);checksum=Math.imul(checksum,16777619)>>>0;}
+  return JSON.stringify({format:'smf-cup-backup',version:1,payload,checksum:checksum.toString(16).padStart(8,'0')});
+ }
+ function importBackup(text,{overwrite=false}={}){
+  check();
+  if(typeof text!=='string'||text.length>2000000)throw Error('Cup backup must be text under 2 MB');
+  let envelope;
+  try{envelope=JSON.parse(text);}catch{throw Error('Invalid Cup backup JSON');}
+  if(!envelope||envelope.format!=='smf-cup-backup'||envelope.version!==1||
+   typeof envelope.payload!=='string'||!/^[0-9a-f]{8}$/.test(envelope.checksum||''))
+   throw Error('Unsupported Cup backup format');
+  let checksum=2166136261;
+  for(let i=0;i<envelope.payload.length;i++){checksum^=envelope.payload.charCodeAt(i);checksum=Math.imul(checksum,16777619)>>>0;}
+  if(checksum.toString(16).padStart(8,'0')!==envelope.checksum)throw Error('Cup backup integrity check failed');
+  let restored;
+  try{restored=JSON.parse(envelope.payload);}catch{throw Error('Cup backup payload is not JSON');}
+  if(!validVault(restored))throw Error('Invalid Cup backup slots or tournament data');
+  if(!overwrite&&state.slots.some(s=>s!==null))throw Error('Cup slots contain data; explicitly confirm overwrite');
+  persist(clone(restored));
+  return state.slots.filter(Boolean).length;
+ }
  function importLegacy(tournament){check();if(exists||!validTournament(tournament))return false;
   save(1,tournament,'Imported legacy Cup');return true;
  }
@@ -84,7 +112,7 @@ function create(storage){
    roundIdx:s?.tournament?.roundIdx??null,occupied:Boolean(s)})),
   firstEmpty:()=>{const i=state.slots.findIndex(s=>s===null);return i<0?null:i+1;},
   activeTournament:()=>blocked?null:(get(state.active)?clone(get(state.active).tournament):null),
-  save,load,duplicate,remove,importLegacy};
+  save,load,duplicate,remove,importLegacy,exportBackup,importBackup};
 }
 return {create,validTournament,validVault};
 })();
