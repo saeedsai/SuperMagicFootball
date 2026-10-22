@@ -1,10 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.13.1',
+ version:'0.9.14.0',
  date:'2026-10-22',
  notes:Object.freeze([
-  'Player Studio now equips Trick levels 1–5 with a bounded dribble proficiency bonus.',
+  'Player Studio separates rare magical Tricks from level-free Dribble Styles; magic selection is preview-only until match mechanics are implemented.',
   'Player Studio now supports choosing Super Shot types and levels 1–5 for midfielders and forwards.',
   'Player Studio now lets outfield players choose and save one of ten trick styles.',
   'Rainbow Flick counterplay now scales with the approaching defender speed.',
