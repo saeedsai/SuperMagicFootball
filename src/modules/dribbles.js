@@ -53,7 +53,8 @@ function dribbleOdds(p,defender,style){
  // strong defensive awareness can read the aerial path. Stationary/retreating defenders,
  // distant opponents and other dribble styles get no aerial counter bonus.
  const rainbowCounter=style?.id==='rainbow'&&closing&&distance<100
-  ?Math.min(8,Math.max(0,((Number(defender.defence)||0)-55)/6))*proximity*(1-defenderFatigue):0;
+  ?Math.min(8,Math.max(0,((Number(defender.defence)||0)-55)/6))*proximity*(1-defenderFatigue)
+    *Math.min(1,Math.hypot(vx,vy)/4):0;
  const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18)+readBonus-evasiveFootwork-nutmegBonus+rainbowCounter;
  return Math.max(.12,Math.min(.95,.47+(offense-defense)/155+style.evade*.29));
 }
