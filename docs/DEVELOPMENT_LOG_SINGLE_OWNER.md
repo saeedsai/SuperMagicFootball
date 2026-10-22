@@ -217,3 +217,7 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - `src/modules/dribbles.js` commit `caad53fe`: close-pressure distance factor (full inside 60 units, linear fade through 180) bounds prior +5 closing read bonus; outside range and retreating defenders receive none.
 - Regression extended to cover close/far read (`e5dbc00e`); package, release/About, README, offline cache and version contract moved to 0.9.9.1.
 - Exact-head 4+4 CI, Modular QA, protected promotion and Pages byte smoke not yet verified. No production release claim.
+
+## 2026-10-22 — Owner-requested future audio/music roadmap
+- Added `docs/AUDIO_MUSIC_EXPANSION_PLAN.md` with multi-song menus, halftime, finals/boss, match, and SFX event coverage, candidate free libraries, per-asset license verification, implementation phases and acceptance criteria (`ef3dce05`).
+- Linked from README (`95f46f61`). Planning only: no audio assets downloaded, no new game audio implemented, no release version bump needed.
