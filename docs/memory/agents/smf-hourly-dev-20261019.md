@@ -27,6 +27,9 @@ Only designated developer. Preserve 223 teams, 2676 players, 2 GK / 3 DF / 4 MF 
 Only edit this checkpoint, under 4 KiB; do not open other agents' memory.
 
 ## Evidence
+- 2026-10-22 repaired required own-memory headings: commit `1bfd85b5adf6686cbddb303763f1b9e7c6154a28`.
+- SAVE-103 preview core `26c4a94d`, UI `84039997`, focused test source `4f8a0b19`, release notes `2ad62412`, README `c391eb12`, newline UI fix `5cd8eb43`.
+- These GitHub source commits were accepted; full 4+4 and Modular QA outcomes for latest head are not yet verified. Do not promote without green exact-head evidence.
 Latest failed preflight: Full Regression Census 39752239767; specific checkpoint heading contract diagnosed from tests/project_memory_contract.test.cjs.
 
 ## Cleanup
