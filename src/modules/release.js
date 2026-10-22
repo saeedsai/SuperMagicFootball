@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.8.0',
+ version:'0.9.8.1',
  date:'2026-10-22',
  notes:Object.freeze([
+  'Attacker stamina penalties in dribble success now remain bounded for out-of-range fatigue values.',
   'Defender fatigue now reduces defensive effectiveness against dribbles by up to 18%, making fresh substitutions more valuable.',
   'Player Studio validates defensive equipment against the chosen defence tier before saving.',
   'Trick counterplay now requires closing defenders to face the attacker; sprinting away cannot gain the trick-read bonus.',
