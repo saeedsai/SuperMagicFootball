@@ -954,8 +954,8 @@ class GameEngine{
   const style=dribbleStyle(p.src.dribbleType), opponents=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&q.z<25)
     .sort((a,b)=>distance(p,a)-distance(p,b));
   const rival=opponents[0],close=!!rival&&distance(p,rival)<105;
-  const skill={dribbling:stat(p,'dribbling'),agility:stat(p,'agility'),fatigue:p.fatigue};
-  const threat=close?{defence:stat(rival,'defence'),aggression:stat(rival,'aggression')}:null;
+  const skill={dribbling:stat(p,'dribbling'),agility:stat(p,'agility'),fatigue:p.fatigue,x:p.x,y:p.y};
+  const threat=close?{defence:stat(rival,'defence'),aggression:stat(rival,'aggression'),fatigue:rival.fatigue,x:rival.x,y:rival.y,vx:rival.dx||0,vy:rival.dy||0}:null;
   // Counterplay: a defender actively closing toward the ball carrier can read
   // the trick. Standing still or moving away does not receive this bonus.
   const closing=close&&((rival.dx||0)*(p.x-rival.x)+(rival.dy||0)*(p.y-rival.y))>0.22*Math.max(1,distance(p,rival));
