@@ -32,3 +32,6 @@ Keep hourly development enabled. Use only existing `dev` for development and pro
 - Verified exact main `817b5344` and hosted Pages byte smoke: main Census #39815030557 and Pages #39815030719 PASS.
 - Studio trick-equipment test commit `57f8a58d`; four new tests passed Modular QA #39819403222. Full Census #39819403252 pending at inspection. No player-facing change.
 - Studio UI implementation still blocked; central log records details.
+
+## 2026-10-22 20:27 — live Nutmeg
+- Engine spatial duel wiring `056849cd`; test `c2a43a0b`; candidate v0.9.11.0 package/release/README/cache/contracts. Focused JS checks 5/5 pass; full Node/Chromium, Modular QA and hosted Pages pending. Continue Player Studio selector next. Do not bypass CI.
