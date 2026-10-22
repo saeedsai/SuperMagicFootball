@@ -1102,9 +1102,13 @@ function action(a){audio.cue('ui');
  picker.onchange=async()=>{try{
   const file=picker.files?.[0];if(!file)return;if(file.size>2000000)throw Error('Cup backup exceeds 2 MB');
   const bytes=await file.text(),hasData=cupSlots.list().some(s=>s.occupied);
-  // Parse/validate before confirming a destructive replacement; no progress changes on rejection.
-  if(hasData&&!confirm('Replace ALL existing Cup save slots with this backup? Current Cup progress will be replaced. Export a backup first.'))return;
-  cupSlots.importBackup(bytes,{overwrite:hasData,validator:saved=>validateTournament(saved,TEAMS)});
+  // Validate and inspect before confirmation; no progress changes on rejection.
+  const validator=saved=>validateTournament(saved,TEAMS);
+  const preview=cupSlots.inspectBackup(bytes,validator);
+  const names=preview.slots.map(s=>'Slot '+s.number+': '+s.name+' ('+s.compId+')').join('\\n');
+  const warning=hasData?'This will REPLACE all existing Cup slots. Export a backup first.':'No existing Cup slots will be overwritten.';
+  if(!confirm('Import '+preview.occupied+' Cup slots? Active slot: '+preview.active+'\\n'+names+'\\n'+warning))return;
+  cupSlots.importBackup(bytes,{overwrite:hasData,validator});
   const restored=cupSlots.activeTournament();
   continentalRun=restored;store.put('continentalRun',continentalRun);showCupSlots();
  }catch(error){alert('Cup backup import failed: '+error.message)}};
