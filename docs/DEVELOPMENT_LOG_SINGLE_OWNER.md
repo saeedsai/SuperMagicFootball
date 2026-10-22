@@ -253,3 +253,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - Implemented spatial trick-duel inputs in `src/modules/engine.js` commit `056849cd`; added engine integration contract `c2a43a0b`.
 - Updated version, release notes, README, service worker cache and version contracts to candidate `0.9.11.0`.
 - Focused JS checks 5/5 pass (wiring, pressure, retreat and fatigue); full Node/Chromium 4+4, Modular QA, protected main and hosted Pages NOT verified.
+
+## 2026-10-22 — v0.9.11.1 defender Nutmeg anticipation
+- Feature commit `6140a66f`: agile defenders counter spatial Nutmeg in closing range, stamina weakens counter; retreating and out-of-range unaffected.
+- Regression commit `9d3bbde6`; release metadata, package, README, offline cache and version contracts updated.
+- Focused JS smoke 4/4 PASS; full 4 Node + 4 Chromium, Modular QA, protected promotion and Pages smoke not yet verified.
