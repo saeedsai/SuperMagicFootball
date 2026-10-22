@@ -6,11 +6,20 @@ const ABILITIES=(()=>{const {abilityLevel,levelModifiers}=SPECIALS;
 // Ability identifiers in this file are intentionally not claims of Famicom frame parity.
 const DEFENCE_MOVES=Object.freeze(GAME_ASSETS.mechanics.defensiveAbilities);
 const KEEPER_MOVES=Object.freeze(GAME_ASSETS.mechanics.keeperAbilities);
+// Studio catalogue is read-only until a player-facing equipment release is certified.
+// Preserve default roster abilities; only the role and existing level determine eligibility.
+function studioDefenceChoices(player){
+ const role=String(player?.role||player?.position||'').toUpperCase();
+ const level=Number(player?.superAbility?.level??player?.abilityLevel??0);
+ if(role!=='DF'||!Number.isFinite(level)||level<3)return [];
+ return Object.keys(DEFENCE_MOVES).filter(id=>id==='spinBumper' || id===player?.superAbility?.id)
+  .map(id=>({id,name:String(DEFENCE_MOVES[id]?.name||id),minLevel:3}));
+}
 function fieldAbility(player){const a=player?.superAbility;return a?.type==='defence' ? DEFENCE_MOVES[a.id]??null : null;}
 function keeperAbility(player){const a=player?.gkSuperAbility;return a?.type==='defence' ? KEEPER_MOVES[a.id]??null : null;}
 function abilityReady(player,ability){return !!(ability&&player&&player.stun<=0&&(player.abilityCd||0)<=0&&(player.fatigue||0)+ability.cost*levelModifiers(abilityLevel(player,player.keeper?'keeper':'defence')).fatigue<=.98);}
 function keeperInReach(keeper,ball,move){return !!(keeper&&ball&&!ball.owner&&move&&ball.attacker!==keeper.t&&Math.abs(ball.x-keeper.x)<=move.reachX&&Math.abs(ball.y-keeper.y)<=move.reachY&&ball.z<=210);}
 
-return {DEFENCE_MOVES,KEEPER_MOVES,fieldAbility,keeperAbility,abilityReady,keeperInReach};})();
+return {DEFENCE_MOVES,KEEPER_MOVES,studioDefenceChoices,fieldAbility,keeperAbility,abilityReady,keeperInReach};})();
 
 export {ABILITIES};
