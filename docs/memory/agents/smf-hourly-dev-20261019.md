@@ -38,3 +38,6 @@ Keep hourly development enabled. Use only existing `dev` for development and pro
 ## 2026-10-22 — write rejection diagnosis
 - GitHub Contents API write confirmed working on dev: checkpoint commit 041b0ce9; exact-head Full Census #39849954239 and Modular QA #39849954322 both passed.
 - Previous safety rejections of source/UI and release updates do not prove GitHub permission failure. Rejection originates at platform safety gate; precise trigger not disclosed. Do not evade. Use scoped legitimate edits and record exact error; escalate persistent false positives through support.
+
+## 2026-10-22 — Rainbow approach speed
+- Feature 118e0b34 scales Rainbow counter by closing speed. Candidate 0.9.11.2 synchronized package/release/README/sw/policy/contracts; test ded6d2e4. Exact-head CI and hosted verification pending. No new branch. Continue Studio selector, LAN and graphics.
