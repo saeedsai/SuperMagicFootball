@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """0.9.1.0: About shows installed offline version and release notes, never a remote SHA."""
 from pathlib import Path
+import json, re
 from playwright.sync_api import sync_playwright
 
 ROOT=Path(__file__).resolve().parents[1]
+RELEASE_VERSION=json.loads((ROOT/'package.json').read_text())['version']
+RELEASE_DATE=re.search(r"date:'(\d{4}-\d{2}-\d{2})'",(ROOT/'src/modules/release.js').read_text()).group(1)
 fixture=ROOT/'tests/.generated/play.html'
 assert fixture.exists(),'Build the modular test fixture with python3 scripts/build.py'
 html=fixture.read_text(encoding='utf-8')
@@ -22,14 +25,14 @@ with sync_playwright() as pw:
   page.route('https://api.github.com/**',reject_github)
   page.set_content(html,wait_until='load')
   page.wait_for_function('!!window.SupermagicFootball?.game',timeout=60000)
-  assert page.evaluate('SupermagicFootball.version')=='0.9.1.0'
+  assert page.evaluate('SupermagicFootball.version')==RELEASE_VERSION
   assert page.locator('.homeMasthead').count()==1
-  assert '0.9.1.0' not in page.locator('.menubox').inner_text(),(label,'version leaked onto Home')
+  assert RELEASE_VERSION not in page.locator('.menubox').inner_text(),(label,'version leaked onto Home')
   for visit in range(2):
    page.locator('[data-action="navAbout"]').first.click()
    assert page.locator('.heading').inner_text()=='ABOUT SUPERMAGIC FOOTBALL'
-   assert page.locator('#aboutBundleVersion').inner_text().strip()=='0.9.1.0'
-   assert '2026-10-21' in page.locator('.menubox').inner_text()
+   assert page.locator('#aboutBundleVersion').inner_text().strip()==RELEASE_VERSION
+   assert RELEASE_DATE in page.locator('.menubox').inner_text()
    assert 'Career save slots' in page.locator('#aboutReleaseNotes').inner_text()
    assert 'Spinning Bumper' in page.locator('#aboutReleaseNotes').inner_text()
    assert page.locator('a[href="mailto:saeedmsalehi1990@gmail.com"]').count()==1
