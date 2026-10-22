@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.11.1',
+ version:'0.9.11.2',
  date:'2026-10-22',
  notes:Object.freeze([
+  'Rainbow Flick counterplay now scales with the approaching defender speed.',
   'Agile, fresh defenders can anticipate close-range Nutmeg tricks; tired defenders lose the counter.',
   'Live Nutmeg tricks now use the actual defender distance, movement and stamina for spatial timing and counterplay.',
   'Nutmeg trick success now has a medium-distance timing sweet spot; defenders can counter at the edges of the window.',
