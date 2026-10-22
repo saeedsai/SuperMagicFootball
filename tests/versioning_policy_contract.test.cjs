@@ -20,7 +20,7 @@ test('the only player-visible version is a bundled 4-field About label, not remo
  const start=ui.indexOf('function showAbout(){'),end=ui.indexOf('function showHome(){',start);
  assert.ok(start>0&&end>start);
  const about=ui.slice(start,end);
- assert.match(release,/version:'0\.9\.2\.0'/);
+ assert.match(release,/version:'0\.9\.3\.0'/);
  assert.match(about,/RELEASE\.version/);
  assert.match(about,/aboutBundleVersion/);
  assert.match(about,/aboutReleaseNotes/);
@@ -33,7 +33,7 @@ test('release module, offline cache and fixture have matching runtime wiring',()
  assert.match(ui,/import \{RELEASE\} from "\.\/release\.js"/);
  assert.match(build,/'render','release','ui'/);
  assert.match(sw,/'render','release','ui'/);
- assert.match(sw,/release-0902-v1/);
+ assert.match(sw,/release-0903-v1/);
  assert.match(ui,/version:RELEASE\.version,game/);
  assert.match(ui,/version:RELEASE\.version,exportedAt/);
 });
@@ -44,7 +44,7 @@ test('internal exact SHA is preserved by GitHub release workflow, not displayed 
  assert.match(flow,/hashlib\.sha256/);
  assert.match(read('docs/VERSIONING_POLICY.md'),/GitHub Pages/);
  assert.match(read('docs/VERSIONING_POLICY.md'),/internal/i);
- assert.match(read('docs/VERSIONING_POLICY.md'),/0\.9\.2\.0/);
+ assert.match(read('docs/VERSIONING_POLICY.md'),/0\.9\.3\.0/);
 });
 
 test('every game release must update README version, dated summary and playable link',()=>{
