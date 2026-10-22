@@ -31,7 +31,12 @@ function dribbleOdds(p,defender,style){
  // Fatigued defenders cannot sustain the same close-pressure reading bonus.
  const freshness=1-defenderFatigue*.35;
  const readBonus=closing?Math.min(5,Math.hypot(vx,vy)*.4)*proximity*freshness:0;
- const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18)+readBonus;
+ // A fresh ball carrier can sidestep a close-pressure defender. This uses existing
+ // dribble/agility stats and the same four-button controls, without new save data.
+ const evasiveFootwork=closing&&proximity>0
+  ?Math.min(4,Math.max(0,((Number(p.agility)||0)-65)/12))*proximity*(1-attackerFatigue)
+  :0;
+ const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18)+readBonus-evasiveFootwork;
  return Math.max(.12,Math.min(.95,.47+(offense-defense)/155+style.evade*.29));
 }
 
