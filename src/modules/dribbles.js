@@ -24,7 +24,11 @@ function dribbleOdds(p,defender,style){
  const vx=Number(defender.vx),vy=Number(defender.vy);
  const closing=Number.isFinite(dx)&&Number.isFinite(dy)&&Number.isFinite(vx)&&Number.isFinite(vy)
   && dx*dx+dy*dy>1 && dx*vx+dy*vy>0;
- const readBonus=closing?Math.min(5,Math.hypot(vx,vy)*.4):0;
+ // A nearby closing defender reads a dribble better than one far away.
+ // Outside the close-pressure radius the bonus tapers to zero.
+ const distance=closing?Math.hypot(dx,dy):Infinity;
+ const proximity=closing?Math.max(0,Math.min(1,(180-distance)/120)):0;
+ const readBonus=closing?Math.min(5,Math.hypot(vx,vy)*.4)*proximity:0;
  const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18)+readBonus;
  return Math.max(.12,Math.min(.95,.47+(offense-defense)/155+style.evade*.29));
 }
