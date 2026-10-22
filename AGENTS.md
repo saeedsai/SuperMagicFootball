@@ -1,5 +1,12 @@
 # SuperMagicFootball — single-developer operating policy
 
+## Highest-priority hourly development mandate (owner directive 2026-10-22)
+**"NEVER STOP HOURLY DEVELOPMENT FOR ANY REASON"**
+**"RESOLVE ANY BLOCKER AND CONTINUE DEVELOPMENT"**
+
+Keep the hourly development automation enabled and the work cadence recurring. On any code, write, permission, CI, deployment, or tool blocker, investigate the actual root cause, attempt all authorized safe repairs, document concrete evidence, and resume the next useful development increment. Do not disable or pause the hourly schedule merely because an individual operation failed. If a blocker cannot be lawfully or technically cleared in the current run, preserve progress, pursue a safe alternative task on existing `dev`, and retry diagnosis next run. Do not bypass OpenAI safety checks, GitHub permissions, branch protections, required green CI, or force-push to satisfy this mandate.
+
+
 **Effective 2026-10-20: owner-directed single-developer mode.** The owner has designated the central `smf-hourly-dev-20261019` development process as the sole ongoing implementer and maintainer. Existing multi-agent feature-lock requirements are **retired as a blocking gate**. The old `docs/agent_coordination/claims/*.json` entries are historical handover records, **not reservations**. Previous independent development chats must stop committing to this repository unless the owner explicitly reauthorizes them. GitHub permissions cannot technically enforce this rule against other credential holders.
 
 ## Mandatory context and priorities
