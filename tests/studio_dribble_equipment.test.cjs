@@ -70,3 +70,19 @@ test('Player Studio Super Shot selection validates levels and persists Career an
  assert.match(ui,/updated\.superAbility=\{type:'shoot',id,name:updated\.shotName,level:tier\}/);
  assert.match(ui,/a==='saveStudioShot'\)saveStudioShot\(\)/);
 });
+
+test('Trick levels persist and improve dribble odds only within bounded range',()=>{
+ const p=player();p.dribbling=75;p.agility=75;p.fatigue=0;
+ const style=DRIBBLES.DRIBBLE_STYLES[0];
+ const one=DRIBBLES.withStudioDribble(p,style.id,1);
+ const five=DRIBBLES.withStudioDribble(p,style.id,5);
+ assert.equal(one.trickLevel,1);assert.equal(five.trickLevel,5);
+ assert.equal(p.trickLevel,undefined);
+ const rival={defence:75,aggression:70,fatigue:0};
+ const low=DRIBBLES.dribbleOdds(one,rival,style),high=DRIBBLES.dribbleOdds(five,rival,style);
+ assert.ok(high>low);assert.ok(high-low<=.031);
+ for(const invalid of [0,6,1.5,'abc'])assert.throws(()=>DRIBBLES.withStudioDribble(p,style.id,invalid),/Trick level/);
+ const ui=fs.readFileSync('src/modules/ui.js','utf8');
+ assert.match(ui,/id="studioTrickTier"/);
+ assert.match(ui,/DRIBBLES\.withStudioDribble\(source\[avatarIndex\],\$\('studioTrick'\)\?\.value,Number\(\$\('studioTrickTier'\)\?\.value\)\)/);
+});
