@@ -226,3 +226,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - Gameplay `src/modules/dribbles.js` commit `94aeccde`: agile ball carriers (agility above 65) gain up to four effective points against closing defenders within 180 units; stamina reduces the sidestep, and far/stationary defenders do not trigger it.
 - Added baseline-matched agility/distance/stamina regression cases (`f90972c8`); updated About, package, README, service-worker cache, version tests and version policy to v0.9.10.0.
 - Not yet certified: full 4 Node + 4 Chromium CI and Modular QA; protected main promotion and Pages smoke unverified. Do not call deployed.
+
+## 2026-10-22 — Nutmeg timing sweet spot v0.9.10.1 candidate
+- Gameplay commit `dbc4c30e`: spatial nutmeg attempts now have a sweet spot around 35–75 units; edge range 15/100 yields no extra nutmeg advantage. Stat-only match-engine callers retain existing .55 bonus for compatibility.
+- Regression case commit `600868e2`; release, README, cache and version contracts synchronized to 0.9.10.1.
+- Full CI/Modular QA, exact green dev promotion and hosted Pages byte smoke not verified; candidate only. Continue dev increments without bypassing gates.
