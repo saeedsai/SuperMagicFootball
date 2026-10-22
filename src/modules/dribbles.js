@@ -18,7 +18,14 @@ function dribbleOdds(p,defender,style){
  const offense=(p.dribbling*.57+p.agility*.43)*(1-attackerFatigue*.28);
  // Tired defenders are less effective at reading an attacker; the penalty is bounded.
  const defenderFatigue=Math.max(0,Math.min(1,Number(defender.fatigue)||0));
- const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18);
+ // Active closing defenders can read a trick better than defenders moving away.
+ // Directional awareness is opt-in: existing callers without velocity/position retain prior odds.
+ const dx=Number(p.x)-Number(defender.x),dy=Number(p.y)-Number(defender.y);
+ const vx=Number(defender.vx),vy=Number(defender.vy);
+ const closing=Number.isFinite(dx)&&Number.isFinite(dy)&&Number.isFinite(vx)&&Number.isFinite(vy)
+  && dx*dx+dy*dy>1 && dx*vx+dy*vy>0;
+ const readBonus=closing?Math.min(5,Math.hypot(vx,vy)*.4):0;
+ const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18)+readBonus;
  return Math.max(.12,Math.min(.95,.47+(offense-defense)/155+style.evade*.29));
 }
 
