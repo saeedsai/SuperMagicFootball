@@ -278,3 +278,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 ## 2026-10-22 — Trick level customization
 - Gameplay `328b7d83` and Studio `d9f633de`: choose Trick level 1–5, preserve saves and four controls, capped +0.03 duel probability at level 5.
 - 0.9.13.1 release metadata synchronized; regression `d1ac58b6`. Await exact-head Modular QA and Full Census before protected promotion and Pages verification.
+
+## 2026-10-23 — Owner clarification: rare Tricks vs normal Dribble Style
+- Canonical specification `docs/PLAYER_ABILITIES_CANONICAL.md`: four separate categories, only rare elite players equip Super Shot, Super Defence or magical Trick; neither Trick nor Dribble Style has levels.
+- Removed erroneous trick tier bonus; Studio now separates magic Trick (selection only, NOT playable yet) from Dribble Style. Provisional eligibility rating>=90 or legacy-equipped; no automatic grants.
+- Candidate 0.9.14.0 synchronized version metadata, README, cache and tests. Exact-head 4+4 CI and protected deployment pending.
