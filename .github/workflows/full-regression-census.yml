@@ -208,7 +208,7 @@ jobs:
         shell: bash
         run: |
           python3 - <<'PY'
-          import time, urllib.request, urllib.error, hashlib
+          import time, urllib.request, urllib.error, hashlib, re
           from pathlib import Path
           root='https://saeedsai.github.io/SuperMagicFootball/'
           paths=('', 'src/main.js', 'style.css', 'src/modules/ui.js', 'src/modules/release.js')
@@ -226,7 +226,10 @@ jobs:
                   assert b'SUPERMAGIC FOOTBALL' in results[''], 'Wrong HTML page'
                   assert b'id="field"' in results[''], 'Missing playable canvas'
                   assert b'type="module"' in results[''], 'Missing module entrypoint'
-                  assert b"version:'0.9.1.0'" in results['src/modules/release.js'], 'Hosted About release version is not 0.9.1.0'
+                  local_release=Path('src/modules/release.js').read_bytes()
+                  matched=re.search(rb"\bversion\s*:\s*['\"](\d+\.\d+\.\d+\.\d+)['\"]",local_release)
+                  assert matched, 'Checked-out main has no valid four-field About release version'
+                  assert matched.group(0) in results['src/modules/release.js'], 'Hosted About version differs from checked-out main: '+matched.group(1).decode()
                   actual={path:hashlib.sha256(results[path]).hexdigest() for path in paths}
                   assert actual==expected, 'Hosted Pages is stale versus checked-out main: '+str({p:(expected[p],actual[p]) for p in paths if expected[p]!=actual[p]})
                   print('HOSTED_PAGES_SMOKE_PASS',root,'exact main HTML, JS and CSS bytes',flush=True)
