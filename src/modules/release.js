@@ -6,7 +6,7 @@ const RELEASE=Object.freeze({
  notes:Object.freeze([
   'Player Studio separates rare magical Tricks from level-free Dribble Styles; magic selection is preview-only until match mechanics are implemented.',
   'Player Studio now supports choosing Super Shot types and levels 1–5 for midfielders and forwards.',
-  'Player Studio now lets outfield players choose and save one of ten trick styles.',
+  'Player Studio now lets outfield players choose and save one of ten level-free dribble styles.',
   'Rainbow Flick counterplay now scales with the approaching defender speed.',
   'Agile, fresh defenders can anticipate close-range Nutmeg tricks; tired defenders lose the counter.',
   'Live Nutmeg tricks now use the actual defender distance, movement and stamina for spatial timing and counterplay.',
