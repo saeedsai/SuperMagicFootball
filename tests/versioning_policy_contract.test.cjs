@@ -33,7 +33,7 @@ test('release module, offline cache and fixture have matching runtime wiring',()
  assert.match(ui,/import \{RELEASE\} from "\.\/release\.js"/);
  assert.match(build,/'render','release','ui'/);
  assert.match(sw,/'render','release','ui'/);
- assert.match(sw,/release-0900-v1/);
+ assert.match(sw,/release-0901-v1/);
  assert.match(ui,/version:RELEASE\.version,game/);
  assert.match(ui,/version:RELEASE\.version,exportedAt/);
 });
