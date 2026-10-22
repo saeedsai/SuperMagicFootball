@@ -114,3 +114,15 @@ test('agile fresh defenders counter spatial Nutmeg, but fatigue weakens the coun
  assert.ok(bonus(alert)<bonus(baseline));
  assert.ok(Math.abs(bonus(exhausted)-bonus({...baseline,fatigue:1}))<1e-10);
 });
+
+test('Rainbow Flick aerial counter requires nearby closing fresh defender',()=>{
+ const carrier={dribbling:75,agility:70,fatigue:0,x:0,y:0};
+ const base={aggression:65,fatigue:0,x:50,y:0,vx:-2,vy:0};
+ const rainbow={id:'rainbow',evade:.35},other={id:'sideStep',evade:.27};
+ const delta=(options,style)=>api.dribbleOdds(carrier,{...base,...options,defence:95},style)
+  -api.dribbleOdds(carrier,{...base,...options,defence:55},style);
+ assert.ok(delta({},rainbow)<delta({},other),'defence counters Rainbow more strongly');
+ for(const options of [{vx:2},{x:120},{fatigue:1}])
+  assert.ok(Math.abs(delta(options,rainbow)-delta(options,other))<1e-10,
+   'retreating, distant or exhausted defender receives no aerial counter');
+});
