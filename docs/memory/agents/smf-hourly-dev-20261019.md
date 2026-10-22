@@ -34,12 +34,6 @@ Keep hourly development enabled. Use only existing `dev` for development and pro
 - Studio UI implementation still blocked; central log records details.
 
 ## 2026-10-22 20:27 — live Nutmeg
-- Engine spatial duel wiring `056849cd`; test `c2a43a0b`; candidate v0.9.11.0 package/release/README/cache/contracts. Focused JS checks 5/5 pass; full No
-## 2026-10-22 — Player Studio trick selector
-- UI feature bd893ddc saves selected existing trick style for outfield players in roster/Career; candidate 0.9.12.0 metadata aligned through 2b59a1f7. Focused wiring test 15712a02 added. Modular QA on earlier 2b59a1f7 PASS; new exact-head QA, Full Census, promotion and Pages unverified. Next Super Shot selection, trick levels, ability restrictions, full CI.
-
-## 2026-10-22 — Super Shot Studio
-- dc309400 adds MF/FW Super Shot choice, 1–5 tier, roster/Career persistence, keep/remove; candidate 0.9.13.0 metadata and contract updated through 3bad1384; focused test de517150. Exact-head CI, full browser regression, protected promotion, Pages byte smoke pending. Continue trick levels and shot integration validation.
-
-## 2026-10-22 — Trick level Studio
-- 328b7d83 bounded trick 1–5 duel bonus; d9f633de UI selector and persistence; 0.9.13.1 candidate metadata and test d1ac58b6. Exact-head full 4+4 QA, promotion and hosted smoke pending. Keep coding on dev.
+- E
+## 2026-10-23 — owner correction: FOUR distinct categories
+- Canonical docs/PLAYER_ABILITIES_CANONICAL.md. Trick = rare magic (banana/ice/fireball/freeze/scream/hide/teleport/bat), NOT dribble. Dribble style = nutmeg/rainbow/roulette etc. Neither has levels. Supershot/Superdefence rare elite only, not every player. UI separates both; magic catalogue selection is preview-only, NOT playable. Provisional elite rating>=90 or legacy equipped. Removed trick tier gameplay. Candidate 0.9.14.0, full CI/promotion pending.
