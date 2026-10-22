@@ -84,3 +84,15 @@ test('nutmeg sweet spot outperforms edge of valid timing window',()=>{
  assert.equal(advantage(15),0);
  assert.equal(advantage(100),0);
 });
+
+test('Player Studio dribble equip preserves source and rejects keepers or unknown styles',()=>{
+ const source={id:'p42',role:'MF',name:'Player',dribbleType:'default',appearance:{hair:2}};
+ const equipped=api.withStudioDribble(source,'default');
+ assert.equal(equipped.dribbleType,'default');
+ assert.equal(equipped.id,source.id);
+ assert.equal(equipped.appearance,source.appearance);
+ assert.notEqual(equipped,source);
+ assert.equal(source.dribbleType,'default');
+ assert.throws(()=>api.withStudioDribble({...source,role:'GK'},'default'),/outfield/);
+ assert.throws(()=>api.withStudioDribble(source,'nonexistent'),/Unknown dribble style/);
+});
