@@ -31,11 +31,20 @@ test('attacker fatigue is clamped for dribble odds',()=>{
 });
 
 test('closing defender gets bounded read bonus, retreating defender does not',()=>{
- const carrier={...attacker,x:100,y:0};
+ const carrier={...attacker,x:80,y:0};
  const base={...defender,x:0,y:0,fatigue:0};
  const retreat=api.dribbleOdds(carrier,{...base,vx:-8,vy:0},styles[0]);
  const closing=api.dribbleOdds(carrier,{...base,vx:8,vy:0},styles[0]);
  assert.ok(closing<retreat);
  assert.equal(retreat,api.dribbleOdds(carrier,{...base,vx:0,vy:0},styles[0]));
  assert.equal(api.dribbleOdds(carrier,{...base,vx:100,vy:0},styles[0]),api.dribbleOdds(carrier,{...base,vx:12.5,vy:0},styles[0]));
+});
+
+test('closing bonus fades beyond pressure radius',()=>{
+ const near={...attacker,x:80,y:0};
+ const far={...attacker,x:300,y:0};
+ const chaser={...defender,x:0,y:0,vx:8,vy:0};
+ const still={...chaser,vx:0};
+ assert.ok(api.dribbleOdds(near,chaser,styles[0])<api.dribbleOdds(near,still,styles[0]));
+ assert.equal(api.dribbleOdds(far,chaser,styles[0]),api.dribbleOdds(far,still,styles[0]));
 });
