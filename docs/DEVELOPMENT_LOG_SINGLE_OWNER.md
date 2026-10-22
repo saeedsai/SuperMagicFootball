@@ -160,3 +160,9 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - Source commits `6b2cc2fd` (canonical level), `d5e37287` (unassigned high-rated defender eligibility), tests `ed0ced09` and `4593285b`. New tests are **committed, not yet confirmed executed**. No UI selection or new player-facing version release.
 - Keep 0.9.2.0 SAVE-103 release candidate gated on exact-head 4+4 Node/Chromium, Modular QA, main promotion and hosted Pages hashes.
 - Next five: (1) obtain and repair exact-head CI (2) certify SAVE-103 0.9.2.0 deployment and README (3) Studio verified role/level test fixtures and ability equip/persistence (4) four-button Trick and counterplay (5) LAN two-client MVP and animation QA.
+
+## 2026-10-22 temporary Studio branch preservation
+- Audited `work/studio-defence-ability-20261022`: exactly two unique commits relative to dev; branch is 15 commits behind, so an unconditional merge is inappropriate. Unique code: pure `withStudioDefence` equipment helper and Studio test suite.
+- Integrated and adapted the helper to current `dev` with `a1e9a3f879f945f856d6192846c0ceefe69daa1f`; added adapted `tests/studio_defence_ability.test.cjs` with `57c91f83270d5819b630610765418635625cae6e`. This preserves newer current-dev `studioDefenceChoices` eligibility and stable roster/save behavior. No user-facing equipment UI, version change, CI certification or Pages release claimed.
+- The connected GitHub action set has **no branch-delete/ref-delete operation**. Leave the extra branch intact rather than imply removal; after independent test review owner may delete via GitHub Branches UI. Branch count remains three until deletion actually succeeds.
+- Next five: focused/full exact-head QA, confirm branch test parity, remove historical branch via authorized GitHub UI, certify 0.9.2.0 Pages, then Studio equipment UI / Tricks / LAN in separate increments.
