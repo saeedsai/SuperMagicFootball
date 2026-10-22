@@ -32,6 +32,9 @@ function withStudioDefence(player,id,level){
  if(!Number.isInteger(tier)||tier<1||tier>5)throw Error('Defence tier must be a whole number from 1 to 5');
  if(!['keep','none',...STUDIO_DEFENCE_IDS].includes(id))throw Error('Unknown defensive ability');
  if(id==='spinBumper'&&tier<3)throw Error('Spinning Bumper requires defence tier 3 or higher');
+ // All explicit equipment choices must be available at the selected tier.
+ if(id!=='keep'&&id!=='none'&&!studioDefenceChoices(source,tier).some(move=>move.id===id))
+  throw Error('Defensive ability is unavailable at the selected tier');
  const updated={...source,superDefenceLevel:tier};
  if(id==='keep'&&updated.superAbility?.type==='defence'){
   if(updated.superAbility.id==='spinBumper'&&tier<3)
