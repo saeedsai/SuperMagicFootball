@@ -207,3 +207,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - `src/modules/dribbles.js`: clamp attacker fatigue to [0,1] before applying the existing 28% maximum stamina penalty; commit `4eef2223`.
 - Regression test extended for negative/excessive fatigue; version, About notes, README, offline cache and policy updated.
 - Await exact-head full 4 Node + 4 Chromium and Modular QA, protected main promotion and hosted Pages byte smoke; do not claim production release.
+
+## 2026-10-22 — Closing-defender dribble-read candidate 0.9.9.0
+- `src/modules/dribbles.js`: a defender with finite positions/velocity moving toward the ball carrier receives at most +5 defence points in dribble duel odds; stationary, retreating and legacy positionless callers retain prior behavior. Commit `76e1db65`.
+- Regression test covers closing/retreating behavior and bonus cap (`6513273e`); About, README, package, offline cache and version contract moved to 0.9.9.0.
+- CI full 4+4, Modular QA, protected main promotion and hosted Pages SHA verification are not yet observed; keep candidate unreleased until green exact-head gates.
