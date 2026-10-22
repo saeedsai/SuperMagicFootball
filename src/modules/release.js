@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.9.2',
+ version:'0.9.10.0',
  date:'2026-10-22',
  notes:Object.freeze([
+  'Agile ball carriers can now sidestep nearby closing defenders, with a stamina-sensitive capped footwork advantage.',
   'Fatigued defenders now have a weaker close-pressure read advantage during dribble duels.',
   'Closing-defender dribble-read advantage now fades with distance and disappears beyond the close-pressure radius.',
   'Dribble duels now reward actively closing defenders with a bounded read bonus; retreating defenders gain no bonus.',
