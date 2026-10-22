@@ -29,3 +29,13 @@ test('attacker fatigue is clamped for dribble odds',()=>{
  assert.equal(api.dribbleOdds({...attacker,fatigue:0},defender,styles[0]),api.dribbleOdds({...attacker,fatigue:-10},defender,styles[0]));
  assert.ok(api.dribbleOdds({...attacker,fatigue:1},defender,styles[0])<api.dribbleOdds({...attacker,fatigue:0},defender,styles[0]));
 });
+
+test('closing defender gets bounded read bonus, retreating defender does not',()=>{
+ const carrier={...attacker,x:100,y:0};
+ const base={...defender,x:0,y:0,fatigue:0};
+ const retreat=api.dribbleOdds(carrier,{...base,vx:-8,vy:0},styles[0]);
+ const closing=api.dribbleOdds(carrier,{...base,vx:8,vy:0},styles[0]);
+ assert.ok(closing<retreat);
+ assert.equal(retreat,api.dribbleOdds(carrier,{...base,vx:0,vy:0},styles[0]));
+ assert.equal(api.dribbleOdds(carrier,{...base,vx:100,vy:0},styles[0]),api.dribbleOdds(carrier,{...base,vx:12.5,vy:0},styles[0]));
+});
