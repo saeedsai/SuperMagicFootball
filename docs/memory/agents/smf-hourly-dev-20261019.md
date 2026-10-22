@@ -37,3 +37,6 @@ Keep hourly development enabled. Use only existing `dev` for development and pro
 - Engine spatial duel wiring `056849cd`; test `c2a43a0b`; candidate v0.9.11.0 package/release/README/cache/contracts. Focused JS checks 5/5 pass; full No
 ## 2026-10-22 — Player Studio trick selector
 - UI feature bd893ddc saves selected existing trick style for outfield players in roster/Career; candidate 0.9.12.0 metadata aligned through 2b59a1f7. Focused wiring test 15712a02 added. Modular QA on earlier 2b59a1f7 PASS; new exact-head QA, Full Census, promotion and Pages unverified. Next Super Shot selection, trick levels, ability restrictions, full CI.
+
+## 2026-10-22 — Super Shot Studio
+- dc309400 adds MF/FW Super Shot choice, 1–5 tier, roster/Career persistence, keep/remove; candidate 0.9.13.0 metadata and contract updated through 3bad1384; focused test de517150. Exact-head CI, full browser regression, protected promotion, Pages byte smoke pending. Continue trick levels and shot integration validation.
