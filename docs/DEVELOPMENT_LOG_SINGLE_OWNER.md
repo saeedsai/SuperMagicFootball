@@ -212,3 +212,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - `src/modules/dribbles.js`: a defender with finite positions/velocity moving toward the ball carrier receives at most +5 defence points in dribble duel odds; stationary, retreating and legacy positionless callers retain prior behavior. Commit `76e1db65`.
 - Regression test covers closing/retreating behavior and bonus cap (`6513273e`); About, README, package, offline cache and version contract moved to 0.9.9.0.
 - CI full 4+4, Modular QA, protected main promotion and hosted Pages SHA verification are not yet observed; keep candidate unreleased until green exact-head gates.
+
+## 2026-10-22 — Proximity-aware defender reads candidate 0.9.9.1
+- `src/modules/dribbles.js` commit `caad53fe`: close-pressure distance factor (full inside 60 units, linear fade through 180) bounds prior +5 closing read bonus; outside range and retreating defenders receive none.
+- Regression extended to cover close/far read (`e5dbc00e`); package, release/About, README, offline cache and version contract moved to 0.9.9.1.
+- Exact-head 4+4 CI, Modular QA, protected promotion and Pages byte smoke not yet verified. No production release claim.
