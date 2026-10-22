@@ -34,15 +34,7 @@ Keep hourly development enabled. Use only existing `dev` for development and pro
 - Studio UI implementation still blocked; central log records details.
 
 ## 2026-10-22 20:27 — live Nutmeg
-- Engine spatial duel wiring `056849cd`; test `c2a43a0b`; candidate v0.9.11.0 package/release/README/cache/contracts. Focused JS checks 5/5 pass; full Node/Chromium, Modular QA and hosted Pages pending. Continue Player Studio selector next. Do not bypass CI.
-
-## 2026-10-22 — Defender Nutmeg counter
-- Feature `6140a66f`, test `9d3bbde6`, v0.9.11.1 synchronized across package/release/README/sw/version contracts. Focused 4/4 JS checks pass. Full 4+4 CI, Modular QA, main promotion and Pages unverified; keep coding on dev.
-
-## 2026-10-22 21:04 — Rainbow Flick
-- `dev` feature `3ce145a0`, live-stat correction `17e9c893`, test `037b6b58`; focused 4/4 pass. Modular QA #39837346423 green, full #39837346503 pending.
-- Safety checks rejected UI selector and all six release metadata/test/docs updates. Dev remains 0.9.11.1 despite changed gameplay: must repair version sync before certification. Main at `afdbe8a4` when checked. Continue authorized work; no bypass.
-
-## 2026-10-22 22:33 — continuation
-- Rechecked dev/main: both c84d3eccdd41530fd0f86b1960db040737d08759. Latest main Full Census #39839640160 cancelled; not new certification.
-- Continue small Player Studio feature on dev; never treat release backlog as stop. Verify exact head and full CI before promotion.
+- Engine spatial duel wiring `056849cd`; test `c2a43a0b`; candidate v0.9.11.0 package/release/README/cache/contracts. Focused JS checks 5/5 pass; full Node/Chromium, Modular QA and hosted Pages pending. Continue Player Studio selector next. Do not bypas
+## 2026-10-22 — write rejection diagnosis
+- GitHub Contents API write confirmed working on dev: checkpoint commit 041b0ce9; exact-head Full Census #39849954239 and Modular QA #39849954322 both passed.
+- Previous safety rejections of source/UI and release updates do not prove GitHub permission failure. Rejection originates at platform safety gate; precise trigger not disclosed. Do not evade. Use scoped legitimate edits and record exact error; escalate persistent false positives through support.
