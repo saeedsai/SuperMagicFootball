@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.7.1',
+ version:'0.9.8.0',
  date:'2026-10-22',
  notes:Object.freeze([
+  'Defender fatigue now reduces defensive effectiveness against dribbles by up to 18%, making fresh substitutions more valuable.',
   'Player Studio validates defensive equipment against the chosen defence tier before saving.',
   'Trick counterplay now requires closing defenders to face the attacker; sprinting away cannot gain the trick-read bonus.',
   'Active defenders now counter double-Dribble tricks by moving toward the ball carrier; the read bonus is capped and no extra button is needed.',
