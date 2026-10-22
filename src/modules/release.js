@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.14.1',
+ version:'0.9.15.0',
  date:'2026-10-22',
  notes:Object.freeze([
+  'Player Studio and team roster stats now share distinctive badges for every Super Shot, Super Defence, Magic Trick and Dribble Style.',
   'Elite ability eligibility now handles missing or invalid player ratings safely.',
   'Player Studio separates rare magical Tricks from level-free Dribble Styles; magic selection is preview-only until match mechanics are implemented.',
   'Player Studio now supports choosing Super Shot types and levels 1–5 for midfielders and forwards.',
