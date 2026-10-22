@@ -263,3 +263,9 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - New gameplay `118e0b34`: closing defender speed scales Rainbow Flick anticipation; no new button or save schema.
 - Candidate 0.9.11.2 metadata synchronized in package, release, README, offline cache, policy and version tests; focused regression added `ded6d2e4`.
 - Exact-head 4 Node + 4 Chromium, Modular QA and hosted byte smoke not yet verified. No production claim. Continue next feature on dev independently.
+
+## 2026-10-22 — Player Studio trick customization candidate
+- `bd893ddc`: outfield Trick Style selector from ten existing styles; save through roster or Career, preserving four controls.
+- Candidate 0.9.12.0 synchronized package, release, README, service-worker cache, policy, version tests.
+- `15712a02`: focused UI wiring and persistence-path test. Earlier exact-head 2b59a1f7 Modular QA PASS; Full Census pending. Newer dev head needs independent exact-head full verification; no production deployment claim.
+- Next: Super Shot/Defence/Trick levels, live behavior, CI and hosted Pages byte smoke.
