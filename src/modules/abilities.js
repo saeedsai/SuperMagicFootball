@@ -8,14 +8,16 @@ const DEFENCE_MOVES=Object.freeze(GAME_ASSETS.mechanics.defensiveAbilities);
 const KEEPER_MOVES=Object.freeze(GAME_ASSETS.mechanics.keeperAbilities);
 // Studio catalogue is read-only until a player-facing equipment release is certified.
 // Preserve default roster abilities; only the role and existing level determine eligibility.
-function studioDefenceChoices(player){
+function studioDefenceChoices(player,selectedTier){
  const source=player?.src||player;
  const role=String(source?.role||source?.position||'').toUpperCase();
  // Unassigned defenders can still qualify for a Studio preview by their rating.
  // Do not mutate or silently equip the existing roster.
  const explicit=Number(source?.superDefenceLevel??(source?.superAbility?.type==='defence'?source.superAbility.level:null));
  const rated=Number(source?.rating)>=86?3:Number(source?.rating)>=74?2:1;
- const level=Number.isInteger(explicit)&&explicit>=1&&explicit<=5?explicit:Math.max(abilityLevel(player,'defence'),rated);
+ const baseline=Number.isInteger(explicit)&&explicit>=1&&explicit<=5?explicit:Math.max(abilityLevel(player,'defence'),rated);
+ const requested=Number(selectedTier);
+ const level=selectedTier!==undefined&&Number.isInteger(requested)&&requested>=1&&requested<=5?requested:baseline;
  if(role!=='DF')return [];
  return ['drill','burst','spinBumper'].filter(id=>DEFENCE_MOVES[id]&&(id!=='spinBumper'||level>=3))
   .map(id=>({id,name:String(DEFENCE_MOVES[id].name||id),minLevel:id==='spinBumper'?3:1}));
