@@ -75,7 +75,7 @@ test('sidestep advantage disappears for distant or exhausted ball carriers',()=>
 
 test('nutmeg sweet spot outperforms edge of valid timing window',()=>{
  const carrier={...attacker,dribbling:95,agility:75,x:0,y:0};
- const rival={...defender,defence:65,aggression:65,vx:-5,vy:0};
+ const rival={...defender,defence:65,aggression:65,y:0,vx:-5,vy:0};
  const nutmeg={...styles[0],nutmeg:true};
  const plain={...styles[0],nutmeg:false};
  const advantage=d=>api.dribbleOdds(carrier,{...rival,x:d},nutmeg)-api.dribbleOdds(carrier,{...rival,x:d},plain);
