@@ -49,15 +49,16 @@ test('Rainbow Flick counter grows with approach speed, not retreat',()=>{
  assert.ok(slow<retreat,'retreating defender must not receive aerial counter');
 });
 
-test('Player Studio exposes trick selector and save handler without a fifth button',()=>{
+test('Player Studio separates elite magical Tricks from normal dribble styles',()=>{
  const ui=fs.readFileSync('src/modules/ui.js','utf8');
- assert.match(ui,/id="studioTrick"/);
- assert.match(ui,/DRIBBLES\.DRIBBLE_STYLES\.map/);
- assert.match(ui,/function saveStudioTrick\(\)/);
- assert.match(ui,/DRIBBLES\.withStudioDribble\(source\[avatarIndex\]/);
- assert.match(ui,/storeCharacterChanges\('edits',updated\)/);
- assert.match(ui,/storeCharacterChanges\('managerCareer',updated\)/);
- assert.match(ui,/a==='saveStudioTrick'\)saveStudioTrick\(\)/);
+ assert.match(ui,/id="studioDribble"/);
+ assert.match(ui,/id="studioMagic"/);
+ assert.match(ui,/STUDIO_MAGIC_TRICKS/);
+ assert.match(ui,/function saveStudioMagic\(\)/);
+ assert.match(ui,/magicTrick=id/);
+ assert.match(ui,/Number\(player.rating\)<90/);
+ assert.match(ui,/DRIBBLES\.withStudioDribble\(source\[avatarIndex\],\$\('studioDribble'\)\?\.value\)/);
+ assert.doesNotMatch(ui,/id="studioTrickTier"/);
 });
 
 test('Player Studio Super Shot selection validates levels and persists Career and roster edits',()=>{
@@ -71,18 +72,12 @@ test('Player Studio Super Shot selection validates levels and persists Career an
  assert.match(ui,/a==='saveStudioShot'\)saveStudioShot\(\)/);
 });
 
-test('Trick levels persist and improve dribble odds only within bounded range',()=>{
- const p=player();p.dribbling=75;p.agility=75;p.fatigue=0;
- const style=DRIBBLES.DRIBBLE_STYLES[0];
- const one=DRIBBLES.withStudioDribble(p,style.id,1);
- const five=DRIBBLES.withStudioDribble(p,style.id,5);
- assert.equal(one.trickLevel,1);assert.equal(five.trickLevel,5);
- assert.equal(p.trickLevel,undefined);
- const rival={defence:75,aggression:70,fatigue:0};
- const low=DRIBBLES.dribbleOdds(one,rival,style),high=DRIBBLES.dribbleOdds(five,rival,style);
- assert.ok(high>low);assert.ok(high-low<=.031);
- for(const invalid of [0,6,1.5,'abc'])assert.throws(()=>DRIBBLES.withStudioDribble(p,style.id,invalid),/Trick level/);
- const ui=fs.readFileSync('src/modules/ui.js','utf8');
- assert.match(ui,/id="studioTrickTier"/);
- assert.match(ui,/DRIBBLES\.withStudioDribble\(source\[avatarIndex\],\$\('studioTrick'\)\?\.value,Number\(\$\('studioTrickTier'\)\?\.value\)\)/);
+test('dribble styles have no levels or level-based duel bonus',()=>{
+ const p=player(),style=DRIBBLES.DRIBBLE_STYLES[0];
+ const chosen=DRIBBLES.withStudioDribble(p,style.id);
+ assert.equal(chosen.dribbleType,style.id);
+ assert.equal(chosen.trickLevel,undefined);
+ assert.equal(p.dribbleType,undefined);
+ const rival={defence:70,aggression:70,fatigue:0};
+ assert.equal(DRIBBLES.dribbleOdds({...chosen,trickLevel:5},rival,style),DRIBBLES.dribbleOdds({...chosen,trickLevel:1},rival,style));
 });
