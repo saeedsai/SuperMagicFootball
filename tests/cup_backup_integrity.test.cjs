@@ -86,3 +86,15 @@ test('SAVE-103 preview is validated and read-only',()=>{
  assert.throws(()=>dst.inspectBackup(JSON.stringify(tampered)),/integrity/);
  assert.equal(storage.getItem('legend_cupSlots'),before);
 });
+
+test('SAVE-103 refuses oversized nested backup payload and preserves existing Cup slots',()=>{
+ const storage=memory(),cup=api.create(storage);
+ cup.save(1,valid(),'existing');
+ const before=storage.getItem('legend_cupSlots');
+ const huge=JSON.parse(cup.exportBackup());
+ huge.payload='x'.repeat(2000001);
+ assert.throws(()=>cup.inspectBackup(JSON.stringify(huge)),/Unsupported Cup backup format/);
+ assert.throws(()=>cup.importBackup(JSON.stringify(huge),{overwrite:true}),/Unsupported Cup backup format/);
+ assert.equal(storage.getItem('legend_cupSlots'),before);
+ assert.equal(cup.list()[0].name,'existing');
+});
