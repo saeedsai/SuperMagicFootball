@@ -36,7 +36,10 @@ function dribbleOdds(p,defender,style){
  const evasiveFootwork=closing&&proximity>0
   ?Math.min(4,Math.max(0,((Number(p.agility)||0)-65)/12))*proximity*(1-attackerFatigue)
   :0;
- const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18)+readBonus-evasiveFootwork;
+ const nutmegWindow=style?.nutmeg&&closing&&distance>=15&&distance<100;
+ const nutmegSkill=Math.max(0,Math.min(5,((Number(p.dribbling)||0)-((Number(defender.defence)||0)*.65+(Number(defender.aggression)||0)*.35)*.7)/8));
+ const nutmegBonus=nutmegWindow?nutmegSkill*Math.min(1,(100-distance)/65)*(1-attackerFatigue):0;
+ const defense=(defender.defence*.67+defender.aggression*.33)*(1-defenderFatigue*.18)+readBonus-evasiveFootwork-nutmegBonus;
  return Math.max(.12,Math.min(.95,.47+(offense-defense)/155+style.evade*.29));
 }
 
