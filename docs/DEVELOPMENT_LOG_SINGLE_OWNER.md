@@ -274,3 +274,7 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - `dc309400`: MF/FW Studio Super Shot choice and 1–5 tier with keep/remove; save in Career and edited roster. No extra buttons or save schema migration.
 - 0.9.13.0 candidate release metadata, README, cache and contract synchronized; focused UI test `de517150`.
 - Exact-head Node/Chromium 4+4, Modular QA, protected promotion and hosted Pages byte smoke still require certification. Continue trick level design and gameplay validation.
+
+## 2026-10-22 — Trick level customization
+- Gameplay `328b7d83` and Studio `d9f633de`: choose Trick level 1–5, preserve saves and four controls, capped +0.03 duel probability at level 5.
+- 0.9.13.1 release metadata synchronized; regression `d1ac58b6`. Await exact-head Modular QA and Full Census before protected promotion and Pages verification.
