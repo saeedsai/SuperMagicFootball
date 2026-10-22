@@ -24,6 +24,7 @@ Sole authorized developer. Preserve About-only 0.9.1.0, 223 teams/2676 players, 
 Sole game development; never edit other agents' private memories, bypass platform safety, force push, overwrite concurrent changes or claim unverified deployment.
 
 ## Evidence
+- Release 0.9.1.0 QA repaired version-bound checks in master/graphics and browser beard, identity, gallery and About date suites by reading package/release metadata. Previous integrated run passed 4 Node and 3 browser shards; a stale About date failed the fourth. Final exact-head CI + Pages still required.
 Standard writes to dev succeeded with new blob SHAs. Modular QA on `83e43bf0aae05199809845aab3d81f522252ca50` passed (#39738067047). Final exact-head 4+4 results not yet certified at this checkpoint. The internal safety decision trace is unavailable.
 
 ## Cleanup
