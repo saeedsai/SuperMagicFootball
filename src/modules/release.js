@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.8.1',
+ version:'0.9.9.0',
  date:'2026-10-22',
  notes:Object.freeze([
+  'Dribble duels now reward actively closing defenders with a bounded read bonus; retreating defenders gain no bonus.',
   'Attacker stamina penalties in dribble success now remain bounded for out-of-range fatigue values.',
   'Defender fatigue now reduces defensive effectiveness against dribbles by up to 18%, making fresh substitutions more valuable.',
   'Player Studio validates defensive equipment against the chosen defence tier before saving.',
