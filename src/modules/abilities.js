@@ -9,10 +9,11 @@ const KEEPER_MOVES=Object.freeze(GAME_ASSETS.mechanics.keeperAbilities);
 // Studio catalogue is read-only until a player-facing equipment release is certified.
 // Preserve default roster abilities; only the role and existing level determine eligibility.
 function studioDefenceChoices(player){
- const role=String(player?.role||player?.position||'').toUpperCase();
- const level=Number(player?.superAbility?.level??player?.abilityLevel??0);
- if(role!=='DF'||!Number.isFinite(level)||level<3)return [];
- return Object.keys(DEFENCE_MOVES).filter(id=>id==='spinBumper' || id===player?.superAbility?.id)
+ const source=player?.src||player;
+ const role=String(source?.role||source?.position||'').toUpperCase();
+ const level=abilityLevel(player,'defence');
+ if(role!=='DF'||level<3)return [];
+ return Object.keys(DEFENCE_MOVES).filter(id=>id==='spinBumper' || id===source?.superAbility?.id)
   .map(id=>({id,name:String(DEFENCE_MOVES[id]?.name||id),minLevel:3}));
 }
 function fieldAbility(player){const a=player?.superAbility;return a?.type==='defence' ? DEFENCE_MOVES[a.id]??null : null;}
