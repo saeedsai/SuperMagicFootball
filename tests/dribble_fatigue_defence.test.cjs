@@ -72,3 +72,15 @@ test('sidestep advantage disappears for distant or exhausted ball carriers',()=>
  assert.ok(Math.abs(api.dribbleOdds(carrier,far,styles[0])-api.dribbleOdds(equalBase,far,styles[0]))<1e-10);
  assert.ok(Math.abs(api.dribbleOdds({...carrier,fatigue:1},close,styles[0])-api.dribbleOdds({...equalBase,fatigue:1},close,styles[0]))<1e-10);
 });
+
+test('nutmeg sweet spot outperforms edge of valid timing window',()=>{
+ const carrier={...attacker,dribbling:95,agility:75,x:0,y:0};
+ const rival={...defender,defence:65,aggression:65,vx:-5,vy:0};
+ const nutmeg={...styles[0],nutmeg:true};
+ const plain={...styles[0],nutmeg:false};
+ const advantage=d=>api.dribbleOdds(carrier,{...rival,x:d},nutmeg)-api.dribbleOdds(carrier,{...rival,x:d},plain);
+ assert.ok(advantage(50)>advantage(20));
+ assert.ok(advantage(50)>advantage(95));
+ assert.equal(advantage(15),0);
+ assert.equal(advantage(100),0);
+});
