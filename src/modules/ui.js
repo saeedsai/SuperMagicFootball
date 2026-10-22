@@ -2,6 +2,7 @@
 import {AUDIO} from "./audio.js";
 import {KITS} from "./kits.js";
 import {SPECIALS} from "./specials.js";
+import {ABILITIES} from "./abilities.js";
 import {STATS} from "./stats.js";
 import {MORALE} from "./morale.js";
 import {DATA} from "./data.js";
@@ -805,8 +806,10 @@ function showPlayerStudio(index=0){avatarIndex=Math.max(0,Math.min(11,Number(ind
   ['style','HAIRSTYLE'],['face','FACE SHAPE'],['eyes','EYE SHAPE'],['brows','EYEBROWS'],['eyeColor','EYE COLOR'],['nose','NOSE'],['lips','LIPS'],
   ['body','BUILD'],['stature','HEIGHT STYLE'],['exaggeration','FUNNY SCALE'],['beard','FACIAL HAIR'],['accessory','ACCESSORY'],['freckles','FRECKLES'],['scar','SCARS'],['tattoo','TATTOOS']
  ].map(([id,name])=>`<label>${name}<select class="choice" id="face_${id}">${studioNumberOptions(id,av[id]??0)}</select></label>`).join('');
+ const defenceChoices=ABILITIES.studioDefenceChoices(player);
+ const defenceSelector=player.role==='DF'? `<div class="panel"><h3>SUPER DEFENCE</h3><p class="muted">Only eligible defenders can equip available defence abilities. No extra action button is added.</p><label>DEFENCE TIER<select class="choice" id="studioDefTier">${[1,2,3,4,5].map(n=>`<option value="${n}" ${n===SPECIALS.abilityLevel(player,'defence')?'selected':''}>${n}</option>`).join('')}</select></label><label>ABILITY<select class="choice" id="studioDefAbility"><option value="keep">KEEP CURRENT</option><option value="none">REMOVE DEFENCE</option>${defenceChoices.map(a=>`<option value="${escapeHTML(a.id)}">${escapeHTML(a.name)}</option>`).join('')}</select></label><div class="row">${button('SAVE DEFENCE ABILITY','saveStudioDefence')}</div></div>`:'';
  studioGallerySignature='';
- page('PLAYER CUSTOMIZATION','Every player has a persistent, editable HD caricature. Modify facial structure, funny exaggeration, hair, expressions and personal details.',`<div class="twoCol"><div class="panel">${career?'':teamField('SELECT TEAM','customTeam',nations(),home)}${field('PLAYER','customPlayer',squad.map((p,i)=>[i,`#${p.num} ${p.name}`]),avatarIndex)}<div class="characterStage"><canvas id="customPortrait" width="300" height="260" role="img" aria-label="Rotatable player preview"></canvas><div class="row studioRotateControls"><button type="button" class="btn" data-action="studioLeft" aria-label="Rotate character left 45 degrees">◀ ROTATE</button><strong id="customAngleLabel">${STUDIO_DIRS[studioDirection].label}</strong><button type="button" class="btn" data-action="studioRight" aria-label="Rotate character right 45 degrees">ROTATE ▶</button></div><p class="muted" style="margin:0">Drag the player horizontally to turn • eight views</p><div class="row studioMotionControls"><label class="fieldLabel" for="customPose">PREVIEW MOTION</label><select id="customPose" class="choice">${STUDIO_ACTIONS.map(a=>`<option value="${a}" ${a===studioAction?'selected':''}>${a.toUpperCase()}</option>`).join('')}</select><button type="button" class="btn" data-action="studioSpin">${studioSpin?'■ STOP TURN':'↻ AUTO ROTATE'}</button></div><div>${escapeHTML(player.name)} · ${player.role}<p>${escapeHTML(player.shotName||'Super shot')}</p></div></div><div class="row">${button(studioGalleryOpen?'HIDE 8-VIEW GALLERY':'COMPARE ALL 8 VIEWS','studioGalleryToggle')}</div>${studioGalleryOpen?studioEightViewMarkup():''}<div class="row">${button('✓ SAVE CHARACTER','saveAppearance','gold')}${button('RANDOMIZE FACE','randomizeFace')}</div></div><div class="panel"><div class="avatarControls">${colorControls}${assetControls}</div><p class="muted">Customization now uses curated natural skin and hair palettes, exposes every hairstyle and face asset used by the renderer, and adds tattoo choices so the editor matches the drawable character system.</p>${studioStatControls(player)}</div></div>`,career?'careerSquad':'home');drawCustomizer();}
+ page('PLAYER CUSTOMIZATION','Every player has a persistent, editable HD caricature. Modify facial structure, funny exaggeration, hair, expressions and personal details.',`<div class="twoCol"><div class="panel">${career?'':teamField('SELECT TEAM','customTeam',nations(),home)}${field('PLAYER','customPlayer',squad.map((p,i)=>[i,`#${p.num} ${p.name}`]),avatarIndex)}<div class="characterStage"><canvas id="customPortrait" width="300" height="260" role="img" aria-label="Rotatable player preview"></canvas><div class="row studioRotateControls"><button type="button" class="btn" data-action="studioLeft" aria-label="Rotate character left 45 degrees">◀ ROTATE</button><strong id="customAngleLabel">${STUDIO_DIRS[studioDirection].label}</strong><button type="button" class="btn" data-action="studioRight" aria-label="Rotate character right 45 degrees">ROTATE ▶</button></div><p class="muted" style="margin:0">Drag the player horizontally to turn • eight views</p><div class="row studioMotionControls"><label class="fieldLabel" for="customPose">PREVIEW MOTION</label><select id="customPose" class="choice">${STUDIO_ACTIONS.map(a=>`<option value="${a}" ${a===studioAction?'selected':''}>${a.toUpperCase()}</option>`).join('')}</select><button type="button" class="btn" data-action="studioSpin">${studioSpin?'■ STOP TURN':'↻ AUTO ROTATE'}</button></div><div>${escapeHTML(player.name)} · ${player.role}<p>${escapeHTML(player.shotName||'Super shot')}</p></div></div><div class="row">${button(studioGalleryOpen?'HIDE 8-VIEW GALLERY':'COMPARE ALL 8 VIEWS','studioGalleryToggle')}</div>${studioGalleryOpen?studioEightViewMarkup():''}<div class="row">${button('✓ SAVE CHARACTER','saveAppearance','gold')}${button('RANDOMIZE FACE','randomizeFace')}</div></div><div class="panel"><div class="avatarControls">${colorControls}${assetControls}</div><p class="muted">Customization now uses curated natural skin and hair palettes, exposes every hairstyle and face asset used by the renderer, and adds tattoo choices so the editor matches the drawable character system.</p>${studioStatControls(player)}${defenceSelector}</div></div>`,career?'careerSquad':'home');drawCustomizer();}
 function getAppearance(){const numeric=['style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo'];return Object.fromEntries(['skin','hair',...numeric].map(k=>[k,k==='skin'||k==='hair'?$('face_'+k).value:+$('face_'+k).value]))}
 function drawCustomizer(){
  const canvas=$('customPortrait');if(!canvas)return;
@@ -857,6 +860,28 @@ function storeCharacterChanges(key,payload){
   alert('Could not save character changes. '+(restored?'Your earlier saved appearance was restored.':'The previous save could not be verified. Please use an exported backup.'));
   return false;
  }
+}
+function saveStudioDefence(){
+ try{
+  const isCareer=!!(career&&home===career.club);
+  const source=isCareer?career.roster.map(p=>({...p})):roster(home);
+  if(!source?.[avatarIndex])throw Error('No selected player');
+  const ability=$('studioDefAbility')?.value,tier=Number($('studioDefTier')?.value);
+  if(!ability)throw Error('Select a defender ability');
+  if(ability!=='keep'&&ability!=='none'&&!ABILITIES.studioDefenceChoices(source[avatarIndex]).some(a=>a.id===ability))
+   throw Error('This defender is not eligible for that ability');
+  source[avatarIndex]=ABILITIES.withStudioDefence(source[avatarIndex],ability,tier);
+  if(isCareer){
+   const updated={...career,roster:source};
+   if(!storeCharacterChanges('managerCareer',updated))return;
+   career=updated;saveCareer();
+  }else{
+   const updated={...edits,[TEAMS[home].id]:source};
+   if(!storeCharacterChanges('edits',updated))return;
+   edits=updated;
+  }
+  showPlayerStudio(avatarIndex);
+ }catch(error){alert('Cannot save Super Defence: '+error.message)}
 }
 function saveAppearance(){
  const isCareer=!!(career&&home===career.club);
@@ -1065,7 +1090,7 @@ function action(a){audio.cue('ui');
   drawCustomizer();
  }
  else if(a==='studioLeft')studioRotate(-1);else if(a==='studioRight')studioRotate(1);else if(a==='studioSpin'){studioSpin=!studioSpin;const btn=menu.querySelector('[data-action=studioSpin]');if(btn)btn.textContent=studioSpin?'■ STOP TURN':'↻ AUTO ROTATE';drawCustomizer()}
- else if(a==='saveStudioStats')saveStudioStats();else if(a==='resetStudioStats'){const player=(career&&home===career.club?career.roster:roster(home))[avatarIndex];if(player){const normalized=withStats(player);for(const key of NUMERIC_STATS)if($('stat_'+key))$('stat_'+key).value=String(normalized[key]);studioStatPreview();}}else if(a==='playerStudio')showPlayerStudio();else if(a.startsWith('editPlayer'))showPlayerStudio(+a.slice(10));else if(a==='saveAppearance')saveAppearance();else if(a==='randomizeFace'){const el=$('face_style');if(el){for(const k of ['style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo']){const node=$('face_'+k);node.value=Math.floor(Math.random()*node.options.length)}const skinNode=$('face_skin'),hairNode=$('face_hair');if(skinNode)skinNode.value=NATURAL_SKIN_TONES[Math.floor(Math.random()*NATURAL_SKIN_TONES.length)][0];if(hairNode)hairNode.value=NATURAL_HAIR_COLORS[Math.floor(Math.random()*NATURAL_HAIR_COLORS.length)][0];drawCustomizer()}}
+ else if(a==='saveStudioStats')saveStudioStats();else if(a==='resetStudioStats'){const player=(career&&home===career.club?career.roster:roster(home))[avatarIndex];if(player){const normalized=withStats(player);for(const key of NUMERIC_STATS)if($('stat_'+key))$('stat_'+key).value=String(normalized[key]);studioStatPreview();}}else if(a==='playerStudio')showPlayerStudio();else if(a.startsWith('editPlayer'))showPlayerStudio(+a.slice(10));else if(a==='saveAppearance')saveAppearance();else if(a==='saveStudioDefence')saveStudioDefence();else if(a==='randomizeFace'){const el=$('face_style');if(el){for(const k of ['style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo']){const node=$('face_'+k);node.value=Math.floor(Math.random()*node.options.length)}const skinNode=$('face_skin'),hairNode=$('face_hair');if(skinNode)skinNode.value=NATURAL_SKIN_TONES[Math.floor(Math.random()*NATURAL_SKIN_TONES.length)][0];if(hairNode)hairNode.value=NATURAL_HAIR_COLORS[Math.floor(Math.random()*NATURAL_HAIR_COLORS.length)][0];drawCustomizer()}}
  else if(a==='conceptDemo'){home=TEAMS.findIndex(t=>t.id===CONCEPT_DEMO_ID);away=0;homeCategory='all';showSetup('quick');}
  else if(a==='quick'||a==='versus'||a==='training')showSetup(a);
  else if(a==='setupRules')showSetupExtras('rules');else if(a==='setupAppearance')showSetupExtras('appearance');else if(a==='setupTactics')showSetupExtras('tactics');
