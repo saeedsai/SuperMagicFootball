@@ -16,9 +16,9 @@ function studioDefenceChoices(player){
  const explicit=Number(source?.superDefenceLevel??(source?.superAbility?.type==='defence'?source.superAbility.level:null));
  const rated=Number(source?.rating)>=86?3:Number(source?.rating)>=74?2:1;
  const level=Number.isInteger(explicit)&&explicit>=1&&explicit<=5?explicit:Math.max(abilityLevel(player,'defence'),rated);
- if(role!=='DF'||level<3)return [];
- return Object.keys(DEFENCE_MOVES).filter(id=>id==='spinBumper' || id===source?.superAbility?.id)
-  .map(id=>({id,name:String(DEFENCE_MOVES[id]?.name||id),minLevel:3}));
+ if(role!=='DF')return [];
+ return ['drill','burst','spinBumper'].filter(id=>DEFENCE_MOVES[id]&&(id!=='spinBumper'||level>=3))
+  .map(id=>({id,name:String(DEFENCE_MOVES[id].name||id),minLevel:id==='spinBumper'?3:1}));
 }
 // Integrated from work/studio-defence-ability-20261022: pure, explicit Studio equipment.
 const STUDIO_DEFENCE_IDS=Object.freeze(['drill','burst','spinBumper'].filter(id=>DEFENCE_MOVES[id]));
