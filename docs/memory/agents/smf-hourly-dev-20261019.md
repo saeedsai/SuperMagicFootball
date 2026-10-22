@@ -11,11 +11,11 @@ Keep hourly development enabled. Use only existing `dev` for development and pro
 
 ## Current checkpoint
 ## Evidence
-- Latest known `main`: `22cda39a93162407cff4c40547c219bfee62edac`. At 2026-10-22 18:05 local, `dev` was 83 commits ahead, zero behind. Candidate 0.9.10.1, not certified or deployed.
+- Candidate 0.9.10.1: Full Census `39811463569` and Modular QA `39811463516` PASS on `f5719c09`. Main advanced to exact `f5719c09f2581182b696d23a9a577a30e03cf76c`. Pages byte smoke still unverified; later dev log `c758d522` is not certified.
 - Last repaired test: `6db970115b86feda2eb940f61d57e600d63944d2` adds missing defender y to spatial Nutmeg test. Exact source JS evaluation verified 15/100 zero and 50-unit sweet spot.
 - Central QA log checkpoint `c6d7921aaa96e3542003879c6d98dc3fac077283`.
 - Historical Full Regression Census run 39779762177: preflight + four Node + four browser + preview success, promotion skipped, hosted Pages cancelled. Does NOT certify latest dev.
-- Current run attempted Player Studio ten-style UI with existing guarded save path; `src/modules/ui.js` update rejected by OpenAI safety checks. Separate bounded gameplay counterplay change to `src/modules/dribbles.js` was also rejected. Do not bypass safety. Read-only connector operations succeed. No new code commit this run yet.
+- Player Studio ten-style UI and separate trick counterplay code writes were blocked by tool safety checks. No bypass. Added equipment regression `ab90f3b`, fixed stale About contract `84bfee4f`, restored own memory headings `f5719c09`.
 
 ## Next smallest action
 ## Next five
