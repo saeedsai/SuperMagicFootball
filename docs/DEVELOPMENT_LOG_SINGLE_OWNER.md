@@ -91,3 +91,18 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - Added `tests/cup_storage_rollback.test.cjs` on `dev` commit `cf6f88713ee464acff7338ed18f438c9cc3e6488`.
 - Six focused Node tests passed locally against current `src/modules/cup_slots.js` content: after-write exceptions, silent mutation, rollback failure lockout, silent rollback corruption, all ten slots and legacy migration, and first-save failure.
 - Require exact-head full 4 Node + 4 Chromium and Modular QA success before main promotion. Preserve About-only 0.9.0.0 and saved-game compatibility.
+
+## 2026-10-22 — platform safety-rejection diagnosis and SAVE-102 integrity
+- Starting `dev`/`main`: `755e5905089ff6427bb117d526c1e13f26ffdcb2`; exact-head green prior CI (Full Census 39677469499, Modular QA 39676866641).
+- Previous rejection (confirmed in prepared handovers): `This tool call was blocked by OpenAI's safety checks. Please double check what you are sending.` affected a full `src/modules/ui.js` Contents write and a non-force `update_ref` of candidate commit `ab4d9ca2fc0b7eadeff42d30de6558b3bee4ba6b`. There was no GitHub 403, conflict or CI error returned by those rejected operations.
+- Current investigation confirmed repo permissions `push=true`, `dev protected=false`, no open pull requests and no red starting-head CI. The specific internal safety rule is not visible; do not claim a definitive content/size root cause.
+- **Legitimate verified write route:** small, SHA-checked GitHub Contents updates succeeded: checkpoint diagnostic `11de696d39b0134d029cacfbb25a66e6ec009d79`; Cup slot validation `e59d237444f66c156bc3e4cbd9fc6b164eb63477`; five atomic load tests `8473844229d8b8bae145ac1357b7ca6645f2841e`; single-line UI integration `83e43bf0aae05199809845aab3d81f522252ca50`; three UI dispatch tests `44923bf6505d5335418fe698f29a6b420583e23b`. These are real commits on `dev`, not deployed claims.
+- Functional change: Cup slot load accepts a read-only validation callback and checks unavailable team IDs **before** active-slot persistence; validator exceptions/rejections cannot switch the slot; no redundant write when reloading the current slot. UI passes `validateTournament(saved,TEAMS)` before replacement. Existing 10-slot schema and About-only `0.9.0.0` remain unchanged.
+- CI evidence is commit-specific: Modular QA succeeded at `83e43bf0aae05199809845aab3d81f522252ca50` (run 39738067047). Full four-Node/four-Chromium census, Modular QA, main promotion and Pages must be checked again at **final exact dev HEAD**. Do not ascribe prior checks to final HEAD.
+
+### Five next steps
+1. Verify fresh exact `dev` SHAs and full Node/Chromium 4+4 + Modular QA results; investigate/redress any failing job before promotion.
+2. Confirm tests cover invalid, valid, and cancelled Cup UI load plus storage isolation; run About/version checks, preserve saves and rosters.
+3. Only green exact-head automatic/protected promotion to `main`; do not use rejected non-force ref operation as an excuse to bypass safety.
+4. Independently inspect Pages deployment and hosted HTML/JS/CSS bytes/smoke for the actual `main` commit.
+5. Continue next bounded roadmap feature (Cup stage metadata or Player Studio abilities, then four-button Tricks, LAN and graphics); if any platform safety rejection recurs, capture exact payload shape, timestamp, and error for support escalation and retain reviewable patches.
