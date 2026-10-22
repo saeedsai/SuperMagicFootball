@@ -27,3 +27,8 @@ Keep hourly development enabled. Use only existing `dev` for development and pro
 
 ## Ownership and exclusions
 ## Cleanup
+
+## 2026-10-22 19:01 checkpoint
+- Verified exact main `817b5344` and hosted Pages byte smoke: main Census #39815030557 and Pages #39815030719 PASS.
+- Studio trick-equipment test commit `57f8a58d`; four new tests passed Modular QA #39819403222. Full Census #39819403252 pending at inspection. No player-facing change.
+- Studio UI implementation still blocked; central log records details.
