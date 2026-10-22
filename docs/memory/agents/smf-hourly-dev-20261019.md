@@ -37,3 +37,6 @@ Latest failed preflight: Full Regression Census 39752239767; specific checkpoint
 
 ## Cleanup
 Keep checkpoint below 4 KiB, no other agents' memory access.
+
+## Permanent branch instruction
+Never create any new branch. All source, test and documentation work must be committed exclusively to `dev`; `main` is only for green protected release promotion. Allowed permanent branches: `dev` and `main`. Do not use temporary work/feature branches.
