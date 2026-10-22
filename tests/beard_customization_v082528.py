@@ -4,6 +4,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
 import json
 R=Path(__file__).resolve().parents[1]
+RELEASE_VERSION=json.loads((R/'package.json').read_text())['version']
 s=(R/'tests/.generated/play.html').read_text(encoding='utf8')
 html=s.split('<script type="module">',1)[0]+'</body></html>'
 js=s.split('<script type="module">',1)[1].split('</script>',1)[0]
@@ -73,7 +74,7 @@ with sync_playwright() as w:
  for mode,args in [('desktop',{'viewport':{'width':1440,'height':900}}),('simulated-touch',{'viewport':{'width':844,'height':390},'has_touch':True,'is_mobile':True})]:
   ctx=b.new_context(**args);p=ctx.new_page();p.set_default_timeout(20000);errors=[];p.on('pageerror',lambda ex:errors.append(str(ex)))
   p.set_content(html);p.add_script_tag(content=js,type='module');p.wait_for_function('!!window.SupermagicFootball')
-  check(mode,'current release loads',lambda:p.evaluate("() => SupermagicFootball.version==='0.9.0.0'"))
+  check(mode,'current release loads',lambda:p.evaluate("version => SupermagicFootball.version===version",RELEASE_VERSION))
   check(mode,'full 5 face × 5 beard × 8 direction pixel-matrix and framing',lambda:p.evaluate(COMBOS))
   check(mode,'named players respect Clean Shave without special-case forced beards',lambda:p.evaluate(NAMED))
   check(mode,'stubble and beard colour respond to natural hair palettes',lambda:p.evaluate(HAIR))
