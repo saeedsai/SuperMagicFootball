@@ -7,6 +7,8 @@ test('Studio defence catalogue remains bounded and read-only',()=>{
  assert.match(source,/role!=='DF'/);
  assert.match(source,/abilityLevel\(player,'defence'\)/);
  assert.match(source,/level<3/);
+ assert.match(source,/Number\(source\?\.rating\)>=86\?3/);
+ assert.match(source,/superDefenceLevel/);
  assert.match(source,/player\?\.src\|\|player/);
  assert.match(source,/id==='spinBumper'/);
  assert.match(source,/return \{DEFENCE_MOVES,KEEPER_MOVES,studioDefenceChoices/);
