@@ -24,3 +24,6 @@ Only own checkpoint; preserve 223 teams, 2676 players, six formations, four cont
 
 ## Evidence
 No release claims before exact SHA CI and hosted smoke. No other branches, migrations or memory edits.
+
+## Cleanup
+No new branches, no data migrations; retain useful test and CI evidence.
