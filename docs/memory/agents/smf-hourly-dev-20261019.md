@@ -2,25 +2,25 @@
 **Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
 
 ## Mission
-Continue one bounded tested feature on existing dev. Repair blockers, never force-push, bypass safety/CI or add branches.
+Continue bounded tested development on existing dev while resolving CI. Do not create branches, force-push or bypass protections.
 
 ## Current checkpoint
-- ICE-032 candidate: Ice Patch Magic Trick now drops bounded, short-lived cyan trap with arm delay, safe enemy-only ground contact and dedicated renderer. Model 242e17e1; engine f1e7fa58; art 72b815da; Node regressions b6f74640. Version 0.9.32.0 staged in About/package/README/cache. Exact-head QA, graphical and Pages certification pending.
-- Main base was 1e30f475 (certified 0.9.31.0 Banana Peel); dev had four docs-only commits before ICE-032. Do not claim new release deployed.
-- Preserve 223 teams/2676 players, six formations, exactly four action buttons, 10 Career/Cup slots, SD09 and old save/offline compatibility.
+- HAZARD-0321: fixed cross-trap deletion when Banana Peel is placed after Ice Patches. Banana and Ice now maintain separate six-item capacity; source 5eb996ce; tests 54c215bf. Candidate 0.9.32.1 synchronized in About/package/README/offline cache; Node and browser CI unverified.
+- Previous ICE-032 Ice Patch trap, runtime and cyan artwork is in main at 73cc8a6c (identical dev/main at run start). No manual visual art certification, hosted Pages byte QA still pending.
+- Preserve 223 teams / 2676 players, 6 formations, 4 actions, ten Career/Cup slots, SD09 and save/offline compatibility.
 
 ## Next smallest action
-1. Inspect exact dev head CI, repair any failing test.
-2. Complete 4 Node, 4 Chromium, preview and Modular QA.
-3. Check Ice Patch gameplay/canvas and Crown Royals graphics, report manual visual gaps honestly.
-4. Permit protected dev-to-main promotion only after fully green checks and verify hosted Pages SHA/bytes.
-5. Continue next distinct Magic Trick or genuine two-client LAN.
+1. Inspect exact dev-head Modular QA and Full Census and repair failures.
+2. Run focused hazard coexistence tests, four Node and four Chromium shards.
+3. Verify actual hosted game, Banana/Ice trap appearance, and Crown Royals views.
+4. Promote exact fully green head through protected dev-to-main pipeline, verify Pages byte SHA.
+5. Continue counterable Tricks, graphics improvements and real LAN.
 
 ## Ownership and exclusions
-Only read AGENTS.md, VERSIONING_POLICY.md, SHARED.md and this agent checkpoint. Continue hourly development despite pending release. No protected workflow bypass.
+Only update own memory checkpoint and central development log. Keep hourly development active; no bypass of safety, GitHub permissions or CI.
 
 ## Evidence
-Ice-032 commits are documented in the central development log; latest exact-head CI must be inspected.
+Hazard source/test commits above; no exact-head CI outcome at checkpoint time.
 
 ## Cleanup
-Checkpoint under 4 KiB. Do not claim screenshots, playable LAN or Pages verification without direct evidence.
+Keep below 4 KiB; do not claim player-facing deployment or visual QA without confirmation.
