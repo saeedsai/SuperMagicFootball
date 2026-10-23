@@ -36,3 +36,20 @@ test('LAN-001 discards extra untrusted fields during normalization',async()=>{
  const p=await load(),clean=p.normalizeLanPacket({...input,admin:true,debug:'x'});
  assert.equal(Object.hasOwn(clean,'admin'),false);assert.equal(Object.hasOwn(clean,'debug'),false);
 });
+
+test('LAN-002 complementary peers complete a version-matched session handshake',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ assert.deepEqual(p.validateLanHandshake(hello,guest),{
+  session,build:hello.build,localRole:'host',remoteRole:'guest'
+ });
+ assert.equal(p.validateLanHandshake(guest,hello).localRole,'guest');
+ assert.ok(Object.isFrozen(p.validateLanHandshake(hello,guest)));
+});
+test('LAN-002 rejects divergent builds, sessions, duplicate roles and replayed hellos',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ for(const remote of [
+  hello,{...guest,build:'0.9.29.3'},{...guest,session:'guest_1234567890'},
+  {...guest,sequence:1},input
+ ])assert.throws(()=>p.validateLanHandshake(hello,remote));
+ assert.throws(()=>p.validateLanHandshake({...hello,sequence:1},guest));
+});
