@@ -109,7 +109,7 @@ const CROWN_NAMES=['Leo','Kwame','Diego','Ryo','Sean','Rafa','Malik','Ivan','Car
 const CROWN_ROLES=['GK','GK','DF','DF','DF','MF','MF','MF','MF','FW','FW','FW'];
 const CROWN_ROSTER=CROWN_NAMES.map((name,i)=>({
  id:i===9?'crown_royals_reference_alex':CROWN_ROYALS_ID+'_'+i,
- name,role:CROWN_ROLES[i],num:i===9?1:i+2,power:70,shoot:36,defense:39,speed:'B',
+ name,role:CROWN_ROLES[i],num:i===9?1:i<9?i+2:i+1,power:70,shoot:36,defense:39,speed:'B',
  shot:'omega',shotName:'Crown Magic Shot',skill:'Reference Art In Progress',
  level:1,xp:0,...(i===9?{renderModel:'crown_royals_reference',
  appearance:{renderModel:'crown_royals_reference',skin:'#e8b48e',hair:'#493020'}}:{})
