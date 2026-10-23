@@ -82,7 +82,14 @@ const CROWN_ROYALS=(()=>{
   if(poseAction==='shoot')ctx.rotate(-step*.16);
   // Super Shot adds bounded anticipation without a new gameplay control.
   if(action==='super'){ctx.translate(0,-Math.abs(step)*8);ctx.rotate(-step*.09);}
-  if(poseAction==='tackle')ctx.rotate(step*.20);
+  if(poseAction==='tackle'){
+   // Keep the planted foot near the field while the player lunges forward.
+   // The prior rotation-only pose read as a standing player tipping over.
+   const lunge=Math.abs(step);
+   ctx.translate(step*12,lunge*8);
+   ctx.rotate(step*.27);
+   ctx.scale(1+.12*lunge,1-.20*lunge);
+  }
   ctx.translate(-w/2,-h+6);ctx.scale(w/sw,h/90);
   // The reference contains three genuine projections. Quarter projections are
   // interim nearest-view previews, not falsely advertised as painted directions.
