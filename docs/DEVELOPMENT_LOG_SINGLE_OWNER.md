@@ -333,3 +333,6 @@ Updated NEXT_MILESTONES with screenshot-inspired polished UI graphics and origin
 
 ## 2026-10-23 — CI blocker repair + LAN wire codec
 Root cause for Full Census #39918616667 and Modular QA #39918616639: previous checkpoint rewrite removed exact registered `**Agent ID:**` marker and six required sections. Repaired own checkpoint in `6101da0c` (contract unchanged). Added transport-neutral strict JSON wire codec in `518024cb`, hardened identifier type in `91890db3`, and host-interoperability/malformed/oversized packet tests in `11fb71bd`. No actual cross-device transport or gameplay synchronization; no player-facing version bump. Wait for exact-head 4+4 Full Census and Modular QA; preserve pending roadmap UI and coin plans.
+
+## 2026-10-23 LAN host wire adapter
+Added transport-neutral `createLanHostAdapter` in `3ea8ce3b` connecting bounded wire validation, guest input timeline, timeout and disconnect; three Node tests in `085482f3`. No real WebRTC channel or match sync yet, no player-facing version change. Await exact-head 4+4 and Modular QA; promote only green dev via protected workflow.
