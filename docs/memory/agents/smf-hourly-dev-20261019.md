@@ -2,28 +2,25 @@
 **Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23
 
 ## Mission
-Continue hourly work directly on existing dev even while CI/deployment is pending. Repair blockers and preserve checkpoints. No other branches, force push, security bypass or red promotion.
+Continue small tested increments on existing dev regardless of release wait. Resolve blockers safely; no extra branches, force push or CI bypass.
 
 ## Current checkpoint
-- Baseline dev/main `b08e886b1d0cdc433f0c6fb87007adac463fc370` (0.9.15.1); Full Census #39866603928 PASS, Modular QA #39866604048 PASS, Pages deployment #39867872562 PASS. Main hosted smoke #39867872780 was still running.
-- Candidate 0.9.16.0: Rainbow Flick defensive aerial read requires facing carrier; missing facing retains old odds. New focused Node regression and release metadata/README/SW/test alignment. Full exact-head CI not yet certified.
-- Four separate categories: rare Super Shot, rare Super Defence, planned magical Trick (no levels; not playable), normal level-free Dribble Style. Icons are visual only.
+- 0.9.16.0 certified dev/main `4548da29769fff4bcab0d9ddea4292568aebbcac`; Full Census #39869704009 PASS, Modular QA #39869703906 PASS, main hosted #39870813429 PASS, Pages #39870813765 PASS.
+- 0.9.17.0 candidate: Nutmeg spatial counter requires closing defender facing ball carrier. Back-turned opponents lose bonus; missing facing preserves legacy odds. Focused Node regression added; exact-head CI/promotion/hosted smoke pending.
+- Four categories: rare Super Shot, rare Super Defence, rare planned Magic Trick (no levels), ordinary Dribble Style (no levels). Magic Tricks are not playable yet.
 
 ## Next smallest action
-Verify 4 Node + 4 Chromium and Modular QA on exact candidate head; fix failures and keep coding next increment even if release pending.
+Inspect exact-head 4+4 Census and Modular QA; repair any failures and continue Player Studio or Magic Trick gameplay increments even if deployment pending.
 
 ## Next five
-1. Diagnose candidate exact-head CI failures or certify green.
-2. Implement next bounded Studio/magic-Trick feature on dev.
-3. Add focused gameplay and browser tests preserving saves.
-4. Verify protected main promotion, Pages build and hosted byte smoke.
-5. Begin host-authoritative two-browser LAN lobby; continue eight-view art audit.
+1. Certify exact-head Node/Chromium and Modular QA; repair failures.
+2. Add explicit Player Studio KEEP CURRENT for planned Magic Trick.
+3. Implement one counterable rare Magic Trick using four controls.
+4. Verify protected promotion, Pages and hosted byte smoke.
+5. Begin two-client LAN lobby; audit eight-view player graphics.
 
 ## Ownership and exclusions
-Only own agent memory; preserve 223 teams, 2676 players, 12-player squad ratios, six formations, four controls, ten Career/Cup slots, SD09 and offline/save compatibility.
+Only own checkpoint; preserve 223 teams, 2676 players, six formations, four controls, ten Career/Cup slots, SD09 and offline/save compatibility.
 
 ## Evidence
-No unobserved CI or deployment claims. GitHub SHA and workflow evidence must be checked after this commit.
-
-## Cleanup
-No additional branches or data migrations.
+No release claims before exact SHA CI and hosted smoke. No other branches, migrations or memory edits.

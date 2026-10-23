@@ -47,7 +47,10 @@ function dribbleOdds(p,defender,style){
  const nutmegTiming=spatial?Math.min(1,(distance-15)/20,(100-distance)/25):.55;
  // Agile defenders can anticipate a spatial nutmeg while closing in;
  // exhausted defenders lose that counter. Stat-only callers keep prior odds.
- const nutmegCounter=nutmegWindow&&spatial?Math.min(2,Math.max(0,((Number(defender.agility)||0)-70)/15))*proximity*(1-defenderFatigue):0;
+ // A defender must face the ball carrier to read a spatial nutmeg. Missing
+ // facing in legacy/stat-only calls preserves established counter behavior.
+ const facingNutmeg=!Number.isFinite(Number(defender.face))||Number(defender.face)===0||Number(defender.face)*dx>0;
+ const nutmegCounter=nutmegWindow&&spatial&&facingNutmeg?Math.min(2,Math.max(0,((Number(defender.agility)||0)-70)/15))*proximity*(1-defenderFatigue):0;
  const nutmegBonus=nutmegWindow?Math.max(0,nutmegSkill*Math.max(0,nutmegTiming)*(1-attackerFatigue)-nutmegCounter):0;
  // Rainbow Flick lifts the ball: a fresh, close, actively closing defender with
  // strong defensive awareness can read the aerial path. Stationary/retreating defenders,

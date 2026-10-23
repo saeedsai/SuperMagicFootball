@@ -297,3 +297,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - Rainbow Flick aerial counterplay now requires the actual defender to face the ball carrier, in addition to existing closing, distance, stamina and defensive skill gates. Other dribbles and stat-only callers unchanged. Four controls, saves and roster IDs unchanged.
 - New focused `tests/rainbow_facing_counter.test.cjs` tests facing/away, legacy parity, ordinary styles, stationary, retreating, distant, tired opponents and live engine facing input. Local V8 formula check passed; GitHub exact-head full CI still required.
 - Continue Studio, rare counterable magic-Trick and real LAN increments on dev even when promotion is pending.
+
+## 2026-10-23 — spatial Nutmeg facing counter (candidate 0.9.17.0)
+- Source: `src/modules/dribbles.js`. A defender must face the ball carrier to receive the close-range, actively closing Nutmeg anticipation bonus. Missing facing preserves legacy/stat-only odds. No new buttons, IDs, saves or player data changes.
+- Regression: `tests/nutmeg_facing_counter.test.cjs` covers front/back, legacy facing, stationary/retreating/exhausted, other styles and four controls. Release metadata/README/offline cache/version contract aligned to 0.9.17.0; exact-head CI/Pages pending.
+- Previous 0.9.16.0 exact-head Census #39869704009 and Modular QA #39869703906 passed on `4548da29769fff4bcab0d9ddea4292568aebbcac`; main hosted #39870813429 and Pages #39870813765 passed.
