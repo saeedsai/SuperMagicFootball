@@ -1,3 +1,6 @@
+### 23 October 2026 — Saved-club editor selection (candidate 0.9.23.4)
+Direct Edit Players / Edit Roster for saved custom clubs now selects the chosen club and returns to the builder. The earlier Settings Studio Back/Career fix is preserved. CI, main and Pages not yet certified; independent ¾ Crown Royals art and five animation packs remain planned.
+
 ## 23 October 2026 — Owner priority: menus, volume and authored animations
 
 **Immediate:** Settings → Player & Team Customization → Player Studio Back/Escape/controller B must return to the customization menu, never jump to active Career/Cup. Studio and Roster Editor must allow selecting any club irrespective of an existing Career save. Crown Royals look flat in real matches: build independently authored front-quarter/back-quarter (both mirrors), spatially consistent hair, uniform and overlap, depth-aware active run/tackle/shoot poses. Existing 3 true directions plus squeezed quarter placeholders are not artistic QA approval.

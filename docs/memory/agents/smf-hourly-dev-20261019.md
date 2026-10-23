@@ -1,29 +1,25 @@
 # SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 15:15 Europe/Stockholm
+**Agent ID:** smf-hourly-dev-20261019 · **Updated:** 2026-10-23 15:27 Europe/Stockholm
 
 ## Mission
-Continue tested small increments directly on existing dev even with pending CI/promotion. No new branches, bypass or force push.
+Keep small tested dev increments despite CI/release blockers; only dev/main; no bypass or force push.
 
 ## Current checkpoint
-- Candidate 0.9.23.1: Crown Royals Alex side chestnut forelock and Leo blond rear with narrow dark band; pixel-bounded cached atlas correction. Original PNG alpha, faces, kit and save data preserved.
-- Kwame #3 independent three-view PNG integrated on dev at 8a317927. Nine Crown teammates remain standard placeholders; quarter views and action frames provisional.
-- Previously green 0.9.22.0 dev/main 4398ba170. 0.9.22.1 candidate CI failed stale Crown drawImage and version literals; test contracts repaired at d1ac6d0. New combined candidate 0.9.23.1 exact-head 4+4/Modular/Crown/Pages pending.
-
-- New candidate 0.9.23.3: Settings Studio Back and arbitrary club picker fix, backlog expanded. Crown perspective still incomplete.
+- Candidate 0.9.23.4: saved custom clubs have direct Edit Players / Edit Roster, chosen-club source and builder Back after roster save. Prior 0.9.23.3 Settings Studio/Career Back fixes preserved.
+- Crown Royals Alex/Leo/Kwame have 3 independent atlases; ¾/action art provisional. Preserve 223 canonical teams/2676 players, 6 formations, 4 buttons, 10 Career/Cup slots, SD09, offline/saves.
 
 ## Next smallest action
-1. Inspect exact-head 4+4 Census, Modular and Crown QA; fix failures without blocking new work.
-2. Capture Chromium real-game Alex side, Leo back, Kwame five-view/action previews; inspect identity, alpha, hair edges and touch.
-3. Refine Kwame dark-skin/black-coil identity; independent quarter views and authored action frames.
-4. Continue counterable four-button Magic Tricks and Player Studio UI.
-5. Continue genuine two-client LAN, then protected exact-green dev promotion and hosted byte smoke.
+1. Inspect exact-head 4 Node + 4 Chromium, Modular QA and new club browser tests; repair failures.
+2. Verify custom-club persistence and loaded Career same-team Studio.
+3. Author genuine ¾ Crown Royals views, verify in-match perspectives.
+4. Add tackles, celebrations, Super Shot, flying kick and bicycle art in small packs.
+5. Continue Tricks and two-client LAN; promote green exact dev head only, verify Pages bytes.
 
 ## Ownership and exclusions
-Sole developer smf-hourly-dev-20261019, development only on dev; main protected promotion. Preserve 223 canonical teams/2676 players, six formations, four buttons, ten Career/Cup slots, saves, offline, SD09.
+Sole developer; no new branches or other agents' memory edits. No unverified release claims.
 
 ## Evidence
-- Local source-PNG palette preview identified prior Leo correction as opaque black rear patch; targeted blond and narrow band correction preview inspected.
-- Exact-head 0.9.23.1 CI pending; do not claim deployed or artistic acceptance without real Chromium evidence.
+Static source checks before commit; GitHub CI pending. Local git DNS unavailable.
 
 ## Cleanup
-Checkpoint <4 KiB. Concept illustrations are not actual in-game captures.
+Checkpoint <4 KiB.

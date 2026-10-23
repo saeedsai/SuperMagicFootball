@@ -1,3 +1,7 @@
+## 2026-10-23 15:27 Europe/Stockholm — Saved-club editing candidate 0.9.23.4
+- Based on exact dev c51912ee0ba578b92f18699e59be681f8e367148; concurrent 0.9.23.3 Settings Studio fixes preserved. Added direct Edit Players / Edit Roster actions for saved custom clubs, with explicit selected team and Back route preserved after roster save.
+- Added focused Node VM contract and expanded Chromium desktop/simulated-touch browser QA. No canonical team IDs, saves, physics, controls or offline precache content changed. Local git clone blocked by DNS; exact-head CI pending.
+
 ## 2026-10-23 15:17 Europe/Stockholm — Kwame actual-renderer QA blocker repair
 - Found source QA fixture error: Kwame browser test injected Kwame sprite into `CROWN_ROYALS_LEO_INLINE`, leaving Kwame's own inline atlas unset in the isolated Chromium page. This could not validate Kwame.
 - Corrected independent inline bindings for Alex, Leo and Kwame, added Kwame Chromium test to Crown QA workflow and preserved screenshots in the three-player artifact. Added Kwame HTML path trigger. This is test/CI only; player-facing version remains 0.9.23.1.
