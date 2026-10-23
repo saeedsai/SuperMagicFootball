@@ -85,4 +85,26 @@ function resolveGuestLanFrame(state,hostFrame){
  });
  return Object.freeze({received:packet!==null,input,state:consumed.state});
 }
-export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame};
+
+// LAN-005: guest-side deterministic packet construction, independent of transport.
+// Sequence and frame advance together; invalid controls never advance sender state.
+function createGuestLanSender(localHello,remoteHello){
+ const peer=validateLanHandshake(localHello,remoteHello);
+ if(peer.localRole!=='guest')throw new Error('Only LAN guest can construct guest inputs');
+ return Object.freeze({session:peer.session,lastSequence:0,lastFrame:-1});
+}
+function buildGuestLanInput(sender,frame,buttons=[],dx=0,dy=0){
+ if(!isRecord(sender)||typeof sender.session!=='string'||!SESSION_RE.test(sender.session)
+    ||!uint(sender.lastSequence)||!Number.isSafeInteger(sender.lastFrame)||sender.lastFrame< -1
+    ||!uint(frame,1000000000)||frame<=sender.lastFrame)throw new Error('Invalid LAN guest sender or frame');
+ if(sender.lastSequence===Number.MAX_SAFE_INTEGER)throw new Error('LAN sequence exhausted');
+ const packet=normalizeLanPacket({
+  protocol:LAN_PROTOCOL_VERSION,type:'input',session:sender.session,
+  sequence:sender.lastSequence+1,frame,buttons,dx,dy
+ });
+ return Object.freeze({
+  packet,
+  state:Object.freeze({session:sender.session,lastSequence:packet.sequence,lastFrame:frame})
+ });
+}
+export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame,createGuestLanSender,buildGuestLanInput};
