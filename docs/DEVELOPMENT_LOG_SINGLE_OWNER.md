@@ -1,3 +1,8 @@
+## 2026-10-23 23:02 Europe/Stockholm — LAN-001 packet contract (non-player-facing roadmap increment)
+- While release CI was pending, added src/modules/lan_protocol.js and tests/lan_protocol.test.cjs directly to dev (commits b1285a3bc269620fbd44be2a2283b08ce28a883d, bf5047b7fdf378cf1eda4c7360d1502674cf64ba). Supports versioned host/guest hello and canonical four-button input packet, strict session/frame/sequence validation, duplicate/unknown action rejection, replay suppression and sanitized untrusted fields.
+- Focused V8 runtime: module parse, JSON roundtrip, replay rejection and three invalid-packet cases passed. GitHub exact-head Node/Chromium/Modular QA remains pending. No transport, two-browser sync or LAN UI yet; not a playable LAN claim. Not imported into shipped game; no player-facing version bump beyond startup fix 0.9.29.2.
+- Next: complete LAN host authority and two-client transport smoke increment; keep browser startup and protected release QA active in parallel.
+
 ## 2026-10-23 23:02 Europe/Stockholm — startup syntax repair + complete module syntax preflight (candidate 0.9.29.2)
 - Exact starting dev c1aed416811e78677eef94e38807e6a1e43c43be, main fb5ed03196e6a27ad2d2a075d4e5055a6360dbc1, dev ahead 14/behind 0. Full Census 40023142814 failed preview smoke: console reported `SyntaxError: Invalid or unexpected token`, while HTTP and failed-request lists were empty.
 - Root cause: literal backslash-n token after `notes:Object.freeze([` in src/modules/release.js. Corrected to actual newline; V8 parse confirmed before GitHub write. Added test in tests/versioning_policy_contract.test.cjs running `node --check` on every shipped JS module, src/main.js, src/assets.js and sw.js. This is a QA gate, not a graphics certification.
