@@ -837,9 +837,9 @@ function studioStatControls(player){const normalized=withStats(player);
  return `<details id="studioStatsEditor"><summary>EDIT PLAYER STATS · ${escapeHTML(player.role)} OVR ${overallForPosition(normalized)}</summary><p class="muted">Change any of the 14 match attributes (1–100). This does not alter historic IDs or the stored legacy overall rating.</p><div class="avatarControls">${NUMERIC_STATS.map(key=>`<label for="stat_${key}">${STUDIO_STAT_NAMES[key]||key}<input class="choice" type="number" inputmode="numeric" min="1" max="100" step="1" id="stat_${key}" value="${normalized[key]}" /></label>`).join('')}</div><p id="studioStatOVR" role="status">POSITION OVR: ${overallForPosition(normalized)}</p><div class="row">${button('SAVE PLAYER STATS','saveStudioStats','gold')}${button('RESET UNSAVED STATS','resetStudioStats')}</div></details>`;
 }
 function readStudioStats(){const stats={};for(const key of NUMERIC_STATS){const node=$('stat_'+key),raw=node?.value??'';const value=Number(raw);if(raw.trim()===''||!Number.isInteger(value)||value<1||value>100)throw Error('Invalid '+(STUDIO_STAT_NAMES[key]||key)+': enter a whole number from 1 to 100');stats[key]=value;}return stats;}
-function studioStatPreview(){const label=$('studioStatOVR');if(!label)return;try{const player=(studioCareerContext&&career&&home===career.club?career.roster:roster(home))[avatarIndex];label.textContent='POSITION OVR: '+overallForPosition({...player,...readStudioStats()});}catch(error){label.textContent=error.message;}}
-function saveStudioStats(){try{const stats=readStudioStats(),inCareer=!!(studioCareerContext&&career&&home===career.club);const source=inCareer?career.roster.map(p=>({...p})):roster(home);if(!source[avatarIndex])throw Error('No player selected');source[avatarIndex]={...source[avatarIndex],...stats};if(inCareer){const updated={...career,roster:source};if(!storeCharacterChanges('managerCareer',updated))return;career=updated;saveCareer();showCareerSquad();}else{const updated={...edits,[TEAMS[home].id]:source};if(!storeCharacterChanges('edits',updated))return;edits=updated;showPlayerStudio(avatarIndex);}}catch(error){alert('Cannot save player stats: '+error.message)}}
-function showPlayerStudio(index=0){avatarIndex=Math.max(0,Math.min(11,Number(index)||0));const squad=studioCareerContext&&career&&home===career.club?career.roster:roster(home);const player=squad[avatarIndex];if(!player){showHome();return;}const av={...avatarFor(player),...(player.appearance||{})};
+function studioStatPreview(){const label=$('studioStatOVR');if(!label)return;try{const player=((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home))[avatarIndex];label.textContent='POSITION OVR: '+overallForPosition({...player,...readStudioStats()});}catch(error){label.textContent=error.message;}}
+function saveStudioStats(){try{const stats=readStudioStats(),inCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club);const source=inCareer?career.roster.map(p=>({...p})):roster(home);if(!source[avatarIndex])throw Error('No player selected');source[avatarIndex]={...source[avatarIndex],...stats};if(inCareer){const updated={...career,roster:source};if(!storeCharacterChanges('managerCareer',updated))return;career=updated;saveCareer();showCareerSquad();}else{const updated={...edits,[TEAMS[home].id]:source};if(!storeCharacterChanges('edits',updated))return;edits=updated;showPlayerStudio(avatarIndex);}}catch(error){alert('Cannot save player stats: '+error.message)}}
+function showPlayerStudio(index=0){avatarIndex=Math.max(0,Math.min(11,Number(index)||0));const squad=(typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home);const player=squad[avatarIndex];if(!player){showHome();return;}const av={...avatarFor(player),...(player.appearance||{})};
  const colorControls=`<label>SKIN COLOR<select class="choice" id="face_skin">${studioColorOptions(NATURAL_SKIN_TONES,av.skin)}</select></label><label>HAIR COLOR<select class="choice" id="face_hair">${studioColorOptions(NATURAL_HAIR_COLORS,av.hair)}</select></label>`;
  const assetControls=[
   ['style','HAIRSTYLE'],['face','FACE SHAPE'],['eyes','EYE SHAPE'],['brows','EYEBROWS'],['eyeColor','EYE COLOR'],['nose','NOSE'],['lips','LIPS'],
@@ -874,7 +874,7 @@ function showPlayerStudio(index=0){avatarIndex=Math.max(0,Math.min(11,Number(ind
 function getAppearance(){const numeric=['style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo'];return Object.fromEntries(['skin','hair',...numeric].map(k=>[k,k==='skin'||k==='hair'?$('face_'+k).value:+$('face_'+k).value]))}
 function drawCustomizer(){
  const canvas=$('customPortrait');if(!canvas)return;
- const ctx=canvas.getContext('2d'),p=(studioCareerContext&&career&&home===career.club?career.roster:roster(home))[avatarIndex];if(!p)return;
+ const ctx=canvas.getContext('2d'),p=((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home))[avatarIndex];if(!p)return;
  const pose=$('customPose')?.value||studioAction;
  const dir=STUDIO_DIRS[studioDirection],action=pose==='run'?'idle':pose;
  const tm=performance.now()/1000,run=pose==='run',canvW=canvas.width,canvH=canvas.height;
@@ -924,7 +924,7 @@ function storeCharacterChanges(key,payload){
 }
 function saveStudioShot(){
  try{
-  const isCareer=!!(studioCareerContext&&career&&home===career.club);
+  const isCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club);
   const source=isCareer?career.roster.map(p=>({...p})):roster(home);
   const player=source?.[avatarIndex],id=$('studioShotAbility')?.value,tier=Number($('studioShotTier')?.value);
   if(!player||!['MF','FW'].includes(player.role))throw Error('Only midfielders and forwards can equip Super Shots');
@@ -954,7 +954,7 @@ const STUDIO_MAGIC_TRICKS=Object.freeze([
 ]);
 function saveStudioMagic(){
  try{
-  const isCareer=!!(studioCareerContext&&career&&home===career.club),source=isCareer?career.roster.map(p=>({...p})):roster(home);
+  const isCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club),source=isCareer?career.roster.map(p=>({...p})):roster(home);
   const player=source?.[avatarIndex],id=$('studioMagic')?.value;
   if(!player||player.role==='GK')throw Error('Only eligible outfield players can equip Tricks');
   if(!id||id!=='keep'&&id!=='none'&&!STUDIO_MAGIC_TRICKS.some(t=>t.id===id))throw Error('Unknown Trick');
@@ -969,7 +969,7 @@ function saveStudioMagic(){
 }
 function saveStudioTrick(){
  try{
-  const isCareer=!!(studioCareerContext&&career&&home===career.club);
+  const isCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club);
   const source=isCareer?career.roster.map(p=>({...p})):roster(home);
   if(!source?.[avatarIndex])throw Error('No selected player');
   source[avatarIndex]=DRIBBLES.withStudioDribble(source[avatarIndex],$('studioDribble')?.value);
@@ -980,7 +980,7 @@ function saveStudioTrick(){
 }
 function saveStudioDefence(){
  try{
-  const isCareer=!!(studioCareerContext&&career&&home===career.club);
+  const isCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club);
   const source=isCareer?career.roster.map(p=>({...p})):roster(home);
   if(!source?.[avatarIndex])throw Error('No selected player');
   const ability=$('studioDefAbility')?.value,tier=Number($('studioDefTier')?.value);
@@ -1002,7 +1002,7 @@ function saveStudioDefence(){
  }catch(error){alert('Cannot save Super Defence: '+error.message)}
 }
 function saveAppearance(){
- const isCareer=!!(studioCareerContext&&career&&home===career.club);
+ const isCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club);
  const source=isCareer?career.roster.map(p=>({...p})):roster(home);
  if(!source?.[avatarIndex])return;
  source[avatarIndex]={...source[avatarIndex],appearance:getAppearance()};
@@ -1208,7 +1208,7 @@ function action(a){audio.cue('ui');
   drawCustomizer();
  }
  else if(a==='studioLeft')studioRotate(-1);else if(a==='studioRight')studioRotate(1);else if(a==='studioSpin'){studioSpin=!studioSpin;const btn=menu.querySelector('[data-action=studioSpin]');if(btn)btn.textContent=studioSpin?'■ STOP TURN':'↻ AUTO ROTATE';drawCustomizer()}
- else if(a==='saveStudioStats')saveStudioStats();else if(a==='resetStudioStats'){const player=(studioCareerContext&&career&&home===career.club?career.roster:roster(home))[avatarIndex];if(player){const normalized=withStats(player);for(const key of NUMERIC_STATS)if($('stat_'+key))$('stat_'+key).value=String(normalized[key]);studioStatPreview();}}else if(a==='playerStudio'){studioCareerContext=false;showPlayerStudio();}else if(a.startsWith('editPlayer')){studioCareerContext=!!career&&screen==='MANAGER SQUAD';showPlayerStudio(+a.slice(10));}else if(a==='saveAppearance')saveAppearance();else if(a==='saveStudioDefence')saveStudioDefence();else if(a==='saveStudioTrick')saveStudioTrick();else if(a==='saveStudioMagic')saveStudioMagic();else if(a==='saveStudioShot')saveStudioShot();else if(a==='randomizeFace'){const el=$('face_style');if(el){for(const k of ['style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo']){const node=$('face_'+k);node.value=Math.floor(Math.random()*node.options.length)}const skinNode=$('face_skin'),hairNode=$('face_hair');if(skinNode)skinNode.value=NATURAL_SKIN_TONES[Math.floor(Math.random()*NATURAL_SKIN_TONES.length)][0];if(hairNode)hairNode.value=NATURAL_HAIR_COLORS[Math.floor(Math.random()*NATURAL_HAIR_COLORS.length)][0];drawCustomizer()}}
+ else if(a==='saveStudioStats')saveStudioStats();else if(a==='resetStudioStats'){const player=((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home))[avatarIndex];if(player){const normalized=withStats(player);for(const key of NUMERIC_STATS)if($('stat_'+key))$('stat_'+key).value=String(normalized[key]);studioStatPreview();}}else if(a==='playerStudio'){studioCareerContext=false;showPlayerStudio();}else if(a.startsWith('editPlayer')){studioCareerContext=!!career&&screen==='MANAGER SQUAD';showPlayerStudio(+a.slice(10));}else if(a==='saveAppearance')saveAppearance();else if(a==='saveStudioDefence')saveStudioDefence();else if(a==='saveStudioTrick')saveStudioTrick();else if(a==='saveStudioMagic')saveStudioMagic();else if(a==='saveStudioShot')saveStudioShot();else if(a==='randomizeFace'){const el=$('face_style');if(el){for(const k of ['style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo']){const node=$('face_'+k);node.value=Math.floor(Math.random()*node.options.length)}const skinNode=$('face_skin'),hairNode=$('face_hair');if(skinNode)skinNode.value=NATURAL_SKIN_TONES[Math.floor(Math.random()*NATURAL_SKIN_TONES.length)][0];if(hairNode)hairNode.value=NATURAL_HAIR_COLORS[Math.floor(Math.random()*NATURAL_HAIR_COLORS.length)][0];drawCustomizer()}}
  else if(a==='conceptDemo'){home=TEAMS.findIndex(t=>t.id===CONCEPT_DEMO_ID);away=0;homeCategory='all';showSetup('quick');}
  else if(a==='quick'||a==='versus'||a==='training')showSetup(a);
  else if(a==='setupRules')showSetupExtras('rules');else if(a==='setupAppearance')showSetupExtras('appearance');else if(a==='setupTactics')showSetupExtras('tactics');
