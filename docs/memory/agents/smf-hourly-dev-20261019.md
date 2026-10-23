@@ -1,29 +1,26 @@
 # SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 16:00 Europe/Stockholm
+**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 Europe/Stockholm
 
 ## Mission
-Keep small tested dev increments despite CI/release blockers; only dev/main; no bypass or force push.
+Keep tested small increments on existing dev while prior CI/promotion runs continue. Only dev/main; no force push or safety bypass.
 
 ## Current checkpoint
-- Candidate 0.9.23.4: saved custom clubs have direct Edit Players / Edit Roster, chosen-club source and builder Back after roster save. Prior 0.9.23.3 Settings Studio/Career Back fixes preserved.
-- Crown Royals Alex/Leo/Kwame have 3 independent atlases; ¾/action art provisional. Preserve 223 canonical teams/2676 players, 6 formations, 4 buttons, 10 Career/Cup slots, SD09, offline/saves.
-
-- Candidate 0.9.24.0: experimental quarter composition rejected by visual QA (ghosted outlines) and safely reverted; authored quarter sprites are still needed. Menu fixes preserved; fresh exact-head CI/Pages pending.
-
-- Candidate 0.9.25.0: Diego #4 reference-derived 3-view atlas integrated, build/offline/QA wiring. Need exact-head browser screenshots, no false 3D/animation approval.
+- Candidate 0.9.25.0: Diego #4 front/back/side source atlas; independent quarter/action art remains unfinished. Earlier custom-club Edit Players / Edit Roster and Studio Back fixes preserved.
+- Added internal-only LAN match snapshot codec + 3 focused Node tests; wire/channel and gameplay sync still not integrated. No player-facing version bump for this standalone module.
+- Preserve 223 teams/2676 players, six formations, four buttons, 10 Career/Cup slots, SD09, offline/saves.
 
 ## Next smallest action
-1. Inspect exact-head 4 Node + 4 Chromium, Modular QA and new club browser tests; repair failures.
-2. Verify custom-club persistence and loaded Career same-team Studio.
-3. Author genuine ¾ Crown Royals views, verify in-match perspectives.
-4. Add tackles, celebrations, Super Shot, flying kick and bicycle art in small packs.
-5. Continue Tricks and two-client LAN; promote green exact dev head only, verify Pages bytes.
+1. Inspect exact new-head Modular QA and 4 Node + 4 Chromium census; fix failures.
+2. Wire LAN snapshot send/receive to the authenticated RTC channel, keeping guest read-only.
+3. Add two-browser state convergence and disconnect/reconnect smoke.
+4. Author independent Crown Royals quarter art and unique action animation phases.
+5. Extend Player Studio/Team Management icons and counterable Tricks; only promote exact green head.
 
 ## Ownership and exclusions
-Sole developer; no new branches or other agents' memory edits. No unverified release claims.
+Sole developer; do not create branches or edit other agents' memory. No unverified release claims.
 
 ## Evidence
-Static source checks before commit; GitHub CI pending. Local git DNS unavailable.
+Focused local Node snapshot tests 3/3 PASS against compatible protocol-version stub; full integrated GitHub CI pending. Git clone DNS unavailable.
 
 ## Cleanup
 Checkpoint <4 KiB.
