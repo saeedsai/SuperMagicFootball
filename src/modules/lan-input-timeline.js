@@ -35,6 +35,17 @@ function applyValidatedLanInput(state, validation) {
   });
 }
 
+// On an authenticated guest departure, discard retained controls immediately.
+// Keep the host frame monotonic while permitting a new guest to start at sequence zero.
+function clearLanInputOnLeave(state, validation) {
+  if (!state || !Number.isSafeInteger(state.frame) ||
+      validation?.accepted !== true || validation.reason !== 'left' ||
+      validation.state?.peerId !== null) {
+    throw new TypeError('Expected an authenticated guest leave result');
+  }
+  return Object.freeze({...state,lastSequence:-1,lastAcceptedFrame:-1,controls:NEUTRAL});
+}
+
 function advanceLanInputFrame(state) {
   if (!state || !Number.isSafeInteger(state.frame) || state.frame < 0 ||
       !Number.isSafeInteger(state.maxHoldFrames) || state.maxHoldFrames < 1 ||
@@ -48,4 +59,4 @@ function advanceLanInputFrame(state) {
   });
 }
 
-export {createLanInputTimeline, applyValidatedLanInput, advanceLanInputFrame};
+export {createLanInputTimeline, applyValidatedLanInput, advanceLanInputFrame, clearLanInputOnLeave};
