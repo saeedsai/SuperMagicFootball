@@ -27,3 +27,20 @@ test('guest invalid identifiers, buttons and axes rejected',async()=>{
  const state=createLanGuest('room001','guest01');
  for(const [b,a] of [[{...buttons(),magic:true},{x:0,y:0}],[buttons(),{x:2,y:0}],[buttons(),{x:NaN,y:0}],[{...buttons(),pass:1},{x:0,y:0}]])assert.throws(()=>nextLanGuestPacket(state,b,a),TypeError);
 });
+
+test('guest join and leave packets round-trip through host handshake',async()=>{
+ const {createLanGuest,lanGuestLifecyclePacket,nextLanGuestPacket}=await load();
+ const {createLanHostState,acceptLanPacket}=await import(pathToFileURL(path.resolve('src/modules/lan-session.js')).href);
+ let guest=createLanGuest('room001','guest01');
+ const hello=lanGuestLifecyclePacket(guest,'hello');
+ assert.deepEqual(Object.keys(hello).sort(),['peerId','roomId','type','version']);
+ let host=acceptLanPacket(createLanHostState('room001','host001'),hello);
+ assert.equal(host.reason,'joined');
+ const next=nextLanGuestPacket(guest,{pass:false,shoot:false,dribble:false,jump:false},{x:0,y:0});
+ assert.equal(acceptLanPacket(host.state,next.packet).accepted,true);
+ const leave=lanGuestLifecyclePacket(next.state,'leave');
+ assert.equal(acceptLanPacket(host.state,leave).reason,'left');
+ assert.equal(next.state.sequence,1);
+ assert.throws(()=>lanGuestLifecyclePacket(guest,'input'),TypeError);
+ assert.equal(Object.isFrozen(leave),true);
+});
