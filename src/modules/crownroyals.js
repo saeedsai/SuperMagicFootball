@@ -74,6 +74,10 @@ const CROWN_ROYALS=(()=>{
   const stride=Math.max(-1,Math.min(1,Number.isFinite(run)?run:0));
   const step=Math.max(-1,Math.min(1,Number.isFinite(phase)?phase:0));
   ctx.save();ctx.imageSmoothingEnabled=false;
+  // The reference atlas only authors one side. Honour explicit left-facing
+  // renderer flags by mirroring around the player's ground anchor, rather than
+  // always showing the same right-facing profile.
+  if(view?.flip===true||view?.mirror===true)ctx.scale(-1,1);
   // Keep identical player width across camera directions. The old 0.86 X-scale
   // made quarter-facing Crown players visibly paper-thin and shifted their feet.
   // Quarter art is still provisional; never distort the whole silhouette.
