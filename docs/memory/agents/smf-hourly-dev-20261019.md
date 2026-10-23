@@ -10,7 +10,7 @@ Keep hourly bounded increments on existing `dev` regardless of release blockers;
 - New Kwame quarter test assertions and SVG contract. Isolated V8 source/runtime QA 13/13 passed; actual Node/Chromium CI and visual acceptance unverified. GitHub DNS unavailable in local container; use connected GitHub app and hosted Actions evidence.
 - Preserve 223 teams / 2676 players, six formations, exactly four gameplay buttons, 10 Career/Cup slots, SD09, legacy saves and offline.
 
-## Next five actions
+## Next smallest action
 1. Inspect exact dev/main heads, latest CI jobs; fix any failures on dev.
 2. Run 4 Node + 4 Chromium and Modular QA on exact dev head; obtain screenshot artifacts.
 3. Verify Kwame quarter visual alignment/transparency and fix defects.
