@@ -1,27 +1,27 @@
 # SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 Europe/Stockholm
+**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 22:02 Europe/Stockholm
 
 ## Mission
-Keep hourly bounded increments on existing `dev` regardless of release blockers; never force-push or bypass protections; only promote exact green head.
+Continue small tested increments on existing `dev` hourly regardless of prior CI/promotion blockers. No additional branches, force-push, weakened tests or bypassed protections.
 
 ## Current checkpoint
-- Last confirmed previous certified build: f9637876d632b633cceca8f320bb11aa31e3c3ff (Census 39992218500, Modular 39992218111, main Census 39993883624, Pages 39993883682). Not proof of current candidate.
-- Candidate 0.9.28.0: Alex #1, Leo #2 and Kwame #3 now have transparent authored front/rear quarter SVGs loaded in live match renderer, embedded in browser fixture and precached offline. Diego #4 still lacks authored quarters. Bespoke action animation remains unfinished.
-- New Kwame quarter test assertions and SVG contract. Isolated V8 source/runtime QA 13/13 passed; actual Node/Chromium CI and visual acceptance unverified. GitHub DNS unavailable in local container; use connected GitHub app and hosted Actions evidence.
-- Preserve 223 teams / 2676 players, six formations, exactly four gameplay buttons, 10 Career/Cup slots, SD09, legacy saves and offline.
+- Started dev `60fa55fdae74dc4cd3d73cfb598a0ee71efbb7d0`, main `ff114be6c5ae4fff8f0f155e82b4b60753238320`. Prior exact-head dev Census 40012769919 and Modular QA 40012769944 green, **not** certification of newer commits. Main has one diverging commit; protected pipeline must reconcile legitimately.
+- Candidate `0.9.29.0`: 23 deterministic unique Super Shot ball silhouettes added to shared Player Studio/Team Management icons, plus focused Node regression tests. Pre-commit V8 checks: 23/23 unique; no hosted CI/Pages evidence yet. Crown Royals gameplay uses painted fallback; SVG quarter art bundled but not live.
+- Updated package/About/README/cache/version policy and stale notes; central log contains detailed change list.
+- Preserve 223 teams/2676 players, 2 GK/3 DF/4 MF/3 FW, six formations, four gameplay buttons, 10 Career/Cup slots, SD09, saves and offline compatibility.
 
 ## Next smallest action
-1. Inspect exact dev/main heads, latest CI jobs; fix any failures on dev.
-2. Run 4 Node + 4 Chromium and Modular QA on exact dev head; obtain screenshot artifacts.
-3. Verify Kwame quarter visual alignment/transparency and fix defects.
-4. Author Diego #4 quarter sprites; continue bounded LAN/Player Studio features while release pending.
-5. Promote only green exact-head dev via protected workflow; verify main and Pages SHA-256 hosted smoke.
+1. Inspect exact latest dev head and its Full Census + Modular QA results; repair any failing Node/Chromium shard without weakening tests.
+2. Confirm unique badge render on mobile and desktop screenshot artifacts.
+3. Investigate dev/main divergence and only permit protected exact-green-head promotion.
+4. Verify actual main SHA, Pages deployment and hosted byte-for-byte smoke.
+5. Continue a small counterable Trick/Player Studio/LAN or painted sprite increment on dev regardless of release status.
 
 ## Ownership and exclusions
-Sole designated developer. Only own checkpoint; no other agents' memory, extra branches, force-push or bypass.
+Only own checkpoint. Do not edit other agents' memory, create branches or bypass security.
 
 ## Evidence
-Candidate 0.9.28.0: isolated V8 13/13. Full Census run 40009187867 and Modular QA 40009187765 each failed 1/532 preflight because required checkpoint headings were missing. Repaired required headings here; rerun needed.
+Pre-commit V8: 23 distinct shapes and safe escaped labels. Hosted CI for this candidate pending. Previous green runs do not certify it.
 
 ## Cleanup
-Checkpoint under 4 KiB. No invented QA, deployment or certification claims.
+Checkpoint below 4 KiB; no invented deployment or QA claims.
