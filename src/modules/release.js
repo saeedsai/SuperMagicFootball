@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.26.0',
+ version:'0.9.27.0',
  date:'2026-10-23',
  notes:Object.freeze([
+  'Crown Royals Leo #2 now has distinct transparent front and rear three-quarter SVG art rendered in matches, precached offline and embedded in browser QA. Other Crown teammates and bespoke action frames remain unfinished.',
   'Alex Crown Royals now uses transparent authored front/rear quarter SVG art in actual matches, offline cache and browser QA; other Crown Royals quarter art and bespoke action frames remain unfinished.',
   'Newly created custom clubs remain in the club builder with immediate Edit Players and Edit Roster access instead of unexpectedly opening Match Setup; the club stays selected and existing saves remain compatible.',
   'Crown Royals Diego (#4) now has a separate front/back/side sprite extracted from the owner-supplied reference. This is a playable graphics increment, not approved 3/4 art or bespoke action animation; facial-hair and tattoo fidelity remains limited by small source sprites.',
