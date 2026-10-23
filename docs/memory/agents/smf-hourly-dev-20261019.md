@@ -2,32 +2,28 @@
 **Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
 
 ## Mission
-Continue one bounded dev feature per iteration and safely repair CI. No new branches, force push or bypass.
+Deliver one bounded, tested increment on existing `dev` every run even while CI/promotion waits. Fix blockers safely. Never create branches, force-push, bypass security or promote red code.
 
 ## Current checkpoint
-- LAN-009 host monotonic frame simulation: 044b4300 adds advanceLanHostFrame with neutral fallback and replay-frame refusal; 29f68d26 carries simulation watermark over valid guest packets; 7e1a109f adds regression cases. No UI or roster change; About version 0.9.29.2 unchanged. Earlier dev was 8 ahead main bfad8158. QA, hosted Pages and art visual checks not yet certified.
-- LAN-008: atomic host handshake-to-frame queue bridge (4c148c1d) and targeted positive/timing-rejection/retransmit/session tests (901a8c70). A rejected future frame does not advance peer replay state. Protocol groundwork only; no live networking/UI changes, version 0.9.29.2 unchanged. At start dev was 4 ahead of main bfad8158; exact-head QA/Pages not confirmed.
-- LAN-007 handshake-gated peer receiver: a7467a22 adds immutable peer state and rejects input before complementary version/session hello, replay and renegotiation; 992615ba adds regressions. Non-player-facing foundation only; package/About remains 0.9.29.2. Earlier main/dev both bfad8158. CI and Pages still require exact-head verification.
-- LAN-006 non-UI transport boundary: 16426d20 adds validated send/receive for an already-open WebRTC-compatible data channel, and 92683b97 adds tests for replay, malformed frames, channel readiness and four-button inputs. No signaling or live LAN game yet. Base main/dev was synchronized at 10a1e348 before development; exact-head CI and Pages/visual QA pending.
-- LAN-005 guest sender: commit 1940052f adds sequenced guest input packet builder; b77edc65 adds Node regression for monotonic frames, action validation, atomic rejection and host queue interoperability. Transport independent, not playable LAN; package/About version unchanged. main/dev previously identical at 28de5112. Exact-head CI and Pages certification pending.
-## 2026-10-24 — LAN-004: missing-frame neutral host input
-- On dev, LAN-004 commits 164d23b8 (resolveGuestLanFrame) and 14df7d2c (focused regression): host produces immutable neutral four-button input when guest frame absent, and consumes real queued guest input without altering future frames. Transport independent, not user-facing; About bundle stays 0.9.29.2. Exact-head CI not yet certified.
-- Prior exact main remains a95f4675; no independent hosted Pages or graphics visual certification. Do not merge dev until fresh 4 Node + 4 Chromium + Modular QA passes.
-
-Preserve 223 teams/2676 players, six formations, exactly four action buttons, 10 Career/Cup slots, SD09, offline/save compatibility. No extra branch, force-push or bypass. LAN-001/002/003 remain foundation only, not live multiplayer.
+- **LAN-010**: guest handshake/session gate and atomic DataChannel input sender (`13e281df`), three Node tests (`a9fafed1`), log `81435186`. Function-level V8 smoke passed: mock host+guest handshake, open-channel send and host queue/frame delivery, premature/closed/throwing channel atomicity. Not live LAN UI/signaling; no graphics work.
+- LAN-009: `044b4300` host monotonic frame advance, `29f68d26` watermark preservation, `7e1a109f` tests. LAN-008: `4c148c1d` host handshake/queue bridge, `901a8c70` tests. LAN-007: `a7467a22` handshake gate, `992615ba` tests. LAN-006: `16426d20` transport, `92683b97` tests. LAN-005: `1940052f` guest packet builder, `b77edc65` tests. LAN-004: `164d23b8` neutral fallback, `14df7d2c` tests.
+- Candidate About version `0.9.29.2` unchanged for non-player-facing LAN protocol. Preserve 223 teams/2676 players, six formations, four actions, 10 Career/Cup slots, SD09, offline/save compatibility.
+- At run start `dev=759f7b1d`, `main=bfad8158`, ahead 13/behind 0. Exact final head and green release evidence must be rechecked.
 
 ## Next smallest action
-1. Inspect exact dev CI for latest LAN-004 and fix failures.
-2. Finish two-peer live transport and frame synchronization in bounded dev commits.
-3. Require 4 Node + 4 Chromium + Modular QA exact-head green.
-4. Permit protected main promotion only from fully certified dev; verify Pages SHA/bytes.
-5. Continue counterable Tricks and Crown Royals independent directional graphics QA.
+1. Inspect exact `dev` Full Regression Census (preflight + 4 Node + 4 Chromium + preview) and Modular QA; fix failures on dev.
+2. Advance genuine LAN transport with host/guest hello exchange and browser connection/signaling UI, bounded and tested.
+3. Address open issue #38 keeper roll and #15 Concept Royals directional sprites with targeted gameplay/art QA.
+4. Allow only protected exact-head green `dev`→`main` promotion; check resulting SHA and main CI.
+5. Verify Pages hosted HTML/JS/CSS byte hashes and desktop/touch gameplay, record remaining visual limitations.
 
 ## Ownership and exclusions
-Read only AGENTS.md, VERSIONING_POLICY, SHARED and this own checkpoint. Keep updating central dev log and own checkpoint. Never suspend authorized hourly development due to pending releases.
+Single developer. Read AGENTS.md, VERSIONING_POLICY.md, SHARED.md and this checkpoint; update central log. Do not edit other agents' memory. Two branches only: dev/main.
 
 ## Evidence
-LAN-004 commits 164d23b8 and 14df7d2c are in dev. CI 40031378895 and 40031378823 failed on missing checkpoint identity; this change restores the exact test contract. Full latest-head CI must be rerun.
+- CI discovery root cause: `fetch_commit_workflow_runs` filters PR-triggered runs and falsely looks empty for push commits. Query GitHub REST `/repos/saeedsai/SuperMagicFootball/actions/runs?branch=dev` instead.
+- `759f7b1d`: Modular QA success run **40036907099**. Full Regression run **40036906913** was in progress: preflight, 4 Node, 3 Chromium, HTTP preview succeeded; browser shard 1 pending. New dev commits supersede this candidate. Check exact final SHA before promotion.
+- Earlier CI 40031378895/40031378823 failed missing checkpoint identity, later repaired. No current Pages or Crown Royals visual certification claimed.
 
 ## Cleanup
-Keep this checkpoint below 4 KiB and preserve the six required headings. No hosted/graphics certification without evidence.
+Keep this checkpoint below 4 KiB; preserve headings. Continue hourly regardless of unreleased increments, without weakening QA.
