@@ -19,16 +19,6 @@ Ship one small tested roadmap increment per run directly on existing `dev`, even
 5. Promote only exact green `dev` via protected pipeline, verify `main` SHA, Pages and hosted byte smoke.
 
 ## Ownership and exclusions
-Sole developer `smf-hourly-dev-20261019`; edit only this agent checkpoint and central docs. Preserve 223 teams/2676 player IDs, 2GK/3DF/4MF/3FW, six formations, four actions, offline/save compatibility, Career/Cup ten slots and SD09. No extra branches or premature multiplayer/currency claims.
-
-## Evidence
-Prior certified baseline: #39923610369, #39922362823, #39923611102. Candidate CI for `27f547f5`: Full Regression #39928852428 and Modular QA #39928852470 were running when checked. Refresh exact head after docs writes.
-
-## Cleanup
-Keep checkpoint under 4096 UTF-8 bytes, six required headings and exact identity marker. Record actual failures; never weaken QA to obtain green.
-
-## 2026-10-23 manual LAN signaling
-`499ad424` adds bounded manual RTC offer/answer SDP helpers; `8879fba1` adds three focused Node tests for handshake, malformed input and peer errors. No ICE trickle UI, peer authentication or playable multiplayer. Version 0.9.17.1 unchanged. Exact-head CI pending; do not bypass protected promotion.
-
-## 2026-10-23 ICE-gathered LAN signaling
-`24290ee9` adds bounded ICE gathering wait and gathered manual SDP offer/answer; `580f1135` fixes listener timer initialization race; `37abc53b` adds three Node tests. No browser signaling UI, connectivity proof or playable multiplayer yet. Candidate 0.9.17.1 unchanged. Exact-head QA pending.
+Sole developer `smf-hourly-dev-20261019`; edit only this agent checkpoint and central docs. Preserve 223 teams/2676 player IDs, 2GK/3DF/4MF/3FW, six formations, four actions, offline/save 
+## 2026-10-23 Concept menu/animation owner request
+Removed both Concept Hero demo nav entries in `10e72d88`, softened prototype leg animation in `f88e0525`, updated regression test `d2fb4ce7`, synchronized player-facing 0.9.18.0 package/release/README/cache/policy in subsequent commits. Prototype remains isolated for graphics iteration; no claim full animation overhaul. Exact-head CI/Concept Hero QA pending; protected promotion only when green.
