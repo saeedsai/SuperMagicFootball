@@ -44,7 +44,7 @@ test('internal exact SHA is preserved by GitHub release workflow, not displayed 
  assert.match(flow,/hashlib\.sha256/);
  assert.match(read('docs/VERSIONING_POLICY.md'),/GitHub Pages/);
  assert.match(read('docs/VERSIONING_POLICY.md'),/internal/i);
- assert.match(read('docs/VERSIONING_POLICY.md'),/0\.9\.28\.0/);
+ assert.ok(read('docs/VERSIONING_POLICY.md').includes(JSON.parse(read('package.json')).version),'release policy must identify current candidate');
 });
 
 test('every game release must update README version, dated summary and playable link',()=>{
