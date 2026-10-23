@@ -1,13 +1,14 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.28.1',
+ version:'0.9.29.0',
  date:'2026-10-23',
  notes:Object.freeze([
+  'Player Studio and Team Management now render 23 individually shaped Super Shot ball badges, with stable panel patterns, readable ability names and no changes to gameplay controls or saved data.',
   'Crown Royals diagonal gameplay views now use the original painted reference artwork instead of mismatched simplified SVG illustrations; bespoke matching quarter art remains planned.',
-  'Crown Royals Kwame #3 now has independently authored transparent front/rear three-quarter sprites, integrated into live matches, offline precache and Chromium test build. Diego quarter views and bespoke action frames remain unfinished.',
-  'Crown Royals Leo #2 now has distinct transparent front and rear three-quarter SVG art rendered in matches, precached offline and embedded in browser QA. Other Crown teammates and bespoke action frames remain unfinished.',
-  'Alex Crown Royals now uses transparent authored front/rear quarter SVG art in actual matches, offline cache and browser QA; other Crown Royals quarter art and bespoke action frames remain unfinished.',
+  'Kwame #3 quarter-view SVG assets are bundled for later art refinement; live Crown Royals diagonal gameplay currently uses painted reference sprites.',
+  'Leo #2 quarter-view SVG assets remain available for future art refinement; live diagonal gameplay currently uses painted reference sprites.',
+  'Alex quarter-view SVG assets remain available for art refinement; live diagonal gameplay currently uses painted reference sprites.',
   'Newly created custom clubs remain in the club builder with immediate Edit Players and Edit Roster access instead of unexpectedly opening Match Setup; the club stays selected and existing saves remain compatible.',
   'Crown Royals Diego (#4) now has a separate front/back/side sprite extracted from the owner-supplied reference. This is a playable graphics increment, not approved 3/4 art or bespoke action animation; facial-hair and tattoo fidelity remains limited by small source sprites.',
   'Rejected experimental Crown Royals quarter-depth compositing after visual QA exposed duplicated outlines; restored reliable original rendering. Authored three-quarter sprites and volumetric action animation remain open.',
