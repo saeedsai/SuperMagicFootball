@@ -355,3 +355,6 @@ Removed both Concept Hero demo nav entries in `10e72d88`, softened prototype leg
 
 ## 2026-10-23 CI repair
 Modular QA #39931445278 failed because `tests/versioning_policy_contract.test.cjs` still asserted 0.9.17.1 after 0.9.18.0 candidate bump. Updated contract and service-worker cache release token (`fbd2c5d3`, `bd3d5e3b`, `22acefdf`). Latest exact-head CI pending; no green certification claimed.
+
+## 2026-10-23 — Concept Royals twelve identities (candidate 0.9.19.0)
+Added twelve named male identities with different skin, hair, face marks and accessories (`ca9b09fb`), painted five-view idle/run overlays (`55416258`), regression contract (`f995b842`), coordinated version/cache/README and tests. Repaired stale leg rotation test (`c752d687`) and six-heading memory checkpoint (`df157d56`). Important: procedural identity overlays reuse the original body atlas; no evidence yet of 12 independent fully illustrated animation sets or real-browser visual certification. Exact-head 4+4 regression and Modular QA pending; no deployment claim.
