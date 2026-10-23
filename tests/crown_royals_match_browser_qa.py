@@ -34,6 +34,7 @@ with sync_playwright() as pw:
   page.locator('[data-action=kickoff]').first.click()
   page.wait_for_function("SupermagicFootball.game.matchState==='play'",timeout=15000)
   assert page.evaluate("SupermagicFootball.game.getTeam(0).id") == 'demo_crown_royals_reference'
+  assert page.evaluate("SupermagicFootball.game.players.some(p=>p.t===0&&p.src?.id==='crown_royals_reference_alex')"), 'Alex must be on the pitch, not just a roster entry'
   page.wait_for_timeout(450)
   images=page.evaluate("""() => {
    const e=SupermagicFootball,t=e.teams.find(t=>t.id==='demo_crown_royals_reference');
