@@ -16,4 +16,15 @@ function nextLanGuestPacket(state,buttons,axis) {
  packet:Object.freeze({type:'input',version:LAN_PROTOCOL_VERSION,roomId:state.roomId,
  peerId:state.peerId,sequence:state.sequence,buttons:Object.freeze({...buttons}),axis:Object.freeze(normalized)})});
 }
-export {createLanGuest,nextLanGuestPacket};
+
+// A guest explicitly handshakes before sending inputs and can close its room
+// without consuming an input sequence number.
+function lanGuestLifecyclePacket(state,type) {
+ if(!state||!/^[a-zA-Z0-9_-]{6,32}$/.test(state.roomId)||
+ !/^[a-zA-Z0-9_-]{6,32}$/.test(state.peerId)||
+ !Number.isSafeInteger(state.sequence)||state.sequence<0||
+ (type!=='hello'&&type!=='leave'))throw new TypeError('Invalid LAN lifecycle packet');
+ return Object.freeze({type,version:LAN_PROTOCOL_VERSION,roomId:state.roomId,peerId:state.peerId});
+}
+
+export {createLanGuest,nextLanGuestPacket,lanGuestLifecyclePacket};
