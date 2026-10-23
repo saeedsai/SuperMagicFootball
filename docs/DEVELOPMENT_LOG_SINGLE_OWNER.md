@@ -1,3 +1,6 @@
+## 2026-10-24 — LAN-008 host channel/queue bridge
+- LAN-008: atomic host handshake-to-frame queue bridge (4c148c1d) and targeted positive/timing-rejection/retransmit/session tests (901a8c70). A rejected future frame does not advance peer replay state. Protocol groundwork only; no live networking/UI changes, version 0.9.29.2 unchanged. At start dev was 4 ahead of main bfad8158; exact-head QA/Pages not confirmed.
+
 ## 2026-10-24 — LAN-007 handshake gate
 - LAN-007 handshake-gated peer receiver: a7467a22 adds immutable peer state and rejects input before complementary version/session hello, replay and renegotiation; 992615ba adds regressions. Non-player-facing foundation only; package/About remains 0.9.29.2. Earlier main/dev both bfad8158. CI and Pages still require exact-head verification.
 
