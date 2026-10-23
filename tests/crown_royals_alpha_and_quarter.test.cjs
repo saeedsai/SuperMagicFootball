@@ -20,7 +20,7 @@ test('Crown renderer keeps transparent sprite edges and does not squash quarter 
   set src(v){this._src=v;if(this.onload)this.onload();}
  },URL,console};
  sandbox.globalThis=sandbox;
- vm.runInNewContext(source,sandbox);
+ vm.runInNewContext(source.replaceAll('import.meta.url', "'https://example.invalid/game.js'"),sandbox);
  const crown=sandbox.CROWN_ROYALS;
  assert.equal(crown.status().playerCount,4);
  assert.equal(crown.status().loaded,true);
