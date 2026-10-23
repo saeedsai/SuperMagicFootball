@@ -25,7 +25,8 @@ function shotBall(id,color){
   '<circle cx="29" cy="31" r="'+center+'" fill="#142943" stroke="#f8fbff" stroke-width="1"/>';
 }
 function icon(type,id,label=''){
- const item=CATALOGUES[type]?.[id];
+ const catalogue=Object.hasOwn(CATALOGUES,type)?CATALOGUES[type]:null;
+ const item=catalogue&&typeof id==='string'&&Object.hasOwn(catalogue,id)?catalogue[id]:null;
  if(!item)return '<span class="abilityGlyph abilityGlyphEmpty" aria-label="Not equipped" title="Not equipped">—</span>';
  const [mark,color]=item,ball=type==='shot';
  const name=escapeMarkup(label||id),title=escapeMarkup(type+' · '+(label||id));
