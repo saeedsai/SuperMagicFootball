@@ -1,27 +1,24 @@
 # SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 12:57 Europe/Stockholm
+**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 13:50 Europe/Stockholm
 
 ## Mission
-Never pause for pending CI/release. Work only on existing dev; promote exact green head through protected pipeline. No new branches, force-push or security bypass.
+Continue small increments on existing dev regardless of pending CI/release; diagnose blockers and repair safely. No new branches, force push, safety or permission bypass.
 
 ## Current checkpoint
-- Start dev `d48c987d6ec94e9ed0b09e03a301d4fdb60d7dc1`; main `385022294d86fdaf5c25ad33222b6bba978c412b`.
-- New candidate 0.9.20.0: separate Crown Royals (Art WIP) team, first reference-derived Alex #1 3-view sprite and experimental run/action transforms. Previous Concept Royals FC and canonical 223 teams/2676 players untouched.
-- Asset is transparent, cropped from owner-supplied artwork, 132x90 palette PNG. Front/back/side genuine; quarter views use nearest art. Other 11 players are placeholders. No claims of finished bespoke animations or QA acceptance.
-- Added specialized Chromium screenshot QA and focused Node tests. Renderer-only Chromium QA 39944291648 PASS (3 genuine projections, action differences). Mapped live kick/super/slide to provisional poses. Exact-head 4+4, match QA, main and Pages pending.
+- Candidate 0.9.21.0: separate Crown Royals Alex #1 and Leo #2 use distinct transparent owner-reference 132x90 three-view atlases. Ten other Crown players remain standard placeholders. Original Concept Royals remains unchanged, as do 223 canonical teams and 2676 canonical players.
+- Leo has blond hair and dark headband. Quarter directions currently reuse nearest sprite; idle/run/jump/shoot/tackle use provisional transforms rather than separately authored animation frames.
+- Local isolated Chromium renderer QA PASS on desktop and simulated touch: five direction slots × five action previews, zero JS errors. New exact-head live match/CI and Pages still need verification.
+- Full census #39944909668 failed 7 legacy Chromium count assumptions (223/224); now default total 225, saved custom-club fixture 226. Corrected counts while preserving original BPW and save indexes.
 
 ## Next smallest action
-1. Inspect new Crown Royals Chromium screenshots and CI; fix concrete defects.
-2. Refine Alex reference fidelity and side hair mismatch; author distinct quarter views.
-3. Add next teammate as an actual reference-derived sprite, not a shared generic overlay.
-4. Continue counterable four-button Tricks and two-client LAN independently of release queue.
-5. Promote exact fully green dev through protected pipeline, verify main SHA and hosted bytes.
+1. Check exact-dev-head 4 Node+4 Chromium census, Modular QA and Crown Royals browser QA, resolve failures.
+2. Allow only verified green protected dev→main promotion and hosted Pages byte smoke.
+3. Correct Alex side-hair mismatch and refine Leo edges.
+4. Paint independent quarter sprites and bespoke action frames and verify.
+5. Integrate third Crown reference player; continue counterable Tricks/two-client LAN.
 
 ## Ownership and exclusions
-Sole maintainer smf-hourly-dev-20261019; dev coding, main protected promotion only. Preserve four controls, six formations, ten Career/Cup slots, offline saves and SD09.
-
-## Evidence
-First CI 39943679151 failed on stale regex tests and checkpoint headings, not on renderer itself. Specialized Crown QA 39943679547 is independent.
+Only smf-hourly-dev-20261019 writes game code on dev; main only through protection. Preserve all four buttons, six formations, ten Career/Cup slots, saves, offline and SD09.
 
 ## Cleanup
-Retain original Concept Royals, canonical data and saves. Do not claim full QA approval until real Chromium and exact-head regression are green.
+Keep this checkpoint under 4 KiB. Do not call renderer smoke final artistic or release approval.

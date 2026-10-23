@@ -8,6 +8,7 @@ on:
       - 'src/modules/ui.js'
       - 'assets/crown_royals/**'
       - 'crown-royals-visual-qa.html'
+      - 'leo-visual-qa.html'
       - 'tests/crown_royals*'
       - 'scripts/build.py'
       - '.github/workflows/crown-royals-qa.yml'
@@ -30,13 +31,15 @@ jobs:
           node --test tests/crown_royals_reference.test.cjs
           python3 scripts/build.py
       - name: Capture actual game renderer in Chromium
-        run: python3 tests/crown_royals_browser_qa.py
+        run: |
+          python3 tests/crown_royals_browser_qa.py
+          python3 tests/crown_royals_leo_browser_qa.py
       - name: Verify Crown Royals in actual desktop and touch matches
         run: python3 tests/crown_royals_match_browser_qa.py
       - name: Preserve browser screenshot evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: crown-royals-alex-game-screenshots
+          name: crown-royals-alex-leo-game-screenshots
           path: docs/qa_runs_crown_royals/
           retention-days: 30

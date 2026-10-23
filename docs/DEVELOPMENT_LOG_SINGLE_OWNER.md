@@ -1,5 +1,11 @@
 # SuperMagicFootball — centralized development log
 
+## 2026-10-23 13:50 Europe/Stockholm — Crown Royals player 2 Leo and regression repair
+- Added transparent actual reference-derived Leo #2 sprite to separately selectable Crown Royals, retaining Alex #1 and older Concept Royals. Candidate version 0.9.21.0. Other ten Crown players remain placeholders; old 223 teams/2676 players, saved indexes and four buttons remain intact.
+- Local Chromium actual-renderer desktop/touch smoke PASS: five directions (three painted/two approximate) and five provisional actions, no page errors. Added screenshot QA automation and in-match Leo assertion.
+- Fixed seven stale browser counts causing previous 4+4 failure #39944909668; 225 total demo-inclusive teams, 226 when one custom club loaded. Do not claim exact-head production release until full Census, Modular QA and hosted Pages checks succeed.
+
+
 ## 2026-10-23 13:18 Europe/Stockholm — live action pose mapping
 - Browser screenshots exposed preview-only `shoot`/`tackle` names while real match uses `kick`/`slide`; added action mapping and passed nonzero pose phase from match timer to new Crown renderer. No physics or control changes. Added focused contract and updated candidate release notes.
 - Specialized renderer Chromium QA 39944291648 PASS on earlier source; exact latest-head 4+4 and new real-match screenshot QA still pending.

@@ -1,4 +1,4 @@
-# SuperMagicFootball release/version policy — About-only 0.9.20.0
+# SuperMagicFootball release/version policy — About-only 0.9.21.0
 
 **Effective 21 October 2026; updated 23 October 2026 for release 0.9.20.0.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
