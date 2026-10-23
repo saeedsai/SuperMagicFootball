@@ -42,3 +42,6 @@ Previously blocked code published on existing dev: `a58cd164` guest sequential f
 
 ## 2026-10-23 — LAN host-observed disconnect
 `61c17f3a` adds `disconnectLanPeer` for a matching connected guest; stale sockets cannot evict a replacement. `18983fb0` adds three focused tests including immediate control reset. No player-facing version change; transport and match sync not implemented. Await exact-head 4+4 and Modular QA.
+
+## 2026-10-23 — guest LAN lifecycle packets
+`baab7e31`: join/leave packet factory interoperable with existing host validation. `4b41bacc`: host/guest focused test. Transport-independent, no user-visible release version change; 4+4 Census and Modular QA pending. Prior hosted main `3c3e6a5d` Pages success #39917009157. Next: transport integration and two-client browser tests.
