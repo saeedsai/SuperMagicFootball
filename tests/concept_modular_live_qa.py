@@ -48,7 +48,7 @@ with sync_playwright() as pw:
         torsoSvg:torso.ok?(await torso.text()).includes('Royals painted front jersey torso number 10'):false,
         torsoSource:moduleText.includes('CONCEPT_MODULAR_TORSO_INLINE')&&moduleText.includes('states.frontTorso.image')};
     }""")
-    assert info['teams']==224 and info['modular']==1 and info['old']==11,info
+    assert info['teams']==225 and info['modular']==1 and info['old']==11,info
     assert info['svgStatus']==200 and info['rearSvgStatus']==200 and info['faceSvgStatus']==200 and info['armSvgStatus']==200 and info['farArmSvgStatus']==200 and info['collarSvgStatus']==200 and info['torsoSvgStatus']==200 and info['moduleStatus']==200 and info['svg'] and info['rearSvg'] and info['faceSvg'] and info['armSvg'] and info['farArmSvg'] and info['collarSvg'] and info['collarSource'] and info['torsoSvg'] and info['torsoSource'] and info['module'],info
     assert info['armIdleBlend'],'Pages still serves an old visual arm-gait module: '+str(info)
     assert set(info['status']['authoredViews'])=={'front','back'},info
@@ -64,7 +64,12 @@ with sync_playwright() as pw:
     if attempt==11:raise
     page.wait_for_timeout(15000)
   page.locator('[data-action="navQuick"]').first.click()
-  page.locator('[data-action="conceptDemo"]').first.click()
+  page.locator('[data-action="navOnDevice"]').first.click()
+  page.locator('[data-action="quick"]').first.click()
+  page.locator('#homeGroup').select_option('all')
+  team_index=page.evaluate("SupermagicFootball.teams.findIndex(t=>t.id==='demo_concept_royals')")
+  assert team_index>=0,'Concept Royals missing from current Quick Match teams'
+  page.locator('#homeTeam').select_option(str(team_index))
   page.locator('[data-action="kickoff"]').first.click()
   page.wait_for_function("SupermagicFootball.game.matchState==='play'",timeout=16000)
   page.wait_for_timeout(700)
