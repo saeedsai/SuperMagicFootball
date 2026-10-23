@@ -11,7 +11,7 @@ Sole developer on existing dev, never stop for pending release. No new branches,
 - Last feature/test commit `78e792985771377e627028faabcc67c49d3c31bc`; Full Census 40023966569 and Modular QA 40023966819 pending. Do not claim green or deployed.
 - Preserve 223 teams/2676 players, 6 formations, 4 buttons, 10 Career/Cup slots, SD09, offline/save compatibility.
 
-## Next five
+## Next smallest action
 1. Inspect exact latest dev CI; fix new Node syntax gate failures if any.
 2. Fix any remaining browser/preview or 4 Chromium shard failure.
 3. Complete 4 Node + 4 Chromium + Modular QA for exact head.
