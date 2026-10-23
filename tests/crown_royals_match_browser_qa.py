@@ -24,9 +24,10 @@ with sync_playwright() as pw:
    return {old:e.teams.some(x=>x.id==='demo_concept_royals'),roster:t?.customRoster?.length,
     alex:t?.customRoster?.find(p=>p.id==='crown_royals_reference_alex')?.renderModel,
     leo:t?.customRoster?.find(p=>p.id==='crown_royals_reference_leo')?.renderModel,
-    kwame:t?.customRoster?.find(p=>p.id==='crown_royals_reference_kwame')?.renderModel};
+    kwame:t?.customRoster?.find(p=>p.id==='crown_royals_reference_kwame')?.renderModel,
+    diego:t?.customRoster?.find(p=>p.id==='crown_royals_reference_diego')?.renderModel};
   }""")
-  assert state=={'old':True,'roster':12,'alex':'crown_royals_reference','leo':'crown_royals_reference','kwame':'crown_royals_reference'},state
+  assert state=={'old':True,'roster':12,'alex':'crown_royals_reference','leo':'crown_royals_reference','kwame':'crown_royals_reference','diego':'crown_royals_reference'},state
   page.locator('[data-action=navQuick]').first.click()
   page.locator('[data-action=navOnDevice]').first.click()
   page.locator('[data-action=quick]').first.click()
@@ -95,6 +96,24 @@ with sync_playwright() as pw:
   assert len({hashlib.sha256(img.tobytes()).digest() for img in kwame_imgs})>=3
   assert any(not a.tobytes()==b.tobytes() for a,b in zip(imgs,kwame_imgs)), 'Kwame and Alex must not render identical pixels'
   assert any(not a.tobytes()==b.tobytes() for a,b in zip(leo_imgs,kwame_imgs)), 'Kwame and Leo must have different sprite pixels'
+  diego_images=page.evaluate("""() => {
+   const e=SupermagicFootball,t=e.teams.find(t=>t.id==='demo_crown_royals_reference');
+   const p=t.customRoster.find(p=>p.id==='crown_royals_reference_diego');
+   const base=e.game.players[0];
+   return [[0,1],[.707,.707],[1,0],[.707,-.707],[0,-1]].map(([dx,dy])=>{
+    const c=document.createElement('canvas');c.width=220;c.height=245;
+    const ctx=c.getContext('2d');ctx.translate(110,213);ctx.scale(1.35,1.35);
+    e.renderer.drawPlayer(ctx,{...base,src:p,t:0,i:2,x:0,y:0,z:0,
+     preview:true,controlled:false,dx,dy,visualFacing:null,anim:0,action:'idle',
+     stun:0,cryTimer:0},{getTeam:()=>t,options:{showNames:false}});
+    return c.toDataURL('image/png');
+   });
+  }""")
+  diego_imgs=[Image.open(io.BytesIO(base64.b64decode(v.split(',',1)[1]))).convert('RGBA') for v in diego_images]
+  diego_ink=[sum(1 for a in img.getchannel('A').getdata() if a>30) for img in diego_imgs]
+  assert min(diego_ink)>1000,diego_ink
+  assert len({hashlib.sha256(img.tobytes()).digest() for img in diego_imgs})>=3
+  assert any(a.tobytes()!=b.tobytes() for a,b in zip(diego_imgs,leo_imgs)), 'Diego and Leo have identical pixels'
   if device=='desktop':
    page.screenshot(path=str(OUT/'alex_real_match.png'))
    sheet=Image.new('RGB',(1100,280),'#202941')
@@ -113,9 +132,14 @@ with sync_playwright() as pw:
     tile=Image.new('RGBA',img.size,'#202941');tile.alpha_composite(img)
     kwame_sheet.paste(tile.convert('RGB'),(220*i,28))
    kwame_sheet.save(OUT/'kwame_real_game_five_views.png')
+   diego_sheet=Image.new('RGB',(1100,280),'#202941')
+   for i,img in enumerate(diego_imgs):
+    tile=Image.new('RGBA',img.size,'#202941');tile.alpha_composite(img)
+    diego_sheet.paste(tile.convert('RGB'),(220*i,28))
+   diego_sheet.save(OUT/'diego_real_game_five_views.png')
    page.screenshot(path=str(OUT/'kwame_real_match.png'))
   assert not errors,errors
-  report[device]={'status':'PASS','alexPixelCounts':ink,'leoPixelCounts':leo_ink,'kwamePixelCounts':kwame_ink,'differentViews':unique,'errors':errors}
+  report[device]={'status':'PASS','alexPixelCounts':ink,'leoPixelCounts':leo_ink,'kwamePixelCounts':kwame_ink,'diegoPixelCounts':diego_ink,'differentViews':unique,'errors':errors}
   context.close()
  browser.close()
 (OUT/'match_report.json').write_text(json.dumps(report,indent=2))
