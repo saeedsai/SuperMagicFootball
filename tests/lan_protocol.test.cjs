@@ -145,3 +145,22 @@ test('LAN-005 guest sender rejects stale frames and invalid controls atomically'
  assert.throws(()=>p.buildGuestLanInput(accepted.state,6,['pass'],0,0));
  assert.throws(()=>p.buildGuestLanInput(accepted.state,1000000001,[],0,0));
 });
+
+test('LAN-006 sends canonical four-button packets only through an open channel',async()=>{
+ const p=await load(),sent=[],channel={readyState:'open',send:x=>sent.push(x)};
+ const length=p.sendLanChannelPacket(channel,input);
+ assert.equal(sent.length,1);
+ assert.equal(length,sent[0].length);
+ assert.deepEqual(p.receiveLanChannelPacket({data:sent[0]},session,0).packet,p.normalizeLanPacket(input));
+ assert.throws(()=>p.sendLanChannelPacket({...channel,readyState:'connecting'},input));
+ assert.throws(()=>p.sendLanChannelPacket(channel,{...input,buttons:['kick']}));
+ assert.equal(sent.length,1,'invalid packets are never sent');
+});
+test('LAN-006 rejects replayed, foreign-session, oversized and malformed network payloads',async()=>{
+ const p=await load(),raw=p.serializeLanPacket(input);
+ assert.equal(p.receiveLanChannelPacket(raw,session,1).accepted,false);
+ assert.throws(()=>p.receiveLanChannelPacket(raw,'different_session_12',0));
+ assert.throws(()=>p.receiveLanChannelPacket({data:'x'.repeat(4097)},session,0));
+ assert.throws(()=>p.receiveLanChannelPacket({data:new Uint8Array([1,2,3])},session,0));
+ assert.throws(()=>p.receiveLanChannelPacket({},session,0));
+});
