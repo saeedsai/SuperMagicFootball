@@ -95,3 +95,26 @@ test('LAN-003 accepts the maximum lead frame without exceeding bounded pending q
  assert.equal(consumed.packet.frame,103);
  assert.equal(consumed.state.pending.length,5);
 });
+
+test('LAN-004 missing guest frame resolves to deterministic neutral controls',async()=>{
+ const p=await load(),host=p.createHostLanInputQueue(hello,{...hello,role:'guest'});
+ const neutral=p.resolveGuestLanFrame(host,40);
+ assert.equal(neutral.received,false);
+ assert.deepEqual(neutral.input,{frame:40,buttons:[],dx:0,dy:0});
+ assert.ok(Object.isFrozen(neutral.input.buttons));
+ assert.equal(neutral.state.lastSequence,0);
+});
+test('LAN-004 consumes supplied guest input without changing future queued packets',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ let state=p.createHostLanInputQueue(hello,guest);
+ state=p.enqueueGuestLanInput(state,{...input,frame:41},40).state;
+ state=p.enqueueGuestLanInput(state,{...input,sequence:2,frame:42},40).state;
+ const absent=p.resolveGuestLanFrame(state,40);
+ assert.equal(absent.received,false);
+ assert.equal(absent.state.pending.length,2);
+ const present=p.resolveGuestLanFrame(absent.state,41);
+ assert.equal(present.received,true);
+ assert.deepEqual(present.input,{frame:41,buttons:['pass','jump'],dx:1,dy:0});
+ assert.equal(present.state.pending.length,1);
+ assert.equal(p.resolveGuestLanFrame(present.state,42).received,true);
+});
