@@ -20,5 +20,11 @@ Sole developer on existing dev, never stop for pending release. No new branches,
 4. Permit protected main promotion only when all green, verify Pages byte smoke.
 5. Continue LAN host-authority/two-browser transport or counterable Trick/graphics increment on dev even if release remains pending.
 
-## Safety
-Read AGENTS.md, VERSIONING_POLICY, SHARED and this checkpoint; latest SHA before writes. Never touch other agent memories or add branches. No unsupported QA/deployment claims.
+## Ownership and exclusions
+Read AGENTS.md, VERSIONING_POLICY, SHARED and this checkpoint; latest SHA before writes. Never touch other agent memories or add branches. No forced pushes or unverified main promotion.
+
+## Evidence
+Full Census and Modular QA run IDs are in central development log. V8 startup parse and LAN-001 focused checks passed; exact-head CI and browser/graphics certification are pending.
+
+## Cleanup
+Keep this checkpoint under 4 KiB. Do not misrepresent a candidate as deployed or a LAN protocol as live multiplayer. No unsupported QA/deployment claims.
