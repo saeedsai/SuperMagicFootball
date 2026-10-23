@@ -32,3 +32,12 @@ test('ability icons escape labels, keep non-shot styles and missing selection ac
  assert.match(icons.icon('dribble','rainbow'),/abilityGlyph-dribble/);
  assert.match(icons.icon('shot','not-real'),/Not equipped/);
 });
+
+test('invalid and inherited catalogue keys never render an ability',()=>{
+ for(const type of ['shot','defence','trick','dribble','toString','__proto__','constructor']){
+  for(const id of ['__proto__','constructor','toString',null,{},42]){
+   assert.match(icons.icon(type,id),/Not equipped/);
+  }
+ }
+ assert.match(icons.icon('shot','ninja'),/data-shot-shape="ninja"/);
+});
