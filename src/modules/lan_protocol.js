@@ -36,4 +36,15 @@ function acceptLanPacket(packet,session,lastSequence=-1){
  if(clean.sequence<=lastSequence)return Object.freeze({accepted:false,lastSequence});
  return Object.freeze({accepted:true,lastSequence:clean.sequence,packet:clean});
 }
-export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket};
+
+// LAN-002: accept a guest only after both peers agree on session, build and roles.
+function validateLanHandshake(localHello,remoteHello){
+ const local=normalizeLanPacket(localHello),remote=normalizeLanPacket(remoteHello);
+ if(local.type!=='hello'||remote.type!=='hello')throw new Error('LAN handshake requires two hello packets');
+ if(local.session!==remote.session)throw new Error('LAN handshake session mismatch');
+ if(local.build!==remote.build)throw new Error('LAN game version mismatch');
+ if(local.role===remote.role)throw new Error('LAN handshake requires complementary roles');
+ if(local.sequence!==0||remote.sequence!==0)throw new Error('LAN handshake must begin at sequence zero');
+ return Object.freeze({session:local.session,build:local.build,localRole:local.role,remoteRole:remote.role});
+}
+export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake};
