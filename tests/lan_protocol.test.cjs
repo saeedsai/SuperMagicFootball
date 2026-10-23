@@ -227,3 +227,28 @@ test('LAN-008 host session rejects guest role confusion and forged sessions',asy
  assert.throws(()=>p.acceptLanHostMessage(state,p.serializeLanPacket({...input,session:'other_session_1234'}),40));
  assert.throws(()=>p.acceptLanHostMessage(state,p.serializeLanPacket(guest),40));
 });
+
+test('LAN-009 host advances frames exactly once with neutral fallback',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ const ready=p.acceptLanHostMessage(p.createLanHostSession(hello),p.serializeLanPacket(guest),40).state;
+ const empty=p.advanceLanHostFrame(ready,40);
+ assert.equal(empty.received,false);
+ assert.deepEqual(empty.input,{frame:40,buttons:[],dx:0,dy:0});
+ assert.equal(empty.state.lastSimulatedFrame,40);
+ assert.throws(()=>p.advanceLanHostFrame(empty.state,40));
+ assert.throws(()=>p.advanceLanHostFrame(empty.state,39));
+});
+test('LAN-009 queued guest packet survives previous frame and watermark survives reception',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ let state=p.acceptLanHostMessage(p.createLanHostSession(hello),p.serializeLanPacket(guest),40).state;
+ state=p.acceptLanHostMessage(state,p.serializeLanPacket({...input,frame:42}),40).state;
+ state=p.advanceLanHostFrame(state,40).state;
+ assert.equal(state.queue.pending.length,1);
+ state=p.acceptLanHostMessage(state,p.serializeLanPacket({...input,sequence:2,frame:43}),41).state;
+ assert.equal(state.lastSimulatedFrame,40);
+ const delivered=p.advanceLanHostFrame(state,42);
+ assert.equal(delivered.received,true);
+ assert.deepEqual(delivered.input.buttons,['pass','jump']);
+ assert.equal(delivered.state.queue.pending.length,1);
+ assert.throws(()=>p.advanceLanHostFrame(delivered.state,42));
+});
