@@ -2,26 +2,23 @@
 **Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23
 
 ## Mission
-Ship one small tested roadmap increment per run directly on existing `dev`, even while earlier commits await QA or release. Diagnose and repair blockers safely; never bypass GitHub/OpenAI security, protections or force-push. Only `dev` and `main` are permitted branches.
+Continue bounded tested increments directly on dev while release is pending. Repair blockers safely. Never bypass security, protected CI or force-push; only dev and main.
 
 ## Current checkpoint
-- Start-of-run `dev=main=05525054256ca6bcb0f9e3bf30a70f848befab32`. Both certified: Full Regression #39923610369 (four Node/four Chromium + hosted smoke PASS), Modular QA #39922362823 PASS, Pages #39923611102 PASS.
-- New LAN increment: `src/modules/lan-data-channel.js` commits `d6ea6f84`, `f3b91a12`; `tests/lan-data-channel.test.cjs` commit `27f547f5`. Binds host and guest to RTCDataChannel-style open/message/close events. Tests cover hello/input/leave, replay, peer identity latch, disconnect/replacement and failed sends.
-- LAN still needs RTCPeerConnection SDP/ICE signaling, authenticated join confirmation, match-state replication and real two-browser smoke; no playable-LAN claim.
-- Installed player-facing version is `0.9.17.1` in Settings → About only. Unbundled LAN module/tests do not change the player-facing bundle/version. Never conflate candidate dev with certified main.
-- Historical memory-contract failure (wrong identity marker/headings) was repaired; preserve exact marker and six required headings. Blue/neon Player Studio and earnable coins remain backlog.
+Concept Royals candidate 0.9.19.0: twelve distinct male identities (names, skin, hair, marks/accessories) on the original five-view prototype atlas. Commits ca9b09fb (roster), 55416258 (renderer), f995b842 (tests). This is procedural overlay art, NOT twelve independently painted animation atlases. Prior 0.9.18.0 removed two Concept Hero menu entries and softened leg stride. Main certification and Pages release pending.
 
 ## Next smallest action
-1. Certify exact `dev` with focused Node tests, full 4 Node + 4 Chromium Census and Modular QA; repair any confirmed failure.
-2. Add bounded RTC peer-connection/signaling handshake for two-browser LAN with explicit trust boundaries.
-3. Add Player Studio ability-row visuals and unique icons with coordinated four-field release bump, README and offline cache.
-4. Implement pure idempotent coin wallet ledger with tests before UI, saves or unlocks.
-5. Promote only exact green `dev` via protected pipeline, verify `main` SHA, Pages and hosted byte smoke.
+1. Check exact-head Modular QA and 4+4 Full Regression, fix failures.
+2. Verify identity renderer in actual browser in five views and run/idle, capture comparison.
+3. Replace provisional overlay art with individually painted coherent multi-view atlases and animation poses.
+4. Connect two-client WebRTC LAN signaling to match synchronization.
+5. Promote only exact green dev head via protected pipeline; verify hosted Pages byte smoke.
 
 ## Ownership and exclusions
-Sole developer `smf-hourly-dev-20261019`; edit only this agent checkpoint and central docs. Preserve 223 teams/2676 player IDs, 2GK/3DF/4MF/3FW, six formations, four actions, offline/save 
-## 2026-10-23 Concept menu/animation owner request
-Removed both Concept Hero demo nav entries in `10e72d88`, softened prototype leg animation in `f88e0525`, updated regression test `d2fb4ce7`, synchronized player-facing 0.9.18.0 package/release/README/cache/policy in subsequent commits. Prototype remains isolated for graphics iteration; no claim full animation overhaul. Exact-head CI/Concept Hero QA pending; protected promotion only when green.
+Sole owner smf-hourly-dev-20261019. Preserve 223 canonical teams/2676 players, six formations, four buttons, offline/save compatibility, ten Career/Cup slots and SD09. Concept Royals is isolated extra demo roster; no new branches.
 
-## 2026-10-23 CI repair
-Modular QA #39931445278 failed because `tests/versioning_policy_contract.test.cjs` still asserted 0.9.17.1 after 0.9.18.0 candidate bump. Updated contract and service-worker cache release token (`fbd2c5d3`, `bd3d5e3b`, `22acefdf`). Latest exact-head CI pending; no green certification claimed.
+## Evidence
+Source/test commits listed above. Preflight failed earlier on stale leg-rotation assertion and missing checkpoint Evidence heading; correcting both. CI still pending. Do not claim completed graphics quality certification or deployed version.
+
+## Cleanup
+Retain original art and experimental modules for future refinement; do not remove tests or bypass validation.
