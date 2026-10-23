@@ -21,6 +21,10 @@ function acceptLanPacket(state,packet){
   if(state.peerId===packet.peerId)return {accepted:true,reason:'already-joined',state};
   return {accepted:true,reason:'joined',state:Object.freeze({...state,peerId:packet.peerId,lastSequence:-1})};
  }
+ if(packet.type==='leave'){
+  if(state.peerId!==packet.peerId)return reject(state,'not-joined');
+  return {accepted:true,reason:'left',state:Object.freeze({...state,peerId:null,lastSequence:-1})};
+ }
  if(packet.type!=='input')return reject(state,'unsupported-type');
  if(state.peerId!==packet.peerId)return reject(state,'not-joined');
  if(!Number.isSafeInteger(packet.sequence)||packet.sequence<0)return reject(state,'invalid-sequence');
