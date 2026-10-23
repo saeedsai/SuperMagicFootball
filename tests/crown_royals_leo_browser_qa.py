@@ -14,7 +14,10 @@ module=(ROOT/'src/modules/crownroyals.js').read_text().replace('export {CROWN_RO
 alex_sprite=base64.b64encode((ROOT/'assets/crown_royals/alex_three_views.png').read_bytes()).decode()
 leo_sprite=base64.b64encode((ROOT/'assets/crown_royals/leo_three_views.png').read_bytes()).decode()
 script='const CROWN_ROYALS_INLINE='+json.dumps(alex_sprite)+';\n'
-script+='const CROWN_ROYALS_LEO_INLINE='+json.dumps(leo_sprite)+';\n'+module+'\n'+page_js
+leo_quarter=base64.b64encode((ROOT/'assets/crown_royals/leo_quarter_views.svg').read_bytes()).decode()
+script+='const CROWN_ROYALS_LEO_INLINE='+json.dumps(leo_sprite)+';\n'
+script+='const CROWN_ROYALS_LEO_QUARTER_INLINE='+json.dumps(leo_quarter)+';\n'+module+'\n'
+script+='window.__leoQuarterStatus=()=>CROWN_ROYALS.status();\n'+page_js
 with sync_playwright() as pw:
  browser=pw.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox','--disable-dev-shm-usage'])
  page=browser.new_page(viewport={'width':1400,'height':850},device_scale_factor=1)
@@ -23,6 +26,8 @@ with sync_playwright() as pw:
  page.set_content(shell)
  page.add_script_tag(content=script,type='module')
  page.wait_for_function("document.querySelector('#status').textContent.includes('Game renderer loaded')",timeout=15000)
+ page.wait_for_function("window.__leoQuarterStatus && window.__leoQuarterStatus().leoQuarterLoaded",timeout=15000)
+ assert page.evaluate("window.__leoQuarterStatus().leoQuarterError") is False
  frames={}
  for action in ['idle','run','jump','shoot','tackle']:
   page.click('#'+action)
@@ -39,7 +44,7 @@ with sync_playwright() as pw:
   assert ImageChops.difference(frames['idle'],frames[action]).getbbox() is not None,action
  report={'status':'PASS renderer smoke only; NOT full animation acceptance','player':'Leo #2',
   'team':'Crown Royals (Art WIP)','true_views':['front','side','back'],
-  'approximated_views':['quarterFront','quarterBack'],
+  'authored_quarter_views':['quarterFront','quarterBack'],
   'animation':['experimental run','jump transform','shoot transform','tackle transform'],
   'not_yet_verified':['12 unique players','bespoke action frames','reference consistency in side hair'],
   'screenshots':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in OUT.glob('leo_*.png')}}
