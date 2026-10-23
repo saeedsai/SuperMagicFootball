@@ -8,7 +8,8 @@ function placeBananaPeel(active,carrier,field){
  const magnitude=Math.hypot(vx,vy)||1;
  const x=Math.max(field.x+25,Math.min(field.x+field.w-25,carrier.x-vx/magnitude*42));
  const y=Math.max(field.y+25,Math.min(field.y+field.h-25,carrier.y-vy/magnitude*42));
- return [...active.slice(-(MAX_BANANA_PEELS-1)),Object.freeze({kind:'banana',team:carrier.t,x,y,life:BANANA_LIFETIME,arm:BANANA_ARM_TIME})];
+ const bananas=active.filter(h=>h.kind==='banana').slice(-(MAX_BANANA_PEELS-1));
+ return [...active.filter(h=>h.kind!=='banana'),...bananas,Object.freeze({kind:'banana',team:carrier.t,x,y,life:BANANA_LIFETIME,arm:BANANA_ARM_TIME})];
 }
 function advanceBananaPeels(active,players,dt){
  if(!Array.isArray(active)||!Array.isArray(players)||!Number.isFinite(dt)||dt<0)throw new TypeError('Invalid banana peel tick');
@@ -25,7 +26,7 @@ function advanceBananaPeels(active,players,dt){
 }
 
 // Ice Patch: distinct persistent trap; shorter chill than banana slip.
-// Per-team hazard capacity is shared, with no contact effects on airborne,
+// Each hazard type has its own bounded capacity; no effect on airborne,
 // friendly, keeper, or already-stunned players.
 const ICE_LIFETIME=2.5,ICE_ARM_TIME=.3,ICE_RADIUS=35,MAX_ICE_PATCHES=6;
 function placeIcePatch(active,carrier,field){
