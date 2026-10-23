@@ -25,3 +25,6 @@ Pre-commit V8: 23 distinct shapes and safe escaped labels. Hosted CI for this ca
 
 ## Cleanup
 Checkpoint below 4 KiB; no invented deployment or QA claims.
+
+## 2026-10-23 candidate 0.9.29.1
+- Fixed inherited Super Shot/Super Defence keys in Player Studio ability summaries; added focused regression case. Dev commits 18116a61, 37061bb0; release metadata updated through ccdd77cf. Full 4+4 CI and hosted deployment pending; do not claim production.
