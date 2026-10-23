@@ -11,7 +11,7 @@ for(const player of ['alex','leo']){
   assert.doesNotMatch(svg,/<(?:rect|image|foreignObject|pattern)\b/i,'no opaque sheet or embedded backdrop');
   assert.doesNotMatch(svg,/\b(?:href|xlink:href)\s*=\s*["'](?:https?:|data:)/i,'no remote/embedded backdrop');
   assert.match(svg,/<g\s+transform="translate\(0 0\)"/);
-  assert.match(svg,/<g\s+transform="translate\(96 0\) scale\(-1 1\)"/);
+  assert.match(svg,/<g\s+transform="translate\(48 0\)"[^>]*data-view="quarterBack"[^>]*data-orientation="rear-facing"/);
   assert.ok((svg.match(/<path\b/g)||[]).length>=10,'both poses need independent visible shapes');
   assert.doesNotMatch(svg,/<(?:script|style)\b/i,'static-only vector sprites');
  });
