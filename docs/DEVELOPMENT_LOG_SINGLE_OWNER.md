@@ -327,3 +327,6 @@ Previously blocked code published on existing dev: `a58cd164` guest sequential f
 
 ## 2026-10-23 — guest LAN lifecycle packets
 `baab7e31`: join/leave packet factory interoperable with existing host validation. `4b41bacc`: host/guest focused test. Transport-independent, no user-visible release version change; 4+4 Census and Modular QA pending. Prior hosted main `3c3e6a5d` Pages success #39917009157. Next: transport integration and two-client browser tests.
+
+## 2026-10-23 — Owner-requested UI redesign / coin economy roadmap
+Updated NEXT_MILESTONES with screenshot-inspired polished UI graphics and original consistent special-ability icons, mobile/PC controls and visual QA; proposed future non-monetized earnable coin ledger and optional unlock catalog, transactional safety, no silent locking of existing content. Roadmap-only, NOT implemented. Candidate 0.9.17.1 unchanged. Commits `51d683ef` and checkpoint `badb9470`; latest exact-head regression and protected promotion need verification.
