@@ -358,3 +358,11 @@ Modular QA #39931445278 failed because `tests/versioning_policy_contract.test.cj
 
 ## 2026-10-23 — Concept Royals twelve identities (candidate 0.9.19.0)
 Added twelve named male identities with different skin, hair, face marks and accessories (`ca9b09fb`), painted five-view idle/run overlays (`55416258`), regression contract (`f995b842`), coordinated version/cache/README and tests. Repaired stale leg rotation test (`c752d687`) and six-heading memory checkpoint (`df157d56`). Important: procedural identity overlays reuse the original body atlas; no evidence yet of 12 independent fully illustrated animation sets or real-browser visual certification. Exact-head 4+4 regression and Modular QA pending; no deployment claim.
+
+## 2026-10-23 11:57 Europe/Stockholm — Concept Royals real renderer animation QA increment
+- Start dev `7d9d6920`, main `38502229`. Modular QA `39935132100` PASS; Concept Hero QA `39935132081` FAIL: old test expected removed `data-action=conceptDemo` shortcut (tests/concept_hero_browser_qa.py:39); Full Census still running at inspection.
+- Repair `2ff222d9`: browser QA now navigates Quick Match → On Device → Single Player, selects Concept Royals through the supported team dropdown; retains roster/match/eight-direction checks.
+- New bounded graphics QA feature `91033ebd`: a five-phase running timeline for each of 12 characters in each of five views (300 calls to actual game renderer) with browser PNG export. No synthetic artwork, no new gameplay buttons or save/schema changes.
+- Browser capture `d1096213`: Chromium+Pillow test creates real 12×5 idle and running-timeline PNGs, checks every tile has drawn pixels, differences, JS errors, SHA-256 manifest. Workflow `cf085374` adds screenshot artifacts; contract `b9c717bf` protects QA wiring.
+- Player-facing installed bundle stays **0.9.19.0**: only QA pages/tests/workflow/docs changed. This does **not** establish unique full animation rigs, shoot/tackle/jump animations, a successful Pages release, or final visual acceptance.
+- Await exact-head Modular QA + Full 4 Node/4 Chromium Census and Concept Hero browser QA; investigate any failures. Keep work moving on dev while CI/promotion is pending.
