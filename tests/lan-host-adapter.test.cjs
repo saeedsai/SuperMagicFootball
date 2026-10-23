@@ -1,0 +1,45 @@
+'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const {pathToFileURL}=require('node:url');
+const path=require('node:path');
+const load=n=>import(pathToFileURL(path.resolve('src/modules',n)).href);
+const packet=(type,peerId='guest01')=>({type,version:1,roomId:'room001',peerId});
+const controls=(sequence,peerId='guest01')=>({...packet('input',peerId),sequence,buttons:{pass:false,shoot:true,dribble:false,jump:false},axis:{x:1,y:1}});
+test('host adapter connects bounded wire input to tick and timeout',async()=>{
+ const {createLanHostAdapter}=await load('lan-host-adapter.js');
+ const {encodeLanWirePacket}=await load('lan-wire.js');
+ const host=createLanHostAdapter('room001','host001',2);
+ assert.equal(host.receive(encodeLanWirePacket(packet('hello'))).reason,'joined');
+ assert.equal(host.receive(encodeLanWirePacket(controls(0))).reason,'input-accepted');
+ const tick=host.tick();
+ assert.equal(tick.controls.buttons.shoot,true);
+ assert.ok(Math.abs(Math.hypot(tick.controls.axis.x,tick.controls.axis.y)-1)<1e-12);
+ host.tick();const timeout=host.tick();
+ assert.equal(timeout.controls.buttons.shoot,false);assert.equal(timeout.timedOut,true);
+});
+test('host adapter rejects malformed wire, replay and unjoined peer',async()=>{
+ const {createLanHostAdapter}=await load('lan-host-adapter.js');
+ const {encodeLanWirePacket}=await load('lan-wire.js');
+ const host=createLanHostAdapter('room001','host001');
+ assert.equal(host.receive('{').reason,'invalid-wire');
+ assert.equal(host.receive(encodeLanWirePacket(controls(0))).reason,'not-joined');
+ host.receive(encodeLanWirePacket(packet('hello')));
+ assert.equal(host.receive(encodeLanWirePacket(controls(0))).accepted,true);
+ assert.equal(host.receive(encodeLanWirePacket(controls(0))).reason,'stale-sequence');
+ assert.equal(host.receive(encodeLanWirePacket(controls(1,'guest02'))).reason,'not-joined');
+});
+test('host adapter clears held input on leave and stale socket cannot eject replacement',async()=>{
+ const {createLanHostAdapter}=await load('lan-host-adapter.js');
+ const {encodeLanWirePacket}=await load('lan-wire.js');
+ const host=createLanHostAdapter('room001','host001',8);
+ host.receive(encodeLanWirePacket(packet('hello')));
+ host.receive(encodeLanWirePacket(controls(0)));
+ assert.equal(host.receive(encodeLanWirePacket(packet('leave'))).reason,'left');
+ assert.equal(host.tick().controls.buttons.shoot,false);
+ assert.equal(host.receive(encodeLanWirePacket(packet('hello','guest02'))).reason,'joined');
+ assert.equal(host.disconnected('guest01').reason,'not-joined');
+ assert.equal(host.receive(encodeLanWirePacket(controls(0,'guest02'))).accepted,true);
+ assert.equal(host.disconnected('guest02').reason,'left');
+ assert.equal(host.tick().controls.buttons.shoot,false);
+});
