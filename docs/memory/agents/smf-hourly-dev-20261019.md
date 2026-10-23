@@ -1,5 +1,8 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-Agent: smf-hourly-dev-20261019. Updated 2026-10-24.
+**Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
+
+## Mission
+Continue one bounded dev feature per iteration and safely repair CI. No new branches, force push or bypass.
 
 ## Current checkpoint
 ## 2026-10-24 — LAN-004: missing-frame neutral host input
@@ -15,5 +18,11 @@ Preserve 223 teams/2676 players, six formations, exactly four action buttons, 10
 4. Permit protected main promotion only from fully certified dev; verify Pages SHA/bytes.
 5. Continue counterable Tricks and Crown Royals independent directional graphics QA.
 
-## Ownership
+## Ownership and exclusions
 Read only AGENTS.md, VERSIONING_POLICY, SHARED and this own checkpoint. Keep updating central dev log and own checkpoint. Never suspend authorized hourly development due to pending releases.
+
+## Evidence
+LAN-004 commits 164d23b8 and 14df7d2c are in dev. CI 40031378895 and 40031378823 failed on missing checkpoint identity; this change restores the exact test contract. Full latest-head CI must be rerun.
+
+## Cleanup
+Keep this checkpoint below 4 KiB and preserve the six required headings. No hosted/graphics certification without evidence.
