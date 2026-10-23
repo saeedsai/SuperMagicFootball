@@ -20,7 +20,7 @@ test('the only player-visible version is a bundled 4-field About label, not remo
  const start=ui.indexOf('function showAbout(){'),end=ui.indexOf('function showHome(){',start);
  assert.ok(start>0&&end>start);
  const about=ui.slice(start,end);
- assert.match(release,/version:'0\.9\.28\.0'/);
+ assert.match(release,/version:'\d+\.\d+\.\d+\.\d+'/);
  assert.match(about,/RELEASE\.version/);
  assert.match(about,/aboutBundleVersion/);
  assert.match(about,/aboutReleaseNotes/);
