@@ -20,6 +20,9 @@ test('banana peel spawns behind carrier and remains inside pitch',async()=>{
  assert.equal(peel.arm,BANANA_ARM_TIME);
  const edge=placeBananaPeel([],{...carrier,x:2,y:2},field)[0];
  assert.ok(edge.x>=25&&edge.y>=25);
+ const vertical=placeBananaPeel([],{...carrier,dx:0,dy:-1},field)[0];
+ assert.equal(vertical.x,300);
+ assert.equal(vertical.y,342);
 });
 test('banana peel arms before an opponent can slip',async()=>{
  const {placeBananaPeel,advanceBananaPeels}=await modulePromise;
