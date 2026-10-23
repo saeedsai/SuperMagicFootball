@@ -28,7 +28,7 @@ try:
   assert not errors,errors
   assert len(frames['idle'].getcolors(maxcolors=1000000) or [])>30
   for action in ['run','jump','shoot','tackle']:
-   assert ImageChops.difference(frames['idle'],frames[action]).getbbox() is not None,action
+   assert ImageChops.difference(frames['idle'].convert('RGB'),frames[action].convert('RGB')).getbbox() is not None,action
   report={'status':'PASS for renderer smoke, NOT full animation acceptance','player':'Alex #1',
    'team':'Crown Royals (Art WIP)','true_views':['front','side','back'],
    'approximated_views':['quarterFront','quarterBack'],
