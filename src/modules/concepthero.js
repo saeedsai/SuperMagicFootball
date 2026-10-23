@@ -39,12 +39,71 @@ const CONCEPT_HERO=(()=>{
   if(image.complete&&image.naturalWidth>0)prepare();
  }
  function isConceptPlayer(p){const model=p?.src?.renderModel||p?.src?.appearance?.renderModel;return model===ID||model==='concept_modular_v1';}
+ // Identity artwork is anchored in the original 5-view painted atlas coordinates.
+ // All overlays are painted in sprite space, so idle and running use identical faces.
+ const identityStyles=Object.freeze(['messy','swept','coils','fade','fringe','crop','curly','locs','buzz','ponytail','shortCurls','long']);
+ function identity(p){
+  const a=p?.src?.appearance||p?.appearance||{};
+  const index=Number.isInteger(a.conceptHeroVariant)?a.conceptHeroVariant:-1;
+  return index>=0&&index<12?{index,skin:a.skin||'#e8b48e',hair:a.hair||'#493020',style:identityStyles[index]}:null;
+ }
+ function paintIdentity(ctx,person,kind,sw){
+  if(!person)return;
+  const profile=kind==='side'||kind==='quarterBack'||kind==='quarterFront';
+  const back=kind==='back'||kind==='quarterBack';
+  const cx=sw*.5,headY=45,headW=profile?27:35;
+  ctx.save();
+  ctx.lineWidth=2.1;ctx.strokeStyle='#281d26';
+  // The head silhouette changes with face width and hair, not just hue.
+  const widths=[1,.94,1.06,.98,.92,1.02,1.07,1.01,.95,.99,1.04,.97];
+  const w=headW*widths[person.index];
+  ctx.fillStyle=person.skin;
+  ctx.beginPath();ctx.ellipse(cx,headY+12,w*.68,29,profile?-.1:0,0,Math.PI*2);ctx.fill();ctx.stroke();
+  ctx.fillStyle=person.hair;
+  const volume=[18,15,21,10,16,9,22,21,5,17,13,21][person.index];
+  ctx.beginPath();ctx.ellipse(cx,headY-9,w*.78,volume,0,Math.PI,Math.PI*2);ctx.lineTo(cx+w*.75,headY-5);ctx.lineTo(cx-w*.75,headY-5);ctx.closePath();ctx.fill();ctx.stroke();
+  if(['coils','curly','locs','shortCurls'].includes(person.style)){
+   const n=person.style==='locs'?7:10;
+   for(let i=0;i<n;i++){
+    const x=cx-w*.72+(i+.5)*w*1.44/n;
+    const y=headY-13-Math.sin(i*1.7)*5;
+    ctx.beginPath();ctx.arc(x,y,person.style==='locs'?4:5,0,Math.PI*2);ctx.fill();
+    if(person.style==='locs'&&i%2===0)ctx.fillRect(x-2,y,4,21);
+   }
+  }
+  if(person.style==='ponytail'||person.style==='long'){
+   ctx.fillRect(cx-w*.75,headY-9,8,person.style==='long'?47:32);
+   ctx.fillRect(cx+w*.65,headY-9,8,person.style==='long'?47:32);
+  }
+  if(person.style==='fringe'||person.style==='messy'||person.style==='swept'){
+   ctx.beginPath();ctx.moveTo(cx-w*.7,headY-13);ctx.lineTo(cx+w*.4,headY+2);ctx.lineTo(cx+w*.72,headY-15);ctx.fill();
+  }
+  if(!back){
+   ctx.fillStyle='#251c23';
+   const eyeY=headY+12;
+   for(const sign of (profile?[1]:[-1,1])){
+    const x=cx+sign*w*.31;
+    ctx.fillRect(x-3,eyeY,6,2.5);
+    ctx.fillRect(x-2,eyeY+1,2,2);
+   }
+   ctx.strokeStyle='#704b42';ctx.lineWidth=1.6;
+   ctx.beginPath();ctx.moveTo(cx-5,headY+30);ctx.quadraticCurveTo(cx,headY+33,cx+6,headY+29);ctx.stroke();
+   if(person.index===6){ctx.strokeStyle='#25212a';ctx.beginPath();ctx.moveTo(cx-13,headY+18);ctx.lineTo(cx-8,headY+24);ctx.stroke();}
+   if(person.index===5){ctx.fillStyle='#a7674c';for(let j=0;j<5;j++)ctx.fillRect(cx-15+j*6,headY+17+(j%2)*4,2,2);}
+   if(person.index===10){ctx.fillStyle='#eed3a2';ctx.fillRect(cx+9,headY+20,11,6);}
+   if(person.index===8){ctx.strokeStyle='#39323b';ctx.beginPath();ctx.moveTo(cx-19,headY-2);ctx.lineTo(cx-13,headY+12);ctx.stroke();}
+  }
+  if(person.index===1||person.index===11){ctx.strokeStyle='#ece5d9';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(cx-w*.77,headY-12);ctx.lineTo(cx+w*.77,headY-12);ctx.stroke();}
+  if(person.index===7){ctx.fillStyle='#e1c27b';ctx.beginPath();ctx.arc(cx+w*.7,headY+18,3,0,Math.PI*2);ctx.fill();}
+  if(person.index===3){ctx.strokeStyle='#413341';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx+w*.6,headY+39);ctx.lineTo(cx+w*.7,headY+52);ctx.stroke();}
+  ctx.restore();
+ }
  function draw(ctx,p,view,{run=0}={}){
   if(!isConceptPlayer(p))return false;
   if(!atlas.ready){preload();return false;}
   const kind=regions[view?.kind]?view.kind:'front';
   const [sx,sw]=regions[kind];
-  const h=141,w=sw*h/HEIGHT,gait=clamp(run),active=Math.abs(gait)>.07;
+  const h=141,w=sw*h/HEIGHT,gait=clamp(run),active=Math.abs(gait)>.07,person=identity(p);
   ctx.save();
   ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
   // The Concept atlas paints its side and quarter profiles facing screen-left.
@@ -68,8 +127,11 @@ const CONCEPT_HERO=(()=>{
     ctx.drawImage(parts[limb],0,0);ctx.restore();
    }
    ctx.drawImage(parts.body,0,0);
+   paintIdentity(ctx,person,kind,sw);
   }else{
-   ctx.drawImage(atlas.image,sx,0,sw,HEIGHT,-w/2,-h+6,w,h);
+   ctx.translate(-w/2,-h+6);ctx.scale(w/sw,h/HEIGHT);
+   ctx.drawImage(atlas.image,sx,0,sw,HEIGHT,0,0,sw,HEIGHT);
+   paintIdentity(ctx,person,kind,sw);
   }
   ctx.restore();return true;
  }
