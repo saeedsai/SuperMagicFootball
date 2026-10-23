@@ -11,12 +11,14 @@ Sole developer on existing dev, never stop for pending release. No new branches,
 - Last feature/test commit `78e792985771377e627028faabcc67c49d3c31bc`; Full Census 40023966569 and Modular QA 40023966819 pending. Do not claim green or deployed.
 - Preserve 223 teams/2676 players, 6 formations, 4 buttons, 10 Career/Cup slots, SD09, offline/save compatibility.
 
+- LAN-001 groundwork: src/modules/lan_protocol.js and tests/lan_protocol.test.cjs committed b1285a3b and bf5047b7. V8 parse/roundtrip/replay/invalid input checks passed. No network transport or two-client play yet; no user-visible version change.
+
 ## Next smallest action
 1. Inspect exact latest dev CI; fix new Node syntax gate failures if any.
 2. Fix any remaining browser/preview or 4 Chromium shard failure.
 3. Complete 4 Node + 4 Chromium + Modular QA for exact head.
 4. Permit protected main promotion only when all green, verify Pages byte smoke.
-5. Continue next counterable Trick/Studio/LAN/graphics small increment on dev even if release still pending.
+5. Continue LAN host-authority/two-browser transport or counterable Trick/graphics increment on dev even if release remains pending.
 
 ## Safety
 Read AGENTS.md, VERSIONING_POLICY, SHARED and this checkpoint; latest SHA before writes. Never touch other agent memories or add branches. No unsupported QA/deployment claims.
