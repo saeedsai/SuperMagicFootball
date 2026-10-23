@@ -5,7 +5,7 @@ const read=p=>fs.readFileSync(path.join(__dirname,'..',p),'utf8');
 test('illustrated concept renderer articulates two legs while running',()=>{
  const s=read('src/modules/concepthero.js');
  assert.match(s,/function layer\(full,sx,sw,part\)/);
- assert.match(s,/ctx\.rotate\(stride\*\.29\)/);
+ assert.match(s,/ctx\.rotate\(stride\*\.12\)/);
  assert.match(s,/parts\.body/);
  assert.match(s,/Math\.abs\(gait\)>\.07/);
 });
