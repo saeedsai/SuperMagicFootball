@@ -467,3 +467,7 @@ Extracted Diego's three miniature source views into transparent 132×90 indexed 
 - Verify alpha channel programmatically, frame bounding boxes, consistent face/kit/number, no accidental backdrop, eight views and all animation transitions in desktop and simulated touch Chromium screenshots; require human visual inspection before marking art complete.
 - Then repair Leo, Kwame, Diego individually; only then author Ryo and remaining players sequentially. Preserve 223 teams/2676 players, four buttons, saves, SD09 and offline support. Full exact-head Node 4 + Chromium 4 + Modular QA, protected promotion and Pages byte smoke are release gates.
 - This entry is a tracked acceptance requirement only, not evidence that artwork, QA or deployment completed.
+
+## 2026-10-23 — Crown Royals SVG asset contract (test-only dev increment)
+- Added `tests/crown_royals_svg_asset_contract.test.cjs` to reject opaque SVG background rectangles, embedded/external images, scripts, wrong 96×90 dimensions, missing front/back quarter groups, or absent character path geometry for Alex and Leo.
+- This is a QA guard, not new player artwork or gameplay improvement. No bundle version bump; 0.9.27.0 remains the candidate. Exact-head full 4 Node + 4 Chromium and Modular QA, main promotion and Pages smoke still require evidence. Local git checkout blocked by DNS resolution of github.com; do not report local tests as executed.
