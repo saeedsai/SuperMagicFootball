@@ -432,3 +432,6 @@ Cached 48x90 front-quarter/back-quarter sprites combine owner-reference front/ba
 
 ### 2026-10-23 — Crown quarter compositing rejected in visual QA
 The 2.5D side-strip prototype produced duplicated hair/body silhouettes at screenshot scale. Reverted only that experimental renderer and its provisional acceptance tests; kept independently verified menu changes and existing original Crown atlas/hair fixes. Do not advertise depth/3D as complete. Prioritize independently painted front/back-quarter and genuine frame animations.
+
+### 2026-10-23 — Diego #4 separate reference sprite (0.9.25.0 candidate)
+Extracted Diego's three miniature source views into transparent 132×90 indexed PNG; assigned Diego's unique Crown reference ID and wired sprite preload, offline precache and test-only fixture. Existing Concept Hero/Alex/Leo/Kwame unchanged. Individual side/quarter and special-action art still pending. Exact-head Node/Chromium/hosted verification required.

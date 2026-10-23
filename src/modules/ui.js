@@ -108,11 +108,11 @@ const CROWN_ROYALS_ID='demo_crown_royals_reference';
 const CROWN_NAMES=['Leo','Kwame','Diego','Ryo','Sean','Rafa','Malik','Ivan','Carlos','Alex','Samuel','Enzo'];
 const CROWN_ROLES=['GK','GK','DF','DF','DF','MF','MF','MF','MF','FW','FW','FW'];
 const CROWN_ROSTER=CROWN_NAMES.map((name,i)=>({
- id:i===9?'crown_royals_reference_alex':i===0?'crown_royals_reference_leo':i===1?'crown_royals_reference_kwame':CROWN_ROYALS_ID+'_'+i,
+ id:i===9?'crown_royals_reference_alex':i===0?'crown_royals_reference_leo':i===1?'crown_royals_reference_kwame':i===2?'crown_royals_reference_diego':CROWN_ROYALS_ID+'_'+i,
  name,role:CROWN_ROLES[i],num:i===9?1:i<9?i+2:i+1,power:70,shoot:36,defense:39,speed:'B',
  shot:'omega',shotName:'Crown Magic Shot',skill:'Reference Art In Progress',
- level:1,xp:0,...((i===9||i===0||i===1)?{renderModel:'crown_royals_reference',
- appearance:{renderModel:'crown_royals_reference',skin:i===1?'#68422f':i===0?'#f0c4a0':'#e8b48e',hair:i===1?'#161419':i===0?'#d5a23f':'#493020'}}:{})
+ level:1,xp:0,...((i===9||i===0||i===1||i===2)?{renderModel:'crown_royals_reference',
+ appearance:{renderModel:'crown_royals_reference',skin:i===2?'#aa7550':i===1?'#68422f':i===0?'#f0c4a0':'#e8b48e',hair:i===2?'#1c171c':i===1?'#161419':i===0?'#d5a23f':'#493020'}}:{})
 }));
 TEAMS.push({id:CROWN_ROYALS_ID,index:TEAMS.length,name:'Crown Royals (Art WIP)',
  group:'crown_royals_reference',flag:'CR',primary:'#362070',secondary:'#edc04c',

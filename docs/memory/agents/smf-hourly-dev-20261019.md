@@ -1,5 +1,5 @@
 # SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 15:35 Europe/Stockholm
+**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 16:00 Europe/Stockholm
 
 ## Mission
 Keep small tested dev increments despite CI/release blockers; only dev/main; no bypass or force push.
@@ -9,6 +9,8 @@ Keep small tested dev increments despite CI/release blockers; only dev/main; no 
 - Crown Royals Alex/Leo/Kwame have 3 independent atlases; ¾/action art provisional. Preserve 223 canonical teams/2676 players, 6 formations, 4 buttons, 10 Career/Cup slots, SD09, offline/saves.
 
 - Candidate 0.9.24.0: experimental quarter composition rejected by visual QA (ghosted outlines) and safely reverted; authored quarter sprites are still needed. Menu fixes preserved; fresh exact-head CI/Pages pending.
+
+- Candidate 0.9.25.0: Diego #4 reference-derived 3-view atlas integrated, build/offline/QA wiring. Need exact-head browser screenshots, no false 3D/animation approval.
 
 ## Next smallest action
 1. Inspect exact-head 4 Node + 4 Chromium, Modular QA and new club browser tests; repair failures.
