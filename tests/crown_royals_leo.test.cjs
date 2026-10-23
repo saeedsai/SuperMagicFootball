@@ -9,6 +9,11 @@ test('Leo transparent reference atlas is distinct from Alex and wired to offline
  assert.ok(!leo.equals(alex));
  for(const [p,pattern] of [['src/modules/crownroyals.js',/crown_royals_reference_leo/],['scripts/build.py',/leo_three_views\.png/],['sw.js',/leo_three_views\.png/]]) assert.match(read(p),pattern);
 });
+test('Leo Chromium QA points to Leo, never Alex, and is labeled #2',()=>{
+ const py=read('tests/crown_royals_leo_browser_qa.py'),html=read('leo-visual-qa.html');
+ assert.match(py,/leo-visual-qa\.html/);assert.match(html,/LEO #2/);assert.match(html,/crown_royals_reference_leo/);
+ assert.doesNotMatch(html,/crown_royals_reference_alex/);
+});
 test('Leo is independent and original Concept Royals remains in roster',()=>{
  const ui=read('src/modules/ui.js');
  assert.match(ui,/id:CONCEPT_DEMO_ID,index:TEAMS\.length,name:'Concept Royals FC'/);

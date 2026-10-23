@@ -6,7 +6,7 @@ from playwright.sync_api import sync_playwright
 import base64,hashlib,io,json
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'docs/qa_runs_crown_royals';OUT.mkdir(parents=True,exist_ok=True)
-html=(ROOT/'crown-royals-visual-qa.html').read_text()
+html=(ROOT/'leo-visual-qa.html').read_text()
 shell=html.split('<script type="module">',1)[0]+'</body></html>'
 page_js=html.split('<script type="module">',1)[1].split('</script>',1)[0]
 page_js=page_js.replace("import {CROWN_ROYALS} from './src/modules/crownroyals.js';",'')
@@ -33,9 +33,11 @@ with sync_playwright() as pw:
   frames[action]=image
  assert not errors,errors
  assert len(frames['idle'].getcolors(maxcolors=1000000) or [])>30
+ assert 'LEO #2' in page.locator('#sheet').evaluate('(canvas) => {const c=document.createElement("canvas");c.width=1;return document.querySelector("h1").textContent+document.querySelector("#status").textContent;}')
+ assert 'crown_royals_reference_leo' in html and 'crown_royals_reference_alex' not in html
  for action in ['run','jump','shoot','tackle']:
   assert ImageChops.difference(frames['idle'],frames[action]).getbbox() is not None,action
- report={'status':'PASS renderer smoke only; NOT full animation acceptance','player':'Leo #1',
+ report={'status':'PASS renderer smoke only; NOT full animation acceptance','player':'Leo #2',
   'team':'Crown Royals (Art WIP)','true_views':['front','side','back'],
   'approximated_views':['quarterFront','quarterBack'],
   'animation':['experimental run','jump transform','shoot transform','tackle transform'],
