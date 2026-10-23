@@ -39,3 +39,6 @@ Added host session `leave` validation, room release and immediate host-control n
 
 ## 2026-10-23 — guest LAN packet builder publication
 Previously blocked code published on existing dev: `a58cd164` guest sequential four-button packet builder and `57b31522` focused tests (local 3/3 PASS). No gameplay integration; version remains 0.9.17.1. Next: inspect exact-head CI; implement guest hello/leave packets, transport and actual two-browser smoke. Do not promote pending checks.
+
+## 2026-10-23 — LAN host-observed disconnect
+`61c17f3a` adds `disconnectLanPeer` for a matching connected guest; stale sockets cannot evict a replacement. `18983fb0` adds three focused tests including immediate control reset. No player-facing version change; transport and match sync not implemented. Await exact-head 4+4 and Modular QA.
