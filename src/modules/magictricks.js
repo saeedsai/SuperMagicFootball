@@ -10,7 +10,8 @@ function evaluateScream({carrier,opponents=[],roll=.5}={}){
   .sort((a,b)=>Math.hypot(carrier.x-a.x,carrier.y-a.y)-Math.hypot(carrier.x-b.x,carrier.y-b.y));
  if(!valid.length)return {activated:false,reason:'no-target'};
  const rival=valid[0],dx=carrier.x-rival.x,dist=Math.hypot(dx,carrier.y-rival.y);
- const aware=Number.isFinite(rival.face)&&rival.face*dx>0&&Math.hypot(rival.vx||0,rival.vy||0)>.12;
+ const closing=(rival.vx||0)*dx+(rival.vy||0)*(carrier.y-rival.y);
+ const aware=Number.isFinite(rival.face)&&rival.face*dx>0&&closing>.12*dist;
  const defence=clamp(((rival.defence||0)*.6+(rival.agility||0)*.4)/100,0,1);
  const chance=clamp(.88-dist/550-defence*.2-(aware?.18:0)-clamp(carrier.fatigue||0,0,1)*.12,.2,.82);
  const success=clamp(Number.isFinite(roll)?roll:.5,0,1)<chance;
