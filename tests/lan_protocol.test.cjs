@@ -192,3 +192,38 @@ test('LAN-007 rejects premature input, mismatched peers and renegotiation',async
  assert.throws(()=>p.receiveLanPeerPacket(ready,p.serializeLanPacket({...input,session:'other_session_1234'})));
  assert.equal(ready.lastSequence,0);
 });
+
+test('LAN-008 host session accepts guest hello and queues valid game input',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ const initial=p.createLanHostSession(hello);
+ assert.equal(initial.queue,null);
+ const ready=p.acceptLanHostMessage(initial,p.serializeLanPacket(guest),40);
+ assert.equal(ready.kind,'ready');
+ const accepted=p.acceptLanHostMessage(ready.state,p.serializeLanPacket(input),40);
+ assert.equal(accepted.kind,'accepted');
+ assert.equal(accepted.state.queue.pending.length,1);
+ assert.equal(p.resolveGuestLanFrame(accepted.state.queue,42).received,true);
+ assert.equal(initial.peer.ready,false);
+});
+test('LAN-008 rejected timing never advances peer sequence and retransmit works',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ const initial=p.createLanHostSession(hello);
+ assert.throws(()=>p.acceptLanHostMessage(initial,p.serializeLanPacket(input),40));
+ const ready=p.acceptLanHostMessage(initial,p.serializeLanPacket(guest),40);
+ const early=p.acceptLanHostMessage(ready.state,p.serializeLanPacket({...input,frame:55}),40);
+ assert.equal(early.kind,'outside-frame-window');
+ assert.equal(early.state,ready.state);
+ const accepted=p.acceptLanHostMessage(early.state,p.serializeLanPacket({...input,frame:42}),40);
+ assert.equal(accepted.kind,'accepted');
+ assert.equal(accepted.state.peer.lastSequence,1);
+ const repeat=p.acceptLanHostMessage(accepted.state,p.serializeLanPacket(input),40);
+ assert.equal(repeat.kind,'replay');
+ assert.equal(repeat.state,accepted.state);
+});
+test('LAN-008 host session rejects guest role confusion and forged sessions',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ assert.throws(()=>p.createLanHostSession(guest));
+ const state=p.acceptLanHostMessage(p.createLanHostSession(hello),p.serializeLanPacket(guest),40).state;
+ assert.throws(()=>p.acceptLanHostMessage(state,p.serializeLanPacket({...input,session:'other_session_1234'}),40));
+ assert.throws(()=>p.acceptLanHostMessage(state,p.serializeLanPacket(guest),40));
+});
