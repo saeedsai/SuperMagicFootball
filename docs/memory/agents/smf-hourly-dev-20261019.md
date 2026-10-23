@@ -20,5 +20,10 @@ Continue small increments on existing dev regardless of pending CI/release; diag
 ## Ownership and exclusions
 Only smf-hourly-dev-20261019 writes game code on dev; main only through protection. Preserve all four buttons, six formations, ten Career/Cup slots, saves, offline and SD09.
 
+## Evidence
+- Local isolated Chromium Leo renderer: five directions, idle/run/jump/shoot/tackle and simulated touch passed with zero page errors.
+- Previous full census #39944909668: four Node shards and preflight green; seven old Chromium fixtures assumed the pre-Crown team count.
+- At candidate head a550f25f, Modular and preflight had 507 Node pass / one failure: own checkpoint missing this mandatory Evidence heading; this change repairs the contract. Full 4+4 and Pages still unverified.
+
 ## Cleanup
 Keep this checkpoint under 4 KiB. Do not call renderer smoke final artistic or release approval.
