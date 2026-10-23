@@ -47,55 +47,80 @@ const CONCEPT_HERO=(()=>{
   const index=Number.isInteger(a.conceptHeroVariant)?a.conceptHeroVariant:-1;
   return index>=0&&index<12?{index,skin:a.skin||'#e8b48e',hair:a.hair||'#493020',style:identityStyles[index]}:null;
  }
+ // Keep the illustrated eyes, nose, mouth and hair outline intact.
+ // Recolour only pixels belonging to the existing painted head; no opaque face masks.
+ const variants=new Map();
+ function rgb(hex){
+  if(!/^#[0-9a-f]{6}$/i.test(hex))return null;
+  return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16));
+ }
+ function tintedLayer(source,person){
+  const canvas=document.createElement('canvas');canvas.width=source.width;canvas.height=source.height;
+  const x=canvas.getContext('2d',{willReadFrequently:true});
+  x.drawImage(source,0,0);
+  const frame=x.getImageData(0,0,canvas.width,canvas.height),data=frame.data;
+  const skin=rgb(person.skin),hair=rgb(person.hair);
+  if(!skin||!hair)return canvas;
+  const clampColor=n=>Math.max(0,Math.min(255,Math.round(n)));
+  for(let y=0;y<Math.min(124,canvas.height);y++)for(let col=0;col<canvas.width;col++){
+   const i=(y*canvas.width+col)*4;
+   if(data[i+3]<25)continue;
+   const r=data[i],g=data[i+1],b=data[i+2];
+   // Original atlas uses warm brown hair and peach skin. Restrict hair to
+   // the upper head so eyebrows, iris, shirt emblems and outlines survive.
+   const isSkin=y>=37&&r>165&&g>89&&b>48&&r>g*1.14&&g>b*1.07;
+   const isHair=y<91&&r>52&&g>23&&b>10&&r>g*1.15&&g>b*1.05&&!isSkin;
+   if(!isSkin&&!isHair)continue;
+   const base=isSkin?[232,166,120]:[128,75,46],target=isSkin?skin:hair;
+   const light=(r+g+b)/(base[0]+base[1]+base[2]);
+   for(let channel=0;channel<3;channel++){
+    const tinted=target[channel]*Math.max(.45,Math.min(1.55,light));
+    data[i+channel]=clampColor(tinted*.88+data[i+channel]*.12);
+   }
+  }
+  x.putImageData(frame,0,0);
+  return canvas;
+ }
+ function variant(kind,person){
+  if(!person)return null;
+  const key=kind+':'+person.index+':'+person.skin+':'+person.hair;
+  if(variants.has(key))return variants.get(key);
+  const [sx,sw]=regions[kind];
+  const full=document.createElement('canvas');full.width=sw;full.height=HEIGHT;
+  full.getContext('2d').drawImage(atlas.image,sx,0,sw,HEIGHT,0,0,sw,HEIGHT);
+  const result={full:tintedLayer(full,person),body:tintedLayer(atlas.parts[kind].body,person)};
+  variants.set(key,result);
+  return result;
+ }
  function paintIdentity(ctx,person,kind,sw){
   if(!person)return;
-  const profile=kind==='side'||kind==='quarterBack'||kind==='quarterFront';
-  const back=kind==='back'||kind==='quarterBack';
-  const cx=sw*.5,headY=45,headW=profile?27:35;
+  // Small painted accessories only: never cover the original face or eyes.
+  const cx=sw*.5,back=kind==='back'||kind==='quarterBack',profile=kind==='side';
   ctx.save();
-  ctx.lineWidth=2.1;ctx.strokeStyle='#281d26';
-  // The head silhouette changes with face width and hair, not just hue.
-  const widths=[1,.94,1.06,.98,.92,1.02,1.07,1.01,.95,.99,1.04,.97];
-  const w=headW*widths[person.index];
-  ctx.fillStyle=person.skin;
-  ctx.beginPath();ctx.ellipse(cx,headY+12,w*.68,29,profile?-.1:0,0,Math.PI*2);ctx.fill();ctx.stroke();
-  ctx.fillStyle=person.hair;
-  const volume=[18,15,21,10,16,9,22,21,5,17,13,21][person.index];
-  ctx.beginPath();ctx.ellipse(cx,headY-9,w*.78,volume,0,Math.PI,Math.PI*2);ctx.lineTo(cx+w*.75,headY-5);ctx.lineTo(cx-w*.75,headY-5);ctx.closePath();ctx.fill();ctx.stroke();
-  if(['coils','curly','locs','shortCurls'].includes(person.style)){
-   const n=person.style==='locs'?7:10;
-   for(let i=0;i<n;i++){
-    const x=cx-w*.72+(i+.5)*w*1.44/n;
-    const y=headY-13-Math.sin(i*1.7)*5;
-    ctx.beginPath();ctx.arc(x,y,person.style==='locs'?4:5,0,Math.PI*2);ctx.fill();
-    if(person.style==='locs'&&i%2===0)ctx.fillRect(x-2,y,4,21);
-   }
+  if(person.index===1||person.index===11){
+   ctx.strokeStyle='#e5ddc6';ctx.lineWidth=3;
+   ctx.beginPath();ctx.moveTo(cx-20,39);ctx.quadraticCurveTo(cx,33,cx+20,39);ctx.stroke();
   }
-  if(person.style==='ponytail'||person.style==='long'){
-   ctx.fillRect(cx-w*.75,headY-9,8,person.style==='long'?47:32);
-   ctx.fillRect(cx+w*.65,headY-9,8,person.style==='long'?47:32);
+  if(person.index===7){
+   ctx.fillStyle='#e8c16d';ctx.beginPath();ctx.arc(cx+(profile?17:23),83,2.5,0,Math.PI*2);ctx.fill();
   }
-  if(person.style==='fringe'||person.style==='messy'||person.style==='swept'){
-   ctx.beginPath();ctx.moveTo(cx-w*.7,headY-13);ctx.lineTo(cx+w*.4,headY+2);ctx.lineTo(cx+w*.72,headY-15);ctx.fill();
+  if(person.index===9||person.index===11){
+   ctx.strokeStyle=person.hair;ctx.lineWidth=5;ctx.lineCap='round';
+   ctx.beginPath();ctx.moveTo(cx+22,36);ctx.quadraticCurveTo(cx+31,50,cx+24,70);ctx.stroke();
   }
   if(!back){
-   ctx.fillStyle='#251c23';
-   const eyeY=headY+12;
-   for(const sign of (profile?[1]:[-1,1])){
-    const x=cx+sign*w*.31;
-    ctx.fillRect(x-3,eyeY,6,2.5);
-    ctx.fillRect(x-2,eyeY+1,2,2);
+   if(person.index===5){
+    ctx.fillStyle='#a7654e';
+    for(let j=0;j<4;j++)ctx.fillRect(cx-18+j*5,88+(j%2)*3,1.7,1.7);
    }
-   ctx.strokeStyle='#704b42';ctx.lineWidth=1.6;
-   ctx.beginPath();ctx.moveTo(cx-5,headY+30);ctx.quadraticCurveTo(cx,headY+33,cx+6,headY+29);ctx.stroke();
-   if(person.index===6){ctx.strokeStyle='#25212a';ctx.beginPath();ctx.moveTo(cx-13,headY+18);ctx.lineTo(cx-8,headY+24);ctx.stroke();}
-   if(person.index===5){ctx.fillStyle='#a7674c';for(let j=0;j<5;j++)ctx.fillRect(cx-15+j*6,headY+17+(j%2)*4,2,2);}
-   if(person.index===10){ctx.fillStyle='#eed3a2';ctx.fillRect(cx+9,headY+20,11,6);}
-   if(person.index===8){ctx.strokeStyle='#39323b';ctx.beginPath();ctx.moveTo(cx-19,headY-2);ctx.lineTo(cx-13,headY+12);ctx.stroke();}
+   if(person.index===6){
+    ctx.strokeStyle='#543d38';ctx.lineWidth=1.4;
+    ctx.beginPath();ctx.moveTo(cx+13,84);ctx.lineTo(cx+17,90);ctx.stroke();
+   }
+   if(person.index===10){
+    ctx.fillStyle='#e8d8ba';ctx.fillRect(cx+15,86,8,3);
+   }
   }
-  if(person.index===1||person.index===11){ctx.strokeStyle='#ece5d9';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(cx-w*.77,headY-12);ctx.lineTo(cx+w*.77,headY-12);ctx.stroke();}
-  if(person.index===7){ctx.fillStyle='#e1c27b';ctx.beginPath();ctx.arc(cx+w*.7,headY+18,3,0,Math.PI*2);ctx.fill();}
-  if(person.index===3){ctx.strokeStyle='#413341';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx+w*.6,headY+39);ctx.lineTo(cx+w*.7,headY+52);ctx.stroke();}
   ctx.restore();
  }
  function draw(ctx,p,view,{run=0}={}){
@@ -104,6 +129,7 @@ const CONCEPT_HERO=(()=>{
   const kind=regions[view?.kind]?view.kind:'front';
   const [sx,sw]=regions[kind];
   const h=141,w=sw*h/HEIGHT,gait=clamp(run),active=Math.abs(gait)>.07,person=identity(p);
+  const painted=person&&atlas.parts[kind]?variant(kind,person):null;
   ctx.save();
   ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
   // The Concept atlas paints its side and quarter profiles facing screen-left.
@@ -126,11 +152,12 @@ const CONCEPT_HERO=(()=>{
     ctx.translate(-hipX,-190);
     ctx.drawImage(parts[limb],0,0);ctx.restore();
    }
-   ctx.drawImage(parts.body,0,0);
+   ctx.drawImage(painted?.body||parts.body,0,0);
    paintIdentity(ctx,person,kind,sw);
   }else{
    ctx.translate(-w/2,-h+6);ctx.scale(w/sw,h/HEIGHT);
-   ctx.drawImage(atlas.image,sx,0,sw,HEIGHT,0,0,sw,HEIGHT);
+   if(painted)ctx.drawImage(painted.full,0,0);
+   else ctx.drawImage(atlas.image,sx,0,sw,HEIGHT,0,0,sw,HEIGHT);
    paintIdentity(ctx,person,kind,sw);
   }
   ctx.restore();return true;
