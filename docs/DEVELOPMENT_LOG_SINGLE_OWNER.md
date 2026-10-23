@@ -315,3 +315,6 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 
 ## 2026-10-23 — LAN timeline increment
 Published on existing dev: diagonal normalization `e88d279a`, host input timeline `a01edc46`, timeout/immutability regression `03819c1b`, diagonal regression `a82b4a70`. Protocol only, not live two-client multiplayer; bundle version unchanged. Exact-head 4+4 and Modular QA pending; do not promote until certified.
+
+## 2026-10-23 — LAN authenticated leave
+Added host session `leave` validation, room release and immediate host-control neutralization with `clearLanInputOnLeave` (`cb15226c`, `09ad8f16`), plus focused regression (`6592b768`). Only protocol code; no gameplay bundle/version change. Await latest exact-head 4+4 and Modular QA; no manual main push.
