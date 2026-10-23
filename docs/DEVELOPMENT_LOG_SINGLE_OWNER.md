@@ -330,3 +330,6 @@ Previously blocked code published on existing dev: `a58cd164` guest sequential f
 
 ## 2026-10-23 — Owner-requested UI redesign / coin economy roadmap
 Updated NEXT_MILESTONES with screenshot-inspired polished UI graphics and original consistent special-ability icons, mobile/PC controls and visual QA; proposed future non-monetized earnable coin ledger and optional unlock catalog, transactional safety, no silent locking of existing content. Roadmap-only, NOT implemented. Candidate 0.9.17.1 unchanged. Commits `51d683ef` and checkpoint `badb9470`; latest exact-head regression and protected promotion need verification.
+
+## 2026-10-23 — CI blocker repair + LAN wire codec
+Root cause for Full Census #39918616667 and Modular QA #39918616639: previous checkpoint rewrite removed exact registered `**Agent ID:**` marker and six required sections. Repaired own checkpoint in `6101da0c` (contract unchanged). Added transport-neutral strict JSON wire codec in `518024cb`, hardened identifier type in `91890db3`, and host-interoperability/malformed/oversized packet tests in `11fb71bd`. No actual cross-device transport or gameplay synchronization; no player-facing version bump. Wait for exact-head 4+4 Full Census and Modular QA; preserve pending roadmap UI and coin plans.
