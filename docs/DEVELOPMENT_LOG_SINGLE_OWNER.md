@@ -346,3 +346,6 @@ Added transport-neutral `createLanHostAdapter` in `3ea8ce3b` connecting bounded 
 
 ## 2026-10-23 manual LAN signaling
 `499ad424` adds bounded manual RTC offer/answer SDP helpers; `8879fba1` adds three focused Node tests for handshake, malformed input and peer errors. No ICE trickle UI, peer authentication or playable multiplayer. Version 0.9.17.1 unchanged. Exact-head CI pending; do not bypass protected promotion.
+
+## 2026-10-23 ICE-gathered LAN signaling
+`24290ee9` adds bounded ICE gathering wait and gathered manual SDP offer/answer; `580f1135` fixes listener timer initialization race; `37abc53b` adds three Node tests. No browser signaling UI, connectivity proof or playable multiplayer yet. Candidate 0.9.17.1 unchanged. Exact-head QA pending.
