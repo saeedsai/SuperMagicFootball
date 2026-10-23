@@ -165,7 +165,7 @@ function acceptLanHostMessage(state,message,hostFrame){
  if(received.kind==='replay')return Object.freeze({kind:'replay',state});
  const queued=enqueueGuestLanInput(state.queue,received.packet,hostFrame);
  if(!queued.accepted)return Object.freeze({kind:queued.reason,state});
- return Object.freeze({kind:'accepted',state:Object.freeze({peer:received.state,queue:queued.state})});
+ return Object.freeze({kind:'accepted',state:Object.freeze({peer:received.state,queue:queued.state,lastSimulatedFrame:state.lastSimulatedFrame??-1})});
 }
 
 // LAN-009: host frame advancement occurs at most once per frame.
