@@ -1,3 +1,8 @@
+## 2026-10-23 19:00 Europe/Stockholm — Alex ¾ sprite integration and Crown CI repair (candidate 0.9.26.0)
+- Started dev 4dedca5c40b6c25cbf8d152dd57af795a6765b5e, main bed050af5ea0b95bf9a5525b9b07a464328cf0ff. Failed Crown QA 39990913878, Full Census 39990913695, Modular QA 39990913696: CommonJS VM import.meta.url syntax and stale literal-source regex tests.
+- Commit 12824a14aea7f778c9f7238ffa49dabebdb86cc2: actual renderer now loads Alex authored transparent front/rear quarter sprites from game-relative asset paths, with identical inline art in generated Chromium fixtures and service-worker offline precache. Redrew rear quarter without mirrored face. Fixed old test contracts, expanded Crown focused CI and aligned package/About/README/version policy at 0.9.26.0.
+- Exact-head full CI and visual art certification pending; do not claim Pages deployment. No roster IDs, controls or save schemas changed.
+
 ## 2026-10-23 18:05 Europe/Stockholm — LAN host-to-guest snapshot channel (internal increment)
 - Based on exact dev/main a274be9506062809799ed1860d68e2831ad51f79. The previous exact-head Modular QA and 4 Node + 4 Chromium regression passed; main hosted byte smoke and Pages deployment also passed for that head.
 - Added bounded host snapshot transmission and guest-side verified room/host identity, monotonic tick acceptance, replay/malformed drop, cleanup and reconnect cursor support over caller-established RTCDataChannel. This is not peer authentication, SDP/ICE setup, actual match-state application or a playable LAN match.
