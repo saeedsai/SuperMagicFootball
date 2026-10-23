@@ -19,7 +19,7 @@ for(const player of ['alex','leo','kwame']){
   const rear=svg.indexOf('transform="translate(48 0)"');
   assert.ok(front>=0&&rear>front,'separate front and rear frame groups');
   for(const [name,body] of [['front',svg.slice(front,rear)],['rear',svg.slice(rear)]]){
-   assert.ok((body.match(/<path\\b/g)||[]).length>=5,`${name} quarter frame needs visible body geometry`);
+   assert.ok((body.match(/<path\b/g)||[]).length>=5,`${name} quarter frame needs visible body geometry`);
   }
   assert.doesNotMatch(svg,/<(?:script|style)\b/i,'static-only vector sprites');
  });
