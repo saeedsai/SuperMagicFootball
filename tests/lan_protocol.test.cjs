@@ -164,3 +164,31 @@ test('LAN-006 rejects replayed, foreign-session, oversized and malformed network
  assert.throws(()=>p.receiveLanChannelPacket({data:new Uint8Array([1,2,3])},session,0));
  assert.throws(()=>p.receiveLanChannelPacket({},session,0));
 });
+
+test('LAN-007 peer gate accepts hello before input and rejects replayed messages',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ const initial=p.createLanPeerGate(hello);
+ assert.equal(initial.ready,false);
+ const ready=p.receiveLanPeerPacket(initial,{data:p.serializeLanPacket(guest)});
+ assert.equal(ready.kind,'ready');
+ assert.equal(ready.state.ready,true);
+ const first=p.receiveLanPeerPacket(ready.state,p.serializeLanPacket(input));
+ assert.equal(first.kind,'input');
+ assert.equal(first.packet.sequence,1);
+ assert.equal(first.state.lastSequence,1);
+ const repeat=p.receiveLanPeerPacket(first.state,p.serializeLanPacket(input));
+ assert.equal(repeat.kind,'replay');
+ assert.equal(repeat.state,first.state);
+});
+test('LAN-007 rejects premature input, mismatched peers and renegotiation',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ const state=p.createLanPeerGate(hello);
+ assert.throws(()=>p.receiveLanPeerPacket(state,p.serializeLanPacket(input)));
+ assert.throws(()=>p.receiveLanPeerPacket(state,p.serializeLanPacket({...guest,build:'0.9.29.3'})));
+ assert.throws(()=>p.receiveLanPeerPacket(state,p.serializeLanPacket({...guest,session:'other_session_1234'})));
+ assert.equal(state.ready,false);
+ const ready=p.receiveLanPeerPacket(state,p.serializeLanPacket(guest)).state;
+ assert.throws(()=>p.receiveLanPeerPacket(ready,p.serializeLanPacket(guest)));
+ assert.throws(()=>p.receiveLanPeerPacket(ready,p.serializeLanPacket({...input,session:'other_session_1234'})));
+ assert.equal(ready.lastSequence,0);
+});
