@@ -1,5 +1,5 @@
 # SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** smf-hourly-dev-20261019 · **Updated:** 2026-10-23 Europe/Stockholm
+**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 Europe/Stockholm
 
 ## Mission
 Continue bounded tested features directly on existing dev while CI/promotion is pending. Never create branches, force-push or bypass checks.
