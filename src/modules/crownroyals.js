@@ -79,6 +79,9 @@ const CROWN_ROYALS=(()=>{
   if(!isCrownPlayer(p))return false;
   const atlas=atlases[PLAYERS[p.src.id]];
   if(!atlas.loaded){preload();return false;}
+  // A deferred SVG load must not leave Alex stuck on legacy quarter art:
+  // request the authored asset again only when its first load has not begun.
+  if(PLAYERS[p.src.id]==='alex'&&!quarterAlex.image)preloadAlexQuarters();
   const kind=frames[view?.kind]?view.kind:'front';
   const authoredQuarter=PLAYERS[p.src.id]==='alex'&&quarterAlex.loaded&&(kind==='quarterFront'||kind==='quarterBack');
   const [sx,sw]=authoredQuarter?[kind==='quarterFront'?0:48,48]:frames[kind],h=141,w=sw*h/90;
