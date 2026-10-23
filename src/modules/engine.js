@@ -946,6 +946,41 @@ class GameEngine{
   }
   this.emit(spinning?'defensiveBicycle':'flyingKick',{team:p.t,player:p.src.name,hit:!!opponent});return true;
  }
+ // Magic Tricks are distinct from dribble styles: hold DRIBBLE for one second
+ // while carrying the ball. The ordinary tap and airborne Jump combinations
+ // remain unchanged. Only the equipped named ability can fire.
+ tryMagicTrick(p){
+  const id=p?.src?.magicTrick;
+  const allowed=['banana','ice','bat','fireball','freeze','scream','hideBall','teleport'];
+  if(!allowed.includes(id)||p.keeper||p.stun>0||this.ball.owner!==p||this.clock<(p.magicReadyAt||0))return false;
+  const rivals=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0)
+   .sort((a,b)=>distance(p,a)-distance(p,b));
+  const rival=rivals[0],radius=id==='scream'?135:id==='fireball'?120:95;
+  const inRange=!!rival&&distance(p,rival)<radius;
+  // A defender who moves toward and faces the carrier can counter the spell.
+  const facing=inRange&&((rival.face||1)*(p.x-rival.x))>0;
+  const closing=inRange&&((rival.dx||0)*(p.x-rival.x)+(rival.dy||0)*(p.y-rival.y))>0;
+  const countered=!!(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling'));
+  p.magicReadyAt=this.clock+6;
+  p.fatigue=Math.min(1,p.fatigue+.035);
+  this.fatigueLedger[p.t][p.src.id]=p.fatigue;
+  if(!countered){
+   if(id==='teleport'){
+    const forward=norm(p.dx||p.face,p.dy||0);
+    p.x=clamp(p.x+forward.x*85,F.x+23,F.x+F.w-23);
+    p.y=clamp(p.y+forward.y*85,F.y+24,F.y+F.h-24);
+   }else if(id==='hideBall'){
+    p.trickGuard=Math.max(p.trickGuard||0,.65);
+   }else if(inRange){
+    rival.stun=Math.max(rival.stun,id==='freeze'||id==='ice'?.65:.32);
+    rival.action='hurt';rival.actionTimer=.3;
+   }
+  }
+  p.action='dribbleTrick';p.actionTimer=.45;
+  this.burst(p.x,p.y,countered?'#94a3b8':'#b87bff',countered?5:12);
+  this.emit('magicTrick',{team:p.t,player:p.src.name,trick:id,countered});
+  return true;
+ }
  // v0.8.7: ten individual dribble types. Only the second DRIBBLE tap triggers
  // a special trick; the first tap keeps the standard feint. Against an alert
  // defender a trick may fail. DEF, AGG, AGI, DRB, stamina and style all matter.
@@ -1322,6 +1357,7 @@ class GameEngine{
   if(this.input.canceled?.(p.t,'dribble')){p.dribbleHold=0;p.ballLiftLock=false;}
   p.dx=dx;p.dy=dy;const elapsedJump=Math.max(p.jumpHold||0,this.input.tapDuration?.(p.t,'jump')||0);
   p.dribbleHold=s.dribble?Math.max(p.dribbleHold||0,this.input.tapDuration?.(p.t,'dribble')||0)+dt:0;
+  if(!s.dribble||this.ball.owner!==p)p.magicHoldLatched=false;
   if(!s.dribble)p.ballLiftLock=false;
   p.jumpHold=s.jump?elapsedJump+dt:0;const defensiveSprint=this.ball.owner!==p&&!!s.jump;const running=defensiveSprint||(this.ball.owner===p&&p.jumpHold>.16);let spd=this.playerSpeed(p)*(running?1.37:1)*(p.dashTimer>0?1.7:1)*(.88+p.src.power*.0015)*(this.terrain==='Sand'?.69:1)*(this.condition==='Wet'?.86:1);
  if((p.chase||0)>0&&this.ball.owner!==p&&p.z<=0){p.chase=Math.max(0,p.chase-dt);const target=this.ball.owner||this.ball,dist=Math.hypot(target.x-p.x,target.y-p.y);if(dist>57){dx=(target.x-p.x)/dist;dy=(target.y-p.y)/dist;}else if(p.cd<=0&&(!this.ball.owner||this.ball.owner.t!==p.t)){this.tackle(p,false);p.chase=0}}else p.chase=0;
@@ -1378,6 +1414,13 @@ class GameEngine{
     const direction=Math.hypot(s.x||0,s.y||0)>.16?{x:s.x,y:s.y}:p.passDirection;
     if(this.ball.owner?.t===p.t)this.performTeamPass(p,longPass,false,direction,held);else this.tackle(p,false);}
    p.passHold=0;p.passUsed=false;p.passDirection=null;
+  }
+  // Hold DRIBBLE for >=1s with possession to trigger an equipped Magic Trick
+  // once per continuous press; Jump combinations take priority.
+  if(s.dribble&&!s.jump&&!s.shoot&&!s.pass&&this.ball.owner===p&&
+     p.dribbleHold>=1&&!p.magicHoldLatched){
+   p.magicHoldLatched=true;
+   this.tryMagicTrick(p);
   }
   const dribbleDown=this.input.just(p.t,'dribble');
   if(dribbleDown&&!aerialDribble&&!bicycleFired&&!liftFired&&!s.shoot&&!s.pass){
