@@ -1,0 +1,111 @@
+{
+  "schema": "smf.concept-royals.identity-reference.v1",
+  "status": "art-direction only; NOT integrated runtime sprites",
+  "source": "Owner-provided 12-player illustrated reference, 2026-10-23",
+  "requirements": {
+    "directions": [
+      "front",
+      "front-quarter",
+      "side",
+      "back-quarter",
+      "back"
+    ],
+    "animations": [
+      "idle",
+      "run",
+      "jump",
+      "shoot",
+      "tackle",
+      "super-shot",
+      "super-defense",
+      "trick"
+    ],
+    "qa": "For every player and direction capture actual Chromium game render; check distinct hair silhouettes and facial features, no occlusion, animation frames, transparent edges, PC and touch, offline compatibility. Do not call this accepted before in-game captures and tests."
+  },
+  "players": [
+    {
+      "number": 1,
+      "name": "Alex",
+      "hair": "spiky chestnut brown",
+      "skin": "light warm",
+      "details": "clean-shaven, thick brows"
+    },
+    {
+      "number": 2,
+      "name": "Leo",
+      "hair": "layered golden blond with black headband",
+      "skin": "light peach",
+      "details": "clean-shaven, black sports headband"
+    },
+    {
+      "number": 3,
+      "name": "Kwame",
+      "hair": "short tight black coils",
+      "skin": "deep brown",
+      "details": "clean-shaven, strong brows"
+    },
+    {
+      "number": 4,
+      "name": "Diego",
+      "hair": "black swept undercut",
+      "skin": "medium tan",
+      "details": "short black beard, patterned neck tattoo"
+    },
+    {
+      "number": 5,
+      "name": "Ryo",
+      "hair": "silver layered swept fringe",
+      "skin": "light peach",
+      "details": "clean-shaven"
+    },
+    {
+      "number": 6,
+      "name": "Sean",
+      "hair": "short tousled copper orange",
+      "skin": "fair warm",
+      "details": "full ginger beard"
+    },
+    {
+      "number": 7,
+      "name": "Rafa",
+      "hair": "voluminous dark brown curls",
+      "skin": "medium olive",
+      "details": "short beard, cross cheek marking"
+    },
+    {
+      "number": 8,
+      "name": "Malik",
+      "hair": "gold-tipped dreadlocks",
+      "skin": "deep brown",
+      "details": "short beard, earrings"
+    },
+    {
+      "number": 9,
+      "name": "Ivan",
+      "hair": "very short dark buzz cut",
+      "skin": "light olive",
+      "details": "dark beard, scalp tattoo"
+    },
+    {
+      "number": 10,
+      "name": "Carlos",
+      "hair": "long swept black waves",
+      "skin": "medium tan",
+      "details": "clean-shaven"
+    },
+    {
+      "number": 11,
+      "name": "Samuel",
+      "hair": "short textured silver-white curls",
+      "skin": "dark brown",
+      "details": "cheek bandage"
+    },
+    {
+      "number": 12,
+      "name": "Enzo",
+      "hair": "shoulder-length chestnut brown with white headband",
+      "skin": "light warm",
+      "details": "clean-shaven, white headband"
+    }
+  ]
+}
