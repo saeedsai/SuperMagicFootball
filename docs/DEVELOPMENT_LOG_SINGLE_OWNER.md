@@ -1,5 +1,11 @@
 # SuperMagicFootball — centralized development log
 
+## 2026-10-23 12:57 Europe/Stockholm — Crown Royals reference-art player 1
+- Separate **Crown Royals (Art WIP)** team added after existing Concept Royals; canonical 223 teams / 2676 players and previous Concept Hero unchanged. Alex (#1) is the first literal owner-reference sprite, extracted as three transparent projections; eleven teammates are placeholders.
+- New opt-in model `crown_royals_reference` in game renderer, offline sprite, fixture and Chromium five-direction/action preview page. Quarter projections and action poses are explicitly provisional. Candidate 0.9.20.0, not certified. Source is user-provided art.
+- Focused Node contract and real Chromium screenshot workflow added. Exact-head full 4 Node+4 Chromium, Modular QA, protected main promotion and Pages byte smoke remain gates. Do not claim QA approval before their results.
+
+
 **Effective:** 2026-10-20 | **Ongoing development owner:** `smf-hourly-dev-20261019`
 
 ## Single-developer migration

@@ -34,7 +34,7 @@ with sync_playwright() as pw:
   errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   page.set_content(shell);page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball',timeout=30000)
   info=page.evaluate("""() => {const e=SupermagicFootball,t=e.teams.find(t=>t.id==='demo_concept_royals');return {teams:e.teams.length,roster:t?.customRoster?.length,allConcept:t?.customRoster?.every(p=>p.renderModel==='concept_hero'),originalTeams:e.teams.filter(t=>t.id!=='demo_concept_royals').length};}""")
-  assert info=={'teams':224,'roster':12,'allConcept':True,'originalTeams':223},info
+  assert info=={'teams':225,'roster':12,'allConcept':True,'originalTeams':224},info
   # Concept Hero's former shortcut was intentionally removed from Quick Match.
   # Exercise the supported menu path instead of requiring the retired button.
   page.locator('[data-action=navQuick]').first.click()

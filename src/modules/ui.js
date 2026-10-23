@@ -101,6 +101,24 @@ TEAMS.push({id:CONCEPT_DEMO_ID,index:TEAMS.length,name:'Concept Royals FC',
  group:'concept_demo',flag:'CRF',primary:'#1262d4',secondary:'#f4f5f7',
  trim:'#f1bb46',rank:84,shot:'omega',customRoster:CONCEPT_DEMO_ROSTER});
 
+// Separate Crown Royals reference team. Never replace or mutate Concept Royals.
+// Exactly one literal reference-art player is implemented so far; the other
+// eleven are explicit placeholders using the existing standard art pipeline.
+const CROWN_ROYALS_ID='demo_crown_royals_reference';
+const CROWN_NAMES=['Leo','Kwame','Diego','Ryo','Sean','Rafa','Malik','Ivan','Carlos','Alex','Samuel','Enzo'];
+const CROWN_ROLES=['GK','GK','DF','DF','DF','MF','MF','MF','MF','FW','FW','FW'];
+const CROWN_ROSTER=CROWN_NAMES.map((name,i)=>({
+ id:i===9?'crown_royals_reference_alex':CROWN_ROYALS_ID+'_'+i,
+ name,role:CROWN_ROLES[i],num:i===9?1:i+2,power:70,shoot:36,defense:39,speed:'B',
+ shot:'omega',shotName:'Crown Magic Shot',skill:'Reference Art In Progress',
+ level:1,xp:0,...(i===9?{renderModel:'crown_royals_reference',
+ appearance:{renderModel:'crown_royals_reference',skin:'#e8b48e',hair:'#493020'}}:{})
+}));
+TEAMS.push({id:CROWN_ROYALS_ID,index:TEAMS.length,name:'Crown Royals (Art WIP)',
+ group:'crown_royals_reference',flag:'CR',primary:'#362070',secondary:'#edc04c',
+ trim:'#f2bd49',rank:83,shot:'omega',customRoster:CROWN_ROSTER});
+
+
 const careerStorage=(()=>{try{return window.localStorage}catch{return {getItem(){return null},setItem(){throw Error('Persistent storage unavailable')},removeItem(){throw Error('Persistent storage unavailable')}}}})();
 const careerSlots=CAREER_SLOTS.create(careerStorage);
 let career=store.get('managerCareer',null),creatingCareer=false;
