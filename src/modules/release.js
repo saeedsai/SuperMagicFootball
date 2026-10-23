@@ -5,7 +5,7 @@ const RELEASE=Object.freeze({
  date:'2026-10-23',
  notes:Object.freeze([
   'Corrected Concept Royals player portraits: original painted eyes, nose and mouth are preserved while skin and hair are recoloured directly in the existing five-view sprite atlas; removed opaque face masks.',
-  'Concept Royals FC now has twelve named male player identities with unique skin tones, hair silhouettes and face markings across the existing five-view character renderer.',
+  'Concept Royals FC now has twelve named male identities with varied skin and hair colours plus selected markings/accessories on a shared five-view illustrated atlas; individually authored hair silhouettes and action animations remain future work.',
   'Removed both Concept Hero demo entries from Quick Match and On Device; the experimental character is no longer advertised as a playable menu mode.',
   'Smoothed experimental Concept Hero leg motion by easing short strides and removing abrupt foot translations.',
   'Player Studio Magic Trick selection now defaults to KEEP CURRENT, preserving equipped abilities until an explicit replacement or removal; unchanged saves are not rewritten.',
