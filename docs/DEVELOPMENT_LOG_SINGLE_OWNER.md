@@ -349,3 +349,6 @@ Added transport-neutral `createLanHostAdapter` in `3ea8ce3b` connecting bounded 
 
 ## 2026-10-23 ICE-gathered LAN signaling
 `24290ee9` adds bounded ICE gathering wait and gathered manual SDP offer/answer; `580f1135` fixes listener timer initialization race; `37abc53b` adds three Node tests. No browser signaling UI, connectivity proof or playable multiplayer yet. Candidate 0.9.17.1 unchanged. Exact-head QA pending.
+
+## 2026-10-23 Concept menu/animation owner request
+Removed both Concept Hero demo nav entries in `10e72d88`, softened prototype leg animation in `f88e0525`, updated regression test `d2fb4ce7`, synchronized player-facing 0.9.18.0 package/release/README/cache/policy in subsequent commits. Prototype remains isolated for graphics iteration; no claim full animation overhaul. Exact-head CI/Concept Hero QA pending; protected promotion only when green.
