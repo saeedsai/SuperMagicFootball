@@ -1,30 +1,22 @@
 # SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 22:02 Europe/Stockholm
+**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 23:02 Europe/Stockholm
 
 ## Mission
-Continue small tested increments on existing `dev` hourly regardless of prior CI/promotion blockers. No additional branches, force-push, weakened tests or bypassed protections.
+Sole developer on existing dev, never stop for pending release. No new branches, force push, bypass or weakening CI. One bounded tested increment per run; only green exact-head protected main promotion.
 
 ## Current checkpoint
-- Started dev `60fa55fdae74dc4cd3d73cfb598a0ee71efbb7d0`, main `ff114be6c5ae4fff8f0f155e82b4b60753238320`. Prior exact-head dev Census 40012769919 and Modular QA 40012769944 green, **not** certification of newer commits. Main has one diverging commit; protected pipeline must reconcile legitimately.
-- Candidate `0.9.29.0`: 23 deterministic unique Super Shot ball silhouettes added to shared Player Studio/Team Management icons, plus focused Node regression tests. Pre-commit V8 checks: 23/23 unique; no hosted CI/Pages evidence yet. Crown Royals gameplay uses painted fallback; SVG quarter art bundled but not live.
-- Updated package/About/README/cache/version policy and stale notes; central log contains detailed change list.
-- Preserve 223 teams/2676 players, 2 GK/3 DF/4 MF/3 FW, six formations, four gameplay buttons, 10 Career/Cup slots, SD09, saves and offline compatibility.
+- Starting dev `c1aed416811e78677eef94e38807e6a1e43c43be`, main `fb5ed03196e6a27ad2d2a075d4e5055a6360dbc1`, dev ahead 14, behind 0.
+- Full Census 40023142814 browser preview failed with console `SyntaxError: Invalid or unexpected token`, no HTTP errors. Root: literal `\\n` in `src/modules/release.js` after `notes:Object.freeze([`. Corrected and confirmed V8 parse. Version advanced 0.9.29.1 → 0.9.29.2 in About/package/README/cache/docs.
+- New automated CI regression test `every shipped JavaScript module parses before browser startup` uses Node `--check` for src/main.js, src/assets.js, sw.js, all src/modules/*.js. This is a new QA feature; it is not gameplay/visual certification.
+- Last feature/test commit `78e792985771377e627028faabcc67c49d3c31bc`; Full Census 40023966569 and Modular QA 40023966819 pending. Do not claim green or deployed.
+- Preserve 223 teams/2676 players, 6 formations, 4 buttons, 10 Career/Cup slots, SD09, offline/save compatibility.
 
-## Next smallest action
-1. Inspect exact latest dev head and its Full Census + Modular QA results; repair any failing Node/Chromium shard without weakening tests.
-2. Confirm unique badge render on mobile and desktop screenshot artifacts.
-3. Investigate dev/main divergence and only permit protected exact-green-head promotion.
-4. Verify actual main SHA, Pages deployment and hosted byte-for-byte smoke.
-5. Continue a small counterable Trick/Player Studio/LAN or painted sprite increment on dev regardless of release status.
+## Next five
+1. Inspect exact latest dev CI; fix new Node syntax gate failures if any.
+2. Fix any remaining browser/preview or 4 Chromium shard failure.
+3. Complete 4 Node + 4 Chromium + Modular QA for exact head.
+4. Permit protected main promotion only when all green, verify Pages byte smoke.
+5. Continue next counterable Trick/Studio/LAN/graphics small increment on dev even if release still pending.
 
-## Ownership and exclusions
-Only own checkpoint. Do not edit other agents' memory, create branches or bypass security.
-
-## Evidence
-Pre-commit V8: 23 distinct shapes and safe escaped labels. Hosted CI for this candidate pending. Modular QA 40016365371 failed due obsolete shared-ball path assertion; fixed in ba44d3b0267703cb045d2be650041d5e2c3c3afb. Latest exact-head CI still pending.
-
-## Cleanup
-Checkpoint below 4 KiB; no invented deployment or QA claims.
-
-## 2026-10-23 candidate 0.9.29.1
-- Fixed inherited Super Shot/Super Defence keys in Player Studio ability summaries; added focused regression case. Dev commits 18116a61, 37061bb0; release metadata updated through ccdd77cf. Full 4+4 CI and hosted deployment pending; do not claim production.
+## Safety
+Read AGENTS.md, VERSIONING_POLICY, SHARED and this checkpoint; latest SHA before writes. Never touch other agent memories or add branches. No unsupported QA/deployment claims.
