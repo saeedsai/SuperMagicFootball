@@ -1,6 +1,6 @@
 // Crown Royals: literal transparent pixels extracted from the owner's three-view
 // reference. This is a separate team/model; the existing Concept Hero is unchanged.
-// Three separate reference-derived atlases: Alex, Leo and Kwame; others use ordinary art.
+// Four three-view atlases; Alex additionally has transparent authored front/rear quarter sprites.
 const CROWN_ROYALS=(()=>{
  const ID='crown_royals_reference';
  const PLAYERS=Object.freeze({crown_royals_reference_alex:'alex',crown_royals_reference_leo:'leo',crown_royals_reference_kwame:'kwame',crown_royals_reference_diego:'diego'});
@@ -53,7 +53,7 @@ const CROWN_ROYALS=(()=>{
   const image=new Image();atlas.image=image;
   image.onload=()=>{try{atlas.painted=correctedAtlas(image,name);}catch{atlas.painted=image;}atlas.loaded=true;};image.onerror=()=>{atlas.error=true;};
   if(typeof inline==='string')image.src='data:image/png;base64,'+inline;
-  else try{image.src=new URL('../../assets/crown_royals/'+name+'_three_views.png',import.meta.url).href;}catch{atlas.error=true;}
+  else try{image.src='./assets/crown_royals/'+name+'_three_views.png';}catch{atlas.error=true;}
   if(image.complete&&image.naturalWidth>0){try{atlas.painted=correctedAtlas(image,name);}catch{atlas.painted=image;}atlas.loaded=true;}
  }
  function preloadAlexQuarters(){
@@ -61,7 +61,7 @@ const CROWN_ROYALS=(()=>{
   const image=new Image();quarterAlex.image=image;
   image.onload=()=>{quarterAlex.loaded=true;};
   image.onerror=()=>{quarterAlex.error=true;};
-  try{image.src=new URL('../../assets/crown_royals/alex_quarter_views.svg',import.meta.url).href;}
+  try{image.src=(typeof CROWN_ROYALS_ALEX_QUARTER_INLINE==='string'?'data:image/svg+xml;base64,'+CROWN_ROYALS_ALEX_QUARTER_INLINE:'./assets/crown_royals/alex_quarter_views.svg');}
   catch{quarterAlex.error=true;}
  }
  function preload(){
@@ -95,7 +95,7 @@ const CROWN_ROYALS=(()=>{
   if(view?.flip===true||view?.mirror===true)ctx.scale(-1,1);
   // Keep identical player width across camera directions. The old 0.86 X-scale
   // made quarter-facing Crown players visibly paper-thin and shifted their feet.
-  // Quarter art is still provisional; never distort the whole silhouette.
+  // Alex has authored quarter views; other players retain nearest-view placeholders.
   const poseAction=action==='kick'||action==='super'?'shoot'
    :action==='slide'||action==='jumpTackle'?'tackle'
    :action==='bicycle'||action==='bicycleKick'?'bicycle'
@@ -140,6 +140,6 @@ const CROWN_ROYALS=(()=>{
   ctx.restore();return true;
  }
  preload();
- return Object.freeze({id:ID,playerId:'crown_royals_reference_alex',playerIds:Object.keys(PLAYERS),directions,isCrownPlayer,preload,draw,status:()=>({loaded:atlases.alex.loaded,leoLoaded:atlases.leo.loaded,kwameLoaded:atlases.kwame.loaded,diegoLoaded:atlases.diego.loaded,error:atlases.alex.error||atlases.leo.error||atlases.kwame.error||atlases.diego.error,paintedViews:3,quarterViews:'nearest-view placeholders',playerCount:4,alexQuarterLoaded:quarterAlex.loaded,alexQuarterError:quarterAlex.error,hairCorrected:!!atlases.alex.painted&&!!atlases.leo.painted})});
+ return Object.freeze({id:ID,playerId:'crown_royals_reference_alex',playerIds:Object.keys(PLAYERS),directions,isCrownPlayer,preload,draw,status:()=>({loaded:atlases.alex.loaded,leoLoaded:atlases.leo.loaded,kwameLoaded:atlases.kwame.loaded,diegoLoaded:atlases.diego.loaded,error:atlases.alex.error||atlases.leo.error||atlases.kwame.error||atlases.diego.error,paintedViews:3,quarterViews:'Alex authored; others nearest-view placeholders',playerCount:4,alexQuarterLoaded:quarterAlex.loaded,alexQuarterError:quarterAlex.error,hairCorrected:!!atlases.alex.painted&&!!atlases.leo.painted})});
 })();
 export {CROWN_ROYALS};

@@ -20,6 +20,9 @@ concept_atlas=base64.b64encode((root/'assets/concept_hero/hero_atlas.webp').read
 code.append('const CONCEPT_HERO_INLINE='+json.dumps(concept_atlas)+';\n')
 crown_atlas=base64.b64encode((root/'assets/crown_royals/alex_three_views.png').read_bytes()).decode('ascii')
 code.append('const CROWN_ROYALS_INLINE='+json.dumps(crown_atlas)+';\n')
+# Embed the same authored SVG in isolated browser QA fixtures.
+quarter_svg=base64.b64encode((root/'assets/crown_royals/alex_quarter_views.svg').read_bytes()).decode('ascii')
+code.append('const CROWN_ROYALS_ALEX_QUARTER_INLINE='+json.dumps(quarter_svg)+';\n')
 leo_atlas=base64.b64encode((root/'assets/crown_royals/leo_three_views.png').read_bytes()).decode('ascii')
 code.append('const CROWN_ROYALS_LEO_INLINE='+json.dumps(leo_atlas)+';\n')
 kwame_atlas=base64.b64encode((root/'assets/crown_royals/kwame_three_views.png').read_bytes()).decode('ascii')

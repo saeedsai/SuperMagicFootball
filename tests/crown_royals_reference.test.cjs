@@ -7,8 +7,9 @@ test('Crown Royals first sprite is literal transparent PNG with 3 source views',
  assert.equal(buf.readUInt32BE(16),132);assert.equal(buf.readUInt32BE(20),90);
  const s=read('src/modules/crownroyals.js');
  for(const direction of ['front','quarterFront','side','quarterBack','back'])assert.ok(s.includes(direction));
- assert.match(s,/paintedViews:3/);assert.match(s,/quarterViews:'nearest-view placeholders'/);
- assert.match(s,/ctx\.drawImage\(atlas\.painted\|\|atlas\.image/);
+ assert.match(s,/paintedViews:3/);assert.match(s,/quarterViews:'Alex authored; others nearest-view placeholders'/);
+ assert.match(s,/const sprite=authoredQuarter\?quarterAlex\.image:/);
+ assert.match(s,/ctx\.drawImage\(sprite,/);
 });
 test('new team does not replace old Concept Hero and preserves canonical assets',()=>{
  const ui=read('src/modules/ui.js'),render=read('src/modules/render.js');
@@ -21,6 +22,8 @@ test('new team does not replace old Concept Hero and preserves canonical assets'
  assert.match(read('sw.js'),/'conceptmodular','crownroyals','render'/);
  assert.match(read('sw.js'),/assets\/crown_royals\/alex_three_views\.png/);
  assert.match(read('sw.js'),/assets\/crown_royals\/leo_three_views\.png/);
+ assert.match(read('sw.js'),/assets\/crown_royals\/alex_quarter_views\.svg/);
+ assert.match(read('scripts/build.py'),/CROWN_ROYALS_ALEX_QUARTER_INLINE/);
 });
 
 test('new reference team keeps twelve unique 1–12 jerseys and 2/3/4/3 roles',()=>{
@@ -45,7 +48,7 @@ test('match actions feed Crown sprite transforms rather than preview-only aliase
  const render=read('src/modules/render.js'),sprite=read('src/modules/crownroyals.js');
  assert.match(render,/CROWN_ROYALS\.draw\(ctx,p,view,\{run,action:p\.action,phase:/);
  assert.match(sprite,/action==='kick'\|\|action==='super'\?'shoot'/);
- assert.match(sprite,/action==='slide'\?'tackle'/);
+ assert.match(sprite,/action==='slide'\|\|action==='jumpTackle'\?'tackle'/);
 });
 
 

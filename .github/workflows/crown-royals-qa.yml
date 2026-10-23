@@ -30,8 +30,8 @@ jobs:
           sudo apt-get install -y chromium
       - name: Focused tests and offline fixture build
         run: |
-          node --test tests/crown_royals_reference.test.cjs
           python3 scripts/build.py
+          node --test tests/crown_royals*.test.cjs
       - name: Capture actual game renderer in Chromium
         run: |
           python3 tests/crown_royals_browser_qa.py
