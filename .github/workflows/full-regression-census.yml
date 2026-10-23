@@ -130,6 +130,10 @@ jobs:
                       page=ctx.new_page()
                       errors=[]
                       failed_requests=[]
+                      console_errors=[]
+                      bad_responses=[]
+                      page.on('console',lambda message: console_errors.append(message.text) if message.type=='error' else None)
+                      page.on('response',lambda response: bad_responses.append((response.status,response.url)) if response.status>=400 else None)
                       page.on('requestfailed',lambda request: failed_requests.append(request.url))
                       page.on('pageerror',lambda error: errors.append(str(error)))
                       response=page.goto('http://127.0.0.1:8765/',wait_until='load',timeout=60000)
@@ -137,7 +141,7 @@ jobs:
                       try:
                           page.wait_for_function('!!window.SupermagicFootball?.game',timeout=60000)
                       except Exception:
-                          print('PREVIEW_STARTUP_DIAGNOSTICS',name,'page_errors=',errors,'menu=',page.locator('#menu').inner_text(timeout=5000)[:1500],'failed_requests=',failed_requests,flush=True)
+                          print('PREVIEW_STARTUP_DIAGNOSTICS',name,'page_errors=',errors,'menu=',page.locator('#menu').inner_text(timeout=5000)[:1500],'failed_requests=',failed_requests,'http_errors=',bad_responses,'console_errors=',console_errors,flush=True)
                           raise
                       for action in ('navQuick','navOnDevice','versus','kickoff'):
                           page.locator('[data-action="'+action+'"]').first.click(timeout=30000)
