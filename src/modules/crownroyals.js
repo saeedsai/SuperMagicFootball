@@ -18,6 +18,7 @@ const CROWN_ROYALS=(()=>{
   // Clear only near-invisible pixels; keep actual anti-aliased silhouette pixels.
   // Never paint a backdrop into the transparent atlas.
   for(let i=0;i<a.length;i+=4){
+   // Only pixels with very low alpha are fringe, not the player's silhouette.
    if(a[i+3]<24){a[i]=0;a[i+1]=0;a[i+2]=0;a[i+3]=0;}
   }
   for(let y=2;y<28;y++)for(let x=0;x<132;x++){
