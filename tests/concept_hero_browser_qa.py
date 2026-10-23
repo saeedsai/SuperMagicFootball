@@ -35,9 +35,14 @@ with sync_playwright() as pw:
   page.set_content(shell);page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball',timeout=30000)
   info=page.evaluate("""() => {const e=SupermagicFootball,t=e.teams.find(t=>t.id==='demo_concept_royals');return {teams:e.teams.length,roster:t?.customRoster?.length,allConcept:t?.customRoster?.every(p=>p.renderModel==='concept_hero'),originalTeams:e.teams.filter(t=>t.id!=='demo_concept_royals').length};}""")
   assert info=={'teams':224,'roster':12,'allConcept':True,'originalTeams':223},info
+  # Concept Hero's former shortcut was intentionally removed from Quick Match.
+  # Exercise the supported menu path instead of requiring the retired button.
   page.locator('[data-action=navQuick]').first.click()
-  assert page.locator('[data-action=conceptDemo]').count()==1
-  page.locator('[data-action=conceptDemo]').first.click()
+  assert page.locator('[data-action=conceptDemo]').count()==0
+  page.locator('[data-action=navOnDevice]').first.click()
+  page.locator('[data-action=quick]').first.click()
+  page.locator('#homeGroup').select_option('all')
+  page.locator('#homeTeam').select_option(str(info['teams']-1))
   assert 'Concept Royals FC' in page.locator('#homeTeam option:checked').inner_text()
   page.locator('[data-action=kickoff]').first.click()
   page.wait_for_function("SupermagicFootball.game.matchState==='play'",timeout=15000)
