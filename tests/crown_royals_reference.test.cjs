@@ -33,10 +33,11 @@ test('new reference team keeps twelve unique 1–12 jerseys and 2/3/4/3 roles',(
  assert.equal(roster.length,12);
  assert.deepEqual(Array.from(roster,p=>p.num).sort((a,b)=>a-b),Array.from({length:12},(_,i)=>i+1));
  assert.deepEqual(['GK','DF','MF','FW'].map(role=>roster.filter(p=>p.role===role).length),[2,3,4,3]);
- assert.equal(roster.filter(p=>p.renderModel==='crown_royals_reference').length,3);
+ assert.equal(roster.filter(p=>p.renderModel==='crown_royals_reference').length,4);
  assert.equal(roster.find(p=>p.name==='Leo').num,2);
  assert.equal(roster.find(p=>p.name==='Leo').id,'crown_royals_reference_leo');
  assert.equal(roster.find(p=>p.name==='Kwame').id,'crown_royals_reference_kwame');
+ assert.equal(roster.find(p=>p.name==='Diego').id,'crown_royals_reference_diego');
  assert.equal(roster.find(p=>p.name==='Alex').num,1);
 });
 
