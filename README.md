@@ -127,3 +127,6 @@ The live goalkeeper now counts a loose-ball collection as a `save` only when it 
 
 ### Future audio and music expansion (planned, not implemented)
 A dedicated [Audio & Music Expansion Plan](docs/AUDIO_MUSIC_EXPANSION_PLAN.md) covers menu and halftime playlists, tournament finals/boss themes, in-match music, UI navigation sounds, tackles, passes, shots, super moves, crowds and whistles. Candidate free/CC0 libraries are documented with per-asset licensing and QA gates. No new audio files are shipped by this planning change.
+
+### LAN wire protocol development on dev (23 October 2026; not yet released)
+The current development branch now contains a **bounded JSON wire codec** (`src/modules/lan-wire.js`) and focused tests (`tests/lan-wire.test.cjs`). It serializes and validates host-compatible hello, leave and four-button input packets, rejects oversized/malformed packets and preserves the input sequence number. The checkpoint memory-contract failure was repaired without weakening CI. This is a transport foundation only: **cross-device LAN, WebRTC signaling and a synchronized match are not playable yet**. The player-facing version remains **0.9.17.1** until a verified game release; the live Pages game may differ from dev.
