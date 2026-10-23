@@ -27,3 +27,6 @@ JS handler smoke checked KEEP/REMOVE/REPLACE/invalid/nonelite/refused save. New 
 
 ## Cleanup
 No new branches or data migrations. Retain regression and CI evidence.
+
+## 2026-10-23 publication recovery
+Normal GitHub dev Contents API writes succeeded: Scream closing-awareness correction 6b809fa4, LAN validation foundation 3a60cade, LAN focused test a90d0d93. Prototype modules are not yet playable; 0.9.17.1 unchanged. Await exact-head CI; no extra branches, no bypass. Next: certify tests, integrate LAN transport and playable Scream.
