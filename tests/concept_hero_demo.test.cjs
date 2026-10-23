@@ -10,7 +10,8 @@ test('prototype is explicitly isolated from the original 223 teams',()=>{
  assert.match(ui,/TEAMS\.push\(\{id:CONCEPT_DEMO_ID/);
  assert.match(ui,/CONCEPT_DEMO_ROLES=\['GK','GK','DF','DF','DF','MF','MF','MF','MF','FW','FW','FW'\]/);
  assert.match(ui,/a==='conceptDemo'/);
- assert.match(ui,/navItem\('★ PLAY CONCEPT ROYALS FC','conceptDemo'/);
+ assert.doesNotMatch(ui,/navItem\('★ PLAY CONCEPT ROYALS FC','conceptDemo'/);
+ assert.doesNotMatch(ui,/navItem\('CONCEPT PLAYER DEMO','conceptDemo'/);
 });
 test('exact reference sprites exist as valid WebP and are not rendered for existing teams',()=>{
  const file=fs.readFileSync(path.join(ROOT,'assets/concept_hero/hero_atlas.webp'));
