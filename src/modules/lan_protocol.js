@@ -72,4 +72,17 @@ function dequeueGuestLanInput(state,hostFrame){
  const pending=Object.freeze(state.pending.filter(item=>item.frame>hostFrame));
  return Object.freeze({packet,state:Object.freeze({session:state.session,lastSequence:state.lastSequence,lastFrame:state.lastFrame,pending})});
 }
-export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput};
+// LAN-004: host advances a frame even when the guest packet is late.
+// Neutral input is deterministic, does not invent an action or consume a sequence.
+function resolveGuestLanFrame(state,hostFrame){
+ const consumed=dequeueGuestLanInput(state,hostFrame);
+ const packet=consumed.packet;
+ const input=Object.freeze({
+  frame:hostFrame,
+  buttons:packet?packet.buttons:Object.freeze([]),
+  dx:packet?packet.dx:0,
+  dy:packet?packet.dy:0
+ });
+ return Object.freeze({received:packet!==null,input,state:consumed.state});
+}
+export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame};
