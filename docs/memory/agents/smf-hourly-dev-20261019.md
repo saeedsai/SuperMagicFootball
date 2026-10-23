@@ -1,5 +1,5 @@
 # SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 13:50 Europe/Stockholm
+**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 14:55 Europe/Stockholm
 
 ## Mission
 Continue small increments on existing dev regardless of pending CI/release; diagnose blockers and repair safely. No new branches, force push, safety or permission bypass.
@@ -10,6 +10,8 @@ Continue small increments on existing dev regardless of pending CI/release; diag
 - Leo has blond hair and dark headband. Quarter directions currently reuse nearest sprite; idle/run/jump/shoot/tackle use provisional transforms rather than separately authored animation frames.
 - Local isolated Chromium renderer QA PASS on desktop and simulated touch: five direction slots × five action previews, zero JS errors. New exact-head live match/CI and Pages still need verification.
 - Full census #39944909668 failed 7 legacy Chromium count assumptions (223/224); now default total 225, saved custom-club fixture 226. Corrected counts while preserving original BPW and save indexes.
+
+- Candidate 0.9.22.1: runtime cached atlas corrects Alex side silver hair and Leo rear/side headband, test contract added. Artwork acceptance must inspect actual Chromium captures. Kwame #3 still pending source atlas integration.
 
 ## Next smallest action
 1. Check exact-dev-head 4 Node+4 Chromium census, Modular QA and Crown Royals browser QA, resolve failures.

@@ -402,3 +402,6 @@ Added twelve named male identities with different skin, hair, face marks and acc
 - Based on exact dev `a550f25f4bfd2138171427d0041bba5cd6c98cba`: Crown Royals Alex/Leo now have distinct Super Shot anticipation versus ordinary shot and symmetric jump lift for positive/negative animation phases. These are visual transforms, not separately painted frames. No changes to 223 canonical teams/2676 players, 4 controls, 6 formations, SD09 or saved data.
 - Earlier Modular QA #39949976975 reported three stale Node assertions; subsequent dev commits repaired them before this increment. Updated version contract for 0.9.22.0 and added deterministic VM canvas transform test plus real Chromium super-vs-shoot screenshot comparison.
 - Local action-transform smoke PASS before commit. Exact-head full 4 Node + 4 Chromium, Modular QA, main protected promotion and hosted byte smoke require separate post-push verification.
+
+### 2026-10-23 — Crown Royals two-player hair alignment, candidate 0.9.22.1
+Adjusted the Crown Royals renderer's cached atlas only: Alex side hair silver→brown and Leo rear/side dark headband continuity. Added a focused source contract test. The 12-player user reference remains the target, but Kwame #3 and bespoke quarter/action art are NOT yet integrated. Do not claim full graphic/Pages approval without exact-SHA CI and actual browser screenshots.
