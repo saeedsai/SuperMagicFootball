@@ -7,7 +7,7 @@ test('Crown Royals first sprite is literal transparent PNG with 3 source views',
  assert.equal(buf.readUInt32BE(16),132);assert.equal(buf.readUInt32BE(20),90);
  const s=read('src/modules/crownroyals.js');
  for(const direction of ['front','quarterFront','side','quarterBack','back'])assert.ok(s.includes(direction));
- assert.match(s,/paintedViews:3/);assert.match(s,/quarterViews:'layered front/side and back/side composite; bespoke quarter art pending'/);
+ assert.match(s,/paintedViews:3/);assert.ok(s.includes("quarterViews:'layered front/side and back/side composite; bespoke quarter art pending'"));
  assert.match(s,/function quarterSprite\(atlas,kind\)/);
  assert.match(s,/g\.drawImage\(source,96,0,36,90,15,0,36,90\)/);
  assert.match(s,/ctx\.drawImage\(source/);
