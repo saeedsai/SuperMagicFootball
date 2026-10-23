@@ -495,3 +495,6 @@ Extracted Diego's three miniature source views into transparent 132×90 indexed 
 
 ### 2026-10-23 — Exact-head CI blocker diagnosed and repaired
 - Full Regression Census run 40009075596 preflight and Modular QA run 40009075599 source-and-data both failed with the same single assertion: tests/project_memory_contract.test.cjs required the literal heading `## Next smallest action` in the sole developer checkpoint. The newly condensed checkpoint had incorrectly renamed it `## Next five actions`. 531/532 Node tests passed in each affected preflight. Repaired checkpoint heading in commit a34482f12ad6232e4526e3a70337b387d0bc90c2; subsequent exact-head 4+4/Modular and Pages smoke must still be verified. Also repaired per-frame SVG `<path\b` regex in commit ece0e3f1fbfe687fd29f4d7ddbbdacef56513d00.
+
+## 2026-10-23 — candidate 0.9.29.1
+- Ability summary own-key validation for Super Shot/Defence and regression test (18116a61, 37061bb0); synchronized package, About, README, offline cache and policy. Focused/full CI not yet observed. Main promotion/Pages not yet verified. Next: run exact-head 4+4 and Modular QA, correct failures, then protected promotion and hosted smoke.
