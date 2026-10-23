@@ -12,8 +12,8 @@ test('renderer QA page loads real game character module and renders 12 × 5 view
  assert.match(html,/canvas\.toDataURL\('image\/png'\)/);
  assert.match(html,/mode==='running'/);
  assert.match(html,/mode==='timeline'/);
- assert.match(html,/for\\(let frame=0;frame<5;frame\\+\\+\\)/);
- assert.match(html,/document\\.getElementById\\('timeline'\\)/);
+ assert.match(html,/for\(let frame=0;frame<5;frame\+\+\)/);
+ assert.match(html,/document\.getElementById\('timeline'\)/);
  assert.doesNotMatch(html,/<img[^>]+src=/);
 });
 
