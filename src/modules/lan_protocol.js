@@ -10,10 +10,10 @@ function uint(value,max=Number.MAX_SAFE_INTEGER){return Number.isSafeInteger(val
 function normalizeLanPacket(raw){
  if(!isRecord(raw))throw new TypeError('LAN packet must be a plain object');
  if(raw.protocol!==LAN_PROTOCOL_VERSION)throw new Error('Unsupported LAN protocol');
- if(!SESSION_RE.test(raw.session||''))throw new Error('Invalid LAN session');
+ if(typeof raw.session!=='string'||!SESSION_RE.test(raw.session))throw new Error('Invalid LAN session');
  if(!uint(raw.sequence))throw new Error('Invalid LAN sequence');
  if(raw.type==='hello'){
-  if(!['host','guest'].includes(raw.role)||!VERSION_RE.test(raw.build||''))throw new Error('Invalid LAN hello');
+  if(!['host','guest'].includes(raw.role)||(typeof raw.build!=='string'||!VERSION_RE.test(raw.build)))throw new Error('Invalid LAN hello');
   return Object.freeze({protocol:1,type:'hello',session:raw.session,sequence:raw.sequence,role:raw.role,build:raw.build});
  }
  if(raw.type==='input'){
