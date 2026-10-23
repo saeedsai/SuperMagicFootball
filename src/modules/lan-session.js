@@ -26,7 +26,9 @@ function acceptLanPacket(state,packet){
  if(!Number.isSafeInteger(packet.sequence)||packet.sequence<0)return reject(state,'invalid-sequence');
  if(packet.sequence<=state.lastSequence)return reject(state,'stale-sequence');
  if(!buttons(packet.buttons)||!axis(packet.axis))return reject(state,'invalid-controls');
- const input=Object.freeze({sequence:packet.sequence,buttons:Object.freeze({...packet.buttons}),axis:Object.freeze({...packet.axis})});
+ const magnitude=Math.hypot(packet.axis.x,packet.axis.y);
+ const movement=magnitude>1?{x:packet.axis.x/magnitude,y:packet.axis.y/magnitude}:{...packet.axis};
+ const input=Object.freeze({sequence:packet.sequence,buttons:Object.freeze({...packet.buttons}),axis:Object.freeze(movement)});
  return {accepted:true,reason:'input-accepted',state:Object.freeze({...state,lastSequence:packet.sequence}),input};
 }
 export {LAN_PROTOCOL_VERSION,LAN_BUTTONS,createLanHostState,acceptLanPacket};
