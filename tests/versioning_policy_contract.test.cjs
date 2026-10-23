@@ -34,6 +34,8 @@ test('release module, offline cache and fixture have matching runtime wiring',()
  assert.match(build,/'render','release','ability-icons','ui'/);
  assert.match(sw,/'render','release','ability-icons','ui'/);
  assert.match(sw,/release-090220-v1/);
+ assert.match(build,/'shotpaths','magic-hazards','engine'/,'QA fixture must include new hazard module');
+ assert.match(sw,/'shotpaths','magic-hazards','engine'/,'offline precache must include new hazard module');
  assert.match(ui,/version:RELEASE\.version,game/);
  assert.match(ui,/version:RELEASE\.version,exportedAt/);
 });
