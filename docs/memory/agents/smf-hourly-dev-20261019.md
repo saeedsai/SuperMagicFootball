@@ -26,3 +26,6 @@ Prior certified baseline: #39923610369, #39922362823, #39923611102. Candidate CI
 
 ## Cleanup
 Keep checkpoint under 4096 UTF-8 bytes, six required headings and exact identity marker. Record actual failures; never weaken QA to obtain green.
+
+## 2026-10-23 manual LAN signaling
+`499ad424` adds bounded manual RTC offer/answer SDP helpers; `8879fba1` adds three focused Node tests for handshake, malformed input and peer errors. No ICE trickle UI, peer authentication or playable multiplayer. Version 0.9.17.1 unchanged. Exact-head CI pending; do not bypass protected promotion.
