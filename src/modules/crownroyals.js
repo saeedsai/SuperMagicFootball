@@ -81,9 +81,23 @@ const CROWN_ROYALS=(()=>{
   // Keep identical player width across camera directions. The old 0.86 X-scale
   // made quarter-facing Crown players visibly paper-thin and shifted their feet.
   // Quarter art is still provisional; never distort the whole silhouette.
-  const poseAction=action==='kick'||action==='super'?'shoot':action==='slide'?'tackle':action;
+  const poseAction=action==='kick'||action==='super'?'shoot'
+   :action==='slide'||action==='jumpTackle'?'tackle'
+   :action==='bicycle'||action==='bicycleKick'?'bicycle'
+   :action;
   if(poseAction==='jump')ctx.translate(0,-Math.abs(step)*15);
   if(poseAction==='shoot')ctx.rotate(-step*.16);
+  if(poseAction==='pass'){ctx.translate(step*5,-Math.abs(step)*2);ctx.rotate(-step*.09);}
+  if(poseAction==='dribble')ctx.translate(step*3,-Math.abs(step)*3);
+  if(poseAction==='bicycle'){
+   // Airborne bicycle kick is a distinct inverted pose, not a grounded shot.
+   ctx.translate(step*8,-18-Math.abs(step)*16);
+   ctx.rotate(-step*.95);
+  }
+  if(poseAction==='celebrate'||poseAction==='celebration'){
+   ctx.translate(0,-Math.abs(step)*8);
+   ctx.rotate(step*.08);
+  }
   // Super Shot adds bounded anticipation without a new gameplay control.
   if(action==='super'){ctx.translate(0,-Math.abs(step)*8);ctx.rotate(-step*.09);}
   if(poseAction==='tackle'){
