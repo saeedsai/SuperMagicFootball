@@ -1,9 +1,11 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.17.1',
+ version:'0.9.18.0',
  date:'2026-10-23',
  notes:Object.freeze([
+  'Removed both Concept Hero demo entries from Quick Match and On Device; the experimental character is no longer advertised as a playable menu mode.',
+  'Smoothed experimental Concept Hero leg motion by easing short strides and removing abrupt foot translations.',
   'Player Studio Magic Trick selection now defaults to KEEP CURRENT, preserving equipped abilities until an explicit replacement or removal; unchanged saves are not rewritten.',
   'Nutmeg defenders must now face the ball carrier to anticipate the move; back-turned defenders cannot gain the spatial counter bonus.',
   'Rainbow Flick aerial anticipation now requires a closing defender facing the ball carrier; back-turned runners cannot read the loft.',
