@@ -92,7 +92,10 @@ const CROWN_ROYALS=(()=>{
   const quarter=quarterAtlases[PLAYERS[p.src.id]];
   if(quarter&&!quarter.image)preloadQuarters(PLAYERS[p.src.id]);
   const kind=frames[view?.kind]?view.kind:'front';
-  // Quality gate: do not display the mismatched flat SVG quarter art.\n  // Until matching painted quarter views are approved, use original painted\n  // front/back reference pixels for diagonal directions instead.\n  const authoredQuarter=false;
+  // Quality gate: do not display the mismatched flat SVG quarter art.
+  // Until matching painted quarter views are approved, use original painted
+  // front/back reference pixels for diagonal directions instead.
+  const authoredQuarter=false;
   const [sx,sw]=authoredQuarter?[kind==='quarterFront'?0:48,48]:(kind==='quarterFront'?frames.front:kind==='quarterBack'?frames.back:frames[kind]),h=141,w=sw*h/90;
   const sprite=authoredQuarter?quarter.image:(atlas.painted||atlas.image);
   const stride=Math.max(-1,Math.min(1,Number.isFinite(run)?run:0));
