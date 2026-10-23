@@ -55,12 +55,15 @@ const CONCEPT_HERO=(()=>{
   if(active&&atlas.parts[kind]){
    const parts=atlas.parts[kind],ratio=h/HEIGHT,split=sw/2;
    ctx.translate(-w/2,-h+6);ctx.scale(ratio,ratio);
-   // Two individually painted leg layers alternate around the hips.
-   // The upper-body/shorts artwork covers the rotating thigh joints.
-   for(const [limb,stride] of [['left',-gait],['right',gait]]){
+   // Keep the painted feet attached to their hips: small eased leg arcs
+   // avoid the extreme scissors/foot teleport of the original prototype.
+   const strength=Math.min(1,Math.abs(gait)/.28);
+   const eased=strength*strength*(3-2*strength);
+   for(const [limb,sign] of [['left',-1],['right',1]]){
+    const stride=sign*gait*eased;
     const hipX=limb==='left'?split*.52:split*1.48;
     ctx.save();ctx.translate(hipX,190);
-    ctx.rotate(stride*.29);ctx.translate(stride*3.7,-Math.max(0,stride)*4.5);
+    ctx.rotate(stride*.12);
     ctx.translate(-hipX,-190);
     ctx.drawImage(parts[limb],0,0);ctx.restore();
    }
