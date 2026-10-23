@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.23.2',
+ version:'0.9.23.3',
  date:'2026-10-23',
  notes:Object.freeze([
+  'Fixed Settings Player Studio Back navigation and independent club selection even with an active Career; dedicated five-action visual art improvement plan remains pending.',
   'Replaced Kwame #3 atlas after screenshot QA found excessive black face recolor; restored portrait skin details and limited dark-coil correction to rear crown. Original team and saves untouched.',
   'Repaired overbroad Alex side and Leo back hair recolor: chestnut side forelock, layered blond rear hair and a narrow dark headband without covering the face. Kwame #3 remains a separate reference-art player.',
   'Added Crown Royals Kwame (#3) with an independently extracted transparent three-view reference atlas; selectable in the existing new team. Quarter views and action animations remain provisional, not bespoke painted frames.',

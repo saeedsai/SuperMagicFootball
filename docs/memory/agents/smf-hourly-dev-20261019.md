@@ -1,5 +1,5 @@
 # SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 15:12 Europe/Stockholm
+**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 15:15 Europe/Stockholm
 
 ## Mission
 Continue tested small increments directly on existing dev even with pending CI/promotion. No new branches, bypass or force push.
@@ -8,6 +8,8 @@ Continue tested small increments directly on existing dev even with pending CI/p
 - Candidate 0.9.23.1: Crown Royals Alex side chestnut forelock and Leo blond rear with narrow dark band; pixel-bounded cached atlas correction. Original PNG alpha, faces, kit and save data preserved.
 - Kwame #3 independent three-view PNG integrated on dev at 8a317927. Nine Crown teammates remain standard placeholders; quarter views and action frames provisional.
 - Previously green 0.9.22.0 dev/main 4398ba170. 0.9.22.1 candidate CI failed stale Crown drawImage and version literals; test contracts repaired at d1ac6d0. New combined candidate 0.9.23.1 exact-head 4+4/Modular/Crown/Pages pending.
+
+- New candidate 0.9.23.3: Settings Studio Back and arbitrary club picker fix, backlog expanded. Crown perspective still incomplete.
 
 ## Next smallest action
 1. Inspect exact-head 4+4 Census, Modular and Crown QA; fix failures without blocking new work.

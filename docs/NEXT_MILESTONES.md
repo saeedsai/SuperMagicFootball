@@ -1,3 +1,16 @@
+## 23 October 2026 — Owner priority: menus, volume and authored animations
+
+**Immediate:** Settings → Player & Team Customization → Player Studio Back/Escape/controller B must return to the customization menu, never jump to active Career/Cup. Studio and Roster Editor must allow selecting any club irrespective of an existing Career save. Crown Royals look flat in real matches: build independently authored front-quarter/back-quarter (both mirrors), spatially consistent hair, uniform and overlap, depth-aware active run/tackle/shoot poses. Existing 3 true directions plus squeezed quarter placeholders are not artistic QA approval.
+
+**Animation backlog (not yet implemented):**
+1. Dedicated realistic directional tackle anticipation, contact, slide and recovery animation for normal, Concept Hero and Crown Royals.
+2. Unique world-class/elite goal celebrations, selectable in player customization, alongside shared celebrations and safe persistence.
+3. Refined multi-phase Super Shot wind-up, strike and follow-through aligned with ball physics.
+4. Distinct jump-tackle/flying-kick art and animation (not reused regular kick or standing tackle).
+5. Distinct bicycle/super-bicycle multi-frame artwork, ball contact, rotation, landing and recovery.
+
+**QA acceptance:** for each model and action, front/front-quarter/side/back-quarter/back (and mirrored), animated phases, proportions, hair and accessory consistency, gameplay collision timing, desktop and simulated touch, full 4 Node + 4 Chromium census, offline/save compatibility; document limitations honestly.
+
 ## Owner-requested visual redesign and in-game coins — 23 October 2026
 
 **Reference:** User-provided SuperMagicFootball Player Customization / Team Management screenshot in the chat dated 2026-10-23. This is an aesthetic target, **not** a current game screenshot or evidence that the pictured currency/shop/card UI exists. Do not blindly reproduce the picture's labels, ratings or inventory.

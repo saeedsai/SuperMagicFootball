@@ -419,3 +419,6 @@ Adjusted the Crown Royals renderer's cached atlas only: Alex side hair silver→
 
 ### 2026-10-23 — Third reference player Kwame #3, candidate 0.9.23.0
 New 132×90 transparent owner-reference-derived front/back/side atlas for Kwame, separately loaded and cached; existing two characters and Concept Hero preserved. UI Kwame ID now points to this atlas. Offline bundle, test fixture, version, QA page and focused tests updated. Quarter projections and action transformations remain experimental and require artistic acceptance; CI and Pages must independently verify candidate.
+
+### 2026-10-23 — Studio navigation and independent club selection (0.9.23.3 candidate)
+Prevented existing Career from hijacking Settings Studio. Studio Back routes to Customization; editable club selection preserved and validated. Added animation art priorities to milestones. Crown quarter-view depth is still pending. Exact-head CI and hosted checks required.
