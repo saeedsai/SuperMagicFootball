@@ -426,3 +426,6 @@ New 132×90 transparent owner-reference-derived front/back/side atlas for Kwame,
 
 ### 2026-10-23 — Studio navigation and independent club selection (0.9.23.3 candidate)
 Prevented existing Career from hijacking Settings Studio. Studio Back routes to Customization; editable club selection preserved and validated. Added animation art priorities to milestones. Crown quarter-view depth is still pending. Exact-head CI and hosted checks required.
+
+### 2026-10-23 — Crown Royals quarter depth proxy (0.9.24.0 candidate)
+Cached 48x90 front-quarter/back-quarter sprites combine owner-reference front/back and side pixels without flattening the player by 0.86. All three integrated players share this pipeline; 3 source views remain the only hand-authored ones. This is a 2.5D directional improvement, not genuine 3D/finished quarter or bespoke action animation; review exact Chromium captures before art acceptance.

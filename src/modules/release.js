@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.23.4',
+ version:'0.9.24.0',
  date:'2026-10-23',
  notes:Object.freeze([
+  'Crown Royals quarter-facing now composites front/back and actual side-reference planes in a cached 48x90 per-player projection instead of simply flattening the frontal sprite; independent painted quarter art and full 3D animation remain outstanding.',
   'Saved custom clubs now offer Edit Players and Edit Roster actions from the builder, selecting the chosen club and returning to the builder after Back or roster save; IDs, saves and controls unchanged.',
   'Fixed Settings Player Studio Back navigation and independent club selection even with an active Career; dedicated five-action visual art improvement plan remains pending.',
   'Replaced Kwame #3 atlas after screenshot QA found excessive black face recolor; restored portrait skin details and limited dark-coil correction to rear crown. Original team and saves untouched.',
