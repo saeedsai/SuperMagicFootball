@@ -56,6 +56,24 @@ with sync_playwright() as pw:
   assert min(ink)>1000,ink
   unique=len({hashlib.sha256(img.tobytes()).digest() for img in imgs})
   assert unique>=3,unique
+  leo_images=page.evaluate("""() => {
+   const e=SupermagicFootball,t=e.teams.find(t=>t.id==='demo_crown_royals_reference');
+   const p=t.customRoster.find(p=>p.id==='crown_royals_reference_leo');
+   const base=e.game.players[0];
+   return [[0,1],[.707,.707],[1,0],[.707,-.707],[0,-1]].map(([dx,dy])=>{
+    const c=document.createElement('canvas');c.width=220;c.height=245;
+    const ctx=c.getContext('2d');ctx.translate(110,213);ctx.scale(1.35,1.35);
+    e.renderer.drawPlayer(ctx,{...base,src:p,t:0,i:9,x:0,y:0,z:0,
+     preview:true,controlled:false,dx,dy,visualFacing:null,anim:0,action:'idle',
+     stun:0,cryTimer:0},{getTeam:()=>t,options:{showNames:false}});
+    return c.toDataURL('image/png');
+   });
+  }""")
+  leo_imgs=[Image.open(io.BytesIO(base64.b64decode(v.split(',',1)[1]))).convert('RGBA') for v in leo_images]
+  leo_ink=[sum(1 for a in img.getchannel('A').getdata() if a>30) for img in leo_imgs]
+  assert min(leo_ink)>1000,leo_ink
+  assert len({hashlib.sha256(img.tobytes()).digest() for img in leo_imgs})>=3
+  assert any(not a.tobytes()==b.tobytes() for a,b in zip(imgs,leo_imgs)), 'Leo and Alex must not render identical pixels'
   if device=='desktop':
    page.screenshot(path=str(OUT/'alex_real_match.png'))
    sheet=Image.new('RGB',(1100,280),'#202941')
@@ -63,8 +81,14 @@ with sync_playwright() as pw:
     tile=Image.new('RGBA',img.size,'#202941');tile.alpha_composite(img)
     sheet.paste(tile.convert('RGB'),(220*i,28))
    sheet.save(OUT/'alex_real_game_five_views.png')
+   leo_sheet=Image.new('RGB',(1100,280),'#202941')
+   for i,img in enumerate(leo_imgs):
+    tile=Image.new('RGBA',img.size,'#202941');tile.alpha_composite(img)
+    leo_sheet.paste(tile.convert('RGB'),(220*i,28))
+   leo_sheet.save(OUT/'leo_real_game_five_views.png')
+   page.screenshot(path=str(OUT/'leo_real_match.png'))
   assert not errors,errors
-  report[device]={'status':'PASS','pixelCounts':ink,'differentViews':unique,'errors':errors}
+  report[device]={'status':'PASS','alexPixelCounts':ink,'leoPixelCounts':leo_ink,'differentViews':unique,'errors':errors}
   context.close()
  browser.close()
 (OUT/'match_report.json').write_text(json.dumps(report,indent=2))
