@@ -23,3 +23,14 @@ test('Concept Hero identity is painted on all five view types in both idle and r
  assert.match(art,/if\(!person\)return/);
  assert.match(art,/ctx\.drawImage\(parts\.body,0,0\)/);
 });
+
+test('identity overlays preserve the original illustrated eyes and face instead of painting opaque masks',()=>{
+ assert.match(art,/function tintedLayer\(source,person\)/);
+ assert.match(art,/const isSkin=/);
+ assert.match(art,/const isHair=/);
+ assert.match(art,/painted\?\.body\|\|parts\.body/);
+ assert.match(art,/if\(painted\)ctx\.drawImage\(painted\.full,0,0\)/);
+ const accessories=art.slice(art.indexOf('function paintIdentity('),art.indexOf('function draw('));
+ assert.doesNotMatch(accessories,/ctx\.ellipse\(/,'no opaque replacement face/head ellipse');
+ assert.doesNotMatch(accessories,/headW|headY|headW\*|ctx\.fill\(\);ctx\.stroke\(\)/);
+});
