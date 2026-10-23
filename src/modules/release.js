@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.28.0',
+ version:'0.9.28.1',
  date:'2026-10-23',
  notes:Object.freeze([
+  'Crown Royals diagonal gameplay views now use the original painted reference artwork instead of mismatched simplified SVG illustrations; bespoke matching quarter art remains planned.',
   'Crown Royals Kwame #3 now has independently authored transparent front/rear three-quarter sprites, integrated into live matches, offline precache and Chromium test build. Diego quarter views and bespoke action frames remain unfinished.',
   'Crown Royals Leo #2 now has distinct transparent front and rear three-quarter SVG art rendered in matches, precached offline and embedded in browser QA. Other Crown teammates and bespoke action frames remain unfinished.',
   'Alex Crown Royals now uses transparent authored front/rear quarter SVG art in actual matches, offline cache and browser QA; other Crown Royals quarter art and bespoke action frames remain unfinished.',
