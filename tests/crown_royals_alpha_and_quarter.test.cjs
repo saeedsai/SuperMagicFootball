@@ -49,4 +49,14 @@ test('Crown renderer keeps transparent sprite edges and does not squash quarter 
  assert.equal(lunges.some(([kind,x,y])=>kind==='scale'&&x===1.12&&y===.8),true);
  assert.equal(crown.draw(actionCtx,p,{kind:'side'},{action:'slide',phase:-1}),true);
  assert.equal(lunges.some(([kind,x,y])=>kind==='translate'&&x===-12&&y===8),true);
+ const capture=(action)=>{const ops=[];const context={
+  save(){},restore(){},drawImage(){},
+  translate(x,y){ops.push(['translate',x,y])},
+  rotate(a){ops.push(['rotate',a])},
+  scale(x,y){ops.push(['scale',x,y])}
+ };assert.equal(crown.draw(context,p,{kind:'side'},{action,phase:1}),true);return ops;};
+ assert.equal(capture('pass').some(([op,x,y])=>op==='translate'&&x===5&&y===-2),true);
+ assert.equal(capture('dribble').some(([op,x,y])=>op==='translate'&&x===3&&y===-3),true);
+ assert.equal(capture('bicycleKick').some(([op,x,y])=>op==='translate'&&x===8&&y===-34),true);
+ assert.equal(capture('celebration').some(([op,x,y])=>op==='translate'&&x===0&&y===-8),true);
 });
