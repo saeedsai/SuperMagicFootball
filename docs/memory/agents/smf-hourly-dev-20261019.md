@@ -17,5 +17,11 @@ Keep hourly bounded increments on existing `dev` regardless of release blockers;
 4. Author Diego #4 quarter sprites; continue bounded LAN/Player Studio features while release pending.
 5. Promote only green exact-head dev via protected workflow; verify main and Pages SHA-256 hosted smoke.
 
-## Constraints
-Only own checkpoint; no extra branches, force-push, bypass, invented QA or deployment claims.
+## Ownership and exclusions
+Sole designated developer. Only own checkpoint; no other agents' memory, extra branches, force-push or bypass.
+
+## Evidence
+Candidate 0.9.28.0: isolated V8 13/13. Full Census run 40009187867 and Modular QA 40009187765 each failed 1/532 preflight because required checkpoint headings were missing. Repaired required headings here; rerun needed.
+
+## Cleanup
+Checkpoint under 4 KiB. No invented QA, deployment or certification claims.
