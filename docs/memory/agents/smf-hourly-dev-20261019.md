@@ -22,7 +22,7 @@ Never pause dev for pending CI/release. Make small, tested increments on existin
 Sole maintainer `smf-hourly-dev-20261019`. Only dev for coding, main for protected promotion. Preserve 223 canonical teams/2676 players, six formations, four buttons, offline saves, 10 Career/Cup slots, SD09. No other agents' memory files.
 
 ## Evidence
-Modular QA `39935132100` and `39936287417` passed on earlier heads. Browser QA `39935767615` passed, produced original screenshot artifact 12493378311, which exposed face occlusion. Latest exact-head 0.9.19.1 CI and corrected visual screenshots remain pending; no Pages deployment claimed.
+Modular QA `39935132100` and `39936287417` passed on earlier heads. Browser QA `39935767615` passed, produced original screenshot artifact 12493378311, which exposed face occlusion. Corrected browser QA `39936440811` PASS at `55abbac6`, screenshot artifact `12494101727` (60 idle + 300 running samples, no JS errors). Visual inspection: no opaque masks; hairstyles still share base shape and run is subtle; jump/shoot/tackle/super actions remain unimplemented. Latest exact-head 0.9.19.1 full 4+4 and Pages deployment pending.
 
 ## Cleanup
 Keep graphics prototype isolated, avoid inventing visual QA success. Next iteration inspect CI artifacts and fix real errors; preserve all regression coverage.
