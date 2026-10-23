@@ -2,6 +2,7 @@
 // Caller owns RTCPeerConnection creation and SDP/ICE signaling.
 // No match-state replication or automatic peer discovery is implied.
 import {decodeLanWirePacket, encodeLanWirePacket} from './lan-wire.js';
+import {LAN_PROTOCOL_VERSION} from './lan-session.js';
 
 const boundHosts = new WeakMap();
 const usableChannel = channel => channel &&
@@ -46,7 +47,7 @@ function bindLanHostChannel(host, channel) {
 function bindLanGuestChannel(channel, roomId, peerId) {
   if (!usableChannel(channel)) throw new TypeError('Expected an RTCDataChannel');
   // Validate identity and version before attaching any listeners.
-  const envelope = type => encodeLanWirePacket({type, version:1, roomId, peerId});
+  const envelope = type => encodeLanWirePacket({type, version:LAN_PROTOCOL_VERSION, roomId, peerId});
   const helloWire = envelope('hello');
   const leaveWire = envelope('leave');
   let disposed = false;
@@ -66,7 +67,7 @@ function bindLanGuestChannel(channel, roomId, peerId) {
   function sendInput(buttons, axis) {
     if (!helloSent || disposed || nextSequence >= Number.MAX_SAFE_INTEGER) return false;
     const wire = encodeLanWirePacket({
-      type:'input', version:1, roomId, peerId, sequence:nextSequence, buttons, axis
+      type:'input', version:LAN_PROTOCOL_VERSION, roomId, peerId, sequence:nextSequence, buttons, axis
     });
     if (!transmit(wire)) return false;
     nextSequence++;
