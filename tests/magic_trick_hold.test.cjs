@@ -4,6 +4,7 @@ const root=path.resolve(__dirname,'..'),engine=fs.readFileSync(path.join(root,'s
 test('held DRIBBLE activates Magic Trick only after one second with possession and without button conflicts',()=>{
  assert.match(engine,/s\.dribble&&!s\.jump&&!s\.shoot&&!s\.pass&&this\.ball\.owner===p/);
  assert.match(engine,/p\.dribbleHold>=1&&!p\.magicHoldLatched/);
+ assert.match(engine,/p\.dribbleHold=s\.dribble&&this\.ball\.owner===p\?\(p\.dribbleHold\|\|0\)\+dt:0/);
  assert.match(engine,/p\.magicHoldLatched=true;\s*this\.tryMagicTrick\(p\)/);
  assert.match(engine,/if\(!s\.dribble\|\|this\.ball\.owner!==p\)p\.magicHoldLatched=false/);
 });
