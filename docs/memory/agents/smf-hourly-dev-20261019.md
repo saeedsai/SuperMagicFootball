@@ -11,6 +11,9 @@ Continue small tested features on existing `dev` every hourly run, independently
 - Owner's reference screenshot: premium blue/neon Player Studio and Team Management UI roadmap. Earnable in-game coins/unlocks are backlog only, not implemented. Source of truth: docs/NEXT_MILESTONES.md.
 - Current player-facing release `0.9.17.1`; keep four-field version About-only and synchronized for later player-facing updates. Docs/tests/non-bundled modules do not imply a release.
 
+
+- 2026-10-23 LAN wire step: `src/modules/lan-wire.js` in `518024cb` + ID hardening `91890db3` + `tests/lan-wire.test.cjs` in `11fb71bd`. Bounded 512-byte JSON hello/leave/input codec with host-compatible four-button validation. Transport not wired; version unchanged. Exact-head CI pending.
+
 ## Next smallest action
 1. Fix exact-head CI memory contract; add a bounded, tested LAN transport/wire increment on `dev`.
 2. Verify Node and Chromium Full Regression 4+4 and Modular QA for exact head, diagnose failures.
