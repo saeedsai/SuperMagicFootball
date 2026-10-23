@@ -15,7 +15,7 @@ import {SHOTFEEL} from "./shotfeel.js";
 import {SHOTPATHS} from "./shotpaths.js";
 import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
-import {placeBananaPeel,advanceBananaPeels} from "./magic-hazards.js";
+import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches} from "./magic-hazards.js";
 const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,defensivePressers}=AI;const {withStats,stat,endurance,contest,shotError}=STATS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition}=FITNESS;
 
 
@@ -968,6 +968,8 @@ class GameEngine{
   if(!countered){
    if(id==='banana'){
     this.magicHazards=placeBananaPeel(this.magicHazards,p,F);
+   }else if(id==='ice'){
+    this.magicHazards=placeIcePatch(this.magicHazards,p,F);
    }else if(id==='teleport'){
     const forward=norm(p.dx||p.face,p.dy||0);
     p.x=clamp(p.x+forward.x*85,F.x+23,F.x+F.w-23);
@@ -988,7 +990,8 @@ class GameEngine{
  // This is called after movement/contact resolution and before ball physics.
  updateMagicHazards(dt){
   const next=advanceBananaPeels(this.magicHazards,this.players,dt);
-  this.magicHazards=next.hazards;
+  const ice=advanceIcePatches(this.magicHazards,this.players,dt);
+  this.magicHazards=[...next.hazards,...ice.hazards];
   for(const victim of next.slips){
    victim.stun=Math.max(victim.stun,.65);
    victim.action='hurt';victim.actionTimer=Math.max(victim.actionTimer||0,.65);
@@ -1000,6 +1003,19 @@ class GameEngine{
    }
    this.burst(victim.x,victim.y,'#ffe46b',9);
    this.emit('magicHazard',{trick:'banana',team:victim.t,player:victim.src.name});
+  }
+  for(const victim of ice.slips){
+   if(next.slips.includes(victim))continue;
+   victim.stun=Math.max(victim.stun,.85);
+   victim.action='hurt';victim.actionTimer=Math.max(victim.actionTimer||0,.85);
+   if(this.ball.owner===victim){
+    this.ball.owner=null;this.ball.shot=null;
+    this.ball.x=victim.x;this.ball.y=victim.y;this.ball.z=15;
+    this.ball.vx=(victim.dx||victim.face||1)*55;
+    this.ball.vy=(victim.dy||0)*55;this.ball.vz=70;this.ball.canCollect=.28;
+   }
+   this.burst(victim.x,victim.y,'#8deaff',10);
+   this.emit('magicHazard',{trick:'ice',team:victim.t,player:victim.src.name});
   }
  }
  // v0.8.7: ten individual dribble types. Only the second DRIBBLE tap triggers
