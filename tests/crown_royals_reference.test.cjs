@@ -15,10 +15,12 @@ test('new team does not replace old Concept Hero and preserves canonical assets'
  assert.match(ui,/id:CONCEPT_DEMO_ID,index:TEAMS\.length,name:'Concept Royals FC'/);
  assert.match(ui,/id:CROWN_ROYALS_ID,index:TEAMS\.length,name:'Crown Royals \(Art WIP\)'/);
  assert.match(ui,/crown_royals_reference_alex/);
+ assert.match(ui,/crown_royals_reference_leo/);
  assert.match(render,/CROWN_ROYALS\.draw\(ctx,p,view/);
  assert.match(read('scripts/build.py'),/'conceptmodular','crownroyals','render'/);
  assert.match(read('sw.js'),/'conceptmodular','crownroyals','render'/);
  assert.match(read('sw.js'),/assets\/crown_royals\/alex_three_views\.png/);
+ assert.match(read('sw.js'),/assets\/crown_royals\/leo_three_views\.png/);
 });
 
 test('new reference team keeps twelve unique 1–12 jerseys and 2/3/4/3 roles',()=>{
@@ -31,7 +33,9 @@ test('new reference team keeps twelve unique 1–12 jerseys and 2/3/4/3 roles',(
  assert.equal(roster.length,12);
  assert.deepEqual(Array.from(roster,p=>p.num).sort((a,b)=>a-b),Array.from({length:12},(_,i)=>i+1));
  assert.deepEqual(['GK','DF','MF','FW'].map(role=>roster.filter(p=>p.role===role).length),[2,3,4,3]);
- assert.equal(roster.filter(p=>p.renderModel==='crown_royals_reference').length,1);
+ assert.equal(roster.filter(p=>p.renderModel==='crown_royals_reference').length,2);
+ assert.equal(roster.find(p=>p.name==='Leo').num,2);
+ assert.equal(roster.find(p=>p.name==='Leo').id,'crown_royals_reference_leo');
  assert.equal(roster.find(p=>p.name==='Alex').num,1);
 });
 

@@ -9,7 +9,7 @@ with sync_playwright() as pw:
   page=ctx.new_page();errors=[]
   page.on('pageerror',lambda e:errors.append(str(e)))
   page.set_content((p/'play.html').read_text(),wait_until='load');page.wait_for_timeout(450)
-  assert page.evaluate('NekketsuHD.teams.length')in (223,224),errors
+  assert page.evaluate('NekketsuHD.teams.length')in (223,224,225),errors
   assert page.evaluate('NekketsuHD.confederations.length')==6
   open_feature(page,'continents')
   assert page.locator('.confedCard').count()==6, page.locator('#menu').inner_text()[:500]

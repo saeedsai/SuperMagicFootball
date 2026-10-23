@@ -11,7 +11,7 @@ with sync_playwright() as pw:
   page=ctx.new_page();errors=[];page.on('pageerror',lambda err:errors.append(str(err)))
   page.set_content(markup,wait_until='load');page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=20000)
   data=page.evaluate('''() => { const api=SupermagicFootball,t=api.teams.find(t=>t.id==='bpw_alltime_legendary_12');const r=api.rosterFor(t.index);return {teams:api.teams.length,index:t.index,role:r.map(p=>p.role),names:r.map(p=>p.name),ratings:r.map(p=>p.legendaryRating),wc:api.teams.filter(t=>t.group==='bpw_worldcup').length,buttons:[...document.querySelectorAll('[data-act]')].map(e=>e.dataset.act).sort()};}''')
-  assert data['teams'] in (223,224) and data['index']==222 and data['wc']==6,data
+  assert data['teams'] in (223,224,225) and data['index']==222 and data['wc']==6,data
   assert data['role']==['GK']*2+['DF']*3+['MF']*4+['FW']*3,data
   assert data['ratings']==[99,98,99,99,98,99,99,99,99,99,99,99],data
   assert data['buttons']==['dribble','jump','pass','shoot'],data

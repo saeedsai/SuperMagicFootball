@@ -22,9 +22,10 @@ with sync_playwright() as pw:
   state=page.evaluate("""() => {
    const e=SupermagicFootball,t=e.teams.find(t=>t.id==='demo_crown_royals_reference');
    return {old:e.teams.some(x=>x.id==='demo_concept_royals'),roster:t?.customRoster?.length,
-    alex:t?.customRoster?.find(p=>p.id==='crown_royals_reference_alex')?.renderModel};
+    alex:t?.customRoster?.find(p=>p.id==='crown_royals_reference_alex')?.renderModel,
+    leo:t?.customRoster?.find(p=>p.id==='crown_royals_reference_leo')?.renderModel};
   }""")
-  assert state=={'old':True,'roster':12,'alex':'crown_royals_reference'},state
+  assert state=={'old':True,'roster':12,'alex':'crown_royals_reference','leo':'crown_royals_reference'},state
   page.locator('[data-action=navQuick]').first.click()
   page.locator('[data-action=navOnDevice]').first.click()
   page.locator('[data-action=quick]').first.click()
@@ -35,6 +36,7 @@ with sync_playwright() as pw:
   page.wait_for_function("SupermagicFootball.game.matchState==='play'",timeout=15000)
   assert page.evaluate("SupermagicFootball.game.getTeam(0).id") == 'demo_crown_royals_reference'
   assert page.evaluate("SupermagicFootball.game.players.some(p=>p.t===0&&p.src?.id==='crown_royals_reference_alex')"), 'Alex must be on the pitch, not just a roster entry'
+  assert page.evaluate("SupermagicFootball.game.players.some(p=>p.t===0&&p.src?.id==='crown_royals_reference_leo')"), 'Leo must be on the pitch, not just a roster entry'
   page.wait_for_timeout(450)
   images=page.evaluate("""() => {
    const e=SupermagicFootball,t=e.teams.find(t=>t.id==='demo_crown_royals_reference');

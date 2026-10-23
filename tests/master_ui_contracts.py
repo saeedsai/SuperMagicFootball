@@ -14,7 +14,7 @@ with sync_playwright() as pw:
   p.set_content(html,wait_until='load');p.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=20000)
   assert p.locator('[data-act]').count()==4,(mode,'action count')
   assert set(p.locator('[data-act]').evaluate_all('(els)=>els.map(e=>e.dataset.act)'))=={'shoot','pass','jump','dribble'}
-  assert len(p.evaluate('SupermagicFootball.teams'))in (223,224)
+  assert len(p.evaluate('SupermagicFootball.teams'))in (223,224,225)
   open_quick(p)
   assert p.locator('select#homeTeam').count()==1
   p.locator('[data-action="setupTactics"]').click()

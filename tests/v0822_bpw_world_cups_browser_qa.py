@@ -22,7 +22,7 @@ with sync_playwright() as pw:
     flags:selected.map(t=>t.flag),actions:[...document.querySelectorAll('[data-act]')].map(x=>x.dataset.act).sort(),
     historical:teams.filter(t=>t.group==='legends').length};
   }''')
-  assert data['count']in (223,224),(label,data)
+  assert data['count']in (223,224,225),(label,data)
   assert data['years']==[1998,2002,2006,2010,2014,2018],(label,data)
   assert data['counts']==[12]*6 and data['historical']==6
   assert data['actions']==['dribble','jump','pass','shoot']
@@ -71,7 +71,7 @@ with sync_playwright() as pw:
     return {total:teams.length,saved:teams.find(t=>t.id==='club_existing')?.index,
       firstBPW:teams.find(t=>t.id==='bpw_wc_1998')?.index};
   }""")
-  assert positions=={'total':225,'saved':216,'firstBPW':217},(label,positions)
+  assert positions=={'total':226,'saved':216,'firstBPW':217},(label,positions)
   saved.close()
   assert not errors,(label,errors)
   print('PASS',label,'223 teams, six BPW historical mixed squads, home/away filters, player portraits and kickoff',flush=True)
