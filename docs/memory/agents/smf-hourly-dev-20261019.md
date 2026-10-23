@@ -29,3 +29,6 @@ CI #39918616667 and #39918616639 show `tests/project_memory_contract.test.cjs` i
 
 ## Cleanup
 Keep checkpoint under 4096 bytes, required headings and exact identity marker. Preserve relevant history in Git; do not remove useful source/test files merely to silence CI. Next run must refresh heads, issues, workflows and source inventory.
+
+## 2026-10-23 LAN host wire adapter
+Added transport-neutral `createLanHostAdapter` in `3ea8ce3b` connecting bounded wire validation, guest input timeline, timeout and disconnect; three Node tests in `085482f3`. No real WebRTC channel or match sync yet, no player-facing version change. Await exact-head 4+4 and Modular QA; promote only green dev via protected workflow.
