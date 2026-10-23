@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Concept Royals — actual renderer visual QA</title>
+<style>body{background:#101326;color:#f6f2ea;font:15px system-ui;margin:20px}h1{font-size:23px}button{padding:10px;margin:5px;border:0;border-radius:7px;cursor:pointer}canvas{display:block;max-width:100%;height:auto;border:1px solid #47516d;background:#202944}p{max-width:980px;line-height:1.5}.status{color:#e8bd62}</style></head>
+<body><h1>Concept Royals FC — renderer QA (12 players × 5 views)</h1>
+<p>This page calls the real <code>CONCEPT_HERO.draw()</code> renderer and uses the existing game atlas. It is not a generated concept illustration. The character bodies are still shared and the animation is experimental.</p>
+<p id="status" class="status">Loading game artwork…</p>
+<button id="idle">Idle views</button><button id="running">Running frames</button><button id="download">Save PNG</button>
+<canvas id="sheet" width="1560" height="2440"></canvas>
+<script type="module">
+import {CONCEPT_HERO} from './src/modules/concepthero.js';
+const identities=[
+['Alex Moreno','#e8b48e','#493020','messy'],['Leo Fischer','#f0c4a0','#d5a23f','swept'],['Kwame Adu','#68422f','#161419','coils'],['Diego Rivas','#b9825c','#221b1b','fade'],['Ryo Tanaka','#e0b49b','#8e8e97','fringe'],['Sean OConnor','#edb48c','#b95225','crop'],['Rafa Silva','#bd865f','#30201a','curly'],['Malik Diarra','#794d35','#c39a4b','locs'],['Ivan Petrov','#dfaa86','#372b27','buzz'],['Carlos Mena','#c28a65','#272027','ponytail'],['Samuel Okafor','#6c4839','#d4d6dc','shortCurls'],['Enzo Ferrari','#e5b58e','#68482d','long']];
+const views=['front','quarterFront','side','quarterBack','back'],canvas=document.querySelector('canvas'),ctx=canvas.getContext('2d'),status=document.getElementById('status');
+let mode='idle';
+function render(){
+ const ready=CONCEPT_HERO.status();
+ if(!ready.loaded){status.textContent=ready.error?'Game atlas failed to load':'Loading game atlas…';return false;}
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ ctx.fillStyle='#151d33';ctx.fillRect(0,0,canvas.width,canvas.height);
+ ctx.fillStyle='#fff';ctx.font='bold 22px system-ui';ctx.fillText('CONCEPT ROYALS FC · '+mode.toUpperCase()+' · GAME RENDERER',18,30);
+ const colW=256,rowH=197;
+ for(let i=0;i<12;i++){
+  const [name,skin,hair,hairStyle]=identities[i];
+  ctx.fillStyle='#d8e0f7';ctx.font='bold 15px system-ui';ctx.fillText((i+1)+'. '+name,18,57+i*rowH);
+  for(let j=0;j<5;j++){
+   const x=35+j*colW,y=60+i*rowH;
+   ctx.fillStyle='#27334e';ctx.fillRect(x,y,190,157);
+   ctx.fillStyle='#bbc7e0';ctx.font='12px system-ui';ctx.fillText(views[j],x+6,y+14);
+   const p={src:{renderModel:'concept_hero',appearance:{renderModel:'concept_hero',conceptHeroVariant:i,skin,hair,hairStyle}}};
+   ctx.save();ctx.translate(x+96,y+149);
+   const run=mode==='running'?[-.95,-.5,0,.5,.95][j]:0;
+   CONCEPT_HERO.draw(ctx,p,{kind:views[j]},{run});
+   ctx.restore();
+  }
+ }
+ status.textContent='Rendered from the game atlas: '+identities.length+' players × '+views.length+' views. '+(mode==='running'?'Running stride samples across five views.':'Idle poses.');
+ return true;
+}
+const poll=setInterval(()=>{if(render())clearInterval(poll)},250);
+document.getElementById('idle').onclick=()=>{mode='idle';render()};
+document.getElementById('running').onclick=()=>{mode='running';render()};
+document.getElementById('download').onclick=()=>{if(!render())return;const a=document.createElement('a');a.download='concept-royals-'+mode+'-renderer-qa.png';a.href=canvas.toDataURL('image/png');a.click()};
+</script></body></html>
