@@ -47,4 +47,29 @@ function validateLanHandshake(localHello,remoteHello){
  if(local.sequence!==0||remote.sequence!==0)throw new Error('LAN handshake must begin at sequence zero');
  return Object.freeze({session:local.session,build:local.build,localRole:local.role,remoteRole:remote.role});
 }
-export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake};
+
+// LAN-003: bounded, host-authoritative input buffering. This is transport independent.
+// The host never accepts guest input for a frame already simulated.
+const LAN_INPUT_LEAD_FRAMES=8;
+function createHostLanInputQueue(localHello,remoteHello){
+ const handshake=validateLanHandshake(localHello,remoteHello);
+ if(handshake.localRole!=='host')throw new Error('Only LAN host can own the input queue');
+ return Object.freeze({session:handshake.session,lastSequence:0,lastFrame:-1,pending:Object.freeze([])});
+}
+function enqueueGuestLanInput(state,raw,hostFrame){
+ if(!isRecord(state)||!Array.isArray(state.pending)||!uint(hostFrame,1000000000))throw new Error('Invalid LAN host queue');
+ const packet=normalizeLanPacket(raw);
+ if(packet.type!=='input'||packet.session!==state.session)throw new Error('Invalid guest LAN input session or type');
+ if(packet.sequence<=state.lastSequence)return Object.freeze({accepted:false,reason:'replay',state});
+ if(packet.frame<=state.lastFrame)return Object.freeze({accepted:false,reason:'stale-frame',state});
+ if(packet.frame<hostFrame||packet.frame>hostFrame+LAN_INPUT_LEAD_FRAMES)return Object.freeze({accepted:false,reason:'outside-frame-window',state});
+ const pending=Object.freeze([...state.pending.filter(item=>item.frame>=hostFrame),packet]);
+ return Object.freeze({accepted:true,state:Object.freeze({session:state.session,lastSequence:packet.sequence,lastFrame:packet.frame,pending})});
+}
+function dequeueGuestLanInput(state,hostFrame){
+ if(!isRecord(state)||!Array.isArray(state.pending)||!uint(hostFrame,1000000000))throw new Error('Invalid LAN host queue');
+ const packet=state.pending.find(item=>item.frame===hostFrame)||null;
+ const pending=Object.freeze(state.pending.filter(item=>item.frame>hostFrame));
+ return Object.freeze({packet,state:Object.freeze({session:state.session,lastSequence:state.lastSequence,lastFrame:state.lastFrame,pending})});
+}
+export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput};
