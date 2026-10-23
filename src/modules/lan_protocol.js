@@ -145,4 +145,26 @@ function receiveLanPeerPacket(state,message){
   local:state.local,remote:state.remote,ready:true,lastSequence:accepted.lastSequence
  })});
 }
-export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame,createGuestLanSender,buildGuestLanInput,sendLanChannelPacket,receiveLanChannelPacket,createLanPeerGate,receiveLanPeerPacket};
+
+// LAN-008: atomically bridge validated guest DataChannel traffic to the host frame queue.
+// A frame rejected by host timing must not consume its sequence number in the peer gate.
+function createLanHostSession(localHello){
+ const local=normalizeLanPacket(localHello);
+ if(local.type!=='hello'||local.role!=='host'||local.sequence!==0)throw new Error('LAN host hello required');
+ return Object.freeze({peer:createLanPeerGate(local),queue:null});
+}
+function acceptLanHostMessage(state,message,hostFrame){
+ if(!isRecord(state)||!isRecord(state.peer)||!uint(hostFrame,1000000000))throw new Error('Invalid LAN host session');
+ const received=receiveLanPeerPacket(state.peer,message);
+ if(received.kind==='ready'){
+  if(state.queue!==null)throw new Error('LAN host cannot reinitialize');
+  const queue=createHostLanInputQueue(received.state.local,received.state.remote);
+  return Object.freeze({kind:'ready',state:Object.freeze({peer:received.state,queue})});
+ }
+ if(!state.queue)throw new Error('LAN host queue unavailable');
+ if(received.kind==='replay')return Object.freeze({kind:'replay',state});
+ const queued=enqueueGuestLanInput(state.queue,received.packet,hostFrame);
+ if(!queued.accepted)return Object.freeze({kind:queued.reason,state});
+ return Object.freeze({kind:'accepted',state:Object.freeze({peer:received.state,queue:queued.state})});
+}
+export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame,createGuestLanSender,buildGuestLanInput,sendLanChannelPacket,receiveLanChannelPacket,createLanPeerGate,receiveLanPeerPacket,createLanHostSession,acceptLanHostMessage};
