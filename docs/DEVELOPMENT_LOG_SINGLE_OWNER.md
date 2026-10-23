@@ -1,3 +1,8 @@
+## 2026-10-24 — ICE-032 Ice Patch Magic Trick candidate
+- Continued on dev while release CI remains pending: bounded Ice Patch placement, arm delay and distinct enemy-only ground trap (242e17e1), runtime integration (f1e7fa58), cyan canvas sprite (72b815da), regression tests (b6f74640).
+- Version candidate 0.9.32.0 synchronized across package, About, README, offline cache and policy. Main baseline 1e30f475 on 0.9.31.0. No independently verified image comparison, hosted byte smoke or full exact-head 4 Node + 4 Chromium + Modular QA yet. Protect main.
+- Follow-up: inspect latest CI; resolve failures; check real gameplay/graphics; promote only exact green head; verify Pages.
+
 ## 2026-10-24 — TRICK-031 Banana Peel trap and certified 0.9.31.0
 - Added deterministic bounded Banana Peel floor hazard behind the carrier: 3-second lifetime, 0.25-second arming, maximum six, one grounded opposing outfielder trips; allies, keepers and airborne players safe. Collision can spill possession; clears on kickoff/PK. Original lightweight canvas artwork, no fifth button, no roster/save schema changes. Core commits: `1ffc6940` module, `b2b5fbc0` engine, `8e4ac5ab` render, `c93d167d` tests; `ddabd2bf` vertical-direction fix.
 - CI root cause at `037a0785`: three legacy Node assertions expected outdated planned-Magic UI or adjacent SHOTPATHS→ENGINE order; corrected the contracts without suppressing runtime assertions (`4fe7d009`, `b93a4645`, `1e30f475`).
