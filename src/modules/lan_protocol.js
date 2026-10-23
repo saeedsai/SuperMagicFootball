@@ -122,4 +122,27 @@ function receiveLanChannelPacket(message,session,lastSequence=-1){
  const packet=parseLanPacket(payload);
  return acceptLanPacket(packet,session,lastSequence);
 }
-export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame,createGuestLanSender,buildGuestLanInput,sendLanChannelPacket,receiveLanChannelPacket};
+
+// LAN-007: explicit handshake gate before accepting any networked inputs.
+// Peer state is immutable so rejected packets cannot advance the session.
+function createLanPeerGate(localHello){
+ const local=normalizeLanPacket(localHello);
+ if(local.type!=='hello'||local.sequence!==0)throw new Error('LAN peer requires initial hello');
+ return Object.freeze({local,ready:false,remote:null,lastSequence:0});
+}
+function receiveLanPeerPacket(state,message){
+ if(!isRecord(state)||!state.local||typeof state.ready!=='boolean'||!uint(state.lastSequence))throw new Error('Invalid LAN peer state');
+ const packet=parseLanPacket(typeof message==='string'?message:message?.data);
+ if(!state.ready){
+  if(packet.type!=='hello')throw new Error('LAN handshake required before input');
+  const handshake=validateLanHandshake(state.local,packet);
+  return Object.freeze({kind:'ready',state:Object.freeze({local:state.local,remote:packet,ready:true,lastSequence:0}),handshake});
+ }
+ if(packet.type!=='input')throw new Error('LAN renegotiation is not supported');
+ const accepted=acceptLanPacket(packet,state.local.session,state.lastSequence);
+ if(!accepted.accepted)return Object.freeze({kind:'replay',state});
+ return Object.freeze({kind:'input',packet:accepted.packet,state:Object.freeze({
+  local:state.local,remote:state.remote,ready:true,lastSequence:accepted.lastSequence
+ })});
+}
+export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame,createGuestLanSender,buildGuestLanInput,sendLanChannelPacket,receiveLanChannelPacket,createLanPeerGate,receiveLanPeerPacket};
