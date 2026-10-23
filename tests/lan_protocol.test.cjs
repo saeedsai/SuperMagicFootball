@@ -53,3 +53,45 @@ test('LAN-002 rejects divergent builds, sessions, duplicate roles and replayed h
  ])assert.throws(()=>p.validateLanHandshake(hello,remote));
  assert.throws(()=>p.validateLanHandshake({...hello,sequence:1},guest));
 });
+
+test('LAN-003 host queues only future guest inputs and consumes each frame once',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ const original=p.createHostLanInputQueue(hello,guest);
+ assert.ok(Object.isFrozen(original));
+ const queued=p.enqueueGuestLanInput(original,input,40);
+ assert.equal(queued.accepted,true);
+ assert.equal(original.pending.length,0);
+ assert.ok(Object.isFrozen(queued.state.pending));
+ assert.equal(p.dequeueGuestLanInput(queued.state,41).packet,null);
+ const consumed=p.dequeueGuestLanInput(queued.state,42);
+ assert.deepEqual(consumed.packet,p.normalizeLanPacket(input));
+ assert.equal(consumed.state.pending.length,0);
+ assert.equal(p.dequeueGuestLanInput(consumed.state,42).packet,null);
+});
+test('LAN-003 blocks replay, stale frames, wrong sessions and excess lead',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ const original=p.createHostLanInputQueue(hello,guest);
+ const first=p.enqueueGuestLanInput(original,input,40);
+ assert.deepEqual(p.enqueueGuestLanInput(first.state,input,40).reason,'replay');
+ assert.equal(p.enqueueGuestLanInput(first.state,{...input,sequence:2,frame:42},40).reason,'stale-frame');
+ assert.equal(p.enqueueGuestLanInput(first.state,{...input,sequence:2,frame:39},40).reason,'stale-frame');
+ assert.equal(p.enqueueGuestLanInput(first.state,{...input,sequence:2,frame:49},40).reason,'outside-frame-window');
+ assert.equal(p.enqueueGuestLanInput(original,{...input,frame:39},40).reason,'outside-frame-window');
+ assert.throws(()=>p.enqueueGuestLanInput(original,{...input,session:'other_1234567890'},40));
+ assert.throws(()=>p.enqueueGuestLanInput(original,{...hello,role:'guest'},40));
+ assert.throws(()=>p.createHostLanInputQueue(guest,hello));
+ assert.throws(()=>p.enqueueGuestLanInput(original,input,-1));
+});
+test('LAN-003 accepts the maximum lead frame without exceeding bounded pending queue',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ let state=p.createHostLanInputQueue(hello,guest);
+ for(let offset=0;offset<=p.LAN_INPUT_LEAD_FRAMES;offset++){
+  const result=p.enqueueGuestLanInput(state,{...input,sequence:offset+1,frame:100+offset},100);
+  assert.equal(result.accepted,true);state=result.state;
+ }
+ assert.equal(state.pending.length,p.LAN_INPUT_LEAD_FRAMES+1);
+ assert.equal(p.enqueueGuestLanInput(state,{...input,sequence:100,frame:109},100).accepted,false);
+ const consumed=p.dequeueGuestLanInput(state,103);
+ assert.equal(consumed.packet.frame,103);
+ assert.equal(consumed.state.pending.length,5);
+});
