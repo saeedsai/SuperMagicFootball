@@ -107,4 +107,19 @@ function buildGuestLanInput(sender,frame,buttons=[],dx=0,dy=0){
   state:Object.freeze({session:sender.session,lastSequence:packet.sequence,lastFrame:frame})
  });
 }
-export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame,createGuestLanSender,buildGuestLanInput};
+
+// LAN-006: WebRTC DataChannel-compatible boundary; signaling/connection establishment
+// remains separate. No packet can be sent before the channel is open.
+function sendLanChannelPacket(channel,packet){
+ if(!channel||channel.readyState!=='open'||typeof channel.send!=='function')throw new Error('LAN channel is not open');
+ const payload=serializeLanPacket(packet);
+ if(payload.length>4096)throw new Error('LAN payload exceeds packet limit');
+ channel.send(payload);
+ return payload.length;
+}
+function receiveLanChannelPacket(message,session,lastSequence=-1){
+ const payload=typeof message==='string'?message:message?.data;
+ const packet=parseLanPacket(payload);
+ return acceptLanPacket(packet,session,lastSequence);
+}
+export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame,createGuestLanSender,buildGuestLanInput,sendLanChannelPacket,receiveLanChannelPacket};
