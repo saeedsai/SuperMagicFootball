@@ -132,7 +132,11 @@ jobs:
                       page.on('pageerror',lambda error: errors.append(str(error)))
                       response=page.goto('http://127.0.0.1:8765/',wait_until='load',timeout=60000)
                       assert response and response.status==200,(name,'HTTP failed')
+                      try:
                       page.wait_for_function('!!window.SupermagicFootball?.game',timeout=60000)
+                  except Exception:
+                      print('PREVIEW_STARTUP_DIAGNOSTICS',name,'page_errors=',errors,'menu=',page.locator('#menu').inner_text(timeout=5000)[:1500],'failed_requests=',failed_requests,flush=True)
+                      raise
                       for action in ('navQuick','navOnDevice','versus','kickoff'):
                           page.locator('[data-action="'+action+'"]').first.click(timeout=30000)
                       state=page.evaluate('''() => ({
