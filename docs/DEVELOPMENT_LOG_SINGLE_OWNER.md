@@ -405,3 +405,6 @@ Added twelve named male identities with different skin, hair, face marks and acc
 
 ### 2026-10-23 — Crown Royals two-player hair alignment, candidate 0.9.22.1
 Adjusted the Crown Royals renderer's cached atlas only: Alex side hair silver→brown and Leo rear/side dark headband continuity. Added a focused source contract test. The 12-player user reference remains the target, but Kwame #3 and bespoke quarter/action art are NOT yet integrated. Do not claim full graphic/Pages approval without exact-SHA CI and actual browser screenshots.
+
+### 2026-10-23 — Third reference player Kwame #3, candidate 0.9.23.0
+New 132×90 transparent owner-reference-derived front/back/side atlas for Kwame, separately loaded and cached; existing two characters and Concept Hero preserved. UI Kwame ID now points to this atlas. Offline bundle, test fixture, version, QA page and focused tests updated. Quarter projections and action transformations remain experimental and require artistic acceptance; CI and Pages must independently verify candidate.

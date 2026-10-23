@@ -1,5 +1,5 @@
 # SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 14:55 Europe/Stockholm
+**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 15:00 Europe/Stockholm
 
 ## Mission
 Continue small increments on existing dev regardless of pending CI/release; diagnose blockers and repair safely. No new branches, force push, safety or permission bypass.
@@ -12,6 +12,8 @@ Continue small increments on existing dev regardless of pending CI/release; diag
 - Full census #39944909668 failed 7 legacy Chromium count assumptions (223/224); now default total 225, saved custom-club fixture 226. Corrected counts while preserving original BPW and save indexes.
 
 - Candidate 0.9.22.1: runtime cached atlas corrects Alex side silver hair and Leo rear/side headband, test contract added. Artwork acceptance must inspect actual Chromium captures. Kwame #3 still pending source atlas integration.
+
+- New candidate 0.9.23.0: Kwame #3 added with 132x90 independent reference-extracted PNG, runtime routing, QA page, offline and build integration, source tests. Full exact-head CI/hosted approval pending.
 
 ## Next smallest action
 1. Check exact-dev-head 4 Node+4 Chromium census, Modular QA and Crown Royals browser QA, resolve failures.

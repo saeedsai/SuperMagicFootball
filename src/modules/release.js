@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.22.1',
+ version:'0.9.23.0',
  date:'2026-10-23',
  notes:Object.freeze([
+  'Added Crown Royals Kwame (#3) with an independently extracted transparent three-view reference atlas; selectable in the existing new team. Quarter views and action animations remain provisional, not bespoke painted frames.',
   'Corrected Crown Royals Alex side-view silver hair to warm brown and reinforced Leo rear/side dark headband without altering the original face, team IDs or saves. Other ten characters, bespoke quarter poses and action frames remain pending.',
   'Crown Royals reference players now show a separate bounded Super Shot anticipation pose and a visible jump lift in both animation phase directions; these remain provisional transforms, not hand-painted action frames.',
   'Crown Royals Leo (#2) now uses unique reference-derived front, back and side sprites, with blond hair and a dark headband; existing Alex and Concept Royals art is unchanged. Quarter views and action movements are provisional.',
