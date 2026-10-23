@@ -181,4 +181,26 @@ function advanceLanHostFrame(state,frame){
   state:Object.freeze({peer:state.peer,queue:result.state,lastSimulatedFrame:frame})
  });
 }
-export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame,createGuestLanSender,buildGuestLanInput,sendLanChannelPacket,receiveLanChannelPacket,createLanPeerGate,receiveLanPeerPacket,createLanHostSession,acceptLanHostMessage,advanceLanHostFrame};
+
+// LAN-010: guest-side session gate and DataChannel sender.
+// This is transport wiring for an already-open channel, not WebRTC signaling.
+function createLanGuestSession(localHello){
+ const local=normalizeLanPacket(localHello);
+ if(local.type!=='hello'||local.role!=='guest'||local.sequence!==0)throw new Error('LAN guest hello required');
+ return Object.freeze({peer:createLanPeerGate(local),sender:null});
+}
+function acceptLanGuestHello(state,message){
+ if(!isRecord(state)||!isRecord(state.peer)||state.sender!==null)throw new Error('Invalid or ready LAN guest session');
+ const received=receiveLanPeerPacket(state.peer,message);
+ if(received.kind!=='ready'||received.handshake.localRole!=='guest')throw new Error('LAN guest requires host hello');
+ return Object.freeze({peer:received.state,sender:createGuestLanSender(received.state.local,received.state.remote)});
+}
+function sendLanGuestFrame(state,channel,frame,buttons=[],dx=0,dy=0){
+ if(!isRecord(state)||!isRecord(state.peer)||!state.peer.ready||!isRecord(state.sender))
+  throw new Error('LAN guest handshake required before sending input');
+ const built=buildGuestLanInput(state.sender,frame,buttons,dx,dy);
+ // Do not advance the sender if the channel is closed or send() throws.
+ const bytes=sendLanChannelPacket(channel,built.packet);
+ return Object.freeze({packet:built.packet,bytes,state:Object.freeze({peer:state.peer,sender:built.state})});
+}
+export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame,createGuestLanSender,buildGuestLanInput,sendLanChannelPacket,receiveLanChannelPacket,createLanPeerGate,receiveLanPeerPacket,createLanHostSession,acceptLanHostMessage,advanceLanHostFrame,createLanGuestSession,acceptLanGuestHello,sendLanGuestFrame};
