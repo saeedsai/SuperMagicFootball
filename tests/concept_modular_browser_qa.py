@@ -23,10 +23,14 @@ with sync_playwright() as pw:
   page.add_script_tag(content=js,type='module')
   page.wait_for_function('!!window.SupermagicFootball',timeout=30000)
   counts=page.evaluate("""() => {const t=SupermagicFootball.teams.find(t=>t.id==='demo_concept_royals');return [SupermagicFootball.teams.length,t.customRoster.filter(p=>p.renderModel==='concept_modular_v1').length,t.customRoster.filter(p=>p.renderModel==='concept_hero').length]}""")
-  assert counts==[224,1,11],counts
+  assert counts==[225,1,11],counts
   page.wait_for_function("window.SupermagicFootball?.conceptModularStatus?.().loaded",timeout=15000)
   page.locator('[data-action=navQuick]').first.click()
-  page.locator('[data-action=conceptDemo]').first.click()
+  page.locator('[data-action=navOnDevice]').first.click()
+  page.locator('[data-action=quick]').first.click()
+  page.locator('#homeGroup').select_option('all')
+  concept_index=page.evaluate("SupermagicFootball.teams.findIndex(t=>t.id==='demo_concept_royals')")
+  page.locator('#homeTeam').select_option(str(concept_index))
   page.locator('[data-action=kickoff]').first.click()
   page.wait_for_function("SupermagicFootball.game.matchState==='play'",timeout=16000)
   page.wait_for_timeout(450)

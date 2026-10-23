@@ -17,5 +17,11 @@ Never pause for pending CI/release. Work only on existing dev; promote exact gre
 4. Continue counterable four-button Tricks and two-client LAN independently of release queue.
 5. Promote exact fully green dev through protected pipeline, verify main SHA and hosted bytes.
 
-## Ownership
+## Ownership and exclusions
 Sole maintainer smf-hourly-dev-20261019; dev coding, main protected promotion only. Preserve four controls, six formations, ten Career/Cup slots, offline saves and SD09.
+
+## Evidence
+First CI 39943679151 failed on stale regex tests and checkpoint headings, not on renderer itself. Specialized Crown QA 39943679547 is independent.
+
+## Cleanup
+Retain original Concept Royals, canonical data and saves. Do not claim full QA approval until real Chromium and exact-head regression are green.

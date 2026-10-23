@@ -1,5 +1,9 @@
 # SuperMagicFootball — centralized development log
 
+## 2026-10-23 13:05 Europe/Stockholm — CI blocker repair
+- Exact failing source QA: Modular 39943679151 and full preflight 39943679315 had five stale test assumptions: prior module adjacency, 0.9.19.1 literals, and required checkpoint headings. Updated test contracts without weakening runtime assertions. Browser regression at previous head 39941799749 failed on removed `conceptDemo` shortcut; updated both Concept Hero and Concept Modular browser tests to select the original team by stable ID rather than assuming it is last.
+- Crown reference-art team and old Concept Royals remain separate; release candidate unchanged pending exact-head CI.
+
 ## 2026-10-23 12:57 Europe/Stockholm — Crown Royals reference-art player 1
 - Separate **Crown Royals (Art WIP)** team added after existing Concept Royals; canonical 223 teams / 2676 players and previous Concept Hero unchanged. Alex (#1) is the first literal owner-reference sprite, extracted as three transparent projections; eleven teammates are placeholders.
 - New opt-in model `crown_royals_reference` in game renderer, offline sprite, fixture and Chromium five-direction/action preview page. Quarter projections and action poses are explicitly provisional. Candidate 0.9.20.0, not certified. Source is user-provided art.
