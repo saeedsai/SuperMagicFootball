@@ -26,6 +26,8 @@ test('Crown renderer keeps transparent sprite edges and does not squash quarter 
  assert.equal(crown.status().loaded,true);
  assert.equal(crown.status().alexQuarterLoaded,true);
  assert.equal(crown.status().alexQuarterError,false);
+ assert.equal(crown.status().leoQuarterLoaded,true);
+ assert.equal(crown.status().leoQuarterError,false);
  const spriteDraws=[];
  const spriteCtx={save(){},restore(){},translate(){},rotate(){},scale(){},drawImage(img,sx){spriteDraws.push({src:img._src,sx});}};
  const alex={src:{id:'crown_royals_reference_alex',renderModel:'crown_royals_reference'}};
@@ -33,6 +35,11 @@ test('Crown renderer keeps transparent sprite edges and does not squash quarter 
  assert.equal(crown.draw(spriteCtx,alex,{kind:'quarterBack'}),true);
  assert.ok(spriteDraws.some(x=>x.src?.includes('alex_quarter_views.svg')&&x.sx===0));
  assert.ok(spriteDraws.some(x=>x.src?.includes('alex_quarter_views.svg')&&x.sx===48));
+ const leo={src:{id:'crown_royals_reference_leo',renderModel:'crown_royals_reference'}};
+ assert.equal(crown.draw(spriteCtx,leo,{kind:'quarterFront'}),true);
+ assert.equal(crown.draw(spriteCtx,leo,{kind:'quarterBack'}),true);
+ assert.ok(spriteDraws.some(x=>x.src?.includes('leo_quarter_views.svg')&&x.sx===0));
+ assert.ok(spriteDraws.some(x=>x.src?.includes('leo_quarter_views.svg')&&x.sx===48));
  assert.deepEqual(Array.from(output.slice(0,4)),[0,0,0,0]);
  assert.deepEqual(Array.from(output.slice(4,8)),[200,100,50,255]);
  const transforms=[];
