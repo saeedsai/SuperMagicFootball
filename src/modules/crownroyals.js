@@ -11,7 +11,8 @@ const CROWN_ROYALS=(()=>{
   const atlas=atlases[name];if(atlas.image||typeof Image==='undefined')return;
   const image=new Image();atlas.image=image;
   image.onload=()=>{atlas.loaded=true;};image.onerror=()=>{atlas.error=true;};
-  image.src=typeof inline==='string'?'data:image/png;base64,'+inline:new URL('../../assets/crown_royals/'+name+'_three_views.png',import.meta.url).href;
+  if(typeof inline==='string')image.src='data:image/png;base64,'+inline;
+  else try{image.src=new URL('../../assets/crown_royals/'+name+'_three_views.png',import.meta.url).href;}catch{atlas.error=true;}
   if(image.complete&&image.naturalWidth>0)atlas.loaded=true;
  }
  function preload(){
