@@ -8,7 +8,7 @@ test('Crown Royals first sprite is literal transparent PNG with 3 source views',
  const s=read('src/modules/crownroyals.js');
  for(const direction of ['front','quarterFront','side','quarterBack','back'])assert.ok(s.includes(direction));
  assert.match(s,/paintedViews:3/);assert.match(s,/quarterViews:'nearest-view placeholders'/);
- assert.match(s,/ctx\.drawImage\(atlas\.image/);
+ assert.match(s,/ctx\.drawImage\(atlas\.painted\|\|atlas\.image/);
 });
 test('new team does not replace old Concept Hero and preserves canonical assets',()=>{
  const ui=read('src/modules/ui.js'),render=read('src/modules/render.js');
