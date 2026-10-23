@@ -318,7 +318,7 @@ function saveNewClub(){
  const rank=Number($('clubRank').value),shot=$('clubShot').value,slug='club_'+Date.now().toString(36);
  const newRoster=Array.from({length:12},(_,i)=>({id:slug+'_'+i,name:(['Ace','Buster','Dash','Flash','Rex','Zip','Boom','Sunny','Maverick','Rocket','Dashie','Glove'][i]),role:i===0||i===11?'GK':i<4?'DF':i<7?'MF':'FW',num:i+1,power:Math.min(65,35+Math.round(rank*.3)+i%9),shoot:15+Math.round(rank*.12)+(i%5),defense:15+Math.round(rank*.13)+(i%3),speed:['B','C','A','B','D'][i%5],shot,shotName:SHOTS[shot].name,skill:'Club Technique',level:1,xp:0,fictional:true}));
  const t={id:slug,index:TEAMS.length,name,flag:flag||'CL',primary:$('clubPrimary').value,secondary:$('clubSecondary').value,trim:$('clubThird').value,shot,rank,customRoster:newRoster};
- TEAMS.push(t);store.put('customClubs',TEAMS.filter(t=>t.id.startsWith('club_')));home=t.index;away=home===away?0:away;showSetup('quick');
+ TEAMS.push(t);store.put('customClubs',TEAMS.filter(t=>t.id.startsWith('club_')));home=t.index;away=home===away?0:away;showClubs();
 }
 function deleteClub(idx){
  const t=TEAMS[idx];if(!t?.id.startsWith('club_')||!confirm(`Delete club ${t.name}?`))return;

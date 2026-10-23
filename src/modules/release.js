@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.25.0',
+ version:'0.9.25.1',
  date:'2026-10-23',
  notes:Object.freeze([
+  'Newly created custom clubs remain in the club builder with immediate Edit Players and Edit Roster access instead of unexpectedly opening Match Setup; the club stays selected and existing saves remain compatible.',
   'Crown Royals Diego (#4) now has a separate front/back/side sprite extracted from the owner-supplied reference. This is a playable graphics increment, not approved 3/4 art or bespoke action animation; facial-hair and tattoo fidelity remains limited by small source sprites.',
   'Rejected experimental Crown Royals quarter-depth compositing after visual QA exposed duplicated outlines; restored reliable original rendering. Authored three-quarter sprites and volumetric action animation remain open.',
   'Saved custom clubs now offer Edit Players and Edit Roster actions from the builder, selecting the chosen club and returning to the builder after Back or roster save; IDs, saves and controls unchanged.',

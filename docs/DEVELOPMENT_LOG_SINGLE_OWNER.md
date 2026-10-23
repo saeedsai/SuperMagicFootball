@@ -1,3 +1,7 @@
+## 2026-10-23 17:05 Europe/Stockholm — New custom club stays in builder; candidate 0.9.25.1
+- Exact prior dev a2e47f50621396bc66eac4eaf12a23fcc13d6497, main 4398ba170b0bfa644a01d00b08c92a5183a0b5c0. Full Regression Census 39966330327: Node 4/4 pass, Chromium 3/4 pass; browser shard 3 failed ui_back_routes_browser_qa.py because saveNewClub navigated to Match Setup without navCustomization.
+- Replaced post-save Match Setup redirect with saved-club builder to enable immediate Edit Players/Edit Roster. Added focused Node VM regression; existing Chromium test exercises this route. Aligned four-field About-only candidate, README, policy and offline cache. No canonical team IDs, save schemas, SD09 or controls changed. Exact-head GitHub QA and hosted certification pending.
+
 ## 2026-10-23 15:27 Europe/Stockholm — Saved-club editing candidate 0.9.23.4
 - Based on exact dev c51912ee0ba578b92f18699e59be681f8e367148; concurrent 0.9.23.3 Settings Studio fixes preserved. Added direct Edit Players / Edit Roster actions for saved custom clubs, with explicit selected team and Back route preserved after roster save.
 - Added focused Node VM contract and expanded Chromium desktop/simulated-touch browser QA. No canonical team IDs, saves, physics, controls or offline precache content changed. Local git clone blocked by DNS; exact-head CI pending.
