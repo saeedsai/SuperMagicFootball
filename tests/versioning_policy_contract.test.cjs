@@ -61,3 +61,14 @@ test('every game release must update README version, dated summary and playable 
  assert.match(read('docs/VERSIONING_POLICY.md'),/Mandatory README changelog/);
  assert.match(read('docs/memory/SHARED.md'),/Every player-facing game update must also update root/);
 });
+
+// Parse the actual shipped ES modules in CI, not just regex-extracted snippets.
+// This catches malformed release metadata before Playwright startup smoke.
+test('every shipped JavaScript module parses before browser startup',()=>{
+ const {spawnSync}=require('node:child_process');
+ const modules=fs.readdirSync(path.join(root,'src/modules')).filter(name=>name.endsWith('.js')).map(name=>'src/modules/'+name);
+ for(const file of ['src/main.js','src/assets.js','sw.js',...modules]){
+  const result=spawnSync(process.execPath,['--check',path.join(root,file)],{encoding:'utf8',timeout:10000});
+  assert.equal(result.status,0,file+': '+(result.stderr||result.error||'syntax check failed'));
+ }
+});
