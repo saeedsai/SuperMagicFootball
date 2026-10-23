@@ -6,6 +6,7 @@ const CROWN_ROYALS=(()=>{
  const PLAYERS=Object.freeze({crown_royals_reference_alex:'alex',crown_royals_reference_leo:'leo',crown_royals_reference_kwame:'kwame',crown_royals_reference_diego:'diego'});
  const directions=Object.freeze(['front','quarterFront','side','quarterBack','back']);
  const frames=Object.freeze({front:[0,48],quarterFront:[0,48],side:[96,36],quarterBack:[48,48],back:[48,48]});
+ const quarterAlex={image:null,loaded:false,error:false};
  const atlases={alex:{image:null,painted:null,loaded:false,error:false},leo:{image:null,painted:null,loaded:false,error:false},kwame:{image:null,painted:null,loaded:false,error:false},diego:{image:null,painted:null,loaded:false,error:false}};
  // Per-view pixel corrections preserve original facial pixels and transparent outlines.
  // They are made on a cached atlas and shared by idle, run and action rendering.
@@ -55,7 +56,16 @@ const CROWN_ROYALS=(()=>{
   else try{image.src=new URL('../../assets/crown_royals/'+name+'_three_views.png',import.meta.url).href;}catch{atlas.error=true;}
   if(image.complete&&image.naturalWidth>0){try{atlas.painted=correctedAtlas(image,name);}catch{atlas.painted=image;}atlas.loaded=true;}
  }
+ function preloadAlexQuarters(){
+  if(quarterAlex.image||typeof Image==='undefined')return;
+  const image=new Image();quarterAlex.image=image;
+  image.onload=()=>{quarterAlex.loaded=true;};
+  image.onerror=()=>{quarterAlex.error=true;};
+  try{image.src=new URL('../../assets/crown_royals/alex_quarter_views.svg',import.meta.url).href;}
+  catch{quarterAlex.error=true;}
+ }
  function preload(){
+  preloadAlexQuarters();
   load('alex',typeof CROWN_ROYALS_INLINE==='string'?CROWN_ROYALS_INLINE:null);
   load('leo',typeof CROWN_ROYALS_LEO_INLINE==='string'?CROWN_ROYALS_LEO_INLINE:null);
   load('kwame',typeof CROWN_ROYALS_KWAME_INLINE==='string'?CROWN_ROYALS_KWAME_INLINE:null);
@@ -70,7 +80,9 @@ const CROWN_ROYALS=(()=>{
   const atlas=atlases[PLAYERS[p.src.id]];
   if(!atlas.loaded){preload();return false;}
   const kind=frames[view?.kind]?view.kind:'front';
-  const [sx,sw]=frames[kind],h=141,w=sw*h/90;
+  const authoredQuarter=PLAYERS[p.src.id]==='alex'&&quarterAlex.loaded&&(kind==='quarterFront'||kind==='quarterBack');
+  const [sx,sw]=authoredQuarter?[kind==='quarterFront'?0:48,48]:frames[kind],h=141,w=sw*h/90;
+  const sprite=authoredQuarter?quarterAlex.image:(atlas.painted||atlas.image);
   const stride=Math.max(-1,Math.min(1,Number.isFinite(run)?run:0));
   const step=Math.max(-1,Math.min(1,Number.isFinite(phase)?phase:0));
   ctx.save();ctx.imageSmoothingEnabled=false;
@@ -117,14 +129,14 @@ const CROWN_ROYALS=(()=>{
     ctx.save();const pivot=left?sw*.30:sw*.70;
     ctx.translate(pivot,upper);ctx.rotate(stride*sign*.16);
     ctx.translate(-pivot,-upper);
-    ctx.drawImage(atlas.painted||atlas.image,sx+partX,upper,partW,90-upper,partX,upper,partW,90-upper);
+    ctx.drawImage(sprite,sx+partX,upper,partW,90-upper,partX,upper,partW,90-upper);
     ctx.restore();
    }
-   ctx.drawImage(atlas.painted||atlas.image,sx,0,sw,upper,0,0,sw,upper);
-  }else ctx.drawImage(atlas.painted||atlas.image,sx,0,sw,90,0,0,sw,90);
+   ctx.drawImage(sprite,sx,0,sw,upper,0,0,sw,upper);
+  }else ctx.drawImage(sprite,sx,0,sw,90,0,0,sw,90);
   ctx.restore();return true;
  }
  preload();
- return Object.freeze({id:ID,playerId:'crown_royals_reference_alex',playerIds:Object.keys(PLAYERS),directions,isCrownPlayer,preload,draw,status:()=>({loaded:atlases.alex.loaded,leoLoaded:atlases.leo.loaded,kwameLoaded:atlases.kwame.loaded,diegoLoaded:atlases.diego.loaded,error:atlases.alex.error||atlases.leo.error||atlases.kwame.error||atlases.diego.error,paintedViews:3,quarterViews:'nearest-view placeholders',playerCount:4,hairCorrected:!!atlases.alex.painted&&!!atlases.leo.painted})});
+ return Object.freeze({id:ID,playerId:'crown_royals_reference_alex',playerIds:Object.keys(PLAYERS),directions,isCrownPlayer,preload,draw,status:()=>({loaded:atlases.alex.loaded,leoLoaded:atlases.leo.loaded,kwameLoaded:atlases.kwame.loaded,diegoLoaded:atlases.diego.loaded,error:atlases.alex.error||atlases.leo.error||atlases.kwame.error||atlases.diego.error,paintedViews:3,quarterViews:'nearest-view placeholders',playerCount:4,alexQuarterLoaded:quarterAlex.loaded,alexQuarterError:quarterAlex.error,hairCorrected:!!atlases.alex.painted&&!!atlases.leo.painted})});
 })();
 export {CROWN_ROYALS};
