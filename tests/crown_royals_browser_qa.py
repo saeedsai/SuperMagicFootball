@@ -22,13 +22,14 @@ with sync_playwright() as pw:
  page.add_script_tag(content=script,type='module')
  page.wait_for_function("document.querySelector('#status').textContent.includes('Game renderer loaded')",timeout=15000)
  frames={}
- for action in ['idle','run','jump','shoot','tackle']:
+ for action in ['idle','run','jump','shoot','super','tackle']:
   page.click('#'+action)
   raw=page.eval_on_selector('#sheet',"(c)=>c.toDataURL('image/png').split(',')[1]")
   image=Image.open(io.BytesIO(base64.b64decode(raw))).convert('RGB')
   assert image.size==(1300,550)
   image.save(OUT/f'alex_{action}.png')
   frames[action]=image
+ assert ImageChops.difference(frames['shoot'],frames['super']).getbbox() is not None,'super shot must differ from ordinary shot'
  assert not errors,errors
  assert len(frames['idle'].getcolors(maxcolors=1000000) or [])>30
  for action in ['run','jump','shoot','tackle']:
@@ -36,7 +37,7 @@ with sync_playwright() as pw:
  report={'status':'PASS renderer smoke only; NOT full animation acceptance','player':'Alex #1',
   'team':'Crown Royals (Art WIP)','true_views':['front','side','back'],
   'approximated_views':['quarterFront','quarterBack'],
-  'animation':['experimental run','jump transform','shoot transform','tackle transform'],
+  'animation':['experimental run','bidirectional jump lift','shoot transform','distinct super anticipation','tackle transform'],
   'not_yet_verified':['12 unique players','bespoke action frames','reference consistency in side hair'],
   'screenshots':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in OUT.glob('alex_*.png')}}
  (OUT/'report.json').write_text(json.dumps(report,indent=2))

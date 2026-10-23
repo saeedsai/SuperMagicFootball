@@ -33,8 +33,10 @@ const CROWN_ROYALS=(()=>{
   ctx.save();ctx.imageSmoothingEnabled=false;
   if(kind==='quarterFront'||kind==='quarterBack')ctx.scale(.86,1);
   const poseAction=action==='kick'||action==='super'?'shoot':action==='slide'?'tackle':action;
-  if(poseAction==='jump')ctx.translate(0,-Math.max(0,step)*15);
+  if(poseAction==='jump')ctx.translate(0,-Math.abs(step)*15);
   if(poseAction==='shoot')ctx.rotate(-step*.16);
+  // Super Shot adds bounded anticipation without a new gameplay control.
+  if(action==='super'){ctx.translate(0,-Math.abs(step)*8);ctx.rotate(-step*.09);}
   if(poseAction==='tackle')ctx.rotate(step*.20);
   ctx.translate(-w/2,-h+6);ctx.scale(w/sw,h/90);
   // The reference contains three genuine projections. Quarter projections are

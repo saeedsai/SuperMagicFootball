@@ -45,3 +45,18 @@ test('match actions feed Crown sprite transforms rather than preview-only aliase
  assert.match(sprite,/action==='kick'\|\|action==='super'\?'shoot'/);
  assert.match(sprite,/action==='slide'\?'tackle'/);
 });
+
+
+test('Crown Super Shot is visually distinct and jump lift works in both phase directions',()=>{
+ const src=read('src/modules/crownroyals.js').replace('export {CROWN_ROYALS};','').replace(/new URL\([^\n]*import\.meta\.url\)\.href/,"'test-sprite.png'");
+ class FakeImage{constructor(){this.complete=true;this.naturalWidth=132;}set src(v){this.onload?.();}}
+ const vm=require('node:vm'),art=vm.runInNewContext(src+';CROWN_ROYALS',{Image:FakeImage,Object});
+ const p={src:{id:'crown_royals_reference_alex',renderModel:'crown_royals_reference'}};
+ const trace=(action,phase)=>{const calls=[];const ctx={save(){},restore(){},drawImage(){},scale(...v){calls.push(['scale',...v]);},translate(...v){calls.push(['translate',...v]);},rotate(v){calls.push(['rotate',v]);}};
+  assert.equal(art.draw(ctx,p,{kind:'front'},{action,phase}),true);return calls;};
+ assert.equal(trace('shoot',.8).filter(x=>x[0]==='rotate').length,1);
+ assert.equal(trace('super',.8).filter(x=>x[0]==='rotate').length,2);
+ assert.ok(trace('super',.8).some(x=>x[0]==='translate'&&Math.abs(x[2]+6.4)<1e-8));
+ for(const phase of [-.8,.8])assert.ok(trace('jump',phase).some(x=>x[0]==='translate'&&Math.abs(x[2]+12)<1e-8));
+ assert.equal(trace('idle',0).filter(x=>x[0]==='rotate').length,0);
+});

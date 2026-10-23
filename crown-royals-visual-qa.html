@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Crown Royals reference sprite QA</title>
 <style>body{background:#10172e;color:#f4f0e9;font:16px system-ui;margin:18px}canvas{background:#253453;max-width:100%;height:auto;image-rendering:pixelated}button{padding:12px;margin:5px;background:#ead078;color:#18223c;border:0;border-radius:6px}p{max-width:1000px}</style></head>
-<body><h1>Crown Royals · Alex #1 · actual game renderer</h1><p>Reference-derived sprite, not an AI-generated image. Three genuine views: front, side and back. Quarter views reuse their nearest projection. Running and actions are provisional transforms, not separately painted animation frames. QA approval pending.</p><p id="status">Loading…</p><button id="idle">Idle</button><button id="run">Running</button><button id="jump">Jump</button><button id="shoot">Shoot</button><button id="tackle">Tackle</button><button id="save">Save PNG</button><canvas id="sheet" width="1300" height="550"></canvas>
+<body><h1>Crown Royals · Alex #1 · actual game renderer</h1><p>Reference-derived sprite, not an AI-generated image. Three genuine views: front, side and back. Quarter views reuse their nearest projection. Running and actions are provisional transforms, not separately painted animation frames. QA approval pending.</p><p id="status">Loading…</p><button id="idle">Idle</button><button id="run">Running</button><button id="jump">Jump</button><button id="shoot">Shoot</button><button id="super">Super Shot</button><button id="tackle">Tackle</button><button id="save">Save PNG</button><canvas id="sheet" width="1300" height="550"></canvas>
 <script type="module">
 import {CROWN_ROYALS} from './src/modules/crownroyals.js';
 const views=['front','quarterFront','side','quarterBack','back'];
@@ -25,6 +25,6 @@ function render(){
  return true;
 }
 const timer=setInterval(()=>{if(render())clearInterval(timer)},200);
-for(const name of ['idle','run','jump','shoot','tackle'])document.getElementById(name).onclick=()=>{mode=name;render()};
+for(const name of ['idle','run','jump','shoot','super','tackle'])document.getElementById(name).onclick=()=>{mode=name;render()};
 document.getElementById('save').onclick=()=>{if(!render())return;const a=document.createElement('a');a.download='crown-royals-alex-'+mode+'.png';a.href=canvas.toDataURL('image/png');a.click()};
 </script></body></html>

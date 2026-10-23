@@ -5,6 +5,7 @@
 Continue small increments on existing dev regardless of pending CI/release; diagnose blockers and repair safely. No new branches, force push, safety or permission bypass.
 
 ## Current checkpoint
+- New candidate 0.9.22.0: distinct bounded Crown Super Shot pose and symmetric jump lift; VM transform regression and Chromium screenshot comparison. Exact-head CI pending.
 - Candidate 0.9.21.0: separate Crown Royals Alex #1 and Leo #2 use distinct transparent owner-reference 132x90 three-view atlases. Ten other Crown players remain standard placeholders. Original Concept Royals remains unchanged, as do 223 canonical teams and 2676 canonical players.
 - Leo has blond hair and dark headband. Quarter directions currently reuse nearest sprite; idle/run/jump/shoot/tackle use provisional transforms rather than separately authored animation frames.
 - Local isolated Chromium renderer QA PASS on desktop and simulated touch: five direction slots × five action previews, zero JS errors. New exact-head live match/CI and Pages still need verification.

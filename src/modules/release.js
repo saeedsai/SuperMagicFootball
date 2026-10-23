@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.21.0',
+ version:'0.9.22.0',
  date:'2026-10-23',
  notes:Object.freeze([
+  'Crown Royals reference players now show a separate bounded Super Shot anticipation pose and a visible jump lift in both animation phase directions; these remain provisional transforms, not hand-painted action frames.',
   'Crown Royals Leo (#2) now uses unique reference-derived front, back and side sprites, with blond hair and a dark headband; existing Alex and Concept Royals art is unchanged. Quarter views and action movements are provisional.',
   'Corrected historical Chromium fixture team-count assertions after Crown Royals addition; the 223 canonical teams, save indexes and four-button controls are preserved.',
   'Mapped real match kick/super/slide action states to Crown Royals provisional pose transforms, instead of limiting them to QA preview names.',
