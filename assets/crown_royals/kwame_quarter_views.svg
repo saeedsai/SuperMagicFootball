@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="90" viewBox="0 0 96 90">
+<!-- Crown Royals Kwame #3: independent front-quarter and rear-quarter poses; transparent 48x90 frames. -->
+<defs>
+ <linearGradient id="kwame-skin" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#bd7653"/><stop offset=".52" stop-color="#8b472f"/><stop offset="1" stop-color="#552d29"/></linearGradient>
+ <linearGradient id="kwame-kit" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a76afb"/><stop offset=".48" stop-color="#6331b5"/><stop offset="1" stop-color="#30115e"/></linearGradient>
+ <linearGradient id="kwame-hair" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#342b36"/><stop offset="1" stop-color="#100e1c"/></linearGradient>
+</defs>
+<g stroke="#21132f" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round">
+ <g transform="translate(0 0)" data-view="quarterFront" data-orientation="front-facing">
+  <!-- Asymmetric planted and forward feet establish three-quarter depth. -->
+  <path d="M17 63 13 76 12 82 23 84 26 67M29 64 34 75 40 81 46 79 38 61" fill="#3e1a83"/>
+  <path d="M11 81 23 81 23 86 9 86ZM38 79 46 77 47 82 39 85 34 85Z" fill="#f5e6c8"/>
+  <path d="M17 67 24 67 23 73 15 72ZM32 67 39 65 40 71 34 73Z" fill="#edc24c" stroke="none"/>
+  <!-- Rear arm occluded by torso; near arm overlaps front hem. -->
+  <path d="M36 37Q43 41 45 51L42 60 37 61 34 52Z" fill="url(#kwame-skin)"/>
+  <path d="M17 36Q9 40 8 52L11 63 18 61 17 49Z" fill="url(#kwame-skin)"/>
+  <path d="M18 34Q28 31 37 38L41 58 34 65 15 63 12 57Z" fill="url(#kwame-kit)"/>
+  <path d="M15 60 35 61 39 69 13 69Z" fill="#43187c"/>
+  <path d="M17 39 14 47M35 39 40 47" stroke="#e5b64a" stroke-width="2" fill="none"/>
+  <path d="M25 43 30 43 33 47 29 51 24 49Z" fill="#f4c34b" stroke="none"/>
+  <path d="M20 54 33 54" stroke="#d7a43b" stroke-width="1" fill="none"/>
+  <!-- Kwame's high cheekbones, broad jaw and cropped natural fade. -->
+  <path d="M16 18Q20 12 30 14L37 20 37 30 32 37 24 36 18 30Z" fill="url(#kwame-skin)"/>
+  <path d="M15 22 16 16 20 13 20 9 27 8 34 10 37 15 39 22 34 19 30 18 23 20 19 24Z" fill="url(#kwame-hair)"/>
+  <path d="M19 15 23 13 29 13 35 15M18 18 22 16 30 16" fill="none" stroke="#514452" stroke-width="1"/>
+  <path d="M22 25 27 24M31 24 35 23" stroke="#16131d" stroke-width="2" fill="none"/>
+  <path d="M29 29 33 30 31 32" stroke="#63332b" fill="none"/>
+  <path d="M26 34Q30 35 33 33" stroke="#402329" fill="none"/>
+  <path d="M15 47 12 57 15 62" stroke="#b96f4b" stroke-width="1" fill="none"/>
+ </g>
+ <g transform="translate(48 0)" data-view="quarterBack" data-orientation="rear-facing">
+  <path d="M16 63 13 77 11 83 23 84 26 66M28 65 35 77 39 84 46 82 38 62" fill="#401a85"/>
+  <path d="M11 81 23 82 23 86 9 86ZM37 81 46 80 47 84 35 86Z" fill="#f4e4c7"/>
+  <path d="M14 68 23 69 22 74 13 73ZM33 68 39 67 40 73 35 74Z" fill="#eac34c" stroke="none"/>
+  <path d="M15 37Q9 42 8 52L10 61 17 62 20 47Z" fill="url(#kwame-skin)"/>
+  <path d="M35 38Q43 42 44 52L41 62 35 60 33 48Z" fill="url(#kwame-skin)"/>
+  <path d="M18 35Q27 31 37 38L40 59 35 66 16 65 12 57Z" fill="url(#kwame-kit)"/>
+  <path d="M15 61 36 61 39 70 13 69Z" fill="#3f1678"/>
+  <path d="M18 39 15 46M35 39 40 47" stroke="#f0bf55" stroke-width="2" fill="none"/>
+  <path d="M23 44 33 44 33 47 27 47 27 50 32 50 32 54 27 54 27 57 33 57 33 60 22 60" stroke="#fbd25a" stroke-width="2.5" fill="none"/>
+  <!-- Rear skull and neck differ from front: no face, natural fade at nape. -->
+  <path d="M18 18Q20 13 30 13L36 19 37 29 33 36 23 37 18 31Z" fill="url(#kwame-skin)"/>
+  <path d="M15 23 15 17 19 13 20 9 28 8 35 12 38 18 39 24 35 27 32 24 27 26 23 23 19 27Z" fill="url(#kwame-hair)"/>
+  <path d="M19 17Q26 14 35 18M20 23Q26 20 34 23" stroke="#504250" stroke-width="1" fill="none"/>
+  <path d="M35 27Q39 28 37 33L34 32" fill="#995538"/>
+ </g>
+</g></svg>
