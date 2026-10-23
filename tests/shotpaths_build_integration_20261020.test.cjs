@@ -7,7 +7,7 @@ const root=path.join(__dirname,'..');
 const source=p=>fs.readFileSync(path.join(root,p),'utf8');
 test('single-file Chromium fixture embeds SHOTPATHS once before the playable engine',()=>{
  const build=source('scripts/build.py'),sw=source('sw.js');
- for(const s of [build,sw])assert.match(s,/'physicsbalance','shotpaths','engine'/);
+ for(const s of [build,sw])assert.match(s,/'physicsbalance','shotpaths','magic-hazards','engine'/);
  const fixture=source('tests/.generated/game.js');
  const helper=fixture.indexOf('const SHOTPATHS=Object.freeze(');
  const engine=fixture.indexOf('const ENGINE=(()=>{');
