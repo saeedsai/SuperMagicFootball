@@ -10,19 +10,33 @@ const CROWN_ROYALS=(()=>{
  // Per-view pixel corrections preserve original facial pixels and transparent outlines.
  // They are made on a cached atlas and shared by idle, run and action rendering.
  function correctedAtlas(image,name){
+  // Hair-only repair on the three-view 132x90 reference atlas. Never alter alpha or body.
   const canvas=document.createElement('canvas');canvas.width=132;canvas.height=90;
   const cx=canvas.getContext('2d',{willReadFrequently:true});cx.drawImage(image,0,0);
   const frame=cx.getImageData(0,0,132,90),a=frame.data;
-  for(let y=0;y<35;y++)for(let x=0;x<132;x++){
-   const p=(y*132+x)*4,r=a[p],g=a[p+1],b=a[p+2];if(a[p+3]<96)continue;
-   // Alex's reference side cut accidentally contains silver hair, unlike front/back.
-   if(name==='alex'&&x>=96&&y<30&&r>110&&g>105&&b>100&&Math.abs(r-g)<43&&Math.abs(g-b)<48){
-    const l=(r+g+b)/3;a[p]=Math.min(204,Math.round(l*.91));a[p+1]=Math.min(133,Math.round(l*.49));a[p+2]=Math.min(94,Math.round(l*.31));
+  for(let y=2;y<28;y++)for(let x=0;x<132;x++){
+   const p=(y*132+x)*4,r=a[p],g=a[p+1],b=a[p+2];if(a[p+3]<180)continue;
+   let color=null;
+   if(name==='alex'){
+    const sx=x-96;if(sx<0)continue;
+    const front=(sx>=4&&sx<=21&&y>=7&&y<=23&&(sx<=17||y<=14)&&y>=Math.max(7,13-Math.floor(sx/3)))||(sx>=13&&sx<=25&&y>=4&&y<=7);
+    const back=sx>=18&&sx<=30&&y>=4&&y<=19&&r<120&&g<115&&b<145;
+    if(!(front||back)||(r<37&&g<34&&b<55))continue;
+    const l=(r+g+b)/3;
+    color=l>208?[202,120,57]:l>160?[164,84,41]:l>112?[127,61,34]:l>65?[91,43,28]:[63,32,28];
+   }else if(name==='leo'){
+    const sx=x-48;
+    const crown=sx>=10&&sx<=40&&y>=2&&y<=13&&sx>=Math.max(10,16-y)&&sx<=Math.min(40,32+Math.floor(y/2));
+    const nape=sx>=17&&sx<=35&&y>=13&&y<=20&&sx>=18+Math.floor((y-13)/3)&&sx<=35-Math.floor((y-13)/3);
+    if(!(crown||nape))continue;
+    if(r<35&&g<35&&b<52&&(sx<=12||sx>=39||y<=3))continue;
+    if(y>=10&&y<=12&&sx>=13&&sx<=37)color=[29,24,43];
+    else{
+     const blond=[[245,197,101],[229,166,65],[207,132,49],[171,95,40],[252,214,123],[194,116,45],[223,154,59]];
+     color=blond[(Math.floor(sx/4)*3+Math.floor(y/3)*2)%blond.length];
+    }
    }
-   // Leo's headband runs continuously around the rear crown and side.
-   if(name==='leo'&&y>=13&&y<=21&&((x>=55&&x<89)||(x>=99&&x<125))&&r>110&&g>70&&r>b*1.17){
-    a[p]=27;a[p+1]=29;a[p+2]=43;
-   }
+   if(color){a[p]=color[0];a[p+1]=color[1];a[p+2]=color[2];}
   }
   cx.putImageData(frame,0,0);return canvas;
  }
