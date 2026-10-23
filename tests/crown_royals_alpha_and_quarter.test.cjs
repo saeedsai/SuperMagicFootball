@@ -32,6 +32,14 @@ test('Crown renderer keeps transparent sprite edges and does not squash quarter 
  assert.equal(crown.draw(ctx,p,{kind:'quarterFront'}),true);
  assert.equal(crown.draw(ctx,p,{kind:'quarterBack'}),true);
  assert.equal(transforms.some(([x,y])=>x===.86&&y===1),false);
+ const mirrored=[];
+ const mirroredCtx={save(){},restore(){},translate(){},rotate(){},scale(x,y){mirrored.push([x,y])},drawImage(){}};
+ assert.equal(crown.draw(mirroredCtx,p,{kind:'side',flip:true}),true);
+ assert.equal(mirrored.some(([x,y])=>x===-1&&y===1),true);
+ const normal=[];
+ const normalCtx={save(){},restore(){},translate(){},rotate(){},scale(x,y){normal.push([x,y])},drawImage(){}};
+ assert.equal(crown.draw(normalCtx,p,{kind:'side',flip:false}),true);
+ assert.equal(normal.some(([x,y])=>x===-1&&y===1),false);
  const lunges=[];
  const actionCtx={save(){},restore(){},translate(x,y){lunges.push(['translate',x,y])},
   rotate(angle){lunges.push(['rotate',angle])},
