@@ -1,12 +1,12 @@
 // Crown Royals: literal transparent pixels extracted from the owner's three-view
 // reference. This is a separate team/model; the existing Concept Hero is unchanged.
-// Four three-view atlases; Alex additionally has transparent authored front/rear quarter sprites.
+// Four three-view atlases; Alex, Leo and Kwame have authored transparent quarter sprites.
 const CROWN_ROYALS=(()=>{
  const ID='crown_royals_reference';
  const PLAYERS=Object.freeze({crown_royals_reference_alex:'alex',crown_royals_reference_leo:'leo',crown_royals_reference_kwame:'kwame',crown_royals_reference_diego:'diego'});
  const directions=Object.freeze(['front','quarterFront','side','quarterBack','back']);
  const frames=Object.freeze({front:[0,48],quarterFront:[0,48],side:[96,36],quarterBack:[48,48],back:[48,48]});
- const quarterAtlases={alex:{image:null,loaded:false,error:false},leo:{image:null,loaded:false,error:false}};
+ const quarterAtlases={alex:{image:null,loaded:false,error:false},leo:{image:null,loaded:false,error:false},kwame:{image:null,loaded:false,error:false}};
  const atlases={alex:{image:null,painted:null,loaded:false,error:false},leo:{image:null,painted:null,loaded:false,error:false},kwame:{image:null,painted:null,loaded:false,error:false},diego:{image:null,painted:null,loaded:false,error:false}};
  // Per-view pixel corrections preserve original facial pixels and transparent outlines.
  // They are made on a cached atlas and shared by idle, run and action rendering.
@@ -65,13 +65,15 @@ const CROWN_ROYALS=(()=>{
   try{
    const inline=name==='alex'
     ?(typeof CROWN_ROYALS_ALEX_QUARTER_INLINE==='string'?CROWN_ROYALS_ALEX_QUARTER_INLINE:null)
-    :(typeof CROWN_ROYALS_LEO_QUARTER_INLINE==='string'?CROWN_ROYALS_LEO_QUARTER_INLINE:null);
+    :name==='leo'?(typeof CROWN_ROYALS_LEO_QUARTER_INLINE==='string'?CROWN_ROYALS_LEO_QUARTER_INLINE:null)
+    :(typeof CROWN_ROYALS_KWAME_QUARTER_INLINE==='string'?CROWN_ROYALS_KWAME_QUARTER_INLINE:null);
    image.src=inline?'data:image/svg+xml;base64,'+inline:'./assets/crown_royals/'+name+'_quarter_views.svg';
   }catch{quarter.error=true;}
  }
  function preload(){
   preloadQuarters('alex');
   preloadQuarters('leo');
+  preloadQuarters('kwame');
   load('alex',typeof CROWN_ROYALS_INLINE==='string'?CROWN_ROYALS_INLINE:null);
   load('leo',typeof CROWN_ROYALS_LEO_INLINE==='string'?CROWN_ROYALS_LEO_INLINE:null);
   load('kwame',typeof CROWN_ROYALS_KWAME_INLINE==='string'?CROWN_ROYALS_KWAME_INLINE:null);
@@ -102,7 +104,7 @@ const CROWN_ROYALS=(()=>{
   if(view?.flip===true||view?.mirror===true)ctx.scale(-1,1);
   // Keep identical player width across camera directions. The old 0.86 X-scale
   // made quarter-facing Crown players visibly paper-thin and shifted their feet.
-  // Alex has authored quarter views; other players retain nearest-view placeholders.
+  // Alex, Leo and Kwame have authored quarter views; Diego retains nearest-view placeholders.
   const poseAction=action==='kick'||action==='super'?'shoot'
    :action==='slide'||action==='jumpTackle'?'tackle'
    :action==='bicycle'||action==='bicycleKick'?'bicycle'
@@ -147,6 +149,6 @@ const CROWN_ROYALS=(()=>{
   ctx.restore();return true;
  }
  preload();
- return Object.freeze({id:ID,playerId:'crown_royals_reference_alex',playerIds:Object.keys(PLAYERS),directions,isCrownPlayer,preload,draw,status:()=>({loaded:atlases.alex.loaded,leoLoaded:atlases.leo.loaded,kwameLoaded:atlases.kwame.loaded,diegoLoaded:atlases.diego.loaded,error:atlases.alex.error||atlases.leo.error||atlases.kwame.error||atlases.diego.error,paintedViews:3,quarterViews:'Alex and Leo authored; others nearest-view placeholders',playerCount:4,alexQuarterLoaded:quarterAtlases.alex.loaded,alexQuarterError:quarterAtlases.alex.error,leoQuarterLoaded:quarterAtlases.leo.loaded,leoQuarterError:quarterAtlases.leo.error,hairCorrected:!!atlases.alex.painted&&!!atlases.leo.painted})});
+ return Object.freeze({id:ID,playerId:'crown_royals_reference_alex',playerIds:Object.keys(PLAYERS),directions,isCrownPlayer,preload,draw,status:()=>({loaded:atlases.alex.loaded,leoLoaded:atlases.leo.loaded,kwameLoaded:atlases.kwame.loaded,diegoLoaded:atlases.diego.loaded,error:atlases.alex.error||atlases.leo.error||atlases.kwame.error||atlases.diego.error,paintedViews:3,quarterViews:'Alex, Leo and Kwame authored; Diego nearest-view placeholder',playerCount:4,alexQuarterLoaded:quarterAtlases.alex.loaded,alexQuarterError:quarterAtlases.alex.error,leoQuarterLoaded:quarterAtlases.leo.loaded,leoQuarterError:quarterAtlases.leo.error,kwameQuarterLoaded:quarterAtlases.kwame.loaded,kwameQuarterError:quarterAtlases.kwame.error,hairCorrected:!!atlases.alex.painted&&!!atlases.leo.painted})});
 })();
 export {CROWN_ROYALS};
