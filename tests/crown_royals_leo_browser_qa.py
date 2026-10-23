@@ -33,7 +33,7 @@ with sync_playwright() as pw:
   frames[action]=image
  assert not errors,errors
  assert len(frames['idle'].getcolors(maxcolors=1000000) or [])>30
- assert 'LEO #2' in page.locator('#sheet').evaluate('(canvas) => {const c=document.createElement("canvas");c.width=1;return document.querySelector("h1").textContent+document.querySelector("#status").textContent;}')
+ assert 'Leo #2' in page.locator('h1').inner_text()
  assert 'crown_royals_reference_leo' in html and 'crown_royals_reference_alex' not in html
  for action in ['run','jump','shoot','tackle']:
   assert ImageChops.difference(frames['idle'],frames[action]).getbbox() is not None,action
