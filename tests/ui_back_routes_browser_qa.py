@@ -26,6 +26,17 @@ with sync_playwright() as pw:
         for route in ['playerStudio', 'clubs', 'editor', 'gallery', 'squad']:
             assert page.locator('.navScreen .heading').inner_text() == 'PLAYER & TEAM CUSTOMIZATION', (label, route, 'parent')
             click(route)
+            if route == 'playerStudio':
+                # Prove arbitrary team selection works in a real browser, not just
+                # that the dropdown exists. This must not depend on Career context.
+                teams = page.locator('#customTeam')
+                assert teams.count() == 1, (label, 'missing Studio club picker')
+                options = teams.locator('option')
+                assert options.count() >= 223, (label, 'missing team choices')
+                chosen = options.last.get_attribute('value')
+                teams.select_option(chosen)
+                assert page.locator('#customTeam').input_value() == chosen, (label, 'team selection reset')
+                assert page.locator('#customPlayer option').count() == 12, (label, 'selected squad not loaded')
             assert page.locator('.row.space [data-action="navCustomization"]').count() == 1, (label, route, 'visible header Back')
             page.keyboard.press('Escape')
             assert page.locator('.navScreen .heading').inner_text() == 'PLAYER & TEAM CUSTOMIZATION', (label, route, 'keyboard Back')
