@@ -1,3 +1,6 @@
+## 2026-10-24 — LAN-006 transport framing
+- LAN-006 non-UI transport boundary: 16426d20 adds validated send/receive for an already-open WebRTC-compatible data channel, and 92683b97 adds tests for replay, malformed frames, channel readiness and four-button inputs. No signaling or live LAN game yet. Base main/dev was synchronized at 10a1e348 before development; exact-head CI and Pages/visual QA pending.
+
 ## 2026-10-24 — LAN-005 guest input sender
 - LAN-005 guest sender: commit 1940052f adds sequenced guest input packet builder; b77edc65 adds Node regression for monotonic frames, action validation, atomic rejection and host queue interoperability. Transport independent, not playable LAN; package/About version unchanged. main/dev previously identical at 28de5112. Exact-head CI and Pages certification pending.
 
