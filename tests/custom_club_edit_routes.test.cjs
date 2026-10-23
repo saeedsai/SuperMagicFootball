@@ -5,7 +5,7 @@ function section(a,b){const x=ui.indexOf(a);assert.ok(x>=0,'missing '+a);const y
 test('custom clubs expose player/roster edit actions without editing canonical teams',()=>{
  const src=section('function showClubs(){','function saveNewClub(){');let shown=null;
  const context={TEAMS:[{id:'national',name:'National',rank:80},{id:'club_qa',name:'QA FC',rank:82,shot:'banana'}],
- SHOTS:{banana:{name:'Banana'}},identity:()=>'',escapeHTML:String,
+ SHOTS:{banana:{name:'Banana'}},identity:()=>'',escapeHTML:String,field:()=>'',
  button:(label,action)=>'<button data-action="'+action+'">'+label+'</button>',
  page:(title,subtitle,body)=>{shown={title,body};}};
  vm.runInNewContext(src+'\nshowClubs();',context);
