@@ -15,7 +15,7 @@ Previous active entries were explicitly retired with a handover; retirement **do
 4. Keep `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` plus your own small agent-memory checkpoint current. Do not change other agents' memory. Preserve rosters, IDs, squad ratios, saves, four controls, six formations and playable offline source.
 
 ## About revision on every commit
-Preserve the **installed `0.9.27.0` release version only inside About** and `src/modules/release.js` on **every commit**. Retain Git SHA audit internally in GitHub Actions/history and verify exact deployed Pages bytes through hosted smoke; do not display remote dev SHA as a player-facing version. Keep [`docs/VERSIONING_POLICY.md`](../VERSIONING_POLICY.md) and its release tests current.
+Preserve the **installed `0.9.28.0` release version only inside About** and `src/modules/release.js` on **every commit**. Retain Git SHA audit internally in GitHub Actions/history and verify exact deployed Pages bytes through hosted smoke; do not display remote dev SHA as a player-facing version. Keep [`docs/VERSIONING_POLICY.md`](../VERSIONING_POLICY.md) and its release tests current.
 
 ## Historical references
 The old per-feature claim README, registry keys and tests remain as compatibility records, not workflow policy. Do not silently delete historical audit evidence or invent successful test results.
