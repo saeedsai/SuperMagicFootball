@@ -1,3 +1,9 @@
+## 2026-10-24 — HAZARD-0321 Banana/Ice coexistence bug fix
+- Current main/dev were identical at 73cc8a6c (0.9.32.0) at run start.
+- Found that placeBananaPeel used active.slice(...) across *all* magic hazards, deleting active Ice Patches when adding bananas. Fixed by capacity-limiting banana hazards independently while retaining other types, commit 5eb996ce. Added interleaved placement/capacity regressions at 54c215bf.
+- Staged About-only four-field bugfix candidate 0.9.32.1 across package, release metadata, README, offline cache and policies. Full exact-head CI not available at last check; do not claim hosted/visual certification.
+- Next: run 4 Node + 4 Chromium + Modular QA, verify actual playable hosted source and sprite visuals, promote only fully green exact head.
+
 ## 2026-10-24 — ICE-032 Ice Patch Magic Trick candidate
 - Continued on dev while release CI remains pending: bounded Ice Patch placement, arm delay and distinct enemy-only ground trap (242e17e1), runtime integration (f1e7fa58), cyan canvas sprite (72b815da), regression tests (b6f74640).
 - Version candidate 0.9.32.0 synchronized across package, About, README, offline cache and policy. Main baseline 1e30f475 on 0.9.31.0. No independently verified image comparison, hosted byte smoke or full exact-head 4 Node + 4 Chromium + Modular QA yet. Protect main.
