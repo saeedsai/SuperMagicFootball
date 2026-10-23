@@ -28,6 +28,25 @@ with sync_playwright() as pw:
  page.wait_for_function("document.querySelector('#status').textContent.includes('Game renderer loaded')",timeout=15000)
  page.wait_for_function("window.__leoQuarterStatus && window.__leoQuarterStatus().leoQuarterLoaded",timeout=15000)
  assert page.evaluate("window.__leoQuarterStatus().leoQuarterError") is False
+ # Inspect the actual decoded SVG pixels: no baked backdrop and genuinely
+ # different front/rear quarter artwork, not just a successful network load.
+ alpha=page.evaluate("""async (source) => {
+  const image=new Image();image.src='data:image/svg+xml;base64,'+source;
+  await image.decode();
+  const canvas=document.createElement('canvas');canvas.width=96;canvas.height=90;
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(image,0,0);
+  const data=ctx.getImageData(0,0,96,90).data;
+  const pixel=(x,y)=>data[(y*96+x)*4+3];
+  let visible=0,different=0;
+  for(let y=0;y<90;y++)for(let x=0;x<48;x++){
+   const a=(y*96+x)*4,b=(y*96+x+48)*4;
+   if(data[a+3]>100)visible++;
+   for(let channel=0;channel<4;channel++)if(Math.abs(data[a+channel]-data[b+channel])>20){different++;break;}
+  }
+  return {corners:[pixel(0,0),pixel(47,0),pixel(48,0),pixel(95,89)],visible,different};
+ }""",leo_quarter)
+ assert alpha['corners']==[0,0,0,0],f"opaque SVG background: {alpha}"
+ assert alpha['visible']>100 and alpha['different']>100,f"missing or duplicated Leo art: {alpha}"
  frames={}
  for action in ['idle','run','jump','shoot','tackle']:
   page.click('#'+action)
@@ -45,6 +64,7 @@ with sync_playwright() as pw:
  report={'status':'PASS renderer smoke only; NOT full animation acceptance','player':'Leo #2',
   'team':'Crown Royals (Art WIP)','true_views':['front','side','back'],
   'authored_quarter_views':['quarterFront','quarterBack'],
+  'quarter_alpha_qa':alpha,
   'animation':['experimental run','jump transform','shoot transform','tackle transform'],
   'not_yet_verified':['12 unique players','bespoke action frames','reference consistency in side hair'],
   'screenshots':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in OUT.glob('leo_*.png')}}
