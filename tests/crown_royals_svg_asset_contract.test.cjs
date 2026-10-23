@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
-for(const player of ['alex','leo']){
+for(const player of ['alex','leo','kwame']){
  test(`Crown Royals ${player} quarter atlas has transparent, bounded authored frames`,()=>{
   const svg=fs.readFileSync(path.join(root,'assets','crown_royals',player+'_quarter_views.svg'),'utf8');
   assert.match(svg,/<svg\b[^>]*\bwidth="96"[^>]*\bheight="90"[^>]*\bviewBox="0 0 96 90"/);
