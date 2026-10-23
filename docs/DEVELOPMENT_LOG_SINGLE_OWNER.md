@@ -471,3 +471,7 @@ Extracted Diego's three miniature source views into transparent 132×90 indexed 
 ## 2026-10-23 — Crown Royals SVG asset contract (test-only dev increment)
 - Added `tests/crown_royals_svg_asset_contract.test.cjs` to reject opaque SVG background rectangles, embedded/external images, scripts, wrong 96×90 dimensions, missing front/back quarter groups, or absent character path geometry for Alex and Leo.
 - This is a QA guard, not new player artwork or gameplay improvement. No bundle version bump; 0.9.27.0 remains the candidate. Exact-head full 4 Node + 4 Chromium and Modular QA, main promotion and Pages smoke still require evidence. Local git checkout blocked by DNS resolution of github.com; do not report local tests as executed.
+
+## 2026-10-23 — QA root cause corrected: Crown SVG rear-frame assertion
+- Reproduced a deterministic mismatch in the newly added `tests/crown_royals_svg_asset_contract.test.cjs`: it expected a mirrored `translate(96 0) scale(-1 1)` group, but BOTH shipped Alex/Leo SVGs actually author a separate rear-facing `translate(48 0)` group with `data-view="quarterBack"` and `data-orientation="rear-facing"`. Corrected the assertion to the real authored rear group, preserving the transparency and external-resource guards. Fix commit `a415391ecd007fb1197fff3a1bd866aa40966dda`.
+- The old assertion was guaranteed to fail for both assets. Source-level matching confirmed the replacement condition; complete Node/Chromium/Modular CI and main/Pages certification have NOT been observed for this new head. Do not promote until exact-head green.
