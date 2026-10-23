@@ -23,6 +23,8 @@ code.append('const CROWN_ROYALS_INLINE='+json.dumps(crown_atlas)+';\n')
 # Embed the same authored SVG in isolated browser QA fixtures.
 quarter_svg=base64.b64encode((root/'assets/crown_royals/alex_quarter_views.svg').read_bytes()).decode('ascii')
 code.append('const CROWN_ROYALS_ALEX_QUARTER_INLINE='+json.dumps(quarter_svg)+';\n')
+leo_quarter_svg=base64.b64encode((root/'assets/crown_royals/leo_quarter_views.svg').read_bytes()).decode('ascii')
+code.append('const CROWN_ROYALS_LEO_QUARTER_INLINE='+json.dumps(leo_quarter_svg)+';\n')
 leo_atlas=base64.b64encode((root/'assets/crown_royals/leo_three_views.png').read_bytes()).decode('ascii')
 code.append('const CROWN_ROYALS_LEO_INLINE='+json.dumps(leo_atlas)+';\n')
 kwame_atlas=base64.b64encode((root/'assets/crown_royals/kwame_three_views.png').read_bytes()).decode('ascii')
