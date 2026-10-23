@@ -9,7 +9,7 @@ Continue bounded tested features directly on dev despite pending CI/deployment; 
 - Candidate 0.9.27.0: Leo #2 transparent front/rear quarter SVG integrated into match renderer, offline cache and Chromium fixture; Alex retained. Other players' quarters and action frames incomplete.
 - Preserve 223 teams/2676 players, six formations, four buttons, 10 Career/Cup slots, SD09 and save compatibility.
 
-- Added Crown SVG quarter transparency/shape contract test on dev (17ae7e6a); full CI and promotion pending; local GitHub DNS unavailable.\n\n## Next smallest action
+- Added Crown SVG quarter transparency/shape contract test on dev (17ae7e6a); full CI and promotion pending; local GitHub DNS unavailable.\n\n- Fixed guaranteed-failing Crown SVG QA assertion: rear quarter uses authored translate(48 0) data-view, not mirrored translate(96 0). Source verified; CI pending.\n\n## Next smallest action
 1. Inspect candidate exact-head 4 Node + 4 Chromium, Modular and Crown QA; repair failures.
 2. Inspect Leo ¾ Chromium screenshots, background transparency and headband/number fidelity.
 3. Create Kwame #3 front/rear quarter art after Leo acceptance.
