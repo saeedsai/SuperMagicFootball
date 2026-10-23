@@ -35,4 +35,13 @@ function acceptLanPacket(state,packet){
  const input=Object.freeze({sequence:packet.sequence,buttons:Object.freeze({...packet.buttons}),axis:Object.freeze(movement)});
  return {accepted:true,reason:'input-accepted',state:Object.freeze({...state,lastSequence:packet.sequence}),input};
 }
-export {LAN_PROTOCOL_VERSION,LAN_BUTTONS,createLanHostState,acceptLanPacket};
+
+// A transport disconnect is host-observed rather than a client-authored packet.
+// Require the currently joined peer identifier; a stale socket cannot evict a replacement.
+function disconnectLanPeer(state, peerId) {
+ if(!state||!idValid(state.roomId)||!idValid(state.hostId)||!idValid(peerId))return reject(state,'invalid-peer');
+ if(state.peerId!==peerId)return reject(state,'not-joined');
+ return {accepted:true,reason:'left',state:Object.freeze({...state,peerId:null,lastSequence:-1})};
+}
+
+export {LAN_PROTOCOL_VERSION,LAN_BUTTONS,createLanHostState,acceptLanPacket,disconnectLanPeer};
