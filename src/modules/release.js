@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.31.0',
+ version:'0.9.32.0',
  date:'2026-10-24',
  notes:Object.freeze([
+  'Ice Patch Magic Trick now creates a visible, short-lived frozen ground trap that affects grounded opponents but not allies, airborne players or goalkeepers.',
   'Banana Peel Magic Trick now drops a visible three-second ground trap behind the ball carrier. After a brief arm delay, one grounded opponent can slip and lose possession; teammates and airborne players are unaffected.',
   'Hold DRIBBLE for one second while carrying the ball to activate an equipped Magic Trick. Each trick costs stamina, has a cooldown, and can be countered by alert defenders.',
   'Fixed a release-metadata syntax error that prevented the game from starting on desktop and touch browsers; added JavaScript syntax preflight checks.',
