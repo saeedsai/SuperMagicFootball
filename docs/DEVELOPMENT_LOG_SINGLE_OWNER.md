@@ -302,3 +302,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - Source: `src/modules/dribbles.js`. A defender must face the ball carrier to receive the close-range, actively closing Nutmeg anticipation bonus. Missing facing preserves legacy/stat-only odds. No new buttons, IDs, saves or player data changes.
 - Regression: `tests/nutmeg_facing_counter.test.cjs` covers front/back, legacy facing, stationary/retreating/exhausted, other styles and four controls. Release metadata/README/offline cache/version contract aligned to 0.9.17.0; exact-head CI/Pages pending.
 - Previous 0.9.16.0 exact-head Census #39869704009 and Modular QA #39869703906 passed on `4548da29769fff4bcab0d9ddea4292568aebbcac`; main hosted #39870813429 and Pages #39870813765 passed.
+
+## 2026-10-23 — Player Studio Magic Trick KEEP CURRENT candidate 0.9.17.1
+- UI now defaults to KEEP CURRENT; explicit REMOVE or replacement required. No storage rewrite on unchanged selection. Legacy-equipped players retain selection without elite-rating migration.
+- Added `tests/studio_magic_keep_current.test.cjs` covering Career/roster preservation, explicit removal/replacement, invalid selections, failed storage and four-button compatibility. JS handler smoke validated before commit; exact-head CI still required.
+- Version metadata, README candidate banner, About release notes, offline cache, version tests and developer checkpoint aligned. Pending full 4 Node + 4 Chromium Census, Modular QA, protected promotion, Pages and hosted bytes.
