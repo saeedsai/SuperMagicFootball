@@ -1356,7 +1356,7 @@ class GameEngine{
   if(this.input.canceled?.(p.t,'jump')){p.jumpHold=0;p.jumpTapPending=false;}
   if(this.input.canceled?.(p.t,'dribble')){p.dribbleHold=0;p.ballLiftLock=false;}
   p.dx=dx;p.dy=dy;const elapsedJump=Math.max(p.jumpHold||0,this.input.tapDuration?.(p.t,'jump')||0);
-  p.dribbleHold=s.dribble&&this.ball.owner===p?Math.max(p.dribbleHold||0,this.input.tapDuration?.(p.t,'dribble')||0)+dt:0;
+  p.dribbleHold=s.dribble&&this.ball.owner===p?(p.dribbleHold||0)+dt:0;
   if(!s.dribble||this.ball.owner!==p)p.magicHoldLatched=false;
   if(!s.dribble)p.ballLiftLock=false;
   p.jumpHold=s.jump?elapsedJump+dt:0;const defensiveSprint=this.ball.owner!==p&&!!s.jump;const running=defensiveSprint||(this.ball.owner===p&&p.jumpHold>.16);let spd=this.playerSpeed(p)*(running?1.37:1)*(p.dashTimer>0?1.7:1)*(.88+p.src.power*.0015)*(this.terrain==='Sand'?.69:1)*(this.condition==='Wet'?.86:1);
