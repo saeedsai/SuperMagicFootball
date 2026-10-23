@@ -37,3 +37,31 @@ test('Ice Patch is wired into runtime and painted independently',()=>{
  assert.match(render,/function drawIcePatches\(ctx,hazards\)/);
  assert.match(render,/drawIcePatches\(ctx,game\.magicHazards\)/);
 });
+
+test('Banana and Ice hazards coexist when alternating placements and trimming capacity',async()=>{
+ const p=await model;
+ let active=[];
+ for(let i=0;i<15;i++){
+  active=p.placeIcePatch(active,{...carrier,x:300+i},field);
+  active=p.placeBananaPeel(active,{...carrier,x:400+i},field);
+ }
+ assert.equal(active.filter(h=>h.kind==='ice').length,p.MAX_ICE_PATCHES);
+ assert.equal(active.filter(h=>h.kind==='banana').length,p.MAX_BANANA_PEELS);
+ const bananaCount=active.filter(h=>h.kind==='banana').length;
+ active=p.placeIcePatch(active,carrier,field);
+ assert.equal(active.filter(h=>h.kind==='banana').length,bananaCount);
+ const iceCount=active.filter(h=>h.kind==='ice').length;
+ active=p.placeBananaPeel(active,carrier,field);
+ assert.equal(active.filter(h=>h.kind==='ice').length,iceCount);
+});
+test('Ice and Banana aging never consumes the other hazard type',async()=>{
+ const p=await model;
+ let active=p.placeBananaPeel([],carrier,field);
+ active=p.placeIcePatch(active,carrier,field);
+ const banana=p.advanceBananaPeels(active,[],.1);
+ const ice=p.advanceIcePatches(active,[],.1);
+ assert.equal(banana.hazards.length,1);
+ assert.equal(ice.hazards.length,1);
+ assert.equal(banana.hazards[0].kind,'banana');
+ assert.equal(ice.hazards[0].kind,'ice');
+});
