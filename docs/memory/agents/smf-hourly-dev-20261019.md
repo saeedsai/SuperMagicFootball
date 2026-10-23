@@ -21,7 +21,7 @@ Continue small tested increments on existing `dev` hourly regardless of prior CI
 Only own checkpoint. Do not edit other agents' memory, create branches or bypass security.
 
 ## Evidence
-Pre-commit V8: 23 distinct shapes and safe escaped labels. Hosted CI for this candidate pending. Previous green runs do not certify it.
+Pre-commit V8: 23 distinct shapes and safe escaped labels. Hosted CI for this candidate pending. Modular QA 40016365371 failed due obsolete shared-ball path assertion; fixed in ba44d3b0267703cb045d2be650041d5e2c3c3afb. Latest exact-head CI still pending.
 
 ## Cleanup
 Checkpoint below 4 KiB; no invented deployment or QA claims.
