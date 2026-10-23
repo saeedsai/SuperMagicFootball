@@ -1,3 +1,6 @@
+## 2026-10-24 — LAN-005 guest input sender
+- LAN-005 guest sender: commit 1940052f adds sequenced guest input packet builder; b77edc65 adds Node regression for monotonic frames, action validation, atomic rejection and host queue interoperability. Transport independent, not playable LAN; package/About version unchanged. main/dev previously identical at 28de5112. Exact-head CI and Pages certification pending.
+
 ## 2026-10-24 — CI memory-contract repair after LAN-004
 - Latest LAN-004 dev head 1ccd6c67 failed Modular QA 40031378895 (550/551 tests) and Full Census preflight 40031378823: `tests/project_memory_contract.test.cjs` rejected wrong identity for smf-hourly-dev-20261019. The checkpoint rewrite used `Agent:` instead of required `**Agent ID:** \`smf-hourly-dev-20261019\`` and omitted required headings.
 - Repaired only own checkpoint with exact identity and all six headings (1b649c61), preserving LAN-004 handover. New exact-head CI pending. Earlier e1551b59 full 4+4 + Modular QA passed but is not latest head, so no promotion claim.
