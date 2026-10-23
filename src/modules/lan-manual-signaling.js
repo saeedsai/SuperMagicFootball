@@ -38,4 +38,47 @@ async function acceptLanAnswer(peer,wire){
  const signal=parseLanSignal(wire);if(signal.type!=='answer')throw new TypeError('Expected answer');
  await peer.setRemoteDescription(signal.description);
 }
-export {MAX_SIGNAL_BYTES,parseLanSignal,encodeLanSignal,createLanOffer,acceptLanOffer,acceptLanAnswer};
+
+// Manual copy/paste SDP must contain gathered ICE candidates: otherwise two
+// browsers can exchange valid SDP yet have no usable network route.
+function waitForLanIceGathering(peer, timeoutMs=15000){
+ if(!peer||typeof peer.addEventListener!=='function'||typeof peer.removeEventListener!=='function'||
+    !Number.isSafeInteger(timeoutMs)||timeoutMs<1||timeoutMs>60000)
+   throw new TypeError('Invalid ICE gathering peer or timeout');
+ if(peer.iceGatheringState==='complete')return Promise.resolve();
+ if(peer.iceGatheringState==='closed')return Promise.reject(new Error('ICE gathering closed'));
+ return new Promise((resolve,reject)=>{
+  let done=false;
+  const finish=error=>{
+   if(done)return;
+   done=true;clearTimeout(timer);
+   peer.removeEventListener('icegatheringstatechange',changed);
+   peer.removeEventListener('connectionstatechange',changed);
+   if(error)reject(error);else resolve();
+  };
+  const changed=()=>{
+   if(peer.iceGatheringState==='complete')finish();
+   else if(peer.connectionState==='closed'||peer.iceGatheringState==='closed')finish(new Error('ICE gathering closed'));
+  };
+  peer.addEventListener('icegatheringstatechange',changed);
+  peer.addEventListener('connectionstatechange',changed);
+  const timer=setTimeout(()=>finish(new Error('ICE gathering timed out')),timeoutMs);
+  changed();
+ });
+}
+async function createGatheredLanOffer(peer,timeoutMs=15000){
+ if(!peer||typeof peer.createOffer!=='function'||typeof peer.setLocalDescription!=='function')throw new TypeError('Expected RTCPeerConnection');
+ const offer=await peer.createOffer();await peer.setLocalDescription(offer);
+ await waitForLanIceGathering(peer,timeoutMs);
+ return encodeLanSignal(peer.localDescription);
+}
+async function acceptGatheredLanOffer(peer,wire,timeoutMs=15000){
+ if(!peer||typeof peer.setRemoteDescription!=='function'||typeof peer.createAnswer!=='function'||typeof peer.setLocalDescription!=='function')throw new TypeError('Expected RTCPeerConnection');
+ const signal=parseLanSignal(wire);if(signal.type!=='offer')throw new TypeError('Expected offer');
+ await peer.setRemoteDescription(signal.description);
+ const answer=await peer.createAnswer();await peer.setLocalDescription(answer);
+ await waitForLanIceGathering(peer,timeoutMs);
+ return encodeLanSignal(peer.localDescription);
+}
+
+export {MAX_SIGNAL_BYTES,parseLanSignal,encodeLanSignal,createLanOffer,acceptLanOffer,acceptLanAnswer,waitForLanIceGathering,createGatheredLanOffer,acceptGatheredLanOffer};
