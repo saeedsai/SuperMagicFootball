@@ -41,3 +41,11 @@ test('invalid and inherited catalogue keys never render an ability',()=>{
  }
  assert.match(icons.icon('shot','ninja'),/data-shot-shape="ninja"/);
 });
+
+test('player ability summary ignores inherited catalogue keys',()=>{
+ const player={role:'FW',shot:'constructor',superAbility:{type:'shoot'},dribbleType:'rainbow'};
+ const html=icons.summary(player,{}, {},[{id:'rainbow',name:'Rainbow'}],[]);
+ assert.match(html,/Player abilities/);
+ assert.doesNotMatch(html,/data-shot-shape="constructor"/);
+ assert.match(html,/Not equipped/);
+});
