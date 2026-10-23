@@ -16,7 +16,7 @@ for(const player of ['alex','leo','kwame']){
   const groups=[...svg.matchAll(/<g\s+transform="translate\((0|48) 0\)"[^>]*>([\s\S]*?)<\/g>/g)];
   assert.equal(groups.length,2,'exactly two authored 48-pixel quarter frames');
   for(const [,offset,body] of groups){
-   assert.ok((body.match(/<path\\b/g)||[]).length>=5,`quarter frame ${offset} needs distinct body geometry`);
+   assert.ok((body.match(/<path\b/g)||[]).length>=5,`quarter frame ${offset} needs distinct body geometry`);
   }
   assert.doesNotMatch(svg,/<(?:script|style)\b/i,'static-only vector sprites');
  });
