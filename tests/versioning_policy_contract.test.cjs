@@ -20,7 +20,7 @@ test('the only player-visible version is a bundled 4-field About label, not remo
  const start=ui.indexOf('function showAbout(){'),end=ui.indexOf('function showHome(){',start);
  assert.ok(start>0&&end>start);
  const about=ui.slice(start,end);
- assert.match(release,/version:'0\.9\.23\.3'/);
+ assert.match(release,/version:'0\.9\.23\.4'/);
  assert.match(about,/RELEASE\.version/);
  assert.match(about,/aboutBundleVersion/);
  assert.match(about,/aboutReleaseNotes/);
@@ -44,7 +44,7 @@ test('internal exact SHA is preserved by GitHub release workflow, not displayed 
  assert.match(flow,/hashlib\.sha256/);
  assert.match(read('docs/VERSIONING_POLICY.md'),/GitHub Pages/);
  assert.match(read('docs/VERSIONING_POLICY.md'),/internal/i);
- assert.match(read('docs/VERSIONING_POLICY.md'),/0\.9\.23\.3/);
+ assert.match(read('docs/VERSIONING_POLICY.md'),/0\.9\.23\.4/);
 });
 
 test('every game release must update README version, dated summary and playable link',()=>{
