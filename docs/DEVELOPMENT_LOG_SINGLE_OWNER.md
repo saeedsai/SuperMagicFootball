@@ -450,3 +450,10 @@ Extracted Diego's three miniature source views into transparent 132×90 indexed 
 - Added src/modules/lan-state-snapshot.js: bounded immutable host-authoritative snapshot codec for room/host, monotonic tick, match clock/scores, ball and up to 22 normalized player positions. Rejects unknown fields, duplicate slots, foreign session and stale ticks. No gameplay wiring, WebRTC transport, or two-client certification is claimed.
 - Added tests/lan-state-snapshot.test.cjs (three focused tests). Focused local Node test: 3/3 PASS with protocol-version-compatible lan-session stub; exact integrated GitHub CI still required.
 - Preserved candidate 0.9.25.0, no player-facing changes; no new branch, no roster/save/control changes. Next: integrate snapshot send/receive with RTC channel, then apply guest interpolation with real two-browser tests.
+
+## 2026-10-23 — Crown Royals graphics acceptance gate (owner follow-up)
+- Existing Alex/Leo/Kwame/Diego sprites are not artistically accepted. Do not substitute promotional generated sheets for integrated assets.
+- Fix first character Alex in actual renderer: independently authored transparent front/back/left/right side and front/back 3/4 views, remove opaque pixels and halo, align body and ball anchors across poses. Never repeat rejected strip-compositing quarter proxy.
+- Verify alpha channel programmatically, frame bounding boxes, consistent face/kit/number, no accidental backdrop, eight views and all animation transitions in desktop and simulated touch Chromium screenshots; require human visual inspection before marking art complete.
+- Then repair Leo, Kwame, Diego individually; only then author Ryo and remaining players sequentially. Preserve 223 teams/2676 players, four buttons, saves, SD09 and offline support. Full exact-head Node 4 + Chromium 4 + Modular QA, protected promotion and Pages byte smoke are release gates.
+- This entry is a tracked acceptance requirement only, not evidence that artwork, QA or deployment completed.
