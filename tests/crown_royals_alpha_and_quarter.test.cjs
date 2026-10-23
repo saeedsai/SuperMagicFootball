@@ -24,6 +24,8 @@ test('Crown renderer keeps transparent sprite edges and does not squash quarter 
  const crown=sandbox.CROWN_ROYALS;
  assert.equal(crown.status().playerCount,4);
  assert.equal(crown.status().loaded,true);
+ assert.equal(crown.status().alexQuarterLoaded,true);
+ assert.equal(crown.status().alexQuarterError,false);
  assert.deepEqual(Array.from(output.slice(0,4)),[0,0,0,0]);
  assert.deepEqual(Array.from(output.slice(4,8)),[200,100,50,255]);
  const transforms=[];
