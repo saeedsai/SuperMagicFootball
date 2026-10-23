@@ -1,9 +1,11 @@
 // Authoritative player-facing release metadata. Change only with certified game releases.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.29.1',
+ version:'0.9.29.2',
  date:'2026-10-23',
- notes:Object.freeze([\n  'Player Studio and Team Management ignore inherited Super Shot and Super Defence identifiers when presenting player abilities, preserving valid equipped badges and saved data.',
+ notes:Object.freeze([
+  'Fixed a release-metadata syntax error that prevented the game from starting on desktop and touch browsers; added JavaScript syntax preflight checks.',
+  'Player Studio and Team Management ignore inherited Super Shot and Super Defence identifiers when presenting player abilities, preserving valid equipped badges and saved data.',
   'Player Studio and Team Management now render 23 individually shaped Super Shot ball badges, with stable panel patterns, readable ability names and no changes to gameplay controls or saved data.',
   'Crown Royals diagonal gameplay views now use the original painted reference artwork instead of mismatched simplified SVG illustrations; bespoke matching quarter art remains planned.',
   'Kwame #3 quarter-view SVG assets are bundled for later art refinement; live Crown Royals diagonal gameplay currently uses painted reference sprites.',
