@@ -38,7 +38,7 @@ with sync_playwright() as pw:
   assert page.evaluate("SupermagicFootball.game.getTeam(0).id") == 'demo_crown_royals_reference'
   assert page.evaluate("SupermagicFootball.game.players.some(p=>p.t===0&&p.src?.id==='crown_royals_reference_alex')"), 'Alex must be on the pitch, not just a roster entry'
   assert page.evaluate("SupermagicFootball.game.players.some(p=>p.t===0&&p.src?.id==='crown_royals_reference_leo')"), 'Leo must be on the pitch, not just a roster entry'
-  assert page.evaluate("SupermagicFootball.game.players.some(p=>p.t===0&&p.src?.id==='crown_royals_reference_kwame')"), 'Kwame must appear on pitch'
+  assert page.evaluate("SupermagicFootball.teams.find(t=>t.id==='demo_crown_royals_reference').customRoster.some(p=>p.id==='crown_royals_reference_kwame'&&p.role==='GK')"), 'Kwame must remain the reserve GK in match roster'
   page.wait_for_timeout(450)
   images=page.evaluate("""() => {
    const e=SupermagicFootball,t=e.teams.find(t=>t.id==='demo_crown_royals_reference');
