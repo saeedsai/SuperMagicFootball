@@ -5,7 +5,7 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const path=require('node:path');
 const source=fs.readFileSync(path.join(__dirname,'../src/modules/crownroyals.js'),'utf8')
- .replace(/export \\{CROWN_ROYALS\\};?/, 'globalThis.CROWN_ROYALS=CROWN_ROYALS;');
+ .replace('export {CROWN_ROYALS};','globalThis.CROWN_ROYALS=CROWN_ROYALS;');
 test('Crown renderer keeps transparent sprite edges and does not squash quarter views',()=>{
  const pixels=new Uint8ClampedArray(132*90*4);
  pixels.set([200,100,50,12],0);
@@ -20,7 +20,7 @@ test('Crown renderer keeps transparent sprite edges and does not squash quarter 
   set src(v){this._src=v;if(this.onload)this.onload();}
  },URL,console};
  sandbox.globalThis=sandbox;
- vm.runInNewContext(source.replace(/export\\s*\\{CROWN_ROYALS\\};?/,'globalThis.CROWN_ROYALS=CROWN_ROYALS;'),sandbox);
+ vm.runInNewContext(source,sandbox);
  const crown=sandbox.CROWN_ROYALS;
  assert.equal(crown.status().playerCount,4);
  assert.equal(crown.status().loaded,true);
