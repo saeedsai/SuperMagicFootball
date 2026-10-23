@@ -20,3 +20,17 @@ test('new team does not replace old Concept Hero and preserves canonical assets'
  assert.match(read('sw.js'),/'conceptmodular','crownroyals','render'/);
  assert.match(read('sw.js'),/assets\/crown_royals\/alex_three_views\.png/);
 });
+
+test('new reference team keeps twelve unique 1–12 jerseys and 2/3/4/3 roles',()=>{
+ const ui=read('src/modules/ui.js'),start=ui.indexOf("const CROWN_ROYALS_ID=");
+ const end=ui.indexOf("const careerStorage=",start);
+ assert.ok(start>0&&end>start,'new team roster source must exist');
+ const vm=require('node:vm'),context={TEAMS:[]};
+ vm.runInNewContext(ui.slice(start,end),context,{timeout:1000});
+ const team=context.TEAMS[0],roster=team.customRoster;
+ assert.equal(roster.length,12);
+ assert.deepEqual(Array.from(roster,p=>p.num).sort((a,b)=>a-b),Array.from({length:12},(_,i)=>i+1));
+ assert.deepEqual(['GK','DF','MF','FW'].map(role=>roster.filter(p=>p.role===role).length),[2,3,4,3]);
+ assert.equal(roster.filter(p=>p.renderModel==='crown_royals_reference').length,1);
+ assert.equal(roster.find(p=>p.name==='Alex').num,1);
+});
