@@ -1,19 +1,21 @@
 # SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 23:02 Europe/Stockholm
+**Agent ID:** smf-hourly-dev-20261019 · **Updated:** 2026-10-23 23:59 Europe/Stockholm
 
 ## Mission
-Sole developer on existing dev, never stop for pending release. No new branches, force push, bypass or weakening CI. One bounded tested increment per run; only green exact-head protected main promotion.
+Only existing dev for coding, main for protected exact-green promotion. Never stop for pending CI or Pages. No branch creation, force push, safety bypass, or weakening checks. Keep 223 teams/2676 players, 6 formations, 4 action buttons, 10 Career/Cup slots, SD09, offline and saves.
 
 ## Current checkpoint
-
-## 2026-10-23 23:55 — LAN-002 handshake increment
-- Verified main/dev identical at a95f4675; Modular QA 40024359317 and Full Census 40024359322 passed all 4 Node, 4 Chromium and preview. Hosted Pages smoke was skipped; no artistic manual certification claimed.
-- Implemented complementary host/guest handshake validation and matching build/session/start sequence in src/modules/lan_protocol.js (048eef1c), with focused positive/negative tests (0ca663bc). Transport is not yet implemented and module is not loaded in the game UI; no player-facing version bump.
-- Next smallest action: inspect exact-head CI for LAN-002; fix regressions; continue two-client transport; verify hosted main Pages separately.
+- Initial main a95f4675 and dev dfe05ec7 (ahead 4, behind 0). Last certified a95f4675: Modular QA 40024359317 and Full Census 40024359322 passed; hosted Pages smoke skipped.
+- LAN-002 complementary peer handshake exists in src/modules/lan_protocol.js. LAN-003 new bounded host input queue (002e339a), regression tests (bd599451). Focused V8 runtime checks passed for queue, replay, consume and lead-window; full CI on new dev head not yet confirmed.
+- LAN protocol not loaded by UI and no live two-browser networking. About-only version stays 0.9.29.2; no player-facing update.
+- Central log records latest changes. Open issues include #38 keeper lane, #15 sprite orientation, #3 touch trick. Continue work while CI pending.
 
 ## Next smallest action
-1. Inspect exact-head CI and repair failures.
-2. Continue LAN transport and host authority on dev.
-3. Preserve 4+4 and Modular QA gate.
-4. Validate exact main/Pages hosted bytes.
-5. Progress player graphics and counterable Tricks.
+1. Inspect exact dev head CI, repair failures without bypass.
+2. Continue LAN transport integration in bounded increments.
+3. Run 4 Node + 4 Chromium + Modular QA on exact dev.
+4. Promote only green exact dev to main and verify Pages bytes.
+5. Progress counterable Tricks, Player Studio and quarter-angle graphics.
+
+## Evidence and restrictions
+Never claim hosted/graphics certification without evidence. Preserve source checkpoint and do not edit other agent memories. Keep this file below 4 KiB.
