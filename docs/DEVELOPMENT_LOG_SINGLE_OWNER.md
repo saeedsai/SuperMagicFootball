@@ -1,3 +1,7 @@
+## 2026-10-24 — CI memory-contract repair after LAN-004
+- Latest LAN-004 dev head 1ccd6c67 failed Modular QA 40031378895 (550/551 tests) and Full Census preflight 40031378823: `tests/project_memory_contract.test.cjs` rejected wrong identity for smf-hourly-dev-20261019. The checkpoint rewrite used `Agent:` instead of required `**Agent ID:** \`smf-hourly-dev-20261019\`` and omitted required headings.
+- Repaired only own checkpoint with exact identity and all six headings (1b649c61), preserving LAN-004 handover. New exact-head CI pending. Earlier e1551b59 full 4+4 + Modular QA passed but is not latest head, so no promotion claim.
+
 ## 2026-10-24 — LAN-004: missing-frame neutral host input
 - On dev, LAN-004 commits 164d23b8 (resolveGuestLanFrame) and 14df7d2c (focused regression): host produces immutable neutral four-button input when guest frame absent, and consumes real queued guest input without altering future frames. Transport independent, not user-facing; About bundle stays 0.9.29.2. Exact-head CI not yet certified.
 - Prior exact main remains a95f4675; no independent hosted Pages or graphics visual certification. Do not merge dev until fresh 4 Node + 4 Chromium + Modular QA passes.
