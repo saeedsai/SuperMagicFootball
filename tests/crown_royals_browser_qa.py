@@ -12,7 +12,7 @@ server=ThreadingHTTPServer(('127.0.0.1',0),partial(SimpleHTTPRequestHandler,dire
 Thread(target=server.serve_forever,daemon=True).start()
 try:
  with sync_playwright() as pw:
-  browser=pw.chromium.launch(headless=True,args=['--no-sandbox'])
+  browser=pw.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox','--disable-dev-shm-usage'])
   page=browser.new_page(viewport={'width':1400,'height':850},device_scale_factor=1)
   errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   page.goto(f'http://127.0.0.1:{server.server_port}/crown-royals-visual-qa.html')
