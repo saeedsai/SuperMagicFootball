@@ -1,3 +1,9 @@
+## 2026-10-24 — LAN-010 guest DataChannel sender
+- Implemented guest session handshake gate and atomic four-button DataChannel frame send on existing `dev`: source `13e281df`; three Node regression cases `a9fafed1`. Two mock peers now exchange hello and guest input through a simulated open channel to host queue/frame resolver. No signaling, live browser LAN UI or authoritative host snapshot yet.
+- Focused JS function-level smoke executed before commit: premature send rejected; host/guest hello validated; guest packet traversed mock channel and host frame queue; closed/throwing channels did not advance sender state. Full Node+Chromium CI is authoritative and pending at the final dev SHA.
+- CI diagnosis: `fetch_commit_workflow_runs` returns only PR-triggered runs, so its empty result does **not** imply no push CI. GitHub REST `/actions/runs?branch=dev` showed exact-head `759f7b1d` Modular QA success (run 40036907099), Full Regression Census run 40036906913 with 4 Node, 3 Chromium and HTTP preview green while Chromium shard 1 was still running; subsequent dev commits supersede that head. Use branch-filtered Actions REST for exact-head evidence.
+- Candidate About version remains 0.9.29.2 (internal LAN-only changes); 223 teams, 2676 players, six formations, four buttons, ten saves and offline paths untouched. Do not claim `main` or Pages deployed without exact-head green 4+4, protected promotion and hosted byte smoke.
+
 ## 2026-10-24 — LAN-009 host frame advance
 - LAN-009 host monotonic frame simulation: 044b4300 adds advanceLanHostFrame with neutral fallback and replay-frame refusal; 29f68d26 carries simulation watermark over valid guest packets; 7e1a109f adds regression cases. No UI or roster change; About version 0.9.29.2 unchanged. Earlier dev was 8 ahead main bfad8158. QA, hosted Pages and art visual checks not yet certified.
 
