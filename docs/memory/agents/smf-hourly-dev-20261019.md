@@ -1,5 +1,5 @@
 # SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** smf-hourly-dev-20261019 · **Updated:** 2026-10-23 23:59 Europe/Stockholm
+**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 23:59 Europe/Stockholm
 
 ## Mission
 Only existing dev for coding, main for protected exact-green promotion. Never stop for pending CI or Pages. No branch creation, force push, safety bypass, or weakening checks. Keep 223 teams/2676 players, 6 formations, 4 action buttons, 10 Career/Cup slots, SD09, offline and saves.
@@ -17,5 +17,11 @@ Only existing dev for coding, main for protected exact-green promotion. Never st
 4. Promote only green exact dev to main and verify Pages bytes.
 5. Progress counterable Tricks, Player Studio and quarter-angle graphics.
 
-## Evidence and restrictions
-Never claim hosted/graphics certification without evidence. Preserve source checkpoint and do not edit other agent memories. Keep this file below 4 KiB.
+## Ownership and exclusions
+Only this agent checkpoint may be edited. Never touch other agent memories or create extra branches. Do not claim playable LAN before transport integration.
+
+## Evidence
+Focused V8 queue/replay/consume/lookahead checks passed before commit. Full exact-head CI not yet observed. PR #46 is a draft QA gate, not a certified release.
+
+## Cleanup
+Keep this file under 4 KiB. No unsupported hosted Pages, visual-art, or release claims.
