@@ -1,26 +1,30 @@
 // Crown Royals: literal transparent pixels extracted from the owner's three-view
 // reference. This is a separate team/model; the existing Concept Hero is unchanged.
-// Player 1 only: other Crown Royals members use the ordinary character renderer.
+// Two independently painted reference players: Alex and Leo; others use ordinary art.
 const CROWN_ROYALS=(()=>{
- const ID='crown_royals_reference',PLAYER='crown_royals_reference_alex';
+ const ID='crown_royals_reference';
+ const PLAYERS=Object.freeze({crown_royals_reference_alex:'alex',crown_royals_reference_leo:'leo'});
  const directions=Object.freeze(['front','quarterFront','side','quarterBack','back']);
  const frames=Object.freeze({front:[0,48],quarterFront:[0,48],side:[96,36],quarterBack:[48,48],back:[48,48]});
- const atlas={image:null,loaded:false,error:false};
- function preload(){
-  if(atlas.image||typeof Image==='undefined')return;
+ const atlases={alex:{image:null,loaded:false,error:false},leo:{image:null,loaded:false,error:false}};
+ function load(name,inline){
+  const atlas=atlases[name];if(atlas.image||typeof Image==='undefined')return;
   const image=new Image();atlas.image=image;
-  image.onload=()=>{atlas.loaded=true;};
-  image.onerror=()=>{atlas.error=true;};
-  const inline=typeof CROWN_ROYALS_INLINE==='string'?CROWN_ROYALS_INLINE:null;
-  image.src=inline?'data:image/png;base64,'+inline:new URL('../../assets/crown_royals/alex_three_views.png',import.meta.url).href;
-  if(image.complete&&image.naturalWidth)atlas.loaded=true;
+  image.onload=()=>{atlas.loaded=true;};image.onerror=()=>{atlas.error=true;};
+  image.src=typeof inline==='string'?'data:image/png;base64,'+inline:new URL('../../assets/crown_royals/'+name+'_three_views.png',import.meta.url).href;
+  if(image.complete&&image.naturalWidth>0)atlas.loaded=true;
+ }
+ function preload(){
+  load('alex',typeof CROWN_ROYALS_INLINE==='string'?CROWN_ROYALS_INLINE:null);
+  load('leo',typeof CROWN_ROYALS_LEO_INLINE==='string'?CROWN_ROYALS_LEO_INLINE:null);
  }
  function isCrownPlayer(p){
-  return p?.src?.id===PLAYER&&
-   (p?.src?.renderModel===ID||p?.src?.appearance?.renderModel===ID);
+  const id=p?.src?.id;
+  return typeof id==='string'&&Object.hasOwn(PLAYERS,id)&&(p?.src?.renderModel===ID||p?.src?.appearance?.renderModel===ID);
  }
  function draw(ctx,p,view,{run=0,action='idle',phase=0}={}){
   if(!isCrownPlayer(p))return false;
+  const atlas=atlases[PLAYERS[p.src.id]];
   if(!atlas.loaded){preload();return false;}
   const kind=frames[view?.kind]?view.kind:'front';
   const [sx,sw]=frames[kind],h=141,w=sw*h/90;
@@ -49,6 +53,6 @@ const CROWN_ROYALS=(()=>{
   ctx.restore();return true;
  }
  preload();
- return Object.freeze({id:ID,playerId:PLAYER,directions,isCrownPlayer,preload,draw,status:()=>({loaded:atlas.loaded,error:atlas.error,paintedViews:3,quarterViews:'nearest-view placeholders',playerCount:1})});
+ return Object.freeze({id:ID,playerId:'crown_royals_reference_alex',playerIds:Object.keys(PLAYERS),directions,isCrownPlayer,preload,draw,status:()=>({loaded:atlases.alex.loaded,leoLoaded:atlases.leo.loaded,error:atlases.alex.error||atlases.leo.error,paintedViews:3,quarterViews:'nearest-view placeholders',playerCount:2})});
 })();
 export {CROWN_ROYALS};
