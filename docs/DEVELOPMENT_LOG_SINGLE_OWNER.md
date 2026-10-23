@@ -1,3 +1,8 @@
+## 2026-10-23 20:03 Europe/Stockholm — Leo #2 quarter sprite integration (candidate 0.9.27.0)
+- Baseline exact dev/main f9637876d632b633cceca8f320bb11aa31e3c3ff; Full Regression dev 39992218500 and Modular QA 39992218111 passed; main Census 39993883624 and Pages deployment 39993883682 passed for prior 0.9.26.0.
+- Added transparent Leo #2 ¾ front/back SVG with blond hair, headband and shirt number 2; actual Crown renderer chooses it by view, QA fixture embeds it, SW precaches it. Updated Node draw-path checks and Chromium Leo loader assertion. No roster/control/save changes.
+- Candidate 0.9.27.0 synchronized package/About/README/cache/version tests and policies. Local git clone blocked by DNS (github.com unresolved); exact-head hosted CI and visual screenshots still required. No production deployment claim.
+
 ## 2026-10-23 19:00 Europe/Stockholm — Alex ¾ sprite integration and Crown CI repair (candidate 0.9.26.0)
 - Started dev 4dedca5c40b6c25cbf8d152dd57af795a6765b5e, main bed050af5ea0b95bf9a5525b9b07a464328cf0ff. Failed Crown QA 39990913878, Full Census 39990913695, Modular QA 39990913696: CommonJS VM import.meta.url syntax and stale literal-source regex tests.
 - Commit 12824a14aea7f778c9f7238ffa49dabebdb86cc2: actual renderer now loads Alex authored transparent front/rear quarter sprites from game-relative asset paths, with identical inline art in generated Chromium fixtures and service-worker offline precache. Redrew rear quarter without mirrored face. Fixed old test contracts, expanded Crown focused CI and aligned package/About/README/version policy at 0.9.26.0.
