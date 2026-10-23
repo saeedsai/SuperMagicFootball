@@ -67,14 +67,31 @@ for(const entry of GAME_ASSETS.teams.slice(216))TEAMS.push({
 const CONCEPT_DEMO_ID='demo_concept_royals';
 const CONCEPT_DEMO_ROLES=['GK','GK','DF','DF','DF','MF','MF','MF','MF','FW','FW','FW'];
 const CONCEPT_DEMO_NUMBERS=[1,12,2,3,4,5,6,7,8,9,10,11];
-const CONCEPT_DEMO_ROSTER=CONCEPT_DEMO_ROLES.map((role,i)=>({
- id:CONCEPT_DEMO_ID+'_'+i,name:'Concept Hero '+String(i+1).padStart(2,'0'),role,
+const CONCEPT_DEMO_IDENTITIES=[
+ ['Alex Moreno','#e8b48e','#493020','messy','none','none'],
+ ['Leo Fischer','#f0c4a0','#d5a23f','swept','headband','none'],
+ ['Kwame Adu','#68422f','#161419','coils','none','none'],
+ ['Diego Rivas','#b9825c','#221b1b','fade','none','neckTattoo'],
+ ['Ryo Tanaka','#e0b49b','#8e8e97','fringe','none','none'],
+ ['Sean OConnor','#edb48c','#b95225','crop','none','freckles'],
+ ['Rafa Silva','#bd865f','#30201a','curly','none','cheekMark'],
+ ['Malik Diarra','#794d35','#c39a4b','locs','earring','none'],
+ ['Ivan Petrov','#dfaa86','#372b27','buzz','none','templeTattoo'],
+ ['Carlos Mena','#c28a65','#272027','ponytail','none','none'],
+ ['Samuel Okafor','#6c4839','#d4d6dc','shortCurls','bandage','none'],
+ ['Enzo Ferrari','#e5b58e','#68482d','long','headband','none']
+];
+const CONCEPT_DEMO_ROSTER=CONCEPT_DEMO_ROLES.map((role,i)=>{
+ const [name,skin,hair,hairStyle,accessory,mark]=CONCEPT_DEMO_IDENTITIES[i];
+ return {
+ id:CONCEPT_DEMO_ID+'_'+i,name,role,
  num:CONCEPT_DEMO_NUMBERS[i],power:72,shoot:40,defense:42,speed:'A',
  shot:'omega',shotName:'Concept Magic Shot',skill:'Illustrated Prototype',
  level:1,xp:0,renderModel:'concept_hero',
- appearance:{renderModel:'concept_hero',style:1,face:0,beard:0,accessory:0,
- skin:'#e9b18b',hair:'#78422b',body:2,stature:2,exaggeration:1}
-}));
+ appearance:{renderModel:'concept_hero',conceptHeroVariant:i,style:1,face:i,beard:0,accessory:0,
+ skin,hair,hairStyle,conceptAccessory:accessory,conceptMark:mark,body:2,stature:2,exaggeration:1}
+ };
+});
 // Explicit one-player art-preview opt-in; default game and saved rosters are unchanged.
 if(typeof location!=='undefined'&&new URLSearchParams(location.search).has('conceptModularPreview')){
  CONCEPT_DEMO_ROSTER[9].renderModel='concept_modular_v1';
