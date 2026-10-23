@@ -1,3 +1,6 @@
+## 2026-10-24 — LAN-007 handshake gate
+- LAN-007 handshake-gated peer receiver: a7467a22 adds immutable peer state and rejects input before complementary version/session hello, replay and renegotiation; 992615ba adds regressions. Non-player-facing foundation only; package/About remains 0.9.29.2. Earlier main/dev both bfad8158. CI and Pages still require exact-head verification.
+
 ## 2026-10-24 — LAN-006 transport framing
 - LAN-006 non-UI transport boundary: 16426d20 adds validated send/receive for an already-open WebRTC-compatible data channel, and 92683b97 adds tests for replay, malformed frames, channel readiness and four-button inputs. No signaling or live LAN game yet. Base main/dev was synchronized at 10a1e348 before development; exact-head CI and Pages/visual QA pending.
 
