@@ -6,7 +6,7 @@ const gameplay=JSON.parse(fs.readFileSync('data/mechanics/gameplay.json','utf8')
 const trickIds=['banana','ice','bat','fireball','freeze','scream','hideBall','teleport'];
 test('Every existing shot has its own ball icon, and every ability catalogue id has one',()=>{
  for(const [type,ids] of Object.entries({shot:Object.keys(gameplay.shotTypes),defence:Object.keys(gameplay.defensiveAbilities),trick:trickIds,dribble:gameplay.dribbleStyles.map(s=>s.id)})){
-  const markup=new Set();for(const id of ids){const html=ICONS.icon(type,id);assert.match(html,/role="img"/);assert.match(html,/<svg/);assert.match(html,/aria-label=/);assert.ok(!html.includes('Not equipped'),type+': '+id);markup.add(html);if(type==='shot')assert.match(html,/<path d="M29 22/);}
+  const markup=new Set();for(const id of ids){const html=ICONS.icon(type,id);assert.match(html,/role="img"/);assert.match(html,/<svg/);assert.match(html,/aria-label=/);assert.ok(!html.includes('Not equipped'),type+': '+id);markup.add(html);if(type==='shot'){assert.match(html,new RegExp('<path data-shot-shape="'+id+'" d="M'));assert.match(html,/<path d="M29 31L/);}}
   assert.equal(markup.size,ids.length,'icons must be unique per '+type);
  }
 });
