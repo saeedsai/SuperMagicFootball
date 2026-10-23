@@ -1,3 +1,8 @@
+## 2026-10-23 15:17 Europe/Stockholm — Kwame actual-renderer QA blocker repair
+- Found source QA fixture error: Kwame browser test injected Kwame sprite into `CROWN_ROYALS_LEO_INLINE`, leaving Kwame's own inline atlas unset in the isolated Chromium page. This could not validate Kwame.
+- Corrected independent inline bindings for Alex, Leo and Kwame, added Kwame Chromium test to Crown QA workflow and preserved screenshots in the three-player artifact. Added Kwame HTML path trigger. This is test/CI only; player-facing version remains 0.9.23.1.
+- Prior head d67e444c: Modular green; full 4+4 and Crown QA running. Exact-head new QA pending.
+
 ## 2026-10-23 15:12 Europe/Stockholm — Crown hair repair after Kwame integration
 - Kwame #3 independent reference PNG landed concurrently on dev (8a317927) with roster/QA/offline wiring. Nine other Crown teammates still placeholders.
 - Reviewed actual Alex/Leo source PNGs at 132x90: earlier Leo rear/side band recolor produced an opaque dark nape and did not correct blond silhouette; earlier Alex broad grey tint risked face pixels.

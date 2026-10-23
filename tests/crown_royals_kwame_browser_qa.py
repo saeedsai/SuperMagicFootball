@@ -15,7 +15,8 @@ alex_sprite=base64.b64encode((ROOT/'assets/crown_royals/alex_three_views.png').r
 leo_sprite=base64.b64encode((ROOT/'assets/crown_royals/leo_three_views.png').read_bytes()).decode()
 kwame_sprite=base64.b64encode((ROOT/'assets/crown_royals/kwame_three_views.png').read_bytes()).decode()
 script='const CROWN_ROYALS_INLINE='+json.dumps(alex_sprite)+';\n'
-script+='const CROWN_ROYALS_LEO_INLINE='+json.dumps(kwame_sprite)+';\n'+module+'\n'+page_js
+script+='const CROWN_ROYALS_LEO_INLINE='+json.dumps(leo_sprite)+';\n'
+script+='const CROWN_ROYALS_KWAME_INLINE='+json.dumps(kwame_sprite)+';\n'+module+'\n'+page_js
 with sync_playwright() as pw:
  browser=pw.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox','--disable-dev-shm-usage'])
  page=browser.new_page(viewport={'width':1400,'height':850},device_scale_factor=1)
