@@ -318,3 +318,6 @@ Published on existing dev: diagonal normalization `e88d279a`, host input timelin
 
 ## 2026-10-23 — LAN authenticated leave
 Added host session `leave` validation, room release and immediate host-control neutralization with `clearLanInputOnLeave` (`cb15226c`, `09ad8f16`), plus focused regression (`6592b768`). Only protocol code; no gameplay bundle/version change. Await latest exact-head 4+4 and Modular QA; no manual main push.
+
+## 2026-10-23 — guest LAN packet builder publication
+Previously blocked code published on existing dev: `a58cd164` guest sequential four-button packet builder and `57b31522` focused tests (local 3/3 PASS). No gameplay integration; version remains 0.9.17.1. Next: inspect exact-head CI; implement guest hello/leave packets, transport and actual two-browser smoke. Do not promote pending checks.
