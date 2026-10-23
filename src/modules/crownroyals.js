@@ -92,8 +92,8 @@ const CROWN_ROYALS=(()=>{
   const quarter=quarterAtlases[PLAYERS[p.src.id]];
   if(quarter&&!quarter.image)preloadQuarters(PLAYERS[p.src.id]);
   const kind=frames[view?.kind]?view.kind:'front';
-  const authoredQuarter=!!(quarter&&quarter.loaded&&(kind==='quarterFront'||kind==='quarterBack'));
-  const [sx,sw]=authoredQuarter?[kind==='quarterFront'?0:48,48]:frames[kind],h=141,w=sw*h/90;
+  // Quality gate: do not display the mismatched flat SVG quarter art.\n  // Until matching painted quarter views are approved, use original painted\n  // front/back reference pixels for diagonal directions instead.\n  const authoredQuarter=false;
+  const [sx,sw]=authoredQuarter?[kind==='quarterFront'?0:48,48]:(kind==='quarterFront'?frames.front:kind==='quarterBack'?frames.back:frames[kind]),h=141,w=sw*h/90;
   const sprite=authoredQuarter?quarter.image:(atlas.painted||atlas.image);
   const stride=Math.max(-1,Math.min(1,Number.isFinite(run)?run:0));
   const step=Math.max(-1,Math.min(1,Number.isFinite(phase)?phase:0));
@@ -149,6 +149,6 @@ const CROWN_ROYALS=(()=>{
   ctx.restore();return true;
  }
  preload();
- return Object.freeze({id:ID,playerId:'crown_royals_reference_alex',playerIds:Object.keys(PLAYERS),directions,isCrownPlayer,preload,draw,status:()=>({loaded:atlases.alex.loaded,leoLoaded:atlases.leo.loaded,kwameLoaded:atlases.kwame.loaded,diegoLoaded:atlases.diego.loaded,error:atlases.alex.error||atlases.leo.error||atlases.kwame.error||atlases.diego.error,paintedViews:3,quarterViews:'Alex, Leo and Kwame authored; Diego nearest-view placeholder',playerCount:4,alexQuarterLoaded:quarterAtlases.alex.loaded,alexQuarterError:quarterAtlases.alex.error,leoQuarterLoaded:quarterAtlases.leo.loaded,leoQuarterError:quarterAtlases.leo.error,kwameQuarterLoaded:quarterAtlases.kwame.loaded,kwameQuarterError:quarterAtlases.kwame.error,hairCorrected:!!atlases.alex.painted&&!!atlases.leo.painted})});
+ return Object.freeze({id:ID,playerId:'crown_royals_reference_alex',playerIds:Object.keys(PLAYERS),directions,isCrownPlayer,preload,draw,status:()=>({loaded:atlases.alex.loaded,leoLoaded:atlases.leo.loaded,kwameLoaded:atlases.kwame.loaded,diegoLoaded:atlases.diego.loaded,error:atlases.alex.error||atlases.leo.error||atlases.kwame.error||atlases.diego.error,paintedViews:3,quarterViews:'Reference-painted fallback active; mismatched SVG quarter art disabled',playerCount:4,alexQuarterLoaded:quarterAtlases.alex.loaded,alexQuarterError:quarterAtlases.alex.error,leoQuarterLoaded:quarterAtlases.leo.loaded,leoQuarterError:quarterAtlases.leo.error,kwameQuarterLoaded:quarterAtlases.kwame.loaded,kwameQuarterError:quarterAtlases.kwame.error,hairCorrected:!!atlases.alex.painted&&!!atlases.leo.painted})});
 })();
 export {CROWN_ROYALS};
