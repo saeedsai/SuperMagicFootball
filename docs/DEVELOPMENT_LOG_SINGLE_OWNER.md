@@ -307,3 +307,8 @@ The [30-feature](OWNER_PRIORITY_FEATURE_AUDIT_20261019.md) and [15-addition](OWN
 - UI now defaults to KEEP CURRENT; explicit REMOVE or replacement required. No storage rewrite on unchanged selection. Legacy-equipped players retain selection without elite-rating migration.
 - Added `tests/studio_magic_keep_current.test.cjs` covering Career/roster preservation, explicit removal/replacement, invalid selections, failed storage and four-button compatibility. JS handler smoke validated before commit; exact-head CI still required.
 - Version metadata, README candidate banner, About release notes, offline cache, version tests and developer checkpoint aligned. Pending full 4 Node + 4 Chromium Census, Modular QA, protected promotion, Pages and hosted bytes.
+
+## 2026-10-23 — GitHub publication recovered
+- GitHub normal authorized dev writes succeeded: Scream closing-awareness fix `6b809fa4`, LAN two-peer handshake and four-control input validation `3a60cade`, LAN regression cases `a90d0d93`, own checkpoint `b4469f0d`.
+- Scream remains rules-only and LAN remains transport-independent, not playable multiplayer. Player bundle stays 0.9.17.1; no new player-facing runtime release.
+- Previous local focused tests were 4 Scream + 4 LAN passing; new exact-head GitHub 4 Node + 4 Chromium and Modular QA require independent confirmation. No security bypass or additional branch.
