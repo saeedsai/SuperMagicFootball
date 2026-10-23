@@ -14,6 +14,12 @@ const CROWN_ROYALS=(()=>{
   const canvas=document.createElement('canvas');canvas.width=132;canvas.height=90;
   const cx=canvas.getContext('2d',{willReadFrequently:true});cx.drawImage(image,0,0);
   const frame=cx.getImageData(0,0,132,90),a=frame.data;
+  // Indexed reference sprites can contain translucent matte fringe pixels.
+  // Clear only near-invisible pixels; keep actual anti-aliased silhouette pixels.
+  // Never paint a backdrop into the transparent atlas.
+  for(let i=0;i<a.length;i+=4){
+   if(a[i+3]<24){a[i]=0;a[i+1]=0;a[i+2]=0;a[i+3]=0;}
+  }
   for(let y=2;y<28;y++)for(let x=0;x<132;x++){
    const p=(y*132+x)*4,r=a[p],g=a[p+1],b=a[p+2];if(a[p+3]<180)continue;
    let color=null;
