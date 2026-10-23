@@ -7,7 +7,7 @@ this output retains their independent deterministic physics/graphics coverage.
 from pathlib import Path
 import json,re,base64
 root=Path(__file__).resolve().parents[1]
-order=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','career_slots','cup_slots','input','visualfeel','shotfeel','physicsbalance','shotpaths','engine','bpwpersonality','artpose','characterart','concepthero','conceptmodular','crownroyals','render','release','ability-icons','ui']
+order=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','career_slots','cup_slots','input','visualfeel','shotfeel','physicsbalance','shotpaths','magic-hazards','engine','bpwpersonality','artpose','characterart','concepthero','conceptmodular','crownroyals','render','release','ability-icons','ui']
 groups=['arcade','national26','club26','legends','continental','bpw_worldcup','bpw_alltime']
 load=lambda path:json.loads((root/'data'/path).read_text())
 players={g:load(f'players/{g}.json') for g in groups}
@@ -51,8 +51,8 @@ modular_back_torso=base64.b64encode((root/'assets/characters/concept_modular_v1/
 code.append('const CONCEPT_MODULAR_BACK_TORSO_INLINE='+json.dumps(modular_back_torso)+';\n')
 for name in order:
  s=(root/'src/modules'/f'{name}.js').read_text()
- s=re.sub(r'^import \{[A-Z_]+\} from .*?;\n','',s,flags=re.M)
- s=re.sub(r'^export \{[A-Z_]+\};\n','',s,flags=re.M)
+ s=re.sub(r'^import \{[^}]+\} from .*?;\n','',s,flags=re.M)
+ s=re.sub(r'^export \{[^}]+\};\n','',s,flags=re.M)
  s=re.sub(r'^export const CAREER_SLOTS=', 'const CAREER_SLOTS=', s, flags=re.M)
  s=re.sub(r'^export const CUP_SLOTS=', 'const CUP_SLOTS=', s, flags=re.M)
  code.append(s)
