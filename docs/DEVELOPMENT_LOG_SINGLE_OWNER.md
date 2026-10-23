@@ -1,3 +1,8 @@
+## 2026-10-23 18:05 Europe/Stockholm — LAN host-to-guest snapshot channel (internal increment)
+- Based on exact dev/main a274be9506062809799ed1860d68e2831ad51f79. The previous exact-head Modular QA and 4 Node + 4 Chromium regression passed; main hosted byte smoke and Pages deployment also passed for that head.
+- Added bounded host snapshot transmission and guest-side verified room/host identity, monotonic tick acceptance, replay/malformed drop, cleanup and reconnect cursor support over caller-established RTCDataChannel. This is not peer authentication, SDP/ICE setup, actual match-state application or a playable LAN match.
+- Four focused Node tests passed in isolated local fixture with copies of existing snapshot codec/protocol; full integrated exact-head GitHub CI must certify repository version. No player-facing code, version, roster, controls, saves, offline cache or SD09 changed.
+
 ## 2026-10-23 17:05 Europe/Stockholm — New custom club stays in builder; candidate 0.9.25.1
 - Exact prior dev a2e47f50621396bc66eac4eaf12a23fcc13d6497, main 4398ba170b0bfa644a01d00b08c92a5183a0b5c0. Full Regression Census 39966330327: Node 4/4 pass, Chromium 3/4 pass; browser shard 3 failed ui_back_routes_browser_qa.py because saveNewClub navigated to Match Setup without navCustomization.
 - Replaced post-save Match Setup redirect with saved-club builder to enable immediate Edit Players/Edit Roster. Added focused Node VM regression; existing Chromium test exercises this route. Aligned four-field About-only candidate, README, policy and offline cache. No canonical team IDs, save schemas, SD09 or controls changed. Exact-head GitHub QA and hosted certification pending.
