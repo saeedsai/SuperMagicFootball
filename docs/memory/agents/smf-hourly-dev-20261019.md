@@ -1,27 +1,19 @@
-# SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 23:59 Europe/Stockholm
-
-## Mission
-Only existing dev for coding, main for protected exact-green promotion. Never stop for pending CI or Pages. No branch creation, force push, safety bypass, or weakening checks. Keep 223 teams/2676 players, 6 formations, 4 action buttons, 10 Career/Cup slots, SD09, offline and saves.
+# SuperMagicFootball — sole hourly developer checkpoint
+Agent: smf-hourly-dev-20261019. Updated 2026-10-24.
 
 ## Current checkpoint
-- Initial main a95f4675 and dev dfe05ec7 (ahead 4, behind 0). Last certified a95f4675: Modular QA 40024359317 and Full Census 40024359322 passed; hosted Pages smoke skipped.
-- LAN-002 complementary peer handshake exists in src/modules/lan_protocol.js. LAN-003 new bounded host input queue (002e339a), regression tests (bd599451). Focused V8 runtime checks passed for queue, replay, consume and lead-window; full CI on new dev head not yet confirmed.
-- LAN protocol not loaded by UI and no live two-browser networking. About-only version stays 0.9.29.2; no player-facing update.
-- Central log records latest changes. Open issues include #38 keeper lane, #15 sprite orientation, #3 touch trick. Continue work while CI pending.
+## 2026-10-24 — LAN-004: missing-frame neutral host input
+- On dev, LAN-004 commits 164d23b8 (resolveGuestLanFrame) and 14df7d2c (focused regression): host produces immutable neutral four-button input when guest frame absent, and consumes real queued guest input without altering future frames. Transport independent, not user-facing; About bundle stays 0.9.29.2. Exact-head CI not yet certified.
+- Prior exact main remains a95f4675; no independent hosted Pages or graphics visual certification. Do not merge dev until fresh 4 Node + 4 Chromium + Modular QA passes.
+
+Preserve 223 teams/2676 players, six formations, exactly four action buttons, 10 Career/Cup slots, SD09, offline/save compatibility. No extra branch, force-push or bypass. LAN-001/002/003 remain foundation only, not live multiplayer.
 
 ## Next smallest action
-1. Inspect exact dev head CI, repair failures without bypass.
-2. Continue LAN transport integration in bounded increments.
-3. Run 4 Node + 4 Chromium + Modular QA on exact dev.
-4. Promote only green exact dev to main and verify Pages bytes.
-5. Progress counterable Tricks, Player Studio and quarter-angle graphics.
+1. Inspect exact dev CI for latest LAN-004 and fix failures.
+2. Finish two-peer live transport and frame synchronization in bounded dev commits.
+3. Require 4 Node + 4 Chromium + Modular QA exact-head green.
+4. Permit protected main promotion only from fully certified dev; verify Pages SHA/bytes.
+5. Continue counterable Tricks and Crown Royals independent directional graphics QA.
 
-## Ownership and exclusions
-Only this agent checkpoint may be edited. Never touch other agent memories or create extra branches. Do not claim playable LAN before transport integration.
-
-## Evidence
-Focused V8 queue/replay/consume/lookahead checks passed before commit. Full exact-head CI not yet observed. PR #46 is a draft QA gate, not a certified release.
-
-## Cleanup
-Keep this file under 4 KiB. No unsupported hosted Pages, visual-art, or release claims.
+## Ownership
+Read only AGENTS.md, VERSIONING_POLICY, SHARED and this own checkpoint. Keep updating central dev log and own checkpoint. Never suspend authorized hourly development due to pending releases.
