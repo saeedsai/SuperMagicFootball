@@ -8,6 +8,8 @@ on:
       - 'src/modules/render.js'
       - 'src/modules/ui.js'
       - 'tests/concept_hero*'
+      - 'tests/concept_royals*'
+      - 'concept-royals-visual-qa.html'
       - 'scripts/clean_concept_hero_atlas.py'
       - 'tests/pitch_length_20pct.test.cjs'
       - 'sw.js'
@@ -34,6 +36,8 @@ jobs:
         run: node --test tests/*.test.cjs
       - name: Play Concept Royals FC in Chromium, verify sprites, capture screenshots
         run: python3 tests/concept_hero_browser_qa.py
+      - name: Capture 12-player five-view idle and 300-frame running sheets in Chromium
+        run: python3 tests/concept_royals_sheet_browser_qa.py
       - name: Verify all sprite transparency islands and alternate running strides
         run: python3 tests/concept_hero_animation_qa.py
       - name: Retain actual game screenshot artifacts
