@@ -1,3 +1,9 @@
+## 2026-10-23 23:59 Europe/Stockholm — LAN-003 bounded host input queue
+- Initial main a95f4675, dev dfe05ec7 (ahead 4, behind 0); exact-head workflow lookup returned no runs, so no LAN-002 certification claim. Existing open issue #38 keeper roll, #15 sprite orientation, #3 touch trick remain relevant backlog.
+- Implemented host-authoritative, transport-independent input queue with eight-frame lookahead, replay/old-frame/session/type rejection and single-consumption semantics in src/modules/lan_protocol.js (002e339a). Added focused tests in tests/lan_protocol.test.cjs (bd599451). V8 focused runtime checks for queue/replay/consume/lead passed before commit. Full 4 Node + 4 Chromium + Modular QA on this new dev head not yet confirmed.
+- No player-visible module import or version change: About-only version remains 0.9.29.2. No actual LAN transport, visual art certification or new main deployment claimed.
+- Next: inspect latest exact-head CI, fix any failures, add safe transport integration, verify main/Pages hosted byte smoke and graphics.
+
 
 ## 2026-10-23 23:55 — LAN-002 handshake increment
 - Verified main/dev identical at a95f4675; Modular QA 40024359317 and Full Census 40024359322 passed all 4 Node, 4 Chromium and preview. Hosted Pages smoke was skipped; no artistic manual certification claimed.
