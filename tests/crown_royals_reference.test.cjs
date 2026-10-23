@@ -34,3 +34,10 @@ test('new reference team keeps twelve unique 1–12 jerseys and 2/3/4/3 roles',(
  assert.equal(roster.filter(p=>p.renderModel==='crown_royals_reference').length,1);
  assert.equal(roster.find(p=>p.name==='Alex').num,1);
 });
+
+test('match actions feed Crown sprite transforms rather than preview-only aliases',()=>{
+ const render=read('src/modules/render.js'),sprite=read('src/modules/crownroyals.js');
+ assert.match(render,/CROWN_ROYALS\.draw\(ctx,p,view,\{run,action:p\.action,phase:/);
+ assert.match(sprite,/action==='kick'\|\|action==='super'\?'shoot'/);
+ assert.match(sprite,/action==='slide'\?'tackle'/);
+});

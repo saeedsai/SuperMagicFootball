@@ -4,6 +4,7 @@ const RELEASE=Object.freeze({
  version:'0.9.20.0',
  date:'2026-10-23',
  notes:Object.freeze([
+  'Mapped real match kick/super/slide action states to Crown Royals provisional pose transforms, instead of limiting them to QA preview names.',
   'Added a separate Crown Royals (Art WIP) selectable team without changing the previous Concept Royals; Alex now uses the first literal three-view reference sprite with a basic running-leg prototype. Other eleven members, quarter angles and action art remain unfinished.',
   'Corrected Concept Royals player portraits: original painted eyes, nose and mouth are preserved while skin and hair are recoloured directly in the existing five-view sprite atlas; removed opaque face masks.',
   'Concept Royals FC now has twelve named male identities with varied skin and hair colours plus selected markings/accessories on a shared five-view illustrated atlas; individually authored hair silhouettes and action animations remain future work.',

@@ -1,5 +1,9 @@
 # SuperMagicFootball — centralized development log
 
+## 2026-10-23 13:18 Europe/Stockholm — live action pose mapping
+- Browser screenshots exposed preview-only `shoot`/`tackle` names while real match uses `kick`/`slide`; added action mapping and passed nonzero pose phase from match timer to new Crown renderer. No physics or control changes. Added focused contract and updated candidate release notes.
+- Specialized renderer Chromium QA 39944291648 PASS on earlier source; exact latest-head 4+4 and new real-match screenshot QA still pending.
+
 ## 2026-10-23 13:05 Europe/Stockholm — CI blocker repair
 - Exact failing source QA: Modular 39943679151 and full preflight 39943679315 had five stale test assumptions: prior module adjacency, 0.9.19.1 literals, and required checkpoint headings. Updated test contracts without weakening runtime assertions. Browser regression at previous head 39941799749 failed on removed `conceptDemo` shortcut; updated both Concept Hero and Concept Modular browser tests to select the original team by stable ID rather than assuming it is last.
 - Crown reference-art team and old Concept Royals remain separate; release candidate unchanged pending exact-head CI.

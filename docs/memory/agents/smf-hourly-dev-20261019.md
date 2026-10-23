@@ -8,7 +8,7 @@ Never pause for pending CI/release. Work only on existing dev; promote exact gre
 - Start dev `d48c987d6ec94e9ed0b09e03a301d4fdb60d7dc1`; main `385022294d86fdaf5c25ad33222b6bba978c412b`.
 - New candidate 0.9.20.0: separate Crown Royals (Art WIP) team, first reference-derived Alex #1 3-view sprite and experimental run/action transforms. Previous Concept Royals FC and canonical 223 teams/2676 players untouched.
 - Asset is transparent, cropped from owner-supplied artwork, 132x90 palette PNG. Front/back/side genuine; quarter views use nearest art. Other 11 players are placeholders. No claims of finished bespoke animations or QA acceptance.
-- Added specialized Chromium screenshot QA and focused Node tests. Exact-head 4+4, Modular QA, main and Pages pending.
+- Added specialized Chromium screenshot QA and focused Node tests. Renderer-only Chromium QA 39944291648 PASS (3 genuine projections, action differences). Mapped live kick/super/slide to provisional poses. Exact-head 4+4, match QA, main and Pages pending.
 
 ## Next smallest action
 1. Inspect new Crown Royals Chromium screenshots and CI; fix concrete defects.

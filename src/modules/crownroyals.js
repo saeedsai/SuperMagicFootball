@@ -28,9 +28,10 @@ const CROWN_ROYALS=(()=>{
   const step=Math.max(-1,Math.min(1,Number.isFinite(phase)?phase:0));
   ctx.save();ctx.imageSmoothingEnabled=false;
   if(kind==='quarterFront'||kind==='quarterBack')ctx.scale(.86,1);
-  if(action==='jump')ctx.translate(0,-Math.max(0,step)*15);
-  if(action==='shoot')ctx.rotate(-step*.16);
-  if(action==='tackle')ctx.rotate(step*.20);
+  const poseAction=action==='kick'||action==='super'?'shoot':action==='slide'?'tackle':action;
+  if(poseAction==='jump')ctx.translate(0,-Math.max(0,step)*15);
+  if(poseAction==='shoot')ctx.rotate(-step*.16);
+  if(poseAction==='tackle')ctx.rotate(step*.20);
   ctx.translate(-w/2,-h+6);ctx.scale(w/sw,h/90);
   // The reference contains three genuine projections. Quarter projections are
   // interim nearest-view previews, not falsely advertised as painted directions.
