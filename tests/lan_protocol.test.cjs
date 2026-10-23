@@ -252,3 +252,50 @@ test('LAN-009 queued guest packet survives previous frame and watermark survives
  assert.equal(delivered.state.queue.pending.length,1);
  assert.throws(()=>p.advanceLanHostFrame(delivered.state,42));
 });
+
+test('LAN-010 two peers handshake and guest DataChannel input reaches host frame',async()=>{
+ const p=await load(),guestHello={...hello,role:'guest'};
+ const host=p.createLanHostSession(hello),guest=p.createLanGuestSession(guestHello);
+ const hostReady=p.acceptLanHostMessage(host,p.serializeLanPacket(guestHello),40);
+ const guestReady=p.acceptLanGuestHello(guest,p.serializeLanPacket(hello));
+ assert.equal(guestReady.sender.lastSequence,0);
+ const sent=[],channel={readyState:'open',send:payload=>sent.push(payload)};
+ const outgoing=p.sendLanGuestFrame(guestReady,channel,42,['pass','jump'],1,0);
+ assert.equal(outgoing.state.sender.lastSequence,1);
+ assert.equal(sent.length,1);
+ assert.equal(outgoing.bytes,sent[0].length);
+ const queued=p.acceptLanHostMessage(hostReady.state,sent[0],40);
+ assert.equal(queued.kind,'accepted');
+ const frame=p.advanceLanHostFrame(queued.state,42);
+ assert.equal(frame.received,true);
+ assert.deepEqual(frame.input,{frame:42,buttons:['pass','jump'],dx:1,dy:0});
+ assert.equal(guest.sender,null,'original guest session stays unchanged');
+});
+test('LAN-010 guest rejects premature input and invalid or repeated hello',async()=>{
+ const p=await load(),guestHello={...hello,role:'guest'};
+ const guest=p.createLanGuestSession(guestHello);
+ assert.throws(()=>p.createLanGuestSession(hello));
+ assert.throws(()=>p.acceptLanGuestHello(guest,p.serializeLanPacket(input)));
+ assert.throws(()=>p.acceptLanGuestHello(guest,p.serializeLanPacket(guestHello)));
+ assert.throws(()=>p.acceptLanGuestHello(guest,p.serializeLanPacket({...hello,build:'0.9.29.3'})));
+ assert.throws(()=>p.sendLanGuestFrame(guest,{readyState:'open',send(){}},42,['pass']));
+ const ready=p.acceptLanGuestHello(guest,p.serializeLanPacket(hello));
+ assert.throws(()=>p.acceptLanGuestHello(ready,p.serializeLanPacket(hello)));
+});
+test('LAN-010 guest send failures and invalid controls do not advance sender state',async()=>{
+ const p=await load(),guest=p.createLanGuestSession({...hello,role:'guest'});
+ const ready=p.acceptLanGuestHello(guest,p.serializeLanPacket(hello));
+ const closed={readyState:'connecting',send(){throw Error('should not send')}};
+ assert.throws(()=>p.sendLanGuestFrame(ready,closed,42,['pass']));
+ assert.throws(()=>p.sendLanGuestFrame(ready,{readyState:'open',send(){throw Error('disconnect')}},42,['pass']));
+ assert.throws(()=>p.sendLanGuestFrame(ready,{readyState:'open',send(){}},42,['kick']));
+ assert.equal(ready.sender.lastSequence,0);
+ const sent=[],open={readyState:'open',send:payload=>sent.push(payload)};
+ const first=p.sendLanGuestFrame(ready,open,42,['shoot']);
+ assert.equal(first.packet.sequence,1);
+ assert.throws(()=>p.sendLanGuestFrame(first.state,open,42,['shoot']));
+ const second=p.sendLanGuestFrame(first.state,open,43,['dribble']);
+ assert.equal(second.packet.sequence,2);
+ assert.equal(sent.length,2);
+ assert.equal(ready.sender.lastSequence,0);
+});
