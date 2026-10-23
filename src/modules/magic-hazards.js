@@ -2,7 +2,9 @@
 const BANANA_LIFETIME=3, BANANA_ARM_TIME=.25, BANANA_RADIUS=27, MAX_BANANA_PEELS=6;
 function placeBananaPeel(active,carrier,field){
  if(!Array.isArray(active)||!carrier||!field||!Number.isFinite(carrier.x)||!Number.isFinite(carrier.y)||![0,1].includes(carrier.t))throw new TypeError('Invalid banana peel placement');
- const vx=Number(carrier.dx)||Number(carrier.face)||1,vy=Number(carrier.dy)||0;
+ const moveX=Number(carrier.dx)||0,moveY=Number(carrier.dy)||0;
+ const moving=Math.hypot(moveX,moveY)>.1;
+ const vx=moving?moveX:Number(carrier.face)||1,vy=moving?moveY:0;
  const magnitude=Math.hypot(vx,vy)||1;
  const x=Math.max(field.x+25,Math.min(field.x+field.w-25,carrier.x-vx/magnitude*42));
  const y=Math.max(field.y+25,Math.min(field.y+field.h-25,carrier.y-vy/magnitude*42));
