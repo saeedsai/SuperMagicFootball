@@ -1,3 +1,6 @@
+## 2026-10-24 — LAN-009 host frame advance
+- LAN-009 host monotonic frame simulation: 044b4300 adds advanceLanHostFrame with neutral fallback and replay-frame refusal; 29f68d26 carries simulation watermark over valid guest packets; 7e1a109f adds regression cases. No UI or roster change; About version 0.9.29.2 unchanged. Earlier dev was 8 ahead main bfad8158. QA, hosted Pages and art visual checks not yet certified.
+
 ## 2026-10-24 — LAN-008 host channel/queue bridge
 - LAN-008: atomic host handshake-to-frame queue bridge (4c148c1d) and targeted positive/timing-rejection/retransmit/session tests (901a8c70). A rejected future frame does not advance peer replay state. Protocol groundwork only; no live networking/UI changes, version 0.9.29.2 unchanged. At start dev was 4 ahead of main bfad8158; exact-head QA/Pages not confirmed.
 
