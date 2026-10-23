@@ -118,3 +118,30 @@ test('LAN-004 consumes supplied guest input without changing future queued packe
  assert.equal(present.state.pending.length,1);
  assert.equal(p.resolveGuestLanFrame(present.state,42).received,true);
 });
+
+test('LAN-005 guest input sender advances frames and sequence without mutating old state',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ const firstState=p.createGuestLanSender(guest,hello);
+ const first=p.buildGuestLanInput(firstState,41,['jump','pass'],1,0);
+ assert.equal(first.packet.sequence,1);
+ assert.equal(first.packet.frame,41);
+ assert.equal(firstState.lastSequence,0);
+ assert.ok(Object.isFrozen(first.packet.buttons));
+ const second=p.buildGuestLanInput(first.state,42,['shoot'],0,-1);
+ assert.equal(second.packet.sequence,2);
+ assert.equal(second.packet.dy,-1);
+ assert.equal(p.enqueueGuestLanInput(p.createHostLanInputQueue(hello,guest),second.packet,40).accepted,true);
+});
+test('LAN-005 guest sender rejects stale frames and invalid controls atomically',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ const initial=p.createGuestLanSender(guest,hello);
+ assert.throws(()=>p.createGuestLanSender(hello,guest));
+ assert.throws(()=>p.buildGuestLanInput(initial,7,['kick'],0,0));
+ assert.throws(()=>p.buildGuestLanInput(initial,7,['pass','pass'],0,0));
+ assert.throws(()=>p.buildGuestLanInput(initial,7,['pass'],2,0));
+ assert.equal(initial.lastSequence,0);
+ const accepted=p.buildGuestLanInput(initial,7,['pass'],0,0);
+ assert.throws(()=>p.buildGuestLanInput(accepted.state,7,['pass'],0,0));
+ assert.throws(()=>p.buildGuestLanInput(accepted.state,6,['pass'],0,0));
+ assert.throws(()=>p.buildGuestLanInput(accepted.state,1000000001,[],0,0));
+});
