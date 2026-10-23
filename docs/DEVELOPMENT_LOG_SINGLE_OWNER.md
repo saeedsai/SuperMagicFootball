@@ -1,3 +1,6 @@
+## 2026-10-24 — Magic Trick hold controls
+- 2026-10-24 Magic Trick control: Hold DRIBBLE for one full second in continuous ball possession, once per hold, to trigger equipped separate Magic Trick. Jump/pass/shoot chords excluded, dribble tap preserved; eight bounded effects with counter, stamina and cooldown. Engine e3999854, possession fixes f6eef8f9/24cfe61a, UI 90ccfdbc, regression a67946d4/2f2b54da. Candidate 0.9.30.0; exact head CI, gameplay/graphics visual and main/Pages verification pending.
+
 ## 2026-10-24 — LAN-010 guest DataChannel sender
 - Implemented guest session handshake gate and atomic four-button DataChannel frame send on existing `dev`: source `13e281df`; three Node regression cases `a9fafed1`. Two mock peers now exchange hello and guest input through a simulated open channel to host queue/frame resolver. No signaling, live browser LAN UI or authoritative host snapshot yet.
 - Focused JS function-level smoke executed before commit: premature send rejected; host/guest hello validated; guest packet traversed mock channel and host frame queue; closed/throwing channels did not advance sender state. Full Node+Chromium CI is authoritative and pending at the final dev SHA.
