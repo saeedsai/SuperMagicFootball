@@ -11,6 +11,7 @@ from PIL import Image, ImageChops
 from playwright.sync_api import sync_playwright
 import hashlib
 import json
+import base64
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'docs/qa_runs_concept_hero'
@@ -34,11 +35,11 @@ try:
         assert page.locator('#sheet').get_attribute('width') == '1560'
         idle = OUT / 'concept_royals_12_players_5_views_idle.png'
         timeline = OUT / 'concept_royals_12_players_5_views_running_timeline.png'
-        page.locator('#sheet').screenshot(path=str(idle))
+        idle.write_bytes(base64.b64decode(page.evaluate("document.querySelector('#sheet').toDataURL('image/png')").split(',', 1)[1]))
         page.locator('#timeline').click()
         page.wait_for_function("document.querySelector('#status').textContent.includes('300 actual renderer calls')",
                                timeout=30000)
-        page.locator('#sheet').screenshot(path=str(timeline))
+        timeline.write_bytes(base64.b64decode(page.evaluate("document.querySelector('#sheet').toDataURL('image/png')").split(',', 1)[1]))
         with Image.open(idle) as a, Image.open(timeline) as b:
             assert a.size == b.size == (1560, 2440), (a.size, b.size)
             assert ImageChops.difference(a.convert('RGB'), b.convert('RGB')).getbbox(), 'Idle and running sheet are identical'
