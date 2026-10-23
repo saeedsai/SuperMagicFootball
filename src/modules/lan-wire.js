@@ -14,7 +14,8 @@ const encoder = new TextEncoder();
 function validateWirePacket(packet) {
   if (!plain(packet) || !['hello', 'leave', 'input'].includes(packet.type) ||
       packet.version !== LAN_PROTOCOL_VERSION ||
-      !ID.test(packet.roomId) || !ID.test(packet.peerId)) {
+      (typeof packet.roomId !== 'string' || !ID.test(packet.roomId)) ||
+      (typeof packet.peerId !== 'string' || !ID.test(packet.peerId))) {
     throw new TypeError('Invalid LAN wire envelope');
   }
   const base = ['type', 'version', 'roomId', 'peerId'];
