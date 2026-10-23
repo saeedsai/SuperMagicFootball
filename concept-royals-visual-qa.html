@@ -5,7 +5,7 @@
 <body><h1>Concept Royals FC — renderer QA (12 players × 5 views)</h1>
 <p>This page calls the real <code>CONCEPT_HERO.draw()</code> renderer and uses the existing game atlas. It is not a generated concept illustration. The character bodies are still shared and the animation is experimental.</p>
 <p id="status" class="status">Loading game artwork…</p>
-<button id="idle">Idle views</button><button id="running">Running frames</button><button id="download">Save PNG</button>
+<button id="idle">Idle views</button><button id="running">Running frames</button><button id="timeline">Five-frame running timeline</button><button id="download">Save PNG</button>
 <canvas id="sheet" width="1560" height="2440"></canvas>
 <script type="module">
 import {CONCEPT_HERO} from './src/modules/concepthero.js';
@@ -29,16 +29,28 @@ function render(){
    ctx.fillStyle='#bbc7e0';ctx.font='12px system-ui';ctx.fillText(views[j],x+6,y+14);
    const p={src:{renderModel:'concept_hero',appearance:{renderModel:'concept_hero',conceptHeroVariant:i,skin,hair,hairStyle}}};
    ctx.save();ctx.translate(x+96,y+149);
-   const run=mode==='running'?[-.95,-.5,0,.5,.95][j]:0;
-   CONCEPT_HERO.draw(ctx,p,{kind:views[j]},{run});
-   ctx.restore();
+   if(mode==='timeline'){
+    // Five consecutive stride samples for EACH direction, not one phase per view.
+    // This is the current experimental running rig; other action animations are not claimed.
+    ctx.restore();
+    for(let frame=0;frame<5;frame++){
+     ctx.save();ctx.translate(x+22+frame*36,y+147);ctx.scale(.70,.70);
+     CONCEPT_HERO.draw(ctx,p,{kind:views[j]},{run:[-.95,-.5,0,.5,.95][frame]});
+     ctx.restore();
+    }
+   }else{
+    const run=mode==='running'?[-.95,-.5,0,.5,.95][j]:0;
+    CONCEPT_HERO.draw(ctx,p,{kind:views[j]},{run});
+    ctx.restore();
+   }
   }
  }
- status.textContent='Rendered from the game atlas: '+identities.length+' players × '+views.length+' views. '+(mode==='running'?'Running stride samples across five views.':'Idle poses.');
+ status.textContent='Rendered from the game atlas: '+identities.length+' players × '+views.length+' views. '+(mode==='timeline'?'Five running stride phases per view (300 actual renderer calls).':mode==='running'?'Running stride samples across five views.':'Idle poses.');
  return true;
 }
 const poll=setInterval(()=>{if(render())clearInterval(poll)},250);
 document.getElementById('idle').onclick=()=>{mode='idle';render()};
 document.getElementById('running').onclick=()=>{mode='running';render()};
+document.getElementById('timeline').onclick=()=>{mode='timeline';render()};
 document.getElementById('download').onclick=()=>{if(!render())return;const a=document.createElement('a');a.download='concept-royals-'+mode+'-renderer-qa.png';a.href=canvas.toDataURL('image/png');a.click()};
 </script></body></html>
