@@ -57,39 +57,16 @@ const CROWN_ROYALS=(()=>{
   const id=p?.src?.id;
   return typeof id==='string'&&Object.hasOwn(PLAYERS,id)&&(p?.src?.renderModel===ID||p?.src?.appearance?.renderModel===ID);
  }
- // A bounded 2.5D quarter projection from TWO real owner-reference sprites.
- // This is NOT independently painted quarter art or a three-dimensional rig.
- function quarterSprite(atlas,kind){
-  if(typeof document==='undefined')return null;
-  const key=kind==='quarterFront'?'front':'back';
-  if(!atlas.quarters)atlas.quarters=Object.create(null);
-  if(atlas.quarters[key])return atlas.quarters[key];
-  const source=atlas.painted||atlas.image;
-  const canvas=document.createElement('canvas');canvas.width=48;canvas.height=90;
-  const g=canvas.getContext('2d');if(!g)return null;
-  g.imageSmoothingEnabled=false;
-  const baseX=key==='front'?0:48;
-  // Main face and kit remain derived from the correct direction.
-  g.drawImage(source,baseX,0,48,90,0,0,45,90);
-  // Narrow side plane is visible only at the far right silhouette. Its different
-  // hair, ear, shoulder and shirt pixels add directional volume without replacing
-  // facial pixels across the middle of the head.
-  g.save();g.beginPath();g.rect(39,0,9,90);g.clip();
-  g.drawImage(source,96,0,36,90,15,0,36,90);g.restore();
-  atlas.quarters[key]=canvas;
-  return canvas;
- }
  function draw(ctx,p,view,{run=0,action='idle',phase=0}={}){
   if(!isCrownPlayer(p))return false;
   const atlas=atlases[PLAYERS[p.src.id]];
   if(!atlas.loaded){preload();return false;}
   const kind=frames[view?.kind]?view.kind:'front';
-  const projected=(kind==='quarterFront'||kind==='quarterBack')?quarterSprite(atlas,kind):null;
-  const [sx,sw]=projected?[0,48]:frames[kind],source=projected||atlas.painted||atlas.image,h=141,w=sw*h/90;
+  const [sx,sw]=frames[kind],h=141,w=sw*h/90;
   const stride=Math.max(-1,Math.min(1,Number.isFinite(run)?run:0));
   const step=Math.max(-1,Math.min(1,Number.isFinite(phase)?phase:0));
   ctx.save();ctx.imageSmoothingEnabled=false;
-  // Quarter projection already contains a side plane; do not flatten it again.
+  if(kind==='quarterFront'||kind==='quarterBack')ctx.scale(.86,1);
   const poseAction=action==='kick'||action==='super'?'shoot':action==='slide'?'tackle':action;
   if(poseAction==='jump')ctx.translate(0,-Math.abs(step)*15);
   if(poseAction==='shoot')ctx.rotate(-step*.16);
@@ -105,14 +82,14 @@ const CROWN_ROYALS=(()=>{
     ctx.save();const pivot=left?sw*.30:sw*.70;
     ctx.translate(pivot,upper);ctx.rotate(stride*sign*.16);
     ctx.translate(-pivot,-upper);
-    ctx.drawImage(source,sx+partX,upper,partW,90-upper,partX,upper,partW,90-upper);
+    ctx.drawImage(atlas.painted||atlas.image,sx+partX,upper,partW,90-upper,partX,upper,partW,90-upper);
     ctx.restore();
    }
-   ctx.drawImage(source,sx,0,sw,upper,0,0,sw,upper);
-  }else ctx.drawImage(source,sx,0,sw,90,0,0,sw,90);
+   ctx.drawImage(atlas.painted||atlas.image,sx,0,sw,upper,0,0,sw,upper);
+  }else ctx.drawImage(atlas.painted||atlas.image,sx,0,sw,90,0,0,sw,90);
   ctx.restore();return true;
  }
  preload();
- return Object.freeze({id:ID,playerId:'crown_royals_reference_alex',playerIds:Object.keys(PLAYERS),directions,isCrownPlayer,preload,draw,status:()=>({loaded:atlases.alex.loaded,leoLoaded:atlases.leo.loaded,kwameLoaded:atlases.kwame.loaded,error:atlases.alex.error||atlases.leo.error||atlases.kwame.error,paintedViews:3,quarterViews:'layered front/side and back/side composite; bespoke quarter art pending',playerCount:3,hairCorrected:!!atlases.alex.painted&&!!atlases.leo.painted})});
+ return Object.freeze({id:ID,playerId:'crown_royals_reference_alex',playerIds:Object.keys(PLAYERS),directions,isCrownPlayer,preload,draw,status:()=>({loaded:atlases.alex.loaded,leoLoaded:atlases.leo.loaded,kwameLoaded:atlases.kwame.loaded,error:atlases.alex.error||atlases.leo.error||atlases.kwame.error,paintedViews:3,quarterViews:'nearest-view placeholders',playerCount:3,hairCorrected:!!atlases.alex.painted&&!!atlases.leo.painted})});
 })();
 export {CROWN_ROYALS};

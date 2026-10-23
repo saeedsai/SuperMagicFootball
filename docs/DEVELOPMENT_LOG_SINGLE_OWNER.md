@@ -429,3 +429,6 @@ Prevented existing Career from hijacking Settings Studio. Studio Back routes to 
 
 ### 2026-10-23 — Crown Royals quarter depth proxy (0.9.24.0 candidate)
 Cached 48x90 front-quarter/back-quarter sprites combine owner-reference front/back and side pixels without flattening the player by 0.86. All three integrated players share this pipeline; 3 source views remain the only hand-authored ones. This is a 2.5D directional improvement, not genuine 3D/finished quarter or bespoke action animation; review exact Chromium captures before art acceptance.
+
+### 2026-10-23 — Crown quarter compositing rejected in visual QA
+The 2.5D side-strip prototype produced duplicated hair/body silhouettes at screenshot scale. Reverted only that experimental renderer and its provisional acceptance tests; kept independently verified menu changes and existing original Crown atlas/hair fixes. Do not advertise depth/3D as complete. Prioritize independently painted front/back-quarter and genuine frame animations.
