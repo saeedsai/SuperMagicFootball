@@ -1,3 +1,8 @@
+
+## 2026-10-23 23:55 — LAN-002 handshake increment
+- Verified main/dev identical at a95f4675; Modular QA 40024359317 and Full Census 40024359322 passed all 4 Node, 4 Chromium and preview. Hosted Pages smoke was skipped; no artistic manual certification claimed.
+- Implemented complementary host/guest handshake validation and matching build/session/start sequence in src/modules/lan_protocol.js (048eef1c), with focused positive/negative tests (0ca663bc). Transport is not yet implemented and module is not loaded in the game UI; no player-facing version bump.
+- Next smallest action: inspect exact-head CI for LAN-002; fix regressions; continue two-client transport; verify hosted main Pages separately.
 ## 2026-10-23 23:02 Europe/Stockholm — LAN-001 packet contract (non-player-facing roadmap increment)
 - While release CI was pending, added src/modules/lan_protocol.js and tests/lan_protocol.test.cjs directly to dev (commits b1285a3bc269620fbd44be2a2283b08ce28a883d, bf5047b7fdf378cf1eda4c7360d1502674cf64ba). Supports versioned host/guest hello and canonical four-button input packet, strict session/frame/sequence validation, duplicate/unknown action rejection, replay suppression and sanitized untrusted fields.
 - Focused V8 runtime: module parse, JSON roundtrip, replay rejection and three invalid-packet cases passed. GitHub exact-head Node/Chromium/Modular QA remains pending. No transport, two-browser sync or LAN UI yet; not a playable LAN claim. Not imported into shipped game; no player-facing version bump beyond startup fix 0.9.29.2.
