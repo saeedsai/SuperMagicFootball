@@ -1,3 +1,9 @@
+## 2026-10-23 22:02 Europe/Stockholm — unique Super Shot ball badges (candidate 0.9.29.0)
+- Start: dev 60fa55fdae74dc4cd3d73cfb598a0ee71efbb7d0, main ff114be6c5ae4fff8f0f155e82b4b60753238320, diverged by one main-only commit. Previous exact-head dev CI: Census 40012769919 and Modular 40012769944 both green, but not proof for this new candidate.
+- Implemented 23 deterministic, individually shaped Super Shot ball silhouettes with different panel seams in shared Player Studio/Team Management badges. No changes to player identity, saves, control buttons, roster, formations or offline behavior. Added tests/ability_shot_ball_shapes.test.cjs for unique geometry, deterministic output, accessibility, XSS-safe labels, and other icon families.
+- Focused V8 execution before commit: 23/23 distinct, 4 assertions successful. Node/Chromium exact-head CI and hosted visual acceptance pending. Updated About/package/README/cache/release policy and version contract to 0.9.29.0; corrected old contradictory quarter-view release notes (painted fallback is active, SVG quarter assets are not live).
+- Continue feature development on dev even while release pending; promote only fully green exact-head through protected CI. Do not equate earlier green runs with this commit.
+
 ## 2026-10-23 20:03 Europe/Stockholm — Leo #2 quarter sprite integration (candidate 0.9.27.0)
 - Baseline exact dev/main f9637876d632b633cceca8f320bb11aa31e3c3ff; Full Regression dev 39992218500 and Modular QA 39992218111 passed; main Census 39993883624 and Pages deployment 39993883682 passed for prior 0.9.26.0.
 - Added transparent Leo #2 ¾ front/back SVG with blond hair, headband and shirt number 2; actual Crown renderer chooses it by view, QA fixture embeds it, SW precaches it. Updated Node draw-path checks and Chromium Leo loader assertion. No roster/control/save changes.
