@@ -29,11 +29,13 @@ test('Facing-aware moving defenders resist more; failed trick never stuns',async
  assert.ok(aware.chance<unaware.chance);
  assert.equal(aware.countered,true);assert.equal(aware.stunSeconds,0);
 });
-test('Scream prototype does not change the four-button match input or existing saves',async()=>{
+test('Scream helper and equipped Magic Trick keep four-button controls and save compatibility',async()=>{
  const fs=require('node:fs');
  const ui=fs.readFileSync('src/modules/ui.js','utf8');
  const engine=fs.readFileSync('src/modules/engine.js','utf8');
  assert.doesNotMatch(engine,/import \{evaluateScream\}/);
- assert.match(ui,/Magic gameplay is under development/);
+ assert.match(ui,/Hold DRIBBLE for 1 second/);
+ assert.match(engine,/p\.dribbleHold>=1&&!p\.magicHoldLatched/);
+ assert.match(engine,/const id=p\?\.src\?\.magicTrick/);
  assert.doesNotMatch(ui,/id="studioMagicTier"/);
 });
