@@ -1,34 +1,27 @@
 # SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 15:00 Europe/Stockholm
+**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-10-23 15:12 Europe/Stockholm
 
 ## Mission
-Continue small increments on existing dev regardless of pending CI/release; diagnose blockers and repair safely. No new branches, force push, safety or permission bypass.
+Continue tested small increments directly on existing dev even with pending CI/promotion. No new branches, bypass or force push.
 
 ## Current checkpoint
-- New candidate 0.9.22.0: distinct bounded Crown Super Shot pose and symmetric jump lift; VM transform regression and Chromium screenshot comparison. Exact-head CI pending.
-- Candidate 0.9.21.0: separate Crown Royals Alex #1 and Leo #2 use distinct transparent owner-reference 132x90 three-view atlases. Ten other Crown players remain standard placeholders. Original Concept Royals remains unchanged, as do 223 canonical teams and 2676 canonical players.
-- Leo has blond hair and dark headband. Quarter directions currently reuse nearest sprite; idle/run/jump/shoot/tackle use provisional transforms rather than separately authored animation frames.
-- Local isolated Chromium renderer QA PASS on desktop and simulated touch: five direction slots × five action previews, zero JS errors. New exact-head live match/CI and Pages still need verification.
-- Full census #39944909668 failed 7 legacy Chromium count assumptions (223/224); now default total 225, saved custom-club fixture 226. Corrected counts while preserving original BPW and save indexes.
-
-- Candidate 0.9.22.1: runtime cached atlas corrects Alex side silver hair and Leo rear/side headband, test contract added. Artwork acceptance must inspect actual Chromium captures. Kwame #3 still pending source atlas integration.
-
-- New candidate 0.9.23.0: Kwame #3 added with 132x90 independent reference-extracted PNG, runtime routing, QA page, offline and build integration, source tests. Full exact-head CI/hosted approval pending.
+- Candidate 0.9.23.1: Crown Royals Alex side chestnut forelock and Leo blond rear with narrow dark band; pixel-bounded cached atlas correction. Original PNG alpha, faces, kit and save data preserved.
+- Kwame #3 independent three-view PNG integrated on dev at 8a317927. Nine Crown teammates remain standard placeholders; quarter views and action frames provisional.
+- Previously green 0.9.22.0 dev/main 4398ba170. 0.9.22.1 candidate CI failed stale Crown drawImage and version literals; test contracts repaired at d1ac6d0. New combined candidate 0.9.23.1 exact-head 4+4/Modular/Crown/Pages pending.
 
 ## Next smallest action
-1. Check exact-dev-head 4 Node+4 Chromium census, Modular QA and Crown Royals browser QA, resolve failures.
-2. Allow only verified green protected dev→main promotion and hosted Pages byte smoke.
-3. Correct Alex side-hair mismatch and refine Leo edges.
-4. Paint independent quarter sprites and bespoke action frames and verify.
-5. Integrate third Crown reference player; continue counterable Tricks/two-client LAN.
+1. Inspect exact-head 4+4 Census, Modular and Crown QA; fix failures without blocking new work.
+2. Capture Chromium real-game Alex side, Leo back, Kwame five-view/action previews; inspect identity, alpha, hair edges and touch.
+3. Refine Kwame dark-skin/black-coil identity; independent quarter views and authored action frames.
+4. Continue counterable four-button Magic Tricks and Player Studio UI.
+5. Continue genuine two-client LAN, then protected exact-green dev promotion and hosted byte smoke.
 
 ## Ownership and exclusions
-Only smf-hourly-dev-20261019 writes game code on dev; main only through protection. Preserve all four buttons, six formations, ten Career/Cup slots, saves, offline and SD09.
+Sole developer smf-hourly-dev-20261019, development only on dev; main protected promotion. Preserve 223 canonical teams/2676 players, six formations, four buttons, ten Career/Cup slots, saves, offline, SD09.
 
 ## Evidence
-- Local isolated Chromium Leo renderer: five directions, idle/run/jump/shoot/tackle and simulated touch passed with zero page errors.
-- Previous full census #39944909668: four Node shards and preflight green; seven old Chromium fixtures assumed the pre-Crown team count.
-- At candidate head a550f25f, Modular and preflight had 507 Node pass / one failure: own checkpoint missing this mandatory Evidence heading; this change repairs the contract. Full 4+4 and Pages still unverified.
+- Local source-PNG palette preview identified prior Leo correction as opaque black rear patch; targeted blond and narrow band correction preview inspected.
+- Exact-head 0.9.23.1 CI pending; do not claim deployed or artistic acceptance without real Chromium evidence.
 
 ## Cleanup
-Keep this checkpoint under 4 KiB. Do not call renderer smoke final artistic or release approval.
+Checkpoint <4 KiB. Concept illustrations are not actual in-game captures.

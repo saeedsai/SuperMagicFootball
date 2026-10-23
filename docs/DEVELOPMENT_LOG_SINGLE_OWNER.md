@@ -1,3 +1,9 @@
+## 2026-10-23 15:12 Europe/Stockholm — Crown hair repair after Kwame integration
+- Kwame #3 independent reference PNG landed concurrently on dev (8a317927) with roster/QA/offline wiring. Nine other Crown teammates still placeholders.
+- Reviewed actual Alex/Leo source PNGs at 132x90: earlier Leo rear/side band recolor produced an opaque dark nape and did not correct blond silhouette; earlier Alex broad grey tint risked face pixels.
+- Candidate 0.9.23.1 uses bounded per-pixel chestnut side forelock and blond rear hair/narrow dark headband. Alpha, uniform, face, canonical teams/saves and Kwame pixels preserved. Added VM regression for hair pixels and no-canvas fallback.
+- Previous candidate CI had two stale contracts: Crown drawImage target and version literal; repaired. New exact-head 4+4, Modular/Crown browser and Pages still pending; do not claim release.
+
 # SuperMagicFootball — centralized development log
 
 ## 2026-10-23 13:50 Europe/Stockholm — Crown Royals player 2 Leo and regression repair
