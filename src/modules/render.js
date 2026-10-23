@@ -19,6 +19,20 @@ const rgb=(hex,a)=>hex+a;
 const c=(ctx,v)=>{ctx.fillStyle=v};
 function rr(ctx,x,y,w,h,r,col,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=col;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke()}}
 function ellipse(ctx,x,y,rx,ry,fill){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,PI*2);ctx.fillStyle=fill;ctx.fill()}
+// Original lightweight canvas peel artwork: no sprite fetch or save-data dependency.
+function drawBananaPeels(ctx,hazards){
+ for(const peel of hazards||[]){
+  if(peel.kind!=='banana'||peel.life<=0)continue;
+  ctx.save();ctx.globalAlpha=Math.min(1,peel.life/.5);
+  ellipse(ctx,peel.x,peel.y+4,16,5,'rgba(22,30,13,.27)');
+  ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(peel.x-13,peel.y-6);
+  ctx.quadraticCurveTo(peel.x,peel.y+10,peel.x+13,peel.y-6);
+  ctx.strokeStyle='#b87918';ctx.lineWidth=9;ctx.stroke();
+  ctx.strokeStyle='#ffe35a';ctx.lineWidth=6;ctx.stroke();
+  ctx.restore();
+ }
+}
 function line(ctx,pts,color,width=2){ctx.beginPath();ctx.moveTo(...pts[0]);for(let i=1;i<pts.length;i++)ctx.lineTo(...pts[i]);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.stroke()}
 function poly(ctx,pts,col,stroke){ctx.beginPath();ctx.moveTo(...pts[0]);for(let i=1;i<pts.length;i++)ctx.lineTo(...pts[i]);ctx.closePath();ctx.fillStyle=col;ctx.fill();if(stroke){ctx.lineWidth=2;ctx.strokeStyle=stroke;ctx.stroke()}}
 
@@ -667,7 +681,7 @@ class Renderer{
  this.cameraY+=(targetY-this.cameraY)*cameraEase;
  const shake=game.shake?(Math.random()-.5)*game.shake*22:0;
  ctx.translate(-this.cameraX+shake,-this.cameraY+shake*.5);
- this.drawStands(ctx);this.drawField(ctx,game);this.drawGoal(ctx,0,false);this.drawGoal(ctx,1,false);
+ this.drawStands(ctx);this.drawField(ctx,game);this.drawGoal(ctx,0,false);this.drawGoal(ctx,1,false);drawBananaPeels(ctx,game.magicHazards);
  if(game.matchState==='penalty')this.drawPenaltyPlayers(ctx,game);else{const list=game.players.slice().sort((a,b)=>a.y-b.y);this.inMatchDraw=true;try{for(let p of list)this.drawPlayer(ctx,p,game);}finally{this.inMatchDraw=false;}this.drawBall(ctx,game)}this.drawGoal(ctx,0,true);this.drawGoal(ctx,1,true);this.drawWeather(ctx,game);if(game.tornado)this.drawTornado(ctx,game.tornado);
  for(let p of game.particles){ctx.globalAlpha=clamp(p.life/p.max,0,1);ellipse(ctx,p.x,p.y-p.z,p.r,p.r,p.color)}ctx.globalAlpha=1;
  ctx.restore();if(game.flash){ctx.fillStyle=`rgba(255,249,204,${Math.min(.5,game.flash*.5)})`;ctx.fillRect(0,0,this.screenW,this.screenH)}this.drawBorder(ctx,game);this.drawMiniMap(ctx,game);if(game.celebration>0)this.drawGoalCelebration(ctx,game);ctx.restore();}
