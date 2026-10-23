@@ -5,6 +5,7 @@
 Continue one bounded dev feature per iteration and safely repair CI. No new branches, force push or bypass.
 
 ## Current checkpoint
+- LAN-006 non-UI transport boundary: 16426d20 adds validated send/receive for an already-open WebRTC-compatible data channel, and 92683b97 adds tests for replay, malformed frames, channel readiness and four-button inputs. No signaling or live LAN game yet. Base main/dev was synchronized at 10a1e348 before development; exact-head CI and Pages/visual QA pending.
 - LAN-005 guest sender: commit 1940052f adds sequenced guest input packet builder; b77edc65 adds Node regression for monotonic frames, action validation, atomic rejection and host queue interoperability. Transport independent, not playable LAN; package/About version unchanged. main/dev previously identical at 28de5112. Exact-head CI and Pages certification pending.
 ## 2026-10-24 — LAN-004: missing-frame neutral host input
 - On dev, LAN-004 commits 164d23b8 (resolveGuestLanFrame) and 14df7d2c (focused regression): host produces immutable neutral four-button input when guest frame absent, and consumes real queued guest input without altering future frames. Transport independent, not user-facing; About bundle stays 0.9.29.2. Exact-head CI not yet certified.
