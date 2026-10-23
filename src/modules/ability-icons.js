@@ -34,11 +34,11 @@ function icon(type,id,label=''){
  return `<span class="abilityGlyph abilityGlyph-${type}" title="${title}" role="img" aria-label="${title}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="44" height="44" aria-hidden="true" focusable="false"><rect x="1" y="1" width="62" height="62" rx="13" fill="#0c1d35" stroke="${color}" stroke-width="2.4"/><circle cx="30" cy="30" r="24" fill="${color}" opacity=".22"/>${lines}<text x="${ball?43:31}" y="${ball?52:43}" text-anchor="middle" font-size="${ball?23:28}" fill="white" stroke="#111c32" stroke-width=".65" paint-order="stroke fill">${escapeMarkup(mark)}</text></svg></span>`;
 }
 function summary(player,shots,defences,dribbles,tricks){
- const p=player||{},shot=p.superAbility?.type==='shoot'&&p.shot&&shots[p.shot]?p.shot:null;
- const defence=p.superAbility?.type==='defence'&&defences[p.superAbility.id]?p.superAbility.id:null;
+ const p=player||{},shot=p.superAbility?.type==='shoot'&&p.shot&&Object.hasOwn(shots,p.shot)?p.shot:null;
+ const defence=p.superAbility?.type==='defence'&&p.superAbility.id&&Object.hasOwn(defences,p.superAbility.id)?p.superAbility.id:null;
  const trick=tricks.some(x=>x.id===p.magicTrick)?p.magicTrick:null;
  const dribble=p.role==='GK'?null:dribbles.find(x=>x.id===p.dribbleType)?.id||dribbles[0]?.id;
- const sections=[['shot',shot,shots[shot]?.name||'None'],['defence',defence,defences[defence]?.name||'None'],['trick',trick,tricks.find(x=>x.id===trick)?.name||'None (planned)'],['dribble',dribble,dribbles.find(x=>x.id===dribble)?.name||'None']];
+ const sections=[['shot',shot,shot?shots[shot]?.name||'None':'None'],['defence',defence,defence?defences[defence]?.name||'None':'None'],['trick',trick,tricks.find(x=>x.id===trick)?.name||'None (planned)'],['dribble',dribble,dribbles.find(x=>x.id===dribble)?.name||'None']];
  return '<div class="abilitySummary" aria-label="Player abilities">'+sections.map(([type,id,name])=>'<span class="abilitySummaryEntry">'+icon(type,id,name)+'<span><strong>'+({shot:'SUPER SHOT',defence:'SUPER DEFENCE',trick:'TRICK',dribble:'DRIBBLE STYLE'}[type])+'</strong><small>'+escapeMarkup(name)+'</small></span></span>').join('')+'</div>';
 }
 const ABILITY_ICONS=Object.freeze({icon,summary,SHOT_ICONS,DEFENCE_ICONS,TRICK_ICONS,DRIBBLE_ICONS});
