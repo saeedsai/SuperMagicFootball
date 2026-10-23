@@ -167,4 +167,18 @@ function acceptLanHostMessage(state,message,hostFrame){
  if(!queued.accepted)return Object.freeze({kind:queued.reason,state});
  return Object.freeze({kind:'accepted',state:Object.freeze({peer:received.state,queue:queued.state})});
 }
-export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame,createGuestLanSender,buildGuestLanInput,sendLanChannelPacket,receiveLanChannelPacket,createLanPeerGate,receiveLanPeerPacket,createLanHostSession,acceptLanHostMessage};
+
+// LAN-009: host frame advancement occurs at most once per frame.
+// Returned state records the last simulated frame without mutating the queue.
+function advanceLanHostFrame(state,frame){
+ if(!isRecord(state)||!isRecord(state.peer)||!state.peer.ready||!isRecord(state.queue)
+    ||!uint(frame,1000000000))throw new Error('LAN host session is not ready');
+ const last=state.lastSimulatedFrame??-1;
+ if(!Number.isSafeInteger(last)||last< -1||frame<=last)throw new Error('LAN host frame must advance');
+ const result=resolveGuestLanFrame(state.queue,frame);
+ return Object.freeze({
+  input:result.input,received:result.received,
+  state:Object.freeze({peer:state.peer,queue:result.state,lastSimulatedFrame:frame})
+ });
+}
+export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame,createGuestLanSender,buildGuestLanInput,sendLanChannelPacket,receiveLanChannelPacket,createLanPeerGate,receiveLanPeerPacket,createLanHostSession,acceptLanHostMessage,advanceLanHostFrame};
