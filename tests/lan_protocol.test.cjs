@@ -16,7 +16,7 @@ test('LAN-001 four-button input packet is canonical and immutable',async()=>{
 });
 test('LAN-001 rejects malformed protocol, sessions, roles and versions',async()=>{
  const p=await load();
- for(const packet of [{...hello,protocol:2},{...hello,session:'bad'},{...hello,role:'spectator'},{...hello,build:'dev'},{...hello,sequence:-1},Object.create(null),null])assert.throws(()=>p.normalizeLanPacket(packet));
+ for(const packet of [{...hello,protocol:2},{...hello,session:'bad'},{...hello,session:{toString:()=>session}},{...hello,role:'spectator'},{...hello,build:'dev'},{...hello,build:{toString:()=>hello.build}},{...hello,sequence:-1},Object.create(null),null])assert.throws(()=>p.normalizeLanPacket(packet));
 });
 test('LAN-001 rejects duplicate, unknown and fifth action buttons',async()=>{
  const p=await load();
