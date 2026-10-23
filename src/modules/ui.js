@@ -162,14 +162,12 @@ const comingLater=(title,description,back='navCups')=>{
 };
 function showQuickMenu(){menuChoices('nav-quick','QUICK MATCH','Play on one device, practice, or explore planned local multiplayer.',[
  navItem('On Device','navOnDevice','Single-player, two-player, penalties and training.','active','🎮'),
- navItem('Local Network','laterLAN','Devices connected over your local network.','later','📡'),
- navItem('★ PLAY CONCEPT ROYALS FC','conceptDemo','Play the original illustrated character model as a complete team.','active','🎨')],'home');}
+ navItem('Local Network','laterLAN','Devices connected over your local network.','later','📡')],'home');}
 function showOnDevice(){menuChoices('nav-device','ON DEVICE','Use the existing playable match setups.',[
  navItem('Single Player vs CPU','quick','Existing team, kit and match setup.','active','⚽'),
  navItem('Two Players · Same Device','versus','Play a local head-to-head match.','active','🎮'),
  navItem('Penalty Shootout','pk','Standalone penalty challenge.','active','🥅'),
- navItem('Training Arena','training','Practice the four action buttons and combinations.','active','💥'),
- navItem('CONCEPT PLAYER DEMO','conceptDemo','Play all twelve slots as the one illustrated model.','active','🎨')],'navQuick');}
+ navItem('Training Arena','training','Practice the four action buttons and combinations.','active','💥')],'navQuick');}
 function showOnlineMenu(){menuChoices('nav-online','ONLINE','Future network modes — not playable in this build.',[
  navItem('Online Match','laterOnlineMatch','Compete over the internet.','later','🌐'),
  navItem('Ultimate Team','laterUltimate','Collect and develop your own squad.','later','⭐'),
