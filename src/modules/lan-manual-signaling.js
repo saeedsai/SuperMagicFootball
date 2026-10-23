@@ -49,6 +49,7 @@ function waitForLanIceGathering(peer, timeoutMs=15000){
  if(peer.iceGatheringState==='closed')return Promise.reject(new Error('ICE gathering closed'));
  return new Promise((resolve,reject)=>{
   let done=false;
+  let timer;
   const finish=error=>{
    if(done)return;
    done=true;clearTimeout(timer);
@@ -62,7 +63,7 @@ function waitForLanIceGathering(peer, timeoutMs=15000){
   };
   peer.addEventListener('icegatheringstatechange',changed);
   peer.addEventListener('connectionstatechange',changed);
-  const timer=setTimeout(()=>finish(new Error('ICE gathering timed out')),timeoutMs);
+  timer=setTimeout(()=>finish(new Error('ICE gathering timed out')),timeoutMs);
   changed();
  });
 }
