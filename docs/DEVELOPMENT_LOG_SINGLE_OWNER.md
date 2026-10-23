@@ -1,3 +1,7 @@
+## 2026-10-24 — LAN-004: missing-frame neutral host input
+- On dev, LAN-004 commits 164d23b8 (resolveGuestLanFrame) and 14df7d2c (focused regression): host produces immutable neutral four-button input when guest frame absent, and consumes real queued guest input without altering future frames. Transport independent, not user-facing; About bundle stays 0.9.29.2. Exact-head CI not yet certified.
+- Prior exact main remains a95f4675; no independent hosted Pages or graphics visual certification. Do not merge dev until fresh 4 Node + 4 Chromium + Modular QA passes.
+
 ## 2026-10-23 23:59 Europe/Stockholm — LAN-003 bounded host input queue
 - Initial main a95f4675, dev dfe05ec7 (ahead 4, behind 0); exact-head workflow lookup returned no runs, so no LAN-002 certification claim. Existing open issue #38 keeper roll, #15 sprite orientation, #3 touch trick remain relevant backlog.
 - Implemented host-authoritative, transport-independent input queue with eight-frame lookahead, replay/old-frame/session/type rejection and single-consumption semantics in src/modules/lan_protocol.js (002e339a). Added focused tests in tests/lan_protocol.test.cjs (bd599451). V8 focused runtime checks for queue/replay/consume/lead passed before commit. Full 4 Node + 4 Chromium + Modular QA on this new dev head not yet confirmed.
