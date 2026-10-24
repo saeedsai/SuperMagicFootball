@@ -695,3 +695,8 @@ Validated optional AbortSignal before registering readiness listeners or timers;
 
 ### 2026-10-24 CI repair + LAN-022
 Exact-head d1ac4b3b failed memory contract because developer checkpoint omitted required backtick identity marker; repaired at 50dab5e9 without weakening test. Added optional AbortSignal cancellation for LAN status subscriptions (ab9553b0), with regression test (ef7f0390). No playable LAN or graphics certification; latest exact-head CI pending. Continue dev increments while release pending.
+
+### 2026-10-24 — LAN-023 terminal status regression repair
+- Exact-head dev `7cb87465a98a7f5d3d7fa320c8fcf44666b35072` failed Modular QA #40104758806 and Full Census #40104758754 preflight: LAN-019 test `tests/lan_peer_connection.test.cjs:342` expected one immediate closed-state callback after `dispose()`, got zero. Root cause: LAN-022 AbortSignal subscriber refactor gated the initial callback behind `!disposed`.
+- Fix: deliver a one-time immutable terminal snapshot to non-aborted subscribers after disposal, without retaining listeners. Preserve pre-aborted silence, observer isolation and live abort cleanup; add LAN-023 regression for terminal snapshot with AbortSignal. One atomic dev commit to avoid intermediate CI cancellation; exact-head 4 Node + 4 Chromium, Modular QA and protected promotion required.
+- Last verified main `9ac3a3887a6fae0bdd99a8b490ea151f2882b662`: main Full Census #40104566268 and Pages #40104566800 success, dev QA #40104315144/#40104315132 success. No visual graphics approval or two-client LAN gameplay claim.

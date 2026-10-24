@@ -107,10 +107,16 @@ function createLanPeerConnection(localHello, options = {}) {
       statusListeners.delete(listener);
       signal?.removeEventListener('abort', unsubscribe);
     };
-    if (!disposed && !signal?.aborted) {
-      statusListeners.add(listener);
-      signal?.addEventListener('abort', unsubscribe, {once:true});
-      try { listener(snapshotStatus()); } catch { /* observer is isolated */ }
+    if (!signal?.aborted) {
+      // LAN-023: even a disposed peer delivers its final closed snapshot once.
+      // Only live peers register persistent observers or abort listeners.
+      if (!disposed) {
+        statusListeners.add(listener);
+        signal?.addEventListener('abort', unsubscribe, {once:true});
+      }
+      if (!signal?.aborted) {
+        try { listener(snapshotStatus()); } catch { /* observer is isolated */ }
+      }
     }
     return unsubscribe;
   }

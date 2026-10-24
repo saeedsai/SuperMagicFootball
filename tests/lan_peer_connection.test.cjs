@@ -399,3 +399,22 @@ test('LAN-022 abortable status subscription cleans up without affecting peer',as
   assert.throws(()=>host.subscribeStatus(()=>{},{}),/AbortSignal/);
   host.dispose();
 });
+
+test('LAN-023 late status subscriber receives terminal snapshot without being retained',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  host.dispose();
+  const controller=new AbortController();
+  const states=[];
+  const unsubscribe=host.subscribeStatus(state=>states.push(state),controller.signal);
+  assert.deepEqual(states,[{phase:'closed',transport:'closed',channel:'closed',ready:false}]);
+  controller.abort();
+  host.peer.dispatchEvent(new Event('connectionstatechange'));
+  assert.equal(states.length,1);
+  unsubscribe();
+  const preAborted=new AbortController();
+  preAborted.abort();
+  let called=0;
+  host.subscribeStatus(()=>called++,preAborted.signal);
+  assert.equal(called,0);
+});
