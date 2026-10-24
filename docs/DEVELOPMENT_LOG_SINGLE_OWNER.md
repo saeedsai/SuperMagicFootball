@@ -761,3 +761,9 @@ Validate host-created DataChannel EventTarget/send/close interface and close bot
 
 ### 2026-10-24 LAN-036 guest incoming channel validation
 Validate remote guest DataChannel interface before binding; close malformed channel without throwing from RTC event (ca8ab53a). Regression 784e749f and corrected public status assertion 09e71640. Previous LAN-034 main/dev 07a6a168 fully certified and Pages deployed. LAN-035 final dev Modular #40125440224 passed, Full #40125440255 in progress at inspection. New exact-head CI pending; no claim of gameplay/graphics QA.
+
+### 2026-10-24 22:02 CEST — LAN-037 abortable guest snapshot receiver
+- Root cause of prior CI failure: #40125905520 failed identity assertion in tests/project_memory_contract.test.cjs (agent ID missing literal backticks); corrected by a5b39153, Modular #40127995468 passed; Full #40127995383 still in progress at inspection.
+- Internal LAN feature 80a7b046: guest snapshot binding optionally accepts an AbortSignal; aborted receivers release their channel binding and stop consuming snapshots, including pre-aborted/racing signals. Tests 929656b0 cover abort/resubscribe, pre-aborted and malformed signal. No game UI, version or save schema change; 0.9.40.0 remains About-only.
+- Exact-head 929656b0 Modular #40128058327 and Full #40128058324 queued at inspection; no production promotion or live graphics acceptance claimed.
+- Next: (1) certify latest exact head; (2) protected main promotion and Pages byte smoke; (3) expose receiver lifecycle at peer API; (4) wire real authoritative match snapshot loop; (5) resolve Concept Royals directional graphics #15 with screenshots.
