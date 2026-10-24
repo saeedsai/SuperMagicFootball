@@ -1,5 +1,5 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** smf-hourly-dev-20261019 · Updated 2026-10-24.
+**Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
 
 ## Mission
 Develop bounded increments on existing dev, certify exact-head CI, promote through protected main workflow, verify Pages. No force-push or safety bypass.
