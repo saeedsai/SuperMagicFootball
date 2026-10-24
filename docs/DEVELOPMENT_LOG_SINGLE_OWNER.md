@@ -692,3 +692,6 @@ Added optional AbortSignal to awaitReady for cancellable future lobby waits; pre
 
 ### 2026-10-24 LAN-021 cancellation validation
 Validated optional AbortSignal before registering readiness listeners or timers; malformed cancellation tokens reject safely, with regression coverage. Source 76217755, test bb09d0be. Prior dev/main 9ac3a388 passed dev 4+4 census and Modular QA; main Census/Pages were running at inspection. Exact new-head QA pending; not a playable LAN or visual art certification.
+
+### 2026-10-24 CI repair + LAN-022
+Exact-head d1ac4b3b failed memory contract because developer checkpoint omitted required backtick identity marker; repaired at 50dab5e9 without weakening test. Added optional AbortSignal cancellation for LAN status subscriptions (ab9553b0), with regression test (ef7f0390). No playable LAN or graphics certification; latest exact-head CI pending. Continue dev increments while release pending.
