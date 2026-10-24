@@ -75,7 +75,7 @@ function mountLanLobby(root,options={}){
   }
   function watchReady(current){
     controller=new AbortController();
-    current.awaitReady(15000,controller.signal).then(()=>{
+    current.awaitReady(120000,controller.signal).then(()=>{
       if(peer===current)handoffReady(current);
     }).catch(error=>{
       if(peer===current&&!controller?.signal.aborted)tell('Connection not ready: '+error.message+'. Reset to retry.');
