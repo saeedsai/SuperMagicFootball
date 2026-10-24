@@ -1,4 +1,4 @@
-// LAN-024: manual host/guest WebRTC connection lab. Match synchronization is NOT wired.
+// LAN-045: manual trusted-peer SDP setup with optional handoff to the live match.
 // SDP may contain local network addresses; users should share it only with a trusted peer.
 import {RELEASE} from './release.js';
 import {normalizeLanPacket} from './lan_protocol.js';
@@ -29,7 +29,7 @@ function mountLanLobby(root,options={}){
   const build=options.build??RELEASE.version;
   const cryptoSource=options.cryptoSource??globalThis.crypto;
   root.innerHTML=`<section class="panel lanConnectionLab" aria-label="Local network connection setup">
-    <p class="muted">Connection preview only: the two-browser match engine and synchronized gameplay are not ready. Both devices must use the same installed game version and local network. Share the connection text only with someone you trust; it may contain local network addresses.</p>
+    <p class="muted">LAN Quick Match: after both devices exchange offers and answers, the host runs the match and the guest controls the away team. Both devices must use the same installed game version and local network. Share the connection text only with someone you trust; it may contain local network addresses.</p>
     <div class="row"><button type="button" class="btn" id="lanHost">CREATE HOST OFFER</button>
       <button type="button" class="btn" id="lanGuest">JOIN AS GUEST</button>
       <button type="button" class="btn minor" id="lanReset">RESET CONNECTION</button></div>
@@ -57,14 +57,26 @@ function mountLanLobby(root,options={}){
   function observe(current){
     unsubscribe=current.subscribeStatus(state=>{
       if(peer!==current||disposed)return;
-      if(state.ready)tell('WebRTC connection ready. Match synchronization is not implemented yet.');
+      if(state.ready)tell('WebRTC connection ready. Starting LAN Quick Match…');
       else tell('Connection: '+state.phase+' · transport '+state.transport+' · channel '+state.channel+'.');
     });
+  }
+  function handoffReady(current){
+    if(peer!==current||disposed)return;
+    if(typeof options.onReady!=='function'){
+      tell('WebRTC connection ready.');return;
+    }
+    controller?.abort();controller=null;
+    unsubscribe?.();unsubscribe=null;
+    peer=null; // transfer ownership: lobby teardown must not close an active match
+    try{options.onReady(current,mode)}catch(error){
+      current.dispose();tell('Unable to start LAN match: '+error.message);
+    }
   }
   function watchReady(current){
     controller=new AbortController();
     current.awaitReady(15000,controller.signal).then(()=>{
-      if(peer===current)tell('WebRTC connection ready. Match synchronization is not implemented yet.');
+      if(peer===current)handoffReady(current);
     }).catch(error=>{
       if(peer===current&&!controller?.signal.aborted)tell('Connection not ready: '+error.message+'. Reset to retry.');
     });
