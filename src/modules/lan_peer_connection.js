@@ -305,6 +305,7 @@ function createLanPeerConnection(localHello, options = {}) {
       throw new Error('LAN guest snapshots require a ready guest connection');
     }
     if (guestSnapshotBinding) throw new Error('LAN guest snapshot receiver already active');
+    if (typeof listener !== 'function') throw new TypeError('Invalid LAN snapshot guest binding');
     const receiver = bindLanSnapshotGuestChannel(channel,
       snapshotIdentity.roomId, snapshotIdentity.hostId, snapshot => {
         if (disposed || !binding?.ready || !transportUsable()) {
