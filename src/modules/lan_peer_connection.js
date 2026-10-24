@@ -35,6 +35,11 @@ function encodeLanSignal(kind, hello, description) {
 }
 
 function waitForLanIceGathering(peer, timeoutMs) {
+  // A completed ICE gathering state is not evidence of a usable peer.
+  // A closed or failed transport must never be treated as successful.
+  if (peer.connectionState === 'closed' || peer.connectionState === 'failed') {
+    return Promise.reject(new Error('LAN peer closed during ICE gathering'));
+  }
   if (peer.iceGatheringState === 'complete') return Promise.resolve();
   return new Promise((resolve, reject) => {
     let settled = false;
