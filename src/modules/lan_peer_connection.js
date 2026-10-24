@@ -187,11 +187,12 @@ function createLanPeerConnection(localHello, options = {}) {
   // LAN-015: await the actual protocol handshake, not merely the SDP exchange.
   // This bounded gate is for future lobby/game-loop wiring; it does not
   // claim a playable two-browser session by itself.
-  function awaitReady(timeoutMs = DEFAULT_ICE_TIMEOUT_MS) {
+  function awaitReady(timeoutMs = DEFAULT_ICE_TIMEOUT_MS, signal = null) {
     if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 120000) {
       return Promise.reject(new RangeError('Invalid LAN readiness timeout'));
     }
     if (disposed) return Promise.reject(new Error('LAN peer disposed'));
+    if (signal?.aborted) return Promise.reject(new Error('LAN readiness cancelled'));
     if (phase === 'connected-signaling' && binding?.ready && transportUsable()) return Promise.resolve(binding);
     return new Promise((resolve, reject) => {
       let finished = false;
@@ -202,10 +203,14 @@ function createLanPeerConnection(localHello, options = {}) {
         finished = true;
         clearInterval(poll);
         clearTimeout(timeout);
+        signal?.removeEventListener('abort', onAbort);
         if (error) reject(error); else resolve(binding);
       }
+      function onAbort() { finish(new Error('LAN readiness cancelled')); }
+      signal?.addEventListener('abort', onAbort, {once:true});
       function check() {
-        if (disposed || peer.connectionState === 'failed' ||
+        if (signal?.aborted) finish(new Error('LAN readiness cancelled'));
+        else if (disposed || peer.connectionState === 'failed' ||
             peer.connectionState === 'closed' || channel?.readyState === 'closed') {
           finish(new Error('LAN peer closed before handshake'));
         } else if (phase === 'connected-signaling' && binding?.ready && transportUsable()) {
