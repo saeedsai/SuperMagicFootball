@@ -774,3 +774,7 @@ Validate remote guest DataChannel interface before binding; close malformed chan
 - Internal LAN feature 80a7b046: guest snapshot binding optionally accepts an AbortSignal; aborted receivers release their channel binding and stop consuming snapshots, including pre-aborted/racing signals. Tests 929656b0 cover abort/resubscribe, pre-aborted and malformed signal. No game UI, version or save schema change; 0.9.40.0 remains About-only.
 - Exact-head 929656b0 Modular #40128058327 and Full #40128058324 queued at inspection; no production promotion or live graphics acceptance claimed.
 - Next: (1) certify latest exact head; (2) protected main promotion and Pages byte smoke; (3) expose receiver lifecycle at peer API; (4) wire real authoritative match snapshot loop; (5) resolve Concept Royals directional graphics #15 with screenshots.
+
+### 2026-10-24 23:46 CEST — LAN-042 guest renderer match-state adapter
+- dev/main baseline 0c3bc81b identical. Implementation 093b8ee5 adds subscribeGuestMatchState adapter, forwarding validated ordered guest snapshots as immutable gameplay-shaped state. Regression bb04b855 covers metadata stripping, delivery and cancellation.
+- Internal-only API: no About version bump; no claim of renderer integration, two-browser gameplay, graphics QA, CI or hosted deployment. Full exact-head 4+4 and Modular QA remain to verify before protected promotion.
