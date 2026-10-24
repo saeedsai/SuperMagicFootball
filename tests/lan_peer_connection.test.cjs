@@ -877,3 +877,29 @@ test('LAN-039 disposing guest detaches snapshot AbortSignal listener',async()=>{
   assert.equal(removed,1,'abort after disposal must not trigger stale cleanup');
   host.dispose();
 });
+
+test('LAN-040 abort racing listener registration rejects and releases receiver',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const channel=new FakeChannel('smf-lan');
+  guest.peer.emitChannel(channel);
+  host.peer.channel.open();channel.open();
+  for(const [target,hello] of [[host.peer.channel,guestHello],[channel,hostHello]]){
+    const e=new Event('message');e.data=JSON.stringify(hello);target.dispatchEvent(e);
+  }
+  const controller=new AbortController();
+  const signal=controller.signal;
+  const original=signal.addEventListener.bind(signal);
+  signal.addEventListener=(type,listener,options)=>{
+    original(type,listener,options);
+    if(type==='abort')controller.abort();
+  };
+  assert.throws(()=>guest.subscribeGuestSnapshots(()=>{},-1,signal),/cancelled/);
+  const next=guest.subscribeGuestSnapshots(()=>{});
+  next.dispose();
+  guest.dispose();host.dispose();
+});
