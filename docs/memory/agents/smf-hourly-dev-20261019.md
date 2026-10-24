@@ -1,27 +1,27 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24 20:00 CEST.
+**Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24 20:11 CEST.
 
 ## Mission
-One bounded increment each hourly run on existing `dev` even while CI or release pending. Only `dev` and `main`; no force-push, safety/permission bypass or uncertified promotion.
+Continue one bounded roadmap increment on existing `dev` every hourly run even if release/CI pending. Only `dev`/`main`; no force-push, CI/security/permission bypass or uncertified promotion.
 
 ## Current checkpoint
-- Prior certified `dev`/`main` `1548bbc7071a76e50ead91b7dd06b293e044ef6d` (About-only 0.9.40.0). Dev Modular QA #40114131448, Full 4 Node+4 Chromium #40114131440, main Full #40114540662, Pages #40114540893 all succeeded.
-- LAN-026 source `fad026bae70a62c8d6abd7e67e9a0ad7277090e2` + peer facade `c244d204e1175e88942f3e829c4b1f94e791ca4a`; regression `825beb1030abca9e4056a6d1b5d265cc8d575921`. Host-only `subscribeHostFrame(listener,signal?)` observes frozen frame/input/received only AFTER authoritative `advanceHostFrame`; no duplicate-frame notifications, observer isolation and abort/dispose cleanup. Does NOT wire live match or guest snapshots.
-- Intermediate source Modular QA #40118822173 and #40118829760 succeeded; exact integrated-head Full 4+4 and Modular QA pending. Log `6f491739`.
-- Internal networking change: retain 0.9.40.0; preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline/saves.
+- Previous certified `dev`/`main` `b0439801375236d96939d224c7aaad17666fc0e1`: dev Full Census #40118878315, Modular QA #40118878305, main Full Census #40119204583, Pages #40119204418 all succeeded.
+- LAN-027 snapshot bridge `864198ef`: host `sendHostSnapshot`, guest `subscribeGuestSnapshots` and immutable session-derived identity use existing snapshot codec on the existing RTCDataChannel. Guest render failures do not consume cursor. No live match or graphics claim.
+- Regression `fb2b4557` added two peer-level tests. Modular QA 660/661 identified missing null observer validation; fixed in `703c9de7`. Offline precache + fixture `c059d834`, `1f7d9166` caused legacy module-order/cache-version contract failures; repaired in `3378c651`, `38e7ef44` without weakening tests. Development log `b4b74d1e`.
+- Exact latest-head 4 Node + 4 Chromium and Modular QA PENDING. About-only 0.9.40.0 unchanged (internal LAN). Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline/saves.
 
 ## Next smallest action
-1. Check exact-head Full 4 Node + 4 Chromium and Modular QA; diagnose/repair failures.
-2. Confirm protected exact-green dev→main, main Full and Pages hosted byte smoke.
-3. Wire validated host frame inputs to actual authoritative match controller.
-4. Implement bounded host snapshots, guest rendering, independent two-client tests.
-5. Correct Concept Royals left/right sprite issue #15 with screenshot-based visual QA.
+1. Inspect exact-head Modular QA and 4+4 Full Census; fix remaining failures.
+2. Permit only protected exact-green dev→main and verify main/Pages byte smoke.
+3. Wire authoritative host match state to LAN snapshot encoder.
+4. Apply snapshots on guest and verify two real browser clients.
+5. Fix Concept Royals left/right issue #15 with screenshot-based visual QA.
 
 ## Ownership and exclusions
-Sole developer; edit only central log and own checkpoint. No other agent memory changes; no graphics quality or playable LAN claims without evidence.
+Sole developer. Edit central log and own checkpoint only; do not read/write other agents' memory. No premature production, gameplay or graphics certification.
 
 ## Evidence
-GitHub Actions #40114131448, #40114131440, #40114540662, #40114540893 certified LAN-025 production. LAN-026 CI pending at checkpoint.
+Previous green workflows #40118878305/#40118878315/#40119204583/#40119204418. LAN-027 intermediate failing Modular QA #40119733234/#40119750830, repaired in later commits; final CI pending.
 
 ## Cleanup
-Under 4 KiB; no secrets.
+Under 4 KiB. No secrets.
