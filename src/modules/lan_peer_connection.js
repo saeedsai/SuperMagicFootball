@@ -80,6 +80,14 @@ function createLanPeerConnection(localHello, options = {}) {
   }
   // Empty ICE server list supports local candidates without external services.
   const peer = new Peer({iceServers:[]});
+  // Fail closed if a custom WebRTC implementation does not provide the
+  // event and lifecycle interface required for safe signaling.
+  if (!peer || typeof peer.addEventListener !== 'function' ||
+      typeof peer.removeEventListener !== 'function' ||
+      typeof peer.close !== 'function') {
+    try { peer?.close?.(); } catch { /* invalid peer */ }
+    throw new TypeError('Invalid LAN RTCPeerConnection implementation');
+  }
   let channel = null;
   let binding = null;
   let hostSnapshotBinding = null;
