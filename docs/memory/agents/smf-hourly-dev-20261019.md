@@ -21,6 +21,7 @@ Continue one bounded roadmap increment on existing `dev` every hourly run even i
 Sole developer. Edit central log and own checkpoint only; do not read/write other agents' memory. No premature production, gameplay or graphics certification.
 
 ## Evidence
+- LAN-028: fail-fast already failed/closed RTC/DataChannel readiness, source 1a4f5111 and regression 9acf5ca6. Prior dev/main c495c329 green (#40119956100, #40119956109, #40120284842, #40120285354); exact-head CI pending.
 Previous green workflows #40118878305/#40118878315/#40119204583/#40119204418. LAN-027 intermediate failing Modular QA #40119733234/#40119750830, repaired in later commits; final CI pending.
 
 ## Cleanup
