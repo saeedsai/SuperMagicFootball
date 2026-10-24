@@ -2,20 +2,21 @@
 **Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
 
 ## Mission
-Continue one bounded tested increment directly on existing `dev` every run, even with pending CI/release. No extra branches, force pushes or bypass of protections.
+Continue one bounded feature each hourly run on existing `dev` even while CI/release pending. No other branches, force pushes, test weakening or bypasses.
 
 ## Current checkpoint
-- SLIDE-0330 candidate `0.9.33.0`: defensive SHOOT slide clears nearby opposing Banana Peel / Ice Patch before collision, with disarm burst and event. Pure hazard model `7a457ec0`; engine `41bc4f11`; tests `8cc8f7e5`; UI `6adb8c25`; version contract `5a036707`. README, About, package, SW cache and policies aligned.
-- At run start `dev`/`main` identical `d98edf1cd64ff729d1bbaf5d7c319c58c759d823` (previous 0.9.32.1). Candidate not certified or hosted-verified.
-- Focused checks: 17 hazard test callbacks passed using actual fetched source in V8 with injected Node mocks; 19 source parse/model/order/version checks passed. This is **not** full Node CI, Chromium, Modular QA, screenshot/real-device or Pages evidence.
-- Preserve 223 teams / 2676 players, 2 GK/3 DF/4 MF/3 FW, 6 formations, 4 buttons, 10 Career/Cup slots, SD09, offline and old save compatibility.
+- ARM-0340 candidate 0.9.34.0: Banana Peel (.25s) and Ice Patch (.3s) now show shrinking canvas countdown rings while arming, giving readable trap activation without gameplay physics changes. Renderer `191fdd0e`, canvas tests `77cd0457`. Release/About, README, package, SW rotated cache, policy and shared memory aligned.
+- Previous SLIDE-0330: existing SHOOT-slide trap disarm. Source and tests retained.
+- Isolated JS V8 harness executed fetched source with Node-style test/fs/assert mocks: **3/3 arming tests + 9/9 hazard tests passed**. Real Node/Chromium, 4+4, Modular QA, screenshots and Pages certification **not executed**.
+- Run start `dev` 33c88188 was 13 commits ahead of `main` d98edf1c. At intermediate inspection `dev` 9a9a2069 was 21 ahead of unchanged main. Workflow lookup is PR-filtered and combined commit status was empty: not evidence of green CI.
+- Preserve 223 teams/2676 players, 6 formations, 4 controls, 10 Career/Cup slots, SD09, save/offline compatibility.
 
 ## Next five steps
-1. Inspect exact current dev SHA, 4 Node + 4 Chromium/preflight/preview and Modular QA; repair genuine failures.
-2. Verify disarm events/graphics and Crown Royals on real browser, desktop and simulated touch.
-3. Promote only unchanged fully green exact dev via existing protected workflow; verify main and Pages byte smoke.
-4. Continue next bounded Player Studio / Magic Trick improvement directly on dev even if release pending.
-5. Progress genuine two-client LAN and authored multi-angle character art in small tested slices.
+1. Inspect latest exact-head full 4 Node + 4 Chromium, preflight/preview and Modular QA, diagnose failures.
+2. Verify both trap telegraphs and SHOOT-slide disarm in real browser, including simulated touch.
+3. Only after full green exact head, allow protected dev-to-main promotion and verify Pages hosted bytes.
+4. Continue next small Player Studio improvement directly on dev regardless of pending release.
+5. Advance genuine two-client LAN and authored Crown Royals quarter/action graphics incrementally.
 
 ## Ownership and exclusions
-Read AGENTS.md, VERSIONING_POLICY.md, SHARED.md and only this agent checkpoint. Central log has details. Do not disable hourly development for transient blockers. GitHub Actions workflow lookup currently PR-only and commit combined status returned no statuses; never claim CI or deployment without direct evidence.
+Read AGENTS.md, VERSIONING_POLICY.md, SHARED.md and only this agent checkpoint. Full evidence in central log. Never claim CI/hosted QA or change the hourly schedule without real evidence.
