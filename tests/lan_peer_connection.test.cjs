@@ -157,3 +157,48 @@ test('LAN-015 awaitReady bounds timeout and rejects disposed/failed peers',async
   host.dispose();
   await assert.rejects(host.awaitReady(50),/disposed/);
 });
+
+test('LAN-016 peer input bridge enforces handshake, roles, frames and four buttons',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  const deliver=(channel,packet)=>{
+    const event=new Event('message');
+    event.data=packet;
+    channel.dispatchEvent(event);
+  };
+  assert.throws(()=>guest.sendGuestInput(0,['pass']),/ready guest/);
+  assert.throws(()=>host.advanceHostFrame(0),/ready host/);
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const guestChannel=new FakeChannel('smf-lan');
+  guest.peer.emitChannel(guestChannel);
+  host.peer.channel.open();
+  guestChannel.open();
+  assert.throws(()=>guest.sendGuestInput(0,['pass']),/ready guest/);
+  deliver(host.peer.channel,JSON.stringify(guestHello));
+  deliver(guestChannel,JSON.stringify(hostHello));
+  assert.equal(host.ready,true);
+  assert.equal(guest.ready,true);
+  assert.throws(()=>host.sendGuestInput(0,['pass']),/ready guest/);
+  assert.throws(()=>guest.advanceHostFrame(0),/ready host/);
+  assert.throws(()=>guest.sendGuestInput(3,['invalid']),/Invalid LAN buttons/);
+  const packet=guest.sendGuestInput(3,['pass','jump'],1,-1);
+  assert.equal(packet.frame,3);
+  assert.deepEqual(packet.buttons,['pass','jump']);
+  deliver(host.peer.channel,guestChannel.sent.at(-1));
+  const frame=host.advanceHostFrame(3);
+  assert.equal(frame.received,true);
+  assert.deepEqual(frame.input.buttons,['pass','jump']);
+  assert.equal(frame.input.dx,1);
+  assert.equal(frame.input.dy,-1);
+  assert.throws(()=>host.advanceHostFrame(3),/must advance/);
+  assert.throws(()=>guest.sendGuestInput(3,['pass']),/sender or frame/);
+  const next=host.advanceHostFrame(4);
+  assert.equal(next.received,false);
+  assert.deepEqual(next.input.buttons,[]);
+  guest.dispose();host.dispose();
+  assert.throws(()=>guest.sendGuestInput(5,['pass']),/ready guest/);
+  assert.throws(()=>host.advanceHostFrame(5),/ready host/);
+});
