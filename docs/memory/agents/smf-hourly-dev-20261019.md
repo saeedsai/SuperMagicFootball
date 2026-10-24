@@ -2,26 +2,25 @@
 **Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
 
 ## Mission
-Continue bounded tested features on existing dev despite pending CI/release. Only dev/main; no force-push, security bypass or unverified production claims.
+Continue tested features on existing dev despite pending release. No new branches, force-push, CI or security bypass.
 
 ## Current checkpoint
-- STUDIO-0390: Player Studio normal Dribble Style now shows accessible live guide for all ten catalogue choices, with Nutmeg/Rainbow counterplay and no accidental Magic Trick or level conflation. UI `09469a89`, six Node regression tests `b0d84344`. Eight source-backed V8 assertions passed; full Node/Chromium/Modular QA **not verified**.
-- About-only `0.9.39.0` candidate staged in release/package/README heading+banner/date/notes/service-worker cache/policy/shared memory. Production remains previously certified version until green exact-head pipeline.
-- Baseline dev `b620034a` and main `72322b31` (21 ahead). GitHub connector workflow lookup PR-only returned no runs; combined statuses empty, web Actions/API disabled. Do not infer CI success or promote.
-- Preserve 223 teams/2676 players, 2GK/3DF/4MF/3FW, six formations, four actions, ten Career/Cup slots, SD09, offline and legacy saves.
+- LAN-011 fixed late guest input arriving for an already simulated host frame, even if caller passes an outdated frame snapshot. Source 69555ac7; Node regressions 32c1284a. Non-player-facing LAN foundation; About version remains 0.9.39.0. No new gameplay buttons or save changes.
+- Before change, dev was 31 commits ahead of main 72322b31. Full exact-head Node/Chromium and Modular QA not independently certified. Pending 0.9.39.0 Player Studio dribble guide release; no confirmed Pages/graphics acceptance.
+- Preserve 223 teams / 2676 players, six formations, four action buttons, 10 Career/Cup slots, SD09, offline and save compatibility.
 
 ## Next smallest action
-1. Inspect exact latest dev/main and push workflow CI; fix observed failures.
-2. Run focused Node and all four Node/four Chromium shards, Modular QA, preflight/preview.
-3. Inspect Player Studio Dribble/Shot/Defence guides and Crown Royals directional art in browser.
-4. Promote unchanged fully green dev via protected pipeline; verify Pages hosted bytes.
-5. Continue next small dev increment regardless of release: genuine two-client LAN or directional sprite fix.
+1. Verify latest-head CI and repair test failures without bypass.
+2. Complete four Node + four Chromium + preview + Modular QA.
+3. Inspect game in browser and assess Crown Royals art and Trick effects.
+4. Promote only fully green exact dev to main, then verify hosted byte SHA.
+5. Continue live two-client LAN transport/signaling or gameplay art increment.
 
 ## Ownership and exclusions
-Only own checkpoint and central log; no additional branches, bypass, false QA/deployment claims or disabled hourly cadence.
+Only own checkpoint and central development log. Hourly development never stops for release blockers.
 
 ## Evidence
-Focused eight source-backed V8 assertions passed; six Node tests added but not executed in Node. Full CI and hosted release unverified.
+Focused LAN-011 tests committed but not yet certified through Node/Chromium workflows; workflow discovery can omit runs.
 
 ## Cleanup
-Keep checkpoint under 4 KiB; exact-head CI is authoritative.
+Keep checkpoint under 4 KiB. No unsupported deployment or visual QA claims.
