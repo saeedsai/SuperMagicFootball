@@ -758,3 +758,6 @@ Reject malformed injected peers lacking DataChannel creation or offer/answer/loc
 
 ### 2026-10-24 LAN-035 malformed host DataChannel cleanup
 Validate host-created DataChannel EventTarget/send/close interface and close both channel and RTC peer on setup failure (4b2e26e1). Added focused cleanup regression (f2ae8a02). Previous certified main/dev 07a6a168: dev Full #40124690676 and Modular #40124690634, main Full #40125043094, Pages #40125043002 succeeded. Latest-head CI pending; gameplay and graphics acceptance not asserted.
+
+### 2026-10-24 LAN-036 guest incoming channel validation
+Validate remote guest DataChannel interface before binding; close malformed channel without throwing from RTC event (ca8ab53a). Regression 784e749f and corrected public status assertion 09e71640. Previous LAN-034 main/dev 07a6a168 fully certified and Pages deployed. LAN-035 final dev Modular #40125440224 passed, Full #40125440255 in progress at inspection. New exact-head CI pending; no claim of gameplay/graphics QA.
