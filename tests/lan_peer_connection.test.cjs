@@ -418,3 +418,69 @@ test('LAN-023 late status subscriber receives terminal snapshot without being re
   host.subscribeStatus(()=>called++,preAborted.signal);
   assert.equal(called,0);
 });
+
+test('LAN-025 host observes only validated guest inputs, preserving authoritative frame queue',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  const controller=new AbortController();
+  const accepted=[];
+  assert.throws(()=>host.subscribeHostInput(null),/listener/);
+  assert.throws(()=>host.subscribeHostInput(()=>{},{}),/AbortSignal/);
+  assert.throws(()=>guest.subscribeHostInput(()=>{}),/active host/);
+  host.subscribeHostInput(()=>{throw Error('observer error');});
+  const unsubscribe=host.subscribeHostInput(packet=>accepted.push(packet),controller.signal);
+  const deliver=(channel,packet)=>{
+    const message=new Event('message');
+    message.data=typeof packet==='string'?packet:JSON.stringify(packet);
+    channel.dispatchEvent(message);
+  };
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const guestChannel=new FakeChannel('smf-lan');
+  guest.peer.emitChannel(guestChannel);
+  host.peer.channel.open();guestChannel.open();
+  deliver(host.peer.channel,guestHello);
+  deliver(guestChannel,hostHello);
+  assert.equal(host.ready,true);
+  assert.equal(guest.ready,true);
+  const first=guest.sendGuestInput(3,['pass','jump'],1,-1);
+  deliver(host.peer.channel,first);
+  assert.equal(accepted.length,1);
+  assert.equal(accepted[0].frame,3);
+  assert.deepEqual(accepted[0].buttons,['pass','jump']);
+  assert.equal(Object.isFrozen(accepted[0]),true);
+  deliver(host.peer.channel,first); // replay rejected
+  deliver(host.peer.channel,{...first,session:'other_1234567890',sequence:2});
+  deliver(host.peer.channel,'not JSON');
+  assert.equal(accepted.length,1);
+  const next=guest.sendGuestInput(4,['shoot'],0,1);
+  controller.abort();
+  deliver(host.peer.channel,next);
+  assert.equal(accepted.length,1,'aborted observer must not be notified');
+  assert.equal(host.advanceHostFrame(3).received,true);
+  const frame4=host.advanceHostFrame(4);
+  assert.equal(frame4.received,true);
+  assert.deepEqual(frame4.input.buttons,['shoot']);
+  unsubscribe();
+  host.dispose();guest.dispose();
+  assert.throws(()=>host.subscribeHostInput(()=>{}),/active host/);
+});
+
+test('LAN-025 pre-aborted host input subscriptions do not receive events',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const aborted=new AbortController();aborted.abort();
+  let count=0;
+  const stop=host.subscribeHostInput(()=>count++,aborted.signal);
+  host.peer.channel.open();
+  const hello=new Event('message');hello.data=JSON.stringify(guestHello);
+  host.peer.channel.dispatchEvent(hello);
+  const packet=new Event('message');
+  packet.data=JSON.stringify({protocol:1,type:'input',session,sequence:1,frame:0,buttons:['dribble'],dx:0,dy:0});
+  host.peer.channel.dispatchEvent(packet);
+  assert.equal(count,0);
+  assert.equal(host.binding.state.queue.pending.length,1);
+  stop();host.dispose();
+});
