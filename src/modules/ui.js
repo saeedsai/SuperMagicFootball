@@ -1403,6 +1403,7 @@ function navigateMenu(direction){const items=menuButtons();if(!items.length)retu
 function backFromMenu(){if(screen==='TEAM COMMAND CENTER'){action(squadContext==='pause'?'returnPause':squadContext==='setup'?'returnSetup':menuBackAction||'home');return;}if(['MATCH RULES','KITS & TEAM TALKS','TEAM TACTICS'].includes(screen)){action('returnSetup');return;}const back=screen==='nav-settings-sound'&&menuEntryReturn==='returnPause'?'returnPause':screen==='nav-saves'?menuBackAction:menuParents[screen]||menuBackAction||'home';if(screen==='home')return;action(back);}
 document.addEventListener('keydown',e=>{
  if(!menuVisible())return;
+ if(screen==='LOCAL NETWORK'&&e.code==='Escape'){e.preventDefault();backFromMenu();return;}
  if(e.target?.matches?.('input,select,textarea,[contenteditable="true"]'))return;
  if(e.code==='Escape'||e.code==='Backspace'){
   if(['PAUSED','HALF TIME'].includes(screen)){e.preventDefault();if(screen==='PAUSED')action('resume');return;}
