@@ -21,6 +21,7 @@ Continue one bounded roadmap increment on existing `dev` every hourly run even i
 Sole developer. Edit central log and own checkpoint only; do not read/write other agents' memory. No premature production, gameplay or graphics certification.
 
 ## Evidence
+- LAN-033 invalid WebRTC peer fail-closed validation 1fad18a4 and regression 384ab2ac. LAN-032 Modular #40124140940 passed; Full #40124140981 in progress. New exact-head CI pending.
 - LAN-032 first-listener synchronous settlement cleanup 95b7ec6a and regression d3a62e45. Prior LAN-031 dev Modular #40124033218 passed, Full #40124033348 running. Latest head CI pending.
 - LAN-031 ICE listener registration race fix e34b9c64 and regression e318fea3. Prior e54e52c0 dev Modular #40123593706, Full #40123593693 and Pages #40123905221 succeeded; main Census running at inspection. Latest-head CI pending.
 - LAN-030 failed/closed peer with complete ICE regression: c8c40950, aa10dd8e. Prior f210660c dev Full #40123209577 and Modular #40123209574 passed; main workflows pending at inspection. New exact-head CI pending.
