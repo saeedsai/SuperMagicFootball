@@ -743,3 +743,6 @@ Added synchronous immutable status emission for offer/answer gathering, answer a
 
 ### 2026-10-24 LAN-030: completed ICE on failed RTC
 Fixed `waitForLanIceGathering` to reject a failed/closed RTC transport before its completed-ICE fast path (c8c40950). Added healthy/failed/closed focused regression (aa10dd8e). Prior dev/main f210660c green on dev full+Modular; main Full Census and Pages running at inspection. Exact new dev CI pending. Internal transport correction; 0.9.40.0 unchanged. Concept Royals graphics and two-browser gameplay not certified.
+
+### 2026-10-24 LAN-031 synchronous ICE listener race
+Avoid arming a timeout after synchronous ICE completion during listener registration (`e34b9c64`); regression `e318fea3`. Prior dev/main e54e52c0 passed dev Modular/Full, Pages deployed; main Full Census running at inspection. New exact-head CI pending. Internal LAN reliability, About-only 0.9.40.0 unchanged; real LAN gameplay and graphics visual acceptance still open.
