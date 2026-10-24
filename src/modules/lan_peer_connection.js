@@ -174,6 +174,23 @@ function createLanPeerConnection(localHello, options = {}) {
       check();
     });
   }
+  // LAN-016: expose the already-validated four-button guest/host frame bridge
+  // only after both SDP signaling and the protocol hello have completed.
+  // The caller still owns the real match loop and snapshot rendering.
+  function sendGuestInput(frame, buttons = [], dx = 0, dy = 0) {
+    if (disposed || hello.role !== 'guest' || phase !== 'connected-signaling' ||
+        !binding?.ready || channel?.readyState !== 'open') {
+      throw new Error('LAN guest input requires a ready guest connection');
+    }
+    return binding.sendInput(frame, buttons, dx, dy);
+  }
+  function advanceHostFrame(frame) {
+    if (disposed || hello.role !== 'host' || phase !== 'connected-signaling' ||
+        !binding?.ready || channel?.readyState !== 'open') {
+      throw new Error('LAN host frame requires a ready host connection');
+    }
+    return binding.advance(frame);
+  }
   function dispose() {
     if (disposed) return;
     disposed = true;
@@ -183,7 +200,7 @@ function createLanPeerConnection(localHello, options = {}) {
     try { channel?.close(); } catch { /* already closed */ }
     peer.close();
   }
-  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, dispose,
+  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, sendGuestInput, advanceHostFrame, dispose,
     get ready() { return !disposed && phase === 'connected-signaling' && !!binding?.ready; },
     get phase() { return phase; },
     get binding() { return binding; },
