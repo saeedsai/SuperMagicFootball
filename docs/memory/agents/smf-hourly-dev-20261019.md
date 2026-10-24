@@ -21,7 +21,7 @@ Continue one bounded tested feature per hourly run on existing dev, even with pe
 Only central log and own checkpoint. Never edit other agents' memory or force-push. Do not claim playable LAN, physical-device or graphics certification.
 
 ## Evidence
-Source-backed V8 LAN syntax/session check passed. Intermediate Modular QA #40109853703, #40109997203 and #40110027915 passed. Escape navigation fix f64a4b4d and regression a4945716 committed. Latest exact-head full 4+4, production and visual approval pending.
+Source-backed V8 LAN syntax/session check passed. Intermediate Modular QA #40109853703, #40109997203 and #40110027915 passed. Escape navigation fix f64a4b4d and regression a4945716 committed. Census #40110160109: 4 Node and preview passed, Chromium shard 2 failed because old menu test clicked removed laterLAN. Updated test to navLan and Escape assertions (45ebde43); latest exact-head 4+4, production and visual approval pending.
 
 ## Cleanup
 Checkpoint under 4 KiB. No secrets.
