@@ -388,7 +388,10 @@ function createLanPeerConnection(localHello, options = {}) {
     }
     guestSnapshotUnsubscribe = unsubscribe;
     signal?.addEventListener('abort', onAbort, {once:true});
-    if (signal?.aborted) unsubscribe();
+    if (signal?.aborted) {
+      unsubscribe();
+      throw new Error('LAN snapshot subscription cancelled');
+    }
     return Object.freeze({
       get lastTick() { return receiver.lastTick; },
       dispose() {
