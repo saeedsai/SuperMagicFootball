@@ -1,3 +1,8 @@
+## 2026-10-24 — LAN-011 simulated-frame replay fix
+- dev/head at start ahead 31 of main 72322b31, About candidate 0.9.39.0. LAN host now rejects an arriving guest packet for frames already simulated, even when hostFrame argument was stale. Source commit 69555ac7; regression tests 32c1284a.
+- Non-player-facing protocol fix, no bundle number change. Latest full 4 Node + 4 Chromium + Modular QA, hosted Pages and Crown Royals manual visual acceptance remain unverified; protected main promotion not requested without exact-head green checks.
+- Next: run focused LAN tests, complete CI gates, inspect graphics, then safe protected promotion.
+
 ## 2026-10-24 — STUDIO-0390: live normal Dribble Style guide (candidate 0.9.39.0)
 - Baseline exact heads: dev `b620034a912d6e3809306e369e075a5fdcf4bd29`, main `72322b31113e0163c41d21327955c381bc2b9524` (21 commits ahead). Only dev/main branches found.
 - UI commit `09469a895fddd7ec95c80f7b10fa62d6835978c5`: accessible live status for normal Dribble Style selection, describes Nutmeg timing, Rainbow Flick defender read, generic evasion, no levels or Magic Trick confusion. Preview changes neither save nor player; existing SAVE DRIBBLE STYLE remains the only write.
