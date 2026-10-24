@@ -673,3 +673,9 @@ Extracted Diego's three miniature source views into transparent 132×90 indexed 
 
 ### 2026-10-24 LAN-017 (internal transport diagnostics)
 Added read-only transportState/channelState accessors to LAN peer wrapper, with lifecycle regression. Implementation 05f6f711; test eb33326e. Exact-head CI pending; no player-facing change, playable LAN or graphics certification claim. Previous main/dev 85f04314 passed 4+4 census, Modular QA and Pages. Continue lobby and graphics QA.
+
+## 2026-10-24 — LAN-018 disconnected transport gating (internal 0.9.39.0)
+- Baseline dev/main: `83a74328e59996f27e5b21278e318897d763e316`; dev Full Census #40093044622 and Modular QA #40093044602 green, main Full Census #40093664611 and Pages #40093664360 green; hosted smoke step passed.
+- LAN-018 `c7b7a9f5`: a protocol-ready RTCDataChannel cannot advertise ready or accept guest/host frames while RTCPeerConnection is disconnected, failed or closed; awaitReady waits for transport recovery. Restores readiness after transient reconnect; no gameplay controls, saved data or rosters changed. `1cf83b8d`: two regression tests for ready/frame gating and reconnect wait.
+- Source-backed V8 mock-peer smoke 9/9 assertions passed. Exact-head Node/Chromium and Modular QA for final documentation commit pending; do not claim new production deployment. No visual art approval or real two-client LAN certification. Owner's issue #15 (Concept Royals facing) remains open.
+- Next: inspect exact-head full 4 Node + 4 Chromium and Modular QA, repair failures; protected dev→main promotion only after green; verify Pages hashes; integrate accessible LAN lobby and authoritative match snapshots; separately perform real Chromium Concept Royals directional screenshot QA.
