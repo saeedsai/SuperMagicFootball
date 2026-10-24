@@ -2,25 +2,20 @@
 **Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
 
 ## Mission
-Continue bounded tested development on existing dev while resolving CI. Do not create branches, force-push or bypass protections.
+Continue one bounded tested increment directly on existing `dev` every run, even with pending CI/release. No extra branches, force pushes or bypass of protections.
 
 ## Current checkpoint
-- HAZARD-0321: fixed cross-trap deletion when Banana Peel is placed after Ice Patches. Banana and Ice now maintain separate six-item capacity; source 5eb996ce; tests 54c215bf. Candidate 0.9.32.1 synchronized in About/package/README/offline cache; Node and browser CI unverified.
-- Previous ICE-032 Ice Patch trap, runtime and cyan artwork is in main at 73cc8a6c (identical dev/main at run start). No manual visual art certification, hosted Pages byte QA still pending.
-- Preserve 223 teams / 2676 players, 6 formations, 4 actions, ten Career/Cup slots, SD09 and save/offline compatibility.
+- SLIDE-0330 candidate `0.9.33.0`: defensive SHOOT slide clears nearby opposing Banana Peel / Ice Patch before collision, with disarm burst and event. Pure hazard model `7a457ec0`; engine `41bc4f11`; tests `8cc8f7e5`; UI `6adb8c25`; version contract `5a036707`. README, About, package, SW cache and policies aligned.
+- At run start `dev`/`main` identical `d98edf1cd64ff729d1bbaf5d7c319c58c759d823` (previous 0.9.32.1). Candidate not certified or hosted-verified.
+- Focused checks: 17 hazard test callbacks passed using actual fetched source in V8 with injected Node mocks; 19 source parse/model/order/version checks passed. This is **not** full Node CI, Chromium, Modular QA, screenshot/real-device or Pages evidence.
+- Preserve 223 teams / 2676 players, 2 GK/3 DF/4 MF/3 FW, 6 formations, 4 buttons, 10 Career/Cup slots, SD09, offline and old save compatibility.
 
-## Next smallest action
-1. Inspect exact dev-head Modular QA and Full Census and repair failures.
-2. Run focused hazard coexistence tests, four Node and four Chromium shards.
-3. Verify actual hosted game, Banana/Ice trap appearance, and Crown Royals views.
-4. Promote exact fully green head through protected dev-to-main pipeline, verify Pages byte SHA.
-5. Continue counterable Tricks, graphics improvements and real LAN.
+## Next five steps
+1. Inspect exact current dev SHA, 4 Node + 4 Chromium/preflight/preview and Modular QA; repair genuine failures.
+2. Verify disarm events/graphics and Crown Royals on real browser, desktop and simulated touch.
+3. Promote only unchanged fully green exact dev via existing protected workflow; verify main and Pages byte smoke.
+4. Continue next bounded Player Studio / Magic Trick improvement directly on dev even if release pending.
+5. Progress genuine two-client LAN and authored multi-angle character art in small tested slices.
 
 ## Ownership and exclusions
-Only update own memory checkpoint and central development log. Keep hourly development active; no bypass of safety, GitHub permissions or CI.
-
-## Evidence
-Hazard source/test commits above; no exact-head CI outcome at checkpoint time.
-
-## Cleanup
-Keep below 4 KiB; do not claim player-facing deployment or visual QA without confirmation.
+Read AGENTS.md, VERSIONING_POLICY.md, SHARED.md and only this agent checkpoint. Central log has details. Do not disable hourly development for transient blockers. GitHub Actions workflow lookup currently PR-only and commit combined status returned no statuses; never claim CI or deployment without direct evidence.
