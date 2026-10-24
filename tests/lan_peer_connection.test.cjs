@@ -984,3 +984,50 @@ test('LAN-042 guest match-state adapter strips transport metadata and preserves 
   assert.equal(states.length,1);
   guest.dispose();host.dispose();
 });
+
+test('LAN-043 authoritative host step consumes guest input and publishes a validated snapshot',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  assert.throws(()=>host.stepHostMatchFrame(0,()=>({})),/ready host/);
+  assert.throws(()=>host.stepHostMatchFrame(0,null),/callback/);
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const channel=new FakeChannel('smf-lan');
+  guest.peer.emitChannel(channel);
+  host.peer.channel.open();channel.open();
+  const deliver=(target,packet)=>{
+    const e=new Event('message');
+    e.data=typeof packet==='string'?packet:JSON.stringify(packet);
+    target.dispatchEvent(e);
+  };
+  deliver(host.peer.channel,guestHello);
+  deliver(channel,hostHello);
+  const states=[];
+  const receiver=guest.subscribeGuestMatchState(s=>states.push(s));
+  const sent=guest.sendGuestInput(5,['pass','jump'],1,0);
+  deliver(host.peer.channel,sent);
+  let calls=0;
+  const result=host.stepHostMatchFrame(5,(input,meta)=>{
+    calls++;
+    assert.equal(meta.received,true);
+    assert.deepEqual(input.buttons,['pass','jump']);
+    assert.equal(input.dx,1);
+    return {tick:5,clockMs:250,scores:{home:0,away:0},
+      ball:{x:0,y:0,z:0},players:[{slot:0,x:0,y:0}]};
+  });
+  assert.equal(calls,1);
+  assert.equal(result.snapshotSent,true);
+  assert.equal(result.received,true);
+  assert.equal(Object.isFrozen(result),true);
+  deliver(channel,host.peer.channel.sent.at(-1));
+  assert.equal(states.length,1);
+  assert.equal(states[0].tick,5);
+  assert.deepEqual(states[0].players,[{slot:0,x:0,y:0}]);
+  assert.throws(()=>host.stepHostMatchFrame(5,()=>{}),/must advance/);
+  assert.throws(()=>guest.stepHostMatchFrame(6,()=>{}),/ready host/);
+  assert.throws(()=>host.stepHostMatchFrame(6,()=>({tick:7})),/tick must match/);
+  assert.throws(()=>host.stepHostMatchFrame(7,async()=>({tick:7})),/synchronously/);
+  receiver.dispose();guest.dispose();host.dispose();
+});
