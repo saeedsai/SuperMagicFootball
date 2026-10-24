@@ -948,3 +948,39 @@ test('LAN-041 host match-state bridge stamps session identity and delivers guest
   guest.dispose();host.dispose();
   assert.throws(()=>host.sendHostMatchState({...state,tick:8}),/ready host/);
 });
+
+test('LAN-042 guest match-state adapter strips transport metadata and preserves cancellation',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const channel=new FakeChannel('smf-lan');
+  guest.peer.emitChannel(channel);
+  host.peer.channel.open();channel.open();
+  const deliver=(target,packet)=>{
+    const event=new Event('message');
+    event.data=typeof packet==='string'?packet:JSON.stringify(packet);
+    target.dispatchEvent(event);
+  };
+  deliver(host.peer.channel,guestHello);
+  deliver(channel,hostHello);
+  assert.throws(()=>guest.subscribeGuestMatchState(null),/listener/);
+  const controller=new AbortController();
+  const states=[];
+  guest.subscribeGuestMatchState(state=>states.push(state),-1,controller.signal);
+  const state={tick:1,clockMs:250,scores:{home:0,away:1},
+    ball:{x:0,y:0,z:0},players:[{slot:0,x:0,y:0}]};
+  assert.equal(host.sendHostMatchState(state),true);
+  deliver(channel,host.peer.channel.sent.at(-1));
+  assert.equal(states.length,1);
+  assert.deepEqual(states[0],state);
+  assert.equal(Object.isFrozen(states[0]),true);
+  assert.equal(Object.hasOwn(states[0],'roomId'),false);
+  controller.abort();
+  assert.equal(host.sendHostMatchState({...state,tick:2}),true);
+  deliver(channel,host.peer.channel.sent.at(-1));
+  assert.equal(states.length,1);
+  guest.dispose();host.dispose();
+});
