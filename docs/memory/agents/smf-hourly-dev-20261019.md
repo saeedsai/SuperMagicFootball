@@ -2,21 +2,21 @@
 **Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
 
 ## Mission
-Continue one bounded feature each hourly run on existing `dev` even while CI/release pending. No other branches, force pushes, test weakening or bypasses.
+Commit one bounded useful feature each hourly run directly to existing dev, even while CI/main/Pages pending. Preserve only dev/main, branch protections, saves and controls.
 
 ## Current checkpoint
-- ARM-0340 candidate 0.9.34.0: Banana Peel (.25s) and Ice Patch (.3s) now show shrinking canvas countdown rings while arming, giving readable trap activation without gameplay physics changes. Renderer `191fdd0e`, canvas tests `77cd0457`. Release/About, README, package, SW rotated cache, policy and shared memory aligned.
-- Previous SLIDE-0330: existing SHOOT-slide trap disarm. Source and tests retained.
-- Isolated JS V8 harness executed fetched source with Node-style test/fs/assert mocks: **3/3 arming tests + 9/9 hazard tests passed**. Real Node/Chromium, 4+4, Modular QA, screenshots and Pages certification **not executed**.
-- Run start `dev` 33c88188 was 13 commits ahead of `main` d98edf1c. At intermediate inspection `dev` 9a9a2069 was 21 ahead of unchanged main. Workflow lookup is PR-filtered and combined commit status was empty: not evidence of green CI.
-- Preserve 223 teams/2676 players, 6 formations, 4 controls, 10 Career/Cup slots, SD09, save/offline compatibility.
+- STUDIO-0350: 0.9.35.0 candidate, live accessible Player Studio Magic Trick effects/counterplay guide for all eight Tricks; KEEP CURRENT and REMOVE are read-only previews, icon and aria-live guide update on select. UI `31f8deb6`, focused tests `34c3f0d3`, release/cache/docs aligned; version-test escaping repaired at `00a85219`.
+- Focused source-extracted V8 harness: 4 Studio + 7 version assertions = **11 passed**. 42 shipped JS scripts V8 syntax parsed after ES-module syntax adaptation. These are not Node --check, actual Chromium, 4+4, Modular QA, manual screenshot or Pages evidence.
+- Run start dev `0097d2e0` 23 commits ahead of main `d98edf1c`; only dev/main branches. Exact-head workflow connector PR-filtered (no runs), combined status empty; web Actions fetch disabled. No green CI or main promotion claimed.
+- Prior ARM-0340 arming rings and SLIDE-0330 SHOOT-slide trap disarm retained.
+- Preserve 223 teams/2676 players, six formations, four action buttons, ten Career/Cup slots, SD09, offline/save compatibility.
 
 ## Next five steps
-1. Inspect latest exact-head full 4 Node + 4 Chromium, preflight/preview and Modular QA, diagnose failures.
-2. Verify both trap telegraphs and SHOOT-slide disarm in real browser, including simulated touch.
-3. Only after full green exact head, allow protected dev-to-main promotion and verify Pages hosted bytes.
-4. Continue next small Player Studio improvement directly on dev regardless of pending release.
-5. Advance genuine two-client LAN and authored Crown Royals quarter/action graphics incrementally.
+1. Inspect actual exact dev-head CI, diagnose and repair failing jobs if available.
+2. Real browser Player Studio and Magic Trap counterplay/graphics inspection, including simulated touch.
+3. Full 4 Node + 4 Chromium + Modular QA; promote unchanged green dev head through protected pipeline, verify Pages SHA/bytes.
+4. Continue next bounded feature on dev regardless of pending CI/main.
+5. Advance genuine two-client LAN and authored Crown Royals directional/action art.
 
-## Ownership and exclusions
-Read AGENTS.md, VERSIONING_POLICY.md, SHARED.md and only this agent checkpoint. Full evidence in central log. Never claim CI/hosted QA or change the hourly schedule without real evidence.
+## Ownership
+Read AGENTS.md, VERSIONING_POLICY.md, SHARED.md and only this checkpoint. Detailed evidence in central development log. Never force-push, bypass safety, weaken tests or disable the hourly schedule because of a blocker.
