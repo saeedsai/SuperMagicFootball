@@ -97,6 +97,7 @@ function createLanPeerConnection(localHello, options = {}) {
   let binding = null;
   let hostSnapshotBinding = null;
   let guestSnapshotBinding = null;
+  let guestSnapshotUnsubscribe = null;
   // Snapshot IDs are deterministic for both peers after the validated hello.
   // They identify this transport session, not an authenticated user account.
   const snapshotIdentity = Object.freeze({roomId:hello.session.slice(0,32),
@@ -380,8 +381,12 @@ function createLanPeerConnection(localHello, options = {}) {
     function unsubscribe() {
       signal?.removeEventListener('abort', onAbort);
       receiver.dispose();
-      if (guestSnapshotBinding === receiver) guestSnapshotBinding = null;
+      if (guestSnapshotBinding === receiver) {
+        guestSnapshotBinding = null;
+        guestSnapshotUnsubscribe = null;
+      }
     }
+    guestSnapshotUnsubscribe = unsubscribe;
     signal?.addEventListener('abort', onAbort, {once:true});
     if (signal?.aborted) unsubscribe();
     return Object.freeze({
@@ -395,8 +400,9 @@ function createLanPeerConnection(localHello, options = {}) {
     if (disposed) return;
     disposed = true;
     hostSnapshotBinding?.dispose();
-    guestSnapshotBinding?.dispose();
+    guestSnapshotUnsubscribe?.();
     guestSnapshotBinding = null;
+    guestSnapshotUnsubscribe = null;
     phase = 'closed';
     peer.removeEventListener('datachannel', onDataChannel);
     peer.removeEventListener('connectionstatechange', emitStatus);
