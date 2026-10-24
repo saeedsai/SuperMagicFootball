@@ -15,7 +15,7 @@ import {SHOTFEEL} from "./shotfeel.js";
 import {SHOTPATHS} from "./shotpaths.js";
 import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
-import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches} from "./magic-hazards.js";
+import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards} from "./magic-hazards.js";
 const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,defensivePressers}=AI;const {withStats,stat,endurance,contest,shotError}=STATS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition}=FITNESS;
 
 
@@ -989,6 +989,14 @@ class GameEngine{
  // Consume a Banana Peel only when a grounded opposing outfielder steps on it.
  // This is called after movement/contact resolution and before ball physics.
  updateMagicHazards(dt){
+  // Existing SHOOT slide clears enemy traps before their collision tick.
+  // No fifth button, stamina bypass, or saved-game schema change.
+  const cleared=disarmMagicHazards(this.magicHazards,this.players);
+  this.magicHazards=cleared.hazards;
+  for(const {hazard,player} of cleared.disarmed){
+   this.burst(hazard.x,hazard.y,hazard.kind==='ice'?'#8deaff':'#ffe46b',7);
+   this.emit('magicHazardDisarmed',{trick:hazard.kind,team:player.t,player:player.src.name});
+  }
   const next=advanceBananaPeels(this.magicHazards,this.players,dt);
   const ice=advanceIcePatches(this.magicHazards,this.players,dt);
   this.magicHazards=[...next.hazards,...ice.hazards];
