@@ -91,3 +91,13 @@ test('player-facing candidate rotates the offline cache to the current four-fiel
  assert.ok(sw.includes('-'+cacheVersion+"';"),'service worker cache must end with the current version token');
  assert.match(read('src/modules/release.js'),/notes:Object\.freeze\(\[/);
 });
+
+test('team-fair Magic Trap gameplay change is reflected in About, README and rotated offline cache',()=>{
+ const version=JSON.parse(read('package.json')).version;
+ const release=read('src/modules/release.js'),readme=read('README.md'),sw=read('sw.js');
+ assert.match(release,/each team can retain up to six Banana Peels and six Ice Patches/);
+ assert.match(readme,/independent six-trap quotas for each team/);
+ assert.ok(readme.startsWith('> **'+version+' release candidate'),'README first banner must describe current candidate');
+ assert.ok(readme.includes('v'+version),'README project heading must track current version');
+ assert.ok(sw.includes('-'+version.replace(/\\./g,'')+"';"),'offline cache must rotate for this candidate');
+});
