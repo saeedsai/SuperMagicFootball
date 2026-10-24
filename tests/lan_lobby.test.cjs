@@ -34,6 +34,7 @@ test('LAN-024 local network menu is explicitly a connection preview, not a playa
   const fixture=fs.readFileSync(path.join(root,'scripts/build.py'),'utf8');
   assert.match(ui,/navItem\('Local Network · Connection Preview','navLan'/);
   assert.match(ui,/mountLanLobby\(\$\('lanLobby'\)\)/);
+  assert.match(ui,/screen==='LOCAL NETWORK'&&e.code==='Escape'/);
   assert.match(ui,/lanLobbyDispose\(\)/);
   assert.match(sw,/'lan_protocol','lan-protocol-channel','lan_peer_connection','lan-lobby'/);
   assert.match(fixture,/'lan_protocol','lan-protocol-channel','lan_peer_connection','lan-lobby'/);
