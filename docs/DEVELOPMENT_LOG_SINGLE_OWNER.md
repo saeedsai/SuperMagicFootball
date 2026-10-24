@@ -689,3 +689,6 @@ Added read-only transportState/channelState accessors to LAN peer wrapper, with 
 
 ### 2026-10-24 LAN-020 abortable readiness
 Added optional AbortSignal to awaitReady for cancellable future lobby waits; pre-aborted and in-flight cancellation covered by two Node regression tests. Implementation 50055eed; tests 24bfb5de. Prior main/dev db6eacfb certified full census, Modular QA, Pages. Exact new-head CI pending; no playable LAN or graphics certification claim.
+
+### 2026-10-24 LAN-021 cancellation validation
+Validated optional AbortSignal before registering readiness listeners or timers; malformed cancellation tokens reject safely, with regression coverage. Source 76217755, test bb09d0be. Prior dev/main 9ac3a388 passed dev 4+4 census and Modular QA; main Census/Pages were running at inspection. Exact new-head QA pending; not a playable LAN or visual art certification.
