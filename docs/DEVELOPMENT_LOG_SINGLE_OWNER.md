@@ -746,3 +746,6 @@ Fixed `waitForLanIceGathering` to reject a failed/closed RTC transport before it
 
 ### 2026-10-24 LAN-031 synchronous ICE listener race
 Avoid arming a timeout after synchronous ICE completion during listener registration (`e34b9c64`); regression `e318fea3`. Prior dev/main e54e52c0 passed dev Modular/Full, Pages deployed; main Full Census running at inspection. New exact-head CI pending. Internal LAN reliability, About-only 0.9.40.0 unchanged; real LAN gameplay and graphics visual acceptance still open.
+
+### 2026-10-24 LAN-032 synchronous ICE cleanup
+Avoid registering second RTC listener after first registration synchronously settles ICE (95b7ec6a); focused regression d3a62e45. Prior LAN-031 exact dev Modular QA passed and Full Census running; main remains e54e52c0. New head CI pending; no premature promotion, no graphics or multiplayer certification.
