@@ -751,3 +751,17 @@ test('LAN-032 synchronous ICE completion skips second listener registration',asy
   await waitForLanIceGathering(peer,100);
   assert.equal(peer.connectionListenerRegistrations,0);
 });
+
+test('LAN-033 rejects malformed injected RTCPeerConnection before wiring events',async()=>{
+  const {createLanPeerConnection}=await load();
+  let closed=0;
+  class InvalidPeer {
+    constructor(){this.addEventListener=()=>{};this.close=()=>{closed++;};}
+  }
+  assert.throws(()=>createLanPeerConnection(hostHello,{RTCPeerConnection:InvalidPeer}),
+    /Invalid LAN RTCPeerConnection implementation/);
+  assert.equal(closed,1);
+  class NullPeer {constructor(){return null;}}
+  assert.throws(()=>createLanPeerConnection(hostHello,{RTCPeerConnection:NullPeer}),
+    /Invalid LAN RTCPeerConnection implementation/);
+});
