@@ -20,6 +20,7 @@ About-only 0.9.39.0 unchanged (internal LAN), preserve 223 teams/2676 players, s
 Sole developer; dev/main only. No false deployment/visual certification.
 
 ## Evidence
+- CI blocker: required backtick identity marker repaired in 50dab5e9; LAN-022 abortable status subscriptions ab9553b0, regression ef7f0390. Exact-head CI pending.
 LAN-021 source/test commits; automated QA pending.
 
 ## Cleanup
