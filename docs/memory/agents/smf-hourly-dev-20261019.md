@@ -23,5 +23,8 @@ Sole developer; only central log and own checkpoint updated. Do not read or edit
 ## Evidence
 Source-backed V8 mock-peer 5/5, exact test-head Modular QA success #40092061230; no full latest-head or deployment claim yet.
 
+## 2026-10-24 LAN-017
+At baseline 85f04314 dev/main green full census, Modular QA and Pages. Internal transport/channel diagnostics commit 05f6f711, regression eb33326e. Exact-head CI pending. Next: verify green protected promotion, LAN lobby UI, real two-browser gameplay, Concept Royals graphics screenshot QA. No player-visible version bump; 0.9.39.0 retained.
+
 ## Cleanup
-Checkpoint under 4 KiB; do not claim playable LAN or graphics approval without real tests.
+Checkpoint under 4 KiB; no unverified deployment claim.
