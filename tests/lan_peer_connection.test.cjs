@@ -686,3 +686,21 @@ test('LAN-028 already-closed DataChannel rejects readiness immediately',async()=
   await assert.rejects(host.awaitReady(1000),/closed before handshake/);
   host.dispose();
 });
+
+test('LAN-029 signaling observers receive gathering phase before SDP resolves',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const phases=[];
+  host.subscribeStatus(status=>phases.push(status.phase));
+  let resolveOffer;
+  host.peer.createOffer=()=>new Promise(resolve=>{resolveOffer=resolve;});
+  const pending=host.createOffer();
+  assert.equal(host.phase,'gathering-offer');
+  assert.deepEqual(phases.slice(0,2),['new','gathering-offer']);
+  resolveOffer({type:'offer',sdp:'v=0\\r\\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\\r\\n'});
+  await pending;
+  assert.equal(host.phase,'awaiting-answer');
+  assert.equal(phases.at(-1),'awaiting-answer');
+  host.dispose();
+  assert.equal(phases.at(-1),'closed');
+});
