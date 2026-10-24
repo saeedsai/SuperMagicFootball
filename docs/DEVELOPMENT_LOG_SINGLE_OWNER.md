@@ -737,3 +737,6 @@ Exact-head d1ac4b3b failed memory contract because developer checkpoint omitted 
 
 ### 2026-10-24 LAN-028 fail-fast readiness
 `awaitReady` now immediately rejects an already-failed/closed RTC transport or closed DataChannel before installing polling timers; source 1a4f5111, tests 9acf5ca6. Prior exact dev/main c495c329 passed 4+4 census, Modular QA and Pages. New head pending CI. Internal LAN change; About-only 0.9.40.0 unchanged. Real two-client gameplay and Concept Royals screenshot QA outstanding.
+
+### 2026-10-24 LAN-029 signaling progress observers
+Added synchronous immutable status emission for offer/answer gathering, answer application and SDP completion (`0239398d`); deferred-offer regression `efbde094` verifies the lobby sees intermediate state before SDP resolves. Previous dev/main e52439db exact-head 4+4, Modular QA and Pages all green (#40122235591, #40122235576, #40122524867, #40122524884). Internal-only; version remains 0.9.40.0. New exact-head QA pending; gameplay and graphics not visually certified.
