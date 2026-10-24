@@ -26,6 +26,8 @@ test('LAN-014 host and guest exchange gathered SDP with matching session/build',
   const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
   const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
   assert.deepEqual(host.peer.config,{iceServers:[]});
+  const rogueHost=new FakeChannel('unexpected');host.peer.emitChannel(rogueHost);
+  assert.equal(rogueHost.readyState,'closed');
   const offer=await host.createOffer();
   assert.equal(JSON.parse(offer).kind,'offer');
   const answer=await guest.acceptOffer(offer);
