@@ -2,26 +2,26 @@
 **Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
 
 ## Mission
-Deliver a bounded tested dev increment every hour even while CI, promotion or hosted verification are pending. Only dev/main; no bypass or force push.
+Ship one bounded, tested increment per run directly on dev, even when CI or release is pending. Never create branches beyond dev/main, bypass security, or force-push.
 
 ## Current checkpoint
-- Last certified dev/main before LAN-013: `ebae2357b22b3face0aa3e137bd4efca015196ee` (0.9.39.0). Modular QA #40076844592 and full 4 Node+4 Chromium #40076844583 green; protected main #40077398244 and Pages #40077398263 successful with hosted byte smoke.
-- LAN-013: new `src/modules/lan-protocol-channel.js` attaches host/guest LAN-001–012 handshake and frame exchange to already-open or opening RTCDataChannels. One hello echo handles late binding; rejects malformed/stale/foreign traffic; send failure preserves guest cursor; close cleans listeners. Four Node regression tests; 16/16 source-backed V8 checks passed before commit. Exact-head GitHub CI pending.
-- LAN still needs RTCPeerConnection creation, manual signaling UI, authoritative game-loop controls and two-browser QA. This is not playable LAN.
-- Keep About-only 0.9.39.0 for non-player-facing LAN increment. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and legacy saves.
+- Baseline dev/main: `cf9a3b27e25d333dfe8ff03178b0ae009aae8f72` (0.9.39.0), green full 4 Node + 4 Chromium #40080799545, Modular QA #40080799548, main hosted smoke #40081043524, Pages #40081043685.
+- LAN-014: `src/modules/lan_peer_connection.js` now constructs WebRTC peer/channel, gathers ICE, exchanges manual JSON SDP offer/answer, checks session/build/role, rejects malformed/replayed signals and closes extra channels. `tests/lan_peer_connection.test.cjs`: 4 Node tests, 4/4 passed locally with isolated dependency stubs. Source `afd32ed3`; tests `5232ad84`. Exact GitHub CI pending.
+- This is **not** playable LAN: no in-game UI, no authoritative gameplay input/snapshot integration or actual two-browser certification. Empty ICE server list intentionally limits remote connectivity; local-network candidates only.
+- Internal protocol-only update: About-only 0.9.39.0 unchanged; preserve 223 teams/2676 players, six formations, four buttons, 10 Career/Cup slots, SD09, offline and legacy saves.
 
 ## Next smallest action
-1. Check exact-head Node/Chromium 4+4 and Modular QA; repair failures.
-2. Wire real RTCPeerConnection + manual SDP/ICE with explicit two-client state.
-3. Feed guest input into actual host game loop and snapshot output.
-4. Add desktop/touch two-browser LAN and art smoke.
-5. Promote only exact green dev head and verify Pages hosted bytes.
+1. Check exact-head 4 Node + 4 Chromium and Modular QA; repair failures.
+2. Build accessible manual SDP copy/paste UI for host and guest, without fifth gameplay button.
+3. Wire guest controls to authoritative host simulation.
+4. Synchronize snapshots and test two real browser peers.
+5. Promote exact green dev via protected workflow, verify main/Pages hosted hashes and graphics.
 
 ## Ownership and exclusions
-Only central log and own checkpoint. No other agents' memory. Keep hourly development active.
+Sole developer; edit only central log and own checkpoint. Other agents' memory remains untouched. Continue hourly work despite pending deployment.
 
 ## Evidence
-Prior main hosted verification green; new LAN-013 V8 16/16 passed. CI of new head not yet certified.
+Prior certified `cf9a3b27` workflows green. LAN-014 local focused 4/4 with dependency stubs; actual exact-head CI not yet observed.
 
 ## Cleanup
-Checkpoint under 4 KiB. No unverified release claims.
+Checkpoint under 4 KiB; no unverified release or playable LAN claim.
