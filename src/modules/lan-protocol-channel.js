@@ -21,6 +21,28 @@ function bindLanProtocolChannel(localHello, channel) {
     ? createLanHostSession(local) : createLanGuestSession(local);
   let disposed = false;
   let helloSent = false;
+  // LAN-025: host-only notifications after authoritative input validation.
+  // Subscribers do not advance the simulation or change packet acceptance.
+  const inputObservers = new Set();
+  function subscribeInput(listener, signal = null) {
+    if (local.role !== 'host') throw new Error('LAN host input subscription requires host');
+    if (typeof listener !== 'function') throw new TypeError('LAN input listener required');
+    if (signal != null && (typeof signal.addEventListener !== 'function' ||
+        typeof signal.removeEventListener !== 'function' || typeof signal.aborted !== 'boolean')) {
+      throw new TypeError('LAN input subscription requires an AbortSignal');
+    }
+    const entry = {listener, signal, unsubscribe: null};
+    const unsubscribe = () => {
+      inputObservers.delete(entry);
+      signal?.removeEventListener('abort', unsubscribe);
+    };
+    entry.unsubscribe = unsubscribe;
+    if (!disposed && !signal?.aborted) {
+      inputObservers.add(entry);
+      signal?.addEventListener('abort', unsubscribe, {once:true});
+    }
+    return unsubscribe;
+  }
 
   function hello() {
     if (disposed || channel.readyState !== 'open') return false;
@@ -38,7 +60,15 @@ function bindLanProtocolChannel(localHello, channel) {
         if (local.role === 'host') {
           const nextFrame = Math.max(0, (state.lastSimulatedFrame ?? -1) + 1);
           const received = acceptLanHostMessage(state, event.data, nextFrame);
-          if (received.kind === 'accepted') state = received.state;
+          if (received.kind === 'accepted') {
+            state = received.state;
+            // The queue contains only validated, in-window inputs. The latest
+            // accepted packet is immutable and remains queued for advance().
+            const packet = state.queue.pending.at(-1);
+            for (const observer of [...inputObservers]) {
+              try { observer.listener(packet); } catch { /* isolate game/UI observers */ }
+            }
+          }
         }
         return;
       }
@@ -81,6 +111,7 @@ function bindLanProtocolChannel(localHello, channel) {
     channel.removeEventListener('open', hello);
     channel.removeEventListener('message', onMessage);
     channel.removeEventListener('close', dispose);
+    for (const observer of [...inputObservers]) observer.unsubscribe();
     bindings.delete(channel);
   }
 
@@ -88,7 +119,7 @@ function bindLanProtocolChannel(localHello, channel) {
   channel.addEventListener('message', onMessage);
   channel.addEventListener('close', dispose);
   const binding = Object.freeze({
-    hello, sendInput, advance, dispose,
+    hello, sendInput, advance, subscribeInput, dispose,
     get ready() { return !disposed && helloSent && state.peer.ready; },
     get state() { return state; },
     get disposed() { return disposed; }
