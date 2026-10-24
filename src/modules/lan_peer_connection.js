@@ -414,6 +414,15 @@ function createLanPeerConnection(localHello, options = {}) {
       }
     });
   }
+  // LAN-042: give a guest renderer a match-state-shaped, immutable view.
+  // The snapshot receiver still validates identity, ordering and readiness.
+  function subscribeGuestMatchState(listener, initialTick = -1, signal = null) {
+    if (typeof listener !== 'function') throw new TypeError('Invalid LAN guest match state listener');
+    return subscribeGuestSnapshots(snapshot => listener(Object.freeze({
+      tick:snapshot.tick, clockMs:snapshot.clockMs, scores:snapshot.scores,
+      ball:snapshot.ball, players:snapshot.players
+    })), initialTick, signal);
+  }
   function dispose() {
     if (disposed) return;
     disposed = true;
@@ -435,7 +444,7 @@ function createLanPeerConnection(localHello, options = {}) {
     emitStatus();
     statusListeners.clear();
   }
-  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, sendGuestInput, advanceHostFrame, sendHostSnapshot, sendHostMatchState, subscribeGuestSnapshots, subscribeHostInput, subscribeHostFrame, subscribeStatus, dispose,
+  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, sendGuestInput, advanceHostFrame, sendHostSnapshot, sendHostMatchState, subscribeGuestSnapshots, subscribeGuestMatchState, subscribeHostInput, subscribeHostFrame, subscribeStatus, dispose,
     get snapshotIdentity() { return snapshotIdentity; },
     get status() { return snapshotStatus(); },
     get ready() { return phase === 'connected-signaling' && !!binding?.ready && transportUsable(); },
