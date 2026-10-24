@@ -806,6 +806,6 @@ test('LAN-036 malformed incoming guest channel does not bind or crash event',asy
   Object.defineProperty(event,'channel',{value:channel});
   assert.doesNotThrow(()=>peer.dispatchEvent(event));
   assert.equal(closed,1);
-  assert.equal(guest.getStatus().channel,'unavailable');
+  assert.equal(guest.status.channel,'unavailable');
   guest.dispose();
 });
