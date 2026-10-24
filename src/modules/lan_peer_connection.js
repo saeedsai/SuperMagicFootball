@@ -61,7 +61,7 @@ function waitForLanIceGathering(peer, timeoutMs) {
       } else if (peer.iceGatheringState === 'complete') finish();
     }
     peer.addEventListener('icegatheringstatechange', onChange);
-    peer.addEventListener('connectionstatechange', onChange);
+    if (!settled) peer.addEventListener('connectionstatechange', onChange);
     // Listener registration can synchronously trigger a fake or custom peer
     // event; do not leave a timer behind if the wait already settled.
     if (!settled) timer = setTimeout(() => finish(new Error('LAN ICE gathering timed out')), timeoutMs);
