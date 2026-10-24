@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.34.0',
+ version:'0.9.35.0',
  date:'2026-10-24',
  notes:Object.freeze([
+  'Player Studio now previews the effect and defensive counterplay for all eight Magic Tricks as you change the selection. KEEP CURRENT and REMOVE show their outcome without modifying the saved player until SAVE is pressed; screen readers receive live updates.',
   'Banana Peel and Ice Patch Magic Traps now display distinct shrinking arming countdown rings. Defenders can read when a trap becomes live; existing SHOOT-slide disarm, hazard physics, four buttons and saves are unchanged.',
   'Defensive SHOOT slides now sweep nearby enemy Banana Peel and Ice Patch Magic Traps before contact. A sliding defender can clear a trap without taking its stun; teammates, keepers, stunned or airborne players cannot clear it.',
   'Fixed Banana Peel placement incorrectly removing active Ice Patches. Both Magic Trick traps now coexist with independent six-trap caps and regression tests.',
