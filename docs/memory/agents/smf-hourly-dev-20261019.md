@@ -21,6 +21,7 @@ Continue one bounded roadmap increment on existing `dev` every hourly run even i
 Sole developer. Edit central log and own checkpoint only; do not read/write other agents' memory. No premature production, gameplay or graphics certification.
 
 ## Evidence
+- LAN-036 malformed incoming guest DataChannel guard ca8ab53a; regression 784e749f with public status assertion correction 09e71640. Prior 07a6a168 certified on main; new head CI pending.
 - LAN-035 malformed host DataChannel fail-closed cleanup 4b2e26e1 and regression f2ae8a02. Prior 07a6a168 main/dev certified: dev Full #40124690676, Modular #40124690634, main Full #40125043094, Pages #40125043002. New exact-head CI pending.
 - LAN-034 complete RTC signaling interface validation 9cff3221 and five-case regression cfa69984. Prior LAN-033 Modular #40124496072 passed, Full #40124496140 running. New exact-head CI pending.
 - LAN-033 invalid WebRTC peer fail-closed validation 1fad18a4 and regression 384ab2ac. LAN-032 Modular #40124140940 passed; Full #40124140981 in progress. New exact-head CI pending.
