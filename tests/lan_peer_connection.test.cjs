@@ -556,3 +556,99 @@ test('LAN-026 pre-aborted frame subscriptions remain inert',async()=>{
   assert.equal(notifications,0);
   unsubscribe();host.dispose();
 });
+
+test('LAN-027 ready host publishes bounded snapshots to guest on the existing channel',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  const delivered=[];
+  const deliver=(channel,payload)=>{
+    const event=new Event('message');
+    event.data=typeof payload==='string'?payload:JSON.stringify(payload);
+    channel.dispatchEvent(event);
+  };
+  assert.deepEqual(host.snapshotIdentity,guest.snapshotIdentity);
+  assert.equal(Object.isFrozen(host.snapshotIdentity),true);
+  assert.throws(()=>host.sendHostSnapshot({}),/ready host/);
+  assert.throws(()=>guest.subscribeGuestSnapshots(()=>{}),/ready guest/);
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const guestChannel=new FakeChannel('smf-lan');
+  guest.peer.emitChannel(guestChannel);
+  host.peer.channel.open();guestChannel.open();
+  deliver(host.peer.channel,guestHello);
+  deliver(guestChannel,hostHello);
+  assert.equal(host.ready,true);
+  assert.equal(guest.ready,true);
+  assert.throws(()=>guest.sendHostSnapshot({}),/ready host/);
+  assert.throws(()=>host.subscribeGuestSnapshots(()=>{}),/ready guest/);
+  const receiver=guest.subscribeGuestSnapshots(snapshot=>delivered.push(snapshot));
+  assert.throws(()=>guest.subscribeGuestSnapshots(()=>{}),/already active/);
+  const packet=tick=>({type:'snapshot',version:1,...host.snapshotIdentity,
+    tick,clockMs:30000,scores:{home:1,away:0},
+    ball:{x:0.25,y:-0.25,z:0},players:[{slot:0,x:-1,y:0},{slot:21,x:1,y:0}]});
+  assert.equal(host.sendHostSnapshot(packet(0)),true);
+  const first=host.peer.channel.sent.at(-1);
+  deliver(guestChannel,first);
+  assert.equal(delivered.length,1);
+  assert.equal(delivered[0].tick,0);
+  assert.equal(Object.isFrozen(delivered[0]),true);
+  assert.equal(receiver.lastTick,0);
+  deliver(guestChannel,first); // replay ignored
+  assert.equal(delivered.length,1);
+  assert.equal(host.sendHostSnapshot(packet(0)),false);
+  assert.throws(()=>host.sendHostSnapshot({...packet(1),hostId:'foreignhost'}),/does not match/);
+  assert.equal(host.sendHostSnapshot(packet(1)),true);
+  deliver(guestChannel,host.peer.channel.sent.at(-1));
+  assert.deepEqual(delivered.map(s=>s.tick),[0,1]);
+  // The existing authoritative guest-input frame queue is independent.
+  const input=guest.sendGuestInput(2,['pass','jump'],1,-1);
+  deliver(host.peer.channel,input);
+  assert.deepEqual(host.advanceHostFrame(2).input.buttons,['pass','jump']);
+  receiver.dispose();
+  const resumed=guest.subscribeGuestSnapshots(s=>delivered.push(s),1);
+  assert.equal(host.sendHostSnapshot(packet(2)),true);
+  deliver(guestChannel,host.peer.channel.sent.at(-1));
+  assert.deepEqual(delivered.map(s=>s.tick),[0,1,2]);
+  host.peer.connectionState='disconnected';
+  assert.throws(()=>host.sendHostSnapshot(packet(3)),/ready host/);
+  host.peer.connectionState='connected';
+  assert.equal(host.sendHostSnapshot(packet(3)),true);
+  deliver(guestChannel,host.peer.channel.sent.at(-1));
+  assert.equal(resumed.lastTick,3);
+  guest.dispose();host.dispose();
+  assert.throws(()=>host.sendHostSnapshot(packet(4)),/ready host/);
+  assert.throws(()=>guest.subscribeGuestSnapshots(()=>{}),/ready guest/);
+});
+
+test('LAN-027 snapshot receiver isolates invalid packets and failing consumer',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const channel=new FakeChannel('smf-lan');guest.peer.emitChannel(channel);
+  host.peer.channel.open();channel.open();
+  const deliver=(ch,p)=>{const e=new Event('message');e.data=p;ch.dispatchEvent(e);};
+  deliver(host.peer.channel,JSON.stringify(guestHello));
+  deliver(channel,JSON.stringify(hostHello));
+  let fail=true, calls=0;
+  assert.throws(()=>guest.subscribeGuestSnapshots(null),/snapshot guest binding/);
+  const rx=guest.subscribeGuestSnapshots(()=>{calls++;if(fail)throw Error('renderer failed');});
+  const packet={type:'snapshot',version:1,...host.snapshotIdentity,
+    tick:0,clockMs:0,scores:{home:0,away:0},
+    ball:{x:0,y:0,z:0},players:[]};
+  const wire=JSON.stringify(packet);
+  deliver(channel,'{bad');
+  deliver(channel,JSON.stringify({...packet,roomId:'foreignroom'}));
+  assert.equal(calls,0);
+  deliver(channel,wire);
+  assert.equal(calls,1);
+  assert.equal(rx.lastTick,-1,'failed render must not consume tick');
+  fail=false;
+  deliver(channel,wire);
+  assert.equal(rx.lastTick,0);
+  rx.dispose();guest.dispose();host.dispose();
+});
