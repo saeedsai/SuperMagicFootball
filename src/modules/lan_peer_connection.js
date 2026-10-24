@@ -221,6 +221,10 @@ function createLanPeerConnection(localHello, options = {}) {
     }
     if (disposed) return Promise.reject(new Error('LAN peer disposed'));
     if (signal?.aborted) return Promise.reject(new Error('LAN readiness cancelled'));
+    if (peer.connectionState === 'failed' || peer.connectionState === 'closed' ||
+        channel?.readyState === 'closed') {
+      return Promise.reject(new Error('LAN peer closed before handshake'));
+    }
     if (phase === 'connected-signaling' && binding?.ready && transportUsable()) return Promise.resolve(binding);
     return new Promise((resolve, reject) => {
       let finished = false;
