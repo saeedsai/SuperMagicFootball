@@ -1,28 +1,28 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
+**Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24 22:02 CEST.
 
 ## Mission
-Develop bounded increments on existing dev, certify exact-head CI, promote through protected main workflow, verify Pages. No force-push or safety bypass.
+One bounded dev increment per hourly run, including when CI/deployment is pending. Only dev/main, no force-push, no CI/security bypass. Protected promotion requires exact-green head, main and Pages verification.
 
 ## Current checkpoint
-- Published 0.9.40.0; certified dev/main 07a6a168: dev Full #40124690676, Modular #40124690634; main Full #40125043094; Pages #40125043002.
-- LAN-035 host channel validation 4b2e26e1, regression f2ae8a02.
-- LAN-036 guest incoming channel validation ca8ab53a, regression 784e749f, test correction 09e71640.
-- Latest dev before this checkpoint dc5d5366. Modular #40125805005 failed ONLY because own checkpoint exceeded 4 KiB (671/672 Node tests passed); trim this file without weakening tests. Full #40125804997 in progress.
-- Real multiplayer match integration and Concept Royals visual QA not complete. Keep 223 teams/2676 players, six formations, four buttons, ten save slots, offline and saves compatible.
+- Published About-only version 0.9.40.0; certified main 07a6a168, main Full #40125043094, Pages #40125043002.
+- LAN-035 host validation 4b2e26e1, regression f2ae8a02; LAN-036 guest validation ca8ab53a, tests 784e749f/09e71640.
+- CI identity issue #40125905520 repaired in a5b39153; Modular #40127995468 passed; Full #40127995383 running at inspection.
+- LAN-037 internal abortable guest snapshot binding 80a7b046; tests 929656b0. Latest-head CI pending (subsequent docs commits). No player-visible game change or release bump.
+- Preserve 223 teams/2676 players, six formations, four buttons, ten save slots, offline compatibility. Genuine two-client gameplay and Concept Royals visual QA still pending.
 
 ## Next smallest action
-1. Verify trimmed checkpoint passes Modular and Full CI on exact head.
-2. Promote only certified dev through protected workflow, verify main and Pages.
-3. Integrate authoritative LAN match state, guest snapshots, and two-browser test.
-4. Repair Concept Royals directional sprite issue #15 with screenshot QA.
+1. Inspect exact-head Modular and Full Census, repair actual failures.
+2. Promote exact green dev through protected main workflow and verify Pages hosted bytes.
+3. Expose abortable guest snapshot receiver via peer API.
+4. Integrate host match state and guest frame rendering; verify two browsers.
+5. Fix Concept Royals left/right issue #15 with screenshot/animation QA.
 
 ## Ownership and exclusions
-Sole developer. Modify own checkpoint and central log; never read other agents' memory. Do not claim graphics or real LAN match certification prematurely.
+Sole developer; own checkpoint and central log only. No other agent memory. Do not claim untested gameplay, visual approval or deployment.
 
 ## Evidence
-- Root cause of #40125805005: tests/project_memory_contract.test.cjs rejects own checkpoint over 4096 bytes. This checkpoint is intentionally compact.
-- LAN-035/036 commits above. Historical evidence in docs/DEVELOPMENT_LOG_SINGLE_OWNER.md.
+- Prior green main 07a6a168. Latest feature 80a7b046 and test 929656b0; see docs/DEVELOPMENT_LOG_SINGLE_OWNER.md for audit.
 
 ## Cleanup
-Under 4 KiB; no secrets.
+Keep under 4 KiB, exact backticked identity, no secrets.
