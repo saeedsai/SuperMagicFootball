@@ -71,3 +71,39 @@ test('throwing snapshot consumer does not advance receiver cursor or crash chann
  fail=false;host.send(encodeLanSnapshot(packet(2)));assert.equal(receiver.lastTick,2);assert.equal(count,2);
  receiver.dispose();
 });
+
+test('LAN-037 abort stops guest snapshots and releases channel for a new receiver',async()=>{
+ const {bindLanSnapshotGuestChannel}=await load('lan-snapshot-channel.js');
+ const {encodeLanSnapshot}=await load('lan-state-snapshot.js');
+ const {host,guest}=pair(),received=[];
+ host.open();guest.open();
+ const controller=new AbortController();
+ const receiver=bindLanSnapshotGuestChannel(guest,'room001','host001',s=>received.push(s.tick),-1,controller.signal);
+ host.send(encodeLanSnapshot(packet(0)));
+ assert.deepEqual(received,[0]);
+ controller.abort();
+ host.send(encodeLanSnapshot(packet(1)));
+ assert.deepEqual(received,[0]);
+ assert.equal(receiver.lastTick,0);
+ const resumed=bindLanSnapshotGuestChannel(guest,'room001','host001',s=>received.push(s.tick),receiver.lastTick);
+ host.send(encodeLanSnapshot(packet(1)));
+ assert.deepEqual(received,[0,1]);
+ resumed.dispose();
+});
+test('LAN-037 pre-aborted guest signal never binds or consumes a snapshot',async()=>{
+ const {bindLanSnapshotGuestChannel}=await load('lan-snapshot-channel.js');
+ const {encodeLanSnapshot}=await load('lan-state-snapshot.js');
+ const {host,guest}=pair(),received=[];
+ host.open();guest.open();
+ const controller=new AbortController();
+ controller.abort();
+ const stopped=bindLanSnapshotGuestChannel(guest,'room001','host001',s=>received.push(s.tick),-1,controller.signal);
+ host.send(encodeLanSnapshot(packet(0)));
+ assert.deepEqual(received,[]);
+ assert.equal(stopped.lastTick,-1);
+ assert.throws(()=>bindLanSnapshotGuestChannel(guest,'room001','host001',()=>{},-1,{}),/Invalid LAN snapshot guest binding/);
+ const active=bindLanSnapshotGuestChannel(guest,'room001','host001',s=>received.push(s.tick));
+ host.send(encodeLanSnapshot(packet(0)));
+ assert.deepEqual(received,[0]);
+ active.dispose();
+});
