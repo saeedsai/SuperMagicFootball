@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.37.0',
+ version:'0.9.37.1',
  date:'2026-10-24',
  notes:Object.freeze([
+  'Fixed overlapping Banana Peel and Ice Patch traps consuming multiple hazards on the same rival in one physics tick. Each grounded opponent triggers at most one trap per tick, preserving other traps for later opponents.',
   'Player Studio Super Defence now previews the available moves for the selected tier, explains when Spin Bumper unlocks, and refreshes the ability icon if a tier change invalidates the selection. Previewing does not modify saved players.',
   'Magic Trick trap placement is now fair between teams: each team can retain up to six Banana Peels and six Ice Patches independently, so placing a new trap cannot erase the rival team\'s active traps. Existing SHOOT-slide counters, timing and save compatibility remain unchanged.',
   'Player Studio now previews the effect and defensive counterplay for all eight Magic Tricks as you change the selection. KEEP CURRENT and REMOVE show their outcome without modifying the saved player until SAVE is pressed; screen readers receive live updates.',
