@@ -2,6 +2,7 @@
 // No signaling server, matchmaking, gameplay loop or automatic LAN discovery.
 import {normalizeLanPacket} from './lan_protocol.js';
 import {bindLanProtocolChannel} from './lan-protocol-channel.js';
+import {bindLanSnapshotHostChannel, bindLanSnapshotGuestChannel} from './lan-snapshot-channel.js';
 
 const MAX_SIGNAL_LENGTH = 200000;
 const MAX_SDP_LENGTH = 180000;
@@ -74,6 +75,12 @@ function createLanPeerConnection(localHello, options = {}) {
   const peer = new Peer({iceServers:[]});
   let channel = null;
   let binding = null;
+  let hostSnapshotBinding = null;
+  let guestSnapshotBinding = null;
+  // Snapshot IDs are deterministic for both peers after the validated hello.
+  // They identify this transport session, not an authenticated user account.
+  const snapshotIdentity = Object.freeze({roomId:hello.session.slice(0,32),
+    hostId:`host_${hello.session.slice(-27)}`});
   let disposed = false;
   let phase = 'new';
   // LAN-019: immutable, event-driven lobby diagnostics. This is internal
@@ -276,9 +283,50 @@ function createLanPeerConnection(localHello, options = {}) {
     }
     return binding.advance(frame);
   }
+  // LAN-027: use the same negotiated DataChannel for authoritative snapshots.
+  // The game must supply actual match state; no rendering or simulation occurs here.
+  function sendHostSnapshot(snapshot) {
+    if (disposed || hello.role !== 'host' || phase !== 'connected-signaling' ||
+        !binding?.ready || !transportUsable()) {
+      throw new Error('LAN host snapshot requires a ready host connection');
+    }
+    if (!hostSnapshotBinding) {
+      const joined = {get peerId() {
+        return !disposed && binding?.ready && transportUsable() ? hello.session : null;
+      }};
+      hostSnapshotBinding = bindLanSnapshotHostChannel(joined, channel,
+        snapshotIdentity.roomId, snapshotIdentity.hostId);
+    }
+    return hostSnapshotBinding.send(snapshot);
+  }
+  function subscribeGuestSnapshots(listener, initialTick = -1) {
+    if (disposed || hello.role !== 'guest' || phase !== 'connected-signaling' ||
+        !binding?.ready || !transportUsable()) {
+      throw new Error('LAN guest snapshots require a ready guest connection');
+    }
+    if (guestSnapshotBinding) throw new Error('LAN guest snapshot receiver already active');
+    const receiver = bindLanSnapshotGuestChannel(channel,
+      snapshotIdentity.roomId, snapshotIdentity.hostId, snapshot => {
+        if (disposed || !binding?.ready || !transportUsable()) {
+          throw new Error('LAN guest snapshot received while disconnected');
+        }
+        listener(snapshot);
+      }, initialTick);
+    guestSnapshotBinding = receiver;
+    return Object.freeze({
+      get lastTick() { return receiver.lastTick; },
+      dispose() {
+        receiver.dispose();
+        if (guestSnapshotBinding === receiver) guestSnapshotBinding = null;
+      }
+    });
+  }
   function dispose() {
     if (disposed) return;
     disposed = true;
+    hostSnapshotBinding?.dispose();
+    guestSnapshotBinding?.dispose();
+    guestSnapshotBinding = null;
     phase = 'closed';
     peer.removeEventListener('datachannel', onDataChannel);
     peer.removeEventListener('connectionstatechange', emitStatus);
@@ -293,7 +341,8 @@ function createLanPeerConnection(localHello, options = {}) {
     emitStatus();
     statusListeners.clear();
   }
-  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, sendGuestInput, advanceHostFrame, subscribeHostInput, subscribeHostFrame, subscribeStatus, dispose,
+  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, sendGuestInput, advanceHostFrame, sendHostSnapshot, subscribeGuestSnapshots, subscribeHostInput, subscribeHostFrame, subscribeStatus, dispose,
+    get snapshotIdentity() { return snapshotIdentity; },
     get status() { return snapshotStatus(); },
     get ready() { return phase === 'connected-signaling' && !!binding?.ready && transportUsable(); },
     get phase() { return phase; },
