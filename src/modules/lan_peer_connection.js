@@ -191,6 +191,10 @@ function createLanPeerConnection(localHello, options = {}) {
     if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 120000) {
       return Promise.reject(new RangeError('Invalid LAN readiness timeout'));
     }
+    if (signal != null && (typeof signal.addEventListener !== 'function' ||
+        typeof signal.removeEventListener !== 'function' || typeof signal.aborted !== 'boolean')) {
+      return Promise.reject(new TypeError('LAN readiness requires an AbortSignal'));
+    }
     if (disposed) return Promise.reject(new Error('LAN peer disposed'));
     if (signal?.aborted) return Promise.reject(new Error('LAN readiness cancelled'));
     if (phase === 'connected-signaling' && binding?.ready && transportUsable()) return Promise.resolve(binding);
