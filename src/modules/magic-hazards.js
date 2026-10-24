@@ -54,4 +54,25 @@ function advanceIcePatches(active,players,dt){
  }
  return {hazards,slips};
 }
-export {ICE_LIFETIME,ICE_ARM_TIME,ICE_RADIUS,MAX_ICE_PATCHES,placeIcePatch,advanceIcePatches,BANANA_LIFETIME,BANANA_ARM_TIME,BANANA_RADIUS,MAX_BANANA_PEELS,placeBananaPeel,advanceBananaPeels};
+
+/**
+ * Defensive SHOOT slide clears nearby enemy ground traps before contact damage.
+ * This is deliberately an on-pitch counter using an existing action button;
+ * teammates, airborne players, keepers and stunned players cannot clear traps.
+ * A single active slide may sweep several traps in its physical path.
+ */
+function disarmMagicHazards(active,players){
+ if(!Array.isArray(active)||!Array.isArray(players))throw new TypeError('Invalid magic hazard disarm input');
+ const hazards=[],disarmed=[];
+ for(const hazard of active){
+  if(hazard.kind!=='banana'&&hazard.kind!=='ice'){hazards.push(hazard);continue;}
+  const radius=(hazard.kind==='ice'?ICE_RADIUS:BANANA_RADIUS)+8;
+  const defender=players.find(p=>p&&p.t!==hazard.team&&!p.keeper&&p.stun<=0&&p.z<20&&
+   p.action==='slide'&&p.actionTimer>0&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&
+   Math.hypot(p.x-hazard.x,p.y-hazard.y)<=radius);
+  if(defender)disarmed.push({hazard,player:defender});
+  else hazards.push(hazard);
+ }
+ return {hazards,disarmed};
+}
+export {disarmMagicHazards,ICE_LIFETIME,ICE_ARM_TIME,ICE_RADIUS,MAX_ICE_PATCHES,placeIcePatch,advanceIcePatches,BANANA_LIFETIME,BANANA_ARM_TIME,BANANA_RADIUS,MAX_BANANA_PEELS,placeBananaPeel,advanceBananaPeels};
