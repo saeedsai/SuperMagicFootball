@@ -4,14 +4,14 @@ import {RELEASE} from './release.js';
 import {normalizeLanPacket} from './lan_protocol.js';
 import {createLanPeerConnection} from './lan_peer_connection.js';
 
-const MAX_SIGNAL_LENGTH=200000;
+const LAN_LOBBY_SIGNAL_LIMIT=200000;
 function makeLanSession(cryptoSource=globalThis.crypto){
   if(typeof cryptoSource?.getRandomValues!=='function')throw new Error('Secure random session generation unavailable');
   const bytes=cryptoSource.getRandomValues(new Uint8Array(16));
   return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
 }
 function parseGuestLanOffer(raw,build=RELEASE.version){
-  if(typeof raw!=='string'||raw.length>MAX_SIGNAL_LENGTH)throw new Error('Invalid LAN offer size');
+  if(typeof raw!=='string'||raw.length>LAN_LOBBY_SIGNAL_LIMIT)throw new Error('Invalid LAN offer size');
   let offer;
   try{offer=JSON.parse(raw)}catch{throw new Error('Invalid LAN offer JSON')}
   if(!offer||Object.getPrototypeOf(offer)!==Object.prototype||
