@@ -79,7 +79,11 @@ function createLanLiveMatch({peer,role,game,input,field}){
       originalPoll.call(input,false);
       const fresh=Date.now()-lastRemoteAt<350&&peer.ready;
       const buttons=new Set(fresh?remote.buttons:[]);
-      const x=fresh?remote.dx:0,y=fresh?remote.dy:0;
+      const rawX=fresh?remote.dx:0,rawY=fresh?remote.dy:0;
+      // Match local Input.poll diagonal normalization: network guests should
+      // never run 41% faster by holding two directions at once.
+      const magnitude=Math.max(1,Math.hypot(rawX,rawY));
+      const x=rawX/magnitude,y=rawY/magnitude;
       const state={x,y,left:x<0?1:0,right:x>0?1:0,
         up:y<0?1:0,down:y>0?1:0,pause:0,confirm:0};
       const pressed={},releases={};
