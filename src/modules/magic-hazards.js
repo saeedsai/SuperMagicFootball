@@ -8,8 +8,9 @@ function placeBananaPeel(active,carrier,field){
  const magnitude=Math.hypot(vx,vy)||1;
  const x=Math.max(field.x+25,Math.min(field.x+field.w-25,carrier.x-vx/magnitude*42));
  const y=Math.max(field.y+25,Math.min(field.y+field.h-25,carrier.y-vy/magnitude*42));
- const bananas=active.filter(h=>h.kind==='banana').slice(-(MAX_BANANA_PEELS-1));
- return [...active.filter(h=>h.kind!=='banana'),...bananas,Object.freeze({kind:'banana',team:carrier.t,x,y,life:BANANA_LIFETIME,arm:BANANA_ARM_TIME})];
+ // A rival's traps must not consume this team's independent placement budget.
+ const bananas=active.filter(h=>h.kind==='banana'&&h.team===carrier.t).slice(-(MAX_BANANA_PEELS-1));
+ return [...active.filter(h=>h.kind!=='banana'||h.team!==carrier.t),...bananas,Object.freeze({kind:'banana',team:carrier.t,x,y,life:BANANA_LIFETIME,arm:BANANA_ARM_TIME})];
 }
 function advanceBananaPeels(active,players,dt){
  if(!Array.isArray(active)||!Array.isArray(players)||!Number.isFinite(dt)||dt<0)throw new TypeError('Invalid banana peel tick');
@@ -26,7 +27,7 @@ function advanceBananaPeels(active,players,dt){
 }
 
 // Ice Patch: distinct persistent trap; shorter chill than banana slip.
-// Each hazard type has its own bounded capacity; no effect on airborne,
+// Each team has its own bounded capacity for each trap type; no effect on airborne,
 // friendly, keeper, or already-stunned players.
 const ICE_LIFETIME=2.5,ICE_ARM_TIME=.3,ICE_RADIUS=35,MAX_ICE_PATCHES=6;
 function placeIcePatch(active,carrier,field){
@@ -38,8 +39,9 @@ function placeIcePatch(active,carrier,field){
  const magnitude=Math.hypot(vx,vy)||1;
  const x=Math.max(field.x+35,Math.min(field.x+field.w-35,carrier.x-vx/magnitude*48));
  const y=Math.max(field.y+35,Math.min(field.y+field.h-35,carrier.y-vy/magnitude*48));
- const ice=active.filter(h=>h.kind==='ice').slice(-(MAX_ICE_PATCHES-1));
- return [...active.filter(h=>h.kind!=='ice'),...ice,Object.freeze({kind:'ice',team:carrier.t,x,y,life:ICE_LIFETIME,arm:ICE_ARM_TIME})];
+ // Ice uses its own per-team budget, independent of bananas and enemy ice.
+ const ice=active.filter(h=>h.kind==='ice'&&h.team===carrier.t).slice(-(MAX_ICE_PATCHES-1));
+ return [...active.filter(h=>h.kind!=='ice'||h.team!==carrier.t),...ice,Object.freeze({kind:'ice',team:carrier.t,x,y,life:ICE_LIFETIME,arm:ICE_ARM_TIME})];
 }
 function advanceIcePatches(active,players,dt){
  if(!Array.isArray(active)||!Array.isArray(players)||!Number.isFinite(dt)||dt<0)throw new TypeError('Invalid ice patch tick');
