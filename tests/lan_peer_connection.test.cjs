@@ -733,3 +733,21 @@ test('LAN-031 synchronous ICE completion during listener registration resolves',
   await waitForLanIceGathering(peer,100);
   assert.equal(peer.iceGatheringState,'complete');
 });
+
+test('LAN-032 synchronous ICE completion skips second listener registration',async()=>{
+  const {waitForLanIceGathering}=await load();
+  class ImmediatePeer extends FakePeer {
+    constructor(){super();this.connectionListenerRegistrations=0;}
+    addEventListener(type,listener,...args){
+      if(type==='connectionstatechange') this.connectionListenerRegistrations++;
+      super.addEventListener(type,listener,...args);
+      if(type==='icegatheringstatechange'){
+        this.iceGatheringState='complete';
+        listener();
+      }
+    }
+  }
+  const peer=new ImmediatePeer();
+  await waitForLanIceGathering(peer,100);
+  assert.equal(peer.connectionListenerRegistrations,0);
+});
