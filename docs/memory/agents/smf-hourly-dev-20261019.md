@@ -26,3 +26,6 @@ See `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` and GitHub commits for full audit.
 
 ## Cleanup
 Keep this file under 4 KiB. No secrets.
+
+## 2026-10-24 23:46 CEST update
+- Baseline dev/main 0c3bc81b. LAN-042 adapter 093b8ee5 and regression bb04b855 on dev. Renderer hookup and full CI not verified. Next: run tests, integrate actual guest renderer, two-client gameplay, graphics #15, protected promotion and Pages byte smoke. No new branches.
