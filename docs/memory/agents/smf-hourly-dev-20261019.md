@@ -2,27 +2,26 @@
 **Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
 
 ## Mission
-Commit one bounded useful feature each hourly run directly to existing dev, even while CI/main/Pages pending. Preserve only dev/main, branch protections, saves and controls.
+Commit one small, tested feature directly to existing dev each hourly run even when release pending; only dev/main branches. Respect protections, four controls and save compatibility.
 
 ## Current checkpoint
-- STUDIO-0350: 0.9.35.0 candidate, live accessible Player Studio Magic Trick effects/counterplay guide for all eight Tricks; KEEP CURRENT and REMOVE are read-only previews, icon and aria-live guide update on select. UI `31f8deb6`, focused tests `34c3f0d3`, release/cache/docs aligned; version-test escaping repaired at `00a85219`.
-- Focused source-extracted V8 harness: 4 Studio + 7 version assertions = **11 passed**. 42 shipped JS scripts V8 syntax parsed after ES-module syntax adaptation. These are not Node --check, actual Chromium, 4+4, Modular QA, manual screenshot or Pages evidence.
-- Run start dev `0097d2e0` 23 commits ahead of main `d98edf1c`; only dev/main branches. Exact-head workflow connector PR-filtered (no runs), combined status empty; web Actions fetch disabled. No green CI or main promotion claimed.
-- Prior ARM-0340 arming rings and SLIDE-0330 SHOOT-slide trap disarm retained.
-- Preserve 223 teams/2676 players, six formations, four action buttons, ten Career/Cup slots, SD09, offline/save compatibility.
+- TRAP-0360 candidate: Banana and Ice now each have a **per-team six-trap quota**, preventing rival hazards being evicted. Source 17b2bb1b, Node test file 1ca05e0d; 19 focused assertions passed in source-executed V8 harness (not Node/Chromium). About/README/package/offline cache now 0.9.36.0. Prior Player Studio Magic Trick guide and trap arming/counterplay retained.
+- Reproduced root cause of prior red CI: exact 51b6eb95 Modular QA #40052444496 and Full Census #40052444562 each passed 594/595 Node cases, failing ONLY `project_memory_contract` because this checkpoint lacked mandatory headings. Repaired heading contract at ae978e01; do not weaken tests.
+- At run start dev 51b6eb95 was 35 commits ahead of main d98edf1c; branch search returned only dev/main. GitHub Actions REST is available through the GitHub fetch connector, unlike PR-filtered commit-workflow wrapper.
+- Preserve 223 teams / 2676 players, 2 GK/3 DF/4 MF/3 FW, 6 formations, 4 action buttons, 10 Career/Cup slots, SD09, offline/save compatibility.
 
 ## Next smallest action
-1. Inspect actual exact dev-head CI, diagnose and repair failing jobs if available.
-2. Real browser Player Studio and Magic Trap counterplay/graphics inspection, including simulated touch.
-3. Full 4 Node + 4 Chromium + Modular QA; promote unchanged green dev head through protected pipeline, verify Pages SHA/bytes.
-4. Continue next bounded feature on dev regardless of pending CI/main.
-5. Advance genuine two-client LAN and authored Crown Royals directional/action art.
+1. Inspect exact current dev head Modular QA and Full Census; fix any new failure.
+2. Complete all four Node and four Chromium shards, preflight, preview and Modular QA.
+3. Real-browser verify Player Studio, trap rendering and touch counterplay; inspect Crown Royals sprites.
+4. Promote only exact fully green unchanged dev via protected pipeline; verify main and Pages hosted bytes.
+5. Continue next small roadmap increment on dev regardless of pending promotion; prioritize genuine two-client LAN and directional art.
 
 ## Ownership and exclusions
-Read AGENTS.md, VERSIONING_POLICY.md, SHARED.md and only this checkpoint. Detailed evidence in central development log. Never force-push, bypass safety, weaken tests or disable the hourly schedule because of a blocker.
+Only this agent checkpoint and central dev log may be edited; never edit other agent memories. No branch creation, force push, CI bypass, false QA or release claims.
 
 ## Evidence
-Exact-head 51b6eb95 CI on 2026-10-24: Modular QA 594/595, Full Census preflight 594/595. Both failed only project_memory_contract: own checkpoint missing required section headers; logs from jobs 120747832346 and 120748543866. Repaired headings in this checkpoint; await new exact-head CI.
+CI runs: https://github.com/saeedsai/SuperMagicFootball/actions/runs/40052444496 and /40052444562; failing job logs identified missing heading. Focused V8 source execution: 19 assertions green; full CI on 0.9.36.0 still pending.
 
 ## Cleanup
-Keep checkpoint under 4 KiB; never weaken the memory test or alter other agents' files.
+Keep under 4 KiB; checkpoint is not a substitute for exact-head CI or device testing.
