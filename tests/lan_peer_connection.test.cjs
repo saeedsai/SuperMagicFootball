@@ -717,3 +717,19 @@ test('LAN-030 complete ICE state does not mask failed or closed transport',async
   healthy.iceGatheringState='complete';
   await waitForLanIceGathering(healthy,100);
 });
+
+test('LAN-031 synchronous ICE completion during listener registration resolves',async()=>{
+  const {waitForLanIceGathering}=await load();
+  class ImmediatePeer extends FakePeer {
+    addEventListener(type,listener,...args){
+      super.addEventListener(type,listener,...args);
+      if(type==='icegatheringstatechange'){
+        this.iceGatheringState='complete';
+        listener();
+      }
+    }
+  }
+  const peer=new ImmediatePeer();
+  await waitForLanIceGathering(peer,100);
+  assert.equal(peer.iceGatheringState,'complete');
+});
