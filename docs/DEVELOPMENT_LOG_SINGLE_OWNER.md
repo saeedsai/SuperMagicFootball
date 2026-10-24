@@ -752,3 +752,6 @@ Avoid registering second RTC listener after first registration synchronously set
 
 ### 2026-10-24 LAN-033 WebRTC peer interface validation
 Fail closed for malformed injected WebRTC peers before attaching handlers; attempt safe peer close (`1fad18a4`), with regression (`384ab2ac`). Previous dev LAN-032 Modular QA #40124140940 passed; full Census #40124140981 running. main remains e54e52c0. New exact-head CI pending; no premature release, real two-browser gameplay and graphics QA remain open.
+
+### 2026-10-24 LAN-034 validate complete WebRTC signaling interface
+Reject malformed injected peers lacking DataChannel creation or offer/answer/local/remote description methods before RTC wiring (9cff3221); test all five missing methods and cleanup (cfa69984). LAN-033 Modular #40124496072 passed; Full #40124496140 running at inspection. New exact-head CI pending, main e54e52c0 unchanged. Internal LAN; graphics and two-browser gameplay remain unverified.
