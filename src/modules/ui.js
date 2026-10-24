@@ -1264,6 +1264,7 @@ function toast(message,duration=1600){let n=$('gameToast');n.textContent=message
 let toastTime=0;
 game.onEvent=e=>{if(lanRuntime&&e.type==='halftime'){game.matchState='play';toast('SECOND HALF · LAN',1600);return;}
  if(lanRuntime&&e.type==='finished'){lanFinish=e;return;}
+ if(lanRuntime&&e.type==='penaltyStart'){game.matchState='finished';lanFinish={type:'finished',score:game.score.slice()};return;}
  if(lanRuntime&&e.type==='pause'){game.matchState='play';return;}
  audio.cue(e);if(e.type==='toast')toast(e.message,1800);if(e.type==='goal'){$('gameToast').classList.add('hidden');toastTime=0}if(e.type==='penaltyStart')toast('PENALTY SHOOTOUT',1500);if(e.type==='penaltyKick')toast(e.goal?'GOAL!':'SAVE!',1300);if(e.type==='pause')pause();if(e.type==='halftime')halftime();if(e.type==='finished')fulltime(e)};
 function action(a){audio.cue('ui');
