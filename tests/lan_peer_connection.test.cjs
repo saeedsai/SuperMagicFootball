@@ -765,3 +765,17 @@ test('LAN-033 rejects malformed injected RTCPeerConnection before wiring events'
   assert.throws(()=>createLanPeerConnection(hostHello,{RTCPeerConnection:NullPeer}),
     /Invalid LAN RTCPeerConnection implementation/);
 });
+
+test('LAN-034 rejects incomplete signaling peer before data channel creation',async()=>{
+  const {createLanPeerConnection}=await load();
+  for(const missing of ['createDataChannel','createOffer','createAnswer','setLocalDescription','setRemoteDescription']){
+    let closed=0;
+    class MissingMethodPeer extends FakePeer {
+      constructor(config){super(config);this[missing]=undefined;}
+      close(){closed++;}
+    }
+    assert.throws(()=>createLanPeerConnection(hostHello,{RTCPeerConnection:MissingMethodPeer}),
+      /Invalid LAN RTCPeerConnection implementation/,missing);
+    assert.equal(closed,1,missing);
+  }
+});
