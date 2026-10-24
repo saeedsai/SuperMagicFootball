@@ -76,6 +76,36 @@ function createLanPeerConnection(localHello, options = {}) {
   let binding = null;
   let disposed = false;
   let phase = 'new';
+  // LAN-019: immutable, event-driven lobby diagnostics. This is internal
+  // transport state, not a claim that the match loop is networked.
+  const statusListeners = new Set();
+  let lastStatusKey = null;
+  function snapshotStatus() {
+    return Object.freeze({
+      phase,
+      transport: disposed ? 'closed' : peer.connectionState,
+      channel: disposed ? 'closed' : (channel?.readyState ?? 'unavailable'),
+      ready: phase === 'connected-signaling' && !!binding?.ready && transportUsable()
+    });
+  }
+  function emitStatus() {
+    const snapshot = snapshotStatus();
+    const key = JSON.stringify(snapshot);
+    if (key === lastStatusKey) return;
+    lastStatusKey = key;
+    for (const listener of [...statusListeners]) {
+      try { listener(snapshot); } catch { /* observer must not break RTC */ }
+    }
+  }
+  function subscribeStatus(listener) {
+    if (typeof listener !== 'function') throw new TypeError('LAN status listener required');
+    if (!disposed) statusListeners.add(listener);
+    try { listener(snapshotStatus()); } catch { /* observer is isolated */ }
+    return () => statusListeners.delete(listener);
+  }
+  // Binding registers its message handler first; this observer runs after
+  // hello validation and reports readiness transitions without polling.
+  function onChannelChange() { emitStatus(); }
   function attach(next) {
     if (disposed || channel || !next || next.label !== 'smf-lan') {
       try { next?.close(); } catch { /* closed/untrusted channel */ }
@@ -83,12 +113,17 @@ function createLanPeerConnection(localHello, options = {}) {
     }
     channel = next;
     binding = bindLanProtocolChannel(hello, channel);
+    channel.addEventListener('open', onChannelChange);
+    channel.addEventListener('close', onChannelChange);
+    channel.addEventListener('message', onChannelChange);
+    emitStatus();
   }
   function onDataChannel(event) {
     if (hello.role === 'guest') attach(event.channel);
     else { try { event.channel?.close(); } catch { /* unexpected channel */ } }
   }
   peer.addEventListener('datachannel', onDataChannel);
+  peer.addEventListener('connectionstatechange', emitStatus);
   if (hello.role === 'host') attach(peer.createDataChannel('smf-lan', {ordered:true}));
 
   function assertPhase(role, expected) {
@@ -139,7 +174,7 @@ function createLanPeerConnection(localHello, options = {}) {
       // Only a failed operation that began changing RTC state is terminal.
       if (phase !== startingPhase) dispose();
       throw error;
-    }
+    } finally { emitStatus(); }
   }
   // LAN-018: an open channel alone does not prove that the RTC transport is
   // usable. A disconnected peer can recover; a failed/closed one must not
@@ -204,11 +239,20 @@ function createLanPeerConnection(localHello, options = {}) {
     disposed = true;
     phase = 'closed';
     peer.removeEventListener('datachannel', onDataChannel);
+    peer.removeEventListener('connectionstatechange', emitStatus);
+    if (channel) {
+      channel.removeEventListener('open', onChannelChange);
+      channel.removeEventListener('close', onChannelChange);
+      channel.removeEventListener('message', onChannelChange);
+    }
     binding?.dispose();
     try { channel?.close(); } catch { /* already closed */ }
     peer.close();
+    emitStatus();
+    statusListeners.clear();
   }
-  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, sendGuestInput, advanceHostFrame, dispose,
+  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, sendGuestInput, advanceHostFrame, subscribeStatus, dispose,
+    get status() { return snapshotStatus(); },
     get ready() { return phase === 'connected-signaling' && !!binding?.ready && transportUsable(); },
     get phase() { return phase; },
     // Read-only transport diagnostics for future LAN lobby status messages.
