@@ -141,6 +141,14 @@ function createLanPeerConnection(localHello, options = {}) {
       throw error;
     }
   }
+  // LAN-018: an open channel alone does not prove that the RTC transport is
+  // usable. A disconnected peer can recover; a failed/closed one must not
+  // report ready or accept input while its DataChannel still appears open.
+  function transportUsable() {
+    return !disposed && channel?.readyState === 'open' &&
+      peer.connectionState !== 'disconnected' &&
+      peer.connectionState !== 'failed' && peer.connectionState !== 'closed';
+  }
   // LAN-015: await the actual protocol handshake, not merely the SDP exchange.
   // This bounded gate is for future lobby/game-loop wiring; it does not
   // claim a playable two-browser session by itself.
@@ -149,7 +157,7 @@ function createLanPeerConnection(localHello, options = {}) {
       return Promise.reject(new RangeError('Invalid LAN readiness timeout'));
     }
     if (disposed) return Promise.reject(new Error('LAN peer disposed'));
-    if (phase === 'connected-signaling' && binding?.ready) return Promise.resolve(binding);
+    if (phase === 'connected-signaling' && binding?.ready && transportUsable()) return Promise.resolve(binding);
     return new Promise((resolve, reject) => {
       let finished = false;
       let poll;
@@ -165,7 +173,7 @@ function createLanPeerConnection(localHello, options = {}) {
         if (disposed || peer.connectionState === 'failed' ||
             peer.connectionState === 'closed' || channel?.readyState === 'closed') {
           finish(new Error('LAN peer closed before handshake'));
-        } else if (phase === 'connected-signaling' && binding?.ready) {
+        } else if (phase === 'connected-signaling' && binding?.ready && transportUsable()) {
           finish();
         }
       }
@@ -179,14 +187,14 @@ function createLanPeerConnection(localHello, options = {}) {
   // The caller still owns the real match loop and snapshot rendering.
   function sendGuestInput(frame, buttons = [], dx = 0, dy = 0) {
     if (disposed || hello.role !== 'guest' || phase !== 'connected-signaling' ||
-        !binding?.ready || channel?.readyState !== 'open') {
+        !binding?.ready || !transportUsable()) {
       throw new Error('LAN guest input requires a ready guest connection');
     }
     return binding.sendInput(frame, buttons, dx, dy);
   }
   function advanceHostFrame(frame) {
     if (disposed || hello.role !== 'host' || phase !== 'connected-signaling' ||
-        !binding?.ready || channel?.readyState !== 'open') {
+        !binding?.ready || !transportUsable()) {
       throw new Error('LAN host frame requires a ready host connection');
     }
     return binding.advance(frame);
@@ -201,7 +209,7 @@ function createLanPeerConnection(localHello, options = {}) {
     peer.close();
   }
   return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, sendGuestInput, advanceHostFrame, dispose,
-    get ready() { return !disposed && phase === 'connected-signaling' && !!binding?.ready; },
+    get ready() { return phase === 'connected-signaling' && !!binding?.ready && transportUsable(); },
     get phase() { return phase; },
     // Read-only transport diagnostics for future LAN lobby status messages.
     get transportState() { return disposed ? 'closed' : peer.connectionState; },
