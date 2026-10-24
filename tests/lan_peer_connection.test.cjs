@@ -849,3 +849,31 @@ test('LAN-038 guest snapshot subscription aborts and allows replacement',async()
   second.dispose();
   guest.dispose();host.dispose();
 });
+
+test('LAN-039 disposing guest detaches snapshot AbortSignal listener',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const channel=new FakeChannel('smf-lan');
+  guest.peer.emitChannel(channel);
+  host.peer.channel.open();channel.open();
+  const deliver=(target,payload)=>{
+    const event=new Event('message');event.data=JSON.stringify(payload);
+    target.dispatchEvent(event);
+  };
+  deliver(host.peer.channel,guestHello);
+  deliver(channel,hostHello);
+  const controller=new AbortController();
+  let removed=0;
+  const original=controller.signal.removeEventListener.bind(controller.signal);
+  controller.signal.removeEventListener=(...args)=>{removed++;return original(...args);};
+  guest.subscribeGuestSnapshots(()=>{},-1,controller.signal);
+  guest.dispose();
+  assert.equal(removed,1,'peer disposal must unregister the abort listener');
+  controller.abort();
+  assert.equal(removed,1,'abort after disposal must not trigger stale cleanup');
+  host.dispose();
+});
