@@ -903,3 +903,48 @@ test('LAN-040 abort racing listener registration rejects and releases receiver',
   next.dispose();
   guest.dispose();host.dispose();
 });
+
+test('LAN-041 host match-state bridge stamps session identity and delivers guest snapshot',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const guestChannel=new FakeChannel('smf-lan');
+  guest.peer.emitChannel(guestChannel);
+  host.peer.channel.open();guestChannel.open();
+  const deliver=(target,payload)=>{
+    const event=new Event('message');
+    event.data=typeof payload==='string'?payload:JSON.stringify(payload);
+    target.dispatchEvent(event);
+  };
+  deliver(host.peer.channel,guestHello);
+  deliver(guestChannel,hostHello);
+  const received=[];
+  const receiver=guest.subscribeGuestSnapshots(snapshot=>received.push(snapshot));
+  const state={tick:7,clockMs:1234,scores:{home:2,away:1},
+    ball:{x:0.1,y:-0.3,z:0.2},
+    players:[{slot:0,x:-0.5,y:0},{slot:21,x:0.5,y:0}]};
+  assert.equal(host.sendHostMatchState(state),true);
+  const wire=host.peer.channel.sent.at(-1);
+  const packet=JSON.parse(wire);
+  assert.deepEqual({roomId:packet.roomId,hostId:packet.hostId},host.snapshotIdentity);
+  assert.equal(packet.version,1);
+  assert.equal(packet.type,'snapshot');
+  assert.deepEqual(packet.players,state.players);
+  assert.equal(Object.hasOwn(state,'roomId'),false,'gameplay state is not mutated');
+  deliver(guestChannel,wire);
+  assert.equal(received.length,1);
+  assert.equal(received[0].tick,7);
+  assert.deepEqual(received[0].scores,state.scores);
+  assert.equal(Object.isFrozen(received[0]),true);
+  assert.equal(host.sendHostMatchState(state),false,'repeated simulation tick is ignored');
+  assert.throws(()=>host.sendHostMatchState({...state,players:[{slot:22,x:0,y:0}]}),/snapshot player/);
+  assert.throws(()=>host.sendHostMatchState({...state,unexpected:true}),/match state/);
+  assert.throws(()=>host.sendHostMatchState(null),/match state/);
+  assert.throws(()=>guest.sendHostMatchState(state),/ready host/);
+  receiver.dispose();
+  guest.dispose();host.dispose();
+  assert.throws(()=>host.sendHostMatchState({...state,tick:8}),/ready host/);
+});
