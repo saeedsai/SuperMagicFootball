@@ -100,3 +100,23 @@ test('LAN-047 authoritative metadata updates half, selection, possession and fin
   assert.deepEqual(guest.controlled,[4,2]);
   assert.equal(guest.ball.owner,guest.players[1]);
 });
+
+test('LAN-048 guest obeys host pause, resume and finish snapshots',async()=>{
+  const {captureLanGameState,applyLanGameState}=await load();
+  const input=controls(),host=game(input),guest=game(input);
+  host.half=2;host.matchState='paused';host.controlled=[2,4];
+  host.ball.owner=host.players[1];
+  let state=captureLanGameState(host,field,10);
+  applyLanGameState(guest,field,state);
+  assert.equal(guest.matchState,'paused');
+  assert.equal(guest.half,2);
+  assert.deepEqual(guest.controlled,[2,4]);
+  assert.equal(guest.ball.owner,guest.players[1]);
+  host.matchState='play';host.ball.owner=null;
+  applyLanGameState(guest,field,captureLanGameState(host,field,11));
+  assert.equal(guest.matchState,'play');
+  assert.equal(guest.ball.owner,null);
+  host.matchState='finished';
+  applyLanGameState(guest,field,captureLanGameState(host,field,12));
+  assert.equal(guest.matchState,'finished');
+});

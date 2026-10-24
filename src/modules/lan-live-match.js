@@ -52,7 +52,9 @@ function applyLanGameState(game,field,state){
     game.controlled[0]=state.meta.controlled.home;
     game.controlled[1]=state.meta.controlled.away;
     for(const p of game.players)p.controlled=p.t===1&&p.i===game.controlled[1];
-    if(state.meta.phase==='finished')game.matchState='finished';
+    // The guest never invents a local phase: only validated host snapshots
+    // may pause, resume, or finish the remote match.
+    game.matchState=state.meta.phase;
   }else if(game.clock*1000>state.clockMs+1500 && game.half===1)game.half=2;
   game.clock=state.clockMs/1000;
 }

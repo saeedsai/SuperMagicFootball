@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.41.0',
+ version:'0.9.41.1',
  date:'2026-10-25',
  notes:Object.freeze([
+  'LAN guest now follows host-authoritative pause, resume and finish snapshots, including half, controlled player and ball ownership. This corrects guest match phase drift; physical two-browser testing and full release QA remain pending.',
   'LAN Quick Match candidate: trusted host and guest can exchange manual WebRTC offer/answer text and start a match. The host runs the original football engine, receives four-button guest controls and sends validated ball, player, score and clock snapshots to the away player. LAN ties finish as draws rather than launching an unsynchronized penalty shootout. Full browser/device and deployment QA remain pending.',
   'Player Studio now previews all ten normal Dribble Styles with live, accessible counterplay guidance. Nutmeg timing, Rainbow Flick defensive reads and other styles are explained without changing the roster until SAVE DRIBBLE STYLE.',
   'Player Studio now previews Super Shot names and selected level live, including KEEP CURRENT and REMOVE. Accessible status updates when either selector changes; previewing never saves a player until SAVE SUPER SHOT.',
