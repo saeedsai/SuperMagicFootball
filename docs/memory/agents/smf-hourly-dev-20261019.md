@@ -2,24 +2,26 @@
 **Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
 
 ## Mission
-Sole developer. Commit bounded roadmap increments directly to existing dev hourly even when earlier releases await CI; never bypass security or force-push. Keep only dev/main.
+Continue one bounded tested feature per hourly run on existing dev, even with pending CI. Never create branches beyond dev/main or bypass protection/force-push.
 
 ## Current checkpoint
-Start dev `7cb87465a98a7f5d3d7fa320c8fcf44666b35072`; main `9ac3a3887a6fae0bdd99a8b490ea151f2882b662`. Main Full Census #40104566268 and Pages #40104566800 passed; dev previous Modular QA #40104758806 and Census #40104758754 failed.
-LAN-023 fix restores immediate terminal snapshot for subscribeStatus after dispose (LAN-022 accidentally suppressed callback). New regression covers late subscriber with AbortSignal; pre-aborted listeners still silent. Internal transport change: About-only 0.9.39.0 unchanged; no player-facing version bump. Preserve 223 teams/2676 players, six formations, four buttons, 10 Career/Cup slots, SD09, saves/offline.
+- Certified baseline dev/main `a79626234763925bbd11223ff2324e19fdbd19e2`. Dev Modular QA #40105531189, Full 4 Node+4 Chromium #40105531159, main Full #40105872910 and Pages #40105873146 passed.
+- LAN-024 0.9.40.0 candidate: Quick Match > Local Network offers manual host/guest SDP connection preview, secure session, version validation, status, clipboard and reset. No playable LAN match or synchronized snapshots yet. New module 9ac9a213, UI 87681e14, fixture cf3d76c4, cache 5405370c, tests 379a2047/3cb6a625, responsive CSS 1fb7a11c.
+- CI failure: three art contract tests assumed `crownroyals,render` adjacency. Updated all three to require LAN modules without weakening art ordering (610d3cc1, c0d858d4, 4e3acf75). Modular QA #40109853703 green on intermediate head; final exact-head 4+4/Modular QA pending.
+- About-only version 0.9.40.0, package/README/release/cache aligned. Preserve 223 teams/2676 players, six formations, four buttons, 10 Career/Cup slots, SD09, saves and offline.
 
 ## Next smallest action
-1. Inspect exact-head LAN-023 Modular QA and Full 4 Node+4 Chromium Census; repair failures.
-2. Allow protected exact-green dev-to-main promotion; verify main regression, Pages and hosted bytes.
-3. Build accessible manual SDP host/guest lobby, with player-facing version/cache/README updates.
-4. Integrate actual host-authoritative four-button inputs and snapshots, test two real browsers.
-5. Resolve Concept Royals directional issue #15 with screenshot-based graphics QA.
+1. Verify latest exact-head 4 Node+4 Chromium and Modular QA; repair failures.
+2. Allow protected exact-green dev→main promotion; verify main/Pages hosted byte smoke.
+3. Wire four-button guest input to host-authoritative match engine.
+4. Implement bounded host snapshots and real two-browser LAN test.
+5. Fix Concept Royals side/quarter orientation issue #15 with screenshot QA.
 
 ## Ownership and exclusions
-Read/update only own checkpoint, central log; no extra branches or manual uncertified main pushes. Visual quality and real two-client LAN remain unverified.
+Only central log and own checkpoint. Never edit other agents' memory or force-push. Do not claim playable LAN, physical-device or graphics certification.
 
 ## Evidence
-Failed exact-head jobs #120904032460 and #120904049884: LAN-019 line 342 expected 1 closed-state callback, actual 0. Main green evidence above. New exact-head CI pending.
+Source-backed V8 LAN syntax/session check passed; intermediate Modular QA #40109853703 passed. Full latest-head CI, production and visual approval pending.
 
 ## Cleanup
-Checkpoint under 4 KiB; no other agents' memory touched.
+Checkpoint under 4 KiB. No secrets.
