@@ -55,12 +55,16 @@ test('banana peel expires, is consumed once and has bounded capacity',async()=>{
  assert.equal(hit.slips.length,1);
  assert.equal(advanceBananaPeels(hit.hazards,[rival],.3).slips.length,0);
 });
-test('two overlapping peels do not stun the same opponent twice in one frame',async()=>{
+test('two overlapping peels stun one rival once and preserve the unused peel',async()=>{
  const {placeBananaPeel,advanceBananaPeels}=await modulePromise;
  const peel=placeBananaPeel([],carrier,field);
  const hit=advanceBananaPeels([...peel,...peel],[rival],.3);
- assert.equal(hit.slips.length,1);
- assert.equal(hit.hazards.length,0);
+ assert.deepEqual(hit.slips,[rival]);
+ assert.equal(hit.hazards.length,1,'unused peel remains armed for a different opponent');
+ const other={...rival};
+ const followup=advanceBananaPeels(hit.hazards,[{...rival,stun:.65},other],.1);
+ assert.deepEqual(followup.slips,[other]);
+ assert.equal(followup.hazards.length,0);
 });
 test('invalid ticks cannot extend or rewind hazard lifetime',async()=>{
  const {advanceBananaPeels}=await modulePromise;
