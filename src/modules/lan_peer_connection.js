@@ -128,6 +128,12 @@ function createLanPeerConnection(localHello, options = {}) {
     if (disposed) throw new Error('LAN peer disposed');
     phase = 'connected-signaling';
   }
+  // LAN-014 recovery: close the half-open peer after any asynchronous signaling
+  // failure so a fresh attempt can start without a stranded RTC connection.
+  async function guarded(operation) {
+    try { return await operation(); }
+    catch (error) { dispose(); throw error; }
+  }
   function dispose() {
     if (disposed) return;
     disposed = true;
@@ -137,7 +143,7 @@ function createLanPeerConnection(localHello, options = {}) {
     try { channel?.close(); } catch { /* already closed */ }
     peer.close();
   }
-  return Object.freeze({createOffer, acceptOffer, acceptAnswer, dispose,
+  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), dispose,
     get ready() { return !disposed && phase === 'connected-signaling' && !!binding?.ready; },
     get phase() { return phase; },
     get binding() { return binding; },
