@@ -74,3 +74,11 @@ test('every shipped JavaScript module parses before browser startup',()=>{
   assert.equal(result.status,0,file+': '+(result.stderr||result.error||'syntax check failed'));
  }
 });
+
+test('each player-facing candidate rotates offline shell and retains About-only release notes',()=>{
+ const pkg=JSON.parse(read('package.json')),sw=read('sw.js'),release=read('src/modules/release.js');
+ assert.ok(sw.startsWith('// '+pkg.version+' modular offline shell'),'service-worker release header must track candidate');
+ assert.match(sw,/const CACHE='smf-[^']+'/,'offline cache key must be explicit and nonempty');
+ assert.match(release,/notes:Object\.freeze\(\[/,'About notes must be immutable');
+ assert.ok(release.includes("version:'"+pkg.version+"'"),'About candidate and package must agree');
+});
