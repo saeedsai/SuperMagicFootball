@@ -2,26 +2,27 @@
 **Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
 
 ## Mission
-Commit one bounded tested roadmap increment directly to existing dev each run, even if CI/release is pending. Only dev/main; no force push or bypass.
+Implement one small tested roadmap feature on existing dev each run, regardless of pending release. Only dev/main; never force-push or bypass protection, safety or QA.
 
 ## Current checkpoint
-- TRAP-0371: Fixed overlapping Banana Peel/Ice Patch consumption: one grounded rival can trigger at most one hazard per physics tick; unused traps remain for other rivals. Banana has deterministic priority over ice. Model `8c21a23d`, engine `981ffcf3`, regression `424aac69`. Source-executed V8 checks 19/19 passed; **Node/Chromium/Modular QA not run or verified**.
-- Version `0.9.37.1` staged in About/package/README heading+banner/SW cache/policy/shared memory. Candidate only; no verified production deployment.
-- At start dev/main identical at `72322b31113e0163c41d21327955c381bc2b9524` (0.9.37.0); prior independently certified 0.9.36.0 at `c711184de5c6e53204ab0a7104042241a0224465`. Connector's workflow lookup is PR-only; GitHub Actions public page unavailable; no exact-head push run evidence.
-- Preserve 223 teams/2676 players, 2GK/3DF/4MF/3FW, six formations, exactly four buttons, 10 Career/Cup slots, SD09, old saves/offline.
+- STUDIO-0380: Player Studio Super Shot now has accessible live shot/level preview, KEEP CURRENT/REMOVE and legacy-shot fallback; both selectors update guide and icon, no save until SAVE SUPER SHOT. Implementation `fc964a6e`; six Node test cases `082850e5`. Six source-backed V8 harness checks passed; **real Node/Chromium/Modular QA unverified**.
+- Candidate `0.9.38.0` staged in About/package/README heading+banner/date/notes/SW cache/policy/shared memory. Release contracts 12/12 source checks passed; candidate not certified or deployed.
+- Previous TRAP-0371 overlapping Banana/Ice fairness is included, not separately certified. Initial dev `ddfd72cac927ce0ec09cc79b6e349f2b7a59056f`, main `72322b31113e0163c41d21327955c381bc2b9524` (11 ahead). Earlier independently certified `0.9.36.0` at `c711184d`.
+- GitHub connector's commit workflow lookup is PR-only and returned no runs, statuses empty; Actions public page unavailable. Do not infer CI success or promote.
+- Preserve 223 teams/2676 players, 2GK/3DF/4MF/3FW, six formations, exactly four buttons, ten Career/Cup slots, SD09, offline and legacy saves.
 
 ## Next smallest action
-1. Inspect exact latest dev push-triggered Modular QA and Full Census through Actions; repair any failures.
-2. Run focused Node tests, four Node and four Chromium shards, preflight/preview and Modular QA.
-3. Browser-check overlapping trap visuals/counterplay and Player Studio tier previews; audit Crown Royals direction.
-4. Promote only unchanged fully green dev through protected main; verify Pages hosted SHA/bytes.
-5. Continue another bounded dev feature regardless of pending release, prioritizing LAN and graphics.
+1. Obtain exact latest dev-head push CI; diagnose failing jobs with logs and repair.
+2. Run focused Node plus four Node/four Chromium shards, Modular QA and preflight/preview.
+3. Browser-review Player Studio Super Shot and Defence guides, Magic Trap gameplay, Crown Royals directional art.
+4. Promote unchanged fully green dev only through protected main pipeline, verify Pages hosted SHA/bytes.
+5. Keep coding next bounded dev feature regardless of release: prioritize two-client LAN handshake or directional sprite fix.
 
 ## Ownership and exclusions
-Only own checkpoint and central log; no new branches, force push, disabled hourly cadence, bypassed security or invented CI results.
+Only own checkpoint and central development log; do not create branches, bypass checks, invent results or disable hourly cadence.
 
 ## Evidence
-Model original behavior consumed two overlapping hazards for one rival; patched source-executed 19/19 checks pass. Current exact-head CI and Pages remain unverified.
+Six source-backed V8 checks and twelve version consistency assertions passed. Full CI, real-browser art QA, Pages and exact-head production status **not verified**.
 
 ## Cleanup
-Keep under 4 KiB; latest exact-head CI authoritative.
+Keep checkpoint below 4 KiB; exact-head CI is authoritative.
