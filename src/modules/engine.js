@@ -998,7 +998,7 @@ class GameEngine{
    this.emit('magicHazardDisarmed',{trick:hazard.kind,team:player.t,player:player.src.name});
   }
   const next=advanceBananaPeels(this.magicHazards,this.players,dt);
-  const ice=advanceIcePatches(this.magicHazards,this.players,dt);
+  const ice=advanceIcePatches(this.magicHazards,this.players,dt,next.slips);
   this.magicHazards=[...next.hazards,...ice.hazards];
   for(const victim of next.slips){
    victim.stun=Math.max(victim.stun,.65);
