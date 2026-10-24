@@ -84,7 +84,12 @@ function createLanPeerConnection(localHello, options = {}) {
   // event and lifecycle interface required for safe signaling.
   if (!peer || typeof peer.addEventListener !== 'function' ||
       typeof peer.removeEventListener !== 'function' ||
-      typeof peer.close !== 'function') {
+      typeof peer.close !== 'function' ||
+      typeof peer.createDataChannel !== 'function' ||
+      typeof peer.createOffer !== 'function' ||
+      typeof peer.createAnswer !== 'function' ||
+      typeof peer.setLocalDescription !== 'function' ||
+      typeof peer.setRemoteDescription !== 'function') {
     try { peer?.close?.(); } catch { /* invalid peer */ }
     throw new TypeError('Invalid LAN RTCPeerConnection implementation');
   }
