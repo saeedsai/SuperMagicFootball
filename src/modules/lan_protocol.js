@@ -185,6 +185,20 @@ function advanceLanHostFrame(state,frame){
  });
 }
 
+// LAN-012: start either endpoint on an already-open RTCDataChannel.
+// The first wire packet is always the canonical local hello (sequence zero).
+// No session is returned if the channel is closed or send() fails.
+function startLanHostChannel(localHello,channel){
+ const state=createLanHostSession(localHello);
+ const bytes=sendLanChannelPacket(channel,state.peer.local);
+ return Object.freeze({state,bytes});
+}
+function startLanGuestChannel(localHello,channel){
+ const state=createLanGuestSession(localHello);
+ const bytes=sendLanChannelPacket(channel,state.peer.local);
+ return Object.freeze({state,bytes});
+}
+
 // LAN-010: guest-side session gate and DataChannel sender.
 // This is transport wiring for an already-open channel, not WebRTC signaling.
 function createLanGuestSession(localHello){
@@ -206,4 +220,4 @@ function sendLanGuestFrame(state,channel,frame,buttons=[],dx=0,dy=0){
  const bytes=sendLanChannelPacket(channel,built.packet);
  return Object.freeze({packet:built.packet,bytes,state:Object.freeze({peer:state.peer,sender:built.state})});
 }
-export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame,createGuestLanSender,buildGuestLanInput,sendLanChannelPacket,receiveLanChannelPacket,createLanPeerGate,receiveLanPeerPacket,createLanHostSession,acceptLanHostMessage,advanceLanHostFrame,createLanGuestSession,acceptLanGuestHello,sendLanGuestFrame};
+export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame,createGuestLanSender,buildGuestLanInput,sendLanChannelPacket,receiveLanChannelPacket,createLanPeerGate,receiveLanPeerPacket,createLanHostSession,acceptLanHostMessage,advanceLanHostFrame,createLanGuestSession,acceptLanGuestHello,sendLanGuestFrame,startLanHostChannel,startLanGuestChannel};
