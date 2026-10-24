@@ -652,3 +652,21 @@ test('LAN-027 snapshot receiver isolates invalid packets and failing consumer',a
   assert.equal(rx.lastTick,0);
   rx.dispose();guest.dispose();host.dispose();
 });
+
+test('LAN-027 snapshot imports remain available in offline shell and browser fixture',()=>{
+  const fs=require('node:fs');
+  const path=require('node:path');
+  const root=path.resolve(__dirname,'..');
+  const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
+  const build=fs.readFileSync(path.join(root,'scripts/build.py'),'utf8');
+  const peer=fs.readFileSync(path.join(root,'src/modules/lan_peer_connection.js'),'utf8');
+  const snapshot=fs.readFileSync(path.join(root,'src/modules/lan-state-snapshot.js'),'utf8');
+  assert.match(peer,/from '.\/lan-snapshot-channel.js'/);
+  assert.match(snapshot,/from '.\/lan-session.js'/);
+  for(const name of ['lan-state-snapshot','lan-snapshot-channel','lan-session']){
+    assert.ok(sw.includes("'"+name+"'"),name+' must be precached for offline import');
+  }
+  for(const name of ['lan-state-snapshot','lan-snapshot-channel']){
+    assert.ok(build.includes("'"+name+"'"),name+' must be in Chromium fixture');
+  }
+});
