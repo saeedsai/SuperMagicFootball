@@ -1,5 +1,5 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** smf-hourly-dev-20261019 · Updated 2026-10-24.
+**Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
 
 ## Mission
 Continue bounded commits on existing dev every hourly run, regardless of pending CI; never bypass protection or force-push.
