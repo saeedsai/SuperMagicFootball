@@ -372,6 +372,33 @@ function createLanPeerConnection(localHello, options = {}) {
       ...snapshotIdentity,tick:state.tick,clockMs:state.clockMs,
       scores:state.scores,ball:state.ball,players:state.players});
   }
+  // LAN-043: authoritative host loop adapter. Consume one validated guest input,
+  // advance the caller-owned simulation exactly once, then publish its state.
+  // This does not start a timer, implement physics or change the offline loop.
+  // If simulation fails, the frame remains consumed; callers must stop/resync.
+  function stepHostMatchFrame(frame, simulate) {
+    if (typeof simulate !== 'function') {
+      throw new TypeError('LAN host simulation callback must be a function');
+    }
+    if (!readyForHostFrame()) {
+      throw new Error('LAN host match step requires a ready host connection');
+    }
+    const guestFrame = advanceHostFrame(frame);
+    const state = simulate(guestFrame.input, guestFrame);
+    if (state && typeof state.then === 'function') {
+      throw new TypeError('LAN host simulation must return state synchronously');
+    }
+    if (!state || state.tick !== frame) {
+      throw new Error('LAN host simulation tick must match input frame');
+    }
+    const snapshotSent = sendHostMatchState(state);
+    return Object.freeze({frame, received:guestFrame.received,
+      input:guestFrame.input, snapshotSent});
+  }
+  function readyForHostFrame() {
+    return !disposed && hello.role === 'host' && phase === 'connected-signaling' &&
+      !!binding?.ready && transportUsable();
+  }
   function subscribeGuestSnapshots(listener, initialTick = -1, signal = null) {
     if (signal != null && (typeof signal.addEventListener !== 'function' ||
         typeof signal.removeEventListener !== 'function' || typeof signal.aborted !== 'boolean')) {
@@ -444,7 +471,7 @@ function createLanPeerConnection(localHello, options = {}) {
     emitStatus();
     statusListeners.clear();
   }
-  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, sendGuestInput, advanceHostFrame, sendHostSnapshot, sendHostMatchState, subscribeGuestSnapshots, subscribeGuestMatchState, subscribeHostInput, subscribeHostFrame, subscribeStatus, dispose,
+  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, sendGuestInput, advanceHostFrame, sendHostSnapshot, sendHostMatchState, stepHostMatchFrame, subscribeGuestSnapshots, subscribeGuestMatchState, subscribeHostInput, subscribeHostFrame, subscribeStatus, dispose,
     get snapshotIdentity() { return snapshotIdentity; },
     get status() { return snapshotStatus(); },
     get ready() { return phase === 'connected-signaling' && !!binding?.ready && transportUsable(); },
