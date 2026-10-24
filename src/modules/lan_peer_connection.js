@@ -364,13 +364,15 @@ function createLanPeerConnection(localHello, options = {}) {
   // This does not simulate the match or render guest snapshots.
   function sendHostMatchState(state) {
     if (!state || Object.getPrototypeOf(state) !== Object.prototype ||
-        Object.keys(state).length !== 5 ||
-        !['tick','clockMs','scores','ball','players'].every(key => Object.hasOwn(state,key))) {
+        ![5,6].includes(Object.keys(state).length) ||
+        !['tick','clockMs','scores','ball','players'].every(key => Object.hasOwn(state,key)) ||
+        (Object.keys(state).length === 6 && !Object.hasOwn(state,'meta'))) {
       throw new TypeError('Invalid LAN host match state');
     }
     return sendHostSnapshot({type:'snapshot',version:LAN_PROTOCOL_VERSION,
       ...snapshotIdentity,tick:state.tick,clockMs:state.clockMs,
-      scores:state.scores,ball:state.ball,players:state.players});
+      scores:state.scores,ball:state.ball,players:state.players,
+      ...(Object.hasOwn(state,'meta')?{meta:state.meta}:{})});
   }
   // LAN-043: authoritative host loop adapter. Consume one validated guest input,
   // advance the caller-owned simulation exactly once, then publish its state.
@@ -447,7 +449,8 @@ function createLanPeerConnection(localHello, options = {}) {
     if (typeof listener !== 'function') throw new TypeError('Invalid LAN guest match state listener');
     return subscribeGuestSnapshots(snapshot => listener(Object.freeze({
       tick:snapshot.tick, clockMs:snapshot.clockMs, scores:snapshot.scores,
-      ball:snapshot.ball, players:snapshot.players
+      ball:snapshot.ball, players:snapshot.players,
+      ...(snapshot.meta?{meta:snapshot.meta}:{})
     })), initialTick, signal);
   }
   function dispose() {
