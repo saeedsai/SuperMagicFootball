@@ -261,6 +261,14 @@ function createLanPeerConnection(localHello, options = {}) {
     }
     return binding.subscribeInput(listener, signal);
   }
+  // LAN-026: authoritative frame consumption events are separate from
+  // raw packet acceptance and never advance the match simulation themselves.
+  function subscribeHostFrame(listener, signal = null) {
+    if (disposed || hello.role !== 'host' || !binding) {
+      throw new Error('LAN host frame subscription requires an active host');
+    }
+    return binding.subscribeFrame(listener, signal);
+  }
   function advanceHostFrame(frame) {
     if (disposed || hello.role !== 'host' || phase !== 'connected-signaling' ||
         !binding?.ready || !transportUsable()) {
@@ -285,7 +293,7 @@ function createLanPeerConnection(localHello, options = {}) {
     emitStatus();
     statusListeners.clear();
   }
-  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, sendGuestInput, advanceHostFrame, subscribeHostInput, subscribeStatus, dispose,
+  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, sendGuestInput, advanceHostFrame, subscribeHostInput, subscribeHostFrame, subscribeStatus, dispose,
     get status() { return snapshotStatus(); },
     get ready() { return phase === 'connected-signaling' && !!binding?.ready && transportUsable(); },
     get phase() { return phase; },
