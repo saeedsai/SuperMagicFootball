@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.38.0',
+ version:'0.9.39.0',
  date:'2026-10-24',
  notes:Object.freeze([
+  'Player Studio now previews all ten normal Dribble Styles with live, accessible counterplay guidance. Nutmeg timing, Rainbow Flick defensive reads and other styles are explained without changing the roster until SAVE DRIBBLE STYLE.',
   'Player Studio now previews Super Shot names and selected level live, including KEEP CURRENT and REMOVE. Accessible status updates when either selector changes; previewing never saves a player until SAVE SUPER SHOT.',
   'Fixed overlapping Banana Peel and Ice Patch traps consuming multiple hazards on the same rival in one physics tick. Each grounded opponent triggers at most one trap per tick, preserving other traps for later opponents.',
   'Player Studio Super Defence now previews the available moves for the selected tier, explains when Spin Bumper unlocks, and refreshes the ability icon if a tier change invalidates the selection. Previewing does not modify saved players.',
