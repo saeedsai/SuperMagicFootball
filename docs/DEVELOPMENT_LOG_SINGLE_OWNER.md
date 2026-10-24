@@ -749,3 +749,6 @@ Avoid arming a timeout after synchronous ICE completion during listener registra
 
 ### 2026-10-24 LAN-032 synchronous ICE cleanup
 Avoid registering second RTC listener after first registration synchronously settles ICE (95b7ec6a); focused regression d3a62e45. Prior LAN-031 exact dev Modular QA passed and Full Census running; main remains e54e52c0. New head CI pending; no premature promotion, no graphics or multiplayer certification.
+
+### 2026-10-24 LAN-033 WebRTC peer interface validation
+Fail closed for malformed injected WebRTC peers before attaching handlers; attempt safe peer close (`1fad18a4`), with regression (`384ab2ac`). Previous dev LAN-032 Modular QA #40124140940 passed; full Census #40124140981 running. main remains e54e52c0. New exact-head CI pending; no premature release, real two-browser gameplay and graphics QA remain open.
