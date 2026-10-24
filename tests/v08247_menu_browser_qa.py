@@ -15,9 +15,14 @@ with sync_playwright() as pw:
   assert page.locator('.menubox').evaluate('(x)=>x.scrollWidth<=x.clientWidth+3'), (label,'overflow main')
   page.locator('[data-action=navQuick]').first.click()
   assert page.locator('[data-action=navOnDevice]').count()==1
-  page.locator('[data-action=laterLAN]').click()
-  assert 'COMING LATER' in page.locator('.navInfo').inner_text()
-  page.locator('[data-action=navQuick]').first.click()
+  page.locator('[data-action=navLan]').click()
+  assert page.locator('#lanHost').count()==1,(label,'LAN host preview')
+  assert page.locator('#lanGuest').count()==1,(label,'LAN guest preview')
+  assert page.locator('#lanIncoming').count()==1,(label,'LAN offer/answer input')
+  assert 'not ready' in page.locator('.lanConnectionLab').inner_text().lower(),(label,'honest LAN limitation')
+  page.locator('#lanIncoming').focus()
+  page.keyboard.press('Escape')
+  assert page.locator('[data-action=navOnDevice]').count()==1,(label,'LAN textarea Escape returns to Quick Match')
   page.locator('[data-action=navOnDevice]').click()
   for a in ['quick','versus','pk','training']:
    assert page.locator(f'[data-action={a}]').count()==1,(label,a)
