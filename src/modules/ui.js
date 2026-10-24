@@ -21,6 +21,7 @@ import {CAREER} from "./career.js";
 import {CAREER_SLOTS} from "./career_slots.js";
 import {CUP_SLOTS} from "./cup_slots.js";
 import {RELEASE} from "./release.js";
+import {mountLanLobby} from "./lan-lobby.js";
 import {INPUT} from "./input.js";
 import {VISUALFEEL} from "./visualfeel.js";
 import {ENGINE} from "./engine.js";
@@ -170,7 +171,8 @@ const planFor=i=>safePlan(teamPlans[TEAMS[i].id],roster(i),i);
 const identity=i=>teamIdentity(TEAMS[i]);
 const menuVisible=()=>!menu.classList.contains('hidden');
 const closeMenu=()=>{input.cancelAll();audio.sceneChange('match');menu.classList.add('hidden');hud.classList.remove('hidden');touch.classList.toggle('hidden',!matchMedia('(pointer:coarse)').matches)};
-const show=(html,id='home')=>{audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');menu.innerHTML=`<div class="menubox"><div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>${html}<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div></div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
+let lanLobbyDispose=null;
+const show=(html,id='home')=>{if(lanLobbyDispose){lanLobbyDispose();lanLobbyDispose=null;}audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');menu.innerHTML=`<div class="menubox"><div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>${html}<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div></div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
 function page(title,subtitle,body,returnAction='home'){if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;menuBackAction=returnAction;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER</div><h1 class="heading">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title)}
 // v0.8.24.7 — Menu handoff: five primary categories, no new gameplay modes.
 // Existing action handlers, saves, teams and engine remain the authority.
@@ -195,9 +197,14 @@ const comingLater=(title,description,back='navCups')=>{
  menuBackAction=back;
  page(title,'Planned feature — not available in this version.',`<div class="panel navInfo"><h2>COMING LATER</h2><p>${escapeHTML(description)}</p><p>No substitute gameplay is launched. Existing saves are unchanged.</p>${button('← BACK',back,'gold')}</div>`,back);
 };
+function showLanLobby(){
+ page('LOCAL NETWORK','Manual host/guest connection preview — multiplayer match not yet playable.',
+  '<div id="lanLobby"></div>','navQuick');
+ lanLobbyDispose=mountLanLobby($('lanLobby'));
+}
 function showQuickMenu(){menuChoices('nav-quick','QUICK MATCH','Play on one device, practice, or explore planned local multiplayer.',[
  navItem('On Device','navOnDevice','Single-player, two-player, penalties and training.','active','🎮'),
- navItem('Local Network','laterLAN','Devices connected over your local network.','later','📡')],'home');}
+ navItem('Local Network · Connection Preview','navLan','Manual host/guest signaling; matches are not synchronized yet.','active','📡')],'home');}
 function showOnDevice(){menuChoices('nav-device','ON DEVICE','Use the existing playable match setups.',[
  navItem('Single Player vs CPU','quick','Existing team, kit and match setup.','active','⚽'),
  navItem('Two Players · Same Device','versus','Play a local head-to-head match.','active','🎮'),
@@ -1244,7 +1251,7 @@ function action(a){audio.cue('ui');
  'nav-device':'navOnDevice','nav-career':'navCareer','nav-cups':'navCups','nav-clubs':'navClubs','nav-settings':'navSettings','nav-customize':'navCustomization','nav-input':'navInput','nav-saves':'navSaveManagement'
  })[screen]||'home';
  if(a==='confirmQuit'){if(confirm('Leave this match and return to the main menu? Match progress will be lost.')){game.matchState='none';showHome();}}else if(a==='confirmRestart'){if(confirm('Restart the match from kickoff? Current match progress will be lost.'))start();}
- else if(a==='navQuick')showQuickMenu();else if(a==='navOnDevice')showOnDevice();else if(a==='navOnline')showOnlineMenu();else if(a==='navCareer'){creatingCareer=false;showCareerMenu();}else if(a==='navCups')showCupsMenu();else if(a==='navInternational')showInternationalMenu();else if(a==='navClubs')showClubCompetitionsMenu();else if(a==='navSettings'||a==='settings')showSettingsMenu();else if(a==='navCustomization')showCustomizationMenu();else if(a==='navInput')showInputMenu();else if(a==='navSaveManagement')showSaveMenu('navSettings');else if(a==='navCareerSlots')showCareerSlots();else if(a==='navCupSlots')showCupSlots();
+ else if(a==='navQuick')showQuickMenu();else if(a==='navLan')showLanLobby();else if(a==='navOnDevice')showOnDevice();else if(a==='navOnline')showOnlineMenu();else if(a==='navCareer'){creatingCareer=false;showCareerMenu();}else if(a==='navCups')showCupsMenu();else if(a==='navInternational')showInternationalMenu();else if(a==='navClubs')showClubCompetitionsMenu();else if(a==='navSettings'||a==='settings')showSettingsMenu();else if(a==='navCustomization')showCustomizationMenu();else if(a==='navInput')showInputMenu();else if(a==='navSaveManagement')showSaveMenu('navSettings');else if(a==='navCareerSlots')showCareerSlots();else if(a==='navCupSlots')showCupSlots();
  else if(a==='navGameSettings')showSettingsSection('game');else if(a==='navGraphics')showSettingsSection('graphics');else if(a==='navSound'){if(game.matchState==='paused'&&screen==='PAUSED')menuEntryReturn='returnPause';showSettingsSection('sound');}
  else if(a==='navAbout')showAbout();
  else if(a==='navNewCareer'){creatingCareer=true;showManager();}
