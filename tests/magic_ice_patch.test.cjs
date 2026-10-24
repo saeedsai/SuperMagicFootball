@@ -65,3 +65,42 @@ test('Ice and Banana aging never consumes the other hazard type',async()=>{
  assert.equal(banana.hazards[0].kind,'banana');
  assert.equal(ice.hazards[0].kind,'ice');
 });
+
+test('defensive SHOOT slide sweeps nearby enemy Ice and Banana traps before triggering',async()=>{
+ const p=await model;
+ const slide={...rival,action:'slide',actionTimer:.3};
+ let active=p.placeBananaPeel([],carrier,field);
+ active=p.placeIcePatch(active,carrier,field);
+ const result=p.disarmMagicHazards(active,[slide]);
+ assert.equal(result.disarmed.length,2);
+ assert.equal(result.hazards.length,0);
+ assert.deepEqual(result.disarmed.map(e=>e.hazard.kind).sort(),['banana','ice']);
+ assert.ok(result.disarmed.every(e=>e.player===slide));
+ assert.equal(p.advanceBananaPeels(result.hazards,[slide],.4).slips.length,0);
+ assert.equal(p.advanceIcePatches(result.hazards,[slide],.4).slips.length,0);
+});
+test('ground trap slide counter excludes allies, keepers, stunned, airborne, idle and distant players',async()=>{
+ const p=await model,active=p.placeIcePatch([],carrier,field);
+ const sliding={...rival,action:'slide',actionTimer:.3};
+ for(const defender of [
+  {...sliding,t:0},{...sliding,keeper:true},{...sliding,stun:.1},
+  {...sliding,z:25},{...sliding,action:'idle'},{...sliding,actionTimer:0},
+  {...sliding,x:800},{...sliding,x:NaN}
+ ]){
+  const result=p.disarmMagicHazards(active,[defender]);
+  assert.equal(result.disarmed.length,0,JSON.stringify(defender));
+  assert.equal(result.hazards.length,1,JSON.stringify(defender));
+ }
+ assert.throws(()=>p.disarmMagicHazards(null,[]),TypeError);
+ assert.throws(()=>p.disarmMagicHazards([],null),TypeError);
+});
+test('trap slide counter is called before collision and emits visual feedback without new input',()=>{
+ const engine=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8');
+ const update=engine.slice(engine.indexOf(' updateMagicHazards(dt){'),engine.indexOf(' // v0.8.7:',engine.indexOf(' updateMagicHazards(dt){')));
+ assert.match(engine,/import \{placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards\}/);
+ assert.match(update,/const cleared=disarmMagicHazards\(this\.magicHazards,this\.players\)/);
+ assert.match(update,/this\.emit\('magicHazardDisarmed'/);
+ assert.ok(update.indexOf('disarmMagicHazards(')<update.indexOf('advanceBananaPeels('));
+ assert.ok(update.indexOf('disarmMagicHazards(')<update.indexOf('advanceIcePatches('));
+ assert.match(engine,/this\.resolvePlayerContacts\(dt\);this\.updateMagicHazards\(dt\);this\.updateBall\(dt\)/);
+});
