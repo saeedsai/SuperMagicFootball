@@ -484,3 +484,75 @@ test('LAN-025 pre-aborted host input subscriptions do not receive events',async(
   assert.equal(host.binding.state.queue.pending.length,1);
   stop();host.dispose();
 });
+
+test('LAN-026 host frame subscribers observe consumed frames once, including neutral fallback',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  const controller=new AbortController();
+  const frames=[];
+  assert.throws(()=>host.subscribeHostFrame(null),/frame listener/);
+  assert.throws(()=>host.subscribeHostFrame(()=>{},{}),/AbortSignal/);
+  assert.throws(()=>guest.subscribeHostFrame(()=>{}),/active host/);
+  host.subscribeHostFrame(()=>{throw Error('observer must not break frame');});
+  const unsubscribe=host.subscribeHostFrame(event=>frames.push(event),controller.signal);
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const guestChannel=new FakeChannel('smf-lan');
+  guest.peer.emitChannel(guestChannel);
+  host.peer.channel.open();guestChannel.open();
+  const deliver=(channel,packet)=>{
+    const message=new Event('message');
+    message.data=JSON.stringify(packet);
+    channel.dispatchEvent(message);
+  };
+  deliver(host.peer.channel,guestHello);
+  deliver(guestChannel,hostHello);
+  assert.equal(host.ready,true);
+  assert.equal(guest.ready,true);
+  const neutral=host.advanceHostFrame(0);
+  assert.equal(neutral.received,false);
+  assert.deepEqual(neutral.input.buttons,[]);
+  assert.equal(frames.length,1);
+  assert.equal(frames[0].frame,0);
+  assert.equal(frames[0].received,false);
+  assert.equal(Object.isFrozen(frames[0]),true);
+  assert.equal(Object.isFrozen(frames[0].input),true);
+  assert.throws(()=>host.advanceHostFrame(0),/must advance/);
+  assert.equal(frames.length,1,'rejected duplicate frame cannot notify');
+  const packet=guest.sendGuestInput(1,['pass','jump'],1,-1);
+  deliver(host.peer.channel,packet);
+  const received=host.advanceHostFrame(1);
+  assert.equal(received.received,true);
+  assert.deepEqual(received.input.buttons,['pass','jump']);
+  assert.equal(frames.length,2);
+  assert.equal(frames[1].frame,1);
+  assert.equal(frames[1].received,true);
+  assert.deepEqual(frames[1].input,received.input);
+  controller.abort();
+  host.advanceHostFrame(2);
+  assert.equal(frames.length,2,'aborted observer must not receive more frames');
+  unsubscribe();
+  host.dispose();guest.dispose();
+  assert.throws(()=>host.subscribeHostFrame(()=>{}),/active host/);
+});
+
+test('LAN-026 pre-aborted frame subscriptions remain inert',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const aborted=new AbortController();aborted.abort();
+  let notifications=0;
+  const unsubscribe=host.subscribeHostFrame(()=>notifications++,aborted.signal);
+  const offer=await host.createOffer();
+  assert.equal(JSON.parse(offer).kind,'offer');
+  host.peer.channel.open();
+  const hello=new Event('message');hello.data=JSON.stringify(guestHello);
+  host.peer.channel.dispatchEvent(hello);
+  await host.acceptAnswer(JSON.stringify({protocol:1,kind:'answer',session,build:hostHello.build,
+    sdp:'v=0\\r\\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\\r\\n'}));
+  assert.equal(host.ready,true);
+  host.advanceHostFrame(0);
+  assert.equal(notifications,0);
+  unsubscribe();host.dispose();
+});
