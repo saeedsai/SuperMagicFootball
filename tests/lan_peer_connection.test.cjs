@@ -364,3 +364,15 @@ test('LAN-020 pre-aborted readiness signal is rejected immediately',async()=>{
   await assert.rejects(host.awaitReady(5000,controller.signal),/cancelled/);
   host.dispose();
 });
+
+test('LAN-021 malformed cancellation tokens reject safely and preserve reusable host',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  for(const invalid of [{aborted:false},{aborted:false,addEventListener(){}},{aborted:'no',addEventListener(){},removeEventListener(){}}]){
+    await assert.rejects(host.awaitReady(5000,invalid),/AbortSignal/);
+  }
+  assert.equal(host.disposed,false);
+  assert.equal(host.phase,'new');
+  assert.equal(JSON.parse(await host.createOffer()).kind,'offer');
+  host.dispose();
+});
