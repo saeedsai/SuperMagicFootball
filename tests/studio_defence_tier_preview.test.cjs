@@ -38,3 +38,39 @@ test('Changing tier removes stale locked selections and updates icon and spoken 
  assert.match(studio,/guide\.textContent=studioDefenceTierGuide\(Number\(tierSelect\.value\),available\)/);
  assert.match(studio,/tierSelect\.onchange\(\)/);
 });
+
+test('actual tier-change callback retains unlocked moves and clears newly locked ones',()=>{
+ const begin=ui.indexOf('if(tierSelect&&abilitySelect)tierSelect.onchange=()=>{');
+ const finish=ui.indexOf('\n if(tierSelect&&abilitySelect)tierSelect.onchange();',begin);
+ assert.ok(begin>=0&&finish>begin,'runtime tier-change callback must be present');
+ const tierSelect={value:'3'},live={textContent:''};
+ let redraws=0;
+ const abilitySelect={
+  value:'spinBumper',options:[],
+  set innerHTML(html){
+   this.options=[...html.matchAll(/<option value="([^"]+)"/g)].map(m=>({value:m[1]}));
+   this.value=this.options[0].value;
+  }
+ };
+ const context={
+  tierSelect,abilitySelect,player:{role:'DF'},
+  studioEliteEligible:()=>true,
+  ABILITIES:{studioDefenceChoices:(_player,tier)=>[
+   {id:'drill',name:'Drill'},{id:'burst',name:'Burst'},
+   ...(tier>=3?[{id:'spinBumper',name:'Spin Bumper'}]:[])
+  ]},
+  escapeHTML:String,
+  previewUpdates:{studioDefAbility:()=>{redraws++;}},
+  $:id=>id==='studioDefTierGuide'?live:null,
+  studioDefenceTierGuide:guide
+ };
+ vm.runInNewContext(ui.slice(begin,finish),context);
+ tierSelect.onchange();
+ assert.equal(abilitySelect.value,'spinBumper');
+ assert.match(live.textContent,/Spin Bumper unlocked/);
+ tierSelect.value='2';tierSelect.onchange();
+ assert.equal(abilitySelect.value,'keep','tier downgrade must not leave a locked move selected');
+ assert.equal(abilitySelect.options.some(o=>o.value==='spinBumper'),false);
+ assert.match(live.textContent,/unlocks at tier 3/);
+ assert.equal(redraws,2,'both changes must refresh the visible ability icon');
+});
