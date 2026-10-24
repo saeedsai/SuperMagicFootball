@@ -1,29 +1,29 @@
 // LAN-044: real GameEngine bridge for host-authoritative Quick Match.
 // The host alone runs physics; the guest only renders validated position snapshots.
 // This module never modifies the offline match, team, or save formats.
-const ACTIONS = Object.freeze(['pass','shoot','dribble','jump']);
-const clamp = (n,a,b) => Math.max(a,Math.min(b,n));
+const LAN_LIVE_ACTIONS = Object.freeze(['pass','shoot','dribble','jump']);
+const lanLiveClamp = (n,a,b) => Math.max(a,Math.min(b,n));
 function requireField(field) {
   if(!field || !['x','y','w','h'].every(k=>Number.isFinite(field[k])) ||
      field.w<=0 || field.h<=0) throw new TypeError('Invalid LAN playing field');
   return field;
 }
-function axis(value,min,span){return clamp((value-min)/span*2-1,-1,1)}
-function position(value,min,span){return min+(value+1)*span/2}
+function lanLiveAxis(value,min,span){return lanLiveClamp((value-min)/span*2-1,-1,1)}
+function lanLivePosition(value,min,span){return min+(value+1)*span/2}
 function captureLanGameState(game,field,tick){
   requireField(field);
   if(!Number.isSafeInteger(tick)||tick<0)throw new TypeError('Invalid LAN match tick');
   const players=game.players.map(p=>({
-    slot:p.t*11+p.i,x:axis(p.x,field.x,field.w),y:axis(p.y,field.y,field.h)
+    slot:p.t*11+p.i,x:lanLiveAxis(p.x,field.x,field.w),y:lanLiveAxis(p.y,field.y,field.h)
   }));
   return {
-    tick,clockMs:clamp(Math.round(game.clock*1000),0,36000000),
-    scores:{home:clamp(game.score[0],0,999),away:clamp(game.score[1],0,999)},
-    ball:{x:axis(game.ball.x,field.x,field.w),y:axis(game.ball.y,field.y,field.h),
-      z:clamp(game.ball.z/200,0,1)},players,
+    tick,clockMs:lanLiveClamp(Math.round(game.clock*1000),0,36000000),
+    scores:{home:lanLiveClamp(game.score[0],0,999),away:lanLiveClamp(game.score[1],0,999)},
+    ball:{x:lanLiveAxis(game.ball.x,field.x,field.w),y:lanLiveAxis(game.ball.y,field.y,field.h),
+      z:lanLiveClamp(game.ball.z/200,0,1)},players,
     meta:{half:game.half===2?2:1,
       phase:game.matchState==='finished'?'finished':game.matchState==='paused'?'paused':'play',
-      controlled:{home:clamp(game.controlled?.[0]??3,0,5),away:clamp(game.controlled?.[1]??3,0,5)},
+      controlled:{home:lanLiveClamp(game.controlled?.[0]??3,0,5),away:lanLiveClamp(game.controlled?.[1]??3,0,5)},
       ballOwnerSlot:game.ball.owner?game.ball.owner.t*11+game.ball.owner.i:-1}
   };
 }
@@ -33,7 +33,7 @@ function applyLanGameState(game,field,state){
   for(const item of state.players){
     const p=current.get(item.slot);
     if(!p)continue;
-    const x=position(item.x,field.x,field.w),y=position(item.y,field.y,field.h);
+    const x=lanLivePosition(item.x,field.x,field.w),y=lanLivePosition(item.y,field.y,field.h);
     const dx=x-p.x,dy=y-p.y;
     p.dx=dx;p.dy=dy;
     if(Math.abs(dx)>0.15)p.face=dx>0?1:-1;
@@ -43,8 +43,8 @@ function applyLanGameState(game,field,state){
   }
   const ownerSlot=state.meta?.ballOwnerSlot??-1;
   game.ball.owner=ownerSlot<0?null:current.get(ownerSlot)||null;
-  game.ball.x=position(state.ball.x,field.x,field.w);
-  game.ball.y=position(state.ball.y,field.y,field.h);
+  game.ball.x=lanLivePosition(state.ball.x,field.x,field.w);
+  game.ball.y=lanLivePosition(state.ball.y,field.y,field.h);
   game.ball.z=state.ball.z*200;
   game.score=[state.scores.home,state.scores.away];
   if(state.meta){
@@ -83,7 +83,7 @@ function createLanLiveMatch({peer,role,game,input,field}){
       const state={x,y,left:x<0?1:0,right:x>0?1:0,
         up:y<0?1:0,down:y>0?1:0,pause:0,confirm:0};
       const pressed={},releases={};
-      for(const action of ACTIONS){
+      for(const action of LAN_LIVE_ACTIONS){
         state[action]=buttons.has(action)?1:0;
         pressed[action]=buttons.has(action)&&!previousButtons.has(action);
         releases[action]=!buttons.has(action)&&previousButtons.has(action);
@@ -126,7 +126,7 @@ function createLanLiveMatch({peer,role,game,input,field}){
     // unbounded future commands or replaying a previously sent frame.
     const frame=Math.max(lastSent+1,latestTick+4);
     if(frame>latestTick+8)return false;
-    const held=ACTIONS.filter(action=>input.held(0,action)||input.just(0,action));
+    const held=LAN_LIVE_ACTIONS.filter(action=>input.held(0,action)||input.just(0,action));
     const x=Math.sign(input.state[0].x||0),y=Math.sign(input.state[0].y||0);
     peer.sendGuestInput(frame,held,x,y);
     lastSent=frame;
