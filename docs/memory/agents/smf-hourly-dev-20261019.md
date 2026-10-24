@@ -2,26 +2,27 @@
 **Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
 
 ## Mission
-Commit one small, tested feature directly to existing dev each hourly run even when release pending; only dev/main branches. Respect protections, four controls and save compatibility.
+Commit one bounded, tested roadmap increment directly to existing dev each run, even while release is pending. Only dev/main branches; no force push or CI bypass.
 
 ## Current checkpoint
-- TRAP-0360 candidate: Banana and Ice now each have a **per-team six-trap quota**, preventing rival hazards being evicted. Source 17b2bb1b, Node test file 1ca05e0d; 19 focused assertions passed in source-executed V8 harness (not Node/Chromium). About/README/package/offline cache now 0.9.36.0. Prior Player Studio Magic Trick guide and trap arming/counterplay retained.
-- Reproduced root cause of prior red CI: exact 51b6eb95 Modular QA #40052444496 and Full Census #40052444562 each passed 594/595 Node cases, failing ONLY `project_memory_contract` because this checkpoint lacked mandatory headings. Repaired heading contract at ae978e01; do not weaken tests.
-- At run start dev 51b6eb95 was 35 commits ahead of main d98edf1c; branch search returned only dev/main. GitHub Actions REST is available through the GitHub fetch connector, unlike PR-filtered commit-workflow wrapper.
-- Preserve 223 teams / 2676 players, 2 GK/3 DF/4 MF/3 FW, 6 formations, 4 action buttons, 10 Career/Cup slots, SD09, offline/save compatibility.
+- STUDIO-0370: Added tier-aware Super Defence preview. Player Studio initially filters move choices by displayed tier, shows screen-reader live guide (Spin Bumper unlocks at tier 3), clears a now-ineligible selected move on downgrade and refreshes preview icon. Gameplay controls, rosters, saves and offline remain unchanged.
+- Source commit 27eafe25; tests cbb77b17 and a19e0b20. V8 source-executed guide and actual callback checks passed; V8 parsing passed for UI, release and test files. These are NOT Node/Chromium/Modular CI results.
+- Version 0.9.37.0 staged in About, package, README banner/heading, SW cache, policy and shared memory. Uncertified candidate.
+- At run start dev/main identical at certified 0.9.36.0 commit c711184de5c6e53204ab0a7104042241a0224465. Previous green runs: dev Full Census #40056890152, Pages #40057151122, main census #40057151222. GitHub connector PR-filtered workflow lookup returns no current push runs; do not equate this with CI success or failure.
+- Preserve 223 teams / 2676 players, 2GK/3DF/4MF/3FW, six formations, exactly four action buttons, 10 Career/Cup slots, SD09 and old save/offline compatibility.
 
 ## Next smallest action
-1. Inspect exact current dev head Modular QA and Full Census; fix any new failure.
-2. Complete all four Node and four Chromium shards, preflight, preview and Modular QA.
-3. Real-browser verify Player Studio, trap rendering and touch counterplay; inspect Crown Royals sprites.
-4. Promote only exact fully green unchanged dev via protected pipeline; verify main and Pages hosted bytes.
-5. Continue next small roadmap increment on dev regardless of pending promotion; prioritize genuine two-client LAN and directional art.
+1. Inspect exact latest dev push-triggered Modular QA and Full Census via Actions; diagnose and fix any failure.
+2. Run focused Node tests plus four Node/four Chromium shards, preflight, preview and Modular QA on exact head.
+3. Browser-check Player Studio tier unlocks, icon and aria guide on desktop and simulated touch; audit Crown Royals directional art.
+4. Allow only unchanged fully green dev through protected main promotion; verify Pages hosted SHA/bytes.
+5. Keep implementing another bounded dev feature regardless of pending release; prioritize real two-client LAN and graphics.
 
 ## Ownership and exclusions
-Only this agent checkpoint and central dev log may be edited; never edit other agent memories. No branch creation, force push, CI bypass, false QA or release claims.
+Edit only own checkpoint and central dev log. No new branches, force push, disabled hourly cadence, bypassed security or invented test/deployment results.
 
 ## Evidence
-CI runs: https://github.com/saeedsai/SuperMagicFootball/actions/runs/40052444496 and /40052444562; failing job logs identified missing heading. Focused V8 source execution: 19 assertions green; full CI on 0.9.36.0 still pending.
+Previous production jobs confirmed green via GitHub run-job API for #40056890152, #40057151122 and #40057151222. New candidate full CI/Pages not yet observed.
 
 ## Cleanup
-Keep under 4 KiB; checkpoint is not a substitute for exact-head CI or device testing.
+Under 4 KiB; latest exact-head CI is authoritative, not this checkpoint.
