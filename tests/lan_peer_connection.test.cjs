@@ -342,3 +342,25 @@ test('LAN-019 status observers are isolated and unsubscribe prevents further eve
   assert.equal(after.length,1);
   assert.equal(after[0].phase,'closed');
 });
+
+test('LAN-020 cancelled lobby wait rejects promptly without closing reusable peer',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const controller=new AbortController();
+  const pending=host.awaitReady(5000,controller.signal);
+  controller.abort();
+  await assert.rejects(pending,/cancelled/);
+  assert.equal(host.disposed,false);
+  assert.equal(host.phase,'new');
+  const offer=await host.createOffer();
+  assert.equal(JSON.parse(offer).kind,'offer');
+  host.dispose();
+});
+test('LAN-020 pre-aborted readiness signal is rejected immediately',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const controller=new AbortController();
+  controller.abort();
+  await assert.rejects(host.awaitReady(5000,controller.signal),/cancelled/);
+  host.dispose();
+});
