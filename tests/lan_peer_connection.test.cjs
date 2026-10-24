@@ -809,3 +809,43 @@ test('LAN-036 malformed incoming guest channel does not bind or crash event',asy
   assert.equal(guest.status.channel,'unavailable');
   guest.dispose();
 });
+
+test('LAN-038 guest snapshot subscription aborts and allows replacement',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const channel=new FakeChannel('smf-lan');
+  guest.peer.emitChannel(channel);
+  host.peer.channel.open();channel.open();
+  function deliver(target,packet){
+    const event=new Event('message');
+    event.data=typeof packet==='string'?packet:JSON.stringify(packet);
+    target.dispatchEvent(event);
+  }
+  deliver(host.peer.channel,guestHello);
+  deliver(channel,hostHello);
+  const aborted=new AbortController();aborted.abort();
+  assert.throws(()=>guest.subscribeGuestSnapshots(()=>{},-1,aborted.signal),/cancelled/);
+  assert.throws(()=>guest.subscribeGuestSnapshots(()=>{},-1,{}),/AbortSignal/);
+  const controller=new AbortController();
+  const received=[];
+  const first=guest.subscribeGuestSnapshots(s=>received.push(s.tick),-1,controller.signal);
+  const packet=tick=>({type:'snapshot',version:1,...host.snapshotIdentity,
+    tick,clockMs:0,scores:{home:0,away:0},ball:{x:0,y:0,z:0},players:[]});
+  assert.equal(host.sendHostSnapshot(packet(0)),true);
+  deliver(channel,host.peer.channel.sent.at(-1));
+  assert.deepEqual(received,[0]);
+  controller.abort();
+  first.dispose();
+  assert.equal(host.sendHostSnapshot(packet(1)),true);
+  deliver(channel,host.peer.channel.sent.at(-1));
+  assert.deepEqual(received,[0]);
+  const second=guest.subscribeGuestSnapshots(s=>received.push(s.tick),0);
+  deliver(channel,host.peer.channel.sent.at(-1));
+  assert.deepEqual(received,[0,1]);
+  second.dispose();
+  guest.dispose();host.dispose();
+});
