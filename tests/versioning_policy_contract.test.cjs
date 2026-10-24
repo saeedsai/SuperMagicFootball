@@ -99,5 +99,5 @@ test('team-fair Magic Trap gameplay change is reflected in About, README and rot
  assert.match(readme,/independent six-trap quotas for each team/);
  assert.ok(readme.startsWith('> **'+version+' release candidate'),'README first banner must describe current candidate');
  assert.ok(readme.includes('v'+version),'README project heading must track current version');
- assert.ok(sw.includes('-'+version.replace(/\\./g,'')+"';"),'offline cache must rotate for this candidate');
+ assert.ok(sw.includes('-'+version.replace(/\./g,'')+"';"),'offline cache must rotate for this candidate');
 });
