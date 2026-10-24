@@ -84,7 +84,10 @@ function createLanPeerConnection(localHello, options = {}) {
     channel = next;
     binding = bindLanProtocolChannel(hello, channel);
   }
-  function onDataChannel(event) { if (hello.role === 'guest') attach(event.channel); }
+  function onDataChannel(event) {
+    if (hello.role === 'guest') attach(event.channel);
+    else { try { event.channel?.close(); } catch { /* unexpected channel */ } }
+  }
   peer.addEventListener('datachannel', onDataChannel);
   if (hello.role === 'host') attach(peer.createDataChannel('smf-lan', {ordered:true}));
 
