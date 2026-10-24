@@ -104,3 +104,24 @@ test('LAN-014 failed remote answer disposes the host connection',async()=>{
   assert.equal(host.disposed,true);
   assert.equal(host.peer.connectionState,'closed');
 });
+
+test('LAN-014 rejected signals leave a healthy session reusable',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  await assert.rejects(guest.createOffer(),/role or phase/);
+  assert.equal(guest.disposed,false);
+  await assert.rejects(guest.acceptOffer('invalid JSON'),/JSON/);
+  assert.equal(guest.phase,'new');
+  const offer=await host.createOffer();
+  const wrongBuild=JSON.stringify({...JSON.parse(offer),build:'not-this-build'});
+  await assert.rejects(guest.acceptOffer(wrongBuild),/mismatch/);
+  assert.equal(guest.disposed,false);
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  await assert.rejects(host.acceptAnswer(answer),/role or phase/);
+  assert.equal(host.disposed,false);
+  assert.equal(host.phase,'connected-signaling');
+  host.dispose();
+  guest.dispose();
+});
