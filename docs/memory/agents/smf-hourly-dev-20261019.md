@@ -11,12 +11,18 @@ Commit one bounded useful feature each hourly run directly to existing dev, even
 - Prior ARM-0340 arming rings and SLIDE-0330 SHOOT-slide trap disarm retained.
 - Preserve 223 teams/2676 players, six formations, four action buttons, ten Career/Cup slots, SD09, offline/save compatibility.
 
-## Next five steps
+## Next smallest action
 1. Inspect actual exact dev-head CI, diagnose and repair failing jobs if available.
 2. Real browser Player Studio and Magic Trap counterplay/graphics inspection, including simulated touch.
 3. Full 4 Node + 4 Chromium + Modular QA; promote unchanged green dev head through protected pipeline, verify Pages SHA/bytes.
 4. Continue next bounded feature on dev regardless of pending CI/main.
 5. Advance genuine two-client LAN and authored Crown Royals directional/action art.
 
-## Ownership
+## Ownership and exclusions
 Read AGENTS.md, VERSIONING_POLICY.md, SHARED.md and only this checkpoint. Detailed evidence in central development log. Never force-push, bypass safety, weaken tests or disable the hourly schedule because of a blocker.
+
+## Evidence
+Exact-head 51b6eb95 CI on 2026-10-24: Modular QA 594/595, Full Census preflight 594/595. Both failed only project_memory_contract: own checkpoint missing required section headers; logs from jobs 120747832346 and 120748543866. Repaired headings in this checkpoint; await new exact-head CI.
+
+## Cleanup
+Keep checkpoint under 4 KiB; never weaken the memory test or alter other agents' files.
