@@ -670,3 +670,6 @@ Extracted Diego's three miniature source views into transparent 132×90 indexed 
 
 ## 2026-10-23 — candidate 0.9.29.1
 - Ability summary own-key validation for Super Shot/Defence and regression test (18116a61, 37061bb0); synchronized package, About, README, offline cache and policy. Focused/full CI not yet observed. Main promotion/Pages not yet verified. Next: run exact-head 4+4 and Modular QA, correct failures, then protected promotion and hosted smoke.
+
+### 2026-10-24 LAN-017 (internal transport diagnostics)
+Added read-only transportState/channelState accessors to LAN peer wrapper, with lifecycle regression. Implementation 05f6f711; test eb33326e. Exact-head CI pending; no player-facing change, playable LAN or graphics certification claim. Previous main/dev 85f04314 passed 4+4 census, Modular QA and Pages. Continue lobby and graphics QA.
