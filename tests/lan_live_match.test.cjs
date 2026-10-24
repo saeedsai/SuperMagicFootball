@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const load=()=>import('../src/modules/lan-live-match.js');
 const field={x:100,y:50,w:800,h:400};
 function game(input){
-  return {matchState:'play',clock:0,half:1,score:[0,0],
+  return {matchState:'play',clock:0,half:1,controlled:[3,3],score:[0,0],
     players:[{t:0,i:0,x:300,y:100,face:1,anim:0},
              {t:1,i:0,x:700,y:350,face:-1,anim:0}],
     ball:{x:500,y:250,z:0,owner:null},
@@ -29,10 +29,13 @@ test('LAN-044 live state converts real engine coordinates and restores them',asy
   assert.deepEqual(state.players.map(p=>p.slot),[0,11]);
   assert.equal(state.ball.z,.25);
   assert.equal(state.clockMs,15750);
+  assert.equal(state.meta.half,1);
+  assert.equal(state.meta.ballOwnerSlot,-1);
   applyLanGameState(guest,field,state);
   assert.deepEqual(guest.score,[2,1]);
   assert.equal(guest.ball.z,50);
   assert.equal(guest.clock,15.75);
+  assert.deepEqual(guest.controlled,[3,3]);
   assert.equal(guest.players[1].x,host.players[1].x);
   assert.throws(()=>captureLanGameState(host,{x:0,y:0,w:0,h:1},0),/field/);
 });
@@ -81,4 +84,19 @@ test('LAN-044 guest applies authorized snapshots and sends bounded four-button i
   run.dispose();
   assert.equal(receivedDisposed,true);
   assert.equal(run.step(.016),false);
+});
+
+test('LAN-047 authoritative metadata updates half, selection, possession and finish',async()=>{
+  const {captureLanGameState,applyLanGameState}=await load();
+  const host=game(controls()),guest=game(controls());
+  host.half=2;host.matchState='finished';host.controlled=[4,2];
+  host.ball.owner=host.players[1];
+  const state=captureLanGameState(host,field,27);
+  assert.deepEqual(state.meta,{half:2,phase:'finished',
+    controlled:{home:4,away:2},ballOwnerSlot:11});
+  applyLanGameState(guest,field,state);
+  assert.equal(guest.half,2);
+  assert.equal(guest.matchState,'finished');
+  assert.deepEqual(guest.controlled,[4,2]);
+  assert.equal(guest.ball.owner,guest.players[1]);
 });
