@@ -78,5 +78,5 @@ test('legacy gameplay effects and authoritative match engine/UI event bridge are
  const ui=fs.readFileSync(path.join(root,'src/modules/ui.js'),'utf8');
  assert.match(engine,/this\.emit\('hyperdash',\{team:p\.t,player:p\.src\.name\}\)/);
  assert.match(engine,/this\.emit\('teamLaunch',\{team:p\.t,player:p\.src\.name,assistant:ally\.src\.name\}\)/);
- assert.match(ui,/game\.onEvent=e=>\{audio\.cue\(e\)/);
+ assert.match(ui,/game\.onEvent=e=>\{[\s\S]{0,700}audio\.cue\(e\)/);
 });

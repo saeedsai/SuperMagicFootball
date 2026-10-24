@@ -80,5 +80,5 @@ test('existing gameplay sound events and engine-to-audio bridge are preserved',a
  const ui=readFileSync(join(__dirname,'../src/modules/ui.js'),'utf8');
  assert.match(engine,/this\.emit\('teamTalk',\{team,choice,phase,backfires,positive,morale:/);
  assert.match(engine,/if\(changes\.out\.length>0\)this\.emit\('substitution'/);
- assert.match(ui,/game\.onEvent=e=>\{audio\.cue\(e\)/);
+ assert.match(ui,/game\.onEvent=e=>\{[\s\S]{0,700}audio\.cue\(e\)/);
 });

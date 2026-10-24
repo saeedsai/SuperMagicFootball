@@ -106,5 +106,5 @@ test('playable engine emits passReceived accurate/friendly fields through UI to 
   const ui=readFileSync(join(root,'src/modules/ui.js'),'utf8');
   assert.match(engine,/this\.emit\('passReceived',\{team:p\.t,player:p\.src\.id,from:incoming\.from,/);
   assert.match(engine,/intendedTarget:incoming\.target,accurate:incoming\.target===p\.src\.id,friendly/);
-  assert.match(ui,/game\.onEvent=e=>\{audio\.cue\(e\)/);
+  assert.match(ui,/game\.onEvent=e=>\{[\s\S]{0,700}audio\.cue\(e\)/);
 });

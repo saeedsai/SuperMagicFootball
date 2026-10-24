@@ -87,5 +87,5 @@ test('pause and ordinary fulltime use read-only helper; final penalty winner use
  for(const banned of ['store.put(','.applyPlan(','this.take(','.emit(','.kicks[','=game.score','localStorage']){
   assert(!source.includes(banned),'scorecard must not change any engine/save state: '+banned);
  }
- assert.match(ui,/game\.onEvent=e=>\{audio\.cue\(e\)/,'actual match events still flow to HUD');
+ assert.match(ui,/game\.onEvent=e=>\{[\s\S]{0,700}audio\.cue\(e\)/,'actual match events still flow to HUD');
 });

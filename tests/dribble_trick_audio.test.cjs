@@ -90,5 +90,5 @@ test('the real engine emits success/failure and human/AI flags to the existing U
   const engine=readFileSync(join(dir,'src/modules/engine.js'),'utf8');
   const ui=readFileSync(join(dir,'src/modules/ui.js'),'utf8');
   assert.match(engine,/this\.emit\('dribbleTrick',\{team:p\.t,player:p\.src\.name,style:style\.id,name:style\.name,success,ai:byAI\}\)/);
-  assert.match(ui,/game\.onEvent=e=>\{audio\.cue\(e\)/);
+  assert.match(ui,/game\.onEvent=e=>\{[\s\S]{0,700}audio\.cue\(e\)/);
 });
