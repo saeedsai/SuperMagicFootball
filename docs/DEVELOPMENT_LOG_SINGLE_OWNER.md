@@ -740,3 +740,6 @@ Exact-head d1ac4b3b failed memory contract because developer checkpoint omitted 
 
 ### 2026-10-24 LAN-029 signaling progress observers
 Added synchronous immutable status emission for offer/answer gathering, answer application and SDP completion (`0239398d`); deferred-offer regression `efbde094` verifies the lobby sees intermediate state before SDP resolves. Previous dev/main e52439db exact-head 4+4, Modular QA and Pages all green (#40122235591, #40122235576, #40122524867, #40122524884). Internal-only; version remains 0.9.40.0. New exact-head QA pending; gameplay and graphics not visually certified.
+
+### 2026-10-24 LAN-030: completed ICE on failed RTC
+Fixed `waitForLanIceGathering` to reject a failed/closed RTC transport before its completed-ICE fast path (c8c40950). Added healthy/failed/closed focused regression (aa10dd8e). Prior dev/main f210660c green on dev full+Modular; main Full Census and Pages running at inspection. Exact new dev CI pending. Internal transport correction; 0.9.40.0 unchanged. Concept Royals graphics and two-browser gameplay not certified.
