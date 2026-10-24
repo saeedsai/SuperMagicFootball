@@ -67,3 +67,35 @@ test('LAN-024 host creates a copyable offer and disposes peer on navigation',asy
   cleanup();
   assert.equal(disposed,1);
 });
+
+test('LAN-024 guest accepts a trusted host offer and reset closes the peer',async()=>{
+  const {mountLanLobby}=await load();
+  const nodes=new Map();
+  class Element extends EventTarget{
+    constructor(){super();this.value='';this.textContent='';}
+    focus(){} select(){}
+  }
+  const root={innerHTML:'',querySelector(sel){if(!nodes.has(sel))nodes.set(sel,new Element());return nodes.get(sel);}};
+  let guestHello=null,closed=0;
+  const factory=hello=>{
+    guestHello=hello;
+    return {
+      subscribeStatus(listener){listener({phase:'new',transport:'new',channel:'unavailable',ready:false});return ()=>{};},
+      async acceptOffer(raw){assert.equal(JSON.parse(raw).kind,'offer');return JSON.stringify({protocol:1,kind:'answer',session:hello.session,build:hello.build,sdp:'v=0\\r\\nanswer\\r\\n'});},
+      awaitReady(){return new Promise(()=>{});},
+      dispose(){closed++;}
+    };
+  };
+  const cleanup=mountLanLobby(root,{peerFactory:factory,build});
+  nodes.get('#lanGuest').dispatchEvent(new Event('click'));
+  nodes.get('#lanIncoming').value=offer();
+  nodes.get('#lanApply').dispatchEvent(new Event('click'));
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(guestHello.role,'guest');
+  assert.equal(guestHello.session,session);
+  assert.equal(JSON.parse(nodes.get('#lanOutgoing').value).kind,'answer');
+  nodes.get('#lanReset').dispatchEvent(new Event('click'));
+  assert.equal(closed,1);
+  cleanup();
+  assert.equal(closed,1);
+});
