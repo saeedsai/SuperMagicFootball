@@ -131,8 +131,15 @@ function createLanPeerConnection(localHello, options = {}) {
   // LAN-014 recovery: close the half-open peer after any asynchronous signaling
   // failure so a fresh attempt can start without a stranded RTC connection.
   async function guarded(operation) {
+    const startingPhase = phase;
     try { return await operation(); }
-    catch (error) { dispose(); throw error; }
+    catch (error) {
+      // Invalid roles, replayed packets and malformed offers are rejected
+      // before changing phase. They must not tear down a healthy session.
+      // Only a failed operation that began changing RTC state is terminal.
+      if (phase !== startingPhase) dispose();
+      throw error;
+    }
   }
   function dispose() {
     if (disposed) return;
