@@ -14,7 +14,9 @@ const safe = n => Number.isSafeInteger(n) && n >= 0;
 const position = n => Number.isFinite(n) && n >= -1 && n <= 1;
 
 function validateLanSnapshot(packet) {
-  if (!keys(packet, ['type','version','roomId','hostId','tick','clockMs','scores','ball','players']) ||
+  const baseFields=['type','version','roomId','hostId','tick','clockMs','scores','ball','players'];
+  const enhanced=keys(packet,[...baseFields,'meta']);
+  if (!(keys(packet,baseFields)||enhanced) ||
       packet.type !== 'snapshot' || packet.version !== LAN_PROTOCOL_VERSION ||
       typeof packet.roomId !== 'string' || !ID.test(packet.roomId) ||
       typeof packet.hostId !== 'string' || !ID.test(packet.hostId) ||
@@ -37,11 +39,29 @@ function validateLanSnapshot(packet) {
     seen.add(player.slot);
     return Object.freeze({slot:player.slot,x:player.x,y:player.y});
   });
+  // LAN-047 optional state envelope: old nine-field snapshots remain valid.
+  // The host alone controls match phase, active players and ball possession.
+  let meta;
+  if(enhanced){
+    const value=packet.meta;
+    if(!keys(value,['half','phase','controlled','ballOwnerSlot']) ||
+       ![1,2].includes(value.half) ||
+       !['play','paused','finished'].includes(value.phase) ||
+       !keys(value.controlled,['home','away']) ||
+       ![value.controlled.home,value.controlled.away].every(n=>safe(n)&&n<6) ||
+       !Number.isSafeInteger(value.ballOwnerSlot) ||
+       value.ballOwnerSlot< -1 || value.ballOwnerSlot>=22){
+      throw new TypeError('Invalid LAN match snapshot metadata');
+    }
+    meta=Object.freeze({half:value.half,phase:value.phase,
+      controlled:Object.freeze({home:value.controlled.home,away:value.controlled.away}),
+      ballOwnerSlot:value.ballOwnerSlot});
+  }
   return Object.freeze({type:'snapshot',version:LAN_PROTOCOL_VERSION,
     roomId:packet.roomId,hostId:packet.hostId,tick:packet.tick,clockMs:packet.clockMs,
     scores:Object.freeze({home:packet.scores.home,away:packet.scores.away}),
     ball:Object.freeze({x:packet.ball.x,y:packet.ball.y,z:packet.ball.z}),
-    players:Object.freeze(players)});
+    players:Object.freeze(players),...(enhanced?{meta}:{})});
 }
 
 function encodeLanSnapshot(packet) {
