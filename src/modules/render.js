@@ -19,6 +19,17 @@ const rgb=(hex,a)=>hex+a;
 const c=(ctx,v)=>{ctx.fillStyle=v};
 function rr(ctx,x,y,w,h,r,col,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=col;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke()}}
 function ellipse(ctx,x,y,rx,ry,fill){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,PI*2);ctx.fillStyle=fill;ctx.fill()}
+// Telegraph the short trap arming window. The ring shrinks as the trap becomes live;
+// it uses the existing hazard timer, with no gameplay or save-format changes.
+function drawHazardArmingCue(ctx,hazard,radius,armDuration,color){
+ if(!hazard||!Number.isFinite(hazard.arm)||hazard.arm<=0||!Number.isFinite(hazard.life)||hazard.life<=0)return;
+ const progress=Math.max(0,Math.min(1,hazard.arm/armDuration));
+ ctx.save();
+ ctx.globalAlpha=.38+.42*progress;
+ ctx.beginPath();ctx.arc(hazard.x,hazard.y,radius,-PI/2,-PI/2+PI*2*progress);
+ ctx.strokeStyle=color;ctx.lineWidth=3;ctx.stroke();
+ ctx.restore();
+}
 // Original lightweight canvas peel artwork: no sprite fetch or save-data dependency.
 function drawBananaPeels(ctx,hazards){
  for(const peel of hazards||[]){
@@ -30,6 +41,7 @@ function drawBananaPeels(ctx,hazards){
   ctx.quadraticCurveTo(peel.x,peel.y+10,peel.x+13,peel.y-6);
   ctx.strokeStyle='#b87918';ctx.lineWidth=9;ctx.stroke();
   ctx.strokeStyle='#ffe35a';ctx.lineWidth=6;ctx.stroke();
+  drawHazardArmingCue(ctx,peel,21,.25,'#fff1a3');
   ctx.restore();
  }
 }
@@ -46,6 +58,7 @@ function drawIcePatches(ctx,hazards){
   ctx.moveTo(patch.x-18,patch.y+1);ctx.lineTo(patch.x-5,patch.y-7);
   ctx.moveTo(patch.x+2,patch.y+5);ctx.lineTo(patch.x+19,patch.y-3);
   ctx.strokeStyle='#4aa9dc';ctx.lineWidth=2;ctx.stroke();
+  drawHazardArmingCue(ctx,patch,37,.3,'#e9fbff');
   ctx.restore();
  }
 }
