@@ -81,3 +81,26 @@ test('LAN-014 ICE gathering timeout rejects instead of emitting partial SDP',asy
   assert.notEqual(host.phase,'awaiting-answer');
   host.dispose();
 });
+
+test('LAN-014 failed ICE gathering disposes the half-open peer',async()=>{
+  const {createLanPeerConnection}=await load();
+  class NoIcePeer extends FakePeer {async setLocalDescription(value){this.localDescription=value;}}
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:NoIcePeer,iceTimeoutMs:5});
+  await assert.rejects(host.createOffer(),/timed out/);
+  assert.equal(host.disposed,true);
+  assert.equal(host.peer.connectionState,'closed');
+  assert.equal(host.peer.channel.readyState,'closed');
+});
+test('LAN-014 failed remote answer disposes the host connection',async()=>{
+  const {createLanPeerConnection}=await load();
+  class BrokenAnswerPeer extends FakePeer {
+    async setRemoteDescription(value){throw new Error('remote SDP rejected');}
+  }
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:BrokenAnswerPeer});
+  await host.createOffer();
+  const signal=JSON.stringify({protocol:1,kind:'answer',session,build:hostHello.build,
+    sdp:'v=0\\r\\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\\r\\n'});
+  await assert.rejects(host.acceptAnswer(signal),/remote SDP rejected/);
+  assert.equal(host.disposed,true);
+  assert.equal(host.peer.connectionState,'closed');
+});
