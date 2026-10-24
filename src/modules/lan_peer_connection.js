@@ -158,18 +158,21 @@ function createLanPeerConnection(localHello, options = {}) {
   async function createOffer() {
     assertPhase('host', 'new');
     phase = 'gathering-offer';
+    emitStatus();
     const offer = await peer.createOffer();
     await peer.setLocalDescription(offer);
     await waitForLanIceGathering(peer, timeoutMs);
     if (disposed) throw new Error('LAN peer disposed');
     const signal = encodeLanSignal('offer', hello, peer.localDescription);
     phase = 'awaiting-answer';
+    emitStatus();
     return signal;
   }
   async function acceptOffer(raw) {
     assertPhase('guest', 'new');
     const remote = parseLanSignal(raw, 'offer', hello);
     phase = 'gathering-answer';
+    emitStatus();
     await peer.setRemoteDescription(remote);
     const answer = await peer.createAnswer();
     await peer.setLocalDescription(answer);
@@ -177,15 +180,18 @@ function createLanPeerConnection(localHello, options = {}) {
     if (disposed) throw new Error('LAN peer disposed');
     const signal = encodeLanSignal('answer', hello, peer.localDescription);
     phase = 'connected-signaling';
+    emitStatus();
     return signal;
   }
   async function acceptAnswer(raw) {
     assertPhase('host', 'awaiting-answer');
     const remote = parseLanSignal(raw, 'answer', hello);
     phase = 'setting-answer';
+    emitStatus();
     await peer.setRemoteDescription(remote);
     if (disposed) throw new Error('LAN peer disposed');
     phase = 'connected-signaling';
+    emitStatus();
   }
   // LAN-014 recovery: close the half-open peer after any asynchronous signaling
   // failure so a fresh attempt can start without a stranded RTC connection.
