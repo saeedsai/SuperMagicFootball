@@ -97,11 +97,22 @@ function createLanPeerConnection(localHello, options = {}) {
       try { listener(snapshot); } catch { /* observer must not break RTC */ }
     }
   }
-  function subscribeStatus(listener) {
+  function subscribeStatus(listener, signal = null) {
     if (typeof listener !== 'function') throw new TypeError('LAN status listener required');
-    if (!disposed) statusListeners.add(listener);
-    try { listener(snapshotStatus()); } catch { /* observer is isolated */ }
-    return () => statusListeners.delete(listener);
+    if (signal != null && (typeof signal.addEventListener !== 'function' ||
+        typeof signal.removeEventListener !== 'function' || typeof signal.aborted !== 'boolean')) {
+      throw new TypeError('LAN status subscription requires an AbortSignal');
+    }
+    const unsubscribe = () => {
+      statusListeners.delete(listener);
+      signal?.removeEventListener('abort', unsubscribe);
+    };
+    if (!disposed && !signal?.aborted) {
+      statusListeners.add(listener);
+      signal?.addEventListener('abort', unsubscribe, {once:true});
+      try { listener(snapshotStatus()); } catch { /* observer is isolated */ }
+    }
+    return unsubscribe;
   }
   // Binding registers its message handler first; this observer runs after
   // hello validation and reports readiness transitions without polling.
