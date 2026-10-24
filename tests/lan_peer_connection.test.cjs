@@ -202,3 +202,20 @@ test('LAN-016 peer input bridge enforces handshake, roles, frames and four butto
   assert.throws(()=>guest.sendGuestInput(5,['pass']),/ready guest/);
   assert.throws(()=>host.advanceHostFrame(5),/ready host/);
 });
+
+test('LAN-017 transport diagnostics track channel and peer lifecycle without mutating RTC',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  assert.equal(host.transportState,'new');
+  assert.equal(host.channelState,'connecting');
+  host.peer.channel.open();
+  assert.equal(host.channelState,'open');
+  host.peer.connectionState='connected';
+  assert.equal(host.transportState,'connected');
+  host.dispose();
+  assert.equal(host.transportState,'closed');
+  assert.equal(host.channelState,'closed');
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  assert.equal(guest.channelState,'unavailable');
+  guest.dispose();
+});
