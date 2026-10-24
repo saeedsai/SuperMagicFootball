@@ -1,9 +1,10 @@
-// Authoritative player-facing release metadata. Change only with certified game releases.
+// Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.32.1',
+ version:'0.9.33.0',
  date:'2026-10-24',
  notes:Object.freeze([
+  'Defensive SHOOT slides now sweep nearby enemy Banana Peel and Ice Patch Magic Traps before contact. A sliding defender can clear a trap without taking its stun; teammates, keepers, stunned or airborne players cannot clear it.',
   'Fixed Banana Peel placement incorrectly removing active Ice Patches. Both Magic Trick traps now coexist with independent six-trap caps and regression tests.',
   'Ice Patch Magic Trick now creates a visible, short-lived frozen ground trap that affects grounded opponents but not allies, airborne players or goalkeepers.',
   'Banana Peel Magic Trick now drops a visible three-second ground trap behind the ball carrier. After a brief arm delay, one grounded opponent can slip and lose possession; teammates and airborne players are unaffected.',
