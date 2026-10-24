@@ -704,3 +704,16 @@ test('LAN-029 signaling observers receive gathering phase before SDP resolves',a
   host.dispose();
   assert.equal(phases.at(-1),'closed');
 });
+
+test('LAN-030 complete ICE state does not mask failed or closed transport',async()=>{
+  const {waitForLanIceGathering}=await load();
+  for(const state of ['failed','closed']){
+    const peer=new FakePeer();
+    peer.iceGatheringState='complete';
+    peer.connectionState=state;
+    await assert.rejects(waitForLanIceGathering(peer,100),/closed during ICE gathering/);
+  }
+  const healthy=new FakePeer();
+  healthy.iceGatheringState='complete';
+  await waitForLanIceGathering(healthy,100);
+});
