@@ -1,28 +1,28 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24 22:02 CEST.
+**Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24 22:58 CEST.
 
 ## Mission
-One bounded dev increment per hourly run, including when CI/deployment is pending. Only dev/main, no force-push, no CI/security bypass. Protected promotion requires exact-green head, main and Pages verification.
+Never stop hourly development for pending release. One bounded compatible increment per run directly on existing `dev`. Only `dev`/`main`; no force-push or CI/security bypass. Promote only exact-green head via protected workflow and verify Pages bytes.
 
 ## Current checkpoint
-- Published About-only version 0.9.40.0; certified main 07a6a168, main Full #40125043094, Pages #40125043002.
-- LAN-035 host validation 4b2e26e1, regression f2ae8a02; LAN-036 guest validation ca8ab53a, tests 784e749f/09e71640.
-- CI identity issue #40125905520 repaired in a5b39153; Modular #40127995468 passed; Full #40127995383 running at inspection.
-- LAN-037 internal abortable guest snapshot binding 80a7b046; tests 929656b0. Latest-head CI pending (subsequent docs commits). No player-visible game change or release bump.
-- Preserve 223 teams/2676 players, six formations, four buttons, ten save slots, offline compatibility. Genuine two-client gameplay and Concept Royals visual QA still pending.
+- Baseline at this run: `dev`=`main`=`6b78c4175ca681caee1aa88418e4444ff94b1dc2`. LAN-038/039/040 were already present in `main`; CI/Pages certification not independently observed.
+- LAN-041 internal host-state bridge source `a5ba1c40`, fake-peer regression `ae8d8820`, development log `1e868c67`. `sendHostMatchState` stamps the bound LAN identity/protocol before calling validated snapshot sender. Does not run gameplay or render remote client.
+- Source-backed V8 smoke: 6/6 simple checks passed (not actual Node/Chromium). Exact-head full 4 Node + 4 Chromium, Modular QA, and hosted smoke **unverified**; commit-workflow connector only returns PR runs, public Actions web fetch disabled.
+- About-only candidate `0.9.40.0` unchanged (internal bridge only). Preserve 223 teams/2676 players, six formations, four controls, ten saves, SD09, offline/legacy saves.
+- Open graphics issue #15: Concept Royals left/right side sprites face opposite movement; manual visual QA pending.
 
 ## Next smallest action
-1. Inspect exact-head Modular and Full Census, repair actual failures.
-2. Promote exact green dev through protected main workflow and verify Pages hosted bytes.
-3. Expose abortable guest snapshot receiver via peer API.
-4. Integrate host match state and guest frame rendering; verify two browsers.
-5. Fix Concept Royals left/right issue #15 with screenshot/animation QA.
+1. Inspect exact latest dev/main and CI; execute focused LAN-041 Node tests and full 4+4 + Modular; fix any actual failure.
+2. Wire host engine frame state into LAN-041 sender and guest render receiver in a bounded increment.
+3. Verify real two-client input/snapshot exchange, latency, reconnect and gameplay behavior.
+4. Fix Concept Royals directional rendering with screenshot/animation QA; preserve procedural players.
+5. When exact dev head green, allow protected main promotion; verify Pages deployed bytes, update player-facing four-field version only for shipped updates.
 
 ## Ownership and exclusions
-Sole developer; own checkpoint and central log only. No other agent memory. Do not claim untested gameplay, visual approval or deployment.
+Only own checkpoint and central log; no other agents' memory. No new branch. No claims of playable LAN, graphic approval, CI pass or deployment without evidence.
 
 ## Evidence
-- Prior green main 07a6a168. Latest feature 80a7b046 and test 929656b0; see docs/DEVELOPMENT_LOG_SINGLE_OWNER.md for audit.
+See `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` and GitHub commits for full audit.
 
 ## Cleanup
-Keep under 4 KiB, exact backticked identity, no secrets.
+Keep this file under 4 KiB. No secrets.
