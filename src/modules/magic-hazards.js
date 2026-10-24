@@ -12,6 +12,7 @@ function placeBananaPeel(active,carrier,field){
  const bananas=active.filter(h=>h.kind==='banana'&&h.team===carrier.t).slice(-(MAX_BANANA_PEELS-1));
  return [...active.filter(h=>h.kind!=='banana'||h.team!==carrier.t),...bananas,Object.freeze({kind:'banana',team:carrier.t,x,y,life:BANANA_LIFETIME,arm:BANANA_ARM_TIME})];
 }
+// A single opponent can consume at most one Banana Peel in a physics tick.
 function advanceBananaPeels(active,players,dt){
  if(!Array.isArray(active)||!Array.isArray(players)||!Number.isFinite(dt)||dt<0)throw new TypeError('Invalid banana peel tick');
  const hazards=[],slips=[],seen=new Set();
@@ -19,7 +20,7 @@ function advanceBananaPeels(active,players,dt){
   if(peel.kind!=='banana')continue;
   const life=peel.life-dt,arm=Math.max(0,peel.arm-dt);
   if(life<=0)continue;
-  const victim=arm===0?players.find(p=>p.t!==peel.team&&!p.keeper&&p.stun<=0&&p.z<20&&Math.hypot(p.x-peel.x,p.y-peel.y)<=BANANA_RADIUS):null;
+  const victim=arm===0?players.find(p=>!seen.has(p)&&p.t!==peel.team&&!p.keeper&&p.stun<=0&&p.z<20&&Math.hypot(p.x-peel.x,p.y-peel.y)<=BANANA_RADIUS):null;
   if(victim){if(!seen.has(victim)){slips.push(victim);seen.add(victim);}continue;}
   hazards.push({...peel,life,arm});
  }
@@ -43,14 +44,15 @@ function placeIcePatch(active,carrier,field){
  const ice=active.filter(h=>h.kind==='ice'&&h.team===carrier.t).slice(-(MAX_ICE_PATCHES-1));
  return [...active.filter(h=>h.kind!=='ice'||h.team!==carrier.t),...ice,Object.freeze({kind:'ice',team:carrier.t,x,y,life:ICE_LIFETIME,arm:ICE_ARM_TIME})];
 }
-function advanceIcePatches(active,players,dt){
- if(!Array.isArray(active)||!Array.isArray(players)||!Number.isFinite(dt)||dt<0)throw new TypeError('Invalid ice patch tick');
- const hazards=[],slips=[],seen=new Set();
+// The engine passes Banana Peel victims to avoid consuming an Ice Patch on the same player in one tick.
+function advanceIcePatches(active,players,dt,excludedVictims=[]){
+ if(!Array.isArray(active)||!Array.isArray(players)||!Array.isArray(excludedVictims)||!Number.isFinite(dt)||dt<0)throw new TypeError('Invalid ice patch tick');
+ const hazards=[],slips=[],seen=new Set(excludedVictims);
  for(const patch of active){
   if(patch.kind!=='ice')continue;
   const life=patch.life-dt,arm=Math.max(0,patch.arm-dt);
   if(life<=0)continue;
-  const victim=arm===0?players.find(p=>p.t!==patch.team&&!p.keeper&&p.stun<=0&&p.z<20&&Math.hypot(p.x-patch.x,p.y-patch.y)<=ICE_RADIUS):null;
+  const victim=arm===0?players.find(p=>!seen.has(p)&&p.t!==patch.team&&!p.keeper&&p.stun<=0&&p.z<20&&Math.hypot(p.x-patch.x,p.y-patch.y)<=ICE_RADIUS):null;
   if(victim){if(!seen.has(victim)){slips.push(victim);seen.add(victim);}continue;}
   hazards.push({...patch,life,arm});
  }
