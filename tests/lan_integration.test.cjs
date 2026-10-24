@@ -6,7 +6,7 @@ const load=async()=>({
   ...(await import('../src/modules/lan-live-match.js'))
 });
 const hello={protocol:1,type:'hello',session:'0123456789abcdef0123456789abcdef',
-  sequence:0,build:'0.9.41.0'};
+  sequence:0,build:require('../package.json').version};
 class FakeChannel extends EventTarget{
   constructor(label){super();this.label=label;this.readyState='connecting';this.sent=[];}
   send(message){
@@ -68,7 +68,7 @@ test('LAN-050 complete protocol DataChannel host/guest simulation and remote ren
   assert.equal(g.latestTick,11);
   assert.ok(hg.players[1].x>700,'guest command must affect authoritative away player');
   assert.equal(gg.players[1].x,hg.players[1].x,'guest renders host-owned coordinates');
-  assert.equal(gg.clock,hg.clock,'guest clock is host-authoritative');
+  assert.ok(Math.abs(gg.clock-hg.clock)<=.0005,'guest clock follows host within wire millisecond precision');
   assert.equal(gg.half,1);
   assert.ok(host.peer.channel.sent.length>=12);
   assert.ok(guestChannel.sent.length>=10);
