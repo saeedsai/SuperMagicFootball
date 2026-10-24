@@ -11,6 +11,9 @@ Continue hourly on existing `dev` even while prior work awaits CI/main/Pages. On
 
 Initial dev `df8a93d4`, main `d2d5101c`. Modular QA #40141272376 failed 10/683 Node tests (six obsolete audio regex, three module-order assertions, one incomplete LAN test fixture). Concurrent commit `f64b562a` repaired fixture. Our CI test repair `6c32a2f578db21bdbebcf0264ce19e19976cbe55` passed Modular QA #40141514346. LAN-048 feature `0f8af146dac086694b00d33d1136fdbf7c399a12`: guest follows host pause/resume/finish and retains half/owner/controlled parity; candidate 0.9.41.1 aligned in release, package, README, sw and policy. Source-backed V8 phase/owner smoke passed. Exact-head Node/Chromium/Modular and real two-client/device QA pending; no verified main or Pages promotion. Preserve 223/2676, six formations, four buttons, ten saves, SD09, offline and legacy.
 
+## Recent verified LAN candidate evidence
+- 2026-10-25: LAN-044–051 real host Engine/guest canvas bridge and manual lobby handoff on dev; candidate About 0.9.41.2. Source-executed 12-frame fake WebRTC E2E sync passed: 11/11 ticks, guest moved authoritative away player, identical remote positions/clock. Diagonal stick normalized, test fixed (93aa0ae5). Node E2E test e284f324 committed. No physical two-browser/graphics or exact-head CI evidence; protected main remains d2d5101c at inspection, do not promote without full QA. See central log.
+
 ## Next smallest action
 
 ## Next five
