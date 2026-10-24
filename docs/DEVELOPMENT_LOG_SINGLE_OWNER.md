@@ -755,3 +755,6 @@ Fail closed for malformed injected WebRTC peers before attaching handlers; attem
 
 ### 2026-10-24 LAN-034 validate complete WebRTC signaling interface
 Reject malformed injected peers lacking DataChannel creation or offer/answer/local/remote description methods before RTC wiring (9cff3221); test all five missing methods and cleanup (cfa69984). LAN-033 Modular #40124496072 passed; Full #40124496140 running at inspection. New exact-head CI pending, main e54e52c0 unchanged. Internal LAN; graphics and two-browser gameplay remain unverified.
+
+### 2026-10-24 LAN-035 malformed host DataChannel cleanup
+Validate host-created DataChannel EventTarget/send/close interface and close both channel and RTC peer on setup failure (4b2e26e1). Added focused cleanup regression (f2ae8a02). Previous certified main/dev 07a6a168: dev Full #40124690676 and Modular #40124690634, main Full #40125043094, Pages #40125043002 succeeded. Latest-head CI pending; gameplay and graphics acceptance not asserted.
