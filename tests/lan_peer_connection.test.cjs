@@ -779,3 +779,18 @@ test('LAN-034 rejects incomplete signaling peer before data channel creation',as
     assert.equal(closed,1,missing);
   }
 });
+
+test('LAN-035 invalid host DataChannel closes both channel and peer',async()=>{
+  const {createLanPeerConnection}=await load();
+  let channelClosed=0,peerClosed=0;
+  class InvalidChannelPeer extends FakePeer {
+    createDataChannel(){
+      return {close(){channelClosed++;},addEventListener(){},removeEventListener(){}};
+    }
+    close(){peerClosed++;}
+  }
+  assert.throws(()=>createLanPeerConnection(hostHello,{RTCPeerConnection:InvalidChannelPeer}),
+    /Invalid LAN RTCDataChannel implementation/);
+  assert.equal(channelClosed,1);
+  assert.equal(peerClosed,1);
+});
