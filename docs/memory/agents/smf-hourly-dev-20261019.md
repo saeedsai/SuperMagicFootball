@@ -29,3 +29,6 @@ Keep this file under 4 KiB. No secrets.
 
 ## 2026-10-24 23:46 CEST update
 - Baseline dev/main 0c3bc81b. LAN-042 adapter 093b8ee5 and regression bb04b855 on dev. Renderer hookup and full CI not verified. Next: run tests, integrate actual guest renderer, two-client gameplay, graphics #15, protected promotion and Pages byte smoke. No new branches.
+
+## 2026-10-25 00:06 CEST
+- Baseline dev/main fa7e620c. LAN-043 source 29f6a034, test eb2960d8; host `stepHostMatchFrame` joins validated guest input to caller simulation and authoritative snapshot. Source-backed V8 fake-peer smoke passed; Node/Chromium/Modular and hosted smoke **unverified**. CI connector PR-only runs [] / statuses []; no promotion. Keep internal candidate 0.9.40.0. Next: CI, real match loop/renderer, two-client QA, graphics #15, protected main/Pages.
