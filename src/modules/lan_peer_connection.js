@@ -356,7 +356,12 @@ function createLanPeerConnection(localHello, options = {}) {
     }
     return hostSnapshotBinding.send(snapshot);
   }
-  function subscribeGuestSnapshots(listener, initialTick = -1) {
+  function subscribeGuestSnapshots(listener, initialTick = -1, signal = null) {
+    if (signal != null && (typeof signal.addEventListener !== 'function' ||
+        typeof signal.removeEventListener !== 'function' || typeof signal.aborted !== 'boolean')) {
+      throw new TypeError('LAN snapshot subscription requires an AbortSignal');
+    }
+    if (signal?.aborted) throw new Error('LAN snapshot subscription cancelled');
     if (disposed || hello.role !== 'guest' || phase !== 'connected-signaling' ||
         !binding?.ready || !transportUsable()) {
       throw new Error('LAN guest snapshots require a ready guest connection');
@@ -371,11 +376,18 @@ function createLanPeerConnection(localHello, options = {}) {
         listener(snapshot);
       }, initialTick);
     guestSnapshotBinding = receiver;
+    const onAbort = () => unsubscribe();
+    function unsubscribe() {
+      signal?.removeEventListener('abort', onAbort);
+      receiver.dispose();
+      if (guestSnapshotBinding === receiver) guestSnapshotBinding = null;
+    }
+    signal?.addEventListener('abort', onAbort, {once:true});
+    if (signal?.aborted) unsubscribe();
     return Object.freeze({
       get lastTick() { return receiver.lastTick; },
       dispose() {
-        receiver.dispose();
-        if (guestSnapshotBinding === receiver) guestSnapshotBinding = null;
+        unsubscribe();
       }
     });
   }
