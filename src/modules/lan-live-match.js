@@ -20,7 +20,11 @@ function captureLanGameState(game,field,tick){
     tick,clockMs:clamp(Math.round(game.clock*1000),0,36000000),
     scores:{home:clamp(game.score[0],0,999),away:clamp(game.score[1],0,999)},
     ball:{x:axis(game.ball.x,field.x,field.w),y:axis(game.ball.y,field.y,field.h),
-      z:clamp(game.ball.z/200,0,1)},players
+      z:clamp(game.ball.z/200,0,1)},players,
+    meta:{half:game.half===2?2:1,
+      phase:game.matchState==='finished'?'finished':game.matchState==='paused'?'paused':'play',
+      controlled:{home:clamp(game.controlled?.[0]??3,0,5),away:clamp(game.controlled?.[1]??3,0,5)},
+      ballOwnerSlot:game.ball.owner?game.ball.owner.t*11+game.ball.owner.i:-1}
   };
 }
 function applyLanGameState(game,field,state){
@@ -37,12 +41,18 @@ function applyLanGameState(game,field,state){
     p.anim=(p.anim||0)+1/60;
     p.x=x;p.y=y;
   }
-  game.ball.owner=null;
+  const ownerSlot=state.meta?.ballOwnerSlot??-1;
+  game.ball.owner=ownerSlot<0?null:current.get(ownerSlot)||null;
   game.ball.x=position(state.ball.x,field.x,field.w);
   game.ball.y=position(state.ball.y,field.y,field.h);
   game.ball.z=state.ball.z*200;
   game.score=[state.scores.home,state.scores.away];
-  if(game.clock*1000>state.clockMs+1500 && game.half===1) game.half=2;
+  if(state.meta){
+    game.half=state.meta.half;
+    game.controlled[0]=state.meta.controlled.home;
+    game.controlled[1]=state.meta.controlled.away;
+    if(state.meta.phase==='finished')game.matchState='finished';
+  }else if(game.clock*1000>state.clockMs+1500 && game.half===1)game.half=2;
   game.clock=state.clockMs/1000;
 }
 function createLanLiveMatch({peer,role,game,input,field}){
