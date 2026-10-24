@@ -44,6 +44,29 @@ function bindLanProtocolChannel(localHello, channel) {
     return unsubscribe;
   }
 
+  // LAN-026: deterministic, read-only notification for each successfully
+  // consumed authoritative host frame. No observer may advance the queue.
+  const frameObservers = new Set();
+  function subscribeFrame(listener, signal = null) {
+    if (local.role !== 'host') throw new Error('LAN host frame subscription requires host');
+    if (typeof listener !== 'function') throw new TypeError('LAN frame listener required');
+    if (signal != null && (typeof signal.addEventListener !== 'function' ||
+        typeof signal.removeEventListener !== 'function' || typeof signal.aborted !== 'boolean')) {
+      throw new TypeError('LAN frame subscription requires an AbortSignal');
+    }
+    const entry = {listener, unsubscribe: null};
+    const unsubscribe = () => {
+      frameObservers.delete(entry);
+      signal?.removeEventListener('abort', unsubscribe);
+    };
+    entry.unsubscribe = unsubscribe;
+    if (!disposed && !signal?.aborted) {
+      frameObservers.add(entry);
+      signal?.addEventListener('abort', unsubscribe, {once:true});
+    }
+    return unsubscribe;
+  }
+
   function hello() {
     if (disposed || channel.readyState !== 'open') return false;
     try {
@@ -102,6 +125,10 @@ function bindLanProtocolChannel(localHello, channel) {
     }
     const next = advanceLanHostFrame(state, frame);
     state = next.state;
+    const event = Object.freeze({frame, input:next.input, received:next.received});
+    for (const observer of [...frameObservers]) {
+      try { observer.listener(event); } catch { /* isolate game/UI observers */ }
+    }
     return Object.freeze({input:next.input, received:next.received});
   }
 
@@ -112,6 +139,7 @@ function bindLanProtocolChannel(localHello, channel) {
     channel.removeEventListener('message', onMessage);
     channel.removeEventListener('close', dispose);
     for (const observer of [...inputObservers]) observer.unsubscribe();
+    for (const observer of [...frameObservers]) observer.unsubscribe();
     bindings.delete(channel);
   }
 
@@ -119,7 +147,7 @@ function bindLanProtocolChannel(localHello, channel) {
   channel.addEventListener('message', onMessage);
   channel.addEventListener('close', dispose);
   const binding = Object.freeze({
-    hello, sendInput, advance, subscribeInput, dispose,
+    hello, sendInput, advance, subscribeInput, subscribeFrame, dispose,
     get ready() { return !disposed && helloSent && state.peer.ready; },
     get state() { return state; },
     get disposed() { return disposed; }
