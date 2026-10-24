@@ -1,27 +1,26 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · Updated 2026-10-24.
+**Agent ID:** smf-hourly-dev-20261019 · Updated 2026-10-24.
 
 ## Mission
-Commit one bounded tested roadmap increment directly to existing dev every hourly run, even with pending CI. Only dev/main, no bypass, no force push.
+Continue bounded commits on existing dev every hourly run, regardless of pending CI; never bypass protection or force-push.
 
 ## Current checkpoint
-- Prior certified dev/main db6eacfb1b8f3eb3a2d88d51a61967e6b6bb9565; dev Modular QA #40100925966, dev Census #40100925986, main Census #40101303079 and Pages #40101303818 succeeded.
-- LAN-020 optional AbortSignal on awaitReady for cancellable lobby waits; implementation 50055eed and tests 24bfb5de.
-- Exact head ef5eec7a CI #40104190049/#40104189968 failed ONLY because checkpoint lacked mandatory identity/section headers. 645/646 Node tests passed, LAN-020 tests passed. Restore required checkpoint contract; do not weaken test.
-- Internal change: About-only 0.9.39.0 retained; 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, saves and offline.
+Baseline dev/main 9ac3a3887a6fae0bdd99a8b490ea151f2882b662. Dev Modular QA #40104315144 and Full Census #40104315132 green; main Census #40104566268 and Pages #40104566800 in progress at inspection.
+LAN-021 validation of malformed optional AbortSignal prevents listener/timer errors; source 76217755 and test bb09d0be. Exact-head CI pending. Previous LAN-020 repaired memory identity CI regression; maintain required headings.
+About-only 0.9.39.0 unchanged (internal LAN), preserve 223 teams/2676 players, six formations, four buttons, ten slots, SD09, offline/saves.
 
 ## Next smallest action
-1. Re-run exact-head full 4 Node+4 Chromium and Modular QA; repair any failures.
-2. Verify protected promotion to main and Pages hosted smoke.
-3. Implement host/guest manual SDP lobby and versioned player-facing integration.
-4. Wire real guest inputs/host snapshots and test two browsers.
-5. Resolve Concept Royals issue #15 with screenshot QA.
+1. Verify exact dev QA; fix any regression.
+2. Confirm protected promotion and main/Pages hosted byte smoke.
+3. Deliver accessible manual host/guest SDP lobby and aligned player-facing version.
+4. Wire host authoritative inputs and snapshots, real two-client tests.
+5. Fix Concept Royals issue #15 with screenshot-based art QA.
 
 ## Ownership and exclusions
-Sole developer. Only update central log and own checkpoint. Do not read other agents' memory. Continue incremental dev while release pending.
+Sole developer; dev/main only. No false deployment/visual certification.
 
 ## Evidence
-Failed workflow logs identify project_memory_contract.test.cjs identity mismatch; 645/646 tests passed, including both LAN-020 tests. This fix restores required contract. No new deployment claim.
+LAN-021 source/test commits; automated QA pending.
 
 ## Cleanup
-Checkpoint under 4 KiB; keep exact Git SHA and CI evidence separate from player-facing About version.
+Under 4 KiB.
