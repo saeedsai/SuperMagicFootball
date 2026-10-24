@@ -203,6 +203,9 @@ function createLanPeerConnection(localHello, options = {}) {
   return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, sendGuestInput, advanceHostFrame, dispose,
     get ready() { return !disposed && phase === 'connected-signaling' && !!binding?.ready; },
     get phase() { return phase; },
+    // Read-only transport diagnostics for future LAN lobby status messages.
+    get transportState() { return disposed ? 'closed' : peer.connectionState; },
+    get channelState() { return disposed ? 'closed' : (channel?.readyState ?? 'unavailable'); },
     get binding() { return binding; },
     get peer() { return peer; },
     get disposed() { return disposed; }
