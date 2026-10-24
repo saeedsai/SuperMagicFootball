@@ -125,3 +125,35 @@ test('LAN-014 rejected signals leave a healthy session reusable',async()=>{
   host.dispose();
   guest.dispose();
 });
+
+test('LAN-015 awaitReady waits for protocol hello, not only SDP',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const pending=host.awaitReady(500);
+  const guestChannel=new FakeChannel('smf-lan');
+  guest.peer.emitChannel(guestChannel);
+  host.peer.channel.open();
+  guestChannel.open();
+  assert.equal(host.ready,false);
+  const hello=new Event('message');
+  hello.data=JSON.stringify(guestHello);
+  host.peer.channel.dispatchEvent(hello);
+  const binding=await pending;
+  assert.equal(binding,host.binding);
+  assert.equal(host.ready,true);
+  host.dispose();guest.dispose();
+});
+test('LAN-015 awaitReady bounds timeout and rejects disposed/failed peers',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  await assert.rejects(host.awaitReady(0),/readiness timeout/);
+  await assert.rejects(host.awaitReady(5),/handshake timed out/);
+  host.peer.connectionState='failed';
+  await assert.rejects(host.awaitReady(50),/closed before handshake/);
+  host.dispose();
+  await assert.rejects(host.awaitReady(50),/disposed/);
+});
