@@ -219,3 +219,65 @@ test('LAN-017 transport diagnostics track channel and peer lifecycle without mut
   assert.equal(guest.channelState,'unavailable');
   guest.dispose();
 });
+
+test('LAN-018 connection lifecycle gates readiness and four-button frame exchange',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const guestChannel=new FakeChannel('smf-lan');
+  guest.peer.emitChannel(guestChannel);
+  host.peer.channel.open();
+  guestChannel.open();
+  const deliver=(channel,packet)=>{
+    const event=new Event('message');event.data=JSON.stringify(packet);
+    channel.dispatchEvent(event);
+  };
+  deliver(host.peer.channel,guestHello);
+  deliver(guestChannel,hostHello);
+  assert.equal(host.ready,true);
+  assert.equal(guest.ready,true);
+
+  host.peer.connectionState='disconnected';
+  assert.equal(host.ready,false);
+  assert.throws(()=>host.advanceHostFrame(0),/ready host/);
+  host.peer.connectionState='connected';
+  assert.equal(host.ready,true);
+  assert.equal(host.advanceHostFrame(0).received,false);
+
+  guest.peer.connectionState='failed';
+  assert.equal(guest.ready,false);
+  assert.throws(()=>guest.sendGuestInput(1,['pass']),/ready guest/);
+  guest.peer.connectionState='connected';
+  assert.equal(guest.ready,true);
+  assert.deepEqual(guest.sendGuestInput(1,['pass']).buttons,['pass']);
+  guestChannel.close();
+  assert.equal(guest.ready,false);
+  assert.throws(()=>guest.sendGuestInput(2,['pass']),/ready guest/);
+  host.dispose();guest.dispose();
+});
+
+test('LAN-018 awaitReady waits through a temporary disconnected RTC state',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const guestChannel=new FakeChannel('smf-lan');
+  guest.peer.emitChannel(guestChannel);
+  host.peer.channel.open();guestChannel.open();
+  const message=new Event('message');message.data=JSON.stringify(guestHello);
+  host.peer.channel.dispatchEvent(message);
+  host.peer.connectionState='disconnected';
+  let resolved=false;
+  const pending=host.awaitReady(1000).then(binding=>{resolved=true;return binding;});
+  await new Promise(resolve=>setTimeout(resolve,75));
+  assert.equal(resolved,false,'must not certify a disconnected RTC peer');
+  host.peer.connectionState='connected';
+  assert.equal(await pending,host.binding);
+  assert.equal(host.ready,true);
+  host.dispose();guest.dispose();
+});
