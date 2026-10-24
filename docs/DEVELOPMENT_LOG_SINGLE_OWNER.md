@@ -709,3 +709,5 @@ Exact-head d1ac4b3b failed memory contract because developer checkpoint omitted 
 - No direct push to main. Preserve 223 teams/2676 players, six formations, four gameplay buttons, ten Career/Cup slots, SD09, save/offline compatibility. Graphics issue #15 still open; no visual approval claimed.
 
 - LAN-024 accessibility follow-up: Escape now navigates back from the signaling textareas (f64a4b4d); corresponding UI contract regression a4945716. Intermediate Modular QA #40109997203 and #40110027915 passed; latest exact-head certification still pending.
+
+- Exact-head Census #40110160109: four Node shards and preview passed, Chromium shard 2 failed solely in legacy `v08247_menu_browser_qa.py` waiting for removed `[data-action=laterLAN]` (30s timeout). Updated this test to assert the new `navLan` connection preview, host/guest controls, honest unplayable-state notice, and Escape from focused SDP textarea; fix commit 45ebde43. No CI bypass or main promotion; rerun required.
