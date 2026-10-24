@@ -168,7 +168,25 @@ function createLanPeerConnection(localHello, options = {}) {
   }
   peer.addEventListener('datachannel', onDataChannel);
   peer.addEventListener('connectionstatechange', emitStatus);
-  if (hello.role === 'host') attach(peer.createDataChannel('smf-lan', {ordered:true}));
+  if (hello.role === 'host') {
+    // A malformed injected channel must not leave an RTC peer alive after
+    // attachment fails; real browsers expose this complete EventTarget API.
+    let outgoing;
+    try {
+      outgoing = peer.createDataChannel('smf-lan', {ordered:true});
+      if (!outgoing || typeof outgoing.addEventListener !== 'function' ||
+          typeof outgoing.removeEventListener !== 'function' ||
+          typeof outgoing.send !== 'function' ||
+          typeof outgoing.close !== 'function') {
+        throw new TypeError('Invalid LAN RTCDataChannel implementation');
+      }
+      attach(outgoing);
+    } catch (error) {
+      try { outgoing?.close?.(); } catch { /* invalid channel */ }
+      try { peer.close(); } catch { /* invalid peer */ }
+      throw error;
+    }
+  }
 
   function assertPhase(role, expected) {
     if (disposed || hello.role !== role || phase !== expected) {
