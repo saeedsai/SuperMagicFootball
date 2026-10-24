@@ -7,7 +7,7 @@ Continue one bounded roadmap increment on existing `dev` every hourly run even i
 ## Current checkpoint
 - Previous certified `dev`/`main` `b0439801375236d96939d224c7aaad17666fc0e1`: dev Full Census #40118878315, Modular QA #40118878305, main Full Census #40119204583, Pages #40119204418 all succeeded.
 - LAN-027 snapshot bridge `864198ef`: host `sendHostSnapshot`, guest `subscribeGuestSnapshots` and immutable session-derived identity use existing snapshot codec on the existing RTCDataChannel. Guest render failures do not consume cursor. No live match or graphics claim.
-- Regression `fb2b4557` added two peer-level tests. Modular QA 660/661 identified missing null observer validation; fixed in `703c9de7`. Offline precache + fixture `c059d834`, `1f7d9166` caused legacy module-order/cache-version contract failures; repaired in `3378c651`, `38e7ef44` without weakening tests. Development log `b4b74d1e`.
+- Regression `fb2b4557` added two peer-level tests. Modular QA 660/661 identified missing null observer validation; fixed in `703c9de7`. Offline precache + fixture `c059d834`, `1f7d9166` caused legacy module-order/cache-version contract failures; repaired in `3378c651`, `38e7ef44` without weakening tests. Development log `b4b74d1e` and follow-up `e56fc14e`. Transitive offline import `lan-session.js` precached in `756990cb`; regression `294a52b5` enforces closure. Intermediate `38e7ef44` Modular QA passed.
 - Exact latest-head 4 Node + 4 Chromium and Modular QA PENDING. About-only 0.9.40.0 unchanged (internal LAN). Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline/saves.
 
 ## Next smallest action
