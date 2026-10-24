@@ -299,3 +299,25 @@ test('LAN-010 guest send failures and invalid controls do not advance sender sta
  assert.equal(sent.length,2);
  assert.equal(ready.sender.lastSequence,0);
 });
+
+test('LAN-011 rejects late guest input for an already simulated host frame',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ const ready=p.acceptLanHostMessage(p.createLanHostSession(hello),p.serializeLanPacket(guest),40).state;
+ const advanced=p.advanceLanHostFrame(ready,40).state;
+ const late=p.acceptLanHostMessage(advanced,p.serializeLanPacket({...input,frame:40}),40);
+ assert.equal(late.kind,'outside-frame-window');
+ assert.equal(late.state,advanced);
+ const valid=p.acceptLanHostMessage(advanced,p.serializeLanPacket({...input,frame:41}),40);
+ assert.equal(valid.kind,'accepted');
+ assert.equal(valid.state.queue.pending.length,1);
+ assert.equal(p.advanceLanHostFrame(valid.state,41).received,true);
+});
+test('LAN-011 preserves host watermark when accepting future packet after simulated frame',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ const ready=p.acceptLanHostMessage(p.createLanHostSession(hello),p.serializeLanPacket(guest),7).state;
+ const advanced=p.advanceLanHostFrame(ready,7).state;
+ const result=p.acceptLanHostMessage(advanced,p.serializeLanPacket({...input,frame:8}),0);
+ assert.equal(result.kind,'accepted');
+ assert.equal(result.state.lastSimulatedFrame,7);
+ assert.throws(()=>p.advanceLanHostFrame(result.state,7));
+});
