@@ -7,7 +7,7 @@ this output retains their independent deterministic physics/graphics coverage.
 from pathlib import Path
 import json,re,base64
 root=Path(__file__).resolve().parents[1]
-order=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','career_slots','cup_slots','input','visualfeel','shotfeel','physicsbalance','shotpaths','magic-hazards','engine','bpwpersonality','artpose','characterart','concepthero','conceptmodular','crownroyals','render','release','ability-icons','ui']
+order=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','career_slots','cup_slots','input','visualfeel','shotfeel','physicsbalance','shotpaths','magic-hazards','engine','bpwpersonality','artpose','characterart','concepthero','conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-lobby','render','release','ability-icons','ui']
 groups=['arcade','national26','club26','legends','continental','bpw_worldcup','bpw_alltime']
 load=lambda path:json.loads((root/'data'/path).read_text())
 players={g:load(f'players/{g}.json') for g in groups}
