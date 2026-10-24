@@ -87,7 +87,7 @@ test('player-facing candidate rotates the offline cache to the current four-fiel
  const version=JSON.parse(read('package.json')).version;
  const sw=read('sw.js');
  assert.ok(sw.startsWith('// '+version+' modular offline shell'),'service worker comment must match candidate');
- const cacheVersion=version.replace(/\\./g,'');
+ const cacheVersion=version.replace(/\./g,'');
  assert.ok(sw.includes('-'+cacheVersion+"';"),'service worker cache must end with the current version token');
- assert.match(read('src/modules/release.js'),/notes:Object\\.freeze\\(\\[/);
+ assert.match(read('src/modules/release.js'),/notes:Object\.freeze\(\[/);
 });
