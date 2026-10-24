@@ -22,6 +22,7 @@ import {CAREER_SLOTS} from "./career_slots.js";
 import {CUP_SLOTS} from "./cup_slots.js";
 import {RELEASE} from "./release.js";
 import {mountLanLobby} from "./lan-lobby.js";
+import {createLanLiveMatch} from "./lan-live-match.js";
 import {INPUT} from "./input.js";
 import {VISUALFEEL} from "./visualfeel.js";
 import {ENGINE} from "./engine.js";
@@ -171,8 +172,12 @@ const planFor=i=>safePlan(teamPlans[TEAMS[i].id],roster(i),i);
 const identity=i=>teamIdentity(TEAMS[i]);
 const menuVisible=()=>!menu.classList.contains('hidden');
 const closeMenu=()=>{input.cancelAll();audio.sceneChange('match');menu.classList.add('hidden');hud.classList.remove('hidden');touch.classList.toggle('hidden',!matchMedia('(pointer:coarse)').matches)};
-let lanLobbyDispose=null;
-const show=(html,id='home')=>{if(lanLobbyDispose){lanLobbyDispose();lanLobbyDispose=null;}audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');menu.innerHTML=`<div class="menubox"><div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>${html}<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div></div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
+let lanLobbyDispose=null,lanRuntime=null,lanPeer=null,lanRole=null,lanFailureSince=0,lanFinish=null;
+function stopLanMatch(){
+  lanRuntime?.dispose();lanRuntime=null;
+  lanPeer?.dispose();lanPeer=null;lanRole=null;lanFailureSince=0;lanFinish=null;
+}
+const show=(html,id='home')=>{if(lanLobbyDispose){lanLobbyDispose();lanLobbyDispose=null;}if(lanRuntime)stopLanMatch();audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');menu.innerHTML=`<div class="menubox"><div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>${html}<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div></div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
 function page(title,subtitle,body,returnAction='home'){if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;menuBackAction=returnAction;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER</div><h1 class="heading">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title)}
 // v0.8.24.7 — Menu handoff: five primary categories, no new gameplay modes.
 // Existing action handlers, saves, teams and engine remain the authority.
@@ -197,14 +202,27 @@ const comingLater=(title,description,back='navCups')=>{
  menuBackAction=back;
  page(title,'Planned feature — not available in this version.',`<div class="panel navInfo"><h2>COMING LATER</h2><p>${escapeHTML(description)}</p><p>No substitute gameplay is launched. Existing saves are unchanged.</p>${button('← BACK',back,'gold')}</div>`,back);
 };
+function startLanQuickMatch(peer,role){
+  if(lanRuntime)stopLanMatch();
+  home=0;away=9;mode='versus';humans=2;
+  game.init({home,away,mode,humans,rosters:[roster(home),roster(away)],
+    lineups:[planFor(home).lineup.slice(),planFor(away).lineup.slice()],
+    formations:[planFor(home).formation,planFor(away).formation],
+    plans:[planFor(home),planFor(away)],
+    options:{...opt,weather:opt.weather==='Random'?'Clear':opt.weather,kitChoices:kitSelections.slice()}});
+  lanPeer=peer;lanRole=role;
+  try{lanRuntime=createLanLiveMatch({peer,role,game,input,field:ENGINE.WORLD.field});}
+  catch(error){stopLanMatch();game.matchState='none';throw error;}
+  closeMenu();drawHUD();toast(role==='host'?'LAN HOST · HOME TEAM':'LAN GUEST · AWAY TEAM',2400);
+}
 function showLanLobby(){
- page('LOCAL NETWORK','Manual host/guest connection preview — multiplayer match not yet playable.',
+ page('LOCAL NETWORK','Two-player LAN Quick Match · host controls home, guest controls away.',
   '<div id="lanLobby"></div>','navQuick');
- lanLobbyDispose=mountLanLobby($('lanLobby'));
+ lanLobbyDispose=mountLanLobby($('lanLobby'),{onReady:startLanQuickMatch});
 }
 function showQuickMenu(){menuChoices('nav-quick','QUICK MATCH','Play on one device, practice, or explore planned local multiplayer.',[
  navItem('On Device','navOnDevice','Single-player, two-player, penalties and training.','active','🎮'),
- navItem('Local Network · Connection Preview','navLan','Manual host/guest signaling; matches are not synchronized yet.','active','📡')],'home');}
+ navItem('Local Network · LAN Quick Match','navLan','Play together on trusted local devices using manual connection codes.','active','📡')],'home');}
 function showOnDevice(){menuChoices('nav-device','ON DEVICE','Use the existing playable match setups.',[
  navItem('Single Player vs CPU','quick','Existing team, kit and match setup.','active','⚽'),
  navItem('Two Players · Same Device','versus','Play a local head-to-head match.','active','🎮'),
@@ -443,7 +461,7 @@ function paintTeamPreviews(){for(const side of ['home','away']){
  ctx.save();ctx.translate(153,36);ctx.scale(.47,.47);renderer.drawTransformation(ctx,{...SHOTS[team.shot],id:team.shot},1.5);ctx.restore();
  }}
 function start(){if(mode==='versus')humans=2;else humans=1;game.init({home,away,mode,humans,rosters:[mode==='career'&&career?career.roster.map(p=>({...p})):roster(home),roster(away)],lineups:[planFor(home).lineup.slice(),planFor(away).lineup.slice()],formations:[planFor(home).formation,planFor(away).formation],plans:[planFor(home),planFor(away)],options:{...opt,kitChoices:kitSelections.slice()}});if(preTalkChoices[0]!=='none')game.applyTeamTalk(0,preTalkChoices[0],'pregame');if(preTalkChoices[1]!=='none')game.applyTeamTalk(1,preTalkChoices[1],'pregame');if(mode==='pk')game.startPK(false);closeMenu();drawHUD()}
-function drawHUD(){let p=game.controlledPlayer(0),s=game.score;$('homeflag').innerHTML=identity(home);$('awayflag').innerHTML=identity(away);$('homename').textContent=TEAMS[home].name.toUpperCase();$('awayname').textContent=TEAMS[away].name.toUpperCase();$('scoring').innerHTML=`${s[0]} <span>:</span> ${s[1]}`;$('weatherHud').textContent=game.weather.toUpperCase();let secs=Math.max(0,Math.ceil(game.matchSeconds-game.clock));$('timeHud').textContent=`${game.half===1?'1ST':'2ND'} • ${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}`;if(p){const inPossession=game.ball.owner?.t===0;const ownBall=game.ball.owner===p;const goalkeeperHasBall=game.ball.owner?.t===0&&game.ball.owner?.keeper;// v0.8.25: keep the exact four approved action labels on screen; defensive / keeper functions remain contextual.
+function drawHUD(){let p=game.controlledPlayer(lanRole==='guest'?1:0),s=game.score;$('homeflag').innerHTML=identity(home);$('awayflag').innerHTML=identity(away);$('homename').textContent=TEAMS[home].name.toUpperCase();$('awayname').textContent=TEAMS[away].name.toUpperCase();$('scoring').innerHTML=`${s[0]} <span>:</span> ${s[1]}`;$('weatherHud').textContent=game.weather.toUpperCase();let secs=Math.max(0,Math.ceil(game.matchSeconds-game.clock));$('timeHud').textContent=`${game.half===1?'1ST':'2ND'} • ${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}`;if(p){const inPossession=game.ball.owner?.t===0;const ownBall=game.ball.owner===p;const goalkeeperHasBall=game.ball.owner?.t===0&&game.ball.owner?.keeper;// v0.8.25: keep the exact four approved action labels on screen; defensive / keeper functions remain contextual.
   for(const [key,text] of Object.entries({pass:'PASS',shoot:'SHOOT',dribble:'DRIBBLE',jump:'JUMP'})){const b=document.querySelector('[data-act="'+key+'"]');if(b){if(b.textContent!==text)b.textContent=text;b.title=key==='pass'?(goalkeeperHasBall?'Pass / goalkeeper clear':inPossession?'Tap nearest · direction aim · hold long · Jump then Pass cross':'Pass / tackle'):key==='shoot'?(inPossession?'Shoot':'Shoot / slide tackle'):key==='dribble'?(inPossession?'Dribble':'Dribble / switch player'):'Jump';}}const dribbleButton=document.querySelector('[data-act="dribble"]');if(dribbleButton){
    const cd=Math.max(0,p.dribbleCooldown||0),cooling=cd>.02&&game.ball.owner===p;
    dribbleButton.classList.toggle('cooling',cooling);
@@ -1244,13 +1262,16 @@ function fulltime(ev){game.matchState='finished';let [a,b]=ev.score,win=a>b;if(m
  page('FULL TIME',`${ev.penalties&&(ev.winner===0||ev.winner===1)?(ev.winner===0?'VICTORY!':'DEFEAT'):win?'VICTORY!':a===b?'DRAW MATCH':'DEFEAT'}${ev.penalties?' • ON PENALTIES':''}`,`<div class="panel" style="text-align:center"><div class="badge">MATCH RESULT</div><div style="font-size:70px;color:#ffe17a;font-weight:1000">${a} : ${b}</div><p>${TEAMS[home].name} vs ${TEAMS[away].name}</p>${ev.penalties?penaltyRoundScorecard(game,{finished:true,winner:ev.winner}):''}${matchHighlightsPanel(game)}<div class="row" style="justify-content:center">${button('↻ REMATCH','kickoff','gold')}${mode==='league'?button('🏆 LEAGUE','league'):button('MAIN MENU','home')}</div></div>`)}
 function toast(message,duration=1600){let n=$('gameToast');n.textContent=message;n.classList.remove('hidden');toastTime=performance.now()+duration}
 let toastTime=0;
-game.onEvent=e=>{audio.cue(e);if(e.type==='toast')toast(e.message,1800);if(e.type==='goal'){$('gameToast').classList.add('hidden');toastTime=0}if(e.type==='penaltyStart')toast('PENALTY SHOOTOUT',1500);if(e.type==='penaltyKick')toast(e.goal?'GOAL!':'SAVE!',1300);if(e.type==='pause')pause();if(e.type==='halftime')halftime();if(e.type==='finished')fulltime(e)};
+game.onEvent=e=>{if(lanRuntime&&e.type==='halftime'){game.matchState='play';toast('SECOND HALF · LAN',1600);return;}
+ if(lanRuntime&&e.type==='finished'){lanFinish=e;return;}
+ if(lanRuntime&&e.type==='pause'){game.matchState='play';return;}
+ audio.cue(e);if(e.type==='toast')toast(e.message,1800);if(e.type==='goal'){$('gameToast').classList.add('hidden');toastTime=0}if(e.type==='penaltyStart')toast('PENALTY SHOOTOUT',1500);if(e.type==='penaltyKick')toast(e.goal?'GOAL!':'SAVE!',1300);if(e.type==='pause')pause();if(e.type==='halftime')halftime();if(e.type==='finished')fulltime(e)};
 function action(a){audio.cue('ui');
  const navTarget=menu.querySelector('[data-action="'+a+'"]');if(navTarget&&a!=='home'&&a!=='quit')navFocusMap[screen]=a;
  if(['quick','versus','pk','training','manager','league','continents','clubs','playerStudio','editor','gallery','squad','help','controls'].includes(a)&&screen.startsWith('nav-'))menuEntryReturn=({
  'nav-device':'navOnDevice','nav-career':'navCareer','nav-cups':'navCups','nav-clubs':'navClubs','nav-settings':'navSettings','nav-customize':'navCustomization','nav-input':'navInput','nav-saves':'navSaveManagement'
  })[screen]||'home';
- if(a==='confirmQuit'){if(confirm('Leave this match and return to the main menu? Match progress will be lost.')){game.matchState='none';showHome();}}else if(a==='confirmRestart'){if(confirm('Restart the match from kickoff? Current match progress will be lost.'))start();}
+ if(a==='confirmQuit'){if(confirm('Leave this match and return to the main menu? Match progress will be lost.')){stopLanMatch();game.matchState='none';showHome();}}else if(a==='confirmRestart'){if(confirm('Restart the match from kickoff? Current match progress will be lost.'))start();}
  else if(a==='navQuick')showQuickMenu();else if(a==='navLan')showLanLobby();else if(a==='navOnDevice')showOnDevice();else if(a==='navOnline')showOnlineMenu();else if(a==='navCareer'){creatingCareer=false;showCareerMenu();}else if(a==='navCups')showCupsMenu();else if(a==='navInternational')showInternationalMenu();else if(a==='navClubs')showClubCompetitionsMenu();else if(a==='navSettings'||a==='settings')showSettingsMenu();else if(a==='navCustomization')showCustomizationMenu();else if(a==='navInput')showInputMenu();else if(a==='navSaveManagement')showSaveMenu('navSettings');else if(a==='navCareerSlots')showCareerSlots();else if(a==='navCupSlots')showCupSlots();
  else if(a==='navGameSettings')showSettingsSection('game');else if(a==='navGraphics')showSettingsSection('graphics');else if(a==='navSound'){if(game.matchState==='paused'&&screen==='PAUSED')menuEntryReturn='returnPause';showSettingsSection('sound');}
  else if(a==='navAbout')showAbout();
@@ -1436,7 +1457,7 @@ menu.addEventListener('change',e=>{if(/^pos[0-5]$/.test(e.target.id)){const choi
 menu.addEventListener('click',e=>{const browser=e.target.closest('[data-team-browse]');if(browser){showTeamBrowser(browser.dataset.teamBrowse);return;}const pick=e.target.closest('[data-pick-team]');if(pick){const select=$(pick.dataset.pickTeam);if(select){select.value=pick.dataset.teamId;select.dispatchEvent(new Event('change',{bubbles:true}));}return;}let train=e.target.closest('[data-train]');if(train){menu.dataset.trainPlayer=train.dataset.train;careerTrain();return}const renew=e.target.closest('[data-careerrenew]');if(renew){tryCareerContract(+renew.dataset.careerrenew);return}const recover=e.target.closest('[data-careerrecover]');if(recover){tryCareerRecover(+recover.dataset.careerrecover);return}let node=e.target.closest('[data-action]');if(node)action(node.dataset.action)});
 menu.addEventListener('change',e=>{const id=e.target.id;switch(id){case 'managerContinent':managerRegion=e.target.value;managerCountry='';showManager();break;case 'managerCountry':managerCountry=e.target.value;showManager();break;case 'continentClub':updateTeamPickerIcon(id);break;case 'managerClub':updateTeamPickerIcon(id);break;case 'formation':refreshFormationPreview();break;case 'homeGroup':homeCategory=e.target.value;home=filteredNations(homeCategory)[0]?.[0]??home;away=home===away?(away+1)%TEAMS.length:away;showSetup(mode);break;case 'awayGroup':awayCategory=e.target.value;away=filteredNations(awayCategory).find(([i])=>i!==home)?.[0]??away;showSetup(mode);break;case 'homeTeam':home=+e.target.value;if(home===away)away=(away+1)%TEAMS.length;showSetup(mode);break;case 'awayTeam':away=+e.target.value;if(away===home)home=(home+1)%TEAMS.length;showSetup(mode);break;case 'preTalkHome':preTalkChoices[0]=e.target.value;break;case 'preTalkAway':preTalkChoices[1]=e.target.value;break;case 'homeKit':case 'awayKit':{let side=id==='homeKit'?0:1;kitSelections[side]=e.target.value;store.put('kitSelections',kitSelections);if(screen==='KITS & TEAM TALKS')showSetupExtras('appearance');else paintTeamPreviews();break;}case 'weather':opt.weather=e.target.value;break;case 'terrain':opt.terrain=e.target.value;break;case 'condition':opt.condition=e.target.value;break;case 'halfSeconds':opt.halfSeconds=+e.target.value;break;case 'ballModel':opt.ballModel=VISUALFEEL.validBallModel(e.target.value);game.options.ballModel=opt.ballModel;store.put('options',opt);paintBallPreview();break;case 'aiStyle':opt.aiStyle=e.target.value;break;case 'matchDifficulty':case 'liveDifficulty':opt.difficulty=+e.target.value;game.options.difficulty=opt.difficulty;store.put('options',opt);{const hint=$('difficultyHint');if(hint)hint.textContent=aiTuning(opt.difficulty).name+' CPU: reaction, shot accuracy, passing, pressure and keeper response all scale by difficulty. Human players are unaffected.';}break;case 'marketTeam':showCareerMarket(+e.target.value);break;case 'customTeam':{const chosen=Number(e.target.value);if(!Number.isInteger(chosen)||!TEAMS[chosen])break;home=chosen;studioCareerContext=false;avatarIndex=0;showPlayerStudio(0);break;}case 'customPlayer':showPlayerStudio(+e.target.value);break;case 'editTeam':{const chosen=Number(e.target.value);if(!Number.isInteger(chosen)||!TEAMS[chosen])break;home=chosen;updateTeamPickerIcon(id);$('jsonRoster').value=JSON.stringify(roster(home),null,2);break;}}});
 menu.addEventListener('change',e=>{if(e.target.id==='difficulty'){const hint=$('difficultyHint');if(hint)hint.textContent=aiTuning(+e.target.value).name+' CPU: reaction, shot accuracy, passing, pressure and keeper response all scale by difficulty. Human players are unaffected.';}});
-$('pauseBtn').addEventListener('click',()=>{if(['play','penalty'].includes(game.matchState))pause()});
+$('pauseBtn').addEventListener('click',()=>{if(lanRuntime){if(confirm('Leave the LAN match? The connection will close.')){stopLanMatch();game.matchState='none';showHome();}return;}if(['play','penalty'].includes(game.matchState))pause()});
 $('dismissRotate').addEventListener('click',()=>{$('rotate').classList.add('hidden');rotateDismissed=true});let rotateDismissed=false;function checkRotate(){let should=!rotateDismissed&&!menuVisible()&&matchMedia('(pointer:coarse)').matches&&innerHeight>innerWidth*1.12;$('rotate').classList.toggle('hidden',!should)}
 let last=performance.now(),uiT=0,perfSamples=0,perfElapsed=0;
 function updatePerformanceHUD(now,rawDelta){
@@ -1449,7 +1470,12 @@ function updatePerformanceHUD(now,rawDelta){
   perfSamples=0;perfElapsed=0;
  }
 }
-function frame(now){pollMenuPad(now);const rawDelta=now-last;let dt=Math.min(.05,Math.max(0,rawDelta/1000||.016));last=now;updatePerformanceHUD(now,rawDelta);if(game.matchState==='play')game.update(dt);else if(game.matchState==='penalty')game.updatePK(dt);renderer.frame(game,dt,menuVisible());if(screen==='home'&&menuVisible())drawPoster();uiT-=dt;if(uiT<=0){uiT=.1;if(!menuVisible())drawHUD()}if(toastTime&&now>toastTime){$('gameToast').classList.add('hidden');toastTime=0}checkRotate();requestAnimationFrame(frame)}
+function frame(now){pollMenuPad(now);const rawDelta=now-last;let dt=Math.min(.05,Math.max(0,rawDelta/1000||.016));last=now;updatePerformanceHUD(now,rawDelta);if(lanRuntime){
+  if(lanPeer?.ready){lanFailureSince=0;try{lanRuntime.step(dt);}catch(error){console.error('LAN match stopped:',error);stopLanMatch();game.matchState='none';page('LAN CONNECTION ERROR','Match stopped safely.',button('RETURN TO QUICK MATCH','navQuick','gold'),'navQuick');}}
+  else if(!lanFailureSince)lanFailureSince=now;
+  else if(now-lanFailureSince>4500){stopLanMatch();game.matchState='none';page('LAN MATCH ENDED','The remote player disconnected or the host ended the match.',button('RETURN TO QUICK MATCH','navQuick','gold'),'navQuick');}
+  if(lanFinish){const result=lanFinish;lanFinish=null;fulltime(result);}
+ }else if(game.matchState==='play')game.update(dt);else if(game.matchState==='penalty')game.updatePK(dt);renderer.frame(game,dt,menuVisible());if(screen==='home'&&menuVisible())drawPoster();uiT-=dt;if(uiT<=0){uiT=.1;if(!menuVisible())drawHUD()}if(toastTime&&now>toastTime){$('gameToast').classList.add('hidden');toastTime=0}checkRotate();requestAnimationFrame(frame)}
 game.init({home,away,options:opt});game.matchState='none';window.NekketsuHD={audio,version:RELEASE.version,game,renderer,input,teams:TEAMS,shots:SHOTS,aiLevels:AI_LEVELS,rosterFor,getCareer:()=>career,getContinental:()=>continentalRun,confederations:CONTINENTS,continentalMapping:CONTINENTAL_TEAMS,kitsFor:team=>KIT_CHOICES.map(k=>kitFor(team,k)),getKitChoices:()=>kitSelections.slice(),getTeamPlan:i=>planFor(i),getMorale:team=>game.teamMorale(team)};window.NekketsuHD.ballModels=VISUALFEEL.BALL_MODELS;window.NekketsuHD.facingView=VISUALFEEL.facingView;window.NekketsuHD.impactStun=VISUALFEEL.impactStun;window.NekketsuHD.rollDelta=VISUALFEEL.rollDelta;window.NekketsuHD.personalityFor=p=>BPWPERSONALITY.profileFor(p);window.NekketsuHD.personalityMotion=(p,params)=>BPWPERSONALITY.sampleMotion(BPWPERSONALITY.profileFor(p),params);window.SupermagicFootball=window.NekketsuHD;window.SupermagicFootball.conceptModularStatus=CONCEPT_MODULAR.status;window.SupermagicFootball.portraitFit=portraitFit;window.SupermagicFootball.studio={directions:STUDIO_DIRS,getDirection:()=>studioDirection,rotate:studioRotate,getAction:()=>studioAction,fitKeeperPose:drawFittedKeeperStudioPose};showHome();requestAnimationFrame(frame);
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
