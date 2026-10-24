@@ -321,3 +321,44 @@ test('LAN-011 preserves host watermark when accepting future packet after simula
  assert.equal(result.state.lastSimulatedFrame,7);
  assert.throws(()=>p.advanceLanHostFrame(result.state,7));
 });
+
+test('LAN-012 host and guest bootstrap canonical hello packets on open channels',async()=>{
+ const p=await load(),hostWire=[],guestWire=[];
+ const host=p.startLanHostChannel(hello,{readyState:'open',send:x=>hostWire.push(x)});
+ const guestHello={...hello,role:'guest'};
+ const guest=p.startLanGuestChannel(guestHello,{readyState:'open',send:x=>guestWire.push(x)});
+ assert.equal(hostWire.length,1);assert.equal(guestWire.length,1);
+ assert.equal(host.bytes,hostWire[0].length);assert.equal(guest.bytes,guestWire[0].length);
+ assert.deepEqual(p.parseLanPacket(hostWire[0]),p.normalizeLanPacket(hello));
+ assert.deepEqual(p.parseLanPacket(guestWire[0]),p.normalizeLanPacket(guestHello));
+ assert.equal(host.state.peer.ready,false);
+ assert.equal(guest.state.peer.ready,false);
+ assert.ok(Object.isFrozen(host));assert.ok(Object.isFrozen(guest));
+});
+test('LAN-012 two already-open peer channels complete hello and exchange frame input',async()=>{
+ const p=await load(),toHost=[],toGuest=[],guestHello={...hello,role:'guest'};
+ const host=p.startLanHostChannel(hello,{readyState:'open',send:x=>toGuest.push(x)});
+ const guest=p.startLanGuestChannel(guestHello,{readyState:'open',send:x=>toHost.push(x)});
+ const hostReady=p.acceptLanHostMessage(host.state,{data:toHost.shift()},40);
+ const guestReady=p.acceptLanGuestHello(guest.state,{data:toGuest.shift()});
+ assert.equal(hostReady.kind,'ready');assert.equal(guestReady.peer.ready,true);
+ const outgoing=p.sendLanGuestFrame(guestReady,{readyState:'open',send:x=>toHost.push(x)},42,['jump','pass'],1,0);
+ assert.equal(outgoing.packet.sequence,1);
+ const accepted=p.acceptLanHostMessage(hostReady.state,{data:toHost.shift()},40);
+ assert.equal(accepted.kind,'accepted');
+ const simulated=p.advanceLanHostFrame(accepted.state,42);
+ assert.equal(simulated.received,true);
+ assert.deepEqual(simulated.input,{frame:42,buttons:['jump','pass'],dx:1,dy:0});
+});
+test('LAN-012 bootstrap refuses closed channels, invalid roles and failed sends',async()=>{
+ const p=await load(),guestHello={...hello,role:'guest'};
+ const closed={readyState:'connecting',send(){throw Error('must not send')}};
+ const broken={readyState:'open',send(){throw Error('disconnected')}};
+ assert.throws(()=>p.startLanHostChannel(hello,closed));
+ assert.throws(()=>p.startLanGuestChannel(guestHello,closed));
+ assert.throws(()=>p.startLanHostChannel(hello,broken),/disconnected/);
+ assert.throws(()=>p.startLanGuestChannel(guestHello,broken),/disconnected/);
+ assert.throws(()=>p.startLanHostChannel(guestHello,{readyState:'open',send(){}}));
+ assert.throws(()=>p.startLanGuestChannel(hello,{readyState:'open',send(){}}));
+ assert.throws(()=>p.startLanHostChannel({...hello,sequence:1},{readyState:'open',send(){}}));
+});
