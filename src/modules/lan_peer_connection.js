@@ -141,6 +141,39 @@ function createLanPeerConnection(localHello, options = {}) {
       throw error;
     }
   }
+  // LAN-015: await the actual protocol handshake, not merely the SDP exchange.
+  // This bounded gate is for future lobby/game-loop wiring; it does not
+  // claim a playable two-browser session by itself.
+  function awaitReady(timeoutMs = DEFAULT_ICE_TIMEOUT_MS) {
+    if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 120000) {
+      return Promise.reject(new RangeError('Invalid LAN readiness timeout'));
+    }
+    if (disposed) return Promise.reject(new Error('LAN peer disposed'));
+    if (phase === 'connected-signaling' && binding?.ready) return Promise.resolve(binding);
+    return new Promise((resolve, reject) => {
+      let finished = false;
+      let poll;
+      let timeout;
+      function finish(error) {
+        if (finished) return;
+        finished = true;
+        clearInterval(poll);
+        clearTimeout(timeout);
+        if (error) reject(error); else resolve(binding);
+      }
+      function check() {
+        if (disposed || peer.connectionState === 'failed' ||
+            peer.connectionState === 'closed' || channel?.readyState === 'closed') {
+          finish(new Error('LAN peer closed before handshake'));
+        } else if (phase === 'connected-signaling' && binding?.ready) {
+          finish();
+        }
+      }
+      poll = setInterval(check, 25);
+      timeout = setTimeout(() => finish(new Error('LAN handshake timed out')), timeoutMs);
+      check();
+    });
+  }
   function dispose() {
     if (disposed) return;
     disposed = true;
@@ -150,7 +183,7 @@ function createLanPeerConnection(localHello, options = {}) {
     try { channel?.close(); } catch { /* already closed */ }
     peer.close();
   }
-  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), dispose,
+  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, dispose,
     get ready() { return !disposed && phase === 'connected-signaling' && !!binding?.ready; },
     get phase() { return phase; },
     get binding() { return binding; },
