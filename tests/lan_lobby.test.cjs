@@ -27,17 +27,18 @@ test('LAN-024 rejects foreign, oversized and malformed signaling without startin
     assert.throws(()=>parseGuestLanOffer(raw,build),/LAN/);
   }
 });
-test('LAN-024 local network menu is explicitly a connection preview, not a playable match',()=>{
+test('LAN-046 Quick Match routes ready LAN sessions to live gameplay',()=>{
   const root=path.resolve(__dirname,'..');
   const ui=fs.readFileSync(path.join(root,'src/modules/ui.js'),'utf8');
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   const fixture=fs.readFileSync(path.join(root,'scripts/build.py'),'utf8');
-  assert.match(ui,/navItem\('Local Network · Connection Preview','navLan'/);
-  assert.match(ui,/mountLanLobby\(\$\('lanLobby'\)\)/);
+  assert.match(ui,/navItem\('Local Network · LAN Quick Match','navLan'/);
+  assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{onReady:startLanQuickMatch\}\)/);
+  assert.match(ui,/createLanLiveMatch\(\{peer,role,game,input,field:ENGINE\.WORLD\.field\}\)/);
   assert.match(ui,/screen==='LOCAL NETWORK'&&e.code==='Escape'/);
   assert.match(ui,/lanLobbyDispose\(\)/);
-  assert.match(sw,/'lan_protocol','lan-protocol-channel','lan_peer_connection','lan-lobby'/);
-  assert.match(fixture,/'lan_protocol','lan-protocol-channel','lan_peer_connection','lan-lobby'/);
+  assert.match(sw,/'lan_peer_connection','lan-lobby','lan-live-match','render'/);
+  assert.match(fixture,/'lan_peer_connection','lan-lobby','lan-live-match','render'/);
 });
 test('LAN-024 host creates a copyable offer and disposes peer on navigation',async()=>{
   const {mountLanLobby}=await load();
