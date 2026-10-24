@@ -163,7 +163,10 @@ function acceptLanHostMessage(state,message,hostFrame){
  }
  if(!state.queue)throw new Error('LAN host queue unavailable');
  if(received.kind==='replay')return Object.freeze({kind:'replay',state});
- const queued=enqueueGuestLanInput(state.queue,received.packet,hostFrame);
+ // A frame already simulated cannot be resurrected by a delayed packet,
+ // even when the caller provides a stale hostFrame snapshot.
+ const nextFrame=Math.max(hostFrame,(state.lastSimulatedFrame??-1)+1);
+ const queued=enqueueGuestLanInput(state.queue,received.packet,nextFrame);
  if(!queued.accepted)return Object.freeze({kind:queued.reason,state});
  return Object.freeze({kind:'accepted',state:Object.freeze({peer:received.state,queue:queued.state,lastSimulatedFrame:state.lastSimulatedFrame??-1})});
 }
