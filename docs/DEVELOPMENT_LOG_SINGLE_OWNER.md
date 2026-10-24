@@ -734,3 +734,6 @@ Exact-head d1ac4b3b failed memory contract because developer checkpoint omitted 
 - Next: finish/repair exact-head CI, permit protected promotion, verify main/Pages hashes; integrate real match state with host snapshots and guest rendering; two-browser network E2E; Concept Royals issue #15 screenshot QA.
 
 - Follow-up offline import closure: `src/modules/lan-state-snapshot.js` imports `lan-session.js`, which was absent from SW precache; added in `756990cb`. Regression `294a52b5` asserts the full transitive snapshot dependency chain is cached and the browser fixture includes the new modules. Intermediate `38e7ef44` Modular QA passed; latest exact-head certification pending.
+
+### 2026-10-24 LAN-028 fail-fast readiness
+`awaitReady` now immediately rejects an already-failed/closed RTC transport or closed DataChannel before installing polling timers; source 1a4f5111, tests 9acf5ca6. Prior exact dev/main c495c329 passed 4+4 census, Modular QA and Pages. New head pending CI. Internal LAN change; About-only 0.9.40.0 unchanged. Real two-client gameplay and Concept Royals screenshot QA outstanding.
