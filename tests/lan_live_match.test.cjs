@@ -54,7 +54,7 @@ test('LAN-044 host simulates only through authoritative peer and remote 4-button
   assert.equal(peer.frames[0].state.tick,0);
   assert.equal(input.state[1].shoot,1);
   assert.equal(input.pressed[1].shoot,true);
-  assert.ok(Math.abs(input.state[1].x-Math.SQRT1_2)<1e-12);
+  assert.ok(Math.abs(input.state[1].x+Math.SQRT1_2)<1e-12);
   assert.ok(Math.abs(input.state[1].y-Math.SQRT1_2)<1e-12);
   assert.ok(Math.abs(Math.hypot(input.state[1].x,input.state[1].y)-1)<1e-12);
   assert.equal(match.players[1].x<700,true);
