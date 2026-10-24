@@ -32,7 +32,7 @@ test('Ice Patch is wired into runtime and painted independently',()=>{
  const engine=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8');
  const render=fs.readFileSync(path.join(__dirname,'../src/modules/render.js'),'utf8');
  assert.match(engine,/this\.magicHazards=placeIcePatch\(this\.magicHazards,p,F\)/);
- assert.match(engine,/const ice=advanceIcePatches\(this\.magicHazards,this\.players,dt\)/);
+ assert.match(engine,/const ice=advanceIcePatches\(this\.magicHazards,this\.players,dt,next\.slips\)/);
  assert.match(engine,/this\.magicHazards=\[\.\.\.next\.hazards,\.\.\.ice\.hazards\]/);
  assert.match(render,/function drawIcePatches\(ctx,hazards\)/);
  assert.match(render,/drawIcePatches\(ctx,game\.magicHazards\)/);
@@ -103,4 +103,44 @@ test('trap slide counter is called before collision and emits visual feedback wi
  assert.ok(update.indexOf('disarmMagicHazards(')<update.indexOf('advanceBananaPeels('));
  assert.ok(update.indexOf('disarmMagicHazards(')<update.indexOf('advanceIcePatches('));
  assert.match(engine,/this\.resolvePlayerContacts\(dt\);this\.updateMagicHazards\(dt\);this\.updateBall\(dt\)/);
+});
+
+test('overlapping Banana Peels stun each grounded rival only once per physics tick',async()=>{
+ const p=await model;
+ const active=p.placeBananaPeel(p.placeBananaPeel([],carrier,field),carrier,field);
+ const one=p.advanceBananaPeels(active,[rival],.4);
+ assert.deepEqual(one.slips,[rival]);
+ assert.equal(one.hazards.length,1,'unused overlapping peel must survive');
+ const second={...rival};
+ const two=p.advanceBananaPeels(active,[rival,second],.4);
+ assert.deepEqual(two.slips,[rival,second],'separate rivals can each trigger a trap');
+ assert.equal(two.hazards.length,0);
+});
+test('overlapping Ice Patches preserve unused trap and never double-chill a rival',async()=>{
+ const p=await model;
+ const active=p.placeIcePatch(p.placeIcePatch([],carrier,field),carrier,field);
+ const one=p.advanceIcePatches(active,[rival],.4);
+ assert.deepEqual(one.slips,[rival]);
+ assert.equal(one.hazards.length,1,'second patch remains available');
+ const second={...rival};
+ const two=p.advanceIcePatches(active,[rival,second],.4);
+ assert.deepEqual(two.slips,[rival,second]);
+ assert.equal(two.hazards.length,0);
+});
+test('Banana priority preserves overlapping Ice Patch for a different opponent',async()=>{
+ const p=await model;
+ const active=p.placeIcePatch(p.placeBananaPeel([],carrier,field),carrier,field);
+ const banana=p.advanceBananaPeels(active,[rival],.4);
+ const ice=p.advanceIcePatches(active,[rival],.4,banana.slips);
+ assert.deepEqual(banana.slips,[rival]);
+ assert.deepEqual(ice.slips,[]);
+ assert.equal(ice.hazards.length,1,'Ice Patch must not be consumed by an already-slipping rival');
+ const other={...rival};
+ const multi=p.advanceIcePatches(active,[rival,other],.4,banana.slips);
+ assert.deepEqual(multi.slips,[other],'Ice Patch should instead affect a second grounded rival');
+ assert.throws(()=>p.advanceIcePatches(active,[rival],.4,null),TypeError);
+});
+test('engine passes same-tick Banana victims to Ice model',()=>{
+ const engine=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8');
+ assert.match(engine,/const ice=advanceIcePatches\(this\.magicHazards,this\.players,dt,next\.slips\)/);
 });
