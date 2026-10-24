@@ -44,9 +44,11 @@ function bindLanSnapshotHostChannel(host, channel, roomId, hostId) {
   return binding;
 }
 
-function bindLanSnapshotGuestChannel(channel, roomId, hostId, onSnapshot, initialTick=-1) {
+function bindLanSnapshotGuestChannel(channel, roomId, hostId, onSnapshot, initialTick=-1, signal=null) {
   if (!validChannel(channel) || !validId(roomId) || !validId(hostId) ||
-      typeof onSnapshot !== 'function' || !Number.isSafeInteger(initialTick) || initialTick < -1) {
+      typeof onSnapshot !== 'function' || !Number.isSafeInteger(initialTick) || initialTick < -1 ||
+      (signal != null && (typeof signal.addEventListener !== 'function' ||
+        typeof signal.removeEventListener !== 'function' || typeof signal.aborted !== 'boolean'))) {
     throw new TypeError('Invalid LAN snapshot guest binding');
   }
   if (guestBindings.has(channel)) throw new Error('Snapshot guest channel already bound');
@@ -69,12 +71,20 @@ function bindLanSnapshotGuestChannel(channel, roomId, hostId, onSnapshot, initia
     disposed = true;
     channel.removeEventListener('message', onMessage);
     channel.removeEventListener('close', dispose);
+    signal?.removeEventListener('abort', dispose);
     guestBindings.delete(channel);
   }
+  const binding = Object.freeze({dispose,get lastTick() { return lastTick; }});
+  // Register before subscribing to abort: an already-aborted or synchronously
+  // aborting signal must not leave a stale binding in the WeakMap.
+  guestBindings.set(channel, binding);
   channel.addEventListener('message', onMessage);
   channel.addEventListener('close', dispose);
-  const binding = Object.freeze({dispose,get lastTick() { return lastTick; }});
-  guestBindings.set(channel, binding);
+  if (signal?.aborted) dispose();
+  else if (signal) {
+    signal.addEventListener('abort', dispose, {once:true});
+    if (signal.aborted) dispose();
+  }
   return binding;
 }
 
