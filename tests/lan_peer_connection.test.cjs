@@ -794,3 +794,18 @@ test('LAN-035 invalid host DataChannel closes both channel and peer',async()=>{
   assert.equal(channelClosed,1);
   assert.equal(peerClosed,1);
 });
+
+test('LAN-036 malformed incoming guest channel does not bind or crash event',async()=>{
+  const {createLanPeerConnection}=await load();
+  let peer;
+  class IncomingPeer extends FakePeer {constructor(config){super(config);peer=this;}}
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:IncomingPeer});
+  let closed=0;
+  const channel={label:'smf-lan',close(){closed++;}};
+  const event=new Event('datachannel');
+  Object.defineProperty(event,'channel',{value:channel});
+  assert.doesNotThrow(()=>peer.dispatchEvent(event));
+  assert.equal(closed,1);
+  assert.equal(guest.getStatus().channel,'unavailable');
+  guest.dispose();
+});
