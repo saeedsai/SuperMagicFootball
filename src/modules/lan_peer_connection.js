@@ -155,6 +155,15 @@ function createLanPeerConnection(localHello, options = {}) {
       try { next?.close(); } catch { /* closed/untrusted channel */ }
       return;
     }
+    // Guest-created channels arrive from a remote RTC event. Validate their
+    // interface before installing protocol handlers or publishing readiness.
+    if (typeof next.addEventListener !== 'function' ||
+        typeof next.removeEventListener !== 'function' ||
+        typeof next.send !== 'function' ||
+        typeof next.close !== 'function') {
+      try { next.close?.(); } catch { /* malformed channel */ }
+      return;
+    }
     channel = next;
     binding = bindLanProtocolChannel(hello, channel);
     channel.addEventListener('open', onChannelChange);
