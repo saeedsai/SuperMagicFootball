@@ -670,3 +670,19 @@ test('LAN-027 snapshot imports remain available in offline shell and browser fix
     assert.ok(build.includes("'"+name+"'"),name+' must be in Chromium fixture');
   }
 });
+
+test('LAN-028 already-failed transport rejects readiness without starting a timer',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  host.peer.connectionState='failed';
+  await assert.rejects(host.awaitReady(1000),/closed before handshake/);
+  assert.equal(host.disposed,false);
+  host.dispose();
+});
+test('LAN-028 already-closed DataChannel rejects readiness immediately',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  host.peer.channel.close();
+  await assert.rejects(host.awaitReady(1000),/closed before handshake/);
+  host.dispose();
+});
