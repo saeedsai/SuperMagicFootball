@@ -376,3 +376,26 @@ test('LAN-021 malformed cancellation tokens reject safely and preserve reusable 
   assert.equal(JSON.parse(await host.createOffer()).kind,'offer');
   host.dispose();
 });
+
+test('LAN-022 abortable status subscription cleans up without affecting peer',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const controller=new AbortController();
+  const states=[];
+  const unsubscribe=host.subscribeStatus(status=>states.push(status),controller.signal);
+  assert.equal(states.length,1);
+  host.peer.channel.open();
+  assert.equal(states.length,2);
+  controller.abort();
+  host.peer.connectionState='connected';
+  host.peer.dispatchEvent(new Event('connectionstatechange'));
+  assert.equal(states.length,2);
+  unsubscribe();
+  assert.equal(host.disposed,false);
+  const aborted=new AbortController();aborted.abort();
+  let called=0;
+  host.subscribeStatus(()=>called++,aborted.signal);
+  assert.equal(called,0);
+  assert.throws(()=>host.subscribeStatus(()=>{},{}),/AbortSignal/);
+  host.dispose();
+});
