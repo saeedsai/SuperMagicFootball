@@ -64,6 +64,7 @@ function createLanLiveMatch({peer,role,game,input,field}){
   }
   requireField(field);
   let disposed=false, tick=-1, latestTick=-1,lastSent=-1;
+  let lastHostPhase=null;
   let lastSnapshotAt=-Infinity;
   // Apply only the guest input validated for the host's current frame.
   let remote={buttons:[],dx:0,dy:0};
@@ -104,21 +105,28 @@ function createLanLiveMatch({peer,role,game,input,field}){
     });
   }
   function step(dt){
-    if(disposed || !peer.ready || game.matchState!=='play')return false;
+    if(disposed || !peer.ready)return false;
     if(role==='host'){
+      const phase=game.matchState;
+      if(!['play','paused','finished'].includes(phase))return false;
+      // A pause/finish can originate in the host UI between physics frames.
+      // Publish that transition once without advancing the frozen match.
+      if(phase!=='play' && lastHostPhase===phase)return false;
       tick++;
       try{
-        peer.stepHostMatchFrame(tick,frameInput=>{
-          // Only a consumed, validated packet may affect this frame.
-          // Missing or late packets produce neutral controls, not stale holds.
-          remote=frameInput??{buttons:[],dx:0,dy:0};
+        const result=peer.stepHostMatchFrame(tick,frameInput=>{
+          // Only a consumed, validated packet may affect a playing frame.
+          // Paused/finished frames must never apply queued guest actions.
+          remote=phase==='play'?(frameInput??{buttons:[],dx:0,dy:0}):{buttons:[],dx:0,dy:0};
           try{
-            game.update(dt);
+            if(phase==='play')game.update(dt);
             return captureLanGameState(game,field,tick);
           }finally{
             remote={buttons:[],dx:0,dy:0};
           }
         });
+        // A failed send must be retried on the next step, not certified.
+        if(result?.snapshotSent!==false)lastHostPhase=game.matchState;
         return true;
       }catch(error){
         // Do not let a disconnected channel keep simulating an unshared match.

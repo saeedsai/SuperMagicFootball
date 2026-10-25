@@ -157,3 +157,57 @@ test('LAN-053 guest sends proportional analog tilt without losing digital direct
     'keyboard full-strength direction is unchanged');
   run.dispose();
 });
+
+test('LAN-054 host publishes paused/finished transitions once without advancing frozen physics',async()=>{
+  const {createLanLiveMatch,applyLanGameState}=await load();
+  const input=controls(),host=game(input),guest=game(controls());
+  let updates=0;
+  const original=host.update;
+  host.update=function(dt){updates++;return original.call(this,dt);};
+  const peer={ready:true,frames:[],stepHostMatchFrame(frame,simulate){
+    const state=simulate({buttons:['shoot'],dx:1,dy:0});
+    this.frames.push(state);
+    return {snapshotSent:true};
+  }};
+  const run=createLanLiveMatch({peer,role:'host',game:host,input,field});
+  assert.equal(run.step(.02),true);
+  assert.equal(updates,1);
+  host.matchState='paused';
+  assert.equal(run.step(.02),true,'host UI pause must reach guest even without physics');
+  assert.equal(updates,1,'pause must not advance the game');
+  assert.equal(peer.frames[1].tick,1);
+  assert.equal(peer.frames[1].meta.phase,'paused');
+  applyLanGameState(guest,field,peer.frames[1]);
+  assert.equal(guest.matchState,'paused');
+  assert.equal(run.step(.02),false,'same paused phase is not resent every RAF');
+  host.matchState='play';
+  assert.equal(run.step(.02),true);
+  assert.equal(updates,2);
+  applyLanGameState(guest,field,peer.frames[2]);
+  assert.equal(guest.matchState,'play');
+  host.matchState='finished';
+  assert.equal(run.step(.02),true,'host finish outside physics must be sent');
+  assert.equal(updates,2,'finished match remains frozen');
+  assert.equal(peer.frames[3].meta.phase,'finished');
+  assert.equal(run.step(.02),false);
+  run.dispose();
+});
+
+test('LAN-054 failed paused snapshot retries without simulating extra physics',async()=>{
+  const {createLanLiveMatch}=await load();
+  const input=controls(),match=game(input);
+  match.matchState='paused';
+  let attempts=0;
+  const peer={ready:true,stepHostMatchFrame(frame,simulate){
+    simulate({buttons:['shoot'],dx:1,dy:0});
+    attempts++;
+    return {snapshotSent:attempts>1};
+  }};
+  const run=createLanLiveMatch({peer,role:'host',game:match,input,field});
+  assert.equal(run.step(.02),true);
+  assert.equal(run.step(.02),true,'failed transport send must not consume phase transition');
+  assert.equal(run.step(.02),false,'successful phase send is sent once');
+  assert.equal(attempts,2);
+  assert.equal(match.clock,0);
+  run.dispose();
+});

@@ -1,20 +1,20 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · 2026-10-25 03:06 CET.
+**Agent ID:** `smf-hourly-dev-20261019` · 2026-10-25 03:59 CET.
 
 ## Mission
-Continue one bounded, tested increment each hour directly on existing dev; never pause for pending CI/main/Pages. Preserve safety gates and only dev/main.
+Ship one bounded tested increment each hour on existing dev regardless of pending release; repair blockers safely. Only dev/main.
 
 ## Current checkpoint
-Baseline dev=main `f934e2d7c2572788d400f555a1f398f9a923f459`, production 0.9.41.3. Dev Modular QA #40145196269 and full 4 Node + 4 Chromium #40145196262 green; main full #40145491155 and Pages #40145491629 green. LAN-053 candidate 0.9.41.4: preserve proportional guest analog-stick axes (instead of Math.sign full-speed) and clamp invalid axes, with focused regression. Source-executed V8 analog/nonfinite/digital smoke passed before commit. New exact-head CI, two physical clients and hosted validation must be checked after push. Keep 223 teams/2676 players, six formations, four buttons, 10 Career/Cup slots, SD09, offline/saves.
+Baseline dev=main `b74ace27bee043355af0e9b374236a238c8895f2` (0.9.41.4 certified via dev Modular #40153292635, Full 4+4 #40153292598, main Full #40153517483, Pages #40153517632). LAN-054 candidate 0.9.41.5: host publishes paused/finished state even when no physics tick occurs, exactly once per successful transition; failed snapshot sends retry. Two Node regressions and source-executed V8 smoke passed. Exact-head CI, physical two-client LAN, protected promotion and Pages byte smoke pending. Preserve 223/2676, six formations, four buttons, ten Career/Cup slots, SD09, offline and saves.
 
 ## Next smallest action
-Inspect exact-head LAN-053 CI; repair any failure safely, then perform genuine two-client LAN movement/latency/reconnect browser QA.
+Inspect exact-head LAN-054 Modular and Full Census runs; repair red checks. Test two-client pause/resume, disconnect and latency, then implement next compatible small dev increment regardless of release status.
 
 ## Ownership and exclusions
-Sole dev `smf-hourly-dev-20261019`. Only own checkpoint and central log; never read/edit other agents' memories. No new branches, force push, red promotions, or bypassed security.
+Sole developer `smf-hourly-dev-20261019`; own checkpoint only. No extra branches, force push, bypassed checks, premature main or unverified claims.
 
 ## Evidence
-Source-executed proposed LAN guest match module test passed for .25/-.5 tilt, Infinity/-4 neutralization/bounds, 1/0 keyboard. GitHub CI after this commit is not yet certified; see central log for actual new SHA and runs.
+Previous green exact-head Actions listed above; new candidate focused source smoke passed before commit. Full new-head CI and physical devices not yet certified.
 
 ## Cleanup
-Keep this file <4 KiB; no secrets. Next five: (1) exact-head CI, (2) two-client analog/latency/disconnect QA, (3) Crown Royals #15 facing art, (4) Player Studio/Trick counterplay, (5) protected main/Pages byte smoke.
+Keep under 4 KiB. Next five: (1) CI diagnosis, (2) real LAN two-client QA, (3) Crown Royals directional art, (4) Player Studio/Trick counterplay, (5) green-head protected main and Pages byte smoke.

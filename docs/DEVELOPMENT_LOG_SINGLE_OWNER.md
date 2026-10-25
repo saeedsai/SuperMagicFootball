@@ -1,3 +1,10 @@
+## 2026-10-25 03:59 CET — LAN-054 host phase transition delivery (0.9.41.5 candidate)
+- Baseline dev=main `b74ace27bee043355af0e9b374236a238c8895f2`; exact-head dev Modular QA #40153292635 and Full Regression Census #40153292598 green, main Full Regression #40153517483 and Pages #40153517632 green for 0.9.41.4. Only dev/main branches found.
+- Root cause: `createLanLiveMatch.step` returned before sending when the host entered `paused` or `finished` between physics frames, leaving the guest on a stale phase despite LAN-048 metadata support.
+- LAN-054 sends one host-authoritative paused/finished snapshot without `game.update`, neutralizes guest controls during frozen phases and retries failed sends. Two focused Node regressions cover pause/resume/finish, frozen physics and retry. Source-executed V8 smoke passed; exact-head Node/Chromium/Modular CI and real two-client LAN are pending until independently verified.
+- Candidate 0.9.41.5 aligned in About, package, README, sw cache, version policy and shared memory. No roster, save, SD09, button or offline schema changes; no extra branch/force push. Green exact-head protected promotion and hosted byte smoke remain separate gates.
+- Next: inspect CI, diagnose any failures, real two-client pause/resume/latency/disconnect QA, Crown Royals directional art, Player Studio/Trick, protected Pages certification.
+
 ## 2026-10-25 03:06 CET — LAN-053 proportional guest gamepad steering (0.9.41.4 candidate)
 - Starting exact dev/main `f934e2d7c2572788d400f555a1f398f9a923f459`, 0.9.41.3 production. Dev Modular QA #40145196269, Full Regression Census #40145196262, main Full Regression #40145491155 and Pages #40145491629 all reported success.
 - Found `src/modules/lan-live-match.js` guest send path used `Math.sign` on axes: analog 0.25/-0.5 was transmitted as 1/-1, turning gentle stick input into full-speed movement. Preserve finite proportional axes, clamp out-of-range values to [-1,1], map NaN/Infinity to neutral. Host already normalizes diagonals; no extra buttons or packet schema changes. Added LAN-053 focused regression.
