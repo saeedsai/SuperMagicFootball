@@ -1,3 +1,6 @@
+## 2026-10-25 — closed LAN host clock safety
+- Dev fix 8449ba2 and test 77e8d47: pendingRequests() returns immediately after close without invoking clock. Internal fix, no version bump. Tests committed but not executed; full 4+4/Modular QA, gameplay/graphics and protected main/Pages unverified. Pre-change dev 56 ahead main.
+
 ## 2026-10-25 — LAN in-flight duplicate rejection
 - Source b3459be, regression 02021a4: reject duplicate join request while async decision send is pending. No player-facing version bump. Tests committed but not executed; full 4+4, Modular QA, gameplay/graphics, protected main/Pages not verified. Pre-change dev 52 ahead main.
 
