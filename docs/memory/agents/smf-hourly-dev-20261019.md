@@ -1,33 +1,30 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-25 19:06 CET
+**Updated:** 2026-10-25 20:00 CET
 
 ## Mission
-Develop one bounded, tested increment per run on existing `dev` even while CI/release waits. Preserve only `dev` and protected `main`; no force push, security bypass or invented QA.
+Never pause development on existing `dev` because CI/release is pending; diagnose blockers, commit small safe tested increments, never bypass protections. Only `dev` and `main` permitted. Preserve 223 teams/2676 players, six formations, four buttons, ten save slots, SD09 and offline/save compatibility.
 
-## Current checkpoint
-Prior certified baseline `dev=main=2e92165a` had Modular #40205918022 and Full 4 Node+4 Chromium #40205918023 green. Current `main=84f8bae589f0675ea1e4cd8525a802ef0a643a92`; `dev` candidate About-only `0.9.42.1` (not certified). Server-side LAN increments: host-left and registration ACK, guest cancellation/release, opt-in hosted signaling Origin policy, room and pending queue bounds, 120 messages/min/socket, eight sockets/IP. No hosted service/TURN or physical two-client certification.
+## Current candidate and history
+Installed About-only candidate 0.9.42.1 (not certified). `main=84f8bae589f0675ea1e4cd8525a802ef0a643a92`; previous `dev=bca2d92cb6c0402cf52ffe310cb7084ecf172060` (41 ahead, 0 behind) before documentation commits. Prior certified baseline was 2e92165a with Modular #40205918022 and Full 4+4 #40205918023, NOT evidence for current dev.
 
-**Current increment:** Timeout cleanup sends guest `join-reject` and host `join-cancel`, clearing stale host approval UI. Helper commit `b980a0b4`, server integration `61e0c2e5`, focused tests `3511562c`, central log `4d518b99`. After tests, dev was `3511562c85d0b37b547d0d9bf3ff9b00fcc7861f` (27 ahead main, 0 behind); re-fetch after this checkpoint commit. Server-only change: no installed game version bump.
+LAN groundwork already on dev: local room discovery, host consent, automatic WebRTC signaling, guest leave/release, timeout cleanup, pending queue/room caps, origin-scoped opt-in hosted signaling, socket message rate/IP connection caps, single guest seat, idempotent same-room host re-registration. No hosted public signaling service, TURN or certified physical two-client LAN.
 
-## New increment
-Approval now rejects other pending requests for same room and notifies host/guests; server commit 60373af1, source regression 02b0be94. Focused/full exact-head CI and real two-client QA not yet confirmed. No bundle change or version bump.
+## Latest increment
+- `bcad53df`: enforce one host/guest role per socket. Registering host releases previous guest seat/pending requests; hosting sockets cannot request a guest seat in another room.
+- `bca2d92c`: update stale host registration test (prior implementation made it idempotent) and add role-transition regression contract.
+- V8 source-backed focused checks 6/6 passed, including real execution of guest-release helper against two rooms and pending joins. No full Node/Chromium/Modular/visual certification.
+- Central log updated `9a6a58c8`. No player-facing bundle changes/version bump.
 
-## Latest host registration increment
-Repeated same-socket same-room host registration now ACKs without clearing guest or pending requests (4750bd06); regression source contract 1e640243. Full QA and protected release unverified. Server-only; no version bump.
+## Evidence and blockers
+Combined commit statuses returned [] and commit-workflow lookup returned [] (PR-only lookup, cannot infer green). Container git clone failed DNS resolution for github.com; GitHub connector commits work. Full Node 4 + Chromium 4, Modular QA, real two-client LAN, screenshot graphics, protected promotion and Pages hosted-byte smoke are UNVERIFIED. Do not promote an unverified head.
 
+## Next five actions
+1. Inspect exact current dev/main and actual CI; repair red jobs, no green inference.
+2. Improve LAN multi-request approval/queue UX and add behavioral integration tests.
+3. Exercise real two-client WebRTC sync, disconnect/retry, room visibility.
+4. Improve Player Studio/counterable four-button Tricks and Concept Royals directional art with screenshot QA.
+5. Once exact combined dev head is fully green, use protected main promotion and verify Pages bytes.
 
-## Latest guest seat fix
-Reject joining a second room when WebSocket is already approved in another; server c2f81102, source regression 28679512. Full CI/graphics/two-device QA and promotion unverified; server-only, no version bump.
-
-## Next smallest action
-Check exact latest dev/main heads and workflow results; repair any full-suite failure. Next independent LAN improvement: reject/cancel other pending joins when a room guest is approved, or browser endpoint configuration with coordinated player-facing version. Then two-client WebRTC, Player Studio, counterable four-button tricks and Crown Royals directional art. Promote only exact green dev via protected pipeline and verify main/Pages hosted bytes.
-
-## Ownership and exclusions
-Only sole developer writes this checkpoint; preserve 223 teams/2676 players, 12-player squads, six formations, four action buttons, 10 Career/Cup slots, SD09, offline and legacy saves. Do not edit other agents' memory.
-
-## Evidence
-Local isolated Node v22.16.0 helper behavior **2/2 PASS**, source/test syntax PASS; connector-backed integration checks **5/5 PASS**. Full 4 Node+4 Chromium, Modular QA, real-device LAN, gameplay/graphics, Pages smoke **NOT verified** for latest head. Commit combined statuses empty (not green). Local git clone blocked by DNS `Could not resolve host: github.com`; GitHub connector commits succeeded. No main promotion.
-
-## Cleanup
-Continue hourly work on `dev` despite pending release; diagnose and repair blockers lawfully. Keep checkpoint under 4 KiB and central log current.
+## Ownership
+Only edit this agent checkpoint and central log, not other agents' memories. Read AGENTS.md, version policy and shared memory each run. Preserve checkpoint below 4 KiB.
