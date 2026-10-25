@@ -25,3 +25,6 @@ Dev source 80d78ea, test 03e68a0, log 4550101. Selector deduplicates room IDs. N
 
 ## 2026-10-25 — protocol identity fix
 Dev source 3cccb96, test 3db5426, log fb3221e. Explicit protocol metadata cannot be overridden by fields. Tests added, not executed this run; full exact-head CI, graphics/gameplay QA and main/Pages not verified. Continue secure LAN transport and UI, then protected promotion.
+
+## 2026-10-25 — directory capacity
+Dev source aba2424, test 8fb790e, log 6a2f545. 128 active rooms max; updates/expiry work. Only dev/main confirmed; dev 8 ahead at pre-change comparison. Tests not executed, full QA/main/Pages pending. Continue secure transport and UI, test exact head before protected promotion.
