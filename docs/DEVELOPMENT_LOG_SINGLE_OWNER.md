@@ -1,3 +1,6 @@
+## 2026-10-25 — Highest priority: visible LAN host/join gateway
+- Owner reported Host Game / Find Games missing in public UI. Root cause: `mountLanLobby` routes public GitHub Pages to manual SDP fallback; automatic discovery only runs on same-origin `npm run serve:lan` server. `f5cedfe8`/`41ada23d` add and correctly mount a private-IP gateway from Pages to LAN companion; `2a8973cd`/`f2c846cb` add source-contract tests. Candidate player-facing version 0.10.1.0 aligned in package, release, README and SW. Full CI, actual browser run, physical two-device and hosted deployment pending. No static-site automatic discovery claim.
+
 ## 2026-10-25 — Host approval closed-guest guard
 - `6f68c72c` prevents host approval reserving a room seat when requesting guest WebSocket already closed; host receives `join-cancel` reason `guest-left`. `347b0302` adds source-contract regression. New head CI and real two-device LAN/graphics unverified. Previous `e667fe42` completed protected promotion to main with all 4 Node + 4 Chromium shards green (Full run #40238388569); hosted byte smoke separately pending verification.
 
