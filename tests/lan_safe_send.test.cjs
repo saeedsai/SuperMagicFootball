@@ -81,3 +81,13 @@ test('socket closed by custom toJSON is not sent to or terminated',async()=>{
  assert.equal(safeLanSend(ws,message),false);
  assert.equal(sent,0);assert.equal(terminated,0);
 });
+
+test('toJSON cannot rewrite a valid envelope into an invalid signaling frame',async()=>{
+ const {safeLanSend}=await load();let sent=0,terminated=0;
+ const ws={readyState:1,send(){sent++},terminate(){terminated++}};
+ for(const rewritten of ['hello',[],{type:99},{roomId:'no-type'}]){
+  assert.equal(safeLanSend(ws,{type:'rooms',toJSON(){return rewritten}}),false);
+ }
+ assert.equal(sent,0);assert.equal(terminated,0);
+ assert.equal(safeLanSend(ws,{type:'rooms'}),true);assert.equal(sent,1);
+});
