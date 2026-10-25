@@ -1,7 +1,7 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.10.3.0',
+ version:'0.10.3.1',
  date:'2026-10-25',
  notes:Object.freeze([
   'Hosted LAN signaling service provisioned on Render; automatic Host Game and Find Games now use the configured secure WebSocket endpoint on GitHub Pages. Rooms are scoped to a shared public network and require host approval; real-phone certification remains pending.',
