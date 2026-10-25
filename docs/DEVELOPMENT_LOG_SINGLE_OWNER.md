@@ -1,3 +1,8 @@
+## 2026-10-25 21:06 CET — LAN send failure recovery and CI checkpoint repair (dev)
+- CI root cause: own agent memory lacked required headings, failing Modular #40228901179 and Full #40228901187. Fixed in `bbc8e65d`; later intermediate Modular QA passed but their Full runs were cancelled as dev advanced.
+- New server-only LAN feature `bcc944d7`: WebSocket signaling send exceptions and async write errors no longer crash the server; broken peer is terminated for standard room/guest cleanup; socket error handler added. New tests: five local Node behavioral cases passed, plus server-wiring contract. Full exact-head 4 Node + 4 Chromium, Modular, physical two-client, graphics and Pages verification pending. No game version bump (About candidate 0.9.42.1), roster/save/control/offline changes.
+- One GitHub ref-update GraphQL UNKNOWN error occurred; retry against fresh dev succeeded. Pending CI/deployment never pauses dev feature work.
+
 ## 2026-10-25 19:06 CET — LAN expired join cleanup (dev candidate only)
 - Root cause: signaling server timed out a guest's pending join after 30s but did not tell the host; the host's ACCEPT/REJECT UI remained stale and could falsely report approval.
 - Added `scripts/lan-pending-expiry.mjs` (b980a0b4), wired the 5s server expiry timer (61e0c2e5), and added `tests/lan_pending_expiry.test.cjs` (3511562c). Timed-out requests now notify guest with join-reject and host with join-cancel using the socket-bound pending record. Fresh requests remain intact; duplicate expiry is idempotent.
