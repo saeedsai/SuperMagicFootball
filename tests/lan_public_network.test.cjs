@@ -11,7 +11,7 @@ test('LAN client IP uses socket and ignores untrusted browser forwarded headers'
 
 test('managed hosted signaling uses the edge-forwarded client IP, not Render load balancer',async()=>{
  const {lanClientIp}=await load();
- const request={socket:{remoteAddress:'10.111.0.5'},headers:{'x-forwarded-for':'203.0.113.20, 172.16.20.3'}};
+ const request={socket:{remoteAddress:'10.111.0.5'},headers:{'x-forwarded-for':'198.51.100.66, 203.0.113.20'}};
  assert.equal(lanClientIp(request,{hosted:true}),'172.16.20.3');
  const spoofed={socket:{remoteAddress:'10.111.0.5'},headers:{'x-forwarded-for':'198.51.100.66, 203.0.113.20'}};
  assert.equal(lanClientIp(spoofed,{hosted:true}),'203.0.113.20','client-supplied prefix must not spoof discovery network');
