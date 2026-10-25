@@ -22,3 +22,6 @@ Central dev log updated (`1c35e95`). Next run inspect latest heads and CI, fix a
 
 ## 2026-10-25 — same-room approvals
 Dev source 598e157, test d0a6d84, log aa01820. Same-room start retains pending join requests; room switch clears them. Tests not executed; full CI and graphics/gameplay/main/Pages not verified. Continue secure peer binding and UI integration; promote exact green dev only.
+
+## 2026-10-25 — host approval count
+Dev source 6329cb2, test 933dbfa, log d10d115. pendingCount() excludes expired requests and closed controller. Not executed; full QA and protected main/Pages unverified. Next authenticate peer identity, integrate UI, run exact-head QA.
