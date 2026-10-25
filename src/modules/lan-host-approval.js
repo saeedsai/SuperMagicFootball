@@ -17,6 +17,9 @@ export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30
   const prune = (time = now()) => {
     for (const [id, entry] of pending) if (entry.expiresAt <= time) pending.delete(id);
     for (const [id, expiresAt] of decided) if (expiresAt <= time) decided.delete(id);
+    // A timed-out send must not reserve the request ID indefinitely. Its
+    // completion is still guarded by entry identity in delivered().
+    for (const id of sending.keys()) if (!pending.has(id)) sending.delete(id);
   };
   return Object.freeze({
     start(roomId) {
