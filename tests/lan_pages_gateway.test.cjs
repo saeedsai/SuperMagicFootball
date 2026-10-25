@@ -51,3 +51,11 @@ test('public Pages signaling fails closed without a hosted endpoint (runtime)',a
   if(previousEndpoint===undefined)delete globalThis.SMF_LAN_SIGNAL_URL;else globalThis.SMF_LAN_SIGNAL_URL=previousEndpoint;
  }
 });
+
+test('host consent is not falsely acknowledged after signaling disconnect',()=>{
+ const auto=read('src/modules/lan-auto-lobby.js');
+ assert.ok(auto.includes("if(!send({type:'decision',roomId,requestId:m.requestId,accept:true}))return status("));
+ assert.ok(auto.includes("if(!send({type:'decision',roomId,requestId:m.requestId,accept:false}))return status("));
+ assert.ok(auto.includes("Discovery disconnected. Cannot approve guest"));
+ assert.ok(auto.includes("Discovery disconnected. Cannot reject guest"));
+});
