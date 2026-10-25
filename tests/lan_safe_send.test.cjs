@@ -35,3 +35,13 @@ test('LAN server wires safe signaling and handles socket error events',()=>{
  assert.match(source,/const send=safeLanSend;/);
  assert.match(source,/ws\.on\('error',/);
 });
+
+test('unserializable signaling payload is contained and peer terminated',async()=>{
+ const {safeLanSend}=await load();let closed=0,sent=0;
+ const ws={readyState:1,send(){sent++},terminate(){closed++}};
+ const circular={type:'offer'};circular.self=circular;
+ assert.equal(safeLanSend(ws,circular),false);
+ assert.equal(sent,0);assert.equal(closed,1);
+ assert.equal(safeLanSend({readyState:1,send(){sent++},terminate(){closed++}},{type:'offer',bad:1n}),false);
+ assert.equal(sent,0);assert.equal(closed,2);
+});
