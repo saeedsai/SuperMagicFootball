@@ -18,6 +18,9 @@ Room registration confirmation commits c3c424f4 (server) and 9ecf1c4b (UI); test
 ## Hosted signaling increment (2026-10-25)
 Commits d83bcf70 (policy), a166b3fa (server wiring), d07be37c (4 tests), 62327062 (log). LAN remains default; opt-in hosted mode accepts only configured exact HTTPS Origin and exposes rooms across IPs. Three isolated Node behavioral tests passed; source wiring verified. This is server-side groundwork ONLY: no hosted service, public signaling endpoint, TURN, abuse protection, two-device verification, full 4+4 CI, graphics certification or protected promotion. Concurrent dev changes seen; re-fetch before edits. Next: bounded room/rate controls, browser auto endpoint, full CI and real hosted deployment. No version bump for this server-only increment.
 
+## Latest bounded signaling increment
+Server room capacity and per-guest/per-room pending queue bounds committed 20b3d4c2, regression source contract 98b24b72. Focused and full exact-head CI not yet observed. Hosted service provisioning and physical two-device verification remain open. Continue dev despite pending promotion.
+
 ## Next smallest action
 Check latest exact dev SHA and Modular/Full 4 Node+4 Chromium CI, repair regressions without stopping further increments. Verify protected main promotion and Pages hosted hashes separately. Next feature: two-client LAN reconnect/approval and Player Studio/tricks/graphics.
 
