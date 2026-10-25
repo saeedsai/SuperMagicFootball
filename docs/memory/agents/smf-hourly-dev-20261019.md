@@ -19,6 +19,10 @@ LAN groundwork already on dev: local room discovery, host consent, automatic Web
 ## Evidence and blockers
 Combined commit statuses returned [] and commit-workflow lookup returned [] (PR-only lookup, cannot infer green). Container git clone failed DNS resolution for github.com; GitHub connector commits work. Full Node 4 + Chromium 4, Modular QA, real two-client LAN, screenshot graphics, protected promotion and Pages hosted-byte smoke are UNVERIFIED. Do not promote an unverified head.
 
+
+## 2026-10-25 approval queue guard
+Server one pending request/room to match single approval UI (0d254b32), source contract updated (67ff82b2). Full exact-head CI, visual and physical QA unverified. Server-only; no version bump.
+
 ## Next five actions
 1. Inspect exact current dev/main and actual CI; repair red jobs, no green inference.
 2. Improve LAN multi-request approval/queue UX and add behavioral integration tests.
