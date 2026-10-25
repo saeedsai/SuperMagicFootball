@@ -18,7 +18,7 @@ def main():
   try:
    for role in ('host','guest'):
     context=browser.new_context(viewport={'width':844,'height':390},is_mobile=True,has_touch=True,ignore_https_errors=False)
-    context.add_init_script("(endpoint)=>{window.SMF_LAN_SIGNAL_URL=endpoint;}",SIGNAL)
+    context.add_init_script("window.SMF_LAN_SIGNAL_URL="+repr(SIGNAL)+";")
     contexts.append(context)
    host=contexts[0].new_page()
    guest=contexts[1].new_page()
