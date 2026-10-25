@@ -1,6 +1,6 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-25 18:00 CET
+**Updated:** 2026-10-25 18:30 CET
 
 ## Mission
 Continue one bounded roadmap increment per hourly run on existing `dev` despite pending CI/release. Only `dev` and `main`; never bypass security or force-push. Follow AGENTS.md and docs/VERSIONING_POLICY.md.
@@ -11,6 +11,9 @@ New About-only candidate `0.9.42.1`: LAN guest explicit leave/cancel/switch, soc
 
 ## Current increment
 Server-only host departure notification committed as 136a95d3; regression source assertion committed as 056d5491. Approved guest receives host-left, pending join-reject includes roomId. Guest lobby host-left handling, exact-head CI, visual and device QA remain unverified. No version bump for companion-server-only change.
+
+## Latest LAN increment
+Room registration confirmation commits c3c424f4 (server) and 9ecf1c4b (UI); test 1da83c4d. UI no longer claims successful hosting until server ACK; registration errors surfaced. Full CI and hosted service not verified. Player-facing change requires coordinated version/README/cache before promotion.
 
 ## Next smallest action
 Check latest exact dev SHA and Modular/Full 4 Node+4 Chromium CI, repair regressions without stopping further increments. Verify protected main promotion and Pages hosted hashes separately. Next feature: two-client LAN reconnect/approval and Player Studio/tricks/graphics.
