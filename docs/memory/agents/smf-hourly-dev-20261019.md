@@ -22,3 +22,6 @@ Next five: (1) verify exact-head Modular and 4+4 CI, repair any red, (2) secure 
 
 ## 2026-10-25 10:51 CET — LAN discovery controller
 Commits 1550b667 and 8f964d5f on dev: announce/heartbeat/remove, guest list and expiry, focused tests added. Log commit 5312406b. Container git ls-remote failed DNS github.com; tests/full CI/main/Pages unverified. Next: secure signaling and browser UI, actual two-client LAN, full QA. No version bump; not player-facing.
+
+## 2026-10-25 — room withdrawal
+Source cf6bd403 and regression 2717fd95 on dev; stale room removed on host switch/close. Log 714462e7. Tests and full CI not verified, no main promotion. Next: run QA, integrate trusted signaling/UI and test two devices.
