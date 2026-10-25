@@ -211,3 +211,33 @@ test('LAN-054 failed paused snapshot retries without simulating extra physics',a
   assert.equal(match.clock,0);
   run.dispose();
 });
+
+
+test('LAN-056 guest recovers from an RTC send failure without skipping its input frame',async()=>{
+  const {createLanLiveMatch}=await load();
+  const input=controls(),match=game(input),sent=[];
+  let fail=true;
+  const peer={ready:true,
+    subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
+    sendGuestInput(frame,buttons,dx,dy){
+      sent.push({frame,buttons,dx,dy});
+      if(fail){fail=false;throw new Error('LAN channel is not open');}
+      return {frame};
+    }
+  };
+  const run=createLanLiveMatch({peer,role:'guest',game:match,input,field});
+  peer.receive({tick:20,clockMs:500,scores:{home:0,away:0},
+    ball:{x:0,y:0,z:0},players:[]});
+  assert.equal(run.step(.016),false,'failed RTC send must not crash the match loop');
+  assert.equal(run.step(.016),true,'a subsequent ready channel retries the unsent input');
+  assert.deepEqual(sent.slice(0,2).map(item=>item.frame),[24,24],
+    'failed frame is not consumed or skipped');
+  assert.deepEqual(sent[0].buttons,['pass']);
+  assert.deepEqual([sent[1].dx,sent[1].dy],[1,0]);
+  assert.equal(run.step(.016),true);
+  assert.equal(sent[2].frame,25,'the next successful frame advances exactly once');
+  peer.ready=false;
+  assert.equal(run.step(.016),false,'disconnected channel never sends another frame');
+  assert.equal(sent.length,3);
+  run.dispose();
+});

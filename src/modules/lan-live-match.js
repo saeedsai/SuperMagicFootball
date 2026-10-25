@@ -146,7 +146,11 @@ function createLanLiveMatch({peer,role,game,input,field}){
     // Reject non-finite device values before they reach the validated LAN codec.
     const x=Number.isFinite(rawX)?lanLiveClamp(rawX,-1,1):0;
     const y=Number.isFinite(rawY)?lanLiveClamp(rawY,-1,1):0;
-    peer.sendGuestInput(frame,held,x,y);
+    // The RTC channel can close after ready was checked but before send.
+    // Do not advance the guest frame cursor on a failed transmission: retry
+    // the same frame if the connection becomes usable again.
+    try { peer.sendGuestInput(frame,held,x,y); }
+    catch { return false; }
     lastSent=frame;
     return true;
   }

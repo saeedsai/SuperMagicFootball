@@ -1,3 +1,10 @@
+## 2026-10-25 06:05 CET — LAN-056 guest RTC send-failure recovery (0.9.41.7 candidate)
+- Baseline dev=main `d0e411fcb1b4fa5143567cfe1601fab157522cf0`; 0.9.41.6 green dev Modular #40160705073, dev Full 4+4 #40160705065, main Full #40160958363, Pages #40160958027; only dev/main branches.
+- Root cause: a WebRTC channel may close between guest `peer.ready` and `sendGuestInput`. The exception escaped `createLanLiveMatch.step` and could interrupt the game loop. Catch transient send errors, return false, preserve `lastSent` and retry the unsent frame after recovery.
+- Added LAN-056 Node regression for failed send, same-frame retry, successful advancement and disconnected guard. Focused source-executed V8 test passed before commit. Full exact-head 4 Node + 4 Chromium, Modular QA, protected main/Pages byte smoke and real two-device LAN remain independent pending gates.
+- 0.9.41.7 About/package/README/policy/shared memory/offline cache aligned. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and saves. No extra branches or forced updates.
+- Next: exact-head CI, real LAN latency/disconnect, reconnect recovery, Crown Royals art, Player Studio/Tricks.
+
 ## 2026-10-25 05:01 CET — LAN-055 fractional analog wire compatibility (0.9.41.6 candidate)
 - Baseline dev=main `a0e5b30f2a806853c1366325c15d75e10ee4c3cc` (0.9.41.5): dev Modular #40156696929 and Full 4+4 #40156696970, main Full #40156962342, Pages #40156962104 green; only dev/main branches.
 - Root cause: LAN-053 preserved fractional guest tilt locally but `normalizeLanPacket` required integer dx/dy, rejecting analog movement before wire transmission. LAN-055 accepts finite fractional [-1,1] axes while preserving malformed-axis rejection, host-authoritative frame queue and four actions.

@@ -1,28 +1,28 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · 2026-10-25 05:01 CET.
+**Agent ID:** `smf-hourly-dev-20261019` · 2026-10-25 06:05 CET.
 
 ## Mission
-Deliver one bounded tested increment each hour directly on dev even if releases wait. Only dev/main, no force push or bypass.
+One bounded tested feature each hour directly on existing dev; never stop for pending releases. Only dev/main, no force push or bypass.
 
 ## Current checkpoint
-Baseline dev=main `a0e5b30f2a806853c1366325c15d75e10ee4c3cc` (0.9.41.5 certified: dev Modular #40156696929, dev Full 4+4 #40156696970, main Full #40156962342, Pages #40156962104). LAN-055 candidate 0.9.41.6 fixes fractional analog axes rejected by the wire codec despite LAN-053 adapter support. Accept finite [-1,1] axes; reject nonnumeric, NaN, Infinity and out-of-range; preserve digital directions and four buttons. Two guest→wire→host and invalid-axis Node regressions added; source-executed V8 smoke passed. First LAN-055 CI failed because the memory-contract test requires this exact '## Current checkpoint' heading; repaired without changing game bytes. New-head CI, protected promotion, Pages hosted byte smoke and real two-device LAN still need verification.
+Baseline dev=main `d0e411fcb1b4fa5143567cfe1601fab157522cf0` (0.9.41.6 certified: dev Modular #40160705073, dev Full 4+4 #40160705065, main Full #40160958363, Pages #40160958027). LAN-056 candidate 0.9.41.7: guest `sendGuestInput` can throw if RTC channel closes between ready-check and send, crashing match loop. Catch this transient send failure and do not advance `lastSent`; a later ready channel retries the exact unsent frame. Focused source-executed V8 test passed. New-head CI and protected Pages verification pending. Real physical two-client LAN still unverified.
 
 ## Invariants
-223 teams/2676 players, six formations, four controls, 10 Career/Cup slots, SD09, offline/saves, About-only version and aligned package/README/offline cache. Own checkpoint only.
+223 teams/2676 players, six formations, exactly four buttons, 10 Career/Cup slots, SD09, offline/saves, About-only version, aligned package/README/cache. Own checkpoint only.
 
 ## Next smallest action
-Inspect exact-head Modular and full 4+4 runs, diagnose any red check, then continue a bounded compatible dev feature.
+Inspect exact-head Modular QA and 4+4 runs; fix red checks safely while continuing next dev increment.
 
 ## Ownership and exclusions
-Sole developer smf-hourly-dev-20261019; only dev/main. No extra branches, forced updates, test bypass or premature main promotion.
+Sole developer smf-hourly-dev-20261019; only dev/main. No extra branches, force push, test bypass or premature promotion.
 
 ## Evidence
-LAN-055 V8 wire-to-host source smoke passed; first two CI runs failed on missing required checkpoint headings (not gameplay tests). All required headings restored; exact new-head CI pending.
+Baseline CI all green on exact `d0e411fcb1b4fa5143567cfe1601fab157522cf0`; focused source-executed LAN-056 simulated send failure, retry frame and proportional axes passed. New-head Node/Chromium CI and Pages are pending; do not claim deployed.
 
 ## Cleanup
-Keep this file below 4 KiB. Next five:
-1. Inspect exact-head Modular and 4+4 CI; repair failures.
-2. Test two-client analog, pause, latency and disconnect.
-3. Implement bounded LAN recovery/reconnect with tests.
-4. Repair Crown Royals left/right sprite orientation and graphics QA.
-5. Improve Player Studio and counterable Tricks; promote only fully green exact dev head through protected main/Pages pipeline.
+Keep under 4 KiB. Next five:
+1. Inspect exact-head Modular and 4+4 CI, repair any failure.
+2. Verify genuine two-client LAN send/latency/disconnect behavior.
+3. Add bounded LAN reconnect state recovery and tests.
+4. Audit Crown Royals directional graphics and authored quarter art.
+5. Improve Player Studio/counterable Tricks; promote only exact fully green dev via protected pipeline.
