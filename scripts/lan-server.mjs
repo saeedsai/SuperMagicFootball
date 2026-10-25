@@ -21,7 +21,7 @@ function lanIp(ip){if(ip==='::1'||ip==='127.0.0.1')return true;if(!/^(10\.|192\.
 function sameSubnet(a,b){if(a===b)return true;if(a==='127.0.0.1'||b==='127.0.0.1'||a==='::1'||b==='::1')return false;return a.split('.').slice(0,3).join('.')===b.split('.').slice(0,3).join('.')}
 const send=(ws,msg)=>{if(ws?.readyState===1)ws.send(JSON.stringify(msg))};
 function broadcast(room,msg){for(const [ws,meta] of clients)if(sameSubnet(meta.ip,room.ip))send(ws,msg)}
-function clearHost(ws){for(const [id,room] of rooms)if(room.host===ws){rooms.delete(id);broadcast(room,{type:'room-remove',roomId:id});for(const [reqId,req] of pending)if(req.roomId===id){send(req.guest,{type:'join-reject',requestId:reqId,reason:'host-left'});pending.delete(reqId)}}}
+function clearHost(ws){for(const [id,room] of rooms)if(room.host===ws){rooms.delete(id);if(room.guest)send(room.guest,{type:'host-left',roomId:id});broadcast(room,{type:'room-remove',roomId:id});for(const [reqId,req] of pending)if(req.roomId===id){send(req.guest,{type:'join-reject',roomId:id,requestId:reqId,reason:'host-left'});pending.delete(reqId)}}}
 const server=http.createServer(async(req,res)=>{
  try{
   const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
