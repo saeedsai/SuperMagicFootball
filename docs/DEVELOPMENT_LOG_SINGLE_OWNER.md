@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN explicit transport failure handling
+- Source 69e52fd, tests 274280d: synchronous or async send() returning false preserves pending host approval for retry. No player-facing version bump. Tests committed, not executed. Full 4+4, Modular QA, gameplay/graphics and protected main/Pages unverified. Pre-change dev 48 ahead main.
+
 ## 2026-10-25 14:06 CET — LAN async host-approval transport fix (candidate only)
 - `dev` source `2551eeaab446b81d853ef66a58773782541b33a7`; test `6f710af5e2c9d3f498eb926d654aa411dc7cb73f`. Follow-up source `92d1752` and regression `89bd1c3` ensure a late acknowledgement cannot extend an expired TTL. Existing synchronous `respond()` semantics retained; Promise-returning `send()` now consumes an approval only on successful send() resolution (not remote peer ACK), deduplicates in-flight sends, allows retries after rejection, and prevents stale completion from deleting requests after room switch/close or expiry/reuse.
 - Isolated local Node 22.16.0 test harness using matching protocol/controller source: **10/10 PASS** (4 pre-existing approval cases, 6 new async cases); `node --check` PASS. Local full repository checkout failed: `Could not resolve host: github.com`; **full 4 Node + 4 Chromium, Modular QA, real two-client gameplay and graphics remain unverified**.
