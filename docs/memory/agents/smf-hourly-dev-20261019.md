@@ -10,7 +10,17 @@ Baseline dev=main `a0e5b30f2a806853c1366325c15d75e10ee4c3cc` (0.9.41.5 certified
 ## Invariants
 223 teams/2676 players, six formations, four controls, 10 Career/Cup slots, SD09, offline/saves, About-only version and aligned package/README/offline cache. Own checkpoint only.
 
-## Next five
+## Next smallest action
+Inspect exact-head Modular and full 4+4 runs, diagnose any red check, then continue a bounded compatible dev feature.
+
+## Ownership and exclusions
+Sole developer smf-hourly-dev-20261019; only dev/main. No extra branches, forced updates, test bypass or premature main promotion.
+
+## Evidence
+LAN-055 V8 wire-to-host source smoke passed; first two CI runs failed on missing required checkpoint headings (not gameplay tests). All required headings restored; exact new-head CI pending.
+
+## Cleanup
+Keep this file below 4 KiB. Next five:
 1. Inspect exact-head Modular and 4+4 CI; repair failures.
 2. Test two-client analog, pause, latency and disconnect.
 3. Implement bounded LAN recovery/reconnect with tests.
