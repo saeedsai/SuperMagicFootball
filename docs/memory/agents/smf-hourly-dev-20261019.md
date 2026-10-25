@@ -21,6 +21,9 @@ Commits d83bcf70 (policy), a166b3fa (server wiring), d07be37c (4 tests), 6232706
 ## Latest bounded signaling increment
 Server room capacity and per-guest/per-room pending queue bounds committed 20b3d4c2, regression source contract 98b24b72. Focused and full exact-head CI not yet observed. Hosted service provisioning and physical two-device verification remain open. Continue dev despite pending promotion.
 
+## Latest rate protection increment
+Per-WebSocket signaling budget 120 messages/60 seconds, policy close 1008 committed a09c6d58; regression contract abe0fcfe. Full exact-head 4+4 and Modular QA, two-device testing and hosted infrastructure not yet verified. Do not promote before green CI.
+
 ## Next smallest action
 Check latest exact dev SHA and Modular/Full 4 Node+4 Chromium CI, repair regressions without stopping further increments. Verify protected main promotion and Pages hosted hashes separately. Next feature: two-client LAN reconnect/approval and Player Studio/tricks/graphics.
 
