@@ -1,3 +1,6 @@
+## 2026-10-25 — One-tap mobile Host/Find UI (0.10.2.0 candidate)
+- `46932463` routes all platforms including public Pages and phones to Host Game/Find Games UI, rather than manual SDP or private-IP gateway. `11bffb41` supports externally configured WSS `SMF_LAN_SIGNAL_URL`; `b6b23063` gives truthful discovery-service failure state. `b420d429` updates UI source regression; release metadata/package/README/SW aligned to 0.10.2.0. **No hosted signaling service deployed/configured**: room creation/discovery and actual two-device play remain blocked, as do full CI, graphics QA, main promotion and Pages byte smoke. Do not claim functional automatic multiplayer.
+
 ## 2026-10-25 — Highest priority: visible LAN host/join gateway
 - Owner reported Host Game / Find Games missing in public UI. Root cause: `mountLanLobby` routes public GitHub Pages to manual SDP fallback; automatic discovery only runs on same-origin `npm run serve:lan` server. `f5cedfe8`/`41ada23d` add and correctly mount a private-IP gateway from Pages to LAN companion; `2a8973cd`/`f2c846cb` add source-contract tests. Candidate player-facing version 0.10.1.0 aligned in package, release, README and SW. Full CI, actual browser run, physical two-device and hosted deployment pending. No static-site automatic discovery claim.
 
