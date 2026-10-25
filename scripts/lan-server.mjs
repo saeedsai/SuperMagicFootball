@@ -47,7 +47,7 @@ wss.on('connection',(ws,req)=>{
   const id=m.roomId,requestId=m.requestId;
   if(m.type==='host'){
    if(typeof id!=='string'||! /^[a-zA-Z0-9_-]{8,64}$/.test(id)||typeof m.name!=='string'||m.name.length>48||!m.name.trim()||typeof m.build!=='string'||m.build.length>32)return;
-   clearHost(ws);if(rooms.has(id))return send(ws,{type:'error',message:'Room already exists'});
+   if(rooms.has(id)&&rooms.get(id).host!==ws)return send(ws,{type:'error',message:'Room already exists'});clearHost(ws);
    const room={id,name:m.name.trim(),build:m.build,host:ws,ip:meta.ip,guest:null};rooms.set(id,room);
    broadcast(room,{type:'room-announce',roomId:id,name:room.name,build:room.build});send(ws,{type:'host-registered',roomId:id});return;
   }
