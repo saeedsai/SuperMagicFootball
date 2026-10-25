@@ -60,3 +60,14 @@ test('late async delivery cannot consume reused request ID after expiry',async()
  task.resolve();await response;
  assert.equal(host.hasPending('request_12345678'),true);
 });
+test('late async acknowledgement never extends expired request TTL',async()=>{
+ const {createLanHostApproval}=await load();
+ let now=0;const task=deferred();
+ const host=createLanHostApproval({send(){return task.promise},now:()=>now,ttlMs:1000});
+ host.start(room);host.receive(join());
+ const response=host.respond('request_12345678',true);
+ now=1000;
+ task.resolve();await response;
+ assert.equal(host.hasPending('request_12345678'),false);
+ assert.equal(host.receive(join()),true);
+});
