@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN same-room approval preservation
+- Dev source 598e157 and focused test d0a6d84: restarting approval for identical room no longer erases pending requests; switching room still clears them. No player-facing version bump. Tests committed, not executed here. Full 4+4/Modular QA, gameplay/graphics and protected main/Pages checks not verified.
+
 ## 2026-10-25 13:04 CET — LAN host join-consent queue (internal increment)
 - Added `src/modules/lan-host-approval.js` (040616e) and `tests/lan_host_approval.test.cjs` (c123cb6) directly to existing dev; no new branch. Pending join requests are scoped to the hosted room, bounded (8 default), TTL-expiring (30s default), deduplicated and never accepted without explicit host decision. Failed send leaves the request retryable; switching/stopping room clears state. Signaling must still authenticate and bind peers; no claim of secure LAN discovery or playable two-device join.
 - **Observed focused evidence:** Node v22.16.0, isolated matching protocol fixture, `node --test tests/lan_host_approval.test.cjs` **4/4 PASS**, `node --check` both new files PASS. Full repository unavailable locally (`git ls-remote` failed: `Could not resolve host: github.com`). Exact-head 4 Node + 4 Chromium, Modular QA, real-device gameplay/graphics and Pages hash verification **not run/verified**.
