@@ -24,6 +24,9 @@ Server room capacity and per-guest/per-room pending queue bounds committed 20b3d
 ## Latest rate protection increment
 Per-WebSocket signaling budget 120 messages/60 seconds, policy close 1008 committed a09c6d58; regression contract abe0fcfe. Full exact-head 4+4 and Modular QA, two-device testing and hosted infrastructure not yet verified. Do not promote before green CI.
 
+## Connection-cap increment
+Per-IP max eight signaling sockets committed 5dbf580b; source regression test 738d636e. No player bundle change or version bump. Focused/full CI and hosted QA unverified; do not promote until exact-head green.
+
 ## Next smallest action
 Check latest exact dev SHA and Modular/Full 4 Node+4 Chromium CI, repair regressions without stopping further increments. Verify protected main promotion and Pages hosted hashes separately. Next feature: two-client LAN reconnect/approval and Player Studio/tricks/graphics.
 
