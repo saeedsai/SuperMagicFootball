@@ -42,8 +42,9 @@ export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30
       return true;
     },
     pendingRequests() {
+      if (closed) return [];
       prune();
-      return closed ? [] : Array.from(pending.keys());
+      return Array.from(pending.keys());
     },
     pendingCount() {
       if (closed) return 0;
