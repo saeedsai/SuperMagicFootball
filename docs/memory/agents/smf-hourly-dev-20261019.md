@@ -1,21 +1,21 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-25 10:01 CET
+**Updated:** 2026-10-25 10:12 CET
 
 ## Mission
-One bounded tested increment per hourly run directly on existing dev even with pending CI/promotion. Only dev and main; no force push or security bypass.
+One bounded tested increment per run directly on existing dev even during pending release. Only dev and main; no force push, CI or security bypass.
 
 ## Current checkpoint
-Start: dev `3247e00a2d81a1fadaf74e46cacc54e89eed0e5a`, main `f4a71836a109fc85efaaee78836024731e3f43be`. CI blocker: Modular #40175356132 and Full #40175356116 failed 1/705 Node tests due missing exact `**Agent ID:**` and section headings in this checkpoint. Repaired `804615b7e364360823314f1931d30a7fa7e102ad`; Modular #40178997960 PASS. Candidate About-only 0.9.41.9; release certification separate.
+Baseline dev=main `e3ee6a03893d3cfbbc4b1bf474fa50cbcaccdc8d` (candidate About-only 0.9.41.9), exactly two branches. Baseline dev Modular #40179083388 and 4 Node+4 Chromium #40179083396 success, main Full+hosted smoke #40179404352 and Pages #40179404635 success. These certify baseline only.
 
 ## Next smallest action
-LAN-060 host lobby admission: source `83741171a7eebd1a0dc67016953058517c2ef389`, tests `c74025d54d571e2b2273927c3cab9d3d9a0581d0`. One approved guest seat, second acceptance refused, replay and wrong disconnect guarded, close blocks requests. Isolated Node 22 tests 2/2 PASS + syntax PASS; full exact-head CI pending. Log `c8ee2efd58d52e43fd57c74ba877a9f360e4e363`.
+LAN-061 guest-side host consent: source `12234a8306d57152f053681a7c5d9034ce054659`, tests `d7a20265d8a49fbf6903e42712a04ff0cc205179`, log `8e72d4946399995666a8b56068bf06043b00868f`. Guest accepts only matching host approval/rejection while pending, blocks unsolicited/expired/replayed replies, supports cancellation. Isolated Node 22 tests 4/4 and syntax PASS. Exact-head GitHub CI pending. No UI, signaling transport or real LAN discovery yet.
 
 ## Ownership and exclusions
-Sole developer smf-hourly-dev-20261019. Do not read/edit other agents' memory. No extra branches, force pushes, bypasses or premature main promotions. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline/save compatibility. Player-facing changes require version, README, release notes and SW cache synchronization.
+Sole developer smf-hourly-dev-20261019. Never read/edit other agents' memory. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves. Player-facing changes require About/package/README/SW/cache/version-test alignment. Version unchanged for non-player-facing foundation.
 
 ## Evidence
-Local git clone blocked by github.com DNS; isolated source-matched LAN protocol/queue/lobby Node tests passed. GitHub CI is authoritative for full game; no two-device or graphical certification. Issue #48 automatic discovery still requires secure signaling transport, browser UI, consent integration and two-client QA.
+GitHub connector commits to dev succeeded. Local full clone blocked by DNS to github.com; isolated source-matched Node test passed. Baseline CI verified; latest exact-head CI, physical two-client and graphics QA are separate pending gates. Issue #48 automatic discovery needs authenticated signaling service, browser room UI and integration.
 
 ## Cleanup
-Next five: (1) exact-head Modular and 4+4 checks, (2) secure LAN discovery/signaling, (3) room browser + approval UI, (4) two-client gameplay/graphics QA, (5) protected green-head main promotion + Pages hosted byte smoke. Keep <4 KiB.
+Next five: (1) verify exact-head Modular and 4+4 CI, repair any red, (2) secure LAN-scoped discovery/signaling, (3) Find Games + host approval UI, (4) genuine two-client gameplay/graphics QA, (5) protected green-head main promotion + Pages hosted byte smoke. Keep checkpoint under 4 KiB.
