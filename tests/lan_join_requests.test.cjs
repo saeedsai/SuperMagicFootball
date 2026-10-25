@@ -27,3 +27,30 @@ test('expired requests cannot be approved', async () => {
   assert.deepEqual(queue.list(), []);
   assert.throws(() => createLanJoinRequests({ roomId, ttlMs: 0 }), RangeError);
 });
+test('accepted or rejected request IDs cannot be replayed before expiry', async () => {
+  const { createLanJoinRequests } = await load();
+  let time = 0;
+  const queue = createLanJoinRequests({ roomId, ttlMs: 1000, now: () => time });
+  assert.equal(queue.receive(packet('request_12345678')), true);
+  assert.equal(queue.decide('request_12345678', true).type, 'join-accept');
+  assert.equal(queue.receive(packet('request_12345678')), false);
+  assert.equal(queue.receive(packet('request_87654321')), true);
+  assert.equal(queue.decide('request_87654321', false).type, 'join-reject');
+  assert.equal(queue.receive(packet('request_87654321')), false);
+  time = 1000;
+  assert.equal(queue.receive(packet('request_12345678')), true);
+});
+test('pending and remembered requests are bounded and cleared', async () => {
+  const { createLanJoinRequests } = await load();
+  const queue = createLanJoinRequests({ roomId, maxPending: 1, maxRemembered: 2 });
+  assert.equal(queue.receive(packet('request_12345678')), true);
+  assert.equal(queue.receive(packet('request_87654321')), false);
+  assert.equal(queue.decide('request_12345678', true).type, 'join-accept');
+  assert.equal(queue.receive(packet('request_87654321')), true);
+  assert.equal(queue.decide('request_87654321', false).type, 'join-reject');
+  assert.equal(queue.receive(packet('request_abcdefgh')), false);
+  queue.clear();
+  assert.equal(queue.receive(packet('request_abcdefgh')), true);
+  assert.throws(() => createLanJoinRequests({ roomId, maxPending: 0 }), RangeError);
+  assert.throws(() => createLanJoinRequests({ roomId, maxPending: 3, maxRemembered: 2 }), RangeError);
+});
