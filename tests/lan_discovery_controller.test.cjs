@@ -74,3 +74,49 @@ test('stopHosting clears local state when transport disconnects', async () => {
   host.host('room_87654321', 'New match');
   assert.deepEqual(sent.map(packet => packet.type), ['room-announce', 'room-announce']);
 });
+
+test('host occupancy changes are announced to guests and retained in heartbeats', async () => {
+  const { createLanDiscoveryController } = await load();
+  const guest = createLanDiscoveryController({ send() {} });
+  const sent = [];
+  const host = createLanDiscoveryController({ send: packet => {
+    sent.push(packet);
+    guest.receive(packet);
+  }});
+  assert.equal(host.setPlayers(2), false);
+  host.host(roomId, 'Football');
+  assert.equal(guest.rooms()[0].players, 1);
+  assert.equal(host.setPlayers(2), true);
+  assert.equal(guest.rooms()[0].players, 2);
+  assert.equal(host.setPlayers(2), false);
+  assert.equal(sent.length, 2);
+  assert.equal(host.heartbeat(), true);
+  assert.equal(sent.at(-1).players, 2);
+  assert.equal(host.setPlayers(1), true);
+  assert.equal(guest.rooms()[0].players, 1);
+  assert.throws(() => host.setPlayers(3), TypeError);
+  assert.throws(() => host.setPlayers(1.5), TypeError);
+  assert.equal(guest.rooms()[0].players, 1);
+  host.stopHosting();
+  assert.deepEqual(guest.rooms(), []);
+});
+
+test('failed occupancy announcement does not change host state', async () => {
+  const { createLanDiscoveryController } = await load();
+  let fail = false;
+  const sent = [];
+  const host = createLanDiscoveryController({ send: packet => {
+    if (fail) throw new Error('offline');
+    sent.push(packet);
+  }});
+  host.host(roomId, 'Match');
+  fail = true;
+  assert.throws(() => host.setPlayers(2), /offline/);
+  fail = false;
+  assert.equal(host.heartbeat(), true);
+  assert.equal(sent.at(-1).players, 1);
+  fail = true;
+  assert.doesNotThrow(() => host.stopHosting());
+  assert.equal(host.heartbeat(), false);
+  assert.equal(host.stopHosting(), false);
+});
