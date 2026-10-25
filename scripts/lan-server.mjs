@@ -56,6 +56,8 @@ wss.on('connection',(ws,req)=>{
    if(rooms.has(id)){if(rooms.get(id).host!==ws)return send(ws,{type:'error',message:'Room already exists'});send(ws,{type:'host-registered',roomId:id});return}
    if(!rooms.has(id)&&rooms.size>=MAX_ROOMS&&!([...rooms.values()].some(room=>room.host===ws)))return send(ws,{type:'error',message:'Room capacity reached'});
    clearHost(ws);
+   // Switching from guest/pending admission to host must release the old seat first.
+   releaseLanGuest(ws,rooms,pending,send);
    const room={id,name:m.name.trim(),build:m.build,host:ws,ip:meta.ip,guest:null};rooms.set(id,room);
    broadcast(room,{type:'room-announce',roomId:id,name:room.name,build:room.build});send(ws,{type:'host-registered',roomId:id});return;
   }
@@ -63,7 +65,7 @@ wss.on('connection',(ws,req)=>{
   if(m.type==='leave'){clearHost(ws);releaseLanGuest(ws,rooms,pending,send);return}
   const room=rooms.get(id);if(!room||!sameSubnet(meta.ip,room.ip))return;
   if(m.type==='join'){
-   if(ws===room.host||room.guest||[...rooms.values()].some(active=>active.guest===ws)||typeof requestId!=='string'||! /^[a-zA-Z0-9_-]{8,64}$/.test(requestId)||pending.has(requestId)||m.build!==room.build)return send(ws,{type:'join-reject',requestId,reason:'room-full-or-version'});
+   if(ws===room.host||room.guest||[...rooms.values()].some(active=>active.guest===ws||active.host===ws)||typeof requestId!=='string'||! /^[a-zA-Z0-9_-]{8,64}$/.test(requestId)||pending.has(requestId)||m.build!==room.build)return send(ws,{type:'join-reject',requestId,reason:'room-full-or-version'});
    if([...pending.values()].filter(p=>p.guest===ws).length>=MAX_PENDING_PER_GUEST)return send(ws,{type:'join-reject',roomId:id,requestId,reason:'request-already-pending'});
    if([...pending.values()].filter(p=>p.roomId===id).length>=MAX_PENDING_PER_ROOM)return send(ws,{type:'join-reject',roomId:id,requestId,reason:'room-queue-full'});
    pending.set(requestId,{roomId:id,guest:ws,host:room.host,time:Date.now()});send(room.host,{type:'join-request',roomId:id,requestId});return;
