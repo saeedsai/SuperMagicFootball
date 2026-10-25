@@ -1,3 +1,7 @@
+## 2026-10-25 — LAN room directory foundation (unreleased)
+- Issue #48: added validated room discovery directory with TTL expiry, announcement refresh, room removal, deterministic listing and clear; added Node tests. Client-side listing is not LAN authorization: secure signaling service and UI remain outstanding.
+- Commits c9c586da173060591d3b275f17f7271d56522304 and 0c7f5e6065620359acef17db7fa93c1590201b36 directly on dev; no player-facing code integration, version remains 0.9.41.9. CI and protected promotion not verified; do not claim deployed or QA-certified.
+
 ## 2026-10-25 07:59 CET — LAN-058 monotonic guest snapshots (0.9.41.9 candidate)
 - Baseline dev=main `b5f91bb1400b68dbc35c3ebc7974f0f821183060` certified 0.9.41.8: dev Modular #40168092612, dev Full 4+4 #40168092513, main Full #40168335987, Pages #40168335767 success; only dev/main branches.
 - Root cause: guest live-match subscription applied every callback, including older or duplicate ticks, allowing stale play/pause/finish and score rollback if a transport rebinds. Fix: apply only strictly newer safe-integer snapshot ticks, preserving newer authoritative states.
