@@ -28,3 +28,6 @@ Source cf6bd403 and regression 2717fd95 on dev; stale room removed on host switc
 
 ## 2026-10-25 — offline discovery cleanup
 Source f6cb37f, test 83298a2 and log aaa6189 on dev. New room first, stale room withdrawal best-effort; close always completes offline. Tests added, execution/full CI/Pages not verified. Continue secure transport/UI and exact-head QA; main promotion blocked pending evidence.
+
+## 2026-10-25 — offline stopHosting
+Dev 34c9bab source, 881b46f tests, 79c4e10 log: local host state clears despite signaling failure; TTL expires stale remote listing. Tests written, not executed; full CI/main/Pages not verified. Continue secure discovery, UI and actual two-device QA; promote only green exact head.
