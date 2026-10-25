@@ -992,3 +992,9 @@ Validate remote guest DataChannel interface before binding; close malformed chan
 
 ### 2026-10-25 — LAN guest single-seat guard
 - Server `c2f81102` rejects joining a second room on the same approved guest socket; source regression `28679512`. Server-only, candidate bundle version unchanged. Full exact-head CI, physical gameplay/graphics QA, protected main promotion and hosted Pages smoke not yet verified.
+
+### 2026-10-25 20:00 CET — LAN exclusive socket roles and stale test repair
+- On `dev` only, `bcad53df` releases a guest's approved seat/pending joins when the socket registers a new host room, and rejects `join` from sockets already hosting any room. Existing same-room host re-registration remains idempotent. `bca2d92c` updates the stale `tests/lan_guest_release.test.cjs` assertion left behind by prior idempotency change and adds a role-transition regression contract.
+- Focused V8 checks against connector-fetched latest sources: 6/6 pass, including executing `releaseLanGuest` with two rooms/two pending joins and checking no cross-socket deletion. Full Node 4-shard, Chromium 4-shard, Modular QA, gameplay/graphics visual QA, physical two-client LAN and Pages byte smoke were NOT executed/verified.
+- After test commit, `dev=bca2d92cb6c0402cf52ffe310cb7084ecf172060`, `main=84f8bae589f0675ea1e4cd8525a802ef0a643a92` (dev 41 ahead, 0 behind). Combined statuses empty; PR-filtered workflow lookup empty (neither proves green). GitHub remote clone DNS failure persists in container. No protected promotion. Server-only: About candidate remains 0.9.42.1.
+- Next: exact-head CI visibility/repair, host approval queue UX, two-client LAN E2E, Player Studio/trick/Concept Royals visual QA, protected promotion only after complete green gates.
