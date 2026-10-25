@@ -19,3 +19,13 @@ test('room browser excludes full rooms and own room', async () => {
   assert.deepEqual(selectJoinableLanRooms(rooms, { search: 'missing' }), []);
   assert.throws(() => selectJoinableLanRooms(null), TypeError);
 });
+
+test('duplicate room advertisements render one joinable card', async () => {
+  const { selectJoinableLanRooms } = await load();
+  const rooms = [
+    { roomId: 'room_12345678', name: 'Match', players: 1 },
+    { roomId: 'room_12345678', name: 'Match', players: 1 },
+    { roomId: 'room_87654321', name: 'Another', players: 1 }
+  ];
+  assert.deepEqual(selectJoinableLanRooms(rooms).map(room => room.roomId), ['room_12345678', 'room_87654321']);
+});
