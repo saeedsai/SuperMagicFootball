@@ -75,13 +75,13 @@ export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30
       };
       const result = send(packet);
       if (result && typeof result.then === 'function') {
-        const task = Promise.resolve(result).then(delivered).finally(() => {
+        const task = Promise.resolve(result).then(value => value === false ? false : delivered()).finally(() => {
           if (sending.get(requestId) === task) sending.delete(requestId);
         });
         sending.set(requestId, task);
         return task;
       }
-      return delivered();
+      return result === false ? false : delivered();
     },
     stop() {
       ensureOpen();
