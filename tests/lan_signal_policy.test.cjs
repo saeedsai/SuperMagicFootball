@@ -54,3 +54,11 @@ test('signaling caps concurrent WebSocket sessions per source IP',()=>{
  assert.match(server,/MAX_CONNECTIONS_PER_IP=8/);
  assert.match(server,/signalPolicy\.allows\(ip,origin,req\.headers\.host\)&&\[\.\.\.clients\.values\(\)\]\.filter\(meta=>meta\.ip===ip\)\.length<MAX_CONNECTIONS_PER_IP/);
 });
+
+test('approving a guest rejects other queued requests for that room',()=>{
+ const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
+ assert.match(server,/for\(const \[otherId,other\] of pending\)if\(other\.roomId===id\)/);
+ assert.match(server,/pending\.delete\(otherId\)/);
+ assert.match(server,/send\(other\.guest,\{type:'join-reject',roomId:id,requestId:otherId,reason:'room-full'\}\)/);
+ assert.match(server,/send\(ws,\{type:'join-cancel',roomId:id,requestId:otherId\}\)/);
+});
