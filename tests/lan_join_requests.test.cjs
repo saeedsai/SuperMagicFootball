@@ -1,0 +1,29 @@
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const { pathToFileURL } = require('node:url');
+const path = require('node:path');
+const load = () => import(pathToFileURL(path.resolve('src/modules/lan-join-requests.js')).href);
+const roomId = 'room_12345678';
+const packet = (requestId, room = roomId) => ({ version: 1, type: 'join-request', roomId: room, requestId });
+test('host approves or rejects each request exactly once', async () => {
+  const { createLanJoinRequests } = await load();
+  const queue = createLanJoinRequests({ roomId });
+  assert.equal(queue.receive(packet('request_12345678')), true);
+  assert.equal(queue.receive(packet('request_12345678')), false);
+  assert.deepEqual(queue.list(), [{ requestId: 'request_12345678' }]);
+  assert.deepEqual(queue.decide('request_12345678', true), { version: 1, type: 'join-accept', roomId, requestId: 'request_12345678' });
+  assert.equal(queue.decide('request_12345678', true), null);
+  assert.equal(queue.receive(packet('request_87654321')), true);
+  assert.equal(queue.decide('request_87654321', false).type, 'join-reject');
+  assert.equal(queue.receive(packet('request_abcdefgh', 'other_12345678')), false);
+});
+test('expired requests cannot be approved', async () => {
+  const { createLanJoinRequests } = await load();
+  let time = 0;
+  const queue = createLanJoinRequests({ roomId, ttlMs: 1000, now: () => time });
+  queue.receive(packet('request_12345678'));
+  time = 1000;
+  assert.equal(queue.decide('request_12345678', true), null);
+  assert.deepEqual(queue.list(), []);
+  assert.throws(() => createLanJoinRequests({ roomId, ttlMs: 0 }), RangeError);
+});
