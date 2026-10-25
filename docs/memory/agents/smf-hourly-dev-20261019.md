@@ -17,6 +17,9 @@ Develop hourly on existing `dev` regardless of release blockers. Never create br
 ## LAN UI priority — 2026-10-25
 - Pages mounts manual SDP because auto discovery needs same-origin local companion. Added public Pages private-IP gateway to `http://HOST-IP:8000/`, preserving existing local Host Game/Find Games lobby. Version 0.10.1.0 candidate synchronized across package, release, README and SW. Source-contract tests committed; exact-head CI and physical two-device LAN remain pending. No protected main promotion yet.
 
+## Latest run — 2026-10-25 mobile Host/Find UI
+- `46932463` makes Host/Find first-class on Pages/phones; `11bffb41` allows secure WSS signaling endpoint config; `b6b23063` truthful service error; `b420d429` updates test. Version 0.10.2.0 candidate aligned. **No hosted signaling backend provisioned**, so functional discovery/join unverified/unavailable. Full QA, protected promotion and Pages verification pending. Next: deploy secure signaling service, configure endpoint, full two-browser + phone QA, exact-head CI.
+
 ## Next smallest action
 1. Inspect fresh dev/main heads and exact-head CI failures; repair red steps.
 2. Obtain uninterrupted green Modular QA and 4 Node + 4 Chromium shards.
