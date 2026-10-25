@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.10.0.0',
+ version:'0.10.1.0',
  date:'2026-10-25',
  notes:Object.freeze([
+  'LAN lobby now offers a direct private-IP gateway from GitHub Pages to the local companion server where Host Game and Find Games are available. Both devices must use the same local server URL.',
   'LAN Quick Match candidate: the local companion server now displays private LAN game addresses that guests can open on their own devices; Host Game and Find Games work on the first click while discovery connects, signaling retries transient disconnects, and WebRTC handshake ownership is guarded. A real two-Chromium-tab host-to-match acceptance test was added, but physical two-device and exact-head production certification remain pending.',
   'LAN Quick Match: guests can cancel a pending join, switch rooms or leave an approved room without restarting the server. The host receives cancellation/disconnect updates and can admit another guest; room identity is bound to the signaling socket. Full two-device and hosted QA remain pending.',
   'Automatic local-network Quick Match candidate: a locally running companion server advertises hosts, shows available games to guests, requests host approval and exchanges WebRTC signaling without copy/paste. Guest disconnects can be retried; the server serves only game assets. GitHub Pages retains manual signaling. Two-device gameplay and full release QA remain pending.',
