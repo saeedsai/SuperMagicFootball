@@ -1,40 +1,23 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-25 18:30 CET
+**Updated:** 2026-10-25 19:06 CET
 
 ## Mission
-Continue one bounded roadmap increment per hourly run on existing `dev` despite pending CI/release. Only `dev` and `main`; never bypass security or force-push. Follow AGENTS.md and docs/VERSIONING_POLICY.md.
+Develop one bounded, tested increment per run on existing `dev` even while CI/release waits. Preserve only `dev` and protected `main`; no force push, security bypass or invented QA.
 
 ## Current checkpoint
-Before increment: `dev=main=2e92165a1256cba19c7612eacf15331274545cd1`; exact-head Modular QA #40205918022 and Full Census #40205918023 passed, with four Node and four Chromium shards. Main synchronization verified, but Pages hosted byte smoke and physical two-device LAN not independently certified.
-New About-only candidate `0.9.42.1`: LAN guest explicit leave/cancel/switch, socket-bound release of pending joins and approved seat, host cancellation notification and stale approval UI clearing. Pure helper `scripts/lan-guest-release.mjs`, wiring in server and auto lobby, tests `tests/lan_guest_release.test.cjs`. Version, README banner/heading, About, offline cache, policy and shared memory updated. No new branch.
+Prior certified baseline `dev=main=2e92165a` had Modular #40205918022 and Full 4 Node+4 Chromium #40205918023 green. Current `main=84f8bae589f0675ea1e4cd8525a802ef0a643a92`; `dev` candidate About-only `0.9.42.1` (not certified). Server-side LAN increments: host-left and registration ACK, guest cancellation/release, opt-in hosted signaling Origin policy, room and pending queue bounds, 120 messages/min/socket, eight sockets/IP. No hosted service/TURN or physical two-client certification.
 
-## Current increment
-Server-only host departure notification committed as 136a95d3; regression source assertion committed as 056d5491. Approved guest receives host-left, pending join-reject includes roomId. Guest lobby host-left handling, exact-head CI, visual and device QA remain unverified. No version bump for companion-server-only change.
-
-## Latest LAN increment
-Room registration confirmation commits c3c424f4 (server) and 9ecf1c4b (UI); test 1da83c4d. UI no longer claims successful hosting until server ACK; registration errors surfaced. Full CI and hosted service not verified. Player-facing change requires coordinated version/README/cache before promotion.
-
-## Hosted signaling increment (2026-10-25)
-Commits d83bcf70 (policy), a166b3fa (server wiring), d07be37c (4 tests), 62327062 (log). LAN remains default; opt-in hosted mode accepts only configured exact HTTPS Origin and exposes rooms across IPs. Three isolated Node behavioral tests passed; source wiring verified. This is server-side groundwork ONLY: no hosted service, public signaling endpoint, TURN, abuse protection, two-device verification, full 4+4 CI, graphics certification or protected promotion. Concurrent dev changes seen; re-fetch before edits. Next: bounded room/rate controls, browser auto endpoint, full CI and real hosted deployment. No version bump for this server-only increment.
-
-## Latest bounded signaling increment
-Server room capacity and per-guest/per-room pending queue bounds committed 20b3d4c2, regression source contract 98b24b72. Focused and full exact-head CI not yet observed. Hosted service provisioning and physical two-device verification remain open. Continue dev despite pending promotion.
-
-## Latest rate protection increment
-Per-WebSocket signaling budget 120 messages/60 seconds, policy close 1008 committed a09c6d58; regression contract abe0fcfe. Full exact-head 4+4 and Modular QA, two-device testing and hosted infrastructure not yet verified. Do not promote before green CI.
-
-## Connection-cap increment
-Per-IP max eight signaling sockets committed 5dbf580b; source regression test 738d636e. No player bundle change or version bump. Focused/full CI and hosted QA unverified; do not promote until exact-head green.
+**Current increment:** Timeout cleanup sends guest `join-reject` and host `join-cancel`, clearing stale host approval UI. Helper commit `b980a0b4`, server integration `61e0c2e5`, focused tests `3511562c`, central log `4d518b99`. After tests, dev was `3511562c85d0b37b547d0d9bf3ff9b00fcc7861f` (27 ahead main, 0 behind); re-fetch after this checkpoint commit. Server-only change: no installed game version bump.
 
 ## Next smallest action
-Check latest exact dev SHA and Modular/Full 4 Node+4 Chromium CI, repair regressions without stopping further increments. Verify protected main promotion and Pages hosted hashes separately. Next feature: two-client LAN reconnect/approval and Player Studio/tricks/graphics.
+Check exact latest dev/main heads and workflow results; repair any full-suite failure. Next independent LAN improvement: reject/cancel other pending joins when a room guest is approved, or browser endpoint configuration with coordinated player-facing version. Then two-client WebRTC, Player Studio, counterable four-button tricks and Crown Royals directional art. Promote only exact green dev via protected pipeline and verify main/Pages hosted bytes.
 
 ## Ownership and exclusions
-Only sole developer edits this checkpoint. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and saved-game compatibility.
+Only sole developer writes this checkpoint; preserve 223 teams/2676 players, 12-player squads, six formations, four action buttons, 10 Career/Cup slots, SD09, offline and legacy saves. Do not edit other agents' memory.
 
 ## Evidence
-Isolated Node v22.16.0 behavioral helper tests 3/3 PASS, source parsed. Added fourth wiring contract test in repository, not yet locally executed against full checkout. GitHub connector writes succeeded; local git remote DNS unavailable. Full exact-head CI, two-device LAN, graphics QA, hosted byte smoke and promotion of this candidate are pending verification.
+Local isolated Node v22.16.0 helper behavior **2/2 PASS**, source/test syntax PASS; connector-backed integration checks **5/5 PASS**. Full 4 Node+4 Chromium, Modular QA, real-device LAN, gameplay/graphics, Pages smoke **NOT verified** for latest head. Commit combined statuses empty (not green). Local git clone blocked by DNS `Could not resolve host: github.com`; GitHub connector commits succeeded. No main promotion.
 
 ## Cleanup
-Continue hourly development, investigate blockers, promote only exact green dev via protected workflow. Checkpoint stays below 4 KiB.
+Continue hourly work on `dev` despite pending release; diagnose and repair blockers lawfully. Keep checkpoint under 4 KiB and central log current.
