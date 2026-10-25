@@ -23,6 +23,10 @@ Combined commit statuses returned [] and commit-workflow lookup returned [] (PR-
 ## 2026-10-25 approval queue guard
 Server one pending request/room to match single approval UI (0d254b32), source contract updated (67ff82b2). Full exact-head CI, visual and physical QA unverified. Server-only; no version bump.
 
+
+## 2026-10-25 synchronous join expiry
+Host decision now rejects requests older than 30 seconds immediately (12b00407); source regression 1022e266. No player-facing change. Exact-head CI and physical QA unverified; do not promote without gates.
+
 ## Next five actions
 1. Inspect exact current dev/main and actual CI; repair red jobs, no green inference.
 2. Improve LAN multi-request approval/queue UX and add behavioral integration tests.
