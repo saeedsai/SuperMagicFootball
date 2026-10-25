@@ -133,7 +133,11 @@ function createLanLiveMatch({peer,role,game,input,field}){
     const frame=Math.max(lastSent+1,latestTick+4);
     if(frame>latestTick+8)return false;
     const held=LAN_LIVE_ACTIONS.filter(action=>input.held(0,action)||input.just(0,action));
-    const x=Math.sign(input.state[0].x||0),y=Math.sign(input.state[0].y||0);
+    const rawX=input.state[0]?.x,rawY=input.state[0]?.y;
+    // Preserve proportional gamepad tilt; keyboard directions remain full strength.
+    // Reject non-finite device values before they reach the validated LAN codec.
+    const x=Number.isFinite(rawX)?lanLiveClamp(rawX,-1,1):0;
+    const y=Number.isFinite(rawY)?lanLiveClamp(rawY,-1,1):0;
     peer.sendGuestInput(frame,held,x,y);
     lastSent=frame;
     return true;

@@ -130,3 +130,30 @@ test('LAN-048 guest obeys host pause, resume and finish snapshots',async()=>{
   applyLanGameState(guest,field,captureLanGameState(host,field,12));
   assert.equal(guest.matchState,'finished');
 });
+
+test('LAN-053 guest sends proportional analog tilt without losing digital directions',async()=>{
+  const {createLanLiveMatch}=await load();
+  const input=controls(),match=game(input);
+  input.poll=()=>{};
+  input.state[0]={x:0.25,y:-0.5,pass:1,shoot:0,dribble:0,jump:0};
+  const peer={ready:true,
+    subscribeGuestMatchState(fn){this.observe=fn;return {dispose(){}};},
+    sendGuestInput(frame,buttons,dx,dy){this.sent={frame,buttons,dx,dy};}
+  };
+  const run=createLanLiveMatch({peer,role:'guest',game:match,input,field});
+  peer.observe({tick:10,clockMs:1000,scores:{home:0,away:0},
+    ball:{x:0,y:0,z:0},players:[]});
+  assert.equal(run.step(.016),true);
+  assert.deepEqual([peer.sent.dx,peer.sent.dy],[0.25,-0.5],
+    'partial gamepad tilt must not become full-speed digital input');
+  assert.deepEqual(peer.sent.buttons,['pass']);
+  input.state[0].x=Infinity;input.state[0].y=-4;
+  assert.equal(run.step(.016),true);
+  assert.deepEqual([peer.sent.dx,peer.sent.dy],[0,-1],
+    'malformed or over-range device values are bounded before sending');
+  input.state[0].x=1;input.state[0].y=0;
+  assert.equal(run.step(.016),true);
+  assert.deepEqual([peer.sent.dx,peer.sent.dy],[1,0],
+    'keyboard full-strength direction is unchanged');
+  run.dispose();
+});

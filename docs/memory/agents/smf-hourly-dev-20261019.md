@@ -1,39 +1,20 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · 2026-10-25 01:05 CEST.
+**Agent ID:** `smf-hourly-dev-20261019` · 2026-10-25 03:06 CET.
 
 ## Mission
-Continue bounded hourly development directly on dev; preserve all safety and release gates.
-
-## Operating rules
-Continue hourly on existing `dev` even while prior work awaits CI/main/Pages. Only `dev` and `main`; never force push, bypass safety or promote red/unverified code. Each feature needs About-only four-field version, README/date/notes, sw cache, save/offline preservation and exact-head full 4 Node + 4 Chromium plus Modular QA.
+Continue one bounded, tested increment each hour directly on existing dev; never pause for pending CI/main/Pages. Preserve safety gates and only dev/main.
 
 ## Current checkpoint
-
-Initial dev `df8a93d4`, main `d2d5101c`. Modular QA #40141272376 failed 10/683 Node tests (six obsolete audio regex, three module-order assertions, one incomplete LAN test fixture). Concurrent commit `f64b562a` repaired fixture. Our CI test repair `6c32a2f578db21bdbebcf0264ce19e19976cbe55` passed Modular QA #40141514346. LAN-048 feature `0f8af146dac086694b00d33d1136fdbf7c399a12`: guest follows host pause/resume/finish and retains half/owner/controlled parity; candidate 0.9.41.1 aligned in release, package, README, sw and policy. Source-backed V8 phase/owner smoke passed. Exact-head Node/Chromium/Modular and real two-client/device QA pending; no verified main or Pages promotion. Preserve 223/2676, six formations, four buttons, ten saves, SD09, offline and legacy.
-
-## 2026-10-25 LAN-052 checkpoint
-At baseline dev 7383694f7156, main d2d5101c: Modular QA #40141980896 green; full 4+4 #40141980887 red only browser shard 2 (obsolete LAN 'not ready' assertion). Prepared exact-frame host input fix, stale menu test repair and 0.9.41.3 candidate; local source-executed frame-neutralization smoke passed. Exact new-head CI, two-browser QA, main/Pages unverified. No extra branch.
-
-## Recent verified LAN candidate evidence
-- 2026-10-25: LAN-044–051 real host Engine/guest canvas bridge and manual lobby handoff on dev; candidate About 0.9.41.2. Source-executed 12-frame fake WebRTC E2E sync passed: 11/11 ticks, guest moved authoritative away player, identical remote positions/clock. Diagonal stick normalized, test fixed (93aa0ae5). Node E2E test e284f324 committed. No physical two-browser/graphics or exact-head CI evidence; protected main remains d2d5101c at inspection, do not promote without full QA. See central log.
+Baseline dev=main `f934e2d7c2572788d400f555a1f398f9a923f459`, production 0.9.41.3. Dev Modular QA #40145196269 and full 4 Node + 4 Chromium #40145196262 green; main full #40145491155 and Pages #40145491629 green. LAN-053 candidate 0.9.41.4: preserve proportional guest analog-stick axes (instead of Math.sign full-speed) and clamp invalid axes, with focused regression. Source-executed V8 analog/nonfinite/digital smoke passed before commit. New exact-head CI, two physical clients and hosted validation must be checked after push. Keep 223 teams/2676 players, six formations, four buttons, 10 Career/Cup slots, SD09, offline/saves.
 
 ## Next smallest action
-Inspect exact-head QA for LAN-052 frame-aligned host controls and repair any new failure; then run two-browser LAN validation.
-
-## Next five
-1. Inspect exact-head Modular QA and 4 Node + 4 Chromium Census; fix failures.
-2. Validate actual host/guest two-client steering, phase, latency and reconnect.
-3. Fix Crown Royals #15 left/right orientation and do real visual QA.
-4. Implement next bounded Player Studio or counterable four-button Trick increment on dev.
-5. Allow protected green-head promotion; verify main and Pages SHA-256 bytes.
-
-Full history: `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md`. Never edit other agents' checkpoints.
+Inspect exact-head LAN-053 CI; repair any failure safely, then perform genuine two-client LAN movement/latency/reconnect browser QA.
 
 ## Ownership and exclusions
-Only own checkpoint and central log. Never edit other agent memory; no extra branches, force-push or unverified production claims.
+Sole dev `smf-hourly-dev-20261019`. Only own checkpoint and central log; never read/edit other agents' memories. No new branches, force push, red promotions, or bypassed security.
 
 ## Evidence
-Modular QA #40141540457 passed 688/688 at 0f8af146. Later #40141569524 and #40141571747 failed solely because this checkpoint omitted mandatory headings; this change restores the memory contract. Exact latest-head QA must rerun.
+Source-executed proposed LAN guest match module test passed for .25/-.5 tilt, Infinity/-4 neutralization/bounds, 1/0 keyboard. GitHub CI after this commit is not yet certified; see central log for actual new SHA and runs.
 
 ## Cleanup
-Keep this file under 4 KiB, no secrets.
+Keep this file <4 KiB; no secrets. Next five: (1) exact-head CI, (2) two-client analog/latency/disconnect QA, (3) Crown Royals #15 facing art, (4) Player Studio/Trick counterplay, (5) protected main/Pages byte smoke.
