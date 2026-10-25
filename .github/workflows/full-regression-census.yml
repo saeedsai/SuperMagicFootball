@@ -67,6 +67,8 @@ jobs:
         shard: [0, 1, 2, 3]
     steps:
       - uses: actions/checkout@v4
+      - name: Install LAN companion WebSocket dependency
+        run: npm install --no-package-lock --ignore-scripts --omit=dev
       - name: Install Playwright Chromium without snap dependency
         run: |
           python3 -m pip install --user playwright pillow
