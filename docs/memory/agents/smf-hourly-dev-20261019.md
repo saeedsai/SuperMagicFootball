@@ -19,3 +19,6 @@ Local isolated Node v22.16.0 focused `node --test tests/lan_host_approval.test.c
 
 ## Cleanup
 Central dev log updated (`1c35e95`). Next run inspect latest heads and CI, fix any new failures, test full repo via GitHub workflows, certify main/Pages only on green exact head. Keep this checkpoint <4 KiB.
+
+## 2026-10-25 — same-room approvals
+Dev source 598e157, test d0a6d84, log aa01820. Same-room start retains pending join requests; room switch clears them. Tests not executed; full CI and graphics/gameplay/main/Pages not verified. Continue secure peer binding and UI integration; promote exact green dev only.
