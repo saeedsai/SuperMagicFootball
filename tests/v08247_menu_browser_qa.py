@@ -16,6 +16,9 @@ with sync_playwright() as pw:
   page.locator('[data-action=navQuick]').first.click()
   assert page.locator('[data-action=navOnDevice]').count()==1
   page.locator('[data-action=navLan]').click()
+  if page.locator('#autoHost').count()!=1:
+   print('LAN_FIXTURE_DEBUG', label, 'text=',page.locator('.menubox').inner_text()[:1600],
+         'errors=',errors, 'lobby=',page.locator('#lanLobby').count(),flush=True)
   assert page.locator('#autoHost').count()==1,(label,'LAN host action')
   assert page.locator('#autoFind').count()==1,(label,'LAN find action')
   assert page.locator('#autoStatus').count()==1,(label,'LAN discovery status')
