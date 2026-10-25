@@ -1,3 +1,8 @@
+## 2026-10-25 16:04 CET — LAN 0.9.42.0 offline-cache regression repair
+- Exact candidate `cda340ed1dc7a9ecc4c86b9882bb0b2bc7d71288` Modular QA #40205818761 failed 3/755 Node tests: three historical test fixtures assumed `lan_peer_connection` was directly adjacent to `lan-lobby` in the service-worker list, but two new LAN auto modules were correctly inserted between them for offline availability. No runtime gameplay failure was shown.
+- Updated the three **service-worker** assertions to require both new LAN modules in the correct order; preserved the original inline-fixture assertions, which intentionally omit auto modules. Existing `tests/lan_auto_lobby_contract.test.cjs` separately checks new SW dependencies. No production code/version change; candidate remains 0.9.42.0.
+- Full exact-head Modular and 4 Node + 4 Chromium, two-device LAN, visual QA, protected main and Pages hosted byte smoke remain pending. Next: rerun CI and repair any further failures.
+
 ## 2026-10-25 16:04 CET — LAN candidate 0.9.42.0, offline precache and disconnect recovery
 - New local-server automatic LAN lobby is player-facing; bumped About-only candidate to 0.9.42.0, aligned package, README first banner/heading, release policy, shared memory and rotated service-worker cache. Added both new LAN client modules to offline precache so existing Pages offline imports do not fail.
 - Host now disposes stale peer on server `guest-left`, allowing a later guest request. Automatic mode activates only on real HTTP browser origins; GitHub Pages and legacy fake-peer tests use manual fallback. Existing server static-file allowlist protects repository internals.
