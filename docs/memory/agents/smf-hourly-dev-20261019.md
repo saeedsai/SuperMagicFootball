@@ -1,43 +1,22 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-25 23:00 CET
+**Agent:** `smf-hourly-dev-20261019`  
+**Updated:** 2026-10-26 00:20 CET
 
-## Mission
-Develop hourly on existing `dev` regardless of release blockers. Never create branches, bypass GitHub security/CI, or force-push. Preserve 223 teams/2676 players, six formations, four action buttons, ten Career/Cup slots, SD09, offline and save compatibility.
+## Standing mandate
+Keep hourly development enabled. Develop one bounded roadmap increment on existing `dev` even if previous CI, main promotion, Render deploy or phone QA is pending. Never create another branch or force-push, bypass safety or protected CI. Only `dev` and `main` allowed. Preserve 223 teams/2676 players, six formations, exactly four controls, SD09, ten Career/Cup save slots, offline/save compatibility. Release version is four fields, visible only in Settings → About. Synchronize `package.json`, `src/modules/release.js`, README banner/heading/notes, `sw.js` cache and version policy for player-facing changes.
 
-## Current checkpoint
-- dev development candidate 0.10.2.0; main production remains older. Exact-head QA required; no hosted signaling service or physical LAN certification.
+## Current state
+- `dev` candidate `0.10.3.1`; `main` observed `fc69ba332e163d0023bbdd82dc2cdf5b684c2cdb` (older 0.10.2.0). Branches diverged by one main-only merge; protected pipeline must reconcile after exact-head green CI. Do not push directly to main.
+- Hosted Render broker service `srv-dbf8m6gm7kps7385tjo0` at `https://supermagicfootball-lan-signal.onrender.com` was LIVE on older commit `c871ee697d8191118a9e893d796b0a4b09038afc`. Auto-deploy configured but newer dev head was not confirmed live. GitHub Pages uses `wss://supermagicfootball-lan-signal.onrender.com/lan-signal` for Host/Find. Physical two-phone acceptance remains open.
+- 2026-10-26 increment: `a5654077` and `71d13261` protect hosted discovery from spoofed XFF prefix, then `08daa11d` repairs proxy-hop handling by selecting last valid public client candidate. A prior Modular QA #40243391096 had 813/814 pass, failing `lan_public_network.test.cjs` because private proxy hop was selected. New-head CI was queued; inspect fresh runs and logs. Local reconstructed 3-case Node smoke passed, not full repo QA.
+- `0.10.3.1` metadata synced across package, release, README, SW and policy; release remains **candidate**, not production certification. `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` records root cause and deployment gap.
 
-## Latest run — 2026-10-25 23:25 CET
-- `main=dev=e667fe42` verified; Full Regression #40238388569: preflight, four Node, four Chromium, preview and protected promotion all success. Hosted byte smoke not independently verified.
-- `6f68c72c` prevents closed guest taking approved LAN room seat; `347b0302` adds source regression. Exact new-head CI and physical LAN/graphics pending. Continue coding dev while release pipeline runs.
+## Next five
+1. Fetch fresh exact `dev`/`main` heads and Modular QA/Full Census run statuses; repair any failing Node/Chromium test.
+2. Verify actual Render deployment matches exact dev head; diagnose why auto-deploy did not advance if still stale.
+3. Run full four Node + four Chromium shards and Modular QA; inspect two-browser LAN acceptance and input/graphics smoke.
+4. Validate two physical phones on same Wi-Fi (host consent, kickoff, away controls, finish, disconnect/rejoin); never claim certification without devices.
+5. Permit protected green exact-head dev→main reconciliation; verify Pages deploy and hosted HTML/JS/CSS byte hashes.
 
-## LAN UI priority — 2026-10-25
-- Pages mounts manual SDP because auto discovery needs same-origin local companion. Added public Pages private-IP gateway to `http://HOST-IP:8000/`, preserving existing local Host Game/Find Games lobby. Version 0.10.1.0 candidate synchronized across package, release, README and SW. Source-contract tests committed; exact-head CI and physical two-device LAN remain pending. No protected main promotion yet.
-
-## Latest run — 2026-10-25 mobile Host/Find UI
-- `46932463` makes Host/Find first-class on Pages/phones; `11bffb41` allows secure WSS signaling endpoint config; `b6b23063` truthful service error; `b420d429` updates test. Version 0.10.2.0 candidate aligned. **No hosted signaling backend provisioned**, so functional discovery/join unverified/unavailable. Full QA, protected promotion and Pages verification pending. Next: deploy secure signaling service, configure endpoint, full two-browser + phone QA, exact-head CI.
-
-## Current fix — 2026-10-25
-- `bffe3e5b` removes obsolete manual Pages IP/CMD gateway (regression blocker); `110174ec` fails fast with unconfigured WSS on public Pages; `6bb6e4c0` test. Seven source checks passed; full CI not verified. Signaling service is not deployed; real phone LAN remains blocked. Candidate 0.10.2.0 not certified; do not promote without exact-head green.
-
-## Latest — 2026-10-25
-- `cc16e0ab` blocks misleading Host/Find when discovery is unconfigured; `a796a58b` source regression. Version 0.10.2.0 candidate unchanged. Hosted signaling service unprovisioned; physical LAN and full CI unverified. Only promote exact green dev head.
-
-## Latest test — 2026-10-25
-- `e7325f79` adds executed Node runtime test for GitHub Pages with missing signaling endpoint (no socket, unconfigured state, no host send). Test execution/full CI not yet confirmed. Candidate remains unpromoted; no signaling service or physical LAN QA.
-
-## Next smallest action
-1. Inspect fresh dev/main heads and exact-head CI failures; repair red steps.
-2. Obtain uninterrupted green Modular QA and 4 Node + 4 Chromium shards.
-3. Run two-tab LAN host/guest browser acceptance, WebRTC game sync and graphics.
-4. Test two physical LAN devices, disconnect/rejoin and offline regression.
-5. Allow protected exact-head promotion only when green; verify Pages bytes and hosted smoke.
-
-## Ownership and exclusions
-Sole developer `smf-hourly-dev-20261019`. Only this agent checkpoint and central `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` are writable memory; never read/edit other agents' notes. No new branches or direct development on main.
-
-## Evidence
-
-## Cleanup
-- Preserve two branches only; verify CI and hosted release, leave checkpoint under 4096 bytes.
+## Boundaries
+Read `AGENTS.md`, `docs/VERSIONING_POLICY.md`, shared memory and only this agent checkpoint. Do not edit another agent's checkpoint. Keep this file under 4096 bytes.
