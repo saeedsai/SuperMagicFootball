@@ -61,7 +61,13 @@ test('host registration must be acknowledged before UI claims a discoverable roo
  assert.match(lobby,/Unable to register room/);
 });
 
-test('duplicate host room ID is rejected before clearing existing host',()=>{
+test('duplicate host ID is rejected; same owner retry preserves active guest',()=>{
  const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
- assert.match(server,/if\(rooms\.has\(id\)&&rooms\.get\(id\)\.host!==ws\)return send\(ws,\{type:'error',message:'Room already exists'\}\);clearHost\(ws\)/);
+ assert.match(server,/if\(rooms\.has\(id\)\)\{if\(rooms\.get\(id\)\.host!==ws\)return send\(ws,\{type:'error',message:'Room already exists'\}\);send\(ws,\{type:'host-registered',roomId:id\}\);return\}/);
+});
+
+test('switching from guest to host releases previous guest seat and pending joins',()=>{
+ const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
+ assert.match(server,/clearHost\(ws\);\s*\/\/ Switching from guest[\s\S]*?releaseLanGuest\(ws,rooms,pending,send\);\s*const room=/);
+ assert.match(server,/some\(active=>active\.guest===ws\|\|active\.host===ws\)/);
 });
