@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN active room count
+- Source 26658a8, regression 8dca122; directory.count() prunes expired listings. Initial test update blocked by tool safety; separate focused test committed. Tests not executed, full CI/graphics/gameplay and main/Pages not verified. Internal module; no version bump.
+
 ## 2026-10-25 — LAN directory capacity guard
 - Source aba2424 and test 8fb790e on dev. Limit unique active rooms to 128 while allowing updates and expiry recovery. No player-facing change/version bump. Test execution, full 4+4/Modular QA, graphics/gameplay and protected main/Pages verification outstanding.
 
