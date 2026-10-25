@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN send state race (dev)
+- `dd449d17` rechecks WebSocket OPEN after serialization to avoid sending to sockets closed by custom toJSON side effects; `771289e0` adds regression. Exact-head CI and real LAN unverified. No game version bump; 4+4, Modular, graphics and protected main/Pages promotion pending.
+
 ## 2026-10-25 — LAN outbound envelope validation (dev)
 - `4f38a2aa` rejects malformed outbound signaling objects (primitives, arrays, absent/non-string type); `6c63262e` adds focused regression. Exact-head tests not run/verified. 4+4, Modular, graphics, real LAN and protected deployment pending. Candidate remains 0.10.0.0.
 
