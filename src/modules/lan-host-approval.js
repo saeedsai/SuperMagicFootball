@@ -37,6 +37,7 @@ export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30
       const message = validateLanRoomMessage(packet);
       if (!message || message.type !== 'join-request' || message.roomId !== hostedRoomId) return false;
       prune();
+      if (!Number.isFinite(now())) return false;
       if (pending.has(message.requestId) || decided.has(message.requestId) || sending.has(message.requestId) || pending.size >= maxPending) return false;
       pending.set(message.requestId, { requestId: message.requestId, expiresAt: now() + ttlMs });
       return true;
