@@ -1000,3 +1000,6 @@ Validate remote guest DataChannel interface before binding; close malformed chan
 - Next: exact-head CI visibility/repair, host approval queue UX, two-client LAN E2E, Player Studio/trick/Concept Royals visual QA, protected promotion only after complete green gates.
 
 - Follow-up after discovering stale `tests/lan_signal_policy.test.cjs` regex from single-seat fix: aligned assertions with exclusive host/guest invariant in commit `d3a7e30a`. Executed all **18/18 focused assertions** from actual `tests/lan_guest_release.test.cjs` and `tests/lan_signal_policy.test.cjs` against latest connector-fetched source in a V8 harness (minimal Node assert/fs/test and URL shims); PASS. This is NOT a Node runtime or Chromium run, and does not certify full CI.
+
+### 2026-10-25 — LAN room approval UI consistency
+- Limit outstanding pending joins per room to one, matching host's single approval dialog (`0d254b32`); update regression contract (`67ff82b2`). No player-facing bundle changes. Full exact-head CI and protected promotion pending verification.
