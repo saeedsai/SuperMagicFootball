@@ -18,7 +18,7 @@ test('new team does not replace old Concept Hero and preserves canonical assets'
  assert.match(ui,/crown_royals_reference_alex/);
  assert.match(ui,/crown_royals_reference_leo/);
  assert.match(render,/CROWN_ROYALS\.draw\(ctx,p,view/);
- assert.match(read('scripts/build.py'),/'conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-lobby','lan-live-match','render'/);
+ assert.match(read('scripts/build.py'),/'conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
  assert.match(read('sw.js'),/'conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
  assert.match(read('sw.js'),/assets\/crown_royals\/alex_three_views\.png/);
  assert.match(read('sw.js'),/assets\/crown_royals\/leo_three_views\.png/);
