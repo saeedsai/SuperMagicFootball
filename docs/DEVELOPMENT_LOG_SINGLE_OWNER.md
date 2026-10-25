@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN offline stopHosting fix
+- Commits 34c9bab and 881b46f on dev. stopHosting clears host state even if removal signaling fails; stale room expires by TTL. Regression tests cover offline stop, heartbeat and rehosting. No player-facing change/version bump. Tests added but execution and exact-head CI/Pages not verified. No main promotion without full QA.
+
 ## 2026-10-25 — LAN offline transport lifecycle fix
 - Source f6cb37f and regression 83298a2 on dev: room switching announces new room before withdrawing old; close completes even if signaling transport is offline, allowing TTL expiry. Test added, not yet executed. Internal non-player-facing candidate remains 0.9.41.9. Full exact-head CI, graphics/gameplay QA, main and Pages pending.
 
