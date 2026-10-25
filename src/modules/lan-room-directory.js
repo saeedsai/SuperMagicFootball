@@ -3,6 +3,7 @@ import { validateLanRoomMessage } from './lan-room-protocol.js';
 // Client-side room list. Network authorization must be enforced by the signaling service.
 export function createLanRoomDirectory({ ttlMs = 15000, now = () => Date.now() } = {}) {
   if (!Number.isSafeInteger(ttlMs) || ttlMs < 1000 || ttlMs > 120000) throw new RangeError('Invalid room TTL');
+  if (typeof now !== 'function') throw new TypeError('now must be a function');
   const rooms = new Map();
   const MAX_ROOMS = 128;
   // A room that was removed must not remain visible in a cached browser list.
