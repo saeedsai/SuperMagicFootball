@@ -19,3 +19,6 @@ Sole developer smf-hourly-dev-20261019. Do not read/write other agents' memory. 
 
 ## Cleanup
 Updated central dev log. Keep checkpoint <4KiB and continue hourly; inspect latest workflow jobs and repair any new failures. Do not claim deployment without main and hosted hash verification.
+
+## 2026-10-25 — duplicate room cards
+Dev source 80d78ea, test 03e68a0, log 4550101. Selector deduplicates room IDs. Not wired into game UI, no version bump. Tests not run this execution, full CI/main/Pages not verified. Next secure transport, UI, two-device QA, protected promotion.
