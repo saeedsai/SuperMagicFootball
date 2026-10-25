@@ -5,6 +5,7 @@ import http from 'node:http';
 import {readFile,stat,realpath} from 'node:fs/promises';
 import {isPublicLanPath} from './lan-static-policy.mjs';
 import {releaseLanGuest} from './lan-guest-release.mjs';
+import {expireLanPending} from './lan-pending-expiry.mjs';
 import {createLanSignalPolicy} from './lan-signal-policy.mjs';
 import {resolve,extname,sep} from 'node:path';
 import {networkInterfaces} from 'node:os';
@@ -79,7 +80,7 @@ wss.on('connection',(ws,req)=>{
  });
  ws.on('close',()=>{clients.delete(ws);clearHost(ws);releaseLanGuest(ws,rooms,pending,send)});
 });
-setInterval(()=>{for(const [id,p] of pending)if(Date.now()-p.time>30000){pending.delete(id);send(p.guest,{type:'join-reject',roomId:p.roomId,requestId:id,reason:'timeout'})}},5000).unref();
+setInterval(()=>expireLanPending(pending,send),5000).unref();
 server.listen(port,host,()=>{
  console.log('SuperMagicFootball LAN server listening on '+host+':'+port);
  for(const [name,entries] of Object.entries(networkInterfaces()))for(const e of entries||[])if(e.family==='IPv4'&&!e.internal)console.log('LAN URL ('+name+'): http://'+e.address+':'+port);
