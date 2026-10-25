@@ -29,3 +29,17 @@ test('room removal, invalid messages and clear', async () => {
   assert.equal(rooms.list().length, 0);
   assert.throws(() => createLanRoomDirectory({ ttlMs: 0 }), RangeError);
 });
+
+test('room directory bounds unique rooms but allows updates and expired replacement', async () => {
+  const { createLanRoomDirectory } = await load();
+  let time = 0;
+  const directory = createLanRoomDirectory({ now: () => time, ttlMs: 1000 });
+  for (let i = 0; i < 128; i++) assert.equal(directory.receive(packet('room_' + String(i).padStart(8, '0'))), true);
+  assert.equal(directory.list().length, 128);
+  assert.equal(directory.receive(packet('room_99999999')), false);
+  assert.equal(directory.receive(packet('room_00000000', 'Updated')), true);
+  assert.equal(directory.list().find(room => room.roomId === 'room_00000000').name, 'Updated');
+  time = 1000;
+  assert.equal(directory.receive(packet('room_99999999')), true);
+  assert.equal(directory.list().length, 1);
+});
