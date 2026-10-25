@@ -45,3 +45,13 @@ test('unserializable signaling payload is contained and peer terminated',async()
  assert.equal(safeLanSend({readyState:1,send(){sent++},terminate(){closed++}},{type:'offer',bad:1n}),false);
  assert.equal(sent,0);assert.equal(closed,2);
 });
+
+test('undefined and function payloads never reach the socket',async()=>{
+ const {safeLanSend}=await load();let sent=0,terminated=0;
+ const ws={readyState:1,send(){sent++},terminate(){terminated++}};
+ assert.equal(safeLanSend(ws,undefined),false);
+ assert.equal(safeLanSend(ws,()=>{}),false);
+ assert.equal(sent,0);assert.equal(terminated,0);
+ assert.equal(safeLanSend(ws,{type:'rooms'}),true);
+ assert.equal(sent,1);
+});
