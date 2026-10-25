@@ -120,3 +120,24 @@ test('failed occupancy announcement does not change host state', async () => {
   assert.equal(host.heartbeat(), false);
   assert.equal(host.stopHosting(), false);
 });
+
+test('joinableRooms tracks occupancy, excludes own room and expires stale listings', async () => {
+  const { createLanDiscoveryController } = await load();
+  let time = 0;
+  const host = createLanDiscoveryController({ send() {}, now: () => time, ttlMs: 1000 });
+  host.host('room_12345678', 'My Room');
+  const own = { version: 1, type: 'room-announce', roomId: 'room_12345678', name: 'My Room', players: 1 };
+  const other = { version: 1, type: 'room-announce', roomId: 'room_87654321', name: 'Guest Game', players: 1 };
+  assert.equal(host.receive(own), true);
+  assert.equal(host.receive(other), true);
+  assert.deepEqual(host.joinableRooms('GUEST'), [{ roomId: 'room_87654321', name: 'Guest Game', players: 1 }]);
+  assert.deepEqual(host.joinableRooms('my'), []);
+  assert.throws(() => host.joinableRooms(1), TypeError);
+  host.receive({ ...other, players: 2 });
+  assert.deepEqual(host.joinableRooms(), []);
+  host.receive(other);
+  time = 1000;
+  assert.deepEqual(host.joinableRooms(), []);
+  host.close();
+  assert.deepEqual(host.joinableRooms(), []);
+});

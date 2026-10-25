@@ -1,3 +1,9 @@
+## 2026-10-25 12:07 CET — LAN browser live discovery integration and CI repair
+- Atomic dev increment: `createLanDiscoveryController.joinableRooms(search)` composes TTL-pruned discovery with existing selector; hides own/full rooms, supports case-insensitive search and expired-room cleanup. Internal only, not authenticated signaling or UI.
+- Focused Node 22 isolated reproduction 9/9 PASS, including new occupancy/search/TTL/close test. GitHub full tests pending for this exact head.
+- CI root cause: Full Regression Census #40183086173 and Modular QA #40183086171 each failed one memory contract assertion (`missing ## Next smallest action`); restored six required headings in own checkpoint. Full 4 Node + 4 Chromium, Modular QA, Pages/graphics/two-device certification still required.
+- Preserve 0.9.41.9 candidate, 223/2676 IDs, six formations, four buttons, offline saves. No main promotion before exact-head green evidence.
+
 ## 2026-10-25 — LAN room browser joinability selector
 - Added dev-only selector 2113bca and focused test c094820 for excluding own/full rooms and searching room names. Not wired into UI/signaling; internal module, candidate version unchanged. Test execution and exact-head full CI/graphics/main/Pages verification outstanding. No premature promotion.
 

@@ -1,5 +1,6 @@
 import { createLanRoomDirectory } from './lan-room-directory.js';
 import { createLanRoomMessage } from './lan-room-protocol.js';
+import { selectJoinableLanRooms } from './lan-room-selector.js';
 
 // Client orchestration only. A trusted signaling service must authenticate peers,
 // scope rooms to a verified LAN and deliver discovery events over a secure channel.
@@ -55,6 +56,12 @@ export function createLanDiscoveryController({ send, now = () => Date.now(), ttl
       return directory.receive(packet);
     },
     rooms() { return closed ? [] : directory.list(); },
+    // Live, TTL-pruned candidates for Find Games. Admission remains host-approved.
+    joinableRooms(search = '') {
+      return selectJoinableLanRooms(closed ? [] : directory.list(), {
+        ownRoomId: hosted?.roomId ?? null, search
+      });
+    },
     close() {
       if (closed) return;
       const lastHosted = hosted;
