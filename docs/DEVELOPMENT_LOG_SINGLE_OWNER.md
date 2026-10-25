@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN outbound envelope validation (dev)
+- `4f38a2aa` rejects malformed outbound signaling objects (primitives, arrays, absent/non-string type); `6c63262e` adds focused regression. Exact-head tests not run/verified. 4+4, Modular, graphics, real LAN and protected deployment pending. Candidate remains 0.10.0.0.
+
 ## 2026-10-25 — LAN outbound frame budget (dev)
 - `400a1a7f` rejects outbound signaling JSON over 210000 UTF-8 bytes, matching inbound maxPayload. `fd2b2fa7` adds ASCII and multibyte size tests plus healthy-connection check. Tests committed, not executed against exact head. Full 4+4, Modular QA, graphics, physical two-device LAN and protected promotion pending; no player version bump.
 
