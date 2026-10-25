@@ -49,7 +49,7 @@ wss.on('connection',(ws,req)=>{
    if(typeof id!=='string'||! /^[a-zA-Z0-9_-]{8,64}$/.test(id)||typeof m.name!=='string'||m.name.length>48||!m.name.trim()||typeof m.build!=='string'||m.build.length>32)return;
    clearHost(ws);if(rooms.has(id))return send(ws,{type:'error',message:'Room already exists'});
    const room={id,name:m.name.trim(),build:m.build,host:ws,ip:meta.ip,guest:null};rooms.set(id,room);
-   broadcast(room,{type:'room-announce',roomId:id,name:room.name,build:room.build});return;
+   broadcast(room,{type:'room-announce',roomId:id,name:room.name,build:room.build});send(ws,{type:'host-registered',roomId:id});return;
   }
   if(m.type==='rooms'){for(const room of rooms.values())if(sameSubnet(meta.ip,room.ip))send(ws,{type:'room-announce',roomId:room.id,name:room.name,build:room.build});return}
   if(m.type==='leave'){clearHost(ws);releaseLanGuest(ws,rooms,pending,send);return}
