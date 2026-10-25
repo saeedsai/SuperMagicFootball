@@ -7,6 +7,7 @@ import {isPublicLanPath} from './lan-static-policy.mjs';
 import {releaseLanGuest} from './lan-guest-release.mjs';
 import {expireLanPending} from './lan-pending-expiry.mjs';
 import {createLanSignalPolicy} from './lan-signal-policy.mjs';
+import {getLanGameUrls} from './lan-addresses.mjs';
 import {resolve,extname,sep} from 'node:path';
 import {networkInterfaces} from 'node:os';
 import {WebSocketServer} from 'ws';
@@ -43,6 +44,7 @@ const wss=new WebSocketServer({server,path:'/lan-signal',maxPayload:MAX,verifyCl
 wss.on('connection',(ws,req)=>{
  const meta={id:'peer_'+(++nextId),ip:ipOf(req),windowStart:Date.now(),messageCount:0};clients.set(ws,meta);
  send(ws,{type:'welcome',peerId:meta.id});
+ send(ws,{type:'lan-addresses',urls:getLanGameUrls({interfaces:networkInterfaces(),port,bind:host})});
  for(const room of rooms.values())if(sameSubnet(meta.ip,room.ip))send(ws,{type:'room-announce',roomId:room.id,name:room.name,build:room.build});
  ws.on('message',bytes=>{
   const now=Date.now();if(now-meta.windowStart>=WINDOW_MS){meta.windowStart=now;meta.messageCount=0}
@@ -86,5 +88,5 @@ wss.on('connection',(ws,req)=>{
 setInterval(()=>expireLanPending(pending,send),5000).unref();
 server.listen(port,host,()=>{
  console.log('SuperMagicFootball LAN server listening on '+host+':'+port);
- for(const [name,entries] of Object.entries(networkInterfaces()))for(const e of entries||[])if(e.family==='IPv4'&&!e.internal)console.log('LAN URL ('+name+'): http://'+e.address+':'+port);
+ for(const url of getLanGameUrls({interfaces:networkInterfaces(),port,bind:host}))console.log('LAN game URL: '+url);
 });
