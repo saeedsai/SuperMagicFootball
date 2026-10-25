@@ -20,5 +20,8 @@ Local Node v22 isolated mirrors of address/WS/policy logic: **5/5 pass** (not fu
 4. Fix any remaining game/graphic issues surfaced by full Node 4/Chromium 4/Modular QA.
 5. Confirm exact-head protected fast-forward and main hosted byte comparison; only then close LAN issue #48.
 
+## Latest increment — 2026-10-25
+- LAN safe-send serialization exception containment committed `a2bc9cdc`; circular/BigInt regression cases committed `47566947`. CI and physical LAN not yet verified. Main promotion gated on exact-head green 4+4 and Modular QA; no Pages claim.
+
 ## Ownership
 Update central `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` and this checkpoint only. No other agents' memories. Never change player identifiers/save formats for LAN.
