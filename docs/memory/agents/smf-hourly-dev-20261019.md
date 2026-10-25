@@ -26,3 +26,6 @@ Keep under 4 KiB. Next five:
 
 ## 2026-10-25 — Automatic LAN discovery foundation
 Issue #48: added src/modules/lan-room-protocol.js and tests/lan_room_protocol.test.cjs directly to dev. Validates room announcements, removals and host-approved join message identities; no transport, LAN scoping, UI or live deployment yet. Pending exact-head CI and protected promotion. Next: secure discovery service, room browser, approval UI, two-client integration, graphics QA. No extra branch.
+
+## LAN directory increment — 2026-10-25
+Issue #48: dev commits c9c586d and 0c7f5e6 add room TTL/refresh/remove/list and tests; dev log commit 3162fa3. Not integrated with UI/signaling; no CI, graphics QA, main or Pages certification claimed. Next: test and fix, signaling service, room browser, host consent, two-client LAN.
