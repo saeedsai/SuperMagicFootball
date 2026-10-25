@@ -91,3 +91,26 @@ test('toJSON cannot rewrite a valid envelope into an invalid signaling frame',as
  assert.equal(sent,0);assert.equal(terminated,0);
  assert.equal(safeLanSend(ws,{type:'rooms'}),true);assert.equal(sent,1);
 });
+
+test('slow client is terminated before exceeding signaling queue budget',async()=>{
+ const {safeLanSend,LAN_MAX_OUTBOUND_QUEUE_BYTES}=await load();let sent=0,closed=0;
+ const message={type:'offer',sdp:'x'.repeat(1000)},bytes=Buffer.byteLength(JSON.stringify(message),'utf8');
+ const ws={readyState:1,bufferedAmount:LAN_MAX_OUTBOUND_QUEUE_BYTES-bytes+1,send(){sent++},terminate(){closed++}};
+ assert.equal(safeLanSend(ws,message),false);assert.equal(sent,0);assert.equal(closed,1);
+});
+test('UTF-8 queue budget boundary accepts exact fit and rejects one extra byte',async()=>{
+ const {safeLanSend,LAN_MAX_OUTBOUND_QUEUE_BYTES}=await load();let sent=0,closed=0;
+ const message={type:'offer',sdp:'😀'.repeat(300)},bytes=Buffer.byteLength(JSON.stringify(message),'utf8');
+ const ws={readyState:1,bufferedAmount:LAN_MAX_OUTBOUND_QUEUE_BYTES-bytes,send(p){sent++;assert.equal(p,JSON.stringify(message))},terminate(){closed++}};
+ assert.equal(safeLanSend(ws,message),true);assert.equal(sent,1);assert.equal(closed,0);
+ ws.bufferedAmount++;assert.equal(safeLanSend(ws,message),false);assert.equal(sent,1);assert.equal(closed,1);
+});
+test('backpressure termination exception is contained',async()=>{
+ const {safeLanSend,LAN_MAX_OUTBOUND_QUEUE_BYTES}=await load();
+ const ws={readyState:1,bufferedAmount:LAN_MAX_OUTBOUND_QUEUE_BYTES,send(){throw Error('should not send')},terminate(){throw Error('already closing')}};
+ assert.equal(safeLanSend(ws,{type:'rooms'}),false);
+});
+test('socket mocks without bufferedAmount preserve successful signaling',async()=>{
+ const {safeLanSend}=await load();let sent=0;
+ assert.equal(safeLanSend({readyState:1,send(){sent++}},{type:'rooms'}),true);assert.equal(sent,1);
+});

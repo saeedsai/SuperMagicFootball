@@ -1,4 +1,5 @@
 // A failed signaling write must not crash the LAN companion server or retain a ghost seat.
+export const LAN_MAX_OUTBOUND_QUEUE_BYTES = 512 * 1024;
 export function safeLanSend(ws, message) {
   if (!ws || ws.readyState !== 1) return false;
   try {
@@ -10,7 +11,14 @@ export function safeLanSend(ws, message) {
     const envelope = JSON.parse(payload);
     if (!envelope || typeof envelope !== 'object' || Array.isArray(envelope) || typeof envelope.type !== 'string') return false;
     // Bound outbound signaling to the same frame budget enforced on inbound messages.
-    if (Buffer.byteLength(payload, 'utf8') > 210000) return false;
+    const payloadBytes = Buffer.byteLength(payload, 'utf8');
+    if (payloadBytes > 210000) return false;
+    // Disconnect a stalled peer before queued signaling grows without bound.
+    if (Number.isFinite(ws.bufferedAmount) && ws.bufferedAmount >= 0 &&
+        ws.bufferedAmount + payloadBytes > LAN_MAX_OUTBOUND_QUEUE_BYTES) {
+      try { ws.terminate?.(); } catch { /* already closing */ }
+      return false;
+    }
     // Recheck state after serialization, which may invoke custom toJSON code.
     if (ws.readyState !== 1) return false;
     ws.send(payload, error => {

@@ -1,45 +1,27 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-25
+**Updated:** 2026-10-25 23:00 CET
 
 ## Mission
-Continue development only on existing `dev`, independent of release blockers; promote *only* exact green head using protected workflow. Never create branches, bypass security, or claim unobserved QA. Preserve 223 teams / 2676 players, six formations, four buttons, 10 Career/Cup slots, SD09, offline/saves.
+Develop hourly on existing `dev` regardless of release blockers. Never create branches, bypass GitHub security/CI, or force-push. Preserve 223 teams/2676 players, six formations, four action buttons, ten Career/Cup slots, SD09, offline and save compatibility.
 
-## Latest LAN milestone — 0.10.0.0 candidate, NOT certified
-`main=84f8bae589f0675ea1e4cd8525a802ef0a643a92`. Last checked `dev=14ce9ab9971558f6a3cc62b18218da46689faa46` (91 commits ahead, 0 behind). Automatic local `npm run serve:lan` WebSocket room discovery, host consent, WebRTC SDP exchange and existing host-authoritative `lan-live-match.js` GameEngine bridge. GitHub Pages remains static and *cannot* auto-discover rooms; the same companion LAN URL must be opened by both browsers.
+## Current checkpoint
+- Before this run: `dev=ec8ecce1a65b9d97558051c647b56f1cebec78c1`, `main=84f8bae589f0675ea1e4cd8525a802ef0a643a92`. About-only `0.10.0.0` is a LAN candidate, **not certified**. Companion server supports LAN discovery, host consent and WebRTC signaling; physical two-device match is unverified.
+- New server-only feature: bound queued WebSocket signaling at 512 KiB (including UTF-8 frame), terminate stalled peers to invoke normal cleanup. Focused isolated Node v22.16.0 mirror tests 4/4 passed; full repository CI not yet observed.
+- Root cause of dev Modular #40236580431 and Full #40236580440 failure: own memory exceeded 4096 bytes (1 of 801 Node tests failed); full 4+4 did not start. This file is compacted with six mandatory headings.
 
-New commits: private IP address helper 843d96f3 and server broadcast 40f93dc3; one-click queued Host/Find 0a068ad0; bounded discovery reconnect 487f0c9f; race/cancel guard 6d13289f; localhost host visibility from private LAN guest 12be7bd0; stale host heartbeat 6cb9db77; Windows one-click `start-lan.cmd` 8f28f6d2; UI navigation hint 3d0280c9; Node tests 75ec3924/c8c19711/00d3e303/cec3f476/b065604e; full browser two-tab acceptance script bb4e1129 plus waiter repair d70f799a; browser CI installs ws cc3e2263; version/README/notes/SW/docs aligned to 0.10.0.0. README has complete host/guest LAN procedure.
+## Next smallest action
+1. Inspect fresh dev/main heads and exact-head CI failures; repair red steps.
+2. Obtain uninterrupted green Modular QA and 4 Node + 4 Chromium shards.
+3. Run two-tab LAN host/guest browser acceptance, WebRTC game sync and graphics.
+4. Test two physical LAN devices, disconnect/rejoin and offline regression.
+5. Allow protected exact-head promotion only when green; verify Pages bytes and hosted smoke.
 
-## Evidence and blockers
-Local Node v22 isolated mirrors of address/WS/policy logic: **5/5 pass** (not full exact-head repo). Browser smoke script committed but **not run**: container GitHub DNS lookup fails, local browser navigation is administratively blocked, GitHub Actions PR-filtered query returns [] and commit legacy statuses []; none means green. Full 4 Node + 4 Chromium, Modular QA, physical two-device host/guest, graphics screenshots, protected main promotion and GitHub Pages byte smoke remain **UNVERIFIED**. Do not mark LAN fully certified/production deployed. Workflow `.github/workflows/full-regression-census.yml` auto fast-forwards dev→main only after exact-head green 4+4/preview/preflight, then triggers main Pages smoke.
+## Ownership and exclusions
+Sole developer `smf-hourly-dev-20261019`. Only this agent checkpoint and central `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` are writable memory; never read/edit other agents' notes. No new branches or direct development on main.
 
-## Next five actions
-1. Inspect exact new dev SHA and all CI run/job failure logs through valid accessible tools; resolve red steps.
-2. Run `python3 tests/lan_auto_two_browser_qa.py` in CI: automatic discovery, acceptance, actual WebRTC and synchronised game/graphics.
-3. Verify two physical devices same private LAN, firewall, host localhost vs guest IP, dropped connection and retry; test offline regression.
-4. Fix any remaining game/graphic issues surfaced by full Node 4/Chromium 4/Modular QA.
-5. Confirm exact-head protected fast-forward and main hosted byte comparison; only then close LAN issue #48.
+## Evidence
+Failing Modular: https://github.com/saeedsai/SuperMagicFootball/actions/runs/40236580431 ; Full: https://github.com/saeedsai/SuperMagicFootball/actions/runs/40236580440 . Both show `smf-hourly-dev-20261019 exceeds 4 KiB`. Isolated 4/4 queue tests PASS, but exact-head CI, physical LAN, visual QA and Pages smoke remain **unverified**.
 
-## Latest increment — 2026-10-25
-- LAN safe-send serialization exception containment committed `a2bc9cdc`; circular/BigInt regression cases committed `47566947`. CI and physical LAN not yet verified. Main promotion gated on exact-head green 4+4 and Modular QA; no Pages claim.
-
-## 22:00 increment
-- Missing/invisible room joins now receive privacy-neutral rejection: `7341338a` helper, `53b66edb` wiring, `3475d101` tests; log `14ce9ab9`. Isolated Node 3/3 and live source wiring 2/2 pass. Full CI, real-device LAN and graphics remain unverified. Old full CI canceled by workflow `cancel-in-progress: true` as newer dev commits arrived; not a green result.
-
-## Latest incremental fix
-- `5ed2b182` rejects non-string JSON serialization results before WebSocket send; `db3a67f3` adds regression. Five mirrored isolated assertions passed, not full CI. Protected main promotion remains gated on exact-head green 4+4 and Modular QA.
-
-## Latest incremental fix
-- `400a1a7f` bounds outbound WebSocket signaling frames to 210000 UTF-8 bytes; `fd2b2fa7` adds regression. CI and production verification pending; preserve 0.10.0.0 candidate and do not bypass protected promotion.
-
-## Latest incremental fix
-- `4f38a2aa` validates outbound LAN signaling envelope, `6c63262e` adds regression; exact-head CI and real-device LAN remain unverified. Main must remain protected until full green CI and hosted smoke.
-
-## Latest incremental fix
-- `dd449d17` closes LAN serialization/send readiness race; `771289e0` adds test. Not yet certified on exact head; do not promote without full CI and hosted smoke.
-
-## Latest incremental fix
-- `dddb4b80` rejects malformed post-toJSON signaling envelopes; `f1357219` adds regression. Exact-head CI, real LAN, graphics and Pages release remain unverified.
-
-## Ownership
-Update central `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` and this checkpoint only. No other agents' memories. Never change player identifiers/save formats for LAN.
+## Cleanup
+Keep checkpoint under 4 KiB and full history in central log. Preserve About-only version; never call candidate a certified release or close LAN #48 prematurely.
