@@ -6,9 +6,7 @@
 Develop hourly on existing `dev` regardless of release blockers. Never create branches, bypass GitHub security/CI, or force-push. Preserve 223 teams/2676 players, six formations, four action buttons, ten Career/Cup slots, SD09, offline and save compatibility.
 
 ## Current checkpoint
-- Before this run: `dev=ec8ecce1a65b9d97558051c647b56f1cebec78c1`, `main=84f8bae589f0675ea1e4cd8525a802ef0a643a92`. About-only `0.10.0.0` is a LAN candidate, **not certified**. Companion server supports LAN discovery, host consent and WebRTC signaling; physical two-device match is unverified.
-- New server-only feature: bound queued WebSocket signaling at 512 KiB (including UTF-8 frame), terminate stalled peers to invoke normal cleanup. Focused isolated Node v22.16.0 mirror tests 4/4 passed; full repository CI not yet observed.
-- Root cause of dev Modular #40236580431 and Full #40236580440 failure: own memory exceeded 4096 bytes (1 of 801 Node tests failed); full 4+4 did not start. This file is compacted with six mandatory headings.
+- dev development candidate 0.10.2.0; main production remains older. Exact-head QA required; no hosted signaling service or physical LAN certification.
 
 ## Latest run — 2026-10-25 23:25 CET
 - `main=dev=e667fe42` verified; Full Regression #40238388569: preflight, four Node, four Chromium, preview and protected promotion all success. Hosted byte smoke not independently verified.
@@ -25,6 +23,9 @@ Develop hourly on existing `dev` regardless of release blockers. Never create br
 
 ## Latest — 2026-10-25
 - `cc16e0ab` blocks misleading Host/Find when discovery is unconfigured; `a796a58b` source regression. Version 0.10.2.0 candidate unchanged. Hosted signaling service unprovisioned; physical LAN and full CI unverified. Only promote exact green dev head.
+
+## Latest test — 2026-10-25
+- `e7325f79` adds executed Node runtime test for GitHub Pages with missing signaling endpoint (no socket, unconfigured state, no host send). Test execution/full CI not yet confirmed. Candidate remains unpromoted; no signaling service or physical LAN QA.
 
 ## Next smallest action
 1. Inspect fresh dev/main heads and exact-head CI failures; repair red steps.
