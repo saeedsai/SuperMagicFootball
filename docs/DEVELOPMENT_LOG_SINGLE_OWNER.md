@@ -1011,3 +1011,12 @@ Validate remote guest DataChannel interface before binding; close malformed chan
 
 ### 2026-10-25 — LAN join expiry decision guard
 - Commit `12b00407` enforces 30-second pending join TTL at host decision, closing gap between timer sweeps; `1022e266` adds source regression. Server-only, version unchanged. Full exact-head CI and protected release unverified.
+
+### 2026-10-25 — LAN 0.10.0.0 candidate: host addresses, one-click discovery, real-browser QA
+- Implemented local server private-network address advertisement (843d96f3, 40f93dc3). A host browsing localhost is now discoverable by an invited guest accessing its LAN IP (12be7bd0), without allowing remote public IPs to enumerate rooms.
+- Fixed Host/Find initial-click while signaling opens (0a068ad0), WebSocket reconnect/cancellation (487f0c9f), stale approvals and readiness races (6d13289f), and ping/pong expiry of dead sockets/rooms (6cb9db77).
+- Added Windows launcher start-lan.cmd (8f28f6d2), revised visible LAN menu instruction (3d0280c9) and host/guest README steps (39c449fc). Browser must open the local HTTP companion server; GitHub Pages alone does not provide LAN WebSocket discovery.
+- Automated focused Node contracts for LAN URLs, reconnect, fake DOM host/find/join, loopback visibility and heartbeat (75ec3924, c8c19711, 00d3e303, cec3f476, b065604e); actual two-Chromium-tab host/guest/WebRTC/gameplay/graphic script (bb4e1129, d70f799a). Browser CI now installs ws dependency (cc3e2263).
+- Four-field About-only **0.10.0.0** candidate aligned in package, release metadata, README, version policy, shared memory and rotated SW cache. Roster IDs, formations, buttons, save schemas/slots and solo offline gameplay untouched.
+- Actual local Node execution against isolated mirrors of address/signal/policy functions **5/5 PASS**. Full exact-head 4 Node + 4 Chromium + Modular QA, physical two-device LAN, graphics visual acceptance, main protected promotion and Pages hosted-byte smoke **not observed**: git/github.com DNS unavailable; browser runtime navigation blocked by host. Empty GitHub statuses and PR-only workflow query are not CI success.
+- Main before this batch: 84f8bae5; latest dev checkpoint before documentation commit b065604e (82 ahead, 0 behind). Automatic protected workflow owns release, do not bypass. Follow-up: exact-head CI logs, two-Chromium acceptance, physical network validation, graphic fidelity, protected main/Pages verification. Issue #48 remains open until genuine acceptance.
