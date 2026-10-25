@@ -19,3 +19,6 @@ GitHub connector commits to dev succeeded. Local full clone blocked by DNS to gi
 
 ## Cleanup
 Next five: (1) verify exact-head Modular and 4+4 CI, repair any red, (2) secure LAN-scoped discovery/signaling, (3) Find Games + host approval UI, (4) genuine two-client gameplay/graphics QA, (5) protected green-head main promotion + Pages hosted byte smoke. Keep checkpoint under 4 KiB.
+
+## 2026-10-25 10:51 CET — LAN discovery controller
+Commits 1550b667 and 8f964d5f on dev: announce/heartbeat/remove, guest list and expiry, focused tests added. Log commit 5312406b. Container git ls-remote failed DNS github.com; tests/full CI/main/Pages unverified. Next: secure signaling and browser UI, actual two-client LAN, full QA. No version bump; not player-facing.
