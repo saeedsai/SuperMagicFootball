@@ -62,3 +62,8 @@ test('approving a guest rejects other queued requests for that room',()=>{
  assert.match(server,/send\(other\.guest,\{type:'join-reject',roomId:id,requestId:otherId,reason:'room-full'\}\)/);
  assert.match(server,/send\(ws,\{type:'join-cancel',roomId:id,requestId:otherId\}\)/);
 });
+
+test('repeated registration by the same host is idempotent',()=>{
+ const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
+ assert.match(server,/if\(rooms\.has\(id\)\)\{if\(rooms\.get\(id\)\.host!==ws\)return send\(ws,\{type:'error',message:'Room already exists'\}\);send\(ws,\{type:'host-registered',roomId:id\}\);return\}/);
+});
