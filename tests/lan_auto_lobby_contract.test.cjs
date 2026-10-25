@@ -1,10 +1,10 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
-test('LAN Quick Match uses automatic same-origin lobby with manual public Pages fallback',()=>{
+test('LAN Quick Match uses automatic lobby on Pages and LAN without manual IP fallback',()=>{
  const lobby=fs.readFileSync('src/modules/lan-lobby.js','utf8');
  assert.match(lobby,/mountAutoLanLobby\(root,options\)/);
- assert.match(lobby,/saeedsai\.github\.io/);
+ assert.doesNotMatch(lobby,/saeedsai\.github\.io/);
 });
 test('automatic LAN path includes discovery, approval and SDP exchange',()=>{
  const lobby=fs.readFileSync('src/modules/lan-auto-lobby.js','utf8');
@@ -17,7 +17,7 @@ test('automatic LAN path includes discovery, approval and SDP exchange',()=>{
 test('automatic LAN uses real HTTP browser origins and preserves offline imports',()=>{
  const lobby=fs.readFileSync('src/modules/lan-lobby.js','utf8');
  const sw=fs.readFileSync('sw.js','utf8');
- assert.match(lobby,/location\?\.protocol==='http:'/);
+ assert.match(lobby,/options\.auto!==false/);
  assert.match(lobby,/!options\.peerFactory/);
  assert.match(sw,/'lan-auto-signal','lan-auto-lobby','lan-lobby'/);
 });
