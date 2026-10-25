@@ -1,3 +1,6 @@
+## 2026-10-25 — invalid LAN clock guard
+- Source 59d9d44, test 3ad0754: reject join request when now() is not finite, preventing NaN expirations. Internal fix, no version bump. Tests committed not executed; full 4+4/Modular QA, gameplay/graphics, protected main/Pages unverified. Pre-change dev 72 ahead main.
+
 ## 2026-10-25 — LAN hosting state
 - Source a794d09, test a8d8506: isHosting() reflects start/restart/stop/close for future lobby. Internal API, no version bump. Tests committed but not executed; full 4+4, Modular QA, gameplay/graphics and protected main/Pages unverified. Pre-change dev 68 ahead main.
 
