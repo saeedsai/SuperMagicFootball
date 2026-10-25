@@ -29,6 +29,22 @@ function mountLanLobby(root,options={}){
   // Same-origin LAN server provides automatic discovery and consent. Public Pages
   // cannot directly scan private networks; retain manual fallback there.
   if(options.auto!==false && !options.peerFactory && globalThis.location?.protocol==='http:' && globalThis.location?.hostname && globalThis.location.hostname!=='saeedsai.github.io')return mountAutoLanLobby(root,options);
+  const peerFactory=options.peerFactory??createLanPeerConnection;
+  const build=options.build??RELEASE.version;
+  const cryptoSource=options.cryptoSource??globalThis.crypto;
+  root.innerHTML=`<section class="panel lanConnectionLab" aria-label="Local network connection setup">
+    <p class="muted">LAN Quick Match: after both devices exchange offers and answers, the host runs the match and the guest controls the away team. Both devices must use the same installed game version and local network. Share the connection text only with someone you trust; it may contain local network addresses.</p>
+    <div class="row"><button type="button" class="btn" id="lanHost">CREATE HOST OFFER</button>
+      <button type="button" class="btn" id="lanGuest">JOIN AS GUEST</button>
+      <button type="button" class="btn minor" id="lanReset">RESET CONNECTION</button></div>
+    <label for="lanIncoming">Incoming offer (guest) or answer (host)</label>
+    <textarea id="lanIncoming" rows="5" maxlength="200000" spellcheck="false" autocapitalize="off" aria-describedby="lanStatus"></textarea>
+    <div class="row"><button type="button" class="btn" id="lanApply">APPLY INCOMING TEXT</button></div>
+    <label for="lanOutgoing">Outgoing offer (host) or answer (guest) — copy to other device</label>
+    <textarea id="lanOutgoing" rows="5" readonly spellcheck="false" aria-label="Outgoing connection text"></textarea>
+    <div class="row"><button type="button" class="btn minor" id="lanCopy">COPY OUTGOING TEXT</button></div>
+    <p id="lanStatus" role="status" aria-live="polite">Choose host or guest to begin connection setup.</p>
+  </section>`;
   // Static GitHub Pages cannot discover LAN hosts. Offer an explicit handoff to
   // the companion server rather than presenting manual SDP as the only route.
   const isPublicPages=globalThis.location?.hostname==='saeedsai.github.io';
@@ -47,22 +63,6 @@ function mountLanLobby(root,options={}){
       globalThis.location.assign('http://'+parts.map(Number).join('.')+':8000/');
     });
   }
-  const peerFactory=options.peerFactory??createLanPeerConnection;
-  const build=options.build??RELEASE.version;
-  const cryptoSource=options.cryptoSource??globalThis.crypto;
-  root.innerHTML=`<section class="panel lanConnectionLab" aria-label="Local network connection setup">
-    <p class="muted">LAN Quick Match: after both devices exchange offers and answers, the host runs the match and the guest controls the away team. Both devices must use the same installed game version and local network. Share the connection text only with someone you trust; it may contain local network addresses.</p>
-    <div class="row"><button type="button" class="btn" id="lanHost">CREATE HOST OFFER</button>
-      <button type="button" class="btn" id="lanGuest">JOIN AS GUEST</button>
-      <button type="button" class="btn minor" id="lanReset">RESET CONNECTION</button></div>
-    <label for="lanIncoming">Incoming offer (guest) or answer (host)</label>
-    <textarea id="lanIncoming" rows="5" maxlength="200000" spellcheck="false" autocapitalize="off" aria-describedby="lanStatus"></textarea>
-    <div class="row"><button type="button" class="btn" id="lanApply">APPLY INCOMING TEXT</button></div>
-    <label for="lanOutgoing">Outgoing offer (host) or answer (guest) — copy to other device</label>
-    <textarea id="lanOutgoing" rows="5" readonly spellcheck="false" aria-label="Outgoing connection text"></textarea>
-    <div class="row"><button type="button" class="btn minor" id="lanCopy">COPY OUTGOING TEXT</button></div>
-    <p id="lanStatus" role="status" aria-live="polite">Choose host or guest to begin connection setup.</p>
-  </section>`;
   const el=id=>root.querySelector('#'+id);
   const status=el('lanStatus'),incoming=el('lanIncoming'),outgoing=el('lanOutgoing');
   let peer=null,mode=null,controller=null,unsubscribe=null,disposed=false;
