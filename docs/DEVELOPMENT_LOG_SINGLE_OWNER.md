@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN invalid JSON frame guard (dev)
+- `5ed2b182` prevents undefined/function JSON serialization results from being sent to WebSocket; preserves a healthy connection. `db3a67f3` adds focused regression. Five isolated mirrored helper assertions passed locally; repository CI, full 4+4, Modular, graphics, physical LAN and protected deployment not verified. No player-facing version bump.
+
 ## 2026-10-25 22:00 CET — LAN unavailable-room join feedback (dev only)
 - Found that `lan-server.mjs` silently discarded joins for vanished or subnet-invisible rooms, leaving guests without immediate feedback. Added privacy-neutral `room-unavailable` join rejection in `scripts/lan-unavailable-join.mjs` and server routing. Commits `7341338a`, `53b66edb`, test `3475d101`.
 - Focused isolated Node helper: 3/3 PASS; fetched server source wiring checked 2/2. Full exact-head 4 Node + 4 Chromium, Modular QA, physical two-client play, graphic QA and Pages hashes NOT verified. Local `git ls-remote` blocked by DNS. No version bump: server-only; candidate 0.10.0.0. Roster, saves, controls, offline untouched.
