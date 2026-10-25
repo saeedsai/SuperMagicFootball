@@ -7,7 +7,10 @@ export function createLanSignalPolicy({mode='lan',publicOrigin}={}) {
       throw new Error('Hosted signaling requires an exact HTTPS public origin');
   }
   const isLanIp=ip=>ip==='::1'||ip==='127.0.0.1'||/^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(ip);
-  const sameSubnet=(a,b)=>a===b||(a!=='127.0.0.1'&&b!=='127.0.0.1'&&a!=='::1'&&b!=='::1'&&a.split('.').slice(0,3).join('.')===b.split('.').slice(0,3).join('.'));
+  // The host frequently opens http://localhost:8000 while guests use a private IPv4 LAN address.
+  // Both sockets terminate at THIS companion server: expose that host to private LAN peers.
+  const loopback=ip=>ip==='127.0.0.1'||ip==='::1';
+  const sameSubnet=(a,b)=>a===b||(loopback(a)&&isLanIp(b))||(loopback(b)&&isLanIp(a))||(!loopback(a)&&!loopback(b)&&a.split('.').slice(0,3).join('.')===b.split('.').slice(0,3).join('.'));
   return Object.freeze({
     mode,
     allows(ip,origin,requestHost) {
