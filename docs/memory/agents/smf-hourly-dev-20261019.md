@@ -1,20 +1,18 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · 2026-10-25 03:59 CET.
+**Agent ID:** `smf-hourly-dev-20261019` · 2026-10-25 05:01 CET.
 
 ## Mission
-Ship one bounded tested increment each hour on existing dev regardless of pending release; repair blockers safely. Only dev/main.
+Deliver one bounded tested increment each hour directly on dev even if releases wait. Only dev/main, no force push or bypass.
 
-## Current checkpoint
-Baseline dev=main `b74ace27bee043355af0e9b374236a238c8895f2` (0.9.41.4 certified via dev Modular #40153292635, Full 4+4 #40153292598, main Full #40153517483, Pages #40153517632). LAN-054 candidate 0.9.41.5: host publishes paused/finished state even when no physics tick occurs, exactly once per successful transition; failed snapshot sends retry. Two Node regressions and source-executed V8 smoke passed. Exact-head CI, physical two-client LAN, protected promotion and Pages byte smoke pending. Preserve 223/2676, six formations, four buttons, ten Career/Cup slots, SD09, offline and saves.
+## Checkpoint
+Baseline dev=main `a0e5b30f2a806853c1366325c15d75e10ee4c3cc` (0.9.41.5 certified: dev Modular #40156696929, dev Full 4+4 #40156696970, main Full #40156962342, Pages #40156962104). LAN-055 candidate 0.9.41.6 fixes fractional analog axes rejected by the wire codec despite LAN-053 adapter support. Accept finite [-1,1] axes; reject nonnumeric, NaN, Infinity and out-of-range; preserve digital directions and four buttons. Two guest→wire→host and invalid-axis Node regressions added; source-executed V8 smoke passed. New-head CI, protected promotion, Pages hosted byte smoke and real two-device LAN still need verification.
 
-## Next smallest action
-Inspect exact-head LAN-054 Modular and Full Census runs; repair red checks. Test two-client pause/resume, disconnect and latency, then implement next compatible small dev increment regardless of release status.
+## Invariants
+223 teams/2676 players, six formations, four controls, 10 Career/Cup slots, SD09, offline/saves, About-only version and aligned package/README/offline cache. Own checkpoint only.
 
-## Ownership and exclusions
-Sole developer `smf-hourly-dev-20261019`; own checkpoint only. No extra branches, force push, bypassed checks, premature main or unverified claims.
-
-## Evidence
-Previous green exact-head Actions listed above; new candidate focused source smoke passed before commit. Full new-head CI and physical devices not yet certified.
-
-## Cleanup
-Keep under 4 KiB. Next five: (1) CI diagnosis, (2) real LAN two-client QA, (3) Crown Royals directional art, (4) Player Studio/Trick counterplay, (5) green-head protected main and Pages byte smoke.
+## Next five
+1. Inspect exact-head Modular and 4+4 CI; repair failures.
+2. Test two-client analog, pause, latency and disconnect.
+3. Implement bounded LAN recovery/reconnect with tests.
+4. Repair Crown Royals left/right sprite orientation and graphics QA.
+5. Improve Player Studio and counterable Tricks; promote only fully green exact dev head through protected main/Pages pipeline.

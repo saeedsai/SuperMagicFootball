@@ -24,7 +24,7 @@ test('LAN-001 rejects duplicate, unknown and fifth action buttons',async()=>{
 });
 test('LAN-001 rejects impossible direction, frame and packet size',async()=>{
  const p=await load();
- for(const packet of [{...input,dx:2},{...input,dy:0.5},{...input,frame:-1},{...input,frame:Infinity}])assert.throws(()=>p.normalizeLanPacket(packet));
+ for(const packet of [{...input,dx:2},{...input,dy:1.5},{...input,frame:-1},{...input,frame:Infinity}])assert.throws(()=>p.normalizeLanPacket(packet));
  assert.throws(()=>p.parseLanPacket('x'.repeat(4097)));assert.throws(()=>p.parseLanPacket('{'));
 });
 test('LAN-001 rejects stale/replayed input and wrong-session injection',async()=>{
@@ -361,4 +361,30 @@ test('LAN-012 bootstrap refuses closed channels, invalid roles and failed sends'
  assert.throws(()=>p.startLanHostChannel(guestHello,{readyState:'open',send(){}}));
  assert.throws(()=>p.startLanGuestChannel(hello,{readyState:'open',send(){}}));
  assert.throws(()=>p.startLanHostChannel({...hello,sequence:1},{readyState:'open',send(){}}));
+});
+
+// LAN-055: exercise the actual guest→wire→host packet codec, not a mock peer.
+test('LAN-055 fractional gamepad axes reach authoritative host frame',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ const host=p.acceptLanHostMessage(p.createLanHostSession(hello),p.serializeLanPacket(guest),40).state;
+ const sender=p.acceptLanGuestHello(p.createLanGuestSession(guest),p.serializeLanPacket(hello));
+ const sent=[],channel={readyState:'open',send:wire=>sent.push(wire)};
+ const outgoing=p.sendLanGuestFrame(sender,channel,42,['pass','jump'],0.25,-0.5);
+ assert.deepEqual([outgoing.packet.dx,outgoing.packet.dy],[0.25,-0.5]);
+ assert.equal(sent.length,1);
+ const accepted=p.acceptLanHostMessage(host,sent[0],40);
+ assert.equal(accepted.kind,'accepted');
+ const resolved=p.advanceLanHostFrame(accepted.state,42);
+ assert.equal(resolved.received,true);
+ assert.deepEqual([resolved.input.dx,resolved.input.dy],[0.25,-0.5]);
+ assert.deepEqual(resolved.input.buttons,['pass','jump']);
+ const digital=p.normalizeLanPacket({...input,dx:-1,dy:1});
+ assert.deepEqual([digital.dx,digital.dy],[-1,1]);
+});
+test('LAN-055 network codec rejects malformed axes and retains fractional precision',async()=>{
+ const p=await load();
+ for(const [dx,dy] of [[Infinity,0],[NaN,0],[1.0001,0],[-1.01,0],[0,-1.01],[0,1.5],['0.5',0],[null,0]])
+  assert.throws(()=>p.normalizeLanPacket({...input,dx,dy}),/Invalid LAN direction/);
+ const clean=p.parseLanPacket(p.serializeLanPacket({...input,dx:0.125,dy:-0.375}));
+ assert.deepEqual([clean.dx,clean.dy],[0.125,-0.375]);
 });

@@ -19,7 +19,9 @@ function normalizeLanPacket(raw){
  if(raw.type==='input'){
   if(!uint(raw.frame,1000000000)||!Array.isArray(raw.buttons)||raw.buttons.length>4)throw new Error('Invalid LAN input');
   if(!raw.buttons.every(button=>ACTIONS.includes(button))||new Set(raw.buttons).size!==raw.buttons.length)throw new Error('Invalid LAN buttons');
-  if(![-1,0,1].includes(raw.dx)||![-1,0,1].includes(raw.dy))throw new Error('Invalid LAN direction');
+  // Fractional analog axes must survive the wire; keyboard -1/0/1 is unchanged.
+  if(!Number.isFinite(raw.dx)||!Number.isFinite(raw.dy)||
+     raw.dx < -1||raw.dx > 1||raw.dy < -1||raw.dy > 1)throw new Error('Invalid LAN direction');
   return Object.freeze({protocol:1,type:'input',session:raw.session,sequence:raw.sequence,frame:raw.frame,buttons:Object.freeze([...raw.buttons]),dx:raw.dx,dy:raw.dy});
  }
  throw new Error('Unsupported LAN packet type');

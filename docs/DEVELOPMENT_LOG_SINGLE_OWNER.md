@@ -1,3 +1,9 @@
+## 2026-10-25 05:01 CET — LAN-055 fractional analog wire compatibility (0.9.41.6 candidate)
+- Baseline dev=main `a0e5b30f2a806853c1366325c15d75e10ee4c3cc` (0.9.41.5): dev Modular #40156696929 and Full 4+4 #40156696970, main Full #40156962342, Pages #40156962104 green; only dev/main branches.
+- Root cause: LAN-053 preserved fractional guest tilt locally but `normalizeLanPacket` required integer dx/dy, rejecting analog movement before wire transmission. LAN-055 accepts finite fractional [-1,1] axes while preserving malformed-axis rejection, host-authoritative frame queue and four actions.
+- Added two Node regressions for guest send→wire→host frame and invalid-axis boundaries; changed obsolete assertion that rejected a valid 0.5 axis. Source-executed V8 smoke passed before commit. New-head 4 Node + 4 Chromium, Modular QA, protected main/Pages hosted byte smoke and real two-device LAN require independent verification.
+- 0.9.41.6 About/package/README/policy/shared memory/offline cache aligned. No roster, save, SD09, control-count or graphics changes. Next: CI, two-client QA, reconnect, Crown Royals art, Player Studio/Tricks.
+
 ## 2026-10-25 03:59 CET — LAN-054 host phase transition delivery (0.9.41.5 candidate)
 - Baseline dev=main `b74ace27bee043355af0e9b374236a238c8895f2`; exact-head dev Modular QA #40153292635 and Full Regression Census #40153292598 green, main Full Regression #40153517483 and Pages #40153517632 green for 0.9.41.4. Only dev/main branches found.
 - Root cause: `createLanLiveMatch.step` returned before sending when the host entered `paused` or `finished` between physics frames, leaving the guest on a stale phase despite LAN-048 metadata support.
