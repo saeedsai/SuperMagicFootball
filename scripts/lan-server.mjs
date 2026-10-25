@@ -3,6 +3,7 @@
 // This is a LAN-only server, NOT an Internet matchmaking service.
 import http from 'node:http';
 import {readFile,stat,realpath} from 'node:fs/promises';
+import {safeLanSend} from './lan-safe-send.mjs';
 import {isPublicLanPath} from './lan-static-policy.mjs';
 import {releaseLanGuest} from './lan-guest-release.mjs';
 import {expireLanPending} from './lan-pending-expiry.mjs';
@@ -24,7 +25,7 @@ const MAX_ROOMS=128,MAX_PENDING_PER_GUEST=1,MAX_PENDING_PER_ROOM=1;
 const MAX_MESSAGES_PER_WINDOW=120,WINDOW_MS=60000,MAX_CONNECTIONS_PER_IP=8;
 function ipOf(request){return String(request.socket.remoteAddress||'').replace(/^::ffff:/,'')}
 function sameSubnet(a,b){return signalPolicy.visible(a,b)}
-const send=(ws,msg)=>{if(ws?.readyState===1)ws.send(JSON.stringify(msg))};
+const send=safeLanSend;
 function broadcast(room,msg){for(const [ws,meta] of clients)if(sameSubnet(meta.ip,room.ip))send(ws,msg)}
 function clearHost(ws){for(const [id,room] of rooms)if(room.host===ws){rooms.delete(id);if(room.guest)send(room.guest,{type:'host-left',roomId:id});broadcast(room,{type:'room-remove',roomId:id});for(const [reqId,req] of pending)if(req.roomId===id){send(req.guest,{type:'join-reject',roomId:id,requestId:reqId,reason:'host-left'});pending.delete(reqId)}}}
 const server=http.createServer(async(req,res)=>{
@@ -43,6 +44,7 @@ const server=http.createServer(async(req,res)=>{
 const wss=new WebSocketServer({server,path:'/lan-signal',maxPayload:MAX,verifyClient:({req})=>{const ip=ipOf(req);const origin=req.headers.origin;return signalPolicy.allows(ip,origin,req.headers.host)&&[...clients.values()].filter(meta=>meta.ip===ip).length<MAX_CONNECTIONS_PER_IP}});
 wss.on('connection',(ws,req)=>{
  const meta={id:'peer_'+(++nextId),ip:ipOf(req),windowStart:Date.now(),messageCount:0};clients.set(ws,meta);
+ ws.on('error',()=>{try{ws.terminate()}catch{ /* already closing */ }});
  send(ws,{type:'welcome',peerId:meta.id});
  send(ws,{type:'lan-addresses',urls:getLanGameUrls({interfaces:networkInterfaces(),port,bind:host})});
  for(const room of rooms.values())if(sameSubnet(meta.ip,room.ip))send(ws,{type:'room-announce',roomId:room.id,name:room.name,build:room.build});
