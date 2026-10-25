@@ -65,6 +65,9 @@ export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30
     roomId() {
       return closed ? null : hostedRoomId;
     },
+    isHosting() {
+      return !closed && hostedRoomId !== null;
+    },
     respond(requestId, accept) {
       ensureOpen();
       if (typeof accept !== 'boolean') throw new TypeError('accept must be boolean');
