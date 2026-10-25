@@ -2,7 +2,8 @@
 export function safeLanSend(ws, message) {
   if (!ws || ws.readyState !== 1) return false;
   try {
-    ws.send(JSON.stringify(message), error => {
+    const payload = JSON.stringify(message);
+    ws.send(payload, error => {
       if (error) { try { ws.terminate?.(); } catch { /* already closing */ } }
     });
     return true;
