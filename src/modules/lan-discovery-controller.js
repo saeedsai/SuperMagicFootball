@@ -13,10 +13,13 @@ export function createLanDiscoveryController({ send, now = () => Date.now(), ttl
     host(roomId, name) {
       ensureOpen();
       const packet = createLanRoomMessage('room-announce', roomId, { name, players: 1 });
-      if (hosted && hosted.roomId !== roomId) {
-        send(createLanRoomMessage('room-remove', hosted.roomId));
-      }
+      // Announce the new room first: a failed transport send must not
+      // silently discard the previously hosted room.
       send(packet);
+      if (hosted && hosted.roomId !== roomId) {
+        try { send(createLanRoomMessage('room-remove', hosted.roomId)); }
+        catch (_) { /* Old room will expire when its heartbeat stops. */ }
+      }
       hosted = packet;
       return packet;
     },
@@ -41,10 +44,14 @@ export function createLanDiscoveryController({ send, now = () => Date.now(), ttl
     rooms() { return closed ? [] : directory.list(); },
     close() {
       if (closed) return;
-      if (hosted) send(createLanRoomMessage('room-remove', hosted.roomId));
+      const lastHosted = hosted;
       closed = true;
       hosted = null;
       directory.clear();
+      if (lastHosted) {
+        try { send(createLanRoomMessage('room-remove', lastHosted.roomId)); }
+        catch (_) { /* TTL expiry removes the stale listing. */ }
+      }
     }
   });
 }
