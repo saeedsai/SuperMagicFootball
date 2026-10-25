@@ -19,3 +19,11 @@ test('secure hosted signaling endpoint is configurable and lobby shows connectio
  assert.ok(auto.includes('id="autoHost"')&&auto.includes('id="autoFind"'));
  assert.ok(auto.includes('requires an online signaling service'));
 });
+
+test('host and find do not promise rooms when signaling is unconfigured',()=>{
+ const auto=read('src/modules/lan-auto-lobby.js');
+ assert.ok(auto.includes("signalState='connecting'"));
+ assert.ok(auto.includes("signalState=s"));
+ assert.ok(auto.includes("function host(){if(signalState==='unconfigured')"));
+ assert.ok(auto.includes("function find(){if(signalState==='unconfigured')"));
+});
