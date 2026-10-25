@@ -27,6 +27,7 @@ export function mountAutoLanLobby(root,options={}){
   if(m.type==='join-request'&&mode==='host'&&m.roomId===roomId){
    const container=get('autoApproval');container.replaceChildren();const label=document.createElement('p');label.textContent='A guest wants to join your match.';const yes=document.createElement('button');yes.className='btn';yes.textContent='ACCEPT GUEST';const no=document.createElement('button');no.className='btn minor';no.textContent='REJECT';yes.onclick=()=>{send({type:'decision',roomId,requestId:m.requestId,accept:true});container.replaceChildren();status('Guest approved. Establishing connection…')};no.onclick=()=>{send({type:'decision',roomId,requestId:m.requestId,accept:false});container.replaceChildren()};container.append(label,yes,no);return;
   }
+  if(m.type==='guest-left'&&mode==='host'&&m.roomId===roomId){cleanupPeer();approved=false;get('autoApproval').replaceChildren();status('Guest disconnected. Hosting remains available for another guest.');return}
   if(m.type==='join-reject'&&m.requestId===requestId){status('Join request rejected or expired. Select a game to retry.');return}
   if(m.type==='join-accept'&&mode==='guest'&&m.requestId===requestId){approved=true;status('Approved. Connecting to host…');return}
   if(m.type==='guest-approved'&&mode==='host'&&m.roomId===roomId){

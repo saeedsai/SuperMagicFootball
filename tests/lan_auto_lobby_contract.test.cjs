@@ -13,3 +13,16 @@ test('automatic LAN path includes discovery, approval and SDP exchange',()=>{
  assert.match(server,/sameSubnet/);
  assert.match(server,/m\.accept===true/);
 });
+
+test('automatic LAN uses real HTTP browser origins and preserves offline imports',()=>{
+ const lobby=fs.readFileSync('src/modules/lan-lobby.js','utf8');
+ const sw=fs.readFileSync('sw.js','utf8');
+ assert.match(lobby,/location\?\.protocol==='http:'/);
+ assert.match(lobby,/!options\.peerFactory/);
+ assert.match(sw,/'lan-auto-signal','lan-auto-lobby','lan-lobby'/);
+});
+test('LAN host can recover after an approved guest disconnects',()=>{
+ const lobby=fs.readFileSync('src/modules/lan-auto-lobby.js','utf8');
+ assert.match(lobby,/m\.type==='guest-left'/);
+ assert.match(lobby,/cleanupPeer\(\);approved=false/);
+});

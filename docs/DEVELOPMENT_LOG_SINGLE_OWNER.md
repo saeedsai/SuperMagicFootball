@@ -1,3 +1,8 @@
+## 2026-10-25 16:04 CET — LAN candidate 0.9.42.0, offline precache and disconnect recovery
+- New local-server automatic LAN lobby is player-facing; bumped About-only candidate to 0.9.42.0, aligned package, README first banner/heading, release policy, shared memory and rotated service-worker cache. Added both new LAN client modules to offline precache so existing Pages offline imports do not fail.
+- Host now disposes stale peer on server `guest-left`, allowing a later guest request. Automatic mode activates only on real HTTP browser origins; GitHub Pages and legacy fake-peer tests use manual fallback. Existing server static-file allowlist protects repository internals.
+- Preserves 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09 and saved-game/offline compatibility. Exact-head full 4 Node+4 Chromium and Modular QA, physical two-device LAN, visual QA, protected main and Pages hosted byte smoke are pending; candidate is not certified.
+
 ## 2026-10-25 16:04 CET — LAN companion HTTP asset allowlist (dev, server-only security fix)
 - Found local LAN companion server served any repository file below project root, including .git/config, scripts, tests and possible local credentials. Added an explicit game asset allowlist and realpath containment guard to deny traversal and symlink escapes; game JS/JSON/art, index, CSS, icon and service worker remain accessible.
 - Focused local Node 22 test of path policy: 2/2 PASS (10 public paths and 18 private/traversal paths). New repository Node regression checks server wiring; GitHub CI for exact dev head, four Node + four Chromium, Modular QA, actual two-client LAN, graphics, protected main and Pages hosted byte smoke remain pending.
