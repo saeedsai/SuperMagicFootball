@@ -30,3 +30,18 @@ test('guest receives and expires rooms; closed controller is inert', async () =>
   assert.deepEqual(guest.rooms(), []);
   assert.throws(() => guest.host(roomId, 'Match'), /closed/);
 });
+
+test('switching host rooms withdraws old listing; close withdraws active listing once', async () => {
+  const { createLanDiscoveryController } = await load();
+  const sent = [];
+  const host = createLanDiscoveryController({ send: packet => sent.push(packet) });
+  host.host('room_12345678', 'First');
+  host.host('room_87654321', 'Second');
+  assert.deepEqual(sent.map(packet => packet.type), ['room-announce', 'room-remove', 'room-announce']);
+  assert.equal(sent[1].roomId, 'room_12345678');
+  host.close();
+  host.close();
+  assert.equal(sent.length, 4);
+  assert.equal(sent[3].type, 'room-remove');
+  assert.equal(sent[3].roomId, 'room_87654321');
+});
