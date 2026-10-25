@@ -55,3 +55,13 @@ test('undefined and function payloads never reach the socket',async()=>{
  assert.equal(safeLanSend(ws,{type:'rooms'}),true);
  assert.equal(sent,1);
 });
+
+test('oversized UTF-8 signaling frames are rejected without harming socket',async()=>{
+ const {safeLanSend}=await load();let sent=0,terminated=0;
+ const ws={readyState:1,send(){sent++},terminate(){terminated++}};
+ assert.equal(safeLanSend(ws,{type:'offer',sdp:'x'.repeat(210000)}),false);
+ assert.equal(safeLanSend(ws,{type:'offer',sdp:'😀'.repeat(60000)}),false);
+ assert.equal(sent,0);assert.equal(terminated,0);
+ assert.equal(safeLanSend(ws,{type:'rooms'}),true);
+ assert.equal(sent,1);
+});
