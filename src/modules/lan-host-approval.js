@@ -14,8 +14,7 @@ export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30
   const decided = new Map();
   const sending = new Map();
   const ensureOpen = () => { if (closed) throw new Error('LAN host approval closed'); };
-  const prune = () => {
-    const time = now();
+  const prune = (time = now()) => {
     for (const [id, entry] of pending) if (entry.expiresAt <= time) pending.delete(id);
     for (const [id, expiresAt] of decided) if (expiresAt <= time) decided.delete(id);
   };
@@ -36,10 +35,13 @@ export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30
       if (closed || !hostedRoomId) return false;
       const message = validateLanRoomMessage(packet);
       if (!message || message.type !== 'join-request' || message.roomId !== hostedRoomId) return false;
-      prune();
-      if (!Number.isFinite(now())) return false;
+      // Use one timestamp for validation, pruning and expiry. An unstable clock
+      // must not create an unexpiring request or extend its lifetime.
+      const time = now();
+      if (!Number.isSafeInteger(time) || !Number.isSafeInteger(time + ttlMs)) return false;
+      prune(time);
       if (pending.has(message.requestId) || decided.has(message.requestId) || sending.has(message.requestId) || pending.size >= maxPending) return false;
-      pending.set(message.requestId, { requestId: message.requestId, expiresAt: now() + ttlMs });
+      pending.set(message.requestId, { requestId: message.requestId, expiresAt: time + ttlMs });
       return true;
     },
     pendingRequests() {
