@@ -38,3 +38,6 @@ Develop hourly on existing `dev` regardless of release blockers. Never create br
 Sole developer `smf-hourly-dev-20261019`. Only this agent checkpoint and central `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` are writable memory; never read/edit other agents' notes. No new branches or direct development on main.
 
 ## Evidence
+
+## Cleanup
+- Preserve two branches only; verify CI and hosted release, leave checkpoint under 4096 bytes.
