@@ -63,7 +63,7 @@ wss.on('connection',(ws,req)=>{
   if(m.type==='leave'){clearHost(ws);releaseLanGuest(ws,rooms,pending,send);return}
   const room=rooms.get(id);if(!room||!sameSubnet(meta.ip,room.ip))return;
   if(m.type==='join'){
-   if(ws===room.host||room.guest||typeof requestId!=='string'||! /^[a-zA-Z0-9_-]{8,64}$/.test(requestId)||pending.has(requestId)||m.build!==room.build)return send(ws,{type:'join-reject',requestId,reason:'room-full-or-version'});
+   if(ws===room.host||room.guest||[...rooms.values()].some(active=>active.guest===ws)||typeof requestId!=='string'||! /^[a-zA-Z0-9_-]{8,64}$/.test(requestId)||pending.has(requestId)||m.build!==room.build)return send(ws,{type:'join-reject',requestId,reason:'room-full-or-version'});
    if([...pending.values()].filter(p=>p.guest===ws).length>=MAX_PENDING_PER_GUEST)return send(ws,{type:'join-reject',roomId:id,requestId,reason:'request-already-pending'});
    if([...pending.values()].filter(p=>p.roomId===id).length>=MAX_PENDING_PER_ROOM)return send(ws,{type:'join-reject',roomId:id,requestId,reason:'room-queue-full'});
    pending.set(requestId,{roomId:id,guest:ws,host:room.host,time:Date.now()});send(room.host,{type:'join-request',roomId:id,requestId});return;
