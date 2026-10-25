@@ -24,7 +24,7 @@ export function validateLanRoomMessage(message) {
 }
 
 export function createLanRoomMessage(type, roomId, fields = {}) {
-  const validated = validateLanRoomMessage({ version: LAN_ROOM_PROTOCOL_VERSION, type, roomId, ...fields });
+  const validated = validateLanRoomMessage({ ...fields, version: LAN_ROOM_PROTOCOL_VERSION, type, roomId });
   if (!validated) throw new TypeError('Invalid LAN room message');
   return validated;
 }
