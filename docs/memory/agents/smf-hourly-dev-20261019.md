@@ -25,3 +25,6 @@ Commits 1550b667 and 8f964d5f on dev: announce/heartbeat/remove, guest list and 
 
 ## 2026-10-25 — room withdrawal
 Source cf6bd403 and regression 2717fd95 on dev; stale room removed on host switch/close. Log 714462e7. Tests and full CI not verified, no main promotion. Next: run QA, integrate trusted signaling/UI and test two devices.
+
+## 2026-10-25 — offline discovery cleanup
+Source f6cb37f, test 83298a2 and log aaa6189 on dev. New room first, stale room withdrawal best-effort; close always completes offline. Tests added, execution/full CI/Pages not verified. Continue secure transport/UI and exact-head QA; main promotion blocked pending evidence.
