@@ -73,3 +73,10 @@ test('host or approved guest cannot request another guest seat on the same socke
  assert.match(server,/\[\.\.\.rooms\.values\(\)\]\.some\(active=>active\.guest===ws\|\|active\.host===ws\)/);
  assert.match(server,/if\(ws===room\.host\|\|room\.guest\|\|\[\.\.\.rooms\.values\(\)\]\.some\(active=>active\.guest===ws\|\|active\.host===ws\)/);
 });
+
+test('late host approval cannot bypass the 30-second join expiry',()=>{
+ const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
+ assert.match(server,/if\(Date\.now\(\)-req\.time>30000\)/);
+ assert.match(server,/send\(req\.guest,\{type:'join-reject',roomId:id,requestId,reason:'timeout'\}\)/);
+ assert.match(server,/send\(ws,\{type:'join-cancel',roomId:id,requestId,reason:'timeout'\}\)/);
+});
