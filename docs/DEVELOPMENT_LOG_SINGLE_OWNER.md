@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN directory capacity guard
+- Source aba2424 and test 8fb790e on dev. Limit unique active rooms to 128 while allowing updates and expiry recovery. No player-facing change/version bump. Test execution, full 4+4/Modular QA, graphics/gameplay and protected main/Pages verification outstanding.
+
 ## 2026-10-25 — LAN protocol identity integrity
 - Dev source 3cccb96, regression 3db5426. Packet constructor now preserves explicit version/type/roomId against conflicting caller fields. Internal module only; no version bump. Test committed, execution and exact-head full CI/gameplay/graphics/main/Pages verification pending.
 
