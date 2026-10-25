@@ -6,7 +6,7 @@
 Continue development only on existing `dev`, independent of release blockers; promote *only* exact green head using protected workflow. Never create branches, bypass security, or claim unobserved QA. Preserve 223 teams / 2676 players, six formations, four buttons, 10 Career/Cup slots, SD09, offline/saves.
 
 ## Latest LAN milestone — 0.10.0.0 candidate, NOT certified
-`main=84f8bae589f0675ea1e4cd8525a802ef0a643a92`. Last seen `dev=b065604e0c87ea7032aefea3fb7a237512817102` (82 commits ahead, 0 behind). Automatic local `npm run serve:lan` WebSocket room discovery, host consent, WebRTC SDP exchange and existing host-authoritative `lan-live-match.js` GameEngine bridge. GitHub Pages remains static and *cannot* auto-discover rooms; the same companion LAN URL must be opened by both browsers.
+`main=84f8bae589f0675ea1e4cd8525a802ef0a643a92`. Last checked `dev=14ce9ab9971558f6a3cc62b18218da46689faa46` (91 commits ahead, 0 behind). Automatic local `npm run serve:lan` WebSocket room discovery, host consent, WebRTC SDP exchange and existing host-authoritative `lan-live-match.js` GameEngine bridge. GitHub Pages remains static and *cannot* auto-discover rooms; the same companion LAN URL must be opened by both browsers.
 
 New commits: private IP address helper 843d96f3 and server broadcast 40f93dc3; one-click queued Host/Find 0a068ad0; bounded discovery reconnect 487f0c9f; race/cancel guard 6d13289f; localhost host visibility from private LAN guest 12be7bd0; stale host heartbeat 6cb9db77; Windows one-click `start-lan.cmd` 8f28f6d2; UI navigation hint 3d0280c9; Node tests 75ec3924/c8c19711/00d3e303/cec3f476/b065604e; full browser two-tab acceptance script bb4e1129 plus waiter repair d70f799a; browser CI installs ws cc3e2263; version/README/notes/SW/docs aligned to 0.10.0.0. README has complete host/guest LAN procedure.
 
@@ -22,6 +22,9 @@ Local Node v22 isolated mirrors of address/WS/policy logic: **5/5 pass** (not fu
 
 ## Latest increment — 2026-10-25
 - LAN safe-send serialization exception containment committed `a2bc9cdc`; circular/BigInt regression cases committed `47566947`. CI and physical LAN not yet verified. Main promotion gated on exact-head green 4+4 and Modular QA; no Pages claim.
+
+## 22:00 increment
+- Missing/invisible room joins now receive privacy-neutral rejection: `7341338a` helper, `53b66edb` wiring, `3475d101` tests; log `14ce9ab9`. Isolated Node 3/3 and live source wiring 2/2 pass. Full CI, real-device LAN and graphics remain unverified. Old full CI canceled by workflow `cancel-in-progress: true` as newer dev commits arrived; not a green result.
 
 ## Ownership
 Update central `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` and this checkpoint only. No other agents' memories. Never change player identifiers/save formats for LAN.
