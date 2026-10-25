@@ -1,21 +1,21 @@
-# SMF sole hourly developer checkpoint — smf-hourly-dev-20261019
-**Updated:** 2026-10-25 09:05 CET. Only dev/main; never force push or bypass CI.
+# SuperMagicFootball — sole hourly developer checkpoint
+**Agent ID:** `smf-hourly-dev-20261019`
+**Updated:** 2026-10-25 10:01 CET
 
-## Latest verified context
-Read AGENTS.md, docs/VERSIONING_POLICY.md and docs/memory/SHARED.md each run. At start of LAN-059 main=dev f4a71836a109fc85efaaee78836024731e3f43be; 0.9.41.9 About-only candidate, production certification separate. Issue #48 requests automatic LAN Create Game → Find Games → Join → host Accept/Reject, no manual copy/paste. Browser discovery needs secure service/companion; client-only protocol cannot guarantee same LAN.
+## Mission
+One bounded tested increment per hourly run directly on existing dev, even with pending CI/promotion. Only dev and main; no force push or security bypass.
 
-## LAN-059 incremental implementation
-- Source commit ac26aade5f076a536ef687f22489242c040c488a: host join queue now caps pending/replay IDs, rejects repeats after approval/rejection, expires IDs, validates limits and clears state.
-- Tests commit 88a9ec2017299684753c29c5e603aaf6ead64821: replay, expiry, queue capacity and configuration cases.
-- Focused local Node 4/4 PASS (reconstructed module files); exact GitHub source executed in V8, 8/8 behavioral assertions PASS. Local full clone blocked by github.com DNS resolution. Full 4 Node + 4 Chromium, Modular QA, production/Pages and physical two-client LAN NOT verified.
-- Central log updated in docs/DEVELOPMENT_LOG_SINGLE_OWNER.md. Documentation-only commits do not bump version.
+## Current checkpoint
+Starting dev `3247e00a2d81a1fadaf74e46cacc54e89eed0e5a`, main `f4a71836a109fc85efaaee78836024731e3f43be`; four commits ahead. LAN-059 adds host join queue replay protection and bounded pending IDs. About-only 0.9.41.9 candidate. Issue #48 requests Create Game → Find Games → Join → host Accept/Reject without manual signaling; secure same-LAN discovery transport and UI not implemented.
 
-## Non-negotiables
-Only develop directly on existing dev. Main only through exact-green protected promotion; no new branches. Do not pause hourly feature work for pending release. Keep 223 teams, 2676 players, six formations, exactly four buttons, 10 Career/Cup save slots, SD09, offline/save compatibility. Four-field release/version + README + cache + About notes on every player-facing change. Keep this checkpoint under 4 KiB.
+## Next smallest action
+CI root cause found: dev Modular #40175356132 and Full #40175356116 each failed one of 705 Node tests: project_memory_contract requires exact `**Agent ID:**` and six section headings. Previous checkpoint rewrite removed those fields. Restore this contract, verify exact-head CI, then implement one independent LAN increment without blocking hourly progress.
 
-## Next five
-1. Diagnose exact-head CI and source access; run full 4 Node + 4 Chromium and Modular QA.
-2. Implement secure same-LAN discovery/signaling transport (do not claim browser broadcast).
-3. Integrate Find Games and host Accept/Reject UI with four-button gameplay.
-4. Real two-client latency/disconnect/rejoin test; graphics/animation QA.
-5. Promote only exact green dev to main; verify Pages deployment and hosted bytes.
+## Ownership and exclusions
+Sole developer smf-hourly-dev-20261019. Do not read/edit other agents' memory. No new branches, force pushes, bypasses or premature main promotions. Preserve 223 teams/2676 players, six formations, four actions, 10 Career/Cup slots, SD09, offline/save compatibility. Player-facing changes require synchronized version, README, release notes and SW cache.
+
+## Evidence
+Failure logs from exact head: Modular 704 pass/1 fail and Full preflight 704 pass/1 fail; other jobs skipped. GitHub refs verified. Previous LAN-059 focused 4/4 Node and 8/8 V8 assertions reported in prior checkpoint; full suite was red. Fix changes metadata only and does not claim gameplay certification.
+
+## Cleanup
+Next five: (1) verify memory CI repair, (2) secure discovery/signaling design, (3) host approval and room browser UI, (4) two-client LAN/graphics QA, (5) protected green exact-head promotion + hosted Pages byte smoke. Keep checkpoint <4KiB.
