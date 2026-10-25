@@ -1,3 +1,9 @@
+## 2026-10-25 13:04 CET — LAN host join-consent queue (internal increment)
+- Added `src/modules/lan-host-approval.js` (040616e) and `tests/lan_host_approval.test.cjs` (c123cb6) directly to existing dev; no new branch. Pending join requests are scoped to the hosted room, bounded (8 default), TTL-expiring (30s default), deduplicated and never accepted without explicit host decision. Failed send leaves the request retryable; switching/stopping room clears state. Signaling must still authenticate and bind peers; no claim of secure LAN discovery or playable two-device join.
+- **Observed focused evidence:** Node v22.16.0, isolated matching protocol fixture, `node --test tests/lan_host_approval.test.cjs` **4/4 PASS**, `node --check` both new files PASS. Full repository unavailable locally (`git ls-remote` failed: `Could not resolve host: github.com`). Exact-head 4 Node + 4 Chromium, Modular QA, real-device gameplay/graphics and Pages hash verification **not run/verified**.
+- Previous failed runs #40183086173 (preflight) and #40183086171 (Modular QA) both failed `project_memory_contract.test.cjs` due to missing checkpoint heading `## Next smallest action`; current checkpoint has required heading. New exact-head CI result unverified. Internal-only module: About candidate 0.9.41.9 unchanged, main promotion not authorized until green.
+- Next: connect trusted service delivery to host approval; bind authenticated sender to request/decision; connect UI, two-client QA; certify exact head then protected promotion.
+
 ## 2026-10-25 — LAN directory clock validation
 - Source 4065548, test c76613c on dev: reject nonfunction now callback at construction, rather than failing during room operations. No version bump. Tests committed but not executed; full CI/gameplay/graphics and main/Pages certification pending. At pre-change comparison dev 17 commits ahead of main.
 
