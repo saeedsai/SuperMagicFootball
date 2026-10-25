@@ -33,8 +33,9 @@ export function createLanDiscoveryController({ send, now = () => Date.now(), ttl
       ensureOpen();
       if (!hosted) return false;
       const packet = createLanRoomMessage('room-remove', hosted.roomId);
-      send(packet);
       hosted = null;
+      try { send(packet); }
+      catch (_) { /* Stale listing expires without heartbeat. */ }
       return true;
     },
     receive(packet) {
