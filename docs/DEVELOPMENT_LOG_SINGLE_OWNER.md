@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN protocol identity integrity
+- Dev source 3cccb96, regression 3db5426. Packet constructor now preserves explicit version/type/roomId against conflicting caller fields. Internal module only; no version bump. Test committed, execution and exact-head full CI/gameplay/graphics/main/Pages verification pending.
+
 ## 2026-10-25 — LAN duplicate room card prevention
 - Dev source 80d78ea and regression 03e68a0: room browser selector deduplicates repeated announcements by room ID. Internal module only, no version bump. Tests added but not run in this execution; full exact-head CI, gameplay/graphics and main/Pages certification pending.
 
