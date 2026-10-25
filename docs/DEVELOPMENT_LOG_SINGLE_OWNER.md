@@ -1,3 +1,6 @@
+## 2026-10-25 — host pending cancellation
+- Dev source 6850186, tests fe8615f: cancel(requestId) removes unsent pending request and refuses in-flight cancellation. No player-facing version bump. Tests committed but not executed; full 4+4/Modular QA, gameplay/graphics and protected main/Pages unverified. Pre-change dev 60 ahead main.
+
 ## 2026-10-25 — closed LAN host clock safety
 - Dev fix 8449ba2 and test 77e8d47: pendingRequests() returns immediately after close without invoking clock. Internal fix, no version bump. Tests committed but not executed; full 4+4/Modular QA, gameplay/graphics and protected main/Pages unverified. Pre-change dev 56 ahead main.
 
