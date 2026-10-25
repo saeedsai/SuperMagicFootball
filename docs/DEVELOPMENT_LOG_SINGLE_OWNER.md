@@ -1003,3 +1003,6 @@ Validate remote guest DataChannel interface before binding; close malformed chan
 
 ### 2026-10-25 — LAN room approval UI consistency
 - Limit outstanding pending joins per room to one, matching host's single approval dialog (`0d254b32`); update regression contract (`67ff82b2`). No player-facing bundle changes. Full exact-head CI and protected promotion pending verification.
+
+### 2026-10-25 — LAN join expiry decision guard
+- Commit `12b00407` enforces 30-second pending join TTL at host decision, closing gap between timer sweeps; `1022e266` adds source regression. Server-only, version unchanged. Full exact-head CI and protected release unverified.
