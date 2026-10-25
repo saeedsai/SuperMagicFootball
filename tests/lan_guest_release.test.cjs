@@ -45,3 +45,9 @@ test('server and lobby wire guest leave, cancel and socket-close cleanup',()=>{
  assert.match(lobby,/if\(mode==='host'\|\|mode==='guest'\)send\(\{type:'leave'\}\)/);
  assert.match(lobby,/m\.type==='join-cancel'/);
 });
+
+test('host departure notifies an already approved guest before room removal',()=>{
+ const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
+ assert.match(server,/if\(room\.guest\)send\(room\.guest,\{type:'host-left',roomId:id\}\)/);
+ assert.match(server,/send\(req\.guest,\{type:'join-reject',roomId:id,requestId:reqId,reason:'host-left'\}\)/);
+});
