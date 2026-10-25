@@ -39,3 +39,12 @@ test('hosted signaling bounds room count and per-guest/per-room pending requests
  assert.match(server,/reason:'request-already-pending'/);
  assert.match(server,/reason:'room-queue-full'/);
 });
+
+test('signaling closes sockets that exceed the per-connection message budget',()=>{
+ const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
+ assert.match(server,/MAX_MESSAGES_PER_WINDOW=120,WINDOW_MS=60000/);
+ assert.match(server,/windowStart:Date\.now\(\),messageCount:0/);
+ assert.match(server,/now-meta\.windowStart>=WINDOW_MS/);
+ assert.match(server,/\+\+meta\.messageCount>MAX_MESSAGES_PER_WINDOW/);
+ assert.match(server,/ws\.close\(1008,'Signaling rate limit'\)/);
+});
