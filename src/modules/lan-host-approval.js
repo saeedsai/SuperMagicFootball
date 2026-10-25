@@ -12,6 +12,7 @@ export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30
   let closed = false;
   const pending = new Map();
   const decided = new Map();
+  const sending = new Map();
   const ensureOpen = () => { if (closed) throw new Error('LAN host approval closed'); };
   const prune = () => {
     const time = now();
@@ -26,6 +27,7 @@ export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30
       if (hostedRoomId !== roomId) {
         pending.clear();
         decided.clear();
+        sending.clear();
       }
       hostedRoomId = roomId;
       return roomId;
@@ -57,25 +59,43 @@ export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30
       ensureOpen();
       if (typeof accept !== 'boolean') throw new TypeError('accept must be boolean');
       prune();
-      if (!pending.has(requestId)) return false;
+      const existing = sending.get(requestId);
+      if (existing) return existing;
+      const entry = pending.get(requestId);
+      if (!entry) return false;
       const packet = createLanRoomMessage(accept ? 'join-accept' : 'join-reject', hostedRoomId, { requestId });
-      // Do not consume a request if the transport failed to deliver the decision.
-      send(packet);
-      pending.delete(requestId);
-      decided.set(requestId, now() + ttlMs);
-      return packet;
+      // Sync transports preserve the legacy return type; async transports only
+      // consume the request once delivery is acknowledged by the send promise.
+      const delivered = () => {
+        if (!closed && hostedRoomId === packet.roomId && pending.get(requestId) === entry) {
+          pending.delete(requestId);
+          decided.set(requestId, now() + ttlMs);
+        }
+        return packet;
+      };
+      const result = send(packet);
+      if (result && typeof result.then === 'function') {
+        const task = Promise.resolve(result).then(delivered).finally(() => {
+          if (sending.get(requestId) === task) sending.delete(requestId);
+        });
+        sending.set(requestId, task);
+        return task;
+      }
+      return delivered();
     },
     stop() {
       ensureOpen();
       hostedRoomId = null;
       pending.clear();
       decided.clear();
+      sending.clear();
     },
     close() {
       if (closed) return;
       hostedRoomId = null;
       pending.clear();
       decided.clear();
+      sending.clear();
       closed = true;
     }
   });
