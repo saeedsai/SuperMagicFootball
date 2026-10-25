@@ -26,5 +26,8 @@ Local Node v22 isolated mirrors of address/WS/policy logic: **5/5 pass** (not fu
 ## 22:00 increment
 - Missing/invisible room joins now receive privacy-neutral rejection: `7341338a` helper, `53b66edb` wiring, `3475d101` tests; log `14ce9ab9`. Isolated Node 3/3 and live source wiring 2/2 pass. Full CI, real-device LAN and graphics remain unverified. Old full CI canceled by workflow `cancel-in-progress: true` as newer dev commits arrived; not a green result.
 
+## Latest incremental fix
+- `5ed2b182` rejects non-string JSON serialization results before WebSocket send; `db3a67f3` adds regression. Five mirrored isolated assertions passed, not full CI. Protected main promotion remains gated on exact-head green 4+4 and Modular QA.
+
 ## Ownership
 Update central `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` and this checkpoint only. No other agents' memories. Never change player identifiers/save formats for LAN.
