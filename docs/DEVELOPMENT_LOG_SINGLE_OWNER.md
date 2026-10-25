@@ -1,3 +1,8 @@
+## 2026-10-25 16:04 CET — LAN companion HTTP asset allowlist (dev, server-only security fix)
+- Found local LAN companion server served any repository file below project root, including .git/config, scripts, tests and possible local credentials. Added an explicit game asset allowlist and realpath containment guard to deny traversal and symlink escapes; game JS/JSON/art, index, CSS, icon and service worker remain accessible.
+- Focused local Node 22 test of path policy: 2/2 PASS (10 public paths and 18 private/traversal paths). New repository Node regression checks server wiring; GitHub CI for exact dev head, four Node + four Chromium, Modular QA, actual two-client LAN, graphics, protected main and Pages hosted byte smoke remain pending.
+- Server-only security fix, no player-facing release/version bump. Current candidate About 0.9.41.9 remains separate from certified main 0.9.41.8. Next: repair current LAN lobby CI and README contract, verify auto-discovery on two physical devices, then protected promotion when green.
+
 ## 2026-10-25 15:00 CET — LAN host TTL consistency (dev only)
 - Root cause: `receive()` sampled injected `now()` three times (prune, validation, expiry), so a changing clock could extend a join request's TTL or insert a non-expiring entry. Changed to one safe-integer timestamp and rejected unsafe expiry arithmetic. Source `d58f36a25da5d5575f98caee32ed157a445a1c4d`; regression `85d405220f1a67a98d921ce6bb573ee1d25a0081`.
 - Focused source-executed V8 validation: 10/10 assertions passed; test file parsed. Full Node/Chromium 4+4, Modular QA, actual two-client LAN, visual QA, protected main and hosted Pages byte smoke **not run/verified**. Local clone blocked by DNS `Could not resolve host: github.com`.

@@ -1,21 +1,21 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-25 15:00 CET
+**Updated:** 2026-10-25 16:04 CET
 
 ## Mission
-Continue one bounded roadmap increment per run on existing `dev` despite pending CI/release. Only `dev` and `main`; no security bypass, force-push or uncertified promotion.
+Continue one bounded feature each run on existing dev regardless of pending CI/release. Only dev/main, no security bypass or force-push.
 
 ## Current checkpoint
-About-only dev candidate `0.9.41.9`, certified main `0.9.41.8`. Run-start main `6b5d6adef4dff53eb02c4ba3a833473e3500cce5`, dev `95c1677b248e693dbf64e94ad02262b07dd96aff` (76 ahead/0 behind). LAN host TTL fix `d58f36a25da5d5575f98caee32ed157a445a1c4d`, test `85d405220f1a67a98d921ce6bb573ee1d25a0081`: one safe timestamp for receive/prune/expiry, preventing clock drift from extending pending joins. Central log updated. LAN consent remains client-side only, not authenticated signaling or actual two-client discovery.
+Run-start dev `bed3877f2f9d3a2f0bd2e68b5ccbb8ea961ac338`, main `249f6fe4e118bc09390cb1694e82d45b7381f689` (10 ahead). New LAN companion-server auto room discovery and host approval are on dev; local server requires `npm install && npm run serve:lan` and shared LAN URL. Pages still manual. Server-only HTTP allowlist + realpath containment fix prepared. Candidate About 0.9.41.9; last documented certified main 0.9.41.8. Preserve 223 teams/2676 players, six formations, four buttons, ten slots, SD09 and saves/offline.
 
 ## Next smallest action
-Integrate authenticated LAN-scoped signaling with sender-to-request binding and host consent; connect Create Game / Find Games UI. Continue independent Player Studio/tricks/graphics increments if release is blocked. Fetch exact heads before edits.
+Diagnose exact-head CI; fix legacy manual LAN lobby and README contract; run full 4 Node+4 Chromium and Modular QA. Then physical LAN/gameplay/graphics QA and protected promotion.
 
 ## Ownership and exclusions
-Only `smf-hourly-dev-20261019` writes this checkpoint. Do not read/edit other agents' private memory. Preserve 223 teams/2676 players, 6 formations, 4 buttons, 10 Career/Cup slots, SD09, saves and offline behavior.
+Only sole developer writes this checkpoint; never read other agents' private memory.
 
 ## Evidence
-Actual committed source passed 10/10 focused isolated V8 assertions; test file parsed. Not Node CI. Local git remote blocked by DNS `Could not resolve host: github.com`. Older runs #40183086173 (Full preflight) and #40183086171 (Modular source-and-data) failed missing `## Next smallest action` on an earlier SHA; this checkpoint retains the heading. Current exact-head full 4 Node+4 Chromium, Modular QA, graphics, physical LAN, main promotion and Pages smoke **not verified**.
+Focused Node 22 policy smoke: 2/2 PASS (public asset routes and private/traversal rejects). PR #50 Modular #40205129067 and Full #40205129176 failed 3/751 Node tests (manual lobby UI and README banner). Latest exact-head CI and real two-client play unverified. Container git clone blocked by DNS; GitHub connector writes available.
 
 ## Cleanup
-Keep hourly development; inspect and repair actual CI failures. Promote only exact green dev through protected workflow; verify main SHA, Pages and hosted bytes separately. Keep checkpoint <4 KiB.
+Continue hourly development, test and repair blockers; no uncertified deployment.

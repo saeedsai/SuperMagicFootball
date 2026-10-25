@@ -2,11 +2,13 @@
 // host-approved admission and WebRTC SDP. Run: npm install && npm run serve:lan
 // This is a LAN-only server, NOT an Internet matchmaking service.
 import http from 'node:http';
-import {readFile,stat} from 'node:fs/promises';
+import {readFile,stat,realpath} from 'node:fs/promises';
+import {isPublicLanPath} from './lan-static-policy.mjs';
 import {resolve,extname,sep} from 'node:path';
 import {networkInterfaces} from 'node:os';
 import {WebSocketServer} from 'ws';
 const root=resolve(process.cwd());
+const realRoot=await realpath(root);
 const port=Number(process.env.LAN_PORT||8000);
 const host=process.env.LAN_BIND||'0.0.0.0';
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml','.webp':'image/webp','.woff2':'font/woff2','.mp3':'audio/mpeg','.wav':'audio/wav'};
@@ -23,10 +25,13 @@ const server=http.createServer(async(req,res)=>{
  try{
   const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
   if(pathname==='/lan-signal'){res.writeHead(426);res.end('WebSocket required');return}
+  if(!isPublicLanPath(pathname)){res.writeHead(403);res.end('Forbidden');return}
   const file=resolve(root,'.'+(pathname==='/'?'/index.html':pathname));
   if(file!==root&&!file.startsWith(root+sep)){res.writeHead(403);res.end();return}
-  const info=await stat(file);if(!info.isFile())throw Error('not file');
-  const bytes=await readFile(file);res.writeHead(200,{'Content-Type':mime[extname(file)]||'application/octet-stream','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(bytes);
+  const actualFile=await realpath(file);
+  if(!actualFile.startsWith(realRoot+sep)){res.writeHead(403);res.end('Forbidden');return}
+  const info=await stat(actualFile);if(!info.isFile())throw Error('not file');
+  const bytes=await readFile(actualFile);res.writeHead(200,{'Content-Type':mime[extname(file)]||'application/octet-stream','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(bytes);
  }catch{res.writeHead(404);res.end('Not found')}
 });
 const wss=new WebSocketServer({server,path:'/lan-signal',maxPayload:MAX,verifyClient:({req})=>{const ip=ipOf(req);const origin=req.headers.origin;return lanIp(ip)&&(!origin||(()=>{try{const u=new URL(origin);return u.host===req.headers.host}catch{return false}})())}});
