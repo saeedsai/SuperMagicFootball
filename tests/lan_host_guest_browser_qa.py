@@ -53,7 +53,7 @@ def main():
                     page.locator('[data-action="navLan"]').first.click(timeout=15000)
                     page.locator('#autoHost').wait_for(timeout=10000)
                 host.locator('#autoHost').click()
-                host.locator('#autoStatus').get_by_text('Room registered',exact=False).wait_for(timeout=10000)
+                host.locator('#autoStatus').filter(has_text='Room registered').wait_for(timeout=10000)
                 guest.locator('#autoFind').click()
                 guest.locator('#autoRooms button').first.wait_for(timeout=12000)
                 guest.locator('#autoRooms button').first.click()
