@@ -48,3 +48,9 @@ test('signaling closes sockets that exceed the per-connection message budget',()
  assert.match(server,/\+\+meta\.messageCount>MAX_MESSAGES_PER_WINDOW/);
  assert.match(server,/ws\.close\(1008,'Signaling rate limit'\)/);
 });
+
+test('signaling caps concurrent WebSocket sessions per source IP',()=>{
+ const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
+ assert.match(server,/MAX_CONNECTIONS_PER_IP=8/);
+ assert.match(server,/signalPolicy\.allows\(ip,origin,req\.headers\.host\)&&\[\.\.\.clients\.values\(\)\]\.filter\(meta=>meta\.ip===ip\)\.length<MAX_CONNECTIONS_PER_IP/);
+});
