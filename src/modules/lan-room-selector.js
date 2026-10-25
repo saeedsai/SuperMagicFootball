@@ -4,9 +4,13 @@ export function selectJoinableLanRooms(rooms, { ownRoomId = null, search = '' } 
   if (!Array.isArray(rooms)) throw new TypeError('Rooms must be an array');
   if (typeof search !== 'string') throw new TypeError('Search must be a string');
   const query = search.trim().toLocaleLowerCase();
+  const seen = new Set();
   return rooms.filter(room =>
-    room && typeof room.roomId === 'string' &&
+    room && typeof room.roomId === 'string' && !seen.has(room.roomId) &&
     room.roomId !== ownRoomId && room.players === 1 &&
     typeof room.name === 'string' && room.name.toLocaleLowerCase().includes(query)
-  ).map(room => Object.freeze({ roomId: room.roomId, name: room.name, players: room.players }));
+  ).map(room => {
+    seen.add(room.roomId);
+    return Object.freeze({ roomId: room.roomId, name: room.name, players: room.players });
+  });
 }
