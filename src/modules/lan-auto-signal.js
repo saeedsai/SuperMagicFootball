@@ -3,7 +3,10 @@
 export function connectLanSignal({WebSocketImpl=globalThis.WebSocket,onEvent=()=>{},onState=()=>{},setTimeoutImpl=globalThis.setTimeout,clearTimeoutImpl=globalThis.clearTimeout}={}){
  if(typeof WebSocketImpl!=='function')throw new Error('WebSocket unavailable');
  const configured=globalThis.SMF_LAN_SIGNAL_URL;
- const url=typeof configured==='string' && /^wss:\/\/[a-z0-9.-]+(?::[0-9]{2,5})?\/lan-signal$/i.test(configured)?configured:(globalThis.location?.protocol==='https:'?'wss://':'ws://')+(globalThis.location?.host||'localhost:8000')+'/lan-signal';
+ const secureEndpoint=typeof configured==='string' && /^wss:\/\/[a-z0-9.-]+(?::[0-9]{2,5})?\/lan-signal$/i.test(configured)?configured:null;
+ const publicPages=globalThis.location?.hostname==='saeedsai.github.io';
+ const url=secureEndpoint||(!publicPages?(globalThis.location?.protocol==='https:'?'wss://':'ws://')+(globalThis.location?.host||'localhost:8000')+'/lan-signal':null);
+ if(!url){onState('unconfigured');return Object.freeze({send(){return false},close(){},get ready(){return false}})}
  let socket=null,closed=false,retry=null,attempt=0;
  function scheduleRetry(){
   if(closed||retry!==null)return;
