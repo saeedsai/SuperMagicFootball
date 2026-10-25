@@ -1,3 +1,7 @@
+## 2026-10-25 — LAN host approval queue (unreleased)
+- Issue #48: dev commits 08b52929 and 1eaee2ee add host-side pending join request queue, explicit accept/reject, duplicate suppression and expiry tests. Still no signaling transport, LAN authentication or UI integration. CI and main promotion pending; no production claim.
+- Local GitHub clone/test attempt blocked by container DNS resolution of github.com. GitHub connector source writes succeeded. Continue implementation directly on dev, not on extra branches. Version remains 0.9.41.9 as this is not player-facing integration.
+
 ## 2026-10-25 — LAN room directory foundation (unreleased)
 - Issue #48: added validated room discovery directory with TTL expiry, announcement refresh, room removal, deterministic listing and clear; added Node tests. Client-side listing is not LAN authorization: secure signaling service and UI remain outstanding.
 - Commits c9c586da173060591d3b275f17f7271d56522304 and 0c7f5e6065620359acef17db7fa93c1590201b36 directly on dev; no player-facing code integration, version remains 0.9.41.9. CI and protected promotion not verified; do not claim deployed or QA-certified.
