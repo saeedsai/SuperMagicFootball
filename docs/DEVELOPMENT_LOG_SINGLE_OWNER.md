@@ -1,3 +1,6 @@
+## 2026-10-25 — Host approval closed-guest guard
+- `6f68c72c` prevents host approval reserving a room seat when requesting guest WebSocket already closed; host receives `join-cancel` reason `guest-left`. `347b0302` adds source-contract regression. New head CI and real two-device LAN/graphics unverified. Previous `e667fe42` completed protected promotion to main with all 4 Node + 4 Chromium shards green (Full run #40238388569); hosted byte smoke separately pending verification.
+
 ## 2026-10-25 23:00 CET — LAN backpressure + CI root-cause repair (dev only)
 - Exact dev `ec8ecce1`: Modular #40236580431 and Full #40236580440 failed 1/801 Node tests because sole-developer checkpoint exceeded 4 KiB; Full 4+4 shards never started. Compacted own checkpoint under 4 KiB with all six required headings.
 - Added 512 KiB per-peer outbound signaling queue cap, using actual UTF-8 byte size, terminating stalled peers for existing room cleanup. Added 4 tests for overload, exact boundary, exception and normal signaling; isolated local Node v22.16.0 mirror 4/4 PASS, syntax PASS. Full exact-head CI, two-device LAN, gameplay/graphics and main/Pages still unverified. Server-only: About candidate stays 0.10.0.0.
