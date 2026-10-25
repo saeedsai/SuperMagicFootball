@@ -65,3 +65,11 @@ test('oversized UTF-8 signaling frames are rejected without harming socket',asyn
  assert.equal(safeLanSend(ws,{type:'rooms'}),true);
  assert.equal(sent,1);
 });
+
+test('outbound signaling rejects primitives and malformed envelopes',async()=>{
+ const {safeLanSend}=await load();let sent=0,closed=0;
+ const ws={readyState:1,send(){sent++},terminate(){closed++}};
+ for(const payload of [null,'hello',42,true,[],{type:3},{roomId:'missing-type'}])assert.equal(safeLanSend(ws,payload),false);
+ assert.equal(sent,0);assert.equal(closed,0);
+ assert.equal(safeLanSend(ws,{type:'rooms'}),true);assert.equal(sent,1);
+});
