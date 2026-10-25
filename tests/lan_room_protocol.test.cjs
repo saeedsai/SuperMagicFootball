@@ -23,3 +23,13 @@ test('LAN host approval messages require valid request identity', async () => {
   assert.equal(validateLanRoomMessage({ version: 1, type: '__proto__', roomId }), null);
   assert.equal(validateLanRoomMessage(null), null);
 });
+
+test('caller fields cannot override explicit packet type room or version', async () => {
+  const { createLanRoomMessage } = await load();
+  const message = createLanRoomMessage('room-announce', roomId, {
+    version: 999, type: 'join-accept', roomId: 'room_87654321', name: 'Match', players: 1
+  });
+  assert.equal(message.version, 1);
+  assert.equal(message.type, 'room-announce');
+  assert.equal(message.roomId, roomId);
+});
