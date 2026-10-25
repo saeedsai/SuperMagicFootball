@@ -56,3 +56,21 @@ test('close completes when signaling transport fails', async () => {
   assert.deepEqual(host.rooms(), []);
   assert.throws(() => host.heartbeat(), /closed/);
 });
+
+test('stopHosting clears local state when transport disconnects', async () => {
+  const { createLanDiscoveryController } = await load();
+  let offline = false;
+  const sent = [];
+  const host = createLanDiscoveryController({ send: packet => {
+    if (offline) throw new Error('offline');
+    sent.push(packet);
+  } });
+  host.host('room_12345678', 'Match');
+  offline = true;
+  assert.equal(host.stopHosting(), true);
+  assert.equal(host.heartbeat(), false);
+  assert.equal(host.stopHosting(), false);
+  offline = false;
+  host.host('room_87654321', 'New match');
+  assert.deepEqual(sent.map(packet => packet.type), ['room-announce', 'room-announce']);
+});
