@@ -19,7 +19,7 @@ const clients=new Map(),rooms=new Map(),pending=new Map();
 let nextId=0;
 const MAX=210000;
 const MAX_ROOMS=128,MAX_PENDING_PER_GUEST=1,MAX_PENDING_PER_ROOM=8;
-const MAX_MESSAGES_PER_WINDOW=120,WINDOW_MS=60000;
+const MAX_MESSAGES_PER_WINDOW=120,WINDOW_MS=60000,MAX_CONNECTIONS_PER_IP=8;
 function ipOf(request){return String(request.socket.remoteAddress||'').replace(/^::ffff:/,'')}
 function sameSubnet(a,b){return signalPolicy.visible(a,b)}
 const send=(ws,msg)=>{if(ws?.readyState===1)ws.send(JSON.stringify(msg))};
@@ -38,7 +38,7 @@ const server=http.createServer(async(req,res)=>{
   const bytes=await readFile(actualFile);res.writeHead(200,{'Content-Type':mime[extname(file)]||'application/octet-stream','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(bytes);
  }catch{res.writeHead(404);res.end('Not found')}
 });
-const wss=new WebSocketServer({server,path:'/lan-signal',maxPayload:MAX,verifyClient:({req})=>{const ip=ipOf(req);const origin=req.headers.origin;return signalPolicy.allows(ip,origin,req.headers.host)}});
+const wss=new WebSocketServer({server,path:'/lan-signal',maxPayload:MAX,verifyClient:({req})=>{const ip=ipOf(req);const origin=req.headers.origin;return signalPolicy.allows(ip,origin,req.headers.host)&&[...clients.values()].filter(meta=>meta.ip===ip).length<MAX_CONNECTIONS_PER_IP}});
 wss.on('connection',(ws,req)=>{
  const meta={id:'peer_'+(++nextId),ip:ipOf(req),windowStart:Date.now(),messageCount:0};clients.set(ws,meta);
  send(ws,{type:'welcome',peerId:meta.id});
