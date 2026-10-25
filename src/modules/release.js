@@ -2,8 +2,9 @@
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
  version:'0.10.3.1',
- date:'2026-10-25',
+ date:'2026-10-26',
  notes:Object.freeze([
+  'Hosted LAN room discovery ignores spoofed X-Forwarded-For prefixes and uses the trusted proxy-appended client address. The secure Host Game / Find Games flow remains a candidate pending exact-head CI and physical two-phone acceptance; rosters, controls and saves are unchanged.',
   'Hosted LAN signaling service provisioned on Render; automatic Host Game and Find Games now use the configured secure WebSocket endpoint on GitHub Pages. Rooms are scoped to a shared public network and require host approval; real-phone certification remains pending.',
   'Host Game and Find Games now appear directly on phones and public Pages without an IP entry screen. A secure hosted signaling service still must be configured and deployed before automatic room discovery and joining will function.',
   'LAN lobby now offers a direct private-IP gateway from GitHub Pages to the local companion server where Host Game and Find Games are available. Both devices must use the same local server URL.',
