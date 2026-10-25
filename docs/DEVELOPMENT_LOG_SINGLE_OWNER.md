@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN pending request lookup
+- Dev feature 0e4b85a, test 1ed7976: hasPending(requestId) supports lobby checks and respects expiry/close. No player-facing version bump. Focused test committed, not executed. Full 4 Node+4 Chromium, Modular QA, graphics/gameplay, protected main/Pages not verified. Pre-change dev 33 ahead main.
+
 ## 2026-10-25 — LAN pending approval count
 - Source 6329cb2, test 933dbfa: pendingCount() reflects live host requests, expires and closes cleanly. Internal module, no player-facing version bump. Tests committed but not executed; full Node/Chromium, Modular QA, gameplay/graphics and main/Pages not verified.
 
