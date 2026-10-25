@@ -23,6 +23,18 @@ export function createLanDiscoveryController({ send, now = () => Date.now(), ttl
       hosted = packet;
       return packet;
     },
+    // Advertise approved guest occupancy; this does not grant admission.
+    setPlayers(players) {
+      ensureOpen();
+      if (!hosted) return false;
+      const packet = createLanRoomMessage('room-announce', hosted.roomId, {
+        name: hosted.name, players
+      });
+      if (packet.players === hosted.players) return false;
+      send(packet);
+      hosted = packet;
+      return true;
+    },
     heartbeat() {
       ensureOpen();
       if (!hosted) return false;
