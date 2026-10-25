@@ -28,3 +28,6 @@ Dev source 3cccb96, test 3db5426, log fb3221e. Explicit protocol metadata cannot
 
 ## 2026-10-25 — directory capacity
 Dev source aba2424, test 8fb790e, log 6a2f545. 128 active rooms max; updates/expiry work. Only dev/main confirmed; dev 8 ahead at pre-change comparison. Tests not executed, full QA/main/Pages pending. Continue secure transport and UI, test exact head before protected promotion.
+
+## 2026-10-25 — active room count
+Dev 26658a8, test 8dca122, log d039c10. count() prunes expired rooms. Test file update blocked by tool safety, separate test created. No executed tests or full QA, main/Pages not verified. Continue UI and secure transport; exact-head green promotion only.
