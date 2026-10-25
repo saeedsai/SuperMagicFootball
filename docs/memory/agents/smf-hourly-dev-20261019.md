@@ -31,3 +31,6 @@ Dev source aba2424, test 8fb790e, log 6a2f545. 128 active rooms max; updates/exp
 
 ## 2026-10-25 — active room count
 Dev 26658a8, test 8dca122, log d039c10. count() prunes expired rooms. Test file update blocked by tool safety, separate test created. No executed tests or full QA, main/Pages not verified. Continue UI and secure transport; exact-head green promotion only.
+
+## 2026-10-25 — LAN clock validation
+Dev source 4065548, test c76613c, log f36dcd8. Reject nonfunction clock early. Focused tests not executed; full CI, graphics/gameplay and main/Pages unverified. Pre-change dev 17 ahead main. Next secure signaling/UI, test and protected promotion.
