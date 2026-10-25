@@ -67,7 +67,7 @@ export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30
       // Sync transports preserve the legacy return type; async transports only
       // consume the request once delivery is acknowledged by the send promise.
       const delivered = () => {
-        if (!closed && hostedRoomId === packet.roomId && pending.get(requestId) === entry) {
+        if (!closed && hostedRoomId === packet.roomId && pending.get(requestId) === entry && entry.expiresAt > now()) {
           pending.delete(requestId);
           decided.set(requestId, now() + ttlMs);
         }
