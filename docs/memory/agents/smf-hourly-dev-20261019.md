@@ -23,3 +23,6 @@ Keep under 4 KiB. Next five:
 3. Reconnect/resync recovery with regressions.
 4. Crown Royals directional quarter art and animation.
 5. Player Studio and counterable Magic Tricks; protected release after green CI.
+
+## 2026-10-25 — Automatic LAN discovery foundation
+Issue #48: added src/modules/lan-room-protocol.js and tests/lan_room_protocol.test.cjs directly to dev. Validates room announcements, removals and host-approved join message identities; no transport, LAN scoping, UI or live deployment yet. Pending exact-head CI and protected promotion. Next: secure discovery service, room browser, approval UI, two-client integration, graphics QA. No extra branch.
