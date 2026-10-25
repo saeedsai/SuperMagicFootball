@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN pending approval count
+- Source 6329cb2, test 933dbfa: pendingCount() reflects live host requests, expires and closes cleanly. Internal module, no player-facing version bump. Tests committed but not executed; full Node/Chromium, Modular QA, gameplay/graphics and main/Pages not verified.
+
 ## 2026-10-25 — LAN same-room approval preservation
 - Dev source 598e157 and focused test d0a6d84: restarting approval for identical room no longer erases pending requests; switching room still clears them. No player-facing version bump. Tests committed, not executed here. Full 4+4/Modular QA, gameplay/graphics and protected main/Pages checks not verified.
 
