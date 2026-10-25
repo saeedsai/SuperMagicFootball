@@ -75,9 +75,9 @@ def main():
                 open_lan_menu(host, origin)
                 open_lan_menu(guest, origin)
                 host.locator("#autoHost").click()
-                host.locator("#autoStatus").get_by_text("Room registered", exact=False).wait_for(timeout=20000)
+                host.wait_for_function("document.querySelector('#autoStatus')?.textContent.includes('Room registered')", timeout=20000)
                 # The companion server must supply a shareable private address, never localhost.
-                host.locator("#autoHostInfo").get_by_text("http://", exact=False).wait_for(timeout=20000)
+                host.wait_for_function("document.querySelector('#autoHostInfo')?.textContent.includes('http://')", timeout=20000)
                 guest.locator("#autoFind").click()
                 join = guest.locator("#autoRooms button")
                 join.first.wait_for(timeout=20000)
