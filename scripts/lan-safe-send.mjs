@@ -4,6 +4,8 @@ export function safeLanSend(ws, message) {
   try {
     const payload = JSON.stringify(message);
     if (typeof payload !== 'string') return false;
+    // Bound outbound signaling to the same frame budget enforced on inbound messages.
+    if (Buffer.byteLength(payload, 'utf8') > 210000) return false;
     ws.send(payload, error => {
       if (error) { try { ws.terminate?.(); } catch { /* already closing */ } }
     });
