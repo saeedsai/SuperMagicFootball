@@ -32,5 +32,8 @@ Local Node v22 isolated mirrors of address/WS/policy logic: **5/5 pass** (not fu
 ## Latest incremental fix
 - `400a1a7f` bounds outbound WebSocket signaling frames to 210000 UTF-8 bytes; `fd2b2fa7` adds regression. CI and production verification pending; preserve 0.10.0.0 candidate and do not bypass protected promotion.
 
+## Latest incremental fix
+- `4f38a2aa` validates outbound LAN signaling envelope, `6c63262e` adds regression; exact-head CI and real-device LAN remain unverified. Main must remain protected until full green CI and hosted smoke.
+
 ## Ownership
 Update central `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` and this checkpoint only. No other agents' memories. Never change player identifiers/save formats for LAN.
