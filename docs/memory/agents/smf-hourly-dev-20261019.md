@@ -31,3 +31,6 @@ Source f6cb37f, test 83298a2 and log aaa6189 on dev. New room first, stale room 
 
 ## 2026-10-25 — offline stopHosting
 Dev 34c9bab source, 881b46f tests, 79c4e10 log: local host state clears despite signaling failure; TTL expires stale remote listing. Tests written, not executed; full CI/main/Pages not verified. Continue secure discovery, UI and actual two-device QA; promote only green exact head.
+
+## 2026-10-25 — room selector
+Dev source 2113bca and test c094820; log 073c025. Selector filters own/full rooms and supports search. Not UI-integrated. Focused tests and full QA not verified; no main/Pages promotion. Next: execute tests, secure discovery transport, UI wiring, two-device validation, green exact-head promotion.
