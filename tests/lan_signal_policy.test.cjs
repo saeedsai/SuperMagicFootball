@@ -33,7 +33,7 @@ test('hosted mode rejects unsafe configuration rather than opening a public sock
 });
 test('server wires hosted scope policy to websocket handshake and room visibility',()=>{
  const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
- assert.match(server,/createLanSignalPolicy\(\{mode:process\.env\.SMF_SIGNAL_MODE\|\|'lan',publicOrigin:process\.env\.SMF_PUBLIC_ORIGIN\}\)/);
+ assert.match(server,/createLanSignalPolicy\(\{mode:process\.env\.SMF_SIGNAL_MODE\|\|'lan',publicOrigin:process\.env\.SMF_PUBLIC_ORIGIN,selfOrigin:process\.env\.RENDER_EXTERNAL_URL\|\|null\}\)/);
  assert.match(server,/signalPolicy\.allows\(ip,origin,req\.headers\.host\)/);
  assert.match(server,/signalPolicy\.visible\(a,b\)/);
 });
