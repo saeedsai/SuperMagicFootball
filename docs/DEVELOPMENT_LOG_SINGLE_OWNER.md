@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN lobby room identity
+- Source f673cab, test 2f2276d: roomId() exposes hosted room or null after stop/close. Internal feature, no version bump. Tests committed, not executed. Full 4+4, Modular QA, gameplay/graphics and protected main/Pages unverified. Pre-change dev 64 ahead main.
+
 ## 2026-10-25 — host pending cancellation
 - Dev source 6850186, tests fe8615f: cancel(requestId) removes unsent pending request and refuses in-flight cancellation. No player-facing version bump. Tests committed but not executed; full 4+4/Modular QA, gameplay/graphics and protected main/Pages unverified. Pre-change dev 60 ahead main.
 
