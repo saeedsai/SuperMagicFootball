@@ -19,6 +19,7 @@ const clients=new Map(),rooms=new Map(),pending=new Map();
 let nextId=0;
 const MAX=210000;
 const MAX_ROOMS=128,MAX_PENDING_PER_GUEST=1,MAX_PENDING_PER_ROOM=8;
+const MAX_MESSAGES_PER_WINDOW=120,WINDOW_MS=60000;
 function ipOf(request){return String(request.socket.remoteAddress||'').replace(/^::ffff:/,'')}
 function sameSubnet(a,b){return signalPolicy.visible(a,b)}
 const send=(ws,msg)=>{if(ws?.readyState===1)ws.send(JSON.stringify(msg))};
@@ -39,10 +40,12 @@ const server=http.createServer(async(req,res)=>{
 });
 const wss=new WebSocketServer({server,path:'/lan-signal',maxPayload:MAX,verifyClient:({req})=>{const ip=ipOf(req);const origin=req.headers.origin;return signalPolicy.allows(ip,origin,req.headers.host)}});
 wss.on('connection',(ws,req)=>{
- const meta={id:'peer_'+(++nextId),ip:ipOf(req)};clients.set(ws,meta);
+ const meta={id:'peer_'+(++nextId),ip:ipOf(req),windowStart:Date.now(),messageCount:0};clients.set(ws,meta);
  send(ws,{type:'welcome',peerId:meta.id});
  for(const room of rooms.values())if(sameSubnet(meta.ip,room.ip))send(ws,{type:'room-announce',roomId:room.id,name:room.name,build:room.build});
  ws.on('message',bytes=>{
+  const now=Date.now();if(now-meta.windowStart>=WINDOW_MS){meta.windowStart=now;meta.messageCount=0}
+  if(++meta.messageCount>MAX_MESSAGES_PER_WINDOW){ws.close(1008,'Signaling rate limit');return}
   if(bytes.length>MAX)return;
   let m;try{m=JSON.parse(String(bytes))}catch{return}
   if(!m||typeof m!=='object'||Array.isArray(m)||typeof m.type!=='string')return;
