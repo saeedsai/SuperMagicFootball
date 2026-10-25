@@ -16,9 +16,14 @@ test('LAN mode remains private-address and same-subnet scoped',async()=>{
 test('hosted mode requires exact configured HTTPS browser origin',async()=>{
  const {createLanSignalPolicy}=await load(),p=createLanSignalPolicy({mode:'hosted',publicOrigin:'https://saeedsai.github.io'});
  assert.equal(p.allows('8.8.8.8','https://saeedsai.github.io','signal.example'),true);
+ const own=createLanSignalPolicy({mode:'hosted',publicOrigin:'https://saeedsai.github.io',selfOrigin:'https://game.onrender.com'});
+ assert.equal(own.allows('203.0.113.5','https://game.onrender.com','game.onrender.com'),true);
+ assert.equal(own.allows('203.0.113.5','https://evil.test','game.onrender.com'),false);
  for(const origin of [undefined,'http://saeedsai.github.io','https://saeedsai.github.io.evil.test','https://evil.test'])
   assert.equal(p.allows('8.8.8.8',origin,'signal.example'),false);
- assert.equal(p.visible('192.168.1.2','10.1.2.3'),true);
+ assert.equal(p.visible('192.168.1.2','10.1.2.3'),false,'different public IPs cannot discover each other');
+ assert.equal(p.visible('203.0.113.21','203.0.113.21'),true,'devices sharing a public IPv4 can discover each other');
+ assert.equal(p.visible('2001:db8:1:2::1','2001:db8:1:2::2'),true,'IPv6 privacy addresses on same /64 can discover each other');
 });
 test('hosted mode rejects unsafe configuration rather than opening a public socket',async()=>{
  const {createLanSignalPolicy}=await load();
