@@ -1,25 +1,25 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · 2026-10-25 07:06 CET.
+**Agent ID:** `smf-hourly-dev-20261019` · 2026-10-25 07:59 CET.
 
 ## Mission
-One bounded tested increment per hourly run directly on existing dev; pending CI/release never stops development. Only dev/main; no force push or security bypass.
+One bounded tested increment per hourly run directly on dev, including during pending releases. Only dev/main; no force push or security bypass.
 
 ## Current checkpoint
-Baseline dev=main `6fc9978964c00691b266e90ed593837b1969b2f4` certified 0.9.41.7 (dev Modular #40164454293, dev Full 4+4 #40164454316, main Full #40164701384, Pages #40164701575). LAN-057 candidate 0.9.41.8: guest no longer sends new input frames while authoritative host snapshot says paused or finished; a new host play snapshot resumes input at a fresh frame. Focused source-executed smoke passed; new-head CI and deployment are not yet certified. Physical two-device LAN still unverified.
+Baseline dev=main `b5f91bb1400b68dbc35c3ebc7974f0f821183060` certified 0.9.41.8: dev Modular #40168092612, dev Full 4+4 #40168092513, main Full #40168335987 and Pages #40168335767 green. LAN-058 candidate 0.9.41.9 ignores delayed/duplicate host snapshots before guest state application; protects phase, score and input cursor. Source-executed V8 smoke passed; exact-head CI/Pages and real two-device LAN pending.
 
 ## Next smallest action
-Inspect exact-head Modular and 4+4 results; safely repair any failing check while proceeding with another bounded LAN reconnect or Player Studio increment on dev.
+Inspect exact-head Modular and 4+4 CI; repair red checks while advancing another compatible dev increment. Promote only exact green head.
 
 ## Ownership and exclusions
-Sole developer smf-hourly-dev-20261019. Only dev/main. Never read or edit another developer checkpoint; no extra branches, force push, test bypass or premature promotion.
+Sole developer smf-hourly-dev-20261019. Never read/edit another agent memory; no extra branches, force push, test bypass or premature promotion.
 
 ## Evidence
-Pre-commit V8 source-executed checks: play frame 24, pause/finish no packets, host-resumed frame 27, disposed no send. Added Node LAN-057 regression; CI not yet run on new head. Invariants: 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and saves.
+V8 source-executed smoke: paused tick12 retained despite late play tick11; fresh tick13 resumed; disposed safe. Added Node LAN-058 regression for delayed/duplicate phase and score, resumed input cursor and disposal. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and saves.
 
 ## Cleanup
 Keep under 4 KiB. Next five:
-1. Verify exact-head 4 Node + 4 Chromium and Modular QA; repair red checks.
-2. Test genuine two-client LAN including latency, pause/resume and disconnect.
-3. Implement bounded reconnect and resync recovery with regressions.
-4. Correct Crown Royals directional graphics and bespoke quarter animations.
-5. Improve Player Studio and counterable Magic Tricks; promote only exact green dev through protected pipeline.
+1. Exact-head 4 Node + 4 Chromium and Modular QA.
+2. Genuine two-client LAN latency, pause/resume and disconnect.
+3. Reconnect/resync recovery with regressions.
+4. Crown Royals directional quarter art and animation.
+5. Player Studio and counterable Magic Tricks; protected release after green CI.

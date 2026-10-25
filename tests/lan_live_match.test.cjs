@@ -270,3 +270,26 @@ test('LAN-057 guest suppresses controls during host pause and finish, then resum
   assert.deepEqual(sent[1].buttons,['pass']);
   run.dispose();
 });
+
+
+test('LAN-058 ignores delayed and duplicate snapshots without rewinding phase, score or input',async()=>{
+ const {createLanLiveMatch,captureLanGameState}=await load();
+ const input=controls(),host=game(controls()),guest=game(input),sent=[];
+ const peer={ready:true,subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
+  sendGuestInput(frame,buttons,dx,dy){sent.push({frame,buttons,dx,dy});}};
+ const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field});
+ const receive=(tick,phase,score)=>{host.matchState=phase;host.score=[score,0];peer.receive(captureLanGameState(host,field,tick));};
+ receive(20,'play',0);
+ assert.equal(run.step(.016),true);assert.equal(sent[0].frame,24);
+ receive(21,'paused',1);assert.equal(run.step(.016),false);
+ receive(20,'play',9);receive(21,'play',8);
+ assert.equal(guest.matchState,'paused');assert.deepEqual(guest.score,[1,0]);
+ assert.equal(run.latestTick,21);assert.equal(run.step(.016),false);
+ receive(22,'play',2);
+ assert.equal(guest.matchState,'play');assert.deepEqual(guest.score,[2,0]);
+ assert.equal(run.step(.016),true);assert.deepEqual(sent.map(item=>item.frame),[24,26]);
+ receive(21,'finished',7);
+ assert.equal(guest.matchState,'play');assert.deepEqual(guest.score,[2,0]);assert.equal(run.latestTick,22);
+ run.dispose();receive(23,'finished',3);
+ assert.equal(guest.matchState,'play','disposed observer cannot mutate game');
+});

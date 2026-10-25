@@ -1,3 +1,9 @@
+## 2026-10-25 07:59 CET — LAN-058 monotonic guest snapshots (0.9.41.9 candidate)
+- Baseline dev=main `b5f91bb1400b68dbc35c3ebc7974f0f821183060` certified 0.9.41.8: dev Modular #40168092612, dev Full 4+4 #40168092513, main Full #40168335987, Pages #40168335767 success; only dev/main branches.
+- Root cause: guest live-match subscription applied every callback, including older or duplicate ticks, allowing stale play/pause/finish and score rollback if a transport rebinds. Fix: apply only strictly newer safe-integer snapshot ticks, preserving newer authoritative states.
+- Added LAN-058 Node regression for stale/duplicate phase and score, resumed input frame and disposal; source-executed V8 smoke passed before commit. Exact-head 4 Node + 4 Chromium, Modular QA, protected main/Pages and physical two-device LAN remain separate gates.
+- About/package/README/policy/shared memory/offline cache aligned to 0.9.41.9. No roster, formation, button, ten-slot Career/Cup, SD09, save or offline changes. Next: CI, real LAN, reconnect, Crown Royals art, Player Studio/Tricks.
+
 ## 2026-10-25 07:06 CET — LAN-057 authoritative pause/finish input gate (0.9.41.8 candidate)
 - Baseline dev=main `6fc9978964c00691b266e90ed593837b1969b2f4` (certified 0.9.41.7): dev Modular #40164454293, dev Full 4+4 #40164454316, main Full #40164701384, Pages #40164701575; only dev/main branches.
 - Defect: guest `createLanLiveMatch.step` kept sending new four-button packets while the latest validated host snapshot marked the match paused or finished. Fix: poll local controls but do not transmit until host snapshot returns to play; resume at current authoritative frame rather than replaying frozen input.

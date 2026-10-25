@@ -98,7 +98,9 @@ function createLanLiveMatch({peer,role,game,input,field}){
     };
   }else{
     receiver=peer.subscribeGuestMatchState(state=>{
-      if(disposed)return;
+      // Ignore delayed, duplicate or malformed snapshots even if transport rebinds.
+      // An older host state must not rewind the match or guest input cursor.
+      if(disposed || !Number.isSafeInteger(state?.tick) || state.tick<=latestTick)return;
       applyLanGameState(game,field,state);
       latestTick=state.tick;
       lastSnapshotAt=Date.now();
