@@ -6,6 +6,9 @@ export function safeLanSend(ws, message) {
     if (typeof payload !== 'string') return false;
     // A valid signaling envelope is always a JSON object with a message type.
     if (!message || typeof message !== 'object' || Array.isArray(message) || typeof message.type !== 'string') return false;
+    // Reject JSON rewrites that no longer contain a valid signaling envelope.
+    const envelope = JSON.parse(payload);
+    if (!envelope || typeof envelope !== 'object' || Array.isArray(envelope) || typeof envelope.type !== 'string') return false;
     // Bound outbound signaling to the same frame budget enforced on inbound messages.
     if (Buffer.byteLength(payload, 'utf8') > 210000) return false;
     // Recheck state after serialization, which may invoke custom toJSON code.
