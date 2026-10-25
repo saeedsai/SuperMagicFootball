@@ -8,8 +8,20 @@ export function lanClientIp(request,{hosted=false}={}){
  if(typeof forwarded!=='string'||forwarded.length>512)return '';
  // Render's trusted ingress appends the actual connecting client to any incoming
  // X-Forwarded-For chain. The first element can be client-supplied/spoofed.
- const edgeClient=forwarded.split(',').at(-1).trim().replace(/^::ffff:/,'');
- return isIP(edgeClient)?edgeClient:'';
+ const chain=forwarded.split(',').map(part=>part.trim().replace(/^::ffff:/,''));
+ // Trusted edge proxies may append private hops after the actual public client.
+ // Select the last globally routed client candidate, not a spoofable prefix.
+ for(let i=chain.length-1;i>=0;i--){
+  const candidate=chain[i],kind=isIP(candidate);
+  if(!kind)return '';
+  if(kind===4){
+   const [a,b]=candidate.split('.').map(Number);
+   if(a===0||a===10||a===127||a===169&&b===254||a===172&&b>=16&&b<=31||
+      a===192&&b===168||a===100&&b>=64&&b<=127)continue;
+  }else if(candidate==='::1'||/^(?:fc|fd|fe[89ab])/i.test(candidate))continue;
+  return candidate;
+ }
+ return '';
 }
 function ipv6Prefix64(ip){
  if(isIP(ip)!==6||ip.includes('.'))return null;
