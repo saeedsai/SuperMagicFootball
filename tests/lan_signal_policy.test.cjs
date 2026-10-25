@@ -68,8 +68,8 @@ test('repeated registration by the same host is idempotent',()=>{
  assert.match(server,/if\(rooms\.has\(id\)\)\{if\(rooms\.get\(id\)\.host!==ws\)return send\(ws,\{type:'error',message:'Room already exists'\}\);send\(ws,\{type:'host-registered',roomId:id\}\);return\}/);
 });
 
-test('approved guest cannot occupy a second room on the same socket',()=>{
+test('host or approved guest cannot request another guest seat on the same socket',()=>{
  const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
- assert.match(server,/\[\.\.\.rooms\.values\(\)\]\.some\(active=>active\.guest===ws\)/);
- assert.match(server,/if\(ws===room\.host\|\|room\.guest\|\|\[\.\.\.rooms\.values\(\)\]\.some\(active=>active\.guest===ws\)/);
+ assert.match(server,/\[\.\.\.rooms\.values\(\)\]\.some\(active=>active\.guest===ws\|\|active\.host===ws\)/);
+ assert.match(server,/if\(ws===room\.host\|\|room\.guest\|\|\[\.\.\.rooms\.values\(\)\]\.some\(active=>active\.guest===ws\|\|active\.host===ws\)/);
 });
