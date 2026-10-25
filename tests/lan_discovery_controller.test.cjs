@@ -37,11 +37,22 @@ test('switching host rooms withdraws old listing; close withdraws active listing
   const host = createLanDiscoveryController({ send: packet => sent.push(packet) });
   host.host('room_12345678', 'First');
   host.host('room_87654321', 'Second');
-  assert.deepEqual(sent.map(packet => packet.type), ['room-announce', 'room-remove', 'room-announce']);
-  assert.equal(sent[1].roomId, 'room_12345678');
+  assert.deepEqual(sent.map(packet => packet.type), ['room-announce', 'room-announce', 'room-remove']);
+  assert.equal(sent[2].roomId, 'room_12345678');
   host.close();
   host.close();
   assert.equal(sent.length, 4);
   assert.equal(sent[3].type, 'room-remove');
   assert.equal(sent[3].roomId, 'room_87654321');
+});
+
+test('close completes when signaling transport fails', async () => {
+  const { createLanDiscoveryController } = await load();
+  let fail = false;
+  const host = createLanDiscoveryController({ send: () => { if (fail) throw new Error('offline'); } });
+  host.host('room_12345678', 'Match');
+  fail = true;
+  assert.doesNotThrow(() => host.close());
+  assert.deepEqual(host.rooms(), []);
+  assert.throws(() => host.heartbeat(), /closed/);
 });
