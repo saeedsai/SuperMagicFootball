@@ -20,6 +20,9 @@ Develop hourly on existing `dev` regardless of release blockers. Never create br
 ## Latest run — 2026-10-25 mobile Host/Find UI
 - `46932463` makes Host/Find first-class on Pages/phones; `11bffb41` allows secure WSS signaling endpoint config; `b6b23063` truthful service error; `b420d429` updates test. Version 0.10.2.0 candidate aligned. **No hosted signaling backend provisioned**, so functional discovery/join unverified/unavailable. Full QA, protected promotion and Pages verification pending. Next: deploy secure signaling service, configure endpoint, full two-browser + phone QA, exact-head CI.
 
+## Current fix — 2026-10-25
+- `bffe3e5b` removes obsolete manual Pages IP/CMD gateway (regression blocker); `110174ec` fails fast with unconfigured WSS on public Pages; `6bb6e4c0` test. Seven source checks passed; full CI not verified. Signaling service is not deployed; real phone LAN remains blocked. Candidate 0.10.2.0 not certified; do not promote without exact-head green.
+
 ## Next smallest action
 1. Inspect fresh dev/main heads and exact-head CI failures; repair red steps.
 2. Obtain uninterrupted green Modular QA and 4 Node + 4 Chromium shards.
@@ -31,7 +34,3 @@ Develop hourly on existing `dev` regardless of release blockers. Never create br
 Sole developer `smf-hourly-dev-20261019`. Only this agent checkpoint and central `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` are writable memory; never read/edit other agents' notes. No new branches or direct development on main.
 
 ## Evidence
-Failing Modular: https://github.com/saeedsai/SuperMagicFootball/actions/runs/40236580431 ; Full: https://github.com/saeedsai/SuperMagicFootball/actions/runs/40236580440 . Both show `smf-hourly-dev-20261019 exceeds 4 KiB`. Isolated 4/4 queue tests PASS, but exact-head CI, physical LAN, visual QA and Pages smoke remain **unverified**.
-
-## Cleanup
-Keep checkpoint under 4 KiB and full history in central log. Preserve About-only version; never call candidate a certified release or close LAN #48 prematurely.
