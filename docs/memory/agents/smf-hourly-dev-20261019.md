@@ -1,6 +1,6 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-25 13:04 CET
+**Updated:** 2026-10-25 14:06 CET
 
 ## Mission
 Always develop the next bounded, tested feature on existing `dev`, even if earlier increments await CI or deployment. Only `dev` and `main`; protected exact-green promotion. Never bypass security, force-push, or disable hourly work because of blockers.
@@ -28,3 +28,6 @@ Dev source 6329cb2, test 933dbfa, log d10d115. pendingCount() excludes expired r
 
 ## 2026-10-25 — pending lookup
 Dev source 0e4b85a, test 1ed7976, log b8cc75c. hasPending(requestId) prunes expiry, handles close. Tests not executed; full QA and protected main/Pages unverified. Pre-change dev 33 ahead main. Next secure peer identity, real UI, CI and exact-head promotion.
+
+## 2026-10-25 14:06 CET — async host decision delivery
+Source `2551eea`, tests `6f710af`, log `acc3b29` on dev. Promise-returning sends retain pending approval until delivery succeeds; failed async sends retry; in-flight deduplication and room/expiry race guards added. Isolated local Node 22.16.0 tests **9/9 PASS**, syntax PASS; full 4+4, Modular, graphics and real two-client LAN not verified (local clone DNS failure). Old run 40183086173 failed memory heading, current checkpoint includes it; no exact-head green evidence. Main `6b5d6ad`, dev 39 ahead at test commit; main/Pages not promoted. Next: authenticated peer binding, UI, exact-head CI and protected release.
