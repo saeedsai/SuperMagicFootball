@@ -23,6 +23,9 @@ Develop hourly on existing `dev` regardless of release blockers. Never create br
 ## Current fix — 2026-10-25
 - `bffe3e5b` removes obsolete manual Pages IP/CMD gateway (regression blocker); `110174ec` fails fast with unconfigured WSS on public Pages; `6bb6e4c0` test. Seven source checks passed; full CI not verified. Signaling service is not deployed; real phone LAN remains blocked. Candidate 0.10.2.0 not certified; do not promote without exact-head green.
 
+## Latest — 2026-10-25
+- `cc16e0ab` blocks misleading Host/Find when discovery is unconfigured; `a796a58b` source regression. Version 0.10.2.0 candidate unchanged. Hosted signaling service unprovisioned; physical LAN and full CI unverified. Only promote exact green dev head.
+
 ## Next smallest action
 1. Inspect fresh dev/main heads and exact-head CI failures; repair red steps.
 2. Obtain uninterrupted green Modular QA and 4 Node + 4 Chromium shards.
