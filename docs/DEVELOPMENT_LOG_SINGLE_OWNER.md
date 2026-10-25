@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN offline transport lifecycle fix
+- Source f6cb37f and regression 83298a2 on dev: room switching announces new room before withdrawing old; close completes even if signaling transport is offline, allowing TTL expiry. Test added, not yet executed. Internal non-player-facing candidate remains 0.9.41.9. Full exact-head CI, graphics/gameplay QA, main and Pages pending.
+
 ## 2026-10-25 — LAN stale room withdrawal fix
 - Fixed discovery controller to withdraw the previous room before switching hosts and withdraw the active room on close; regression added for both. dev commits cf6bd403 and 2717fd95. Not connected to real signaling/UI, no player-facing version bump. Tests written, execution/full CI not verified; do not promote without exact-head green checks.
 
