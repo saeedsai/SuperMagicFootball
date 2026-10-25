@@ -1,3 +1,6 @@
+## 2026-10-25 — Truthful mobile LAN discovery state
+- `cc16e0ab` tracks signaling state in auto lobby and prevents Host Game/Find Games from claiming progress when hosted signaling is unconfigured; `a796a58b` adds source regression. Server provisioning and actual mobile peer play still unavailable. Candidate 0.10.2.0 unchanged (same unreleased candidate). Full Node/Chromium/graphics QA and exact-head protected promotion not verified; do not claim deployment.
+
 ## 2026-10-25 — Remove stale Pages LAN gateway and fail fast
 - `bffe3e5b` removed stale public Pages manual IP/CMD gateway from `lan-lobby.js`; this directly repaired `tests/lan_pages_gateway.test.cjs` expectation. `110174ec` reports `unconfigured` when public Pages has no secure hosted signaling URL instead of attempting nonexistent Pages WSS. `6bb6e4c0` tests this state. Seven focused source checks passed via GitHub fetched bytes; full Node/Chromium, gameplay, graphics, two-device and exact-head promotion not run/verified. Backend still unprovisioned, so Host/Find cannot yet connect.
 
