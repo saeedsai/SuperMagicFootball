@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN room browser joinability selector
+- Added dev-only selector 2113bca and focused test c094820 for excluding own/full rooms and searching room names. Not wired into UI/signaling; internal module, candidate version unchanged. Test execution and exact-head full CI/graphics/main/Pages verification outstanding. No premature promotion.
+
 ## 2026-10-25 10:59 CET — LAN occupancy announcements (unreleased)
 - Added `createLanDiscoveryController.setPlayers(1|2)` to advertise host-approved occupancy to guest room listings and retain it in heartbeats. Failed transport sends preserve the prior advertised state; invalid counts reject. Commits: source `8a161a1eb660ac5d7aded099fe8e9f29a3793802`, regression `7e57beb2fb5843f49b66e2d61a39281f3eefefb4`.
 - Isolated Node 22 LAN controller suite **7/7 PASS** (four existing cases, an independently committed offline-stop case, two occupancy cases); source module matched GitHub blob `361bf2576986fe3fc0cc44979778b1b539771b1d`. Full repo checkout failed `Could not resolve host: github.com`; full 4+4/Modular QA and exact-head promotion remain unverified. No real LAN signaling/UI or graphics changes; internal only, version stays 0.9.41.9.
