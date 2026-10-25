@@ -5,6 +5,7 @@ export function createLanRoomDirectory({ ttlMs = 15000, now = () => Date.now() }
   if (!Number.isSafeInteger(ttlMs) || ttlMs < 1000 || ttlMs > 120000) throw new RangeError('Invalid room TTL');
   const rooms = new Map();
   const MAX_ROOMS = 128;
+  // A room that was removed must not remain visible in a cached browser list.
   const prune = () => {
     const time = now();
     for (const [id, room] of rooms) if (room.expiresAt <= time) rooms.delete(id);
