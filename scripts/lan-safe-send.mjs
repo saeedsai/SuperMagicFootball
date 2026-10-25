@@ -4,6 +4,8 @@ export function safeLanSend(ws, message) {
   try {
     const payload = JSON.stringify(message);
     if (typeof payload !== 'string') return false;
+    // A valid signaling envelope is always a JSON object with a message type.
+    if (!message || typeof message !== 'object' || Array.isArray(message) || typeof message.type !== 'string') return false;
     // Bound outbound signaling to the same frame budget enforced on inbound messages.
     if (Buffer.byteLength(payload, 'utf8') > 210000) return false;
     ws.send(payload, error => {
