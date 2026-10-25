@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN in-flight duplicate rejection
+- Source b3459be, regression 02021a4: reject duplicate join request while async decision send is pending. No player-facing version bump. Tests committed but not executed; full 4+4, Modular QA, gameplay/graphics, protected main/Pages not verified. Pre-change dev 52 ahead main.
+
 ## 2026-10-25 — LAN explicit transport failure handling
 - Source 69e52fd, tests 274280d: synchronous or async send() returning false preserves pending host approval for retry. No player-facing version bump. Tests committed, not executed. Full 4+4, Modular QA, gameplay/graphics and protected main/Pages unverified. Pre-change dev 48 ahead main.
 
