@@ -1,8 +1,10 @@
+import {samePublicNetwork} from './lan-public-network.mjs';
 // Signaling visibility and origin policy for LAN and separately deployed hosted rooms.
 // Hosted mode is opt-in and MUST sit behind a TLS reverse proxy with abuse controls.
-export function createLanSignalPolicy({mode='lan',publicOrigin}={}) {
+export function createLanSignalPolicy({mode='lan',publicOrigin,selfOrigin=null}={}) {
   if(mode!=='lan'&&mode!=='hosted')throw new Error('Invalid signaling mode');
   if(mode==='hosted') {
+    if(selfOrigin!==null&&(typeof selfOrigin!=='string'||!/^https:\/\/[a-z0-9.-]+(?::\d+)?$/i.test(selfOrigin)||new URL(selfOrigin).origin!==selfOrigin))throw new Error('Hosted signaling requires an exact HTTPS self origin');
     if(typeof publicOrigin!=='string'||!/^https:\/\/[a-z0-9.-]+(?::\d+)?$/i.test(publicOrigin)||new URL(publicOrigin).origin!==publicOrigin)
       throw new Error('Hosted signaling requires an exact HTTPS public origin');
   }
@@ -14,11 +16,11 @@ export function createLanSignalPolicy({mode='lan',publicOrigin}={}) {
   return Object.freeze({
     mode,
     allows(ip,origin,requestHost) {
-      if(mode==='hosted')return origin===publicOrigin;
+      if(mode==='hosted')return Boolean(ip)&&(origin===publicOrigin||(selfOrigin!==null&&origin===selfOrigin));
       if(!isLanIp(ip))return false;
       if(!origin)return true;
       try{return new URL(origin).host===requestHost}catch{return false}
     },
-    visible(a,b){return mode==='hosted'||sameSubnet(a,b)}
+    visible(a,b){return mode==='hosted'?samePublicNetwork(a,b):sameSubnet(a,b)}
   });
 }
