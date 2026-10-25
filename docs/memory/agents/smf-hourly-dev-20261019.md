@@ -14,7 +14,7 @@ LAN groundwork already on dev: local room discovery, host consent, automatic Web
 - `bcad53df`: enforce one host/guest role per socket. Registering host releases previous guest seat/pending requests; hosting sockets cannot request a guest seat in another room.
 - `bca2d92c`: update stale host registration test (prior implementation made it idempotent) and add role-transition regression contract.
 - V8 source-backed focused checks 6/6 passed, including real execution of guest-release helper against two rooms and pending joins. No full Node/Chromium/Modular/visual certification.
-- Central log updated `9a6a58c8`. No player-facing bundle changes/version bump.
+- Repaired second stale single-seat regex in `tests/lan_signal_policy.test.cjs` (`d3a7e30a`). Actual focused test bodies from two LAN suites executed via V8 with Node test/assert/fs and URL shims: **18/18 PASS**. This is not native Node CI. Central log updated `5c17861a`. No player-facing bundle changes/version bump.
 
 ## Evidence and blockers
 Combined commit statuses returned [] and commit-workflow lookup returned [] (PR-only lookup, cannot infer green). Container git clone failed DNS resolution for github.com; GitHub connector commits work. Full Node 4 + Chromium 4, Modular QA, real two-client LAN, screenshot graphics, protected promotion and Pages hosted-byte smoke are UNVERIFIED. Do not promote an unverified head.
