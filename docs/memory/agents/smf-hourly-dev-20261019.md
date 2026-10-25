@@ -14,6 +14,9 @@ Develop hourly on existing `dev` regardless of release blockers. Never create br
 - `main=dev=e667fe42` verified; Full Regression #40238388569: preflight, four Node, four Chromium, preview and protected promotion all success. Hosted byte smoke not independently verified.
 - `6f68c72c` prevents closed guest taking approved LAN room seat; `347b0302` adds source regression. Exact new-head CI and physical LAN/graphics pending. Continue coding dev while release pipeline runs.
 
+## LAN UI priority — 2026-10-25
+- Pages mounts manual SDP because auto discovery needs same-origin local companion. Added public Pages private-IP gateway to `http://HOST-IP:8000/`, preserving existing local Host Game/Find Games lobby. Version 0.10.1.0 candidate synchronized across package, release, README and SW. Source-contract tests committed; exact-head CI and physical two-device LAN remain pending. No protected main promotion yet.
+
 ## Next smallest action
 1. Inspect fresh dev/main heads and exact-head CI failures; repair red steps.
 2. Obtain uninterrupted green Modular QA and 4 Node + 4 Chromium shards.
