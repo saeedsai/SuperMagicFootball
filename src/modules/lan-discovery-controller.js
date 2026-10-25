@@ -13,6 +13,9 @@ export function createLanDiscoveryController({ send, now = () => Date.now(), ttl
     host(roomId, name) {
       ensureOpen();
       const packet = createLanRoomMessage('room-announce', roomId, { name, players: 1 });
+      if (hosted && hosted.roomId !== roomId) {
+        send(createLanRoomMessage('room-remove', hosted.roomId));
+      }
       send(packet);
       hosted = packet;
       return packet;
@@ -38,6 +41,7 @@ export function createLanDiscoveryController({ send, now = () => Date.now(), ttl
     rooms() { return closed ? [] : directory.list(); },
     close() {
       if (closed) return;
+      if (hosted) send(createLanRoomMessage('room-remove', hosted.roomId));
       closed = true;
       hosted = null;
       directory.clear();
