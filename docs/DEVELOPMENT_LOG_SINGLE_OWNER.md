@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN duplicate room card prevention
+- Dev source 80d78ea and regression 03e68a0: room browser selector deduplicates repeated announcements by room ID. Internal module only, no version bump. Tests added but not run in this execution; full exact-head CI, gameplay/graphics and main/Pages certification pending.
+
 ## 2026-10-25 12:07 CET — LAN browser live discovery integration and CI repair
 - Atomic dev increment: `createLanDiscoveryController.joinableRooms(search)` composes TTL-pruned discovery with existing selector; hides own/full rooms, supports case-insensitive search and expired-room cleanup. Internal only, not authenticated signaling or UI.
 - Focused Node 22 isolated reproduction 9/9 PASS, including new occupancy/search/TTL/close test. GitHub full tests pending for this exact head.
