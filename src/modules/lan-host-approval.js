@@ -23,9 +23,11 @@ export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30
       ensureOpen();
       // Use the canonical packet validator to reject malformed room IDs.
       createLanRoomMessage('room-remove', roomId);
+      if (hostedRoomId !== roomId) {
+        pending.clear();
+        decided.clear();
+      }
       hostedRoomId = roomId;
-      pending.clear();
-      decided.clear();
       return roomId;
     },
     receive(packet) {
