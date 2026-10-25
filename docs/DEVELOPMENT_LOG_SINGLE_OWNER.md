@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN post-serialization envelope validation (dev)
+- `dddb4b80` verifies serialized JSON envelope after custom toJSON transformations; `f1357219` adds regression for rewritten primitives/arrays/missing types. Exact-head CI and 4+4/Modular/graphics/real LAN not verified; protected main promotion pending. No player-facing version bump.
+
 ## 2026-10-25 — LAN send state race (dev)
 - `dd449d17` rechecks WebSocket OPEN after serialization to avoid sending to sockets closed by custom toJSON side effects; `771289e0` adds regression. Exact-head CI and real LAN unverified. No game version bump; 4+4, Modular, graphics and protected main/Pages promotion pending.
 
