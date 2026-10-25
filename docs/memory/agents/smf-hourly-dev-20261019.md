@@ -1,6 +1,6 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-25 17:06 CET
+**Updated:** 2026-10-25 18:00 CET
 
 ## Mission
 Continue one bounded roadmap increment per hourly run on existing `dev` despite pending CI/release. Only `dev` and `main`; never bypass security or force-push. Follow AGENTS.md and docs/VERSIONING_POLICY.md.
@@ -8,6 +8,9 @@ Continue one bounded roadmap increment per hourly run on existing `dev` despite 
 ## Current checkpoint
 Before increment: `dev=main=2e92165a1256cba19c7612eacf15331274545cd1`; exact-head Modular QA #40205918022 and Full Census #40205918023 passed, with four Node and four Chromium shards. Main synchronization verified, but Pages hosted byte smoke and physical two-device LAN not independently certified.
 New About-only candidate `0.9.42.1`: LAN guest explicit leave/cancel/switch, socket-bound release of pending joins and approved seat, host cancellation notification and stale approval UI clearing. Pure helper `scripts/lan-guest-release.mjs`, wiring in server and auto lobby, tests `tests/lan_guest_release.test.cjs`. Version, README banner/heading, About, offline cache, policy and shared memory updated. No new branch.
+
+## Current increment
+Server-only host departure notification committed as 136a95d3; regression source assertion committed as 056d5491. Approved guest receives host-left, pending join-reject includes roomId. Guest lobby host-left handling, exact-head CI, visual and device QA remain unverified. No version bump for companion-server-only change.
 
 ## Next smallest action
 Check latest exact dev SHA and Modular/Full 4 Node+4 Chromium CI, repair regressions without stopping further increments. Verify protected main promotion and Pages hosted hashes separately. Next feature: two-client LAN reconnect/approval and Player Studio/tricks/graphics.
