@@ -83,3 +83,12 @@ test('late host approval cannot bypass the 30-second join expiry',()=>{
  assert.match(server,/send\(req\.guest,\{type:'join-reject',roomId:id,requestId,reason:'timeout'\}\)/);
  assert.match(server,/send\(ws,\{type:'join-cancel',roomId:id,requestId,reason:'timeout'\}\)/);
 });
+
+test('half-open WebSocket rooms are evicted after missed heartbeat response',()=>{
+ const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
+ assert.match(server,/alive:true/);
+ assert.match(server,/ws\.on\('pong',\(\)=>\{meta\.alive=true\}\)/);
+ assert.match(server,/if\(!meta\.alive\)\{ws\.terminate\(\);continue\}/);
+ assert.match(server,/meta\.alive=false;try\{ws\.ping\(\)\}/);
+ assert.match(server,/\},20000\)\.unref\(\)/);
+});
