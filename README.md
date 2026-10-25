@@ -170,6 +170,20 @@ A dedicated [Audio & Music Expansion Plan](docs/AUDIO_MUSIC_EXPANSION_PLAN.md) c
 The current development branch now contains a **bounded JSON wire codec** (`src/modules/lan-wire.js`) and focused tests (`tests/lan-wire.test.cjs`). It serializes and validates host-compatible hello, leave and four-button input packets, rejects oversized/malformed packets and preserves the input sequence number. The checkpoint memory-contract failure was repaired without weakening CI. This is a transport foundation only: **cross-device LAN, WebRTC signaling and a synchronized match are not playable yet**. The player-facing version remains **0.9.20.0** until a verified game release; the live Pages game may differ from dev.
 
 
+## Playable LAN setup (0.10.0.0 development candidate)
+
+LAN auto-discovery uses the bundled **local companion server**. GitHub Pages is a static host and cannot discover LAN games on its own.
+
+1. **Host PC:** Download the complete `dev` source folder (not a single HTML file). On Windows double-click `start-lan.cmd`; alternatively install Node.js, run `npm install` and then `npm run serve:lan` in the project folder. Keep the console open.
+2. **Both devices:** Open the **same private LAN game address** printed by the console, e.g. `http://192.168.1.20:8000`. Never share `localhost` or `127.0.0.1` with another device; it points back to that device. The host is also allowed to open localhost while guests use the host's LAN IP.
+3. **Host:** Quick Match → Local Network → **HOST GAME**. The host's lobby shows shareable game addresses and confirms registration.
+4. **Guest:** Open the exact same game address in a browser → Quick Match → Local Network → **FIND GAMES**. Select the automatically advertised host → **JOIN**.
+5. **Host:** Click **ACCEPT GUEST**. The browser exchanges WebRTC offers and answers automatically, without manual text copying. Both players enter a host-authoritative match: host plays the home team and guest the away team, with the existing four gameplay actions.
+
+Troubleshooting: both devices must be on the same trusted LAN/Wi-Fi and use the same build; avoid guest-isolation/guest Wi-Fi and VPN subnet separation. If rooms do not appear, verify the Windows Firewall allows inbound TCP port 8000 on the **Private** profile, both devices can open the host IP in their browser, and the `start-lan.cmd` window is still running. Try **FIND GAMES** again after the signaling connection recovers. The server does not need router port forwarding or public Internet access after dependencies are installed.
+
+**Verification status:** The development branch has a new executable two-Chromium-tab host/discovery/approval/real-game/graphics acceptance script (`python3 tests/lan_auto_two_browser_qa.py`). It must pass, alongside all Node/Chromium/Modular CI and physical two-device tests, before declaring this candidate certified or promoted to production.
+
 ## Automatic LAN Quick Match (local server, development candidate)
 
 On the host computer, install Node.js and run `npm install` then `npm run serve:lan`. The server prints a LAN URL such as `http://192.168.1.20:8000`. Both devices must open **that same URL**, be on the same local subnet, and run the same game build. The host selects **Quick Match → Local Network → Host Game**. The guest selects **Find Games**, sees the advertised host, selects **Join**, and waits for the host to **Accept Guest**. WebRTC signaling and match handoff then occur automatically without copying offers or answers.
