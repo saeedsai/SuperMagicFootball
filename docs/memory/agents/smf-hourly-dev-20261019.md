@@ -13,6 +13,9 @@ Prior certified baseline `dev=main=2e92165a` had Modular #40205918022 and Full 4
 ## New increment
 Approval now rejects other pending requests for same room and notifies host/guests; server commit 60373af1, source regression 02b0be94. Focused/full exact-head CI and real two-client QA not yet confirmed. No bundle change or version bump.
 
+## Latest host registration increment
+Repeated same-socket same-room host registration now ACKs without clearing guest or pending requests (4750bd06); regression source contract 1e640243. Full QA and protected release unverified. Server-only; no version bump.
+
 ## Next smallest action
 Check exact latest dev/main heads and workflow results; repair any full-suite failure. Next independent LAN improvement: reject/cancel other pending joins when a room guest is approved, or browser endpoint configuration with coordinated player-facing version. Then two-client WebRTC, Player Studio, counterable four-button tricks and Crown Royals directional art. Promote only exact green dev via protected pipeline and verify main/Pages hosted bytes.
 
