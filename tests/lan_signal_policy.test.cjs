@@ -29,3 +29,13 @@ test('server wires hosted scope policy to websocket handshake and room visibilit
  assert.match(server,/signalPolicy\.allows\(ip,origin,req\.headers\.host\)/);
  assert.match(server,/signalPolicy\.visible\(a,b\)/);
 });
+
+test('hosted signaling bounds room count and per-guest/per-room pending requests',()=>{
+ const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
+ assert.match(server,/MAX_ROOMS=128,MAX_PENDING_PER_GUEST=1,MAX_PENDING_PER_ROOM=8/);
+ assert.match(server,/rooms\.size>=MAX_ROOMS/);
+ assert.match(server,/p\.guest===ws/);
+ assert.match(server,/p\.roomId===id/);
+ assert.match(server,/reason:'request-already-pending'/);
+ assert.match(server,/reason:'room-queue-full'/);
+});
