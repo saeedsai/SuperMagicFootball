@@ -1,0 +1,62 @@
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const {pathToFileURL}=require('node:url');
+const path=require('node:path');
+const load=()=>import(pathToFileURL(path.resolve('src/modules/lan-host-approval.js')).href);
+const room='room_12345678';
+const join=(id='request_12345678')=>({version:1,type:'join-request',roomId:room,requestId:id});
+const deferred=()=>{let resolve,reject;const promise=new Promise((res,rej)=>{resolve=res;reject=rej});return {promise,resolve,reject}};
+test('async send failure keeps join request retryable',async()=>{
+ const {createLanHostApproval}=await load();
+ let task=deferred(),sends=0;
+ const host=createLanHostApproval({send(){sends++;return task.promise}});
+ host.start(room);assert.equal(host.receive(join()),true);
+ const pending=host.respond('request_12345678',true);
+ assert.equal(host.hasPending('request_12345678'),true);
+ assert.equal(host.respond('request_12345678',true),pending);
+ assert.equal(sends,1);
+ task.reject(new Error('offline'));
+ await assert.rejects(pending,/offline/);
+ assert.equal(host.hasPending('request_12345678'),true);
+ task=deferred();const retried=host.respond('request_12345678',true);
+ assert.equal(sends,2);task.resolve();
+ assert.equal((await retried).type,'join-accept');
+ assert.equal(host.hasPending('request_12345678'),false);
+});
+test('async room switch never consumes a new room request with same id',async()=>{
+ const {createLanHostApproval}=await load();
+ const task=deferred();
+ const host=createLanHostApproval({send(){return task.promise}});
+ host.start(room);host.receive(join());
+ const response=host.respond('request_12345678',false);
+ host.start('room_87654321');
+ assert.equal(host.receive({...join(),roomId:'room_87654321'}),true);
+ task.resolve();await response;
+ assert.deepEqual(host.pendingRequests(),['request_12345678']);
+});
+test('async close does not resurrect old requests',async()=>{
+ const {createLanHostApproval}=await load();
+ const task=deferred();const host=createLanHostApproval({send(){return task.promise}});
+ host.start(room);host.receive(join());const response=host.respond('request_12345678',true);
+ host.close();task.resolve();await response;
+ assert.equal(host.pendingCount(),0);
+});
+test('sync send behavior remains compatible',async()=>{
+ const {createLanHostApproval}=await load();
+ const sent=[];const host=createLanHostApproval({send:p=>sent.push(p)});
+ host.start(room);host.receive(join());
+ assert.equal(host.respond('request_12345678',false).type,'join-reject');
+ assert.equal(sent.length,1);assert.equal(host.pendingCount(),0);
+});
+test('late async delivery cannot consume reused request ID after expiry',async()=>{
+ const {createLanHostApproval}=await load();
+ let now=0;const task=deferred();
+ const host=createLanHostApproval({send(){return task.promise},now:()=>now,ttlMs:1000});
+ host.start(room);host.receive(join());
+ const response=host.respond('request_12345678',true);
+ now=1000;
+ assert.equal(host.hasPending('request_12345678'),false);
+ assert.equal(host.receive(join()),true);
+ task.resolve();await response;
+ assert.equal(host.hasPending('request_12345678'),true);
+});
