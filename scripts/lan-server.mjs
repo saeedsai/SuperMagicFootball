@@ -4,6 +4,7 @@
 import http from 'node:http';
 import {readFile,stat,realpath} from 'node:fs/promises';
 import {isPublicLanPath} from './lan-static-policy.mjs';
+import {releaseLanGuest} from './lan-guest-release.mjs';
 import {resolve,extname,sep} from 'node:path';
 import {networkInterfaces} from 'node:os';
 import {WebSocketServer} from 'ws';
@@ -51,7 +52,7 @@ wss.on('connection',(ws,req)=>{
    broadcast(room,{type:'room-announce',roomId:id,name:room.name,build:room.build});return;
   }
   if(m.type==='rooms'){for(const room of rooms.values())if(sameSubnet(meta.ip,room.ip))send(ws,{type:'room-announce',roomId:room.id,name:room.name,build:room.build});return}
-  if(m.type==='leave'){clearHost(ws);return}
+  if(m.type==='leave'){clearHost(ws);releaseLanGuest(ws,rooms,pending,send);return}
   const room=rooms.get(id);if(!room||!sameSubnet(meta.ip,room.ip))return;
   if(m.type==='join'){
    if(ws===room.host||room.guest||typeof requestId!=='string'||! /^[a-zA-Z0-9_-]{8,64}$/.test(requestId)||pending.has(requestId)||m.build!==room.build)return send(ws,{type:'join-reject',requestId,reason:'room-full-or-version'});
@@ -67,7 +68,7 @@ wss.on('connection',(ws,req)=>{
   if(m.type==='offer'&&ws===room.host&&room.guest){if(typeof m.sdp==='string'&&m.sdp.length<=200000)send(room.guest,{type:'offer',roomId:id,sdp:m.sdp});return}
   if(m.type==='answer'&&ws===room.guest){if(typeof m.sdp==='string'&&m.sdp.length<=200000)send(room.host,{type:'answer',roomId:id,sdp:m.sdp});return}
  });
- ws.on('close',()=>{clients.delete(ws);clearHost(ws);for(const [id,p] of pending)if(p.guest===ws)pending.delete(id);for(const room of rooms.values())if(room.guest===ws){room.guest=null;send(room.host,{type:'guest-left',roomId:room.id})}});
+ ws.on('close',()=>{clients.delete(ws);clearHost(ws);releaseLanGuest(ws,rooms,pending,send)});
 });
 setInterval(()=>{for(const [id,p] of pending)if(Date.now()-p.time>30000){pending.delete(id);send(p.guest,{type:'join-reject',roomId:p.roomId,requestId:id,reason:'timeout'})}},5000).unref();
 server.listen(port,host,()=>{
