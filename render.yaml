@@ -1,0 +1,18 @@
+# Deploy the existing Node WebSocket signaling broker as a public HTTPS/WSS service.
+# Create this Blueprint in Render; Render provisions TLS and sets PORT automatically.
+# IMPORTANT: deployment needs the repository owner's Render authorization.
+services:
+  - type: web
+    name: supermagicfootball-lan-signal
+    runtime: node
+    plan: starter
+    buildCommand: npm ci --omit=dev || npm install --omit=dev
+    startCommand: node scripts/hosted-lan-server.mjs
+    healthCheckPath: /lan-signal
+    envVars:
+      - key: SMF_SIGNAL_MODE
+        value: hosted
+      - key: SMF_PUBLIC_ORIGIN
+        value: https://saeedsai.github.io
+      - key: NODE_ENV
+        value: production
