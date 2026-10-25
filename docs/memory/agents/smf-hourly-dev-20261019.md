@@ -25,3 +25,6 @@ Dev source 598e157, test d0a6d84, log aa01820. Same-room start retains pending j
 
 ## 2026-10-25 — host approval count
 Dev source 6329cb2, test 933dbfa, log d10d115. pendingCount() excludes expired requests and closed controller. Not executed; full QA and protected main/Pages unverified. Next authenticate peer identity, integrate UI, run exact-head QA.
+
+## 2026-10-25 — pending lookup
+Dev source 0e4b85a, test 1ed7976, log b8cc75c. hasPending(requestId) prunes expiry, handles close. Tests not executed; full QA and protected main/Pages unverified. Pre-change dev 33 ahead main. Next secure peer identity, real UI, CI and exact-head promotion.
