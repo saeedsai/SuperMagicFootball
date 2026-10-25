@@ -1,3 +1,9 @@
+## 2026-10-25 14:06 CET — LAN async host-approval transport fix (candidate only)
+- `dev` source `2551eeaab446b81d853ef66a58773782541b33a7`; test `6f710af5e2c9d3f498eb926d654aa411dc7cb73f`. Existing synchronous `respond()` semantics retained; Promise-returning `send()` now consumes an approval only on successful resolution, deduplicates in-flight sends, allows retries after rejection, and prevents stale completion from deleting requests after room switch/close or expiry/reuse.
+- Isolated local Node 22.16.0 test harness using matching protocol/controller source: **9/9 PASS** (4 pre-existing approval cases, 5 new async cases); `node --check` PASS. Local full repository checkout failed: `Could not resolve host: github.com`; **full 4 Node + 4 Chromium, Modular QA, real two-client gameplay and graphics remain unverified**.
+- Prior run `40183086173` preflight failed 1/719 on `tests/project_memory_contract.test.cjs`: missing `## Next smallest action`; current checkpoint contains heading, but **no new exact-head green CI evidence**. Main remains `6b5d6adef4dff53eb02c4ba3a833473e3500cce5`; dev 39 ahead, 0 behind at test commit. Protected promotion/Pages byte smoke **not performed**.
+- Internal-only LAN change; candidate `0.9.41.9` remains unchanged. Next: trusted peer identity binding, host UI, real LAN, full CI, protected exact-head release.
+
 ## 2026-10-25 — LAN pending request lookup
 - Dev feature 0e4b85a, test 1ed7976: hasPending(requestId) supports lobby checks and respects expiry/close. No player-facing version bump. Focused test committed, not executed. Full 4 Node+4 Chromium, Modular QA, graphics/gameplay, protected main/Pages not verified. Pre-change dev 33 ahead main.
 
