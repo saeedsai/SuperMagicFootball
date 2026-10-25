@@ -4,6 +4,7 @@
 import http from 'node:http';
 import {readFile,stat,realpath} from 'node:fs/promises';
 import {safeLanSend} from './lan-safe-send.mjs';
+import {lanClientIp} from './lan-public-network.mjs';
 import {rejectUnavailableJoin} from './lan-unavailable-join.mjs';
 import {isPublicLanPath} from './lan-static-policy.mjs';
 import {releaseLanGuest} from './lan-guest-release.mjs';
@@ -17,14 +18,14 @@ const root=resolve(process.cwd());
 const realRoot=await realpath(root);
 const port=Number(process.env.LAN_PORT||8000);
 const host=process.env.LAN_BIND||'0.0.0.0';
-const signalPolicy=createLanSignalPolicy({mode:process.env.SMF_SIGNAL_MODE||'lan',publicOrigin:process.env.SMF_PUBLIC_ORIGIN});
+const signalPolicy=createLanSignalPolicy({mode:process.env.SMF_SIGNAL_MODE||'lan',publicOrigin:process.env.SMF_PUBLIC_ORIGIN,selfOrigin:process.env.RENDER_EXTERNAL_URL||null});
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml','.webp':'image/webp','.woff2':'font/woff2','.mp3':'audio/mpeg','.wav':'audio/wav'};
 const clients=new Map(),rooms=new Map(),pending=new Map();
 let nextId=0;
 const MAX=210000;
 const MAX_ROOMS=128,MAX_PENDING_PER_GUEST=1,MAX_PENDING_PER_ROOM=1;
 const MAX_MESSAGES_PER_WINDOW=120,WINDOW_MS=60000,MAX_CONNECTIONS_PER_IP=8;
-function ipOf(request){return String(request.socket.remoteAddress||'').replace(/^::ffff:/,'')}
+function ipOf(request){return lanClientIp(request,{hosted:signalPolicy.mode==='hosted'})}
 function sameSubnet(a,b){return signalPolicy.visible(a,b)}
 const send=safeLanSend;
 function broadcast(room,msg){for(const [ws,meta] of clients)if(sameSubnet(meta.ip,room.ip))send(ws,msg)}
@@ -32,6 +33,7 @@ function clearHost(ws){for(const [id,room] of rooms)if(room.host===ws){rooms.del
 const server=http.createServer(async(req,res)=>{
  try{
   const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
+  if(pathname==='/healthz'){res.writeHead(200,{'Content-Type':'text/plain','Cache-Control':'no-store'});res.end('ok');return}
   if(pathname==='/lan-signal'){res.writeHead(426);res.end('WebSocket required');return}
   if(!isPublicLanPath(pathname)){res.writeHead(403);res.end('Forbidden');return}
   const file=resolve(root,'.'+(pathname==='/'?'/index.html':pathname));
@@ -48,7 +50,8 @@ wss.on('connection',(ws,req)=>{
  ws.on('pong',()=>{meta.alive=true});
  ws.on('error',()=>{try{ws.terminate()}catch{ /* already closing */ }});
  send(ws,{type:'welcome',peerId:meta.id});
- send(ws,{type:'lan-addresses',urls:getLanGameUrls({interfaces:networkInterfaces(),port,bind:host})});
+ if(signalPolicy.mode==='lan')send(ws,{type:'lan-addresses',urls:getLanGameUrls({interfaces:networkInterfaces(),port,bind:host})});
+ else send(ws,{type:'discovery-scope',scope:'public-network'});
  for(const room of rooms.values())if(sameSubnet(meta.ip,room.ip))send(ws,{type:'room-announce',roomId:room.id,name:room.name,build:room.build});
  ws.on('message',bytes=>{
   const now=Date.now();if(now-meta.windowStart>=WINDOW_MS){meta.windowStart=now;meta.messageCount=0}
