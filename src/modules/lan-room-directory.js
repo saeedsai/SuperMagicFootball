@@ -4,6 +4,7 @@ import { validateLanRoomMessage } from './lan-room-protocol.js';
 export function createLanRoomDirectory({ ttlMs = 15000, now = () => Date.now() } = {}) {
   if (!Number.isSafeInteger(ttlMs) || ttlMs < 1000 || ttlMs > 120000) throw new RangeError('Invalid room TTL');
   const rooms = new Map();
+  const MAX_ROOMS = 128;
   const prune = () => {
     const time = now();
     for (const [id, room] of rooms) if (room.expiresAt <= time) rooms.delete(id);
@@ -14,7 +15,10 @@ export function createLanRoomDirectory({ ttlMs = 15000, now = () => Date.now() }
       if (!message || !['room-announce', 'room-remove'].includes(message.type)) return false;
       prune();
       if (message.type === 'room-remove') rooms.delete(message.roomId);
-      else rooms.set(message.roomId, { ...message, expiresAt: now() + ttlMs });
+      else {
+        if (!rooms.has(message.roomId) && rooms.size >= MAX_ROOMS) return false;
+        rooms.set(message.roomId, { ...message, expiresAt: now() + ttlMs });
+      }
       return true;
     },
     list() {
