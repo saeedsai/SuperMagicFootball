@@ -35,5 +35,8 @@ Local Node v22 isolated mirrors of address/WS/policy logic: **5/5 pass** (not fu
 ## Latest incremental fix
 - `4f38a2aa` validates outbound LAN signaling envelope, `6c63262e` adds regression; exact-head CI and real-device LAN remain unverified. Main must remain protected until full green CI and hosted smoke.
 
+## Latest incremental fix
+- `dd449d17` closes LAN serialization/send readiness race; `771289e0` adds test. Not yet certified on exact head; do not promote without full CI and hosted smoke.
+
 ## Ownership
 Update central `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` and this checkpoint only. No other agents' memories. Never change player identifiers/save formats for LAN.
