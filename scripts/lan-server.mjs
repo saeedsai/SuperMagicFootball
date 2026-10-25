@@ -18,6 +18,7 @@ const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json
 const clients=new Map(),rooms=new Map(),pending=new Map();
 let nextId=0;
 const MAX=210000;
+const MAX_ROOMS=128,MAX_PENDING_PER_GUEST=1,MAX_PENDING_PER_ROOM=8;
 function ipOf(request){return String(request.socket.remoteAddress||'').replace(/^::ffff:/,'')}
 function sameSubnet(a,b){return signalPolicy.visible(a,b)}
 const send=(ws,msg)=>{if(ws?.readyState===1)ws.send(JSON.stringify(msg))};
@@ -48,7 +49,9 @@ wss.on('connection',(ws,req)=>{
   const id=m.roomId,requestId=m.requestId;
   if(m.type==='host'){
    if(typeof id!=='string'||! /^[a-zA-Z0-9_-]{8,64}$/.test(id)||typeof m.name!=='string'||m.name.length>48||!m.name.trim()||typeof m.build!=='string'||m.build.length>32)return;
-   if(rooms.has(id)&&rooms.get(id).host!==ws)return send(ws,{type:'error',message:'Room already exists'});clearHost(ws);
+   if(rooms.has(id)&&rooms.get(id).host!==ws)return send(ws,{type:'error',message:'Room already exists'});
+   if(!rooms.has(id)&&rooms.size>=MAX_ROOMS&&!([...rooms.values()].some(room=>room.host===ws)))return send(ws,{type:'error',message:'Room capacity reached'});
+   clearHost(ws);
    const room={id,name:m.name.trim(),build:m.build,host:ws,ip:meta.ip,guest:null};rooms.set(id,room);
    broadcast(room,{type:'room-announce',roomId:id,name:room.name,build:room.build});send(ws,{type:'host-registered',roomId:id});return;
   }
@@ -57,6 +60,8 @@ wss.on('connection',(ws,req)=>{
   const room=rooms.get(id);if(!room||!sameSubnet(meta.ip,room.ip))return;
   if(m.type==='join'){
    if(ws===room.host||room.guest||typeof requestId!=='string'||! /^[a-zA-Z0-9_-]{8,64}$/.test(requestId)||pending.has(requestId)||m.build!==room.build)return send(ws,{type:'join-reject',requestId,reason:'room-full-or-version'});
+   if([...pending.values()].filter(p=>p.guest===ws).length>=MAX_PENDING_PER_GUEST)return send(ws,{type:'join-reject',roomId:id,requestId,reason:'request-already-pending'});
+   if([...pending.values()].filter(p=>p.roomId===id).length>=MAX_PENDING_PER_ROOM)return send(ws,{type:'join-reject',roomId:id,requestId,reason:'room-queue-full'});
    pending.set(requestId,{roomId:id,guest:ws,host:room.host,time:Date.now()});send(room.host,{type:'join-request',roomId:id,requestId});return;
   }
   if(m.type==='decision'){
