@@ -60,3 +60,8 @@ test('host registration must be acknowledged before UI claims a discoverable roo
  assert.match(lobby,/Registering room with discovery service/);
  assert.match(lobby,/Unable to register room/);
 });
+
+test('duplicate host room ID is rejected before clearing existing host',()=>{
+ const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
+ assert.match(server,/if\(rooms\.has\(id\)&&rooms\.get\(id\)\.host!==ws\)return send\(ws,\{type:'error',message:'Room already exists'\}\);clearHost\(ws\)/);
+});
