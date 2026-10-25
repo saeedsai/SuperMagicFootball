@@ -16,6 +16,10 @@ Approval now rejects other pending requests for same room and notifies host/gues
 ## Latest host registration increment
 Repeated same-socket same-room host registration now ACKs without clearing guest or pending requests (4750bd06); regression source contract 1e640243. Full QA and protected release unverified. Server-only; no version bump.
 
+
+## Latest guest seat fix
+Reject joining a second room when WebSocket is already approved in another; server c2f81102, source regression 28679512. Full CI/graphics/two-device QA and promotion unverified; server-only, no version bump.
+
 ## Next smallest action
 Check exact latest dev/main heads and workflow results; repair any full-suite failure. Next independent LAN improvement: reject/cancel other pending joins when a room guest is approved, or browser endpoint configuration with coordinated player-facing version. Then two-client WebRTC, Player Studio, counterable four-button tricks and Crown Royals directional art. Promote only exact green dev via protected pipeline and verify main/Pages hosted bytes.
 
