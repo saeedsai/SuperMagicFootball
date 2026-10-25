@@ -8,6 +8,8 @@ export function safeLanSend(ws, message) {
     if (!message || typeof message !== 'object' || Array.isArray(message) || typeof message.type !== 'string') return false;
     // Bound outbound signaling to the same frame budget enforced on inbound messages.
     if (Buffer.byteLength(payload, 'utf8') > 210000) return false;
+    // Recheck state after serialization, which may invoke custom toJSON code.
+    if (ws.readyState !== 1) return false;
     ws.send(payload, error => {
       if (error) { try { ws.terminate?.(); } catch { /* already closing */ } }
     });
