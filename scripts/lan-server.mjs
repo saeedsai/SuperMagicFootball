@@ -19,7 +19,7 @@ const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json
 const clients=new Map(),rooms=new Map(),pending=new Map();
 let nextId=0;
 const MAX=210000;
-const MAX_ROOMS=128,MAX_PENDING_PER_GUEST=1,MAX_PENDING_PER_ROOM=8;
+const MAX_ROOMS=128,MAX_PENDING_PER_GUEST=1,MAX_PENDING_PER_ROOM=1;
 const MAX_MESSAGES_PER_WINDOW=120,WINDOW_MS=60000,MAX_CONNECTIONS_PER_IP=8;
 function ipOf(request){return String(request.socket.remoteAddress||'').replace(/^::ffff:/,'')}
 function sameSubnet(a,b){return signalPolicy.visible(a,b)}
