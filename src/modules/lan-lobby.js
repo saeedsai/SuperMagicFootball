@@ -46,24 +46,6 @@ function mountLanLobby(root,options={}){
     <div class="row"><button type="button" class="btn minor" id="lanCopy">COPY OUTGOING TEXT</button></div>
     <p id="lanStatus" role="status" aria-live="polite">Choose host or guest to begin connection setup.</p>
   </section>`;
-  // Static GitHub Pages cannot discover LAN hosts. Offer an explicit handoff to
-  // the companion server rather than presenting manual SDP as the only route.
-  const isPublicPages=globalThis.location?.hostname==='saeedsai.github.io';
-  if(isPublicPages){
-    const gateway=document.createElement('section');
-    gateway.className='panel lanConnectionLab';
-    gateway.innerHTML='<h2>HOST OR JOIN A LAN GAME</h2><p>Automatic host rooms and guest discovery run on the LAN game server, not on GitHub Pages. On the host computer run <code>npm run serve:lan</code> (or <code>start-lan.cmd</code>). Enter its local IP address below, then open the game on both devices.</p><label for="lanServerIp">Host computer IP address (example: 192.168.1.20)</label><input id="lanServerIp" type="text" inputmode="decimal" autocomplete="off" placeholder="192.168.1.20" aria-label="LAN host IP address"/><div class="row"><button type="button" class="btn" id="lanOpenServer">OPEN LAN HOST / JOIN LOBBY</button></div><p id="lanGatewayStatus" role="status" aria-live="polite">The LAN server must be running and both devices must be on the same network.</p>';
-    root.prepend(gateway);
-    gateway.querySelector('#lanOpenServer').addEventListener('click',()=>{
-      const ip=gateway.querySelector('#lanServerIp').value.trim();
-      const parts=ip.split('.');
-      if(parts.length!==4||parts.some(part=>!/^\\d{1,3}$/.test(part)||Number(part)>255)||!((Number(parts[0])===10)||(Number(parts[0])===192&&Number(parts[1])===168)||(Number(parts[0])===172&&Number(parts[1])>=16&&Number(parts[1])<=31))){
-        gateway.querySelector('#lanGatewayStatus').textContent='Enter a valid private IPv4 address of the host computer.';
-        return;
-      }
-      globalThis.location.assign('http://'+parts.map(Number).join('.')+':8000/');
-    });
-  }
   const el=id=>root.querySelector('#'+id);
   const status=el('lanStatus'),incoming=el('lanIncoming'),outgoing=el('lanOutgoing');
   let peer=null,mode=null,controller=null,unsubscribe=null,disposed=false;
