@@ -1,0 +1,31 @@
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const { pathToFileURL } = require('node:url');
+const path = require('node:path');
+const load = () => import(pathToFileURL(path.resolve('src/modules/lan-room-directory.js')).href);
+const packet = (roomId, name = 'Room') => ({ version: 1, type: 'room-announce', roomId, name, players: 1 });
+test('rooms expire unless announced again', async () => {
+  const { createLanRoomDirectory } = await load();
+  let time = 0;
+  const rooms = createLanRoomDirectory({ ttlMs: 1000, now: () => time });
+  assert.equal(rooms.receive(packet('room_12345678')), true);
+  time = 999;
+  assert.equal(rooms.list().length, 1);
+  assert.equal(rooms.receive(packet('room_12345678', 'Updated')), true);
+  time = 1001;
+  assert.equal(rooms.list()[0].name, 'Updated');
+  time = 1999;
+  assert.equal(rooms.list().length, 0);
+});
+test('room removal, invalid messages and clear', async () => {
+  const { createLanRoomDirectory } = await load();
+  const rooms = createLanRoomDirectory();
+  assert.equal(rooms.receive(packet('room_12345678')), true);
+  assert.equal(rooms.receive({ version: 1, type: 'join-request', roomId: 'room_12345678', requestId: 'request_12345678' }), false);
+  assert.equal(rooms.receive({ version: 1, type: 'room-remove', roomId: 'room_12345678' }), true);
+  assert.equal(rooms.list().length, 0);
+  rooms.receive(packet('room_12345678'));
+  rooms.clear();
+  assert.equal(rooms.list().length, 0);
+  assert.throws(() => createLanRoomDirectory({ ttlMs: 0 }), RangeError);
+});
