@@ -56,6 +56,12 @@ export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30
       prune();
       return pending.has(requestId);
     },
+    cancel(requestId) {
+      ensureOpen();
+      prune();
+      if (sending.has(requestId)) return false;
+      return pending.delete(requestId);
+    },
     respond(requestId, accept) {
       ensureOpen();
       if (typeof accept !== 'boolean') throw new TypeError('accept must be boolean');
