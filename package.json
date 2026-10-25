@@ -7,6 +7,10 @@
     "build:qa": "python3 scripts/build.py",
     "test:node": "python3 scripts/build.py && node --test tests/*.test.cjs && node tests/club26_fc27_roster.mjs",
     "serve": "python3 -m http.server 8000",
-    "test:roster:fc27": "node tests/club26_fc27_roster.mjs"
+    "test:roster:fc27": "node tests/club26_fc27_roster.mjs",
+    "serve:lan": "node scripts/lan-server.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.18.3"
   }
 }
