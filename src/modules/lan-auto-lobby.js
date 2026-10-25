@@ -7,7 +7,7 @@ export function mountAutoLanLobby(root,options={}){
  const build=options.build??RELEASE.version,peerFactory=options.peerFactory??createLanPeerConnection;
  root.innerHTML='<section class="panel lanConnectionLab"><h2>LOCAL NETWORK</h2><p>Host and guest must open the same LAN game address shown by the host computer. Available matches appear automatically.</p><div class="row"><button class="btn" id="autoHost">HOST GAME</button><button class="btn" id="autoFind">FIND GAMES</button><button class="btn minor" id="autoReset">CANCEL</button></div><div id="autoRooms" aria-live="polite"></div><div id="autoApproval"></div><p id="autoStatus" role="status" aria-live="polite">Connecting to LAN discovery…</p></section>';
  const get=id=>root.querySelector('#'+id),rooms=new Map();
- let mode=null,roomId=null,session=null,peer=null,connection=null,unsub=null,controller=null,disposed=false,requestId=null,approved=false;
+ let mode=null,roomId=null,session=null,peer=null,connection=null,unsub=null,controller=null,disposed=false,requestId=null,approved=false,approvalRequestId=null;
  const status=message=>{if(!disposed)get('autoStatus').textContent=message};
  const send=packet=>connection?.send(packet);
  function cleanupPeer(){controller?.abort();controller=null;unsub?.();unsub=null;peer?.dispose();peer=null}
@@ -17,18 +17,20 @@ export function mountAutoLanLobby(root,options={}){
  }
  function watch(current){unsub=current.subscribeStatus(s=>{if(peer===current&&s.ready)ready(current)});controller=new AbortController();current.awaitReady(120000,controller.signal).then(()=>ready(current)).catch(e=>{if(peer===current&&!controller?.signal.aborted)status('Connection failed: '+e.message)})}
  function ready(current){if(disposed||peer!==current||!approved)return;controller?.abort();controller=null;unsub?.();unsub=null;peer=null;try{options.onReady?.(current,mode)}catch(e){current.dispose();status('Unable to start match: '+e.message)}}
- function reset(){if(mode==='host')send({type:'leave'});cleanupPeer();mode=null;roomId=null;session=null;approved=false;requestId=null;get('autoApproval').replaceChildren();render();status('Select Host Game or Find Games.')}
+ function reset(){if(mode==='host'||mode==='guest')send({type:'leave'});cleanupPeer();mode=null;roomId=null;session=null;approved=false;requestId=null;approvalRequestId=null;get('autoApproval').replaceChildren();render();status('Select Host Game or Find Games.')}
  function host(){reset();if(!connection?.ready)return status('LAN server unavailable. Start npm run serve:lan on the host.');mode='host';roomId='room_'+makeId();session=makeId();send({type:'host',roomId,name:'SuperMagicFootball Match',build});status('Hosting. Waiting for guest join request.')}
  function find(){reset();mode='guest';send({type:'rooms'});render();status('Searching for games on this LAN…')}
- function join(id){if(!connection?.ready)return status('LAN server disconnected');cleanupPeer();roomId=id;requestId='request_'+makeId();send({type:'join',roomId:id,requestId,build});status('Waiting for host approval…')}
+ function join(id){if(!connection?.ready)return status('LAN server disconnected');if(requestId)send({type:'leave'});cleanupPeer();approved=false;roomId=id;requestId='request_'+makeId();send({type:'join',roomId:id,requestId,build});status('Waiting for host approval…')}
  async function onEvent(m){if(disposed)return;
   if(m.type==='room-announce'&&typeof m.roomId==='string'){rooms.set(m.roomId,m);render();return}
   if(m.type==='room-remove'){rooms.delete(m.roomId);render();return}
   if(m.type==='join-request'&&mode==='host'&&m.roomId===roomId){
-   const container=get('autoApproval');container.replaceChildren();const label=document.createElement('p');label.textContent='A guest wants to join your match.';const yes=document.createElement('button');yes.className='btn';yes.textContent='ACCEPT GUEST';const no=document.createElement('button');no.className='btn minor';no.textContent='REJECT';yes.onclick=()=>{send({type:'decision',roomId,requestId:m.requestId,accept:true});container.replaceChildren();status('Guest approved. Establishing connection…')};no.onclick=()=>{send({type:'decision',roomId,requestId:m.requestId,accept:false});container.replaceChildren()};container.append(label,yes,no);return;
+   approvalRequestId=m.requestId;
+   const container=get('autoApproval');container.replaceChildren();const label=document.createElement('p');label.textContent='A guest wants to join your match.';const yes=document.createElement('button');yes.className='btn';yes.textContent='ACCEPT GUEST';const no=document.createElement('button');no.className='btn minor';no.textContent='REJECT';yes.onclick=()=>{if(approvalRequestId!==m.requestId)return;send({type:'decision',roomId,requestId:m.requestId,accept:true});approvalRequestId=null;container.replaceChildren();status('Guest approved. Establishing connection…')};no.onclick=()=>{if(approvalRequestId!==m.requestId)return;send({type:'decision',roomId,requestId:m.requestId,accept:false});approvalRequestId=null;container.replaceChildren()};container.append(label,yes,no);return;
   }
-  if(m.type==='guest-left'&&mode==='host'&&m.roomId===roomId){cleanupPeer();approved=false;get('autoApproval').replaceChildren();status('Guest disconnected. Hosting remains available for another guest.');return}
-  if(m.type==='join-reject'&&m.requestId===requestId){status('Join request rejected or expired. Select a game to retry.');return}
+  if(m.type==='join-cancel'&&mode==='host'&&m.roomId===roomId&&m.requestId===approvalRequestId){approvalRequestId=null;get('autoApproval').replaceChildren();status('Guest cancelled their join request.');return}
+  if(m.type==='guest-left'&&mode==='host'&&m.roomId===roomId){cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();status('Guest disconnected. Hosting remains available for another guest.');return}
+  if(m.type==='join-reject'&&m.requestId===requestId){requestId=null;approved=false;status('Join request rejected or expired. Select a game to retry.');return}
   if(m.type==='join-accept'&&mode==='guest'&&m.requestId===requestId){approved=true;status('Approved. Connecting to host…');return}
   if(m.type==='guest-approved'&&mode==='host'&&m.roomId===roomId){
    approved=true;try{const hello=normalizeLanPacket({protocol:1,type:'hello',role:'host',session,build,sequence:0});const current=peerFactory(hello);peer=current;const offer=await current.createOffer();if(peer===current){send({type:'offer',roomId,sdp:offer});watch(current)}}catch(e){cleanupPeer();status('Host connection failed: '+e.message)}return;
