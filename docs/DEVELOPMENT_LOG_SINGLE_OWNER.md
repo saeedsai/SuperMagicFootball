@@ -1,3 +1,18 @@
+## 2026-10-25 — Truthful mobile LAN discovery state
+- `cc16e0ab` tracks signaling state in auto lobby and prevents Host Game/Find Games from claiming progress when hosted signaling is unconfigured; `a796a58b` adds source regression. Server provisioning and actual mobile peer play still unavailable. Candidate 0.10.2.0 unchanged (same unreleased candidate). Full Node/Chromium/graphics QA and exact-head protected promotion not verified; do not claim deployment.
+
+## 2026-10-25 — Remove stale Pages LAN gateway and fail fast
+- `bffe3e5b` removed stale public Pages manual IP/CMD gateway from `lan-lobby.js`; this directly repaired `tests/lan_pages_gateway.test.cjs` expectation. `110174ec` reports `unconfigured` when public Pages has no secure hosted signaling URL instead of attempting nonexistent Pages WSS. `6bb6e4c0` tests this state. Seven focused source checks passed via GitHub fetched bytes; full Node/Chromium, gameplay, graphics, two-device and exact-head promotion not run/verified. Backend still unprovisioned, so Host/Find cannot yet connect.
+
+## 2026-10-25 — One-tap mobile Host/Find UI (0.10.2.0 candidate)
+- `46932463` routes all platforms including public Pages and phones to Host Game/Find Games UI, rather than manual SDP or private-IP gateway. `11bffb41` supports externally configured WSS `SMF_LAN_SIGNAL_URL`; `b6b23063` gives truthful discovery-service failure state. `b420d429` updates UI source regression; release metadata/package/README/SW aligned to 0.10.2.0. **No hosted signaling service deployed/configured**: room creation/discovery and actual two-device play remain blocked, as do full CI, graphics QA, main promotion and Pages byte smoke. Do not claim functional automatic multiplayer.
+
+## 2026-10-25 — Highest priority: visible LAN host/join gateway
+- Owner reported Host Game / Find Games missing in public UI. Root cause: `mountLanLobby` routes public GitHub Pages to manual SDP fallback; automatic discovery only runs on same-origin `npm run serve:lan` server. `f5cedfe8`/`41ada23d` add and correctly mount a private-IP gateway from Pages to LAN companion; `2a8973cd`/`f2c846cb` add source-contract tests. Candidate player-facing version 0.10.1.0 aligned in package, release, README and SW. Full CI, actual browser run, physical two-device and hosted deployment pending. No static-site automatic discovery claim.
+
+## 2026-10-25 — Host approval closed-guest guard
+- `6f68c72c` prevents host approval reserving a room seat when requesting guest WebSocket already closed; host receives `join-cancel` reason `guest-left`. `347b0302` adds source-contract regression. New head CI and real two-device LAN/graphics unverified. Previous `e667fe42` completed protected promotion to main with all 4 Node + 4 Chromium shards green (Full run #40238388569); hosted byte smoke separately pending verification.
+
 ## 2026-10-25 23:00 CET — LAN backpressure + CI root-cause repair (dev only)
 - Exact dev `ec8ecce1`: Modular #40236580431 and Full #40236580440 failed 1/801 Node tests because sole-developer checkpoint exceeded 4 KiB; Full 4+4 shards never started. Compacted own checkpoint under 4 KiB with all six required headings.
 - Added 512 KiB per-peer outbound signaling queue cap, using actual UTF-8 byte size, terminating stalled peers for existing room cleanup. Added 4 tests for overload, exact boundary, exception and normal signaling; isolated local Node v22.16.0 mirror 4/4 PASS, syntax PASS. Full exact-head CI, two-device LAN, gameplay/graphics and main/Pages still unverified. Server-only: About candidate stays 0.10.0.0.

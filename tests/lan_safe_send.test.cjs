@@ -114,3 +114,12 @@ test('socket mocks without bufferedAmount preserve successful signaling',async()
  const {safeLanSend}=await load();let sent=0;
  assert.equal(safeLanSend({readyState:1,send(){sent++}},{type:'rooms'}),true);assert.equal(sent,1);
 });
+
+test('host approval checks guest readiness before occupying a room seat',()=>{
+ const source=fs.readFileSync('scripts/lan-server.mjs','utf8');
+ const accept=source.indexOf('if(m.accept===true&&!room.guest)');
+ const guard=source.indexOf('if(req.guest.readyState!==1)',accept);
+ const assign=source.indexOf('room.guest=req.guest',accept);
+ assert.ok(accept>=0 && guard>accept && assign>guard,'disconnected guest must be rejected before seat assignment');
+ assert.match(source.slice(guard,assign),/join-cancel[^\n]*guest-left/);
+});
