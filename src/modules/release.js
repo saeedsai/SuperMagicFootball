@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.42.0',
+ version:'0.9.42.1',
  date:'2026-10-25',
  notes:Object.freeze([
+  'LAN Quick Match: guests can cancel a pending join, switch rooms or leave an approved room without restarting the server. The host receives cancellation/disconnect updates and can admit another guest; room identity is bound to the signaling socket. Full two-device and hosted QA remain pending.',
   'Automatic local-network Quick Match candidate: a locally running companion server advertises hosts, shows available games to guests, requests host approval and exchanges WebRTC signaling without copy/paste. Guest disconnects can be retried; the server serves only game assets. GitHub Pages retains manual signaling. Two-device gameplay and full release QA remain pending.',
   'LAN guests now ignore delayed or duplicate host snapshots, preventing older play, pause or finish packets from rewinding match phase, score or input cursor. Newer validated snapshots still apply normally; four buttons, saves and offline play are unchanged.',
   'LAN guests now stop transmitting four-button gameplay inputs while the host-authoritative match is paused or finished. A fresh host play snapshot resumes input at the current network frame without replaying frozen actions; offline play and saves are unchanged.',
