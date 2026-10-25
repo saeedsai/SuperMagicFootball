@@ -10,6 +10,10 @@ Develop hourly on existing `dev` regardless of release blockers. Never create br
 - New server-only feature: bound queued WebSocket signaling at 512 KiB (including UTF-8 frame), terminate stalled peers to invoke normal cleanup. Focused isolated Node v22.16.0 mirror tests 4/4 passed; full repository CI not yet observed.
 - Root cause of dev Modular #40236580431 and Full #40236580440 failure: own memory exceeded 4096 bytes (1 of 801 Node tests failed); full 4+4 did not start. This file is compacted with six mandatory headings.
 
+## Latest run — 2026-10-25 23:25 CET
+- `main=dev=e667fe42` verified; Full Regression #40238388569: preflight, four Node, four Chromium, preview and protected promotion all success. Hosted byte smoke not independently verified.
+- `6f68c72c` prevents closed guest taking approved LAN room seat; `347b0302` adds source regression. Exact new-head CI and physical LAN/graphics pending. Continue coding dev while release pipeline runs.
+
 ## Next smallest action
 1. Inspect fresh dev/main heads and exact-head CI failures; repair red steps.
 2. Obtain uninterrupted green Modular QA and 4 Node + 4 Chromium shards.
