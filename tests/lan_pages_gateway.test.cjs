@@ -14,6 +14,8 @@ test('secure hosted signaling endpoint is configurable and lobby shows connectio
  const auto=read('src/modules/lan-auto-lobby.js');
  assert.ok(signal.includes('SMF_LAN_SIGNAL_URL'));
  assert.ok(signal.includes('wss:'));
+ assert.ok(signal.includes("onState('unconfigured')"));
+ assert.ok(signal.includes("hostname==='saeedsai.github.io'"));
  assert.ok(auto.includes('id="autoHost"')&&auto.includes('id="autoFind"'));
  assert.ok(auto.includes('requires an online signaling service'));
 });
