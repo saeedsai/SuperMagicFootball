@@ -27,6 +27,7 @@ export function createLanRoomDirectory({ ttlMs = 15000, now = () => Date.now() }
       return Array.from(rooms.values(), ({ expiresAt, ...room }) => Object.freeze(room))
         .sort((a, b) => a.name.localeCompare(b.name) || a.roomId.localeCompare(b.roomId));
     },
+    count() { prune(); return rooms.size; },
     clear() { rooms.clear(); }
   });
 }
