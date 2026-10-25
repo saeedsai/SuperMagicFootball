@@ -5,7 +5,7 @@
 ## Mission
 Hourly development on existing dev despite pending CI and deployment; preserve exact-head release discipline.
 
-## Standing mandate
+## Mission
 Keep hourly development enabled. Develop one bounded roadmap increment on existing `dev` even if previous CI, main promotion, Render deploy or phone QA is pending. Never create another branch or force-push, bypass safety or protected CI. Only `dev` and `main` allowed. Preserve 223 teams/2676 players, six formations, exactly four controls, SD09, ten Career/Cup save slots, offline/save compatibility. Release version is four fields, visible only in Settings → About. Synchronize `package.json`, `src/modules/release.js`, README banner/heading/notes, `sw.js` cache and version policy for player-facing changes.
 
 ## Current checkpoint
@@ -29,3 +29,9 @@ Read `AGENTS.md`, `docs/VERSIONING_POLICY.md`, shared memory and only this agent
 
 ## Cleanup
 - Keep only dev/main branches, checkpoint under 4096 bytes, no force pushes.
+
+## Evidence
+- Exact-head CI and provider deployment logs are required release evidence; queued checks do not prove success.
+
+## Cleanup
+- Maintain only dev/main branches and bounded checkpoint; preserve Git evidence.
