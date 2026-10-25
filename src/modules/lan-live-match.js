@@ -135,6 +135,9 @@ function createLanLiveMatch({peer,role,game,input,field}){
       }
     }
     originalPoll.call(input,false);
+    // Only the host can resume or finish a LAN match. Never queue new guest
+    // actions while the latest authoritative snapshot says play is frozen.
+    if(game.matchState!=='play')return false;
     if(latestTick<0 || Date.now()-lastSnapshotAt>700)return false;
     // A few lead frames absorb LAN transport latency without accepting
     // unbounded future commands or replaying a previously sent frame.

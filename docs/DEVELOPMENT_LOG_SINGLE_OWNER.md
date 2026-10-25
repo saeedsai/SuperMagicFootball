@@ -1,3 +1,9 @@
+## 2026-10-25 07:06 CET — LAN-057 authoritative pause/finish input gate (0.9.41.8 candidate)
+- Baseline dev=main `6fc9978964c00691b266e90ed593837b1969b2f4` (certified 0.9.41.7): dev Modular #40164454293, dev Full 4+4 #40164454316, main Full #40164701384, Pages #40164701575; only dev/main branches.
+- Defect: guest `createLanLiveMatch.step` kept sending new four-button packets while the latest validated host snapshot marked the match paused or finished. Fix: poll local controls but do not transmit until host snapshot returns to play; resume at current authoritative frame rather than replaying frozen input.
+- Added LAN-057 regression for play→pause→finish→host-resume and monotonic sent frames. Source-executed V8 focused smoke passed before commit. Exact-head CI, protected main promotion, Pages hosted byte smoke and physical two-client LAN remain independent pending gates.
+- About/package/README/policy/shared memory/offline cache aligned to 0.9.41.8. No roster, formation, control-count, Career/Cup ten-slot, SD09, save or offline changes. Next: exact-head 4+4 and Modular QA, physical LAN latency/disconnect, reconnect recovery, Crown Royals art, Player Studio/Tricks.
+
 ## 2026-10-25 06:05 CET — LAN-056 guest RTC send-failure recovery (0.9.41.7 candidate)
 - Baseline dev=main `d0e411fcb1b4fa5143567cfe1601fab157522cf0`; 0.9.41.6 green dev Modular #40160705073, dev Full 4+4 #40160705065, main Full #40160958363, Pages #40160958027; only dev/main branches.
 - Root cause: a WebRTC channel may close between guest `peer.ready` and `sendGuestInput`. The exception escaped `createLanLiveMatch.step` and could interrupt the game loop. Catch transient send errors, return false, preserve `lastSent` and retry the unsent frame after recovery.

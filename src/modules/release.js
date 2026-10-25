@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.9.41.7',
+ version:'0.9.41.8',
  date:'2026-10-25',
  notes:Object.freeze([
+  'LAN guests now stop transmitting four-button gameplay inputs while the host-authoritative match is paused or finished. A fresh host play snapshot resumes input at the current network frame without replaying frozen actions; offline play and saves are unchanged.',
   'LAN guest input now survives a transient WebRTC send failure without crashing the match loop or skipping the unsent input frame. The guest retries the same frame when the channel is ready; four buttons, offline play and saves are unchanged.',
   'Fixed LAN analog steering end-to-end: partial gamepad-stick directions now survive the validated WebRTC input protocol and reach the host. Invalid network directions remain blocked; keyboard movement and all four action buttons are unchanged.',
   'LAN host now sends a paused or finished state to the guest even when the host UI changes phase between physics frames. Frozen matches never advance simulation, repeated pause frames are suppressed, and failed snapshot sends are retried.',

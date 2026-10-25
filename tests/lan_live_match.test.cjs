@@ -241,3 +241,32 @@ test('LAN-056 guest recovers from an RTC send failure without skipping its input
   assert.equal(sent.length,3);
   run.dispose();
 });
+
+
+test('LAN-057 guest suppresses controls during host pause and finish, then resumes on host play',async()=>{
+  const {createLanLiveMatch,captureLanGameState}=await load();
+  const input=controls(),guest=game(input),host=game(controls()),sent=[];
+  const peer={ready:true,
+    subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
+    sendGuestInput(frame,buttons,dx,dy){sent.push({frame,buttons,dx,dy});return {frame};}
+  };
+  const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field});
+  const receive=(tick,phase)=>{
+    host.matchState=phase;
+    peer.receive(captureLanGameState(host,field,tick));
+    assert.equal(guest.matchState,phase);
+  };
+  receive(20,'play');
+  assert.equal(run.step(.016),true);
+  assert.deepEqual(sent.map(p=>p.frame),[24]);
+  receive(21,'paused');
+  assert.equal(run.step(.016),false,'pause must not queue guest controls');
+  receive(22,'finished');
+  assert.equal(run.step(.016),false,'finish must not queue guest controls');
+  assert.deepEqual(sent.map(p=>p.frame),[24]);
+  receive(23,'play');
+  assert.equal(run.step(.016),true,'only a host play snapshot resumes input');
+  assert.deepEqual(sent.map(p=>p.frame),[24,27]);
+  assert.deepEqual(sent[1].buttons,['pass']);
+  run.dispose();
+});

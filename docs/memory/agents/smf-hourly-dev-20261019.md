@@ -1,28 +1,25 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019` · 2026-10-25 06:05 CET.
+**Agent ID:** `smf-hourly-dev-20261019` · 2026-10-25 07:06 CET.
 
 ## Mission
-One bounded tested feature each hour directly on existing dev; never stop for pending releases. Only dev/main, no force push or bypass.
+One bounded tested increment per hourly run directly on existing dev; pending CI/release never stops development. Only dev/main; no force push or security bypass.
 
 ## Current checkpoint
-Baseline dev=main `d0e411fcb1b4fa5143567cfe1601fab157522cf0` (0.9.41.6 certified: dev Modular #40160705073, dev Full 4+4 #40160705065, main Full #40160958363, Pages #40160958027). LAN-056 candidate 0.9.41.7: guest `sendGuestInput` can throw if RTC channel closes between ready-check and send, crashing match loop. Catch this transient send failure and do not advance `lastSent`; a later ready channel retries the exact unsent frame. Focused source-executed V8 test passed. New-head CI and protected Pages verification pending. Real physical two-client LAN still unverified.
-
-## Invariants
-223 teams/2676 players, six formations, exactly four buttons, 10 Career/Cup slots, SD09, offline/saves, About-only version, aligned package/README/cache. Own checkpoint only.
+Baseline dev=main `6fc9978964c00691b266e90ed593837b1969b2f4` certified 0.9.41.7 (dev Modular #40164454293, dev Full 4+4 #40164454316, main Full #40164701384, Pages #40164701575). LAN-057 candidate 0.9.41.8: guest no longer sends new input frames while authoritative host snapshot says paused or finished; a new host play snapshot resumes input at a fresh frame. Focused source-executed smoke passed; new-head CI and deployment are not yet certified. Physical two-device LAN still unverified.
 
 ## Next smallest action
-Inspect exact-head Modular QA and 4+4 runs; fix red checks safely while continuing next dev increment.
+Inspect exact-head Modular and 4+4 results; safely repair any failing check while proceeding with another bounded LAN reconnect or Player Studio increment on dev.
 
 ## Ownership and exclusions
-Sole developer smf-hourly-dev-20261019; only dev/main. No extra branches, force push, test bypass or premature promotion.
+Sole developer smf-hourly-dev-20261019. Only dev/main. Never read or edit another developer checkpoint; no extra branches, force push, test bypass or premature promotion.
 
 ## Evidence
-Baseline CI all green on exact `d0e411fcb1b4fa5143567cfe1601fab157522cf0`; focused source-executed LAN-056 simulated send failure, retry frame and proportional axes passed. New-head Node/Chromium CI and Pages are pending; do not claim deployed.
+Pre-commit V8 source-executed checks: play frame 24, pause/finish no packets, host-resumed frame 27, disposed no send. Added Node LAN-057 regression; CI not yet run on new head. Invariants: 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and saves.
 
 ## Cleanup
 Keep under 4 KiB. Next five:
-1. Inspect exact-head Modular and 4+4 CI, repair any failure.
-2. Verify genuine two-client LAN send/latency/disconnect behavior.
-3. Add bounded LAN reconnect state recovery and tests.
-4. Audit Crown Royals directional graphics and authored quarter art.
-5. Improve Player Studio/counterable Tricks; promote only exact fully green dev via protected pipeline.
+1. Verify exact-head 4 Node + 4 Chromium and Modular QA; repair red checks.
+2. Test genuine two-client LAN including latency, pause/resume and disconnect.
+3. Implement bounded reconnect and resync recovery with regressions.
+4. Correct Crown Royals directional graphics and bespoke quarter animations.
+5. Improve Player Studio and counterable Magic Tricks; promote only exact green dev through protected pipeline.
