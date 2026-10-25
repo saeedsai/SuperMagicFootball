@@ -26,9 +26,10 @@ function parseGuestLanOffer(raw,build=RELEASE.version){
 
 function mountLanLobby(root,options={}){
   if(!root||typeof root.querySelector!=='function')throw new TypeError('LAN lobby root required');
-  // Same-origin LAN server provides automatic discovery and consent. Public Pages
-  // cannot directly scan private networks; retain manual fallback there.
-  if(options.auto!==false && !options.peerFactory && globalThis.location?.protocol==='http:' && globalThis.location?.hostname && globalThis.location.hostname!=='saeedsai.github.io')return mountAutoLanLobby(root,options);
+  // Host and Find must be the first-class UI on every device, including Pages.
+  // Hosted discovery requires an actual secure signaling endpoint; a static site
+  // cannot create a LAN listener or discover private hosts by itself.
+  if(options.auto!==false && !options.peerFactory)return mountAutoLanLobby(root,options);
   const peerFactory=options.peerFactory??createLanPeerConnection;
   const build=options.build??RELEASE.version;
   const cryptoSource=options.cryptoSource??globalThis.crypto;
