@@ -1,3 +1,7 @@
+## 2026-10-25 — LAN discovery controller (unreleased)
+- Added transport-independent room hosting/heartbeat/removal and guest directory lifecycle on dev (1550b667, 8f964d5f), with focused Node tests. Does not supply signaling service, LAN authorization or UI; not player-facing, candidate version remains 0.9.41.9.
+- Exact-head full CI, Modular QA, protected promotion and hosted smoke not independently confirmed for this increment. Preserve dev/main-only and all gameplay/save constraints.
+
 ## 2026-10-25 10:12 CET — LAN-061 guest host-consent handshake (unreleased)
 - Baseline dev=main `e3ee6a03893d3cfbbc4b1bf474fa50cbcaccdc8d`, exactly dev/main. Baseline exact-head dev Modular #40179083388 and 4 Node + 4 Chromium #40179083396 PASS; main Full + hosted smoke #40179404352 and Pages #40179404635 PASS. These certify baseline only.
 - Added `src/modules/lan-guest-lobby.js` in commit `12234a8306d57152f053681a7c5d9034ce054659`: guest join request waits for explicit matching host accept/reject, rejects unsolicited/wrong-room/wrong-request/replayed replies, expires and supports cancellation. Signaling must authenticate host; request ID alone is not security.
