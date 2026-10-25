@@ -1,6 +1,7 @@
 // LAN-045: manual trusted-peer SDP setup with optional handoff to the live match.
 // SDP may contain local network addresses; users should share it only with a trusted peer.
 import {RELEASE} from './release.js';
+import {mountAutoLanLobby} from './lan-auto-lobby.js';
 import {normalizeLanPacket} from './lan_protocol.js';
 import {createLanPeerConnection} from './lan_peer_connection.js';
 
@@ -25,6 +26,9 @@ function parseGuestLanOffer(raw,build=RELEASE.version){
 
 function mountLanLobby(root,options={}){
   if(!root||typeof root.querySelector!=='function')throw new TypeError('LAN lobby root required');
+  // Same-origin LAN server provides automatic discovery and consent. Public Pages
+  // cannot directly scan private networks; retain manual fallback there.
+  if(options.auto!==false && globalThis.location?.hostname!=='saeedsai.github.io')return mountAutoLanLobby(root,options);
   const peerFactory=options.peerFactory??createLanPeerConnection;
   const build=options.build??RELEASE.version;
   const cryptoSource=options.cryptoSource??globalThis.crypto;
