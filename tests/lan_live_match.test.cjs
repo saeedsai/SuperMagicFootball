@@ -42,13 +42,14 @@ test('LAN-044 live state converts real engine coordinates and restores them',asy
 test('LAN-044 host simulates only through authoritative peer and remote 4-button input',async()=>{
   const {createLanLiveMatch}=await load();
   const input=controls(),match=game(input),oldPoll=input.poll;
-  let observed=null;
   const peer={ready:true,
-    subscribeHostInput(fn){observed=fn;return ()=>{observed=null;}},
-    stepHostMatchFrame(frame,simulate){const state=simulate();this.frames??=[];this.frames.push({frame,state});return {frame};}
+    inputs:new Map([[0,{buttons:['shoot','pass'],dx:-1,dy:1}]]),
+    stepHostMatchFrame(frame,simulate){
+      const state=simulate(this.inputs.get(frame)??{buttons:[],dx:0,dy:0});
+      this.frames??=[];this.frames.push({frame,state});return {frame};
+    }
   };
   const run=createLanLiveMatch({peer,role:'host',game:match,input,field});
-  observed({buttons:['shoot','pass'],dx:-1,dy:1});
   assert.equal(run.step(.02),true);
   assert.equal(peer.frames[0].frame,0);
   assert.equal(peer.frames[0].state.tick,0);
@@ -59,11 +60,17 @@ test('LAN-044 host simulates only through authoritative peer and remote 4-button
   assert.ok(Math.abs(Math.hypot(input.state[1].x,input.state[1].y)-1)<1e-12);
   assert.equal(match.players[1].x<700,true);
   assert.equal(run.step(.02),true);
-  assert.equal(input.pressed[1].shoot,false,'held action has one initial press');
-  assert.equal(run.latestTick,1);
+  assert.equal(input.pressed[1].shoot,false,'missing frame never replays old press');
+  assert.equal(input.state[1].shoot,0,'missing frame releases a held network action');
+  assert.equal(input.releases[1].shoot,true);
+  assert.deepEqual([input.state[1].x,input.state[1].y],[0,0]);
+  peer.inputs.set(2,{buttons:['dribble'],dx:1,dy:0});
+  assert.equal(run.step(.02),true);
+  assert.equal(input.state[1].dribble,1,'later input applies only at its own frame');
+  assert.equal(input.pressed[1].dribble,true);
+  assert.equal(run.latestTick,2);
   run.dispose();
   assert.equal(input.poll,oldPoll,'offline input polling is restored');
-  assert.equal(observed,null);
 });
 test('LAN-044 guest applies authorized snapshots and sends bounded four-button input',async()=>{
   const {createLanLiveMatch}=await load();

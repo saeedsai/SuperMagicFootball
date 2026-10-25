@@ -64,22 +64,17 @@ function createLanLiveMatch({peer,role,game,input,field}){
   }
   requireField(field);
   let disposed=false, tick=-1, latestTick=-1,lastSent=-1;
-  let lastSnapshotAt=-Infinity,lastRemoteAt=-Infinity;
+  let lastSnapshotAt=-Infinity;
+  // Apply only the guest input validated for the host's current frame.
   let remote={buttons:[],dx:0,dy:0};
   let previousButtons=new Set();
   const originalPoll=input.poll;
-  let stopInputs=()=>{},receiver=null;
+  let receiver=null;
   if(role==='host'){
-    stopInputs=peer.subscribeHostInput(packet=>{
-      if(disposed)return;
-      remote={buttons:packet.buttons,dx:packet.dx,dy:packet.dy};
-      lastRemoteAt=Date.now();
-    });
     input.poll=function(){
       originalPoll.call(input,false);
-      const fresh=Date.now()-lastRemoteAt<350&&peer.ready;
-      const buttons=new Set(fresh?remote.buttons:[]);
-      const rawX=fresh?remote.dx:0,rawY=fresh?remote.dy:0;
+      const buttons=new Set(peer.ready?remote.buttons:[]);
+      const rawX=peer.ready?remote.dx:0,rawY=peer.ready?remote.dy:0;
       // Match local Input.poll diagonal normalization: network guests should
       // never run 41% faster by holding two directions at once.
       const magnitude=Math.max(1,Math.hypot(rawX,rawY));
@@ -113,9 +108,16 @@ function createLanLiveMatch({peer,role,game,input,field}){
     if(role==='host'){
       tick++;
       try{
-        peer.stepHostMatchFrame(tick,()=>{
-          game.update(dt);
-          return captureLanGameState(game,field,tick);
+        peer.stepHostMatchFrame(tick,frameInput=>{
+          // Only a consumed, validated packet may affect this frame.
+          // Missing or late packets produce neutral controls, not stale holds.
+          remote=frameInput??{buttons:[],dx:0,dy:0};
+          try{
+            game.update(dt);
+            return captureLanGameState(game,field,tick);
+          }finally{
+            remote={buttons:[],dx:0,dy:0};
+          }
         });
         return true;
       }catch(error){
@@ -139,7 +141,6 @@ function createLanLiveMatch({peer,role,game,input,field}){
   function dispose(){
     if(disposed)return;
     disposed=true;
-    stopInputs();
     receiver?.dispose();
     if(role==='host')input.poll=originalPoll;
   }
