@@ -29,5 +29,8 @@ Local Node v22 isolated mirrors of address/WS/policy logic: **5/5 pass** (not fu
 ## Latest incremental fix
 - `5ed2b182` rejects non-string JSON serialization results before WebSocket send; `db3a67f3` adds regression. Five mirrored isolated assertions passed, not full CI. Protected main promotion remains gated on exact-head green 4+4 and Modular QA.
 
+## Latest incremental fix
+- `400a1a7f` bounds outbound WebSocket signaling frames to 210000 UTF-8 bytes; `fd2b2fa7` adds regression. CI and production verification pending; preserve 0.10.0.0 candidate and do not bypass protected promotion.
+
 ## Ownership
 Update central `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` and this checkpoint only. No other agents' memories. Never change player identifiers/save formats for LAN.
