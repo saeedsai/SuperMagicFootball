@@ -4,6 +4,7 @@
 import http from 'node:http';
 import {readFile,stat,realpath} from 'node:fs/promises';
 import {safeLanSend} from './lan-safe-send.mjs';
+import {rejectUnavailableJoin} from './lan-unavailable-join.mjs';
 import {isPublicLanPath} from './lan-static-policy.mjs';
 import {releaseLanGuest} from './lan-guest-release.mjs';
 import {expireLanPending} from './lan-pending-expiry.mjs';
@@ -68,7 +69,7 @@ wss.on('connection',(ws,req)=>{
   }
   if(m.type==='rooms'){for(const room of rooms.values())if(sameSubnet(meta.ip,room.ip))send(ws,{type:'room-announce',roomId:room.id,name:room.name,build:room.build});return}
   if(m.type==='leave'){clearHost(ws);releaseLanGuest(ws,rooms,pending,send);return}
-  const room=rooms.get(id);if(!room||!sameSubnet(meta.ip,room.ip))return;
+  const room=rooms.get(id);if(!room||!sameSubnet(meta.ip,room.ip)){rejectUnavailableJoin(ws,m,send);return;}
   if(m.type==='join'){
    if(ws===room.host||room.guest||[...rooms.values()].some(active=>active.guest===ws||active.host===ws)||typeof requestId!=='string'||! /^[a-zA-Z0-9_-]{8,64}$/.test(requestId)||pending.has(requestId)||m.build!==room.build)return send(ws,{type:'join-reject',requestId,reason:'room-full-or-version'});
    if([...pending.values()].filter(p=>p.guest===ws).length>=MAX_PENDING_PER_GUEST)return send(ws,{type:'join-reject',roomId:id,requestId,reason:'request-already-pending'});
