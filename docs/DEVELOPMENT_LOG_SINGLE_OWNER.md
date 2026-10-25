@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN directory clock validation
+- Source 4065548, test c76613c on dev: reject nonfunction now callback at construction, rather than failing during room operations. No version bump. Tests committed but not executed; full CI/gameplay/graphics and main/Pages certification pending. At pre-change comparison dev 17 commits ahead of main.
+
 ## 2026-10-25 — LAN active room count
 - Source 26658a8, regression 8dca122; directory.count() prunes expired listings. Initial test update blocked by tool safety; separate focused test committed. Tests not executed, full CI/graphics/gameplay and main/Pages not verified. Internal module; no version bump.
 
