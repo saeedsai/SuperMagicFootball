@@ -15,6 +15,9 @@ Server-only host departure notification committed as 136a95d3; regression source
 ## Latest LAN increment
 Room registration confirmation commits c3c424f4 (server) and 9ecf1c4b (UI); test 1da83c4d. UI no longer claims successful hosting until server ACK; registration errors surfaced. Full CI and hosted service not verified. Player-facing change requires coordinated version/README/cache before promotion.
 
+## Hosted signaling increment (2026-10-25)
+Commits d83bcf70 (policy), a166b3fa (server wiring), d07be37c (4 tests), 62327062 (log). LAN remains default; opt-in hosted mode accepts only configured exact HTTPS Origin and exposes rooms across IPs. Three isolated Node behavioral tests passed; source wiring verified. This is server-side groundwork ONLY: no hosted service, public signaling endpoint, TURN, abuse protection, two-device verification, full 4+4 CI, graphics certification or protected promotion. Concurrent dev changes seen; re-fetch before edits. Next: bounded room/rate controls, browser auto endpoint, full CI and real hosted deployment. No version bump for this server-only increment.
+
 ## Next smallest action
 Check latest exact dev SHA and Modular/Full 4 Node+4 Chromium CI, repair regressions without stopping further increments. Verify protected main promotion and Pages hosted hashes separately. Next feature: two-client LAN reconnect/approval and Player Studio/tricks/graphics.
 
