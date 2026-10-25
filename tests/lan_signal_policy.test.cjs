@@ -9,6 +9,9 @@ test('LAN mode remains private-address and same-subnet scoped',async()=>{
  assert.equal(p.allows('192.168.1.2','https://evil.example','192.168.1.2:8000'),false);
  assert.equal(p.visible('192.168.1.2','192.168.1.3'),true);
  assert.equal(p.visible('192.168.1.2','192.168.2.3'),false);
+ assert.equal(p.visible('127.0.0.1','192.168.1.3'),true,'host browsing localhost must be visible to private LAN guests');
+ assert.equal(p.visible('192.168.1.3','::1'),true,'IPv6 localhost host must be visible too');
+ assert.equal(p.visible('127.0.0.1','8.8.8.8'),false,'never expose loopback-hosted rooms to public source addresses');
 });
 test('hosted mode requires exact configured HTTPS browser origin',async()=>{
  const {createLanSignalPolicy}=await load(),p=createLanSignalPolicy({mode:'hosted',publicOrigin:'https://saeedsai.github.io'});
