@@ -1,4 +1,6 @@
-> **0.10.0.0 release candidate (25 October 2026):** LAN host now receives reachable private-network game URLs rather than incorrectly sharing localhost; both computers open that same address. Host Game and Find Games work from one click even before signaling is connected, local discovery reconnects after interruption, and host/guest readiness handling avoids duplicate start races. Added a real two-Chromium-tab automatic discovery, host consent, WebRTC game and graphic smoke; a green CI run and testing on two physical devices are still required before LAN is certified. Existing teams, four buttons, ten Career/Cup saves, offline play and save compatibility remain unchanged. The [production game](https://saeedsai.github.io/SuperMagicFootball/) may still be an earlier certified release.
+> **0.10.1.0 release candidate (25 October 2026):** LAN Quick Match on GitHub Pages now shows an explicit gateway for entering the host computer's private IPv4 address and opening its LAN companion server, where the playable Host Game / Find Games lobby is available. Run `npm run serve:lan` or `start-lan.cmd` on the host, then use the same `http://HOST-IP:8000/` address on both devices. Static Pages cannot auto-discover private LAN rooms directly. This is a candidate pending full QA, real-device verification and protected promotion. All rosters, four controls, ten save slots and offline saves remain compatible. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
+
+> **0.10.0.0 previous release candidate (25 October 2026):** LAN host now receives reachable private-network game URLs rather than incorrectly sharing localhost; both computers open that same address. Host Game and Find Games work from one click even before signaling is connected, local discovery reconnects after interruption, and host/guest readiness handling avoids duplicate start races. Added a real two-Chromium-tab automatic discovery, host consent, WebRTC game and graphic smoke; a green CI run and testing on two physical devices are still required before LAN is certified. Existing teams, four buttons, ten Career/Cup saves, offline play and save compatibility remain unchanged. The [production game](https://saeedsai.github.io/SuperMagicFootball/) may still be an earlier certified release.
 
 > **0.9.42.1 release candidate (25 October 2026):** LAN Quick Match now lets guests cancel pending join requests, switch rooms or leave an approved match without restarting the companion server. Host admission UI clears cancelled requests and frees approved guest seats for a new join. Added socket-identity-bound cleanup and focused Node regression; physical two-device gameplay, graphics QA, full exact-head CI, protected main promotion and hosted Pages byte smoke remain pending. Preserves 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and saved-game compatibility. [Live production game](https://saeedsai.github.io/SuperMagicFootball/) remains independently certified.
 
@@ -42,7 +44,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.10.0.0 · Modular source project
+# Supermagic Football · v0.10.1.0 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 
@@ -170,7 +172,7 @@ A dedicated [Audio & Music Expansion Plan](docs/AUDIO_MUSIC_EXPANSION_PLAN.md) c
 The current development branch now contains a **bounded JSON wire codec** (`src/modules/lan-wire.js`) and focused tests (`tests/lan-wire.test.cjs`). It serializes and validates host-compatible hello, leave and four-button input packets, rejects oversized/malformed packets and preserves the input sequence number. The checkpoint memory-contract failure was repaired without weakening CI. This is a transport foundation only: **cross-device LAN, WebRTC signaling and a synchronized match are not playable yet**. The player-facing version remains **0.9.20.0** until a verified game release; the live Pages game may differ from dev.
 
 
-## Playable LAN setup (0.10.0.0 development candidate)
+## Playable LAN setup (0.10.1.0 development candidate)
 
 LAN auto-discovery uses the bundled **local companion server**. GitHub Pages is a static host and cannot discover LAN games on its own.
 
