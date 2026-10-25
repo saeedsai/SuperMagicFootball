@@ -38,5 +38,8 @@ Local Node v22 isolated mirrors of address/WS/policy logic: **5/5 pass** (not fu
 ## Latest incremental fix
 - `dd449d17` closes LAN serialization/send readiness race; `771289e0` adds test. Not yet certified on exact head; do not promote without full CI and hosted smoke.
 
+## Latest incremental fix
+- `dddb4b80` rejects malformed post-toJSON signaling envelopes; `f1357219` adds regression. Exact-head CI, real LAN, graphics and Pages release remain unverified.
+
 ## Ownership
 Update central `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` and this checkpoint only. No other agents' memories. Never change player identifiers/save formats for LAN.
