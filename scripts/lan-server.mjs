@@ -43,7 +43,8 @@ const server=http.createServer(async(req,res)=>{
 });
 const wss=new WebSocketServer({server,path:'/lan-signal',maxPayload:MAX,verifyClient:({req})=>{const ip=ipOf(req);const origin=req.headers.origin;return signalPolicy.allows(ip,origin,req.headers.host)&&[...clients.values()].filter(meta=>meta.ip===ip).length<MAX_CONNECTIONS_PER_IP}});
 wss.on('connection',(ws,req)=>{
- const meta={id:'peer_'+(++nextId),ip:ipOf(req),windowStart:Date.now(),messageCount:0};clients.set(ws,meta);
+ const meta={id:'peer_'+(++nextId),ip:ipOf(req),windowStart:Date.now(),messageCount:0,alive:true};clients.set(ws,meta);
+ ws.on('pong',()=>{meta.alive=true});
  ws.on('error',()=>{try{ws.terminate()}catch{ /* already closing */ }});
  send(ws,{type:'welcome',peerId:meta.id});
  send(ws,{type:'lan-addresses',urls:getLanGameUrls({interfaces:networkInterfaces(),port,bind:host})});
@@ -88,6 +89,9 @@ wss.on('connection',(ws,req)=>{
  ws.on('close',()=>{clients.delete(ws);clearHost(ws);releaseLanGuest(ws,rooms,pending,send)});
 });
 setInterval(()=>expireLanPending(pending,send),5000).unref();
+// Remove half-open hosts/guests that lost their network without a WebSocket close frame.
+setInterval(()=>{for(const [ws,meta] of clients){if(!meta.alive){ws.terminate();continue}meta.alive=false;try{ws.ping()}catch{ws.terminate()}}},20000).unref();
+
 server.listen(port,host,()=>{
  console.log('SuperMagicFootball LAN server listening on '+host+':'+port);
  for(const url of getLanGameUrls({interfaces:networkInterfaces(),port,bind:host}))console.log('LAN game URL: '+url);
