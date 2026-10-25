@@ -1,3 +1,6 @@
+## 2026-10-25 — LAN stale room withdrawal fix
+- Fixed discovery controller to withdraw the previous room before switching hosts and withdraw the active room on close; regression added for both. dev commits cf6bd403 and 2717fd95. Not connected to real signaling/UI, no player-facing version bump. Tests written, execution/full CI not verified; do not promote without exact-head green checks.
+
 ## 2026-10-25 — LAN discovery controller (unreleased)
 - Added transport-independent room hosting/heartbeat/removal and guest directory lifecycle on dev (1550b667, 8f964d5f), with focused Node tests. Does not supply signaling service, LAN authorization or UI; not player-facing, candidate version remains 0.9.41.9.
 - Exact-head full CI, Modular QA, protected promotion and hosted smoke not independently confirmed for this increment. Preserve dev/main-only and all gameplay/save constraints.
