@@ -6,8 +6,10 @@ export function lanClientIp(request,{hosted=false}={}){
  if(!hosted)return socketIp;
  const forwarded=request?.headers?.['x-forwarded-for'];
  if(typeof forwarded!=='string'||forwarded.length>512)return '';
- const first=forwarded.split(',')[0].trim().replace(/^::ffff:/,'');
- return isIP(first)?first:'';
+ // Render's trusted ingress appends the actual connecting client to any incoming
+ // X-Forwarded-For chain. The first element can be client-supplied/spoofed.
+ const edgeClient=forwarded.split(',').at(-1).trim().replace(/^::ffff:/,'');
+ return isIP(edgeClient)?edgeClient:'';
 }
 function ipv6Prefix64(ip){
  if(isIP(ip)!==6||ip.includes('.'))return null;
