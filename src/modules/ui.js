@@ -222,7 +222,7 @@ function showLanLobby(){
 }
 function showQuickMenu(){menuChoices('nav-quick','QUICK MATCH','Play on one device, practice, or explore planned local multiplayer.',[
  navItem('On Device','navOnDevice','Single-player, two-player, penalties and training.','active','🎮'),
- navItem('Local Network · LAN Quick Match','navLan','Play together on trusted local devices using manual connection codes.','active','📡')],'home');}
+ navItem('Local Network · LAN Quick Match','navLan','Host a game or automatically find a friend on the same LAN game address.','active','📡')],'home');}
 function showOnDevice(){menuChoices('nav-device','ON DEVICE','Use the existing playable match setups.',[
  navItem('Single Player vs CPU','quick','Existing team, kit and match setup.','active','⚽'),
  navItem('Two Players · Same Device','versus','Play a local head-to-head match.','active','🎮'),
