@@ -72,6 +72,7 @@ wss.on('connection',(ws,req)=>{
   }
   if(m.type==='decision'){
    const req=pending.get(requestId);if(!req||req.host!==ws||req.roomId!==id)return;
+   if(Date.now()-req.time>30000){pending.delete(requestId);send(req.guest,{type:'join-reject',roomId:id,requestId,reason:'timeout'});send(ws,{type:'join-cancel',roomId:id,requestId,reason:'timeout'});return}
    pending.delete(requestId);
    if(m.accept===true&&!room.guest){room.guest=req.guest;for(const [otherId,other] of pending)if(other.roomId===id){pending.delete(otherId);send(other.guest,{type:'join-reject',roomId:id,requestId:otherId,reason:'room-full'});send(ws,{type:'join-cancel',roomId:id,requestId:otherId})}send(req.guest,{type:'join-accept',roomId:id,requestId});send(ws,{type:'guest-approved',roomId:id,requestId});}
    else send(req.guest,{type:'join-reject',roomId:id,requestId});
