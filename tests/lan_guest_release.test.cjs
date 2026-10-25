@@ -51,3 +51,12 @@ test('host departure notifies an already approved guest before room removal',()=
  assert.match(server,/if\(room\.guest\)send\(room\.guest,\{type:'host-left',roomId:id\}\)/);
  assert.match(server,/send\(req\.guest,\{type:'join-reject',roomId:id,requestId:reqId,reason:'host-left'\}\)/);
 });
+
+test('host registration must be acknowledged before UI claims a discoverable room',()=>{
+ const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
+ const lobby=fs.readFileSync('src/modules/lan-auto-lobby.js','utf8');
+ assert.match(server,/send\(ws,\{type:'host-registered',roomId:id\}\)/);
+ assert.match(lobby,/m\.type==='host-registered'&&mode==='host'&&m\.roomId===roomId/);
+ assert.match(lobby,/Registering room with discovery service/);
+ assert.match(lobby,/Unable to register room/);
+});
