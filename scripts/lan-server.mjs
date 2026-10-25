@@ -5,6 +5,7 @@ import http from 'node:http';
 import {readFile,stat,realpath} from 'node:fs/promises';
 import {isPublicLanPath} from './lan-static-policy.mjs';
 import {releaseLanGuest} from './lan-guest-release.mjs';
+import {createLanSignalPolicy} from './lan-signal-policy.mjs';
 import {resolve,extname,sep} from 'node:path';
 import {networkInterfaces} from 'node:os';
 import {WebSocketServer} from 'ws';
@@ -12,13 +13,13 @@ const root=resolve(process.cwd());
 const realRoot=await realpath(root);
 const port=Number(process.env.LAN_PORT||8000);
 const host=process.env.LAN_BIND||'0.0.0.0';
+const signalPolicy=createLanSignalPolicy({mode:process.env.SMF_SIGNAL_MODE||'lan',publicOrigin:process.env.SMF_PUBLIC_ORIGIN});
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml','.webp':'image/webp','.woff2':'font/woff2','.mp3':'audio/mpeg','.wav':'audio/wav'};
 const clients=new Map(),rooms=new Map(),pending=new Map();
 let nextId=0;
 const MAX=210000;
 function ipOf(request){return String(request.socket.remoteAddress||'').replace(/^::ffff:/,'')}
-function lanIp(ip){if(ip==='::1'||ip==='127.0.0.1')return true;if(!/^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(ip))return false;return true}
-function sameSubnet(a,b){if(a===b)return true;if(a==='127.0.0.1'||b==='127.0.0.1'||a==='::1'||b==='::1')return false;return a.split('.').slice(0,3).join('.')===b.split('.').slice(0,3).join('.')}
+function sameSubnet(a,b){return signalPolicy.visible(a,b)}
 const send=(ws,msg)=>{if(ws?.readyState===1)ws.send(JSON.stringify(msg))};
 function broadcast(room,msg){for(const [ws,meta] of clients)if(sameSubnet(meta.ip,room.ip))send(ws,msg)}
 function clearHost(ws){for(const [id,room] of rooms)if(room.host===ws){rooms.delete(id);if(room.guest)send(room.guest,{type:'host-left',roomId:id});broadcast(room,{type:'room-remove',roomId:id});for(const [reqId,req] of pending)if(req.roomId===id){send(req.guest,{type:'join-reject',roomId:id,requestId:reqId,reason:'host-left'});pending.delete(reqId)}}}
@@ -35,7 +36,7 @@ const server=http.createServer(async(req,res)=>{
   const bytes=await readFile(actualFile);res.writeHead(200,{'Content-Type':mime[extname(file)]||'application/octet-stream','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(bytes);
  }catch{res.writeHead(404);res.end('Not found')}
 });
-const wss=new WebSocketServer({server,path:'/lan-signal',maxPayload:MAX,verifyClient:({req})=>{const ip=ipOf(req);const origin=req.headers.origin;return lanIp(ip)&&(!origin||(()=>{try{const u=new URL(origin);return u.host===req.headers.host}catch{return false}})())}});
+const wss=new WebSocketServer({server,path:'/lan-signal',maxPayload:MAX,verifyClient:({req})=>{const ip=ipOf(req);const origin=req.headers.origin;return signalPolicy.allows(ip,origin,req.headers.host)}});
 wss.on('connection',(ws,req)=>{
  const meta={id:'peer_'+(++nextId),ip:ipOf(req)};clients.set(ws,meta);
  send(ws,{type:'welcome',peerId:meta.id});
