@@ -66,6 +66,8 @@ function applyLanGameState(game,field,state){
       p.diveDy=Number.isFinite(v.diveY)?v.diveY:0;
     }else{
       if(Math.abs(dx)>0.15)p.face=dx>0?1:-1;
+      // Legacy position-only packets must clear special effects from earlier poses.
+      p.z=0;p.actionTimer=0;p.stun=0;p.slideTimer=0;p.diveElapsed=0;p.diveDy=0;
       p.action=Math.hypot(dx,dy)>0.2?'run':'idle';
       p.anim=(p.anim||0)+1/60;
     }
