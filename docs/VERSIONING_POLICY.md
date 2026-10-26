@@ -1,6 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.10.7.7
+# SuperMagicFootball release/version policy — About-only 0.10.7.8
 
-**Effective 21 October 2026; updated 26 October 2026 for candidate 0.10.7.7.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 26 October 2026 for candidate 0.10.7.8.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
 ## One authoritative player-facing release
 
@@ -50,4 +50,4 @@ Saved data retains `legend_` storage keys, Career save vault, JSON sections and 
 
 **Current dev 0.10.7.2 candidate (26 October 2026):** LAN-059 adds validated optional host player poses and transformed Super Shot visuals. Legacy position-only snapshots remain supported. Exact-head CI, protected promotion, hosted byte smoke and physical two-phone visual acceptance are separate gates.
 
-**0.10.7.7 dev candidate (26 October 2026):** LAN host retries the same room registration at a broker-safe ten-second interval while waiting for acknowledgment. It cancels retries on broker success, rejection, disconnect or Cancel. Duplicate same-socket registrations are idempotent on the signaling broker. Exact-head QA, Pages smoke, broker reliability and physical two-phone LAN validation remain independent release gates.
+**0.10.7.8 dev candidate (26 October 2026):** LAN host retries the same room registration at a broker-safe ten-second interval while waiting for acknowledgment. It cancels retries on broker success, rejection, disconnect or Cancel. Duplicate same-socket registrations are idempotent on the signaling broker. Exact-head QA, Pages smoke, broker reliability and physical two-phone LAN validation remain independent release gates.
