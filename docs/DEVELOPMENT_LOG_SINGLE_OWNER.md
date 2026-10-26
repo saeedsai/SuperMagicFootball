@@ -1,3 +1,8 @@
+## 2026-10-26 — Quick Match private Online P2P (0.11.0.0 candidate)
+- Added separate Quick Match Online P2P mode, manual trusted-party offer/answer signaling, public STUN and reuse of the existing host-authoritative LAN gameplay bridge. Top-level backend Online menu unchanged; no automatic internet matchmaking or game server.
+- Some network pairs cannot connect without TURN relay. No physical two-network certification. Full exact-head Node 4 / Chromium 4 / Modular QA, protected promotion and Pages byte comparison pending; not yet a certified release.
+- Intended invariants: four controls, 223 teams/2676 players, six formations, Career/Cup ten slots, SD09, offline and saves unchanged.
+
 ## 2026-10-26 17:05 CET — LAN-071 RTC readiness event guest cursor reset (0.10.7.14 candidate)
 - Baseline dev 2f0e52c3b5321f53352cf6ee9b7b541274418152, main f69e79b230af2e4a35b535a40887b76d1f23a248. LAN-070 reset guest cursors only when a disconnected animation step ran. Fast RTC drop/recovery between steps could reuse stale latestTick and lastSent, skipping a restarted host timeline.
 - Subscribe to existing peer readiness notifications on guest; reset tick, sent frame and snapshot freshness immediately when ready=false, retain disconnected-step fallback, unsubscribe on dispose. Added Node regression for disconnect/reconnect entirely between game steps, fresh tick-zero snapshot and cleanup. Focused source-executed V8 red-before/green-after passed; full Node/Chromium/Modular CI, main/Pages bytes and physical two-phone LAN remain unverified.
