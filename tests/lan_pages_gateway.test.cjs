@@ -5,7 +5,7 @@ const fs=require('node:fs');
 const read=p=>fs.readFileSync(p,'utf8');
 test('all platforms default to one-tap automatic Host Game and Find Games',()=>{
  const lobby=read('src/modules/lan-lobby.js');
- assert.ok(lobby.includes('return mountAutoLanLobby(root,options)'));
+ assert.ok(lobby.includes('let stop=mountAutoLanLobby(root,options)'));
  assert.ok(!lobby.includes("hostname==='saeedsai.github.io'"));
  assert.ok(!lobby.includes('lanServerIp'));
 });
@@ -17,7 +17,7 @@ test('secure hosted signaling endpoint is configurable and lobby shows connectio
  assert.ok(signal.includes("onState('unconfigured')"));
  assert.ok(signal.includes("hostname==='saeedsai.github.io'"));
  assert.ok(auto.includes('id="autoHost"')&&auto.includes('id="autoFind"'));
- assert.ok(auto.includes('requires an online signaling service'));
+ assert.ok(auto.includes('requires a signaling directory'));
 });
 
 test('host and find do not promise rooms when signaling is unconfigured',()=>{
