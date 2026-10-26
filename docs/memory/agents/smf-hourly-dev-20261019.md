@@ -7,7 +7,7 @@ Deliver one bounded tested increment per run on existing dev; no extra branches,
 
 ## Current checkpoint
 - Baseline dev/main `4799b42c1312918dd22c2723439ed6442b613b62` (0.10.7.2): dev Modular #40298696780 and Full 4+4 #40298696824 green; main Full #40300247968 and Pages #40300247835 green.
-- LAN-060 0.10.7.3 candidate: guest now renders authoritative Banana/Ice trap positions, arming/life countdown and removal. Optional <=24 bounded validated traps in snapshots; old packets remain compatible. New exact-head CI pending.
+- LAN-060 0.10.7.3 candidate: host-authoritative Banana/Ice trap render and expiry, bounded optional snapshot hazards. First CI failed LAN-050 because peer transport rejected the new state; repaired peer allowlist/forwarding and added RTC integration regression. New exact-head CI pending.
 - Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline/saves.
 
 ## Next smallest action

@@ -363,16 +363,19 @@ function createLanPeerConnection(localHello, options = {}) {
   // identity rather than requiring gameplay code to construct wire packets.
   // This does not simulate the match or render guest snapshots.
   function sendHostMatchState(state) {
+    // LAN-060: optional hazards travel alongside existing optional metadata.
+    // Reject unknown top-level fields; the snapshot codec validates every trap.
+    const allowed=['tick','clockMs','scores','ball','players','meta','hazards'];
     if (!state || Object.getPrototypeOf(state) !== Object.prototype ||
-        ![5,6].includes(Object.keys(state).length) ||
         !['tick','clockMs','scores','ball','players'].every(key => Object.hasOwn(state,key)) ||
-        (Object.keys(state).length === 6 && !Object.hasOwn(state,'meta'))) {
+        Object.keys(state).some(key=>!allowed.includes(key))) {
       throw new TypeError('Invalid LAN host match state');
     }
     return sendHostSnapshot({type:'snapshot',version:LAN_PROTOCOL_VERSION,
       ...snapshotIdentity,tick:state.tick,clockMs:state.clockMs,
       scores:state.scores,ball:state.ball,players:state.players,
-      ...(Object.hasOwn(state,'meta')?{meta:state.meta}:{})});
+      ...(Object.hasOwn(state,'meta')?{meta:state.meta}:{}),
+      ...(Object.hasOwn(state,'hazards')?{hazards:state.hazards}:{})});
   }
   // LAN-043: authoritative host loop adapter. Consume one validated guest input,
   // advance the caller-owned simulation exactly once, then publish its state.

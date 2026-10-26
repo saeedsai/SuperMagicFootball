@@ -1,3 +1,7 @@
+## 2026-10-26 11:08 CET — LAN-060 CI integration repair (0.10.7.3 candidate)
+- First exact-head Modular #40303858721 and Full #40303858526 failed LAN-050: `sendHostMatchState` rejected new six/seven-key host state with optional `hazards` before the validated snapshot codec could run. Root cause confirmed in GitHub job logs (831/832 Node tests passed).
+- Updated peer transport allowlist and forwarding for optional `hazards`; added full fake-RTC host/guest trap delivery and removal regression. This repairs the same unshipped candidate; no second player-facing deployment or version bump. Exact-head rerun required.
+
 ## 2026-10-26 11:00 CET — LAN-060 guest Magic Trick trap graphics (0.10.7.3 candidate)
 - Baseline dev/main `4799b42c1312918dd22c2723439ed6442b613b62` certified by dev Modular #40298696780, dev Full 4+4 #40298696824, main Full #40300247968 and Pages #40300247835.
 - Fix: host snapshots optionally carry <=24 validated Banana/Ice hazards; guest renders matching positions, team, arming/life countdown, and removes cleared/expired traps. Old snapshots remain valid. Focused regression tests added for codec validation and guest render state. New exact-head CI and physical two-phone QA pending.

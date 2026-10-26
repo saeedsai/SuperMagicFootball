@@ -57,6 +57,8 @@ test('LAN-050 complete protocol DataChannel host/guest simulation and remote ren
   host.peer.channel.open();guestChannel.open();
   assert.equal(host.ready,true);assert.equal(guest.ready,true);
   const hi=input(),gi=input(),hg=game(hi),gg=game(gi);
+  hg.magicHazards=[{kind:'banana',team:0,x:360,y:250,life:2.8,arm:.2}];
+  gg.magicHazards=[];
   const field={x:100,y:50,w:800,h:400};
   const h=createLanLiveMatch({peer:host,role:'host',game:hg,input:hi,field});
   const g=createLanLiveMatch({peer:guest,role:'guest',game:gg,input:gi,field});
@@ -70,6 +72,11 @@ test('LAN-050 complete protocol DataChannel host/guest simulation and remote ren
   assert.equal(gg.players[1].x,hg.players[1].x,'guest renders host-owned coordinates');
   assert.ok(Math.abs(gg.clock-hg.clock)<=.0005,'guest clock follows host within wire millisecond precision');
   assert.equal(gg.half,1);
+  assert.deepEqual(gg.magicHazards,hg.magicHazards,
+    'host Magic Trick trap reaches guest through the actual RTC snapshot bridge');
+  hg.magicHazards=[];
+  assert.equal(h.step(.016),true);
+  assert.deepEqual(gg.magicHazards,[],'host trap removal reaches guest immediately');
   assert.ok(host.peer.channel.sent.length>=12);
   assert.ok(guestChannel.sent.length>=10);
   h.dispose();g.dispose();host.dispose();guest.dispose();
