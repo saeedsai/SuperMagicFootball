@@ -48,3 +48,18 @@ test('LAN snapshot rejects extra fields, duplicate slots, nonfinite coordinates 
   assert.throws(()=>decodeLanSnapshot(new Uint8Array([123,125])),TypeError);
   assert.throws(()=>acceptLanSnapshot(-2,base,'room001','host001'),TypeError);
 });
+
+test('LAN-059 validates immutable visual states and rejects malformed effects',async()=>{
+ const {encodeLanSnapshot,decodeLanSnapshot}=await load(),p=snapshot();
+ const v={z:.48,face:-1,action:'doubleJump',timer:.4,anim:2.5,stun:0,slide:0,dive:0};
+ const fx={id:'nuts',color:'#ffc15f',trail:'#ed763c',age:.3,vx:930,vy:-80};
+ p.players[0].visual=v;p.ball.fx=fx;
+ const got=decodeLanSnapshot(encodeLanSnapshot(p));
+ assert.deepEqual(got.players[0].visual,v);assert.deepEqual(got.ball.fx,fx);
+ assert.ok(Object.isFrozen(got.players[0].visual)&&Object.isFrozen(got.ball.fx));
+ for(const bad of [{...v,action:'<script>'},{...v,z:Infinity},{...v,face:0},{...v,extra:1}])
+  assert.throws(()=>encodeLanSnapshot({...p,players:[{slot:0,x:0,y:0,visual:bad}]}),TypeError);
+ for(const bad of [{...fx,color:'red'},{...fx,trail:'url(x)'},{...fx,vx:Infinity},{...fx,extra:1}])
+  assert.throws(()=>encodeLanSnapshot({...p,ball:{...p.ball,fx:bad}}),TypeError);
+ assert.equal(decodeLanSnapshot(encodeLanSnapshot(snapshot())).ball.fx,undefined);
+});

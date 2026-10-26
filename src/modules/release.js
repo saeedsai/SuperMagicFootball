@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.10.7.1',
+ version:'0.10.7.2',
  date:'2026-10-26',
  notes:Object.freeze([
+  'LAN guests now follow host jump height, player action and animation timing, and transformed Super Shot ball colors and trails. Legacy snapshots remain supported; physical two-phone visual QA remains pending.',
   'Player Studio now honors either legacy rating 90+ or current positional overall 90+ when unlocking elite Magic Trick, Super Shot and Super Defence choices. Edited high-skill players are no longer incorrectly locked by a lower legacy rating; no existing equipment, saves, rosters or controls are changed.',
   'Player Studio Magic Trick selection now explains elite eligibility and shows whether a choice is equipped, preview-only or pending removal. Existing legacy-equipped Tricks remain editable, and no selection changes a player until SAVE is pressed. Four controls, rosters, saves and offline play are unchanged.',
   'LAN guests now release the reserved room seat and return to Find Games when WebRTC offer negotiation fails or the answer cannot be sent. They can retry without reopening the lobby; host consent, four controls, saves and offline play remain unchanged. Hosted and physical two-phone certification remain pending.',

@@ -293,3 +293,21 @@ test('LAN-058 ignores delayed and duplicate snapshots without rewinding phase, s
  run.dispose();receive(23,'finished',3);
  assert.equal(guest.matchState,'play','disposed observer cannot mutate game');
 });
+
+test('LAN-059 guest restores jump pose, transformed Super Shot and effect cleanup',async()=>{
+ const {captureLanGameState,applyLanGameState}=await load();
+ const host=game(controls()),guest=game(controls());
+ Object.assign(host.players[1],{z:192,face:-1,action:'doubleJump',actionTimer:.42,anim:2.5});
+ host.ball.shot={id:'nuts',color:'#ffc15f',trail:'#ed763c'};
+ host.ball.age=.2;host.ball.vx=950;host.ball.vy=-90;
+ applyLanGameState(guest,field,captureLanGameState(host,field,100));
+ assert.equal(guest.players[1].action,'doubleJump');
+ assert.equal(guest.players[1].z,192);assert.equal(guest.players[1].actionTimer,.42);
+ assert.equal(guest.ball.shot.id,'nuts');assert.equal(guest.ball.shot.color,'#ffc15f');
+ host.players[1].action='super';host.players[1].z=0;host.ball.x+=30;host.ball.age=.3;
+ applyLanGameState(guest,field,captureLanGameState(host,field,101));
+ assert.equal(guest.players[1].action,'super');assert.equal(guest.players[1].z,0);
+ assert.ok(guest.ball.trail.length>=2);
+ host.ball.shot=null;applyLanGameState(guest,field,captureLanGameState(host,field,102));
+ assert.equal(guest.ball.shot,null);assert.deepEqual(guest.ball.trail,[]);
+});

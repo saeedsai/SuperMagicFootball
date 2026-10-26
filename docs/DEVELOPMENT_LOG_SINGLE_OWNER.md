@@ -1,3 +1,8 @@
+## 2026-10-26 10:15 CET — LAN-059 guest graphics synchronization (0.10.7.2 candidate)
+- Baseline dev/main `165a1ebc0a20e01ad704c63448622b1b5fef3deb` green: dev Modular #40289887078, dev Full 4+4 #40289887080, main Full #40291272628, Pages #40291272622.
+- Root cause: guest overwrote host action with run/idle; host snapshot lacked jump height and transformed Super Shot. Added bounded optional pose and ball effects with legacy compatibility; focused source checks and regression tests. New exact-head CI and physical two-phone visual QA pending.
+- Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves. Render broker and device certification remain open.
+
 ## 2026-10-26 08:00 CET — Player Studio Magic Trick selection clarity (0.10.7.0 dev candidate)
 - Before edit exact dev/main `f5380eaddc306ca341fb3c698446694b8947e30c`; dev Modular #40278108775 and Full 4+4 #40278108643 green, main Full #40278972815 and Pages #40278973386 green. These certify previous 0.10.6.4, not the new candidate.
 - Added Player Studio eligibility notice for locked non-elite Magic Tricks, with legacy equipped exception, plus distinct equipped/preview/remove guidance before SAVE. Focused source-executed checks; exact-head new CI pending. No changes to four buttons, 223 teams/2676 players, six formations, ten save slots, SD09, save schema or offline play.

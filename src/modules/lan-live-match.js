@@ -1,5 +1,5 @@
 // LAN-044: real GameEngine bridge for host-authoritative Quick Match.
-// The host alone runs physics; the guest only renders validated position snapshots.
+// The host alone runs physics; the guest renders validated poses and ball effects.
 // This module never modifies the offline match, team, or save formats.
 const LAN_LIVE_ACTIONS = Object.freeze(['pass','shoot','dribble','jump']);
 const lanLiveClamp = (n,a,b) => Math.max(a,Math.min(b,n));
@@ -10,17 +10,25 @@ function requireField(field) {
 }
 function lanLiveAxis(value,min,span){return lanLiveClamp((value-min)/span*2-1,-1,1)}
 function lanLivePosition(value,min,span){return min+(value+1)*span/2}
+const visNum=(n,max)=>lanLiveClamp(Number.isFinite(n)?n:0,0,max);
 function captureLanGameState(game,field,tick){
   requireField(field);
   if(!Number.isSafeInteger(tick)||tick<0)throw new TypeError('Invalid LAN match tick');
   const players=game.players.map(p=>({
-    slot:p.t*11+p.i,x:lanLiveAxis(p.x,field.x,field.w),y:lanLiveAxis(p.y,field.y,field.h)
+    slot:p.t*11+p.i,x:lanLiveAxis(p.x,field.x,field.w),y:lanLiveAxis(p.y,field.y,field.h),
+    visual:{z:visNum(p.z/400,1),face:p.face<0?-1:1,
+      action:typeof p.action==='string'&&/^[A-Za-z][A-Za-z0-9]{0,23}$/.test(p.action)?p.action:'idle',
+      timer:visNum(p.actionTimer,10),anim:visNum(p.anim,36000),
+      stun:visNum(p.stun,10),slide:visNum(p.slideTimer,10),dive:visNum(p.diveElapsed,10)}
   }));
   return {
     tick,clockMs:lanLiveClamp(Math.round(game.clock*1000),0,36000000),
     scores:{home:lanLiveClamp(game.score[0],0,999),away:lanLiveClamp(game.score[1],0,999)},
     ball:{x:lanLiveAxis(game.ball.x,field.x,field.w),y:lanLiveAxis(game.ball.y,field.y,field.h),
-      z:lanLiveClamp(game.ball.z/200,0,1)},players,
+      z:lanLiveClamp(game.ball.z/200,0,1),
+      fx:game.ball.shot?{id:game.ball.shot.id,color:game.ball.shot.color,trail:game.ball.shot.trail,
+        age:visNum(game.ball.age,600),vx:lanLiveClamp(game.ball.vx||0,-20000,20000),
+        vy:lanLiveClamp(game.ball.vy||0,-20000,20000)}:null},players,
     meta:{half:game.half===2?2:1,
       phase:game.matchState==='finished'?'finished':game.matchState==='paused'?'paused':'play',
       controlled:{home:lanLiveClamp(game.controlled?.[0]??3,0,5),away:lanLiveClamp(game.controlled?.[1]??3,0,5)},
@@ -36,16 +44,39 @@ function applyLanGameState(game,field,state){
     const x=lanLivePosition(item.x,field.x,field.w),y=lanLivePosition(item.y,field.y,field.h);
     const dx=x-p.x,dy=y-p.y;
     p.dx=dx;p.dy=dy;
-    if(Math.abs(dx)>0.15)p.face=dx>0?1:-1;
-    p.action=Math.hypot(dx,dy)>0.2?'run':'idle';
-    p.anim=(p.anim||0)+1/60;
+    if(item.visual){
+      // Never replace a host jump, kick or tackle with inferred run/idle.
+      const v=item.visual;
+      p.face=v.face;p.z=v.z*400;p.action=v.action;p.actionTimer=v.timer;
+      p.anim=v.anim;p.stun=v.stun;p.slideTimer=v.slide;p.diveElapsed=v.dive;
+    }else{
+      if(Math.abs(dx)>0.15)p.face=dx>0?1:-1;
+      p.action=Math.hypot(dx,dy)>0.2?'run':'idle';
+      p.anim=(p.anim||0)+1/60;
+    }
     p.x=x;p.y=y;
   }
   const ownerSlot=state.meta?.ballOwnerSlot??-1;
   game.ball.owner=ownerSlot<0?null:current.get(ownerSlot)||null;
+  const oldBall={x:game.ball.x,y:game.ball.y,z:game.ball.z};
+  const oldShot=game.ball.shot?.id;
   game.ball.x=lanLivePosition(state.ball.x,field.x,field.w);
   game.ball.y=lanLivePosition(state.ball.y,field.y,field.h);
   game.ball.z=state.ball.z*200;
+  const fx=state.ball.fx;
+  if(fx){
+    // Reconstruct a bounded guest-only trail; gameplay physics stays on host.
+    const same=oldShot===fx.id&&fx.age>=(game.ball.age||0);
+    if(!same||!Array.isArray(game.ball.trail))game.ball.trail=[];
+    if(same&&Math.hypot(oldBall.x-game.ball.x,oldBall.y-game.ball.y)>1)
+      game.ball.trail.push(oldBall);
+    game.ball.trail.push({x:game.ball.x,y:game.ball.y,z:game.ball.z});
+    if(game.ball.trail.length>22)game.ball.trail.splice(0,game.ball.trail.length-22);
+    game.ball.shot={id:fx.id,color:fx.color,trail:fx.trail};
+    game.ball.age=fx.age;game.ball.vx=fx.vx;game.ball.vy=fx.vy;
+  }else{
+    game.ball.shot=null;game.ball.trail=[];
+  }
   game.score=[state.scores.home,state.scores.away];
   if(state.meta){
     game.half=state.meta.half;

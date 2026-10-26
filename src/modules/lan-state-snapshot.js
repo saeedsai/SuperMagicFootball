@@ -2,7 +2,7 @@
 // Coordinates are normalized [-1, 1]. This codec does not wire a game or a transport.
 import {LAN_PROTOCOL_VERSION} from './lan-session.js';
 
-const MAX_SNAPSHOT_BYTES = 4096;
+const MAX_SNAPSHOT_BYTES = 8192;
 const ID = /^[A-Za-z0-9_-]{6,32}$/;
 const encoder = new TextEncoder();
 const plain = value => value !== null && typeof value === 'object' &&
@@ -12,10 +12,22 @@ const keys = (value, expected) => plain(value) &&
   expected.every(key => Object.hasOwn(value, key));
 const safe = n => Number.isSafeInteger(n) && n >= 0;
 const position = n => Number.isFinite(n) && n >= -1 && n <= 1;
+// LAN-059: bounded optional visual payload; old position-only packets still work.
+const finite=(n,max)=>Number.isFinite(n)&&n>=0&&n<=max;
+const visual=v=>keys(v,['z','face','action','timer','anim','stun','slide','dive'])&&
+  finite(v.z,1)&&[1,-1].includes(v.face)&&typeof v.action==='string'&&
+  /^[A-Za-z][A-Za-z0-9]{0,23}$/.test(v.action)&&finite(v.timer,10)&&
+  finite(v.anim,36000)&&finite(v.stun,10)&&finite(v.slide,10)&&finite(v.dive,10);
+const shotFx=v=>keys(v,['id','color','trail','age','vx','vy'])&&
+  typeof v.id==='string'&&/^[A-Za-z][A-Za-z0-9_-]{0,31}$/.test(v.id)&&
+  typeof v.color==='string'&&/^#[0-9a-fA-F]{6}$/.test(v.color)&&
+  typeof v.trail==='string'&&/^#[0-9a-fA-F]{6}$/.test(v.trail)&&
+  finite(v.age,600)&&[v.vx,v.vy].every(n=>Number.isFinite(n)&&Math.abs(n)<=20000);
 
 function validateLanSnapshot(packet) {
   const baseFields=['type','version','roomId','hostId','tick','clockMs','scores','ball','players'];
   const enhanced=keys(packet,[...baseFields,'meta']);
+  const ballFx=keys(packet?.ball,['x','y','z','fx']);
   if (!(keys(packet,baseFields)||enhanced) ||
       packet.type !== 'snapshot' || packet.version !== LAN_PROTOCOL_VERSION ||
       typeof packet.roomId !== 'string' || !ID.test(packet.roomId) ||
@@ -23,7 +35,8 @@ function validateLanSnapshot(packet) {
       !safe(packet.tick) || !safe(packet.clockMs) || packet.clockMs > 36000000 ||
       !keys(packet.scores, ['home','away']) ||
       !['home','away'].every(k => safe(packet.scores[k]) && packet.scores[k] <= 999) ||
-      !keys(packet.ball, ['x','y','z']) ||
+      !(keys(packet.ball,['x','y','z'])||ballFx) ||
+      (ballFx&&packet.ball.fx!==null&&!shotFx(packet.ball.fx)) ||
       !['x','y'].every(k => position(packet.ball[k])) ||
       !Number.isFinite(packet.ball.z) || packet.ball.z < 0 || packet.ball.z > 1 ||
       !Array.isArray(packet.players) || packet.players.length > 22) {
@@ -31,13 +44,15 @@ function validateLanSnapshot(packet) {
   }
   const seen = new Set();
   const players = packet.players.map(player => {
-    if (!keys(player, ['slot','x','y']) || !safe(player.slot) ||
+    const withVisual=keys(player,['slot','x','y','visual']);
+    if (!(keys(player,['slot','x','y'])||withVisual) ||
+        (withVisual&&!visual(player.visual)) || !safe(player.slot) ||
         player.slot >= 22 || seen.has(player.slot) ||
         !position(player.x) || !position(player.y)) {
       throw new TypeError('Invalid LAN snapshot player');
     }
     seen.add(player.slot);
-    return Object.freeze({slot:player.slot,x:player.x,y:player.y});
+    return Object.freeze({slot:player.slot,x:player.x,y:player.y,...(withVisual?{visual:Object.freeze({...player.visual})}:{})});
   });
   // LAN-047 optional state envelope: old nine-field snapshots remain valid.
   // The host alone controls match phase, active players and ball possession.
@@ -60,7 +75,7 @@ function validateLanSnapshot(packet) {
   return Object.freeze({type:'snapshot',version:LAN_PROTOCOL_VERSION,
     roomId:packet.roomId,hostId:packet.hostId,tick:packet.tick,clockMs:packet.clockMs,
     scores:Object.freeze({home:packet.scores.home,away:packet.scores.away}),
-    ball:Object.freeze({x:packet.ball.x,y:packet.ball.y,z:packet.ball.z}),
+    ball:Object.freeze({x:packet.ball.x,y:packet.ball.y,z:packet.ball.z,...(ballFx?{fx:packet.ball.fx===null?null:Object.freeze({...packet.ball.fx})}:{})}),
     players:Object.freeze(players),...(enhanced?{meta}:{})});
 }
 
