@@ -32,7 +32,7 @@ const roomScope=m=>m?.scope===undefined||m.scope==='lan'?'lan':m.scope==='intern
 function roomVisible(room,meta){return meta.discoveryScope===(room.scope??'lan')&&((room.scope??'lan')==='internet-p2p'||sameSubnet(meta.ip,room.ip))}
 // Keep room availability synchronized when an approved guest leaves or disconnects.
 const send=(ws,msg)=>{const delivered=safeLanSend(ws,msg);if(msg?.type==='guest-left'){const room=rooms.get(msg.roomId);if(room)announceRoom(room)}return delivered};
-function announceRoom(room){broadcast(room,{type:'room-announce',roomId:room.id,name:room.name,build:room.build,full:!!room.guest})}
+function announceRoom(room){broadcast(room,{type:'room-announce',roomId:room.id,name:room.name,build:room.build,full:!!room.guest,...(room.scope==='internet-p2p'?{scope:room.scope}:{})})}
 function broadcast(room,msg){for(const [ws,meta] of clients)if(roomVisible(room,meta))send(ws,msg)}
 function clearHost(ws){for(const [id,room] of rooms)if(room.host===ws){rooms.delete(id);if(room.guest)send(room.guest,{type:'host-left',roomId:id});broadcast(room,{type:'room-remove',roomId:id});for(const [reqId,req] of pending)if(req.roomId===id){send(req.guest,{type:'join-reject',roomId:id,requestId:reqId,reason:'host-left'});pending.delete(reqId)}}}
 const server=http.createServer(async(req,res)=>{
