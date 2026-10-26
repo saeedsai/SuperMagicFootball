@@ -1,3 +1,8 @@
+## 2026-10-26 — LAN-062 legacy guest pose fallback (0.10.7.5 candidate)
+- Starting dev/main e924c548824e2cab4350435caf04957e40b7b675, dev Modular #40312959115, dev Full #40312959119, Pages #40315072955 green. Production Full #40315071630 queued at inspection.
+- Legacy position-only snapshot inference previously retained stale jump height, slide/stun and goalkeeper dive timing/direction. Guest fallback now resets six render fields; authoritative player/ball positions remain unchanged and host physics untouched.
+- Added source-executed LAN regression; bumped package/About/README/SW/policy/shared checkpoint. Exact-head QA, protected promotion and physical-device visual certification pending.
+
 ## 2026-10-26 11:16 CET — LAN-060 guest projection repair
 - Exact-head 51dbda3 failed only LAN-050 RTC integration: host sent hazards correctly but `subscribeGuestMatchState` projected away the optional `hazards` field before the guest renderer. Fixed projection to retain validated immutable trap list; the existing fake-RTC regression covers both trap arrival and removal. 3aa5359 also contains the 22-player/24-trap size test. New exact-head CI pending; same unshipped candidate 0.10.7.3.
 
