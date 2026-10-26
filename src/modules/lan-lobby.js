@@ -61,7 +61,7 @@ function mountLanLobby(root,options={}){
       manual.type='button';
       manual.id='lanManualFallback';
       manual.className='btn minor';
-      manual.textContent='MANUAL LAN CONNECTION';
+      manual.textContent=options.internet===true?'MANUAL P2P CONNECTION':'MANUAL LAN CONNECTION';
       manual.title='Connect without room discovery by privately exchanging an offer and answer';
       manual.addEventListener('click',switchToManual);
       row.append(manual);
