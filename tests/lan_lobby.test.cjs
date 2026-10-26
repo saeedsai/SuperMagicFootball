@@ -108,7 +108,7 @@ test('Online P2P Quick Match reuses LAN authoritative engine without changing to
  const peer=fs.readFileSync(path.join(path.resolve(__dirname,'..'),'src/modules/lan_peer_connection.js'),'utf8');
  const lobby=fs.readFileSync(path.join(path.resolve(__dirname,'..'),'src/modules/lan-lobby.js'),'utf8');
  assert.match(ui,/navItem\('Online P2P · Private Quick Match','navOnlineP2P'/);
- assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{auto:false,internet:true,onReady:startLanQuickMatch\}\)/);
+ assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{internet:true,onReady:startLanQuickMatch\}\)/);
  assert.match(ui,/else if\(a==='navOnlineP2P'\)showOnlineP2PLobby\(\)/);
  assert.match(ui,/function showOnlineMenu\(\)\{menuChoices\('nav-online'/);
  assert.match(peer,/options\.internet===true\?\[\{urls:'stun:/);
@@ -308,7 +308,7 @@ test('LAN automatic, LAN manual, and internet P2P remain wired to one live match
  const lobby=fs.readFileSync(path.join(root,'src/modules/lan-lobby.js'),'utf8');
  const peer=fs.readFileSync(path.join(root,'src/modules/lan_peer_connection.js'),'utf8');
  assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{onReady:startLanQuickMatch\}\)/);
- assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{auto:false,internet:true,onReady:startLanQuickMatch\}\)/);
+ assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{internet:true,onReady:startLanQuickMatch\}\)/);
  assert.equal((ui.match(/createLanLiveMatch\(\{peer,role,game,input,field:ENGINE\.WORLD\.field\}\)/g)||[]).length,1,
   'all modes must share exactly one authoritative gameplay bridge');
  assert.match(lobby,/stop=mountLanLobby\(root,\{\.\.\.options,auto:false\}\)/,
@@ -317,4 +317,21 @@ test('LAN automatic, LAN manual, and internet P2P remain wired to one live match
   'LAN manual and P2P must share transport factory');
  assert.match(peer,/options\.internet===true\?\[\{urls:'stun:/,
   'only internet P2P requests STUN; local peers do not need internet services');
+});
+
+test('Online P2P defaults to automatic discovery, with manual fallback, both using shared four-button match',()=>{
+ const root=path.resolve(__dirname,'..');
+ const ui=fs.readFileSync(path.join(root,'src/modules/ui.js'),'utf8');
+ const lobby=fs.readFileSync(path.join(root,'src/modules/lan-lobby.js'),'utf8');
+ const auto=fs.readFileSync(path.join(root,'src/modules/lan-auto-lobby.js'),'utf8');
+ const signal=fs.readFileSync(path.join(root,'src/modules/lan-auto-signal.js'),'utf8');
+ assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{internet:true,onReady:startLanQuickMatch\}\)/);
+ assert.match(lobby,/manual\.textContent=options\.internet===true\?'MANUAL P2P CONNECTION'/);
+ assert.match(auto,/roomScope=internet\?'internet-p2p':'lan'/);
+ assert.match(auto,/createLanPeerConnection\(hello,\{internet\}\)/);
+ assert.match(auto,/const registerHost=\(\)=>send\(\{type:'host'/);
+ assert.match(auto,/scope:roomScope/);
+ assert.match(signal,/SMF_P2P_SIGNAL_URL/);
+ assert.equal((ui.match(/createLanLiveMatch\(\{peer,role,game,input,field:ENGINE\.WORLD\.field\}\)/g)||[]).length,1);
+ assert.match(ui,/function showOnlineMenu\(\)\{menuChoices\('nav-online'/,'top-level Online backend menu must be preserved');
 });
