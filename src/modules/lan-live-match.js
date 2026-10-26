@@ -97,7 +97,10 @@ function applyLanGameState(game,field,state){
     const elapsed=state.clockMs/1000-game.clock;
     // Restart/kickoff/goal teleports must not become a phantom pass streak.
     const displacement=Math.hypot(game.ball.x-oldBall.x,game.ball.y-oldBall.y);
-    if(!game.ball.owner && elapsed>0 && elapsed<=.75 && displacement<=160){
+    const scoreChanged=state.scores.home!==game.score[0] || state.scores.away!==game.score[1];
+    const halfChanged=state.meta?.half!==undefined && state.meta.half!==game.half;
+    // A scored goal or halftime resets play even when the ball moves <160 px.
+    if(!game.ball.owner && !scoreChanged && !halfChanged && elapsed>0 && elapsed<=.75 && displacement<=160){
       game.ball.vx=lanLiveClamp((game.ball.x-oldBall.x)/elapsed,-1600,1600);
       game.ball.vy=lanLiveClamp((game.ball.y-oldBall.y)/elapsed,-1600,1600);
     }else{
