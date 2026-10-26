@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.2.1',
+ version:'0.11.3.0',
  date:'2026-10-26',
  notes:Object.freeze([
+  'Quick Match Online P2P now supports automatic internet room discovery, host approval and WebRTC joining through the existing lightweight signaling directory. Both LAN and P2P reuse the same authoritative gameplay and four-button controls. LAN offers a manual connection fallback when automatic discovery is unavailable; internet P2P also offers manual signaling. A signaling directory is necessary for discovery, and restrictive NATs may still need TURN; physical two-device testing is pending.',
   'Fixed a manual LAN/Online P2P session race: a delayed failed host offer or guest negotiation from an abandoned connection can no longer close a newer host session or replace its status. Reset and navigation invalidate outstanding operations; explicit Apply, four controls, saves and offline play are unchanged.',
   'Online P2P and manual LAN connection setup now previews whether pasted or typed text is a matching-version host offer or guest answer before Apply. It warns about wrong roles, mismatched sessions and invalid text, and ignores delayed clipboard reads after reset or manual edits. Preview never creates a peer or accepts untrusted SDP; offline, saves and four controls are unchanged.',
   'Private Online P2P Quick Match now has a mobile-friendly Paste from Clipboard action. Pasted connection text is bounded and never automatically accepted: the player must explicitly apply it. Clipboard permission failures retain manual paste. No internet matchmaking or TURN is added; saves and four controls are unchanged.',
