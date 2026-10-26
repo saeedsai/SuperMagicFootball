@@ -1,29 +1,22 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-26 07 CET
+**Updated:** 2026-10-26 08 CET
 
 ## Mission
-One bounded tested dev increment hourly; only dev/main; no bypass, force push or extra branches.
+One bounded tested feature per run on dev. Only dev/main; no bypass, force-push or additional branches.
 
 ## Current checkpoint
-- Before edit dev `ca1be5150a08dfa7b4a870335913748dfce55018`, main `01dfa202e8ad76791717a1cb7935d1284bbc6a07`.
-- Dev 0.10.6.3 Modular #40272473004 green; Full #40272472958 failed only hosted Render+Pages browser smoke: `#autoStatus` did not show Room registered within 25s. Four Node, three Chromium, preview passed. Requested rerun job 121408119298; investigate external readiness, not yet certified.
-- New 0.10.6.4 candidate recovers approved guest offer/answer/ready/start failures: releases server seat via leave, resets pending state, refreshes room list and enables retry. Added focused Node regressions; exact-head CI pending.
-- Render srv-dbf8m6gm7kps7385tjo0 autoDeploy=yes dev but only c871ee69 live; no later events. Physical two-phone LAN unverified.
-- Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and saves.
+- Before edit dev/main `f5380eaddc306ca341fb3c698446694b8947e30c` (0.10.6.4). Exact-head dev Modular #40278108775 and Full 4+4 #40278108643 green; main Full #40278972815 and Pages #40278973386 green.
+- New 0.10.7.0 candidate: Player Studio Magic Trick eligibility hints and explicit equipped/preview/removal status; legacy equipped exceptions preserved. No save/roster/control changes. Focused source checks done; exact-head CI pending.
+- Render signaling deployment remained at c871ee69 at last verified inspection; auto-deploy issue and physical two-phone LAN remain open.
+- Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves.
 
-## Next smallest action
-1. Complete exact-head 4 Node+4 Chromium and Modular QA, repair red jobs.
-2. Diagnose hosted Render room-registration timeout and missing auto-deploy integration.
-3. Verify actual two-client host/guest, kickoff, controls, reconnect, graphics.
-4. Continue Player Studio and counterable Tricks on dev.
-5. Promote only exact green dev via protected CI; verify main/Pages byte smoke.
+## Next
+1. Finish new exact-head 4 Node+4 Chromium and Modular QA; fix red jobs.
+2. Diagnose Render GitHub integration and verify deployed signaling commit.
+3. Certify two-client LAN host consent, kickoff, sync and reconnect.
+4. Continue counterable Tricks, Player Studio and Crown Royals graphics.
+5. Promote only green exact dev head through protected pipeline; verify main/Pages hosted bytes.
 
-## Ownership and exclusions
-Only own checkpoint writable; no other agent memory, branches or force pushes.
-
-## Evidence
-CI and deployment are not inferred from previous heads. New feature pending exact-head CI; hosted/device LAN unverified.
-
-## Cleanup
-Checkpoint <4 KiB; keep candidate separate from certified release.
+## Ownership
+Only this checkpoint writable; no other agent memory, branch or force push. Candidate is not certified release.

@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.10.6.4',
+ version:'0.10.7.0',
  date:'2026-10-26',
  notes:Object.freeze([
+  'Player Studio Magic Trick selection now explains elite eligibility and shows whether a choice is equipped, preview-only or pending removal. Existing legacy-equipped Tricks remain editable, and no selection changes a player until SAVE is pressed. Four controls, rosters, saves and offline play are unchanged.',
   'LAN guests now release the reserved room seat and return to Find Games when WebRTC offer negotiation fails or the answer cannot be sent. They can retry without reopening the lobby; host consent, four controls, saves and offline play remain unchanged. Hosted and physical two-phone certification remain pending.',
   'LAN Find Games now ignores malformed room announcements and limits its live room list to 128 entries, while allowing existing rooms to update and legacy local room cards without occupancy fields. No controls, rosters or saved games changed; hosted broker and physical two-phone certification remain pending.',
   'LAN guest admission now recovers after 25 seconds without host approval: a stale join is cancelled, room discovery resumes and Join can be retried. Late approvals cannot revive the expired request. Physical two-phone certification remains outstanding.',

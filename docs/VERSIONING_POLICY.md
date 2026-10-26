@@ -1,6 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.10.6.3
+# SuperMagicFootball release/version policy — About-only 0.10.7.0
 
-**Effective 21 October 2026; updated 26 October 2026 for candidate 0.10.6.3.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 26 October 2026 for candidate 0.10.7.0.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
 ## One authoritative player-facing release
 
@@ -42,4 +42,6 @@ Saved data retains `legend_` storage keys, Career save vault, JSON sections and 
 
 **Current `dev` 0.10.6.3 candidate (26 October 2026):** LAN Find Games now validates incremental room announcements against the same schema as authoritative snapshots and bounds room cards to 128, without blocking updates or older local brokers that omit occupancy. This is a client-side correctness and resource-bound fix; no team, control or save changes. Prior 0.10.6.2 passed dev Modular #40267581032, dev Full 4+4 #40267580859, main Full #40267885832 and Pages #40267885527; these runs do not certify 0.10.6.3 or physical LAN/Render deployment.
 
-**Current `dev` 0.10.6.4 candidate (26 October 2026):** Approved LAN guests now release their occupied room seat and resume Find Games if offer negotiation fails or the answer cannot be sent; retries no longer require restarting the lobby. Source-executed focused regressions added. Exact-head 4+4 CI, Render deployment and two-phone LAN verification remain separate gates. The prior 0.10.6.3 CI #40272472958 failed hosted Chromium smoke (room registration timeout), despite four Node and three Chromium shards passing; investigate external signaling readiness, do not claim production certification.
+**Previous `dev` 0.10.6.4 candidate (26 October 2026):** Approved LAN guests now release their occupied room seat and resume Find Games if offer negotiation fails or the answer cannot be sent; retries no longer require restarting the lobby. Source-executed focused regressions added. Exact-head 4+4 CI, Render deployment and two-phone LAN verification remain separate gates. The prior 0.10.6.3 CI #40272472958 failed hosted Chromium smoke (room registration timeout), despite four Node and three Chromium shards passing; investigate external signaling readiness, do not claim production certification.
+
+**Current `dev` 0.10.7.0 candidate (26 October 2026):** Player Studio Magic Trick selector now explains elite eligibility, legacy-equipped exception and unsaved preview versus pending removal. The equipment save path, four buttons, roster IDs, ten save slots and offline data format are unchanged. Exact-head 4+4, Modular QA, protected promotion and hosted smoke are required separately. Previous 0.10.6.4 passed dev Modular #40278108775, dev Full #40278108643, main Full #40278972815 and Pages #40278973386; these runs do not certify this new candidate or physical two-phone LAN.

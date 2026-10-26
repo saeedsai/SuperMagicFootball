@@ -8,7 +8,7 @@ const begin=ui.indexOf('const STUDIO_MAGIC_TRICK_GUIDES=');
 const end=ui.indexOf('function saveStudioMagic(){',begin);
 assert.ok(begin>0&&end>begin,'guide helpers must be present before save action');
 const guideSource=ui.slice(begin,end);
-const guide=new Function(guideSource+';return studioMagicGuide;')();
+const {guide,eligibility}=new Function('studioEliteEligible',guideSource+';return {guide:studioMagicGuide,eligibility:studioMagicEligibilityGuide};')(p=>Number(p?.rating)>=90);
 
 test('all eight equipable Tricks have distinct, truthful live descriptions',()=>{
  const ids=['banana','ice','bat','fireball','freeze','scream','hideBall','teleport'];
@@ -24,11 +24,22 @@ test('all eight equipable Tricks have distinct, truthful live descriptions',()=>
  assert.equal(new Set(descriptions).size,8);
 });
 test('KEEP CURRENT, REMOVE and unknown saved equipment are safe previews',()=>{
- assert.equal(guide('keep','banana'),guide('banana',null));
- assert.match(guide('none','banana'),/No Magic Trick selected/);
- assert.match(guide('keep',null),/No Magic Trick selected/);
+ assert.match(guide('keep','banana'),/Equipped Trick:/);
+ assert.match(guide('banana',null),/Preview only:/);
+ assert.match(guide('banana',null),/SAVE TRICK SELECTION/);
+ assert.match(guide('none','banana'),/REMOVE selected/);
+ assert.match(guide('none','banana'),/until SAVE TRICK SELECTION/);
+ assert.match(guide('keep',null),/No Magic Trick equipped/);
  assert.match(guide('keep','legacyUnknown'),/Unknown saved Trick/);
  assert.match(guide('invalid',null),/Unknown saved Trick/);
+});
+test('non-elite Magic Trick selection explains locks without changing legacy equipment',()=>{
+ assert.match(eligibility({rating:65,role:'MF'}),/locked.*elite/i);
+ assert.match(eligibility({rating:65,role:'MF'}),/Dribble Styles/);
+ assert.match(eligibility({rating:65,magicTrick:'banana'}),/preserved/);
+ assert.match(eligibility({rating:95}),/Eligible/);
+ assert.match(ui,/id="studioMagicEligibility"/);
+ assert.match(ui,/escapeHTML\(studioMagicEligibilityGuide\(player\)\)/);
 });
 test('Studio uses an accessible, read-only live guide that follows icon changes',()=>{
  assert.match(ui,/id="studioMagicGuide" role="status" aria-live="polite"/);
