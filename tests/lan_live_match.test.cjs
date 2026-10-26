@@ -381,3 +381,20 @@ test('LAN-061 guest mirrors goalkeeper dive direction and clears stale dive pose
  applyLanGameState(guest,field,legacy);
  assert.equal(guest.players[0].diveDy,0,'legacy visual packets do not leave stale dive direction');
 });
+
+
+test('LAN-062 legacy position-only snapshot clears stale guest animations',async()=>{
+ const {captureLanGameState,applyLanGameState}=await load();
+ const host=game(controls()),guest=game(controls());
+ Object.assign(guest.players[0],{z:200,action:'keeperDive',actionTimer:.5,stun:.7,slideTimer:.3,diveElapsed:.4,diveDy:-.9});
+ host.players[0].x+=20;
+ const packet=captureLanGameState(host,field,90);
+ packet.players.forEach(p=>delete p.visual);
+ applyLanGameState(guest,field,packet);
+ const p=guest.players[0];
+ assert.equal(p.x,host.players[0].x);
+ assert.equal(p.action,'run');
+ for(const key of ['z','actionTimer','stun','slideTimer','diveElapsed','diveDy'])
+  assert.equal(p[key],0,'legacy packet must clear '+key);
+ assert.equal(guest.ball.x,host.ball.x);
+});
