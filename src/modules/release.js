@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.10.7.9',
+ version:'0.10.7.10',
  date:'2026-10-26',
  notes:Object.freeze([
+  'LAN guest Super Shot trails now reset cleanly on goals, halftime and large ball relocations even when the host effect ID stays unchanged. Continuous Super Shots animate normally; host physics, offline gameplay and saves are unchanged.',
   'LAN guest ball streak reconstruction now suppresses false pass motion on scoring and halftime transitions, even when a restart moves the ball only a short distance. Normal passes resume afterward; host physics and saves remain unchanged.',
   'LAN guest ordinary ball streaks now ignore sudden large host relocations after goals or kickoffs, while continuing to render regular passes and authoritative positions. Host physics, saves and four controls remain unchanged.',
   'LAN Host Game retries the same room registration every ten seconds while awaiting the discovery broker acknowledgment, recovering from missed acknowledgments without replacing the room or automatically admitting guests. Retries stop on success, rejection, disconnection or cancellation. Offline games, controls and saves are unchanged.',

@@ -1,3 +1,8 @@
+## 2026-10-26 14:08 CET — LAN-067 Super Shot trail continuity (0.10.7.10 candidate)
+- Baseline dev 14d2ae1bfa0602c80321413da4f4bbd804c67e37 (0.10.7.9); Modular #40327456911 green; Full #40327456870 had last Chromium shard pending at inspection; main last observed c463780b5f38205d868c64fd9ea16033d8bcfe7c (0.10.7.7).
+- Root cause: guest trail continuation checked matching shot ID and nondecreasing age only. A goal, halftime or teleport could draw ghost streaks across the field. Break on match transition or >240 px discontinuity while preserving authoritative ball coordinates and later valid animation. Regression covers continuity, goal, halftime, resumption and teleport.
+- Version/package/About/README/cache/policy/checkpoint aligned to 0.10.7.10. Exact-head CI, protected promotion, Pages smoke and physical two-phone QA remain gates. No roster, save, offline or control changes.
+
 ## 2026-10-26 — LAN-066 goal and halftime guest ball streak guard (0.10.7.9 candidate)
 - Baseline dev ed7babae0e63c03c20410d60229f72db92c62c11; Modular #40327113745 passed, full #40327113649 running. Main c463780b5f38205d868c64fd9ea16033d8bcfe7c (0.10.7.7).
 - Score changes and halftime were previously not distinguished from short normal passes in LAN-063/065 guest ball velocity reconstruction. Guard these transition packets and preserve precise host ball position. Add source-executed test covering goal, halftime and resumed pass.

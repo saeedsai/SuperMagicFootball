@@ -1,27 +1,21 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-26
+**Updated:** 2026-10-26 14:08 CET
 
 ## Mission
-One bounded tested feature on existing dev per run, no extra branches, bypass or force push. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup save slots, SD09, offline/saves.
+One bounded tested increment each hourly run on existing dev; only dev/main. Never bypass security, permissions, exact-head QA or force push. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline/saves.
 
 ## Current checkpoint
-- Baseline dev ed7babae0e63c03c20410d60229f72db92c62c11 (0.10.7.8), Modular #40327113745 green, Full #40327113649 running; main c463780b5f38205d868c64fd9ea16033d8bcfe7c (0.10.7.7).
-- LAN-066 0.10.7.9 candidate: prevent false normal-ball velocity on score or halftime transition, even when relocation is under 160 px. Test verifies both transitions, position, resume pass. Host physics, saves, controls remain intact.
-- Physical two-phone LAN acceptance outstanding. Candidate remains uncertified until exact-head CI and protected Pages release.
+- Baseline dev 14d2ae1bfa0602c80321413da4f4bbd804c67e37 (0.10.7.9), Modular #40327456911 green, Full #40327456870 had preflight, 4 Node, 3 Chromium and preview green; last Chromium pending at inspection. Main last observed c463780b5f38205d868c64fd9ea16033d8bcfe7c (0.10.7.7).
+- LAN-067 0.10.7.10 candidate: guest Super Shot trail resets on goal/halftime and large reposition despite unchanged effect ID/advancing age; resumes for continuous snapshots. Focused source-executed regression.
+- Physical two-device and broker discovery acceptance outstanding; candidate uncertified until exact-head CI and protected Pages release.
 
-## Next smallest action
-1. Verify exact-head Modular and full 4 Node + 4 Chromium CI, fix any failures.
-2. Promote only exact green dev to main through protected pipeline; verify Pages bytes and main CI.
-3. Test two phones: short restart ball, goals/halftime, supershots and dives.
-4. Improve LAN guest animation and Crown Royals side sprites on dev.
-5. Diagnose Render automatic room discovery and reconnect.
-
-## Evidence
-- LAN-066 source-executed regression: tests/lan_live_match.test.cjs. CI outcomes are release authority.
+## Next five steps
+1. Verify exact dev head Modular and full 4 Node/4 Chromium CI; fix red shards.
+2. Promote only exact green dev head via protected pipeline; verify main and Pages bytes.
+3. Test LAN on two phones for goals, halftime, teleports and Super Shot trails at real RTT.
+4. Improve automatic discovery/host admission; verify Render broker behavior.
+5. Continue Crown Royals side-view orientation and Player Studio graphics QA.
 
 ## Ownership and exclusions
-Only this agent checkpoint writable; do not touch other agent memories.
-
-## Cleanup
-- Keep checkpoint below 4 KiB. Git history is audit; no extra branches or temporary files.
+Only this agent checkpoint writable. No extra branches or bypass. Keep under 4 KiB; Git history is audit.

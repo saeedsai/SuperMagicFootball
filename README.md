@@ -1,3 +1,5 @@
+> **0.10.7.10 release candidate (26 October 2026):** LAN guest Super Shot trails now break cleanly across goals, halftime and sudden host ball relocations, without ghost streaks across the pitch. Continuous shots still animate normally; authoritative host positions, 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline play and saves remain unchanged. Exact-head QA, protected promotion, hosted byte smoke and physical two-phone validation remain separate gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.10.7.9 release candidate (26 October 2026):** LAN guests now clear phantom ball-motion streaks when a score changes or halftime begins, including short restart repositionings. Real passes animate normally after play resumes; host physics, 223 teams/2676 players, six formations, four actions, ten Career/Cup slots, SD09, offline gameplay and saves remain unchanged. Exact-head QA, protected promotion, hosted byte smoke and two-phone acceptance are separate gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.10.7.8 release candidate (26 October 2026):** LAN guest ball motion reconstruction now suppresses false high-speed streaks when the host relocates the ball for restart, goals or kickoff, without changing authoritative positions or normal pass animation. 223 teams/2676 players, four controls, six formations, ten Career/Cup slots, SD09, offline and saves are preserved. QA, deployment and two-phone acceptance remain separate gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -84,7 +86,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.10.7.9 · Modular source project
+# Supermagic Football · v0.10.7.10 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 

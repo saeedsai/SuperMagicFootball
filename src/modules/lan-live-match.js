@@ -80,10 +80,15 @@ function applyLanGameState(game,field,state){
   game.ball.x=lanLivePosition(state.ball.x,field.x,field.w);
   game.ball.y=lanLivePosition(state.ball.y,field.y,field.h);
   game.ball.z=state.ball.z*200;
+  const scoreChanged=state.scores.home!==game.score[0] || state.scores.away!==game.score[1];
+  const halfChanged=state.meta?.half!==undefined && state.meta.half!==game.half;
   const fx=state.ball.fx;
   if(fx){
     // Reconstruct a bounded guest-only trail; gameplay physics stays on host.
-    const same=oldShot===fx.id&&fx.age>=(game.ball.age||0);
+    // Reset a reused Super Shot effect on scoring, halftime or a ball teleport.
+    const displacement=Math.hypot(oldBall.x-game.ball.x,oldBall.y-game.ball.y);
+    const same=oldShot===fx.id&&fx.age>=(game.ball.age||0)&&
+      !scoreChanged&&!halfChanged&&displacement<=240;
     if(!same||!Array.isArray(game.ball.trail))game.ball.trail=[];
     if(same&&Math.hypot(oldBall.x-game.ball.x,oldBall.y-game.ball.y)>1)
       game.ball.trail.push(oldBall);
@@ -97,8 +102,6 @@ function applyLanGameState(game,field,state){
     const elapsed=state.clockMs/1000-game.clock;
     // Restart/kickoff/goal teleports must not become a phantom pass streak.
     const displacement=Math.hypot(game.ball.x-oldBall.x,game.ball.y-oldBall.y);
-    const scoreChanged=state.scores.home!==game.score[0] || state.scores.away!==game.score[1];
-    const halfChanged=state.meta?.half!==undefined && state.meta.half!==game.half;
     // A scored goal or halftime resets play even when the ball moves <160 px.
     if(!game.ball.owner && !scoreChanged && !halfChanged && elapsed>0 && elapsed<=.75 && displacement<=160){
       game.ball.vx=lanLiveClamp((game.ball.x-oldBall.x)/elapsed,-1600,1600);

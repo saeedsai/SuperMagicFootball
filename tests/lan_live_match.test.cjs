@@ -457,3 +457,28 @@ test('LAN-066 guest suppresses phantom ball streak across goals and halftime',as
  applyLanGameState(guest,field,captureLanGameState(host,field,133));
  assert.ok(guest.ball.vx>0,'normal motion resumes after halftime');
 });
+
+
+test('LAN-067 guest Super Shot trail resets on goal, halftime and teleport',async()=>{
+ const {captureLanGameState,applyLanGameState}=await load();
+ const host=game(controls()),guest=game(controls());
+ host.ball.shot={id:'fire',color:'#ff6433',trail:'#ffac56'};
+ host.ball.age=.1;host.clock=.1;
+ const receive=tick=>applyLanGameState(guest,field,captureLanGameState(host,field,tick));
+ receive(140);assert.equal(guest.ball.trail.length,1);
+ host.ball.x+=30;host.ball.age=.2;host.clock=.2;receive(141);
+ assert.ok(guest.ball.trail.length>=3,'continuous Super Shot retains its trail');
+ host.score=[1,0];host.ball.x+=30;host.ball.age=.3;host.clock=.3;receive(142);
+ assert.equal(guest.ball.trail.length,1,'goal breaks the old Super Shot trail');
+ assert.equal(guest.ball.x,host.ball.x,'goal still applies host ball position');
+ host.ball.x+=30;host.ball.age=.4;host.clock=.4;receive(143);
+ assert.ok(guest.ball.trail.length>=3,'trail resumes after goal');
+ host.half=2;host.ball.x+=30;host.ball.age=.5;host.clock=.5;receive(144);
+ assert.equal(guest.ball.trail.length,1,'halftime breaks the old trail');
+ host.ball.x+=30;host.ball.age=.6;host.clock=.6;receive(145);
+ assert.ok(guest.ball.trail.length>=3,'trail resumes after halftime');
+ host.ball.x-=300;host.ball.age=.7;host.clock=.7;receive(146);
+ assert.equal(guest.ball.trail.length,1,'discontinuous teleport breaks the trail');
+ assert.equal(guest.ball.x,host.ball.x);
+ assert.equal(guest.ball.shot.id,'fire','visual effect remains host authoritative');
+});
