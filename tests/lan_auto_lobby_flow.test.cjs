@@ -65,3 +65,36 @@ test('one Find Games click before signaling opens later discovers and joins host
   dispose();
  }finally{f.cleanup()}
 });
+
+test('occupied LAN rooms cannot be joined until the approved guest leaves',async()=>{
+ const f=setup();
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.10.4.0',signalFactory:f.signalFactory});
+  f.elements.get('#autoFind').click();f.connect();
+  const room={type:'room-announce',roomId:'room_87654321',name:'Friendly',build:'0.10.4.0'};
+  f.emit({...room,full:false});
+  assert.equal(f.elements.get('#autoRooms').children[0].disabled,false);
+  f.emit({...room,full:true});
+  const occupied=f.elements.get('#autoRooms').children[0];
+  assert.equal(occupied.disabled,true);
+  assert.match(occupied.textContent,/IN MATCH/);
+  occupied.click();
+  assert.equal(f.packets.some(p=>p.type==='join'),false);
+  assert.match(f.elements.get('#autoStatus').textContent,/already playing/);
+  f.emit({...room,full:false});
+  const open=f.elements.get('#autoRooms').children[0];
+  assert.equal(open.disabled,false);
+  open.click();
+  assert.equal(f.packets.at(-1).type,'join');
+  dispose();
+ }finally{f.cleanup()}
+});
+test('LAN broker publishes occupancy on approval, new discovery and guest departure',()=>{
+ const fs=require('node:fs');
+ const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
+ assert.match(server,/function announceRoom\(room\)[^\n]*full:!!room\.guest/);
+ assert.match(server,/room\.guest=req\.guest;announceRoom\(room\)/);
+ assert.match(server,/msg\?\.type==='guest-left'/);
+ assert.match(server,/full:!!room\.guest/);
+});

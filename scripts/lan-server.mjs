@@ -27,7 +27,9 @@ const MAX_ROOMS=128,MAX_PENDING_PER_GUEST=1,MAX_PENDING_PER_ROOM=1;
 const MAX_MESSAGES_PER_WINDOW=120,WINDOW_MS=60000,MAX_CONNECTIONS_PER_IP=8;
 function ipOf(request){return lanClientIp(request,{hosted:signalPolicy.mode==='hosted'})}
 function sameSubnet(a,b){return signalPolicy.visible(a,b)}
-const send=safeLanSend;
+// Keep room availability synchronized when an approved guest leaves or disconnects.
+const send=(ws,msg)=>{safeLanSend(ws,msg);if(msg?.type==='guest-left'){const room=rooms.get(msg.roomId);if(room)announceRoom(room)}};
+function announceRoom(room){broadcast(room,{type:'room-announce',roomId:room.id,name:room.name,build:room.build,full:!!room.guest})}
 function broadcast(room,msg){for(const [ws,meta] of clients)if(sameSubnet(meta.ip,room.ip))send(ws,msg)}
 function clearHost(ws){for(const [id,room] of rooms)if(room.host===ws){rooms.delete(id);if(room.guest)send(room.guest,{type:'host-left',roomId:id});broadcast(room,{type:'room-remove',roomId:id});for(const [reqId,req] of pending)if(req.roomId===id){send(req.guest,{type:'join-reject',roomId:id,requestId:reqId,reason:'host-left'});pending.delete(reqId)}}}
 const server=http.createServer(async(req,res)=>{
@@ -52,7 +54,7 @@ wss.on('connection',(ws,req)=>{
  send(ws,{type:'welcome',peerId:meta.id});
  if(signalPolicy.mode==='lan')send(ws,{type:'lan-addresses',urls:getLanGameUrls({interfaces:networkInterfaces(),port,bind:host})});
  else send(ws,{type:'discovery-scope',scope:'public-network'});
- for(const room of rooms.values())if(sameSubnet(meta.ip,room.ip))send(ws,{type:'room-announce',roomId:room.id,name:room.name,build:room.build});
+ for(const room of rooms.values())if(sameSubnet(meta.ip,room.ip))send(ws,{type:'room-announce',roomId:room.id,name:room.name,build:room.build,full:!!room.guest});
  ws.on('message',bytes=>{
   const now=Date.now();if(now-meta.windowStart>=WINDOW_MS){meta.windowStart=now;meta.messageCount=0}
   if(++meta.messageCount>MAX_MESSAGES_PER_WINDOW){ws.close(1008,'Signaling rate limit');return}
@@ -68,9 +70,9 @@ wss.on('connection',(ws,req)=>{
    // Switching from guest/pending admission to host must release the old seat first.
    releaseLanGuest(ws,rooms,pending,send);
    const room={id,name:m.name.trim(),build:m.build,host:ws,ip:meta.ip,guest:null};rooms.set(id,room);
-   broadcast(room,{type:'room-announce',roomId:id,name:room.name,build:room.build});send(ws,{type:'host-registered',roomId:id});return;
+   announceRoom(room);send(ws,{type:'host-registered',roomId:id});return;
   }
-  if(m.type==='rooms'){for(const room of rooms.values())if(sameSubnet(meta.ip,room.ip))send(ws,{type:'room-announce',roomId:room.id,name:room.name,build:room.build});return}
+  if(m.type==='rooms'){for(const room of rooms.values())if(sameSubnet(meta.ip,room.ip))send(ws,{type:'room-announce',roomId:room.id,name:room.name,build:room.build,full:!!room.guest});return}
   if(m.type==='leave'){clearHost(ws);releaseLanGuest(ws,rooms,pending,send);return}
   const room=rooms.get(id);if(!room||!sameSubnet(meta.ip,room.ip)){rejectUnavailableJoin(ws,m,send);return;}
   if(m.type==='join'){
@@ -87,7 +89,7 @@ wss.on('connection',(ws,req)=>{
     // A guest may disconnect after requesting admission but before host approval.
     // Never reserve a room seat for a closed socket.
     if(req.guest.readyState!==1){send(ws,{type:'join-cancel',roomId:id,requestId,reason:'guest-left'});return;}
-    room.guest=req.guest;for(const [otherId,other] of pending)if(other.roomId===id){pending.delete(otherId);send(other.guest,{type:'join-reject',roomId:id,requestId:otherId,reason:'room-full'});send(ws,{type:'join-cancel',roomId:id,requestId:otherId})}send(req.guest,{type:'join-accept',roomId:id,requestId});send(ws,{type:'guest-approved',roomId:id,requestId});}
+    room.guest=req.guest;announceRoom(room);for(const [otherId,other] of pending)if(other.roomId===id){pending.delete(otherId);send(other.guest,{type:'join-reject',roomId:id,requestId:otherId,reason:'room-full'});send(ws,{type:'join-cancel',roomId:id,requestId:otherId})}send(req.guest,{type:'join-accept',roomId:id,requestId});send(ws,{type:'guest-approved',roomId:id,requestId});}
    else send(req.guest,{type:'join-reject',roomId:id,requestId});
    return;
   }
