@@ -26,7 +26,9 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
   ws.addEventListener('close',()=>{if(closed||socket!==ws)return;onState('disconnected');scheduleRetry()});
   ws.addEventListener('error',()=>{if(!closed&&socket===ws)onState('error')});
   ws.addEventListener('message',event=>{
-   if(closed||socket!==ws||typeof event.data!=='string'||event.data.length>210000)return;
+   if(closed||socket!==ws||typeof event.data!=='string'||event.data.length>MAX_SIGNAL_FRAME_BYTES)return;
+   // JavaScript string length counts UTF-16 units, not WebSocket UTF-8 bytes.
+   if(signalEncoder.encode(event.data).byteLength>MAX_SIGNAL_FRAME_BYTES)return;
    try{const packet=JSON.parse(event.data);if(packet&&typeof packet==='object'&&!Array.isArray(packet))onEvent(packet)}catch{}
   });
  }

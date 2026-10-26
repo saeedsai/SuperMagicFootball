@@ -6,22 +6,19 @@
 Develop on dev only; promote only an exact fully green SHA through protected main. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and saves.
 
 ## Current checkpoint
-- Candidate 0.11.3.1: LAN/Online P2P browser signaling now bounds outbound JSON/UTF-8 frames and closes a stalled WebSocket when its queued bytes would exceed 512 KiB, triggering existing reconnect. No protocol, roster, save or physics change.
-- Previous P2P-005 0.11.3.0: internet Host/Find with separate room scopes, host consent, WebRTC and manual fallback. Render rollout and physical cross-network play unverified.
-- Baseline dev f6529de5f23561d373be366c9174a0496fc5c42d had Modular QA #40391144323 green and Full #40391144329 in progress (4 Node, 3 Chromium green). Main was a9a6286c26dd4cb51b9907462001a7cf9d18ea99. This does not certify 0.11.3.1.
+- Candidate 0.11.3.2: LAN/Online P2P discovery rejects inbound multibyte Unicode frames exceeding 210000 UTF-8 bytes; previously only UTF-16 length was checked. Focused regression added. No protocol/roster/save changes.
+- Prior 0.11.3.1 baseline dev/main `1bfb5c163cefeb1e6b47e502c905137e1d88dbf0`: dev Modular #40393240315 and Full 4+4 #40393240205 green; main Full #40396672086 and Pages #40396670991 green. Those do not certify the new candidate.
+- Physical two-phone LAN and cross-network P2P not certified. Render broker version/rollout still needs independent verification.
 
 ## Next smallest action
-1. Verify exact new dev SHA Modular and full 4 Node + 4 Chromium; repair failures.
-2. Promote only fully green exact dev head; verify main/Pages hosted bytes.
-3. Confirm Render signaling deployment and scope separation; test two real phones/networks.
-4. Add optional TURN configuration with safe defaults when relay exists.
-5. Continue counterable Tricks, Player Studio and Crown Royals art QA.
+1. Check exact-head 4 Node + 4 Chromium and Modular QA for 0.11.3.2; fix failures.
+2. Promote exact green dev head via protected workflow; verify main/Pages hosted bytes.
+3. Verify Render signaling scopes and deployment; test two real phones.
+4. Implement safe optional TURN configuration only when relay credentials exist.
+5. Continue counterable Tricks, Player Studio and Crown Royals graphics QA.
 
 ## Ownership and exclusions
-No extra branches, force pushes, bypassed security or weakened tests. Edit only this developer checkpoint.
+Only dev/main; no force push, security bypass or weakening tests. Edit only this developer checkpoint.
 
 ## Evidence
-- Focused Unicode, malformed frame, queue boundary and reconnect regression tests added. Exact-head CI and physical acceptance remain to be observed.
-
-## Cleanup
-Keep only dev/main and the sole registered checkpoint; preserve IDs, four controls, offline and saves.
+- Source-executed V8 focused Unicode ingress acceptance/rejection test; CI is authoritative for full Node/browser QA.

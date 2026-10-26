@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.3.1',
+ version:'0.11.3.2',
  date:'2026-10-26',
  notes:Object.freeze([
+  'LAN and Online P2P discovery now reject oversized incoming Unicode signaling frames by actual UTF-8 byte size, not only JavaScript character count. Valid messages continue to work; no changes to gameplay, four controls, rosters, offline play or saves. Two-device LAN and internet acceptance remain pending.',
   'LAN and Online P2P signaling now reject malformed or oversized outbound messages and reconnect stalled WebSockets before their queued data exceeds 512 KiB. Unicode signaling counts actual UTF-8 bytes. Four controls, rosters, offline play and saves are unchanged; physical two-device acceptance is pending.',
   'Quick Match Online P2P now supports automatic internet room discovery, host approval and WebRTC joining through the existing lightweight signaling directory. Both LAN and P2P reuse the same authoritative gameplay and four-button controls. LAN offers a manual connection fallback when automatic discovery is unavailable; internet P2P also offers manual signaling. A signaling directory is necessary for discovery, and restrictive NATs may still need TURN; physical two-device testing is pending.',
   'Fixed a manual LAN/Online P2P session race: a delayed failed host offer or guest negotiation from an abandoned connection can no longer close a newer host session or replace its status. Reset and navigation invalidate outstanding operations; explicit Apply, four controls, saves and offline play are unchanged.',

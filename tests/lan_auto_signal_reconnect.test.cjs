@@ -79,3 +79,17 @@ test('outbound signaling queue limit closes a stalled socket and reconnects',asy
  assert.deepEqual(JSON.parse(second.sent[0]),{type:'rooms'});
  client.close();
 });
+
+test('inbound signaling bounds UTF-8 bytes, not just UTF-16 string length',async()=>{
+ const f=fixture(),client=await f.clientFactory(),socket=FakeSocket.instances[0];socket.open();
+ const valid=JSON.stringify({type:'notice',message:'😀'.repeat(50000)});
+ const oversized=JSON.stringify({type:'notice',message:'😀'.repeat(60000)});
+ assert.ok(valid.length<210000&&new TextEncoder().encode(valid).byteLength<210000);
+ assert.ok(oversized.length<210000&&new TextEncoder().encode(oversized).byteLength>210000);
+ socket.message(valid);socket.message(oversized);
+ assert.equal(f.packets.length,1,'reject oversized Unicode payload before event dispatch');
+ assert.equal(f.packets[0].message.length,100000);
+ socket.message(JSON.stringify({type:'rooms-snapshot',rooms:[]}));
+ assert.deepEqual(f.packets.map(p=>p.type),['notice','rooms-snapshot'],'subsequent valid frames still work');
+ client.close();
+});
