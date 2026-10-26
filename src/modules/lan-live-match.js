@@ -224,7 +224,7 @@ function createLanLiveMatch({peer,role,game,input,field}){
     // The RTC channel can close after ready was checked but before send.
     // Do not advance the guest frame cursor on a failed transmission: retry
     // the same frame if the connection becomes usable again.
-    try { peer.sendGuestInput(frame,held,x,y); }
+    try { if(peer.sendGuestInput(frame,held,x,y)===false)return false; }
     catch { return false; }
     lastSent=frame;
     return true;
