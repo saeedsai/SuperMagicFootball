@@ -1,3 +1,7 @@
+## 2026-10-26 — LAN-068 guest input send refusal (0.10.7.11 candidate)
+- Baseline dev compared against main: 22 commits ahead, main c463780b5f38205d868c64fd9ea16033d8bcfe7c; previous candidate 0.10.7.10. A guest transport send returning false was treated as a successful frame; guard cursor advancement and add source-executed regression for retry of the same numbered frame.
+- Version/About/package/README/cache/policy aligned to 0.10.7.11. CI and production certification not yet established; no physical two-client LAN verification. No roster, four-button, save or offline schema changes.
+
 ## 2026-10-26 14:08 CET — LAN-067 Super Shot trail continuity (0.10.7.10 candidate)
 - Baseline dev 14d2ae1bfa0602c80321413da4f4bbd804c67e37 (0.10.7.9); Modular #40327456911 green; Full #40327456870 had last Chromium shard pending at inspection; main last observed c463780b5f38205d868c64fd9ea16033d8bcfe7c (0.10.7.7).
 - Root cause: guest trail continuation checked matching shot ID and nondecreasing age only. A goal, halftime or teleport could draw ghost streaks across the field. Break on match transition or >240 px discontinuity while preserving authoritative ball coordinates and later valid animation. Regression covers continuity, goal, halftime, resumption and teleport.
