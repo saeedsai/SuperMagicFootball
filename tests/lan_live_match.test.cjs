@@ -398,3 +398,29 @@ test('LAN-062 legacy position-only snapshot clears stale guest animations',async
   assert.equal(p[key],0,'legacy packet must clear '+key);
  assert.equal(guest.ball.x,host.ball.x);
 });
+
+
+test('LAN-063 guest restores ordinary pass motion without stale Super Shot velocity',async()=>{
+ const {captureLanGameState,applyLanGameState}=await load();
+ const host=game(controls()),guest=game(controls());
+ host.clock=.2;host.ball.x+=60;host.ball.y-=30;
+ applyLanGameState(guest,field,captureLanGameState(host,field,110));
+ assert.equal(guest.ball.shot,null);
+ assert.ok(Math.abs(guest.ball.vx-300)<1e-8);
+ assert.ok(Math.abs(guest.ball.vy+150)<1e-8);
+ host.ball.shot={id:'nuts',color:'#ffc15f',trail:'#ed763c'};
+ host.ball.age=.3;host.ball.vx=950;host.ball.vy=-90;host.clock=.3;
+ applyLanGameState(guest,field,captureLanGameState(host,field,111));
+ assert.equal(guest.ball.shot.id,'nuts');assert.equal(guest.ball.vx,950);
+ host.ball.shot=null;host.clock=.4;
+ applyLanGameState(guest,field,captureLanGameState(host,field,112));
+ assert.equal(guest.ball.shot,null);assert.deepEqual(guest.ball.trail,[]);
+ assert.equal(guest.ball.vx,0,'ended Super Shot cannot leave a phantom normal streak');
+ assert.equal(guest.ball.vy,0);assert.equal(guest.ball.age,0);
+ host.ball.owner=host.players[0];host.ball.x+=40;host.clock=.5;
+ applyLanGameState(guest,field,captureLanGameState(host,field,113));
+ assert.equal(guest.ball.vx,0,'possessed ball must not inherit fake pass velocity');
+ host.ball.owner=null;host.ball.x+=50;
+ applyLanGameState(guest,field,captureLanGameState(host,field,114));
+ assert.equal(guest.ball.vx,0,'frozen clock cannot create a velocity spike');
+});

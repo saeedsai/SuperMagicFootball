@@ -92,7 +92,16 @@ function applyLanGameState(game,field,state){
     game.ball.shot={id:fx.id,color:fx.color,trail:fx.trail};
     game.ball.age=fx.age;game.ball.vx=fx.vx;game.ball.vy=fx.vy;
   }else{
-    game.ball.shot=null;game.ball.trail=[];
+    // Normal passes need host-derived motion for streaks and camera tracking.
+    // Never reuse a finished Super Shot's velocity on an ordinary ball.
+    const elapsed=state.clockMs/1000-game.clock;
+    if(!game.ball.owner && elapsed>0 && elapsed<=.75){
+      game.ball.vx=lanLiveClamp((game.ball.x-oldBall.x)/elapsed,-1600,1600);
+      game.ball.vy=lanLiveClamp((game.ball.y-oldBall.y)/elapsed,-1600,1600);
+    }else{
+      game.ball.vx=0;game.ball.vy=0;
+    }
+    game.ball.age=0;game.ball.shot=null;game.ball.trail=[];
   }
   // Replace, never merge, to prevent cleared/expired traps persisting on guests.
   // Old position-only snapshots have no hazards and render none.

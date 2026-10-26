@@ -1,3 +1,8 @@
+## 2026-10-26 13:03 CET — LAN-063 guest ordinary ball velocity and stale Super Shot cleanup (0.10.7.6 candidate)
+- Baseline dev b9a694e95d0b58a2a8069c057dd725a1b5f9040b; main e924c548824e2cab4350435caf04957e40b7b675. Prior Modular #40315886365 and Full #40315886392 failed solely missing Cleanup checkpoint section (835/836 Node passed); restored required heading.
+- Guest normal-ball renderer/camera use vx/vy, but previous LAN bridge updated them only during Super Shots. Normal passes lacked host-derived motion and finished Super Shots could leave a false ordinary streak. Derive bounded velocity from recent host ball position/time for unowned ordinary ball, reset when possessed/frozen/stale, and clear old shot age. Host physics, four controls, rosters, saves and offline untouched.
+- Added LAN-063 Node regression for pass motion, shot cleanup, owned ball and frozen clock. About/package/README/cache/policy/shared/checkpoint aligned. Exact-head 4+4, Modular QA, protected promotion and two-phone acceptance pending.
+
 ## 2026-10-26 — LAN-062 legacy guest pose fallback (0.10.7.5 candidate)
 - Starting dev/main e924c548824e2cab4350435caf04957e40b7b675, dev Modular #40312959115, dev Full #40312959119, Pages #40315072955 green. Production Full #40315071630 queued at inspection.
 - Legacy position-only snapshot inference previously retained stale jump height, slide/stun and goalkeeper dive timing/direction. Guest fallback now resets six render fields; authoritative player/ball positions remain unchanged and host physics untouched.

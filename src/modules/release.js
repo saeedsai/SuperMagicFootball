@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.10.7.5',
+ version:'0.10.7.6',
  date:'2026-10-26',
  notes:Object.freeze([
+  'LAN guests reconstruct ordinary ball-pass velocity from recent host positions for accurate streaks and camera tracking. Finished Super Shots clear stale motion and animation age; possessed balls and paused clocks do not invent speed. Offline physics, controls and saves are unchanged.',
   'LAN guests using legacy position-only snapshots now clear stale jump, slide, stun and goalkeeper dive effects instead of preserving old animation state. Modern host visual snapshots, offline physics, four-button controls and saves are unchanged.',
   'LAN guest goalkeeper dives now use the host shot-lane direction, so dive poses and save streaks point the same way on both devices. Legacy visual snapshots still decode; host physics, offline gameplay and saves are unchanged. Physical two-phone visual acceptance remains pending.',
   'LAN guests now see host-authoritative Banana Peel and Ice Patch Magic Trick traps, including arming countdowns and removal after disarm or expiry. Legacy snapshots remain compatible; guest gameplay physics and saves are unchanged. Physical two-phone acceptance remains pending.',
