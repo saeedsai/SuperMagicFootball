@@ -18,5 +18,11 @@ One bounded increment hourly on existing dev. Only dev/main; no forced pushes, p
 4. Advance another independent Player Studio or counterable Trick feature on dev regardless of deployment.
 5. Promote only exact green dev head via protected pipeline; verify main/Pages hosted bytes.
 
-## Exclusions
-Only own checkpoint writable, under 4 KiB. Never create extra branches or edit other agents' memory.
+## Ownership and exclusions
+Only this agent's own checkpoint is writable. Never create extra branches or edit other agents' memory.
+
+## Evidence
+LAN Join regression passed in both failing CI runs #40262270255 and #40262321384; overall CI failed because checkpoint headings violated tests/project_memory_contract.test.cjs. Repairing headings without changing player-facing version.
+
+## Cleanup
+Keep checkpoint under 4 KiB, only dev/main and no force pushes.
