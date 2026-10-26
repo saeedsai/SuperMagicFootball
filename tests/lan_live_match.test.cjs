@@ -424,3 +424,17 @@ test('LAN-063 guest restores ordinary pass motion without stale Super Shot veloc
  applyLanGameState(guest,field,captureLanGameState(host,field,114));
  assert.equal(guest.ball.vx,0,'frozen clock cannot create a velocity spike');
 });
+
+
+test('LAN-065 large ball reposition does not invent guest pass velocity',async()=>{
+ const {captureLanGameState,applyLanGameState}=await load();
+ const host=game(controls()),guest=game(controls());
+ host.clock=.2;host.ball.x+=60;
+ applyLanGameState(guest,field,captureLanGameState(host,field,120));
+ assert.ok(guest.ball.vx>0,'normal pass still gets a motion streak');
+ host.clock=.3;host.ball.x+=320;host.ball.y+=100;
+ applyLanGameState(guest,field,captureLanGameState(host,field,121));
+ assert.equal(guest.ball.x,host.ball.x,'authoritative position is unchanged');
+ assert.equal(guest.ball.vx,0,'kickoff/goal relocation cannot create fake speed');
+ assert.equal(guest.ball.vy,0);
+});
