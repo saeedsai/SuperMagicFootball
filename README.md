@@ -1,3 +1,5 @@
+> **0.10.6.2 release candidate (26 October 2026):** LAN Find Games now recovers after 25 seconds without host approval: the stale join is cancelled, discovery resumes, and guests can retry without reopening the lobby. Late approvals cannot revive an expired request. Preserves four controls, 223 teams/2676 players, six formations, ten Career/Cup slots, SD09, offline play and existing saves. Exact-head QA, Render signaling update and physical two-phone certification remain separate gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.10.6.1 release candidate (26 October 2026):** Fixed a LAN guest admission failure where an unsuccessful WebSocket Join send could leave Find Games indefinitely waiting for approval and block room refresh. Failed or thrown sends now clear the pending request and permit immediate retry without restarting the lobby. Preserves four controls, 223 teams/2676 players, six formations, ten Career/Cup slots, SD09, offline play and existing saves. Exact-head CI, hosted broker deployment and physical two-phone certification are separate gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.10.6.0 release candidate (26 October 2026):** LAN Find Games now replaces stale room cards using a complete network-scoped directory snapshot on each periodic refresh, rather than accumulating announcements indefinitely. Invalid responses are ignored and pending host approval is preserved. No new buttons, roster changes, save migrations or offline dependencies. Exact-head 4 Node + 4 Chromium, Modular QA, protected promotion, hosted broker update and physical two-phone gameplay remain separate certification gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -58,7 +60,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.10.6.1 · Modular source project
+# Supermagic Football · v0.10.6.2 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 

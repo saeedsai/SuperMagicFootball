@@ -1,3 +1,7 @@
+## 2026-10-26 05:07 CET — Guest admission timeout recovery (0.10.6.2 dev candidate)
+- Previous exact dev/main `3e13616fb8fbf536f6d4c6d5adf5cdad13f60e50` passed dev Modular #40262382280 and 4+4 Full #40262382251, main Full #40262713234 and Pages #40262715556. Render autoDeploy=yes but only initial c871ee69 live; no later deploy events.
+- LAN guest join now times out after 25s without approval, sends leave/cancel, resumes room discovery and allows retry; late approvals ignored. Added executable regression. About/package/README/cache/version policy aligned; four controls, roster, saves, offline unchanged. New exact-head CI, hosted backend and physical phone validation pending.
+
 ## 2026-10-26 04:03 CET — Failed LAN Join send recovery (0.10.6.1 dev candidate)
 - Pre-increment exact dev/main `85f006c348407b9e6167008f01dafeb6d79258ba`: dev Modular #40257013543, dev Full 4+4 #40257013601, main Full #40257318914 and Pages #40257318737 all succeeded. The 0.10.6.1 candidate requires its own exact-head CI.
 - Fixed guest admission: failed/throwing WebSocket Join send no longer sets phantom pending request or blocks directory reconciliation. Added regression for false, throw, snapshot cleanup and immediate retry. Roster, controls, offline and saves unchanged. Updated About-only release, README, package, service-worker cache and version policy.

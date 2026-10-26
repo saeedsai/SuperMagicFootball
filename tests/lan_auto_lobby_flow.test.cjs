@@ -184,3 +184,29 @@ test('failed LAN join send does not strand guest admission and allows immediate 
   dispose();
  }finally{f.cleanup()}
 });
+
+test('LAN unanswered host approval expires locally and allows a fresh join',async()=>{
+ const f=setup(),timers=[];
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.10.6.2',signalFactory:f.signalFactory,
+   setTimeoutImpl:(fn,ms)=>{const timer={fn,ms,cleared:false};timers.push(timer);return timer},
+   clearTimeoutImpl:timer=>{timer.cleared=true}});
+  f.elements.get('#autoFind').click();f.connect();
+  const room={type:'room-announce',roomId:'room_12345678',name:'Friendly',build:'0.10.6.2',full:false};
+  f.emit(room);f.elements.get('#autoRooms').children[0].click();
+  const first=f.packets.at(-1);assert.equal(first.type,'join');
+  assert.equal(timers[0].ms,25000);
+  timers[0].fn();
+  assert.deepEqual(f.packets.slice(-2).map(p=>p.type),['leave','rooms']);
+  assert.match(f.elements.get('#autoStatus').textContent,/approval timed out/);
+  f.emit({type:'join-accept',requestId:first.requestId});
+  assert.doesNotMatch(f.elements.get('#autoStatus').textContent,/Approved/);
+  f.elements.get('#autoRooms').children[0].click();
+  const second=f.packets.at(-1);assert.equal(second.type,'join');
+  assert.notEqual(second.requestId,first.requestId);
+  f.emit({type:'join-accept',requestId:second.requestId});
+  assert.equal(timers[1].cleared,true,'approval cancels timeout');
+  dispose();
+ }finally{f.cleanup()}
+});

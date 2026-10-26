@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.10.6.1',
+ version:'0.10.6.2',
  date:'2026-10-26',
  notes:Object.freeze([
+  'LAN guest admission now recovers after 25 seconds without host approval: a stale join is cancelled, room discovery resumes and Join can be retried. Late approvals cannot revive the expired request. Physical two-phone certification remains outstanding.',
   'LAN Find Games now recovers immediately if a join request cannot be sent: the guest is not left waiting for approval that never started, room refresh continues, and retry works without reopening the lobby. Two-phone and hosted signaling certification remain outstanding.',
   'Find Games now reconciles each periodic LAN directory refresh with an authoritative, network-scoped room list. Closed or missed rooms disappear without reopening the lobby, occupied rooms stay disabled, and in-progress join requests are protected. Hosted signaling deployment and physical two-phone acceptance remain pending.',
   'Find Games automatically refreshes LAN room availability every ten seconds while browsing, recovering missed room announcements without restarting discovery. Refresh pauses during a join request and stops when leaving the lobby; four buttons, rosters, offline play and saves are unchanged.',
