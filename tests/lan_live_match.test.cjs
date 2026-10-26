@@ -518,3 +518,30 @@ test('LAN-069 host restores a fresh guest button edge after RTC disconnect',asyn
  assert.equal(input.pressed[1].pass,false,'continuous new hold still does not retrigger');
  run.dispose();
 });
+
+
+test('LAN-070 guest rejects disconnected snapshots and accepts restarted host ticks',async()=>{
+ const {createLanLiveMatch,captureLanGameState}=await load();
+ const input=controls(),host=game(controls()),guest=game(input),sent=[];
+ const peer={ready:true,subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
+  sendGuestInput(frame){sent.push(frame);return {frame};}};
+ const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field});
+ peer.receive(captureLanGameState(host,field,120));
+ assert.equal(run.step(.016),true);
+ assert.deepEqual(sent,[124]);
+ peer.ready=false;
+ host.score=[9,0];
+ peer.receive(captureLanGameState(host,field,121));
+ assert.deepEqual(guest.score,[0,0],'closed RTC cannot mutate guest game');
+ assert.equal(run.step(.016),false);
+ assert.equal(run.latestTick,-1,'old host tick is forgotten after disconnect');
+ peer.ready=true;
+ assert.equal(run.step(.016),false,'reconnection waits for a fresh snapshot');
+ host.score=[2,0];
+ peer.receive(captureLanGameState(host,field,0));
+ assert.equal(run.latestTick,0,'restarted host tick zero must be accepted');
+ assert.deepEqual(guest.score,[2,0]);
+ assert.equal(run.step(.016),true);
+ assert.deepEqual(sent,[124,4],'new session sends against the fresh host timeline');
+ run.dispose();
+});
