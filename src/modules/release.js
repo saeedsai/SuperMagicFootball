@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.10.7.13',
+ version:'0.10.7.14',
  date:'2026-10-26',
  notes:Object.freeze([
+  'LAN guest input synchronization now observes RTC readiness changes immediately, including disconnect/reconnect between animation frames, and waits for a new host snapshot before sending. Four controls, offline play and saves are unchanged; physical two-phone acceptance remains pending.',
   'LAN guests now discard stale host tick/input cursors after RTC disconnect, reject snapshots while offline, and wait for a fresh authoritative snapshot on reconnect. With a fresh transport session, the guest bridge can accept host tick zero; offline gameplay, four buttons and saves are unchanged.',
   'LAN host now clears stale held-button edges when the guest RTC transport disconnects. After reconnecting, a new guest press registers normally without repeating continuous holds; four controls, saves and offline gameplay remain unchanged.',
   'LAN guest controls now retry a frame when a transport send explicitly returns false instead of silently consuming the frame number. Four controls, roster, host authority, offline play and saves are unchanged.',
