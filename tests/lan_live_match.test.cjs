@@ -438,3 +438,22 @@ test('LAN-065 large ball reposition does not invent guest pass velocity',async()
  assert.equal(guest.ball.vx,0,'kickoff/goal relocation cannot create fake speed');
  assert.equal(guest.ball.vy,0);
 });
+
+
+test('LAN-066 guest suppresses phantom ball streak across goals and halftime',async()=>{
+ const {captureLanGameState,applyLanGameState}=await load();
+ const host=game(controls()),guest=game(controls());
+ host.clock=.2;host.ball.x+=40;
+ applyLanGameState(guest,field,captureLanGameState(host,field,130));
+ assert.ok(guest.ball.vx>0,'normal short pass animates');
+ host.clock=.3;host.score=[1,0];host.ball.x+=40;
+ applyLanGameState(guest,field,captureLanGameState(host,field,131));
+ assert.equal(guest.ball.vx,0,'goal resets ordinary motion');
+ assert.equal(guest.ball.x,host.ball.x);
+ host.clock=.4;host.half=2;host.ball.x+=40;
+ applyLanGameState(guest,field,captureLanGameState(host,field,132));
+ assert.equal(guest.ball.vx,0,'halftime does not invent a pass');
+ host.clock=.5;host.ball.x+=40;
+ applyLanGameState(guest,field,captureLanGameState(host,field,133));
+ assert.ok(guest.ball.vx>0,'normal motion resumes after halftime');
+});
