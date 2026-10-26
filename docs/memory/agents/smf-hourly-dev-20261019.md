@@ -22,3 +22,6 @@ One bounded tested increment each hourly run on existing dev. Only dev/main. No 
 
 ## Ownership and exclusions
 Only this agent checkpoint writable; no additional branches or permission bypass.
+
+## Cleanup
+- Keep checkpoint under 4 KiB; Git history is audit, no stale temporary files or extra branches.
