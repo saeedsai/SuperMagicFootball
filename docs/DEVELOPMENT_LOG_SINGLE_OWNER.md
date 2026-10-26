@@ -1,3 +1,8 @@
+## 2026-10-26 — P2P-005 auto-discovery and shared LAN/P2P multiplayer (0.11.3.0 candidate)
+- Automatic internet P2P Host/Find and host-approved joining reuse hosted signaling directory with scope 'internet-p2p'; LAN scopes remain separate and local. Only the signaling directory relays room/SDP messages; match simulation remains directly host-authoritative over WebRTC. STUN enabled for online peer connections; TURN-required NATs remain unsupported.
+- Added always-available manual offer/answer fallback to LAN and P2P Quick Match. Top-level future server-backed Online section untouched. Central gameplay bridge is shared; no rosters, buttons, six formations, ten slots, SD09 or offline/save migration.
+- Source-executed checks covered LAN/P2P registration and snapshot scoping, UI syntax and manual fallback. Full exact-head 4 Node + 4 Chromium, Modular QA, hosted signaling rollout and real two-device acceptance not yet independently certified; protected promotion only if green.
+
 ## 2026-10-26 20:06 CET — ART-CI-001 Concept Hero QA snapcraft dependency repair (no player-version bump)
 - On dev candidate 0.11.2.1, Concept Hero Playable #40383211283 failed during Ubuntu `apt-get install chromium`: snap `mesa-2404` assertion GET returned HTTP 408; no game/graphics tests ran. This is an external snapcraft install failure, not a proven gameplay regression.
 - Switch this workflow to Playwright-managed Chromium with `install --with-deps` and a compatibility symlink for historical browser scripts, matching the already-green Full Census browser setup. Add a Node regression contract forbidding the snap install. No permissions, CI gates, version, runtime, roster, controls or saves changed.
