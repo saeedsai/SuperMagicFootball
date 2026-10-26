@@ -11,12 +11,18 @@ One bounded tested feature per run on dev. Only dev/main; no bypass, force-push 
 - Render signaling deployment remained at c871ee69 at last verified inspection; auto-deploy issue and physical two-phone LAN remain open.
 - Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves.
 
-## Next
+## Next smallest action
 1. Finish new exact-head 4 Node+4 Chromium and Modular QA; fix red jobs.
 2. Diagnose Render GitHub integration and verify deployed signaling commit.
 3. Certify two-client LAN host consent, kickoff, sync and reconnect.
 4. Continue counterable Tricks, Player Studio and Crown Royals graphics.
 5. Promote only green exact dev head through protected pipeline; verify main/Pages hosted bytes.
 
-## Ownership
+## Ownership and exclusions
 Only this checkpoint writable; no other agent memory, branch or force push. Candidate is not certified release.
+
+## Evidence
+Focused source checks passed; new exact-head CI is required. 0.10.6.4 previous head had green 4+4 and Modular QA. Hosted Render and physical two-phone LAN remain unverified.
+
+## Cleanup
+Checkpoint stays below 4 KiB; no cross-agent memory references.
