@@ -1129,3 +1129,8 @@ Validate remote guest DataChannel interface before binding; close malformed chan
 - New candidate CI/hosted Pages verification pending. Render broker still reports only original deployed commit `c871ee69`; real two-phone LAN remains uncertified. Continue on dev regardless; no branch or protection bypass.
 
 - CI repair for STUDIO-ELITE-OVR: exact-head #40289773164 preflight and #40289773186 Modular failed on outdated source-shape assertion in `tests/studio_dribble_equipment.test.cjs:92` expecting the old ternary predicate. Updated contract to verify both rating and OVR paths without restoring the bug. Previous failing runs do not certify new head; rerun full 4+4 and Modular QA. No player-facing version bump (test/docs only).
+
+### 2026-10-26 12:05 CET — LAN-061 goalkeeper dive direction (0.10.7.4 candidate)
+- Baseline dev/main `06933ea7b9f15968ce1576db50bca1ca54eedada` (0.10.7.3); Modular #40304257110, dev Full 4+4 #40304257177, main Full #40304857742 and Pages #40304856924 green.
+- Render `ARTPOSE.keeperPose(...,p.diveDy,...)` and save streaks use diveDy; guest previously omitted it. Host now transmits signed normalized diveY; guest applies it and clears stale direction for older visual packets. Codec accepts both formats, rejects invalid values. Regression covers both directions, recovery and legacy compatibility.
+- Aligned 0.10.7.4 package/About/README/policy/shared memory and rotated SW cache. No host physics, controls, rosters, saves or offline behavior changed. Exact-head CI and physical two-phone acceptance pending.

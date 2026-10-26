@@ -83,3 +83,18 @@ test('LAN-060 validates and freezes bounded Magic Trick ground traps',async()=>{
  const all={...p,hazards:Array.from({length:24},(_,i)=>({...banana,team:i%2,x:i/24*2-1}))};
  assert.ok(Buffer.byteLength(encodeLanSnapshot(all))<=8192);
 });
+
+
+test('LAN-061 validates signed goalkeeper dive direction without breaking old visual snapshots',async()=>{
+ const {encodeLanSnapshot,decodeLanSnapshot}=await load(),p=snapshot();
+ const old={z:0,face:1,action:'keeperDive',timer:.42,anim:1,stun:0,slide:0,dive:.2};
+ p.players[0].visual={...old,diveY:-.8};
+ assert.equal(decodeLanSnapshot(encodeLanSnapshot(p)).players[0].visual.diveY,-.8);
+ for(const invalid of [1.1,-1.1,Infinity,NaN,'left',null]){
+  p.players[0].visual={...old,diveY:invalid};
+  assert.throws(()=>encodeLanSnapshot(p),TypeError);
+ }
+ p.players[0].visual=old;
+ assert.deepEqual(decodeLanSnapshot(encodeLanSnapshot(p)).players[0].visual,old,
+   'existing 0.10.7.2/.3 visual packets remain accepted');
+});

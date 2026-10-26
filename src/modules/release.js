@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.10.7.3',
+ version:'0.10.7.4',
  date:'2026-10-26',
  notes:Object.freeze([
+  'LAN guest goalkeeper dives now use the host shot-lane direction, so dive poses and save streaks point the same way on both devices. Legacy visual snapshots still decode; host physics, offline gameplay and saves are unchanged. Physical two-phone visual acceptance remains pending.',
   'LAN guests now see host-authoritative Banana Peel and Ice Patch Magic Trick traps, including arming countdowns and removal after disarm or expiry. Legacy snapshots remain compatible; guest gameplay physics and saves are unchanged. Physical two-phone acceptance remains pending.',
   'LAN guests now follow host jump height, player action and animation timing, and transformed Super Shot ball colors and trails. Legacy snapshots remain supported; physical two-phone visual QA remains pending.',
   'Player Studio now honors either legacy rating 90+ or current positional overall 90+ when unlocking elite Magic Trick, Super Shot and Super Defence choices. Edited high-skill players are no longer incorrectly locked by a lower legacy rating; no existing equipment, saves, rosters or controls are changed.',

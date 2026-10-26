@@ -11,6 +11,7 @@ function requireField(field) {
 function lanLiveAxis(value,min,span){return lanLiveClamp((value-min)/span*2-1,-1,1)}
 function lanLivePosition(value,min,span){return min+(value+1)*span/2}
 const visNum=(n,max)=>lanLiveClamp(Number.isFinite(n)?n:0,0,max);
+const visDirection=n=>lanLiveClamp(Number.isFinite(n)?n:0,-1,1);
 // Trap rendering needs sub-pixel precision, not noisy 16-digit physics floats.
 const trapWire=n=>Math.round(n*1000)/1000;
 function captureLanGameState(game,field,tick){
@@ -21,7 +22,8 @@ function captureLanGameState(game,field,tick){
     visual:{z:visNum(p.z/400,1),face:p.face<0?-1:1,
       action:typeof p.action==='string'&&/^[A-Za-z][A-Za-z0-9]{0,23}$/.test(p.action)?p.action:'idle',
       timer:visNum(p.actionTimer,10),anim:visNum(p.anim,36000),
-      stun:visNum(p.stun,10),slide:visNum(p.slideTimer,10),dive:visNum(p.diveElapsed,10)}
+      stun:visNum(p.stun,10),slide:visNum(p.slideTimer,10),dive:visNum(p.diveElapsed,10),
+      diveY:visDirection(p.diveDy)}
   }));
   // Magic Trick ground traps are rendered from host physics; guests never
   // simulate collision/disarm. A full empty list removes expired traps.
@@ -59,6 +61,9 @@ function applyLanGameState(game,field,state){
       const v=item.visual;
       p.face=v.face;p.z=v.z*400;p.action=v.action;p.actionTimer=v.timer;
       p.anim=v.anim;p.stun=v.stun;p.slideTimer=v.slide;p.diveElapsed=v.dive;
+      // Keeper pose and directional save streaks both read diveDy.
+      // Older visual snapshots omit diveY and safely render neutral dives.
+      p.diveDy=Number.isFinite(v.diveY)?v.diveY:0;
     }else{
       if(Math.abs(dx)>0.15)p.face=dx>0?1:-1;
       p.action=Math.hypot(dx,dy)>0.2?'run':'idle';

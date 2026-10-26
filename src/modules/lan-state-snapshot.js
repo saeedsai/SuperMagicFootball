@@ -14,10 +14,13 @@ const safe = n => Number.isSafeInteger(n) && n >= 0;
 const position = n => Number.isFinite(n) && n >= -1 && n <= 1;
 // LAN-059: bounded optional visual payload; old position-only packets still work.
 const finite=(n,max)=>Number.isFinite(n)&&n>=0&&n<=max;
-const visual=v=>keys(v,['z','face','action','timer','anim','stun','slide','dive'])&&
+// LAN-061: diveY is optional for compatibility with 0.10.7.2/.3 peers.
+const visual=v=>(keys(v,['z','face','action','timer','anim','stun','slide','dive'])||
+  keys(v,['z','face','action','timer','anim','stun','slide','dive','diveY']))&&
   finite(v.z,1)&&[1,-1].includes(v.face)&&typeof v.action==='string'&&
   /^[A-Za-z][A-Za-z0-9]{0,23}$/.test(v.action)&&finite(v.timer,10)&&
-  finite(v.anim,36000)&&finite(v.stun,10)&&finite(v.slide,10)&&finite(v.dive,10);
+  finite(v.anim,36000)&&finite(v.stun,10)&&finite(v.slide,10)&&finite(v.dive,10)&&
+  (!Object.hasOwn(v,'diveY')||position(v.diveY));
 // LAN-060: bounded host-authoritative Magic Trick trap visuals.
 const hazard=v=>keys(v,['kind','team','x','y','life','arm'])&&
   ['banana','ice'].includes(v.kind)&&[0,1].includes(v.team)&&

@@ -357,3 +357,27 @@ test('LAN-060 maximal roster and trap snapshots fit bounded wire budget',async()
  assert.ok(Buffer.byteLength(wire)<=MAX_SNAPSHOT_BYTES,
   'full player pose plus maximum traps must not overflow RTC snapshot codec');
 });
+
+
+test('LAN-061 guest mirrors goalkeeper dive direction and clears stale dive pose',async()=>{
+ const {captureLanGameState,applyLanGameState}=await load();
+ const host=game(controls()),guest=game(controls());
+ host.players[0].keeper=true;guest.players[0].keeper=true;
+ Object.assign(host.players[0],{action:'keeperDive',actionTimer:.42,diveElapsed:.21,diveDy:-.8});
+ const left=captureLanGameState(host,field,70);
+ assert.equal(left.players[0].visual.diveY,-.8);
+ applyLanGameState(guest,field,left);
+ assert.equal(guest.players[0].diveDy,-.8,'guest must reach toward the host shot lane');
+ assert.equal(guest.players[0].diveElapsed,.21);
+ Object.assign(host.players[0],{action:'keeperDiveCatch',diveDy:.65,diveElapsed:.34});
+ applyLanGameState(guest,field,captureLanGameState(host,field,71));
+ assert.equal(guest.players[0].diveDy,.65,'opposite-direction dive updates immediately');
+ host.players[0].action='keeperRecover';host.players[0].diveDy=0;
+ applyLanGameState(guest,field,captureLanGameState(host,field,72));
+ assert.equal(guest.players[0].diveDy,0,'recovery clears previous direction');
+ const legacy=captureLanGameState(host,field,73);
+ delete legacy.players[0].visual.diveY;
+ guest.players[0].diveDy=.8;
+ applyLanGameState(guest,field,legacy);
+ assert.equal(guest.players[0].diveDy,0,'legacy visual packets do not leave stale dive direction');
+});
