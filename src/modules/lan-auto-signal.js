@@ -32,7 +32,7 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
   socket=ws;
   ws.addEventListener('open',()=>{if(closed||socket!==ws)return;attempt=0;onState('connected')});
   ws.addEventListener('close',()=>{if(closed||socket!==ws)return;onState('disconnected');scheduleRetry()});
-  ws.addEventListener('error',()=>{if(!closed&&socket===ws)onState('error')});
+  ws.addEventListener('error',()=>{if(closed||socket!==ws)return;onState('error');recycleSocket(1011,'Signaling transport error')});
   ws.addEventListener('message',event=>{
    if(closed||socket!==ws||typeof event.data!=='string'||event.data.length>MAX_SIGNAL_FRAME_BYTES)return;
    // JavaScript string length counts UTF-16 units, not WebSocket UTF-8 bytes.
@@ -59,7 +59,7 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
     catch{recycleSocket(1011,'Signaling send failed');return false}
    }catch{return false}
   },
-  close(){if(closed)return;closed=true;if(retry!==null){clearTimeoutImpl(retry);retry=null}socket?.close()},
+  close(){if(closed)return;closed=true;if(retry!==null){clearTimeoutImpl(retry);retry=null}const stale=socket;socket=null;try{stale?.close()}catch{}},
   get ready(){return !closed&&socket?.readyState===1}
  });
 }

@@ -122,3 +122,32 @@ test('queue overflow retries when WebSocket close itself throws',async()=>{
  assert.equal(client.send({type:'rooms'}),true);
  client.close();
 });
+
+test('WebSocket error without close event retires the connection and retries',async()=>{
+ const f=fixture(),client=await f.clientFactory(),first=FakeSocket.instances[0];first.open();
+ first.close=()=>{throw Error('transport close failed')};
+ first.dispatchEvent(new Event('error'));
+ assert.equal(client.ready,false,'failed socket is retired immediately');
+ assert.deepEqual(f.states,['connected','error','disconnected']);
+ assert.equal(f.callbacks.length,1,'a retry is scheduled even without close');
+ first.message(JSON.stringify({type:'stale'}));
+ first.dispatchEvent(new Event('close'));
+ assert.deepEqual(f.packets,[],'old socket messages are ignored');
+ assert.equal(f.callbacks.length,1,'stale close does not schedule a second retry');
+ f.callbacks[0].fn();
+ const second=FakeSocket.instances[1];second.open();
+ assert.equal(client.send({type:'rooms'}),true);
+ assert.deepEqual(JSON.parse(second.sent[0]),{type:'rooms'});
+ client.close();
+});
+test('lobby shutdown tolerates WebSocket close exceptions and ignores stale events',async()=>{
+ const f=fixture(),client=await f.clientFactory(),first=FakeSocket.instances[0];first.open();
+ first.close=()=>{throw Error('shutdown close failed')};
+ assert.doesNotThrow(()=>client.close());
+ assert.equal(client.ready,false);
+ first.message(JSON.stringify({type:'late'}));
+ first.dispatchEvent(new Event('error'));
+ assert.deepEqual(f.packets,[]);
+ assert.equal(f.callbacks.length,0,'explicit close never schedules reconnect');
+ assert.equal(client.send({type:'rooms'}),false);
+});

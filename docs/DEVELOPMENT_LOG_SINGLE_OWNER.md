@@ -1,3 +1,9 @@
+## 2026-10-26 23:59 CET — LAN/P2P error-event lifecycle recovery (0.11.3.4 candidate)
+- Exact baseline dev/main `3ee63dcb97cec64424b452bd1f0a38bda9fb120b`; dev Modular #40410020795 and Full 4 Node + 4 Chromium #40410021242 green; main Full/hosted smoke #40411790991 and Pages #40411791238 green. No open PR; only dev/main branches.
+- WebSocket error events could leave a nonfunctional connection ready indefinitely if no close event arrived. Recycle immediately on error and retry even if socket close throws; manual lobby close also tolerates close errors and detaches stale callbacks. Added two focused lifecycle regression tests.
+- Candidate 0.11.3.4 aligns About/package/README/offline cache/policy. No changes to 223 teams/2676 players, six formations, four controls, Career/Cup ten slots, SD09, offline play or save schema. Exact-head CI, protected promotion, Pages bytes, Render broker and two-device play remain independent gates.
+- Next five: exact-head Modular and 4+4 CI; protected exact-head promotion; Pages hosted smoke; Render and two-device LAN/P2P acceptance; Player Studio/Tricks/graphics increment.
+
 ## 2026-10-26 23:05 CET — LAN/P2P send-error recovery (0.11.3.3 candidate)
 - Baseline dev/main `16e46a7816654682ff6b7e6c19cfa15a2a84c6e3`: dev Modular #40401375792, dev Full 4 Node + 4 Chromium #40401375422, main Full/hosted smoke #40402612619, Pages #40402613182 green. No open PR, only dev/main branches.
 - A WebSocket send exception previously returned false but left a falsely ready socket; queue overflow relied on a close event. Retire socket before closing, ignore stale events, schedule reconnect even when close throws. Two focused regression tests added.

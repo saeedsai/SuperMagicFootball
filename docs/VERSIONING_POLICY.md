@@ -1,6 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.11.3.3
+# SuperMagicFootball release/version policy — About-only 0.11.3.4
 
-**Effective 21 October 2026; updated 26 October 2026 for candidate 0.11.3.3.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 26 October 2026 for candidate 0.11.3.4.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
 ## One authoritative player-facing release
 
@@ -77,3 +77,5 @@ Saved data retains `legend_` storage keys, Career save vault, JSON sections and 
 **0.11.3.2 dev candidate (26 October 2026):** LAN/Online P2P signaling now rejects oversized inbound UTF-8 frames, including multibyte Unicode payloads shorter than the former UTF-16 character ceiling. Source-executed focused regression added; exact-head 4+4/Modular QA, protected promotion, hosted Pages smoke and physical two-device play are independent certification gates.
 
 **0.11.3.3 dev candidate (26 October 2026):** Broken signaling WebSockets are retired and reconnected after send exceptions or queue overflow, even if close throws. Stale events cannot revive a retired socket. Focused regressions added; exact-head QA, protected promotion, hosted Pages bytes and physical LAN/P2P play remain separate gates. Prior 0.11.3.2 exact SHA `16e46a7816654682ff6b7e6c19cfa15a2a84c6e3` passed dev Modular #40401375792, dev Full 4+4 #40401375422, main Full/hosted smoke #40402612619 and Pages #40402613182.
+
+**0.11.3.4 dev candidate (26 October 2026):** LAN/Online P2P discovery now retires and retries a signaling socket on an error event even when no close event arrives; manual lobby shutdown tolerates close exceptions and blocks stale socket callbacks. Two source-executed lifecycle regressions added. Prior 0.11.3.3 exact commit `3ee63dcb97cec64424b452bd1f0a38bda9fb120b` passed dev Modular #40410020795, dev Full 4+4 #40410021242, main Full with hosted byte smoke #40411790991, and Pages deployment #40411791238. Those runs do not certify the newer candidate or physical LAN/P2P play.
