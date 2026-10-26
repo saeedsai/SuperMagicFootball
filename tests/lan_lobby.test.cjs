@@ -139,6 +139,7 @@ test('P2P-002 clipboard paste is bounded, manual-approval-only and has a touch f
   assert.equal(nodes.get('#lanIncoming').value,offer());
   assert.equal(created,0,'paste must never accept SDP or start a peer');
   assert.match(nodes.get('#lanStatus').textContent,/Verify the sender/);
+  assert.match(nodes.get('#lanStatus').textContent,/choose host or guest before applying/);
   text='x'.repeat(200001);
   await click();
   assert.equal(nodes.get('#lanIncoming').value,offer(),'oversized clipboard never replaces existing text');

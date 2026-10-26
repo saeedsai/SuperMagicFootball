@@ -81,7 +81,7 @@ function mountLanLobby(root,options={}){
     try{
       const signal=inspectLanConnectionText(raw,build);
       const prefix='Connection text '+origin+'. ';
-      if(!mode)return prefix+'Choose host or guest before applying.';
+      if(!mode)return prefix+'Verify the sender, then choose host or guest before applying.';
       const expectedKind=mode==='guest'?'offer':'answer';
       if(signal.kind!==expectedKind)return prefix+'Expected '+(expectedKind==='offer'?'a host offer':'a guest answer')+' for this role.';
       if(mode==='host'&&signal.session!==expectedSession)return prefix+'Answer belongs to another host session. Create a new offer or request the matching answer.';

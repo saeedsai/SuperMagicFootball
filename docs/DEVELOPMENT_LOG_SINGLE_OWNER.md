@@ -1,3 +1,7 @@
+## 2026-10-26 19:06 CET — P2P-003 CI regression repair (same unreleased 0.11.2.0 candidate)
+- Commit `5bed20f529f3d5c9cc00a940a9c9808153c7e7e2` preflight #40374582676 and Modular #40374582811 failed exactly one legacy P2P-002 status assertion (848/849 Node passed): when a valid clipboard offer was pasted before role selection, preview replaced the prior "Verify the sender" guidance with only "Choose host or guest".
+- Keep both safe instructions in no-role preview. Add assertion that the role prompt remains; no SDP auto-apply, version change, save/roster/control change or CI bypass. Re-run exact-head CI on repaired dev.
+
 ## 2026-10-26 19:02 CET — P2P-003 safe connection-text preview (0.11.2.0 candidate)
 - Baseline dev/main `e42233ecb887e0370a98800fa0863d42c0b6d5b8`. Prior exact-head dev Modular #40365269024, dev Full 4+4 #40365269002, main Full #40367360840 (hosted Pages smoke green), Pages deployment #40367361334 all successful.
 - Manual LAN and Online P2P now preview matching-version offer/answer type and warn on wrong role or host session without applying SDP. Delayed clipboard permission results cannot overwrite manual edits or a reset/changed role. Added focused Node regressions. No automatic connection, TURN, team/roster/save/controls/offline changes.
