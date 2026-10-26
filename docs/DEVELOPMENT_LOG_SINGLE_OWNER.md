@@ -1,3 +1,8 @@
+## 2026-10-26 19:02 CET — P2P-003 safe connection-text preview (0.11.2.0 candidate)
+- Baseline dev/main `e42233ecb887e0370a98800fa0863d42c0b6d5b8`. Prior exact-head dev Modular #40365269024, dev Full 4+4 #40365269002, main Full #40367360840 (hosted Pages smoke green), Pages deployment #40367361334 all successful.
+- Manual LAN and Online P2P now preview matching-version offer/answer type and warn on wrong role or host session without applying SDP. Delayed clipboard permission results cannot overwrite manual edits or a reset/changed role. Added focused Node regressions. No automatic connection, TURN, team/roster/save/controls/offline changes.
+- New candidate requires exact-head CI, protected main promotion, Pages byte smoke and real two-client LAN/cross-network acceptance. Prior green SHA does not certify this commit.
+
 ## 2026-10-26 18:01 CET — P2P-002 clipboard paste + two CI repairs (0.11.1.0 candidate)
 - Baseline dev 9e59d26c314d8d09499e6d7cc6cf0db8c92dc5ee, main f69e79b230af2e4a35b535a40887b76d1f23a248. Full #40359664536 and Modular #40359664733 failed two Node contracts: LAN-046 stale Escape regex omitted new Online P2P screen; own memory checkpoint omitted three mandatory sections.
 - Add explicit incoming clipboard paste, reject >200k characters, retain manual fallback on clipboard failure, never auto-apply untrusted SDP. Add focused Node regression. Update test to accept both LAN/Online P2P Escape routes and restore own checkpoint contract headings.

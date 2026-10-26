@@ -149,3 +149,56 @@ test('P2P-002 clipboard paste is bounded, manual-approval-only and has a touch f
   assert.match(nodes.get('#lanStatus').textContent,/paste manually/);
   cleanup();
 });
+
+test('P2P-003 previews validated offer/answer metadata without trusting or applying SDP',async()=>{
+  const {inspectLanConnectionText}=await load();
+  assert.deepEqual(inspectLanConnectionText(offer(),build),{kind:'offer',session,build});
+  const answer=JSON.stringify({...JSON.parse(offer()),kind:'answer'});
+  assert.equal(inspectLanConnectionText(answer,build).kind,'answer');
+  for(const wire of ['{','null','[]','{}','x'.repeat(200001),
+    JSON.stringify({...JSON.parse(offer()),session:'invalid'}),
+    JSON.stringify({...JSON.parse(offer()),build:'0.0.0.0'}),
+    JSON.stringify({...JSON.parse(offer()),sdp:'not-sdp'})]){
+    assert.throws(()=>inspectLanConnectionText(wire,build),/Connection text|versions differ/);
+  }
+});
+test('P2P-003 ignores clipboard completion after role reset or manual edits',async()=>{
+  const {mountLanLobby}=await load();
+  const nodes=new Map(),pending=[];
+  class Element extends EventTarget{
+    constructor(){super();this.value='';this.textContent='';}
+    focus(){} select(){}
+  }
+  const root={innerHTML:'',querySelector(sel){
+    if(!nodes.has(sel))nodes.set(sel,new Element());
+    return nodes.get(sel);
+  }};
+  let created=0;
+  const cleanup=mountLanLobby(root,{auto:false,internet:true,build,
+    peerFactory(){created++;throw new Error('no automatic connection');},
+    clipboard:{readText(){return new Promise(resolve=>pending.push(resolve));}}
+  });
+  const click=id=>nodes.get('#'+id).dispatchEvent(new Event('click'));
+  const flush=()=>new Promise(resolve=>setImmediate(resolve));
+  click('lanGuest');
+  click('lanPaste');
+  nodes.get('#lanIncoming').value='manually typed text';
+  nodes.get('#lanIncoming').dispatchEvent(new Event('input'));
+  pending.shift()(offer());await flush();
+  assert.equal(nodes.get('#lanIncoming').value,'manually typed text','late paste must not replace edits');
+  click('lanPaste');
+  click('lanReset');
+  pending.shift()(offer());await flush();
+  assert.equal(nodes.get('#lanIncoming').value,'','late paste must not revive a reset session');
+  click('lanGuest');
+  click('lanPaste');
+  pending.shift()(offer());await flush();
+  assert.equal(nodes.get('#lanIncoming').value,offer());
+  assert.match(nodes.get('#lanStatus').textContent,/Host offer matches game version/);
+  assert.match(nodes.get('#lanStatus').textContent,/Verify the sender/);
+  assert.equal(created,0,'preview must not create a peer');
+  nodes.get('#lanIncoming').value=JSON.stringify({...JSON.parse(offer()),kind:'answer'});
+  nodes.get('#lanIncoming').dispatchEvent(new Event('input'));
+  assert.match(nodes.get('#lanStatus').textContent,/Expected a host offer/);
+  cleanup();
+});

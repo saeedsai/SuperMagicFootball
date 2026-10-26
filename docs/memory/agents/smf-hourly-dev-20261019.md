@@ -3,24 +3,24 @@
 **Updated:** 2026-10-26
 
 ## Mission
-Deliver one bounded tested increment on existing dev per run; promote only exact-green head through protected pipeline. Preserve 223 teams/2676 players, six formations, four buttons, 10 Career/Cup slots, SD09, offline/saves.
+One bounded tested feature per hourly run on existing dev; green exact-head protected main promotion only. Preserve 223 teams/2676 players, six formations, exactly four buttons, 10 Career/Cup slots, SD09, offline/saves.
 
 ## Current checkpoint
-- 0.11.1.0 dev candidate: Online P2P manual SDP clipboard paste with explicit Apply, 200k limit, clipboard fallback. No matchmaking or TURN; physical cross-network acceptance pending.
-- CI blockers on 9e59d26: stale LAN-046 Escape regex after Online P2P route, and missing own checkpoint headings. Both repaired in this increment.
+- 0.11.2.0 dev candidate: untrusted offer/answer role/build/session preview in manual LAN and Online P2P; delayed clipboard reads cannot overwrite reset sessions or manual input. Explicit Apply still required; no TURN/matchmaking.
+- Prior 0.11.1.0 `e42233ecb887e0370a98800fa0863d42c0b6d5b8` passed dev Modular #40365269024, dev Full 4+4 #40365269002, main Full #40367360840 and Pages #40367361334. No physical two-device or cross-network acceptance.
 
 ## Next smallest action
-1. Inspect exact-head Modular and Full 4 Node + 4 Chromium CI; repair failures.
-2. Verify protected promotion only for green unchanged dev SHA and Pages hosted byte smoke.
-3. Test manual Online P2P on separate networks; document NAT/TURN limits.
-4. Continue counterable Magic Tricks and directional animation art.
-5. Retest LAN broker discovery and two-client host consent.
+1. Inspect exact-head Modular and Full 4 Node + 4 Chromium CI; repair failures on dev.
+2. Verify protected exact-head promotion and main hosted Pages byte smoke.
+3. Test two physical LAN clients and private Online P2P across networks; document TURN limits.
+4. Continue counterable four-button Magic Tricks and Player Studio.
+5. Improve directional character art with original authored action frames.
 
 ## Ownership and exclusions
-Sole designated hourly developer. Commit only to dev; main is for protected promotion. Do not read/edit other agents' private memory, create branches, bypass security or force push.
+Only dev/main; sole developer; no extra branches, force-push, security bypass or premature production claim. Other agents' private checkpoints untouched.
 
 ## Evidence
-Baseline dev 9e59d26, main f69e79b. CI Full #40359664536 and Modular #40359664733 failed two Node contracts; new candidate exact-head QA pending. Clipboard regression added; physical QA not claimed.
+Baseline dev/main `e42233ecb887e0370a98800fa0863d42c0b6d5b8`. New preview tests added. New candidate exact-head CI and deployment unverified at commit creation.
 
 ## Cleanup
-No temp branches or changed roster/save schemas. Keep automation enabled; continue next increment regardless of pending CI.
+No roster, save-schema, physics, controls or offline compatibility changes. Hourly cadence continues regardless of pending release.

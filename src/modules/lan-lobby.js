@@ -6,6 +6,21 @@ import {normalizeLanPacket} from './lan_protocol.js';
 import {createLanPeerConnection} from './lan_peer_connection.js';
 
 const LAN_LOBBY_SIGNAL_LIMIT=200000;
+// Preview untrusted offer/answer metadata only; the RTC peer performs final validation.
+function inspectLanConnectionText(raw,build=RELEASE.version){
+  if(typeof raw!=='string'||raw.length>LAN_LOBBY_SIGNAL_LIMIT)throw new Error('Connection text is too large or invalid');
+  let value;
+  try{value=JSON.parse(raw)}catch{throw new Error('Connection text is not valid JSON')}
+  if(!value||Object.getPrototypeOf(value)!==Object.prototype||
+      value.protocol!==1||!['offer','answer'].includes(value.kind)||
+      typeof value.session!=='string'||!/^[a-f0-9]{32}$/.test(value.session)||
+      typeof value.build!=='string'||typeof value.sdp!=='string'||
+      !value.sdp.startsWith('v=0')||value.sdp.length<8||value.sdp.length>180000){
+    throw new Error('Connection text is not a valid offer or answer');
+  }
+  if(value.build!==build)throw new Error('Installed game versions differ; both players need '+build);
+  return Object.freeze({kind:value.kind,session:value.session,build:value.build});
+}
 function makeLanSession(cryptoSource=globalThis.crypto){
   if(typeof cryptoSource?.getRandomValues!=='function')throw new Error('Secure random session generation unavailable');
   const bytes=cryptoSource.getRandomValues(new Uint8Array(16));
@@ -50,7 +65,7 @@ function mountLanLobby(root,options={}){
   </section>`;
   const el=id=>root.querySelector('#'+id);
   const status=el('lanStatus'),incoming=el('lanIncoming'),outgoing=el('lanOutgoing');
-  let peer=null,mode=null,controller=null,unsubscribe=null,disposed=false;
+  let peer=null,mode=null,controller=null,unsubscribe=null,disposed=false,clipboardEpoch=0,expectedSession=null;
   const tell=message=>{if(!disposed)status.textContent=message;};
   function cleanup(){
     controller?.abort();controller=null;
@@ -58,9 +73,27 @@ function mountLanLobby(root,options={}){
     peer?.dispose();peer=null;
   }
   function reset(){
-    cleanup();mode=null;incoming.value='';outgoing.value='';
+    clipboardEpoch++;
+    cleanup();mode=null;expectedSession=null;incoming.value='';outgoing.value='';
     tell('Choose host or guest to begin connection setup.');
   }
+  function previewIncoming(raw,origin){
+    try{
+      const signal=inspectLanConnectionText(raw,build);
+      const prefix='Connection text '+origin+'. ';
+      if(!mode)return prefix+'Choose host or guest before applying.';
+      const expectedKind=mode==='guest'?'offer':'answer';
+      if(signal.kind!==expectedKind)return prefix+'Expected '+(expectedKind==='offer'?'a host offer':'a guest answer')+' for this role.';
+      if(mode==='host'&&signal.session!==expectedSession)return prefix+'Answer belongs to another host session. Create a new offer or request the matching answer.';
+      return prefix+(signal.kind==='offer'?'Host offer':'Guest answer')+' matches game version '+signal.build+'. Verify the sender, then choose APPLY INCOMING TEXT.';
+    }catch(error){return 'Connection text '+origin+', but cannot apply: '+error.message;}
+  }
+  function onIncomingInput(){
+    clipboardEpoch++;
+    const raw=incoming.value.trim();
+    tell(raw?previewIncoming(raw,'entered'):'Paste connection text before applying.');
+  }
+  incoming.addEventListener('input',onIncomingInput);
   function observe(current){
     unsubscribe=current.subscribeStatus(state=>{
       if(peer!==current||disposed)return;
@@ -92,6 +125,7 @@ function mountLanLobby(root,options={}){
     reset();mode='host';
     try{
       const hello=normalizeLanPacket({protocol:1,type:'hello',role:'host',session:makeLanSession(cryptoSource),build,sequence:0});
+      expectedSession=hello.session;
       const current=peerFactory(hello);peer=current;observe(current);
       const offer=await current.createOffer();
       if(peer!==current||disposed)return;
@@ -129,17 +163,19 @@ function mountLanLobby(root,options={}){
   }
   // Pasted SDP is untrusted and must never auto-start a connection.
   async function paste(){
+    const epoch=clipboardEpoch,previous=incoming.value;
     try{
       if(!clipboard?.readText)throw new Error('Clipboard unavailable');
       const raw=await clipboard.readText();
-      if(disposed)return;
+      // Clipboard permission prompts can outlive a reset, role change or user edit.
+      if(disposed||epoch!==clipboardEpoch||incoming.value!==previous)return;
       if(typeof raw!=='string'||raw.length>LAN_LOBBY_SIGNAL_LIMIT){
         tell('Clipboard connection text is too large or invalid.');return;
       }
       incoming.value=raw.trim();
-      tell(incoming.value?'Connection text pasted. Verify the sender, then choose APPLY INCOMING TEXT.':'Clipboard has no connection text.');
+      tell(incoming.value?previewIncoming(incoming.value,'pasted'):'Clipboard has no connection text.');
     }catch{
-      if(disposed)return;
+      if(disposed||epoch!==clipboardEpoch||incoming.value!==previous)return;
       incoming.focus();
       tell('Clipboard paste unavailable. Tap Incoming and paste manually.');
     }
@@ -161,7 +197,8 @@ function mountLanLobby(root,options={}){
     if(disposed)return;
     disposed=true;
     cleanup();
+    incoming.removeEventListener('input',onIncomingInput);
     for(const [id,handler] of actions)el(id)?.removeEventListener('click',handler);
   };
 }
-export {makeLanSession,parseGuestLanOffer,mountLanLobby};
+export {makeLanSession,parseGuestLanOffer,inspectLanConnectionText,mountLanLobby};

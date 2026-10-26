@@ -1,4 +1,4 @@
-# SuperMagicFootball release/version policy — About-only 0.11.1.0
+# SuperMagicFootball release/version policy — About-only 0.11.2.0
 
 **Effective 21 October 2026; updated 26 October 2026 for candidate 0.11.0.0.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
@@ -65,3 +65,5 @@ Saved data retains `legend_` storage keys, Career save vault, JSON sections and 
 **0.11.0.0 dev candidate (26 October 2026):** Quick Match Online P2P private WebRTC via manual signaling and STUN. This is not guaranteed across symmetric NAT or restricted firewalls without TURN. Top-level Online menu is unchanged; exact-head QA and hosted cross-network acceptance not certified.
 
 **0.11.1.0 dev candidate (26 October 2026):** Private Online P2P incoming SDP now supports bounded permission-aware clipboard paste, with separate explicit Apply and manual fallback. Repairs two existing Node contract failures (LAN Escape route assertion and own checkpoint headings). Full exact-head 4+4/Modular QA, protected promotion, Pages byte smoke and physical cross-network play remain independent gates; this candidate is not certified production.
+
+**0.11.2.0 dev candidate (26 October 2026):** Manual LAN/Online P2P connection text gains an untrusted-metadata preview (offer/answer role, game build and host session matching) before the existing explicit Apply. Clipboard reads returning after role reset or user edits are ignored. No automatic negotiation, TURN, roster/save changes or fifth action button. Prior 0.11.1.0 exact commit `e42233ecb887e0370a98800fa0863d42c0b6d5b8` passed dev Modular #40365269024, dev Full 4+4 #40365269002, main Full 4+4 and hosted Pages smoke #40367360840, Pages deployment #40367361334; these runs do not certify 0.11.2.0 or physical two-device/cross-network gameplay.
