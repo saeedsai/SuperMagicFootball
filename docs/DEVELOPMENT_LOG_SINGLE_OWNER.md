@@ -1,3 +1,8 @@
+## 2026-10-26 14:00 CET — LAN-065 suppress spurious guest streak on ball relocations (0.10.7.8 candidate)
+- Baseline dev/main c463780b5f38205d868c64fd9ea16033d8bcfe7c, dev Modular #40323731508, Full #40323731431 and Pages #40325446755 successful. Production Full #40325446590 in progress at inspection.
+- Host may reposition ball suddenly during kickoff/goal restarts. LAN-063 guest derives ordinary ball velocity from host positions; a large discontinuity previously generated a false high-speed pass trail. Limit reconstruction to at most 160 pixels displacement per snapshot; keep exact authoritative coordinates and ordinary passes.
+- Added focused Node regression, advanced aligned About/package/README/SW/policy/memory to 0.10.7.8. No new game controls, roster, physics or save changes. Exact-head CI, protected promotion and physical two-phone QA separate gates.
+
 ## 2026-10-26 13:28 CET — LAN-064 host room registration retry (0.10.7.7 candidate)
 - Baseline dev/main 5a0b8b2a24319f40d272128b82e4394e5701715f, version 0.10.7.6. Dev Modular #40320152892 and 4+4 Full #40320152920 green; main Pages #40322281677 green but production Full #40322281733 failed hosted Render LAN smoke on room registration timeout; 24/25 tests in browser shard 3 passed. Broker availability has not been confirmed.
 - LAN-064 re-sends the original host registration every ten seconds until acknowledged. Server already treats same-socket duplicate registrations idempotently. Stops on acknowledgment, rejection, disconnect or Cancel. Deterministic timer regression added; About/package/README/SW/policy/shared/checkpoint aligned. No four-button, physics, roster, offline or save format changes.
