@@ -1,3 +1,8 @@
+## 2026-10-26 16:03 CET — LAN-070 guest reconnect snapshot epoch (0.10.7.13 candidate)
+- Baseline main/dev identical at f69e79b230af2e4a35b535a40887b76d1f23a248; no claim of hosted Pages byte smoke from branch equality alone. Root cause: guest latestTick/lastSent survived RTC disconnect, so a restarted host at tick zero was rejected as stale, and old guest state could send commands after reconnect without a new snapshot.
+- Fix: ignore snapshots while peer not ready; clear guest latestTick, lastSent and snapshot freshness on disconnected step. Focused V8 source execution reproduced original failure and passed patched reconnect/old-packet/first-new-tick checks. Added Node regression LAN-070. Roster, formations, four controls, SD09, Career/Cup slots, saves and offline untouched.
+- Candidate metadata/package/README/cache/policy/shared memory aligned; exact-head full 4 Node + 4 Chromium and Modular QA, protected main promotion, hosted Pages byte smoke and physical two-phone LAN acceptance remain independent gates.
+
 ## 2026-10-26 15:09 CET — LAN-069 host input edge reset on reconnect (0.10.7.12 candidate)
 - Baseline dev d60217256456431b6986a085675a8e04a65bd00d, main c463780b5f38205d868c64fd9ea16033d8bcfe7c. Host `previousButtons` persisted across `peer.ready=false`, suppressing first press after RTC reconnect. Clear on disconnected host step, without changing held-state semantics during a healthy session.
 - Added focused regression for first press, continuous hold, disconnection and reconnection. Source-executed V8 harness confirmed baseline failed and patch passed; full Node/Chromium/Modular CI is not yet certified.
