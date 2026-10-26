@@ -170,7 +170,7 @@ function createLanLiveMatch({peer,role,game,input,field}){
     receiver=peer.subscribeGuestMatchState(state=>{
       // Ignore delayed, duplicate or malformed snapshots even if transport rebinds.
       // An older host state must not rewind the match or guest input cursor.
-      if(disposed || !Number.isSafeInteger(state?.tick) || state.tick<=latestTick)return;
+      if(disposed || !peer.ready || !Number.isSafeInteger(state?.tick) || state.tick<=latestTick)return;
       applyLanGameState(game,field,state);
       latestTick=state.tick;
       lastSnapshotAt=Date.now();
@@ -182,6 +182,11 @@ function createLanLiveMatch({peer,role,game,input,field}){
       // A reconnected guest must produce fresh button-press edges rather than
       // inheriting the old RTC session's held buttons.
       if(role==='host')previousButtons.clear();
+      else {
+        // A restarted host can begin its authoritative tick at zero.
+        // Do not send against the disconnected session's stale snapshot.
+        latestTick=-1;lastSent=-1;lastSnapshotAt=-Infinity;
+      }
       return false;
     }
     if(role==='host'){
