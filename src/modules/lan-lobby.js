@@ -44,7 +44,35 @@ function mountLanLobby(root,options={}){
   // Host and Find must be the first-class UI on every device, including Pages.
   // Hosted discovery requires an actual secure signaling endpoint; a static site
   // cannot create a LAN listener or discover private hosts by itself.
-  if(options.auto!==false && !options.peerFactory)return mountAutoLanLobby(root,options);
+  if(options.auto!==false && !options.peerFactory){
+    // Automatic LAN discovery stays the default. If the broker is unavailable,
+    // manual trusted-peer WebRTC uses the exact same connection workflow as
+    // Online P2P, without introducing another gameplay implementation.
+    let stop=mountAutoLanLobby(root,options),disposed=false;
+    const row=root.querySelector('.lanConnectionLab .row');
+    const manual=root.ownerDocument?.createElement('button');
+    function switchToManual(){
+      if(disposed)return;
+      manual?.removeEventListener('click',switchToManual);
+      stop();
+      stop=mountLanLobby(root,{...options,auto:false});
+    }
+    if(row&&manual){
+      manual.type='button';
+      manual.id='lanManualFallback';
+      manual.className='btn minor';
+      manual.textContent='MANUAL LAN CONNECTION';
+      manual.title='Connect without room discovery by privately exchanging an offer and answer';
+      manual.addEventListener('click',switchToManual);
+      row.append(manual);
+    }
+    return ()=>{
+      if(disposed)return;
+      disposed=true;
+      manual?.removeEventListener('click',switchToManual);
+      stop();
+    };
+  }
   const internet=options.internet===true;
   const peerFactory=options.peerFactory??(hello=>createLanPeerConnection(hello,{internet}));
   const build=options.build??RELEASE.version;
