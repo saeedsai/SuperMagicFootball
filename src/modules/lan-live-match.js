@@ -95,7 +95,9 @@ function applyLanGameState(game,field,state){
     // Normal passes need host-derived motion for streaks and camera tracking.
     // Never reuse a finished Super Shot's velocity on an ordinary ball.
     const elapsed=state.clockMs/1000-game.clock;
-    if(!game.ball.owner && elapsed>0 && elapsed<=.75){
+    // Restart/kickoff/goal teleports must not become a phantom pass streak.
+    const displacement=Math.hypot(game.ball.x-oldBall.x,game.ball.y-oldBall.y);
+    if(!game.ball.owner && elapsed>0 && elapsed<=.75 && displacement<=160){
       game.ball.vx=lanLiveClamp((game.ball.x-oldBall.x)/elapsed,-1600,1600);
       game.ball.vy=lanLiveClamp((game.ball.y-oldBall.y)/elapsed,-1600,1600);
     }else{
