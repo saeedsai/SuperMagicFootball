@@ -49,3 +49,33 @@ test('closing an offline lobby cancels pending retry and prevents reconnect',asy
  f.callbacks[0].fn();assert.equal(FakeSocket.instances.length,1);
  assert.equal(client.send({type:'rooms'}),false);
 });
+
+test('outbound signaling rejects malformed and oversized UTF-8 frames',async()=>{
+ const f=fixture(),client=await f.clientFactory(),socket=FakeSocket.instances[0];socket.open();
+ for(const bad of [null,[],42,{roomId:'missing-type'},{type:3},{type:'offer',sdp:'😀'.repeat(60000)}])
+  assert.equal(client.send(bad),false);
+ const circular={type:'rooms'};circular.self=circular;
+ assert.equal(client.send(circular),false);
+ assert.equal(socket.sent.length,0);
+ assert.equal(client.send({type:'rooms'}),true);
+ assert.equal(socket.sent.length,1);
+ client.close();
+});
+test('outbound signaling queue limit closes a stalled socket and reconnects',async()=>{
+ const f=fixture(),client=await f.clientFactory(),first=FakeSocket.instances[0];first.open();
+ const packet={type:'offer',sdp:'😀'.repeat(300)};
+ const bytes=new TextEncoder().encode(JSON.stringify(packet)).byteLength;
+ first.bufferedAmount=512*1024-bytes;
+ assert.equal(client.send(packet),true,'exact queue budget is allowed');
+ first.bufferedAmount++;
+ assert.equal(client.send(packet),false,'one byte over budget is rejected');
+ assert.equal(first.sent.length,1);
+ assert.equal(first.readyState,3);
+ assert.equal(client.ready,false);
+ assert.equal(f.callbacks.length,1);
+ f.callbacks[0].fn();
+ const second=FakeSocket.instances[1];second.open();
+ assert.equal(client.send({type:'rooms'}),true);
+ assert.deepEqual(JSON.parse(second.sent[0]),{type:'rooms'});
+ client.close();
+});

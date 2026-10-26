@@ -1,3 +1,8 @@
+## 2026-10-26 21:06 CET — LAN/P2P signaling backpressure (0.11.3.1 candidate)
+- Baseline dev `f6529de5f23561d373be366c9174a0496fc5c42d`; main `a9a6286c26dd4cb51b9907462001a7cf9d18ea99`. Baseline Modular QA #40391144323 green; Full #40391144329 in progress at inspection (four Node and three Chromium green). No production certification inferred.
+- Browser signaling now rejects malformed or >210,000-byte outbound frames and closes a stalled WebSocket before its queued bytes exceed 512 KiB, triggering normal reconnect. Focused Unicode, queue-boundary and reconnect tests added. No game protocol, roster, controls, save or offline schema change.
+- Aligned 0.11.3.1 About/package/README/policy/shared memory and offline cache. Exact-head 4+4, Modular QA, protected promotion, hosted Pages byte smoke, Render rollout and real two-device play remain independent gates.
+
 ## 2026-10-26 — P2P-005 auto-discovery and shared LAN/P2P multiplayer (0.11.3.0 candidate)
 - Automatic internet P2P Host/Find and host-approved joining reuse hosted signaling directory with scope 'internet-p2p'; LAN scopes remain separate and local. Only the signaling directory relays room/SDP messages; match simulation remains directly host-authoritative over WebRTC. STUN enabled for online peer connections; TURN-required NATs remain unsupported.
 - Added always-available manual offer/answer fallback to LAN and P2P Quick Match. Top-level future server-backed Online section untouched. Central gameplay bridge is shared; no rosters, buttons, six formations, ten slots, SD09 or offline/save migration.

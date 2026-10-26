@@ -1,5 +1,8 @@
 // Same-origin LAN lobby signaling. The companion server scopes rooms to its local network.
 // GitHub Pages cannot scan a LAN; devices must open the host's companion-server URL.
+// Bound outbound signaling bytes and WebSocket queue growth on slow connections.
+const MAX_SIGNAL_FRAME_BYTES=210000,MAX_SIGNAL_QUEUE_BYTES=512*1024;
+const signalEncoder=new TextEncoder();
 export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSocket,onEvent=()=>{},onState=()=>{},setTimeoutImpl=globalThis.setTimeout,clearTimeoutImpl=globalThis.clearTimeout}={}){
  if(typeof WebSocketImpl!=='function')throw new Error('WebSocket unavailable');
  const hosted='wss://supermagicfootball-lan-signal.onrender.com/lan-signal';
@@ -29,7 +32,22 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
  }
  open();
  return Object.freeze({
-  send(packet){if(closed||socket?.readyState!==1)return false;try{socket.send(JSON.stringify(packet));return true}catch{return false}},
+  send(packet){
+   if(closed||socket?.readyState!==1||!packet||typeof packet!=='object'||Array.isArray(packet)||typeof packet.type!=='string')return false;
+   try{
+    const payload=JSON.stringify(packet);
+    if(typeof payload!=='string'||payload.length>MAX_SIGNAL_FRAME_BYTES)return false;
+    const bytes=signalEncoder.encode(payload).byteLength;
+    if(bytes>MAX_SIGNAL_FRAME_BYTES)return false;
+    const queued=socket.bufferedAmount;
+    if(Number.isFinite(queued)&&queued>=0&&queued+bytes>MAX_SIGNAL_QUEUE_BYTES){
+     try{socket.close(1009,'Signaling queue full')}catch{try{socket.close()}catch{}}
+     return false;
+    }
+    if(closed||socket.readyState!==1)return false;
+    socket.send(payload);return true;
+   }catch{return false}
+  },
   close(){if(closed)return;closed=true;if(retry!==null){clearTimeoutImpl(retry);retry=null}socket?.close()},
   get ready(){return !closed&&socket?.readyState===1}
  });

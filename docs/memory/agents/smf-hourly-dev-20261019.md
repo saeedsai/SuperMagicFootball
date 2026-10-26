@@ -3,27 +3,25 @@
 **Updated:** 2026-10-26
 
 ## Mission
-Develop on existing dev only; promote exact fully green SHA through protected main pipeline, never force-push or bypass security. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline/saves.
+Develop on dev only; promote only an exact fully green SHA through protected main. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and saves.
 
 ## Current checkpoint
-- Candidate 0.11.3.0 P2P-005: internet P2P auto Host/Find with explicit broker room scope, host consent, shared host-authoritative LAN gameplay, STUN, manual P2P fallback. LAN retains subnet-scoped discovery plus manual fallback. Top-level Online backend menu unchanged.
-- Added tests/p2p_auto_discovery.test.cjs (two synthetic clients, host approval), tests/lan_two_client_browser_qa.py (two real Chromium LAN clients), and tests/p2p_hosted_discovery_browser_qa.py (hosted WebSocket scope across distinct synthetic public IPs). None is physical two-device acceptance until CI confirms.
-- Existing hosted signal broker must deploy new scoped code for global P2P search. This is lightweight signaling, not gameplay hosting. No guaranteed traversal of restricted NAT without TURN. Two-phone/real internet acceptance and hosted Render rollout unverified.
-- Prior dev a9a6286c26dd4cb51b9907462001a7cf9d18ea99 (0.11.2.1) had 4 Node + 3 Chromium green in Full #40384978348, last browser shard in progress, Concept Hero #40384978339 green. Main last confirmed da78ebbff2797978e2eb36e8f56b58fe2a82e4df (0.11.2.0).
+- Candidate 0.11.3.1: LAN/Online P2P browser signaling now bounds outbound JSON/UTF-8 frames and closes a stalled WebSocket when its queued bytes would exceed 512 KiB, triggering existing reconnect. No protocol, roster, save or physics change.
+- Previous P2P-005 0.11.3.0: internet Host/Find with separate room scopes, host consent, WebRTC and manual fallback. Render rollout and physical cross-network play unverified.
+- Baseline dev f6529de5f23561d373be366c9174a0496fc5c42d had Modular QA #40391144323 green and Full #40391144329 in progress (4 Node, 3 Chromium green). Main was a9a6286c26dd4cb51b9907462001a7cf9d18ea99. This does not certify 0.11.3.1.
 
 ## Next smallest action
-1. Verify candidate exact-head Modular and full 4 Node + 4 Chromium; fix CI failures.
-2. Promote only green exact dev head and verify Pages byte smoke.
-3. Confirm Render signaling deployment, scope separation and origin policy; verify two actual networks/phones.
-4. Implement and test TURN opt-in only when available; preserve safe defaults.
-5. Continue counterable four-button Tricks, Player Studio and Crown Royals art QA.
+1. Verify exact new dev SHA Modular and full 4 Node + 4 Chromium; repair failures.
+2. Promote only fully green exact dev head; verify main/Pages hosted bytes.
+3. Confirm Render signaling deployment and scope separation; test two real phones/networks.
+4. Add optional TURN configuration with safe defaults when relay exists.
+5. Continue counterable Tricks, Player Studio and Crown Royals art QA.
 
 ## Ownership and exclusions
-No extra branches, no weakened tests, no claims of physical-device certification without evidence. Sole developer checkpoint under 4 KiB.
+No extra branches, force pushes, bypassed security or weakened tests. Edit only this developer checkpoint.
 
 ## Evidence
-- Source-executed LAN/P2P scope, simulated two-client consent and manual fallback checks passed. Permanent Node tests added; exact-head full CI remains the certification gate.
-- Browser LAN two-client and hosted internet broker acceptance scripts are committed, not yet certified on current exact head. No physical multi-device evidence.
+- Focused Unicode, malformed frame, queue boundary and reconnect regression tests added. Exact-head CI and physical acceptance remain to be observed.
 
 ## Cleanup
-- Keep only dev/main and the sole registered checkpoint; retain all player IDs, four controls, offline and ten save slots. No branches, permissions or test gates bypassed.
+Keep only dev/main and the sole registered checkpoint; preserve IDs, four controls, offline and saves.
