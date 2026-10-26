@@ -1,3 +1,5 @@
+> **0.10.7.14 release candidate (26 October 2026):** LAN guest controls now invalidate stale host tick/input cursors on RTC readiness loss even when disconnection and reconnection occur between animation frames. The guest waits for a fresh host snapshot before resuming four-button input. Preserves 223 teams/2676 players, six formations, ten Career/Cup slots, SD09, offline play and save compatibility. Exact-head CI, protected promotion, hosted Pages byte smoke and physical two-phone acceptance remain pending. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.10.7.13 release candidate (26 October 2026):** LAN guests now reject snapshots received while disconnected, clear stale frame/tick cursors, and wait for fresh host state after reconnect. With a fresh transport session, the guest bridge can accept a host timeline restarting at tick zero; transport-level reconnect still needs physical validation. Preserves 223 teams/2676 players, six formations, exactly four buttons, ten Career/Cup slots, SD09, offline play and save compatibility. Exact-head CI, protected promotion, hosted Pages byte smoke and physical two-phone acceptance remain separate gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.10.7.12 release candidate (26 October 2026):** LAN host now clears the disconnected guest's held-button edge state so a reconnected guest can trigger Pass, Shoot, Dribble or Jump normally; uninterrupted holds still trigger once. This preserves 223 teams/2676 players, six formations, exactly four buttons, ten Career/Cup slots, SD09, offline play and save compatibility. Exact-head CI, protected promotion, Pages hosted smoke and physical two-phone LAN verification remain outstanding. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -92,7 +94,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.10.7.13 · Modular source project
+# Supermagic Football · v0.10.7.14 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 
