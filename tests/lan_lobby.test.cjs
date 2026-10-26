@@ -101,3 +101,17 @@ test('LAN-024 guest accepts a trusted host offer and reset closes the peer',asyn
   cleanup();
   assert.equal(closed,1);
 });
+
+
+test('Online P2P Quick Match reuses LAN authoritative engine without changing top-level Online',()=>{
+ const ui=fs.readFileSync(path.join(path.resolve(__dirname,'..'),'src/modules/ui.js'),'utf8');
+ const peer=fs.readFileSync(path.join(path.resolve(__dirname,'..'),'src/modules/lan_peer_connection.js'),'utf8');
+ const lobby=fs.readFileSync(path.join(path.resolve(__dirname,'..'),'src/modules/lan-lobby.js'),'utf8');
+ assert.match(ui,/navItem\('Online P2P · Private Quick Match','navOnlineP2P'/);
+ assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{auto:false,internet:true,onReady:startLanQuickMatch\}\)/);
+ assert.match(ui,/else if\(a==='navOnlineP2P'\)showOnlineP2PLobby\(\)/);
+ assert.match(ui,/function showOnlineMenu\(\)\{menuChoices\('nav-online'/);
+ assert.match(peer,/options\.internet===true\?\[\{urls:'stun:/);
+ assert.match(lobby,/createLanPeerConnection\(hello,\{internet\}\)/);
+ assert.match(lobby,/Some firewalls\/NATs require TURN/);
+});
