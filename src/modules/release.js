@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.10.7.7',
+ version:'0.10.7.8',
  date:'2026-10-26',
  notes:Object.freeze([
+  'LAN guest ordinary ball streaks now ignore sudden large host relocations after goals or kickoffs, while continuing to render regular passes and authoritative positions. Host physics, saves and four controls remain unchanged.',
   'LAN Host Game retries the same room registration every ten seconds while awaiting the discovery broker acknowledgment, recovering from missed acknowledgments without replacing the room or automatically admitting guests. Retries stop on success, rejection, disconnection or cancellation. Offline games, controls and saves are unchanged.',
   'LAN guests reconstruct ordinary ball-pass velocity from recent host positions for accurate streaks and camera tracking. Finished Super Shots clear stale motion and animation age; possessed balls and paused clocks do not invent speed. Offline physics, controls and saves are unchanged.',
   'LAN guests using legacy position-only snapshots now clear stale jump, slide, stun and goalkeeper dive effects instead of preserving old animation state. Modern host visual snapshots, offline physics, four-button controls and saves are unchanged.',
