@@ -284,3 +284,32 @@ test('approved LAN guest recovers when the WebRTC answer cannot be signaled',asy
   dispose();
  }finally{f.cleanup()}
 });
+
+
+test('LAN-064 host retries registration until acknowledged and cancels stale timers',async()=>{
+ const f=setup(),timers=[];
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.10.7.7',signalFactory:f.signalFactory,
+   setIntervalImpl:(fn,ms)=>{const timer={fn,ms,stopped:false};timers.push(timer);return timer},
+   clearIntervalImpl:timer=>{timer.stopped=true}});
+  f.connect();f.elements.get('#autoHost').click();
+  const first=f.packets.at(-1);assert.equal(first.type,'host');
+  assert.equal(timers.at(-1).ms,10000);
+  timers.at(-1).fn();
+  assert.equal(f.packets.filter(p=>p.type==='host').length,2);
+  assert.equal(f.packets.at(-1).roomId,first.roomId,'retry keeps original room identity');
+  f.emit({type:'host-registered',roomId:first.roomId});
+  assert.equal(timers.at(-1).stopped,true,'ack stops retry timer');
+  const count=f.packets.length;
+  timers.at(-1).fn();assert.equal(f.packets.length,count,'stale timer must not send after ack');
+  f.elements.get('#autoHost').click();
+  assert.equal(timers.at(-1).stopped,false);
+  f.emit({type:'error',message:'Room capacity reached'});
+  assert.equal(timers.at(-1).stopped,true,'broker rejection stops retries');
+  f.elements.get('#autoReset').click();
+  const before=f.packets.length;timers.at(-1).fn();
+  assert.equal(f.packets.length,before,'cancel removes pending registration');
+  dispose();
+ }finally{f.cleanup()}
+});

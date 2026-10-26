@@ -1,28 +1,27 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-26
+**Updated:** 2026-10-26 13:28 CET
 
 ## Mission
-One bounded tested increment each run on existing dev; only dev/main, no force push or bypass. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves.
+One bounded tested increment per run on existing dev; only dev/main, no force push or bypass. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline/saves.
 
 ## Current checkpoint
-- Baseline dev b9a694e95d0b58a2a8069c057dd725a1b5f9040b (0.10.7.5 candidate), main e924c548824e2cab4350435caf04957e40b7b675 (0.10.7.4). Modular #40315886365 and Full #40315886392 red solely on missing checkpoint Cleanup section; 835/836 Node passed.
-- LAN-063 0.10.7.6 candidate: ordinary guest ball velocity derived from host position/time, stale Super Shot velocity/age reset, paused/owned ball neutral. Added focused Node regression; package/About/README/SW/policy aligned.
-- LAN-062 old-snapshot animation fallback retained; two physical phones not yet certified.
+- Baseline dev/main `5a0b8b2a24319f40d272128b82e4394e5701715f` (0.10.7.6). Dev Modular #40320152892, Full 4+4 #40320152920 and Pages #40322281677 green. Main Full #40322281733 browser shard 3 failed hosted LAN room registration timeout (24/25 browser tests passed).
+- LAN-064 0.10.7.7 candidate: resend idempotent Host Game registration every 10s until ack; cancel on broker error, disconnection, reset or success. Controlled mock-timer Node regression added.
 
 ## Next smallest action
-1. Inspect exact-head Modular and Full 4 Node/4 Chromium CI; repair any failure.
-2. Promote exact green dev through protected pipeline; verify main and Pages bytes.
-3. Test two phones for passes, Super Shots, keeper dives, jumps, traps and join/discovery.
-4. Improve Crown Royals directional art and LAN visual smoothness.
-5. Diagnose Render signaling broker and retry/discovery reliability.
+1. Inspect exact-head Modular and Full four Node/four Chromium CI, repair failures.
+2. Promote exact green dev through protected pipeline; verify main and hosted Pages hashes.
+3. Diagnose Render signaling cold starts and physical two-phone matchmaking.
+4. Continue LAN visual interpolation and Crown Royals art improvements.
+5. Preserve checkpoints, continue next bounded dev increment while release gates are pending.
 
 ## Ownership and exclusions
-Only this agent checkpoint writable. No extra branches, bypasses or force pushes.
+Only this checkpoint writable; no other agent memories, bypasses or force pushes.
 
 ## Evidence
-- Source-executed regression: tests/lan_live_match.test.cjs LAN-062 and LAN-063; GitHub CI is release authority.
-- Previous red Modular #40315886365 and Full #40315886392: missing Cleanup heading, not gameplay.
+- LAN-064 regression in tests/lan_auto_lobby_flow.test.cjs; server duplicate host registration idempotency.
+- CI and real devices remain authoritative for release and visual acceptance.
 
 ## Cleanup
-- Checkpoint under 4 KiB. No changes to another agent memory or historical claims.
+- Checkpoint below 4 KiB. No other agents' files altered.

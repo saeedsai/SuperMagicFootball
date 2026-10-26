@@ -3,17 +3,24 @@ import {createLanPeerConnection} from './lan_peer_connection.js';
 import {normalizeLanPacket} from './lan_protocol.js';
 import {RELEASE} from './release.js';
 const ADMISSION_TIMEOUT_MS=25000;
+const HOST_REGISTRATION_RETRY_MS=10000; // six idempotent attempts per minute
 const makeId=()=>{const b=crypto.getRandomValues(new Uint8Array(16));return Array.from(b,v=>v.toString(16).padStart(2,'0')).join('')};
 export function mountAutoLanLobby(root,options={}){
  const build=options.build??RELEASE.version,peerFactory=options.peerFactory??createLanPeerConnection;
  root.innerHTML='<section class="panel lanConnectionLab"><h2>LOCAL NETWORK</h2><p>Create a room on your phone or computer, or find an available game. A secure discovery service is required for browser-to-browser matchmaking.</p><div class="row"><button class="btn" id="autoHost">HOST GAME</button><button class="btn" id="autoFind">FIND GAMES</button><button class="btn minor" id="autoReset">CANCEL</button></div><div id="autoHostInfo" aria-live="polite"></div><div id="autoRooms" aria-live="polite"></div><div id="autoApproval"></div><p id="autoStatus" role="status" aria-live="polite">Connecting to LAN discovery…</p></section>';
  const get=id=>root.querySelector('#'+id),rooms=new Map();
- let mode=null,roomId=null,session=null,peer=null,connection=null,unsub=null,controller=null,disposed=false,requestId=null,approved=false,approvalRequestId=null,started=false,refreshTimer=null,admissionTimer=null,lanUrls=[],signalState='connecting',discoveryScope='lan';
+ let mode=null,roomId=null,session=null,peer=null,connection=null,unsub=null,controller=null,disposed=false,requestId=null,approved=false,approvalRequestId=null,started=false,refreshTimer=null,hostRetryTimer=null,hostRegistered=false,admissionTimer=null,lanUrls=[],signalState='connecting',discoveryScope='lan';
  const status=message=>{if(!disposed)get('autoStatus').textContent=message};
  const send=packet=>connection?.send(packet);
  // Recover room availability if an advertisement was missed while Find Games stays open.
  // Six reads per minute stay well below the broker's signaling rate limit.
  function stopRefresh(){if(refreshTimer!==null){(options.clearIntervalImpl??clearInterval)(refreshTimer);refreshTimer=null}}
+ // The broker responds to duplicate registrations from the same socket without changing the room.
+ function stopHostRetry(){if(hostRetryTimer!==null){(options.clearIntervalImpl??clearInterval)(hostRetryTimer);hostRetryTimer=null}}
+ function startHostRetry(){stopHostRetry();hostRetryTimer=(options.setIntervalImpl??setInterval)(()=>{
+  if(!disposed&&mode==='host'&&roomId&&!hostRegistered&&!started&&connection?.ready)
+   send({type:'host',roomId,name:'SuperMagicFootball Match',build});
+ },HOST_REGISTRATION_RETRY_MS)}
  function startRefresh(){stopRefresh();refreshTimer=(options.setIntervalImpl??setInterval)(()=>{if(!disposed&&mode==='guest'&&!requestId&&!started&&connection?.ready)send({type:'rooms'})},10000)}
  function clearAdmissionTimeout(){if(admissionTimer!==null){(options.clearTimeoutImpl??clearTimeout)(admissionTimer);admissionTimer=null}}
  function waitForAdmission(id){clearAdmissionTimeout();admissionTimer=(options.setTimeoutImpl??setTimeout)(()=>{
@@ -41,16 +48,16 @@ export function mountAutoLanLobby(root,options={}){
  }
  function watch(current){const aborter=new AbortController();controller=aborter;unsub=current.subscribeStatus(s=>{if(peer===current&&s.ready)ready(current)},aborter.signal);if(peer!==current||aborter.signal.aborted)return;current.awaitReady(120000,aborter.signal).then(()=>ready(current)).catch(e=>{if(peer===current&&!aborter.signal.aborted){if(mode==='guest')recoverGuestHandshake('Connection failed: '+e.message);else status('Connection failed: '+e.message)}})}
  function ready(current){if(disposed||peer!==current||!approved||started)return;controller?.abort();controller=null;unsub?.();unsub=null;peer=null;started=true;try{options.onReady?.(current,mode)}catch(e){started=false;current.dispose();if(mode==='guest')recoverGuestHandshake('Unable to start match: '+e.message);else status('Unable to start match: '+e.message)}}
- function reset(){stopRefresh();clearAdmissionTimeout();get('autoHostInfo').replaceChildren();if(mode==='host'||mode==='guest')send({type:'leave'});cleanupPeer();mode=null;roomId=null;session=null;approved=false;started=false;requestId=null;approvalRequestId=null;rooms.clear();get('autoApproval').replaceChildren();render();status('Select Host Game or Find Games.')}
+ function reset(){stopRefresh();stopHostRetry();hostRegistered=false;clearAdmissionTimeout();get('autoHostInfo').replaceChildren();if(mode==='host'||mode==='guest')send({type:'leave'});cleanupPeer();mode=null;roomId=null;session=null;approved=false;started=false;requestId=null;approvalRequestId=null;rooms.clear();get('autoApproval').replaceChildren();render();status('Select Host Game or Find Games.')}
  function showHostAddress(){if(mode!=='host')return;const guestUrls=lanUrls.length?lanUrls:(location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'?[location.origin]:[]);get('autoHostInfo').textContent='Room ID: '+roomId+' | Open this game address on BOTH devices: '+(guestUrls.length?guestUrls.join(' or '):'Waiting for signaling service connection.')+(discoveryScope==='public-network'?' | Automatic discovery uses the same public-network address; host approval is required.':' | Both devices must use the same Wi-Fi/LAN.')}
- function host(){if(signalState==='unconfigured')return status('Online room discovery is not configured for this build. Hosting is unavailable.');reset();mode='host';roomId='room_'+makeId();session=makeId();if(connection?.ready)send({type:'host',roomId,name:'SuperMagicFootball Match',build});showHostAddress();status(connection?.ready?'Registering room with discovery service…':'Connecting to LAN server; room will register automatically…')}
+ function host(){if(signalState==='unconfigured')return status('Online room discovery is not configured for this build. Hosting is unavailable.');reset();mode='host';roomId='room_'+makeId();session=makeId();startHostRetry();if(connection?.ready)send({type:'host',roomId,name:'SuperMagicFootball Match',build});showHostAddress();status(connection?.ready?'Registering room with discovery service…':'Connecting to LAN server; room will register automatically…')}
  function find(){if(signalState==='unconfigured')return status('Online room discovery is not configured for this build. Finding games is unavailable.');reset();mode='guest';startRefresh();if(connection?.ready)send({type:'rooms'});render();status(connection?.ready?'Searching for games on this LAN…':'Connecting to LAN server; search will start automatically…')}
  function join(id){if(mode!=='guest'||disposed||started)return;if(rooms.get(id)?.full===true)return status('This room is already playing. Choose another host.');if(!connection?.ready)return status('LAN server disconnected');if(requestId){clearAdmissionTimeout();send({type:'leave'})}cleanupPeer();approved=false;roomId=id;const nextRequestId='request_'+makeId();let submitted=false;try{submitted=send({type:'join',roomId:id,requestId:nextRequestId,build})===true}catch{}if(!submitted){roomId=null;requestId=null;status('Unable to send join request. Check discovery connection and retry.');return}requestId=nextRequestId;waitForAdmission(nextRequestId);status('Waiting for host approval…')}
  async function onEvent(m){if(disposed)return;
   if(m.type==='discovery-scope'&&m.scope==='public-network'){discoveryScope='public-network';if(mode==='host')showHostAddress();return}
   if(m.type==='lan-addresses'&&Array.isArray(m.urls)){lanUrls=m.urls.filter(url=>typeof url==='string'&&/^http:\/\/(?:10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[01])\.)[0-9.]+:[0-9]+$/.test(url)).slice(0,8);if(mode==='host')showHostAddress();return}
-  if(m.type==='host-registered'&&mode==='host'&&m.roomId===roomId){showHostAddress();status('Room registered. Waiting for a guest to join.');return}
-  if(m.type==='error'&&mode==='host'){status('Unable to register room: '+String(m.message||'server rejected request'));return}
+  if(m.type==='host-registered'&&mode==='host'&&m.roomId===roomId){hostRegistered=true;stopHostRetry();showHostAddress();status('Room registered. Waiting for a guest to join.');return}
+  if(m.type==='error'&&mode==='host'){stopHostRetry();status('Unable to register room: '+String(m.message||'server rejected request'));return}
   if(m.type==='host-left'&&mode==='guest'&&m.roomId===roomId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;status('Host disconnected. Select another available room.');return}
   if(m.type==='rooms-snapshot'){
    // Ignore malformed or out-of-phase replies; never replace an active admission.
@@ -86,7 +93,7 @@ export function mountAutoLanLobby(root,options={}){
   }
   if(m.type==='answer'&&mode==='host'&&m.roomId===roomId&&peer){try{await peer.acceptAnswer(m.sdp);if(peer)watch(peer)}catch(e){cleanupPeer();status('Host answer failed: '+e.message)}}
  }
- connection=(options.signalFactory??connectLanSignal)({onEvent,onState:s=>{if(started||disposed)return;signalState=s;if(s==='connected'){status('LAN discovery connected.');if(mode==='host'&&roomId){cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();send({type:'host',roomId,name:'SuperMagicFootball Match',build})}else if(mode==='guest'){if(requestId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;status('Connection restored. Choose a game again.')}send({type:'rooms'})}}else {rooms.clear();render();approvalRequestId=null;get('autoApproval').replaceChildren();status('Discovery '+s+'. Automatic hosting requires an online signaling service. If none is configured, rooms cannot be created or found yet.')}}});
+ connection=(options.signalFactory??connectLanSignal)({onEvent,onState:s=>{if(started||disposed)return;signalState=s;if(s==='connected'){status('LAN discovery connected.');if(mode==='host'&&roomId){hostRegistered=false;startHostRetry();cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();send({type:'host',roomId,name:'SuperMagicFootball Match',build})}else if(mode==='guest'){if(requestId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;status('Connection restored. Choose a game again.')}send({type:'rooms'})}}else {if(mode==='host'){hostRegistered=false;stopHostRetry()}rooms.clear();render();approvalRequestId=null;get('autoApproval').replaceChildren();status('Discovery '+s+'. Automatic hosting requires an online signaling service. If none is configured, rooms cannot be created or found yet.')}}});
  const actions=[['autoHost',host],['autoFind',find],['autoReset',reset]];for(const [id,fn] of actions)get(id).addEventListener('click',fn);
  return ()=>{if(disposed)return;reset();disposed=true;connection.close();for(const [id,fn] of actions)get(id)?.removeEventListener('click',fn)};
 }
