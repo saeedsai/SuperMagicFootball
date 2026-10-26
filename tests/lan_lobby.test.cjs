@@ -203,3 +203,70 @@ test('P2P-003 ignores clipboard completion after role reset or manual edits',asy
   assert.match(nodes.get('#lanStatus').textContent,/Expected a host offer/);
   cleanup();
 });
+
+
+test('P2P-004 stale host offer rejection cannot dispose a replacement host',async()=>{
+  const {mountLanLobby}=await load();
+  const nodes=new Map();
+  class Element extends EventTarget{
+    constructor(){super();this.value='';this.textContent='';}
+    focus(){} select(){}
+  }
+  const root={innerHTML:'',querySelector(sel){if(!nodes.has(sel))nodes.set(sel,new Element());return nodes.get(sel);}};
+  let rejectOld,created=0,oldClosed=0,newClosed=0;
+  const oldOffer=new Promise((resolve,reject)=>{rejectOld=reject;});
+  const cleanup=mountLanLobby(root,{auto:false,build,cryptoSource:{getRandomValues(arr){arr.fill(7);return arr;}},
+    peerFactory(){
+      const id=++created;
+      return {
+        subscribeStatus(listener){listener({phase:'new',transport:'new',channel:'connecting',ready:false});return ()=>{};},
+        createOffer(){return id===1?oldOffer:Promise.resolve('replacement offer');},
+        dispose(){if(id===1)oldClosed++;else newClosed++;}
+      };
+    }
+  });
+  const click=id=>nodes.get('#'+id).dispatchEvent(new Event('click'));
+  const flush=()=>new Promise(resolve=>setImmediate(resolve));
+  click('lanHost');await flush();
+  click('lanHost');await flush();
+  assert.equal(nodes.get('#lanOutgoing').value,'replacement offer');
+  rejectOld(new Error('old host failed'));await flush();
+  assert.equal(oldClosed,1);
+  assert.equal(newClosed,0,'old rejection must not dispose the new host');
+  assert.equal(nodes.get('#lanOutgoing').value,'replacement offer');
+  assert.match(nodes.get('#lanStatus').textContent,/Host offer ready/);
+  cleanup();assert.equal(newClosed,1);
+});
+
+test('P2P-004 stale guest negotiation rejection cannot close a new host',async()=>{
+  const {mountLanLobby}=await load();
+  const nodes=new Map();
+  class Element extends EventTarget{
+    constructor(){super();this.value='';this.textContent='';}
+    focus(){} select(){}
+  }
+  const root={innerHTML:'',querySelector(sel){if(!nodes.has(sel))nodes.set(sel,new Element());return nodes.get(sel);}};
+  let rejectGuest,guestClosed=0,hostClosed=0;
+  const pendingGuest=new Promise((resolve,reject)=>{rejectGuest=reject;});
+  const cleanup=mountLanLobby(root,{auto:false,build,cryptoSource:{getRandomValues(arr){arr.fill(8);return arr;}},
+    peerFactory(hello){
+      return {
+        subscribeStatus(listener){listener({phase:'new',transport:'new',channel:'connecting',ready:false});return ()=>{};},
+        acceptOffer(){return pendingGuest;},
+        createOffer(){return Promise.resolve('new host offer');},
+        dispose(){if(hello.role==='guest')guestClosed++;else hostClosed++;}
+      };
+    }
+  });
+  const click=id=>nodes.get('#'+id).dispatchEvent(new Event('click'));
+  const flush=()=>new Promise(resolve=>setImmediate(resolve));
+  click('lanGuest');nodes.get('#lanIncoming').value=offer();click('lanApply');await flush();
+  click('lanHost');await flush();
+  assert.equal(nodes.get('#lanOutgoing').value,'new host offer');
+  rejectGuest(new Error('stale guest negotiation failed'));await flush();
+  assert.equal(guestClosed,1);
+  assert.equal(hostClosed,0,'old guest rejection must not close replacement host');
+  assert.equal(nodes.get('#lanOutgoing').value,'new host offer');
+  assert.match(nodes.get('#lanStatus').textContent,/Host offer ready/);
+  cleanup();assert.equal(hostClosed,1);
+});

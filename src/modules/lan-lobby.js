@@ -65,7 +65,7 @@ function mountLanLobby(root,options={}){
   </section>`;
   const el=id=>root.querySelector('#'+id);
   const status=el('lanStatus'),incoming=el('lanIncoming'),outgoing=el('lanOutgoing');
-  let peer=null,mode=null,controller=null,unsubscribe=null,disposed=false,clipboardEpoch=0,expectedSession=null;
+  let peer=null,mode=null,controller=null,unsubscribe=null,disposed=false,clipboardEpoch=0,operationEpoch=0,expectedSession=null;
   const tell=message=>{if(!disposed)status.textContent=message;};
   function cleanup(){
     controller?.abort();controller=null;
@@ -73,6 +73,7 @@ function mountLanLobby(root,options={}){
     peer?.dispose();peer=null;
   }
   function reset(){
+    operationEpoch++;
     clipboardEpoch++;
     cleanup();mode=null;expectedSession=null;incoming.value='';outgoing.value='';
     tell('Choose host or guest to begin connection setup.');
@@ -123,6 +124,7 @@ function mountLanLobby(root,options={}){
   }
   async function host(){
     reset();mode='host';
+    const epoch=operationEpoch;
     try{
       const hello=normalizeLanPacket({protocol:1,type:'hello',role:'host',session:makeLanSession(cryptoSource),build,sequence:0});
       expectedSession=hello.session;
@@ -131,13 +133,18 @@ function mountLanLobby(root,options={}){
       if(peer!==current||disposed)return;
       outgoing.value=offer;
       tell('Host offer ready. Copy it to the guest, then paste the guest answer above and apply.');
-    }catch(error){cleanup();tell('Cannot create host offer: '+error.message);}
+    }catch(error){
+      // An older rejected offer must not close a newly created session.
+      if(disposed||epoch!==operationEpoch)return;
+      cleanup();tell('Cannot create host offer: '+error.message);
+    }
   }
   function guest(){reset();mode='guest';tell('Paste the host offer into Incoming, then choose APPLY INCOMING TEXT.');}
   async function apply(){
     if(!mode){tell('Choose host or guest first.');return;}
     const raw=incoming.value.trim();
     if(!raw){tell('Paste connection text before applying.');return;}
+    const epoch=operationEpoch;
     try{
       if(mode==='guest'){
         if(peer){tell('Guest answer already created. Reset to start another connection.');return;}
@@ -157,6 +164,8 @@ function mountLanLobby(root,options={}){
         watchReady(current);
       }
     }catch(error){
+      // Rejects from a previous role/session must not dispose the current peer.
+      if(disposed||epoch!==operationEpoch)return;
       if(mode==='guest')cleanup();
       tell('Connection text rejected: '+error.message);
     }
@@ -196,6 +205,8 @@ function mountLanLobby(root,options={}){
   return ()=>{
     if(disposed)return;
     disposed=true;
+    operationEpoch++;
+    clipboardEpoch++;
     cleanup();
     incoming.removeEventListener('input',onIncomingInput);
     for(const [id,handler] of actions)el(id)?.removeEventListener('click',handler);

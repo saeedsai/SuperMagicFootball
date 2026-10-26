@@ -1,3 +1,8 @@
+## 2026-10-26 20:00 CET — P2P-004 stale asynchronous negotiation guard (0.11.2.1 candidate)
+- Baseline dev/main `da78ebbff2797978e2eb36e8f56b58fe2a82e4df` passed dev Modular #40374843405, dev Full 4+4 #40374843277, main Full #40375449068 and Pages #40375446757.
+- Fixed host-offer and guest-negotiation promise rejection race: a failed operation after Reset/role change/navigation cannot dispose the replacement peer or overwrite its status. Added two focused regressions. Explicit Apply, wire format, roster, four controls, saves and offline remain unchanged.
+- New candidate awaits exact-head CI, protected main promotion, hosted byte smoke and physical two-device LAN/Online P2P validation; no production certification claimed.
+
 ## 2026-10-26 19:06 CET — P2P-003 CI regression repair (same unreleased 0.11.2.0 candidate)
 - Commit `5bed20f529f3d5c9cc00a940a9c9808153c7e7e2` preflight #40374582676 and Modular #40374582811 failed exactly one legacy P2P-002 status assertion (848/849 Node passed): when a valid clipboard offer was pasted before role selection, preview replaced the prior "Verify the sender" guidance with only "Choose host or guest".
 - Keep both safe instructions in no-role preview. Add assertion that the role prompt remains; no SDP auto-apply, version change, save/roster/control change or CI bypass. Re-run exact-head CI on repaired dev.

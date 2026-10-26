@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.2.0',
+ version:'0.11.2.1',
  date:'2026-10-26',
  notes:Object.freeze([
+  'Fixed a manual LAN/Online P2P session race: a delayed failed host offer or guest negotiation from an abandoned connection can no longer close a newer host session or replace its status. Reset and navigation invalidate outstanding operations; explicit Apply, four controls, saves and offline play are unchanged.',
   'Online P2P and manual LAN connection setup now previews whether pasted or typed text is a matching-version host offer or guest answer before Apply. It warns about wrong roles, mismatched sessions and invalid text, and ignores delayed clipboard reads after reset or manual edits. Preview never creates a peer or accepts untrusted SDP; offline, saves and four controls are unchanged.',
   'Private Online P2P Quick Match now has a mobile-friendly Paste from Clipboard action. Pasted connection text is bounded and never automatically accepted: the player must explicitly apply it. Clipboard permission failures retain manual paste. No internet matchmaking or TURN is added; saves and four controls are unchanged.',
   'Quick Match now includes a private Online P2P beta using manual trusted-friend offer/answer exchange and public STUN to attempt internet WebRTC. It uses existing host-authoritative gameplay and four controls; some NAT/firewall combinations require a TURN relay and cannot connect without one. The separate Online backend menu, LAN discovery, offline and saves are unchanged.',
