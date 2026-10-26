@@ -26,8 +26,13 @@ jobs:
       - name: Install Chromium, Playwright and Pillow
         run: |
           python3 -m pip install --user playwright pillow
-          sudo apt-get update -qq
-          sudo apt-get install -y chromium
+          # Ubuntu's chromium apt package invokes snap; snapcraft 408 responses
+          # must not block art QA. Use the same Playwright browser as Full Census.
+          python3 -m playwright install --with-deps chromium
+          browser_path="$(python3 -c 'from playwright.sync_api import sync_playwright; p=sync_playwright().start(); print(p.chromium.executable_path); p.stop()')"
+          test -x "$browser_path"
+          sudo ln -sf "$browser_path" /usr/bin/chromium
+          /usr/bin/chromium --version
       - name: Build and validate existing game and roster data
         run: |
           python3 scripts/validate_data.py

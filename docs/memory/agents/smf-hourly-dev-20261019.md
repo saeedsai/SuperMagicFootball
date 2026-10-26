@@ -6,6 +6,7 @@
 Deliver one bounded tested dev increment per hourly run. Keep only dev/main, never force-push or bypass CI. Preserve 223 teams/2676 players, six formations, four buttons, Career/Cup ten slots, SD09, saves/offline.
 
 ## Current checkpoint
+- ART-CI-001: Concept Hero Playable #40383211283 failed on snapcraft HTTP 408 installing chromium before tests. Workflow changed to Playwright-managed Chromium (same as Full Census) with a Node contract; exact-head rerun pending. No version bump for CI-only fix.
 - 0.11.2.1 P2P-004 candidate: stale rejected host-offer and guest-accept promises cannot close a newer session or overwrite status after Reset, role change or disposal. Two focused regression cases added.
 - Baseline dev/main `da78ebbff2797978e2eb36e8f56b58fe2a82e4df` is certified in CI: dev Modular #40374843405, dev Full 4+4 #40374843277, main Full #40375449068, Pages #40375446757. Physical two-device LAN/P2P unverified.
 

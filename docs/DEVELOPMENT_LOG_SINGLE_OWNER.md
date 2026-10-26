@@ -1,3 +1,8 @@
+## 2026-10-26 20:06 CET — ART-CI-001 Concept Hero QA snapcraft dependency repair (no player-version bump)
+- On dev candidate 0.11.2.1, Concept Hero Playable #40383211283 failed during Ubuntu `apt-get install chromium`: snap `mesa-2404` assertion GET returned HTTP 408; no game/graphics tests ran. This is an external snapcraft install failure, not a proven gameplay regression.
+- Switch this workflow to Playwright-managed Chromium with `install --with-deps` and a compatibility symlink for historical browser scripts, matching the already-green Full Census browser setup. Add a Node regression contract forbidding the snap install. No permissions, CI gates, version, runtime, roster, controls or saves changed.
+- Rerun exact-head CI; do not claim a green Concept Hero QA or deployment before observing it.
+
 ## 2026-10-26 20:00 CET — P2P-004 stale asynchronous negotiation guard (0.11.2.1 candidate)
 - Baseline dev/main `da78ebbff2797978e2eb36e8f56b58fe2a82e4df` passed dev Modular #40374843405, dev Full 4+4 #40374843277, main Full #40375449068 and Pages #40375446757.
 - Fixed host-offer and guest-negotiation promise rejection race: a failed operation after Reset/role change/navigation cannot dispose the replacement peer or overwrite its status. Added two focused regressions. Explicit Apply, wire format, roster, four controls, saves and offline remain unchanged.
