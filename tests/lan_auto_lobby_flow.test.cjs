@@ -240,3 +240,47 @@ test('LAN room announcements reject malformed cards and cap unsolicited director
   dispose();
  }finally{f.cleanup()}
 });
+
+
+test('approved LAN guest releases occupied seat and retries after offer negotiation failure',async()=>{
+ const f=setup();let disposed=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.10.6.4',signalFactory:f.signalFactory,
+   peerFactory:()=>({acceptOffer:async()=>{throw Error('invalid offer')},dispose(){disposed++}})});
+  f.elements.get('#autoFind').click();f.connect();
+  const room={type:'room-announce',roomId:'room_12345678',name:'Friendly',build:'0.10.6.4',full:false};
+  f.emit(room);f.elements.get('#autoRooms').children[0].click();
+  const first=f.packets.at(-1);f.emit({type:'join-accept',roomId:room.roomId,requestId:first.requestId});
+  await f.emit({type:'offer',roomId:room.roomId,sdp:JSON.stringify({session:'session_12345678'})});
+  assert.deepEqual(f.packets.slice(-2).map(packet=>packet.type),['leave','rooms']);
+  assert.equal(disposed,1);
+  assert.match(f.elements.get('#autoStatus').textContent,/Guest connection failed.*retry/);
+  f.emit({type:'rooms-snapshot',rooms:[{roomId:room.roomId,name:room.name,build:room.build,full:false}]});
+  f.elements.get('#autoRooms').children[0].click();
+  const second=f.packets.at(-1);assert.equal(second.type,'join');assert.notEqual(second.requestId,first.requestId);
+  dispose();
+ }finally{f.cleanup()}
+});
+
+test('approved LAN guest recovers when the WebRTC answer cannot be signaled',async()=>{
+ const f=setup();let disposed=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.10.6.4',signalFactory:f.signalFactory,
+   peerFactory:()=>({acceptOffer:async()=>'{"answer":true}',dispose(){disposed++}})});
+  f.elements.get('#autoFind').click();f.connect();
+  const room={type:'room-announce',roomId:'room_12345678',name:'Friendly',build:'0.10.6.4',full:false};
+  f.emit(room);f.elements.get('#autoRooms').children[0].click();
+  const first=f.packets.at(-1);f.emit({type:'join-accept',roomId:room.roomId,requestId:first.requestId});
+  const original=f.connection.send.bind(f.connection);
+  f.connection.send=packet=>packet.type==='answer'?false:original(packet);
+  await f.emit({type:'offer',roomId:room.roomId,sdp:JSON.stringify({session:'session_12345678'})});
+  assert.deepEqual(f.packets.slice(-2).map(packet=>packet.type),['leave','rooms']);
+  assert.equal(disposed,1);
+  assert.match(f.elements.get('#autoStatus').textContent,/unable to send answer/);
+  f.emit({type:'rooms-snapshot',rooms:[]});
+  assert.equal(f.elements.get('#autoRooms').children.length,0,'failed negotiation must unlock directory updates');
+  dispose();
+ }finally{f.cleanup()}
+});
