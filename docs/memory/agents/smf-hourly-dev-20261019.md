@@ -7,7 +7,7 @@ One bounded tested increment each hourly run on existing dev. Protected green ex
 
 ## Current checkpoint
 - Baseline main=dev f69e79b230af2e4a35b535a40887b76d1f23a248, 0.10.7.12; equality alone does not certify Pages bytes or physical LAN.
-- LAN-070 candidate 0.10.7.13: guest rejects snapshots while disconnected; on observed disconnection resets latestTick, lastSent and snapshot freshness. A host restarted at tick zero is accepted after reconnect. Source-executed red-before/green-after V8 check passed; Node regression added, full CI pending.
+- LAN-070 candidate 0.10.7.13: guest rejects snapshots while disconnected; on observed disconnection resets latestTick, lastSent and snapshot freshness. With a fresh transport, the guest bridge accepts restarted tick zero; protocol-level rejoin remains unverified. Source-executed red-before/green-after V8 check passed; Node regression added, full CI pending.
 - LAN-069 host resets guest held-button edges on disconnect. LAN-068 retries explicitly refused guest sends. Neither certifies physical two-client acceptance.
 
 ## Next smallest action
