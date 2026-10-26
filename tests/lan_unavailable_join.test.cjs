@@ -22,5 +22,5 @@ test('failed signaling send is propagated without throwing',async()=>{
 test('LAN server invokes unavailable join reply only on inaccessible room path',()=>{
  const source=fs.readFileSync('scripts/lan-server.mjs','utf8');
  assert.match(source,/import \{rejectUnavailableJoin\} from '\.\/lan-unavailable-join\.mjs'/);
- assert.match(source,/if\(!room\|\|!sameSubnet\(meta\.ip,room\.ip\)\)\{rejectUnavailableJoin\(ws,m,send\);return;\}/);
+ assert.match(source,/if\(!room\|\|!roomVisible\(room,meta\)\)\{rejectUnavailableJoin\(ws,m,send\);return;\}/);
 });
