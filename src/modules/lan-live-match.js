@@ -177,7 +177,13 @@ function createLanLiveMatch({peer,role,game,input,field}){
     });
   }
   function step(dt){
-    if(disposed || !peer.ready)return false;
+    if(disposed)return false;
+    if(!peer.ready){
+      // A reconnected guest must produce fresh button-press edges rather than
+      // inheriting the old RTC session's held buttons.
+      if(role==='host')previousButtons.clear();
+      return false;
+    }
     if(role==='host'){
       const phase=game.matchState;
       if(!['play','paused','finished'].includes(phase))return false;
