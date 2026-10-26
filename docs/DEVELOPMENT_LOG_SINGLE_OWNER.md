@@ -1,3 +1,6 @@
+## 2026-10-26 11:16 CET — LAN-060 guest projection repair
+- Exact-head 51dbda3 failed only LAN-050 RTC integration: host sent hazards correctly but `subscribeGuestMatchState` projected away the optional `hazards` field before the guest renderer. Fixed projection to retain validated immutable trap list; the existing fake-RTC regression covers both trap arrival and removal. 3aa5359 also contains the 22-player/24-trap size test. New exact-head CI pending; same unshipped candidate 0.10.7.3.
+
 ## 2026-10-26 11:12 CET — LAN-060 trap packet size hardening
 - Bounded Magic Trap wire positions and timers to three decimals (sub-pixel trap precision), preventing high-precision float bloat when all 22 player poses and 24 traps are present. Added full-capacity snapshot regression. Host physics is untouched; same unshipped 0.10.7.3 candidate.
 - Await exact-head Modular and Full 4+4; do not promote without green.

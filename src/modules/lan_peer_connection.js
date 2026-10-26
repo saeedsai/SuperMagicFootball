@@ -453,7 +453,8 @@ function createLanPeerConnection(localHello, options = {}) {
     return subscribeGuestSnapshots(snapshot => listener(Object.freeze({
       tick:snapshot.tick, clockMs:snapshot.clockMs, scores:snapshot.scores,
       ball:snapshot.ball, players:snapshot.players,
-      ...(snapshot.meta?{meta:snapshot.meta}:{})
+      ...(snapshot.meta?{meta:snapshot.meta}:{}),
+      ...(Object.hasOwn(snapshot,'hazards')?{hazards:snapshot.hazards}:{})
     })), initialTick, signal);
   }
   function dispose() {
