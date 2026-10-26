@@ -2,12 +2,13 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {webcrypto}=require('node:crypto');
-const {mountAutoLanLobby}=require('../src/modules/lan-auto-lobby.js');
+// ESM gameplay modules are imported inside the asynchronous test.
 
 // The actual WebRTC/game bridge is covered by lan_live_match and peer tests.
 // This checks two independently mounted UIs, broker messages, host consent,
 // automatic discovery and handoff without an external signaling dependency.
 test('Online P2P two-client automatic room discovery requires host approval before common match handoff',async()=>{
+ const {mountAutoLanLobby}=await import('../src/modules/lan-auto-lobby.js');
  const oldCrypto=Object.getOwnPropertyDescriptor(globalThis,'crypto');
  const oldDocument=Object.getOwnPropertyDescriptor(globalThis,'document');
  const oldLocation=Object.getOwnPropertyDescriptor(globalThis,'location');
