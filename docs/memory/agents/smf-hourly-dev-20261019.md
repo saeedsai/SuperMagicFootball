@@ -11,7 +11,7 @@ One bounded increment hourly on existing dev. Only dev/main; no forced pushes, p
 - Render broker srv-dbf8m6gm7kps7385tjo0: autoDeploy=yes branch=dev but only recorded deployment c871ee69; no later deploy events. Hosted backend and real two-phone gameplay remain uncertified.
 - Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and saves.
 
-## Next actions
+## Next smallest action
 1. Inspect 0.10.6.1 exact-head Modular and 4 Node + 4 Chromium Full CI; repair failures.
 2. Diagnose missing Render auto-deploy GitHub integration; verify hosted backend commit before claiming LAN ready.
 3. Verify host/guest room, approval, kickoff, controls, rejoin and phone graphics on two devices.
