@@ -482,3 +482,18 @@ test('LAN-067 guest Super Shot trail resets on goal, halftime and teleport',asyn
  assert.equal(guest.ball.x,host.ball.x);
  assert.equal(guest.ball.shot.id,'fire','visual effect remains host authoritative');
 });
+
+
+test('LAN-068 guest retries a frame after a nonthrowing transport refusal',async()=>{
+ const {createLanLiveMatch,captureLanGameState}=await load();
+ const input=controls(),host=game(controls()),guest=game(input),sent=[];
+ let attempts=0;
+ const peer={ready:true,subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
+  sendGuestInput(frame,buttons,dx,dy){sent.push(frame);return ++attempts===1?false:{frame};}};
+ const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field});
+ peer.receive(captureLanGameState(host,field,70));
+ assert.equal(run.step(.016),false,'refused send must not count as delivered');
+ assert.equal(run.step(.016),true,'same guest frame can be retried');
+ assert.deepEqual(sent,[74,74]);
+ run.dispose();
+});
