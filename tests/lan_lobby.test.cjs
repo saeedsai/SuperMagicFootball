@@ -270,3 +270,51 @@ test('P2P-004 stale guest negotiation rejection cannot close a new host',async()
   assert.match(nodes.get('#lanStatus').textContent,/Host offer ready/);
   cleanup();assert.equal(hostClosed,1);
 });
+
+
+test('LAN fallback switches from discovery to the same manual WebRTC lobby used by P2P',async()=>{
+ const {mountLanLobby}=await load();
+ const nodes=new Map();
+ class Element extends EventTarget{
+  constructor(){super();this.children=[];this.value='';this.textContent='';}
+  append(...items){this.children.push(...items);for(const item of items)if(item.id)nodes.set('#'+item.id,item);}
+  replaceChildren(){this.children=[];}
+  focus(){} select(){}
+ }
+ const root={
+  innerHTML:'',
+  ownerDocument:{createElement(){return new Element();}},
+  querySelector(sel){if(!nodes.has(sel))nodes.set(sel,new Element());return nodes.get(sel);}
+ };
+ let closeCount=0;
+ const cleanup=mountLanLobby(root,{
+  signalFactory(){return {send(){return false;},close(){closeCount++;},get ready(){return false;}};}
+ });
+ assert.match(root.innerHTML,/FIND GAMES/,'default LAN remains automatic');
+ const manual=nodes.get('#lanManualFallback');
+ assert.ok(manual,'a discoverable manual option must exist when automatic signaling is unavailable');
+ manual.dispatchEvent(new Event('click'));
+ assert.equal(closeCount,1,'switching modes must dispose discovery connection');
+ assert.match(root.innerHTML,/CREATE HOST OFFER/,'LAN manual fallback uses common offer/answer workflow');
+ assert.match(root.innerHTML,/APPLY INCOMING TEXT/);
+ assert.match(root.innerHTML,/COPY OUTGOING TEXT/);
+ cleanup();
+ assert.equal(closeCount,1,'disposal must not try to close old discovery twice');
+});
+
+test('LAN automatic, LAN manual, and internet P2P remain wired to one live match engine',()=>{
+ const root=path.resolve(__dirname,'..');
+ const ui=fs.readFileSync(path.join(root,'src/modules/ui.js'),'utf8');
+ const lobby=fs.readFileSync(path.join(root,'src/modules/lan-lobby.js'),'utf8');
+ const peer=fs.readFileSync(path.join(root,'src/modules/lan_peer_connection.js'),'utf8');
+ assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{onReady:startLanQuickMatch\}\)/);
+ assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{auto:false,internet:true,onReady:startLanQuickMatch\}\)/);
+ assert.equal((ui.match(/createLanLiveMatch\(\{peer,role,game,input,field:ENGINE\.WORLD\.field\}\)/g)||[]).length,1,
+  'all modes must share exactly one authoritative gameplay bridge');
+ assert.match(lobby,/stop=mountLanLobby\(root,\{\.\.\.options,auto:false\}\)/,
+  'LAN fallback must reuse manual connection implementation');
+ assert.match(lobby,/createLanPeerConnection\(hello,\{internet\}\)/,
+  'LAN manual and P2P must share transport factory');
+ assert.match(peer,/options\.internet===true\?\[\{urls:'stun:/,
+  'only internet P2P requests STUN; local peers do not need internet services');
+});
