@@ -23,6 +23,9 @@ export function mountAutoLanLobby(root,options={}){
   if(connection?.ready)send({type:'rooms'});
  },ADMISSION_TIMEOUT_MS)}
  function cleanupPeer(){controller?.abort();controller=null;unsub?.();unsub=null;peer?.dispose();peer=null}
+ // Bound unsolicited room advertisements to the same schema and capacity as full directory snapshots.
+ // Older local companions may omit full; treat that as an available room for compatibility.
+ function validRoom(room,legacyFull=false){return !!room&&typeof room.roomId==='string'&&/^[a-zA-Z0-9_-]{8,64}$/.test(room.roomId)&&typeof room.name==='string'&&!!room.name.trim()&&room.name.length<=48&&typeof room.build==='string'&&room.build.length<=32&&(typeof room.full==='boolean'||(legacyFull&&room.full===undefined))}
  function render(){const box=get('autoRooms');box.replaceChildren();if(mode!=='guest')return;
   for(const [id,room] of rooms){if(room.build!==build)continue;const button=document.createElement('button');button.className='btn';button.disabled=room.full===true;button.textContent=(room.full===true?'IN MATCH · ':'JOIN ')+room.name;button.addEventListener('click',()=>join(id));box.append(button)}
   if(!box.children.length)box.textContent='Searching for available hosts…';
@@ -45,15 +48,17 @@ export function mountAutoLanLobby(root,options={}){
    if(mode!=='guest'||requestId||started||!Array.isArray(m.rooms)||m.rooms.length>128)return;
    const fresh=new Map();
    for(const room of m.rooms){
-    if(!room||typeof room.roomId!=='string'||!/^[a-zA-Z0-9_-]{8,64}$/.test(room.roomId)||
-       typeof room.name!=='string'||!room.name.trim()||room.name.length>48||
-       typeof room.build!=='string'||room.build.length>32||typeof room.full!=='boolean')return;
+    if(!validRoom(room))return;
     fresh.set(room.roomId,room);
    }
    rooms.clear();for(const [id,room] of fresh)rooms.set(id,room);
    render();return;
   }
-  if(m.type==='room-announce'&&typeof m.roomId==='string'){rooms.set(m.roomId,m);render();return}
+  if(m.type==='room-announce'){
+   if(mode!=='guest'||!validRoom(m,true))return;
+   if(!rooms.has(m.roomId)&&rooms.size>=128)return;
+   rooms.set(m.roomId,{...m,full:m.full===true});render();return;
+  }
   if(m.type==='room-remove'){rooms.delete(m.roomId);render();if(mode==='guest'&&roomId===m.roomId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;status('Host room closed. Choose another room.')}return}
   if(m.type==='join-request'&&mode==='host'&&m.roomId===roomId){
    approvalRequestId=m.requestId;

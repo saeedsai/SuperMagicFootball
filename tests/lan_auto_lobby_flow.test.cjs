@@ -210,3 +210,33 @@ test('LAN unanswered host approval expires locally and allows a fresh join',asyn
   dispose();
  }finally{f.cleanup()}
 });
+
+test('LAN room announcements reject malformed cards and cap unsolicited directory growth',async()=>{
+ const f=setup();
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.10.6.3',signalFactory:f.signalFactory});
+  f.elements.get('#autoFind').click();f.connect();
+  const room={type:'room-announce',roomId:'room_12345678',name:'Friendly',build:'0.10.6.3',full:false};
+  for(const bad of [
+   {...room,roomId:'../bad'}, {...room,name:' '}, {...room,name:'x'.repeat(49)},
+   {...room,build:'x'.repeat(33)}, {...room,full:'false'}
+  ])f.emit(bad);
+  assert.equal(f.elements.get('#autoRooms').children.length,0,'invalid announcements never create cards');
+  f.emit({...room,full:undefined});
+  assert.equal(f.elements.get('#autoRooms').children.length,1,'legacy local broker may omit full');
+  assert.equal(f.elements.get('#autoRooms').children[0].disabled,false);
+  for(let i=1;i<128;i++)f.emit({...room,roomId:'room_'+String(i).padStart(8,'0')});
+  assert.equal(f.elements.get('#autoRooms').children.length,128);
+  f.emit({...room,roomId:'room_99999999'});
+  assert.equal(f.elements.get('#autoRooms').children.length,128,'new cards beyond broker capacity are ignored');
+  f.emit({...room,full:true});
+  assert.equal(f.elements.get('#autoRooms').children.length,128,'existing cards remain updatable at capacity');
+  assert.equal(f.elements.get('#autoRooms').children[0].disabled,true);
+  f.emit({type:'rooms-snapshot',rooms:[]});
+  assert.equal(f.elements.get('#autoRooms').children.length,0,'authoritative snapshot still clears directory');
+  f.emit({...room,roomId:'room_99999999'});
+  assert.equal(f.elements.get('#autoRooms').children.length,1,'room becomes visible after capacity frees');
+  dispose();
+ }finally{f.cleanup()}
+});
