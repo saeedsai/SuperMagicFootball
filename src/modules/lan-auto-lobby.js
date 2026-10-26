@@ -6,8 +6,11 @@ const ADMISSION_TIMEOUT_MS=25000;
 const HOST_REGISTRATION_RETRY_MS=10000; // six idempotent attempts per minute
 const makeId=()=>{const b=crypto.getRandomValues(new Uint8Array(16));return Array.from(b,v=>v.toString(16).padStart(2,'0')).join('')};
 export function mountAutoLanLobby(root,options={}){
- const build=options.build??RELEASE.version,peerFactory=options.peerFactory??createLanPeerConnection;
- root.innerHTML='<section class="panel lanConnectionLab"><h2>LOCAL NETWORK</h2><p>Create a room on your phone or computer, or find an available game. A secure discovery service is required for browser-to-browser matchmaking.</p><div class="row"><button class="btn" id="autoHost">HOST GAME</button><button class="btn" id="autoFind">FIND GAMES</button><button class="btn minor" id="autoReset">CANCEL</button></div><div id="autoHostInfo" aria-live="polite"></div><div id="autoRooms" aria-live="polite"></div><div id="autoApproval"></div><p id="autoStatus" role="status" aria-live="polite">Connecting to LAN discovery…</p></section>';
+ const internet=options.internet===true,roomScope=internet?'internet-p2p':'lan';
+ const build=options.build??RELEASE.version,peerFactory=options.peerFactory??(hello=>createLanPeerConnection(hello,{internet}));
+ const registerHost=()=>send({type:'host',roomId,name:internet?'Online P2P Match':'SuperMagicFootball Match',build,...(internet?{scope:roomScope}:{})});
+ const requestRooms=()=>send(internet?{type:'rooms',scope:roomScope}:{type:'rooms'});
+ root.innerHTML=`<section class="panel lanConnectionLab"><h2>${internet?'ONLINE P2P':'LOCAL NETWORK'}</h2><p>${internet?'Host or find internet P2P games automatically. A lightweight signaling directory finds rooms and exchanges offers; physics stays peer-to-peer and the host approves each guest. Some networks need a TURN relay.':'Create a room on your phone or computer, or find an available game. A secure discovery service is required for browser-to-browser matchmaking.'}</p><div class="row"><button class="btn" id="autoHost">HOST GAME</button><button class="btn" id="autoFind">FIND GAMES</button><button class="btn minor" id="autoReset">CANCEL</button></div><div id="autoHostInfo" aria-live="polite"></div><div id="autoRooms" aria-live="polite"></div><div id="autoApproval"></div><p id="autoStatus" role="status" aria-live="polite">Connecting to LAN discovery…</p></section>`;
  const get=id=>root.querySelector('#'+id),rooms=new Map();
  let mode=null,roomId=null,session=null,peer=null,connection=null,unsub=null,controller=null,disposed=false,requestId=null,approved=false,approvalRequestId=null,started=false,refreshTimer=null,hostRetryTimer=null,hostRegistered=false,admissionTimer=null,lanUrls=[],signalState='connecting',discoveryScope='lan';
  const status=message=>{if(!disposed)get('autoStatus').textContent=message};
@@ -19,15 +22,15 @@ export function mountAutoLanLobby(root,options={}){
  function stopHostRetry(){if(hostRetryTimer!==null){(options.clearIntervalImpl??clearInterval)(hostRetryTimer);hostRetryTimer=null}}
  function startHostRetry(){stopHostRetry();hostRetryTimer=(options.setIntervalImpl??setInterval)(()=>{
   if(!disposed&&mode==='host'&&roomId&&!hostRegistered&&!started&&connection?.ready)
-   send({type:'host',roomId,name:'SuperMagicFootball Match',build});
+   registerHost();
  },HOST_REGISTRATION_RETRY_MS)}
- function startRefresh(){stopRefresh();refreshTimer=(options.setIntervalImpl??setInterval)(()=>{if(!disposed&&mode==='guest'&&!requestId&&!started&&connection?.ready)send({type:'rooms'})},10000)}
+ function startRefresh(){stopRefresh();refreshTimer=(options.setIntervalImpl??setInterval)(()=>{if(!disposed&&mode==='guest'&&!requestId&&!started&&connection?.ready)requestRooms()},10000)}
  function clearAdmissionTimeout(){if(admissionTimer!==null){(options.clearTimeoutImpl??clearTimeout)(admissionTimer);admissionTimer=null}}
  function waitForAdmission(id){clearAdmissionTimeout();admissionTimer=(options.setTimeoutImpl??setTimeout)(()=>{
   admissionTimer=null;if(disposed||mode!=='guest'||requestId!==id||approved||started)return;
   send({type:'leave'});cleanupPeer();requestId=null;roomId=null;
   status('Host approval timed out. Select a game to retry.');
-  if(connection?.ready)send({type:'rooms'});
+  if(connection?.ready)requestRooms();
  },ADMISSION_TIMEOUT_MS)}
  function cleanupPeer(){controller?.abort();controller=null;unsub?.();unsub=null;peer?.dispose();peer=null}
  // An approved guest must release the reserved seat if WebRTC negotiation fails.
@@ -37,11 +40,11 @@ export function mountAutoLanLobby(root,options={}){
   clearAdmissionTimeout();cleanupPeer();send({type:'leave'});
   approved=false;requestId=null;roomId=null;
   status(message+' Select a game to retry.');
-  if(connection?.ready)send({type:'rooms'});
+  if(connection?.ready)requestRooms();
  }
  // Bound unsolicited room advertisements to the same schema and capacity as full directory snapshots.
  // Older local companions may omit full; treat that as an available room for compatibility.
- function validRoom(room,legacyFull=false){return !!room&&typeof room.roomId==='string'&&/^[a-zA-Z0-9_-]{8,64}$/.test(room.roomId)&&typeof room.name==='string'&&!!room.name.trim()&&room.name.length<=48&&typeof room.build==='string'&&room.build.length<=32&&(typeof room.full==='boolean'||(legacyFull&&room.full===undefined))}
+ function validRoom(room,legacyFull=false){return !!room&&(!internet||room.scope===roomScope)&&typeof room.roomId==='string'&&/^[a-zA-Z0-9_-]{8,64}$/.test(room.roomId)&&typeof room.name==='string'&&!!room.name.trim()&&room.name.length<=48&&typeof room.build==='string'&&room.build.length<=32&&(typeof room.full==='boolean'||(legacyFull&&room.full===undefined))}
  function render(){const box=get('autoRooms');box.replaceChildren();if(mode!=='guest')return;
   for(const [id,room] of rooms){if(room.build!==build)continue;const button=document.createElement('button');button.className='btn';button.disabled=room.full===true;button.textContent=(room.full===true?'IN MATCH · ':'JOIN ')+room.name;button.addEventListener('click',()=>join(id));box.append(button)}
   if(!box.children.length)box.textContent='Searching for available hosts…';
@@ -49,9 +52,10 @@ export function mountAutoLanLobby(root,options={}){
  function watch(current){const aborter=new AbortController();controller=aborter;unsub=current.subscribeStatus(s=>{if(peer===current&&s.ready)ready(current)},aborter.signal);if(peer!==current||aborter.signal.aborted)return;current.awaitReady(120000,aborter.signal).then(()=>ready(current)).catch(e=>{if(peer===current&&!aborter.signal.aborted){if(mode==='guest')recoverGuestHandshake('Connection failed: '+e.message);else status('Connection failed: '+e.message)}})}
  function ready(current){if(disposed||peer!==current||!approved||started)return;controller?.abort();controller=null;unsub?.();unsub=null;peer=null;started=true;try{options.onReady?.(current,mode)}catch(e){started=false;current.dispose();if(mode==='guest')recoverGuestHandshake('Unable to start match: '+e.message);else status('Unable to start match: '+e.message)}}
  function reset(){stopRefresh();stopHostRetry();hostRegistered=false;clearAdmissionTimeout();get('autoHostInfo').replaceChildren();if(mode==='host'||mode==='guest')send({type:'leave'});cleanupPeer();mode=null;roomId=null;session=null;approved=false;started=false;requestId=null;approvalRequestId=null;rooms.clear();get('autoApproval').replaceChildren();render();status('Select Host Game or Find Games.')}
- function showHostAddress(){if(mode!=='host')return;const guestUrls=lanUrls.length?lanUrls:(location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'?[location.origin]:[]);get('autoHostInfo').textContent='Room ID: '+roomId+' | Open this game address on BOTH devices: '+(guestUrls.length?guestUrls.join(' or '):'Waiting for signaling service connection.')+(discoveryScope==='public-network'?' | Automatic discovery uses the same public-network address; host approval is required.':' | Both devices must use the same Wi-Fi/LAN.')}
- function host(){if(signalState==='unconfigured')return status('Online room discovery is not configured for this build. Hosting is unavailable.');reset();mode='host';roomId='room_'+makeId();session=makeId();startHostRetry();if(connection?.ready)send({type:'host',roomId,name:'SuperMagicFootball Match',build});showHostAddress();status(connection?.ready?'Registering room with discovery service…':'Connecting to LAN server; room will register automatically…')}
- function find(){if(signalState==='unconfigured')return status('Online room discovery is not configured for this build. Finding games is unavailable.');reset();mode='guest';startRefresh();if(connection?.ready)send({type:'rooms'});render();status(connection?.ready?'Searching for games on this LAN…':'Connecting to LAN server; search will start automatically…')}
+ function showHostAddress(){if(mode!=='host')return;
+ if(internet){get('autoHostInfo').textContent='Room ID: '+roomId+' | Public Online P2P room; every guest requires host approval. No gameplay server.';return;}const guestUrls=lanUrls.length?lanUrls:(location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'?[location.origin]:[]);get('autoHostInfo').textContent='Room ID: '+roomId+' | Open this game address on BOTH devices: '+(guestUrls.length?guestUrls.join(' or '):'Waiting for signaling service connection.')+(discoveryScope==='public-network'?' | Automatic discovery uses the same public-network address; host approval is required.':' | Both devices must use the same Wi-Fi/LAN.')}
+ function host(){if(signalState==='unconfigured')return status('Online room discovery is not configured for this build. Hosting is unavailable.');reset();mode='host';roomId='room_'+makeId();session=makeId();startHostRetry();if(connection?.ready)registerHost();showHostAddress();status(connection?.ready?'Registering room with discovery service…':'Connecting to LAN server; room will register automatically…')}
+ function find(){if(signalState==='unconfigured')return status('Online room discovery is not configured for this build. Finding games is unavailable.');reset();mode='guest';startRefresh();if(connection?.ready)requestRooms();render();status(connection?.ready?(internet?'Searching for Online P2P games…':'Searching for games on this LAN…'):(internet?'Connecting to P2P discovery…':'Connecting to LAN server; search will start automatically…'))}
  function join(id){if(mode!=='guest'||disposed||started)return;if(rooms.get(id)?.full===true)return status('This room is already playing. Choose another host.');if(!connection?.ready)return status('LAN server disconnected');if(requestId){clearAdmissionTimeout();send({type:'leave'})}cleanupPeer();approved=false;roomId=id;const nextRequestId='request_'+makeId();let submitted=false;try{submitted=send({type:'join',roomId:id,requestId:nextRequestId,build})===true}catch{}if(!submitted){roomId=null;requestId=null;status('Unable to send join request. Check discovery connection and retry.');return}requestId=nextRequestId;waitForAdmission(nextRequestId);status('Waiting for host approval…')}
  async function onEvent(m){if(disposed)return;
   if(m.type==='discovery-scope'&&m.scope==='public-network'){discoveryScope='public-network';if(mode==='host')showHostAddress();return}
@@ -93,7 +97,7 @@ export function mountAutoLanLobby(root,options={}){
   }
   if(m.type==='answer'&&mode==='host'&&m.roomId===roomId&&peer){try{await peer.acceptAnswer(m.sdp);if(peer)watch(peer)}catch(e){cleanupPeer();status('Host answer failed: '+e.message)}}
  }
- connection=(options.signalFactory??connectLanSignal)({onEvent,onState:s=>{if(started||disposed)return;signalState=s;if(s==='connected'){status('LAN discovery connected.');if(mode==='host'&&roomId){hostRegistered=false;startHostRetry();cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();send({type:'host',roomId,name:'SuperMagicFootball Match',build})}else if(mode==='guest'){if(requestId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;status('Connection restored. Choose a game again.')}send({type:'rooms'})}}else {if(mode==='host'){hostRegistered=false;stopHostRetry()}rooms.clear();render();approvalRequestId=null;get('autoApproval').replaceChildren();status('Discovery '+s+'. Automatic hosting requires an online signaling service. If none is configured, rooms cannot be created or found yet.')}}});
+ connection=(options.signalFactory??connectLanSignal)({internet,onEvent,onState:s=>{if(started||disposed)return;signalState=s;if(s==='connected'){status(internet?'Online P2P discovery connected.':'LAN discovery connected.');if(mode==='host'&&roomId){hostRegistered=false;startHostRetry();cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();registerHost()}else if(mode==='guest'){if(requestId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;status('Connection restored. Choose a game again.')}requestRooms()}}else {if(mode==='host'){hostRegistered=false;stopHostRetry()}rooms.clear();render();approvalRequestId=null;get('autoApproval').replaceChildren();status('Discovery '+s+'. Automatic hosting requires a signaling directory. If unavailable, choose MANUAL CONNECTION to exchange an offer and answer privately.')}}});
  const actions=[['autoHost',host],['autoFind',find],['autoReset',reset]];for(const [id,fn] of actions)get(id).addEventListener('click',fn);
  return ()=>{if(disposed)return;reset();disposed=true;connection.close();for(const [id,fn] of actions)get(id)?.removeEventListener('click',fn)};
 }
