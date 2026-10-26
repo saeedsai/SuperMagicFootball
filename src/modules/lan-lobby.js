@@ -30,11 +30,12 @@ function mountLanLobby(root,options={}){
   // Hosted discovery requires an actual secure signaling endpoint; a static site
   // cannot create a LAN listener or discover private hosts by itself.
   if(options.auto!==false && !options.peerFactory)return mountAutoLanLobby(root,options);
-  const peerFactory=options.peerFactory??createLanPeerConnection;
+  const internet=options.internet===true;
+  const peerFactory=options.peerFactory??(hello=>createLanPeerConnection(hello,{internet}));
   const build=options.build??RELEASE.version;
   const cryptoSource=options.cryptoSource??globalThis.crypto;
-  root.innerHTML=`<section class="panel lanConnectionLab" aria-label="Local network connection setup">
-    <p class="muted">LAN Quick Match: after both devices exchange offers and answers, the host runs the match and the guest controls the away team. Both devices must use the same installed game version and local network. Share the connection text only with someone you trust; it may contain local network addresses.</p>
+  root.innerHTML=`<section class="panel lanConnectionLab" aria-label="${internet?'Online P2P':'Local network'} connection setup">
+    <p class="muted">${internet?'ONLINE P2P (manual): Share the offer and answer privately with a friend over the internet. This uses public STUN to discover reachable WebRTC addresses, with no match server or automatic matchmaking. Some firewalls/NATs require TURN and will not connect. Connection text can expose network information.':'LAN Quick Match: after both devices exchange offers and answers, the host runs the match and the guest controls the away team. Both devices must use the same installed game version and local network. Share the connection text only with someone you trust; it may contain local network addresses.'} Both players must have the same game version. The host controls home; the guest controls away.</p>
     <div class="row"><button type="button" class="btn" id="lanHost">CREATE HOST OFFER</button>
       <button type="button" class="btn" id="lanGuest">JOIN AS GUEST</button>
       <button type="button" class="btn minor" id="lanReset">RESET CONNECTION</button></div>
