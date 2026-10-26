@@ -22,3 +22,6 @@ Only dev/main; no force push, security bypass or weakening tests. Edit only this
 
 ## Evidence
 - Source-executed V8 focused Unicode ingress acceptance/rejection test; CI is authoritative for full Node/browser QA.
+
+## Cleanup
+Keep only dev/main and this developer checkpoint; preserve historical audit, IDs and save compatibility.
