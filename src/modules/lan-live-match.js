@@ -11,6 +11,8 @@ function requireField(field) {
 function lanLiveAxis(value,min,span){return lanLiveClamp((value-min)/span*2-1,-1,1)}
 function lanLivePosition(value,min,span){return min+(value+1)*span/2}
 const visNum=(n,max)=>lanLiveClamp(Number.isFinite(n)?n:0,0,max);
+// Trap rendering needs sub-pixel precision, not noisy 16-digit physics floats.
+const trapWire=n=>Math.round(n*1000)/1000;
 function captureLanGameState(game,field,tick){
   requireField(field);
   if(!Number.isSafeInteger(tick)||tick<0)throw new TypeError('Invalid LAN match tick');
@@ -26,8 +28,9 @@ function captureLanGameState(game,field,tick){
   const hazards=(Array.isArray(game.magicHazards)?game.magicHazards:[])
     .filter(h=>(h.kind==='banana'||h.kind==='ice')&&(h.team===0||h.team===1))
     .slice(0,24).map(h=>({kind:h.kind,team:h.team,
-      x:lanLiveAxis(h.x,field.x,field.w),y:lanLiveAxis(h.y,field.y,field.h),
-      life:visNum(h.life,3),arm:visNum(h.arm,.3)}));
+      x:trapWire(lanLiveAxis(h.x,field.x,field.w)),
+      y:trapWire(lanLiveAxis(h.y,field.y,field.h)),
+      life:trapWire(visNum(h.life,3)),arm:trapWire(visNum(h.arm,.3))}));
   return {
     hazards,tick,clockMs:lanLiveClamp(Math.round(game.clock*1000),0,36000000),
     scores:{home:lanLiveClamp(game.score[0],0,999),away:lanLiveClamp(game.score[1],0,999)},

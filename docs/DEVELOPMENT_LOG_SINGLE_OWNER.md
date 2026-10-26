@@ -1,3 +1,7 @@
+## 2026-10-26 11:12 CET — LAN-060 trap packet size hardening
+- Bounded Magic Trap wire positions and timers to three decimals (sub-pixel trap precision), preventing high-precision float bloat when all 22 player poses and 24 traps are present. Added full-capacity snapshot regression. Host physics is untouched; same unshipped 0.10.7.3 candidate.
+- Await exact-head Modular and Full 4+4; do not promote without green.
+
 ## 2026-10-26 11:08 CET — LAN-060 CI integration repair (0.10.7.3 candidate)
 - First exact-head Modular #40303858721 and Full #40303858526 failed LAN-050: `sendHostMatchState` rejected new six/seven-key host state with optional `hazards` before the validated snapshot codec could run. Root cause confirmed in GitHub job logs (831/832 Node tests passed).
 - Updated peer transport allowlist and forwarding for optional `hazards`; added full fake-RTC host/guest trap delivery and removal regression. This repairs the same unshipped candidate; no second player-facing deployment or version bump. Exact-head rerun required.

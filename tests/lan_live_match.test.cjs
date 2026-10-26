@@ -334,3 +334,26 @@ test('LAN-060 guest mirrors host Banana Peel and Ice Patch countdowns and clears
  applyLanGameState(guest,field,{...first,hazards:undefined});
  assert.deepEqual(guest.magicHazards,[],'legacy snapshots never invent traps');
 });
+
+test('LAN-060 maximal roster and trap snapshots fit bounded wire budget',async()=>{
+ const {captureLanGameState}=await load();
+ const {encodeLanSnapshot,MAX_SNAPSHOT_BYTES}=await import('../src/modules/lan-state-snapshot.js');
+ const host=game(controls());
+ host.players=Array.from({length:22},(_,slot)=>({
+  t:Math.floor(slot/11),i:slot%11,
+  x:100.00000000000001,y:449.99999999999994,z:399.99999999999994,
+  face:-1,action:'doubleJumpSuperBicycle',actionTimer:9.99999999999999,
+  anim:35999.9999999999,stun:9.9999999999999,
+  slideTimer:9.9999999999999,diveElapsed:9.9999999999999
+ }));
+ host.magicHazards=Array.from({length:24},(_,i)=>({
+  kind:i%2?'banana':'ice',team:i%2,
+  x:100.00000000000001,y:449.99999999999994,
+  life:2.99999999999999,arm:.299999999999999
+ }));
+ const state=captureLanGameState(host,field,100);
+ const wire=encodeLanSnapshot({type:'snapshot',version:1,
+  roomId:'room001',hostId:'host001',...state});
+ assert.ok(Buffer.byteLength(wire)<=MAX_SNAPSHOT_BYTES,
+  'full player pose plus maximum traps must not overflow RTC snapshot codec');
+});
