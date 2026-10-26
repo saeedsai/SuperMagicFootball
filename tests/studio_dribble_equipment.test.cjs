@@ -89,6 +89,7 @@ test('Rare super abilities require elite eligibility without revoking legacy equ
  assert.match(ui,/Tricks are reserved for elite players/);
  assert.match(ui,/player\.superAbility\?\.type==='shoot'/);
  assert.match(ui,/player\.superAbility\?\.type==='defence'/);
- assert.match(ui,/const studioEliteEligible=p=>Number\.isFinite/);
+  assert.match(ui,/const studioEliteEligible=p=>/);
+  assert.match(ui,/Number\(p\.rating\)>=90\)\|\|playerOVR\(p\)>=90/);
  assert.match(ui,/!studioEliteEligible\(source\[avatarIndex\]\)/);
 });

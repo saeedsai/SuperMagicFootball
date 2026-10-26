@@ -7,7 +7,7 @@ One bounded tested feature per run on existing dev. Only dev/main; never bypass 
 
 ## Current checkpoint
 - Baseline dev/main `431a2db880033c61606b2863d49b23306d0603f8` (0.10.7.0). Exact-head dev Modular #40283293796, dev Full 4+4 #40283294758, main Full #40283701565 and Pages #40283701332 succeeded.
-- New 0.10.7.1 candidate: fix Player Studio elite predicate (legacy rating 90+ OR positional OVR 90+). Low legacy rating no longer masks high edited match stats; affects Magic/Shot/Defence choices. Regression added; new CI and Pages not yet certified.
+- New 0.10.7.1 candidate: fix Player Studio elite predicate (legacy rating 90+ OR positional OVR 90+). Low legacy rating no longer masks high edited match stats; affects Magic/Shot/Defence choices. Regression added; initial CI failed on outdated `studio_dribble_equipment.test.cjs:92` source-shape assertion; repaired in follow-up. New exact-head CI and Pages not yet certified.
 - Render signaling still reported only deployed `c871ee69` on inspection; auto-deploy integration unresolved. Physical two-phone LAN uncertified.
 - Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and saved-game compatibility.
 
