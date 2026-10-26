@@ -152,3 +152,35 @@ test('authoritative LAN room refresh removes stale cards, rejects malformed repl
   dispose();
  }finally{f.cleanup()}
 });
+
+test('failed LAN join send does not strand guest admission and allows immediate retry',async()=>{
+ const f=setup();
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.10.6.1',signalFactory:f.signalFactory});
+  f.elements.get('#autoFind').click();f.connect();
+  const originalSend=f.connection.send.bind(f.connection);
+  let failure='return';
+  f.connection.send=packet=>{
+   if(packet.type==='join'&&failure==='return')return false;
+   if(packet.type==='join'&&failure==='throw')throw Error('transport closed');
+   return originalSend(packet);
+  };
+  const room={roomId:'room_12345678',name:'Friendly',build:'0.10.6.1',full:false};
+  f.emit({type:'room-announce',...room});
+  f.elements.get('#autoRooms').children[0].click();
+  assert.match(f.elements.get('#autoStatus').textContent,/Unable to send join request/);
+  assert.equal(f.packets.some(packet=>packet.type==='join'),false);
+  f.emit({type:'rooms-snapshot',rooms:[]});
+  assert.equal(f.elements.get('#autoRooms').children.length,0,'failed join must not lock snapshot reconciliation');
+  f.emit({type:'room-announce',...room});
+  failure='throw';
+  assert.doesNotThrow(()=>f.elements.get('#autoRooms').children[0].click());
+  assert.match(f.elements.get('#autoStatus').textContent,/Unable to send join request/);
+  failure='none';
+  f.elements.get('#autoRooms').children[0].click();
+  assert.equal(f.packets.at(-1).type,'join');
+  assert.match(f.elements.get('#autoStatus').textContent,/Waiting for host approval/);
+  dispose();
+ }finally{f.cleanup()}
+});

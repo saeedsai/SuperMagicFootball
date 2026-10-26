@@ -1,3 +1,8 @@
+## 2026-10-26 04:03 CET — Failed LAN Join send recovery (0.10.6.1 dev candidate)
+- Pre-increment exact dev/main `85f006c348407b9e6167008f01dafeb6d79258ba`: dev Modular #40257013543, dev Full 4+4 #40257013601, main Full #40257318914 and Pages #40257318737 all succeeded. The 0.10.6.1 candidate requires its own exact-head CI.
+- Fixed guest admission: failed/throwing WebSocket Join send no longer sets phantom pending request or blocks directory reconciliation. Added regression for false, throw, snapshot cleanup and immediate retry. Roster, controls, offline and saves unchanged. Updated About-only release, README, package, service-worker cache and version policy.
+- Render service srv-dbf8m6gm7kps7385tjo0 reports autoDeploy=yes on dev, but its only recorded live deployment is c871ee69; events show initial deployment only. Automatic GitHub-triggered deploy remains unverified. No manual deployment triggered while autoDeploy enabled; physical two-phone QA remains pending.
+
 ## 2026-10-26 03:00 CET — LAN authoritative room directory refresh (0.10.6.0 dev candidate)
 - Previous exact dev/main `f628c4da491afa4922ec943e08c075f29c6961d3`: dev Modular #40252414893 and Full #40252414869 green; main Full #40253122511 and Pages #40253122594 green. New version is a separate candidate.
 - Added server-side LAN/public-network-scoped `rooms-snapshot` response to periodic Find Games directory refresh. Guest replaces stale room cards atomically, rejects malformed snapshots and defers reconciliation during host approval. Added pure Node scoping/occupancy regression and guest UI flow test. Existing room announcements, WebRTC, four buttons, 223 teams/2676 players, six formations, ten Career/Cup slots, SD09, offline and saves unchanged.
