@@ -167,7 +167,9 @@ const filteredNations=cat=>nations().filter(([i])=>cat==='all'||cat==='arcade'&&
 const roster=i=>(edits[TEAMS[i].id]||rosterFor(i)).map(withStats);
 const playerOVR=(p,position=p?.role)=>overallForPosition(p,position);
 const playerAbilityIcons=p=>ABILITY_ICONS.summary(p,SHOTS,ABILITIES.DEFENCE_MOVES,DRIBBLES.DRIBBLE_STYLES,STUDIO_MAGIC_TRICKS);
-const studioEliteEligible=p=>Number.isFinite(Number(p?.rating))?Number(p.rating)>=90:playerOVR(p)>=90;
+// Elite Studio access accepts either a high legacy rating OR a high editable position OVR.
+// A lower legacy rating must not mask a qualifying set of current match attributes.
+const studioEliteEligible=p=>(Number.isFinite(Number(p?.rating))&&Number(p.rating)>=90)||playerOVR(p)>=90;
 const planFor=i=>safePlan(teamPlans[TEAMS[i].id],roster(i),i);
 const identity=i=>teamIdentity(TEAMS[i]);
 const menuVisible=()=>!menu.classList.contains('hidden');
@@ -1043,7 +1045,7 @@ function studioMagicGuide(choice,equipped){
   :'Preview only: '+guide+' Press SAVE TRICK SELECTION to equip this Trick.';
 }
 function studioMagicEligibilityGuide(player){
- if(studioEliteEligible(player))return 'Eligible for Magic Tricks. Preview a move, then save to equip it.';
+ if(studioEliteEligible(player))return 'Eligible for Magic Tricks (legacy rating or position OVR 90+). Preview a move, then save to equip it.';
  if(player?.magicTrick)return 'Existing equipped Trick is preserved. You may keep, replace or remove it without changing player eligibility.';
  return 'Magic Tricks are locked for this player. Only elite players (rating or positional overall 90+) can equip them. Normal Dribble Styles remain available.';
 }
