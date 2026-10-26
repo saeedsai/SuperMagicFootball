@@ -35,7 +35,7 @@ test('LAN-046 Quick Match routes ready LAN sessions to live gameplay',()=>{
   assert.match(ui,/navItem\('Local Network · LAN Quick Match','navLan'/);
   assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{onReady:startLanQuickMatch\}\)/);
   assert.match(ui,/createLanLiveMatch\(\{peer,role,game,input,field:ENGINE\.WORLD\.field\}\)/);
-  assert.match(ui,/screen==='LOCAL NETWORK'&&e.code==='Escape'/);
+  assert.match(ui,/\(screen==='LOCAL NETWORK'\|\|screen==='ONLINE P2P'\)\&\&e\.code==='Escape'/);
   assert.match(ui,/lanLobbyDispose\(\)/);
   assert.match(sw,/'lan_peer_connection','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
   assert.match(fixture,/'lan_peer_connection','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
@@ -114,4 +114,38 @@ test('Online P2P Quick Match reuses LAN authoritative engine without changing to
  assert.match(peer,/options\.internet===true\?\[\{urls:'stun:/);
  assert.match(lobby,/createLanPeerConnection\(hello,\{internet\}\)/);
  assert.match(lobby,/Some firewalls\/NATs require TURN/);
+});
+
+
+test('P2P-002 clipboard paste is bounded, manual-approval-only and has a touch fallback',async()=>{
+  const {mountLanLobby}=await load();
+  const nodes=new Map();
+  class Element extends EventTarget{
+    constructor(){super();this.value='';this.textContent='';this.focused=false;}
+    focus(){this.focused=true;} select(){}
+  }
+  const root={innerHTML:'',querySelector(sel){
+    if(!nodes.has(sel))nodes.set(sel,new Element());return nodes.get(sel);
+  }};
+  let text=offer(),fail=false,created=0;
+  const cleanup=mountLanLobby(root,{auto:false,internet:true,build,
+    peerFactory(){created++;throw new Error('must not auto-connect');},
+    clipboard:{async readText(){if(fail)throw new Error('permission denied');return text;}}
+  });
+  assert.match(root.innerHTML,/id="lanPaste"/);
+  const click=async()=>{nodes.get('#lanPaste').dispatchEvent(new Event('click'));
+    await new Promise(resolve=>setImmediate(resolve));};
+  await click();
+  assert.equal(nodes.get('#lanIncoming').value,offer());
+  assert.equal(created,0,'paste must never accept SDP or start a peer');
+  assert.match(nodes.get('#lanStatus').textContent,/Verify the sender/);
+  text='x'.repeat(200001);
+  await click();
+  assert.equal(nodes.get('#lanIncoming').value,offer(),'oversized clipboard never replaces existing text');
+  assert.match(nodes.get('#lanStatus').textContent,/too large/);
+  fail=true;
+  await click();
+  assert.equal(nodes.get('#lanIncoming').focused,true);
+  assert.match(nodes.get('#lanStatus').textContent,/paste manually/);
+  cleanup();
 });

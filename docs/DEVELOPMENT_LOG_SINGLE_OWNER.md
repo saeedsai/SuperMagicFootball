@@ -1,3 +1,8 @@
+## 2026-10-26 18:01 CET — P2P-002 clipboard paste + two CI repairs (0.11.1.0 candidate)
+- Baseline dev 9e59d26c314d8d09499e6d7cc6cf0db8c92dc5ee, main f69e79b230af2e4a35b535a40887b76d1f23a248. Full #40359664536 and Modular #40359664733 failed two Node contracts: LAN-046 stale Escape regex omitted new Online P2P screen; own memory checkpoint omitted three mandatory sections.
+- Add explicit incoming clipboard paste, reject >200k characters, retain manual fallback on clipboard failure, never auto-apply untrusted SDP. Add focused Node regression. Update test to accept both LAN/Online P2P Escape routes and restore own checkpoint contract headings.
+- Align About/package/README/SW/cache/policy. Exact-head CI, protected main promotion, Pages bytes, actual two-device LAN and cross-network P2P acceptance remain pending. Four controls, 223 teams/2676 players, six formations, SD09, Career/Cup ten slots and offline/saves unchanged.
+
 ## 2026-10-26 — Quick Match private Online P2P (0.11.0.0 candidate)
 - Added separate Quick Match Online P2P mode, manual trusted-party offer/answer signaling, public STUN and reuse of the existing host-authoritative LAN gameplay bridge. Top-level backend Online menu unchanged; no automatic internet matchmaking or game server.
 - Some network pairs cannot connect without TURN relay. No physical two-network certification. Full exact-head Node 4 / Chromium 4 / Modular QA, protected promotion and Pages byte comparison pending; not yet a certified release.

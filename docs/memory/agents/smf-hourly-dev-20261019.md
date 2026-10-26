@@ -3,15 +3,24 @@
 **Updated:** 2026-10-26
 
 ## Mission
-One bounded increment on dev only; protected exact-green promotion to main. Preserve 223 teams/2676 players, six formations, four buttons, 10 save slots, SD09, offline/saves.
+Deliver one bounded tested increment on existing dev per run; promote only exact-green head through protected pipeline. Preserve 223 teams/2676 players, six formations, four buttons, 10 Career/Cup slots, SD09, offline/saves.
 
 ## Current checkpoint
-- Candidate 0.11.0.0: Quick Match private Online P2P via manual offer/answer, public STUN, existing host-authoritative LAN engine. Top-level Online menu untouched. No internet discovery/TURN; some network pairs cannot connect.
-- Exact-head 4 Node + 4 Chromium, Modular QA, hosted Pages byte smoke and actual two-client separate-network acceptance pending. Do not claim released.
+- 0.11.1.0 dev candidate: Online P2P manual SDP clipboard paste with explicit Apply, 200k limit, clipboard fallback. No matchmaking or TURN; physical cross-network acceptance pending.
+- CI blockers on 9e59d26: stale LAN-046 Escape regex after Online P2P route, and missing own checkpoint headings. Both repaired in this increment.
 
 ## Next smallest action
-1. Verify all candidate files, run focused contract and exact-head 4+4 + Modular QA; fix failures.
-2. Promote only exact-green head using protected workflow and verify Pages.
-3. Check manual Online P2P on two separate networks and document STUN failure cases.
-4. Improve TURN configuration only with secure credentials when needed.
-5. Continue Player Studio counterable Tricks and directional art.
+1. Inspect exact-head Modular and Full 4 Node + 4 Chromium CI; repair failures.
+2. Verify protected promotion only for green unchanged dev SHA and Pages hosted byte smoke.
+3. Test manual Online P2P on separate networks; document NAT/TURN limits.
+4. Continue counterable Magic Tricks and directional animation art.
+5. Retest LAN broker discovery and two-client host consent.
+
+## Ownership and exclusions
+Sole designated hourly developer. Commit only to dev; main is for protected promotion. Do not read/edit other agents' private memory, create branches, bypass security or force push.
+
+## Evidence
+Baseline dev 9e59d26, main f69e79b. CI Full #40359664536 and Modular #40359664733 failed two Node contracts; new candidate exact-head QA pending. Clipboard regression added; physical QA not claimed.
+
+## Cleanup
+No temp branches or changed roster/save schemas. Keep automation enabled; continue next increment regardless of pending CI.

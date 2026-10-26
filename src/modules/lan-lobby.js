@@ -34,6 +34,7 @@ function mountLanLobby(root,options={}){
   const peerFactory=options.peerFactory??(hello=>createLanPeerConnection(hello,{internet}));
   const build=options.build??RELEASE.version;
   const cryptoSource=options.cryptoSource??globalThis.crypto;
+  const clipboard=options.clipboard??globalThis.navigator?.clipboard;
   root.innerHTML=`<section class="panel lanConnectionLab" aria-label="${internet?'Online P2P':'Local network'} connection setup">
     <p class="muted">${internet?'ONLINE P2P (manual): Share the offer and answer privately with a friend over the internet. This uses public STUN to discover reachable WebRTC addresses, with no match server or automatic matchmaking. Some firewalls/NATs require TURN and will not connect. Connection text can expose network information.':'LAN Quick Match: after both devices exchange offers and answers, the host runs the match and the guest controls the away team. Both devices must use the same installed game version and local network. Share the connection text only with someone you trust; it may contain local network addresses.'} Both players must have the same game version. The host controls home; the guest controls away.</p>
     <div class="row"><button type="button" class="btn" id="lanHost">CREATE HOST OFFER</button>
@@ -41,7 +42,7 @@ function mountLanLobby(root,options={}){
       <button type="button" class="btn minor" id="lanReset">RESET CONNECTION</button></div>
     <label for="lanIncoming">Incoming offer (guest) or answer (host)</label>
     <textarea id="lanIncoming" rows="5" maxlength="200000" spellcheck="false" autocapitalize="off" aria-describedby="lanStatus"></textarea>
-    <div class="row"><button type="button" class="btn" id="lanApply">APPLY INCOMING TEXT</button></div>
+    <div class="row"><button type="button" class="btn minor" id="lanPaste">PASTE FROM CLIPBOARD</button><button type="button" class="btn" id="lanApply">APPLY INCOMING TEXT</button></div>
     <label for="lanOutgoing">Outgoing offer (host) or answer (guest) — copy to other device</label>
     <textarea id="lanOutgoing" rows="5" readonly spellcheck="false" aria-label="Outgoing connection text"></textarea>
     <div class="row"><button type="button" class="btn minor" id="lanCopy">COPY OUTGOING TEXT</button></div>
@@ -126,18 +127,35 @@ function mountLanLobby(root,options={}){
       tell('Connection text rejected: '+error.message);
     }
   }
+  // Pasted SDP is untrusted and must never auto-start a connection.
+  async function paste(){
+    try{
+      if(!clipboard?.readText)throw new Error('Clipboard unavailable');
+      const raw=await clipboard.readText();
+      if(disposed)return;
+      if(typeof raw!=='string'||raw.length>LAN_LOBBY_SIGNAL_LIMIT){
+        tell('Clipboard connection text is too large or invalid.');return;
+      }
+      incoming.value=raw.trim();
+      tell(incoming.value?'Connection text pasted. Verify the sender, then choose APPLY INCOMING TEXT.':'Clipboard has no connection text.');
+    }catch{
+      if(disposed)return;
+      incoming.focus();
+      tell('Clipboard paste unavailable. Tap Incoming and paste manually.');
+    }
+  }
   async function copy(){
     if(!outgoing.value){tell('No outgoing connection text yet.');return;}
     try{
-      if(!globalThis.navigator?.clipboard?.writeText)throw new Error('Clipboard unavailable');
-      await globalThis.navigator.clipboard.writeText(outgoing.value);
+      if(!clipboard?.writeText)throw new Error('Clipboard unavailable');
+      await clipboard.writeText(outgoing.value);
       tell('Connection text copied. Share it privately with the other device.');
     }catch{
       outgoing.focus();outgoing.select();
       tell('Clipboard unavailable. Select and manually copy the outgoing text.');
     }
   }
-  const actions=[['lanHost',host],['lanGuest',guest],['lanReset',reset],['lanApply',apply],['lanCopy',copy]];
+  const actions=[['lanHost',host],['lanGuest',guest],['lanReset',reset],['lanApply',apply],['lanPaste',paste],['lanCopy',copy]];
   for(const [id,handler] of actions)el(id).addEventListener('click',handler);
   return ()=>{
     if(disposed)return;

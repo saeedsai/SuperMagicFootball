@@ -1,4 +1,4 @@
-# SuperMagicFootball release/version policy — About-only 0.11.0.0
+# SuperMagicFootball release/version policy — About-only 0.11.1.0
 
 **Effective 21 October 2026; updated 26 October 2026 for candidate 0.11.0.0.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
@@ -63,3 +63,5 @@ Saved data retains `legend_` storage keys, Career save vault, JSON sections and 
 **0.11.0.0 dev candidate (26 October 2026):** LAN-071 observes RTC readiness loss between render frames, invalidating stale guest tick/input cursors before new session input can be sent. A fresh authoritative snapshot remains required. Focused source-executed test passed; full exact-head 4 Node + 4 Chromium and Modular QA, protected promotion, hosted byte smoke and physical two-phone acceptance are separate gates.
 
 **0.11.0.0 dev candidate (26 October 2026):** Quick Match Online P2P private WebRTC via manual signaling and STUN. This is not guaranteed across symmetric NAT or restricted firewalls without TURN. Top-level Online menu is unchanged; exact-head QA and hosted cross-network acceptance not certified.
+
+**0.11.1.0 dev candidate (26 October 2026):** Private Online P2P incoming SDP now supports bounded permission-aware clipboard paste, with separate explicit Apply and manual fallback. Repairs two existing Node contract failures (LAN Escape route assertion and own checkpoint headings). Full exact-head 4+4/Modular QA, protected promotion, Pages byte smoke and physical cross-network play remain independent gates; this candidate is not certified production.
