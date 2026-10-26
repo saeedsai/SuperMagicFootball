@@ -52,6 +52,6 @@ Saved data retains `legend_` storage keys, Career save vault, JSON sections and 
 
 **0.10.7.9 dev candidate (26 October 2026):** LAN host retries the same room registration at a broker-safe ten-second interval while waiting for acknowledgment. It cancels retries on broker success, rejection, disconnect or Cancel. Duplicate same-socket registrations are idempotent on the signaling broker. Exact-head QA, Pages smoke, broker reliability and physical two-phone LAN validation remain independent release gates.
 
-**0.10.7.11 dev candidate (26 October 2026):** LAN-067 guest Super Shot trail breaks on goals, halftime and large ball teleports while preserving normal animation and authoritative positions. Source-executed focused regression added; full exact-head 4 Node + 4 Chromium, Modular QA, protected promotion, hosted Pages byte smoke and physical two-phone validation remain separate gates.
+**0.10.7.10 dev candidate (26 October 2026):** LAN-067 guest Super Shot trail breaks on goals, halftime and large ball teleports while preserving normal animation and authoritative positions. Source-executed focused regression added; full exact-head 4 Node + 4 Chromium, Modular QA, protected promotion, hosted Pages byte smoke and physical two-phone validation remain separate gates.
 
 **0.10.7.11 dev candidate (26 October 2026):** LAN-068 prevents a nonthrowing guest input send refusal from consuming a frame. Physical LAN, exact-head CI, protected promotion and hosted byte smoke remain independent gates.
