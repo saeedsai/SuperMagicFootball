@@ -1,8 +1,9 @@
 // Same-origin LAN lobby signaling. The companion server scopes rooms to its local network.
 // GitHub Pages cannot scan a LAN; devices must open the host's companion-server URL.
-export function connectLanSignal({WebSocketImpl=globalThis.WebSocket,onEvent=()=>{},onState=()=>{},setTimeoutImpl=globalThis.setTimeout,clearTimeoutImpl=globalThis.clearTimeout}={}){
+export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSocket,onEvent=()=>{},onState=()=>{},setTimeoutImpl=globalThis.setTimeout,clearTimeoutImpl=globalThis.clearTimeout}={}){
  if(typeof WebSocketImpl!=='function')throw new Error('WebSocket unavailable');
- const configured=globalThis.SMF_LAN_SIGNAL_URL??(globalThis.location?.hostname==='saeedsai.github.io'?'wss://supermagicfootball-lan-signal.onrender.com/lan-signal':null);
+ const hosted='wss://supermagicfootball-lan-signal.onrender.com/lan-signal';
+ const configured=internet?(globalThis.SMF_P2P_SIGNAL_URL??hosted):(globalThis.SMF_LAN_SIGNAL_URL??(globalThis.location?.hostname==='saeedsai.github.io'?hosted:null));
  const secureEndpoint=typeof configured==='string' && /^wss:\/\/[a-z0-9.-]+(?::[0-9]{2,5})?\/lan-signal$/i.test(configured)?configured:null;
  const publicPages=globalThis.location?.hostname==='saeedsai.github.io';
  const url=secureEndpoint||(!publicPages?(globalThis.location?.protocol==='https:'?'wss://':'ws://')+(globalThis.location?.host||'localhost:8000')+'/lan-signal':null);
