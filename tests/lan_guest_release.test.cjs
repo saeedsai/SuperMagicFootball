@@ -68,6 +68,6 @@ test('duplicate host ID is rejected; same owner retry preserves active guest',()
 
 test('switching from guest to host releases previous guest seat and pending joins',()=>{
  const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
- assert.match(server,/clearHost\(ws\);\s*\/\/ Switching from guest[\s\S]*?releaseLanGuest\(ws,rooms,pending,send\);\s*const room=/);
+ assert.match(server,/clearHost\(ws\);\s*\/\/ Switching from guest[\s\S]*?releaseLanGuest\(ws,rooms,pending,send\);\s*meta\.discoveryScope=requested;\s*const room=/);
  assert.match(server,/some\(active=>active\.guest===ws\|\|active\.host===ws\)/);
 });
