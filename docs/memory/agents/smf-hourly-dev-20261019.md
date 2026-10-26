@@ -19,3 +19,7 @@ One bounded tested increment each run on existing dev; only dev/main, no force p
 
 ## Ownership and exclusions
 Only this agent checkpoint writable. No extra branches, bypasses or force pushes.
+
+## Evidence
+- LAN-062 regression: tests/lan_live_match.test.cjs; exact-head GitHub Modular and Full 4+4 are release authority.
+- Modular #40315797561 failed only missing checkpoint Evidence heading (835/836 Node passed); this commit repairs heading without changing gameplay.
