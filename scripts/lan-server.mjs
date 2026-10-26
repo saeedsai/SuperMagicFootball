@@ -11,6 +11,7 @@ import {releaseLanGuest} from './lan-guest-release.mjs';
 import {expireLanPending} from './lan-pending-expiry.mjs';
 import {createLanSignalPolicy} from './lan-signal-policy.mjs';
 import {getLanGameUrls} from './lan-addresses.mjs';
+import {lanRoomSnapshot} from './lan-room-snapshot.mjs';
 import {resolve,extname,sep} from 'node:path';
 import {networkInterfaces} from 'node:os';
 import {WebSocketServer} from 'ws';
@@ -72,7 +73,7 @@ wss.on('connection',(ws,req)=>{
    const room={id,name:m.name.trim(),build:m.build,host:ws,ip:meta.ip,guest:null};rooms.set(id,room);
    announceRoom(room);send(ws,{type:'host-registered',roomId:id});return;
   }
-  if(m.type==='rooms'){for(const room of rooms.values())if(sameSubnet(meta.ip,room.ip))send(ws,{type:'room-announce',roomId:room.id,name:room.name,build:room.build,full:!!room.guest});return}
+  if(m.type==='rooms'){send(ws,lanRoomSnapshot(rooms,meta.ip,sameSubnet));return}
   if(m.type==='leave'){clearHost(ws);releaseLanGuest(ws,rooms,pending,send);return}
   const room=rooms.get(id);if(!room||!sameSubnet(meta.ip,room.ip)){rejectUnavailableJoin(ws,m,send);return;}
   if(m.type==='join'){

@@ -32,6 +32,19 @@ export function mountAutoLanLobby(root,options={}){
   if(m.type==='host-registered'&&mode==='host'&&m.roomId===roomId){showHostAddress();status('Room registered. Waiting for a guest to join.');return}
   if(m.type==='error'&&mode==='host'){status('Unable to register room: '+String(m.message||'server rejected request'));return}
   if(m.type==='host-left'&&mode==='guest'&&m.roomId===roomId){cleanupPeer();approved=false;requestId=null;roomId=null;status('Host disconnected. Select another available room.');return}
+  if(m.type==='rooms-snapshot'){
+   // Ignore malformed or out-of-phase replies; never replace an active admission.
+   if(mode!=='guest'||requestId||started||!Array.isArray(m.rooms)||m.rooms.length>128)return;
+   const fresh=new Map();
+   for(const room of m.rooms){
+    if(!room||typeof room.roomId!=='string'||!/^[a-zA-Z0-9_-]{8,64}$/.test(room.roomId)||
+       typeof room.name!=='string'||!room.name.trim()||room.name.length>48||
+       typeof room.build!=='string'||room.build.length>32||typeof room.full!=='boolean')return;
+    fresh.set(room.roomId,room);
+   }
+   rooms.clear();for(const [id,room] of fresh)rooms.set(id,room);
+   render();return;
+  }
   if(m.type==='room-announce'&&typeof m.roomId==='string'){rooms.set(m.roomId,m);render();return}
   if(m.type==='room-remove'){rooms.delete(m.roomId);render();if(mode==='guest'&&roomId===m.roomId){cleanupPeer();approved=false;requestId=null;roomId=null;status('Host room closed. Choose another room.')}return}
   if(m.type==='join-request'&&mode==='host'&&m.roomId===roomId){

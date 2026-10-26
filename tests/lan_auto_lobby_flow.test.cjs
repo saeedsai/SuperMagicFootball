@@ -123,3 +123,32 @@ test('Find Games refreshes room discovery but pauses during admission and stops 
   dispose();assert.equal(f.connection.closed,true);
  }finally{f.cleanup()}
 });
+
+test('authoritative LAN room refresh removes stale cards, rejects malformed replies and respects admission',async()=>{
+ const f=setup();
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.10.6.0',signalFactory:f.signalFactory});
+  f.elements.get('#autoFind').click();f.connect();
+  const stale={roomId:'room_12345678',name:'Stale',build:'0.10.6.0',full:false};
+  const fresh={roomId:'room_87654321',name:'Current',build:'0.10.6.0',full:true};
+  f.emit({type:'room-announce',...stale});
+  assert.match(f.elements.get('#autoRooms').children[0].textContent,/Stale/);
+  f.emit({type:'rooms-snapshot',rooms:[fresh]});
+  assert.equal(f.elements.get('#autoRooms').children.length,1);
+  assert.match(f.elements.get('#autoRooms').children[0].textContent,/IN MATCH.*Current/);
+  f.emit({type:'rooms-snapshot',rooms:[{...stale,full:'false'}]});
+  assert.match(f.elements.get('#autoRooms').children[0].textContent,/Current/,'invalid response cannot erase valid directory');
+  f.emit({type:'rooms-snapshot',rooms:[{...stale,full:false}]});
+  f.elements.get('#autoRooms').children[0].click();
+  assert.equal(f.packets.at(-1).type,'join');
+  f.emit({type:'rooms-snapshot',rooms:[]});
+  assert.match(f.elements.get('#autoRooms').children[0].textContent,/Stale/,'pending admission cannot be overwritten');
+  const request=f.packets.at(-1).requestId;
+  f.emit({type:'join-reject',requestId:request});
+  f.emit({type:'rooms-snapshot',rooms:[]});
+  assert.equal(f.elements.get('#autoRooms').children.length,0);
+  assert.match(f.elements.get('#autoRooms').textContent,/Searching/);
+  dispose();
+ }finally{f.cleanup()}
+});
