@@ -1,3 +1,9 @@
+## 2026-10-26 23:05 CET — LAN/P2P send-error recovery (0.11.3.3 candidate)
+- Baseline dev/main `16e46a7816654682ff6b7e6c19cfa15a2a84c6e3`: dev Modular #40401375792, dev Full 4 Node + 4 Chromium #40401375422, main Full/hosted smoke #40402612619, Pages #40402613182 green. No open PR, only dev/main branches.
+- A WebSocket send exception previously returned false but left a falsely ready socket; queue overflow relied on a close event. Retire socket before closing, ignore stale events, schedule reconnect even when close throws. Two focused regression tests added.
+- Candidate 0.11.3.3 About/package/README/offline cache/policy aligned. Preserve rosters, four buttons, six formations, ten slots, SD09 and save schema. Exact-head QA, protected promotion, Pages hosted byte smoke, Render broker and physical two-device play are independent gates.
+- Next five: exact-head QA, protected promotion, Pages hosted smoke, real two-client signaling validation, Player Studio/Tricks/Crown Royals increment.
+
 ## 2026-10-26 21:06 CET — LAN/P2P signaling backpressure (0.11.3.1 candidate)
 - Baseline dev `f6529de5f23561d373be366c9174a0496fc5c42d`; main `a9a6286c26dd4cb51b9907462001a7cf9d18ea99`. Baseline Modular QA #40391144323 green; Full #40391144329 in progress at inspection (four Node and three Chromium green). No production certification inferred.
 - Browser signaling now rejects malformed or >210,000-byte outbound frames and closes a stalled WebSocket before its queued bytes exceed 512 KiB, triggering normal reconnect. Focused Unicode, queue-boundary and reconnect tests added. No game protocol, roster, controls, save or offline schema change.

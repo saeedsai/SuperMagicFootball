@@ -17,6 +17,14 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
   const delay=Math.min(10000,1000*Math.pow(2,Math.min(attempt++,4)));
   retry=setTimeoutImpl(()=>{retry=null;open()},delay);
  }
+ // Retire a broken socket even if close throws or never emits an event.
+ // Old socket events cannot reattach to the lobby.
+ function recycleSocket(code,reason){
+  if(closed||!socket)return;
+  const stale=socket;socket=null;
+  try{stale.close(code,reason)}catch{try{stale.close()}catch{}}
+  onState('disconnected');scheduleRetry();
+ }
  function open(){
   if(closed)return;
   let ws;
@@ -43,11 +51,12 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
     if(bytes>MAX_SIGNAL_FRAME_BYTES)return false;
     const queued=socket.bufferedAmount;
     if(Number.isFinite(queued)&&queued>=0&&queued+bytes>MAX_SIGNAL_QUEUE_BYTES){
-     try{socket.close(1009,'Signaling queue full')}catch{try{socket.close()}catch{}}
+     recycleSocket(1009,'Signaling queue full');
      return false;
     }
     if(closed||socket.readyState!==1)return false;
-    socket.send(payload);return true;
+    try{socket.send(payload);return true}
+    catch{recycleSocket(1011,'Signaling send failed');return false}
    }catch{return false}
   },
   close(){if(closed)return;closed=true;if(retry!==null){clearTimeoutImpl(retry);retry=null}socket?.close()},

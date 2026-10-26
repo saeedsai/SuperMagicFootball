@@ -93,3 +93,32 @@ test('inbound signaling bounds UTF-8 bytes, not just UTF-16 string length',async
  assert.deepEqual(f.packets.map(p=>p.type),['notice','rooms-snapshot'],'subsequent valid frames still work');
  client.close();
 });
+
+test('failed WebSocket send reconnects even if close throws and stale events arrive',async()=>{
+ const f=fixture(),client=await f.clientFactory(),first=FakeSocket.instances[0];first.open();
+ first.send=()=>{throw Error('write failed')};
+ first.close=()=>{throw Error('close failed')};
+ assert.equal(client.send({type:'rooms'}),false);
+ assert.equal(client.ready,false);
+ assert.deepEqual(f.states,['connected','disconnected']);
+ assert.equal(f.callbacks.length,1);
+ first.message(JSON.stringify({type:'stale'}));
+ assert.deepEqual(f.packets,[]);
+ f.callbacks[0].fn();
+ const second=FakeSocket.instances[1];second.open();
+ assert.equal(client.send({type:'rooms'}),true);
+ assert.deepEqual(JSON.parse(second.sent[0]),{type:'rooms'});
+ client.close();
+});
+test('queue overflow retries when WebSocket close itself throws',async()=>{
+ const f=fixture(),client=await f.clientFactory(),first=FakeSocket.instances[0];first.open();
+ first.bufferedAmount=512*1024;
+ first.close=()=>{throw Error('close failed')};
+ assert.equal(client.send({type:'rooms'}),false);
+ assert.equal(client.ready,false);
+ assert.equal(f.callbacks.length,1);
+ f.callbacks[0].fn();
+ const second=FakeSocket.instances[1];second.open();
+ assert.equal(client.send({type:'rooms'}),true);
+ client.close();
+});

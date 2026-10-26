@@ -3,25 +3,25 @@
 **Updated:** 2026-10-26
 
 ## Mission
-Develop on dev only; promote only an exact fully green SHA through protected main. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and saves.
+Develop on dev only; promote exact green dev through protected main. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline saves.
 
 ## Current checkpoint
-- Candidate 0.11.3.2: LAN/Online P2P discovery rejects inbound multibyte Unicode frames exceeding 210000 UTF-8 bytes; previously only UTF-16 length was checked. Focused regression added. No protocol/roster/save changes.
-- Prior 0.11.3.1 baseline dev/main `1bfb5c163cefeb1e6b47e502c905137e1d88dbf0`: dev Modular #40393240315 and Full 4+4 #40393240205 green; main Full #40396672086 and Pages #40396670991 green. Those do not certify the new candidate.
-- Physical two-phone LAN and cross-network P2P not certified. Render broker version/rollout still needs independent verification.
+- 0.11.3.3 candidate: failed WebSocket sends and queue overflow now reconnect even if close throws; old socket events are ignored. Two focused Node regressions added.
+- Prior 0.11.3.2 exact SHA `16e46a7816654682ff6b7e6c19cfa15a2a84c6e3` passed dev Modular #40401375792, dev Full 4+4 #40401375422, main Full/hosted smoke #40402612619 and Pages #40402613182. This does not certify 0.11.3.3.
+- Two-phone LAN and cross-network P2P remain uncertified; Render broker rollout and TURN-required networks need independent checks.
 
 ## Next smallest action
-1. Check exact-head 4 Node + 4 Chromium and Modular QA for 0.11.3.2; fix failures.
-2. Promote exact green dev head via protected workflow; verify main/Pages hosted bytes.
-3. Verify Render signaling scopes and deployment; test two real phones.
-4. Implement safe optional TURN configuration only when relay credentials exist.
-5. Continue counterable Tricks, Player Studio and Crown Royals graphics QA.
+1. Inspect new exact-head Modular QA and four Node + four Chromium shards; repair failures.
+2. Promote only green exact dev head and verify main/Pages hosted bytes.
+3. Check Render broker deployment and physical two-phone LAN/P2P discovery.
+4. Implement one bounded Player Studio/Trick counterplay improvement with regression.
+5. Audit Crown Royals side/quarter animation continuity and correct a reproducible defect.
 
 ## Ownership and exclusions
-Only dev/main; no force push, security bypass or weakening tests. Edit only this developer checkpoint.
+Only dev/main; no force push, safety bypass, weakened CI or other agents' memory.
 
 ## Evidence
-- Source-executed V8 focused Unicode ingress acceptance/rejection test; CI is authoritative for full Node/browser QA.
+Prior workflow IDs above; new candidate CI and physical device acceptance are separate gates.
 
 ## Cleanup
-Keep only dev/main and this developer checkpoint; preserve historical audit, IDs and save compatibility.
+Keep only dev/main, own checkpoint under 4 KiB and historical audit.
