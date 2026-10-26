@@ -223,14 +223,14 @@ function showLanLobby(){
  lanLobbyDispose=mountLanLobby($('lanLobby'),{onReady:startLanQuickMatch});
 }
 function showOnlineP2PLobby(){
- page('ONLINE P2P','Manual private internet WebRTC · host controls home, guest controls away.',
+ page('ONLINE P2P','Automatic internet room discovery or private manual WebRTC · host controls home, guest controls away.',
   '<div id="lanLobby"></div>','navQuick');
- lanLobbyDispose=mountLanLobby($('lanLobby'),{auto:false,internet:true,onReady:startLanQuickMatch});
+ lanLobbyDispose=mountLanLobby($('lanLobby'),{internet:true,onReady:startLanQuickMatch});
 }
 function showQuickMenu(){menuChoices('nav-quick','QUICK MATCH','Play on one device, LAN or internet peer-to-peer.',[
  navItem('On Device','navOnDevice','Single-player, two-player, penalties and training.','active','🎮'),
  navItem('Local Network · LAN Quick Match','navLan','Host a game or automatically find a friend on the same LAN game address.','active','📡'),
- navItem('Online P2P · Private Quick Match','navOnlineP2P','Direct internet match with manual offer/answer exchange; STUN only, some networks unavailable.','active','🌐')],'home');}
+ navItem('Online P2P · Private Quick Match','navOnlineP2P','Discover internet P2P games automatically or use private manual exchange; some networks need TURN.','active','🌐')],'home');}
 function showOnDevice(){menuChoices('nav-device','ON DEVICE','Use the existing playable match setups.',[
  navItem('Single Player vs CPU','quick','Existing team, kit and match setup.','active','⚽'),
  navItem('Two Players · Same Device','versus','Play a local head-to-head match.','active','🎮'),
