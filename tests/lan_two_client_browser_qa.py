@@ -63,7 +63,7 @@ try:
         assert state_host['clock']>0.1,('host physics must advance',state_host)
         assert abs(state_host['clock']-state_guest['clock'])<1.2,(state_host,state_guest)
         assert state_host['score']==state_guest['score'],(state_host,state_guest)
-        assert not errors,(errors,)
+        assert not any(errors),errors
         print('PASS LAN_REAL_TWO_CHROMIUM_CLIENTS_HOST_FIND_APPROVE_WEBRTC_MATCH',state_host,state_guest,flush=True)
         for context in contexts:
             context.close()
