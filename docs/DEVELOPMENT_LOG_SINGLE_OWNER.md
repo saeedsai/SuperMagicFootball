@@ -1,3 +1,8 @@
+## 2026-10-26 — LAN-066 goal and halftime guest ball streak guard (0.10.7.9 candidate)
+- Baseline dev ed7babae0e63c03c20410d60229f72db92c62c11; Modular #40327113745 passed, full #40327113649 running. Main c463780b5f38205d868c64fd9ea16033d8bcfe7c (0.10.7.7).
+- Score changes and halftime were previously not distinguished from short normal passes in LAN-063/065 guest ball velocity reconstruction. Guard these transition packets and preserve precise host ball position. Add source-executed test covering goal, halftime and resumed pass.
+- Version package/About/README/cache/policy/memory aligned to 0.10.7.9. Exact-head CI, protected promotion, Pages byte smoke and two-phone visual QA still required. No host physics, roster, four controls or saves changed.
+
 ## 2026-10-26 14:00 CET — LAN-065 suppress spurious guest streak on ball relocations (0.10.7.8 candidate)
 - Baseline dev/main c463780b5f38205d868c64fd9ea16033d8bcfe7c, dev Modular #40323731508, Full #40323731431 and Pages #40325446755 successful. Production Full #40325446590 in progress at inspection.
 - Host may reposition ball suddenly during kickoff/goal restarts. LAN-063 guest derives ordinary ball velocity from host positions; a large discontinuity previously generated a false high-speed pass trail. Limit reconstruction to at most 160 pixels displacement per snapshot; keep exact authoritative coordinates and ordinary passes.
