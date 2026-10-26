@@ -497,3 +497,24 @@ test('LAN-068 guest retries a frame after a nonthrowing transport refusal',async
  assert.deepEqual(sent,[74,74]);
  run.dispose();
 });
+
+test('LAN-069 host restores a fresh guest button edge after RTC disconnect',async()=>{
+ const {createLanLiveMatch}=await load();
+ const input=controls(),match=game(input);
+ const peer={ready:true,stepHostMatchFrame(frame,simulate){
+   simulate({buttons:['pass'],dx:0,dy:0});return {snapshotSent:true};
+ }};
+ const run=createLanLiveMatch({peer,role:'host',game:match,input,field});
+ assert.equal(run.step(.02),true);
+ assert.equal(input.pressed[1].pass,true,'first held button generates one press');
+ assert.equal(run.step(.02),true);
+ assert.equal(input.pressed[1].pass,false,'continuous hold does not retrigger');
+ peer.ready=false;
+ assert.equal(run.step(.02),false,'host does not simulate disconnected frames');
+ peer.ready=true;
+ assert.equal(run.step(.02),true);
+ assert.equal(input.pressed[1].pass,true,'new session starts with a fresh press edge');
+ assert.equal(run.step(.02),true);
+ assert.equal(input.pressed[1].pass,false,'continuous new hold still does not retrigger');
+ run.dispose();
+});
