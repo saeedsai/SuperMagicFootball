@@ -79,8 +79,10 @@ function createLanPeerConnection(localHello, options = {}) {
   if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 120000) {
     throw new Error('Invalid LAN ICE timeout');
   }
-  // Empty ICE server list supports local candidates without external services.
-  const peer = new Peer({iceServers:[]});
+  // LAN stays entirely local; opt-in Online P2P uses STUN for public ICE candidates.
+  // No credentials or arbitrary remote ICE URLs are accepted from connection text.
+  const iceServers=options.internet===true?[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]:[];
+  const peer = new Peer({iceServers});
   // Fail closed if a custom WebRTC implementation does not provide the
   // event and lifecycle interface required for safe signaling.
   if (!peer || typeof peer.addEventListener !== 'function' ||
