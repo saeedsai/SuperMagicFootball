@@ -1,3 +1,8 @@
+## 2026-10-26 11:00 CET — LAN-060 guest Magic Trick trap graphics (0.10.7.3 candidate)
+- Baseline dev/main `4799b42c1312918dd22c2723439ed6442b613b62` certified by dev Modular #40298696780, dev Full 4+4 #40298696824, main Full #40300247968 and Pages #40300247835.
+- Fix: host snapshots optionally carry <=24 validated Banana/Ice hazards; guest renders matching positions, team, arming/life countdown, and removes cleared/expired traps. Old snapshots remain valid. Focused regression tests added for codec validation and guest render state. New exact-head CI and physical two-phone QA pending.
+- No change to host physics, 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline or saves. Continue coding on dev while release gates run.
+
 ## 2026-10-26 10:15 CET — LAN-059 guest graphics synchronization (0.10.7.2 candidate)
 - Baseline dev/main `165a1ebc0a20e01ad704c63448622b1b5fef3deb` green: dev Modular #40289887078, dev Full 4+4 #40289887080, main Full #40291272628, Pages #40291272622.
 - Root cause: guest overwrote host action with run/idle; host snapshot lacked jump height and transformed Super Shot. Added bounded optional pose and ball effects with legacy compatibility; focused source checks and regression tests. New exact-head CI and physical two-phone visual QA pending.

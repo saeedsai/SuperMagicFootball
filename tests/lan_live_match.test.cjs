@@ -311,3 +311,26 @@ test('LAN-059 guest restores jump pose, transformed Super Shot and effect cleanu
  host.ball.shot=null;applyLanGameState(guest,field,captureLanGameState(host,field,102));
  assert.equal(guest.ball.shot,null);assert.deepEqual(guest.ball.trail,[]);
 });
+
+test('LAN-060 guest mirrors host Banana Peel and Ice Patch countdowns and clears disarmed traps',async()=>{
+ const {captureLanGameState,applyLanGameState}=await load();
+ const host=game(controls()),guest=game(controls());
+ host.magicHazards=[
+  {kind:'banana',team:0,x:340,y:180,life:2.5,arm:.15},
+  {kind:'ice',team:1,x:690,y:320,life:1.2,arm:0}
+ ];
+ const first=captureLanGameState(host,field,40);
+ assert.equal(first.hazards.length,2);
+ applyLanGameState(guest,field,first);
+ assert.deepEqual(guest.magicHazards,host.magicHazards,
+   'guest receives the exact drawable trap kind, team, position and countdown');
+ host.magicHazards=[{...host.magicHazards[1],life:.8}];
+ applyLanGameState(guest,field,captureLanGameState(host,field,41));
+ assert.equal(guest.magicHazards.length,1,'disarmed banana disappears');
+ assert.equal(guest.magicHazards[0].life,.8);
+ host.magicHazards=[];
+ applyLanGameState(guest,field,captureLanGameState(host,field,42));
+ assert.deepEqual(guest.magicHazards,[],'expired ice disappears');
+ applyLanGameState(guest,field,{...first,hazards:undefined});
+ assert.deepEqual(guest.magicHazards,[],'legacy snapshots never invent traps');
+});

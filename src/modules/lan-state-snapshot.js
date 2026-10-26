@@ -18,6 +18,10 @@ const visual=v=>keys(v,['z','face','action','timer','anim','stun','slide','dive'
   finite(v.z,1)&&[1,-1].includes(v.face)&&typeof v.action==='string'&&
   /^[A-Za-z][A-Za-z0-9]{0,23}$/.test(v.action)&&finite(v.timer,10)&&
   finite(v.anim,36000)&&finite(v.stun,10)&&finite(v.slide,10)&&finite(v.dive,10);
+// LAN-060: bounded host-authoritative Magic Trick trap visuals.
+const hazard=v=>keys(v,['kind','team','x','y','life','arm'])&&
+  ['banana','ice'].includes(v.kind)&&[0,1].includes(v.team)&&
+  position(v.x)&&position(v.y)&&finite(v.life,3)&&finite(v.arm,.3);
 const shotFx=v=>keys(v,['id','color','trail','age','vx','vy'])&&
   typeof v.id==='string'&&/^[A-Za-z][A-Za-z0-9_-]{0,31}$/.test(v.id)&&
   typeof v.color==='string'&&/^#[0-9a-fA-F]{6}$/.test(v.color)&&
@@ -26,9 +30,14 @@ const shotFx=v=>keys(v,['id','color','trail','age','vx','vy'])&&
 
 function validateLanSnapshot(packet) {
   const baseFields=['type','version','roomId','hostId','tick','clockMs','scores','ball','players'];
-  const enhanced=keys(packet,[...baseFields,'meta']);
+  const withHazards=keys(packet,[...baseFields,'hazards']);
+  const enhanced=keys(packet,[...baseFields,'meta'])||
+    keys(packet,[...baseFields,'meta','hazards']);
+  const hasHazards=withHazards||keys(packet,[...baseFields,'meta','hazards']);
   const ballFx=keys(packet?.ball,['x','y','z','fx']);
-  if (!(keys(packet,baseFields)||enhanced) ||
+  if (!(keys(packet,baseFields)||enhanced||withHazards) ||
+      (hasHazards&&(!Array.isArray(packet.hazards)||
+        packet.hazards.length>24||!packet.hazards.every(hazard))) ||
       packet.type !== 'snapshot' || packet.version !== LAN_PROTOCOL_VERSION ||
       typeof packet.roomId !== 'string' || !ID.test(packet.roomId) ||
       typeof packet.hostId !== 'string' || !ID.test(packet.hostId) ||
@@ -76,7 +85,9 @@ function validateLanSnapshot(packet) {
     roomId:packet.roomId,hostId:packet.hostId,tick:packet.tick,clockMs:packet.clockMs,
     scores:Object.freeze({home:packet.scores.home,away:packet.scores.away}),
     ball:Object.freeze({x:packet.ball.x,y:packet.ball.y,z:packet.ball.z,...(ballFx?{fx:packet.ball.fx===null?null:Object.freeze({...packet.ball.fx})}:{})}),
-    players:Object.freeze(players),...(enhanced?{meta}:{})});
+    players:Object.freeze(players),
+    ...(hasHazards?{hazards:Object.freeze(packet.hazards.map(h=>Object.freeze({...h})))}:{}),
+    ...(enhanced?{meta}:{})});
 }
 
 function encodeLanSnapshot(packet) {

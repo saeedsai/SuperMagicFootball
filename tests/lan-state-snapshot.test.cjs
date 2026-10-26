@@ -63,3 +63,23 @@ test('LAN-059 validates immutable visual states and rejects malformed effects',a
   assert.throws(()=>encodeLanSnapshot({...p,ball:{...p.ball,fx:bad}}),TypeError);
  assert.equal(decodeLanSnapshot(encodeLanSnapshot(snapshot())).ball.fx,undefined);
 });
+
+test('LAN-060 validates and freezes bounded Magic Trick ground traps',async()=>{
+ const {encodeLanSnapshot,decodeLanSnapshot}=await load(),p=snapshot();
+ const banana={kind:'banana',team:0,x:-.25,y:.5,life:2.7,arm:.1};
+ const ice={kind:'ice',team:1,x:.25,y:-.5,life:1.8,arm:0};
+ p.hazards=[banana,ice];
+ const result=decodeLanSnapshot(encodeLanSnapshot(p));
+ assert.deepEqual(result.hazards,[banana,ice]);
+ assert.ok(Object.isFrozen(result.hazards)&&result.hazards.every(Object.isFrozen));
+ assert.equal(decodeLanSnapshot(encodeLanSnapshot(snapshot())).hazards,undefined,
+   'old position-only snapshots remain supported');
+ for(const invalid of [
+  {...banana,kind:'fire'}, {...banana,team:2},{...banana,x:1.1},
+  {...banana,life:-1},{...banana,arm:.4},{...banana,extra:true}
+ ])assert.throws(()=>encodeLanSnapshot({...p,hazards:[invalid]}),TypeError);
+ assert.throws(()=>encodeLanSnapshot({...p,hazards:Array.from({length:25},()=>banana)}),TypeError);
+ assert.throws(()=>encodeLanSnapshot({...p,hazards:'banana'}),TypeError);
+ const all={...p,hazards:Array.from({length:24},(_,i)=>({...banana,team:i%2,x:i/24*2-1}))};
+ assert.ok(Buffer.byteLength(encodeLanSnapshot(all))<=8192);
+});

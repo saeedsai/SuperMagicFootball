@@ -1,27 +1,27 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-26 10:15 CET
+**Updated:** 2026-10-26 11:00 CET
 
 ## Mission
-One bounded tested increment per run on dev. Only dev/main, no bypass or force push.
+Deliver one bounded tested increment per run on existing dev; no extra branches, bypass or force push.
 
 ## Current checkpoint
-- Baseline dev/main `165a1ebc0a20e01ad704c63448622b1b5fef3deb` (0.10.7.1) green: dev Modular #40289887078, dev Full 4+4 #40289887080, main Full #40291272628, Pages #40291272622.
-- LAN-059 0.10.7.2 candidate: guest formerly overwrote jump/special action with run/idle and lacked transformed Super Shot. Optional bounded host poses and ball effects added with legacy compatibility. Focused source checks and regression fixtures added; new CI and physical two-phone QA pending.
-- Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves. Render auto-deploy remains a separate risk.
+- Baseline dev/main `4799b42c1312918dd22c2723439ed6442b613b62` (0.10.7.2): dev Modular #40298696780 and Full 4+4 #40298696824 green; main Full #40300247968 and Pages #40300247835 green.
+- LAN-060 0.10.7.3 candidate: guest now renders authoritative Banana/Ice trap positions, arming/life countdown and removal. Optional <=24 bounded validated traps in snapshots; old packets remain compatible. New exact-head CI pending.
+- Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline/saves.
 
 ## Next smallest action
-1. Check new exact-head Modular and 4 Node+4 Chromium; repair failures.
-2. Promote only green dev through protected workflow; verify main/Pages bytes.
-3. Test two-phone host/guest jumping and Super Shots.
-4. Synchronize missing guest Magic hazards and particles.
-5. Diagnose Render broker auto-deploy and LAN discovery/reconnect.
+1. Inspect new Modular and Full 4+4 exact-head CI; repair red jobs.
+2. Promote only fully green exact dev head via protected pipeline; verify main/Pages bytes.
+3. Test two physical phones: jump, Super Shot, Banana/Ice visibility, disarm/expiry.
+4. Continue LAN guest effects/particles, Magic Trick counterplay and Crown Royals graphics.
+5. Diagnose Render broker deployment and discovery/reconnect.
 
 ## Ownership and exclusions
-Only this checkpoint writable. Candidate is not certified release.
+Only this checkpoint writable; candidate is not certified release. No other agent memory.
 
 ## Evidence
-Baseline green; LAN-059 focused source checks and CI pending. No physical-device certification.
+Baseline green; LAN-060 protocol and renderer tests added, new CI required; no physical-device certification.
 
 ## Cleanup
 Checkpoint under 4 KiB; Git history is durable audit.

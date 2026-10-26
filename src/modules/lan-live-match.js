@@ -21,8 +21,15 @@ function captureLanGameState(game,field,tick){
       timer:visNum(p.actionTimer,10),anim:visNum(p.anim,36000),
       stun:visNum(p.stun,10),slide:visNum(p.slideTimer,10),dive:visNum(p.diveElapsed,10)}
   }));
+  // Magic Trick ground traps are rendered from host physics; guests never
+  // simulate collision/disarm. A full empty list removes expired traps.
+  const hazards=(Array.isArray(game.magicHazards)?game.magicHazards:[])
+    .filter(h=>(h.kind==='banana'||h.kind==='ice')&&(h.team===0||h.team===1))
+    .slice(0,24).map(h=>({kind:h.kind,team:h.team,
+      x:lanLiveAxis(h.x,field.x,field.w),y:lanLiveAxis(h.y,field.y,field.h),
+      life:visNum(h.life,3),arm:visNum(h.arm,.3)}));
   return {
-    tick,clockMs:lanLiveClamp(Math.round(game.clock*1000),0,36000000),
+    hazards,tick,clockMs:lanLiveClamp(Math.round(game.clock*1000),0,36000000),
     scores:{home:lanLiveClamp(game.score[0],0,999),away:lanLiveClamp(game.score[1],0,999)},
     ball:{x:lanLiveAxis(game.ball.x,field.x,field.w),y:lanLiveAxis(game.ball.y,field.y,field.h),
       z:lanLiveClamp(game.ball.z/200,0,1),
@@ -77,6 +84,11 @@ function applyLanGameState(game,field,state){
   }else{
     game.ball.shot=null;game.ball.trail=[];
   }
+  // Replace, never merge, to prevent cleared/expired traps persisting on guests.
+  // Old position-only snapshots have no hazards and render none.
+  game.magicHazards=(state.hazards||[]).map(h=>({kind:h.kind,team:h.team,
+    x:lanLivePosition(h.x,field.x,field.w),
+    y:lanLivePosition(h.y,field.y,field.h),life:h.life,arm:h.arm}));
   game.score=[state.scores.home,state.scores.away];
   if(state.meta){
     game.half=state.meta.half;
