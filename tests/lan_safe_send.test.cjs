@@ -32,7 +32,8 @@ test('already-closing socket during termination cannot crash signaling',async()=
 test('LAN server wires safe signaling and handles socket error events',()=>{
  const source=fs.readFileSync('scripts/lan-server.mjs','utf8');
  assert.match(source,/import \{safeLanSend\} from '\.\/lan-safe-send\.mjs'/);
- assert.match(source,/const send=\(ws,msg\)=>\{safeLanSend\(ws,msg\)/,'all signaling must still pass through safeLanSend before occupancy announcements');
+ assert.match(source,/const send=\(ws,msg\)=>\{const delivered=safeLanSend\(ws,msg\)/,'all signaling must still pass through safeLanSend before occupancy announcements');
+ assert.match(source,/return delivered\}/,'the signaling wrapper must preserve safeLanSend success/failure semantics');
  assert.match(source,/ws\.on\('error',/);
 });
 

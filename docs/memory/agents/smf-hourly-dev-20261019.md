@@ -7,7 +7,7 @@ Continue one tested bounded feature per hourly run on existing `dev` despite pen
 
 ## Current checkpoint
 - Before this increment `dev` and `main` both pointed to `493c50ed2a8d3d791f3eaeb31b5c404c7d7ac594`. Exact-head Modular QA #40244602437 and Full 4 Node + 4 Chromium #40244602372 passed; main Full #40244994365 and Pages #40244994402 passed. Those runs do not certify any newer commit or Render deployment.
-- Current candidate `0.10.4.0`: LAN room occupancy advertisements and rejoinable seat state. Find Games disables full rooms, re-enables them when the guest leaves; server broadcasts availability on guest approval and departure. New focused Node regressions added; exact new-head CI and physical two-phone acceptance pending.
+- Current candidate `0.10.4.0`: LAN room occupancy advertisements and rejoinable seat state. Find Games disables full rooms, re-enables them when the guest leaves; server broadcasts availability on guest approval and departure. New focused Node regressions added; first Full Census preflight #40247745320 failed on stale safe-send alias assertion, repaired by test-only commit 5b299d12. Modular QA #40247829407 passed; Full Census #40247829435 pending at last observation. Physical two-phone acceptance pending.
 - Preserve 223 teams/2676 players, six formations, four action buttons, ten Career/Cup slots, SD09, offline and saves. About-only version synchronized in package, release, README, SW cache and version policy. `main` must change only via green protected promotion.
 
 ## Next smallest action
