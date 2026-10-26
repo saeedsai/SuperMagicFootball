@@ -141,6 +141,8 @@ function createLanLiveMatch({peer,role,game,input,field}){
   let previousButtons=new Set();
   const originalPoll=input.poll;
   let receiver=null;
+  let statusUnsubscribe=null;
+  function resetGuestCursor(){latestTick=-1;lastSent=-1;lastSnapshotAt=-Infinity;}
   if(role==='host'){
     input.poll=function(){
       originalPoll.call(input,false);
@@ -175,6 +177,13 @@ function createLanLiveMatch({peer,role,game,input,field}){
       latestTick=state.tick;
       lastSnapshotAt=Date.now();
     });
+    // RTC readiness can fall and recover between animation frames.
+    // Invalidate the previous session immediately, not only on the next step.
+    if(typeof peer.subscribeStatus==='function'){
+      statusUnsubscribe=peer.subscribeStatus(status=>{
+        if(!disposed&&status?.ready===false)resetGuestCursor();
+      });
+    }
   }
   function step(dt){
     if(disposed)return false;
@@ -185,7 +194,7 @@ function createLanLiveMatch({peer,role,game,input,field}){
       else {
         // A restarted host can begin its authoritative tick at zero.
         // Do not send against the disconnected session's stale snapshot.
-        latestTick=-1;lastSent=-1;lastSnapshotAt=-Infinity;
+        resetGuestCursor();
       }
       return false;
     }
@@ -244,6 +253,8 @@ function createLanLiveMatch({peer,role,game,input,field}){
     if(disposed)return;
     disposed=true;
     receiver?.dispose();
+    if(typeof statusUnsubscribe==='function')statusUnsubscribe();
+    else statusUnsubscribe?.dispose?.();
     if(role==='host')input.poll=originalPoll;
   }
   return Object.freeze({step,dispose,
