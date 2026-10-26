@@ -4,7 +4,7 @@ const RELEASE=Object.freeze({
  version:'0.10.7.13',
  date:'2026-10-26',
  notes:Object.freeze([
-  'LAN guests now discard stale host tick/input cursors after RTC disconnect, reject snapshots while offline, and wait for a fresh authoritative snapshot on reconnect. Restarted hosts can begin at tick zero without freezing guest controls; offline gameplay, four buttons and saves are unchanged.',
+  'LAN guests now discard stale host tick/input cursors after RTC disconnect, reject snapshots while offline, and wait for a fresh authoritative snapshot on reconnect. With a fresh transport session, the guest bridge can accept host tick zero; offline gameplay, four buttons and saves are unchanged.',
   'LAN host now clears stale held-button edges when the guest RTC transport disconnects. After reconnecting, a new guest press registers normally without repeating continuous holds; four controls, saves and offline gameplay remain unchanged.',
   'LAN guest controls now retry a frame when a transport send explicitly returns false instead of silently consuming the frame number. Four controls, roster, host authority, offline play and saves are unchanged.',
   'LAN guest Super Shot trails now reset cleanly on goals, halftime and large ball relocations even when the host effect ID stays unchanged. Continuous Super Shots animate normally; host physics, offline gameplay and saves are unchanged.',
