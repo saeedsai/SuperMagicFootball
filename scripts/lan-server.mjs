@@ -28,10 +28,12 @@ const MAX_ROOMS=128,MAX_PENDING_PER_GUEST=1,MAX_PENDING_PER_ROOM=1;
 const MAX_MESSAGES_PER_WINDOW=120,WINDOW_MS=60000,MAX_CONNECTIONS_PER_IP=8;
 function ipOf(request){return lanClientIp(request,{hosted:signalPolicy.mode==='hosted'})}
 function sameSubnet(a,b){return signalPolicy.visible(a,b)}
+const roomScope=m=>m?.scope===undefined||m.scope==='lan'?'lan':m.scope==='internet-p2p'&&signalPolicy.mode==='hosted'?'internet-p2p':null;
+function roomVisible(room,meta){return meta.discoveryScope===(room.scope??'lan')&&((room.scope??'lan')==='internet-p2p'||sameSubnet(meta.ip,room.ip))}
 // Keep room availability synchronized when an approved guest leaves or disconnects.
 const send=(ws,msg)=>{const delivered=safeLanSend(ws,msg);if(msg?.type==='guest-left'){const room=rooms.get(msg.roomId);if(room)announceRoom(room)}return delivered};
 function announceRoom(room){broadcast(room,{type:'room-announce',roomId:room.id,name:room.name,build:room.build,full:!!room.guest})}
-function broadcast(room,msg){for(const [ws,meta] of clients)if(sameSubnet(meta.ip,room.ip))send(ws,msg)}
+function broadcast(room,msg){for(const [ws,meta] of clients)if(roomVisible(room,meta))send(ws,msg)}
 function clearHost(ws){for(const [id,room] of rooms)if(room.host===ws){rooms.delete(id);if(room.guest)send(room.guest,{type:'host-left',roomId:id});broadcast(room,{type:'room-remove',roomId:id});for(const [reqId,req] of pending)if(req.roomId===id){send(req.guest,{type:'join-reject',roomId:id,requestId:reqId,reason:'host-left'});pending.delete(reqId)}}}
 const server=http.createServer(async(req,res)=>{
  try{
@@ -49,13 +51,13 @@ const server=http.createServer(async(req,res)=>{
 });
 const wss=new WebSocketServer({server,path:'/lan-signal',maxPayload:MAX,verifyClient:({req})=>{const ip=ipOf(req);const origin=req.headers.origin;return signalPolicy.allows(ip,origin,req.headers.host)&&[...clients.values()].filter(meta=>meta.ip===ip).length<MAX_CONNECTIONS_PER_IP}});
 wss.on('connection',(ws,req)=>{
- const meta={id:'peer_'+(++nextId),ip:ipOf(req),windowStart:Date.now(),messageCount:0,alive:true};clients.set(ws,meta);
+ const meta={id:'peer_'+(++nextId),ip:ipOf(req),windowStart:Date.now(),messageCount:0,alive:true,discoveryScope:'lan'};clients.set(ws,meta);
  ws.on('pong',()=>{meta.alive=true});
  ws.on('error',()=>{try{ws.terminate()}catch{ /* already closing */ }});
  send(ws,{type:'welcome',peerId:meta.id});
  if(signalPolicy.mode==='lan')send(ws,{type:'lan-addresses',urls:getLanGameUrls({interfaces:networkInterfaces(),port,bind:host})});
  else send(ws,{type:'discovery-scope',scope:'public-network'});
- for(const room of rooms.values())if(sameSubnet(meta.ip,room.ip))send(ws,{type:'room-announce',roomId:room.id,name:room.name,build:room.build,full:!!room.guest});
+ for(const room of rooms.values())if(roomVisible(room,meta))send(ws,{type:'room-announce',roomId:room.id,name:room.name,build:room.build,full:!!room.guest});
  ws.on('message',bytes=>{
   const now=Date.now();if(now-meta.windowStart>=WINDOW_MS){meta.windowStart=now;meta.messageCount=0}
   if(++meta.messageCount>MAX_MESSAGES_PER_WINDOW){ws.close(1008,'Signaling rate limit');return}
@@ -65,17 +67,25 @@ wss.on('connection',(ws,req)=>{
   const id=m.roomId,requestId=m.requestId;
   if(m.type==='host'){
    if(typeof id!=='string'||! /^[a-zA-Z0-9_-]{8,64}$/.test(id)||typeof m.name!=='string'||m.name.length>48||!m.name.trim()||typeof m.build!=='string'||m.build.length>32)return;
+   const requested=roomScope(m);
+   if(!requested)return send(ws,{type:'error',message:'Unsupported discovery scope'});
    if(rooms.has(id)){if(rooms.get(id).host!==ws)return send(ws,{type:'error',message:'Room already exists'});send(ws,{type:'host-registered',roomId:id});return}
    if(!rooms.has(id)&&rooms.size>=MAX_ROOMS&&!([...rooms.values()].some(room=>room.host===ws)))return send(ws,{type:'error',message:'Room capacity reached'});
    clearHost(ws);
    // Switching from guest/pending admission to host must release the old seat first.
    releaseLanGuest(ws,rooms,pending,send);
-   const room={id,name:m.name.trim(),build:m.build,host:ws,ip:meta.ip,guest:null};rooms.set(id,room);
+   meta.discoveryScope=requested;
+   const room={id,name:m.name.trim(),build:m.build,host:ws,ip:meta.ip,guest:null,scope:requested};rooms.set(id,room);
    announceRoom(room);send(ws,{type:'host-registered',roomId:id});return;
   }
-  if(m.type==='rooms'){send(ws,lanRoomSnapshot(rooms,meta.ip,sameSubnet));return}
+  if(m.type==='rooms'){
+   const requested=roomScope(m);
+   if(!requested)return send(ws,{type:'rooms-snapshot',rooms:[]});
+   meta.discoveryScope=requested;
+   send(ws,lanRoomSnapshot(rooms,meta.ip,sameSubnet,requested));return
+  }
   if(m.type==='leave'){clearHost(ws);releaseLanGuest(ws,rooms,pending,send);return}
-  const room=rooms.get(id);if(!room||!sameSubnet(meta.ip,room.ip)){rejectUnavailableJoin(ws,m,send);return;}
+  const room=rooms.get(id);if(!room||!roomVisible(room,meta)){rejectUnavailableJoin(ws,m,send);return;}
   if(m.type==='join'){
    if(ws===room.host||room.guest||[...rooms.values()].some(active=>active.guest===ws||active.host===ws)||typeof requestId!=='string'||! /^[a-zA-Z0-9_-]{8,64}$/.test(requestId)||pending.has(requestId)||m.build!==room.build)return send(ws,{type:'join-reject',requestId,reason:'room-full-or-version'});
    if([...pending.values()].filter(p=>p.guest===ws).length>=MAX_PENDING_PER_GUEST)return send(ws,{type:'join-reject',roomId:id,requestId,reason:'request-already-pending'});
