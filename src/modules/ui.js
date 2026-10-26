@@ -222,9 +222,15 @@ function showLanLobby(){
   '<div id="lanLobby"></div>','navQuick');
  lanLobbyDispose=mountLanLobby($('lanLobby'),{onReady:startLanQuickMatch});
 }
-function showQuickMenu(){menuChoices('nav-quick','QUICK MATCH','Play on one device, practice, or explore planned local multiplayer.',[
+function showOnlineP2PLobby(){
+ page('ONLINE P2P','Manual private internet WebRTC · host controls home, guest controls away.',
+  '<div id="lanLobby"></div>','navQuick');
+ lanLobbyDispose=mountLanLobby($('lanLobby'),{auto:false,internet:true,onReady:startLanQuickMatch});
+}
+function showQuickMenu(){menuChoices('nav-quick','QUICK MATCH','Play on one device, LAN or internet peer-to-peer.',[
  navItem('On Device','navOnDevice','Single-player, two-player, penalties and training.','active','🎮'),
- navItem('Local Network · LAN Quick Match','navLan','Host a game or automatically find a friend on the same LAN game address.','active','📡')],'home');}
+ navItem('Local Network · LAN Quick Match','navLan','Host a game or automatically find a friend on the same LAN game address.','active','📡'),
+ navItem('Online P2P · Private Quick Match','navOnlineP2P','Direct internet match with manual offer/answer exchange; STUN only, some networks unavailable.','active','🌐')],'home');}
 function showOnDevice(){menuChoices('nav-device','ON DEVICE','Use the existing playable match setups.',[
  navItem('Single Player vs CPU','quick','Existing team, kit and match setup.','active','⚽'),
  navItem('Two Players · Same Device','versus','Play a local head-to-head match.','active','🎮'),
@@ -1287,7 +1293,7 @@ function action(a){audio.cue('ui');
  'nav-device':'navOnDevice','nav-career':'navCareer','nav-cups':'navCups','nav-clubs':'navClubs','nav-settings':'navSettings','nav-customize':'navCustomization','nav-input':'navInput','nav-saves':'navSaveManagement'
  })[screen]||'home';
  if(a==='confirmQuit'){if(confirm('Leave this match and return to the main menu? Match progress will be lost.')){stopLanMatch();game.matchState='none';showHome();}}else if(a==='confirmRestart'){if(confirm('Restart the match from kickoff? Current match progress will be lost.'))start();}
- else if(a==='navQuick')showQuickMenu();else if(a==='navLan')showLanLobby();else if(a==='navOnDevice')showOnDevice();else if(a==='navOnline')showOnlineMenu();else if(a==='navCareer'){creatingCareer=false;showCareerMenu();}else if(a==='navCups')showCupsMenu();else if(a==='navInternational')showInternationalMenu();else if(a==='navClubs')showClubCompetitionsMenu();else if(a==='navSettings'||a==='settings')showSettingsMenu();else if(a==='navCustomization')showCustomizationMenu();else if(a==='navInput')showInputMenu();else if(a==='navSaveManagement')showSaveMenu('navSettings');else if(a==='navCareerSlots')showCareerSlots();else if(a==='navCupSlots')showCupSlots();
+ else if(a==='navQuick')showQuickMenu();else if(a==='navLan')showLanLobby();else if(a==='navOnlineP2P')showOnlineP2PLobby();else if(a==='navOnDevice')showOnDevice();else if(a==='navOnline')showOnlineMenu();else if(a==='navCareer'){creatingCareer=false;showCareerMenu();}else if(a==='navCups')showCupsMenu();else if(a==='navInternational')showInternationalMenu();else if(a==='navClubs')showClubCompetitionsMenu();else if(a==='navSettings'||a==='settings')showSettingsMenu();else if(a==='navCustomization')showCustomizationMenu();else if(a==='navInput')showInputMenu();else if(a==='navSaveManagement')showSaveMenu('navSettings');else if(a==='navCareerSlots')showCareerSlots();else if(a==='navCupSlots')showCupSlots();
  else if(a==='navGameSettings')showSettingsSection('game');else if(a==='navGraphics')showSettingsSection('graphics');else if(a==='navSound'){if(game.matchState==='paused'&&screen==='PAUSED')menuEntryReturn='returnPause';showSettingsSection('sound');}
  else if(a==='navAbout')showAbout();
  else if(a==='navNewCareer'){creatingCareer=true;showManager();}
@@ -1439,7 +1445,7 @@ function navigateMenu(direction){const items=menuButtons();if(!items.length)retu
 function backFromMenu(){if(screen==='TEAM COMMAND CENTER'){action(squadContext==='pause'?'returnPause':squadContext==='setup'?'returnSetup':menuBackAction||'home');return;}if(['MATCH RULES','KITS & TEAM TALKS','TEAM TACTICS'].includes(screen)){action('returnSetup');return;}const back=screen==='nav-settings-sound'&&menuEntryReturn==='returnPause'?'returnPause':screen==='nav-saves'?menuBackAction:menuParents[screen]||menuBackAction||'home';if(screen==='home')return;action(back);}
 document.addEventListener('keydown',e=>{
  if(!menuVisible())return;
- if(screen==='LOCAL NETWORK'&&e.code==='Escape'){e.preventDefault();backFromMenu();return;}
+ if((screen==='LOCAL NETWORK'||screen==='ONLINE P2P')&&e.code==='Escape'){e.preventDefault();backFromMenu();return;}
  if(e.target?.matches?.('input,select,textarea,[contenteditable="true"]'))return;
  if(e.code==='Escape'||e.code==='Backspace'){
   if(['PAUSED','HALF TIME'].includes(screen)){e.preventDefault();if(screen==='PAUSED')action('resume');return;}
