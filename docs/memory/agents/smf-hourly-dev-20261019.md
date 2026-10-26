@@ -20,3 +20,10 @@ Develop on existing dev only; promote exact fully green SHA through protected ma
 
 ## Ownership and exclusions
 No extra branches, no weakened tests, no claims of physical-device certification without evidence. Sole developer checkpoint under 4 KiB.
+
+## Evidence
+- Source-executed LAN/P2P scope, simulated two-client consent and manual fallback checks passed. Permanent Node tests added; exact-head full CI remains the certification gate.
+- Browser LAN two-client and hosted internet broker acceptance scripts are committed, not yet certified on current exact head. No physical multi-device evidence.
+
+## Cleanup
+- Keep only dev/main and the sole registered checkpoint; retain all player IDs, four controls, offline and ten save slots. No branches, permissions or test gates bypassed.
