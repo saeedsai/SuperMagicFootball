@@ -98,3 +98,28 @@ test('LAN broker publishes occupancy on approval, new discovery and guest depart
  assert.match(server,/msg\?\.type==='guest-left'/);
  assert.match(server,/full:!!room\.guest/);
 });
+
+test('Find Games refreshes room discovery but pauses during admission and stops after leaving',async()=>{
+ const f=setup(),timers=[];
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.10.5.0',signalFactory:f.signalFactory,
+   setIntervalImpl:(fn,ms)=>{const timer={fn,ms,stopped:false};timers.push(timer);return timer},
+   clearIntervalImpl:timer=>{timer.stopped=true}});
+  f.elements.get('#autoFind').click();
+  assert.equal(timers.length,1);assert.equal(timers[0].ms,10000);
+  timers[0].fn();assert.equal(f.packets.length,0,'do not send while disconnected');
+  f.connect();assert.equal(f.packets.filter(p=>p.type==='rooms').length,1);
+  timers[0].fn();assert.equal(f.packets.filter(p=>p.type==='rooms').length,2);
+  f.emit({type:'room-announce',roomId:'room_12345678',name:'Friendly',build:'0.10.5.0',full:false});
+  f.elements.get('#autoRooms').children[0].click();
+  const join=f.packets.at(-1);assert.equal(join.type,'join');
+  timers[0].fn();assert.equal(f.packets.filter(p=>p.type==='rooms').length,2,'pending admission should not poll');
+  f.emit({type:'join-reject',requestId:join.requestId});
+  timers[0].fn();assert.equal(f.packets.filter(p=>p.type==='rooms').length,3,'poll resumes after rejection');
+  f.elements.get('#autoHost').click();assert.equal(timers[0].stopped,true);
+  const reads=f.packets.filter(p=>p.type==='rooms').length;
+  timers[0].fn();assert.equal(f.packets.filter(p=>p.type==='rooms').length,reads,'old timer cannot poll as host');
+  dispose();assert.equal(f.connection.closed,true);
+ }finally{f.cleanup()}
+});

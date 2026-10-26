@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.10.4.0',
+ version:'0.10.5.0',
  date:'2026-10-26',
  notes:Object.freeze([
+  'Find Games automatically refreshes LAN room availability every ten seconds while browsing, recovering missed room announcements without restarting discovery. Refresh pauses during a join request and stops when leaving the lobby; four buttons, rosters, offline play and saves are unchanged.',
   'LAN Find Games now marks occupied rooms as IN MATCH and disables their Join action. The signaling broker publishes seat availability when a guest is approved or leaves, allowing another player to join after the seat is freed. Physical two-phone LAN QA remains pending; rosters, four buttons and saves are unchanged.',
   'Hosted LAN room discovery ignores spoofed X-Forwarded-For prefixes and uses the trusted proxy-appended client address. The secure Host Game / Find Games flow remains a candidate pending exact-head CI and physical two-phone acceptance; rosters, controls and saves are unchanged.',
   'Hosted LAN signaling service provisioned on Render; automatic Host Game and Find Games now use the configured secure WebSocket endpoint on GitHub Pages. Rooms are scoped to a shared public network and require host approval; real-phone certification remains pending.',
