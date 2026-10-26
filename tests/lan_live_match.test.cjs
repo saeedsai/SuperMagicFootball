@@ -545,3 +545,28 @@ test('LAN-070 guest rejects disconnected snapshots and accepts restarted host ti
  assert.deepEqual(sent,[124,4],'new session sends against the fresh host timeline');
  run.dispose();
 });
+
+
+test('LAN-071 readiness transition between frames resets guest cursor',async()=>{
+ const {createLanLiveMatch,captureLanGameState}=await load();
+ const input=controls(),host=game(controls()),guest=game(input),sent=[];
+ let unsubscribed=false;
+ const peer={ready:true,
+  subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
+  subscribeStatus(fn){this.onStatus=fn;fn({ready:true});return ()=>{unsubscribed=true;};},
+  sendGuestInput(frame){sent.push(frame);return {frame};}
+ };
+ const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field});
+ peer.receive(captureLanGameState(host,field,120));
+ assert.equal(run.step(.016),true);
+ assert.deepEqual(sent,[124]);
+ // No game.step() executes while transport drops and recovers.
+ peer.ready=false;peer.onStatus({ready:false});peer.ready=true;
+ assert.equal(run.latestTick,-1,'readiness event clears the stale tick immediately');
+ assert.equal(run.step(.016),false,'reconnected guest waits for a new host snapshot');
+ host.score=[2,0];peer.receive(captureLanGameState(host,field,0));
+ assert.equal(run.step(.016),true);
+ assert.deepEqual(sent,[124,4],'fresh host epoch starts with frame four');
+ assert.deepEqual(guest.score,[2,0]);
+ run.dispose();assert.equal(unsubscribed,true,'RTC status listener is removed on exit');
+});
