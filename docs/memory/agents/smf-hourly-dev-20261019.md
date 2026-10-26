@@ -3,25 +3,19 @@
 **Updated:** 2026-10-26
 
 ## Mission
-Deliver one bounded tested dev increment per hourly run. Keep only dev/main, never force-push or bypass CI. Preserve 223 teams/2676 players, six formations, four buttons, Career/Cup ten slots, SD09, saves/offline.
+Develop on existing dev only; promote exact fully green SHA through protected main pipeline, never force-push or bypass security. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline/saves.
 
 ## Current checkpoint
-- ART-CI-001: Concept Hero Playable #40383211283 failed on snapcraft HTTP 408 installing chromium before tests. Workflow changed to Playwright-managed Chromium (same as Full Census) with a Node contract; exact-head rerun pending. No version bump for CI-only fix.
-- 0.11.2.1 P2P-004 candidate: stale rejected host-offer and guest-accept promises cannot close a newer session or overwrite status after Reset, role change or disposal. Two focused regression cases added.
-- Baseline dev/main `da78ebbff2797978e2eb36e8f56b58fe2a82e4df` is certified in CI: dev Modular #40374843405, dev Full 4+4 #40374843277, main Full #40375449068, Pages #40375446757. Physical two-device LAN/P2P unverified.
+- Candidate 0.11.3.0 P2P-005: internet P2P auto Host/Find with explicit broker room scope, host consent, shared host-authoritative LAN gameplay, STUN, manual P2P fallback. LAN retains subnet-scoped discovery plus manual fallback. Top-level Online backend menu unchanged.
+- Existing hosted signal broker must deploy new scoped code for global P2P search. This is lightweight signaling, not gameplay hosting. No guaranteed traversal of restricted NAT without TURN. Two-phone/real internet acceptance and hosted Render rollout unverified.
+- Prior dev a9a6286c26dd4cb51b9907462001a7cf9d18ea99 (0.11.2.1) had 4 Node + 3 Chromium green in Full #40384978348, last browser shard in progress, Concept Hero #40384978339 green. Main last confirmed da78ebbff2797978e2eb36e8f56b58fe2a82e4df (0.11.2.0).
 
 ## Next smallest action
-1. Inspect new exact-head Modular and Full 4 Node + 4 Chromium; repair failures on dev.
-2. Verify protected exact-head promotion and main/Pages byte smoke.
-3. Test two physical LAN clients and private internet P2P; document TURN limitations.
-4. Continue counterable four-button Magic Tricks and Player Studio.
-5. Improve authored directional animations with desktop/touch visual QA.
+1. Verify candidate exact-head Modular and full 4 Node + 4 Chromium; fix CI failures.
+2. Promote only green exact dev head and verify Pages byte smoke.
+3. Confirm Render signaling deployment, scope separation and origin policy; verify two actual networks/phones.
+4. Implement and test TURN opt-in only when available; preserve safe defaults.
+5. Continue counterable four-button Tricks, Player Studio and Crown Royals art QA.
 
 ## Ownership and exclusions
-Only dev/main; sole developer. Never force-push, weaken tests, bypass permissions/security, or claim physical-device certification without evidence. Do not read or edit other agents' memory.
-
-## Evidence
-Previous green SHA `da78ebbff2797978e2eb36e8f56b58fe2a82e4df`; new P2P-004 exact-head CI pending. Local source-level race tests must be checked against GitHub Actions.
-
-## Cleanup
-No schema, roster, gameplay physics, button count, saved-game, or offline behavior changes. Continue hourly even if release is pending.
+No extra branches, no weakened tests, no claims of physical-device certification without evidence. Sole developer checkpoint under 4 KiB.
