@@ -1,3 +1,9 @@
+## 2026-10-26 15:09 CET — LAN-069 host input edge reset on reconnect (0.10.7.12 candidate)
+- Baseline dev d60217256456431b6986a085675a8e04a65bd00d, main c463780b5f38205d868c64fd9ea16033d8bcfe7c. Host `previousButtons` persisted across `peer.ready=false`, suppressing first press after RTC reconnect. Clear on disconnected host step, without changing held-state semantics during a healthy session.
+- Added focused regression for first press, continuous hold, disconnection and reconnection. Source-executed V8 harness confirmed baseline failed and patch passed; full Node/Chromium/Modular CI is not yet certified.
+- Investigated Modular QA #40328411505 source-and-data failure: 840/841 Node passed, one project_memory_contract failure from own checkpoint headings/identity; fixed in docs-only commit d60217256456431b6986a085675a8e04a65bd00d. No new release claim.
+- Aligned About/package/README heading and banner/cache/version policy/shared memory to 0.10.7.12. No roster, save schema, control count or offline changes. Physical two-phone LAN and broker discovery remain unverified.
+
 ## 2026-10-26 — LAN-068 guest input send refusal (0.10.7.11 candidate)
 - Baseline dev compared against main: 22 commits ahead, main c463780b5f38205d868c64fd9ea16033d8bcfe7c; previous candidate 0.10.7.10. A guest transport send returning false was treated as a successful frame; guard cursor advancement and add source-executed regression for retry of the same numbered frame.
 - Version/About/package/README/cache/policy aligned to 0.10.7.11. CI and production certification not yet established; no physical two-client LAN verification. No roster, four-button, save or offline schema changes.
