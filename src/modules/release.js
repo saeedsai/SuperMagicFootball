@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.14',
- date:'2026-10-27',
+ version:'0.11.4.15',
+ date:'2026-10-28',
  notes:Object.freeze([
+  'LAN and Quick Match P2P now resend paused or finished match state after a transport reconnect, even when disconnect and recovery occur between frames. A returning guest gets fresh Jump presses rather than stale held controls. LAN-073 tests added; physical two-device validation remains pending.',
   'P2P guest controls now survive up to two missing network frames without fake Jump releases, repeated jump presses or interrupted sprint; genuine release and expired gaps still stop movement. LAN-072 regression added; physical two-device certification pending.',
   'Internet P2P approved relay now rejects direct WebRTC or foreign SDP offered to its fallback transport instead of falsely reporting a connected match. P2P-RELAY-10 covers both roles and valid relay descriptions; exact-head CI and physical devices remain pending.',
   'Internet P2P relay retains one strictly validated host hello arriving before the guest creates its DataChannel, then replays it after listeners open. Lost later echoes no longer strand the guest. P2P-RELAY-09 added; exact-head CI and real two-device QA pending.',
