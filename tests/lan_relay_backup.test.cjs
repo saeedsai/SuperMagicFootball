@@ -412,3 +412,28 @@ test('P2P-RELAY-09 guest replays only validated pre-channel host hello',async()=
   assert.deepEqual(frame.input.buttons,['jump']);
  }finally{host.dispose();guest.dispose();}
 });
+
+// P2P-RELAY-10: a direct or foreign SDP must not make the approved relay
+// claim a connected transport. The same relay pseudo-SDP still works.
+test('P2P-RELAY-10 rejects incompatible SDP on both approved relay roles',async()=>{
+ const {createLanRelayPeerConnection}=await import('../src/modules/lan-relay-peer.js');
+ const connection={send:()=>true};
+ const host=createLanRelayPeerConnection(hello('host'),{connection,roomId});
+ const guest=createLanRelayPeerConnection(hello('guest'),{connection,roomId});
+ try{
+  const offer=JSON.parse(await host.createOffer());
+  const direct='v=0\\r\\ns=direct-webrtc\\r\\nt=0 0\\r\\n';
+  await assert.rejects(guest.acceptOffer(JSON.stringify({...offer,sdp:direct})),/Incompatible approved relay description/);
+  assert.equal(guest.ready,false,'foreign offer cannot start guest match');
+  await assert.rejects(host.acceptAnswer(JSON.stringify({...offer,kind:'answer',sdp:direct})),/Incompatible approved relay description/);
+  assert.equal(host.ready,false,'foreign answer cannot start host match');
+ }finally{host.dispose();guest.dispose();}
+ const validHost=createLanRelayPeerConnection(hello('host'),{connection,roomId});
+ const validGuest=createLanRelayPeerConnection(hello('guest'),{connection,roomId});
+ try{
+  const answer=await validGuest.acceptOffer(await validHost.createOffer());
+  await validHost.acceptAnswer(answer);
+  assert.equal(validHost.peer.channel.readyState,'open');
+  assert.equal(validGuest.peer.channel.readyState,'open');
+ }finally{validHost.dispose();validGuest.dispose();}
+});

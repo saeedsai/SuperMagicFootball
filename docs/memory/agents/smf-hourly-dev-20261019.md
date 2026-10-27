@@ -3,25 +3,24 @@
 **Updated:** 2026-10-27
 
 ## Mission
-Continue one bounded tested increment per hourly run directly on dev, even if release is queued. Never create branches beyond dev/main, bypass protections, force-push or stop for pending releases. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves.
+Sole developer: one bounded feature directly on dev every run, even if release pending. Only dev/main; no force, protection bypass or paused hourly work. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, saves/offline.
 
 ## Current checkpoint
-- Baseline dev `9e07d47baffe64123afe0f14800b86b3712696ee`; main `b3c8100a88e924dd4209396898116877602d284d`. PR #56 open, mergeable_state unstable; exact-head Full #40574997917 and Modular #40574998177 queued, not green.
-- Candidate 0.11.4.12 P2P-RELAY-09: guest retains only exact-session/build, opposite-role host hello before its relay channel exists. Replays after listeners open; rejects malformed, stale and >4 KiB frames; clears on close/failure.
-- Checkpoint repaired to include all six required sections from `tests/project_memory_contract.test.cjs`. README/About/package/SW/cache/policy aligned.
+- Starting dev `06b70af8cb822ed07a6cc75cc9a6b1d72f32e7b0`, main `b3c8100a88e924dd4209396898116877602d284d`; PR #56 open. Previous Full #40583818694 and Modular #40583818746 in progress on starting dev; no exact-head green evidence.
+- Candidate 0.11.4.13 P2P-RELAY-10: approved relay pseudo-RTC rejects foreign/direct SDP in host and guest before connected state. Valid relay SDP remains accepted. About/package/README/SW/cache/policy aligned.
 
 ## Next smallest action
-1. Inspect new exact-head Full 4 Node + 4 Chromium and Modular QA; fix concrete failures.
-2. Promote only completely green unchanged dev via protected PR #56; confirm main SHA.
-3. Verify Pages deployment/hosted SHA-256 byte smoke and Render broker health.
-4. Validate two physical phones for LAN and cross-network P2P discovery, consent, fallback, gameplay and graphics.
+1. Check exact new-head Full 4 Node + 4 Chromium and Modular QA; repair any concrete failure.
+2. Promote only unchanged completely green dev via protected PR #56; verify main SHA.
+3. Verify Pages deployment/hosted SHA-256 byte smoke and Render signaling health.
+4. Test two physical phones for LAN and cross-network P2P consent, fallback, inputs and graphics.
 5. Continue Player Studio, counterable four-button Tricks and Crown Royals directional art.
 
 ## Ownership and exclusions
-Sole developer `smf-hourly-dev-20261019`. No other agent memory edits; no new branches, no security bypass or physical QA claims.
+Sole developer `smf-hourly-dev-20261019`; no other agent memory edits, new branches, force pushes, security bypass or invented physical QA.
 
 ## Evidence
-Isolated source-equivalent Node smoke for pre-channel validation and lifecycle: 2/2 pass. Permanent real-module P2P-RELAY-09 regression prepared for CI but not executed locally against full repo. Full CI queued on previous head; new-head CI and main/Pages not verified.
+Source-extracted rejection smoke performed in V8; P2P-RELAY-10 permanent Node regression committed for CI. Complete repository Node/Chromium/Modular not run locally; new-head CI, Pages and physical acceptance pending.
 
 ## Cleanup
-No stale branch deletion or release promotion attempted while exact-head checks remain queued. Continue coding independently on dev.
+No promotion while exact-head checks remain unverified. Continue development on dev next run.

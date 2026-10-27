@@ -59,6 +59,10 @@ export function createLanRelayPeerConnection(hello,{connection,roomId}={}){
   async createAnswer(){return {type:'answer',sdp:RELAY_SDP};}
   async setLocalDescription(description){this.localDescription=description;}
   async setRemoteDescription(description){
+   // Relay pseudo-SDP is never a direct WebRTC offer/answer. Fail closed if
+   // a delayed direct negotiation or foreign transport enters this fallback.
+   if(!description||description.type!==(hello.role==='guest'?'offer':'answer')||description.sdp!==RELAY_SDP)
+    throw Error('Incompatible approved relay description');
    this.remoteDescription=description;
    if(description.type==='offer'){
     this.channel=new RelayChannel(data=>{const frame={type:'relay-frame',roomId,data};return relayEncoder.encode(JSON.stringify(frame)).byteLength<=MAX_RELAY_WIRE&&connection.send(frame)===true;},hello);

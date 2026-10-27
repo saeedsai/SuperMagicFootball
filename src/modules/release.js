@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.12',
+ version:'0.11.4.13',
  date:'2026-10-27',
  notes:Object.freeze([
+  'Internet P2P approved relay now rejects direct WebRTC or foreign SDP offered to its fallback transport instead of falsely reporting a connected match. P2P-RELAY-10 covers both roles and valid relay descriptions; exact-head CI and physical devices remain pending.',
   'Internet P2P relay retains one strictly validated host hello arriving before the guest creates its DataChannel, then replays it after listeners open. Lost later echoes no longer strand the guest. P2P-RELAY-09 added; exact-head CI and real two-device QA pending.',
   'Internet P2P relay now rejects the full serialized broker JSON message when it exceeds 24,000 UTF-8 bytes, avoiding silent near-limit frame loss. Exact-head CI and two-device acceptance pending.',
   'Internet P2P backup relay now validates early handshakes with the same 4 KiB LAN protocol parser used by live play. Oversized matching hellos can no longer consume the one-message buffer and starve a valid guest if its later echo is lost. P2P-RELAY-07 regression added; exact-head CI and physical two-device acceptance pending.',

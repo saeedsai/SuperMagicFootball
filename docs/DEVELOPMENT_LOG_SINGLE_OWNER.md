@@ -1,3 +1,9 @@
+## 2026-10-27 23:04 CET — P2P-RELAY-10 fail-closed foreign SDP (0.11.4.13 candidate)
+- Baseline dev `06b70af8cb822ed07a6cc75cc9a6b1d72f32e7b0`; main `b3c8100a88e924dd4209396898116877602d284d`; PR #56 open. Prior exact-head Full #40583818694 and Modular #40583818746 still in progress, not green.
+- Fixed approved relay pseudo-RTC accepting arbitrary SDP with a plausible v=0 header, which could falsely declare connected when delayed direct WebRTC signaling crosses the fallback path. Enforce exact relay SDP and expected offer/answer role before mutating remote state. P2P-RELAY-10 tests rejection for both roles and normal relay SDP acceptance.
+- Aligned About-only 0.11.4.13, package, README candidate banner/heading, offline SW cache, policy and memory. Preserved 223 teams/2676 players, six formations, four buttons, saves/offline, Career/Cup ten slots and SD09.
+- Validation: source-extracted rejection smoke; permanent focused Node test awaits CI. Full Node, 4 Node + 4 Chromium, Modular, protected main promotion, Pages byte smoke, Render health and physical two-device play are NOT certified. Next five actions in own checkpoint; keep coding while release pending.
+
 ## 2026-10-27 22:02 CET — P2P-RELAY-09 pre-channel host handshake resilience (0.11.4.12 candidate)
 - Baseline dev `9e07d47baffe64123afe0f14800b86b3712696ee`, main `b3c8100a88e924dd4209396898116877602d284d`; PR #56 open, exact-head Full #40574997917 and Modular #40574998177 queued (not green).
 - Found that `RelayPeer.receive` dropped an approved host hello received before the guest's DataChannel existed. A lost later echo could stall guest readiness. Added one bounded pre-channel buffer using the strict 4 KiB LAN parser and exact session/build/opposite-role match; replay after guest listeners and channel open, clear on close/disconnect. Existing host pre-open buffer shares validation helper.
