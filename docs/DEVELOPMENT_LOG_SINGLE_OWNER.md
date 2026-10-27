@@ -1,4 +1,4 @@
-## 2026-10-27 10:57 CET — LAN-061 independent ICE state reliability (0.11.4.1 candidate)
+## 2026-10-27 10:57 CET — LAN-ICE-01 independent ICE state reliability (0.11.4.1 candidate)
 - Baseline main af7b80d392a1329f9174a40d3b3527552197060f, dev 5b675eb7c49363e2cc06c107c643730439441939 (21 ahead). PR #54 open. Modular QA 40484660176 green; Full Census 40484660081 pending at start.
 - WebRTC ICE can enter failed/disconnected before RTCPeerConnection.connectionState reflects it. LAN and Online P2P now abort ICE gathering and awaitReady on terminal ICE, mark live transport unavailable on ICE disconnect and emit observable status changes on ICE events; recovery resumes on ICE reconnect. Three focused Node regressions added. Existing STUN-only P2P still needs TURN for restrictive NAT pairs; no physical device claim.
 - Candidate version 0.11.4.1 aligned with About/package/README/cache/policy/shared memory. Exact-head CI and protected promotion still required; no roster, control, save or art changes.
