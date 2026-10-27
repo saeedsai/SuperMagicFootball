@@ -204,7 +204,7 @@ const comingLater=(title,description,back='navCups')=>{
  menuBackAction=back;
  page(title,'Planned feature — not available in this version.',`<div class="panel navInfo"><h2>COMING LATER</h2><p>${escapeHTML(description)}</p><p>No substitute gameplay is launched. Existing saves are unchanged.</p>${button('← BACK',back,'gold')}</div>`,back);
 };
-function startLanQuickMatch(peer,role){
+function startLanQuickMatch(peer,role,opponentName){
   if(lanRuntime)stopLanMatch();
   home=0;away=9;mode='versus';humans=2;
   game.init({home,away,mode,humans,rosters:[roster(home),roster(away)],
@@ -215,7 +215,7 @@ function startLanQuickMatch(peer,role){
   lanPeer=peer;lanRole=role;
   try{lanRuntime=createLanLiveMatch({peer,role,game,input,field:ENGINE.WORLD.field});}
   catch(error){stopLanMatch();game.matchState='none';throw error;}
-  closeMenu();drawHUD();toast(role==='host'?'LAN HOST · HOME TEAM':'LAN GUEST · AWAY TEAM',2400);
+  closeMenu();drawHUD();toast((role==='host'?'LAN HOST · HOME TEAM':'LAN GUEST · AWAY TEAM')+(opponentName?' · vs '+String(opponentName).slice(0,32):''),2400);
 }
 function showLanLobby(){
  page('LOCAL NETWORK','Two-player LAN Quick Match · host controls home, guest controls away.',
