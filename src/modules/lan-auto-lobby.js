@@ -1,10 +1,12 @@
 import {connectLanSignal} from './lan-auto-signal.js';
 import {createLanPeerConnection} from './lan_peer_connection.js';
+import {createLanRelayPeerConnection} from './lan-relay-peer.js';
 import {normalizeLanPacket} from './lan_protocol.js';
 import {RELEASE} from './release.js';
 const ADMISSION_TIMEOUT_MS=25000;
 const HOST_REGISTRATION_RETRY_MS=10000;
 const CONNECTION_READY_TIMEOUT_MS=35000;
+const P2P_DIRECT_TIMEOUT_MS=10000;
 const displayName=value=>typeof value==='string'?(value.replace(/[\u0000-\u001f\u007f]/g,' ').trim().replace(/\s+/g,' ').slice(0,32)||'Player'):'Player'; // six idempotent attempts per minute
 const makeId=()=>{const b=crypto.getRandomValues(new Uint8Array(16));return Array.from(b,v=>v.toString(16).padStart(2,'0')).join('')};
 export function mountAutoLanLobby(root,options={}){
@@ -15,7 +17,7 @@ export function mountAutoLanLobby(root,options={}){
  const requestRooms=()=>send(internet?{type:'rooms',scope:roomScope}:{type:'rooms'});
  root.innerHTML=`<section class="panel lanConnectionLab"><h2>${internet?'ONLINE P2P':'LOCAL NETWORK'}</h2><p>${internet?'Host or find internet P2P games automatically. A lightweight signaling directory finds rooms and exchanges offers; physics stays peer-to-peer and the host approves each guest. Some networks need a TURN relay.':'Create a room on your phone or computer, or find an available game. A secure discovery service is required for browser-to-browser matchmaking.'}</p><label for="autoPlayerName">Your player name (visible to opponent)</label><input id="autoPlayerName" type="text" maxlength="32" autocomplete="nickname" placeholder="Enter your name"><div class="row"><button class="btn" id="autoHost">HOST GAME</button><button class="btn" id="autoFind">FIND GAMES</button><button class="btn minor" id="autoReset">CANCEL</button></div><div id="autoHostInfo" aria-live="polite"></div><div id="autoRooms" aria-live="polite"></div><div id="autoApproval"></div><p id="autoStatus" role="status" aria-live="polite">Connecting to LAN discovery…</p></section>`;
  const get=id=>root.querySelector('#'+id),rooms=new Map();
- let mode=null,roomId=null,session=null,peer=null,connection=null,unsub=null,controller=null,disposed=false,requestId=null,approved=false,approvalRequestId=null,started=false,answerProcessingPeer=null,refreshTimer=null,hostRetryTimer=null,hostRegistered=false,admissionTimer=null,lanUrls=[],signalState='connecting',discoveryScope='lan',hostName='Player',opponentName='Player',localName='Player';
+ let mode=null,roomId=null,session=null,peer=null,connection=null,unsub=null,controller=null,disposed=false,requestId=null,approved=false,approvalRequestId=null,started=false,answerProcessingPeer=null,refreshTimer=null,hostRetryTimer=null,hostRegistered=false,admissionTimer=null,lanUrls=[],signalState='connecting',discoveryScope='lan',hostName='Player',opponentName='Player',localName='Player',relayStarted=false,activeRelay=null;
  const status=message=>{if(!disposed)get('autoStatus').textContent=message};
  const send=packet=>connection?.send(packet);
  // Recover room availability if an advertisement was missed while Find Games stays open.
@@ -58,9 +60,10 @@ export function mountAutoLanLobby(root,options={}){
    if(admissionTimer!==timer)return;
    admissionTimer=null;
    if(disposed||mode!=='host'||peer!==current||!approved||started)return;
+   if(startRelay('Direct offer timed out'))return;
    cleanupPeer();approved=false;
    status('Host offer creation timed out. Waiting for guest retry.');
-  },ADMISSION_TIMEOUT_MS);
+  },internet?20000:ADMISSION_TIMEOUT_MS);
   admissionTimer=timer;
  }
  // Bound the time a host waits for an answer after transmitting its offer.
@@ -70,6 +73,7 @@ export function mountAutoLanLobby(root,options={}){
    if(admissionTimer!==timer)return;
    admissionTimer=null;
    if(disposed||mode!=='host'||peer!==current||!approved||started)return;
+   if(startRelay('Direct answer timed out'))return;
    cleanupPeer();approved=false;
    status('Guest answer timed out. Waiting for guest retry.');
   },ADMISSION_TIMEOUT_MS);
@@ -83,6 +87,7 @@ export function mountAutoLanLobby(root,options={}){
    if(admissionTimer!==timer)return;
    admissionTimer=null;
    if(disposed||mode!=='host'||peer!==current||!approved||started)return;
+   if(startRelay('Direct negotiation timed out'))return;
    cleanupPeer();approved=false;
    status('Host answer negotiation timed out. Waiting for guest retry.');
   },ADMISSION_TIMEOUT_MS);
@@ -95,6 +100,25 @@ export function mountAutoLanLobby(root,options={}){
   if(connection?.ready)requestRooms();
  },ADMISSION_TIMEOUT_MS)}
  function cleanupPeer(){controller?.abort();controller=null;unsub?.();unsub=null;peer?.dispose();peer=null;answerProcessingPeer=null}
+ // Direct ICE may not cross restrictive NAT. The host can use the consent broker
+ // as a last-resort transport for the SAME validated game protocol.
+ function canRelay(){return internet&&!options.peerFactory&&connection?.ready&&mode==='host'&&approved&&roomId&&!relayStarted&&!started&&!disposed}
+ async function startRelay(reason){
+  if(!canRelay())return false;
+  relayStarted=true;clearAdmissionTimeout();cleanupPeer();
+  status(reason+'. Activating approved relay backup…');
+  let current=null;
+  try{
+   const hello=normalizeLanPacket({protocol:1,type:'hello',role:'host',session,build,sequence:0});
+   current=createLanRelayPeerConnection(hello,{connection,roomId});peer=current;
+   const offer=await current.createOffer();
+   if(peer!==current)return true;
+   if(!send({type:'relay-offer',roomId,sdp:offer}))throw Error('relay offer could not be sent');
+   waitForHostAnswer(current);
+   status('Direct WebRTC unavailable. Waiting for backup relay handshake…');
+  }catch(e){if(!current||peer===current){cleanupPeer();approved=false;status('Backup relay failed: '+e.message+'. Retry the match.')}}
+  return true;
+ }
  // An approved guest must release the reserved seat if WebRTC negotiation fails.
  // Keep the room browser usable without reopening Find Games or changing the host room.
  function recoverGuestHandshake(message){
