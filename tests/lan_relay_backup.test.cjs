@@ -136,3 +136,85 @@ test('P2P-RELAY-02 real auto lobby reaches both playable match callbacks without
   globalThis.document=oldDoc;globalThis.location=oldLocation;globalThis.RTCPeerConnection=oldRtc;
  }
 });
+
+test('P2P-RELAY-03 guest-only WebRTC failure asks approved host for backup and starts both matches', {timeout:8000},async()=>{
+ const {mountAutoLanLobby}=await import('../src/modules/lan-auto-lobby.js');
+ const oldDoc=globalThis.document,oldLocation=globalThis.location,oldRtc=globalThis.RTCPeerConnection;
+ class Element extends EventTarget {
+  constructor(){super();this.children=[];this.textContent='';this.value='';this.className='';this.onclick=null;}
+  replaceChildren(...items){this.children=items;this.textContent='';}
+  append(...items){this.children.push(...items);}
+  click(){this.onclick?.();this.dispatchEvent(new Event('click'));}
+ }
+ // Host can produce a direct SDP offer, but guest cannot create its own RTC peer.
+ // Without a guest relay-request the host would wait 25 seconds for an answer.
+ class DirectPeer extends EventTarget {
+  constructor(){super();this.connectionState='connecting';this.iceConnectionState='checking';this.iceGatheringState='complete';}
+  createDataChannel(label){const c=new EventTarget();c.label=label;c.readyState='connecting';c.send=()=>{};c.close=()=>{c.readyState='closed';};return c;}
+  async createOffer(){return {type:'offer',sdp:'v=0\\r\\ns=direct\\r\\nt=0 0\\r\\n'};}
+  async createAnswer(){return {type:'answer',sdp:'v=0\\r\\ns=direct\\r\\nt=0 0\\r\\n'};}
+  async setLocalDescription(d){this.localDescription=d;}
+  async setRemoteDescription(d){this.remoteDescription=d;}
+  close(){this.connectionState='closed';this.iceConnectionState='closed';}
+ }
+ const root=()=>{const elements=new Map();return {innerHTML:'',elements,querySelector(id){
+  if(!elements.has(id))elements.set(id,new Element());return elements.get(id);
+ }}};
+ const host=root(),guest=root(),handlers={},ready={},sent=[],room={};
+ const emit=(side,message)=>queueMicrotask(()=>handlers[side].onEvent(message));
+ function send(side,packet){
+  sent.push([side,packet.type]);
+  switch(packet.type){
+   case 'host':Object.assign(room,{roomId:packet.roomId,name:packet.name,build:packet.build,scope:'internet-p2p'});
+    emit('host',{type:'host-registered',roomId:room.roomId});emit('guest',{type:'room-announce',...room,full:false});break;
+   case 'rooms':emit('guest',{type:'rooms-snapshot',rooms:room.roomId?[{...room,full:false}]:[]});break;
+   case 'join':room.requestId=packet.requestId;room.guestName=packet.guestName;
+    emit('host',{type:'join-request',roomId:room.roomId,requestId:room.requestId,guestName:room.guestName});break;
+   case 'decision':if(packet.accept){
+    emit('guest',{type:'join-accept',roomId:room.roomId,requestId:room.requestId,hostName:room.name});
+    emit('host',{type:'guest-approved',roomId:room.roomId,requestId:room.requestId,guestName:room.guestName});
+   }break;
+   case 'offer':emit('guest',packet);break;
+   case 'relay-request':assert.equal(side,'guest');emit('host',packet);break;
+   case 'relay-offer':emit('guest',packet);break;
+   case 'relay-answer':emit('host',packet);break;
+   case 'relay-frame':emit(side==='host'?'guest':'host',packet);break;
+   case 'leave':break;
+   default:throw Error('Unexpected signaling packet '+packet.type);
+  }
+  return true;
+ }
+ const signalFactory=side=>callbacks=>{handlers[side]=callbacks;return {ready:true,send:packet=>send(side,packet),close(){}};};
+ let stopHost,stopGuest;
+ try{
+  globalThis.document={createElement:()=>new Element()};
+  globalThis.location={hostname:'saeedsai.github.io',origin:'https://saeedsai.github.io'};
+  globalThis.RTCPeerConnection=DirectPeer;
+  stopHost=mountAutoLanLobby(host,{internet:true,build:'0.11.4.3',signalFactory:signalFactory('host'),
+   onReady:(peer,role)=>ready.host={peer,role}});
+  stopGuest=mountAutoLanLobby(guest,{internet:true,build:'0.11.4.3',signalFactory:signalFactory('guest'),
+   peerFactory:()=>{throw Error('Guest WebRTC unavailable');},
+   onReady:(peer,role)=>ready.guest={peer,role}});
+  handlers.host.onState('connected');handlers.guest.onState('connected');
+  host.querySelector('#autoHost').click();guest.querySelector('#autoFind').click();
+  for(let i=0;i<50&&!guest.querySelector('#autoRooms').children.length;i++)await new Promise(r=>setTimeout(r,0));
+  assert.equal(guest.querySelector('#autoRooms').children.length,1);
+  guest.querySelector('#autoRooms').children[0].click();
+  for(let i=0;i<50&&host.querySelector('#autoApproval').children.length<2;i++)await new Promise(r=>setTimeout(r,0));
+  host.querySelector('#autoApproval').children[1].click();
+  for(let i=0;i<150&&(!ready.host||!ready.guest);i++)await new Promise(r=>setTimeout(r,10));
+  assert.ok(sent.some(([side,type])=>side==='host'&&type==='offer'),'direct host SDP was offered');
+  assert.ok(sent.some(([side,type])=>side==='guest'&&type==='relay-request'),'guest asked for backup without leaving');
+  assert.ok(!sent.some(([side,type])=>side==='guest'&&type==='leave'),'guest kept approved room seat');
+  assert.ok(ready.host&&ready.guest,'both matches start using approved fallback');
+  assert.equal(ready.host.peer.relay,true);assert.equal(ready.guest.peer.relay,true);
+  ready.guest.peer.sendGuestInput(0,['dribble'],.2,0);
+  await new Promise(r=>setImmediate(r));
+  assert.deepEqual(ready.host.peer.advanceHostFrame(0).input.buttons,['dribble']);
+  const broker=fs.readFileSync('scripts/lan-server.mjs','utf8');
+  assert.match(broker,/room\\.guest===ws&&!room\\.relay/,'only approved guest can request fallback');
+ }finally{
+  stopHost?.();stopGuest?.();
+  globalThis.document=oldDoc;globalThis.location=oldLocation;globalThis.RTCPeerConnection=oldRtc;
+ }
+});
