@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.3.14',
+ version:'0.11.4.0',
  date:'2026-10-27',
  notes:Object.freeze([
+  'LAN and Online P2P hosts and guests can enter names visible during discovery, approval and match start. WebRTC readiness is bounded and internet connection errors explain potential TURN requirements. Cross-network TURN and physical two-device certification remain pending.',
   'LAN and Online P2P guests now retire a rejected admission even if browser SDP negotiation is already in progress. The stale peer and room identity are cleared, late answers cannot revive a denied seat, and another host can be joined without reopening Find Games. Two focused regressions added; four controls, rosters, offline play and saves are unchanged. Physical two-device acceptance remains pending.',
   'LAN and Online P2P guests now ignore duplicate host approvals for an already accepted request. Duplicate signaling cannot restart the 25-second host-offer timeout or displace a pending SDP negotiation deadline. Two focused regressions added; four controls, rosters, offline play and saves are unchanged. Real two-device acceptance remains pending.',
   'LAN and Online P2P hosts ignore duplicate guest WebRTC answers while SDP processing or transport readiness is pending. Duplicates cannot restart the 25-second deadline or race another remote-description update. Two focused regressions added; four controls, rosters, saves and offline play are unchanged. Physical two-device acceptance remains pending.',
