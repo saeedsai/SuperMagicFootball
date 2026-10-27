@@ -1,3 +1,5 @@
+> **0.11.4.14 release candidate (27 October 2026):** Online P2P host preserves validated guest four-button holds and movement for at most two missing frames, preventing phantom repeated Jump and disrupted sprint; explicit releases and longer packet loss clear controls. LAN-072 adds regression coverage. Offline game, saves, graphics and rosters unchanged. Exact-head QA, protected deployment and physical phone testing pending.
+
 > **0.11.4.13 release candidate (27 October 2026):** Internet P2P approved fallback now rejects direct WebRTC or incompatible SDP on both host and guest, preventing false connected states when signaling from different transports crosses. P2P-RELAY-10 tests both rejections and a valid relay offer/answer. No changes to 223 teams/2676 players, six formations, four buttons, saves, Career/Cup slots, SD09 or offline play. Exact-head CI, protected main/Pages, hosted broker and two-device QA remain pending. [Live previously released game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.11.4.12 release candidate (27 October 2026):** Internet P2P backup relay now retains one exact-session, exact-build host hello received before the guest DataChannel exists and replays it after protocol listeners open. Malformed, stale, wrong-role and oversized early frames are ignored; P2P-RELAY-09 covers lost later host echoes and playable guest input. Rosters, four buttons, saves, offline play and formations are unchanged. Exact-head CI, protected main/Pages, hosted broker and physical two-device QA remain pending. [Live previously released game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -160,7 +162,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.11.4.13 · Modular source project
+# Supermagic Football · v0.11.4.14 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 
