@@ -1032,7 +1032,7 @@ test('LAN-043 authoritative host step consumes guest input and publishes a valid
   receiver.dispose();guest.dispose();host.dispose();
 });
 
-// LAN-061: WebRTC ICE may fail independently before RTCPeerConnection.connectionState changes.
+// LAN-ICE-01: WebRTC ICE may fail independently before RTCPeerConnection.connectionState changes.
 test('LAN-ICE-01 independent ICE failure aborts gathering and closes the incomplete peer',async()=>{
   const {createLanPeerConnection}=await load();
   class IceFailPeer extends FakePeer {
