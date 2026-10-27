@@ -69,3 +69,70 @@ test('P2P-RELAY-01 broker permits only two approved internet endpoints, with rat
  assert.match(lobby,/m\.type==='relay-answer'/);
  assert.match(lobby,/activeRelay\|\|peer/);
 });
+
+test('P2P-RELAY-02 real auto lobby reaches both playable match callbacks without WebRTC candidates', {timeout:8000},async()=>{
+ const {mountAutoLanLobby}=await import('../src/modules/lan-auto-lobby.js');
+ const oldDoc=globalThis.document,oldLocation=globalThis.location,oldRtc=globalThis.RTCPeerConnection;
+ class Element extends EventTarget {
+  constructor(){super();this.children=[];this.textContent='';this.className='';this.value='';this.onclick=null;}
+  replaceChildren(...items){this.children=items;this.textContent=''}
+  append(...items){this.children.push(...items)}
+  click(){this.onclick?.();this.dispatchEvent(new Event('click'))}
+ }
+ const root=()=>{const elements=new Map();return {elements,innerHTML:'',querySelector(id){if(!elements.has(id))elements.set(id,new Element());return elements.get(id)}}};
+ const host=root(),guest=root(),sides={},ready={},room={};
+ function emit(side,message){queueMicrotask(()=>sides[side].onEvent(message))}
+ function send(side,packet){
+  switch(packet.type){
+   case 'host':
+    Object.assign(room,{roomId:packet.roomId,name:packet.name,build:packet.build,scope:'internet-p2p'});
+    emit('host',{type:'host-registered',roomId:room.roomId});
+    emit('guest',{type:'room-announce',...room,full:false});break;
+   case 'rooms':
+    emit('guest',{type:'rooms-snapshot',rooms:room.roomId?[{...room,full:false}]:[]});break;
+   case 'join':
+    Object.assign(room,{guestRequestId:packet.requestId,guestName:packet.guestName});
+    emit('host',{type:'join-request',roomId:room.roomId,requestId:packet.requestId,guestName:packet.guestName});break;
+   case 'decision':
+    if(packet.accept===true){
+     emit('guest',{type:'join-accept',roomId:room.roomId,requestId:room.guestRequestId,hostName:room.name});
+     emit('host',{type:'guest-approved',roomId:room.roomId,requestId:room.guestRequestId,guestName:room.guestName});
+    }break;
+   case 'relay-offer': emit('guest',{...packet});break;
+   case 'relay-answer': emit('host',{...packet});break;
+   case 'relay-frame': emit(side==='host'?'guest':'host',{...packet});break;
+   case 'leave':break;
+   default:throw Error('Unexpected signaling packet '+packet.type);
+  }
+  return true;
+ }
+ const signalFactory=side=>handlers=>{sides[side]=handlers;return {ready:true,send:packet=>send(side,packet),close(){}}};
+ let stopHost,stopGuest;
+ try{
+  globalThis.document={createElement:()=>new Element()};
+  globalThis.location={hostname:'saeedsai.github.io',origin:'https://saeedsai.github.io'};
+  globalThis.RTCPeerConnection=undefined; // force failed direct RTC -> fallback
+  stopHost=mountAutoLanLobby(host,{internet:true,build:'0.11.4.3',signalFactory:signalFactory('host'),onReady:(peer,role,name)=>ready.host={peer,role,name}});
+  stopGuest=mountAutoLanLobby(guest,{internet:true,build:'0.11.4.3',signalFactory:signalFactory('guest'),onReady:(peer,role,name)=>ready.guest={peer,role,name}});
+  sides.host.onState('connected');sides.guest.onState('connected');
+  host.querySelector('#autoPlayerName').value='Alice';guest.querySelector('#autoPlayerName').value='Bob';
+  host.querySelector('#autoHost').click();guest.querySelector('#autoFind').click();
+  for(let i=0;i<50&&guest.querySelector('#autoRooms').children.length===0;i++)await new Promise(r=>setTimeout(r,0));
+  assert.equal(guest.querySelector('#autoRooms').children.length,1);
+  guest.querySelector('#autoRooms').children[0].click();
+  for(let i=0;i<50&&host.querySelector('#autoApproval').children.length<2;i++)await new Promise(r=>setTimeout(r,0));
+  assert.match(host.querySelector('#autoApproval').children[0].textContent,/Bob wants to join/);
+  host.querySelector('#autoApproval').children[1].click();
+  for(let i=0;i<150&&(!ready.host||!ready.guest);i++)await new Promise(r=>setTimeout(r,10));
+  assert.ok(ready.host&&ready.guest,'both lobby callbacks must establish live match');
+  assert.equal(ready.host.peer.relay,true);assert.equal(ready.guest.peer.relay,true);
+  assert.equal(ready.host.peer.ready,true);assert.equal(ready.guest.peer.ready,true);
+  assert.equal(ready.host.name,'Bob');assert.equal(ready.guest.name,'Alice');
+  ready.guest.peer.sendGuestInput(0,['pass'],0,-1);
+  await new Promise(r=>setImmediate(r));
+  assert.deepEqual(ready.host.peer.advanceHostFrame(0).input.buttons,['pass']);
+ }finally{
+  stopHost?.();stopGuest?.();
+  globalThis.document=oldDoc;globalThis.location=oldLocation;globalThis.RTCPeerConnection=oldRtc;
+ }
+});
