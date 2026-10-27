@@ -6,6 +6,7 @@
 Sole developer: one bounded feature directly on dev every run, even if release pending. Only dev/main; no force, protection bypass or paused hourly work. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, saves/offline.
 
 ## Current checkpoint
+- 2026-10-27 23:12 CET: GH Actions cleanup permitted restart of exact-head Full Census, Modular QA and auto-promotion push. Modular source-and-data run #40592712627 exposed seven active Node test failures: four old module-order assertions, one obsolete workflow concurrency expectation, one double-escaped relay SDP test fixture and one double-escaped broker approval regex. Repair committed as a single six-test patch; no gameplay source/version bump. Full 4 Node + 4 Chromium and Modular QA remain certification gates; do not merge without green exact current head.
 - Starting dev `06b70af8cb822ed07a6cc75cc9a6b1d72f32e7b0`, main `b3c8100a88e924dd4209396898116877602d284d`; PR #56 open. Previous Full #40583818694 and Modular #40583818746 in progress on starting dev; no exact-head green evidence.
 - Candidate 0.11.4.13 P2P-RELAY-10: approved relay pseudo-RTC rejects foreign/direct SDP in host and guest before connected state. Valid relay SDP remains accepted. About/package/README/SW/cache/policy aligned.
 

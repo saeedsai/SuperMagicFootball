@@ -28,7 +28,7 @@ test('offline, modular imports and inline fixture contain the actual raster asse
  assert.match(sw,/smf-082538-concept-front-hair-v1/);
  assert.match(sw,/assets\/concept_hero/);
  assert.match(build,/CONCEPT_HERO_INLINE/);
- assert.match(build,/'concepthero','conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
+ assert.match(build,/'concepthero','conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-relay-peer','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
  const fixture=text('tests/.generated/game.js');
  assert.match(fixture,/data:image\/webp;base64/);
 });

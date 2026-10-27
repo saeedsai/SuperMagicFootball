@@ -57,9 +57,9 @@ test('write permission is scoped to promotion, never QA or browser tests', () =>
   }
 });
 
-test('new commits cancel only obsolete same-branch census, never bypass required QA',()=>{
- assert.match(workflow,/group: full-regression-\$\{\{ github\.ref \}\}/);
- assert.match(workflow,/cancel-in-progress: true/);
+test('full census has no stale workflow lock, while promotion requires exact-head green QA',()=>{
+ assert.doesNotMatch(workflow,/^concurrency:/m,'no workflow-level lock can indefinitely hold exact-head runs');
+ assert.doesNotMatch(workflow,/cancel-in-progress: true/,'frequent dev commits cannot cancel running full QA');
  const release=job('promote-dev-to-main');
  assert.match(release,/needs:\s*\[preflight, node-regression, browser-regression, preview-smoke\]/);
  assert.match(release,/CERTIFIED_SHA/);

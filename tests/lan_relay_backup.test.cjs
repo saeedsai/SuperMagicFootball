@@ -52,7 +52,7 @@ test('P2P-RELAY-01 rejects unauthorized room identifiers, offline use and oversi
  const peer=createLanRelayPeerConnection(hello('host'),{connection:{send(){return true}},roomId});
  try{
   await peer.createOffer();
-  await peer.acceptAnswer(JSON.stringify({protocol:1,kind:'answer',session,build:'0.11.4.3',sdp:'v=0\\r\\ns=smf-approved-relay\\r\\nt=0 0\\r\\n'}));
+  await peer.acceptAnswer(JSON.stringify({protocol:1,kind:'answer',session,build:'0.11.4.3',sdp:'v=0\r\ns=smf-approved-relay\r\nt=0 0\r\n'}));
   assert.throws(()=>peer.peer.channel.send('x'.repeat(25000)),/relay unavailable/i);
  }finally{peer.dispose()}
 });
@@ -212,7 +212,7 @@ test('P2P-RELAY-03 guest-only WebRTC failure asks approved host for backup and s
   await new Promise(r=>setImmediate(r));
   assert.deepEqual(ready.host.peer.advanceHostFrame(0).input.buttons,['dribble']);
   const broker=fs.readFileSync('scripts/lan-server.mjs','utf8');
-  assert.match(broker,/room\\.guest===ws&&!room\\.relay/,'only approved guest can request fallback');
+  assert.match(broker,/room\.guest===ws&&!room\.relay/,'only approved guest can request fallback');
  }finally{
   stopHost?.();stopGuest?.();
   globalThis.document=oldDoc;globalThis.location=oldLocation;globalThis.RTCPeerConnection=oldRtc;

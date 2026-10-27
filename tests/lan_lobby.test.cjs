@@ -37,8 +37,8 @@ test('LAN-046 Quick Match routes ready LAN sessions to live gameplay',()=>{
   assert.match(ui,/createLanLiveMatch\(\{peer,role,game,input,field:ENGINE\.WORLD\.field\}\)/);
   assert.match(ui,/\(screen==='LOCAL NETWORK'\|\|screen==='ONLINE P2P'\)\&\&e\.code==='Escape'/);
   assert.match(ui,/lanLobbyDispose\(\)/);
-  assert.match(sw,/'lan_peer_connection','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
-  assert.match(fixture,/'lan_peer_connection','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
+  assert.match(sw,/'lan_peer_connection','lan-relay-peer','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
+  assert.match(fixture,/'lan_peer_connection','lan-relay-peer','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
 });
 test('LAN-024 host creates a copyable offer and disposes peer on navigation',async()=>{
   const {mountLanLobby}=await load();

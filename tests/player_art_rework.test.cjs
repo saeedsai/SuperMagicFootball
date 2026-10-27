@@ -43,8 +43,8 @@ test('appearance presets, mirroring, kit changes, accessories and keeper actions
 test('offline caching and inline browser test fixture both load new art module',()=>{
  const build=fs.readFileSync(path.resolve(__dirname,'../scripts/build.py'),'utf8');
  const sw=fs.readFileSync(path.resolve(__dirname,'../sw.js'),'utf8');
- assert.match(build,/'artpose','characterart','concepthero','conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
- assert.match(sw,/'artpose','characterart','concepthero','conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
+ assert.match(build,/'artpose','characterart','concepthero','conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-relay-peer','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
+ assert.match(sw,/'artpose','characterart','concepthero','conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-relay-peer','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
  assert.match(sw,/smf-082538-concept-front-hair-v1/);
 });
 test('production integration remains in match renderer',()=>{
