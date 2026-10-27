@@ -1,3 +1,9 @@
+## 2026-10-27 10:08 CET — LAN/P2P named participants, bounded WebRTC negotiation (0.11.4.0 candidate)
+- Owner observed automatic P2P discovery and host consent but no established game. Current WebRTC ICE configuration has public STUN but no TURN relay; restricted NAT pairings may fail. No false claim of TURN support or physical success.
+- Both modes now allow host/guest player names. Host name is advertised in discovery; validated bounded guest name travels through broker to the host approval prompt; guest receives host identity in acceptance; name appears on match-start toast.
+- Host and guest now stop waiting indefinitely after SDP: 35-second readiness deadline, retry available and explicit internet TURN diagnosis. Additional tests cover LAN/P2P player names and ICE readiness deadline, plus broker name forwarding contract.
+- Release candidate 0.11.4.0; pending exact-head 4 Node + 4 Chromium, Modular QA, protected promotion, Render update, Pages hosted hash verification and two-device cross-network/TURN acceptance. Next five: fix CI; release exact green candidate; deploy broker; TURN and real-device QA; Studio/Tricks/Crown Royals art.
+
 ## 2026-10-27 09:58 CET — LAN/P2P rejected guest SDP cleanup (0.11.3.14 candidate)
 - Baseline dev/main `58cf9298bd59e3b02e6d5adab09c4ed17585e619` (0.11.3.13). Rejection during pending SDP previously cleared the admission ID but left the peer and room identity alive; a late browser answer could still be sent.
 - Guest rejection now cancels its watchdog, disposes the pending peer and clears the stale room identity. New regressions cover stale room-removal/approval after rejection and delayed SDP completion. No roster, four-button, six-formation, SD09, ten-slot, offline or save-schema changes.
