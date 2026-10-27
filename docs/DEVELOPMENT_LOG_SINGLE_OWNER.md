@@ -1,3 +1,9 @@
+## 2026-10-27 08:59 CET — LAN/P2P duplicate guest admission guard (0.11.3.13 candidate)
+- Exact baseline dev/main e8adca57e9e08b93337a4405f49525ebb555c540; dev Modular #40465003574, Full 4 Node + 4 Chromium #40465003455, Concept Hero #40465003402 and Hair #40465003377 green; main Full hosted smoke #40466167217 and Pages #40466167228 green. Only dev/main; issue #48 open.
+- Replayed join-accept messages previously restarted the 25-second offer timeout, and could displace an in-progress guest SDP negotiation deadline. Guard already-approved/started guest admissions; two new Node regressions cover offer wait and pending SDP. Source-executed harness reproduced the old stuck wait and verified the correction.
+- About-only 0.11.3.13, package, README heading/banner/date, offline cache, policy, shared memory and own checkpoint aligned in final candidate. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves. New exact-head CI, protected promotion, hosted byte smoke and physical two-device play remain separate gates.
+- Next five: (1) Modular + 4 Node/4 Chromium; (2) repair failures and protected green promotion; (3) Pages hosted byte smoke; (4) physical LAN/P2P/TURN; (5) Player Studio, counterable Tricks and Crown Royals graphics.
+
 ## 2026-10-27 08:03 CET — LAN/P2P duplicate host SDP guard (0.11.3.12 candidate)
 - Baseline exact dev/main bc264bfd0b37bf8b5c23b8fb803959f9052c7d6d; dev Modular #40458844304 and Full 4 Node + 4 Chromium #40458844302 green; main Full hosted smoke #40459608996 and Pages #40459608191 green. Only dev/main, no open PR; LAN issue #48 open.
 - Duplicate guest answers could reset the 25-second SDP watchdog and invoke concurrent acceptAnswer. Track active host peer and ignore duplicate answers through readiness. Two focused Node regressions cover pending and completed SDP.

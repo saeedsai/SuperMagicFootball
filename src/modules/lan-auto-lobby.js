@@ -146,7 +146,8 @@ export function mountAutoLanLobby(root,options={}){
   if(m.type==='join-cancel'&&mode==='host'&&m.roomId===roomId&&m.requestId===approvalRequestId){approvalRequestId=null;get('autoApproval').replaceChildren();status('Guest cancelled their join request.');return}
   if(m.type==='guest-left'&&mode==='host'&&m.roomId===roomId){clearAdmissionTimeout();cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();status('Guest disconnected. Hosting remains available for another guest.');return}
   if(m.type==='join-reject'&&m.requestId===requestId){clearAdmissionTimeout();requestId=null;approved=false;status('Join request rejected or expired. Select a game to retry.');return}
-  if(m.type==='join-accept'&&mode==='guest'&&m.requestId===requestId){approved=true;waitForOffer(m.requestId);status('Approved. Waiting for host offer…');return}
+  // Ignore replayed approvals: they must not restart the offer or SDP deadline.
+  if(m.type==='join-accept'&&mode==='guest'&&m.requestId===requestId&&!approved&&!started){approved=true;waitForOffer(m.requestId);status('Approved. Waiting for host offer…');return}
   if(m.type==='guest-approved'&&mode==='host'&&m.roomId===roomId){
    if(peer||started)return;
    approved=true;let current=null;

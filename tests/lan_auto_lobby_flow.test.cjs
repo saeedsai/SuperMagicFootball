@@ -670,3 +670,53 @@ test('LAN/P2P duplicate host answer after SDP success cannot renegotiate',async(
   dispose();assert.equal(disposed,1);
  }finally{f.cleanup()}
 });
+
+
+test('duplicate LAN/P2P guest approval cannot restart the original offer deadline',async()=>{
+ const f=setup(),timers=[];
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.13',signalFactory:f.signalFactory,
+   setTimeoutImpl:(fn,ms)=>{const t={fn,ms,cleared:false};timers.push(t);return t},
+   clearTimeoutImpl:t=>{t.cleared=true}});
+  f.elements.get('#autoFind').click();f.connect();
+  const room={type:'room-announce',roomId:'room_12345678',name:'Friendly',build:'0.11.3.13',full:false};
+  f.emit(room);f.elements.get('#autoRooms').children[0].click();
+  const request=f.packets.at(-1).requestId;
+  f.emit({type:'join-accept',roomId:room.roomId,requestId:request});
+  assert.equal(timers.length,2);assert.equal(timers[1].ms,25000);
+  f.emit({type:'join-accept',roomId:room.roomId,requestId:request});
+  assert.equal(timers.length,2,'duplicate approval cannot rearm the offer deadline');
+  assert.equal(timers[1].cleared,false,'original offer deadline remains active');
+  timers[1].fn();
+  assert.deepEqual(f.packets.slice(-2).map(p=>p.type),['leave','rooms']);
+  assert.match(f.elements.get('#autoStatus').textContent,/Host offer timed out.*retry/);
+  dispose();
+ }finally{f.cleanup()}
+});
+
+test('duplicate LAN/P2P approval cannot replace a pending guest SDP deadline',async()=>{
+ const f=setup(),timers=[];let finish,disposed=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.13',signalFactory:f.signalFactory,
+   setTimeoutImpl:(fn,ms)=>{const t={fn,ms,cleared:false};timers.push(t);return t},
+   clearTimeoutImpl:t=>{t.cleared=true},
+   peerFactory:()=>({acceptOffer:()=>new Promise(resolve=>{finish=resolve}),dispose(){disposed++}})});
+  f.elements.get('#autoFind').click();f.connect();
+  const room={type:'room-announce',roomId:'room_12345678',name:'Friendly',build:'0.11.3.13',full:false};
+  f.emit(room);f.elements.get('#autoRooms').children[0].click();
+  const request=f.packets.at(-1).requestId;
+  f.emit({type:'join-accept',roomId:room.roomId,requestId:request});
+  const pending=f.emit({type:'offer',roomId:room.roomId,sdp:JSON.stringify({session:'session_12345678'})});
+  assert.equal(timers.length,3);assert.equal(timers[1].cleared,true);
+  f.emit({type:'join-accept',roomId:room.roomId,requestId:request});
+  assert.equal(timers.length,3,'duplicate approval cannot create a new offer timeout');
+  assert.equal(timers[2].cleared,false,'SDP deadline must remain active');
+  timers[2].fn();
+  assert.equal(disposed,1);assert.deepEqual(f.packets.slice(-2).map(p=>p.type),['leave','rooms']);
+  finish('late-answer');await pending;
+  assert.equal(f.packets.some(p=>p.type==='answer'),false,'late SDP must not be sent');
+  dispose();
+ }finally{f.cleanup()}
+});
