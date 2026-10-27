@@ -3,25 +3,25 @@
 **Updated:** 2026-10-27
 
 ## Mission
-Bounded increments on dev; protected exact-green promotion only. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and saves. Only dev/main; no force-push or bypass.
+Bounded dev-only increments; promote only exact green head via protected pipeline. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and saves. Only dev/main, no force-push or security bypass.
 
 ## Current checkpoint
-- Candidate 0.11.3.7: guest SDP answer processing has a 25-second deadline after host offer. Stalls release seat and resume discovery; late answers ignored and success cancels deadline. Two Node regressions.
-- Baseline dev/main `5158446d58a74b6d5a91cea07c5153b974067891` green: dev Modular #40430557655, Full 4+4 #40430557553, main Full hosted smoke #40431545841 and Pages #40431545633.
-- New exact-head QA, protected promotion and hosted bytes pending. Physical two-device LAN/P2P and TURN-dependent internet play uncertified.
+- Candidate 0.11.3.8: host SDP offer creation now has a 25-second timeout; guest-left/reconnect cancel timer; stale completion/rejection cannot dispose replacement peer. Two Node regressions.
+- Baseline dev/main `4b15b9c4e3c7e3da98bf7d533be534c36d3a1a62` identical. Modular #40435820821 and Full 4 Node + 4 Chromium #40435820727 green; protected promotion succeeded. Hosted Pages byte smoke not rechecked in this run.
+- New candidate exact-head CI, promotion, hosted Pages and physical two-device LAN/P2P/TURN acceptance pending.
 
 ## Next smallest action
-1. Inspect exact-head Modular QA and four Node/four Chromium shards; repair failures.
+1. Inspect exact-head Modular and four Node/four Chromium; repair failures.
 2. Promote only exact green dev head through protected pipeline.
-3. Verify Pages and hosted HTML/JS/CSS bytes for main SHA.
-4. Validate real two-device LAN/P2P and TURN requirements.
-5. Continue Player Studio, counterable Tricks and Crown Royals directional art.
+3. Verify main Pages and hosted HTML/JS/CSS byte hashes.
+4. Test two-device LAN and cross-network P2P, including TURN.
+5. Continue Player Studio, counterable Tricks and Crown Royals art.
 
 ## Ownership and exclusions
-Sole developer on dev; only dev/main. No other agent memory; no bypass of CI or security.
+Sole developer on dev; only dev/main. Do not read or edit other agents' memory.
 
 ## Evidence
-Prior certified workflow IDs in central log. New regression cases in tests/lan_auto_lobby_flow.test.cjs; exact-head QA pending.
+Source and regressions: `src/modules/lan-auto-lobby.js`, `tests/lan_auto_lobby_flow.test.cjs`. Prior run IDs above; new exact-head QA pending.
 
 ## Cleanup
-Own checkpoint under 4 KiB. No unrelated branches or memory changed.
+Checkpoint under 4 KiB; no unrelated branches or memory changed.

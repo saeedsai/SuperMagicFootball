@@ -48,6 +48,18 @@ export function mountAutoLanLobby(root,options={}){
   },ADMISSION_TIMEOUT_MS);
   admissionTimer=timer;
  }
+ // Host SDP creation can hang without rejecting, leaving a stale peer after the guest gives up.
+ function waitForHostOffer(current){
+  clearAdmissionTimeout();
+  const timer=(options.setTimeoutImpl??setTimeout)(()=>{
+   if(admissionTimer!==timer)return;
+   admissionTimer=null;
+   if(disposed||mode!=='host'||peer!==current||!approved||started)return;
+   cleanupPeer();approved=false;
+   status('Host offer creation timed out. Waiting for guest retry.');
+  },ADMISSION_TIMEOUT_MS);
+  admissionTimer=timer;
+ }
  function waitForAdmission(id){clearAdmissionTimeout();admissionTimer=(options.setTimeoutImpl??setTimeout)(()=>{
   admissionTimer=null;if(disposed||mode!=='guest'||requestId!==id||approved||started)return;
   send({type:'leave'});cleanupPeer();requestId=null;roomId=null;
@@ -107,11 +119,29 @@ export function mountAutoLanLobby(root,options={}){
    const container=get('autoApproval');container.replaceChildren();const label=document.createElement('p');label.textContent='A guest wants to join your match.';const yes=document.createElement('button');yes.className='btn';yes.textContent='ACCEPT GUEST';const no=document.createElement('button');no.className='btn minor';no.textContent='REJECT';yes.onclick=()=>{if(approvalRequestId!==m.requestId)return;if(!send({type:'decision',roomId,requestId:m.requestId,accept:true}))return status('Discovery disconnected. Cannot approve guest; reconnect and retry.');approvalRequestId=null;container.replaceChildren();status('Guest approved. Establishing connection…')};no.onclick=()=>{if(approvalRequestId!==m.requestId)return;if(!send({type:'decision',roomId,requestId:m.requestId,accept:false}))return status('Discovery disconnected. Cannot reject guest; reconnect and retry.');approvalRequestId=null;container.replaceChildren()};container.append(label,yes,no);return;
   }
   if(m.type==='join-cancel'&&mode==='host'&&m.roomId===roomId&&m.requestId===approvalRequestId){approvalRequestId=null;get('autoApproval').replaceChildren();status('Guest cancelled their join request.');return}
-  if(m.type==='guest-left'&&mode==='host'&&m.roomId===roomId){cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();status('Guest disconnected. Hosting remains available for another guest.');return}
+  if(m.type==='guest-left'&&mode==='host'&&m.roomId===roomId){clearAdmissionTimeout();cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();status('Guest disconnected. Hosting remains available for another guest.');return}
   if(m.type==='join-reject'&&m.requestId===requestId){clearAdmissionTimeout();requestId=null;approved=false;status('Join request rejected or expired. Select a game to retry.');return}
   if(m.type==='join-accept'&&mode==='guest'&&m.requestId===requestId){approved=true;waitForOffer(m.requestId);status('Approved. Waiting for host offer…');return}
   if(m.type==='guest-approved'&&mode==='host'&&m.roomId===roomId){
-   approved=true;try{const hello=normalizeLanPacket({protocol:1,type:'hello',role:'host',session,build,sequence:0});const current=peerFactory(hello);peer=current;const offer=await current.createOffer();if(peer===current&&!send({type:'offer',roomId,sdp:offer})){cleanupPeer();approved=false;status('Unable to send host offer. Waiting for guest retry.')}}catch(e){cleanupPeer();status('Host connection failed: '+e.message)}return;
+   if(peer||started)return;
+   approved=true;let current=null;
+   try{
+    const hello=normalizeLanPacket({protocol:1,type:'hello',role:'host',session,build,sequence:0});
+    current=peerFactory(hello);peer=current;waitForHostOffer(current);
+    const offer=await current.createOffer();
+    if(peer!==current)return;
+    clearAdmissionTimeout();
+    if(!send({type:'offer',roomId,sdp:offer})){
+     cleanupPeer();approved=false;status('Unable to send host offer. Waiting for guest retry.');
+    }
+   }catch(e){
+    // A rejected offer from an abandoned session must not dispose a newer peer.
+    if(!current||peer===current){
+     clearAdmissionTimeout();cleanupPeer();approved=false;
+     status('Host connection failed: '+e.message);
+    }
+   }
+   return;
   }
   if(m.type==='offer'&&mode==='guest'&&m.roomId===roomId&&approved&&!peer){
    clearAdmissionTimeout();
@@ -120,7 +150,7 @@ export function mountAutoLanLobby(root,options={}){
   }
   if(m.type==='answer'&&mode==='host'&&m.roomId===roomId&&peer){try{await peer.acceptAnswer(m.sdp);if(peer)watch(peer)}catch(e){cleanupPeer();status('Host answer failed: '+e.message)}}
  }
- connection=(options.signalFactory??connectLanSignal)({internet,onEvent,onState:s=>{if(started||disposed)return;signalState=s;if(s==='connected'){status(internet?'Online P2P discovery connected.':'LAN discovery connected.');if(mode==='host'&&roomId){hostRegistered=false;startHostRetry();cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();registerHost()}else if(mode==='guest'){if(requestId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;status('Connection restored. Choose a game again.')}requestRooms()}}else {if(mode==='host'){hostRegistered=false;stopHostRetry()}rooms.clear();render();approvalRequestId=null;get('autoApproval').replaceChildren();status('Discovery '+s+'. Automatic hosting requires a signaling directory. If unavailable, choose MANUAL CONNECTION to exchange an offer and answer privately.')}}});
+ connection=(options.signalFactory??connectLanSignal)({internet,onEvent,onState:s=>{if(started||disposed)return;signalState=s;if(s==='connected'){status(internet?'Online P2P discovery connected.':'LAN discovery connected.');if(mode==='host'&&roomId){hostRegistered=false;startHostRetry();clearAdmissionTimeout();cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();registerHost()}else if(mode==='guest'){if(requestId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;status('Connection restored. Choose a game again.')}requestRooms()}}else {if(mode==='host'){hostRegistered=false;stopHostRetry()}rooms.clear();render();approvalRequestId=null;get('autoApproval').replaceChildren();status('Discovery '+s+'. Automatic hosting requires a signaling directory. If unavailable, choose MANUAL CONNECTION to exchange an offer and answer privately.')}}});
  const actions=[['autoHost',host],['autoFind',find],['autoReset',reset]];for(const [id,fn] of actions)get(id).addEventListener('click',fn);
  return ()=>{if(disposed)return;reset();disposed=true;connection.close();for(const [id,fn] of actions)get(id)?.removeEventListener('click',fn)};
 }

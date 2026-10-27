@@ -1,3 +1,9 @@
+## 2026-10-27 04:03 CET — LAN/P2P host offer creation deadline (0.11.3.8 candidate)
+- Baseline dev/main `4b15b9c4e3c7e3da98bf7d533be534c36d3a1a62` identical; prior dev Modular #40435820821 and Full 4 Node + 4 Chromium #40435820727 green, including protected dev→main promotion. Two branches only; no open PR. Production Pages byte smoke for baseline not independently rechecked this run.
+- Host createOffer could remain pending after approval, and a delayed rejection could dispose a newer peer. Add 25-second host offer deadline, cleanup on guest departure/reconnect, stale completion/rejection guards, and two focused Node regressions. Host room remains registered for retry.
+- About/package/README/cache/policy/shared and sole checkpoint aligned at candidate 0.11.3.8. No roster, formation, button, save, SD09 or offline changes. New exact-head CI, protected promotion, Pages bytes and physical LAN/P2P acceptance remain independent gates.
+- Next five: (1) exact-head Modular + four Node/four Chromium; (2) protected exact-head dev→main promotion; (3) Pages hosted asset hash smoke; (4) physical LAN/P2P/TURN testing; (5) Player Studio/counterable Tricks/Crown Royals art.
+
 ## 2026-10-27 02:57 CET — LAN/P2P stalled guest SDP answer deadline (0.11.3.7 candidate)
 - Baseline dev/main `5158446d58a74b6d5a91cea07c5153b974067891`: dev Modular #40430557655 and Full 4+4 #40430557553 green; main Full hosted smoke #40431545841 and Pages #40431545633 green. Only dev/main, no open PR.
 - Offer arrival cleared the guest timeout before asynchronous browser SDP processing; a never-resolving acceptOffer could strand the seat. New 25-second deadline releases the seat, resumes discovery and ignores late answers; successful answer cancels timer. Two focused Node regressions.

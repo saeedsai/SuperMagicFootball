@@ -426,3 +426,55 @@ test('LAN/P2P completed SDP answer cancels negotiation timeout',async()=>{
   dispose();
  }finally{f.cleanup()}
 });
+
+test('LAN/P2P host SDP creation timeout disposes stale peer without sending a late offer',async()=>{
+ const f=setup(),timers=[];let finish,created=0,disposed=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.8',signalFactory:f.signalFactory,
+   setTimeoutImpl:(fn,ms)=>{const t={fn,ms,cleared:false};timers.push(t);return t},
+   clearTimeoutImpl:t=>{t.cleared=true},
+   peerFactory:()=>({createOffer:()=>++created===1?new Promise(resolve=>{finish=resolve}):Promise.resolve('new-offer'),dispose(){disposed++}})});
+  f.connect();f.elements.get('#autoHost').click();
+  const roomId=f.packets.at(-1).roomId;f.emit({type:'host-registered',roomId});
+  const pending=f.emit({type:'guest-approved',roomId});
+  assert.equal(timers[0].ms,25000);
+  timers[0].fn();
+  assert.equal(disposed,1);
+  assert.match(f.elements.get('#autoStatus').textContent,/Host offer creation timed out/);
+  finish('stale-offer');await pending;
+  assert.equal(f.packets.filter(p=>p.type==='offer').length,0);
+  f.emit({type:'guest-left',roomId});
+  await f.emit({type:'guest-approved',roomId});
+  assert.equal(f.packets.at(-1).type,'offer');
+  assert.equal(f.packets.at(-1).sdp,'new-offer');
+  assert.equal(f.packets.some(p=>p.type==='leave'),false,'host room must remain registered');
+  dispose();
+ }finally{f.cleanup()}
+});
+
+test('LAN/P2P guest departure cancels pending host offer and late rejection cannot kill replacement',async()=>{
+ const f=setup(),timers=[];let rejectOld,disposed=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.8',signalFactory:f.signalFactory,
+   setTimeoutImpl:(fn,ms)=>{const t={fn,ms,cleared:false};timers.push(t);return t},
+   clearTimeoutImpl:t=>{t.cleared=true},
+   peerFactory:()=>({createOffer:()=>timers.length===1?new Promise((_,reject)=>{rejectOld=reject}):Promise.resolve('replacement-offer'),dispose(){disposed++}})});
+  f.connect();f.elements.get('#autoHost').click();
+  const roomId=f.packets.at(-1).roomId;
+  const old=f.emit({type:'guest-approved',roomId});
+  f.emit({type:'guest-left',roomId});
+  assert.equal(timers[0].cleared,true);
+  assert.equal(disposed,1);
+  await f.emit({type:'guest-approved',roomId});
+  assert.equal(f.packets.at(-1).sdp,'replacement-offer');
+  assert.equal(timers[1].cleared,true,'successful offer cancels its deadline');
+  rejectOld(Error('late failure'));await old;
+  assert.equal(disposed,1,'old rejection must not dispose the new peer');
+  assert.doesNotMatch(f.elements.get('#autoStatus').textContent,/Host connection failed/);
+  const count=f.packets.length;timers[1].fn();
+  assert.equal(f.packets.length,count,'expired callback must not send or change room');
+  dispose();
+ }finally{f.cleanup()}
+});
