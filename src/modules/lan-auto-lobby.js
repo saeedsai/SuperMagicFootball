@@ -38,7 +38,7 @@ export function mountAutoLanLobby(root,options={}){
    if(admissionTimer!==timer)return;
    admissionTimer=null;
    if(disposed||mode!=='guest'||requestId!==id||!approved||peer||started)return;
-   recoverGuestHandshake('Host offer timed out.');
+   if(!requestRelay('Host offer timed out'))recoverGuestHandshake('Host offer timed out.');
   },ADMISSION_TIMEOUT_MS);
   admissionTimer=timer;
  }
@@ -49,7 +49,7 @@ export function mountAutoLanLobby(root,options={}){
    if(admissionTimer!==timer)return;
    admissionTimer=null;
    if(disposed||mode!=='guest'||requestId!==id||!approved||peer!==current||started)return;
-   recoverGuestHandshake('Guest offer negotiation timed out.');
+   if(!requestRelay('Guest offer negotiation timed out'))recoverGuestHandshake('Guest offer negotiation timed out.');
   },ADMISSION_TIMEOUT_MS);
   admissionTimer=timer;
  }
@@ -121,12 +121,23 @@ export function mountAutoLanLobby(root,options={}){
   })();
   return true;
  }
+ // A guest can fail before producing an SDP answer (unsupported WebRTC, ICE).
+ // Keep host approval alive and ask the host to start the same broker backup.
+ function requestRelay(reason){
+  if(!internet||mode!=='guest'||!approved||!roomId||!connection?.ready||
+     relayStarted||peer?.relay||started||disposed)return false;
+  clearAdmissionTimeout();cleanupPeer();relayStarted=true;
+  if(!send({type:'relay-request',roomId})){relayStarted=false;return false}
+  waitForOffer(requestId);
+  status(reason+'. Asking host for approved relay backup…');
+  return true;
+ }
  // An approved guest must release the reserved seat if WebRTC negotiation fails.
  // Keep the room browser usable without reopening Find Games or changing the host room.
  function recoverGuestHandshake(message){
   if(disposed||mode!=='guest'||started)return;
   clearAdmissionTimeout();cleanupPeer();send({type:'leave'});
-  approved=false;requestId=null;roomId=null;
+  relayStarted=false;approved=false;requestId=null;roomId=null;
   status(message+' Select a game to retry.');
   if(connection?.ready)requestRooms();
  }
@@ -137,14 +148,14 @@ export function mountAutoLanLobby(root,options={}){
   for(const [id,room] of rooms){if(room.build!==build)continue;const button=document.createElement('button');button.className='btn';button.disabled=room.full===true;button.textContent=(room.full===true?'IN MATCH · ':'JOIN ')+room.name;button.addEventListener('click',()=>join(id));box.append(button)}
   if(!box.children.length)box.textContent='Searching for available hosts…';
  }
- function watch(current){const aborter=new AbortController();controller=aborter;unsub=current.subscribeStatus(s=>{if(peer===current&&s.ready)ready(current)},aborter.signal);if(peer!==current||aborter.signal.aborted)return;current.awaitReady(internet&&mode==='host'&&!current.relay?P2P_DIRECT_TIMEOUT_MS:CONNECTION_READY_TIMEOUT_MS,aborter.signal).then(()=>ready(current)).catch(e=>{if(peer===current&&!aborter.signal.aborted){if(mode==='host'&&startRelay('Direct connection failed: '+e.message))return;if(mode==='guest')recoverGuestHandshake('Connection failed: '+e.message+(internet?' Direct P2P and backup relay unavailable.':''));else {cleanupPeer();approved=false;status('Host connection failed: '+e.message+' Waiting for guest retry.')}}})}
+ function watch(current){const aborter=new AbortController();controller=aborter;unsub=current.subscribeStatus(s=>{if(peer===current&&s.ready)ready(current)},aborter.signal);if(peer!==current||aborter.signal.aborted)return;current.awaitReady(internet&&mode==='host'&&!current.relay?P2P_DIRECT_TIMEOUT_MS:CONNECTION_READY_TIMEOUT_MS,aborter.signal).then(()=>ready(current)).catch(e=>{if(peer===current&&!aborter.signal.aborted){if(mode==='host'&&startRelay('Direct connection failed: '+e.message))return;if(mode==='guest'){if(requestRelay('Direct connection failed: '+e.message))return;recoverGuestHandshake('Connection failed: '+e.message+(internet?' Direct P2P and backup relay unavailable.':''));}else {cleanupPeer();approved=false;status('Host connection failed: '+e.message+' Waiting for guest retry.')}}})}
  function ready(current){if(disposed||peer!==current||!approved||started)return;controller?.abort();controller=null;unsub?.();unsub=null;peer=null;answerProcessingPeer=null;started=true;if(current.relay)activeRelay=current;try{options.onReady?.(current,mode,opponentName,localName);if(current.relay)status('Match connected through approved relay backup (not direct P2P).')}catch(e){started=false;current.dispose();activeRelay=null;if(mode==='guest')recoverGuestHandshake('Unable to start match: '+e.message);else {approved=false;status('Unable to start host match: '+e.message+'. Waiting for guest retry.')}}}
  function reset(){activeRelay?.dispose();activeRelay=null;relayStarted=false;stopRefresh();stopHostRetry();hostRegistered=false;clearAdmissionTimeout();get('autoHostInfo').replaceChildren();if(mode==='host'||mode==='guest')send({type:'leave'});cleanupPeer();mode=null;roomId=null;session=null;approved=false;started=false;requestId=null;approvalRequestId=null;rooms.clear();get('autoApproval').replaceChildren();render();status('Select Host Game or Find Games.')}
  function showHostAddress(){if(mode!=='host')return;
  if(internet){get('autoHostInfo').textContent='Hosting as '+hostName+' | Room ID: '+roomId+' | Public Online P2P room; every guest requires host approval. Direct WebRTC preferred; approved backup may relay via the discovery service.';return;}const guestUrls=lanUrls.length?lanUrls:(location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'?[location.origin]:[]);get('autoHostInfo').textContent='Hosting as '+hostName+' | Room ID: '+roomId+' | Open this game address on BOTH devices: '+(guestUrls.length?guestUrls.join(' or '):'Waiting for signaling service connection.')+(discoveryScope==='public-network'?' | Automatic discovery uses the same public-network address; host approval is required.':' | Both devices must use the same Wi-Fi/LAN.')}
  function host(){if(signalState==='unconfigured')return status('Online room discovery is not configured for this build. Hosting is unavailable.');reset();mode='host';roomId='room_'+makeId();session=makeId();hostName=ownName();localName=hostName;startHostRetry();if(connection?.ready)registerHost();showHostAddress();status(connection?.ready?'Registering room with discovery service…':'Connecting to LAN server; room will register automatically…')}
  function find(){if(signalState==='unconfigured')return status('Online room discovery is not configured for this build. Finding games is unavailable.');reset();mode='guest';startRefresh();if(connection?.ready)requestRooms();render();status(connection?.ready?(internet?'Searching for Online P2P games…':'Searching for games on this LAN…'):(internet?'Connecting to P2P discovery…':'Connecting to LAN server; search will start automatically…'))}
- function join(id){if(mode!=='guest'||disposed||started)return;const selected=rooms.get(id);if(!selected||selected.build!==build||!validRoom(selected,true))return status('This game is no longer available. Refresh the room list.');if(selected.full===true)return status('This room is already playing. Choose another host.');if(!connection?.ready)return status('LAN server disconnected');if(requestId){clearAdmissionTimeout();send({type:'leave'})}cleanupPeer();approved=false;roomId=id;localName=ownName();const nextRequestId='request_'+makeId();let submitted=false;try{submitted=send({type:'join',roomId:id,requestId:nextRequestId,build,guestName:localName})===true}catch{}if(!submitted){roomId=null;requestId=null;status('Unable to send join request. Check discovery connection and retry.');return}requestId=nextRequestId;waitForAdmission(nextRequestId);status('Waiting for host approval… '+(rooms.get(id)?.name||'Host'))}
+ function join(id){if(mode!=='guest'||disposed||started)return;const selected=rooms.get(id);if(!selected||selected.build!==build||!validRoom(selected,true))return status('This game is no longer available. Refresh the room list.');if(selected.full===true)return status('This room is already playing. Choose another host.');if(!connection?.ready)return status('LAN server disconnected');if(requestId){clearAdmissionTimeout();send({type:'leave'})}cleanupPeer();relayStarted=false;approved=false;roomId=id;localName=ownName();const nextRequestId='request_'+makeId();let submitted=false;try{submitted=send({type:'join',roomId:id,requestId:nextRequestId,build,guestName:localName})===true}catch{}if(!submitted){roomId=null;requestId=null;status('Unable to send join request. Check discovery connection and retry.');return}requestId=nextRequestId;waitForAdmission(nextRequestId);status('Waiting for host approval… '+(rooms.get(id)?.name||'Host'))}
  async function onEvent(m){if(disposed)return;
   if(m.type==='relay-frame'){if(internet&&m.roomId===roomId)(activeRelay||peer)?.receiveRelayFrame?.(m.data);return;}
   if(m.type==='discovery-scope'&&m.scope==='public-network'){discoveryScope='public-network';if(mode==='host')showHostAddress();return}
@@ -206,6 +217,9 @@ export function mountAutoLanLobby(root,options={}){
    }
    return;
   }
+  if(m.type==='relay-request'&&internet&&mode==='host'&&m.roomId===roomId&&approved&&!started){
+   startRelay('Guest requested backup after direct connection failure');return;
+  }
   if(m.type==='relay-offer'&&internet&&mode==='guest'&&m.roomId===roomId&&approved&&!started){
    if(peer?.relay)return;
    clearAdmissionTimeout();cleanupPeer();relayStarted=true;
@@ -232,7 +246,7 @@ export function mountAutoLanLobby(root,options={}){
   if(m.type==='offer'&&mode==='guest'&&m.roomId===roomId&&approved&&!peer){
    clearAdmissionTimeout();
    let current=null;
-   try{const data=JSON.parse(m.sdp);const hello=normalizeLanPacket({protocol:1,type:'hello',role:'guest',session:data.session,build,sequence:0});current=peerFactory(hello);peer=current;waitForGuestNegotiation(requestId,current);const answer=await current.acceptOffer(m.sdp);if(peer===current){clearAdmissionTimeout();if(!send({type:'answer',roomId,sdp:answer}))throw Error('unable to send answer');watch(current)}}catch(e){if(!current||peer===current)recoverGuestHandshake('Guest connection failed: '+e.message)}return;
+   try{const data=JSON.parse(m.sdp);const hello=normalizeLanPacket({protocol:1,type:'hello',role:'guest',session:data.session,build,sequence:0});current=peerFactory(hello);peer=current;waitForGuestNegotiation(requestId,current);const answer=await current.acceptOffer(m.sdp);if(peer===current){clearAdmissionTimeout();if(!send({type:'answer',roomId,sdp:answer}))throw Error('unable to send answer');watch(current)}}catch(e){if(!current||peer===current){if(!requestRelay('Guest direct connection failed: '+e.message))recoverGuestHandshake('Guest connection failed: '+e.message)}}return;
   }
   if(m.type==='answer'&&mode==='host'&&m.roomId===roomId&&peer&&!peer.relay){
    // Ignore duplicate guest answers while SDP is processing or transport readiness is pending.
