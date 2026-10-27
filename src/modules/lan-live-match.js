@@ -211,13 +211,13 @@ function createLanLiveMatch({peer,role,game,input,field}){
       if(phase!=='play' && lastHostPhase===phase)return false;
       tick++;
       try{
-        const result=peer.stepHostMatchFrame(tick,frameInput=>{
+        const result=peer.stepHostMatchFrame(tick,(frameInput,guestFrame)=>{
           // Only a consumed, validated packet may affect a playing frame.
           // Paused/finished frames must never apply queued guest actions.
-          if(phase==='play'&&frameInput){lastGuestInput=frameInput;guestInputGap=0;}
+          if(phase==='play'&&frameInput&&guestFrame?.received!==false){lastGuestInput=frameInput;guestInputGap=0;}
           else if(phase==='play')guestInputGap++;
           else {lastGuestInput=null;guestInputGap=0;}
-          remote=phase==='play'?(frameInput??(guestInputGap<=MAX_GUEST_INPUT_GAP?lastGuestInput:null)??{buttons:[],dx:0,dy:0}):{buttons:[],dx:0,dy:0};
+          remote=phase==='play'?((guestFrame?.received===false?null:frameInput)??(guestInputGap<=MAX_GUEST_INPUT_GAP?lastGuestInput:null)??{buttons:[],dx:0,dy:0}):{buttons:[],dx:0,dy:0};
           try{
             if(phase==='play')game.update(dt);
             return captureLanGameState(game,field,tick);
