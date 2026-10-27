@@ -826,3 +826,12 @@ test('failed internet P2P readiness is bounded and reports TURN requirement',asy
   stop();
  }finally{f.cleanup()}
 });
+
+test('network match HUD keeps both player names visible without changing four controls',()=>{
+ const fs=require('node:fs');
+ const ui=fs.readFileSync('src/modules/ui.js','utf8');
+ assert.match(ui,/lanPlayerNames=\{home:role==='host'\?ownName:opponentName,away:role==='host'\?opponentName:ownName\}/);
+ assert.match(ui,/lanPlayerNames\?\.home/);
+ assert.match(ui,/lanPlayerNames\?\.away/);
+ assert.match(ui,/lanPlayerNames=null/);
+});
