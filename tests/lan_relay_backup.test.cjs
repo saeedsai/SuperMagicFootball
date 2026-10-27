@@ -422,7 +422,7 @@ test('P2P-RELAY-10 rejects incompatible SDP on both approved relay roles',async(
  const guest=createLanRelayPeerConnection(hello('guest'),{connection,roomId});
  try{
   const offer=JSON.parse(await host.createOffer());
-  const direct='v=0\\r\\ns=direct-webrtc\\r\\nt=0 0\\r\\n';
+  const direct='v=0\r\ns=direct-webrtc\r\nt=0 0\r\n';
   await assert.rejects(guest.acceptOffer(JSON.stringify({...offer,sdp:direct})),/Incompatible approved relay description/);
   assert.equal(guest.ready,false,'foreign offer cannot start guest match');
   await assert.rejects(host.acceptAnswer(JSON.stringify({...offer,kind:'answer',sdp:direct})),/Incompatible approved relay description/);
