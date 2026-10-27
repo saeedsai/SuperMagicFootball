@@ -103,20 +103,22 @@ export function mountAutoLanLobby(root,options={}){
  // Direct ICE may not cross restrictive NAT. The host can use the consent broker
  // as a last-resort transport for the SAME validated game protocol.
  function canRelay(){return internet&&!options.peerFactory&&connection?.ready&&mode==='host'&&approved&&roomId&&!relayStarted&&!started&&!disposed}
- async function startRelay(reason){
+ function startRelay(reason){
   if(!canRelay())return false;
   relayStarted=true;clearAdmissionTimeout();cleanupPeer();
   status(reason+'. Activating approved relay backup…');
-  let current=null;
-  try{
-   const hello=normalizeLanPacket({protocol:1,type:'hello',role:'host',session,build,sequence:0});
-   current=createLanRelayPeerConnection(hello,{connection,roomId});peer=current;
-   const offer=await current.createOffer();
-   if(peer!==current)return true;
-   if(!send({type:'relay-offer',roomId,sdp:offer}))throw Error('relay offer could not be sent');
-   waitForHostAnswer(current);
-   status('Direct WebRTC unavailable. Waiting for backup relay handshake…');
-  }catch(e){if(!current||peer===current){cleanupPeer();approved=false;status('Backup relay failed: '+e.message+'. Retry the match.')}}
+  (async()=>{
+   let current=null;
+   try{
+    const hello=normalizeLanPacket({protocol:1,type:'hello',role:'host',session,build,sequence:0});
+    current=createLanRelayPeerConnection(hello,{connection,roomId});peer=current;
+    const offer=await current.createOffer();
+    if(peer!==current)return;
+    if(!send({type:'relay-offer',roomId,sdp:offer}))throw Error('relay offer could not be sent');
+    waitForHostAnswer(current);
+    status('Direct WebRTC unavailable. Waiting for backup relay handshake…');
+   }catch(e){if(!current||peer===current){cleanupPeer();approved=false;status('Backup relay failed: '+e.message+'. Retry the match.')}}
+  })();
   return true;
  }
  // An approved guest must release the reserved seat if WebRTC negotiation fails.
