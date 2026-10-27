@@ -174,10 +174,10 @@ const planFor=i=>safePlan(teamPlans[TEAMS[i].id],roster(i),i);
 const identity=i=>teamIdentity(TEAMS[i]);
 const menuVisible=()=>!menu.classList.contains('hidden');
 const closeMenu=()=>{input.cancelAll();audio.sceneChange('match');menu.classList.add('hidden');hud.classList.remove('hidden');touch.classList.toggle('hidden',!matchMedia('(pointer:coarse)').matches)};
-let lanLobbyDispose=null,lanRuntime=null,lanPeer=null,lanRole=null,lanFailureSince=0,lanFinish=null;
+let lanLobbyDispose=null,lanRuntime=null,lanPeer=null,lanRole=null,lanFailureSince=0,lanFinish=null,lanPlayerNames=null;
 function stopLanMatch(){
   lanRuntime?.dispose();lanRuntime=null;
-  lanPeer?.dispose();lanPeer=null;lanRole=null;lanFailureSince=0;lanFinish=null;
+  lanPeer?.dispose();lanPeer=null;lanRole=null;lanPlayerNames=null;lanFailureSince=0;lanFinish=null;
 }
 const show=(html,id='home')=>{if(lanLobbyDispose){lanLobbyDispose();lanLobbyDispose=null;}if(lanRuntime)stopLanMatch();audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');menu.innerHTML=`<div class="menubox"><div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>${html}<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div></div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
 function page(title,subtitle,body,returnAction='home'){if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;menuBackAction=returnAction;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER</div><h1 class="heading">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title)}
@@ -204,7 +204,7 @@ const comingLater=(title,description,back='navCups')=>{
  menuBackAction=back;
  page(title,'Planned feature — not available in this version.',`<div class="panel navInfo"><h2>COMING LATER</h2><p>${escapeHTML(description)}</p><p>No substitute gameplay is launched. Existing saves are unchanged.</p>${button('← BACK',back,'gold')}</div>`,back);
 };
-function startLanQuickMatch(peer,role,opponentName){
+function startLanQuickMatch(peer,role,opponentName,ownName){
   if(lanRuntime)stopLanMatch();
   home=0;away=9;mode='versus';humans=2;
   game.init({home,away,mode,humans,rosters:[roster(home),roster(away)],
@@ -212,7 +212,7 @@ function startLanQuickMatch(peer,role,opponentName){
     formations:[planFor(home).formation,planFor(away).formation],
     plans:[planFor(home),planFor(away)],
     options:{...opt,weather:opt.weather==='Random'?'Clear':opt.weather,kitChoices:kitSelections.slice()}});
-  lanPeer=peer;lanRole=role;
+  lanPeer=peer;lanRole=role;lanPlayerNames={home:role==='host'?ownName:opponentName,away:role==='host'?opponentName:ownName};
   try{lanRuntime=createLanLiveMatch({peer,role,game,input,field:ENGINE.WORLD.field});}
   catch(error){stopLanMatch();game.matchState='none';throw error;}
   closeMenu();drawHUD();toast((role==='host'?'LAN HOST · HOME TEAM':'LAN GUEST · AWAY TEAM')+(opponentName?' · vs '+String(opponentName).slice(0,32):''),2400);
@@ -469,7 +469,7 @@ function paintTeamPreviews(){for(const side of ['home','away']){
  ctx.save();ctx.translate(153,36);ctx.scale(.47,.47);renderer.drawTransformation(ctx,{...SHOTS[team.shot],id:team.shot},1.5);ctx.restore();
  }}
 function start(){if(mode==='versus')humans=2;else humans=1;game.init({home,away,mode,humans,rosters:[mode==='career'&&career?career.roster.map(p=>({...p})):roster(home),roster(away)],lineups:[planFor(home).lineup.slice(),planFor(away).lineup.slice()],formations:[planFor(home).formation,planFor(away).formation],plans:[planFor(home),planFor(away)],options:{...opt,kitChoices:kitSelections.slice()}});if(preTalkChoices[0]!=='none')game.applyTeamTalk(0,preTalkChoices[0],'pregame');if(preTalkChoices[1]!=='none')game.applyTeamTalk(1,preTalkChoices[1],'pregame');if(mode==='pk')game.startPK(false);closeMenu();drawHUD()}
-function drawHUD(){let p=game.controlledPlayer(lanRole==='guest'?1:0),s=game.score;$('homeflag').innerHTML=identity(home);$('awayflag').innerHTML=identity(away);$('homename').textContent=TEAMS[home].name.toUpperCase();$('awayname').textContent=TEAMS[away].name.toUpperCase();$('scoring').innerHTML=`${s[0]} <span>:</span> ${s[1]}`;$('weatherHud').textContent=game.weather.toUpperCase();let secs=Math.max(0,Math.ceil(game.matchSeconds-game.clock));$('timeHud').textContent=`${game.half===1?'1ST':'2ND'} • ${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}`;if(p){const inPossession=game.ball.owner?.t===0;const ownBall=game.ball.owner===p;const goalkeeperHasBall=game.ball.owner?.t===0&&game.ball.owner?.keeper;// v0.8.25: keep the exact four approved action labels on screen; defensive / keeper functions remain contextual.
+function drawHUD(){let p=game.controlledPlayer(lanRole==='guest'?1:0),s=game.score;$('homeflag').innerHTML=identity(home);$('awayflag').innerHTML=identity(away);$('homename').textContent=(lanPlayerNames?.home?lanPlayerNames.home+' · ':'')+TEAMS[home].name.toUpperCase();$('awayname').textContent=(lanPlayerNames?.away?lanPlayerNames.away+' · ':'')+TEAMS[away].name.toUpperCase();$('scoring').innerHTML=`${s[0]} <span>:</span> ${s[1]}`;$('weatherHud').textContent=game.weather.toUpperCase();let secs=Math.max(0,Math.ceil(game.matchSeconds-game.clock));$('timeHud').textContent=`${game.half===1?'1ST':'2ND'} • ${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}`;if(p){const inPossession=game.ball.owner?.t===0;const ownBall=game.ball.owner===p;const goalkeeperHasBall=game.ball.owner?.t===0&&game.ball.owner?.keeper;// v0.8.25: keep the exact four approved action labels on screen; defensive / keeper functions remain contextual.
   for(const [key,text] of Object.entries({pass:'PASS',shoot:'SHOOT',dribble:'DRIBBLE',jump:'JUMP'})){const b=document.querySelector('[data-act="'+key+'"]');if(b){if(b.textContent!==text)b.textContent=text;b.title=key==='pass'?(goalkeeperHasBall?'Pass / goalkeeper clear':inPossession?'Tap nearest · direction aim · hold long · Jump then Pass cross':'Pass / tackle'):key==='shoot'?(inPossession?'Shoot':'Shoot / slide tackle'):key==='dribble'?(inPossession?'Dribble':'Dribble / switch player'):'Jump';}}const dribbleButton=document.querySelector('[data-act="dribble"]');if(dribbleButton){
    const cd=Math.max(0,p.dribbleCooldown||0),cooling=cd>.02&&game.ball.owner===p;
    dribbleButton.classList.toggle('cooling',cooling);
