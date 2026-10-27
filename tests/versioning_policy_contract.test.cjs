@@ -101,3 +101,15 @@ test('team-fair Magic Trap gameplay change is reflected in About, README and rot
  assert.ok(readme.includes('v'+version),'README project heading must track current version');
  assert.ok(sw.includes('-'+version.replace(/\./g,'')+"';"),'offline cache must rotate for this candidate');
 });
+
+
+test('LAN-073 release notes and README describe reconnect phase recovery',()=>{
+ const version=JSON.parse(read('package.json')).version;
+ const release=read('src/modules/release.js'),readme=read('README.md');
+ if(version==='0.11.4.15'){
+  assert.match(release,/LAN-073/);
+  assert.match(readme,/LAN-073/);
+  assert.match(release,/paused or finished match state after a transport reconnect/);
+  assert.match(readme,/reconnection/);
+ }
+});
