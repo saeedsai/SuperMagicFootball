@@ -807,11 +807,13 @@ test('both LAN and Online P2P identify players through discovery, join request a
   }finally{guest.cleanup()}
  }
 });
-test('failed internet P2P readiness is bounded and reports TURN requirement',async()=>{
- const f=setup();let waited=0,disposed=0;
+test('failed internet P2P readiness uses bounded direct timeout and cleans up safely',async()=>{
+ const f=setup();let waited=0,disposed=0,stop;
  try{
   const {mountAutoLanLobby}=await load();
-  const stop=mountAutoLanLobby(f.root,{internet:true,build:'0.11.4.0',signalFactory:f.signalFactory,
+  // A custom peerFactory intentionally replaces native WebRTC and cannot
+  // create the approved broker relay, so it must report the host error honestly.
+  stop=mountAutoLanLobby(f.root,{internet:true,build:'0.11.4.0',signalFactory:f.signalFactory,
    peerFactory:()=>({createOffer:async()=>'{"offer":1}',acceptAnswer:async()=>{},
     subscribeStatus:()=>()=>{},awaitReady:(ms)=>{waited=ms;return Promise.reject(Error('ICE failed'))},dispose(){disposed++}})});
   f.connect();f.elements.get('#autoHost').click();
@@ -820,11 +822,12 @@ test('failed internet P2P readiness is bounded and reports TURN requirement',asy
   assert.equal(f.packets.at(-1).type,'offer');
   await f.emit({type:'answer',roomId:register.roomId,sdp:'{"answer":true}'});
   await new Promise(resolve=>setImmediate(resolve));
-  assert.equal(waited,35000);
-  assert.match(f.elements.get('#autoStatus').textContent,/TURN/);
-  assert.equal(disposed,1);
-  stop();
- }finally{f.cleanup()}
+  assert.equal(waited,10000,'internet host attempts direct P2P for ten seconds before fallback');
+  assert.match(f.elements.get('#autoStatus').textContent,/Host connection failed: ICE failed/);
+  assert.equal(disposed,1,'broken peer is disposed exactly once');
+  assert.equal(f.packets.some(packet=>packet.type==='relay-offer'),false,
+   'injected peer factories must not silently create a native relay');
+ }finally{stop?.();f.cleanup()}
 });
 
 test('network match HUD keeps both player names visible without changing four controls',()=>{
