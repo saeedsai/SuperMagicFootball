@@ -222,3 +222,38 @@ test('hosted Pages LAN signaling also tolerates cold start but retries after its
  assert.equal(client.send({type:'rooms'}),true);
  client.close();
 });
+
+test('invalid explicit internet P2P broker never silently falls back to local LAN signaling',async()=>{
+ const previous=globalThis.SMF_P2P_SIGNAL_URL;
+ try{
+  globalThis.SMF_P2P_SIGNAL_URL='http://example.invalid/lan-signal';
+  const f=fixture({internet:true}),client=await f.clientFactory();
+  assert.deepEqual(f.states,['unconfigured']);
+  assert.equal(FakeSocket.instances.length,0,'invalid hosted override must not open a local socket');
+  assert.equal(client.ready,false);
+  assert.equal(client.send({type:'rooms'}),false);
+  client.close();
+ }finally{if(previous===undefined)delete globalThis.SMF_P2P_SIGNAL_URL;else globalThis.SMF_P2P_SIGNAL_URL=previous}
+});
+test('invalid explicit LAN broker never silently switches to a different signaling directory',async()=>{
+ const previous=globalThis.SMF_LAN_SIGNAL_URL;
+ try{
+  globalThis.SMF_LAN_SIGNAL_URL='ws://other-host.invalid:9000/lan-signal';
+  const f=fixture({location:{protocol:'https:',host:'saeedsai.github.io',hostname:'saeedsai.github.io'}}),client=await f.clientFactory();
+  assert.deepEqual(f.states,['unconfigured']);
+  assert.equal(FakeSocket.instances.length,0,'invalid LAN override must not use hosted fallback');
+  assert.equal(client.ready,false);
+  client.close();
+ }finally{if(previous===undefined)delete globalThis.SMF_LAN_SIGNAL_URL;else globalThis.SMF_LAN_SIGNAL_URL=previous}
+});
+test('valid explicit secure internet P2P broker remains configurable',async()=>{
+ const previous=globalThis.SMF_P2P_SIGNAL_URL;
+ try{
+  globalThis.SMF_P2P_SIGNAL_URL='wss://example.invalid/lan-signal';
+  const f=fixture({internet:true}),client=await f.clientFactory(),socket=FakeSocket.instances[0];
+  assert.equal(socket.url,'wss://example.invalid/lan-signal');
+  assert.equal(f.connectTimers[0].delay,60000);
+  socket.open();assert.equal(client.ready,true);
+  client.close();
+ }finally{if(previous===undefined)delete globalThis.SMF_P2P_SIGNAL_URL;else globalThis.SMF_P2P_SIGNAL_URL=previous}
+});

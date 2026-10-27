@@ -3,22 +3,25 @@
 **Updated:** 2026-10-27
 
 ## Mission
-Continue bounded tested increments directly on dev despite pending releases; exact-head green protected promotion only. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, saves and offline.
+Continue one bounded tested increment directly on dev every run, even while release waits. Only dev/main, protected exact-green promotion. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves.
 
 ## Current checkpoint
-- 0.11.4.4 candidate: hosted secure signaling WebSocket watchdog 60s for Render cold starts; local same-origin LAN remains 12s. Two Node regressions cover hosted P2P open and hosted LAN retry; CI authoritative and pending.
-- Previous 0.11.4.3 candidate: guest-requested consent-approved internet relay backup for WebRTC failure. Render/main/Pages and real two-phone acceptance remain pending.
-- Baseline dev c57d0fdb23e657b3b274d67ff38d9b5ce6a20d79; main b3c8100a88e924dd4209396898116877602d284d. PR #56 open. Full #40501517174 and Modular #40501517177 were queued at inspection; not green certification.
+- 0.11.4.5 candidate: explicit malformed/insecure LAN or internet P2P broker URL overrides fail closed with unconfigured state rather than silently connecting to another directory. Three focused Node regressions cover both invalid scopes and valid WSS override. Local source-equivalent smoke passed; exact-head GitHub CI is authoritative and pending.
+- Prior 0.11.4.4 candidate: 60s hosted WSS cold-start watchdog, 12s local LAN. Prior 0.11.4.3: approved internet relay backup when WebRTC fails.
+- Baseline dev 5a38ffa427cc0c533d0e3c20024ac98fb5bca926; main b3c8100a88e924dd4209396898116877602d284d; PR #56 open. Full #40508485325 and Modular #40508485456 were queued at inspection. No promotion, Pages/Render or physical two-phone certification.
 
 ## Next smallest action
-1. Inspect exact-head focused Node and Modular + 4 Node/4 Chromium CI; fix failures on dev.
-2. Protected green dev-to-main promotion via PR #56 only at unchanged certified SHA.
-3. Verify Pages hosted byte smoke and Render broker deployment at compatible commit.
-4. Test real two-phone Wi-Fi/cellular host/approve/play, fallback and LAN discovery.
-5. Continue Player Studio, four-button counterable Tricks and Crown Royals directional art.
+1. Diagnose exact-head 4 Node + 4 Chromium and Modular QA queue/failures; repair on dev.
+2. Promote only exact unchanged green head through protected PR #56.
+3. Verify Pages hosted byte smoke and Render broker deployment compatibility.
+4. Run actual LAN Wi-Fi and cross-network cellular P2P Host/Approve/Play, including relay.
+5. Continue Player Studio, counterable four-button Tricks and Crown Royals eight-view art.
 
 ## Ownership and exclusions
-Only dev/main; own checkpoint only. No force push, security bypass or false deployment claims.
+Only sole developer checkpoint; no new branches, force pushes, security bypass or fabricated QA.
 
 ## Evidence
-`src/modules/lan-auto-signal.js`, `tests/lan_auto_signal_reconnect.test.cjs`, `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md`. Device and graphics QA not certified.
+`src/modules/lan-auto-signal.js`, `tests/lan_auto_signal_reconnect.test.cjs`, `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md`. Full CI and device tests not run locally.
+
+## Cleanup
+No other agents' memory changed; no branches created.
