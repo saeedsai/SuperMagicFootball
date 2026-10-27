@@ -10,7 +10,7 @@ Develop directly on dev, promote only exact green head through protected main. P
 - Prior 0.11.3.4 exact SHA `1a05837ec57cd9d6524d766c833091d3ec37b261`: dev Modular #40416902598 and Full 4+4 #40416902606 green; main Full hosted smoke #40418467148 and Pages #40418466165 green. This does not certify 0.11.3.5.
 - Render signaling broker deployment reported earlier; physical two-phone LAN and cross-network P2P remain uncertified; TURN-dependent networks may fail.
 
-## Next five
+## Next smallest action
 1. Check 0.11.3.5 exact-head Modular QA and four Node + four Chromium shards; fix failures.
 2. Promote only exact green dev to main through protected pipeline.
 3. Verify main, Pages deployment and hosted byte smoke.
