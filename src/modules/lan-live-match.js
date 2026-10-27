@@ -139,6 +139,11 @@ function createLanLiveMatch({peer,role,game,input,field}){
   // Apply only the guest input validated for the host's current frame.
   let remote={buttons:[],dx:0,dy:0};
   let previousButtons=new Set();
+  // A transient missing network frame is not a physical button release.
+  // Retain the last validated input for at most two simulation frames, then
+  // fail closed; an explicit empty packet releases immediately.
+  let lastGuestInput=null,guestInputGap=0;
+  const MAX_GUEST_INPUT_GAP=2;
   const originalPoll=input.poll;
   let receiver=null;
   let statusUnsubscribe=null;
@@ -190,7 +195,7 @@ function createLanLiveMatch({peer,role,game,input,field}){
     if(!peer.ready){
       // A reconnected guest must produce fresh button-press edges rather than
       // inheriting the old RTC session's held buttons.
-      if(role==='host')previousButtons.clear();
+      if(role==='host'){previousButtons.clear();lastGuestInput=null;guestInputGap=0;}
       else {
         // A restarted host can begin its authoritative tick at zero.
         // Do not send against the disconnected session's stale snapshot.
@@ -209,7 +214,10 @@ function createLanLiveMatch({peer,role,game,input,field}){
         const result=peer.stepHostMatchFrame(tick,frameInput=>{
           // Only a consumed, validated packet may affect a playing frame.
           // Paused/finished frames must never apply queued guest actions.
-          remote=phase==='play'?(frameInput??{buttons:[],dx:0,dy:0}):{buttons:[],dx:0,dy:0};
+          if(phase==='play'&&frameInput){lastGuestInput=frameInput;guestInputGap=0;}
+          else if(phase==='play')guestInputGap++;
+          else {lastGuestInput=null;guestInputGap=0;}
+          remote=phase==='play'?(frameInput??(guestInputGap<=MAX_GUEST_INPUT_GAP?lastGuestInput:null)??{buttons:[],dx:0,dy:0}):{buttons:[],dx:0,dy:0};
           try{
             if(phase==='play')game.update(dt);
             return captureLanGameState(game,field,tick);
