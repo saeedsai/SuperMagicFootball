@@ -2,6 +2,9 @@
 **Agent ID:** smf-hourly-dev-20261019
 **Updated:** 2026-10-27
 
+## Current increment
+- Candidate 0.11.4.11: broker JSON envelope byte budget fix on both relay send paths. Full CI and physical QA pending.
+
 ## Mission
 Keep developing one tested bounded dev increment hourly even when release is pending; only promote exact-green head via protected PR. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, saves and offline.
 
