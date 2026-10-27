@@ -35,10 +35,13 @@ function encodeLanSignal(kind, hello, description) {
     build:hello.build, sdp:description.sdp});
 }
 
+function iceTerminal(peer) { return peer.iceConnectionState === 'failed' || peer.iceConnectionState === 'closed'; }
+function iceDisconnected(peer) { return peer.iceConnectionState === 'disconnected'; }
+
 function waitForLanIceGathering(peer, timeoutMs) {
   // A completed ICE gathering state is not evidence of a usable peer.
   // A closed or failed transport must never be treated as successful.
-  if (peer.connectionState === 'closed' || peer.connectionState === 'failed') {
+  if (peer.connectionState === 'closed' || peer.connectionState === 'failed' || iceTerminal(peer)) {
     return Promise.reject(new Error('LAN peer closed during ICE gathering'));
   }
   if (peer.iceGatheringState === 'complete') return Promise.resolve();
@@ -49,6 +52,7 @@ function waitForLanIceGathering(peer, timeoutMs) {
       clearTimeout(timer);
       peer.removeEventListener('icegatheringstatechange', onChange);
       peer.removeEventListener('connectionstatechange', onChange);
+      peer.removeEventListener('iceconnectionstatechange', onChange);
     }
     function finish(error) {
       if (settled) return;
@@ -57,12 +61,13 @@ function waitForLanIceGathering(peer, timeoutMs) {
       if (error) reject(error); else resolve();
     }
     function onChange() {
-      if (peer.connectionState === 'closed' || peer.connectionState === 'failed') {
+      if (peer.connectionState === 'closed' || peer.connectionState === 'failed' || iceTerminal(peer)) {
         finish(new Error('LAN peer closed during ICE gathering'));
       } else if (peer.iceGatheringState === 'complete') finish();
     }
     peer.addEventListener('icegatheringstatechange', onChange);
     if (!settled) peer.addEventListener('connectionstatechange', onChange);
+    if (!settled) peer.addEventListener('iceconnectionstatechange', onChange);
     // Listener registration can synchronously trigger a fake or custom peer
     // event; do not leave a timer behind if the wait already settled.
     if (!settled) timer = setTimeout(() => finish(new Error('LAN ICE gathering timed out')), timeoutMs);
@@ -114,7 +119,7 @@ function createLanPeerConnection(localHello, options = {}) {
   function snapshotStatus() {
     return Object.freeze({
       phase,
-      transport: disposed ? 'closed' : peer.connectionState,
+      transport: disposed ? 'closed' : iceTerminal(peer) ? 'failed' : iceDisconnected(peer) ? 'disconnected' : peer.connectionState,
       channel: disposed ? 'closed' : (channel?.readyState ?? 'unavailable'),
       ready: phase === 'connected-signaling' && !!binding?.ready && transportUsable()
     });
@@ -181,6 +186,7 @@ function createLanPeerConnection(localHello, options = {}) {
   }
   peer.addEventListener('datachannel', onDataChannel);
   peer.addEventListener('connectionstatechange', emitStatus);
+  peer.addEventListener('iceconnectionstatechange', emitStatus);
   if (hello.role === 'host') {
     // A malformed injected channel must not leave an RTC peer alive after
     // attachment fails; real browsers expose this complete EventTarget API.
@@ -263,7 +269,8 @@ function createLanPeerConnection(localHello, options = {}) {
   function transportUsable() {
     return !disposed && channel?.readyState === 'open' &&
       peer.connectionState !== 'disconnected' &&
-      peer.connectionState !== 'failed' && peer.connectionState !== 'closed';
+      peer.connectionState !== 'failed' && peer.connectionState !== 'closed' &&
+      !iceTerminal(peer) && !iceDisconnected(peer);
   }
   // LAN-015: await the actual protocol handshake, not merely the SDP exchange.
   // This bounded gate is for future lobby/game-loop wiring; it does not
@@ -279,7 +286,7 @@ function createLanPeerConnection(localHello, options = {}) {
     if (disposed) return Promise.reject(new Error('LAN peer disposed'));
     if (signal?.aborted) return Promise.reject(new Error('LAN readiness cancelled'));
     if (peer.connectionState === 'failed' || peer.connectionState === 'closed' ||
-        channel?.readyState === 'closed') {
+        iceTerminal(peer) || channel?.readyState === 'closed') {
       return Promise.reject(new Error('LAN peer closed before handshake'));
     }
     if (phase === 'connected-signaling' && binding?.ready && transportUsable()) return Promise.resolve(binding);
@@ -300,7 +307,7 @@ function createLanPeerConnection(localHello, options = {}) {
       function check() {
         if (signal?.aborted) finish(new Error('LAN readiness cancelled'));
         else if (disposed || peer.connectionState === 'failed' ||
-            peer.connectionState === 'closed' || channel?.readyState === 'closed') {
+            peer.connectionState === 'closed' || iceTerminal(peer) || channel?.readyState === 'closed') {
           finish(new Error('LAN peer closed before handshake'));
         } else if (phase === 'connected-signaling' && binding?.ready && transportUsable()) {
           finish();
@@ -469,6 +476,7 @@ function createLanPeerConnection(localHello, options = {}) {
     phase = 'closed';
     peer.removeEventListener('datachannel', onDataChannel);
     peer.removeEventListener('connectionstatechange', emitStatus);
+    peer.removeEventListener('iceconnectionstatechange', emitStatus);
     if (channel) {
       channel.removeEventListener('open', onChannelChange);
       channel.removeEventListener('close', onChannelChange);
@@ -486,7 +494,7 @@ function createLanPeerConnection(localHello, options = {}) {
     get ready() { return phase === 'connected-signaling' && !!binding?.ready && transportUsable(); },
     get phase() { return phase; },
     // Read-only transport diagnostics for future LAN lobby status messages.
-    get transportState() { return disposed ? 'closed' : peer.connectionState; },
+    get transportState() { return snapshotStatus().transport; },
     get channelState() { return disposed ? 'closed' : (channel?.readyState ?? 'unavailable'); },
     get binding() { return binding; },
     get peer() { return peer; },
