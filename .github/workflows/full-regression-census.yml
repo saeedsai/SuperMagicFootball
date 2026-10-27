@@ -11,8 +11,10 @@ on:
   workflow_dispatch:
 concurrency:
   group: full-regression-${{ github.ref }}
-  # Newer exact-head releases supersede obsolete dev/main CI runs without skipping any shards.
-  cancel-in-progress: true
+  # Preserve running full-census jobs so frequent dev commits cannot interrupt
+  # the long preflight Node contracts before the four Node/Chromium shards run.
+  # The protected promotion job still verifies the exact unchanged dev head.
+  cancel-in-progress: false
 permissions:
   contents: read
 
