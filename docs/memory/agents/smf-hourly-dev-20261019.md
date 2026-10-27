@@ -25,3 +25,6 @@ Source-extracted rejection smoke performed in V8; P2P-RELAY-10 permanent Node re
 
 ## Cleanup
 No promotion while exact-head checks remain unverified. Continue development on dev next run.
+
+## LAN-072 checkpoint
+Two-frame remote input gap hold on dev, explicit release immediate, gap timeout fails closed. Tests updated. Candidate 0.11.4.14; do not claim deployed until exact SHA CI/Pages verified.
