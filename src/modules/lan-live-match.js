@@ -148,6 +148,12 @@ function createLanLiveMatch({peer,role,game,input,field}){
   let receiver=null;
   let statusUnsubscribe=null;
   function resetGuestCursor(){latestTick=-1;lastSent=-1;lastSnapshotAt=-Infinity;}
+  function resetHostSession(){
+    // A new transport epoch must replay its current phase even if paused or
+    // finished; never inherit the previous guest's held controls or packet gap.
+    previousButtons.clear();lastGuestInput=null;guestInputGap=0;lastHostPhase=null;
+    remote={buttons:[],dx:0,dy:0};
+  }
   if(role==='host'){
     input.poll=function(){
       originalPoll.call(input,false);
@@ -182,20 +188,22 @@ function createLanLiveMatch({peer,role,game,input,field}){
       latestTick=state.tick;
       lastSnapshotAt=Date.now();
     });
-    // RTC readiness can fall and recover between animation frames.
-    // Invalidate the previous session immediately, not only on the next step.
-    if(typeof peer.subscribeStatus==='function'){
-      statusUnsubscribe=peer.subscribeStatus(status=>{
-        if(!disposed&&status?.ready===false)resetGuestCursor();
-      });
-    }
+  }
+  // Readiness can fall and recover entirely between animation frames.
+  // Reset both host and guest epochs on the event, not only in step().
+  if(typeof peer.subscribeStatus==='function'){
+    statusUnsubscribe=peer.subscribeStatus(status=>{
+      if(disposed||status?.ready!==false)return;
+      if(role==='host')resetHostSession();
+      else resetGuestCursor();
+    });
   }
   function step(dt){
     if(disposed)return false;
     if(!peer.ready){
       // A reconnected guest must produce fresh button-press edges rather than
       // inheriting the old RTC session's held buttons.
-      if(role==='host'){previousButtons.clear();lastGuestInput=null;guestInputGap=0;}
+      if(role==='host')resetHostSession();
       else {
         // A restarted host can begin its authoritative tick at zero.
         // Do not send against the disconnected session's stale snapshot.
