@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.3.4',
- date:'2026-10-26',
+ version:'0.11.3.5',
+ date:'2026-10-27',
  notes:Object.freeze([
+  'LAN and Online P2P discovery now retry a WebSocket that stays stuck connecting without an open or close event. A 12-second connection watchdog cancels on success, shutdown or socket retirement; stale callbacks cannot disrupt a newer connection. Four controls, teams, saves and offline play are unchanged; physical two-device acceptance remains pending.',
   'LAN and Online P2P discovery now reconnect after a WebSocket transport error even if the browser never delivers a close event. Leaving a lobby safely handles socket-close exceptions and ignores stale events. Room admission, four controls, saves and offline play are unchanged; real-device acceptance remains pending.',
   'LAN and Online P2P signaling recover from failed WebSocket sends or full signaling queues even when closing a broken socket fails. Old socket events cannot revive it; discovery reconnects automatically. Four controls, teams, offline and saves are unchanged; real two-device acceptance remains pending.',
   'LAN and Online P2P discovery now reject oversized incoming Unicode signaling frames by actual UTF-8 byte size, not only JavaScript character count. Valid messages continue to work; no changes to gameplay, four controls, rosters, offline play or saves. Two-device LAN and internet acceptance remain pending.',

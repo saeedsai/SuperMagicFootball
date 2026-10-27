@@ -1,3 +1,9 @@
+## 2026-10-27 01:03 CET — LAN/P2P connection-open watchdog (0.11.3.5 candidate)
+- Exact baseline dev/main `1a05837ec57cd9d6524d766c833091d3ec37b261`; dev Modular #40416902598 and Full 4 Node + 4 Chromium #40416902606 green; main Full hosted smoke #40418467148 and Pages #40418466165 green. No open PR, only dev/main branches.
+- Silent WebSocket connecting stalls had no timeout, leaving automatic Host/Find unresponsive. Add 12-second watchdog to retire/retry stalled transport; cancel on successful open, close and lobby shutdown. Stale timer callbacks cannot interrupt a newer socket. Three focused regressions added.
+- Candidate 0.11.3.5 aligns About/package/README/offline cache/policy/shared memory. No changes to 223 teams/2676 players, six formations, four controls, Career/Cup ten slots, SD09, offline play or save schema. Exact-head CI, protected promotion, Pages hosted bytes, Render and physical two-device QA remain independent gates.
+- Next five: exact-head Modular and 4+4 CI; protected promotion; Pages hosted smoke; Render/two-device LAN/P2P acceptance; Player Studio/Tricks/graphics.
+
 ## 2026-10-26 23:59 CET — LAN/P2P error-event lifecycle recovery (0.11.3.4 candidate)
 - Exact baseline dev/main `3ee63dcb97cec64424b452bd1f0a38bda9fb120b`; dev Modular #40410020795 and Full 4 Node + 4 Chromium #40410021242 green; main Full/hosted smoke #40411790991 and Pages #40411791238 green. No open PR; only dev/main branches.
 - WebSocket error events could leave a nonfunctional connection ready indefinitely if no close event arrived. Recycle immediately on error and retry even if socket close throws; manual lobby close also tolerates close errors and detaches stale callbacks. Added two focused lifecycle regression tests.

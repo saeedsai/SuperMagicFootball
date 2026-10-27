@@ -12,13 +12,13 @@ class FakeSocket extends EventTarget{
 function fixture(){
  FakeSocket.instances=[];
  globalThis.location={protocol:'http:',host:'192.168.1.20:8000'};
- const callbacks=[],states=[],packets=[];
+ const callbacks=[],connectTimers=[],states=[],packets=[];
  const clientFactory=()=>load().then(({connectLanSignal})=>connectLanSignal({
   WebSocketImpl:FakeSocket,onState:s=>states.push(s),onEvent:p=>packets.push(p),
-  setTimeoutImpl:(fn,delay)=>{const item={fn,delay,cancelled:false};callbacks.push(item);return item},
+  setTimeoutImpl:(fn,delay)=>{const item={fn,delay,cancelled:false};(delay>10000?connectTimers:callbacks).push(item);return item},
   clearTimeoutImpl:item=>{item.cancelled=true}
  }));
- return {callbacks,states,packets,clientFactory};
+ return {callbacks,connectTimers,states,packets,clientFactory};
 }
 test('same-origin discovery reconnects, re-admits messages, and does not accept stale socket events',async()=>{
  const f=fixture(),client=await f.clientFactory(),first=FakeSocket.instances[0];
@@ -150,4 +150,43 @@ test('lobby shutdown tolerates WebSocket close exceptions and ignores stale even
  assert.deepEqual(f.packets,[]);
  assert.equal(f.callbacks.length,0,'explicit close never schedules reconnect');
  assert.equal(client.send({type:'rooms'}),false);
+});
+
+
+test('connecting WebSocket timeout recovers LAN/P2P discovery when no open or close arrives',async()=>{
+ const f=fixture(),client=await f.clientFactory(),first=FakeSocket.instances[0];
+ assert.equal(f.connectTimers.length,1);
+ assert.equal(f.connectTimers[0].delay,12000);
+ f.connectTimers[0].fn();
+ assert.equal(client.ready,false);
+ assert.deepEqual(f.states,['disconnected']);
+ assert.equal(f.callbacks.length,1,'a retry is scheduled after connection timeout');
+ first.open();first.message(JSON.stringify({type:'stale'}));
+ assert.deepEqual(f.packets,[],'timed-out socket cannot revive discovery');
+ f.callbacks[0].fn();
+ const second=FakeSocket.instances[1];second.open();
+ assert.equal(client.ready,true);
+ assert.equal(client.send({type:'rooms'}),true);
+ assert.deepEqual(JSON.parse(second.sent[0]),{type:'rooms'});
+ client.close();
+});
+test('successful connection cancels watchdog and stale timer cannot recycle live socket',async()=>{
+ const f=fixture(),client=await f.clientFactory(),socket=FakeSocket.instances[0];
+ socket.open();
+ assert.equal(f.connectTimers[0].cancelled,true);
+ f.connectTimers[0].fn();
+ assert.equal(client.ready,true);
+ assert.deepEqual(f.states,['connected']);
+ assert.equal(f.callbacks.length,0);
+ client.close();
+});
+test('leaving a lobby while connecting cancels watchdog and prevents retry',async()=>{
+ const f=fixture(),client=await f.clientFactory(),socket=FakeSocket.instances[0];
+ client.close();
+ assert.equal(f.connectTimers[0].cancelled,true);
+ f.connectTimers[0].fn();
+ socket.open();
+ assert.equal(client.ready,false);
+ assert.equal(f.callbacks.length,0);
+ assert.equal(FakeSocket.instances.length,1);
 });

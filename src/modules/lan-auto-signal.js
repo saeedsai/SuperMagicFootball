@@ -2,6 +2,7 @@
 // GitHub Pages cannot scan a LAN; devices must open the host's companion-server URL.
 // Bound outbound signaling bytes and WebSocket queue growth on slow connections.
 const MAX_SIGNAL_FRAME_BYTES=210000,MAX_SIGNAL_QUEUE_BYTES=512*1024;
+const CONNECT_TIMEOUT_MS=12000;
 const signalEncoder=new TextEncoder();
 export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSocket,onEvent=()=>{},onState=()=>{},setTimeoutImpl=globalThis.setTimeout,clearTimeoutImpl=globalThis.clearTimeout}={}){
  if(typeof WebSocketImpl!=='function')throw new Error('WebSocket unavailable');
@@ -11,7 +12,8 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
  const publicPages=globalThis.location?.hostname==='saeedsai.github.io';
  const url=secureEndpoint||(!publicPages?(globalThis.location?.protocol==='https:'?'wss://':'ws://')+(globalThis.location?.host||'localhost:8000')+'/lan-signal':null);
  if(!url){onState('unconfigured');return Object.freeze({send(){return false},close(){},get ready(){return false}})}
- let socket=null,closed=false,retry=null,attempt=0;
+ let socket=null,closed=false,retry=null,attempt=0,connectTimeout=null;
+ function clearConnectTimeout(){if(connectTimeout!==null){clearTimeoutImpl(connectTimeout);connectTimeout=null}}
  function scheduleRetry(){
   if(closed||retry!==null)return;
   const delay=Math.min(10000,1000*Math.pow(2,Math.min(attempt++,4)));
@@ -21,7 +23,7 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
  // Old socket events cannot reattach to the lobby.
  function recycleSocket(code,reason){
   if(closed||!socket)return;
-  const stale=socket;socket=null;
+  const stale=socket;socket=null;clearConnectTimeout();
   try{stale.close(code,reason)}catch{try{stale.close()}catch{}}
   onState('disconnected');scheduleRetry();
  }
@@ -30,8 +32,13 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
   let ws;
   try{ws=new WebSocketImpl(url)}catch{onState('error');scheduleRetry();return}
   socket=ws;
-  ws.addEventListener('open',()=>{if(closed||socket!==ws)return;attempt=0;onState('connected')});
-  ws.addEventListener('close',()=>{if(closed||socket!==ws)return;onState('disconnected');scheduleRetry()});
+  clearConnectTimeout();
+  connectTimeout=setTimeoutImpl(()=>{
+   if(closed||socket!==ws||ws.readyState===1)return;
+   connectTimeout=null;recycleSocket(1001,'Signaling connect timeout');
+  },CONNECT_TIMEOUT_MS);
+  ws.addEventListener('open',()=>{if(closed||socket!==ws)return;clearConnectTimeout();attempt=0;onState('connected')});
+  ws.addEventListener('close',()=>{if(closed||socket!==ws)return;clearConnectTimeout();socket=null;onState('disconnected');scheduleRetry()});
   ws.addEventListener('error',()=>{if(closed||socket!==ws)return;onState('error');recycleSocket(1011,'Signaling transport error')});
   ws.addEventListener('message',event=>{
    if(closed||socket!==ws||typeof event.data!=='string'||event.data.length>MAX_SIGNAL_FRAME_BYTES)return;
@@ -59,7 +66,7 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
     catch{recycleSocket(1011,'Signaling send failed');return false}
    }catch{return false}
   },
-  close(){if(closed)return;closed=true;if(retry!==null){clearTimeoutImpl(retry);retry=null}const stale=socket;socket=null;try{stale?.close()}catch{}},
+  close(){if(closed)return;closed=true;clearConnectTimeout();if(retry!==null){clearTimeoutImpl(retry);retry=null}const stale=socket;socket=null;try{stale?.close()}catch{}},
   get ready(){return !closed&&socket?.readyState===1}
  });
 }
