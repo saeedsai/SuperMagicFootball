@@ -9,12 +9,9 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
-concurrency:
-  group: full-regression-${{ github.ref }}
-  # Preserve running full-census jobs so frequent dev commits cannot interrupt
-  # the long preflight Node contracts before the four Node/Chromium shards run.
-  # The protected promotion job still verifies the exact unchanged dev head.
-  cancel-in-progress: false
+# No workflow-level concurrency lock: stale pending GitHub Actions runs can
+# otherwise prevent the latest exact-head regression from ever creating jobs.
+# Protected promotion still validates the exact current dev commit.
 permissions:
   contents: read
 
