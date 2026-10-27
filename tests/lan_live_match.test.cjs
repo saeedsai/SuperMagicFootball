@@ -61,9 +61,9 @@ test('LAN-044 host simulates only through authoritative peer and remote 4-button
   assert.equal(match.players[1].x<700,true);
   assert.equal(run.step(.02),true);
   assert.equal(input.pressed[1].shoot,false,'missing frame never replays old press');
-  assert.equal(input.state[1].shoot,0,'missing frame releases a held network action');
-  assert.equal(input.releases[1].shoot,true);
-  assert.deepEqual([input.state[1].x,input.state[1].y],[0,0]);
+  assert.equal(input.state[1].shoot,1,'one missing frame preserves the held control');
+  assert.equal(input.releases[1].shoot,false);
+  assert.ok(input.state[1].x<0,'one missing frame preserves direction');
   peer.inputs.set(2,{buttons:['dribble'],dx:1,dy:0});
   assert.equal(run.step(.02),true);
   assert.equal(input.state[1].dribble,1,'later input applies only at its own frame');
@@ -569,4 +569,30 @@ test('LAN-071 readiness transition between frames resets guest cursor',async()=>
  assert.deepEqual(sent,[124,4],'fresh host epoch starts with frame four');
  assert.deepEqual(guest.score,[2,0]);
  run.dispose();assert.equal(unsubscribed,true,'RTC status listener is removed on exit');
+});
+
+test('LAN-072 transient packet gaps do not repeat jump or interrupt sprint, but expire safely',async()=>{
+  const {createLanLiveMatch}=await load();
+  const input=controls(),match=game(input),observed=[];
+  match.update=function(){input.poll(true);observed.push({
+    held:!!input.state[1].jump,pressed:!!input.pressed[1].jump,
+    released:!!input.releases[1].jump,x:input.state[1].x
+  });};
+  const peer={ready:true,inputs:new Map([
+    [0,{buttons:['jump'],dx:1,dy:0}],
+    [4,{buttons:['jump'],dx:1,dy:0}],
+    [5,{buttons:[],dx:0,dy:0}],
+    [7,{buttons:['jump'],dx:1,dy:0}]
+  ]),stepHostMatchFrame(frame,simulate){simulate(this.inputs.get(frame));return {snapshotSent:true};}};
+  const run=createLanLiveMatch({peer,role:'host',game:match,input,field});
+  for(let n=0;n<11;n++)assert.equal(run.step(.016),true);
+  assert.deepEqual(observed.slice(0,5).map(v=>[v.held,v.pressed,v.released,v.x]),[
+    [true,true,false,1],[true,false,false,1],[true,false,false,1],
+    [false,false,true,0],[true,true,false,1]
+  ]);
+  assert.deepEqual(observed.slice(5,11).map(v=>[v.held,v.pressed,v.released]),[
+    [false,false,true],[false,false,false],[true,true,false],
+    [true,false,false],[true,false,false],[false,false,true]
+  ]);
+  run.dispose();
 });
