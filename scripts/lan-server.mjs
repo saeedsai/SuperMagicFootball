@@ -116,6 +116,12 @@ wss.on('connection',(ws,req)=>{
    else send(req.guest,{type:'join-reject',roomId:id,requestId});
    return;
   }
+  // Only an approved internet guest can request fallback; never a stranger or LAN guest.
+  if(m.type==='relay-request'){
+   if(room.scope==='internet-p2p'&&room.guest===ws&&!room.relay)
+    send(room.host,{type:'relay-request',roomId:id});
+   return;
+  }
   if(m.type==='relay-offer'&&ws===room.host&&room.guest&&room.scope==='internet-p2p'){
    if(typeof m.sdp==='string'&&m.sdp.length<=1024&&m.sdp.length>=8){room.relay=true;send(room.guest,{type:'relay-offer',roomId:id,sdp:m.sdp})}return;
   }
