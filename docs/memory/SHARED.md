@@ -26,14 +26,6 @@ Read only your own [registered checkpoint](AGENTS_INDEX.json) according to [memo
 
 
 
-
-
-- **0.11.4.0 candidate (2026-10-27):** LAN/P2P named host and guest during discovery, consent and match start; a 35-second WebRTC readiness timeout and honest TURN diagnostics. Broker deployment, CI and actual two-device certification pending.
-
-- **0.11.4.1 candidate (2026-10-27):** LAN/P2P detects ICE-only terminal/disconnected state, prevents false ready status and recovers after transient ICE reconnect; three regression tests. Full CI, TURN and real-device certification pending.
-
-- **0.11.4.2 dev candidate (2026-10-27):** LAN/P2P reject stale detached room buttons after host removal or incompatible snapshot. No phantom join. Focused regression added; full CI, Pages and real-device acceptance pending.
-
 - **0.11.4.3 dev candidate (2026-10-27):** WebRTC-first internet match with approved WSS relayed backup, shared host-authoritative gameplay protocol, bounded broker frames and automatic fallback. Render/main/Pages and live two-device certification pending.
 
 - **0.11.4.4 dev candidate (2026-10-27):** Secure hosted signaling gets a 60-second cold-start watchdog; same-origin LAN retains 12 seconds. Timed-out hosted sockets still reconnect; no roster, control or save changes. Full CI, Pages/Render and physical two-device play pending.
@@ -52,4 +44,4 @@ Read only your own [registered checkpoint](AGENTS_INDEX.json) according to [memo
 
 - **0.11.4.13 dev candidate (2026-10-27):** Approved relay rejects incompatible direct/foreign SDP for host and guest. P2P-RELAY-10 added; exact-head CI and real two-device play pending.
 
-- **0.11.4.15 dev candidate (2026-10-28):** LAN-073 clears host-held controls and republishes paused/finished match phase after RTC reconnect, including readiness flaps between frames; source and focused tests committed. Exact-head QA, Pages and physical devices require independent evidence.
+- **0.11.4.15 dev (2026-10-28):** LAN-073 resets host controls and frozen phase after RTC reconnect. CI/Pages/devices pending.
