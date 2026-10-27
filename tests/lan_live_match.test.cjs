@@ -583,7 +583,7 @@ test('LAN-072 transient packet gaps do not repeat jump or interrupt sprint, but 
     [4,{buttons:['jump'],dx:1,dy:0}],
     [5,{buttons:[],dx:0,dy:0}],
     [7,{buttons:['jump'],dx:1,dy:0}]
-  ]),stepHostMatchFrame(frame,simulate){simulate(this.inputs.get(frame));return {snapshotSent:true};}};
+  ]),stepHostMatchFrame(frame,simulate){const received=this.inputs.has(frame);simulate(this.inputs.get(frame)??{buttons:[],dx:0,dy:0},{received});return {snapshotSent:true,received};}};
   const run=createLanLiveMatch({peer,role:'host',game:match,input,field});
   for(let n=0;n<11;n++)assert.equal(run.step(.016),true);
   assert.deepEqual(observed.slice(0,5).map(v=>[v.held,v.pressed,v.released,v.x]),[
