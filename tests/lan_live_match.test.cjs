@@ -597,3 +597,55 @@ test('LAN-072 transient packet gaps do not repeat jump or interrupt sprint, but 
   ]);
   run.dispose();
 });
+
+
+test('LAN-073 host republishes frozen match phases after a brief transport reconnect',async()=>{
+  const {createLanLiveMatch}=await load();
+  const input=controls(),match=game(input),frames=[];
+  let unsubscribed=false;
+  const peer={ready:true,
+    subscribeStatus(fn){this.notify=fn;return ()=>{unsubscribed=true;};},
+    stepHostMatchFrame(frame,simulate){
+      frames.push(simulate({buttons:['jump'],dx:1,dy:0}));
+      return {snapshotSent:true};
+    }
+  };
+  const run=createLanLiveMatch({peer,role:'host',game:match,input,field});
+  match.matchState='paused';
+  assert.equal(run.step(.02),true);
+  assert.equal(run.step(.02),false,'unchanged paused state is not repeatedly sent');
+  peer.ready=false;peer.notify({ready:false});peer.ready=true;
+  assert.equal(run.step(.02),true,'paused state must be sent to a reconnected guest');
+  assert.equal(frames[1].meta.phase,'paused');
+  assert.equal(run.step(.02),false);
+  match.matchState='finished';
+  assert.equal(run.step(.02),true);
+  peer.ready=false;
+  assert.equal(run.step(.02),false,'closed transport cannot publish a frame');
+  peer.ready=true;
+  assert.equal(run.step(.02),true,'step-observed disconnect also resets finished phase');
+  assert.equal(frames[3].meta.phase,'finished');
+  assert.equal(match.clock,0,'reconnection must not advance frozen physics');
+  run.dispose();
+  assert.equal(unsubscribed,true,'host removes its readiness observer');
+});
+
+test('LAN-073 host restores fresh press edges after an unobserved short disconnect',async()=>{
+  const {createLanLiveMatch}=await load();
+  const input=controls(),match=game(input),pressed=[];
+  const peer={ready:true,
+    subscribeStatus(fn){this.notify=fn;return ()=>{};},
+    stepHostMatchFrame(frame,simulate){
+      simulate({buttons:['jump'],dx:1,dy:0});
+      pressed.push(!!input.pressed[1].jump);
+      return {snapshotSent:true};
+    }
+  };
+  const run=createLanLiveMatch({peer,role:'host',game:match,input,field});
+  run.step(.02);run.step(.02);
+  peer.ready=false;peer.notify({ready:false});peer.ready=true;
+  run.step(.02);run.step(.02);
+  assert.deepEqual(pressed,[true,false,true,false],
+    'fresh guest jump must not inherit the previous RTC session hold');
+  run.dispose();
+});
