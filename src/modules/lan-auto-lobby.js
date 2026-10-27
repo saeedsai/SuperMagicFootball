@@ -72,6 +72,19 @@ export function mountAutoLanLobby(root,options={}){
   },ADMISSION_TIMEOUT_MS);
   admissionTimer=timer;
  }
+ // A host can receive an answer but hang while the browser processes its SDP.
+ // Bound the pending peer, retaining the registered room for the next guest.
+ function waitForHostNegotiation(current){
+  clearAdmissionTimeout();
+  const timer=(options.setTimeoutImpl??setTimeout)(()=>{
+   if(admissionTimer!==timer)return;
+   admissionTimer=null;
+   if(disposed||mode!=='host'||peer!==current||!approved||started)return;
+   cleanupPeer();approved=false;
+   status('Host answer negotiation timed out. Waiting for guest retry.');
+  },ADMISSION_TIMEOUT_MS);
+  admissionTimer=timer;
+ }
  function waitForAdmission(id){clearAdmissionTimeout();admissionTimer=(options.setTimeoutImpl??setTimeout)(()=>{
   admissionTimer=null;if(disposed||mode!=='guest'||requestId!==id||approved||started)return;
   send({type:'leave'});cleanupPeer();requestId=null;roomId=null;
@@ -161,9 +174,9 @@ export function mountAutoLanLobby(root,options={}){
    try{const data=JSON.parse(m.sdp);const hello=normalizeLanPacket({protocol:1,type:'hello',role:'guest',session:data.session,build,sequence:0});current=peerFactory(hello);peer=current;waitForGuestNegotiation(requestId,current);const answer=await current.acceptOffer(m.sdp);if(peer===current){clearAdmissionTimeout();if(!send({type:'answer',roomId,sdp:answer}))throw Error('unable to send answer');watch(current)}}catch(e){if(!current||peer===current)recoverGuestHandshake('Guest connection failed: '+e.message)}return;
   }
   if(m.type==='answer'&&mode==='host'&&m.roomId===roomId&&peer){
-   const current=peer;clearAdmissionTimeout();
-   try{await current.acceptAnswer(m.sdp);if(peer===current)watch(current)}
-   catch(e){if(peer===current){cleanupPeer();approved=false;status('Host answer failed: '+e.message)}}
+   const current=peer;waitForHostNegotiation(current);
+   try{await current.acceptAnswer(m.sdp);if(peer===current){clearAdmissionTimeout();watch(current)}}
+   catch(e){if(peer===current){clearAdmissionTimeout();cleanupPeer();approved=false;status('Host answer failed: '+e.message)}}
   }
  }
  connection=(options.signalFactory??connectLanSignal)({internet,onEvent,onState:s=>{if(started||disposed)return;signalState=s;if(s==='connected'){status(internet?'Online P2P discovery connected.':'LAN discovery connected.');if(mode==='host'&&roomId){hostRegistered=false;startHostRetry();clearAdmissionTimeout();cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();registerHost()}else if(mode==='guest'){if(requestId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;status('Connection restored. Choose a game again.')}requestRooms()}}else {if(mode==='host'){hostRegistered=false;stopHostRetry()}rooms.clear();render();approvalRequestId=null;get('autoApproval').replaceChildren();status('Discovery '+s+'. Automatic hosting requires a signaling directory. If unavailable, choose MANUAL CONNECTION to exchange an offer and answer privately.')}}});

@@ -574,3 +574,56 @@ test('LAN/P2P failed host match startup allows a fresh guest without closing the
   dispose();
  }finally{f.cleanup()}
 });
+
+test('LAN/P2P host SDP answer processing timeout releases peer and ignores stale rejection',async()=>{
+ const f=setup(),timers=[];let rejectOld,disposed=0,created=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.11',signalFactory:f.signalFactory,
+   setTimeoutImpl:(fn,ms)=>{const t={fn,ms,cleared:false};timers.push(t);return t},
+   clearTimeoutImpl:t=>{t.cleared=true},
+   peerFactory:()=>({createOffer:async()=>String(++created),
+    acceptAnswer:()=>new Promise((_,reject)=>{rejectOld=reject}),
+    dispose(){disposed++}})});
+  f.connect();f.elements.get('#autoHost').click();
+  const roomId=f.packets.at(-1).roomId;f.emit({type:'host-registered',roomId});
+  await f.emit({type:'guest-approved',roomId});
+  const old=f.emit({type:'answer',roomId,sdp:'old-answer'});
+  assert.equal(timers.length,3,'offer, answer wait and SDP negotiation each have a deadline');
+  assert.equal(timers[1].cleared,true);
+  assert.equal(timers[2].ms,25000);
+  timers[2].fn();
+  assert.equal(disposed,1,'timed-out SDP peer is released');
+  assert.match(f.elements.get('#autoStatus').textContent,/Host answer negotiation timed out.*Waiting for guest retry/);
+  f.emit({type:'guest-left',roomId});
+  await f.emit({type:'guest-approved',roomId});
+  assert.equal(f.packets.at(-1).sdp,'2','replacement guest receives a fresh offer');
+  rejectOld(Error('obsolete SDP failure'));await old;
+  assert.equal(disposed,1,'old SDP rejection cannot destroy replacement peer');
+  assert.equal(f.packets.filter(p=>p.type==='host').length,1,'host room remains registered');
+  assert.equal(f.packets.some(p=>p.type==='leave'),false);
+  dispose();
+ }finally{f.cleanup()}
+});
+
+test('LAN/P2P completed host SDP answer cancels negotiation watchdog',async()=>{
+ const f=setup(),timers=[];let disposed=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.11',signalFactory:f.signalFactory,
+   setTimeoutImpl:(fn,ms)=>{const t={fn,ms,cleared:false};timers.push(t);return t},
+   clearTimeoutImpl:t=>{t.cleared=true},
+   peerFactory:()=>({createOffer:async()=>'offer',acceptAnswer:async()=>{},
+    subscribeStatus:()=>()=>{},awaitReady:()=>new Promise(()=>{}),dispose(){disposed++}})});
+  f.connect();f.elements.get('#autoHost').click();
+  const roomId=f.packets.at(-1).roomId;
+  await f.emit({type:'guest-approved',roomId});
+  await f.emit({type:'answer',roomId,sdp:'valid-answer'});
+  assert.equal(timers.length,3);
+  assert.equal(timers[2].cleared,true,'successful SDP acceptance clears the watchdog');
+  timers[2].fn();
+  assert.equal(disposed,0,'expired callback cannot tear down an active RTC peer');
+  assert.doesNotMatch(f.elements.get('#autoStatus').textContent,/Host answer negotiation timed out/);
+  dispose();assert.equal(disposed,1);
+ }finally{f.cleanup()}
+});

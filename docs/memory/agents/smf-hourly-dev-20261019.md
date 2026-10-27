@@ -3,25 +3,25 @@
 **Updated:** 2026-10-27
 
 ## Mission
-Ship bounded tested changes directly on dev; only protected exact-green promotion. Never create extra branches, force-push or bypass CI. Preserve 223 teams/2676 players, six formations, four buttons, Career/Cup ten slots, SD09, offline and saves.
+Continue bounded tested increments directly on dev despite release waits; only green exact-head protected promotion. Never create extra branches or force-push. Preserve 223 teams/2676 players, six formations, four buttons, Career/Cup ten slots, SD09, offline and saves.
 
 ## Current checkpoint
-- 0.11.3.10 candidate: host LAN/P2P peer readiness failures and onReady exceptions release broken peers and clear approval without unregistering the room. Two focused regressions.
-- Baseline dev/main b6155cf453a22d4fb6e409e0fc0d7b84e0c12475 identical at start; prior 0.11.3.9 CI status was not confirmed through connector status API. Physical LAN/P2P/TURN acceptance remains pending.
-- Candidate exact-head Modular, 4 Node + 4 Chromium, protected promotion, Pages and hosted bytes are independent gates.
+- 0.11.3.11 candidate: host LAN/P2P SDP answer processing now has a 25-second deadline after receipt. Stalled peers are released; old SDP failures cannot kill replacement sessions. Two focused Node regressions.
+- Baseline dev/main `912123b354c7f9d665b831539b073442765e4898` identical; dev Modular #40452788651 and 4+4 #40452788588, main Full hosted smoke #40453518886 and Pages #40453518764 successful. This candidate requires its own exact-head checks.
+- Open issue #48; physical two-phone LAN and cross-network P2P/TURN remain uncertified. Only dev/main and no open PR.
 
 ## Next smallest action
-1. Inspect exact-head Modular and 4 Node + 4 Chromium results; fix failures.
-2. Promote only fully green unchanged dev through protected workflow.
-3. Verify main Pages deployment and hosted HTML/JS/CSS bytes.
-4. Test two-device LAN and internet P2P/TURN.
-5. Continue Player Studio, counterable Tricks and Crown Royals directional art.
+1. Inspect exact-head Modular and four Node/four Chromium jobs; repair failures.
+2. Promote only completely green unchanged dev via protected workflow.
+3. Verify main GitHub Pages and hosted HTML/JS/CSS bytes.
+4. Test genuine two-device LAN and internet P2P/TURN.
+5. Continue Player Studio, counterable four-button Tricks and Crown Royals directional art.
 
 ## Ownership and exclusions
 Only dev/main; no other agents' memory read or edited.
 
 ## Evidence
-`src/modules/lan-auto-lobby.js`, `tests/lan_auto_lobby_flow.test.cjs`; release certification pending.
+`src/modules/lan-auto-lobby.js`, `tests/lan_auto_lobby_flow.test.cjs`; previous CI run IDs above. New candidate CI pending.
 
 ## Cleanup
-Checkpoint below 4 KiB; no new branches or unrelated changes.
+Checkpoint under 4 KiB; no unrelated roster/save/control changes.
