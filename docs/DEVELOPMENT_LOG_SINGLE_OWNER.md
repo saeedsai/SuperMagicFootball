@@ -1,3 +1,9 @@
+## 2026-10-27 02:02 CET — LAN/P2P approved guest offer timeout (0.11.3.6 candidate)
+- Exact baseline dev/main `c83b8fa57ebe36049fd8866ecb10a363d4f1fa2f`; dev Modular #40424489450 and Full 4 Node + 4 Chromium #40424490550 green; main Full hosted smoke #40424946688 and Pages #40424946166 green. Only dev/main branches, no open PR.
+- Guest approval previously cancelled admission timeout but could wait forever if host never sent a WebRTC offer. After 25 seconds, release reserved seat and resume discovery; a valid offer cancels timer. Failed host offer sends dispose unusable peer and report failure. Source-executed baseline stuck; patched flow recovered. Three Node regressions added.
+- Candidate About/package/README/cache/policy/shared memory and own checkpoint aligned. Preserves rosters, six formations, four controls, ten Career/Cup slots, SD09, offline and saves. Exact-head CI, protected promotion, Pages bytes, Render and physical two-device play remain separate gates.
+- Next five: exact-head 4+4 and Modular QA; protected promotion; hosted Pages byte smoke; real LAN/P2P and TURN QA; Player Studio/Tricks/Crown Royals increment.
+
 ## 2026-10-27 01:03 CET — LAN/P2P connection-open watchdog (0.11.3.5 candidate)
 - Exact baseline dev/main `1a05837ec57cd9d6524d766c833091d3ec37b261`; dev Modular #40416902598 and Full 4 Node + 4 Chromium #40416902606 green; main Full hosted smoke #40418467148 and Pages #40418466165 green. No open PR, only dev/main branches.
 - Silent WebSocket connecting stalls had no timeout, leaving automatic Host/Find unresponsive. Add 12-second watchdog to retire/retry stalled transport; cancel on successful open, close and lobby shutdown. Stale timer callbacks cannot interrupt a newer socket. Three focused regressions added.

@@ -26,6 +26,17 @@ export function mountAutoLanLobby(root,options={}){
  },HOST_REGISTRATION_RETRY_MS)}
  function startRefresh(){stopRefresh();refreshTimer=(options.setIntervalImpl??setInterval)(()=>{if(!disposed&&mode==='guest'&&!requestId&&!started&&connection?.ready)requestRooms()},10000)}
  function clearAdmissionTimeout(){if(admissionTimer!==null){(options.clearTimeoutImpl??clearTimeout)(admissionTimer);admissionTimer=null}}
+ // An approved guest may never receive a WebRTC offer from the host.
+ function waitForOffer(id){
+  clearAdmissionTimeout();
+  const timer=(options.setTimeoutImpl??setTimeout)(()=>{
+   if(admissionTimer!==timer)return;
+   admissionTimer=null;
+   if(disposed||mode!=='guest'||requestId!==id||!approved||peer||started)return;
+   recoverGuestHandshake('Host offer timed out.');
+  },ADMISSION_TIMEOUT_MS);
+  admissionTimer=timer;
+ }
  function waitForAdmission(id){clearAdmissionTimeout();admissionTimer=(options.setTimeoutImpl??setTimeout)(()=>{
   admissionTimer=null;if(disposed||mode!=='guest'||requestId!==id||approved||started)return;
   send({type:'leave'});cleanupPeer();requestId=null;roomId=null;
@@ -87,11 +98,12 @@ export function mountAutoLanLobby(root,options={}){
   if(m.type==='join-cancel'&&mode==='host'&&m.roomId===roomId&&m.requestId===approvalRequestId){approvalRequestId=null;get('autoApproval').replaceChildren();status('Guest cancelled their join request.');return}
   if(m.type==='guest-left'&&mode==='host'&&m.roomId===roomId){cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();status('Guest disconnected. Hosting remains available for another guest.');return}
   if(m.type==='join-reject'&&m.requestId===requestId){clearAdmissionTimeout();requestId=null;approved=false;status('Join request rejected or expired. Select a game to retry.');return}
-  if(m.type==='join-accept'&&mode==='guest'&&m.requestId===requestId){clearAdmissionTimeout();approved=true;status('Approved. Connecting to host…');return}
+  if(m.type==='join-accept'&&mode==='guest'&&m.requestId===requestId){approved=true;waitForOffer(m.requestId);status('Approved. Waiting for host offer…');return}
   if(m.type==='guest-approved'&&mode==='host'&&m.roomId===roomId){
-   approved=true;try{const hello=normalizeLanPacket({protocol:1,type:'hello',role:'host',session,build,sequence:0});const current=peerFactory(hello);peer=current;const offer=await current.createOffer();if(peer===current){send({type:'offer',roomId,sdp:offer})}}catch(e){cleanupPeer();status('Host connection failed: '+e.message)}return;
+   approved=true;try{const hello=normalizeLanPacket({protocol:1,type:'hello',role:'host',session,build,sequence:0});const current=peerFactory(hello);peer=current;const offer=await current.createOffer();if(peer===current&&!send({type:'offer',roomId,sdp:offer})){cleanupPeer();approved=false;status('Unable to send host offer. Waiting for guest retry.')}}catch(e){cleanupPeer();status('Host connection failed: '+e.message)}return;
   }
   if(m.type==='offer'&&mode==='guest'&&m.roomId===roomId&&approved&&!peer){
+   clearAdmissionTimeout();
    let current=null;
    try{const data=JSON.parse(m.sdp);const hello=normalizeLanPacket({protocol:1,type:'hello',role:'guest',session:data.session,build,sequence:0});current=peerFactory(hello);peer=current;const answer=await current.acceptOffer(m.sdp);if(peer===current){if(!send({type:'answer',roomId,sdp:answer}))throw Error('unable to send answer');watch(current)}}catch(e){if(!current||peer===current)recoverGuestHandshake('Guest connection failed: '+e.message)}return;
   }

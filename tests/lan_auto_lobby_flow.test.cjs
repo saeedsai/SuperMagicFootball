@@ -313,3 +313,71 @@ test('LAN-064 host retries registration until acknowledged and cancels stale tim
   dispose();
  }finally{f.cleanup()}
 });
+
+test('approved LAN/P2P guest recovers if host never sends offer and can retry',async()=>{
+ const f=setup(),timers=[];
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.6',signalFactory:f.signalFactory,
+   setTimeoutImpl:(fn,ms)=>{const t={fn,ms,cleared:false};timers.push(t);return t},
+   clearTimeoutImpl:t=>{t.cleared=true}});
+  f.elements.get('#autoFind').click();f.connect();
+  const room={type:'room-announce',roomId:'room_12345678',name:'Friendly',build:'0.11.3.6',full:false};
+  f.emit(room);f.elements.get('#autoRooms').children[0].click();
+  const first=f.packets.at(-1);
+  f.emit({type:'join-accept',roomId:room.roomId,requestId:first.requestId});
+  assert.equal(timers.length,2);assert.equal(timers[0].cleared,true);assert.equal(timers[1].ms,25000);
+  timers[1].fn();
+  assert.deepEqual(f.packets.slice(-2).map(p=>p.type),['leave','rooms']);
+  assert.match(f.elements.get('#autoStatus').textContent,/Host offer timed out.*retry/);
+  const status=f.elements.get('#autoStatus').textContent;
+  await f.emit({type:'offer',roomId:room.roomId,sdp:'late'});
+  f.emit({type:'join-accept',roomId:room.roomId,requestId:first.requestId});
+  assert.equal(f.elements.get('#autoStatus').textContent,status);
+  f.elements.get('#autoRooms').children[0].click();
+  const second=f.packets.at(-1);
+  assert.equal(second.type,'join');assert.notEqual(second.requestId,first.requestId);
+  timers[1].fn();
+  assert.equal(f.packets.at(-1).requestId,second.requestId);
+  dispose();
+ }finally{f.cleanup()}
+});
+
+test('arriving host offer cancels guest offer timeout before negotiation',async()=>{
+ const f=setup(),timers=[];let disposed=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.6',signalFactory:f.signalFactory,
+   setTimeoutImpl:(fn,ms)=>{const t={fn,ms,cleared:false};timers.push(t);return t},
+   clearTimeoutImpl:t=>{t.cleared=true},
+   peerFactory:()=>({acceptOffer:async()=>{throw Error('bad SDP')},dispose(){disposed++}})});
+  f.elements.get('#autoFind').click();f.connect();
+  const room={type:'room-announce',roomId:'room_12345678',name:'Friendly',build:'0.11.3.6',full:false};
+  f.emit(room);f.elements.get('#autoRooms').children[0].click();
+  const join=f.packets.at(-1);
+  f.emit({type:'join-accept',roomId:room.roomId,requestId:join.requestId});
+  await f.emit({type:'offer',roomId:room.roomId,sdp:JSON.stringify({session:'session_12345678'})});
+  assert.equal(timers[1].cleared,true);assert.equal(disposed,1);
+  assert.deepEqual(f.packets.slice(-2).map(p=>p.type),['leave','rooms']);
+  const before=f.packets.length;timers[1].fn();assert.equal(f.packets.length,before);
+  dispose();
+ }finally{f.cleanup()}
+});
+
+test('host failed offer send disposes broken peer and reports error',async()=>{
+ const f=setup();let disposed=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.6',signalFactory:f.signalFactory,
+   peerFactory:()=>({createOffer:async()=>'offer',dispose(){disposed++}})});
+  f.connect();f.elements.get('#autoHost').click();
+  const roomId=f.packets.at(-1).roomId;f.emit({type:'host-registered',roomId});
+  const original=f.connection.send.bind(f.connection);
+  f.connection.send=p=>p.type==='offer'?false:original(p);
+  await f.emit({type:'guest-approved',roomId});
+  assert.equal(disposed,1);
+  assert.match(f.elements.get('#autoStatus').textContent,/Unable to send host offer/);
+  assert.equal(f.packets.some(p=>p.type==='offer'),false);
+  dispose();
+ }finally{f.cleanup()}
+});
