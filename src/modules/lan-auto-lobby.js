@@ -12,7 +12,7 @@ export function mountAutoLanLobby(root,options={}){
  const requestRooms=()=>send(internet?{type:'rooms',scope:roomScope}:{type:'rooms'});
  root.innerHTML=`<section class="panel lanConnectionLab"><h2>${internet?'ONLINE P2P':'LOCAL NETWORK'}</h2><p>${internet?'Host or find internet P2P games automatically. A lightweight signaling directory finds rooms and exchanges offers; physics stays peer-to-peer and the host approves each guest. Some networks need a TURN relay.':'Create a room on your phone or computer, or find an available game. A secure discovery service is required for browser-to-browser matchmaking.'}</p><div class="row"><button class="btn" id="autoHost">HOST GAME</button><button class="btn" id="autoFind">FIND GAMES</button><button class="btn minor" id="autoReset">CANCEL</button></div><div id="autoHostInfo" aria-live="polite"></div><div id="autoRooms" aria-live="polite"></div><div id="autoApproval"></div><p id="autoStatus" role="status" aria-live="polite">Connecting to LAN discovery…</p></section>`;
  const get=id=>root.querySelector('#'+id),rooms=new Map();
- let mode=null,roomId=null,session=null,peer=null,connection=null,unsub=null,controller=null,disposed=false,requestId=null,approved=false,approvalRequestId=null,started=false,refreshTimer=null,hostRetryTimer=null,hostRegistered=false,admissionTimer=null,lanUrls=[],signalState='connecting',discoveryScope='lan';
+ let mode=null,roomId=null,session=null,peer=null,connection=null,unsub=null,controller=null,disposed=false,requestId=null,approved=false,approvalRequestId=null,started=false,answerProcessingPeer=null,refreshTimer=null,hostRetryTimer=null,hostRegistered=false,admissionTimer=null,lanUrls=[],signalState='connecting',discoveryScope='lan';
  const status=message=>{if(!disposed)get('autoStatus').textContent=message};
  const send=packet=>connection?.send(packet);
  // Recover room availability if an advertisement was missed while Find Games stays open.
@@ -91,7 +91,7 @@ export function mountAutoLanLobby(root,options={}){
   status('Host approval timed out. Select a game to retry.');
   if(connection?.ready)requestRooms();
  },ADMISSION_TIMEOUT_MS)}
- function cleanupPeer(){controller?.abort();controller=null;unsub?.();unsub=null;peer?.dispose();peer=null}
+ function cleanupPeer(){controller?.abort();controller=null;unsub?.();unsub=null;peer?.dispose();peer=null;answerProcessingPeer=null}
  // An approved guest must release the reserved seat if WebRTC negotiation fails.
  // Keep the room browser usable without reopening Find Games or changing the host room.
  function recoverGuestHandshake(message){
@@ -109,7 +109,7 @@ export function mountAutoLanLobby(root,options={}){
   if(!box.children.length)box.textContent='Searching for available hosts…';
  }
  function watch(current){const aborter=new AbortController();controller=aborter;unsub=current.subscribeStatus(s=>{if(peer===current&&s.ready)ready(current)},aborter.signal);if(peer!==current||aborter.signal.aborted)return;current.awaitReady(120000,aborter.signal).then(()=>ready(current)).catch(e=>{if(peer===current&&!aborter.signal.aborted){if(mode==='guest')recoverGuestHandshake('Connection failed: '+e.message);else {cleanupPeer();approved=false;status('Host connection failed: '+e.message+'. Waiting for guest retry.')}}})}
- function ready(current){if(disposed||peer!==current||!approved||started)return;controller?.abort();controller=null;unsub?.();unsub=null;peer=null;started=true;try{options.onReady?.(current,mode)}catch(e){started=false;current.dispose();if(mode==='guest')recoverGuestHandshake('Unable to start match: '+e.message);else {approved=false;status('Unable to start host match: '+e.message+'. Waiting for guest retry.')}}}
+ function ready(current){if(disposed||peer!==current||!approved||started)return;controller?.abort();controller=null;unsub?.();unsub=null;peer=null;answerProcessingPeer=null;started=true;try{options.onReady?.(current,mode)}catch(e){started=false;current.dispose();if(mode==='guest')recoverGuestHandshake('Unable to start match: '+e.message);else {approved=false;status('Unable to start host match: '+e.message+'. Waiting for guest retry.')}}}
  function reset(){stopRefresh();stopHostRetry();hostRegistered=false;clearAdmissionTimeout();get('autoHostInfo').replaceChildren();if(mode==='host'||mode==='guest')send({type:'leave'});cleanupPeer();mode=null;roomId=null;session=null;approved=false;started=false;requestId=null;approvalRequestId=null;rooms.clear();get('autoApproval').replaceChildren();render();status('Select Host Game or Find Games.')}
  function showHostAddress(){if(mode!=='host')return;
  if(internet){get('autoHostInfo').textContent='Room ID: '+roomId+' | Public Online P2P room; every guest requires host approval. No gameplay server.';return;}const guestUrls=lanUrls.length?lanUrls:(location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'?[location.origin]:[]);get('autoHostInfo').textContent='Room ID: '+roomId+' | Open this game address on BOTH devices: '+(guestUrls.length?guestUrls.join(' or '):'Waiting for signaling service connection.')+(discoveryScope==='public-network'?' | Automatic discovery uses the same public-network address; host approval is required.':' | Both devices must use the same Wi-Fi/LAN.')}
@@ -174,7 +174,9 @@ export function mountAutoLanLobby(root,options={}){
    try{const data=JSON.parse(m.sdp);const hello=normalizeLanPacket({protocol:1,type:'hello',role:'guest',session:data.session,build,sequence:0});current=peerFactory(hello);peer=current;waitForGuestNegotiation(requestId,current);const answer=await current.acceptOffer(m.sdp);if(peer===current){clearAdmissionTimeout();if(!send({type:'answer',roomId,sdp:answer}))throw Error('unable to send answer');watch(current)}}catch(e){if(!current||peer===current)recoverGuestHandshake('Guest connection failed: '+e.message)}return;
   }
   if(m.type==='answer'&&mode==='host'&&m.roomId===roomId&&peer){
-   const current=peer;waitForHostNegotiation(current);
+   // Ignore duplicate guest answers while SDP is processing or transport readiness is pending.
+   if(answerProcessingPeer===peer)return;
+   const current=peer;answerProcessingPeer=current;waitForHostNegotiation(current);
    try{await current.acceptAnswer(m.sdp);if(peer===current){clearAdmissionTimeout();watch(current)}}
    catch(e){if(peer===current){clearAdmissionTimeout();cleanupPeer();approved=false;status('Host answer failed: '+e.message)}}
   }

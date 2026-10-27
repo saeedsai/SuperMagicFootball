@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.3.11',
+ version:'0.11.3.12',
  date:'2026-10-27',
  notes:Object.freeze([
+  'LAN and Online P2P hosts ignore duplicate guest WebRTC answers while SDP processing or transport readiness is pending. Duplicates cannot restart the 25-second deadline or race another remote-description update. Two focused regressions added; four controls, rosters, saves and offline play are unchanged. Physical two-device acceptance remains pending.',
   'LAN and Online P2P hosts now time out stalled browser SDP answer processing after 25 seconds, release the unusable peer and keep their room registered for the next guest. Late SDP failures cannot tear down replacement peers. Two focused regressions added; four controls, rosters, saves and offline play are unchanged. Real two-device acceptance remains pending.',
   'LAN and Online P2P hosts now recover when WebRTC readiness fails or match initialization throws: broken peers are disposed, the room remains registered and another guest can retry. Two focused regressions added. Four controls, rosters, saves and offline play are unchanged; physical device acceptance remains pending.',
   'LAN and Online P2P hosts now stop waiting after 25 seconds if an approved guest never sends a WebRTC answer. Late answer errors cannot destroy replacement connections, and the host room remains available for retry. Four controls, rosters, saves and offline play are unchanged; real-device acceptance remains pending.',

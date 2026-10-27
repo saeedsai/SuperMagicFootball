@@ -1,3 +1,9 @@
+## 2026-10-27 08:03 CET — LAN/P2P duplicate host SDP guard (0.11.3.12 candidate)
+- Baseline exact dev/main bc264bfd0b37bf8b5c23b8fb803959f9052c7d6d; dev Modular #40458844304 and Full 4 Node + 4 Chromium #40458844302 green; main Full hosted smoke #40459608996 and Pages #40459608191 green. Only dev/main, no open PR; LAN issue #48 open.
+- Duplicate guest answers could reset the 25-second SDP watchdog and invoke concurrent acceptAnswer. Track active host peer and ignore duplicate answers through readiness. Two focused Node regressions cover pending and completed SDP.
+- About-only 0.11.3.12, package, README, offline cache, policy, shared memory and own checkpoint aligned. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves. New exact-head CI and physical two-device play remain separate gates.
+- Next five: (1) Modular + 4 Node/4 Chromium QA; (2) protected green promotion; (3) Pages hosted byte smoke; (4) two-device LAN/P2P/TURN; (5) Player Studio, counterable Tricks, Crown Royals graphics.
+
 ## 2026-10-27 07:02 CET — LAN/P2P host SDP answer processing deadline (0.11.3.11 candidate)
 - Exact baseline dev/main `912123b354c7f9d665b831539b073442765e4898` identical, with dev Modular #40452788651 and Full 4 Node + 4 Chromium #40452788588 successful, production Full hosted byte smoke #40453518886 and Pages #40453518764 successful. Open issue #48 tracks real-device LAN/P2P and Render reliability; no open PR. Two branches only.
 - Host receiving an SDP answer previously cleared the answer-receipt timeout before browser acceptAnswer resolved. A never-settling browser SDP operation could strand the peer indefinitely. Add a 25-second host negotiation watchdog, identity-guarded cleanup and cancellation on successful SDP processing; two focused Node regressions cover timeout/stale rejection and normal success.

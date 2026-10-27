@@ -627,3 +627,46 @@ test('LAN/P2P completed host SDP answer cancels negotiation watchdog',async()=>{
   dispose();assert.equal(disposed,1);
  }finally{f.cleanup()}
 });
+
+test('LAN/P2P duplicate host answer cannot restart pending SDP watchdog',async()=>{
+ const f=setup(),timers=[];let resolveAnswer,accepts=0,disposed=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.12',signalFactory:f.signalFactory,
+   setTimeoutImpl:(fn,ms)=>{const t={fn,ms,cleared:false};timers.push(t);return t},
+   clearTimeoutImpl:t=>{t.cleared=true},
+   peerFactory:()=>({createOffer:async()=>'offer',acceptAnswer:()=>{accepts++;return new Promise(resolve=>{resolveAnswer=resolve})},dispose(){disposed++}})});
+  f.connect();f.elements.get('#autoHost').click();
+  const roomId=f.packets.at(-1).roomId;f.emit({type:'host-registered',roomId});
+  await f.emit({type:'guest-approved',roomId});
+  const pending=f.emit({type:'answer',roomId,sdp:'first'});
+  await f.emit({type:'answer',roomId,sdp:'duplicate'});
+  assert.equal(accepts,1);assert.equal(timers.length,3);
+  assert.equal(timers[2].cleared,false);
+  timers[2].fn();assert.equal(disposed,1);
+  resolveAnswer();await pending;
+  assert.match(f.elements.get('#autoStatus').textContent,/Host answer negotiation timed out/);
+  assert.equal(f.packets.filter(p=>p.type==='host').length,1);
+  dispose();
+ }finally{f.cleanup()}
+});
+
+test('LAN/P2P duplicate host answer after SDP success cannot renegotiate',async()=>{
+ const f=setup(),timers=[];let accepts=0,disposed=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.12',signalFactory:f.signalFactory,
+   setTimeoutImpl:(fn,ms)=>{const t={fn,ms,cleared:false};timers.push(t);return t},
+   clearTimeoutImpl:t=>{t.cleared=true},
+   peerFactory:()=>({createOffer:async()=>'offer',acceptAnswer:async()=>{accepts++},
+    subscribeStatus:()=>()=>{},awaitReady:()=>new Promise(()=>{}),dispose(){disposed++}})});
+  f.connect();f.elements.get('#autoHost').click();
+  const roomId=f.packets.at(-1).roomId;f.emit({type:'host-registered',roomId});
+  await f.emit({type:'guest-approved',roomId});
+  await f.emit({type:'answer',roomId,sdp:'first'});
+  assert.equal(timers[2].cleared,true);
+  await f.emit({type:'answer',roomId,sdp:'duplicate'});
+  assert.equal(accepts,1);assert.equal(timers.length,3);assert.equal(disposed,0);
+  dispose();assert.equal(disposed,1);
+ }finally{f.cleanup()}
+});
