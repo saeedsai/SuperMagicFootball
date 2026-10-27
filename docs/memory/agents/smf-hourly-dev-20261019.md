@@ -22,3 +22,6 @@ Only own checkpoint; no edits to other agents' memories. No new branches, force 
 
 ## Evidence
 Source and Node regression committed; full exact-head CI pending. Previously certified green checks belong to prior SHA only. Preserve current dev head and continue hourly development.
+
+## Cleanup
+No unmerged branch cleanup; only dev/main are allowed. Keep the hourly cadence and retry exact-head QA and protected promotion.
