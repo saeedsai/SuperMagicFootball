@@ -247,3 +247,30 @@ test('P2P-RELAY-04 enforces broker UTF-8 budget in both directions',async()=>{
   assert.deepEqual(accepted,[withinLimit],'valid UTF-8 frame still crosses relay');
  }finally{host.dispose();guest.dispose();}
 });
+
+// The first guest hello can arrive while the host relay is still connecting.
+// Losing its later echo must not stall host readiness or the first game input.
+test('P2P-RELAY-05 buffers early guest hello before host answer',async()=>{
+ const {createLanRelayPeerConnection}=await import('../src/modules/lan-relay-peer.js');
+ let host,guest,guestFrames=0;
+ const toHost={send(packet){if(packet.type!=='relay-frame')return false;
+  guestFrames++;if(guestFrames!==2)host.receiveRelayFrame(packet.data);return true;}};
+ const toGuest={send(packet){if(packet.type!=='relay-frame')return false;
+  guest.receiveRelayFrame(packet.data);return true;}};
+ host=createLanRelayPeerConnection(hello('host'),{connection:toGuest,roomId});
+ guest=createLanRelayPeerConnection(hello('guest'),{connection:toHost,roomId});
+ try{
+  const answer=await guest.acceptOffer(await host.createOffer());
+  assert.equal(host.peer.channel.readyState,'connecting');
+  assert.equal(guestFrames,1,'first hello reached connecting host');
+  assert.equal(host.ready,false);
+  await host.acceptAnswer(answer);
+  await Promise.all([host.awaitReady(1200),guest.awaitReady(1200)]);
+  assert.equal(host.ready,true,'host accepted buffered hello without echo');
+  assert.equal(guest.ready,true);
+  guest.sendGuestInput(0,['pass'],.25,-.25);
+  const input=host.advanceHostFrame(0);
+  assert.equal(input.received,true);
+  assert.deepEqual(input.input.buttons,['pass']);
+ }finally{host.dispose();guest.dispose();}
+});

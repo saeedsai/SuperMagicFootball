@@ -7,18 +7,31 @@ const MAX_RELAY_WIRE=24000;
 // The broker enforces UTF-8 bytes, not UTF-16 code units. Match its limit locally.
 const relayEncoder=new TextEncoder();
 class RelayChannel extends EventTarget {
- constructor(send){super();this.label='smf-lan';this.readyState='connecting';this._send=send;}
- open(){if(this.readyState!=='connecting')return;this.readyState='open';this.dispatchEvent(new Event('open'));}
+ constructor(send){super();this.label='smf-lan';this.readyState='connecting';this._send=send;this._earlyHello=null;}
+ open(){
+  if(this.readyState!=='connecting')return;
+  this.readyState='open';this.dispatchEvent(new Event('open'));
+  // The guest may send its first hello before the host accepts the relay answer.
+  // Deliver that one bounded packet after local listeners have opened.
+  if(this._earlyHello!==null){const hello=this._earlyHello;this._earlyHello=null;this.receive(hello);}
+ }
  send(data){
   if(this.readyState!=='open'||typeof data!=='string'||data.length>MAX_RELAY_WIRE||relayEncoder.encode(data).byteLength>MAX_RELAY_WIRE||!this._send(data))
    throw Error('Approved backup relay unavailable');
  }
  receive(data){
-  if(this.readyState!=='open'||typeof data!=='string'||data.length>MAX_RELAY_WIRE||relayEncoder.encode(data).byteLength>MAX_RELAY_WIRE)return;
+  if(this.readyState==='closed'||typeof data!=='string'||data.length>MAX_RELAY_WIRE||relayEncoder.encode(data).byteLength>MAX_RELAY_WIRE)return;
+  if(this.readyState==='connecting'){
+   // Keep only one validated-shape handshake packet; never buffer gameplay data.
+   if(this._earlyHello===null){try{const p=JSON.parse(data);
+    if(p&&p.protocol===1&&p.type==='hello'&&p.sequence===0&&(p.role==='host'||p.role==='guest'))this._earlyHello=data;
+   }catch{ /* malformed early packet */ }}
+   return;
+  }
   const event=new Event('message');Object.defineProperty(event,'data',{value:data});
   this.dispatchEvent(event);
  }
- close(){if(this.readyState==='closed')return;this.readyState='closed';this.dispatchEvent(new Event('close'));}
+ close(){if(this.readyState==='closed')return;this._earlyHello=null;this.readyState='closed';this.dispatchEvent(new Event('close'));}
 }
 export function createLanRelayPeerConnection(hello,{connection,roomId}={}){
  if(!connection||typeof connection.send!=='function'||typeof roomId!=='string'||

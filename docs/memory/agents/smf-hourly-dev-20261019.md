@@ -3,22 +3,25 @@
 **Updated:** 2026-10-27
 
 ## Mission
-Continuous tested increments on existing dev; only protected exact-green promotion to main. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline/saves.
+Continue small tested increments directly on dev; protected exact-green promotion to main only. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, saves and offline play.
 
 ## Current checkpoint
-- Baseline dev 0d394f77b383810d86b1a11c9c24b82f01eac766; main b3c8100a88e924dd4209396898116877602d284d; PR #56 open. 0.11.4.7 candidate fixes Unicode UTF-8 relay budget against 24,000-byte broker limit (outbound rejection/inbound discard) and adds a two-peer regression. Candidate only: exact-head CI, Pages, Render and physical two-client certification pending.
-- Previous 0.11.4.6: broker flap backoff; workflow cancellation policy changed to preserve running full census. Earlier 0.11.4.3: approved WebRTC relay fallback.
-- At inspection Full #40535793954 pending and Modular #40535793695 queued on prior head. Do not mistake older green jobs for this candidate.
+- Base dev 331ba11d652e9d7f47f8d46cf2aec18c9ce2cd96; main b3c8100a88e924dd4209396898116877602d284d; PR #56 open. 0.11.4.8 candidate: approved internet relay retains a single early guest protocol hello until host channel opens, preventing loss before SDP answer acceptance; new P2P-RELAY-05 source regression. Pending new exact-head checks, Pages, Render and physical two-client acceptance.
+- Existing 0.11.4.7 broker UTF-8 size check remains. Earlier source notes and prior CI are not evidence of this candidate.
+- At inspection Full #40545674602 pending (0 jobs) and Modular #40545674623 queued on prior 331ba11d. GitHub Actions scheduler not yet running the complete suite; no bypass.
 
-## CI queue investigation — 2026-10-27 17:55 CET
-- Dev 454114634383e689557734d67dfd087797c75c5e, main b3c8100a88e924dd4209396898116877602d284d. Full run #40537757831 remains pending since 16:07:14Z with zero jobs created; Modular #40537757576 queued. This is a workflow scheduling blocker, not evidence of a failing game test. No protected promotion or gameplay certification.
+## Next smallest action
+1. Inspect new exact-head 4 Node + 4 Chromium Full Census and Modular QA, repair any failures.
+2. If exact head fully green, promote through existing protected PR #56, not a direct push.
+3. Verify main Pages deployed byte smoke and hosted Render broker health.
+4. Run real two-device Wi-Fi LAN and cross-network P2P Host/Approve/Play/Relay.
+5. Continue Player Studio, counterable four-button Tricks, Crown Royals directional art QA.
 
-## Next five
-1. Inspect exact-head Full 4 Node+4 Chromium and Modular QA; repair failures.
-2. Promote only unchanged fully green dev head via protected PR #56.
-3. Verify main GitHub Pages byte hashes and Render broker compatibility.
-4. Run real two-phone Wi-Fi LAN and cross-network P2P Host/Approve/Play, including relay.
-5. Continue Player Studio, counterable four-button Tricks and Crown Royals directional art.
+## Ownership and exclusions
+Only dev for code, main for protected release. Never create branches, force push, bypass checks, touch other agents' memory or claim device QA without devices.
+
+## Evidence
+Source regression committed as test but not locally executed in connector-only runtime; exact-head CI still pending. Old main remains certified only at its prior SHA.
 
 ## Cleanup
-Keep checkpoint <4 KiB, do not touch other agents' memory, never create branches or force-push.
+Keep this checkpoint below 4 KiB; maintain central dev log and truthful versioning.
