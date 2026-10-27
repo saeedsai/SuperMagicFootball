@@ -6,8 +6,8 @@
 Continue bounded tested development on dev only; main promotion protected and exact-head green. Preserve 223 teams/2676 players, six formations, four action buttons, ten Career/Cup slots, SD09, offline and saves.
 
 ## Current checkpoint
-- 0.11.4.0 dev candidate: LAN/P2P names for host and guest in lobby, consent and match toast; broker name forwarding; 35s WebRTC ready deadline and TURN-related failure diagnosis.
-- User verified discovery+approval but P2P match did not establish. STUN-only internet ICE cannot traverse every NAT. Needs provisioned TURN credentials/infrastructure plus real two-device tests. Latest previously certified main 58cf9298bd59e3b02e6d5adab09c4ed17585e619; candidate base dev af7b80d392a1329f9174a40d3b3527552197060f.
+- 0.11.4.1 dev candidate: ICE-only failure/disconnect blocks false ready; three focused regressions. Prior 0.11.4.0: LAN/P2P names for host and guest in lobby, consent and match toast; broker name forwarding; 35s WebRTC ready deadline and TURN-related failure diagnosis.
+- User verified discovery+approval but P2P match did not establish. STUN-only internet ICE cannot traverse every NAT. Needs provisioned TURN credentials/infrastructure plus real two-device tests. Observed main af7b80d392a1329f9174a40d3b3527552197060f; dev 5b675eb7c49363e2cc06c107c643730439441939 before this increment. Prior Modular QA 40484660176 passed; full 40484660081 pending. PR #54 open.
 
 ## Next smallest action
 1. Inspect newest exact-head 4 Node + 4 Chromium and Modular QA; repair failures.
