@@ -112,7 +112,7 @@ wss.on('connection',(ws,req)=>{
     // A guest may disconnect after requesting admission but before host approval.
     // Never reserve a room seat for a closed socket.
     if(req.guest.readyState!==1){send(ws,{type:'join-cancel',roomId:id,requestId,reason:'guest-left'});return;}
-    room.guest=req.guest;announceRoom(room);for(const [otherId,other] of pending)if(other.roomId===id){pending.delete(otherId);send(other.guest,{type:'join-reject',roomId:id,requestId:otherId,reason:'room-full'});send(ws,{type:'join-cancel',roomId:id,requestId:otherId})}send(req.guest,{type:'join-accept',roomId:id,requestId,hostName:room.name});send(ws,{type:'guest-approved',roomId:id,requestId,guestName:req.guestName});}
+    room.relay=false;room.guest=req.guest;announceRoom(room);for(const [otherId,other] of pending)if(other.roomId===id){pending.delete(otherId);send(other.guest,{type:'join-reject',roomId:id,requestId:otherId,reason:'room-full'});send(ws,{type:'join-cancel',roomId:id,requestId:otherId})}send(req.guest,{type:'join-accept',roomId:id,requestId,hostName:room.name});send(ws,{type:'guest-approved',roomId:id,requestId,guestName:req.guestName});}
    else send(req.guest,{type:'join-reject',roomId:id,requestId});
    return;
   }
