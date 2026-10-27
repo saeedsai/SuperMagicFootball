@@ -2,6 +2,7 @@
 - Owner observed automatic P2P discovery and host consent but no established game. Current WebRTC ICE configuration has public STUN but no TURN relay; restricted NAT pairings may fail. No false claim of TURN support or physical success.
 - Both modes now allow host/guest player names. Host name is advertised in discovery; validated bounded guest name travels through broker to the host approval prompt; guest receives host identity in acceptance; name appears on match-start toast.
 - Host and guest now stop waiting indefinitely after SDP: 35-second readiness deadline, retry available and explicit internet TURN diagnosis. Additional tests cover LAN/P2P player names and ICE readiness deadline, plus broker name forwarding contract.
+- Source-executed V8 two-client simulation passed in BOTH LAN and internet mode: Alice host registration, Bob join/approval, full offer/answer transfer, and ready handoff on both clients with correct names. All seven touched runtime/test JS files passed syntax parsing. This uses mocked RTC, not a physical or browser WebRTC pass.
 - Release candidate 0.11.4.0; pending exact-head 4 Node + 4 Chromium, Modular QA, protected promotion, Render update, Pages hosted hash verification and two-device cross-network/TURN acceptance. Next five: fix CI; release exact green candidate; deploy broker; TURN and real-device QA; Studio/Tricks/Crown Royals art.
 
 ## 2026-10-27 09:58 CET — LAN/P2P rejected guest SDP cleanup (0.11.3.14 candidate)
