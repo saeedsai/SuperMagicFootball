@@ -25,6 +25,7 @@ const clients=new Map(),rooms=new Map(),pending=new Map();
 let nextId=0;
 const MAX=210000;
 const MAX_ROOMS=128,MAX_PENDING_PER_GUEST=1,MAX_PENDING_PER_ROOM=1;
+const safeGuestName=value=>typeof value==='string'?(value.replace(/[\u0000-\u001f\u007f]/g,' ').trim().replace(/\s+/g,' ').slice(0,32)||'Guest'):'Guest';
 const MAX_MESSAGES_PER_WINDOW=120,WINDOW_MS=60000,MAX_CONNECTIONS_PER_IP=8;
 function ipOf(request){return lanClientIp(request,{hosted:signalPolicy.mode==='hosted'})}
 function sameSubnet(a,b){return signalPolicy.visible(a,b)}
@@ -90,7 +91,7 @@ wss.on('connection',(ws,req)=>{
    if(ws===room.host||room.guest||[...rooms.values()].some(active=>active.guest===ws||active.host===ws)||typeof requestId!=='string'||! /^[a-zA-Z0-9_-]{8,64}$/.test(requestId)||pending.has(requestId)||m.build!==room.build)return send(ws,{type:'join-reject',requestId,reason:'room-full-or-version'});
    if([...pending.values()].filter(p=>p.guest===ws).length>=MAX_PENDING_PER_GUEST)return send(ws,{type:'join-reject',roomId:id,requestId,reason:'request-already-pending'});
    if([...pending.values()].filter(p=>p.roomId===id).length>=MAX_PENDING_PER_ROOM)return send(ws,{type:'join-reject',roomId:id,requestId,reason:'room-queue-full'});
-   pending.set(requestId,{roomId:id,guest:ws,host:room.host,time:Date.now()});send(room.host,{type:'join-request',roomId:id,requestId});return;
+   pending.set(requestId,{roomId:id,guest:ws,host:room.host,guestName:safeGuestName(m.guestName),time:Date.now()});send(room.host,{type:'join-request',roomId:id,requestId,guestName:safeGuestName(m.guestName)});return;
   }
   if(m.type==='decision'){
    const req=pending.get(requestId);if(!req||req.host!==ws||req.roomId!==id)return;
@@ -100,7 +101,7 @@ wss.on('connection',(ws,req)=>{
     // A guest may disconnect after requesting admission but before host approval.
     // Never reserve a room seat for a closed socket.
     if(req.guest.readyState!==1){send(ws,{type:'join-cancel',roomId:id,requestId,reason:'guest-left'});return;}
-    room.guest=req.guest;announceRoom(room);for(const [otherId,other] of pending)if(other.roomId===id){pending.delete(otherId);send(other.guest,{type:'join-reject',roomId:id,requestId:otherId,reason:'room-full'});send(ws,{type:'join-cancel',roomId:id,requestId:otherId})}send(req.guest,{type:'join-accept',roomId:id,requestId});send(ws,{type:'guest-approved',roomId:id,requestId});}
+    room.guest=req.guest;announceRoom(room);for(const [otherId,other] of pending)if(other.roomId===id){pending.delete(otherId);send(other.guest,{type:'join-reject',roomId:id,requestId:otherId,reason:'room-full'});send(ws,{type:'join-cancel',roomId:id,requestId:otherId})}send(req.guest,{type:'join-accept',roomId:id,requestId,hostName:room.name});send(ws,{type:'guest-approved',roomId:id,requestId,guestName:req.guestName});}
    else send(req.guest,{type:'join-reject',roomId:id,requestId});
    return;
   }
