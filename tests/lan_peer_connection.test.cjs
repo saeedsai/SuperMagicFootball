@@ -1033,7 +1033,7 @@ test('LAN-043 authoritative host step consumes guest input and publishes a valid
 });
 
 // LAN-061: WebRTC ICE may fail independently before RTCPeerConnection.connectionState changes.
-test('LAN-061 independent ICE failure aborts gathering and closes the incomplete peer',async()=>{
+test('LAN-ICE-01 independent ICE failure aborts gathering and closes the incomplete peer',async()=>{
   const {createLanPeerConnection}=await load();
   class IceFailPeer extends FakePeer {
     async setLocalDescription(value){
@@ -1046,7 +1046,7 @@ test('LAN-061 independent ICE failure aborts gathering and closes the incomplete
   assert.equal(host.disposed,true);
   assert.equal(host.peer.channel.readyState,'closed');
 });
-test('LAN-061 ICE-only failure rejects readiness without waiting for the full timeout',async()=>{
+test('LAN-ICE-01 ICE-only failure rejects readiness without waiting for the full timeout',async()=>{
   const {createLanPeerConnection}=await load();
   const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
   host.peer.iceConnectionState='failed';
@@ -1055,7 +1055,7 @@ test('LAN-061 ICE-only failure rejects readiness without waiting for the full ti
   assert.equal(host.transportState,'failed');
   host.dispose();
 });
-test('LAN-061 ICE-only disconnect and recovery update ready state without changing peer connectionState',async()=>{
+test('LAN-ICE-01 ICE-only disconnect and recovery update ready state without changing peer connectionState',async()=>{
   const {createLanPeerConnection}=await load();
   const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
   const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
