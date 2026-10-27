@@ -1,8 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.13
+# SuperMagicFootball release/version policy — About-only 0.11.4.14
 
-**Effective 21 October 2026; updated 27 October 2026 for candidate 0.11.4.13.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 27 October 2026 for candidate 0.11.4.14.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Latest dev candidate 0.11.4.13 (27 October 2026):** Approved internet relay pseudo-RTC now rejects foreign/direct SDP rather than claiming a connected fallback channel. P2P-RELAY-10 tests host and guest rejection plus compatible relay descriptions. Exact-head 4+4/Modular, main/Pages, broker and physical devices remain pending.
+**Previous dev candidate 0.11.4.13 (27 October 2026):** Approved internet relay pseudo-RTC now rejects foreign/direct SDP rather than claiming a connected fallback channel. P2P-RELAY-10 tests host and guest rejection plus compatible relay descriptions. Exact-head 4+4/Modular, main/Pages, broker and physical devices remain pending.
 
 **Previous dev candidate 0.11.4.12 (27 October 2026):** A strictly validated host hello arriving before the guest relay DataChannel exists is retained and replayed after listeners open. Stale/malformed/wrong-role/oversized frames cannot occupy the pre-channel slot; P2P-RELAY-09 covers lost later echoes and guest four-button input over synthetic two-peer transport. No roster, save, offline, formation or control changes. Exact-head 4+4/Modular CI, main/Pages and physical two-device acceptance pending.
 
