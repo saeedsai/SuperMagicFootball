@@ -770,3 +770,68 @@ test('LAN/P2P rejection during guest SDP cancels negotiation and blocks a late a
   dispose();
  }finally{f.cleanup()}
 });
+
+
+test('both LAN and Online P2P identify players through discovery, join request and host consent',async()=>{
+ for(const internet of [false,true]){
+  const host=setup();
+  try{
+   const {mountAutoLanLobby}=await load();
+   const stop=mountAutoLanLobby(host.root,{internet,build:'0.11.4.0',signalFactory:host.signalFactory});
+   host.connect();host.root.querySelector('#autoPlayerName').value=' Alice ';
+   host.elements.get('#autoHost').click();
+   const registration=host.packets.find(packet=>packet.type==='host');
+   assert.equal(registration.name,'Alice');
+   assert.match(host.elements.get('#autoHostInfo').textContent,/Hosting as Alice/);
+   host.emit({type:'join-request',roomId:registration.roomId,requestId:'request_12345678',guestName:'Bob'});
+   assert.match(host.elements.get('#autoApproval').children[0].textContent,/Bob wants to join/);
+   host.elements.get('#autoApproval').children[1].click();
+   assert.deepEqual(host.packets.at(-1),{type:'decision',roomId:registration.roomId,requestId:'request_12345678',accept:true});
+   stop();
+  }finally{host.cleanup()}
+  const guest=setup();
+  try{
+   const {mountAutoLanLobby}=await load();
+   const stop=mountAutoLanLobby(guest.root,{internet,build:'0.11.4.0',signalFactory:guest.signalFactory});
+   guest.connect();guest.root.querySelector('#autoPlayerName').value=' Bob ';
+   guest.elements.get('#autoFind').click();
+   const room={type:'room-announce',roomId:'room_12345678',name:'Alice',build:'0.11.4.0',full:false,...(internet?{scope:'internet-p2p'}:{})};
+   guest.emit(room);
+   assert.match(guest.elements.get('#autoRooms').children[0].textContent,/Alice/);
+   guest.elements.get('#autoRooms').children[0].click();
+   const join=guest.packets.at(-1);
+   assert.equal(join.guestName,'Bob');
+   guest.emit({type:'join-accept',roomId:room.roomId,requestId:join.requestId,hostName:'Alice'});
+   assert.match(guest.elements.get('#autoStatus').textContent,/Approved by Alice/);
+   stop();
+  }finally{guest.cleanup()}
+ }
+});
+test('failed internet P2P readiness is bounded and reports TURN requirement',async()=>{
+ const f=setup();let waited=0,disposed=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const stop=mountAutoLanLobby(f.root,{internet:true,build:'0.11.4.0',signalFactory:f.signalFactory,
+   peerFactory:()=>({createOffer:async()=>'{"offer":1}',acceptAnswer:async()=>{},
+    subscribeStatus:()=>()=>{},awaitReady:(ms)=>{waited=ms;return Promise.reject(Error('ICE failed'))},dispose(){disposed++}})});
+  f.connect();f.elements.get('#autoHost').click();
+  const register=f.packets.find(packet=>packet.type==='host');
+  await f.emit({type:'guest-approved',roomId:register.roomId,requestId:'request_12345678',guestName:'Bob'});
+  assert.equal(f.packets.at(-1).type,'offer');
+  await f.emit({type:'answer',roomId:register.roomId,sdp:'{"answer":true}'});
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(waited,35000);
+  assert.match(f.elements.get('#autoStatus').textContent,/TURN/);
+  assert.equal(disposed,1);
+  stop();
+ }finally{f.cleanup()}
+});
+
+test('network match HUD keeps both player names visible without changing four controls',()=>{
+ const fs=require('node:fs');
+ const ui=fs.readFileSync('src/modules/ui.js','utf8');
+ assert.match(ui,/lanPlayerNames=\{home:role==='host'\?ownName:opponentName,away:role==='host'\?opponentName:ownName\}/);
+ assert.match(ui,/lanPlayerNames\?\.home/);
+ assert.match(ui,/lanPlayerNames\?\.away/);
+ assert.match(ui,/lanPlayerNames=null/);
+});

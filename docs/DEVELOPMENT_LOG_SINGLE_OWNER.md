@@ -1,3 +1,20 @@
+## 2026-10-27 10:57 CET — LAN-ICE-01 independent ICE state reliability (0.11.4.1 candidate)
+- Baseline main af7b80d392a1329f9174a40d3b3527552197060f, dev 5b675eb7c49363e2cc06c107c643730439441939 (21 ahead). PR #54 open. Modular QA 40484660176 green; Full Census 40484660081 pending at start.
+- WebRTC ICE can enter failed/disconnected before RTCPeerConnection.connectionState reflects it. LAN and Online P2P now abort ICE gathering and awaitReady on terminal ICE, mark live transport unavailable on ICE disconnect and emit observable status changes on ICE events; recovery resumes on ICE reconnect. Three focused Node regressions added. Existing STUN-only P2P still needs TURN for restrictive NAT pairs; no physical device claim.
+- Candidate version 0.11.4.1 aligned with About/package/README/cache/policy/shared memory. Exact-head CI and protected promotion still required; no roster, control, save or art changes.
+- Next five: (1) full Modular and 4+4 exact-head QA, (2) repair failing shards, (3) protected main promotion and Pages byte smoke, (4) Render broker + TURN and physical two-phone QA, (5) Player Studio/Tricks/Crown Royals art.
+
+## 2026-10-27 — CI blocker repair for 0.11.4.0
+- Exact previous dev head a2bc33abc55d44ccf351ed315cb9505ea6915a6f failed Modular Game Dev QA run 40484051045 and Full Regression Census run 40484051276. Both failed solely in Node version policy: offline cache token must end with four-field package version (two assertions). All earlier named-player and P2P readiness tests shown in logs passed.
+- Repaired sw.js suffix to `-01140` and committed 9022b282faa1da062e03a315f8f8065bf3419ed3 on dev. Fresh Modular QA run 40484611743 and Full Census run 40484611636 started, results pending at observation. Protected PR #54 remains open; do not merge until exact-head green. Physical LAN/P2P/TURN and graphics remain uncertified.
+
+## 2026-10-27 10:08 CET — LAN/P2P named participants, bounded WebRTC negotiation (0.11.4.0 candidate)
+- Owner observed automatic P2P discovery and host consent but no established game. Current WebRTC ICE configuration has public STUN but no TURN relay; restricted NAT pairings may fail. No false claim of TURN support or physical success.
+- Both modes now allow host/guest player names. Host name is advertised in discovery; validated bounded guest name travels through broker to the host approval prompt; guest receives host identity in acceptance; name appears on match-start toast.
+- Host and guest now stop waiting indefinitely after SDP: 35-second readiness deadline, retry available and explicit internet TURN diagnosis. Additional tests cover LAN/P2P player names and ICE readiness deadline, plus broker name forwarding contract.
+- Source-executed V8 two-client simulation passed in BOTH LAN and internet mode: Alice host registration, Bob join/approval, full offer/answer transfer, and ready handoff on both clients with correct names. All seven touched runtime/test JS files passed syntax parsing. This uses mocked RTC, not a physical or browser WebRTC pass.
+- Release candidate 0.11.4.0; pending exact-head 4 Node + 4 Chromium, Modular QA, protected promotion, Render update, Pages hosted hash verification and two-device cross-network/TURN acceptance. Next five: fix CI; release exact green candidate; deploy broker; TURN and real-device QA; Studio/Tricks/Crown Royals art.
+
 ## 2026-10-27 09:58 CET — LAN/P2P rejected guest SDP cleanup (0.11.3.14 candidate)
 - Baseline dev/main `58cf9298bd59e3b02e6d5adab09c4ed17585e619` (0.11.3.13). Rejection during pending SDP previously cleared the admission ID but left the peer and room identity alive; a late browser answer could still be sent.
 - Guest rejection now cancels its watchdog, disposes the pending peer and clears the stale room identity. New regressions cover stale room-removal/approval after rejection and delayed SDP completion. No roster, four-button, six-formation, SD09, ten-slot, offline or save-schema changes.

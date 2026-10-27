@@ -1031,3 +1031,48 @@ test('LAN-043 authoritative host step consumes guest input and publishes a valid
   assert.throws(()=>host.stepHostMatchFrame(7,async()=>({tick:7})),/synchronously/);
   receiver.dispose();guest.dispose();host.dispose();
 });
+
+// LAN-ICE-01: WebRTC ICE may fail independently before RTCPeerConnection.connectionState changes.
+test('LAN-ICE-01 independent ICE failure aborts gathering and closes the incomplete peer',async()=>{
+  const {createLanPeerConnection}=await load();
+  class IceFailPeer extends FakePeer {
+    async setLocalDescription(value){
+      this.localDescription=value;
+      setTimeout(()=>{this.iceConnectionState='failed';this.dispatchEvent(new Event('iceconnectionstatechange'));},0);
+    }
+  }
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:IceFailPeer,iceTimeoutMs:2000});
+  await assert.rejects(host.createOffer(),/closed during ICE gathering/);
+  assert.equal(host.disposed,true);
+  assert.equal(host.peer.channel.readyState,'closed');
+});
+test('LAN-ICE-01 ICE-only failure rejects readiness without waiting for the full timeout',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  host.peer.iceConnectionState='failed';
+  await assert.rejects(host.awaitReady(1000),/closed before handshake/);
+  assert.equal(host.ready,false);
+  assert.equal(host.transportState,'failed');
+  host.dispose();
+});
+test('LAN-ICE-01 ICE-only disconnect and recovery update ready state without changing peer connectionState',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const channel=new FakeChannel('smf-lan');guest.peer.emitChannel(channel);
+  host.peer.channel.open();channel.open();
+  const deliver=(target,packet)=>{const e=new Event('message');e.data=JSON.stringify(packet);target.dispatchEvent(e);};
+  deliver(host.peer.channel,guestHello);deliver(channel,hostHello);
+  host.peer.connectionState='connected';host.peer.iceConnectionState='connected';
+  const seen=[];host.subscribeStatus(x=>seen.push(x));
+  assert.equal(host.ready,true);
+  host.peer.iceConnectionState='disconnected';host.peer.dispatchEvent(new Event('iceconnectionstatechange'));
+  assert.equal(host.ready,false);assert.equal(host.transportState,'disconnected');
+  assert.equal(seen.at(-1).ready,false);
+  host.peer.iceConnectionState='connected';host.peer.dispatchEvent(new Event('iceconnectionstatechange'));
+  assert.equal(host.ready,true);assert.equal(seen.at(-1).ready,true);
+  guest.dispose();host.dispose();
+});
