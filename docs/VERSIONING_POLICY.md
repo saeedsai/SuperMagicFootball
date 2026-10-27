@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.14
+# SuperMagicFootball release/version policy — About-only 0.11.4.15
 
-**Effective 21 October 2026; updated 27 October 2026 for candidate 0.11.4.14.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.15.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+
+**Current dev candidate 0.11.4.15 (28 October 2026):** LAN-073 resets host session input edges and phase notification on a disconnected RTC epoch, including rapid readiness flaps between simulation frames. A reconnected guest receives a paused/finished authoritative snapshot without advancing physics. Full exact-head 4+4/Modular, protected main/Pages and physical two-client QA are independent gates.
 
 **Previous dev candidate 0.11.4.13 (27 October 2026):** Approved internet relay pseudo-RTC now rejects foreign/direct SDP rather than claiming a connected fallback channel. P2P-RELAY-10 tests host and guest rejection plus compatible relay descriptions. Exact-head 4+4/Modular, main/Pages, broker and physical devices remain pending.
 
