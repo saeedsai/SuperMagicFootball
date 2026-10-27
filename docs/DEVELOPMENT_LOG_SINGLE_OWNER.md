@@ -1,3 +1,7 @@
+## 2026-10-27 — CI blocker repair for 0.11.4.0
+- Exact previous dev head a2bc33abc55d44ccf351ed315cb9505ea6915a6f failed Modular Game Dev QA run 40484051045 and Full Regression Census run 40484051276. Both failed solely in Node version policy: offline cache token must end with four-field package version (two assertions). All earlier named-player and P2P readiness tests shown in logs passed.
+- Repaired sw.js suffix to `-01140` and committed 9022b282faa1da062e03a315f8f8065bf3419ed3 on dev. Fresh Modular QA run 40484611743 and Full Census run 40484611636 started, results pending at observation. Protected PR #54 remains open; do not merge until exact-head green. Physical LAN/P2P/TURN and graphics remain uncertified.
+
 ## 2026-10-27 10:08 CET — LAN/P2P named participants, bounded WebRTC negotiation (0.11.4.0 candidate)
 - Owner observed automatic P2P discovery and host consent but no established game. Current WebRTC ICE configuration has public STUN but no TURN relay; restricted NAT pairings may fail. No false claim of TURN support or physical success.
 - Both modes now allow host/guest player names. Host name is advertised in discovery; validated bounded guest name travels through broker to the host approval prompt; guest receives host identity in acceptance; name appears on match-start toast.
