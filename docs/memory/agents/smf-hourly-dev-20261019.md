@@ -10,6 +10,12 @@ One bounded tested increment each run directly on dev even when release waits. O
 - Previous 0.11.4.5: invalid explicit broker URL fails closed; 0.11.4.4: 60s hosted cold-start; 0.11.4.3: consent-scoped internet relay fallback.
 - Baseline dev b56fe67be2cd0bcf2c46ad5339c63a555497e860; main b3c8100a88e924dd4209396898116877602d284d; PR #56 open. At inspection Full #40517980648 pending preflight, Modular #40517979707 queued; older Full #40508485325 cancelled. No new main/Pages/Render or real two-phone certification.
 
+## CI investigation — 2026-10-27
+- Exact dev b9e3e4cff832eb0ebeab3aaa4defa11d86d431e6; main b3c8100a88e924dd4209396898116877602d284d. Full #40535458135/#40535472748 and Modular #40535458132/#40535472699 remain queued. The Full workflow now has cancel-in-progress false; no successful exact-head full QA yet. Do not promote.
+
+## Cleanup
+- Keep this checkpoint below 4 KiB and avoid altering other agents' files.
+
 ## Next five
 1. Diagnose and repair exact-head queued/failing 4 Node+4 Chromium and Modular QA.
 2. Promote only unchanged fully green dev head through protected PR #56.
