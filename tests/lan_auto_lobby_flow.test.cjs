@@ -720,3 +720,53 @@ test('duplicate LAN/P2P approval cannot replace a pending guest SDP deadline',as
   dispose();
  }finally{f.cleanup()}
 });
+
+
+test('LAN/P2P rejected admission clears stale room identity and permits a different host',async()=>{
+ const f=setup();
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.14',signalFactory:f.signalFactory});
+  f.elements.get('#autoFind').click();f.connect();
+  const first={type:'room-announce',roomId:'room_12345678',name:'Old host',build:'0.11.3.14',full:false};
+  const second={...first,roomId:'room_87654321',name:'New host'};
+  f.emit(first);f.emit(second);f.elements.get('#autoRooms').children[0].click();
+  const oldRequest=f.packets.at(-1).requestId;
+  f.emit({type:'join-reject',requestId:oldRequest});
+  assert.match(f.elements.get('#autoStatus').textContent,/Join request rejected or expired/);
+  f.emit({type:'room-remove',roomId:first.roomId});
+  assert.match(f.elements.get('#autoStatus').textContent,/Join request rejected or expired/,'stale room removal cannot reset a rejected admission');
+  f.elements.get('#autoRooms').children[0].click();
+  const next=f.packets.at(-1);
+  assert.equal(next.type,'join');assert.equal(next.roomId,second.roomId);
+  assert.notEqual(next.requestId,oldRequest);
+  f.emit({type:'join-accept',requestId:oldRequest});
+  assert.match(f.elements.get('#autoStatus').textContent,/Waiting for host approval/,'late approval cannot replace new request');
+  dispose();
+ }finally{f.cleanup()}
+});
+
+test('LAN/P2P rejection during guest SDP cancels negotiation and blocks a late answer',async()=>{
+ const f=setup(),timers=[];let finish,disposed=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.14',signalFactory:f.signalFactory,
+   setTimeoutImpl:(fn,ms)=>{const timer={fn,ms,cleared:false};timers.push(timer);return timer},
+   clearTimeoutImpl:timer=>{timer.cleared=true},
+   peerFactory:()=>({acceptOffer:()=>new Promise(resolve=>{finish=resolve}),dispose(){disposed++}})});
+  f.elements.get('#autoFind').click();f.connect();
+  const room={type:'room-announce',roomId:'room_12345678',name:'Friendly',build:'0.11.3.14',full:false};
+  f.emit(room);f.elements.get('#autoRooms').children[0].click();
+  const request=f.packets.at(-1).requestId;
+  f.emit({type:'join-accept',requestId:request});
+  const pending=f.emit({type:'offer',roomId:room.roomId,sdp:JSON.stringify({session:'session_12345678'})});
+  assert.equal(timers.length,3);assert.equal(timers[2].cleared,false);
+  f.emit({type:'join-reject',requestId:request});
+  assert.equal(disposed,1,'rejected guest peer must be disposed');
+  assert.equal(timers[2].cleared,true,'SDP watchdog must be cancelled');
+  finish('late-answer');await pending;
+  assert.equal(f.packets.some(p=>p.type==='answer'),false,'rejected session must never transmit a late SDP answer');
+  assert.match(f.elements.get('#autoStatus').textContent,/Join request rejected or expired/);
+  dispose();
+ }finally{f.cleanup()}
+});
