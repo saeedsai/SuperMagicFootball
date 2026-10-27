@@ -2,7 +2,8 @@
 // GitHub Pages cannot scan a LAN; devices must open the host's companion-server URL.
 // Bound outbound signaling bytes and WebSocket queue growth on slow connections.
 const MAX_SIGNAL_FRAME_BYTES=210000,MAX_SIGNAL_QUEUE_BYTES=512*1024;
-const CONNECT_TIMEOUT_MS=12000;
+// Public WSS brokers can cold-start after an idle period; retain the fast LAN watchdog.
+const LAN_CONNECT_TIMEOUT_MS=12000,HOSTED_CONNECT_TIMEOUT_MS=60000;
 const signalEncoder=new TextEncoder();
 export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSocket,onEvent=()=>{},onState=()=>{},setTimeoutImpl=globalThis.setTimeout,clearTimeoutImpl=globalThis.clearTimeout}={}){
  if(typeof WebSocketImpl!=='function')throw new Error('WebSocket unavailable');
@@ -10,6 +11,7 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
  const configured=internet?(globalThis.SMF_P2P_SIGNAL_URL??hosted):(globalThis.SMF_LAN_SIGNAL_URL??(globalThis.location?.hostname==='saeedsai.github.io'?hosted:null));
  const secureEndpoint=typeof configured==='string' && /^wss:\/\/[a-z0-9.-]+(?::[0-9]{2,5})?\/lan-signal$/i.test(configured)?configured:null;
  const publicPages=globalThis.location?.hostname==='saeedsai.github.io';
+ const connectTimeoutMs=secureEndpoint?HOSTED_CONNECT_TIMEOUT_MS:LAN_CONNECT_TIMEOUT_MS;
  const url=secureEndpoint||(!publicPages?(globalThis.location?.protocol==='https:'?'wss://':'ws://')+(globalThis.location?.host||'localhost:8000')+'/lan-signal':null);
  if(!url){onState('unconfigured');return Object.freeze({send(){return false},close(){},get ready(){return false}})}
  let socket=null,closed=false,retry=null,attempt=0,connectTimeout=null;
@@ -36,7 +38,7 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
   connectTimeout=setTimeoutImpl(()=>{
    if(closed||socket!==ws||ws.readyState===1)return;
    connectTimeout=null;recycleSocket(1001,'Signaling connect timeout');
-  },CONNECT_TIMEOUT_MS);
+  },connectTimeoutMs);
   ws.addEventListener('open',()=>{if(closed||socket!==ws)return;clearConnectTimeout();attempt=0;onState('connected')});
   ws.addEventListener('close',()=>{if(closed||socket!==ws)return;clearConnectTimeout();socket=null;onState('disconnected');scheduleRetry()});
   ws.addEventListener('error',()=>{if(closed||socket!==ws)return;onState('error');recycleSocket(1011,'Signaling transport error')});

@@ -9,12 +9,12 @@ class FakeSocket extends EventTarget{
  close(){this.readyState=3;this.dispatchEvent(new Event('close'))}
  message(data){const event=new Event('message');event.data=data;this.dispatchEvent(event)}
 }
-function fixture(){
+function fixture({internet=false,location={protocol:'http:',host:'192.168.1.20:8000'}}={}){
  FakeSocket.instances=[];
- globalThis.location={protocol:'http:',host:'192.168.1.20:8000'};
+ globalThis.location=location;
  const callbacks=[],connectTimers=[],states=[],packets=[];
  const clientFactory=()=>load().then(({connectLanSignal})=>connectLanSignal({
-  WebSocketImpl:FakeSocket,onState:s=>states.push(s),onEvent:p=>packets.push(p),
+  internet,WebSocketImpl:FakeSocket,onState:s=>states.push(s),onEvent:p=>packets.push(p),
   setTimeoutImpl:(fn,delay)=>{const item={fn,delay,cancelled:false};(delay>10000?connectTimers:callbacks).push(item);return item},
   clearTimeoutImpl:item=>{item.cancelled=true}
  }));
@@ -189,4 +189,36 @@ test('leaving a lobby while connecting cancels watchdog and prevents retry',asyn
  assert.equal(client.ready,false);
  assert.equal(f.callbacks.length,0);
  assert.equal(FakeSocket.instances.length,1);
+});
+
+test('hosted internet P2P broker permits a 60-second cold start, then cancels its watchdog on open',async()=>{
+ const f=fixture({internet:true,location:{protocol:'https:',host:'saeedsai.github.io',hostname:'saeedsai.github.io'}});
+ const client=await f.clientFactory(),socket=FakeSocket.instances[0];
+ assert.equal(socket.url,'wss://supermagicfootball-lan-signal.onrender.com/lan-signal');
+ assert.equal(f.connectTimers.length,1);
+ assert.equal(f.connectTimers[0].delay,60000,'do not abort a sleeping hosted broker at the local LAN deadline');
+ assert.equal(f.callbacks.length,0);
+ socket.open();
+ assert.equal(f.connectTimers[0].cancelled,true);
+ f.connectTimers[0].fn();
+ assert.equal(client.ready,true,'late timeout cannot retire a successful cold-start connection');
+ assert.equal(f.callbacks.length,0);
+ client.close();
+});
+test('hosted Pages LAN signaling also tolerates cold start but retries after its extended deadline',async()=>{
+ const f=fixture({location:{protocol:'https:',host:'saeedsai.github.io',hostname:'saeedsai.github.io'}});
+ const client=await f.clientFactory(),first=FakeSocket.instances[0];
+ assert.equal(first.url,'wss://supermagicfootball-lan-signal.onrender.com/lan-signal');
+ assert.equal(f.connectTimers[0].delay,60000);
+ f.connectTimers[0].fn();
+ assert.equal(client.ready,false);
+ assert.deepEqual(f.states,['disconnected']);
+ assert.equal(f.callbacks.length,1);
+ first.open();
+ assert.equal(client.ready,false,'late socket must not revive the retired connection');
+ f.callbacks[0].fn();
+ const second=FakeSocket.instances[1];second.open();
+ assert.equal(client.ready,true);
+ assert.equal(client.send({type:'rooms'}),true);
+ client.close();
 });

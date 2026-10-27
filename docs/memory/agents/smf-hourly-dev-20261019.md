@@ -1,28 +1,24 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019`
+**Agent ID:** `smf-hourly-dev-20261019`  
 **Updated:** 2026-10-27
 
 ## Mission
-Continue bounded tested features directly on dev, even with pending release; only exact-head green protected promotion. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves.
+Continue bounded tested increments directly on dev despite pending releases; exact-head green protected promotion only. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, saves and offline.
 
 ## Current checkpoint
-- P2P-RELAY-03 (2026-10-27 13:05 CET): guest-only WebRTC failure now sends approved relay-request instead of leaving, host starts backup; broker checks exact approved internet guest. Executable two-lobby regression added. CI on exact dev head pending; production, Render, Pages, physical two-device/graphics still unverified.
-- 0.11.4.3 P2P relay fallback dev candidate: WebRTC first; 10s direct readiness fallback, 20s negotiation fallback, broker forwarding for approved guests, same validated host input and snapshot protocol, offline precache/QA regression. Production deployment, real devices and Render update not yet verified.
-- Baseline dev/main 4655feb30a1d2a05ce1da01bc0fde313c8cbc368, merged 0.11.4.1 PR #54. Exact-head dev Modular #40485167540 and Full 4 Node + 4 Chromium #40485167337 passed; real devices and Render broker version not yet certified.
-- 0.11.4.2 dev candidate LAN-ROOM-STALE-01: join(id) revalidates current room existence/build/schema, rejecting detached stale room buttons after removal or incompatible directory refresh. Regression covers LAN and internet P2P. No gameplay/roster/save/graphic changes. Exact-head CI and deployment pending.
+- 0.11.4.4 candidate: hosted secure signaling WebSocket watchdog 60s for Render cold starts; local same-origin LAN remains 12s. Two Node regressions cover hosted P2P open and hosted LAN retry; CI authoritative and pending.
+- Previous 0.11.4.3 candidate: guest-requested consent-approved internet relay backup for WebRTC failure. Render/main/Pages and real two-phone acceptance remain pending.
+- Baseline dev c57d0fdb23e657b3b274d67ff38d9b5ce6a20d79; main b3c8100a88e924dd4209396898116877602d284d. PR #56 open. Full #40501517174 and Modular #40501517177 were queued at inspection; not green certification.
 
 ## Next smallest action
-1. Inspect P2P-RELAY-03 focused Node regression, full 4+4 and Modular QA for exact dev head; repair failures.
-2. Promote only unchanged green dev via protected PR/workflow; verify main/Pages hosted bytes.
-3. Verify hosted Render signaling broker forwards guest names and is on current code.
-4. Add secure TURN relay support and test actual two-phone/cross-network Host/Join/Play.
-5. Continue Player Studio, counterable four-button Tricks and Crown Royals art.
+1. Inspect exact-head focused Node and Modular + 4 Node/4 Chromium CI; fix failures on dev.
+2. Protected green dev-to-main promotion via PR #56 only at unchanged certified SHA.
+3. Verify Pages hosted byte smoke and Render broker deployment at compatible commit.
+4. Test real two-phone Wi-Fi/cellular host/approve/play, fallback and LAN discovery.
+5. Continue Player Studio, four-button counterable Tricks and Crown Royals directional art.
 
 ## Ownership and exclusions
-Only dev/main; own checkpoint only. No force-push or security/CI bypass.
+Only dev/main; own checkpoint only. No force push, security bypass or false deployment claims.
 
 ## Evidence
-`src/modules/lan-auto-lobby.js`, `tests/lan_auto_lobby_flow.test.cjs`, `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md`. Physical LAN/P2P and visual art not certified.
-
-## Cleanup
-Under 4 KiB; preserve historical source and save data.
+`src/modules/lan-auto-signal.js`, `tests/lan_auto_signal_reconnect.test.cjs`, `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md`. Device and graphics QA not certified.
