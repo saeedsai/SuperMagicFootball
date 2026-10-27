@@ -1395,3 +1395,6 @@ Validate remote guest DataChannel interface before binding; close malformed chan
 - Candidate version 0.11.3.2 synchronized in About, package, README, SW cache, version policy and shared memory. Exact-head CI and hosted bytes must be rechecked before promotion; Render broker and two-phone tests remain separate gates.
 
 - CI repair follow-up: exact candidate `11036eae` failed dev preflight #40401209182 and Modular #40401209209 with 859/860 Node passing; the sole failure was `tests/project_memory_contract.test.cjs` requiring `## Cleanup` in the own checkpoint. Added the missing heading without changing game code or 0.11.3.2 version. New exact-head CI required; prior failure does not certify this documentation-only repair.
+
+## 2026-10-27 — LAN-072 P2P held input fix (0.11.4.14 candidate)
+Host now holds last validated guest four-button and directional input for at most two missing frames, eliminating false Jump release/repress and sprint resets from one-frame packet gaps; explicit empty packets release instantly. Added LAN-072 network input continuity test and updated LAN-044 expectation. Exact-head CI, hosted bytes and physical devices still require verification.
