@@ -1,30 +1,24 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-27
+**Updated:** 2026-10-28 00:06 CET
 
 ## Mission
-Sole developer: one bounded feature directly on dev every run, even if release pending. Only dev/main; no force, protection bypass or paused hourly work. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, saves/offline.
+Sole developer. Continue a bounded tested feature each run on existing dev regardless of release queue; only dev/main, no force push or protection bypass. Preserve 223 teams/2676 players, six formations, exactly four controls, Career/Cup 10 slots, SD09, saves and offline.
 
 ## Current checkpoint
-- 2026-10-27 23:12 CET: GH Actions cleanup permitted restart of exact-head Full Census, Modular QA and auto-promotion push. Modular source-and-data run #40592712627 exposed seven active Node test failures: four old module-order assertions, one obsolete workflow concurrency expectation, one double-escaped relay SDP test fixture and one double-escaped broker approval regex. Repair committed as a single six-test patch; no gameplay source/version bump. Full 4 Node + 4 Chromium and Modular QA remain certification gates; do not merge without green exact current head.
-- Starting dev `06b70af8cb822ed07a6cc75cc9a6b1d72f32e7b0`, main `b3c8100a88e924dd4209396898116877602d284d`; PR #56 open. Previous Full #40583818694 and Modular #40583818746 in progress on starting dev; no exact-head green evidence.
-- Candidate 0.11.4.13 P2P-RELAY-10: approved relay pseudo-RTC rejects foreign/direct SDP in host and guest before connected state. Valid relay SDP remains accepted. About/package/README/SW/cache/policy aligned.
+- Starting dev/main `45dd7a13b6a1f756c573b5c9fed85e3318e062ec` (PR #57 merged 2026-10-27 23:06 UTC). Prior SHA passed Full 4 Node + 4 Chromium #40599258942 and Modular #40599258872; main/Pages hosted bytes and physical two-client certification require independent checks.
+- LAN-073 implemented on dev: reset host held buttons and frozen-phase dedupe after RTC readiness loss, including fast false→true transitions between frames; reconnected guest gets paused/finished snapshot without physics, and new Jump press is not swallowed. Two focused tests committed. Candidate 0.11.4.15 metadata/package/README/SW/version contract updated. New exact-head CI not yet certified.
+- Pending: inspect current-head workflows, protected PR merge, Pages hosted byte smoke, Render broker health and two physical phones. Do not claim QA or deployment prematurely.
 
 ## Next smallest action
-1. Check exact new-head Full 4 Node + 4 Chromium and Modular QA; repair any concrete failure.
-2. Promote only unchanged completely green dev via protected PR #56; verify main SHA.
-3. Verify Pages deployment/hosted SHA-256 byte smoke and Render signaling health.
-4. Test two physical phones for LAN and cross-network P2P consent, fallback, inputs and graphics.
-5. Continue Player Studio, counterable four-button Tricks and Crown Royals directional art.
+1. Verify exact-head 4 Node + 4 Chromium, Modular and focused LAN-073 tests; repair failures on dev.
+2. Promote only fully green unchanged dev through protected PR, verify main exact SHA.
+3. Verify GitHub Pages deployment and hosted HTML/JS/CSS byte checks.
+4. Exercise two phones for LAN/P2P discovery, consent, input edges, pause/resume, graphics; distinguish emulator from physical proof.
+5. Implement next small Player Studio, counterable four-button Trick or directional-art improvement on dev even if release waits.
 
 ## Ownership and exclusions
-Sole developer `smf-hourly-dev-20261019`; no other agent memory edits, new branches, force pushes, security bypass or invented physical QA.
+Only own checkpoint; no edits to other agents' memories. No new branches, force pushes, bypassed security/CI, false device or deployment claims.
 
 ## Evidence
-Source-extracted rejection smoke performed in V8; P2P-RELAY-10 permanent Node regression committed for CI. Complete repository Node/Chromium/Modular not run locally; new-head CI, Pages and physical acceptance pending.
-
-## Cleanup
-No promotion while exact-head checks remain unverified. Continue development on dev next run.
-
-## LAN-072 checkpoint
-Two-frame remote input gap hold on dev, explicit release immediate, gap timeout fails closed. Tests updated. Candidate 0.11.4.14; do not claim deployed until exact SHA CI/Pages verified.
+Source and Node regression committed; full exact-head CI pending. Previously certified green checks belong to prior SHA only. Preserve current dev head and continue hourly development.
