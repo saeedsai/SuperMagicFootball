@@ -1,3 +1,8 @@
+## 2026-10-27 09:58 CET — LAN/P2P rejected guest SDP cleanup (0.11.3.14 candidate)
+- Baseline dev/main `58cf9298bd59e3b02e6d5adab09c4ed17585e619` (0.11.3.13). Rejection during pending SDP previously cleared the admission ID but left the peer and room identity alive; a late browser answer could still be sent.
+- Guest rejection now cancels its watchdog, disposes the pending peer and clears the stale room identity. New regressions cover stale room-removal/approval after rejection and delayed SDP completion. No roster, four-button, six-formation, SD09, ten-slot, offline or save-schema changes.
+- Candidate 0.11.3.14 aligned in About/package/README/service worker/policy/shared memory and own checkpoint. Full exact-head 4 Node + 4 Chromium, Modular QA, protected promotion, hosted bytes and physical LAN/P2P/TURN acceptance remain separate gates. Continue development despite pending release.
+
 ## 2026-10-27 08:59 CET — LAN/P2P duplicate guest admission guard (0.11.3.13 candidate)
 - Exact baseline dev/main e8adca57e9e08b93337a4405f49525ebb555c540; dev Modular #40465003574, Full 4 Node + 4 Chromium #40465003455, Concept Hero #40465003402 and Hair #40465003377 green; main Full hosted smoke #40466167217 and Pages #40466167228 green. Only dev/main; issue #48 open.
 - Replayed join-accept messages previously restarted the 25-second offer timeout, and could displace an in-progress guest SDP negotiation deadline. Guard already-approved/started guest admissions; two new Node regressions cover offer wait and pending SDP. Source-executed harness reproduced the old stuck wait and verified the correction.
