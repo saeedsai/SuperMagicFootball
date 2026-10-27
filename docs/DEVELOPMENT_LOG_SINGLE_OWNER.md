@@ -1,3 +1,9 @@
+## 2026-10-27 05:58 CET — LAN/P2P host readiness and match-start recovery (0.11.3.10 candidate)
+- Start: dev/main `b6155cf453a22d4fb6e409e0fc0d7b84e0c12475` identical; prior 0.11.3.9 combined-status API returned no statuses, so exact-head certification not inferred. No open PR. Open LAN issue #48; physical two-device play remains uncertified.
+- Fixed host WebRTC awaitReady rejection leaving peer allocated and blocking subsequent guests. Also clear host approval when onReady throws. Failed peers are disposed while room registration remains. Two focused Node regressions cover both paths.
+- Updated About-only 0.11.3.10, package, README heading/banner/date, release notes, SW cache, policy, shared memory, memory protocol and sole checkpoint. Preserve 223 teams/2676 players, six formations, four controls, ten save slots, SD09, offline and saves.
+- Next five: (1) exact-head Modular and 4+4 QA; (2) repair failures; (3) protected unchanged dev→main promotion; (4) Pages hosted byte smoke and physical LAN/P2P/TURN; (5) Player Studio/Tricks/Crown Royals graphics.
+
 ## 2026-10-27 05:04 CET — LAN/P2P host answer deadline (0.11.3.9 candidate)
 - Baseline exact dev/main `29ebbb29f32421d87f2668645bb3117ecafbe670` identical; dev Modular #40442165809, dev Full 4+4 #40442165792, main Full hosted smoke #40442543715 and Pages #40442543765 green. Only dev/main; no open PR. Physical two-device gameplay remains uncertified.
 - Host offer sent successfully could wait indefinitely for guest answer. Add 25-second host answer deadline, cleanup of stuck peer without unregistering room, and identity guard for stale async answer completion/rejection. Two focused Node regressions. No roster, six-formation, four-button, ten-slot, SD09, offline or save changes.

@@ -528,3 +528,49 @@ test('LAN/P2P delayed host answer rejection cannot dispose replacement peer',asy
   dispose();
  }finally{f.cleanup()}
 });
+
+test('LAN/P2P host recovers from WebRTC readiness rejection without losing registered room',async()=>{
+ const f=setup();let rejectReady,disposed=0,created=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.10',signalFactory:f.signalFactory,
+   peerFactory:()=>({createOffer:async()=>String(++created),acceptAnswer:async()=>{},
+    subscribeStatus:()=>()=>{},awaitReady:()=>new Promise((_,reject)=>{rejectReady=reject}),
+    dispose(){disposed++}})});
+  f.connect();f.elements.get('#autoHost').click();
+  const roomId=f.packets.at(-1).roomId;f.emit({type:'host-registered',roomId});
+  await f.emit({type:'guest-approved',roomId});
+  await f.emit({type:'answer',roomId,sdp:'answer'});
+  rejectReady(Error('RTC transport failed'));await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(disposed,1,'failed peer must be released');
+  assert.match(f.elements.get('#autoStatus').textContent,/Host connection failed.*Waiting for guest retry/);
+  await f.emit({type:'guest-approved',roomId});
+  assert.equal(f.packets.at(-1).type,'offer');
+  assert.equal(f.packets.at(-1).sdp,'2','a new guest must receive a new offer');
+  assert.equal(f.packets.filter(p=>p.type==='host').length,1);
+  assert.equal(f.packets.some(p=>p.type==='leave'),false,'hosting must remain registered');
+  dispose();
+ }finally{f.cleanup()}
+});
+
+test('LAN/P2P failed host match startup allows a fresh guest without closing the room',async()=>{
+ const f=setup();let onStatus,disposed=0,created=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.10',signalFactory:f.signalFactory,
+   onReady:()=>{throw Error('match initialization failed')},
+   peerFactory:()=>({createOffer:async()=>String(++created),acceptAnswer:async()=>{},
+    subscribeStatus:fn=>{onStatus=fn;return ()=>{}},awaitReady:()=>new Promise(()=>{}),
+    dispose(){disposed++}})});
+  f.connect();f.elements.get('#autoHost').click();const roomId=f.packets.at(-1).roomId;
+  await f.emit({type:'guest-approved',roomId});
+  await f.emit({type:'answer',roomId,sdp:'answer'});
+  onStatus({ready:true});
+  assert.equal(disposed,1,'failed startup must dispose its peer');
+  assert.match(f.elements.get('#autoStatus').textContent,/Unable to start host match.*Waiting for guest retry/);
+  await f.emit({type:'guest-approved',roomId});
+  assert.equal(f.packets.at(-1).sdp,'2');
+  assert.equal(f.packets.some(p=>p.type==='leave'),false);
+  dispose();
+ }finally{f.cleanup()}
+});
