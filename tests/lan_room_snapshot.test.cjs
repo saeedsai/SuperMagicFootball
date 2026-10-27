@@ -41,3 +41,12 @@ test('internet P2P rooms are globally visible only in their explicit directory; 
  assert.deepEqual(lanRoomSnapshot(rooms,'198.51.100.25',same,'lan').rooms,[]);
  assert.equal(rooms.size,3);
 });
+
+test('host consent broker forwards bounded guest name and original host display name',()=>{
+ const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
+ assert.match(server,/guestName:safeGuestName\(m\.guestName\)/);
+ assert.match(server,/type:'join-request',roomId:id,requestId,guestName:safeGuestName\(m\.guestName\)/);
+ assert.match(server,/type:'join-accept',roomId:id,requestId,hostName:room\.name/);
+ assert.match(server,/type:'guest-approved',roomId:id,requestId,guestName:req\.guestName/);
+ assert.match(server,/slice\(0,32\)/,'guest name must be bounded');
+});
