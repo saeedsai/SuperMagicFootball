@@ -1,3 +1,9 @@
+## 2026-10-27 12:00 CET — LAN-ROOM-STALE-01 stale directory click guard (0.11.4.2 candidate)
+- Baseline dev/main 4655feb30a1d2a05ce1da01bc0fde313c8cbc368, 0.11.4.1 merged via PR #54; exact-head Modular QA #40485167540 and Full 4 Node + 4 Chromium #40485167337 passed. Physical LAN/P2P and Render broker update remain separate checks.
+- Find Games previously retained clickable detached buttons after room-remove or refreshed build; join(id) only checked full flag and could send a phantom join for missing/incompatible rooms. Revalidate selected room existence, build and schema at click time, before sending. New regression covers both LAN and internet P2P stale removal and incompatible refresh.
+- Version 0.11.4.2 aligned across package, About notes, README banner/heading, offline cache and policy/memory. Exact-head focused/Modular/4+4 CI, protected promotion, hosted bytes and real two-phone acceptance pending at commit creation.
+- Next five: (1) inspect focused/Modular and 4+4 exact-head QA, (2) repair CI and promote only exact green head, (3) verify Pages and Render broker version, (4) secure TURN + physical two-device LAN/P2P, (5) Player Studio/Tricks/Crown Royals directional art.
+
 ## 2026-10-27 10:57 CET — LAN-ICE-01 independent ICE state reliability (0.11.4.1 candidate)
 - Baseline main af7b80d392a1329f9174a40d3b3527552197060f, dev 5b675eb7c49363e2cc06c107c643730439441939 (21 ahead). PR #54 open. Modular QA 40484660176 green; Full Census 40484660081 pending at start.
 - WebRTC ICE can enter failed/disconnected before RTCPeerConnection.connectionState reflects it. LAN and Online P2P now abort ICE gathering and awaitReady on terminal ICE, mark live transport unavailable on ICE disconnect and emit observable status changes on ICE events; recovery resumes on ICE reconnect. Three focused Node regressions added. Existing STUN-only P2P still needs TURN for restrictive NAT pairs; no physical device claim.
