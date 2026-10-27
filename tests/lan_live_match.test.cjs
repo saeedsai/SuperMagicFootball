@@ -45,7 +45,8 @@ test('LAN-044 host simulates only through authoritative peer and remote 4-button
   const peer={ready:true,
     inputs:new Map([[0,{buttons:['shoot','pass'],dx:-1,dy:1}]]),
     stepHostMatchFrame(frame,simulate){
-      const state=simulate(this.inputs.get(frame)??{buttons:[],dx:0,dy:0});
+      const received=this.inputs.has(frame);
+      const state=simulate(this.inputs.get(frame)??{buttons:[],dx:0,dy:0},{received});
       this.frames??=[];this.frames.push({frame,state});return {frame};
     }
   };
