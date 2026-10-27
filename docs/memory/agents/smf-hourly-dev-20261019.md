@@ -1,11 +1,12 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-27 12:00 CET
+**Updated:** 2026-10-27
 
 ## Mission
 Continue bounded tested features directly on dev, even with pending release; only exact-head green protected promotion. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves.
 
 ## Current checkpoint
+- 0.11.4.3 P2P relay fallback dev candidate: WebRTC first; 10s direct readiness fallback, 20s negotiation fallback, broker forwarding for approved guests, same validated host input and snapshot protocol, offline precache/QA regression. Production deployment, real devices and Render update not yet verified.
 - Baseline dev/main 4655feb30a1d2a05ce1da01bc0fde313c8cbc368, merged 0.11.4.1 PR #54. Exact-head dev Modular #40485167540 and Full 4 Node + 4 Chromium #40485167337 passed; real devices and Render broker version not yet certified.
 - 0.11.4.2 dev candidate LAN-ROOM-STALE-01: join(id) revalidates current room existence/build/schema, rejecting detached stale room buttons after removal or incompatible directory refresh. Regression covers LAN and internet P2P. No gameplay/roster/save/graphic changes. Exact-head CI and deployment pending.
 

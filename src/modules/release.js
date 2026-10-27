@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.2',
+ version:'0.11.4.3',
  date:'2026-10-27',
  notes:Object.freeze([
+  'Internet P2P now prefers direct WebRTC but automatically falls back to a bounded, consent-scoped relay through the existing discovery broker when restrictive NAT prevents a DataChannel. The same host-authoritative four-button inputs and validated match snapshots cross the fallback channel; relay traffic is not direct P2P and may add latency. LAN continues direct, with no roster, save or art asset changes. Hosted broker rollout and real cross-network two-phone gameplay still require verification.',
   'LAN and Online P2P room selection now rejects stale join buttons after a host disappears or a directory refresh replaces the room with an incompatible build. The guest stays in Find Games without sending a phantom join; roster, controls, offline play and saves are unchanged. Real two-device acceptance is still pending.',
   'LAN and Online P2P now detect ICE-only failure or disconnection even when the browser peer connection state lags. Broken handshakes fail promptly, live controls pause on ICE disconnect and recover when ICE reconnects; physical two-device validation and TURN provisioning remain pending.',
   'LAN and Online P2P hosts and guests can enter names visible during discovery, approval and match start. WebRTC readiness is bounded and internet connection errors explain potential TURN requirements. Cross-network TURN and physical two-device certification remain pending.',

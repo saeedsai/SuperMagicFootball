@@ -215,7 +215,7 @@ function startLanQuickMatch(peer,role,opponentName,ownName){
   lanPeer=peer;lanRole=role;lanPlayerNames={home:role==='host'?ownName:opponentName,away:role==='host'?opponentName:ownName};
   try{lanRuntime=createLanLiveMatch({peer,role,game,input,field:ENGINE.WORLD.field});}
   catch(error){stopLanMatch();game.matchState='none';throw error;}
-  closeMenu();drawHUD();toast((role==='host'?'LAN HOST · HOME TEAM':'LAN GUEST · AWAY TEAM')+(opponentName?' · vs '+String(opponentName).slice(0,32):''),2400);
+  closeMenu();drawHUD();toast((peer.relay?'RELAY BACKUP · ':'')+(role==='host'?'LAN HOST · HOME TEAM':'LAN GUEST · AWAY TEAM')+(opponentName?' · vs '+String(opponentName).slice(0,32):''),3000);
 }
 function showLanLobby(){
  page('LOCAL NETWORK','Two-player LAN Quick Match · host controls home, guest controls away.',
