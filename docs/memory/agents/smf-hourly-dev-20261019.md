@@ -17,5 +17,11 @@ Develop directly on dev, promote only exact green head through protected main. P
 4. Validate two real devices on LAN/P2P and Render room scope.
 5. Continue Player Studio, counterable Tricks and Crown Royals directional graphics.
 
+## Ownership and exclusions
+Sole authorized ongoing developer; only dev/main. No other agents' memory; never bypass GitHub security, CI, or protected promotion.
+
+## Evidence
+Prior certified 0.11.3.4 workflows recorded above. Candidate 0.11.3.5 exact-head checks must pass before promotion. First QA run failed checkpoint section contract; corrected section structure without a player version bump.
+
 ## Cleanup
 Keep this checkpoint under 4 KiB. Only dev/main branches; no other agents' memory edited.
