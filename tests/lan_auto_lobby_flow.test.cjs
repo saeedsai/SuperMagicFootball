@@ -778,7 +778,7 @@ test('both LAN and Online P2P identify players through discovery, join request a
   try{
    const {mountAutoLanLobby}=await load();
    const stop=mountAutoLanLobby(host.root,{internet,build:'0.11.4.0',signalFactory:host.signalFactory});
-   host.connect();host.elements.get('#autoPlayerName').value=' Alice ';
+   host.connect();host.root.querySelector('#autoPlayerName').value=' Alice ';
    host.elements.get('#autoHost').click();
    const registration=host.packets.find(packet=>packet.type==='host');
    assert.equal(registration.name,'Alice');
@@ -793,7 +793,7 @@ test('both LAN and Online P2P identify players through discovery, join request a
   try{
    const {mountAutoLanLobby}=await load();
    const stop=mountAutoLanLobby(guest.root,{internet,build:'0.11.4.0',signalFactory:guest.signalFactory});
-   guest.connect();guest.elements.get('#autoPlayerName').value=' Bob ';
+   guest.connect();guest.root.querySelector('#autoPlayerName').value=' Bob ';
    guest.elements.get('#autoFind').click();
    const room={type:'room-announce',roomId:'room_12345678',name:'Alice',build:'0.11.4.0',full:false,...(internet?{scope:'internet-p2p'}:{})};
    guest.emit(room);
