@@ -37,6 +37,17 @@ export function mountAutoLanLobby(root,options={}){
   },ADMISSION_TIMEOUT_MS);
   admissionTimer=timer;
  }
+ // A received offer can still hang while the browser computes an SDP answer.
+ function waitForGuestNegotiation(id,current){
+  clearAdmissionTimeout();
+  const timer=(options.setTimeoutImpl??setTimeout)(()=>{
+   if(admissionTimer!==timer)return;
+   admissionTimer=null;
+   if(disposed||mode!=='guest'||requestId!==id||!approved||peer!==current||started)return;
+   recoverGuestHandshake('Guest offer negotiation timed out.');
+  },ADMISSION_TIMEOUT_MS);
+  admissionTimer=timer;
+ }
  function waitForAdmission(id){clearAdmissionTimeout();admissionTimer=(options.setTimeoutImpl??setTimeout)(()=>{
   admissionTimer=null;if(disposed||mode!=='guest'||requestId!==id||approved||started)return;
   send({type:'leave'});cleanupPeer();requestId=null;roomId=null;
@@ -105,7 +116,7 @@ export function mountAutoLanLobby(root,options={}){
   if(m.type==='offer'&&mode==='guest'&&m.roomId===roomId&&approved&&!peer){
    clearAdmissionTimeout();
    let current=null;
-   try{const data=JSON.parse(m.sdp);const hello=normalizeLanPacket({protocol:1,type:'hello',role:'guest',session:data.session,build,sequence:0});current=peerFactory(hello);peer=current;const answer=await current.acceptOffer(m.sdp);if(peer===current){if(!send({type:'answer',roomId,sdp:answer}))throw Error('unable to send answer');watch(current)}}catch(e){if(!current||peer===current)recoverGuestHandshake('Guest connection failed: '+e.message)}return;
+   try{const data=JSON.parse(m.sdp);const hello=normalizeLanPacket({protocol:1,type:'hello',role:'guest',session:data.session,build,sequence:0});current=peerFactory(hello);peer=current;waitForGuestNegotiation(requestId,current);const answer=await current.acceptOffer(m.sdp);if(peer===current){clearAdmissionTimeout();if(!send({type:'answer',roomId,sdp:answer}))throw Error('unable to send answer');watch(current)}}catch(e){if(!current||peer===current)recoverGuestHandshake('Guest connection failed: '+e.message)}return;
   }
   if(m.type==='answer'&&mode==='host'&&m.roomId===roomId&&peer){try{await peer.acceptAnswer(m.sdp);if(peer)watch(peer)}catch(e){cleanupPeer();status('Host answer failed: '+e.message)}}
  }

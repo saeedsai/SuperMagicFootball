@@ -3,25 +3,25 @@
 **Updated:** 2026-10-27
 
 ## Mission
-Implement bounded changes on dev; promote only exact green head via protected pipeline. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves. Only dev/main, no force-push or bypass.
+Bounded increments on dev; protected exact-green promotion only. Preserve 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, offline and saves. Only dev/main; no force-push or bypass.
 
 ## Current checkpoint
-- Candidate 0.11.3.6: approved LAN/Online P2P guest times out after 25 seconds without host offer, releases seat and resumes discovery; host handles failed offer send. Three Node regressions.
-- Baseline dev/main `c83b8fa57ebe36049fd8866ecb10a363d4f1fa2f` green: dev Modular #40424489450, dev Full 4+4 #40424490550, main Full hosted smoke #40424946688 and Pages #40424946166.
-- Candidate requires new exact-head CI and Pages. Physical LAN/P2P and TURN-dependent cross-network play remain unverified.
+- Candidate 0.11.3.7: guest SDP answer processing has a 25-second deadline after host offer. Stalls release seat and resume discovery; late answers ignored and success cancels deadline. Two Node regressions.
+- Baseline dev/main `5158446d58a74b6d5a91cea07c5153b974067891` green: dev Modular #40430557655, Full 4+4 #40430557553, main Full hosted smoke #40431545841 and Pages #40431545633.
+- New exact-head QA, protected promotion and hosted bytes pending. Physical two-device LAN/P2P and TURN-dependent internet play uncertified.
 
 ## Next smallest action
-1. Complete exact-head Modular and four Node/four Chromium shards; repair failures.
-2. Promote only exact green dev head to main.
-3. Verify Pages deployment and hosted HTML/JS/CSS bytes.
-4. Validate real two-device LAN/P2P and Render broker scope, plus TURN limitations.
-5. Continue Player Studio, counterable Magic Tricks and Crown Royals art QA.
+1. Inspect exact-head Modular QA and four Node/four Chromium shards; repair failures.
+2. Promote only exact green dev head through protected pipeline.
+3. Verify Pages and hosted HTML/JS/CSS bytes for main SHA.
+4. Validate real two-device LAN/P2P and TURN requirements.
+5. Continue Player Studio, counterable Tricks and Crown Royals directional art.
 
 ## Ownership and exclusions
-Sole authorized developer on dev; only dev/main. No other agents' memory; no bypass of CI, security or protections.
+Sole developer on dev; only dev/main. No other agent memory; no bypass of CI or security.
 
 ## Evidence
-Baseline certified workflow links in central log. Red-before/green-after source-executed offer-timeout smoke; permanent Node cases pending exact-head CI.
+Prior certified workflow IDs in central log. New regression cases in tests/lan_auto_lobby_flow.test.cjs; exact-head QA pending.
 
 ## Cleanup
-Own checkpoint under 4 KiB. No other agent memory or branch touched.
+Own checkpoint under 4 KiB. No unrelated branches or memory changed.

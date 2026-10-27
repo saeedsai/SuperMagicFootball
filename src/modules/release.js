@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.3.6',
+ version:'0.11.3.7',
  date:'2026-10-27',
  notes:Object.freeze([
+  'LAN and Online P2P guests now recover when browser SDP answer processing stalls after host approval: a 25-second deadline releases the reserved seat, resumes discovery and ignores late answers. Successful negotiation cancels the deadline. Four controls, rosters, offline play and saves are unchanged; physical two-device acceptance remains pending.',
   'LAN and Online P2P approved guests recover if a host never sends its WebRTC offer: after 25 seconds the reserved seat is released and room discovery resumes. Hosts detect failed offer sends and dispose broken peers. Four controls, rosters, saves and offline play are unchanged; physical two-device testing remains pending.',
   'LAN and Online P2P discovery now retry a WebSocket that stays stuck connecting without an open or close event. A 12-second connection watchdog cancels on success, shutdown or socket retirement; stale callbacks cannot disrupt a newer connection. Four controls, teams, saves and offline play are unchanged; physical two-device acceptance remains pending.',
   'LAN and Online P2P discovery now reconnect after a WebSocket transport error even if the browser never delivers a close event. Leaving a lobby safely handles socket-close exceptions and ignores stale events. Room admission, four controls, saves and offline play are unchanged; real-device acceptance remains pending.',

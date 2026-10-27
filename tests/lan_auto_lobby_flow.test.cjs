@@ -381,3 +381,48 @@ test('host failed offer send disposes broken peer and reports error',async()=>{
   dispose();
  }finally{f.cleanup()}
 });
+
+test('LAN/P2P stalled guest SDP answer releases seat and ignores late completion',async()=>{
+ const f=setup(),timers=[];let finish,disposed=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.7',signalFactory:f.signalFactory,
+   setTimeoutImpl:(fn,ms)=>{const t={fn,ms,cleared:false};timers.push(t);return t},
+   clearTimeoutImpl:t=>{t.cleared=true},
+   peerFactory:()=>({acceptOffer:()=>new Promise(resolve=>{finish=resolve}),dispose(){disposed++}})});
+  f.elements.get('#autoFind').click();f.connect();
+  const room={type:'room-announce',roomId:'room_12345678',name:'Friendly',build:'0.11.3.7',full:false};
+  f.emit(room);f.elements.get('#autoRooms').children[0].click();
+  const join=f.packets.at(-1);f.emit({type:'join-accept',roomId:room.roomId,requestId:join.requestId});
+  const pending=f.emit({type:'offer',roomId:room.roomId,sdp:JSON.stringify({session:'session_12345678'})});
+  assert.equal(timers.length,3);assert.equal(timers[1].cleared,true);
+  assert.equal(timers[2].ms,25000);timers[2].fn();
+  assert.deepEqual(f.packets.slice(-2).map(p=>p.type),['leave','rooms']);
+  assert.equal(disposed,1);assert.match(f.elements.get('#autoStatus').textContent,/Guest offer negotiation timed out.*retry/);
+  finish('late-answer');await pending;
+  assert.equal(f.packets.some(p=>p.type==='answer'),false);
+  f.emit({type:'rooms-snapshot',rooms:[{roomId:room.roomId,name:room.name,build:room.build,full:false}]});
+  f.elements.get('#autoRooms').children[0].click();assert.equal(f.packets.at(-1).type,'join');
+  dispose();
+ }finally{f.cleanup()}
+});
+
+test('LAN/P2P completed SDP answer cancels negotiation timeout',async()=>{
+ const f=setup(),timers=[];
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.3.7',signalFactory:f.signalFactory,
+   setTimeoutImpl:(fn,ms)=>{const t={fn,ms,cleared:false};timers.push(t);return t},
+   clearTimeoutImpl:t=>{t.cleared=true},
+   peerFactory:()=>({acceptOffer:async()=>'valid-answer',subscribeStatus:()=>()=>{},
+    awaitReady:()=>new Promise(()=>{}),dispose(){}})});
+  f.elements.get('#autoFind').click();f.connect();
+  const room={type:'room-announce',roomId:'room_12345678',name:'Friendly',build:'0.11.3.7',full:false};
+  f.emit(room);f.elements.get('#autoRooms').children[0].click();
+  const join=f.packets.at(-1);f.emit({type:'join-accept',roomId:room.roomId,requestId:join.requestId});
+  await f.emit({type:'offer',roomId:room.roomId,sdp:JSON.stringify({session:'session_12345678'})});
+  assert.equal(timers[2].cleared,true);assert.equal(f.packets.at(-1).type,'answer');
+  const count=f.packets.length;timers[2].fn();assert.equal(f.packets.length,count);
+  dispose();
+ }finally{f.cleanup()}
+});

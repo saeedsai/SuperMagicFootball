@@ -1,3 +1,9 @@
+## 2026-10-27 02:57 CET — LAN/P2P stalled guest SDP answer deadline (0.11.3.7 candidate)
+- Baseline dev/main `5158446d58a74b6d5a91cea07c5153b974067891`: dev Modular #40430557655 and Full 4+4 #40430557553 green; main Full hosted smoke #40431545841 and Pages #40431545633 green. Only dev/main, no open PR.
+- Offer arrival cleared the guest timeout before asynchronous browser SDP processing; a never-resolving acceptOffer could strand the seat. New 25-second deadline releases the seat, resumes discovery and ignores late answers; successful answer cancels timer. Two focused Node regressions.
+- Candidate About/package/README/cache/policy/shared memory and sole checkpoint aligned. Preserves 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves. Exact-head CI, protected promotion, Pages bytes and physical LAN/P2P acceptance remain separate gates.
+- Next five: (1) exact-head Modular and 4 Node + 4 Chromium; (2) protected green promotion; (3) hosted Pages byte smoke; (4) real two-device LAN/P2P/TURN QA; (5) Player Studio/counterable Tricks/Crown Royals art.
+
 ## 2026-10-27 02:02 CET — LAN/P2P approved guest offer timeout (0.11.3.6 candidate)
 - Exact baseline dev/main `c83b8fa57ebe36049fd8866ecb10a363d4f1fa2f`; dev Modular #40424489450 and Full 4 Node + 4 Chromium #40424490550 green; main Full hosted smoke #40424946688 and Pages #40424946166 green. Only dev/main branches, no open PR.
 - Guest approval previously cancelled admission timeout but could wait forever if host never sent a WebRTC offer. After 25 seconds, release reserved seat and resume discovery; a valid offer cancels timer. Failed host offer sends dispose unusable peer and report failure. Source-executed baseline stuck; patched flow recovered. Three Node regressions added.
