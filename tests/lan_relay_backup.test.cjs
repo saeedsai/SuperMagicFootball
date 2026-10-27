@@ -218,3 +218,32 @@ test('P2P-RELAY-03 guest-only WebRTC failure asks approved host for backup and s
   globalThis.document=oldDoc;globalThis.location=oldLocation;globalThis.RTCPeerConnection=oldRtc;
  }
 });
+
+// Broker rejects UTF-8 payloads above 24,000 bytes. Do not claim success for
+// a smaller UTF-16 string whose Unicode encoding will be silently dropped.
+test('P2P-RELAY-04 enforces broker UTF-8 budget in both directions',async()=>{
+ const {createLanRelayPeerConnection}=await import('../src/modules/lan-relay-peer.js');
+ let host,guest;const forwarded=[];
+ const toGuest={send(packet){forwarded.push(packet);queueMicrotask(()=>guest?.receiveRelayFrame(packet.data));return true;}};
+ const toHost={send(packet){queueMicrotask(()=>host?.receiveRelayFrame(packet.data));return true;}};
+ host=createLanRelayPeerConnection(hello('host'),{connection:toGuest,roomId});
+ guest=createLanRelayPeerConnection(hello('guest'),{connection:toHost,roomId});
+ try{
+  const answer=await guest.acceptOffer(await host.createOffer());
+  await host.acceptAnswer(answer);
+  await Promise.all([host.awaitReady(1200),guest.awaitReady(1200)]);
+  const accepted=[],channel=guest.peer.channel;
+  channel.addEventListener('message',event=>accepted.push(event.data));
+  const tooLarge='😀'.repeat(6001),withinLimit='😀'.repeat(5999);
+  assert.ok(tooLarge.length<24000&&new TextEncoder().encode(tooLarge).byteLength>24000);
+  assert.equal(new TextEncoder().encode(withinLimit).byteLength,23996);
+  const before=forwarded.length;
+  assert.throws(()=>host.peer.channel.send(tooLarge),/relay unavailable/i);
+  assert.equal(forwarded.length,before,'oversized Unicode never reaches broker');
+  guest.receiveRelayFrame(tooLarge);
+  assert.deepEqual(accepted,[],'oversized inbound Unicode is discarded');
+  host.peer.channel.send(withinLimit);
+  await tick();
+  assert.deepEqual(accepted,[withinLimit],'valid UTF-8 frame still crosses relay');
+ }finally{host.dispose();guest.dispose();}
+});

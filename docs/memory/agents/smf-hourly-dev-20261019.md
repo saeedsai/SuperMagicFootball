@@ -1,27 +1,21 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019`
+**Agent ID:** smf-hourly-dev-20261019
 **Updated:** 2026-10-27
 
 ## Mission
-One bounded tested increment each run directly on dev even when release waits. Only dev/main and protected exact-green promotion. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves.
+Continuous tested increments on existing dev; only protected exact-green promotion to main. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline/saves.
 
 ## Current checkpoint
-- 0.11.4.6 dev candidate: short-lived LAN/Online P2P WebSocket opens no longer reset exponential retry backoff. A stable 30-second connection resets retries. Four focused source-executed Node regressions (LAN/P2P short-lived/stable) passed locally. Full exact-head CI pending.
-- Previous 0.11.4.5: invalid explicit broker URL fails closed; 0.11.4.4: 60s hosted cold-start; 0.11.4.3: consent-scoped internet relay fallback.
-- Baseline dev b56fe67be2cd0bcf2c46ad5339c63a555497e860; main b3c8100a88e924dd4209396898116877602d284d; PR #56 open. At inspection Full #40517980648 pending preflight, Modular #40517979707 queued; older Full #40508485325 cancelled. No new main/Pages/Render or real two-phone certification.
-
-## CI investigation — 2026-10-27
-- Exact dev b9e3e4cff832eb0ebeab3aaa4defa11d86d431e6; main b3c8100a88e924dd4209396898116877602d284d. Full #40535458135/#40535472748 and Modular #40535458132/#40535472699 remain queued. The Full workflow now has cancel-in-progress false; no successful exact-head full QA yet. Do not promote.
-
-## Cleanup
-- Keep this checkpoint below 4 KiB and avoid altering other agents' files.
+- Baseline dev 0d394f77b383810d86b1a11c9c24b82f01eac766; main b3c8100a88e924dd4209396898116877602d284d; PR #56 open. 0.11.4.7 candidate fixes Unicode UTF-8 relay budget against 24,000-byte broker limit (outbound rejection/inbound discard) and adds a two-peer regression. Candidate only: exact-head CI, Pages, Render and physical two-client certification pending.
+- Previous 0.11.4.6: broker flap backoff; workflow cancellation policy changed to preserve running full census. Earlier 0.11.4.3: approved WebRTC relay fallback.
+- At inspection Full #40535793954 pending and Modular #40535793695 queued on prior head. Do not mistake older green jobs for this candidate.
 
 ## Next five
-1. Diagnose and repair exact-head queued/failing 4 Node+4 Chromium and Modular QA.
-2. Promote only unchanged fully green dev head through protected PR #56.
-3. Verify Pages hosted bytes and compatible Render broker.
-4. Verify physical Wi-Fi LAN and cross-network P2P Host/Approve/Play, including relay.
+1. Inspect exact-head Full 4 Node+4 Chromium and Modular QA; repair failures.
+2. Promote only unchanged fully green dev head via protected PR #56.
+3. Verify main GitHub Pages byte hashes and Render broker compatibility.
+4. Run real two-phone Wi-Fi LAN and cross-network P2P Host/Approve/Play, including relay.
 5. Continue Player Studio, counterable four-button Tricks and Crown Royals directional art.
 
-## Ownership
-Sole developer only; no new branches, force pushes, security bypass or fabricated QA. Keep own checkpoint under 4 KiB.
+## Cleanup
+Keep checkpoint <4 KiB, do not touch other agents' memory, never create branches or force-push.

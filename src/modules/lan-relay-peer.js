@@ -4,15 +4,17 @@
 import {createLanPeerConnection} from './lan_peer_connection.js';
 const RELAY_SDP='v=0\r\ns=smf-approved-relay\r\nt=0 0\r\n';
 const MAX_RELAY_WIRE=24000;
+// The broker enforces UTF-8 bytes, not UTF-16 code units. Match its limit locally.
+const relayEncoder=new TextEncoder();
 class RelayChannel extends EventTarget {
  constructor(send){super();this.label='smf-lan';this.readyState='connecting';this._send=send;}
  open(){if(this.readyState!=='connecting')return;this.readyState='open';this.dispatchEvent(new Event('open'));}
  send(data){
-  if(this.readyState!=='open'||typeof data!=='string'||data.length>MAX_RELAY_WIRE||!this._send(data))
+  if(this.readyState!=='open'||typeof data!=='string'||data.length>MAX_RELAY_WIRE||relayEncoder.encode(data).byteLength>MAX_RELAY_WIRE||!this._send(data))
    throw Error('Approved backup relay unavailable');
  }
  receive(data){
-  if(this.readyState!=='open'||typeof data!=='string'||data.length>MAX_RELAY_WIRE)return;
+  if(this.readyState!=='open'||typeof data!=='string'||data.length>MAX_RELAY_WIRE||relayEncoder.encode(data).byteLength>MAX_RELAY_WIRE)return;
   const event=new Event('message');Object.defineProperty(event,'data',{value:data});
   this.dispatchEvent(event);
  }

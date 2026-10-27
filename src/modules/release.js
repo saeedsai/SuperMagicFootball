@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.6',
+ version:'0.11.4.7',
  date:'2026-10-27',
  notes:Object.freeze([
+  'Internet P2P approved relay now rejects oversized UTF-8 Unicode frames before sending and discards oversized inbound frames, matching the 24,000-byte broker limit instead of mistakenly counting UTF-16 characters. This avoids silently dropped relayed messages; valid frames and four-button gameplay remain unchanged. Physical cross-network acceptance and exact-head CI are pending.',
   'LAN and Online P2P signaling now preserve exponential reconnect backoff across short-lived broker connections, preventing rapid repeated reconnects when a broker flaps. A stable 30-second connection resets retries to one second. Four source-executed regressions cover both modes; four controls, rosters, offline play and saves remain unchanged. Hosted and physical two-phone acceptance still require verification.',
   'Explicitly configured LAN and internet P2P signaling broker URLs now fail closed when invalid, rather than silently switching to an unintended local or hosted directory. Valid secure broker overrides and default LAN/hosted discovery remain unchanged. This is a connection-scope safety fix, not real-device multiplayer certification; rosters, four controls, offline play and saves are unchanged.',
   'LAN and internet P2P discovery now allow up to 60 seconds for a hosted secure signaling broker to wake after idle, instead of closing its WebSocket after 12 seconds. Local same-origin LAN still retries after 12 seconds; successful connections cancel their watchdog and stalled hosted connections still retry. This improves connection startup, not physical two-device certification. Four buttons, rosters, saves and offline play are unchanged.',
