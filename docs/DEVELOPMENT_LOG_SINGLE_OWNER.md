@@ -1,3 +1,9 @@
+## 2026-10-27 10:57 CET — LAN-061 independent ICE state reliability (0.11.4.1 candidate)
+- Baseline main af7b80d392a1329f9174a40d3b3527552197060f, dev 5b675eb7c49363e2cc06c107c643730439441939 (21 ahead). PR #54 open. Modular QA 40484660176 green; Full Census 40484660081 pending at start.
+- WebRTC ICE can enter failed/disconnected before RTCPeerConnection.connectionState reflects it. LAN and Online P2P now abort ICE gathering and awaitReady on terminal ICE, mark live transport unavailable on ICE disconnect and emit observable status changes on ICE events; recovery resumes on ICE reconnect. Three focused Node regressions added. Existing STUN-only P2P still needs TURN for restrictive NAT pairs; no physical device claim.
+- Candidate version 0.11.4.1 aligned with About/package/README/cache/policy/shared memory. Exact-head CI and protected promotion still required; no roster, control, save or art changes.
+- Next five: (1) full Modular and 4+4 exact-head QA, (2) repair failing shards, (3) protected main promotion and Pages byte smoke, (4) Render broker + TURN and physical two-phone QA, (5) Player Studio/Tricks/Crown Royals art.
+
 ## 2026-10-27 — CI blocker repair for 0.11.4.0
 - Exact previous dev head a2bc33abc55d44ccf351ed315cb9505ea6915a6f failed Modular Game Dev QA run 40484051045 and Full Regression Census run 40484051276. Both failed solely in Node version policy: offline cache token must end with four-field package version (two assertions). All earlier named-player and P2P readiness tests shown in logs passed.
 - Repaired sw.js suffix to `-01140` and committed 9022b282faa1da062e03a315f8f8065bf3419ed3 on dev. Fresh Modular QA run 40484611743 and Full Census run 40484611636 started, results pending at observation. Protected PR #54 remains open; do not merge until exact-head green. Physical LAN/P2P/TURN and graphics remain uncertified.
