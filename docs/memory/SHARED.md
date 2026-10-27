@@ -13,7 +13,7 @@
 - **QA:** [single-developer log](../DEVELOPMENT_LOG_SINGLE_OWNER.md), GitHub Actions and [Pages](../../GITHUB_PAGES_SETUP.md).
 
 ## Mandatory About version rule
-On **every Git commit**, preserve the About-only installed release version `0.11.4.11` and its offline notes from `src/modules/release.js`. Do not display a remote GitHub `dev` SHA or version banner outside About. Immutable commit SHAs stay internal to GitHub Actions/history; hosted Pages byte comparison verifies actual deployed content. **Every player-facing game update must also update root `README.md` with the new four-part version in banner and heading, dated summary of shipped features/fixes, compatibility notes where relevant and live link. README/version mismatch blocks release.** Documentation-only commits do not bump the installed version. Follow [`docs/VERSIONING_POLICY.md`](../VERSIONING_POLICY.md).
+On **every Git commit**, preserve the About-only installed release version `0.11.4.12` and its offline notes from `src/modules/release.js`. Do not display a remote GitHub `dev` SHA or version banner outside About. Immutable commit SHAs stay internal to GitHub Actions/history; hosted Pages byte comparison verifies actual deployed content. **Every player-facing game update must also update root `README.md` with the new four-part version in banner and heading, dated summary of shipped features/fixes, compatibility notes where relevant and live link. README/version mismatch blocks release.** Documentation-only commits do not bump the installed version. Follow [`docs/VERSIONING_POLICY.md`](../VERSIONING_POLICY.md).
 
 ## Shared risks and working decisions
 - Other developer sessions should stop writing to the repository unless newly authorized; still reconcile any concurrent Git changes with the latest SHA. No force pushes or circumvented security checks.
@@ -47,3 +47,5 @@ Read only your own [registered checkpoint](AGENTS_INDEX.json) according to [memo
 - **0.11.4.9 dev candidate (2026-10-27):** Early approved internet relay hello requires matching session, build and opposite role, preventing stale frames from consuming the single pre-open handshake buffer. Focused regression added; exact-head CI, Pages, broker and two-client acceptance pending.
 
 - **0.11.4.11 dev candidate (2026-10-27):** Approved relay now budgets the complete 24,000-byte broker JSON frame, including UTF-8, room ID and escaping. P2P-RELAY-08 tests both peer directions and corrects P2P-RELAY-04. Earlier P2P-RELAY-07 covers 4 KiB pre-open hello parsing. Exact-head CI, main/Pages and physical two-client play pending.
+
+- **0.11.4.12 dev candidate (2026-10-27):** A validated pre-channel host hello survives signaling reorder; lost later echoes no longer strand the guest. P2P-RELAY-09 added. Exact-head CI, main/Pages and physical devices pending.

@@ -382,3 +382,33 @@ test('P2P-RELAY-08 both peers enforce exact 24000-byte JSON wire cap',async()=>{
   }
  }finally{host.dispose();guest.dispose();}
 });
+
+// P2P-RELAY-09: retain a host hello received before the guest's DataChannel exists.
+test('P2P-RELAY-09 guest replays only validated pre-channel host hello',async()=>{
+ const {createLanRelayPeerConnection}=await import('../src/modules/lan-relay-peer.js');
+ let host,guest,hostHellos=0;
+ const toGuest={send(packet){if(packet.type!=='relay-frame')return false;
+  if(JSON.parse(packet.data).type==='hello'){hostHellos++;return true;} // drop later host echoes
+  guest.receiveRelayFrame(packet.data);return true;}};
+ const toHost={send(packet){if(packet.type!=='relay-frame')return false;
+  host.receiveRelayFrame(packet.data);return true;}};
+ host=createLanRelayPeerConnection(hello('host'),{connection:toGuest,roomId});
+ guest=createLanRelayPeerConnection(hello('guest'),{connection:toHost,roomId});
+ try{
+  const offer=await host.createOffer();
+  assert.equal(guest.peer.channel,null,'guest has no DataChannel yet');
+  for(const bad of ['{',JSON.stringify({...hello('host'),session:'stale_session'}),
+    JSON.stringify({...hello('host'),build:'0.0.0.0'}),JSON.stringify(hello('guest')),
+    JSON.stringify({...hello('host'),padding:'x'.repeat(4096)})])guest.receiveRelayFrame(bad);
+  guest.receiveRelayFrame(JSON.stringify(hello('host')));
+  const answer=await guest.acceptOffer(offer);
+  assert.equal(guest.ready,true,'valid buffered host hello must be replayed after open');
+  await host.acceptAnswer(answer);
+  await Promise.all([host.awaitReady(1200),guest.awaitReady(1200)]);
+  assert.ok(hostHellos>=1,'later host hello frames were intentionally dropped');
+  guest.sendGuestInput(0,['jump'],.25,0);
+  const frame=host.advanceHostFrame(0);
+  assert.equal(frame.received,true);
+  assert.deepEqual(frame.input.buttons,['jump']);
+ }finally{host.dispose();guest.dispose();}
+});
