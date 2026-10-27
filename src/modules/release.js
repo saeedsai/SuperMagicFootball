@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.3.8',
+ version:'0.11.3.9',
  date:'2026-10-27',
  notes:Object.freeze([
+  'LAN and Online P2P hosts now stop waiting after 25 seconds if an approved guest never sends a WebRTC answer. Late answer errors cannot destroy replacement connections, and the host room remains available for retry. Four controls, rosters, saves and offline play are unchanged; real-device acceptance remains pending.',
   'LAN and Online P2P hosts now time out WebRTC offer creation after 25 seconds instead of keeping a stuck peer. Guest departure cancels the deadline, and late offers or errors cannot replace or dispose a newer connection. Existing gameplay, four controls, teams, offline play and saves are unchanged; real-device acceptance is pending.',
   'LAN and Online P2P guests now recover when browser SDP answer processing stalls after host approval: a 25-second deadline releases the reserved seat, resumes discovery and ignores late answers. Successful negotiation cancels the deadline. Four controls, rosters, offline play and saves are unchanged; physical two-device acceptance remains pending.',
   'LAN and Online P2P approved guests recover if a host never sends its WebRTC offer: after 25 seconds the reserved seat is released and room discovery resumes. Hosts detect failed offer sends and dispose broken peers. Four controls, rosters, saves and offline play are unchanged; physical two-device testing remains pending.',

@@ -1,3 +1,9 @@
+## 2026-10-27 05:04 CET — LAN/P2P host answer deadline (0.11.3.9 candidate)
+- Baseline exact dev/main `29ebbb29f32421d87f2668645bb3117ecafbe670` identical; dev Modular #40442165809, dev Full 4+4 #40442165792, main Full hosted smoke #40442543715 and Pages #40442543765 green. Only dev/main; no open PR. Physical two-device gameplay remains uncertified.
+- Host offer sent successfully could wait indefinitely for guest answer. Add 25-second host answer deadline, cleanup of stuck peer without unregistering room, and identity guard for stale async answer completion/rejection. Two focused Node regressions. No roster, six-formation, four-button, ten-slot, SD09, offline or save changes.
+- Align About-only 0.11.3.9, package, README banner/heading, release notes, offline cache, version policy, shared memory and sole checkpoint. New exact-head Modular/4+4, protected promotion, Pages hosted bytes and physical LAN/P2P/TURN verification remain separate gates.
+- Next five: (1) exact-head Modular and 4 Node + 4 Chromium; (2) repair failures; (3) promote only green unchanged dev; (4) Pages byte smoke and physical LAN/P2P/TURN acceptance; (5) Player Studio/counterable Tricks/Crown Royals art.
+
 ## 2026-10-27 04:03 CET — LAN/P2P host offer creation deadline (0.11.3.8 candidate)
 - Baseline dev/main `4b15b9c4e3c7e3da98bf7d533be534c36d3a1a62` identical; prior dev Modular #40435820821 and Full 4 Node + 4 Chromium #40435820727 green, including protected dev→main promotion. Two branches only; no open PR. Production Pages byte smoke for baseline not independently rechecked this run.
 - Host createOffer could remain pending after approval, and a delayed rejection could dispose a newer peer. Add 25-second host offer deadline, cleanup on guest departure/reconnect, stale completion/rejection guards, and two focused Node regressions. Host room remains registered for retry.

@@ -60,6 +60,18 @@ export function mountAutoLanLobby(root,options={}){
   },ADMISSION_TIMEOUT_MS);
   admissionTimer=timer;
  }
+ // Bound the time a host waits for an answer after transmitting its offer.
+ function waitForHostAnswer(current){
+  clearAdmissionTimeout();
+  const timer=(options.setTimeoutImpl??setTimeout)(()=>{
+   if(admissionTimer!==timer)return;
+   admissionTimer=null;
+   if(disposed||mode!=='host'||peer!==current||!approved||started)return;
+   cleanupPeer();approved=false;
+   status('Guest answer timed out. Waiting for guest retry.');
+  },ADMISSION_TIMEOUT_MS);
+  admissionTimer=timer;
+ }
  function waitForAdmission(id){clearAdmissionTimeout();admissionTimer=(options.setTimeoutImpl??setTimeout)(()=>{
   admissionTimer=null;if(disposed||mode!=='guest'||requestId!==id||approved||started)return;
   send({type:'leave'});cleanupPeer();requestId=null;roomId=null;
@@ -133,7 +145,7 @@ export function mountAutoLanLobby(root,options={}){
     clearAdmissionTimeout();
     if(!send({type:'offer',roomId,sdp:offer})){
      cleanupPeer();approved=false;status('Unable to send host offer. Waiting for guest retry.');
-    }
+    }else waitForHostAnswer(current);
    }catch(e){
     // A rejected offer from an abandoned session must not dispose a newer peer.
     if(!current||peer===current){
@@ -148,7 +160,11 @@ export function mountAutoLanLobby(root,options={}){
    let current=null;
    try{const data=JSON.parse(m.sdp);const hello=normalizeLanPacket({protocol:1,type:'hello',role:'guest',session:data.session,build,sequence:0});current=peerFactory(hello);peer=current;waitForGuestNegotiation(requestId,current);const answer=await current.acceptOffer(m.sdp);if(peer===current){clearAdmissionTimeout();if(!send({type:'answer',roomId,sdp:answer}))throw Error('unable to send answer');watch(current)}}catch(e){if(!current||peer===current)recoverGuestHandshake('Guest connection failed: '+e.message)}return;
   }
-  if(m.type==='answer'&&mode==='host'&&m.roomId===roomId&&peer){try{await peer.acceptAnswer(m.sdp);if(peer)watch(peer)}catch(e){cleanupPeer();status('Host answer failed: '+e.message)}}
+  if(m.type==='answer'&&mode==='host'&&m.roomId===roomId&&peer){
+   const current=peer;clearAdmissionTimeout();
+   try{await current.acceptAnswer(m.sdp);if(peer===current)watch(current)}
+   catch(e){if(peer===current){cleanupPeer();approved=false;status('Host answer failed: '+e.message)}}
+  }
  }
  connection=(options.signalFactory??connectLanSignal)({internet,onEvent,onState:s=>{if(started||disposed)return;signalState=s;if(s==='connected'){status(internet?'Online P2P discovery connected.':'LAN discovery connected.');if(mode==='host'&&roomId){hostRegistered=false;startHostRetry();clearAdmissionTimeout();cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();registerHost()}else if(mode==='guest'){if(requestId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;status('Connection restored. Choose a game again.')}requestRooms()}}else {if(mode==='host'){hostRegistered=false;stopHostRetry()}rooms.clear();render();approvalRequestId=null;get('autoApproval').replaceChildren();status('Discovery '+s+'. Automatic hosting requires a signaling directory. If unavailable, choose MANUAL CONNECTION to exchange an offer and answer privately.')}}});
  const actions=[['autoHost',host],['autoFind',find],['autoReset',reset]];for(const [id,fn] of actions)get(id).addEventListener('click',fn);
