@@ -1,3 +1,9 @@
+## 2026-10-27 20:01 CET — P2P pre-open LAN decoder parity (0.11.4.10 dev candidate)
+- Baseline dev a470bf4b49b5fb27e4eec7410604a208cab4627d; main b3c8100a88e924dd4209396898116877602d284d; PR #56 open. Full #40557088884 preflight entered in_progress, other exact-head workflows queued.
+- Reproduced: a matching early guest hello longer than the 4 KiB LAN parser limit occupies the relay's one-message buffer; subsequent valid hello is discarded and lost echo stalls match readiness. Fix: parse early hello with parseLanPacket (the real wire contract), not unrestricted JSON.parse. P2P-RELAY-07 tests oversized predecessor, valid guest, lost echo and first pass input. Source-extracted before/after regression demonstrated failure then success; full exact-head 4+4/Modular and physical device QA pending.
+- Version 0.11.4.10 synchronized in About, package, README heading/banner, offline cache, policy and memory. No changes to 223 teams/2676 players, six formations, four buttons, ten Career/Cup slots, SD09, save schema, offline play or graphics.
+- Next five: exact-head CI repair; protected green PR; Pages/Render hosted validation; physical LAN/P2P acceptance; Player Studio/Tricks/directional art.
+
 ## 2026-10-27 19:05 CET — P2P early-hello identity hardening (0.11.4.9 dev candidate)
 - Baseline dev 9035a4b77272695b82e5270887b656209146c2e2; main b3c8100a88e924dd4209396898116877602d284d; PR #56 open. Full #40549189858 and Modular #40549189946 queued, no green exact-head evidence. Prior concurrency removal did not yet demonstrate runner scheduling recovery.
 - One-message pre-open relay buffer accepted a hello with wrong session, build or role. Such stale predecessor could consume the slot, discarding a valid guest hello if its later echo is lost. Require exact local session/build and opposite role before buffering; never queue gameplay frames.

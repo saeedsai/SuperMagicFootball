@@ -307,3 +307,36 @@ test('P2P-RELAY-06 rejects stale early session/build/role before valid guest hel
   assert.deepEqual(frame.input.buttons,['dribble']);
  }finally{host.dispose();guest.dispose();}
 });
+
+// The relay's pre-open slot must accept only hellos that the LAN protocol
+// decoder will actually process (including its 4 KiB wire-size bound).
+test('P2P-RELAY-07 oversized matching hello cannot starve valid early guest',async()=>{
+ const {createLanRelayPeerConnection}=await import('../src/modules/lan-relay-peer.js');
+ let host,guest,guestFrames=0;
+ const toHost={send(packet){if(packet.type!=='relay-frame')return false;
+  guestFrames++;
+  if(guestFrames===1){
+   const oversized=JSON.stringify({...hello('guest'),padding:'x'.repeat(4096)});
+   assert.ok(oversized.length>4096&&oversized.length<24000);
+   host.receiveRelayFrame(oversized);
+   host.receiveRelayFrame(packet.data);
+  }else if(guestFrames!==2)host.receiveRelayFrame(packet.data);
+  return true;
+ }};
+ const toGuest={send(packet){if(packet.type!=='relay-frame')return false;
+  guest.receiveRelayFrame(packet.data);return true;}};
+ host=createLanRelayPeerConnection(hello('host'),{connection:toGuest,roomId});
+ guest=createLanRelayPeerConnection(hello('guest'),{connection:toHost,roomId});
+ try{
+  const answer=await guest.acceptOffer(await host.createOffer());
+  assert.equal(host.peer.channel.readyState,'connecting');
+  assert.equal(guestFrames,1);
+  await host.acceptAnswer(answer);
+  await Promise.all([host.awaitReady(1200),guest.awaitReady(1200)]);
+  assert.equal(host.ready,true);assert.equal(guest.ready,true);
+  guest.sendGuestInput(0,['pass'],.3,0);
+  const frame=host.advanceHostFrame(0);
+  assert.equal(frame.received,true);
+  assert.deepEqual(frame.input.buttons,['pass']);
+ }finally{host.dispose();guest.dispose();}
+});

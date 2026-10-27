@@ -2,6 +2,7 @@
 // signaling broker when direct WebRTC cannot traverse NAT. NOT direct P2P or TURN.
 // No game simulation on the broker; the host remains authoritative.
 import {createLanPeerConnection} from './lan_peer_connection.js';
+import {parseLanPacket} from './lan_protocol.js';
 const RELAY_SDP='v=0\r\ns=smf-approved-relay\r\nt=0 0\r\n';
 const MAX_RELAY_WIRE=24000;
 // The broker enforces UTF-8 bytes, not UTF-16 code units. Match its limit locally.
@@ -24,7 +25,9 @@ class RelayChannel extends EventTarget {
   if(this.readyState==='connecting'){
    // Keep only one exact-session, exact-build opposite-role handshake packet;
    // stale early messages cannot occupy the slot. Never buffer gameplay data.
-   if(this._earlyHello===null){try{const p=JSON.parse(data);
+   // Use the actual 4 KiB LAN parser: a matching but unparseable oversized
+   // hello must not occupy the sole pre-open slot and starve a valid peer.
+   if(this._earlyHello===null){try{const p=parseLanPacket(data);
     if(p&&p.protocol===1&&p.type==='hello'&&p.sequence===0&&
        p.session===this._expectedHello.session&&p.build===this._expectedHello.build&&
        p.role===(this._expectedHello.role==='host'?'guest':'host'))this._earlyHello=data;

@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.9',
+ version:'0.11.4.10',
  date:'2026-10-27',
  notes:Object.freeze([
+  'Internet P2P backup relay now validates early handshakes with the same 4 KiB LAN protocol parser used by live play. Oversized matching hellos can no longer consume the one-message buffer and starve a valid guest if its later echo is lost. P2P-RELAY-07 regression added; exact-head CI and physical two-device acceptance pending.',
   'Internet P2P backup relay now buffers an early handshake only when its session, game build and opposite player role match. Stale early messages cannot occupy the one-message buffer and stall a valid guest if a later echo is lost. Focused regression added; exact-head CI and physical two-device acceptance remain pending.',
   'Internet P2P relay now preserves one bounded early guest handshake when the host has not yet opened its approved backup channel, preventing a lost echo from stalling match setup. Later gameplay frames are never queued. Source regression added; exact-head CI and physical two-device acceptance remain pending.',
   'Internet P2P approved relay now rejects oversized UTF-8 Unicode frames before sending and discards oversized inbound frames, matching the 24,000-byte broker limit instead of mistakenly counting UTF-16 characters. This avoids silently dropped relayed messages; valid frames and four-button gameplay remain unchanged. Physical cross-network acceptance and exact-head CI are pending.',
