@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.1',
+ version:'0.11.4.2',
  date:'2026-10-27',
  notes:Object.freeze([
+  'LAN and Online P2P room selection now rejects stale join buttons after a host disappears or a directory refresh replaces the room with an incompatible build. The guest stays in Find Games without sending a phantom join; roster, controls, offline play and saves are unchanged. Real two-device acceptance is still pending.',
   'LAN and Online P2P now detect ICE-only failure or disconnection even when the browser peer connection state lags. Broken handshakes fail promptly, live controls pause on ICE disconnect and recover when ICE reconnects; physical two-device validation and TURN provisioning remain pending.',
   'LAN and Online P2P hosts and guests can enter names visible during discovery, approval and match start. WebRTC readiness is bounded and internet connection errors explain potential TURN requirements. Cross-network TURN and physical two-device certification remain pending.',
   'LAN and Online P2P guests now retire a rejected admission even if browser SDP negotiation is already in progress. The stale peer and room identity are cleared, late answers cannot revive a denied seat, and another host can be joined without reopening Find Games. Two focused regressions added; four controls, rosters, offline play and saves are unchanged. Physical two-device acceptance remains pending.',

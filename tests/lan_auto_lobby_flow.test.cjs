@@ -835,3 +835,29 @@ test('network match HUD keeps both player names visible without changing four co
  assert.match(ui,/lanPlayerNames\?\.away/);
  assert.match(ui,/lanPlayerNames=null/);
 });
+
+// LAN-ROOM-STALE-01: old DOM buttons must never join removed or superseded rooms.
+test('LAN and internet P2P refuse stale room buttons after removal or incompatible refresh',async()=>{
+ for(const internet of [false,true]){
+  const f=setup();
+  try{
+   const {mountAutoLanLobby}=await load();
+   const stop=mountAutoLanLobby(f.root,{internet,build:'0.11.4.2',signalFactory:f.signalFactory});
+   f.elements.get('#autoFind').click();f.connect();
+   const room={type:'room-announce',roomId:'room_12345678',name:'Alice',build:'0.11.4.2',full:false,...(internet?{scope:'internet-p2p'}:{})};
+   f.emit(room);
+   const removedButton=f.elements.get('#autoRooms').children[0];
+   f.emit({type:'room-remove',roomId:room.roomId});
+   removedButton.click();
+   assert.equal(f.packets.filter(p=>p.type==='join').length,0,'removed room cannot be joined from stale button');
+   assert.match(f.elements.get('#autoStatus').textContent,/no longer available/);
+   f.emit(room);
+   const oldVersionButton=f.elements.get('#autoRooms').children[0];
+   f.emit({type:'rooms-snapshot',rooms:[{...room,build:'0.11.4.1'}]});
+   oldVersionButton.click();
+   assert.equal(f.packets.filter(p=>p.type==='join').length,0,'incompatible refreshed room cannot be joined');
+   assert.match(f.elements.get('#autoStatus').textContent,/no longer available/);
+   stop();
+  }finally{f.cleanup()}
+ }
+});
