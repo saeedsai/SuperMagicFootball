@@ -3,9 +3,9 @@
 // Bound outbound signaling bytes and WebSocket queue growth on slow connections.
 const MAX_SIGNAL_FRAME_BYTES=210000,MAX_SIGNAL_QUEUE_BYTES=512*1024;
 // Public WSS brokers can cold-start after an idle period; retain the fast LAN watchdog.
-const LAN_CONNECT_TIMEOUT_MS=12000,HOSTED_CONNECT_TIMEOUT_MS=60000;
+const LAN_CONNECT_TIMEOUT_MS=12000,HOSTED_CONNECT_TIMEOUT_MS=60000,STABLE_CONNECTION_MS=30000;
 const signalEncoder=new TextEncoder();
-export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSocket,onEvent=()=>{},onState=()=>{},setTimeoutImpl=globalThis.setTimeout,clearTimeoutImpl=globalThis.clearTimeout}={}){
+export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSocket,onEvent=()=>{},onState=()=>{},setTimeoutImpl=globalThis.setTimeout,clearTimeoutImpl=globalThis.clearTimeout,nowImpl=Date.now}={}){
  if(typeof WebSocketImpl!=='function')throw new Error('WebSocket unavailable');
  const hosted='wss://supermagicfootball-lan-signal.onrender.com/lan-signal';
  const override=internet?globalThis.SMF_P2P_SIGNAL_URL:globalThis.SMF_LAN_SIGNAL_URL;
@@ -18,8 +18,15 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
  const connectTimeoutMs=secureEndpoint?HOSTED_CONNECT_TIMEOUT_MS:LAN_CONNECT_TIMEOUT_MS;
  const url=secureEndpoint||(!publicPages?(globalThis.location?.protocol==='https:'?'wss://':'ws://')+(globalThis.location?.host||'localhost:8000')+'/lan-signal':null);
  if(!url){onState('unconfigured');return Object.freeze({send(){return false},close(){},get ready(){return false}})}
- let socket=null,closed=false,retry=null,attempt=0,connectTimeout=null;
+ let socket=null,closed=false,retry=null,attempt=0,connectTimeout=null,openedAt=null;
  function clearConnectTimeout(){if(connectTimeout!==null){clearTimeoutImpl(connectTimeout);connectTimeout=null}}
+ // A brief WebSocket open is not proof of broker health. Keep the retry backoff
+ // across flapping connections; reset only after 30 seconds of stable uptime.
+ function retireUptime(){
+  const now=nowImpl();
+  if(openedAt!==null&&Number.isFinite(now)&&Number.isFinite(openedAt)&&now-openedAt>=STABLE_CONNECTION_MS)attempt=0;
+  openedAt=null;
+ }
  function scheduleRetry(){
   if(closed||retry!==null)return;
   const delay=Math.min(10000,1000*Math.pow(2,Math.min(attempt++,4)));
@@ -29,7 +36,7 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
  // Old socket events cannot reattach to the lobby.
  function recycleSocket(code,reason){
   if(closed||!socket)return;
-  const stale=socket;socket=null;clearConnectTimeout();
+  const stale=socket;socket=null;clearConnectTimeout();retireUptime();
   try{stale.close(code,reason)}catch{try{stale.close()}catch{}}
   onState('disconnected');scheduleRetry();
  }
@@ -43,8 +50,8 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
    if(closed||socket!==ws||ws.readyState===1)return;
    connectTimeout=null;recycleSocket(1001,'Signaling connect timeout');
   },connectTimeoutMs);
-  ws.addEventListener('open',()=>{if(closed||socket!==ws)return;clearConnectTimeout();attempt=0;onState('connected')});
-  ws.addEventListener('close',()=>{if(closed||socket!==ws)return;clearConnectTimeout();socket=null;onState('disconnected');scheduleRetry()});
+  ws.addEventListener('open',()=>{if(closed||socket!==ws)return;clearConnectTimeout();openedAt=nowImpl();onState('connected')});
+  ws.addEventListener('close',()=>{if(closed||socket!==ws)return;clearConnectTimeout();socket=null;retireUptime();onState('disconnected');scheduleRetry()});
   ws.addEventListener('error',()=>{if(closed||socket!==ws)return;onState('error');recycleSocket(1011,'Signaling transport error')});
   ws.addEventListener('message',event=>{
    if(closed||socket!==ws||typeof event.data!=='string'||event.data.length>MAX_SIGNAL_FRAME_BYTES)return;
