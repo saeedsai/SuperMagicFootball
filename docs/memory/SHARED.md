@@ -23,15 +23,10 @@ On **every Git commit**, preserve the About-only installed release version `0.11
 ## Memory hygiene
 Read only your own [registered checkpoint](AGENTS_INDEX.json) according to [memory protocol](README.md). Git history preserves older states. Never edit another chat's memory or store secrets.
 
-- **0.11.3.10 candidate (2026-10-27):** LAN/Online P2P hosts release failed WebRTC peers on readiness or match-start failure, keeping their room available for retry. Exact-head CI, Pages and real-device verification remain separate gates.
 
-- **0.11.3.11 candidate (2026-10-27):** Host SDP answer processing is bounded to 25 seconds after receipt; stale peers are released for retry and late failures ignored. New exact-head QA, Pages and physical two-device play are separate gates.
 
-- **0.11.3.12 candidate (2026-10-27):** Duplicate host SDP answers cannot rearm the negotiation watchdog or start concurrent browser SDP acceptance. Exact-head QA, Pages and physical LAN/P2P/TURN remain separate gates.
 
-- **0.11.3.13 candidate (2026-10-27):** Duplicate LAN/P2P guest approval frames cannot restart the offer or SDP negotiation deadline. Focused regressions added; exact-head CI and physical two-device play remain separate gates.
 
-- **0.11.3.14 candidate (2026-10-27):** LAN/P2P rejected guest admission now retires pending SDP, cancels timeout and clears stale room identity. Exact-head CI, Pages and physical two-client acceptance remain separate gates.
 
 - **0.11.4.0 candidate (2026-10-27):** LAN/P2P named host and guest during discovery, consent and match start; a 35-second WebRTC readiness timeout and honest TURN diagnostics. Broker deployment, CI and actual two-device certification pending.
 
@@ -51,4 +46,4 @@ Read only your own [registered checkpoint](AGENTS_INDEX.json) according to [memo
 
 - **0.11.4.9 dev candidate (2026-10-27):** Early approved internet relay hello requires matching session, build and opposite role, preventing stale frames from consuming the single pre-open handshake buffer. Focused regression added; exact-head CI, Pages, broker and two-client acceptance pending.
 
-- **0.11.4.11 dev candidate (2026-10-27):** Approved internet relay early hellos now pass the real 4 KiB LAN packet parser before buffering; oversized matching hellos cannot block a valid peer. P2P-RELAY-07 regression; exact-head CI, main/Pages and physical two-client play pending.
+- **0.11.4.11 dev candidate (2026-10-27):** Approved relay now budgets the complete 24,000-byte broker JSON frame, including UTF-8, room ID and escaping. P2P-RELAY-08 tests both peer directions and corrects P2P-RELAY-04. Earlier P2P-RELAY-07 covers 4 KiB pre-open hello parsing. Exact-head CI, main/Pages and physical two-client play pending.

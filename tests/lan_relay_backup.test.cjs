@@ -234,12 +234,14 @@ test('P2P-RELAY-04 enforces broker UTF-8 budget in both directions',async()=>{
   await Promise.all([host.awaitReady(1200),guest.awaitReady(1200)]);
   const accepted=[],channel=guest.peer.channel;
   channel.addEventListener('message',event=>accepted.push(event.data));
-  const tooLarge='😀'.repeat(6001),withinLimit='😀'.repeat(5999);
+  const tooLarge='😀'.repeat(6001),withinLimit='😀'.repeat(5975),envelopeTooLarge='😀'.repeat(5999);
   assert.ok(tooLarge.length<24000&&new TextEncoder().encode(tooLarge).byteLength>24000);
-  assert.equal(new TextEncoder().encode(withinLimit).byteLength,23996);
+  assert.ok(new TextEncoder().encode(JSON.stringify({type:'relay-frame',roomId,data:withinLimit})).byteLength<=24000);
+  assert.ok(new TextEncoder().encode(JSON.stringify({type:'relay-frame',roomId,data:envelopeTooLarge})).byteLength>24000);
   const before=forwarded.length;
   assert.throws(()=>host.peer.channel.send(tooLarge),/relay unavailable/i);
-  assert.equal(forwarded.length,before,'oversized Unicode never reaches broker');
+  assert.throws(()=>host.peer.channel.send(envelopeTooLarge),/relay unavailable/i,'full JSON envelope must fit');
+  assert.equal(forwarded.length,before,'oversized Unicode or JSON envelope never reaches broker');
   guest.receiveRelayFrame(tooLarge);
   assert.deepEqual(accepted,[],'oversized inbound Unicode is discarded');
   host.peer.channel.send(withinLimit);
@@ -338,5 +340,45 @@ test('P2P-RELAY-07 oversized matching hello cannot starve valid early guest',asy
   const frame=host.advanceHostFrame(0);
   assert.equal(frame.received,true);
   assert.deepEqual(frame.input.buttons,['pass']);
+ }finally{host.dispose();guest.dispose();}
+});
+
+// The broker counts the *serialized relay-frame object*, including room ID,
+// quotes and JSON escaping, not just the game packet's UTF-8 bytes.
+test('P2P-RELAY-08 both peers enforce exact 24000-byte JSON wire cap',async()=>{
+ const {createLanRelayPeerConnection}=await import('../src/modules/lan-relay-peer.js');
+ const forwarded=[];
+ const connection={send(frame){forwarded.push(frame);return true;}};
+ const host=createLanRelayPeerConnection(hello('host'),{connection,roomId});
+ const guest=createLanRelayPeerConnection(hello('guest'),{connection,roomId});
+ const bytes=data=>new TextEncoder().encode(JSON.stringify({type:'relay-frame',roomId,data})).byteLength;
+ try{
+  // Exercise the real transport channel without invoking the LAN packet parser:
+  // boundary-sized synthetic payloads are not gameplay packets.
+  const answer=await guest.acceptOffer(await host.createOffer());
+  await host.acceptAnswer(answer);
+  const exact='x'.repeat(24000-bytes(''));
+  assert.equal(bytes(exact),24000);
+  assert.equal(bytes(exact+'x'),24001);
+  const unicode='😀'.repeat(Math.floor((24000-bytes(''))/4));
+  assert.ok(bytes(unicode)<=24000&&bytes(unicode+'😀')>24000);
+  const escaped='\\'.repeat(12000);
+  assert.ok(new TextEncoder().encode(escaped).byteLength<24000&&bytes(escaped)>24000);
+  for(const peer of [host,guest]){
+   const channel=peer.peer.channel;
+   const before=forwarded.length;
+   channel.send(exact);
+   channel.send(unicode);
+   assert.equal(forwarded.length,before+2,'exact-limit and Unicode frames are sent');
+   for(const rejected of [exact+'x',unicode+'😀',escaped]){
+    assert.throws(()=>channel.send(rejected),/relay unavailable/i);
+   }
+   assert.equal(forwarded.length,before+2,'oversized envelopes never reach broker');
+   for(const frame of forwarded.slice(before)){
+    assert.equal(frame.type,'relay-frame');
+    assert.equal(frame.roomId,roomId);
+    assert.ok(new TextEncoder().encode(JSON.stringify(frame)).byteLength<=24000);
+   }
+  }
  }finally{host.dispose();guest.dispose();}
 });

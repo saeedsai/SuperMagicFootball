@@ -2,7 +2,9 @@
 
 **Effective 21 October 2026; updated 27 October 2026 for candidate 0.11.4.11.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Latest dev candidate 0.11.4.11 (27 October 2026):** The approved internet relay validates pre-open hello packets using the actual LAN protocol parser (including its 4 KiB bound), preventing oversized matching hellos from starving valid guests if a later echo is lost. P2P-RELAY-07 regression added; exact-head CI, protected main/Pages, hosted broker and physical two-device QA pending.
+**Latest dev candidate 0.11.4.11 (27 October 2026):** Approved internet relay sends only when the complete serialized JSON broker frame fits the 24,000-byte UTF-8 cap, including room ID, JSON escaping and wrapper. P2P-RELAY-08 covers exact boundary, Unicode and escaped payloads for both peers; the earlier P2P-RELAY-04 near-limit expectation is corrected. No roster, controls, save or offline changes. Exact-head 4+4/Modular CI, protected main/Pages, hosted broker and physical two-device QA pending.
+
+**Previous dev candidate 0.11.4.10 (27 October 2026):** Pre-open hello packets use the actual 4 KiB LAN protocol parser, preventing an oversized matching hello from starving a valid guest if its later echo is lost. P2P-RELAY-07 added; this earlier candidate is not independent release certification.
 
 **Previous dev candidate 0.11.4.9 (27 October 2026):** The early internet relay hello must match the local session, game build and opposite player role before occupying the sole pre-open slot. Invalid predecessors no longer starve the valid guest when its later echo is lost. Added focused P2P-RELAY-06; exact-head 4+4/Modular, protected main/Pages, hosted broker and physical two-device acceptance pending.
 
