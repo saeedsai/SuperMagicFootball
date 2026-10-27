@@ -7,7 +7,7 @@ const MAX_RELAY_WIRE=24000;
 // The broker enforces UTF-8 bytes, not UTF-16 code units. Match its limit locally.
 const relayEncoder=new TextEncoder();
 class RelayChannel extends EventTarget {
- constructor(send){super();this.label='smf-lan';this.readyState='connecting';this._send=send;this._earlyHello=null;}
+ constructor(send,expectedHello){super();this.label='smf-lan';this.readyState='connecting';this._send=send;this._earlyHello=null;this._expectedHello=expectedHello;}
  open(){
   if(this.readyState!=='connecting')return;
   this.readyState='open';this.dispatchEvent(new Event('open'));
@@ -22,9 +22,12 @@ class RelayChannel extends EventTarget {
  receive(data){
   if(this.readyState==='closed'||typeof data!=='string'||data.length>MAX_RELAY_WIRE||relayEncoder.encode(data).byteLength>MAX_RELAY_WIRE)return;
   if(this.readyState==='connecting'){
-   // Keep only one validated-shape handshake packet; never buffer gameplay data.
+   // Keep only one exact-session, exact-build opposite-role handshake packet;
+   // stale early messages cannot occupy the slot. Never buffer gameplay data.
    if(this._earlyHello===null){try{const p=JSON.parse(data);
-    if(p&&p.protocol===1&&p.type==='hello'&&p.sequence===0&&(p.role==='host'||p.role==='guest'))this._earlyHello=data;
+    if(p&&p.protocol===1&&p.type==='hello'&&p.sequence===0&&
+       p.session===this._expectedHello.session&&p.build===this._expectedHello.build&&
+       p.role===(this._expectedHello.role==='host'?'guest':'host'))this._earlyHello=data;
    }catch{ /* malformed early packet */ }}
    return;
   }
@@ -42,7 +45,7 @@ export function createLanRelayPeerConnection(hello,{connection,roomId}={}){
    this.iceGatheringState='complete';this.localDescription=null;this.remoteDescription=null;
    this.channel=null;physical=this;}
   createDataChannel(label){if(label!=='smf-lan'||this.channel)throw Error('Invalid backup channel');
-   this.channel=new RelayChannel(data=>connection.send({type:'relay-frame',roomId,data})===true);
+   this.channel=new RelayChannel(data=>connection.send({type:'relay-frame',roomId,data})===true,hello);
    return this.channel;}
   async createOffer(){return {type:'offer',sdp:RELAY_SDP};}
   async createAnswer(){return {type:'answer',sdp:RELAY_SDP};}
@@ -50,7 +53,7 @@ export function createLanRelayPeerConnection(hello,{connection,roomId}={}){
   async setRemoteDescription(description){
    this.remoteDescription=description;
    if(description.type==='offer'){
-    this.channel=new RelayChannel(data=>connection.send({type:'relay-frame',roomId,data})===true);
+    this.channel=new RelayChannel(data=>connection.send({type:'relay-frame',roomId,data})===true,hello);
     this.dispatchEvent(Object.assign(new Event('datachannel'),{channel:this.channel}));
     this.connectionState='connected';this.iceConnectionState='connected';
     this.channel.open();

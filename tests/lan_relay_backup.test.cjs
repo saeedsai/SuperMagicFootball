@@ -274,3 +274,36 @@ test('P2P-RELAY-05 buffers early guest hello before host answer',async()=>{
   assert.deepEqual(input.input.buttons,['pass']);
  }finally{host.dispose();guest.dispose();}
 });
+
+// Invalid early hellos must not consume the one pre-open handshake slot.
+test('P2P-RELAY-06 rejects stale early session/build/role before valid guest hello',async()=>{
+ const {createLanRelayPeerConnection}=await import('../src/modules/lan-relay-peer.js');
+ let host,guest,guestFrames=0;
+ const toHost={send(packet){if(packet.type!=='relay-frame')return false;
+  guestFrames++;
+  if(guestFrames===1){
+   for(const fake of [{...hello('guest'),session:'stale_session'},
+                       {...hello('guest'),build:'incompatible'},hello('host')]){
+    host.receiveRelayFrame(JSON.stringify(fake));
+   }
+   host.receiveRelayFrame(packet.data);
+  }else if(guestFrames!==2)host.receiveRelayFrame(packet.data);
+  return true;
+ }};
+ const toGuest={send(packet){if(packet.type!=='relay-frame')return false;
+  guest.receiveRelayFrame(packet.data);return true;}};
+ host=createLanRelayPeerConnection(hello('host'),{connection:toGuest,roomId});
+ guest=createLanRelayPeerConnection(hello('guest'),{connection:toHost,roomId});
+ try{
+  const answer=await guest.acceptOffer(await host.createOffer());
+  assert.equal(host.peer.channel.readyState,'connecting');
+  assert.equal(guestFrames,1,'valid guest hello follows three invalid predecessors');
+  await host.acceptAnswer(answer);
+  await Promise.all([host.awaitReady(1200),guest.awaitReady(1200)]);
+  assert.equal(host.ready,true);assert.equal(guest.ready,true);
+  guest.sendGuestInput(0,['dribble'],.4,-.1);
+  const frame=host.advanceHostFrame(0);
+  assert.equal(frame.received,true);
+  assert.deepEqual(frame.input.buttons,['dribble']);
+ }finally{host.dispose();guest.dispose();}
+});
