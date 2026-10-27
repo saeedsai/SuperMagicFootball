@@ -27,6 +27,8 @@ const MAX=210000;
 const MAX_ROOMS=128,MAX_PENDING_PER_GUEST=1,MAX_PENDING_PER_ROOM=1;
 const safeGuestName=value=>typeof value==='string'?(value.replace(/[\u0000-\u001f\u007f]/g,' ').trim().replace(/\s+/g,' ').slice(0,32)||'Guest'):'Guest';
 const MAX_MESSAGES_PER_WINDOW=120,WINDOW_MS=60000,MAX_CONNECTIONS_PER_IP=8;
+// Consent-approved internet-only relay fallback. Keep signaling rate limit independent.
+const MAX_RELAY_WIRE=24000,MAX_RELAY_FRAMES_PER_SECOND=90;
 function ipOf(request){return lanClientIp(request,{hosted:signalPolicy.mode==='hosted'})}
 function sameSubnet(a,b){return signalPolicy.visible(a,b)}
 const roomScope=m=>m?.scope===undefined||m.scope==='lan'?'lan':m.scope==='internet-p2p'&&signalPolicy.mode==='hosted'?'internet-p2p':null;
@@ -52,7 +54,7 @@ const server=http.createServer(async(req,res)=>{
 });
 const wss=new WebSocketServer({server,path:'/lan-signal',maxPayload:MAX,verifyClient:({req})=>{const ip=ipOf(req);const origin=req.headers.origin;return signalPolicy.allows(ip,origin,req.headers.host)&&[...clients.values()].filter(meta=>meta.ip===ip).length<MAX_CONNECTIONS_PER_IP}});
 wss.on('connection',(ws,req)=>{
- const meta={id:'peer_'+(++nextId),ip:ipOf(req),windowStart:Date.now(),messageCount:0,alive:true,discoveryScope:'lan'};clients.set(ws,meta);
+ const meta={id:'peer_'+(++nextId),ip:ipOf(req),windowStart:Date.now(),messageCount:0,relayWindowStart:Date.now(),relayFrames:0,alive:true,discoveryScope:'lan'};clients.set(ws,meta);
  ws.on('pong',()=>{meta.alive=true});
  ws.on('error',()=>{try{ws.terminate()}catch{ /* already closing */ }});
  send(ws,{type:'welcome',peerId:meta.id});
@@ -61,10 +63,19 @@ wss.on('connection',(ws,req)=>{
  for(const room of rooms.values())if(roomVisible(room,meta))send(ws,{type:'room-announce',roomId:room.id,name:room.name,build:room.build,full:!!room.guest});
  ws.on('message',bytes=>{
   const now=Date.now();if(now-meta.windowStart>=WINDOW_MS){meta.windowStart=now;meta.messageCount=0}
-  if(++meta.messageCount>MAX_MESSAGES_PER_WINDOW){ws.close(1008,'Signaling rate limit');return}
   if(bytes.length>MAX)return;
   let m;try{m=JSON.parse(String(bytes))}catch{return}
   if(!m||typeof m!=='object'||Array.isArray(m)||typeof m.type!=='string')return;
+  if(m.type==='relay-frame'){
+   if(now-meta.relayWindowStart>=1000){meta.relayWindowStart=now;meta.relayFrames=0}
+   if(++meta.relayFrames>MAX_RELAY_FRAMES_PER_SECOND){ws.close(1008,'Relay traffic limit');return}
+   const room=rooms.get(m.roomId);
+   if(!room||room.scope!=='internet-p2p'||!room.relay||!room.guest||
+      (ws!==room.host&&ws!==room.guest)||typeof m.data!=='string'||
+      Buffer.byteLength(m.data,'utf8')>MAX_RELAY_WIRE)return;
+   send(ws===room.host?room.guest:room.host,{type:'relay-frame',roomId:room.id,data:m.data});return;
+  }
+  if(++meta.messageCount>MAX_MESSAGES_PER_WINDOW){ws.close(1008,'Signaling rate limit');return}
   const id=m.roomId,requestId=m.requestId;
   if(m.type==='host'){
    if(typeof id!=='string'||! /^[a-zA-Z0-9_-]{8,64}$/.test(id)||typeof m.name!=='string'||m.name.length>48||!m.name.trim()||typeof m.build!=='string'||m.build.length>32)return;
@@ -104,6 +115,12 @@ wss.on('connection',(ws,req)=>{
     room.guest=req.guest;announceRoom(room);for(const [otherId,other] of pending)if(other.roomId===id){pending.delete(otherId);send(other.guest,{type:'join-reject',roomId:id,requestId:otherId,reason:'room-full'});send(ws,{type:'join-cancel',roomId:id,requestId:otherId})}send(req.guest,{type:'join-accept',roomId:id,requestId,hostName:room.name});send(ws,{type:'guest-approved',roomId:id,requestId,guestName:req.guestName});}
    else send(req.guest,{type:'join-reject',roomId:id,requestId});
    return;
+  }
+  if(m.type==='relay-offer'&&ws===room.host&&room.guest&&room.scope==='internet-p2p'){
+   if(typeof m.sdp==='string'&&m.sdp.length<=1024&&m.sdp.length>=8){room.relay=true;send(room.guest,{type:'relay-offer',roomId:id,sdp:m.sdp})}return;
+  }
+  if(m.type==='relay-answer'&&ws===room.guest&&room.relay){
+   if(typeof m.sdp==='string'&&m.sdp.length<=1024&&m.sdp.length>=8)send(room.host,{type:'relay-answer',roomId:id,sdp:m.sdp});return;
   }
   if(m.type==='offer'&&ws===room.host&&room.guest){if(typeof m.sdp==='string'&&m.sdp.length<=200000)send(room.guest,{type:'offer',roomId:id,sdp:m.sdp});return}
   if(m.type==='answer'&&ws===room.guest){if(typeof m.sdp==='string'&&m.sdp.length<=200000)send(room.host,{type:'answer',roomId:id,sdp:m.sdp});return}
