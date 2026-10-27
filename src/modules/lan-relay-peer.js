@@ -48,7 +48,7 @@ export function createLanRelayPeerConnection(hello,{connection,roomId}={}){
    this.iceGatheringState='complete';this.localDescription=null;this.remoteDescription=null;
    this.channel=null;physical=this;}
   createDataChannel(label){if(label!=='smf-lan'||this.channel)throw Error('Invalid backup channel');
-   this.channel=new RelayChannel(data=>connection.send({type:'relay-frame',roomId,data})===true,hello);
+   this.channel=new RelayChannel(data=>{const frame={type:'relay-frame',roomId,data};return relayEncoder.encode(JSON.stringify(frame)).byteLength<=MAX_RELAY_WIRE&&connection.send(frame)===true;},hello);
    return this.channel;}
   async createOffer(){return {type:'offer',sdp:RELAY_SDP};}
   async createAnswer(){return {type:'answer',sdp:RELAY_SDP};}
@@ -56,7 +56,7 @@ export function createLanRelayPeerConnection(hello,{connection,roomId}={}){
   async setRemoteDescription(description){
    this.remoteDescription=description;
    if(description.type==='offer'){
-    this.channel=new RelayChannel(data=>connection.send({type:'relay-frame',roomId,data})===true,hello);
+    this.channel=new RelayChannel(data=>{const frame={type:'relay-frame',roomId,data};return relayEncoder.encode(JSON.stringify(frame)).byteLength<=MAX_RELAY_WIRE&&connection.send(frame)===true;},hello);
     this.dispatchEvent(Object.assign(new Event('datachannel'),{channel:this.channel}));
     this.connectionState='connected';this.iceConnectionState='connected';
     this.channel.open();
