@@ -3,25 +3,24 @@
 **Updated:** 2026-10-27
 
 ## Mission
-Continue bounded tested features on existing dev; only protected green promotion to main. Preserve 223 teams/2676 players, six formations, four controls, Career/Cup ten slots, SD09, offline and saves.
+Continue bounded tested changes directly on existing dev; green exact-head protected promotion only. Preserve 223 teams/2676 players, six formations, four controls, ten Career/Cup slots, SD09, offline and saves.
 
 ## Current checkpoint
-- 0.11.3.13 candidate: ignore duplicate guest join-accept after approval, preserving 25-second offer and SDP deadlines; two focused regressions.
-- Baseline dev/main e8adca57e9e08b93337a4405f49525ebb555c540: dev Modular #40465003574, Full 4+4 #40465003455, Concept Hero #40465003402, Hair #40465003377; main Full hosted smoke #40466167217 and Pages #40466167228 all green.
-- Issue #48 remains open; physical two-phone LAN and internet P2P/TURN uncertified. Only dev/main.
+- 0.11.3.14 candidate: rejected guest admission retires pending SDP peer, cancels negotiation timer and clears room identity; two focused regressions.
+- Baseline dev/main `58cf9298bd59e3b02e6d5adab09c4ed17585e619`, 0.11.3.13. Issue #48 remains open. Real two-phone LAN and internet P2P/TURN not certified.
 
 ## Next smallest action
-1. Inspect exact-head Modular and 4 Node + 4 Chromium; repair failures on dev.
+1. Inspect candidate exact-head Modular QA and 4 Node + 4 Chromium; repair failures on dev.
 2. Promote only unchanged completely green dev through protected workflow.
-3. Verify main Pages deployment and hosted HTML/JS/CSS bytes.
+3. Verify main Pages hosted HTML/JS/CSS byte hashes.
 4. Validate physical two-client LAN and cross-network P2P/TURN.
-5. Continue Player Studio, counterable Tricks and Crown Royals directional graphics.
+5. Continue Player Studio, counterable Tricks and Crown Royals graphics.
 
 ## Ownership and exclusions
-Only dev/main; do not read or edit other agents' memory.
+Only dev/main; never read/edit other agents' memory.
 
 ## Evidence
-`src/modules/lan-auto-lobby.js`, `tests/lan_auto_lobby_flow.test.cjs`; baseline runs above. New candidate exact-head CI pending.
+`src/modules/lan-auto-lobby.js`, `tests/lan_auto_lobby_flow.test.cjs`; exact-head CI pending.
 
 ## Cleanup
-Checkpoint below 4 KiB; no roster, control, offline or save schema changes.
+Checkpoint under 4 KiB; no roster, control, offline or save schema changes.
