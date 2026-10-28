@@ -244,8 +244,12 @@ function createLanLiveMatch({peer,role,game,input,field}){
           }
         });
         // A failed send must be retried on the next step, not certified.
-        if(result?.snapshotSent!==false)lastHostPhase=game.matchState;
-        return true;
+        // LAN-076: a transport-reported failed snapshot is not a completed
+        // host frame. Preserve the frozen-phase retry and report failure to
+        // the caller instead of claiming the guest received the transition.
+        const snapshotDelivered=result!==false&&result?.snapshotSent!==false;
+        if(snapshotDelivered)lastHostPhase=game.matchState;
+        return snapshotDelivered;
       }catch(error){
         // Do not let a disconnected channel keep simulating an unshared match.
         if(!peer.ready)return false;
