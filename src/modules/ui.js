@@ -1082,14 +1082,14 @@ function studioMagicEligibilityGuide(player){
 // STUDIO-TRICK-PROGRESS-01: show both eligibility paths without modifying player data.
 function studioMagicUnlockProgress(player){
  if(!player||player.role==='GK')return 'Magic Trick equipment is unavailable to goalkeepers.';
- const rating=Number(player.rating),ovr=Number(playerOVR(player));
+ const rating=player.rating==null||player.rating===''?NaN:Number(player.rating),ovr=Number(playerOVR(player));
  const legacy=Number.isFinite(rating)?rating:null;
  const positional=Number.isFinite(ovr)?ovr:null;
  const best=Math.max(legacy??0,positional??0);
  const detail='Rating '+(legacy??'unknown')+' · position OVR '+(positional??'unknown')+'. ';
- if(best>=91)return detail+'Magic Trick equipment unlocked (91+ via either rating).';
+ if(best>=91)return detail+'Magic Trick equipment unlocked (91+ rating or position OVR).';
  if(legacy===null&&positional===null)return detail+'Magic Trick eligibility cannot be determined.';
- return detail+'Magic Trick locked: '+Math.ceil(91-best)+' more overall point'+(Math.ceil(91-best)===1?'':'s')+' needed to reach 91 in either rating.';
+ return detail+'Magic Trick locked: '+Math.ceil(91-best)+' more overall point'+(Math.ceil(91-best)===1?'':'s')+' needed to reach 91 in rating or position OVR.';
 }
 function studioGoalkeeperMagicGuide(id){
  const description=Object.prototype.hasOwnProperty.call(STUDIO_MAGIC_TRICK_GUIDES,id)?STUDIO_MAGIC_TRICK_GUIDES[id]:null;
