@@ -1098,7 +1098,7 @@ function saveStudioMagic(){
   if(!player||player.role==='GK')throw Error('Only eligible outfield players can equip Tricks');
   if(!id||id!=='keep'&&id!=='none'&&!STUDIO_MAGIC_TRICKS.some(t=>t.id===id))throw Error('Unknown Trick');
   if(id!=='keep'&&id!=='none'&&!studioMagicEligible(player))throw Error('Tricks are reserved for Star and Superstar players (91+)');
-  if(id==='keep'){showPlayerStudio(avatarIndex);return;} // No storage write for an unchanged ability.
+  if(id==='keep'||(id==='none'&&!player.magicTrick)||id===player.magicTrick){showPlayerStudio(avatarIndex);return;} // Unchanged selections must not rewrite Career or club saves.
   const updated={...player};if(id==='none')delete updated.magicTrick;else updated.magicTrick=id;
   source[avatarIndex]=updated;
   if(isCareer){const next={...career,roster:source};if(!storeCharacterChanges('managerCareer',next))return;career=next;saveCareer();}
