@@ -1,3 +1,6 @@
+## 2026-10-28 — LAN-082 initial CI contract repair
+- Exact-head Modular QA #40693416252 ran 949 Node tests: 948 passed, one legacy LAN-064 assertion expected capacity errors to stop retries. Updated that assertion to verify the new bounded retry and same-room re-advertisement, preserving the existing cancel guard. No gameplay change or version bump. Fresh exact-head CI required.
+
 ## 2026-10-28 — LAN-082 capacity recovery (candidate 0.11.4.33)
 - Found live auto-lobby registration stopped its host retry timer on *every* broker error, including temporary "Room capacity reached". Keep bounded ten-second same-room retries only for that recoverable error; stop on permanent scope/configuration failures. Added two focused flow regressions. No gameplay, graphics, save, roster, formation or four-button changes. Exact-head full 4+4, Modular QA, protected main and hosted Pages remain release gates. Physical two-device acceptance remains open.
 - Next: focused CI; exact-head full 4+4/Modular; protected main; Pages byte smoke; physical LAN/P2P plus Player Studio/Tricks/art.

@@ -306,7 +306,10 @@ test('LAN-064 host retries registration until acknowledged and cancels stale tim
   f.elements.get('#autoHost').click();
   assert.equal(timers.at(-1).stopped,false);
   f.emit({type:'error',message:'Room capacity reached'});
-  assert.equal(timers.at(-1).stopped,true,'broker rejection stops retries');
+  assert.equal(timers.at(-1).stopped,false,'temporary broker capacity keeps retry alive');
+   const beforeRetry=f.packets.filter(p=>p.type==='host').length;
+   timers.at(-1).fn();
+   assert.equal(f.packets.filter(p=>p.type==='host').length,beforeRetry+1,'capacity retry re-advertises the same room');
   f.elements.get('#autoReset').click();
   const before=f.packets.length;timers.at(-1).fn();
   assert.equal(f.packets.length,before,'cancel removes pending registration');
