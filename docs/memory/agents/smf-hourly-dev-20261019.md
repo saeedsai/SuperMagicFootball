@@ -1,32 +1,19 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-28 11:00 CET
-
-## Mission
-Keep coding one bounded increment on existing dev every hour, regardless of pending CI or release. Only dev/main; no force push, bypass, or unauthorized branches.
+**Agent ID:** smf-hourly-dev-20261019
+**Updated:** 2026-10-28 12:00 CET
 
 ## Current checkpoint
-- STUDIO-TRICK-PROGRESS-01 0.11.4.29: Outfield Player Studio displays rating, positional OVR and 91+ unlock gap; no eligibility/save changes. Focused regression added. First Full #40668776917 failed Node preflight due to unescaped apostrophe in release note; corrected on dev. Fresh exact-head Full/Modular/Pages pending. Previous 0.11.4.28 Full #40661840816 and Modular #40661840769 green, dev/main identical at 377b65bd12b8.
-- STUDIO-GK-PREVIEW-01 0.11.4.28: goalkeeper-only read-only eight-Trick catalogue with live icon and counter text, no save controls. Node contract added. Previous .27 Full #40658793925 and Modular #40658793852 green; main/dev were synced at 232886cc7d5d before this increment. Current CI/Pages/physical QA pending.
-- 0.11.4.27 STUDIO-GK-HELP-01 goalkeeper Magic Trick informational preview clarity and regression on dev; full QA and Pages pending.
-- STUDIO-TRICK-PREVIEW-02 0.11.4.26: All eight Magic Tricks visible for outfield read-only previews; locked selections disable SAVE, with existing save-handler validation retained. New Node VM regression. First Full #40654684002 and Modular #40654684094 failed 2/935 Node contracts (old eligible-only options/guide signatures); updated both stale assertions to require disabled locked Save and safe serverless validation. Await exact-head re-run and Pages.
-- STUDIO-TRICK-HELP-01 0.11.4.25: Magic Trick preview action guidance and Node regression on dev; Full/Modular #40649528225/#40649528401 passed; main synced to a7c671d80816d938cbd535b6023eb3f2e6cb26cc; Pages bytes not verified.
-- Baseline dev/main `60fff3cf7b980364923fcd3976a3faaa161cf7c4` (0.11.4.23), PR #66 merged. Main Full #40645171130 (4 Node+4 Chromium, preview, hosted smoke) and Pages #40645170675 green.
-- STUDIO-STAR-01 candidate 0.11.4.24: Magic Trick new equipment gated at Star/Superstar 91+ by rating or positional OVR; Gold 90 may keep/remove legacy Trick, not replace. Super Shot/Defence and four controls unaffected. Regression and release metadata included; first push CI failed on stale Studio assertion and 6 KiB shared-memory bound. Both repaired; new exact-head CI/Pages pending.
-- Preserve 223 teams/2676 players, six formations, offline saves, ten Career/Cup slots and SD09. Physical two-phone LAN/P2P and human graphics QA remain pending.
+- 0.11.4.30 STUDIO-MAGIC-NOOP-01: unchanged equipped Magic Trick and removal of absent Trick no longer write Career or club saves; real removal still writes. Focused VM regression added. Exact-head CI and hosted acceptance pending.
+- 0.11.4.29 STUDIO-TRICK-PROGRESS-01: rating and positional OVR unlock progress, prior full 4+4 and Modular QA green; main/dev synchronized at 6ce57cd576facf76f8b9994b875cbb82ae1aef13. Pages bytes not verified.
+- 0.11.4.28 STUDIO-GK-PREVIEW-01: eight-Trick goalkeeper read-only catalogue. Previous full and Modular QA green.
+- Preserve 223 teams/2676 players, six formations, four buttons, offline saves, Career/Cup ten slots, SD09. Physical two-phone LAN and art QA remain open.
 
-## Next smallest action
-1. Check new locked-preview regression and 4 Node + 4 Chromium + Modular exact-head QA.
-2. Fix CI failures on dev, promote only fully green exact dev via protected PR.
-3. Verify main SHA, Pages deploy and hosted HTML/JS/CSS bytes.
-4. Test real two-phone LAN/P2P and Concept/Crown directional art.
-5. Continue next Player Studio/Tricks/graphics roadmap increment on dev.
+## Next five actions
+1. Check focused Node and exact-head full 4+4/Modular CI.
+2. Repair failed checks on dev without bypass; continue incremental work.
+3. Promote only green exact dev head through protected pipeline.
+4. Verify main SHA, Pages and hosted HTML/JS/CSS bytes.
+5. Continue two-device LAN, counterable Tricks and directional sprite QA.
 
-## Ownership and exclusions
-Sole developer smf-hourly-dev-20261019. Never read/write other agents' memory; no other branches, force push or security bypass.
-
-## Evidence
-Prior release main #40645171130 and Pages #40645170675 passed. New candidate is not yet certified; GitHub CI/Pages are authoritative.
-
-## Cleanup
-Only dev/main. Keep checkpoint under 4 KiB.
+## Scope
+Sole developer; only dev/main; no force push, branch creation or security bypass.
