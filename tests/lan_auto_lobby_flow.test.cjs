@@ -961,3 +961,32 @@ test('LAN-084 directory scope isolation rejects internet rooms in LAN and LAN ro
   }finally{f.cleanup()}
  }
 });
+
+
+test('LAN-085 duplicate taps keep pending approval in LAN and Online P2P',async()=>{
+ for(const internet of [false,true]){
+  const f=setup();
+  try{
+   const {mountAutoLanLobby}=await load();
+   const dispose=mountAutoLanLobby(f.root,{build:'0.11.4.36',internet,signalFactory:f.signalFactory});
+   f.elements.get('#autoFind').click();f.connect();
+   const scope=internet?{scope:'internet-p2p'}:{};
+   f.emit({type:'room-announce',roomId:'room_12345678',name:'First host',build:'0.11.4.36',full:false,...scope});
+   f.emit({type:'room-announce',roomId:'room_87654321',name:'Second host',build:'0.11.4.36',full:false,...scope});
+   const buttons=f.elements.get('#autoRooms').children;
+   buttons[0].click();const pending=f.packets.at(-1);
+   assert.equal(pending.type,'join');
+   buttons[0].click();buttons[0].click();
+   assert.equal(f.packets.filter(p=>p.type==='join').length,1,'same room cannot generate another JOIN');
+   assert.equal(f.packets.filter(p=>p.type==='leave').length,0,'same room cannot cancel consent');
+   buttons[1].click();const switched=f.packets.at(-1);
+   assert.equal(switched.type,'join');assert.notEqual(switched.requestId,pending.requestId);
+   assert.deepEqual(f.packets.slice(-2).map(p=>p.type),['leave','join'],'another room still cancels old request');
+   f.emit({type:'join-accept',requestId:pending.requestId,hostName:'Old host'});
+   assert.doesNotMatch(f.elements.get('#autoStatus').textContent,/Approved by Old host/);
+   f.emit({type:'join-accept',requestId:switched.requestId,hostName:'New host'});
+   assert.match(f.elements.get('#autoStatus').textContent,/Approved by New host/);
+   dispose();
+  }finally{f.cleanup()}
+ }
+});

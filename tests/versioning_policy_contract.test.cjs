@@ -155,3 +155,10 @@ test('LAN-083 About and README retain busy room recovery notes',()=>{
  assert.match(readme,/LAN-083/);
  assert.match(readme,/join is rejected because the room is full/);
 });
+
+
+test('LAN-085 release notes describe duplicate pending host approval protection',()=>{
+ const release=read('src/modules/release.js'),readme=read('README.md');
+ assert.match(release,/LAN-085:/);assert.match(readme,/LAN-085/);
+ assert.match(release,/pending host-approval request/);assert.match(readme,/Switching to another host/);
+});

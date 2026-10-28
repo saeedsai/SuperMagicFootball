@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.35
+# SuperMagicFootball release/version policy — About-only 0.11.4.36
 
-**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.35.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.36.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.35 (28 October 2026):** LAN-084 filters cross-scope room snapshots and advertisements so LAN-only browsing never displays internet-P2P rooms and vice versa. Legacy unscoped LAN hosts remain discoverable. Exact-head QA, protected promotion and hosted Pages acceptance pending.
+**Current dev candidate 0.11.4.36 (28 October 2026):** LAN-085 prevents duplicate taps on a pending host-consent room from cancelling/recreating the request in LAN or Online P2P. Switching hosts and stale-approval rejection remain intact. Exact-head CI, protected promotion and Pages acceptance pending.
+
+**Previous dev candidate 0.11.4.35 (28 October 2026):** LAN-084 filters cross-scope room snapshots and advertisements so LAN-only browsing never displays internet-P2P rooms and vice versa. Legacy unscoped LAN hosts remain discoverable. Exact-head QA, protected promotion and hosted Pages acceptance pending.
 
 **Previous dev candidate 0.11.4.34 (28 October 2026):** LAN-083 refreshes room occupancy immediately after busy admission rejection, without replay-triggered polling. Exact-head QA, promotion and Pages bytes pending.
 

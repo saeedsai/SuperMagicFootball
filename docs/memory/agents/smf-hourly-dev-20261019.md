@@ -1,33 +1,27 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-28 16:00 CET
+**Updated:** 2026-10-28 17:05 CET
 
 ## Mission
-Keep coding one bounded increment each hour on dev. Only dev/main; never force-push, bypass security or pause for pending release.
+Keep coding bounded tested increments on existing dev; never pause for CI/deployment or bypass security. Only dev/main, no force push.
 
 ## Current checkpoint
-- 0.11.4.35 LAN-084: isolate LAN vs Online P2P room scopes for announcements and snapshots; preserve legacy unscoped LAN. Focused two-mode flow regression committed. CI and promotion pending; no physical-device acceptance. Render workspace not selected, so broker deployment drift cannot be checked safely in this run.
-- 0.11.4.34 LAN-083: busy admission rejection triggers immediate room snapshot refresh, replay guarded; focused flow regression. Exact-head CI, promotion and hosted bytes pending. Physical two-device LAN remains open.
-- 0.11.4.33 LAN-082: temporary broker capacity errors preserve 10-second host retry and room identity; permanent scope errors stop retries. Two focused lobby regressions added; first Modular #40693416252 failed stale LAN-064 capacity expectation (948/949 pass), repaired in test-only follow-up; exact-head CI, main and Pages pending. Physical two-device LAN/P2P remains open.
-- 0.11.4.32 STUDIO-TRICK-PROGRESS-02 fixes missing rating unlock guidance with focused VM regression; exact-head 4+4, Modular and Pages pending.
-- 0.11.4.31 STUDIO-MAGIC-SAVE-STATE-01: no-op Magic Trick save button disabled in Player Studio (KEEP, absent REMOVE, same equipped); genuine changes remain enabled and locked previews stay disabled. Focused VM regression added. First Full #40684644344 and Modular #40684644386 failed three stale source-contract assertions; updated tests to require new disabled state and preserve locked eligibility guard. Fresh exact-head QA pending. Prior .30 exact-head Full #40677013054 and Modular #40677013174 green, dev/main synced at ffa4c143c0a7. New candidate QA/Pages pending.
-- Preserve 223 teams/2676 players, six formations, four buttons, offline saves, Career/Cup ten slots, SD09. Physical two-phone LAN and art QA remain open.
-
-## 2026-10-28 release and graphics checkpoint
-- Verified `main...dev` identical at b852ecbbccacd5bebba0f2df64b2d821c41a4e32; no unmerged change to promote. Existing Concept Hero already flips side and quarter profiles locally; avoid double-flip until screenshot QA confirms orientation. No new game-code release or CI run in this checkpoint. LAN/P2P physical acceptance and hosted Pages byte verification remain open. Continue independently useful dev features without waiting for release.
+- 0.11.4.36 LAN-085: duplicate clicks on the same room during pending approval no longer cancel/rejoin; switching hosts still sends LEAVE and a fresh JOIN. Focused LAN and Online P2P regression added. CI, main and hosted Pages pending. Physical two-device LAN and broker revision unverified.
+- Previous 0.11.4.35 LAN-084 isolates LAN vs Online P2P room scopes; exact dev/main parity f167e72a577e53f4c1b8e6d30ffae1eb5d0a404f before this increment.
+- Existing Concept Hero side/quarter local flip already present; require screenshots before further renderer changes. Preserve 223 teams/2676 players, six formations, four buttons, offline saves, Career/Cup ten slots and SD09.
 
 ## Next smallest action
-1. Verify focused Node and exact-head full 4 Node + 4 Chromium and Modular QA.
-2. Repair actual failures on dev; continue independent roadmap increments.
-3. Promote only fully green exact dev head through protected pipeline.
-4. Verify main SHA, Pages and hosted HTML/JS/CSS bytes.
-5. Continue two-client LAN/P2P, counterable Tricks and directional art.
+1. Run exact-head focused Node and full 4 Node + 4 Chromium and Modular QA; repair failures on dev.
+2. Promote only completely green exact dev head through protected main pipeline.
+3. Verify Pages HTML/JS/CSS bytes, broker revision and physical two-device LAN/P2P.
+4. Mark LAN complete only after discovery/consent/sprint/Jump/reconnect/mobile acceptance.
+5. Shift to Player Studio, counterable Tricks, directional graphics, gameplay and Career.
 
 ## Ownership and exclusions
-Sole developer smf-hourly-dev-20261019. No extra branches, cross-agent private memory, force push or security bypass.
+Sole developer smf-hourly-dev-20261019; never access other agents' private memory or bypass CI/security.
 
 ## Evidence
-PR #73. Failed initial Full #40676804744 and Modular #40676804765; follow-up Full #40676882873 and Modular #40676883280. Latest 0.11.4.35 exact-head CI pending.
+GitHub commit/CI/PR refs in Git history and central development log; do not claim unobserved checks.
 
 ## Cleanup
-Checkpoint below 4 KiB. Git history preserves prior handovers.
+Checkpoint below 4 KiB.

@@ -1512,3 +1512,8 @@ Host now holds last validated guest four-button and directional input for at mos
 - Added a focused two-mode mock lobby regression for valid snapshots, malicious/mis-scoped announcements and snapshots, legacy LAN, and joining only valid rooms. No change to broker protocol, host approval, physics, controls, saves, rosters, graphics, Career/Cup slots or SD09.
 - Updated package/About/README heading and banner/SW cache/version policy/shared memory/own checkpoint to 0.11.4.35. Exact-head CI, 4 Node + 4 Chromium, Modular QA, protected promotion and hosted byte verification remain pending until observed. Render deployment investigation is blocked by missing confirmed workspace selection; do not select an arbitrary workspace.
 - Next five: focused and full CI; diagnose failures; protected exact-head promotion; Pages byte smoke; physical two-device LAN/P2P then other roadmap features.
+
+### 2026-10-28 17:05 CET — LAN-085 pending admission duplicate-click guard
+- Found live `lan-auto-lobby.js` repeated room taps while awaiting host approval sent LEAVE and generated another JOIN, cancelling consent and racing stale approvals. Same-room repeat taps now preserve pending request; selecting a different host still sends LEAVE and a fresh JOIN.
+- Added two-mode LAN/Online P2P regression for duplicate taps, host switching, stale/new approvals. Aligned 0.11.4.36 About, package, README, SW, version policy and memory. No physics, four-button, roster, graphics or save changes.
+- Full exact-head 4 Node + 4 Chromium, Modular QA, protected main and hosted Pages remain gates. Physical two-device acceptance pending.
