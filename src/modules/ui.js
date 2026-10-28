@@ -940,7 +940,7 @@ function showPlayerStudio(index=0){avatarIndex=Math.max(0,Math.min(11,Number(ind
   ['studioDribble','studioDribbleIcon','dribble',DRIBBLES.assignedDribbleType(player)]
  ]){
   const select=$(selectId),target=$(previewId);if(!select||!target)continue;
-  const update=()=>{const chosen=select.value==='keep'?current:select.value==='none'?null:select.value;target.innerHTML=ABILITY_ICONS.icon(category,chosen);if(category==='shot'){const guide=$('studioShotGuide');if(guide)guide.textContent=studioShotPreviewGuide(select.value,player.superAbility?.type==='shoot'?player.shot:null,$('studioShotTier')?.value);}if(category==='trick'){const locked=!studioMagicEligible(player)&&select.value!=='keep'&&select.value!=='none';const guide=$('studioMagicGuide');if(guide)guide.textContent=studioMagicGuide(select.value,current,!locked);const save=$('studioMagicSaveRow')?.querySelector('button');if(save){save.disabled=locked;save.setAttribute('aria-disabled',String(locked));}}if(category==='dribble'){const guide=$('studioDribbleGuide');if(guide)guide.textContent=studioDribblePreviewGuide(select.value,DRIBBLES.DRIBBLE_STYLES);}};
+  const update=()=>{const chosen=select.value==='keep'?current:select.value==='none'?null:select.value;target.innerHTML=ABILITY_ICONS.icon(category,chosen);if(category==='shot'){const guide=$('studioShotGuide');if(guide)guide.textContent=studioShotPreviewGuide(select.value,player.superAbility?.type==='shoot'?player.shot:null,$('studioShotTier')?.value);}if(category==='trick'){const state=studioMagicSaveState(select.value,current,studioMagicEligible(player));const guide=$('studioMagicGuide');if(guide)guide.textContent=studioMagicGuide(select.value,current,!state.locked);const save=$('studioMagicSaveRow')?.querySelector('button');if(save){save.disabled=state.disabled;save.setAttribute('aria-disabled',String(state.disabled));save.title=state.locked?'Reach Star or Superstar (91+) to equip this Trick.':state.unchanged?'No Magic Trick change to save.':'';}}if(category==='dribble'){const guide=$('studioDribbleGuide');if(guide)guide.textContent=studioDribblePreviewGuide(select.value,DRIBBLES.DRIBBLE_STYLES);}};
   previewUpdates[selectId]=update;
   select.addEventListener('change',update);update();
  }
@@ -1052,6 +1052,12 @@ const STUDIO_MAGIC_TRICK_GUIDES=Object.freeze({
  hideBall:'Briefly protects the carried ball. A strong defender approaching and facing the carrier can counter.',
  teleport:'Moves the carrier a short distance forward within the pitch. A strong defender approaching and facing the carrier can counter.'
 });
+// STUDIO-MAGIC-SAVE-STATE-01: no-op selections should never look actionable.
+function studioMagicSaveState(choice,equipped,eligible){
+ const locked=!eligible&&choice!=='keep'&&choice!=='none';
+ const unchanged=choice==='keep'||(choice==='none'&&!equipped)||choice===equipped;
+ return {locked,unchanged,disabled:locked||unchanged};
+}
 function studioMagicGuide(choice,equipped,eligible=true){
  if(choice==='none')return equipped
   ?'REMOVE selected. The equipped Magic Trick stays active until SAVE TRICK SELECTION is pressed.'
