@@ -224,7 +224,11 @@ function createLanLiveMatch({peer,role,game,input,field}){
           // Paused/finished frames must never apply queued guest actions.
           if(phase==='play'&&frameInput&&guestFrame?.received!==false){lastGuestInput=frameInput;guestInputGap=0;}
           else if(phase==='play')guestInputGap++;
-          else {lastGuestInput=null;guestInputGap=0;}
+          else {
+            // Paused/finished frames do not poll guest input. Drop the old
+            // button-edge history so a new press after resume is not lost.
+            lastGuestInput=null;guestInputGap=0;previousButtons.clear();
+          }
           remote=phase==='play'?((guestFrame?.received===false?null:frameInput)??(guestInputGap<=MAX_GUEST_INPUT_GAP?lastGuestInput:null)??{buttons:[],dx:0,dy:0}):{buttons:[],dx:0,dy:0};
           try{
             if(phase==='play')game.update(dt);
