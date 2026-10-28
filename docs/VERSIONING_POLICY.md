@@ -2,11 +2,15 @@
 
 **Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.30.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.30 (28 October 2026):** STUDIO-MAGIC-NOOP-01 skips redundant Career and club save writes for unchanged Magic Trick selections and absent Trick removals. Real changes still persist; exact-head QA and Pages acceptance pending.\n\n**Previous dev candidate 0.11.4.29 (28 October 2026):** STUDIO-TRICK-PROGRESS-01: Player Studio now shows each outfield player's legacy rating and positional OVR, plus the remaining points to unlock Magic Trick equipment at 91 via either path. Eligibility and saves are unchanged. Full exact-head QA, protected promotion and Pages verification pending.
+**Current dev candidate 0.11.4.30 (28 October 2026):** STUDIO-MAGIC-NOOP-01 skips redundant Career and club save writes for unchanged Magic Trick selections and absent Trick removals. Real changes still persist; exact-head QA and Pages acceptance pending.
+
+**Previous dev candidate 0.11.4.29 (28 October 2026):** STUDIO-TRICK-PROGRESS-01: Player Studio now shows each outfield player's legacy rating and positional OVR, plus the remaining points to unlock Magic Trick equipment at 91 via either path. Eligibility and saves are unchanged. Full exact-head QA, protected promotion and Pages verification pending.
 
 **Previous dev candidate 0.11.4.28 (28 October 2026):** STUDIO-GK-PREVIEW-01 adds a real goalkeeper-only read-only eight-Trick catalogue with live effect/counter guidance and no save action; exact-head QA, promotion and Pages acceptance pending.
 
-**Previous dev candidate 0.11.4.27 (28 October 2026):** STUDIO-GK-HELP-01 clarifies that goalkeepers may preview but cannot save Magic Tricks, with a focused test. Exact-head release checks pending.\n\n**Previous dev candidate 0.11.4.26 (28 October 2026):** STUDIO-TRICK-PREVIEW-02 makes all eight Magic Tricks inspectable by outfield players; a locked selection cannot be saved, while keep/remove legacy options remain. Full exact-head QA, protected promotion and Pages byte verification pending.
+**Previous dev candidate 0.11.4.27 (28 October 2026):** STUDIO-GK-HELP-01 clarifies that goalkeepers may preview but cannot save Magic Tricks, with a focused test. Exact-head release checks pending.
+
+**Previous dev candidate 0.11.4.26 (28 October 2026):** STUDIO-TRICK-PREVIEW-02 makes all eight Magic Tricks inspectable by outfield players; a locked selection cannot be saved, while keep/remove legacy options remain. Full exact-head QA, protected promotion and Pages byte verification pending.
 
 **Previous dev candidate 0.11.4.25 (28 October 2026):** STUDIO-TRICK-HELP-01 displays in-match one-second DRIBBLE activation with the existing Trick counter explanation in player equipment previews. Exact-head 4+4 CI, Modular QA and protected Pages release pending.
 
