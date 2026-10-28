@@ -244,10 +244,10 @@ function createLanLiveMatch({peer,role,game,input,field}){
           }
         });
         // A failed send must be retried on the next step, not certified.
-        // LAN-076: a transport-reported failed snapshot is not a completed
-        // host frame. Preserve the frozen-phase retry and report failure to
-        // the caller instead of claiming the guest received the transition.
-        const snapshotDelivered=result!==false&&result?.snapshotSent!==false;
+        // LAN-077: require an explicit successful transport receipt. Missing,
+        // null or malformed results must not certify a frozen phase as sent;
+        // preserve the retry and report failure to the caller.
+        const snapshotDelivered=result?.snapshotSent===true;
         if(snapshotDelivered)lastHostPhase=game.matchState;
         return snapshotDelivered;
       }catch(error){

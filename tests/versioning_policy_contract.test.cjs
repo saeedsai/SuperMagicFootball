@@ -113,3 +113,10 @@ test('LAN-073 release notes and README describe reconnect phase recovery',()=>{
   assert.match(readme,/reconnection/);
  }
 });
+
+
+test('LAN-077 candidate documents explicit snapshot delivery receipts',()=>{
+ const release=read('src/modules/release.js'),readme=read('README.md');
+ assert.match(release,/LAN-077/,'About notes must describe the delivery receipt fix');
+ assert.match(readme,/LAN-077/,'README must describe the delivery receipt fix');
+});

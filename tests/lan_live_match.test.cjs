@@ -47,7 +47,7 @@ test('LAN-044 host simulates only through authoritative peer and remote 4-button
     stepHostMatchFrame(frame,simulate){
       const received=this.inputs.has(frame);
       const state=simulate(this.inputs.get(frame)??{buttons:[],dx:0,dy:0},{received});
-      this.frames??=[];this.frames.push({frame,state});return {frame};
+      this.frames??=[];this.frames.push({frame,state});return {frame,snapshotSent:true};
     }
   };
   const run=createLanLiveMatch({peer,role:'host',game:match,input,field});
@@ -717,6 +717,28 @@ test('LAN-076 host reports unsent frozen snapshots and retries the phase',async(
   assert.equal(run.step(.016),false,'delivered frozen phase is not sent again');
   assert.deepEqual(published.map(state=>state.meta.phase),['paused','paused']);
   assert.equal(match.clock,0,'failed frozen delivery never advances physics');
+  run.dispose();
+ }
+});
+
+
+test('LAN-077 missing or malformed host receipts do not suppress frozen-phase retry',async()=>{
+ const {createLanLiveMatch}=await load();
+ for(const missing of [undefined,null,{}, {snapshotSent:undefined},
+   {snapshotSent:null},{snapshotSent:0},{snapshotSent:'true'}]){
+  const input=controls(),match=game(input),phases=[];
+  match.matchState='paused';
+  let attempts=0;
+  const peer={ready:true,stepHostMatchFrame(frame,simulate){
+   phases.push(simulate({buttons:[],dx:0,dy:0},{received:false}).meta.phase);
+   return attempts++===0?missing:{snapshotSent:true};
+  }};
+  const run=createLanLiveMatch({peer,role:'host',game:match,input,field});
+  assert.equal(run.step(.016),false,'missing/malformed receipt must not report delivery');
+  assert.equal(run.step(.016),true,'the frozen snapshot must be retried');
+  assert.equal(run.step(.016),false,'an acknowledged phase is published once');
+  assert.deepEqual(phases,['paused','paused']);
+  assert.equal(match.clock,0,'retry cannot simulate frozen physics');
   run.dispose();
  }
 });
