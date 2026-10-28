@@ -1,3 +1,5 @@
+> **0.11.4.34 release candidate (28 October 2026):** LAN-083 immediately refreshes Find Games when a join is rejected because the room is full or its approval queue is occupied. Fresh occupancy disables stale JOIN buttons, and duplicate rejection packets cannot flood discovery. Host consent, WebRTC transport, four controls, offline saves, 223 teams/2676 players, six formations, Career/Cup ten slots, SD09 and graphics are unchanged. Focused regression added; exact-head CI and protected Pages verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.11.4.33 release candidate (28 October 2026):** LAN-082 keeps automatic host registration retries alive when the LAN/P2P discovery server temporarily reaches room capacity; it reuses the same room ID and stops on successful registration. Permanent broker configuration errors still stop retries. Host consent, game physics, four buttons, 223 teams/2676 players, six formations, offline saves, Career/Cup ten slots, SD09 and graphics remain unchanged. Focused regression added; full exact-head CI, protected main and hosted Pages verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.11.4.32 release candidate (28 October 2026):** Magic Trick unlock guidance now reports missing/blank rating as unknown and explicitly recognizes rating or position OVR 91+. Regression added; no gameplay, controls, roster, saves or graphics changed. Exact-head release QA pending.
@@ -200,7 +202,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.11.4.33 · Modular source project
+# Supermagic Football · v0.11.4.34 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 
