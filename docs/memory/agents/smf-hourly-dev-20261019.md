@@ -23,6 +23,7 @@ Continue bounded tested increments directly on existing dev; never new branches,
 Sole developer `smf-hourly-dev-20261019`; no other agent memory or CI/security bypass. Git history and central log retain evidence.
 
 ## Evidence
+- Initial 0.11.4.40 Full #40760374882 and Modular #40760374739 failed Node preflight on a stale host-registered regex contract and shared memory over 6 KiB. Both corrected in follow-up; await exact-head CI.
 Previous 0.11.4.39 exact head ff3d3650 Full Regression Census #40751363545 and Modular QA #40751363528 successful. New candidate requires separate exact-head verification.
 
 ## Cleanup

@@ -56,7 +56,7 @@ test('host registration must be acknowledged before UI claims a discoverable roo
  const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
  const lobby=fs.readFileSync('src/modules/lan-auto-lobby.js','utf8');
  assert.match(server,/send\(ws,\{type:'host-registered',roomId:id\}\)/);
- assert.match(lobby,/m\.type==='host-registered'&&mode==='host'&&m\.roomId===roomId/);
+ assert.match(lobby,/m\.type==='host-registered'&&mode==='host'&&!started&&m\.roomId===roomId/);
  assert.match(lobby,/Registering room with discovery service/);
  assert.match(lobby,/Unable to register room/);
 });

@@ -1,3 +1,7 @@
+## 2026-10-28 21:08 CET — LAN-089 CI contract repair (same candidate 0.11.4.40)
+- Full Regression Census #40760374882 and Modular QA #40760374739 failed Node preflight: tests/lan_guest_release.test.cjs expected the old host-registered source condition without !started, and docs/memory/SHARED.md exceeded 6 KiB.
+- Updated source contract to require the guarded condition and compacted stale shared release history into Git-log pointers. No gameplay code, release version or security gate changed. Fresh exact-head 4+4/Modular required before promotion.
+
 ## 2026-10-28 21:04 CET — LAN-089 late host-side broker notice isolation (candidate 0.11.4.40)
 - Diagnosed host lobby: unlike the LAN-088 guest-side guard, a delayed guest-left event after kickoff still cleared host approval and displayed a false 'Hosting remains available' status. A late host-registered acknowledgement also replaced live-match status with 'Waiting for a guest'.
 - Fix: ignore these broker-only events once the host hands active transport to the match. Before kickoff, legitimate guest departure and registration still work. Added LAN and Online P2P host kickoff, answer, late-message and no-restart regression.
