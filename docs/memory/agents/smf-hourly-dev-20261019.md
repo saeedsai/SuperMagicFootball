@@ -18,5 +18,11 @@ Continue bounded tested increments on existing dev only; no new branches, force 
 4. Complete physical two-device LAN/P2P consent, hold-sprint, Jump edge, reconnect/mobile QA.
 5. Mark LAN done only on acceptance; then prioritize Player Studio, counterable Tricks, eight-view art, gameplay and Career.
 
-## Ownership
+## Ownership and exclusions
 Sole developer `smf-hourly-dev-20261019`; no other agent memory or security bypass. Central log and Git history retain evidence.
+
+## Evidence
+LAN-087 focused Node passed in first 955/956 preflight; two initial full/Modular runs blocked by checkpoint section-name contract, not game code. Await fresh exact-head CI.
+
+## Cleanup
+Checkpoint remains below 4 KiB. Git history and central log retain detailed evidence.
