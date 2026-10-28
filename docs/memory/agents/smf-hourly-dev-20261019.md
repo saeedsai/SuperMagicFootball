@@ -1,27 +1,21 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-28 01:02 CET
+**Updated:** 2026-10-28 02:02 CET
 
 ## Mission
-Sole developer; continue one bounded feature on existing dev each run regardless of CI or release queue. Only dev/main; no bypass or force push. Preserve 223 teams/2676 players, six formations, four controls, Career/Cup ten slots, SD09, saves and offline.
+Continue one bounded feature each run on existing dev even with CI/Pages pending. Only dev/main; no bypass, force push or disabling hourly schedule. Preserve 223 teams/2676 players, six formations, four buttons, offline saves, Career/Cup ten slots and SD09.
 
 ## Current checkpoint
-- Baseline dev/main `0e3ace5f5f529d025206c17c24aa67caac89e186`. Full #40600238583 and Modular #40600238397 passed for that baseline only. Main/Pages hosted bytes and physical two-client proof remain separate.
-- LAN-074 candidate 0.11.4.16: host clears stale guest button edges while paused/finished (physics does not poll inputs), so resume accepts fresh Jump without duplicate held edges. Added focused LAN-074 Node test and aligned About/package/README/SW/version policy/shared memory.
-- Latest dev SHA must be fetched after these commits; exact-head full CI, protected PR, Pages and real devices not yet certified.
+- Baseline dev/main `f99e9deef0db1f6b9ecc5379f1577cf3b590af71` (0.11.4.16). Prior Full #40606270252 and Modular #40606270217 green only for baseline.
+- LAN-075 candidate 0.11.4.17: if host physics transitions to paused/finished within `game.update`, immediately clear guest held-button edges/gap state in finally, because next frozen step is skipped. Regression covers both phases, fresh Jump on resume and no repeat on subsequent held frame.
+- About/package/README/SW/policy/shared/log aligned. Current exact dev head must be fetched; CI and protected promotion not yet certified. Physical two-device LAN/P2P and hosted Pages bytes remain unverified.
 
-## Next smallest action
-1. Inspect exact dev head and 4 Node + 4 Chromium and Modular QA; fix red CI on dev.
-2. Promote only exact fully green head via protected dev-to-main pipeline.
-3. Confirm main SHA, Pages deployment and hosted HTML/JS/CSS bytes.
-4. Test actual two-device LAN/P2P discovery, consent, controls, pause/resume and graphics.
-5. Continue next bounded Studio, Trick or directional-art feature even if release is pending.
+## Next five
+1. Inspect exact-head full 4 Node + 4 Chromium and Modular; fix red checks on dev.
+2. Protected green exact-head dev-to-main promotion only.
+3. Confirm main SHA, Pages deployment and hosted HTML/JS/CSS byte smoke.
+4. Two-phone LAN/P2P discovery, host consent, reconnect, input and graphics QA.
+5. Continue next small Studio, counterable Trick or directional-art increment on dev regardless of release queue.
 
-## Ownership and exclusions
-Only own checkpoint; no other agents' memory. No new branches, force push, bypass, false deployment or device claims.
-
-## Evidence
-LAN-074 code and regression committed on dev; exact-head CI not yet observed. Earlier green runs apply only to prior SHA.
-
-## Cleanup
-Only dev/main. Keep hourly development enabled; retry blocked CI, deployment and physical acceptance.
+## Safety
+Only own checkpoint, no other agents' memory; no new branches or force pushes. Previous green runs do not certify new candidate.
