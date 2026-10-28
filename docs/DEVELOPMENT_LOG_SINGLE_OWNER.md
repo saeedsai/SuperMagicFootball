@@ -1,3 +1,6 @@
+## 2026-10-28 — LAN-081 (candidate 0.11.4.23)
+- Bounded host frozen-phase invalid-clock guard prevents heartbeat flood; LAN-081 test exercises invalid and recovered clocks. Commits published directly to dev; exact-head CI/Pages and physical two-device verification required.
+
 ## 2026-10-28 07:04 CET — LAN-080 guest snapshot clock rollback fail-closed (0.11.4.22 dev candidate)
 - Baseline synchronized dev/main `3a7ccf375f31b82f98d66c1dc4c081714049e12e` (0.11.4.21), prior main Full #40637341147 and Pages #40637341010 green; physical two-phone LAN/P2P and human art QA still pending.
 - Defect: guest snapshot receipt and freshness used raw Date.now() despite the bridge's injected now() clock, and a backwards clock adjustment could leave stale guest four-button controls sending indefinitely. Guest now records and checks age on the same clock, rejects non-finite/negative/>700ms age, and recovers on a newer authoritative tick. LAN-080 deterministic test covers valid boundary, timeout, rollback, duplicate, recovery and invalid clock.
