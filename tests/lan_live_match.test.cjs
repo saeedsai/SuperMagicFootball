@@ -205,7 +205,7 @@ test('LAN-054 failed paused snapshot retries without simulating extra physics',a
     return {snapshotSent:attempts>1};
   }};
   const run=createLanLiveMatch({peer,role:'host',game:match,input,field});
-  assert.equal(run.step(.02),true);
+  assert.equal(run.step(.02),false,'failed transport send must report an unsent snapshot');
   assert.equal(run.step(.02),true,'failed transport send must not consume phase transition');
   assert.equal(run.step(.02),false,'successful phase send is sent once');
   assert.equal(attempts,2);
@@ -696,6 +696,27 @@ test('LAN-075 in-frame host pause or finish clears stale guest Jump edges',async
   assert.equal(run.step(.016),true);
   assert.deepEqual(edges,[true,true,false],
    frozen+' transition inside update must restore one fresh Jump edge after resume');
+  run.dispose();
+ }
+});
+
+
+test('LAN-076 host reports unsent frozen snapshots and retries the phase',async()=>{
+ const {createLanLiveMatch}=await load();
+ for(const failure of [false,{snapshotSent:false}]){
+  const input=controls(),match=game(input),published=[];
+  match.matchState='paused';
+  let attempts=0;
+  const peer={ready:true,stepHostMatchFrame(frame,simulate){
+   published.push(simulate({buttons:[],dx:0,dy:0},{received:false}));
+   return attempts++===0?failure:{snapshotSent:true};
+  }};
+  const run=createLanLiveMatch({peer,role:'host',game:match,input,field});
+  assert.equal(run.step(.016),false,'failed host snapshot must not claim success');
+  assert.equal(run.step(.016),true,'frozen phase is retried after failed delivery');
+  assert.equal(run.step(.016),false,'delivered frozen phase is not sent again');
+  assert.deepEqual(published.map(state=>state.meta.phase),['paused','paused']);
+  assert.equal(match.clock,0,'failed frozen delivery never advances physics');
   run.dispose();
  }
 });
