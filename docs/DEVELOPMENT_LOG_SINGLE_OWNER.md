@@ -1,3 +1,7 @@
+## 2026-10-28 — LAN-083 busy room directory refresh (candidate 0.11.4.34)
+- Busy admission rejection immediately requests fresh room occupancy; stale rejection replays cannot poll again. Added focused lobby flow regression. Host consent, four buttons, game physics, graphics, rosters, offline saves and Career/Cup slots unchanged. Full exact-head 4+4/Modular, protected main and Pages bytes pending; physical two-device acceptance remains open.
+- Next five: focused/full QA; repair failures; exact-head protected promotion; hosted Pages byte smoke; physical LAN then Studio/Tricks/art.
+
 ## 2026-10-28 — LAN-082 initial CI contract repair
 - Exact-head Modular QA #40693416252 ran 949 Node tests: 948 passed, one legacy LAN-064 assertion expected capacity errors to stop retries. Updated that assertion to verify the new bounded retry and same-room re-advertisement, preserving the existing cancel guard. No gameplay change or version bump. Fresh exact-head CI required.
 
