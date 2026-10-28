@@ -1,3 +1,6 @@
+## 2026-10-28 — STUDIO-GK-PREVIEW-01 / 0.11.4.28 candidate
+- Goalkeeper Player Studio now displays all eight Magic Tricks as informational previews, with live icon and defensive-counter text. Goalkeepers cannot equip/remove Tricks, no save action exists in this panel, and the existing save handler remains protected. Added Node contract. Previous 0.11.4.27 exact-head Full #40658793925 (4 Node + 4 Chromium, preflight and preview) and Modular #40658793852 passed; dev/main were identical at 232886cc7d5d. Current 0.11.4.28 CI, main promotion, Pages byte verification and physical QA pending.
+
 ## 2026-10-28 — STUDIO-GK-HELP-01 / 0.11.4.27 candidate
 - Clarified goalkeeper Magic Trick restriction in Player Studio; existing roster/save mechanics unchanged. Focused VM test committed. Full 4+4/Modular, Pages bytes and physical graphics acceptance pending.
 
