@@ -1091,3 +1091,36 @@ test('LAN-088 host departure retires pending room and cannot interrupt a started
   }finally{f.cleanup()}
  }
 });
+
+
+test('LAN-089 late guest-left and host registration ack cannot reset a started host match',async()=>{
+ for(const internet of [false,true]){
+  const f=setup();let onStatus=null,readyCount=0,disposed=0;
+  try{
+   const {mountAutoLanLobby}=await load();
+   const dispose=mountAutoLanLobby(f.root,{build:'0.11.4.40',internet,signalFactory:f.signalFactory,
+    onReady:()=>{readyCount++},
+    peerFactory:()=>({createOffer:async()=>'host-offer',acceptAnswer:async()=>{},
+     subscribeStatus:fn=>{onStatus=fn;return ()=>{}},
+     awaitReady:()=>new Promise(()=>{}),dispose(){disposed++}})});
+   f.connect();f.elements.get('#autoHost').click();
+   const roomId=f.packets.at(-1).roomId;
+   f.emit({type:'host-registered',roomId});
+   await f.emit({type:'guest-approved',roomId});
+   assert.equal(f.packets.at(-1).type,'offer');
+   await f.emit({type:'answer',roomId,sdp:'guest-answer'});
+   assert.equal(typeof onStatus,'function');
+   onStatus({ready:true});assert.equal(readyCount,1);
+   const matchStatus=f.elements.get('#autoStatus').textContent;
+   const offerCount=f.packets.filter(p=>p.type==='offer').length;
+   f.emit({type:'guest-left',roomId});
+   f.emit({type:'host-registered',roomId});
+   await f.emit({type:'guest-approved',roomId});
+   assert.equal(readyCount,1,'late signaling cannot restart the established match');
+   assert.equal(disposed,0,'late broker notices cannot dispose the active transport');
+   assert.equal(f.packets.filter(p=>p.type==='offer').length,offerCount,'no new SDP offer after kickoff');
+   assert.equal(f.elements.get('#autoStatus').textContent,matchStatus,'active host match status must not be overwritten');
+   dispose();
+  }finally{f.cleanup()}
+ }
+});

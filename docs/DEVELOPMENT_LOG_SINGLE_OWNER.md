@@ -1,3 +1,10 @@
+## 2026-10-28 21:04 CET — LAN-089 late host-side broker notice isolation (candidate 0.11.4.40)
+- Diagnosed host lobby: unlike the LAN-088 guest-side guard, a delayed guest-left event after kickoff still cleared host approval and displayed a false 'Hosting remains available' status. A late host-registered acknowledgement also replaced live-match status with 'Waiting for a guest'.
+- Fix: ignore these broker-only events once the host hands active transport to the match. Before kickoff, legitimate guest departure and registration still work. Added LAN and Online P2P host kickoff, answer, late-message and no-restart regression.
+- Rotated About/package/README/service-worker cache and updated policy, shared context and own checkpoint. Exact-head 4 Node + 4 Chromium, Modular QA, protected main promotion, Pages byte verification and physical acceptance remain required.
+- Render: broker deployment dep-dbh5amvlk1mc73f9mci0 LIVE at previous 0.11.4.39 commit ff3d3650 (API-triggered after absent commit auto-deploy). New candidate broker revision not yet verified.
+- Next five: focused/full CI; fix failures; protected main promotion; hosted Pages/broker verification; physical two-device acceptance then Player Studio/Tricks/eight-view graphics.
+
 ## 2026-10-28 20:04 CET — LAN-088 host-departure recovery and post-kickoff signaling isolation (candidate 0.11.4.39)
 - Diagnosed guest lobby: host-left during admission left a stale joinable room card and did not refresh discovery; host-left and room-remove after kickoff could clear the active room identity, interrupting relay routing despite an established match.
 - Fix: remove departed host from directory and request a fresh snapshot immediately before kickoff; guard both notices against resetting an already started LAN/P2P match. Added two-mode mock admission, stale approval and ready-match regression. No physics, graphics, roster, four-button, saves, Career/Cup or SD09 changes.

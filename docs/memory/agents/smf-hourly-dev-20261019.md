@@ -1,29 +1,29 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-28 20:04 CET
+**Updated:** 2026-10-28 21:04 CET
 
 ## Mission
-Continue bounded tested increments on existing dev only; no new branches, force push, security bypass or paused hourly work.
+Continue bounded tested increments directly on existing dev; never new branches, force-push, security bypass or paused hourly work.
 
 ## Current checkpoint
-- 0.11.4.39 LAN-088: host-left while joining removes stale room and immediately refreshes; post-kickoff host-left/room-remove cannot reset live LAN/P2P state. Focused two-mode regression added. Exact-head QA, protected promotion, hosted bytes and physical acceptance pending.
-- 0.11.4.38 LAN-087: mixed-scope room snapshots now retain only valid same-mode rooms; foreign-only snapshots cannot erase valid directory; malformed same-scope entries still reject the snapshot. Two-mode Node regression added. Exact-head CI and protected promotion pending.
-- Render signaling deployment drift was confirmed: latest prior live deployment `b3c8100a` from 27 Oct. Manual redeploy `dep-dbh3hj61egvs739c6g6g` completed LIVE 28 Oct 18:03 UTC at `350f09a0` (0.11.4.37), aligning broker with pre-LAN-087 dev/main. Check subsequent auto-deploy behavior; do not infer latest broker version from GitHub alone.
-- Previous 0.11.4.37 LAN-086 binds guest admission replies to room and request ID. Physical two-device discovery/consent/sprint/Jump/reconnect/mobile acceptance not certified. Concept Hero direction flip already exists; screenshot QA needed.
-- Preserve 223 teams/2676 players, six formations, four action buttons, offline saves, Career/Cup ten slots and SD09.
+- 0.11.4.40 LAN-089: post-kickoff host guest-left and host-registered broker notices cannot clear approval or show misleading waiting-room status. Two-mode regression added; full CI, protected promotion, Pages bytes and physical acceptance pending.
+- 0.11.4.39 LAN-088: guest host-left and room-remove cannot interrupt started match; stale pre-kickoff host cards removed. Prior dev/main synced at ff3d3650184a; full 4 Node + 4 Chromium and Modular QA green.
+- Render supermagicfootball-lan-signal manually deployed previous 0.11.4.39 commit ff3d3650184a via dep-dbh5amvlk1mc73f9mci0, LIVE 2026-10-28 20:05 UTC. Auto-deploy configured for dev but commit-triggered deployments absent; verify after new dev commit.
+- LAN/P2P physical two-device discovery, consent, sprint, Jump, reconnect and mobile acceptance not certified; keep issue #48 open.
+- Preserve 223 teams/2676 players, six formations, four buttons, offline saves, Career/Cup ten slots and SD09.
 
 ## Next smallest action
-1. Run focused LAN-088 Node and exact-head Full 4 Node + 4 Chromium, Modular QA.
-2. Repair real CI failures on dev and promote only exact green head via protected PR.
-3. Verify main SHA, Pages hosted HTML/JS/CSS bytes, and new broker deployment.
-4. Complete physical two-device LAN/P2P consent, hold-sprint, Jump edge, reconnect/mobile QA.
-5. Mark LAN done only on acceptance; then prioritize Player Studio, counterable Tricks, eight-view art, gameplay and Career.
+1. Verify focused LAN-089 test and exact-head Full 4 Node + 4 Chromium plus Modular QA.
+2. Repair actual CI failures on dev, if any, without weakening checks.
+3. Promote only exact green dev head via protected pipeline and verify main/Pages bytes.
+4. Verify Render broker revision and physical two-device LAN/P2P behavior.
+5. After acceptance mark LAN complete; prioritize Player Studio, counterable Tricks, eight-view art, gameplay and Career.
 
 ## Ownership and exclusions
-Sole developer `smf-hourly-dev-20261019`; no other agent memory or security bypass. Central log and Git history retain evidence.
+Sole developer `smf-hourly-dev-20261019`; no other agent memory or CI/security bypass. Git history and central log retain evidence.
 
 ## Evidence
-LAN-087 focused Node passed in first 955/956 preflight; two initial full/Modular runs blocked by checkpoint section-name contract, not game code. Await fresh exact-head CI.
+Previous 0.11.4.39 exact head ff3d3650 Full Regression Census #40751363545 and Modular QA #40751363528 successful. New candidate requires separate exact-head verification.
 
 ## Cleanup
-Checkpoint remains below 4 KiB. Git history and central log retain detailed evidence.
+Checkpoint remains below 4 KiB.

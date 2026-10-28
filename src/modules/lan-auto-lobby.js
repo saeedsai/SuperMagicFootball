@@ -170,7 +170,8 @@ export function mountAutoLanLobby(root,options={}){
   if(m.type==='relay-frame'){if(internet&&m.roomId===roomId)(activeRelay||peer)?.receiveRelayFrame?.(m.data);return;}
   if(m.type==='discovery-scope'&&m.scope==='public-network'){discoveryScope='public-network';if(mode==='host')showHostAddress();return}
   if(m.type==='lan-addresses'&&Array.isArray(m.urls)){lanUrls=m.urls.filter(url=>typeof url==='string'&&/^http:\/\/(?:10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[01])\.)[0-9.]+:[0-9]+$/.test(url)).slice(0,8);if(mode==='host')showHostAddress();return}
-  if(m.type==='host-registered'&&mode==='host'&&m.roomId===roomId){hostRegistered=true;stopHostRetry();showHostAddress();status('Room registered. Waiting for a guest to join.');return}
+  // LAN-089: late broker registration acknowledgements cannot revert an active host match.
+  if(m.type==='host-registered'&&mode==='host'&&!started&&m.roomId===roomId){hostRegistered=true;stopHostRetry();showHostAddress();status('Room registered. Waiting for a guest to join.');return}
   if(m.type==='error'&&mode==='host'){
    // Broker room capacity is temporary: keep the bounded ten-second registration
    // retry alive with the same room ID. Permanent scope errors must not loop.
@@ -208,7 +209,8 @@ export function mountAutoLanLobby(root,options={}){
    const container=get('autoApproval');container.replaceChildren();const label=document.createElement('p');label.textContent=opponentName+' wants to join your match.';const yes=document.createElement('button');yes.className='btn';yes.textContent='ACCEPT GUEST';const no=document.createElement('button');no.className='btn minor';no.textContent='REJECT';yes.onclick=()=>{if(approvalRequestId!==m.requestId)return;if(!send({type:'decision',roomId,requestId:m.requestId,accept:true}))return status('Discovery disconnected. Cannot approve guest; reconnect and retry.');approvalRequestId=null;container.replaceChildren();status(opponentName+' approved. Establishing WebRTC connection…')};no.onclick=()=>{if(approvalRequestId!==m.requestId)return;if(!send({type:'decision',roomId,requestId:m.requestId,accept:false}))return status('Discovery disconnected. Cannot reject guest; reconnect and retry.');approvalRequestId=null;container.replaceChildren()};container.append(label,yes,no);return;
   }
   if(m.type==='join-cancel'&&mode==='host'&&m.roomId===roomId&&m.requestId===approvalRequestId){approvalRequestId=null;get('autoApproval').replaceChildren();status('Guest cancelled their join request.');return}
-  if(m.type==='guest-left'&&mode==='host'&&m.roomId===roomId){clearAdmissionTimeout();cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();status('Guest disconnected. Hosting remains available for another guest.');return}
+  // After kickoff, match transport owns disconnects; broker notices must not reset host approval.
+  if(m.type==='guest-left'&&mode==='host'&&!started&&m.roomId===roomId){clearAdmissionTimeout();cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();status('Guest disconnected. Hosting remains available for another guest.');return}
   // Rejection can arrive after approval while guest SDP is still pending.
   // Retire that peer and room identity so delayed offers/answers cannot revive a denied seat.
   if(m.type==='join-reject'&&mode==='guest'&&!started&&requestId&&m.roomId===roomId&&m.requestId===requestId){

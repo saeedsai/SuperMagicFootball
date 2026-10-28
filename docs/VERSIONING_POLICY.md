@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.39
+# SuperMagicFootball release/version policy — About-only 0.11.4.40
 
-**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.39.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.40.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.39 (28 October 2026):** LAN-088 removes stale room cards and refreshes after host departure before kickoff; directory host-left/room-remove notices no longer reset a started LAN/P2P match. Two-mode regression added; exact-head QA and Pages certification pending.
+**Current dev candidate 0.11.4.40 (28 October 2026):** LAN-089 ignores late host-side guest-left and host-registered broker notices after kickoff, preserving active match status and approval state. Focused two-mode host regression; exact-head CI, protected promotion, hosted Pages and physical acceptance remain separate gates.
+
+**Previous dev candidate 0.11.4.39 (28 October 2026):** LAN-088 removes stale room cards and refreshes after host departure before kickoff; directory host-left/room-remove notices no longer reset a started LAN/P2P match. Two-mode regression added; exact-head QA and Pages certification pending.
 
 **Previous dev candidate 0.11.4.38 (28 October 2026):** LAN-087 skips recognized foreign-scope room entries in mixed directory snapshots, preserves valid same-mode rooms and rejects malformed same-scope entries. Two-mode focused regression; exact-head 4+4/Modular, protected promotion and Pages bytes remain gates.
 
