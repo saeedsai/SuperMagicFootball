@@ -11,6 +11,9 @@ Keep coding one bounded increment each hour on dev. Only dev/main; never force-p
 - Previous 0.11.4.29 STUDIO-TRICK-PROGRESS-01 green full 4+4 and Modular QA; dev/main synchronized at 6ce57cd576facf76f8b9994b875cbb82ae1aef13. Hosted Pages byte verification not established.
 - Preserve 223 teams/2676 players, six formations, four buttons, offline saves, Career/Cup ten slots, SD09. Physical two-phone LAN and art QA remain open.
 
+## 2026-10-28 release and graphics checkpoint
+- Verified `main...dev` identical at b852ecbbccacd5bebba0f2df64b2d821c41a4e32; no unmerged change to promote. Existing Concept Hero already flips side and quarter profiles locally; avoid double-flip until screenshot QA confirms orientation. No new game-code release or CI run in this checkpoint. LAN/P2P physical acceptance and hosted Pages byte verification remain open. Continue independently useful dev features without waiting for release.
+
 ## Next smallest action
 1. Verify focused Node and exact-head full 4 Node + 4 Chromium and Modular QA.
 2. Repair actual failures on dev; continue independent roadmap increments.
