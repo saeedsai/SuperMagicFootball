@@ -1,9 +1,9 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.29',
+ version:'0.11.4.30',
  date:'2026-10-28',
- notes:Object.freeze([
+ notes:Object.freeze([\n  'STUDIO-MAGIC-NOOP-01: Saving an unchanged Magic Trick or removing one that is not equipped no longer rewrites Career or club roster saves. Real equipment changes still persist normally; no control or save-format changes.',
   'STUDIO-TRICK-PROGRESS-01: Player Studio now shows each outfield player\'s legacy rating and positional OVR, plus the remaining points to unlock Magic Trick equipment at 91 via either path. Eligibility and saves are unchanged.',
   'STUDIO-GK-PREVIEW-01: Goalkeepers can now inspect all eight Magic Tricks in a read-only Player Studio catalogue with live icons, effects and counters. No equip or remove control is offered; existing goalkeeper save guards and outfield gameplay are unchanged.',
   'Player Studio now states that goalkeepers may preview but cannot equip Magic Tricks, including when a legacy roster lists a Trick. Existing outfield eligibility and save protections are unchanged.',
