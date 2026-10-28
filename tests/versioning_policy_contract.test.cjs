@@ -120,3 +120,13 @@ test('LAN-077 candidate documents explicit snapshot delivery receipts',()=>{
  assert.match(release,/LAN-077/,'About notes must describe the delivery receipt fix');
  assert.match(readme,/LAN-077/,'README must describe the delivery receipt fix');
 });
+
+test('LAN-078 candidate describes guest exact-frame send receipt validation',()=>{
+ const version=JSON.parse(read('package.json')).version;
+ const release=read('src/modules/release.js'),readme=read('README.md');
+ assert.equal(version,'0.11.4.20');
+ assert.match(release,/LAN-078/);
+ assert.match(readme,/LAN-078/);
+ assert.match(release,/exact-frame/);
+ assert.match(readme,/four-button frame/);
+});
