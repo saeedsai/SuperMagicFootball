@@ -1,3 +1,6 @@
+## 2026-10-28 — STUDIO-GK-HELP-01 / 0.11.4.27 candidate
+- Clarified goalkeeper Magic Trick restriction in Player Studio; existing roster/save mechanics unchanged. Focused VM test committed. Full 4+4/Modular, Pages bytes and physical graphics acceptance pending.
+
 ### 2026-10-28 — Locked-preview CI contract repair
 - First candidate head `becaf67951e93a3bd8a9dc738e46afbb61b69766` failed Full #40654684002 (preflight Node) and Modular #40654684094 (Node) with 933/935 passing. Root cause: two older source-pattern assertions still required eligible-only options and a two-argument live guide. Updated `tests/player_studio_magic_guide.test.cjs` and `tests/studio_elite_position_ovr.test.cjs` to require the new visible catalogue, locked disabled Save, independent save-handler guard and contextual guide; no production behavior or CI gates weakened. Exact-head re-run pending.
 
