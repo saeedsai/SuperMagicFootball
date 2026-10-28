@@ -674,3 +674,28 @@ test('LAN-074 host restores guest Jump press after pause without simulating froz
   'continuous post-resume hold still cannot retrigger');
  run.dispose();
 });
+
+
+test('LAN-075 in-frame host pause or finish clears stale guest Jump edges',async()=>{
+ const {createLanLiveMatch}=await load();
+ for(const frozen of ['paused','finished']){
+  const input=controls(),match=game(input),edges=[];
+  let updates=0;
+  match.update=function(){input.poll(true);edges.push(!!input.pressed[1].jump);
+   if(++updates===1)this.matchState=frozen;};
+  const peer={ready:true,stepHostMatchFrame(frame,simulate){
+   simulate({buttons:['jump'],dx:0,dy:0},{received:true});return {snapshotSent:true};
+  }};
+  const run=createLanLiveMatch({peer,role:'host',game:match,input,field});
+  assert.equal(run.step(.016),true);
+  assert.deepEqual(edges,[true]);
+  assert.equal(match.matchState,frozen);
+  assert.equal(run.step(.016),false,'frozen phase is already published by the play frame');
+  match.matchState='play';
+  assert.equal(run.step(.016),true);
+  assert.equal(run.step(.016),true);
+  assert.deepEqual(edges,[true,true,false],
+   frozen+' transition inside update must restore one fresh Jump edge after resume');
+  run.dispose();
+ }
+});

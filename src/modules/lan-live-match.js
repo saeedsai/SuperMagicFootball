@@ -234,6 +234,12 @@ function createLanLiveMatch({peer,role,game,input,field}){
             if(phase==='play')game.update(dt);
             return captureLanGameState(game,field,tick);
           }finally{
+            // LAN-075: the engine may pause/finish *inside* update(). The
+            // already-published frozen snapshot makes the next step a no-op,
+            // so clear button edges now rather than waiting for a frozen step.
+            if(phase==='play'&&game.matchState!=='play'){
+              lastGuestInput=null;guestInputGap=0;previousButtons.clear();
+            }
             remote={buttons:[],dx:0,dy:0};
           }
         });
