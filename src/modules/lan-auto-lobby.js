@@ -143,7 +143,9 @@ export function mountAutoLanLobby(root,options={}){
  }
  // Bound unsolicited room advertisements to the same schema and capacity as full directory snapshots.
  // Older local companions may omit full; treat that as an available room for compatibility.
- function validRoom(room,legacyFull=false){return !!room&&(!internet||room.scope===roomScope)&&typeof room.roomId==='string'&&/^[a-zA-Z0-9_-]{8,64}$/.test(room.roomId)&&typeof room.name==='string'&&!!room.name.trim()&&room.name.length<=48&&typeof room.build==='string'&&room.build.length<=32&&(typeof room.full==='boolean'||(legacyFull&&room.full===undefined))}
+ // Keep LAN-only discovery isolated from internet rooms, even if a misconfigured
+ // broker sends cross-scope advertisements. Legacy LAN companions omit scope.
+ function validRoom(room,legacyFull=false){const scopeMatches=internet?room?.scope===roomScope:room?.scope===undefined||room?.scope==='lan';return !!room&&scopeMatches&&typeof room.roomId==='string'&&/^[a-zA-Z0-9_-]{8,64}$/.test(room.roomId)&&typeof room.name==='string'&&!!room.name.trim()&&room.name.length<=48&&typeof room.build==='string'&&room.build.length<=32&&(typeof room.full==='boolean'||(legacyFull&&room.full===undefined))}
  function render(){const box=get('autoRooms');box.replaceChildren();if(mode!=='guest')return;
   for(const [id,room] of rooms){if(room.build!==build)continue;const button=document.createElement('button');button.className='btn';button.disabled=room.full===true;button.textContent=(room.full===true?'IN MATCH · ':'JOIN ')+room.name;button.addEventListener('click',()=>join(id));box.append(button)}
   if(!box.children.length)box.textContent='Searching for available hosts…';

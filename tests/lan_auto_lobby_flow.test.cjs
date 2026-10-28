@@ -930,3 +930,34 @@ test('LAN-083 busy admission refreshes directory immediately without replaying a
   dispose();
  }finally{f.cleanup()}
 });
+
+
+test('LAN-084 directory scope isolation rejects internet rooms in LAN and LAN rooms in Online P2P',async()=>{
+ for(const internet of [false,true]){
+  const f=setup();
+  try{
+   const {mountAutoLanLobby}=await load();
+   const dispose=mountAutoLanLobby(f.root,{build:'0.11.4.35',internet,signalFactory:f.signalFactory});
+   f.elements.get('#autoFind').click();f.connect();
+   const own={roomId:'room_12345678',name:'Correct scope',build:'0.11.4.35',full:false,...(internet?{scope:'internet-p2p'}:{})};
+   const foreign={roomId:'room_87654321',name:'Wrong scope',build:'0.11.4.35',full:false,scope:internet?'lan':'internet-p2p'};
+   f.emit({type:'rooms-snapshot',rooms:[own]});
+   assert.equal(f.elements.get('#autoRooms').children.length,1);
+   assert.match(f.elements.get('#autoRooms').children[0].textContent,/Correct scope/);
+   f.emit({type:'room-announce',...foreign});
+   assert.equal(f.elements.get('#autoRooms').children.length,1,'cross-scope announce must not enter directory');
+   f.emit({type:'rooms-snapshot',rooms:[foreign]});
+   assert.match(f.elements.get('#autoRooms').children[0].textContent,/Correct scope/,'cross-scope snapshot cannot erase valid rooms');
+   if(!internet){
+    f.emit({type:'room-announce',...own,scope:'lan'});
+    assert.equal(f.elements.get('#autoRooms').children.length,1,'explicit LAN scope remains valid');
+   }else{
+    f.emit({type:'room-announce',...own,scope:undefined});
+    assert.equal(f.elements.get('#autoRooms').children.length,1,'unscoped LAN announcements cannot enter P2P');
+   }
+   f.elements.get('#autoRooms').children[0].click();
+   assert.equal(f.packets.at(-1).roomId,own.roomId,'only matching scope is joinable');
+   dispose();
+  }finally{f.cleanup()}
+ }
+});
