@@ -4,7 +4,7 @@ const RELEASE=Object.freeze({
  version:'0.11.4.29',
  date:'2026-10-28',
  notes:Object.freeze([
-  'STUDIO-TRICK-PROGRESS-01: Player Studio now shows each outfield player's legacy rating and positional OVR, plus the remaining points to unlock Magic Trick equipment at 91 via either path. Eligibility and saves are unchanged.',
+  'STUDIO-TRICK-PROGRESS-01: Player Studio now shows each outfield player\'s legacy rating and positional OVR, plus the remaining points to unlock Magic Trick equipment at 91 via either path. Eligibility and saves are unchanged.',
   'STUDIO-GK-PREVIEW-01: Goalkeepers can now inspect all eight Magic Tricks in a read-only Player Studio catalogue with live icons, effects and counters. No equip or remove control is offered; existing goalkeeper save guards and outfield gameplay are unchanged.',
   'Player Studio now states that goalkeepers may preview but cannot equip Magic Tricks, including when a legacy roster lists a Trick. Existing outfield eligibility and save protections are unchanged.',
   'STUDIO-TRICK-PREVIEW-02: Every outfield player can preview all eight Magic Tricks and their counters in Player Studio. Locked players see an explicit 91+ requirement and cannot save a new Trick; keep/remove legacy equipment remains available. No fifth button or save-format change.',
