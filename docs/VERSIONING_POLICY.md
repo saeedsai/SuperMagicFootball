@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.33
+# SuperMagicFootball release/version policy — About-only 0.11.4.34
 
-**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.33.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.34.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.33 (28 October 2026):** LAN-082 retries registration after a temporary broker room-capacity error while retaining the same host room and stopping on permanent scope errors. Full exact-head CI and Pages verification pending.
+**Current dev candidate 0.11.4.34 (28 October 2026):** LAN-083 refreshes room occupancy immediately after busy admission rejection, without replay-triggered polling. Exact-head QA, promotion and Pages bytes pending.
+
+**Previous dev candidate 0.11.4.33 (28 October 2026):** LAN-082 retries registration after a temporary broker room-capacity error while retaining the same host room and stopping on permanent scope errors. Full exact-head CI and Pages verification pending.
 
 **Previous dev candidate 0.11.4.32 (28 October 2026):** STUDIO-TRICK-PROGRESS-02 handles absent or blank legacy player rating as unknown rather than zero, with explicit dual-path 91+ progress and regression. Exact-head CI and hosted verification pending.\n\n**Previous dev candidate 0.11.4.31 (28 October 2026):** STUDIO-MAGIC-SAVE-STATE-01 disables no-op Magic Trick save actions while retaining locked previews and valid changes. Exact-head QA, protected promotion and Pages bytes pending.
 
