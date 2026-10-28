@@ -47,7 +47,9 @@ test('Studio uses an accessible, read-only live guide that follows icon changes'
  assert.match(ui,/id="studioMagicGuide" role="status" aria-live="polite"/);
  assert.match(ui,/escapeHTML\(studioMagicGuide\('keep',player\.magicTrick\)\)/);
  assert.match(ui,/select\.addEventListener\('change',update\)/);
- assert.match(ui,/guide\.textContent=studioMagicGuide\(select\.value,current\)/);
+ assert.match(ui,/guide\.textContent=studioMagicGuide\(select\.value,current,!locked\)/);
+ assert.match(ui,/save\.disabled=locked/);
+ assert.match(guide('banana',null,false),/Locked preview:.*Star or Superstar \(91\+\)/);
  assert.match(ui,/if\(id==='keep'\)\{showPlayerStudio\(avatarIndex\);return;\}/);
 });
 test('trap preview matches existing arming durations and SHOOT-slide disarm',()=>{
