@@ -13,7 +13,7 @@
 - **QA:** [single-developer log](../DEVELOPMENT_LOG_SINGLE_OWNER.md), GitHub Actions and [Pages](../../GITHUB_PAGES_SETUP.md).
 
 ## Mandatory About version rule
-On **every Git commit**, preserve the About-only current dev candidate `0.11.4.30` (previous verified Pages release `0.11.4.23`; `0.11.4.25` has green PR CI and is on main, but hosted byte certification is not established here) and its offline notes from `src/modules/release.js`. Do not display a remote GitHub `dev` SHA or version banner outside About. Immutable commit SHAs stay internal to GitHub Actions/history; hosted Pages byte comparison verifies actual deployed content. **Every player-facing game update must also update root `README.md` with the new four-part version in banner and heading, dated summary of shipped features/fixes, compatibility notes where relevant and live link. README/version mismatch blocks release.** Documentation-only commits do not bump the installed version. Follow [`docs/VERSIONING_POLICY.md`](../VERSIONING_POLICY.md).
+On **every Git commit**, preserve the About-only current dev candidate `0.11.4.31` (previous verified Pages release `0.11.4.23`; `0.11.4.25` has green PR CI and is on main, but hosted byte certification is not established here) and its offline notes from `src/modules/release.js`. Do not display a remote GitHub `dev` SHA or version banner outside About. Immutable commit SHAs stay internal to GitHub Actions/history; hosted Pages byte comparison verifies actual deployed content. **Every player-facing game update must also update root `README.md` with the new four-part version in banner and heading, dated summary of shipped features/fixes, compatibility notes where relevant and live link. README/version mismatch blocks release.** Documentation-only commits do not bump the installed version. Follow [`docs/VERSIONING_POLICY.md`](../VERSIONING_POLICY.md).
 
 ## Shared risks and working decisions
 - Other developer sessions should stop writing to the repository unless newly authorized; still reconcile any concurrent Git changes with the latest SHA. No force pushes or circumvented security checks.
@@ -24,6 +24,7 @@ On **every Git commit**, preserve the About-only current dev candidate `0.11.4.3
 Read only your own [registered checkpoint](AGENTS_INDEX.json) according to [memory protocol](README.md). Git history preserves older states. Never edit another chat's memory or store secrets.
 
 ## Recent release context
+- **0.11.4.31 candidate** (2026-10-28): Studio disables no-op Magic Trick save buttons and keeps valid equipment changes actionable. Focused regression; exact-head QA and Pages pending.
 - **0.11.4.30 candidate** (2026-10-28): unchanged Magic Trick save and absent Trick removal no longer write Career or club roster. Focused test added; full CI and Pages pending.
 - **0.11.4.29 candidate** (2026-10-28): Studio shows legacy rating, position OVR and remaining 91+ Magic Trick unlock points for outfield players. New focused regression; exact-head QA/Pages pending.
 - **0.11.4.26 candidate** (2026-10-28): STUDIO-TRICK-PREVIEW-02 shows all eight Magic Tricks to outfield players as read-only previews when locked; selection cannot be saved until 91+, but legacy keep/remove remains. Four buttons and saves unchanged. CI, protected promotion and hosted Pages verification pending.
