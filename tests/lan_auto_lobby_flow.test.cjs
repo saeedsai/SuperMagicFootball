@@ -1050,3 +1050,44 @@ test('LAN-087 mixed-scope directory snapshots retain valid local hosts without c
   }finally{f.cleanup()}
  }
 });
+
+test('LAN-088 host departure retires pending room and cannot interrupt a started LAN/P2P match',async()=>{
+ for(const internet of [false,true]){
+  const f=setup();let onStatus=null,readyCount=0,disposed=0;
+  try{
+   const {mountAutoLanLobby}=await load();
+   const build='0.11.4.39';
+   const dispose=mountAutoLanLobby(f.root,{build,internet,signalFactory:f.signalFactory,
+    onReady:()=>{readyCount++},
+    peerFactory:()=>({acceptOffer:async()=>'{"answer":true}',
+     subscribeStatus:fn=>{onStatus=fn;return ()=>{}},
+     awaitReady:()=>new Promise(()=>{}),dispose(){disposed++}})});
+   f.elements.get('#autoFind').click();f.connect();
+   const room={type:'room-announce',roomId:'room_12345678',name:'Available host',build,full:false,
+    ...(internet?{scope:'internet-p2p'}:{})};
+   f.emit(room);f.elements.get('#autoRooms').children[0].click();
+   const oldJoin=f.packets.at(-1);assert.equal(oldJoin.type,'join');
+   const previousReads=f.packets.filter(p=>p.type==='rooms').length;
+   f.emit({type:'host-left',roomId:room.roomId});
+   assert.equal(f.elements.get('#autoRooms').children.length,0,'departed host cannot remain joinable');
+   assert.equal(f.packets.filter(p=>p.type==='rooms').length,previousReads+1,'refresh immediately after host departure');
+   assert.match(f.elements.get('#autoStatus').textContent,/Host disconnected/);
+   f.emit({type:'join-accept',roomId:room.roomId,requestId:oldJoin.requestId});
+   assert.equal(readyCount,0,'late approval cannot start abandoned room');
+   f.emit(room);f.elements.get('#autoRooms').children[0].click();
+   const newJoin=f.packets.at(-1);assert.equal(newJoin.type,'join');
+   assert.notEqual(newJoin.requestId,oldJoin.requestId);
+   f.emit({type:'join-accept',roomId:room.roomId,requestId:newJoin.requestId});
+   await f.emit({type:'offer',roomId:room.roomId,sdp:JSON.stringify({session:'session_12345678'})});
+   assert.equal(typeof onStatus,'function','guest negotiates the approved match');
+   onStatus({ready:true});assert.equal(readyCount,1);
+   const activeStatus=f.elements.get('#autoStatus').textContent;
+   f.emit({type:'room-remove',roomId:room.roomId});
+   f.emit({type:'host-left',roomId:room.roomId});
+   assert.equal(readyCount,1,'directory notices cannot restart a live match');
+   assert.equal(disposed,0,'directory notices cannot dispose the active transport');
+   assert.equal(f.elements.get('#autoStatus').textContent,activeStatus,'live-match status is preserved');
+   dispose();
+  }finally{f.cleanup()}
+ }
+});

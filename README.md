@@ -1,3 +1,5 @@
+> **0.11.4.39 release candidate (28 October 2026):** LAN-088 removes a departed host from Find Games and refreshes immediately during admission. After kickoff, directory host-left/room-remove notices cannot reset an established LAN or Online P2P match. Focused two-mode regression added; gameplay, graphics, four controls, rosters, saves and offline play are unchanged. Exact-head 4+4 CI, protected promotion and hosted Pages verification remain release gates. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.11.4.38 release candidate (28 October 2026):** LAN-087 fixes mixed-scope room snapshots so Find Games can update valid Local Network or Online P2P hosts without admitting cross-mode rooms. Foreign-only and malformed same-scope snapshots cannot erase the previous valid list. Focused two-mode regression added; host approval, four buttons, graphics, rosters, saves and offline play are unchanged. Exact-head 4+4 CI, protected main promotion and hosted Pages byte verification are required. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.11.4.37 release candidate (28 October 2026):** LAN-086 binds guest approval and rejection to both the active room and request IDs, preventing cross-room replies from accepting or cancelling another host handshake. Added LAN and Online P2P regressions; four buttons, rosters, saves, graphics and offline play are unchanged. Exact-head 4+4 CI, protected promotion and hosted Pages verification are required. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -210,7 +212,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.11.4.38 · Modular source project
+# Supermagic Football · v0.11.4.39 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 

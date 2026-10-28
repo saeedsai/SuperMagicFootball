@@ -179,7 +179,9 @@ export function mountAutoLanLobby(root,options={}){
    status(capacity?'Room capacity reached. Waiting to retry hosting automatically…':'Unable to register room: '+String(m.message||'server rejected request'));
    return;
   }
-  if(m.type==='host-left'&&mode==='guest'&&m.roomId===roomId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;status('Host disconnected. Select another available room.');return}
+  // LAN-088: signaling departure before kickoff invalidates the stale room card;
+  // after kickoff, a broker notice must not break an established direct/relay match.
+  if(m.type==='host-left'&&mode==='guest'&&!started&&m.roomId===roomId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;rooms.delete(m.roomId);render();status('Host disconnected. Select another available room.');if(connection?.ready)requestRooms();return}
   if(m.type==='rooms-snapshot'){
    // Ignore malformed or out-of-phase replies; never replace an active admission.
    if(mode!=='guest'||requestId||started||!Array.isArray(m.rooms)||m.rooms.length>128)return;
@@ -200,7 +202,7 @@ export function mountAutoLanLobby(root,options={}){
    if(!rooms.has(m.roomId)&&rooms.size>=128)return;
    rooms.set(m.roomId,{...m,full:m.full===true});render();return;
   }
-  if(m.type==='room-remove'){rooms.delete(m.roomId);render();if(mode==='guest'&&roomId===m.roomId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;status('Host room closed. Choose another room.')}return}
+  if(m.type==='room-remove'){rooms.delete(m.roomId);render();if(mode==='guest'&&!started&&roomId===m.roomId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;status('Host room closed. Choose another room.');if(connection?.ready)requestRooms()}return}
   if(m.type==='join-request'&&mode==='host'&&m.roomId===roomId){
    approvalRequestId=m.requestId;opponentName=displayName(m.guestName);
    const container=get('autoApproval');container.replaceChildren();const label=document.createElement('p');label.textContent=opponentName+' wants to join your match.';const yes=document.createElement('button');yes.className='btn';yes.textContent='ACCEPT GUEST';const no=document.createElement('button');no.className='btn minor';no.textContent='REJECT';yes.onclick=()=>{if(approvalRequestId!==m.requestId)return;if(!send({type:'decision',roomId,requestId:m.requestId,accept:true}))return status('Discovery disconnected. Cannot approve guest; reconnect and retry.');approvalRequestId=null;container.replaceChildren();status(opponentName+' approved. Establishing WebRTC connection…')};no.onclick=()=>{if(approvalRequestId!==m.requestId)return;if(!send({type:'decision',roomId,requestId:m.requestId,accept:false}))return status('Discovery disconnected. Cannot reject guest; reconnect and retry.');approvalRequestId=null;container.replaceChildren()};container.append(label,yes,no);return;

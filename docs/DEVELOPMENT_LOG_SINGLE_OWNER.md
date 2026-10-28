@@ -1,3 +1,9 @@
+## 2026-10-28 20:04 CET — LAN-088 host-departure recovery and post-kickoff signaling isolation (candidate 0.11.4.39)
+- Diagnosed guest lobby: host-left during admission left a stale joinable room card and did not refresh discovery; host-left and room-remove after kickoff could clear the active room identity, interrupting relay routing despite an established match.
+- Fix: remove departed host from directory and request a fresh snapshot immediately before kickoff; guard both notices against resetting an already started LAN/P2P match. Added two-mode mock admission, stale approval and ready-match regression. No physics, graphics, roster, four-button, saves, Career/Cup or SD09 changes.
+- Bumped About/package/README/offline cache and policy to 0.11.4.39. Exact-head 4 Node + 4 Chromium, Modular QA, protected promotion, Pages hosted-byte smoke, and physical-device acceptance remain required.
+- Next five: focused test; exact-head 4+4/Modular; protected main promotion; Pages/broker bytes and two-device acceptance; then Player Studio/Tricks/eight-view graphics.
+
 ## 2026-10-28 19:04 CET — LAN-087 mixed-scope discovery recovery (candidate 0.11.4.38)
 - Root cause: LAN-084 rejected an entire `rooms-snapshot` when any foreign-scope room appeared, even if the snapshot also contained valid hosts for the current Local Network or Online P2P mode. A mixed broker snapshot could therefore leave stale JOIN cards and hide new valid hosts.
 - Fix: skip only recognized foreign-scope entries; continue to reject malformed same-scope entries atomically. Preserve previous valid cards on foreign-only snapshots; a genuine empty snapshot still clears the list. Added focused two-mode regression with valid, foreign-only, mixed, malformed and join assertions.
