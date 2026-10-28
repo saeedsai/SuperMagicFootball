@@ -1,6 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.22
+# SuperMagicFootball release/version policy — About-only 0.11.4.23
 
-**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.22.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.23.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
 **Current dev candidate 0.11.4.22 (28 October 2026):** LAN-080 uses one injected clock for guest snapshot receipt and age checks; a backwards or invalid device clock fails closed rather than sending stale four-button input. Fresh host snapshots restore input. Exact-head CI, protected promotion, hosted Pages bytes and physical two-device QA are independent gates.
 
