@@ -2,7 +2,9 @@
 
 **Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.20.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.20 (28 October 2026):** LAN-078 validates that a guest input send returns an exact-frame input packet before advancing its cursor; missing/malformed responses retry without dropping four-button controls. Exact-head 4+4/Modular, protected promotion, Pages byte smoke and physical two-device acceptance remain separate gates.\n\n**Previous dev candidate 0.11.4.19 (28 October 2026):** LAN-077 requires an explicit successful host snapshot transport receipt. Missing, null and malformed receipts no longer suppress paused/finished state retries. LAN and Quick Match P2P share the bridge; exact-head QA, protected promotion, Pages hosted bytes and physical two-device acceptance remain independent gates.
+**Current dev candidate 0.11.4.20 (28 October 2026):** LAN-078 validates that a guest input send returns an exact-frame input packet before advancing its cursor; missing/malformed responses retry without dropping four-button controls. Exact-head 4+4/Modular, protected promotion, Pages byte smoke and physical two-device acceptance remain separate gates.
+
+**Previous dev candidate 0.11.4.19 (28 October 2026):** LAN-077 requires an explicit successful host snapshot transport receipt. Missing, null and malformed receipts no longer suppress paused/finished state retries. LAN and Quick Match P2P share the bridge; exact-head QA, protected promotion, Pages hosted bytes and physical two-device acceptance remain independent gates.
 
 **Previous dev candidate 0.11.4.18 (28 October 2026):** LAN-076 reports failed host snapshot sends as failed steps and retries paused/finished phase delivery without advancing frozen physics. LAN and Quick Match P2P share this authoritative bridge. Exact-head 4+4/Modular, main/Pages hosted byte verification and real two-device acceptance remain independent gates.
 
