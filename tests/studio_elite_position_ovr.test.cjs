@@ -33,8 +33,8 @@ test('Magic Trick threshold is 91+ for Star/Superstar, unlike other elite equipm
   assert.equal(magic(p),true,'Star/Superstar can equip by either overall path');
  assert.equal(magic(null),false);
  assert.match(ui,/STUDIO_MAGIC_TRICKS\.map\(a=>/);
- assert.match(ui,/const locked=!studioMagicEligible\(player\)&&select\.value!=='keep'&&select\.value!=='none'/);
- assert.match(ui,/save\.disabled=locked/);
+ assert.match(ui,/const locked=!eligible&&choice!=='keep'&&choice!=='none'/);
+ assert.match(ui,/save\.disabled=state\.disabled/);
  assert.match(ui,/if\(id!=='keep'&&id!=='none'&&!studioMagicEligible\(player\)\)throw Error/);
  assert.match(ui,/studioEliteEligible\(player\)\|\|player\.superAbility\?\.type==='shoot'/);
  assert.match(ui,/studioEliteEligible\(player\)\|\|player\.superAbility\?\.type==='defence'/);
