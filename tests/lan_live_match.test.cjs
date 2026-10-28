@@ -205,7 +205,7 @@ test('LAN-054 failed paused snapshot retries without simulating extra physics',a
     return {snapshotSent:attempts>1};
   }};
   const run=createLanLiveMatch({peer,role:'host',game:match,input,field});
-  assert.equal(run.step(.02),true);
+  assert.equal(run.step(.02),false,'failed transport send must report an unsent snapshot');
   assert.equal(run.step(.02),true,'failed transport send must not consume phase transition');
   assert.equal(run.step(.02),false,'successful phase send is sent once');
   assert.equal(attempts,2);
