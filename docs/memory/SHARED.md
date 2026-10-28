@@ -23,7 +23,8 @@ On **every Git commit**, preserve the About-only current dev candidate `0.11.4.3
 ## Memory hygiene
 Read only your own [registered checkpoint](AGENTS_INDEX.json) according to [memory protocol](README.md). Git history preserves older states. Never edit another chat's memory or store secrets.
 
-## Recent release context\n- **0.11.4.30 candidate** (2026-10-28): unchanged Magic Trick save and absent Trick removal no longer write Career or club roster. Focused test added; full CI and Pages pending.
+## Recent release context
+- **0.11.4.30 candidate** (2026-10-28): unchanged Magic Trick save and absent Trick removal no longer write Career or club roster. Focused test added; full CI and Pages pending.
 - **0.11.4.29 candidate** (2026-10-28): Studio shows legacy rating, position OVR and remaining 91+ Magic Trick unlock points for outfield players. New focused regression; exact-head QA/Pages pending.
 - **0.11.4.26 candidate** (2026-10-28): STUDIO-TRICK-PREVIEW-02 shows all eight Magic Tricks to outfield players as read-only previews when locked; selection cannot be saved until 91+, but legacy keep/remove remains. Four buttons and saves unchanged. CI, protected promotion and hosted Pages verification pending.
 - **0.11.4.25** (2026-10-28): STUDIO-TRICK-HELP-01 preview activation guidance; PR #68 exact-head Full #40649528225 and Modular #40649528401 passed; dev/main synced at a7c671d80816d938cbd535b6023eb3f2e6cb26cc. Pages bytes not verified in this run.
