@@ -224,8 +224,9 @@ export function mountAutoLanLobby(root,options={}){
   // Ignore replayed approvals: they must not restart the offer or SDP deadline.
   if(m.type==='join-accept'&&mode==='guest'&&m.roomId===roomId&&m.requestId===requestId&&!approved&&!started){approved=true;opponentName=displayName(m.hostName||rooms.get(roomId)?.name);waitForOffer(m.requestId);status('Approved by '+opponentName+'. Waiting for host offer…');return}
   if(m.type==='guest-approved'&&mode==='host'&&m.roomId===roomId){
+   // LAN-091: replayed approval cannot clear the active relay latch.
+   if(approved||peer||started)return;
    relayStarted=false;
-   if(peer||started)return;
    approved=true;let current=null;
    try{
     const hello=normalizeLanPacket({protocol:1,type:'hello',role:'host',session,build,sequence:0});

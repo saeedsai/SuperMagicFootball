@@ -1164,3 +1164,22 @@ test('LAN-090 late host join requests and broker errors cannot reopen consent du
   }finally{f.cleanup()}
  }
 });
+
+test('LAN-091 duplicate host approval cannot restart an in-flight Online P2P relay',async()=>{
+ const f=setup(),oldRtc=globalThis.RTCPeerConnection;globalThis.RTCPeerConnection=undefined;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.4.42',internet:true,signalFactory:f.signalFactory});
+  f.connect();f.elements.get('#autoHost').click();
+  const roomId=f.packets.at(-1).roomId;
+  await f.emit({type:'guest-approved',roomId});
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(f.packets.filter(p=>p.type==='relay-offer').length,1,'fallback starts one approved relay');
+  await f.emit({type:'guest-approved',roomId});
+  await f.emit({type:'relay-request',roomId});
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(f.packets.filter(p=>p.type==='relay-offer').length,1,'duplicate approval cannot unlock another relay');
+  assert.doesNotMatch(f.elements.get('#autoStatus').textContent,/Backup relay failed/);
+  dispose();
+ }finally{globalThis.RTCPeerConnection=oldRtc;f.cleanup()}
+});

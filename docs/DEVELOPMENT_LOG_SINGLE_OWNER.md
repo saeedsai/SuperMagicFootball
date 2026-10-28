@@ -1,3 +1,9 @@
+## 2026-10-28 23:06 CET — LAN-091 replayed approval relay guard (candidate 0.11.4.42)
+- Diagnosed a race: duplicate host guest-approved reset relayStarted even with an approved backup peer. A delayed relay-request could then replace that peer and send a second relay offer.
+- Guarded duplicate approvals before resetting the latch. Added focused Online P2P regression using real relay fallback when direct WebRTC is unavailable.
+- Synchronized About, package, README banner/heading, offline cache, version policy, shared memory and own checkpoint. No physics, graphics, roster, four-button or save changes.
+- Exact-head 4 Node + 4 Chromium, Modular QA, protected promotion, Pages byte verification and physical two-device acceptance remain required.
+
 ## 2026-10-28 22:14 CET — LAN-090 checkpoint contract completion (same candidate 0.11.4.41)
 - Second exact-head Full #40769410058 preflight ran 959 Node tests, 958 passed (including LAN-090), but memory contract required additional 'Ownership and exclusions', 'Evidence', and 'Cleanup' headings.
 - Restored all six required checkpoint sections. No gameplay or tests weakened; new exact-head CI and Modular QA required before promotion.

@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.41',
+ version:'0.11.4.42',
  date:'2026-10-28',
  notes:Object.freeze([
+  'LAN-091: Replayed host approval during Online P2P relay negotiation cannot clear the active relay latch. Delayed relay requests no longer replace an approved backup peer or send duplicate relay offers. Normal LAN approval, four controls, graphics, rosters and saves remain unchanged.',
   'LAN-090: A host establishing or playing a LAN/Online P2P match ignores delayed extra join requests; after kickoff, late discovery errors cannot reopen consent or overwrite match status. Before kickoff, normal host approval remains available; four controls, graphics, rosters and saves are unchanged.',
   'LAN-089: After host kickoff, delayed guest-left and host-registered broker messages cannot reset host approval or replace live-match status with a waiting-room message. Active match transport is preserved; four controls, graphics, rosters and saves are unchanged.',
   'LAN-088: A host departure while joining immediately removes its stale Find Games card and refreshes discovery. After kickoff, host-left and room-remove signaling notices cannot reset the established LAN or Online P2P match; gameplay, controls and saves are unchanged.',
