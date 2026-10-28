@@ -1,3 +1,9 @@
+## 2026-10-29 00:03 CET — LAN-092 delayed direct offer during relay fallback (candidate 0.11.4.43)
+- Diagnosed a race: after a guest requested approved Online P2P relay fallback, a delayed direct WebRTC offer still matched the `!peer` guard, could create a second peer and cancel the reserved seat on SDP failure.
+- Ignore direct offers once the internet guest has committed to the relay request. Added focused regression proving no second peer, no duplicate relay request, and no leave; normal direct-first and LAN behavior remain unchanged.
+- Updated About, package, README banner/heading, offline cache, version policy and sole-developer checkpoint. No changes to graphics, physics, rosters, saves, four controls, Career/Cup or SD09.
+- Focused CI and full exact-head 4 Node + 4 Chromium, Modular QA, protected main promotion, Pages byte verification and physical-device acceptance require evidence before claiming success.
+
 ## 2026-10-28 23:06 CET — LAN-091 replayed approval relay guard (candidate 0.11.4.42)
 - Diagnosed a race: duplicate host guest-approved reset relayStarted even with an approved backup peer. A delayed relay-request could then replace that peer and send a second relay offer.
 - Guarded duplicate approvals before resetting the latch. Added focused Online P2P regression using real relay fallback when direct WebRTC is unavailable.

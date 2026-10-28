@@ -1183,3 +1183,31 @@ test('LAN-091 duplicate host approval cannot restart an in-flight Online P2P rel
   dispose();
  }finally{globalThis.RTCPeerConnection=oldRtc;f.cleanup()}
 });
+
+test('LAN-092 guest ignores delayed direct offers after requesting approved Online P2P relay',async()=>{
+ const f=setup();let directAttempts=0,disposedPeers=0;
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.4.43',internet:true,signalFactory:f.signalFactory,
+   peerFactory:()=>{directAttempts++;return {acceptOffer:async()=>{throw Error('direct SDP unavailable')},dispose(){disposedPeers++}}}});
+  f.elements.get('#autoFind').click();f.connect();
+  const roomId='room_12345678',sdp=JSON.stringify({session:'session_12345678'});
+  f.emit({type:'room-announce',roomId,name:'Host',build:'0.11.4.43',full:false,scope:'internet-p2p'});
+  f.elements.get('#autoRooms').children[0].click();
+  const request=f.packets.at(-1);
+  assert.equal(request.type,'join');
+  await f.emit({type:'join-accept',roomId,requestId:request.requestId,hostName:'Host'});
+  await f.emit({type:'offer',roomId,sdp});
+  assert.equal(directAttempts,1);
+  assert.equal(disposedPeers,1);
+  assert.equal(f.packets.filter(p=>p.type==='relay-request').length,1);
+  const pending=f.elements.get('#autoStatus').textContent;
+  assert.match(pending,/approved relay backup/);
+  await f.emit({type:'offer',roomId,sdp});
+  assert.equal(directAttempts,1,'a late direct offer cannot create a second peer');
+  assert.equal(f.packets.filter(p=>p.type==='relay-request').length,1,'fallback is requested only once');
+  assert.equal(f.packets.filter(p=>p.type==='leave').length,0,'approved seat is retained');
+  assert.equal(f.elements.get('#autoStatus').textContent,pending,'relay wait remains active');
+  dispose();
+ }finally{f.cleanup()}
+});

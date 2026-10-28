@@ -273,7 +273,9 @@ export function mountAutoLanLobby(root,options={}){
    catch(e){if(peer===current){clearAdmissionTimeout();cleanupPeer();approved=false;status('Backup relay answer failed: '+e.message)}}
    return;
   }
-  if(m.type==='offer'&&mode==='guest'&&m.roomId===roomId&&approved&&!peer){
+  // LAN-092: once the guest requests broker relay, a delayed direct offer must
+  // not restart WebRTC or cancel the approved fallback while the relay is pending.
+  if(m.type==='offer'&&mode==='guest'&&m.roomId===roomId&&approved&&!peer&&!(internet&&relayStarted)){
    clearAdmissionTimeout();
    let current=null;
    try{const data=JSON.parse(m.sdp);const hello=normalizeLanPacket({protocol:1,type:'hello',role:'guest',session:data.session,build,sequence:0});current=peerFactory(hello);peer=current;waitForGuestNegotiation(requestId,current);const answer=await current.acceptOffer(m.sdp);if(peer===current){clearAdmissionTimeout();if(!send({type:'answer',roomId,sdp:answer}))throw Error('unable to send answer');watch(current)}}catch(e){if(!current||peer===current){if(!requestRelay('Guest direct connection failed: '+e.message))recoverGuestHandshake('Guest connection failed: '+e.message)}}return;
