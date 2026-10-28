@@ -21,7 +21,7 @@ Continue bounded features on existing dev each hour despite release queue. Only 
 Only own checkpoint; no other agent memory, extra branches, security bypass or force push.
 
 ## Evidence
-Baseline PR #63 merged; dev Full #40629963552 preflight/Node 4/4/Chromium 4/4/preview green; Modular #40629963534 green. LAN-079 CI and physical devices not yet observed.
+Baseline PR #63 merged; dev Full #40629963552 preflight/Node 4/4/Chromium 4/4/preview green; Modular #40629963534 green. LAN-079 PR #64 exact-head preflight, Node 4/4, Chromium 4/4, preview and Modular green at `981334bb`; dev push browser shard 2 had intermittent fixed-sleep LAN steering failure while PR shard passed. Browser QA now polls bounded movement with same acceptance. Fresh exact-head full CI required; physical devices not observed.
 
 ## Cleanup
 Keep dev/main only and checkpoint below 4 KiB.

@@ -74,12 +74,24 @@ def main():
                 # Exercise a real away-team input: the guest presses its own left key,
                 # transmitted to the host and reflected in the guest snapshot stream.
                 before=host.evaluate("() => {let g=SupermagicFootball.game;return g.controlledPlayer(1)?.x}")
+                # Poll the host while the guest holds left. Fixed 850ms sleeps
+                # can miss the movement under concurrent Chromium CI load, or
+                # sample after the host's next animation/AI transition.
+                # The real acceptance condition (host moved left) is unchanged.
+                samples=[]
                 guest.keyboard.down('a')
-                host.wait_for_timeout(850)
-                guest.keyboard.up('a')
-                after=host.evaluate("() => {let g=SupermagicFootball.game;return g.controlledPlayer(1)?.x}")
+                try:
+                    for attempt in range(20):
+                        host.wait_for_timeout(150)
+                        sample=host.evaluate("() => {let g=SupermagicFootball.game;return g.controlledPlayer(1)?.x}")
+                        samples.append(sample)
+                        if isinstance(before,(float,int)) and isinstance(sample,(float,int)) and sample<before-0.05:
+                            break
+                finally:
+                    guest.keyboard.up('a')
+                after=min((v for v in samples if isinstance(v,(float,int))),default=None)
                 assert isinstance(before,(float,int)) and isinstance(after,(float,int)),(before,after)
-                assert after<before-0.05,('guest input did not steer host away player left',before,after)
+                assert after<before-0.05,('guest input did not steer host away player left',before,after,samples)
                 # Browser render smoke; visual/art QA still requires human screenshots.
                 from PIL import Image
                 import io
