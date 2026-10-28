@@ -1,27 +1,28 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-28 02:02 CET
+**Updated:** 2026-10-28 03:04 CET
 
 ## Mission
-Continue one bounded feature each run on existing dev even with CI/Pages pending. Only dev/main; no bypass, force push or disabling hourly schedule. Preserve 223 teams/2676 players, six formations, four buttons, offline saves, Career/Cup ten slots and SD09.
+Continue bounded development directly on dev despite pending release. Only dev/main, no force push or CI bypass; keep hourly schedule enabled. Preserve 223 teams/2676 players, six formations, exactly four buttons, offline/save compatibility, Career/Cup ten slots and SD09.
 
 ## Current checkpoint
-- Baseline dev/main `f99e9deef0db1f6b9ecc5379f1577cf3b590af71` (0.11.4.16). Prior Full #40606270252 and Modular #40606270217 green only for baseline.
-- LAN-075 candidate 0.11.4.17: if host physics transitions to paused/finished within `game.update`, immediately clear guest held-button edges/gap state in finally, because next frozen step is skipped. Regression covers both phases, fresh Jump on resume and no repeat on subsequent held frame.
-- About/package/README/SW/policy/shared/log aligned. Current exact dev head must be fetched; CI and protected promotion not yet certified. Physical two-device LAN/P2P and hosted Pages bytes remain unverified.
+- Baseline dev/main `f4dada12949b8ec2226b985a783716a03e85514e` (0.11.4.17), prior Full #40613023780 and Modular #40613023936 green only for that baseline.
+- LAN-076 candidate 0.11.4.18: host bridge reports `snapshotSent:false` or explicit false as failed `step()`, preserving frozen-phase resend. LAN-076 test covers both failures and retry; LAN-054 expectation aligned.
+- About, package, README dated candidate banner/heading, SW cache, policy, shared memory and central log updated. Exact new dev head, 4+4/Modular, protected promotion and Pages verification require fresh evidence. Physical two-device LAN/P2P and graphics QA pending.
 
 ## Next smallest action
-1. Inspect exact-head full 4 Node + 4 Chromium and Modular; fix red checks on dev.
-2. Protected green exact-head dev-to-main promotion only.
-3. Confirm main SHA, Pages deployment and hosted HTML/JS/CSS byte smoke.
-4. Two-phone LAN/P2P discovery, host consent, reconnect, input and graphics QA.
-5. Continue next small Studio, counterable Trick or directional-art increment on dev regardless of release queue.
+1. Inspect/fix exact-head 4 Node + 4 Chromium and Modular CI.
+2. Promote unchanged green dev via protected PR only.
+3. Confirm main SHA, Pages and hosted HTML/JS/CSS byte smoke.
+4. Validate two-phone LAN/P2P discovery, host consent, reconnection, gameplay and graphics.
+5. Continue next bounded Player Studio, counterable Trick or directional-art feature on dev regardless of release queue.
 
 ## Ownership and exclusions
-Only own checkpoint, no other agents' memory; no new branches or force pushes. Previous green runs do not certify new candidate.
+Only own checkpoint; no other agents' memory, no extra branches, no force push or weakened CI.
 
 ## Evidence
-- LAN-075 focused Node test passed on earlier candidate in preflight #40612859870 (920 other tests passed); exact-head full CI remains pending. #40612928449 exposed missing checkpoint section, not gameplay failure.
+- LAN-076 source and focused regression committed to dev via SHA-checked GitHub contents writes; CI not yet verified for this candidate.
+- Baseline main/dev `f4dada12949b8ec2226b985a783716a03e85514e` synchronized before changes.
 
 ## Cleanup
-- Keep only dev/main, preserve checkpoint, continue coding while release gates are pending.
+- Keep dev/main only; preserve checkpoint and continue hourly coding while release gates remain pending.
