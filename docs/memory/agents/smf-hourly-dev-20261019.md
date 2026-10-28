@@ -17,5 +17,11 @@ Continue one bounded feature each run on existing dev even with CI/Pages pending
 4. Two-phone LAN/P2P discovery, host consent, reconnect, input and graphics QA.
 5. Continue next small Studio, counterable Trick or directional-art increment on dev regardless of release queue.
 
-## Safety
+## Ownership and exclusions
 Only own checkpoint, no other agents' memory; no new branches or force pushes. Previous green runs do not certify new candidate.
+
+## Evidence
+- LAN-075 focused Node test passed on earlier candidate in preflight #40612859870 (920 other tests passed); exact-head full CI remains pending. #40612928449 exposed missing checkpoint section, not gameplay failure.
+
+## Cleanup
+- Keep only dev/main, preserve checkpoint, continue coding while release gates are pending.
