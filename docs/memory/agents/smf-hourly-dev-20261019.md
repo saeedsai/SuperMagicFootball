@@ -10,12 +10,18 @@ Continue bounded development on existing dev despite release queue. Only dev/mai
 - LAN-078 0.11.4.20 candidate: guest send cursor now requires returned input packet with matching frame; missing, malformed or mismatched receipts retry exact frame. Focused LAN-078 regression covers ten failure shapes, recovery and next-frame progression.
 - Updated source, test mocks, About, package, README, SW, version contract, policy, shared memory and central log. CI authoritative; no physical two-phone or hosted-byte certification inferred.
 
-## Next five
+## Next smallest action
 1. Inspect/fix exact-head Modular and four Node/four Chromium CI.
 2. Promote only unchanged fully green dev through protected PR.
 3. Verify main SHA, Pages deploy and hosted HTML/JS/CSS bytes.
 4. Validate two-phone LAN discovery/consent, P2P reconnect and graphics.
 5. Continue next bounded Player Studio, Trick or directional-art feature on dev regardless of release queue.
 
-## Ownership
+## Ownership and exclusions
 Only own checkpoint; no other agents' memory, extra branches, force push or weakened CI.
+
+## Evidence
+- CI preflight on initial LAN-078 head failed only the missing checkpoint heading contract; repair committed on dev. Exact new-head CI remains authoritative; no physical two-device or Pages hosted-byte certification inferred.
+
+## Cleanup
+- Keep dev/main only; continue hourly coding even when release checks are pending.
