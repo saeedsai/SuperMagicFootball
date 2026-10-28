@@ -190,7 +190,7 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now}){
       if(disposed || !peer.ready || !Number.isSafeInteger(state?.tick) || state.tick<=latestTick)return;
       applyLanGameState(game,field,state);
       latestTick=state.tick;
-      lastSnapshotAt=Date.now();
+      lastSnapshotAt=now();
     });
   }
   // Readiness can fall and recover entirely between animation frames.
@@ -272,7 +272,9 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now}){
     // Only the host can resume or finish a LAN match. Never queue new guest
     // actions while the latest authoritative snapshot says play is frozen.
     if(game.matchState!=='play')return false;
-    if(latestTick<0 || Date.now()-lastSnapshotAt>700)return false;
+    const snapshotAge=now()-lastSnapshotAt;
+    // A backwards wall-clock adjustment must not keep stale guest input live.
+    if(latestTick<0 || !Number.isFinite(snapshotAge) || snapshotAge<0 || snapshotAge>700)return false;
     // A few lead frames absorb LAN transport latency without accepting
     // unbounded future commands or replaying a previously sent frame.
     const frame=Math.max(lastSent+1,latestTick+4);

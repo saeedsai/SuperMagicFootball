@@ -1,3 +1,9 @@
+## 2026-10-28 07:04 CET — LAN-080 guest snapshot clock rollback fail-closed (0.11.4.22 dev candidate)
+- Baseline synchronized dev/main `3a7ccf375f31b82f98d66c1dc4c081714049e12e` (0.11.4.21), prior main Full #40637341147 and Pages #40637341010 green; physical two-phone LAN/P2P and human art QA still pending.
+- Defect: guest snapshot receipt and freshness used raw Date.now() despite the bridge's injected now() clock, and a backwards clock adjustment could leave stale guest four-button controls sending indefinitely. Guest now records and checks age on the same clock, rejects non-finite/negative/>700ms age, and recovers on a newer authoritative tick. LAN-080 deterministic test covers valid boundary, timeout, rollback, duplicate, recovery and invalid clock.
+- Candidate About/package/README/SW/policy/version test/shared memory/own checkpoint aligned. Rosters, four buttons, six formations, offline saves, ten Career/Cup slots and SD09 untouched. Exact-head 4+4/Modular and protected promotion/Pages remain separate gates.
+- Next five: exact-head CI; protected promotion if green; Pages hosted-byte verification; real two-device LAN/P2P and art QA; Player Studio/Tricks/directional graphics increment.
+
 ## 2026-10-28 04:58 CET — LAN-078 guest exact-frame send receipt (0.11.4.20 dev candidate)
 - Starting synchronized dev/main `034214df22c4afb2565d3443d350b28b83627fcf`; previous 0.11.4.19 candidate `09a43c3f411c6abd11f7c15c1c01ea50ede5e748` was merged via PR #62. Exact new-head CI, main/Pages bytes and physical devices are separate evidence.
 - Defect: guest bridge treated undefined/null/malformed or wrong-frame send responses as success, advancing lastSent and skipping an unsent four-button frame. LAN-078 now requires receipt.type==='input' and receipt.frame===frame. Added focused malformed receipt cases, retry of same frame and next acknowledged frame; updated older test mocks to model real protocol input packets.

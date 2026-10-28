@@ -797,3 +797,30 @@ test('LAN-079 frozen-phase heartbeat recovers missed pause and finish without ph
  assert.equal(match.clock,0);assert.equal(updates,0,'frozen physics never advances');
  run.dispose();
 });
+
+
+test('LAN-080 guest snapshot freshness fails closed on clock rollback and recovers',async()=>{
+ const {createLanLiveMatch,captureLanGameState}=await load();
+ const input=controls(),host=game(controls()),guest=game(input),sent=[];
+ let clock=1000;
+ const peer={ready:true,
+  subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
+  sendGuestInput(frame,buttons,dx,dy){sent.push({frame,buttons,dx,dy});return {type:'input',frame};}
+ };
+ const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field,now:()=>clock});
+ peer.receive(captureLanGameState(host,field,20));
+ assert.equal(run.step(.016),true,'fresh host state enables guest input');
+ clock=1700;assert.equal(run.step(.016),true,'700ms boundary remains valid');
+ clock=1701;assert.equal(run.step(.016),false,'stale host state blocks input');
+ clock=999;assert.equal(run.step(.016),false,'clock rollback cannot revive stale input');
+ peer.receive(captureLanGameState(host,field,20));
+ assert.equal(run.step(.016),false,'duplicate tick cannot refresh stale state');
+ peer.receive(captureLanGameState(host,field,21));
+ assert.equal(run.step(.016),true,'new authoritative tick recovers input after rollback');
+ clock=NaN;assert.equal(run.step(.016),false,'invalid clock fails closed');
+ clock=999;assert.equal(run.step(.016),true,'valid clock and fresh snapshot recover');
+ clock=1700;assert.equal(run.step(.016),false,'new snapshot also expires at 701ms');
+ assert.deepEqual(sent.map(p=>p.frame),[24,25,26,27]);
+ assert.deepEqual(sent.map(p=>p.buttons),[['pass'],['pass'],['pass'],['pass']]);
+ run.dispose();
+});

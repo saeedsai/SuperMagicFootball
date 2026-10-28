@@ -138,3 +138,13 @@ test('LAN-079 frozen-phase heartbeat is documented in bundled About and README',
  assert.ok(release.includes('LAN-079:'),'About notes must include heartbeat');
  assert.ok(readme.startsWith('> **'+pkg.version+' release candidate')&&readme.includes('LAN-079'));
 });
+
+
+test('LAN-080 candidate documents clock-safe guest snapshot freshness',()=>{
+ const version=JSON.parse(read('package.json')).version;
+ const release=read('src/modules/release.js'),readme=read('README.md');
+ assert.match(release,/LAN-080:/);
+ assert.ok(readme.startsWith('> **'+version+' release candidate'));
+ assert.match(readme,/LAN-080/);
+ assert.match(readme,/clock moves backwards/);
+});

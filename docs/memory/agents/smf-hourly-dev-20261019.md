@@ -1,27 +1,27 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-28 06:06 CET
+**Updated:** 2026-10-28 07:04 CET
 
 ## Mission
-Continue bounded features on existing dev each hour despite release queue. Only dev/main; green protected CI, no force push. Preserve 223 teams/2676 players, six formations, four buttons, offline/saves, Career/Cup ten slots, SD09.
+Keep hourly incremental coding on existing dev even when release gates are pending. Only dev/main, no force push or security bypass. Preserve 223 teams/2676 players, six formations, four buttons, offline saves, ten Career/Cup slots and SD09.
 
 ## Current checkpoint
-- Baseline dev/main `14627784a8f94e0fd13474a9b1338fec2a03803b` (0.11.4.20), PR #63 merged. Full dev preflight, Node 4/4, Chromium 4/4, preview and Modular green on baseline; Pages bytes and physical devices not independently certified.
-- LAN-079 0.11.4.21 candidate: host refreshes paused/finished authoritative state every 1500ms; failed heartbeats retry immediately, no frozen physics or guest controls.
-- New deterministic LAN-079 regression covers timing, retry, phase transition. About, package, README, SW, policy, shared memory, log and version test aligned. Exact new-head CI required.
+- Baseline synchronized dev/main `3a7ccf375f31b82f98d66c1dc4c081714049e12e`, 0.11.4.21, main Full #40637341147 and Pages #40637341010 green; hosted-byte smoke reported previously, physical two-device QA remains pending.
+- LAN-080 candidate 0.11.4.22: guest snapshot receipt and 700ms freshness use injected `now()` consistently. Clock rollback/nonfinite time fails closed; newer authoritative tick recovers. Deterministic regression added.
+- Candidate metadata, README, service worker, version policy/tests, shared memory and development log aligned. New exact-head CI not yet certified.
 
 ## Next smallest action
-1. Inspect exact-head Modular and Node 4/4 + Chromium 4/4; fix failures.
-2. Promote only fully green exact dev through protected PR.
-3. Verify main and Pages hosted HTML/JS/CSS bytes.
-4. Validate two-phone LAN discovery/consent, cross-network P2P and graphics.
-5. Continue Player Studio, counterable Tricks and directional art on dev.
+1. Inspect exact-head Modular and Node 4/4 + Chromium 4/4; fix failures on dev.
+2. Promote only completely green exact dev through protected PR.
+3. Verify main/Pages hosted HTML, JS and CSS bytes.
+4. Validate two-phone LAN discovery, host approval, P2P reconnect and graphics.
+5. Continue Player Studio, counterable Tricks and authored directional art on dev regardless of release queue.
 
 ## Ownership and exclusions
 Only own checkpoint; no other agent memory, extra branches, security bypass or force push.
 
 ## Evidence
-Baseline PR #63 merged; dev Full #40629963552 preflight/Node 4/4/Chromium 4/4/preview green; Modular #40629963534 green. LAN-079 PR #64 exact-head preflight, Node 4/4, Chromium 4/4, preview and Modular green at `981334bb`; dev push browser shard 2 had intermittent fixed-sleep LAN steering failure while PR shard passed. Browser QA now polls bounded movement with same acceptance. Fresh exact-head full CI required; physical devices not observed.
+Baseline dev Full #40636932764 and Modular #40636932752 green; main Full #40637341147 and Pages #40637341010 green. LAN-080 test source committed in this increment; exact-head QA and physical devices remain independent gates.
 
 ## Cleanup
 Keep dev/main only and checkpoint below 4 KiB.
