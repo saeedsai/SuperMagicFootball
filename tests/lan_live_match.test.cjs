@@ -79,7 +79,7 @@ test('LAN-044 guest applies authorized snapshots and sends bounded four-button i
   let observe=null,receivedDisposed=false;
   const peer={ready:true,
     subscribeGuestMatchState(fn){observe=fn;return {dispose(){receivedDisposed=true;}};},
-    sendGuestInput(frame,buttons,dx,dy){this.last={frame,buttons,dx,dy};return this.last;}
+    sendGuestInput(frame,buttons,dx,dy){this.last={frame,buttons,dx,dy};return {type:'input',frame};}
   };
   const run=createLanLiveMatch({peer,role:'guest',game:match,input,field});
   assert.equal(run.step(.016),false,'guest waits for authoritative initial frame');
@@ -139,7 +139,7 @@ test('LAN-053 guest sends proportional analog tilt without losing digital direct
   input.state[0]={x:0.25,y:-0.5,pass:1,shoot:0,dribble:0,jump:0};
   const peer={ready:true,
     subscribeGuestMatchState(fn){this.observe=fn;return {dispose(){}};},
-    sendGuestInput(frame,buttons,dx,dy){this.sent={frame,buttons,dx,dy};}
+    sendGuestInput(frame,buttons,dx,dy){this.sent={frame,buttons,dx,dy};return {type:'input',frame};}
   };
   const run=createLanLiveMatch({peer,role:'guest',game:match,input,field});
   peer.observe({tick:10,clockMs:1000,scores:{home:0,away:0},
@@ -223,7 +223,7 @@ test('LAN-056 guest recovers from an RTC send failure without skipping its input
     sendGuestInput(frame,buttons,dx,dy){
       sent.push({frame,buttons,dx,dy});
       if(fail){fail=false;throw new Error('LAN channel is not open');}
-      return {frame};
+      return {type:'input',frame};
     }
   };
   const run=createLanLiveMatch({peer,role:'guest',game:match,input,field});
@@ -249,7 +249,7 @@ test('LAN-057 guest suppresses controls during host pause and finish, then resum
   const input=controls(),guest=game(input),host=game(controls()),sent=[];
   const peer={ready:true,
     subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
-    sendGuestInput(frame,buttons,dx,dy){sent.push({frame,buttons,dx,dy});return {frame};}
+    sendGuestInput(frame,buttons,dx,dy){sent.push({frame,buttons,dx,dy});return {type:'input',frame};}
   };
   const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field});
   const receive=(tick,phase)=>{
@@ -277,7 +277,7 @@ test('LAN-058 ignores delayed and duplicate snapshots without rewinding phase, s
  const {createLanLiveMatch,captureLanGameState}=await load();
  const input=controls(),host=game(controls()),guest=game(input),sent=[];
  const peer={ready:true,subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
-  sendGuestInput(frame,buttons,dx,dy){sent.push({frame,buttons,dx,dy});}};
+  sendGuestInput(frame,buttons,dx,dy){sent.push({frame,buttons,dx,dy});return {type:'input',frame};}};
  const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field});
  const receive=(tick,phase,score)=>{host.matchState=phase;host.score=[score,0];peer.receive(captureLanGameState(host,field,tick));};
  receive(20,'play',0);
@@ -490,7 +490,7 @@ test('LAN-068 guest retries a frame after a nonthrowing transport refusal',async
  const input=controls(),host=game(controls()),guest=game(input),sent=[];
  let attempts=0;
  const peer={ready:true,subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
-  sendGuestInput(frame,buttons,dx,dy){sent.push(frame);return ++attempts===1?false:{frame};}};
+  sendGuestInput(frame,buttons,dx,dy){sent.push(frame);return ++attempts===1?false:{type:'input',frame};}};
  const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field});
  peer.receive(captureLanGameState(host,field,70));
  assert.equal(run.step(.016),false,'refused send must not count as delivered');
@@ -525,7 +525,7 @@ test('LAN-070 guest rejects disconnected snapshots and accepts restarted host ti
  const {createLanLiveMatch,captureLanGameState}=await load();
  const input=controls(),host=game(controls()),guest=game(input),sent=[];
  const peer={ready:true,subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
-  sendGuestInput(frame){sent.push(frame);return {frame};}};
+  sendGuestInput(frame){sent.push(frame);return {type:'input',frame};}};
  const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field});
  peer.receive(captureLanGameState(host,field,120));
  assert.equal(run.step(.016),true);
@@ -555,7 +555,7 @@ test('LAN-071 readiness transition between frames resets guest cursor',async()=>
  const peer={ready:true,
   subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
   subscribeStatus(fn){this.onStatus=fn;fn({ready:true});return ()=>{unsubscribed=true;};},
-  sendGuestInput(frame){sent.push(frame);return {frame};}
+  sendGuestInput(frame){sent.push(frame);return {type:'input',frame};}
  };
  const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field});
  peer.receive(captureLanGameState(host,field,120));
@@ -739,6 +739,31 @@ test('LAN-077 missing or malformed host receipts do not suppress frozen-phase re
   assert.equal(run.step(.016),false,'an acknowledged phase is published once');
   assert.deepEqual(phases,['paused','paused']);
   assert.equal(match.clock,0,'retry cannot simulate frozen physics');
+  run.dispose();
+ }
+});
+
+test('LAN-078 ambiguous guest send receipts retry the exact input frame',async()=>{
+ const {createLanLiveMatch,captureLanGameState}=await load();
+ for(const bad of [undefined,null,false,true,{}, {frame:74},
+   {type:'input',frame:73},{type:'other',frame:74},
+   {type:'input',frame:74.5},{type:'input',frame:'74'}]){
+  const input=controls(),host=game(controls()),guest=game(input),sent=[];
+  let attempts=0;
+  const peer={ready:true,
+   subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
+   sendGuestInput(frame,buttons,dx,dy){
+    sent.push({frame,buttons,dx,dy});
+    return attempts++===0?bad:{type:'input',frame};
+   }
+  };
+  const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field});
+  peer.receive(captureLanGameState(host,field,70));
+  assert.equal(run.step(.016),false,'ambiguous receipt cannot advance input cursor');
+  assert.equal(run.step(.016),true,'the same input frame must be retryable');
+  assert.equal(run.step(.016),true,'acknowledged frame advances normally');
+  assert.deepEqual(sent.map(p=>p.frame),[74,74,75]);
+  assert.deepEqual(sent.map(p=>p.buttons),[['pass'],['pass'],['pass']]);
   run.dispose();
  }
 });
