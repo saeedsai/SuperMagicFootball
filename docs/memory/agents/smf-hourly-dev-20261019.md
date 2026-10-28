@@ -18,5 +18,11 @@ Continue bounded, tested work on existing dev only; no new branches, force pushe
 4. Verify Render revision and physical two-client acceptance; keep LAN open until certified.
 5. Then prioritize Player Studio, counterable Tricks, eight-view art, gameplay and Career.
 
-## Ownership
+## Ownership and exclusions
 Sole developer smf-hourly-dev-20261019; only own checkpoint edited. Git log is authoritative history.
+
+## Evidence
+- LAN-090 focused test passed twice; Full Regression #40769305171 and #40769410058 preflights each ran 959 Node tests, 958 passed. Remaining failure was a checkpoint heading contract, not gameplay; fixed all required headings.
+
+## Cleanup
+- Own checkpoint below 4 KiB; no other agent memory touched.

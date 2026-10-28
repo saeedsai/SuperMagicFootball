@@ -1,3 +1,7 @@
+## 2026-10-28 22:14 CET — LAN-090 checkpoint contract completion (same candidate 0.11.4.41)
+- Second exact-head Full #40769410058 preflight ran 959 Node tests, 958 passed (including LAN-090), but memory contract required additional 'Ownership and exclusions', 'Evidence', and 'Cleanup' headings.
+- Restored all six required checkpoint sections. No gameplay or tests weakened; new exact-head CI and Modular QA required before promotion.
+
 ## 2026-10-28 22:12 CET — LAN-090 memory contract repair (same candidate 0.11.4.41)
 - Exact-head Full Regression Census #40769305171 preflight ran 959 Node tests: 958 passed, including focused LAN-090, and one failed because sole-developer checkpoint used '## Next five' instead of required '## Next smallest action'.
 - Restored the required heading without weakening tests or changing game code. Repeat exact-head 4 Node + 4 Chromium and Modular QA before protected promotion.
