@@ -1,3 +1,6 @@
+### 2026-10-28 — Locked-preview CI contract repair
+- First candidate head `becaf67951e93a3bd8a9dc738e46afbb61b69766` failed Full #40654684002 (preflight Node) and Modular #40654684094 (Node) with 933/935 passing. Root cause: two older source-pattern assertions still required eligible-only options and a two-argument live guide. Updated `tests/player_studio_magic_guide.test.cjs` and `tests/studio_elite_position_ovr.test.cjs` to require the new visible catalogue, locked disabled Save, independent save-handler guard and contextual guide; no production behavior or CI gates weakened. Exact-head re-run pending.
+
 ## 2026-10-28 — STUDIO-TRICK-PREVIEW-02 (0.11.4.26 candidate)
 - On dev, every outfield player can preview all eight Magic Tricks, including activation and counters. Locked (below 91) selections are visibly read-only, SAVE is disabled with aria-disabled, and saveStudioMagic independently rejects bypass attempts. Keep/remove legacy moves remain enabled. Node VM regression added; 4 Node + 4 Chromium/Modular CI and hosted Pages verification are separate gates. No roster, save, gameplay or four-button changes.
 - Previous 0.11.4.25 PR #68 Full #40649528225 and Modular #40649528401 passed; dev/main both a7c671d80816d938cbd535b6023eb3f2e6cb26cc at run start. Pages byte evidence not independently established.
