@@ -1,3 +1,9 @@
+## 2026-10-28 18:01 CET — LAN-086 cross-room admission reply binding (candidate 0.11.4.37)
+- Guest join-accept and join-reject previously matched request ID but not room ID; mismatched-room replies with the active request ID could incorrectly approve or cancel the current handshake. Now require both IDs in LAN and Online P2P; valid host decisions still work.
+- Added two-mode regression for mismatched approval/rejection before and after approval, and valid rejection. Updated historical mock broker events to include room ID already sent by the real broker.
+- Aligned About release, package, README, SW cache, version policy, shared memory and own checkpoint. No change to four controls, physics, rosters, offline saves, Career/Cup slots, SD09 or graphics. Exact-head 4+4 and Modular QA, protected promotion, hosted byte smoke and physical device acceptance pending.
+- Next five: focused/full QA; exact-head protected promotion; Pages bytes; Render broker and two devices; then Studio/Tricks/art/Career.
+
 ## 2026-10-28 — LAN-083 busy room directory refresh (candidate 0.11.4.34)
 - Busy admission rejection immediately requests fresh room occupancy; stale rejection replays cannot poll again. Added focused lobby flow regression. Host consent, four buttons, game physics, graphics, rosters, offline saves and Career/Cup slots unchanged. Full exact-head 4+4/Modular, protected main and Pages bytes pending; physical two-device acceptance remains open.
 - Next five: focused/full QA; repair failures; exact-head protected promotion; hosted Pages byte smoke; physical LAN then Studio/Tricks/art.

@@ -201,7 +201,7 @@ export function mountAutoLanLobby(root,options={}){
   if(m.type==='guest-left'&&mode==='host'&&m.roomId===roomId){clearAdmissionTimeout();cleanupPeer();approved=false;approvalRequestId=null;get('autoApproval').replaceChildren();status('Guest disconnected. Hosting remains available for another guest.');return}
   // Rejection can arrive after approval while guest SDP is still pending.
   // Retire that peer and room identity so delayed offers/answers cannot revive a denied seat.
-  if(m.type==='join-reject'&&mode==='guest'&&!started&&requestId&&m.requestId===requestId){
+  if(m.type==='join-reject'&&mode==='guest'&&!started&&requestId&&m.roomId===roomId&&m.requestId===requestId){
    clearAdmissionTimeout();cleanupPeer();requestId=null;roomId=null;approved=false;
    status('Join request rejected or expired. Select a game to retry.');
    // Busy room or approval queue: refresh immediately, not after the ten-second poll.
@@ -210,7 +210,7 @@ export function mountAutoLanLobby(root,options={}){
    return;
   }
   // Ignore replayed approvals: they must not restart the offer or SDP deadline.
-  if(m.type==='join-accept'&&mode==='guest'&&m.requestId===requestId&&!approved&&!started){approved=true;opponentName=displayName(m.hostName||rooms.get(roomId)?.name);waitForOffer(m.requestId);status('Approved by '+opponentName+'. Waiting for host offer…');return}
+  if(m.type==='join-accept'&&mode==='guest'&&m.roomId===roomId&&m.requestId===requestId&&!approved&&!started){approved=true;opponentName=displayName(m.hostName||rooms.get(roomId)?.name);waitForOffer(m.requestId);status('Approved by '+opponentName+'. Waiting for host offer…');return}
   if(m.type==='guest-approved'&&mode==='host'&&m.roomId===roomId){
    relayStarted=false;
    if(peer||started)return;

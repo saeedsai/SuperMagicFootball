@@ -115,7 +115,7 @@ test('Find Games refreshes room discovery but pauses during admission and stops 
   f.elements.get('#autoRooms').children[0].click();
   const join=f.packets.at(-1);assert.equal(join.type,'join');
   timers[0].fn();assert.equal(f.packets.filter(p=>p.type==='rooms').length,2,'pending admission should not poll');
-  f.emit({type:'join-reject',requestId:join.requestId});
+  f.emit({type:'join-reject',roomId:join.roomId,requestId:join.requestId});
   timers[0].fn();assert.equal(f.packets.filter(p=>p.type==='rooms').length,3,'poll resumes after rejection');
   f.elements.get('#autoHost').click();assert.equal(timers[0].stopped,true);
   const reads=f.packets.filter(p=>p.type==='rooms').length;
@@ -145,7 +145,7 @@ test('authoritative LAN room refresh removes stale cards, rejects malformed repl
   f.emit({type:'rooms-snapshot',rooms:[]});
   assert.match(f.elements.get('#autoRooms').children[0].textContent,/Stale/,'pending admission cannot be overwritten');
   const request=f.packets.at(-1).requestId;
-  f.emit({type:'join-reject',requestId:request});
+  f.emit({type:'join-reject',roomId:stale.roomId,requestId:request});
   f.emit({type:'rooms-snapshot',rooms:[]});
   assert.equal(f.elements.get('#autoRooms').children.length,0);
   assert.match(f.elements.get('#autoRooms').textContent,/Searching/);
@@ -200,12 +200,12 @@ test('LAN unanswered host approval expires locally and allows a fresh join',asyn
   timers[0].fn();
   assert.deepEqual(f.packets.slice(-2).map(p=>p.type),['leave','rooms']);
   assert.match(f.elements.get('#autoStatus').textContent,/approval timed out/);
-  f.emit({type:'join-accept',requestId:first.requestId});
+  f.emit({type:'join-accept',roomId:room.roomId,requestId:first.requestId});
   assert.doesNotMatch(f.elements.get('#autoStatus').textContent,/Approved/);
   f.elements.get('#autoRooms').children[0].click();
   const second=f.packets.at(-1);assert.equal(second.type,'join');
   assert.notEqual(second.requestId,first.requestId);
-  f.emit({type:'join-accept',requestId:second.requestId});
+  f.emit({type:'join-accept',roomId:room.roomId,requestId:second.requestId});
   assert.equal(timers[1].cleared,true,'approval cancels timeout');
   dispose();
  }finally{f.cleanup()}
@@ -735,7 +735,7 @@ test('LAN/P2P rejected admission clears stale room identity and permits a differ
   const second={...first,roomId:'room_87654321',name:'New host'};
   f.emit(first);f.emit(second);f.elements.get('#autoRooms').children[0].click();
   const oldRequest=f.packets.at(-1).requestId;
-  f.emit({type:'join-reject',requestId:oldRequest});
+  f.emit({type:'join-reject',roomId:first.roomId,requestId:oldRequest});
   assert.match(f.elements.get('#autoStatus').textContent,/Join request rejected or expired/);
   f.emit({type:'room-remove',roomId:first.roomId});
   assert.match(f.elements.get('#autoStatus').textContent,/Join request rejected or expired/,'stale room removal cannot reset a rejected admission');
@@ -743,7 +743,7 @@ test('LAN/P2P rejected admission clears stale room identity and permits a differ
   const next=f.packets.at(-1);
   assert.equal(next.type,'join');assert.equal(next.roomId,second.roomId);
   assert.notEqual(next.requestId,oldRequest);
-  f.emit({type:'join-accept',requestId:oldRequest});
+  f.emit({type:'join-accept',roomId:first.roomId,requestId:oldRequest});
   assert.match(f.elements.get('#autoStatus').textContent,/Waiting for host approval/,'late approval cannot replace new request');
   dispose();
  }finally{f.cleanup()}
@@ -761,10 +761,10 @@ test('LAN/P2P rejection during guest SDP cancels negotiation and blocks a late a
   const room={type:'room-announce',roomId:'room_12345678',name:'Friendly',build:'0.11.3.14',full:false};
   f.emit(room);f.elements.get('#autoRooms').children[0].click();
   const request=f.packets.at(-1).requestId;
-  f.emit({type:'join-accept',requestId:request});
+  f.emit({type:'join-accept',roomId:room.roomId,requestId:request});
   const pending=f.emit({type:'offer',roomId:room.roomId,sdp:JSON.stringify({session:'session_12345678'})});
   assert.equal(timers.length,3);assert.equal(timers[2].cleared,false);
-  f.emit({type:'join-reject',requestId:request});
+  f.emit({type:'join-reject',roomId:room.roomId,requestId:request});
   assert.equal(disposed,1,'rejected guest peer must be disposed');
   assert.equal(timers[2].cleared,true,'SDP watchdog must be cancelled');
   finish('late-answer');await pending;
@@ -982,10 +982,39 @@ test('LAN-085 duplicate taps keep pending approval in LAN and Online P2P',async(
    buttons[1].click();const switched=f.packets.at(-1);
    assert.equal(switched.type,'join');assert.notEqual(switched.requestId,pending.requestId);
    assert.deepEqual(f.packets.slice(-2).map(p=>p.type),['leave','join'],'another room still cancels old request');
-   f.emit({type:'join-accept',requestId:pending.requestId,hostName:'Old host'});
+   f.emit({type:'join-accept',roomId:'room_12345678',requestId:pending.requestId,hostName:'Old host'});
    assert.doesNotMatch(f.elements.get('#autoStatus').textContent,/Approved by Old host/);
-   f.emit({type:'join-accept',requestId:switched.requestId,hostName:'New host'});
+   f.emit({type:'join-accept',roomId:'room_87654321',requestId:switched.requestId,hostName:'New host'});
    assert.match(f.elements.get('#autoStatus').textContent,/Approved by New host/);
+   dispose();
+  }finally{f.cleanup()}
+ }
+});
+
+
+test('LAN-086 LAN and Online P2P ignore cross-room admission replies even with a matching request ID',async()=>{
+ for(const internet of [false,true]){
+  const f=setup();
+  try{
+   const {mountAutoLanLobby}=await load();
+   const build='0.11.4.37';
+   const dispose=mountAutoLanLobby(f.root,{build,internet,signalFactory:f.signalFactory});
+   f.elements.get('#autoFind').click();f.connect();
+   const roomId='room_12345678',wrongRoom='room_87654321';
+   f.emit({type:'room-announce',roomId,name:'Valid host',build,full:false,...(internet?{scope:'internet-p2p'}:{})});
+   f.elements.get('#autoRooms').children[0].click();
+   const request=f.packets.at(-1);assert.equal(request.type,'join');
+   f.emit({type:'join-reject',roomId:wrongRoom,requestId:request.requestId,reason:'room-full-or-version'});
+   assert.match(f.elements.get('#autoStatus').textContent,/Waiting for host approval/);
+   assert.equal(f.packets.filter(p=>p.type==='rooms').length,1,'cross-room rejection must not refresh discovery');
+   f.emit({type:'join-accept',roomId:wrongRoom,requestId:request.requestId,hostName:'Wrong host'});
+   assert.match(f.elements.get('#autoStatus').textContent,/Waiting for host approval/);
+   f.emit({type:'join-accept',roomId,requestId:request.requestId,hostName:'Valid host'});
+   assert.match(f.elements.get('#autoStatus').textContent,/Approved by Valid host/);
+   f.emit({type:'join-reject',roomId:wrongRoom,requestId:request.requestId});
+   assert.match(f.elements.get('#autoStatus').textContent,/Approved by Valid host/,'cross-room denial must not tear down an approved negotiation');
+   f.emit({type:'join-reject',roomId,requestId:request.requestId});
+   assert.match(f.elements.get('#autoStatus').textContent,/Join request rejected or expired/,'correctly bound rejection still releases the seat');
    dispose();
   }finally{f.cleanup()}
  }
