@@ -23,31 +23,7 @@ On **every Git commit**, preserve the About-only current dev candidate `0.11.4.2
 ## Memory hygiene
 Read only your own [registered checkpoint](AGENTS_INDEX.json) according to [memory protocol](README.md). Git history preserves older states. Never edit another chat's memory or store secrets.
 
-
-
-
-- **0.11.4.3 dev candidate (2026-10-27):** WebRTC-first internet match with approved WSS relayed backup, shared host-authoritative gameplay protocol, bounded broker frames and automatic fallback. Render/main/Pages and live two-device certification pending.
-
-- **0.11.4.4 dev candidate (2026-10-27):** Secure hosted signaling gets a 60-second cold-start watchdog; same-origin LAN retains 12 seconds. Timed-out hosted sockets still reconnect; no roster, control or save changes. Full CI, Pages/Render and physical two-device play pending.
-
-- **0.11.4.5 dev candidate (2026-10-27):** Invalid explicit LAN/P2P signaling URL overrides fail closed instead of silently changing discovery scope; valid WSS and defaults unchanged. CI, Pages/Render and two-phone play unverified.
-
-- **0.11.4.6 dev candidate (2026-10-27):** LAN/P2P short-lived signaling connections no longer reset exponential backoff; stable 30-second sessions reset retry delay. Four focused source tests passed locally; exact-head CI, Pages/Render and physical two-device gameplay remain unverified.
-
-- **0.11.4.8 dev candidate (2026-10-27):** Approved internet relay buffers one early guest hello until host channel opens, tolerating a lost echo; focused two-peer regression added. Exact-head CI, Pages/Render and physical two-device acceptance pending.
-
-- **0.11.4.9 dev candidate (2026-10-27):** Early approved internet relay hello requires matching session, build and opposite role, preventing stale frames from consuming the single pre-open handshake buffer. Focused regression added; exact-head CI, Pages, broker and two-client acceptance pending.
-
-- **0.11.4.11 dev candidate (2026-10-27):** Approved relay now budgets the complete 24,000-byte broker JSON frame, including UTF-8, room ID and escaping. P2P-RELAY-08 tests both peer directions and corrects P2P-RELAY-04. Earlier P2P-RELAY-07 covers 4 KiB pre-open hello parsing. Exact-head CI, main/Pages and physical two-client play pending.
-
-- **0.11.4.12 dev candidate (2026-10-27):** A validated pre-channel host hello survives signaling reorder; lost later echoes no longer strand the guest. P2P-RELAY-09 added. Exact-head CI, main/Pages and physical devices pending.
-
-- **0.11.4.13 dev candidate (2026-10-27):** Approved relay rejects incompatible direct/foreign SDP for host and guest. P2P-RELAY-10 added; exact-head CI and real two-device play pending.
-
-- **0.11.4.15 dev (2026-10-28):** LAN-073 resets host controls and frozen phase after RTC reconnect. CI/Pages/devices pending.
-
-- **0.11.4.16 dev (2026-10-28):** LAN-074 clears frozen-phase guest Jump edge history; focused regression committed, exact-head CI/Pages/physical phones require verification.
-
-- **0.11.4.18 dev (2026-10-28):** LAN-076 reports failed authoritative host snapshots as failed steps and retries frozen phase delivery. Focused regression added; exact-head CI, Pages bytes and physical devices remain independent gates.
-\n- **0.11.4.20 dev candidate (2026-10-28):** LAN-078 requires an exact-frame input-packet send receipt before guest input cursor advances; malformed/missing receipts retry. Exact-head QA, Pages and physical two-device acceptance remain independent.\n
-- **0.11.4.24 dev candidate (2026-10-28):** Player Studio Magic Tricks are Star/Superstar-only (legacy rating or positional OVR 91+); Gold 90 may keep/remove an existing legacy Trick but cannot equip/replace. Four controls, other equipment and saves unchanged. CI and Pages pending.
+## Recent release context
+- **0.11.4.23** (2026-10-28): LAN-081 host frozen-phase clock safeguard; main Full #40645171130 (4 Node/4 Chromium, hosted smoke) and Pages #40645170675 green. Physical two-phone QA remains pending.
+- **0.11.4.24 candidate** (2026-10-28): STUDIO-STAR-01 reserves new Magic Trick equipment for Star/Superstar outfield players with legacy rating or positional OVR 91+; Gold 90 can keep/remove an existing legacy Trick but cannot equip/replace. Super Shot/Defence rules, controls and saves unchanged. Exact-head CI and Pages pending.
+- Full historical feature and release records remain in `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` and Git history.

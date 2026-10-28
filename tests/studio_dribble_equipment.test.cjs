@@ -56,7 +56,7 @@ test('Player Studio separates elite magical Tricks from normal dribble styles',(
  assert.match(ui,/STUDIO_MAGIC_TRICKS/);
  assert.match(ui,/function saveStudioMagic\(\)/);
  assert.match(ui,/magicTrick=id/);
- assert.match(ui,/!studioEliteEligible\(player\)/);
+ assert.match(ui,/!studioMagicEligible\(player\)/);
  assert.match(ui,/DRIBBLES\.withStudioDribble\(source\[avatarIndex\],\$\('studioDribble'\)\?\.value\)/);
  assert.doesNotMatch(ui,/id="studioTrickTier"/);
 });
@@ -86,10 +86,11 @@ test('Rare super abilities require elite eligibility without revoking legacy equ
  const ui=fs.readFileSync('src/modules/ui.js','utf8');
  assert.match(ui,/Super Shots are reserved for elite players/);
  assert.match(ui,/Super Defence is reserved for elite players/);
- assert.match(ui,/Tricks are reserved for elite players/);
+ assert.match(ui,/Tricks are reserved for Star and Superstar players \(91\+\)/);
  assert.match(ui,/player\.superAbility\?\.type==='shoot'/);
  assert.match(ui,/player\.superAbility\?\.type==='defence'/);
   assert.match(ui,/const studioEliteEligible=p=>/);
+ assert.match(ui,/const studioMagicEligible=p=>/);
   assert.match(ui,/Number\(p\.rating\)>=90\)\|\|playerOVR\(p\)>=90/);
  assert.match(ui,/!studioEliteEligible\(source\[avatarIndex\]\)/);
 });
