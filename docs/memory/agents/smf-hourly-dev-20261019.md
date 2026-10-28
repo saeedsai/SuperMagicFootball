@@ -11,7 +11,7 @@ Continue bounded tested increments on existing dev only; no new branches, force 
 - Previous 0.11.4.37 LAN-086 binds guest admission replies to room and request ID. Physical two-device discovery/consent/sprint/Jump/reconnect/mobile acceptance not certified. Concept Hero direction flip already exists; screenshot QA needed.
 - Preserve 223 teams/2676 players, six formations, four action buttons, offline saves, Career/Cup ten slots and SD09.
 
-## Next five
+## Next smallest action
 1. Run focused LAN-087 Node and exact-head Full 4 Node + 4 Chromium, Modular QA.
 2. Repair real CI failures on dev and promote only exact green head via protected PR.
 3. Verify main SHA, Pages hosted HTML/JS/CSS bytes, and new broker deployment.
