@@ -1,5 +1,6 @@
 ## 2026-10-28 — STUDIO-TRICK-PROGRESS-01 / 0.11.4.29 candidate
 - STUDIO-TRICK-PROGRESS-01: Player Studio now shows each outfield player's legacy rating and positional OVR, plus the remaining points to unlock Magic Trick equipment at 91 via either path. Eligibility and saves are unchanged.
+- First Full #40668776917 failed Node preflight with `SyntaxError: Unexpected identifier 's'` from an unescaped apostrophe in the new release note. Corrected `src/modules/release.js` on dev; exact-head rerun required.
 - Focused VM and Studio-markup regression added; exact-head full 4 Node + 4 Chromium, Modular QA, main and Pages acceptance pending. Previous 0.11.4.28 Full #40661840816 and Modular #40661840769 passed; dev/main were identical at 377b65bd12b8 before this increment.
 
 ## 2026-10-28 — STUDIO-GK-PREVIEW-01 / 0.11.4.28 candidate
