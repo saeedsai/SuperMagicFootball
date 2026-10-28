@@ -124,7 +124,8 @@ test('LAN-077 candidate documents explicit snapshot delivery receipts',()=>{
 test('LAN-078 candidate describes guest exact-frame send receipt validation',()=>{
  const version=JSON.parse(read('package.json')).version;
  const release=read('src/modules/release.js'),readme=read('README.md');
- assert.equal(version,'0.11.4.20');
+ assert.match(version,/^\d+\.\d+\.\d+\.\d+$/,'current bundle retains four-field version');
+ assert.match(readme,/> \*\*0\.11\.4\.20 release candidate/,'historical LAN-078 release remains documented');
  assert.match(release,/LAN-078/);
  assert.match(readme,/LAN-078/);
  assert.match(release,/exact-frame/);
