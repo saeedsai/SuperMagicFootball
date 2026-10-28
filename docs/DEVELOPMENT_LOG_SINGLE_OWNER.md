@@ -1,3 +1,7 @@
+## 2026-10-28 — STUDIO-TRICK-PREVIEW-02 (0.11.4.26 candidate)
+- On dev, every outfield player can preview all eight Magic Tricks, including activation and counters. Locked (below 91) selections are visibly read-only, SAVE is disabled with aria-disabled, and saveStudioMagic independently rejects bypass attempts. Keep/remove legacy moves remain enabled. Node VM regression added; 4 Node + 4 Chromium/Modular CI and hosted Pages verification are separate gates. No roster, save, gameplay or four-button changes.
+- Previous 0.11.4.25 PR #68 Full #40649528225 and Modular #40649528401 passed; dev/main both a7c671d80816d938cbd535b6023eb3f2e6cb26cc at run start. Pages byte evidence not independently established.
+
 ## 2026-10-28 — STUDIO-TRICK-HELP-01 0.11.4.25 candidate
 - Player Studio per-move Magic Trick preview now explains one-second hold DRIBBLE activation, preserving move-specific counters and four-button gameplay. Source-backed Node contract added. Full CI, production hosted bytes and physical art/play testing pending.
 
