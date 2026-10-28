@@ -128,13 +128,16 @@ function applyLanGameState(game,field,state){
   }else if(game.clock*1000>state.clockMs+1500 && game.half===1)game.half=2;
   game.clock=state.clockMs/1000;
 }
-function createLanLiveMatch({peer,role,game,input,field}){
+function createLanLiveMatch({peer,role,game,input,field,now=Date.now}){
   if(!peer || !['host','guest'].includes(role) || !game || !input) {
     throw new TypeError('Invalid LAN live match participants');
   }
   requireField(field);
+  if(typeof now!=='function')throw new TypeError('Invalid LAN match clock');
   let disposed=false, tick=-1, latestTick=-1,lastSent=-1;
   let lastHostPhase=null;
+  let lastFrozenSnapshotAt=-Infinity;
+  const FROZEN_HEARTBEAT_MS=1500;
   let lastSnapshotAt=-Infinity;
   // Apply only the guest input validated for the host's current frame.
   let remote={buttons:[],dx:0,dy:0};
@@ -152,6 +155,7 @@ function createLanLiveMatch({peer,role,game,input,field}){
     // A new transport epoch must replay its current phase even if paused or
     // finished; never inherit the previous guest's held controls or packet gap.
     previousButtons.clear();lastGuestInput=null;guestInputGap=0;lastHostPhase=null;
+    lastFrozenSnapshotAt=-Infinity;
     remote={buttons:[],dx:0,dy:0};
   }
   if(role==='host'){
@@ -216,7 +220,12 @@ function createLanLiveMatch({peer,role,game,input,field}){
       if(!['play','paused','finished'].includes(phase))return false;
       // A pause/finish can originate in the host UI between physics frames.
       // Publish that transition once without advancing the frozen match.
-      if(phase!=='play' && lastHostPhase===phase)return false;
+      // LAN-079: refresh a frozen phase at low rate so a lost pause/finish
+      // packet cannot strand the guest in play. No frozen physics or input.
+      if(phase!=='play' && lastHostPhase===phase){
+        const age=now()-lastFrozenSnapshotAt;
+        if(age>=0 && age<FROZEN_HEARTBEAT_MS)return false;
+      }
       tick++;
       try{
         const result=peer.stepHostMatchFrame(tick,(frameInput,guestFrame)=>{
@@ -248,7 +257,10 @@ function createLanLiveMatch({peer,role,game,input,field}){
         // null or malformed results must not certify a frozen phase as sent;
         // preserve the retry and report failure to the caller.
         const snapshotDelivered=result?.snapshotSent===true;
-        if(snapshotDelivered)lastHostPhase=game.matchState;
+        if(snapshotDelivered){
+          lastHostPhase=game.matchState;
+          if(lastHostPhase!=='play')lastFrozenSnapshotAt=now();
+        }
         return snapshotDelivered;
       }catch(error){
         // Do not let a disconnected channel keep simulating an unshared match.

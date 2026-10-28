@@ -767,3 +767,33 @@ test('LAN-078 ambiguous guest send receipts retry the exact input frame',async()
   run.dispose();
  }
 });
+
+
+test('LAN-079 frozen-phase heartbeat recovers missed pause and finish without physics',async()=>{
+ const {createLanLiveMatch}=await load();
+ const input=controls(),match=game(input),published=[];
+ let clock=1000,updates=0,failNext=false;
+ match.update=()=>{updates++;};match.matchState='paused';
+ const peer={ready:true,stepHostMatchFrame(frame,simulate){
+  published.push(simulate({buttons:['jump'],dx:1,dy:0},{received:true}));
+  if(failNext){failNext=false;return {snapshotSent:false};}
+  return {snapshotSent:true};
+ }};
+ const run=createLanLiveMatch({peer,role:'host',game:match,input,field,now:()=>clock});
+ assert.equal(run.step(.02),true,'first paused state is immediate');
+ assert.equal(run.step(.02),false,'no per-frame frozen-state spam');
+ clock+=1499;assert.equal(run.step(.02),false,'heartbeat waits 1500ms');
+ clock++;assert.equal(run.step(.02),true,'missed paused phase is refreshed');
+ assert.deepEqual(published.map(s=>[s.tick,s.meta.phase]),[[0,'paused'],[1,'paused']]);
+ clock+=1500;failNext=true;
+ assert.equal(run.step(.02),false,'failed heartbeat is not certified');
+ assert.equal(run.step(.02),true,'failed heartbeat retries immediately');
+ assert.equal(run.step(.02),false,'acknowledged heartbeat resets timer');
+ match.matchState='finished';
+ assert.equal(run.step(.02),true,'finish transition is immediate');
+ clock+=1500;assert.equal(run.step(.02),true,'finished state is refreshed');
+ assert.deepEqual(published.map(s=>s.meta.phase),
+  ['paused','paused','paused','paused','finished','finished']);
+ assert.equal(match.clock,0);assert.equal(updates,0,'frozen physics never advances');
+ run.dispose();
+});

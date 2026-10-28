@@ -130,3 +130,10 @@ test('LAN-078 candidate describes guest exact-frame send receipt validation',()=
  assert.match(release,/exact-frame/);
  assert.match(readme,/four-button frame/);
 });
+
+test('LAN-079 frozen-phase heartbeat is documented in bundled About and README',()=>{
+ const pkg=JSON.parse(read('package.json'));
+ const release=read('src/modules/release.js'),readme=read('README.md');
+ assert.ok(release.includes('LAN-079:'),'About notes must include heartbeat');
+ assert.ok(readme.startsWith('> **'+pkg.version+' release candidate')&&readme.includes('LAN-079'));
+});

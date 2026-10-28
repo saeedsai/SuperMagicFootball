@@ -1436,3 +1436,9 @@ Validate remote guest DataChannel interface before binding; close malformed chan
 
 ## 2026-10-27 — LAN-072 P2P held input fix (0.11.4.14 candidate)
 Host now holds last validated guest four-button and directional input for at most two missing frames, eliminating false Jump release/repress and sprint resets from one-frame packet gaps; explicit empty packets release instantly. Added LAN-072 network input continuity test and updated LAN-044 expectation. Exact-head CI, hosted bytes and physical devices still require verification.
+
+## 2026-10-28 06:06 CET — LAN-079 frozen-phase heartbeat (0.11.4.21 candidate)
+- Baseline dev/main `14627784a8f94e0fd13474a9b1338fec2a03803b`; PR #63 merged; Full #40629963552 preflight, Node 4/4, Chromium 4/4, preview and Modular #40629963534 green. Those runs certify baseline only, not LAN-079. Pages hosted bytes and real devices unverified.
+- A lost pause/finish packet without disconnect could leave the guest showing play indefinitely. Host now republishes unchanged frozen state every 1500ms, without physics or guest-input replay; failed heartbeat retries immediately. Existing reconnect and phase-transition behavior retained.
+- Added deterministic LAN-079 regression for cadence, retry, pause-to-finish and zero physics. About/package/README/SW/policy/shared memory/own checkpoint/version test aligned. Rosters, four buttons, offline solo, saves, ten Career/Cup slots and SD09 untouched. New exact-head 4+4/Modular, protected promotion, Pages and physical-device QA remain gates.
+- Next five: exact-head CI; protected merge; Pages hosted-byte smoke; two-device LAN/P2P; Player Studio/Tricks/directional-art QA.
