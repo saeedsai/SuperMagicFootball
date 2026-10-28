@@ -148,3 +148,10 @@ test('LAN-080 candidate documents clock-safe guest snapshot freshness',()=>{
  assert.match(readme,/LAN-080/);
  assert.match(readme,/clock moves backwards/);
 });
+
+test('LAN-083 About and README retain busy room recovery notes',()=>{
+ const release=read('src/modules/release.js'),readme=read('README.md');
+ assert.match(release,/LAN-083:/);
+ assert.match(readme,/LAN-083/);
+ assert.match(readme,/join is rejected because the room is full/);
+});
