@@ -223,7 +223,11 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now}){
       // LAN-079: refresh a frozen phase at low rate so a lost pause/finish
       // packet cannot strand the guest in play. No frozen physics or input.
       if(phase!=='play' && lastHostPhase===phase){
-        const age=now()-lastFrozenSnapshotAt;
+        const currentTime=now();
+        const age=currentTime-lastFrozenSnapshotAt;
+        // Invalid clocks cannot certify a heartbeat; a clock rollback
+        // refreshes once, then the stored time suppresses frame-by-frame spam.
+        if(!Number.isFinite(currentTime))return false;
         if(age>=0 && age<FROZEN_HEARTBEAT_MS)return false;
       }
       tick++;
