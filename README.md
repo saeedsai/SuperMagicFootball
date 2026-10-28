@@ -1,3 +1,5 @@
+> **0.11.4.16 release candidate (28 October 2026):** LAN and Quick Match P2P now clear stale guest Jump press history when host play freezes for pause or finish. Resumed gameplay recognizes a fresh Jump press without simulating paused frames; LAN-074 adds regression coverage. All 223 teams/2676 players, six formations, four buttons, Career/Cup saves, SD09 and offline solo remain unchanged. Exact-head CI, protected promotion, Pages byte smoke and physical two-device QA are separate gates. [Previously released game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.11.4.15 release candidate (28 October 2026):** LAN and Quick Match P2P hosts now republish paused/finished match state after reconnection, including fast disconnect/recovery between animation frames, and clear old guest button holds so a new Jump press works. LAN-073 adds regression coverage. No roster, saves, formations, four-button layout, offline solo or art changes. Exact-head QA, protected main/Pages and physical two-device validation pending. [Live previously released game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.11.4.14 release candidate (27 October 2026):** Online P2P host preserves validated guest four-button holds and movement for at most two missing frames, preventing phantom repeated Jump and disrupted sprint; explicit releases and longer packet loss clear controls. LAN-072 adds regression coverage. Offline game, saves, graphics and rosters unchanged. Exact-head QA, protected deployment and physical phone testing pending.
@@ -164,7 +166,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.11.4.15 · Modular source project
+# Supermagic Football · v0.11.4.16 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 
