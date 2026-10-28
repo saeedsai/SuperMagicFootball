@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.25',
+ version:'0.11.4.26',
  date:'2026-10-28',
  notes:Object.freeze([
+  'STUDIO-TRICK-PREVIEW-02: Every outfield player can preview all eight Magic Tricks and their counters in Player Studio. Locked players see an explicit 91+ requirement and cannot save a new Trick; keep/remove legacy equipment remains available. No fifth button or save-format change.',
   'Player Studio Magic Trick previews now explain the existing hold-DRIBBLE one-second activation and keep counter guidance alongside each equipped move. No new gameplay button, skill effect or save format.',
   'STUDIO-STAR-01: New Magic Trick equipment requires Star or Superstar (legacy rating or positional OVR 91+). Gold 90 cannot equip or replace a Trick; existing saved Tricks can still be kept or removed. Super Shot/Defence thresholds and the four gameplay buttons are unchanged.',
   'LAN-081: frozen LAN/P2P host matches no longer flood snapshots when the injected host clock becomes invalid; the normal retry heartbeat recovers when time is valid. Automated two-client and physical QA are still required.',
