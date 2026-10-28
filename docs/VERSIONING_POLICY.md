@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.15
+# SuperMagicFootball release/version policy — About-only 0.11.4.16
 
-**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.15.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.16.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.15 (28 October 2026):** LAN-073 resets host session input edges and phase notification on a disconnected RTC epoch, including rapid readiness flaps between simulation frames. A reconnected guest receives a paused/finished authoritative snapshot without advancing physics. Full exact-head 4+4/Modular, protected main/Pages and physical two-client QA are independent gates.
+**Current dev candidate 0.11.4.16 (28 October 2026):** LAN-074 clears held-button edge history when host play freezes, so a resumed guest Jump is a fresh press without frozen physics. Exact-head CI, main/Pages and physical devices remain independent gates.
+
+**Previous dev candidate 0.11.4.15 (28 October 2026):** LAN-073 resets host session input edges and phase notification on a disconnected RTC epoch, including rapid readiness flaps between simulation frames. A reconnected guest receives a paused/finished authoritative snapshot without advancing physics. Full exact-head 4+4/Modular, protected main/Pages and physical two-client QA are independent gates.
 
 **Previous dev candidate 0.11.4.13 (27 October 2026):** Approved internet relay pseudo-RTC now rejects foreign/direct SDP rather than claiming a connected fallback channel. P2P-RELAY-10 tests host and guest rejection plus compatible relay descriptions. Exact-head 4+4/Modular, main/Pages, broker and physical devices remain pending.
 
@@ -22,7 +24,7 @@
 
 ## One authoritative player-facing release
 
-`src/modules/release.js` exports the immutable `RELEASE` record containing `version`, `date` and short human-readable `notes`. **The current `dev` candidate identifies itself as `0.11.4.15` in Settings → Credits / About only; certification of the production `main` bundle is tracked separately.** It must never fetch or show the remote development branch's newest commit as if that were the player's installed version. The browser title/home and other menus have no version number. Credits and developer information remain accessible. `package.json` contains the matching release number; the game runtime and save-export label read `RELEASE.version`, while imported older save files and historical storage keys remain compatible. Offline service-worker precache explicitly includes the release module and is rotated for changed game bytes.
+`src/modules/release.js` exports the immutable `RELEASE` record containing `version`, `date` and short human-readable `notes`. **The current `dev` candidate identifies itself as `0.11.4.16` in Settings → Credits / About only; certification of the production `main` bundle is tracked separately.** It must never fetch or show the remote development branch's newest commit as if that were the player's installed version. The browser title/home and other menus have no version number. Credits and developer information remain accessible. `package.json` contains the matching release number; the game runtime and save-export label read `RELEASE.version`, while imported older save files and historical storage keys remain compatible. Offline service-worker precache explicitly includes the release module and is rotated for changed game bytes.
 
 The four-field numbering is advanced **once for every newly deployed player-facing game update**, including minor enhancements and bug fixes, not for independent documentation or test-only commits. Do not deploy additional game-code changes under the same version. For subsequent releases increment the highest applicable category: `x` complete owner-accepted product milestone (not before 1.0 acceptance); `y` a major feature, reset `z,a`; `z` an existing feature's enhancement, reset `a`; `a` a correction/re-release. Release notes must describe shipped, verified changes, never aspirational plans.
 
