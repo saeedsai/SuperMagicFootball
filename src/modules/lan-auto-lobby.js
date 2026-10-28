@@ -172,7 +172,7 @@ export function mountAutoLanLobby(root,options={}){
   if(m.type==='lan-addresses'&&Array.isArray(m.urls)){lanUrls=m.urls.filter(url=>typeof url==='string'&&/^http:\/\/(?:10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[01])\.)[0-9.]+:[0-9]+$/.test(url)).slice(0,8);if(mode==='host')showHostAddress();return}
   // LAN-089: late broker registration acknowledgements cannot revert an active host match.
   if(m.type==='host-registered'&&mode==='host'&&!started&&m.roomId===roomId){hostRegistered=true;stopHostRetry();showHostAddress();status('Room registered. Waiting for a guest to join.');return}
-  if(m.type==='error'&&mode==='host'){
+  if(m.type==='error'&&mode==='host'&&!started){
    // Broker room capacity is temporary: keep the bounded ten-second registration
    // retry alive with the same room ID. Permanent scope errors must not loop.
    const capacity=String(m.message||'')==='Room capacity reached';
@@ -204,7 +204,7 @@ export function mountAutoLanLobby(root,options={}){
    rooms.set(m.roomId,{...m,full:m.full===true});render();return;
   }
   if(m.type==='room-remove'){rooms.delete(m.roomId);render();if(mode==='guest'&&!started&&roomId===m.roomId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;status('Host room closed. Choose another room.');if(connection?.ready)requestRooms()}return}
-  if(m.type==='join-request'&&mode==='host'&&m.roomId===roomId){
+  if(m.type==='join-request'&&mode==='host'&&!approved&&!started&&m.roomId===roomId){
    approvalRequestId=m.requestId;opponentName=displayName(m.guestName);
    const container=get('autoApproval');container.replaceChildren();const label=document.createElement('p');label.textContent=opponentName+' wants to join your match.';const yes=document.createElement('button');yes.className='btn';yes.textContent='ACCEPT GUEST';const no=document.createElement('button');no.className='btn minor';no.textContent='REJECT';yes.onclick=()=>{if(approvalRequestId!==m.requestId)return;if(!send({type:'decision',roomId,requestId:m.requestId,accept:true}))return status('Discovery disconnected. Cannot approve guest; reconnect and retry.');approvalRequestId=null;container.replaceChildren();status(opponentName+' approved. Establishing WebRTC connection…')};no.onclick=()=>{if(approvalRequestId!==m.requestId)return;if(!send({type:'decision',roomId,requestId:m.requestId,accept:false}))return status('Discovery disconnected. Cannot reject guest; reconnect and retry.');approvalRequestId=null;container.replaceChildren()};container.append(label,yes,no);return;
   }

@@ -1,3 +1,8 @@
+## 2026-10-28 22:08 CET — LAN-090 host consent and status isolation (candidate 0.11.4.41)
+- Found a post-kickoff gap: the host ignored late guest-left and host-registered events, but still processed delayed join-request packets, opening a fresh approval prompt during a live match. A late broker error could also replace active-match status.
+- Guarded join-request while a host is negotiating or playing, and error messages after kickoff. Legitimate pre-kickoff consent is retained. Added LAN and Online P2P regression for pre-kickoff consent, negotiation, kickoff and delayed packets.
+- Bumped About/package/README/offline cache together. No change to physics, graphics, roster IDs, four buttons, offline saves, Career/Cup slots or SD09. Full 4 Node + 4 Chromium, Modular QA, protected main promotion and Pages bytes require exact-head verification; physical acceptance remains outstanding.
+
 ## 2026-10-28 21:08 CET — LAN-089 CI contract repair (same candidate 0.11.4.40)
 - Full Regression Census #40760374882 and Modular QA #40760374739 failed Node preflight: tests/lan_guest_release.test.cjs expected the old host-registered source condition without !started, and docs/memory/SHARED.md exceeded 6 KiB.
 - Updated source contract to require the guarded condition and compacted stale shared release history into Git-log pointers. No gameplay code, release version or security gate changed. Fresh exact-head 4+4/Modular required before promotion.

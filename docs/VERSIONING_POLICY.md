@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.40
+# SuperMagicFootball release/version policy — About-only 0.11.4.41
 
-**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.40.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.41.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.40 (28 October 2026):** LAN-089 ignores late host-side guest-left and host-registered broker notices after kickoff, preserving active match status and approval state. Focused two-mode host regression; exact-head CI, protected promotion, hosted Pages and physical acceptance remain separate gates.
+**Current dev candidate 0.11.4.41 (28 October 2026):** LAN-090 suppresses stale host-side join-request prompts while negotiating or playing and ignores post-kickoff broker errors. LAN and Online P2P focused regression; exact-head QA, protected promotion, hosted Pages bytes and physical-device acceptance pending.
+
+**Previous dev candidate 0.11.4.40 (28 October 2026):** LAN-089 ignores late host-side guest-left and host-registered broker notices after kickoff, preserving active match status and approval state. Focused two-mode host regression; exact-head CI, protected promotion, hosted Pages and physical acceptance remain separate gates.
 
 **Previous dev candidate 0.11.4.39 (28 October 2026):** LAN-088 removes stale room cards and refreshes after host departure before kickoff; directory host-left/room-remove notices no longer reset a started LAN/P2P match. Two-mode regression added; exact-head QA and Pages certification pending.
 

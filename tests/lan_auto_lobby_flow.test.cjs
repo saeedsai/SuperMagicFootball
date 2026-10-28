@@ -1124,3 +1124,43 @@ test('LAN-089 late guest-left and host registration ack cannot reset a started h
   }finally{f.cleanup()}
  }
 });
+
+
+test('LAN-090 late host join requests and broker errors cannot reopen consent during kickoff',async()=>{
+ for(const internet of [false,true]){
+  const f=setup();let onStatus=null,readyCount=0,disposed=0;
+  try{
+   const {mountAutoLanLobby}=await load();
+   const dispose=mountAutoLanLobby(f.root,{build:'0.11.4.41',internet,signalFactory:f.signalFactory,
+    onReady:()=>{readyCount++},
+    peerFactory:()=>({createOffer:async()=>'host-offer',acceptAnswer:async()=>{},
+     subscribeStatus:fn=>{onStatus=fn;return ()=>{}},
+     awaitReady:()=>new Promise(()=>{}),dispose(){disposed++}})});
+   f.connect();f.elements.get('#autoHost').click();
+   const roomId=f.packets.at(-1).roomId;
+   f.emit({type:'host-registered',roomId});
+   f.emit({type:'join-request',roomId,requestId:'request_12345678',guestName:'Valid guest'});
+   assert.equal(f.elements.get('#autoApproval').children.length,3,'before kickoff the host must be able to approve');
+   f.elements.get('#autoApproval').children[1].click();
+   assert.equal(f.packets.at(-1).type,'decision');
+   assert.equal(f.packets.at(-1).accept,true);
+   await f.emit({type:'guest-approved',roomId});
+   const negotiationStatus=f.elements.get('#autoStatus').textContent;
+   f.emit({type:'join-request',roomId,requestId:'request_87654321',guestName:'Late guest'});
+   assert.equal(f.elements.get('#autoApproval').children.length,0,'a negotiating host must not reopen consent');
+   assert.equal(f.elements.get('#autoStatus').textContent,negotiationStatus);
+   await f.emit({type:'answer',roomId,sdp:'guest-answer'});
+   assert.equal(typeof onStatus,'function');onStatus({ready:true});
+   assert.equal(readyCount,1);
+   const activeStatus=f.elements.get('#autoStatus').textContent;
+   const decisionCount=f.packets.filter(p=>p.type==='decision').length;
+   f.emit({type:'join-request',roomId,requestId:'request_99999999',guestName:'Stale guest'});
+   f.emit({type:'error',message:'Room capacity reached'});
+   assert.equal(f.elements.get('#autoApproval').children.length,0,'active host must not show a new consent prompt');
+   assert.equal(f.elements.get('#autoStatus').textContent,activeStatus,'broker errors must not replace live-match status');
+   assert.equal(f.packets.filter(p=>p.type==='decision').length,decisionCount,'no late approval sent');
+   assert.equal(readyCount,1);assert.equal(disposed,0);
+   dispose();
+  }finally{f.cleanup()}
+ }
+});
