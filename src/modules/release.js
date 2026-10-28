@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.33',
+ version:'0.11.4.34',
  date:'2026-10-28',
  notes:Object.freeze([
+  'LAN-083: A busy room or full approval queue now triggers an immediate Find Games refresh after join rejection, so stale JOIN buttons are corrected without waiting ten seconds. Replayed rejections do not trigger duplicate refreshes; host consent and gameplay are unchanged.',
   'LAN-082: A temporarily full discovery server now retries host room registration every ten seconds using the same room ID. Permanent configuration errors still stop retrying; guest consent, direct P2P, relay and four gameplay buttons are unchanged.',
   'Player Studio Magic Trick unlock progress now treats missing or blank legacy ratings as unknown instead of 0, while showing the correct 91+ rating or position OVR qualification path.',
   'STUDIO-MAGIC-SAVE-STATE-01: Player Studio now disables SAVE TRICK SELECTION when KEEP CURRENT, removing an absent Trick or reselecting an already equipped Trick. Locked previews remain disabled; genuine changes still save normally. No gameplay, graphics, roster or save-format changes.',
