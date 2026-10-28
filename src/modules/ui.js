@@ -1049,9 +1049,12 @@ function studioMagicGuide(choice,equipped){
  const id=choice==='keep'?equipped:choice;
  const guide=STUDIO_MAGIC_TRICK_GUIDES[id];
  if(!guide)return 'Unknown saved Trick. KEEP CURRENT preserves the existing equipment.';
+ // STUDIO-TRICK-HELP-01: make the existing four-button activation discoverable
+ // alongside the selected Trick and its counter, without introducing a fifth control.
+ const instructions=' In a match, carry the ball and hold DRIBBLE for 1 second to trigger the equipped Trick (cooldown applies).';
  return choice==='keep'
-  ?'Equipped Trick: '+guide+' KEEP CURRENT leaves the player unchanged.'
-  :'Preview only: '+guide+' Press SAVE TRICK SELECTION to equip this Trick.';
+  ?'Equipped Trick: '+guide+instructions+' KEEP CURRENT leaves the player unchanged.'
+  :'Preview only: '+guide+instructions+' Press SAVE TRICK SELECTION to equip this Trick.';
 }
 function studioMagicEligibilityGuide(player){
  if(studioMagicEligible(player))return 'Eligible for Magic Tricks: Star or Superstar (legacy rating or position OVR 91+). Preview a move, then save to equip it.';
