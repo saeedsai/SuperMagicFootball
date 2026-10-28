@@ -1,3 +1,6 @@
+## 2026-10-28 — STUDIO-TRICK-PROGRESS-02 (candidate 0.11.4.32)
+- Fixed missing/blank legacy rating displayed as 0 in Magic Trick unlock guidance and clarified dual rating/position OVR eligibility. Regression added. Four-button gameplay, graphics and saves unchanged. Full CI and Pages acceptance pending.
+
 ## 2026-10-28 — STUDIO-MAGIC-SAVE-STATE-01 / 0.11.4.31 candidate
 - Disabled Player Studio Magic Trick save for KEEP CURRENT, removing an absent Trick and reselecting equipped Trick. Locked 91+ previews still disabled, valid removal/equipment still enabled. Added focused VM/markup regression. Existing no-op save guard remains. No gameplay, art, roster, control or save-format changes. First Full #40684644344 and Modular #40684644386 failed three stale Node source-contract assertions expecting save.disabled=locked; all three tests were updated to assert combined disabled state, with original 91+ eligibility guard still checked. Fresh exact-head Full 4+4, Modular QA, main and Pages pending.
 
