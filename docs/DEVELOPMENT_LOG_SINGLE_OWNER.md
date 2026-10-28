@@ -1,3 +1,6 @@
+## 2026-10-28 — STUDIO-TRICK-HELP-01 0.11.4.25 candidate
+- Player Studio per-move Magic Trick preview now explains one-second hold DRIBBLE activation, preserving move-specific counters and four-button gameplay. Source-backed Node contract added. Full CI, production hosted bytes and physical art/play testing pending.
+
 ### 2026-10-28 08:14 CET — CI repair for STUDIO-STAR-01
 - Initial dev push Full #40648265756 and Modular #40648265449 failed two Node tests: stale `studio_dribble_equipment` expected old Magic gate/error, and `project_memory_contract` detected SHARED.md >6144 bytes. Updated regression expectations to the new Star/Superstar-only 91+ rule and compacted shared memory, preserving current release facts and referring historical entries to central log. Re-run exact-head CI; do not promote red head.
 
