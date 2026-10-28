@@ -34,9 +34,9 @@ test('all eight tricks are discoverable but locked save remains disabled and val
  assert.match(ui,/STUDIO_MAGIC_TRICKS\.map\(a=>`<option value=/);
  assert.doesNotMatch(ui,/\(studioMagicEligible\(player\)\?STUDIO_MAGIC_TRICKS:\[\]\)/);
  assert.match(ui,/id="studioMagicSaveRow"/);
- assert.match(ui,/const locked=!studioMagicEligible\(player\)&&select\.value!=='keep'&&select\.value!=='none'/);
- assert.match(ui,/save\.disabled=locked/);
- assert.match(ui,/save\.setAttribute\('aria-disabled',String\(locked\)\)/);
+ assert.match(ui,/const locked=!eligible&&choice!=='keep'&&choice!=='none'/);
+ assert.match(ui,/save\.disabled=state\.disabled/);
+ assert.match(ui,/save\.setAttribute\('aria-disabled',String\(state\.disabled\)\)/);
  assert.match(ui,/if\(id!=='keep'&&id!=='none'&&!studioMagicEligible\(player\)\)throw Error/);
  assert.match(ui,/if\(id==='keep'\|\|\(id==='none'&&!player\.magicTrick\)\|\|id===player\.magicTrick\)\{showPlayerStudio\(avatarIndex\);return;\}/);
 });
