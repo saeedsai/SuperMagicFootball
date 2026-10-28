@@ -274,7 +274,13 @@ function createLanLiveMatch({peer,role,game,input,field}){
     // The RTC channel can close after ready was checked but before send.
     // Do not advance the guest frame cursor on a failed transmission: retry
     // the same frame if the connection becomes usable again.
-    try { if(peer.sendGuestInput(frame,held,x,y)===false)return false; }
+    // LAN-078: only the validated input packet for this exact frame proves
+    // that the guest sender advanced. An ambiguous transport return must
+    // leave lastSent unchanged so the next step retries the same controls.
+    try {
+      const receipt=peer.sendGuestInput(frame,held,x,y);
+      if(receipt?.type!=='input' || receipt.frame!==frame)return false;
+    }
     catch { return false; }
     lastSent=frame;
     return true;
