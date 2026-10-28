@@ -1,3 +1,5 @@
+> **0.11.4.32 release candidate (28 October 2026):** Magic Trick unlock guidance now reports missing/blank rating as unknown and explicitly recognizes rating or position OVR 91+. Regression added; no gameplay, controls, roster, saves or graphics changed. Exact-head release QA pending.
+
 > **0.11.4.31 release candidate (28 October 2026):** Player Studio disables the Magic Trick save button for KEEP CURRENT, removing an absent Trick or reselecting an equipped Trick. Locked previews stay disabled; actual changes still save. Four controls, 223 teams/2676 players, six formations, graphics, offline saves, Career/Cup ten slots and SD09 unchanged. Focused regression added; exact-head CI, protected main and hosted Pages byte verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.11.4.30 release candidate (28 October 2026):** Player Studio no longer rewrites Career or club saves when selecting an already equipped Magic Trick or removing a Trick that is absent. Real changes still persist; four buttons, 223 teams/2676 players, six formations, offline saves, Career/Cup ten slots, SD09, gameplay and graphics are unchanged. Focused regression added; exact-head full 4+4, Modular QA, protected promotion and Pages bytes require independent verification. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -196,7 +198,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.11.4.31 · Modular source project
+# Supermagic Football · v0.11.4.32 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 
