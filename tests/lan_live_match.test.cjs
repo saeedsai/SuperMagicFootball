@@ -649,3 +649,28 @@ test('LAN-073 host restores fresh press edges after an unobserved short disconne
     'fresh guest jump must not inherit the previous RTC session hold');
   run.dispose();
 });
+
+
+test('LAN-074 host restores guest Jump press after pause without simulating frozen frames',async()=>{
+ const {createLanLiveMatch}=await load();
+ const input=controls(),match=game(input),edges=[];
+ match.update=function(dt){input.poll(true);edges.push(!!input.pressed[1].jump);this.clock+=dt;};
+ const peer={ready:true,stepHostMatchFrame(frame,simulate){
+  simulate({buttons:['jump'],dx:0,dy:0},{received:true});return {snapshotSent:true};
+ }};
+ const run=createLanLiveMatch({peer,role:'host',game:match,input,field});
+ assert.equal(run.step(.02),true);assert.equal(run.step(.02),true);
+ assert.deepEqual(edges,[true,false],'continuous held Jump has only one initial edge');
+ match.matchState='paused';
+ assert.equal(run.step(.02),true,'host publishes paused snapshot');
+ assert.equal(run.step(.02),false,'frozen state is not repeatedly simulated');
+ assert.equal(match.clock,.04,'pause does not advance authoritative clock');
+ match.matchState='play';
+ assert.equal(run.step(.02),true,'host resumes play');
+ assert.deepEqual(edges,[true,false,true],
+  'the resumed guest Jump is a fresh press, not stale pre-pause hold');
+ assert.equal(run.step(.02),true);
+ assert.deepEqual(edges,[true,false,true,false],
+  'continuous post-resume hold still cannot retrigger');
+ run.dispose();
+});
