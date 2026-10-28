@@ -16,7 +16,7 @@ function run(selection,player,{careerMode=false,allowSave=true}={}){
   home:1,avatarIndex:0,edits:{},TEAMS:{1:{id:'team-1'}},
   roster:()=>[{...player}],$:()=>({value:selection}),
   STUDIO_MAGIC_TRICKS:[{id:'banana'},{id:'ice'}],
-  studioEliteEligible:p=>Number(p.rating)>=90,
+  studioMagicEligible:p=>p.role!=='GK'&&Number(p.rating)>=91,
   storeCharacterChanges:(key,value)=>{calls.push({key,value});return allowSave;},
   saveCareer:()=>{},showPlayerStudio:i=>redraw.push(i),alert:e=>errors.push(e)
  };
@@ -53,7 +53,8 @@ test('explicit REMOVE and new selections persist without changing other player f
 test('invalid, missing, ineligible and keeper choices cannot mutate storage',()=>{
  for(const [selection,player] of [
   ['unknown',{role:'MF',rating:95}], [undefined,{role:'MF',rating:95}],
-  ['ice',{role:'MF',rating:70}], ['ice',{role:'GK',rating:99}]
+  ['ice',{role:'MF',rating:70}], ['ice',{role:'MF',rating:90}],
+  ['ice',{role:'MF',rating:90,magicTrick:'banana'}], ['ice',{role:'GK',rating:99}]
  ]){
   const result=run(selection,player);
   assert.equal(result.calls.length,0);assert.equal(result.errors.length,1);

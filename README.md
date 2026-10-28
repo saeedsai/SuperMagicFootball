@@ -1,3 +1,5 @@
+> **0.11.4.24 release candidate (28 October 2026):** Player Studio now limits new Magic Trick equipment to Star/Superstar outfield players (legacy rating or positional OVR 91+), preventing Gold 90 players from equipping or replacing a Trick. Previously saved Tricks remain keepable/removable; Super Shot/Defence eligibility, four controls, 223 teams/2676 players, six formations, offline saves, Career/Cup ten slots and SD09 remain unchanged. Focused regression covers both eligibility paths and legacy save safety. Exact-head CI, protected promotion, Pages bytes and physical-device art/gameplay acceptance are separate gates. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.11.4.23 release candidate (28 October 2026):** LAN-081 prevents an invalid host clock from flooding paused or finished LAN/P2P snapshots, while retaining the normal heartbeat when time recovers. Added a deterministic host-clock regression; no changes to four-button controls, graphics, rosters, saves, Career/Cup or SD09. Exact-head QA, protected promotion and physical-device verification pending.
 
 > **0.11.4.22 release candidate (28 October 2026):** LAN-080 keeps LAN and Quick Match P2P guest input synchronized with authoritative snapshot freshness even if the device clock moves backwards or becomes invalid. A fresh host snapshot restores four-button controls; deterministic regression covers expiry, rollback, duplicate ticks and recovery. All 223 teams/2676 players, six formations, four buttons, offline saves, Career/Cup ten slots and SD09 are preserved. Exact-head 4+4/Modular QA, protected promotion, Pages byte smoke and physical two-device acceptance are separate gates. [Previously released live game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -180,7 +182,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.11.4.23 · Modular source project
+# Supermagic Football · v0.11.4.24 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 

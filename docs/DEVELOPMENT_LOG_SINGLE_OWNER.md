@@ -1,3 +1,9 @@
+## 2026-10-28 08:04 CET — STUDIO-STAR-01 Magic Trick eligibility (0.11.4.24 candidate)
+- Baseline dev/main identical `60fff3cf7b980364923fcd3976a3faaa161cf7c4` (0.11.4.23). PR #66 merged; main Full #40645171130 passed all 4 Node + 4 Chromium, preflight, preview and hosted Pages smoke; Pages #40645170675 deployed. Physical two-phone LAN/P2P and visual art acceptance pending.
+- Bug: Studio shared elite threshold 90 with Super Shot/Defence, allowing Gold 90 players to equip Magic Tricks despite Star/Superstar-only 91+ rule. Separate Magic predicate uses legacy rating OR positional OVR 91+, excludes GK, and gates both options and save handler. Previously equipped Gold Tricks can be kept/removed for save compatibility, but not replaced. Other abilities, four controls, 223 teams/2676 players, formations, Career/Cup slots, SD09 and offline saves untouched.
+- Added focused regression for Gold 90/Star 91, both OVR paths, GK, legacy keep/remove and invalid selections. About, package, README, cache, version policy, shared memory and own checkpoint aligned. Exact new-head CI and Pages still required.
+- Next five: focused and full 4+4 + Modular QA; protected exact-head dev→main promotion; hosted Pages byte smoke; physical LAN/P2P and Crown/Concept art QA; next Player Studio/Tricks increment.
+
 ## 2026-10-28 — LAN-081 (candidate 0.11.4.23)
 - Bounded host frozen-phase invalid-clock guard prevents heartbeat flood; LAN-081 test exercises invalid and recovered clocks. Commits published directly to dev; exact-head CI/Pages and physical two-device verification required.
 

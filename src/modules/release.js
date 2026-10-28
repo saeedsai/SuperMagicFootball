@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.23',
+ version:'0.11.4.24',
  date:'2026-10-28',
  notes:Object.freeze([
+  'STUDIO-STAR-01: New Magic Trick equipment requires Star or Superstar (legacy rating or positional OVR 91+). Gold 90 cannot equip or replace a Trick; existing saved Tricks can still be kept or removed. Super Shot/Defence thresholds and the four gameplay buttons are unchanged.',
   'LAN-081: frozen LAN/P2P host matches no longer flood snapshots when the injected host clock becomes invalid; the normal retry heartbeat recovers when time is valid. Automated two-client and physical QA are still required.',
   'LAN-080: LAN and Quick Match P2P guests now use the same injected snapshot clock for receipt and freshness checks, and stop sending controls if local time moves backwards or becomes invalid. A fresh authoritative snapshot restores input; two-device acceptance remains pending.',
   'LAN-079: LAN and Quick Match P2P hosts refresh paused or finished match state every 1.5 seconds, recovering a lost frozen-phase snapshot without reconnecting, advancing physics or replaying guest controls. Failed sends retry immediately; physical two-device acceptance remains pending.',

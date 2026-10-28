@@ -1,28 +1,27 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-28
+**Updated:** 2026-10-28 08:04 CET
 
 ## Mission
-Keep hourly incremental coding on existing dev even when release gates are pending. Only dev/main, no force push or security bypass. Preserve 223 teams/2676 players, six formations, four buttons, offline saves, ten Career/Cup slots and SD09.
+Keep coding one bounded increment on existing dev every hour, regardless of pending CI or release. Only dev/main; no force push, bypass, or unauthorized branches.
 
 ## Current checkpoint
-- LAN-081 candidate 0.11.4.23 on dev: host frozen invalid-clock guard and regression; exact-head CI and Pages pending.
-- Baseline synchronized dev/main `3a7ccf375f31b82f98d66c1dc4c081714049e12e`, 0.11.4.21, main Full #40637341147 and Pages #40637341010 green; hosted-byte smoke reported previously, physical two-device QA remains pending.
-- LAN-080 candidate 0.11.4.22: guest snapshot receipt and 700ms freshness use injected `now()` consistently. Clock rollback/nonfinite time fails closed; newer authoritative tick recovers. Deterministic regression added.
-- Candidate metadata, README, service worker, version policy/tests, shared memory and development log aligned. New exact-head CI not yet certified.
+- Baseline dev/main `60fff3cf7b980364923fcd3976a3faaa161cf7c4` (0.11.4.23), PR #66 merged. Main Full #40645171130 (4 Node+4 Chromium, preview, hosted smoke) and Pages #40645170675 green.
+- STUDIO-STAR-01 candidate 0.11.4.24: Magic Trick new equipment gated at Star/Superstar 91+ by rating or positional OVR; Gold 90 may keep/remove legacy Trick, not replace. Super Shot/Defence and four controls unaffected. Regression and release metadata included; new exact-head CI/Pages pending.
+- Preserve 223 teams/2676 players, six formations, offline saves, ten Career/Cup slots and SD09. Physical two-phone LAN/P2P and human graphics QA remain pending.
 
 ## Next smallest action
-1. Inspect exact-head Modular and Node 4/4 + Chromium 4/4; fix failures on dev.
-2. Promote only completely green exact dev through protected PR.
-3. Verify main/Pages hosted HTML, JS and CSS bytes.
-4. Validate two-phone LAN discovery, host approval, P2P reconnect and graphics.
-5. Continue Player Studio, counterable Tricks and authored directional art on dev regardless of release queue.
+1. Check focused Magic eligibility regression and 4 Node + 4 Chromium + Modular exact-head QA.
+2. Fix CI failures on dev, promote only fully green exact dev via protected PR.
+3. Verify main SHA, Pages deploy and hosted HTML/JS/CSS bytes.
+4. Test real two-phone LAN/P2P and Concept/Crown directional art.
+5. Continue next Player Studio/Tricks/graphics roadmap increment on dev.
 
 ## Ownership and exclusions
-Only own checkpoint; no other agent memory, extra branches, security bypass or force push.
+Sole developer smf-hourly-dev-20261019. Never read/write other agents' memory; no other branches, force push or security bypass.
 
 ## Evidence
-Baseline dev Full #40636932764 and Modular #40636932752 green; main Full #40637341147 and Pages #40637341010 green. LAN-080 test source committed in this increment; exact-head QA and physical devices remain independent gates.
+Prior release main #40645171130 and Pages #40645170675 passed. New candidate is not yet certified; GitHub CI/Pages are authoritative.
 
 ## Cleanup
-Keep dev/main only and checkpoint below 4 KiB.
+Only dev/main. Keep checkpoint under 4 KiB.

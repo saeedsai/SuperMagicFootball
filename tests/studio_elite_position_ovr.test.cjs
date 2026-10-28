@@ -19,10 +19,22 @@ test('legacy rating and current position OVR are independent qualifying paths',(
  assert.equal(predicate({rating:89,positionOVR:90}),true,'position threshold inclusive');
  assert.equal(predicate({rating:0,positionOVR:89}),false,'low overall remains locked');
 });
-test('all three outfield elite equipment selectors use the same gate',()=>{
- assert.match(ui,/studioEliteEligible\(player\)\|\|player\.magicTrick/);
+test('Magic Trick threshold is 91+ for Star/Superstar, unlike other elite equipment',()=>{
+ const start=ui.indexOf('const studioMagicEligible='),end=ui.indexOf(';',start);
+ assert.ok(start>=0&&end>start);
+ const magic=vm.runInNewContext(ui.slice(start,end+1)+'\nstudioMagicEligible;',{
+  playerOVR:p=>p.positionOVR
+ });
+ for(const p of [{role:'MF',rating:90,positionOVR:90},{role:'DF',rating:90,positionOVR:40},
+   {role:'FW',rating:80,positionOVR:90},{role:'GK',rating:99,positionOVR:99}])
+  assert.equal(magic(p),false,'Gold 90 and goalkeepers cannot equip new Tricks');
+ for(const p of [{role:'FW',rating:91,positionOVR:50},{role:'MF',rating:75,positionOVR:91},
+   {role:'DF',rating:96,positionOVR:20}])
+  assert.equal(magic(p),true,'Star/Superstar can equip by either overall path');
+ assert.equal(magic(null),false);
+ assert.match(ui,/studioMagicEligible\(player\)\?STUDIO_MAGIC_TRICKS:\[\]/);
  assert.match(ui,/studioEliteEligible\(player\)\|\|player\.superAbility\?\.type==='shoot'/);
  assert.match(ui,/studioEliteEligible\(player\)\|\|player\.superAbility\?\.type==='defence'/);
- assert.match(ui,/if\(studioEliteEligible\(player\)\)return 'Eligible for Magic Tricks \(legacy rating or position OVR 90\+\)/);
+ assert.match(ui,/if\(studioMagicEligible\(player\)\)return 'Eligible for Magic Tricks/);
  assert.match(ui,/if\(!player\|\|player\.role==='GK'\)throw Error/);
 });

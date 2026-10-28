@@ -13,7 +13,7 @@
 - **QA:** [single-developer log](../DEVELOPMENT_LOG_SINGLE_OWNER.md), GitHub Actions and [Pages](../../GITHUB_PAGES_SETUP.md).
 
 ## Mandatory About version rule
-On **every Git commit**, preserve the About-only installed release version `0.11.4.22` and its offline notes from `src/modules/release.js`. Do not display a remote GitHub `dev` SHA or version banner outside About. Immutable commit SHAs stay internal to GitHub Actions/history; hosted Pages byte comparison verifies actual deployed content. **Every player-facing game update must also update root `README.md` with the new four-part version in banner and heading, dated summary of shipped features/fixes, compatibility notes where relevant and live link. README/version mismatch blocks release.** Documentation-only commits do not bump the installed version. Follow [`docs/VERSIONING_POLICY.md`](../VERSIONING_POLICY.md).
+On **every Git commit**, preserve the About-only current dev candidate `0.11.4.24` (previous verified Pages release `0.11.4.23`) and its offline notes from `src/modules/release.js`. Do not display a remote GitHub `dev` SHA or version banner outside About. Immutable commit SHAs stay internal to GitHub Actions/history; hosted Pages byte comparison verifies actual deployed content. **Every player-facing game update must also update root `README.md` with the new four-part version in banner and heading, dated summary of shipped features/fixes, compatibility notes where relevant and live link. README/version mismatch blocks release.** Documentation-only commits do not bump the installed version. Follow [`docs/VERSIONING_POLICY.md`](../VERSIONING_POLICY.md).
 
 ## Shared risks and working decisions
 - Other developer sessions should stop writing to the repository unless newly authorized; still reconcile any concurrent Git changes with the latest SHA. No force pushes or circumvented security checks.
@@ -50,3 +50,4 @@ Read only your own [registered checkpoint](AGENTS_INDEX.json) according to [memo
 
 - **0.11.4.18 dev (2026-10-28):** LAN-076 reports failed authoritative host snapshots as failed steps and retries frozen phase delivery. Focused regression added; exact-head CI, Pages bytes and physical devices remain independent gates.
 \n- **0.11.4.20 dev candidate (2026-10-28):** LAN-078 requires an exact-frame input-packet send receipt before guest input cursor advances; malformed/missing receipts retry. Exact-head QA, Pages and physical two-device acceptance remain independent.\n
+- **0.11.4.24 dev candidate (2026-10-28):** Player Studio Magic Tricks are Star/Superstar-only (legacy rating or positional OVR 91+); Gold 90 may keep/remove an existing legacy Trick but cannot equip/replace. Four controls, other equipment and saves unchanged. CI and Pages pending.

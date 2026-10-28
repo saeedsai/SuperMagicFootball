@@ -8,7 +8,7 @@ const begin=ui.indexOf('const STUDIO_MAGIC_TRICK_GUIDES=');
 const end=ui.indexOf('function saveStudioMagic(){',begin);
 assert.ok(begin>0&&end>begin,'guide helpers must be present before save action');
 const guideSource=ui.slice(begin,end);
-const {guide,eligibility}=new Function('studioEliteEligible',guideSource+';return {guide:studioMagicGuide,eligibility:studioMagicEligibilityGuide};')(p=>Number(p?.rating)>=90);
+const {guide,eligibility}=new Function('studioMagicEligible',guideSource+';return {guide:studioMagicGuide,eligibility:studioMagicEligibilityGuide};')(p=>p?.role!=='GK'&&Number(p?.rating)>=91);
 
 test('all eight equipable Tricks have distinct, truthful live descriptions',()=>{
  const ids=['banana','ice','bat','fireball','freeze','scream','hideBall','teleport'];
@@ -34,7 +34,9 @@ test('KEEP CURRENT, REMOVE and unknown saved equipment are safe previews',()=>{
  assert.match(guide('invalid',null),/Unknown saved Trick/);
 });
 test('non-elite Magic Trick selection explains locks without changing legacy equipment',()=>{
- assert.match(eligibility({rating:65,role:'MF'}),/locked.*elite/i);
+ assert.match(eligibility({rating:65,role:'MF'}),/locked.*Star or Superstar/i);
+ assert.match(eligibility({rating:90,role:'MF'}),/locked.*91\+/i);
+ assert.match(eligibility({rating:91,role:'MF'}),/Eligible/);
  assert.match(eligibility({rating:65,role:'MF'}),/Dribble Styles/);
  assert.match(eligibility({rating:65,magicTrick:'banana'}),/preserved/);
  assert.match(eligibility({rating:95}),/Eligible/);
