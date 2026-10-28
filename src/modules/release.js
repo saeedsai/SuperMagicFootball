@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.19',
+ version:'0.11.4.20',
  date:'2026-10-28',
  notes:Object.freeze([
+  'LAN-078: LAN and Quick Match P2P guests now accept only an exact-frame validated input-packet receipt before advancing their send cursor. Ambiguous or mismatched send results retry the same four-button input instead of silently skipping it; physical two-device acceptance remains pending.',
   'LAN and Quick Match P2P hosts now require an explicit successful snapshot delivery receipt. Missing or malformed transport results no longer falsely mark paused/finished state as delivered; LAN-077 tests retries without frozen physics. Real two-device acceptance remains pending.',
   'LAN and Quick Match P2P host frames now report failed snapshot delivery instead of claiming success. A paused or finished phase remains retryable until its authoritative state is sent; LAN-076 covers failed and recovered delivery. Physical two-client acceptance remains pending.',
   'LAN and Quick Match P2P hosts now reset guest Jump button edges when physics itself enters pause or finish inside an update frame. Resuming play receives one fresh press rather than a stale hold; LAN-075 tests both transitions. Physical two-device acceptance remains pending.',
