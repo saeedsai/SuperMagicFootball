@@ -1,3 +1,7 @@
+## 2026-10-28 22:12 CET — LAN-090 memory contract repair (same candidate 0.11.4.41)
+- Exact-head Full Regression Census #40769305171 preflight ran 959 Node tests: 958 passed, including focused LAN-090, and one failed because sole-developer checkpoint used '## Next five' instead of required '## Next smallest action'.
+- Restored the required heading without weakening tests or changing game code. Repeat exact-head 4 Node + 4 Chromium and Modular QA before protected promotion.
+
 ## 2026-10-28 22:08 CET — LAN-090 host consent and status isolation (candidate 0.11.4.41)
 - Found a post-kickoff gap: the host ignored late guest-left and host-registered events, but still processed delayed join-request packets, opening a fresh approval prompt during a live match. A late broker error could also replace active-match status.
 - Guarded join-request while a host is negotiating or playing, and error messages after kickoff. Legitimate pre-kickoff consent is retained. Added LAN and Online P2P regression for pre-kickoff consent, negotiation, kickoff and delayed packets.

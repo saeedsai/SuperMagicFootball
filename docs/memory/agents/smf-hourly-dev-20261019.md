@@ -6,12 +6,12 @@
 Continue bounded, tested work on existing dev only; no new branches, force pushes, CI bypass or disabled hourly development.
 
 ## Current checkpoint
-- 0.11.4.41 LAN-090: host ignores delayed join-request during approved negotiation/after kickoff, and ignores post-kickoff broker error. Two-mode test preserves legitimate pre-kickoff approval and checks status/decision/transport stability. Exact-head full CI, protected promotion and Pages verification pending.
+- 0.11.4.41 LAN-090: host ignores delayed join-request during approved negotiation/after kickoff, and ignores post-kickoff broker error. Two-mode test preserves legitimate pre-kickoff approval and checks status/decision/transport stability. Focused LAN-090 test passed in 959-test Node preflight; exact-head full CI blocked by missing checkpoint heading, protected promotion and Pages verification pending.
 - 0.11.4.40 LAN-089: post-kickoff host guest-left/host-registered isolation. Previous dev/main synchronized at 127260992415f0e9e11f096faaa214c5ff5d847f, QA and Pages previously reported green.
 - Render broker auto-deploy configured for dev but has required manual API deployments; verify exact broker commit after promotion. Physical two-device discovery, approval, sprint, Jump, reconnect and mobile acceptance remains open in issue #48.
 - Preserve 223 teams/2676 players, six formations, four buttons, saves/offline, Career/Cup ten slots and SD09.
 
-## Next five
+## Next smallest action
 1. Check LAN-090 focused test and exact-head 4 Node + 4 Chromium plus Modular QA.
 2. Repair any real CI failures without weakening gates.
 3. Promote exact green dev head through protected pipeline; verify main/Pages hosted bytes.
