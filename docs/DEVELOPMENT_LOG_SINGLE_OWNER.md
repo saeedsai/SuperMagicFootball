@@ -1,3 +1,10 @@
+## 2026-10-28 19:04 CET — LAN-087 mixed-scope discovery recovery (candidate 0.11.4.38)
+- Root cause: LAN-084 rejected an entire `rooms-snapshot` when any foreign-scope room appeared, even if the snapshot also contained valid hosts for the current Local Network or Online P2P mode. A mixed broker snapshot could therefore leave stale JOIN cards and hide new valid hosts.
+- Fix: skip only recognized foreign-scope entries; continue to reject malformed same-scope entries atomically. Preserve previous valid cards on foreign-only snapshots; a genuine empty snapshot still clears the list. Added focused two-mode regression with valid, foreign-only, mixed, malformed and join assertions.
+- Rotated About/package/README/Service Worker version to 0.11.4.38; updated policy, shared memory and own checkpoint. No roster, four-button, save, offline, graphics or SD09 changes. Exact-head 4+4/Modular, protected promotion, Pages bytes and physical acceptance pending.
+- Render drift resolved for previous release: manual deploy `dep-dbh3hj61egvs739c6g6g` LIVE at 18:03 UTC, commit `350f09a0` (0.11.4.37); check automatic deployment for newer commits before claiming broker parity.
+- Next five: focused/full CI; protected main promotion; hosted Pages/broker bytes; two physical clients; Player Studio/Tricks/art/Career.
+
 ## 2026-10-28 18:01 CET — LAN-086 cross-room admission reply binding (candidate 0.11.4.37)
 - Guest join-accept and join-reject previously matched request ID but not room ID; mismatched-room replies with the active request ID could incorrectly approve or cancel the current handshake. Now require both IDs in LAN and Online P2P; valid host decisions still work.
 - Added two-mode regression for mismatched approval/rejection before and after approval, and valid rejection. Updated historical mock broker events to include room ID already sent by the real broker.

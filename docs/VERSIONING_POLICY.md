@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.37
+# SuperMagicFootball release/version policy — About-only 0.11.4.38
 
-**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.37.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.38.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.37 (28 October 2026):** LAN-086 validates both room ID and request ID on guest approval/rejection, preventing a cross-room reply from altering a different host handshake. Focused LAN/Online P2P tests; exact-head 4+4 QA, protected promotion and Pages bytes remain release gates.
+**Current dev candidate 0.11.4.38 (28 October 2026):** LAN-087 skips recognized foreign-scope room entries in mixed directory snapshots, preserves valid same-mode rooms and rejects malformed same-scope entries. Two-mode focused regression; exact-head 4+4/Modular, protected promotion and Pages bytes remain gates.
+
+**Previous dev candidate 0.11.4.37 (28 October 2026):** LAN-086 validates both room ID and request ID on guest approval/rejection, preventing a cross-room reply from altering a different host handshake. Focused LAN/Online P2P tests; exact-head 4+4 QA, protected promotion and Pages bytes remain release gates.
 
 **Previous dev candidate 0.11.4.36 (28 October 2026):** LAN-085 prevents duplicate taps on a pending host-consent room from cancelling/recreating the request in LAN or Online P2P. Switching hosts and stale-approval rejection remain intact. Exact-head CI, protected promotion and Pages acceptance pending.
 
@@ -64,7 +66,7 @@
 
 ## One authoritative player-facing release
 
-`src/modules/release.js` exports the immutable `RELEASE` record containing `version`, `date` and short human-readable `notes`. **The current `dev` candidate identifies itself as `0.11.4.31` in Settings → Credits / About only; certification of the production `main` bundle is tracked separately.** It must never fetch or show the remote development branch's newest commit as if that were the player's installed version. The browser title/home and other menus have no version number. Credits and developer information remain accessible. `package.json` contains the matching release number; the game runtime and save-export label read `RELEASE.version`, while imported older save files and historical storage keys remain compatible. Offline service-worker precache explicitly includes the release module and is rotated for changed game bytes.
+`src/modules/release.js` exports the immutable `RELEASE` record containing `version`, `date` and short human-readable `notes`. **The current `dev` candidate identifies itself as `0.11.4.38` in Settings → Credits / About only; certification of the production `main` bundle is tracked separately.** It must never fetch or show the remote development branch's newest commit as if that were the player's installed version. The browser title/home and other menus have no version number. Credits and developer information remain accessible. `package.json` contains the matching release number; the game runtime and save-export label read `RELEASE.version`, while imported older save files and historical storage keys remain compatible. Offline service-worker precache explicitly includes the release module and is rotated for changed game bytes.
 
 The four-field numbering is advanced **once for every newly deployed player-facing game update**, including minor enhancements and bug fixes, not for independent documentation or test-only commits. Do not deploy additional game-code changes under the same version. For subsequent releases increment the highest applicable category: `x` complete owner-accepted product milestone (not before 1.0 acceptance); `y` a major feature, reset `z,a`; `z` an existing feature's enhancement, reset `a`; `a` a correction/re-release. Release notes must describe shipped, verified changes, never aspirational plans.
 

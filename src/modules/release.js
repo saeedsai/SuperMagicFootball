@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.37',
+ version:'0.11.4.38',
  date:'2026-10-28',
  notes:Object.freeze([
+  'LAN-087: Mixed LAN and Online P2P directory snapshots now retain valid hosts from the selected mode without admitting cross-scope rooms. Foreign-only snapshots preserve the previous list; malformed same-scope entries remain rejected. Host approval, four controls, saves and offline play are unchanged.',
   'LAN-086: LAN and Online P2P admission replies now require both the active room ID and request ID. Cross-room approvals or denials cannot start or cancel the wrong handshake; legitimate host decisions and offline play remain unchanged.',
   'LAN-085: Repeated taps on the same LAN or Online P2P room no longer cancel and recreate a pending host-approval request. Switching to another host still cancels the old request; stale approvals are ignored. Four buttons, gameplay and saves are unchanged.',
   'LAN-084: Local Network discovery now rejects internet-P2P room advertisements and snapshots, while Online P2P rejects LAN-only rooms. Legacy unscoped LAN rooms still work; host approval, gameplay and saves are unchanged.',

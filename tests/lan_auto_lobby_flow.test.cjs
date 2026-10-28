@@ -1019,3 +1019,34 @@ test('LAN-086 LAN and Online P2P ignore cross-room admission replies even with a
   }finally{f.cleanup()}
  }
 });
+
+
+test('LAN-087 mixed-scope directory snapshots retain valid local hosts without cross-mode contamination',async()=>{
+ for(const internet of [false,true]){
+  const f=setup();
+  try{
+   const {mountAutoLanLobby}=await load();
+   const build='0.11.4.38';
+   const dispose=mountAutoLanLobby(f.root,{build,internet,signalFactory:f.signalFactory});
+   f.elements.get('#autoFind').click();f.connect();
+   const scope=internet?'internet-p2p':'lan';
+   const old={roomId:'room_12345678',name:'Old local host',build,full:false,scope};
+   const current={roomId:'room_87654321',name:'Fresh local host',build,full:false,scope};
+   const foreign={roomId:'room_99999999',name:'Foreign scope host',build,full:false,scope:internet?'lan':'internet-p2p'};
+   f.emit({type:'rooms-snapshot',rooms:[old]});
+   f.emit({type:'rooms-snapshot',rooms:[foreign]});
+   assert.equal(f.elements.get('#autoRooms').children.length,1,'foreign-only snapshot cannot clear a valid local room');
+   assert.match(f.elements.get('#autoRooms').children[0].textContent,/Old local host/);
+   f.emit({type:'rooms-snapshot',rooms:[foreign,current]});
+   assert.equal(f.elements.get('#autoRooms').children.length,1,'mixed snapshot must include only the matching mode');
+   assert.match(f.elements.get('#autoRooms').children[0].textContent,/Fresh local host/);
+   const joinCount=f.packets.filter(p=>p.type==='join').length;
+   f.emit({type:'rooms-snapshot',rooms:[foreign,{...current,name:' '}]});
+   assert.match(f.elements.get('#autoRooms').children[0].textContent,/Fresh local host/,'malformed same-scope data must not replace the valid directory');
+   f.elements.get('#autoRooms').children[0].click();
+   assert.equal(f.packets.filter(p=>p.type==='join').length,joinCount+1);
+   assert.equal(f.packets.at(-1).roomId,current.roomId,'guest joins only the matching-scope room');
+   dispose();
+  }finally{f.cleanup()}
+ }
+});

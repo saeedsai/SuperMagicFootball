@@ -145,6 +145,10 @@ export function mountAutoLanLobby(root,options={}){
  // Older local companions may omit full; treat that as an available room for compatibility.
  // Keep LAN-only discovery isolated from internet rooms, even if a misconfigured
  // broker sends cross-scope advertisements. Legacy LAN companions omit scope.
+ // A mixed-scope snapshot may be emitted by a misconfigured or older broker.
+ // Skip only recognized rooms from the other mode; malformed local-scope data
+ // still invalidates the entire snapshot, preserving the previous directory.
+ const foreignRoomScope=room=>internet?(room?.scope===undefined||room?.scope==='lan'):room?.scope==='internet-p2p';
  function validRoom(room,legacyFull=false){const scopeMatches=internet?room?.scope===roomScope:room?.scope===undefined||room?.scope==='lan';return !!room&&scopeMatches&&typeof room.roomId==='string'&&/^[a-zA-Z0-9_-]{8,64}$/.test(room.roomId)&&typeof room.name==='string'&&!!room.name.trim()&&room.name.length<=48&&typeof room.build==='string'&&room.build.length<=32&&(typeof room.full==='boolean'||(legacyFull&&room.full===undefined))}
  function render(){const box=get('autoRooms');box.replaceChildren();if(mode!=='guest')return;
   for(const [id,room] of rooms){if(room.build!==build)continue;const button=document.createElement('button');button.className='btn';button.disabled=room.full===true;button.textContent=(room.full===true?'IN MATCH · ':'JOIN ')+room.name;button.addEventListener('click',()=>join(id));box.append(button)}
@@ -181,9 +185,13 @@ export function mountAutoLanLobby(root,options={}){
    if(mode!=='guest'||requestId||started||!Array.isArray(m.rooms)||m.rooms.length>128)return;
    const fresh=new Map();
    for(const room of m.rooms){
+    if(foreignRoomScope(room))continue;
     if(!validRoom(room))return;
     fresh.set(room.roomId,room);
    }
+   // An all-foreign snapshot must not erase valid rooms from our own mode.
+   // A truly empty snapshot still clears the directory as usual.
+   if(m.rooms.length>0&&fresh.size===0)return;
    rooms.clear();for(const [id,room] of fresh)rooms.set(id,room);
    render();return;
   }
