@@ -909,3 +909,24 @@ test('LAN-082 permanent broker scope rejection stops host retry instead of flood
   dispose();
  }finally{f.cleanup()}
 });
+
+test('LAN-083 busy admission refreshes directory immediately without replaying a stale rejection',async()=>{
+ const f=setup();
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.4.34',signalFactory:f.signalFactory});
+  f.elements.get('#autoFind').click();f.connect();
+  const room={roomId:'room_12345678',name:'Busy host',build:'0.11.4.34',full:false};
+  f.emit({type:'room-announce',...room});
+  f.elements.get('#autoRooms').children[0].click();
+  const join=f.packets.at(-1);assert.equal(join.type,'join');
+  const reads=f.packets.filter(p=>p.type==='rooms').length;
+  f.emit({type:'join-reject',roomId:room.roomId,requestId:join.requestId,reason:'room-queue-full'});
+  assert.equal(f.packets.filter(p=>p.type==='rooms').length,reads+1,'busy rejection requests fresh room occupancy immediately');
+  f.emit({type:'rooms-snapshot',rooms:[{...room,full:true}]});
+  assert.equal(f.elements.get('#autoRooms').children[0].disabled,true,'fresh occupancy disables join');
+  f.emit({type:'join-reject',roomId:room.roomId,requestId:join.requestId,reason:'room-queue-full'});
+  assert.equal(f.packets.filter(p=>p.type==='rooms').length,reads+1,'replayed rejection cannot flood directory');
+  dispose();
+ }finally{f.cleanup()}
+});
