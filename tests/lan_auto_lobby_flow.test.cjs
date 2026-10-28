@@ -864,3 +864,45 @@ test('LAN and internet P2P refuse stale room buttons after removal or incompatib
   }finally{f.cleanup()}
  }
 });
+
+
+test('LAN-082 temporary broker capacity rejection retains automatic host registration retry',async()=>{
+ const f=setup(),timers=[];
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.4.33',signalFactory:f.signalFactory,
+   setIntervalImpl:(fn,ms)=>{const timer={fn,ms,stopped:false};timers.push(timer);return timer},
+   clearIntervalImpl:timer=>{timer.stopped=true}});
+  f.connect();f.elements.get('#autoHost').click();
+  const first=f.packets.at(-1);
+  assert.equal(first.type,'host');
+  assert.equal(timers.length,1);assert.equal(timers[0].ms,10000);
+  f.emit({type:'error',message:'Room capacity reached'});
+  assert.equal(timers[0].stopped,false,'capacity is transient; retain bounded retry');
+  assert.match(f.elements.get('#autoStatus').textContent,/Waiting to retry hosting automatically/);
+  timers[0].fn();
+  const hosts=f.packets.filter(p=>p.type==='host');
+  assert.equal(hosts.length,2,'retry host advertisement after capacity becomes available');
+  assert.equal(hosts[1].roomId,first.roomId,'do not abandon original host identity');
+  f.emit({type:'host-registered',roomId:first.roomId});
+  assert.equal(timers[0].stopped,true,'acknowledged registration ends retry');
+  assert.match(f.elements.get('#autoStatus').textContent,/Room registered/);
+  dispose();
+ }finally{f.cleanup()}
+});
+
+test('LAN-082 permanent broker scope rejection stops host retry instead of flooding server',async()=>{
+ const f=setup(),timers=[];
+ try{
+  const {mountAutoLanLobby}=await load();
+  const dispose=mountAutoLanLobby(f.root,{build:'0.11.4.33',signalFactory:f.signalFactory,
+   setIntervalImpl:(fn,ms)=>{const timer={fn,ms,stopped:false};timers.push(timer);return timer},
+   clearIntervalImpl:timer=>{timer.stopped=true}});
+  f.connect();f.elements.get('#autoHost').click();
+  assert.equal(f.packets.filter(p=>p.type==='host').length,1);
+  f.emit({type:'error',message:'Unsupported discovery scope'});
+  assert.equal(timers[0].stopped,true,'permanent configuration errors cannot retry');
+  assert.match(f.elements.get('#autoStatus').textContent,/Unable to register room: Unsupported discovery scope/);
+  dispose();
+ }finally{f.cleanup()}
+});

@@ -161,7 +161,14 @@ export function mountAutoLanLobby(root,options={}){
   if(m.type==='discovery-scope'&&m.scope==='public-network'){discoveryScope='public-network';if(mode==='host')showHostAddress();return}
   if(m.type==='lan-addresses'&&Array.isArray(m.urls)){lanUrls=m.urls.filter(url=>typeof url==='string'&&/^http:\/\/(?:10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[01])\.)[0-9.]+:[0-9]+$/.test(url)).slice(0,8);if(mode==='host')showHostAddress();return}
   if(m.type==='host-registered'&&mode==='host'&&m.roomId===roomId){hostRegistered=true;stopHostRetry();showHostAddress();status('Room registered. Waiting for a guest to join.');return}
-  if(m.type==='error'&&mode==='host'){stopHostRetry();status('Unable to register room: '+String(m.message||'server rejected request'));return}
+  if(m.type==='error'&&mode==='host'){
+   // Broker room capacity is temporary: keep the bounded ten-second registration
+   // retry alive with the same room ID. Permanent scope errors must not loop.
+   const capacity=String(m.message||'')==='Room capacity reached';
+   if(!capacity)stopHostRetry();
+   status(capacity?'Room capacity reached. Waiting to retry hosting automatically…':'Unable to register room: '+String(m.message||'server rejected request'));
+   return;
+  }
   if(m.type==='host-left'&&mode==='guest'&&m.roomId===roomId){clearAdmissionTimeout();cleanupPeer();approved=false;requestId=null;roomId=null;status('Host disconnected. Select another available room.');return}
   if(m.type==='rooms-snapshot'){
    // Ignore malformed or out-of-phase replies; never replace an active admission.

@@ -6,6 +6,7 @@
 Keep coding one bounded increment each hour on dev. Only dev/main; never force-push, bypass security or pause for pending release.
 
 ## Current checkpoint
+- 0.11.4.33 LAN-082: temporary broker capacity errors preserve 10-second host retry and room identity; permanent scope errors stop retries. Two focused lobby regressions added; exact-head CI, main and Pages pending. Physical two-device LAN/P2P remains open.
 - 0.11.4.32 STUDIO-TRICK-PROGRESS-02 fixes missing rating unlock guidance with focused VM regression; exact-head 4+4, Modular and Pages pending.
 - 0.11.4.31 STUDIO-MAGIC-SAVE-STATE-01: no-op Magic Trick save button disabled in Player Studio (KEEP, absent REMOVE, same equipped); genuine changes remain enabled and locked previews stay disabled. Focused VM regression added. First Full #40684644344 and Modular #40684644386 failed three stale source-contract assertions; updated tests to require new disabled state and preserve locked eligibility guard. Fresh exact-head QA pending. Prior .30 exact-head Full #40677013054 and Modular #40677013174 green, dev/main synced at ffa4c143c0a7. New candidate QA/Pages pending.
 - 0.11.4.30 STUDIO-MAGIC-NOOP-01: unchanged equipped Trick and absent Trick removal no longer rewrite Career or club saves; genuine edits still persist. New focused VM regression. Initial Full #40676804744 and Modular #40676804765 failed stale KEEP test assertion. Follow-up #40676882873 and #40676883280 exposed second stale assertion plus checkpoint section/identity contract; repaired on dev. New exact-head CI pending.

@@ -1,3 +1,7 @@
+## 2026-10-28 — LAN-082 capacity recovery (candidate 0.11.4.33)
+- Found live auto-lobby registration stopped its host retry timer on *every* broker error, including temporary "Room capacity reached". Keep bounded ten-second same-room retries only for that recoverable error; stop on permanent scope/configuration failures. Added two focused flow regressions. No gameplay, graphics, save, roster, formation or four-button changes. Exact-head full 4+4, Modular QA, protected main and hosted Pages remain release gates. Physical two-device acceptance remains open.
+- Next: focused CI; exact-head full 4+4/Modular; protected main; Pages byte smoke; physical LAN/P2P plus Player Studio/Tricks/art.
+
 ## 2026-10-28 — STUDIO-TRICK-PROGRESS-02 (candidate 0.11.4.32)
 - Fixed missing/blank legacy rating displayed as 0 in Magic Trick unlock guidance and clarified dual rating/position OVR eligibility. Regression added. Four-button gameplay, graphics and saves unchanged. Full CI and Pages acceptance pending.
 
