@@ -1,8 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.26
+# SuperMagicFootball release/version policy — About-only 0.11.4.27
 
-**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.26.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 28 October 2026 for candidate 0.11.4.27.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.26 (28 October 2026):** STUDIO-TRICK-PREVIEW-02 makes all eight Magic Tricks inspectable by outfield players; a locked selection cannot be saved, while keep/remove legacy options remain. Full exact-head QA, protected promotion and Pages byte verification pending.
+**Current dev candidate 0.11.4.27 (28 October 2026):** STUDIO-GK-HELP-01 clarifies that goalkeepers may preview but cannot save Magic Tricks, with a focused test. Exact-head release checks pending.\n\n**Previous dev candidate 0.11.4.26 (28 October 2026):** STUDIO-TRICK-PREVIEW-02 makes all eight Magic Tricks inspectable by outfield players; a locked selection cannot be saved, while keep/remove legacy options remain. Full exact-head QA, protected promotion and Pages byte verification pending.
 
 **Previous dev candidate 0.11.4.25 (28 October 2026):** STUDIO-TRICK-HELP-01 displays in-match one-second DRIBBLE activation with the existing Trick counter explanation in player equipment previews. Exact-head 4+4 CI, Modular QA and protected Pages release pending.
 
