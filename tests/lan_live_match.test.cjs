@@ -824,3 +824,20 @@ test('LAN-080 guest snapshot freshness fails closed on clock rollback and recove
  assert.deepEqual(sent.map(p=>p.buttons),[['pass'],['pass'],['pass'],['pass']]);
  run.dispose();
 });
+
+
+test('LAN-081 invalid host clock cannot flood paused heartbeat',async()=>{
+ const {createLanLiveMatch}=await load();
+ const input=controls(),match=game(input),snapshots=[];
+ match.matchState='paused';let clock=1000;
+ const peer={ready:true,stepHostMatchFrame(frame,simulate){snapshots.push(simulate(null,{received:false}));return {snapshotSent:true};}};
+ const run=createLanLiveMatch({peer,role:'host',game:match,input,field,now:()=>clock});
+ assert.equal(run.step(.016),true);
+ clock=NaN;
+ for(let i=0;i<5;i++)assert.equal(run.step(.016),false,'invalid clock may not create heartbeat flood');
+ assert.equal(snapshots.length,1);
+ clock=2499;assert.equal(run.step(.016),false);
+ clock=2500;assert.equal(run.step(.016),true,'normal timer recovers');
+ assert.equal(snapshots.length,2);
+ run.dispose();
+});
