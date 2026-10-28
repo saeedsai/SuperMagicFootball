@@ -1057,6 +1057,7 @@ function studioMagicGuide(choice,equipped,eligible=true){
  return 'Preview only: '+guide+instructions+' Press SAVE TRICK SELECTION to equip this Trick.';
 }
 function studioMagicEligibilityGuide(player){
+ if(player?.role==='GK')return 'Goalkeepers cannot equip Magic Tricks. Trick previews are informational only; no Trick can be saved for this position.';
  if(studioMagicEligible(player))return 'Eligible for Magic Tricks: Star or Superstar (legacy rating or position OVR 91+). Preview a move, then save to equip it.';
  if(player?.magicTrick)return 'Existing equipped Trick is preserved for save compatibility. You may keep or remove it; replacing it requires Star or Superstar status (91+).';
  return 'Magic Tricks are locked for this player. Preview any Trick and its counter without equipping; only Star or Superstar outfield players (rating or positional overall 91+) can save one. Normal Dribble Styles remain available.';
