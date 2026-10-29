@@ -6,9 +6,9 @@ const start=ui.indexOf('function saveAppearance(){'),end=ui.indexOf('function pa
 assert.ok(start>=0&&end>start,'real Player Studio appearance save handler exists');
 const handler=ui.slice(start,end);
 const complete={skin:'#f1c8a5',hair:'#332211',style:1,face:2,eyes:3,brows:0,eyeColor:1,nose:2,lips:1,body:2,stature:0,exaggeration:1,beard:0,accessory:1,freckles:0,scar:0,tattoo:0};
-function run({careerMode=false,previous=complete,selected=complete,storageOk=true,missingPlayer=false}={}){
+function run({careerMode=false,previous=complete,selected=complete,storageOk=true,missingPlayer=false,omitAppearance=false}={}){
  const player={id:'appearance-player',role:'MF',rating:92};
- if(previous!==undefined)player.appearance={...previous};
+ if(!omitAppearance)player.appearance={...previous};
  const stats={writes:0,careerWrites:0,studioViews:0,careerViews:0};
  const context={
   studioCareerContext:careerMode,career:careerMode?{club:0,roster:missingPlayer?[]:[player]}:null,
@@ -48,7 +48,7 @@ test('STUDIO-APPEARANCE-NOOP-01: obsolete extra appearance fields are normalized
  assert.equal(stats.writes,1);assert.equal(Object.hasOwn(context.edits.team[0].appearance,'obsoleteField'),false);
 });
 test('STUDIO-APPEARANCE-NOOP-01: missing appearance is saved on first selection',()=>{
- const {save,stats,context}=run({previous:undefined});save();
+ const {save,stats,context}=run({omitAppearance:true});save();
  assert.equal(stats.writes,1);assert.equal(context.edits.team[0].appearance.face,complete.face);
 });
 test('STUDIO-APPEARANCE-NOOP-01: failed storage never reports save or updates Career',()=>{
