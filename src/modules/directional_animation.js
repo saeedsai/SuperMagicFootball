@@ -51,10 +51,18 @@ function animationAssetCandidates(pose){
   'idle/S/0'
  ])]);
 }
+// Cross-realm Set/Map detection matters for Node VM regression harnesses and
+// embedded-frame consumers; instanceof fails across JavaScript realms.
+function hasAuthoredFrame(catalog,key){
+ const tag=Object.prototype.toString.call(catalog);
+ if(tag==='[object Set]')return catalog.has(key);
+ if(tag==='[object Map]')return Boolean(catalog.get(key));
+ return Boolean(catalog&&Object.prototype.hasOwnProperty.call(catalog,key)&&catalog[key]);
+}
 // Resolve a sparse authored frame catalog without assuming every pose exists.
 // The catalog may be a Set, Map or own-key object; no URL is constructed.
 function resolveAuthoredFrame(pose,catalog){
- const has=key=>catalog instanceof Set?catalog.has(key):catalog instanceof Map?Boolean(catalog.get(key)):Boolean(catalog&&Object.prototype.hasOwnProperty.call(catalog,key)&&catalog[key]);
+ const has=key=>hasAuthoredFrame(catalog,key);
  for(const key of animationAssetCandidates(pose))if(has(key))return key;
  return null;
 }
@@ -62,7 +70,7 @@ function resolveAuthoredFrame(pose,catalog){
 // Never reflect front/rear or replace an available exact-heading frame.
 const MIRROR_HEADING=Object.freeze({N:'N',NE:'NW',E:'W',SE:'SW',S:'S',SW:'SE',W:'E',NW:'NE'});
 function resolveDirectionalAsset(pose,catalog,{allowMirror=false}={}){
- const has=key=>catalog instanceof Set?catalog.has(key):catalog instanceof Map?Boolean(catalog.get(key)):Boolean(catalog&&Object.prototype.hasOwnProperty.call(catalog,key)&&catalog[key]);
+ const has=key=>hasAuthoredFrame(catalog,key);
  const original=animationAssetCandidates(pose);
  const generic='idle/S/0';
  // Keep exact-facing action and idle frames ahead of any mirrored alternative.
