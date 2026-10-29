@@ -10,6 +10,9 @@ Incremental dev-only changes, never extra branches, force pushes or CI bypass. P
 - Updated stale idle-only gallery test causing preflight/Modular failure on 0.12.3.0; added phase and accessibility regressions. About/package/README/SW cache/policy/log updated.
 - CI exact-head results and main/Pages must be verified; never infer deployment from commits. Original bespoke eight-view art packs still pending.
 
+
+- ACTION-TIMELINE-01: `actionFrame()` one-shot action completion API plus two regression cases committed (a6158fc5, 74a461b2). Renderer integration pending; no release bump. Tests not executed/verified in this run.
+
 ## Next smallest action
 1. Verify four Node/four Chromium and Modular QA on exact dev head, fix any failures.
 2. Permit authorized green-CI main promotion and verify Pages bytes.
