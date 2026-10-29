@@ -834,10 +834,10 @@ class GameEngine{
  }
  requestKeeperSuper(t){const keeper=this.player(t,0);return this.activateKeeperSuper(keeper,true);}
  dribble(p){
-  if(this.ball.owner===p){if(p.cd>0||p.stun>0||(p.dribbleCooldown||0)>0)return false;
+  if(this.ball.owner===p){if(p.cd>0||p.stun>0||p.breath<.55)return false;
    const dx=p.dx||p.face,dy=p.dy||0,n=norm(dx,dy);
    p.x=clamp(p.x+n.x*19,F.x+25,F.x+F.w-25);p.y=clamp(p.y+n.y*19,F.y+25,F.y+F.h-25);
-   p.dribbleCooldown=2;p.cd=.43;p.action='dribble';p.actionTimer=.44;this.spendStamina(p,'sprint');this.emit('dribble',{team:p.t,player:p.src.name});return true;
+   p.dribbleCooldown=0;p.cd=.43;p.action='dribble';p.actionTimer=.44;this.spendStamina(p,'dribble');this.emit('dribble',{team:p.t,player:p.src.name});return true;
   }
   this.swap(p.t);return true;
  }
@@ -1061,7 +1061,7 @@ class GameEngine{
  // a special trick; the first tap keeps the standard feint. Against an alert
  // defender a trick may fail. DEF, AGG, AGI, DRB, stamina and style all matter.
  tryDribbleTrick(p,byAI=false){
-  if(!p||this.ball.owner!==p||p.keeper||p.stun>0||p.trickCd>0||(p.dribbleCooldown||0)>0||p.fatigue>.92)return false;
+  if(!p||this.ball.owner!==p||p.keeper||p.stun>0||p.trickCd>0||(p.dribbleCooldown||0)>0||p.fatigue>.92||p.breath<.65)return false;
   const style=dribbleStyle(p.src.dribbleType), opponents=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&q.z<25)
     .sort((a,b)=>distance(p,a)-distance(p,b));
   const rival=opponents[0],close=!!rival&&distance(p,rival)<105;
@@ -1432,6 +1432,9 @@ class GameEngine{
   if(this.input.canceled?.(p.t,'jump')){p.jumpHold=0;p.jumpTapPending=false;}
   if(this.input.canceled?.(p.t,'dribble')){p.dribbleHold=0;p.ballLiftLock=false;}
   p.dx=dx;p.dy=dy;const elapsedJump=Math.max(p.jumpHold||0,this.input.tapDuration?.(p.t,'jump')||0);
+  // Breath replaces any fixed continuous-dribble duration cap.
+  // Holding DRIBBLE with the ball costs short-term Breath every frame.
+  if(s.dribble&&this.ball.owner===p)p.breath=Math.max(0,(p.breath??breathCapacity(stat(p,'stamina')))-dt*(1.0+.5*(100-stat(p,'stamina'))/99));
   p.dribbleHold=s.dribble&&this.ball.owner===p?(p.dribbleHold||0)+dt:0;
   if(!s.dribble||this.ball.owner!==p)p.magicHoldLatched=false;
   if(!s.dribble)p.ballLiftLock=false;
@@ -1494,7 +1497,7 @@ class GameEngine{
   // Hold DRIBBLE for >=1s with possession to trigger an equipped Magic Trick
   // once per continuous press; Jump combinations take priority.
   if(s.dribble&&!s.jump&&!s.shoot&&!s.pass&&this.ball.owner===p&&
-     p.dribbleHold>=1&&!p.magicHoldLatched){
+     p.dribbleHold>=1&&p.breath>=.8&&!p.magicHoldLatched){
    p.magicHoldLatched=true;
    this.tryMagicTrick(p);
   }
