@@ -1,3 +1,8 @@
+## 2026-10-29 — MAGIC-BAT-SLIDE-01 (candidate 0.11.4.57)
+- Baseline dev/main `1c90677ae61bba38d7cbb038f377710f50ba4fa9`: 0.11.4.56 Full Regression Census 40854451550, Modular QA 40854451551, main Pages 40855262287 and post-main census 40855262069 green. Separate deployed PC/touch 40854451762 failed three desktop initialization waits before Pages build; not certified.
+- Added active grounded defensive SHOOT-slide parry for Bat at close range, with explicit positive action timer and finite below-20 height. A parried cast still consumes cooldown/fatigue; expired/airborne slides and other Tricks remain unchanged. Player Studio describes the existing four-button counter.
+- Added focused real-method two-direction, active/expired/airborne, caster cost, directional fallback and unrelated-Trick regression. Synchronized About/package/README/cache/version policy/shared memory/checkpoint. Exact-head 4+4, Modular QA, protected main promotion and hosted Pages byte checks are separate gates; physical LAN/P2P issue #48 remains open.
+
 ## 2026-10-29 — MAGIC-SCREAM-JUMP-01 (candidate 0.11.4.56)
 - Baseline exact dev/main `f7be17b32f4172b3b36f5426b751d56a4ef7e06f`; 0.11.4.55 dev Full Regression Census 40853324642 (four Node/four Chromium) and Modular QA 40853324667 green; main Pages build 40853663446 green. Prior deployed PC/touch smoke 40853149148 failed initialization before Pages build; follow up on hosted exact bytes.
 - New four-button counter: an airborne defender at z>=20 avoids Scream's targeted stagger using JUMP; grounded Scream, Fireball, directional defence and other Tricks remain unchanged. Caster still spends six-second cooldown and fatigue. Player Studio Scream help documents dodge.

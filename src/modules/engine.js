@@ -961,11 +961,13 @@ class GameEngine{
   // A defender who moves toward and faces the carrier can counter the spell.
   const facing=inRange&&((rival.face||1)*(p.x-rival.x))>0;
   const closing=inRange&&((rival.dx||0)*(p.x-rival.x)+(rival.dy||0)*(p.y-rival.y))>0;
-  // Airborne JUMP counters Fireball and Scream without adding a fifth action.
-  // The carrier still pays the same cooldown and fatigue for a dodged cast.
+  // Airborne JUMP counters Fireball/Scream; an active grounded SHOOT-slide
+  // parries Bat. All counters use the existing four buttons and still cost
+  // the caster the original cooldown and fatigue.
   const jumpDodged=id==='fireball'&&inRange&&Number.isFinite(rival.z)&&rival.z>=20;
   const screamDodged=id==='scream'&&inRange&&Number.isFinite(rival.z)&&rival.z>=20;
-  const countered=!!(jumpDodged||screamDodged||(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling')));
+  const batParried=id==='bat'&&inRange&&rival.action==='slide'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&Number.isFinite(rival.z)&&rival.z<20;
+  const countered=!!(jumpDodged||screamDodged||batParried||(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling')));
   p.magicReadyAt=this.clock+6;
   p.fatigue=Math.min(1,p.fatigue+.035);
   this.fatigueLedger[p.t][p.src.id]=p.fatigue;

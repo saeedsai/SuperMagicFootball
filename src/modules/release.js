@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.56',
+ version:'0.11.4.57',
  date:'2026-10-29',
  notes:Object.freeze([
+  'MAGIC-BAT-SLIDE-01: An active grounded defensive SHOOT-slide now parries the Bat Magic Trick at close range, without adding a fifth button. The attacker still spends cooldown and fatigue; inactive/airborne slides, other Tricks, rosters and offline saves remain unchanged.',
   'MAGIC-SCREAM-JUMP-01: An airborne defender can now use the existing JUMP button to dodge a targeted Scream shockwave at height 20 or above. The cast still spends its six-second cooldown and stamina, while grounded Scream, facing-based defence, other Tricks, four controls and saved games remain unchanged.',
   'MAGIC-FIREBALL-JUMP-01: Defenders now dodge a nearby Fireball Magic Trick by jumping at least 20 pitch units above the ground. A dodged cast still costs the attacker its cooldown and stamina; existing facing-based counter, eight Magic Tricks, four buttons and save compatibility remain unchanged.',
   'STUDIO-MAGIC-LIVE-STATE-01: Player Studio now announces whether a Magic Trick selection is unchanged, locked at 91+ or ready to save, and exposes live accessible status beside the existing save button. All eight counters, four controls, legacy equipment and saved progress remain unchanged.',
