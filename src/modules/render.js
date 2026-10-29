@@ -734,6 +734,27 @@ class Renderer{
  paintStands(ctx){let g=ctx.createLinearGradient(0,0,0,WORLD.h);g.addColorStop(0,'#0b2537');g.addColorStop(.10,'#17414b');g.addColorStop(.14,'#2b513b');g.addColorStop(.87,'#1b452e');g.addColorStop(1,'#0e2830');ctx.fillStyle=g;ctx.fillRect(0,0,WORLD.w,WORLD.h);
  for(let side=0;side<2;side++){let y=side?WORLD.h-72:0;ctx.fillStyle='#102937';ctx.fillRect(0,y,WORLD.w,65);for(let row=0;row<4;row++)for(let i=0;i<240;i++){const hash=(i*71+row*113)%17,x=8+i*15+(row%2)*5,yy=y+10+row*13,colors=['#7ab9bc','#f9c55c','#ea8e69','#9bc994','#c0c4d9','#738daf','#f2d2a8'];ctx.fillStyle=colors[(hash+row)%colors.length];ctx.beginPath();ctx.arc(x,yy,3+(hash%3),0,PI*2);ctx.fill()}
  ctx.fillStyle='#172328';ctx.fillRect(0,side?WORLD.h-20:50,WORLD.w,8);ctx.fillStyle='#f6db6c';for(let k=0;k<31;k++)ctx.fillRect(k*111,side?WORLD.h-18:52,70,3)}
+
+  this.paintArenaAccents(ctx);
+ }
+ paintArenaAccents(ctx){
+  // Arena details are painted once into the cached stands, not every animation frame.
+  ctx.save();
+  for(const y of [F.y-26,F.y+F.h+9]){
+   const rail=ctx.createLinearGradient(0,y,0,y+18);
+   rail.addColorStop(0,'#0c2862');rail.addColorStop(.5,'#2882c3');rail.addColorStop(1,'#092650');
+   ctx.fillStyle=rail;ctx.fillRect(F.x-30,y,F.w+60,18);
+   for(let i=0;i<10;i++){const x=F.x+18+i*(F.w-36)/10;ctx.fillStyle=i%2?'#ffe18a':'#c9f6ff';ctx.fillRect(x,y+6,Math.max(35,F.w/15),5);}
+  }
+  for(const x of [F.x-50,F.x+F.w+16]){
+   ctx.fillStyle='#0c285a';ctx.fillRect(x,F.y-10,29,F.h+20);
+   for(let i=0;i<24;i++){ctx.fillStyle=i%3===0?'#ffe18a':i%3===1?'#83e2ff':'#f5ffff';ctx.fillRect(x+7,F.y+i*F.h/24+8,15,5);}
+  }
+  for(const x of [F.x-42,F.x+F.w+42])for(const y of [F.y-39,F.y+F.h+39]){
+   const glow=ctx.createRadialGradient(x,y,1,x,y,90);glow.addColorStop(0,'#ffffffbf');glow.addColorStop(.28,'#dcf8ff4f');glow.addColorStop(1,'#ffffff00');
+   ctx.fillStyle=glow;ctx.beginPath();ctx.arc(x,y,90,0,PI*2);ctx.fill();
+  }
+  ctx.restore();
  }
  drawField(ctx,game){
    // Cache expensive wear, grass grain and pitch geometry for slower mobile GPUs.
@@ -747,8 +768,8 @@ class Renderer{
    }
    ctx.drawImage(this.fieldCache,F.x,F.y);
  }
- drawFieldArtwork(ctx,game){const {terrain,condition}=game;let ground=terrain==='Classic'?['#6f8c3b','#738c3e']:terrain==='Grass'?['#357e40','#448e49']:terrain==='Dirt'?['#9e6b42','#ac7650']:['#c7ab68','#d8bc75'];ctx.fillStyle=ground[0];ctx.fillRect(F.x,F.y,F.w,F.h);
- if(terrain!=='Classic'){for(let i=0;i<22;i++){ctx.fillStyle=ground[i%2];ctx.fillRect(F.x+i*F.w/22,F.y,F.w/22+2,F.h)}}
+ drawFieldArtwork(ctx,game){const {terrain,condition}=game;let ground=terrain==='Classic'?['#33844a','#3e9955']:terrain==='Grass'?['#357e40','#448e49']:terrain==='Dirt'?['#9e6b42','#ac7650']:['#c7ab68','#d8bc75'];ctx.fillStyle=ground[0];ctx.fillRect(F.x,F.y,F.w,F.h);
+ if(terrain!=='Classic'){for(let i=0;i<22;i++){ctx.fillStyle=ground[i%2];ctx.fillRect(F.x+i*F.w/22,F.y,F.w/22+2,F.h)}}else{for(let i=0;i<20;i++){ctx.fillStyle=i%2?'#d8ffb31b':'#124d3930';ctx.fillRect(F.x+i*F.w/20,F.y,F.w/20+1,F.h)}}
  for(let i=0;i<1650;i++){let sx=F.x+((i*7319)%Math.floor(F.w)),sy=F.y+((i*2969)%Math.floor(F.h));ctx.fillStyle=i%3===0?'#e0d49722':'#162d1c14';ctx.fillRect(sx,sy,2+i%3,2+i%5)}
  if(terrain==='Classic'){
    // Tiled-looking irregular ochre field wear inspired by the Famicom ground palette;
@@ -763,8 +784,8 @@ class Renderer{
        const xx=Math.cos(theta)*rx*r,yy=Math.sin(theta)*ry*r;
        if(j===0)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy);
      }
-     ctx.closePath();ctx.fillStyle=i%4===0?'#cd8d31a0':i%4===1?'#dba04caa':'#c98936b0';ctx.fill();
-     ctx.strokeStyle='#dcac60a0';ctx.lineWidth=6;ctx.stroke();
+     ctx.closePath();ctx.fillStyle=i%4===0?'#b9ad6e37':i%4===1?'#d2d88335':'#83ac6a34';ctx.fill();
+     ctx.strokeStyle='#d4fca024';ctx.lineWidth=6;ctx.stroke();
      for(let n=0;n<34;n++){
        const tx=(random(i*17+n,-.9,.9))*rx,ty=(random(i*131+n,-.85,.85))*ry;
        ctx.fillStyle=n%3?'#e6b55d55':'#6d7c2c55';ctx.fillRect(tx,ty,n%4+1,n%3+2);
@@ -810,7 +831,8 @@ class Renderer{
   const headScale=[1,.96,1.12][(av.exaggeration??1)%3];
   const lips=av.lips??av.mouth??0;
   ctx.save();ctx.translate(p.x,p.y);if(p.action==='celebrate'){const style=game.celebrationStyle||0;ctx.translate(Math.sin(this.time*(8+style)+p.i*1.5)*(10+style*2),-Math.abs(Math.sin(this.time*(6+style)+p.i))*(10+style*2));ctx.rotate(Math.sin(this.time*(5+style)+p.i*2)*(.11+style*.025))}if(p.action==='cry'){ctx.rotate(Math.sin(this.time*11+p.i)*.08);ctx.translate(0,Math.abs(Math.sin(this.time*8+p.i))*5)}
-  ellipse(ctx,0,3,26,8,'#09271a59');
+  ellipse(ctx,0,3,29,10,'#071d2a78');
+   if(p.controlled){ctx.save();const bob=Math.sin(this.time*6)*3;ctx.translate(0,-115-(p.z||0)+bob);ctx.shadowColor=p.t===0?'#ffe48b':'#8be7ff';ctx.shadowBlur=14;ctx.fillStyle=p.t===0?'#ffdb66':'#78e8ff';ctx.beginPath();ctx.moveTo(0,11);ctx.lineTo(-11,-7);ctx.lineTo(11,-7);ctx.closePath();ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#092855';ctx.lineWidth=3;ctx.stroke();ctx.restore();}
   // Directional speed lines, purely visual; no effect on collision, speed or stamina.
   if(moving&&['hyperdash','dribbleTrick'].includes(p.action)){ctx.save();ctx.globalAlpha=.32;ctx.strokeStyle=p.t===0?'#ffe79a':'#8df7ff';ctx.lineWidth=3;for(let k=-1;k<=1;k++){ctx.beginPath();ctx.moveTo(-p.face*35,p.z?(-p.z+k*11):k*11);ctx.lineTo(-p.face*(62+8*Math.sin(this.time*14+k)),k*11-3);ctx.stroke()}ctx.restore();}
   if((p.firstTouchFx||0)>0){ctx.save();ctx.globalAlpha=clamp(p.firstTouchFx/.35,0,1)*.75;

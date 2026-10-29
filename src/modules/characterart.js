@@ -439,6 +439,10 @@ const CHARACTER_ART=(()=>{
   stroke(c,[[-3,-59],[-3,-53]],ink('#ffffff',.26),3.3);
   arm(c,-1,k,p,colors,opt,false);
   jersey(c,k,p,colors);
+  // Direction-aware gold seam highlight reinforces the cartoon jersey silhouette.
+  c.save();c.globalAlpha=.25;c.strokeStyle=colors.gold;c.lineWidth=2.3;c.lineCap='round';c.beginPath();
+  const seamWidth=k==='side'?11:k.startsWith('quarter')?16:19;
+  c.moveTo(-seamWidth,-55);c.quadraticCurveTo(-seamWidth+2,-43,-seamWidth+5,-34);c.stroke();c.restore();
   arm(c,1,k,p,colors,{...opt,tattoo:av.tattoo},true);
   face(c,k,av,colors.skin,colors.hair,opt);
   c.restore();
