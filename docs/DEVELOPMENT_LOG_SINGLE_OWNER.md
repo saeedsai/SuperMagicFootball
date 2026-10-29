@@ -1,3 +1,10 @@
+## 2026-10-29 — STUDIO-ACTION-GALLERY-01 (0.12.3.0 dev candidate)
+- Starting main/dev 1758c76837719523fb19eed9de2f1262ebf53740. Delivered pure VISUALFEEL.artHeading() with eight compass keys and invalid-vector fallback (commits a37528a7, 30266e6f), plus Node regression tests (096ecee2).
+- Player Studio's optional eight-view comparison now displays the selected motion (run/kick/slide/header/keeper/celebration) in eight fixed directional frames, with accessible pose labels and pose-sensitive cache. Main portrait remains animated; static gallery avoids eight additional animation loops. UI commit 331010d8, regression a26a0a52, CSS 59399e18.
+- Player-facing 0.12.3.0 candidate aligned in package, About release notes, README release banner/heading, service worker cache and version policy. No player IDs, physics, saves, four-button controls, SD09, LAN/P2P or formations changed.
+- Exact-source isolated JS smoke passed: eight compass headings, invalid idle heading, Studio gallery selected slide and run poses, cache invalidation and UI syntax parse. New Node test files exist but the repository's Node 4 shards, Chromium 4 shards and Modular QA have NOT been observed green for this exact head. Main promotion/Pages byte verification NOT claimed.
+- Issues #48 physical two-phone, #86 Render commit-trigger drift, #87 GitHub-enforced main protection and #15 directional visual acceptance remain open. Next: inspect CI failures and fix; run full exact-head QA; only then allow protected promotion and Pages verification; develop independent eight-view art and further Studio usability.
+
 ## 2026-10-29 — BROADCAST-GOAL-01 browser visual regression (test-only)
 - Added direct actual playable Chromium renderer check to match highlights suite on desktop and simulated touch, with pixel presence, non-mutating score assertion and screenshot capture per mode. This supplements (does not replace) focused Node and full 4+4/Modular QA. No player-facing source/version change; candidate remains 0.12.2.0.
 
