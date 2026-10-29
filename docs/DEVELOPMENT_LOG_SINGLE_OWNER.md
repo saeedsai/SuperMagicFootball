@@ -1740,3 +1740,6 @@ Host now holds last validated guest four-button and directional input for at mos
 ## 2026-10-29 — SPARSE-ART-RESOLVER-01
 - Added `resolveAuthoredFrame()` for sparse eight-view catalogs with exact frame, directional and default fallback. Pure API, not yet live renderer; no player-facing version bump.
 - Three regression cases for exact selection, sparse fallback and prototype safety. Commits 4dd0ac1b, 15b13298. Full 4+4/Modular and Pages not verified.
+
+## 2026-10-29 — MAP-ART-CATALOG-01
+- Fixed sparse authored-frame resolution to support `Map` catalogs in addition to `Set` and own-key objects; falsey Map entries remain unavailable. Added two regression cases. Commits 084b4072 and 34de8217. No player-facing change/version bump; exact-head full CI and hosted verification not run.
