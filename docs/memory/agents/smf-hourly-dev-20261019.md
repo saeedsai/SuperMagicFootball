@@ -19,6 +19,9 @@ Incremental dev-only changes, never extra branches, force pushes or CI bypass. P
 
 - EIGHT-VIEW-ASSET-FALLBACK-01: `animationAssetCandidates()` adds safe ordered art frame fallbacks, three regression tests (45617076, c87a5548). Live renderer integration and full CI pending; no release bump.
 
+
+- SPARSE-ART-RESOLVER-01: `resolveAuthoredFrame()` selects sparse authored art with safe fallback; three regressions committed (4dd0ac1b, 15b13298). Renderer integration/CI pending, no version bump.
+
 ## Next smallest action
 1. Verify four Node/four Chromium and Modular QA on exact dev head, fix any failures.
 2. Permit authorized green-CI main promotion and verify Pages bytes.
