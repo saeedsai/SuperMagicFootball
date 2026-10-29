@@ -28,3 +28,6 @@ Before this increment main SHA `93af332189be3856025d90d2f9eb6b1466d09121`, dev S
 
 ## Cleanup
 Keep own checkpoint under 4KiB, shared memory under 6KiB and detailed history in development log.
+
+## Latest checkpoint — JUMPING-STAT-01 (2026-10-29)
+0.12.8.0 dev candidate: canonical Jumping 1–100 via mechanics numericStats; STATS.withStats defaults to overall rating, preserving edited values and legacy saves. Engine single/double jumps scale impulse sqrt(.30+.70*(jumping-1)/99); at 100 retain 420/535 and 14 lift. Jump stamina multiplier 1+(100-jumping)/100. Tests: tests/jumping_stat.test.cjs committed, full CI not verified. Next: run tests, check 223/2676 data and save migration, QA, only green main promotion.
