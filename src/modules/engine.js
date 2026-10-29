@@ -345,7 +345,7 @@ class GameEngine{
   p.dx=maxSpeed?p.moveVX/maxSpeed:0;p.dy=maxSpeed?p.moveVY/maxSpeed:0;
  }
 
- staminaTick(p,dt,intensity=0){p.breath=breathTick(p.breath,stat(p,'stamina'),dt,intensity);p.fatigue=fatigueTick(p.fatigue,stat(p,'stamina'),dt,intensity);this.fatigueLedger[p.t][p.src.id]=p.fatigue;}
+ staminaTick(p,dt,intensity=0){const carrying=this.ball.owner===p&&intensity>.14;const breathIntensity=carrying?Math.max(1.15,intensity):intensity;p.breath=breathTick(p.breath,stat(p,'stamina'),dt,breathIntensity);p.fatigue=fatigueTick(p.fatigue,stat(p,'stamina'),dt,intensity);this.fatigueLedger[p.t][p.src.id]=p.fatigue;}
  spendStamina(p,kind){const breathMultiplier=breathPenalty(p.breath??breathCapacity(stat(p,'stamina')),stat(p,'stamina'));p.breath=spendBreath(p.breath,stat(p,'stamina'),kind);const jumpCost=kind==='jump'?1+(100-stat(p,'jumping'))/100:1;const levelKind=kind==='super'||kind==='comboSuper'?'shot':(kind==='defenceSuper'||kind==='spinBumper')?'defence':kind==='keeperSuper'?'keeper':null;const multiplier=(levelKind?levelModifiers(abilityLevel(p,levelKind)).fatigue:1)*(['super','comboSuper'].includes(kind)?superShotFatigueMultiplier(PHYSICS_TUNING):1);p.fatigue=actionFatigue(p.fatigue,stat(p,'stamina'),kind,multiplier*jumpCost*breathMultiplier);this.fatigueLedger[p.t][p.src.id]=p.fatigue;}
  halftimeRecovery(){
   for(const p of this.players)this.fatigueLedger[p.t][p.src.id]=p.fatigue;
