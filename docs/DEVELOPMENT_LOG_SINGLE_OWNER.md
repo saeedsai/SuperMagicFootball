@@ -1,5 +1,5 @@
 ## 2026-10-29 — STUDIO-ACTION-PHASE-01 (0.12.4.0 dev candidate)
-- Added keyboard/touch range scrubber to Player Studio's eight-view comparison. Four deterministic phase samples update action timing, running stride, header elevation and keeper dive elapsed across all eight views; gallery stays cached between unchanged selections and does not write saves.
+- Added keyboard/touch range scrubber to Player Studio's eight-view comparison. The phase slider spans all four gallery columns rather than squeezing into the first tile. Four deterministic phase samples update action timing, running stride, header elevation and keeper dive elapsed across all eight views; gallery stays cached between unchanged selections and does not write saves.
 - Updated the stale idle-only gallery contract that was causing exact-head Full Regression Census preflight and Modular QA to fail on the previous 0.12.3.0 feature. Added phase-specific runtime regression and accessible-input contract tests.
 - Four-field About/package/README/offline cache/version policy aligned to 0.12.4.0. Preserve four controls, 223 teams/2676 players, six formations, ten Career/Cup slots, SD09 and LAN/P2P. Full exact-head CI, protected promotion, Pages bytes and physical LAN device certification are separate gates.
 

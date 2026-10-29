@@ -105,3 +105,8 @@ test('phase slider has keyboard/touch accessible wiring and cannot create a fift
  assert.match(source,/Number\.isInteger\(frame\)&&frame>=0&&frame<=3/);
  assert.match(source,/studioGalleryFrame=frame;drawCustomizer\(\)/);
 });
+
+test('motion phase slider spans the full eight-view grid on desktop and mobile',()=>{
+ const css=fs.readFileSync(path.join(__dirname,'../style.css'),'utf8');
+ assert.match(css,/\.studioGalleryTimeline\{grid-column:1\/-1;/);
+});
