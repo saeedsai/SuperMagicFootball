@@ -1,3 +1,6 @@
+## 29 October 2026 — CAREER-SLOT-RENAME-01 (0.12.7.0 candidate)
+Occupied Career saves can be renamed in the existing ten-slot manager without loading, overwriting, altering the active slot, save timestamp or match progress. Blank labels rejected; storage failure leaves old state intact. Next: full exact-head QA, eight-view authored renderer integration, Magic Trick counterplay, keeper improvements and hosted certification.
+
 ## 29 October 2026 — STUDIO-GALLERY-KEYS-01 (0.12.6.0 candidate)
 Responsive arrow-key navigation (4 desktop columns / 2 mobile), Home/End, visible focus and preview selection now work within the existing eight-direction Player Studio gallery. Preserve unsaved edits, exactly four game controls and offline data. Next: authored graphics in renderer, keeper action art, Magic Trick counters, Career progression, full exact-head CI and hosted certification.
 
