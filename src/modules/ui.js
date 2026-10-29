@@ -842,29 +842,38 @@ setInterval(()=>{if(screen==='PLAYER CUSTOMIZATION' && $('customPortrait') && st
 function studioRotate(step){studioDirection=((studioDirection+step)%8+8)%8;const label=$('customAngleLabel');if(label)label.textContent=STUDIO_DIRS[studioDirection].label;drawCustomizer()}
 function studioAnimationFrame(){if(!studioSpin||!$('customPortrait')||screen!=='PLAYER CUSTOMIZATION')return;studioDirection=(studioDirection+1)%8;drawCustomizer();}
 function studioEightViewMarkup(){
- return `<section id="studioEightViewGallery" class="studioEightViewGallery" aria-label="Eight-direction player appearance gallery">${STUDIO_DIRS.map((dir,i)=>`<figure class="studioEightViewItem"><canvas data-studio-view="${i}" width="144" height="152" role="img" aria-label="${escapeHTML(dir.label)} appearance"></canvas><figcaption>${escapeHTML(dir.label)}</figcaption></figure>`).join('')}</section>`;
+ return `<section id="studioEightViewGallery" class="studioEightViewGallery" aria-label="Eight-direction player action gallery"><p id="studioEightViewPoseLabel" class="muted" role="status" aria-live="polite">Comparing ${escapeHTML(studioAction.toUpperCase())} in eight directions</p>${STUDIO_DIRS.map((dir,i)=>`<figure class="studioEightViewItem"><canvas data-studio-view="${i}" width="144" height="152" role="img" aria-label="${escapeHTML(dir.label)} ${escapeHTML(studioAction)} pose"></canvas><figcaption>${escapeHTML(dir.label)}</figcaption></figure>`).join('')}</section>`;
 }
 // 0.8.25.32: Optional, non-interactive eight-view contact sheet for the selected
 // Studio appearance. Idle frames are deterministic even while rotating/animating
 // the large preview; update the sheet only when the edited character changes.
 function drawStudioEightViewGallery(player,appearance){
  const root=$('studioEightViewGallery');if(!studioGalleryOpen||!root||!player)return;
- const signature=JSON.stringify([home,avatarIndex,player.name,appearance]);
+ // Compare a frozen action frame in all eight headings; the main portrait
+ // remains the only animated preview, avoiding eight extra render loops.
+ const pose=$('customPose')?.value||studioAction;
+ const signature=JSON.stringify([home,avatarIndex,player.name,appearance,pose]);
  if(signature===studioGallerySignature&&root.querySelectorAll('canvas').length===8)return;
  studioGallerySignature=signature;
+ const poseLabel=$('studioEightViewPoseLabel');
+ if(poseLabel)poseLabel.textContent='Comparing '+pose.toUpperCase()+' in eight directions';
  const gameView={getTeam:()=>TEAMS[home],options:{showNames:false},celebrationStyle:0};
  const template=game.player(0,3)||{i:3,team:0};
- const fit=portraitFit(144,152,appearance,'idle');
+ const action=pose==='run'?'idle':pose;
+ const fit=portraitFit(144,152,appearance,action);
  for(let i=0;i<STUDIO_DIRS.length;i++){
   const canvas=root.querySelector('canvas[data-studio-view="'+i+'"]');if(!canvas)continue;
+  canvas.setAttribute('aria-label',STUDIO_DIRS[i].label+' '+pose+' pose');
   const ctx=canvas.getContext('2d');if(!ctx)continue;
   ctx.clearRect(0,0,canvas.width,canvas.height);
   const gr=ctx.createLinearGradient(0,0,144,152);
   gr.addColorStop(0,'#27666e');gr.addColorStop(1,'#102b3e');ctx.fillStyle=gr;ctx.fillRect(0,0,144,152);
-  const dir=STUDIO_DIRS[i];
-  const dummy={...template,x:0,y:0,z:0,t:0,i:avatarIndex,src:{...player,appearance},
-   keeper:player.role==='GK',face:dir.view.side,dx:dir.dx,dy:dir.dy,
-   visualFacing:dir.view,anim:0,action:'idle',controlled:false,preview:true,stun:0,cryTimer:0};
+  const dir=STUDIO_DIRS[i],moving=pose==='run';
+  const dummy={...template,x:0,y:0,z:pose==='header'?22:0,t:0,i:avatarIndex,src:{...player,appearance},
+   keeper:player.role==='GK'||action.startsWith('keeper'),face:dir.view.side,
+   dx:moving?dir.dx*.6:0,dy:moving?dir.dy*.6:0,
+   visualFacing:dir.view,anim:moving?1.2:0,action,actionTimer:.22,
+   diveElapsed:.32,diveDy:dir.dy<0?-1:1,controlled:false,preview:true,stun:0,cryTimer:0};
   ctx.save();ctx.translate(fit.x,fit.y);ctx.scale(fit.scale,fit.scale);
   renderer.drawPlayer(ctx,dummy,gameView);ctx.restore();
  }
