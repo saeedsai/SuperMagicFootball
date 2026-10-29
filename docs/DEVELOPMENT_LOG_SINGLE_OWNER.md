@@ -1,3 +1,6 @@
+## 2026-10-29 — ARENA-OVERHAUL-01 release-contract forward compatibility (test-only)
+- The existing sole developer delivered a new candidate GK-GLOVE-ART-01 at 0.12.1.0 after arena v0.12.0.0 while this turn's browser QA was running. The arena source contract incorrectly hardcoded 0.12.0.0, blocking valid later increments. Check four-part version format dynamically and require the retained arena release note while continuing to check package, About, README and offline cache parity. No player-facing version bump or game/source changes. Browser Quick Match selector collision was corrected separately; rerun exact-head QA.
+
 ## 2026-10-29 — ARENA-OVERHAUL-01 navigation regression correction (version unchanged)
 - Exact candidate 6ebdcbb3d773c8fbaaa621a8e66ed7bb0984823a passed 1,049 Node contracts and Modular QA, but Chromium revealed duplicated data-action=navQuick selectors and focus on the hero. Fixed Play Now to use existing single-player action quick and restored home focus to the primary navChoice; existing Quick Match remains unique. Regression added. Rerun exact-head 4+4 and Modular QA before promotion. No game/save change.
 

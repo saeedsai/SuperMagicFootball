@@ -32,7 +32,8 @@ test('renderer draws cached stadium and pitch graphics with visual-only player c
 });
 test('About version README offline cache and package agree for the new candidate',()=>{
  const pkg=JSON.parse(read('package.json')),release=read('src/modules/release.js'),readme=read('README.md'),sw=read('sw.js'),policy=read('docs/VERSIONING_POLICY.md');
- assert.equal(pkg.version,'0.12.0.0');
+ assert.match(pkg.version,/^\d+\.\d+\.\d+\.\d+$/);
+ assert.ok(release.includes('ARENA-OVERHAUL-01:'),'arena release entry must be retained across later updates');
  assert.ok(release.includes("version:'"+pkg.version+"'"));
  assert.ok(readme.startsWith('> **'+pkg.version+' release candidate'));
  assert.ok(readme.includes('# Supermagic Football · v'+pkg.version));
