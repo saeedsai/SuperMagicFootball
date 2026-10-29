@@ -1,3 +1,5 @@
+> **0.12.2.0 release candidate (29 October 2026):** BROADCAST-GOAL-01 gives matches a new original team-colored GOAL highlight with the scorer, actual scoreboard and deterministic confetti, plus animated turf-contact accents on running players. This is one implemented step of the owner-requested full Mini Football-inspired UI and graphics overhaul, not a copy of proprietary art. Four action buttons, 223 teams/2676 players, six formations, Career/Cup ten slots, SD09, LAN/P2P, offline saves and physics remain compatible. Exact-head Node/Chromium 4+4, Modular QA, safe promotion and Pages bytes are separate gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.12.1.1 release candidate (29 October 2026):** CAREER-COPY-LABEL-01 keeps copied Career save names clearly identifiable: long 60-character source labels retain a visible (copy) suffix and repeated copies use numbered labels. Original names, active Career, ten Career/Cup slots, save format, 223 teams/2676 players, six formations, four controls, SD09 and offline play are unchanged. Exact-head 4+4/Modular QA, protected promotion and Pages byte verification remain independent gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.12.1.0 release candidate (29 October 2026):** GK-GLOVE-ART-01 adds distinct padded goalkeeper glove palms during catches and dives, improving hand readability without changing goalkeeper reach, collision or timing. The 0.12.0.0 stadium UI/graphics overhaul, four actions, 223 teams/2676 players, six formations, ten Career/Cup slots, SD09, LAN/P2P and offline saves remain compatible. Focused and exact-head 4+4/Modular QA, protected main promotion and Pages hosted verification remain separate gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -262,7 +264,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.12.1.1 · Modular source project
+# Supermagic Football · v0.12.2.0 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 

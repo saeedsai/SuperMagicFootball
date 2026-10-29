@@ -3,25 +3,25 @@
 **Updated:** 2026-10-29
 
 ## Mission
-Incrementally develop directly on dev; preserve 223 teams/2676 players, six formations, four actions, Career/Cup ten slots, SD09, LAN/P2P and offline saves.
+Incremental tested dev-only development with no extra branches/force pushes/CI bypass. Preserve four buttons, 223 teams, 2676 players, six formations, ten Career/Cup slots, SD09, LAN/P2P and offline saves.
 
 ## Current checkpoint
-- Baseline dev/main b75728c94d035789b27c6852f2a345871879496e was green 4+4/Modular and Pages hosted verification.
-- CAREER-COPY-LABEL-01 candidate 0.12.1.1: long Career slot names retain copy suffix; repeated copies are numbered; blank legacy names get readable copy labels. Focused tests added; release/About/README/cache updated.
-- Exact new-head CI, protected promotion and hosted byte comparison must be checked separately. Main protection #87, physical LAN acceptance #48, Render drift #86 remain open. No routine LAN implementation.
+- Baseline dev f5688a2f91d41ff9a280585b5fa7a74ce00ad31b, main b75728c94d035789b27c6852f2a345871879496e; current 0.12.2.0 BROADCAST-GOAL-01 adds original match-scoring graphics and turf-contact animation, renderer-only.
+- About/package/README/SW cache aligned; new focused Node tests. Exact-head 4+4/Modular, main/Pages and mobile QA require verification.
+- Owner Mini Football-inspired original visual roadmap active, including bespoke eight-view player art and menu/gameplay improvement.
 
 ## Next smallest action
-1. Inspect focused, four Node/four Chromium and Modular QA on exact candidate.
-2. Fix any failures without weakening coverage.
-3. Restore required main branch protection via authorized settings.
-4. Promote only exact green dev head through protected pipeline and verify Pages bytes.
-5. Continue authored eight-view graphics, Player Studio, counterable Tricks, keeper and Career.
+1. Inspect exact-head four Node + four Chromium and Modular QA, fix failures.
+2. Promote exact green dev only via authorized main workflow; verify hosted bytes.
+3. Verify mobile goal graphics, responsive screenshots and startup/performance.
+4. Author independent eight-view player graphics and fix Crown Royals side direction #15.
+5. Expand Player Studio, keeper, stadium and gameplay presentation.
 
 ## Ownership and exclusions
-Sole developer; never read/edit other agents' private memory. Physical LAN not certified.
+Sole developer; do not read/edit others' private memory. Physical two-phone #48, Render trigger drift #86, branch protection #87 remain unresolved.
 
 ## Evidence
-GitHub commits and CI runs; no deployment claim until hosted check.
+Only GitHub actions/commit records certify tests; verify Pages separately.
 
 ## Cleanup
-Keep checkpoint under 4KiB; details in development log.
+Own checkpoint below 4KiB, detailed notes in log.

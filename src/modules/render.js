@@ -715,15 +715,52 @@ class Renderer{
  for(let p of game.particles){ctx.globalAlpha=clamp(p.life/p.max,0,1);ellipse(ctx,p.x,p.y-p.z,p.r,p.r,p.color)}ctx.globalAlpha=1;
  ctx.restore();if(game.flash){ctx.fillStyle=`rgba(255,249,204,${Math.min(.5,game.flash*.5)})`;ctx.fillRect(0,0,this.screenW,this.screenH)}this.drawBorder(ctx,game);this.drawMiniMap(ctx,game);if(game.celebration>0)this.drawGoalCelebration(ctx,game);ctx.restore();}
  drawGoalCelebration(ctx,game){
-   const t=game.pendingKickoff?.scorer??0,team=game.getTeam(t),hero=game.goalHero||team.name;
-   const elapsed=3.3-game.celebration;const styles=['CHAMPION DANCE!','THE HUMAN PYRAMID!','SILLY VICTORY LAP!','SUPER STAR POSE!','GOAL PARTY!'];const style=game.celebrationStyle||0;
-   ctx.save();ctx.textAlign='center';ctx.translate(this.screenW/2,130);
-   ctx.rotate(Math.sin(elapsed*7)*.019);ctx.shadowColor='#081621';ctx.shadowBlur=19;
-   ctx.fillStyle='#0b263cdc';ctx.beginPath();ctx.roundRect(-285,-73,570,152,27);ctx.fill();ctx.strokeStyle='#ffdb6d';ctx.lineWidth=5;ctx.stroke();
-   ctx.font='1000 60px system-ui';ctx.lineWidth=9;ctx.strokeStyle='#0d2032';ctx.strokeText('GOOOOAL!!',0,-8);ctx.fillStyle='#ffe273';ctx.fillText('GOOOOAL!!',0,-8);
-   ctx.shadowBlur=0;ctx.font='900 23px system-ui';ctx.fillStyle='#f2fafc';ctx.fillText(hero.toUpperCase().slice(0,25)+'   ✦   '+team.name.toUpperCase(),0,40);ctx.font='900 21px system-ui';ctx.fillStyle='#ffe273';ctx.fillText(styles[style],0,70);ctx.fillStyle='#c8ecfc';ctx.fillText('THE OTHER TEAM IS IN TEARS!',0,124);
-   for(let i=0;i<18;i++){const x=(i*79+elapsed*60)%1100-550,y=Math.sin(i*4+elapsed*7)*65+83;ctx.fillStyle=i%3?'#b5f6e4':'#ffad5d';ctx.fillRect(x,y,8,20)}
-   ctx.restore();
+  // BROADCAST-GOAL-01: original team-colored highlight, no gameplay mutations.
+  const scorer=game.pendingKickoff?.scorer===1?1:0,team=game.getTeam(scorer);
+  const primary=/^#[0-9a-f]{6}$/i.test(team?.primary||'')?team.primary:'#247dda';
+  const secondary=/^#[0-9a-f]{6}$/i.test(team?.secondary||'')?team.secondary:'#ffda6d';
+  const remaining=Math.max(0,Number(game.celebration)||0);
+  const elapsed=Math.max(0,3.3-remaining);
+  const alpha=Math.min(1,elapsed/.25,remaining/.4);
+  if(alpha<=0)return;
+  const name=String(team?.name||'FOOTBALL CLUB').toUpperCase().slice(0,24);
+  const hero=String(game.goalHero||name).toUpperCase().slice(0,25);
+  const score=Array.isArray(game.score)?game.score:[0,0];
+  const a=Math.max(0,Math.trunc(Number(score[0])||0));
+  const b=Math.max(0,Math.trunc(Number(score[1])||0));
+  const w=Math.min(680,this.screenW-48),h=182;
+  ctx.save();ctx.globalAlpha=alpha;
+  ctx.translate(this.screenW/2,25-Math.max(0,1-elapsed/.5)*14);
+  ctx.shadowColor='#031633c7';ctx.shadowBlur=22;ctx.shadowOffsetY=8;
+  const gradient=ctx.createLinearGradient(-w/2,0,w/2,h);
+  gradient.addColorStop(0,'#0b2f6df1');gradient.addColorStop(.5,'#123d83f4');gradient.addColorStop(1,'#081f4df8');
+  ctx.fillStyle=gradient;ctx.beginPath();ctx.roundRect(-w/2,0,w,h,24);ctx.fill();
+  ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+  ctx.lineWidth=3;ctx.strokeStyle='#e4f9ffd8';ctx.stroke();
+  const bar=ctx.createLinearGradient(-w/2,0,w/2,0);
+  bar.addColorStop(0,primary);bar.addColorStop(.5,secondary);bar.addColorStop(1,primary);
+  ctx.fillStyle=bar;ctx.beginPath();ctx.roundRect(-w/2+12,10,w-24,9,5);ctx.fill();
+  // Self-authored badge uses geometric shapes, never a real club crest.
+  ctx.fillStyle=primary;ctx.beginPath();ctx.arc(-w/2+48,84,30,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle=secondary;ctx.lineWidth=3;ctx.stroke();
+  ctx.textAlign='center';ctx.font='900 30px system-ui';ctx.fillStyle='#ffffff';ctx.fillText('★',-w/2+48,94);
+  ctx.textAlign='left';ctx.font='900 12px system-ui';ctx.fillStyle='#bbf2ff';
+  ctx.fillText('SUPERMAGIC FOOTBALL · MATCH HIGHLIGHT',-w/2+95,43);
+  ctx.font='1000 56px system-ui';ctx.fillStyle='#ffeb9d';ctx.fillText('GOAL!',-w/2+95,99);
+  ctx.font='900 17px system-ui';ctx.fillStyle='#ffffff';ctx.fillText(hero,-w/2+95,130);
+  ctx.font='800 12px system-ui';ctx.fillStyle='#cbeaff';ctx.fillText(name,-w/2+95,151);
+  ctx.textAlign='right';ctx.font='1000 35px system-ui';ctx.fillStyle='#ffe39a';
+  ctx.fillText(a+'  –  '+b,w/2-18,116);
+  ctx.font='900 11px system-ui';ctx.fillStyle='#b5e8ff';ctx.fillText('MATCH SCORE',w/2-19,137);
+  const colors=['#fff09d','#8ce4ff','#ffffff',primary,secondary];
+  // Every particle has deterministic geometry for replay/QA and runs only during a goal.
+  for(let i=0;i<24;i++){
+   const x=-w*.59+(((i*71+17)%97)/97)*w*1.18+Math.sin(elapsed*2+i)*13;
+   const y=(i*43+elapsed*(72+i%5*22))%265-33;
+   ctx.save();ctx.translate(x,y);ctx.rotate(elapsed*(1+i%3)+i*.72);
+   ctx.globalAlpha=alpha*.69;ctx.fillStyle=colors[i%5];ctx.fillRect(-3,-6,6,12);ctx.restore();
+  }
+  ctx.restore();
  }
  drawStands(ctx){
   // Stadium crowd is static: paint to an offscreen canvas once instead of drawing ~2,000 arcs per frame.
@@ -832,6 +869,17 @@ class Renderer{
   const lips=av.lips??av.mouth??0;
   ctx.save();ctx.translate(p.x,p.y);if(p.action==='celebrate'){const style=game.celebrationStyle||0;ctx.translate(Math.sin(this.time*(8+style)+p.i*1.5)*(10+style*2),-Math.abs(Math.sin(this.time*(6+style)+p.i))*(10+style*2));ctx.rotate(Math.sin(this.time*(5+style)+p.i*2)*(.11+style*.025))}if(p.action==='cry'){ctx.rotate(Math.sin(this.time*11+p.i)*.08);ctx.translate(0,Math.abs(Math.sin(this.time*8+p.i))*5)}
   ellipse(ctx,0,3,29,10,'#071d2a78');
+  // VIZ-06: subtle turf-contact animation, visual-only and bounded.
+  if(this.inMatchDraw&&moving&&!p.preview&&!p.keeper){
+   const step=Math.max(0,Math.sin((Number(p.anim)||0)*17+(Number(p.i)||0)*.35));
+   if(step>.55){
+    ctx.save();ctx.globalAlpha=(step-.55)*.55;
+    ctx.fillStyle=game.terrain==='Dirt'?'#ebc892':'#c9fca3';
+    const back=(p.dx||p.face||1)<0?1:-1;
+    ctx.beginPath();ctx.ellipse(back*26,4,7,2.5,0,0,PI*2);ctx.fill();
+    ctx.beginPath();ctx.ellipse(back*34,5,3,1.5,0,0,PI*2);ctx.fill();ctx.restore();
+   }
+  }
    if(p.controlled){ctx.save();const bob=Math.sin(this.time*6)*3;ctx.translate(0,-115-(p.z||0)+bob);ctx.shadowColor=p.t===0?'#ffe48b':'#8be7ff';ctx.shadowBlur=14;ctx.fillStyle=p.t===0?'#ffdb66':'#78e8ff';ctx.beginPath();ctx.moveTo(0,11);ctx.lineTo(-11,-7);ctx.lineTo(11,-7);ctx.closePath();ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#092855';ctx.lineWidth=3;ctx.stroke();ctx.restore();}
   // Directional speed lines, purely visual; no effect on collision, speed or stamina.
   if(moving&&['hyperdash','dribbleTrick'].includes(p.action)){ctx.save();ctx.globalAlpha=.32;ctx.strokeStyle=p.t===0?'#ffe79a':'#8df7ff';ctx.lineWidth=3;for(let k=-1;k<=1;k++){ctx.beginPath();ctx.moveTo(-p.face*35,p.z?(-p.z+k*11):k*11);ctx.lineTo(-p.face*(62+8*Math.sin(this.time*14+k)),k*11-3);ctx.stroke()}ctx.restore();}

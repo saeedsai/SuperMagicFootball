@@ -41,3 +41,6 @@ Implement in small scoped commits to existing `dev` only; never create branches,
 
 ## ARENA-OVERHAUL-01 — broad design implementation candidate (29 October 2026)
 Implemented together as a broad, original arcade presentation increment: stadium-themed home and mode cards, featured Play Now, Player Studio/Career shortcuts, responsive match HUD/four-action touch layout, brighter cached stadium and pitch dressing, directional jersey accents and controlled-player marker. This is **not** a claim that every bespoke eight-direction animation asset, stadium design variation, gameplay physics rework, physical phone or hosted device smoke is complete. Follow-up art and animation QA must still be executed separately.
+
+## BROADCAST-GOAL-01 — gameplay graphics increment (0.12.2.0 candidate)
+Original team-color scoring banner, scorer/score and animated deterministic confetti now replace the previous text pop-up. Animated ground-contact accents improve normal player movement. Engine, inputs and saves unchanged. Bespoke eight-direction source art and full gameplay presentation rework remain active. CI, device art QA and hosted smoke are separate gates.
