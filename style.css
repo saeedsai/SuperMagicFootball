@@ -286,6 +286,10 @@ html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%;min-height:100%
 .studioEightViewGallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:11px 0;padding:9px;border:1px solid #6bb4c18e;border-radius:10px;background:#061e31}
 .studioEightViewGallery>#studioEightViewPoseLabel{grid-column:1/-1;margin:0 0 4px;padding:4px 6px;font-size:.85rem;letter-spacing:.02em}
 .studioEightViewItem{margin:0;min-width:0;background:#143849;border:1px solid #457d88;border-radius:7px;overflow:hidden}
+.studioViewPick{display:block;width:100%;padding:0;border:2px solid transparent;border-radius:5px;background:transparent;color:inherit;cursor:pointer;touch-action:manipulation}
+.studioViewPick[aria-pressed=true]{border-color:#ffe49a;box-shadow:inset 0 0 0 2px #ffe49a55}
+.studioViewPick:focus-visible{outline:3px solid #5fe7f0;outline-offset:-3px}
+@media(hover:hover){.studioViewPick:hover{background:#3c6f8240}}
 .studioEightViewItem canvas{display:block;position:static;inset:auto;width:100%;height:auto;aspect-ratio:144/152;object-fit:contain}
 .studioEightViewItem figcaption{font:800 9px/1.2 system-ui,sans-serif;letter-spacing:.3px;padding:4px 2px 5px;text-align:center;color:#ffdf91;min-height:29px}
 @media(max-width:650px){.studioEightViewGallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:5px}}
