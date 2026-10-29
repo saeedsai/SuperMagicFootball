@@ -4,8 +4,8 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync('src/modules/directional_animation.js','utf8').replace(/^export \{[^\n]+\};?\s*$/m,'');
 const context=vm.createContext({});
-vm.runInContext(source+'\nthis.api={HEADINGS,ACTIONS,animationFrame,actionFrame,normalizeHeading};',context);
-const {HEADINGS,ACTIONS,animationFrame,actionFrame,normalizeHeading}=context.api;
+vm.runInContext(source+'\nthis.api={HEADINGS,ACTIONS,animationFrame,actionFrame,resolveActionPose,normalizeHeading};',context);
+const {HEADINGS,ACTIONS,animationFrame,actionFrame,resolveActionPose,normalizeHeading}=context.api;
 test('all eight directions resolve unique action frame keys',()=>{
  assert.equal(HEADINGS.length,8);
  assert.equal(new Set(HEADINGS.map(heading=>animationFrame({heading,action:'run'}).key)).size,8);
@@ -41,4 +41,19 @@ test('one-shot action handles bad timing and idle without NaN',()=>{
  assert.equal(fallback.frame,0);
  assert.equal(fallback.finished,false);
  assert.equal(actionFrame({action:'idle',elapsed:100}).finished,true);
+});
+
+test('completed one-shot actions return to idle in same heading',()=>{
+ const active=resolveActionPose({heading:'SW',action:'kick',elapsed:.125,frames:4,fps:8});
+ assert.equal(active.key,'kick/SW/1');
+ assert.equal(active.transitioned,false);
+ const complete=resolveActionPose({heading:'SW',action:'kick',elapsed:.5,frames:4,fps:8});
+ assert.equal(complete.key,'idle/SW/0');
+ assert.equal(complete.previousAction,'kick');
+ assert.equal(complete.transitioned,true);
+});
+test('running loops and does not transition to idle',()=>{
+ const pose=resolveActionPose({heading:'NE',action:'run',elapsed:.625,frames:4,fps:8});
+ assert.equal(pose.key,'run/NE/1');
+ assert.equal(pose.transitioned,false);
 });
