@@ -336,3 +336,31 @@ html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%;min-height:100%
 .lanConnectionLab .row .btn{min-height:44px;white-space:normal}
 #lanStatus{border-left:3px solid #73c1e6;padding:10px 12px;background:#12314b;color:#f0fbff;overflow-wrap:anywhere}
 @media(max-width:560px){.lanConnectionLab{gap:10px}.lanConnectionLab .row .btn{flex:1 1 130px}.lanConnectionLab textarea{font-size:12px}}
+
+
+/* VIZ-01: original high-readability arcade match controls (four actions only).
+   Keep DOM actions and pointer handlers unchanged; tune thumb zones visually. */
+:root{--smf-hud-glass:#091b30e8;--smf-hud-edge:#c2f4ff66;--smf-touch-ring:#e3faffd9}
+#touchButtons{isolation:isolate;gap:4px;right:max(14px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));grid-template-columns:repeat(3,clamp(50px,7.4vw,72px));grid-template-rows:repeat(3,clamp(50px,7.4vw,72px))}
+#touchButtons .round{position:relative;min-width:0;min-height:0;padding:2px;border:2.5px solid var(--smf-touch-ring);border-radius:50%;font-size:clamp(9px,1.25vw,12px);font-weight:950;letter-spacing:.035em;text-shadow:0 1px 2px #000b;box-shadow:0 4px 0 #071c2aac,0 0 0 4px #071c2a66,inset 0 2px 5px #ffffff60;transition:filter .11s,transform .11s;user-select:none;-webkit-user-select:none}
+#touchButtons .round.pass{background:linear-gradient(150deg,#66c6ec,#186fbd)}
+#touchButtons .round.shoot{background:linear-gradient(150deg,#ff9f77,#cf334a)}
+#touchButtons .round.dribble{background:linear-gradient(150deg,#c39aff,#7845c1)}
+#touchButtons .round.jump{background:linear-gradient(150deg,#9cecb5,#278677)}
+#touchButtons .round:focus-visible{outline:3px solid #fff3a2;outline-offset:5px}
+#touchButtons .round.active{filter:brightness(1.22);transform:scale(.94)}
+#joyStick{border:3px solid #d6f9ffb8;background:radial-gradient(circle,#1f66814d,#0929439c);box-shadow:0 0 0 6px #09294066,inset 0 0 23px #d5f9ff25,0 5px 18px #0006}
+#joyKnob{background:radial-gradient(circle at 35% 28%,#f2ffff,#75cdd9);border:2px solid #ffffffcf;box-shadow:0 3px 11px #0009}
+.scoregroup{border:1px solid var(--smf-hud-edge);border-radius:13px;background:var(--smf-hud-glass);padding:5px 9px;box-shadow:0 4px 15px #0005;backdrop-filter:blur(5px)}
+.scoregroup strong{background:#071b31;box-shadow:inset 0 1px #ffffff20}
+@media (max-width:650px),(max-height:460px){
+ #touchButtons{grid-template-columns:repeat(3,clamp(46px,13vh,58px));grid-template-rows:repeat(3,clamp(46px,13vh,58px));gap:3px;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom))}
+ #touchButtons .round{font-size:9px}
+ .mobile{height:min(195px,48vh)}
+ .scoregroup{padding:3px 5px;gap:4px}
+}
+@media (max-width:370px) and (orientation:portrait){
+ #touchButtons{grid-template-columns:repeat(3,46px);grid-template-rows:repeat(3,46px);gap:2px}
+ #joyZone{transform:scale(.78);transform-origin:bottom left}
+}
+@media (prefers-reduced-motion:reduce){#touchButtons .round{transition:none}}
