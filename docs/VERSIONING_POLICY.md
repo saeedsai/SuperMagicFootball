@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.12.5.0
+# SuperMagicFootball release/version policy — About-only 0.12.6.0
 
-**Effective 21 October 2026; updated 29 October 2026 for candidate 0.12.5.0.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 29 October 2026 for candidate 0.12.6.0.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.12.5.0 (29 October 2026):** STUDIO-GALLERY-PICK-01 makes each eight-view Player Studio comparison tile a selectable, keyboard-accessible button. The chosen direction updates the main portrait and active tile highlight, stopping auto-rotation without changing unsaved edits or gameplay. Exact-head 4+4/Modular, protected promotion and hosted Pages verification remain independent gates.
+**Current dev candidate 0.12.6.0 (29 October 2026):** STUDIO-GALLERY-KEYS-01 adds desktop/mobile-aware arrow navigation and Home/End to the Player Studio eight-view gallery, with focus following the preview. Only presentation changes; no saved data or gameplay controls change. Exact-head full CI, protected main promotion and Pages hosted-byte verification remain mandatory.
+
+**Previous dev candidate 0.12.5.0 (29 October 2026):** STUDIO-GALLERY-PICK-01 makes each eight-view Player Studio comparison tile a selectable, keyboard-accessible button. The chosen direction updates the main portrait and active tile highlight, stopping auto-rotation without changing unsaved edits or gameplay. Exact-head 4+4/Modular, protected promotion and hosted Pages verification remain independent gates.
 
 **Previous dev candidate 0.12.4.0 (29 October 2026):** STUDIO-ACTION-PHASE-01 adds a user-controlled four-phase comparison to the existing eight-direction Player Studio gallery, without touching gameplay, saves or control mapping. An obsolete idle-only gallery test is updated to the actual action-preview contract. The eight bespoke art packs remain unfinished; exact-head 4+4/Modular, promotion and Pages are independent gates.
 
