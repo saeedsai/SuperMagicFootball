@@ -15,6 +15,17 @@ const VISUALFEEL=(()=>{
   if(Math.abs(y)<=.31)return {kind:'side',side};
   return {kind:y>0?'quarterFront':'quarterBack',side};
  }
+ // Resolve a stable compass heading for eight independent directional art frames.
+ // This does not change the legacy {kind,side} renderer contract.
+ function artHeading(dx=0,dy=0,face=1){
+  const view=facingView(dx,dy,face);
+  if(view.kind==='front')return 'S';
+  if(view.kind==='back')return 'N';
+  const east=view.side>=0;
+  if(view.kind==='side')return east?'E':'W';
+  if(view.kind==='quarterFront')return east?'SE':'SW';
+  return east?'NE':'NW';
+ }
  // World-space travelled distance: one radius of travel is one radian of rolling.
  function rollDelta(dx,dy,radius=15){return Math.hypot(dx,dy)/Math.max(1,radius);}
  const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
@@ -26,7 +37,7 @@ const VISUALFEEL=(()=>{
   const [base,factor,limit]=profile[kind]||profile.collision;
   return clamp((base+amount*factor)*(1.42-resistance*.0064),.12,limit);
  }
- return {BALL_MODELS,validBallModel,facingView,rollDelta,impactStun};
+ return {BALL_MODELS,validBallModel,facingView,artHeading,rollDelta,impactStun};
 })();
 
 // v0.8.25.12 balance rules are deliberately pure to support independent regression checks.
