@@ -1,3 +1,6 @@
+## 29 October 2026 — STUDIO-GALLERY-KEYS-01 (0.12.6.0 candidate)
+Responsive arrow-key navigation (4 desktop columns / 2 mobile), Home/End, visible focus and preview selection now work within the existing eight-direction Player Studio gallery. Preserve unsaved edits, exactly four game controls and offline data. Next: authored graphics in renderer, keeper action art, Magic Trick counters, Career progression, full exact-head CI and hosted certification.
+
 ## 29 October 2026 — STUDIO-GALLERY-PICK-01 (0.12.5.0 candidate)
 The eight-direction Player Studio gallery now supports accessible, selectable directional previews, highlights the active direction, and stops auto-spin when a tile is selected. Unsaved appearance edits remain untouched. Next: true authored directional action frames, goalkeeper animation quality, counterable Magic Tricks, Career improvements and exact-head QA/release gates.
 
