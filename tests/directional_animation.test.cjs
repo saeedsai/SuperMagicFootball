@@ -4,8 +4,8 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync('src/modules/directional_animation.js','utf8').replace(/^export \{[^\n]+\};?\s*$/m,'');
 const context=vm.createContext({});
-vm.runInContext(source+'\nthis.api={HEADINGS,ACTIONS,animationFrame,actionFrame,resolveActionPose,normalizeHeading};',context);
-const {HEADINGS,ACTIONS,animationFrame,actionFrame,resolveActionPose,normalizeHeading}=context.api;
+vm.runInContext(source+'\nthis.api={HEADINGS,ACTIONS,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates,normalizeHeading};',context);
+const {HEADINGS,ACTIONS,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates,normalizeHeading}=context.api;
 test('all eight directions resolve unique action frame keys',()=>{
  assert.equal(HEADINGS.length,8);
  assert.equal(new Set(HEADINGS.map(heading=>animationFrame({heading,action:'run'}).key)).size,8);
@@ -56,4 +56,18 @@ test('running loops and does not transition to idle',()=>{
  const pose=resolveActionPose({heading:'NE',action:'run',elapsed:.625,frames:4,fps:8});
  assert.equal(pose.key,'run/NE/1');
  assert.equal(pose.transitioned,false);
+});
+
+test('authored asset candidates prioritize action frame then directional fallbacks',()=>{
+ const keys=Array.from(animationAssetCandidates({action:'keeper',heading:'NW',frame:3}));
+ assert.deepEqual(keys,['keeper/NW/3','keeper/NW/0','idle/NW/0','idle/S/0']);
+});
+test('idle default has no duplicate fallback keys',()=>{
+ const keys=Array.from(animationAssetCandidates({action:'idle',heading:'S',frame:0}));
+ assert.deepEqual(keys,['idle/S/0']);
+ assert.equal(Object.isFrozen(animationAssetCandidates({})),true);
+});
+test('untrusted pose keys cannot inject asset path segments',()=>{
+ const keys=Array.from(animationAssetCandidates({action:'../other',heading:'../../escape',frame:999}));
+ assert.deepEqual(keys,['idle/S/0']);
 });
