@@ -51,4 +51,11 @@ function animationAssetCandidates(pose){
   'idle/S/0'
  ])]);
 }
-export {HEADINGS,ACTIONS,normalizeHeading,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates};
+// Resolve a sparse authored frame catalog without assuming every pose exists.
+// The catalog may be a Set or an object of exact keys; no URL is constructed.
+function resolveAuthoredFrame(pose,catalog){
+ const has=key=>catalog instanceof Set?catalog.has(key):Boolean(catalog&&Object.prototype.hasOwnProperty.call(catalog,key)&&catalog[key]);
+ for(const key of animationAssetCandidates(pose))if(has(key))return key;
+ return null;
+}
+export {HEADINGS,ACTIONS,normalizeHeading,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates,resolveAuthoredFrame};
