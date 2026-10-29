@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.5.0',
+ version:'0.12.6.0',
  date:'2026-10-29',
  notes:Object.freeze([
+  'STUDIO-GALLERY-KEYS-01 adds arrow-key navigation across the eight selectable Player Studio views, following the four-column desktop or two-column mobile grid. Home/End jump to the first/last direction, focus follows the selection, and unrelated controls keep their normal keys. Preview-only: no new gameplay buttons, saved-data changes or finished bespoke art claims.',
   'STUDIO-GALLERY-PICK-01: Click or tap any of the eight directional comparison frames to select that angle in the main Player Studio portrait. The active view is highlighted and exposed to screen readers, auto-rotation stops on selection, and unsaved appearance edits remain intact. No changes to four gameplay controls, match physics, saves, rosters or LAN/P2P.',
   'STUDIO-ACTION-PHASE-01: Player Studio eight-direction gallery now has a keyboard- and touch-friendly four-phase motion scrubber. Compare run, kick, slide, header, keeper dive and celebration timing side by side without changing the player, saved data or the four gameplay buttons. This uses existing directional art, not yet-completed bespoke animation packs.',
   'STUDIO-ACTION-GALLERY-01: Player Studio now compares the selected idle, run, kick, slide, header, goalkeeper and celebration pose across all eight directions. Static comparison frames update when the pose changes, with accessible labels; the main portrait remains animated. No changes to four controls, gameplay, saved rosters, Career/Cup slots, SD09 or LAN/P2P.',
