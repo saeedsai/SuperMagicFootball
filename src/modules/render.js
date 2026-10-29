@@ -887,6 +887,16 @@ class Renderer{
    ctx.strokeStyle=p.t===0?'#fff4a4':'#a8f2ff';ctx.lineWidth=3;
    ctx.beginPath();ctx.ellipse(0,5,29+(1-p.firstTouchFx/.35)*15,12+(1-p.firstTouchFx/.35)*5,0,0,PI*2);ctx.stroke();ctx.restore();}
   if(p.controlled){ctx.strokeStyle=p.t===0?'#ffe675':'#74f2ff';ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(0,5,28,12,0,0,PI*2);ctx.stroke();ellipse(ctx,0,5,21,6,'#061d2855')}
+  // Circular Breath gauge at the feet. Draw only in live matches, not editor previews.
+  if(this.inMatchDraw&&!p.preview){
+   const stamina=Math.max(1,Math.min(100,Number(p.src.stamina)||60));
+   const cap=3+7*(stamina-1)/99;
+   const ratio=clamp((Number.isFinite(p.breath)?p.breath:cap)/cap,0,1);
+   ctx.save();ctx.beginPath();ctx.ellipse(0,4,34,15,0,0,Math.PI*2);
+   ctx.strokeStyle='#071827c2';ctx.lineWidth=5;ctx.stroke();
+   ctx.beginPath();ctx.ellipse(0,4,34,15,0,-Math.PI/2,-Math.PI/2+Math.PI*2*ratio);
+   ctx.strokeStyle=ratio<.2?'#ff786a':ratio<.5?'#ffcd66':'#66efcd';ctx.lineWidth=4;ctx.stroke();ctx.restore();
+  }
   ctx.translate(0,-(p.z||0)-Math.abs(run)*2+(1-stature)*12);
   if(signatureMotion){ctx.translate(signatureMotion.offsetX,signatureMotion.offsetY);ctx.rotate(signatureMotion.lean);}
   if(turnLag)ctx.rotate(Math.max(-.095,Math.min(.095,turnLag*.12))); // brief counter-lean during turns
