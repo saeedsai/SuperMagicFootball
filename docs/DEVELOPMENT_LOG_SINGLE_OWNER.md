@@ -1611,3 +1611,8 @@ Host now holds last validated guest four-button and directional input for at mos
 - Baseline dev/main 2c878ae066032b21ec2abe1f2c2c415d7cc49ad3. New Player Studio live appearance save feedback disables the action for complete unchanged selections while preserving legacy normalization and genuine edits. Preview pose/rotation never changes saved data. Existing save handler unchanged.
 - Added focused pure-helper regression and UI event wiring assertions. Updated About, package, README, offline cache, version policy and own checkpoint. No LAN broker, physics, buttons, rosters, saves or graphics assets modified.
 - Exact-head full 4 Node + 4 Chromium, Modular QA, protected promotion and Pages hosted-byte smoke are release gates, not claimed until observed. Physical two-device LAN/P2P acceptance remains open in #48. Continue other roadmap work if promotion is pending.
+
+### 2026-10-29 08:00 CET — STUDIO-DRIBBLE-STATE-01 (0.11.4.51 candidate)
+- Baseline dev/main 0aa4fa7323e1ed57de1272cfc9b0bcc38fbb0cf6. Dribble Style Studio now provides accessible live save-state feedback. Explicitly stored unchanged selections disable SAVE DRIBBLE STYLE; deterministic legacy defaults remain savable on first selection. Invalid choices fail closed.
+- Added focused helper and UI-wiring regression. Updated About, package, README banner/heading, SW cache, version policy, shared memory and own checkpoint. No LAN broker, physics, fifth button, roster, save schema or art change.
+- Full exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and Pages byte verification remain gates until observed. Physical two-device LAN/P2P acceptance open in #48. Continue roadmap increments even if release pending.
