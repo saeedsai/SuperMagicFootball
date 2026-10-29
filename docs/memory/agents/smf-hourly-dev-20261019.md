@@ -3,26 +3,26 @@
 **Updated:** 2026-10-29
 
 ## Mission
-Sole incremental developer directly on existing `dev`. No new branches, force pushes, CI/security bypass or manual `main` edits. Preserve 223 teams/2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09, saves/offline and LAN/P2P.
+Sole incremental developer directly on existing `dev`. No extra branches, force pushes, security/CI bypass or manual `main` edits. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump only, ten Career/Cup slots, SD09, offline saves and LAN/P2P.
 
 ## Current checkpoint
-- **0.12.6.0 STUDIO-GALLERY-KEYS-01:** Eight-view Player Studio gallery supports responsive arrow navigation (4 columns desktop, 2 mobile), Home/End, focus following selected preview, and noninterference with Alt/Ctrl/Meta browser shortcuts. Existing click/touch selection, unsaved edits and four gameplay actions preserved.
-- UI commits 56da2cad and 4f072e85; tests 6ccd950a, d9776dc1 (regex correction) and 729ce429. About/package/SW cache/README/policy/roadmap updated; corrected previously stale README project heading.
-- Four isolated local Node VM tests passed against mirrored committed handler. Source/version consistency checks on fetched dev files passed. Actual GitHub repository focused test, four Node/four Chromium and Modular QA not executed: local GitHub clone DNS failed; green CI unverified. No protected main promotion or hosted Pages verification.
-- Prior 0.12.5.0 selectable gallery and 0.12.4.0 motion-phase scrubber remain. Authored-frame utilities still **not wired** into live renderer; bespoke eight-direction action art incomplete.
+- **0.12.7.0 CAREER-SLOT-RENAME-01:** Career slot menu now offers RENAME; `careerSlots.rename(n,name)` preserves original `savedAt`, active selection, career payload and 10-slot vault, rejects blank/nontext names, avoids no-op writes and rolls back in-memory state if storage fails. UI uses cancelable prompt. Commits: 10a805b8, 11601fd1.
+- Regression: c800de80 and f9cc4948; seven committed tests including UI wiring. Six isolated Node tests passed on manually mirrored slot module; module syntax checked. Actual repository test file, 4 Node + 4 Chromium, Modular QA not run due GitHub clone DNS failure. Green CI not established.
+- About/package/README heading and banner/SW cache/policy/roadmap/shared memory updated to 0.12.7.0. Development log commit 250bca65. No main promotion or Pages byte verification.
+- Prior 0.12.6.0 gallery keyboard navigation, 0.12.5.0 selectable views and 0.12.4.0 motion-phase scrubber remain. Independently authored eight-view art not yet integrated into live renderer.
 
 ## Next smallest action
-1. Run exact-head repository focused tests, four Node/four Chromium and Modular QA; fix observed regressions.
-2. Promote only an exact green dev head through protected main pipeline; verify Pages hosted bytes.
-3. Wire independently authored directional art into renderer and visually validate issue #15.
-4. Implement counterable Magic Trick using only existing four buttons.
-5. Improve goalkeeper action feedback or Career progression with regression coverage.
+1. Run exact-head focused + four Node/four Chromium + Modular QA and repair any observed failures.
+2. Integrate original eight-view directional action art into live renderer, inspect orientation #15.
+3. Add counterable Magic Trick gameplay using only the four established buttons.
+4. Improve goalkeeper catch/dive visuals and Career progression.
+5. Promote only exact green dev via protected main pipeline; verify Pages bytes and hosted smoke.
 
 ## Ownership and exclusions
-Sole developer; do not read other agents' private memory. No routine LAN/P2P work. Physical two-phone #48, Render trigger drift #86, main protection #87 remain open; do not claim physical certification.
+Sole developer; no other agents' private memory. Stop routine LAN/P2P implementation. Physical two-phone #48, Render commit-trigger drift #86 and main protection #87 remain open; no physical certification.
 
 ## Evidence
-Local isolated tests: 4 passed. GitHub exact-head CI and Pages: unverified. Earlier main SHA `93af332189be3856025d90d2f9eb6b1466d09121`.
+Before this increment main SHA `93af332189be3856025d90d2f9eb6b1466d09121`, dev SHA `4579d01a9926fecdb5e73111724c78e18642f837` (46 ahead). Local git ls-remote failed: `Could not resolve host: github.com`; GitHub PR-only workflow lookup and commit statuses empty. Exact current heads and CI must be rechecked next run.
 
 ## Cleanup
-Keep checkpoint under 4KiB; detailed history in `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md`.
+Keep own checkpoint under 4KiB, shared memory under 6KiB and detailed history in development log.
