@@ -1728,3 +1728,7 @@ Host now holds last validated guest four-button and directional input for at mos
 - Added pure eight-way animation frame resolver (`src/modules/directional_animation.js`) for seven existing visual action categories; no runtime integration or player-facing release/version bump yet.
 - Added focused Node regression `tests/directional_animation.test.cjs` for direction uniqueness, action identity, deterministic looping and invalid inputs.
 - Commits: `7cb68ca71719274af922bbc2058845034aa9bdd1`, `04b20951073f6abca0f72e8ff1e7db05803e4fb5`. Full 4+4 Chromium/Node and Modular QA not verified in this run; main/Pages promotion not claimed.
+
+## 2026-10-29 — ACTION-TIMELINE-01
+- Added pure non-looping `actionFrame()` for action animation completion and final-frame hold. Existing looping `animationFrame()` unchanged. Not wired to live renderer; no player-facing version bump.
+- Focused regressions added for completion, compatibility and malformed timing. Commits a6158fc5 and 74a461b2. Tests/4+4/Modular and Pages not verified in this run.
