@@ -1,3 +1,6 @@
+## 2026-10-29 — ARENA-OVERHAUL-01 navigation regression correction (version unchanged)
+- Exact candidate 6ebdcbb3d773c8fbaaa621a8e66ed7bb0984823a passed 1,049 Node contracts and Modular QA, but Chromium revealed duplicated data-action=navQuick selectors and focus on the hero. Fixed Play Now to use existing single-player action quick and restored home focus to the primary navChoice; existing Quick Match remains unique. Regression added. Rerun exact-head 4+4 and Modular QA before promotion. No game/save change.
+
 ## 2026-10-29 — GK-GLOVE-ART-01 action-specific keeper glove (0.12.1.0 candidate)
 - Baseline exact dev `6ebdcbb3d773c8fbaaa621a8e66ed7bb0984823a` integrates ARENA-OVERHAUL-01; main was `5bac08dc3d102cb3d860de323db2ac474f44fe00` at start of this run. Do not overwrite concurrent menu/stadium changes.
 - Added padded goalkeeper glove palms only for existing keeper catch/dive/super actions, with focused source contract. No hitbox, physics, goalkeeper reach, action mapping, roster, save or LAN change.
