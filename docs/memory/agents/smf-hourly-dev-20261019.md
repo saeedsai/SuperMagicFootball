@@ -22,6 +22,9 @@ Incremental dev-only changes, never extra branches, force pushes or CI bypass. P
 
 - SPARSE-ART-RESOLVER-01: `resolveAuthoredFrame()` selects sparse authored art with safe fallback; three regressions committed (4dd0ac1b, 15b13298). Renderer integration/CI pending, no version bump.
 
+
+- MAP-ART-CATALOG-01: `resolveAuthoredFrame` now handles Map-backed catalogs and skips unavailable values; two tests added (084b4072, 34de8217). Tests/4+4/Modular not verified; renderer still not wired, no version bump.
+
 ## Next smallest action
 1. Verify four Node/four Chromium and Modular QA on exact dev head, fix any failures.
 2. Permit authorized green-CI main promotion and verify Pages bytes.
