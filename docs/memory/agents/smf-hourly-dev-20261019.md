@@ -8,7 +8,7 @@ Small tested commits directly on existing `dev`; no new branches, force pushes o
 ## Current checkpoint
 - 0.11.4.57 candidate MAGIC-BAT-SLIDE-01: grounded active SHOOT-slide parries close-range Bat, with cost and other Tricks unchanged. New focused real-engine regression; exact-head 4 Node + 4 Chromium and Modular QA, protected promotion and Pages hosted-byte verification are independent gates.
 - Baseline dev/main `1c90677ae61bba38d7cbb038f377710f50ba4fa9` (0.11.4.56). Full Regression Census 40854451550 and Modular QA 40854451551 green; Pages build 40855262287 and main census 40855262069 green.
-- Deployed PC/touch workflow 40854451762 failed: desktop `window.SupermagicFootball` readiness timeout three times before Pages build completed. Investigate hosted runtime initialization, browser console/network and smoke sequencing; do not misreport success.
+- Hosted Render LAN smoke failed on 0.11.4.57 browser shard 3: 25-second room-registration timeout. Added 90-second bounded cold-start wait and browser/WSS diagnostics, still requiring real registration; exact-head CI pending.\n- Deployed PC/touch workflow 40854451762 failed: desktop `window.SupermagicFootball` readiness timeout three times before Pages build completed. Investigate hosted runtime initialization, browser console/network and smoke sequencing; do not misreport success.
 - LAN-094 delivered with automated two-client coverage; physical two-phone acceptance #48 remains open. Render commit-trigger drift unresolved.
 - Preserve 223 teams, 2676 players, six formations, four actions, offline saves, Career/Cup ten slots and SD09.
 

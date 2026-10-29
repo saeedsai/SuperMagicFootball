@@ -27,8 +27,18 @@ def main():
     page.wait_for_function("!!window.SupermagicFootball?.game",timeout=45000)
     page.locator('[data-action="navQuick"]').first.click(timeout=15000)
     page.locator('[data-action="navLan"]').first.click(timeout=15000)
+   # Render's cold-start and reconnect can exceed the original 25-second gate.
+   # Keep the real registration assertion; expose broker/browser diagnostics on failure.
+   diagnostics=[]
+   host.on('pageerror',lambda exc:diagnostics.append('pageerror: '+str(exc)))
+   host.on('console',lambda msg:diagnostics.append('console: '+msg.text) if msg.type=='error' else None)
+   host.on('websocket',lambda ws:diagnostics.append('websocket: '+ws.url))
    host.locator('#autoHost').click()
-   host.locator('#autoStatus').filter(has_text='Room registered').wait_for(timeout=25000)
+   try:
+    host.locator('#autoStatus').filter(has_text='Room registered').wait_for(timeout=90000)
+   except Exception:
+    print('RENDER_HOST_DIAGNOSTICS',{'status':host.locator('#autoStatus').inner_text(),'hostInfo':host.locator('#autoHostInfo').inner_text(),'events':diagnostics[-12:]},flush=True)
+    raise
    guest.locator('#autoFind').click()
    guest.locator('#autoRooms button').first.wait_for(timeout=25000)
    guest.locator('#autoRooms button').first.click()

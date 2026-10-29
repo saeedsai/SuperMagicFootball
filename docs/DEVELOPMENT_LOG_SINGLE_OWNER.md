@@ -1,3 +1,7 @@
+## 2026-10-29 — hosted Render LAN smoke reliability follow-up (test-only; version remains 0.11.4.57)
+- Exact-head 0.11.4.57 at c821299251a8ca39613a791c284b24cbaefe42c3: focused 33 assertions, 1023/1025 Node tests on earlier 5ccf commit (two README-heading contract failures fixed in c821), Modular QA green, four Node shards green and three Chromium shards green. Chromium shard 3 failed only hosted Render LAN smoke waiting 25s for 'Room registered'; physical two-phone acceptance remains open.
+- Preserve real Render + Pages two-browser assertion and all four controls. Extend the bounded hosted registration wait to 90s for cold-start and print status, host info, browser errors and WSS URL on failure; no bypass, skip or weakening of the registration assertion. Full exact-head CI must rerun.
+
 ## 2026-10-29 — MAGIC-BAT-SLIDE-01 (candidate 0.11.4.57)
 - Baseline dev/main `1c90677ae61bba38d7cbb038f377710f50ba4fa9`: 0.11.4.56 Full Regression Census 40854451550, Modular QA 40854451551, main Pages 40855262287 and post-main census 40855262069 green. Separate deployed PC/touch 40854451762 failed three desktop initialization waits before Pages build; not certified.
 - Added active grounded defensive SHOOT-slide parry for Bat at close range, with explicit positive action timer and finite below-20 height. A parried cast still consumes cooldown/fatigue; expired/airborne slides and other Tricks remain unchanged. Player Studio describes the existing four-button counter.
