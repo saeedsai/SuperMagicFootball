@@ -198,7 +198,7 @@ const navItem=(label,act,description='',availability='active',icon='⚽')=>({lab
 function menuChoices(id,title,subtitle,entries,back='home',extra=''){
  menuBackAction=back;
  const cards=entries.map((e,i)=>`<button type="button" class="btn navChoice ${e.availability==='later'?'navLater':''}" data-action="${escapeHTML(e.act)}" ${i===0?'data-default-focus="true"':''} aria-label="${escapeHTML(e.label+(e.availability==='later'?' coming later':''))}"><span class="navIcon" aria-hidden="true">${e.icon}</span><span class="navCopy"><strong>${escapeHTML(e.label)}</strong><small>${escapeHTML(e.description)}</small></span><span class="navStatus">${e.availability==='later'?'COMING LATER':'›'}</span></button>`).join('');
- show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL</div><h1 class="heading">${escapeHTML(title)}</h1><p class="subtitle">${escapeHTML(subtitle)}</p></div>${button('← BACK',back,'minor navBack')}</div><div class="navList">${cards}</div>${extra}</div>`,id);
+ show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL</div><h1 class="heading">${escapeHTML(title)}</h1><p class="subtitle">${escapeHTML(subtitle)}</p></div>${button('← BACK',back,'minor navBack')}</div><div class="arenaDirectoryLabel"><span>CHOOSE YOUR PATH</span><small>ALL MODES, ONE ARENA</small></div><div class="navList">${cards}</div>${extra}</div>`,id);
  // Restore the selected item in its parent after returning; do not steal focus from clicks.
  if(navFocusMap[id]){const match=menu.querySelector(`[data-action="${navFocusMap[id]}"]`);if(match){match.focus({preventScroll:true});return;}}
  menu.querySelector('.navChoice')?.focus({preventScroll:true});
@@ -312,9 +312,10 @@ function showAbout(){
 }
 function showHome(){
  menuBackAction='home';menuEntryReturn='home';
- show(`<header class="homeMasthead"><div><div class="topline">ARCADE FOOTBALL · SUPER SHOTS · YOUR FOOTBALL UNIVERSE</div><h1 class="heading logoHeading">SUPERMAGIC <em>FOOTBALL</em></h1><p class="subtitle">Pick a mode. All original gameplay and editing tools remain accessible.</p></div></header>
+ show(`<header class="homeMasthead arcadeHomeHeader"><div class="arcadeIdentity"><div class="topline arcadeEyebrow">★ ORIGINAL ARCADE FOOTBALL · THE MAGIC LEAGUE</div><h1 class="heading logoHeading">SUPERMAGIC <em>FOOTBALL</em></h1><p class="subtitle">Big goals. Wild tricks. Your football universe.</p></div><div class="arcadeHomeTrophy" aria-hidden="true"><span>★</span><strong>THE ARENA</strong><small>PLAY • CREATE • WIN</small></div></header>
+<section class="arcadeHeroStrip" aria-label="Featured match"><div><span class="arenaKicker">READY FOR KICKOFF?</span><h2>THE PITCH IS YOURS.</h2><p>Fast arcade matches, outrageous magic and your own dream squad.</p></div><button type="button" class="btn gold arcadeLaunch" data-action="navQuick" aria-label="Play quick match">PLAY NOW <span aria-hidden="true">▶</span></button></section>
  <div class="menuGrid homeDashboard simplifiedHome"><main class="homeDirectory" aria-label="Five game categories">
- <div class="navList navMainList">
+ <div class="arenaDirectoryLabel"><span>CHOOSE YOUR GAME</span><small>ONE TAP TO FOOTBALL</small></div><div class="navList navMainList">
  ${[
  navItem('Quick Match','navQuick','Play locally or enter training.','active','⚽'),
  navItem('Online','navOnline','Online modes planned for later.','later','🌐'),
@@ -322,9 +323,9 @@ function showHome(){
  navItem('Leagues & Cups','navCups','World League, continental cups and upcoming competitions.','active','🏆'),
  navItem('Settings','navSettings','Game, graphics, sound, controls and customization.','active','⚙')
  ].map(e=>`<button type="button" class="btn navChoice" data-action="${e.act}"><span class="navIcon" aria-hidden="true">${e.icon}</span><span class="navCopy"><strong>${e.label}</strong><small>${e.description}</small></span><span class="navStatus">${e.availability==='later'?'LATER':'›'}</span></button>`).join('')}
- </div><div class="row navFooter">${career?button('▶ CONTINUE CAREER','manager','minor'):''}${button('⛶ FULLSCREEN','fullscreen','minor')}${button('CREDITS / ABOUT','navAbout','minor')}</div>
+ </div><div class="arenaShortcutRow" aria-label="Customization shortcuts"><button type="button" class="btn arenaShortcut" data-action="navCustomization"><span aria-hidden="true">🎨</span><span>PLAYER STUDIO <small>Build your football star</small></span><b aria-hidden="true">›</b></button><button type="button" class="btn arenaShortcut" data-action="navCareerSlots"><span aria-hidden="true">💾</span><span>CAREER SAVES <small>Pick up where you left off</small></span><b aria-hidden="true">›</b></button></div><div class="row navFooter">${career?button('▶ CONTINUE CAREER','manager','minor'):''}${button('⛶ FULLSCREEN','fullscreen','minor')}${button('CREDITS / ABOUT','navAbout','minor')}</div>
  <p class="muted homeFootnote">${TEAMS.length} teams · 12 players per team · six formations · four action buttons · playable offline.</p></main>
- <aside class="panel posterPanel" aria-label="Supermagic Football preview"><div class="poster newPoster"><div class="posterSun"></div><div class="posterLines"></div><canvas id="posterCanvas" width="480" height="360" aria-label="Animated football preview"></canvas><div class="posterBall">✦</div><div class="posterTitle">BIG PERSONALITY.<br><span>BIGGER PLAY.</span></div></div><div class="posterStats"><span>01 <b>PLAY OFFLINE</b></span><span>02 <b>${TEAMS.length} TEAMS</b></span><span>03 <b>FOUR ACTION BUTTONS</b></span></div></aside></div>`,'home');
+ <aside class="panel posterPanel" aria-label="Supermagic Football preview"><div class="poster newPoster"><div class="posterSun"></div><div class="posterLines"></div><canvas id="posterCanvas" width="480" height="360" aria-label="Animated football preview"></canvas><div class="posterBall">✦</div><div class="posterTitle">BIG PERSONALITY.<br><span>BIGGER PLAY.</span></div></div><span class="arenaPosterStamp">ORIGINAL MAGIC FOOTBALL</span><div class="posterStats"><span>01 <b>PLAY OFFLINE</b></span><span>02 <b>${TEAMS.length} TEAMS</b></span><span>03 <b>FOUR ACTION BUTTONS</b></span></div></aside></div>`,'home');
  drawPoster();const focus=menu.querySelector(`[data-action="${navFocusMap.home||'navQuick'}"]`)||menu.querySelector('.navChoice');focus?.focus({preventScroll:true});
 }
 function drawPoster(){let canvas=$('posterCanvas');if(!canvas)return;let cx=canvas.getContext('2d');let t=performance.now()/1000;cx.clearRect(0,0,canvas.width,canvas.height);

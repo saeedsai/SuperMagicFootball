@@ -364,3 +364,89 @@ html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%;min-height:100%
  #joyZone{transform:scale(.78);transform-origin:bottom left}
 }
 @media (prefers-reduced-motion:reduce){#touchButtons .round{transition:none}}
+
+
+/* ARENA-OVERHAUL-01: original arcade-sports UI, not third-party artwork.
+   All navigation and exactly four in-match action handlers remain unchanged. */
+:root{--arena-royal:#2365d9;--arena-deep:#0b194a;--arena-blue:#23b1ff;--arena-sky:#78deff;--arena-gold:#ffd461;--arena-panel:#122d64eb;--arena-line:#91d9ff9e;--gold:var(--arena-gold);--ice:var(--arena-sky);--ink:#0e2251}
+.menu{isolation:isolate;background:radial-gradient(ellipse at 50% 10%,#a6e8ff8c,transparent 53%),radial-gradient(ellipse 90% 60% at 50% 110%,#27bb6bcb,transparent 80%),linear-gradient(160deg,#1545a0,#187bc3 48%,#176b80 78%,#104f3e)}
+.menu::before,.menu::after{content:"";position:absolute;pointer-events:none;z-index:0}
+.menu::before{inset:0;background:repeating-linear-gradient(90deg,#c5e9ff14 0 2px,transparent 2px 57px);opacity:.6}
+.menu::after{inset:auto -10% -14%;height:28%;background:repeating-linear-gradient(90deg,#5bdf8c57 0 98px,#297f6283 98px 196px);border-top:7px solid #dcfff08a;border-radius:50% 50% 0 0}
+.menu>.menubox{position:relative;z-index:1;width:min(1260px,97vw);max-height:96dvh;padding:clamp(12px,2.2vw,26px);border:1.5px solid #d6f4ff8c;border-top:3px solid #e5faffbd;border-radius:22px;background:linear-gradient(158deg,#132e68f4,#0e2453f7 55%,#0d214bef);box-shadow:0 25px 65px #04102c9b,inset 0 2px #ffffff30;scrollbar-color:#5c9be2 #11274f}
+.menu .screenTools{margin:-8px 0 4px}
+.menu .screenTools>.fullscreenTool{background:#1e4780e8;border-color:#b4eaff81;color:#ecfaff}
+.heading,.navHeader .heading{color:#fffce9;letter-spacing:-.025em;text-shadow:0 3px #09234e,0 8px 17px #04112f}
+.heading em{color:#ffe27a;text-shadow:0 3px #aa702c,0 8px 17px #06123b}
+.topline{color:#94e6ff;letter-spacing:.15em;font-weight:1000}
+.subtitle,.navHeader .subtitle{color:#dcf1ff;line-height:1.45}
+.menu .panel{background:linear-gradient(150deg,#193b7eee,#122850f4);border:1px solid #a2dffe72;border-radius:17px;box-shadow:inset 0 1px #ffffff2c,0 8px 18px #0714355c}
+.menu .btn{border-radius:13px;background:linear-gradient(160deg,#3484d7,#214993);color:#f6fcff;font-weight:950;border:1.5px solid #b8ebff80;box-shadow:0 4px 0 #071a49,inset 0 1px #ffffff4b;transition:transform .13s,filter .13s,box-shadow .13s}
+.menu .btn:hover{background:linear-gradient(160deg,#429aeb,#295cae);filter:saturate(1.08)}
+.menu .btn:active{transform:translateY(3px);box-shadow:0 1px 0 #071a49}
+.menu .btn.gold{color:#50310e;background:linear-gradient(#fff4ae,#ffcb51 58%,#eda12e);border:2px solid #fff0a2;text-shadow:0 1px #fff9be;box-shadow:0 5px 0 #a66b1f,0 9px 20px #000a}
+.menu .btn.minor{background:#21467ecf;color:#e9f6ff}
+.menu .btn:focus-visible{outline:3px solid #fff5a2;outline-offset:3px}
+.menu .btn:disabled,.menu .navLater{opacity:.69;filter:saturate(.65)}
+.menu .choice,.menu input:not([type=color]):not([type=range]):not([type=checkbox]),.menu select,.menu textarea{border-color:#83bcecab;background:#0d2554;color:#f7fcff;border-radius:10px}
+.arcadeHomeHeader{margin:2px 0 12px;min-height:90px;align-items:center}
+.arcadeIdentity .logoHeading{font-size:clamp(27px,4.2vw,58px);margin:8px 0 4px}
+.arcadeEyebrow{display:inline-block;padding:6px 12px;background:#102f6da8;border:1px solid #8ddfff77;border-radius:999px;font-size:10px}
+.arcadeHomeTrophy{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;width:125px;height:92px;border-radius:20px;background:radial-gradient(circle at 50% 14%,#fff29b99,transparent 70%),linear-gradient(160deg,#3779c2,#192e77);border:1px solid #ffe9a5a6;box-shadow:inset 0 2px #ffffff4a,0 6px 18px #06183b}
+.arcadeHomeTrophy span{font-size:35px;color:#ffe27b;line-height:1}.arcadeHomeTrophy strong{font-size:11px;color:#fff5b3}.arcadeHomeTrophy small{font-size:8px;color:#cff5ff;letter-spacing:.1em}
+.arcadeHeroStrip{display:flex;align-items:center;justify-content:space-between;gap:18px;position:relative;overflow:hidden;min-height:112px;padding:18px clamp(16px,3vw,35px);margin-bottom:15px;border-radius:19px;border:2px solid #c3f0ff8c;background:radial-gradient(circle at 70% 85%,#53dc9760,transparent 33%),linear-gradient(105deg,#0f5ba2,#178cd1 49%,#166f84);box-shadow:inset 0 2px #ffffff4d,0 9px 24px #0415346f}
+.arcadeHeroStrip::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(128deg,#ffffff12 0 3px,transparent 3px 40px)}
+.arenaKicker{position:relative;color:#fff3a5;font-weight:1000;font-size:11px;letter-spacing:.18em}
+.arcadeHeroStrip h2{position:relative;margin:6px 0 2px;font-size:clamp(21px,3vw,34px);color:#fff;letter-spacing:-.03em;text-shadow:0 3px #0a3465}
+.arcadeHeroStrip p{position:relative;margin:5px 0;font-size:12px;color:#ddf8ff}
+.arcadeHeroStrip .arcadeLaunch{position:relative;display:flex;align-items:center;justify-content:center;gap:15px;flex:none;min-width:clamp(140px,19vw,200px);min-height:56px;font-size:19px}
+.homeDashboard{grid-template-columns:minmax(0,1.15fr) minmax(230px,.85fr);gap:16px;align-items:stretch}.homeDirectory{gap:10px;align-content:start}
+.arenaDirectoryLabel{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 2px 6px}
+.arenaDirectoryLabel span{font-size:12px;color:#fff4bd;font-weight:1000;letter-spacing:.13em}.arenaDirectoryLabel small{font-size:9px;color:#add9fa;font-weight:850;letter-spacing:.1em}
+.navMainList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.navMainList .navChoice:first-child{grid-column:1/-1;min-height:80px;background:linear-gradient(112deg,#248fde,#236bc1);border-color:#e0faffc7}
+.navMainList .navChoice:first-child .navIcon{height:52px;width:52px;flex-basis:52px;font-size:27px;background:linear-gradient(#76e8ff,#2aafed)}
+.navChoice.btn{display:flex;align-items:center;gap:13px;min-height:74px;padding:12px 13px;border:1.5px solid #8bd5f3a6;border-radius:15px;text-align:left;background:linear-gradient(145deg,#2057a6,#163875);box-shadow:0 4px 0 #071943a6,inset 0 1px #ffffff27}
+.navChoice.btn:hover{transform:translateY(-2px);background:linear-gradient(145deg,#2e83d2,#2557a6)}
+.navChoice .navIcon{border-radius:13px;background:linear-gradient(145deg,#328cd2,#1a417d);box-shadow:inset 0 1px #f5fdff6b}
+.navChoice .navCopy strong{font-size:clamp(13px,1.5vw,17px);color:#fff;font-weight:1000}.navChoice .navCopy small{color:#d3eaff;font-size:clamp(10px,1vw,12px)}.navChoice .navStatus{color:#ffdc6b}
+.navScreen{max-width:1060px}.navScreen .navList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.navScreen .navHeader{margin-bottom:15px;padding:8px 0 13px;border-bottom:1px solid #94d7ff5e}
+.navScreen .navChoice{min-height:82px}
+.arenaShortcutRow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.arenaShortcut.btn{display:flex;gap:11px;align-items:center;justify-content:space-between;min-height:54px;padding:9px 12px;font-size:12px}
+.arenaShortcut>span:first-child{font-size:24px}.arenaShortcut span:nth-child(2){flex:1;text-align:left}
+.arenaShortcut small{display:block;font-size:10px;color:#dbedff;font-weight:550;margin-top:4px}.arenaShortcut b{color:#fff0a2}
+.homeFootnote{color:#bcdff8;font-size:10px}
+.homeDashboard>.posterPanel{display:flex;flex-direction:column;gap:7px;background:linear-gradient(150deg,#174b96,#0f2b64);overflow:hidden}
+.homeDashboard .poster{flex:1;min-height:290px;background:linear-gradient(180deg,#56b9f9,#71e0f4 45%,#38b66b 70%,#115f40)}
+.arenaPosterStamp{align-self:center;padding:7px 12px;background:#ffd26b;color:#163369;letter-spacing:.12em;font-size:9px;font-weight:1000;border-radius:999px}
+.menu .characterStage,.menu .nationCard,.menu .formationPitch,.menu .shotCard{border:1px solid #81d5ff77;box-shadow:inset 0 1px #ffffff38,0 6px 14px #00112b46}
+.menu .squadEntry,.menu .fixture,.menu .studioEightViewGallery>*,.menu .abilitySummaryEntry{border-radius:12px;border-color:#91d9ff64}
+.menu .badge,.menu .titleSmall{color:#ffdd7b;letter-spacing:.06em}
+.hud{background:linear-gradient(180deg,#061a45e8,#0c3563b1 58%,transparent);min-height:142px}
+.scoregroup{position:absolute;top:max(7px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);gap:7px;min-width:300px;max-width:min(70vw,740px);justify-content:center;padding:7px 10px;border-radius:16px;background:linear-gradient(135deg,#0f3679e8,#081d50ed);border:2px solid #f3e9a79c;box-shadow:0 6px 0 #07143793,0 9px 20px #0010309e}
+.scoregroup #homename,.scoregroup #awayname{max-width:150px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-align:center;color:#fff}
+.scoregroup strong{font-size:clamp(21px,2.6vw,32px);background:linear-gradient(140deg,#1d62b0,#10295c);border-color:#badcf7aa;border-radius:11px;color:#fffdf0}.scoregroup strong span{color:#ffda64}
+.hudright{position:absolute;right:max(9px,env(safe-area-inset-right));top:max(11px,env(safe-area-inset-top));gap:7px}.hudright span{color:#f3fcff;background:#1a4882c7;border:1px solid #bce9ff62;border-radius:10px;padding:8px 10px}
+.hudright button{min-width:39px;min-height:39px;background:linear-gradient(#438ac5,#18487c);border:2px solid #d0f0ffb3;border-radius:11px}
+#playerTag{top:77px;left:max(13px,env(safe-area-inset-left));max-width:min(550px,65vw);font-size:11px;line-height:1.35;border-radius:10px;background:#092c60bd;border:1px solid #b2ecff66;padding:6px 10px;color:#fff3c7;text-shadow:0 2px 3px #041028}
+#staminaHud{top:117px;left:15px;color:#dbfdef}.staminaTrack{height:10px;background:#0e335b}#powerMeter{top:139px;left:15px;height:10px;border-color:#fbe09ab0}#specialMeter{top:134px;left:183px;background:#12376cdb;padding:3px 8px;border-radius:8px;border:1px solid #ffd86a73}
+#touchButtons .round{box-shadow:0 5px 0 #08173d,0 0 0 4px #0c27548a,inset 0 3px 5px #ffffff61,0 8px 20px #001024a8}
+#touchButtons .round:active,#touchButtons .round.active{transform:scale(.91);filter:brightness(1.2)}
+#joyZone{filter:drop-shadow(0 10px 16px #00142990)}#joyStick{background:radial-gradient(circle at 45% 34%,#48b5e567,#113a7dbf 72%);border:3px solid #c6edffcc}#joyKnob{background:radial-gradient(circle at 33% 22%,#fdffff,#73dce5 46%,#2b83b6);border:2px solid #ffffffd9}
+.toast{background:linear-gradient(160deg,#1c5fabeb,#082968f7);border:2px solid #ffe191;border-radius:17px;box-shadow:0 12px 26px #07152fa6;color:#fff4aa}
+@media(max-width:900px){.hudright #weatherHud{display:none}.scoregroup{max-width:60vw;min-width:0}.scoregroup #homename,.scoregroup #awayname{max-width:95px;font-size:10px}}
+@media(max-width:700px),(max-height:510px){
+ .menu>.menubox{padding:12px;border-radius:15px}.arcadeHomeTrophy{display:none}
+ .arcadeHeroStrip{padding:10px 13px;min-height:78px}.arcadeHeroStrip h2{font-size:22px}.arcadeHeroStrip p{font-size:10px}.arcadeHeroStrip .arcadeLaunch{min-width:110px;min-height:46px;font-size:12px}
+ .arenaDirectoryLabel small{display:none}.homeDashboard{grid-template-columns:1fr}.homeDashboard>.posterPanel{display:none}
+ .navScreen .navList{grid-template-columns:1fr}.navChoice.btn{min-height:57px;padding:9px 11px}.navMainList{gap:7px}.navMainList .navChoice:first-child{min-height:63px}
+ .arcadeIdentity .logoHeading{font-size:clamp(26px,5.2vw,37px)}.arcadeHomeHeader{min-height:0;margin-bottom:7px}
+ .hud{min-height:108px}.scoregroup{left:9px;transform:none;top:max(5px,env(safe-area-inset-top));max-width:calc(100vw - 155px);padding:2px 6px;gap:4px}
+ .scoregroup strong{font-size:18px;padding:3px 5px}.scoregroup #homeflag,.scoregroup #awayflag{font-size:11px;padding:3px}.scoregroup #homename,.scoregroup #awayname{max-width:66px;font-size:9px}
+ .hudright{top:max(5px,env(safe-area-inset-top));gap:3px}.hudright span{font-size:9px;padding:5px}.hudright button{height:32px;min-height:32px;min-width:32px;font-size:18px}
+ #playerTag{top:46px;left:8px;max-width:min(420px,75vw);font-size:9px;padding:3px 6px}#staminaHud{top:76px;left:8px;font-size:9px}#powerMeter{top:94px;left:8px;width:95px;height:7px}#specialMeter{top:88px;left:111px;font-size:9px;padding:2px 5px}
+}
+@media(max-width:440px) and (orientation:portrait){.navMainList{grid-template-columns:1fr}.navMainList .navChoice:first-child{grid-column:auto}.arcadeHeroStrip{flex-direction:column;align-items:stretch;gap:7px}.arcadeHeroStrip .arcadeLaunch{width:100%}.arenaShortcutRow{grid-template-columns:1fr}.scoregroup #homename,.scoregroup #awayname{display:none}.scoregroup{max-width:55vw}}
+@media(max-height:400px) and (pointer:coarse){.arcadeHeroStrip p{display:none}.arcadeHeroStrip{min-height:65px;padding:6px 11px}.navChoice.btn{min-height:48px}.scoregroup #homename,.scoregroup #awayname{display:none}#touchButtons{right:max(7px,env(safe-area-inset-right));bottom:max(7px,env(safe-area-inset-bottom))}}
+@media(prefers-reduced-motion:reduce){.menu .btn,.menu .navChoice,#touchButtons .round{transition:none!important}.menu .btn:hover,.menu .navChoice:hover{transform:none}}
