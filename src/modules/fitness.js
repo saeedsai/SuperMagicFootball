@@ -14,7 +14,7 @@ function fatigueTick(fatigue,stamina,seconds,intensity=0){
 }
 function actionFatigue(fatigue,stamina,kind,modifier=1){
  const costs={jump:.008,tackle:.019,slide:.029,pass:.004,shoot:.012,super:.085,defenceSuper:.065,spinBumper:.125,keeperSuper:.080,hyperdash:.060,header:.013,keeperDive:.022,comboJump:.035,assistBoost:.023,flipKick:.022,comboSuper:.105,bicycle:.035,superBicycle:.070,flyingKick:.029,dribbleTrick:.020};
- return clamp(fatigue+(costs[kind]||0)*.78*Math.max(.5,Math.min(1.5,Number(modifier)||1))*(120-clamp(Number(stamina)||60,1,100))/65,0,1);
+ return clamp(fatigue+(costs[kind]||0)*.78*Math.max(.5,Math.min(kind==='jump'?2:1.5,Number(modifier)||1))*(120-clamp(Number(stamina)||60,1,100))/65,0,1);
 }
 const staminaPercent=fatigue=>Math.round((1-clamp(fatigue||0,0,1))*100);
 const matchCondition=(condition,fatigue,seconds)=>clamp(Math.round((Number(condition)??100)-fatigue*10-Math.min(5,seconds/65)),25,100);
