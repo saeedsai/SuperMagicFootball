@@ -16,9 +16,9 @@ const source=fs.readFileSync(path.join(root,'src/modules/abilities.js'),'utf8')
 const ABILITIES=vm.runInNewContext(source+';ABILITIES',{
  GAME_ASSETS:{mechanics},SPECIALS:{abilityLevel:()=>3,levelModifiers:()=>({fatigue:1})}
 });
-function run({choice='keep',tier=3,explicitTier=3,ability,careerMode=false}={}){
+function run({choice='keep',tier=3,explicitTier=3,omitTier=false,ability,careerMode=false}={}){
  const player={id:'stable-df',role:'DF',rating:92,appearance:{style:2}};
- if(explicitTier!==undefined)player.superDefenceLevel=explicitTier;
+ if(!omitTier)player.superDefenceLevel=explicitTier;
  if(ability)player.superAbility={...ability};
  const stats={writes:0,careerWrites:0,refreshes:0};
  const context={
@@ -50,7 +50,7 @@ test('STUDIO-DEFENCE-NOOP-01: removing absent defence is read-only with explicit
  }
 });
 test('STUDIO-DEFENCE-NOOP-01: first explicit tier persists even for KEEP',()=>{
- const {save,stats,context}=run({choice:'keep',explicitTier:undefined});
+ const {save,stats,context}=run({choice:'keep',omitTier:true});
  save();assert.equal(stats.writes,1);assert.equal(stats.refreshes,1);
  assert.equal(context.edits.team[0].superDefenceLevel,3);
 });

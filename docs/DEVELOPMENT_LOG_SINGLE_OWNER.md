@@ -1,3 +1,6 @@
+## 2026-10-29 04:10 CET — CI fixture correction for 0.11.4.47
+- Exact-head Full Regression preflight failed 1 of 974 Node tests: the new first-time-tier fixture used an explicitly `undefined` argument with a destructuring default, inadvertently assigning tier 3 and asserting a write that should not happen. Fixed the fixture with an explicit `omitTier` flag; no game logic or eligibility relaxed. Retest full exact-head CI before promotion.
+
 ## 2026-10-29 04:05 CET — STUDIO-DEFENCE-NOOP-01 (candidate 0.11.4.47)
 - Render broker remains LIVE at LAN-094 `3da2f0c7`; this Studio-only change requires no broker update. Automated two-client LAN/P2P previously green; physical device acceptance still open in issue #48. No speculative LAN fixes.
 - Found `saveStudioDefence` rewrote Career/custom-club saves for unchanged explicit defence equipment/tier. Validate first; compare tier and ability fields; skip no-op writes while preserving first-time explicit tier, genuine edits, eligibility and SD09. Added focused real-handler tests in both save contexts.
