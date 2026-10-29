@@ -30,8 +30,22 @@ function create(storage){
   next.slots[index]={name:label,savedAt:new Date().toISOString(),career:clone(source.career)};
   persist(next);return index+1;
  }
+ // Rename an occupied slot without loading, overwriting, or touching career progress.
+ // The original save timestamp remains the time of the last gameplay save.
+ function rename(n,name){
+  check();const previous=get(n);
+  if(!previous)throw Error('Career slot '+n+' is empty');
+  if(typeof name!=='string')throw Error('Career slot name must be text');
+  const label=name.trim().slice(0,60).trim();
+  if(!label)throw Error('Career slot name cannot be empty');
+  if(label===previous.name)return clone(previous);
+  const next=clone(state);
+  next.slots[n-1].name=label;
+  persist(next);
+  return clone(next.slots[n-1]);
+ }
  function remove(n){check();if(!get(n))throw Error('Career slot '+n+' is empty');const next=clone(state);next.slots[n-1]=null;persist(next);}
  function importLegacy(career){check();if(exists||!validCareer(career))return false;save(1,career,'Imported legacy Career');return true;}
- return {get active(){return state.active},get error(){return blocked?.message||null},get hasVault(){return exists},list:()=>state.slots.map((s,i)=>({number:i+1,active:state.active===i+1,name:s?.name||'',savedAt:s?.savedAt||'',club:s?.career?.club??null,season:s?.career?.season??null,week:s?.career?.week??null,occupied:Boolean(s)})),firstEmpty:()=>{const i=state.slots.findIndex(s=>s===null);return i<0?null:i+1;},activeCareer:()=>blocked?null:(get(state.active)?clone(get(state.active).career):null),save,load,duplicate,remove,importLegacy};
+ return {get active(){return state.active},get error(){return blocked?.message||null},get hasVault(){return exists},list:()=>state.slots.map((s,i)=>({number:i+1,active:state.active===i+1,name:s?.name||'',savedAt:s?.savedAt||'',club:s?.career?.club??null,season:s?.career?.season??null,week:s?.career?.week??null,occupied:Boolean(s)})),firstEmpty:()=>{const i=state.slots.findIndex(s=>s===null);return i<0?null:i+1;},activeCareer:()=>blocked?null:(get(state.active)?clone(get(state.active).career):null),save,load,duplicate,rename,remove,importLegacy};
 }
 export const CAREER_SLOTS={create,validCareer,validVault};
