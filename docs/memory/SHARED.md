@@ -13,7 +13,7 @@
 - **QA:** [single-developer log](../DEVELOPMENT_LOG_SINGLE_OWNER.md), GitHub Actions and [Pages](../../GITHUB_PAGES_SETUP.md).
 
 ## Mandatory About version rule
-On **every Git commit**, preserve the About-only current dev candidate `0.11.4.46` (previous verified Pages release `0.11.4.23`; `0.11.4.25` has green PR CI and is on main, but hosted byte certification is not established here) and its offline notes from `src/modules/release.js`. Do not display a remote GitHub `dev` SHA or version banner outside About. Immutable commit SHAs stay internal to GitHub Actions/history; hosted Pages byte comparison verifies actual deployed content. **Every player-facing game update must also update root `README.md` with the new four-part version in banner and heading, dated summary of shipped features/fixes, compatibility notes where relevant and live link. README/version mismatch blocks release.** Documentation-only commits do not bump the installed version. Follow [`docs/VERSIONING_POLICY.md`](../VERSIONING_POLICY.md).
+On **every Git commit**, preserve the About-only current dev candidate `0.11.4.47` (previous verified Pages release `0.11.4.23`; `0.11.4.25` has green PR CI and is on main, but hosted byte certification is not established here) and its offline notes from `src/modules/release.js`. Do not display a remote GitHub `dev` SHA or version banner outside About. Immutable commit SHAs stay internal to GitHub Actions/history; hosted Pages byte comparison verifies actual deployed content. **Every player-facing game update must also update root `README.md` with the new four-part version in banner and heading, dated summary of shipped features/fixes, compatibility notes where relevant and live link. README/version mismatch blocks release.** Documentation-only commits do not bump the installed version. Follow [`docs/VERSIONING_POLICY.md`](../VERSIONING_POLICY.md).
 
 ## Shared risks and working decisions
 - Other developer sessions should stop writing to the repository unless newly authorized; still reconcile any concurrent Git changes with the latest SHA. No force pushes or circumvented security checks.
@@ -24,6 +24,7 @@ On **every Git commit**, preserve the About-only current dev candidate `0.11.4.4
 Read only your own [registered checkpoint](AGENTS_INDEX.json) according to [memory protocol](README.md). Git history preserves older states. Never edit another chat's memory or store secrets.
 
 ## Recent release context
+- **0.11.4.47 candidate** (2026-10-29): Super Defence Studio skips redundant writes for unchanged explicit equipment and tier; first-time tier selection and real edits persist. Exact-head CI, promotion and Pages pending.
 - **0.11.4.46 candidate** (2026-10-29): Player Studio skips redundant Dribble Style save writes for unchanged explicit equipment, retaining first-time persistence and validation. Full exact-head CI, promotion and hosted bytes pending.
 - **0.11.4.45 candidate** (2026-10-29): LAN-094 fixes busy/version-mismatch broker rejection missing roomId. Broker contract and two-mode guest recovery tests; CI, Render/Pages and physical acceptance pending.
 - **0.11.4.44 candidate** (2026-10-29): LAN-093 preserves host consent/negotiation status across duplicate registration acknowledgements; two-mode regression. Exact-head CI/Pages and physical acceptance pending.

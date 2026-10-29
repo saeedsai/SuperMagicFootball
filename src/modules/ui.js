@@ -1137,7 +1137,16 @@ function saveStudioDefence(){
   if(ability!=='keep'&&ability!=='none'&&!studioEliteEligible(source[avatarIndex])&&source[avatarIndex].superAbility?.type!=='defence')throw Error('Super Defence is reserved for elite players');
   if(ability!=='keep'&&ability!=='none'&&!ABILITIES.studioDefenceChoices(source[avatarIndex],tier).some(a=>a.id===ability))
    throw Error('This defender is not eligible for that ability');
-  source[avatarIndex]=ABILITIES.withStudioDefence(source[avatarIndex],ability,tier);
+  const prior=source[avatarIndex],equipped=ABILITIES.withStudioDefence(source[avatarIndex],ability,tier);
+  // Validate first, then avoid redundant Career/club writes for unchanged explicit equipment.
+  // A first-time tier selection must still persist.
+  const sameAbility=prior.superAbility===equipped.superAbility||(
+   !!prior.superAbility&&!!equipped.superAbility&&
+   Object.keys(prior.superAbility).length===Object.keys(equipped.superAbility).length&&
+   Object.keys(prior.superAbility).every(key=>Object.is(prior.superAbility[key],equipped.superAbility[key]))
+  );
+  if(prior.superDefenceLevel===equipped.superDefenceLevel&&sameAbility){showPlayerStudio(avatarIndex);return;}
+  source[avatarIndex]=equipped;
   if(isCareer){
    const updated={...career,roster:source};
    if(!storeCharacterChanges('managerCareer',updated))return;

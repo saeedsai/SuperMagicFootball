@@ -1,3 +1,8 @@
+## 2026-10-29 04:05 CET — STUDIO-DEFENCE-NOOP-01 (candidate 0.11.4.47)
+- Render broker remains LIVE at LAN-094 `3da2f0c7`; this Studio-only change requires no broker update. Automated two-client LAN/P2P previously green; physical device acceptance still open in issue #48. No speculative LAN fixes.
+- Found `saveStudioDefence` rewrote Career/custom-club saves for unchanged explicit defence equipment/tier. Validate first; compare tier and ability fields; skip no-op writes while preserving first-time explicit tier, genuine edits, eligibility and SD09. Added focused real-handler tests in both save contexts.
+- Updated About, package, README, offline cache, version policy, shared memory and own checkpoint. Preserve rosters, four buttons, six formations, ten Career/Cup slots, graphics and offline saves. Exact-head CI, protected promotion and hosted byte verification pending.
+
 ## 2026-10-29 03:02 CET — STUDIO-DRIBBLE-NOOP-01 (candidate 0.11.4.46)
 - Restored LAN-094 Render broker to live parity at `3da2f0c77957706dadc562c5ac7e28f91551a134` (`dep-dbhai3gm7kps73ec23lg`); shifted next bounded increment to Player Studio while physical two-device LAN/P2P acceptance remains open.
 - Found `saveStudioTrick` rewrote Career/custom-club saves when reselecting an explicitly equipped Dribble Style. Validate via `withStudioDribble` first, skip unchanged explicit selections, retain first-time choices and reject invalid IDs. Added focused real-handler regression for both save contexts.
