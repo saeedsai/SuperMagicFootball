@@ -1171,8 +1171,16 @@ function saveStudioDefence(){
 function saveAppearance(){
  const isCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club);
  const source=isCareer?career.roster.map(p=>({...p})):roster(home);
- if(!source?.[avatarIndex])return;
- source[avatarIndex]={...source[avatarIndex],appearance:getAppearance()};
+ const player=source?.[avatarIndex];
+ if(!player)return;
+ const appearance=getAppearance(),previous=player.appearance;
+ // Do not rewrite Career/club saves for a truly unchanged, fully explicit appearance.
+ // Partial legacy appearances and obsolete extra fields still persist the normalized selection.
+ const unchanged=previous&&typeof previous==='object'&&!Array.isArray(previous)&&
+  Object.keys(previous).length===Object.keys(appearance).length&&
+  Object.keys(appearance).every(key=>Object.hasOwn(previous,key)&&Object.is(previous[key],appearance[key]));
+ if(unchanged){if(isCareer)showCareerSquad();else showPlayerStudio(avatarIndex);return;}
+ source[avatarIndex]={...player,appearance};
  if(isCareer){
   const updated={...career,roster:source};
   if(!storeCharacterChanges('managerCareer',updated))return;

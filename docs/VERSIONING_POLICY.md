@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.48
+# SuperMagicFootball release/version policy — About-only 0.11.4.49
 
-**Effective 21 October 2026; updated 29 October 2026 for candidate 0.11.4.48.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 29 October 2026 for candidate 0.11.4.49.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.48 (29 October 2026):** STUDIO-SHOT-NOOP-01 skips redundant Super Shot Studio writes for unchanged explicit equipment, level and display name. First-time legacy and real edits persist; seven focused regressions added. Exact-head 4+4/Modular, protected promotion and hosted Pages bytes remain separate gates.
+**Current dev candidate 0.11.4.49 (29 October 2026):** STUDIO-APPEARANCE-NOOP-01 avoids redundant Player Studio appearance writes for fully explicit unchanged appearances, preserving legacy normalization and genuine edits. Focused real-handler tests; exact-head 4+4/Modular, protected promotion and Pages hosted bytes remain separate gates.
+
+**Previous dev candidate 0.11.4.48 (29 October 2026):** STUDIO-SHOT-NOOP-01 skips redundant Super Shot Studio writes for unchanged explicit equipment, level and display name. First-time legacy and real edits persist; seven focused regressions added. Exact-head 4+4/Modular, protected promotion and hosted Pages bytes remain separate gates.
 
 **Previous dev candidate 0.11.4.47 (29 October 2026):** STUDIO-DEFENCE-NOOP-01 skips redundant Career/club writes for unchanged explicit Super Defence equipment and tier, preserving first-time tier and real edits. Focused Node regression; exact-head 4+4/Modular, protected promotion and Pages bytes remain release gates.
 

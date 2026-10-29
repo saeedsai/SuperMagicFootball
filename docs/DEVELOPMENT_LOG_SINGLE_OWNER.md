@@ -1,3 +1,8 @@
+## 2026-10-29 06:02 CET — STUDIO-APPEARANCE-NOOP-01 (candidate 0.11.4.49)
+- LAN/P2P: automated two-client acceptance previously green, physical phone-to-phone acceptance remains open (#48); Render broker LAN-094 live at 3da2f0c7. No speculative LAN edits; Studio-only change requires no broker update.
+- Found saveAppearance rewrote Career/custom-club saves when all explicit appearance fields were unchanged. Compare exact key sets and values after reading current editor selections; no-op preserves view navigation, while partial legacy, obsolete keys and real edits still save. Focused real-handler Node tests added.
+- Commit directly to dev with four-field About/package/README/service-worker cache synchronized. Exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and hosted Pages byte verification remain release gates. No art, physics, roster, control or save-schema changes.
+
 ## 2026-10-29 05:06 CET — STUDIO-SHOT-NOOP-01 (candidate 0.11.4.48)
 - LAN/P2P: prior automated two-client tests green; physical phone acceptance remains open (#48). Render broker LAN-094 at 3da2f0c7 LIVE; Studio-only increment needs no broker change.
 - Found saveStudioShot rewrote Career/custom-club saves for unchanged explicit Shot, level and name. Added validated no-op guard; missing legacy fields and genuine edits still persist. Seven real-handler Node tests cover club/Career, validation and compatibility.
