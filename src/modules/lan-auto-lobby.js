@@ -171,7 +171,7 @@ export function mountAutoLanLobby(root,options={}){
   if(m.type==='discovery-scope'&&m.scope==='public-network'){discoveryScope='public-network';if(mode==='host')showHostAddress();return}
   if(m.type==='lan-addresses'&&Array.isArray(m.urls)){lanUrls=m.urls.filter(url=>typeof url==='string'&&/^http:\/\/(?:10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[01])\.)[0-9.]+:[0-9]+$/.test(url)).slice(0,8);if(mode==='host')showHostAddress();return}
   // LAN-089: late broker registration acknowledgements cannot revert an active host match.
-  if(m.type==='host-registered'&&mode==='host'&&!started&&m.roomId===roomId){hostRegistered=true;stopHostRetry();showHostAddress();status('Room registered. Waiting for a guest to join.');return}
+  if(m.type==='host-registered'&&mode==='host'&&!started&&m.roomId===roomId){const firstAck=!hostRegistered;hostRegistered=true;stopHostRetry();showHostAddress();if(firstAck&&!approved&&!approvalRequestId)status('Room registered. Waiting for a guest to join.');return}
   if(m.type==='error'&&mode==='host'&&!started){
    // Broker room capacity is temporary: keep the bounded ten-second registration
    // retry alive with the same room ID. Permanent scope errors must not loop.

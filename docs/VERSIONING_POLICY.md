@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.43
+# SuperMagicFootball release/version policy — About-only 0.11.4.44
 
-**Effective 21 October 2026; updated 29 October 2026 for candidate 0.11.4.43.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 29 October 2026 for candidate 0.11.4.44.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.43 (29 October 2026):** LAN-092 ignores late direct WebRTC offers after an approved guest has requested Online P2P relay fallback. Focused regression added; exact-head CI, protected promotion, hosted bytes and physical acceptance pending.
+**Current dev candidate 0.11.4.44 (29 October 2026):** LAN-093 ignores duplicate host registration acknowledgements while consent is pending or an approved peer is negotiating. Two-mode focused regression; exact-head 4+4/Modular, protected promotion, hosted bytes and physical acceptance pending.
+
+**Previous dev candidate 0.11.4.43 (29 October 2026):** LAN-092 ignores late direct WebRTC offers after an approved guest has requested Online P2P relay fallback. Focused regression added; exact-head CI, protected promotion, hosted bytes and physical acceptance pending.
 
 **Previous dev candidate 0.11.4.42 (28 October 2026):** LAN-091 ignores replayed host approvals during Online P2P relay negotiation, preserving the relay latch and preventing duplicate offers. Focused real-fallback regression; exact-head 4+4/Modular, protected promotion, hosted Pages bytes and physical-device acceptance pending.
 

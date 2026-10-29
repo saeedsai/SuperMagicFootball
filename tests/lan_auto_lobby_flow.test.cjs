@@ -1211,3 +1211,35 @@ test('LAN-092 guest ignores delayed direct offers after requesting approved Onli
   dispose();
  }finally{f.cleanup()}
 });
+
+test('LAN-093 repeated host registration acks preserve pending consent and active negotiation status',async()=>{
+ for(const internet of [false,true]){
+  const f=setup();let resolveOffer=null,disposed=0;
+  try{
+   const {mountAutoLanLobby}=await load();
+   const dispose=mountAutoLanLobby(f.root,{build:'0.11.4.44',internet,signalFactory:f.signalFactory,
+    peerFactory:()=>({createOffer:()=>new Promise(resolve=>{resolveOffer=resolve}),dispose(){disposed++}})});
+   f.connect();f.elements.get('#autoHost').click();
+   const roomId=f.packets.at(-1).roomId;
+   f.emit({type:'host-registered',roomId});
+   assert.match(f.elements.get('#autoStatus').textContent,/Room registered/);
+   f.emit({type:'join-request',roomId,requestId:'request_12345678',guestName:'Bob'});
+   assert.equal(f.elements.get('#autoApproval').children.length,3);
+   const beforeConsent=f.elements.get('#autoStatus').textContent;
+   f.emit({type:'host-registered',roomId});
+   assert.equal(f.elements.get('#autoStatus').textContent,beforeConsent,'duplicate ack cannot overwrite pending host consent');
+   f.elements.get('#autoApproval').children[1].click();
+   assert.match(f.elements.get('#autoStatus').textContent,/Bob approved/);
+   f.emit({type:'host-registered',roomId});
+   assert.match(f.elements.get('#autoStatus').textContent,/Bob approved/,'ack between decision and guest approval cannot revert status');
+   const pending=f.emit({type:'guest-approved',roomId});
+   assert.equal(typeof resolveOffer,'function');
+   f.emit({type:'host-registered',roomId});
+   assert.match(f.elements.get('#autoStatus').textContent,/Bob approved/,'ack during SDP creation cannot claim room is waiting for another guest');
+   resolveOffer('host-offer');await pending;
+   assert.equal(f.packets.at(-1).type,'offer','original host offer continues');
+   assert.equal(disposed,0,'registration ack must not dispose the active peer');
+   dispose();
+  }finally{f.cleanup()}
+ }
+});

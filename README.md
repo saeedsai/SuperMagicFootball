@@ -1,3 +1,5 @@
+> **0.11.4.44 release candidate (29 October 2026):** LAN-093 prevents duplicate room-registration acknowledgements from falsely displaying “Waiting for a guest” while host consent or an approved WebRTC handshake is underway. Two-mode focused regression added; LAN/Online P2P connection flow, four gameplay buttons, 223 teams/2676 players, six formations, Career/Cup ten slots, SD09, graphics and offline saves remain unchanged. Exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and Pages hosted-byte verification are release gates. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.11.4.43 release candidate (29 October 2026):** LAN-092 prevents a delayed direct WebRTC offer from interrupting an approved Online P2P relay fallback. The guest keeps its reserved seat and pending relay request; direct-first matchmaking, LAN mode, four-button gameplay, graphics, 223 teams/2676 players, six formations, Career/Cup ten slots, SD09 and offline saves are unchanged. Focused regression added; exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and hosted Pages bytes are required before release. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.11.4.42 release candidate (28 October 2026):** LAN-091 prevents replayed Online P2P host approvals from clearing an in-flight backup-relay guard, so delayed relay requests cannot replace the approved peer or send duplicate relay offers. Added focused real fallback regression; normal LAN approval, four-button gameplay, 223 teams/2676 players, six formations, graphics, Career/Cup ten slots, SD09 and offline saves remain unchanged. Exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and hosted Pages bytes are required before release. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -220,7 +222,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.11.4.43 · Modular source project
+# Supermagic Football · v0.11.4.44 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 

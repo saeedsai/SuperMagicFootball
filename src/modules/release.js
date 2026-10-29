@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.43',
- date:'2026-10-28',
+ version:'0.11.4.44',
+ date:'2026-10-29',
  notes:Object.freeze([
+  'LAN-093: Repeated room-registration acknowledgements no longer overwrite a host\'s pending consent or active SDP negotiation status. Original host approval, connection and four-button gameplay remain unchanged in LAN and Online P2P.',
   'LAN-092: After an approved Online P2P guest requests broker relay fallback, a late direct WebRTC offer is ignored instead of restarting negotiation or cancelling the reserved seat. Direct-first connections and LAN gameplay are unchanged.',
   'LAN-091: Replayed host approval during Online P2P relay negotiation cannot clear the active relay latch. Delayed relay requests no longer replace an approved backup peer or send duplicate relay offers. Normal LAN approval, four controls, graphics, rosters and saves remain unchanged.',
   'LAN-090: A host establishing or playing a LAN/Online P2P match ignores delayed extra join requests; after kickoff, late discovery errors cannot reopen consent or overwrite match status. Before kickoff, normal host approval remains available; four controls, graphics, rosters and saves are unchanged.',

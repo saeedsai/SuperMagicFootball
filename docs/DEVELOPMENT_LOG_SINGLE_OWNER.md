@@ -1,3 +1,9 @@
+## 2026-10-29 01:05 CET — LAN-093 duplicate registration ack during host approval (candidate 0.11.4.44)
+- Found that repeated host-registered broker acknowledgements could overwrite pending host-consent or active SDP-handshake status with a false "Waiting for a guest" message, even though the approved peer continued connecting.
+- Keep the first room-registration confirmation and retry cancellation; ignore duplicate status resets while the room is already registered. Added LAN and Online P2P regression through consent, approval and asynchronous offer creation.
+- Synchronized About, package, README, offline cache, version policy and sole-developer checkpoint. No roster, graphics, physics, four-button, save, Career/Cup or SD09 changes.
+- Exact-head 4 Node + 4 Chromium and Modular QA, protected promotion, hosted byte verification and physical two-device acceptance remain independent gates until verified.
+
 ## 2026-10-29 00:03 CET — LAN-092 delayed direct offer during relay fallback (candidate 0.11.4.43)
 - Diagnosed a race: after a guest requested approved Online P2P relay fallback, a delayed direct WebRTC offer still matched the `!peer` guard, could create a second peer and cancel the reserved seat on SDP failure.
 - Ignore direct offers once the internet guest has committed to the relay request. Added focused regression proving no second peer, no duplicate relay request, and no leave; normal direct-first and LAN behavior remain unchanged.
