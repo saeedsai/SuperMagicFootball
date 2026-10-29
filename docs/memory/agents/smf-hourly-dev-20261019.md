@@ -11,6 +11,8 @@ Incremental, tested development on existing dev only. No extra branches, force p
 - Exact-source isolated JS smoke passed for compass mapping, Studio slide/run frames, cache and UI syntax. New repository Node tests committed; 4 Node + 4 Chromium + Modular QA not independently confirmed green. No new main promotion/Pages byte certification claimed.
 - Prior dev/main baseline 1758c76837719523fb19eed9de2f1262ebf53740. Development commits recorded in docs/DEVELOPMENT_LOG_SINGLE_OWNER.md.
 
+- DIR-ANIM-CORE-01: pure eight-heading/seven-action animation frame resolver and focused Node regression committed on dev (7cb68ca, 04b2095); development log 76edd7e. Not integrated into renderer, so no player-facing version bump. Full CI and deployment not verified.
+
 ## Next smallest action
 1. Inspect exact dev head and latest Full Regression Census, four Node + four Chromium + Modular QA.
 2. Fix any failing test with a focused regression; keep coding on dev.
