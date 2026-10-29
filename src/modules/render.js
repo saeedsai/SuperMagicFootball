@@ -4,6 +4,7 @@ import {DATA} from "./data.js";
 import {EXPANDED} from "./expanded.js";
 import {VISUALFEEL} from "./visualfeel.js";
 import {ENGINE} from "./engine.js";
+import {STATS} from "./stats.js";
 import {BPWPERSONALITY} from "./bpwpersonality.js";
 import {ARTPOSE} from "./artpose.js";
 import {CHARACTER_ART} from "./characterart.js";
@@ -889,7 +890,7 @@ class Renderer{
   if(p.controlled){ctx.strokeStyle=p.t===0?'#ffe675':'#74f2ff';ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(0,5,28,12,0,0,PI*2);ctx.stroke();ellipse(ctx,0,5,21,6,'#061d2855')}
   // Circular Breath gauge at the feet. Draw only in live matches, not editor previews.
   if(this.inMatchDraw&&!p.preview){
-   const stamina=Math.max(1,Math.min(100,Number(p.src.stamina)||60));
+   const stamina=STATS.stat(p,'stamina');
    const cap=3+7*(stamina-1)/99;
    const ratio=clamp((Number.isFinite(p.breath)?p.breath:cap)/cap,0,1);
    ctx.save();ctx.beginPath();ctx.ellipse(0,4,34,15,0,0,Math.PI*2);
