@@ -149,3 +149,12 @@ test('Set and Map catalogs work across Node and VM realms',()=>{
   assert.equal(resolved.mirrorX,false);
  }
 });
+
+test('spoofed catalog tags fail closed without throwing',()=>{
+ const fakeSet={ [Symbol.toStringTag]:'Set' };
+ const fakeMap={ [Symbol.toStringTag]:'Map' };
+ for(const fake of [fakeSet,fakeMap]){
+  assert.equal(resolveAuthoredFrame({action:'kick',heading:'W',frame:0},fake),null);
+  assert.equal(resolveDirectionalAsset({action:'kick',heading:'W',frame:0},fake,{allowMirror:true}),null);
+ }
+});
