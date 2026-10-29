@@ -58,4 +58,27 @@ function resolveAuthoredFrame(pose,catalog){
  for(const key of animationAssetCandidates(pose))if(has(key))return key;
  return null;
 }
-export {HEADINGS,ACTIONS,normalizeHeading,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates,resolveAuthoredFrame};
+// Optional horizontal reflection for incomplete *independently authored* packs.
+// Never reflect front/rear or replace an available exact-heading frame.
+const MIRROR_HEADING=Object.freeze({N:'N',NE:'NW',E:'W',SE:'SW',S:'S',SW:'SE',W:'E',NW:'NE'});
+function resolveDirectionalAsset(pose,catalog,{allowMirror=false}={}){
+ const has=key=>catalog instanceof Set?catalog.has(key):catalog instanceof Map?Boolean(catalog.get(key)):Boolean(catalog&&Object.prototype.hasOwnProperty.call(catalog,key)&&catalog[key]);
+ const original=animationAssetCandidates(pose);
+ const generic='idle/S/0';
+ // Keep exact-facing action and idle frames ahead of any mirrored alternative.
+ for(const key of original){
+  if(key===generic)continue;
+  if(has(key))return Object.freeze({key,mirrorX:false});
+ }
+ if(allowMirror){
+  const heading=normalizeHeading(pose?.heading),opposite=MIRROR_HEADING[heading];
+  if(opposite!==heading){
+   for(const key of animationAssetCandidates({...pose,heading:opposite})){
+    if(key===generic)continue;
+    if(has(key))return Object.freeze({key,mirrorX:true});
+   }
+  }
+ }
+ return has(generic)?Object.freeze({key:generic,mirrorX:false}):null;
+}
+export {HEADINGS,ACTIONS,normalizeHeading,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates,resolveAuthoredFrame,resolveDirectionalAsset};
