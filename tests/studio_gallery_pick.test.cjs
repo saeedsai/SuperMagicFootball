@@ -105,6 +105,13 @@ test('mobile gallery uses two-column vertical steps and Home/End navigation',()=
 test('gallery keys ignore other controls, unsupported keys and hidden gallery',()=>{
  const {ctx}=studioContext();
  const track={prevented:0};
+ const browserShortcut=galleryKeyEvent('ArrowLeft',0,track);
+ browserShortcut.altKey=true;
+ assert.equal(ctx.studioGalleryKeydown(browserShortcut),false);
+ browserShortcut.altKey=false;browserShortcut.ctrlKey=true;
+ assert.equal(ctx.studioGalleryKeydown(browserShortcut),false);
+ browserShortcut.ctrlKey=false;browserShortcut.metaKey=true;
+ assert.equal(ctx.studioGalleryKeydown(browserShortcut),false);
  assert.equal(ctx.studioGalleryKeydown(galleryKeyEvent('Escape',0,track)),false);
  assert.equal(ctx.studioGalleryKeydown(galleryKeyEvent('ArrowLeft',99,track)),false);
  assert.equal(ctx.studioGalleryKeydown({key:'ArrowRight',target:{closest:()=>null},preventDefault(){track.prevented++}}),false);
