@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.8.0
+# SuperMagicFootball release/version policy — About-only 0.12.9.0
 
-**Current dev candidate 0.12.8.0 (30 October 2026):** JUMPING-STAT-01 adds Jumping to all players and scales single/double jump height and fatigue; 100 retains previous maximum and minimum cost. Full QA and protected promotion pending.
+**Current dev candidate 0.12.9.0 (30 October 2026):** ENERGY-BREATH-01 introduces separate Breath in gameplay, stored Energy in Career, 3–10-second Breath caps and day-based recovery. Exact-head QA and hosted validation pending.
+
+**Previous dev candidate 0.12.8.0 (30 October 2026):** JUMPING-STAT-01 adds Jumping to all players and scales single/double jump height and fatigue; 100 retains previous maximum and minimum cost. Full QA and protected promotion pending.
 
 **Effective 21 October 2026; updated 30 October 2026 for candidate 0.12.8.0.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
