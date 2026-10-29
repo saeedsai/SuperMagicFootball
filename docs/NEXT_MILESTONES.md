@@ -1,3 +1,6 @@
+## 30 October 2026 — ENERGY-BREATH-01
+Dual-resource initial candidate: persistent Career Energy with per-day recovery and separate 3–10-second Breath. Pending: integrate a dated fixture calendar (current defaults two rest days after cup/seven after league); add visible two-resource HUD and tune Energy caps; extend other competition saves; execute full 4 Node + 4 Chromium + Modular QA; promote only verified exact head.
+
 ## 30 October 2026 — JUMPING-FATIGUE-MONOTONIC-01 (0.12.8.0 candidate)
 Corrected the fitness action-fatigue multiplier cap for Jump only: the previous generic 1.5 cap caused ratings 1–50 to cost the same. Jump now accepts up to 2.0 while other actions retain the 1.5 cap. Added real engine spendStamina + FITNESS.actionFatigue monotonic regression cases; locally mirrored 7/7 jumping tests passed, full exact-head QA still unverified. Continue eight-view renderer, Magic Trick counterplay and goalkeeper/Career improvements.
 
