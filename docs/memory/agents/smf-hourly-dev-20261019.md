@@ -12,7 +12,7 @@ Continue tested increments on existing dev only; never create branches, force-pu
 - About-only four-part release, package, README and SW cache rotated. Code maintains original controls and saves. Exact-head CI/Modular, main/Pages and live browser boot are separate gates; do not claim success before verifying.
 - Physical two-phone LAN issue #48 open; Render commit-trigger drift issue #86 open. Do not resume routine LAN implementation.
 
-## Next five steps
+## Next smallest action
 1. Diagnose any exact-head Node/Chromium/Modular failures and fix on dev.
 2. Promote only exact green dev head via existing pipeline; verify Pages byte hashes.
 3. Capture real portrait/landscape touch visual QA and deployed startup errors.
