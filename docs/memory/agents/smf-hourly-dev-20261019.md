@@ -11,12 +11,18 @@ Continue bounded tested increments on existing dev; no new branches, force push,
 - Render broker LAN-094 3da2f0c7 was live; Studio-only change needs no broker update. Automated two-client LAN/P2P previously green, physical phone acceptance open in #48. No speculative LAN fixes; Render auto-deploy drift unresolved.
 - Preserve 223 teams/2676 players, six formations, four buttons, saves/offline, Career/Cup ten slots and SD09.
 
-## Next five steps
+## Next smallest action
 1. Inspect exact-head focused and full 4+4/Modular CI; repair genuine failures.
 2. Promote only green exact dev SHA through protected pipeline; verify main and Pages bytes.
 3. Complete physical two-device LAN/P2P acceptance when available; investigate Render auto-deploy.
 4. Continue Player Studio customization and counterable four-button Magic Tricks.
 5. Continue eight-view art/animations, gameplay and Career.
 
-## Ownership and evidence
-Sole developer smf-hourly-dev-20261019; only this checkpoint edited. Historical test and release evidence in GitHub Actions and development log.
+## Ownership and exclusions
+Sole developer smf-hourly-dev-20261019; only this checkpoint edited.
+
+## Evidence
+Preflight 987/988 passed at 7c0504dd; required checkpoint heading caused the sole failure. Correcting documentation contract without weakening the test.
+
+## Cleanup
+Under 4 KiB; historical evidence retained in Git and development log.
