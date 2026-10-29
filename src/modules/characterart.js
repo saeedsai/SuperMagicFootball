@@ -397,7 +397,18 @@ const CHARACTER_ART=(()=>{
   }
   oval(c,hand[0],hand[1],6.4,7.3,p.keeper?'#e6edf2':near?blend(col.skin,.17):col.skin,dark,1.6);
   oval(c,hand[0]-2,hand[1]-2,2.5,3.2,ink('#ffffff',.16));
-  if(p.keeper){stroke(c,[[hand[0]-5,hand[1]-1],[hand[0]+5,hand[1]+1]],'#2486ae',2.4);oval(c,hand[0]+sign*3,hand[1]-2,2.5,3.1,'#ffffff')}
+  if(p.keeper){
+    stroke(c,[[hand[0]-5,hand[1]-1],[hand[0]+5,hand[1]+1]],'#2486ae',2.4);
+    oval(c,hand[0]+sign*3,hand[1]-2,2.5,3.1,'#ffffff');
+    // GK-GLOVE-ART-01: a padded catch palm appears only during the existing keeper actions.
+    // The eight-view painter and all game collision/catch timing remain unchanged.
+    const catchingGlove=['keeperDive','keeperDiveCatch','keeperCatch','keeperSuper'].includes(p.action);
+    if(catchingGlove){
+     oval(c,hand[0],hand[1],5.1,5.6,near?'#f4fbff':'#b8dfe9',dark,1.1);
+     stroke(c,[[hand[0]-4,hand[1]],[hand[0]+4,hand[1]]],'#287eaa',1.5);
+     stroke(c,[[hand[0]-3,hand[1]+3],[hand[0]+3,hand[1]+3]],'#7dd5e8',1.1);
+    }
+   }
  }
  function jersey(c,k,p,colors){
   const side=k==='side',quarter=k.startsWith('quarter'),back=k==='back'||k==='quarterBack',w=side?18:quarter?21:24;

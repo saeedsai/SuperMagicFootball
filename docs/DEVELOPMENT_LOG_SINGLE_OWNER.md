@@ -1,3 +1,10 @@
+## 2026-10-29 — GK-GLOVE-ART-01 action-specific keeper glove (0.12.1.0 candidate)
+- Baseline exact dev `6ebdcbb3d773c8fbaaa621a8e66ed7bb0984823a` integrates ARENA-OVERHAUL-01; main was `5bac08dc3d102cb3d860de323db2ac474f44fe00` at start of this run. Do not overwrite concurrent menu/stadium changes.
+- Added padded goalkeeper glove palms only for existing keeper catch/dive/super actions, with focused source contract. No hitbox, physics, goalkeeper reach, action mapping, roster, save or LAN change.
+- Advanced About/package/README/SW cache/version policy to 0.12.1.0. Exact-head 4 Node + 4 Chromium/Modular, protected promotion and Pages hosted-byte verification remain independent gates.
+- Main branch protection #87 is open; physical two-phone LAN #48 and Render drift #86 remain open. Do not bypass protection or claim device certification.
+- Next five: exact-head CI; fix failures; restore main protection; promote verified green head and compare hosted Pages bytes; continue eight-view animation, Player Studio and goalkeeper feel.
+
 ## 2026-10-29 — ARENA-OVERHAUL-01 (0.12.0.0 candidate)
 - Baseline exact dev/main `5bac08dc3d102cb3d860de323db2ac474f44fe00` passed the last four Node/four Chromium, Modular QA and hosted byte checks. Current build must be retested at its own SHA; no premature release claim.
 - Miniclip Mini Football is a quality/ergonomics reference only, not an asset, layout, code or branded-identity source.

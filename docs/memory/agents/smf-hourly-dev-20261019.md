@@ -3,27 +3,26 @@
 **Updated:** 2026-10-29
 
 ## Mission
-Develop on existing dev only; no new branches, force-push or CI/security bypass. Preserve 223 teams, 2676 players, six formations, Pass/Shoot/Dribble/Jump only, SD09, ten Career/Cup slots, offline saves, LAN/P2P.
+Continue tested commits directly on dev; preserve 223 teams/2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09, LAN/P2P and offline saves.
 
 ## Current checkpoint
-- Previous certified dev/main `5bac08dc3d102cb3d860de323db2ac474f44fe00` at 0.11.6.0.
-- ARENA-OVERHAUL-01 candidate 0.12.0.0: original stadium-blue/gold home/menu theme, featured Play Now, Player Studio/Career shortcuts, submenu cards, match HUD, touch diamond, procedural arena/pitch and selected-player/kit art accents.
-- All engine logic, player/team identity, gameplay button mapping, save/offline and LAN/P2P code remain unchanged. No third-party art/assets copied.
-- Read `docs/MINI_FOOTBALL_VISUAL_ROADMAP_20261029.md`. Four Node/four Chromium, Modular QA, safe promotion and Pages hosted hash need current exact-head evidence.
-- Real two-phone LAN #48, Render auto-deploy #86 and branch protection #87 remain open.
+- ARENA-OVERHAUL-01 integrated in dev `6ebdcbb3d773c8fbaaa621a8e66ed7bb0984823a` (0.12.0.0).
+- GK-GLOVE-ART-01 candidate 0.12.1.0 adds padded keeper catch/dive palms without changing reach, physics or saves; focused regression, About/package/README/offline cache rotated.
+- Previous baseline `5bac08dc` green 4+4 and Modular; newer exact-head CI, protected main promotion, Pages bytes and real touch QA must be verified separately.
+- Main protection #87, physical LAN two-phone #48, Render commit-trigger drift #86 open. No routine LAN implementation.
 
 ## Next smallest action
-1. Run focused Node contracts and exact-head CI; repair real failures.
-2. Verify all four Node and four Chromium shards plus Modular QA.
-3. Check exact green-head promotion and hosted Pages HTML/JS/CSS.
-4. Verify portrait/landscape touch screenshots and menu/score overlap.
-5. Continue truly independently authored eight-view art and animations, goalkeepers and Career polish.
+1. Inspect exact-head four Node/four Chromium and Modular QA; fix failures.
+2. Restore required main branch protection #87 through authorized settings.
+3. Promote only green exact dev head through protected pipeline and verify hosted Pages bytes.
+4. Review real portrait/landscape and desktop graphics/performance.
+5. Continue independently authored eight-view animation, Player Studio and keeper gameplay.
 
 ## Ownership and exclusions
-Sole owner; never read or edit other agents' checkpoints. Do not claim physical-device certification.
+Sole developer; never read/edit other agents' private memory. Physical LAN not certified.
 
 ## Evidence
-Git commit and CI logs; no test/deployment claims before observed evidence.
+GitHub CI and commits are the audit trail; no production claim without exact-head checks.
 
 ## Cleanup
-Keep this checkpoint below 4 KiB; detailed outcomes belong in Git history and development log.
+Keep checkpoint under 4 KiB; details in development log.

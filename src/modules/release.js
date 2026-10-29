@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.0.0',
+ version:'0.12.1.0',
  date:'2026-10-29',
  notes:Object.freeze([
+  'GK-GLOVE-ART-01: Goalkeepers now show distinct padded glove palms when catching or diving, improving visual feedback in the existing eight-direction character painter. Catch reach, timing, physics, four actions, offline saves and all arena overhaul menus are unchanged.',
   'ARENA-OVERHAUL-01: Original stadium-themed arcade menus, featured Play Now, game-mode cards, Player Studio and Career save shortcuts, a unified in-match scoreboard and four-button touch HUD, brighter turf, cached illuminated stadium trim, clearer player markers and directional jersey highlights. Gameplay, 223 teams/2676 players, six formations, Magic Tricks, ten Career/Cup slots, SD09, offline saves and LAN/P2P remain compatible.',
   'VIZ-01: Mobile match controls now have clearer original arcade colors, distinct four-button outlines, joystick contrast and a more readable score panel with compact viewport and safe-area spacing. Pass, Shoot, Dribble and Jump mappings, all Magic Trick combinations, saves and offline play are unchanged.',
   'CAREER-COPY-01: Career Save Slots now lets you COPY an existing manager career into the first empty slot. The independent copy keeps its squad, fixtures and progress without overwriting any slot or switching the active career; all ten slots, legacy saves, four controls and offline play remain compatible.',
