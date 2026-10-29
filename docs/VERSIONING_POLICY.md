@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.11.5.0
+# SuperMagicFootball release/version policy — About-only 0.11.6.0
 
-**Effective 21 October 2026; updated 29 October 2026 for candidate 0.11.5.0.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 29 October 2026 for candidate 0.11.6.0.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.5.0 (29 October 2026):** CAREER-COPY-01 duplicates a saved manager career into the first empty Career slot without switching active selection or overwriting progress. Existing ten slots, legacy migration, four controls, SD09 and offline saves remain compatible. Focused tests added; exact-head 4+4/Modular, protected promotion and hosted Pages bytes remain independent gates.
+**Current dev candidate 0.11.6.0 (29 October 2026):** VIZ-01 starts the owner-directed original arcade UI/graphics program (see [visual roadmap](MINI_FOOTBALL_VISUAL_ROADMAP_20261029.md)): thumb-friendly high-contrast Pass/Shoot/Dribble/Jump diamond, joystick, scoreboard and mobile safe-area treatment. Visual CSS only: no new action, gameplay balance or save schema change. Focused tests and exact-head 4 Node + 4 Chromium/Modular QA, protected promotion and Pages hosted verification remain independent gates.
+
+**Previous dev candidate 0.11.5.0 (29 October 2026):** CAREER-COPY-01 duplicates a saved manager career into the first empty Career slot without switching active selection or overwriting progress. Existing ten slots, legacy migration, four controls, SD09 and offline saves remain compatible. Focused tests added; exact-head 4+4/Modular, protected promotion and hosted Pages bytes remain independent gates.
 
 **Previous dev candidate 0.11.4.59 (29 October 2026):** TELEPORT-SLIDE-01 lets a grounded active SHOOT-slide intercept Teleport only inside the carrier's forward 85-unit travel lane (35-unit lateral margin). Expired/airborne/off-lane slides fail; caster cooldown and fatigue, other Tricks, four controls and offline saves are unchanged. Focused real-engine regression added; exact-head 4+4/Modular, protected promotion and Pages hosted bytes remain separate gates.
 
