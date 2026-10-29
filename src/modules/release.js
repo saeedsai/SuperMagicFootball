@@ -2,9 +2,9 @@
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
  version:'0.12.8.0',
- date:'2026-10-29',
+ date:'2026-10-30',
  notes:Object.freeze([
-  'JUMPING-STAT-01: Every player now has an editable Jumping attribute proportional to overall rating. Single and double jump height scale with Jumping; 100 preserves the previous maximum height and minimum jump fatigue.',
+  'JUMPING-STAT-01: Every player now has an editable Jumping attribute proportional to overall rating. Single and double jump height scale with Jumping; 100 preserves the previous maximum height and minimum jump fatigue; every lower rating progressively increases jump cost.',
   'CAREER-SLOT-RENAME-01: Rename an occupied Career save from the ten-slot manager without loading or overwriting progress. Active selection, saved match data and original save timestamp remain unchanged; blank names are rejected and storage failures leave the old label intact.',
   'STUDIO-GALLERY-KEYS-01 adds arrow-key navigation across the eight selectable Player Studio views, following the four-column desktop or two-column mobile grid. Home/End jump to the first/last direction, focus follows the selection, and unrelated controls keep their normal keys. Preview-only: no new gameplay buttons, saved-data changes or finished bespoke art claims.',
   'STUDIO-GALLERY-PICK-01: Click or tap any of the eight directional comparison frames to select that angle in the main Player Studio portrait. The active view is highlighted and exposed to screen readers, auto-rotation stops on selection, and unsaved appearance edits remain intact. No changes to four gameplay controls, match physics, saves, rosters or LAN/P2P.',
