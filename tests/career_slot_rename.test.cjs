@@ -56,3 +56,16 @@ test('Career slot UI wires a rename control without adding gameplay actions',()=
  assert.match(ui,/a\.startsWith\('careerSlotRename_'\)/);
  assert.match(ui,/careerSlots\.rename\(n,name\)/);
 });
+
+test('renaming works even when all ten slots are occupied',()=>{
+ const db=storage(),slots=create(db);
+ for(let n=1;n<=10;n++)slots.save(n,career(),'Career '+n);
+ const before=JSON.parse(db.raw);
+ slots.rename(4,'Season Two');
+ const after=JSON.parse(db.raw);
+ assert.equal(slots.firstEmpty(),null);
+ assert.equal(after.active,10);
+ assert.equal(after.slots[3].name,'Season Two');
+ assert.deepEqual(after.slots[3].career,before.slots[3].career);
+ assert.equal(after.slots[3].savedAt,before.slots[3].savedAt);
+});
