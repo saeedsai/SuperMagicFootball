@@ -1,28 +1,28 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-29 10:00 CET
+**Updated:** 2026-10-29
 
 ## Mission
-Continue bounded, tested increments on existing `dev`; never create branches, force-push, bypass security/CI or stop hourly development.
+Continue bounded tested increments on existing `dev`; no new branches, force-push or CI/security bypass.
 
 ## Current checkpoint
-- Candidate 0.11.4.53 STUDIO-DEFENCE-STATE-01: live accessible Defence save feedback and disabled no-op saving for explicit unchanged tier/equipment; legacy first-time and genuine changes remain savable. Seven focused Node regression cases introduced.
-- Base `dev`/`main` 04a8265466735288e56e57272eaa63a37a7b808a (0.11.4.52); new exact-head 4+4/Modular and hosted bytes pending.
-- LAN-094 broker `3da2f0c7` last verified live. Automated two-client browser QA previously green; practical physical phone-to-phone acceptance open in issue #48. No new broker changes; Render auto-deploy drift unresolved.
-- Preserve 223 teams / 2676 players, six formations, four buttons, saves/offline, Career/Cup ten slots, SD09.
+- New candidate 0.11.4.54 STUDIO-MAGIC-LIVE-STATE-01: live accessible Magic Trick save feedback for unchanged, locked (91+) and ready choices. No gameplay/control/save-schema change.
+- Previous 0.11.4.53 at `b6c9028564a30f37b67f047b95248a61c3c07ff8` passed exact-head four Node/four Chromium and Modular QA (40845896683 / 40845896633); main matched. Pages deployment and main rerun were in progress at inspection.
+- LAN-094 broker last verified live at `3da2f0c7`. Automated two-client browser QA previously green; physical two-device LAN/Online P2P acceptance remains open (#48). No routine LAN changes absent confirmed regression.
+- Preserve 223 teams/2676 players, six formations, four actions, offline saves, Career/Cup ten slots and SD09.
 
 ## Next smallest action
-1. Check focused test and fresh full Node 4 + Chromium 4 + Modular QA results; repair any failures.
-2. Promote exact-green `dev` via protected `main` pipeline; verify Pages hosted bytes.
-3. Pursue physical two-device LAN/P2P acceptance and Render auto-deploy diagnosis; no routine LAN patches absent confirmed defect.
+1. Check focused Magic status tests and exact-head 4 Node + 4 Chromium + Modular QA; fix failures.
+2. Promote only exact green dev via protected pipeline; confirm main and hosted Pages bytes.
+3. Obtain physical phone-to-phone LAN/P2P approval, sprint/Jump and reconnect acceptance; diagnose Render drift.
 4. Advance counterable four-button Magic Tricks and Player Studio.
-5. Improve independently authored directional art, gameplay and Career.
+5. Continue eight-view art, gameplay and Career improvements.
 
 ## Ownership and exclusions
-Sole developer `smf-hourly-dev-20261019`; no other agent checkpoint accessed.
+Sole developer `smf-hourly-dev-20261019`; no other agent private memory accessed.
 
 ## Evidence
-No release claim until exact-head CI and Pages verification. Physical LAN/P2P acceptance pending.
+Do not claim candidate deployment or physical LAN/P2P acceptance without independent verification.
 
 ## Cleanup
-Checkpoint under 4 KiB; prior handovers retained in Git.
+Checkpoint below 4 KiB; historical detail in Git.

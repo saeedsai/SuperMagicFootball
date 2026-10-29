@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.53
+# SuperMagicFootball release/version policy — About-only 0.11.4.54
 
-**Effective 21 October 2026; updated 29 October 2026 for candidate 0.11.4.51.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 29 October 2026 for candidate 0.11.4.54.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.53 (29 October 2026):** STUDIO-DEFENCE-STATE-01 adds live accessible Super Defence save feedback; unchanged explicit equipment and tier disable saving while legacy first-time tiers, actual updates and SD09 retain persistence. Exact-head QA, protected promotion and hosted Pages bytes remain gates.
+**Current dev candidate 0.11.4.54 (29 October 2026):** STUDIO-MAGIC-LIVE-STATE-01 provides accessible live feedback for unchanged, locked and savable Magic Trick choices without altering gameplay or saves. Exact-head 4+4/Modular, protected promotion and hosted Pages bytes remain release gates.
+
+**Previous dev candidate 0.11.4.53 (29 October 2026):** STUDIO-DEFENCE-STATE-01 adds live accessible Super Defence save feedback; unchanged explicit equipment and tier disable saving while legacy first-time tiers, actual updates and SD09 retain persistence. Exact-head QA, protected promotion and hosted Pages bytes remain gates.
 
 **Previous dev candidate 0.11.4.52 (29 October 2026):** STUDIO-SHOT-STATE-01 adds live accessible Super Shot save feedback, disabling redundant explicit unchanged selections while preserving first-time legacy and genuine changes. Exact-head 4+4/Modular, protected promotion and hosted Pages bytes remain independent gates.
 
