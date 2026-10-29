@@ -1743,3 +1743,9 @@ Host now holds last validated guest four-button and directional input for at mos
 
 ## 2026-10-29 — MAP-ART-CATALOG-01
 - Fixed sparse authored-frame resolution to support `Map` catalogs in addition to `Set` and own-key objects; falsey Map entries remain unavailable. Added two regression cases. Commits 084b4072 and 34de8217. No player-facing change/version bump; exact-head full CI and hosted verification not run.
+
+## 29 October 2026 — STUDIO-GALLERY-PICK-01 (0.12.5.0 candidate)
+- Player Studio's eight-view action gallery now has eight keyboard/touch-selectable preview buttons with live pressed-state highlighting. Selecting a tile updates the large portrait, stops auto-rotation and preserves unsaved appearance edits; gameplay, LAN, saves and roster data are unchanged.
+- New `tests/studio_gallery_pick.test.cjs` exercises selection, invalid/hidden input, semantic markup and delegated wiring. Three isolated Node helper checks passed locally on extracted logic; the full committed repository test and four Node/four Chromium/Modular suites were not executable locally because GitHub cannot be cloned from this runtime (DNS failure). Static checks against fetched dev UI/style/release sources passed.
+- Source commits: e1d6c38f (UI), 60045083 (CSS), 4903c8d6 (tests); About/package/SW/README/policy/roadmap advanced to 0.12.5.0. Exact-head CI and Pages hosted-byte verification are still pending; do not promote without green required gates.
+- Open: #48 physical two-phone LAN acceptance; #86 Render auto-deploy trigger drift (client-only changes this run); #87 main branch protection; #15 side orientation requires device/visual validation despite existing local Concept flip.
