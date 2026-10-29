@@ -55,8 +55,8 @@ function animationAssetCandidates(pose){
 // embedded-frame consumers; instanceof fails across JavaScript realms.
 function hasAuthoredFrame(catalog,key){
  const tag=Object.prototype.toString.call(catalog);
- if(tag==='[object Set]')return catalog.has(key);
- if(tag==='[object Map]')return Boolean(catalog.get(key));
+ if(tag==='[object Set]')return typeof catalog?.has==='function'&&catalog.has(key);
+ if(tag==='[object Map]')return typeof catalog?.get==='function'&&Boolean(catalog.get(key));
  return Boolean(catalog&&Object.prototype.hasOwnProperty.call(catalog,key)&&catalog[key]);
 }
 // Resolve a sparse authored frame catalog without assuming every pose exists.
