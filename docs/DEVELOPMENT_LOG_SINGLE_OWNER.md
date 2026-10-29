@@ -1,3 +1,6 @@
+## 2026-10-29 — MAGIC-FREEZE-JUMP-01 regression alignment (test-only, 0.11.4.58 unchanged)
+- Exact candidate `37bd4c522daa4b3f191507d6044f70d4cb322e76` preflight and Modular QA each failed one old Scream regression fixture: `tests/magic_scream_jump_counter.test.cjs:45` still expected an airborne Freeze target (z=25) to be stunned. The new feature correctly dodges Freeze at z>=20. Change the old unrelated-Trick fixture to grounded Freeze (z=0), preserving its .65-second stun assertion; the new Freeze regression independently covers airborne dodge and both sides. Do not weaken CI, bump the version or claim deployment until new exact-head checks pass.
+
 ## 2026-10-29 — MAGIC-FREEZE-JUMP-01 (candidate 0.11.4.58)
 - Inspected baseline `dev`/`main` `f05f67e25600bc9bd984bc335aa781a486272915`; Full Regression Census dev 40863139211, Modular QA dev 40863139155, main census 40863776226 and Pages build 40863776113 were green. Separate deployed desktop/touch initialization and Render auto-deploy drift remain unresolved; physical two-phone issue #48 remains open.
 - Added an existing-JUMP counter to targeted Freeze at z>=20. Grounded/low jumps remain vulnerable; caster cooldown/fatigue, other Tricks, four controls, 223 teams/2676 players, six formations, Career/Cup ten slots, SD09 and offline saves unchanged.

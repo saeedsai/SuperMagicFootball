@@ -41,7 +41,7 @@ test('Directional defence still counters grounded Scream; unrelated Tricks keep 
  const {defender,events,fire}=setup({z:0,face:-1});
  defender.dx=-1;defender.src.defence=95;
  assert.equal(fire(),true);assert.equal(defender.stun,0);assert.equal(events[0].countered,true);
- const freeze=setup({z:25,id:'freeze'});
+ const freeze=setup({z:0,id:'freeze'});
  assert.equal(freeze.fire(),true);assert.equal(freeze.defender.stun,.65);
  const fireball=setup({z:20,id:'fireball'});
  assert.equal(fireball.fire(),true);assert.equal(fireball.defender.stun,0);

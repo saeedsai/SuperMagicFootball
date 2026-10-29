@@ -7,7 +7,7 @@ Incremental tested commits directly on existing `dev`; no branches, force pushes
 
 ## Current checkpoint
 - Baseline `dev`/`main` `f05f67e25600bc9bd984bc335aa781a486272915`, 0.11.4.57. Full Regression Census dev 40863139211, Modular QA dev 40863139155, main census 40863776226 and Pages build 40863776113 green.
-- New 0.11.4.58 candidate MAGIC-FREEZE-JUMP-01: airborne JUMP at z>=20 dodges targeted Freeze. Grounded Freeze, caster cost, other Tricks and save format unchanged. Focused real-method regression added; exact-head 4+4/Modular and Pages are independent gates.
+- New 0.11.4.58 candidate MAGIC-FREEZE-JUMP-01: airborne JUMP at z>=20 dodges targeted Freeze. Grounded Freeze, caster cost, other Tricks and save format unchanged. Focused real-method regression added. Initial CI failed a stale Scream test expecting airborne Freeze to stun; adjusted that fixture to grounded Freeze while preserving its .65-second assertion. Exact-head 4+4/Modular and Pages remain independent gates.
 - Separate deployed desktop/touch browser smoke previously timed out during initialization; investigate. Render commit-trigger auto-deploy drift remains unverified.
 - LAN-094 automated two-client coverage delivered; physical two-phone acceptance #48 remains open. Do not close without devices.
 - Preserve 223 teams, 2676 players, six formations, exactly four actions, offline saves, Career/Cup ten slots and SD09.
