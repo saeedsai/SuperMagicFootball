@@ -16,7 +16,7 @@ test('idle and walking refill Breath quickly without exceeding capacity',()=>{
   const cap=F.breathCapacity(stat);
   assert.ok(F.breathTick(0,stat,8,.45)>cap*.90);
   assert.equal(F.breathTick(cap,stat,10,0),cap);
-  assert.ok(F.breathTick(0,stat,3,0)>F.breathTick(0,stat,3,.45));
+  assert.ok(F.breathTick(0,stat,.5,0)>F.breathTick(0,stat,.5,.45));
  }
 });
 test('running and sprinting do not regenerate Breath',()=>{
