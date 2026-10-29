@@ -1138,7 +1138,7 @@ const STUDIO_MAGIC_TRICK_GUIDES=Object.freeze({
  freeze:'Briefly freezes the nearest opponent in close range. JUMP above the freezing pulse to dodge it; a strong defender approaching and facing the carrier can also counter.',
  scream:'Briefly staggers the nearest opponent in a wider radius. JUMP above the shockwave to dodge it; a strong defender approaching and facing the carrier can also counter.',
  hideBall:'Briefly protects the carried ball. A strong defender approaching and facing the carrier can counter.',
- teleport:'Moves the carrier a short distance forward within the pitch. A strong defender approaching and facing the carrier can counter.'
+ teleport:'Moves the carrier a short distance forward within the pitch. A timed grounded SHOOT-slide in the forward travel lane intercepts the teleport; a strong defender approaching and facing the carrier can also counter.'
 });
 // STUDIO-MAGIC-SAVE-STATE-01: no-op selections should never look actionable.
 function studioMagicSaveState(choice,equipped,eligible){

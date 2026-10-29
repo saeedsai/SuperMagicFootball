@@ -1658,3 +1658,10 @@ Host now holds last validated guest four-button and directional input for at mos
 - Baseline dev/main 0aa4fa7323e1ed57de1272cfc9b0bcc38fbb0cf6. Dribble Style Studio now provides accessible live save-state feedback. Explicitly stored unchanged selections disable SAVE DRIBBLE STYLE; deterministic legacy defaults remain savable on first selection. Invalid choices fail closed.
 - Added focused helper and UI-wiring regression. Updated About, package, README banner/heading, SW cache, version policy, shared memory and own checkpoint. No LAN broker, physics, fifth button, roster, save schema or art change.
 - Full exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and Pages byte verification remain gates until observed. Physical two-device LAN/P2P acceptance open in #48. Continue roadmap increments even if release pending.
+
+### 2026-10-29 14:00 CET — TELEPORT-SLIDE-01 (0.11.4.59 candidate)
+- Baseline exact dev/main `7c3fb0f1482170b37adee53323f656c6d8b9fda9`; previous main Full Regression Census #40871107173 green for 0.11.4.58 only.
+- Teleport now checks an active grounded defensive SHOOT-slide within the carrier's forward travel lane (0..85 ahead, <=35 lateral). Behind/off-lane/expired/airborne slides fail; directional defence, original teleport distance and caster cooldown/fatigue retained.
+- Added focused real-engine regression for both sides, diagonal, lane bounds, invalid states, successful teleport, caster cost and other Tricks. Player Studio guide, About/package/README/SW cache/version policy/memory updated to 0.11.4.59.
+- No LAN/P2P implementation, roster, formation, save schema, Career/Cup slots, SD09, graphics asset or fifth-button change. Exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and hosted Pages bytes pending until observed; physical #48 and Render drift #86 remain open.
+- Next five: exact-head CI, diagnose failures, protected promotion/Pages verification, desktop/touch smoke, Player Studio/eight-view art/goalkeeper/Career increments.

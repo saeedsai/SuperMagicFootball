@@ -1,3 +1,5 @@
+> **0.11.4.59 release candidate (29 October 2026):** TELEPORT-SLIDE-01 adds a directional counter to Teleport: an active grounded SHOOT-slide within the carrier's forward travel lane intercepts the escape; behind, wide, expired or airborne slides do not. The caster still pays cooldown and fatigue. Exactly four buttons, 223 teams/2676 players, six formations, Career/Cup ten slots, SD09, other Tricks and offline saves remain unchanged. Focused real-engine regression added; exact-head four Node + four Chromium, Modular QA, protected promotion and Pages hosted bytes are independent gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.11.4.58 release candidate (29 October 2026):** MAGIC-FREEZE-JUMP-01 lets an airborne defender use existing JUMP to dodge a close-range Freeze pulse at height 20 or above; grounded and low-jumping defenders still freeze. Caster cooldown and fatigue, all four action buttons, 223 teams/2676 players, six formations, Career/Cup ten slots, SD09, other Magic Tricks and offline saves remain unchanged. Focused real-engine regression added; exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and Pages hosted bytes are independent gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.11.4.57 release candidate (29 October 2026):** MAGIC-BAT-SLIDE-01 adds an existing-SHOOT defensive slide parry against the Bat Magic Trick while the defender is grounded and actively sliding in range. Expired or airborne slides do not parry; the attacker still spends cooldown and fatigue. The four gameplay buttons, 223 teams/2676 players, six formations, Career/Cup ten slots, SD09, and offline saves remain unchanged. New focused runtime regression; exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and Pages hosted bytes are separate gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -250,7 +252,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.11.4.58 · Modular source project
+# Supermagic Football · v0.11.4.59 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 
