@@ -1,3 +1,6 @@
+## 30 October 2026 — JUMPING-FATIGUE-MONOTONIC-01 (0.12.8.0 candidate)
+Corrected the fitness action-fatigue multiplier cap for Jump only: the previous generic 1.5 cap caused ratings 1–50 to cost the same. Jump now accepts up to 2.0 while other actions retain the 1.5 cap. Added real engine spendStamina + FITNESS.actionFatigue monotonic regression cases; locally mirrored 7/7 jumping tests passed, full exact-head QA still unverified. Continue eight-view renderer, Magic Trick counterplay and goalkeeper/Career improvements.
+
 ## 29 October 2026 — CAREER-SLOT-RENAME-01 (0.12.7.0 candidate)
 Occupied Career saves can be renamed in the existing ten-slot manager without loading, overwriting, altering the active slot, save timestamp or match progress. Blank labels rejected; storage failure leaves old state intact. Next: full exact-head QA, eight-view authored renderer integration, Magic Trick counterplay, keeper improvements and hosted certification.
 
