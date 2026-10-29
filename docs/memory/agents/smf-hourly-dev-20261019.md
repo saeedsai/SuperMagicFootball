@@ -6,6 +6,8 @@
 Sole incremental developer directly on existing `dev`. No extra branches, force pushes, security/CI bypass or manual `main` edits. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump only, ten Career/Cup slots, SD09, offline saves and LAN/P2P.
 
 ## Current checkpoint
+- **EIGHT-VIEW-MIRROR-FALLBACK-01 (non-player-facing):** opt-in mirrored frame fallback for sparse eight-view packs, with exact-facing priority, no front/back reflection, immutable selection and safe generic idle. Also fixed cross-realm Set/Map recognition in both resolvers and guarded spoofed catalog tags. Source commits 93a7655f, 73b847c3, 339e67b3; tests 8d2e8c30, 60b97ffa, 84ef28d3. Seven committed regressions; isolated mirrored tests 5/5, cross-realm 2/2. Exact-head repository CI and renderer integration pending; no version bump.
+
 - **0.12.7.0 CAREER-SLOT-RENAME-01:** Career slot menu now offers RENAME; `careerSlots.rename(n,name)` preserves original `savedAt`, active selection, career payload and 10-slot vault, rejects blank/nontext names, avoids no-op writes and rolls back in-memory state if storage fails. UI uses cancelable prompt. Commits: 10a805b8, 11601fd1.
 - Regression: c800de80 and f9cc4948; seven committed tests including UI wiring. Six isolated Node tests passed on manually mirrored slot module; module syntax checked. Actual repository test file, 4 Node + 4 Chromium, Modular QA not run due GitHub clone DNS failure. Green CI not established.
 - About/package/README heading and banner/SW cache/policy/roadmap/shared memory updated to 0.12.7.0. Development log commit 250bca65. No main promotion or Pages byte verification.
