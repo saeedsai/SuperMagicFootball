@@ -86,3 +86,12 @@ test('inherited catalog properties are never treated as authored frames',()=>{
  const catalog=Object.create({'kick/S/0':true});
  assert.equal(resolveAuthoredFrame({action:'kick',heading:'S',frame:0},catalog),null);
 });
+
+test('Map-backed authored art resolves present frames and skips missing entries',()=>{
+ const catalog=new Map([['kick/E/2',false],['kick/E/0',{src:'kick-east'}],['idle/E/0',{src:'idle-east'}]]);
+ assert.equal(resolveAuthoredFrame({heading:'E',action:'kick',frame:2},catalog),'kick/E/0');
+ assert.equal(resolveAuthoredFrame({heading:'E',action:'kick',frame:0},catalog),'kick/E/0');
+});
+test('empty Map catalog returns null without affecting direction',()=>{
+ assert.equal(resolveAuthoredFrame({heading:'W',action:'keeper',frame:1},new Map()),null);
+});
