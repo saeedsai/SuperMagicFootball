@@ -13,7 +13,7 @@
 - **QA:** [single-developer log](../DEVELOPMENT_LOG_SINGLE_OWNER.md), GitHub Actions and [Pages](../../GITHUB_PAGES_SETUP.md).
 
 ## Mandatory About version rule
-On **every Git commit**, preserve the About-only current dev candidate `0.12.6.0` and its offline notes from `src/modules/release.js`; this candidate has not yet passed exact-head CI/Pages certification. Do not display a remote GitHub `dev` SHA or version banner outside About. Immutable commit SHAs stay internal to GitHub Actions/history; hosted Pages byte comparison verifies actual deployed content. **Every player-facing game update must also update root `README.md` with the new four-part version in banner and heading, dated summary of shipped features/fixes, compatibility notes where relevant and live link. README/version mismatch blocks release.** Documentation-only commits do not bump the installed version. Follow [`docs/VERSIONING_POLICY.md`](../VERSIONING_POLICY.md).
+On **every Git commit**, preserve the About-only current dev candidate `0.12.7.0` and its offline notes from `src/modules/release.js`; this candidate has not yet passed exact-head CI/Pages certification. Do not display a remote GitHub `dev` SHA or version banner outside About. Immutable commit SHAs stay internal to GitHub Actions/history; hosted Pages byte comparison verifies actual deployed content. **Every player-facing game update must also update root `README.md` with the new four-part version in banner and heading, dated summary of shipped features/fixes, compatibility notes where relevant and live link. README/version mismatch blocks release.** Documentation-only commits do not bump the installed version. Follow [`docs/VERSIONING_POLICY.md`](../VERSIONING_POLICY.md).
 
 ## Shared risks and working decisions
 - Other developer sessions should stop writing to the repository unless newly authorized; still reconcile any concurrent Git changes with the latest SHA. No force pushes or circumvented security checks.
@@ -24,6 +24,7 @@ On **every Git commit**, preserve the About-only current dev candidate `0.12.6.0
 Read only your own [registered checkpoint](AGENTS_INDEX.json) according to [memory protocol](README.md). Git history preserves older states. Never edit another chat's memory or store secrets.
 
 ## Recent release context
+- **0.12.7.0 candidate** (2026-10-29): Career slot rename preserves progress, active selection, save timestamp and offline compatibility; tests committed, exact-head CI and hosted release pending.
 - **0.11.5.0 candidate** (2026-10-29): CAREER-COPY-01 duplicates occupied Career saves to the first empty slot without switching active career or overwriting another slot. Focused regression added; exact-head CI, promotion and Pages remain separate gates.
 - **0.11.4.59 candidate** (2026-10-29): TELEPORT-SLIDE-01 adds directional grounded SHOOT-slide interception within the carrier's forward Teleport lane. Cost, other Tricks, four controls and offline saves unchanged; exact-head QA, protected promotion and hosted Pages certification separate.
 - **0.11.4.58 candidate** (2026-10-29): Freeze now dodged by JUMP at z>=20; caster cost and grounded Freeze unchanged. Focused regression added; exact-head CI, protected promotion and Pages certification remain independent.
