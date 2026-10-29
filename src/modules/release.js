@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.49',
+ version:'0.11.4.50',
  date:'2026-10-29',
  notes:Object.freeze([
+  'STUDIO-APPEARANCE-STATE-01: Player Studio shows when appearance changes need saving and disables SAVE CHARACTER for complete unchanged selections. First-time legacy normalization and real edits remain savable; preview rotation does not persist.',
   'STUDIO-APPEARANCE-NOOP-01: Saving an unchanged, fully explicit Player Studio appearance no longer rewrites Career or custom-club saves. First-time legacy appearances, actual changes and normalized obsolete fields still persist; graphics, four controls and SD09 remain unchanged.',
   'STUDIO-SHOT-NOOP-01: Player Studio skips redundant Career/club writes for unchanged explicit Super Shot, level and display name. Legacy first-time choices, real edits and validation still persist; four-button gameplay and SD09 are unchanged.',
   'STUDIO-DEFENCE-NOOP-01: Player Studio skips redundant Career/club writes for unchanged explicit Super Defence equipment and tier. First-time tier selection, actual edits and validation remain intact; SD09 and four-button gameplay are unchanged.',

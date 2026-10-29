@@ -1,3 +1,5 @@
+> **0.11.4.50 release candidate (29 October 2026):** STUDIO-APPEARANCE-STATE-01 adds live accessible Player Studio appearance save feedback and disables SAVE CHARACTER only when every stored appearance field already matches. Real edits and first-time legacy normalization remain savable; preview rotation never changes saved appearance. Focused Node regression added; 223 teams/2676 players, six formations, four buttons, Career/Cup ten slots, SD09, offline saves and graphics are preserved. Exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and hosted Pages byte verification remain release gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.11.4.49 release candidate (29 October 2026):** STUDIO-APPEARANCE-NOOP-01 avoids redundant Career/custom-club save writes when all Player Studio appearance fields are already explicitly unchanged. Legacy partial appearances, real edits and normalization of obsolete fields still persist. Focused real-handler Node regression added; 223 teams/2676 players, six formations, four buttons, Career/Cup ten slots, SD09, offline saves and graphics are preserved. Exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and hosted-byte verification remain release gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.11.4.48 release candidate (29 October 2026):** STUDIO-SHOT-NOOP-01 avoids redundant Career/custom-club save writes when an explicit Super Shot, level and name are unchanged. First-time legacy choices and genuine edits persist; invalid selections reject. Seven focused tests added; 223 teams/2676 players, six formations, four buttons, Career/Cup ten slots, SD09, offline saves and graphics remain unchanged. Exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and hosted-byte verification remain release gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -232,7 +234,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.11.4.49 · Modular source project
+# Supermagic Football · v0.11.4.50 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 

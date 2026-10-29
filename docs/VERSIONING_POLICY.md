@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.49
+# SuperMagicFootball release/version policy — About-only 0.11.4.50
 
-**Effective 21 October 2026; updated 29 October 2026 for candidate 0.11.4.49.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 29 October 2026 for candidate 0.11.4.50.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.49 (29 October 2026):** STUDIO-APPEARANCE-NOOP-01 avoids redundant Player Studio appearance writes for fully explicit unchanged appearances, preserving legacy normalization and genuine edits. Focused real-handler tests; exact-head 4+4/Modular, protected promotion and Pages hosted bytes remain separate gates.
+**Current dev candidate 0.11.4.50 (29 October 2026):** STUDIO-APPEARANCE-STATE-01 adds live accessible appearance save-state feedback, disabling SAVE CHARACTER only for fully explicit unchanged selections; genuine edits and legacy normalization remain savable. Focused tests added; exact-head 4+4/Modular, protected promotion and hosted bytes are independent gates.
+
+**Previous dev candidate 0.11.4.49 (29 October 2026):** STUDIO-APPEARANCE-NOOP-01 avoids redundant Player Studio appearance writes for fully explicit unchanged appearances, preserving legacy normalization and genuine edits. Focused real-handler tests; exact-head 4+4/Modular, protected promotion and Pages hosted bytes remain separate gates.
 
 **Previous dev candidate 0.11.4.48 (29 October 2026):** STUDIO-SHOT-NOOP-01 skips redundant Super Shot Studio writes for unchanged explicit equipment, level and display name. First-time legacy and real edits persist; seven focused regressions added. Exact-head 4+4/Modular, protected promotion and hosted Pages bytes remain separate gates.
 

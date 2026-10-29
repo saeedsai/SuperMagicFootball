@@ -1606,3 +1606,8 @@ Host now holds last validated guest four-button and directional input for at mos
 - Found live `lan-auto-lobby.js` repeated room taps while awaiting host approval sent LEAVE and generated another JOIN, cancelling consent and racing stale approvals. Same-room repeat taps now preserve pending request; selecting a different host still sends LEAVE and a fresh JOIN.
 - Added two-mode LAN/Online P2P regression for duplicate taps, host switching, stale/new approvals. Aligned 0.11.4.36 About, package, README, SW, version policy and memory. No physics, four-button, roster, graphics or save changes.
 - Full exact-head 4 Node + 4 Chromium, Modular QA, protected main and hosted Pages remain gates. Physical two-device acceptance pending.
+
+### 2026-10-29 07:00 CET — STUDIO-APPEARANCE-STATE-01 (0.11.4.50 candidate)
+- Baseline dev/main 2c878ae066032b21ec2abe1f2c2c415d7cc49ad3. New Player Studio live appearance save feedback disables the action for complete unchanged selections while preserving legacy normalization and genuine edits. Preview pose/rotation never changes saved data. Existing save handler unchanged.
+- Added focused pure-helper regression and UI event wiring assertions. Updated About, package, README, offline cache, version policy and own checkpoint. No LAN broker, physics, buttons, rosters, saves or graphics assets modified.
+- Exact-head full 4 Node + 4 Chromium, Modular QA, protected promotion and Pages hosted-byte smoke are release gates, not claimed until observed. Physical two-device LAN/P2P acceptance remains open in #48. Continue other roadmap work if promotion is pending.
