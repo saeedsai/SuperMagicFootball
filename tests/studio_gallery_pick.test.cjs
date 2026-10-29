@@ -73,7 +73,7 @@ test('desktop arrow keys wrap and preserve focus on the selected eight-view tile
  const track={prevented:0,focused:[]};
  ctx.menu.querySelector=selector=>{
   if(selector==='[data-action=studioSpin]')return {textContent:''};
-  const found=selector.match(/^\\[data-studio-pick="(\\d+)"\\]$/);
+  const found=selector.match(/^\[data-studio-pick="(\d+)"\]$/);
   return found?{focus(){track.focused.push(Number(found[1]))}}:null;
  };
  assert.equal(ctx.studioGalleryKeydown(galleryKeyEvent('ArrowLeft',0,track)),true);
@@ -118,6 +118,6 @@ test('gallery advertises shortcuts and delegates keydown without extra gameplay 
  const {ctx}=studioContext();
  const html=ctx.studioEightViewMarkup();
  assert.equal((html.match(/aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Home End"/g)||[]).length,8);
- assert.match(ui,/menu\\.addEventListener\\('keydown',e=>\\{studioGalleryKeydown\\(e\\)\\}\\)/);
- assert.match(ui,/function studioGalleryKeydown\\(event\\)/);
+ assert.match(ui,/menu\.addEventListener\('keydown',e=>\{studioGalleryKeydown\(e\)\}\)/);
+ assert.match(ui,/function studioGalleryKeydown\(event\)/);
 });
