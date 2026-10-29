@@ -1,6 +1,18 @@
+import {FITNESS} from './fitness.js';
 // Supermagic Football v0.8.25.30 | CAREER | independently editable module
 const CAREER=(()=>{// Pure deterministic-season manager simulation; client-only career save; no server required.
 const deep=x=>JSON.parse(JSON.stringify(x));
+const {recoverEnergy}=FITNESS;
+// Where fixtures lack calendar dates, the game uses seven rest days for league
+// and two for a cup fixture; callers can specify nextFixtureRestDays explicitly.
+function recoverCareerEnergy(c,days){
+ for(const p of c.roster||[]){
+  const base=Number.isFinite(+p.energy)?+p.energy:Math.max(0,Math.min(100,Number(p.condition)||100));
+  p.energy=recoverEnergy(base,days,Number(p.stamina)||60);
+ }
+ return c;
+}
+
 const seed=(...a)=>a.join('|').split('').reduce((h,c)=>Math.imul(h^c.charCodeAt(0),16777619)>>>0,2166136261);
 const FIRST=['Ace','Bobby','Juno','Marco','Leo','Kobe','Miko','Yuri','Rafi','Eli','Niko','Rio','Zeno','Jasper','Mateo','Kian'];
 const LAST=['Storm','Blaze','Ramos','Falcon','Stone','Ninja','Hawk','Rocket','Volt','Breeze','Ace','River','Spark'];
@@ -56,16 +68,19 @@ function recordMatchFitness(c,report){
  const lookup=new Map(report.map(r=>[r.id,r]));const incidents=[];
  for(const p of c.roster){const r=lookup.get(p.id);if(!r)continue;
   const old=Number.isFinite(+p.condition)?+p.condition:100;
-  if(r.seconds>0){p.condition=Math.max(25,Math.min(100,Math.round(r.condition)));}
+  if(r.seconds>0){p.condition=Math.max(25,Math.min(100,Math.round(r.condition)));p.energy=Math.max(0,Math.min(100,Math.round((1-(Number(r.fatigue)||0))*100)));}
   else p.condition=Math.min(100,old+2);
   const exposure=r.seconds>5&&(r.fatigue>.68||p.condition<48);
   const injuryRoll=seed(p.id,c.season,c.week,c.history.length)%1000;
   if(exposure&&injuryRoll<Math.min(85,Math.round((r.fatigue*.6+(100-p.condition)/200)*55))){p.injuryWeeks=Math.max(p.injuryWeeks||0,1+injuryRoll%2);incidents.push(p.name);}
  }
- c.lastFitnessReport={players:report.length,injuries:incidents,averageCondition:Math.round(c.roster.reduce((s,p)=>s+(p.condition??100),0)/c.roster.length)};
+ // Report describes the completed match; recovery affects the *next* fixture.
+ const days=Number.isFinite(+c.nextFixtureRestDays)?Math.max(0,+c.nextFixtureRestDays):(c.lastResult?.kind==='cup'?2:7);
+ recoverCareerEnergy(c,days);
+ c.lastFitnessReport={restDays:days,players:report.length,injuries:incidents,averageCondition:Math.round(c.roster.reduce((s,p)=>s+(p.condition??100),0)/c.roster.length)};
  return c.lastFitnessReport;
 }
 
-return {createCareer,currentCareerFixture,advanceCareer,standings,nextSeason,purchase,upgradeFacility,trainPlayer,scoutAcademy,signAcademy,renewContract,recoverPlayer,careerCoverage,recordMatchFitness};})();
+return {createCareer,currentCareerFixture,advanceCareer,standings,nextSeason,purchase,upgradeFacility,trainPlayer,scoutAcademy,signAcademy,renewContract,recoverPlayer,careerCoverage,recordMatchFitness,recoverCareerEnergy};})();
 
 export {CAREER};
