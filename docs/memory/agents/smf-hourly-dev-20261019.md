@@ -25,3 +25,6 @@ Local `git ls-remote` failed DNS: `Could not resolve host: github.com`. GitHub c
 
 ## Cleanup
 Keep this file under 4KiB and shared memory under 6KiB; preserve full history in development log and GitHub commits.
+
+## 2026-10-30 checkpoint: ENERGY-BREATH-01
+Dev v0.12.9.0 candidate. Fitness exports breathCapacity (3..10s), spendBreath, breathTick, breathPenalty, recoverEnergy (+30, +50, +10 per extra day, Stamina-adjusted); engine spends Breath on actions, running and moving with ball, scales movement/fatigue when winded; Career recordMatchFitness saves energy and recovers for next fixture using configurable nextFixtureRestDays, default Cup 2/League 7 (calendar not dated). Existing fatigue and condition saves readable. tests/dual_resources.test.cjs committed; 12 direct-source focused checks passed, syntax checked, full CI/Modular QA unverified. No main deployment. Next: HUD, exact fixture-day integration, Energy capacity fairness, complete CI.
