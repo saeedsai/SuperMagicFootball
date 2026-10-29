@@ -1,3 +1,6 @@
+## 29 October 2026 — ARENA-OVERHAUL-01 game-wide visual candidate 0.12.0.0
+Original Mini Football-inspired, not copied: stadium-backed home, playable mode/Studio/Save navigation, blue/gold UI theme, match HUD, vibrant procedural field/arena, selected-player cue and jersey details. Candidate requires focused test, exact-head 4 Node+4 Chromium+Modular, main promotion, Pages byte verification and device screenshots. Next: independently authored eight-direction animations and goalkeeper/goal feedback. No added action button or save migration.
+
 ### 23 October 2026 — Saved-club editor selection (candidate 0.9.23.4)
 Direct Edit Players / Edit Roster for saved custom clubs now selects the chosen club and returns to the builder. The earlier Settings Studio Back/Career fix is preserved. CI, main and Pages not yet certified; independent ¾ Crown Royals art and five animation packs remain planned.
 

@@ -1,3 +1,11 @@
+## 2026-10-29 — ARENA-OVERHAUL-01 (0.12.0.0 candidate)
+- Baseline exact dev/main `5bac08dc3d102cb3d860de323db2ac474f44fe00` passed the last four Node/four Chromium, Modular QA and hosted byte checks. Current build must be retested at its own SHA; no premature release claim.
+- Miniclip Mini Football is a quality/ergonomics reference only, not an asset, layout, code or branded-identity source.
+- Reworked home hero, prominent Quick Match launch, accessible mode tiles, Player Studio and Career save shortcuts, submenu cards, stadium-backed menu surfaces, inputs and customization panel styling; existing routes and focus handling remain.
+- Reworked in-match scoreboard, time/pause controls, four-button/joystick treatment, stamina/charge/special overlays and viewport safe-area CSS. Exactly Pass/Shoot/Dribble/Jump remain the only gameplay actions; no physics or button mapping changes.
+- Added cached stadium/arena dressing and vivid grass pitch stripes, more visible controlled-player marker and hand-styled kit seam highlights. No game-state, roster, save schema, LAN/P2P or data changes.
+- Added focused source/UX contract tests, new About-only release version, package, README, SW cache, version policy, visual roadmap and sole developer checkpoint. Four Node/four Chromium/Modular and Pages hosted validation are separate release gates. Physical two-phone LAN #48, Render #86 and branch security #87 remain open.
+
 ## 2026-10-29 — VIZ-01 original arcade HUD/style (0.11.6.0 candidate)
 - Baseline exact dev/main `e5438025ba310b93c8615fdb38108ae331c976a6` (0.11.5.0). Owner reference: https://play.google.com/store/apps/details?id=com.miniclip.minifootball; visual/UX inspiration only, no copied assets.
 - Added six ordered visual milestones in `docs/MINI_FOOTBALL_VISUAL_ROADMAP_20261029.md`, promoted current P0 in development plan: match HUD/buttons, menus, eight authored views/animation, pitch/stadium/camera, Player Studio and QA.

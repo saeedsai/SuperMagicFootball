@@ -38,3 +38,6 @@ Keep **exactly four gameplay buttons** (Pass / Shoot / Dribble / Jump), includin
 
 ## Delivery and release policy
 Implement in small scoped commits to existing `dev` only; never create branches, force-push, bypass CI/security or overwrite parallel work. Each player-facing increment updates About-only four-number release, package, README, release notes, sw cache, development log and the sole developer's under-4KiB checkpoint. Require focused tests, four Node + four Chromium shards and Modular QA on exact head before protected `main` promotion; verify Pages bytes and hosted boot separately. Pending Render commit-trigger investigation #86 or physical LAN #48 cannot block useful new visual increments.
+
+## ARENA-OVERHAUL-01 — broad design implementation candidate (29 October 2026)
+Implemented together as a broad, original arcade presentation increment: stadium-themed home and mode cards, featured Play Now, Player Studio/Career shortcuts, responsive match HUD/four-action touch layout, brighter cached stadium and pitch dressing, directional jersey accents and controlled-player marker. This is **not** a claim that every bespoke eight-direction animation asset, stadium design variation, gameplay physics rework, physical phone or hosted device smoke is complete. Follow-up art and animation QA must still be executed separately.
