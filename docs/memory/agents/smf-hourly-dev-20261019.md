@@ -3,27 +3,27 @@
 **Updated:** 2026-10-29
 
 ## Mission
-Small tested commits directly on existing `dev`; no new branches, force pushes or CI/security bypass.
+Incremental tested commits directly on existing `dev`; no branches, force pushes or CI/security bypass.
 
 ## Current checkpoint
-- 0.11.4.57 candidate MAGIC-BAT-SLIDE-01: grounded active SHOOT-slide parries close-range Bat, with cost and other Tricks unchanged. New focused real-engine regression; exact-head 4 Node + 4 Chromium and Modular QA, protected promotion and Pages hosted-byte verification are independent gates.
-- Baseline dev/main `1c90677ae61bba38d7cbb038f377710f50ba4fa9` (0.11.4.56). Full Regression Census 40854451550 and Modular QA 40854451551 green; Pages build 40855262287 and main census 40855262069 green.
-- Hosted Render LAN smoke failed on 0.11.4.57 browser shard 3: 25-second room-registration timeout. Added 90-second bounded cold-start wait and browser/WSS diagnostics, still requiring real registration; exact-head CI pending.\n- Deployed PC/touch workflow 40854451762 failed: desktop `window.SupermagicFootball` readiness timeout three times before Pages build completed. Investigate hosted runtime initialization, browser console/network and smoke sequencing; do not misreport success.
-- LAN-094 delivered with automated two-client coverage; physical two-phone acceptance #48 remains open. Render commit-trigger drift unresolved.
-- Preserve 223 teams, 2676 players, six formations, four actions, offline saves, Career/Cup ten slots and SD09.
+- Baseline `dev`/`main` `f05f67e25600bc9bd984bc335aa781a486272915`, 0.11.4.57. Full Regression Census dev 40863139211, Modular QA dev 40863139155, main census 40863776226 and Pages build 40863776113 green.
+- New 0.11.4.58 candidate MAGIC-FREEZE-JUMP-01: airborne JUMP at z>=20 dodges targeted Freeze. Grounded Freeze, caster cost, other Tricks and save format unchanged. Focused real-method regression added; exact-head 4+4/Modular and Pages are independent gates.
+- Separate deployed desktop/touch browser smoke previously timed out during initialization; investigate. Render commit-trigger auto-deploy drift remains unverified.
+- LAN-094 automated two-client coverage delivered; physical two-phone acceptance #48 remains open. Do not close without devices.
+- Preserve 223 teams, 2676 players, six formations, exactly four actions, offline saves, Career/Cup ten slots and SD09.
 
 ## Next smallest action
-1. Verify 0.11.4.57 exact-head 4+4/Modular and focused Bat regression.
-2. If green, promote only exact dev SHA through protected main pipeline; verify hosted bytes.
-3. Diagnose deployed PC/touch boot failure using console and failed request diagnostics.
-4. Improve Player Studio and another independently counterable Trick.
-5. Advance eight-view authored graphics, goalkeeper and Career without routine LAN changes.
+1. Inspect 0.11.4.58 focused/4+4/Modular; repair actual failures.
+2. Promote only exact green dev SHA through protected pipeline; verify main and hosted Pages bytes.
+3. Diagnose separate hosted PC/touch boot with console/network evidence.
+4. Improve Player Studio and distinct counterable Magic Tricks.
+5. Advance eight-view graphics, goalkeeper and Career Mode.
 
 ## Ownership and exclusions
-Sole developer `smf-hourly-dev-20261019`; do not read/edit other agents' private memory.
+Sole developer `smf-hourly-dev-20261019`; never read or edit other agents' private memory.
 
 ## Evidence
-No physical two-phone certification, unobserved tests, or speculative Pages deployment claims.
+New candidate not certified until observed exact-head CI and Pages; no physical two-phone certification.
 
 ## Cleanup
-Keep checkpoint under 4 KiB; detailed history in Git.
+Keep under 4 KiB; Git log holds full history.
