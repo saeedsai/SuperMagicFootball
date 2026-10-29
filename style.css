@@ -451,3 +451,8 @@ html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%;min-height:100%
 @media(max-width:440px) and (orientation:portrait){.navMainList{grid-template-columns:1fr}.navMainList .navChoice:first-child{grid-column:auto}.arcadeHeroStrip{flex-direction:column;align-items:stretch;gap:7px}.arcadeHeroStrip .arcadeLaunch{width:100%}.arenaShortcutRow{grid-template-columns:1fr}.scoregroup #homename,.scoregroup #awayname{display:none}.scoregroup{max-width:55vw}}
 @media(max-height:400px) and (pointer:coarse){.arcadeHeroStrip p{display:none}.arcadeHeroStrip{min-height:65px;padding:6px 11px}.navChoice.btn{min-height:48px}.scoregroup #homename,.scoregroup #awayname{display:none}#touchButtons{right:max(7px,env(safe-area-inset-right));bottom:max(7px,env(safe-area-inset-bottom))}}
 @media(prefers-reduced-motion:reduce){.menu .btn,.menu .navChoice,#touchButtons .round{transition:none!important}.menu .btn:hover,.menu .navChoice:hover{transform:none}}
+
+/* STUDIO-ACTION-PHASE-01: keyboard/touch motion scrubber, scoped to optional gallery. */
+.studioGalleryTimeline{align-items:center;justify-content:center;gap:12px;margin:4px 0 12px;flex-wrap:wrap}
+.studioGalleryTimeline input[type=range]{width:min(240px,60vw);min-height:40px;accent-color:#e6bc53;cursor:pointer}
+.studioGalleryTimeline output{min-width:92px;font-variant-numeric:tabular-nums;font-weight:700}

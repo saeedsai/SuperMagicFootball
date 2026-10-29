@@ -21,9 +21,11 @@ test('eight-view gallery reuses the current studio direction contract and preser
  assert.doesNotMatch(ui.slice(ui.indexOf("else if(a==='studioGalleryToggle')"),ui.indexOf("else if(a==='studioLeft')")),/showPlayerStudio\(/);
  assert.match(ui,/drawStudioEightViewGallery\(p,appearance\)/);
 });
-test('gallery uses cached idle portraits without changing gameplay controls, storage or player data',()=>{
+test('gallery caches selected action frames without changing gameplay controls, storage or player data',()=>{
  assert.match(ui,/if\(signature===studioGallerySignature&&root\.querySelectorAll\('canvas'\)\.length===8\)return/);
- assert.match(ui,/visualFacing:dir\.view,anim:0,action:'idle'/);
+ assert.match(ui,/visualFacing:dir\.view,anim:moving\?/);
+ assert.match(ui,/action,actionTimer:actionTime/);
+ assert.match(ui,/studioGalleryFrame/);
  assert.match(css,/\.studioEightViewGallery\{display:grid/);
  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
  assert.equal((html.match(/<button data-act=/g)||[]).length,4);

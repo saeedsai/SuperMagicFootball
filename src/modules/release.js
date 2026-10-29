@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.3.0',
+ version:'0.12.4.0',
  date:'2026-10-29',
  notes:Object.freeze([
+  'STUDIO-ACTION-PHASE-01: Player Studio eight-direction gallery now has a keyboard- and touch-friendly four-phase motion scrubber. Compare run, kick, slide, header, keeper dive and celebration timing side by side without changing the player, saved data or the four gameplay buttons. This uses existing directional art, not yet-completed bespoke animation packs.',
   'STUDIO-ACTION-GALLERY-01: Player Studio now compares the selected idle, run, kick, slide, header, goalkeeper and celebration pose across all eight directions. Static comparison frames update when the pose changes, with accessible labels; the main portrait remains animated. No changes to four controls, gameplay, saved rosters, Career/Cup slots, SD09 or LAN/P2P.',
   'BROADCAST-GOAL-01: Original team-colored goal broadcast now shows scorer and live score with animated confetti; light grass-contact accents animate running players. Game physics, four controls, rosters, saved progress, SD09 and LAN/P2P are preserved.',
   'CAREER-COPY-LABEL-01: Repeated Career save copies now receive distinct, readable labels, and even 60-character names keep a visible copy suffix. Original saves, active slot, ten-slot limit and offline data format remain unchanged.',

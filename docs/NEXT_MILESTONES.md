@@ -1,3 +1,6 @@
+## 29 October 2026 — STUDIO-ACTION-PHASE-01 (0.12.4.0 candidate)
+Player Studio optional eight-view gallery gains an accessible four-step phase scrubber for comparing the selected action across all headings, using existing rendered art. No new gameplay action, save schema or finished bespoke art claim. Exact-head 4+4/Modular, promotion and hosted verification required. Next: author true eight-direction action frames, improve keeper art, counters and Career Mode.
+
 ## 29 October 2026 — ARENA-OVERHAUL-01 game-wide visual candidate 0.12.0.0
 Original Mini Football-inspired, not copied: stadium-backed home, playable mode/Studio/Save navigation, blue/gold UI theme, match HUD, vibrant procedural field/arena, selected-player cue and jersey details. Candidate requires focused test, exact-head 4 Node+4 Chromium+Modular, main promotion, Pages byte verification and device screenshots. Next: independently authored eight-direction animations and goalkeeper/goal feedback. No added action button or save migration.
 

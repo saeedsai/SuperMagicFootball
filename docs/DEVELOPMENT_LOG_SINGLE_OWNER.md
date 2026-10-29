@@ -1,3 +1,8 @@
+## 2026-10-29 — STUDIO-ACTION-PHASE-01 (0.12.4.0 dev candidate)
+- Added keyboard/touch range scrubber to Player Studio's eight-view comparison. Four deterministic phase samples update action timing, running stride, header elevation and keeper dive elapsed across all eight views; gallery stays cached between unchanged selections and does not write saves.
+- Updated the stale idle-only gallery contract that was causing exact-head Full Regression Census preflight and Modular QA to fail on the previous 0.12.3.0 feature. Added phase-specific runtime regression and accessible-input contract tests.
+- Four-field About/package/README/offline cache/version policy aligned to 0.12.4.0. Preserve four controls, 223 teams/2676 players, six formations, ten Career/Cup slots, SD09 and LAN/P2P. Full exact-head CI, protected promotion, Pages bytes and physical LAN device certification are separate gates.
+
 ## 2026-10-29 — STUDIO-ACTION-GALLERY-01 (0.12.3.0 dev candidate)
 - Starting main/dev 1758c76837719523fb19eed9de2f1262ebf53740. Delivered pure VISUALFEEL.artHeading() with eight compass keys and invalid-vector fallback (commits a37528a7, 30266e6f), plus Node regression tests (096ecee2).
 - Player Studio's optional eight-view comparison now displays the selected motion (run/kick/slide/header/keeper/celebration) in eight fixed directional frames, with accessible pose labels and pose-sensitive cache. Main portrait remains animated; static gallery avoids eight additional animation loops. UI commit 331010d8, regression a26a0a52, CSS 59399e18.

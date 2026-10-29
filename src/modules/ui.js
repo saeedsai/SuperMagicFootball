@@ -836,27 +836,30 @@ function studioColorOptions(list,selected){
  return studioOptionTags(values,selected);
 }
 
-let studioDirection=0,studioAction='idle',studioSpin=false,studioDragX=null,studioGalleryOpen=false,studioGallerySignature='';
+let studioDirection=0,studioAction='idle',studioSpin=false,studioDragX=null,studioGalleryOpen=false,studioGallerySignature='',studioGalleryFrame=1;
 setInterval(studioAnimationFrame,1150);
 setInterval(()=>{if(screen==='PLAYER CUSTOMIZATION' && $('customPortrait') && studioAction!=='idle')drawCustomizer()},90);
 function studioRotate(step){studioDirection=((studioDirection+step)%8+8)%8;const label=$('customAngleLabel');if(label)label.textContent=STUDIO_DIRS[studioDirection].label;drawCustomizer()}
 function studioAnimationFrame(){if(!studioSpin||!$('customPortrait')||screen!=='PLAYER CUSTOMIZATION')return;studioDirection=(studioDirection+1)%8;drawCustomizer();}
 function studioEightViewMarkup(){
- return `<section id="studioEightViewGallery" class="studioEightViewGallery" aria-label="Eight-direction player action gallery"><p id="studioEightViewPoseLabel" class="muted" role="status" aria-live="polite">Comparing ${escapeHTML(studioAction.toUpperCase())} in eight directions</p>${STUDIO_DIRS.map((dir,i)=>`<figure class="studioEightViewItem"><canvas data-studio-view="${i}" width="144" height="152" role="img" aria-label="${escapeHTML(dir.label)} ${escapeHTML(studioAction)} pose"></canvas><figcaption>${escapeHTML(dir.label)}</figcaption></figure>`).join('')}</section>`;
+ return `<section id="studioEightViewGallery" class="studioEightViewGallery" aria-label="Eight-direction player action gallery"><p id="studioEightViewPoseLabel" class="muted" role="status" aria-live="polite">Comparing ${escapeHTML(studioAction.toUpperCase())} in eight directions</p><div class="row studioGalleryTimeline"><label for="studioGalleryPhase">ACTION FRAME</label><input id="studioGalleryPhase" class="choice" type="range" min="0" max="3" step="1" value="${studioGalleryFrame}" aria-label="Scrub motion phase across all eight player views"><output id="studioGalleryPhaseLabel" for="studioGalleryPhase">FRAME ${studioGalleryFrame+1} / 4</output></div>${STUDIO_DIRS.map((dir,i)=>`<figure class="studioEightViewItem"><canvas data-studio-view="${i}" width="144" height="152" role="img" aria-label="${escapeHTML(dir.label)} ${escapeHTML(studioAction)} pose"></canvas><figcaption>${escapeHTML(dir.label)}</figcaption></figure>`).join('')}</section>`;
 }
 // 0.8.25.32: Optional, non-interactive eight-view contact sheet for the selected
 // Studio appearance. Idle frames are deterministic even while rotating/animating
 // the large preview; update the sheet only when the edited character changes.
 function drawStudioEightViewGallery(player,appearance){
  const root=$('studioEightViewGallery');if(!studioGalleryOpen||!root||!player)return;
- // Compare a frozen action frame in all eight headings; the main portrait
+ // Compare a user-selected action phase in all eight headings; the main portrait
  // remains the only animated preview, avoiding eight extra render loops.
  const pose=$('customPose')?.value||studioAction;
- const signature=JSON.stringify([home,avatarIndex,player.name,appearance,pose]);
+ const signature=JSON.stringify([home,avatarIndex,player.name,appearance,pose,studioGalleryFrame]);
  if(signature===studioGallerySignature&&root.querySelectorAll('canvas').length===8)return;
  studioGallerySignature=signature;
  const poseLabel=$('studioEightViewPoseLabel');
  if(poseLabel)poseLabel.textContent='Comparing '+pose.toUpperCase()+' in eight directions';
+ const frameLabel=$('studioGalleryPhaseLabel');if(frameLabel)frameLabel.textContent='FRAME '+(studioGalleryFrame+1)+' / 4';
+ const phase=Math.max(0,Math.min(3,studioGalleryFrame|0));
+ const actionTime=[.4,.28,.16,.04][phase],diveTime=[.06,.16,.28,.42][phase];
  const gameView={getTeam:()=>TEAMS[home],options:{showNames:false},celebrationStyle:0};
  const template=game.player(0,3)||{i:3,team:0};
  const action=pose==='run'?'idle':pose;
@@ -869,11 +872,11 @@ function drawStudioEightViewGallery(player,appearance){
   const gr=ctx.createLinearGradient(0,0,144,152);
   gr.addColorStop(0,'#27666e');gr.addColorStop(1,'#102b3e');ctx.fillStyle=gr;ctx.fillRect(0,0,144,152);
   const dir=STUDIO_DIRS[i],moving=pose==='run';
-  const dummy={...template,x:0,y:0,z:pose==='header'?22:0,t:0,i:avatarIndex,src:{...player,appearance},
+  const dummy={...template,x:0,y:0,z:pose==='header'?[5,14,22,10][phase]:0,t:0,i:avatarIndex,src:{...player,appearance},
    keeper:player.role==='GK'||action.startsWith('keeper'),face:dir.view.side,
    dx:moving?dir.dx*.6:0,dy:moving?dir.dy*.6:0,
-   visualFacing:dir.view,anim:moving?1.2:0,action,actionTimer:.22,
-   diveElapsed:.32,diveDy:dir.dy<0?-1:1,controlled:false,preview:true,stun:0,cryTimer:0};
+   visualFacing:dir.view,anim:moving?(phase+1)*.45:phase*.3,action,actionTimer:actionTime,
+   diveElapsed:diveTime,diveDy:dir.dy<0?-1:1,controlled:false,preview:true,stun:0,cryTimer:0};
   ctx.save();ctx.translate(fit.x,fit.y);ctx.scale(fit.scale,fit.scale);
   renderer.drawPlayer(ctx,dummy,gameView);ctx.restore();
  }
@@ -1635,7 +1638,7 @@ menu.addEventListener('change',e=>{if(e.target.id==='saveImportFile'){importSave
 menu.addEventListener('pointerdown',e=>{if(e.target.id==='customPortrait'){studioDragX=e.clientX;e.target.setPointerCapture?.(e.pointerId)}});
 menu.addEventListener('pointermove',e=>{if(studioDragX===null||e.target.id!=='customPortrait')return;const delta=e.clientX-studioDragX;if(Math.abs(delta)>=22){studioRotate(delta>0?1:-1);studioDragX=e.clientX;}});
 for(const eventName of ['pointerup','pointercancel','lostpointercapture'])menu.addEventListener(eventName,()=>{studioDragX=null});
-menu.addEventListener('input',e=>{if(e.target.id?.startsWith('stat_')){studioStatPreview();return;}if(e.target.dataset.teamSearch){fillTeamBrowser(e.target.dataset.teamSearch);return;}if(e.target.id?.startsWith('face_')||e.target.id==='customPose'){if(e.target.id==='customPose')studioAction=e.target.value;drawCustomizer()}});
+menu.addEventListener('input',e=>{if(e.target.id==='studioGalleryPhase'){const frame=Number(e.target.value);if(Number.isInteger(frame)&&frame>=0&&frame<=3){studioGalleryFrame=frame;drawCustomizer()}return;}if(e.target.id?.startsWith('stat_')){studioStatPreview();return;}if(e.target.dataset.teamSearch){fillTeamBrowser(e.target.dataset.teamSearch);return;}if(e.target.id?.startsWith('face_')||e.target.id==='customPose'){if(e.target.id==='customPose')studioAction=e.target.value;drawCustomizer()}});
 menu.addEventListener('change',e=>{if(/^pos[0-5]$/.test(e.target.id)){const choiceEl=$('role_captain');if(!choiceEl)return;const current=+choiceEl.value;const ix=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;const players=squadContext==='pause'?game.rosters[squadSide]:roster(ix);const slots=Array.from({length:6},(_,i)=>+$('pos'+i).value);choiceEl.innerHTML=slots.map(i=>`<option value="${i}" ${i===current?'selected':''}>#${players[i].num} ${escapeHTML(players[i].name)}</option>`).join('');if(!slots.includes(current))choiceEl.value=String(slots[1]||slots[0]);refreshFormationPreview();}});
 
 menu.addEventListener('click',e=>{const browser=e.target.closest('[data-team-browse]');if(browser){showTeamBrowser(browser.dataset.teamBrowse);return;}const pick=e.target.closest('[data-pick-team]');if(pick){const select=$(pick.dataset.pickTeam);if(select){select.value=pick.dataset.teamId;select.dispatchEvent(new Event('change',{bubbles:true}));}return;}let train=e.target.closest('[data-train]');if(train){menu.dataset.trainPlayer=train.dataset.train;careerTrain();return}const renew=e.target.closest('[data-careerrenew]');if(renew){tryCareerContract(+renew.dataset.careerrenew);return}const recover=e.target.closest('[data-careerrecover]');if(recover){tryCareerRecover(+recover.dataset.careerrecover);return}let node=e.target.closest('[data-action]');if(node)action(node.dataset.action)});
