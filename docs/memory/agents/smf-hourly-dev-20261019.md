@@ -13,6 +13,9 @@ Incremental dev-only changes, never extra branches, force pushes or CI bypass. P
 
 - ACTION-TIMELINE-01: `actionFrame()` one-shot action completion API plus two regression cases committed (a6158fc5, 74a461b2). Renderer integration pending; no release bump. Tests not executed/verified in this run.
 
+
+- ACTION-POSE-TRANSITION-01: `resolveActionPose()` transitions finished one-shot moves to idle; running loops. Two tests committed (ef0c5a07, adb290cf). Renderer wiring and CI remain pending; no version bump.
+
 ## Next smallest action
 1. Verify four Node/four Chromium and Modular QA on exact dev head, fix any failures.
 2. Permit authorized green-CI main promotion and verify Pages bytes.
