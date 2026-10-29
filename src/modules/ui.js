@@ -1029,6 +1029,15 @@ function saveStudioShot(){
    updated.shot=id;updated.shotName=SHOTS[id].name||id;
    updated.superAbility={type:'shoot',id,name:updated.shotName,level:tier};
   }
+  // Validate first: unchanged explicit Shot equipment must not rewrite Career/club saves.
+  // Missing legacy level, shot ID or name still persists on the first explicit selection.
+  const sameAbility=player.superAbility===updated.superAbility||(
+   !!player.superAbility&&!!updated.superAbility&&
+   Object.keys(player.superAbility).length===Object.keys(updated.superAbility).length&&
+   Object.keys(player.superAbility).every(key=>Object.is(player.superAbility[key],updated.superAbility[key]))
+  );
+  if(player.superShotLevel===updated.superShotLevel&&Object.is(player.shot,updated.shot)&&
+     Object.is(player.shotName,updated.shotName)&&sameAbility){showPlayerStudio(avatarIndex);return;}
   source[avatarIndex]=updated;
   if(isCareer){const next={...career,roster:source};if(!storeCharacterChanges('managerCareer',next))return;career=next;saveCareer();}
   else{const next={...edits,[TEAMS[home].id]:source};if(!storeCharacterChanges('edits',next))return;edits=next;}

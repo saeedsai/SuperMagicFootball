@@ -1,3 +1,8 @@
+## 2026-10-29 05:06 CET — STUDIO-SHOT-NOOP-01 (candidate 0.11.4.48)
+- LAN/P2P: prior automated two-client tests green; physical phone acceptance remains open (#48). Render broker LAN-094 at 3da2f0c7 LIVE; Studio-only increment needs no broker change.
+- Found saveStudioShot rewrote Career/custom-club saves for unchanged explicit Shot, level and name. Added validated no-op guard; missing legacy fields and genuine edits still persist. Seven real-handler Node tests cover club/Career, validation and compatibility.
+- Direct dev commit; exact-head 4 Node + 4 Chromium and Modular QA, protected promotion, main/Pages hosted-byte verification pending at commit time. No art, physics, control, roster or save-schema changes.
+
 ## 2026-10-29 04:10 CET — CI fixture correction for 0.11.4.47
 - Exact-head Full Regression preflight failed 1 of 974 Node tests: the new first-time-tier fixture used an explicitly `undefined` argument with a destructuring default, inadvertently assigning tier 3 and asserting a write that should not happen. Fixed the fixture with an explicit `omitTier` flag; no game logic or eligibility relaxed. Retest full exact-head CI before promotion.
 

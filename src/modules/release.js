@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.47',
+ version:'0.11.4.48',
  date:'2026-10-29',
  notes:Object.freeze([
+  'STUDIO-SHOT-NOOP-01: Player Studio skips redundant Career/club writes for unchanged explicit Super Shot, level and display name. Legacy first-time choices, real edits and validation still persist; four-button gameplay and SD09 are unchanged.',
   'STUDIO-DEFENCE-NOOP-01: Player Studio skips redundant Career/club writes for unchanged explicit Super Defence equipment and tier. First-time tier selection, actual edits and validation remain intact; SD09 and four-button gameplay are unchanged.',
   'STUDIO-DRIBBLE-NOOP-01: Player Studio skips Career and club save writes when the selected Dribble Style is already explicitly equipped. First-time selections still persist, invalid styles still reject, and all ten styles and four controls remain unchanged.',
   'LAN-094: Busy or incompatible LAN/Online P2P rooms now return a join rejection with both room and request IDs. Guests refresh Find Games and retry immediately rather than waiting for the 25-second approval timeout. Four-button gameplay, graphics, rosters and saves remain unchanged.',
