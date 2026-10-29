@@ -1718,3 +1718,8 @@ Host now holds last validated guest four-button and directional input for at mos
 - Added focused real-engine regression for both sides, diagonal, lane bounds, invalid states, successful teleport, caster cost and other Tricks. Player Studio guide, About/package/README/SW cache/version policy/memory updated to 0.11.4.59.
 - No LAN/P2P implementation, roster, formation, save schema, Career/Cup slots, SD09, graphics asset or fifth-button change. Exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and hosted Pages bytes pending until observed; physical #48 and Render drift #86 remain open.
 - Next five: exact-head CI, diagnose failures, protected promotion/Pages verification, desktop/touch smoke, Player Studio/eight-view art/goalkeeper/Career increments.
+
+## 2026-10-29 — DIR-ANIM-CORE-01
+- Added pure eight-way animation frame resolver (`src/modules/directional_animation.js`) for seven existing visual action categories; no runtime integration or player-facing release/version bump yet.
+- Added focused Node regression `tests/directional_animation.test.cjs` for direction uniqueness, action identity, deterministic looping and invalid inputs.
+- Commits: `7cb68ca71719274af922bbc2058845034aa9bdd1`, `04b20951073f6abca0f72e8ff1e7db05803e4fb5`. Full 4+4 Chromium/Node and Modular QA not verified in this run; main/Pages promotion not claimed.
