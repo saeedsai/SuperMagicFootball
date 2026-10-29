@@ -135,3 +135,17 @@ test('malformed pose cannot inject keys and inherited catalog entries are ignore
  const result=resolveDirectionalAsset({action:'../kick',heading:'../../W',frame:999},catalog,{allowMirror:true});
  assert.equal(result,null);
 });
+
+test('Set and Map catalogs work across Node and VM realms',()=>{
+ const pose={heading:'W',action:'kick',frame:1};
+ const nodeSet=new Set(['kick/W/1']);
+ const nodeMap=new Map([['kick/W/1',{src:'authored'}]]);
+ const vmSet=vm.runInContext("new Set(['kick/W/1'])",context);
+ const vmMap=vm.runInContext("new Map([['kick/W/1',{src:'authored'}]])",context);
+ for(const catalog of [nodeSet,nodeMap,vmSet,vmMap]){
+  assert.equal(resolveAuthoredFrame(pose,catalog),'kick/W/1');
+  const resolved=resolveDirectionalAsset(pose,catalog,{allowMirror:true});
+  assert.equal(resolved.key,'kick/W/1');
+  assert.equal(resolved.mirrorX,false);
+ }
+});
