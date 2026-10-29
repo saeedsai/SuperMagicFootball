@@ -18,6 +18,7 @@ const VISUALFEEL=(()=>{
  // Resolve a stable compass heading for eight independent directional art frames.
  // This does not change the legacy {kind,side} renderer contract.
  function artHeading(dx=0,dy=0,face=1){
+  if(!Number.isFinite(dx)||!Number.isFinite(dy))return face<0?'W':'E';
   const view=facingView(dx,dy,face);
   if(view.kind==='front')return 'S';
   if(view.kind==='back')return 'N';
