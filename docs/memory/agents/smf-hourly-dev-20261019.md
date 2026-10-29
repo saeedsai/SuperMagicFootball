@@ -7,7 +7,7 @@ Incremental tested dev-only development with no extra branches/force pushes/CI b
 
 ## Current checkpoint
 - Baseline dev f5688a2f91d41ff9a280585b5fa7a74ce00ad31b, main b75728c94d035789b27c6852f2a345871879496e; current 0.12.2.0 BROADCAST-GOAL-01 adds original match-scoring graphics and turf-contact animation, renderer-only.
-- About/package/README/SW cache aligned; new focused Node tests. Exact-head 4+4/Modular, main/Pages and mobile QA require verification.
+- About/package/README/SW cache aligned; new focused Node tests and actual desktop/touch Chromium goal-banner visual regression. Exact-head 4+4/Modular, main/Pages and mobile QA require verification.
 - Owner Mini Football-inspired original visual roadmap active, including bespoke eight-view player art and menu/gameplay improvement.
 
 ## Next smallest action

@@ -21,6 +21,26 @@ with sync_playwright() as pw:
     removeItem:k=>data.delete(k),clear:()=>data.clear()}})}""")
    page.set_content(html,wait_until='load')
    page.wait_for_function('!!window.SupermagicFootball?.game',timeout=60000)
+   # BROADCAST-GOAL-01: actual Chromium canvas paint, independent of mock Node checks.
+   goal_art=page.evaluate("""() => {
+    const env=window.SupermagicFootball,canvas=document.createElement('canvas');
+    canvas.width=Math.ceil(env.renderer.screenW);canvas.height=250;
+    const ctx=canvas.getContext('2d',{willReadFrequently:true});
+    const scoreBefore=JSON.stringify(env.game.score);
+    env.renderer.drawGoalCelebration(ctx,{
+     getTeam:side=>env.game.getTeam(side),pendingKickoff:{scorer:0},
+     goalHero:'Broadcast QA Star',score:[1,0],celebration:2.0
+    });
+    const pixel=[...ctx.getImageData(Math.floor(canvas.width/2),65,1,1).data];
+    canvas.id='goalBroadcastVisualQA';
+    canvas.style.cssText='position:fixed;z-index:100;top:0;left:0;width:100vw;height:auto;pointer-events:none';
+    document.body.append(canvas);
+    return {pixel,unchanged:JSON.stringify(env.game.score)===scoreBefore};
+   }""")
+   assert goal_art['pixel'][3]>0,(device,mode,'transparent goal banner',goal_art)
+   assert goal_art['unchanged'],(device,mode,'goal art changed live match score')
+   page.locator('#goalBroadcastVisualQA').screenshot(path=str(ROOT/'tests'/f'broadcast_goal_{device}_{mode}.png'))
+   page.locator('#goalBroadcastVisualQA').evaluate('(el)=>el.remove()')
    for action in ('navQuick','navOnDevice',mode,'kickoff'):
     page.locator(f'[data-action="{action}"]').first.click()
    assert page.evaluate("SupermagicFootball.game.matchState")=='play',(device,mode)

@@ -1,3 +1,6 @@
+## 2026-10-29 — BROADCAST-GOAL-01 browser visual regression (test-only)
+- Added direct actual playable Chromium renderer check to match highlights suite on desktop and simulated touch, with pixel presence, non-mutating score assertion and screenshot capture per mode. This supplements (does not replace) focused Node and full 4+4/Modular QA. No player-facing source/version change; candidate remains 0.12.2.0.
+
 ## 2026-10-29 — BROADCAST-GOAL-01 (0.12.2.0 candidate)
 - Baseline dev f5688a2f91d41ff9a280585b5fa7a74ce00ad31b, main b75728c94d035789b27c6852f2a345871879496e. Implemented original canvas GOAL broadcast (scoring team, player, actual score, deterministic confetti) and running turf-contact VFX. No gameplay, input, save, roster, SD09 or LAN mutations.
 - Added actual-method Node canvas contract and updated About-only version/package/README/offline cache, roadmap and checkpoint. Exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and hosted byte/phone visual verification are separate gates. Issues #48/#86/#87 remain open.
