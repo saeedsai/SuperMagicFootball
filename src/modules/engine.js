@@ -961,7 +961,11 @@ class GameEngine{
   // A defender who moves toward and faces the carrier can counter the spell.
   const facing=inRange&&((rival.face||1)*(p.x-rival.x))>0;
   const closing=inRange&&((rival.dx||0)*(p.x-rival.x)+(rival.dy||0)*(p.y-rival.y))>0;
-  const countered=!!(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling'));
+  // Existing JUMP also counters a targeted Fireball when the rival is high enough.
+  // Keep the same four actions, stamina cost and six-second cooldown: jumping
+  // avoids the stagger but does not cancel the carrier's committed cast.
+  const jumpDodged=id==='fireball'&&inRange&&Number.isFinite(rival.z)&&rival.z>=20;
+  const countered=!!(jumpDodged||(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling')));
   p.magicReadyAt=this.clock+6;
   p.fatigue=Math.min(1,p.fatigue+.035);
   this.fatigueLedger[p.t][p.src.id]=p.fatigue;

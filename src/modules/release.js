@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.54',
+ version:'0.11.4.55',
  date:'2026-10-29',
  notes:Object.freeze([
+  'MAGIC-FIREBALL-JUMP-01: Defenders now dodge a nearby Fireball Magic Trick by jumping at least 20 pitch units above the ground. A dodged cast still costs the attacker its cooldown and stamina; existing facing-based counter, eight Magic Tricks, four buttons and save compatibility remain unchanged.',
   'STUDIO-MAGIC-LIVE-STATE-01: Player Studio now announces whether a Magic Trick selection is unchanged, locked at 91+ or ready to save, and exposes live accessible status beside the existing save button. All eight counters, four controls, legacy equipment and saved progress remain unchanged.',
   'STUDIO-DEFENCE-STATE-01: Player Studio now reports Super Defence save status and disables redundant saves for unchanged explicit equipment and tier. Legacy first-time tiers, genuine changes and SD09 eligibility remain supported without a fifth action button or save-format change.',
   'STUDIO-SHOT-STATE-01: Player Studio now shows accessible live Super Shot save feedback and disables redundant saves for unchanged explicit equipment, level and name. Legacy first-time choices and real edits remain savable; no fifth control, physics or save-schema changes.',
