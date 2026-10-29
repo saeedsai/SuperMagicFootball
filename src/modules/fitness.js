@@ -16,6 +16,42 @@ function actionFatigue(fatigue,stamina,kind,modifier=1){
  const costs={jump:.008,tackle:.019,slide:.029,pass:.004,shoot:.012,super:.085,defenceSuper:.065,spinBumper:.125,keeperSuper:.080,hyperdash:.060,header:.013,keeperDive:.022,comboJump:.035,assistBoost:.023,flipKick:.022,comboSuper:.105,bicycle:.035,superBicycle:.070,flyingKick:.029,dribbleTrick:.020};
  return clamp(fatigue+(costs[kind]||0)*.78*Math.max(.5,Math.min(kind==='jump'?2:1.5,Number(modifier)||1))*(120-clamp(Number(stamina)||60,1,100))/65,0,1);
 }
+// ENERGY is long-term (legacy 'fatigue' 0..1 stays for save/API compatibility).
+// BREATH is a separate, short-term action budget measured in seconds.
+const breathCapacity=stamina=>3+7*(clamp(Number(stamina)||1,1,100)-1)/99;
+const breathPenalty=(breath,stamina)=>{
+ const cap=breathCapacity(stamina);
+ return 1+.75*(1-clamp(Number(breath)||0,0,cap)/cap);
+};
+const breathActionSeconds=Object.freeze({
+ pass:.25,shoot:1.1,super:2.6,comboSuper:3.0,defenceSuper:2.4,
+ keeperSuper:2.4,tackle:1.2,slide:1.5,dribble:.3,dribbleTrick:1.8,
+ jump:1.0,comboJump:1.6,superBicycle:2.2,bicycle:1.6,
+ header:.8,keeperDive:1.1,hyperdash:2.2,spinBumper:2.3,
+ flyingKick:1.6,flipKick:1.5,assistBoost:.7
+});
+function spendBreath(breath,stamina,kind){
+ const cap=breathCapacity(stamina),rated=clamp(Number(stamina)||1,1,100);
+ const cost=(breathActionSeconds[kind]||.45)*(1.2-.4*(rated-1)/99);
+ return clamp((Number.isFinite(+breath)?+breath:cap)-cost,0,cap);
+}
+function breathTick(breath,stamina,seconds,intensity=0){
+ const cap=breathCapacity(stamina),rated=clamp(Number(stamina)||1,1,100);
+ const active=clamp(Number(intensity)||0,0,1.8);
+ // Walking or resting restores breath; sprinting consumes it quickly.
+ const regen=(.65+.65*(rated-1)/99)*(1-Math.min(.9,active*.6));
+ const drain=active>0.55?(active-.55)*1.6*(1.2-.4*(rated-1)/99):0;
+ return clamp((Number.isFinite(+breath)?+breath:cap)+Math.max(0,seconds)*(regen-drain),0,cap);
+}
+// Explicit cumulative recovery after N rest days: +30%, +50%, then +10% per day.
+// These are percentage points of MAX Energy, not percentages of the missing balance.
+function recoverEnergy(energy,days,stamina=60){
+ const available=clamp(Number(energy)||0,0,100),n=Math.max(0,Math.floor(Number(days)||0));
+ const recovery=n===0?0:n===1?30:80+10*(n-2);
+ // High stamina restores energy somewhat faster; low stamina somewhat slower.
+ const statFactor=.85+.3*(clamp(Number(stamina)||1,1,100)-1)/99;
+ return clamp(available+recovery*statFactor,0,100);
+}
 const staminaPercent=fatigue=>Math.round((1-clamp(fatigue||0,0,1))*100);
 const matchCondition=(condition,fatigue,seconds)=>clamp(Math.round((Number(condition)??100)-fatigue*10-Math.min(5,seconds/65)),25,100);
 function fatigueStatus(fatigue){return fatigue>=.75?'EXHAUSTED':fatigue>=.5?'TIRED':fatigue>=.3?'WORKING':'FRESH';}
@@ -36,6 +72,6 @@ function recommendSubstitute(plan,roster,ledger,subbedOut=new Set()){
  return best;
 }
 
-return {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,staminaPercent,matchCondition,fatigueStatus,substitutionChanges,recommendSubstitute};})();
+return {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,staminaPercent,matchCondition,fatigueStatus,substitutionChanges,recommendSubstitute,breathCapacity,breathPenalty,spendBreath,breathTick,recoverEnergy};})();
 
 export {FITNESS};
