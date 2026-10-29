@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.12.1.0
+# SuperMagicFootball release/version policy — About-only 0.12.1.1
 
-**Effective 21 October 2026; updated 29 October 2026 for candidate 0.12.1.0.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 29 October 2026 for candidate 0.12.1.1.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.12.1.0 (29 October 2026):** GK-GLOVE-ART-01 adds a hand-painted padded catch/dive palm to the existing eight-view goalkeeper painter, preserving physics, timing, four controls, rosters and offline saves. Focused tests and exact-head 4+4/Modular QA, protected main promotion and Pages verification are separate gates.
+**Current dev candidate 0.12.1.1 (29 October 2026):** CAREER-COPY-LABEL-01 preserves a visible copy suffix on maximum-length Career slot names and numbers repeated copies without overwriting or switching active saves. New focused tests; 4+4/Modular CI, protected main promotion and Pages bytes remain independent gates.
+
+**Previous dev candidate 0.12.1.0 (29 October 2026):** GK-GLOVE-ART-01 adds a hand-painted padded catch/dive palm to the existing eight-view goalkeeper painter, preserving physics, timing, four controls, rosters and offline saves. Focused tests and exact-head 4+4/Modular QA, protected main promotion and Pages verification are separate gates.
 
 **Previous dev candidate 0.12.0.0 (29 October 2026):** ARENA-OVERHAUL-01 is a broad, original arcade-sports presentation redesign across home, mode menus, responsive HUD, exactly four action controls, stadium and turf appearance and selected-player rendering. Physics, inputs, saved data and identities are unchanged; eight-view bespoke character animation remains a separate unfinished art milestone. Exact-head four Node and four Chromium regression shards, Modular QA, safe promotion and Pages hosted verification remain independent gates.
 

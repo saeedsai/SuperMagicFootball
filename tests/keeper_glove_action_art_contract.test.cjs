@@ -21,10 +21,11 @@ test('visual-only glove change retains eight-view painter and four controls',()=
  assert.match(ui,/const actions=\['pass','shoot','dribble','jump'\]/);
 });
 test('player-facing candidate rotates package, About notes, README and cache',()=>{
- const version='0.12.1.0';
+ const version=JSON.parse(read('package.json')).version;
  assert.equal(JSON.parse(read('package.json')).version,version);
  assert.ok(read('src/modules/release.js').includes("version:'"+version+"'"));
  assert.ok(read('README.md').startsWith('> **'+version+' release candidate'));
  assert.ok(read('README.md').includes('# Supermagic Football · v'+version+' ·'));
- assert.ok(read('sw.js').includes('-01210\';'));
+ assert.ok(read('sw.js').includes('-'+version.replace(/\./g,'')+"';"));
+ assert.match(read('src/modules/release.js'),/GK-GLOVE-ART-01/);
 });

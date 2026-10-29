@@ -1,28 +1,27 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019`
+**Agent ID:** smf-hourly-dev-20261019
 **Updated:** 2026-10-29
 
 ## Mission
-Continue tested commits directly on dev; preserve 223 teams/2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09, LAN/P2P and offline saves.
+Incrementally develop directly on dev; preserve 223 teams/2676 players, six formations, four actions, Career/Cup ten slots, SD09, LAN/P2P and offline saves.
 
 ## Current checkpoint
-- ARENA-OVERHAUL-01 integrated in dev `6ebdcbb3d773c8fbaaa621a8e66ed7bb0984823a` (0.12.0.0).
-- GK-GLOVE-ART-01 candidate 0.12.1.0 adds padded keeper catch/dive palms without changing reach, physics or saves; focused regression, About/package/README/offline cache rotated.
-- Previous baseline `5bac08dc` green 4+4 and Modular; newer exact-head CI, protected main promotion, Pages bytes and real touch QA must be verified separately.
-- Main protection #87, physical LAN two-phone #48, Render commit-trigger drift #86 open. No routine LAN implementation.
+- Baseline dev/main b75728c94d035789b27c6852f2a345871879496e was green 4+4/Modular and Pages hosted verification.
+- CAREER-COPY-LABEL-01 candidate 0.12.1.1: long Career slot names retain copy suffix; repeated copies are numbered; blank legacy names get readable copy labels. Focused tests added; release/About/README/cache updated.
+- Exact new-head CI, protected promotion and hosted byte comparison must be checked separately. Main protection #87, physical LAN acceptance #48, Render drift #86 remain open. No routine LAN implementation.
 
 ## Next smallest action
-1. Inspect exact-head four Node/four Chromium and Modular QA; fix failures.
-2. Restore required main branch protection #87 through authorized settings.
-3. Promote only green exact dev head through protected pipeline and verify hosted Pages bytes.
-4. Review real portrait/landscape and desktop graphics/performance.
-5. Continue independently authored eight-view animation, Player Studio and keeper gameplay.
+1. Inspect focused, four Node/four Chromium and Modular QA on exact candidate.
+2. Fix any failures without weakening coverage.
+3. Restore required main branch protection via authorized settings.
+4. Promote only exact green dev head through protected pipeline and verify Pages bytes.
+5. Continue authored eight-view graphics, Player Studio, counterable Tricks, keeper and Career.
 
 ## Ownership and exclusions
 Sole developer; never read/edit other agents' private memory. Physical LAN not certified.
 
 ## Evidence
-GitHub CI and commits are the audit trail; no production claim without exact-head checks.
+GitHub commits and CI runs; no deployment claim until hosted check.
 
 ## Cleanup
-Keep checkpoint under 4 KiB; details in development log.
+Keep checkpoint under 4KiB; details in development log.

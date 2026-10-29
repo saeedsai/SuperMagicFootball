@@ -45,6 +45,28 @@ test('copy label stays within 60 characters',async()=>{
  const db=memory(),v=(await api()).create(db);v.save(1,career(2),'X'.repeat(60));
  v.duplicate(1);assert.equal(v.list()[1].name.length,60);
 });
+test('Career copy labels stay distinguishable at the 60-character limit and on repeat',async()=>{
+ const db=memory(),v=(await api()).create(db);
+ const long='X'.repeat(60);v.save(1,career(2),long);
+ assert.equal(v.duplicate(1),2);
+ assert.equal(v.duplicate(1),3);
+ const names=v.list().map(s=>s.name);
+ assert.equal(names[0],long,'original label must not change');
+ assert.equal(names[1],'X'.repeat(53)+' (copy)');
+ assert.equal(names[2],'X'.repeat(51)+' (copy 2)');
+ assert.ok(names.every(name=>name.length<=60));
+ assert.equal(v.active,1,'copy must not change the active slot');
+ assert.equal(v.load(2).club,2);
+ assert.equal(v.load(3).club,2);
+});
+test('Career copy gives a readable label to legacy blank-named slots',async()=>{
+ const db=memory(),v=(await api()).create(db);v.save(1,career(2),'Original');
+ const raw=JSON.parse(db.getItem('legend_careerSlots'));raw.slots[0].name='';
+ const fresh=memory();fresh.setItem('legend_careerSlots',JSON.stringify(raw));
+ const restored=(await api()).create(fresh);
+ assert.equal(restored.duplicate(1),2);
+ assert.equal(restored.list()[1].name,'Career 1 (copy)');
+});
 test('Career menu only offers COPY when space remains and dispatch preserves active game',()=>{
  const src=fs.readFileSync('src/modules/ui.js','utf8');
  const menu=src.match(/function showCareerSlots\(\)\{[\s\S]*?\n\}(?=\nfunction showCupSlots)/);

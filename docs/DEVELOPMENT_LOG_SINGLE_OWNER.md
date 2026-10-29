@@ -1,3 +1,9 @@
+## 2026-10-29 — CAREER-COPY-LABEL-01 (0.12.1.1 dev candidate)
+- Baseline dev/main b75728c94d035789b27c6852f2a345871879496e had green 4 Node + 4 Chromium, Modular QA and Pages hosted checks. Main branch protection #87 remained open; physical LAN acceptance #48 and Render drift #86 remain open.
+- Career copy now preserves a visible suffix for maximum-length names, numbers repeated copies, and supplies a readable label for legacy blank names. Original slot data, active selection, ten-slot capacity and save schema unchanged. Added focused regression and made keeper-art release contract version-independent while retaining the art assertion.
+- About/package/README/SW cache and version policy advance to 0.12.1.1. Exact new-head 4+4/Modular, protected main promotion and hosted byte verification are pending independent checks; do not claim deployment from this commit alone.
+- Next five: verify focused and full CI; repair failures; restore main protection; promote exact green head and verify Pages bytes; continue eight-view character animation and Player Studio/gameplay features.
+
 ## 2026-10-29 — ARENA-OVERHAUL-01 release-contract forward compatibility (test-only)
 - The existing sole developer delivered a new candidate GK-GLOVE-ART-01 at 0.12.1.0 after arena v0.12.0.0 while this turn's browser QA was running. The arena source contract incorrectly hardcoded 0.12.0.0, blocking valid later increments. Check four-part version format dynamically and require the retained arena release note while continuing to check package, About, README and offline cache parity. No player-facing version bump or game/source changes. Browser Quick Match selector collision was corrected separately; rerun exact-head QA.
 

@@ -20,7 +20,14 @@ function create(storage){
   const index=state.slots.findIndex(s=>s===null);
   if(index<0)throw Error('All ten Career save slots are occupied');
   const next=clone(state);
-  next.slots[index]={name:(source.name+' (copy)').slice(0,60),savedAt:new Date().toISOString(),career:clone(source.career)};
+  // Keep the copy suffix visible even for 60-character names, and disambiguate repeated copies.
+  let copyNumber=1,label;
+  do{
+   const suffix=copyNumber===1?' (copy)':` (copy ${copyNumber})`;
+   const base=source.name.trim().slice(0,60-suffix.length).trimEnd()||('Career '+n);
+   label=base+suffix;copyNumber++;
+  }while(state.slots.some(slot=>slot?.name===label));
+  next.slots[index]={name:label,savedAt:new Date().toISOString(),career:clone(source.career)};
   persist(next);return index+1;
  }
  function remove(n){check();if(!get(n))throw Error('Career slot '+n+' is empty');const next=clone(state);next.slots[n-1]=null;persist(next);}
