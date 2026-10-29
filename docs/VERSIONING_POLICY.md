@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.12.6.0
+# SuperMagicFootball release/version policy — About-only 0.12.7.0
 
-**Effective 21 October 2026; updated 29 October 2026 for candidate 0.12.6.0.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 29 October 2026 for candidate 0.12.7.0.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.12.6.0 (29 October 2026):** STUDIO-GALLERY-KEYS-01 adds desktop/mobile-aware arrow navigation and Home/End to the Player Studio eight-view gallery, with focus following the preview. Only presentation changes; no saved data or gameplay controls change. Exact-head full CI, protected main promotion and Pages hosted-byte verification remain mandatory.
+**Current dev candidate 0.12.7.0 (29 October 2026):** CAREER-SLOT-RENAME-01 allows renaming an occupied Career slot without loading, overwriting or changing its active status, gameplay data or original save timestamp. Empty names fail and failed storage writes do not change memory. All ten slots and legacy saves remain compatible. Exact-head CI, protected promotion and Pages hosted-byte checks pending.
+
+**Previous dev candidate 0.12.6.0 (29 October 2026):** STUDIO-GALLERY-KEYS-01 adds desktop/mobile-aware arrow navigation and Home/End to the Player Studio eight-view gallery, with focus following the preview. Only presentation changes; no saved data or gameplay controls change. Exact-head full CI, protected main promotion and Pages hosted-byte verification remain mandatory.
 
 **Previous dev candidate 0.12.5.0 (29 October 2026):** STUDIO-GALLERY-PICK-01 makes each eight-view Player Studio comparison tile a selectable, keyboard-accessible button. The chosen direction updates the main portrait and active tile highlight, stopping auto-rotation without changing unsaved edits or gameplay. Exact-head 4+4/Modular, protected promotion and hosted Pages verification remain independent gates.
 
