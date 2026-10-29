@@ -1,10 +1,10 @@
 # SuperMagicFootball release/version policy — About-only 0.12.8.0
 
-**Current dev candidate 0.12.8.0 (29 October 2026):** JUMPING-STAT-01 adds Jumping to all players and scales single/double jump height and fatigue; 100 retains previous maximum and minimum cost. Full QA and protected promotion pending.
+**Current dev candidate 0.12.8.0 (30 October 2026):** JUMPING-STAT-01 adds Jumping to all players and scales single/double jump height and fatigue; 100 retains previous maximum and minimum cost. Full QA and protected promotion pending.
 
-**Effective 21 October 2026; updated 29 October 2026 for candidate 0.12.7.0.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 30 October 2026 for candidate 0.12.8.0.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.12.7.0 (29 October 2026):** CAREER-SLOT-RENAME-01 allows renaming an occupied Career slot without loading, overwriting or changing its active status, gameplay data or original save timestamp. Empty names fail and failed storage writes do not change memory. All ten slots and legacy saves remain compatible. Exact-head CI, protected promotion and Pages hosted-byte checks pending.
+**Previous dev candidate 0.12.7.0 (29 October 2026):** CAREER-SLOT-RENAME-01 allows renaming an occupied Career slot without loading, overwriting or changing its active status, gameplay data or original save timestamp. Empty names fail and failed storage writes do not change memory. All ten slots and legacy saves remain compatible. Exact-head CI, protected promotion and Pages hosted-byte checks pending.
 
 **Previous dev candidate 0.12.6.0 (29 October 2026):** STUDIO-GALLERY-KEYS-01 adds desktop/mobile-aware arrow navigation and Home/End to the Player Studio eight-view gallery, with focus following the preview. Only presentation changes; no saved data or gameplay controls change. Exact-head full CI, protected main promotion and Pages hosted-byte verification remain mandatory.
 
