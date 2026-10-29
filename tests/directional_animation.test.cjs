@@ -4,8 +4,8 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync('src/modules/directional_animation.js','utf8').replace(/^export \{[^\n]+\};?\s*$/m,'');
 const context=vm.createContext({});
-vm.runInContext(source+'\nthis.api={HEADINGS,ACTIONS,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates,normalizeHeading};',context);
-const {HEADINGS,ACTIONS,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates,normalizeHeading}=context.api;
+vm.runInContext(source+'\nthis.api={HEADINGS,ACTIONS,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates,resolveAuthoredFrame,normalizeHeading};',context);
+const {HEADINGS,ACTIONS,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates,resolveAuthoredFrame,normalizeHeading}=context.api;
 test('all eight directions resolve unique action frame keys',()=>{
  assert.equal(HEADINGS.length,8);
  assert.equal(new Set(HEADINGS.map(heading=>animationFrame({heading,action:'run'}).key)).size,8);
@@ -70,4 +70,19 @@ test('idle default has no duplicate fallback keys',()=>{
 test('untrusted pose keys cannot inject asset path segments',()=>{
  const keys=Array.from(animationAssetCandidates({action:'../other',heading:'../../escape',frame:999}));
  assert.deepEqual(keys,['idle/S/0']);
+});
+
+test('sparse authored art chooses exact action frame when present',()=>{
+ const pose={heading:'NW',action:'kick',frame:2};
+ assert.equal(resolveAuthoredFrame(pose,new Set(['idle/S/0','kick/NW/2'])),'kick/NW/2');
+});
+test('sparse authored art falls back through direction before generic idle',()=>{
+ const pose={heading:'NE',action:'slide',frame:3};
+ assert.equal(resolveAuthoredFrame(pose,{'idle/S/0':true,'idle/NE/0':true}),'idle/NE/0');
+ assert.equal(resolveAuthoredFrame(pose,{'idle/S/0':true}),'idle/S/0');
+ assert.equal(resolveAuthoredFrame(pose,{}),null);
+});
+test('inherited catalog properties are never treated as authored frames',()=>{
+ const catalog=Object.create({'kick/S/0':true});
+ assert.equal(resolveAuthoredFrame({action:'kick',heading:'S',frame:0},catalog),null);
 });
