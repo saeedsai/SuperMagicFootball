@@ -679,6 +679,7 @@
     "shootPower",
     "shootAccuracy",
     "heading",
+    "jumping",
     "passing",
     "crossing",
     "gkDiving",
