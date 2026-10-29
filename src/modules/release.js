@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.59',
+ version:'0.11.5.0',
  date:'2026-10-29',
  notes:Object.freeze([
+  'CAREER-COPY-01: Career Save Slots now lets you COPY an existing manager career into the first empty slot. The independent copy keeps its squad, fixtures and progress without overwriting any slot or switching the active career; all ten slots, legacy saves, four controls and offline play remain compatible.',
   'TELEPORT-SLIDE-01: An active grounded defensive SHOOT-slide in the carrier\'s forward travel lane now intercepts Teleport. Behind or wide slides, expired slides and airborne defenders cannot intercept; the caster still spends cooldown and fatigue. The four buttons, other Tricks, 223 teams/2676 players, six formations, Career/Cup slots, SD09 and offline saves remain unchanged.',
   'MAGIC-FREEZE-JUMP-01: Existing JUMP now dodges a close-range Freeze pulse at height 20 or above. Grounded and low jumps remain vulnerable; the caster still pays cooldown and fatigue. Other Tricks, four controls, rosters and offline saves remain unchanged.',
   'MAGIC-BAT-SLIDE-01: An active grounded defensive SHOOT-slide now parries the Bat Magic Trick at close range, without adding a fifth button. The attacker still spends cooldown and fatigue; inactive/airborne slides, other Tricks, rosters and offline saves remain unchanged.',

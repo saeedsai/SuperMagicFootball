@@ -1,3 +1,8 @@
+## 2026-10-29 — CAREER-COPY-01 (candidate 0.11.5.0)
+- Baseline exact dev/main `32165f337985ad2d7e73ce67b522335e05671f34`: dev Full Regression Census #40878692066 (four Node + four Chromium), Modular QA #40878692278, main Full Regression Census #40879323606 and Pages build #40879323617 passed. Separate deployed desktop/touch workflow #40878692065 failed during initialization; physical two-phone issue #48 and Render auto-deploy drift issue #86 remain open.
+- Added Career slot COPY into first empty slot, preserving the source, all other slots, active career and the 10-slot vault schema. The UI offers COPY only while free capacity exists, matching Cup slot behavior. No new gameplay controls, rosters, formations or save keys.
+- Added focused regression for deep-copy independence, invalid/empty/full slots, failed storage writes and UI dispatch. Rotated About-only four-part release, package, README heading/banner, offline cache and policy. Exact-head 4+4 Node/Chromium, Modular QA, protected promotion and Pages hosted bytes are separate gates; do not claim success until observed.
+
 ## 2026-10-29 — MAGIC-FREEZE-JUMP-01 regression alignment (test-only, 0.11.4.58 unchanged)
 - Exact candidate `37bd4c522daa4b3f191507d6044f70d4cb322e76` preflight and Modular QA each failed one old Scream regression fixture: `tests/magic_scream_jump_counter.test.cjs:45` still expected an airborne Freeze target (z=25) to be stunned. The new feature correctly dodges Freeze at z>=20. Change the old unrelated-Trick fixture to grounded Freeze (z=0), preserving its .65-second stun assertion; the new Freeze regression independently covers airborne dodge and both sides. Do not weaken CI, bump the version or claim deployment until new exact-head checks pass.
 

@@ -15,8 +15,16 @@ function create(storage){
  const get=n=>{if(!slotNumber(n))throw Error('Career slot must be 1–10');return state.slots[n-1];};
  function save(n,career,name){check();get(n);if(!validCareer(career))throw Error('Cannot save an invalid Career');const previous=get(n),label=String(name??previous?.name??('Career '+n)).trim().slice(0,60)||('Career '+n);const next=clone(state);next.active=n;next.slots[n-1]={name:label,savedAt:new Date().toISOString(),career:clone(career)};persist(next);return clone(next.slots[n-1]);}
  function load(n){check();const slot=get(n);if(!slot)throw Error('Career slot '+n+' is empty');persist({...state,active:n});return clone(slot.career);}
+ // Copy a saved Career without changing the active game or overwriting another slot.
+ function duplicate(n){check();const source=get(n);if(!source)throw Error('Career slot '+n+' is empty');
+  const index=state.slots.findIndex(s=>s===null);
+  if(index<0)throw Error('All ten Career save slots are occupied');
+  const next=clone(state);
+  next.slots[index]={name:(source.name+' (copy)').slice(0,60),savedAt:new Date().toISOString(),career:clone(source.career)};
+  persist(next);return index+1;
+ }
  function remove(n){check();if(!get(n))throw Error('Career slot '+n+' is empty');const next=clone(state);next.slots[n-1]=null;persist(next);}
  function importLegacy(career){check();if(exists||!validCareer(career))return false;save(1,career,'Imported legacy Career');return true;}
- return {get active(){return state.active},get error(){return blocked?.message||null},get hasVault(){return exists},list:()=>state.slots.map((s,i)=>({number:i+1,active:state.active===i+1,name:s?.name||'',savedAt:s?.savedAt||'',club:s?.career?.club??null,season:s?.career?.season??null,week:s?.career?.week??null,occupied:Boolean(s)})),firstEmpty:()=>{const i=state.slots.findIndex(s=>s===null);return i<0?null:i+1;},activeCareer:()=>blocked?null:(get(state.active)?clone(get(state.active).career):null),save,load,remove,importLegacy};
+ return {get active(){return state.active},get error(){return blocked?.message||null},get hasVault(){return exists},list:()=>state.slots.map((s,i)=>({number:i+1,active:state.active===i+1,name:s?.name||'',savedAt:s?.savedAt||'',club:s?.career?.club??null,season:s?.career?.season??null,week:s?.career?.week??null,occupied:Boolean(s)})),firstEmpty:()=>{const i=state.slots.findIndex(s=>s===null);return i<0?null:i+1;},activeCareer:()=>blocked?null:(get(state.active)?clone(get(state.active).career):null),save,load,duplicate,remove,importLegacy};
 }
 export const CAREER_SLOTS={create,validCareer,validVault};
