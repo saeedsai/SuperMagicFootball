@@ -1,4 +1,6 @@
-> **0.12.8.0 development candidate (30 October 2026):** JUMPING-STAT-01 adds Jumping (1–100) to every player, defaulted proportionally to overall rating and editable independently. A rating of 100 retains the previous maximum single/double jump and minimum fatigue cost; lower ratings jump less high and consume progressively more stamina; a previous fatigue multiplier cap that flattened ratings below 50 is corrected. Full CI and hosted certification pending.
+> **0.12.9.0 development candidate (30 October 2026):** ENERGY-BREATH-01 adds persistent between-game Career Energy and a 3–10-second Stamina-scaled Breath budget. Rest-day Energy recovery uses +30 points on day one, +50 on day two, +10 for additional days (Stamina adjusts recovery), with calendar-independent approximations of two cup / seven league rest days unless nextFixtureRestDays is provided. Active actions and sprint consume Breath; recovery and penalties depend on Stamina. Tests committed; full cross-platform QA/promotion pending. This is the initial implementation, not a certified release.
+
+> **0.12.9.0 development candidate (30 October 2026):** JUMPING-STAT-01 adds Jumping (1–100) to every player, defaulted proportionally to overall rating and editable independently. A rating of 100 retains the previous maximum single/double jump and minimum fatigue cost; lower ratings jump less high and consume progressively more stamina; a previous fatigue multiplier cap that flattened ratings below 50 is corrected. Full CI and hosted certification pending.
 
 > **Previous 0.12.7.0 release candidate (29 October 2026):** CAREER-SLOT-RENAME-01 adds a RENAME action for occupied Career save slots. It preserves career progress, active slot, original save timestamp, all ten slots and offline storage; blank names are rejected and failed writes do not change the current label. Exactly four gameplay actions, 223 teams/2676 players, six formations, ten Career/Cup slots, SD09 and LAN/P2P remain compatible. Exact-head 4 Node/4 Chromium, Modular QA, protected promotion and Pages byte verification remain release gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
 
@@ -276,7 +278,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.12.8.0 · Modular source project
+# Supermagic Football · v0.12.9.0 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 
