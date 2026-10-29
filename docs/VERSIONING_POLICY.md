@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.7.0
+# SuperMagicFootball release/version policy — About-only 0.12.8.0
+
+**Current dev candidate 0.12.8.0 (29 October 2026):** JUMPING-STAT-01 adds Jumping to all players and scales single/double jump height and fatigue; 100 retains previous maximum and minimum cost. Full QA and protected promotion pending.
 
 **Effective 21 October 2026; updated 29 October 2026 for candidate 0.12.7.0.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
