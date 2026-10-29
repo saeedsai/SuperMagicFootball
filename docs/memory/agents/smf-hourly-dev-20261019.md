@@ -3,25 +3,26 @@
 **Updated:** 2026-10-29
 
 ## Mission
-Incremental tested dev-only development with no extra branches/force pushes/CI bypass. Preserve four buttons, 223 teams, 2676 players, six formations, ten Career/Cup slots, SD09, LAN/P2P and offline saves.
+Incremental, tested development on existing dev only. No extra branches, force pushes, required-CI bypass or unverified release claims. Preserve four buttons, 223 teams/2676 players, six formations, ten Career/Cup slots, SD09, LAN/P2P and offline saves.
 
 ## Current checkpoint
-- Baseline dev f5688a2f91d41ff9a280585b5fa7a74ce00ad31b, main b75728c94d035789b27c6852f2a345871879496e; current 0.12.2.0 BROADCAST-GOAL-01 adds original match-scoring graphics and turf-contact animation, renderer-only.
-- About/package/README/SW cache aligned; new focused Node tests and actual desktop/touch Chromium goal-banner visual regression. Exact-head 4+4/Modular, main/Pages and mobile QA require verification.
-- Owner Mini Football-inspired original visual roadmap active, including bespoke eight-view player art and menu/gameplay improvement.
+- STUDIO-ACTION-GALLERY-01 implemented on dev, candidate 0.12.3.0. Eight-way compass artHeading() API and focused Node test; Studio optional eight-view gallery now shows the selected motion in static directional poses (including run, kick, slide, header, keeper and celebration), with accessible action labels and cache invalidation.
+- package, About, README banner/heading, SW cache, version policy and development log aligned to 0.12.3.0. Player-facing feature; original bespoke eight-view animation packs remain unfinished.
+- Exact-source isolated JS smoke passed for compass mapping, Studio slide/run frames, cache and UI syntax. New repository Node tests committed; 4 Node + 4 Chromium + Modular QA not independently confirmed green. No new main promotion/Pages byte certification claimed.
+- Prior dev/main baseline 1758c76837719523fb19eed9de2f1262ebf53740. Development commits recorded in docs/DEVELOPMENT_LOG_SINGLE_OWNER.md.
 
 ## Next smallest action
-1. Inspect exact-head four Node + four Chromium and Modular QA, fix failures.
-2. Promote exact green dev only via authorized main workflow; verify hosted bytes.
-3. Verify mobile goal graphics, responsive screenshots and startup/performance.
-4. Author independent eight-view player graphics and fix Crown Royals side direction #15.
-5. Expand Player Studio, keeper, stadium and gameplay presentation.
+1. Inspect exact dev head and latest Full Regression Census, four Node + four Chromium + Modular QA.
+2. Fix any failing test with a focused regression; keep coding on dev.
+3. Allow only green exact-head protected pipeline promotion; independently verify Pages bytes.
+4. Author genuinely independent eight-view character art/action frames and validate #15 direction visually.
+5. Expand Player Studio, counterable Magic Tricks, goalkeeper and Career Mode usability.
 
 ## Ownership and exclusions
-Sole developer; do not read/edit others' private memory. Physical two-phone #48, Render trigger drift #86, branch protection #87 remain unresolved.
+Sole developer; do not read/edit other agents' private notes. Physical two-phone LAN #48, Render commit-trigger drift #86 and main protection #87 remain open; do not claim acceptance.
 
 ## Evidence
-Only GitHub actions/commit records certify tests; verify Pages separately.
+GitHub commit records and source smoke are not substitutes for full CI or device acceptance.
 
 ## Cleanup
-Own checkpoint below 4KiB, detailed notes in log.
+Checkpoint under 4KiB; detailed history in development log.
