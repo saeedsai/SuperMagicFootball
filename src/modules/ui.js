@@ -855,6 +855,8 @@ function studioPickView(index){
 // Arrow keys move through the existing eight buttons; Home/End jump to edges.
 // Only the preview direction changes: no appearance persistence or game input.
 function studioGalleryKeydown(event){
+ // Preserve browser/system Alt+Arrow and Ctrl/Meta shortcuts.
+ if(event.altKey||event.ctrlKey||event.metaKey)return false;
  const button=event.target?.closest?.('[data-studio-pick]');
  if(!studioGalleryOpen||!button)return false;
  const index=Number(button.dataset.studioPick);
