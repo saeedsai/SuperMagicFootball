@@ -1,3 +1,6 @@
+## 30 October 2026 — BREATH-WALK-HUD-01
+0.12.10.0 development candidate: idle/walk Breath rapidly regenerates, hard activity drains, on-field circular Breath ring, top Energy label and dribble timed lockout removed in favor of Breath pacing. Next: browser HUD/visual QA, continuous-input behavior, multi-client deterministic state, exact-head four Node/four Chromium/Modular CI, protected deployment only after green.
+
 ## 30 October 2026 — ENERGY-BREATH-01
 Dual-resource initial candidate: persistent Career Energy with per-day recovery and separate 3–10-second Breath. Pending: integrate a dated fixture calendar (current defaults two rest days after cup/seven after league); add visible two-resource HUD and tune Energy caps; extend other competition saves; execute full 4 Node + 4 Chromium + Modular QA; promote only verified exact head.
 
