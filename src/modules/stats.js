@@ -28,6 +28,8 @@ function withStats(player){
   shootPower:Math.round(origShoot*2.22+23),
   shootAccuracy:Math.round(origShoot*2.05+21+(r==='FW'?7:0)+off(4)),
   heading:Math.round(overall*.66+16+(r==='FW'?10:0)+off(6)),
+  // Every roster and legacy save receives a stable overall-proportional jump rating.
+  jumping:Math.round(Math.max(1,Math.min(100,overall))),
   passing:Math.round(overall*.78+13+(r==='MF'?7:0)+off(7)),
   crossing:Math.round(overall*.67+13+(r==='MF'?8:0)+off(9)),
   gkDiving:r==='GK'?Math.round(overall*.8+13+off(10)):18,
