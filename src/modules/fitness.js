@@ -3,7 +3,7 @@ const FITNESS=(()=>{// v0.7.1: standalone, deterministic fatigue and match-fitne
 // These are arcade balance values, not physiological/medical predictions.
 const MAX_SUBSTITUTIONS=3;
 const clamp=(x,lo,hi)=>Math.min(hi,Math.max(lo,x));
-const initialFatigue=p=>clamp((100-(Number(p?.condition) || 100))*.006,0,.65);
+const initialFatigue=p=>Number.isFinite(+p?.energy)?clamp(1-(+p.energy)/100,0,1):clamp((100-(Number(p?.condition) || 100))*.006,0,.65);
 function fatigueTick(fatigue,stamina,seconds,intensity=0){
  const rated=clamp(Number(stamina)||60,1,100),load=clamp(intensity,0,1.8);
  const rate=(.0011+.015*load)*.78*(120-rated)/65; // lower exertion cost
