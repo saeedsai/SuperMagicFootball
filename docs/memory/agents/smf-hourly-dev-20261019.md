@@ -1,5 +1,5 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** smf-hourly-dev-20261019
+**Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-10-29
 
 ## Mission
