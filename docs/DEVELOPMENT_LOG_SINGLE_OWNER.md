@@ -1,3 +1,8 @@
+## 2026-10-29 03:02 CET — STUDIO-DRIBBLE-NOOP-01 (candidate 0.11.4.46)
+- Restored LAN-094 Render broker to live parity at `3da2f0c77957706dadc562c5ac7e28f91551a134` (`dep-dbhai3gm7kps73ec23lg`); shifted next bounded increment to Player Studio while physical two-device LAN/P2P acceptance remains open.
+- Found `saveStudioTrick` rewrote Career/custom-club saves when reselecting an explicitly equipped Dribble Style. Validate via `withStudioDribble` first, skip unchanged explicit selections, retain first-time choices and reject invalid IDs. Added focused real-handler regression for both save contexts.
+- Updated About, package, README, offline cache, version policy, shared context and own checkpoint. Four buttons, rosters, saves, six formations, Career/Cup ten slots, SD09 and graphics unchanged. Exact-head CI, protected promotion and hosted bytes pending.
+
 ## 2026-10-29 02:06 CET — LAN-094 correlated busy/incompatible admission rejection (candidate 0.11.4.45)
 - Confirmed broker `join` branch returned busy/version-mismatch `join-reject` with requestId but without roomId; guest requires both IDs and therefore ignored the rejection until its 25-second timeout.
 - Added correlated broker reply helper and broker/two-mode guest recovery regressions. Preserved all four controls, rosters, graphics, saves, Career/Cup slots and SD09.

@@ -1117,7 +1117,11 @@ function saveStudioTrick(){
   const isCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club);
   const source=isCareer?career.roster.map(p=>({...p})):roster(home);
   if(!source?.[avatarIndex])throw Error('No selected player');
-  source[avatarIndex]=DRIBBLES.withStudioDribble(source[avatarIndex],$('studioDribble')?.value);
+  const equipped=DRIBBLES.withStudioDribble(source[avatarIndex],$('studioDribble')?.value);
+  // Validate first, then avoid rewriting Career/club saves for unchanged explicit equipment.
+  // A legacy player without an explicit style still persists their first choice.
+  if(equipped.dribbleType===source[avatarIndex].dribbleType){showPlayerStudio(avatarIndex);return;}
+  source[avatarIndex]=equipped;
   if(isCareer){const updated={...career,roster:source};if(!storeCharacterChanges('managerCareer',updated))return;career=updated;saveCareer();}
   else{const updated={...edits,[TEAMS[home].id]:source};if(!storeCharacterChanges('edits',updated))return;edits=updated;}
   showPlayerStudio(avatarIndex);
