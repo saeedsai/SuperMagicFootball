@@ -1,3 +1,6 @@
+## 29 October 2026 — STUDIO-GALLERY-PICK-01 (0.12.5.0 candidate)
+The eight-direction Player Studio gallery now supports accessible, selectable directional previews, highlights the active direction, and stops auto-spin when a tile is selected. Unsaved appearance edits remain untouched. Next: true authored directional action frames, goalkeeper animation quality, counterable Magic Tricks, Career improvements and exact-head QA/release gates.
+
 ## 29 October 2026 — STUDIO-ACTION-PHASE-01 (0.12.4.0 candidate)
 Player Studio optional eight-view gallery gains an accessible four-step phase scrubber for comparing the selected action across all headings, using existing rendered art. No new gameplay action, save schema or finished bespoke art claim. Exact-head 4+4/Modular, promotion and hosted verification required. Next: author true eight-direction action frames, improve keeper art, counters and Career Mode.
 
