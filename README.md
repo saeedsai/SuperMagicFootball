@@ -1,3 +1,5 @@
+> **0.11.4.56 release candidate (29 October 2026):** MAGIC-SCREAM-JUMP-01 makes the Scream Magic Trick counterable with the existing JUMP action: airborne defenders at 20+ pitch units dodge its shockwave while the caster still spends cooldown and stamina. Grounded Scream, directional defensive counters and the other seven Tricks are preserved, as are exactly four buttons, 223 teams/2676 players, six formations, ten Career/Cup slots, SD09 and offline saves. Focused runtime regression added; exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and hosted Pages bytes are separate release gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.11.4.55 release candidate (29 October 2026):** MAGIC-FIREBALL-JUMP-01 adds a counterable Fireball Magic Trick: a defender can press the existing JUMP button to dodge the stagger once airborne at 20+ pitch units. The cast still spends cooldown and stamina; other Tricks, four controls, 223 teams/2676 players, six formations, Career/Cup ten slots, SD09 and offline saves are preserved. Focused regression added; exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and Pages hosted bytes remain release gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.11.4.54 release candidate (29 October 2026):** STUDIO-MAGIC-LIVE-STATE-01 adds accessible live Magic Trick save feedback for unchanged, locked (91+) and genuinely savable choices. All eight Trick previews and counters, exactly four buttons, 223 teams/2676 players, six formations, Career/Cup ten slots, SD09 and offline saves are preserved. Focused tests added; exact-head 4 Node + 4 Chromium, Modular QA, protected promotion and hosted Pages byte verification remain separate release gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -244,7 +246,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.11.4.55 · Modular source project
+# Supermagic Football · v0.11.4.56 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 

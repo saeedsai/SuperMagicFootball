@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.55
+# SuperMagicFootball release/version policy — About-only 0.11.4.56
 
-**Effective 21 October 2026; updated 29 October 2026 for candidate 0.11.4.55.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 29 October 2026 for candidate 0.11.4.56.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.55 (29 October 2026):** MAGIC-FIREBALL-JUMP-01 adds a live four-button Fireball jump dodge; eligible airborne opponents counter the stagger at z>=20, while the cast still spends cooldown and fatigue. Focused regression; exact-head 4+4/Modular, protected promotion, hosted Pages and physical LAN acceptance remain independent gates.
+**Current dev candidate 0.11.4.56 (29 October 2026):** MAGIC-SCREAM-JUMP-01 adds an existing-JUMP shockwave dodge for Scream at z>=20. The original cast cost, grounded effect, directional counter and all other Tricks are unchanged; focused regression, exact-head 4+4/Modular, protected promotion and hosted Pages verification are separate gates.
+
+**Previous dev candidate 0.11.4.55 (29 October 2026):** MAGIC-FIREBALL-JUMP-01 adds a live four-button Fireball jump dodge; eligible airborne opponents counter the stagger at z>=20, while the cast still spends cooldown and fatigue. Focused regression; exact-head 4+4/Modular, protected promotion, hosted Pages and physical LAN acceptance remain independent gates.
 
 **Previous dev candidate 0.11.4.54 (29 October 2026):** STUDIO-MAGIC-LIVE-STATE-01 provides accessible live feedback for unchanged, locked and savable Magic Trick choices without altering gameplay or saves. Exact-head 4+4/Modular, protected promotion and hosted Pages bytes remain release gates.
 

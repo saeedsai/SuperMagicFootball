@@ -3,27 +3,26 @@
 **Updated:** 2026-10-29
 
 ## Mission
-Continue bounded tested increments on existing `dev`; no new branches, force-push or CI/security bypass.
+Continue small tested increments directly on existing `dev`; no new branches, force push or security/CI bypass.
 
 ## Current checkpoint
-- New candidate 0.11.4.55 MAGIC-FIREBALL-JUMP-01: JUMP at z>=20 counters targeted Fireball without cancelling attacker cooldown/fatigue; focused two-direction runtime test. Full exact-head CI, promotion and Pages pending.
-- Previous 0.11.4.54 STUDIO-MAGIC-LIVE-STATE-01: live accessible Magic Trick save feedback for unchanged, locked and ready choices. Full exact-head dev regression and Modular QA green (40846824575 / 40846824320), Pages build 40847418391 green.
-- Previous 0.11.4.53 at `b6c9028564a30f37b67f047b95248a61c3c07ff8` passed exact-head four Node/four Chromium and Modular QA (40845896683 / 40845896633); main matched. Pages deployment and main rerun were in progress at inspection.
-- LAN-094 broker last verified live at `3da2f0c7`. Automated two-client browser QA previously green; physical two-device LAN/Online P2P acceptance remains open (#48). No routine LAN changes absent confirmed regression.
-- Preserve 223 teams/2676 players, six formations, four actions, offline saves, Career/Cup ten slots and SD09.
+- 0.11.4.56 candidate MAGIC-SCREAM-JUMP-01: JUMP at z>=20 dodges targeted Scream while preserving cast cooldown/fatigue, grounded stun and facing counter. Focused two-direction runtime regression. Exact-head CI, protected promotion and Pages bytes must be verified separately.
+- Previous 0.11.4.55 at `f7be17b32f4172b3b36f5426b751d56a4ef7e06f`: dev 4+4 40853324642 and Modular QA 40853324667 green; Pages build 40853663446 green. Earlier deployed-PC/touch 40853149148 failed boot before Pages build; investigate main hosted smoke.
+- LAN-094 delivered with automated two-client coverage. Physical two-phone acceptance remains open (#48); no routine LAN changes without regression.
+- Preserve 223 teams/2676 players, six formations, four controls, offline saves, Career/Cup ten slots and SD09.
 
 ## Next smallest action
-1. Check focused Magic status tests and exact-head 4 Node + 4 Chromium + Modular QA; fix failures.
-2. Promote only exact green dev via protected pipeline; confirm main and hosted Pages bytes.
-3. Obtain physical phone-to-phone LAN/P2P approval, sprint/Jump and reconnect acceptance; diagnose Render drift.
-4. Advance counterable four-button Magic Tricks and Player Studio.
-5. Continue eight-view art, gameplay and Career improvements.
+1. Inspect exact-head 4 Node + 4 Chromium and Modular QA for 0.11.4.56.
+2. Fix any red jobs on dev; promote only exact green dev through protected workflow.
+3. Verify main Pages hosted bytes and PC/touch smoke; distinguish CDN lag from startup failures.
+4. Continue Player Studio and counterable four-button Magic Tricks; no routine LAN/P2P work.
+5. Advance independent eight-view art, goalkeeper and Career; seek physical two-phone acceptance separately.
 
 ## Ownership and exclusions
-Sole developer `smf-hourly-dev-20261019`; no other agent private memory accessed.
+Sole developer `smf-hourly-dev-20261019`; other agents' private memory untouched.
 
 ## Evidence
-Do not claim candidate deployment or physical LAN/P2P acceptance without independent verification.
+No physical LAN/P2P certification or 0.11.4.56 deployment claim without direct evidence.
 
 ## Cleanup
-Checkpoint below 4 KiB; historical detail in Git.
+Keep checkpoint below 4 KiB; older evidence in Git.

@@ -961,11 +961,11 @@ class GameEngine{
   // A defender who moves toward and faces the carrier can counter the spell.
   const facing=inRange&&((rival.face||1)*(p.x-rival.x))>0;
   const closing=inRange&&((rival.dx||0)*(p.x-rival.x)+(rival.dy||0)*(p.y-rival.y))>0;
-  // Existing JUMP also counters a targeted Fireball when the rival is high enough.
-  // Keep the same four actions, stamina cost and six-second cooldown: jumping
-  // avoids the stagger but does not cancel the carrier's committed cast.
+  // Airborne JUMP counters Fireball and Scream without adding a fifth action.
+  // The carrier still pays the same cooldown and fatigue for a dodged cast.
   const jumpDodged=id==='fireball'&&inRange&&Number.isFinite(rival.z)&&rival.z>=20;
-  const countered=!!(jumpDodged||(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling')));
+  const screamDodged=id==='scream'&&inRange&&Number.isFinite(rival.z)&&rival.z>=20;
+  const countered=!!(jumpDodged||screamDodged||(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling')));
   p.magicReadyAt=this.clock+6;
   p.fatigue=Math.min(1,p.fatigue+.035);
   this.fatigueLedger[p.t][p.src.id]=p.fatigue;
