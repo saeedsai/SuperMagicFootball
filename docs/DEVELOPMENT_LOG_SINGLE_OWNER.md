@@ -1,3 +1,8 @@
+## 2026-10-29 10:00 CET — STUDIO-DEFENCE-STATE-01 (candidate 0.11.4.53)
+- LAN/P2P: existing automated two-client tests previously green; physical phone-to-phone discovery, approval, held sprint/Jump and reconnect remain unverified (#48). Client-facing Studio improvement needs no broker update; Render auto-deployment drift tracked separately.
+- Found Super Defence Studio always offered SAVE DEFENCE ABILITY for unchanged explicit equipment. Added pure save-state projection through canonical ABILITIES.withStudioDefence, with locked/invalid tier guard, accessible live feedback and disabled button for unchanged explicit state. Defender tier changes rebuild choices and refresh feedback; existing save handler unchanged.
+- Seven focused regression cases cover no-ops, legacy first-time tiers, actual updates, SD09 tier restrictions, role/eligibility, unrelated ability preservation and accessibility. Version/package/README/SW/policy/shared memory/checkpoint synchronized. Require exact-head 4 Node+4 Chromium+Modular, protected promotion and hosted bytes before release claim. No roster, physics, art or four-control change.
+
 ## 2026-10-29 09:05 CET — STUDIO-SHOT-STATE-01 (candidate 0.11.4.52)
 - LAN/P2P: prior automated two-client coverage green, physical phone-to-phone acceptance remains open (#48). Render LAN-094 broker last verified live at 3da2f0c7; Studio-only change needs no broker update.
 - Found Super Shot Studio always offered SAVE SUPER SHOT for unchanged explicit equipment. Added read-only validated save-state projection mirroring existing handler, accessible status and button disabled state; shot and level changes both refresh. Legacy first-time and genuine edits remain savable.
