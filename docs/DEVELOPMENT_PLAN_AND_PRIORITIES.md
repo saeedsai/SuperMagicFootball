@@ -1,3 +1,5 @@
+> **Current owner priority (29 October 2026): Mini Football-inspired visual and UX transformation.** The authoritative ordered six-milestone specification is [MINI_FOOTBALL_VISUAL_ROADMAP_20261029.md](MINI_FOOTBALL_VISUAL_ROADMAP_20261029.md). Begin with VIZ-01 four-button mobile match HUD/joystick polish; then VIZ-02 menus, VIZ-03 independently authored eight-direction characters/animation, VIZ-04 pitch/camera/stadium, VIZ-05 Player Studio and VIZ-06 gameplay feel/QA. This supersedes only older visual-priority sequencing, not release/security gates, rosters, offline saves or exactly four action controls. Reference Mini Football for polished arcade UX, never copy its proprietary artwork or branding. Physical LAN issue #48 and Render trigger drift #86 remain separate open work.
+
 # Development priorities — v0.8.25.32
 
 Baseline: latest inspected GitHub `dev` SHA `d44cb954554e344bcc02e1b8f582c2e8b21a68a8`; continue modular source; no clean-sheet rewrite, no unrequested squad or mechanic changes.
