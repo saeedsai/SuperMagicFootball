@@ -1,3 +1,10 @@
+## 2026-10-29 — VIZ-01 original arcade HUD/style (0.11.6.0 candidate)
+- Baseline exact dev/main `e5438025ba310b93c8615fdb38108ae331c976a6` (0.11.5.0). Owner reference: https://play.google.com/store/apps/details?id=com.miniclip.minifootball; visual/UX inspiration only, no copied assets.
+- Added six ordered visual milestones in `docs/MINI_FOOTBALL_VISUAL_ROADMAP_20261029.md`, promoted current P0 in development plan: match HUD/buttons, menus, eight authored views/animation, pitch/stadium/camera, Player Studio and QA.
+- Implemented CSS-only four-action diamond clarity, distinct pass/shoot/dribble/jump gradients, focus/active states, joystick contrast, scoreboard glass, responsive narrow layouts, safe-area offsets and reduced-motion behavior. No new button, listener, physics change, roster change, saves/offline modification or LAN alteration.
+- Added `tests/arcade_match_ui_visual_contract.test.cjs` to guard button IDs, original input binding, art/style states, safe-area and layout breakpoints. Rotated About version/package/README/SW cache and version policy to 0.11.6.0.
+- Tests/CI, protected promotion, GitHub Pages byte verification and touch screenshot QA are not certified by this log; inspect exact current head runs separately. Physical two-phone LAN #48 and Render trigger drift #86 remain unresolved.
+
 ## 2026-10-29 — CAREER-COPY-01 (candidate 0.11.5.0)
 - Baseline exact dev/main `32165f337985ad2d7e73ce67b522335e05671f34`: dev Full Regression Census #40878692066 (four Node + four Chromium), Modular QA #40878692278, main Full Regression Census #40879323606 and Pages build #40879323617 passed. Separate deployed desktop/touch workflow #40878692065 failed during initialization; physical two-phone issue #48 and Render auto-deploy drift issue #86 remain open.
 - Added Career slot COPY into first empty slot, preserving the source, all other slots, active career and the 10-slot vault schema. The UI offers COPY only while free capacity exists, matching Cup slot behavior. No new gameplay controls, rosters, formations or save keys.
