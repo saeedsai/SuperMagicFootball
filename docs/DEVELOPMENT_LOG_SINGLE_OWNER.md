@@ -1736,3 +1736,7 @@ Host now holds last validated guest four-button and directional input for at mos
 ## 2026-10-29 — EIGHT-VIEW-ASSET-FALLBACK-01
 - Added `animationAssetCandidates()` with exact-action, action-frame-zero, directional-idle and default-idle fallbacks. Pure graphics API only, not yet connected to live renderer; no player-facing version bump.
 - Added three regression cases for fallback priority, deduplication and invalid keys. Commits 45617076 and c87a5548. Full 4+4/Modular and hosted checks unverified.
+
+## 2026-10-29 — SPARSE-ART-RESOLVER-01
+- Added `resolveAuthoredFrame()` for sparse eight-view catalogs with exact frame, directional and default fallback. Pure API, not yet live renderer; no player-facing version bump.
+- Three regression cases for exact selection, sparse fallback and prototype safety. Commits 4dd0ac1b, 15b13298. Full 4+4/Modular and Pages not verified.
