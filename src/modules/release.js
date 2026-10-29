@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.11.4.51',
+ version:'0.11.4.52',
  date:'2026-10-29',
  notes:Object.freeze([
+  'STUDIO-SHOT-STATE-01: Player Studio now shows accessible live Super Shot save feedback and disables redundant saves for unchanged explicit equipment, level and name. Legacy first-time choices and real edits remain savable; no fifth control, physics or save-schema changes.',
   'STUDIO-DRIBBLE-STATE-01: Player Studio now shows live Dribble Style save feedback and disables saving an already-explicitly equipped style. First-time legacy defaults and genuine changes remain savable; no fifth control or save-format changes.',
   'STUDIO-APPEARANCE-STATE-01: Player Studio shows when appearance changes need saving and disables SAVE CHARACTER for complete unchanged selections. First-time legacy normalization and real edits remain savable; preview rotation does not persist.',
   'STUDIO-APPEARANCE-NOOP-01: Saving an unchanged, fully explicit Player Studio appearance no longer rewrites Career or custom-club saves. First-time legacy appearances, actual changes and normalized obsolete fields still persist; graphics, four controls and SD09 remain unchanged.',

@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.51
+# SuperMagicFootball release/version policy — About-only 0.11.4.52
 
 **Effective 21 October 2026; updated 29 October 2026 for candidate 0.11.4.51.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.51 (29 October 2026):** STUDIO-DRIBBLE-STATE-01 shows accessible live Dribble Style save feedback and disables redundant saves only for explicitly stored unchanged equipment; first-time legacy defaults and real changes remain savable. Exact-head 4+4/Modular, protected promotion and hosted bytes remain independent gates.
+**Current dev candidate 0.11.4.52 (29 October 2026):** STUDIO-SHOT-STATE-01 adds live accessible Super Shot save feedback, disabling redundant explicit unchanged selections while preserving first-time legacy and genuine changes. Exact-head 4+4/Modular, protected promotion and hosted Pages bytes remain independent gates.
+
+**Previous dev candidate 0.11.4.51 (29 October 2026):** STUDIO-DRIBBLE-STATE-01 shows accessible live Dribble Style save feedback and disables redundant saves only for explicitly stored unchanged equipment; first-time legacy defaults and real changes remain savable. Exact-head 4+4/Modular, protected promotion and hosted bytes remain independent gates.
 
 **Previous dev candidate 0.11.4.50 (29 October 2026):** STUDIO-APPEARANCE-STATE-01 adds live accessible appearance save-state feedback, disabling SAVE CHARACTER only for fully explicit unchanged selections; genuine edits and legacy normalization remain savable. Focused tests added; exact-head 4+4/Modular, protected promotion and hosted bytes are independent gates.
 

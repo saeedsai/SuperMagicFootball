@@ -1,3 +1,8 @@
+## 2026-10-29 09:05 CET — STUDIO-SHOT-STATE-01 (candidate 0.11.4.52)
+- LAN/P2P: prior automated two-client coverage green, physical phone-to-phone acceptance remains open (#48). Render LAN-094 broker last verified live at 3da2f0c7; Studio-only change needs no broker update.
+- Found Super Shot Studio always offered SAVE SUPER SHOT for unchanged explicit equipment. Added read-only validated save-state projection mirroring existing handler, accessible status and button disabled state; shot and level changes both refresh. Legacy first-time and genuine edits remain savable.
+- Focused tests added; About, package, README, offline cache, version policy, shared memory and own checkpoint synchronized. Exact-head 4 Node + 4 Chromium/Modular, protected promotion and Pages bytes remain gates. No gameplay physics, graphics, controls, roster or save-schema changes.
+
 ## 2026-10-29 06:02 CET — STUDIO-APPEARANCE-NOOP-01 (candidate 0.11.4.49)
 - LAN/P2P: automated two-client acceptance previously green, physical phone-to-phone acceptance remains open (#48); Render broker LAN-094 live at 3da2f0c7. No speculative LAN edits; Studio-only change requires no broker update.
 - Found saveAppearance rewrote Career/custom-club saves when all explicit appearance fields were unchanged. Compare exact key sets and values after reading current editor selections; no-op preserves view navigation, while partial legacy, obsolete keys and real edits still save. Focused real-handler Node tests added.
