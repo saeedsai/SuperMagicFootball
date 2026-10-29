@@ -21,3 +21,9 @@ Continue tested increments on existing dev only; never create branches, force-pu
 
 ## Ownership and exclusions
 Sole developer; do not read/edit other agents' private memory. No physical LAN certification until two real phones pass.
+
+## Evidence
+CI logs and commit history record exact-head regression; local/hosted visual QA and physical two-phone tests remain separate.
+
+## Cleanup
+Keep this sole-developer file under 4 KiB and remove stale checkpoint facts at each iteration; detailed evidence stays in the Git log.
