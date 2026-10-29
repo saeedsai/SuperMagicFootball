@@ -26,4 +26,16 @@ function actionFrame({heading='S',action='kick',elapsed=0,fps=8,frames=4}={}){
  const frame=motion==='idle'?0:Math.min(step,count-1);
  return Object.freeze({heading:direction,action:motion,frame,finished:motion==='idle'||step>=count,key:`${motion}/${direction}/${frame}`});
 }
-export {HEADINGS,ACTIONS,normalizeHeading,animationFrame,actionFrame};
+// Blend-free state transition for authored action strips. A completed one-shot
+// returns to idle; locomotion keeps looping. No changes to game input mapping.
+function resolveActionPose({heading='S',action='idle',elapsed=0,fps=8,frames=4}={}){
+ const motion=ACTIONS.includes(action)?action:'idle';
+ const pose=(motion==='run'||motion==='idle')
+  ?animationFrame({heading,action:motion,elapsed,fps,frames})
+  :actionFrame({heading,action:motion,elapsed,fps,frames});
+ if(motion!=='run'&&motion!=='idle'&&pose.finished){
+  return Object.freeze({...animationFrame({heading,action:'idle'}),previousAction:motion,transitioned:true});
+ }
+ return Object.freeze({...pose,transitioned:false});
+}
+export {HEADINGS,ACTIONS,normalizeHeading,animationFrame,actionFrame,resolveActionPose};
