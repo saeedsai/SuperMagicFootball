@@ -1,3 +1,8 @@
+## 2026-10-29 02:06 CET — LAN-094 correlated busy/incompatible admission rejection (candidate 0.11.4.45)
+- Confirmed broker `join` branch returned busy/version-mismatch `join-reject` with requestId but without roomId; guest requires both IDs and therefore ignored the rejection until its 25-second timeout.
+- Added correlated broker reply helper and broker/two-mode guest recovery regressions. Preserved all four controls, rosters, graphics, saves, Career/Cup slots and SD09.
+- Synchronized About/package/README/SW/version policy/shared memory/own checkpoint. Exact-head 4 Node + 4 Chromium, Modular QA, protected promotion, Render and hosted Pages checks pending independent verification.
+
 ## 2026-10-29 01:05 CET — LAN-093 duplicate registration ack during host approval (candidate 0.11.4.44)
 - Found that repeated host-registered broker acknowledgements could overwrite pending host-consent or active SDP-handshake status with a false "Waiting for a guest" message, even though the approved peer continued connecting.
 - Keep the first room-registration confirmation and retry cancellation; ignore duplicate status resets while the room is already registered. Added LAN and Online P2P regression through consent, approval and asynchronous offer creation.

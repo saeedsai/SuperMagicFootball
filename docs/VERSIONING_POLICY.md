@@ -1,8 +1,10 @@
-# SuperMagicFootball release/version policy — About-only 0.11.4.44
+# SuperMagicFootball release/version policy — About-only 0.11.4.45
 
-**Effective 21 October 2026; updated 29 October 2026 for candidate 0.11.4.44.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
+**Effective 21 October 2026; updated 29 October 2026 for candidate 0.11.4.45.** Replaces the historical `v<BUNDLE>+dev.<SHA>` player-facing development banner and the old remote-dev About implementation. The owner-approved release numbering is `x.y.z.a`: four nonnegative decimal integers.
 
-**Current dev candidate 0.11.4.44 (29 October 2026):** LAN-093 ignores duplicate host registration acknowledgements while consent is pending or an approved peer is negotiating. Two-mode focused regression; exact-head 4+4/Modular, protected promotion, hosted bytes and physical acceptance pending.
+**Current dev candidate 0.11.4.45 (29 October 2026):** LAN-094 includes room and request IDs in busy/incompatible join rejections, allowing immediate guest recovery. Broker and two-mode focused regressions; exact-head 4+4/Modular, protected promotion, broker/Pages and physical acceptance pending.
+
+**Previous dev candidate 0.11.4.44 (29 October 2026):** LAN-093 ignores duplicate host registration acknowledgements while consent is pending or an approved peer is negotiating. Two-mode focused regression; exact-head 4+4/Modular, protected promotion, hosted bytes and physical acceptance pending.
 
 **Previous dev candidate 0.11.4.43 (29 October 2026):** LAN-092 ignores late direct WebRTC offers after an approved guest has requested Online P2P relay fallback. Focused regression added; exact-head CI, protected promotion, hosted bytes and physical acceptance pending.
 

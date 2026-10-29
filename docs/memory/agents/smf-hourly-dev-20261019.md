@@ -1,30 +1,28 @@
 # SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-29 01:05 CET
+**Updated:** 2026-10-29 02:06 CET
 
 ## Mission
-Continue bounded tested commits directly on dev; no new branches, force push, security bypass or paused hourly work.
+Keep bounded commits on existing dev; no new branches, force push, security bypass or paused hourly development.
 
 ## Current checkpoint
-- 0.11.4.44 LAN-093: duplicate host-registered acknowledgements previously replaced consent/approved negotiation status with "Waiting for a guest". Guard repeated registration status; two-mode focused regression checks pending consent, approval and delayed SDP offer.
-- Baseline 0.11.4.43 dev/main synchronized at `2715ecc1a1d0d2d041061fbdf3707259c07022ce`; Full Regression #40784919729, Modular QA #40784920920 green.
-- Render broker 0.11.4.43 LIVE `dep-dbh820d9fdbs7387in3g` (API-triggered). Automatic commit-triggered deployment remains unreliable; do not infer new broker release.
-- Physical two-device discovery, approval, held sprint, Jump, reconnect and mobile acceptance remains open in issue #48.
+- 0.11.4.45 LAN-094: busy/version-mismatch `join-reject` omitted `roomId`; guest requires both IDs, so waited 25 seconds. Correlated broker reply and broker/two-mode guest regressions added; CI/deployment not yet certified.
+- Baseline 0.11.4.44 dev/main synchronized at `9d7849faabf8a3889b8f3884748447d0a1105422` before this increment.
+- Render last observed LIVE `2715ecc1` (0.11.4.43), API deployment; auto commit-trigger unreliable. Physical two-device acceptance open in issue #48.
 - Preserve 223 teams/2676 players, six formations, four controls, saves/offline, Career/Cup ten slots and SD09.
 
 ## Next smallest action
-1. Verify LAN-093 focused Node and exact-head 4 Node + 4 Chromium plus Modular QA.
-2. Repair any genuine CI failures without weakening checks.
-3. Promote only exact green dev HEAD through protected pipeline; verify main/Pages hosted bytes.
-4. Diagnose Render auto-deploy and record physical two-client acceptance limitations.
-5. After LAN/P2P certification, shift primary work to Player Studio, counterable Tricks, eight-view graphics, gameplay and Career.
+1. Check focused LAN-094 tests and exact-head 4 Node + 4 Chromium plus Modular QA.
+2. Repair genuine CI failures without weakening tests.
+3. Promote only exact green dev head through protected PR; verify main/Pages bytes.
+4. Verify Render broker and auto-deploy; obtain physical two-device acceptance where possible.
+5. Once LAN/P2P certified, shift to Player Studio, counterable Tricks, eight-view graphics, gameplay and Career.
 
 ## Ownership and exclusions
 Sole developer smf-hourly-dev-20261019; only own checkpoint edited.
 
 ## Evidence
-- Baseline green Full #40784919729 and Modular #40784920920 on 0.11.4.43.
-- LAN-093 source and focused regression submitted together; do not claim new CI/promotion/Pages before observing results.
+- Baseline `9d7849fa`; Render prior LIVE `2715ecc1`. LAN-094 QA/hosted acceptance pending.
 
 ## Cleanup
-- Checkpoint under 4 KiB. No other agent memory touched.
+Checkpoint under 4 KiB; Git history retains earlier work.

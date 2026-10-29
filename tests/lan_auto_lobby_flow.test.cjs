@@ -1243,3 +1243,27 @@ test('LAN-093 repeated host registration acks preserve pending consent and activ
   }finally{f.cleanup()}
  }
 });
+
+
+test('LAN-094 busy room rejection restores search and retry in LAN and Online P2P',async()=>{
+ for(const internet of [false,true]){
+  const f=setup();
+  try{
+   const {mountAutoLanLobby}=await load();
+   const dispose=mountAutoLanLobby(f.root,{build:'0.10.0.0',internet,signalFactory:f.signalFactory});
+   f.connect();f.elements.get('#autoFind').click();
+   const roomId='room_12345678';
+   f.emit({type:'room-announce',roomId,name:'Busy host',build:'0.10.0.0',...(internet?{scope:'internet-p2p'}:{})});
+   assert.equal(f.elements.get('#autoRooms').children.length,1);
+   f.elements.get('#autoRooms').children[0].click();
+   const join=f.packets.find(p=>p.type==='join');assert.ok(join);
+   const reads=f.packets.filter(p=>p.type==='rooms').length;
+   f.emit({type:'join-reject',roomId,requestId:join.requestId,reason:'room-full-or-version'});
+   assert.match(f.elements.get('#autoStatus').textContent,/Join request rejected or expired/);
+   assert.equal(f.packets.filter(p=>p.type==='rooms').length,reads+1);
+   f.elements.get('#autoRooms').children[0].click();
+   assert.equal(f.packets.filter(p=>p.type==='join').length,2,'retry without waiting for approval timeout');
+   dispose();
+  }finally{f.cleanup()}
+ }
+});
