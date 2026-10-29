@@ -52,9 +52,9 @@ function animationAssetCandidates(pose){
  ])]);
 }
 // Resolve a sparse authored frame catalog without assuming every pose exists.
-// The catalog may be a Set or an object of exact keys; no URL is constructed.
+// The catalog may be a Set, Map or own-key object; no URL is constructed.
 function resolveAuthoredFrame(pose,catalog){
- const has=key=>catalog instanceof Set?catalog.has(key):Boolean(catalog&&Object.prototype.hasOwnProperty.call(catalog,key)&&catalog[key]);
+ const has=key=>catalog instanceof Set?catalog.has(key):catalog instanceof Map?Boolean(catalog.get(key)):Boolean(catalog&&Object.prototype.hasOwnProperty.call(catalog,key)&&catalog[key]);
  for(const key of animationAssetCandidates(pose))if(has(key))return key;
  return null;
 }
