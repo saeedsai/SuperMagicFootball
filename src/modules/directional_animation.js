@@ -38,4 +38,17 @@ function resolveActionPose({heading='S',action='idle',elapsed=0,fps=8,frames=4}=
  }
  return Object.freeze({...pose,transitioned:false});
 }
-export {HEADINGS,ACTIONS,normalizeHeading,animationFrame,actionFrame,resolveActionPose};
+// Asset lookup order: exact authored pose, directional idle, then generic idle.
+// A missing bespoke frame never breaks rendering or changes player state.
+function animationAssetCandidates(pose){
+ const heading=normalizeHeading(pose?.heading);
+ const action=ACTIONS.includes(pose?.action)?pose.action:'idle';
+ const frame=Number.isInteger(pose?.frame)&&pose.frame>=0&&pose.frame<=63?pose.frame:0;
+ return Object.freeze([...new Set([
+  `${action}/${heading}/${frame}`,
+  `${action}/${heading}/0`,
+  `idle/${heading}/0`,
+  'idle/S/0'
+ ])]);
+}
+export {HEADINGS,ACTIONS,normalizeHeading,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates};
