@@ -291,8 +291,8 @@ function showInputMenu(){menuChoices('nav-input','INPUT SETTINGS','The game alwa
  navItem('Touch Controls & Combos','help','View the existing touch layout and combo reference.','active','👆')],'navSettings');}
 function showCareerSlots(){
  const hasFree=careerSlots.firstEmpty()!==null;
- const rows=careerSlots.list().map(s=>`<div class="panel"><h3 class="titleSmall">SLOT ${s.number}${s.active?' · ACTIVE':''}</h3><p>${s.occupied?`${escapeHTML(s.name)} · ${escapeHTML(TEAMS[s.club]?.name||'Unknown club')} · Season ${s.season} · Week ${s.week} · ${escapeHTML(new Date(s.savedAt).toLocaleString())}`:'Empty slot'}</p><div class="row">${career?button(s.occupied?'OVERWRITE':'SAVE HERE','careerSlotSave_'+s.number):''}${s.occupied?button('LOAD','careerSlotLoad_'+s.number)+(hasFree?button('COPY','careerSlotCopy_'+s.number):'')+button('DELETE','careerSlotDelete_'+s.number):''}</div></div>`).join('');
- page('CAREER SAVE SLOTS','10 independent local slots. Copy a saved career to the first empty slot without switching your active career; overwrite and delete require confirmation.',`${careerSlots.error?`<p role="alert">Save storage is damaged: ${escapeHTML(careerSlots.error)}. Export a backup before recovery.</p>`:''}<div class="scroll">${rows}</div><p class="muted">Legacy single-save careers are copied into slot 1 without removing the old data. Use Settings → Save Management to export all slots.</p>`,'navCareer');
+ const rows=careerSlots.list().map(s=>`<div class="panel"><h3 class="titleSmall">SLOT ${s.number}${s.active?' · ACTIVE':''}</h3><p>${s.occupied?`${escapeHTML(s.name)} · ${escapeHTML(TEAMS[s.club]?.name||'Unknown club')} · Season ${s.season} · Week ${s.week} · ${escapeHTML(new Date(s.savedAt).toLocaleString())}`:'Empty slot'}</p><div class="row">${career?button(s.occupied?'OVERWRITE':'SAVE HERE','careerSlotSave_'+s.number):''}${s.occupied?button('LOAD','careerSlotLoad_'+s.number)+(hasFree?button('COPY','careerSlotCopy_'+s.number):'')+button('RENAME','careerSlotRename_'+s.number)+button('DELETE','careerSlotDelete_'+s.number):''}</div></div>`).join('');
+ page('CAREER SAVE SLOTS','10 independent local slots. Rename a saved career without changing its progress or active slot, or copy it to the first empty slot; overwrite and delete require confirmation.',`${careerSlots.error?`<p role="alert">Save storage is damaged: ${escapeHTML(careerSlots.error)}. Export a backup before recovery.</p>`:''}<div class="scroll">${rows}</div><p class="muted">Legacy single-save careers are copied into slot 1 without removing the old data. Use Settings → Save Management to export all slots.</p>`,'navCareer');
 }
 function showCupSlots(){
  const hasFree=cupSlots.list().some(slot=>!slot.occupied);
@@ -1578,6 +1578,11 @@ function action(a){audio.cue('ui');
  else if(a.startsWith('careerSlotSave_')){const n=Number(a.slice(15));if(!career)return showCareerSlots();const prior=careerSlots.list()[n-1];if(prior?.occupied&&!confirm('Overwrite Career slot '+n+'?'))return;try{const name=prompt('Career save name:',prior?.name||TEAMS[career.club]?.name||'Career '+n);if(name===null)return;careerSlots.save(n,career,name);store.put('managerCareer',career);showCareerSlots();}catch(error){alert(error.message)}}
   else if(a.startsWith('careerSlotLoad_')){const n=Number(a.slice(15));if(career&&!confirm('Load Career slot '+n+'? Unsaved progress in the current career will be lost.'))return;try{career=careerSlots.load(n);store.put('managerCareer',career);showManager();}catch(error){alert(error.message)}}
   else if(a.startsWith('careerSlotCopy_')){const n=Number(a.slice('careerSlotCopy_'.length));try{careerSlots.duplicate(n);showCareerSlots();}catch(error){alert(error.message)}}
+  else if(a.startsWith('careerSlotRename_')){const n=Number(a.slice('careerSlotRename_'.length));try{
+   const slot=careerSlots.list()[n-1];if(!slot?.occupied)throw Error('Career slot '+n+' is empty');
+   const name=prompt('Rename Career slot '+n+':',slot.name);if(name===null)return;
+   careerSlots.rename(n,name);showCareerSlots();
+  }catch(error){alert(error.message)}}
   else if(a.startsWith('careerSlotDelete_')){const n=Number(a.slice(17));if(!confirm('Permanently delete Career slot '+n+'? Export a backup first if needed.'))return;try{careerSlots.remove(n);if(careerSlots.active===n){career=null;store.put('managerCareer',null);}showCareerSlots();}catch(error){alert(error.message)}}
   else if(a==='exportSave')exportSave();else if(a==='importSave')$('saveImportFile')?.click();
  else if(a==='saveSettings'){
