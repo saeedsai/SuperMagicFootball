@@ -42,7 +42,7 @@ test('About version README offline cache and package agree for the new candidate
 });
 
 test('arena Play Now and Quick Match are unique, with home focus on the primary card',()=>{
- assert.equal((home.match(/data-action="navQuick"/g)||[]).length,1);
+ assert.equal((home.match(/navItem\('Quick Match','navQuick'/g)||[]).length,1);
  assert.equal((home.match(/data-action="quick"/g)||[]).length,1);
  assert.match(home,/class="btn gold arcadeLaunch" data-action="quick"/);
  assert.ok(home.includes('menu.querySelector(`.navChoice[data-action='));
