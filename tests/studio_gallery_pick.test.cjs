@@ -63,3 +63,61 @@ test('delegated gallery clicks and selection sync are wired to the live Studio',
  assert.match(css,/\.studioViewPick\[aria-pressed=true\]/);
  assert.match(css,/\.studioViewPick:focus-visible/);
 });
+
+function galleryKeyEvent(key,index,track){
+ return {key,target:{closest:selector=>selector==='[data-studio-pick]'?{dataset:{studioPick:String(index)}}:null},
+  preventDefault(){track.prevented++}};
+}
+test('desktop arrow keys wrap and preserve focus on the selected eight-view tile',()=>{
+ const {ctx}=studioContext();
+ const track={prevented:0,focused:[]};
+ ctx.menu.querySelector=selector=>{
+  if(selector==='[data-action=studioSpin]')return {textContent:''};
+  const found=selector.match(/^\\[data-studio-pick="(\\d+)"\\]$/);
+  return found?{focus(){track.focused.push(Number(found[1]))}}:null;
+ };
+ assert.equal(ctx.studioGalleryKeydown(galleryKeyEvent('ArrowLeft',0,track)),true);
+ assert.equal(ctx.studioDirection,7);
+ assert.equal(ctx.studioGalleryKeydown(galleryKeyEvent('ArrowRight',7,track)),true);
+ assert.equal(ctx.studioDirection,0);
+ assert.equal(ctx.studioGalleryKeydown(galleryKeyEvent('ArrowUp',0,track)),true);
+ assert.equal(ctx.studioDirection,4);
+ assert.equal(ctx.studioGalleryKeydown(galleryKeyEvent('ArrowDown',4,track)),true);
+ assert.equal(ctx.studioDirection,0);
+ assert.equal(track.prevented,4);
+ assert.deepEqual(track.focused,[7,0,4,0]);
+ assert.equal(ctx.studioSpin,false);
+});
+test('mobile gallery uses two-column vertical steps and Home/End navigation',()=>{
+ const {ctx}=studioContext();
+ const track={prevented:0};
+ ctx.matchMedia=query=>({matches:query==='(max-width:650px)'});
+ assert.equal(ctx.studioGalleryKeydown(galleryKeyEvent('ArrowDown',1,track)),true);
+ assert.equal(ctx.studioDirection,3);
+ assert.equal(ctx.studioGalleryKeydown(galleryKeyEvent('ArrowUp',3,track)),true);
+ assert.equal(ctx.studioDirection,1);
+ assert.equal(ctx.studioGalleryKeydown(galleryKeyEvent('End',1,track)),true);
+ assert.equal(ctx.studioDirection,7);
+ assert.equal(ctx.studioGalleryKeydown(galleryKeyEvent('Home',7,track)),true);
+ assert.equal(ctx.studioDirection,0);
+ assert.equal(track.prevented,4);
+});
+test('gallery keys ignore other controls, unsupported keys and hidden gallery',()=>{
+ const {ctx}=studioContext();
+ const track={prevented:0};
+ assert.equal(ctx.studioGalleryKeydown(galleryKeyEvent('Escape',0,track)),false);
+ assert.equal(ctx.studioGalleryKeydown(galleryKeyEvent('ArrowLeft',99,track)),false);
+ assert.equal(ctx.studioGalleryKeydown({key:'ArrowRight',target:{closest:()=>null},preventDefault(){track.prevented++}}),false);
+ ctx.studioGalleryOpen=false;
+ assert.equal(ctx.studioGalleryKeydown(galleryKeyEvent('ArrowRight',0,track)),false);
+ assert.equal(ctx.studioDirection,0);
+ assert.equal(ctx.redraws,0);
+ assert.equal(track.prevented,0);
+});
+test('gallery advertises shortcuts and delegates keydown without extra gameplay controls',()=>{
+ const {ctx}=studioContext();
+ const html=ctx.studioEightViewMarkup();
+ assert.equal((html.match(/aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Home End"/g)||[]).length,8);
+ assert.match(ui,/menu\\.addEventListener\\('keydown',e=>\\{studioGalleryKeydown\\(e\\)\\}\\)/);
+ assert.match(ui,/function studioGalleryKeydown\\(event\\)/);
+});
