@@ -4,8 +4,8 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync('src/modules/directional_animation.js','utf8').replace(/^export \{[^\n]+\};?\s*$/m,'');
 const context=vm.createContext({});
-vm.runInContext(source+'\nthis.api={HEADINGS,ACTIONS,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates,resolveAuthoredFrame,normalizeHeading};',context);
-const {HEADINGS,ACTIONS,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates,resolveAuthoredFrame,normalizeHeading}=context.api;
+vm.runInContext(source+'\nthis.api={HEADINGS,ACTIONS,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates,resolveAuthoredFrame,resolveDirectionalAsset,normalizeHeading};',context);
+const {HEADINGS,ACTIONS,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates,resolveAuthoredFrame,resolveDirectionalAsset,normalizeHeading}=context.api;
 test('all eight directions resolve unique action frame keys',()=>{
  assert.equal(HEADINGS.length,8);
  assert.equal(new Set(HEADINGS.map(heading=>animationFrame({heading,action:'run'}).key)).size,8);
@@ -94,4 +94,44 @@ test('Map-backed authored art resolves present frames and skips missing entries'
 });
 test('empty Map catalog returns null without affecting direction',()=>{
  assert.equal(resolveAuthoredFrame({heading:'W',action:'keeper',frame:1},new Map()),null);
+});
+
+test('mirrored art fallback uses opposite horizontal view only when explicitly enabled',()=>{
+ const catalog=new Set(['kick/W/2']);
+ const pose={action:'kick',heading:'E',frame:2};
+ assert.equal(resolveDirectionalAsset(pose,catalog),null);
+ const result=resolveDirectionalAsset(pose,catalog,{allowMirror:true});
+ assert.equal(result.key,'kick/W/2');
+ assert.equal(result.mirrorX,true);
+ assert.equal(Object.isFrozen(result),true);
+});
+test('authored exact-heading and directional idle outrank mirrored frames',()=>{
+ const pose={action:'kick',heading:'E',frame:2};
+ const exact=resolveDirectionalAsset(pose,new Map([['kick/E/2',{src:'exact'}],['kick/W/2',{src:'mirrored'}]]),{allowMirror:true});
+ assert.equal(exact.key,'kick/E/2');
+ assert.equal(exact.mirrorX,false);
+ const idle=resolveDirectionalAsset(pose,new Set(['idle/E/0','kick/W/2']),{allowMirror:true});
+ assert.equal(idle.key,'idle/E/0');
+ assert.equal(idle.mirrorX,false);
+});
+test('mirrored fallback precedes generic idle and never mirrors the generic sprite',()=>{
+ const pose={action:'slide',heading:'SW',frame:1};
+ const mirror=resolveDirectionalAsset(pose,new Set(['slide/SE/1','idle/S/0']),{allowMirror:true});
+ assert.equal(mirror.key,'slide/SE/1');
+ assert.equal(mirror.mirrorX,true);
+ const generic=resolveDirectionalAsset(pose,new Set(['idle/S/0']),{allowMirror:true});
+ assert.equal(generic.key,'idle/S/0');
+ assert.equal(generic.mirrorX,false);
+});
+test('front and back views are never reflected',()=>{
+ for(const heading of ['N','S']){
+  const result=resolveDirectionalAsset({heading,action:'run',frame:2},new Set(['idle/S/0']),{allowMirror:true});
+  assert.equal(result.key,'idle/S/0');
+  assert.equal(result.mirrorX,false);
+ }
+});
+test('malformed pose cannot inject keys and inherited catalog entries are ignored',()=>{
+ const catalog=Object.create({'kick/W/0':true});
+ const result=resolveDirectionalAsset({action:'../kick',heading:'../../W',frame:999},catalog,{allowMirror:true});
+ assert.equal(result,null);
 });
