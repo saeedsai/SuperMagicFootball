@@ -31,6 +31,13 @@ with sync_playwright() as pw:
   page.locator('[data-action="studioResetAppearance"]').click()
   restored_hair=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
   assert restored_hair==before,(label,'hair preview could not be reset')
+  page.locator('[data-action="randomizeAccessories"]').click()
+  after_accessories=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
+  assert all(after_accessories[k]==before[k] for k in before if k not in ('face_accessory','face_tattoo')),(label,'accessory randomization modified unrelated fields')
+  assert any(after_accessories[k]!=before[k] for k in ('face_accessory','face_tattoo')),(label,'accessory preview did not change')
+  assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'accessory preview wrote saves')
+  page.locator('[data-action="studioResetAppearance"]').click()
+  assert page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")==before,(label,'accessory reset failed')
   page.locator('[data-action="randomizeFaceDetails"]').click()
   detail=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
   allowed={'face_face','face_eyes','face_brows','face_eyeColor','face_nose','face_lips','face_beard','face_freckles','face_scar'}
