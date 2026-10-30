@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.17.1',
+ version:'0.12.17.2',
  date:'2026-10-30',
  notes:Object.freeze([
+  'TACKLE-ANIMATION-01: Slide tackles now ease into a deeper low-body extension, recover upright, and kick up directional turf spray in live matches. Defence-based reach, collision, four controls and saves remain unchanged.',
   'DEFENCE-TACKLE-REACH-01: Slide tackle travel distance now scales from 50% at Defence 1 to the existing maximum at Defence 100, preserving sprint versus standing slide speed and timing. No new controls, roster changes or save schema changes.',
   'STUDIO-GALLERY-FRAME-STEP-01: Player Studio eight-view animation comparison now has accessible Previous/Next Frame buttons. Each tap advances all eight views together through four motion phases, wraps at either end and keeps the scrubber synchronized without discarding unsaved appearance edits. Four match controls, saves, rosters, Energy and Breath are unchanged.',
   'BREATH-SWITCH-IMMEDIATE-01: The foot-level Breath ring now follows the current human-selected player immediately after a control switch, even when the old per-player controlled flag has not yet refreshed. Solo CPU, unselected players, studio previews and off-match screens remain ring-free; local two-human players each retain their own selected ring. Breath balance, Energy, controls, saves and player identities are unchanged.',
