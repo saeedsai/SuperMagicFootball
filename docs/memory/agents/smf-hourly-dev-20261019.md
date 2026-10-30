@@ -2,6 +2,9 @@
 **Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-10-30
 
+## Mission
+Sole developer for safe, incremental tested commits on existing dev; continue useful work through release blockers without bypassing CI, branch protections or physical acceptance gates.
+
 ## Current dev candidate 0.12.17.3
 - BREATH-DRIBBLE-HOLD-01: ordinary held DRIBBLE with possession now drains 0.12–0.20 Breath/sec by Stamina, alongside the existing tiny normal-running drain; JUMP sprint remains expensive. Shared FITNESS helper and actual engine usage committed; focused Node + Chromium regression added. Preserve one-time action costs.
 - Prior DEFENCE-TACKLE-REACH-01 and TACKLE-ANIMATION-01 (0.12.17.1/.2) are committed but not released. Staged slide animation and directional turf spray are visual-only.
