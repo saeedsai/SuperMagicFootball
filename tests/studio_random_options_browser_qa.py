@@ -47,7 +47,17 @@ with sync_playwright() as pw:
   page.locator('[data-action="studioResetAppearance"]').click()
   assert page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")==before,(label,'face detail reset failed')
   assert page.locator('[data-action="randomizeFace"]').inner_text().strip()=='RANDOMIZE FULL LOOK',(label,'misleading full-look action label')
+  # Invalid palette entries must never be selected by full-look randomization.
+  page.evaluate("""() => {
+   const skin=document.querySelector('#face_skin');
+   skin.add(new Option('Select a color',''));
+   const group=document.createElement('optgroup');
+   group.label='Unavailable palette';group.disabled=true;
+   group.append(new Option('Forbidden','forbidden-skin'));
+   skin.append(group);
+  }""")
   page.locator('[data-action="randomizeFace"]').click()
+  assert page.locator('#face_skin').input_value() not in ('','forbidden-skin'),(label,'invalid palette option selected')
   after=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
   assert set(before)==set(after) and len(after)>=15,(label,'appearance options missing')
   for key,value in after.items():
@@ -64,6 +74,19 @@ with sync_playwright() as pw:
   restored=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
   assert restored==before,(label,'reset did not restore persisted appearance')
   assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'reset wrote saved edits')
+  # A selective preview with no available alternatives reports a reason and does not save.
+  page.evaluate("""() => {
+   for(const id of ['face_body','face_stature','face_exaggeration']){
+    const select=document.getElementById(id);
+    for(const option of select.options)option.disabled=option.value!==select.value;
+   }
+  }""")
+  before_noop=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
+  page.locator('[data-action="randomizeBody"]').click()
+  assert 'No alternate appearance options available' in page.locator('#studioAppearanceSaveState').inner_text(),(label,'no-op status absent')
+  assert page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")==before_noop,(label,'no-op changed appearance')
+  assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'no-op wrote saves')
+
   assert not errors,(label,errors)
   print('STUDIO_RANDOM_OPTIONS_BROWSER_PASS',label,flush=True)
   context.close()
