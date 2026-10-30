@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.19
+# SuperMagicFootball release/version policy — About-only 0.12.17.20
+
+**Current dev candidate 0.12.17.20 (30 October 2026):** STUDIO-FULL-LOOK-LABEL-01: Player Studio now calls its existing all-category appearance preview RANDOMIZE FULL LOOK instead of misleading RANDOMIZE FACE. It still changes only unsaved appearance options (including body and accessories), preserves the action ID, and leaves abilities, roster, saves and the four match controls untouched. Exact-head 4+4, Modular QA, promotion and hosted verification pending.
 
 **Current dev candidate 0.12.17.19 (30 October 2026):** BREATH-LOCAL-OWNER-01: Breath outline and circular gauge now follow only the viewer's selected player in LAN/P2P (host home, guest away), including instant player switches. Local two-human Versus still shows one selected ring per side. Ordinary ball running/dribbling remains low-drain, JUMP sprint high-drain, and idle/walking recovery unchanged; Energy, four controls, rosters and saves are unchanged. Full exact-head 4+4, Modular QA, protected promotion and hosted Pages verification pending.
 
