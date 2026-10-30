@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.16.2',
+ version:'0.12.16.3',
  date:'2026-10-30',
  notes:Object.freeze([
+  'BREATH-CRITICAL-RING-01: The selected user-controlled player now gets a subtle pulsing warning on the existing circular Breath ring below 20% remaining, without adding a HUD bar or showing the indicator on any unselected or AI player. Gameplay drain, Energy, four buttons, saves and rosters remain unchanged.',
   'BREATH-RUN-SELECTED-01: Ordinary running, including carrying the ball, now spends very little Breath; sprinting and hyperdash spend substantially more. The foot-level Breath ring appears only for the currently user-selected controlled player, following selection switches. Four buttons, player IDs, saves, Energy and offline play remain unchanged.',
   'STUDIO-GALLERY-A11Y-PHASE-01: Player Studio now announces the selected action and four-step animation frame on all eight gallery views, including their keyboard-focusable buttons. The live comparison status updates when scrubbing or changing actions. Visual art, gameplay, controls, saves and rosters are unchanged.',
   'PENALTY-KEEPER-FEEDBACK-01: During local two-player penalty shootouts, the goalkeeper HUD now confirms DIVING and RECOVERING using the existing JUMP timers, then restores MOVE/JUMP guidance when ready. Solo CPU keeper labels remain automatic. Display only: no shot physics, four-button controls, saves or rosters changed.',
