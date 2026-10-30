@@ -1,3 +1,7 @@
+## 2026-10-30 — TACKLE-ANIMATION-01 (0.12.17.2)
+- TACKLE-ANIMATION-01: Slide tackles now ease into a deeper low-body extension, recover upright, and kick up directional turf spray in live matches. Defence-based reach, collision, four controls and saves remain unchanged.
+- Added focused Node regression for pose staging and directional match-only spray; exact-head full QA and release unverified.
+
 ## 2026-10-30 — DEFENCE-TACKLE-REACH-01 (0.12.17.1 dev candidate)
 - DEFENCE-TACKLE-REACH-01: Slide tackle travel distance now scales from 50% at Defence 1 to the existing maximum at Defence 100, preserving sprint versus standing slide speed and timing. No new controls, roster changes or save schema changes.
 - Added two focused Node regressions for monotonic rating scaling and existing slide travel cap/timing. Exact-head 4+4 Chromium/Node and Modular QA pending; no promotion or hosted verification claimed.
