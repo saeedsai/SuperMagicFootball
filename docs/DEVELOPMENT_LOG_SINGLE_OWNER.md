@@ -1,3 +1,8 @@
+## 2026-10-30 — STUDIO-APPEARANCE-RESET-01 (0.12.17.12 candidate)
+- STUDIO-APPEARANCE-RESET-01: Player Studio now offers RESET UNSAVED to restore the current player's saved face, hair and appearance controls without writing storage or changing stats, equipment, roster identity, controls or saves. The eight-view gallery remains open.
+- Added real-helper Node coverage (club/Career, legacy/default, unavailable options, no-op, no storage writes) and desktop/touch Chromium fixture coverage. Full exact-head 4 Node + 4 Chromium, Modular and protected Pages gates pending.
+- No routine LAN implementation; physical two-phone acceptance #48 remains open. Render drift #86 and branch protection #87 remain open.
+
 ## 2026-10-30 — MAGIC-BAT-JUMP-01 (0.12.17.11 candidate)
 - MAGIC-BAT-JUMP-01: Defenders can now evade a close-range Bat Strike with a timely JUMP (20+ world-height), while the existing grounded SHOOT-slide parry remains. The caster still pays the six-second cooldown and original fatigue; no new controls, roster changes or save-format changes.
 - Real match-engine method tested in isolated V8 with ten direction/height combinations (passed); added Node regression covering active JUMP, low/invalid heights, range, original grounded slide, cooldown, fatigue, other Tricks; added desktop/touch Chromium regression source. Full exact-head 4+4 Node/Chromium and Modular QA pending, no promotion/hosted verification claimed.
