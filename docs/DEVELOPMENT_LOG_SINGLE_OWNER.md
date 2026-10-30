@@ -1,3 +1,7 @@
+## 2026-10-30 — BREATH-SWITCH-IMMEDIATE-01 (0.12.16.4 dev candidate)
+- BREATH-SWITCH-IMMEDIATE-01: The foot-level Breath ring now follows the current human-selected player immediately after a control switch, even when the old per-player controlled flag has not yet refreshed. Solo CPU, unselected players, studio previews and off-match screens remain ring-free; local two-human players each retain their own selected ring. Breath balance, Energy, controls, saves and player identities are unchanged.
+- Replaced stale .controlled gate with current selected-player identity; added actual helper behavior Node regression and Chromium desktop/simulated-touch real canvas ring instrumentation and fitness drain checks. Previous 0.12.16.3 Modular QA passed; full 4+4 queued. Exact-head checks and Pages must be verified independently; no release claimed. LAN physical #48 open; Render #86 and protection #87 tracked.
+
 ## 2026-10-30 — BREATH-CRITICAL-RING-01 (0.12.16.3 dev candidate)
 - BREATH-CRITICAL-RING-01: The selected user-controlled player now gets a subtle pulsing warning on the existing circular Breath ring below 20% remaining, without adding a HUD bar or showing the indicator on any unselected or AI player. Gameplay drain, Energy, four buttons, saves and rosters remain unchanged.
 - Added focused source-level ring selection/pulse regression test. Previous 0.12.16.2 Modular QA green; full regression queued during CI congestion. Current exact-head checks require independent verification. LAN #48 remains uncertified; Render #86 and branch protection #87 tracked.

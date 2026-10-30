@@ -34,7 +34,7 @@ test('live renderer draws foot-level proportional Breath ring with stat normaliz
  const render=text('src/modules/render.js');
  assert.match(render,/STATS\.stat\(p,'stamina'\)/);
  assert.match(render,/Math\.PI\*2\*ratio/);
- assert.match(render,/if\(this\.inMatchDraw&&!p\.preview&&p\.controlled&&game\.inControl\(p\.t\)&&game\.controlledPlayer\(p\.t\)===p\)/);
+ assert.match(render,/if\(shouldShowBreathRing\(p,game,this\.inMatchDraw\)\)/);
 });
 test('HUD identifies existing top stamina meter as Energy',()=>{
  assert.match(text('src/modules/ui.js'),/staminaText\.textContent=`ENERGY /);
@@ -62,16 +62,39 @@ test('normal running with ball has very low Breath drain versus sprint',()=>{
 });
 test('Breath ring is restricted to the currently selected human-controlled player',()=>{
  const render=text('src/modules/render.js');
- assert.match(render,/p\.controlled&&game\.inControl\(p\.t\)&&game\.controlledPlayer\(p\.t\)===p/);
+ assert.match(render,/game\.inControl\(p\.t\)&&game\.controlledPlayer\(p\.t\)===p/);
  assert.doesNotMatch(render,/if\(this\.inMatchDraw&&!p\.preview\)\s*\{\s*const stamina=/);
 });
 
 test('critical Breath pulses only inside the selected-player ring branch',()=>{
  const render=text('src/modules/render.js');
- const guard=render.indexOf('if(this.inMatchDraw&&!p.preview&&p.controlled&&game.inControl(p.t)&&game.controlledPlayer(p.t)===p)');
+ const guard=render.indexOf('if(shouldShowBreathRing(p,game,this.inMatchDraw))');
  const pulse=render.indexOf('if(ratio<.2){ctx.save();ctx.globalAlpha=',guard);
  const restore=render.indexOf('ctx.restore();',pulse);
  assert.ok(guard>=0&&pulse>guard&&restore>pulse);
  assert.match(render.slice(pulse,restore),/Math.sin\(this.time\*10\)/);
  assert.match(render.slice(pulse,restore),/ctx\.ellipse\(0,4,39,19/);
+});
+
+test('current selection wins immediately over stale controlled flags in both local teams',()=>{
+ const render=text('src/modules/render.js');
+ const match=render.match(/function shouldShowBreathRing\(p,game,inMatchDraw\)\{[\s\S]*?\n\}/);
+ assert.ok(match,'test the actual renderer predicate');
+ const predicate=vm.runInNewContext('('+match[0]+')');
+ const home={t:0,i:2,controlled:true},next={t:0,i:3,controlled:false};
+ const away={t:1,i:2,controlled:false},cpu={t:1,i:4,controlled:true};
+ const selected=[home,away];
+ const game={humans:1,inControl(t){return t===0||this.humans===2;},
+  controlledPlayer(t){return selected[t];}};
+ assert.equal(predicate(home,game,true),true);
+ assert.equal(predicate(next,game,true),false);
+ selected[0]=next; // old .controlled remains true; new remains false until next update
+ assert.equal(predicate(home,game,true),false);
+ assert.equal(predicate(next,game,true),true);
+ assert.equal(predicate(away,game,true),false,'solo CPU');
+ game.humans=2;
+ assert.equal(predicate(away,game,true),true,'local second human');
+ assert.equal(predicate(cpu,game,true),false,'unselected second-team player');
+ assert.equal(predicate(next,game,false),false,'outside live match');
+ next.preview=true;assert.equal(predicate(next,game,true),false,'editor preview');
 });

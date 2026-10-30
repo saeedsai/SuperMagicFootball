@@ -6,6 +6,7 @@
 Develop directly on existing dev only; no new branches, force pushes or CI/security bypass. Preserve 223 teams, 2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09 and offline saves.
 
 ## Current checkpoint
+- BREATH-SWITCH-IMMEDIATE-01 0.12.16.4: renderer Breath ring uses live selected identity instead of stale controlled flag; Node and desktop/touch Chromium regression added. Previous 0.12.16.3 Modular QA green, full 4+4 queued. New exact-head checks and Pages pending.
 - BREATH-CRITICAL-RING-01 0.12.16.3 candidate: selected player's circular Breath ring pulses below 20%; focused regression committed, exact-head QA and deployment unverified. Prior Breath balance candidate Modular QA passed while full regression jobs were queued.
 - BREATH-RUN-SELECTED-01 candidate 0.12.16.2: normal running/carrying .6 intensity (low drain), sprint 1.5, hyperdash 1.7; Breath ring only currently selected human-controlled player. Focused tests committed; exact-head CI, main promotion and hosted bytes unverified.
 - Starting dev/main synchronized at `1b511ac09f54922b21031251586a2eaef9c3b0e6` (previous hosted 0.12.16.0).

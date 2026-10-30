@@ -16,6 +16,11 @@ const RENDER=(()=>{const {WORLD}=ENGINE;const {TEAMS,SHOTS}=DATA;const {dribbleS
 
 
 const F=WORLD.field;const PI=Math.PI;
+// Use the current selection, not p.controlled (which is a physics-frame snapshot).
+// A switch can occur after that snapshot but before the next painted frame.
+function shouldShowBreathRing(p,game,inMatchDraw){
+ return !!(inMatchDraw&&!p.preview&&game.inControl(p.t)&&game.controlledPlayer(p.t)===p);
+}
 const rgb=(hex,a)=>hex+a;
 const c=(ctx,v)=>{ctx.fillStyle=v};
 function rr(ctx,x,y,w,h,r,col,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=col;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke()}}
@@ -905,7 +910,7 @@ class Renderer{
    ctx.beginPath();ctx.ellipse(0,5,29+(1-p.firstTouchFx/.35)*15,12+(1-p.firstTouchFx/.35)*5,0,0,PI*2);ctx.stroke();ctx.restore();}
   if(p.controlled){ctx.strokeStyle=p.t===0?'#ffe675':'#74f2ff';ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(0,5,28,12,0,0,PI*2);ctx.stroke();ellipse(ctx,0,5,21,6,'#061d2855')}
   // Circular Breath gauge at the feet. Draw only in live matches, not editor previews.
-  if(this.inMatchDraw&&!p.preview&&p.controlled&&game.inControl(p.t)&&game.controlledPlayer(p.t)===p){
+  if(shouldShowBreathRing(p,game,this.inMatchDraw)){
    const stamina=STATS.stat(p,'stamina');
    const cap=3+7*(stamina-1)/99;
    const ratio=clamp((Number.isFinite(p.breath)?p.breath:cap)/cap,0,1);
@@ -1066,6 +1071,6 @@ class Renderer{
 function random(seed,a,b){return a+((Math.sin(seed*122.4)*49833)%1+1)%1*(b-a)}
 function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
 
-return {Renderer};})();
+return {Renderer,shouldShowBreathRing};})();
 
 export {RENDER};

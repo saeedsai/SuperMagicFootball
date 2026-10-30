@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.16.3',
+ version:'0.12.16.4',
  date:'2026-10-30',
  notes:Object.freeze([
+  'BREATH-SWITCH-IMMEDIATE-01: The foot-level Breath ring now follows the current human-selected player immediately after a control switch, even when the old per-player controlled flag has not yet refreshed. Solo CPU, unselected players, studio previews and off-match screens remain ring-free; local two-human players each retain their own selected ring. Breath balance, Energy, controls, saves and player identities are unchanged.',
   'BREATH-CRITICAL-RING-01: The selected user-controlled player now gets a subtle pulsing warning on the existing circular Breath ring below 20% remaining, without adding a HUD bar or showing the indicator on any unselected or AI player. Gameplay drain, Energy, four buttons, saves and rosters remain unchanged.',
   'BREATH-RUN-SELECTED-01: Ordinary running, including carrying the ball, now spends very little Breath; sprinting and hyperdash spend substantially more. The foot-level Breath ring appears only for the currently user-selected controlled player, following selection switches. Four buttons, player IDs, saves, Energy and offline play remain unchanged.',
   'STUDIO-GALLERY-A11Y-PHASE-01: Player Studio now announces the selected action and four-step animation frame on all eight gallery views, including their keyboard-focusable buttons. The live comparison status updates when scrubbing or changing actions. Visual art, gameplay, controls, saves and rosters are unchanged.',
