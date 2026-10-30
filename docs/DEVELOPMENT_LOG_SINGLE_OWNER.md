@@ -1,3 +1,9 @@
+## 2026-10-30 — BREATH-LOCAL-OWNER-01 (0.12.17.19 candidate)
+- Confirmed multiplayer visibility regression: shared LAN/P2P simulation uses humans=2 on both devices, previously showing the opponent's selected Breath ring. The local role now scopes ring/outline to host home or guest away; local couch Versus remains two-human.
+- Added Node and desktop/simulated-touch Chromium regressions for host/guest, immediate switching, unselected/CPU and normal-vs-sprint Breath balance.
+- Existing ordinary movement, held dribble, sprint drain, walking recovery and Energy mechanics unchanged; four controls, offline saves, 223 teams, 2676 players and ten-slot modes preserved.
+- Full exact-head CI, Modular QA, protected main promotion and hosted verification pending. Physical two-phone LAN issue #48 remains open.
+
 ## 2026-10-30 — VIZ-03-HEADING-STABILITY-01 (0.12.17.18 candidate)
 - Added pure directional hysteresis to reduce live atlas flicker near eight-view thresholds, while keeping slide and Studio preview directions exact.
 - New Node and desktop/simulated-touch Chromium tests discovered by the 4+4 census; focused JS predicate checks passed. Full CI/Modular/Pages not yet verified.
