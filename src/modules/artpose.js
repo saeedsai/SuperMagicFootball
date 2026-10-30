@@ -60,7 +60,17 @@ const ARTPOSE=(()=>{
   const progress=1-clamp((Number(actionTimer)||0)/duration,0,1);
   return {throwing:action==='keeperThrow',punting:action==='keeperPunt',windup:Math.sin(Math.PI*progress),follow:progress};
  }
- return Object.freeze({easeHeading,gait,keeperPose,settleStride,receivePose,passFollowThrough,keeperRelease});
+ // Visual-only penalty JUMP animation; no game-state or save mutations.
+ function penaltyKeeperVisual(pk,cy){
+  const boost=Number.isFinite(pk?.diveBoost)?Math.max(0,Math.min(.38,pk.diveBoost)):0;
+  const cooldown=Number.isFinite(pk?.diveCooldown)?Math.max(0,Math.min(.8,pk.diveCooldown)):0;
+  const offset=Number(pk?.saveY)-Number(cy);
+  const diveDy=Number.isFinite(offset)&&offset<-.5?-1:1;
+  if(boost>0)return {action:'keeperDive',diveElapsed:(.38-boost)/.38*.6,actionTimer:boost,diveDy};
+  if(cooldown>.08&&cooldown<=.420001)return {action:'keeperRecover',diveElapsed:.6,actionTimer:Math.min(.34,cooldown-.08),diveDy};
+  return {action:'idle',diveElapsed:0,actionTimer:0,diveDy:0};
+ }
+ return Object.freeze({easeHeading,gait,keeperPose,settleStride,receivePose,passFollowThrough,keeperRelease,penaltyKeeperVisual});
 })();
 
 export {ARTPOSE};

@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.14.0',
+ version:'0.12.15.0',
  date:'2026-10-30',
  notes:Object.freeze([
+  'PENALTY-KEEPER-VISUAL-01: Human goalkeepers in local Versus penalty shootouts now visibly dive on JUMP and recover after the existing boost. This does not change saves, shot results, physics, controls or rosters.',
   'STUDIO-COUNTER-PLAYBOOK-01: Player Studio offers a collapsible eight-Trick defender counter reference for outfield players and goalkeepers, reusing the same live Trick descriptions. Hide Ball now explains its timed grounded PASS-poke counter and the Trick panel says Energy cost. No new action buttons, physics, saves or roster changes.',
   'CAREER-STANDINGS-PREVIEW-01: Career save slots now show each saved team\'s league rank and points, including goal-difference and goals-scored tie breaks. Incomplete legacy tables omit the preview safely. Read-only display: ten slots, active Career, match progress and offline saves are unchanged.',
   'CAREER-COPY-UNIQUE-01: Copying a Career now avoids labels that differ only by letter case or Unicode width, including after the 60-character limit. It picks the next available numbered copy name without changing the source, active slot, saved progress or ten-slot offline format.',

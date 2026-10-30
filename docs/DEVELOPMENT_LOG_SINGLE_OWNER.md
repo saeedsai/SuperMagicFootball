@@ -1,3 +1,7 @@
+## 2026-10-30 — PENALTY-KEEPER-VISUAL-01 (0.12.15.0 dev candidate)
+- Human JUMP now drives a visible keeper dive/recovery during local Versus penalty shootouts. Visual-only state reads, stable side-facing guard; no physics, save, roster or button changes.
+- Focused Node regression added. Four Node + four Chromium shards, Modular QA, exact-green promotion and hosted Pages bytes are separate gates.
+
 ## 2026-10-30 — STUDIO-COUNTER-PLAYBOOK-01 (0.12.14.0 dev candidate)
 - Added a read-only collapsible eight-Trick defender counter reference to both outfield and goalkeeper Player Studio using the live guide catalogue. Corrected Hide Ball PASS-poke and Energy guidance. No fifth gameplay button, physics or save-schema change.
 - Three focused Node regressions cover all entries, the Hide Ball engine contract and both Studio panels. Exact-head four Node + four Chromium, Modular QA, protected promotion and Pages bytes require independent post-commit evidence.

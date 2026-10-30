@@ -970,7 +970,7 @@ class Renderer{
   const cy=(WORLD.goalTop+WORLD.goalBottom)/2,at=pk.turn%2,keeper=1-at;
   let kicker=g.player(at,4),guard=g.player(keeper,0);if(!kicker||!guard)return;
   this.drawPlayer(ctx,{...kicker,x:(pk.shotTimer>0?pk.startX:pk.ballX)-72,y:(pk.shotTimer>0?pk.startY:pk.ballY)+23,face:1,controlled:false,anim:this.time},g);
-  this.drawPlayer(ctx,{...guard,x:F.x+F.w-30,y:pk.saveY+22,face:-1,controlled:false,anim:this.time},g);
+  this.drawPlayer(ctx,{...guard,...ARTPOSE.penaltyKeeperVisual(pk,cy),x:F.x+F.w-30,y:pk.saveY+22,face:-1,dx:0,dy:0,visualFacing:{kind:'side',side:-1},keeper:true,controlled:false,anim:this.time},g);
   if(pk.shotTimer<=0){ellipse(ctx,F.x+F.w-12,pk.aim,9,9,'#fff49a');ctx.strokeStyle='#ffd962';ctx.lineWidth=2;ctx.beginPath();ctx.arc(F.x+F.w-12,pk.aim,17,0,PI*2);ctx.stroke()}
   const z=pk.shotTimer>0?Math.sin((1-pk.shotTimer/pk.shotMax)*PI)*55:0;
   this.drawSoccerBall(ctx,pk.ballX,pk.ballY-z,17,g.options?.ballModel||'classic',pk.shotTimer>0?(1-pk.shotTimer/pk.shotMax)*9:0);
