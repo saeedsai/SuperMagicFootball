@@ -3,26 +3,26 @@
 **Updated:** 2026-10-30
 
 ## Mission
-Only commit directly to existing dev; no branches, force pushes or CI/security bypass. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump only, ten Career/Cup slots, SD09 and offline saves.
+Commit directly to existing dev only; no branches, force pushes or CI/security bypass. Preserve 223 teams/2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09 and offline saves.
 
 ## Current checkpoint
-- Started dev/main at 2682e0cabe6eb40274d9aa065ded033351a04d43 (0.12.15.0, previous Pages verified).
-- PENALTY-KEEPER-GUIDE-01 candidate 0.12.15.1: render-only shootout HUD labels local taker and keeper, MOVE/JUMP and shot flight; solo automatic keeper is explicit. No gameplay or save changes.
-- Isolated helper 6/6 probes passed; new focused Node test added. Exact-head 4+4/Modular, promotion and Pages byte check require GitHub evidence after commit.
+- Began at synchronized dev/main `387391b2d3b72c01f5a58767810edd538f78ce24` (previous production 0.12.15.1).
+- PENALTY-KEEPER-FEEDBACK-01 candidate 0.12.16.0: penalty HUD reports DIVING and RECOVERING from existing keeper JUMP timers and restores control instructions; solo CPU label unchanged. Display only, no game-state mutation.
+- Focused helper assertions performed before commit; new Node regression added. Exact-head 4 Node + 4 Chromium, Modular QA, promotion and Pages verification require independent GitHub evidence.
 - Eight independently authored directional packs remain incomplete; physical two-phone LAN #48 remains unverified.
 
 ## Next smallest action
-1. Inspect exact-head 4 Node + 4 Chromium and Modular QA; fix failures.
-2. Promote only exact-green dev through approved pipeline; verify Pages hosted bytes.
-3. Advance independently authored eight-view side/quarter art and issue #15.
-4. Improve Studio animation previews or add another counterable Trick.
-5. Advance Career; inspect Render #86 and protection #87 without routine LAN coding.
+1. Inspect exact-head Node/Chromium and Modular QA, fix failures.
+2. Promote only through green pipeline; verify Pages hosted bytes.
+3. Advance original eight-view side/quarter graphics and issue #15.
+4. Improve Player Studio directional previews or counterable Magic Tricks.
+5. Advance Career and investigate Render #86 and branch protection #87 without routine LAN work.
 
 ## Ownership and exclusions
-Sole developer, retired locks are historical. Never read/edit other agents' memory. No routine LAN/P2P work.
+Sole developer; old locks historical. Never read or edit other agents' private memory. No routine LAN/P2P implementation.
 
 ## Evidence
-GitHub connector SHA-checked fast-forward; local git DNS unavailable. GitHub Actions authoritative for full tests.
+GitHub SHA-checked fast-forward, no local GitHub DNS. Full GitHub Actions QA authoritative; no physical phone certification.
 
 ## Cleanup
-Checkpoint under 4 KiB; history preserved.
+Checkpoint under 4 KiB; history retained in Git.

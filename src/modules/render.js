@@ -67,9 +67,13 @@ function drawIcePatches(ctx,hazards){
 function penaltyHudHints(pk,humans){
  const turn=Number.isFinite(pk?.turn)?Math.abs(Math.trunc(pk.turn))%2:0;
  const flight=Number(pk?.shotTimer)>0;
+ // Read the same bounded dive/recovery phases as penaltyKeeperVisual; never mutate pk.
+ const diving=Number.isFinite(pk?.diveBoost)&&pk.diveBoost>0;
+ const recovering=!diving&&Number.isFinite(pk?.diveCooldown)&&pk.diveCooldown>.08&&pk.diveCooldown<=.420001;
+ const keeperHint=diving?'DIVING':recovering?'RECOVERING':'MOVE UP/DOWN + JUMP';
  if(Number(humans)>=2)return [
   `P${turn+1} TAKER: ${flight?'SHOT IN FLIGHT':'MOVE / AIM + SHOOT'}`,
-  `P${2-turn} KEEPER: MOVE UP/DOWN + JUMP`
+  `P${2-turn} KEEPER: ${keeperHint}`
  ];
  return turn===0
   ? [flight?'P1 TAKER: SHOT IN FLIGHT':'P1 TAKER: MOVE / AIM + SHOOT','CPU KEEPER: AUTOMATIC']
