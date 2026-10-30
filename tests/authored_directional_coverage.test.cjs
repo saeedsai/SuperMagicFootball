@@ -3,9 +3,9 @@ const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
-const source=fs.readFileSync('src/modules/directional_animation.js','utf8').replace(/^export \\{[^\\n]+\\};?\\s*$/m,'');
+const source=fs.readFileSync('src/modules/directional_animation.js','utf8').replace(/^export \{[^\n]+\};?\s*$/m,'');
 const context=vm.createContext({});
-vm.runInContext(source+'\\nthis.coverage=authoredDirectionalCoverage;this.headings=HEADINGS;',context);
+vm.runInContext(source+'\nthis.coverage=authoredDirectionalCoverage;this.headings=HEADINGS;',context);
 const coverage=context.coverage;
 test('all eight independently authored idle views are required',()=>{
  const complete=new Set(Array.from(context.headings,heading=>`idle/${heading}/0`));
