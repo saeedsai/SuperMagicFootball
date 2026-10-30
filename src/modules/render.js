@@ -905,7 +905,7 @@ class Renderer{
    ctx.beginPath();ctx.ellipse(0,5,29+(1-p.firstTouchFx/.35)*15,12+(1-p.firstTouchFx/.35)*5,0,0,PI*2);ctx.stroke();ctx.restore();}
   if(p.controlled){ctx.strokeStyle=p.t===0?'#ffe675':'#74f2ff';ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(0,5,28,12,0,0,PI*2);ctx.stroke();ellipse(ctx,0,5,21,6,'#061d2855')}
   // Circular Breath gauge at the feet. Draw only in live matches, not editor previews.
-  if(this.inMatchDraw&&!p.preview){
+  if(this.inMatchDraw&&!p.preview&&p.controlled&&game.inControl(p.t)&&game.controlledPlayer(p.t)===p){
    const stamina=STATS.stat(p,'stamina');
    const cap=3+7*(stamina-1)/99;
    const ratio=clamp((Number.isFinite(p.breath)?p.breath:cap)/cap,0,1);
