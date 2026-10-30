@@ -89,4 +89,28 @@ function resolveDirectionalAsset(pose,catalog,{allowMirror=false}={}){
  }
  return has(generic)?Object.freeze({key:generic,mirrorX:false}):null;
 }
-export {HEADINGS,ACTIONS,normalizeHeading,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates,resolveAuthoredFrame,resolveDirectionalAsset};
+
+// Exact authored coverage for eight-way animation production and QA.
+// Reflection and generic idle fallbacks are deliberately NOT counted as art.
+// This diagnostic never changes the renderer's permissive fallback behavior.
+function authoredDirectionalCoverage(catalog,{actions=ACTIONS,frames=4}={}){
+ const selected=Array.isArray(actions)?[...new Set(actions.filter(action=>ACTIONS.includes(action)))]:ACTIONS;
+ const frameCount=Number.isInteger(frames)&&frames>=1&&frames<=64?frames:4;
+ const missing=[],byAction=Object.create(null);
+ let present=0,required=0;
+ for(const action of selected){
+  let actionPresent=0;
+  const count=action==='idle'?1:frameCount;
+  for(const heading of HEADINGS)for(let frame=0;frame<count;frame++){
+   const key=`${action}/${heading}/${frame}`;
+   required++;
+   if(hasAuthoredFrame(catalog,key)){present++;actionPresent++;}
+   else missing.push(key);
+  }
+  byAction[action]=Object.freeze({present:actionPresent,required:HEADINGS.length*count});
+ }
+ return Object.freeze({present,required,complete:required>0&&present===required,
+  missing:Object.freeze(missing),byAction:Object.freeze(byAction)});
+}
+
+export {HEADINGS,ACTIONS,normalizeHeading,animationFrame,actionFrame,resolveActionPose,animationAssetCandidates,resolveAuthoredFrame,resolveDirectionalAsset,authoredDirectionalCoverage};

@@ -3,26 +3,25 @@
 **Updated:** 2026-10-30
 
 ## Mission
-Only existing `dev`; no new branches, force pushes, manual main writes or CI/security bypass. Preserve 223 teams/2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09, offline saves and LAN.
+Work only on existing `dev`; no new branches, force pushes, manual main development or CI/security bypass. Preserve 223 teams, 2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09 and offline saves.
 
 ## Current checkpoint
-- **0.12.12.1 BREATH-SWAP-FIX-01:** `applyPlan` snapshots `breath` with player identity across tactical slot reorder, preventing a free refill. New substitutes still enter with normal Breath capacity; halftime restores Breath.
-- Repaired nine observed Node failures: seven isolated VM tests omitted `breathCapacity/stat` bindings and two Magic Trick tests expected a pre-Breath hold guard. Added tactical swap, halftime and keeper Breath assertions.
-- Code/tests/version commit `b30ff4c0e40eddf9bb15f002a3724360b8d36845`; documentation/checkpoint follow-up. Prior 0.12.12.0 Hide Ball PASS counter and 0.12.11.0 Studio Jumping preview remain.
+- Starting `dev` and `main` synchronized at `8868ca3e79b93442a038b9006e1c7df2613451bf` (0.12.12.1). Four Node/four Chromium and Modular QA passed on that head; Pages deployment and hosted-byte verification previously reported green.
+- ART-EIGHT-VIEW-COVERAGE-01: exact authored directional-frame coverage diagnostic, without counting mirrored or idle fallback as independent artwork. Six Node regressions; no player-facing version bump. This is a QA tool, NOT eight finished art packs.
+- Prior Breath swap fix and Hide Ball PASS counter remain; physical two-phone LAN acceptance not certified.
 
 ## Next smallest action
-1. Inspect exact-head four Node/four Chromium and Modular QA; fix failures.
-2. Implement a bounded independently authored directional art/animation increment and validate #15.
-3. Improve Player Studio and counterable Magic Tricks with mobile acceptance.
-4. Advance goalkeeper penalty control or Career Mode.
-5. Promote only exact green `dev` via authorized protected pipeline; verify main and Pages bytes.
+1. Confirm new exact-head 4 Node/4 Chromium and Modular QA, repair failures.
+2. Integrate coverage report with real independently painted directional asset manifests and author missing views.
+3. Validate Concept Royals side/quarter orientation visually on desktop and simulated touch (#15).
+4. Improve Player Studio and goalkeeper penalty controls (#5) in bounded batches.
+5. Promote only exact green dev via protected pipeline; verify Pages bytes and Render trigger drift.
 
 ## Ownership and exclusions
-Sole developer; historical locks nonblocking. Never read/edit other agents' private memory. Two-phone LAN acceptance #48 remains open and uncertified. Render drift #86 and main protection #87 remain open.
+Sole developer; historical locks retired. Do not read or edit other agents' private memory. #48 remains open, #86 Render commit-trigger and #87 main protection unresolved.
 
 ## Evidence
-At 187dcedea3f73a7618a29c2fa331190544ad855a: Modular QA green; preflight, four Node shards and preview smoke green; browser 1/3 green, browser 0/2 failed stale 14-stat/ENERGY label expectations. Corrected browser tests and added live Jumping preview checks; new exact-head CI pending. Promotion skipped.
-Starting `dev` 881414a914b9b2981b362c153333b5698176ec7d, `main` e8c07652f66071ec2da5370127966475f2f0df45 (74 ahead). Full Regression Census #40984010558 and Modular QA #40984010582 failed nine Node assertions; Chromium skipped. Direct V8 gameplay smoke passed. Local GitHub DNS failed. Exact new-head CI, promotion, Pages and physical LAN remain unverified.
+Four direct V8 assertions of the new source helper passed before commit. New-head Node/Chromium/Modular results must be inspected independently; do not treat earlier green runs as proof for new code. Local git clone cannot resolve github.com DNS.
 
 ## Cleanup
 Keep own checkpoint under 4 KiB and shared memory under 6 KiB.

@@ -1,3 +1,8 @@
+## 2026-10-30 — ART-EIGHT-VIEW-COVERAGE-01 (tooling; no player version bump)
+- Added `authoredDirectionalCoverage` to the independent directional animation module. Art QA can now count every exact heading/action/frame, list missing keys and distinguish genuinely authored views from reflected or generic idle fallbacks. Existing renderer fallback, four controls, game physics, rosters and saves are untouched.
+- Six focused Node regressions cover complete/partial eight-view sets, motion-frame coverage, Map/object catalogs, cross-realm collections, malformed input and immutable reports. Four direct V8 source assertions passed before commit; exact-head four Node + four Chromium and Modular QA are required before any promotion.
+- The installed About-only 0.12.12.1 remains unchanged because this is a non-player-facing art-production diagnostic. Physical LAN #48, Render trigger #86 and branch protection #87 remain open.
+
 ## 2026-10-30 — exact-head Chromium QA correction (0.12.12.1, test-only)
 - At `187dcedea3f73a7618a29c2fa331190544ad855a`, Modular QA #40989833618 passed; Full Regression Census #40989833643 passed preflight, all four Node shards and preview smoke, but browser shards 0/2 failed. Browser shards 1/3 passed. Promotion correctly skipped.
 - Shard 0: `studio_stat_editor_browser_qa.py` still expected 14 fields after Jumping became the 15th. Updated to assert 15 and actually edit/restore Jumping with live height/Energy preview on desktop and simulated touch, without saving.
