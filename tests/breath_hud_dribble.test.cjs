@@ -34,7 +34,7 @@ test('live renderer draws foot-level proportional Breath ring with stat normaliz
  const render=text('src/modules/render.js');
  assert.match(render,/STATS\.stat\(p,'stamina'\)/);
  assert.match(render,/Math\.PI\*2\*ratio/);
- assert.match(render,/if\(this\.inMatchDraw&&!p\.preview\)/);
+ assert.match(render,/if\(this\.inMatchDraw&&!p\.preview&&p\.controlled&&game\.inControl\(p\.t\)&&game\.controlledPlayer\(p\.t\)===p\)/);
 });
 test('HUD identifies existing top stamina meter as Energy',()=>{
  assert.match(text('src/modules/ui.js'),/staminaText\.textContent=`ENERGY /);
@@ -45,4 +45,23 @@ test('dribble no longer applies fixed lockout and continuous hold spends Breath'
  assert.match(engine,/if\(s\.dribble&&this\.ball\.owner===p\)p\.breath=Math\.max\(0,/);
  assert.match(engine,/p\.breath<\.55/);
  assert.doesNotMatch(engine,/p\.dribbleCooldown=2;p\.cd=\.43/);
+});
+
+test('normal running with ball has very low Breath drain versus sprint',()=>{
+ for(const stat of [1,50,100]){
+  const cap=F.breathCapacity(stat);
+  const jog=F.breathTick(cap,stat,1,.6);
+  const sprint=F.breathTick(cap,stat,1,1.5);
+  assert.ok(cap-jog<.2,`normal run depleted too much Breath at stamina ${stat}`);
+  assert.ok(cap-sprint>1.4,`sprint depleted too little Breath at stamina ${stat}`);
+  assert.ok(cap-sprint>8*(cap-jog));
+ }
+ const engine=text('src/modules/engine.js');
+ assert.doesNotMatch(engine,/Math\.max\(1\.15,intensity\)/);
+ assert.match(engine,/running\?1\.5:\.6/);
+});
+test('Breath ring is restricted to the currently selected human-controlled player',()=>{
+ const render=text('src/modules/render.js');
+ assert.match(render,/p\.controlled&&game\.inControl\(p\.t\)&&game\.controlledPlayer\(p\.t\)===p/);
+ assert.doesNotMatch(render,/if\(this\.inMatchDraw&&!p\.preview\)\s*\{\s*const stamina=/);
 });
