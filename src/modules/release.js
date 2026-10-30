@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.17.19',
+ version:'0.12.17.20',
  date:'2026-10-30',
  notes:Object.freeze([
+  'STUDIO-FULL-LOOK-LABEL-01: Player Studio now calls its existing all-category appearance preview RANDOMIZE FULL LOOK instead of misleading RANDOMIZE FACE. It still changes only unsaved appearance options (including body and accessories), preserves the action ID, and leaves abilities, roster, saves and the four match controls untouched.',
   'BREATH-LOCAL-OWNER-01: Breath outline and circular gauge now follow only the local viewer-selected player in LAN/P2P (host home, guest away), including instant player switches. Local two-human Versus still shows one selected ring per side. Ordinary ball running/dribbling remains low-drain, JUMP sprint high-drain, and idle/walking recovery unchanged; Energy, four controls, rosters and saves are unchanged.',
   'VIZ-03-HEADING-STABILITY-01: Live player artwork now uses a small eight-direction steering hysteresis to prevent side/quarter/front/back sprite flicker near angle thresholds. Sliding tackles and deterministic Studio previews still use exact headings; physics, four controls, rosters and saves are unchanged.',
   'STUDIO-ACCESSORY-RANDOM-01: Player Studio adds RANDOMIZE ACCESSORIES to preview accessory and tattoo options independently of facial features, hair, skin and physique. RESET UNSAVED reverses edits; only SAVE CHARACTER persists changes. Four match controls and all saved games remain compatible.',
