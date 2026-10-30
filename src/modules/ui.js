@@ -1120,6 +1120,26 @@ function studioResetUnsavedAppearance(){
  if(hint)hint.textContent='Unsaved appearance edits reverted; nothing was saved.';
  return true;
 }
+// STUDIO-RANDOM-OPTIONS-01: choose real enabled option values, not numeric indexes.
+// This is an unsaved preview only; SAVE CHARACTER remains the sole persistence action.
+function studioRandomizeUnsavedAppearance(random=Math.random){
+ if(screen!=='PLAYER CUSTOMIZATION')return false;
+ const squad=(typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home);
+ if(!squad?.[avatarIndex])return false;
+ let changed=false;
+ for(const key of Object.keys(getAppearance())){
+  const field=$('face_'+key);if(!field?.options)continue;
+  const options=Array.from(field.options).filter(option=>!option.disabled&&option.value!==field.value);
+  if(!options.length)continue;
+  const roll=Number(random()),index=Math.min(options.length-1,Math.max(0,Math.floor((Number.isFinite(roll)?roll:0)*options.length)));
+  field.value=options[index].value;changed=true;
+ }
+ if(!changed)return false;
+ studioGallerySignature='';drawCustomizer();
+ const hint=$('studioAppearanceSaveState');
+ if(hint)hint.textContent='Random look previewed; press SAVE CHARACTER to keep it. Nothing saved yet.';
+ return true;
+}
 function studioAppearanceSaveState(previous,appearance){
  const unchanged=!!(previous&&typeof previous==='object'&&!Array.isArray(previous)&&
   Object.keys(previous).length===Object.keys(appearance).length&&
@@ -1587,7 +1607,7 @@ function action(a){audio.cue('ui');
  else if(a==='saveStudioStats')saveStudioStats();else if(a==='resetStudioStats'){const player=((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home))[avatarIndex];if(player){const normalized=withStats(player);for(const key of NUMERIC_STATS)if($('stat_'+key))$('stat_'+key).value=String(normalized[key]);studioStatPreview();}}else if(a==='playerStudio'){studioCareerContext=false;studioReturnAction='navCustomization';showPlayerStudio();}
  else if(a.startsWith('editClubPlayers')){const ix=Number(a.slice('editClubPlayers'.length));if(TEAMS[ix]?.id.startsWith('club_')){home=ix;studioCareerContext=false;studioReturnAction='clubs';showPlayerStudio(0);}}
  else if(a.startsWith('editClubRoster')){const ix=Number(a.slice('editClubRoster'.length));if(TEAMS[ix]?.id.startsWith('club_')){home=ix;showEditor('clubs');}}
- else if(a.startsWith('editPlayer')){studioCareerContext=!!career&&screen==='MANAGER SQUAD';studioReturnAction=studioCareerContext?'careerSquad':'navCustomization';showPlayerStudio(+a.slice(10));}else if(a==='saveAppearance')saveAppearance();else if(a==='studioResetAppearance')studioResetUnsavedAppearance();else if(a==='saveStudioDefence')saveStudioDefence();else if(a==='saveStudioTrick')saveStudioTrick();else if(a==='saveStudioMagic')saveStudioMagic();else if(a==='saveStudioShot')saveStudioShot();else if(a==='randomizeFace'){const el=$('face_style');if(el){for(const k of ['style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo']){const node=$('face_'+k);node.value=Math.floor(Math.random()*node.options.length)}const skinNode=$('face_skin'),hairNode=$('face_hair');if(skinNode)skinNode.value=NATURAL_SKIN_TONES[Math.floor(Math.random()*NATURAL_SKIN_TONES.length)][0];if(hairNode)hairNode.value=NATURAL_HAIR_COLORS[Math.floor(Math.random()*NATURAL_HAIR_COLORS.length)][0];drawCustomizer()}}
+ else if(a.startsWith('editPlayer')){studioCareerContext=!!career&&screen==='MANAGER SQUAD';studioReturnAction=studioCareerContext?'careerSquad':'navCustomization';showPlayerStudio(+a.slice(10));}else if(a==='saveAppearance')saveAppearance();else if(a==='studioResetAppearance')studioResetUnsavedAppearance();else if(a==='saveStudioDefence')saveStudioDefence();else if(a==='saveStudioTrick')saveStudioTrick();else if(a==='saveStudioMagic')saveStudioMagic();else if(a==='saveStudioShot')saveStudioShot();else if(a==='randomizeFace')studioRandomizeUnsavedAppearance();
  else if(a==='conceptDemo'){home=TEAMS.findIndex(t=>t.id===CONCEPT_DEMO_ID);away=0;homeCategory='all';showSetup('quick');}
  else if(a==='quick'||a==='versus'||a==='training')showSetup(a);
  else if(a==='setupRules')showSetupExtras('rules');else if(a==='setupAppearance')showSetupExtras('appearance');else if(a==='setupTactics')showSetupExtras('tactics');

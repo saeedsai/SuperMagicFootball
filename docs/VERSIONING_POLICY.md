@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.12
+# SuperMagicFootball release/version policy — About-only 0.12.17.13
+
+**Current dev candidate 0.12.17.13 (30 October 2026):** STUDIO-RANDOM-OPTIONS-01: Player Studio RANDOMIZE FACE now selects real enabled appearance options, including sparse asset IDs and curated colors, guarantees a changed preview when alternatives exist, and refreshes the eight-view gallery. Only SAVE CHARACTER persists edits; rosters, stats, four controls, Energy/Breath and offline saves are unchanged. Exact-head CI and hosted certification pending.
 
 **Current dev candidate 0.12.17.12 (30 October 2026):** STUDIO-APPEARANCE-RESET-01: Player Studio now offers RESET UNSAVED to restore the current player's saved face, hair and appearance controls without writing storage or changing stats, equipment, roster identity, controls or saves. The eight-view gallery remains open. Full exact-head QA, promotion and Pages verification pending.
 

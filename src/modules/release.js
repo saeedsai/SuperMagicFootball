@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.17.12',
+ version:'0.12.17.13',
  date:'2026-10-30',
  notes:Object.freeze([
+  'STUDIO-RANDOM-OPTIONS-01: Player Studio RANDOMIZE FACE now selects real enabled appearance options, including sparse asset IDs and curated colors, guarantees a changed preview when alternatives exist, and refreshes the eight-view gallery. Only SAVE CHARACTER persists edits; rosters, stats, four controls, Energy/Breath and offline saves are unchanged.',
   'STUDIO-APPEARANCE-RESET-01: Player Studio now offers RESET UNSAVED to restore the current player\'s saved face, hair and appearance controls without writing storage or changing stats, equipment, roster identity, controls or saves. The eight-view gallery remains open.',
   'MAGIC-BAT-JUMP-01: Defenders can now evade a close-range Bat Strike with a timely JUMP (20+ world-height), while the existing grounded SHOOT-slide parry remains. The caster still pays the six-second cooldown and original fatigue; no new controls, roster changes or save-format changes.',
   'BREATH-ANALOG-WALK-01: Light analog walking with possession now restores Breath, ordinary full-speed running/dribbling remains low-drain, and JUMP sprint/hyperdash remains expensive. The controlled-player outline and Breath gauge now follow the same current human selection in solo/local Versus, including immediate switches. Energy, four controls, rosters and saves unchanged.',

@@ -1,3 +1,5 @@
+> **0.12.17.13 release candidate (30 October 2026):** STUDIO-RANDOM-OPTIONS-01: Player Studio RANDOMIZE FACE now selects real enabled appearance options, including sparse asset IDs and curated colors, guarantees a changed preview when alternatives exist, and refreshes the eight-view gallery. Only SAVE CHARACTER persists edits; rosters, stats, four controls, Energy/Breath and offline saves are unchanged. Exact-head full CI, protected promotion and hosted Pages certification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.12.17.12 release candidate (30 October 2026):** STUDIO-APPEARANCE-RESET-01: Player Studio now offers RESET UNSAVED to restore the current player's saved face, hair and appearance controls without writing storage or changing stats, equipment, roster identity, controls or saves. The eight-view gallery remains open. Focused preflight and exact-head CI pending; protected promotion and Pages verification are separate gates. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.12.17.11 release candidate (30 October 2026):** MAGIC-BAT-JUMP-01: Defenders can now evade a close-range Bat Strike with a timely JUMP (20+ world-height), while the existing grounded SHOOT-slide parry remains. The caster still pays the six-second cooldown and original fatigue; no new controls, roster changes or save-format changes. Focused logic checks passed; exact-head CI, protected promotion and hosted Pages verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -334,7 +336,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.12.17.12 · Modular source project
+# Supermagic Football · v0.12.17.13 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 

@@ -1,3 +1,8 @@
+## 2026-10-30 — STUDIO-RANDOM-OPTIONS-01 (0.12.17.13 candidate)
+- RANDOMIZE FACE now chooses actual enabled select option values, including sparse asset IDs and curated skin/hair palettes, and guarantees an unsaved change when alternatives exist. The eight-view gallery refreshes; SAVE CHARACTER alone persists changes. Club/Career identity, stats, four controls, Energy/Breath and save schema unchanged.
+- Added real-helper Node scenarios and desktop/simulated-touch Chromium regression. Focused helper preflight: six scenarios passed; full exact-head CI, protected promotion and hosted verification pending.
+- No routine LAN work; physical two-phone acceptance #48, Render auto-deploy drift #86 and branch protection #87 remain open.
+
 ## 2026-10-30 — STUDIO-APPEARANCE-RESET-01 (0.12.17.12 candidate)
 - STUDIO-APPEARANCE-RESET-01: Player Studio now offers RESET UNSAVED to restore the current player's saved face, hair and appearance controls without writing storage or changing stats, equipment, roster identity, controls or saves. The eight-view gallery remains open.
 - Added real-helper Node coverage (club/Career, legacy/default, unavailable options, no-op, no storage writes) and desktop/touch Chromium fixture coverage. Full exact-head 4 Node + 4 Chromium, Modular and protected Pages gates pending.
