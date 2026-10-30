@@ -1,3 +1,8 @@
+## 2026-10-30 — CAREER-STANDINGS-PREVIEW-01 (0.12.13.0 dev candidate)
+- Added read-only league position and points to occupied Career save-slot cards. Rankings use points, goal difference and goals scored, matching Career standings. Missing/malformed legacy rows hide the summary without blocking load/save or changing the ten-slot schema.
+- Added focused Node tests for ranking, tie breaks, incomplete legacy data, save immutability and UI rendering. Exact-head four Node + four Chromium shards, Modular QA, protected promotion and Pages hosted-byte verification require post-commit evidence.
+- About-only release, package, README, version policy, SW cache and sole-developer checkpoint updated. No routine LAN/P2P, four-button, roster, SD09 or offline save changes; physical phone #48, Render #86 and protection #87 remain open.
+
 ## 2026-10-30 — CAREER-COPY-UNIQUE-01 (0.12.12.3 dev candidate)
 - Updated Career slot duplication to use the same Unicode NFKC/case-insensitive name key as renaming. Existing copy labels with alternate case/width now cause the next available numbered suffix, including for 60-character names; existing saves, active career and ten-slot vault remain unchanged.
 - Added three Node regressions for case collisions, full-width Unicode/case collisions and truncation collisions. Four standalone algorithm probes passed before commit; exact-head Node 4/4, Chromium 4/4, Modular QA, protected promotion and Pages hosted bytes require post-commit evidence.

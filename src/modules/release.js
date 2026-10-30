@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.12.3',
+ version:'0.12.13.0',
  date:'2026-10-30',
  notes:Object.freeze([
+  'CAREER-STANDINGS-PREVIEW-01: Career save slots now show each saved team\'s league rank and points, including goal-difference and goals-scored tie breaks. Incomplete legacy tables omit the preview safely. Read-only display: ten slots, active Career, match progress and offline saves are unchanged.',
   'CAREER-COPY-UNIQUE-01: Copying a Career now avoids labels that differ only by letter case or Unicode width, including after the 60-character limit. It picks the next available numbered copy name without changing the source, active slot, saved progress or ten-slot offline format.',
   'CAREER-RENAME-UNIQUE-01: Career slot renaming now rejects another slot\'s label after case-insensitive Unicode normalization and the 60-character limit. Duplicate names already present in legacy saves remain loadable and can be corrected. Failed renames never overwrite saves, switch the active Career or change progress.',
   'BREATH-SWAP-FIX-01: Tactical lineup reorders retain each player\'s Breath instead of granting free recovery. Halftime still refills Breath; new substitutes enter with normal capacity. Four controls, saves and rosters unchanged.',

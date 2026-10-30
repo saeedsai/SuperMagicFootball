@@ -7,6 +7,20 @@ const labelKey=name=>name.trim().normalize('NFKC').toLowerCase();
 const slotNumber=n=>Number.isInteger(n)&&n>=1&&n<=count;
 const validCareer=c=>Boolean(c&&typeof c==='object'&&!Array.isArray(c)&&Number.isInteger(c.club)&&Array.isArray(c.members)&&Array.isArray(c.fixtures)&&Array.isArray(c.history)&&Array.isArray(c.roster)&&c.roster.length===12&&c.table&&typeof c.table==='object'&&c.facilities&&typeof c.facilities==='object'&&c.cup&&typeof c.cup==='object'&&Number.isFinite(c.cash)&&Number.isInteger(c.week));
 const validVault=v=>Boolean(v&&v.schema===1&&slotNumber(v.active)&&Array.isArray(v.slots)&&v.slots.length===count&&v.slots.every(s=>s===null||(s&&typeof s.name==='string'&&s.name.length<=60&&typeof s.savedAt==='string'&&!Number.isNaN(Date.parse(s.savedAt))&&validCareer(s.career))));
+// Read-only standings for save-slot previews. Mirror CAREER.standings tie breaks;
+// malformed legacy tables simply omit the preview rather than blocking saves.
+function leagueSnapshot(c){
+ const members=c?.members,table=c?.table;
+ if(!Array.isArray(members)||!members.length||!members.includes(c.club)||!table||typeof table!=='object')return null;
+ const rows=members.map((id,index)=>{
+  const row=table[id];
+  if(!row||!['pts','gf','ga'].every(key=>Number.isFinite(row[key])))return null;
+  return {id,index,pts:row.pts,gd:row.gf-row.ga,gf:row.gf};
+ });
+ if(rows.some(row=>row===null))return null;
+ rows.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.index-b.index);
+ return {position:rows.findIndex(row=>row.id===c.club)+1,size:rows.length,points:table[c.club].pts};
+}
 const empty=()=>({schema:1,active:1,slots:Array(count).fill(null)});
 function create(storage){
  let state=empty(),blocked=null,exists=false;
@@ -54,6 +68,6 @@ function create(storage){
  }
  function remove(n){check();if(!get(n))throw Error('Career slot '+n+' is empty');const next=clone(state);next.slots[n-1]=null;persist(next);}
  function importLegacy(career){check();if(exists||!validCareer(career))return false;save(1,career,'Imported legacy Career');return true;}
- return {get active(){return state.active},get error(){return blocked?.message||null},get hasVault(){return exists},list:()=>state.slots.map((s,i)=>({number:i+1,active:state.active===i+1,name:s?.name||'',savedAt:s?.savedAt||'',club:s?.career?.club??null,season:s?.career?.season??null,week:s?.career?.week??null,occupied:Boolean(s)})),firstEmpty:()=>{const i=state.slots.findIndex(s=>s===null);return i<0?null:i+1;},activeCareer:()=>blocked?null:(get(state.active)?clone(get(state.active).career):null),save,load,duplicate,rename,remove,importLegacy};
+ return {get active(){return state.active},get error(){return blocked?.message||null},get hasVault(){return exists},list:()=>state.slots.map((s,i)=>{const league=s?leagueSnapshot(s.career):null;return {number:i+1,active:state.active===i+1,name:s?.name||'',savedAt:s?.savedAt||'',club:s?.career?.club??null,season:s?.career?.season??null,week:s?.career?.week??null,leaguePosition:league?.position??null,leagueSize:league?.size??null,leaguePoints:league?.points??null,occupied:Boolean(s)};}),firstEmpty:()=>{const i=state.slots.findIndex(s=>s===null);return i<0?null:i+1;},activeCareer:()=>blocked?null:(get(state.active)?clone(get(state.active).career):null),save,load,duplicate,rename,remove,importLegacy};
 }
 export const CAREER_SLOTS={create,validCareer,validVault};
