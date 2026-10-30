@@ -6,6 +6,7 @@
 Sole developer on existing dev; small tested increments, no new branch, force push or bypass of CI/security. Never certify physical LAN without two-phone acceptance.
 
 ## Current checkpoint
+- 0.12.17.16 STUDIO-BODY-RANDOM-01: selective unsaved physique randomizer and Node tests committed. Full QA and main/Pages unverified.
 - 0.12.17.15 STUDIO-FACE-DETAILS-01: unsaved facial-details-only randomizer; Node and browser regression committed; exact-head 4+4, Modular and Pages not yet verified.
 - 0.12.17.14 STUDIO-HAIR-RANDOM-01: selective unsaved hair randomizer; Node and desktop/touch browser regression expanded. Full exact-head 4+4, Modular and Pages pending.
 - 0.12.17.13 STUDIO-RANDOM-OPTIONS-01: RANDOMIZE FACE now picks actual enabled select values and ensures a changed unsaved preview, including sparse numeric IDs and skin/hair palettes. Gallery refreshes; no persistence until SAVE CHARACTER. Node and Chromium regression added; six focused helper scenarios passed; exact-head CI/Pages pending.
