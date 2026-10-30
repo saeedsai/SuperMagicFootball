@@ -1,3 +1,5 @@
+> **0.12.17.9 release candidate (30 October 2026):** STRIKE-POSE-STABILITY-01: Shooting and aerial strikes no longer cycle running footsteps during their authored action poses; lingering crying animation also suppresses gait. No ball physics, four-button controls, saves or roster changes. Full CI and Pages verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.12.17.8 release candidate (30 October 2026):** KEEPER-POSE-GAIT-01: Goalkeeper catch, throw and punt animations, plus hurt/cry and stunned states, no longer cycle running footsteps. Match physics, four controls, saves and roster IDs are unchanged. Exact-head CI and Pages verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.12.17.7 release candidate (30 October 2026):** TACKLE-POSE-STABILITY-01: Sliding players no longer cycle their running gait during a tackle; the committed slide pose stays stable in all directions. Tackle distance, collisions, controls and saves remain unchanged. Exact-head CI and hosted verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -326,7 +328,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.12.17.8 · Modular source project
+# Supermagic Football · v0.12.17.9 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 
