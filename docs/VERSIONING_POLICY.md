@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.20
+# SuperMagicFootball release/version policy — About-only 0.12.17.21
+
+**Current dev candidate 0.12.17.21 (30 October 2026):** STUDIO-RANDOM-CHOICE-GUARD-01: Player Studio randomization now excludes blank placeholders and options in disabled groups, and explains when no alternative exists without redrawing or saving. Full-look and selective randomizers retain their existing controls; appearance saves, rosters, gameplay and four match actions are unchanged. Full exact-head CI, Modular QA, protected promotion and hosted verification pending.
 
 **Current dev candidate 0.12.17.20 (30 October 2026):** STUDIO-FULL-LOOK-LABEL-01: Player Studio now calls its existing all-category appearance preview RANDOMIZE FULL LOOK instead of misleading RANDOMIZE FACE. It still changes only unsaved appearance options (including body and accessories), preserves the action ID, and leaves abilities, roster, saves and the four match controls untouched. Exact-head 4+4, Modular QA, promotion and hosted verification pending.
 
