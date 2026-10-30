@@ -51,7 +51,7 @@ test('Existing facing/closing defence counter still applies and other Tricks ret
  assert.equal(events[0].countered,true);
  const other=setup({z:25,id:'bat'});
  assert.equal(other.fire(),true);
- assert.equal(other.defender.stun,.32,'the new jump counter is Fireball-specific');
+ assert.equal(other.defender.stun,0,'Bat now has its own airborne JUMP counter');
 });
 test('The Fireball counter uses existing JUMP, and Player Studio explains it',()=>{
  const ui=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
