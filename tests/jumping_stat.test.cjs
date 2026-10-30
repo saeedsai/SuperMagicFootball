@@ -8,12 +8,14 @@ const stats=fs.readFileSync(path.join(root,'src/modules/stats.js'),'utf8');
 const mechanics=JSON.parse(fs.readFileSync(path.join(root,'data/mechanics/gameplay.json'),'utf8'));
 const jumpBody=engine.match(/ jump\(p\)\{([\s\S]*?)\n \}\n\n \/\/ Resolve impact/);
 assert.ok(jumpBody,'engine jump method is present');
-const jump=new Function('p','stat',`const self=this;\n${jumpBody[1]}`);
+const metricsSource=fs.readFileSync(path.join(root,'src/modules/jumpmetrics.js'),'utf8').replace(/export \{JUMPMETRICS\};/, '');
+const jumpMetrics=new Function(metricsSource+'\nreturn JUMPMETRICS.jumpMetrics;')();
+const jump=new Function('p','stat','jumpMetrics',`const self=this;\n${jumpBody[1]}`);
 function simulate(jumping,double=false){
  const p={stun:0,z:double?30:0,vz:0,jumpCount:double?1:0,fatigue:0,t:0,src:{name:'Player'}};
  const events=[],costs=[];
- const ctx={spendStamina:(_p,k)=>costs.push(k==='jump'?1+(100-jumping)/100:1),emit:(...e)=>events.push(e)};
- assert.equal(jump.call(ctx,p,()=>jumping),true);
+ const ctx={spendStamina:(_p,k)=>costs.push(k==='jump'?jumpMetrics(jumping).energyCostMultiplier:1),emit:(...e)=>events.push(e)};
+ assert.equal(jump.call(ctx,p,()=>jumping,jumpMetrics),true);
  return {p,cost:costs[0],events};
 }
 test('jumping is a canonical editable numeric attribute',()=>{
