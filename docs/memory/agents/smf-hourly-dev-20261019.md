@@ -3,34 +3,25 @@
 **Updated:** 2026-10-30
 
 ## Mission
-Sole developer for safe, incremental tested commits on existing dev; continue useful work through release blockers without bypassing CI, branch protections or physical acceptance gates.
+Sole developer on existing dev; tested small increments, no new branch, force push or bypass of required CI/security. Do not certify physical LAN without two-phone acceptance.
 
 ## Current checkpoint
-- 0.12.17.10 BREATH-ANALOG-WALK-01: analog walking recovers Breath, normal run cheap, sprint expensive; only selected human gets Breath and selection rings. Two stale gait CI assertions repaired; 724826b CI exposed cache suffix and overbroad test, corrected in follow-up. Exact-head CI/Pages pending.
-- 0.12.17.9 STRIKE-POSE-STABILITY-01: running gait suppressed in shot/aerial actions and lingering cry; predicate checks passed, exact-head 4+4 QA and Pages not verified.
-- 0.12.17.8 KEEPER-POSE-GAIT-01: keeper catch/throw/punt, hurt/cry and stun states suppress running gait; focused regression committed; full exact-head QA and Pages pending.
-- 0.12.17.7 TACKLE-POSE-STABILITY-01: committed gait freeze during slide and Node regression; full QA and release pending.
-- 0.12.17.6 BREATH-STATIONARY-HOLD-01: analog-scaled held-dribble drain; stationary hold recovers. README heading corrected after exact-head 3e09d66 CI failure. Node/Chromium regressions added; exact-head CI, main and Pages pending.
-- 0.12.17.5 TACKLE-SNAP-HEADING-01: committed immediate slide facing, Node regression and README release-banner CI fix; exact-head QA/promotion pending.
-- TACKLE-DIRECTION-01 0.12.17.4: slide-facing uses committed slide vector for eight headings; Node regression added. Exact-head CI and deployment pending.
-**Current dev candidate:** 0.12.17.10
-- BREATH-DRIBBLE-HOLD-01: ordinary held DRIBBLE with possession now drains 0.12–0.20 Breath/sec by Stamina, alongside the existing tiny normal-running drain; JUMP sprint remains expensive. Shared FITNESS helper and actual engine usage committed; focused Node + Chromium regression added. Preserve one-time action costs.
-- Prior DEFENCE-TACKLE-REACH-01 and TACKLE-ANIMATION-01 (0.12.17.1/.2) are committed but not released. Staged slide animation and directional turf spray are visual-only.
-- CI at dev a63ecaac: Full Regression Census 41062348594 and Modular QA 41062348480 failed 6 release-banner assertions, 1181 other Node tests passed. README banner corrected at 7be52a4; new exact-head CI results still required.
-- BREATH-RUN-SELECTED-01 and BREATH-SWITCH-IMMEDIATE-01 were already delivered earlier; current ring must remain selected-human-only including local Versus switches.
-
-## Ownership and exclusions
-Sole developer; only existing dev branch, no force-push or CI/security bypass. Preserve 223 teams, 2676 players, six formations, four action buttons, offline saves, ten Career/Cup slots, SD09. Physical two-phone LAN #48 open, no certification. Render drift #86 and branch protection #87 open. Never read other agents private memory.
+- 0.12.17.11 MAGIC-BAT-JUMP-01: real engine Bat Strike now allows JUMP at height >=20 as an airborne dodge. Existing grounded SHOOT-slide parry, facing/closing defence, cooldown/fatigue and 4 controls preserved. Player Studio counter guide updated. Node and desktop/touch Chromium regression sources committed; focused 10-case V8 live-method preflight passed; exact-head 4+4 and Modular CI pending.
+- 0.12.17.10 BREATH-ANALOG-WALK-01 already deployed at exact main/dev 1f71a3c with green 4+4, Modular and Pages. Cheap ordinary running/dribbling, expensive sprint, walking recovery; Breath ring only for selected human, including same-frame local Versus switching.
+- Recent animation work: stable keeper, tackle, strike poses; directional art remains incomplete.
 
 ## Next smallest action
-1. Check exact-head Node/Chromium 4+4 and Modular QA; repair any real failures.
-2. Promote exact green dev through protected main pipeline and verify Pages hosted bytes.
-3. Original independently authored eight-view graphics and tackle/keeper motion QA (#15).
-4. Counterable Magic Tricks using four buttons; no routine LAN work.
-5. Career progression and Player Studio usability; investigate Render trigger drift when relevant.
+1. Inspect exact-head 4 Node + 4 Chromium, Modular QA and preview smoke for 0.12.17.11; repair failures without weakening tests.
+2. Allow only protected exact-green-head promotion and verify Pages hosted bytes.
+3. Fix original left/right sprite direction and advance independently authored eight-view art.
+4. Expand Player Studio and four-button Magic Trick counterplay, then goalkeeper and Career Mode.
+5. Investigate Render commit-trigger drift #86 when relevant; keep two-phone LAN #48 open.
+
+## Ownership and exclusions
+Single developer; dev only. Preserve 223 teams, 2676 players, six formations, four action buttons, ten Career/Cup slots, SD09, offline saves. No routine LAN coding, no other agent memory reads. #87 branch protection unresolved.
 
 ## Evidence
-GitHub connector current-blob SHA writes, exact CI logs and GitHub history. Local GitHub DNS may be unavailable. No hosted certification inferred from commits.
+GitHub commit/CI history and focused V8 engine method cases. Git clone unavailable locally (GitHub DNS resolution failure); do not claim local full checkout or hosted certification.
 
 ## Cleanup
-Compact checkpoint stays under 4 KiB; retain immutable Git history and do not edit other agent memories.
+Keep this checkpoint under 4 KiB and use immutable Git history for older notes.
