@@ -1,3 +1,6 @@
+### 2026-10-30 — release metadata syntax repair
+- Exact-head Full Regression preflight run 41059663232 and Modular QA 41059663045 failed: unescaped apostrophe in the newly added release note caused a JavaScript SyntaxError in src/modules/release.js. Corrected the string; rerun full exact-head checks. No gameplay or version change.
+
 ## 2026-10-30 — STUDIO-GALLERY-FRAME-STEP-01 (0.12.17.0 candidate)
 - STUDIO-GALLERY-FRAME-STEP-01: Player Studio's eight-view animation comparison now has accessible Previous/Next Frame buttons. Each tap advances all eight views together through four motion phases, wraps at either end and keeps the scrubber synchronized without discarding unsaved appearance edits. Four match controls, saves, rosters, Energy and Breath are unchanged.
 - Node real-function and desktop/simulated-touch Chromium tests added. Starting dev/main were synchronized at e2a55e4eac5a0fc1e25c2275d11dca710defd5a2; its exact-head dev 4+4, Modular QA, main regression and Pages deployment succeeded. New candidate requires fresh exact-head certification before promotion. Physical two-phone LAN #48 stays open; Render #86 and branch protection #87 remain tracked.
