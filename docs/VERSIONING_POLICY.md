@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.8
+# SuperMagicFootball release/version policy — About-only 0.12.17.9
+
+**Current dev candidate 0.12.17.9 (30 October 2026):** STRIKE-POSE-STABILITY-01: Shooting and aerial strikes no longer cycle running footsteps during their authored action poses; lingering crying animation also suppresses gait. No ball physics, four-button controls, saves or roster changes. Full QA/promotion and hosted certification pending.
 
 **Current dev candidate 0.12.17.8 (30 October 2026):** KEEPER-POSE-GAIT-01: Goalkeeper catch, throw and punt animations, plus hurt/cry and stunned states, no longer cycle running footsteps. Match physics, four controls, saves and roster IDs are unchanged. Full QA/promotion and hosted certification pending.
 
