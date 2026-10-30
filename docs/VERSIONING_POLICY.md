@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.7
+# SuperMagicFootball release/version policy — About-only 0.12.17.8
+
+**Current dev candidate 0.12.17.8 (30 October 2026):** KEEPER-POSE-GAIT-01: Goalkeeper catch, throw and punt animations, plus hurt/cry and stunned states, no longer cycle running footsteps. Match physics, four controls, saves and roster IDs are unchanged. Full QA/promotion and hosted certification pending.
 
 **Current dev candidate 0.12.17.7 (30 October 2026):** TACKLE-POSE-STABILITY-01: Sliding players no longer cycle their running gait during a tackle; the committed slide pose stays stable in all directions. Tackle distance, collisions, controls and saves remain unchanged. Exact-head CI and hosted verification pending.
 
