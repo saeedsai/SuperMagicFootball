@@ -20,3 +20,8 @@ test('slide direction follows committed tackle vector for all eight headings',()
   assert.deepEqual(facing,[dx,dy]);
  }
 });
+
+test('tackle facing bypasses walking heading interpolation and updates heading cache',()=>{
+ assert.match(render,/if\(this\.inMatchDraw&&moving&&!p\.preview&&p\.action!=='slide'\)/);
+ assert.match(render,/if\(this\.inMatchDraw&&p\.action==='slide'&&!p\.preview&&moving\)this\.poseHeadings\.set\(p,Math\.atan2\(faceDY,faceDX\)\)/);
+});
