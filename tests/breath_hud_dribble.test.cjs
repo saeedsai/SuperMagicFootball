@@ -78,6 +78,36 @@ test('Breath ring is restricted to the currently selected human-controlled playe
  assert.doesNotMatch(render,/if\(this\.inMatchDraw&&!p\.preview\)\s*\{\s*const stamina=/);
 });
 
+test('LAN/P2P Breath ring is scoped to local human, with immediate switching and couch Versus preserved',()=>{
+ const render=text('src/modules/render.js');
+ const match=render.match(/function shouldShowBreathRing\(p,game,inMatchDraw\)\{[\s\S]*?\n\}/);
+ assert.ok(match,'real renderer predicate must be present');
+ const visible=vm.runInNewContext('('+match[0]+')');
+ const home={t:0,i:2},nextHome={t:0,i:3},away={t:1,i:2},nextAway={t:1,i:3};
+ const chosen=[home,away];
+ const game={humans:2,localBreathSide:null,inControl(t){return t===0||this.humans===2;},controlledPlayer(t){return chosen[t];}};
+ assert.equal(visible(home,game,true),true,'local Versus home');
+ assert.equal(visible(away,game,true),true,'local Versus away');
+ game.localBreathSide=0;
+ assert.equal(visible(home,game,true),true,'host local home');
+ assert.equal(visible(away,game,true),false,'host must not see remote away ring');
+ game.localBreathSide=1;
+ assert.equal(visible(home,game,true),false,'guest must not see remote home ring');
+ assert.equal(visible(away,game,true),true,'guest local away');
+ chosen[1]=nextAway;
+ assert.equal(visible(away,game,true),false,'stale remote selection hidden immediately');
+ assert.equal(visible(nextAway,game,true),true,'guest switched player shown immediately');
+ chosen[0]=nextHome;
+ assert.equal(visible(nextHome,game,true),false,'guest must not see home switch');
+ game.humans=1;
+ assert.equal(visible(nextAway,game,true),false,'CPU never shows ring');
+ game.humans=2;game.localBreathSide=null;
+ assert.equal(visible(nextHome,game,true),true,'couch Versus home restored');
+ assert.equal(visible(nextAway,game,true),true,'couch Versus away restored');
+ assert.equal(visible(nextAway,game,false),false,'menu/preview never draws live ring');
+ assert.match(text('src/modules/ui.js'),/game\.localBreathSide=lanRole==='host'\?0:lanRole==='guest'\?1:null/,'UI must supply actual local network role');
+});
+
 test('critical Breath pulses only inside the selected-player ring branch',()=>{
  const render=text('src/modules/render.js');
  const guard=render.indexOf('if(shouldShowBreathRing(p,game,this.inMatchDraw))');
