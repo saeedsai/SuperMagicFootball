@@ -8,5 +8,6 @@ test('STUDIO-TRICK-HELP-01 selected Magic Trick explains existing DRIBBLE hold a
  assert.match(ui,/Equipped Trick: '\+guide\+instructions/);
  assert.match(ui,/Preview only: '\+guide\+instructions/);
  assert.match(ui,/opposing SHOOT-slide can clear it/);
- assert.match(ui,/strong defender approaching and facing the carrier can counter/);
+ assert.match(ui,/a strong defender approaching and facing the carrier can also counter/);
+ assert.match(ui,/grounded defender facing the carrier can interrupt the cast with a timed PASS poke/);
 });
