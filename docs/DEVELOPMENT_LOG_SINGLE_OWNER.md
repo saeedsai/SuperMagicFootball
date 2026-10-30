@@ -1,3 +1,8 @@
+## 2026-10-30 — VIZ-03-HEADING-STABILITY-01 (0.12.17.18 candidate)
+- Added pure directional hysteresis to reduce live atlas flicker near eight-view thresholds, while keeping slide and Studio preview directions exact.
+- New Node and desktop/simulated-touch Chromium tests discovered by the 4+4 census; focused JS predicate checks passed. Full CI/Modular/Pages not yet verified.
+- Gameplay physics, Energy/Breath, controls, roster IDs and save formats unchanged.
+
 ## 2026-10-30 — STUDIO-ACCESSORY-RANDOM-01 (0.12.17.17 candidate)
 - Added accessory/tattoo-only unsaved randomization in Player Studio and desktop/touch browser plus Node regressions for field isolation, reset and no storage writes.
 - Four controls, saves, rosters and match physics unchanged. Full exact-head CI, protected promotion and hosted bytes not yet verified.
