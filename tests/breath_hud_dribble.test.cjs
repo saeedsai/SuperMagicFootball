@@ -119,10 +119,10 @@ test('stationary DRIBBLE hold preserves idle recovery and analog movement scales
   const rest=F.breathTick(start,stamina,1,0);
   const still=rest-rate*0,half=F.breathTick(start,stamina,1,.6)-rate*.5;
   const full=F.breathTick(start,stamina,1,.6)-rate;
-  const sprint=F.breathTick(start,stamina,1,1.5);
+  const sprint=F.breathTick(cap,stamina,1,1.5);
   assert.equal(still,rest,'stationary held DRIBBLE must not cancel idle recovery');
   assert.ok(half>full,'half-speed dribble must consume less extra Breath');
   assert.ok(start-full<.5,'ordinary moving dribble remains inexpensive');
-  assert.ok(start-sprint>5*(start-full),'sprint must cost much more');
+  assert.ok(cap-sprint>5*(start-full),'sprint must cost much more');
  }
 });
