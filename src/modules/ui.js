@@ -1129,12 +1129,16 @@ function studioRandomizeUnsavedAppearance(random=Math.random,keys=null){
  let changed=false;
  for(const key of keys||Object.keys(getAppearance())){
   const field=$('face_'+key);if(!field?.options)continue;
-  const options=Array.from(field.options).filter(option=>!option.disabled&&option.value!==field.value);
+  const options=Array.from(field.options).filter(option=>!option.disabled&&!option.parentElement?.disabled&&option.value!==''&&option.value!==field.value);
   if(!options.length)continue;
   const roll=Number(random()),index=Math.min(options.length-1,Math.max(0,Math.floor((Number.isFinite(roll)?roll:0)*options.length)));
   field.value=options[index].value;changed=true;
  }
- if(!changed)return false;
+ if(!changed){
+  const hint=$('studioAppearanceSaveState');
+  if(hint)hint.textContent='No alternate appearance options available for this selection. Nothing saved yet.';
+  return false;
+ }
  studioGallerySignature='';drawCustomizer();
  const hint=$('studioAppearanceSaveState');
  if(hint)hint.textContent=(keys?'Selected appearance previewed':'Random look previewed')+'; press SAVE CHARACTER to keep it. Nothing saved yet.';
