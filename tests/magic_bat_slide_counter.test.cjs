@@ -30,8 +30,8 @@ test('MAGIC-BAT-SLIDE-01: active grounded SHOOT-slide parries Bat from both side
   assert.equal(fire(),false,'cooldown still prevents a free second cast');
  }
 });
-test('Expired, non-slide, airborne and invalid-height defenders cannot parry Bat',()=>{
- for(const opts of [{timer:0},{timer:-.01},{timer:NaN},{action:'run'},{z:20},{z:NaN}]){
+test('Expired, non-slide, low-jump and invalid-height defenders cannot parry Bat',()=>{
+ for(const opts of [{timer:0},{timer:-.01},{timer:NaN},{action:'run'},{z:19.9,action:'run'},{z:NaN}]){
   const {defender,events,fire}=setup(opts);
   assert.equal(fire(),true);assert.equal(defender.stun,.32);
   assert.equal(defender.action,'hurt');assert.equal(events[0].countered,false);
@@ -52,4 +52,34 @@ test('Player Studio describes SHOOT parry and game still uses exactly four actio
  assert.match(ui,/bat:'[^']*SHOOT-slide parries the bat while grounded/);
  assert.match(engine,/p\.magicReadyAt=this\.clock\+6/);
  assert.doesNotMatch(engine,/fifthAction/);
+});
+
+test('MAGIC-BAT-JUMP-01: airborne JUMP evades Bat from both sides with original caster cost',()=>{
+ for(const side of [0,1]){
+  const {attacker,defender,events,game,fire}=setup({side,z:20,action:'run',timer:0});
+  assert.equal(fire(),true);assert.equal(defender.stun,0);assert.equal(defender.action,'run');
+  assert.equal(events[0].trick,'bat');assert.equal(events[0].countered,true);
+  assert.equal(attacker.magicReadyAt,8);assert.equal(attacker.fatigue,.035);
+  assert.equal(game.fatigueLedger[side].a,.035);
+  assert.equal(fire(),false,'jump dodge cannot bypass caster cooldown');
+ }
+});
+test('Bat JUMP dodge requires height and range; grounded SHOOT-slide still parries',()=>{
+ for(const z of [0,19.99,NaN]){
+  const {defender,events,fire}=setup({z,action:'run',timer:0});
+  assert.equal(fire(),true);assert.equal(defender.stun,.32);
+  assert.equal(events[0].countered,false);
+ }
+ const far=setup({z:30,action:'run',timer:0});far.defender.x=far.attacker.x+200;
+ assert.equal(far.fire(),true);assert.equal(far.events[0].countered,false);
+ const slide=setup({z:0,action:'slide',timer:.25});
+ assert.equal(slide.fire(),true);assert.equal(slide.events[0].countered,true);
+ const other=setup({z:30,action:'run',timer:0,id:'teleport'});
+ assert.equal(other.fire(),true);assert.equal(other.events[0].countered,false,'Bat JUMP does not cancel Teleport');
+});
+test('Bat JUMP counter is documented in Player Studio without a fifth action',()=>{
+ const ui=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
+ assert.match(engine,/batDodged=id==='bat'&&inRange&&Number\.isFinite\(rival\.z\)&&rival\.z>=20/);
+ assert.match(ui,/bat:'[^']*JUMP above the swing to evade it/);
+ assert.match(engine,/freezeDodged\|\|batDodged\|\|batParried/);
 });
