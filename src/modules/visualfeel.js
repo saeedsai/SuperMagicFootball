@@ -15,6 +15,23 @@ const VISUALFEEL=(()=>{
   if(Math.abs(y)<=.31)return {kind:'side',side};
   return {kind:y>0?'quarterFront':'quarterBack',side};
  }
+ // VIZ-03: retain a direction briefly at atlas boundaries to prevent a player
+ // flickering between profile and quarter/front/back art while steering.
+ // Only visual headings are affected; movement, collisions and tackle aim are not.
+ function stableFacingView(dx=0,dy=0,face=1,previous=null){
+  const current=facingView(dx,dy,face),length=Math.hypot(dx,dy);
+  if(!previous||!['front','back','side','quarterFront','quarterBack'].includes(previous.kind)||!Number.isFinite(length)||length<.14)return current;
+  const x=dx/length,y=dy/length;
+  // Do not alternate left/right quarter art on tiny near-vertical input noise.
+  const side=Math.abs(x)<.10&&(previous.side===1||previous.side===-1)?previous.side:current.side;
+  let kind=current.kind;
+  if(previous.kind==='front'&&y>=.82)kind='front';
+  else if(previous.kind==='back'&&y<=-.82)kind='back';
+  else if(previous.kind==='side'&&Math.abs(y)<=.36)kind='side';
+  else if(previous.kind==='quarterFront'&&y>=.26&&y<=.92)kind='quarterFront';
+  else if(previous.kind==='quarterBack'&&y<=-.26&&y>=-.92)kind='quarterBack';
+  return {kind,side};
+ }
  // Resolve a stable compass heading for eight independent directional art frames.
  // This does not change the legacy {kind,side} renderer contract.
  function artHeading(dx=0,dy=0,face=1){
@@ -38,7 +55,7 @@ const VISUALFEEL=(()=>{
   const [base,factor,limit]=profile[kind]||profile.collision;
   return clamp((base+amount*factor)*(1.42-resistance*.0064),.12,limit);
  }
- return {BALL_MODELS,validBallModel,facingView,artHeading,rollDelta,impactStun};
+ return {BALL_MODELS,validBallModel,facingView,stableFacingView,artHeading,rollDelta,impactStun};
 })();
 
 // v0.8.25.12 balance rules are deliberately pure to support independent regression checks.
