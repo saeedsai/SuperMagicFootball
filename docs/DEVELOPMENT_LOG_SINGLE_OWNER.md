@@ -1,3 +1,8 @@
+## 2026-10-30 — MAGIC-BAT-JUMP-01 (0.12.17.11 candidate)
+- MAGIC-BAT-JUMP-01: Defenders can now evade a close-range Bat Strike with a timely JUMP (20+ world-height), while the existing grounded SHOOT-slide parry remains. The caster still pays the six-second cooldown and original fatigue; no new controls, roster changes or save-format changes.
+- Real match-engine method tested in isolated V8 with ten direction/height combinations (passed); added Node regression covering active JUMP, low/invalid heights, range, original grounded slide, cooldown, fatigue, other Tricks; added desktop/touch Chromium regression source. Full exact-head 4+4 Node/Chromium and Modular QA pending, no promotion/hosted verification claimed.
+- Prior 0.12.17.10 exact-head dev/main 1f71a3c CI (Full Regression and Modular QA) and Pages deployment were green. Physical two-phone LAN #48 remains open; Render #86 and branch protection #87 remain open.
+
 ## 2026-10-30 — BREATH-ANALOG-WALK-01 (0.12.17.10 candidate)
 - BREATH-ANALOG-WALK-01: Light analog walking with possession now restores Breath, ordinary full-speed running/dribbling remains low-drain, and JUMP sprint/hyperdash remains expensive. The controlled-player outline and Breath gauge now follow the same current human selection in solo/local Versus, including immediate switches. Energy, four controls, rosters and saves unchanged.
 - Added Node drain/selection tests and Chromium analog-walk plus selected-outline checks; repaired two stale gait regex tests exposed by exact-head CI at 2c7b980 (1192/1194 Node passed).
