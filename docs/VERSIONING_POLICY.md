@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.11
+# SuperMagicFootball release/version policy — About-only 0.12.17.12
+
+**Current dev candidate 0.12.17.12 (30 October 2026):** STUDIO-APPEARANCE-RESET-01: Player Studio now offers RESET UNSAVED to restore the current player's saved face, hair and appearance controls without writing storage or changing stats, equipment, roster identity, controls or saves. The eight-view gallery remains open. Full exact-head QA, promotion and Pages verification pending.
 
 **Current dev candidate 0.12.17.11 (30 October 2026):** MAGIC-BAT-JUMP-01: Defenders can now evade a close-range Bat Strike with a timely JUMP (20+ world-height), while the existing grounded SHOOT-slide parry remains. The caster still pays the six-second cooldown and original fatigue; no new controls, roster changes or save-format changes. Exact-head CI and Pages certification pending.
 
