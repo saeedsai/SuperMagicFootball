@@ -86,3 +86,39 @@ test('Career menu only offers COPY when space remains and dispatch preserves act
  vm.runInNewContext('function dispatch(a){if(false){}'+handler+'}\ndispatch("careerSlotCopy_1")',ctx);
  assert.equal(copies,1);
 });
+
+test('Career copy skips an existing label differing only by case without changing the active career',async()=>{
+ const db=memory(),v=(await api()).create(db);
+ v.save(1,career(2),'Original');v.save(2,career(7),'original (COPY)');v.load(1);
+ const source=v.activeCareer(),other=v.list()[1].name;
+ assert.equal(v.duplicate(1),3);
+ assert.equal(v.list()[2].name,'Original (copy 2)');
+ assert.equal(v.list()[1].name,other);
+ assert.equal(v.active,1);
+ assert.deepEqual(v.activeCareer(),source);
+ assert.equal(v.load(3).club,2);
+});
+test('Career copy skips Unicode-width and case-equivalent existing copy labels',async()=>{
+ const db=memory(),v=(await api()).create(db);
+ v.save(1,career(2),'Rangers');
+ v.save(2,career(3),'Ｒａｎｇｅｒｓ (copy)');
+ v.save(3,career(4),'rangers (COPY 2)');
+ v.load(1);
+ assert.equal(v.duplicate(1),4);
+ assert.equal(v.list()[3].name,'Rangers (copy 3)');
+ assert.equal(v.list()[1].name,'Ｒａｎｇｅｒｓ (copy)');
+ assert.equal(v.list()[2].name,'rangers (COPY 2)');
+ assert.equal(v.active,1);
+});
+test('Career copy avoids normalized collisions after truncating a maximum-length source name',async()=>{
+ const db=memory(),v=(await api()).create(db);
+ const original='X'.repeat(60);
+ v.save(1,career(2),original);
+ v.save(2,career(3),'x'.repeat(53)+' (COPY)');
+ v.load(1);
+ assert.equal(v.duplicate(1),3);
+ assert.equal(v.list()[2].name,'X'.repeat(51)+' (copy 2)');
+ assert.equal(v.list()[2].name.length,60);
+ assert.equal(v.list()[0].name,original);
+ assert.equal(v.active,1);
+});

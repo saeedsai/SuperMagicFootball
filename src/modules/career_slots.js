@@ -2,6 +2,8 @@
 const KEY='legend_careerSlots';
 const count=10;
 const clone=value=>JSON.parse(JSON.stringify(value));
+// Copy and rename must use the same visual label uniqueness rule.
+const labelKey=name=>name.trim().normalize('NFKC').toLowerCase();
 const slotNumber=n=>Number.isInteger(n)&&n>=1&&n<=count;
 const validCareer=c=>Boolean(c&&typeof c==='object'&&!Array.isArray(c)&&Number.isInteger(c.club)&&Array.isArray(c.members)&&Array.isArray(c.fixtures)&&Array.isArray(c.history)&&Array.isArray(c.roster)&&c.roster.length===12&&c.table&&typeof c.table==='object'&&c.facilities&&typeof c.facilities==='object'&&c.cup&&typeof c.cup==='object'&&Number.isFinite(c.cash)&&Number.isInteger(c.week));
 const validVault=v=>Boolean(v&&v.schema===1&&slotNumber(v.active)&&Array.isArray(v.slots)&&v.slots.length===count&&v.slots.every(s=>s===null||(s&&typeof s.name==='string'&&s.name.length<=60&&typeof s.savedAt==='string'&&!Number.isNaN(Date.parse(s.savedAt))&&validCareer(s.career))));
@@ -26,7 +28,7 @@ function create(storage){
    const suffix=copyNumber===1?' (copy)':` (copy ${copyNumber})`;
    const base=source.name.trim().slice(0,60-suffix.length).trimEnd()||('Career '+n);
    label=base+suffix;copyNumber++;
-  }while(state.slots.some(slot=>slot?.name===label));
+  }while(state.slots.some(slot=>slot&&labelKey(slot.name)===labelKey(label)));
   next.slots[index]={name:label,savedAt:new Date().toISOString(),career:clone(source.career)};
   persist(next);return index+1;
  }
@@ -41,8 +43,8 @@ function create(storage){
   if(label===previous.name)return clone(previous);
   // Keep slot labels unambiguous after trimming/truncation and Unicode normalization.
   // Existing imported vaults with duplicate labels remain readable and unchanged.
-  const labelKey=label.normalize('NFKC').toLowerCase();
-  if(state.slots.some((slot,index)=>index!==n-1&&slot&&slot.name.trim().normalize('NFKC').toLowerCase()===labelKey)){
+  const candidateKey=labelKey(label);
+  if(state.slots.some((slot,index)=>index!==n-1&&slot&&labelKey(slot.name)===candidateKey)){
    throw Error('Another Career slot already uses this name');
   }
   const next=clone(state);

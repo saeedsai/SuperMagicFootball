@@ -1,3 +1,8 @@
+## 2026-10-30 — CAREER-COPY-UNIQUE-01 (0.12.12.3 dev candidate)
+- Updated Career slot duplication to use the same Unicode NFKC/case-insensitive name key as renaming. Existing copy labels with alternate case/width now cause the next available numbered suffix, including for 60-character names; existing saves, active career and ten-slot vault remain unchanged.
+- Added three Node regressions for case collisions, full-width Unicode/case collisions and truncation collisions. Four standalone algorithm probes passed before commit; exact-head Node 4/4, Chromium 4/4, Modular QA, protected promotion and Pages hosted bytes require post-commit evidence.
+- About-only release, package, README heading/banner, SW cache, version policy, development log and sole-agent checkpoint advanced together. No LAN/P2P implementation, roster, formation, four-button, SD09 or offline save-schema changes. Physical two-phone #48, Render #86 and main protection #87 remain open.
+
 ## 2026-10-30 — ART-EIGHT-VIEW-COVERAGE-01 (tooling; no player version bump)
 - Added `authoredDirectionalCoverage` to the independent directional animation module. Art QA can now count every exact heading/action/frame, list missing keys and distinguish genuinely authored views from reflected or generic idle fallbacks. Existing renderer fallback, four controls, game physics, rosters and saves are untouched.
 - Six focused Node regressions cover complete/partial eight-view sets, motion-frame coverage, Map/object catalogs, cross-realm collections, malformed input and immutable reports. Four direct V8 source assertions passed before commit; exact-head four Node + four Chromium and Modular QA are required before any promotion.

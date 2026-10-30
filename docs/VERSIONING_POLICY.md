@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.12.2
+# SuperMagicFootball release/version policy — About-only 0.12.12.3
 
-**Current dev candidate 0.12.12.2 (30 October 2026):** CAREER-RENAME-UNIQUE-01 prevents new duplicate Career save labels on rename (case, Unicode compatibility normalization, final 60-character limit). Existing duplicate legacy saves remain readable and correctable. No new save schema, buttons or roster edits. Focused and exact-head CI, protected promotion and Pages hosted bytes remain independent release gates.
+**Current dev candidate 0.12.12.3 (30 October 2026):** CAREER-COPY-UNIQUE-01 prevents new Career copy labels colliding after Unicode NFKC/case folding or 60-character source truncation; picks next available numbered copy suffix. Ten slots, original save, active selection, progress, offline vault and gameplay controls unchanged. Exact-head 4+4/Modular QA, protected promotion and hosted Pages bytes remain separate gates.
+
+**Previous dev candidate 0.12.12.2 (30 October 2026):** CAREER-RENAME-UNIQUE-01 prevents new duplicate Career save labels on rename (case, Unicode compatibility normalization, final 60-character limit). Existing duplicate legacy saves remain readable and correctable. No new save schema, buttons or roster edits. Focused and exact-head CI, protected promotion and Pages hosted bytes remain independent release gates.
 
 **Previous dev candidate 0.12.12.1 (30 October 2026):** BREATH-SWAP-FIX-01 preserves player-specific Breath when tactical slots are reordered; previously a moved existing player was refilled for free. Halftime and substitute capacity remain unchanged. Corrected nine previously failing preflight/Modular Node assertions with current Breath dependencies and hold-guard contracts. Exact-head 4 Node + 4 Chromium, Modular QA, protected main promotion and Pages bytes remain separate gates.
 
