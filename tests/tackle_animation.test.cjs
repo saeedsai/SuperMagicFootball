@@ -30,3 +30,15 @@ test('sliding players do not cycle running gait while tackling',()=>{
  assert.match(render,/const gaitMoving=moving&&p\.action!=='slide'&&p\.action!=='receive'/);
  assert.match(render,/ARTPOSE\.settleStride\(this\.poseCycles\.get\(p\),oscillator,gaitMoving,this\.frameDelta\)/);
 });
+
+
+test('keeper ball-handling and hurt/cry states do not animate a running gait',()=>{
+ assert.match(render,/p\.action!=='hurt'&&p\.action!=='cry'&&!\(p\.stun>\.2\)/);
+ assert.match(render,/\['keeperDive','keeperDiveCatch','keeperRecover','keeperCatch','keeperThrow','keeperPunt'\]\.includes\(p\.action\)/);
+ for(const action of ['keeperCatch','keeperThrow','keeperPunt','keeperDive','keeperRecover','hurt','cry']){
+  const p={action,stun:0};const gaitMoving=true&&p.action!=='slide'&&p.action!=='receive'&&p.action!=='pass'&&p.action!=='hurt'&&p.action!=='cry'&&!(p.stun>.2)&&!['keeperDive','keeperDiveCatch','keeperRecover','keeperCatch','keeperThrow','keeperPunt'].includes(p.action);
+  assert.equal(gaitMoving,false,`${action} must not step while posed`);
+ }
+ const running={action:'run',stun:0};assert.equal(running.action!=='hurt'&&running.action!=='cry'&&!(running.stun>.2)&&!['keeperCatch','keeperThrow','keeperPunt'].includes(running.action),true);
+ const stunned={action:'run',stun:.4};assert.equal(!(stunned.stun>.2),false);
+});
