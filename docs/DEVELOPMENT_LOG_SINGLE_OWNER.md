@@ -1,3 +1,7 @@
+## 2026-10-30 — BREATH-SELECTED-QA-ISOLATION-01 (test-only)
+- Full Regression Census for 0.12.17.20 passed 4 Node shards, 3 Chromium shards and preview; Chromium shard 0 failed in breath_selected_browser_qa.py after a synthetic sprint frame regenerated Breath because the runner could enter a transient AI stun/slide state between frames.
+- Isolated the controlled runner's grounded, non-stunned start state for each measured frame, preserving actual engine movement/drain assertions. Await exact-head 4+4 rerun; no gameplay mechanics changed.
+
 ## 2026-10-30 — STUDIO-FULL-LOOK-LABEL-01 (0.12.17.20 candidate)
 - Fixed misleading Player Studio action text: the existing randomizeFace action randomizes the entire look, so the button now says RANDOMIZE FULL LOOK without changing dispatch or adding a match control.
 - Added focused Node regression proving body/tattoo/accessory randomization remains unsaved and leaves stats/abilities intact; Chromium desktop/touch verifies the button label and all appearance options.
