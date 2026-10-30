@@ -39,6 +39,12 @@ function create(storage){
   const label=name.trim().slice(0,60).trim();
   if(!label)throw Error('Career slot name cannot be empty');
   if(label===previous.name)return clone(previous);
+  // Keep slot labels unambiguous after trimming/truncation and Unicode normalization.
+  // Existing imported vaults with duplicate labels remain readable and unchanged.
+  const labelKey=label.normalize('NFKC').toLowerCase();
+  if(state.slots.some((slot,index)=>index!==n-1&&slot&&slot.name.trim().normalize('NFKC').toLowerCase()===labelKey)){
+   throw Error('Another Career slot already uses this name');
+  }
   const next=clone(state);
   next.slots[n-1].name=label;
   persist(next);

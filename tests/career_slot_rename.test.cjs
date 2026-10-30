@@ -69,3 +69,40 @@ test('renaming works even when all ten slots are occupied',()=>{
  assert.deepEqual(after.slots[3].career,before.slots[3].career);
  assert.equal(after.slots[3].savedAt,before.slots[3].savedAt);
 });
+
+
+test('rename rejects case-insensitive duplicate slot names without writing or switching the active slot',()=>{
+ const db=storage(),slots=create(db);
+ slots.save(1,career(),'Rangers');slots.save(2,career(),'Tigers');slots.load(1);
+ const before=db.raw,writes=db.writes;
+ assert.throws(()=>slots.rename(2,'  rAnGeRs  '),/already uses this name/);
+ assert.equal(db.writes,writes);assert.equal(db.raw,before);
+ assert.equal(slots.active,1);assert.equal(slots.list()[1].name,'Tigers');
+});
+test('rename compares the final truncated and Unicode-normalized label, but allows changing own case',()=>{
+ const db=storage(),slots=create(db);
+ slots.save(1,career(),'A'.repeat(60));slots.save(2,career(),'Second');
+ const writes=db.writes;
+ assert.throws(()=>slots.rename(2,'a'.repeat(60)+' trailing'),/already uses this name/);
+ assert.equal(db.writes,writes);
+ slots.rename(1,'a'.repeat(60));
+ assert.equal(slots.list()[0].name,'a'.repeat(60));
+ slots.rename(2,'Ｒｅｓｕｍｅ');
+ slots.save(3,career(),'Resume');
+ assert.throws(()=>slots.rename(3,'resume'),/already uses this name/);
+ assert.equal(slots.list()[2].name,'Resume');
+});
+test('existing legacy duplicate labels can still be renamed and all ten slots stay compatible',()=>{
+ const db=storage(),slots=create(db);
+ for(let n=1;n<=10;n++)slots.save(n,career(),'Career '+n);
+ const raw=JSON.parse(db.raw);raw.slots[1].name='Career 1';
+ // Seed a legacy vault without changing the public storage API.
+ const legacy={raw:JSON.stringify(raw),getItem(){return this.raw},setItem(_key,value){this.raw=value}};
+ const vault=create(legacy);
+ assert.equal(vault.list()[1].name,'Career 1');
+ assert.throws(()=>vault.rename(3,'Career 1'),/already uses this name/);
+ vault.rename(2,'Recovered');
+ assert.equal(vault.list()[1].name,'Recovered');
+ assert.equal(vault.list().length,10);
+ assert.equal(context.CAREER_SLOTS.validVault(JSON.parse(legacy.raw)),true);
+});
