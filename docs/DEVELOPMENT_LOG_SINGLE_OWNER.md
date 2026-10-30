@@ -1,3 +1,8 @@
+
+## 2026-10-30 — KEEPER-POSE-GAIT-01 (0.12.17.8 candidate)
+- Fixed live render gait during goalkeeper catch/throw/punt and during hurt/cry/stunned actions, retaining static action poses; kept physics, players, controls and saved data unchanged.
+- Added `tests/tackle_animation.test.cjs` guard. Full CI, protected promotion, hosted bytes **not yet verified** at authoring.
+
 ## 2026-10-30 — TACKLE-POSE-STABILITY-01 (0.12.17.7)
 - TACKLE-POSE-STABILITY-01: Sliding players no longer cycle their running gait during a tackle; the committed slide pose stays stable in all directions. Tackle distance, collisions, controls and saves remain unchanged.
 - Added focused Node regression. Full CI and hosted certification pending.
