@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.0
+# SuperMagicFootball release/version policy — About-only 0.12.17.1
+
+**Current dev candidate 0.12.17.1 (30 October 2026):** DEFENCE-TACKLE-REACH-01: Slide tackle travel distance now scales from 50% at Defence 1 to the existing maximum at Defence 100, preserving sprint versus standing slide speed and timing. No new controls, roster changes or save schema changes. Exact-head CI and hosted verification pending.
 
 **Current dev candidate 0.12.17.0 (30 October 2026):** STUDIO-GALLERY-FRAME-STEP-01: Player Studio's eight-view animation comparison now has accessible Previous/Next Frame buttons. Each tap advances all eight views together through four motion phases, wraps at either end and keeps the scrubber synchronized without discarding unsaved appearance edits. Four match controls, saves, rosters, Energy and Breath are unchanged. Exact-head CI and hosted certification are separate gates.
 
