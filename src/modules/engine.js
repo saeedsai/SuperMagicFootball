@@ -777,7 +777,8 @@ class GameEngine{
    const running=Math.hypot(p.moveVX||0,p.moveVY||0)>this.playerSpeed(p)*.65 || p.dashTimer>0 || p.sprintCharge>.1;
    p.slideTimer=running?.46:.34;p.slideSpeed=(running?585:395)*(0.85+stat(p,'speedRating')/600);
    // A fixed travel budget stops a low-FPS or sprinting slide crossing the pitch.
-   p.slideRemaining=running?148:104;p.slideBudget=p.slideRemaining;p.slideTravelled=0;
+   const defenceReach=.5+.5*(stat(p,'defence')-1)/99;
+   p.slideRemaining=(running?148:104)*defenceReach;p.slideBudget=p.slideRemaining;p.slideTravelled=0;
    p.slideDX=dir.x;p.slideDY=dir.y;p.moveVX=0;p.moveVY=0;
    this.emit('slideStart',{team:p.t,player:p.src.name,running,reach:Math.round(Math.min(p.slideRemaining,p.slideTimer*p.slideSpeed))});
    this.slideContact(p);return true;
