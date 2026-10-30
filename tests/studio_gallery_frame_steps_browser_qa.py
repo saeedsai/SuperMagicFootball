@@ -16,6 +16,16 @@ with sync_playwright() as pw:
   page=context.new_page()
   errors=[]
   page.on('pageerror',lambda error:errors.append(str(error)))
+  # The inline about:blank fixture has an opaque origin: mock durable storage,
+  # matching the existing Player Studio browser suites.
+  page.evaluate("""() => {
+   const memory=new Map();
+   Object.defineProperty(window,'localStorage',{configurable:true,value:{
+    getItem:k=>memory.has(k)?memory.get(k):null,
+    setItem:(k,v)=>memory.set(k,String(v)),
+    removeItem:k=>memory.delete(k),clear:()=>memory.clear()
+   }});
+  }""")
   page.set_content(html,wait_until='load')
   page.wait_for_function('!!window.SupermagicFootball?.game',timeout=60000)
   for action in ('navSettings','navCustomization','playerStudio'):
