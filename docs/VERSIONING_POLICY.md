@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.10.0
+# SuperMagicFootball release/version policy — About-only 0.12.11.0
 
-**Current dev candidate 0.12.10.0 (30 October 2026):** BREATH-WALK-HUD-01: walking/idle Breath recharge, per-player circular Breath gauge, top Energy label, Breath-driven dribble pacing. Full QA/promotion pending.
+**Current dev candidate 0.12.11.0 (30 October 2026):** STUDIO-JUMP-PREVIEW-01: Player Studio shows all 15 attributes and previews relative leap height and jump Energy cost using shared match physics. Source tests and exact-head full QA gates are distinct; no promotion or hosted certification yet.
+
+**Previous dev candidate 0.12.10.0 (30 October 2026):** BREATH-WALK-HUD-01: walking/idle Breath recharge, per-player circular Breath gauge, top Energy label, Breath-driven dribble pacing. Full QA/promotion pending.
 
 **Previous dev candidate 0.12.9.0 (30 October 2026):** ENERGY-BREATH-01 introduces separate Breath in gameplay, stored Energy in Career, 3–10-second Breath caps and day-based recovery. Exact-head QA and hosted validation pending.
 
