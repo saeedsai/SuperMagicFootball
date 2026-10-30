@@ -1,3 +1,7 @@
+## 2026-10-30 — BREATH-CRITICAL-RING-01 (0.12.16.3 dev candidate)
+- BREATH-CRITICAL-RING-01: The selected user-controlled player now gets a subtle pulsing warning on the existing circular Breath ring below 20% remaining, without adding a HUD bar or showing the indicator on any unselected or AI player. Gameplay drain, Energy, four buttons, saves and rosters remain unchanged.
+- Added focused source-level ring selection/pulse regression test. Previous 0.12.16.2 Modular QA green; full regression queued during CI congestion. Current exact-head checks require independent verification. LAN #48 remains uncertified; Render #86 and branch protection #87 tracked.
+
 ## 2026-10-30 — BREATH-RUN-SELECTED-01 (0.12.16.2 dev candidate)
 - BREATH-RUN-SELECTED-01: Ordinary running, including carrying the ball, now spends very little Breath; sprinting and hyperdash spend substantially more. The foot-level Breath ring appears only for the currently user-selected controlled player, following selection switches. Four buttons, player IDs, saves, Energy and offline play remain unchanged.
 - Changed existing Breath intensity and renderer gating, extended focused Node regressions. Exact-head 4+4/Modular QA and hosted Pages remain unverified pending workflows; no physical two-phone LAN certification (#48). No broker changes (#86); main protection issue #87 remains.
