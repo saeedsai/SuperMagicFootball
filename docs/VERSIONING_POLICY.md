@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.16.2
+# SuperMagicFootball release/version policy — About-only 0.12.16.3
+
+**Current dev candidate 0.12.16.3 (30 October 2026):** BREATH-CRITICAL-RING-01: The selected user-controlled player now gets a subtle pulsing warning on the existing circular Breath ring below 20% remaining, without adding a HUD bar or showing the indicator on any unselected or AI player. Gameplay drain, Energy, four buttons, saves and rosters remain unchanged. Exact-head checks and hosted deployment pending.
 
 **Current dev candidate 0.12.16.2 (30 October 2026):** BREATH-RUN-SELECTED-01: Ordinary running, including carrying the ball, now spends very little Breath; sprinting and hyperdash spend substantially more. The foot-level Breath ring appears only for the currently user-selected controlled player, following selection switches. Four buttons, player IDs, saves, Energy and offline play remain unchanged. Tests, protected promotion and hosted verification are separate gates.
 
