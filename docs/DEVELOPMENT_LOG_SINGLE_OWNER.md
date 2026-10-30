@@ -1,3 +1,7 @@
+## 2026-10-30 — TACKLE-POSE-STABILITY-01 (0.12.17.7)
+- TACKLE-POSE-STABILITY-01: Sliding players no longer cycle their running gait during a tackle; the committed slide pose stays stable in all directions. Tackle distance, collisions, controls and saves remain unchanged.
+- Added focused Node regression. Full CI and hosted certification pending.
+
 ## 2026-10-30 — BREATH-STATIONARY-HOLD-01 (0.12.17.6)
 - BREATH-STATIONARY-HOLD-01: Holding DRIBBLE while standing still no longer spends sustained-movement Breath; analog-speed dribbling scales its small hold drain with movement, while sprint remains expensive. Idle/walking recovery and selected-human-only Breath rings are preserved.
 - Fixed exact-head 3e09d66b CI preflight/Modular README heading mismatch (README v0.12.17.4 vs package v0.12.17.5); no test bypass.
