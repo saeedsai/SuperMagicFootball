@@ -63,6 +63,18 @@ function drawIcePatches(ctx,hazards){
   ctx.restore();
  }
 }
+// Read-only shootout instructions: both local players use their existing four actions.
+function penaltyHudHints(pk,humans){
+ const turn=Number.isFinite(pk?.turn)?Math.abs(Math.trunc(pk.turn))%2:0;
+ const flight=Number(pk?.shotTimer)>0;
+ if(Number(humans)>=2)return [
+  `P${turn+1} TAKER: ${flight?'SHOT IN FLIGHT':'MOVE / AIM + SHOOT'}`,
+  `P${2-turn} KEEPER: MOVE UP/DOWN + JUMP`
+ ];
+ return turn===0
+  ? [flight?'P1 TAKER: SHOT IN FLIGHT':'P1 TAKER: MOVE / AIM + SHOOT','CPU KEEPER: AUTOMATIC']
+  : [`CPU TAKER: ${flight?'SHOT IN FLIGHT':'PREPARING SHOT'}`,'P1 KEEPER: AUTOMATIC'];
+}
 function line(ctx,pts,color,width=2){ctx.beginPath();ctx.moveTo(...pts[0]);for(let i=1;i<pts.length;i++)ctx.lineTo(...pts[i]);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin='round';ctx.stroke()}
 function poly(ctx,pts,col,stroke){ctx.beginPath();ctx.moveTo(...pts[0]);for(let i=1;i<pts.length;i++)ctx.lineTo(...pts[i]);ctx.closePath();ctx.fillStyle=col;ctx.fill();if(stroke){ctx.lineWidth=2;ctx.strokeStyle=stroke;ctx.stroke()}}
 
@@ -1025,7 +1037,24 @@ class Renderer{
    for(const p of g.players){const x=mx+((p.x-F.x)/F.w)*mw,y=my+((p.y-F.y)/F.h)*mh;ellipse(ctx,x,y,p.controlled?5:3.5,p.controlled?5:3.5,p.t===0?'#ff8d57':'#fff0ac');if(p.controlled){ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(x,y,6.2,0,PI*2);ctx.stroke()}}
    const b=g.ball;if(b)ellipse(ctx,mx+((b.x-F.x)/F.w)*mw,my+((b.y-F.y)/F.h)*mh,3,3,'#ffffff');
  }
-  drawPK(ctx,g){let pk=g.pk;if(!pk)return;ctx.save();ctx.translate(this.screenW/2-640,0);rr(ctx,400,90,480,66,13,'#092635ea','#eedc75');ctx.textAlign='center';ctx.fillStyle='#fff9c5';ctx.font='900 25px system-ui';ctx.fillText('PENALTY SHOWDOWN',640,118);ctx.font='800 16px system-ui';ctx.fillText(`${pk.kicks[0].map(x=>x?'●':'×').join(' ')}   •   ${pk.kicks[1].map(x=>x?'●':'×').join(' ')}`,640,140);rr(ctx,480,606,320,55,12,'#092635df','#fff8');ctx.fillStyle='#fff';ctx.font='900 15px system-ui';ctx.fillText(`${pk.turn%2===0||g.humans>=2?"AIM ↑ ↓  •  SHOOT J  •  ":"DEFEND ↑ ↓  •  "}${Math.ceil(pk.timer)}s`,640,637);ctx.restore()}
+   drawPK(ctx,g){
+    const pk=g.pk;if(!pk)return;
+    const hints=penaltyHudHints(pk,g.humans);
+    const seconds=Number.isFinite(pk.timer)?Math.max(0,Math.ceil(pk.timer)):0;
+    ctx.save();ctx.translate(this.screenW/2-640,0);
+    rr(ctx,400,90,480,66,13,'#092635ea','#eedc75');
+    ctx.textAlign='center';ctx.fillStyle='#fff9c5';ctx.font='900 25px system-ui';
+    ctx.fillText('PENALTY SHOWDOWN',640,118);
+    ctx.font='800 16px system-ui';
+    ctx.fillText(`${pk.kicks[0].map(x=>x?'●':'×').join(' ')}   •   ${pk.kicks[1].map(x=>x?'●':'×').join(' ')}`,640,140);
+    rr(ctx,410,591,460,80,12,'#092635df','#fff8');
+    ctx.fillStyle='#fff';ctx.font='900 15px system-ui';
+    ctx.fillText(hints[0],640,616);
+    ctx.font='800 14px system-ui';
+    ctx.fillText(hints[1],640,638);
+    ctx.fillText(`TIME ${seconds}s`,640,657);
+    ctx.restore();
+   }
 }
 function random(seed,a,b){return a+((Math.sin(seed*122.4)*49833)%1+1)%1*(b-a)}
 function clamp(x,a,b){return Math.max(a,Math.min(b,x))}

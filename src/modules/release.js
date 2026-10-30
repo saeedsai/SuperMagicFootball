@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.15.0',
+ version:'0.12.15.1',
  date:'2026-10-30',
  notes:Object.freeze([
+  'PENALTY-KEEPER-GUIDE-01: Local two-player penalty HUD now names the current taker and goalkeeper, explains the existing MOVE/JUMP keeper control and shows when the ball is in flight. Solo play identifies its automatic CPU keeper. No new buttons, physics, shot outcomes, saves or roster changes.',
   'PENALTY-KEEPER-VISUAL-01: Human goalkeepers in local Versus penalty shootouts now visibly dive on JUMP and recover after the existing boost. This does not change saves, shot results, physics, controls or rosters.',
   'STUDIO-COUNTER-PLAYBOOK-01: Player Studio offers a collapsible eight-Trick defender counter reference for outfield players and goalkeepers, reusing the same live Trick descriptions. Hide Ball now explains its timed grounded PASS-poke counter and the Trick panel says Energy cost. No new action buttons, physics, saves or roster changes.',
   'CAREER-STANDINGS-PREVIEW-01: Career save slots now show each saved team\'s league rank and points, including goal-difference and goals-scored tie breaks. Incomplete legacy tables omit the preview safely. Read-only display: ten slots, active Career, match progress and offline saves are unchanged.',

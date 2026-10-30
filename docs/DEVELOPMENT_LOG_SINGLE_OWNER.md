@@ -1,3 +1,8 @@
+## 2026-10-30 — PENALTY-KEEPER-GUIDE-01 (0.12.15.1 dev candidate)
+- Fixed shootout HUD guidance: local Versus now names P1/P2 taker/keeper correctly on alternating turns, exposes the defender's existing MOVE/JUMP input and flight state; solo play explicitly identifies the automatic keeper.
+- Render-only instructions, no new action buttons, penalty physics, save data, roster, formation or LAN changes. Focused Node regression covers both sides, solo CPU and flight/timer rendering. Isolated helper probe 6/6 passed; exact-head four Node/four Chromium and Modular QA must be verified after commit.
+- Updated About-only four-part release, package, README heading/banner, version policy, offline cache and own checkpoint. Physical LAN #48 remains open; Render #86 and main protection #87 unresolved. Main promotion and Pages hosted bytes require independent verification.
+
 ## 2026-10-30 — PENALTY-KEEPER-VISUAL-01 (0.12.15.0 dev candidate)
 - Human JUMP now drives a visible keeper dive/recovery during local Versus penalty shootouts. Visual-only state reads, stable side-facing guard; no physics, save, roster or button changes.
 - Focused Node regression added. Four Node + four Chromium shards, Modular QA, exact-green promotion and hosted Pages bytes are separate gates.

@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.15.0
+# SuperMagicFootball release/version policy — About-only 0.12.15.1
 
-**Current dev candidate 0.12.15.0 (30 October 2026):** PENALTY-KEEPER-VISUAL-01 adds a human penalty keeper JUMP dive and recovery animation. Existing gameplay save outcomes, four controls, rosters and offline saves are unchanged. Full exact-head four Node/four Chromium, Modular QA, protected promotion and Pages hosted bytes remain independent gates.
+**Current dev candidate 0.12.15.1 (30 October 2026):** PENALTY-KEEPER-GUIDE-01 makes the shootout HUD identify the local taker and defending human keeper on alternating turns, show the existing JUMP dive control and ball-in-flight state, and correctly describe the automatic solo keeper. Visual-only, no physics, input mappings, saves, four-action count, teams or player IDs changed. Exact-head 4+4/Modular QA, protected main promotion and hosted Pages bytes remain independent gates.
+
+**Previous dev candidate 0.12.15.0 (30 October 2026):** PENALTY-KEEPER-VISUAL-01 adds a human penalty keeper JUMP dive and recovery animation. Existing gameplay save outcomes, four controls, rosters and offline saves are unchanged. Full exact-head four Node/four Chromium, Modular QA, protected promotion and Pages hosted bytes remain independent gates.
 
 **Previous dev candidate 0.12.14.0 (30 October 2026):** STUDIO-COUNTER-PLAYBOOK-01 adds a read-only collapsible counter reference for all eight Magic Tricks in outfield and goalkeeper Player Studio. The Hide Ball guide documents the existing timed grounded PASS poke; Energy terminology matches dual resources. No extra controls, physics, save or roster edits. Exact-head 4+4/Modular QA, protected promotion and hosted Pages verification remain independent gates.
 
