@@ -1,3 +1,5 @@
+> **0.12.17.11 release candidate (30 October 2026):** MAGIC-BAT-JUMP-01: Defenders can now evade a close-range Bat Strike with a timely JUMP (20+ world-height), while the existing grounded SHOOT-slide parry remains. The caster still pays the six-second cooldown and original fatigue; no new controls, roster changes or save-format changes. Focused logic checks passed; exact-head CI, protected promotion and hosted Pages verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.12.17.10 release candidate (30 October 2026):** BREATH-ANALOG-WALK-01: Light analog walking with possession now restores Breath, ordinary full-speed running/dribbling remains low-drain, and JUMP sprint/hyperdash remains expensive. The controlled-player outline and Breath gauge now follow the same current human selection in solo/local Versus, including immediate switches. Energy, four controls, rosters and saves unchanged. Exact-head CI, promotion and Pages verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.12.17.9 release candidate (30 October 2026):** STRIKE-POSE-STABILITY-01: Shooting and aerial strikes no longer cycle running footsteps during their authored action poses; lingering crying animation also suppresses gait. No ball physics, four-button controls, saves or roster changes. Full CI and Pages verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -330,7 +332,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.12.17.10 · Modular source project
+# Supermagic Football · v0.12.17.11 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 
