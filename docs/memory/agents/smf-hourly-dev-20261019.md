@@ -6,6 +6,7 @@
 Develop directly on existing dev only; no new branches, force pushes or CI/security bypass. Preserve 223 teams, 2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09 and offline saves.
 
 ## Current checkpoint
+- TACKLE-ANIMATION-01 0.12.17.2: three-stage slide pose and turf spray committed with Node tests; exact-head CI and deployment pending.
 - DEFENCE-TACKLE-REACH-01 0.12.17.1 dev candidate: slide travel cap = original 104/148 units times (.5+.5*(Defence-1)/99); 100 Defence unchanged. Two Node tests added. Exact-head QA and promotion pending.
 - STUDIO-GALLERY-FRAME-STEP-01 0.12.17.0 candidate: previous/next four-phase eight-view comparison with slider sync, unsaved edits preserved. Node + Chromium regression added; initial CI failed on release-note apostrophe (runs 41059663232/41059663045), now fixed; new exact-head QA pending. Baseline e2a55e4eac5a0fc1e25c2275d11dca710defd5a2 dev/main green and Pages successful.
 - BREATH-SWITCH-IMMEDIATE-01 0.12.16.4: renderer Breath ring uses live selected identity instead of stale controlled flag; Node and desktop/touch Chromium regression added. Previous 0.12.16.3 Modular QA green, full 4+4 queued. New exact-head checks and Pages pending.
