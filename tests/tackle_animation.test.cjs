@@ -10,3 +10,13 @@ test('turf spray is match-only and uses actual slide heading',()=>{
  assert.match(render,/const dx=p\.slideDX\|\|p\.face\|\|1,dy=p\.slideDY\|\|0/);
  assert.match(render,/game\.terrain==='Dirt'/);
 });
+
+test('slide direction follows committed tackle vector for all eight headings',()=>{
+ assert.match(render,/let faceDX=p\.action==='slide'\?\(p\.slideDX\|\|0\):\(p\.dx\|\|0\),faceDY=p\.action==='slide'\?\(p\.slideDY\|\|0\):\(p\.dy\|\|0\)/);
+ assert.match(render,/const moving=Math\.hypot\(p\.action==='slide'\?\(p\.slideDX\|\|0\):\(p\.dx\|\|0\),p\.action==='slide'\?\(p\.slideDY\|\|0\):\(p\.dy\|\|0\)\)>\.2/);
+ for(const [dx,dy] of [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]]){
+  const p={action:'slide',slideDX:dx,slideDY:dy,dx:-dx,dy:-dy};
+  const facing=[p.action==='slide'?p.slideDX:p.dx,p.action==='slide'?p.slideDY:p.dy];
+  assert.deepEqual(facing,[dx,dy]);
+ }
+});
