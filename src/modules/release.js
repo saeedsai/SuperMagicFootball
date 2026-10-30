@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.17.15',
+ version:'0.12.17.16',
  date:'2026-10-30',
  notes:Object.freeze([
+  'STUDIO-BODY-RANDOM-01: Player Studio adds RANDOMIZE BODY to preview build, stature and exaggeration independently of face, hair, skin and tattoos. Changes remain unsaved until SAVE CHARACTER; controls, rosters and stats are unchanged.',
   'STUDIO-FACE-DETAILS-01: Player Studio adds RANDOMIZE FACE DETAILS to preview facial features independently of skin, hair, build, stature and tattoos. RESET UNSAVED reverses the preview; saved data changes only through SAVE CHARACTER. Four match controls, rosters and offline saves are preserved.',
   'STUDIO-HAIR-RANDOM-01: Player Studio adds RANDOMIZE HAIR to preview a different hairstyle and hair color without changing face, skin, body or other appearance fields. RESET UNSAVED reverses it; SAVE CHARACTER remains the only persistence action. Eight-view gallery, four controls, saves, Energy/Breath and roster data are unchanged.',
   'STUDIO-RANDOM-OPTIONS-01: Player Studio RANDOMIZE FACE now selects real enabled appearance options, including sparse asset IDs and curated colors, guarantees a changed preview when alternatives exist, and refreshes the eight-view gallery. Only SAVE CHARACTER persists edits; rosters, stats, four controls, Energy/Breath and offline saves are unchanged.',
