@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.16.4
+# SuperMagicFootball release/version policy — About-only 0.12.17.0
 
-**Current dev candidate 0.12.16.4 (30 October 2026):** BREATH-SWITCH-IMMEDIATE-01: The foot-level Breath ring now follows the current human-selected player immediately after a control switch, even when the old per-player controlled flag has not yet refreshed. Solo CPU, unselected players, studio previews and off-match screens remain ring-free; local two-human players each retain their own selected ring. Breath balance, Energy, controls, saves and player identities are unchanged. Full exact-head CI and hosted verification are separate gates.
+**Current dev candidate 0.12.17.0 (30 October 2026):** STUDIO-GALLERY-FRAME-STEP-01: Player Studio's eight-view animation comparison now has accessible Previous/Next Frame buttons. Each tap advances all eight views together through four motion phases, wraps at either end and keeps the scrubber synchronized without discarding unsaved appearance edits. Four match controls, saves, rosters, Energy and Breath are unchanged. Exact-head CI and hosted certification are separate gates.
+
+**Previous dev candidate 0.12.16.4 (30 October 2026):** BREATH-SWITCH-IMMEDIATE-01: The foot-level Breath ring now follows the current human-selected player immediately after a control switch, even when the old per-player controlled flag has not yet refreshed. Solo CPU, unselected players, studio previews and off-match screens remain ring-free; local two-human players each retain their own selected ring. Breath balance, Energy, controls, saves and player identities are unchanged. Full exact-head CI and hosted verification are separate gates.
 
 **Current dev candidate 0.12.16.3 (30 October 2026):** BREATH-CRITICAL-RING-01: The selected user-controlled player now gets a subtle pulsing warning on the existing circular Breath ring below 20% remaining, without adding a HUD bar or showing the indicator on any unselected or AI player. Gameplay drain, Energy, four buttons, saves and rosters remain unchanged. Exact-head checks and hosted deployment pending.
 

@@ -874,9 +874,19 @@ function studioGalleryKeydown(event){
  menu.querySelector('[data-studio-pick="'+next+'"]')?.focus();
  return true;
 }
+// STUDIO-GALLERY-FRAME-STEP-01: accessible single-frame comparison controls.
+// Gallery-only: no saved appearance writes and no additional match actions.
+function studioStepGalleryFrame(step){
+ if(!studioGalleryOpen||!Number.isInteger(step)||Math.abs(step)!==1)return false;
+ studioGalleryFrame=(studioGalleryFrame+step+4)%4;
+ const slider=$('studioGalleryPhase');
+ if(slider)slider.value=String(studioGalleryFrame);
+ drawCustomizer();
+ return true;
+}
 // STUDIO-GALLERY-PICK-01 END
 function studioEightViewMarkup(){
- return `<section id="studioEightViewGallery" class="studioEightViewGallery" aria-label="Eight-direction player action gallery"><p id="studioEightViewPoseLabel" class="muted" role="status" aria-live="polite">Comparing ${escapeHTML(studioAction.toUpperCase())} frame ${studioGalleryFrame+1} of 4 in eight directions</p><div class="row studioGalleryTimeline"><label for="studioGalleryPhase">ACTION FRAME</label><input id="studioGalleryPhase" class="choice" type="range" min="0" max="3" step="1" value="${studioGalleryFrame}" aria-label="Scrub motion phase across all eight player views"><output id="studioGalleryPhaseLabel" for="studioGalleryPhase">FRAME ${studioGalleryFrame+1} / 4</output></div>${STUDIO_DIRS.map((dir,i)=>`<figure class="studioEightViewItem"><button type="button" class="studioViewPick" data-studio-pick="${i}" aria-pressed="${i===studioDirection}" aria-label="Show ${escapeHTML(dir.label)} in main player preview" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Home End"><canvas data-studio-view="${i}" width="144" height="152" role="img" aria-label="${escapeHTML(dir.label)} ${escapeHTML(studioAction)} pose"></canvas></button><figcaption>${escapeHTML(dir.label)}</figcaption></figure>`).join('')}</section>`;
+ return `<section id="studioEightViewGallery" class="studioEightViewGallery" aria-label="Eight-direction player action gallery"><p id="studioEightViewPoseLabel" class="muted" role="status" aria-live="polite">Comparing ${escapeHTML(studioAction.toUpperCase())} frame ${studioGalleryFrame+1} of 4 in eight directions</p><div class="row studioGalleryTimeline"><label for="studioGalleryPhase">ACTION FRAME</label><input id="studioGalleryPhase" class="choice" type="range" min="0" max="3" step="1" value="${studioGalleryFrame}" aria-label="Scrub motion phase across all eight player views"><output id="studioGalleryPhaseLabel" for="studioGalleryPhase">FRAME ${studioGalleryFrame+1} / 4</output><button type="button" class="btn" data-action="studioGalleryPrev" aria-label="Previous animation frame">◀ FRAME</button><button type="button" class="btn" data-action="studioGalleryNext" aria-label="Next animation frame">FRAME ▶</button></div>${STUDIO_DIRS.map((dir,i)=>`<figure class="studioEightViewItem"><button type="button" class="studioViewPick" data-studio-pick="${i}" aria-pressed="${i===studioDirection}" aria-label="Show ${escapeHTML(dir.label)} in main player preview" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Home End"><canvas data-studio-view="${i}" width="144" height="152" role="img" aria-label="${escapeHTML(dir.label)} ${escapeHTML(studioAction)} pose"></canvas></button><figcaption>${escapeHTML(dir.label)}</figcaption></figure>`).join('')}</section>`;
 }
 // 0.8.25.32: Optional, cached eight-view comparison gallery for the selected
 // Studio appearance. Idle frames are deterministic even while rotating/animating
@@ -1542,7 +1552,8 @@ function action(a){audio.cue('ui');
   if(navTarget)navTarget.textContent=studioGalleryOpen?'HIDE 8-VIEW GALLERY':'COMPARE ALL 8 VIEWS';
   drawCustomizer();
  }
- else if(a==='studioLeft')studioRotate(-1);else if(a==='studioRight')studioRotate(1);else if(a==='studioSpin'){studioSpin=!studioSpin;const btn=menu.querySelector('[data-action=studioSpin]');if(btn)btn.textContent=studioSpin?'■ STOP TURN':'↻ AUTO ROTATE';drawCustomizer()}
+ else if(a==='studioGalleryPrev')studioStepGalleryFrame(-1);else if(a==='studioGalleryNext')studioStepGalleryFrame(1);
+  else if(a==='studioLeft')studioRotate(-1);else if(a==='studioRight')studioRotate(1);else if(a==='studioSpin'){studioSpin=!studioSpin;const btn=menu.querySelector('[data-action=studioSpin]');if(btn)btn.textContent=studioSpin?'■ STOP TURN':'↻ AUTO ROTATE';drawCustomizer()}
  else if(a==='saveStudioStats')saveStudioStats();else if(a==='resetStudioStats'){const player=((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home))[avatarIndex];if(player){const normalized=withStats(player);for(const key of NUMERIC_STATS)if($('stat_'+key))$('stat_'+key).value=String(normalized[key]);studioStatPreview();}}else if(a==='playerStudio'){studioCareerContext=false;studioReturnAction='navCustomization';showPlayerStudio();}
  else if(a.startsWith('editClubPlayers')){const ix=Number(a.slice('editClubPlayers'.length));if(TEAMS[ix]?.id.startsWith('club_')){home=ix;studioCareerContext=false;studioReturnAction='clubs';showPlayerStudio(0);}}
  else if(a.startsWith('editClubRoster')){const ix=Number(a.slice('editClubRoster'.length));if(TEAMS[ix]?.id.startsWith('club_')){home=ix;showEditor('clubs');}}

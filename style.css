@@ -460,3 +460,4 @@ html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%;min-height:100%
 .studioGalleryTimeline{grid-column:1/-1;align-items:center;justify-content:center;gap:12px;margin:4px 0 12px;flex-wrap:wrap}
 .studioGalleryTimeline input[type=range]{width:min(240px,60vw);min-height:40px;accent-color:#e6bc53;cursor:pointer}
 .studioGalleryTimeline output{min-width:92px;font-variant-numeric:tabular-nums;font-weight:700}
+.studioGalleryTimeline [data-action^=studioGallery]{min-height:40px;min-width:108px;touch-action:manipulation}
