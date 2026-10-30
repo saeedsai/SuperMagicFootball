@@ -7,14 +7,14 @@ const root=path.join(__dirname,'..');
 const engine=fs.readFileSync(path.join(root,'src/modules/engine.js'),'utf8');
 const spendBody=engine.match(/ spendStamina\(p,kind\)\{([\s\S]*?)\}\n halftimeRecovery\(/);
 assert.ok(spendBody,'engine spendStamina method is present');
-const spend=new Function('p','kind','stat','actionFatigue','levelModifiers','abilityLevel','superShotFatigueMultiplier','PHYSICS_TUNING','jumpMetrics',spendBody[1]);
+const spend=new Function('p','kind','stat','actionFatigue','levelModifiers','abilityLevel','superShotFatigueMultiplier','PHYSICS_TUNING','jumpMetrics','breathPenalty','breathCapacity','spendBreath',spendBody[1]);
 async function fatigueAt(jumping){
  const {FITNESS}=await import(pathToFileURL(path.join(root,'src/modules/fitness.js')).href);
  const {JUMPMETRICS}=await import(pathToFileURL(path.join(root,'src/modules/jumpmetrics.js')).href);
  const p={t:0,src:{id:'jump-regression',jumping,stamina:70},fatigue:0};
  const ctx={fatigueLedger:[{}]};
  const stat=(player,key)=>player.src[key];
- spend.call(ctx,p,'jump',stat,FITNESS.actionFatigue,()=>1,()=>1,()=>1,{},JUMPMETRICS.jumpMetrics);
+ spend.call(ctx,p,'jump',stat,FITNESS.actionFatigue,()=>1,()=>1,()=>1,{},JUMPMETRICS.jumpMetrics,FITNESS.breathPenalty,FITNESS.breathCapacity,FITNESS.spendBreath);
  assert.equal(ctx.fatigueLedger[0][p.src.id],p.fatigue);
  return p.fatigue;
 }
