@@ -991,7 +991,14 @@ class GameEngine{
     const across=Math.abs(offsetX*forward.y-offsetY*forward.x);
     return ahead>0&&ahead<=85&&across<=35;
    })();
-  const countered=!!(jumpDodged||screamDodged||freezeDodged||batParried||teleportParried||(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling')));
+  // HIDE-BALL-PASS-01: a timely defensive PASS poke (ordinary grounded tackle)
+  // reads the fake ball only when the defender faces the carrier at close range.
+  // A stale, airborne or backwards poke cannot cancel the trick.
+  const hideBallPoked=id==='hideBall'&&inRange&&distance(p,rival)<=70&&
+   rival.action==='punch'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&
+   Number.isFinite(rival.z)&&rival.z<20&&
+   ((rival.face||1)*(p.x-rival.x))>0;
+  const countered=!!(jumpDodged||screamDodged||freezeDodged||batParried||teleportParried||hideBallPoked||(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling')));
   p.magicReadyAt=this.clock+6;
   p.fatigue=Math.min(1,p.fatigue+.035);
   this.fatigueLedger[p.t][p.src.id]=p.fatigue;
