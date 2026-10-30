@@ -1,3 +1,8 @@
+## 2026-10-30 — TACKLE-SNAP-HEADING-01 (0.12.17.5)
+- Fixed prior CI blocker: README first-line release candidate banner and playable link.
+- TACKLE-SNAP-HEADING-01: Slide tackles immediately face the committed tackle direction without walking-turn interpolation; ordinary walking keeps smooth heading transitions. No changes to tackle reach, collisions, four controls or saves.
+- Added focused Node regression for immediate slide facing while preserving walking interpolation; exact-head full QA pending.
+
 ## 2026-10-30 — TACKLE-DIRECTION-01 (0.12.17.4)
 - TACKLE-DIRECTION-01: Eight-direction slide-tackle animation now faces the committed slide vector instead of stale walking input, including diagonal tackles. Slide reach, collision, stamina, four controls and saves remain unchanged.
 - Added eight-direction Node regression covering slide vector selection. Exact-head QA and hosted release pending.
