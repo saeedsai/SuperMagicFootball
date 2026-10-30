@@ -1,3 +1,5 @@
+> **0.12.17.19 release candidate (30 October 2026):** BREATH-LOCAL-OWNER-01: Breath outline and circular gauge now follow only the viewer's selected player in LAN/P2P (host home, guest away), including instant player switches. Local two-human Versus still shows one selected ring per side. Ordinary ball running/dribbling remains low-drain, JUMP sprint high-drain, and idle/walking recovery unchanged; Energy, four controls, rosters and saves are unchanged. Focused Node/desktop/simulated-touch Chromium coverage added; exact-head CI, protected promotion and hosted Pages verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.12.17.18 release candidate (30 October 2026):** VIZ-03-HEADING-STABILITY-01: Live player artwork now uses a small eight-direction steering hysteresis to prevent side/quarter/front/back sprite flicker near angle thresholds. Sliding tackles and deterministic Studio previews still use exact headings; physics, four controls, rosters and saves are unchanged. Focused predicate checks passed; exact-head 4+4, Modular QA and hosted certification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.12.17.17 release candidate (30 October 2026):** STUDIO-ACCESSORY-RANDOM-01: Player Studio adds RANDOMIZE ACCESSORIES to preview accessory and tattoo options independently of facial features, hair, skin and physique. RESET UNSAVED reverses edits; only SAVE CHARACTER persists changes. Four match controls and all saved games remain compatible. Node/Chromium tests added; full exact-head CI and hosted verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -346,7 +348,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.12.17.18 · Modular source project
+# Supermagic Football · v0.12.17.19 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 
