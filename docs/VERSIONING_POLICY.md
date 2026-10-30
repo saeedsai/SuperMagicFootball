@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.1
+# SuperMagicFootball release/version policy — About-only 0.12.17.2
+
+**Current dev candidate 0.12.17.2 (30 October 2026):** TACKLE-ANIMATION-01: Slide tackles now ease into a deeper low-body extension, recover upright, and kick up directional turf spray in live matches. Defence-based reach, collision, four controls and saves remain unchanged. QA and hosted verification pending.
 
 **Current dev candidate 0.12.17.1 (30 October 2026):** DEFENCE-TACKLE-REACH-01: Slide tackle travel distance now scales from 50% at Defence 1 to the existing maximum at Defence 100, preserving sprint versus standing slide speed and timing. No new controls, roster changes or save schema changes. Exact-head CI and hosted verification pending.
 
