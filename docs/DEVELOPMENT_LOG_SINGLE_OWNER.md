@@ -1,3 +1,8 @@
+## 2026-10-30 — STUDIO-COUNTER-PLAYBOOK-01 (0.12.14.0 dev candidate)
+- Added a read-only collapsible eight-Trick defender counter reference to both outfield and goalkeeper Player Studio using the live guide catalogue. Corrected Hide Ball PASS-poke and Energy guidance. No fifth gameplay button, physics or save-schema change.
+- Three focused Node regressions cover all entries, the Hide Ball engine contract and both Studio panels. Exact-head four Node + four Chromium, Modular QA, protected promotion and Pages bytes require independent post-commit evidence.
+- Updated About-only four-field version, package, README, version policy, SW cache and sole-developer checkpoint. Preserve 223 teams/2676 players, six formations, ten Career/Cup slots, SD09 and offline saves. #48 phones, #86 Render and #87 protection remain open.
+
 ## 2026-10-30 — CAREER-STANDINGS-PREVIEW-01 (0.12.13.0 dev candidate)
 - Added read-only league position and points to occupied Career save-slot cards. Rankings use points, goal difference and goals scored, matching Career standings. Missing/malformed legacy rows hide the summary without blocking load/save or changing the ten-slot schema.
 - Added focused Node tests for ranking, tie breaks, incomplete legacy data, save immutability and UI rendering. Exact-head four Node + four Chromium shards, Modular QA, protected promotion and Pages hosted-byte verification require post-commit evidence.

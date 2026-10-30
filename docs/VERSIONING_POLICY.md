@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.13.0
+# SuperMagicFootball release/version policy — About-only 0.12.14.0
 
-**Current dev candidate 0.12.13.0 (30 October 2026):** CAREER-STANDINGS-PREVIEW-01 displays saved Career league rank and points in the ten-slot manager, using points/goal-difference/goals-for ordering. Missing or invalid legacy table rows hide the summary without modifying saves. Full exact-head 4+4/Modular QA, protected promotion and hosted bytes remain independent gates.
+**Current dev candidate 0.12.14.0 (30 October 2026):** STUDIO-COUNTER-PLAYBOOK-01 adds a read-only collapsible counter reference for all eight Magic Tricks in outfield and goalkeeper Player Studio. The Hide Ball guide documents the existing timed grounded PASS poke; Energy terminology matches dual resources. No extra controls, physics, save or roster edits. Exact-head 4+4/Modular QA, protected promotion and hosted Pages verification remain independent gates.
+
+**Previous dev candidate 0.12.13.0 (30 October 2026):** CAREER-STANDINGS-PREVIEW-01 displays saved Career league rank and points in the ten-slot manager, using points/goal-difference/goals-for ordering. Missing or invalid legacy table rows hide the summary without modifying saves. Full exact-head 4+4/Modular QA, protected promotion and hosted bytes remain independent gates.
 
 **Previous dev candidate 0.12.12.3 (30 October 2026):** CAREER-COPY-UNIQUE-01 prevents new Career copy labels colliding after Unicode NFKC/case folding or 60-character source truncation; picks next available numbered copy suffix. Ten slots, original save, active selection, progress, offline vault and gameplay controls unchanged. Exact-head 4+4/Modular QA, protected promotion and hosted Pages bytes remain separate gates.
 
