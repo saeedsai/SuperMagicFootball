@@ -876,7 +876,7 @@ function studioGalleryKeydown(event){
 }
 // STUDIO-GALLERY-PICK-01 END
 function studioEightViewMarkup(){
- return `<section id="studioEightViewGallery" class="studioEightViewGallery" aria-label="Eight-direction player action gallery"><p id="studioEightViewPoseLabel" class="muted" role="status" aria-live="polite">Comparing ${escapeHTML(studioAction.toUpperCase())} in eight directions</p><div class="row studioGalleryTimeline"><label for="studioGalleryPhase">ACTION FRAME</label><input id="studioGalleryPhase" class="choice" type="range" min="0" max="3" step="1" value="${studioGalleryFrame}" aria-label="Scrub motion phase across all eight player views"><output id="studioGalleryPhaseLabel" for="studioGalleryPhase">FRAME ${studioGalleryFrame+1} / 4</output></div>${STUDIO_DIRS.map((dir,i)=>`<figure class="studioEightViewItem"><button type="button" class="studioViewPick" data-studio-pick="${i}" aria-pressed="${i===studioDirection}" aria-label="Show ${escapeHTML(dir.label)} in main player preview" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Home End"><canvas data-studio-view="${i}" width="144" height="152" role="img" aria-label="${escapeHTML(dir.label)} ${escapeHTML(studioAction)} pose"></canvas></button><figcaption>${escapeHTML(dir.label)}</figcaption></figure>`).join('')}</section>`;
+ return `<section id="studioEightViewGallery" class="studioEightViewGallery" aria-label="Eight-direction player action gallery"><p id="studioEightViewPoseLabel" class="muted" role="status" aria-live="polite">Comparing ${escapeHTML(studioAction.toUpperCase())} frame ${studioGalleryFrame+1} of 4 in eight directions</p><div class="row studioGalleryTimeline"><label for="studioGalleryPhase">ACTION FRAME</label><input id="studioGalleryPhase" class="choice" type="range" min="0" max="3" step="1" value="${studioGalleryFrame}" aria-label="Scrub motion phase across all eight player views"><output id="studioGalleryPhaseLabel" for="studioGalleryPhase">FRAME ${studioGalleryFrame+1} / 4</output></div>${STUDIO_DIRS.map((dir,i)=>`<figure class="studioEightViewItem"><button type="button" class="studioViewPick" data-studio-pick="${i}" aria-pressed="${i===studioDirection}" aria-label="Show ${escapeHTML(dir.label)} in main player preview" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Home End"><canvas data-studio-view="${i}" width="144" height="152" role="img" aria-label="${escapeHTML(dir.label)} ${escapeHTML(studioAction)} pose"></canvas></button><figcaption>${escapeHTML(dir.label)}</figcaption></figure>`).join('')}</section>`;
 }
 // 0.8.25.32: Optional, cached eight-view comparison gallery for the selected
 // Studio appearance. Idle frames are deterministic even while rotating/animating
@@ -890,7 +890,7 @@ function drawStudioEightViewGallery(player,appearance){
  if(signature===studioGallerySignature&&root.querySelectorAll('canvas').length===8)return;
  studioGallerySignature=signature;
  const poseLabel=$('studioEightViewPoseLabel');
- if(poseLabel)poseLabel.textContent='Comparing '+pose.toUpperCase()+' in eight directions';
+ if(poseLabel)poseLabel.textContent='Comparing '+pose.toUpperCase()+' frame '+(studioGalleryFrame+1)+' of 4 in eight directions';
  const frameLabel=$('studioGalleryPhaseLabel');if(frameLabel)frameLabel.textContent='FRAME '+(studioGalleryFrame+1)+' / 4';
  const phase=Math.max(0,Math.min(3,studioGalleryFrame|0));
  const actionTime=[.4,.28,.16,.04][phase],diveTime=[.06,.16,.28,.42][phase];
@@ -900,7 +900,12 @@ function drawStudioEightViewGallery(player,appearance){
  const fit=portraitFit(144,152,appearance,action);
  for(let i=0;i<STUDIO_DIRS.length;i++){
   const canvas=root.querySelector('canvas[data-studio-view="'+i+'"]');if(!canvas)continue;
-  canvas.setAttribute('aria-label',STUDIO_DIRS[i].label+' '+pose+' pose');
+  // Keep both the focusable tile and its canvas accurate when action or phase changes.
+  // Screen readers can compare poses without relying on the visual slider output.
+  const phaseText='frame '+(phase+1)+' of 4';
+  canvas.setAttribute('aria-label',STUDIO_DIRS[i].label+' '+pose+' pose, '+phaseText);
+  canvas.closest?.('[data-studio-pick]')?.setAttribute('aria-label',
+   'Show '+STUDIO_DIRS[i].label+' '+pose+' '+phaseText+' in main player preview');
   const ctx=canvas.getContext('2d');if(!ctx)continue;
   ctx.clearRect(0,0,canvas.width,canvas.height);
   const gr=ctx.createLinearGradient(0,0,144,152);

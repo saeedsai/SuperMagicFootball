@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.16.0',
+ version:'0.12.16.1',
  date:'2026-10-30',
  notes:Object.freeze([
+  'STUDIO-GALLERY-A11Y-PHASE-01: Player Studio now announces the selected action and four-step animation frame on all eight gallery views, including their keyboard-focusable buttons. The live comparison status updates when scrubbing or changing actions. Visual art, gameplay, controls, saves and rosters are unchanged.',
   'PENALTY-KEEPER-FEEDBACK-01: During local two-player penalty shootouts, the goalkeeper HUD now confirms DIVING and RECOVERING using the existing JUMP timers, then restores MOVE/JUMP guidance when ready. Solo CPU keeper labels remain automatic. Display only: no shot physics, four-button controls, saves or rosters changed.',
   'PENALTY-KEEPER-GUIDE-01: Local two-player penalty HUD now names the current taker and goalkeeper, explains the existing MOVE/JUMP keeper control and shows when the ball is in flight. Solo play identifies its automatic CPU keeper. No new buttons, physics, shot outcomes, saves or roster changes.',
   'PENALTY-KEEPER-VISUAL-01: Human goalkeepers in local Versus penalty shootouts now visibly dive on JUMP and recover after the existing boost. This does not change saves, shot results, physics, controls or rosters.',

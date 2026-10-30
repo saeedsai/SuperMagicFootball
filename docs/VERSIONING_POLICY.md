@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.16.0
+# SuperMagicFootball release/version policy — About-only 0.12.16.1
 
-**Current dev candidate 0.12.16.0 (30 October 2026):** PENALTY-KEEPER-FEEDBACK-01 shows DIVING and RECOVERING goalkeeper HUD phases in local two-player penalties using existing timers, restoring MOVE/JUMP instructions when ready. Solo remains CPU automatic. No gameplay physics, action buttons, saves or roster changes. Exact-head 4+4/Modular QA, protected main promotion and hosted Pages bytes are independent gates.
+**Current dev candidate 0.12.16.1 (30 October 2026):** STUDIO-GALLERY-A11Y-PHASE-01 adds action/frame-aware accessible names to eight Player Studio canvas previews and focusable direction tiles; the polite live status announces the current frame. No changes to art assets, gameplay, four controls, saves, teams or player identities. Exact-head four Node/four Chromium, Modular QA, protected main promotion and hosted Pages bytes remain independent gates.
+
+**Previous dev candidate 0.12.16.0 (30 October 2026):** PENALTY-KEEPER-FEEDBACK-01 shows DIVING and RECOVERING goalkeeper HUD phases in local two-player penalties using existing timers, restoring MOVE/JUMP instructions when ready. Solo remains CPU automatic. No gameplay physics, action buttons, saves or roster changes. Exact-head 4+4/Modular QA, protected main promotion and hosted Pages bytes are independent gates.
 
 **Previous dev candidate 0.12.15.1 (30 October 2026):** PENALTY-KEEPER-GUIDE-01 makes the shootout HUD identify the local taker and defending human keeper on alternating turns, show the existing JUMP dive control and ball-in-flight state, and correctly describe the automatic solo keeper. Visual-only, no physics, input mappings, saves, four-action count, teams or player IDs changed. Exact-head 4+4/Modular QA, protected main promotion and hosted Pages bytes remain independent gates.
 

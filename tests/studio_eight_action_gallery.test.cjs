@@ -24,7 +24,9 @@ function fixture() {
  const canvases = Array.from({length:8},()=>({
   width:144,height:152,labels:[],
   getContext:context,
-  setAttribute(key,value){this.labels.push([key,value]);}
+  setAttribute(key,value){this.labels.push([key,value]);},
+  buttonLabels:[],
+  closest(selector){return selector==='[data-studio-pick]'?{setAttribute:(key,value)=>this.buttonLabels.push([key,value])}:null;}
  }));
  const root = {
   querySelectorAll(){return canvases;},
@@ -47,7 +49,7 @@ test('Studio compares the selected action in all eight directions',()=>{
  f.sandbox.drawGallery({name:'Keeper',role:'GK'},{style:2});
  assert.equal(f.calls.length,8);
  assert.ok(f.calls.every(p=>p.action==='slide'&&p.keeper===true));
- assert.equal(f.status.textContent,'Comparing SLIDE in eight directions');
+ assert.equal(f.status.textContent,'Comparing SLIDE frame 2 of 4 in eight directions');
  assert.ok(f.canvases.every(c=>c.labels.some(([key,value])=>key==='aria-label'&&value.includes('slide pose'))));
 });
 
@@ -63,7 +65,7 @@ test('changing pose invalidates gallery cache and run previews use movement vect
  const run=f.calls.slice(8);
  assert.ok(run.every(p=>p.action==='idle'&&p.anim===.9));
  assert.ok(run.some(p=>p.dx!==0||p.dy!==0));
- assert.equal(f.status.textContent,'Comparing RUN in eight directions');
+ assert.equal(f.status.textContent,'Comparing RUN frame 2 of 4 in eight directions');
 });
 
 test('gallery preview never writes to saved player data',()=>{
@@ -109,4 +111,33 @@ test('phase slider has keyboard/touch accessible wiring and cannot create a fift
 test('motion phase slider spans the full eight-view grid on desktop and mobile',()=>{
  const css=fs.readFileSync(path.join(__dirname,'../style.css'),'utf8');
  assert.match(css,/\.studioGalleryTimeline\{grid-column:1\/-1;/);
+});
+
+// STUDIO-GALLERY-A11Y-PHASE-01: verify the real eight-canvas render path.
+test('screen readers receive the exact action and phase on each focusable gallery tile',()=>{
+ const f=fixture(),player={name:'Goalkeeper',role:'GK'},appearance={style:2};
+ f.sandbox.drawGallery(player,appearance);
+ for(let i=0;i<8;i++){
+  assert.deepEqual(f.canvases[i].labels.at(-1),['aria-label',f.sandbox.STUDIO_DIRS[i].label+' slide pose, frame 2 of 4']);
+  assert.deepEqual(f.canvases[i].buttonLabels.at(-1),['aria-label','Show '+f.sandbox.STUDIO_DIRS[i].label+' slide frame 2 of 4 in main player preview']);
+ }
+ f.sandbox.studioGalleryFrame=3;
+ f.sandbox.drawGallery(player,appearance);
+ assert.equal(f.status.textContent,'Comparing SLIDE frame 4 of 4 in eight directions');
+ assert.deepEqual(f.canvases[0].labels.at(-1),['aria-label','N slide pose, frame 4 of 4']);
+ assert.deepEqual(f.canvases[0].buttonLabels.at(-1),['aria-label','Show N slide frame 4 of 4 in main player preview']);
+ f.pose.value='kick';
+ f.sandbox.drawGallery(player,appearance);
+ assert.deepEqual(f.canvases[7].labels.at(-1),['aria-label','NW kick pose, frame 4 of 4']);
+ assert.equal(f.calls.length,24);
+});
+test('unchanged Studio gallery frames keep their cached accessible labels without extra redraws',()=>{
+ const f=fixture(),player={name:'Forward',role:'FW'},appearance={style:1};
+ f.sandbox.drawGallery(player,appearance);
+ const count=f.canvases[0].buttonLabels.length;
+ f.sandbox.drawGallery(player,appearance);
+ assert.equal(f.canvases[0].buttonLabels.length,count);
+ assert.equal(f.calls.length,8);
+ const markup=fs.readFileSync('src/modules/ui.js','utf8');
+ assert.match(markup,/id="studioEightViewPoseLabel"[^>]*role="status" aria-live="polite"/);
 });

@@ -3,26 +3,26 @@
 **Updated:** 2026-10-30
 
 ## Mission
-Commit directly to existing dev only; no branches, force pushes or CI/security bypass. Preserve 223 teams/2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09 and offline saves.
+Develop directly on existing dev only; no new branches, force pushes or CI/security bypass. Preserve 223 teams, 2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09 and offline saves.
 
 ## Current checkpoint
-- Began at synchronized dev/main `387391b2d3b72c01f5a58767810edd538f78ce24` (previous production 0.12.15.1).
-- PENALTY-KEEPER-FEEDBACK-01 candidate 0.12.16.0: penalty HUD reports DIVING and RECOVERING from existing keeper JUMP timers and restores control instructions; solo CPU label unchanged. Display only, no game-state mutation.
-- Focused helper assertions performed before commit; new Node regression added. Exact-head 4 Node + 4 Chromium, Modular QA, promotion and Pages verification require independent GitHub evidence.
-- Eight independently authored directional packs remain incomplete; physical two-phone LAN #48 remains unverified.
+- Starting dev/main synchronized at `1b511ac09f54922b21031251586a2eaef9c3b0e6` (previous hosted 0.12.16.0).
+- STUDIO-GALLERY-A11Y-PHASE-01 candidate `0.12.16.1`: the eight direction tiles/canvases announce selected action and frame 1–4, and polite status includes frame. Presentation only; no art assets or gameplay altered.
+- Extended real gallery Node tests. Exact-head 4 Node + 4 Chromium, Modular QA, protected main promotion and hosted Pages verification require independent GitHub evidence; do not infer results from earlier commits.
+- Eight bespoke art directions still unfinished; physical two-phone LAN #48 not certified.
 
 ## Next smallest action
-1. Inspect exact-head Node/Chromium and Modular QA, fix failures.
-2. Promote only through green pipeline; verify Pages hosted bytes.
-3. Advance original eight-view side/quarter graphics and issue #15.
-4. Improve Player Studio directional previews or counterable Magic Tricks.
-5. Advance Career and investigate Render #86 and branch protection #87 without routine LAN work.
+1. Inspect focused and exact-head CI, repair failures.
+2. Promote only through green pipeline and verify Pages bytes.
+3. Implement independent side/quarter character art; visually verify #15.
+4. Improve a four-button counterable Magic Trick and goalkeeper animation.
+5. Extend Career progression; inspect Render #86 and main protection #87.
 
 ## Ownership and exclusions
-Sole developer; old locks historical. Never read or edit other agents' private memory. No routine LAN/P2P implementation.
+Sole developer; historical locks are not gates. Never read or edit other agents' memory. No routine LAN/P2P implementation.
 
 ## Evidence
-GitHub SHA-checked fast-forward, no local GitHub DNS. Full GitHub Actions QA authoritative; no physical phone certification.
+GitHub connector SHA-checked fast-forward; local GitHub DNS unavailable. Full CI and physical-device verification are separate.
 
 ## Cleanup
-Checkpoint under 4 KiB; history retained in Git.
+Checkpoint under 4 KiB; historical commits preserved.

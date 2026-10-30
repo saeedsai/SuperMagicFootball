@@ -1,3 +1,8 @@
+## 2026-10-30 — STUDIO-GALLERY-A11Y-PHASE-01 (0.12.16.1 dev candidate)
+- Improved eight-direction Player Studio action gallery: focusable tile and canvas accessible names now include selected action and frame 1–4; the polite comparison status also announces frame changes. Cache prevents redundant redraws. No new artwork, physics, save format, input, roster or LAN changes.
+- Extended real extracted UI gallery Node tests for eight directional labels, action/phase updates, and unchanged cached frames. Full exact-head four Node + four Chromium and Modular QA are mandatory before promotion; hosted Pages byte verification is independent.
+- Updated About-only version, package, README heading/banner, offline cache, version policy and own checkpoint. Physical LAN #48 remains open; Render #86 and unprotected main #87 are tracked separately.
+
 ## 2026-10-30 — PENALTY-KEEPER-FEEDBACK-01 (0.12.16.0 dev candidate)
 - Local Versus penalty goalkeeper HUD now reports DIVING during the existing JUMP boost, RECOVERING during the existing animation cooldown and MOVE/JUMP when ready. Solo automatic keeper remains unchanged. No physics, save, roster, LAN, formation or fifth action button changes.
 - Added focused Node coverage for alternating sides, phase boundaries, invalid clocks, solo mode and real renderer immutability. Full exact-head four Node/four Chromium, Modular QA, protected promotion and Pages hosted-byte verification are separate gates.
