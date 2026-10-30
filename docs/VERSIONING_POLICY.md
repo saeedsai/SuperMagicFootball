@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.15
+# SuperMagicFootball release/version policy — About-only 0.12.17.16
+
+**Current dev candidate 0.12.17.16 (30 October 2026):** STUDIO-BODY-RANDOM-01: Player Studio adds RANDOMIZE BODY to preview build, stature and exaggeration independently of face, hair, skin and tattoos. Changes remain unsaved until SAVE CHARACTER; controls, rosters and stats are unchanged. Exact-head QA and Pages certification pending.
 
 **Current dev candidate 0.12.17.15 (30 October 2026):** STUDIO-FACE-DETAILS-01: Player Studio adds RANDOMIZE FACE DETAILS to preview facial features independently of skin, hair, build, stature and tattoos. RESET UNSAVED reverses the preview; saved data changes only through SAVE CHARACTER. Four match controls, rosters and offline saves are preserved. Exact-head CI and hosted verification pending.
 
