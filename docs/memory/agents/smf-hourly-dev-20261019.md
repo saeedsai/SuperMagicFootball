@@ -6,11 +6,12 @@
 Sole developer for safe, incremental tested commits on existing dev; continue useful work through release blockers without bypassing CI, branch protections or physical acceptance gates.
 
 ## Current checkpoint
+- 0.12.17.8 KEEPER-POSE-GAIT-01: keeper catch/throw/punt, hurt/cry and stun states suppress running gait; focused regression committed; full exact-head QA and Pages pending.
 - 0.12.17.7 TACKLE-POSE-STABILITY-01: committed gait freeze during slide and Node regression; full QA and release pending.
 - 0.12.17.6 BREATH-STATIONARY-HOLD-01: analog-scaled held-dribble drain; stationary hold recovers. README heading corrected after exact-head 3e09d66 CI failure. Node/Chromium regressions added; exact-head CI, main and Pages pending.
 - 0.12.17.5 TACKLE-SNAP-HEADING-01: committed immediate slide facing, Node regression and README release-banner CI fix; exact-head QA/promotion pending.
 - TACKLE-DIRECTION-01 0.12.17.4: slide-facing uses committed slide vector for eight headings; Node regression added. Exact-head CI and deployment pending.
-**Current dev candidate:** 0.12.17.3
+**Current dev candidate:** 0.12.17.8
 - BREATH-DRIBBLE-HOLD-01: ordinary held DRIBBLE with possession now drains 0.12–0.20 Breath/sec by Stamina, alongside the existing tiny normal-running drain; JUMP sprint remains expensive. Shared FITNESS helper and actual engine usage committed; focused Node + Chromium regression added. Preserve one-time action costs.
 - Prior DEFENCE-TACKLE-REACH-01 and TACKLE-ANIMATION-01 (0.12.17.1/.2) are committed but not released. Staged slide animation and directional turf spray are visual-only.
 - CI at dev a63ecaac: Full Regression Census 41062348594 and Modular QA 41062348480 failed 6 release-banner assertions, 1181 other Node tests passed. README banner corrected at 7be52a4; new exact-head CI results still required.
