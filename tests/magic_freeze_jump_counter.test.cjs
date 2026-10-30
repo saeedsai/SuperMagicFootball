@@ -34,11 +34,11 @@ test('Grounded, early jump and invalid height still freeze',()=>{
   assert.equal(defender.action,'hurt');assert.equal(events[0].countered,false);
  }
 });
-test('Directional defence still counters Freeze; other Tricks unchanged',()=>{
+test('Directional defence still counters Freeze; Bat and Scream now have JUMP counters',()=>{
  const {defender,events,fire}=setup({face:-1,z:0});
  defender.dx=-1;defender.src.defence=95;
  assert.equal(fire(),true);assert.equal(defender.stun,0);assert.equal(events[0].countered,true);
- const bat=setup({id:'bat',z:20});assert.equal(bat.fire(),true);assert.equal(bat.defender.stun,.32);
+ const bat=setup({id:'bat',z:20});assert.equal(bat.fire(),true);assert.equal(bat.defender.stun,0);assert.equal(bat.events[0].countered,true);
  const scream=setup({id:'scream',z:20});assert.equal(scream.fire(),true);assert.equal(scream.defender.stun,0);
 });
 test('Player Studio explains existing JUMP; no fifth action or new save field',()=>{
