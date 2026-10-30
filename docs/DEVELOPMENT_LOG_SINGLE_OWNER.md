@@ -1,3 +1,7 @@
+## 2026-10-30 — TACKLE-DIRECTION-01 (0.12.17.4)
+- TACKLE-DIRECTION-01: Eight-direction slide-tackle animation now faces the committed slide vector instead of stale walking input, including diagonal tackles. Slide reach, collision, stamina, four controls and saves remain unchanged.
+- Added eight-direction Node regression covering slide vector selection. Exact-head QA and hosted release pending.
+
 ## 2026-10-30 — BREATH-DRIBBLE-HOLD-01 (0.12.17.3 dev candidate)
 - BREATH-DRIBBLE-HOLD-01: Ordinary moving DRIBBLE holds now use a small Stamina-scaled Breath drain (0.12 to 0.20 per second), while JUMP sprint remains much more costly. The existing one-time dribble and Magic Trick costs, idle/walking recovery, selected-player-only Breath ring, Energy, saves and four controls are unchanged.
 - Confirmed exact-head 0.12.17.2 full CI had 6 failures caused by README first banner using `development candidate` rather than required `release candidate`; corrected the banner before this increment.
