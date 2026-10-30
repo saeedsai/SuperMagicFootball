@@ -40,9 +40,10 @@ function breathTick(breath,stamina,seconds,intensity=0){
  const active=clamp(Number(intensity)||0,0,1.8);
  // Walking or resting restores breath; sprinting consumes it quickly.
  // Rest: refill ~3-5 seconds; walking: refill ~5-8 seconds.
+ // Ordinary running (intensity .6) has a tiny drain; sprinting (1.5+) drains quickly.
  // Hard movement must NOT recharge Breath while it is being consumed.
  const regen=active<=.08?(1.4+1.1*(rated-1)/99):active<=.55?(1.0+.9*(rated-1)/99):0;
- const drain=active>0.55?(.6+(active-.55)*1.6)*(1.2-.4*(rated-1)/99):0;
+ const drain=active>0.55?(.02+(active-.55)*2.2)*(1.2-.4*(rated-1)/99):0;
  return clamp((Number.isFinite(+breath)?+breath:cap)+Math.max(0,seconds)*(regen-drain),0,cap);
 }
 // Explicit cumulative recovery after N rest days: +30%, +50%, then +10% per day.
