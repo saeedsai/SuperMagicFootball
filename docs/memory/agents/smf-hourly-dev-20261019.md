@@ -21,6 +21,7 @@ Only existing `dev`; no new branches, force pushes, manual main writes or CI/sec
 Sole developer; historical locks nonblocking. Never read/edit other agents' private memory. Two-phone LAN acceptance #48 remains open and uncertified. Render drift #86 and main protection #87 remain open.
 
 ## Evidence
+At 187dcedea3f73a7618a29c2fa331190544ad855a: Modular QA green; preflight, four Node shards and preview smoke green; browser 1/3 green, browser 0/2 failed stale 14-stat/ENERGY label expectations. Corrected browser tests and added live Jumping preview checks; new exact-head CI pending. Promotion skipped.
 Starting `dev` 881414a914b9b2981b362c153333b5698176ec7d, `main` e8c07652f66071ec2da5370127966475f2f0df45 (74 ahead). Full Regression Census #40984010558 and Modular QA #40984010582 failed nine Node assertions; Chromium skipped. Direct V8 gameplay smoke passed. Local GitHub DNS failed. Exact new-head CI, promotion, Pages and physical LAN remain unverified.
 
 ## Cleanup

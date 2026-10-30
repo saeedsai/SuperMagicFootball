@@ -25,18 +25,18 @@ with sync_playwright() as pw:
   page.locator('[data-action="kickoff"]').first.click()
   assert page.evaluate('NekketsuHD.game.matchState')=='play'
   assert page.locator('#staminaHud').is_visible()
-  assert page.locator('#staminaText').inner_text().startswith('STAMINA')
+  assert page.locator('#staminaText').inner_text().startswith('ENERGY')
   # Advance a focused synthetic activity simulation without waiting for real time.
   page.evaluate("""() => {const g=NekketsuHD.game,p=g.controlledPlayer(0);g.staminaTick(p,65,1);return p.fatigue;}""")
   page.wait_for_timeout(120)
   pct=page.locator('#staminaText').inner_text()
-  assert pct!='STAMINA 100%',f'Stamina HUD did not change: {pct}'
+  assert pct!='ENERGY 100%',f'Energy HUD did not change: {pct}'
   page.screenshot(path=str(root/'tests'/f'stats_match_{name}.png'))
   page.locator('#pauseBtn').click(force=True)
   assert page.evaluate('NekketsuHD.game.matchState')=='paused'
   page.locator('[data-action="resume"]').first.click()
   assert page.evaluate('NekketsuHD.game.matchState')=='play'
   assert not issues,issues
-  print(f'Player stats browser {name}: PASS • squad ratings • GK attributes • live stamina HUD • pause/resume')
+  print(f'Player stats browser {name}: PASS • squad ratings • GK attributes • live Energy HUD • pause/resume')
   ctx.close()
  browser.close()

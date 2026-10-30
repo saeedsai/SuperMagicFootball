@@ -1,3 +1,9 @@
+## 2026-10-30 — exact-head Chromium QA correction (0.12.12.1, test-only)
+- At `187dcedea3f73a7618a29c2fa331190544ad855a`, Modular QA #40989833618 passed; Full Regression Census #40989833643 passed preflight, all four Node shards and preview smoke, but browser shards 0/2 failed. Browser shards 1/3 passed. Promotion correctly skipped.
+- Shard 0: `studio_stat_editor_browser_qa.py` still expected 14 fields after Jumping became the 15th. Updated to assert 15 and actually edit/restore Jumping with live height/Energy preview on desktop and simulated touch, without saving.
+- Shard 2: `stats_browser_qa.py` expected obsolete STAMINA HUD label, renamed ENERGY in BREATH-WALK-HUD-01. Updated label/change assertion, retaining live fatigue activity and pause/resume.
+- No gameplay changes or version bump; rerun exact-head four Node + four Chromium, Modular QA, then protected promotion and Pages bytes.
+
 ## 2026-10-30 — BREATH-SWAP-FIX-01 (0.12.12.1 candidate)
 - Exact-head Full Regression Census #40984010558 and Modular QA #40984010582 failed nine Node assertions: seven isolated VM fixtures lacked `breathCapacity/stat` bindings and two Magic Trick source contracts expected a hold condition without Breath. Corrected tests to match live behavior, without weakening engine guards.
 - Found real gameplay defect: `applyPlan` saved fatigue/cooldowns for players moved between lineup slots but omitted Breath, granting free refill on tactical reorders. Added Breath to per-player snapshot and new regressions for moved players, halftime refill, new keeper capacity and unchanged formation.

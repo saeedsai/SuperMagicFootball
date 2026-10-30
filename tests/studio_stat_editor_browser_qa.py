@@ -37,8 +37,21 @@ with sync_playwright() as pw:
         assert page.locator('#studioStatsEditor').count() == 1, (label, 'stats editor missing')
         page.locator('#studioStatsEditor summary').click()
         fields = page.locator('#studioStatsEditor input[type=number]')
-        assert fields.count() == 14, (label, 'expected fourteen independent stats')
+        assert fields.count() == 15, (label, 'expected fifteen independent stats including Jumping')
         assert page.locator('#touchButtons [data-act]').count() == 4
+        # STUDIO-JUMP-PREVIEW-01: verify live, unsaved Jumping feedback in both layouts.
+        jumping = page.locator('#stat_jumping')
+        assert jumping.count() == 1, (label, 'Jumping input missing')
+        old_jump = jumping.input_value()
+        preview = page.locator('#studioJumpPreview')
+        before_jump = preview.inner_text()
+        assert 'JUMPING' in before_jump and 'LEAP HEIGHT' in before_jump and 'ENERGY COST' in before_jump
+        new_jump = int(old_jump) - 1 if int(old_jump) > 1 else int(old_jump) + 1
+        jumping.fill(str(new_jump))
+        after_jump = preview.inner_text()
+        assert after_jump != before_jump and f'JUMPING {new_jump}/100' in after_jump, (label, before_jump, after_jump)
+        jumping.fill(old_jump)
+        assert preview.inner_text() == before_jump, (label, 'unsaved Jumping reset did not restore preview')
 
         before = page.evaluate("localStorage.getItem('legend_edits')")
         assert before is None, (label, 'unexpected preexisting team edits')
@@ -69,6 +82,6 @@ with sync_playwright() as pw:
         )
         assert not errors, (label, errors)
         print('STUDIO_STATS_BROWSER_PASS', label,
-              '14 stats, validation, live overall, durable save and reload', flush=True)
+              '15 stats, live Jumping preview, validation, overall, durable save and reload', flush=True)
         context.close()
     browser.close()
