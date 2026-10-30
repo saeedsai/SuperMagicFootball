@@ -3,29 +3,27 @@
 **Updated:** 2026-10-30
 
 ## Mission
-Develop on existing `dev` only; no new branches, force-push, direct main writes or bypassed CI/security. Preserve 223 teams/2676 players, 12-player rosters, six formations, four Pass/Shoot/Dribble/Jump controls, saves/offline, ten Career/Cup slots, SD09 and LAN/P2P.
+Only existing `dev` branch; no new branches, force-push, manual main writes or CI/security bypass. Preserve 223 teams/2676 players, 12-person squads, six formations, Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09, LAN/P2P, offline and save compatibility.
 
 ## Current checkpoint
-- **0.12.11.0 STUDIO-JUMP-PREVIEW-01:** Added `src/modules/jumpmetrics.js` pure shared Jumping profile: 1..100 rating, 30..100% relative jump height, 420/535 max impulses, 1..1.99x jump Energy cost. Match engine's single/double jump and jump Energy spend now use this exact profile. Player Studio labels all 15 stats and updates height/energy preview on edit, reset or invalid input; no persistence until SAVE PLAYER STATS.
-- Updated test-only QA build module order and PWA precache, rotated offline cache, About-only four-field 0.12.11.0 release metadata, package and README; no save/roster schema changes.
-- Added seven-case `tests/studio_jumping_preview.test.cjs`; repaired `tests/jumping_fatigue_real.test.cjs` extracted engine test to inject Jumping and Breath dependencies.
-- Prior 0.12.10.0: walking/idle Breath regeneration, foot-level circular Breath gauge, top ENERGY bar and Breath-based dribble pacing. Prior 0.12.9.0: Career Energy and short-term Breath. Prior 0.12.8.0: Jumping stat and monotonic jump fatigue. Earlier Studio eight-view gallery, Career rename, UI/art and LAN features remain.
-- LAN-094 two-client automation delivered, physical two-phone acceptance still **unverified**. No routine LAN implementation until confirmed regression. Keep issue #48 open.
+- **0.12.12.0 HIDE-BALL-PASS-01:** A defender's close (<=70), forward-facing, grounded and still-active ordinary PASS poke (`action='punch'`) counters a Hide Ball cast. Expired, airborne, backwards, distant, idle and SHOOT-slide actions do not; unrelated Freeze unaffected. Caster still pays six-second cooldown and 0.035 fatigue. No new input or save schema. Added `tests/hide_ball_pass_counter.test.cjs`.
+- Prior **0.12.11.0** Studio Jumping preview: all 15 attributes and shared jump metrics. Prior **0.12.10.0** Breath foot-ring, walk recovery and Breath-driven dribble. Prior **0.12.9.0** Career Energy/Breath.
+- LAN-094 automated two-client coverage exists; physical two-phone acceptance **unverified** (#48). Do not resume routine LAN work. Render commit-trigger auto-deploy drift (#86) and main protection (#87) remain open.
 
 ## Next smallest action
-1. Verify exact-head four Node/four Chromium/Modular QA via GitHub Actions; fix real regressions without weakening checks.
-2. Visually check Player Studio Jumping preview and invalid-input/reset on mobile and desktop; verify four gameplay buttons.
-3. Integrate independently authored eight-view character art, including side-facing corrections (#15).
-4. Implement next bounded counterable Magic Trick / goalkeeper penalty feature with regression tests.
-5. Advance Career progression and promote only exact green `dev` through protected main pipeline, then verify hosted Pages bytes.
+1. Obtain exact-head four Node, four Chromium and Modular QA; fix genuine failures, preserve required checks.
+2. Validate Hide Ball PASS counter against actual phone controls and AI timing; inspect on-device Studio Jumping preview.
+3. Improve eight-view authored directional graphics and fix side orientation (#15).
+4. Advance goalkeeper penalty control (#5) or Career progression in one bounded tested increment.
+5. Promote only green exact `dev` through protected main pipeline and verify Pages hosted bytes; never certify physical LAN without two phones.
 
 ## Ownership and exclusions
-Sole authorized maintainer. Historical feature locks are nonblocking. Never access or alter another agent's private checkpoint. Preserve all existing source data and LAN logic. Issue #48 physical certification open; #86 Render commit-trigger drift open; #87 main protection missing.
+Sole authorized maintainer. Historical locks are nonblocking. Do not read/edit other agents' private memory. Never close #48 without physical evidence.
 
 ## Evidence
-- Starting exact heads: dev `e790f0afa4df6006a23ec291603e85651f6d525c`, main `e8c07652f66071ec2da5370127966475f2f0df45` (50 commits ahead).
-- Focused V8 execution: 14/14 checks passed; extracted real-engine jump fatigue strictly monotonic across nine ratings, 1.99x cost at Jumping 1. New Node tests committed but **full Node and Chromium suites not executed** here.
-- Local `git ls-remote` failed DNS (cannot resolve github.com); GitHub connector writes succeeded. Commit combined status returned no statuses; PR-filtered workflow lookup returned zero runs. Push-triggered workflows may run separately; not proof of green CI. No main promotion, physical acceptance or hosted Pages certification.
+- Starting heads: `dev` aabb56651ccfb322096e6aa92548defb4bdd52e7, `main` e8c07652f66071ec2da5370127966475f2f0df45; 70 ahead, 0 behind.
+- Actual gameplay method extracted and executed with V8: 14/14 focused checks passed (counter, cooldown/fatigue, negative timings/angles, unrelated spell, rejection and syntax).
+- Local git remote DNS failed (`Could not resolve host: github.com`); GitHub connector works. Combined status empty and PR-filtered workflow query returned no runs at prior head; neither certifies full CI. Full Node/Chromium/Modular, main promotion, Pages byte verification and physical LAN not verified.
 
 ## Cleanup
-Keep this checkpoint below 4 KiB and shared memory below 6 KiB; Git history/development log retain full details. Continue small, SHA-checked increments.
+Keep checkpoint <4 KiB, shared memory <6 KiB. Git history and development log hold prior details.
