@@ -1,3 +1,7 @@
+## 2026-10-30 — STUDIO-FACE-DETAILS-01 (0.12.17.15 candidate)
+- Added facial detail randomization with constrained allowed fields, preserving skin/hair, body, tattoos, all player identity, match controls and saves. Added Node and Chromium checks including reset/persistence guards.
+- Exact-head full QA, protected promotion and hosted bytes not verified at commit time.
+
 ## 2026-10-30 — STUDIO-HAIR-RANDOM-01 (0.12.17.14 candidate)
 - Added RANDOMIZE HAIR: unsaved hairstyle and hair-color preview only, retaining face/skin/build and other appearance controls. RESET UNSAVED restores persisted values. Gallery and exactly four gameplay actions unchanged.
 - Extended Node helper tests and desktop/simulated-touch Chromium regression. Focused helper preflight passed; exact-head full CI and Pages verification are separate gates.
