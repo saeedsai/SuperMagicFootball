@@ -6,7 +6,7 @@
 Sole developer on existing dev; small tested increments, no new branch, force push or bypass of CI/security. Never certify physical LAN without two-phone acceptance.
 
 ## Current checkpoint
-- 0.12.17.21 STUDIO-RANDOM-CHOICE-GUARD-01: invalid palette choices filtered and no-alternative feedback added; focused JS smoke passed, Node/Chromium regression committed, full CI and Pages pending. Breath semantics unchanged.
+- 0.12.17.21 STUDIO-RANDOM-CHOICE-GUARD-01: invalid palette choices filtered and no-alternative feedback added; focused JS smoke and 20 Studio tests passed in a JS compatibility harness (not native Node CI); Node/Chromium regression committed, full CI and Pages pending. Breath semantics unchanged.
 - BREATH-SELECTED-QA-ISOLATION-01: after 0.12.17.20 full QA found synthetic sprint sample could be interrupted by AI stun/slide, reset runner state per measurement. Exact-head rerun pending; runtime unchanged.
 - 0.12.17.20 STUDIO-FULL-LOOK-LABEL-01: corrected full-appearance randomizer label without changing existing action, added Node + desktop/touch Chromium tests. BREATH-LOCAL-OWNER-01 remains intact. Exact-head 4+4/Modular/Pages pending.
 - 0.12.17.19 BREATH-LOCAL-OWNER-01: confirmed remote opponent Breath ring in shared LAN/P2P simulation; render-only local-side filter + Node and desktop/touch Chromium tests committed. Normal/sprint contrast already in 0.12.17.10 and unchanged. Exact-head 4+4/Modular/Pages pending.
