@@ -25,4 +25,4 @@
 
 **No gameplay change**: only directional artwork and optional Studio UI in this iteration. Existing team order, rosters, player IDs, formations, game input, collision calculations and saves kept intact.
 
-**Evidence**: `docs/qa_runs_v082532/*.log`, `docs/QA_STUDIO_GALLERY_v082532.json`, `docs/Studio_Eight_Directions_v082532.png`, `docs/QA_SUMMARY_v082532.json`, `docs/QA_CATALOG_v082532.csv`.
+**Evidence**: `docs/qa_runs_v082532/*.log`, `docs/QA_STUDIO_GALLERY_v082532.json`, `docs/Studio_Eight_Directions_v082532.png`, `docs/history/archive/QA_SUMMARY_v082532.json`, `docs/history/archive/QA_CATALOG_v082532.csv`.

@@ -18,7 +18,7 @@ The **live game** is described in [root README](../README.md). This index points
 | Central development and handovers | [Single-developer log](DEVELOPMENT_LOG_SINGLE_OWNER.md), [historical claims](agent_coordination/README.md), [safe data merge](PARALLEL_DATA_MERGE_GUIDE.md) |
 | Player database batches | [Club roster plan](CLUB_ROSTER_BATCH_PLAN_20261016.md), [ledger](CLUB_ROSTER_BATCH_LEDGER_20261016.json), [metadata batches](PLAYER_METADATA_BATCHES_20261016.json) |
 | Illustrated player artwork | [Concept pipeline](concept_character_pipeline/NEXT_CHAT_HANDOVER.md), [tracker](concept_character_pipeline/PROGRESS_TRACKER.json) |
-| Current QA evidence and status | [Release QA](QA_RELEASE_v082534_20261016.md), [status](STATUS.md), **live GitHub Actions** for newer revisions |
+| Current QA evidence and status | [Release QA](history/archive/QA_RELEASE_v082534_20261016.md), [status](STATUS.md), **live GitHub Actions** for newer revisions |
 | Documentation retention | [Active/archive policy](ARCHIVE_AND_ACTIVE_FILES.md), [historical changelogs](history/changelogs/) |
 
 ## Cleanup rules
