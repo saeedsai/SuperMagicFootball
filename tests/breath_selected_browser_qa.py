@@ -76,10 +76,10 @@ with sync_playwright() as pw:
            actions:document.querySelectorAll('#touchButtons button[data-act]').length,
            players:g.players.length};
   }""")
-  assert outcome['initial']==1,(name,'initial selected ring',outcome)
+  assert outcome['initial']==2,(name,'initial selected ring background and progress arc',outcome)
   assert outcome['unselected']==0 and outcome['cpu']==0,(name,'unselected/CPU ring',outcome)
-  assert outcome['switched']==1 and outcome['former']==0,(name,'same-frame switch',outcome)
-  assert outcome['localAway']==1 and outcome['soloAway']==0,(name,'two-human/solo',outcome)
+  assert outcome['switched']==2 and outcome['former']==0,(name,'same-frame switch',outcome)
+  assert outcome['localAway']==2 and outcome['soloAway']==0,(name,'two-human/solo',outcome)
   assert outcome['preview']==0 and outcome['menu']==0,(name,'preview/menu',outcome)
   assert outcome['actions']==4 and outcome['players']==12,(name,'control/roster invariants',outcome)
   for sample in outcome['staminaSamples']:
