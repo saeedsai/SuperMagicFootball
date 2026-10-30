@@ -47,7 +47,7 @@ test('non-finite random values fall back to a valid enabled alternative',()=>{
 });
 test('real menu dispatch uses the unsaved randomizer and retains exactly four action controls',()=>{
  assert.match(ui,/else if\(a==='randomizeFace'\)studioRandomizeUnsavedAppearance\(\)/);
- assert.match(ui,/button\('RANDOMIZE FACE','randomizeFace'\)/);
+ assert.match(ui,/button\('RANDOMIZE FULL LOOK','randomizeFace'\)/);
  assert.doesNotMatch(method,/store\.put|localStorage\.setItem|saveAppearance\(/);
 });
 
@@ -140,4 +140,24 @@ test('accessory randomizer no-ops when unavailable and is bound to Studio',()=>{
  assert.match(ui,/button\('RANDOMIZE ACCESSORIES','randomizeAccessories'\)/);
  assert.match(ui,/a==='randomizeAccessories'\)studioRandomizeAccessoriesUnsaved\(\)/);
  assert.match(method,/\['accessory','tattoo'\]/);
+});
+
+// STUDIO-FULL-LOOK-LABEL-01: the original action randomizes every editable appearance field,
+// not just facial features. Keep the existing action ID for saved UI/navigation compatibility.
+test('full-look randomizer includes body and accessories without saving abilities or roster',()=>{
+ const f=fixture({careerMode:true});
+ for(const [key,values] of [['body',['1','3']],['tattoo',['0','2']],['accessory',['0','4']]]){
+  f.fields['face_'+key]={value:values[0],options:values.map(value=>({value}))};
+ }
+ f.context.getAppearance=()=>Object.fromEntries(Object.keys(f.fields).map(id=>[id.slice(5),f.fields[id].value]));
+ assert.equal(f.context.randomize(()=>.99),true);
+ assert.equal(f.fields.face_body.value,'3');
+ assert.equal(f.fields.face_tattoo.value,'2');
+ assert.equal(f.fields.face_accessory.value,'4');
+ assert.equal(f.player.appearance.face,3);
+ assert.equal(f.player.rating,90);assert.equal(f.player.magicTrick,'bat');
+ assert.equal(f.stats.writes,0);assert.equal(f.stats.redraw,1);
+ assert.match(f.hint.textContent,/Random look previewed.*Nothing saved yet/);
+ assert.match(ui,/button\('RANDOMIZE FULL LOOK','randomizeFace'\)/);
+ assert.doesNotMatch(ui,/button\('RANDOMIZE FACE','randomizeFace'\)/);
 });
