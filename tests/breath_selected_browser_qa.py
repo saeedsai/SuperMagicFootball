@@ -72,7 +72,17 @@ with sync_playwright() as pw:
     staminaSamples.push({stat,start,normal,sprint,idle});
    }
    first.breath=initialBreath;
-   return {initial,unselected,cpu,switched,former,localAway,soloAway,preview,menu,staminaSamples,
+   // Exercise the actual controlled-player frame path, not a copied rate formula.
+   // Holding DRIBBLE while moving normally must cost far less than JUMP sprint.
+   const oldInput=g.input.state[0],oldAutoSwitch=g.autoSwitch,oldCooldown=g.cooldown;
+   g.controlled[0]=first.i;g.autoSwitch=()=>{};g.cooldown=1;
+   g.input.state[0]={x:1,y:0,dribble:true,pass:false,shoot:false,jump:false};
+   g.ball.owner=first;first.stun=0;first.slideTimer=0;first.z=0;first.vz=0;
+   first.breath=4;const beforeHold=first.breath;
+   g.updatePlayers(.02);
+   const holdLoss=beforeHold-first.breath;
+   g.input.state[0]=oldInput;g.autoSwitch=oldAutoSwitch;g.cooldown=oldCooldown;
+   return {initial,unselected,cpu,switched,former,localAway,soloAway,preview,menu,staminaSamples,holdLoss,
            actions:document.querySelectorAll('#touchButtons button[data-act]').length,
            players:g.players.length};
   }""")
@@ -81,6 +91,7 @@ with sync_playwright() as pw:
   assert outcome['switched']==2 and outcome['former']==0,(name,'same-frame switch',outcome)
   assert outcome['localAway']==2 and outcome['soloAway']==0,(name,'two-human/solo',outcome)
   assert outcome['preview']==0 and outcome['menu']==0,(name,'preview/menu',outcome)
+  assert 0<outcome['holdLoss']<.01,(name,'actual held-dribble frame should have tiny positive Breath drain',outcome)
   assert outcome['actions']==4 and outcome['players']==12,(name,'control/roster invariants',outcome)
   for sample in outcome['staminaSamples']:
    assert sample['normal']>sample['start']-.2,(name,'normal run drains too much',sample)
