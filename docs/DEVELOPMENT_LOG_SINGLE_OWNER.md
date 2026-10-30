@@ -1,3 +1,7 @@
+## 2026-10-30 — STUDIO-BODY-RANDOM-01 (0.12.17.16)
+- STUDIO-BODY-RANDOM-01: Player Studio adds RANDOMIZE BODY to preview build, stature and exaggeration independently of face, hair, skin and tattoos. Changes remain unsaved until SAVE CHARACTER; controls, rosters and stats are unchanged.
+- Regression tests added; complete CI and Pages gate pending.
+
 ## 2026-10-30 — STUDIO-FACE-DETAILS-01 (0.12.17.15 candidate)
 - Added facial detail randomization with constrained allowed fields, preserving skin/hair, body, tattoos, all player identity, match controls and saves. Added Node and Chromium checks including reset/persistence guards.
 - Exact-head full QA, protected promotion and hosted bytes not verified at commit time.
