@@ -65,11 +65,11 @@ with sync_playwright() as pw:
    for(const stat of [1,50,100]){
     const p=first;
     p.src={...p.src,stamina:stat,stats:{...p.src.stats,stamina:stat}};
-    const start=10;
+    const start=3+7*(stat-1)/99;
     p.breath=start;g.staminaTick(p,1,.6);const normal=p.breath;
     p.breath=start;g.staminaTick(p,1,1.5);const sprint=p.breath;
     p.breath=0;g.staminaTick(p,1,0);const idle=p.breath;
-    staminaSamples.push({stat,normal,sprint,idle});
+    staminaSamples.push({stat,start,normal,sprint,idle});
    }
    first.breath=initialBreath;
    return {initial,unselected,cpu,switched,former,localAway,soloAway,preview,menu,staminaSamples,
@@ -83,8 +83,8 @@ with sync_playwright() as pw:
   assert outcome['preview']==0 and outcome['menu']==0,(name,'preview/menu',outcome)
   assert outcome['actions']==4 and outcome['players']==12,(name,'control/roster invariants',outcome)
   for sample in outcome['staminaSamples']:
-   assert sample['normal']>9.8,(name,'normal run drains too much',sample)
-   assert sample['sprint']<8.6,(name,'sprint drains too little',sample)
+   assert sample['normal']>sample['start']-.2,(name,'normal run drains too much',sample)
+   assert sample['sprint']<sample['start']-1.4,(name,'sprint drains too little',sample)
    assert sample['idle']>0,(name,'idle did not recharge',sample)
   assert not errors,(name,errors)
   print('BREATH_SELECTED_BROWSER_PASS',name,outcome['staminaSamples'],flush=True)
