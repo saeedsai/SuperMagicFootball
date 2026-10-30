@@ -60,6 +60,18 @@ test('normal running with ball has very low Breath drain versus sprint',()=>{
  assert.doesNotMatch(engine,/Math\.max\(1\.15,intensity\)/);
  assert.match(engine,/running\?1\.5:\.6/);
 });
+test('ordinary held dribble is low-drain and JUMP sprint remains substantially more costly',()=>{
+ const engine=text('src/modules/engine.js');
+ assert.match(engine,/dt\*dribbleHoldBreathRate\(stat\(p,'stamina'\)\)/,'live engine must use shared hold rate');
+ for(const stamina of [1,50,100]){
+  const cap=F.breathCapacity(stamina),rate=F.dribbleHoldBreathRate(stamina);
+  assert.ok(rate>=.12&&rate<=.201,'holding dribble must be cheap but nonzero');
+  const held=F.breathTick(cap,stamina,1,.6)-rate;
+  const sprint=F.breathTick(cap,stamina,1,1.5);
+  assert.ok(cap-held<.45,'normal moving dribble should spend less than half a second of Breath');
+  assert.ok(cap-sprint>5*(cap-held),'sprinting must drain over five times as much');
+ }
+});
 test('Breath ring is restricted to the currently selected human-controlled player',()=>{
  const render=text('src/modules/render.js');
  assert.match(render,/game\.inControl\(p\.t\)&&game\.controlledPlayer\(p\.t\)===p/);
