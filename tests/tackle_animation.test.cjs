@@ -42,3 +42,15 @@ test('keeper ball-handling and hurt/cry states do not animate a running gait',()
  const running={action:'run',stun:0};assert.equal(running.action!=='hurt'&&running.action!=='cry'&&!(running.stun>.2)&&!['keeperCatch','keeperThrow','keeperPunt'].includes(running.action),true);
  const stunned={action:'run',stun:.4};assert.equal(!(stunned.stun>.2),false);
 });
+
+test('shot and aerial action poses freeze locomotion gait while regular running stays animated',()=>{
+ assert.match(render,/!\(\(p\.cryTimer\|\|0\)>\.05\)/);
+ const actions=['kick','super','header','superHead','flipKick','comboSuper','bicycle','superBicycle','flyingKick','defensiveBicycle'];
+ const match=render.match(/const gaitMoving=([^;]+);/);
+ assert.ok(match,'live gait condition must exist');
+ const gait=new Function('p','moving',`return ${match[1]}`);
+ for(const action of actions)assert.equal(gait({action,stun:0},true),false,action);
+ assert.equal(gait({action:'run',stun:0,cryTimer:0},true),true);
+ assert.equal(gait({action:'run',stun:0,cryTimer:.4},true),false,'cry timer overrides stale run action');
+ assert.equal(gait({action:'run',stun:0,cryTimer:0},false),false,'standing players do not run');
+});
