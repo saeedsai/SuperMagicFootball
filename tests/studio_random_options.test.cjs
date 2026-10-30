@@ -18,7 +18,7 @@ function fixture({screen='PLAYER CUSTOMIZATION',careerMode=false,missing=false}=
   $:k=>k==='studioAppearanceSaveState'?hint:fields[k],studioGallerySignature:'cached',
   drawCustomizer(){stats.redraw++;hint.textContent='Appearance changes are ready to save.'},
   localStorage:{setItem(){stats.writes++;}}};
- vm.runInNewContext(method+';this.randomize=studioRandomizeUnsavedAppearance;this.randomizeHair=studioRandomizeHairUnsaved;this.randomizeDetails=studioRandomizeFaceDetailsUnsaved;',context);
+ vm.runInNewContext(method+';this.randomize=studioRandomizeUnsavedAppearance;this.randomizeHair=studioRandomizeHairUnsaved;this.randomizeBody=studioRandomizeBodyUnsaved;this.randomizeDetails=studioRandomizeFaceDetailsUnsaved;',context);
  return {context,fields,stats,hint,player};
 }
 test('random look chooses actual enabled option values even with sparse numeric IDs',()=>{
@@ -95,4 +95,26 @@ test('facial detail changes are disabled outside editor and with no option alter
  const other=fixture({screen:'HOME'});assert.equal(other.context.randomizeDetails(),false);
  const f=fixture();f.fields.face_face.options=[{value:'3'}];
  assert.equal(f.context.randomizeDetails(),false);assert.equal(f.stats.redraw,0);
+});
+
+test('body-only randomizer changes build, stature and exaggeration without changing face, hair or skin',()=>{
+ const f=fixture();
+ for(const [key,a,b] of [['body','2','4'],['stature','1','3'],['exaggeration','0','2']])
+  f.fields['face_'+key]={value:a,options:[{value:a},{value:b}]};
+ assert.equal(f.context.randomizeBody(()=>.99),true);
+ assert.deepEqual(['body','stature','exaggeration'].map(k=>f.fields['face_'+k].value),['4','3','2']);
+ assert.deepEqual(Object.values(f.fields).slice(0,4).map(x=>x.value),['1','3','#abc','#123']);
+ assert.equal(f.stats.writes,0);assert.equal(f.stats.redraw,1);
+ assert.equal(f.player.appearance.face,3);
+ assert.match(f.hint.textContent,/Nothing saved yet/);
+});
+test('body randomizer remains a no-op outside Studio or when physique has no alternatives',()=>{
+ const f=fixture();for(const key of ['body','stature','exaggeration'])f.fields['face_'+key]={value:'1',options:[{value:'1'}]};
+ assert.equal(f.context.randomizeBody(),false);assert.equal(f.stats.redraw,0);
+ f.context.screen='HOME';assert.equal(f.context.randomizeBody(),false);
+});
+test('body randomizer is exposed through Studio without adding a game action',()=>{
+ assert.match(ui,/button\('RANDOMIZE BODY','randomizeBody'\)/);
+ assert.match(ui,/else if\(a==='randomizeBody'\)studioRandomizeBodyUnsaved\(\)/);
+ assert.doesNotMatch(method,/localStorage\.setItem|saveAppearance\(/);
 });
