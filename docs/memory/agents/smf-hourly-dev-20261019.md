@@ -6,6 +6,7 @@
 Sole developer on existing dev; small tested increments, no new branch, force push or bypass of CI/security. Never certify physical LAN without two-phone acceptance.
 
 ## Current checkpoint
+- 0.12.17.20 STUDIO-FULL-LOOK-LABEL-01: corrected full-appearance randomizer label without changing existing action, added Node + desktop/touch Chromium tests. BREATH-LOCAL-OWNER-01 remains intact. Exact-head 4+4/Modular/Pages pending.
 - 0.12.17.19 BREATH-LOCAL-OWNER-01: confirmed remote opponent Breath ring in shared LAN/P2P simulation; render-only local-side filter + Node and desktop/touch Chromium tests committed. Normal/sprint contrast already in 0.12.17.10 and unchanged. Exact-head 4+4/Modular/Pages pending.
 - 0.12.17.18 VIZ-03-HEADING-STABILITY-01: stable live eight-direction atlas transitions with exact slide/Studio bypass. Focused JS checks passed; Node and desktop/touch Chromium regression committed, full exact-head QA/Pages pending.
 - 0.12.17.17 STUDIO-ACCESSORY-RANDOM-01: unsaved accessory/tattoo randomizer, focused Node and Chromium regression committed; 4+4, Modular and Pages pending.
