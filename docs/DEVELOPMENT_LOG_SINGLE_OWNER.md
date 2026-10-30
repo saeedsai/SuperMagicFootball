@@ -1971,3 +1971,8 @@ Host now holds last validated guest four-button and directional input for at mos
 - Retained: the five `*-visual-qa.html` root pages (consumed by Crown Royals / Concept QA workflows and tests), all versioned reports that tests still read, and `docs/qa_runs*` evidence.
 - Evidence: `node --test tests/*.test.cjs` gave 1213 pass / 4 fail on a fresh checkout because the ignored `tests/.generated` fixture had not been built (ENOENT `game.js`); after `python3 scripts/build.py` all 1228 pass / 0 fail, with the tidy-up included. Chromium suites not run locally.
 - Backlog status: not changed. Remaining open items are listed in `docs/NEXT_MILESTONES.md` (authored eight-direction art, device acceptance #48, Render drift #86) and need art/hardware work beyond a single run.
+
+## 2026-10-30 — Issue #3 root cause: test isolation, not touch input (test-only, no version bump)
+- `tests/dribble_styles_browser_qa.py` waited for the retired version `0.8.24.12-alpha` (current build reports `0.12.17.20`), so it could not run at all. It now waits for `SupermagicFootball.game`.
+- With that fixed, the Android double-tap flaked (3 failures in 24 runs, always `ballOwner:false`, no `dribbleTrick` event). Cause: the adjacent rival AI could tackle during the ~250 ms CDP double tap, so no trick was possible. Fix: `rival.cd=9` in test setup. Result: 30/30 pass (desktop + Android), against 3 failures in 24 before the isolation fix. No engine or input code changed.
+- 44 other legacy `tests/*_browser_qa.py` scripts still pin `0.8.24.12-alpha`; port them the same way (separate task). Chromium suites were not run as a whole.
