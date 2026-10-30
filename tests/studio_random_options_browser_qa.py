@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Player Studio RANDOMIZE FACE real-option, no-save desktop and touch regression."""
+"""Player Studio full-look randomization, no-save desktop and touch regression."""
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -46,6 +46,7 @@ with sync_playwright() as pw:
   assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'facial details wrote saves')
   page.locator('[data-action="studioResetAppearance"]').click()
   assert page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")==before,(label,'face detail reset failed')
+  assert page.locator('[data-action="randomizeFace"]').inner_text().strip()=='RANDOMIZE FULL LOOK',(label,'misleading full-look action label')
   page.locator('[data-action="randomizeFace"]').click()
   after=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
   assert set(before)==set(after) and len(after)>=15,(label,'appearance options missing')
