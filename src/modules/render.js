@@ -879,7 +879,7 @@ class Renderer{
   const signatureMotion=personality?sampleMotion(personality,{time:this.time,anim:p.anim,action:p.action,moving}):null;
   const oscillator=Math.sin(p.anim*(17*(signatureMotion?.runRate||1))+p.i*.35);
   // Only real-time match players are smoothed; gallery/studio renders remain deterministic.
-  const gaitMoving=moving&&p.action!=='slide'&&p.action!=='receive'&&p.action!=='pass'&&!['keeperDive','keeperDiveCatch','keeperRecover'].includes(p.action);
+  const gaitMoving=moving&&p.action!=='slide'&&p.action!=='receive'&&p.action!=='pass'&&p.action!=='hurt'&&p.action!=='cry'&&!(p.stun>.2)&&!['keeperDive','keeperDiveCatch','keeperRecover','keeperCatch','keeperThrow','keeperPunt'].includes(p.action);
   const run=this.inMatchDraw&&!p.preview?ARTPOSE.settleStride(this.poseCycles.get(p),oscillator,gaitMoving,this.frameDelta):gaitMoving?oscillator:0;
   if(this.inMatchDraw&&!p.preview)this.poseCycles.set(p,run);
   const av={...avatarFor(p.src),...(p.src.appearance||{})};
