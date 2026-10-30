@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.4
+# SuperMagicFootball release/version policy — About-only 0.12.17.5
+
+**Current dev candidate 0.12.17.5 (30 October 2026):** TACKLE-SNAP-HEADING-01: Slide tackles immediately face the committed tackle direction without walking-turn interpolation; ordinary walking keeps smooth heading transitions. No changes to tackle reach, collisions, four controls or saves. Exact-head CI and hosted verification pending.
 
 **Current dev candidate 0.12.17.4 (30 October 2026):** TACKLE-DIRECTION-01: Eight-direction slide-tackle animation now faces the committed slide vector instead of stale walking input, including diagonal tackles. Slide reach, collision, stamina, four controls and saves remain unchanged. Exact-head CI and hosted verification pending.
 
