@@ -1,3 +1,7 @@
+## 2026-10-30 — STRIKE-POSE-STABILITY-01 (0.12.17.9 candidate)
+- Stable striking poses for kick, super, header, aerial variations; lingering crying state also suppresses moving gait. Gameplay physics, roster, four controls and saves unchanged.
+- New executable Node regression in `tests/tackle_animation.test.cjs`; focused expression checks passed. Full CI, protected promotion and hosted bytes **not verified**.
+
 
 ## 2026-10-30 — KEEPER-POSE-GAIT-01 (0.12.17.8 candidate)
 - Fixed live render gait during goalkeeper catch/throw/punt and during hurt/cry/stunned actions, retaining static action poses; kept physics, players, controls and saved data unchanged.
