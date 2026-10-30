@@ -6,6 +6,7 @@ import {ABILITIES} from "./abilities.js";
 import {DRIBBLES} from "./dribbles.js";
 import {ABILITY_ICONS} from "./ability-icons.js";
 import {STATS} from "./stats.js";
+import {JUMPMETRICS} from "./jumpmetrics.js";
 import {MORALE} from "./morale.js";
 import {DATA} from "./data.js";
 import {IDENTITY} from "./identity.js";
@@ -30,7 +31,7 @@ import {BPWPERSONALITY} from "./bpwpersonality.js";
 import {RENDER} from "./render.js";
 import {CONCEPT_MODULAR} from "./conceptmodular.js";
 import {GAME_ASSETS} from "../assets.js";
-(()=>{const {ArcadeAudio,AUDIO_DEFAULTS}=AUDIO;const {JAPAN_ROSTER,TEAMS,rosterFor,SHOTS,DEFAULT_OPTIONS,DEFAULT_LINEUP,WEATHER,TERRAIN,CONDITIONS,FORMATIONS}=DATA;const {Input}=INPUT;const {TEAM_TALKS,moodLabel}=MORALE;const {AI_LEVELS,aiTuning}=AI;const {withStats,NUMERIC_STATS,overallForPosition}=STATS;const {abilityLevel}=SPECIALS;const {kitFor,KIT_CHOICES}=KITS;const {teamIdentity,countryFlag,countryCode,isClub}=IDENTITY;const {careerClubIds,clubRegion,clubCountry,countryName,availableRegions,availableCountries,clubsInCountry}=CLUBFILTERS;const {defaultPlan,safePlan,validatePlan,ATTACK_STYLES,DEFENCE_STYLES}=TACTICS;const {GameEngine}=ENGINE;const {Renderer}=RENDER;const {installExpansion,avatarFor,NATURAL_SKIN_TONES,NATURAL_HAIR_COLORS,STUDIO_ASSET_LABELS}=EXPANDED;const {installBPWWorldCups,BPW_YEARS}=BPW;const {installBPWAllTime}=BPWALLTIME;const {CONTINENTS,SIX_TOP_BY_CONTINENT,installContinentalClubs}=CONTINENTAL;const {createTournament,tournamentCurrent,tournamentAdvance,tournamentStandings,tournamentProgress,validateTournament}=TOURNAMENTS;const {createCareer,currentCareerFixture,advanceCareer,standings,nextSeason,purchase,upgradeFacility,trainPlayer,scoutAcademy,signAcademy,renewContract,recoverPlayer,careerCoverage,recordMatchFitness}=CAREER;
+(()=>{const {ArcadeAudio,AUDIO_DEFAULTS}=AUDIO;const {JAPAN_ROSTER,TEAMS,rosterFor,SHOTS,DEFAULT_OPTIONS,DEFAULT_LINEUP,WEATHER,TERRAIN,CONDITIONS,FORMATIONS}=DATA;const {Input}=INPUT;const {TEAM_TALKS,moodLabel}=MORALE;const {AI_LEVELS,aiTuning}=AI;const {withStats,NUMERIC_STATS,overallForPosition}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel}=SPECIALS;const {kitFor,KIT_CHOICES}=KITS;const {teamIdentity,countryFlag,countryCode,isClub}=IDENTITY;const {careerClubIds,clubRegion,clubCountry,countryName,availableRegions,availableCountries,clubsInCountry}=CLUBFILTERS;const {defaultPlan,safePlan,validatePlan,ATTACK_STYLES,DEFENCE_STYLES}=TACTICS;const {GameEngine}=ENGINE;const {Renderer}=RENDER;const {installExpansion,avatarFor,NATURAL_SKIN_TONES,NATURAL_HAIR_COLORS,STUDIO_ASSET_LABELS}=EXPANDED;const {installBPWWorldCups,BPW_YEARS}=BPW;const {installBPWAllTime}=BPWALLTIME;const {CONTINENTS,SIX_TOP_BY_CONTINENT,installContinentalClubs}=CONTINENTAL;const {createTournament,tournamentCurrent,tournamentAdvance,tournamentStandings,tournamentProgress,validateTournament}=TOURNAMENTS;const {createCareer,currentCareerFixture,advanceCareer,standings,nextSeason,purchase,upgradeFacility,trainPlayer,scoutAcademy,signAcademy,renewContract,recoverPlayer,careerCoverage,recordMatchFitness}=CAREER;
 
 
 
@@ -917,12 +918,25 @@ function drawStudioEightViewGallery(player,appearance){
 
 // STUDIO-101: edit the exact 14 numeric attributes already used by the match
 // engine. Keep legacy rating and player identity intact for older saves.
-const STUDIO_STAT_NAMES=Object.freeze({stamina:'Stamina',strength:'Strength',aggression:'Aggression',defence:'Defence',speedRating:'Speed',agility:'Agility',dribbling:'Dribbling',shootPower:'Shot power',shootAccuracy:'Shot accuracy',heading:'Heading',passing:'Passing',crossing:'Crossing',gkDiving:'GK diving',gkSkill:'GK skill'});
+const STUDIO_STAT_NAMES=Object.freeze({stamina:'Stamina',strength:'Strength',aggression:'Aggression',defence:'Defence',speedRating:'Speed',agility:'Agility',dribbling:'Dribbling',shootPower:'Shot power',shootAccuracy:'Shot accuracy',heading:'Heading',jumping:'Jumping',passing:'Passing',crossing:'Crossing',gkDiving:'GK diving',gkSkill:'GK skill'});
 function studioStatControls(player){const normalized=withStats(player);
- return `<details id="studioStatsEditor"><summary>EDIT PLAYER STATS · ${escapeHTML(player.role)} OVR ${overallForPosition(normalized)}</summary><p class="muted">Change any of the 14 match attributes (1–100). This does not alter historic IDs or the stored legacy overall rating.</p><div class="avatarControls">${NUMERIC_STATS.map(key=>`<label for="stat_${key}">${STUDIO_STAT_NAMES[key]||key}<input class="choice" type="number" inputmode="numeric" min="1" max="100" step="1" id="stat_${key}" value="${normalized[key]}" /></label>`).join('')}</div><p id="studioStatOVR" role="status">POSITION OVR: ${overallForPosition(normalized)}</p><div class="row">${button('SAVE PLAYER STATS','saveStudioStats','gold')}${button('RESET UNSAVED STATS','resetStudioStats')}</div></details>`;
+ return `<details id="studioStatsEditor"><summary>EDIT PLAYER STATS · ${escapeHTML(player.role)} OVR ${overallForPosition(normalized)}</summary><p class="muted">Change any of the ${NUMERIC_STATS.length} match attributes (1–100). Jumping affects leap height and Energy cost, not the legacy overall rating or player ID.</p><div class="avatarControls">${NUMERIC_STATS.map(key=>`<label for="stat_${key}">${STUDIO_STAT_NAMES[key]||key}<input class="choice" type="number" inputmode="numeric" min="1" max="100" step="1" id="stat_${key}" value="${normalized[key]}" /></label>`).join('')}</div><p id="studioStatOVR" role="status">POSITION OVR: ${overallForPosition(normalized)}</p><p id="studioJumpPreview" class="muted" role="status" aria-live="polite">${studioJumpPreview(normalized.jumping)}</p><div class="row">${button('SAVE PLAYER STATS','saveStudioStats','gold')}${button('RESET UNSAVED STATS','resetStudioStats')}</div></details>`;
 }
 function readStudioStats(){const stats={};for(const key of NUMERIC_STATS){const node=$('stat_'+key),raw=node?.value??'';const value=Number(raw);if(raw.trim()===''||!Number.isInteger(value)||value<1||value>100)throw Error('Invalid '+(STUDIO_STAT_NAMES[key]||key)+': enter a whole number from 1 to 100');stats[key]=value;}return stats;}
-function studioStatPreview(){const label=$('studioStatOVR');if(!label)return;try{const player=((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home))[avatarIndex];label.textContent='POSITION OVR: '+overallForPosition({...player,...readStudioStats()});}catch(error){label.textContent=error.message;}}
+// STUDIO-JUMP-PREVIEW-01: the editor and live engine use one Jumping formula.
+function studioJumpPreview(jumping){
+ const {rating,heightRatio,energyCostMultiplier}=jumpMetrics(jumping);
+ return 'JUMPING '+rating+'/100 · LEAP HEIGHT '+Math.round(heightRatio*100)+'% · JUMP ENERGY COST ×'+energyCostMultiplier.toFixed(2)+' (relative to Jumping 100)';
+}
+function studioStatPreview(){
+ const label=$('studioStatOVR'),jump=$('studioJumpPreview');if(!label)return;
+ try{
+  const player=((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home))[avatarIndex];
+  const stats=readStudioStats();
+  label.textContent='POSITION OVR: '+overallForPosition({...player,...stats});
+  if(jump)jump.textContent=studioJumpPreview(stats.jumping);
+ }catch(error){label.textContent=error.message;if(jump)jump.textContent='Enter valid stats to preview Jumping performance.';}
+}
 function saveStudioStats(){try{const stats=readStudioStats(),inCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club);const source=inCareer?career.roster.map(p=>({...p})):roster(home);if(!source[avatarIndex])throw Error('No player selected');source[avatarIndex]={...source[avatarIndex],...stats};if(inCareer){const updated={...career,roster:source};if(!storeCharacterChanges('managerCareer',updated))return;career=updated;saveCareer();showCareerSquad();}else{const updated={...edits,[TEAMS[home].id]:source};if(!storeCharacterChanges('edits',updated))return;edits=updated;showPlayerStudio(avatarIndex);}}catch(error){alert('Cannot save player stats: '+error.message)}}
 // Read-only Super Shot level/selection guide. It never writes to the roster.
 function studioShotPreviewGuide(choice,equipped,tier){
