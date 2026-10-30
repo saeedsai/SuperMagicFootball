@@ -1,3 +1,7 @@
+## 2026-10-30 — DEFENCE-TACKLE-REACH-01 (0.12.17.1 dev candidate)
+- DEFENCE-TACKLE-REACH-01: Slide tackle travel distance now scales from 50% at Defence 1 to the existing maximum at Defence 100, preserving sprint versus standing slide speed and timing. No new controls, roster changes or save schema changes.
+- Added two focused Node regressions for monotonic rating scaling and existing slide travel cap/timing. Exact-head 4+4 Chromium/Node and Modular QA pending; no promotion or hosted verification claimed.
+
 ### 2026-10-30 — release metadata syntax repair
 - Exact-head Full Regression preflight run 41059663232 and Modular QA 41059663045 failed: unescaped apostrophe in the newly added release note caused a JavaScript SyntaxError in src/modules/release.js. Corrected the string; rerun full exact-head checks. No gameplay or version change.
 
