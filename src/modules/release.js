@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.17.5',
+ version:'0.12.17.6',
  date:'2026-10-30',
  notes:Object.freeze([
+  'BREATH-STATIONARY-HOLD-01: Holding DRIBBLE while standing still no longer spends sustained-movement Breath; analog-speed dribbling scales its small hold drain with movement, while sprint remains expensive. Idle/walking recovery and selected-human-only Breath rings are preserved.',
   'TACKLE-SNAP-HEADING-01: Slide tackles immediately face the committed tackle direction without walking-turn interpolation; ordinary walking keeps smooth heading transitions. No changes to tackle reach, collisions, four controls or saves.',
   'TACKLE-DIRECTION-01: Eight-direction slide-tackle animation now faces the committed slide vector instead of stale walking input, including diagonal tackles. Slide reach, collision, stamina, four controls and saves remain unchanged.',
   'BREATH-DRIBBLE-HOLD-01: Ordinary moving DRIBBLE holds now use a small Stamina-scaled Breath drain (0.12 to 0.20 per second), while JUMP sprint remains much more costly. The existing one-time dribble and Magic Trick costs, idle/walking recovery, selected-player-only Breath ring, Energy, saves and four controls are unchanged.',

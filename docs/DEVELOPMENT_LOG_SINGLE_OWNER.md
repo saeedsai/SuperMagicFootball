@@ -1,3 +1,9 @@
+## 2026-10-30 — BREATH-STATIONARY-HOLD-01 (0.12.17.6)
+- BREATH-STATIONARY-HOLD-01: Holding DRIBBLE while standing still no longer spends sustained-movement Breath; analog-speed dribbling scales its small hold drain with movement, while sprint remains expensive. Idle/walking recovery and selected-human-only Breath rings are preserved.
+- Fixed exact-head 3e09d66b CI preflight/Modular README heading mismatch (README v0.12.17.4 vs package v0.12.17.5); no test bypass.
+- Added focused Node numeric/source checks and real-engine desktop/simulated-touch Chromium stationary-hold comparison; actual CI results pending.
+- Retain open physical two-phone acceptance #48; no routine LAN changes. No main promotion or Pages certification claimed.
+
 ## 2026-10-30 — TACKLE-SNAP-HEADING-01 (0.12.17.5)
 - Fixed prior CI blocker: README first-line release candidate banner and playable link.
 - TACKLE-SNAP-HEADING-01: Slide tackles immediately face the committed tackle direction without walking-turn interpolation; ordinary walking keeps smooth heading transitions. No changes to tackle reach, collisions, four controls or saves.

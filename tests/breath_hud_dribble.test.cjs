@@ -110,3 +110,19 @@ test('current selection wins immediately over stale controlled flags in both loc
  assert.equal(predicate(next,game,false),false,'outside live match');
  next.preview=true;assert.equal(predicate(next,game,true),false,'editor preview');
 });
+
+test('stationary DRIBBLE hold preserves idle recovery and analog movement scales the extra cost',()=>{
+ const engine=text('src/modules/engine.js');
+ assert.match(engine,/dt\*dribbleHoldBreathRate\(stat\(p,'stamina'\)\)\*Math\.min\(1,Math\.hypot\(dx,dy\)\)/);
+ for(const stamina of [1,50,100]){
+  const cap=F.breathCapacity(stamina),start=cap*.4,rate=F.dribbleHoldBreathRate(stamina);
+  const rest=F.breathTick(start,stamina,1,0);
+  const still=rest-rate*0,half=F.breathTick(start,stamina,1,.6)-rate*.5;
+  const full=F.breathTick(start,stamina,1,.6)-rate;
+  const sprint=F.breathTick(start,stamina,1,1.5);
+  assert.equal(still,rest,'stationary held DRIBBLE must not cancel idle recovery');
+  assert.ok(half>full,'half-speed dribble must consume less extra Breath');
+  assert.ok(start-full<.5,'ordinary moving dribble remains inexpensive');
+  assert.ok(start-sprint>5*(start-full),'sprint must cost much more');
+ }
+});

@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.5
+# SuperMagicFootball release/version policy — About-only 0.12.17.6
+
+**Current dev candidate 0.12.17.6 (30 October 2026):** BREATH-STATIONARY-HOLD-01: Holding DRIBBLE while standing still no longer spends sustained-movement Breath; analog-speed dribbling scales its small hold drain with movement, while sprint remains expensive. Idle/walking recovery and selected-human-only Breath rings are preserved. Exact-head CI and hosted verification pending.
 
 **Current dev candidate 0.12.17.5 (30 October 2026):** TACKLE-SNAP-HEADING-01: Slide tackles immediately face the committed tackle direction without walking-turn interpolation; ordinary walking keeps smooth heading transitions. No changes to tackle reach, collisions, four controls or saves. Exact-head CI and hosted verification pending.
 

@@ -6,6 +6,7 @@
 Sole developer for safe, incremental tested commits on existing dev; continue useful work through release blockers without bypassing CI, branch protections or physical acceptance gates.
 
 ## Current checkpoint
+- 0.12.17.6 BREATH-STATIONARY-HOLD-01: analog-scaled held-dribble drain; stationary hold recovers. README heading corrected after exact-head 3e09d66 CI failure. Node/Chromium regressions added; exact-head CI, main and Pages pending.
 - 0.12.17.5 TACKLE-SNAP-HEADING-01: committed immediate slide facing, Node regression and README release-banner CI fix; exact-head QA/promotion pending.
 - TACKLE-DIRECTION-01 0.12.17.4: slide-facing uses committed slide vector for eight headings; Node regression added. Exact-head CI and deployment pending.
 **Current dev candidate:** 0.12.17.3

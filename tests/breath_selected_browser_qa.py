@@ -81,8 +81,15 @@ with sync_playwright() as pw:
    first.breath=4;const beforeHold=first.breath;
    g.updatePlayers(.02);
    const holdLoss=beforeHold-first.breath;
+   // Same real controlled-player path: stationary DRIBBLE must recover as if resting.
+   g.ball.owner=first;first.breath=4;
+   g.input.state[0]={x:0,y:0,dribble:true,pass:false,shoot:false,jump:false};
+   g.updatePlayers(.02);const stationaryHold=first.breath;
+   g.ball.owner=first;first.breath=4;
+   g.input.state[0]={x:0,y:0,dribble:false,pass:false,shoot:false,jump:false};
+   g.updatePlayers(.02);const stationaryRest=first.breath;
    g.input.state[0]=oldInput;g.autoSwitch=oldAutoSwitch;g.cooldown=oldCooldown;
-   return {initial,unselected,cpu,switched,former,localAway,soloAway,preview,menu,staminaSamples,holdLoss,
+   return {initial,unselected,cpu,switched,former,localAway,soloAway,preview,menu,staminaSamples,holdLoss,stationaryHold,stationaryRest,
            actions:document.querySelectorAll('#touchButtons button[data-act]').length,
            players:g.players.length};
   }""")
@@ -92,6 +99,8 @@ with sync_playwright() as pw:
   assert outcome['localAway']==2 and outcome['soloAway']==0,(name,'two-human/solo',outcome)
   assert outcome['preview']==0 and outcome['menu']==0,(name,'preview/menu',outcome)
   assert 0<outcome['holdLoss']<.01,(name,'actual held-dribble frame should have tiny positive Breath drain',outcome)
+  assert outcome['stationaryHold']>4,(name,'stationary held dribble must recharge',outcome)
+  assert abs(outcome['stationaryHold']-outcome['stationaryRest'])<1e-6,(name,'stationary DRIBBLE must not drain extra Breath',outcome)
   assert outcome['actions']==4 and outcome['players']==12,(name,'control/roster invariants',outcome)
   for sample in outcome['staminaSamples']:
    assert sample['normal']>sample['start']-.2,(name,'normal run drains too much',sample)

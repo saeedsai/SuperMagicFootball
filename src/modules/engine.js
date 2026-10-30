@@ -1440,8 +1440,9 @@ class GameEngine{
   if(this.input.canceled?.(p.t,'dribble')){p.dribbleHold=0;p.ballLiftLock=false;}
   p.dx=dx;p.dy=dy;const elapsedJump=Math.max(p.jumpHold||0,this.input.tapDuration?.(p.t,'jump')||0);
   // Breath replaces any fixed continuous-dribble duration cap.
-  // Ordinary ball-control hold costs little Breath; sustained JUMP sprint still drains much faster.
-  if(s.dribble&&this.ball.owner===p)p.breath=Math.max(0,(p.breath??breathCapacity(stat(p,'stamina')))-dt*dribbleHoldBreathRate(stat(p,'stamina')));
+  // Only moving ball-control holds spend their small extra Breath budget. Standing still may recover.
+  // Analog dribble movement scales the cost; sustained JUMP sprint remains far more expensive.
+  if(s.dribble&&this.ball.owner===p)p.breath=Math.max(0,(p.breath??breathCapacity(stat(p,'stamina')))-dt*dribbleHoldBreathRate(stat(p,'stamina'))*Math.min(1,Math.hypot(dx,dy)));
   p.dribbleHold=s.dribble&&this.ball.owner===p?(p.dribbleHold||0)+dt:0;
   if(!s.dribble||this.ball.owner!==p)p.magicHoldLatched=false;
   if(!s.dribble)p.ballLiftLock=false;

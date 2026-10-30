@@ -1,3 +1,5 @@
+> **0.12.17.6 release candidate (30 October 2026):** BREATH-STATIONARY-HOLD-01: Holding DRIBBLE while standing still no longer spends sustained-movement Breath; analog-speed dribbling scales its small hold drain with movement, while sprint remains expensive. Idle/walking recovery and selected-human-only Breath rings are preserved. Focused Node/Chromium and exact-head full QA pending; protected promotion and Pages verification are separate gates. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.12.17.5 release candidate (30 October 2026):** TACKLE-SNAP-HEADING-01: Slide tackles immediately face the committed tackle direction without walking-turn interpolation; ordinary walking keeps smooth heading transitions. No changes to tackle reach, collisions, four controls or saves. Exact-head CI and hosted verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.12.17.4 release candidate (30 October 2026):** TACKLE-DIRECTION-01: Eight-direction slide-tackle animation now faces the committed slide vector instead of stale walking input, including diagonal tackles. Slide reach, collision, stamina, four controls and saves remain unchanged. Exact-head CI and hosted verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -320,7 +322,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.12.17.4 · Modular source project
+# Supermagic Football · v0.12.17.6 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 
