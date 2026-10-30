@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.17.10',
+ version:'0.12.17.11',
  date:'2026-10-30',
  notes:Object.freeze([
+  'MAGIC-BAT-JUMP-01: Defenders can now evade a close-range Bat Strike with a timely JUMP (20+ world-height), while the existing grounded SHOOT-slide parry remains. The caster still pays the six-second cooldown and original fatigue; no new controls, roster changes or save-format changes.',
   'BREATH-ANALOG-WALK-01: Light analog walking with possession now restores Breath, ordinary full-speed running/dribbling remains low-drain, and JUMP sprint/hyperdash remains expensive. The controlled-player outline and Breath gauge now follow the same current human selection in solo/local Versus, including immediate switches. Energy, four controls, rosters and saves unchanged.',
   'STRIKE-POSE-STABILITY-01: Shooting and aerial strikes no longer cycle running footsteps during their authored action poses; lingering crying animation also suppresses gait. No ball physics, four-button controls, saves or roster changes.',
   'KEEPER-POSE-GAIT-01: Goalkeeper catch, throw and punt animations, plus hurt/cry and stunned states, no longer cycle running footsteps. Match physics, four controls, saves and roster IDs are unchanged.',
