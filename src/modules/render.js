@@ -874,7 +874,7 @@ class Renderer{
   }
   // Committed tackles snap to their heading; walking still eases through turns.
   if(this.inMatchDraw&&p.action==='slide'&&!p.preview&&moving)this.poseHeadings.set(p,Math.atan2(faceDY,faceDX));
-  const view=moving?VISUALFEEL.facingView(faceDX,faceDY,p.face||1):(p.visualFacing||VISUALFEEL.facingView(0,0,p.face||1));if(moving)p.visualFacing=view;
+  const view=moving?(this.inMatchDraw&&!p.preview&&p.action!=='slide'?VISUALFEEL.stableFacingView(faceDX,faceDY,p.face||1,p.visualFacing):VISUALFEEL.facingView(faceDX,faceDY,p.face||1)):(p.visualFacing||VISUALFEEL.facingView(0,0,p.face||1));if(moving)p.visualFacing=view;
   const personality=profileFor(p.src);
   const signatureMotion=personality?sampleMotion(personality,{time:this.time,anim:p.anim,action:p.action,moving}):null;
   const oscillator=Math.sin(p.anim*(17*(signatureMotion?.runRate||1))+p.i*.35);
