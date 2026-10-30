@@ -1,3 +1,7 @@
+## 2026-10-30 — BREATH-RUN-SELECTED-01 (0.12.16.2 dev candidate)
+- BREATH-RUN-SELECTED-01: Ordinary running, including carrying the ball, now spends very little Breath; sprinting and hyperdash spend substantially more. The foot-level Breath ring appears only for the currently user-selected controlled player, following selection switches. Four buttons, player IDs, saves, Energy and offline play remain unchanged.
+- Changed existing Breath intensity and renderer gating, extended focused Node regressions. Exact-head 4+4/Modular QA and hosted Pages remain unverified pending workflows; no physical two-phone LAN certification (#48). No broker changes (#86); main protection issue #87 remains.
+
 ## 2026-10-30 — STUDIO-GALLERY-A11Y-PHASE-01 (0.12.16.1 dev candidate)
 - Improved eight-direction Player Studio action gallery: focusable tile and canvas accessible names now include selected action and frame 1–4; the polite comparison status also announces frame changes. Cache prevents redundant redraws. No new artwork, physics, save format, input, roster or LAN changes.
 - Extended real extracted UI gallery Node tests for eight directional labels, action/phase updates, and unchanged cached frames. Full exact-head four Node + four Chromium and Modular QA are mandatory before promotion; hosted Pages byte verification is independent.
