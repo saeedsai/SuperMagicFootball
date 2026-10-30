@@ -17,7 +17,7 @@ import {SHOTPATHS} from "./shotpaths.js";
 import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
 import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards} from "./magic-hazards.js";
-const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,defensivePressers}=AI;const {withStats,stat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,dribbleHoldBreathRate}=FITNESS;
+const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,defensivePressers}=AI;const {withStats,stat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
 
 
 
@@ -346,7 +346,7 @@ class GameEngine{
   p.dx=maxSpeed?p.moveVX/maxSpeed:0;p.dy=maxSpeed?p.moveVY/maxSpeed:0;
  }
 
- staminaTick(p,dt,intensity=0){p.breath=breathTick(p.breath,stat(p,'stamina'),dt,intensity);p.fatigue=fatigueTick(p.fatigue,stat(p,'stamina'),dt,intensity);this.fatigueLedger[p.t][p.src.id]=p.fatigue;}
+ staminaTick(p,dt,intensity=0,breathIntensity=intensity){p.breath=breathTick(p.breath,stat(p,'stamina'),dt,breathIntensity);p.fatigue=fatigueTick(p.fatigue,stat(p,'stamina'),dt,intensity);this.fatigueLedger[p.t][p.src.id]=p.fatigue;}
  spendStamina(p,kind){const breathMultiplier=breathPenalty(p.breath??breathCapacity(stat(p,'stamina')),stat(p,'stamina'));p.breath=spendBreath(p.breath,stat(p,'stamina'),kind);const jumpCost=kind==='jump'?jumpMetrics(stat(p,'jumping')).energyCostMultiplier:1;const levelKind=kind==='super'||kind==='comboSuper'?'shot':(kind==='defenceSuper'||kind==='spinBumper')?'defence':kind==='keeperSuper'?'keeper':null;const multiplier=(levelKind?levelModifiers(abilityLevel(p,levelKind)).fatigue:1)*(['super','comboSuper'].includes(kind)?superShotFatigueMultiplier(PHYSICS_TUNING):1);p.fatigue=actionFatigue(p.fatigue,stat(p,'stamina'),kind,multiplier*jumpCost*breathMultiplier);this.fatigueLedger[p.t][p.src.id]=p.fatigue;}
  halftimeRecovery(){
   for(const p of this.players)this.fatigueLedger[p.t][p.src.id]=p.fatigue;
@@ -1451,7 +1451,7 @@ class GameEngine{
  // Sustained movement + sprint is deliberate to prevent accidental hyperdash.
  if(running&&Math.hypot(dx,dy)>.52&&this.ball.owner!==p){p.sprintCharge=(p.sprintCharge||0)+dt;if(p.sprintCharge>.56)this.triggerHyperdash(p);}else p.sprintCharge=0;
  this.moveAgile(p,dx,dy,spd,dt);if(p.dashTimer>0){p.action='hyperdash';p.actionTimer=.17;}
- if(Math.abs(p.dx)>.04)p.face=p.dx>0?1:-1;this.staminaTick(p,dt,Math.hypot(dx,dy)>.14?(p.dashTimer>0?1.7:running?1.5:.6):0);if(this.cooldown===0){
+ if(Math.abs(p.dx)>.04)p.face=p.dx>0?1:-1;this.staminaTick(p,dt,Math.hypot(dx,dy)>.14?(p.dashTimer>0?1.7:running?1.5:.6):0,breathMovementIntensity(Math.hypot(dx,dy),running,p.dashTimer>0));if(this.cooldown===0){
   if(p.queuedPass){
    const pending=p.queuedPass;p.queuedPass=null;
    if(this.clock<=pending.until&&this.ball.owner?.t===p.t){this.performTeamPass(p,pending.hold>.24,false,pending.direction,pending.hold);p.passUsed=true;p.passHold=0;p.passDirection=null;}

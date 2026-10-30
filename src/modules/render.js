@@ -920,7 +920,7 @@ class Renderer{
   if((p.firstTouchFx||0)>0){ctx.save();ctx.globalAlpha=clamp(p.firstTouchFx/.35,0,1)*.75;
    ctx.strokeStyle=p.t===0?'#fff4a4':'#a8f2ff';ctx.lineWidth=3;
    ctx.beginPath();ctx.ellipse(0,5,29+(1-p.firstTouchFx/.35)*15,12+(1-p.firstTouchFx/.35)*5,0,0,PI*2);ctx.stroke();ctx.restore();}
-  if(p.controlled){ctx.strokeStyle=p.t===0?'#ffe675':'#74f2ff';ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(0,5,28,12,0,0,PI*2);ctx.stroke();ellipse(ctx,0,5,21,6,'#061d2855')}
+  if(shouldShowBreathRing(p,game,this.inMatchDraw)){ctx.strokeStyle=p.t===0?'#ffe675':'#74f2ff';ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(0,5,28,12,0,0,PI*2);ctx.stroke();ellipse(ctx,0,5,21,6,'#061d2855')}
   // Circular Breath gauge at the feet. Draw only in live matches, not editor previews.
   if(shouldShowBreathRing(p,game,this.inMatchDraw)){
    const stamina=STATS.stat(p,'stamina');

@@ -38,12 +38,13 @@ with sync_playwright() as pw:
    const canvas=document.createElement('canvas');canvas.width=1000;canvas.height=700;
    const ctx=canvas.getContext('2d');
    const original=ctx.ellipse.bind(ctx);
-   let ringCount=0;
+   let ringCount=0,outlineCount=0;
    ctx.ellipse=(x,y,rx,ry,...args)=>{
     if(x===0&&y===4&&rx===34&&ry===15)ringCount++;
+    if(x===0&&y===5&&rx===28&&ry===12)outlineCount++;
     return original(x,y,rx,ry,...args);
    };
-   const draw=p=>{const before=ringCount;r.drawPlayer(ctx,p,g);return ringCount-before;};
+   const draw=p=>{const before=ringCount,outlineBefore=outlineCount;r.drawPlayer(ctx,p,g);return {breath:ringCount-before,outline:outlineCount-outlineBefore};};
    r.inMatchDraw=true;
    const initial=draw(first),unselected=draw(next),cpu=draw(away);
    // Switch without a physics tick: the old .controlled flag is deliberately stale.
@@ -81,6 +82,10 @@ with sync_playwright() as pw:
    first.breath=4;const beforeHold=first.breath;
    g.updatePlayers(.02);
    const holdLoss=beforeHold-first.breath;
+   // Slow analog walking with possession restores Breath.
+   g.ball.owner=first;first.breath=4;
+   g.input.state[0]={x:.25,y:0,dribble:false,pass:false,shoot:false,jump:false};
+   g.updatePlayers(.02);const analogWalk=first.breath;
    // Same real controlled-player path: stationary DRIBBLE must recover as if resting.
    g.ball.owner=first;first.breath=4;
    g.input.state[0]={x:0,y:0,dribble:true,pass:false,shoot:false,jump:false};
@@ -89,16 +94,17 @@ with sync_playwright() as pw:
    g.input.state[0]={x:0,y:0,dribble:false,pass:false,shoot:false,jump:false};
    g.updatePlayers(.02);const stationaryRest=first.breath;
    g.input.state[0]=oldInput;g.autoSwitch=oldAutoSwitch;g.cooldown=oldCooldown;
-   return {initial,unselected,cpu,switched,former,localAway,soloAway,preview,menu,staminaSamples,holdLoss,stationaryHold,stationaryRest,
+   return {initial,unselected,cpu,switched,former,localAway,soloAway,preview,menu,staminaSamples,holdLoss,analogWalk,stationaryHold,stationaryRest,
            actions:document.querySelectorAll('#touchButtons button[data-act]').length,
            players:g.players.length};
   }""")
-  assert outcome['initial']==2,(name,'initial selected ring background and progress arc',outcome)
-  assert outcome['unselected']==0 and outcome['cpu']==0,(name,'unselected/CPU ring',outcome)
-  assert outcome['switched']==2 and outcome['former']==0,(name,'same-frame switch',outcome)
-  assert outcome['localAway']==2 and outcome['soloAway']==0,(name,'two-human/solo',outcome)
-  assert outcome['preview']==0 and outcome['menu']==0,(name,'preview/menu',outcome)
+  assert outcome['initial']=={'breath':2,'outline':1},(name,'initial selected ring and outline',outcome)
+  assert outcome['unselected']=={'breath':0,'outline':0} and outcome['cpu']=={'breath':0,'outline':0},(name,'unselected/CPU ring',outcome)
+  assert outcome['switched']=={'breath':2,'outline':1} and outcome['former']=={'breath':0,'outline':0},(name,'same-frame switch',outcome)
+  assert outcome['localAway']=={'breath':2,'outline':1} and outcome['soloAway']=={'breath':0,'outline':0},(name,'two-human/solo',outcome)
+  assert outcome['preview']=={'breath':0,'outline':0} and outcome['menu']=={'breath':0,'outline':0},(name,'preview/menu',outcome)
   assert 0<outcome['holdLoss']<.01,(name,'actual held-dribble frame should have tiny positive Breath drain',outcome)
+  assert 4<outcome['analogWalk']<4.06,(name,'analog walking restores Breath',outcome)
   assert outcome['stationaryHold']>4,(name,'stationary held dribble must recharge',outcome)
   assert abs(outcome['stationaryHold']-outcome['stationaryRest'])<1e-6,(name,'stationary DRIBBLE must not drain extra Breath',outcome)
   assert outcome['actions']==4 and outcome['players']==12,(name,'control/roster invariants',outcome)

@@ -126,3 +126,30 @@ test('stationary DRIBBLE hold preserves idle recovery and analog movement scales
   assert.ok(cap-sprint>5*(start-full),'sprint must cost much more');
  }
 });
+
+test('analog walking restores Breath while full-speed running and sprint spend progressively more',()=>{
+ const movement=F.breathMovementIntensity;
+ assert.equal(movement(0),0);assert.equal(movement(.14),0);
+ assert.ok(movement(.25)<.55,'slow analog input is walking');
+ assert.ok(Math.abs(movement(1)-.6)<1e-10);
+ assert.ok(Math.abs(movement(1,true)-1.5)<1e-10);
+ assert.equal(movement(1,true,true),1.7);
+ for(const stat of [1,50,100]){
+  const cap=F.breathCapacity(stat),start=cap*.5;
+  const walk=F.breathTick(start,stat,1,movement(.25));
+  const jog=F.breathTick(start,stat,1,movement(1));
+  const sprint=F.breathTick(start,stat,1,movement(1,true));
+  assert.ok(walk>start,'walking restores Breath');
+  assert.ok(jog<start&&start-jog<.2,'normal run is cheap');
+  assert.ok(sprint<jog-1.3,'sprint costs far more');
+ }
+ const engine=text('src/modules/engine.js');
+ assert.match(engine,/breathMovementIntensity\(Math\.hypot\(dx,dy\),running,p\.dashTimer>0\)/);
+ assert.match(engine,/staminaTick\(p,dt,intensity=0,breathIntensity=intensity\)/);
+ assert.match(engine,/fatigueTick\(p\.fatigue,stat\(p,'stamina'\),dt,intensity\)/,'Energy intensity unchanged');
+});
+test('controlled-player outline and Breath ring share current human selection',()=>{
+ const render=text('src/modules/render.js');
+ assert.match(render,/if\(shouldShowBreathRing\(p,game,this\.inMatchDraw\)\)\{ctx\.strokeStyle=p\.t===0/);
+ assert.doesNotMatch(render,/if\(p\.controlled\)\{ctx\.strokeStyle=/);
+});

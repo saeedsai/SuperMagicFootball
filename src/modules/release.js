@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.17.9',
+ version:'0.12.17.10',
  date:'2026-10-30',
  notes:Object.freeze([
+  'BREATH-ANALOG-WALK-01: Light analog walking with possession now restores Breath, ordinary full-speed running/dribbling remains low-drain, and JUMP sprint/hyperdash remains expensive. The controlled-player outline and Breath gauge now follow the same current human selection in solo/local Versus, including immediate switches. Energy, four controls, rosters and saves unchanged.',
   'STRIKE-POSE-STABILITY-01: Shooting and aerial strikes no longer cycle running footsteps during their authored action poses; lingering crying animation also suppresses gait. No ball physics, four-button controls, saves or roster changes.',
   'KEEPER-POSE-GAIT-01: Goalkeeper catch, throw and punt animations, plus hurt/cry and stunned states, no longer cycle running footsteps. Match physics, four controls, saves and roster IDs are unchanged.',
   'TACKLE-POSE-STABILITY-01: Sliding players no longer cycle their running gait during a tackle; the committed slide pose stays stable in all directions. Tackle distance, collisions, controls and saves remain unchanged.',

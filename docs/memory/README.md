@@ -8,7 +8,7 @@ This folder is a short, bounded handover layer. See `AGENTS.md` for the owner-au
 - Previous chat agents must not continue committing without the owner's new approval. Historical active locks are not an authority to block work.
 
 ## Mandatory per-commit About revision
-The current development About screen displays only the installed four-part `0.12.17.9` candidate version (production verification is separate) and bundled release notes. On **every commit**, keep `src/modules/release.js` and the About tests valid without showing a dev SHA to players. Full immutable Git SHA traceability remains in CI and GitHub history; only main hosted smoke and Pages verify deployed bytes. Follow `docs/VERSIONING_POLICY.md`.
+The current development About screen displays only the installed four-part `0.12.17.10` candidate version (production verification is separate) and bundled release notes. On **every commit**, keep `src/modules/release.js` and the About tests valid without showing a dev SHA to players. Full immutable Git SHA traceability remains in CI and GitHub history; only main hosted smoke and Pages verify deployed bytes. Follow `docs/VERSIONING_POLICY.md`.
 
 ## Start session
 1. Read latest `dev`/ `main` SHAs, this file, shared memory and your own indexed checkpoint.

@@ -1,3 +1,8 @@
+## 2026-10-30 — BREATH-ANALOG-WALK-01 (0.12.17.10 candidate)
+- BREATH-ANALOG-WALK-01: Light analog walking with possession now restores Breath, ordinary full-speed running/dribbling remains low-drain, and JUMP sprint/hyperdash remains expensive. The controlled-player outline and Breath gauge now follow the same current human selection in solo/local Versus, including immediate switches. Energy, four controls, rosters and saves unchanged.
+- Added Node drain/selection tests and Chromium analog-walk plus selected-outline checks; repaired two stale gait regex tests exposed by exact-head CI at 2c7b980 (1192/1194 Node passed).
+- Focused V8 source/predicate checks passed; full Node 4+4, Chromium 4+4, Modular QA and hosted verification must be observed on exact new dev head before promotion.
+
 ## 2026-10-30 — STRIKE-POSE-STABILITY-01 (0.12.17.9 candidate)
 - Stable striking poses for kick, super, header, aerial variations; lingering crying state also suppresses moving gait. Gameplay physics, roster, four controls and saves unchanged.
 - New executable Node regression in `tests/tackle_animation.test.cjs`; focused expression checks passed. Full CI, protected promotion and hosted bytes **not verified**.

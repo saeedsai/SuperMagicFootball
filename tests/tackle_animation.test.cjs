@@ -34,7 +34,11 @@ test('sliding players do not cycle running gait while tackling',()=>{
 
 test('keeper ball-handling and hurt/cry states do not animate a running gait',()=>{
  assert.match(render,/p\.action!=='hurt'&&p\.action!=='cry'&&!\(p\.stun>\.2\)/);
- assert.match(render,/\['keeperDive','keeperDiveCatch','keeperRecover','keeperCatch','keeperThrow','keeperPunt'\]\.includes\(p\.action\)/);
+ const gaitMatch=render.match(/const gaitMoving=([^;]+);/);
+ assert.ok(gaitMatch,'renderer has locomotion predicate');
+ const gait=new Function('p','moving',`return ${gaitMatch[1]}`);
+ for(const action of ['keeperDive','keeperDiveCatch','keeperRecover','keeperCatch','keeperThrow','keeperPunt'])
+  assert.equal(gait({action,stun:0},true),false,action);
  for(const action of ['keeperCatch','keeperThrow','keeperPunt','keeperDive','keeperRecover','hurt','cry']){
   const p={action,stun:0};const gaitMoving=true&&p.action!=='slide'&&p.action!=='receive'&&p.action!=='pass'&&p.action!=='hurt'&&p.action!=='cry'&&!(p.stun>.2)&&!['keeperDive','keeperDiveCatch','keeperRecover','keeperCatch','keeperThrow','keeperPunt'].includes(p.action);
   assert.equal(gaitMoving,false,`${action} must not step while posed`);

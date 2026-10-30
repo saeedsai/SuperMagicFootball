@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.9
+# SuperMagicFootball release/version policy — About-only 0.12.17.10
+
+**Current dev candidate 0.12.17.10 (30 October 2026):** BREATH-ANALOG-WALK-01: Light analog walking with possession now restores Breath, ordinary full-speed running/dribbling remains low-drain, and JUMP sprint/hyperdash remains expensive. The controlled-player outline and Breath gauge now follow the same current human selection in solo/local Versus, including immediate switches. Energy, four controls, rosters and saves unchanged. Exact-head CI, promotion and hosted verification pending.
 
 **Current dev candidate 0.12.17.9 (30 October 2026):** STRIKE-POSE-STABILITY-01: Shooting and aerial strikes no longer cycle running footsteps during their authored action poses; lingering crying animation also suppresses gait. No ball physics, four-button controls, saves or roster changes. Full QA/promotion and hosted certification pending.
 

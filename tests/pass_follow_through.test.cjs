@@ -35,7 +35,11 @@ test('real premium character renderer uses follow-through only on near boot and 
  assert.match(renderer,/const passing=ARTPOSE\.passFollowThrough\(action,p\.actionTimer\)/);
  assert.match(renderer,/gait\.stride\+\(sign===1\?passing\.stride:0\)/);
  assert.match(renderer,/gait\.lift\+\(sign===1\?passing\.lift:0\)/);
- assert.match(renderer,/gaitMoving=moving&&p\.action!=='receive'&&p\.action!=='pass'/);
+ const gaitMatch=renderer.match(/const gaitMoving=([^;]+);/);
+ assert.ok(gaitMatch,'renderer has locomotion predicate');
+ const gait=new Function('p','moving',`return ${gaitMatch[1]}`);
+ for(const action of ['pass','receive'])assert.equal(gait({action,stun:0},true),false,action);
+ assert.equal(gait({action:'run',stun:0},true),true);
  assert.match(renderer,/if\(p\.action==='pass'\)[\s\S]*?ctx\.rotate\(ARTPOSE\.passFollowThrough\(p\.action,p\.actionTimer\)\.lean\)/);
  assert.doesNotMatch(renderer,/\.ball\.vx\s*=|\.ball\.owner\s*=|\.fatigue\s*=/);
 });

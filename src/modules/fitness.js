@@ -38,6 +38,16 @@ function spendBreath(breath,stamina,kind){
 // Sustained ordinary DRIBBLE hold is inexpensive; JUMP sprint remains the high-drain option.
 // This is separate from the one-off action cost of initiating a dribble or Magic Trick.
 const dribbleHoldBreathRate=stamina=>.12+.08*(100-clamp(Number(stamina)||1,1,100))/99;
+// Analog walking restores BREATH while full-speed running and JUMP sprint remain costly.
+// This is BREATH-only: long-term Energy continues to use its original intensity.
+function breathMovementIntensity(magnitude,sprinting=false,hyperdash=false){
+ const input=clamp(Number(magnitude)||0,0,1);
+ if(input<=.14)return 0;
+ if(hyperdash)return 1.7;
+ if(sprinting)return .55+.95*(input-.14)/.86;
+ if(input<=.55)return .15+.4*(input-.14)/.41;
+ return .55+.05*(input-.55)/.45;
+}
 function breathTick(breath,stamina,seconds,intensity=0){
  const cap=breathCapacity(stamina),rated=clamp(Number(stamina)||1,1,100);
  const active=clamp(Number(intensity)||0,0,1.8);
@@ -78,6 +88,6 @@ function recommendSubstitute(plan,roster,ledger,subbedOut=new Set()){
  return best;
 }
 
-return {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,staminaPercent,matchCondition,fatigueStatus,substitutionChanges,recommendSubstitute,breathCapacity,breathPenalty,spendBreath,breathTick,dribbleHoldBreathRate,recoverEnergy};})();
+return {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,staminaPercent,matchCondition,fatigueStatus,substitutionChanges,recommendSubstitute,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate,recoverEnergy};})();
 
 export {FITNESS};
