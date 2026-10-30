@@ -6,7 +6,7 @@
 Sole developer for safe, incremental tested commits on existing dev; continue useful work through release blockers without bypassing CI, branch protections or physical acceptance gates.
 
 ## Current checkpoint
-- 0.12.17.10 BREATH-ANALOG-WALK-01: analog walking recovers Breath, normal run cheap, sprint expensive; only selected human gets Breath and selection rings. Two stale gait CI assertions repaired; exact-head CI/Pages pending.
+- 0.12.17.10 BREATH-ANALOG-WALK-01: analog walking recovers Breath, normal run cheap, sprint expensive; only selected human gets Breath and selection rings. Two stale gait CI assertions repaired; 724826b CI exposed cache suffix and overbroad test, corrected in follow-up. Exact-head CI/Pages pending.
 - 0.12.17.9 STRIKE-POSE-STABILITY-01: running gait suppressed in shot/aerial actions and lingering cry; predicate checks passed, exact-head 4+4 QA and Pages not verified.
 - 0.12.17.8 KEEPER-POSE-GAIT-01: keeper catch/throw/punt, hurt/cry and stun states suppress running gait; focused regression committed; full exact-head QA and Pages pending.
 - 0.12.17.7 TACKLE-POSE-STABILITY-01: committed gait freeze during slide and Node regression; full QA and release pending.

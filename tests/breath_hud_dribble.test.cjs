@@ -151,5 +151,8 @@ test('analog walking restores Breath while full-speed running and sprint spend p
 test('controlled-player outline and Breath ring share current human selection',()=>{
  const render=text('src/modules/render.js');
  assert.match(render,/if\(shouldShowBreathRing\(p,game,this\.inMatchDraw\)\)\{ctx\.strokeStyle=p\.t===0/);
- assert.doesNotMatch(render,/if\(p\.controlled\)\{ctx\.strokeStyle=/);
+ const outline=render.indexOf('if(shouldShowBreathRing(p,game,this.inMatchDraw)){ctx.strokeStyle=');
+ const gauge=render.indexOf('if(shouldShowBreathRing(p,game,this.inMatchDraw)){',outline+1);
+ assert.ok(outline>=0&&gauge>outline,'selected outline must precede selected gauge');
+ assert.doesNotMatch(render.slice(outline,gauge),/if\(p\.controlled\)/,'no stale selection in foot-gauge region');
 });
