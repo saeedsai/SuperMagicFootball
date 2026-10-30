@@ -1,3 +1,6 @@
+## 30 October 2026 — HIDE-BALL-PASS-01 (0.12.12.0)
+Defensive PASS's existing ordinary poke (`action='punch'`) can interrupt Hide Ball when close, grounded, facing the carrier and still within its action timer. This counter has no extra button or save schema; stale, backwards, airborne, far-away and SHOOT-slide inputs cannot cancel it. The caster still pays cooldown and fatigue. Nine Node cases committed; focused execution of real engine method passed 14/14 V8 checks. Pending: full exact-head four Node/four Chromium/Modular QA, device acceptance, protected main promotion and hosted Pages verification.
+
 ## 30 October 2026 — STUDIO-JUMP-PREVIEW-01 (0.12.11.0)
 Player Studio's stat editor now names Jumping, dynamically counts all 15 attributes and previews relative jump height and Energy cost as the value changes; invalid edits show a safe prompt. A shared pure Jumping metrics module now drives both actual single/double-jump impulses and fatigue multiplier, preventing Studio/engine drift. Added seven Node regression tests and repaired the real-engine fatigue test's missing Breath dependencies. No roster, save schema, controls, LAN/P2P or offline behavior changed. Pending: full exact-head four Node/four Chromium/Modular QA, mobile Studio screenshot acceptance, protected promotion and Pages byte smoke.
 
