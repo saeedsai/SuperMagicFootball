@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.17.17',
+ version:'0.12.17.18',
  date:'2026-10-30',
  notes:Object.freeze([
+  'VIZ-03-HEADING-STABILITY-01: Live player artwork now uses a small eight-direction steering hysteresis to prevent side/quarter/front/back sprite flicker near angle thresholds. Sliding tackles and deterministic Studio previews still use exact headings; physics, four controls, rosters and saves are unchanged.',
   'STUDIO-ACCESSORY-RANDOM-01: Player Studio adds RANDOMIZE ACCESSORIES to preview accessory and tattoo options independently of facial features, hair, skin and physique. RESET UNSAVED reverses edits; only SAVE CHARACTER persists changes. Four match controls and all saved games remain compatible.',
   'STUDIO-BODY-RANDOM-01: Player Studio adds RANDOMIZE BODY to preview build, stature and exaggeration independently of face, hair, skin and tattoos. Changes remain unsaved until SAVE CHARACTER; controls, rosters and stats are unchanged.',
   'STUDIO-FACE-DETAILS-01: Player Studio adds RANDOMIZE FACE DETAILS to preview facial features independently of skin, hair, build, stature and tattoos. RESET UNSAVED reverses the preview; saved data changes only through SAVE CHARACTER. Four match controls, rosters and offline saves are preserved.',
