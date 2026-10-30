@@ -903,7 +903,16 @@ class Renderer{
    }
   }
    if(p.controlled){ctx.save();const bob=Math.sin(this.time*6)*3;ctx.translate(0,-115-(p.z||0)+bob);ctx.shadowColor=p.t===0?'#ffe48b':'#8be7ff';ctx.shadowBlur=14;ctx.fillStyle=p.t===0?'#ffdb66':'#78e8ff';ctx.beginPath();ctx.moveTo(0,11);ctx.lineTo(-11,-7);ctx.lineTo(11,-7);ctx.closePath();ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#092855';ctx.lineWidth=3;ctx.stroke();ctx.restore();}
-  // Directional speed lines, purely visual; no effect on collision, speed or stamina.
+  // Turf spray trails behind the sliding boot; visual-only.
+   if(sliding&&this.inMatchDraw&&!p.preview&&p.slideTimer>0){
+    const progress=clamp(1-(p.slideRemaining||0)/Math.max(1,p.slideBudget||104),0,1);
+    ctx.save();ctx.globalAlpha=.16+.36*Math.sin(Math.PI*progress);
+    ctx.fillStyle=game.terrain==='Dirt'?'#dfbc83':'#b5e38b';
+    const dx=p.slideDX||p.face||1,dy=p.slideDY||0;
+    for(let k=0;k<4;k++){const spread=(k-1.5)*7;ctx.beginPath();ctx.ellipse(-dx*(17+k*11)-dy*spread,4-dy*(17+k*11)+dx*spread,5+k*1.4,2+k*.5,0,0,PI*2);ctx.fill();}
+    ctx.restore();
+   }
+   // Directional speed lines, purely visual; no effect on collision, speed or stamina.
   if(moving&&['hyperdash','dribbleTrick'].includes(p.action)){ctx.save();ctx.globalAlpha=.32;ctx.strokeStyle=p.t===0?'#ffe79a':'#8df7ff';ctx.lineWidth=3;for(let k=-1;k<=1;k++){ctx.beginPath();ctx.moveTo(-p.face*35,p.z?(-p.z+k*11):k*11);ctx.lineTo(-p.face*(62+8*Math.sin(this.time*14+k)),k*11-3);ctx.stroke()}ctx.restore();}
   if((p.firstTouchFx||0)>0){ctx.save();ctx.globalAlpha=clamp(p.firstTouchFx/.35,0,1)*.75;
    ctx.strokeStyle=p.t===0?'#fff4a4':'#a8f2ff';ctx.lineWidth=3;
@@ -928,10 +937,12 @@ class Renderer{
   ctx.scale((.77+((av.face%5)*.011))*build,(.78+((av.style%3)*.018))*stature);ctx.scale(view.side,1);
   if(isHurt&&(p.stun||0)>1.15){ctx.translate(0,12);ctx.rotate(-.55*view.side);}
   if(sliding){const remaining=clamp((p.slideRemaining||0)/Math.max(1,p.slideBudget||104),0,1);
-   // Ease into a committed tackle and settle back when it stops.
-   const pose=p.slideTimer>0?(.8+.2*remaining):clamp((p.actionTimer||0)/.18,0,1);
-   ctx.translate(3*pose,12*pose);ctx.rotate(-.44*pose);
-  }
+    // Drop into a committed tackle, extend low, then recover upright.
+    const entry=clamp((1-remaining)/.22,0,1);
+    const recovery=p.slideTimer>0?1:clamp((p.actionTimer||0)/.18,0,1);
+    const pose=(.42+.58*entry)*recovery;
+    ctx.translate(8*pose,15*pose);ctx.rotate(-.62*pose);
+   }
   if(p.action==='pass'){
    // Direction mirroring is already applied by ctx.scale(view.side,1).
    ctx.rotate(ARTPOSE.passFollowThrough(p.action,p.actionTimer).lean);
