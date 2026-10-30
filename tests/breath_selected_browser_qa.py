@@ -53,6 +53,12 @@ with sync_playwright() as pw:
    // Local Versus has one selected human on each side.
    g.humans=2;away.controlled=false;
    const localAway=draw(away);
+   // A network peer runs both teams as humans; its HUD belongs only to its own side.
+   g.localBreathSide=0;const hostHome=draw(next),hostAway=draw(away);
+   g.localBreathSide=1;const guestHome=draw(next),guestAway=draw(away);
+   g.controlled[1]=g.players.find(p=>p.t===1&&p!==away&&!p.keeper).i;
+   const guestFormer=draw(away),guestSwitched=draw(g.controlledPlayer(1));
+   g.localBreathSide=null;
    g.humans=1;
    const soloAway=draw(away);
    next.preview=true;
@@ -94,7 +100,7 @@ with sync_playwright() as pw:
    g.input.state[0]={x:0,y:0,dribble:false,pass:false,shoot:false,jump:false};
    g.updatePlayers(.02);const stationaryRest=first.breath;
    g.input.state[0]=oldInput;g.autoSwitch=oldAutoSwitch;g.cooldown=oldCooldown;
-   return {initial,unselected,cpu,switched,former,localAway,soloAway,preview,menu,staminaSamples,holdLoss,analogWalk,stationaryHold,stationaryRest,
+   return {initial,unselected,cpu,switched,former,localAway,hostHome,hostAway,guestHome,guestAway,guestFormer,guestSwitched,soloAway,preview,menu,staminaSamples,holdLoss,analogWalk,stationaryHold,stationaryRest,
            actions:document.querySelectorAll('#touchButtons button[data-act]').length,
            players:g.players.length};
   }""")
@@ -102,6 +108,9 @@ with sync_playwright() as pw:
   assert outcome['unselected']=={'breath':0,'outline':0} and outcome['cpu']=={'breath':0,'outline':0},(name,'unselected/CPU ring',outcome)
   assert outcome['switched']=={'breath':2,'outline':1} and outcome['former']=={'breath':0,'outline':0},(name,'same-frame switch',outcome)
   assert outcome['localAway']=={'breath':2,'outline':1} and outcome['soloAway']=={'breath':0,'outline':0},(name,'two-human/solo',outcome)
+  assert outcome['hostHome']=={'breath':2,'outline':1} and outcome['hostAway']=={'breath':0,'outline':0},(name,'network host ring scope',outcome)
+  assert outcome['guestHome']=={'breath':0,'outline':0} and outcome['guestAway']=={'breath':2,'outline':1},(name,'network guest ring scope',outcome)
+  assert outcome['guestFormer']=={'breath':0,'outline':0} and outcome['guestSwitched']=={'breath':2,'outline':1},(name,'network guest same-frame switch',outcome)
   assert outcome['preview']=={'breath':0,'outline':0} and outcome['menu']=={'breath':0,'outline':0},(name,'preview/menu',outcome)
   assert 0<outcome['holdLoss']<.01,(name,'actual held-dribble frame should have tiny positive Breath drain',outcome)
   assert 4<outcome['analogWalk']<4.06,(name,'analog walking restores Breath',outcome)
