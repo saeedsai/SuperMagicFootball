@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.10.0',
+ version:'0.12.11.0',
  date:'2026-10-30',
  notes:Object.freeze([
+  'STUDIO-JUMP-PREVIEW-01: Player Studio now labels all 15 attributes and previews Jumping height and Energy cost live before saving. Shared Jumping formulas power both the Studio and match physics; old player IDs, ratings and saves are preserved.',
   'BREATH-WALK-HUD-01: Breath regenerates quickly while resting or walking, drains during extreme activity; a circular Breath ring appears under players. Top player bar reads ENERGY; dribble now uses Breath instead of a fixed lockout.',
   'ENERGY-BREATH-01: Added short-term 3–10-second Breath with action drains, recovery and exhaustion penalties, plus persistent Career Energy with rest-day recovery.',
   'JUMPING-STAT-01: Every player now has an editable Jumping attribute proportional to overall rating. Single and double jump height scale with Jumping; 100 preserves the previous maximum height and minimum jump fatigue; every lower rating progressively increases jump cost.',
