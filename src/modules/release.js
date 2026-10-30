@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.17.7',
+ version:'0.12.17.8',
  date:'2026-10-30',
  notes:Object.freeze([
+  'KEEPER-POSE-GAIT-01: Goalkeeper catch, throw and punt animations, plus hurt/cry and stunned states, no longer cycle running footsteps. Match physics, four controls, saves and roster IDs are unchanged.',
   'TACKLE-POSE-STABILITY-01: Sliding players no longer cycle their running gait during a tackle; the committed slide pose stays stable in all directions. Tackle distance, collisions, controls and saves remain unchanged.',
   'BREATH-STATIONARY-HOLD-01: Holding DRIBBLE while standing still no longer spends sustained-movement Breath; analog-speed dribbling scales its small hold drain with movement, while sprint remains expensive. Idle/walking recovery and selected-human-only Breath rings are preserved.',
   'TACKLE-SNAP-HEADING-01: Slide tackles immediately face the committed tackle direction without walking-turn interpolation; ordinary walking keeps smooth heading transitions. No changes to tackle reach, collisions, four controls or saves.',
