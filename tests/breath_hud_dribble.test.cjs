@@ -65,3 +65,13 @@ test('Breath ring is restricted to the currently selected human-controlled playe
  assert.match(render,/p\.controlled&&game\.inControl\(p\.t\)&&game\.controlledPlayer\(p\.t\)===p/);
  assert.doesNotMatch(render,/if\(this\.inMatchDraw&&!p\.preview\)\s*\{\s*const stamina=/);
 });
+
+test('critical Breath pulses only inside the selected-player ring branch',()=>{
+ const render=text('src/modules/render.js');
+ const guard=render.indexOf('if(this.inMatchDraw&&!p.preview&&p.controlled&&game.inControl(p.t)&&game.controlledPlayer(p.t)===p)');
+ const pulse=render.indexOf('if(ratio<.2){ctx.save();ctx.globalAlpha=',guard);
+ const restore=render.indexOf('ctx.restore();',pulse);
+ assert.ok(guard>=0&&pulse>guard&&restore>pulse);
+ assert.match(render.slice(pulse,restore),/Math.sin\(this.time\*10\)/);
+ assert.match(render.slice(pulse,restore),/ctx\.ellipse\(0,4,39,19/);
+});
