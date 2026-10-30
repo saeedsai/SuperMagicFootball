@@ -88,6 +88,14 @@ with sync_playwright() as pw:
    first.breath=4;const beforeHold=first.breath;
    g.updatePlayers(.02);
    const holdLoss=beforeHold-first.breath;
+   // Real engine update with ball: ordinary running is cheap; sustained JUMP sprint is costly.
+   g.ball.owner=first;first.breath=4;first.jumpHold=0;
+   g.input.state[0]={x:1,y:0,dribble:false,pass:false,shoot:false,jump:false};
+   g.updatePlayers(.02);const runLoss=4-first.breath;
+   g.ball.owner=first;first.breath=4;first.jumpHold=.22;
+   g.input.state[0]={x:1,y:0,dribble:false,pass:false,shoot:false,jump:true};
+   g.updatePlayers(.02);const sprintLoss=4-first.breath;
+   first.jumpHold=0;
    // Slow analog walking with possession restores Breath.
    g.ball.owner=first;first.breath=4;
    g.input.state[0]={x:.25,y:0,dribble:false,pass:false,shoot:false,jump:false};
@@ -100,7 +108,7 @@ with sync_playwright() as pw:
    g.input.state[0]={x:0,y:0,dribble:false,pass:false,shoot:false,jump:false};
    g.updatePlayers(.02);const stationaryRest=first.breath;
    g.input.state[0]=oldInput;g.autoSwitch=oldAutoSwitch;g.cooldown=oldCooldown;
-   return {initial,unselected,cpu,switched,former,localAway,hostHome,hostAway,guestHome,guestAway,guestFormer,guestSwitched,soloAway,preview,menu,staminaSamples,holdLoss,analogWalk,stationaryHold,stationaryRest,
+   return {initial,unselected,cpu,switched,former,localAway,hostHome,hostAway,guestHome,guestAway,guestFormer,guestSwitched,soloAway,preview,menu,staminaSamples,holdLoss,runLoss,sprintLoss,analogWalk,stationaryHold,stationaryRest,
            actions:document.querySelectorAll('#touchButtons button[data-act]').length,
            players:g.players.length};
   }""")
@@ -113,6 +121,8 @@ with sync_playwright() as pw:
   assert outcome['guestFormer']=={'breath':0,'outline':0} and outcome['guestSwitched']=={'breath':2,'outline':1},(name,'network guest same-frame switch',outcome)
   assert outcome['preview']=={'breath':0,'outline':0} and outcome['menu']=={'breath':0,'outline':0},(name,'preview/menu',outcome)
   assert 0<outcome['holdLoss']<.01,(name,'actual held-dribble frame should have tiny positive Breath drain',outcome)
+  assert 0<outcome['runLoss']<.01,(name,'actual ordinary run with ball must have tiny Breath drain',outcome)
+  assert outcome['sprintLoss']>5*max(outcome['runLoss'],outcome['holdLoss']),(name,'actual sustained JUMP sprint must drain substantially more than ordinary ball movement',outcome)
   assert 4<outcome['analogWalk']<4.06,(name,'analog walking restores Breath',outcome)
   assert outcome['stationaryHold']>4,(name,'stationary held dribble must recharge',outcome)
   assert abs(outcome['stationaryHold']-outcome['stationaryRest'])<1e-6,(name,'stationary DRIBBLE must not drain extra Breath',outcome)
