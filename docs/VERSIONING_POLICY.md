@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.16.1
+# SuperMagicFootball release/version policy — About-only 0.12.16.2
+
+**Current dev candidate 0.12.16.2 (30 October 2026):** BREATH-RUN-SELECTED-01: Ordinary running, including carrying the ball, now spends very little Breath; sprinting and hyperdash spend substantially more. The foot-level Breath ring appears only for the currently user-selected controlled player, following selection switches. Four buttons, player IDs, saves, Energy and offline play remain unchanged. Tests, protected promotion and hosted verification are separate gates.
 
 **Current dev candidate 0.12.16.1 (30 October 2026):** STUDIO-GALLERY-A11Y-PHASE-01 adds action/frame-aware accessible names to eight Player Studio canvas previews and focusable direction tiles; the polite live status announces the current frame. No changes to art assets, gameplay, four controls, saves, teams or player identities. Exact-head four Node/four Chromium, Modular QA, protected main promotion and hosted Pages bytes remain independent gates.
 
