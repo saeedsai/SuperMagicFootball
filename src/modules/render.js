@@ -863,8 +863,9 @@ class Renderer{
  }
  drawPlayer(ctx,p,game){
   const team=game.getTeam(p.t);if(!team||!p.src)return;
-  const moving=Math.hypot(p.dx||0,p.dy||0)>.2;
-  let faceDX=p.dx||0,faceDY=p.dy||0,turnLag=0;
+  const moving=Math.hypot(p.action==='slide'?(p.slideDX||0):(p.dx||0),p.action==='slide'?(p.slideDY||0):(p.dy||0))>.2;
+  // Slide pose follows its committed tackle vector, not stale movement input.
+   let faceDX=p.action==='slide'?(p.slideDX||0):(p.dx||0),faceDY=p.action==='slide'?(p.slideDY||0):(p.dy||0),turnLag=0;
   // Live match characters ease their visual heading; preview snapshots remain deterministic.
   if(this.inMatchDraw&&moving&&!p.preview){
    const target=Math.atan2(faceDY,faceDX),previous=this.poseHeadings.get(p);
