@@ -18,7 +18,7 @@ function fixture({screen='PLAYER CUSTOMIZATION',careerMode=false,missing=false}=
   $:k=>k==='studioAppearanceSaveState'?hint:fields[k],studioGallerySignature:'cached',
   drawCustomizer(){stats.redraw++;hint.textContent='Appearance changes are ready to save.'},
   localStorage:{setItem(){stats.writes++;}}};
- vm.runInNewContext(method+';this.randomize=studioRandomizeUnsavedAppearance;this.randomizeHair=studioRandomizeHairUnsaved;',context);
+ vm.runInNewContext(method+';this.randomize=studioRandomizeUnsavedAppearance;this.randomizeHair=studioRandomizeHairUnsaved;this.randomizeDetails=studioRandomizeFaceDetailsUnsaved;',context);
  return {context,fields,stats,hint,player};
 }
 test('random look chooses actual enabled option values even with sparse numeric IDs',()=>{
@@ -57,7 +57,7 @@ test('hair-only randomizer changes real enabled hairstyle and hair-color options
  assert.equal(f.context.randomizeHair(()=>.99),true);
  assert.deepEqual(Object.values(f.fields).map(x=>x.value),['11','3','#abc','#456']);
  assert.equal(f.stats.redraw,1);assert.equal(f.context.studioGallerySignature,'');
- assert.match(f.hint.textContent,/Hair previewed.*Nothing saved yet/);
+ assert.match(f.hint.textContent,/Selected appearance previewed.*Nothing saved yet/);
  assert.equal(f.stats.writes,0);assert.equal(f.player.appearance.face,3);
 });
 test('hair-only randomizer does not mutate Career roster or create saved edits',()=>{
@@ -77,4 +77,22 @@ test('hair-only menu action preserves other appearance fields and does not persi
  assert.match(ui,/else if\(a==='randomizeHair'\)studioRandomizeHairUnsaved\(\)/);
  assert.match(method,/\['style','hair'\]/);
  assert.doesNotMatch(method,/store\.put|localStorage\.setItem|saveAppearance\(/);
+});
+
+// Face details leave hair, palette and stature untouched, even in Career Studio.
+test('facial details randomizer changes only permitted features and never persists',()=>{
+ const f=fixture({careerMode:true});
+ assert.equal(f.context.randomizeDetails(()=>.99),true);
+ assert.deepEqual(Object.values(f.fields).map(x=>x.value),['1','8','#abc','#123']);
+ assert.equal(f.stats.redraw,1);assert.equal(f.stats.writes,0);
+ assert.equal(f.context.career.roster[0].appearance.face,3);
+ assert.match(f.hint.textContent,/Selected appearance previewed.*Nothing saved yet/);
+ assert.match(ui,/button\('RANDOMIZE FACE DETAILS','randomizeFaceDetails'\)/);
+ assert.match(ui,/else if\(a==='randomizeFaceDetails'\)studioRandomizeFaceDetailsUnsaved\(\)/);
+ assert.match(method,/\['face','eyes','brows','eyeColor','nose','lips','beard','freckles','scar'\]/);
+});
+test('facial detail changes are disabled outside editor and with no option alternatives',()=>{
+ const other=fixture({screen:'HOME'});assert.equal(other.context.randomizeDetails(),false);
+ const f=fixture();f.fields.face_face.options=[{value:'3'}];
+ assert.equal(f.context.randomizeDetails(),false);assert.equal(f.stats.redraw,0);
 });
