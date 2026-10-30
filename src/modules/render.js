@@ -18,8 +18,13 @@ const RENDER=(()=>{const {WORLD}=ENGINE;const {TEAMS,SHOTS}=DATA;const {dribbleS
 const F=WORLD.field;const PI=Math.PI;
 // Use the current selection, not p.controlled (which is a physics-frame snapshot).
 // A switch can occur after that snapshot but before the next painted frame.
+// In a network match both teams are human in the shared simulation, but only
+// the local side owns this HUD. Null means ordinary couch Versus: show one
+// selected ring per local human; never draw remote or CPU selection rings.
 function shouldShowBreathRing(p,game,inMatchDraw){
- return !!(inMatchDraw&&!p.preview&&game.inControl(p.t)&&game.controlledPlayer(p.t)===p);
+ return !!(inMatchDraw&&!p.preview&&
+  (game.localBreathSide==null||game.localBreathSide===p.t)&&
+  game.inControl(p.t)&&game.controlledPlayer(p.t)===p);
 }
 const rgb=(hex,a)=>hex+a;
 const c=(ctx,v)=>{ctx.fillStyle=v};
