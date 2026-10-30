@@ -6,6 +6,7 @@
 Sole developer on existing dev; small tested increments, no new branch, force push or bypass of CI/security. Never certify physical LAN without two-phone acceptance.
 
 ## Current checkpoint
+- 0.12.17.18 VIZ-03-HEADING-STABILITY-01: stable live eight-direction atlas transitions with exact slide/Studio bypass. Focused JS checks passed; Node and desktop/touch Chromium regression committed, full exact-head QA/Pages pending.
 - 0.12.17.17 STUDIO-ACCESSORY-RANDOM-01: unsaved accessory/tattoo randomizer, focused Node and Chromium regression committed; 4+4, Modular and Pages pending.
 - 0.12.17.16 STUDIO-BODY-RANDOM-01: selective unsaved physique randomizer and Node tests committed. Full QA and main/Pages unverified.
 - 0.12.17.15 STUDIO-FACE-DETAILS-01: unsaved facial-details-only randomizer; Node and browser regression committed; exact-head 4+4, Modular and Pages not yet verified.
