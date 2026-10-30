@@ -1,33 +1,31 @@
-all — sole hourly developer checkpoint
+# SuperMagicFootball — sole hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-10-30
 
 ## Mission
-Develop only on existing `dev`; never create branches, force-push, bypass CI or manually change `main`. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09, saves/offline and LAN/P2P.
+Develop on existing `dev` only; no new branches, force-push, direct main writes or bypassed CI/security. Preserve 223 teams/2676 players, 12-player rosters, six formations, four Pass/Shoot/Dribble/Jump controls, saves/offline, ten Career/Cup slots, SD09 and LAN/P2P.
 
 ## Current checkpoint
-- **0.12.8.0 JUMPING-STAT-01:** Added canonical `jumping` numeric attribute to mechanics; `STATS.withStats` infers it deterministically from overall rating, respecting existing overrides. Single/double jump velocity scales by sqrt(.30+.70*(jumping-1)/99). Rating 100 retains original 420/535 impulses and 14-unit double-jump boost. Jump fatigue multiplier `1+(100-jumping)/100`.
-- **2026-10-30 fatigue correction:** `FITNESS.actionFatigue` formerly capped all multipliers at 1.5, flattening jump costs at ratings 1–50. Jump now permits up to 2.0; other actions remain capped at 1.5. New `tests/jumping_fatigue_real.test.cjs` tests the real engine spendStamina path and fitness function. Seven focused tests passed in a **locally mirrored subset**, not the full repository. Exact-head CI, Chromium, Modular QA, and hosted bytes remain unverified.
-- Earlier: 0.12.7.0 Career slot rename; Player Studio gallery selection/keyboard; eight-view mirror fallback. Independently authored live art remains incomplete.
+- **0.12.11.0 STUDIO-JUMP-PREVIEW-01:** Added `src/modules/jumpmetrics.js` pure shared Jumping profile: 1..100 rating, 30..100% relative jump height, 420/535 max impulses, 1..1.99x jump Energy cost. Match engine's single/double jump and jump Energy spend now use this exact profile. Player Studio labels all 15 stats and updates height/energy preview on edit, reset or invalid input; no persistence until SAVE PLAYER STATS.
+- Updated test-only QA build module order and PWA precache, rotated offline cache, About-only four-field 0.12.11.0 release metadata, package and README; no save/roster schema changes.
+- Added seven-case `tests/studio_jumping_preview.test.cjs`; repaired `tests/jumping_fatigue_real.test.cjs` extracted engine test to inject Jumping and Breath dependencies.
+- Prior 0.12.10.0: walking/idle Breath regeneration, foot-level circular Breath gauge, top ENERGY bar and Breath-based dribble pacing. Prior 0.12.9.0: Career Energy and short-term Breath. Prior 0.12.8.0: Jumping stat and monotonic jump fatigue. Earlier Studio eight-view gallery, Career rename, UI/art and LAN features remain.
+- LAN-094 two-client automation delivered, physical two-phone acceptance still **unverified**. No routine LAN implementation until confirmed regression. Keep issue #48 open.
 
 ## Next smallest action
-1. Obtain exact-head 4 Node + 4 Chromium + Modular QA and repair failures.
-2. Check all 2676 players, legacy save imports and Jumping editor display.
-3. Integrate original eight-direction art into live renderer.
-4. Implement counterable Magic Trick, keeper improvements and Career progression.
-5. Promote only exact green dev through protected main; verify Pages hosted bytes.
+1. Verify exact-head four Node/four Chromium/Modular QA via GitHub Actions; fix real regressions without weakening checks.
+2. Visually check Player Studio Jumping preview and invalid-input/reset on mobile and desktop; verify four gameplay buttons.
+3. Integrate independently authored eight-view character art, including side-facing corrections (#15).
+4. Implement next bounded counterable Magic Trick / goalkeeper penalty feature with regression tests.
+5. Advance Career progression and promote only exact green `dev` through protected main pipeline, then verify hosted Pages bytes.
 
 ## Ownership and exclusions
-Sole developer. Do not read other agents' memory or resume routine LAN/P2P. Physical two-phone #48 remains open; Render auto-deploy drift #86 and main protection #87 remain open.
+Sole authorized maintainer. Historical feature locks are nonblocking. Never access or alter another agent's private checkpoint. Preserve all existing source data and LAN logic. Issue #48 physical certification open; #86 Render commit-trigger drift open; #87 main protection missing.
 
 ## Evidence
-Local `git ls-remote` failed DNS: `Could not resolve host: github.com`. GitHub connector can commit using fresh blob SHAs, but combined commit statuses and PR-only workflow lookup did not establish green exact-head CI. Render service autoDeploy=yes, trigger=commit, latest listed deployment API-triggered at 2026-10-29 02:02 UTC for LAN-094. No main promotion attempted.
+- Starting exact heads: dev `e790f0afa4df6006a23ec291603e85651f6d525c`, main `e8c07652f66071ec2da5370127966475f2f0df45` (50 commits ahead).
+- Focused V8 execution: 14/14 checks passed; extracted real-engine jump fatigue strictly monotonic across nine ratings, 1.99x cost at Jumping 1. New Node tests committed but **full Node and Chromium suites not executed** here.
+- Local `git ls-remote` failed DNS (cannot resolve github.com); GitHub connector writes succeeded. Commit combined status returned no statuses; PR-filtered workflow lookup returned zero runs. Push-triggered workflows may run separately; not proof of green CI. No main promotion, physical acceptance or hosted Pages certification.
 
 ## Cleanup
-Keep this file under 4KiB and shared memory under 6KiB; preserve full history in development log and GitHub commits.
-
-## 2026-10-30 checkpoint: ENERGY-BREATH-01
-Dev v0.12.9.0 candidate. Fitness exports breathCapacity (3..10s), spendBreath, breathTick, breathPenalty, recoverEnergy (+30, +50, +10 per extra day, Stamina-adjusted); engine spends Breath on actions, running and moving with ball, scales movement/fatigue when winded; Career recordMatchFitness saves energy and recovers for next fixture using configurable nextFixtureRestDays, default Cup 2/League 7 (calendar not dated). Existing fatigue and condition saves readable. tests/dual_resources.test.cjs committed; 12 direct-source focused checks passed, syntax checked, full CI/Modular QA unverified. No main deployment. Next: HUD, exact fixture-day integration, Energy capacity fairness, complete CI.
-
-## 2026-10-30 latest: BREATH-WALK-HUD-01 v0.12.10.0
-FITNESS: rapid Breath regen when idle/walking, no regen during run/sprint; normalized stamina governs 3..10s cap. ENGINE: ordinary dribble cooldown=0, Breath gating and held-dribble drain, dribble consumes Breath+Energy; existing resource penalty unchanged. RENDER: circular per-player Breath ring at feet in live matches. UI: top staminaText label ENERGY. Added tests/breath_hud_dribble.test.cjs; fixed oversaturation test assumption. Full exact-head Node/Chromium/Modular QA and hosted bytes not verified; do not promote. Next: run full suite, inspect browser HUD, resolve regressions, protect main.
+Keep this checkpoint below 4 KiB and shared memory below 6 KiB; Git history/development log retain full details. Continue small, SHA-checked increments.
