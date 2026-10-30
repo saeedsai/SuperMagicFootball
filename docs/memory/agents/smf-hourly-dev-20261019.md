@@ -2,33 +2,21 @@
 **Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-10-30
 
-## Mission
-Develop directly on existing dev only; no new branches, force pushes or CI/security bypass. Preserve 223 teams, 2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09 and offline saves.
+## Current dev candidate 0.12.17.3
+- BREATH-DRIBBLE-HOLD-01: ordinary held DRIBBLE with possession now drains 0.12–0.20 Breath/sec by Stamina, alongside the existing tiny normal-running drain; JUMP sprint remains expensive. Shared FITNESS helper and actual engine usage committed; focused Node + Chromium regression added. Preserve one-time action costs.
+- Prior DEFENCE-TACKLE-REACH-01 and TACKLE-ANIMATION-01 (0.12.17.1/.2) are committed but not released. Staged slide animation and directional turf spray are visual-only.
+- CI at dev a63ecaac: Full Regression Census 41062348594 and Modular QA 41062348480 failed 6 release-banner assertions, 1181 other Node tests passed. README banner corrected at 7be52a4; new exact-head CI results still required.
+- BREATH-RUN-SELECTED-01 and BREATH-SWITCH-IMMEDIATE-01 were already delivered earlier; current ring must remain selected-human-only including local Versus switches.
 
-## Current checkpoint
-- TACKLE-ANIMATION-01 0.12.17.2: three-stage slide pose and turf spray committed with Node tests; exact-head CI and deployment pending.
-- DEFENCE-TACKLE-REACH-01 0.12.17.1 dev candidate: slide travel cap = original 104/148 units times (.5+.5*(Defence-1)/99); 100 Defence unchanged. Two Node tests added. Exact-head QA and promotion pending.
-- STUDIO-GALLERY-FRAME-STEP-01 0.12.17.0 candidate: previous/next four-phase eight-view comparison with slider sync, unsaved edits preserved. Node + Chromium regression added; initial CI failed on release-note apostrophe (runs 41059663232/41059663045), now fixed; new exact-head QA pending. Baseline e2a55e4eac5a0fc1e25c2275d11dca710defd5a2 dev/main green and Pages successful.
-- BREATH-SWITCH-IMMEDIATE-01 0.12.16.4: renderer Breath ring uses live selected identity instead of stale controlled flag; Node and desktop/touch Chromium regression added. Previous 0.12.16.3 Modular QA green, full 4+4 queued. New exact-head checks and Pages pending.
-- BREATH-CRITICAL-RING-01 0.12.16.3 candidate: selected player's circular Breath ring pulses below 20%; focused regression committed, exact-head QA and deployment unverified. Prior Breath balance candidate Modular QA passed while full regression jobs were queued.
-- BREATH-RUN-SELECTED-01 candidate 0.12.16.2: normal running/carrying .6 intensity (low drain), sprint 1.5, hyperdash 1.7; Breath ring only currently selected human-controlled player. Focused tests committed; exact-head CI, main promotion and hosted bytes unverified.
-- Starting dev/main synchronized at `1b511ac09f54922b21031251586a2eaef9c3b0e6` (previous hosted 0.12.16.0).
-- STUDIO-GALLERY-A11Y-PHASE-01 candidate `0.12.16.1`: the eight direction tiles/canvases announce selected action and frame 1–4, and polite status includes frame. Presentation only; no art assets or gameplay altered.
-- Extended real gallery Node tests. Exact-head 4 Node + 4 Chromium, Modular QA, protected main promotion and hosted Pages verification require independent GitHub evidence; do not infer results from earlier commits.
-- Eight bespoke art directions still unfinished; physical two-phone LAN #48 not certified.
+## Guardrails
+Sole developer; only existing dev branch, no force-push or CI/security bypass. Preserve 223 teams, 2676 players, six formations, four action buttons, offline saves, ten Career/Cup slots, SD09. Physical two-phone LAN #48 open, no certification. Render drift #86 and branch protection #87 open. Never read other agents private memory.
 
-## Next smallest action
-1. Inspect focused and exact-head CI, repair failures.
-2. Promote only through green pipeline and verify Pages bytes.
-3. Implement independent side/quarter character art; visually verify #15.
-4. Improve a four-button counterable Magic Trick and goalkeeper animation.
-5. Extend Career progression; inspect Render #86 and main protection #87.
-
-## Ownership and exclusions
-Sole developer; historical locks are not gates. Never read or edit other agents' memory. No routine LAN/P2P implementation.
+## Next five
+1. Check exact-head Node/Chromium 4+4 and Modular QA; repair any real failures.
+2. Promote exact green dev through protected main pipeline and verify Pages hosted bytes.
+3. Original independently authored eight-view graphics and tackle/keeper motion QA (#15).
+4. Counterable Magic Tricks using four buttons; no routine LAN work.
+5. Career progression and Player Studio usability; investigate Render trigger drift when relevant.
 
 ## Evidence
-GitHub connector SHA-checked fast-forward; local GitHub DNS unavailable. Full CI and physical-device verification are separate.
-
-## Cleanup
-Checkpoint under 4 KiB; historical commits preserved.
+GitHub connector current-blob SHA writes, exact CI logs and GitHub history. Local GitHub DNS may be unavailable. No hosted certification inferred from commits.

@@ -1,3 +1,8 @@
+## 2026-10-30 — BREATH-DRIBBLE-HOLD-01 (0.12.17.3 dev candidate)
+- BREATH-DRIBBLE-HOLD-01: Ordinary moving DRIBBLE holds now use a small Stamina-scaled Breath drain (0.12 to 0.20 per second), while JUMP sprint remains much more costly. The existing one-time dribble and Magic Trick costs, idle/walking recovery, selected-player-only Breath ring, Energy, saves and four controls are unchanged.
+- Confirmed exact-head 0.12.17.2 full CI had 6 failures caused by README first banner using `development candidate` rather than required `release candidate`; corrected the banner before this increment.
+- Added Node functional contrast test and real-engine controlled-player Chromium one-frame held-dribble regression; exact-head 4 Node + 4 Chromium, Modular QA, promotion and hosted bytes still require fresh evidence.
+
 ## 2026-10-30 — TACKLE-ANIMATION-01 (0.12.17.2)
 - TACKLE-ANIMATION-01: Slide tackles now ease into a deeper low-body extension, recover upright, and kick up directional turf spray in live matches. Defence-based reach, collision, four controls and saves remain unchanged.
 - Added focused Node regression for pose staging and directional match-only spray; exact-head full QA and release unverified.

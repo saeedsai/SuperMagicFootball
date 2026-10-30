@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.2
+# SuperMagicFootball release/version policy — About-only 0.12.17.3
+
+**Current dev candidate 0.12.17.3 (30 October 2026):** BREATH-DRIBBLE-HOLD-01: Ordinary moving DRIBBLE holds now use a small Stamina-scaled Breath drain (0.12 to 0.20 per second), while JUMP sprint remains much more costly. The existing one-time dribble and Magic Trick costs, idle/walking recovery, selected-player-only Breath ring, Energy, saves and four controls are unchanged. Full QA, protected promotion and Pages bytes remain separate release gates.
 
 **Current dev candidate 0.12.17.2 (30 October 2026):** TACKLE-ANIMATION-01: Slide tackles now ease into a deeper low-body extension, recover upright, and kick up directional turf spray in live matches. Defence-based reach, collision, four controls and saves remain unchanged. QA and hosted verification pending.
 
