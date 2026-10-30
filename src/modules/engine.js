@@ -737,7 +737,7 @@ class GameEngine{
   if(p.stun>0)return false;
   // 100 retains the original 420/535 impulses and 14-unit double-jump lift.
   // Scaling velocity by sqrt(height ratio) makes peak height proportional to rating.
-  const {heightRatio,velocityRatio,firstImpulse,doubleImpulse,initialLift,doubleLift}=jumpMetrics(stat(p,'jumping'));
+  const {firstImpulse,doubleImpulse,initialLift,doubleLift}=jumpMetrics(stat(p,'jumping'));
   if(p.z>10){
    if(p.jumpCount>=2||p.vz>275||p.fatigue>.86)return false;
    this.spendStamina(p,'jump');
