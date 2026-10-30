@@ -32,7 +32,7 @@ node --test tests/*.test.cjs
 python3 tests/modular_browser_integration.py
 python3 tests/performance_loader_browser_v082531.py
 python3 tests/scripted_match_replays.py
-# Remaining inherited suites live under tests/*.py and are summarized in docs/QA_INHERITED_BROWSER_v082531.json
+# Remaining inherited suites live under tests/*.py and are summarized in docs/history/archive/QA_INHERITED_BROWSER_v082531.json
 ```
 
 On desktop and simulated mobile, Chromium uses intercepted `https://supermagic.test/...` asset requests because this execution environment blocks direct localhost navigation. That verifies separate module imports and JSON loading, **not** a persistent public host. Genuine hosted-origin cache/install, saved-data restart and live GitHub Pages playback are NOT VERIFIED. Physical iOS/Android devices remain NOT EXECUTED. Failure to verify public Pages is a hosting gap, not proof that the game code fails.
