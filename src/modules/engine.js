@@ -3,6 +3,7 @@ import {DRIBBLES} from "./dribbles.js";
 import {KITS} from "./kits.js";
 import {SPECIALS} from "./specials.js";
 import {STATS} from "./stats.js";
+import {JUMPMETRICS} from "./jumpmetrics.js";
 import {MORALE} from "./morale.js";
 import {ABILITIES} from "./abilities.js";
 import {FITNESS} from "./fitness.js";
@@ -16,7 +17,7 @@ import {SHOTPATHS} from "./shotpaths.js";
 import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
 import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards} from "./magic-hazards.js";
-const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,defensivePressers}=AI;const {withStats,stat,endurance,contest,shotError}=STATS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick}=FITNESS;
+const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,defensivePressers}=AI;const {withStats,stat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick}=FITNESS;
 
 
 
@@ -346,7 +347,7 @@ class GameEngine{
  }
 
  staminaTick(p,dt,intensity=0){const carrying=this.ball.owner===p&&intensity>.14;const breathIntensity=carrying?Math.max(1.15,intensity):intensity;p.breath=breathTick(p.breath,stat(p,'stamina'),dt,breathIntensity);p.fatigue=fatigueTick(p.fatigue,stat(p,'stamina'),dt,intensity);this.fatigueLedger[p.t][p.src.id]=p.fatigue;}
- spendStamina(p,kind){const breathMultiplier=breathPenalty(p.breath??breathCapacity(stat(p,'stamina')),stat(p,'stamina'));p.breath=spendBreath(p.breath,stat(p,'stamina'),kind);const jumpCost=kind==='jump'?1+(100-stat(p,'jumping'))/100:1;const levelKind=kind==='super'||kind==='comboSuper'?'shot':(kind==='defenceSuper'||kind==='spinBumper')?'defence':kind==='keeperSuper'?'keeper':null;const multiplier=(levelKind?levelModifiers(abilityLevel(p,levelKind)).fatigue:1)*(['super','comboSuper'].includes(kind)?superShotFatigueMultiplier(PHYSICS_TUNING):1);p.fatigue=actionFatigue(p.fatigue,stat(p,'stamina'),kind,multiplier*jumpCost*breathMultiplier);this.fatigueLedger[p.t][p.src.id]=p.fatigue;}
+ spendStamina(p,kind){const breathMultiplier=breathPenalty(p.breath??breathCapacity(stat(p,'stamina')),stat(p,'stamina'));p.breath=spendBreath(p.breath,stat(p,'stamina'),kind);const jumpCost=kind==='jump'?jumpMetrics(stat(p,'jumping')).energyCostMultiplier:1;const levelKind=kind==='super'||kind==='comboSuper'?'shot':(kind==='defenceSuper'||kind==='spinBumper')?'defence':kind==='keeperSuper'?'keeper':null;const multiplier=(levelKind?levelModifiers(abilityLevel(p,levelKind)).fatigue:1)*(['super','comboSuper'].includes(kind)?superShotFatigueMultiplier(PHYSICS_TUNING):1);p.fatigue=actionFatigue(p.fatigue,stat(p,'stamina'),kind,multiplier*jumpCost*breathMultiplier);this.fatigueLedger[p.t][p.src.id]=p.fatigue;}
  halftimeRecovery(){
   for(const p of this.players)this.fatigueLedger[p.t][p.src.id]=p.fatigue;
   // v0.8.25.12: halftime restores 40% of accumulated fatigue instead of a flat amount.
@@ -736,19 +737,17 @@ class GameEngine{
   if(p.stun>0)return false;
   // 100 retains the original 420/535 impulses and 14-unit double-jump lift.
   // Scaling velocity by sqrt(height ratio) makes peak height proportional to rating.
-  const jumping=stat(p,'jumping');
-  const heightRatio=.30+.70*(jumping-1)/99;
-  const velocityRatio=Math.sqrt(heightRatio);
+  const {heightRatio,velocityRatio,firstImpulse,doubleImpulse,initialLift,doubleLift}=jumpMetrics(stat(p,'jumping'));
   if(p.z>10){
    if(p.jumpCount>=2||p.vz>275||p.fatigue>.86)return false;
    this.spendStamina(p,'jump');
-   p.vz=Math.max(p.vz,535*velocityRatio);
-   p.z+=14*heightRatio;
+   p.vz=Math.max(p.vz,doubleImpulse);
+   p.z+=doubleLift;
    p.jumpCount=2;p.action='doubleJump';p.actionTimer=.5;
    this.emit('doubleJump',{team:p.t,player:p.src.name});return true;
   }
   this.spendStamina(p,'jump');
-  p.z=2*heightRatio;p.vz=420*velocityRatio;
+  p.z=initialLift;p.vz=firstImpulse;
   p.jumpCount=1;p.action='jump';p.actionTimer=.5;return true;
  }
 
