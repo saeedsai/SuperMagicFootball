@@ -83,28 +83,31 @@ with sync_playwright() as pw:
    // Holding DRIBBLE while moving normally must cost far less than JUMP sprint.
    const oldInput=g.input.state[0],oldAutoSwitch=g.autoSwitch,oldCooldown=g.cooldown;
    g.controlled[0]=first.i;g.autoSwitch=()=>{};g.cooldown=1;
+   // Other AI players may stun or slide the runner between consecutive synthetic frames.
+   // Each measurement starts from an equivalent active, grounded controlled player.
+   const ready=()=>{first.stun=0;first.slideTimer=0;first.slideRemaining=0;first.z=0;first.vz=0;};
    g.input.state[0]={x:1,y:0,dribble:true,pass:false,shoot:false,jump:false};
-   g.ball.owner=first;first.stun=0;first.slideTimer=0;first.z=0;first.vz=0;
+   g.ball.owner=first;ready();
    first.breath=4;const beforeHold=first.breath;
    g.updatePlayers(.02);
    const holdLoss=beforeHold-first.breath;
    // Real engine update with ball: ordinary running is cheap; sustained JUMP sprint is costly.
-   g.ball.owner=first;first.breath=4;first.jumpHold=0;
+   g.ball.owner=first;ready();first.breath=4;first.jumpHold=0;
    g.input.state[0]={x:1,y:0,dribble:false,pass:false,shoot:false,jump:false};
    g.updatePlayers(.02);const runLoss=4-first.breath;
-   g.ball.owner=first;first.breath=4;first.jumpHold=.22;
+   g.ball.owner=first;ready();first.breath=4;first.jumpHold=.22;
    g.input.state[0]={x:1,y:0,dribble:false,pass:false,shoot:false,jump:true};
    g.updatePlayers(.02);const sprintLoss=4-first.breath;
    first.jumpHold=0;
    // Slow analog walking with possession restores Breath.
-   g.ball.owner=first;first.breath=4;
+   g.ball.owner=first;ready();first.breath=4;
    g.input.state[0]={x:.25,y:0,dribble:false,pass:false,shoot:false,jump:false};
    g.updatePlayers(.02);const analogWalk=first.breath;
    // Same real controlled-player path: stationary DRIBBLE must recover as if resting.
-   g.ball.owner=first;first.breath=4;
+   g.ball.owner=first;ready();first.breath=4;
    g.input.state[0]={x:0,y:0,dribble:true,pass:false,shoot:false,jump:false};
    g.updatePlayers(.02);const stationaryHold=first.breath;
-   g.ball.owner=first;first.breath=4;
+   g.ball.owner=first;ready();first.breath=4;
    g.input.state[0]={x:0,y:0,dribble:false,pass:false,shoot:false,jump:false};
    g.updatePlayers(.02);const stationaryRest=first.breath;
    g.input.state[0]=oldInput;g.autoSwitch=oldAutoSwitch;g.cooldown=oldCooldown;
