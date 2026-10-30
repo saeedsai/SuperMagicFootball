@@ -35,6 +35,9 @@ function spendBreath(breath,stamina,kind){
  const cost=(breathActionSeconds[kind]||.45)*(1.2-.4*(rated-1)/99);
  return clamp((Number.isFinite(+breath)?+breath:cap)-cost,0,cap);
 }
+// Sustained ordinary DRIBBLE hold is inexpensive; JUMP sprint remains the high-drain option.
+// This is separate from the one-off action cost of initiating a dribble or Magic Trick.
+const dribbleHoldBreathRate=stamina=>.12+.08*(100-clamp(Number(stamina)||1,1,100))/99;
 function breathTick(breath,stamina,seconds,intensity=0){
  const cap=breathCapacity(stamina),rated=clamp(Number(stamina)||1,1,100);
  const active=clamp(Number(intensity)||0,0,1.8);
@@ -75,6 +78,6 @@ function recommendSubstitute(plan,roster,ledger,subbedOut=new Set()){
  return best;
 }
 
-return {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,staminaPercent,matchCondition,fatigueStatus,substitutionChanges,recommendSubstitute,breathCapacity,breathPenalty,spendBreath,breathTick,recoverEnergy};})();
+return {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,staminaPercent,matchCondition,fatigueStatus,substitutionChanges,recommendSubstitute,breathCapacity,breathPenalty,spendBreath,breathTick,dribbleHoldBreathRate,recoverEnergy};})();
 
 export {FITNESS};
