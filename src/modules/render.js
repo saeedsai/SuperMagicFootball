@@ -867,11 +867,13 @@ class Renderer{
   // Slide pose follows its committed tackle vector, not stale movement input.
    let faceDX=p.action==='slide'?(p.slideDX||0):(p.dx||0),faceDY=p.action==='slide'?(p.slideDY||0):(p.dy||0),turnLag=0;
   // Live match characters ease their visual heading; preview snapshots remain deterministic.
-  if(this.inMatchDraw&&moving&&!p.preview){
+  if(this.inMatchDraw&&moving&&!p.preview&&p.action!=='slide'){
    const target=Math.atan2(faceDY,faceDX),previous=this.poseHeadings.get(p);
    const pose=ARTPOSE.easeHeading(previous,target,this.frameDelta||1/60);
    this.poseHeadings.set(p,pose.heading);faceDX=Math.cos(pose.heading);faceDY=Math.sin(pose.heading);turnLag=pose.lag;
   }
+  // Committed tackles snap to their heading; walking still eases through turns.
+  if(this.inMatchDraw&&p.action==='slide'&&!p.preview&&moving)this.poseHeadings.set(p,Math.atan2(faceDY,faceDX));
   const view=moving?VISUALFEEL.facingView(faceDX,faceDY,p.face||1):(p.visualFacing||VISUALFEEL.facingView(0,0,p.face||1));if(moving)p.visualFacing=view;
   const personality=profileFor(p.src);
   const signatureMotion=personality?sampleMotion(personality,{time:this.time,anim:p.anim,action:p.action,moving}):null;
