@@ -18,7 +18,7 @@ function fixture({screen='PLAYER CUSTOMIZATION',careerMode=false,missing=false}=
   $:k=>k==='studioAppearanceSaveState'?hint:fields[k],studioGallerySignature:'cached',
   drawCustomizer(){stats.redraw++;hint.textContent='Appearance changes are ready to save.'},
   localStorage:{setItem(){stats.writes++;}}};
- vm.runInNewContext(method+';this.randomize=studioRandomizeUnsavedAppearance;this.randomizeHair=studioRandomizeHairUnsaved;this.randomizeBody=studioRandomizeBodyUnsaved;this.randomizeDetails=studioRandomizeFaceDetailsUnsaved;',context);
+ vm.runInNewContext(method+';this.randomize=studioRandomizeUnsavedAppearance;this.randomizeHair=studioRandomizeHairUnsaved;this.randomizeBody=studioRandomizeBodyUnsaved;this.randomizeAccessories=studioRandomizeAccessoriesUnsaved;this.randomizeDetails=studioRandomizeFaceDetailsUnsaved;',context);
  return {context,fields,stats,hint,player};
 }
 test('random look chooses actual enabled option values even with sparse numeric IDs',()=>{
@@ -117,4 +117,27 @@ test('body randomizer is exposed through Studio without adding a game action',()
  assert.match(ui,/button\('RANDOMIZE BODY','randomizeBody'\)/);
  assert.match(ui,/else if\(a==='randomizeBody'\)studioRandomizeBodyUnsaved\(\)/);
  assert.doesNotMatch(method,/localStorage\.setItem|saveAppearance\(/);
+});
+
+// Cosmetic-only unsaved randomization must not affect equipped abilities or player data.
+test('accessory randomizer edits only accessory and tattoo, without writing career saves',()=>{
+ const f=fixture({careerMode:true});
+ f.fields.face_accessory={value:'0',options:[{value:'0'},{value:'2'}]};
+ f.fields.face_tattoo={value:'1',options:[{value:'1'},{value:'5'}]};
+ assert.equal(f.context.randomizeAccessories(()=>.99),true);
+ assert.equal(f.fields.face_accessory.value,'2');assert.equal(f.fields.face_tattoo.value,'5');
+ assert.deepEqual(['style','face','skin','hair'].map(k=>f.fields['face_'+k].value),['1','3','#abc','#123']);
+ assert.equal(f.player.rating,90);assert.equal(f.player.magicTrick,'bat');
+ assert.equal(f.stats.writes,0);assert.equal(f.stats.redraw,1);
+ assert.equal(f.context.studioGallerySignature,'');
+ assert.match(f.hint.textContent,/Nothing saved yet/);
+});
+test('accessory randomizer no-ops when unavailable and is bound to Studio',()=>{
+ const f=fixture();f.fields.face_accessory={value:'0',options:[{value:'0'}]};
+ f.fields.face_tattoo={value:'1',options:[{value:'1'}]};
+ assert.equal(f.context.randomizeAccessories(),false);assert.equal(f.stats.redraw,0);
+ f.context.screen='HOME';assert.equal(f.context.randomizeAccessories(),false);
+ assert.match(ui,/button\('RANDOMIZE ACCESSORIES','randomizeAccessories'\)/);
+ assert.match(ui,/a==='randomizeAccessories'\)studioRandomizeAccessoriesUnsaved\(\)/);
+ assert.match(method,/\['accessory','tattoo'\]/);
 });
