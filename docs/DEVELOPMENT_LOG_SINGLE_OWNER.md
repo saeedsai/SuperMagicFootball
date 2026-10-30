@@ -1,3 +1,7 @@
+## 2026-10-30 — STUDIO-ACCESSORY-RANDOM-01 (0.12.17.17 candidate)
+- Added accessory/tattoo-only unsaved randomization in Player Studio and desktop/touch browser plus Node regressions for field isolation, reset and no storage writes.
+- Four controls, saves, rosters and match physics unchanged. Full exact-head CI, protected promotion and hosted bytes not yet verified.
+
 ## 2026-10-30 — STUDIO-BODY-RANDOM-01 (0.12.17.16)
 - STUDIO-BODY-RANDOM-01: Player Studio adds RANDOMIZE BODY to preview build, stature and exaggeration independently of face, hair, skin and tattoos. Changes remain unsaved until SAVE CHARACTER; controls, rosters and stats are unchanged.
 - Regression tests added; complete CI and Pages gate pending.
