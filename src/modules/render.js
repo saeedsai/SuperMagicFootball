@@ -912,7 +912,10 @@ class Renderer{
    ctx.save();ctx.beginPath();ctx.ellipse(0,4,34,15,0,0,Math.PI*2);
    ctx.strokeStyle='#071827c2';ctx.lineWidth=5;ctx.stroke();
    ctx.beginPath();ctx.ellipse(0,4,34,15,0,-Math.PI/2,-Math.PI/2+Math.PI*2*ratio);
-   ctx.strokeStyle=ratio<.2?'#ff786a':ratio<.5?'#ffcd66':'#66efcd';ctx.lineWidth=4;ctx.stroke();ctx.restore();
+   ctx.strokeStyle=ratio<.2?'#ff786a':ratio<.5?'#ffcd66':'#66efcd';ctx.lineWidth=4;ctx.stroke();
+   // Selected-player-only low-Breath warning; pulse the existing ring, never add a second HUD bar.
+   if(ratio<.2){ctx.save();ctx.globalAlpha=.35+.45*(.5+.5*Math.sin(this.time*10));ctx.strokeStyle='#ff786a';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(0,4,39,19,0,0,Math.PI*2);ctx.stroke();ctx.restore();}
+   ctx.restore();
   }
   ctx.translate(0,-(p.z||0)-Math.abs(run)*2+(1-stature)*12);
   if(signatureMotion){ctx.translate(signatureMotion.offsetX,signatureMotion.offsetY);ctx.rotate(signatureMotion.lean);}
