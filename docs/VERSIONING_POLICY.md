@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.10
+# SuperMagicFootball release/version policy — About-only 0.12.17.11
+
+**Current dev candidate 0.12.17.11 (30 October 2026):** MAGIC-BAT-JUMP-01: Defenders can now evade a close-range Bat Strike with a timely JUMP (20+ world-height), while the existing grounded SHOOT-slide parry remains. The caster still pays the six-second cooldown and original fatigue; no new controls, roster changes or save-format changes. Exact-head CI and Pages certification pending.
 
 **Current dev candidate 0.12.17.10 (30 October 2026):** BREATH-ANALOG-WALK-01: Light analog walking with possession now restores Breath, ordinary full-speed running/dribbling remains low-drain, and JUMP sprint/hyperdash remains expensive. The controlled-player outline and Breath gauge now follow the same current human selection in solo/local Versus, including immediate switches. Energy, four controls, rosters and saves unchanged. Exact-head CI, promotion and hosted verification pending.
 
