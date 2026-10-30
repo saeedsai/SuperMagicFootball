@@ -17,7 +17,7 @@ const applyPlan=vm.runInNewContext('({'+source.slice(from,to)+'}).applyPlan',{
  }),
  FORMATIONS:{'2-1-2':positions,'1-2-2':positions},
  F:{x:100,y:50,w:1900,h:900},
- initialFatigue:()=>.1,
+ initialFatigue:()=>.1,breathCapacity:()=>5,stat:()=>50,
  TEAMS:[{name:'Home'},{name:'Away'}]
 });
 
@@ -28,7 +28,7 @@ function fixture(){
  }));
  const old=roster.slice(0,6);
  const players=old.map((src,i)=>({
-  t:0,i,src,x:200+i*30,y:300+i*20,fatigue:.2,morale:55,stun:0,
+  t:0,i,src,x:200+i*30,y:300+i*20,fatigue:.2,breath:1+i*.2,morale:55,stun:0,
   cryTimer:0,abilityCd:0,dashCooldown:0,diveCooldown:0,
   comboCooldown:0,contactCooldown:0,trickCd:0,dribbleCooldown:0,
   trickGuard:0,action:i===0?'keeperDive':'run',actionTimer:.45,
@@ -54,6 +54,7 @@ test('new goalkeeper does not inherit a replaced keeper dive or freeze movement'
  const entering=players[0];
  assert.equal(entering.src.id,'p6');
  assert.equal(entering.keeper,true);
+ assert.equal(entering.breath,5,'new keeper starts with full Breath');
  for(const key of ['diveIntentPending'])assert.equal(entering[key],false,key);
  for(const key of ['diveIntentCooldown','diveAdvanceTravel','diveDy','diveDx','diveElapsed','actionTimer','z','vz'])
   assert.equal(entering[key],0,key);
@@ -73,6 +74,7 @@ test('unchanged lineup/formation update preserves an active keeper state',()=>{
  assert.equal(keeper.diveIntentPending,true);
  assert.equal(keeper.diveAdvanceTravel,19);
  assert.equal(keeper.action,'keeperDive');
+ assert.equal(keeper.breath,1,'formation-only changes do not refill Breath');
  assert.equal(game.substitutionsUsed[0],0);
 });
 test('replacement also clears completed dive/catch recovery presentation',()=>{

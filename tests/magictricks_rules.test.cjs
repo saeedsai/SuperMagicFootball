@@ -35,7 +35,7 @@ test('Scream helper and equipped Magic Trick keep four-button controls and save 
  const engine=fs.readFileSync('src/modules/engine.js','utf8');
  assert.doesNotMatch(engine,/import \{evaluateScream\}/);
  assert.match(ui,/Hold DRIBBLE for 1 second/);
- assert.match(engine,/p\.dribbleHold>=1&&!p\.magicHoldLatched/);
+ assert.match(engine,/p\.dribbleHold>=1&&p\.breath>=\.8&&!p\.magicHoldLatched/);
  assert.match(engine,/const id=p\?\.src\?\.magicTrick/);
  assert.doesNotMatch(ui,/id="studioMagicTier"/);
 });

@@ -16,14 +16,14 @@ const applyPlan=vm.runInNewContext('({'+engine.slice(start,end)+'}).applyPlan',{
  },
  substitutionChanges:(a,b)=>({out:a.filter(i=>!b.includes(i)),in:b.filter(i=>!a.includes(i))}),
  FORMATIONS:{'2-1-2':slots,'1-2-2':slots},
- F:{x:100,y:50,w:1900,h:900},initialFatigue:()=>.1,
+ F:{x:100,y:50,w:1900,h:900},initialFatigue:()=>.1,breathCapacity:()=>5,stat:()=>50,
  TEAMS:[{name:'Home'},{name:'Away'}]
 });
 function make(){
  const roster=Array.from({length:12},(_,i)=>({id:'id'+i,name:'Player'+i,role:i<2?'GK':'DF',injuryWeeks:0}));
  const lineup=[0,2,3,4,5,6];
  const plan={formation:'2-1-2',lineup:[...lineup],captain:4,penalty:4,freeKick:4,corner:4,attack:'Balanced',defence:'Balanced'};
- const players=lineup.map((n,i)=>({t:0,i,src:roster[n],fatigue:.2,morale:55,stun:0,x:240+i*35,y:270+i*33,
+ const players=lineup.map((n,i)=>({t:0,i,src:roster[n],fatigue:.2,breath:1+i*.2,morale:55,stun:0,x:240+i*35,y:270+i*33,
   action:'idle',actionTimer:0,keeper:i===0,cryTimer:0,abilityCd:0,dashCooldown:0,diveCooldown:0,comboCooldown:0,
   contactCooldown:0,trickCd:0,dribbleCooldown:0,trickGuard:0}));
  const events=[],game={rosters:[roster,[]],teamIds:[0,1],lineups:[[...lineup],[]],formation:['2-1-2','2-1-2'],
@@ -78,4 +78,15 @@ test('invalid paused state rejects changes and emits nothing',()=>{
  assert.throws(()=>applyPlan.call(game,0,{...plan,attack:'Direct'}),/paused match/);
  assert.equal(events.length,0);
  assert.equal(game.teamPlans[0].attack,'Balanced');
+});
+
+test('reordering existing tactical slots preserves each player Breath and emits no substitution',()=>{
+ const {game,events,plan}=make();
+ const before=Object.fromEntries(game.players.map(p=>[p.src.id,p.breath]));
+ applyPlan.call(game,0,{...plan,lineup:[0,4,3,2,5,6]});
+ assert.equal(game.player(0,1).src.id,'id4');
+ assert.equal(game.player(0,3).src.id,'id2');
+ for(const p of game.players)assert.equal(p.breath,before[p.src.id],p.src.id+' Breath must follow identity');
+ assert.equal(game.substitutionsUsed[0],0);
+ assert.equal(events.filter(e=>e.type==='substitution').length,0);
 });

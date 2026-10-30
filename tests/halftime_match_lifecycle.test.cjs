@@ -11,11 +11,11 @@ const start=source.indexOf(' halftimeRecovery(){');
 const end=source.indexOf(' autoSubstituteCpu(){',start);
 assert(start>=0&&end>start,'live engine has halftimeRecovery directly before autoSubstituteCpu');
 const recover=vm.runInNewContext('({'+source.slice(start,end)+'}).halftimeRecovery',
- {initialFatigue:src=>src.initial??0});
+ {initialFatigue:src=>src.initial??0,breathCapacity:()=>5,stat:()=>50});
 function match(){
  const home=[{id:'h0'},{id:'h1'},{id:'hBench'}],away=[{id:'a0'},{id:'a1'},{id:'aBench'}];
  const players=[
-  {t:0,src:home[0],fatigue:.8,stun:.7,cd:.45},
+  {t:0,src:home[0],fatigue:.8,breath:.7,stun:.7,cd:.45},
   {t:0,src:home[1],fatigue:.1,stun:.2,cd:.12},
   {t:1,src:away[0],fatigue:.5,stun:.3,cd:.15},
   {t:1,src:away[1],fatigue:.95,stun:.4,cd:.21}
@@ -57,4 +57,11 @@ test('halftime recovery is invoked on first-half expiry before the UI is paused'
  assert.match(update,/this\.halftimeRecovery\(\);this\.resetKickoff\(1\);this\.matchState='paused';/);
  assert.match(update,/this\.emit\('halftime'\)/);
  assert.match(update,/else if\(this\.score\[0\]===this\.score\[1\]&&this\.mode!=='training'\)\{this\.startPK\(true\)\}else\{this\.matchState='finished'/);
+});
+
+test('halftime restores Breath independently of fatigue and cooldowns',()=>{
+ const g=match(),cooldowns=g.players.map(p=>p.cd);
+ recover.call(g);
+ for(const p of g.players)near(p.breath,5);
+ assert.deepEqual(g.players.map(p=>p.cd),cooldowns);
 });

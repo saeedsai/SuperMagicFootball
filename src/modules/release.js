@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.12.0',
+ version:'0.12.12.1',
  date:'2026-10-30',
  notes:Object.freeze([
+  'BREATH-SWAP-FIX-01: Tactical lineup reorders retain each player\'s Breath instead of granting free recovery. Halftime still refills Breath; new substitutes enter with normal capacity. Four controls, saves and rosters unchanged.',
   'HIDE-BALL-PASS-01: Defenders can counter Hide Ball with a timely, close, forward-facing grounded PASS poke. Expired, airborne, backwards or distant pokes fail; the caster still pays cooldown and Energy. No fifth button or save changes.',
   'STUDIO-JUMP-PREVIEW-01: Player Studio now labels all 15 attributes and previews Jumping height and Energy cost live before saving. Shared Jumping formulas power both the Studio and match physics; old player IDs, ratings and saves are preserved.',
   'BREATH-WALK-HUD-01: Breath regenerates quickly while resting or walking, drains during extreme activity; a circular Breath ring appears under players. Top player bar reads ENERGY; dribble now uses Breath instead of a fixed lockout.',

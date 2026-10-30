@@ -270,7 +270,7 @@ class GameEngine{
   if(this.substitutionsUsed[t]+changes.out.length>this.maxSubstitutions)throw Error('Only '+this.maxSubstitutions+' substitutions permitted per team');
   if(changes.in.some(i=>this.subbedOut[t].has(this.rosters[t][i].id)))throw Error('A substituted-off player cannot return');
   if(changes.in.some(i=>(this.rosters[t][i].injuryWeeks||0)>0))throw Error('An injured player cannot enter');
-  const prev=this.players.filter(p=>p.t===t);const existing=new Map(prev.map(p=>[p.src.id,{fatigue:p.fatigue,stun:p.stun,morale:p.morale,cryTimer:p.cryTimer,abilityCd:p.abilityCd,dashCooldown:p.dashCooldown,diveCooldown:p.diveCooldown,comboCooldown:p.comboCooldown,contactCooldown:p.contactCooldown,trickCd:p.trickCd,dribbleCooldown:p.dribbleCooldown,trickGuard:p.trickGuard}]));
+  const prev=this.players.filter(p=>p.t===t);const existing=new Map(prev.map(p=>[p.src.id,{fatigue:p.fatigue,breath:p.breath,stun:p.stun,morale:p.morale,cryTimer:p.cryTimer,abilityCd:p.abilityCd,dashCooldown:p.dashCooldown,diveCooldown:p.diveCooldown,comboCooldown:p.comboCooldown,contactCooldown:p.contactCooldown,trickCd:p.trickCd,dribbleCooldown:p.dribbleCooldown,trickGuard:p.trickGuard}]));
   for(const player of prev)this.fatigueLedger[t][player.src.id]=player.fatigue;
   this.substitutionsUsed[t]+=changes.out.length;
   for(const id of changes.out)this.subbedOut[t].add(this.rosters[t][id].id);
