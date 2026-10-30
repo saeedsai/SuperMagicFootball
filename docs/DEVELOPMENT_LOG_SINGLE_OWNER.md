@@ -1,3 +1,8 @@
+## 2026-10-30 — STUDIO-FULL-LOOK-LABEL-01 (0.12.17.20 candidate)
+- Fixed misleading Player Studio action text: the existing randomizeFace action randomizes the entire look, so the button now says RANDOMIZE FULL LOOK without changing dispatch or adding a match control.
+- Added focused Node regression proving body/tattoo/accessory randomization remains unsaved and leaves stats/abilities intact; Chromium desktop/touch verifies the button label and all appearance options.
+- Prior BREATH-LOCAL-OWNER-01 (0.12.17.19) remains intact. Full exact-head CI, protected promotion and Pages verification pending; physical two-phone issue #48 remains open.
+
 ## 2026-10-30 — BREATH-LOCAL-OWNER-01 (0.12.17.19 candidate)
 - Confirmed multiplayer visibility regression: shared LAN/P2P simulation uses humans=2 on both devices, previously showing the opponent's selected Breath ring. The local role now scopes ring/outline to host home or guest away; local couch Versus remains two-human.
 - Added Node and desktop/simulated-touch Chromium regressions for host/guest, immediate switching, unselected/CPU and normal-vs-sprint Breath balance.
