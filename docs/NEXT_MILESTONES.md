@@ -1,3 +1,6 @@
+## 30 October 2026 — STUDIO-JUMP-PREVIEW-01 (0.12.11.0)
+Player Studio's stat editor now names Jumping, dynamically counts all 15 attributes and previews relative jump height and Energy cost as the value changes; invalid edits show a safe prompt. A shared pure Jumping metrics module now drives both actual single/double-jump impulses and fatigue multiplier, preventing Studio/engine drift. Added seven Node regression tests and repaired the real-engine fatigue test's missing Breath dependencies. No roster, save schema, controls, LAN/P2P or offline behavior changed. Pending: full exact-head four Node/four Chromium/Modular QA, mobile Studio screenshot acceptance, protected promotion and Pages byte smoke.
+
 ## 30 October 2026 — BREATH-WALK-HUD-01
 0.12.10.0 development candidate: idle/walk Breath rapidly regenerates, hard activity drains, on-field circular Breath ring, top Energy label and dribble timed lockout removed in favor of Breath pacing. Next: browser HUD/visual QA, continuous-input behavior, multi-client deterministic state, exact-head four Node/four Chromium/Modular CI, protected deployment only after green.
 
