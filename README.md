@@ -1,3 +1,5 @@
+> **0.12.17.2 development candidate (30 October 2026):** TACKLE-ANIMATION-01: Slide tackles now ease into a deeper low-body extension, recover upright, and kick up directional turf spray in live matches. Defence-based reach, collision, four controls and saves remain unchanged. CI and deployment pending.
+
 > **0.12.17.1 release candidate (30 October 2026):** DEFENCE-TACKLE-REACH-01: Slide tackle travel distance now scales from 50% at Defence 1 to the existing maximum at Defence 100, preserving sprint versus standing slide speed and timing. No new controls, roster changes or save schema changes. Full CI and Pages verification are separate release gates. [Live game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.12.17.0 release candidate (30 October 2026):** STUDIO-GALLERY-FRAME-STEP-01: Player Studio's eight-view animation comparison now has accessible Previous/Next Frame buttons. Each tap advances all eight views together through four motion phases, wraps at either end and keeps the scrubber synchronized without discarding unsaved appearance edits. Four match controls, saves, rosters, Energy and Breath are unchanged. Added focused executable Node and desktop/simulated-touch Chromium regression coverage; exact-head 4+4 and Modular QA, protected promotion and hosted Pages bytes remain separate gates. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -312,7 +314,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.12.17.1 · Modular source project
+# Supermagic Football · v0.12.17.2 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 
