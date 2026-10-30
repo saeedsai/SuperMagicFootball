@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.12.0
+# SuperMagicFootball release/version policy — About-only 0.12.12.1
 
-**Current dev candidate 0.12.12.0 (30 October 2026):** HIDE-BALL-PASS-01 adds a timed grounded PASS-poke counter to Hide Ball; existing four buttons, Energy cost, cooldown, saves and rosters remain unchanged. Focused source execution passed; exact-head full QA and Pages pending.
+**Current dev candidate 0.12.12.1 (30 October 2026):** BREATH-SWAP-FIX-01 preserves player-specific Breath when tactical slots are reordered; previously a moved existing player was refilled for free. Halftime and substitute capacity remain unchanged. Corrected nine previously failing preflight/Modular Node assertions with current Breath dependencies and hold-guard contracts. Exact-head 4 Node + 4 Chromium, Modular QA, protected main promotion and Pages bytes remain separate gates.
+
+**Previous dev candidate 0.12.12.0 (30 October 2026):** HIDE-BALL-PASS-01 adds a timed grounded PASS-poke counter to Hide Ball; existing four buttons, Energy cost, cooldown, saves and rosters remain unchanged. Focused source execution passed; exact-head full QA and Pages pending.
 
 **Previous dev candidate 0.12.11.0 (30 October 2026):** STUDIO-JUMP-PREVIEW-01: Player Studio shows all 15 attributes and previews relative leap height and jump Energy cost using shared match physics. Source tests and exact-head full QA gates are distinct; no promotion or hosted certification yet.
 

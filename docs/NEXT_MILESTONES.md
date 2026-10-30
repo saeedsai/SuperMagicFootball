@@ -1,3 +1,5 @@
+> **30 October 2026 — BREATH-SWAP-FIX-01 (0.12.12.1 candidate):** Tactical slot reorders now preserve existing players’ Breath, eliminating a free refill. Halftime and substitutes retain normal Breath rules. Fixed nine observed preflight/Modular Node failures caused by missing VM bindings and stale Breath-gated Magic Trick assertions. Full 4+4/Modular and Pages remain separate gates.
+
 ## 30 October 2026 — HIDE-BALL-PASS-01 (0.12.12.0)
 Defensive PASS's existing ordinary poke (`action='punch'`) can interrupt Hide Ball when close, grounded, facing the carrier and still within its action timer. This counter has no extra button or save schema; stale, backwards, airborne, far-away and SHOOT-slide inputs cannot cancel it. The caster still pays cooldown and fatigue. Nine Node cases committed; focused execution of real engine method passed 14/14 V8 checks. Pending: full exact-head four Node/four Chromium/Modular QA, device acceptance, protected main promotion and hosted Pages verification.
 
