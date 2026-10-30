@@ -17,7 +17,7 @@ import {SHOTPATHS} from "./shotpaths.js";
 import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
 import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards} from "./magic-hazards.js";
-const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,defensivePressers}=AI;const {withStats,stat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick}=FITNESS;
+const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,defensivePressers}=AI;const {withStats,stat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,dribbleHoldBreathRate}=FITNESS;
 
 
 
@@ -1440,8 +1440,8 @@ class GameEngine{
   if(this.input.canceled?.(p.t,'dribble')){p.dribbleHold=0;p.ballLiftLock=false;}
   p.dx=dx;p.dy=dy;const elapsedJump=Math.max(p.jumpHold||0,this.input.tapDuration?.(p.t,'jump')||0);
   // Breath replaces any fixed continuous-dribble duration cap.
-  // Holding DRIBBLE with the ball costs short-term Breath every frame.
-  if(s.dribble&&this.ball.owner===p)p.breath=Math.max(0,(p.breath??breathCapacity(stat(p,'stamina')))-dt*(1.0+.5*(100-stat(p,'stamina'))/99));
+  // Ordinary ball-control hold costs little Breath; sustained JUMP sprint still drains much faster.
+  if(s.dribble&&this.ball.owner===p)p.breath=Math.max(0,(p.breath??breathCapacity(stat(p,'stamina')))-dt*dribbleHoldBreathRate(stat(p,'stamina')));
   p.dribbleHold=s.dribble&&this.ball.owner===p?(p.dribbleHold||0)+dt:0;
   if(!s.dribble||this.ball.owner!==p)p.magicHoldLatched=false;
   if(!s.dribble)p.ballLiftLock=false;
