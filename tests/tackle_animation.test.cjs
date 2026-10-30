@@ -25,3 +25,8 @@ test('tackle facing bypasses walking heading interpolation and updates heading c
  assert.match(render,/if\(this\.inMatchDraw&&moving&&!p\.preview&&p\.action!=='slide'\)/);
  assert.match(render,/if\(this\.inMatchDraw&&p\.action==='slide'&&!p\.preview&&moving\)this\.poseHeadings\.set\(p,Math\.atan2\(faceDY,faceDX\)\)/);
 });
+
+test('sliding players do not cycle running gait while tackling',()=>{
+ assert.match(render,/const gaitMoving=moving&&p\.action!=='slide'&&p\.action!=='receive'/);
+ assert.match(render,/ARTPOSE\.settleStride\(this\.poseCycles\.get\(p\),oscillator,gaitMoving,this\.frameDelta\)/);
+});
