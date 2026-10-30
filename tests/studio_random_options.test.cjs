@@ -161,3 +161,25 @@ test('full-look randomizer includes body and accessories without saving abilitie
  assert.match(ui,/button\('RANDOMIZE FULL LOOK','randomizeFace'\)/);
  assert.doesNotMatch(ui,/button\('RANDOMIZE FACE','randomizeFace'\)/);
 });
+
+test('studio randomizer skips disabled optgroups and blank placeholder choices',()=>{
+ const f=fixture();
+ f.fields.face_skin.options=[
+  {value:'#abc'}, {value:'#forbidden',parentElement:{disabled:true}},
+  {value:''}, {value:'#def',parentElement:{disabled:false}}
+ ];
+ assert.equal(f.context.randomize(()=>0),true);
+ assert.equal(f.fields.face_skin.value,'#def');
+ assert.equal(f.stats.writes,0);
+ assert.equal(f.stats.redraw,1);
+});
+test('studio randomizer explains when no alternatives exist without redraw or saving',()=>{
+ const f=fixture();
+ for(const field of Object.values(f.fields))field.options=[{value:field.value}];
+ assert.equal(f.context.randomize(),false);
+ assert.equal(f.stats.redraw,0);
+ assert.equal(f.stats.writes,0);
+ assert.match(f.hint.textContent,/No alternate appearance options available/);
+ assert.match(f.hint.textContent,/Nothing saved yet/);
+ assert.equal(f.player.appearance.face,3);
+});
