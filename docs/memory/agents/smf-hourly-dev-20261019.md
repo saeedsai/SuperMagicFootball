@@ -6,6 +6,7 @@
 Sole developer on existing dev; small tested increments, no new branch, force push or bypass of CI/security. Never certify physical LAN without two-phone acceptance.
 
 ## Current checkpoint
+- 0.12.17.14 STUDIO-HAIR-RANDOM-01: selective unsaved hair randomizer; Node and desktop/touch browser regression expanded. Full exact-head 4+4, Modular and Pages pending.
 - 0.12.17.13 STUDIO-RANDOM-OPTIONS-01: RANDOMIZE FACE now picks actual enabled select values and ensures a changed unsaved preview, including sparse numeric IDs and skin/hair palettes. Gallery refreshes; no persistence until SAVE CHARACTER. Node and Chromium regression added; six focused helper scenarios passed; exact-head CI/Pages pending.
 - 0.12.17.12 Player Studio RESET UNSAVED deployed: exact dev/main 41038a32 with green 4+4, Modular, main Pages and hosted smoke (verified in GitHub Actions).
 - 0.12.17.10 Breath tuning and selected-human-only ring already delivered; keep JUMP sprint expensive and ordinary dribbling cheap.

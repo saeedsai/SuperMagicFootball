@@ -18,7 +18,7 @@ function fixture({screen='PLAYER CUSTOMIZATION',careerMode=false,missing=false}=
   $:k=>k==='studioAppearanceSaveState'?hint:fields[k],studioGallerySignature:'cached',
   drawCustomizer(){stats.redraw++;hint.textContent='Appearance changes are ready to save.'},
   localStorage:{setItem(){stats.writes++;}}};
- vm.runInNewContext(method+';this.randomize=studioRandomizeUnsavedAppearance;',context);
+ vm.runInNewContext(method+';this.randomize=studioRandomizeUnsavedAppearance;this.randomizeHair=studioRandomizeHairUnsaved;',context);
  return {context,fields,stats,hint,player};
 }
 test('random look chooses actual enabled option values even with sparse numeric IDs',()=>{
@@ -48,5 +48,33 @@ test('non-finite random values fall back to a valid enabled alternative',()=>{
 test('real menu dispatch uses the unsaved randomizer and retains exactly four action controls',()=>{
  assert.match(ui,/else if\(a==='randomizeFace'\)studioRandomizeUnsavedAppearance\(\)/);
  assert.match(ui,/button\('RANDOMIZE FACE','randomizeFace'\)/);
+ assert.doesNotMatch(method,/store\.put|localStorage\.setItem|saveAppearance\(/);
+});
+
+// STUDIO-HAIR-RANDOM-01: selective unsaved edits must never disturb face or skin.
+test('hair-only randomizer changes real enabled hairstyle and hair-color options',()=>{
+ const f=fixture();
+ assert.equal(f.context.randomizeHair(()=>.99),true);
+ assert.deepEqual(Object.values(f.fields).map(x=>x.value),['11','3','#abc','#456']);
+ assert.equal(f.stats.redraw,1);assert.equal(f.context.studioGallerySignature,'');
+ assert.match(f.hint.textContent,/Hair previewed.*Nothing saved yet/);
+ assert.equal(f.stats.writes,0);assert.equal(f.player.appearance.face,3);
+});
+test('hair-only randomizer does not mutate Career roster or create saved edits',()=>{
+ const f=fixture({careerMode:true});assert.equal(f.context.randomizeHair(()=>0),true);
+ assert.deepEqual(Object.values(f.fields).map(x=>x.value),['7','3','#abc','#456']);
+ assert.equal(f.context.career.roster[0].appearance.face,3);assert.equal(f.stats.writes,0);
+});
+test('hair-only randomizer is safe when no alternatives or outside Studio',()=>{
+ for(const opts of [{screen:'HOME'},{missing:true}]){
+  const f=fixture(opts);assert.equal(f.context.randomizeHair(),false);assert.equal(f.stats.redraw,0);
+ }
+ const f=fixture();for(const key of ['style','hair'])f.fields['face_'+key].options=[{value:f.fields['face_'+key].value}];
+ assert.equal(f.context.randomizeHair(),false);assert.equal(f.stats.redraw,0);
+});
+test('hair-only menu action preserves other appearance fields and does not persist',()=>{
+ assert.match(ui,/button\('RANDOMIZE HAIR','randomizeHair'\)/);
+ assert.match(ui,/else if\(a==='randomizeHair'\)studioRandomizeHairUnsaved\(\)/);
+ assert.match(method,/\['style','hair'\]/);
  assert.doesNotMatch(method,/store\.put|localStorage\.setItem|saveAppearance\(/);
 });

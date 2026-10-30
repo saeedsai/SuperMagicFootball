@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.17.13',
+ version:'0.12.17.14',
  date:'2026-10-30',
  notes:Object.freeze([
+  'STUDIO-HAIR-RANDOM-01: Player Studio adds RANDOMIZE HAIR to preview a different hairstyle and hair color without changing face, skin, body or other appearance fields. RESET UNSAVED reverses it; SAVE CHARACTER remains the only persistence action. Eight-view gallery, four controls, saves, Energy/Breath and roster data are unchanged.',
   'STUDIO-RANDOM-OPTIONS-01: Player Studio RANDOMIZE FACE now selects real enabled appearance options, including sparse asset IDs and curated colors, guarantees a changed preview when alternatives exist, and refreshes the eight-view gallery. Only SAVE CHARACTER persists edits; rosters, stats, four controls, Energy/Breath and offline saves are unchanged.',
   'STUDIO-APPEARANCE-RESET-01: Player Studio now offers RESET UNSAVED to restore the current player\'s saved face, hair and appearance controls without writing storage or changing stats, equipment, roster identity, controls or saves. The eight-view gallery remains open.',
   'MAGIC-BAT-JUMP-01: Defenders can now evade a close-range Bat Strike with a timely JUMP (20+ world-height), while the existing grounded SHOOT-slide parry remains. The caster still pays the six-second cooldown and original fatigue; no new controls, roster changes or save-format changes.',
