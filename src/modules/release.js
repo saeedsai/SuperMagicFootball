@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.17.21',
- date:'2026-10-30',
+ version:'0.12.17.22',
+ date:'2026-10-31',
  notes:Object.freeze([
+  'MAGIC-FREEZE-SLIDE-01: Defenders can now cut through a close-range Freeze with a timed grounded SHOOT-slide (active slide, under 20 world-height), alongside the existing JUMP dodge. Expired, airborne, far-away and non-slide inputs still get frozen; the caster still pays the six-second cooldown and original fatigue. No new controls, roster changes or save-format changes.',
   'STUDIO-RANDOM-CHOICE-GUARD-01: Player Studio randomization now excludes blank placeholders and options in disabled groups, and explains when no alternative exists without redrawing or saving. Full-look and selective randomizers retain their existing controls; appearance saves, rosters, gameplay and four match actions are unchanged.',
   'STUDIO-FULL-LOOK-LABEL-01: Player Studio now calls its existing all-category appearance preview RANDOMIZE FULL LOOK instead of misleading RANDOMIZE FACE. It still changes only unsaved appearance options (including body and accessories), preserves the action ID, and leaves abilities, roster, saves and the four match controls untouched.',
   'BREATH-LOCAL-OWNER-01: Breath outline and circular gauge now follow only the local viewer-selected player in LAN/P2P (host home, guest away), including instant player switches. Local two-human Versus still shows one selected ring per side. Ordinary ball running/dribbling remains low-drain, JUMP sprint high-drain, and idle/walking recovery unchanged; Energy, four controls, rosters and saves are unchanged.',

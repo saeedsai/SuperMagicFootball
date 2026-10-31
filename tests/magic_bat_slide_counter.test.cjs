@@ -41,7 +41,7 @@ test('Facing/closing defence remains available, while other Tricks are unaffecte
  const {defender,events,fire}=setup({action:'run',timer:0,face:-1});
  defender.dx=-1;defender.src.defence=95;
  assert.equal(fire(),true);assert.equal(defender.stun,0);assert.equal(events[0].countered,true);
- const freeze=setup({id:'freeze'});
+ const freeze=setup({id:'freeze',action:'run',timer:0});
  assert.equal(freeze.fire(),true);assert.equal(freeze.defender.stun,.65);
  const scream=setup({id:'scream',z:20});
  assert.equal(scream.fire(),true);assert.equal(scream.defender.stun,0);
@@ -81,5 +81,5 @@ test('Bat JUMP counter is documented in Player Studio without a fifth action',()
  const ui=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
  assert.match(engine,/batDodged=id==='bat'&&inRange&&Number\.isFinite\(rival\.z\)&&rival\.z>=20/);
  assert.match(ui,/bat:'[^']*JUMP above the swing to evade it/);
- assert.match(engine,/freezeDodged\|\|batDodged\|\|batParried/);
+ assert.match(engine,/freezeDodged\|\|freezeParried\|\|batDodged\|\|batParried/);
 });

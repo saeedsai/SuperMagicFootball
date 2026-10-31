@@ -1,3 +1,8 @@
+## 2026-10-31 — MAGIC-FREEZE-SLIDE-01 (0.12.17.22 candidate)
+- Freeze now has a second counter using existing buttons: an active grounded defensive SHOOT-slide at close range (pattern of the Bat slide parry). Caster cooldown/fatigue unchanged; Fireball/Scream/Bat/Teleport/Hide Ball behaviour unchanged. Player Studio Freeze guidance text updated.
+- Added tests/magic_freeze_slide_counter.test.cjs (real engine method, 4 tests) and tests/magic_freeze_slide_browser_qa.py (desktop + simulated-touch Chromium, four-button/12-player checks); updated tests/magic_bat_slide_counter.test.cjs for the new counter chain.
+- Exact-head 4+4 CI, Modular QA, protected promotion and Pages verification pending; not claimed.
+
 ## 2026-10-30 — STUDIO-RANDOM-CHOICE-GUARD-01 (0.12.17.21 candidate)
 - Studio randomization excludes disabled optgroup options and blank placeholder choices; no-alternative previews show an accessible status without modifying unsaved edits or storage.
 - Added Node and desktop/touch Chromium regression cases. Focused source-level JS smoke and all 20 Studio Node-test cases passed in an isolated JS compatibility harness (not native Node/Chromium CI). Exact-head 4+4 and Modular QA not yet verified; production unchanged.
