@@ -1,6 +1,6 @@
 {
   "schema": "smf-concept-modular-roadmap/1",
-  "updated": "2026-10-20",
+  "updated": "2026-10-31",
   "branch": "dev",
   "baselineAtPlanning": "82119108ca63dd510bd49bdf5c2083bed168a9a0",
   "currentMilestone": "C01",
@@ -790,5 +790,36 @@
       "issue": "https://github.com/saeedsai/SuperMagicFootball/issues/38"
     }
   },
-  "artworkOwnerPending": "Rear jersey C01 source exists, but C01 and 8-direction authored art remain incomplete, owner art signoff not obtained"
+  "artworkOwnerPending": "Rear jersey C01 source exists, but C01 and 8-direction authored art remain incomplete, owner art signoff not obtained",
+  "statusReview": {
+    "reviewedOn": "2026-10-31",
+    "basis": "Documentation and source inspection on dev at game candidate 0.12.17.21; no new CI run was used. Statuses above are unchanged because no further modular-art milestone has been completed since the last verified commit.",
+    "authoredViewCoverage": {
+      "authored": 2,
+      "total": 8,
+      "authoredViews": [
+        "front",
+        "back"
+      ],
+      "missingViews": [
+        "frontRight",
+        "right",
+        "backRight",
+        "backLeft",
+        "left",
+        "frontLeft"
+      ],
+      "source": "python3 scripts/report_authored_views.py"
+    },
+    "registeredSourceLayers": 8,
+    "uniqueModularPlayersInGame": 1,
+    "verifiedVariantTotal": 0,
+    "completedAnimationGroupTotal": 0,
+    "ownerArtApproval": "pending",
+    "relatedRoadmaps": {
+      "visualUx": "docs/MINI_FOOTBALL_VISUAL_ROADMAP_20261029.md",
+      "mapping": "VIZ-03 (independent eight-direction character art) is this same programme (C00-C12); do not plan it twice. VIZ-01 HUD, VIZ-02 menus, VIZ-04 pitch/stadium, VIZ-05 Studio and VIZ-06 game feel are separate game-side tracks with candidate releases on dev, each still needing exact-head CI, protected promotion and hosted verification."
+    },
+    "knownStaleBefore": "updated/branch notes in this file predated 0.12.x; currentMilestone remains C01."
+  }
 }

@@ -1980,3 +1980,7 @@ Host now holds last validated guest four-button and directional input for at mos
 - `tests/dribble_styles_browser_qa.py` waited for the retired version `0.8.24.12-alpha` (current build reports `0.12.17.20`), so it could not run at all. It now waits for `SupermagicFootball.game`.
 - With that fixed, the Android double-tap flaked (3 failures in 24 runs, always `ballOwner:false`, no `dribbleTrick` event). Cause: the adjacent rival AI could tackle during the ~250 ms CDP double tap, so no trick was possible. Fix: `rival.cd=9` in test setup. Result: 30/30 pass (desktop + Android), against 3 failures in 24 before the isolation fix. No engine or input code changed.
 - 44 other legacy `tests/*_browser_qa.py` scripts still pin `0.8.24.12-alpha`; port them the same way (separate task). Chromium suites were not run as a whole.
+
+## 2026-10-31 — Concept-graphics tracker status review (documentation only, no version bump)
+- `docs/concept_character_pipeline/PROGRESS_TRACKER.json`: bumped `updated`, added a `statusReview` block (2/8 authored views, 8 registered layers, 0 verified variants, 0 completed animation groups, owner approval pending) and mapped VIZ-03 to C00-C12 so it is not planned twice. Milestone statuses unchanged: no new modular-art milestone completed since the last verified commit.
+- Evidence: `scripts/verify_concept_graphics_docs.py` pass; `node --test tests/*.test.cjs` 1230/1230 (fixture built). Basis is documentation/source inspection, not a new CI run.
