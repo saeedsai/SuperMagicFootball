@@ -16,6 +16,8 @@ for(const file of fs.readdirSync(new URL('tests/',root)).filter(f=>f.endsWith('.
   // Archived browser suites legitimately describe an older release. They are upgraded\n  // to current readiness checks by the isolated regression test harness.
   count++;
  }
+ // Ported suites wait for the live game object instead of a retired version string.
+ if(/wait_for_function\(\s*["']!!window\.(?:SupermagicFootball|NekketsuHD)\?\.game["']/.test(src))count++;
 }
 assert(count>=20,'version assertions are actually checked');
 console.log('PASS release/browser alignment',release,count,'checks');

@@ -2038,3 +2038,7 @@ Host now holds last validated guest four-button and directional input for at mos
 | `v08247_menu_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
 | `v08247_menu_input_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
 | `v0824_keeper_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+
+## 2026-10-31 — CI follow-up for the legacy test port (test-only, no version bump)
+- Census run 41173557217 on `542bf1e`: all 4 browser shards, 3 of 4 Node shards, preflight and preview-smoke passed; Node shard 1 failed only `tests/v08245_release_alignment.mjs` ("version assertions are actually checked"). Cause: that guard counted retired `0.8.x` version pins in `tests/*.py` (required >= 20) and the port had removed them.
+- Fix: the guard now also counts the replacement readiness wait (`!!window.SupermagicFootball?.game` / `NekketsuHD`), still requiring >= 20 (82 found). Local Node shard 1: 79/79; exact-head CI rerun pending.
