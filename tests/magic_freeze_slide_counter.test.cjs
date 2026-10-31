@@ -43,7 +43,7 @@ test('Expired, airborne, far or non-slide defenders still get frozen',()=>{
  const air=setup({action:'slide',timer:.25,z:25});assert.equal(air.fire(),true);assert.equal(air.events[0].countered,true);
 });
 test('Slide parry is specific to Freeze; other tricks and Bat behaviour unchanged',()=>{
- for(const id of ['fireball','scream']){
+ for(const id of ['scream']){
   const t=setup({id,action:'slide',timer:.25});
   assert.equal(t.fire(),true);assert.equal(t.events[0].countered,false,id+' not slide-parried');assert.equal(t.defender.stun,.32);
  }

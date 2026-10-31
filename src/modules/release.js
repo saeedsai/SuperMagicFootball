@@ -1,7 +1,7 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.17.22',
+ version:'0.12.17.23',
  date:'2026-10-31',
  notes:Object.freeze([
   'MAGIC-FREEZE-SLIDE-01: Defenders can now cut through a close-range Freeze with a timed grounded SHOOT-slide (active slide, under 20 world-height), alongside the existing JUMP dodge. Expired, airborne, far-away and non-slide inputs still get frozen; the caster still pays the six-second cooldown and original fatigue. No new controls, roster changes or save-format changes.',

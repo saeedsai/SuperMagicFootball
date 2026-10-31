@@ -1,3 +1,5 @@
+> **0.12.17.23 release candidate (31 October 2026):** MAGIC-FIREBALL-SLIDE-01: Defenders can now duck under a medium-range Fireball with a timed grounded SHOOT-slide (active slide, under 20 world-height), alongside the existing JUMP dodge. Expired, airborne, far-away and non-slide inputs are still staggered; the caster still pays the six-second cooldown and original fatigue. No new controls, roster changes or save-format changes. Focused Node and desktop/touch Chromium regression tests added; exact-head CI, protected promotion and hosted Pages verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
+
 > **0.12.17.22 release candidate (31 October 2026):** MAGIC-FREEZE-SLIDE-01: Defenders can now cut through a close-range Freeze with a timed grounded SHOOT-slide (active slide, under 20 world-height), alongside the existing JUMP dodge. Expired, airborne, far-away and non-slide inputs still get frozen; the caster still pays the six-second cooldown and original fatigue. No new controls, roster changes or save-format changes. Focused Node and desktop/touch Chromium regression tests added; exact-head CI, protected promotion and hosted Pages verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
 
 > **0.12.17.21 release candidate (30 October 2026):** STUDIO-RANDOM-CHOICE-GUARD-01: Player Studio randomization now excludes blank placeholders and options in disabled groups, and explains when no alternative exists without redrawing or saving. Full-look and selective randomizers retain their existing controls; appearance saves, rosters, gameplay and four match actions are unchanged. Focused source-level JS smoke passed; Node and desktop/touch Chromium regression tests committed, full exact-head QA and protected release verification pending. [Live production game](https://saeedsai.github.io/SuperMagicFootball/).
@@ -354,7 +356,7 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.12.17.22 · Modular source project
+# Supermagic Football · v0.12.17.23 · Modular source project
 
 > **21 October 2026 active development:** SD09 [Spinning Bumper Super Defense](docs/SPINNING_BUMPER_SD09_20261021.md) introduces an **opt-in** level-three defender prototype with jump/dash counters, bounded knockback, a stun cap and significant cooldown/stamina costs. It is not yet equipped for existing rosters or selectable in Player Studio. See the [development milestones](docs/NEXT_MILESTONES.md) for the next five increments. The 0.9.1.0 bundle metadata is now authoritative; exact production deployment still requires green CI/Pages verification; only exact green CI/Pages evidence certifies a deployed change.
 

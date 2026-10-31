@@ -1,3 +1,8 @@
+## 2026-10-31 — MAGIC-FIREBALL-SLIDE-01 (0.12.17.23 candidate)
+- Fireball now has a second counter using existing buttons: an active grounded defensive SHOOT-slide at medium range (pattern of the Freeze/Bat slide parries). Caster cooldown/fatigue unchanged; Scream/Teleport/Hide Ball unchanged. Player Studio Fireball text updated. Audit: Scream (JUMP only) is the remaining Trick without a ground counter.
+- Added tests/magic_fireball_slide_counter.test.cjs (real engine method) and tests/magic_fireball_slide_browser_qa.py (desktop + simulated-touch Chromium); updated tests/magic_freeze_slide_counter.test.cjs.
+- Exact-head 4+4 CI, Modular QA, protected promotion and Pages verification pending; not claimed.
+
 ## 2026-10-31 — MAGIC-FREEZE-SLIDE-01 (0.12.17.22 candidate)
 - Freeze now has a second counter using existing buttons: an active grounded defensive SHOOT-slide at close range (pattern of the Bat slide parry). Caster cooldown/fatigue unchanged; Fireball/Scream/Bat/Teleport/Hide Ball behaviour unchanged. Player Studio Freeze guidance text updated.
 - Added tests/magic_freeze_slide_counter.test.cjs (real engine method, 4 tests) and tests/magic_freeze_slide_browser_qa.py (desktop + simulated-touch Chromium, four-button/12-player checks); updated tests/magic_bat_slide_counter.test.cjs for the new counter chain.

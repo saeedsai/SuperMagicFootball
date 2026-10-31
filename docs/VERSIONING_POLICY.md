@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.22
+# SuperMagicFootball release/version policy — About-only 0.12.17.23
 
-**Current dev candidate 0.12.17.22 (31 October 2026):** MAGIC-FREEZE-SLIDE-01: Defenders can now cut through a close-range Freeze with a timed grounded SHOOT-slide (active slide, under 20 world-height), alongside the existing JUMP dodge. Expired, airborne, far-away and non-slide inputs still get frozen; the caster still pays the six-second cooldown and original fatigue. No new controls, roster changes or save-format changes. Exact-head CI, protected promotion and hosted verification pending.
+**Current dev candidate 0.12.17.23 (31 October 2026):** MAGIC-FIREBALL-SLIDE-01: Defenders can now duck under a medium-range Fireball with a timed grounded SHOOT-slide (active slide, under 20 world-height), alongside the existing JUMP dodge. Expired, airborne, far-away and non-slide inputs are still staggered; the caster still pays the six-second cooldown and original fatigue. No new controls, roster changes or save-format changes. Exact-head CI, protected promotion and hosted verification pending.
+
+**Previous dev candidate 0.12.17.22 (31 October 2026):** MAGIC-FREEZE-SLIDE-01: Defenders can now cut through a close-range Freeze with a timed grounded SHOOT-slide (active slide, under 20 world-height), alongside the existing JUMP dodge. Expired, airborne, far-away and non-slide inputs still get frozen; the caster still pays the six-second cooldown and original fatigue. No new controls, roster changes or save-format changes. Exact-head CI, protected promotion and hosted verification pending.
 
 **Previous dev candidate 0.12.17.21 (30 October 2026):** STUDIO-RANDOM-CHOICE-GUARD-01: Player Studio randomization now excludes blank placeholders and options in disabled groups, and explains when no alternative exists without redrawing or saving. Full-look and selective randomizers retain their existing controls; appearance saves, rosters, gameplay and four match actions are unchanged. Full exact-head CI, Modular QA, protected promotion and hosted verification pending.
 

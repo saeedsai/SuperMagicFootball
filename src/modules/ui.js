@@ -1287,7 +1287,7 @@ const STUDIO_MAGIC_TRICK_GUIDES=Object.freeze({
  banana:'Drops a peel behind the carrier. It arms after 0.25 seconds and trips a grounded rival; an opposing SHOOT-slide can clear it.',
  ice:'Leaves a short-lived ice patch behind the carrier. It arms after 0.30 seconds and briefly stuns a grounded rival; an opposing SHOOT-slide can clear it.',
  bat:'Briefly staggers the nearest opponent in close range. A timed defensive SHOOT-slide parries the bat while grounded; JUMP above the swing to evade it; a strong defender approaching and facing the carrier can also counter.',
- fireball:'Briefly staggers the nearest opponent at medium range. JUMP above the strike to dodge it; a strong defender approaching and facing the carrier can also counter.',
+ fireball:'Briefly staggers the nearest opponent at medium range. JUMP above the strike to dodge it, or time a grounded defensive SHOOT-slide to duck under it; a strong defender approaching and facing the carrier can also counter.',
  freeze:'Briefly freezes the nearest opponent in close range. JUMP above the freezing pulse to dodge it, or time a grounded defensive SHOOT-slide to cut through it; a strong defender approaching and facing the carrier can also counter.',
  scream:'Briefly staggers the nearest opponent in a wider radius. JUMP above the shockwave to dodge it; a strong defender approaching and facing the carrier can also counter.',
  hideBall:'Briefly protects the carried ball. A nearby grounded defender facing the carrier can interrupt the cast with a timed PASS poke; a strong defender approaching and facing the carrier can also counter.',
