@@ -7,7 +7,7 @@ const path=require('node:path');
 const vm=require('node:vm');
 const root=path.join(__dirname,'..');
 const ui=fs.readFileSync(path.join(root,'src/modules/ui.js'),'utf8');
-const at=ui.indexOf('function careerFormSummary(');
+const at=ui.indexOf('const careerScoreOK=');
 const end=ui.indexOf('\nfunction careerOpponentScoutPanel(',at);
 assert(at>0&&end>at,'production form helpers present');
 assert(ui.includes('$'+'{careerFormPanel(c,sorted)}'),'manager hub embeds the form panel');

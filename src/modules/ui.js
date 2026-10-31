@@ -127,7 +127,7 @@ const careerSlots=CAREER_SLOTS.create(careerStorage);
 let career=store.get('managerCareer',null),creatingCareer=false;
 // Migrate pre-0.6 custom-club index saves: v0.5 appended user clubs at index 83.
 if(career&&!career.saveSchema&&clubs.length){const oldToNew=id=>Number.isInteger(id)&&id>=83&&id<83+clubs.length?(TEAMS.findIndex(t=>t.id===clubs[id-83].id)):id;
- if(career.club>=83&&career.club<83+clubs.length){career.club=oldToNew(career.club);career.members=career.members.map(oldToNew);career.fixtures=career.fixtures.map(r=>r.map(pair=>pair.map(oldToNew)));career.table=Object.fromEntries(Object.entries(career.table).map(([id,v])=>[oldToNew(+id),v]));career.history.forEach(r=>r.against=oldToNew(r.against));if(career.lastResult)career.lastResult.against=oldToNew(career.lastResult.against);career.saveSchema=2;store.put('managerCareer',career)}
+ if(career.club>=83&&career.club<83+clubs.length){career.club=oldToNew(career.club);career.members=career.members.map(oldToNew);career.fixtures=career.fixtures.map(r=>r.map(pair=>pair.map(oldToNew)));career.table=Object.fromEntries(Object.entries(career.table).map(([id,v])=>[oldToNew(+id),v]));(Array.isArray(career.history)?career.history:[]).forEach(r=>{if(r&&typeof r==='object')r.against=oldToNew(r.against)});if(career.lastResult&&typeof career.lastResult==='object')career.lastResult.against=oldToNew(career.lastResult.against);career.saveSchema=2;store.put('managerCareer',career)}
 }
 if(!careerSlots.error){try{careerSlots.importLegacy(career);if(careerSlots.hasVault)career=careerSlots.activeCareer();}catch(error){console.warn('Career slot migration could not be saved:',error);}}
 let continentalRun=store.get('continentalRun',null);if(!validateTournament(continentalRun,TEAMS))continentalRun=null;
@@ -723,9 +723,22 @@ function careerLineupRoleFitPanel(c){
 // Read-only recent-form summary derived from the existing c.history (newest first) and table.
 // League results follow the score (draws allowed); a cup tie level after play is a shootout and uses its stored win flag.
 // Tolerates legacy/partial entries; never writes the career, plans or storage.
+// A history score is usable only when it is a real number or a non-blank numeric string (null/''/objects are not 0).
+const careerScoreOK=v=>(typeof v==='number'||(typeof v==='string'&&v.trim()!==''))&&Number.isFinite(+v);
+// CAREER-HISTORY-ROBUST-01: latest-results rows tolerate legacy/partial history. Non-object entries and entries without a
+// usable score are skipped; a missing kind shows MATCH and a missing/unknown opponent shows "unknown club". Read-only.
+function careerLatestResultsHTML(c,limit=5){
+ const hist=Array.isArray(c?.history)?c.history:[];
+ const rows=hist.filter(r=>r&&typeof r==='object'&&careerScoreOK(r.a)&&careerScoreOK(r.b)).slice(0,Math.max(1,limit|0));
+ return rows.map(r=>{
+  const kind=typeof r.kind==='string'&&r.kind.trim()?r.kind.toUpperCase():'MATCH';
+  const opp=Number.isInteger(r.against)&&TEAMS[r.against]&&TEAMS[r.against].name!=null?escapeHTML(String(TEAMS[r.against].name)):'unknown club';
+  return `<div class="stat"><span>${escapeHTML(kind)} vs ${opp}</span><strong>${escapeHTML(String(r.a))}:${escapeHTML(String(r.b))}</strong></div>`;
+ }).join('')||'<p class="muted">No matches played yet</p>';
+}
 function careerFormSummary(c,sorted,limit=5){
  const hist=Array.isArray(c?.history)?c.history:[];
- const valid=hist.filter(r=>r&&Number.isFinite(+r.a)&&Number.isFinite(+r.b)&&(r.kind==='league'||r.kind==='cup'));
+ const valid=hist.filter(r=>r&&typeof r==='object'&&careerScoreOK(r.a)&&careerScoreOK(r.b)&&(r.kind==='league'||r.kind==='cup'));
  const code=r=>+r.a>+r.b?'W':+r.a<+r.b?'L':r.kind==='cup'?(r.win?'W':'L'):'D';
  const recent=valid.slice(0,Math.max(1,limit|0));
  const results=recent.map(code);
@@ -831,7 +844,7 @@ function showManager(){if(!career||creatingCareer){const regions=availableRegion
  <div class="row">${fx?button('▶ PLAY NEXT MATCH','careerPlay','gold'):button('↻ BEGIN NEW SEASON','careerSeason','gold')}${button('12-PLAYER SQUAD','careerSquad')}${button('TRANSFER MARKET','careerMarket')}${button('🔍 YOUTH ACADEMY','careerScout')}</div><hr><h3 class="titleSmall">CLUB FACILITIES</h3>
  ${Object.entries(c.facilities).map(([key,v])=>`<div class="facility"><span>🏟 ${key.toUpperCase()} LVL ${v}</span>${button('UPGRADE '+eur(v*12500000),'facility_'+key)}</div>`).join('')}
  <p class="muted">Academy scouts create fictional recruitable prospects with defined potential, and players have contract years and fitness. Wins generate income. Training improves player experience; upgraded training increases XP per match. Facilities and transfers persist in this browser.</p></div>
- <div class="panel"><h3 class="titleSmall">LEAGUE TABLE</h3><div class="scroll"><table class="miniTable"><thead><tr><th>TEAM</th><th>PL</th><th>W</th><th>D</th><th>GD</th><th>PTS</th></tr></thead><tbody>${sorted.map((r,i)=>`<tr class="${r.id===c.club?'myTeam':''}"><td>${i+1}. ${teamIdentity(TEAMS[r.id])} ${escapeHTML(TEAMS[r.id].name)}</td><td>${r.p}</td><td>${r.w}</td><td>${r.d}</td><td>${r.gf-r.ga}</td><td><b>${r.pts}</b></td></tr>`).join('')}</tbody></table></div>${careerFormPanel(c,sorted)}<h3 class="titleSmall">LATEST RESULTS</h3><div class="scroll">${c.history.slice(0,5).map(r=>`<div class="stat"><span>${r.kind.toUpperCase()} vs ${escapeHTML(TEAMS[r.against].name)}</span><strong>${r.a}:${r.b}</strong></div>`).join('')||'<p class="muted">No matches played yet</p>'}</div></div></div>`);
+ <div class="panel"><h3 class="titleSmall">LEAGUE TABLE</h3><div class="scroll"><table class="miniTable"><thead><tr><th>TEAM</th><th>PL</th><th>W</th><th>D</th><th>GD</th><th>PTS</th></tr></thead><tbody>${sorted.map((r,i)=>`<tr class="${r.id===c.club?'myTeam':''}"><td>${i+1}. ${teamIdentity(TEAMS[r.id])} ${escapeHTML(TEAMS[r.id].name)}</td><td>${r.p}</td><td>${r.w}</td><td>${r.d}</td><td>${r.gf-r.ga}</td><td><b>${r.pts}</b></td></tr>`).join('')}</tbody></table></div>${careerFormPanel(c,sorted)}<h3 class="titleSmall">LATEST RESULTS</h3><div class="scroll">${careerLatestResultsHTML(c)}</div></div></div>`);
 }
 function careerPlay(){if(!career)return showManager();const fx=currentCareerFixture(career);if(!fx)return showManager();home=career.club;away=fx.opponent;mode='career';start()}
 function showCareerSquad(){if(!career)return showManager();home=career.club;const rows=career.roster.map((p,i)=>`<div class="squadEntry"><canvas class="miniAvatar" width="100" height="108" data-avatar="${i}" data-avatarcareer="1"></canvas><div><strong>#${p.num} ${escapeHTML(p.name)}</strong><small>${p.role} · LV ${p.level} · ${p.xp} XP · OVR ${playerOVR(p)}</small><small>STR ${withStats(p).strength} · STA ${withStats(p).stamina} · SHOOT ${withStats(p).shootPower}/${withStats(p).shootAccuracy} · GK ${withStats(p).gkSkill}</small>${playerAbilityIcons(p)}<small>FIT ${p.condition??100}% · CONTRACT ${p.contractYears??2}Y ${p.injuryWeeks?' · OUT '+p.injuryWeeks+'w':''}</small>${p.fictional?'<small class="placeholder">Academy stand-in</small>':''}</div><div class="squadBtns">${button('🎨','editPlayer'+i)}<button class="btn" data-train="${i}">TRAIN €1.5m</button><button class="btn" data-careerrecover="${i}">RECOVER €0.5m</button><button class="btn" data-careerrenew="${i}">RENEW</button></div></div>`).join('');page('MANAGER SQUAD',`Twelve players · ${TEAMS[career.club].name}. Improve their stats, appearance and experience.`,`<div class="squadGrid">${rows}</div><div class="row" style="margin-top:12px">${button('← MANAGER HUB','manager','gold')}${button('TRANSFER MARKET','careerMarket')}${button('YOUTH SCOUTING','careerScout')}</div>`,'manager');paintAvatars();}
