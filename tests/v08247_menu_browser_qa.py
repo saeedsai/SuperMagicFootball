@@ -9,7 +9,7 @@ with sync_playwright() as pw:
   page=browser.new_page(**ctx_args)
   errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   page.set_content(html,wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=15000)
+  page.wait_for_function("!!window.SupermagicFootball?.game",timeout=15000)
   assert page.locator('.navMainList > .navChoice').count()==5,label
   assert page.locator('.navMainList > .navChoice .navCopy strong').all_text_contents()==['Quick Match','Online','Career','Leagues & Cups','Settings']
   assert page.locator('.menubox').evaluate('(x)=>x.scrollWidth<=x.clientWidth+3'), (label,'overflow main')

@@ -10,7 +10,7 @@ with sync_playwright() as pw:
   context=browser.new_context(viewport={'width':1280 if not mobile else 844,'height':720 if not mobile else 390},is_mobile=mobile,has_touch=mobile)
   page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   page.set_content((root/'play.html').read_text(),wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
+  page.wait_for_function("!!window.SupermagicFootball?.game")
   open_quick(page)
   page.locator('[data-action="kickoff"]').first.click()
   result=page.evaluate('''()=>{

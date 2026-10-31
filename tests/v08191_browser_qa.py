@@ -11,7 +11,7 @@ with sync_playwright() as pw:
   failures=[]
   page.on('pageerror',lambda e:failures.append(str(e)))
   page.set_content((root/'play.html').read_text(),wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
+  page.wait_for_function("!!window.SupermagicFootball?.game")
   assert set(page.locator('#touchButtons [data-act]').evaluate_all('a=>a.map(x=>x.dataset.act)'))=={'pass','shoot','dribble','jump'}
   outcome=page.evaluate('''()=>{
    const i=SupermagicFootball.input, g=SupermagicFootball.game;

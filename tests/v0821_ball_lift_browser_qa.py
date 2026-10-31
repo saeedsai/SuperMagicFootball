@@ -13,7 +13,7 @@ with sync_playwright() as pw:
   ctx=browser.new_context(viewport={'width':1400,'height':850} if not touch else {'width':760,'height':412},has_touch=touch,is_mobile=touch)
   page=ctx.new_page();errors=[];page.on('pageerror',lambda exc:errors.append(str(exc)))
   page.set_content(html,wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=20000)
+  page.wait_for_function("!!window.SupermagicFootball?.game",timeout=20000)
   assert sorted(page.locator('[data-act]').evaluate_all('els=>els.map(x=>x.dataset.act)'))==['dribble','jump','pass','shoot']
   open_feature(page,'help')
   help_text=page.locator('body').inner_text()

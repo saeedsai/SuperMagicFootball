@@ -12,7 +12,7 @@ with sync_playwright() as pw:
   ctx=browser.new_context(viewport={'width':1340,'height':820} if not touch else {'width':844,'height':400},is_mobile=touch,has_touch=touch)
   page=ctx.new_page();errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
   page.set_content(html,wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=30000)
+  page.wait_for_function("!!window.SupermagicFootball?.game",timeout=30000)
   open_quick(page)
   page.locator('[data-action="kickoff"]').first.click()
   report=page.evaluate('''() => {

@@ -15,7 +15,7 @@ try:
    browser=pw.chromium.launch(executable_path=shutil.which('chromium') or None,headless=True,args=['--no-sandbox'])
    ctx=browser.new_context(viewport={'width':1400,'height':850} if device=='desktop' else {'width':760,'height':400},has_touch=device!='desktop',is_mobile=device!='desktop')
    page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
-   page.goto(f'http://127.0.0.1:{server.server_port}/play.html',wait_until='load');page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
+   page.goto(f'http://127.0.0.1:{server.server_port}/play.html',wait_until='load');page.wait_for_function("!!window.SupermagicFootball?.game")
    open_quick(page);page.locator('[data-action="setupTactics"]').click();page.locator('[data-action="prepHome"]').first.click()
    assert page.locator('.rosterCard .ovrBadge').count()==12,'roster has 12 derived natural-position overall ratings'
    assert page.locator('.positionOvr').count()==6,'every lineup row shows an OVR'

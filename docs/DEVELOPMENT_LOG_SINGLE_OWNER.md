@@ -1989,3 +1989,52 @@ Host now holds last validated guest four-button and directional input for at mos
 ## 2026-10-31 — Concept-graphics tracker status review (documentation only, no version bump)
 - `docs/concept_character_pipeline/PROGRESS_TRACKER.json`: bumped `updated`, added a `statusReview` block (2/8 authored views, 8 registered layers, 0 verified variants, 0 completed animation groups, owner approval pending) and mapped VIZ-03 to C00-C12 so it is not planned twice. Milestone statuses unchanged: no new modular-art milestone completed since the last verified commit.
 - Evidence: `scripts/verify_concept_graphics_docs.py` pass; `node --test tests/*.test.cjs` 1230/1230 (fixture built). Basis is documentation/source inspection, not a new CI run.
+
+## 2026-10-31 — Legacy Chromium scripts ported off retired version wait (test-only, no version bump)
+- 42 `tests/*.py` scripts waited for `SupermagicFootball`/`NekketsuHD` `.version === '0.8.24.12-alpha'` (retired). Only that wait was replaced by `!!window.SupermagicFootball?.game` (original quoting and timeouts kept). `full_regression_runner.py` and `test_full_regression_runner.py` intentionally keep the string (the runner rewrites it at run time; their test asserts that).
+- Each script was run 3 times sequentially-per-script (2 scripts in parallel, 150 s timeout, against the current build). No assertion was changed and no game code touched; no failures were observed after the wait fix. These are direct script runs, not the CI 4+4 suites.
+
+| script | result | action |
+|---|---|---|
+| `abilities_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `aerial_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `ai_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `ai_combos_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `collisions_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `combo_priority_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `control_reliability_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `fitness_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `four_button_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `four_button_phase2_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `home_dashboard_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `kits_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `master_ui_contracts.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `morale_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `penalty_audio_feedback_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `penalty_controls_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `rapid_controls_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `stats_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `tactics_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `team_combos_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `touch_dribble_pulse_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08191_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08193_ui_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08194_keeper_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08195_overall_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08196_keeper_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08197_keeper_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08202_rosters_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08203_rosters_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08205_rosters_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08206_identity_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08211_input_cancel_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v0821_ball_lift_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08221_aerial_super_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v0822_bpw_world_cups_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08231_bpw_alltime_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08232_audio_origin_manual_probe.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08232_audio_storage_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v0823_audio_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08247_menu_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v08247_menu_input_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |
+| `v0824_keeper_browser_qa.py` | 3/3 pass | wait ported to `!!window.SupermagicFootball?.game` |

@@ -9,7 +9,7 @@ with sync_playwright() as p:
  for label,config in [('desktop',{'viewport':{'width':1440,'height':900}}),('mobile',{'viewport':{'width':844,'height':390},'is_mobile':True,'has_touch':True})]:
   page=browser.new_page(**config);errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   page.set_content(markup,wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=12000)
+  page.wait_for_function("!!window.SupermagicFootball?.game",timeout=12000)
   assert page.locator('.navMainList>.navChoice').count()==5
   assert page.locator('.navMainList .navCopy strong').all_text_contents()==['Quick Match','Online','Career','Leagues & Cups','Settings']
   for name,route in [('Quick Match','navQuick'),('Online','navOnline'),('Career','navCareer'),('Leagues & Cups','navCups'),('Settings','navSettings')]:

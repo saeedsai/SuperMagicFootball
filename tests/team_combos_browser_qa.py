@@ -85,7 +85,7 @@ with sync_playwright() as pw:
         errors = []
         page.on('pageerror', lambda error: errors.append(str(error)))
         page.set_content((ROOT/'play.html').read_text(), wait_until='load')
-        page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
+        page.wait_for_function("!!window.SupermagicFootball?.game")
         open_quick(page)
         page.locator('[data-action="kickoff"]').first.click()
         result = page.evaluate(RUN)

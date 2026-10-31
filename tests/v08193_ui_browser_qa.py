@@ -9,7 +9,7 @@ with sync_playwright() as pw:
   context=browser.new_context(viewport={'width':1400,'height':850} if device=='desktop' else {'width':720,'height':390},has_touch=device=='mobile',is_mobile=device=='mobile')
   page=context.new_page();errors=[]
   page.on('pageerror',lambda err:errors.append(str(err)))
-  page.set_content(p.read_text(),wait_until='load');page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
+  page.set_content(p.read_text(),wait_until='load');page.wait_for_function("!!window.SupermagicFootball?.game")
   open_feature(page,'manager')
   assert page.locator('#managerContinent').count()==1
   assert page.locator('#managerCountry').count()==1

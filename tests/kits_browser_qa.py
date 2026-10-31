@@ -10,7 +10,7 @@ with sync_playwright() as pw:
   page.on('pageerror',lambda e:issues.append(str(e)))
   page.evaluate("""() => {let data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}""")
   page.set_content((root/'play.html').read_text(),wait_until='load')
-  page.wait_for_function("window.NekketsuHD?.version==='0.8.24.12-alpha'")
+  page.wait_for_function("!!window.SupermagicFootball?.game")
   assert page.evaluate('NekketsuHD.teams.length')in (223,224,225)
   open_feature(page,'squad')
   assert 'AGI' in page.locator('.rosterCard').first.inner_text(), 'Agility must be visible in squad'

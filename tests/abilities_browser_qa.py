@@ -11,7 +11,7 @@ with sync_playwright() as pw:
   c=b.new_context(viewport={'width':1280 if not mobile else 844,'height':720 if not mobile else 390},is_mobile=mobile,has_touch=mobile)
   p=c.new_page();errors=[];p.on('pageerror',lambda error:errors.append(str(error)))
   p.set_content((root/'play.html').read_text(),wait_until='load')
-  p.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
+  p.wait_for_function("!!window.SupermagicFootball?.game")
   open_quick(p);p.locator('[data-action="kickoff"]').first.click()
   p.evaluate('''()=>{const sf=SupermagicFootball,g=sf.game,p=g.player(0,2),q=g.player(1,2);
    g.matchState='paused';g.cooldown=0;g.controlled[0]=2;g.driveAI=()=>{};

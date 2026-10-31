@@ -25,7 +25,7 @@ try:
     if 'ERR_BLOCKED_BY_ADMINISTRATOR' in str(exc):
      raise SystemExit('BLOCKED (not PASS): sandbox administrator disallows browser HTTP navigation; run this optional origin probe on a normal desktop environment.') from None
     raise
-   page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=30000)
+   page.wait_for_function("!!window.SupermagicFootball?.game",timeout=30000)
    assert not page.evaluate('SupermagicFootball.audio.unlocked'),'No music before click'
    open_settings(page,'sound')
    page.locator('#audioMute').select_option('false')

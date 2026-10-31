@@ -11,7 +11,7 @@ with sync_playwright() as pw:
   page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   for club,star,shirt in [('Manchester City','Erling Haaland',9),('Liverpool','Alexander Isak',9)]:
    page.set_content(html,wait_until='load')
-   page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=20000)
+   page.wait_for_function("!!window.SupermagicFootball?.game",timeout=20000)
    squad=page.evaluate('''name => {const t=SupermagicFootball.teams.find(t=>t.name===name&&t.id.startsWith('club26_'));return {index:t.index,players:SupermagicFootball.rosterFor(t.index)};}''',club)
    assert len(squad['players'])==12,(mode,club)
    assert len(set(p['id'] for p in squad['players']))==12

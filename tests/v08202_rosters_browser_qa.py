@@ -9,7 +9,7 @@ with sync_playwright() as pw:
   ctx=browser.new_context(viewport={'width':1400,'height':800} if device=='desktop' else {'width':720,'height':390},has_touch=device!='desktop',is_mobile=device!='desktop')
   page=ctx.new_page();errors=[]
   page.on('pageerror',lambda e:errors.append(str(e)))
-  page.set_content(html,wait_until='load');page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=30000)
+  page.set_content(html,wait_until='load');page.wait_for_function("!!window.SupermagicFootball?.game",timeout=30000)
   for club,star in [('Real Madrid','Kylian Mbappé'),('Arsenal','Bukayo Saka')]:
    squad=page.evaluate('''name => {let t=window.SupermagicFootball.teams.find(t=>t.name===name&&t.id.startsWith('club26_'));return {index:t.index,players:window.SupermagicFootball.rosterFor(t.index)};}''',club)
    assert len(squad['players'])==12,club
@@ -25,7 +25,7 @@ with sync_playwright() as pw:
    assert page.locator('.playerFaceCanvas').count()==12,(device,club)
    assert page.locator('.playerOverall').count()>0 or 'OVR' in page.locator('body').inner_text(),(device,club,'OVR missing')
    page.set_content(html,wait_until='load')
-   page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=30000)
+   page.wait_for_function("!!window.SupermagicFootball?.game",timeout=30000)
   assert not errors,errors
   print(device,'PASS Real Madrid and Arsenal 2026/27 names, shirts, ages, formation faces & OVR',flush=True)
   browser.close()

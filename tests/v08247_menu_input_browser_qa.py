@@ -7,7 +7,7 @@ with sync_playwright() as pw:
  b=pw.chromium.launch(executable_path=shutil.which('chromium') or None,headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
  p=b.new_page(viewport={'width':1360,'height':850});errors=[];p.on('pageerror',lambda e:errors.append(str(e)))
  p.set_content((root/'play.html').read_text(),wait_until='load')
- p.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
+ p.wait_for_function("!!window.SupermagicFootball?.game")
  assert p.evaluate("document.activeElement?.dataset.action")=='navQuick'
  p.keyboard.press('ArrowDown')
  assert p.evaluate("document.activeElement?.dataset.action")=='navOnline'

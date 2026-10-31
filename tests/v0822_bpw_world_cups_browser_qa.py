@@ -12,7 +12,7 @@ with sync_playwright() as pw:
   context=browser.new_context(viewport={'width':1400,'height':840} if not mobile else {'width':780,'height':410},is_mobile=mobile,has_touch=mobile)
   page=context.new_page();errors=[];page.on('pageerror',lambda exc:errors.append(str(exc)))
   page.set_content(markup,wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=25000)
+  page.wait_for_function("!!window.SupermagicFootball?.game",timeout=25000)
   data=page.evaluate('''() => {
    const teams=SupermagicFootball.teams;
    const selected=teams.filter(t=>t.group==='bpw_worldcup');
@@ -65,7 +65,7 @@ with sync_playwright() as pw:
     data.legend_customClubs=JSON.stringify([club]);
   }""")
   saved.set_content(markup,wait_until='load')
-  saved.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=25000)
+  saved.wait_for_function("!!window.SupermagicFootball?.game",timeout=25000)
   positions=saved.evaluate("""() => {
     const teams=SupermagicFootball.teams;
     return {total:teams.length,saved:teams.find(t=>t.id==='club_existing')?.index,

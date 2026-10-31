@@ -9,7 +9,7 @@ with sync_playwright() as pw:
  for label,mobile in [('desktop',False),('simulated touch',True)]:
   ctx=browser.new_context(viewport={'width':1340,'height':820} if not mobile else {'width':850,'height':420},is_mobile=mobile,has_touch=mobile)
   page=ctx.new_page();errors=[];page.on('pageerror',lambda err:errors.append(str(err)))
-  page.set_content(markup,wait_until='load');page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=20000)
+  page.set_content(markup,wait_until='load');page.wait_for_function("!!window.SupermagicFootball?.game",timeout=20000)
   data=page.evaluate('''() => { const api=SupermagicFootball,t=api.teams.find(t=>t.id==='bpw_alltime_legendary_12');const r=api.rosterFor(t.index);return {teams:api.teams.length,index:t.index,role:r.map(p=>p.role),names:r.map(p=>p.name),ratings:r.map(p=>p.legendaryRating),wc:api.teams.filter(t=>t.group==='bpw_worldcup').length,buttons:[...document.querySelectorAll('[data-act]')].map(e=>e.dataset.act).sort()};}''')
   assert data['teams'] in (223,224,225) and data['index']==222 and data['wc']==6,data
   assert data['role']==['GK']*2+['DF']*3+['MF']*4+['FW']*3,data

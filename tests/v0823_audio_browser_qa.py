@@ -15,7 +15,7 @@ with sync_playwright() as pw:
   page=b.new_page(viewport={'width':844,'height':390} if mobile else {'width':1366,'height':820},has_touch=mobile,is_mobile=mobile)
   errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   page.set_content(html,wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'")
+  page.wait_for_function("!!window.SupermagicFootball?.game")
   assert page.evaluate('SupermagicFootball.audio.unlocked') is False
   open_settings(page,'sound')
   page.locator('#audioMute').select_option('true')

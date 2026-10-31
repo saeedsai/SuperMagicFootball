@@ -11,7 +11,7 @@ with sync_playwright() as pw:
   b=pw.chromium.launch(executable_path=shutil.which('chromium') or None,headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
   c=b.new_context(viewport={'width':1366,'height':820} if mode=='desktop' else {'width':720,'height':390},is_mobile=(mode!='desktop'),has_touch=(mode!='desktop'))
   p=c.new_page();errs=[];p.on('pageerror',lambda err:errs.append(str(err)))
-  p.set_content(html,wait_until='load');p.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=20000)
+  p.set_content(html,wait_until='load');p.wait_for_function("!!window.SupermagicFootball?.game",timeout=20000)
   assert p.locator('[data-act]').count()==4,(mode,'action count')
   assert set(p.locator('[data-act]').evaluate_all('(els)=>els.map(e=>e.dataset.act)'))=={'shoot','pass','jump','dribble'}
   assert len(p.evaluate('SupermagicFootball.teams'))in (223,224,225)

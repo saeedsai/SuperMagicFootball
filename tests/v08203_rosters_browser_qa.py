@@ -10,7 +10,7 @@ with sync_playwright() as pw:
   page=ctx.new_page();errors=[]
   page.on('pageerror',lambda e:errors.append(str(e)))
   page.set_content(html,wait_until='load')
-  page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=20000)
+  page.wait_for_function("!!window.SupermagicFootball?.game",timeout=20000)
   for club,player,expected_shirt in [('Bayern Munich','Harry Kane',9),('Paris Saint-Germain','Ousmane Dembélé',10)]:
    squad=page.evaluate('''name => {const t=SupermagicFootball.teams.find(t=>t.name===name&&t.id.startsWith('club26_'));return {index:t.index,players:SupermagicFootball.rosterFor(t.index)};}''',club)
    assert len(squad['players'])==12,club
@@ -26,7 +26,7 @@ with sync_playwright() as pw:
    assert page.locator('.playerFaceCanvas').count()==12,(device,club)
    assert 'OVR' in page.locator('body').inner_text(),(device,club,'missing OVR')
    page.set_content(html,wait_until='load')
-   page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=20000)
+   page.wait_for_function("!!window.SupermagicFootball?.game",timeout=20000)
   assert not errors,errors
   print(device,'PASS Bayern and PSG: 2026/27 roster, shirts, DOB, formation portraits, and OVR',flush=True)
   browser.close()

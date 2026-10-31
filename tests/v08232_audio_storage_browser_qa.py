@@ -23,7 +23,7 @@ with sync_playwright() as pw:
       setItem:(k,v)=>{window.__audioTestStorage[k]=String(v)},removeItem:k=>{delete window.__audioTestStorage[k]}
     }});</script>""".replace('STORAGE_VALUE',json.dumps(saved))
    p.set_content(html.replace('<script type="module">',shim+'<script type="module">',1),wait_until='load')
-   p.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=30000)
+   p.wait_for_function("!!window.SupermagicFootball?.game",timeout=30000)
    return p,errors
   page,errors=load_page()
   assert not page.evaluate('SupermagicFootball.audio.unlocked'),'No audio until user gesture'

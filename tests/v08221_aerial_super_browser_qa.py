@@ -54,7 +54,7 @@ with sync_playwright() as pw:
    ctx=browser.new_context(viewport={'width':1380,'height':820} if not mobile else {'width':740,'height':410},is_mobile=mobile,has_touch=mobile)
    page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
    page.set_content(markup,wait_until='load')
-   page.wait_for_function("window.SupermagicFootball?.version==='0.8.24.12-alpha'",timeout=20000)
+   page.wait_for_function("!!window.SupermagicFootball?.game",timeout=20000)
    assert sorted(page.locator('[data-act]').evaluate_all('(els)=>els.map(x=>x.dataset.act)'))==['dribble','jump','pass','shoot']
    open_feature(page,'help')
    helptext=page.locator('body').inner_text()
