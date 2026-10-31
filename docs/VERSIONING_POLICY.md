@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.17.23
+# SuperMagicFootball release/version policy — About-only 0.12.17.24
 
-**Current dev candidate 0.12.17.23 (31 October 2026):** MAGIC-FIREBALL-SLIDE-01: Defenders can now duck under a medium-range Fireball with a timed grounded SHOOT-slide (active slide, under 20 world-height), alongside the existing JUMP dodge. Expired, airborne, far-away and non-slide inputs are still staggered; the caster still pays the six-second cooldown and original fatigue. No new controls, roster changes or save-format changes. Exact-head CI, protected promotion and hosted verification pending.
+**Current dev candidate 0.12.17.24 (31 October 2026):** MAGIC-SCREAM-SLIDE-01: Defenders can now slide under a wide-radius Scream shockwave with a timed grounded SHOOT-slide (active slide, under 20 world-height), alongside the existing JUMP dodge. Expired, airborne, far-away and non-slide inputs are still staggered; the caster still pays the six-second cooldown and original fatigue. No new controls, roster changes or save-format changes. Exact-head CI, protected promotion and hosted verification pending.
+
+**Previous dev candidate 0.12.17.23 (31 October 2026):** MAGIC-FIREBALL-SLIDE-01: Defenders can now duck under a medium-range Fireball with a timed grounded SHOOT-slide (active slide, under 20 world-height), alongside the existing JUMP dodge. Expired, airborne, far-away and non-slide inputs are still staggered; the caster still pays the six-second cooldown and original fatigue. No new controls, roster changes or save-format changes. Exact-head CI, protected promotion and hosted verification pending.
 
 **Previous dev candidate 0.12.17.22 (31 October 2026):** MAGIC-FREEZE-SLIDE-01: Defenders can now cut through a close-range Freeze with a timed grounded SHOOT-slide (active slide, under 20 world-height), alongside the existing JUMP dodge. Expired, airborne, far-away and non-slide inputs still get frozen; the caster still pays the six-second cooldown and original fatigue. No new controls, roster changes or save-format changes. Exact-head CI, protected promotion and hosted verification pending.
 

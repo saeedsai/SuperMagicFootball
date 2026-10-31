@@ -42,9 +42,9 @@ test('Medium-range slide counters; expired, airborne, non-slide or out-of-range 
  assert.equal(far.fire(),true);assert.equal(far.defender.stun,0,'out of range: nobody staggered');assert.equal(far.events[0].countered,false);
  const air=setup({action:'slide',timer:.25,z:25});assert.equal(air.fire(),true);assert.equal(air.events[0].countered,true,'JUMP dodge preserved');
 });
-test('Fireball slide counter does not leak to Scream; Freeze, Bat and JUMP dodge unchanged',()=>{
+test('Fireball slide counter is its own rule; Scream (own slide counter), Freeze, Bat and JUMP dodge unchanged',()=>{
  const scream=setup({id:'scream',action:'slide',timer:.25});
- assert.equal(scream.fire(),true);assert.equal(scream.events[0].countered,false);assert.equal(scream.defender.stun,.32);
+ assert.equal(scream.fire(),true);assert.equal(scream.events[0].countered,true);assert.equal(scream.defender.stun,0);
  for(const id of ['freeze','bat']){
   const t=setup({id,action:'slide',timer:.25,dist:50});assert.equal(t.fire(),true);assert.equal(t.events[0].countered,true,id);
  }

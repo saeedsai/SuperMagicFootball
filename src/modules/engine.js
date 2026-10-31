@@ -975,7 +975,7 @@ class GameEngine{
   const facing=inRange&&((rival.face||1)*(p.x-rival.x))>0;
   const closing=inRange&&((rival.dx||0)*(p.x-rival.x)+(rival.dy||0)*(p.y-rival.y))>0;
   // Airborne JUMP counters Fireball, Scream, Freeze and Bat; a grounded SHOOT-slide
-  // parries Bat and Freeze and ducks Fireball. All counters use the existing four buttons and still cost
+  // parries Bat and Freeze, ducks Fireball and slides under Scream. All counters use the existing four buttons and still cost
   // the caster the original cooldown and fatigue.
   const jumpDodged=id==='fireball'&&inRange&&Number.isFinite(rival.z)&&rival.z>=20;
   const screamDodged=id==='scream'&&inRange&&Number.isFinite(rival.z)&&rival.z>=20;
@@ -988,6 +988,9 @@ class GameEngine{
   // MAGIC-FIREBALL-SLIDE-01: an active grounded defensive SHOOT-slide ducks
   // under the medium-range fireball. Expired or airborne slides do not count.
   const fireballParried=id==='fireball'&&inRange&&rival.action==='slide'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&Number.isFinite(rival.z)&&rival.z<20;
+  // MAGIC-SCREAM-SLIDE-01: an active grounded defensive SHOOT-slide slips under
+  // the wide shockwave. Expired or airborne slides do not count.
+  const screamParried=id==='scream'&&inRange&&rival.action==='slide'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&Number.isFinite(rival.z)&&rival.z<20;
   const batParried=id==='bat'&&inRange&&rival.action==='slide'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&Number.isFinite(rival.z)&&rival.z<20;
   // TELEPORT-SLIDE-01: a grounded SHOOT-slide intercepts only the carrier's
   // forward travel lane; a slide behind or wide of that lane misses.
@@ -1007,7 +1010,7 @@ class GameEngine{
    rival.action==='punch'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&
    Number.isFinite(rival.z)&&rival.z<20&&
    ((rival.face||1)*(p.x-rival.x))>0;
-  const countered=!!(jumpDodged||fireballParried||screamDodged||freezeDodged||freezeParried||batDodged||batParried||teleportParried||hideBallPoked||(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling')));
+  const countered=!!(jumpDodged||fireballParried||screamDodged||screamParried||freezeDodged||freezeParried||batDodged||batParried||teleportParried||hideBallPoked||(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling')));
   p.magicReadyAt=this.clock+6;
   p.fatigue=Math.min(1,p.fatigue+.035);
   this.fatigueLedger[p.t][p.src.id]=p.fatigue;
