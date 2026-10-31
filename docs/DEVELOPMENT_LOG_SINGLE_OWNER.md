@@ -1,3 +1,8 @@
+## 2026-10-31 — CAREER-RECENT-FORM-01 (0.12.18.0 candidate)
+- Audit: Career already offered league table, latest-five scores, scout, bench readiness and role fit, but no at-a-glance form/streak/gap summary. Added pure `careerFormSummary`/`careerFormPanel` in ui.js (derived only from existing `history` and standings; no persisted field, no writes) and a `.formStrip` style; panel sits above LATEST RESULTS in the Manager hub (no new screen, controls or HUD element). League results follow score; level cup ties use the stored shootout `win` flag; malformed/legacy entries are skipped.
+- Added tests/career_recent_form.test.cjs (real helpers, real CAREER.advanceCareer history, legacy-save slot round trip) and tests/career_recent_form_browser_qa.py (desktop + simulated-touch Chromium).
+- Exact-head 4+4 CI, Modular QA, protected promotion and Pages verification pending; not claimed.
+
 ## 2026-10-31 — MAGIC-SCREAM-SLIDE-01 (0.12.17.24 candidate)
 - Scream now has a second counter using existing buttons: an active grounded defensive SHOOT-slide within its wider radius (pattern of the Freeze/Fireball/Bat slide parries). Caster cooldown/fatigue unchanged; Teleport/Hide Ball unchanged. Player Studio Scream text updated. All damage-style Tricks now have both a JUMP and a ground counter.
 - Added tests/magic_scream_slide_counter.test.cjs (real engine method) and tests/magic_scream_slide_browser_qa.py (desktop + simulated-touch Chromium); updated Freeze/Fireball slide tests that asserted Scream was not slide-parried.

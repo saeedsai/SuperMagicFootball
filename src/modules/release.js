@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.17.24',
+ version:'0.12.18.0',
  date:'2026-10-31',
  notes:Object.freeze([
+  'CAREER-RECENT-FORM-01: The Manager Career hub now shows a RECENT FORM strip above Latest Results: your last five league and cup results as W/D/L badges (oldest to newest, with a spoken summary for screen readers), the W-D-L record and goals for/against, your current run, and how many points you lead or trail the top of the table by. It is read-only and derived from your existing results, so older Career saves load unchanged; no new controls, match HUD changes, roster changes or save-format changes.',
   'MAGIC-SCREAM-SLIDE-01: Defenders can now slide under a wide-radius Scream shockwave with a timed grounded SHOOT-slide (active slide, under 20 world-height), alongside the existing JUMP dodge. Expired, airborne, far-away and non-slide inputs are still staggered; the caster still pays the six-second cooldown and original fatigue. No new controls, roster changes or save-format changes.',
   'MAGIC-FREEZE-SLIDE-01: Defenders can now cut through a close-range Freeze with a timed grounded SHOOT-slide (active slide, under 20 world-height), alongside the existing JUMP dodge. Expired, airborne, far-away and non-slide inputs still get frozen; the caster still pays the six-second cooldown and original fatigue. No new controls, roster changes or save-format changes.',
   'STUDIO-RANDOM-CHOICE-GUARD-01: Player Studio randomization now excludes blank placeholders and options in disabled groups, and explains when no alternative exists without redrawing or saving. Full-look and selective randomizers retain their existing controls; appearance saves, rosters, gameplay and four match actions are unchanged.',

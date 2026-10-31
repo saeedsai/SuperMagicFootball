@@ -720,6 +720,46 @@ function careerLineupRoleFitPanel(c){
  </div>`;
 }
 // Read-only pre-kickoff scouting. No AI odds, plan edits, or career writes.
+// Read-only recent-form summary derived from the existing c.history (newest first) and table.
+// League results follow the score (draws allowed); a cup tie level after play is a shootout and uses its stored win flag.
+// Tolerates legacy/partial entries; never writes the career, plans or storage.
+function careerFormSummary(c,sorted,limit=5){
+ const hist=Array.isArray(c?.history)?c.history:[];
+ const valid=hist.filter(r=>r&&Number.isFinite(+r.a)&&Number.isFinite(+r.b)&&(r.kind==='league'||r.kind==='cup'));
+ const code=r=>+r.a>+r.b?'W':+r.a<+r.b?'L':r.kind==='cup'?(r.win?'W':'L'):'D';
+ const recent=valid.slice(0,Math.max(1,limit|0));
+ const results=recent.map(code);
+ const count=k=>results.filter(v=>v===k).length;
+ let run=0;for(const v of results){if(v===results[0])run++;else break;}
+ const rows=Array.isArray(sorted)?sorted:[];
+ const mine=rows.findIndex(v=>v&&v.id===c?.club);
+ let gap=null;
+ if(mine>=0&&rows.length>1){
+  const mp=Number(rows[mine].pts)||0;
+  if(mine===0)gap={leader:true,other:rows[1].id,pts:mp-(Number(rows[1].pts)||0)};
+  else gap={leader:false,other:rows[0].id,pts:(Number(rows[0].pts)||0)-mp};
+ }
+ return {results,w:count('W'),d:count('D'),l:count('L'),
+  gf:recent.reduce((t,r)=>t+(+r.a),0),ga:recent.reduce((t,r)=>t+(+r.b),0),
+  run:results.length?{code:results[0],length:run}:null,gap,played:results.length};
+}
+function careerFormPanel(c,sorted){
+ const f=careerFormSummary(c,sorted);
+ if(!f.played)return '<div id="careerForm" aria-label="Recent form"><h3 class="titleSmall">RECENT FORM</h3><p class="muted">Form appears after your first match.</p></div>';
+ const word={W:'win',D:'draw',L:'defeat'},name={W:'win',D:'draw',L:'loss'};
+ const badges=f.results.slice().reverse().map(v=>`<span class="formBadge form${v}" data-form="${v}" aria-hidden="true">${v}</span>`).join('');
+ const spoken=f.results.slice().reverse().map(v=>name[v]).join(', ');
+ const runText=f.run.length>1?`${f.run.length} ${word[f.run.code]}${f.run.length===1?'':'s'} in a row`:`Last result: ${name[f.run.code]}`;
+ let gapText='';
+ if(f.gap){
+  const other=TEAMS[f.gap.other]?escapeHTML(TEAMS[f.gap.other].name):'the field';
+  gapText=f.gap.leader?(f.gap.pts>0?`Top of the table, ${f.gap.pts} point${f.gap.pts===1?'':'s'} clear of ${other}.`:`Top of the table, level on points with ${other}.`)
+   :(f.gap.pts>0?`${f.gap.pts} point${f.gap.pts===1?'':'s'} behind leaders ${other}.`:`Level on points with leaders ${other}.`);
+ }
+ return `<div id="careerForm" aria-label="Recent form"><h3 class="titleSmall">RECENT FORM</h3>
+  <div class="formStrip" role="img" aria-label="Last ${f.played} result${f.played===1?'':'s'}, oldest to newest: ${spoken}">${badges}</div>
+  <p class="muted" data-form-summary="1"><strong>LAST ${f.played}:</strong> ${f.w}W ${f.d}D ${f.l}L · goals ${f.gf}:${f.ga} · ${runText}.${gapText?' '+gapText:''}</p></div>`;
+}
 function careerOpponentScoutPanel(c,fx){
  if(!fx||!Number.isInteger(fx.opponent)||!TEAMS[fx.opponent])return '';
  const opponent=TEAMS[fx.opponent],oppRoster=roster(fx.opponent);
@@ -791,7 +831,7 @@ function showManager(){if(!career||creatingCareer){const regions=availableRegion
  <div class="row">${fx?button('▶ PLAY NEXT MATCH','careerPlay','gold'):button('↻ BEGIN NEW SEASON','careerSeason','gold')}${button('12-PLAYER SQUAD','careerSquad')}${button('TRANSFER MARKET','careerMarket')}${button('🔍 YOUTH ACADEMY','careerScout')}</div><hr><h3 class="titleSmall">CLUB FACILITIES</h3>
  ${Object.entries(c.facilities).map(([key,v])=>`<div class="facility"><span>🏟 ${key.toUpperCase()} LVL ${v}</span>${button('UPGRADE '+eur(v*12500000),'facility_'+key)}</div>`).join('')}
  <p class="muted">Academy scouts create fictional recruitable prospects with defined potential, and players have contract years and fitness. Wins generate income. Training improves player experience; upgraded training increases XP per match. Facilities and transfers persist in this browser.</p></div>
- <div class="panel"><h3 class="titleSmall">LEAGUE TABLE</h3><div class="scroll"><table class="miniTable"><thead><tr><th>TEAM</th><th>PL</th><th>W</th><th>D</th><th>GD</th><th>PTS</th></tr></thead><tbody>${sorted.map((r,i)=>`<tr class="${r.id===c.club?'myTeam':''}"><td>${i+1}. ${teamIdentity(TEAMS[r.id])} ${escapeHTML(TEAMS[r.id].name)}</td><td>${r.p}</td><td>${r.w}</td><td>${r.d}</td><td>${r.gf-r.ga}</td><td><b>${r.pts}</b></td></tr>`).join('')}</tbody></table></div><h3 class="titleSmall">LATEST RESULTS</h3><div class="scroll">${c.history.slice(0,5).map(r=>`<div class="stat"><span>${r.kind.toUpperCase()} vs ${escapeHTML(TEAMS[r.against].name)}</span><strong>${r.a}:${r.b}</strong></div>`).join('')||'<p class="muted">No matches played yet</p>'}</div></div></div>`);
+ <div class="panel"><h3 class="titleSmall">LEAGUE TABLE</h3><div class="scroll"><table class="miniTable"><thead><tr><th>TEAM</th><th>PL</th><th>W</th><th>D</th><th>GD</th><th>PTS</th></tr></thead><tbody>${sorted.map((r,i)=>`<tr class="${r.id===c.club?'myTeam':''}"><td>${i+1}. ${teamIdentity(TEAMS[r.id])} ${escapeHTML(TEAMS[r.id].name)}</td><td>${r.p}</td><td>${r.w}</td><td>${r.d}</td><td>${r.gf-r.ga}</td><td><b>${r.pts}</b></td></tr>`).join('')}</tbody></table></div>${careerFormPanel(c,sorted)}<h3 class="titleSmall">LATEST RESULTS</h3><div class="scroll">${c.history.slice(0,5).map(r=>`<div class="stat"><span>${r.kind.toUpperCase()} vs ${escapeHTML(TEAMS[r.against].name)}</span><strong>${r.a}:${r.b}</strong></div>`).join('')||'<p class="muted">No matches played yet</p>'}</div></div></div>`);
 }
 function careerPlay(){if(!career)return showManager();const fx=currentCareerFixture(career);if(!fx)return showManager();home=career.club;away=fx.opponent;mode='career';start()}
 function showCareerSquad(){if(!career)return showManager();home=career.club;const rows=career.roster.map((p,i)=>`<div class="squadEntry"><canvas class="miniAvatar" width="100" height="108" data-avatar="${i}" data-avatarcareer="1"></canvas><div><strong>#${p.num} ${escapeHTML(p.name)}</strong><small>${p.role} · LV ${p.level} · ${p.xp} XP · OVR ${playerOVR(p)}</small><small>STR ${withStats(p).strength} · STA ${withStats(p).stamina} · SHOOT ${withStats(p).shootPower}/${withStats(p).shootAccuracy} · GK ${withStats(p).gkSkill}</small>${playerAbilityIcons(p)}<small>FIT ${p.condition??100}% · CONTRACT ${p.contractYears??2}Y ${p.injuryWeeks?' · OUT '+p.injuryWeeks+'w':''}</small>${p.fictional?'<small class="placeholder">Academy stand-in</small>':''}</div><div class="squadBtns">${button('🎨','editPlayer'+i)}<button class="btn" data-train="${i}">TRAIN €1.5m</button><button class="btn" data-careerrecover="${i}">RECOVER €0.5m</button><button class="btn" data-careerrenew="${i}">RENEW</button></div></div>`).join('');page('MANAGER SQUAD',`Twelve players · ${TEAMS[career.club].name}. Improve their stats, appearance and experience.`,`<div class="squadGrid">${rows}</div><div class="row" style="margin-top:12px">${button('← MANAGER HUB','manager','gold')}${button('TRANSFER MARKET','careerMarket')}${button('YOUTH SCOUTING','careerScout')}</div>`,'manager');paintAvatars();}
