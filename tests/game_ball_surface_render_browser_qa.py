@@ -3,7 +3,8 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 HTML = (ROOT / 'tests/.generated/play.html').read_text(encoding='utf-8')
-OUT = ROOT / 'tests/.generated/game_ball_surface_render.png'
+OUT = ROOT / 'docs/evidence/browser/ball_panel_projection_20261104.png'
+OUT.parent.mkdir(parents=True, exist_ok=True)
 
 with sync_playwright() as pw:
     browser = pw.chromium.launch(headless=True, args=['--no-sandbox', '--disable-dev-shm-usage'])
@@ -26,6 +27,10 @@ with sync_playwright() as pw:
       ball(220,236,84,'classic',.42,'Classic · featured');
       ball(590,246,17,'classic',1.16,'Classic · in-match scale');
       ball(932,236,72,'auriverde',-.24,'Optional ball cosmetic');
+      // Three real gameplay-size positions make the projected panel seam easy
+      // to inspect through a full turn without changing ball state or radius.
+      const turnAngles=[0,Math.PI/4,Math.PI/2],turnXs=[390,510,630];
+      for(let i=0;i<turnAngles.length;i++)renderer.drawSoccerBall(ctx,turnXs[i],365,17,'classic',turnAngles[i]);
       const shadowHeights=[0,60,120,240],shadowXs=[350,510,670,830];
       for(let i=0;i<shadowHeights.length;i++){
         renderer.drawBallShadow(ctx,shadowXs[i],440,shadowHeights[i],1);
@@ -33,10 +38,10 @@ with sync_playwright() as pw:
         ctx.fillText(['Ground','Low','High','Max height'][i],shadowXs[i],495);
       }
       document.body.append(canvas);
-      return {canvas:{width:canvas.width,height:canvas.height},balls:3,classicRadius:17,selectedRadius:84,shadowHeights};
+      return {canvas:{width:canvas.width,height:canvas.height},balls:3,turnSamples:turnAngles.map(angle=>Math.round(angle*180/Math.PI)),classicRadius:17,selectedRadius:84,shadowHeights};
     }""")
     page.screenshot(path=str(OUT), full_page=False)
-    assert result['balls'] == 3 and result['classicRadius'] == 17
+    assert result['balls'] == 3 and result['turnSamples'] == [0, 45, 90] and result['classicRadius'] == 17
     assert not errors, errors
     print('GAME_BALL_SURFACE_RENDER_BROWSER_PASS', result, 'screenshot', OUT, flush=True)
     browser.close()

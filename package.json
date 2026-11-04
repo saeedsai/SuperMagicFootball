@@ -1,6 +1,6 @@
 {
   "name": "supermagic-football-modular",
-  "version": "0.12.81.27",
+  "version": "0.12.81.36",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,9 +8,11 @@
     "test:node": "python3 scripts/build.py && node --test tests/*.test.cjs && node tests/club26_fc27_roster.mjs",
     "serve": "python3 -m http.server 8000",
     "test:roster:fc27": "node tests/club26_fc27_roster.mjs",
-    "serve:lan": "node scripts/lan-server.mjs"
+    "serve:lan": "node scripts/lan-server.mjs",
+    "serve:online": "node scripts/online-account-service.mjs"
   },
   "dependencies": {
+    "pg": "^8.23.1",
     "ws": "^8.18.3"
   }
 }

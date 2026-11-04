@@ -31,8 +31,8 @@ test('the only player-visible version is a bundled 4-field About label, not remo
 test('release module, offline cache and fixture have matching runtime wiring',()=>{
  const build=read('scripts/build.py'),sw=read('sw.js'),ui=read('src/modules/ui.js');
  assert.match(ui,/import \{RELEASE\} from "\.\/release\.js"/);
- assert.match(build,/'render','release','ability-icons','ui'/);
- assert.match(sw,/'render','release','ability-icons','ui'/);
+ assert.match(build,/'render','release','ability-icons','online-auth','online-account-client','online-match-client','online-match-renderer','online-history','ui'/);
+ assert.match(sw,/'render','release','ability-icons','online-auth','online-account-client','online-match-client','online-match-renderer','online-history','ui'/);
  assert.match(sw,/release-090220-v1/);
  assert.match(build,/'shotpaths','magic-hazards','engine'/,'QA fixture must include new hazard module');
  assert.match(sw,/'shotpaths','magic-hazards','engine'/,'offline precache must include new hazard module');

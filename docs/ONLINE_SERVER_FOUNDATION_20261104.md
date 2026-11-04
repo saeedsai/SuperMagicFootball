@@ -1,0 +1,34 @@
+# Online server foundation — 4 November 2026
+
+## Current status
+
+The local development tree includes authenticated account snapshots, server-simulated online matches, immutable terminal results, account-scoped match history, durable result rewards, server-owned Career seasons, and online UT catalog/collection/purchases/lineups. Saved lineups use validated canonical player assets in the match simulation. The in-game routes use existing controls and renderer. This is a locally validated implementation, not a production-ready online game. The owner has requested a free hosted prototype; no API service, database, or identity tenant has been provisioned yet.
+
+## Implemented locally
+
+- OIDC authorization-code sign-in with PKCE in the browser. Access tokens remain in memory; only the temporary state/verifier pair is held in session storage during redirect. The Node API verifies RS256 signatures against a configured HTTPS JWKS endpoint and derives account IDs from verified issuer/subject claims.
+- PostgreSQL account schemas for profiles, versioned Career/Ultimate Team snapshots, owned canonical catalog entities, idempotency keys, result rewards and Career seasons. Account snapshot writes use optimistic versions and account-scoped transaction locks. Local Career save-copy and UT squad-copy flows remain separate and preserve source bytes/active slots. The new Online Career season and UT purchase routes are separate server-owned data.
+- Authenticated, exact-origin API routes with bounded request bodies, per-account process-local read/write limits and non-disclosing readiness checks. PostgreSQL statements/queries have timeouts and production requires TLS.
+- Short-lived one-use match tickets, WebSocket seat binding, origin/message/input limits, bounded matchmaking collections and a fixed-step 30 Hz server-owned match simulation. The signed-in match screen offers the server-supported canonical team catalog; selected team IDs are validated and bound to the one-use ticket and assigned side. Ticket JSON is streamed through the bounded HTTP adapter with a 1 KiB limit. The client uses the existing keyboard/touch/gamepad actions and four-button schema; validated server snapshots are adapted into the production renderer without advancing local online physics.
+- Immutable terminal match records stored in PostgreSQL. Match cleanup and the client completion signal occur only after the result store confirms the authoritative result; failed writes retry with bounded backoff. A bounded authenticated match-history route returns account-relative scores/outcomes and hides opponent account IDs.
+- In-game Online Server Match sign-in, find/cancel queue, assigned-side play, escape/resume/leave and result views. PVP assigns two humans. Online Career provides owned-team season creation, eight bound fixtures, standings and next-fixture play against server CPU; progression is applied once from a matching durable result. UT exposes catalog, collection, server-priced/idempotent purchases and a playable twelve-slot lineup builder. The server validates roles, canonical IDs, ownership, lineup versions and idempotency, binds the roster to Career/PVP tickets, and uses canonical player assets/stats in simulation. UT squad copy remains a separate local import flow.
+- A local deployment handoff guide and standalone Render Blueprint exist at [ONLINE_SERVER_DEPLOYMENT.md](ONLINE_SERVER_DEPLOYMENT.md) and `render.online.yaml`. The Blueprint provisions only the online API and leaves the existing LAN service in `render.yaml` unchanged. Recommended closed-test infrastructure is Render Free + Supabase Free Postgres + Auth0 Free OIDC. None of the accounts has been provisioned for this API; database/OIDC settings and public browser config are still required.
+
+## Validation on candidate 0.12.81.35
+
+- `npm run test:node`: build passed (**5,135,564 JavaScript / 5,258,576 HTML characters**), **2,189/2,189** Node tests passed, followed by the club runtime integrity fixture (32 clubs, 384 player slots).
+- Focused account API/client/HTTP, match session/client, matchmaking and WebSocket suites: **126/126** passed; release/version and keeper/art contracts: **19/19** passed.
+- `python3 tests/online_account_ui_browser_qa.py`: passed mocked OIDC/API/WebSocket flows including Career archive/CPU fixtures, UT purchase and lineup retry, PVP reconnect, four-action input, rewards, offline-save preservation and accessible status.
+- `python3 tests/game_ball_surface_render_browser_qa.py`: actual renderer passed at 0°/45°/90° and match radius 17, with unchanged geometry and no page errors.
+- Browser checks use mocked identity/API/WebSocket boundaries; no real-network acceptance is implied. Visual/device review, two-device different-network play, restart recovery, exact-head CI, hosting/deployment and restore drills remain open.
+
+## Remaining work before real users can play online
+
+- Validate lineup saves, conflicts and concurrent writes against a live PostgreSQL instance after hosting is supplied; preserve local squad-copy and offline roster/save behavior.
+- Decide whether future Career opponents/events need online human competition; the current eight-fixture season remains server CPU competition.
+- Keep real-money checkout explicitly out of scope until the owner supplies a server and payment requirements; current soft-token rewards and purchases use durable server ledgers, and no real-money purchase flow exists.
+- Same-process PVP reconnect is implemented locally with a bounded authenticated resume ticket and no-result grace expiry. Add crash recovery for in-memory matches, match history UX hardening, shared/edge rate limiting for multiple instances, controlled idempotency retention and load/abuse testing. The current match queue/runtime are single-process and active sessions do not survive restart.
+- The recommended free setup is only a closed-test target: Render Free supports WebSockets but sleeps after 15 minutes of inactivity; Supabase Free includes 500 MB Postgres storage with no automatic backups and may pause a low-activity project; Auth0 Free currently includes up to 25,000 MAU. Move to an always-on, backed-up host before relying on online progress.
+- After the owner provides a server, configure a real OIDC issuer/client/audience/origin and PostgreSQL, deploy all account/UT/reward/Career migrations, exercise backup/restore, and verify two separate accounts over real networks.
+
+Until these are resolved, online mode remains optional and must fail safely when its service configuration is absent. Offline play and local saves remain independent and authoritative.

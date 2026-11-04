@@ -1,0 +1,46 @@
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const net=require('node:net');
+
+async function freePort(){
+ const server=net.createServer();
+ await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});
+ const port=server.address().port;await new Promise(resolve=>server.close(resolve));return port;
+}
+
+test('online service configures Career AI as one human plus server CPU and advances only after durable result storage',async()=>{
+ const {startOnlineAccountService}=await import('../scripts/online-account-service.mjs');
+ const port=await freePort(),events=[],engineCalls=[];
+ const pool={async query(sql){events.push(['query',sql]);return {rows:[]};},async connect(){return {query:async()=>({rows:[]}),release(){}};},on(){},async end(){events.push(['pool-end']);}};
+ let matcherOptions;
+ const transport={
+  sendSnapshot(){return true;},onRequeue(){},onMatchFinished(matchId){events.push(['ack',matchId]);return true;},close(){events.push(['transport-close']);}
+ };
+ let advanceAttempts=0;
+ const runtimeFactory=async({canonicalTeamIds})=>{
+  assert.ok(canonicalTeamIds.includes('japan'));
+  return {handle:async()=>new Response('{}',{headers:{'content-type':'application/json'}}),allowedOrigins:['https://game.example.test'],
+   resultStore:{async recordFinalResult(result){events.push(['persist',result.matchId]);return {matchId:result.matchId};}},
+   onlineCareerService:{async advanceMatchResult(matchId){events.push(['advance',matchId]);advanceAttempts++;if(advanceAttempts===1)throw new Error('transient progression database failure');return {playedCount:1};}}
+  };
+ };
+ const service=await startOnlineAccountService({env:{PORT:String(port)},pool,runtimeFactory,
+  matchmakingFactory:options=>{matcherOptions=options;return {close(){events.push(['matchmaking-close']);}}},
+  engineFactory:async options=>{engineCalls.push(options);return {};},
+  transportFactory:()=>transport});
+ try{
+  const engine=await matcherOptions.createEngine({teamIds:['japan','brazil'],mode:'career-ai'});
+  assert.deepEqual(engine,{});
+  assert.equal(engineCalls[0].mode,'career-ai');
+  assert.equal(engineCalls[0].humans,1);
+  assert.deepEqual(engineCalls[0].teamIds,['japan','brazil']);
+  const result={matchId:'a'.repeat(32),status:'finished'};
+  await assert.rejects(()=>matcherOptions.onMatchFinished(result),/transient progression database failure/);
+  assert.deepEqual(events.filter(row=>['persist','advance'].includes(row[0])).map(row=>row[0]),['persist','advance']);
+  assert.deepEqual(await matcherOptions.onMatchFinished(result),{matchId:result.matchId});
+  assert.deepEqual(events.filter(row=>['persist','advance'].includes(row[0])).map(row=>row[0]),['persist','advance','persist','advance']);
+  assert.equal(matcherOptions.onMatchPersisted(result),true);
+  assert.deepEqual(events.at(-1),['ack',result.matchId]);
+ }finally{await service.close();}
+ assert.ok(events.some(row=>row[0]==='pool-end'));
+});

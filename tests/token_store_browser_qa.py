@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Desktop/touch smoke QA for the Store route, prices, ownership and Coming Soon categories."""
+"""Desktop/touch smoke QA for the Store route, prices, collection ownership, and safe free choices."""
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import json
@@ -14,7 +14,7 @@ assert FIXTURE.exists(),'Build the current game fixture first'
 FIXTURE_HTML=FIXTURE.read_bytes()
 players=json.loads((ROOT/'data/players/arcade.json').read_text(encoding='utf-8'))['japan']
 players[0].update({'statsVerified':True,**{key:95 for key in ['passing','crossing','dribbling','agility','stamina','speedRating']}})
-seed={'wallet':{'schema':1,'tokens':1000,'unlocks':[],'receipts':[]},'edits':{'japan':players}}
+seed={'wallet':{'schema':1,'tokens':2000,'unlocks':[],'receipts':[]},'edits':{'japan':players}}
 
 class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -40,28 +40,43 @@ try:
    wallet_shortcut=page.locator('.arcadeWallet[data-action="navStore"]')
    if store_route.count()!=1:
     raise AssertionError((device,'Store Home route missing',errors,page.locator('body').inner_text()[:1200]))
-   assert wallet_shortcut.count()==1 and 'Token balance: 1,000' in wallet_shortcut.get_attribute('aria-label'),(device,'wallet shortcut must remain uniquely labelled')
+   assert wallet_shortcut.count()==1 and 'Token balance: 2,000' in wallet_shortcut.get_attribute('aria-label'),(device,'wallet shortcut must remain uniquely labelled')
    assert 'SHOP' in store_route.inner_text(),(device,'Shop shortcut should remain visible in the Home dock')
    store_route.click()
-   assert page.locator('#tokenStoreBalance').inner_text()=='1,000 TOKENS'
+   assert page.locator('#tokenStoreBalance').inner_text()=='2,000 TOKENS'
    categories=['superShot','magicTrick','team','player','appearance','accessory']
    search_names={'superShot':'SUPER SHOTS','magicTrick':'MAGIC TRICKS','team':'TEAMS','player':'PLAYERS','appearance':'APPEARANCE','accessory':'ACCESSORIES'}
    assert page.locator('#storeCategory option').count()==6
    for category in categories:
     page.locator('#storeCategory').select_option(category)
     assert page.get_by_role('searchbox',name=f'SEARCH {search_names[category]}').count()==1,(device,category,'search input accessible name did not follow the selected category')
-    if category in ('team','player'):
-     assert page.locator('.tokenStoreComingSoon').count()==1
-     assert 'COMING SOON' in page.locator('#tokenStoreCards').inner_text()
-    else:
-     assert page.locator('.tokenStoreCard').count()>0,(device,category,page.locator('#tokenStoreCards').inner_text(),errors)
+    assert page.locator('.tokenStoreCard').count()>0,(device,category,page.locator('#tokenStoreCards').inner_text(),errors)
+   page.locator('#storeCategory').select_option('team');page.locator('#storeSearch').fill('Japan')
+   team_card=page.locator('.tokenStoreCard').first
+   assert '300 TOKENS' in team_card.inner_text() and 'playable for free' in page.locator('#menu').inner_text().lower()
+   team_card.locator('button').click()
+   assert 'unlocked' in page.locator('#tokenStoreNotice').inner_text().lower()
+   assert page.locator('#tokenStoreBalance').inner_text()=='1,700 TOKENS'
+   page.locator('#storeOwnedOnly').check()
+   assert page.locator('.tokenStoreCard button').inner_text()=='OWNED'
+   page.locator('#storeOwnedOnly').uncheck()
+   page.locator('#storeCategory').select_option('player');page.locator('#storeSearch').fill('Kunio')
+   player_card=page.locator('.tokenStoreCard').first
+   assert '250 TOKENS' in player_card.inner_text()
+   player_card.locator('button').click()
+   assert 'unlocked' in page.locator('#tokenStoreNotice').inner_text().lower()
+   assert page.locator('#tokenStoreBalance').inner_text()=='1,450 TOKENS'
+   page.goto(origin,wait_until='load');page.locator('[data-action="navQuick"]').click();page.locator('[data-action="navOnDevice"]').click();page.locator('[data-action="quick"]').click()
+   assert sum('Japan' in label for label in page.locator('#homeTeam option').all_text_contents())>=1,'buying a team must not gate its existing quick-match selection'
+   assert page.locator('#awayTeam option').count()>0,'existing teams remain available to opponents'
+   page.goto(origin,wait_until='load');page.locator('.homeActionTiles [data-action="navStore"]').click()
    page.locator('#storeCategory').select_option('superShot')
    page.locator('#storeSearch').fill('Banana')
    card=page.locator('.tokenStoreCard').first
    assert '120 TOKENS' in card.inner_text()
    card.locator('button').click()
    assert 'unlocked' in page.locator('#tokenStoreNotice').inner_text().lower()
-   assert page.locator('#tokenStoreBalance').inner_text()=='880 TOKENS'
+   assert page.locator('#tokenStoreBalance').inner_text()=='1,330 TOKENS'
    assert page.locator('.tokenStoreCard button').inner_text()=='OWNED',(page.locator('.tokenStoreCard button').inner_text(),page.locator('#tokenStoreNotice').inner_text(),page.locator('#tokenStoreBalance').inner_text(),errors)
    page.reload(wait_until='load');page.locator('.homeActionTiles [data-action="navStore"]').click()
    page.locator('#storeCategory').select_option('superShot');page.locator('#storeSearch').fill('Banana')
@@ -71,7 +86,7 @@ try:
    assert '160 TOKENS' in trick_card.inner_text()
    trick_card.locator('button').click()
    assert 'unlocked' in page.locator('#tokenStoreNotice').inner_text().lower()
-   assert page.locator('#tokenStoreBalance').inner_text()=='720 TOKENS'
+   assert page.locator('#tokenStoreBalance').inner_text()=='1,170 TOKENS'
    page.goto(origin,wait_until='load');page.locator('[data-action="navCustomization"]').click();page.locator('[data-action="playerStudio"]').click()
    assert page.locator('#studioMagic option[value="banana"]').count()==1,'owned Trick should appear for a verified Star+ field player'
    page.locator('#customPlayer').select_option('1')

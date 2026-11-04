@@ -4,6 +4,19 @@ Use [MASTER_BACKLOG.md](MASTER_BACKLOG.md) as the single current plan and status
 
 ## Read for current work
 
+- [Candidate 0.12.81.36 validation](CANDIDATE_012836_VALIDATION_20261104.md): online match-history single-flight paging, duplicate-page filtering, sign-out response invalidation, and local validation.
+- [Candidate 0.12.81.35 validation](CANDIDATE_012835_VALIDATION_20261104.md): searchable local team/player token collection with owned-only filter; existing roster and team choices stay free, with economy and desktop/touch browser evidence.
+- [Candidate 0.12.81.34 validation](CANDIDATE_012834_VALIDATION_20261104.md): PVP reconnect/recovery, projected gameplay ball panels, online squad reload fix and local validation. Public hosting and OIDC configuration remain open.
+- [Gameplay ball panel projection](BALL_PANEL_PROJECTION_20261104.md): match-scale curved classic-ball panel rendering, with physics and radius invariants.
+- [Candidate 0.12.81.33 validation](CANDIDATE_012833_VALIDATION_20261104.md): Online Career season archive and idempotent Online UT lineup retry after a lost response; local integration and mocked browser coverage.
+- [Candidate 0.12.81.32 validation](CANDIDATE_012832_VALIDATION_20261104.md): server-validated Ultimate Team lineups bound to Career/PVP tickets and used by canonical authoritative player simulation; focused online and mocked-browser checks, with owner-provided hosting still pending.
+- [Candidate 0.12.81.31 validation](CANDIDATE_012831_VALIDATION_20261104.md): server Career seasons and fixtures, Ultimate Team catalog/collection/purchases, local integrated test results and outstanding real-server gates.
+
+- [Candidate 0.12.81.29 validation](CANDIDATE_012829_VALIDATION_20261104.md): authenticated online team selection, ticket binding, bounded HTTP ticket body and mocked browser flow.
+
+- [Candidate 0.12.81.28 validation](CANDIDATE_012828_VALIDATION_20261104.md): in-game server match sign-in, queue, four-action input, snapshot rendering, durable results, account-scoped match history and ticket-bound team selection; local tests pass with a mocked-service browser flow.
+- [Online server foundation — 4 November 2026](ONLINE_SERVER_FOUNDATION_20261104.md): local OIDC/PKCE, account snapshots, server-owned match and durable results; online progression, deployment and real-network acceptance remain open.
+- [Online server deployment handoff](ONLINE_SERVER_DEPLOYMENT.md): local Render Blueprint and free closed-test stack recommendation (Render + Supabase Postgres + Auth0), setup, limitations and live acceptance gates. No cloud database or identity tenant is provisioned.
 - [Candidate 0.12.81.27 validation](CANDIDATE_012827_VALIDATION_20261104.md): same-tab LAN host token reward recovery after reload, with idempotent receipt retry and accessible keyboard flow.
 - [Candidate 0.12.81.26 validation](CANDIDATE_012826_VALIDATION_20261104.md): Spin Bumper impact/recovery animation follows the real post-telegraph idle state; full local, exact-head CI, protected promotion, and hosted Pages verification passed.
 - [Candidate 0.12.81.25 validation](CANDIDATE_012825_VALIDATION_20261104.md): narrow-phone Studio fit plus CI dependency, timeout and browser-path fixes; exact-head and hosted Pages verification passed.

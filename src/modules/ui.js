@@ -21,6 +21,11 @@ import {CONTINENTAL} from "./continental.js";
 import {TOURNAMENTS} from "./tournaments.js";
 import {CAREER} from "./career.js";
 import {CAREER_SLOTS} from "./career_slots.js";
+import {createOnlineOidcSession} from "./online-auth.js";
+import {createOnlineAccountClient,copyOfflineCareerSlotToRemotePayload,OnlineAccountError} from "./online-account-client.js";
+import {createOnlineMatchClient,sampleOnlineActionInput} from "./online-match-client.js";
+import {applyOnlineMatchSnapshot} from "./online-match-renderer.js";
+import {createOnlineHistoryController} from "./online-history.js";
 import {CUP_SLOTS} from "./cup_slots.js";
 import {ECONOMY} from "./economy.js";
 import {RELEASE} from "./release.js";
@@ -127,6 +132,12 @@ TEAMS.push({id:CROWN_ROYALS_ID,index:TEAMS.length,name:'Crown Royals (Art WIP)',
 const careerStorage=(()=>{try{return window.localStorage}catch{return {getItem(){return null},setItem(){throw Error('Persistent storage unavailable')},removeItem(){throw Error('Persistent storage unavailable')}}}})();
 const careerSlots=CAREER_SLOTS.create(careerStorage);
 const tokenWallet=ECONOMY.create(careerStorage);
+let onlineConfig=null,onlineAuthSession=null,onlineAccountClient=null,onlineIdentityError='',onlineCareerRecord=null,onlineCareerLoaded=false,onlineCareerStatus='',onlineCareerSourceSlotNumber=null,onlineCareerTargetSlotNumber=null,onlineCareerSeason=null,onlineCareerProgressLoaded=false,onlineCareerProgressLoading=false,onlineCareerProgressRequested=false,onlineCareerProgressStatus='',onlineCareerTeamId='japan',onlineCareerMatchTicketing=false,onlineUtRecord=null,onlineUtLoaded=false,onlineUtStatus='',onlineUtTeam=0,onlineUtCatalog=null,onlineUtCollection=[],onlineUtBalance=null,onlineUtCatalogLoading=false,onlineUtCatalogRequested=false,onlineUtPendingPurchase=null,onlineUtPurchaseInFlight=false,onlineUtCategory='player',onlineUtSearch='',onlineUtPage=0,onlineUtLineupTeamId='japan',onlineUtLineup=null,onlineUtLineupLoading=false,onlineUtLineupSaving=false,onlineUtLineupPendingSave=null,onlineCareerSeasons=[];
+let onlineMatchClient=null,onlineMatchStatus='',onlineMatchSequence=0,onlineMatchSendAccumulator=0,onlineMatchSnapshotTick=-1,onlineMatchReported=false,onlineMatchFinalSnapshot=null,onlineMatchFinalMatchId=null,onlineMatchManualStop=false,onlineMatchCareer=false,onlineMatchInitialTeamIds=[],onlineCareerActiveFixtureNo=null;
+let onlineMatchOwnedTeamIds=[],onlineMatchTeamsLoaded=false,onlineMatchTeamsLoading=false,onlineMatchTeamsRefreshNeeded=false,onlineMatchTeamsError='';
+let onlineRewardMatchId=null,onlineRewardClaimStatus='';
+let onlineMatchHistoryItems=[],onlineMatchHistoryCursor=null,onlineMatchHistoryStatus='',onlineMatchTeamId='japan';
+let onlineHistoryController=null;
 let career=store.get('managerCareer',null),creatingCareer=false;
 // Never let a structurally damaged legacy mirror reach Career screens or migrate into a vault.
 if(career&&!CAREER_SLOTS.validCareer(career))career=null;
@@ -159,7 +170,7 @@ const kitSelections=(()=>{const k=store.get('kitSelections',null);return Array.i
 let preTalkChoices=['none','none'];let home=0,away=9,homeCategory='all',awayCategory='all',mode='quick',humans=1,formation=opt.formation||'2-1-2',lineup=store.get('lineup',DEFAULT_LINEUP.slice()), edits=store.get('edits',{}),screen='home';
 let arcadeShotId='',arcadeShotPlayerId='';
 let activeMatchReceiptId=null,matchReceiptSequence=0;
-let storeCategory='superShot',storeSearch='',storePage=0,storeNotice='',storeCatalogCache=null;
+let storeCategory='superShot',storeSearch='',storePage=0,storeNotice='',storeOwnedOnly=false,storeCatalogCache=null;
 function newMatchReceiptId(){
  matchReceiptSequence++;
  const uuid=globalThis.crypto?.randomUUID?.();
@@ -237,7 +248,8 @@ function stopLanMatch(){
   lanRuntime?.dispose();lanRuntime=null;
   lanPeer?.dispose();lanPeer=null;lanRole=null;lanPlayerNames=null;lanFailureSince=0;lanFinish=null;lanResultCleanupPending=false;
 }
-const show=(html,id='home')=>{if(screen==='CONTROLS'&&id!=='CONTROLS')cancelControlsChargePractice();if(lanLobbyDispose){lanLobbyDispose();lanLobbyDispose=null;}if(lanRuntime){const resultPage=['FULL TIME','CAREER MATCH RESULT','CONTINENTAL RESULT'].includes(id);if(lanRole==='host'&&resultPage&&['pending','failed'].includes(lanRuntime.resultAckStatus))lanResultCleanupPending=true;else stopLanMatch();}audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');const nameDialog=id==='SAVE SLOT NAME';menu.innerHTML=`<div class="menubox">${nameDialog?'':`<div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>`}${html}${nameDialog?'':`<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div>`}</div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
+function stopOnlineServerMatch(){onlineMatchManualStop=true;try{onlineMatchClient?.disconnect();}finally{onlineMatchClient=null;onlineMatchSendAccumulator=0;onlineMatchSnapshotTick=-1;onlineMatchSequence=0;onlineMatchReported=false;onlineMatchFinalSnapshot=null;onlineMatchFinalMatchId=null;onlineMatchManualStop=false;lanRole=null;}}
+const show=(html,id='home')=>{if(screen==='CONTROLS'&&id!=='CONTROLS')cancelControlsChargePractice();if(onlineMatchClient&&id!=='ONLINE MATCH')stopOnlineServerMatch();if(lanLobbyDispose){lanLobbyDispose();lanLobbyDispose=null;}if(lanRuntime){const resultPage=['FULL TIME','CAREER MATCH RESULT','CONTINENTAL RESULT'].includes(id);if(lanRole==='host'&&resultPage&&['pending','failed'].includes(lanRuntime.resultAckStatus))lanResultCleanupPending=true;else stopLanMatch();}audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');const nameDialog=id==='SAVE SLOT NAME';menu.innerHTML=`<div class="menubox">${nameDialog?'':`<div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>`}${html}${nameDialog?'':`<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div>`}</div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
 function page(title,subtitle,body,returnAction='home'){if(screen==='CONTROLS'&&title!=='CONTROLS')cancelControlsChargePractice();if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;const routeChanged=screen!==title;menuBackAction=returnAction;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER</div><h1 class="heading" tabindex="-1">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title);if(routeChanged)menu.querySelector('.heading')?.focus({preventScroll:true})}
 const unsavedFormScreens=new Set(['PLAYER CUSTOMIZATION','MANAGER APPEARANCE','PLAYER DATA EDITOR','CUSTOM CLUB BUILDER','TEAM COMMAND CENTER','HALF TIME']);
 function menuHasUnsavedFormChanges(){
@@ -257,7 +269,7 @@ function confirmDiscardBeforeBack(actionId){
 // v0.8.24.7 — Menu handoff: five primary categories, no new gameplay modes.
 // Existing action handlers, saves, teams and engine remain the authority.
 const menuParents={
- 'nav-quick':'home','nav-device':'navQuick','nav-online':'home','nav-career':'home',
+ 'nav-quick':'home','nav-device':'navQuick','nav-online':'home','nav-online-career':'navOnline','nav-online-ultimate':'navOnline','nav-career':'home',
  'nav-cups':'home','nav-international':'navCups','nav-clubs':'navCups',
  'nav-settings':'home','nav-settings-game':'navSettings','nav-settings-graphics':'navSettings',
  'nav-settings-sound':'navSettings','nav-customize':'navSettings','nav-input':'navSettings',
@@ -379,11 +391,421 @@ function showOnDevice(){menuChoices('nav-device','ON DEVICE','Use the existing p
  navItem('Penalty Shootout','pk','Standalone penalty challenge.','active','🥅'),
  navItem('Training Arena','training','Practice the four action buttons and combinations.','active','💥')],'navQuick');}
 function showOnlineMenu(){menuChoices('nav-online','ONLINE MATCHES','Choose a private internet match or a local-network quick match.',[
+ navItem('Online Server Match','navOnlineServerMatch','Play a server-simulated match with four-action controls and account sign-in.','active','🌐'),
  navItem('Online P2P · Private Quick Match','navOnlineP2P','Play online with a friend using room discovery or a private invite code.','active','🌐'),
  navItem('Local Network · LAN Quick Match','navLan','Host a game or find a friend on the same local network.','active','📡'),
- navItem('Ultimate Team','laterUltimate','Collect and develop your own squad.','later','⭐'),
- navItem('Online Career','laterOnlineCareer','Shared career experience.','later','💼'),
+ navItem('Ultimate Team · Collection','navOnlineUltimate','Acquire canonical teams and players with earned online tokens; local squads stay untouched.','active','⭐'),
+ navItem('Online Career · Season','navOnlineCareer','Play a server-managed season, then review fixtures and standings.','active','💼'),
  navItem('Online Cup / League','laterOnlineCup','Multiplayer competitive tournaments.','later','🏆')],'home');}
+function onlineMatchStatusText(state){return state==='connecting'?'Connected. Finding an opponent…':state==='queued'?'Searching for an opponent. Keep this screen open.':state==='matched'?'Opponent found. Loading the server match…':state==='resumed'?'Reconnected to the same match.':state==='finished'?'Match complete.':state==='rejected'?'The server could not add you to matchmaking. Try again shortly.':state==='disconnected'?'Connection lost. The server has paused this match briefly; reconnect or leave.':state==='input-rejected'?'The server rejected an action sample.':'';}
+function onlineSelectableTeams(){const serverTeamIds=new Set(TEAMS.map(team=>team.id));return GAME_ASSETS.teams.filter(team=>typeof team?.id==='string'&&serverTeamIds.has(team.id)&&!team.id.startsWith('demo_')&&!['concept_demo','crown_royals_reference'].includes(team.group));}
+function onlineMatchTeamOptions(){
+ if(!onlineMatchTeamsLoaded)return '<option value="">VERIFYING ONLINE COLLECTION…</option>';
+ const owned=new Set(onlineMatchOwnedTeamIds),teams=onlineSelectableTeams().filter(team=>owned.has(team.id));
+ if(!teams.some(team=>team.id===onlineMatchTeamId))onlineMatchTeamId=teams.some(team=>team.id==='japan')?'japan':teams[0]?.id||'';
+ return teams.map(team=>`<option value="${escapeHTML(team.id)}" ${team.id===onlineMatchTeamId?'selected':''}>${escapeHTML(team.name)}${team.id==='japan'?' · FREE STARTER':''}</option>`).join('');
+}
+function loadOnlineMatchTeamOwnership(focusAction='onlineMatchTeam'){
+ if(onlineMatchTeamsLoading||!onlineAuthSession?.isSignedIn()||!onlineAccountClient)return;
+ onlineMatchTeamsRefreshNeeded=false;onlineMatchTeamsLoaded=false;onlineMatchTeamsLoading=true;onlineMatchTeamsError='';
+ showOnlineServerMatch();
+ void (async()=>{
+  try{
+   const collection=await onlineAccountClient.loadUltimateTeamCollection();
+   if(!onlineAuthSession?.isSignedIn())return;
+   const owned=new Set(['japan',...collection.items.filter(item=>item.category==='team').map(item=>item.itemId)]);
+   onlineMatchOwnedTeamIds=[...owned].filter(id=>onlineSelectableTeams().some(team=>team.id===id));
+   onlineMatchTeamsLoaded=true;
+   if(!onlineMatchOwnedTeamIds.includes(onlineMatchTeamId))onlineMatchTeamId=onlineMatchOwnedTeamIds.includes('japan')?'japan':onlineMatchOwnedTeamIds[0]||'';
+   onlineMatchTeamsError='';
+  }catch(error){
+   onlineMatchTeamsLoaded=false;onlineMatchOwnedTeamIds=[];onlineMatchTeamsError=onlineSafeStatus(error);
+  }finally{
+   onlineMatchTeamsLoading=false;
+   if(onlineAuthSession?.isSignedIn())showOnlineServerMatch(focusAction);
+  }
+ })();
+}
+function showOnlineServerMatch(focusAction){
+ const signed=onlineAuthSession?.isSignedIn()===true,active=!!onlineMatchClient,playing=active&&!!onlineMatchClient?.matchId&&onlineMatchClient.connected&&game.matchState==='play',recoverable=active&&!!onlineMatchClient?.matchId&&!onlineMatchClient.connected&&!onlineMatchCareer;
+ const ownership=signed?`<p id="onlineMatchOwnershipStatus" role="status" aria-live="polite" aria-atomic="true">${escapeHTML(onlineMatchTeamsLoading?'Checking your online team collection…':onlineMatchTeamsLoaded?`Verified ${onlineMatchOwnedTeamIds.length} playable teams. Japan is always free.`:onlineMatchTeamsError||'Verify your online team collection before matchmaking.')}</p>${!onlineMatchTeamsLoaded&&!onlineMatchTeamsLoading?button('RETRY TEAM CHECK','onlineMatchTeamsRetry','minor'):''}<label class="fieldLabel" for="onlineMatchTeam">CHOOSE AN OWNED TEAM</label><select id="onlineMatchTeam" class="choice" ${onlineMatchTeamsLoaded?'':'disabled'}>${onlineMatchTeamOptions()}</select>`:'';
+ const controls=active?`<p id="onlineMatchStatus" role="status" aria-live="polite" aria-atomic="true">${escapeHTML(onlineMatchStatus||'Connecting…')}</p><p class="muted">Four actions: pass, shoot, dribble and jump. Move with your configured keyboard, touch or gamepad controls. The match is simulated by the server.</p><div class="row">${button(recoverable?'LEAVE MATCH':playing?'LEAVE ONLINE MATCH':'CANCEL SEARCH','onlineMatchLeave','minor')}${recoverable?button('RETRY CONNECTION','onlineMatchReconnect','gold'):playing?button('RESUME MATCH','onlineMatchResume','gold'):''}</div>`:signed?`${ownership}<p id="onlineMatchStatus" role="status" aria-live="polite" aria-atomic="true">${escapeHTML(onlineMatchStatus||'Ready when you are.')}</p><p class="muted">Quick matchmaking pairs signed-in players. The server owns the clock, score and match simulation. Completed results award server-side soft tokens. Online Career seasons are available from the Online Career menu.</p><div class="row"><button type="button" class="btn gold" data-action="onlineMatchStart" ${onlineMatchTeamsLoaded?'':'disabled'}>FIND OPPONENT</button></div>`:`<p id="onlineMatchStatus" role="status" aria-live="polite" aria-atomic="true">Sign in to request a one-use matchmaking ticket.</p>${onlineAuthPanel('match')}`;
+ page('ONLINE MATCH','Server-simulated quick match · sign-in is optional for every other game mode.',`${controls}<p class="muted">${escapeHTML(onlineIdentityError||'')}</p>`,'navOnline');restoreOnlineFocus(focusAction);
+ if(signed&&onlineMatchTeamsRefreshNeeded&&!onlineMatchTeamsLoading)loadOnlineMatchTeamOwnership('onlineMatchTeam');
+}
+function updateOnlineMatchStatus(update){
+ const state=typeof update==='string'?update:update?.state;
+ if(update&&typeof update==='object'&&update.mode==='career-ai')onlineMatchCareer=true;
+ onlineMatchStatus=onlineMatchStatusText(state);const status=$('onlineMatchStatus');if(status)status.textContent=onlineMatchStatus;
+ if(state==='finished'&&onlineMatchFinalSnapshot&&!onlineMatchReported){onlineMatchReported=true;if(onlineMatchCareer){onlineCareerProgressLoaded=false;onlineCareerProgressRequested=false;onlineCareerProgressStatus='Career fixture recorded. Refresh the season to see updated standings.';}finishOnlineServerMatch(onlineMatchFinalSnapshot);return;}
+ if(state==='resumed'){onlineMatchSequence=0;onlineMatchSendAccumulator=0;onlineMatchSnapshotTick=-1;onlineMatchReported=false;onlineMatchFinalSnapshot=null;onlineMatchFinalMatchId=null;game.matchState='play';closeMenu();drawHUD();toast('RECONNECTED · MATCH RESUMED',1800);return;}
+ if(state==='matched'){
+  onlineMatchSequence=0;onlineMatchSnapshotTick=-1;onlineMatchReported=false;onlineMatchFinalSnapshot=null;onlineMatchFinalMatchId=null;
+  lanRole=onlineMatchClient?.side===1?'guest':'host';
+  const selected=onlineMatchCareer&&onlineMatchInitialTeamIds.length===2?onlineMatchInitialTeamIds:[onlineMatchTeamId,null];
+  home=TEAMS.findIndex(team=>team.id===selected[0]);if(home<0)home=0;
+  away=TEAMS.findIndex(team=>team.id===selected[1]);if(away<0||away===home)away=(home+1)%TEAMS.length;
+  mode='versus';humans=onlineMatchCareer?1:2;const plans=[planFor(home),planFor(away)];
+  game.init({home,away,mode,humans,rosters:[roster(home),roster(away)],lineups:plans.map(plan=>plan.lineup.slice()),formations:plans.map(plan=>plan.formation),plans,options:{...opt,weather:opt.weather==='Random'?'Clear':opt.weather,kitChoices:kitSelections.slice()}});
+  game.matchState='play';closeMenu();drawHUD();toast(onlineMatchCareer?'ONLINE CAREER · FIXTURE '+(onlineCareerActiveFixtureNo||''):'ONLINE MATCH · '+(lanRole==='host'?'HOME TEAM':'AWAY TEAM'),2200);return;
+ }
+ if(state==='disconnected'&&!onlineMatchCareer&&onlineMatchClient?.matchId){game.matchState='none';onlineMatchStatus=onlineMatchStatusText('disconnected');showOnlineServerMatch('onlineMatchReconnect');return;}
+ if(state==='rejected'||state==='disconnected'){
+  const reason=state==='rejected'?'The server could not start this online match. Try again shortly.':'The server connection ended.';
+  stopOnlineServerMatch();game.matchState='none';onlineMatchStatus=reason;
+  if(onlineMatchCareer){onlineCareerProgressStatus=reason;showOnlineCareer('onlineCareerPlayNext');}
+  else showOnlineServerMatch('onlineMatchStart');
+ }
+}
+async function reconnectOnlineServerMatch(){
+ if(!onlineMatchClient||onlineMatchCareer||onlineMatchClient.connected||!onlineMatchClient.matchId)return;
+ onlineMatchStatus='Requesting a secure ticket to resume the paused match…';showOnlineServerMatch('onlineMatchReconnect');
+ try{await onlineMatchClient.resume();}
+ catch(error){onlineMatchStatus=`Could not resume this match: ${error?.message||'connection failed'}. Retry while the server grace period remains, or leave.`;showOnlineServerMatch('onlineMatchReconnect');}
+}
+async function startOnlineServerMatch({career=false}={}){
+ if(!onlineAuthSession?.isSignedIn()||!onlineAccountClient||!onlineConfig){onlineMatchStatus='Sign in with a configured online account before matchmaking.';return showOnlineServerMatch('onlineSignIn_match');}
+ if(onlineMatchClient)return;
+ if(!onlineMatchTeamsLoaded){onlineMatchStatus=onlineMatchTeamsLoading?'Checking the online team collection. Please wait.':onlineMatchTeamsError||'Verify the online team collection before matchmaking.';if(!onlineMatchTeamsLoading)onlineMatchTeamsRefreshNeeded=true;return career?showOnlineCareer('onlineCareerPlayNext'):showOnlineServerMatch('onlineMatchTeamsRetry');}
+ const teamId=career?onlineCareerSeason?.teamId:onlineMatchTeamId;
+ if(career&&(!onlineCareerProgressLoaded||!onlineCareerSeason||onlineCareerSeason.status!=='active'||!onlineCareerSeason.fixtures.some(row=>row.status==='scheduled'))){onlineCareerProgressStatus='Load an active Online Career season before starting a fixture.';return showOnlineCareer('onlineCareerSeasonReload');}
+ if(!onlineMatchOwnedTeamIds.includes(teamId)){onlineMatchStatus='Choose Japan or another team owned by this account.';if(career){onlineCareerProgressStatus=onlineMatchStatus;return showOnlineCareer('onlineCareerPlayNext');}return showOnlineServerMatch('onlineMatchTeam');}
+ onlineMatchCareer=career;onlineMatchInitialTeamIds=[];onlineCareerActiveFixtureNo=null;onlineMatchTeamId=teamId;
+ onlineMatchStatus=career?'Requesting your next server Career fixture…':'Requesting secure match ticket…';onlineIdentityError='';if(career)showOnlineCareer();else showOnlineServerMatch();
+ const requestTicket=async()=>{
+  if(!career)return onlineAccountClient.requestMatchTicket({teamId});
+  const ticket=await onlineAccountClient.requestOnlineCareerTicket();
+  if(ticket.teamIds[0]!==teamId)throw new Error('The next Career fixture does not match your owned season team. Refresh the season and retry.');
+  onlineCareerActiveFixtureNo=ticket.fixtureNo;onlineMatchInitialTeamIds=ticket.teamIds.slice();return ticket;
+ };
+ try{
+  const client=createOnlineMatchClient({requestTicket,requestResumeTicket:()=>onlineAccountClient.requestMatchResumeTicket(),apiBase:onlineConfig.apiOrigin,onStatus:value=>{if(onlineMatchManualStop)return;updateOnlineMatchStatus(value);},onSnapshot:result=>{
+   if(!onlineMatchClient||result.tick<=onlineMatchSnapshotTick)return;onlineMatchSnapshotTick=result.tick;
+   const ok=applyOnlineMatchSnapshot(game,ENGINE.WORLD.field,result.snapshot,onlineMatchClient.side,{teamIndexForId:id=>TEAMS.findIndex(team=>team.id===id),playerForId:assetId=>{const [teamId,playerId]=String(assetId).split('/');const player=GAME_ASSETS?.rosters?.[teamId]?.find(row=>row.id===playerId);return player?withStats(player):null;}});if(!ok)throw new Error('Invalid online snapshot');
+   const indices=result.snapshot.teamIds.map(id=>TEAMS.findIndex(team=>team.id===id));if(indices.every(index=>index>=0)){home=indices[0];away=indices[1];}
+   game.matchState=result.snapshot.phase;if(result.snapshot.phase==='finished'){onlineMatchFinalSnapshot=result.snapshot;onlineMatchFinalMatchId=result.matchId;}
+  },onError:error=>{
+   if(onlineMatchManualStop)return;onlineIdentityError=error?.message||'Online match connection failed.';
+   if(error?.code==='team-not-owned'){onlineMatchTeamsLoaded=false;onlineMatchTeamsRefreshNeeded=true;}
+   if(onlineMatchClient){stopOnlineServerMatch();game.matchState='none';if(career){onlineCareerProgressStatus=onlineIdentityError;showOnlineCareer('onlineCareerPlayNext');}else showOnlineServerMatch('onlineMatchStart');}
+  }});
+  onlineMatchClient=client;await client.connect();
+ }catch(error){onlineMatchClient=null;game.matchState='none';onlineIdentityError=error?.message||'Could not connect to the match server.';onlineMatchStatus=onlineIdentityError;
+  if(error?.code==='team-not-owned'){onlineMatchTeamsLoaded=false;onlineMatchTeamsRefreshNeeded=true;onlineMatchTeamsError=onlineIdentityError;}
+  if(career){onlineCareerProgressStatus=onlineIdentityError;showOnlineCareer('onlineCareerPlayNext');}else showOnlineServerMatch('onlineMatchStart');
+ }
+}
+async function playOnlineCareerNext(){
+ if(onlineCareerMatchTicketing||onlineMatchClient)return;
+ onlineCareerMatchTicketing=true;onlineCareerProgressStatus='Connecting to your next Online Career fixture…';
+ try{await startOnlineServerMatch({career:true});}finally{onlineCareerMatchTicketing=false;}
+}function renderOnlineServerResult(snapshot){
+ const names=snapshot.teamIds.map(id=>TEAMS[TEAMS.findIndex(team=>team.id===id)]?.name||id);
+ const reward=onlineRewardClaimStatus==='claiming'?'<p id="onlineRewardStatus" role="status" aria-live="polite">Confirming server match reward…</p>':onlineRewardClaimStatus.startsWith('claimed:')?'<p id="onlineRewardStatus" role="status" aria-live="polite">'+escapeHTML(onlineRewardClaimStatus.slice(8))+'</p>':'<p id="onlineRewardStatus" role="status" aria-live="polite">'+escapeHTML(onlineRewardClaimStatus||'Match result durably recorded by the server.')+'</p>'+(onlineRewardMatchId&&onlineAuthSession?.isSignedIn()?button('RETRY TOKEN CLAIM','onlineRewardRetry','minor'):'');
+ const returnButton=button(onlineMatchCareer?'RETURN TO ONLINE CAREER':'RETURN TO ONLINE MENU',onlineMatchCareer?'navOnlineCareer':'navOnline',onlineMatchCareer?'gold':'gold');
+ page('ONLINE MATCH RESULT',names[0]+' '+snapshot.score[0]+' — '+snapshot.score[1]+' '+names[1],'<div class="panel"><h2>MATCH COMPLETE</h2><p>The server confirmed and durably recorded this authoritative result.</p>'+(onlineMatchCareer?'<p>Career fixture '+(onlineCareerActiveFixtureNo||'')+' is complete. Refresh the season table to see the standings update.</p>':'')+reward+'</div>'+returnButton,'navOnline');
+}async function claimOnlineMatchReward(){if(!onlineRewardMatchId||!onlineAccountClient||!onlineAuthSession?.isSignedIn()){onlineRewardClaimStatus='Sign in again to claim this server-recorded result.';if(onlineMatchFinalSnapshot)renderOnlineServerResult(onlineMatchFinalSnapshot);return;}onlineRewardClaimStatus='claiming';if(onlineMatchFinalSnapshot)renderOnlineServerResult(onlineMatchFinalSnapshot);try{const result=await onlineAccountClient.claimMatchReward(onlineRewardMatchId);onlineRewardClaimStatus='claimed:'+(result.duplicate?'Reward already claimed. ':'+'+result.receipt.reward+' ONLINE TOKENS · BALANCE '+result.balance+'.');}catch(error){onlineRewardClaimStatus=onlineSafeStatus(error)+' You can retry this claim; the server receipt prevents duplicate credit.';}if(onlineMatchFinalSnapshot)renderOnlineServerResult(onlineMatchFinalSnapshot);}
+function finishOnlineServerMatch(snapshot){const matchId=onlineMatchFinalMatchId;onlineRewardMatchId=matchId;onlineRewardClaimStatus=matchId?'claiming':'The server result was recorded, but no reward claim ID was available.';stopOnlineServerMatch();game.matchState='none';onlineMatchFinalSnapshot=snapshot;onlineMatchFinalMatchId=matchId;renderOnlineServerResult(snapshot);if(matchId)void claimOnlineMatchReward();}
+function leaveOnlineServerMatch(){if(onlineMatchClient){try{onlineMatchClient.disconnect()}catch{};onlineMatchClient=null;}onlineMatchCareer=false;onlineMatchInitialTeamIds=[];onlineCareerActiveFixtureNo=null;onlineMatchManualStop=false;onlineMatchSendAccumulator=0;onlineMatchSnapshotTick=-1;lanRole=null;game.matchState='none';onlineMatchStatus='Match left. No result or reward was created.';showOnlineServerMatch('onlineMatchStart');}
+function normalizeOnlineConfig(raw){
+ if(!raw||typeof raw!=='object'||Array.isArray(raw))return null;
+ const {apiOrigin,issuer,clientId,audience='',redirectUri}=raw;
+ if([apiOrigin,issuer,clientId,redirectUri].some(value=>typeof value!=='string'||!value.trim()))return null;
+ try{
+  const api=new URL(apiOrigin),identity=new URL(issuer),redirect=new URL(redirectUri);
+  const localApi=['localhost','127.0.0.1','[::1]'].includes(api.hostname);
+  if(!['https:'].includes(api.protocol)&&!(localApi&&api.protocol==='http:'))return null;
+  if(api.origin!==apiOrigin.replace(/\/$/,''))return null;
+  if(identity.protocol!=='https:'||identity.username||identity.password||identity.hash)return null;
+  if(redirect.protocol!=='https:'||redirect.origin!==location.origin||redirect.username||redirect.password||redirect.hash)return null;
+  if(typeof audience!=='string'||audience.length>256)return null;
+  return Object.freeze({apiOrigin:api.origin,issuer:identity.href,clientId:clientId.trim(),audience,redirectUri:redirect.href});
+ }catch{return null;}
+}
+function initializeOnlineAccount(){
+ onlineConfig=normalizeOnlineConfig(window.SMF_ONLINE_CONFIG);
+ if(!onlineConfig)return false;
+ try{
+  onlineAuthSession=createOnlineOidcSession({issuer:onlineConfig.issuer,clientId:onlineConfig.clientId,redirectUri:onlineConfig.redirectUri,audience:onlineConfig.audience});
+  onlineAccountClient=createOnlineAccountClient({getAccessToken:()=>onlineAuthSession?.getAccessToken()||null,baseUrl:onlineConfig.apiOrigin});
+  onlineHistoryController=createOnlineHistoryController({loadPage:options=>onlineAccountClient.loadMatchHistory(options),isSignedIn:()=>onlineAuthSession?.isSignedIn()===true,describeError:onlineSafeStatus});
+ }catch{onlineConfig=null;onlineIdentityError='Online sign-in configuration is invalid. Offline game modes remain available.';return false;}
+ onlineAuthSession.completeRedirect().then(result=>{
+  let returnRoute='';try{returnRoute=sessionStorage.getItem('smf.online.account.return.v1')||'';sessionStorage.removeItem('smf.online.account.return.v1')}catch{}
+  const route=returnRoute==='online-ultimate'?'ultimate':returnRoute==='online-career'?'career':returnRoute==='online-match'?'match':'';
+  if(result.completed){onlineIdentityError='';onlineCareerStatus='Signed in. Online features sync copies only; offline saves remain separate.';onlineUtStatus='Signed in. Online features sync copies only; offline saves remain separate.';if(route==='ultimate')showOnlineUltimateTeam();else if(route==='career')showOnlineCareer();else if(route==='match'){onlineMatchTeamsRefreshNeeded=true;showOnlineServerMatch();}else showOnlineMenu();}
+  else if(result.error){onlineIdentityError='Sign-in was not completed. Check the identity configuration and try again.';if(route==='ultimate')showOnlineUltimateTeam();else if(route==='career')showOnlineCareer();else if(route==='match')showOnlineServerMatch();}
+ }).catch(()=>{onlineIdentityError='Sign-in could not be completed. Check the identity configuration and try again.';});
+ return true;
+}
+function onlineSafeStatus(error){
+ if(error instanceof OnlineAccountError)return error.message;
+ if(error?.code==='identity-sign-in-storage-unavailable')return 'Secure sign-in needs temporary session storage, which this browser blocked.';
+ return 'The online request failed safely. Check the connection and account configuration, then retry.';
+}
+function onlineAuthPanel(route){
+ if(!onlineConfig||!onlineAccountClient)return `<section class="panel" aria-label="Online account configuration"><h2 class="titleSmall">ONLINE ACCOUNT NOT CONFIGURED</h2><p>This build has no public account API and identity settings. Offline Career, saves, teams and matches remain available.</p><p class="muted">Online sign-in and account sync are unavailable until API origin, OIDC issuer, public client ID, audience and same-site redirect are configured.</p></section>`;
+ const signedIn=onlineAuthSession?.isSignedIn()===true;
+ return `<section class="panel" aria-label="Online account"><h2 class="titleSmall">${signedIn?'ACCOUNT SIGNED IN':'ACCOUNT SIGN IN'}</h2><p>${signedIn?'Your bearer token remains in memory for this tab only.':'Use the configured identity provider. Sign-in uses authorization code with PKCE.'}</p><div class="row">${signedIn?button('SIGN OUT','onlineSignOut','minor'):button('SIGN IN','onlineSignIn_'+route,'gold')}</div></section>`;
+}
+function onlineStatusMarkup(status){return `<p id="onlineAccountStatus" role="status" aria-live="polite" aria-atomic="true">${escapeHTML(status||'')}</p>`;}
+function restoreOnlineFocus(actionId){if(!actionId)return;menu.querySelector(`[data-action="${actionId}"]`)?.focus({preventScroll:true});}
+function setOnlineRouteStatus(route,status,focusAction){if(route==='career')onlineCareerStatus=status;else if(route==='ultimate')onlineUtStatus=status;else onlineIdentityError=status;if(route==='career')showOnlineCareer(focusAction);else if(route==='ultimate')showOnlineUltimateTeam(focusAction);else showOnlineServerMatch(focusAction);}
+function localCareerSlotFromBackup(number){
+ if(!Number.isInteger(number)||number<1||number>10)throw new Error('Choose a valid occupied local Career slot.');
+ const backup=JSON.parse(careerSlots.exportBackup()),vault=JSON.parse(backup.payload),slot=vault.slots[number-1];
+ if(!slot)throw new Error('That local Career slot is empty.');
+ return JSON.parse(JSON.stringify(slot));
+}
+function currentRemoteCareer(){return onlineCareerRecord?.payload&&typeof onlineCareerRecord.payload==='object'?onlineCareerRecord.payload:null;}
+function localCareerSlotOptions(){
+ const occupied=careerSlots.list().filter(slot=>slot.occupied);
+ if(!onlineCareerSourceSlotNumber||!occupied.some(slot=>slot.number===onlineCareerSourceSlotNumber))onlineCareerSourceSlotNumber=occupied[0]?.number??null;
+ return occupied.map(slot=>`<option value="${slot.number}" ${slot.number===onlineCareerSourceSlotNumber?'selected':''}>SLOT ${slot.number} · ${escapeHTML(slot.name)} · Season ${escapeHTML(slot.season??'—')} · Week ${escapeHTML(slot.week??'—')}</option>`).join('');
+}
+function emptyCareerSlotOptions(){
+ const empty=careerSlots.list().filter(slot=>!slot.occupied);
+ if(!empty.some(slot=>slot.number===onlineCareerTargetSlotNumber))onlineCareerTargetSlotNumber=empty[0]?.number??null;
+ return empty.map(slot=>`<option value="${slot.number}" ${slot.number===onlineCareerTargetSlotNumber?'selected':''}>EMPTY LOCAL SLOT ${slot.number}</option>`).join('');
+}
+function onlineCareerOwnedTeamOptions(){
+ const owned=new Set(['japan',...onlineUtCollection.filter(item=>item.category==='team').map(item=>item.itemId)]);
+ const teams=onlineSelectableTeams().filter(team=>owned.has(team.id));
+ if(!teams.some(team=>team.id===onlineCareerTeamId))onlineCareerTeamId=teams.some(team=>team.id==='japan')?'japan':teams[0]?.id||'';
+ return teams.map(team=>'<option value="'+escapeHTML(team.id)+'" '+(team.id===onlineCareerTeamId?'selected':'')+'>'+escapeHTML(team.name)+(team.id==='japan'?' · FREE STARTER':'')+'</option>').join('');
+}
+function onlineCareerSeasonMarkup(){
+ const season=onlineCareerSeason;
+ if(onlineCareerProgressLoading)return '<p id="onlineCareerSeasonStatus" role="status" aria-live="polite">Loading your server Career and team entitlements…</p>';
+ if(!onlineCareerProgressLoaded)return '<p id="onlineCareerSeasonStatus" role="status" aria-live="polite">'+escapeHTML(onlineCareerProgressStatus||'Load your Online Career from the server.')+'</p>'+button('LOAD ONLINE CAREER','onlineCareerSeasonReload','minor');
+ if(!season)return '<p id="onlineCareerSeasonStatus" role="status" aria-live="polite">'+escapeHTML(onlineCareerProgressStatus||'No Online Career season yet. Choose an owned team to begin.')+'</p><label class="fieldLabel" for="onlineCareerTeam">CHOOSE YOUR OWNED TEAM</label><select id="onlineCareerTeam" class="choice">'+onlineCareerOwnedTeamOptions()+'</select><p class="muted">Play an eight-fixture server-managed season against server-controlled teams. Results and standings update only after the server records each final match.</p>'+button('START ONLINE CAREER SEASON','onlineCareerSeasonStart','gold');
+ const fixtures=season.fixtures.map(row=>{
+  const home=TEAMS.find(team=>team.id===row.teamIds[0])?.name||row.teamIds[0],away=TEAMS.find(team=>team.id===row.teamIds[1])?.name||row.teamIds[1],score=row.score?' · '+row.score[0]+'–'+row.score[1]:'';
+  return '<li><strong>FIXTURE '+row.fixtureNo+'</strong> · '+escapeHTML(home)+' vs '+escapeHTML(away)+' · '+(row.status==='completed'?'PLAYED'+score:'UP NEXT')+'</li>';
+ }).join('');
+ const standings=season.standings.length?'<div class="scroll"><table class="miniTable"><thead><tr><th>TEAM</th><th>PL</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>PTS</th></tr></thead><tbody>'+season.standings.map(row=>'<tr><td>'+escapeHTML(TEAMS.find(team=>team.id===row.teamId)?.name||row.teamId)+'</td><td>'+row.played+'</td><td>'+row.wins+'</td><td>'+row.draws+'</td><td>'+row.losses+'</td><td>'+row.goalDifference+'</td><td>'+row.points+'</td></tr>').join('')+'</tbody></table></div>':'<p>Standings appear after the first completed fixture.</p>';
+ const next=season.fixtures.find(row=>row.status==='scheduled');
+ return '<p class="fixture">ONLINE SEASON · '+escapeHTML(season.status.toUpperCase())+' · '+season.playedCount+'/'+season.fixtureCount+' FIXTURES · '+escapeHTML(TEAMS.find(team=>team.id===season.teamId)?.name||season.teamId)+'</p><p id="onlineCareerSeasonStatus" role="status" aria-live="polite">'+escapeHTML(onlineCareerProgressStatus||'Server-owned season progress loaded.')+'</p><div class="row">'+button('REFRESH SEASON','onlineCareerSeasonReload','minor')+(next?button('PLAY FIXTURE '+next.fixtureNo,'onlineCareerPlayNext','gold'):button('START NEXT SEASON','onlineCareerSeasonStart','gold'))+'</div><h3 class="titleSmall">FIXTURES</h3><ol class="onlineMatchHistoryList">'+fixtures+'</ol><h3 class="titleSmall">STANDINGS</h3>'+standings;
+}
+function onlineCareerArchiveMarkup(){
+ if(!onlineCareerProgressLoaded)return '';
+ const archived=onlineCareerSeasons.slice(0,20);
+ if(!archived.length)return '<section class="panel" aria-label="Online Career archives"><h2 class="titleSmall">PAST ONLINE SEASONS</h2><p>Completed season standings and fixtures will be saved here.</p></section>';
+ const entries=archived.map((row,index)=>{
+  const own=TEAMS.find(team=>team.id===row.teamId)?.name||row.teamId,standing=row.standings.find(item=>item.teamId===row.teamId),record=standing?`${standing.wins}W · ${standing.draws}D · ${standing.losses}L · ${standing.points} PTS`:'No played fixtures';
+  const fixtures=row.fixtures.map(fixture=>{const opponent=TEAMS.find(team=>team.id===fixture.teamIds[1])?.name||fixture.teamIds[1],score=fixture.score?` · ${fixture.score[0]}–${fixture.score[1]}`:'';return `<li>FIXTURE ${fixture.fixtureNo} · ${escapeHTML(opponent)} · ${fixture.status==='completed'?'PLAYED'+score:'NOT PLAYED'}</li>`}).join('');
+  const table=row.standings.length?'<div class="scroll"><table class="miniTable"><thead><tr><th>TEAM</th><th>PL</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>PTS</th></tr></thead><tbody>'+row.standings.map(item=>'<tr><td>'+escapeHTML(TEAMS.find(team=>team.id===item.teamId)?.name||item.teamId)+'</td><td>'+item.played+'</td><td>'+item.wins+'</td><td>'+item.draws+'</td><td>'+item.losses+'</td><td>'+item.goalDifference+'</td><td>'+item.points+'</td></tr>').join('')+'</tbody></table></div>':'<p>No standings were recorded.</p>';
+  return `<details><summary>PAST SEASON ${index+1} · ${escapeHTML(own)} · ${row.status==='complete'?'COMPLETE':'IN PROGRESS'} · ${row.playedCount}/${row.fixtureCount} · ${escapeHTML(record)}</summary><h3 class="titleSmall">FINAL STANDINGS</h3>${table}<h3 class="titleSmall">FIXTURE RECORD</h3><ol class="onlineMatchHistoryList">${fixtures}</ol></details>`;
+ }).join('');
+ return `<section class="panel" aria-label="Online Career archives"><h2 class="titleSmall">PAST ONLINE SEASONS</h2><p>Your most recent completed seasons are stored with server results, standings, and fixtures.</p><div class="onlineCareerArchiveList">${entries}</div></section>`;
+}
+function loadOnlineCareerProgress(focusAction='onlineCareerSeasonReload'){
+ if(onlineCareerProgressLoading||!onlineAuthSession?.isSignedIn()||!onlineAccountClient)return;
+ onlineCareerProgressRequested=true;onlineCareerProgressLoading=true;onlineCareerProgressLoaded=false;
+ onlineCareerProgressStatus='Loading the server season, archive and your owned teams…';showOnlineCareer();
+ void (async()=>{try{
+  const [season,collection,seasons]=await Promise.all([onlineAccountClient.loadOnlineCareerSeason(),onlineAccountClient.loadUltimateTeamCollection(),onlineAccountClient.loadOnlineCareerSeasons()]);
+  if(!onlineAuthSession?.isSignedIn())return;
+  onlineCareerSeason=season;onlineCareerSeasons=seasons;onlineUtCollection=collection.items;onlineUtBalance=collection.balance;
+  onlineMatchOwnedTeamIds=[...new Set(['japan',...collection.items.filter(item=>item.category==='team').map(item=>item.itemId)])].filter(id=>onlineSelectableTeams().some(team=>team.id===id));onlineMatchTeamsLoaded=true;onlineMatchTeamsError='';
+  onlineCareerProgressLoaded=true;onlineCareerProgressStatus=season?'Season and team collection are current.':'No season yet. Japan is free; other teams must be owned.';
+ }catch(error){onlineCareerProgressStatus=onlineSafeStatus(error);onlineCareerProgressLoaded=false;}
+ finally{onlineCareerProgressLoading=false;if(onlineAuthSession?.isSignedIn())showOnlineCareer(focusAction);}
+ })();
+}
+async function createOnlineCareerSeason(){
+ if(!onlineCareerProgressLoaded||onlineCareerMatchTicketing)return;
+ const select=$('onlineCareerTeam');if(select)onlineCareerTeamId=select.value;
+ onlineCareerMatchTicketing=true;onlineCareerProgressStatus='Creating your server-managed season…';showOnlineCareer();
+ try{onlineCareerSeason=(await onlineAccountClient.createOnlineCareerSeason(onlineCareerTeamId)).season;onlineCareerSeasons=await onlineAccountClient.loadOnlineCareerSeasons();onlineCareerProgressLoaded=true;onlineCareerProgressStatus='Season created. Your first fixture is ready.';}
+ catch(error){onlineCareerProgressStatus=onlineSafeStatus(error);}
+ finally{onlineCareerMatchTicketing=false;showOnlineCareer('onlineCareerSeasonStart');}
+}
+function showOnlineCareer(focusAction){
+ const configured=!!onlineConfig&&!!onlineAccountClient,signed=onlineAuthSession?.isSignedIn()===true;
+ const remote=onlineCareerLoaded?currentRemoteCareer():null;
+ const occupied=careerSlots.list().some(slot=>slot.occupied),empty=careerSlots.firstEmpty()!==null;
+ const copyStatus=onlineCareerLoaded?(remote?'A remote Career copy is loaded. Uploading replaces that remote snapshot only after confirmation.':'No remote Career exists yet. Upload will create one.'):'Load the remote Career before syncing so the expected version is current.';
+ const copyForm=signed?`<section class="panel" aria-label="Online Career copy sync"><h2 class="titleSmall">REMOTE SAVE COPY</h2><p>This is manual save-copy sync only. It does not submit ranked Career results, award tokens, or unlock content.</p><p>${escapeHTML(copyStatus)}</p><div class="row">${button('LOAD REMOTE CAREER','onlineCareerReload','minor')}${button('SIGN OUT','onlineSignOut','minor')}</div>${onlineCareerLoaded&&remote?`<p class="fixture">REMOTE VERSION <strong>${onlineCareerRecord.version}</strong> · COPY LABEL <strong>${escapeHTML(remote.name||'Career copy')}</strong></p>`:''}</section>
+  <section class="panel" aria-label="Copy a local Career save online"><h2 class="titleSmall">LOCAL → ONLINE</h2><label class="fieldLabel" for="onlineCareerSource">Choose an occupied local Career save</label><select id="onlineCareerSource" class="choice" ${occupied?'':'disabled'}>${localCareerSlotOptions()||'<option value="">No occupied local slots</option>'}</select><p class="muted">Your local slot and active Career stay unchanged. This is an explicit copy.</p>${button('UPLOAD COPY TO ONLINE CAREER','onlineCareerUpload','gold')}${occupied?'':'<p>No occupied local Career slots are available to copy.</p>'}</section>
+  <section class="panel" aria-label="Copy online Career to local"><h2 class="titleSmall">ONLINE → LOCAL</h2>${remote?`<label class="fieldLabel" for="onlineCareerTarget">Choose an empty local slot</label><select id="onlineCareerTarget" class="choice" ${empty?'':'disabled'}>${emptyCareerSlotOptions()||'<option value="">No empty local slots</option>'}</select>${button('COPY REMOTE CAREER TO EMPTY SLOT','onlineCareerImport','gold')}${empty?'':'<p>All ten local Career slots are occupied. Remove or copy a local slot before importing.</p>'}`:'<p>Load an existing remote Career first. If none exists, upload an occupied local save to create the first remote copy.</p>'}<p class="muted">Import creates a separate local slot. It preserves the active slot and the legacy single-save bytes.</p></section>`:'';
+ const form=signed?'<section class="panel" aria-label="Online Career season"><h2 class="titleSmall">SERVER CAREER SEASON</h2><p>Fixtures, opponents, results and standings are managed by the online server. Your offline Career and saves remain separate.</p>'+onlineCareerSeasonMarkup()+'</section>'+onlineCareerArchiveMarkup()+copyForm:'';
+ const historyLoading=onlineHistoryController?.state.loading===true;
+ const history=signed?`<section class="panel" aria-label="Online match history" aria-busy="${historyLoading?'true':'false'}"><h2 class="titleSmall">ONLINE MATCH HISTORY</h2><p>Server-recorded results for this signed-in account. These server-recorded results remain separate from your offline Career saves.</p><div class="row"><button type="button" class="btn minor" data-action="onlineHistoryReload" ${historyLoading?'disabled':''}>${historyLoading?'LOADING…':onlineMatchHistoryItems.length?'REFRESH HISTORY':'LOAD MATCH HISTORY'}</button>${onlineMatchHistoryCursor?`<button type="button" class="btn minor" data-action="onlineHistoryMore" ${historyLoading?'disabled':''}>LOAD MORE RESULTS</button>`:''}</div>${onlineMatchHistoryItems.length?`<ul class="onlineMatchHistoryList">${onlineMatchHistoryItems.map(item=>{const own=TEAMS.find(team=>team.id===item.teamId)?.name||item.teamId,opponent=TEAMS.find(team=>team.id===item.opponentTeamId)?.name||item.opponentTeamId;return `<li><strong>${escapeHTML(item.outcome.toUpperCase())}</strong> · ${escapeHTML(own)} ${item.score[0]}–${item.score[1]} ${escapeHTML(opponent)}<small>${escapeHTML(new Date(item.recordedAt).toLocaleString())}</small></li>`}).join('')}</ul>`:''}<p id="onlineHistoryStatus" role="status" aria-live="polite" aria-atomic="true">${escapeHTML(onlineMatchHistoryStatus)}</p></section>`:'';
+ page('ONLINE CAREER','Server-managed season progress, plus optional local save-copy tools.',`${onlineAuthPanel('career')}${form}${history}${onlineStatusMarkup(onlineIdentityError||onlineCareerStatus)}`,'navOnline');
+ restoreOnlineFocus(focusAction);
+ if(signed&&!onlineCareerProgressLoaded&&!onlineCareerProgressLoading&&!onlineCareerProgressRequested)loadOnlineCareerProgress();
+}
+async function loadOnlineMatchHistory(append=false){if(!onlineHistoryController){onlineMatchHistoryStatus='Online account configuration is unavailable.';showOnlineCareer(append?'onlineHistoryMore':'onlineHistoryReload');return;}const refresh=()=>{const state=onlineHistoryController.state;onlineMatchHistoryItems=state.items.slice();onlineMatchHistoryCursor=state.cursor;onlineMatchHistoryStatus=state.status;};const request=onlineHistoryController.load({append});refresh();showOnlineCareer(append?'onlineHistoryMore':'onlineHistoryReload');await request;refresh();showOnlineCareer(append?'onlineHistoryMore':'onlineHistoryReload');}
+function onlineUtOwnedTeamIds(){return [...new Set(['japan',...onlineUtCollection.filter(item=>item.category==='team').map(item=>item.itemId)])].filter(id=>GAME_ASSETS?.teams?.some(team=>team.id===id));}
+function onlineUtLineupTeamOptions(){return onlineUtOwnedTeamIds().map(id=>{const team=GAME_ASSETS.teams.find(row=>row.id===id);return `<option value="${escapeHTML(id)}" ${id===onlineUtLineupTeamId?'selected':''}>${escapeHTML(team?.name||id)}</option>`;}).join('');}
+function onlineUtLineupMarkup(){
+ const ownedPlayers=new Set(onlineUtCollection.filter(item=>item.category==='player').map(item=>item.itemId));
+ const teamRoster=GAME_ASSETS?.rosters?.[onlineUtLineupTeamId];
+ const editable=onlineUtLineup&&onlineUtLineup.teamId===onlineUtLineupTeamId&&Array.isArray(teamRoster)&&teamRoster.length===12;
+ const controls=editable?teamRoster.map((base,slot)=>{
+  const options=[];
+  for(const [teamId,roster] of Object.entries(GAME_ASSETS.rosters||{}))for(const player of roster||[]){
+   const id=`${teamId}/${player.id}`;if(player.role!==base.role)continue;
+   if(teamId!==onlineUtLineupTeamId&&!ownedPlayers.has(id))continue;
+   options.push({id,label:`${player.name} · ${GAME_ASSETS.teams.find(team=>team.id===teamId)?.name||teamId}`});
+  }
+  return `<label class="fieldLabel" for="onlineUtLineupSlot${slot}">SLOT ${slot+1} · ${escapeHTML(base.role)}<select id="onlineUtLineupSlot${slot}" class="choice onlineUtLineupSlot">${options.map(row=>`<option value="${escapeHTML(row.id)}" ${onlineUtLineup.playerIds[slot]===row.id?'selected':''}>${escapeHTML(row.label)}</option>`).join('')}</select></label>`;
+ }).join(''):'';
+ return `<section class="panel" aria-label="Online Ultimate Team lineup"><h2 class="titleSmall">PLAYABLE ONLINE LINEUP</h2><p>Choose a team you own, then fill its twelve roster slots. Players from the base team are included; replacements from other teams must be in your online player collection. Player stats are loaded from the server’s canonical game catalog.</p><label class="fieldLabel" for="onlineUtLineupTeam">BASE TEAM<select id="onlineUtLineupTeam" class="choice" ${onlineUtOwnedTeamIds().length?'':'disabled'}>${onlineUtLineupTeamOptions()}</select></label><p id="onlineUtLineupStatus" class="muted" role="status" aria-live="polite" aria-atomic="true">${escapeHTML(onlineUtLineupLoading?'Loading saved lineup…':editable?`Lineup version ${onlineUtLineup.version}. Role-compatible slots are enforced.`:'Load this owned team’s server lineup before editing.')}</p><div class="row"><button type="button" class="btn minor" data-action="onlineUtLineupReload" ${onlineUtLineupLoading||onlineUtLineupSaving?'disabled':''}>${onlineUtLineupLoading?'LOADING…':'LOAD LINEUP'}</button></div>${controls?`<div class="grid" aria-label="Twelve player lineup slots">${controls}</div><p>Unique players only. Editing does not alter offline squads or local saves.</p><button type="button" class="btn gold" data-action="onlineUtLineupSave" ${onlineUtLineupSaving?'disabled':''}>${onlineUtLineupSaving?'SAVING…':'SAVE ONLINE LINEUP'}</button>`:''}</section>`;
+}
+function onlineTeamOptions(){return TEAMS.map((team,index)=>`<option value="${index}" ${index===onlineUtTeam?'selected':''}>${escapeHTML(team.name)}</option>`).join('');}
+function buildOnlineTeamSnapshot(index){
+ if(!Number.isInteger(index)||!TEAMS[index])throw new Error('Choose an available local squad.');
+ const players=roster(index),plan=planFor(index);
+ if(!Array.isArray(players)||!Array.isArray(plan?.lineup))throw new Error('The selected local squad is unavailable.');
+ return {schemaVersion:1,teamId:TEAMS[index].id,formation:plan.formation,lineup:plan.lineup.slice(),playerIds:players.map(player=>player.id)};
+}
+function showOnlineUltimateTeam(focusAction){
+ const signed=onlineAuthSession?.isSignedIn()===true,remote=onlineUtRecord?.payload;
+ const owned=new Set(onlineUtCollection.map(item=>`${item.category}:${item.itemId}`));
+ const lineupBuilder=signed?onlineUtLineupMarkup():'';
+ const marketplace=signed?`<section class="panel" aria-label="Online Ultimate Team collection"><h2 class="titleSmall">ONLINE COLLECTION</h2><p>Own existing canonical teams and players in your online collection with tokens earned in server-recorded matches. Offline teams, players and saves remain unchanged.</p><p class="fixture">${onlineUtBalance===null?'TOKEN BALANCE · —':`TOKEN BALANCE · ${onlineUtBalance.toLocaleString()}`} · ${onlineUtCollection.length} ITEMS OWNED</p><div class="row">${button(onlineUtCatalogLoading?'LOADING COLLECTION…':'REFRESH CATALOG & COLLECTION','onlineUtCatalogReload','minor')}${button('SIGN OUT','onlineSignOut','minor')}</div><div class="tacticsGrid"><label class="fieldLabel" for="onlineUtCategory">CATEGORY<select id="onlineUtCategory" class="choice"><option value="player" ${onlineUtCategory==='player'?'selected':''}>PLAYERS</option><option value="team" ${onlineUtCategory==='team'?'selected':''}>TEAMS</option></select></label><label class="fieldLabel" for="onlineUtSearch">SEARCH<input id="onlineUtSearch" class="choice" type="search" value="${escapeHTML(onlineUtSearch)}" placeholder="Search current teams and players" autocomplete="off"></label></div><p id="onlineUtCatalogStatus" class="muted" role="status" aria-live="polite" aria-atomic="true">${escapeHTML(onlineUtCatalogLoading?'Loading server catalog and collection…':onlineUtCatalog?`${onlineUtCatalog.length} server catalog items loaded.`:'Load the server catalog to browse available items.')}</p><div id="onlineUtItems" class="grid" aria-label="Available Ultimate Team items">${onlineUtCatalog?onlineUtCatalogMarkup(owned):''}</div>${onlineUtCatalog&&onlineUtPage*24<onlineUtCatalog.filter(item=>item.category===onlineUtCategory).length?button('SHOW MORE','onlineUtMore','minor'):''}</section>`:'';
+ const copyForm=signed?`<section class="panel" aria-label="Online Ultimate Team snapshot"><h2 class="titleSmall">VERSIONED SQUAD SNAPSHOT</h2><p>Load, create, or explicitly update an account copy of an existing local squad. This does not change any local roster identity or offline save.</p><div class="row">${button('LOAD REMOTE SQUAD','onlineUtReload','minor')}</div>${onlineUtLoaded?`<p class="fixture">${remote?'REMOTE SNAPSHOT LOADED · VERSION '+onlineUtRecord.version:'NO REMOTE SNAPSHOT · A new copy can be created.'}</p>`:'<p>Load the remote squad before saving so the expected version is current.</p>'}<label class="fieldLabel" for="onlineUtTeam">Choose an existing local team</label><select id="onlineUtTeam" class="choice">${onlineTeamOptions()}</select><p id="onlineUtPreview" class="muted">The saved copy contains the current formation and existing player IDs from this team.</p>${button('SAVE EXPLICIT SQUAD COPY','onlineUtSave','gold')}</section>`:'';
+ page('ONLINE ULTIMATE TEAM','Build an account-owned collection while keeping local squads and offline saves intact.',`${onlineAuthPanel('ultimate')}${marketplace}${lineupBuilder}${copyForm}${onlineStatusMarkup(onlineIdentityError||onlineUtStatus)}`,'navOnline');
+ restoreOnlineFocus(focusAction);
+ if(signed&&!onlineUtCatalogRequested)loadOnlineUltimateTeamMarketplace();
+}
+function onlineUtItemName(item){
+ if(item.category==='team')return GAME_ASSETS?.teams?.find(team=>team.id===item.id)?.name||item.id;
+ const [teamId,playerId]=item.id.split('/');
+ const team=GAME_ASSETS?.teams?.find(row=>row.id===teamId),player=GAME_ASSETS?.rosters?.[teamId]?.find(row=>row.id===playerId);
+ return player?`${player.name} · ${team?.name||teamId}`:item.id;
+}
+function onlineUtCatalogMarkup(owned=new Set(onlineUtCollection.map(item=>`${item.category}:${item.itemId}`))){
+ if(!Array.isArray(onlineUtCatalog))return '';
+ const query=onlineUtSearch.trim().toLocaleLowerCase();
+ const filtered=onlineUtCatalog.filter(item=>item.category===onlineUtCategory&&(!query||`${item.id} ${onlineUtItemName(item)}`.toLocaleLowerCase().includes(query)));
+ const items=filtered.slice(0,(onlineUtPage+1)*24);
+ return items.map(item=>{const own=owned.has(`${item.category}:${item.id}`),pending=onlineUtPendingPurchase?.category===item.category&&onlineUtPendingPurchase?.itemId===item.id;
+  const label=own?'OWNED':pending?(onlineUtPurchaseInFlight?'PURCHASING…':'RETRY PURCHASE'):`BUY · ${item.price} TOKENS`;
+  return `<article class="panel" data-online-ut-card><h3 class="titleSmall">${escapeHTML(onlineUtItemName(item))}</h3><p class="muted">${item.category==='player'?'PLAYER':'TEAM'} · ${escapeHTML(item.id)}</p><p>${item.price.toLocaleString()} TOKENS</p><button type="button" class="btn ${own?'minor':'gold'}" data-online-ut-buy="${item.category}" data-ut-item="${escapeHTML(item.id)}" ${own||onlineUtBalance===null||onlineUtPurchaseInFlight||onlineUtPendingPurchase&&!pending?'disabled':''}>${label}</button></article>`;
+ }).join('')||'<p class="muted">No catalog entries match this search.</p>';
+}
+function refreshOnlineUtCatalog(){
+ const out=$('onlineUtItems'),status=$('onlineUtCatalogStatus');if(!out)return;
+ const items=onlineUtCatalog?.filter(item=>item.category===onlineUtCategory&&(!onlineUtSearch.trim()||`${item.id} ${onlineUtItemName(item)}`.toLocaleLowerCase().includes(onlineUtSearch.trim().toLocaleLowerCase())))||[];
+ out.innerHTML=onlineUtCatalogMarkup();
+ if(status)status.textContent=onlineUtCatalogLoading?'Loading server catalog and collection…':onlineUtCatalog?`${items.length} ${onlineUtCategory==='player'?'players':'teams'} match this filter. Showing ${Math.min(items.length,(onlineUtPage+1)*24)}.`:'Load the server catalog to browse available items.';
+}
+async function loadOnlineUltimateTeamMarketplace(focusAction='onlineUtCatalogReload'){
+ if(!onlineAuthSession?.isSignedIn()||!onlineAccountClient)return;
+ onlineUtCatalogRequested=true;onlineUtCatalogLoading=true;refreshOnlineUtCatalog();
+ try{
+  const [catalog,collection]=await Promise.all([onlineAccountClient.loadUltimateTeamCatalog(),onlineAccountClient.loadUltimateTeamCollection()]);
+  onlineUtCatalog=catalog;onlineUtCollection=collection.items;onlineUtBalance=collection.balance;
+  if(!onlineUtOwnedTeamIds().includes(onlineUtLineupTeamId))onlineUtLineupTeamId='japan';
+  onlineUtLineupLoading=true;
+  try{onlineUtLineup=await onlineAccountClient.loadUltimateTeamLineup(onlineUtLineupTeamId);onlineUtLineupPendingSave=null;}catch(error){onlineUtLineup=null;onlineUtStatus=onlineSafeStatus(error);}
+  finally{onlineUtLineupLoading=false;}
+  onlineUtStatus='Online catalog and collection loaded. No offline squad or save was changed.';
+ }catch(error){onlineUtStatus=onlineSafeStatus(error);}
+ finally{onlineUtCatalogLoading=false;showOnlineUltimateTeam(focusAction);}
+}
+async function loadOnlineUtLineup(focusAction='onlineUtLineupReload'){
+ if(!onlineAuthSession?.isSignedIn()||!onlineAccountClient)return;
+ if(!onlineUtOwnedTeamIds().includes(onlineUtLineupTeamId)){onlineUtStatus='Acquire the base team before editing its online lineup.';showOnlineUltimateTeam(focusAction);return;}
+ onlineUtLineupLoading=true;onlineUtLineup=null;showOnlineUltimateTeam(focusAction);
+ try{onlineUtLineup=await onlineAccountClient.loadUltimateTeamLineup(onlineUtLineupTeamId);onlineUtLineupPendingSave=null;onlineUtStatus='Online lineup loaded from the account service.';}
+ catch(error){onlineUtStatus=onlineSafeStatus(error);}
+ finally{onlineUtLineupLoading=false;showOnlineUltimateTeam(focusAction);}
+}
+async function saveOnlineUtLineup(){
+ if(!onlineAuthSession?.isSignedIn()||!onlineAccountClient||!onlineUtLineup||onlineUtLineupSaving)return;
+ const base=GAME_ASSETS?.rosters?.[onlineUtLineupTeamId],playerIds=base?.map((_,slot)=>$(`onlineUtLineupSlot${slot}`)?.value);
+ if(!Array.isArray(playerIds)||playerIds.length!==12||playerIds.some(id=>typeof id!=='string')){onlineUtStatus='Load the lineup and fill every roster slot before saving.';showOnlineUltimateTeam('onlineUtLineupSave');return;}
+ const samePending=onlineUtLineupPendingSave&&onlineUtLineupPendingSave.teamId===onlineUtLineupTeamId&&onlineUtLineupPendingSave.expectedVersion===onlineUtLineup.version&&JSON.stringify(onlineUtLineupPendingSave.playerIds)===JSON.stringify(playerIds);
+ if(!samePending)onlineUtLineupPendingSave={teamId:onlineUtLineupTeamId,playerIds:playerIds.slice(),expectedVersion:onlineUtLineup.version,idempotencyKey:makeOnlineIdempotencyKey('ut_lineup')};
+ onlineUtLineupSaving=true;showOnlineUltimateTeam('onlineUtLineupSave');
+ try{
+  const result=await onlineAccountClient.saveUltimateTeamLineup({...onlineUtLineupPendingSave});
+  onlineUtLineup=result.lineup;onlineUtLineupPendingSave=null;onlineUtStatus='Online lineup saved. It will be used for this team in server matches.';
+ }catch(error){onlineUtStatus=onlineSafeStatus(error);}
+ finally{onlineUtLineupSaving=false;showOnlineUltimateTeam('onlineUtLineupSave');}
+}
+async function purchaseOnlineUltimateTeamItem(category,itemId){
+ if(!onlineAuthSession?.isSignedIn()||!onlineAccountClient)return;
+ if(onlineUtPurchaseInFlight)return;
+ if(onlineUtPendingPurchase&&(onlineUtPendingPurchase.category!==category||onlineUtPendingPurchase.itemId!==itemId)){
+  onlineUtStatus='Retry or resolve the pending purchase before starting another item.';showOnlineUltimateTeam('onlineUtCatalogReload');return;
+ }
+ onlineUtPendingPurchase??={category,itemId,idempotencyKey:makeOnlineIdempotencyKey('ut_purchase')};
+ onlineUtPurchaseInFlight=true;
+ try{
+  const result=await onlineAccountClient.purchaseUltimateTeamItem({...onlineUtPendingPurchase});
+  onlineUtBalance=result.balance;
+  if(!onlineUtCollection.some(row=>row.category===category&&row.itemId===itemId))onlineUtCollection=[...onlineUtCollection,{category,itemId,acquiredAt:result.receipt.recordedAt}];
+  if(category==='team'){onlineMatchTeamsLoaded=false;onlineMatchTeamsRefreshNeeded=true;}
+  onlineUtStatus=result.status==='duplicate'?`${onlineUtItemName({category,id:itemId})} purchase confirmed from its original receipt.`:`${onlineUtItemName({category,id:itemId})} added to your online collection for ${result.receipt.price} tokens.`;
+  onlineUtPendingPurchase=null;
+ }catch(error){
+  onlineUtStatus=onlineSafeStatus(error);
+  if(['already-owned','insufficient-balance','unknown-item','idempotency-conflict','invalid-request'].includes(error?.code))onlineUtPendingPurchase=null;
+ }finally{onlineUtPurchaseInFlight=false;}
+ showOnlineUltimateTeam('onlineUtCatalogReload');
+}
+async function beginOnlineSignIn(route){
+ if(!onlineAuthSession){setOnlineRouteStatus(route,'Online account is not configured for this build.');return;}
+ try{sessionStorage.setItem('smf.online.account.return.v1',route==='ultimate'?'online-ultimate':route==='match'?'online-match':'online-career');await onlineAuthSession.beginSignIn();}
+ catch(error){try{sessionStorage.removeItem('smf.online.account.return.v1')}catch{};setOnlineRouteStatus(route,onlineSafeStatus(error),route==='career'?'onlineSignIn_career':route==='ultimate'?'onlineSignIn_ultimate':'onlineSignIn_match');}
+}
+function signOutOnlineAccount(){onlineAuthSession?.signOut();onlineHistoryController?.reset();onlineCareerRecord=null;onlineCareerLoaded=false;onlineCareerStatus='Signed out. Local saves and squads are unchanged.';onlineCareerSeason=null;onlineCareerSeasons=[];onlineCareerProgressLoaded=false;onlineCareerProgressLoading=false;onlineCareerProgressRequested=false;onlineCareerProgressStatus='Signed out.';onlineUtRecord=null;onlineUtLoaded=false;onlineUtStatus='Signed out. Local saves and squads are unchanged.';onlineUtCatalog=null;onlineUtCollection=[];onlineUtBalance=null;onlineUtCatalogRequested=false;onlineUtPendingPurchase=null;onlineUtLineup=null;onlineUtLineupLoading=false;onlineUtLineupSaving=false;onlineUtLineupPendingSave=null;onlineMatchOwnedTeamIds=[];onlineMatchTeamsLoaded=false;onlineMatchTeamsLoading=false;onlineMatchTeamsRefreshNeeded=false;onlineMatchTeamsError='';onlineMatchHistoryItems=[];onlineMatchHistoryCursor=null;onlineMatchHistoryStatus='';if(screen==='ONLINE ULTIMATE TEAM')showOnlineUltimateTeam('onlineSignIn_ultimate');else if(screen==='ONLINE MATCH')showOnlineServerMatch('onlineSignIn_match');else showOnlineCareer('onlineSignIn_career');}
+async function reloadOnlineCareer(){
+ try{onlineCareerRecord=await onlineAccountClient.loadCareer();onlineCareerLoaded=true;onlineCareerStatus=onlineCareerRecord?'Remote Career loaded.':'No remote Career copy exists yet.';showOnlineCareer('onlineCareerReload');}
+ catch(error){onlineCareerLoaded=false;onlineCareerStatus=onlineSafeStatus(error);showOnlineCareer('onlineCareerReload');}
+}
+function makeOnlineIdempotencyKey(prefix){const bytes=new Uint8Array(16);crypto.getRandomValues(bytes);return prefix+'_'+Array.from(bytes,value=>value.toString(16).padStart(2,'0')).join('');}
+async function uploadOnlineCareerCopy(){
+ if(!onlineCareerLoaded){onlineCareerStatus='Load the remote Career first. This prevents overwriting a newer copy.';return showOnlineCareer('onlineCareerUpload');}
+ try{
+  const slot=localCareerSlotFromBackup(Number($('onlineCareerSource')?.value));
+  const snapshot=copyOfflineCareerSlotToRemotePayload(slot);
+  if(onlineCareerRecord&&!confirm('Replace the remote Career snapshot with an explicit copy of local slot “'+slot.name+'”? The local save will not change.'))return;
+  const result=await onlineAccountClient.saveCareer(snapshot,{expectedVersion:onlineCareerRecord?.version??0,idempotencyKey:makeOnlineIdempotencyKey('career_copy')});
+  onlineCareerRecord=result.record;onlineCareerLoaded=true;onlineCareerStatus=result.status==='duplicate'?'This Career copy was already saved.':'Career copy uploaded. The local save and active slot were not changed.';
+ }catch(error){onlineCareerStatus=onlineSafeStatus(error);if(error?.code==='version-conflict')onlineCareerLoaded=false;}
+ showOnlineCareer('onlineCareerUpload');
+}
+function buildRemoteCareerVaultBackup(vault){
+ const data=new Map([['legend_careerSlots',JSON.stringify(vault)]]),tempStorage={getItem:key=>data.get(key)??null,setItem:(key,value)=>data.set(key,String(value)),removeItem:key=>data.delete(key)};
+ return CAREER_SLOTS.create(tempStorage).exportBackup();
+}
+function importOnlineCareerCopy(){
+ try{
+  const payload=currentRemoteCareer(),destination=Number($('onlineCareerTarget')?.value);
+  if(!onlineCareerLoaded||!payload)throw new Error('Load a remote Career copy before importing.');
+  if(!CAREER_SLOTS.validCareer(payload.career))throw new Error('Remote Career snapshot is not compatible with local saves.');
+  const backup=JSON.parse(careerSlots.exportBackup()),vault=JSON.parse(backup.payload),index=destination-1;
+  if(!Number.isInteger(index)||index<0||index>=vault.slots.length||vault.slots[index]!==null)throw new Error('Choose an empty local slot.');
+  const beforeActive=vault.active,legacyBefore=careerStorage.getItem('legend_managerCareer');
+  const safeName=Array.from(String(payload.name||'Online Career copy').trim()||'Online Career copy').slice(0,60).join('');
+  const savedAt=typeof payload.savedAt==='string'&&!Number.isNaN(Date.parse(payload.savedAt))?payload.savedAt:new Date().toISOString();
+  vault.slots[index]={name:safeName,savedAt,career:JSON.parse(JSON.stringify(payload.career))};
+  careerSlots.importBackup(buildRemoteCareerVaultBackup(vault),{overwrite:true});
+  if(careerSlots.active!==beforeActive||careerStorage.getItem('legend_managerCareer')!==legacyBefore)throw new Error('Local active slot or legacy bytes changed unexpectedly.');
+  onlineCareerStatus=`Remote Career copied into empty local slot ${destination}. The active local slot and legacy save are unchanged.`;
+ }catch(error){onlineCareerStatus=error instanceof OnlineAccountError?error.message:'Could not copy this remote Career into local storage. No legacy save was intentionally changed.';}
+ showOnlineCareer('onlineCareerImport');
+}
+async function reloadOnlineUltimateTeam(){
+ try{onlineUtRecord=await onlineAccountClient.loadUltimateTeam();onlineUtLoaded=true;onlineUtStatus=onlineUtRecord?'Remote squad loaded.':'No remote squad copy exists yet.';showOnlineUltimateTeam('onlineUtReload');}
+ catch(error){onlineUtLoaded=false;onlineUtStatus=onlineSafeStatus(error);showOnlineUltimateTeam('onlineUtReload');}
+}
+async function saveOnlineUltimateTeam(){
+ if(!onlineUtLoaded){onlineUtStatus='Load the remote squad first. Reload after a conflict before saving.';return showOnlineUltimateTeam('onlineUtSave');}
+ try{
+  const snapshot=buildOnlineTeamSnapshot(onlineUtTeam);
+  const result=await onlineAccountClient.saveUltimateTeam(snapshot,{expectedVersion:onlineUtRecord?.version??0,idempotencyKey:makeOnlineIdempotencyKey('squad_copy')});
+  onlineUtRecord=result.record;onlineUtLoaded=true;onlineUtStatus=result.status==='duplicate'?'This squad copy was already saved.':'Existing squad copy saved. Local roster identities and player data were not modified.';
+ }catch(error){onlineUtStatus=onlineSafeStatus(error);if(error?.code==='version-conflict')onlineUtLoaded=false;}
+ showOnlineUltimateTeam('onlineUtSave');
+}
+function refreshOnlineTeamPreview(){const target=$('onlineUtPreview');if(!target)return;try{const snapshot=buildOnlineTeamSnapshot(onlineUtTeam);target.textContent=`Ready to copy ${snapshot.playerIds.length} existing player IDs with the current ${snapshot.formation} formation. No local player data will be changed.`;}catch(error){target.textContent=error.message;}}
 function showCareerMenu(){menuChoices('nav-career','CAREER','Continue your existing manager career or manage your club.',[
  ...(career?[navItem('Continue Career','manager',`Season ${career.season} · ${TEAMS[career.club]?.name||'Saved career'}`,'active','▶')]:[]),
  navItem(career?'Start a New Career':'New Career','navNewCareer',career?'Replaces the current career after confirmation.':'Select a club and begin a career.','active','⭐'),
@@ -532,6 +954,16 @@ function tokenStoreCatalog(){
  if(storeCatalogCache)return storeCatalogCache;
  const appearances=[];
  const accessories=[];
+ const teams=GAME_ASSETS.teams.map(team=>({category:'team',id:team.id,name:team.name,detail:`${team.group||'Club'} · ${team.country||'Team collection'}`,existing:true,availableForPurchase:true}));
+ const players=[];
+ const seenPlayers=new Set();
+ for(const team of GAME_ASSETS.teams){
+  for(const player of GAME_ASSETS.rosters[team.id]||[]){
+   if(typeof player.id!=='string'||seenPlayers.has(player.id))continue;
+   seenPlayers.add(player.id);
+   players.push({category:'player',id:player.id,name:player.name,detail:`${player.role||'Player'} · ${team.name}`,existing:true,availableForPurchase:true});
+  }
+ }
  for(const family of ['style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','freckles','scar','tattoo'])
   for(const [index,name] of (STUDIO_ASSET_LABELS[family]||[]).entries())appearances.push({category:'appearance',id:`${family}:${index}`,name:`${family.replace(/[A-Z]/g,m=>' '+m).toUpperCase()} · ${name}`,existing:true,availableForPurchase:true});
  for(const [index,name] of (STUDIO_ASSET_LABELS.accessory||[]).entries())accessories.push({category:'accessory',id:`accessory:${index}`,name:`ACCESSORY · ${name}`,existing:true,availableForPurchase:true});
@@ -540,27 +972,27 @@ function tokenStoreCatalog(){
  storeCatalogCache={
   superShot:Object.entries(SHOTS).map(([id,shot])=>({category:'superShot',id,name:shot.name||id,detail:`${String(shot.behavior||'special').toUpperCase()} · impact ${Math.round((Number(shot.impact)||1)*100)}%`,existing:true,availableForPurchase:true})),
   magicTrick:STUDIO_MAGIC_TRICK_FULL_CATALOGUE.map(trick=>({category:'magicTrick',id:trick.id,name:trick.name,existing:true,availableForPurchase:true})),
-  team:[],player:[],appearance:appearances,accessory:accessories
+  team:teams,player:players,appearance:appearances,accessory:accessories
  };
  return storeCatalogCache;
 }
 function storeCard(item){
  const owned=tokenWallet.owns(item.category,item.id),cost=ECONOMY.PRICES[item.category];
- const detail=item.detail||({superShot:'Unlocks the Studio option for an eligible player; existing role and verified-tier rules still apply.',magicTrick:'Unlocks the Studio option for an eligible outfield player; existing tier rules still apply.',team:'Coming soon: team unlocks do not yet have a safe selectable-content path.',player:'Coming soon: player unlocks do not yet have a safe selectable-content path.',appearance:'Unlocks this existing palette or character detail in Player Studio. Current saved looks remain available.',accessory:'Unlocks this existing accessory in Player Studio. Current saved looks remain available.'}[item.category]);
+ const detail=item.detail||({superShot:'Unlocks the Studio option for an eligible player; existing role and verified-tier rules still apply.',magicTrick:'Unlocks the Studio option for an eligible outfield player; existing tier rules still apply.',team:'Adds this existing team to your local token collection. All current team choices remain playable for free.',player:'Adds this existing player to your local token collection. Existing rosters and Career saves remain unchanged.',appearance:'Unlocks this existing palette or character detail in Player Studio. Current saved looks remain available.',accessory:'Unlocks this existing accessory in Player Studio. Current saved looks remain available.'}[item.category]);
  const action=`storeBuy_${item.category}_${encodeURIComponent(item.id)}`;
  return `<article class="tokenStoreCard"><div class="tokenStoreCardTop"><span class="tokenStoreCategory">${escapeHTML(item.category==='superShot'?'SUPER SHOT':item.category==='magicTrick'?'MAGIC TRICK':item.category.toUpperCase())}</span><span class="tokenStorePrice">${owned?'OWNED':`${cost} TOKENS`}</span></div><h3>${escapeHTML(item.name)}</h3>${item.detail?`<p class="tokenStoreDetail">${escapeHTML(item.detail)}</p>`:''}<p class="muted">${escapeHTML(detail)}</p><button type="button" class="btn ${owned?'minor':'gold'} tokenStoreBuy" data-action="${escapeHTML(action)}" ${owned?'disabled aria-disabled="true"':''} aria-label="${owned?'Owned':'Buy '+escapeHTML(item.name)+' for '+cost+' tokens'}">${owned?'OWNED':`BUY · ${cost} TOKENS`}</button></article>`;
 }
 function drawTokenStoreCards(){
  const host=$('tokenStoreCards'),status=$('tokenStoreRange'),previous=$('storePagePrev'),next=$('storePageNext');if(!host)return;
- if(!['superShot','magicTrick','appearance','accessory'].includes(storeCategory)){
+ if(!STORE_CATEGORIES.some(([id])=>id===storeCategory)){
   const label=STORE_CATEGORIES.find(([id])=>id===storeCategory)?.[1]||'This category';
-  host.innerHTML=`<section class="panel tokenStoreComingSoon"><span class="badge">${escapeHTML(label.toUpperCase())}</span><h2>COMING SOON</h2><p class="muted">These items need a safe, selectable unlock path. They remain available exactly as before, and no tokens will be charged for a dormant collection entry.</p></section>`;
-  if(status)status.textContent='No offers available';if(previous)previous.hidden=true;if(next)next.hidden=true;
+  host.innerHTML=`<section class="panel tokenStoreComingSoon"><span class="badge">${escapeHTML(label.toUpperCase())}</span><h2>CATALOG UNAVAILABLE</h2><p class="muted">This catalog could not be loaded. No tokens were spent.</p></section>`;
+  if(status)status.textContent='Catalog unavailable';if(previous)previous.hidden=true;if(next)next.hidden=true;
   const feedback=$('tokenStoreNotice');if(feedback)feedback.textContent=tokenWallet.error?`Wallet unavailable: ${tokenWallet.error}`:'';
   return;
  }
  if(previous)previous.hidden=false;if(next)next.hidden=false;
- const query=storeSearch.trim().toLocaleLowerCase(),items=(tokenStoreCatalog()[storeCategory]||[]).filter(item=>!query||`${item.name} ${item.detail||''} ${item.id}`.toLocaleLowerCase().includes(query));
+ const query=storeSearch.trim().toLocaleLowerCase(),items=(tokenStoreCatalog()[storeCategory]||[]).filter(item=>(!storeOwnedOnly||tokenWallet.owns(item.category,item.id))&&(!query||`${item.name} ${item.detail||''} ${item.id}`.toLocaleLowerCase().includes(query)));
  const pages=Math.max(1,Math.ceil(items.length/STORE_PAGE_SIZE));storePage=Math.max(0,Math.min(storePage,pages-1));
  host.innerHTML=items.slice(storePage*STORE_PAGE_SIZE,(storePage+1)*STORE_PAGE_SIZE).map(storeCard).join('')||'<div class="panel tokenStoreEmpty">No matching items. Try a shorter search.</div>';
  if(status)status.textContent=items.length?`Showing ${storePage*STORE_PAGE_SIZE+1}–${Math.min(items.length,(storePage+1)*STORE_PAGE_SIZE)} of ${items.length}`:'0 items';
@@ -570,9 +1002,10 @@ function drawTokenStoreCards(){
 }
 function showTokenStore(){
  const categoryLabel=STORE_CATEGORIES.find(([id])=>id===storeCategory)?.[1]||'Super Shots';
- page('STORE & TOKENS','Earn tokens in Career, Cups, tournaments and online peer matches. Spend them on existing game-content unlocks; current team and player choices remain intact.',`<section class="tokenStoreWallet panel" aria-label="Token wallet"><div><span class="badge">YOUR WALLET</span><strong id="tokenStoreBalance">${tokenWallet.wallet().tokens.toLocaleString()} TOKENS</strong></div><p class="muted">No real-money purchases or token packs are available. Unlocks are saved locally and included in Export All Saves.</p></section><p class="muted tokenStoreRules">Match rewards: ${ECONOMY.REWARDS.completion} tokens for completion, +${ECONOMY.REWARDS.winBonus} for a win, +${ECONOMY.REWARDS.drawBonus} for a draw. Losses still receive the completion reward. Online peer-match receipts are host-authoritative and pay each device's local soft-token wallet; they are not server-verified.</p><div class="panel tokenStoreControls"><label class="fieldLabel" for="storeCategory">SHOP CATEGORY</label><select class="choice" id="storeCategory" aria-label="Shop category">${STORE_CATEGORIES.map(([id,label])=>`<option value="${id}" ${id===storeCategory?'selected':''}>${label}</option>`).join('')}</select><label class="fieldLabel" for="storeSearch">SEARCH ${escapeHTML(categoryLabel.toUpperCase())}</label><input class="choice" type="search" id="storeSearch" value="${escapeHTML(storeSearch)}" placeholder="Search existing items" autocomplete="off" aria-controls="tokenStoreCards"/><p id="tokenStoreRange" class="muted" role="status" aria-live="polite"></p><div class="row tokenStorePager"><button type="button" class="btn minor" id="storePagePrev" data-action="storePagePrev">← PREVIOUS</button><button type="button" class="btn minor" id="storePageNext" data-action="storePageNext">NEXT →</button></div></div><p id="tokenStoreNotice" class="tokenStoreNotice" role="status" aria-live="polite" aria-atomic="true"></p><div id="tokenStoreCards" class="tokenStoreCards" aria-label="Available store items"></div>`,`home`);
+ page('STORE & TOKENS','Earn tokens in Career, Cups, tournaments and online matches. Unlock existing game items. Team/player purchases add to your collection; all current teams and players remain playable for free.',`<section class="tokenStoreWallet panel" aria-label="Token wallet"><div><span class="badge">YOUR WALLET</span><strong id="tokenStoreBalance">${tokenWallet.wallet().tokens.toLocaleString()} TOKENS</strong></div><p class="muted">No real-money purchases or token packs are available. Unlocks are saved locally and included in Export All Saves.</p></section><p class="muted tokenStoreRules">Match rewards: ${ECONOMY.REWARDS.completion} tokens for completion, +${ECONOMY.REWARDS.winBonus} for a win, +${ECONOMY.REWARDS.drawBonus} for a draw. Losses still receive the completion reward. Online peer-match receipts are host-authoritative and pay each device's local soft-token wallet; they are not server-verified.</p><div class="panel tokenStoreControls"><label class="fieldLabel" for="storeCategory">SHOP CATEGORY</label><select class="choice" id="storeCategory" aria-label="Shop category">${STORE_CATEGORIES.map(([id,label])=>`<option value="${id}" ${id===storeCategory?'selected':''}>${label}</option>`).join('')}</select><label class="fieldLabel" for="storeSearch">SEARCH ${escapeHTML(categoryLabel.toUpperCase())}</label><input class="choice" type="search" id="storeSearch" value="${escapeHTML(storeSearch)}" placeholder="Search existing items" autocomplete="off" aria-controls="tokenStoreCards"/><label class="tokenStoreOwnedFilter"><input id="storeOwnedOnly" type="checkbox" ${storeOwnedOnly?'checked':''}/> SHOW OWNED ONLY</label><p id="tokenStoreRange" class="muted" role="status" aria-live="polite"></p><div class="row tokenStorePager"><button type="button" class="btn minor" id="storePagePrev" data-action="storePagePrev">← PREVIOUS</button><button type="button" class="btn minor" id="storePageNext" data-action="storePageNext">NEXT →</button></div></div><p id="tokenStoreNotice" class="tokenStoreNotice" role="status" aria-live="polite" aria-atomic="true"></p><div id="tokenStoreCards" class="tokenStoreCards" aria-label="Available store items"></div>`,`home`);
  menu.querySelector('#storeCategory')?.addEventListener('change',event=>{storeCategory=event.target.value;storePage=0;storeSearch='';storeNotice='';menu.querySelector('#storeSearch').value='';const label=STORE_CATEGORIES.find(([id])=>id===storeCategory)?.[1]||'Existing items';const searchLabel=menu.querySelector('label[for="storeSearch"]');if(searchLabel)searchLabel.textContent=`SEARCH ${label.toUpperCase()}`;drawTokenStoreCards();});
  menu.querySelector('#storeSearch')?.addEventListener('input',event=>{storeSearch=event.target.value;storePage=0;drawTokenStoreCards();});
+ menu.querySelector('#storeOwnedOnly')?.addEventListener('change',event=>{storeOwnedOnly=event.target.checked;storePage=0;drawTokenStoreCards();});
  drawTokenStoreCards();
 }
 function buyTokenStoreItem(category,id){
@@ -2408,10 +2841,10 @@ function action(a){if(a===menuBackAction&&!confirmDiscardBeforeBack(a))return;if
   return;
  }
  else if(a==='confirmQuit'){if(confirm('Leave this match and return to the main menu? Match progress will be lost.')){stopLanMatch();game.matchState='none';showHome();}}else if(a==='confirmRestart'){if(confirm('Restart the match from kickoff? Current match progress will be lost.'))start();}
- else if(a==='navQuick')showQuickMenu();else if(a==='navLan')showLanLobby(screen==='nav-online'?'navOnline':'navQuick');else if(a==='navOnlineP2P')showOnlineP2PLobby(screen==='nav-online'?'navOnline':'navQuick');else if(a==='navOnDevice')showOnDevice();else if(a==='navOnline')showOnlineMenu();else if(a==='navCareer'){creatingCareer=false;showCareerMenu();}else if(a==='navCups')showCupsMenu();else if(a==='navStore')showTokenStore();else if(a==='navInternational')showInternationalMenu();else if(a==='navClubs')showClubCompetitionsMenu();else if(a==='navSettings'||a==='settings')showSettingsMenu();else if(a==='navCustomization'){if(screen==='nav-settings')customizationReturn='navSettings';else if(screen==='home')customizationReturn='home';showCustomizationMenu();}else if(a==='navInput')showInputMenu();else if(a==='navSaveManagement')showSaveMenu('navSettings');else if(a==='navCareerSlots')showCareerSlots();else if(a==='navCupSlots')showCupSlots();
+ else if(a==='navQuick')showQuickMenu();else if(a==='navLan')showLanLobby(screen==='nav-online'?'navOnline':'navQuick');else if(a==='navOnlineP2P')showOnlineP2PLobby(screen==='nav-online'?'navOnline':'navQuick');else if(a==='navOnDevice')showOnDevice();else if(a==='navOnline')showOnlineMenu();else if(a==='navOnlineServerMatch'){onlineMatchCareer=false;onlineMatchStatus='';onlineIdentityError='';onlineMatchTeamsRefreshNeeded=true;showOnlineServerMatch();}else if(a==='onlineSignIn_match')beginOnlineSignIn('match');else if(a==='onlineMatchTeamsRetry')loadOnlineMatchTeamOwnership('onlineMatchTeamsRetry');else if(a==='onlineMatchStart')startOnlineServerMatch();else if(a==='onlineMatchReconnect')reconnectOnlineServerMatch();else if(a==='onlineMatchLeave')leaveOnlineServerMatch();else if(a==='onlineMatchResume'){closeMenu();drawHUD();}else if(a==='onlineRewardRetry')claimOnlineMatchReward();else if(a==='navOnlineCareer'){onlineCareerStatus='';onlineIdentityError='';onlineCareerProgressLoaded=false;onlineCareerProgressRequested=false;showOnlineCareer();}else if(a==='navOnlineUltimate'){onlineUtStatus='';onlineIdentityError='';onlineUtCatalogRequested=true;showOnlineUltimateTeam();loadOnlineUltimateTeamMarketplace();}else if(a==='onlineSignIn_career')beginOnlineSignIn('career');else if(a==='onlineSignIn_ultimate')beginOnlineSignIn('ultimate');else if(a==='onlineSignOut')signOutOnlineAccount();else if(a==='onlineHistoryReload')loadOnlineMatchHistory(false);else if(a==='onlineHistoryMore')loadOnlineMatchHistory(true);else if(a==='onlineCareerSeasonReload'){onlineCareerProgressRequested=false;loadOnlineCareerProgress();}else if(a==='onlineCareerSeasonStart')createOnlineCareerSeason();else if(a==='onlineCareerPlayNext')playOnlineCareerNext();else if(a==='onlineCareerReload')reloadOnlineCareer();else if(a==='onlineCareerUpload')uploadOnlineCareerCopy();else if(a==='onlineCareerImport')importOnlineCareerCopy();else if(a==='onlineUtReload')reloadOnlineUltimateTeam();else if(a==='onlineUtCatalogReload')loadOnlineUltimateTeamMarketplace();else if(a==='onlineUtMore'){onlineUtPage++;refreshOnlineUtCatalog();}else if(a==='onlineUtSave')saveOnlineUltimateTeam();else if(a==='navCareer'){creatingCareer=false;showCareerMenu();}else if(a==='navCups')showCupsMenu();else if(a==='navStore')showTokenStore();else if(a==='navInternational')showInternationalMenu();else if(a==='navClubs')showClubCompetitionsMenu();else if(a==='navSettings'||a==='settings')showSettingsMenu();else if(a==='navCustomization'){if(screen==='nav-settings')customizationReturn='navSettings';else if(screen==='home')customizationReturn='home';showCustomizationMenu();}else if(a==='navInput')showInputMenu();else if(a==='navSaveManagement')showSaveMenu('navSettings');else if(a==='navCareerSlots')showCareerSlots();else if(a==='navCupSlots')showCupSlots();
  else if(a==='storePagePrev'){storePage=Math.max(0,storePage-1);drawTokenStoreCards();const previous=$('storePagePrev'),next=$('storePageNext');(previous&&!previous.disabled?previous:next&&!next.disabled?next:menu.querySelector('#tokenStoreCards button:not([disabled])')||$('storeSearch'))?.focus({preventScroll:true});}
  else if(a==='storePageNext'){storePage++;drawTokenStoreCards();const next=$('storePageNext'),previous=$('storePagePrev');(next&&!next.disabled?next:previous&&!previous.disabled?previous:menu.querySelector('#tokenStoreCards button:not([disabled])')||$('storeSearch'))?.focus({preventScroll:true});}
- else if(a.startsWith('storeBuy_')){const match=a.match(/^storeBuy_(superShot|magicTrick|appearance|accessory)_(.*)$/);if(match)buyTokenStoreItem(match[1],decodeURIComponent(match[2]));}
+ else if(a.startsWith('storeBuy_')){const match=a.match(/^storeBuy_(superShot|magicTrick|team|player|appearance|accessory)_(.*)$/);if(match)buyTokenStoreItem(match[1],decodeURIComponent(match[2]));}
  else if(a==='navGameSettings')showSettingsSection('game');else if(a==='navGraphics')showSettingsSection('graphics');else if(a==='navSound'){if(game.matchState==='paused'&&screen==='PAUSED')menuEntryReturn='returnPause';showSettingsSection('sound');}
  else if(a==='navAbout')showAbout();
  else if(a==='navNewCareer'){creatingCareer=true;showManager();}
@@ -2643,6 +3076,7 @@ function closeNestedMenuLayer(){
 }
 function backFromMenu(){if(typeof closeNestedMenuLayer==='function'&&closeNestedMenuLayer())return;if(['PAUSED','HALF TIME'].includes(screen)){action('resume');return;}if(screen==='TEAM COMMAND CENTER'){action(squadContext==='pause'?'returnPause':squadContext==='setup'?'returnSetup':menuBackAction||'home');return;}if(['MATCH RULES','KITS & TEAM TALKS','TEAM TACTICS'].includes(screen)){action('returnSetup');return;}const back=screen==='nav-settings-sound'&&menuEntryReturn==='returnPause'?'returnPause':screen==='nav-saves'?menuBackAction:menuParents[screen]||menuBackAction||'home';if(screen==='home')return;action(back);}
 document.addEventListener('keydown',e=>{
+ if(onlineMatchClient&&!menuVisible()&&e.code==='Escape'){e.preventDefault();e.stopPropagation();try{onlineMatchClient.sendInput(++onlineMatchSequence,{x:0,y:0,buttons:{pass:false,shoot:false,dribble:false,jump:false}})}catch{};page('ONLINE MATCH','Match remains live on the server. Choose whether to resume or leave.',`<p id="onlineMatchStatus" role="status" aria-live="polite">${escapeHTML(onlineMatchStatus||'Connected to server.')}</p><div class="row">${button('RESUME MATCH','onlineMatchResume','gold')}${button('LEAVE ONLINE MATCH','onlineMatchLeave','minor')}</div>`,'navOnline');return;}
  if(!menuVisible())return;
  if((screen==='LOCAL NETWORK'||screen==='ONLINE P2P')&&e.code==='Escape'){e.preventDefault();backFromMenu();return;}
  if(e.code==='Escape'||e.code==='Backspace'){
@@ -2675,19 +3109,29 @@ function pollMenuPad(now){
  padWas={a:pressed(0),b:pressed(1)};
 }
 menu.addEventListener('change',e=>{if(e.target.id==='saveImportFile'){importSave(e.target.files?.[0]);}if(e.target.id==='careerBackupImportFile'){importCareerBackup(e.target.files?.[0]);}if(['face_skin','face_hair'].includes(e.target.id)){studioUpdateColorPreview(e.target.id);drawCustomizer();}});
+menu.addEventListener('change',e=>{
+ if(e.target.id==='onlineCareerSource'){onlineCareerSourceSlotNumber=Number(e.target.value);return;}
+ if(e.target.id==='onlineCareerTarget'){onlineCareerTargetSlotNumber=Number(e.target.value);return;}
+ if(e.target.id==='onlineUtTeam'){onlineUtTeam=Number(e.target.value);refreshOnlineTeamPreview();return;}
+ if(e.target.id==='onlineUtLineupTeam'){onlineUtLineupTeamId=e.target.value;onlineUtLineupPendingSave=null;loadOnlineUtLineup();return;}
+ const lineupSlot=/^onlineUtLineupSlot(\d+)$/.exec(e.target.id||'');
+ if(lineupSlot&&onlineUtLineup){onlineUtLineup.playerIds[Number(lineupSlot[1])]=e.target.value;return;}
+ if(e.target.id==='onlineUtCategory'&&['team','player'].includes(e.target.value)){onlineUtCategory=e.target.value;onlineUtPage=0;refreshOnlineUtCatalog();}
+});
 
 // Studio drag-to-rotate; pointer capture keeps rotation stable on touch screens.
 menu.addEventListener('pointerdown',e=>{if(e.target.id==='customPortrait'){studioDragX=e.clientX;e.target.setPointerCapture?.(e.pointerId)}});
 menu.addEventListener('pointermove',e=>{if(studioDragX===null||e.target.id!=='customPortrait')return;const delta=e.clientX-studioDragX;if(Math.abs(delta)>=22){studioRotate(delta>0?1:-1);studioDragX=e.clientX;}});
 for(const eventName of ['pointerup','pointercancel','lostpointercapture'])menu.addEventListener(eventName,()=>{studioDragX=null});
-menu.addEventListener('input',e=>{if(e.target.id==='studioGalleryPhase'){const frame=Number(e.target.value);if(Number.isInteger(frame)&&frame>=0&&frame<=3){studioGalleryFrame=frame;drawCustomizer()}return;}if(e.target.id?.startsWith('stat_')){studioStatPreview();return;}if(e.target.dataset.teamSearch){fillTeamBrowser(e.target.dataset.teamSearch);return;}if(['face_skin','face_hair'].includes(e.target.id)){studioUpdateColorPreview(e.target.id);drawCustomizer();return;}if(e.target.id?.startsWith('face_')||e.target.id==='customPose'){if(e.target.id==='customPose')studioAction=e.target.value;drawCustomizer()}});
-menu.addEventListener('change',e=>{if(/^pos[0-5]$/.test(e.target.id)){const choiceEl=$('role_captain');if(!choiceEl)return;const current=+choiceEl.value;const ix=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;const players=squadContext==='pause'?game.rosters[squadSide]:roster(ix);const slots=Array.from({length:6},(_,i)=>+$('pos'+i).value);choiceEl.innerHTML=slots.map(i=>`<option value="${i}" ${i===current?'selected':''}>#${players[i].num} ${escapeHTML(players[i].name)}</option>`).join('');if(!slots.includes(current))choiceEl.value=String(slots[1]||slots[0]);refreshFormationPreview();}});
+menu.addEventListener('input',e=>{if(e.target.id==='onlineUtSearch'){onlineUtSearch=e.target.value;onlineUtPage=0;refreshOnlineUtCatalog();return;}if(e.target.id==='studioGalleryPhase'){const frame=Number(e.target.value);if(Number.isInteger(frame)&&frame>=0&&frame<=3){studioGalleryFrame=frame;drawCustomizer()}return;}if(e.target.id?.startsWith('stat_')){studioStatPreview();return;}if(e.target.dataset.teamSearch){fillTeamBrowser(e.target.dataset.teamSearch);return;}if(['face_skin','face_hair'].includes(e.target.id)){studioUpdateColorPreview(e.target.id);drawCustomizer();return;}if(e.target.id?.startsWith('face_')||e.target.id==='customPose'){if(e.target.id==='customPose')studioAction=e.target.value;drawCustomizer()}});
+menu.addEventListener('change',e=>{if(e.target.id==='onlineMatchTeam'&&onlineMatchTeamsLoaded&&onlineMatchOwnedTeamIds.includes(e.target.value)){onlineMatchTeamId=e.target.value;return;}if(/^pos[0-5]$/.test(e.target.id)){const choiceEl=$('role_captain');if(!choiceEl)return;const current=+choiceEl.value;const ix=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;const players=squadContext==='pause'?game.rosters[squadSide]:roster(ix);const slots=Array.from({length:6},(_,i)=>+$('pos'+i).value);choiceEl.innerHTML=slots.map(i=>`<option value="${i}" ${i===current?'selected':''}>#${players[i].num} ${escapeHTML(players[i].name)}</option>`).join('');if(!slots.includes(current))choiceEl.value=String(slots[1]||slots[0]);refreshFormationPreview();}});
 
 menu.addEventListener('input',e=>{if(e.target.id==='careerMarketSearch'){careerMarketSearch=e.target.value;refreshCareerMarketListing();refreshCareerTransferQuote();}});
 menu.addEventListener('change',e=>{if(e.target.id==='careerMarketRole'){careerMarketRole=e.target.value;refreshCareerMarketListing();refreshCareerTransferQuote();}if(e.target.id==='careerMarketSort'){careerMarketSort=e.target.value;refreshCareerMarketListing();refreshCareerTransferQuote();}if(e.target.id==='releasePlayer'||e.target.name==='target')refreshCareerTransferQuote();if(e.target.id==='academyOutgoing')refreshAcademySigningSummary()});
 menu.addEventListener('keydown',e=>{studioGalleryKeydown(e)});
 menu.addEventListener('keydown',teamBrowserKeydown);
 menu.addEventListener('click',e=>{const practice=e.target.closest?.('[data-help-practice]');if(practice){updateTouchHelpPractice(practice);updateGuidedHelpPractice(practice.dataset.helpPractice);}});
+menu.addEventListener('click',e=>{const target=e.target.closest?.('[data-action="onlineUtLineupReload"],[data-action="onlineUtLineupSave"]');if(!target||target.disabled)return;if(target.dataset.action==='onlineUtLineupReload')loadOnlineUtLineup();else saveOnlineUtLineup();});
 menu.addEventListener('submit',event=>{const form=event.target;if(form?.id!=='slotNameForm')return;event.preventDefault();action(form.dataset.slotAction)});
 menu.addEventListener('input',event=>{if(event.target?.id==='slotNameInput'){event.target.removeAttribute('aria-invalid');const error=$('slotNameError');if(error)error.textContent='';}});
 menu.addEventListener('keydown',event=>{
@@ -2711,7 +3155,7 @@ document.addEventListener('keydown',event=>{
  const bindings=input.getBindings(),actions=['pass','shoot','dribble','jump'];
  for(const [profileIndex,profile] of [bindings.keyboard,bindings.keyboard2].entries()){const index=profile?.indexOf(event.code)??-1;if(index>=0&&index<actions.length){event.preventDefault();if(profileIndex===0&&index===0){startPassChargePractice('keyboard',event.code);return;}if(profileIndex===0&&index===1){startShootChargePractice('keyboard',event.code);return;}updateGuidedHelpPractice(actions[index]);return;}}
 });
-menu.addEventListener('click',e=>{const galleryPick=e.target.closest?.('[data-studio-pick]');if(galleryPick){studioPickView(Number(galleryPick.dataset.studioPick));return;}const browser=e.target.closest('[data-team-browse]');if(browser){showTeamBrowser(browser.dataset.teamBrowse);return;}const pick=e.target.closest('[data-pick-team]');if(pick){const select=$(pick.dataset.pickTeam);if(select){select.value=pick.dataset.teamId;select.dispatchEvent(new Event('change',{bubbles:true}));}return;}let train=e.target.closest('[data-train]');if(train){menu.dataset.trainPlayer=train.dataset.train;careerTrain();return}const renew=e.target.closest('[data-careerrenew]');if(renew){tryCareerContract(+renew.dataset.careerrenew);return}const recover=e.target.closest('[data-careerrecover]');if(recover){tryCareerRecover(+recover.dataset.careerrecover);return}let node=e.target.closest('[data-action]');if(node)action(node.dataset.action)});
+menu.addEventListener('click',e=>{const galleryPick=e.target.closest?.('[data-studio-pick]');if(galleryPick){studioPickView(Number(galleryPick.dataset.studioPick));return;}const utBuy=e.target.closest('[data-online-ut-buy]');if(utBuy&&!utBuy.disabled){purchaseOnlineUltimateTeamItem(utBuy.dataset.onlineUtBuy,utBuy.dataset.utItem);return;}const browser=e.target.closest('[data-team-browse]');if(browser){showTeamBrowser(browser.dataset.teamBrowse);return;}const pick=e.target.closest('[data-pick-team]');if(pick){const select=$(pick.dataset.pickTeam);if(select){select.value=pick.dataset.teamId;select.dispatchEvent(new Event('change',{bubbles:true}));}return;}let train=e.target.closest('[data-train]');if(train){menu.dataset.trainPlayer=train.dataset.train;careerTrain();return}const renew=e.target.closest('[data-careerrenew]');if(renew){tryCareerContract(+renew.dataset.careerrenew);return}const recover=e.target.closest('[data-careerrecover]');if(recover){tryCareerRecover(+recover.dataset.careerrecover);return}let node=e.target.closest('[data-action]');if(node)action(node.dataset.action)});
 menu.addEventListener('change',e=>{const id=e.target.id;switch(id){case 'managerContinent':managerRegion=e.target.value;managerCountry='';showManager();break;case 'managerCountry':managerCountry=e.target.value;showManager();break;case 'continentClub':updateTeamPickerIcon(id);break;case 'managerClub':updateTeamPickerIcon(id);break;case 'formation':refreshFormationPreview();break;case 'homeGroup':homeCategory=e.target.value;home=filteredNations(homeCategory)[0]?.[0]??home;away=home===away?(away+1)%TEAMS.length:away;showSetup(mode);break;case 'awayGroup':awayCategory=e.target.value;away=filteredNations(awayCategory).find(([i])=>i!==home)?.[0]??away;showSetup(mode);break;case 'homeTeam':home=+e.target.value;if(home===away)away=(away+1)%TEAMS.length;showSetup(mode);break;case 'awayTeam':away=+e.target.value;if(away===home)home=(home+1)%TEAMS.length;showSetup(mode);break;case 'arcadeShotPick':arcadeShotId=Object.hasOwn(SHOTS,e.target.value)?e.target.value:'';paintArcadeShotPreview();break;case 'arcadeShotPlayerPick':arcadeShotPlayerId=roster(home).some((p,index)=>p.id===e.target.value&&planFor(home).lineup.includes(index)&&['MF','FW'].includes(p.role)&&(!p.superAbility||p.superAbility.type==='shoot'))?e.target.value:'';break;case 'preTalkHome':preTalkChoices[0]=e.target.value;break;case 'preTalkAway':preTalkChoices[1]=e.target.value;break;case 'homeKit':case 'awayKit':{let side=id==='homeKit'?0:1;kitSelections[side]=e.target.value;store.put('kitSelections',kitSelections);if(screen==='KITS & TEAM TALKS')refreshKitContrastUI();else paintTeamPreviews();break;}case 'weather':opt.weather=e.target.value;break;case 'terrain':opt.terrain=e.target.value;break;case 'condition':opt.condition=e.target.value;break;case 'settingsStadium':opt.stadium=STADIUMS.some(v=>v.id===e.target.value)?e.target.value:DEFAULT_OPTIONS.stadium;store.put('options',opt);break;case 'halfSeconds':opt.halfSeconds=+e.target.value;break;case 'ballModel':opt.ballModel=VISUALFEEL.validBallModel(e.target.value);game.options.ballModel=opt.ballModel;store.put('options',opt);paintBallPreview();break;case 'aiStyle':opt.aiStyle=e.target.value;break;case 'matchDifficulty':case 'liveDifficulty':opt.difficulty=+e.target.value;game.options.difficulty=opt.difficulty;store.put('options',opt);{const hint=$('difficultyHint');if(hint)hint.textContent=aiTuning(opt.difficulty).name+' CPU: reaction, shot accuracy, passing, pressure and keeper response all scale by difficulty. Human players are unaffected.';}break;case 'marketTeam':showCareerMarket(+e.target.value);break;case 'customTeam':{const chosen=Number(e.target.value);if(!Number.isInteger(chosen)||!TEAMS[chosen])break;home=chosen;studioManagerContext=false;studioCareerContext=false;avatarIndex=0;showPlayerStudio(0);break;}case 'customPlayer':showPlayerStudio(+e.target.value);break;case 'editTeam':{const chosen=Number(e.target.value);if(!Number.isInteger(chosen)||!TEAMS[chosen])break;home=chosen;updateTeamPickerIcon(id);$('jsonRoster').value=JSON.stringify(roster(home),null,2);break;}}});
 menu.addEventListener('change',e=>{if(e.target.id==='difficulty'){const hint=$('difficultyHint');if(hint)hint.textContent=aiTuning(+e.target.value).name+' CPU: reaction, shot accuracy, passing, pressure and keeper response all scale by difficulty. Human players are unaffected.';}});
 menu.addEventListener('change',e=>{if(e.target.id==='releasePlayer'||e.target.name==='target')refreshCareerTransferQuote();if(e.target.id==='academyOutgoing')refreshAcademySigningSummary()});
@@ -2735,7 +3179,7 @@ function updatePerformanceHUD(now,rawDelta){
   perfSamples=0;perfElapsed=0;
  }
 }
-function frame(now){pollMenuPad(now);const rawDelta=now-last;let dt=Math.min(.05,Math.max(0,rawDelta/1000||.016));last=now;updatePerformanceHUD(now,rawDelta);if(lanRuntime){
+function frame(now){pollMenuPad(now);const rawDelta=now-last;let dt=Math.min(.05,Math.max(0,rawDelta/1000||.016));last=now;updatePerformanceHUD(now,rawDelta);if(onlineMatchClient){if(onlineMatchClient.connected&&onlineMatchClient.matchId&&!menuVisible()&&game.matchState==='play'){onlineMatchSendAccumulator+=dt;while(onlineMatchSendAccumulator>=1/30){onlineMatchSendAccumulator-=1/30;try{onlineMatchClient.sendInput(++onlineMatchSequence,sampleOnlineActionInput(input));}catch(error){onlineIdentityError=error?.message||'Online input could not be sent.';break;}}}else onlineMatchSendAccumulator=0;}else if(lanRuntime){
   if(lanPeer?.ready){lanFailureSince=0;try{lanRuntime.step(dt);}catch(error){console.error('LAN match stopped:',error);stopLanMatch();game.matchState='none';page('LAN CONNECTION ERROR','Match stopped safely.',button('RETURN TO QUICK MATCH','navQuick','gold'),'navQuick');}}
   else if(!lanFailureSince)lanFailureSince=now;
   else if(now-lanFailureSince>4500&&!(lanRole==='host'&&screen==='FULL TIME'&&lanRuntime.resultAckStatus==='failed')){stopLanMatch();game.matchState='none';page('LAN MATCH ENDED','The remote player disconnected or the host ended the match.',button('RETURN TO QUICK MATCH','navQuick','gold'),'navQuick');}
@@ -2743,11 +3187,13 @@ function frame(now){pollMenuPad(now);const rawDelta=now-last;let dt=Math.min(.05
   if(lanRole==='guest'&&game.matchState==='finished'&&!lanFinish)lanFinish={type:'finished',score:game.score.slice()};
  if(lanFinish&&(lanRole!=='host'||lanRuntime?.resultDelivered)){const result=lanFinish;lanFinish=null;fulltime(result);}
  if(lanResultCleanupPending&&['confirmed','unconfirmed'].includes(lanRuntime?.resultAckStatus))stopLanMatch();
- }else if(game.matchState==='play'){game.update(dt);updateTrainingCrossCoach();}else if(game.matchState==='penalty')game.updatePK(dt);// The network simulation has two humans on both peers; only the local user's
+ }else if(!onlineMatchClient&&game.matchState==='play'){game.update(dt);updateTrainingCrossCoach();}else if(game.matchState==='penalty')game.updatePK(dt);// The network simulation has two humans on both peers; only the local user's
  // selected player may receive a Breath ring. Local couch Versus stays dual-human.
  game.localBreathSide=lanRole==='host'?0:lanRole==='guest'?1:null;
  renderer.frame(game,dt,menuVisible());if(screen==='home'&&menuVisible())drawPoster();uiT-=dt;if(uiT<=0){uiT=.1;if(!menuVisible())drawHUD()}if(toastTime&&now>toastTime){$('gameToast').classList.add('hidden');toastTime=0}checkRotate();requestAnimationFrame(frame)}
-game.init({home,away,options:opt});game.matchState='none';window.NekketsuHD={audio,version:RELEASE.version,game,renderer,input,teams:TEAMS,shots:SHOTS,aiLevels:AI_LEVELS,rosterFor,getCareer:()=>career,getContinental:()=>continentalRun,confederations:CONTINENTS,continentalMapping:CONTINENTAL_TEAMS,kitsFor:team=>KIT_CHOICES.map(k=>kitFor(team,k)),getKitChoices:()=>kitSelections.slice(),getTeamPlan:i=>planFor(i),getMorale:team=>game.teamMorale(team)};window.NekketsuHD.ballModels=VISUALFEEL.BALL_MODELS;window.NekketsuHD.facingView=VISUALFEEL.facingView;window.NekketsuHD.impactStun=VISUALFEEL.impactStun;window.NekketsuHD.rollDelta=VISUALFEEL.rollDelta;window.NekketsuHD.personalityFor=p=>BPWPERSONALITY.profileFor(p);window.NekketsuHD.personalityMotion=(p,params)=>BPWPERSONALITY.sampleMotion(BPWPERSONALITY.profileFor(p),params);window.SupermagicFootball=window.NekketsuHD;window.SupermagicFootball.conceptModularStatus=CONCEPT_MODULAR.status;window.SupermagicFootball.portraitFit=portraitFit;window.SupermagicFootball.studio={directions:STUDIO_DIRS,getDirection:()=>studioDirection,rotate:studioRotate,getAction:()=>studioAction,fitKeeperPose:drawFittedKeeperStudioPose};showHome();requestAnimationFrame(frame);
+game.init({home,away,options:opt});game.matchState='none';window.NekketsuHD={audio,version:RELEASE.version,game,renderer,input,teams:TEAMS,shots:SHOTS,aiLevels:AI_LEVELS,rosterFor,getCareer:()=>career,getContinental:()=>continentalRun,confederations:CONTINENTS,continentalMapping:CONTINENTAL_TEAMS,kitsFor:team=>KIT_CHOICES.map(k=>kitFor(team,k)),getKitChoices:()=>kitSelections.slice(),getTeamPlan:i=>planFor(i),getMorale:team=>game.teamMorale(team)};window.NekketsuHD.ballModels=VISUALFEEL.BALL_MODELS;window.NekketsuHD.facingView=VISUALFEEL.facingView;window.NekketsuHD.impactStun=VISUALFEEL.impactStun;window.NekketsuHD.rollDelta=VISUALFEEL.rollDelta;window.NekketsuHD.personalityFor=p=>BPWPERSONALITY.profileFor(p);window.NekketsuHD.personalityMotion=(p,params)=>BPWPERSONALITY.sampleMotion(BPWPERSONALITY.profileFor(p),params);window.SupermagicFootball=window.NekketsuHD;window.SupermagicFootball.conceptModularStatus=CONCEPT_MODULAR.status;window.SupermagicFootball.portraitFit=portraitFit;window.SupermagicFootball.studio={directions:STUDIO_DIRS,getDirection:()=>studioDirection,rotate:studioRotate,getAction:()=>studioAction,fitKeeperPose:drawFittedKeeperStudioPose};
+initializeOnlineAccount();
+showHome();requestAnimationFrame(frame);
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
 // Browser audio can only be unlocked by a deliberate user gesture.

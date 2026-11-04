@@ -7,7 +7,7 @@ this output retains their independent deterministic physics/graphics coverage.
 from pathlib import Path
 import json,re,base64
 root=Path(__file__).resolve().parents[1]
-order=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','jumpmetrics','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','career_slots','cup_slots','economy','input','visualfeel','shotfeel','physicsbalance','shotpaths','magic-hazards','engine','bpwpersonality','artpose','characterart','concepthero','conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-relay-peer','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render','release','ability-icons','ui','lan-state-snapshot','lan-snapshot-channel']
+order=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','jumpmetrics','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','career_slots','cup_slots','economy','input','visualfeel','shotfeel','physicsbalance','shotpaths','magic-hazards','engine','bpwpersonality','artpose','characterart','concepthero','conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-relay-peer','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render','release','ability-icons','online-auth','online-account-client','online-match-client','online-match-renderer','online-history','ui','lan-state-snapshot','lan-snapshot-channel']
 groups=['arcade','national26','club26','legends','continental','bpw_worldcup','bpw_alltime']
 load=lambda path:json.loads((root/'data'/path).read_text(encoding='utf-8'))
 players={g:load(f'players/{g}.json') for g in groups}
@@ -41,6 +41,11 @@ code.append('const CONCEPT_MODULAR_MANIFEST_INLINE='+json.dumps(modular_manifest
 code.append('const CONCEPT_MODULAR_INLINE_ASSETS='+json.dumps(modular_inline_assets,separators=(',',':'))+';\n')
 for name in order:
  s=(root/'src/modules'/f'{name}.js').read_text(encoding='utf-8')
+ if name=='online-account-client':
+  # The generated classic-script QA harness shares one lexical scope across
+  # modules; keep this browser module's private predicate distinct from LAN's.
+  s=re.sub(r'\bisRecord\b','onlineAccountIsRecord',s)
+  s=re.sub(r'\bMAX_SNAPSHOT_BYTES\b','ONLINE_MAX_SNAPSHOT_BYTES',s)
  if name=='career':
   api_start=s.rfind('return {')
   api_end=s.find('};})();',api_start)

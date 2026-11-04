@@ -1482,11 +1482,28 @@ class Renderer{
  ctx.save();ctx.rotate(rotation);
  if(id==='classic'){
   const seam='#52616b',panel='#1b2a35';
+  // Classic panel boundaries follow the ball's spherical surface. Treat each
+  // panel vertex as a point on the front hemisphere and draw the great-circle
+  // edge in short projected segments. This creates a restrained perspective
+  // curve at match scale without changing the familiar six-panel layout.
+  const sphereVertex=([px,py])=>{const sx=px/r,sy=py/r;return[sx,sy,Math.sqrt(Math.max(0,1-sx*sx-sy*sy))]};
+  const traceSphericalPanel=points=>{
+   const verts=points.map(sphereVertex);ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);
+   for(let edge=0;edge<verts.length;edge++){
+    const a=verts[edge],b=verts[(edge+1)%verts.length],dot=clamp(a[0]*b[0]+a[1]*b[1]+a[2]*b[2],-1,1),omega=Math.acos(dot),sinOmega=Math.sin(omega);
+    for(let step=1;step<=6;step++){
+     const t=step/6,wa=sinOmega>1e-6?Math.sin((1-t)*omega)/sinOmega:1-t,wb=sinOmega>1e-6?Math.sin(t*omega)/sinOmega:t;
+     const length=Math.hypot(a[0]*wa+b[0]*wb,a[1]*wa+b[1]*wb,a[2]*wa+b[2]*wb)||1;
+     ctx.lineTo((a[0]*wa+b[0]*wb)*r/length,(a[1]*wa+b[1]*wb)*r/length);
+    }
+   }
+   ctx.closePath();
+  };
   const center=[[0,-r*.46],[r*.44,-r*.14],[r*.28,r*.39],[-r*.28,r*.39],[-r*.44,-r*.14]];
-  poly(ctx,center,panel);
+  traceSphericalPanel(center);ctx.fillStyle=panel;ctx.fill();
   // Keep the hub panel's stitched edge visible at gameplay radius. A uniform
   // fine stroke matches the surrounding patches without changing the outline.
-  ctx.beginPath();ctx.moveTo(...center[0]);for(let i=1;i<center.length;i++)ctx.lineTo(...center[i]);ctx.closePath();
+  traceSphericalPanel(center);
   ctx.lineWidth=Math.max(.55,r*.035);ctx.strokeStyle=seam;ctx.stroke();
   // Five connected five-sided outer panels form the traditional stitched
   // pentagon layout around the center. The inward point meets the center
@@ -1494,8 +1511,7 @@ class Renderer{
   for(let a=0;a<5;a++){
    const angle=a*PI*2/5-PI/2,cx=Math.cos(angle)*r*.64,cy=Math.sin(angle)*r*.64,pr=r*.18;
    const points=Array.from({length:5},(_,i)=>{const side=angle+PI+i*PI*2/5;return[cx+Math.cos(side)*pr,cy+Math.sin(side)*pr]});
-   ctx.beginPath();ctx.moveTo(...points[0]);for(let i=1;i<points.length;i++)ctx.lineTo(...points[i]);ctx.closePath();
-   ctx.fillStyle=panel;ctx.fill();ctx.lineWidth=Math.max(.55,r*.035);ctx.strokeStyle=seam;ctx.stroke();
+   traceSphericalPanel(points);ctx.fillStyle=panel;ctx.fill();traceSphericalPanel(points);ctx.lineWidth=Math.max(.55,r*.035);ctx.strokeStyle=seam;ctx.stroke();
    const inner=[Math.cos(angle)*r*.48,Math.sin(angle)*r*.48],outer=[Math.cos(angle)*r*.55,Math.sin(angle)*r*.55];
    line(ctx,[inner,outer],seam,Math.max(.5,r*.027));
   }

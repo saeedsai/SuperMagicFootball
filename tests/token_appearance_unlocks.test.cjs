@@ -46,10 +46,12 @@ test('Studio renders only owned or current appearance options and validates save
  assert.match(save,/if\(locked\.length\)\{const message=`Unlock these appearance selections in Store & Tokens first:/);
 });
 
-test('Store offers existing appearance/accessory ids and leaves teams/players unavailable',()=>{
+test('Store offers existing bonus teams/players alongside appearance/accessory items without gating them',()=>{
  const catalog=ui.slice(ui.indexOf('function tokenStoreCatalog()'),ui.indexOf('function storeCard('));
- assert.match(catalog,/appearance:appearances,accessory:accessories/);
+ assert.match(catalog,/team:teams,player:players,appearance:appearances,accessory:accessories/);
  assert.match(catalog,/category:'accessory',id:`accessory:\$\{index\}`/);
- assert.match(catalog,/team:\[\],player:\[\]/);
- assert.match(ui,/if\(!\['superShot','magicTrick','appearance','accessory'\]\.includes\(storeCategory\)\)/);
+ assert.match(catalog,/GAME_ASSETS\.teams\.map\(team=>\(\{category:'team',id:team\.id/);
+ assert.match(catalog,/GAME_ASSETS\.rosters\[team\.id\]/);
+ assert.match(ui,/current teams and players remain playable for free/i);
+ assert.match(ui,/storeBuy_\(superShot\|magicTrick\|team\|player\|appearance\|accessory\)/);
 });

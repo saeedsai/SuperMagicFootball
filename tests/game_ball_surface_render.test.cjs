@@ -68,10 +68,19 @@ test('normal in-match ball uses penalty-scale rendering without changing simulat
 test('classic ball uses a connected center and five surrounding pentagon panels',()=>{
  const renderer=Object.create(RENDER.Renderer.prototype),ctx=context();
  renderer.drawSoccerBall(ctx,0,0,30,'classic',0);
- const pentagons=ctx.polygonFills.filter(shape=>shape.color==='#1b2a35'&&shape.vertices===5);
+ const pentagons=ctx.polygonFills.filter(shape=>shape.color==='#1b2a35'&&shape.vertices>=30);
  assert.equal(pentagons.length,6,'center and five inward-facing surround panels use five sides');
- assert.ok(ctx.strokes.filter(stroke=>stroke.color==='#52616b'&&stroke.vertices===5&&stroke.width<=1.1).length>=6,
-  'center panel receives a fine seam outline that remains legible at match scale');
+ assert.ok(ctx.strokes.filter(stroke=>stroke.color==='#52616b'&&stroke.vertices>=30&&stroke.width<=1.1).length>=6,
+  'all five-sided panel edges are smoothly projected onto the spherical surface');
+});
+
+test('classic panel projection leaves the gameplay circle and render rotation intact',()=>{
+ const renderer=Object.create(RENDER.Renderer.prototype),ctx=context();
+ renderer.drawSoccerBall(ctx,3,7,17,'classic',Math.PI/4);
+ assert.equal(ctx.arcs[0].r,17,'sphere clip remains the declared gameplay radius');
+ assert.equal(ctx.rotations[0],Math.PI/4,'spherical panels honor the existing rotation API');
+ assert.ok(ctx.polygonFills.filter(shape=>shape.color==='#1b2a35').every(shape=>shape.vertices>5),
+  'panel geodesics are tessellated rather than flat five-edge decals');
 });
 
 test('older Canvas contexts retain the non-gradient ball fallback',()=>{

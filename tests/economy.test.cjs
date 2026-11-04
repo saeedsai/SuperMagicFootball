@@ -113,6 +113,60 @@ test('store rejects synthetic, unlisted, already-owned, invalid, and unaffordabl
  assert.equal(wallet.wallet().tokens,10);
 });
 
+test('bonus team and player unlocks are additive and leave legacy free Career choices untouched',async()=>{
+ const economy=await api();
+ const legacyCareer={teamId:'club-free-01',selectedPlayerId:'player-free-01',roster:[{id:'player-free-01',role:'FW'}]};
+ const careerBytes=JSON.stringify(legacyCareer);
+ const bonusCatalog=[
+  {id:'club-free-01',category:'team',existing:true,availableForPurchase:false},
+  {id:'club-bonus-02',category:'team',existing:true,availableForPurchase:true},
+  {id:'player-free-01',category:'player',existing:true,availableForPurchase:false},
+  {id:'player-bonus-02',category:'player',existing:true,availableForPurchase:true},
+ ];
+ const storage=memory({legend_managerCareer:careerBytes,[economy.KEY]:JSON.stringify({schema:1,tokens:1000,unlocks:[],receipts:[]})});
+ const wallet=economy.create(storage);
+ assert.equal(wallet.purchase(bonusCatalog[0],bonusCatalog).reason,'not-in-existing-store-catalog');
+ assert.equal(wallet.purchase(bonusCatalog[2],bonusCatalog).reason,'not-in-existing-store-catalog');
+ assert.equal(wallet.purchase(bonusCatalog[1],bonusCatalog).ok,true);
+ assert.equal(wallet.purchase(bonusCatalog[3],bonusCatalog).ok,true);
+ assert.equal(wallet.owns('team','club-bonus-02'),true);
+ assert.equal(wallet.owns('player','player-bonus-02'),true);
+ assert.deepEqual(JSON.parse(storage.getItem('legend_managerCareer')),legacyCareer);
+ assert.equal(storage.getItem('legend_managerCareer'),careerBytes,'unlock purchases must not rewrite an existing Career team, player, or roster');
+ const reloaded=economy.create(storage);
+ assert.equal(reloaded.owns('team','club-bonus-02'),true,'bonus collection persists in the additive wallet key');
+ assert.equal(reloaded.owns('player','player-bonus-02'),true);
+ assert.equal(reloaded.wallet().tokens,1000-economy.PRICES.team-economy.PRICES.player);
+});
+
+test('unaffordable team and player bonus purchases fail without debiting or changing unlock state',async()=>{
+ const economy=await api(),catalog=[
+  {id:'club-bonus-03',category:'team',existing:true,availableForPurchase:true},
+  {id:'player-bonus-03',category:'player',existing:true,availableForPurchase:true},
+ ];
+ const wallet=economy.create(memory({[economy.KEY]:JSON.stringify({schema:1,tokens:economy.PRICES.player-1,unlocks:[],receipts:[]})}));
+ for(const item of catalog){
+  const result=wallet.purchase(item,catalog);
+  assert.equal(result.ok,false,item.category);
+  assert.equal(result.reason,'insufficient-tokens',item.category);
+  assert.equal(result.cost,economy.PRICES[item.category]);
+ }
+ assert.equal(wallet.wallet().tokens,economy.PRICES.player-1);
+ assert.deepEqual(wallet.wallet().unlocks,[]);
+});
+
+test('a pre-wallet legacy save opens a fresh additive wallet without rewriting its saved team or players',async()=>{
+ const economy=await api(),legacyCareer={teamId:'club-legacy-04',players:['player-legacy-01','player-legacy-02'],formation:'4-3-3'};
+ const careerBytes=JSON.stringify(legacyCareer),storage=memory({legend_managerCareer:careerBytes});
+ const wallet=economy.create(storage);
+ assert.deepEqual(wallet.wallet(),economy.emptyWallet());
+ assert.equal(storage.getItem(economy.KEY),null,'opening a legacy save does not eagerly rewrite it or create a wallet');
+ assert.equal(wallet.awardCompletedMatch(receipt('legacy-save-match-0001')).ok,true);
+ assert.equal(storage.getItem(economy.KEY)!==null,true,'earned wallet state uses its own additive storage key');
+ assert.equal(storage.getItem('legend_managerCareer'),careerBytes);
+ assert.deepEqual(JSON.parse(storage.getItem('legend_managerCareer')),legacyCareer);
+});
+
 test('corrupt wallet fails closed without resetting bytes or changing other save sections',async()=>{
  const economy=await api(),career='{"club":4}',storage=memory({[economy.KEY]:'{bad',legend_managerCareer:career});
  const wallet=economy.create(storage);

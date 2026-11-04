@@ -36,6 +36,6 @@ test('Studio previews and both team stat menus use shared visual catalogues',()=
 
 test('Inline Chromium bundle includes shared ability icon implementation before UI',()=>{
  const build=fs.readFileSync('scripts/build.py','utf8');
- assert.match(build,/'release','ability-icons','ui'/);
+ assert.match(build,/'release','ability-icons','online-auth','online-account-client','online-match-client','online-match-renderer','online-history','ui'/);
  assert.match(build,/for name in order:/);
 });
