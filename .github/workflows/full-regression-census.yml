@@ -46,6 +46,8 @@ jobs:
         shard: [0, 1, 2, 3]
     steps:
       - uses: actions/checkout@v4
+      - name: Install runtime dependencies for legacy LAN Node tests
+        run: npm install --no-package-lock --ignore-scripts --omit=dev
       - name: Build test fixture
         run: python3 scripts/build.py
       - name: Run all historical and current Node executable tests

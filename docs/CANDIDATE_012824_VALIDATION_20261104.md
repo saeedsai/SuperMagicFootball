@@ -15,4 +15,4 @@ The normal in-match ball is now drawn at the same 17-unit scale as the penalty b
 
 ## Remaining acceptance
 
-The first exact-head GitHub Actions run exposed a workflow setup defect: preflight invoked LAN Node contracts before installing the manifest's `ws` dependency. The workflow now installs declared production dependencies before the Node contract suite, matching the existing browser-job setup. A fresh exact-head run is required; hosted smoke, physical-device or owner acceptance, protected promotion, and deployment remain unverified until it passes.
+Exact-head GitHub Actions exposed workflow setup defects: both preflight and the separate historical Node shards invoked LAN tests before installing the manifest's `ws` dependency. The workflow now installs declared production dependencies in both clean job types, matching the existing browser-job setup. The first preflight fix passed preflight and preview smoke; a later dependency setup fix for isolated Node shards is awaiting a fresh exact-head run. Hosted smoke, physical-device or owner acceptance, protected promotion, and deployment remain unverified until every gate passes.
