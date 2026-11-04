@@ -1,7 +1,7 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.24',
+ version:'0.12.81.25',
  date:'2026-11-04',
  notes:Object.freeze([
   'VIZ-01 / BALL: The normal in-match ball now renders at the same 17-unit drawn scale as the penalty ball so its panel seams remain easier to read during play. The simulation state, movement, collision and saved cosmetics are unchanged. Focused renderer and browser QA pass.',

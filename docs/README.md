@@ -4,6 +4,8 @@ Use [MASTER_BACKLOG.md](MASTER_BACKLOG.md) as the single current plan and status
 
 ## Read for current work
 
+- [Candidate 0.12.81.25 validation](CANDIDATE_012825_VALIDATION_20261104.md): narrow-phone Studio fit plus CI dependency, timeout and browser-path fixes; exact-head run pending.
+
 - [Candidate 0.12.81.24 validation](CANDIDATE_012824_VALIDATION_20261104.md): increased normal match ball drawn scale to penalty-ball scale with no gameplay state change.
 - [Preserved browser-render captures](evidence/browser/README.md): referenced screenshots copied out of the ignored QA cache so their evidence remains available on GitHub.
 - [Candidate 0.12.81.23 validation](CANDIDATE_012823_VALIDATION_20261104.md): penalty-transition cleanup of active field effects.

@@ -83,6 +83,17 @@ class RegressionRunnerSafetyTests(unittest.TestCase):
                 self.assertEqual(code, 2)
                 self.assertIn(expected, err)
 
+    def test_expensive_engine_diagnostics_get_specific_bounded_timeouts(self):
+        self.assertEqual(
+            runner.script_timeout_seconds("super_shot_whole_match_balance_diagnostic.mjs", 35),
+            600,
+        )
+        self.assertEqual(
+            runner.script_timeout_seconds("super_shot_directional_crossover_diagnostic.mjs", 35),
+            900,
+        )
+        self.assertEqual(runner.script_timeout_seconds("ordinary.test.cjs", 35), 35)
+
     def test_nonempty_single_shard_writes_actual_pass_not_empty_pass(self):
         self.new_script("a_browser_qa.py")
         code, output, err = self.run_runner("browser")

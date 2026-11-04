@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Exercise endline restarts in the actual modular game on desktop and touch."""
 from pathlib import Path
+import os
 import json
 from playwright.sync_api import sync_playwright
 
@@ -46,7 +47,8 @@ CHECK=r"""() => {
 CHECK=CHECK.replace('FIELD_JSON',json.dumps(field,separators=(',',':')))
 
 with sync_playwright() as pw:
- browser=pw.chromium.launch(executable_path='C:/Program Files/Google/Chrome/Application/chrome.exe',headless=True)
+ browser_path=os.environ.get('SMF_CHROMIUM_PATH')
+ browser=pw.chromium.launch(headless=True,**({'executable_path':browser_path} if browser_path else {}))
  for label,mobile in [('desktop',False),('simulated-touch',True)]:
   ctx=browser.new_context(viewport={'width':1280,'height':720} if not mobile else {'width':844,'height':390},
                           is_mobile=mobile,has_touch=mobile)

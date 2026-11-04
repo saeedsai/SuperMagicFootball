@@ -26,6 +26,16 @@ EXTRA_BROWSER = {
     "master_ui_contracts.py",
     "v060_qa.py",
 }
+NODE_TIMEOUT_OVERRIDES = {
+    # These engine-only 60 Hz match matrices intentionally simulate hundreds
+    # of regulation games. They need a longer per-script bound than small unit
+    # contracts, but remain bounded within the enclosing CI job timeout.
+    "super_shot_whole_match_balance_diagnostic.mjs": 600,
+    "super_shot_directional_crossover_diagnostic.mjs": 900,
+}
+
+def script_timeout_seconds(name: str, default: int) -> int:
+    return NODE_TIMEOUT_OVERRIDES.get(name, default)
 
 def selected_scripts(category: str):
     if category == "node":
@@ -127,11 +137,12 @@ def main():
                    else ["node", "--test", str(file)] if file.name.endswith(".test.cjs")
                    else ["node", str(file)])
         begin = time.monotonic()
+        timeout_seconds = script_timeout_seconds(file.name, args.timeout_seconds)
         try:
             p = subprocess.run(
                 command, cwd=ROOT, capture_output=True, text=True,
                 encoding="utf-8", errors="replace",
-                timeout=args.timeout_seconds,
+                timeout=timeout_seconds,
                 env={**os.environ,"PYTHONUNBUFFERED":"1","PYTHONUTF8":"1",
                      **({"SMF_BROWSER_GAME_VERSION":browser_version} if args.portable_browser else {})},
             )

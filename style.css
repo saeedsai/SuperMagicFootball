@@ -746,3 +746,7 @@ textarea::placeholder{color:#b4d5eb;opacity:1}
  .homeReferenceNav{min-height:max-content}
  .homeReferenceFeature{min-height:260px}
 }
+
+/* At very narrow phone widths, give Player Studio controls the full viewport
+   width so platform font metrics cannot force an inner horizontal scroller. */
+@media(max-width:380px){.menu:has(.studioControlGroup)>.menubox{width:100vw;max-width:100vw;min-width:0;padding:14px 12px}}

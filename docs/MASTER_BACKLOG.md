@@ -1,6 +1,6 @@
 # SuperMagicFootball — master plan and backlog
 
-**Canonical plan and status ledger.** Updated 4 November 2026 for local candidate **0.12.81.24**. Earlier candidate evidence remains linked; this ledger avoids claiming unsupported completion. Keep this file canonical and record future status/evidence here.
+**Canonical plan and status ledger.** Updated 4 November 2026 for local candidate **0.12.81.25**. Earlier candidate evidence remains linked; this ledger avoids claiming unsupported completion. Keep this file canonical and record future status/evidence here.
 
 ## Owner priorities and invariants
 
@@ -11,9 +11,9 @@
 - SuperMagicAssetStudio is the source-art tool. The game consumes only approved exported assets/manifests; keep the procedural renderer as fallback. Structural checks do not imply owner visual approval.
 - Do not claim visual approval, physical-device acceptance, protected promotion, hosting or server readiness without evidence.
 
-## Current candidate 0.12.81.24
+## Current candidate 0.12.81.25
 
-The normal in-match ball is drawn at the same 17-unit scale as the penalty ball, making its panels and seams easier to read. This rendering-only adjustment leaves ball simulation, collision, movement, saved cosmetics and the hidden-ball attenuation path unchanged. Candidate .24 passes local build (4,997,137 JS / 5,118,716 HTML characters), full Node (1,964/1,964), release/version contracts (21/21), focused renderer/cosmetic tests (13/13), and actual-renderer Chromium capture. The .24 local four-shard browser attempt selected all 229 scripts (227 passed, one focus assertion failed, one save/restart check timed out under parallel load); both checks passed isolated retries, but this is not a clean local census. Exact-head CI identified absent `ws` installs in preflight and the separate legacy Node shard jobs. Both clean job types now install manifest dependencies; the first fix passed preflight and preview smoke, and the second awaits a fresh exact-head run. Hosted, owner and device acceptance remain open. See [candidate .24 report](CANDIDATE_012824_VALIDATION_20261104.md), [browser attempt and retries](qa_runs_012824_browser_20261104/README.md), and [match-scale ball capture](BALL_SURFACE_MATCH_SCALE_20261104.png).
+Candidate .25 retains the larger gameplay-scale ball and corrects Player Studio width at narrow phone sizes. It also fixes release-gate setup: clean preflight and Node shard jobs install declared runtime dependencies, the two documented whole-match CPU diagnostics receive bounded script-specific timeouts, and two browser checks no longer hardcode a Windows-only Chromium path. Local Player Studio 320×568 Chromium QA and focused UI contracts pass; full exact-head CI is pending. Candidate .24's local browser attempt was not clean (227/229 pass, with isolated retries passing the focus and save cases); its first exact-head run exposed the missing `ws` install. The second exact-head run passed preflight/preview and browser shards 1 and 3, but identified the missing narrow-screen width and Windows-only browser executable in shard 2, the width issue in shard 0, and 35-second timeouts on the two whole-match diagnostics. The .25 fixes are awaiting the next full run. Hosted Pages, owner/device acceptance and protected promotion remain open. See [candidate .25 report](CANDIDATE_012825_VALIDATION_20261104.md), [candidate .24 browser attempt](qa_runs_012824_browser_20261104/README.md), and [match-scale ball capture](BALL_SURFACE_MATCH_SCALE_20261104.png).
 
 ## Previous candidate 0.12.81.23
 

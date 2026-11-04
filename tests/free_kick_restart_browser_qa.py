@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Verify direct free-kick play in the actual game build on desktop/touch."""
 from pathlib import Path
+import os
 from playwright.sync_api import sync_playwright
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -30,7 +31,8 @@ CHECK=r"""() => {
 }"""
 
 with sync_playwright() as pw:
- browser=pw.chromium.launch(executable_path='C:/Program Files/Google/Chrome/Application/chrome.exe',headless=True)
+ browser_path=os.environ.get('SMF_CHROMIUM_PATH')
+ browser=pw.chromium.launch(headless=True,**({'executable_path':browser_path} if browser_path else {}))
  for label,mobile in [('desktop',False),('simulated-touch',True)]:
   ctx=browser.new_context(viewport={'width':1280,'height':720} if not mobile else {'width':844,'height':390},
                           is_mobile=mobile,has_touch=mobile)
