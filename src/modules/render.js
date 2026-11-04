@@ -1203,6 +1203,8 @@ class Renderer{
    ?clamp(1-(Number(p.maceSweepPending.remaining)||0)/.24,0,1):undefined;
   const spinBumperPhase=p.action==='defenceSuper'&&p.spinBumperPending
    ?clamp(1-(Number(p.spinBumperPending.remaining)||0)/.42,0,1):undefined;
+  const spinBumperImpactPhase=!p.spinBumperPending&&(Number(p.spinBumperImpactFx)||0)>0
+   ?clamp(1-(Number(p.spinBumperImpactFx)||0)/.28,0,1):undefined;
   const knockdownTimer=Math.max(0,Number(p.shotImpactKnockdownTimer)||0);
   const knockdownPose=p.action==='shotDown'&&knockdownTimer>0?1:0;
   const impactRecovery=ARTPOSE.shotImpactRecoveryPose(p.action,p.actionTimer,p.face);
@@ -1311,6 +1313,13 @@ class Renderer{
    ctx.rotate(impactRecovery.angle);
   }
   else if(shotLaunchPose.armSpread>0)ctx.rotate(shotLaunchPose.angle);
+  // The existing impact timer drives a short, mirrored Spin Bumper follow-through
+  // on every character painter; this local lean is visual-only and never feeds
+  // position or collision state back into the engine.
+  if(spinBumperImpactPhase!==undefined){
+   const phase=spinBumperImpactPhase,settled=phase*phase*(3-2*phase),drive=1-settled;
+   ctx.translate(3*drive,1.5*drive);ctx.rotate(.11*drive);
+  }
   if(p.action==='rideBallCarrier'){ctx.translate(0,3);ctx.rotate(-.07*(p.face||1));}
   if(p.action==='rideBallPassenger'){ctx.translate(0,-4);ctx.rotate(.045*(p.face||1));}
   if(isHurt&&(p.stun||0)>1.15){ctx.translate(0,12);ctx.rotate(-.55*view.side);}
@@ -1335,7 +1344,7 @@ class Renderer{
   }if(p.action==='ballLift')ctx.translate(0,-8);if(p.action==='superHead')ctx.translate(0,-18);if(p.action==='superBicycle')ctx.rotate(-p.face*.90);if(p.action==='bicycle')ctx.rotate(-p.face*.64);if(p.action==='flyingKick')ctx.rotate(-p.face*.28);if(p.action==='defensiveBicycle')ctx.rotate(-p.face*.76);
   if(kick)ctx.rotate(-.045);
   // v0.8.25.15: articulated five-projection character rendering.
- if(!CROWN_ROYALS.draw(ctx,p,view,{run,action:p.action,phase:(kick||sliding)?Math.max(.3,Math.min(1,(p.actionTimer||0)/.3)):0})&&!CONCEPT_MODULAR.draw(ctx,p,view,{run,headScale})&&!CONCEPT_HERO.draw(ctx,p,view,{run,headScale}))CHARACTER_ART.draw(ctx,p,av,team,view,{run,runPhase,runSpeedRatio:clamp(Math.hypot(p.moveVX||0,p.moveVY||0)/315||Math.hypot(p.dx||0,p.dy||0),0,1),footScaleX:characterScaleX,footScaleY:characterScaleY,locomotion,isHurt,isCrying,kick,sliding,skin,dark,hair,build,stature,headScale,lips,time:this.time,signatureMotion,shotLaunchPose,celebrate:p.action==='celebrate',celebrationStyle:(game.celebrationStyle+(Number.isInteger(p.i)?p.i:0))%25,defenceSweepPhase:maceSweepPhase,defenceSweepDirection:view.side<0?-1:1,spinBumperPhase,hurt:isHurt,cry:isCrying});
+ if(!CROWN_ROYALS.draw(ctx,p,view,{run,action:p.action,phase:(kick||sliding)?Math.max(.3,Math.min(1,(p.actionTimer||0)/.3)):0})&&!CONCEPT_MODULAR.draw(ctx,p,view,{run,headScale})&&!CONCEPT_HERO.draw(ctx,p,view,{run,headScale}))CHARACTER_ART.draw(ctx,p,av,team,view,{run,runPhase,runSpeedRatio:clamp(Math.hypot(p.moveVX||0,p.moveVY||0)/315||Math.hypot(p.dx||0,p.dy||0),0,1),footScaleX:characterScaleX,footScaleY:characterScaleY,locomotion,isHurt,isCrying,kick,sliding,skin,dark,hair,build,stature,headScale,lips,time:this.time,signatureMotion,shotLaunchPose,celebrate:p.action==='celebrate',celebrationStyle:(game.celebrationStyle+(Number.isInteger(p.i)?p.i:0))%25,defenceSweepPhase:maceSweepPhase,defenceSweepDirection:view.side<0?-1:1,spinBumperPhase,hurt:isHurt,cry:isCrying,spinBumperImpactPhase});
  if(!p.preview&&(p.fireballBurnFx||0)>0){const alpha=clamp(p.fireballBurnFx/.48,0,1)*.72;ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle='#ff9b46';ctx.fillStyle='#ffd16a';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(0,-67,31,48,0,0,PI*2);ctx.stroke();for(const x of [-19,0,19]){ctx.beginPath();ctx.moveTo(x,-107);ctx.quadraticCurveTo(x-7,-121,x,-128);ctx.quadraticCurveTo(x+8,-119,x,-107);ctx.fill();}ctx.restore();}
  if(p.action==='hyperdash'){ctx.save();ctx.globalAlpha=.72;ctx.lineWidth=7;ctx.strokeStyle='#a0f0ff';for(let k=0;k<3;k++){ctx.beginPath();ctx.moveTo(-p.face*(38+k*22),-22-k*16);ctx.lineTo(-p.face*(72+k*21),-20-k*17);ctx.stroke()}ctx.restore()}
  if(p.action==='header'&&!p.preview){ctx.save();ctx.textAlign='center';ctx.fillStyle='#fff4a1';ctx.font='900 24px sans-serif';ctx.fillText('HEAD!',0,-139);ctx.restore()}

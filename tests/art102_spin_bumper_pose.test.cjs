@@ -18,6 +18,16 @@ test('ART-102 Spin Bumper widens both character arms through its existing .42-se
  assert.doesNotMatch(arm,/p\.[\w.]+\s*=|velocity|hitbox|physics/i,'brace remains visual-only');
 });
 
+test('ART-102 Spin Bumper impact phase drives a mirrored visual recovery only',()=>{
+ assert.match(player,/const spinBumperImpactPhase=!p\.spinBumperPending&&\(Number\(p\.spinBumperImpactFx\)\|\|0\)>0[\s\S]*?clamp\(1-\(Number\(p\.spinBumperImpactFx\)\|\|0\)\/\.28,0,1\):undefined/);
+ assert.match(player,/spinBumperImpactPhase\}\)/,'every fallback-painter heading receives the impact phase');
+ assert.match(player,/const phase=spinBumperImpactPhase,settled=phase\*phase\*\(3-2\*phase\),drive=1-settled[\s\S]*?ctx\.translate\(3\*drive,1\.5\*drive\);ctx\.rotate\(\.11\*drive\)/,'impact eases from hit to recovery without changing player state');
+ assert.match(arm,/const bumperImpactPhase=Number\.isFinite\(opt\.spinBumperImpactPhase\)\?clamp\(opt\.spinBumperImpactPhase,0,1\):null/);
+ assert.match(arm,/1-bumperImpactPhase\*bumperImpactPhase\*\(3-2\*bumperImpactPhase\)/,'the arm guard eases back to neutral');
+ assert.match(arm,/bumperImpactPhase!==null\s*\?sign>0\?\[sh\+sign\*\(16\+12\*bumperImpact\)/,'the near and far arms recover asymmetrically');
+ assert.doesNotMatch(arm,/p\.[\w.]+\s*=|velocity|hitbox|physics/i,'character pose remains visual-only');
+});
+
 test('Spin Bumper telegraph shows timer-linked progress while reduced-flash freezes orbit',()=>{
  assert.match(telegraph,/const reduced=!!game\.options\?\.reducedFlash,remaining=Math\.max\(0,Math\.min\(1,p\.spinBumperPending\.remaining\/\.42\)\),progress=1-remaining/);
  assert.match(telegraph,/ctx\.arc\(0,3,124,-PI\/2,-PI\/2\+progress\*PI\*2\)/,'outer arc follows the existing warning timer');

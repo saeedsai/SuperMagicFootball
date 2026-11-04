@@ -426,6 +426,8 @@ const CHARACTER_ART=(()=>{
   const launch=clamp(Number(opt.shotLaunchPose?.armSpread)||0,0,1);
   const macePhase=sign===1&&Number.isFinite(opt.defenceSweepPhase)?clamp(opt.defenceSweepPhase,0,1):null;
   const bumperPhase=Number.isFinite(opt.spinBumperPhase)?clamp(opt.spinBumperPhase,0,1):null;
+  const bumperImpactPhase=Number.isFinite(opt.spinBumperImpactPhase)?clamp(opt.spinBumperImpactPhase,0,1):null;
+  const bumperImpact=bumperImpactPhase===null?0:1-bumperImpactPhase*bumperImpactPhase*(3-2*bumperImpactPhase);
   const cheering=!!opt.celebrate&&!p.keeper,crying=!!opt.cry&&!p.keeper,style=norm(opt.celebrationStyle,25);
   let cheerPose=null;
   if(cheering){
@@ -499,12 +501,14 @@ const CHARACTER_ART=(()=>{
    else cheerPose={elbow:[sh+sign*13,-60],hand:[sh+sign*7,-75]}; // temple press
   }
   const launchGuard=launch>0&&sign===(Number(p.face)<0?-1:1);
-  const elbow=holding?[sh-sign*9,-55]:(cheerPose?.elbow||(dive?[sh+sign*(12+9*diveReach),-49-11*diveReach]:bumperPhase!==null
+  const elbow=holding?[sh-sign*9,-55]:(cheerPose?.elbow||(dive?[sh+sign*(12+9*diveReach),-49-11*diveReach]:bumperImpactPhase!==null
+   ?sign>0?[sh+sign*(16+12*bumperImpact),-40-5*bumperImpact]:[sh+sign*(7+4*bumperImpact),-44+4*bumperImpact]:bumperPhase!==null
    ?[sh+sign*(11+bumperPhase*8),-39-Math.sin(bumperPhase*Math.PI)*5]
    :macePhase!==null
    ?[sh+sign*(12+Math.sin(macePhase*Math.PI)*8),-47-Math.sin(macePhase*Math.PI)*7]
    :launch>0?(launchGuard?[sh-sign*launch*5,-43-launch*8]:[sh+sign*(12+launch*15),-43-launch*7]):[sh+sign*(near?13:10),-41+sw*.40]));
-  const hand=holding?[elbow[0]-sign*5,-59]:(cheerPose?.hand||(dive?[elbow[0]+sign*(5+13*diveReach),-58-16*diveReach]:bumperPhase!==null
+  const hand=holding?[elbow[0]-sign*5,-59]:(cheerPose?.hand||(dive?[elbow[0]+sign*(5+13*diveReach),-58-16*diveReach]:bumperImpactPhase!==null
+   ?sign>0?[elbow[0]+sign*(10+12*bumperImpact),-37-7*bumperImpact]:[elbow[0]+sign*(5+4*bumperImpact),-50+4*bumperImpact]:bumperPhase!==null
    ?[elbow[0]+sign*(8+bumperPhase*7),-30-bumperPhase*18]
    :macePhase!==null
    ?[elbow[0]+(opt.defenceSweepDirection||1)*(5+15*macePhase),-40+21*macePhase]

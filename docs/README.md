@@ -4,7 +4,9 @@ Use [MASTER_BACKLOG.md](MASTER_BACKLOG.md) as the single current plan and status
 
 ## Read for current work
 
-- [Candidate 0.12.81.25 validation](CANDIDATE_012825_VALIDATION_20261104.md): narrow-phone Studio fit plus CI dependency, timeout and browser-path fixes; exact-head run pending.
+- [Candidate 0.12.81.26 validation](CANDIDATE_012826_VALIDATION_20261104.md): Spin Bumper impact/recovery animation follows the real post-telegraph idle state; focused build and eight-heading browser capture.
+- [Candidate 0.12.81.25 validation](CANDIDATE_012825_VALIDATION_20261104.md): narrow-phone Studio fit plus CI dependency, timeout and browser-path fixes; exact-head and hosted Pages verification passed.
+- [ART-102 Spin Bumper impact/recovery gallery](evidence/browser/art102_spin_bumper_impact_gallery.png): 40 actual-renderer samples across eight headings and five recovery phases, with unchanged gameplay state.
 
 - [Candidate 0.12.81.24 validation](CANDIDATE_012824_VALIDATION_20261104.md): increased normal match ball drawn scale to penalty-ball scale with no gameplay state change.
 - [Preserved browser-render captures](evidence/browser/README.md): referenced screenshots copied out of the ignored QA cache so their evidence remains available on GitHub.
