@@ -99,6 +99,10 @@ try:
         assert search.count() == 1, 'Store search should be labelled by its category prompt'
         assert search.evaluate('(e)=>e===document.activeElement')
         page.keyboard.press('Tab')
+        owned_filter = page.get_by_role('checkbox', name='SHOW OWNED ONLY')
+        assert owned_filter.count() == 1, 'Owned-only filter needs an accessible name'
+        assert owned_filter.evaluate('(e)=>e===document.activeElement'), 'Keyboard order should expose the owned-only filter'
+        page.keyboard.press('Tab')
         next_page = page.get_by_role('button', name='NEXT →')
         assert next_page.count() == 1
         assert next_page.is_enabled()

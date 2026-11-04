@@ -44,9 +44,19 @@ with sync_playwright() as pw:
   page.locator('[data-action=navOnline]').first.click()
   assert page.locator('[data-action=navOnlineP2P]').count()==1
   assert page.locator('[data-action=navLan]').count()==1
-  for a in ['laterUltimate','laterOnlineCareer','laterOnlineCup']:
+  for a in ['navOnlineServerMatch','navOnlineUltimate','navOnlineCareer','laterOnlineCup']:
    assert page.locator(f'[data-action={a}]').count()==1
-  page.locator('[data-action=laterUltimate]').click()
+  page.locator('[data-action=navOnlineServerMatch]').click()
+  assert page.locator('.heading').inner_text()=='ONLINE MATCH'
+  assert page.locator('#onlineMatchStatus').count()==1
+  page.locator('[data-action=navOnline]').click()
+  page.locator('[data-action=navOnlineUltimate]').click()
+  assert page.locator('.heading').inner_text()=='ONLINE ULTIMATE TEAM'
+  page.locator('[data-action=navOnline]').click()
+  page.locator('[data-action=navOnlineCareer]').click()
+  assert page.locator('.heading').inner_text()=='ONLINE CAREER'
+  page.locator('[data-action=navOnline]').click()
+  page.locator('[data-action=laterOnlineCup]').click()
   assert 'COMING LATER' in page.locator('.navInfo').inner_text()
   page.locator('[data-action=navOnline]').first.click()
   page.keyboard.press('Escape')
