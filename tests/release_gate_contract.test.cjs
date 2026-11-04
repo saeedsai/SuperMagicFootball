@@ -65,3 +65,10 @@ test('full census has no stale workflow lock, while promotion requires exact-hea
  assert.match(release,/CERTIFIED_SHA/);
  assert.match(release,/-F force=false/);
 });
+
+test('dev quality installs declared LAN runtime dependencies before Node regressions',()=>{
+ const devQuality=fs.readFileSync(path.join(__dirname,'../.github/workflows/dev-quality.yml'),'utf8').replace(/\r\n/g,'\n');
+ const install=devQuality.indexOf('npm install --no-package-lock --ignore-scripts --omit=dev');
+ const tests=devQuality.indexOf('node --test tests/*.test.cjs');
+ assert.ok(install>=0&&tests>install,'install the declared ws runtime dependency before LAN server contract tests');
+});

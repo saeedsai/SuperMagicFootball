@@ -24,6 +24,8 @@ jobs:
           python3 scripts/advance_club_roster_batch.py --check
           node tests/all_club_fc27_rosters.mjs
           node tests/club_roster_batch_ledger.mjs
+      - name: Install runtime dependencies for LAN Node contracts
+        run: npm install --no-package-lock --ignore-scripts --omit=dev
       - name: Execute Node regression suite
         run: node --test tests/*.test.cjs
       - name: Compile Python browser regression scripts
