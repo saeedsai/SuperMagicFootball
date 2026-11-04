@@ -424,6 +424,8 @@ const CHARACTER_ART=(()=>{
   const dive=p.keeper&&['keeperDive','keeperDiveCatch','keeperSuper'].includes(p.action),holding=p.keeper&&['keeperCatch','keeperHold'].includes(p.action);
   const diveReach=dive?keeperArmReach(p.action,p.diveElapsed):0;
   const launch=clamp(Number(opt.shotLaunchPose?.armSpread)||0,0,1);
+  const recoveryBrace=!p.keeper?shotRecoveryBrace(p.action,p.actionTimer):0;
+  const gettingUp=!p.keeper&&p.action==='shotGetUp';
   const macePhase=sign===1&&Number.isFinite(opt.defenceSweepPhase)?clamp(opt.defenceSweepPhase,0,1):null;
   const bumperPhase=Number.isFinite(opt.spinBumperPhase)?clamp(opt.spinBumperPhase,0,1):null;
   const bumperImpactPhase=Number.isFinite(opt.spinBumperImpactPhase)?clamp(opt.spinBumperImpactPhase,0,1):null;
@@ -506,12 +508,14 @@ const CHARACTER_ART=(()=>{
    ?[sh+sign*(11+bumperPhase*8),-39-Math.sin(bumperPhase*Math.PI)*5]
    :macePhase!==null
    ?[sh+sign*(12+Math.sin(macePhase*Math.PI)*8),-47-Math.sin(macePhase*Math.PI)*7]
+   :gettingUp?[sh+sign*((near?13:10)-5*recoveryBrace),-41+sw*.40+(near?10:6)*recoveryBrace]
    :launch>0?(launchGuard?[sh-sign*launch*5,-43-launch*8]:[sh+sign*(12+launch*15),-43-launch*7]):[sh+sign*(near?13:10),-41+sw*.40]));
   const hand=holding?[elbow[0]-sign*5,-59]:(cheerPose?.hand||(dive?[elbow[0]+sign*(5+13*diveReach),-58-16*diveReach]:bumperImpactPhase!==null
    ?sign>0?[elbow[0]+sign*(10+12*bumperImpact),-37-7*bumperImpact]:[elbow[0]+sign*(5+4*bumperImpact),-50+4*bumperImpact]:bumperPhase!==null
    ?[elbow[0]+sign*(8+bumperPhase*7),-30-bumperPhase*18]
    :macePhase!==null
    ?[elbow[0]+(opt.defenceSweepDirection||1)*(5+15*macePhase),-40+21*macePhase]
+   :gettingUp?[elbow[0]+sign*5,-24+sw+(near?5:13)*recoveryBrace]
    :launch>0?(launchGuard?[sh-sign*(6+launch*10),-24-launch*28+sw]:[elbow[0]+sign*(5+launch*15),-24-launch*17+sw]):[elbow[0]+sign*5,-24+sw]));
   const kit=near?grad(c,sh-20,-57,sh+18,-38,[[0,blend(col.main,.34)],[.44,col.main],[1,blend(col.main,-.32)]]):blend(col.main,-.33);
   stroke(c,[[sh,-51],[elbow[0],elbow[1]]],kit,15,dark);
@@ -539,6 +543,13 @@ const CHARACTER_ART=(()=>{
     path.quadraticCurveTo(hand[0]-sign*5.2,hand[1]-5.0,hand[0]-sign*6.3,hand[1]-2.2);
     path.quadraticCurveTo(hand[0]-sign*6.8,hand[1]-.1,hand[0]-sign*3.5,hand[1]+1.5);
     path.quadraticCurveTo(hand[0]-sign*2.0,hand[1]+.6,hand[0]-sign*2.1,hand[1]-3.1)},thumb,dark,.8);
+   if(gettingUp&&near&&recoveryBrace>.4){
+    // The near hand opens against the turf as the player pushes upright.
+    for(let finger=0;finger<3;finger++){
+     const offset=sign*(1+finger*2.1),reach=3.5-Math.abs(finger-1)*.4;
+     stroke(c,[[hand[0]+offset,hand[1]+3],[hand[0]+offset+sign*1.1,hand[1]+reach]],blend(col.skin,.08),1.05,ink(dark,.6));
+    }
+   }
   }
   oval(c,hand[0]-2,hand[1]-2,2.5,3.2,ink('#ffffff',.16));
   if(!p.keeper&&sign===1&&Number.isFinite(opt.defenceSweepPhase))drawMaceSweep(c,hand[0],hand[1],opt.defenceSweepPhase,opt.defenceSweepDirection||1,col);

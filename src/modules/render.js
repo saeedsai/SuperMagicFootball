@@ -1179,7 +1179,11 @@ class Renderer{
    }
  }
  if(condition!=='Good'||terrain==='Dirt'){for(let i=0;i<27;i++){let x=F.x+85+((i*349)%Math.floor(F.w-170)),y=F.y+40+((i*227)%Math.floor(F.h-80));const damp=condition==='Wet'||i%3===0;ctx.fillStyle=damp?(terrain==='Grass'?'#477e4bc7':'#776443b9'):terrain==='Grass'?'#b7924877':'#89593973';ellipse(ctx,x,y,random(i+42,18,70),random(i+48,9,32),ctx.fillStyle);if(damp&&condition==='Wet'){ellipse(ctx,x-7,y-5,24,5,'#a5d8ee38')}}}
- const top=F.y,left=F.x,right=F.x+F.w,bot=F.y+F.h,center=(left+right)/2,cy=(top+bot)/2;this.drawVenueMarkings(ctx,game);ctx.save();const venue=STADIUMS.find(v=>v.id===game.options?.stadium)||STADIUMS[0],markingTone=['#fff3df','#e4f5e8','#def4ff','#eee9ff','#e8f4cf'][(venue.profile??0)%5];ctx.strokeStyle=terrain==='Dirt'?'#f1e1c5dd':markingTone+'e9';ctx.lineWidth=4;ctx.strokeRect(left+4,top+4,F.w-8,F.h-8);
+  const top=F.y,left=F.x,right=F.x+F.w,bot=F.y+F.h,center=(left+right)/2,cy=(top+bot)/2;this.drawVenueMarkings(ctx,game);ctx.save();const venue=STADIUMS.find(v=>v.id===game.options?.stadium)||STADIUMS[0],markingTone=['#fff3df','#e4f5e8','#def4ff','#eee9ff','#e8f4cf'][(venue.profile??0)%5];
+  // A small dark halo keeps chalk legible over every venue's grass, wear and
+  // decorative turf pattern while leaving all official line paths unchanged.
+  ctx.shadowColor='rgba(8,22,18,.52)';ctx.shadowBlur=2;ctx.shadowOffsetX=0;ctx.shadowOffsetY=1;
+  ctx.strokeStyle=terrain==='Dirt'?'#f1e1c5dd':markingTone+'e9';ctx.lineWidth=4;ctx.strokeRect(left+4,top+4,F.w-8,F.h-8);
  line(ctx,[[center,top],[center,bot]],'#f7f6dcdc',4);ctx.beginPath();ctx.arc(center,cy,156,0,PI*2);ctx.stroke();ellipse(ctx,center,cy,5,5,'#f2f8e9');
  for(let side of [0,1]){const x=side?right:left,dir=side?-1:1;ctx.strokeRect(x+(side?-310:4),cy-230,306,460);ctx.strokeRect(x+(side?-110:4),cy-130,106,260);ellipse(ctx,x+dir*205,cy,5,5,'#fff7df');ctx.beginPath();ctx.arc(x+dir*205,cy,117,side?PI/2:-PI/2,side?PI*1.5:PI/2,!side);ctx.stroke();}
  ctx.restore();

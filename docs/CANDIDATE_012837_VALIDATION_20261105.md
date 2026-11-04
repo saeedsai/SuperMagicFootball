@@ -15,8 +15,9 @@
 - `python -X utf8 tests/run_gait_contact_browser_qa.py`: passed across **288 actual production-renderer frames** (eight headings × three speeds × twelve phases); no page errors or player/ball state changes.
 - `python -X utf8 tests/online_account_ui_browser_qa.py`: passed, including the mocked online PVP rendering flow.
 - `git diff --check`: passed.
-- Exact-head regression CI, hosted deployment, physical-device acceptance and owner visual approval have not yet been run for this candidate.
+- Exact-head `dev` Full Regression Census [41933058105](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41933058105) and Modular Game Dev QA [41933060494](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41933060494) passed; the SHA was promoted to `main`.
+- Pages deployment [41934226266](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41934226266) and main full regression [41934226308](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41934226308) passed. The public page, service worker/cache and bundled .37 version have been verified, while `online-config.js` remains blank. Physical-device acceptance and owner visual approval remain open.
 
 ## Limits and remaining gates
 
-The gait effect is procedural fallback presentation; these checks do not establish human visual approval. Online transformed-shot presentation is still validated against a mocked browser service, not a deployed backend or two live clients. GitHub Pages currently serves candidate .36; .37's exact-head CI, promotion and deployment remain pending. The online API is not deployed because database and OIDC configuration are still missing. See [online server deployment handoff](ONLINE_SERVER_DEPLOYMENT.md) and [master backlog](MASTER_BACKLOG.md).
+The gait effect is procedural fallback presentation; these checks do not establish human visual approval. Online transformed-shot presentation is still validated against a mocked browser service, not a deployed backend or two live clients. Candidate .37 is promoted and deployed to Pages, and the main regression passed. The online API is not deployed because database and OIDC configuration are still missing. See [online server deployment handoff](ONLINE_SERVER_DEPLOYMENT.md) and [master backlog](MASTER_BACKLOG.md).

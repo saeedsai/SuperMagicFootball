@@ -88,13 +88,25 @@ export function createOnlineCareerService({db,resultStore,buildSchedule,now=()=>
     catch(error){try{await client.query('ROLLBACK')}catch{};throw error}
     finally{client.release?.()}
   }
+  async function consistentRead(work){
+    const client=await db.connect();
+    try{
+      await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+      const value=await work(client);await client.query('COMMIT');return value;
+    }catch(error){try{await client.query('ROLLBACK')}catch{};throw error}
+    finally{client.release?.()}
+  }
   async function getSeason(accountId,seasonId){
     safeAccount(accountId);safeSeason(seasonId);
-    const found=await db.query('SELECT account_id,season_id,team_id,fixture_count,played_count,version,status FROM smf_online_career_seasons WHERE account_id=$1 AND season_id=$2',[accountId,seasonId]);
-    const season=found.rows?.[0];if(!season)return null;
-    const rows=await db.query('SELECT fixture_no,fixture_id,match_id,participant_0,participant_1,team_0,team_1,status,score_0,score_1,recorded_at,result_hash FROM smf_online_career_fixtures WHERE account_id=$1 AND season_id=$2 ORDER BY fixture_no',[accountId,seasonId]);
-    if(rows.rows?.length!==Number(season.fixture_count))fail('corrupt-season','Stored Online Career fixture count is inconsistent');
-    return summarize(season,rows.rows);
+    const projection=await consistentRead(async client=>{
+      const found=await client.query('SELECT account_id,season_id,team_id,fixture_count,played_count,version,status FROM smf_online_career_seasons WHERE account_id=$1 AND season_id=$2',[accountId,seasonId]);
+      const season=found.rows?.[0];if(!season)return null;
+      const rows=await client.query('SELECT fixture_no,fixture_id,match_id,participant_0,participant_1,team_0,team_1,status,score_0,score_1,recorded_at,result_hash FROM smf_online_career_fixtures WHERE account_id=$1 AND season_id=$2 ORDER BY fixture_no',[accountId,seasonId]);
+      return {season,fixtures:rows.rows||[]};
+    });
+    if(!projection)return null;
+    if(projection.fixtures.length!==Number(projection.season.fixture_count))fail('corrupt-season','Stored Online Career fixture count is inconsistent');
+    return summarize(projection.season,projection.fixtures);
   }
   async function getFixtureBinding(accountId,seasonId,fixtureNo){
     safeAccount(accountId);safeSeason(seasonId);

@@ -12,17 +12,18 @@ function finalResult(matchId=oneMatch,overrides={}){
 function schedule(matchId=oneMatch){return [{fixtureNo:1,fixtureId:'c'.repeat(32),matchId,participants:[{userId:ACCOUNT,side:0},{userId:AI,side:1}],teamIds:['team_alpha','team_bravo'],mode:'career-ai'}];}
 function snapshot(state){return structuredClone({seasons:[...state.seasons],fixtures:[...state.fixtures]});}
 class FakePool{
-  constructor(){this.seasons=new Map();this.fixtures=new Map();this.tail=Promise.resolve();this.rollbacks=0;this.commits=0;this.lockReads=0;this.seasonLockReads=0;this.failOn=null;this.archiveQueries=[];}
+  constructor(){this.seasons=new Map();this.fixtures=new Map();this.tail=Promise.resolve();this.rollbacks=0;this.commits=0;this.lockReads=0;this.seasonLockReads=0;this.failOn=null;this.archiveQueries=[];this.transactionCommands=[];}
   async query(sql,params){return this.exec(sql,params)}
   async connect(){
     const pool=this;let releaseTurn=null,before=null;
     return {async query(sql,params){
       const normalized=sql.replace(/\s+/g,' ').trim().toLowerCase();
-      if(normalized==='begin'){
+      if(normalized.startsWith('begin')){
+        pool.transactionCommands.push(normalized);
         const prior=pool.tail;let release;pool.tail=new Promise(resolve=>release=resolve);releaseTurn=release;await prior;before=snapshot(pool);return {rows:[]};
       }
-      if(normalized==='commit'){pool.commits++;releaseTurn?.();releaseTurn=null;return {rows:[]};}
-      if(normalized==='rollback'){pool.rollbacks++;if(before){pool.seasons=new Map(before.seasons);pool.fixtures=new Map(before.fixtures)}releaseTurn?.();releaseTurn=null;return {rows:[]};}
+      if(normalized==='commit'){pool.transactionCommands.push(normalized);pool.commits++;releaseTurn?.();releaseTurn=null;return {rows:[]};}
+      if(normalized==='rollback'){pool.transactionCommands.push(normalized);pool.rollbacks++;if(before){pool.seasons=new Map(before.seasons);pool.fixtures=new Map(before.fixtures)}releaseTurn?.();releaseTurn=null;return {rows:[]};}
       if(normalized.includes('for update')){pool.lockReads++;if(normalized.includes('smf_online_career_seasons'))pool.seasonLockReads++;}
       return pool.exec(sql,params);
     },release(){releaseTurn?.();releaseTurn=null;}};
@@ -112,6 +113,13 @@ test('season schedule and access are account-scoped, standings begin empty, and 
   assert.equal(Object.hasOwn(season.fixtures[0],'matchId'),false);
   assert.equal(await service.getSeason('player_bravo',season.seasonId),null);
   assert.equal(db.seasons.size,1);assert.equal(db.fixtures.size,1);
+});
+
+test('season header and fixture projection use one repeatable-read snapshot',async()=>{
+  const {service,db}=await setup();const season=await service.createSeason(ACCOUNT);db.transactionCommands.length=0;
+  const result=await service.getSeason(ACCOUNT,season.seasonId);
+  assert.equal(result.playedCount,0);assert.equal(result.fixtures[0].status,'scheduled');
+  assert.deepEqual(db.transactionCommands,['begin isolation level repeatable read read only','commit']);
 });
 
 test('internal fixture binding getter is account-scoped, immutable, and preserves participant/team side order',async()=>{

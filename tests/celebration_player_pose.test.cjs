@@ -24,7 +24,7 @@ test('actual draw path varies celebration poses deterministically by player inde
 });
 
 test('gesture implementation does not add gameplay controls or mutate player/ball state',()=>{
- assert.doesNotMatch(arm,/p\.[A-Za-z_$][\w$]*\s*=/);
+ assert.doesNotMatch(arm,/p\.[A-Za-z_$][\w$]*\s*=(?!=)/,'arm rendering must not assign to player state');
  assert.doesNotMatch(arm,/game\.|ball|hitbox|physics/i);
  const html=fs.readFileSync('index.html','utf8');
  assert.deepEqual([...html.matchAll(/<button data-act="(pass|shoot|dribble|jump)"/g)].map(m=>m[1]).sort(),['dribble','jump','pass','shoot']);

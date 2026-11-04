@@ -15,7 +15,7 @@ test('ART-102 Spin Bumper widens both character arms through its existing .42-se
  assert.match(arm,/\[elbow\[0\]\+sign\*\(8\+bumperPhase\*7\),-30-bumperPhase\*18\]/);
  assert.match(player,/const spinBumperPhase=p\.action==='defenceSuper'&&p\.spinBumperPending[\s\S]*?\?clamp\(1-\(Number\(p\.spinBumperPending\.remaining\)\|\|0\)\/\.42,0,1\):undefined/);
  assert.match(player,/spinBumperPhase,hurt:isHurt/);
- assert.doesNotMatch(arm,/p\.[\w.]+\s*=|velocity|hitbox|physics/i,'brace remains visual-only');
+ assert.doesNotMatch(arm,/p\.[\w.]+\s*=(?!=)|velocity|hitbox|physics/i,'brace remains visual-only');
 });
 
 test('ART-102 Spin Bumper impact phase drives a mirrored visual recovery only',()=>{
@@ -25,12 +25,12 @@ test('ART-102 Spin Bumper impact phase drives a mirrored visual recovery only',(
  assert.match(arm,/const bumperImpactPhase=Number\.isFinite\(opt\.spinBumperImpactPhase\)\?clamp\(opt\.spinBumperImpactPhase,0,1\):null/);
  assert.match(arm,/1-bumperImpactPhase\*bumperImpactPhase\*\(3-2\*bumperImpactPhase\)/,'the arm guard eases back to neutral');
  assert.match(arm,/bumperImpactPhase!==null\s*\?sign>0\?\[sh\+sign\*\(16\+12\*bumperImpact\)/,'the near and far arms recover asymmetrically');
- assert.doesNotMatch(arm,/p\.[\w.]+\s*=|velocity|hitbox|physics/i,'character pose remains visual-only');
+ assert.doesNotMatch(arm,/p\.[\w.]+\s*=(?!=)|velocity|hitbox|physics/i,'character pose remains visual-only');
 });
 
 test('Spin Bumper telegraph shows timer-linked progress while reduced-flash freezes orbit',()=>{
  assert.match(telegraph,/const reduced=!!game\.options\?\.reducedFlash,remaining=Math\.max\(0,Math\.min\(1,p\.spinBumperPending\.remaining\/\.42\)\),progress=1-remaining/);
  assert.match(telegraph,/ctx\.arc\(0,3,124,-PI\/2,-PI\/2\+progress\*PI\*2\)/,'outer arc follows the existing warning timer');
  assert.match(telegraph,/const spin=reduced\?0:progress\*PI\*2/,'reduced-flash mode freezes the rotating orbit');
- assert.doesNotMatch(telegraph,/p\.[\w.]+\s*=|velocity|hitbox|physics/i,'telegraph remains render-only');
+ assert.doesNotMatch(telegraph,/p\.[\w.]+\s*=(?!=)|velocity|hitbox|physics/i,'telegraph remains render-only');
 });
