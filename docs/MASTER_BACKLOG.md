@@ -1,6 +1,6 @@
 # SuperMagicFootball — master plan and backlog
 
-**Canonical plan and status ledger.** Updated 4 November 2026 for candidate **0.12.81.36**, source SHA `943ee4a2b80af38dd9839eb79940951140451929`, promoted to `main` and deployed to GitHub Pages. The authenticated online API remains unconfigured and undeployed. Earlier candidate evidence remains linked; this ledger avoids claiming unsupported completion. Keep this file canonical and record future status/evidence here.
+**Canonical plan and status ledger.** Updated 5 November 2026 for local candidate **0.12.81.37**. Candidate .36 remains deployed to GitHub Pages; .37 contains presentation-only renderer changes, with exact-head CI and promotion pending. The authenticated online API remains unconfigured and undeployed. Earlier candidate evidence remains linked; this ledger avoids claiming unsupported completion. Keep this file canonical and record future status/evidence here.
 
 ## Owner priorities and invariants
 
@@ -11,7 +11,11 @@
 - SuperMagicAssetStudio is the source-art tool. The game consumes only approved exported assets/manifests; keep the procedural renderer as fallback. Structural checks do not imply owner visual approval.
 - Do not claim visual approval, physical-device acceptance, protected promotion, hosting or server readiness without evidence.
 
-## Current candidate 0.12.81.36
+## Current local candidate 0.12.81.37
+
+Running players' ground scuff cues now follow the articulated gait's alternating touchdown phases and fade between contacts, with intensity scaled by the current visual run-speed ratio. Online authoritative transformed shots now retain server-provided behavior, underground, phase, level and transform-duration visuals through the LAN snapshot adapter; this restores underground wakes and behavior-specific shot cues in online matches. Both changes are presentation-only: player movement, ball positions/physics, scores/results, input, and the four-action controls are unchanged. Build passed (5,140,242 JS / 5,263,254 HTML characters); focused renderer tests pass 10/10; release/version contracts plus focused tests pass 26/26; the full tracked Node suite passes 2,193/2,193; online account browser QA passes; actual-renderer gait browser QA covers 288 frames across eight headings, three speeds and twelve phases with unchanged player/ball state and no page errors. Exact-head CI, promotion and deployment for .37 are pending. No human visual or device acceptance is claimed. See [candidate .37 validation](CANDIDATE_012837_VALIDATION_20261105.md).
+
+## Previous local candidate 0.12.81.36
 
 Online match history now uses single-flight requests: repeat taps do not start duplicate fetches, overlapping pages do not duplicate match entries, and a pending response cannot repopulate the previous account's history after sign-out. The panel exposes a disabled/busy state during loading and retryable safe error feedback. Controller regressions cover duplicate request, duplicate row, absent next page, account reset during a pending response, and retry. The online UI code is deployed to GitHub Pages with empty provider configuration; the API itself remains undeployed. Exact-head `dev` regression [41917324857](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41917324857), documentation follow-up regressions [41919548679](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41919548679) and [41919669742](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41919669742), and Modular Game Dev QA [41919669758](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41919669758) passed. Source promotion and the current docs-head Pages deployment passed; main regression [41921015123](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41921015123) and Pages deploy [41921015750](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41921015750) passed. The public browser config remains empty and no authenticated backend is deployed. See [candidate .36 validation](CANDIDATE_012836_VALIDATION_20261104.md).
 

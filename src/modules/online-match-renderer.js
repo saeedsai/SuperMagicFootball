@@ -15,7 +15,8 @@ function onlineVisualPlayer(player){
 function mapOnlineServerSnapshot(snapshot){
  const ball=snapshot.ball,shot=ball.shot;
  return {tick:snapshot.tick,clockMs:Math.round(snapshot.clock*1000),scores:{home:snapshot.score[0],away:snapshot.score[1]},
-  ball:{x:ball.x*2-1,y:ball.y*2-1,z:ball.height,fx:shot?{id:shot.id,color:shot.color,trail:shot.trail,age:shot.age,
+  ball:{x:ball.x*2-1,y:ball.y*2-1,z:ball.height,fx:shot?{id:shot.id,behavior:shot.behavior,color:shot.color,trail:shot.trail,
+    underground:shot.underground,level:shot.level,phase:shot.phase,transformSeconds:shot.transformSeconds,age:shot.age,
     vx:ball.velocity.x*1600,vy:ball.velocity.y*1600}:null},
   players:snapshot.players.map(onlineVisualPlayer),
   hazards:snapshot.hazards.magic.map(h=>({kind:h.kind,team:h.team,x:h.x*2-1,y:h.y*2-1,life:h.life,arm:h.arm})),
@@ -34,6 +35,14 @@ export function applyOnlineMatchSnapshot(game,field,snapshot,localSide,{teamInde
  if(typeof playerForId!=='function')throw new TypeError('Online player resolver is required');
  const adapted=mapOnlineServerSnapshot(snapshot);
  applyLanGameState(game,field,adapted);
+ // The LAN pose adapter intentionally consumes only the basic shot fields. Online
+ // presentation also needs the server's visual cues (underground state and shot
+ // behavior) so transformed-ball wakes and burrow/phase/warp tells stay visible.
+ if(snapshot.ball.shot&&game.ball.shot){
+  const shot=snapshot.ball.shot;
+  Object.assign(game.ball.shot,{behavior:shot.behavior,underground:shot.underground,level:shot.level,
+   phase:shot.phase,transformSeconds:shot.transformSeconds});
+ }
  game.teamIds=teamIndices;game.options.ballModel=snapshot.ballModel;game.weather=snapshot.hazards.weather;
  for(const player of snapshot.players){
   const current=game.players.find(row=>row.t===player.team&&row.i===player.slot);

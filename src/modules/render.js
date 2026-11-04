@@ -16,6 +16,14 @@ const RENDER=(()=>{const {WORLD}=ENGINE;const {TEAMS,SHOTS,STADIUMS}=DATA;const 
 
 
 const F=WORLD.field;const PI=Math.PI;
+// Short visual contact puff centered on the alternating run-foot touchdown
+// phases. This consumes the same player phase as the articulated foot poses;
+// it is presentation-only and never feeds back into locomotion.
+function runFootContactPulse(phase){
+ const raw=Number(phase),cycle=((Number.isFinite(raw)?raw:0)%PI+PI)%PI;
+ const distance=Math.min(cycle,PI-cycle);
+ return clamp(1-distance/.48,0,1);
+}
 // Rendering is synchronous; reusable per-leg outputs avoid allocating in the
 // high-frequency match draw loop. Each result is consumed before its next use.
 const runFootPoseScratch=[{},{}];
@@ -1196,6 +1204,7 @@ class Renderer{
   const personality=profileFor(p.src);
   const signatureMotion=personality?sampleMotion(personality,{time:this.time,anim:p.anim,action:p.action,moving}):null;
   const runPhase=ARTPOSE.runPhase(p.anim,signatureMotion?.runRate,p.i);
+  const runSpeedRatio=clamp(Math.hypot(p.moveVX||0,p.moveVY||0)/315||Math.hypot(p.dx||0,p.dy||0),0,1);
   const oscillator=Math.sin(runPhase);
   // Only real-time match players are smoothed; gallery/studio renders remain deterministic.
   const shotLaunchPose=ARTPOSE.shotImpactLaunchPose(p.action,p.actionTimer,p.face);
@@ -1255,10 +1264,10 @@ class Renderer{
    }
    if(!p.preview&&(p.maceSweepImpactFx||0)>0){const impact=Math.max(0,Math.min(1,p.maceSweepImpactFx/.24));ctx.save();ctx.globalAlpha=.62*impact;ctx.strokeStyle='#ffbd52';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,3,52+(1-impact)*78,0,PI*2);ctx.stroke();ctx.restore();}
   // VIZ-06: subtle turf-contact animation, visual-only and bounded.
-  if(this.inMatchDraw&&moving&&!p.preview&&!p.keeper){
-   const step=Math.max(0,Math.sin((Number(p.anim)||0)*17+(Number(p.i)||0)*.35));
-   if(step>.55){
-    ctx.save();ctx.globalAlpha=(step-.55)*.55;
+  if(this.inMatchDraw&&moving&&!p.preview&&!p.keeper&&runSpeedRatio>.12){
+   const contact=runFootContactPulse(runPhase);
+   if(contact>.05){
+    ctx.save();ctx.globalAlpha=contact*.34*runSpeedRatio;
     ctx.fillStyle=game.terrain==='Dirt'?'#ebc892':'#c9fca3';
     const back=(p.dx||p.face||1)<0?1:-1;
     ctx.beginPath();ctx.ellipse(back*26,4,7,2.5,0,0,PI*2);ctx.fill();
@@ -1344,7 +1353,7 @@ class Renderer{
   }if(p.action==='ballLift')ctx.translate(0,-8);if(p.action==='superHead')ctx.translate(0,-18);if(p.action==='superBicycle')ctx.rotate(-p.face*.90);if(p.action==='bicycle')ctx.rotate(-p.face*.64);if(p.action==='flyingKick')ctx.rotate(-p.face*.28);if(p.action==='defensiveBicycle')ctx.rotate(-p.face*.76);
   if(kick)ctx.rotate(-.045);
   // v0.8.25.15: articulated five-projection character rendering.
- if(!CROWN_ROYALS.draw(ctx,p,view,{run,action:p.action,phase:(kick||sliding)?Math.max(.3,Math.min(1,(p.actionTimer||0)/.3)):0})&&!CONCEPT_MODULAR.draw(ctx,p,view,{run,headScale})&&!CONCEPT_HERO.draw(ctx,p,view,{run,headScale}))CHARACTER_ART.draw(ctx,p,av,team,view,{run,runPhase,runSpeedRatio:clamp(Math.hypot(p.moveVX||0,p.moveVY||0)/315||Math.hypot(p.dx||0,p.dy||0),0,1),footScaleX:characterScaleX,footScaleY:characterScaleY,locomotion,isHurt,isCrying,kick,sliding,skin,dark,hair,build,stature,headScale,lips,time:this.time,signatureMotion,shotLaunchPose,celebrate:p.action==='celebrate',celebrationStyle:(game.celebrationStyle+(Number.isInteger(p.i)?p.i:0))%25,defenceSweepPhase:maceSweepPhase,defenceSweepDirection:view.side<0?-1:1,spinBumperPhase,hurt:isHurt,cry:isCrying,spinBumperImpactPhase});
+ if(!CROWN_ROYALS.draw(ctx,p,view,{run,action:p.action,phase:(kick||sliding)?Math.max(.3,Math.min(1,(p.actionTimer||0)/.3)):0})&&!CONCEPT_MODULAR.draw(ctx,p,view,{run,headScale})&&!CONCEPT_HERO.draw(ctx,p,view,{run,headScale}))CHARACTER_ART.draw(ctx,p,av,team,view,{run,runPhase,runSpeedRatio,footScaleX:characterScaleX,footScaleY:characterScaleY,locomotion,isHurt,isCrying,kick,sliding,skin,dark,hair,build,stature,headScale,lips,time:this.time,signatureMotion,shotLaunchPose,celebrate:p.action==='celebrate',celebrationStyle:(game.celebrationStyle+(Number.isInteger(p.i)?p.i:0))%25,defenceSweepPhase:maceSweepPhase,defenceSweepDirection:view.side<0?-1:1,spinBumperPhase,hurt:isHurt,cry:isCrying,spinBumperImpactPhase});
  if(!p.preview&&(p.fireballBurnFx||0)>0){const alpha=clamp(p.fireballBurnFx/.48,0,1)*.72;ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle='#ff9b46';ctx.fillStyle='#ffd16a';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(0,-67,31,48,0,0,PI*2);ctx.stroke();for(const x of [-19,0,19]){ctx.beginPath();ctx.moveTo(x,-107);ctx.quadraticCurveTo(x-7,-121,x,-128);ctx.quadraticCurveTo(x+8,-119,x,-107);ctx.fill();}ctx.restore();}
  if(p.action==='hyperdash'){ctx.save();ctx.globalAlpha=.72;ctx.lineWidth=7;ctx.strokeStyle='#a0f0ff';for(let k=0;k<3;k++){ctx.beginPath();ctx.moveTo(-p.face*(38+k*22),-22-k*16);ctx.lineTo(-p.face*(72+k*21),-20-k*17);ctx.stroke()}ctx.restore()}
  if(p.action==='header'&&!p.preview){ctx.save();ctx.textAlign='center';ctx.fillStyle='#fff4a1';ctx.font='900 24px sans-serif';ctx.fillText('HEAD!',0,-139);ctx.restore()}

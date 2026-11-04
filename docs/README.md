@@ -4,6 +4,7 @@ Use [MASTER_BACKLOG.md](MASTER_BACKLOG.md) as the single current plan and status
 
 ## Read for current work
 
+- [Candidate 0.12.81.37 validation](CANDIDATE_012837_VALIDATION_20261105.md): foot-contact-timed ground scuffs and online transformed-shot visual cue preservation, with focused tests and production-renderer browser evidence.
 - [Candidate 0.12.81.36 validation](CANDIDATE_012836_VALIDATION_20261104.md): online match-history single-flight paging, duplicate-page filtering, sign-out response invalidation, and local validation.
 - [Candidate 0.12.81.35 validation](CANDIDATE_012835_VALIDATION_20261104.md): searchable local team/player token collection with owned-only filter; existing roster and team choices stay free, with economy and desktop/touch browser evidence.
 - [Candidate 0.12.81.34 validation](CANDIDATE_012834_VALIDATION_20261104.md): PVP reconnect/recovery, projected gameplay ball panels, online squad reload fix and local validation. Public hosting and OIDC configuration remain open.

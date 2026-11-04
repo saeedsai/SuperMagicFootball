@@ -23,8 +23,20 @@ test('online renderer maps authoritative snapshot through the production remote-
  assert.equal(target.players.find(p=>p.t===0&&p.i===2).x,250);assert.equal(target.players.find(p=>p.t===0&&p.i===2).y,450);
  assert.ok(Math.abs(target.players.find(p=>p.t===0&&p.i===3).shotImpactKnockdownTimer-1.2)<1e-9);
  assert.equal(target.ball.x,750);assert.equal(target.ball.y,150);assert.equal(target.ball.z,100);assert.equal(target.ball.owner,target.players.find(p=>p.t===1&&p.i===4));
- assert.equal(target.ball.shot.id,'silverCarp');assert.equal(target.magicHazards[0].kind,'banana');assert.equal(target.magicWalls[0].id,'magicWall');
+ assert.equal(target.ball.shot.id,'silverCarp');assert.equal(target.ball.shot.behavior,'underground');assert.equal(target.ball.shot.underground,true);
+ assert.equal(target.ball.shot.transformSeconds,2);assert.equal(target.ball.shot.phase,1);
+ assert.equal(target.magicHazards[0].kind,'banana');assert.equal(target.magicWalls[0].id,'magicWall');
  assert.equal(target.supernova.team,0);assert.equal(target.tornado.life,2);assert.equal(target.weatherLightning.phase,'warning');
+});
+
+test('online renderer retains behavior cues used by the production transformed-ball renderer',async()=>{
+ const {applyOnlineMatchSnapshot}=await import('../src/modules/online-match-renderer.js');
+ const target=game(),state=snapshot();state.ball.shot={...state.ball.shot,id:'warpOrb',behavior:'warp',underground:false};
+ assert.equal(applyOnlineMatchSnapshot(target,{x:0,y:0,w:1000,h:600},state,1,
+  {teamIndexForId:id=>({japan:0,brazil:9})[id]??-1,playerForId:id=>({id:id.split('/')[1],role:'MF'})}),true);
+ assert.equal(target.ball.shot.behavior,'warp');
+ assert.equal(target.ball.shot.underground,false);
+ assert.equal(target.ball.shot.transformSeconds,2);
 });
 
 test('online renderer rejects unknown teams and missing side before touching the game state',async()=>{

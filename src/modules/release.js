@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.36',
- date:'2026-11-04',
+ version:'0.12.81.37',
+ date:'2026-11-05',
  notes:Object.freeze([
+  'GAMEPLAY PLAYER / ONLINE SHOT VISUALS: Turf contact scuffs now pulse at the existing runner’s alternating foot touchdowns and scale with visual run speed. Online authoritative transformed shots retain their behavior cues, underground state, phase and transform timing, so wakes and special shot tells remain visible. These are renderer-only changes: movement, ball physics, results, controls and four-button inputs are unchanged. Focused contracts pass 10/10; the gait browser capture covers 288 frames with unchanged player/ball state and no page errors. Human visual and device approval remain open; online hosting still needs configured database/OIDC services.',
   'ONLINE MATCH HISTORY: Result history now uses single-flight paging, ignores duplicate pages, and invalidates in-flight responses at sign-out so another account cannot see stale results. Loading and failure states are announced accessibly; failed requests can be retried. Local controller regressions cover duplicate taps, pagination overlap, late responses after sign-out, and retry. Live hosting is still not configured.',
   'LOCAL TOKEN STORE: Earned tokens can now unlock existing team and player entries into a separate local collection, alongside the existing ability and appearance items. Search, paging and an owned-only filter cover the larger catalogs. Existing teams, players, rosters, Career saves and offline choices stay free and unchanged; purchases only update the additive token wallet. Desktop/touch Store QA and wallet/save compatibility tests pass.',
   'ONLINE PVP RECOVERY: Unexpected disconnects pause the server match for a bounded 15-second grace window. A new authenticated, one-use ticket reattaches only that account to the same side and authoritative snapshot; an expired session closes without settling a result. Intentional leave remains immediate. Restart/crash recovery and cross-instance matchmaking are still open.',

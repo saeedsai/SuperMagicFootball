@@ -76,3 +76,18 @@ test('signature pace and player phase stay synchronized between body and feet',(
   assert.notEqual(near.stance,far.stance);
  }
 });
+
+test('renderer turf contact puffs align to both alternating foot touchdown phases',()=>{
+ const render=fs.readFileSync('src/modules/render.js','utf8');
+ const helperSource=render.match(/function runFootContactPulse\(phase\)\{[\s\S]*?\n\}/)?.[0];
+ assert.ok(helperSource,'renderer exposes a focused touchdown pulse helper');
+ const helperContext=vm.createContext({Math,Number,PI:Math.PI,clamp:(value,min,max)=>Math.max(min,Math.min(max,value))});
+ vm.runInContext(`${helperSource}\nthis.runFootContactPulse=runFootContactPulse;`,helperContext);
+ const pulse=helperContext.runFootContactPulse;
+ for(const touchdown of [0,Math.PI,Math.PI*2])assert.equal(pulse(touchdown),1,'touchdown phase has full contact cue');
+ assert.ok(pulse(.24)>.45&&pulse(.24)<.55,'cue fades smoothly away from touchdown');
+ assert.equal(pulse(Math.PI/2),0,'mid-stride has no contact cue');
+ for(const phase of [-100,-Math.PI,0,.1,Math.PI/2,Math.PI,10*Math.PI])assert.ok(pulse(phase)>=0&&pulse(phase)<=1);
+ assert.match(render,/const contact=runFootContactPulse\(runPhase\)/,'contact cue shares the articulated run phase');
+ assert.doesNotMatch(render,/Math\.sin\(\(Number\(p\.anim\)\|\|0\)\*17/,'legacy free-running dust phase is removed');
+});
