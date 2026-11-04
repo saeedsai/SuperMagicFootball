@@ -15,4 +15,4 @@ The normal in-match ball is now drawn at the same 17-unit scale as the penalty b
 
 ## Remaining acceptance
 
-Exact-head GitHub Actions, hosted smoke, physical-device or owner acceptance, protected promotion, and deployment remain unverified. The repository's existing workflow must pass all required gates before it promotes this exact `dev` commit to `main` and verifies the hosted Pages bytes.
+The first exact-head GitHub Actions run exposed a workflow setup defect: preflight invoked LAN Node contracts before installing the manifest's `ws` dependency. The workflow now installs declared production dependencies before the Node contract suite, matching the existing browser-job setup. A fresh exact-head run is required; hosted smoke, physical-device or owner acceptance, protected promotion, and deployment remain unverified until it passes.

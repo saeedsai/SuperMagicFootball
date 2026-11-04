@@ -27,6 +27,8 @@ jobs:
         run: python3 scripts/build.py
       - name: Regression — three-way JSON agent merge safeguards
         run: python3 -m unittest discover -s tests -p 'test_parallel_data_merge.py' -v
+      - name: Install runtime dependencies for LAN Node contracts
+        run: npm install --no-package-lock --ignore-scripts --omit=dev
       - name: Execute active Node contract tests
         run: node --test tests/*.test.cjs
       - name: Execute current Club26/FC27 roster contracts
