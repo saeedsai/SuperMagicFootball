@@ -1,0 +1,23 @@
+{
+  "format": "FootballSpriteAssetBundle",
+  "version": 1,
+  "source": "bald_head_sheet_source.png",
+  "items": [
+    {
+      "file": "bald_head_sheet_source_transparent.png",
+      "view": "front",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "bodyPart",
+      "mirror": false,
+      "cropSource": {
+        "x": 0,
+        "y": 0,
+        "w": 1254,
+        "h": 1254
+      },
+      "width": 1254,
+      "height": 1254
+    }
+  ]
+}

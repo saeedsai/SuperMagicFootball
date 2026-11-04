@@ -1,0 +1,80 @@
+{
+  "commands": [
+    {
+      "frame": "stand_1",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\final_front.png",
+      "scale": 1,
+      "animation": "stand",
+      "op": "renderPNG",
+      "view": "front"
+    },
+    {
+      "frame": "stand_1",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\final_threeQuarterFrontLeft.png",
+      "scale": 1,
+      "animation": "stand",
+      "op": "renderPNG",
+      "view": "threeQuarterFrontLeft"
+    },
+    {
+      "frame": "stand_1",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\final_left.png",
+      "scale": 1,
+      "animation": "stand",
+      "op": "renderPNG",
+      "view": "left"
+    },
+    {
+      "frame": "stand_1",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\final_threeQuarterBackLeft.png",
+      "scale": 1,
+      "animation": "stand",
+      "op": "renderPNG",
+      "view": "threeQuarterBackLeft"
+    },
+    {
+      "frame": "stand_1",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\final_back.png",
+      "scale": 1,
+      "animation": "stand",
+      "op": "renderPNG",
+      "view": "back"
+    },
+    {
+      "frame": "stand_1",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\final_threeQuarterBackRight.png",
+      "scale": 1,
+      "animation": "stand",
+      "op": "renderPNG",
+      "view": "threeQuarterBackRight"
+    },
+    {
+      "frame": "stand_1",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\final_right.png",
+      "scale": 1,
+      "animation": "stand",
+      "op": "renderPNG",
+      "view": "right"
+    },
+    {
+      "frame": "stand_1",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\final_threeQuarterFrontRight.png",
+      "scale": 1,
+      "animation": "stand",
+      "op": "renderPNG",
+      "view": "threeQuarterFrontRight"
+    },
+    {
+      "animation": "stand",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\stand_turntable_360.gif",
+      "scale": 0.6,
+      "op": "renderTurntable"
+    },
+    {
+      "op": "review"
+    },
+    {
+      "op": "summary"
+    }
+  ]
+}

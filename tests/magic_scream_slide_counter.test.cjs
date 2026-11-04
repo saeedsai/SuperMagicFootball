@@ -2,9 +2,10 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const engine=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8');
-const start=engine.indexOf(' tryMagicTrick(p){'),end=engine.indexOf(' // Consume a Banana Peel',start);
+const start=engine.indexOf(' tryMagicTrick(p){'),end=engine.indexOf(' beginRideBall(carrier,passenger){',start);
 assert.ok(start>0&&end>start,'real engine method found');
-const cast=vm.runInNewContext('({'+engine.slice(start,end)+'})',{
+const methods=engine.slice(start,end).replace(/}\r?\n (?=[A-Za-z_$][\w$]*\([^)]*\)\{)/g,'},\n');
+const cast=vm.runInNewContext('({'+methods+'})',{
  distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),stat:(p,k)=>p.src?.[k]??50,
  clamp:(v,lo,hi)=>Math.max(lo,Math.min(hi,v)),
  norm:(x,y)=>{const m=Math.hypot(x,y)||1;return {x:x/m,y:y/m}},

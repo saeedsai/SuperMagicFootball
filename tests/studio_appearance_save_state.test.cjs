@@ -20,8 +20,8 @@ test('STUDIO-APPEARANCE-STATE-01: strict field equality prevents coercion',()=>{
 test('Studio save-state hint and accessible button respond to appearance inputs',()=>{
  assert.match(src,/id="studioAppearanceSaveState" role="status" aria-live="polite"/);
  assert.match(src,/const saveState=studioAppearanceSaveState\(p\.appearance,appearance\)/);
- assert.match(src,/saveButton\.disabled=saveState\.disabled/);
- assert.match(src,/saveButton\.setAttribute\('aria-disabled',String\(saveState\.disabled\)\)/);
- assert.match(src,/saveHint\.textContent=saveState\.message/);
+ assert.match(src,/saveButton\.disabled=saveState\.disabled\|\|lockedAppearance\.length>0/);
+ assert.match(src,/saveButton\.setAttribute\('aria-disabled',String\(saveButton\.disabled\)\)/);
+ assert.match(src,/saveHint\.textContent=lockedAppearance\.length\?`Unlock these selections in Store & Tokens before saving: \$\{lockedAppearance\.join\(', '\)\}\.`:saveState\.message/);
  assert.match(src,/e\.target\.id\?\.startsWith\('face_'\)/);
 });

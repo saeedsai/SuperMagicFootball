@@ -29,6 +29,19 @@ test('host adapter rejects malformed wire, replay and unjoined peer',async()=>{
  assert.equal(host.receive(encodeLanWirePacket(controls(0))).reason,'stale-sequence');
  assert.equal(host.receive(encodeLanWirePacket(controls(1,'guest02'))).reason,'not-joined');
 });
+test('simulated guest cannot poison host input ordering with a sequence jump',async()=>{
+ const {createLanHostAdapter}=await load('lan-host-adapter.js');
+ const {encodeLanWirePacket}=await load('lan-wire.js');
+ const host=createLanHostAdapter('room001','host001');
+ const simulatedGuestSend=packet=>host.receive(encodeLanWirePacket(packet));
+ assert.equal(simulatedGuestSend(packet('hello')).reason,'joined');
+ const forged=simulatedGuestSend(controls(Number.MAX_SAFE_INTEGER));
+ assert.equal(forged.accepted,false);assert.equal(forged.reason,'sequence-gap');
+ assert.equal(simulatedGuestSend(controls(0)).reason,'input-accepted');
+ assert.equal(host.tick().controls.buttons.shoot,true);
+ assert.equal(simulatedGuestSend(controls(2)).reason,'sequence-gap');
+ assert.equal(simulatedGuestSend(controls(1)).reason,'input-accepted');
+});
 test('host adapter clears held input on leave and stale socket cannot eject replacement',async()=>{
  const {createLanHostAdapter}=await load('lan-host-adapter.js');
  const {encodeLanWirePacket}=await load('lan-wire.js');

@@ -12,8 +12,8 @@ function run({careerMode=false,previous=complete,selected=complete,storageOk=tru
  const stats={writes:0,careerWrites:0,studioViews:0,careerViews:0};
  const context={
   studioCareerContext:careerMode,career:careerMode?{club:0,roster:missingPlayer?[]:[player]}:null,
-  home:0,avatarIndex:0,edits:{},TEAMS:[{id:'team'}],roster:()=>missingPlayer?[]:[player],
-  getAppearance:()=>({...selected}),
+  home:0,avatarIndex:0,edits:{},TEAMS:[{id:'team'}],roster:()=>missingPlayer?[]:[player],tokenWallet:{owns:()=>true},studioAppearanceUnlockIssues:()=>[],
+  getAppearance:()=>({...selected}),studioSavedAppearance:p=>p.appearance||{},studioAppearanceUnlockIssues:()=>[],
   storeCharacterChanges:()=>{stats.writes++;return storageOk;},
   saveCareer:()=>{stats.careerWrites++;},showPlayerStudio:()=>{stats.studioViews++;},
   showCareerSquad:()=>{stats.careerViews++;}

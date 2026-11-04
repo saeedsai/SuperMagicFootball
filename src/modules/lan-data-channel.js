@@ -28,6 +28,12 @@ function bindLanHostChannel(host, channel) {
     if (identity === null && packet.type !== 'hello') return;
     const result = host.receive(event.data);
     if (result.accepted && packet.type === 'hello') identity = packet.peerId;
+    // A guest that leaves has consumed this channel's admission. Do not let a
+    // replayed hello on the same transport silently bypass host approval.
+    if (result.accepted && packet.type === 'leave') {
+      identity = null;
+      dispose();
+    }
   }
   function dispose() {
     if (disposed) return;

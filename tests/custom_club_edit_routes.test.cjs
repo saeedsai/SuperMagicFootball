@@ -22,5 +22,5 @@ test('edit dispatch guards custom ID and preserves builder route on Back and sav
  assert.match(ui,/studioCareerContext\?'careerSquad':studioReturnAction/);
  assert.match(ui,/function showEditor\(back=editorReturnAction\)\{editorReturnAction=back;page\(/);
  assert.match(ui,/showEditor\(editorReturnAction\);toast\('ROSTER SAVED'\)/);
- assert.match(ui,/a==='playerStudio'\)\{studioCareerContext=false;studioReturnAction='navCustomization';showPlayerStudio\(\)/);
+ assert.match(ui,/a==='playerStudio'\)\{studioManagerContext=false;studioCareerContext=false;studioReturnAction='navCustomization';showPlayerStudio\(\)/);
 });

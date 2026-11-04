@@ -42,7 +42,11 @@ def main():
     ap.add_argument("--shard-count", type=int, default=1)
     ap.add_argument("--timeout-seconds", type=int, default=55)
     ap.add_argument("--out-dir", default="docs/qa_runs_full_regression")
+    ap.add_argument("--portable-browser", action="store_true",
+                    help="Use a cross-platform Chromium bootstrap and in-memory test readiness")
     args = ap.parse_args()
+    if args.portable_browser and args.category != "browser":
+        ap.error("--portable-browser is only valid with --category browser")
     if args.shard_count < 1:
         ap.error("--shard-count must be positive")
     if not 0 <= args.shard_index < args.shard_count:
@@ -62,21 +66,21 @@ def main():
                if i % args.shard_count == args.shard_index]
     if not scripts:
         ap.error(f"shard {args.shard_index} has no scripts; refusing a false-green census")
-    # Archive browser suites still pin the legacy public version string.
-    # Make *only their readiness expectations* reflect the real current game.
-    # This modifies disposable CI checkout test files, never runtime code.
+    browser_version = None
     if args.category == "browser":
-        release = json.loads((ROOT / "package.json").read_text())["version"]
-        current_runtime = release
-        updated = []
-        for suite in scripts:
-            source = suite.read_text()
-            if "0.8.24.12-alpha" in source:
-                # The historical app identifier still has a compatibility alias.
-                # Changing the expected version allows genuine UI assertions to run.
-                suite.write_text(source.replace("0.8.24.12-alpha", current_runtime))
-                updated.append(suite.name)
-        print("LEGACY_TEST_READINESS_MIGRATED", len(updated), ", ".join(updated), flush=True)
+        browser_version = json.loads((ROOT / "package.json").read_text())["version"]
+        legacy = [suite.name for suite in scripts
+                  if "0.8.24.12-alpha" in suite.read_text(encoding="utf-8")]
+        if args.portable_browser:
+            # Local browser runs do not rewrite tracked test sources.
+            print("LEGACY_TEST_READINESS_MIGRATED in-memory", len(legacy), ", ".join(legacy), flush=True)
+        else:
+            # Preserve current Linux CI behavior for its disposable checkout.
+            for suite in scripts:
+                source = suite.read_text()
+                if "0.8.24.12-alpha" in source:
+                    suite.write_text(source.replace("0.8.24.12-alpha", browser_version))
+            print("LEGACY_TEST_READINESS_MIGRATED", len(legacy), ", ".join(legacy), flush=True)
     out_dir = ROOT / args.out_dir
     out_dir.mkdir(parents=True,exist_ok=True)
     (ROOT / 'docs' / 'qa_runs_v082530').mkdir(parents=True,exist_ok=True)
@@ -101,7 +105,7 @@ def main():
             "ERROR": sum(r["status"] == "ERROR" for r in results),
             "NOT_RUN": len(scripts)-len(results),
         }
-        result_path.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")
+        result_path.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         rows = [
             f"# Full regression — {args.category}, shard {args.shard_index + 1}/{args.shard_count}",
             f"Commit: {result['commit']}", "",
@@ -114,18 +118,22 @@ def main():
             rows.append(f"| {test['name']} | {test['status']} | {test['seconds']:.2f} | {tail} |")
         rows.append("")
         rows.append("Summary: " + json.dumps(result["summary"]))
-        summary_path.write_text("\n".join(rows) + "\n")
+        summary_path.write_text("\n".join(rows) + "\n", encoding="utf-8")
     save()
     for file in scripts:
-        command = ([sys.executable, str(file)] if args.category == "browser"
+        command = ([sys.executable, str(TESTS / "browser_runner_compat.py"), str(file)]
+                   if args.category == "browser" and args.portable_browser
+                   else [sys.executable, str(file)] if args.category == "browser"
                    else ["node", "--test", str(file)] if file.name.endswith(".test.cjs")
                    else ["node", str(file)])
         begin = time.monotonic()
         try:
             p = subprocess.run(
                 command, cwd=ROOT, capture_output=True, text=True,
+                encoding="utf-8", errors="replace",
                 timeout=args.timeout_seconds,
-                env={**os.environ,"PYTHONUNBUFFERED":"1"},
+                env={**os.environ,"PYTHONUNBUFFERED":"1","PYTHONUTF8":"1",
+                     **({"SMF_BROWSER_GAME_VERSION":browser_version} if args.portable_browser else {})},
             )
             status = "PASS" if p.returncode == 0 else "FAIL"
             code = p.returncode

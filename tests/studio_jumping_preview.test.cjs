@@ -6,7 +6,7 @@ const path=require('node:path');
 const vm=require('node:vm');
 const {pathToFileURL}=require('node:url');
 const root=path.join(__dirname,'..');
-const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8').replace(/\r\n/g,'\n');
 const engine=read('src/modules/engine.js'),ui=read('src/modules/ui.js');
 const jumpSource=engine.match(/ jump\(p\)\{([\s\S]*?)\n \}\n\n \/\/ Resolve impact/);
 assert.ok(jumpSource,'actual engine jump method remains extractable');

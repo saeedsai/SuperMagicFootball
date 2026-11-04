@@ -7,10 +7,11 @@ const src=fs.readFileSync(require('node:path').join(__dirname,'../src/modules/ui
 test('STUDIO-TRICK-PROGRESS-02 distinguishes missing legacy rating from zero',()=>{
  const fn=src.match(/function studioMagicUnlockProgress\(player\)\{[\s\S]*?\n\}/);
  assert.ok(fn);
- const guide=vm.runInNewContext(fn[0]+';studioMagicUnlockProgress',{playerOVR:p=>p.ovr});
- assert.match(guide({role:'MF',rating:null,ovr:88}),/Rating unknown/);
- assert.match(guide({role:'MF',rating:'',ovr:88}),/Rating unknown/);
- assert.match(guide({role:'MF',rating:91,ovr:80}),/unlocked/);
- assert.match(guide({role:'MF',rating:80,ovr:91}),/unlocked/);
+ const guide=vm.runInNewContext(fn[0]+';studioMagicUnlockProgress',{playerOVR:p=>p.ovr,verifiedRatingTierForPlayer:p=>p?.verifiedTier??null});
+ assert.match(guide({role:'MF',rating:null,ovr:88}),/No verified canonical Gold tier/);
+ assert.match(guide({role:'MF',rating:'',ovr:88}),/No verified canonical Gold tier/);
+ assert.match(guide({role:'MF',rating:99,ovr:99}),/No verified canonical Gold tier/);
+ assert.match(guide({role:'MF',rating:99,ovr:99,verifiedTier:'Gold'}),/Gold.*available/);
+ assert.match(guide({role:'GK',rating:99,ovr:99}),/unavailable/);
  assert.match(guide({role:'GK',rating:99,ovr:99}),/unavailable/);
 });

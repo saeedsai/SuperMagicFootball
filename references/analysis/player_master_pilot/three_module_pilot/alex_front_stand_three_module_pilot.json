@@ -1,0 +1,215 @@
+{
+  "format": "FootballSpriteStudio",
+  "schemaVersion": 4,
+  "projectName": "Alex Front Stand Three Module Partition Pilot",
+  "mode": "bodyHead",
+  "assetStorage": "external",
+  "partDefinitions": null,
+  "canvas": {
+    "width": 1024,
+    "height": 1024
+  },
+  "viewOrder": [
+    "front",
+    "threeQuarterFrontLeft",
+    "left",
+    "threeQuarterBackLeft",
+    "back",
+    "threeQuarterBackRight",
+    "right",
+    "threeQuarterFrontRight"
+  ],
+  "animations": [
+    {
+      "id": "stand",
+      "name": "Stand",
+      "fps": 6,
+      "frames": [
+        {
+          "id": "stand_1",
+          "name": "Stand 1"
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "name": "Run",
+      "fps": 8,
+      "frames": [
+        {
+          "id": "run_1",
+          "name": "Run 1"
+        },
+        {
+          "id": "run_2",
+          "name": "Run 2"
+        }
+      ]
+    }
+  ],
+  "assets": {
+    "split_u0gk7rszm": {
+      "name": "alex_front_stand_source_01_body_without_head.png",
+      "fileRef": "assets/split_u0gk7rszm.png",
+      "mime": "image/png",
+      "width": 1024,
+      "height": 1024
+    },
+    "split_oew74q40k": {
+      "name": "alex_front_stand_source_02_bald_head.png",
+      "fileRef": "assets/split_oew74q40k.png",
+      "mime": "image/png",
+      "width": 1024,
+      "height": 1024
+    },
+    "split_0hl0zzmm8": {
+      "name": "alex_front_stand_source_03_hair.png",
+      "fileRef": "assets/split_0hl0zzmm8.png",
+      "mime": "image/png",
+      "width": 1024,
+      "height": 1024
+    }
+  },
+  "scenes": {
+    "front": {
+      "stand": {
+        "stand_1": [
+          {
+            "id": "layer_2d7935f1-e30",
+            "name": "alex_front_stand_source_01_body_without_head.png",
+            "category": "body",
+            "assetId": "split_u0gk7rszm",
+            "visible": true,
+            "locked": false,
+            "crop": {
+              "x": 0,
+              "y": 0,
+              "w": 1024,
+              "h": 1024
+            },
+            "transform": {
+              "x": 512,
+              "y": 512,
+              "scaleX": 1,
+              "scaleY": 1,
+              "rotationDeg": 0,
+              "opacity": 1,
+              "flipX": false,
+              "flipY": false,
+              "anchorX": 0.5,
+              "anchorY": 0.5
+            },
+            "color": {
+              "brightness": 100,
+              "contrast": 100,
+              "saturate": 100,
+              "hue": 0,
+              "sepia": 0,
+              "red": 100,
+              "green": 100,
+              "blue": 100,
+              "tintHex": "#ffffff",
+              "tintAmount": 0
+            }
+          },
+          {
+            "id": "layer_319f0a43-3a2",
+            "name": "alex_front_stand_source_02_bald_head.png",
+            "category": "head",
+            "assetId": "split_oew74q40k",
+            "visible": true,
+            "locked": false,
+            "crop": {
+              "x": 0,
+              "y": 0,
+              "w": 1024,
+              "h": 1024
+            },
+            "transform": {
+              "x": 512,
+              "y": 512,
+              "scaleX": 1,
+              "scaleY": 1,
+              "rotationDeg": 0,
+              "opacity": 1,
+              "flipX": false,
+              "flipY": false,
+              "anchorX": 0.5,
+              "anchorY": 0.5
+            },
+            "color": {
+              "brightness": 100,
+              "contrast": 100,
+              "saturate": 100,
+              "hue": 0,
+              "sepia": 0,
+              "red": 100,
+              "green": 100,
+              "blue": 100,
+              "tintHex": "#ffffff",
+              "tintAmount": 0
+            }
+          },
+          {
+            "id": "layer_17383d45-725",
+            "name": "alex_front_stand_source_03_hair.png",
+            "category": "hairFront",
+            "assetId": "split_0hl0zzmm8",
+            "visible": true,
+            "locked": false,
+            "crop": {
+              "x": 0,
+              "y": 0,
+              "w": 1024,
+              "h": 1024
+            },
+            "transform": {
+              "x": 512,
+              "y": 512,
+              "scaleX": 1,
+              "scaleY": 1,
+              "rotationDeg": 0,
+              "opacity": 1,
+              "flipX": false,
+              "flipY": false,
+              "anchorX": 0.5,
+              "anchorY": 0.5
+            },
+            "color": {
+              "brightness": 100,
+              "contrast": 100,
+              "saturate": 100,
+              "hue": 0,
+              "sepia": 0,
+              "red": 100,
+              "green": 100,
+              "blue": 100,
+              "tintHex": "#ffffff",
+              "tintAmount": 0
+            }
+          }
+        ]
+      }
+    },
+    "threeQuarterFrontLeft": {},
+    "left": {},
+    "threeQuarterBackLeft": {},
+    "back": {},
+    "threeQuarterBackRight": {},
+    "right": {},
+    "threeQuarterFrontRight": {}
+  },
+  "defaults": {},
+  "editor": {
+    "grid": false,
+    "rulers": false,
+    "gridSize": 32,
+    "snap": false,
+    "reference": null,
+    "cliCursor": {
+      "view": "front",
+      "animation": "stand",
+      "frame": "stand_1"
+    }
+  }
+}

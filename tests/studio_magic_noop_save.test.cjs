@@ -19,6 +19,7 @@ function run({choice,magicTrick,careerMode=false}){
   roster:()=>[player],$:(id)=>id==='studioMagic'?{value:choice}:null,
   STUDIO_MAGIC_TRICKS:[{id:'banana'},{id:'ice'}],
   studioMagicEligible:()=>true,
+  tokenWallet:{owns:(category,id)=>category==='magicTrick'&&id==='ice'},
   storeCharacterChanges:()=>{stats.writes++;return true;},
   saveCareer:()=>{stats.careerWrites++;},
   showPlayerStudio:()=>{stats.refreshes++;},
@@ -36,6 +37,13 @@ test('STUDIO-MAGIC-NOOP-01: removing absent Trick does not rewrite club or Caree
   assert.equal(stats.refreshes,1);
   assert.equal(context.career?.roster?.[0]??player,player);
  }
+});
+test('STUDIO-MAGIC-OWNERSHIP-01: an unowned Trick cannot be equipped through a forged selector value',()=>{
+ const source=fs.readFileSync(require('node:path').join(__dirname,'../src/modules/ui.js'),'utf8');
+ const from=source.indexOf('function saveStudioMagic(){'),to=source.indexOf('function saveStudioTrick(){',from),forged=source.slice(from,to);
+ const stats={writes:0},context={studioCareerContext:false,career:null,home:0,avatarIndex:0,edits:{},TEAMS:[{id:'team'}],roster:()=>[{role:'MF',rating:92}],$:(id)=>id==='studioMagic'?{value:'banana'}:null,STUDIO_MAGIC_TRICKS:[{id:'banana'}],studioMagicEligible:()=>true,tokenWallet:{owns:()=>false},storeCharacterChanges:()=>{stats.writes++;return true},showPlayerStudio(){},alert:message=>{throw Error(message)}};
+ const save=vm.runInNewContext(forged+';saveStudioMagic',context);
+ assert.throws(save,/Unlock this Trick in Store & Tokens/);assert.equal(stats.writes,0);
 });
 test('STUDIO-MAGIC-NOOP-01: reselecting equipped Trick is read-only in either save context',()=>{
  for(const careerMode of [false,true]){

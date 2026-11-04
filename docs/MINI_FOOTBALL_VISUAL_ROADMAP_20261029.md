@@ -1,5 +1,7 @@
 # Mini Football-inspired visual and UX transformation — owner direction, 29 October 2026
 
+> Scope reference only. Current VIZ-01–06 implementation status and priorities are maintained in [`MASTER_BACKLOG.md`](MASTER_BACKLOG.md); do not use this dated document as the live status ledger.
+
 Reference: https://play.google.com/store/apps/details?id=com.miniclip.minifootball
 
 ## Goal and boundaries

@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "source": "src/modules/concepthero.js + assets/concept_hero/hero_atlas.webp",
+  "players": 12,
+  "directions": 5,
+  "idle_samples": 60,
+  "running_samples": 300,
+  "action_animations_verified": [
+    "experimental running stride"
+  ],
+  "not_yet_verified": [
+    "jump",
+    "tackle",
+    "shoot",
+    "super actions"
+  ],
+  "pngs": {
+    "concept_royals_12_players_5_views_idle.png": "20689f46eebf98e0d004b44d0dfb8081f7c5f74b4cc1a869f8909322b1102aa3",
+    "concept_royals_12_players_5_views_running_timeline.png": "3379d55465aa3b942640355ff67a259173261a3d44a7bbb9ae97aea31f6a2357"
+  },
+  "browser_errors": []
+}

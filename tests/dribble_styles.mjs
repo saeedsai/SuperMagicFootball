@@ -10,12 +10,20 @@ assert.equal(DRIBBLE_STYLES.length,10);
 assert.equal(new Set(DRIBBLE_STYLES.map(s=>s.id)).size,10);
 assert.equal(NUMERIC_STATS.includes('dribbling'),true);
 assert.equal(TEAMS.length,216);
-const used=new Set();
+const projected=new Set();
 for(let i=0;i<TEAMS.length;i++){
  const team=TEAMS[i].customRoster||rosterFor(i);assert.equal(team.length,12);
- for(let p of team){let rated=withStats(p);assert.ok(DRIBBLE_STYLES.some(s=>s.id===rated.dribbleType));assert.ok(rated.dribbling>=1&&rated.dribbling<=100);used.add(rated.dribbleType);}
+ for(let p of team){let rated=withStats(p);assert.ok(DRIBBLE_STYLES.some(s=>s.id===rated.dribbleType));assert.ok(rated.dribbling>=1&&rated.dribbling<=100);projected.add(rated.dribbleType);}
 }
-assert.equal(used.size,10,'All 10 types appear in shipped squads');
+assert.ok(projected.size>=1,'every shipped player resolves to a safe existing style');
+const verifiedStyles=new Set();
+for(let i=0;i<1000;i++){
+ const ovr=80,player={id:`verified-style-${i}`,name:`Verified Style ${i}`,role:'MF',statsVerified:true,
+  stamina:ovr,strength:ovr,aggression:ovr,defence:ovr,speedRating:ovr,agility:ovr,dribbling:ovr,
+  shootPower:ovr,shootAccuracy:ovr,heading:ovr,passing:ovr,crossing:ovr,gkDiving:ovr,gkSkill:ovr};
+ verifiedStyles.add(withStats(player).dribbleType);
+}
+assert.equal(verifiedStyles.size,10,'verified Gold-tier players can project every distinct style');
 assert.equal(assignedDribbleType({id:'a',name:'Lionel Messi'}),assignedDribbleType({id:'other-club',name:'Lionel Messi'}));
 assert.equal(assignedDribbleType({name:'Test',dribbleType:'nutmeg'}),'nutmeg');
 assert.notEqual(assignedDribbleType({name:'Test',dribbleType:'invalid'}),'invalid');
@@ -52,4 +60,4 @@ try{
  Math.random=()=>0;cpu.driveAI(bot,.03);
  assert.ok(cpu.events.some(e=>e.type==='dribbleTrick'&&e.ai===true),'AI executes its unique dribble');
 }finally{Math.random=origRand;}
-console.log('v0.8.7 DRIBBLE STYLES PASS — 216 teams, 2592 players, 10 profiles, stamina/cooldowns, defensive counters, AI, identity stability');
+console.log('DRIBBLE STYLES PASS — 216 teams, verified Gold-tier projections, 10 profiles, stamina/cooldowns, defensive counters, AI, identity stability');

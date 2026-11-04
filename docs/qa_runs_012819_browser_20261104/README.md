@@ -1,0 +1,7 @@
+# Candidate 0.12.81.19 browser regression run — 4 November 2026
+
+The portable-Chromium runner discovered and selected **229/229** browser scripts across four disjoint shards. The first parallel pass completed every script, with **223 passes, five per-script timeouts and one transient simulated-touch file-import failure**. The five timeouts were `graphics_integration_v082522.py`, `ux101_later_nav_contrast_browser_qa.py`, `save_origin_restart_browser_qa.py`, `v08193_ui_browser_qa.py`, and `ux27_render_quality_browser_qa.py`; the file-import failure was `ux27_partial_save_preserves_career_cup_browser_qa.py`.
+
+All six were rerun individually and passed. The two UTF-8-sensitive scripts, `graphics_integration_v082522.py` and `v08193_ui_browser_qa.py`, passed with `python -X utf8 tests/browser_runner_compat.py ...`; the other four passed with the portable browser runner. These retries cover the complete discovered script set, but the four-shard census is **not a clean all-pass artifact** because its first-pass shard results include timeout/failure statuses. The latest audited clean four-shard census remains candidate `.81.17` (228/228).
+
+The candidate-specific ball surface, player-motion transition, and formation Energy browser checks all passed again after the final `.81.19` build. Exact-head CI, physical-device/screen-reader review, hosted validation and owner visual approval remain separate.

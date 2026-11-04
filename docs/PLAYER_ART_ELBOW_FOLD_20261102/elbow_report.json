@@ -1,0 +1,36 @@
+{
+  "before": {
+    "players": 4,
+    "blank": 0,
+    "clipped": 0,
+    "checksums": [
+      263429419,
+      3631635670,
+      3299794041,
+      1930950158
+    ],
+    "uniqueChecksums": 4,
+    "pageErrors": []
+  },
+  "after": {
+    "players": 4,
+    "blank": 0,
+    "clipped": 0,
+    "checksums": [
+      411147673,
+      3508963102,
+      1006425657,
+      35779872
+    ],
+    "uniqueChecksums": 4,
+    "pageErrors": [],
+    "beforeChecksums": [
+      263429419,
+      3631635670,
+      3299794041,
+      1930950158
+    ],
+    "changedSkinVariants": 4,
+    "ok": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "commands": [
+    {
+      "animation": "stand",
+      "op": "renderTurntable",
+      "scale": 0.6,
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\attached_review\\stand_turntable_360_adjusted.gif"
+    },
+    {
+      "op": "review"
+    },
+    {
+      "op": "summary"
+    }
+  ]
+}

@@ -1,0 +1,7029 @@
+{
+  "date": "2026-11-03",
+  "candidate": "0.12.81.0 local source tree",
+  "scope": "Randomized GameEngine directional crossover using separate deterministic RNG domains; descriptive simulation only, not human balance approval.",
+  "scenarioCount": 192,
+  "matrix": {
+    "shotIds": [
+      "silverCarp",
+      "dice",
+      "bird"
+    ],
+    "difficulties": [
+      2,
+      4
+    ],
+    "frameRates": [
+      60
+    ],
+    "attackTeams": [
+      0,
+      1
+    ],
+    "arms": [
+      "baseline",
+      "arcadeSuper"
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "halfSeconds": 60,
+    "regulationSeconds": 120
+  },
+  "persistentWrites": 0,
+  "allRegulationMatchesCompleted": true,
+  "seedPolicy": "Eight independent deterministic replicates per direction; opposite directions intentionally use separate RNG seed domains. Do not compare same-seed score equality.",
+  "directionGroups": [
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "baseline",
+      "attackTeam": 0,
+      "samples": 8,
+      "meanAttackGoals": 0.125,
+      "meanDefenseGoals": 0.625,
+      "meanAttackGoalDifference": -0.5,
+      "meanKeeperSaves": 3.375,
+      "meanPlayerContacts": 0.25,
+      "attackGoalDifferenceBootstrap95": [
+        -1,
+        -0.125
+      ]
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "baseline",
+      "attackTeam": 1,
+      "samples": 8,
+      "meanAttackGoals": 0.625,
+      "meanDefenseGoals": 0.5,
+      "meanAttackGoalDifference": 0.125,
+      "meanKeeperSaves": 2.875,
+      "meanPlayerContacts": 1.125,
+      "attackGoalDifferenceBootstrap95": [
+        -0.375,
+        0.625
+      ]
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "attackTeam": 0,
+      "samples": 8,
+      "meanAttackGoals": 0.25,
+      "meanDefenseGoals": 0.625,
+      "meanAttackGoalDifference": -0.375,
+      "meanKeeperSaves": 2.75,
+      "meanPlayerContacts": 0.5,
+      "attackGoalDifferenceBootstrap95": [
+        -1,
+        0.375
+      ]
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "attackTeam": 1,
+      "samples": 8,
+      "meanAttackGoals": 0,
+      "meanDefenseGoals": 0.25,
+      "meanAttackGoalDifference": -0.25,
+      "meanKeeperSaves": 2.5,
+      "meanPlayerContacts": 0.5,
+      "attackGoalDifferenceBootstrap95": [
+        -0.625,
+        0
+      ]
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "baseline",
+      "attackTeam": 0,
+      "samples": 8,
+      "meanAttackGoals": 1.125,
+      "meanDefenseGoals": 1.75,
+      "meanAttackGoalDifference": -0.625,
+      "meanKeeperSaves": 4.125,
+      "meanPlayerContacts": 2,
+      "attackGoalDifferenceBootstrap95": [
+        -1.75,
+        0.375
+      ]
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "baseline",
+      "attackTeam": 1,
+      "samples": 8,
+      "meanAttackGoals": 1.625,
+      "meanDefenseGoals": 0.25,
+      "meanAttackGoalDifference": 1.375,
+      "meanKeeperSaves": 4,
+      "meanPlayerContacts": 1,
+      "attackGoalDifferenceBootstrap95": [
+        0.5,
+        2.125
+      ]
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "attackTeam": 0,
+      "samples": 8,
+      "meanAttackGoals": 1.625,
+      "meanDefenseGoals": 0.875,
+      "meanAttackGoalDifference": 0.75,
+      "meanKeeperSaves": 4.25,
+      "meanPlayerContacts": 2.875,
+      "attackGoalDifferenceBootstrap95": [
+        -0.25,
+        1.875
+      ]
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "attackTeam": 1,
+      "samples": 8,
+      "meanAttackGoals": 1.5,
+      "meanDefenseGoals": 0.5,
+      "meanAttackGoalDifference": 1,
+      "meanKeeperSaves": 2.625,
+      "meanPlayerContacts": 1.5,
+      "attackGoalDifferenceBootstrap95": [
+        -0.25,
+        2.25
+      ]
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "baseline",
+      "attackTeam": 0,
+      "samples": 8,
+      "meanAttackGoals": 0.25,
+      "meanDefenseGoals": 0.125,
+      "meanAttackGoalDifference": 0.125,
+      "meanKeeperSaves": 3.75,
+      "meanPlayerContacts": 0.75,
+      "attackGoalDifferenceBootstrap95": [
+        -0.375,
+        0.75
+      ]
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "baseline",
+      "attackTeam": 1,
+      "samples": 8,
+      "meanAttackGoals": 0.625,
+      "meanDefenseGoals": 0.25,
+      "meanAttackGoalDifference": 0.375,
+      "meanKeeperSaves": 3.25,
+      "meanPlayerContacts": 1.125,
+      "attackGoalDifferenceBootstrap95": [
+        -0.5,
+        1.125
+      ]
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "attackTeam": 0,
+      "samples": 8,
+      "meanAttackGoals": 0.5,
+      "meanDefenseGoals": 0.5,
+      "meanAttackGoalDifference": 0,
+      "meanKeeperSaves": 2.75,
+      "meanPlayerContacts": 1.125,
+      "attackGoalDifferenceBootstrap95": [
+        -0.625,
+        0.625
+      ]
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "attackTeam": 1,
+      "samples": 8,
+      "meanAttackGoals": 1.375,
+      "meanDefenseGoals": 0.125,
+      "meanAttackGoalDifference": 1.25,
+      "meanKeeperSaves": 2.75,
+      "meanPlayerContacts": 0.875,
+      "attackGoalDifferenceBootstrap95": [
+        0.75,
+        1.75
+      ]
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "baseline",
+      "attackTeam": 0,
+      "samples": 8,
+      "meanAttackGoals": 1.5,
+      "meanDefenseGoals": 1.125,
+      "meanAttackGoalDifference": 0.375,
+      "meanKeeperSaves": 2.875,
+      "meanPlayerContacts": 1.625,
+      "attackGoalDifferenceBootstrap95": [
+        -1,
+        1.75
+      ]
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "baseline",
+      "attackTeam": 1,
+      "samples": 8,
+      "meanAttackGoals": 1,
+      "meanDefenseGoals": 1.5,
+      "meanAttackGoalDifference": -0.5,
+      "meanKeeperSaves": 3.5,
+      "meanPlayerContacts": 1.125,
+      "attackGoalDifferenceBootstrap95": [
+        -1.75,
+        0.75
+      ]
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "attackTeam": 0,
+      "samples": 8,
+      "meanAttackGoals": 1.375,
+      "meanDefenseGoals": 1.25,
+      "meanAttackGoalDifference": 0.125,
+      "meanKeeperSaves": 2.75,
+      "meanPlayerContacts": 2,
+      "attackGoalDifferenceBootstrap95": [
+        -0.5,
+        0.875
+      ]
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "attackTeam": 1,
+      "samples": 8,
+      "meanAttackGoals": 1.75,
+      "meanDefenseGoals": 1.5,
+      "meanAttackGoalDifference": 0.25,
+      "meanKeeperSaves": 1.625,
+      "meanPlayerContacts": 0.625,
+      "attackGoalDifferenceBootstrap95": [
+        -1.75,
+        2.375
+      ]
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "baseline",
+      "attackTeam": 0,
+      "samples": 8,
+      "meanAttackGoals": 0.875,
+      "meanDefenseGoals": 0.75,
+      "meanAttackGoalDifference": 0.125,
+      "meanKeeperSaves": 2.625,
+      "meanPlayerContacts": 1.625,
+      "attackGoalDifferenceBootstrap95": [
+        -1.25,
+        2
+      ]
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "baseline",
+      "attackTeam": 1,
+      "samples": 8,
+      "meanAttackGoals": 0.75,
+      "meanDefenseGoals": 0.375,
+      "meanAttackGoalDifference": 0.375,
+      "meanKeeperSaves": 2.375,
+      "meanPlayerContacts": 0.375,
+      "attackGoalDifferenceBootstrap95": [
+        -0.25,
+        1
+      ]
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "attackTeam": 0,
+      "samples": 8,
+      "meanAttackGoals": 0.375,
+      "meanDefenseGoals": 0.625,
+      "meanAttackGoalDifference": -0.25,
+      "meanKeeperSaves": 3,
+      "meanPlayerContacts": 1.125,
+      "attackGoalDifferenceBootstrap95": [
+        -1.125,
+        0.625
+      ]
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "attackTeam": 1,
+      "samples": 8,
+      "meanAttackGoals": 0.75,
+      "meanDefenseGoals": 0.375,
+      "meanAttackGoalDifference": 0.375,
+      "meanKeeperSaves": 1.5,
+      "meanPlayerContacts": 0.875,
+      "attackGoalDifferenceBootstrap95": [
+        -0.375,
+        1
+      ]
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "baseline",
+      "attackTeam": 0,
+      "samples": 8,
+      "meanAttackGoals": 1,
+      "meanDefenseGoals": 0.5,
+      "meanAttackGoalDifference": 0.5,
+      "meanKeeperSaves": 2.5,
+      "meanPlayerContacts": 0.375,
+      "attackGoalDifferenceBootstrap95": [
+        -0.5,
+        1.5
+      ]
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "baseline",
+      "attackTeam": 1,
+      "samples": 8,
+      "meanAttackGoals": 1.625,
+      "meanDefenseGoals": 1,
+      "meanAttackGoalDifference": 0.625,
+      "meanKeeperSaves": 2.625,
+      "meanPlayerContacts": 1.25,
+      "attackGoalDifferenceBootstrap95": [
+        -1,
+        2.25
+      ]
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "attackTeam": 0,
+      "samples": 8,
+      "meanAttackGoals": 0.75,
+      "meanDefenseGoals": 1.125,
+      "meanAttackGoalDifference": -0.375,
+      "meanKeeperSaves": 2.625,
+      "meanPlayerContacts": 1,
+      "attackGoalDifferenceBootstrap95": [
+        -1.5,
+        0.5
+      ]
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "attackTeam": 1,
+      "samples": 8,
+      "meanAttackGoals": 0.875,
+      "meanDefenseGoals": 1.625,
+      "meanAttackGoalDifference": -0.75,
+      "meanKeeperSaves": 3.125,
+      "meanPlayerContacts": 1.5,
+      "attackGoalDifferenceBootstrap95": [
+        -2,
+        0.625
+      ]
+    }
+  ],
+  "directionContrasts": [
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "baseline",
+      "replicatesPerDirection": 8,
+      "meanTeam0AttackGoalDiff": -0.5,
+      "meanTeam1AttackGoalDiff": 0.125,
+      "team0MinusTeam1AttackDirection": -0.625,
+      "bootstrap95": [
+        -1.375,
+        0.125
+      ]
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "replicatesPerDirection": 8,
+      "meanTeam0AttackGoalDiff": -0.375,
+      "meanTeam1AttackGoalDiff": -0.25,
+      "team0MinusTeam1AttackDirection": -0.125,
+      "bootstrap95": [
+        -0.875,
+        0.625
+      ]
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "baseline",
+      "replicatesPerDirection": 8,
+      "meanTeam0AttackGoalDiff": -0.625,
+      "meanTeam1AttackGoalDiff": 1.375,
+      "team0MinusTeam1AttackDirection": -2,
+      "bootstrap95": [
+        -3.375,
+        -0.625
+      ]
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "replicatesPerDirection": 8,
+      "meanTeam0AttackGoalDiff": 0.75,
+      "meanTeam1AttackGoalDiff": 1,
+      "team0MinusTeam1AttackDirection": -0.25,
+      "bootstrap95": [
+        -1.875,
+        1.375
+      ]
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "baseline",
+      "replicatesPerDirection": 8,
+      "meanTeam0AttackGoalDiff": 0.125,
+      "meanTeam1AttackGoalDiff": 0.375,
+      "team0MinusTeam1AttackDirection": -0.25,
+      "bootstrap95": [
+        -1.125,
+        0.75
+      ]
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "replicatesPerDirection": 8,
+      "meanTeam0AttackGoalDiff": 0,
+      "meanTeam1AttackGoalDiff": 1.25,
+      "team0MinusTeam1AttackDirection": -1.25,
+      "bootstrap95": [
+        -2,
+        -0.5
+      ]
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "baseline",
+      "replicatesPerDirection": 8,
+      "meanTeam0AttackGoalDiff": 0.375,
+      "meanTeam1AttackGoalDiff": -0.5,
+      "team0MinusTeam1AttackDirection": 0.875,
+      "bootstrap95": [
+        -1,
+        2.75
+      ]
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "replicatesPerDirection": 8,
+      "meanTeam0AttackGoalDiff": 0.125,
+      "meanTeam1AttackGoalDiff": 0.25,
+      "team0MinusTeam1AttackDirection": -0.125,
+      "bootstrap95": [
+        -2.375,
+        2
+      ]
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "baseline",
+      "replicatesPerDirection": 8,
+      "meanTeam0AttackGoalDiff": 0.125,
+      "meanTeam1AttackGoalDiff": 0.375,
+      "team0MinusTeam1AttackDirection": -0.25,
+      "bootstrap95": [
+        -1.75,
+        1.75
+      ]
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "replicatesPerDirection": 8,
+      "meanTeam0AttackGoalDiff": -0.25,
+      "meanTeam1AttackGoalDiff": 0.375,
+      "team0MinusTeam1AttackDirection": -0.625,
+      "bootstrap95": [
+        -1.75,
+        0.5
+      ]
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "baseline",
+      "replicatesPerDirection": 8,
+      "meanTeam0AttackGoalDiff": 0.5,
+      "meanTeam1AttackGoalDiff": 0.625,
+      "team0MinusTeam1AttackDirection": -0.125,
+      "bootstrap95": [
+        -2.125,
+        1.875
+      ]
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "arm": "arcadeSuper",
+      "replicatesPerDirection": 8,
+      "meanTeam0AttackGoalDiff": -0.375,
+      "meanTeam1AttackGoalDiff": -0.75,
+      "team0MinusTeam1AttackDirection": 0.375,
+      "bootstrap95": [
+        -1.375,
+        1.875
+      ]
+    }
+  ],
+  "aggregate": {
+    "silverCarp": {
+      "baseline": {
+        "matches": 32,
+        "regulationGoals": 53,
+        "goalsPerMatch": 1.6563,
+        "selectedShotLaunches": 0,
+        "keeperSaves": 115,
+        "playerContacts": 35
+      },
+      "arcadeSuper": {
+        "matches": 32,
+        "regulationGoals": 45,
+        "goalsPerMatch": 1.4063,
+        "selectedShotLaunches": 32,
+        "keeperSaves": 97,
+        "playerContacts": 43
+      }
+    },
+    "dice": {
+      "baseline": {
+        "matches": 32,
+        "regulationGoals": 51,
+        "goalsPerMatch": 1.5938,
+        "selectedShotLaunches": 0,
+        "keeperSaves": 107,
+        "playerContacts": 37
+      },
+      "arcadeSuper": {
+        "matches": 32,
+        "regulationGoals": 67,
+        "goalsPerMatch": 2.0938,
+        "selectedShotLaunches": 34,
+        "keeperSaves": 79,
+        "playerContacts": 37
+      }
+    },
+    "bird": {
+      "baseline": {
+        "matches": 32,
+        "regulationGoals": 55,
+        "goalsPerMatch": 1.7188,
+        "selectedShotLaunches": 0,
+        "keeperSaves": 81,
+        "playerContacts": 29
+      },
+      "arcadeSuper": {
+        "matches": 32,
+        "regulationGoals": 52,
+        "goalsPerMatch": 1.625,
+        "selectedShotLaunches": 35,
+        "keeperSaves": 82,
+        "playerContacts": 36
+      }
+    }
+  },
+  "results": [
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9097280,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 5,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        14.9,
+        21.55
+      ],
+      "fatigueSpent": [
+        2.146175,
+        2.172435
+      ],
+      "events": 562,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9097327,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.5,
+        21.083
+      ],
+      "fatigueSpent": [
+        2.125558,
+        1.860395
+      ],
+      "events": 507,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9097338,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        18.033,
+        18.267
+      ],
+      "fatigueSpent": [
+        2.076446,
+        1.976894
+      ],
+      "events": 495,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9097225,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        14.1,
+        20.683
+      ],
+      "fatigueSpent": [
+        2.320487,
+        2.041497
+      ],
+      "events": 617,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9097236,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 2,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.717,
+        18.633
+      ],
+      "fatigueSpent": [
+        2.080585,
+        1.856628
+      ],
+      "events": 612,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9097251,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 3,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        13.117,
+        19.083
+      ],
+      "fatigueSpent": [
+        2.111526,
+        2.015248
+      ],
+      "events": 582,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9098190,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 4,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        22.95,
+        14.95
+      ],
+      "fatigueSpent": [
+        2.114619,
+        2.0782
+      ],
+      "events": 587,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9098205,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.233,
+      "frames": 7215,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 2,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        20.95,
+        18.7
+      ],
+      "fatigueSpent": [
+        2.10411,
+        2.283393
+      ],
+      "events": 577,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9097280,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        16.567,
+        17.85
+      ],
+      "fatigueSpent": [
+        2.083655,
+        2.131908
+      ],
+      "events": 543,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9097327,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.983,
+      "frames": 7260,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 2,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        16.9,
+        20.333
+      ],
+      "fatigueSpent": [
+        2.18606,
+        1.803719
+      ],
+      "events": 518,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9097338,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 0,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        17.683,
+        20.833
+      ],
+      "fatigueSpent": [
+        2.149408,
+        2.052766
+      ],
+      "events": 492,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9097225,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 2,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        13.967,
+        20.4
+      ],
+      "fatigueSpent": [
+        2.389094,
+        2.114165
+      ],
+      "events": 591,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9097236,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 2,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.583,
+        16.983
+      ],
+      "fatigueSpent": [
+        1.91347,
+        1.905465
+      ],
+      "events": 540,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9097251,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 2,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 2,
+      "playerKnockdowns": 1,
+      "possessionSeconds": [
+        17.083,
+        13.767
+      ],
+      "fatigueSpent": [
+        2.062974,
+        1.987671
+      ],
+      "events": 590,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9098190,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 1,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        19.2,
+        17.383
+      ],
+      "fatigueSpent": [
+        2.214507,
+        2.02677
+      ],
+      "events": 497,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9098205,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 2,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        19.217,
+        15.183
+      ],
+      "fatigueSpent": [
+        2.110352,
+        1.929071
+      ],
+      "events": 522,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8440453,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        15.767,
+        15.467
+      ],
+      "fatigueSpent": [
+        1.973251,
+        2.041993
+      ],
+      "events": 544,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8440490,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.3,
+      "frames": 7418,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 4,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        22.483,
+        15.883
+      ],
+      "fatigueSpent": [
+        2.112718,
+        2.128824
+      ],
+      "events": 537,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8440511,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        15.733,
+        20.7
+      ],
+      "fatigueSpent": [
+        2.370623,
+        2.012744
+      ],
+      "events": 567,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8440524,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 4,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 5,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        15.717,
+        18.267
+      ],
+      "fatigueSpent": [
+        2.193946,
+        2.218448
+      ],
+      "events": 576,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8440529,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 2,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        19.95,
+        18.917
+      ],
+      "fatigueSpent": [
+        2.222803,
+        2.221424
+      ],
+      "events": 576,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8440550,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 5,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        25.417,
+        12.8
+      ],
+      "fatigueSpent": [
+        1.976175,
+        2.094157
+      ],
+      "events": 551,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8440075,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 5,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.15,
+        23.217
+      ],
+      "fatigueSpent": [
+        2.306362,
+        1.917537
+      ],
+      "events": 583,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8440088,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 5,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        19.717,
+        19.667
+      ],
+      "fatigueSpent": [
+        2.131918,
+        2.050244
+      ],
+      "events": 506,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8440453,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        22.917,
+        17.083
+      ],
+      "fatigueSpent": [
+        2.023291,
+        2.205613
+      ],
+      "events": 546,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8440490,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 4,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        19.4,
+        15.1
+      ],
+      "fatigueSpent": [
+        2.154622,
+        2.012386
+      ],
+      "events": 551,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8440511,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 0,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        16.767,
+        23.2
+      ],
+      "fatigueSpent": [
+        2.311407,
+        2.245631
+      ],
+      "events": 585,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8440524,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        19.817,
+        12.633
+      ],
+      "fatigueSpent": [
+        1.987851,
+        1.994175
+      ],
+      "events": 513,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8440529,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 2,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        21.217,
+        14.967
+      ],
+      "fatigueSpent": [
+        2.182827,
+        2.098157
+      ],
+      "events": 552,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8440550,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 2,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        21.433,
+        19.65
+      ],
+      "fatigueSpent": [
+        2.167056,
+        2.184312
+      ],
+      "events": 542,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8440075,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 1,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        18.65,
+        21.4
+      ],
+      "fatigueSpent": [
+        1.84914,
+        1.957825
+      ],
+      "events": 509,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8440088,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 1,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        19.783,
+        15.983
+      ],
+      "fatigueSpent": [
+        2.225293,
+        2.326569
+      ],
+      "events": 577,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9099454,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 2,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.883,
+        6.783
+      ],
+      "fatigueSpent": [
+        2.084029,
+        2.137983
+      ],
+      "events": 595,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9099341,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7998,
+      "score": [
+        2,
+        2
+      ],
+      "goals": 4,
+      "ordinaryShots": 5,
+      "superShots": 7,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 6,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.217,
+        12.117
+      ],
+      "fatigueSpent": [
+        2.637787,
+        2.302922
+      ],
+      "events": 682,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9099352,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 4,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        8.533,
+        10.033
+      ],
+      "fatigueSpent": [
+        2.334022,
+        2.145497
+      ],
+      "events": 679,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9099367,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        0,
+        3
+      ],
+      "goals": 3,
+      "ordinaryShots": 9,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 7,
+      "playerContacts": 3,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.133,
+        13.883
+      ],
+      "fatigueSpent": [
+        2.338513,
+        2.501385
+      ],
+      "events": 675,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9099378,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 8,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 7,
+      "playerContacts": 3,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        7.667,
+        9.867
+      ],
+      "fatigueSpent": [
+        2.310541,
+        2.310035
+      ],
+      "events": 694,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9099265,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 8396,
+      "score": [
+        4,
+        2
+      ],
+      "goals": 6,
+      "ordinaryShots": 6,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 2,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.95,
+        10.283
+      ],
+      "fatigueSpent": [
+        2.548204,
+        2.404359
+      ],
+      "events": 707,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9099308,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        0,
+        3
+      ],
+      "goals": 3,
+      "ordinaryShots": 5,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 5,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        8.317,
+        11.567
+      ],
+      "fatigueSpent": [
+        2.488939,
+        2.27591
+      ],
+      "events": 636,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9099323,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 4,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.567,
+        10.367
+      ],
+      "fatigueSpent": [
+        2.411509,
+        2.37519
+      ],
+      "events": 680,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9099454,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        2,
+        1
+      ],
+      "goals": 3,
+      "ordinaryShots": 6,
+      "superShots": 4,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 7,
+      "playerContacts": 3,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.517,
+        9.25
+      ],
+      "fatigueSpent": [
+        2.602188,
+        2.322152
+      ],
+      "events": 664,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9099341,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        2,
+        0
+      ],
+      "goals": 2,
+      "ordinaryShots": 3,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.15,
+        9.817
+      ],
+      "fatigueSpent": [
+        2.577055,
+        2.288522
+      ],
+      "events": 684,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9099352,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.5,
+        11.183
+      ],
+      "fatigueSpent": [
+        2.660758,
+        2.343616
+      ],
+      "events": 712,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9099367,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 6,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 6,
+      "playerContacts": 3,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        13.217,
+        8.433
+      ],
+      "fatigueSpent": [
+        2.467349,
+        2.170426
+      ],
+      "events": 643,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9099378,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 5,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 4,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.65,
+        10.15
+      ],
+      "fatigueSpent": [
+        2.34193,
+        2.232605
+      ],
+      "events": 676,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9099265,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 8,
+      "superShots": 4,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 7,
+      "playerContacts": 9,
+      "playerKnockdowns": 1,
+      "possessionSeconds": [
+        11.25,
+        10.133
+      ],
+      "fatigueSpent": [
+        2.356702,
+        2.489059
+      ],
+      "events": 704,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9099308,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 8197,
+      "score": [
+        2,
+        3
+      ],
+      "goals": 5,
+      "ordinaryShots": 5,
+      "superShots": 4,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.483,
+        10.35
+      ],
+      "fatigueSpent": [
+        2.261781,
+        2.452142
+      ],
+      "events": 705,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9099323,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7998,
+      "score": [
+        4,
+        0
+      ],
+      "goals": 4,
+      "ordinaryShots": 5,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.6,
+        6.867
+      ],
+      "fatigueSpent": [
+        2.410166,
+        2.276656
+      ],
+      "events": 685,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8438395,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        2,
+        1
+      ],
+      "goals": 3,
+      "ordinaryShots": 3,
+      "superShots": 3,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.817,
+        8.983
+      ],
+      "fatigueSpent": [
+        2.454079,
+        2.251922
+      ],
+      "events": 632,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8438408,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 4,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.783,
+        13.15
+      ],
+      "fatigueSpent": [
+        2.561463,
+        2.375479
+      ],
+      "events": 666,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8438429,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.117,
+      "frames": 7407,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 4,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        8.333,
+        12.317
+      ],
+      "fatigueSpent": [
+        2.574995,
+        2.231475
+      ],
+      "events": 654,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8438434,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 6,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 5,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        13,
+        11.617
+      ],
+      "fatigueSpent": [
+        2.639296,
+        2.300505
+      ],
+      "events": 639,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8438455,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 2,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.333,
+        13.333
+      ],
+      "fatigueSpent": [
+        2.367285,
+        2.36899
+      ],
+      "events": 693,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8438468,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 5,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 3,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        8.65,
+        7.383
+      ],
+      "fatigueSpent": [
+        2.154217,
+        2.134074
+      ],
+      "events": 638,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8438505,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7801,
+      "score": [
+        0,
+        3
+      ],
+      "goals": 3,
+      "ordinaryShots": 7,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.35,
+        11.317
+      ],
+      "fatigueSpent": [
+        2.435463,
+        2.25158
+      ],
+      "events": 681,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8438526,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 6,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 9,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.1,
+        9.267
+      ],
+      "fatigueSpent": [
+        2.388705,
+        2.134714
+      ],
+      "events": 661,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8438395,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.433,
+      "frames": 8023,
+      "score": [
+        0,
+        4
+      ],
+      "goals": 4,
+      "ordinaryShots": 4,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.6,
+        12.667
+      ],
+      "fatigueSpent": [
+        2.304748,
+        2.464053
+      ],
+      "events": 696,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8438408,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.033,
+      "frames": 7601,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 5,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 3,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        7.933,
+        9.633
+      ],
+      "fatigueSpent": [
+        2.23833,
+        2.396641
+      ],
+      "events": 691,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8438429,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 3,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 3,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.283,
+        9.9
+      ],
+      "fatigueSpent": [
+        2.318086,
+        2.197453
+      ],
+      "events": 641,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8438434,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 2,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        6.867,
+        12.183
+      ],
+      "fatigueSpent": [
+        2.555479,
+        2.269844
+      ],
+      "events": 712,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8438455,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 5,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 3,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.617,
+        10.9
+      ],
+      "fatigueSpent": [
+        2.404543,
+        2.318266
+      ],
+      "events": 653,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8438468,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 2,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        8.033,
+        10.483
+      ],
+      "fatigueSpent": [
+        2.35392,
+        2.297888
+      ],
+      "events": 620,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8438505,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.75,
+        11.083
+      ],
+      "fatigueSpent": [
+        2.489922,
+        2.427306
+      ],
+      "events": 716,
+      "finite": true
+    },
+    {
+      "shotId": "silverCarp",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8438526,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        2,
+        1
+      ],
+      "goals": 3,
+      "ordinaryShots": 3,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        13.1,
+        9.75
+      ],
+      "fatigueSpent": [
+        2.415339,
+        2.356402
+      ],
+      "events": 651,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9107819,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 4,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        20.05,
+        17.533
+      ],
+      "fatigueSpent": [
+        2.210448,
+        2.246097
+      ],
+      "events": 564,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9107830,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7203,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 2,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        19.85,
+        19.4
+      ],
+      "fatigueSpent": [
+        2.278833,
+        1.977068
+      ],
+      "events": 515,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9107717,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        2,
+        0
+      ],
+      "goals": 2,
+      "ordinaryShots": 5,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        24.933,
+        11.2
+      ],
+      "fatigueSpent": [
+        1.978197,
+        2.038509
+      ],
+      "events": 574,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9107728,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 2,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        24.667,
+        18.7
+      ],
+      "fatigueSpent": [
+        2.119914,
+        2.307089
+      ],
+      "events": 530,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9107775,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 2,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 2,
+      "playerKnockdowns": 1,
+      "possessionSeconds": [
+        15.85,
+        17.533
+      ],
+      "fatigueSpent": [
+        2.1265,
+        2.119352
+      ],
+      "events": 545,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9107658,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 6,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        20.883,
+        13.817
+      ],
+      "fatigueSpent": [
+        2.153267,
+        2.108785
+      ],
+      "events": 579,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9107673,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 5,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 5,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        18.367,
+        14.667
+      ],
+      "fatigueSpent": [
+        1.733796,
+        2.126663
+      ],
+      "events": 563,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9107684,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 6,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 5,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        19.133,
+        12.483
+      ],
+      "fatigueSpent": [
+        1.91169,
+        1.974162
+      ],
+      "events": 535,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9107819,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 4,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        15.633,
+        19.883
+      ],
+      "fatigueSpent": [
+        2.17225,
+        2.127456
+      ],
+      "events": 533,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9107830,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 1,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        16.633,
+        15.283
+      ],
+      "fatigueSpent": [
+        2.096093,
+        2.170836
+      ],
+      "events": 598,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9107717,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 2,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        17.317,
+        18.533
+      ],
+      "fatigueSpent": [
+        2.202418,
+        1.953262
+      ],
+      "events": 544,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9107728,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 7,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 5,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        18.5,
+        11.017
+      ],
+      "fatigueSpent": [
+        2.118108,
+        2.076373
+      ],
+      "events": 560,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9107775,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 4,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 5,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        14.683,
+        23.033
+      ],
+      "fatigueSpent": [
+        2.174626,
+        2.11067
+      ],
+      "events": 535,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9107658,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        18.633,
+        13.75
+      ],
+      "fatigueSpent": [
+        2.021894,
+        1.925632
+      ],
+      "events": 493,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9107673,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        1,
+        2
+      ],
+      "goals": 3,
+      "ordinaryShots": 4,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 0,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        18.233,
+        23.183
+      ],
+      "fatigueSpent": [
+        2.261942,
+        2.107716
+      ],
+      "events": 584,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9107684,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        16.467,
+        19.433
+      ],
+      "fatigueSpent": [
+        2.140289,
+        2.042346
+      ],
+      "events": 527,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8446894,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7288,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        19.183,
+        16.7
+      ],
+      "fatigueSpent": [
+        2.196231,
+        2.005071
+      ],
+      "events": 616,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8446899,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 1,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        21.367,
+        18.133
+      ],
+      "fatigueSpent": [
+        2.1153,
+        2.286291
+      ],
+      "events": 552,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8446912,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 2,
+      "superShots": 3,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        13.283,
+        22.55
+      ],
+      "fatigueSpent": [
+        2.091709,
+        2.192792
+      ],
+      "events": 522,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8446933,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        15.667,
+        13.117
+      ],
+      "fatigueSpent": [
+        2.002476,
+        2.079784
+      ],
+      "events": 563,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8446970,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 1,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        14.4,
+        21.783
+      ],
+      "fatigueSpent": [
+        2.340967,
+        1.920863
+      ],
+      "events": 570,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8446479,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        13.183,
+        16.967
+      ],
+      "fatigueSpent": [
+        1.999596,
+        1.973352
+      ],
+      "events": 506,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8446492,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 6,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 5,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        12.333,
+        22.167
+      ],
+      "fatigueSpent": [
+        1.92252,
+        2.104869
+      ],
+      "events": 549,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8446497,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        2,
+        0
+      ],
+      "goals": 2,
+      "ordinaryShots": 5,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        22.35,
+        10.967
+      ],
+      "fatigueSpent": [
+        2.138907,
+        2.223799
+      ],
+      "events": 567,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8446894,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7413,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        12.367,
+        21.683
+      ],
+      "fatigueSpent": [
+        2.15247,
+        2.087202
+      ],
+      "events": 550,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8446899,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 1,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        16.217,
+        23.383
+      ],
+      "fatigueSpent": [
+        2.367726,
+        2.138314
+      ],
+      "events": 572,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8446912,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        1,
+        2
+      ],
+      "goals": 3,
+      "ordinaryShots": 2,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        13.617,
+        19.067
+      ],
+      "fatigueSpent": [
+        2.057539,
+        1.998328
+      ],
+      "events": 538,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8446933,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7236,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 3,
+      "superShots": 5,
+      "selectedShotLaunches": 2,
+      "keeperSaves": 4,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        20.233,
+        14.617
+      ],
+      "fatigueSpent": [
+        2.111091,
+        2.178287
+      ],
+      "events": 558,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8446970,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        20.333,
+        14.617
+      ],
+      "fatigueSpent": [
+        1.931591,
+        2.389519
+      ],
+      "events": 585,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8446479,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 5,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 3,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        13.367,
+        25.95
+      ],
+      "fatigueSpent": [
+        2.319389,
+        2.10771
+      ],
+      "events": 557,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8446492,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 2,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.617,
+        22.2
+      ],
+      "fatigueSpent": [
+        2.070371,
+        2.191417
+      ],
+      "events": 557,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8446497,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.1,
+      "frames": 7406,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 2,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        12.4,
+        19.317
+      ],
+      "fatigueSpent": [
+        2.27215,
+        2.127827
+      ],
+      "events": 570,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9101641,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        2,
+        0
+      ],
+      "goals": 2,
+      "ordinaryShots": 6,
+      "superShots": 3,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 3,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.283,
+        9.117
+      ],
+      "fatigueSpent": [
+        2.453395,
+        2.484928
+      ],
+      "events": 683,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9101652,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7998,
+      "score": [
+        1,
+        3
+      ],
+      "goals": 4,
+      "ordinaryShots": 8,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.7,
+        10.383
+      ],
+      "fatigueSpent": [
+        2.392994,
+        2.345449
+      ],
+      "events": 692,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9101667,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 4,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        8.8,
+        7.65
+      ],
+      "fatigueSpent": [
+        2.260529,
+        2.133684
+      ],
+      "events": 645,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9101582,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 7,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        12.267,
+        8.033
+      ],
+      "fatigueSpent": [
+        2.463362,
+        2.241483
+      ],
+      "events": 673,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9101597,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 8197,
+      "score": [
+        2,
+        3
+      ],
+      "goals": 5,
+      "ordinaryShots": 9,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.583,
+        10.717
+      ],
+      "fatigueSpent": [
+        2.735686,
+        2.296265
+      ],
+      "events": 755,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9101608,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7998,
+      "score": [
+        4,
+        0
+      ],
+      "goals": 4,
+      "ordinaryShots": 4,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.667,
+        8.933
+      ],
+      "fatigueSpent": [
+        2.342484,
+        2.152511
+      ],
+      "events": 686,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9101623,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 4,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 3,
+      "playerKnockdowns": 1,
+      "possessionSeconds": [
+        10.767,
+        12.283
+      ],
+      "fatigueSpent": [
+        2.759561,
+        2.274726
+      ],
+      "events": 731,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9101506,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        2,
+        0
+      ],
+      "goals": 2,
+      "ordinaryShots": 2,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.25,
+        7.717
+      ],
+      "fatigueSpent": [
+        2.311651,
+        2.420798
+      ],
+      "events": 663,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9101641,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7998,
+      "score": [
+        3,
+        1
+      ],
+      "goals": 4,
+      "ordinaryShots": 4,
+      "superShots": 4,
+      "selectedShotLaunches": 2,
+      "keeperSaves": 3,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.133,
+        9.333
+      ],
+      "fatigueSpent": [
+        2.330091,
+        2.299832
+      ],
+      "events": 669,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9101652,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 3,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        8.3,
+        11.167
+      ],
+      "fatigueSpent": [
+        2.34493,
+        2.354962
+      ],
+      "events": 742,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9101667,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        1,
+        2
+      ],
+      "goals": 3,
+      "ordinaryShots": 2,
+      "superShots": 4,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 4,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.45,
+        11.9
+      ],
+      "fatigueSpent": [
+        2.512578,
+        2.179631
+      ],
+      "events": 686,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9101582,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        1,
+        2
+      ],
+      "goals": 3,
+      "ordinaryShots": 3,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 3,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.95,
+        8.733
+      ],
+      "fatigueSpent": [
+        2.450286,
+        2.429731
+      ],
+      "events": 713,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9101597,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 2,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.667,
+        10.217
+      ],
+      "fatigueSpent": [
+        2.385405,
+        2.1686
+      ],
+      "events": 689,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9101608,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.283,
+      "frames": 8213,
+      "score": [
+        3,
+        2
+      ],
+      "goals": 5,
+      "ordinaryShots": 4,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        8.667,
+        11.833
+      ],
+      "fatigueSpent": [
+        2.842834,
+        2.330047
+      ],
+      "events": 732,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9101623,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        2,
+        1
+      ],
+      "goals": 3,
+      "ordinaryShots": 3,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        7.667,
+        11.583
+      ],
+      "fatigueSpent": [
+        2.678715,
+        2.274351
+      ],
+      "events": 700,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9101506,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.4,
+        12.067
+      ],
+      "fatigueSpent": [
+        2.401067,
+        2.514947
+      ],
+      "events": 719,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8453004,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        2,
+        0
+      ],
+      "goals": 2,
+      "ordinaryShots": 5,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        12.05,
+        9.033
+      ],
+      "fatigueSpent": [
+        2.53508,
+        2.312046
+      ],
+      "events": 681,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8453009,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        1,
+        2
+      ],
+      "goals": 3,
+      "ordinaryShots": 6,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.567,
+        11.933
+      ],
+      "fatigueSpent": [
+        2.57078,
+        2.546507
+      ],
+      "events": 731,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8453030,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7998,
+      "score": [
+        3,
+        1
+      ],
+      "goals": 4,
+      "ordinaryShots": 4,
+      "superShots": 3,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.733,
+        9.417
+      ],
+      "fatigueSpent": [
+        2.610945,
+        2.605444
+      ],
+      "events": 752,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8453067,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        1,
+        2
+      ],
+      "goals": 3,
+      "ordinaryShots": 4,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        8.867,
+        13.383
+      ],
+      "fatigueSpent": [
+        2.439118,
+        2.482962
+      ],
+      "events": 762,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8453080,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 5,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 5,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        8.867,
+        14.167
+      ],
+      "fatigueSpent": [
+        2.473818,
+        2.593347
+      ],
+      "events": 691,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8453101,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        2,
+        0
+      ],
+      "goals": 2,
+      "ordinaryShots": 3,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.867,
+        10.35
+      ],
+      "fatigueSpent": [
+        2.413113,
+        2.141433
+      ],
+      "events": 664,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8453106,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        3,
+        0
+      ],
+      "goals": 3,
+      "ordinaryShots": 8,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 5,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.4,
+        9.533
+      ],
+      "fatigueSpent": [
+        2.410833,
+        2.366717
+      ],
+      "events": 684,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8452615,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 6,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.2,
+        14.633
+      ],
+      "fatigueSpent": [
+        2.52966,
+        2.216875
+      ],
+      "events": 654,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8453004,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        3,
+        0
+      ],
+      "goals": 3,
+      "ordinaryShots": 2,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        12.083,
+        9.967
+      ],
+      "fatigueSpent": [
+        2.401288,
+        2.438969
+      ],
+      "events": 693,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8453009,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7998,
+      "score": [
+        0,
+        4
+      ],
+      "goals": 4,
+      "ordinaryShots": 3,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 0,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.017,
+        11.45
+      ],
+      "fatigueSpent": [
+        2.502456,
+        2.521528
+      ],
+      "events": 714,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8453030,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 2,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.683,
+        12.6
+      ],
+      "fatigueSpent": [
+        2.466149,
+        2.39085
+      ],
+      "events": 684,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8453067,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7998,
+      "score": [
+        4,
+        0
+      ],
+      "goals": 4,
+      "ordinaryShots": 2,
+      "superShots": 4,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        14.267,
+        9.433
+      ],
+      "fatigueSpent": [
+        2.62086,
+        2.569951
+      ],
+      "events": 709,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8453080,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 2,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        14.383,
+        9.2
+      ],
+      "fatigueSpent": [
+        2.597356,
+        2.451851
+      ],
+      "events": 690,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8453101,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        2,
+        0
+      ],
+      "goals": 2,
+      "ordinaryShots": 1,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.55,
+        11.15
+      ],
+      "fatigueSpent": [
+        2.390696,
+        2.33433
+      ],
+      "events": 704,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8453106,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 8596,
+      "score": [
+        1,
+        6
+      ],
+      "goals": 7,
+      "ordinaryShots": 7,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.117,
+        12.067
+      ],
+      "fatigueSpent": [
+        2.469035,
+        2.328888
+      ],
+      "events": 689,
+      "finite": true
+    },
+    {
+      "shotId": "dice",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8452615,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        1,
+        2
+      ],
+      "goals": 3,
+      "ordinaryShots": 2,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        8.867,
+        11.7
+      ],
+      "fatigueSpent": [
+        2.380357,
+        2.30721
+      ],
+      "events": 696,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9117298,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 5,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 2,
+      "playerContacts": 4,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        18.5,
+        17.783
+      ],
+      "fatigueSpent": [
+        2.181588,
+        2.015053
+      ],
+      "events": 530,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9117185,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        19.833,
+        13.717
+      ],
+      "fatigueSpent": [
+        2.216464,
+        2.218376
+      ],
+      "events": 528,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9117228,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 6,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        18.517,
+        20.85
+      ],
+      "fatigueSpent": [
+        2.039401,
+        2.217241
+      ],
+      "events": 551,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9117243,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 8396,
+      "score": [
+        6,
+        0
+      ],
+      "goals": 6,
+      "ordinaryShots": 5,
+      "superShots": 3,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        26.967,
+        16.933
+      ],
+      "fatigueSpent": [
+        2.168933,
+        2.292277
+      ],
+      "events": 570,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9109958,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 7,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 3,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        17.117,
+        22.883
+      ],
+      "fatigueSpent": [
+        2.482735,
+        2.074396
+      ],
+      "events": 579,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9109973,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 2,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        13.85,
+        17.717
+      ],
+      "fatigueSpent": [
+        2.070471,
+        1.979674
+      ],
+      "events": 522,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9109984,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 4,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        15.35,
+        20.583
+      ],
+      "fatigueSpent": [
+        2.171578,
+        2.202392
+      ],
+      "events": 575,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9109903,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 3,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 2,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        20.217,
+        17.3
+      ],
+      "fatigueSpent": [
+        2.235417,
+        2.306966
+      ],
+      "events": 558,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9117298,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 1,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        21.167,
+        14.117
+      ],
+      "fatigueSpent": [
+        2.155569,
+        2.1134
+      ],
+      "events": 539,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9117185,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 2,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        16.3,
+        21.15
+      ],
+      "fatigueSpent": [
+        2.193313,
+        1.974303
+      ],
+      "events": 521,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9117228,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        2,
+        0
+      ],
+      "goals": 2,
+      "ordinaryShots": 2,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        15.25,
+        19.483
+      ],
+      "fatigueSpent": [
+        2.262871,
+        1.879569
+      ],
+      "events": 508,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9117243,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 4,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        16.017,
+        19.517
+      ],
+      "fatigueSpent": [
+        2.046218,
+        2.190515
+      ],
+      "events": 561,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9109958,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        16.617,
+        19.6
+      ],
+      "fatigueSpent": [
+        2.134717,
+        2.189775
+      ],
+      "events": 550,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9109973,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 3,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 5,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        16,
+        21.45
+      ],
+      "fatigueSpent": [
+        2.252965,
+        1.898332
+      ],
+      "events": 565,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9109984,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 5,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 5,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.767,
+        16.8
+      ],
+      "fatigueSpent": [
+        2.026901,
+        1.916633
+      ],
+      "events": 549,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9109903,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 2,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        14.3,
+        21.867
+      ],
+      "fatigueSpent": [
+        2.10584,
+        2.009436
+      ],
+      "events": 551,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8455351,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 2,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 2,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        13.767,
+        17.683
+      ],
+      "fatigueSpent": [
+        2.107549,
+        1.986444
+      ],
+      "events": 557,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8455364,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 1,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        15.733,
+        15.217
+      ],
+      "fatigueSpent": [
+        2.23052,
+        2.011638
+      ],
+      "events": 532,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8455401,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 3,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        19.1,
+        15.583
+      ],
+      "fatigueSpent": [
+        2.006152,
+        2.17231
+      ],
+      "events": 551,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8455422,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        1,
+        2
+      ],
+      "goals": 3,
+      "ordinaryShots": 6,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        14.133,
+        21.2
+      ],
+      "fatigueSpent": [
+        1.933226,
+        1.948015
+      ],
+      "events": 560,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8461059,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 5,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        23.117,
+        16.983
+      ],
+      "fatigueSpent": [
+        2.156317,
+        2.149165
+      ],
+      "events": 599,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8461072,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.65,
+      "frames": 7837,
+      "score": [
+        1,
+        2
+      ],
+      "goals": 3,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        15.133,
+        18.983
+      ],
+      "fatigueSpent": [
+        2.052467,
+        2.132245
+      ],
+      "events": 546,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8461093,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7204,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 1,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        25.6,
+        18.917
+      ],
+      "fatigueSpent": [
+        2.135296,
+        2.497473
+      ],
+      "events": 585,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8461130,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 2,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        20.533,
+        21.817
+      ],
+      "fatigueSpent": [
+        2.085089,
+        1.975752
+      ],
+      "events": 472,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8455351,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 2,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        16.967,
+        17.717
+      ],
+      "fatigueSpent": [
+        1.96895,
+        2.102358
+      ],
+      "events": 548,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8455364,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 1,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        13.183,
+        22.9
+      ],
+      "fatigueSpent": [
+        1.983678,
+        2.117262
+      ],
+      "events": 568,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8455401,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 4,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        18.917,
+        16.717
+      ],
+      "fatigueSpent": [
+        2.069554,
+        2.051262
+      ],
+      "events": 497,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8455422,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        2,
+        1
+      ],
+      "goals": 3,
+      "ordinaryShots": 3,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        20.117,
+        16.217
+      ],
+      "fatigueSpent": [
+        2.10353,
+        2.257684
+      ],
+      "events": 558,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8461059,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 1,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 0,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        23.767,
+        18.15
+      ],
+      "fatigueSpent": [
+        2.382499,
+        2.163135
+      ],
+      "events": 590,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8461072,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        22.117,
+        19.617
+      ],
+      "fatigueSpent": [
+        2.022405,
+        2.129754
+      ],
+      "events": 555,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8461093,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 1,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        15.55,
+        12.083
+      ],
+      "fatigueSpent": [
+        1.889255,
+        1.681328
+      ],
+      "events": 522,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8461130,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 0,
+      "superShots": 3,
+      "selectedShotLaunches": 2,
+      "keeperSaves": 2,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        18.867,
+        25.417
+      ],
+      "fatigueSpent": [
+        2.252961,
+        2.269163
+      ],
+      "events": 520,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9111120,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 7,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 6,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.083,
+        9.917
+      ],
+      "fatigueSpent": [
+        2.323269,
+        2.558563
+      ],
+      "events": 707,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9111167,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 5,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.033,
+        9.05
+      ],
+      "fatigueSpent": [
+        2.356153,
+        2.193277
+      ],
+      "events": 660,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9111050,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.417,
+        11.217
+      ],
+      "fatigueSpent": [
+        2.264308,
+        2.40518
+      ],
+      "events": 697,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9111065,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        12.017,
+        8.183
+      ],
+      "fatigueSpent": [
+        2.591368,
+        2.353618
+      ],
+      "events": 678,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9111076,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 1,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.667,
+        7.75
+      ],
+      "fatigueSpent": [
+        2.34075,
+        2.192204
+      ],
+      "events": 687,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9111091,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        2,
+        0
+      ],
+      "goals": 2,
+      "ordinaryShots": 3,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.65,
+        12.05
+      ],
+      "fatigueSpent": [
+        2.576791,
+        2.201779
+      ],
+      "events": 663,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9112030,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        3,
+        0
+      ],
+      "goals": 3,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        14.6,
+        7.983
+      ],
+      "fatigueSpent": [
+        2.491729,
+        2.383486
+      ],
+      "events": 728,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "baseline",
+      "seed": 9112045,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.6,
+        11.833
+      ],
+      "fatigueSpent": [
+        2.439859,
+        2.232335
+      ],
+      "events": 668,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9111120,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 4,
+      "superShots": 4,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        12.733,
+        7.967
+      ],
+      "fatigueSpent": [
+        2.361287,
+        2.367241
+      ],
+      "events": 686,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9111167,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        2,
+        1
+      ],
+      "goals": 3,
+      "ordinaryShots": 3,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        13.417,
+        8.667
+      ],
+      "fatigueSpent": [
+        2.470148,
+        2.403302
+      ],
+      "events": 675,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9111050,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7202,
+      "score": [
+        0,
+        0
+      ],
+      "goals": 0,
+      "ordinaryShots": 0,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.7,
+        11.833
+      ],
+      "fatigueSpent": [
+        2.482586,
+        2.431029
+      ],
+      "events": 677,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9111065,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7998,
+      "score": [
+        0,
+        4
+      ],
+      "goals": 4,
+      "ordinaryShots": 3,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        8.883,
+        15.45
+      ],
+      "fatigueSpent": [
+        2.709801,
+        2.31507
+      ],
+      "events": 708,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9111076,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 8,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 8,
+      "playerContacts": 4,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.5,
+        10.65
+      ],
+      "fatigueSpent": [
+        2.35355,
+        2.142694
+      ],
+      "events": 704,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9111091,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 2,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.617,
+        8.967
+      ],
+      "fatigueSpent": [
+        2.333427,
+        2.170259
+      ],
+      "events": 669,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9112030,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 3,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        8.533,
+        11.367
+      ],
+      "fatigueSpent": [
+        2.409724,
+        2.19243
+      ],
+      "events": 692,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 9112045,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        1,
+        1
+      ],
+      "goals": 2,
+      "ordinaryShots": 4,
+      "superShots": 1,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.183,
+        11.283
+      ],
+      "fatigueSpent": [
+        2.340809,
+        2.094549
+      ],
+      "events": 655,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8461461,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        3,
+        0
+      ],
+      "goals": 3,
+      "ordinaryShots": 4,
+      "superShots": 3,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 3,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        12.917,
+        11.767
+      ],
+      "fatigueSpent": [
+        2.553593,
+        2.245361
+      ],
+      "events": 692,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8461498,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        1,
+        2
+      ],
+      "goals": 3,
+      "ordinaryShots": 2,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        14.317,
+        9.417
+      ],
+      "fatigueSpent": [
+        2.646168,
+        2.494913
+      ],
+      "events": 710,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8461519,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7800,
+      "score": [
+        3,
+        0
+      ],
+      "goals": 3,
+      "ordinaryShots": 3,
+      "superShots": 3,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 4,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.4,
+        10.383
+      ],
+      "fatigueSpent": [
+        2.677799,
+        2.155527
+      ],
+      "events": 705,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8461532,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        1,
+        2
+      ],
+      "goals": 3,
+      "ordinaryShots": 7,
+      "superShots": 3,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 6,
+      "playerContacts": 3,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.817,
+        9.35
+      ],
+      "fatigueSpent": [
+        2.384205,
+        2.46743
+      ],
+      "events": 680,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8461537,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 4,
+      "superShots": 1,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 2,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        8.783,
+        9.817
+      ],
+      "fatigueSpent": [
+        2.386577,
+        2.206576
+      ],
+      "events": 677,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8461558,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        0,
+        2
+      ],
+      "goals": 2,
+      "ordinaryShots": 2,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 2,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        7.25,
+        13
+      ],
+      "fatigueSpent": [
+        2.578875,
+        2.24513
+      ],
+      "events": 658,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8459035,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 8197,
+      "score": [
+        0,
+        5
+      ],
+      "goals": 5,
+      "ordinaryShots": 4,
+      "superShots": 2,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 1,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        7.5,
+        12.117
+      ],
+      "fatigueSpent": [
+        2.532136,
+        2.233546
+      ],
+      "events": 677,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "baseline",
+      "seed": 8459048,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 6,
+      "superShots": 0,
+      "selectedShotLaunches": 0,
+      "keeperSaves": 2,
+      "playerContacts": 4,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.6,
+        13.05
+      ],
+      "fatigueSpent": [
+        2.517252,
+        2.233045
+      ],
+      "events": 701,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8461461,
+      "seedIndex": 0,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7799,
+      "score": [
+        0,
+        3
+      ],
+      "goals": 3,
+      "ordinaryShots": 7,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        10.233,
+        13.117
+      ],
+      "fatigueSpent": [
+        2.506922,
+        2.533197
+      ],
+      "events": 744,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8461498,
+      "seedIndex": 1,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 8197,
+      "score": [
+        4,
+        1
+      ],
+      "goals": 5,
+      "ordinaryShots": 5,
+      "superShots": 4,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.483,
+        8.85
+      ],
+      "fatigueSpent": [
+        2.50672,
+        2.276964
+      ],
+      "events": 686,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8461519,
+      "seedIndex": 2,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7998,
+      "score": [
+        2,
+        2
+      ],
+      "goals": 4,
+      "ordinaryShots": 4,
+      "superShots": 3,
+      "selectedShotLaunches": 2,
+      "keeperSaves": 3,
+      "playerContacts": 0,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        11.483,
+        11
+      ],
+      "fatigueSpent": [
+        2.656526,
+        2.362534
+      ],
+      "events": 713,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8461532,
+      "seedIndex": 3,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        1,
+        0
+      ],
+      "goals": 1,
+      "ordinaryShots": 5,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 2,
+      "playerContacts": 3,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        8.217,
+        12.233
+      ],
+      "fatigueSpent": [
+        2.296743,
+        2.170034
+      ],
+      "events": 685,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8461537,
+      "seedIndex": 4,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        2,
+        0
+      ],
+      "goals": 2,
+      "ordinaryShots": 3,
+      "superShots": 2,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 3,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.65,
+        9.833
+      ],
+      "fatigueSpent": [
+        2.498395,
+        2.200999
+      ],
+      "events": 652,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8461558,
+      "seedIndex": 5,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        2,
+        0
+      ],
+      "goals": 2,
+      "ordinaryShots": 5,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 4,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.367,
+        11.333
+      ],
+      "fatigueSpent": [
+        2.611581,
+        2.3302
+      ],
+      "events": 700,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8459035,
+      "seedIndex": 6,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7600,
+      "score": [
+        2,
+        0
+      ],
+      "goals": 2,
+      "ordinaryShots": 1,
+      "superShots": 3,
+      "selectedShotLaunches": 1,
+      "keeperSaves": 1,
+      "playerContacts": 1,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        13.05,
+        9.517
+      ],
+      "fatigueSpent": [
+        2.3949,
+        2.433136
+      ],
+      "events": 707,
+      "finite": true
+    },
+    {
+      "shotId": "bird",
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 8459048,
+      "seedIndex": 7,
+      "regulationCompleted": true,
+      "simulatedSeconds": 120.017,
+      "frames": 7401,
+      "score": [
+        0,
+        1
+      ],
+      "goals": 1,
+      "ordinaryShots": 7,
+      "superShots": 3,
+      "selectedShotLaunches": 2,
+      "keeperSaves": 6,
+      "playerContacts": 2,
+      "playerKnockdowns": 0,
+      "possessionSeconds": [
+        9.717,
+        12.983
+      ],
+      "fatigueSpent": [
+        2.605402,
+        2.353361
+      ],
+      "events": 713,
+      "finite": true
+    }
+  ],
+  "limitations": [
+    "Both teams use isolated copies of the same Japan roster; this is not broad roster coverage.",
+    "Only Silver Carp, Dice and Bird represent underground, arcing/rotating, and evasive families; conclusions do not generalize to all 32 shots.",
+    "Normal and Expert CPU difficulties are sampled; Star is used only for selected Super Shot equipping and is not a human opponent.",
+    "A paired opening shot is scripted through GameEngine.shoot so each trial actually uses its treatment; all players are restored to formation home positions before the shot so both attack directions begin from reflected match setups; the remainder of each regulation match is active CPU-versus-CPU play.",
+    "Whole-match runs use 60 Hz; the companion short-window calibration covers 30/60/120 Hz but is not full-match evidence.",
+    "Each half is compressed to 60 simulated seconds instead of the shipping 120-second default; simulation runs at accelerated wall-clock speed.",
+    "Eight replicates per cell provide a preliminary, low-power interval estimate; bootstrap intervals are descriptive, have no multiplicity adjustment, and are not a balance acceptance threshold.",
+    "The baseline clears the selected player’s pre-existing shooting ability in its match copy only; other roster players retain normal loadouts.",
+    "The diagnostic does not exercise human controls, physical devices, accessibility preferences, online latency, or owner fun/visual review.",
+    "Tied regulation matches stop at the penalty phase; penalty outcomes are excluded. No gameplay tuning is applied from these observations."
+  ]
+}

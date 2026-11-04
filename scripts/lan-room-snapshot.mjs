@@ -5,6 +5,7 @@ export function lanRoomSnapshot(rooms, viewerIp, visible, scope='lan') {
   const listed = [];
   for (const room of rooms.values()) {
     if ((room.scope??'lan')!==scope) continue;
+    if (scope==='internet-p2p' && room.listed===false) continue;
     if(scope==='lan'&&!visible(viewerIp, room.ip))continue;
     listed.push({roomId: room.id, name: room.name, build: room.build, full: !!room.guest,
       ...(scope==='internet-p2p'?{scope}:{})});

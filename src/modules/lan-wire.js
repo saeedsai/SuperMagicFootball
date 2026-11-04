@@ -52,7 +52,10 @@ function encodeLanWirePacket(packet) {
 }
 
 function decodeLanWirePacket(data) {
-  if (typeof data !== 'string' ||
+  // UTF-8 encoding cannot use fewer bytes than the source string has UTF-16
+  // code units. Reject obviously oversized network frames before allocating
+  // an encoded copy, then retain the exact byte check for shorter Unicode.
+  if (typeof data !== 'string' || data.length > LAN_MAX_WIRE_BYTES ||
       encoder.encode(data).byteLength > LAN_MAX_WIRE_BYTES) {
     throw new TypeError('Invalid LAN wire data size or type');
   }

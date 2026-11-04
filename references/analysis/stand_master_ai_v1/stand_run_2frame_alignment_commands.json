@@ -1,0 +1,772 @@
+{
+  "commands": [
+    {
+      "op": "setLayer",
+      "view": "front",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_front_run_1_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 503.775,
+          "y": 574.4124999999999
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "front",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_front_run_1_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 503.775,
+          "y": 220.4124999999999
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "front",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_front_run_1_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 503.775,
+          "y": 211.4124999999999
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "front",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_front_run_2_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 494.375,
+          "y": 573.2375
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "front",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_front_run_2_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 494.375,
+          "y": 219.23749999999995
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "front",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_front_run_2_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 494.375,
+          "y": 210.23749999999995
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterFrontLeft",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterFrontLeft_run_1_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 520.8125,
+          "y": 552.0875
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterFrontLeft",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterFrontLeft_run_1_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 520.8125,
+          "y": 198.08749999999998
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterFrontLeft",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterFrontLeft_run_1_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 520.8125,
+          "y": 189.08749999999998
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterFrontLeft",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterFrontLeft_run_2_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 513.175,
+          "y": 550.9124999999999
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterFrontLeft",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterFrontLeft_run_2_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 513.175,
+          "y": 196.9124999999999
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterFrontLeft",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterFrontLeft_run_2_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 513.175,
+          "y": 187.9124999999999
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "left",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_left_run_1_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 538.4375,
+          "y": 573.2375
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "left",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_left_run_1_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 553.3501213592233,
+          "y": 207.31481823777358
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "left",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_left_run_1_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 553.3501213592233,
+          "y": 198.96277075899013
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "left",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_left_run_2_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 536.0875,
+          "y": 572.0625
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "left",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_left_run_2_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 551.0001213592233,
+          "y": 206.13981823777362
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "left",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_left_run_2_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 551.0001213592233,
+          "y": 197.78777075899018
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterBackLeft",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterBackLeft_run_1_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 502.6,
+          "y": 584.9875
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterBackLeft",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterBackLeft_run_1_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 520.8265372168285,
+          "y": 253.81921521035594
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterBackLeft",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterBackLeft_run_1_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 522.8265372168285,
+          "y": 243.81921521035594
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterBackLeft",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterBackLeft_run_2_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 500.8375,
+          "y": 586.1624999999999
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterBackLeft",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterBackLeft_run_2_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 519.0640372168284,
+          "y": 254.9942152103559
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterBackLeft",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterBackLeft_run_2_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 521.0640372168284,
+          "y": 244.9942152103559
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "back",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_back_run_1_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 501.425,
+          "y": 588.5125
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "back",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_back_run_1_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 501.425,
+          "y": 245.51250000000005
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "back",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_back_run_1_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 503.425,
+          "y": 232.51250000000005
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "back",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_back_run_2_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 513.175,
+          "y": 586.1624999999999
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "back",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_back_run_2_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 513.175,
+          "y": 243.1624999999999
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "back",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_back_run_2_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 515.175,
+          "y": 230.1624999999999
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterBackRight",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterBackRight_run_1_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 521.4,
+          "y": 584.9875
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterBackRight",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterBackRight_run_1_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 503.4,
+          "y": 246.98749999999995
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterBackRight",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterBackRight_run_1_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 499.4,
+          "y": 236.98749999999995
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterBackRight",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterBackRight_run_2_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 523.1625,
+          "y": 586.1624999999999
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterBackRight",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterBackRight_run_2_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 505.1625,
+          "y": 248.1624999999999
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterBackRight",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterBackRight_run_2_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 501.1625,
+          "y": 238.1624999999999
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "right",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_right_run_1_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 485.5625,
+          "y": 573.2375
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "right",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_right_run_1_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 475.6207524271844,
+          "y": 207.12144475173312
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "right",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_right_run_1_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 475.6207524271844,
+          "y": 199.15614424503065
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "right",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_right_run_2_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 487.9125,
+          "y": 572.0625
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "right",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_right_run_2_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 477.97075242718444,
+          "y": 205.94644475173317
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "right",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_right_run_2_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 477.97075242718444,
+          "y": 197.9811442450307
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterFrontRight",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterFrontRight_run_1_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 503.1875,
+          "y": 552.0875
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterFrontRight",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterFrontRight_run_1_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 489.9318365695793,
+          "y": 189.80271035598702
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterFrontRight",
+      "animation": "run",
+      "frame": "run_1",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterFrontRight_run_1_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 489.9318365695793,
+          "y": 180.80271035598702
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterFrontRight",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterFrontRight_run_2_body"
+      },
+      "changes": {
+        "transform": {
+          "x": 510.825,
+          "y": 550.9124999999999
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterFrontRight",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterFrontRight_run_2_head"
+      },
+      "changes": {
+        "transform": {
+          "x": 497.56933656957926,
+          "y": 188.62771035598695
+        }
+      }
+    },
+    {
+      "op": "setLayer",
+      "view": "threeQuarterFrontRight",
+      "animation": "run",
+      "frame": "run_2",
+      "scope": "currentFrame",
+      "match": {
+        "id": "layer_run_threeQuarterFrontRight_run_2_hair"
+      },
+      "changes": {
+        "transform": {
+          "x": 497.56933656957926,
+          "y": 179.62771035598695
+        }
+      }
+    }
+  ]
+}

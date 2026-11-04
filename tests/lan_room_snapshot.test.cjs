@@ -42,6 +42,18 @@ test('internet P2P rooms are globally visible only in their explicit directory; 
  assert.equal(rooms.size,3);
 });
 
+test('unlisted hosted internet rooms are excluded while opted-in rooms remain discoverable',async()=>{
+ const {lanRoomSnapshot}=await import('../scripts/lan-room-snapshot.mjs');
+ const rooms=new Map([
+  ['private',{id:'room_private',name:'Invite only',build:'0.12.49.0',scope:'internet-p2p',listed:false,ip:'203.0.113.9',guest:null}],
+  ['public',{id:'room_public',name:'Listed',build:'0.12.49.0',scope:'internet-p2p',listed:true,ip:'203.0.113.10',guest:null}]
+ ]);
+ assert.deepEqual(lanRoomSnapshot(rooms,'198.51.100.25',()=>true,'internet-p2p').rooms,[
+  {roomId:'room_public',name:'Listed',build:'0.12.49.0',full:false,scope:'internet-p2p'}
+ ]);
+ assert.equal(rooms.has('private'),true,'private rooms remain joinable by their room ID');
+});
+
 test('host consent broker forwards bounded guest name and original host display name',()=>{
  const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
  assert.match(server,/guestName:safeGuestName\(m\.guestName\)/);

@@ -365,6 +365,31 @@ test('LAN-020 pre-aborted readiness signal is rejected immediately',async()=>{
   host.dispose();
 });
 
+test('LAN readiness sync-abort race does not allocate polling or timeout handles',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const signal={aborted:false,addEventListener(_type,listener){listener();},removeEventListener(){}};
+  const originalSetInterval=globalThis.setInterval,originalClearInterval=globalThis.clearInterval;
+  const originalSetTimeout=globalThis.setTimeout,originalClearTimeout=globalThis.clearTimeout;
+  let intervals=0,timeouts=0;
+  globalThis.setInterval=()=>{intervals++;return {kind:'interval'}};
+  globalThis.clearInterval=()=>{};
+  globalThis.setTimeout=()=>{timeouts++;return {kind:'timeout'}};
+  globalThis.clearTimeout=()=>{};
+  try {
+    await assert.rejects(host.awaitReady(500,signal),/cancelled/);
+    assert.equal(intervals,0);
+    assert.equal(timeouts,0);
+    assert.equal(host.disposed,false,'cancellation leaves the peer reusable');
+  } finally {
+    globalThis.setInterval=originalSetInterval;
+    globalThis.clearInterval=originalClearInterval;
+    globalThis.setTimeout=originalSetTimeout;
+    globalThis.clearTimeout=originalClearTimeout;
+    host.dispose();
+  }
+});
+
 test('LAN-021 malformed cancellation tokens reject safely and preserve reusable host',async()=>{
   const {createLanPeerConnection}=await load();
   const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
@@ -899,6 +924,26 @@ test('LAN-040 abort racing listener registration rejects and releases receiver',
     if(type==='abort')controller.abort();
   };
   assert.throws(()=>guest.subscribeGuestSnapshots(()=>{},-1,signal),/cancelled/);
+  const next=guest.subscribeGuestSnapshots(()=>{});
+  next.dispose();
+  guest.dispose();host.dispose();
+});
+
+test('LAN guest snapshot subscription cleans up when AbortSignal registration throws',async()=>{
+  const {createLanPeerConnection}=await load();
+  const host=createLanPeerConnection(hostHello,{RTCPeerConnection:FakePeer});
+  const guest=createLanPeerConnection(guestHello,{RTCPeerConnection:FakePeer});
+  const offer=await host.createOffer();
+  const answer=await guest.acceptOffer(offer);
+  await host.acceptAnswer(answer);
+  const channel=new FakeChannel('smf-lan');
+  guest.peer.emitChannel(channel);
+  host.peer.channel.open();channel.open();
+  for(const [target,hello] of [[host.peer.channel,guestHello],[channel,hostHello]]){
+    const event=new Event('message');event.data=JSON.stringify(hello);target.dispatchEvent(event);
+  }
+  const brokenSignal={aborted:false,addEventListener(){throw new Error('signal registration failed');},removeEventListener(){}};
+  assert.throws(()=>guest.subscribeGuestSnapshots(()=>{},-1,brokenSignal),/signal registration failed/);
   const next=guest.subscribeGuestSnapshots(()=>{});
   next.dispose();
   guest.dispose();host.dispose();

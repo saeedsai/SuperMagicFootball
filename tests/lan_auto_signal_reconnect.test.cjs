@@ -80,6 +80,19 @@ test('outbound signaling queue limit closes a stalled socket and reconnects',asy
  client.close();
 });
 
+test('invalid WebSocket queue counters fail closed and cannot bypass signaling backpressure',async()=>{
+ for(const bufferedAmount of [NaN,Infinity,-1,1.5,Number.MAX_SAFE_INTEGER+1]){
+  const f=fixture(),client=await f.clientFactory(),socket=FakeSocket.instances[0];socket.open();
+  socket.bufferedAmount=bufferedAmount;
+  assert.equal(client.send({type:'rooms'}),false,`counter ${bufferedAmount} is invalid`);
+  assert.equal(socket.sent.length,0);
+  assert.equal(socket.readyState,3);
+  assert.equal(client.ready,false);
+  assert.equal(f.callbacks.length,1);
+  client.close();
+ }
+});
+
 test('inbound signaling bounds UTF-8 bytes, not just UTF-16 string length',async()=>{
  const f=fixture(),client=await f.clientFactory(),socket=FakeSocket.instances[0];socket.open();
  const valid=JSON.stringify({type:'notice',message:'😀'.repeat(50000)});

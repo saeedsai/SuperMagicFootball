@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
 """QA of the 20% longitudinal pitch extension in the real modular browser fixture."""
 from pathlib import Path
+import shutil
+import os
 from playwright.sync_api import sync_playwright
 root=Path(__file__).resolve().parents[1]
-fixture=(root/'tests/.generated/play.html').read_text()
+fixture=(root/'tests/.generated/play.html').read_text(encoding='utf-8')
 html=fixture.split('<script type="module">',1)[0]+'</body></html>'
 javascript=fixture.split('<script type="module">',1)[1].split('</script>',1)[0]
 for_display=[]
 with sync_playwright() as p:
- browser=p.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox','--disable-dev-shm-usage'])
- for label,options in [('desktop',{'viewport':{'width':1280,'height':720}}),('simulated-touch',{'viewport':{'width':844,'height':390},'is_mobile':True,'has_touch':True})]:
+ chromium=shutil.which('chromium') or shutil.which('chrome') or shutil.which('chromium-browser') or os.environ.get('CHROME_PATH')
+ if not chromium:
+  for candidate in [Path(os.environ.get('PROGRAMFILES','C:/Program Files'))/'Google/Chrome/Application/chrome.exe',Path(os.environ.get('PROGRAMFILES(X86)','C:/Program Files (x86)'))/'Microsoft/Edge/Application/msedge.exe']:
+   if candidate.is_file():chromium=str(candidate);break
+ browser=p.chromium.launch(headless=True,executable_path=chromium,args=['--no-sandbox','--disable-dev-shm-usage'])
+ for label,options in [('desktop',{'viewport':{'width':1280,'height':720}}),('simulated-touch',{'viewport':{'width':844,'height':390},'is_mobile':True,'has_touch':True}),('portrait-touch',{'viewport':{'width':390,'height':844},'is_mobile':True,'has_touch':True})]:
   context=browser.new_context(**options)
   page=context.new_page()
   exceptions=[]
@@ -27,16 +33,26 @@ with sync_playwright() as p:
     rightKeeper:g.player(1,0).x>f.right-340,
     leftKeeper:g.player(0,0).x<f.left+340,
     goalCentres:g.player(0,0).y>=155&&g.player(1,0).y<=1375};
-   g.ball.owner=null;g.ball.x=f.right-50;g.ball.y=f.goalY;g.ball.vx=0;g.ball.vy=0;
-   r.cameraX=0;r.frame(g,.05,false);r.frame(g,.05,false);r.frame(g,.05,false);
+   g.ball.owner=null;g.ball.x=f.center;g.ball.y=f.goalY;g.ball.vx=0;g.ball.vy=0;
+   const simulation=()=>JSON.stringify({ball:[g.ball.x,g.ball.y,g.ball.vx,g.ball.vy],players:g.players.map(p=>[p.x,p.y,p.vx,p.vy]),score:g.score});
+   const before=simulation();
+   g.options.camera='Follow';r.cameraX=0;r.cameraY=0;
+   for(let k=0;k<30;k++)r.frame(g,.05,false);
+   const follow={zoom:r.cameraZoom,width:r.screenW/r.cameraZoom,cameraX:r.cameraX};
+   g.options.camera='Wide';r.cameraX=0;r.cameraY=0;
+   for(let k=0;k<30;k++)r.frame(g,.05,false);
+   const wide={zoom:r.cameraZoom,width:r.screenW/r.cameraZoom,cameraX:r.cameraX};
+   g.ball.x=f.right-50;
+   for(let k=0;k<80;k++)r.frame(g,.05,false);
    const rightCamera=r.cameraX;
    g.ball.x=f.left+50;
-   for(let k=0;k<10;k++)r.frame(g,.05,false);
-   return {initial,rightCamera,leftCamera:r.cameraX,screen:r.screenW,errors:[],
-      ok:Object.values(initial).every(Boolean)&&rightCamera>250&&r.cameraX<rightCamera};
+   for(let k=0;k<100;k++)r.frame(g,.05,false);
+   g.ball.x=f.center;
+   return {initial,follow,wide,rightCamera,leftCamera:r.cameraX,screen:r.screenW,errors:[],
+      simulationUnchanged:before===simulation(),ok:Object.values(initial).every(Boolean)&&wide.width>=follow.width*1.15&&wide.zoom<follow.zoom&&rightCamera>250&&r.cameraX<rightCamera&&before===simulation()};
   }""")
   assert result['ok'],(label,result)
   assert not exceptions,(label,exceptions)
-  print(label,'PASS: kickoff center, mirrored keepers, longer right-side pitch and camera tracking',result,flush=True)
+  print(label,'PASS: kickoff/keepers, end tracking, Wide field span >=15% above Follow and simulation unchanged',result,flush=True)
   context.close()
  browser.close()

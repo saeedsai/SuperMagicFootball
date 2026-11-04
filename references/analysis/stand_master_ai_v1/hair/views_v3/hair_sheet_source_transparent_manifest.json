@@ -1,0 +1,87 @@
+{
+  "format": "FootballSpriteAssetBundle",
+  "version": 1,
+  "source": "hair_sheet_source_transparent.png",
+  "items": [
+    {
+      "file": "hair_sheet_source_transparent_01.png",
+      "view": "front",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "hair",
+      "mirror": false,
+      "cropSource": {
+        "x": 0,
+        "y": 0,
+        "w": 418,
+        "h": 627
+      },
+      "width": 418,
+      "height": 627
+    },
+    {
+      "file": "hair_sheet_source_transparent_02.png",
+      "view": "threeQuarterFrontLeft",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "hair",
+      "mirror": false,
+      "cropSource": {
+        "x": 418,
+        "y": 0,
+        "w": 418,
+        "h": 627
+      },
+      "width": 418,
+      "height": 627
+    },
+    {
+      "file": "hair_sheet_source_transparent_03.png",
+      "view": "left",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "hair",
+      "mirror": false,
+      "cropSource": {
+        "x": 836,
+        "y": 0,
+        "w": 418,
+        "h": 627
+      },
+      "width": 418,
+      "height": 627
+    },
+    {
+      "file": "hair_sheet_source_transparent_04.png",
+      "view": "threeQuarterBackLeft",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "hair",
+      "mirror": false,
+      "cropSource": {
+        "x": 0,
+        "y": 627,
+        "w": 418,
+        "h": 627
+      },
+      "width": 418,
+      "height": 627
+    },
+    {
+      "file": "hair_sheet_source_transparent_05.png",
+      "view": "back",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "hair",
+      "mirror": false,
+      "cropSource": {
+        "x": 418,
+        "y": 627,
+        "w": 418,
+        "h": 627
+      },
+      "width": 418,
+      "height": 627
+    }
+  ]
+}

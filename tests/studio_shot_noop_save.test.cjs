@@ -2,12 +2,23 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const root=path.join(__dirname,'..'),ui=fs.readFileSync(path.join(root,'src/modules/ui.js'),'utf8');
+const mechanics=JSON.parse(fs.readFileSync(path.join(root,'data/mechanics/gameplay.json'),'utf8'));
+const abilitySource=fs.readFileSync(path.join(root,'src/modules/abilities.js'),'utf8');
+const abilityBody=abilitySource.slice(abilitySource.indexOf('const ABILITIES=(()=>')).replace(/\nexport \{ABILITIES\};?\s*$/,'');
+const ABILITIES=vm.runInNewContext(abilityBody+'\nABILITIES;',{
+ GAME_ASSETS:{mechanics},STATS:{verifiedRatingTierForPlayer:p=>p?.verifiedTier??null},
+ SPECIALS:{abilityLevel:()=>1,levelModifiers:()=>({fatigue:1})}
+});
 const start=ui.indexOf('function saveStudioShot(){'),end=ui.indexOf('const STUDIO_MAGIC_TRICKS=',start);
 assert.ok(start>=0&&end>start,'real Super Shot Studio handler exists');
 const handler=ui.slice(start,end),SHOTS={fire:{name:'Fire Strike'},banana:{name:'Banana Shot'}};
+const stateMatch=ui.match(/function studioShotSaveState\(choice,tier,player\)\{[\s\S]*?\n\}/);
+assert.ok(stateMatch,'real Super Shot save-state helper exists');
+const SPECIALS={abilityLevel:p=>p.superShotLevel??p.superAbility?.level??1};
+const studioShotSaveState=vm.runInNewContext(stateMatch[0]+';studioShotSaveState',{SHOTS,SPECIALS,ABILITIES});
 const fire={type:'shoot',id:'fire',name:'Fire Strike',level:3};
 function run({choice='keep',tier=3,shot='fire',shotName='Fire Strike',ability=fire,omitTier=false,omitShot=false,omitName=false,careerMode=false,role='MF'}={}){
- const player={id:'stable-shot',role,rating:92};
+ const player={id:'stable-shot',role,rating:92,statsVerified:true,verifiedTier:'Superstar'};
  if(!omitTier)player.superShotLevel=3;
  if(!omitShot)player.shot=shot;
  if(!omitName)player.shotName=shotName;
@@ -17,7 +28,8 @@ function run({choice='keep',tier=3,shot='fire',shotName='Fire Strike',ability=fi
   studioCareerContext:careerMode,career:careerMode?{club:0,roster:[player]}:null,
   home:0,avatarIndex:0,edits:{},TEAMS:[{id:'team'}],roster:()=>[player],
   $:id=>id==='studioShotAbility'?{value:choice}:id==='studioShotTier'?{value:String(tier)}:null,
-  SHOTS,studioEliteEligible:()=>true,
+  SPECIALS,studioShotSaveState,
+  SHOTS,ABILITIES,studioEliteEligible:()=>true,tokenWallet:{owns:(category,id)=>category==='superShot'&&id==='banana'},
   storeCharacterChanges:()=>{stats.writes++;return true;},
   saveCareer:()=>{stats.careerWrites++;},showPlayerStudio:()=>{stats.refreshes++;},
   alert:message=>{throw Error(message);}
@@ -41,7 +53,7 @@ test('STUDIO-SHOT-NOOP-01: removing an already-removed explicit Shot is read-onl
  }
 });
 test('STUDIO-SHOT-NOOP-01: first explicit level persists even with KEEP',()=>{
- const {save,stats,context}=run({choice:'keep',omitTier:true});
+ const {save,stats,context}=run({choice:'keep',omitTier:true,ability:{type:'shoot',id:'fire',name:'Fire Strike'}});
  save();assert.equal(stats.writes,1);assert.equal(stats.refreshes,1);
  assert.equal(context.edits.team[0].superShotLevel,3);
 });
@@ -64,15 +76,25 @@ test('STUDIO-SHOT-NOOP-01: different Shot and stale name are genuine edits',()=>
  assert.equal(stale.context.edits.team[0].shotName,'Fire Strike');
 });
 test('STUDIO-SHOT-NOOP-01: invalid selection and tier reject before no-op',()=>{
- for(const options of [{choice:'not-a-shot'},{tier:0},{role:'GK'}]){
+ for(const options of [{choice:'not-a-shot'},{tier:0},{role:'GK',ability:null}]){
   const {save,stats}=run(options);
   assert.throws(save,/Cannot save Super Shot/);
   assert.equal(stats.writes,0);assert.equal(stats.refreshes,0);
  }
 });
-test('STUDIO-SHOT-NOOP-01: legacy absent fields persist on explicit REMOVE',()=>{
+test('STUDIO-SHOT-OWNERSHIP-01: an unowned shot cannot be equipped through a forged selector value',()=>{
+ const options=run({choice:'banana'});options.context.tokenWallet.owns=()=>false;
+ assert.throws(options.save,/Unlock this Super Shot in Store & Tokens/);
+ assert.equal(options.stats.writes,0);
+});
+test('STUDIO-SHOT-NOOP-01: goalkeeper legacy equipment can be kept but tier changes fail closed',()=>{
+ const same=run({choice:'keep',tier:3,role:'GK'});same.save();
+ assert.equal(same.stats.writes,0);assert.equal(same.stats.refreshes,1);
+ const change=run({choice:'keep',tier:4,role:'GK'});
+ assert.throws(change.save,/verified tier/);assert.equal(change.stats.writes,0);
+});
+test('STUDIO-SHOT-NOOP-01: removing absent legacy fields is read-only',()=>{
  const {save,stats,context}=run({choice:'none',omitShot:true,omitName:true,ability:null});
- save();assert.equal(stats.writes,1);
- assert.equal(context.edits.team[0].shot,null);
- assert.equal(context.edits.team[0].shotName,'');
+ save();assert.equal(stats.writes,0);assert.equal(stats.refreshes,1);
+ assert.equal(context.edits.team,undefined);
 });

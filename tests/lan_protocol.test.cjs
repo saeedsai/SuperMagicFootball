@@ -220,6 +220,17 @@ test('LAN-008 rejected timing never advances peer sequence and retransmit works'
  assert.equal(repeat.kind,'replay');
  assert.equal(repeat.state,accepted.state);
 });
+test('LAN-008 rejects sequence jumps without poisoning the production peer cursor',async()=>{
+ const p=await load(),guest={...hello,role:'guest'};
+ const ready=p.acceptLanHostMessage(p.createLanHostSession(hello),p.serializeLanPacket(guest),40).state;
+ const jump=p.acceptLanHostMessage(ready,p.serializeLanPacket({...input,sequence:Number.MAX_SAFE_INTEGER}),40);
+ assert.equal(jump.kind,'sequence-gap');
+ assert.equal(jump.state,ready,'rejected sequence gaps leave both peer and input queue unchanged');
+ const next=p.acceptLanHostMessage(jump.state,p.serializeLanPacket({...input,sequence:1}),40);
+ assert.equal(next.kind,'accepted','the next honest contiguous input still works on the same connection');
+ assert.equal(next.state.peer.lastSequence,1);
+ assert.equal(next.state.queue.lastSequence,1);
+});
 test('LAN-008 host session rejects guest role confusion and forged sessions',async()=>{
  const p=await load(),guest={...hello,role:'guest'};
  assert.throws(()=>p.createLanHostSession(guest));
@@ -300,14 +311,74 @@ test('LAN-010 guest send failures and invalid controls do not advance sender sta
  assert.equal(ready.sender.lastSequence,0);
 });
 
+test('LAN-091 guest input backpressure accepts the exact byte limit',async()=>{
+ const p=await load(),guest=p.createLanGuestSession({...hello,role:'guest'});
+ const ready=p.acceptLanGuestHello(guest,p.serializeLanPacket(hello));
+ const sent=[];
+ const probe={readyState:'open',bufferedAmount:0,send:wire=>sent.push(wire)};
+ const wire=p.serializeLanPacket({protocol:1,type:'input',session:hello.session,
+  sequence:1,frame:42,buttons:['pass'],dx:1,dy:0});
+ const byteLength=new TextEncoder().encode(wire).byteLength;
+ probe.bufferedAmount=p.LAN_GUEST_INPUT_MAX_BUFFERED_BYTES-byteLength;
+ const outgoing=p.sendLanGuestFrame(ready,probe,42,['pass'],1,0);
+ assert.equal(sent.length,1);
+ assert.equal(outgoing.bytes,wire.length);
+ assert.equal(outgoing.state.sender.lastSequence,1);
+ assert.equal(outgoing.state.sender.lastFrame,42);
+ assert.equal(p.LAN_GUEST_INPUT_MAX_BUFFERED_BYTES,16*1024);
+});
+
+test('LAN-091 over-limit guest queue rejects without send or sequence/frame advance, then retries after drain',async()=>{
+ const p=await load(),guest=p.createLanGuestSession({...hello,role:'guest'});
+ const ready=p.acceptLanGuestHello(guest,p.serializeLanPacket(hello));
+ const sent=[];
+ const channel={readyState:'open',bufferedAmount:0,send:wire=>sent.push(wire)};
+ const wire=p.serializeLanPacket({protocol:1,type:'input',session:hello.session,
+  sequence:1,frame:42,buttons:['pass'],dx:1,dy:0});
+ const bytes=new TextEncoder().encode(wire).byteLength;
+ channel.bufferedAmount=p.LAN_GUEST_INPUT_MAX_BUFFERED_BYTES-bytes+1;
+ assert.throws(()=>p.sendLanGuestFrame(ready,channel,42,['pass'],1,0),/backpressure/);
+ assert.equal(sent.length,0);
+ assert.equal(ready.sender.lastSequence,0);
+ assert.equal(ready.sender.lastFrame,-1);
+ channel.bufferedAmount=0;
+ const retried=p.sendLanGuestFrame(ready,channel,42,['pass'],1,0);
+ assert.deepEqual([retried.packet.sequence,retried.packet.frame],[1,42]);
+ assert.equal(retried.state.sender.lastSequence,1);
+ assert.equal(retried.state.sender.lastFrame,42);
+ const next=p.sendLanGuestFrame(retried.state,channel,43,['jump'],0,1);
+ assert.deepEqual([next.packet.sequence,next.packet.frame],[2,43]);
+ assert.equal(sent.length,2);
+});
+
+test('LAN-091 guest queue rejects invalid bufferedAmount values before send',async()=>{
+ const p=await load(),guest=p.createLanGuestSession({...hello,role:'guest'});
+ const ready=p.acceptLanGuestHello(guest,p.serializeLanPacket(hello));
+ for(const bufferedAmount of [-1,NaN,Infinity,1.5,Number.MAX_SAFE_INTEGER+1]){
+  let sends=0;
+  const channel={readyState:'open',bufferedAmount,send(){sends++}};
+  assert.throws(()=>p.sendLanGuestFrame(ready,channel,42,['pass']),/backpressure/);
+  assert.equal(sends,0);
+  assert.equal(ready.sender.lastSequence,0);
+  assert.equal(ready.sender.lastFrame,-1);
+ }
+ // Older test channels omit bufferedAmount; treat the absent API field as an empty queue.
+ let sends=0;
+ const legacyMock={readyState:'open',send(){sends++}};
+ const sent=p.sendLanGuestFrame(ready,legacyMock,42,['pass']);
+ assert.equal(sends,1);
+ assert.equal(sent.state.sender.lastSequence,1);
+});
+
 test('LAN-011 rejects late guest input for an already simulated host frame',async()=>{
  const p=await load(),guest={...hello,role:'guest'};
  const ready=p.acceptLanHostMessage(p.createLanHostSession(hello),p.serializeLanPacket(guest),40).state;
  const advanced=p.advanceLanHostFrame(ready,40).state;
  const late=p.acceptLanHostMessage(advanced,p.serializeLanPacket({...input,frame:40}),40);
- assert.equal(late.kind,'outside-frame-window');
- assert.equal(late.state,advanced);
- const valid=p.acceptLanHostMessage(advanced,p.serializeLanPacket({...input,frame:41}),40);
+ assert.equal(late.kind,'late-frame');
+ assert.equal(late.state.lastSimulatedFrame,40);
+ assert.equal(late.state.peer.lastSequence,1,'stale controls are discarded but their valid sequence is consumed');
+ const valid=p.acceptLanHostMessage(late.state,p.serializeLanPacket({...input,sequence:2,frame:41}),40);
  assert.equal(valid.kind,'accepted');
  assert.equal(valid.state.queue.pending.length,1);
  assert.equal(p.advanceLanHostFrame(valid.state,41).received,true);

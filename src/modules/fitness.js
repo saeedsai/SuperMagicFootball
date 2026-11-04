@@ -6,7 +6,7 @@ const clamp=(x,lo,hi)=>Math.min(hi,Math.max(lo,x));
 const initialFatigue=p=>Number.isFinite(+p?.energy)?clamp(1-(+p.energy)/100,0,1):clamp((100-(Number(p?.condition) || 100))*.006,0,.65);
 function fatigueTick(fatigue,stamina,seconds,intensity=0){
  const rated=clamp(Number(stamina)||60,1,100),load=clamp(intensity,0,1.8);
- const rate=(.0011+.015*load)*.78*(120-rated)/65; // lower exertion cost
+ const rate=(.0011+.015*load)*.70*(120-rated)/65; // eased exertion cost
  // v0.8.25.12: players recover meaningfully when resting or only jogging.
  // Around 3% stamina returns per 10 seconds when effectively idle, tapering as activity rises.
  const recovery=load<.03?.004:load<.08?.00155:.00018;
@@ -14,14 +14,14 @@ function fatigueTick(fatigue,stamina,seconds,intensity=0){
 }
 function actionFatigue(fatigue,stamina,kind,modifier=1){
  const costs={jump:.008,tackle:.019,slide:.029,pass:.004,dribble:.010,shoot:.012,super:.085,defenceSuper:.065,spinBumper:.125,keeperSuper:.080,hyperdash:.060,header:.013,keeperDive:.022,comboJump:.035,assistBoost:.023,flipKick:.022,comboSuper:.105,bicycle:.035,superBicycle:.070,flyingKick:.029,dribbleTrick:.020};
- return clamp(fatigue+(costs[kind]||0)*.78*Math.max(.5,Math.min(kind==='jump'?2:1.5,Number(modifier)||1))*(120-clamp(Number(stamina)||60,1,100))/65,0,1);
+ return clamp(fatigue+(costs[kind]||0)*.70*Math.max(.5,Math.min(kind==='jump'?2:1.5,Number(modifier)||1))*(120-clamp(Number(stamina)||60,1,100))/65,0,1);
 }
 // ENERGY is long-term (legacy 'fatigue' 0..1 stays for save/API compatibility).
 // BREATH is a separate, short-term action budget measured in seconds.
 const breathCapacity=stamina=>3+7*(clamp(Number(stamina)||1,1,100)-1)/99;
 const breathPenalty=(breath,stamina)=>{
  const cap=breathCapacity(stamina);
- return 1+.75*(1-clamp(Number(breath)||0,0,cap)/cap);
+ return 1+.60*(1-clamp(Number(breath)||0,0,cap)/cap);
 };
 const breathActionSeconds=Object.freeze({
  pass:.25,shoot:1.1,super:2.6,comboSuper:3.0,defenceSuper:2.4,
@@ -32,7 +32,7 @@ const breathActionSeconds=Object.freeze({
 });
 function spendBreath(breath,stamina,kind){
  const cap=breathCapacity(stamina),rated=clamp(Number(stamina)||1,1,100);
- const cost=(breathActionSeconds[kind]||.45)*(1.2-.4*(rated-1)/99);
+ const cost=(breathActionSeconds[kind]||.45)*.90*(1.2-.4*(rated-1)/99);
  return clamp((Number.isFinite(+breath)?+breath:cap)-cost,0,cap);
 }
 // Sustained ordinary DRIBBLE hold is inexpensive; JUMP sprint remains the high-drain option.
@@ -56,7 +56,7 @@ function breathTick(breath,stamina,seconds,intensity=0){
  // Ordinary running (intensity .6) has a tiny drain; sprinting (1.5+) drains quickly.
  // Hard movement must NOT recharge Breath while it is being consumed.
  const regen=active<=.08?(1.4+1.1*(rated-1)/99):active<=.55?(1.0+.9*(rated-1)/99):0;
- const drain=active>0.55?(.02+(active-.55)*2.2)*(1.2-.4*(rated-1)/99):0;
+ const drain=active>0.55?(.02+(active-.55)*2.0)*(1.2-.4*(rated-1)/99):0;
  return clamp((Number.isFinite(+breath)?+breath:cap)+Math.max(0,seconds)*(regen-drain),0,cap);
 }
 // Explicit cumulative recovery after N rest days: +30%, +50%, then +10% per day.

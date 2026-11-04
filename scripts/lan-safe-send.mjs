@@ -14,10 +14,15 @@ export function safeLanSend(ws, message) {
     const payloadBytes = Buffer.byteLength(payload, 'utf8');
     if (payloadBytes > 210000) return false;
     // Disconnect a stalled peer before queued signaling grows without bound.
-    if (Number.isFinite(ws.bufferedAmount) && ws.bufferedAmount >= 0 &&
-        ws.bufferedAmount + payloadBytes > LAN_MAX_OUTBOUND_QUEUE_BYTES) {
-      try { ws.terminate?.(); } catch { /* already closing */ }
-      return false;
+    if (ws.bufferedAmount !== undefined) {
+      const queuedBytes = ws.bufferedAmount;
+      // A malformed transport counter must not disable the queue bound.
+      // Legacy test doubles without the property still represent an empty queue.
+      if (!Number.isSafeInteger(queuedBytes) || queuedBytes < 0 ||
+          queuedBytes + payloadBytes > LAN_MAX_OUTBOUND_QUEUE_BYTES) {
+        try { ws.terminate?.(); } catch { /* already closing */ }
+        return false;
+      }
     }
     // Recheck state after serialization, which may invoke custom toJSON code.
     if (ws.readyState !== 1) return false;

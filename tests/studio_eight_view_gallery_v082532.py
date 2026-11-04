@@ -10,6 +10,11 @@ RELEASE_VERSION=json.loads((ROOT/'package.json').read_text())['version']
 source=(ROOT/'tests/.generated/play.html').read_text()
 html=source.split('<script type="module">',1)[0]+'</body></html>'
 js=source.split('<script type="module">',1)[1].split('</script>',1)[0]
+# The gallery test needs at least two unlocked hairstyles to distinguish an
+# unsaved edit. Store purchase/locked-state coverage lives in token_store_browser_qa.py.
+assets=json.loads((ROOT/'data/graphics/procedural_assets.json').read_text(encoding='utf-8'))
+style_count=len(assets['studioAssetLabels']['style'])
+test_wallet={'schema':1,'tokens':0,'unlocks':[f'appearance:style:{index}' for index in range(style_count)],'receipts':[]}
 checks=[]
 def check(name,fn):
  try:
@@ -25,7 +30,7 @@ with sync_playwright() as pw:
   ctx=browser.new_context(**context_options)
   page=ctx.new_page();page.set_default_timeout(30000)
   errors=[];page.on('pageerror',lambda exc:errors.append(str(exc)))
-  page.set_content(html);page.evaluate('''() => {const values=new Map();Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>values.has(k)?values.get(k):null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k),clear:()=>values.clear()}})}''');page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball')
+  page.set_content(html);page.evaluate('''seed => {const values=new Map([['legend_tokenWallet',JSON.stringify(seed)]]);Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>values.has(k)?values.get(k):null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k),clear:()=>values.clear()}})}''',test_wallet);page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball')
   check(mode+' current modular game boots',lambda:page.evaluate("version => SupermagicFootball.version===version",RELEASE_VERSION))
   def open_studio():
    for a in ['navSettings','navCustomization','playerStudio']:page.locator('[data-action="'+a+'"]').first.click()
@@ -72,7 +77,7 @@ with sync_playwright() as pw:
   check(mode+' rear hairstyle uniqueness: all thirteen styles distinguishable',rear_matrix)
   check(mode+' no uncaught JavaScript exceptions',lambda:len(errors)==0 or {'ok':False,'errors':errors})
   if mode=='desktop':
-   page.locator('#studioEightViewGallery').screenshot(path=str(ROOT/'docs/Studio_Eight_Directions_v082532.png'))
+   check(mode+' eight-view gallery screenshot available',lambda:page.locator('#studioEightViewGallery').screenshot(path=str(ROOT/'docs/Studio_Eight_Directions_v082532.png')) is not None)
   def gallery_close():
    selected=page.locator('#face_style').input_value()
    page.locator('[data-action="studioGalleryToggle"]').click()

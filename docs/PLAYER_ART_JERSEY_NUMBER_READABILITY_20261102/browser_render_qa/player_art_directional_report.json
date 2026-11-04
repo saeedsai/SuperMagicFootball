@@ -1,0 +1,30 @@
+{
+  "desktop": {
+    "ok": true,
+    "tested": 2860,
+    "blank": 0,
+    "clipped": 0,
+    "beardMissing": [],
+    "styleCollisions": [],
+    "noseCollisions": [],
+    "lipCollisions": [],
+    "naturalSkinSamples": 3,
+    "hairColorSamples": 3,
+    "checksum": 3219354579,
+    "uncaught_errors": []
+  },
+  "simulated-touch": {
+    "ok": true,
+    "tested": 2860,
+    "blank": 0,
+    "clipped": 0,
+    "beardMissing": [],
+    "styleCollisions": [],
+    "noseCollisions": [],
+    "lipCollisions": [],
+    "naturalSkinSamples": 3,
+    "hairColorSamples": 3,
+    "checksum": 3219354579,
+    "uncaught_errors": []
+  }
+}

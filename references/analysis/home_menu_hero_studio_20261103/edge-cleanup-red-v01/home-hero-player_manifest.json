@@ -1,0 +1,23 @@
+{
+  "format": "FootballSpriteAssetBundle",
+  "version": 1,
+  "source": "home-hero-player.png",
+  "items": [
+    {
+      "file": "home-hero-player_transparent.png",
+      "view": "front",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "bodyPart",
+      "mirror": false,
+      "cropSource": {
+        "x": 0,
+        "y": 0,
+        "w": 1230,
+        "h": 1278
+      },
+      "width": 1230,
+      "height": 1278
+    }
+  ]
+}

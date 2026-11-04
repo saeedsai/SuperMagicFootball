@@ -304,6 +304,10 @@ function createLanPeerConnection(localHello, options = {}) {
       }
       function onAbort() { finish(new Error('LAN readiness cancelled')); }
       signal?.addEventListener('abort', onAbort, {once:true});
+      // A structural AbortSignal implementation may invoke a newly added
+      // abort listener synchronously. Do not allocate polling/timer handles
+      // after that listener has already settled the readiness promise.
+      if (finished) return;
       function check() {
         if (signal?.aborted) finish(new Error('LAN readiness cancelled'));
         else if (disposed || peer.connectionState === 'failed' ||
@@ -327,6 +331,21 @@ function createLanPeerConnection(localHello, options = {}) {
       throw new Error('LAN guest input requires a ready guest connection');
     }
     return binding.sendInput(frame, buttons, dx, dy);
+  }
+  // LAN-098: acknowledgement of durable, host-bound terminal reward receipt.
+  // This control-plane packet is separate from the guest's four-button input.
+  function sendGuestResultAck(receiptId) {
+    if (disposed || hello.role !== 'guest' || phase !== 'connected-signaling' ||
+        !binding?.ready || !transportUsable()) {
+      throw new Error('LAN result acknowledgement requires a ready guest connection');
+    }
+    return binding.sendResultAck(receiptId);
+  }
+  function subscribeHostResultAck(listener, signal = null) {
+    if (disposed || hello.role !== 'host' || !binding) {
+      throw new Error('LAN result acknowledgement subscription requires an active host');
+    }
+    return binding.subscribeResultAck(listener, signal);
   }
   // LAN-025: validated guest inputs can be observed by a future authoritative
   // match loop; observers cannot bypass host frame advancement.
@@ -435,7 +454,8 @@ function createLanPeerConnection(localHello, options = {}) {
     guestSnapshotBinding = receiver;
     const onAbort = () => unsubscribe();
     function unsubscribe() {
-      signal?.removeEventListener('abort', onAbort);
+      try { signal?.removeEventListener('abort', onAbort); }
+      catch { /* a broken signal must not strand the channel receiver */ }
       receiver.dispose();
       if (guestSnapshotBinding === receiver) {
         guestSnapshotBinding = null;
@@ -443,7 +463,11 @@ function createLanPeerConnection(localHello, options = {}) {
       }
     }
     guestSnapshotUnsubscribe = unsubscribe;
-    signal?.addEventListener('abort', onAbort, {once:true});
+    try { signal?.addEventListener('abort', onAbort, {once:true}); }
+    catch (error) {
+      unsubscribe();
+      throw error;
+    }
     if (signal?.aborted) {
       unsubscribe();
       throw new Error('LAN snapshot subscription cancelled');
@@ -488,7 +512,7 @@ function createLanPeerConnection(localHello, options = {}) {
     emitStatus();
     statusListeners.clear();
   }
-  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, sendGuestInput, advanceHostFrame, sendHostSnapshot, sendHostMatchState, stepHostMatchFrame, subscribeGuestSnapshots, subscribeGuestMatchState, subscribeHostInput, subscribeHostFrame, subscribeStatus, dispose,
+  return Object.freeze({createOffer:()=>guarded(createOffer), acceptOffer:raw=>guarded(()=>acceptOffer(raw)), acceptAnswer:raw=>guarded(()=>acceptAnswer(raw)), awaitReady, sendGuestInput, sendGuestResultAck, advanceHostFrame, sendHostSnapshot, sendHostMatchState, stepHostMatchFrame, subscribeGuestSnapshots, subscribeGuestMatchState, subscribeHostInput, subscribeHostResultAck, subscribeHostFrame, subscribeStatus, dispose,
     get snapshotIdentity() { return snapshotIdentity; },
     get status() { return snapshotStatus(); },
     get ready() { return phase === 'connected-signaling' && !!binding?.ready && transportUsable(); },

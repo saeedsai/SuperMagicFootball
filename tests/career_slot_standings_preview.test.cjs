@@ -31,11 +31,11 @@ test('incomplete legacy standings hide only the preview; save and load remain av
  assert.equal(slots.list().length,10);assert.equal(slots.list()[1].leaguePosition,null);
 });
 test('Career save-slot screen displays standings only when available',()=>{
- const ui=fs.readFileSync('src/modules/ui.js','utf8');
+ const ui=fs.readFileSync('src/modules/ui.js','utf8').replace(/\r\n/g,'\n');
  const found=ui.match(/function showCareerSlots\(\)\{[\s\S]*?\n\}(?=\nfunction showCupSlots)/);
  assert.ok(found,'Career slots screen exists');
  let html='';const slot={number:1,active:true,occupied:true,name:'Saved',club:0,season:3,week:6,savedAt:'2026-10-30T00:00:00Z',leaguePosition:2,leagueSize:4,leaguePoints:12};
- const ctx={careerSlots:{firstEmpty:()=>null,list:()=>[slot],error:null},career:null,TEAMS:[{name:'Club'}],escapeHTML:String,button:()=>'',page:(_title,_desc,markup)=>{html=markup}};
+ const ctx={careerSlots:{firstEmpty:()=>null,list:()=>[slot],error:null},career:null,TEAMS:[{name:'Club'}],escapeHTML:String,button:()=>'',slotActionButton:()=>'',page:(_title,_desc,markup)=>{html=markup}};
  vm.runInNewContext(found[0]+'\nshowCareerSlots()',ctx);
  assert.match(html,/League #2\/4 · 12 pts/);
  slot.leaguePosition=null;vm.runInNewContext(found[0]+'\nshowCareerSlots()',ctx);

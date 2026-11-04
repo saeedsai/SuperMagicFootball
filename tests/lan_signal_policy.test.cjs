@@ -51,8 +51,9 @@ test('hosted signaling bounds room count and per-guest/per-room pending requests
 test('signaling closes sockets that exceed the per-connection message budget',()=>{
  const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
  assert.match(server,/MAX_MESSAGES_PER_WINDOW=120,WINDOW_MS=60000/);
- assert.match(server,/windowStart:Date\.now\(\),messageCount:0/);
- assert.match(server,/now-meta\.windowStart>=WINDOW_MS/);
+ assert.match(server,/windowStart:connectedAt,messageCount:0/);
+ assert.match(server,/if\(elapsedNow-meta\.windowStart>=WINDOW_MS\)/);
+ assert.doesNotMatch(server,/Date\.now\(\).*windowStart|wallNow-meta\.windowStart/);
  assert.match(server,/\+\+meta\.messageCount>MAX_MESSAGES_PER_WINDOW/);
  assert.match(server,/ws\.close\(1008,'Signaling rate limit'\)/);
 });
@@ -60,20 +61,33 @@ test('signaling closes sockets that exceed the per-connection message budget',()
 test('signaling caps concurrent WebSocket sessions per source IP',()=>{
  const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
  assert.match(server,/MAX_CONNECTIONS_PER_IP=8/);
- assert.match(server,/signalPolicy\.allows\(ip,origin,req\.headers\.host\)&&\[\.\.\.clients\.values\(\)\]\.filter\(meta=>meta\.ip===ip\)\.length<MAX_CONNECTIONS_PER_IP/);
+ assert.match(server,/maxPerIp:MAX_CONNECTIONS_PER_IP/);
+ assert.match(server,/connectionBudget\.reserve\(req,ip\)/);
+});
+
+test('signaling reserves a configurable bounded total connection budget through handshake completion',()=>{
+ const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
+ assert.match(server,/LAN_MAX_CONNECTIONS===undefined\?256:Number\(process\.env\.LAN_MAX_CONNECTIONS\)/);
+ assert.match(server,/connectionBudget\.reserve\(req,ip\)/);
+ assert.match(server,/connectionBudget\.connect\(req\)/);
+ assert.match(server,/connectionBudget\.release\(req\)/);
+ assert.match(server,/wss\.on\('wsClientError',\(_error,_socket,req\)=>connectionBudget\.release\(req\)\)/);
 });
 
 test('approving a guest rejects other queued requests for that room',()=>{
  const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
- assert.match(server,/for\(const \[otherId,other\] of pending\)if\(other\.roomId===id\)/);
- assert.match(server,/pending\.delete\(otherId\)/);
+ assert.match(server,/for\(const \[otherKey,other\] of pending\)if\(other\.roomId===id\)/);
+ assert.match(server,/pending\.delete\(otherKey\)/);
  assert.match(server,/send\(other\.guest,\{type:'join-reject',roomId:id,requestId:otherId,reason:'room-full'\}\)/);
  assert.match(server,/send\(ws,\{type:'join-cancel',roomId:id,requestId:otherId\}\)/);
 });
 
 test('repeated registration by the same host is idempotent',()=>{
  const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
- assert.match(server,/if\(rooms\.has\(id\)\)\{if\(rooms\.get\(id\)\.host!==ws\)return send\(ws,\{type:'error',message:'Room already exists'\}\);send\(ws,\{type:'host-registered',roomId:id\}\);return\}/);
+ assert.match(server,/if\(rooms\.has\(id\)\)\{const existing=rooms\.get\(id\);if\(existing\.host!==ws\).*?send\(ws,\{type:'host-registered',roomId:id\}\);return\}/);
+ assert.match(server,/existing\.listed=requested!=='internet-p2p'\|\|m\.public!==false/);
+ assert.match(server,/existing\.scope!==requested\)return send\(ws,\{type:'error',message:'Cannot change discovery scope for an active room'\}\)/);
+ assert.match(server,/requested==='internet-p2p'&&m\.public!==undefined&&typeof m\.public!=='boolean'/);
 });
 
 test('host or approved guest cannot request another guest seat on the same socket',()=>{
@@ -84,7 +98,7 @@ test('host or approved guest cannot request another guest seat on the same socke
 
 test('late host approval cannot bypass the 30-second join expiry',()=>{
  const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
- assert.match(server,/if\(Date\.now\(\)-req\.time>30000\)/);
+ assert.match(server,/if\(brokerNow\(\)-req\.time>30000\)/);
  assert.match(server,/send\(req\.guest,\{type:'join-reject',roomId:id,requestId,reason:'timeout'\}\)/);
  assert.match(server,/send\(ws,\{type:'join-cancel',roomId:id,requestId,reason:'timeout'\}\)/);
 });

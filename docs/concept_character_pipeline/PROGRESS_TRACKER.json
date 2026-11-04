@@ -1,6 +1,6 @@
 {
   "schema": "smf-concept-modular-roadmap/1",
-  "updated": "2026-10-31",
+  "updated": "2026-11-01",
   "branch": "dev",
   "baselineAtPlanning": "82119108ca63dd510bd49bdf5c2083bed168a9a0",
   "currentMilestone": "C01",
@@ -342,7 +342,7 @@
       "identifier": "medium-honey-curls-moustache"
     }
   ],
-  "nextSmallTask": "After current C01 seventh front torso graphic QA and hosted Pages acceptance: inspect baked old arm exposure at ±run on four backgrounds, then claim a separate bounded safe occlusion mask; do not alter legacy side/back or match physics.",
+  "nextSmallTask": "Refine V12's remaining run_01 temple, ear, and hairline alpha edges; the three-module candidate differs at 36 pixels at 64 px (one above 8) and has 495 missing/5 extra source pixels at full resolution. Run_02 and run_03 now have source-specific three-module candidates at 30 and 34 changed game-size pixels respectively, none above 8; owner review remains open. Build the same source-locked proof for run_04, then check run_05-run_07 individually for compatible head/hair reuse. Expand from the run cycle to the 20 available front run/jump/tackle frames. Keep frames unapproved until joins, compatible reuse, game integration, and owner art review pass. Continue the eight-view neutral backlog in parallel; the seven non-front action previews are transformed standing art and must not count as authored coverage.",
   "openRisks": [
     "Only one cloned literal concept character is available for all twelve demo slots",
     "Flattened five-view atlas has baked blue uniform and number 10",
@@ -350,7 +350,7 @@
     "Basic cutout leg swing is not fully animated arms, faces, specials or goalkeeper motion",
     "Editable component-layer art and provenance have not been validated for new modular renderer",
     "Source resolution/performance/atlas budget and in-game art quality require measured baseline and owner review",
-    "New back view only supplies a transparent hair overlay on the existing flattened back-body art; must not be counted as complete authored back view",
+    "Legacy C01 back work only supplied a transparent hair overlay on flattened back-body art; that legacy limitation remains. A separate experimental three-module back pilot now has an independently painted bald-head base, but it is still unapproved and not game-integrated.",
     "New front face is a transparently painted independent feature set over an existing flattened head/body, not a complete separated full head; no owner face-art approval.",
     "Experiment: overlay arm over baked old static arm may show residual ghosting at large run poses; only low-amplitude motion until torso/body are independently authored.",
     "Both new arm overlays paint over the unchanged flat torso; a full clean articulated arm cycle and occlusion masks are NOT delivered."

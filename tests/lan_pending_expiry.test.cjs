@@ -37,6 +37,6 @@ test('server periodically expires pending joins and host UI already handles join
   const server = fs.readFileSync('scripts/lan-server.mjs','utf8');
   const lobby = fs.readFileSync('src/modules/lan-auto-lobby.js','utf8');
   assert.match(server,/import \{expireLanPending\} from '\.\/lan-pending-expiry\.mjs'/);
-  assert.match(server,/setInterval\(\(\)=>expireLanPending\(pending,send\),5000\)\.unref\(\)/);
+  assert.match(server,/setInterval\(\(\)=>expireLanPending\(pending,send,brokerNow\(\)\),5000\)\.unref\(\)/);
   assert.match(lobby,/m\.type==='join-cancel'/);
 });

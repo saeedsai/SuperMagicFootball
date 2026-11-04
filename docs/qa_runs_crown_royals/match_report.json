@@ -1,0 +1,68 @@
+{
+  "desktop": {
+    "status": "PASS",
+    "alexPixelCounts": [
+      7162,
+      7162,
+      5479,
+      7317,
+      7317
+    ],
+    "leoPixelCounts": [
+      7747,
+      7747,
+      5800,
+      8874,
+      8874
+    ],
+    "kwamePixelCounts": [
+      9246,
+      9246,
+      8047,
+      9195,
+      9195
+    ],
+    "diegoPixelCounts": [
+      8255,
+      8255,
+      7025,
+      8384,
+      8384
+    ],
+    "differentViews": 5,
+    "errors": []
+  },
+  "touch": {
+    "status": "PASS",
+    "alexPixelCounts": [
+      7162,
+      7162,
+      5479,
+      7317,
+      7317
+    ],
+    "leoPixelCounts": [
+      7747,
+      7747,
+      5800,
+      8874,
+      8874
+    ],
+    "kwamePixelCounts": [
+      9246,
+      9246,
+      8047,
+      9195,
+      9195
+    ],
+    "diegoPixelCounts": [
+      8255,
+      8255,
+      7025,
+      8384,
+      8384
+    ],
+    "differentViews": 5,
+    "errors": []
+  }
+}

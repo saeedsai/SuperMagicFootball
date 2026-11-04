@@ -10,6 +10,8 @@ const BPW=(()=>{/** BPW: Best Players of each historical World Cup, not a nation
  * Slot IDs are version-stable and never replace legacy club/national team IDs.
  */
 const BPW_YEARS=Object.freeze([1998,2002,2006,2010,2014,2018]);
+const BPW_TIER_EXEMPT_TEAM_IDS=new Set(BPW_YEARS.map(year=>`bpw_wc_${year}`));
+function isBPWTierExemptTeam(teamId){return typeof teamId==='string'&&BPW_TIER_EXEMPT_TEAM_IDS.has(teamId);}
 // [name, role, 2-letter nationality, approximate tournament age]
 const BPW_SELECTIONS=Object.freeze(GAME_ASSETS.editorial.bpwSelections);
 const COLORS={1998:['#273869','#e1c357','#e7e9fb'],2002:['#f5d056','#27a47e','#3448a2'],2006:['#325ab5','#f3f5f9','#efc65d'],2010:['#d1ab4f','#263c60','#fbefe1'],2014:['#41ab6f','#e8d052','#2c58a0'],2018:['#d63e48','#f0eadf','#315eac']};
@@ -52,6 +54,6 @@ function installBPWWorldCups(TEAMS,SHOTS,avatarFor){
  return installed;
 }
 
-return {BPW_YEARS,BPW_SELECTIONS,historicalPersonKey,installBPWWorldCups};})();
+return {BPW_YEARS,BPW_SELECTIONS,historicalPersonKey,isBPWTierExemptTeam,installBPWWorldCups};})();
 
 export {BPW};

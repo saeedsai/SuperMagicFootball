@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const api=async()=>(await import('../src/modules/career_slots.js')).CAREER_SLOTS;
-const career=club=>({club,season:2,week:3,members:[club],fixtures:[],history:[],roster:Array.from({length:12},(_,i)=>({id:'p'+i,condition:100})),table:{},facilities:{training:1},cup:{stage:0},cash:100});
+const career=club=>({club,season:2,week:3,members:[club],fixtures:Array.from({length:14},()=>[]),history:[],roster:Array.from({length:12},(_,i)=>({id:'p'+i,condition:100})),table:{},facilities:{training:1},cup:{stage:0},cash:100});
 const memory=()=>{const map=new Map();let writes=0,fail=false;
  return {getItem:k=>map.has(k)?map.get(k):null,setItem(k,v){writes++;if(fail){fail=false;throw Error('write denied')}map.set(k,String(v))},
   get writes(){return writes},failNext(){fail=true}};
@@ -68,13 +68,13 @@ test('Career copy gives a readable label to legacy blank-named slots',async()=>{
  assert.equal(restored.list()[1].name,'Career 1 (copy)');
 });
 test('Career menu only offers COPY when space remains and dispatch preserves active game',()=>{
- const src=fs.readFileSync('src/modules/ui.js','utf8');
+ const src=fs.readFileSync('src/modules/ui.js','utf8').replace(/\r\n/g,'\n');
  const menu=src.match(/function showCareerSlots\(\)\{[\s\S]*?\n\}(?=\nfunction showCupSlots)/);
  assert.ok(menu,'Career slot screen must be present');
  let html='',copies=0;
  const slots=[{number:1,occupied:true,active:true,name:'Original',club:0,season:2,week:3,savedAt:new Date().toISOString()},{number:2,occupied:false,active:false}];
  const ctx={careerSlots:{list:()=>slots,firstEmpty:()=>slots.some(s=>!s.occupied)?2:null,error:null,duplicate(n){assert.equal(n,1);copies++}},
-  career:null,TEAMS:[{name:'Home'}],escapeHTML:String,button:(name,a)=>'<button data-action="'+a+'">'+name+'</button>',
+  career:null,TEAMS:[{name:'Home'}],escapeHTML:String,button:(name,a)=>'<button data-action="'+a+'">'+name+'</button>',slotActionButton:(name,a,kind,n)=>'<button data-action="'+a+'" aria-label="'+name+' '+kind+' slot '+n+'">'+name+'</button>',
   page:(a,b,h)=>{html=h},alert(){throw Error('Unexpected alert')},showCareerSlots(){}};
  vm.runInNewContext(menu[0]+'\nshowCareerSlots()',ctx);
  assert.match(html,/careerSlotCopy_1/);

@@ -1,0 +1,5 @@
+# Weather field clipping and rain depth — 3 November 2026
+
+Rain, storm and wind streaks are now clipped to the playable pitch, so diagonal rain endpoints cannot bleed into the goal surround or stadium. Precipitation uses a small deterministic range of line widths and opacity for depth. Rain/storm add sparse, low-alpha elliptical ground ripples. The ripples reuse the renderer clock and item index; they do not add randomness or flash pulses. Reduced-flash mode retains its smaller particle counts and uses dimmer rain/splash opacity. Weather event timers, RNG, gameplay forces, player/ball behavior and lightning/tornado cues are unchanged.
+
+Validation: the focused weather contract passes **4/4**. The Chromium weather/event preview passes **10 scenarios**, checks lightning and tornado at 30/60/120 Hz, includes normal and reduced-flash rain and storm examples, and passes an actual canvas-pixel scan beyond the four playable-field edges, and reports no page errors. Preview image: `evidence/browser/weather_02_render_preview.png`. This is a machine-rendered local preview; it does not constitute owner visual or physical-device approval.

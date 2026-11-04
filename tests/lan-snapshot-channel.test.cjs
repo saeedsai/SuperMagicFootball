@@ -5,7 +5,7 @@ const {pathToFileURL}=require('node:url');
 const path=require('node:path');
 const load=name=>import(pathToFileURL(path.resolve('src/modules',name)).href);
 class FakeChannel {
- constructor(){this.readyState='connecting';this.listeners=new Map();this.peer=null;this.failSend=false;}
+ constructor(){this.readyState='connecting';this.listeners=new Map();this.peer=null;this.failSend=false;this.bufferedAmount=0;}
  addEventListener(name,fn){if(!this.listeners.has(name))this.listeners.set(name,new Set());this.listeners.get(name).add(fn);}
  removeEventListener(name,fn){this.listeners.get(name)?.delete(fn);}
  emit(name,event={}){for(const fn of [...(this.listeners.get(name)||[])])fn(event);}
@@ -61,6 +61,42 @@ test('host refuses foreign identity, bad payload, stale tick and failed sends wi
  host.failSend=true;assert.equal(sender.send(packet(1)),false);assert.equal(sender.lastTick,-1);
  host.failSend=false;assert.equal(sender.send(packet(1)),true);assert.equal(sender.send(packet(0)),false);
  host.close();assert.equal(sender.send(packet(2)),false);
+});
+
+test('LAN30 snapshot sender bounds DataChannel backlog and resumes with fresh state',async()=>{
+ const {bindLanSnapshotHostChannel,bindLanSnapshotGuestChannel,LAN_SNAPSHOT_MAX_BUFFERED_BYTES}=await load('lan-snapshot-channel.js');
+ const {encodeLanSnapshot}=await load('lan-state-snapshot.js');
+ const {host,guest}=pair(),session={peerId:'guest01'},received=[];
+ const sender=bindLanSnapshotHostChannel(session,host,'room001','host001',{maxBufferedAmount:1024});
+ const receiver=bindLanSnapshotGuestChannel(guest,'room001','host001',s=>received.push(s.tick));
+ host.open();guest.open();assert.equal(sender.send(packet(0)),true);assert.equal(sender.lastTick,0);
+ const nextWire=encodeLanSnapshot(packet(1));
+ assert.equal(nextWire.length,Buffer.byteLength(nextWire,'utf8'),'validated snapshot wire is ASCII, so code-unit length is the byte budget');
+ host.bufferedAmount=1024-Buffer.byteLength(nextWire,'utf8')+1;
+ assert.equal(sender.send(packet(1)),false);assert.equal(sender.lastTick,0);assert.deepEqual(received,[0]);
+ host.bufferedAmount=0;assert.equal(sender.send(packet(2)),true);assert.equal(sender.lastTick,2);assert.deepEqual(received,[0,2]);
+ assert.equal(LAN_SNAPSHOT_MAX_BUFFERED_BYTES,65536);receiver.dispose();sender.dispose();
+});
+
+test('LAN-094 validated snapshot text keeps exact UTF-8 byte accounting',async()=>{
+ const {encodeLanSnapshot}=await load('lan-state-snapshot.js');
+ const full=packet(7,{
+  hazards:[{kind:'banana',team:0,x:-.25,y:.4,life:2.5,arm:.2}],
+  ball:{x:.1,y:.2,z:.3,fx:{id:'Fireball-1',color:'#ff8833',trail:'#ffe177',age:2,vx:120,vy:-80}},
+  players:[{slot:1,x:0,y:0,visual:{z:.2,face:-1,action:'flyingKick',timer:.4,anim:2,stun:0,slide:0,dive:0,diveY:-.5}}],
+  meta:{half:1,phase:'play',controlled:{home:1,away:4},ballOwnerSlot:1}
+ });
+ const wire=encodeLanSnapshot(full);
+ assert.equal(wire.length,Buffer.byteLength(wire,'utf8'),
+  'validated ids, action names, effect IDs and colors are ASCII; other wire values are numeric');
+});
+
+test('LAN30 snapshot sender rejects invalid backpressure limits and unsafe channel counters',async()=>{
+ const {bindLanSnapshotHostChannel}=await load('lan-snapshot-channel.js');
+ const {host}=pair(),session={peerId:'guest01'};
+ assert.throws(()=>bindLanSnapshotHostChannel(session,host,'room001','host001',{maxBufferedAmount:0}),/Invalid LAN snapshot host binding/);
+ const sender=bindLanSnapshotHostChannel(session,host,'room001','host001');host.open();host.bufferedAmount=Number.NaN;
+ assert.equal(sender.send(packet(0)),false);assert.equal(sender.lastTick,-1);sender.dispose();
 });
 test('throwing snapshot consumer does not advance receiver cursor or crash channel',async()=>{
  const {bindLanSnapshotGuestChannel}=await load('lan-snapshot-channel.js');

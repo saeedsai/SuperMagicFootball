@@ -65,5 +65,5 @@ test('no premature recommendation when starters are fit or replacement advantage
 });
 test('pregame/paused wiring is confined to existing Team Command Center',()=>{
  assert.match(source,/origin==='pause'\?substitutionAdviceForPause\(game,side,plan,players\):''/);
- assert.match(source,/if\(squadContext==='pause'\)game\.applyPlan\(squadSide,plan\)/);
+ assert.match(source,/if\(squadContext==='pause'\)\s*\{\s*game\.applyPlan\(squadSide,plan\)/);
 });

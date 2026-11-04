@@ -30,7 +30,15 @@ script=r"""() => {
     newSaves:saves.length-saveBefore,ownerIsKeeper:b.owner===k,
     keeperCatches:catches.length,contactEvents:g.events.filter(e=>e.type==='keeperContact').length});
  }
- return out;
+ g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});g.matchState='paused';
+ const k=g.player(0,0),b=g.ball,c=document.createElement('canvas');c.width=600;c.height=400;
+ const ctx=c.getContext('2d');Object.assign(k,{x:150,y:170,action:'keeperHold',face:1,hideBallTimer:0});
+ Object.assign(b,{owner:k,x:420,y:330,z:0,shot:null,trail:[],vx:0,vy:0,rollAngle:0});
+ const ink=(x,y,r=19)=>{const pixels=ctx.getImageData(Math.max(0,x-r),Math.max(0,y-r),r*2,r*2).data;let count=0;for(let i=3;i<pixels.length;i+=4)if(pixels[i]>24)count++;return count};
+ SupermagicFootball.renderer.drawBall(ctx,g);const held={gloves:ink(155,111),physics:ink(420,330)};
+ k.action='keeperThrow';ctx.clearRect(0,0,c.width,c.height);SupermagicFootball.renderer.drawBall(ctx,g);
+ const released={gloves:ink(155,111),physics:ink(420,330)};
+ return {out,held,released};
 }"""
 with sync_playwright() as pw:
  browser=pw.chromium.launch(executable_path='/usr/bin/chromium',headless=True,
@@ -46,7 +54,8 @@ with sync_playwright() as pw:
   page.evaluate("""() => {const m=new Map();Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>m.get(k)||null,setItem:(k,x)=>m.set(k,String(x)),removeItem:k=>m.delete(k),clear:()=>m.clear()}})}""")
   page.add_script_tag(content=js,type='module')
   page.wait_for_function('!!window.SupermagicFootball?.game')
-  rows=page.evaluate(script)
+  result=page.evaluate(script)
+  rows=result['out']
   assert not errors,(device,errors)
   assert len(rows)==18,(device,len(rows))
   for r in rows:
@@ -55,6 +64,8 @@ with sync_playwright() as pw:
    expected=1 if r['kind']=='opponentShot' else 0
    assert r['newSaves']==expected,(device,r)
    assert r['totalSaves']==1 if r['kind']!='opponentLoose' else r['totalSaves']==0,(device,r)
-  print('PASS',device,'18 goalkeeper shot/deflection/loose-ball collection fixtures at 30/60/120Hz',flush=True)
+  assert result['held']['gloves']>35 and result['held']['physics']==0,(device,'held ball must render at gloves without false ground shadow',result['held'])
+  assert result['released']['gloves']==0 and result['released']['physics']>35,(device,'released ball must return to its physics point',result['released'])
+  print('PASS',device,'18 keeper collection fixtures plus rendered catch/hold/release ball anchors at 30/60/120Hz',flush=True)
   ctx.close()
  browser.close()

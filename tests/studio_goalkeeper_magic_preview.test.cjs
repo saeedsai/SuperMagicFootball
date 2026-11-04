@@ -9,18 +9,19 @@ const end=ui.indexOf('function saveStudioMagic(){',begin);
 assert.ok(begin>0&&end>begin,'read-only preview uses the shipped Magic Trick descriptions');
 const preview=vm.runInNewContext('(()=>{'+ui.slice(begin,end)+';return studioGoalkeeperMagicGuide;})()',{});
 
-test('STUDIO-GK-PREVIEW-01 all eight Tricks expose their effect and defensive counter',()=>{
- const ids=['banana','ice','bat','fireball','freeze','scream','hideBall','teleport'];
+test('STUDIO-GK-PREVIEW-01 all nine Tricks expose their effect and defensive stop or counter',()=>{
+ const ids=['banana','ice','bat','fireball','freeze','scream','hideBall','teleport','shoulderRide'];
  const guides=ids.map(id=>{
   const message=preview(id);
   assert.match(message,/^Goalkeeper preview only:/,id);
-  assert.match(message,/counter|clear/i,id);
+  if(id==='shoulderRide')assert.match(message,/opponent contact|touchline/i,id);
+  else assert.match(message,/counter|clear/i,id);
   assert.match(message,/goalkeepers cannot equip it/i,id);
   assert.match(message,/hold DRIBBLE for 1 second/i,id);
   assert.doesNotMatch(message,/SAVE TRICK SELECTION|Reach Star|91\+/i,id);
   return message;
  });
- assert.equal(new Set(guides).size,8);
+ assert.equal(new Set(guides).size,9);
  assert.match(preview(''),/Choose any Magic Trick/);
  assert.match(preview('toString'),/Choose any Magic Trick/,'prototype names are never valid Tricks');
  assert.match(preview('__proto__'),/Choose any Magic Trick/);
@@ -33,7 +34,7 @@ test('goalkeeper Studio panel is preview-only with live icon and no save control
  const selector=ui.slice(start,end);
  const keeper=selector.slice(selector.indexOf('TRICK — READ-ONLY PREVIEW'));
  assert.match(keeper,/id="studioGKMagicPreview"/);
- assert.match(keeper,/STUDIO_MAGIC_TRICKS\.map\(a=>/);
+ assert.match(keeper,/STUDIO_MAGIC_TRICK_FULL_CATALOGUE\.map\(a=>/);
  assert.match(keeper,/id="studioGKMagicGuide" role="status" aria-live="polite"/);
  assert.match(keeper,/studioGoalkeeperMagicGuide\(''\)/);
  assert.doesNotMatch(keeper,/SAVE TRICK SELECTION|saveStudioMagic|KEEP CURRENT|REMOVE MAGIC TRICK/);

@@ -2,7 +2,11 @@
 // Foundation only: no live networking, matchmaking or online-play claim.
 const LAN_PROTOCOL_VERSION=1;
 const ACTIONS=Object.freeze(['pass','shoot','dribble','jump']);
+// Inputs become stale quickly; keep their reliable ordered DataChannel queue
+// small so a temporarily slow peer cannot accumulate seconds of old controls.
+const LAN_GUEST_INPUT_MAX_BUFFERED_BYTES=16*1024;
 const SESSION_RE=/^[a-zA-Z0-9_-]{12,64}$/;
+const RESULT_RECEIPT_RE=/^lan:[A-Za-z0-9_-]{6,32}:[A-Za-z0-9_-]{6,32}:[a-f0-9]{32}$/;
 const VERSION_RE=/^\d+\.\d+\.\d+\.\d+$/;
 const own=(object,key)=>Object.prototype.hasOwnProperty.call(object,key);
 function isRecord(value){return value!==null&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)===Object.prototype;}
@@ -23,6 +27,15 @@ function normalizeLanPacket(raw){
   if(!Number.isFinite(raw.dx)||!Number.isFinite(raw.dy)||
      raw.dx < -1||raw.dx > 1||raw.dy < -1||raw.dy > 1)throw new Error('Invalid LAN direction');
   return Object.freeze({protocol:1,type:'input',session:raw.session,sequence:raw.sequence,frame:raw.frame,buttons:Object.freeze([...raw.buttons]),dx:raw.dx,dy:raw.dy});
+ }
+ // Result acknowledgements are separate from the ordered control sequence so
+ // they cannot consume, reorder, or poison gameplay input. Repeats are safe.
+ if(raw.type==='result-ack'){
+  const expected=['protocol','type','session','sequence','receiptId'];
+  if(Object.keys(raw).length!==expected.length||expected.some(key=>!own(raw,key))||
+     raw.sequence!==0||typeof raw.receiptId!=='string'||!RESULT_RECEIPT_RE.test(raw.receiptId))
+   throw new Error('Invalid LAN result acknowledgement');
+  return Object.freeze({protocol:1,type:'result-ack',session:raw.session,sequence:0,receiptId:raw.receiptId});
  }
  throw new Error('Unsupported LAN packet type');
 }
@@ -109,13 +122,27 @@ function buildGuestLanInput(sender,frame,buttons=[],dx=0,dy=0){
   state:Object.freeze({session:sender.session,lastSequence:packet.sequence,lastFrame:frame})
  });
 }
+function buildLanResultAck(session,receiptId){
+ if(typeof session!=='string'||!SESSION_RE.test(session))throw new Error('Invalid LAN result acknowledgement session');
+ return normalizeLanPacket({protocol:LAN_PROTOCOL_VERSION,type:'result-ack',session,sequence:0,receiptId});
+}
 
 // LAN-006: WebRTC DataChannel-compatible boundary; signaling/connection establishment
 // remains separate. No packet can be sent before the channel is open.
-function sendLanChannelPacket(channel,packet){
+function sendLanChannelPacket(channel,packet,options={}){
  if(!channel||channel.readyState!=='open'||typeof channel.send!=='function')throw new Error('LAN channel is not open');
  const payload=serializeLanPacket(packet);
  if(payload.length>4096)throw new Error('LAN payload exceeds packet limit');
+ if(options.maxBufferedAmount!==undefined){
+  const bufferedAmount=channel.bufferedAmount===undefined?0:channel.bufferedAmount;
+  const maxBufferedAmount=options.maxBufferedAmount;
+  const bytes=new TextEncoder().encode(payload).byteLength;
+  if(!Number.isSafeInteger(bufferedAmount)||bufferedAmount<0||
+     !Number.isSafeInteger(maxBufferedAmount)||maxBufferedAmount<1||
+     !Number.isSafeInteger(bufferedAmount+bytes)||bufferedAmount+bytes>maxBufferedAmount){
+   throw new Error('LAN channel input backpressure limit reached');
+  }
+ }
  channel.send(payload);
  return payload.length;
 }
@@ -140,9 +167,16 @@ function receiveLanPeerPacket(state,message){
   const handshake=validateLanHandshake(state.local,packet);
   return Object.freeze({kind:'ready',state:Object.freeze({local:state.local,remote:packet,ready:true,lastSequence:0}),handshake});
  }
+ if(packet.type==='result-ack'){
+  if(packet.session!==state.local.session)throw new Error('LAN result acknowledgement session mismatch');
+  return Object.freeze({kind:'result-ack',packet,state});
+ }
  if(packet.type!=='input')throw new Error('LAN renegotiation is not supported');
  const accepted=acceptLanPacket(packet,state.local.session,state.lastSequence);
  if(!accepted.accepted)return Object.freeze({kind:'replay',state});
+ // WebRTC DataChannels are reliable and ordered, and the guest increments
+ // once per emitted input. A sequence jump must not poison the session cursor.
+ if(packet.sequence!==state.lastSequence+1)return Object.freeze({kind:'sequence-gap',state});
  return Object.freeze({kind:'input',packet:accepted.packet,state:Object.freeze({
   local:state.local,remote:state.remote,ready:true,lastSequence:accepted.lastSequence
  })});
@@ -163,13 +197,23 @@ function acceptLanHostMessage(state,message,hostFrame){
   const queue=createHostLanInputQueue(received.state.local,received.state.remote);
   return Object.freeze({kind:'ready',state:Object.freeze({peer:received.state,queue})});
  }
+ if(received.kind==='result-ack')return Object.freeze({kind:'result-ack',packet:received.packet,state});
  if(!state.queue)throw new Error('LAN host queue unavailable');
  if(received.kind==='replay')return Object.freeze({kind:'replay',state});
+ if(received.kind==='sequence-gap')return Object.freeze({kind:'sequence-gap',state});
  // A frame already simulated cannot be resurrected by a delayed packet,
  // even when the caller provides a stale hostFrame snapshot.
  const nextFrame=Math.max(hostFrame,(state.lastSimulatedFrame??-1)+1);
  const queued=enqueueGuestLanInput(state.queue,received.packet,nextFrame);
- if(!queued.accepted)return Object.freeze({kind:queued.reason,state});
+ if(!queued.accepted){
+  // A contiguous, valid input that arrives after its target frame is stale,
+  // so discard its controls but consume its sequence. Otherwise one delayed
+  // frame would make every later current input look like a forged sequence gap.
+  if(queued.reason==='outside-frame-window'&&received.packet.frame<nextFrame){
+   return Object.freeze({kind:'late-frame',state:Object.freeze({...state,peer:received.state})});
+  }
+  return Object.freeze({kind:queued.reason,state});
+ }
  return Object.freeze({kind:'accepted',state:Object.freeze({peer:received.state,queue:queued.state,lastSimulatedFrame:state.lastSimulatedFrame??-1})});
 }
 
@@ -219,7 +263,9 @@ function sendLanGuestFrame(state,channel,frame,buttons=[],dx=0,dy=0){
   throw new Error('LAN guest handshake required before sending input');
  const built=buildGuestLanInput(state.sender,frame,buttons,dx,dy);
  // Do not advance the sender if the channel is closed or send() throws.
- const bytes=sendLanChannelPacket(channel,built.packet);
+ // RTCDataChannel.send() can queue successfully while the peer is draining
+ // slowly. Bound guest controls and preserve the same sequence/frame on reject.
+ const bytes=sendLanChannelPacket(channel,built.packet,{maxBufferedAmount:LAN_GUEST_INPUT_MAX_BUFFERED_BYTES});
  return Object.freeze({packet:built.packet,bytes,state:Object.freeze({peer:state.peer,sender:built.state})});
 }
-export {LAN_PROTOCOL_VERSION,ACTIONS,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame,createGuestLanSender,buildGuestLanInput,sendLanChannelPacket,receiveLanChannelPacket,createLanPeerGate,receiveLanPeerPacket,createLanHostSession,acceptLanHostMessage,advanceLanHostFrame,createLanGuestSession,acceptLanGuestHello,sendLanGuestFrame,startLanHostChannel,startLanGuestChannel};
+export {LAN_PROTOCOL_VERSION,ACTIONS,LAN_GUEST_INPUT_MAX_BUFFERED_BYTES,normalizeLanPacket,parseLanPacket,serializeLanPacket,acceptLanPacket,validateLanHandshake,LAN_INPUT_LEAD_FRAMES,createHostLanInputQueue,enqueueGuestLanInput,dequeueGuestLanInput,resolveGuestLanFrame,createGuestLanSender,buildGuestLanInput,buildLanResultAck,sendLanChannelPacket,receiveLanChannelPacket,createLanPeerGate,receiveLanPeerPacket,createLanHostSession,acceptLanHostMessage,advanceLanHostFrame,createLanGuestSession,acceptLanGuestHello,sendLanGuestFrame,startLanHostChannel,startLanGuestChannel};

@@ -20,6 +20,20 @@ function controls(){
     just(slot,action){return !!this.pressed[slot]?.[action]}
   };
 }
+function scriptedControls(samples){
+ const input=controls();let index=0;
+ input.poll=function(){
+  const sample=samples[Math.min(index++,samples.length-1)]||{};
+  const held=new Set(sample.held||[]),edges=new Set(sample.edges||[]);
+  this.state[0]={x:sample.x??0,y:sample.y??0,
+   pass:held.has('pass')?1:0,shoot:held.has('shoot')?1:0,
+   dribble:held.has('dribble')?1:0,jump:held.has('jump')?1:0};
+  this.pressed[0]=Object.fromEntries(['pass','shoot','dribble','jump'].map(a=>[a,edges.has(a)]));
+ };
+ input.held=(slot,action)=>!!input.state[slot]?.[action];
+ input.just=(slot,action)=>!!input.pressed[slot]?.[action];
+ return input;
+}
 test('LAN-044 live state converts real engine coordinates and restores them',async()=>{
   const {captureLanGameState,applyLanGameState}=await load();
   const input=controls(),host=game(input),guest=game(input);
@@ -426,6 +440,78 @@ test('LAN-063 guest restores ordinary pass motion without stale Super Shot veloc
  assert.equal(guest.ball.vx,0,'frozen clock cannot create a velocity spike');
 });
 
+test('LAN online match rewards use one host-bound receipt and orient penalty winner for guest',async()=>{
+ const {createLanLiveMatch}=await load();
+ const {encodeLanSnapshot,decodeLanSnapshot}=await import('../src/modules/lan-state-snapshot.js');
+ const identity={roomId:'room001',hostId:'host001'};
+ let now=0,guestReceive=null;
+ const hostInput=controls(),guestInput=controls();
+ const host=game(hostInput),guest=game(guestInput);
+ host.onEvent=()=>{};
+ const hostAwards=[],guestAwards=[];let hostAck=null;
+ const {ECONOMY}=await import('../src/modules/economy.js');
+ const memoryStorage=()=>{const values=new Map();return {getItem:key=>values.has(key)?values.get(key):null,
+  setItem:(key,value)=>values.set(key,String(value)),removeItem:key=>values.delete(key)};};
+ const hostWallet=ECONOMY.create(memoryStorage()),guestWallet=ECONOMY.create(memoryStorage());
+ const guestPeer={ready:true,snapshotIdentity:identity,
+  subscribeGuestMatchState(fn){guestReceive=fn;return {dispose(){}};},
+  sendGuestResultAck(receiptId){hostAck?.({type:'result-ack',receiptId});return true;},
+  sendGuestInput(){return false;}};
+ let hostSnapshotAttempts=0;
+ const hostPeer={ready:true,snapshotIdentity:identity,
+  subscribeHostResultAck(fn){hostAck=fn;return ()=>{hostAck=null;};},
+  stepHostMatchFrame(tick,simulate){
+   hostSnapshotAttempts++;
+   const state=simulate({buttons:[],dx:0,dy:0},{received:true});
+   const packet=decodeLanSnapshot(encodeLanSnapshot({type:'snapshot',version:1,...identity,...state}));
+   if(hostSnapshotAttempts>1)guestReceive(packet);
+   return {snapshotSent:hostSnapshotAttempts>1};
+  }};
+ const hostRun=createLanLiveMatch({peer:hostPeer,role:'host',game:host,input:hostInput,field,now:()=>now,
+  awardResult:receipt=>{hostAwards.push(receipt);return hostWallet.awardCompletedMatch(receipt);}});
+ const guestRun=createLanLiveMatch({peer:guestPeer,role:'guest',game:guest,input:guestInput,field,now:()=>now,
+  awardResult:receipt=>{guestAwards.push(receipt);return guestWallet.awardCompletedMatch(receipt);}});
+ host.update=function(dt){hostInput.poll(true);this.clock+=dt;this.score=[1,1];this.matchState='finished';
+  this.onEvent({type:'finished',score:[1,1],penalties:true,pkScore:[3,4],winner:1});};
+ assert.equal(hostRun.step(.02),false,'terminal result must wait for transport acknowledgement');
+ assert.equal(hostRun.resultDelivered,false);
+ assert.equal(hostAwards.length,0,'host must not be rewarded before guest delivery');
+ assert.equal(hostWallet.wallet().tokens,0);
+ assert.equal(guest.matchState,'play','failed send cannot finish the guest match');
+ assert.equal(hostRun.step(.02),true,'terminal snapshot retries after failed delivery');
+ assert.equal(hostRun.resultDelivered,true);
+ assert.equal(guest.matchState,'finished');
+ assert.equal(hostAwards.length,1);assert.equal(guestAwards.length,1);
+ assert.equal(hostAwards[0].result,'loss');assert.equal(guestAwards[0].result,'win');
+ assert.equal(hostWallet.wallet().tokens,20);assert.equal(guestWallet.wallet().tokens,30);
+ assert.equal(hostAwards[0].receiptId,guestAwards[0].receiptId,'both local wallets bind the receipt to the same match');
+ now=1600;assert.equal(hostRun.step(.02),true,'finished state is resent on frozen heartbeat');
+ assert.equal(guestAwards.length,2,'guest safely retries receipt on a repeated host snapshot');
+ assert.equal(new Set(guestAwards.map(receipt=>receipt.receiptId)).size,1,'wallet dedupes repeated terminal snapshots');
+ assert.equal(guestWallet.wallet().tokens,30,'repeated frozen snapshots cannot duplicate persisted soft tokens');
+ hostRun.dispose();guestRun.dispose();
+});
+
+test('LAN match runs without rewards when secure match ID generation is unavailable',async()=>{
+ const {createLanLiveMatch}=await load();
+ const original=Object.getOwnPropertyDescriptor(globalThis,'crypto');
+ Object.defineProperty(globalThis,'crypto',{configurable:true,value:undefined});
+ try{
+  const input=controls(),match=game(input),awards=[];match.onEvent=()=>{};
+  match.update=function(dt){input.poll(true);this.matchState='finished';this.onEvent({type:'finished',score:[1,0]});};
+  const peer={ready:true,snapshotIdentity:{roomId:'room001',hostId:'host001'},
+   stepHostMatchFrame(tick,simulate){this.state=simulate({buttons:[],dx:0,dy:0},{received:true});return {snapshotSent:true};}};
+  const run=createLanLiveMatch({peer,role:'host',game:match,input,field,awardResult:r=>{awards.push(r);return {ok:true};}});
+  assert.equal(run.step(.02),true,'gameplay frame still sends without secure reward ID');
+  assert.equal(peer.state.meta.matchId,undefined);
+  assert.equal(awards.length,0);
+  run.dispose();
+ }finally{
+  if(original)Object.defineProperty(globalThis,'crypto',original);
+  else delete globalThis.crypto;
+ }
+});
+
 
 test('LAN-065 large ball reposition does not invent guest pass velocity',async()=>{
  const {captureLanGameState,applyLanGameState}=await load();
@@ -570,6 +656,48 @@ test('LAN-071 readiness transition between frames resets guest cursor',async()=>
  assert.deepEqual(sent,[124,4],'fresh host epoch starts with frame four');
  assert.deepEqual(guest.score,[2,0]);
  run.dispose();assert.equal(unsubscribed,true,'RTC status listener is removed on exit');
+});
+
+test('guest accepts and acknowledges a restarted host match result exactly once per receipt',async()=>{
+ const {createLanLiveMatch,captureLanGameState}=await load();
+ const {ECONOMY}=await import('../src/modules/economy.js');
+ const storage=()=>{const values=new Map();return {getItem:key=>values.has(key)?values.get(key):null,
+  setItem:(key,value)=>values.set(key,String(value)),removeItem:key=>values.delete(key)};};
+ const identity={roomId:'room001',hostId:'host001'},input=controls(),host=game(controls()),guest=game(input);
+ const guestWallet=ECONOMY.create(storage()),awardAttempts=[],acks=[];
+ const peer={ready:true,snapshotIdentity:identity,
+  subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
+  subscribeStatus(fn){this.notify=fn;return ()=>{};},
+  sendGuestInput(frame){return {type:'input',frame};},
+  sendGuestResultAck(receiptId){acks.push(receiptId);return true;}
+ };
+ const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field,
+  awardResult:receipt=>{const result=guestWallet.awardCompletedMatch(receipt);awardAttempts.push({receipt,result});return result;}});
+
+ const priorMatch=captureLanGameState(host,field,73);
+ priorMatch.meta.matchId='a'.repeat(32);
+ peer.receive(priorMatch);
+ peer.ready=false;peer.notify({ready:false});
+ peer.ready=true;
+ host.matchState='finished';host.score=[1,0];
+ const restartedMatch=captureLanGameState(host,field,0);
+ restartedMatch.meta.matchId='b'.repeat(32);
+ restartedMatch.meta.result={score:[1,0]};
+ peer.receive(restartedMatch);
+
+ const receiptId=`lan:${identity.roomId}:${identity.hostId}:${'b'.repeat(32)}`;
+ assert.equal(awardAttempts.length,1,'new host terminal snapshot produces a local receipt attempt');
+ assert.equal(awardAttempts[0].receipt.receiptId,receiptId);
+ assert.deepEqual(acks,[receiptId],'guest ACK is bound to the restarted match receipt');
+ const tokensAfterFirst=guestWallet.wallet().tokens;
+
+ peer.receive({...restartedMatch,tick:1});
+ assert.equal(awardAttempts.length,2,'repeated terminal snapshot may retry the same idempotent receipt');
+ assert.equal(awardAttempts[1].receipt.receiptId,receiptId);
+ assert.equal(awardAttempts[1].result.duplicate,true,'wallet recognizes the repeated receipt');
+ assert.deepEqual(acks,[receiptId,receiptId]);
+ assert.equal(guestWallet.wallet().tokens,tokensAfterFirst,'duplicate snapshot cannot settle a second reward');
+ run.dispose();
 });
 
 test('LAN-072 transient packet gaps do not repeat jump or interrupt sprint, but expire safely',async()=>{
@@ -764,6 +892,108 @@ test('LAN-078 ambiguous guest send receipts retry the exact input frame',async()
   assert.equal(run.step(.016),true,'acknowledged frame advances normally');
   assert.deepEqual(sent.map(p=>p.frame),[74,74,75]);
   assert.deepEqual(sent.map(p=>p.buttons),[['pass'],['pass'],['pass']]);
+  run.dispose();
+ }
+});
+
+test('LAN-092 backpressure preserves one-step action edges and rebases them to the current lead frame',async()=>{
+ const {createLanLiveMatch,captureLanGameState}=await load();
+ const input=scriptedControls([
+  {x:.25,edges:['jump']},
+  {x:.75,edges:['pass']},
+  {x:-.5}
+ ]);
+ const host=game(controls()),guest=game(input),sent=[];
+ let clock=1000,attempts=0;
+ const peer={ready:true,
+  subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
+  sendGuestInput(frame,buttons,dx,dy){
+   sent.push({frame,buttons:[...buttons],dx,dy});
+   if(attempts++===0)throw new Error('LAN channel input backpressure limit reached');
+   return {type:'input',frame};
+  }
+ };
+ const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field,now:()=>clock});
+ peer.receive(captureLanGameState(host,field,70));
+ assert.equal(run.step(.016),false,'first send is refused by queue backpressure');
+ assert.deepEqual(sent[0],{frame:74,buttons:['jump'],dx:.25,dy:0});
+ // A newer host tick moves the lead frame. New one-shot edges merge with the
+ // pending edge; held controls and analog axes come from the latest poll.
+ clock+=16;peer.receive(captureLanGameState(host,field,71));
+ assert.equal(run.step(.016),true,'the bounded pending action retries after drain');
+ assert.deepEqual(sent[1],{frame:75,buttons:['pass','jump'],dx:.75,dy:0});
+ clock+=16;peer.receive(captureLanGameState(host,field,72));
+ assert.equal(run.step(.016),true);
+ assert.deepEqual(sent[2],{frame:76,buttons:[],dx:-.5,dy:0},'accepted edges are not replayed');
+ run.dispose();
+});
+
+test('LAN-092 pending action edges expire by age and bounded attempts',async()=>{
+ const {createLanLiveMatch,captureLanGameState}=await load();
+ const host=game(controls());
+ for(const mode of ['age','attempts']){
+  const input=scriptedControls([{edges:['jump']},{},{},{},{}]);
+  const guest=game(input),sent=[];let clock=1000;
+  const peer={ready:true,
+   subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
+   sendGuestInput(frame,buttons,dx,dy){sent.push({frame,buttons:[...buttons],dx,dy});return false;}
+  };
+  const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field,now:()=>clock});
+  peer.receive(captureLanGameState(host,field,80));
+  assert.equal(run.step(.016),false);
+  assert.deepEqual(sent[0].buttons,['jump']);
+  if(mode==='age'){
+   clock+=251;
+   assert.equal(run.step(.016),false,'expired edge is not retried after the age bound');
+   assert.deepEqual(sent[1].buttons,[]);
+  }else{
+   for(let i=0;i<2;i++){clock+=16;assert.equal(run.step(.016),false);}
+   assert.deepEqual(sent.slice(1,3).map(x=>x.buttons),[['jump'],['jump']]);
+   clock+=16;
+   assert.equal(run.step(.016),false,'no more than three total sends retain one edge');
+   assert.deepEqual(sent[3].buttons,[],'attempt-bound edge is dropped before another send');
+  }
+  run.dispose();
+ }
+});
+
+test('LAN-092 pause, finish, stale host state, and transport reset clear pending edges',async()=>{
+ const {createLanLiveMatch,captureLanGameState}=await load();
+ for(const mode of ['paused','finished','stale','disconnect']){
+  const input=scriptedControls([{edges:['jump']},{},{},{}]);
+  const host=game(controls()),guest=game(input),sent=[];let clock=1000,attempts=0;
+  const peer={ready:true,
+   subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
+   sendGuestInput(frame,buttons,dx,dy){
+    sent.push({frame,buttons:[...buttons],dx,dy});
+    return attempts++===0?false:{type:'input',frame};
+   }
+  };
+  const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field,now:()=>clock});
+  peer.receive(captureLanGameState(host,field,80));
+  assert.equal(run.step(.016),false);
+  assert.deepEqual(sent[0].buttons,['jump']);
+  if(mode==='paused'||mode==='finished'){
+   host.matchState=mode;
+   peer.receive(captureLanGameState(host,field,81));
+   assert.equal(run.step(.016),false,'frozen phase clears pending action');
+   assert.equal(sent.length,1);
+   host.matchState='play';clock+=16;
+   peer.receive(captureLanGameState(host,field,82));
+  }else if(mode==='stale'){
+   clock+=701;
+   assert.equal(run.step(.016),false,'stale snapshot expires pending action');
+   assert.equal(sent.length,1);
+   peer.receive(captureLanGameState(host,field,81));
+  }else{
+   peer.ready=false;
+   assert.equal(run.step(.016),false,'disconnected transport clears pending action');
+   assert.equal(sent.length,1);
+   peer.ready=true;
+   peer.receive(captureLanGameState(host,field,0));
+  }
+  assert.equal(run.step(.016),true,'later valid frame can send fresh controls');
+  assert.deepEqual(sent[1].buttons,[],`${mode} must not replay the rejected edge`);
   run.dispose();
  }
 });

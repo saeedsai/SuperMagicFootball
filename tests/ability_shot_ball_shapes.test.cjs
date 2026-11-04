@@ -11,7 +11,7 @@ vm.runInNewContext(source,context);
 const icons=context.ABILITY_ICONS;
 test('every Super Shot has a deterministic, uniquely shaped ball',()=>{
  const ids=Object.keys(icons.SHOT_ICONS);
- assert.equal(ids.length,23);
+ assert.equal(ids.length,32);
  const shapes=ids.map(id=>{
   const html=icons.icon('shot',id,id);
   assert.match(html,new RegExp('data-shot-shape="'+id+'"'));

@@ -74,13 +74,14 @@ test('invalid ticks cannot extend or rewind hazard lifetime',async()=>{
 test('engine uses the hazard model before ball physics and drops possession on slip',()=>{
  const engine=fs.readFileSync(path.join(root,'src/modules/engine.js'),'utf8');
  assert.match(engine,/this\.magicHazards=placeBananaPeel\(this\.magicHazards,p,F\)/);
- assert.match(engine,/this\.resolvePlayerContacts\(dt\);this\.updateMagicHazards\(dt\);this\.updateBall\(dt\)/);
+ assert.ok(engine.indexOf('this.resolvePlayerContacts(dt)')<engine.indexOf('this.updateMagicHazards(dt)'));
+ assert.match(engine,/this\.updateMagicHazards\(dt\);this\.updateBall\(dt\)/);
  assert.match(engine,/const next=advanceBananaPeels\(this\.magicHazards,this\.players,dt\)/);
  assert.match(engine,/if\(this\.ball\.owner===victim\)\{\s*this\.ball\.owner=null/);
  assert.match(engine,/resetKickoff\(which=0\)\{this\._closeShotAudits\('kickoffReset'\);this\.magicHazards=\[\]/);
 });
 test('pitch renderer paints hazards without new assets or controls',()=>{
  const render=fs.readFileSync(path.join(root,'src/modules/render.js'),'utf8');
- assert.match(render,/function drawBananaPeels\(ctx,hazards\)/);
- assert.match(render,/drawBananaPeels\(ctx,game\.magicHazards\)/);
+ assert.match(render,/function drawBananaPeels\(ctx,hazards,reducedFlash=false\)/);
+ assert.match(render,/drawBananaPeels\(ctx,game\.magicHazards,!!game\.options\?\.reducedFlash\)/);
 });

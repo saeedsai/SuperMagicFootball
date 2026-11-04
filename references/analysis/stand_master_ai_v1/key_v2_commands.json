@@ -1,0 +1,28 @@
+{
+  "commands": [
+    {
+      "tolerance": 110,
+      "color": "#00ff00",
+      "connected": true,
+      "op": "removeBackground",
+      "outputDir": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\body\\transparent_v2",
+      "source": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\body\\headless_body_sheet_chroma.png"
+    },
+    {
+      "tolerance": 110,
+      "color": "#00ff00",
+      "connected": true,
+      "op": "removeBackground",
+      "outputDir": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\heads\\transparent_v2",
+      "source": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\heads\\bald_head_sheet_source.png"
+    },
+    {
+      "tolerance": 110,
+      "color": "#00ff00",
+      "connected": true,
+      "op": "removeBackground",
+      "outputDir": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\hair\\transparent_v2",
+      "source": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\hair\\hair_sheet_source.png"
+    }
+  ]
+}

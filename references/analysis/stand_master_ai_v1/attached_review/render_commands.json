@@ -1,0 +1,60 @@
+{
+  "commands": [
+    {
+      "animation": "stand",
+      "view": "front",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\attached_review\\front.png",
+      "frame": "stand_1",
+      "op": "renderPNG"
+    },
+    {
+      "animation": "stand",
+      "view": "threeQuarterFrontLeft",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\attached_review\\threeQuarterFrontLeft.png",
+      "frame": "stand_1",
+      "op": "renderPNG"
+    },
+    {
+      "animation": "stand",
+      "view": "left",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\attached_review\\left.png",
+      "frame": "stand_1",
+      "op": "renderPNG"
+    },
+    {
+      "animation": "stand",
+      "view": "threeQuarterBackLeft",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\attached_review\\threeQuarterBackLeft.png",
+      "frame": "stand_1",
+      "op": "renderPNG"
+    },
+    {
+      "animation": "stand",
+      "view": "back",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\attached_review\\back.png",
+      "frame": "stand_1",
+      "op": "renderPNG"
+    },
+    {
+      "animation": "stand",
+      "view": "threeQuarterBackRight",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\attached_review\\threeQuarterBackRight.png",
+      "frame": "stand_1",
+      "op": "renderPNG"
+    },
+    {
+      "animation": "stand",
+      "view": "right",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\attached_review\\right.png",
+      "frame": "stand_1",
+      "op": "renderPNG"
+    },
+    {
+      "animation": "stand",
+      "view": "threeQuarterFrontRight",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\attached_review\\threeQuarterFrontRight.png",
+      "frame": "stand_1",
+      "op": "renderPNG"
+    }
+  ]
+}

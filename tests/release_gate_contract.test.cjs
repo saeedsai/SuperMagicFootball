@@ -5,7 +5,7 @@ const path = require('node:path');
 
 const workflow = fs.readFileSync(
   path.join(__dirname, '../.github/workflows/full-regression-census.yml'), 'utf8'
-);
+).replace(/\r\n/g, '\n');
 const job = (name) => {
   const match = workflow.match(new RegExp('^  ' + name + ':\\n([\\s\\S]*?)(?=^  [a-z][a-z-]*:\\n|$(?![\\s\\S]))', 'm'));
   assert.ok(match, 'missing job ' + name);

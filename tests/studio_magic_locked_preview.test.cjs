@@ -15,8 +15,12 @@ test('STUDIO-TRICK-PREVIEW-02 locked players can read move and counter without e
  assert.match(locked,/peel behind the carrier/);
  assert.match(locked,/SHOOT-slide can clear it/);
  assert.match(locked,/hold DRIBBLE for 1 second/);
- assert.match(locked,/Reach Star or Superstar \(91\+\) to equip/);
- assert.doesNotMatch(locked,/Press SAVE TRICK SELECTION/);
+ assert.match(locked,/source-verified canonical Star or Superstar tier is required to equip/);
+ assert.doesNotMatch(locked,/Press SAVE TRICK SELECTION|91\+|OVR/);
+ const goldLocked=guide('spinBump',null,false);
+ assert.match(goldLocked,/source-verified canonical-position Gold tier or higher/);
+ assert.match(goldLocked,/An OVR number alone does not unlock this Trick/);
+ assert.doesNotMatch(goldLocked,/OVR 80\+/);
  const eligible=guide('banana',null,true);
  assert.match(eligible,/^Preview only:/);
  assert.match(eligible,/Press SAVE TRICK SELECTION/);
@@ -30,13 +34,15 @@ test('locked preview does not remove legacy keep and remove semantics',()=>{
  assert.match(guide('none',null,false),/No Magic Trick is equipped/);
 });
 
-test('all eight tricks are discoverable but locked save remains disabled and validated',()=>{
- assert.match(ui,/STUDIO_MAGIC_TRICKS\.map\(a=>`<option value=/);
+test('all nine tricks are discoverable but locked save remains disabled and validated',()=>{
+ assert.match(ui,/STUDIO_MAGIC_TRICK_FULL_CATALOGUE\.map\(a=>`<option value=/);
  assert.doesNotMatch(ui,/\(studioMagicEligible\(player\)\?STUDIO_MAGIC_TRICKS:\[\]\)/);
  assert.match(ui,/id="studioMagicSaveRow"/);
  assert.match(ui,/const locked=!eligible&&choice!=='keep'&&choice!=='none'/);
  assert.match(ui,/save\.disabled=state\.disabled/);
  assert.match(ui,/save\.setAttribute\('aria-disabled',String\(state\.disabled\)\)/);
  assert.match(ui,/if\(id!=='keep'&&id!=='none'&&!studioMagicEligible\(player\)\)throw Error/);
+ assert.match(ui,/Tricks require a source-verified canonical Star or Superstar tier/);
+ assert.doesNotMatch(ui,/91\+ to equip this Trick|players \(91\+\)|OVR 80\+\)/,'numeric OVR labels must not imply that an unverified player can equip equipment');
  assert.match(ui,/if\(id==='keep'\|\|\(id==='none'&&!player\.magicTrick\)\|\|id===player\.magicTrick\)\{showPlayerStudio\(avatarIndex\);return;\}/);
 });

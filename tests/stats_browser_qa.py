@@ -11,7 +11,8 @@ with sync_playwright() as pw:
   page.evaluate("""() => {let data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}""")
   page.set_content((root/'play.html').read_text(),wait_until='load')
   page.wait_for_function('!!window.SupermagicFootball?.game')
-  open_feature(page,'squad')
+  open_settings(page,'customize')
+  page.locator('[data-action="squad"]').first.click()
   assert 'STA' in page.locator('.rosterCard').first.inner_text(), 'Squad must display stamina'
   assert 'GK DIVING' in page.locator('.roster').inner_text(),'Goalkeeper jump must be on roster'
   page.screenshot(path=str(root/'tests'/f'stats_roster_{name}.png'))
@@ -28,7 +29,7 @@ with sync_playwright() as pw:
   assert page.locator('#staminaText').inner_text().startswith('ENERGY')
   # Advance a focused synthetic activity simulation without waiting for real time.
   page.evaluate("""() => {const g=NekketsuHD.game,p=g.controlledPlayer(0);g.staminaTick(p,65,1);return p.fatigue;}""")
-  page.wait_for_timeout(120)
+  page.wait_for_function("document.querySelector('#staminaText')?.innerText.trim() !== 'ENERGY 100%'",timeout=2500)
   pct=page.locator('#staminaText').inner_text()
   assert pct!='ENERGY 100%',f'Energy HUD did not change: {pct}'
   page.screenshot(path=str(root/'tests'/f'stats_match_{name}.png'))

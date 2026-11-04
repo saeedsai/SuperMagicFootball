@@ -144,7 +144,7 @@ export class Renderer{
  ctx.restore();if(game.flash){ctx.fillStyle=`rgba(255,249,204,${Math.min(.5,game.flash*.5)})`;ctx.fillRect(0,0,this.screenW,this.screenH)}this.drawBorder(ctx,game);this.drawMiniMap(ctx,game);if(game.celebration>0)this.drawGoalCelebration(ctx,game);ctx.restore();}
  drawGoalCelebration(ctx,game){
    const t=game.pendingKickoff?.scorer??0,team=game.getTeam(t),hero=game.goalHero||team.name;
-   const elapsed=3.3-game.celebration;const styles=['CHAMPION DANCE!','THE HUMAN PYRAMID!','SILLY VICTORY LAP!','SUPER STAR POSE!','GOAL PARTY!'];const style=game.celebrationStyle||0;
+   const elapsed=3.3-game.celebration;const styles=['CHAMPION DANCE!','THE HUMAN PYRAMID!','SILLY VICTORY LAP!','SUPER STAR POSE!','GOAL PARTY!','TEAM WAVE!','VICTORY V!','FAN PARADE!','RESPECTFUL BOW!','KICKOFF SPIN!','ONE-KNEE PRAYER!','SHOULDER SURF!','DOUBLE FIST PUMP!','WAVE TO THE CROWD!','HEART HANDS!','ELBOW PUMP!','CALM IT!','SKY POINT!','BADGE KISS!','OPEN ARMS!','SIDE SHUFFLE!','SALUTE TO FANS!','CROSS-CHEST FIST!','SIDELINE POINT!','VICTORY SPREAD!'];const style=game.celebrationStyle||0;
    ctx.save();ctx.textAlign='center';ctx.translate(this.screenW/2,130);
    ctx.rotate(Math.sin(elapsed*7)*.019);ctx.shadowColor='#081621';ctx.shadowBlur=19;
    ctx.fillStyle='#0b263cdc';ctx.beginPath();ctx.roundRect(-285,-73,570,152,27);ctx.fill();ctx.strokeStyle='#ffdb6d';ctx.lineWidth=5;ctx.stroke();
@@ -217,7 +217,7 @@ export class Renderer{
   const build=[.88,.96,1.03,1.11,1.18][(av.body??2)%5];
   const headScale=[1,.96,1.12][(av.exaggeration??1)%3];
   const lips=av.lips??av.mouth??0;
-  ctx.save();ctx.translate(p.x,p.y);if(p.action==='celebrate'){const style=game.celebrationStyle||0;ctx.translate(Math.sin(this.time*(8+style)+p.i*1.5)*(10+style*2),-Math.abs(Math.sin(this.time*(6+style)+p.i))*(10+style*2));ctx.rotate(Math.sin(this.time*(5+style)+p.i*2)*(.11+style*.025))}if(p.action==='cry'){ctx.rotate(Math.sin(this.time*11+p.i)*.08);ctx.translate(0,Math.abs(Math.sin(this.time*8+p.i))*5)}
+  ctx.save();ctx.translate(p.x,p.y);if(p.action==='celebrate'){const style=(Number.isInteger(game.celebrationStyle)?game.celebrationStyle:0)%5;ctx.translate(Math.sin(this.time*(8+style)+p.i*1.5)*(10+style*2),-Math.abs(Math.sin(this.time*(6+style)+p.i))*(10+style*2));ctx.rotate(Math.sin(this.time*(5+style)+p.i*2)*(.11+style*.025))}if(p.action==='cry'){ctx.rotate(Math.sin(this.time*11+p.i)*.08);ctx.translate(0,Math.abs(Math.sin(this.time*8+p.i))*5)}
   ellipse(ctx,0,3,26,8,'#09271a59');
   if(p.controlled){ctx.strokeStyle=p.t===0?'#ffe675':'#74f2ff';ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(0,5,28,12,0,0,PI*2);ctx.stroke();ellipse(ctx,0,5,21,6,'#061d2855')}
   ctx.translate(0,-(p.z||0)-Math.abs(run)*2+(1-stature)*12);

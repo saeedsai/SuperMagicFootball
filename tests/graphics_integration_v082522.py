@@ -6,6 +6,16 @@ import json, time
 ROOT=Path(__file__).resolve().parents[1]
 RELEASE_VERSION=json.loads((ROOT/'package.json').read_text())['version']
 DOC=ROOT/'docs'; DOC.mkdir(exist_ok=True)
+asset_data=json.loads((ROOT/'data/graphics/procedural_assets.json').read_text(encoding='utf-8'))
+# This integration fixture represents an account that has purchased the existing
+# cosmetics. Token-store browser tests separately cover purchase and locked defaults.
+appearance_unlocks=[]
+for family,values in asset_data['studioAssetLabels'].items():
+ category='accessory' if family=='accessory' else 'appearance'
+ appearance_unlocks.extend(f'{category}:{family}:{index}' for index,_ in enumerate(values))
+for family,values in [('skin',asset_data['skinTones']),('hair',asset_data['hairColors'])]:
+ appearance_unlocks.extend(f'appearance:{family}:{index}' for index,_ in enumerate(values))
+test_wallet={'schema':1,'tokens':0,'unlocks':appearance_unlocks,'receipts':[]}
 s=(ROOT/'tests/.generated/play.html').read_text()
 html=s.split('<script type="module">',1)[0]+'</body></html>'
 script=s.split('<script type="module">',1)[1].split('</script>',1)[0]
@@ -62,7 +72,9 @@ with sync_playwright() as w:
  for mode,context_args in [('desktop',{'viewport':{'width':1440,'height':900}}),('simulated-touch',{'viewport':{'width':844,'height':390},'has_touch':True,'is_mobile':True})]:
   context=browser.new_context(**context_args)
   p=context.new_page();p.set_default_timeout(8000);errors=[];p.on('pageerror',lambda exc:errors.append(str(exc)))
-  p.set_content(html);p.add_script_tag(content=script,type='module');p.wait_for_function('!!window.SupermagicFootball')
+  p.set_content(html)
+  p.evaluate('''seed=>{const values=new Map([['legend_tokenWallet',JSON.stringify(seed)]]);Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>values.has(k)?values.get(k):null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k),clear:()=>values.clear()}})}''',test_wallet)
+  p.add_script_tag(content=script,type='module');p.wait_for_function('!!window.SupermagicFootball')
   run('game boot + updated version',mode,lambda:p.evaluate("version => window.SupermagicFootball.version===version",RELEASE_VERSION))
   run('12,096-case directional artwork sweep (layout subset)',mode,lambda:p.evaluate(PAINT_SWEEP))
   run('beard changes remain visible across all eight view directions',mode,lambda:p.evaluate("""() => {
@@ -78,7 +90,7 @@ with sync_playwright() as w:
     function hash(dx,dy,tattoo){x.clearRect(0,0,250,250);e.renderer.drawPlayer(x,{...p,x:125,y:175,dx,dy,visualFacing:null,action:'idle',z:0,src:{...p.src,appearance:{...p.src.appearance,tattoo}}},{getTeam:()=>e.game.getTeam(p.t),options:{showNames:false}});const d=x.getImageData(0,0,250,250).data;let h=0;for(let i=0;i<d.length;i+=8)h=(Math.imul(h,31)+d[i]+d[i+1]*7+d[i+2]*11+d[i+3])>>>0;return h;}
     return views.every(([dx,dy])=>hash(dx,dy,0)!==hash(dx,dy,5));
   }"""))
-  run('Studio navigation opens from Settings/Customization',mode,lambda: (p.locator('[data-action="navSettings"]').click(),p.locator('[data-action="navCustomization"]').click(),p.locator('[data-action="playerStudio"]').click(),p.locator('#customPortrait').count()==1)[-1])
+  run('Studio navigation opens from Settings/Customization',mode,lambda: (p.locator('[data-action="navSettings"]').first.click(),p.locator('[data-action="navCustomization"]').click(),p.locator('[data-action="playerStudio"]').click(),p.locator('#customPortrait').count()==1)[-1])
   families={'skin':10,'hair':10,'style':13,'face':5,'eyes':20,'brows':20,'eyeColor':6,'nose':6,'lips':8,'body':5,'stature':5,'exaggeration':3,'beard':5,'accessory':6,'freckles':4,'scar':6,'tattoo':6}
   run('all 17 curated appearance selector families',mode,lambda:all(p.locator('#face_'+field+' option').count()>=n for field,n in families.items()))
   # Each rotation must update the actual painted preview, not just its label.
@@ -95,10 +107,13 @@ with sync_playwright() as w:
    import hashlib
    preview=p.locator('#customPortrait');before=hashlib.sha256(preview.screenshot()).hexdigest()
    chosen={}
-   for f,val in [('skin','#ab7458'),('hair','#141b27'),('style','7'),('eyes','18'),('beard','3'),('tattoo','5')]:
-    selector=p.locator('#face_'+f);options=selector.locator('option').evaluate_all('(a)=>a.map(o=>o.value)');
-    if val not in options:val=options[-1]
-    selector.select_option(val);chosen[f]=val
+   for f in ['skin','hair','style','eyes','beard','tattoo']:
+    selector=p.locator('#face_'+f);current=selector.input_value()
+    options=selector.locator('option').evaluate_all('(a)=>a.filter(o=>!o.disabled).map(o=>o.value)')
+    alternatives=[value for value in options if value!=current]
+    if not alternatives:return {'ok':False,'reason':f'no owned alternative for {f}','current':current}
+    value=alternatives[-1]
+    selector.select_option(value);chosen[f]=value
    after=hashlib.sha256(preview.screenshot()).hexdigest()
    p.locator('[data-action="saveAppearance"]').click()
    # reopen from customization, return navigation may differ across modes.

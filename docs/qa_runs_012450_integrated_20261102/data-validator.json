@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "teamCount": 223,
+  "playerCount": 2676,
+  "shards": {
+    "arcade": 13,
+    "national26": 32,
+    "club26": 32,
+    "legends": 6,
+    "continental": 133,
+    "bpw_worldcup": 6,
+    "bpw_alltime": 1
+  },
+  "avatarPresets": 84,
+  "errors": []
+}

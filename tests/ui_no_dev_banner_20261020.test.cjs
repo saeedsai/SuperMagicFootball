@@ -14,8 +14,9 @@ function part(begin,end){
 test('home screen no longer displays dev / version hint, About stays reachable',()=>{
  const home=part('function showHome(){','function drawPoster(){');
  assert.doesNotMatch(home,/homeVersion|DEV\s*[→>-]\s*ABOUT|DEV VERSION IN ABOUT|LATEST DEV VERSION/i);
- assert.match(home,/CREDITS\s*\/\s*ABOUT/);
- assert.match(home,/navAbout/);
+ assert.doesNotMatch(home,/CREDITS\s*\/\s*ABOUT|navAbout/,'About is moved under Settings to match the reference Home menu');
+ const settings=part('function showSettingsMenu(){','function showCustomizationMenu(){');
+ assert.match(settings,/navItem\('About & Credits','navAbout'/);
  assert.match(home,/navQuick/);
 });
 test('ordinary page header remains usable without dev version hint',()=>{

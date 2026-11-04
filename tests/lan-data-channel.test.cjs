@@ -117,3 +117,24 @@ test('send failure does not advance sequence and invalid controls are rejected',
   assert.equal(client.sendInput(buttons(),{x:0,y:0}),false);
   binding.dispose();
 });
+
+test('LAN30 an admitted guest cannot reclaim ownership on the same channel after leave',async()=>{
+  const {bindLanHostChannel,bindLanGuestChannel}=await load('lan-data-channel.js');
+  const {createLanHostAdapter}=await load('lan-host-adapter.js');
+  const {encodeLanWirePacket}=await load('lan-wire.js');
+  const adapter=createLanHostAdapter('room001','host001');
+  const first=pair(),firstBinding=bindLanHostChannel(adapter,first.host),firstGuest=bindLanGuestChannel(first.guest,'room001','guest01');
+  first.host.open();first.guest.open();assert.equal(adapter.peerId,'guest01');
+  assert.equal(firstGuest.leave(),true);assert.equal(adapter.peerId,null);assert.equal(firstBinding.peerId,null);
+  const send=(channel,type,peerId,sequence=0)=>channel.send(encodeLanWirePacket({type,version:1,roomId:'room001',peerId,...(type==='input'?{sequence,buttons:buttons(),axis:{x:0,y:1}}:{})}));
+  send(first.guest,'hello','guest01');send(first.guest,'input','guest01');
+  assert.equal(adapter.peerId,null,'replayed hello on the departed transport cannot self-admit');
+
+  const second=pair(),secondBinding=bindLanHostChannel(adapter,second.host),secondGuest=bindLanGuestChannel(second.guest,'room001','guest02');
+  second.host.open();second.guest.open();assert.equal(adapter.peerId,'guest02');
+  send(first.guest,'leave','guest01');send(first.guest,'hello','guest01');send(first.guest,'input','guest01');
+  assert.equal(adapter.peerId,'guest02','departed channel cannot evict or impersonate the replacement');
+  assert.equal(secondGuest.sendInput(buttons(),{x:0,y:1}),true);
+  assert.equal(adapter.tick().controls.buttons.shoot,true);
+  firstGuest.dispose();firstBinding.dispose();secondGuest.dispose();secondBinding.dispose();
+});

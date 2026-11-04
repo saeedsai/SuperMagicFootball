@@ -6,7 +6,7 @@ const source=fs.readFileSync('src/modules/career_slots.js','utf8').replace(/expo
 const context=vm.createContext({});
 vm.runInContext(source,context);
 const {create}=context.CAREER_SLOTS;
-const career=()=>({club:2,members:[],fixtures:[],history:[],roster:Array.from({length:12},(_,id)=>({id})),table:{},facilities:{},cup:{},cash:100,week:4,season:2});
+const career=()=>({club:2,members:[2],fixtures:Array.from({length:14},()=>[]),history:[],roster:Array.from({length:12},(_,id)=>({id})),table:{2:{}},facilities:{},cup:{},cash:100,week:4,season:2});
 function storage(){let raw=null,writes=0,fail=false;return {
  getItem:()=>raw,
  setItem:(_key,value)=>{if(fail)throw Error('quota exceeded');raw=value;writes++},
@@ -52,7 +52,7 @@ test('storage failures leave the in-memory career unchanged',()=>{
 });
 test('Career slot UI wires a rename control without adding gameplay actions',()=>{
  const ui=fs.readFileSync('src/modules/ui.js','utf8');
- assert.match(ui,/button\('RENAME','careerSlotRename_'\+s\.number\)/);
+ assert.match(ui,/slotActionButton\('RENAME','careerSlotRename_'\+s\.number,'Career',s\.number\)/);
  assert.match(ui,/a\.startsWith\('careerSlotRename_'\)/);
  assert.match(ui,/careerSlots\.rename\(n,name\)/);
 });

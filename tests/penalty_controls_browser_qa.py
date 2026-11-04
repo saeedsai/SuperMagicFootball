@@ -7,7 +7,7 @@ with sync_playwright() as pw:
  for label,w,h,mobile in [('desktop',1280,720,False),('android',844,390,True)]:
   context=browser.new_context(viewport={'width':w,'height':h},is_mobile=mobile,has_touch=mobile)
   page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
-  page.evaluate('''()=>{const data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v)}})}''')
+  page.evaluate('''()=>{const data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}''')
   page.set_content((root/'play.html').read_text(),wait_until='load')
   page.wait_for_function("!!window.SupermagicFootball?.game")
   open_settings(page,'game')

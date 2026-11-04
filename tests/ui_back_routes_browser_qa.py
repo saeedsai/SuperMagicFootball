@@ -14,7 +14,9 @@ with sync_playwright() as pw:
         )
         page = context.new_page()
         errors = []
+        dialogs = []
         page.on('pageerror', lambda e: errors.append(str(e)))
+        page.on('dialog', lambda dialog: (dialogs.append(dialog.message), dialog.dismiss()))
         page.set_content(HTML, wait_until='load')
         page.wait_for_function('!!window.SupermagicFootball?.game', timeout=30000)
 
@@ -38,7 +40,12 @@ with sync_playwright() as pw:
                 assert page.locator('#customTeam').input_value() == chosen, (label, 'team selection reset')
                 assert page.locator('#customPlayer option').count() == 12, (label, 'selected squad not loaded')
             assert page.locator('.row.space [data-action="navCustomization"]').count() == 1, (label, route, 'visible header Back')
+            dialog_count = len(dialogs)
             page.keyboard.press('Escape')
+            assert len(dialogs) == dialog_count, (label, route, 'clean form must not prompt on Back', dialogs[dialog_count:])
+            if not page.locator('.navScreen .heading').count():
+                print('UI_BACK_ROUTE_DIAGNOSTIC', label, route,
+                      page.locator('#menu').inner_text()[:500], errors, flush=True)
             assert page.locator('.navScreen .heading').inner_text() == 'PLAYER & TEAM CUSTOMIZATION', (label, route, 'keyboard Back')
         # Create a club and edit it from the saved-club list.
         click('clubs')

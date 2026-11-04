@@ -5,7 +5,7 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 
 function render(slots){
- const ui=fs.readFileSync('src/modules/ui.js','utf8');
+ const ui=fs.readFileSync('src/modules/ui.js','utf8').replace(/\r\n/g,'\n');
  const match=ui.match(/function showCupSlots\(\)\{[\s\S]*?\n\}(?=\nfunction showSaveMenu)/);
  assert.ok(match,'Cup save slot renderer should remain present');
  let html='';
@@ -14,6 +14,7 @@ function render(slots){
   TEAMS:[{name:'Home'},{name:'Away'}],
   escapeHTML:value=>String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'),
   button:(label,action)=>'<button data-action="'+action+'">'+label+'</button>',
+  slotActionButton:(label,action,kind,number)=>'<button data-action="'+action+'" aria-label="'+label+' '+kind+' slot '+number+'">'+label+'</button>',
   page:(_title,_intro,body)=>{html=body;}
  };
  vm.runInNewContext(match[0]+'\nshowCupSlots();',ctx);

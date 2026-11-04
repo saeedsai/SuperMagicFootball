@@ -17,7 +17,9 @@ with sync_playwright() as p:
   page.locator('[data-action="tacticHome"]').click()
   assert 'SUBSTITUTIONS' in page.locator('.panel').first.inner_text()
   assert '0 / 3' in page.locator('.panel').first.inner_text()
-  assert 'FIT ' in page.locator('.roster').first.inner_text()
+  roster_text=page.locator('.roster').first.inner_text()
+  assert 'ENERGY ' in roster_text, 'formation roster cards must show the current Energy value'
+  assert 'FIT ' not in roster_text, 'the live match meter is Energy, not long-term condition'
   # First non-GK bench is guaranteed for Classic Japan.
   original=page.evaluate('NekketsuHD.game.lineups[0][2]')
   bench=page.evaluate('''() => {let g=NekketsuHD.game;return g.rosters[0].findIndex((p,i)=>!g.lineups[0].includes(i)&&p.role!=="GK");}''')
@@ -31,6 +33,6 @@ with sync_playwright() as p:
   assert '1 / 3' in page.locator('.panel').first.inner_text()
   page.screenshot(path=str(root/'tests'/f'fitness_substitutions_{device}.png'),full_page=True)
   assert not errors,errors
-  print('v0.7.1 fitness browser '+device+': PASS • paused substitution • 1/3 limit • fitness indicators • no JS errors')
+  print('v0.7.1 Energy browser '+device+': PASS • paused substitution • 1/3 limit • live Energy indicators • no JS errors')
   ctx.close()
  browser.close()

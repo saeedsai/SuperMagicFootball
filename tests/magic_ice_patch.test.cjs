@@ -34,8 +34,8 @@ test('Ice Patch is wired into runtime and painted independently',()=>{
  assert.match(engine,/this\.magicHazards=placeIcePatch\(this\.magicHazards,p,F\)/);
  assert.match(engine,/const ice=advanceIcePatches\(this\.magicHazards,this\.players,dt,next\.slips\)/);
  assert.match(engine,/this\.magicHazards=\[\.\.\.next\.hazards,\.\.\.ice\.hazards\]/);
- assert.match(render,/function drawIcePatches\(ctx,hazards\)/);
- assert.match(render,/drawIcePatches\(ctx,game\.magicHazards\)/);
+ assert.match(render,/function drawIcePatches\(ctx,hazards,reducedFlash=false\)/);
+ assert.match(render,/drawIcePatches\(ctx,game\.magicHazards,!!game\.options\?\.reducedFlash\)/);
 });
 
 test('Banana and Ice hazards coexist when alternating placements and trimming capacity',async()=>{
@@ -96,13 +96,14 @@ test('ground trap slide counter excludes allies, keepers, stunned, airborne, idl
 });
 test('trap slide counter is called before collision and emits visual feedback without new input',()=>{
  const engine=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8');
- const update=engine.slice(engine.indexOf(' updateMagicHazards(dt){'),engine.indexOf(' // v0.8.7:',engine.indexOf(' updateMagicHazards(dt){')));
+ const update=engine.slice(engine.indexOf(' updateMagicHazards(dt){'),engine.indexOf(' resolveMagicWalls(){',engine.indexOf(' updateMagicHazards(dt){')));
  assert.match(engine,/import \{placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards\}/);
  assert.match(update,/const cleared=disarmMagicHazards\(this\.magicHazards,this\.players\)/);
  assert.match(update,/this\.emit\('magicHazardDisarmed'/);
  assert.ok(update.indexOf('disarmMagicHazards(')<update.indexOf('advanceBananaPeels('));
  assert.ok(update.indexOf('disarmMagicHazards(')<update.indexOf('advanceIcePatches('));
- assert.match(engine,/this\.resolvePlayerContacts\(dt\);this\.updateMagicHazards\(dt\);this\.updateBall\(dt\)/);
+ assert.ok(engine.indexOf('this.resolvePlayerContacts(dt)')<engine.indexOf('this.updateMagicHazards(dt)'));
+ assert.match(engine,/this\.updateMagicHazards\(dt\);this\.updateBall\(dt\)/);
 });
 
 test('overlapping Banana Peels stun each grounded rival only once per physics tick',async()=>{

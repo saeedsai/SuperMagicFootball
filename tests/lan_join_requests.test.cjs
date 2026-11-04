@@ -27,6 +27,28 @@ test('expired requests cannot be approved', async () => {
   assert.deepEqual(queue.list(), []);
   assert.throws(() => createLanJoinRequests({ roomId, ttlMs: 0 }), RangeError);
 });
+test('receive samples the clock once so clock drift cannot extend approval TTL', async () => {
+  const { createLanJoinRequests } = await load();
+  let calls = 0;
+  const queue = createLanJoinRequests({
+    roomId,
+    ttlMs: 1000,
+    now: () => ++calls === 1 ? 0 : 1001
+  });
+  assert.equal(queue.receive(packet('request_12345678')), true);
+  assert.equal(calls, 1);
+  assert.equal(queue.decide('request_12345678', true), null, 'request expires at the original receipt time');
+});
+test('invalid clocks and unsafe expiry arithmetic fail closed without reserving request IDs', async () => {
+  const { createLanJoinRequests } = await load();
+  let time = Number.MAX_SAFE_INTEGER - 500;
+  const queue = createLanJoinRequests({ roomId, ttlMs: 1000, now: () => time });
+  assert.equal(queue.receive(packet('request_12345678')), false, 'unsafe TTL addition is rejected');
+  time = NaN;
+  assert.equal(queue.receive(packet('request_12345678')), false, 'invalid clock value is rejected');
+  time = 0;
+  assert.equal(queue.receive(packet('request_12345678')), true, 'failed receives did not mutate replay state');
+});
 test('accepted or rejected request IDs cannot be replayed before expiry', async () => {
   const { createLanJoinRequests } = await load();
   let time = 0;

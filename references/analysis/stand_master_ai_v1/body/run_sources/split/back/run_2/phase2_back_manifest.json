@@ -1,0 +1,23 @@
+{
+  "format": "FootballSpriteAssetBundle",
+  "version": 1,
+  "source": "phase2_back.png",
+  "items": [
+    {
+      "file": "phase2_back_01.png",
+      "view": "back",
+      "animation": "run",
+      "frame": "run_2",
+      "category": "body",
+      "mirror": false,
+      "cropSource": {
+        "x": 0,
+        "y": 0,
+        "w": 1024,
+        "h": 1536
+      },
+      "width": 1024,
+      "height": 1536
+    }
+  ]
+}

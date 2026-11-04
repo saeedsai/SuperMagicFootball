@@ -55,6 +55,20 @@ test('nonfinite/negative clocks and tuning cannot generate unbounded zigzag',asy
   assert.ok(Math.abs(sample.offset)<=45+1e-9);
  }
 });
+test('Books and Serpent flight tuning stays within the SH01 speed and path bounds',async()=>{
+ const {SHOTPATHS}=await helper;
+ for(const [id,minSpeed,maxSpeed] of [['books',1.0,1.5],['serpent',1.0,1.5]]){
+  const shot=config.shotTypes[id],profile=SHOTPATHS.zigzagProfile({id});
+  assert.ok(shot.speed>=minSpeed&&shot.speed<=maxSpeed,`${id} speed multiplier bounded: ${shot.speed}`);
+  assert.ok(profile.amplitude>=10&&profile.amplitude<=65,`${id} amplitude bounded: ${profile.amplitude}`);
+  assert.ok(profile.frequency>=6&&profile.frequency<=18,`${id} frequency bounded: ${profile.frequency}`);
+  for(const direction of [-1,1])for(let t=0;t<=SHOTPATHS.TRANSFORM_SECONDS;t+=.005){
+   const sample=SHOTPATHS.zigzagSample({id,direction},t);
+   assert.ok(Math.abs(sample.offset)<=65+1e-9,`${id} ${direction} offset bounded at ${t}`);
+   assert.ok(Number.isFinite(sample.velocity),`${id} ${direction} velocity finite at ${t}`);
+  }
+ }
+});
 test('shot helpers are deterministic and do not mutate gameplay configuration',async()=>{
  const {SHOTPATHS}=await helper;
  const shot=Object.freeze({...config.shotTypes.serpent,id:'serpent',direction:-1});

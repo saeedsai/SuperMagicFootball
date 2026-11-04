@@ -4,36 +4,39 @@ const src=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
 const match=src.match(/function studioShotSaveState\(choice,tier,player\)\{[\s\S]*?\n\}/);
 assert.ok(match,'real Super Shot save-state helper exists');
 const SHOTS={fire:{name:'Fire Strike'},banana:{name:'Banana Shot'}};
-const state=vm.runInNewContext(match[0]+';studioShotSaveState',{SHOTS,studioEliteEligible:p=>p.rating>=91});
+const SPECIALS={abilityLevel:p=>p.superShotLevel??p.superAbility?.level??1};
+const ABILITIES={canEquipVerifiedFieldSpecial:(p,{kind,level})=>kind==='shot'&&['MF','FW'].includes(p?.role)&&({Gold:2,Star:3,Superstar:5}[p?.verifiedTier]||0)>=level};
+const state=vm.runInNewContext(match[0]+';studioShotSaveState',{SHOTS,SPECIALS,ABILITIES});
 const fire={type:'shoot',id:'fire',name:'Fire Strike',level:3};
-const player={role:'MF',rating:92,shot:'fire',shotName:'Fire Strike',superShotLevel:3,superAbility:fire};
+const player={role:'MF',rating:92,verifiedTier:'Star',shot:'fire',shotName:'Fire Strike',superShotLevel:3,superAbility:fire};
 test('STUDIO-SHOT-STATE-01: unchanged explicit equipment disables saving',()=>{
- for(const choice of ['keep','fire']){
+ for(const choice of ['keep']){
   const result=state(choice,3,player);
   assert.equal(result.disabled,true);assert.equal(result.unchanged,true);
   assert.match(result.message,/already saved/);
  }
 });
 test('STUDIO-SHOT-STATE-01: legacy first-time level and tier changes remain savable',()=>{
- for(const p of [{...player,superShotLevel:undefined},{...player,superAbility:{...fire,level:2}}]){
+ assert.equal(state('keep',3,{...player,superShotLevel:undefined}).disabled,true,'inferred ability level does not need a duplicate explicit field');
+ for(const p of [{...player,superShotLevel:undefined,superAbility:{...fire,level:2}}]){
   const result=state('keep',3,p);
   assert.equal(result.disabled,false);assert.match(result.message,/ready to save/);
  }
- assert.equal(state('keep',4,player).disabled,false);
+ assert.equal(state('keep',4,{...player,verifiedTier:'Superstar'}).disabled,false);
 });
 test('STUDIO-SHOT-STATE-01: new shot and stale name remain savable',()=>{
  assert.equal(state('banana',3,player).disabled,false);
  assert.equal(state('fire',3,{...player,shotName:'Old name'}).disabled,false);
 });
 test('STUDIO-SHOT-STATE-01: removed shot is a no-op but legacy missing fields are savable',()=>{
- const removed={role:'FW',rating:92,shot:null,shotName:'',superShotLevel:3};
+ const removed={role:'FW',rating:92,verifiedTier:'Star',shot:null,shotName:'',superShotLevel:3};
  assert.equal(state('none',3,removed).disabled,true);
- assert.equal(state('none',3,{role:'FW',rating:92}).disabled,false);
+ assert.equal(state('none',3,{role:'FW',rating:92,verifiedTier:'Star'}).disabled,true);
 });
 test('STUDIO-SHOT-STATE-01: invalid tier, shot, role and eligibility fail closed',()=>{
- for(const [choice,tier,p] of [['fire',0,player],['unknown',3,player],['fire',3,{...player,role:'GK'}],['fire',3,{role:'FW',rating:80}]]){
+ for(const [choice,tier,p] of [['fire',0,player],['unknown',3,player],['fire',3,{...player,role:'GK'}],['fire',3,{role:'FW',rating:80}],['banana',3,{role:'MF',rating:75,superAbility:{type:'shoot',id:'fire'}}]]){
   const result=state(choice,tier,p);assert.equal(result.disabled,true);
-  assert.equal(result.invalid,true);assert.match(result.message,/eligible Super Shot/);
+  assert.equal(result.invalid,true);assert.match(result.message,/verified tier/);
  }
 });
 test('Super Shot save feedback is accessible and updates for shot and tier',()=>{

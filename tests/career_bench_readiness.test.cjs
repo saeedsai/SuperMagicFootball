@@ -7,13 +7,13 @@ const path=require('node:path');
 const vm=require('node:vm');
 const ui=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
 const at=ui.indexOf('function careerBenchReadinessPanel(c){');
-const end=ui.indexOf('\nfunction showManager(){',at);
+const end=ui.indexOf('\nfunction managerAvatarAppearance(',at);
 assert(at>0&&end>at,'actual production career readiness helper is present');
 assert(ui.includes('$'+'{careerBenchReadinessPanel(c)}'),'the live scout embeds readiness');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const lineup=[0,1,2,3,4,5];
 const plan={lineup};
-const helper=vm.runInNewContext('('+ui.slice(at,end)+')',{planFor:()=>plan,playerOVR:p=>p.ovr??55,escapeHTML:esc});
+const helper=vm.runInNewContext('('+ui.slice(at,end)+')',{careerPlanFor:()=>plan,playerOVR:p=>p.ovr??55,escapeHTML:esc});
 function career(){
  const roles=['GK','DF','DF','MF','FW','FW','GK','DF','MF','MF','MF','FW'];
  return {club:1,cash:500000,season:2,roster:roles.map((role,i)=>({

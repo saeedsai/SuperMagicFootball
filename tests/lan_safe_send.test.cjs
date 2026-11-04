@@ -99,6 +99,16 @@ test('slow client is terminated before exceeding signaling queue budget',async()
  const ws={readyState:1,bufferedAmount:LAN_MAX_OUTBOUND_QUEUE_BYTES-bytes+1,send(){sent++},terminate(){closed++}};
  assert.equal(safeLanSend(ws,message),false);assert.equal(sent,0);assert.equal(closed,1);
 });
+test('invalid WebSocket queue counters fail closed instead of bypassing the bound',async()=>{
+ const {safeLanSend}=await load();
+ for(const bufferedAmount of [NaN,Infinity,-1,1.5,Number.MAX_SAFE_INTEGER+1]){
+  let sent=0,terminated=0;
+  const ws={readyState:1,bufferedAmount,send(){sent++},terminate(){terminated++}};
+  assert.equal(safeLanSend(ws,{type:'rooms'}),false,`counter ${bufferedAmount} is invalid`);
+  assert.equal(sent,0);
+  assert.equal(terminated,1);
+ }
+});
 test('UTF-8 queue budget boundary accepts exact fit and rejects one extra byte',async()=>{
  const {safeLanSend,LAN_MAX_OUTBOUND_QUEUE_BYTES}=await load();let sent=0,closed=0;
  const message={type:'offer',sdp:'😀'.repeat(300)},bytes=Buffer.byteLength(JSON.stringify(message),'utf8');

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Real hosted WebSocket broker integration with distinct simulated client IPs.
 
-Tests public P2P discovery, LAN isolation, host approval and SDP relay against
+Tests private-by-default/public-opt-in P2P discovery, direct invite admission,
+LAN isolation, host approval and SDP relay against
 the production broker source. These are simulated IPs, not physical devices.
 The browser shard installs the declared ws dependency before running this test.
 """
@@ -39,34 +40,39 @@ async function receive(client,type,check=()=>true){
 (async()=>{
  const all=[];
  try{
-  const publicHost=await connect('203.0.113.11');all.push(publicHost);
+  const privateHost=await connect('203.0.113.11');all.push(privateHost);
+  const publicHost=await connect('203.0.113.12');all.push(publicHost);
   const remoteGuest=await connect('198.51.100.22');all.push(remoteGuest);
   const localHost=await connect('203.0.113.11');all.push(localHost);
   const remoteLAN=await connect('198.51.100.22');all.push(remoteLAN);
-  publicHost.send({type:'host',roomId:'room_internet_test',name:'Internet Match',build:'0.11.3.0',scope:'internet-p2p'});
+  privateHost.send({type:'host',roomId:'room_'+('a'.repeat(32)),name:'Invite Match',build:'0.12.49.0',scope:'internet-p2p',public:false});
+  await receive(privateHost,'host-registered');
+  publicHost.send({type:'host',roomId:'room_internet_public',name:'Listed Match',build:'0.12.49.0',scope:'internet-p2p',public:true});
   await receive(publicHost,'host-registered');
   localHost.send({type:'host',roomId:'room_local_test',name:'Local Match',build:'0.11.3.0'});
   await receive(localHost,'host-registered');
   remoteGuest.send({type:'rooms',scope:'internet-p2p'});
   const internet=await receive(remoteGuest,'rooms-snapshot');
-  if(internet.rooms.length!==1||internet.rooms[0].roomId!=='room_internet_test'||internet.rooms[0].scope!=='internet-p2p')
+  if(internet.rooms.length!==1||internet.rooms[0].roomId!=='room_internet_public'||internet.rooms[0].scope!=='internet-p2p')
    throw Error('Internet directory leaked LAN room or missed internet room '+JSON.stringify(internet));
   remoteLAN.send({type:'rooms'});
   const lan=await receive(remoteLAN,'rooms-snapshot');
   if(lan.rooms.length)throw Error('Remote LAN guest discovered nonlocal room '+JSON.stringify(lan));
-  remoteGuest.send({type:'join',roomId:'room_internet_test',requestId:'request_test0001',build:'0.11.3.0'});
-  await receive(publicHost,'join-request');
+  if(remoteGuest.messages.some(x=>x.type==='room-announce'&&x.roomId==='room_'+('a'.repeat(32))))
+   throw Error('Private invite room leaked through unsolicited announcement');
+  remoteGuest.send({type:'join',roomId:'room_'+('a'.repeat(32)),requestId:'request_test0001',build:'0.12.49.0'});
+  await receive(privateHost,'join-request');
   if(remoteGuest.messages.some(x=>x.type==='join-accept'))throw Error('Host consent was bypassed');
-  publicHost.send({type:'decision',roomId:'room_internet_test',requestId:'request_test0001',accept:true});
+  privateHost.send({type:'decision',roomId:'room_'+('a'.repeat(32)),requestId:'request_test0001',accept:true});
   await receive(remoteGuest,'join-accept');
-  await receive(publicHost,'guest-approved');
-  publicHost.send({type:'offer',roomId:'room_internet_test',sdp:'v=0\r\ntest-offer'});
+  await receive(privateHost,'guest-approved');
+  privateHost.send({type:'offer',roomId:'room_'+('a'.repeat(32)),sdp:'v=0\r\ntest-offer'});
   const offer=await receive(remoteGuest,'offer');
   if(!offer.sdp.includes('test-offer'))throw Error('Host SDP not forwarded');
-  remoteGuest.send({type:'answer',roomId:'room_internet_test',sdp:'v=0\r\ntest-answer'});
-  const answer=await receive(publicHost,'answer');
+  remoteGuest.send({type:'answer',roomId:'room_'+('a'.repeat(32)),sdp:'v=0\r\ntest-answer'});
+  const answer=await receive(privateHost,'answer');
   if(!answer.sdp.includes('test-answer'))throw Error('Guest SDP not forwarded');
-  console.log('PASS HOSTED_BROKER_SCOPED_P2P_DISCOVERY_AND_HOST_CONSENT');
+  console.log('PASS HOSTED_BROKER_PRIVATE_INVITES_PUBLIC_OPT_IN_AND_HOST_CONSENT');
  }finally{for(const c of all)c.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});
 """

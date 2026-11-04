@@ -1,0 +1,33 @@
+{
+  "samples": 4,
+  "blank": 0,
+  "clipped": 0,
+  "inkTotal": 28992,
+  "checksums": [
+    {
+      "freckles": 0,
+      "hash": 631602036
+    },
+    {
+      "freckles": 1,
+      "hash": 1878473572
+    },
+    {
+      "freckles": 2,
+      "hash": 1018166897
+    },
+    {
+      "freckles": 3,
+      "hash": 2424156139
+    }
+  ],
+  "sourceName": "Horibata",
+  "inputFreckles": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "pageErrors": [],
+  "ok": true
+}

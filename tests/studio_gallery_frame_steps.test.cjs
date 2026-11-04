@@ -31,6 +31,8 @@ test('hidden gallery and malformed steps cannot change preview or write saves',(
 test('frame controls are accessible, delegated and limited to Player Studio',()=>{
  const a=ui.indexOf('function studioEightViewMarkup(){'),b=ui.indexOf('// 0.8.25.32: Optional',a);
  const html=ui.slice(a,b);
+ assert.match(html,/aria-valuetext="Frame \$\{studioGalleryFrame\+1\} of 4"/);
+ assert.match(ui,/slider\.setAttribute\('aria-valuetext','Frame '\+\(studioGalleryFrame\+1\)\+' of 4'\)/);
  for(const [action,label] of [['studioGalleryPrev','Previous animation frame'],['studioGalleryNext','Next animation frame']]){
   assert.ok(html.includes('data-action="'+action+'"'),action);
   assert.ok(html.includes('aria-label="'+label+'"'),label);

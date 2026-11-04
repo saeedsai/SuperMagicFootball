@@ -63,7 +63,7 @@ test('host registration must be acknowledged before UI claims a discoverable roo
 
 test('duplicate host ID is rejected; same owner retry preserves active guest',()=>{
  const server=fs.readFileSync('scripts/lan-server.mjs','utf8');
- assert.match(server,/if\(rooms\.has\(id\)\)\{if\(rooms\.get\(id\)\.host!==ws\)return send\(ws,\{type:'error',message:'Room already exists'\}\);send\(ws,\{type:'host-registered',roomId:id\}\);return\}/);
+ assert.match(server,/if\(rooms\.has\(id\)\)\{const existing=rooms\.get\(id\);if\(existing\.host!==ws\).*?send\(ws,\{type:'host-registered',roomId:id\}\);return\}/);
 });
 
 test('switching from guest to host releases previous guest seat and pending joins',()=>{

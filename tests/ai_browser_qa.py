@@ -35,7 +35,9 @@ with sync_playwright() as pw:
   assert page.evaluate('NekketsuHD.game.options.difficulty')==1
   assert page.evaluate('JSON.parse(localStorage.getItem("legend_options")).difficulty')==1
   page.screenshot(path=str(p/'tests'/f'ai_pause_{name}.png'))
-  page.locator('[data-action="resume"]').click()
+  # The paused screen also has a `← BACK` button mapped to the same action.
+  # Select the visible primary resume control so Playwright does not see two matches.
+  page.locator('#menu button.btn.gold[data-action="resume"]').click()
   assert page.evaluate('NekketsuHD.game.matchState')=='play'
   assert not errors,errors
   print(f'AI difficulty browser QA {name}: PASS · settings, setup, paused live change, resume')

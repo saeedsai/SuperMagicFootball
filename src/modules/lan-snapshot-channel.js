@@ -5,15 +5,20 @@ import {encodeLanSnapshot,decodeLanSnapshot,acceptLanSnapshot} from './lan-state
 
 const guestBindings = new WeakMap();
 const hostBindings = new WeakMap();
+const LAN_SNAPSHOT_MAX_BUFFERED_BYTES = 64 * 1024;
+// The validated snapshot schema permits ASCII-only strings (IDs, actions,
+// colors) and numeric values, so JSON wire code units are exact UTF-8 bytes.
 const validChannel = channel => channel &&
   typeof channel.addEventListener === 'function' &&
   typeof channel.removeEventListener === 'function' &&
   typeof channel.send === 'function';
 const validId = id => typeof id === 'string' && /^[A-Za-z0-9_-]{6,32}$/.test(id);
 
-function bindLanSnapshotHostChannel(host, channel, roomId, hostId) {
+function bindLanSnapshotHostChannel(host, channel, roomId, hostId, options={}) {
+  const maxBufferedAmount=options.maxBufferedAmount??LAN_SNAPSHOT_MAX_BUFFERED_BYTES;
   if (!host || !('peerId' in host) || !validChannel(channel) ||
-      !validId(roomId) || !validId(hostId)) {
+      !validId(roomId) || !validId(hostId) || !Number.isSafeInteger(maxBufferedAmount) ||
+      maxBufferedAmount<1 || maxBufferedAmount>512*1024) {
     throw new TypeError('Invalid LAN snapshot host binding');
   }
   if (hostBindings.has(channel)) throw new Error('Snapshot host channel already bound');
@@ -27,6 +32,11 @@ function bindLanSnapshotHostChannel(host, channel, roomId, hostId) {
     }
     const wire = encodeLanSnapshot(snapshot);
     if (snapshot.tick <= lastTick) return false;
+    // Reliable ordered DataChannels can accumulate stale game snapshots when
+    // the peer is slow. Keep a bounded queue; a later tick supersedes skipped state.
+    const bufferedAmount=channel.bufferedAmount??0;
+    if (!Number.isSafeInteger(bufferedAmount) || bufferedAmount<0 ||
+        bufferedAmount+wire.length>maxBufferedAmount) return false;
     try { channel.send(wire); }
     catch { return false; }
     lastTick = snapshot.tick;
@@ -88,4 +98,4 @@ function bindLanSnapshotGuestChannel(channel, roomId, hostId, onSnapshot, initia
   return binding;
 }
 
-export {bindLanSnapshotHostChannel,bindLanSnapshotGuestChannel};
+export {LAN_SNAPSHOT_MAX_BUFFERED_BYTES,bindLanSnapshotHostChannel,bindLanSnapshotGuestChannel};

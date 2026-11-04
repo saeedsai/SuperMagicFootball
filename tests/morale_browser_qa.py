@@ -11,7 +11,7 @@ with sync_playwright() as pw:
   page.evaluate("""() => {let data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}""")
   page.set_content((root/'play.html').read_text(),wait_until='load')
   page.wait_for_function("!!window.SupermagicFootball?.game")
-  assert page.locator('h1').first.inner_text().upper().find('SUPERMAGIC')>=0,errors
+  assert 'SUPER' in page.locator('.logoHeading').inner_text().upper() and 'MAGIC FOOTBALL' in page.locator('.logoHeading').inner_text().upper(),errors
   open_quick(page)
   page.locator('[data-action="setupAppearance"]').click()
   assert page.locator('#preTalkHome option').count()==5
@@ -32,7 +32,8 @@ with sync_playwright() as pw:
   page.locator('[data-action="talkHalfHome"]').click()
   assert page.evaluate('SupermagicFootball.game.talksUsed[0].halftime')
   assert page.locator('[data-action="talkHalfHome"]').count()==0
-  page.locator('[data-action="resume"]').click()
+  # The halftime route exposes both Back and the primary action as resume.
+  page.locator('#menu button.btn.gold[data-action="resume"]').click()
   assert page.evaluate('SupermagicFootball.game.matchState')=='play'
   # Force an actual physics goal and keep game on screen while crying players are rendered.
   page.evaluate("""()=>{let g=SupermagicFootball.game;g.ball.owner=null;g.ball.x=3498;g.ball.y=765;g.ball.z=0;g.ball.canCollect=0;g.updateBall(.016)}""")

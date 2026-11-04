@@ -1,16 +1,18 @@
-# Master roadmap — concept-quality fully modular footballers
+# Production character pipeline — staged technical acceptance
+
+> Overall project priorities and live status are maintained only in [`docs/MASTER_BACKLOG.md`](../MASTER_BACKLOG.md). The stages below define technical acceptance for this character workstream; they are not a second schedule or completion ledger.
 
 **Goal:** eventually deliver the smooth, expressive illustrated concept style as actual playable characters, with multiple faces, bodies, hairstyles, beards, colors, tattoos, clothing and accessories, plus all major game actions in all **eight genuinely authored views**. Options must alter rendered game pixels and remain editable and saved in Player Studio. Passing tests alone does not establish artistic similarity: owner visual signoff is mandatory.
 
 ## Design decision and scope protection
-Use an **artist-authored layered 2D rig** plus hand-painted corrective animation frames. Reuse shared bodies, kits and pose rigs while compositing unique heads/hair/skin/features; do not bake millions of combinations. Keep the old flat CONCEPT_HERO and ordinary CHARACTER_ART as fallback. Add the new renderer only to opt-in renderModel = concept_modular_v1 and expand through Concept Royals FC *before* other teams. Preserve original 223 team IDs, player data, positions, save keys, gameplay mechanics, four main buttons and match hitboxes. Keep existing numeric Studio option values intact and use versioned concept-specific IDs for richer choices.
+Use the current three-module authoring fallback: a fully drawn headless body per action frame, plus a bald face/head and hair overlay that may be reused only when their view/pose fit. Do not move isolated limbs to fake motion. Keep the old flat CONCEPT_HERO and ordinary CHARACTER_ART as fallback. Add new renderer work only to opt-in renderModel = concept_modular_v1 and expand through Concept Royals FC *before* other teams. Preserve original 223 team IDs, player data, positions, save keys, gameplay mechanics, four main buttons and match hitboxes. Keep existing numeric Studio option values intact and use versioned concept-specific IDs for richer choices. The current three-module front proof is experimental with a source-locked face and unresolved scalp/hairline defects; status lives in `docs/MASTER_BACKLOG.md` and the pilot coverage matrix.
 
 ## Programme stages (small commits, not a single huge task)
 
 | Stage | Small deliveries, in this order | Gate to mark verified |
 |---|---|---|
 | C00 Reference and source foundations | Preserve approved art reference/source provenance, freeze game-scale screenshots, define editable layer source & alpha/pivot contract. | Source reference accessible in repo/authorized location, initial art comparison, manifest schema tests. |
-| C01 One true modular hero | ONE high-quality body/head with independently authored hair, face, shirt, arms, knees, shoes; start ONE facing direction. | Real game shows one character without white matte, limb gaps or eye/hair seams. |
+| C01 One true modular hero | ONE high-quality three-module character: complete headless body cel, bald face/head and hair; start ONE facing direction. | Real game shows one character without white matte, body/head gaps or eye/hair seams. The front face is source-locked; its bald scalp/hairline join still needs repair. |
 | C02 Eight-view hero | Expand the same hero to actual front, rear, both sides and four quarters; idle/walk/run and basic kick; avoid mirrored jersey numbers. | Eight coherent, distinct directions and animated run with reciprocal arm/leg movement. |
 | C03 First unique team | Make all **12** Concept Royals players different using the same modular art system (2 GK, 3 DF, 4 MF, 3 FW). | Twelve visibly unique faces/hair/skin etc and dynamic kit numbers in real gameplay, not a team poster. |
 | C04 Face construction | Add eye, brow, ear, nose, lips, mouth expressions, jaw/face banks; validate fit across hairstyles/beards. | Every shipped selector visibly changes character in appropriate eight directions. |
@@ -24,12 +26,11 @@ Use an **artist-authored layered 2D rig** plus hand-painted corrective animation
 | C12 Release certification | Owner art review, full asset coverage, golden sheets, original-team regression, hosted gameplay & exact SHA. | Every release gate passes on same committed and deployed version. |
 
 ## One-session workflow
-1. Read the entire pipeline document set and PROGRESS_TRACKER.json, re-fetch current dev head and related source.
-2. Select **one small C-stage deliverable** (e.g. first isolated head-and-hair layer plus a validator, or two hair variants), not 40 models.
-3. Implement a source file/manifest/renderer hookup, tests, playable screenshot; keep legacy fallback.
-4. Run focused regression, game data validation and full active Node suite; browser check actual character.
-5. Commit **only** the small verified change without force, update tracker and handover, compare with any parallel commits.
-6. Read GitHub Actions for the exact SHA; if runtime changed, verify deployed browser behavior. Record PASS/FAIL/SKIP truthfully.
+1. Read `docs/MASTER_BACKLOG.md`, `docs/GRAPHICS_AGENT_WORKFLOW.md`, the pilot README and coverage matrix; verify current branch/source before changing game code.
+2. Repair the front bald-face/hair mask against its complete source and validate the assembly through Studio.
+3. Only after front acceptance, author the same player's remaining views and prioritized action frames. Complete body poses per frame; reuse head/hair only on compatible views/poses.
+4. Keep old renderer fallback; integrate one reviewed batch at a time with focused QA and actual game screenshots.
+5. Update the canonical backlog, pilot coverage matrix and handover with evidence and precise status. Preserve failed outputs for comparison and never mark a cell complete from counts alone.
 
 ## Explicit completion criteria
 - **Production-ready** means source-layer artwork exists, transparent runtime images and manifest resolve, selectable in game, meaningful visual difference, accurate eight views, animation coverage, save persistence, tests, and human review.

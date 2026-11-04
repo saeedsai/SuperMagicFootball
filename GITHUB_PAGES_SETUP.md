@@ -1,5 +1,9 @@
 # Publish Supermagic Football using GitHub Pages (branch source)
 
+## Current release path
+
+GitHub Pages is configured for `main` at the repository root. Do not push a candidate directly to `main`: push the reviewed candidate to `dev`, then let the `Full Regression Census` workflow run its exact-head Node/browser/preview gates. Its protected promotion step advances the certified `dev` commit to `main` only when those gates pass. GitHub Pages then rebuilds `main`, and the workflow verifies the deployed bytes and opens the hosted smoke check. See `docs/VERSIONING_POLICY.md` and `docs/MASTER_BACKLOG.md` for the current candidate and evidence. Local browser results alone do not mean the site has deployed.
+
 **Required one-time action in your GitHub account**
 
 The game has already been committed to the root of the public repository `saeedsai/SuperMagicFootball`. There is no build step; the root `index.html` loads `src/`, `data/`, and `style.css` as static files.

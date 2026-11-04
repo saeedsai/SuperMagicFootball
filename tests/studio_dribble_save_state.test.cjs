@@ -3,22 +3,22 @@ const {test}=require('node:test'),assert=require('node:assert/strict'),fs=requir
 const src=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
 const match=src.match(/function studioDribbleSaveState\(choice,player,styles\)\{[\s\S]*?\n\}/);
 assert.ok(match,'real Dribble Style save-state helper exists');
-const state=vm.runInNewContext(match[0]+';studioDribbleSaveState');
+const state=vm.runInNewContext(match[0]+';studioDribbleSaveState',{studioVerifiedDribbleEligible:p=>['Gold','Star','Superstar'].includes(p?.verifiedTier)});
 const styles=[{id:'rainbow'},{id:'nutmeg'}];
 test('STUDIO-DRIBBLE-STATE-01: unchanged explicitly stored style disables saving',()=>{
- const result=state('rainbow',{role:'MF',dribbleType:'rainbow'},styles);
+ const result=state('rainbow',{role:'MF',verifiedTier:'Gold',dribbleType:'rainbow'},styles);
  assert.equal(result.disabled,true);assert.equal(result.unchanged,true);
  assert.match(result.message,/already saved/);
 });
 test('STUDIO-DRIBBLE-STATE-01: legacy deterministic default still requires first explicit save',()=>{
- for(const player of [{role:'MF'}, {role:'MF',dribbleType:null}]){
+ for(const player of [{role:'MF',verifiedTier:'Gold'}, {role:'MF',verifiedTier:'Gold',dribbleType:null}]){
   const result=state('rainbow',player,styles);
   assert.equal(result.disabled,false);assert.match(result.message,/ready to save/);
  }
 });
 test('STUDIO-DRIBBLE-STATE-01: genuine changes remain savable, invalid choices fail closed',()=>{
- assert.equal(state('nutmeg',{dribbleType:'rainbow'},styles).disabled,false);
- const invalid=state('missing',{dribbleType:'missing'},styles);
+ assert.equal(state('nutmeg',{role:'MF',verifiedTier:'Gold',dribbleType:'rainbow'},styles).disabled,false);
+ const invalid=state('missing',{role:'MF',verifiedTier:'Gold',dribbleType:'missing'},styles);
  assert.equal(invalid.disabled,true);assert.equal(invalid.invalid,true);
  assert.match(invalid.message,/valid Dribble Style/);
 });

@@ -48,10 +48,11 @@ with sync_playwright() as p:
    assert page.evaluate('NekketsuHD.game.teamPlans[0].attack')=='Possession'
    assert page.evaluate('NekketsuHD.game.player(0,1).src.id')=='jp3'
    page.screenshot(path=str(root/'tests'/f'tactics_pause_{name}.png'))
-   page.locator('[data-action="resume"]').click()
+   # Both the Back link and the primary resume button map to this action.
+   page.locator('#menu button.btn.gold[data-action="resume"]').click()
    assert page.evaluate('NekketsuHD.game.matchState')=='play'
-   assert page.evaluate("JSON.parse(localStorage.getItem('legend_teamPlans')).japan.attack")=='Possession' 
-   assert page.evaluate('NekketsuHD.getTeamPlan(0).attack')=='Possession','save should persist'
+   assert page.evaluate("JSON.parse(localStorage.getItem('legend_teamPlans')).japan.attack")=='Direct','live pause tactics must not overwrite the saved pre-match plan'
+   assert page.evaluate('NekketsuHD.getTeamPlan(0).attack')=='Direct','the persistent pre-match plan remains unchanged'
    assert not errors,errors
    print('v0.7.0 tactical browser '+name+': PASS • menus/roles • pre-match • pause • saved team plans • visual badges')
    ctx.close()

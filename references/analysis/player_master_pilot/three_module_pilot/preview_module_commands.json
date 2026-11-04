@@ -1,0 +1,7 @@
+{
+  "commands": [
+    { "op": "renderPNG", "view": "front", "animation": "stand", "frame": "stand_1", "hiddenCategories": ["head", "hairFront"], "path": "./references/analysis/player_master_pilot/three_module_pilot/exports/body_without_head.png" },
+    { "op": "renderPNG", "view": "front", "animation": "stand", "frame": "stand_1", "hiddenCategories": ["body", "hairFront"], "path": "./references/analysis/player_master_pilot/three_module_pilot/exports/bald_head.png" },
+    { "op": "renderPNG", "view": "front", "animation": "stand", "frame": "stand_1", "hiddenCategories": ["body", "head"], "path": "./references/analysis/player_master_pilot/three_module_pilot/exports/hair.png" }
+  ]
+}

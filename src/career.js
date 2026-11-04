@@ -1,23 +1,101 @@
 // Pure deterministic-season manager simulation; client-only career save; no server required.
 const deep=x=>JSON.parse(JSON.stringify(x));
+const currentSeasonDate=()=>new Date().toISOString().slice(0,10);
+function parseSeasonDate(value){if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(value))return null;const d=new Date(value+'T00:00:00.000Z');return Number.isFinite(d.getTime())&&d.toISOString().slice(0,10)===value?d:null;}
+export function verifiedPlayerAgeOnDate(player,date){if(player?.ageVerified!==true)return null;const birth=parseSeasonDate(player.birthDate),asOf=parseSeasonDate(date);if(!birth||!asOf)return null;let age=asOf.getUTCFullYear()-birth.getUTCFullYear();if(asOf.getUTCMonth()<birth.getUTCMonth()||(asOf.getUTCMonth()===birth.getUTCMonth()&&asOf.getUTCDate()<birth.getUTCDate()))age--;return age>=0?age:null;}
+function advanceCareerSeasonDate(date){const d=parseSeasonDate(date)||parseSeasonDate(currentSeasonDate()),year=d.getUTCFullYear()+1,month=d.getUTCMonth(),day=Math.min(d.getUTCDate(),new Date(Date.UTC(year,month+1,0)).getUTCDate());return `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;}
 const seed=(...a)=>a.join('|').split('').reduce((h,c)=>Math.imul(h^c.charCodeAt(0),16777619)>>>0,2166136261);
 const FIRST=['Ace','Bobby','Juno','Marco','Leo','Kobe','Miko','Yuri','Rafi','Eli','Niko','Rio','Zeno','Jasper','Mateo','Kian'];
 const LAST=['Storm','Blaze','Ramos','Falcon','Stone','Ninja','Hawk','Rocket','Volt','Breeze','Ace','River','Spark'];
 const leagueSchedule=(members)=>{let a=members.slice(),rounds=[];for(let k=0;k<a.length-1;k++){let matches=[];for(let i=0;i<a.length/2;i++)matches.push([a[i],a[a.length-1-i]]);rounds.push(matches);a=[a[0],a[a.length-1],...a.slice(1,-1)]}return [...rounds,...rounds.map(ms=>ms.map(([x,y])=>[y,x]))]};
 export function createCareer(club,teams){const leagueClubs=teams.map((t,i)=>i).filter(i=>['club26','continental'].includes(teams[i].group)&&i!==club);const team=teams[club];const candidates=leagueClubs.sort((a,b)=>{const xa=teams[a],xb=teams[b],score=t=>(t.flag===team.flag?0:((t.continent||'UEFA')===(team.continent||'UEFA')?180:350))+Math.abs(t.rank-team.rank)*1.5;return score(xa)-score(xb)});const members=[club,...candidates.slice(0,7)];
- return {club,season:1,week:0,scouted:[],sponsors:0,facilitiesNews:[],members,fixtures:leagueSchedule(members),table:Object.fromEntries(members.map(i=>[i,{p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}])),cash:155000000,roster:deep(teams[club].customRoster),facilities:{training:1,stadium:1,academy:1},cup:{stage:0,eliminated:false,pending:false,wins:0},history:[],lastResult:null,leagueFinished:false};}
+ const seasonDate=currentSeasonDate(),roster=deep(teams[club].customRoster);for(const p of roster){const verifiedAge=verifiedPlayerAgeOnDate(p,seasonDate);if(verifiedAge!==null)p.age=verifiedAge;}
+ return {club,season:1,seasonDate,week:0,scouted:[],sponsors:0,facilitiesNews:[],members,fixtures:leagueSchedule(members),table:Object.fromEntries(members.map(i=>[i,{p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}])),cash:155000000,roster,facilities:{training:1,stadium:1,academy:1},cup:{stage:0,eliminated:false,pending:false,wins:0},history:[],lastResult:null,leagueFinished:false};}
 export function currentCareerFixture(c){if(!c||c.leagueFinished)return null;if(c.cup.pending&&!c.cup.eliminated){const rival=c.members[(c.cup.stage*2+3)%c.members.length]===c.club?c.members[1]:c.members[(c.cup.stage*2+3)%c.members.length];return {kind:'cup',opponent:rival,round:['Quarterfinal','Semifinal','Final'][c.cup.stage]}}
  const round=c.fixtures[c.week];if(!round)return null;const m=round.find(v=>v.includes(c.club));return {kind:'league',opponent:m[0]===c.club?m[1]:m[0],round:c.week+1};}
 function add(c,a,b,sa,sb){const x=c.table[a],y=c.table[b];for(const q of [x,y])q.p++;x.gf+=sa;x.ga+=sb;y.gf+=sb;y.ga+=sa;if(sa>sb){x.w++;x.pts+=3;y.l++;}else if(sa<sb){y.w++;y.pts+=3;x.l++;}else{x.d++;y.d++;x.pts++;y.pts++;}}
 // Keep new v0.6.2 attributes aligned with player growth. Old careers lacking
 // explicit ratings still derive from legacy values at game initialization.
-function growAttributes(p,focused=false){
+function growAttributes(p,focused=false,amount=1){
  const keys=(p.role==='GK'?['gkSkill','gkDiving','stamina','strength']:p.role==='DF'?['defence','strength','aggression','stamina']:p.role==='MF'?['passing','crossing','stamina','speedRating','agility','dribbling']:['shootPower','shootAccuracy','heading','speedRating','agility','dribbling']);
  const target=focused?[...keys,'stamina']:keys;
- for(const key of target)if(Number.isFinite(+p[key]))p[key]=Math.min(100,Math.round(+p[key]+1));
+ for(const key of target)if(Number.isFinite(+p[key]))p[key]=Math.max(1,Math.min(100,Math.round(+p[key]+amount)));
+}
+// Derived labels keep potential classifications out of the save schema.
+export const POTENTIAL_BANDS=Object.freeze([
+ {id:'foundation',label:'Foundation',min:0,max:59},
+ {id:'developing',label:'Developing',min:60,max:69},
+ {id:'promising',label:'Promising',min:70,max:79},
+ {id:'elite',label:'Elite',min:80,max:89},
+ {id:'generational',label:'Generational',min:90,max:99}
+]);
+export function careerPotentialBand(value){
+ const score=value&&typeof value==='object'?value.potential:value;
+ if(score===null||score===undefined||score===''||!Number.isFinite(Number(score)))return null;
+ const potential=Math.max(0,Math.min(99,Math.round(Number(score))));
+ return POTENTIAL_BANDS.find(b=>potential>=b.min&&potential<=b.max)?.label||null;
+}
+// Pure bounded growth returns a copy. Missing legacy potential uses the normal
+// rating ceiling and never adds a class or migration field to a saved player.
+// Under-21 players get a youth bonus, ages 29+ lose growth, and age 34+ regresses
+// one rating point per season. Training and match form adjust bounded event growth.
+export function applyCareerGrowth(player,{training=0,performance=0,ageAdvance=false,focused=false}={}){
+ if(!player||typeof player!=='object')throw new TypeError('Career player is required');
+ const updated={...player},age=Number.isFinite(Number(player.age))?Number(player.age):23;
+ const train=Math.max(0,Math.min(3,Math.round(Number(training)||0)));
+ const form=Math.max(-2,Math.min(2,Math.round(Number(performance)||0)));
+ let units=0;
+ if(ageAdvance){
+  if(age<=19&&train>0)units=1;
+  else if(age>=34||age>=30&&(train<2||form<0))units=-1;
+ }else{
+  units=1+(train>=3?1:0)+(form>=2?1:form<0?-2:0);
+  if(age<=20&&units>0)units++;
+  if(age>=29)units--;
+  if(age>=32)units--;
+  units=Math.max(-2,Math.min(2,units));
+ }
+ const rawPotential=Number(player.potential);
+ const potential=Number.isFinite(rawPotential)?Math.max(0,Math.min(99,Math.round(rawPotential))):99;
+ const currentRating=Number.isFinite(Number(player.rating))?Number(player.rating):
+  Math.max(Number(player.power)||0,Number(player.shoot)||0,Number(player.defense)||0);
+ if(units>0&&currentRating>=potential)units=0;
+ const fields=[['rating',units>0?potential:99],['power',99],['shoot',70],['defense',70]];
+ for(let step=0;step<Math.abs(units);step++){
+  const direction=Math.sign(units);
+  for(const [key,cap] of fields)if(Number.isFinite(Number(updated[key])))
+   updated[key]=Math.max(1,Math.min(cap,Math.round(Number(updated[key])+direction)));
+  growAttributes(updated,focused,direction);
+ }
+ return updated;
 }
 const strength=(teams,id)=>teams[id]?.rank||60;
-export function advanceCareer(c,teams,goals,penaltyWinner=null){const fx=currentCareerFixture(c);if(!fx)throw Error('No playable fixture');const [a,b]=goals;const win=a>b||a===b&&penaltyWinner===0;const draw=a===b;
+function validateLeagueFixtureState(c){
+ if(!c||typeof c!=='object'||!Number.isSafeInteger(c.club)||!Array.isArray(c.members)||
+  c.members.length<2||c.members.some(id=>!Number.isSafeInteger(id)||id<0)||new Set(c.members).size!==c.members.length||
+  !c.members.includes(c.club)||!Array.isArray(c.fixtures)||!Number.isSafeInteger(c.week)||
+  c.week<0||c.week>=c.fixtures.length)throw Error('Invalid Career fixture schedule');
+ const round=c.fixtures[c.week];
+ if(!Array.isArray(round)||!round.length)throw Error('Invalid Career fixture schedule');
+ const members=new Set(c.members),seen=new Set();let clubFixtures=0;
+ for(const match of round){
+  if(!Array.isArray(match)||match.length!==2||!match.every(id=>Number.isSafeInteger(id)&&id>=0&&members.has(id))||
+   match[0]===match[1]||seen.has(match[0])||seen.has(match[1]))throw Error('Invalid Career fixture schedule');
+  seen.add(match[0]);seen.add(match[1]);
+  if(match.includes(c.club))clubFixtures++;
+  for(const id of match){
+   const row=Object.hasOwn(c.table||{},String(id))?c.table[id]:null;
+   if(!row||typeof row!=='object'||Array.isArray(row)||!['p','w','d','l','gf','ga','pts'].every(key=>Number.isSafeInteger(row[key])&&row[key]>=0))
+    throw Error('Invalid Career standings table');
+  }
+ }
+ if(seen.size!==members.size)throw Error('Invalid Career fixture schedule');
+ if(clubFixtures!==1)throw Error('Invalid Career fixture schedule');
+}
+export function advanceCareer(c,teams,goals,penaltyWinner=null){if(!c||c.leagueFinished)throw Error('No playable fixture');if(!(c.cup?.pending&&!c.cup?.eliminated))validateLeagueFixtureState(c);const fx=currentCareerFixture(c);if(!fx)throw Error('No playable fixture');if(!Array.isArray(goals)||goals.length!==2||goals.some(v=>!Number.isInteger(v)||v<0||v>30))throw Error('A valid score is required');if(penaltyWinner!==null&&penaltyWinner!==0&&penaltyWinner!==1)throw Error('A valid penalty winner is required');const [a,b]=goals;const draw=a===b;
+ // Shootout outcomes apply to the Cup only; a league draw remains a draw even
+ // if a legacy caller supplies stray penalty metadata.
+ const cupPenaltyWin=fx.kind==='cup'&&draw&&penaltyWinner===0,win=a>b||cupPenaltyWin;
  c.lastResult={kind:fx.kind,week:c.week+1,against:fx.opponent,a,b,win};
  if(fx.kind==='cup'){
   if(win){c.cup.wins++;c.cup.stage++;c.cash+=8500000;c.cup.pending=false;if(c.cup.stage===3)c.cash+=40000000;}
@@ -27,7 +105,7 @@ export function advanceCareer(c,teams,goals,penaltyWinner=null){const fx=current
  const ra=strength(teams,match[0]),rb=strength(teams,match[1]);const da=Math.max(0,Math.round(1.3+(ra-rb)*.055+(Math.sin(c.week*31+match[0]*9)*1.5))),db=Math.max(0,Math.round(1.3+(rb-ra)*.055+Math.sin(c.week*17+match[1]*13)*1.4));add(c,match[0],match[1],da,db);
  }}
  c.week++;c.cash+=1800000+Math.max(0,a)*2500000+(win?4300000:draw?1700000:500000)-Math.round(c.roster.reduce((total,p)=>total+(p.value||5000000)*.006,0));
- for(const p of c.roster){p.xp=(p.xp||0)+(win?24:12)+c.facilities.training*3;if(p.xp>=100){p.level=(p.level||1)+1;p.xp-=100;p.power=Math.min(99,p.power+1);p.shoot=Math.min(70,p.shoot+1);p.defense=Math.min(70,p.defense+1);p.rating=Math.min(99,(p.rating||70)+1);growAttributes(p);p.value=Math.round((p.value||4000000)*1.04)}}
+ for(const p of c.roster){p.xp=(p.xp||0)+(win?24:12)+(c.facilities?.training||1)*3;if(p.xp>=100){p.level=(p.level||1)+1;p.xp-=100;Object.assign(p,applyCareerGrowth(p,{training:c.facilities?.training||1,performance:win?2:draw?0:-1}));p.value=Math.round((p.value||4000000)*1.04)}}
  if(c.week%3===0){const sponsor=450000*c.facilities.stadium;c.cash+=sponsor;c.sponsors=(c.sponsors||0)+sponsor;}
  for(const p of c.roster){p.condition=Math.max(50,(p.condition??100)-2+(c.facilities.training>2?1:0));if((p.injuryWeeks||0)>0)p.injuryWeeks--;if((p.contractYears||2)<=0)p.contractYears=1;}
  if(c.week===4||c.week===8||c.week===12){if(!c.cup.eliminated&&c.cup.stage<3)c.cup.pending=true}
@@ -35,23 +113,117 @@ export function advanceCareer(c,teams,goals,penaltyWinner=null){const fx=current
  c.history.unshift(c.lastResult);return c.lastResult;
 }
 export function standings(c){return c.members.map(id=>({id,...c.table[id]})).sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga)||b.gf-a.gf)}
-export function nextSeason(c){c.season++;for(const p of c.roster){p.age=(p.age||23)+1;p.contractYears=Math.max(0,(p.contractYears??2)-1);p.condition=100;p.injuryWeeks=0;}c.scouted=[];c.week=0;c.leagueFinished=false;c.fixtures=leagueSchedule(c.members);c.table=Object.fromEntries(c.members.map(i=>[i,{p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}]));c.cup={stage:0,eliminated:false,pending:false,wins:0};}
-export function purchase(c,teams,marketTeam,playerIndex,releaseIndex){const source=teams[marketTeam]?.customRoster?.[playerIndex];if(!source||marketTeam===c.club||releaseIndex<0||releaseIndex>11)throw Error('Select player and your outgoing squad member');const money=source.value||5000000;if(c.cash<money)throw Error('Not enough transfer funds');if(c.roster.some(p=>p.id===source.id))throw Error('Already in your squad');c.cash-=money;const released=c.roster[releaseIndex];c.cash+=Math.floor((released.value||2000000)*.35);const join=deep(source);join.num=released.num;c.roster[releaseIndex]=join;return join;}
-export function upgradeFacility(c,type){if(!['training','stadium','academy'].includes(type))throw Error('Invalid facility');const cost=c.facilities[type]*12500000;if(c.cash<cost)throw Error('Not enough funds');c.cash-=cost;c.facilities[type]++;return cost;}
-export function trainPlayer(c,index){const p=c.roster[index];if(!p)throw Error('Player not found');const cost=1500000;if(c.cash<cost)throw Error('Insufficient funds');c.cash-=cost;p.xp=(p.xp||0)+38+c.facilities.training*8;if(p.xp>=100){p.xp-=100;p.level++;p.shoot=Math.min(70,p.shoot+1);p.power=Math.min(99,p.power+1);p.rating=Math.min(99,(p.rating||75)+1);growAttributes(p,true);}return p;}
+const careerArchiveCopy=x=>JSON.parse(JSON.stringify(x));
+export function completedSeasonArchive(c){return c&&typeof c==='object'&&Array.isArray(c.seasonArchive)?careerArchiveCopy(c.seasonArchive.filter(row=>row&&typeof row==='object'&&!Array.isArray(row))):[];}
+function isCompleteCareerArchiveRow(row){
+ return Boolean(row&&typeof row==='object'&&!Array.isArray(row)&&Number.isSafeInteger(row.season)&&row.season>0&&
+  Number.isSafeInteger(row.clubId)&&row.clubId>=0&&Number.isSafeInteger(row.championId)&&row.championId>=0&&
+  Number.isSafeInteger(row.clubPosition)&&row.clubPosition>0&&Number.isSafeInteger(row.teamCount)&&row.teamCount>0&&
+  row.clubPosition<=row.teamCount&&row.clubRecord&&typeof row.clubRecord==='object'&&!Array.isArray(row.clubRecord)&&
+  Array.isArray(row.standings)&&row.cup&&typeof row.cup==='object'&&!Array.isArray(row.cup));
+}
+function archiveCompletedSeason(c){
+ const complete=c?.leagueFinished===true||(c?.leagueFinished===undefined&&Array.isArray(c?.fixtures)&&c.fixtures.length>0&&Number.isSafeInteger(c.week)&&c.week>=c.fixtures.length);
+ if(!complete||!Number.isSafeInteger(c?.season)||c.season<1||!Number.isSafeInteger(c?.club)||c.club<0||!Array.isArray(c?.members)||!c.members.includes(c.club)||!c.table||typeof c.table!=='object')return false;
+ const rows=[];
+ for(let order=0;order<c.members.length;order++){
+  const id=c.members[order],row=c.table[id];
+  if(!Number.isSafeInteger(id)||!row||![row.pts,row.gf,row.ga].every(value=>Number.isSafeInteger(value)&&value>=0))return false;
+  const count=key=>Number.isSafeInteger(row[key])&&row[key]>=0?row[key]:null;
+  rows.push({id,name:null,played:count('p'),wins:count('w'),draws:count('d'),losses:count('l'),goalsFor:row.gf,goalsAgainst:row.ga,goalDifference:row.gf-row.ga,points:row.pts,_order:order});
+ }
+ rows.sort((a,b)=>b.points-a.points||b.goalDifference-a.goalDifference||b.goalsFor-a.goalsFor||a._order-b._order);
+ const standings=rows.map(({_order,...row},index)=>({...row,position:index+1})),clubRow=standings.find(row=>row.id===c.club);
+ if(!clubRow||!standings.length)return false;
+ const champion=standings[0],cup=c.cup&&typeof c.cup==='object'?c.cup:{},stage=Number.isInteger(cup.stage)&&cup.stage>=0&&cup.stage<=3?cup.stage:null;
+ let cupStatus='unknown';if(cup.eliminated===true&&stage!==3)cupStatus='eliminated';else if(cup.eliminated!==true&&stage===3)cupStatus='champion';else if(cup.eliminated!==true&&stage!==null)cupStatus=cup.pending===true?'pending':'in_progress';
+ const archive=completedSeasonArchive(c);
+ if(archive.some(row=>isCompleteCareerArchiveRow(row)&&row.season===c.season&&row.clubId===c.club))return false;
+ archive.push({season:c.season,clubId:c.club,championId:champion.id,clubPosition:clubRow.position,teamCount:standings.length,
+  clubRecord:{played:clubRow.played,wins:clubRow.wins,draws:clubRow.draws,losses:clubRow.losses,goalsFor:clubRow.goalsFor,goalsAgainst:clubRow.goalsAgainst,goalDifference:clubRow.goalDifference,points:clubRow.points},standings,cup:{status:cupStatus,stage,wins:Number.isSafeInteger(cup.wins)&&cup.wins>=0?cup.wins:null,pending:typeof cup.pending==='boolean'?cup.pending:null}});
+ c.seasonArchive=archive.slice(-12);return true;
+}
+export function nextSeason(c){archiveCompletedSeason(c);c.season++;c.seasonDate=advanceCareerSeasonDate(c.seasonDate);for(const p of c.roster){const verifiedAge=verifiedPlayerAgeOnDate(p,c.seasonDate),legacyAge=Number(p.age);p.age=verifiedAge??(Number.isSafeInteger(legacyAge)&&legacyAge>=0&&legacyAge<Number.MAX_SAFE_INTEGER?legacyAge+1:24);Object.assign(p,applyCareerGrowth(p,{ageAdvance:true,training:c.facilities?.training||1,performance:c.lastResult?.win?2:c.lastResult?.a===c.lastResult?.b?0:-1}));p.contractYears=Math.max(0,(p.contractYears??2)-1);p.condition=100;p.injuryWeeks=0;}c.scouted=[];c.week=0;c.leagueFinished=false;c.fixtures=leagueSchedule(c.members);c.table=Object.fromEntries(c.members.map(i=>[i,{p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}]));c.cup={stage:0,eliminated:false,pending:false,wins:0};}
+const validCareerPlayerId=id=>(typeof id==='string'&&id.trim().length>0)||(Number.isSafeInteger(id)&&id>=0);
+const sameCareerPlayerId=(a,b)=>validCareerPlayerId(a)&&validCareerPlayerId(b)&&String(a)===String(b);
+const validCareerShirtNumber=num=>Number.isSafeInteger(num)&&num>=1&&num<=99;
+function careerReplacementShirtNumber(c,incoming,releaseIndex,released){
+ if(validCareerShirtNumber(released?.num))return released.num;
+ // Older or imported Career rows may not have a usable number. Keep the
+ // market player's valid number instead of replacing it with undefined/NaN.
+ if(validCareerShirtNumber(incoming?.num))return incoming.num;
+ const used=new Set(c.roster.filter((_,index)=>index!==releaseIndex).map(player=>player?.num).filter(validCareerShirtNumber));
+ for(let number=1;number<=99;number++)if(!used.has(number))return number;
+ return 1;
+}
+export function careerTransferQuote(c,teams,marketTeam,playerIndex,releaseIndex){
+ const source=teams?.[marketTeam]?.customRoster?.[playerIndex];
+ const released=Array.isArray(c?.roster)&&Number.isInteger(releaseIndex)?c.roster[releaseIndex]:null;
+ if(!source||typeof source!=='object'||Array.isArray(source)||!validCareerPlayerId(source.id)||marketTeam===c?.club||!released||typeof released!=='object'||Array.isArray(released))return {valid:false,affordable:false};
+ if(c.roster.some(p=>sameCareerPlayerId(p?.id,source.id)))return {valid:false,affordable:false};
+ const configuredMoney=source.value,configuredSaleValue=released.value;
+ const price=configuredMoney===undefined||configuredMoney===null||configuredMoney===0||configuredMoney===''?5000000:Number(configuredMoney);
+ const saleValue=configuredSaleValue===undefined||configuredSaleValue===null||configuredSaleValue===0||configuredSaleValue===''?2000000:Number(configuredSaleValue);
+ if(!Number.isFinite(price)||price<=0||!Number.isFinite(saleValue)||saleValue<0||!Number.isFinite(c.cash))return {valid:false,affordable:false};
+ const credit=Math.floor(saleValue*.35),projectedCash=c.cash-price+credit;
+ if(!Number.isFinite(projectedCash))return {valid:false,affordable:false};
+ return {valid:true,price,saleValue,credit,projectedCash,affordable:c.cash>=price,shortfall:Math.max(0,price-c.cash)};
+}
+export function purchase(c,teams,marketTeam,playerIndex,releaseIndex){
+ const source=teams?.[marketTeam]?.customRoster?.[playerIndex];
+ if(!source||typeof source!=='object'||Array.isArray(source)||!validCareerPlayerId(source.id)||marketTeam===c?.club||
+  !Array.isArray(c?.roster)||!Number.isInteger(releaseIndex)||releaseIndex<0||releaseIndex>=c.roster.length){
+  throw Error('Select player and your outgoing squad member');
+ }
+ const released=c.roster[releaseIndex];
+ if(!released||typeof released!=='object'||Array.isArray(released))throw Error('Select player and your outgoing squad member');
+ if(c.roster.some(p=>sameCareerPlayerId(p?.id,source.id)))throw Error('Already in your squad');
+ const quote=careerTransferQuote(c,teams,marketTeam,playerIndex,releaseIndex);
+ if(!quote.valid)throw Error('Invalid transfer value');
+ if(!quote.affordable)throw Error('Not enough transfer funds');
+ const join=deep(source);
+ join.num=careerReplacementShirtNumber(c,source,releaseIndex,released);
+ const resultingCash=quote.projectedCash;
+ if(!Number.isFinite(resultingCash))throw Error('Invalid transfer value');
+ // Resolve every input and clone before committing either side of the swap.
+ c.roster[releaseIndex]=join;
+ c.cash=resultingCash;
+ return join;
+}
+export function upgradeFacility(c,type){if(!['training','stadium','academy'].includes(type))throw Error('Invalid facility');if(!c||typeof c!=='object'||!c.facilities||typeof c.facilities!=='object'||Array.isArray(c.facilities))throw Error('Invalid facility state');const level=c.facilities[type];if(!Number.isSafeInteger(level)||level<0)throw Error('Invalid facility level');if(!Number.isFinite(c.cash)||c.cash<0)throw Error('Invalid facility budget');const cost=level*12500000,nextLevel=level+1,resultingCash=c.cash-cost;if(!Number.isFinite(cost)||!Number.isSafeInteger(nextLevel)||!Number.isFinite(resultingCash))throw Error('Invalid facility upgrade');if(c.cash<cost)throw Error('Not enough funds');const facilities={...c.facilities,[type]:nextLevel};c.facilities=facilities;c.cash=resultingCash;return cost;}
+export function trainPlayer(c,index){if(!c||typeof c!=='object'||!Array.isArray(c.roster)||!Number.isInteger(index)||index<0||index>=c.roster.length)throw Error('Player not found');const p=c.roster[index];if(!p||typeof p!=='object'||Array.isArray(p))throw Error('Player not found');const cost=1500000;if(!Number.isFinite(c.cash)||c.cash<0)throw Error('Invalid training budget');if(c.cash<cost)throw Error('Insufficient funds');const rawTraining=c.facilities?.training||1,training=Number(rawTraining),xp=Number(p.xp||0),level=Number(p.level||1);if(!Number.isFinite(training)||training<0||!Number.isFinite(xp)||xp<0||!Number.isSafeInteger(level)||level<1)throw Error('Invalid training details');const nextXp=xp+38+training*8,resultingCash=c.cash-cost;if(!Number.isFinite(nextXp)||!Number.isFinite(resultingCash))throw Error('Invalid training details');const trained={...p,xp:nextXp,level};Object.assign(trained,applyCareerGrowth(trained,{training:Math.min(3,training+1),performance:0,focused:true}));if(trained.xp>=100){trained.xp-=100;trained.level++;if(!Number.isSafeInteger(trained.level))throw Error('Invalid training details');}const roster=c.roster.slice();roster[index]=trained;c.roster=roster;c.cash=resultingCash;return trained;}
 
-export function scoutAcademy(c){const cost=2500000;if(c.cash<cost)throw Error('Not enough scouting funds');c.cash-=cost;const i=(c.scouted?.length||0),n=seed(c.club,c.season,c.week,i),role=['GK','DF','MF','FW'][n%4],rating=54+Math.min(34,c.facilities.academy*3+(n%17)),id='youth_'+c.club+'_'+c.season+'_'+c.week+'_'+i;
- const p={id,name:FIRST[n%FIRST.length]+' '+LAST[(n>>>5)%LAST.length],role,num:13+i,power:25+Math.round(rating*.38),shoot:Math.round(rating*.25),defense:Math.round(rating*.26),speed:['A','B','C'][n%3],shot:c.roster[n%c.roster.length].shot,shotName:c.roster[n%c.roster.length].shotName,skill:'Scouted academy talent',age:16+n%5,level:1,xp:0,rating,potential:Math.min(99,rating+8+n%13),value:Math.round(rating*rating*2200),fictional:true,source:'procedurally generated academy talent',condition:100,contractYears:3};
- (c.scouted||(c.scouted=[])).push(p);return p;}
-export function signAcademy(c,scoutIndex,releaseIndex){const p=c.scouted?.[scoutIndex];if(!p)throw Error('No such scouted player');if(!Number.isInteger(releaseIndex)||releaseIndex<0||releaseIndex>=12)throw Error('Select an outgoing player');const fee=Math.ceil(p.value*.55);if(c.cash<fee)throw Error('Cannot afford youth player');c.cash-=fee;p.num=c.roster[releaseIndex].num;c.roster[releaseIndex]=deep(p);c.scouted.splice(scoutIndex,1);return p;}
-export function renewContract(c,index){const p=c.roster[index];if(!p)throw Error('No player selected');const fee=Math.round((p.value||5000000)*.13)+850000;if(c.cash<fee)throw Error('Not enough budget');c.cash-=fee;p.contractYears=(p.contractYears||0)+2;return fee;}
-export function recoverPlayer(c,index){const p=c.roster[index];if(!p)throw Error('No player selected');const fee=500000;if(c.cash<fee)throw Error('Not enough budget');c.cash-=fee;p.condition=Math.min(100,(p.condition||100)+25);p.injuryWeeks=Math.max(0,(p.injuryWeeks||0)-1);return p;}
+export function scoutAcademy(c){
+ const cost=2500000;
+ if(!c||typeof c!=='object'||!Number.isSafeInteger(c.club)||c.club<0||!Number.isSafeInteger(c.season)||c.season<1||!Number.isSafeInteger(c.week)||c.week<0||!Array.isArray(c.roster)||!c.roster.length||!c.facilities||typeof c.facilities!=='object'||Array.isArray(c.facilities)||!Number.isSafeInteger(c.facilities.academy)||c.facilities.academy<0||c.scouted!==undefined&&!Array.isArray(c.scouted))throw Error('Invalid Academy scouting state');
+ if(!Number.isFinite(c.cash)||c.cash<0)throw Error('Invalid Academy budget');
+ if(c.cash<cost)throw Error('Not enough scouting funds');
+ const scouted=c.scouted||[],idBase='youth_'+c.club+'_'+c.season+'_'+c.week+'_',usedIds=new Set([...c.roster,...scouted].map(p=>p?.id).filter(id=>typeof id==='string'));
+ let i=scouted.length;while(usedIds.has(idBase+i))i++;
+ const n=seed(c.club,c.season,c.week,i),role=['GK','DF','MF','FW'][n%4],rating=54+Math.min(34,c.facilities.academy*3+(n%17)),id=idBase+i,model=c.roster[n%c.roster.length];
+ if(!model||typeof model!=='object'||Array.isArray(model))throw Error('Invalid Academy scouting roster');
+ const p={id,name:FIRST[n%FIRST.length]+' '+LAST[(n>>>5)%LAST.length],role,num:13+i,power:25+Math.round(rating*.38),shoot:Math.round(rating*.25),defense:Math.round(rating*.26),speed:['A','B','C'][n%3],shot:model.shot,shotName:model.shotName,skill:'Scouted academy talent',age:16+n%5,level:1,xp:0,rating,potential:Math.min(99,rating+8+n%13),value:Math.round(rating*rating*2200),fictional:true,source:'procedurally generated academy talent',condition:100,contractYears:3};
+ const resultingCash=c.cash-cost;if(!Number.isFinite(resultingCash))throw Error('Invalid Academy budget');
+ c.scouted=[...scouted,p];c.cash=resultingCash;return p;
+}
+export function signAcademy(c,scoutIndex,releaseIndex){const p=c.scouted?.[scoutIndex];if(!p)throw Error('No such scouted player');if(!validCareerPlayerId(p.id))throw Error('Invalid youth player identity');if(!Array.isArray(c.roster)||c.roster.some(player=>sameCareerPlayerId(player?.id,p.id)))throw Error('Youth player identity already in your squad');if(!Number.isInteger(releaseIndex)||releaseIndex<0||releaseIndex>=12)throw Error('Select an outgoing player');const outgoing=Array.isArray(c.roster)?c.roster[releaseIndex]:null;if(!outgoing||!Number.isFinite(outgoing.num))throw Error('Select an outgoing player');if(!Number.isFinite(p.value)||p.value<0)throw Error('Invalid youth player value');if(!Number.isFinite(c.cash))throw Error('Invalid youth budget');const fee=Math.ceil(p.value*.55);if(c.cash<fee)throw Error('Cannot afford youth player');const resultingCash=c.cash-fee;if(!Number.isFinite(resultingCash))throw Error('Invalid youth budget');const signed=deep(p);signed.num=outgoing.num;const roster=c.roster.slice();roster[releaseIndex]=signed;const scouted=c.scouted.slice();scouted.splice(scoutIndex,1);c.roster=roster;c.scouted=scouted;c.cash=resultingCash;return signed;}
+export function renewContract(c,index){if(!Array.isArray(c?.roster)||!Number.isInteger(index)||index<0||index>=c.roster.length)throw Error('No player selected');const p=c.roster[index];if(!p||typeof p!=='object'||Array.isArray(p))throw Error('No player selected');const rawValue=p.value,rawYears=p.contractYears,value=rawValue===undefined||rawValue===null||rawValue===0||rawValue===''?5000000:Number(rawValue),years=rawYears===undefined||rawYears===null||rawYears===''?0:Number(rawYears);if(!Number.isFinite(value)||value<0||!Number.isSafeInteger(years)||years<0||!Number.isFinite(c.cash))throw Error('Invalid contract details');const fee=Math.round(value*.13)+850000,resultingCash=c.cash-fee,nextYears=years+2;if(!Number.isFinite(fee)||!Number.isFinite(resultingCash)||!Number.isSafeInteger(nextYears))throw Error('Invalid contract details');if(c.cash<fee)throw Error('Not enough budget');const roster=c.roster.slice();roster[index]={...p,contractYears:nextYears};c.roster=roster;c.cash=resultingCash;return fee;}
+export function recoverPlayer(c,index){if(!c||typeof c!=='object'||!Array.isArray(c.roster)||!Number.isInteger(index)||index<0||index>=c.roster.length)throw Error('No player selected');const p=c.roster[index];if(!p||typeof p!=='object'||Array.isArray(p))throw Error('No player selected');const fee=500000;if(!Number.isFinite(c.cash)||c.cash<0)throw Error('Invalid recovery budget');if(c.cash<fee)throw Error('Not enough budget');if(p.condition!==undefined&&p.condition!==null&&p.condition!==''&&p.condition!==0&&!Number.isFinite(Number(p.condition)))throw Error('Invalid player recovery state');if(p.injuryWeeks!==undefined&&p.injuryWeeks!==null&&p.injuryWeeks!==''&&!Number.isFinite(Number(p.injuryWeeks)))throw Error('Invalid player recovery state');const condition=Number(p.condition||100),injuryWeeks=Number(p.injuryWeeks||0),resultingCash=c.cash-fee;if(!Number.isFinite(condition)||!Number.isFinite(injuryWeeks)||!Number.isFinite(resultingCash))throw Error('Invalid player recovery state');const recovered={...p,condition:Math.min(100,condition+25),injuryWeeks:Math.max(0,injuryWeeks-1)},roster=c.roster.slice();roster[index]=recovered;c.roster=roster;c.cash=resultingCash;return recovered;}
 export function careerCoverage(c,teams){return {members:c.members.length,realDomesticMatches:c.fixtures.length,region:teams[c.club].continent||'UEFA',country:teams[c.club].flag,scoutCount:c.scouted?.length||0,activeInjuries:c.roster.filter(p=>p.injuryWeeks>0).length,expiring:c.roster.filter(p=>(p.contractYears??2)<=1).length};}
 
 // v0.7.1: after an actual played career fixture, preserve fatigue-driven fitness.
 // A low-condition, heavily exhausted athlete has a deterministic small risk of a
 // short injury. Academy/bench players recover slightly if they did not play.
 export function recordMatchFitness(c,report){
+ if(!c||typeof c!=='object'||!Array.isArray(c.roster)||!Array.isArray(report))throw Error('Invalid Career fitness report');
+ const reportIds=new Set();
+ for(const row of report){
+  const validId=(typeof row?.id==='string'&&row.id.trim().length>0)||(Number.isSafeInteger(row?.id)&&row.id>=0);
+  if(!row||typeof row!=='object'||Array.isArray(row)||!validId||
+   !Number.isFinite(row.seconds)||row.seconds<0||!Number.isFinite(row.fatigue)||row.fatigue<0||row.fatigue>1||
+   !Number.isFinite(row.condition)||row.condition<0||row.condition>100||reportIds.has(row.id))throw Error('Invalid Career fitness report');
+  reportIds.add(row.id);
+ }
  const lookup=new Map(report.map(r=>[r.id,r]));const incidents=[];
  for(const p of c.roster){const r=lookup.get(p.id);if(!r)continue;
   const old=Number.isFinite(+p.condition)?+p.condition:100;

@@ -16,7 +16,7 @@ def open_quick(page):
 
 def open_settings(page,section='game'):
  home(page)
- page.locator('[data-action="navSettings"]').click()
+ page.locator('[data-action="navSettings"]').first.click()
  page.locator(f'[data-action=nav{dict(game="GameSettings",sound="Sound",graphics="Graphics",save="SaveManagement",input="Input",customize="Customization")[section]}]').click()
 
 def open_feature(page,route):

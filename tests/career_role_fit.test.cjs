@@ -13,7 +13,7 @@ assert(ui.includes('$'+'{careerLineupRoleFitPanel(c)}'),'real scout displays rol
 const escapeHTML=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const original=[0,1,2,3,4,5],plan={lineup:original.slice()};
 const fit=vm.runInNewContext('('+ui.slice(at,end)+')',{
- planFor:()=>plan,playerOVR:(p)=>p.ovr??60,escapeHTML});
+ careerPlanFor:()=>plan,playerOVR:(p)=>p.ovr??60,escapeHTML});
 function career(){
  const roles=['GK','DF','DF','MF','FW','FW','GK','DF','MF','MF','MF','FW'];
  return {club:1,cash:20000,season:2,roster:roles.map((role,i)=>({

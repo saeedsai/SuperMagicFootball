@@ -83,6 +83,21 @@ test('LAN-013 malformed, wrong-build and out-of-window traffic never advances ho
   H.dispose();G.dispose();
 });
 
+test('LAN-013 rejected sequence gap leaves the real channel cursor ready for the next guest input',async()=>{
+  const {bindLanProtocolChannel}=await load(),{host,guest}=pair();
+  const {serializeLanPacket}=await import('../src/modules/lan_protocol.js');
+  const H=bindLanProtocolChannel(hello,host),G=bindLanProtocolChannel(guestHello,guest);
+  host.open();guest.open();
+  assert.equal(H.ready,true);assert.equal(G.ready,true);
+  guest.send(serializeLanPacket({protocol:1,type:'input',session:hello.session,
+    sequence:Number.MAX_SAFE_INTEGER,frame:1,buttons:['shoot'],dx:0,dy:0}));
+  assert.equal(H.state.peer.lastSequence,0,'jump is rejected before mutating the peer gate');
+  assert.equal(H.advance(0).received,false,'forged control never enters the authoritative frame');
+  assert.equal(G.sendInput(2,['pass']).sequence,1);
+  assert.deepEqual(H.advance(2),{input:{frame:2,buttons:['pass'],dx:0,dy:0},received:true});
+  H.dispose();G.dispose();
+});
+
 test('LAN-013 send failure retains guest sequence; close/dispose removes listeners',async()=>{
   const {bindLanProtocolChannel}=await load(),{host,guest}=pair();
   host.open();guest.open();

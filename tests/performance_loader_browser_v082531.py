@@ -27,7 +27,7 @@ with sync_playwright() as p:
         mode='mobile-touch' if touch else 'desktop'
         state=page.evaluate('''()=>({off:SupermagicFootball.game.options.showPerformance===false,hidden:document.querySelector('#perfHud').classList.contains('hidden'),actions:document.querySelectorAll('[data-act]').length})''')
         verify(mode+' default OFF; exactly four actions',state['off'] and state['hidden'] and state['actions']==4,str(state))
-        page.locator('[data-action="navSettings"]').click();page.locator('[data-action="navGraphics"]').click()
+        page.locator('.arcadeHomeHeader [data-action="navSettings"]').click();page.locator('[data-action="navGraphics"]').click()
         verify(mode+' FPS option exists',page.locator('#showPerformance').count()==1)
         page.select_option('#showPerformance','true');page.locator('[data-action="saveSettings"]').click()
         page.evaluate('''()=>{const g=SupermagicFootball.game;g.init({home:0,away:9,mode:'quick',humans:0,options:g.options});g.matchState='play';document.querySelector('#menu').classList.add('hidden');}''')

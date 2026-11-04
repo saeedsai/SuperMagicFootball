@@ -1,0 +1,44 @@
+{
+  "status": "PASS renderer smoke only; NOT full animation acceptance",
+  "player": "Leo #2",
+  "team": "Crown Royals (Art WIP)",
+  "true_views": [
+    "front",
+    "side",
+    "back"
+  ],
+  "authored_quarter_views": [
+    "quarterFront",
+    "quarterBack"
+  ],
+  "quarter_alpha_qa": {
+    "corners": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "visible": 2002,
+    "different": 1284
+  },
+  "animation": [
+    "experimental run",
+    "jump transform",
+    "shoot transform",
+    "tackle transform"
+  ],
+  "not_yet_verified": [
+    "12 unique players",
+    "bespoke action frames",
+    "reference consistency in side hair"
+  ],
+  "screenshots": {
+    "leo_idle.png": "08ea858208cc9b548e1d40ee4e04055158e678960611e13b7c19a9d103beea1d",
+    "leo_jump.png": "437041913c9931a29073058f8e5454381e433b49f69b2947e0621486d985f54e",
+    "leo_real_game_five_views.png": "966d8769b93af067602060d631eb353440bc3b89d0197b0e7df90bb0d83a9d69",
+    "leo_real_match.png": "58900e4e9ded62a9361daf11c7a4fef6ba482d6c0357e5d285ad466a8db8de21",
+    "leo_run.png": "32d874e8a0659dbd49adfa1cb5f9a3a8833f301e5f3ba8e4801e88aaab021118",
+    "leo_shoot.png": "6c88d6ed5a07cf59c8676e07e4a8934ba98292a2b7d85bea9b27ce479e1305a7",
+    "leo_tackle.png": "f44ea0119746f52465c74df2d9e362d6de10c2f1b0f4bc5c7dfc3fe464a32211"
+  }
+}

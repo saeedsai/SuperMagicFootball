@@ -10,10 +10,10 @@ const input=seq=>({...packet('input'),sequence:seq,buttons:{pass:false,shoot:tru
 test('LAN guest can leave and a replacement can join the same room',async()=>{
  const {createLanHostState,acceptLanPacket}=await load('lan-session.js');
  let state=acceptLanPacket(createLanHostState('room001','host001'),packet('hello')).state;
- let result=acceptLanPacket(state,input(42));assert.equal(result.accepted,true);state=result.state;
+ let result=acceptLanPacket(state,input(0));assert.equal(result.accepted,true);state=result.state;
  const leave=acceptLanPacket(state,packet('leave'));assert.equal(leave.reason,'left');
  assert.equal(leave.state.peerId,null);assert.equal(leave.state.lastSequence,-1);
- assert.equal(acceptLanPacket(leave.state,input(43)).reason,'not-joined');
+ assert.equal(acceptLanPacket(leave.state,input(1)).reason,'not-joined');
  const replacement=acceptLanPacket(leave.state,packet('hello','guest02'));
  assert.equal(replacement.reason,'joined');assert.equal(replacement.state.peerId,'guest02');
 });

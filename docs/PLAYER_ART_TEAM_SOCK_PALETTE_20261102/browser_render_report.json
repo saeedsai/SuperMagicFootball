@@ -1,0 +1,25 @@
+{
+  "palettes": [
+    {
+      "label": "WHITE SECONDARY",
+      "secondary": "#f3f3ea"
+    },
+    {
+      "label": "RED SECONDARY",
+      "secondary": "#df4149"
+    },
+    {
+      "label": "GREEN SECONDARY",
+      "secondary": "#329b65"
+    },
+    {
+      "label": "NAVY SECONDARY",
+      "secondary": "#263c60"
+    }
+  ],
+  "sprites": 4,
+  "nontransparent": 30424,
+  "edgePixels": 0,
+  "pageErrors": [],
+  "ok": true
+}

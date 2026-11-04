@@ -3,11 +3,12 @@ import { createLanRoomMessage, validateLanRoomMessage } from './lan-room-protoco
 // Host-side consent queue only. The signaling service MUST authenticate sender
 // identity, enforce LAN scope, and bind responses to the originating peer.
 // These client-side checks are not an authorization or identity mechanism.
-export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30000, maxPending = 8 } = {}) {
+export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30000, maxPending = 8, maxRemembered = 64 } = {}) {
   if (typeof send !== 'function') throw new TypeError('send must be a function');
   if (typeof now !== 'function') throw new TypeError('now must be a function');
   if (!Number.isSafeInteger(ttlMs) || ttlMs < 1000 || ttlMs > 120000) throw new RangeError('Invalid request TTL');
   if (!Number.isSafeInteger(maxPending) || maxPending < 1 || maxPending > 32) throw new RangeError('Invalid pending limit');
+  if (!Number.isSafeInteger(maxRemembered) || maxRemembered < maxPending || maxRemembered > 512) throw new RangeError('Invalid replay limit');
   let hostedRoomId = null;
   let closed = false;
   const pending = new Map();
@@ -43,7 +44,10 @@ export function createLanHostApproval({ send, now = () => Date.now(), ttlMs = 30
       const time = now();
       if (!Number.isSafeInteger(time) || !Number.isSafeInteger(time + ttlMs)) return false;
       prune(time);
-      if (pending.has(message.requestId) || decided.has(message.requestId) || sending.has(message.requestId) || pending.size >= maxPending) return false;
+      // Bound both live prompts and replay suppression. Otherwise unique
+      // requests approved in a short TTL window can grow `decided` without
+      // limit even though the pending queue itself is capped.
+      if (pending.has(message.requestId) || decided.has(message.requestId) || sending.has(message.requestId) || pending.size >= maxPending || pending.size + decided.size >= maxRemembered) return false;
       pending.set(message.requestId, { requestId: message.requestId, expiresAt: time + ttlMs });
       return true;
     },

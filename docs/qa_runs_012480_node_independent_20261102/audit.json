@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "commit": "local",
+  "categories": {
+    "node": {
+      "shards": 4,
+      "discovered": 409,
+      "executed": 409,
+      "passed": 409
+    }
+  },
+  "total_scripts": 409
+}

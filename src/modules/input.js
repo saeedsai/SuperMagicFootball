@@ -11,21 +11,32 @@ const GAMEPAD_BUTTONS={0:'shoot',1:'pass',2:'dribble',3:'jump',9:'pause'};
 const MAX_BUFFERED_TAPS=12;
 const deadzone=v=>Math.abs(v)<.16?0:Math.max(-1,Math.min(1,v));
 class Input{
- constructor(){this.keys=new Set();this.keyPending=new Set();this.keyReleasePending=new Set();this.keyPulsePending=new Map();this.keyDownTimes=new Map();this.touchPulsePending=new Map();this.touchDownTimes=new Map();this.touchReplayHeldPending=new Set();this.touchReplayTapDurations=new Map();this.pulseBacklog=Array.from({length:4},()=>({}));this.pulseDurations=Array.from({length:4},()=>({}));this.tapDurations=Array.from({length:4},()=>({}));this.touchPending=new Set();this.touchReleasePending=new Set();this.touchPointers=new Map();this.joyPointers=new Map();this.touchCanceled=new Set();this.globalCancelPending=false;this.canceledActions=Array.from({length:4},()=>({}));this.bindings=Object.fromEntries(Object.entries(DEFAULT_BINDINGS).map(([k,v])=>[k,v.slice()]));this.prev=[{}, {}, {}, {}];this.touch={x:0,y:0};this.touchButtons=new Set();this.gamepads=[];this.state=Array.from({length:4},()=>({}));this.pressed=Array.from({length:4},()=>({}));this.releases=Array.from({length:4},()=>({}));this.enabled=true;
- const stopCodes=new Set(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','Tab']);
- window.addEventListener('keydown',e=>{if((e.target instanceof HTMLInputElement)||(e.target instanceof HTMLSelectElement))return;if(stopCodes.has(e.code))e.preventDefault();if(!this.keys.has(e.code)){this.keyPending.add(e.code);this.keyDownTimes.set(e.code,Number.isFinite(e.timeStamp)?e.timeStamp:Date.now());}this.keys.add(e.code)});
+ constructor(){this.keys=new Set();this.keyPending=new Set();this.keyReleasePending=new Set();this.keyPulsePending=new Map();this.keyDownTimes=new Map();this.touchPulsePending=new Map();this.touchDownTimes=new Map();this.touchReplayHeldPending=new Set();this.touchReplayTapDurations=new Map();this.pulseBacklog=Array.from({length:4},()=>({}));this.pulseDurations=Array.from({length:4},()=>({}));this.tapDurations=Array.from({length:4},()=>({}));this.touchPending=new Set();this.touchReleasePending=new Set();this.touchPointers=new Map();this.joyPointers=new Map();this.touchCanceled=new Set();this.touchPointerClickPending=new Set();this.globalCancelPending=false;this.canceledActions=Array.from({length:4},()=>({}));this.bindings=Object.fromEntries(Object.entries(DEFAULT_BINDINGS).map(([k,v])=>[k,v.slice()]));this.prev=[{}, {}, {}, {}];this.touch={x:0,y:0};this.touchButtons=new Set();this.gamepads=[];this.gamepadNeutralRequired=Array(4).fill(false);this.state=Array.from({length:4},()=>({}));this.pressed=Array.from({length:4},()=>({}));this.releases=Array.from({length:4},()=>({}));this.enabled=true;
+ const stopCodes=new Set(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space']);
+ window.addEventListener('keydown',e=>{const target=e.target,tag=String(target?.tagName||'').toUpperCase();if(['INPUT','SELECT','TEXTAREA'].includes(tag)||target?.isContentEditable)return;if(e.code==='Space'&&target?.closest?.('[data-act]'))return;if(stopCodes.has(e.code))e.preventDefault();if(!this.keys.has(e.code)){this.keyPending.add(e.code);this.keyDownTimes.set(e.code,Number.isFinite(e.timeStamp)?e.timeStamp:Date.now());}this.keys.add(e.code)});
  window.addEventListener('keyup',e=>{if(this.keys.has(e.code)||this.keyPending.has(e.code)){this.keyReleasePending.add(e.code);if(this.keyPending.has(e.code)){const duration=Math.max(0,(Number.isFinite(e.timeStamp)?e.timeStamp:Date.now())-(this.keyDownTimes.get(e.code)||0));const arr=this.keyPulsePending.get(e.code)||[];arr.push(duration/1000);this.keyPulsePending.set(e.code,arr);}}this.keys.delete(e.code);this.keyDownTimes.delete(e.code)});window.addEventListener('blur',()=>this.cancelAll());
  // Mobile browsers can background without firing window.blur (app switch, call overlay).
  // Never replay an old held action or queued short tap when a tab becomes visible.
  document.addEventListener?.('visibilitychange',()=>{if(document.hidden)this.cancelAll()});
  // A disconnected gamepad is released by the next poll; do not reset held
  // keyboard actions here or they will create spurious 'just pressed' edges.
- window.addEventListener('gamepaddisconnected',()=>{this.gamepads=[]});
+ window.addEventListener('gamepaddisconnected',event=>{
+  this.gamepads=[];
+  // Browsers can reconnect a controller with its old buttons still held.
+  // Suppress that pad until one neutral poll, without cancelling keyboard input.
+  const index=event?.gamepad?.index;
+  if(Number.isInteger(index)&&index>=0&&index<this.gamepadNeutralRequired.length)this.gamepadNeutralRequired[index]=true;
+  else this.gamepadNeutralRequired.fill(true);
+ });
  this.bindTouch();}
  // Cancel every transient input state, including already buffered taps. Keep remappings.
  cancelAll(){
+  // A held physical gamepad button may remain down while the browser stops
+  // polling a backgrounded page. Require neutral before accepting that pad
+  // again, or the first foreground poll manufactures a new action edge.
+  this.gamepadNeutralRequired.fill(true);
   this.keys.clear();this.keyPending.clear();this.keyReleasePending.clear();this.keyPulsePending.clear();this.keyDownTimes.clear();
-  this.touchPulsePending.clear();this.touchDownTimes.clear();this.touchReplayHeldPending.clear();this.touchReplayTapDurations.clear();this.touchCanceled.clear();this.touchButtons.clear();this.touchPending.clear();this.touchReleasePending.clear();
+  this.touchPulsePending.clear();this.touchDownTimes.clear();this.touchReplayHeldPending.clear();this.touchReplayTapDurations.clear();this.touchCanceled.clear();this.touchPointerClickPending.clear();this.touchButtons.clear();this.touchPending.clear();this.touchReleasePending.clear();
   this.touchPointers.clear();this.joyPointers.clear();this.touch.x=this.touch.y=0;this.globalCancelPending=true;
   const knob=document.querySelector?.('#joyKnob');if(knob)knob.style.transform='translate(0,0)';
   document.querySelectorAll?.('[data-act]').forEach(b=>b.classList?.toggle('active',false));
@@ -70,12 +81,25 @@ class Input{
     }
     refresh();
    });
-   const off=e=>{if(this.touchPointers.get(e.pointerId)===act){this.touchPointers.delete(e.pointerId);if(![...this.touchPointers.values()].includes(act)){if(e.type&&e.type!=='pointerup'){this.touchPending.delete(act);this.touchDownTimes.delete(act);this.touchReplayHeldPending.delete(act);this.touchReplayTapDurations.delete(act);this.touchCanceled.add(act);refresh();return;}this.touchReleasePending.add(act);if(this.touchPending.has(act)||this.touchReplayHeldPending.has(act)){const duration=Math.max(0,(Number.isFinite(e.timeStamp)?e.timeStamp:Date.now())-(this.touchDownTimes.get(act)||0))/1000;if(this.touchPending.has(act)){const arr=this.touchPulsePending.get(act)||[];arr.push(duration);this.touchPulsePending.set(act,arr);}else this.touchReplayTapDurations.set(act,duration);}this.touchDownTimes.delete(act);}}refresh()};
+   const off=e=>{if(this.touchPointers.get(e.pointerId)===act){this.touchPointers.delete(e.pointerId);if(![...this.touchPointers.values()].includes(act)){if(e.type&&e.type!=='pointerup'){this.touchPending.delete(act);this.touchDownTimes.delete(act);this.touchReplayHeldPending.delete(act);this.touchReplayTapDurations.delete(act);this.touchCanceled.add(act);refresh();return;}this.touchPointerClickPending.add(act);this.touchReleasePending.add(act);if(this.touchPending.has(act)||this.touchReplayHeldPending.has(act)){const duration=Math.max(0,(Number.isFinite(e.timeStamp)?e.timeStamp:Date.now())-(this.touchDownTimes.get(act)||0))/1000;if(this.touchPending.has(act)){const arr=this.touchPulsePending.get(act)||[];arr.push(duration);this.touchPulsePending.set(act,arr);}else this.touchReplayTapDurations.set(act,duration);}this.touchDownTimes.delete(act);}}refresh()};
    for(const ev of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(ev,off);
+   b.addEventListener('click',e=>{
+    // Native keyboard and assistive-technology activation dispatch a click
+    // without pointer events. Touch/mouse pointer taps already enter above.
+    if(e.detail!==0||this.touchPointerClickPending.has(act))return;
+    const taps=this.touchPulsePending.get(act)||[];taps.push(0);this.touchPulsePending.set(act,taps);
+   });
   });
  }
  poll(multiplayer=false){const gps=navigator.getGamepads?.()||[];const gp=Array.from(gps);for(let slot=0;slot<4;slot++){
- const pad=(slot===0||multiplayer)?(gp[slot]||null):null;
+ let pad=(slot===0||multiplayer)?(gp[slot]||null):null;
+ if(pad){
+  const neutral=!(pad.buttons||[]).some(button=>button?.pressed)&&!(pad.axes||[]).some(axis=>Math.abs(Number(axis)||0)>=.16);
+  if(this.gamepadNeutralRequired[slot]){
+   if(neutral)this.gamepadNeutralRequired[slot]=false;
+   else pad=null;
+  }
+ }
  const keys=MAPPINGS[slot]||{};let s={up:0,down:0,left:0,right:0,shoot:0,pass:0,dribble:0,jump:0,pause:0,confirm:0,x:0,y:0};
  if(slot===0||multiplayer){for(let code of new Set([...this.keys,...this.keyPending])){if(multiplayer&&slot===0&&code.startsWith('Arrow'))continue;let a=keys[code];if(slot<=1){const custom=this.bindings[slot===0?'keyboard':'keyboard2'].indexOf(code);if(custom>=0)a=REMAPPABLE_ACTIONS[custom];else if(REMAPPABLE_ACTIONS.includes(a)&&(slot===0?DEFAULT_BINDINGS.keyboard.includes(code):LEGACY_P2_ACTION_KEYS.has(code)))a=null;}if(a)s[a]=1}}
  if(slot===0){for(const a of this.touchButtons)s[a]=1;for(const a of this.touchPending)s[a]=1;}
@@ -170,7 +194,7 @@ class Input{
   }
  }
  this.prev[slot]=nextPrev;this.state[slot]=s;}
- this.keyPending.clear();this.keyReleasePending.clear();this.keyPulsePending.clear();this.touchPulsePending.clear();this.touchPending.clear();this.touchReleasePending.clear();this.touchCanceled.clear();this.globalCancelPending=false;
+ this.keyPending.clear();this.keyReleasePending.clear();this.keyPulsePending.clear();this.touchPulsePending.clear();this.touchPending.clear();this.touchReleasePending.clear();this.touchCanceled.clear();this.touchPointerClickPending.clear();this.globalCancelPending=false;
  }
  held(i,a){return !!this.state[i]?.[a]}
  just(i,a){return !!this.pressed[i]?.[a]}

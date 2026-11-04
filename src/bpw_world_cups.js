@@ -8,6 +8,8 @@
  * Slot IDs are version-stable and never replace legacy club/national team IDs.
  */
 export const BPW_YEARS=Object.freeze([1998,2002,2006,2010,2014,2018]);
+const BPW_TIER_EXEMPT_TEAM_IDS=new Set(BPW_YEARS.map(year=>`bpw_wc_${year}`));
+export function isBPWTierExemptTeam(teamId){return typeof teamId==='string'&&BPW_TIER_EXEMPT_TEAM_IDS.has(teamId);}
 // [name, role, 2-letter nationality, approximate tournament age]
 export const BPW_SELECTIONS=Object.freeze({
   "1998": [

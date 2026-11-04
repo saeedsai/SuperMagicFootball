@@ -32,6 +32,19 @@ test('LAN guest rejects stale, replayed and foreign-room or foreign-host snapsho
   assert.equal(acceptLanSnapshot(-1,packet,'room001','host002').reason,'wrong-session');
 });
 
+test('LAN snapshot rejects oversized string frames before UTF-8 allocation',async()=>{
+  const {decodeLanSnapshot,MAX_SNAPSHOT_BYTES}=await load();
+  const original=TextEncoder.prototype.encode;
+  let encoded=false;
+  TextEncoder.prototype.encode=function(value){encoded=true;return original.call(this,value);};
+  try {
+    assert.throws(()=>decodeLanSnapshot(' '.repeat(MAX_SNAPSHOT_BYTES+1)),/Invalid LAN snapshot wire size/);
+    assert.equal(encoded,false,'oversized input is rejected before allocating its encoded copy');
+  } finally {
+    TextEncoder.prototype.encode=original;
+  }
+});
+
 test('LAN snapshot rejects extra fields, duplicate slots, nonfinite coordinates and unsafe ticks',async()=>{
   const {encodeLanSnapshot,decodeLanSnapshot,acceptLanSnapshot,MAX_SNAPSHOT_BYTES}=await load();
   const base=snapshot();
@@ -97,4 +110,26 @@ test('LAN-061 validates signed goalkeeper dive direction without breaking old vi
  p.players[0].visual=old;
  assert.deepEqual(decodeLanSnapshot(encodeLanSnapshot(p)).players[0].visual,old,
    'existing 0.10.7.2/.3 visual packets remain accepted');
+});
+
+test('LAN reward receipts round trip only with a bound match ID and validated result',async()=>{
+ const {encodeLanSnapshot,decodeLanSnapshot}=await load();
+ const packet=snapshot();packet.meta={half:2,phase:'finished',controlled:{home:3,away:3},
+  ballOwnerSlot:-1,matchId:'0123456789abcdef0123456789abcdef',
+  result:{score:[1,1],penalties:{score:[3,4],winner:1}}};
+ const result=decodeLanSnapshot(encodeLanSnapshot(packet));
+ assert.deepEqual(result.meta.result,packet.meta.result);
+ assert.ok(Object.isFrozen(result.meta.result)&&Object.isFrozen(result.meta.result.penalties.score));
+ const invalid=[
+  {...packet,meta:{...packet.meta,matchId:'weak-id'}},
+  {...packet,meta:{...packet.meta,result:{score:[1,-1]}}},
+  {...packet,meta:{...packet.meta,result:{score:[1,1],extra:true}}},
+  {...packet,meta:{...packet.meta,result:{score:[1,1],penalties:{score:[3,4],winner:0}}}},
+  {...packet,meta:{...packet.meta,matchId:undefined}},
+  {...packet,meta:{...packet.meta,phase:'play'}},
+  {...packet,meta:{...packet.meta,result:{score:[2,2]}}}
+ ];
+ for(const bad of invalid)assert.throws(()=>encodeLanSnapshot(bad),TypeError);
+ const legacy=snapshot();legacy.meta={half:1,phase:'play',controlled:{home:3,away:3},ballOwnerSlot:-1};
+ assert.deepEqual(decodeLanSnapshot(encodeLanSnapshot(legacy)).meta,legacy.meta);
 });

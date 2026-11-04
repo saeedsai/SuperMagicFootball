@@ -4,9 +4,13 @@ const assert = require('node:assert/strict');
 const { spawnSync } = require('node:child_process');
 const path = require('node:path');
 
+// Set SMF_PYTHON to an interpreter path when the machine's launcher is not discoverable.
+const python = process.env.SMF_PYTHON || (process.platform === 'win32' ? 'py' : 'python3');
+const pythonArgs = process.platform === 'win32' && !process.env.SMF_PYTHON ? ['-3'] : [];
+
 test('cross-shard regression auditor rejects silent missing and duplicate coverage', () => {
   const root = path.resolve(__dirname, '..');
-  const result = spawnSync('python3', ['-m', 'unittest', 'discover', '-s', 'tests',
+  const result = spawnSync(python, [...pythonArgs, '-m', 'unittest', 'discover', '-s', 'tests',
     '-p', 'test_audit_regression_shards.py', '-v'], {
     cwd: root, encoding: 'utf8', timeout: 25000, maxBuffer: 1024 * 1024
   });

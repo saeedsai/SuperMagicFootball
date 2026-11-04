@@ -1,21 +1,19 @@
-# Single-developer coordination — owner directive of 2026-10-20
+# Coordinated development
 
-## Lean-memory protocol
-Read `AGENTS.md`, `docs/memory/README.md`, `docs/memory/SHARED.md` and **only your own** `docs/memory/agents/smf-hourly-dev-20261019.md`. Other agents' memory files remain private by convention. Current plans and source supersede stale handovers.
+The project owner requires coordinated multi-agent work by default. This supersedes any earlier single-developer-only rule. Use as much parallel capacity as the active runtime/account allows, without assuming unlimited concurrency; fill freed slots promptly and keep coordinator work moving on disjoint scopes while agents run. The game and Studio use their existing `dev` branches; do not create branches or edit `main`.
 
-## Sole developer and retired locks
-The project owner designated `smf-hourly-dev-20261019` as the sole ongoing coding maintainer. All old `docs/agent_coordination/claims/*.json` entries are **retired historical records**: their `feature_id`, `owner`, `status` and `lock_key` no longer gate development. Do not claim, renew, verify or release a lock when starting work. The lock catalog and `scripts/claim_feature.py` are retained for history/tests only. Old chats must stop pushing unless the owner reauthorizes them; GitHub does not technically enforce chat-specific rights.
+The [Lean-memory protocol](../memory/README.md) limits shared context and protects private-by-convention checkpoints. The product version stays About-only under [`VERSIONING_POLICY.md`](../VERSIONING_POLICY.md); immutable commit SHA and hosted bytes are release evidence, not player-facing UI.
 
-Previous active entries were explicitly retired with a handover; retirement **does not mean** their features passed tests, that another session completed work, or that its uncommitted changes exist in Git. In-flight unrelated commits must still be reconciled using the latest head and current blob SHA. Do not overwrite them.
+## Scope and integration
 
-## Every development increment
-1. Read exact `dev` and `main` SHAs, relevant source/tests, open issues/PRs and the 30+15 owner roadmaps. Choose one useful, manageable feature.
-2. Edit latest files; use SHA-checked GitHub Contents updates or commit to an up-to-date tree with a non-forced fast-forward. If rejected, collect exact error details; only retry after legitimately addressing the cause. Never bypass security checks or GitHub permissions.
-3. Write focused tests, run local checks where possible, and wait for the exact-code-head full Node+Chromium 4+4 CI before promotion. Confirm Pages deployment and smoke separately. Never claim a deployed release from a `dev` commit alone.
-4. Keep `docs/DEVELOPMENT_LOG_SINGLE_OWNER.md` plus your own small agent-memory checkpoint current. Do not change other agents' memory. Preserve rosters, IDs, squad ratios, saves, four controls, six formations and playable offline source.
+- The task coordinator owns the integrated backlog and final shared-file changes. Each worker receives a concrete scope and a list of owned files or a read-only audit assignment.
+- Parallelize audits and independent implementation work. Continue each worker through successive unblocked scopes when its current scope is complete. Never edit the same source, test, asset manifest or documentation file concurrently. Stop and reconcile only the overlapping scopes if work conflicts or the branch head changes; other independent work continues.
+- Use existing `dev` as the source of truth. Check `git status`, branch and exact HEAD before editing and before integration. Preserve unrelated staged/unstaged changes and never force-push or bypass CI/review.
+- Legacy entries in `claims/` and `FEATURE_REGISTRY.json` are retained as historical records. They do not reserve code or require a claim. They do not prove a feature was completed or tested.
+- Do not read another agent's private-by-convention memory or checkpoint. Shared project guidance is in `AGENTS.md`, `docs/README.md` and `docs/MASTER_BACKLOG.md`.
 
-## About revision on every commit
-Preserve the **installed `0.9.41.8` release version only inside About** and `src/modules/release.js` on **every commit**. Retain Git SHA audit internally in GitHub Actions/history and verify exact deployed Pages bytes through hosted smoke; do not display remote dev SHA as a player-facing version. Keep [`docs/VERSIONING_POLICY.md`](../VERSIONING_POLICY.md) and its release tests current.
+## Completion evidence
 
-## Historical references
-The old per-feature claim README, registry keys and tests remain as compatibility records, not workflow policy. Do not silently delete historical audit evidence or invent successful test results.
+For code work, add focused regressions, run affected and required full suites on the integrated SHA, and report exact results. For artwork, include provenance, real Studio import/render/export evidence, in-game desktop/touch review, and an explicit visual approval status. CI, protected release, hosted deployment, physical-device testing and two-device multiplayer are separate gates; do not infer one from another.
+
+The canonical work sequence and status for every owner request are in [the master backlog](../MASTER_BACKLOG.md). Update that file rather than maintaining competing roadmaps.

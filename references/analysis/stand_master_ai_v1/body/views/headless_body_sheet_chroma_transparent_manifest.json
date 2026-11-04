@@ -1,0 +1,87 @@
+{
+  "format": "FootballSpriteAssetBundle",
+  "version": 1,
+  "source": "headless_body_sheet_chroma_transparent.png",
+  "items": [
+    {
+      "file": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\body\\views\\headless_body_sheet_chroma_transparent_01.png",
+      "view": "front",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "body",
+      "mirror": false,
+      "cropSource": {
+        "x": 0,
+        "y": 0,
+        "w": 418,
+        "h": 627
+      },
+      "width": 418,
+      "height": 627
+    },
+    {
+      "file": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\body\\views\\headless_body_sheet_chroma_transparent_02.png",
+      "view": "threeQuarterFrontLeft",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "body",
+      "mirror": false,
+      "cropSource": {
+        "x": 418,
+        "y": 0,
+        "w": 418,
+        "h": 627
+      },
+      "width": 418,
+      "height": 627
+    },
+    {
+      "file": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\body\\views\\headless_body_sheet_chroma_transparent_03.png",
+      "view": "left",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "body",
+      "mirror": false,
+      "cropSource": {
+        "x": 836,
+        "y": 0,
+        "w": 418,
+        "h": 627
+      },
+      "width": 418,
+      "height": 627
+    },
+    {
+      "file": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\body\\views\\headless_body_sheet_chroma_transparent_04.png",
+      "view": "threeQuarterBackLeft",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "body",
+      "mirror": false,
+      "cropSource": {
+        "x": 0,
+        "y": 627,
+        "w": 418,
+        "h": 627
+      },
+      "width": 418,
+      "height": 627
+    },
+    {
+      "file": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\body\\views\\headless_body_sheet_chroma_transparent_05.png",
+      "view": "back",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "body",
+      "mirror": false,
+      "cropSource": {
+        "x": 418,
+        "y": 627,
+        "w": 418,
+        "h": 627
+      },
+      "width": 418,
+      "height": 627
+    }
+  ]
+}

@@ -1509,7 +1509,7 @@
   "frameBenchmark": {
     "simulatedFrames": 1801,
     "secondsSimulated": 30.016666666666666,
-    "wallMs": 387,
+    "wallMs": 229,
     "environment": "Node headless (not device FPS)"
   }
 }

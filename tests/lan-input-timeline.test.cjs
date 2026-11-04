@@ -13,6 +13,24 @@ test('LAN host tick retains validated guest controls briefly, then neutralizes t
  tick=advanceLanInputFrame(tick.state);assert.equal(tick.controls.axis.x,1);
  tick=advanceLanInputFrame(tick.state);assert.equal(tick.controls.buttons.shoot,false);assert.equal(tick.controls.axis.x,0);assert.equal(tick.timedOut,true);
 });
+test('LAN hold expiry is a one-tick event and a fresh sequence starts a new hold window',async()=>{
+ const {createLanInputTimeline,applyValidatedLanInput,advanceLanInputFrame}=await load();
+ let state=applyValidatedLanInput(createLanInputTimeline(1),accepted(0));
+ const timeoutEvents=[];
+ for(let i=0;i<4;i++){
+  const tick=advanceLanInputFrame(state);
+  timeoutEvents.push(tick.timedOut);
+  assert.equal(tick.controls.buttons.shoot,i<1);
+  state=tick.state;
+ }
+ assert.deepEqual(timeoutEvents,[false,true,false,false]);
+ state=applyValidatedLanInput(state,accepted(1,{pass:true,shoot:false,dribble:false,jump:false},{x:0,y:1}));
+ const freshWindow=advanceLanInputFrame(state);
+ assert.equal(freshWindow.controls.buttons.pass,true);
+ assert.equal(freshWindow.timedOut,false);
+ state=freshWindow.state;
+ assert.equal(advanceLanInputFrame(state).timedOut,true);
+});
 test('LAN host tick resets timeout on newer sequence and ignores stale accepted input',async()=>{
  const {createLanInputTimeline,applyValidatedLanInput,advanceLanInputFrame}=await load();
  let state=applyValidatedLanInput(createLanInputTimeline(2),accepted(2));
@@ -40,4 +58,34 @@ test('LAN host tick copies input, so caller mutations cannot alter held controls
  const tick=advanceLanInputFrame(state);
  assert.equal(tick.controls.buttons.shoot,true);assert.equal(tick.controls.axis.x,1);
  assert.equal(Object.isFrozen(tick.controls.buttons),true);
+});
+
+test('LAN host tick rejects malformed timestamps instead of retaining guest controls',async()=>{
+ const {createLanInputTimeline,applyValidatedLanInput,advanceLanInputFrame}=await load();
+ const acceptedState=applyValidatedLanInput(createLanInputTimeline(),accepted(0));
+ for(const lastAcceptedFrame of [NaN,Infinity,-2,1.5,1]){
+  const corrupted={...acceptedState,lastAcceptedFrame};
+  assert.throws(()=>advanceLanInputFrame(corrupted),/Invalid LAN input timeline state/);
+ }
+ for(const lastSequence of [NaN,Infinity,-2,1.5]){
+  const corrupted={...acceptedState,lastSequence};
+  assert.throws(()=>applyValidatedLanInput(corrupted,accepted(1)),/Invalid LAN input timeline state/);
+ }
+});
+
+test('LAN timeline rejects malformed held controls and non-neutral uninitialized state',async()=>{
+ const {createLanInputTimeline,applyValidatedLanInput,advanceLanInputFrame}=await load();
+ const acceptedState=applyValidatedLanInput(createLanInputTimeline(),accepted(0));
+ const badControls=[
+  {...acceptedState.controls,buttons:{...acceptedState.controls.buttons,shoot:1}},
+  {...acceptedState.controls,buttons:{...acceptedState.controls.buttons,magic:true}},
+  {...acceptedState.controls,axis:{x:NaN,y:0}},
+  {...acceptedState.controls,axis:{x:1.01,y:0}},
+  {...acceptedState.controls,axis:{x:0,y:0,z:0}}
+ ];
+ for(const controls of badControls){
+  assert.throws(()=>advanceLanInputFrame({...acceptedState,controls}),/Invalid LAN input timeline state/);
+ }
+ const uninitialized=createLanInputTimeline();
+ assert.throws(()=>advanceLanInputFrame({...uninitialized,controls:acceptedState.controls}),/Invalid LAN input timeline state/);
 });

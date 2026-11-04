@@ -1,0 +1,181 @@
+{
+  "commands": [
+    {
+      "outputDir": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\body\\views_v3",
+      "source": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\body\\transparent_v3\\headless_body_sheet_chroma_transparent.png",
+      "op": "splitImageManual",
+      "regions": [
+        {
+          "x": 0,
+          "h": 627,
+          "w": 418,
+          "y": 0.0
+        },
+        {
+          "x": 418,
+          "h": 627,
+          "w": 418,
+          "y": 0.0
+        },
+        {
+          "x": 836,
+          "h": 627,
+          "w": 418,
+          "y": 0.0
+        },
+        {
+          "x": 0,
+          "h": 627,
+          "w": 418,
+          "y": 627.0
+        },
+        {
+          "x": 418,
+          "h": 627,
+          "w": 418,
+          "y": 627.0
+        }
+      ],
+      "assignments": [
+        {
+          "category": "body",
+          "view": "front"
+        },
+        {
+          "category": "body",
+          "view": "threeQuarterFrontLeft"
+        },
+        {
+          "category": "body",
+          "view": "left"
+        },
+        {
+          "category": "body",
+          "view": "threeQuarterBackLeft"
+        },
+        {
+          "category": "body",
+          "view": "back"
+        }
+      ]
+    },
+    {
+      "outputDir": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\heads\\views_v3",
+      "source": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\heads\\transparent_v3\\bald_head_sheet_source_transparent.png",
+      "op": "splitImageManual",
+      "regions": [
+        {
+          "x": 0,
+          "h": 627,
+          "w": 418,
+          "y": 0.0
+        },
+        {
+          "x": 418,
+          "h": 627,
+          "w": 418,
+          "y": 0.0
+        },
+        {
+          "x": 836,
+          "h": 627,
+          "w": 418,
+          "y": 0.0
+        },
+        {
+          "x": 0,
+          "h": 627,
+          "w": 418,
+          "y": 627.0
+        },
+        {
+          "x": 418,
+          "h": 627,
+          "w": 418,
+          "y": 627.0
+        }
+      ],
+      "assignments": [
+        {
+          "category": "head",
+          "view": "front"
+        },
+        {
+          "category": "head",
+          "view": "threeQuarterFrontLeft"
+        },
+        {
+          "category": "head",
+          "view": "left"
+        },
+        {
+          "category": "head",
+          "view": "threeQuarterBackLeft"
+        },
+        {
+          "category": "head",
+          "view": "back"
+        }
+      ]
+    },
+    {
+      "outputDir": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\hair\\views_v3",
+      "source": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\hair\\transparent_v3\\hair_sheet_source_transparent.png",
+      "op": "splitImageManual",
+      "regions": [
+        {
+          "x": 0,
+          "h": 627,
+          "w": 418,
+          "y": 0.0
+        },
+        {
+          "x": 418,
+          "h": 627,
+          "w": 418,
+          "y": 0.0
+        },
+        {
+          "x": 836,
+          "h": 627,
+          "w": 418,
+          "y": 0.0
+        },
+        {
+          "x": 0,
+          "h": 627,
+          "w": 418,
+          "y": 627.0
+        },
+        {
+          "x": 418,
+          "h": 627,
+          "w": 418,
+          "y": 627.0
+        }
+      ],
+      "assignments": [
+        {
+          "category": "hair",
+          "view": "front"
+        },
+        {
+          "category": "hair",
+          "view": "threeQuarterFrontLeft"
+        },
+        {
+          "category": "hair",
+          "view": "left"
+        },
+        {
+          "category": "hair",
+          "view": "threeQuarterBackLeft"
+        },
+        {
+          "category": "hair",
+          "view": "back"
+        }
+      ]
+    }
+  ]
+}

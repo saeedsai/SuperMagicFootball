@@ -1,0 +1,123 @@
+{
+  "suite": "graphics_integration_v082522.py",
+  "summary": {
+    "PASS": 19,
+    "FAIL": 0
+  },
+  "results": [
+    {
+      "name": "game boot + updated version",
+      "mode": "desktop",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "12,096-case directional artwork sweep (layout subset)",
+      "mode": "desktop",
+      "status": "PASS",
+      "detail": "{'ok': True, 'people': 108, 'views': 8, 'poses': 7, 'rendered': 6048, 'empty': 0, 'clip': 0, 'odd': 0, 'uniqueIssues': []}"
+    },
+    {
+      "name": "beard changes remain visible across all eight view directions",
+      "mode": "desktop",
+      "status": "PASS",
+      "detail": "{'ok': True, 'checked': [{'view': 0, 'beardVisible': True}, {'view': 1, 'beardVisible': True}, {'view': 2, 'beardVisible': True}, {'view': 3, 'beardVisible': True}, {'view': 4, 'beardVisible': True}, {'view': 5, 'beardVisible': True}, {'view': 6, 'beardVisible': True}, {'view': 7, 'beardVisible': True}]}"
+    },
+    {
+      "name": "tattoos are visible on the character across gameplay angles",
+      "mode": "desktop",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "Studio navigation opens from Settings/Customization",
+      "mode": "desktop",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "all 17 curated appearance selector families",
+      "mode": "desktop",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "rotate through 8 actual distinct studio previews",
+      "mode": "desktop",
+      "status": "PASS",
+      "detail": "{'ok': True, 'distinctImages': 8, 'distinctLabels': 8}"
+    },
+    {
+      "name": "curated palette, hairstyle, beard and tattoo editing + save",
+      "mode": "desktop",
+      "status": "PASS",
+      "detail": "{'ok': True, 'previewChanged': True, 'reopenedValuesMatch': True}"
+    },
+    {
+      "name": "no uncaught JS errors in customization",
+      "mode": "desktop",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "independent readable BPW contact sheet",
+      "mode": "desktop",
+      "status": "PASS",
+      "detail": "Integrated_BPWHistorical_SixView_QA_v082522.png"
+    },
+    {
+      "name": "game boot + updated version",
+      "mode": "simulated-touch",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "12,096-case directional artwork sweep (layout subset)",
+      "mode": "simulated-touch",
+      "status": "PASS",
+      "detail": "{'ok': True, 'people': 108, 'views': 8, 'poses': 7, 'rendered': 6048, 'empty': 0, 'clip': 0, 'odd': 0, 'uniqueIssues': []}"
+    },
+    {
+      "name": "beard changes remain visible across all eight view directions",
+      "mode": "simulated-touch",
+      "status": "PASS",
+      "detail": "{'ok': True, 'checked': [{'view': 0, 'beardVisible': True}, {'view': 1, 'beardVisible': True}, {'view': 2, 'beardVisible': True}, {'view': 3, 'beardVisible': True}, {'view': 4, 'beardVisible': True}, {'view': 5, 'beardVisible': True}, {'view': 6, 'beardVisible': True}, {'view': 7, 'beardVisible': True}]}"
+    },
+    {
+      "name": "tattoos are visible on the character across gameplay angles",
+      "mode": "simulated-touch",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "Studio navigation opens from Settings/Customization",
+      "mode": "simulated-touch",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "all 17 curated appearance selector families",
+      "mode": "simulated-touch",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "rotate through 8 actual distinct studio previews",
+      "mode": "simulated-touch",
+      "status": "PASS",
+      "detail": "{'ok': True, 'distinctImages': 8, 'distinctLabels': 8}"
+    },
+    {
+      "name": "curated palette, hairstyle, beard and tattoo editing + save",
+      "mode": "simulated-touch",
+      "status": "PASS",
+      "detail": "{'ok': True, 'previewChanged': True, 'reopenedValuesMatch': True}"
+    },
+    {
+      "name": "no uncaught JS errors in customization",
+      "mode": "simulated-touch",
+      "status": "PASS",
+      "detail": "True"
+    }
+  ]
+}

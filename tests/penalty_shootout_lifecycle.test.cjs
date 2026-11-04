@@ -7,9 +7,9 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
-const src=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8');
+const src=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8').replace(/\r\n/g,'\n');
 const a=src.indexOf(' startPK(afterDraw=false){');
-const b=src.indexOf('\n}\n\nreturn {GameEngine,WORLD}',a);
+const b=src.indexOf('\n reactToMagicWall(',a);
 assert(a>=0&&b>a,'current playable GameEngine penalty methods must be present');
 const methods=vm.runInNewContext('({'+src.slice(a,b).replace('\n updatePK(dt){',',\n updatePK(dt){')+'})',{
  WORLD:{goalTop:530,goalBottom:910},
@@ -26,7 +26,7 @@ function create(afterDraw=false){
   teamPlans:[{penalty:0},{penalty:0}],substitutionsUsed:[0,0],
   input:{poll(){},state:[{},{}],just:()=>false},
   inControl:()=>false,player:()=>({src:{gkSkill:78}}),
-  _closeShotAudits(){},emit(type,value={}){events.push({type,...value})},burst(){},
+  _closeShotAudits(){},cancelPendingAbilityActions(){},emit(type,value={}){events.push({type,...value})},burst(){},
   startPK:methods.startPK,updatePK:methods.updatePK};
  g.startPK(afterDraw);
  return g;

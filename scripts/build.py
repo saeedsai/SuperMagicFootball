@@ -7,9 +7,9 @@ this output retains their independent deterministic physics/graphics coverage.
 from pathlib import Path
 import json,re,base64
 root=Path(__file__).resolve().parents[1]
-order=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','jumpmetrics','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','career_slots','cup_slots','input','visualfeel','shotfeel','physicsbalance','shotpaths','magic-hazards','engine','bpwpersonality','artpose','characterart','concepthero','conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-relay-peer','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render','release','ability-icons','ui','lan-state-snapshot','lan-snapshot-channel']
+order=['audio','dribbles','kits','specials','stats','morale','abilities','fitness','jumpmetrics','playeridentity','data','identity','clubfilters','tactics','ai','expanded','bpw','bpwalltime','continental','tournaments','career','career_slots','cup_slots','economy','input','visualfeel','shotfeel','physicsbalance','shotpaths','magic-hazards','engine','bpwpersonality','artpose','characterart','concepthero','conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-relay-peer','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render','release','ability-icons','ui','lan-state-snapshot','lan-snapshot-channel']
 groups=['arcade','national26','club26','legends','continental','bpw_worldcup','bpw_alltime']
-load=lambda path:json.loads((root/'data'/path).read_text())
+load=lambda path:json.loads((root/'data'/path).read_text(encoding='utf-8'))
 players={g:load(f'players/{g}.json') for g in groups}
 rosters={k:v for group in players.values() for k,v in group.items()}
 assets={'teams':load('teams.json'),'rosters':rosters,'players':players,'mechanics':load('mechanics/gameplay.json'),'graphics':load('graphics/procedural_assets.json'),'editorial':load('editorial/historical_rosters.json'),'confederations':load('confederations.json'),'continentalMapping':load('continental_mapping.json')}
@@ -33,24 +33,19 @@ kwame_atlas=base64.b64encode((root/'assets/crown_royals/kwame_three_views.png').
 code.append('const CROWN_ROYALS_KWAME_INLINE='+json.dumps(kwame_atlas)+';\n')
 diego_atlas=base64.b64encode((root/'assets/crown_royals/diego_three_views.png').read_bytes()).decode('ascii')
 code.append('const CROWN_ROYALS_DIEGO_INLINE='+json.dumps(diego_atlas)+';\n')
-modular_front=base64.b64encode((root/'assets/characters/concept_modular_v1/source/hair_front_front.svg').read_bytes()).decode('ascii')
-code.append('const CONCEPT_MODULAR_FRONT_INLINE='+json.dumps(modular_front)+';\n')
-modular_back=base64.b64encode((root/'assets/characters/concept_modular_v1/source/hair_back_back.svg').read_bytes()).decode('ascii')
-code.append('const CONCEPT_MODULAR_BACK_INLINE='+json.dumps(modular_back)+';\n')
-modular_face=base64.b64encode((root/'assets/characters/concept_modular_v1/source/face_front_front.svg').read_bytes()).decode('ascii')
-code.append('const CONCEPT_MODULAR_FACE_INLINE='+json.dumps(modular_face)+';\n')
-modular_arm=base64.b64encode((root/'assets/characters/concept_modular_v1/source/arm_near_front.svg').read_bytes()).decode('ascii')
-code.append('const CONCEPT_MODULAR_ARM_INLINE='+json.dumps(modular_arm)+';\n')
-modular_far_arm=base64.b64encode((root/'assets/characters/concept_modular_v1/source/arm_far_front.svg').read_bytes()).decode('ascii')
-code.append('const CONCEPT_MODULAR_FAR_ARM_INLINE='+json.dumps(modular_far_arm)+';\n')
-modular_collar=base64.b64encode((root/'assets/characters/concept_modular_v1/source/torso_collar_front.svg').read_bytes()).decode('ascii')
-code.append('const CONCEPT_MODULAR_COLLAR_INLINE='+json.dumps(modular_collar)+';\n')
-modular_torso=base64.b64encode((root/'assets/characters/concept_modular_v1/source/torso_front.svg').read_bytes()).decode('ascii')
-code.append('const CONCEPT_MODULAR_TORSO_INLINE='+json.dumps(modular_torso)+';\n')
-modular_back_torso=base64.b64encode((root/'assets/characters/concept_modular_v1/source/torso_back.svg').read_bytes()).decode('ascii')
-code.append('const CONCEPT_MODULAR_BACK_TORSO_INLINE='+json.dumps(modular_back_torso)+';\n')
+modular_root=root/'assets/characters/concept_modular_v1'
+modular_manifest=json.loads((modular_root/'manifests/rig.json').read_text(encoding='utf8'))
+modular_layers=[modular_manifest['runtimeLayer'],*modular_manifest['additionalLayers']]
+modular_inline_assets={layer['asset']:base64.b64encode((modular_root/'manifests'/layer['asset']).resolve().read_bytes()).decode('ascii') for layer in modular_layers}
+code.append('const CONCEPT_MODULAR_MANIFEST_INLINE='+json.dumps(modular_manifest,ensure_ascii=False,separators=(',',':'))+';\n')
+code.append('const CONCEPT_MODULAR_INLINE_ASSETS='+json.dumps(modular_inline_assets,separators=(',',':'))+';\n')
 for name in order:
- s=(root/'src/modules'/f'{name}.js').read_text()
+ s=(root/'src/modules'/f'{name}.js').read_text(encoding='utf-8')
+ if name=='career':
+  api_start=s.rfind('return {')
+  api_end=s.find('};})();',api_start)
+  if api_start<0 or api_end<0 or not re.search(r'\bcareerSeasonReview\b',s[api_start:api_end]):
+   raise SystemExit('Career season review API is missing from the bundled CAREER export')
  s=re.sub(r'^import \{[^}]+\} from .*?;\n','',s,flags=re.M)
  s=re.sub(r'^export \{[^}]+\};\n','',s,flags=re.M)
  s=re.sub(r'^export (?=(?:async )?(?:function|class|const)\\b)','',s,flags=re.M)
@@ -59,8 +54,8 @@ for name in order:
  code.append(s)
 src='\n'.join(code)
 fixture=root/'tests/.generated';fixture.mkdir(exist_ok=True)
-(fixture/'game.js').write_text(src)
-html=(root/'index.html').read_text().replace('<link rel="stylesheet" href="style.css"/>','<style>\n'+(root/'style.css').read_text()+'\n</style>').replace('<script type="module" src="src/main.js"></script>','<script type="module">\n'+src.replace('</script','<\\/script')+'\n</script>')
+(fixture/'game.js').write_text(src,encoding='utf-8')
+html=(root/'index.html').read_text(encoding='utf-8').replace('<link rel="stylesheet" href="style.css"/>','<style>\n'+(root/'style.css').read_text(encoding='utf-8')+'\n</style>').replace('<script type="module" src="src/main.js"></script>','<script type="module">\n'+src.replace('</script','<\\/script')+'\n</script>')
 html=html.replace('href="icon-180.png"','href="data:image/png;base64,'+base64.b64encode((root/'icon-180.png').read_bytes()).decode()+'"')
-(fixture/'play.html').write_text(html)
+(fixture/'play.html').write_text(html,encoding='utf-8')
 print('Built inherited test fixtures from modular runtime:',len(src),'JS chars;',len(html),'HTML chars')

@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "commit": "local",
+  "categories": {
+    "browser": {
+      "shards": 4,
+      "discovered": 218,
+      "executed": 218,
+      "passed": 218
+    }
+  },
+  "total_scripts": 218
+}

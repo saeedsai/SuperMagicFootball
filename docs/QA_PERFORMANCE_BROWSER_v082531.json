@@ -17,7 +17,7 @@
     {
       "case": "desktop live FPS and ms/frame while playing",
       "status": "PASS",
-      "detail": "{'visible': True, 'text': 'FPS 56 \u00b7 17.8 ms', 'actions': 4}"
+      "detail": "{'visible': True, 'text': 'FPS 38 \u00b7 26.3 ms', 'actions': 4}"
     },
     {
       "case": "desktop performance overlay hidden when paused",
@@ -42,7 +42,7 @@
     {
       "case": "mobile-touch live FPS and ms/frame while playing",
       "status": "PASS",
-      "detail": "{'visible': True, 'text': 'FPS 58 \u00b7 17.2 ms', 'actions': 4}"
+      "detail": "{'visible': True, 'text': 'FPS 60 \u00b7 16.7 ms', 'actions': 4}"
     },
     {
       "case": "mobile-touch performance overlay hidden when paused",

@@ -15,7 +15,7 @@ function run(selection,player,{careerMode=false,allowSave=true}={}){
   career:careerMode?{club:1,roster:[{...player}]}:null,
   home:1,avatarIndex:0,edits:{},TEAMS:{1:{id:'team-1'}},
   roster:()=>[{...player}],$:()=>({value:selection}),
-  STUDIO_MAGIC_TRICKS:[{id:'banana'},{id:'ice'}],
+  STUDIO_MAGIC_TRICKS:[{id:'banana'},{id:'ice'}],tokenWallet:{owns:()=>true},
   studioMagicEligible:p=>p.role!=='GK'&&Number(p.rating)>=91,
   storeCharacterChanges:(key,value)=>{calls.push({key,value});return allowSave;},
   saveCareer:()=>{},showPlayerStudio:i=>redraw.push(i),alert:e=>errors.push(e)

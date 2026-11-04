@@ -1,0 +1,4693 @@
+{
+  "candidate": "0.12.79.0 local source tree",
+  "shotId": "silverCarp",
+  "scenarioCount": 180,
+  "matrix": {
+    "difficulties": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "frameRates": [
+      30,
+      60,
+      120
+    ],
+    "attackTeams": [
+      0,
+      1
+    ],
+    "arms": [
+      "ordinary",
+      "arcadeSuper"
+    ],
+    "seeds": [
+      0,
+      1,
+      2
+    ]
+  },
+  "persistentWrites": 0,
+  "ordinaryAndSuperAreBothTestedAgainstLiveCpu": true,
+  "aggregate": {
+    "ordinary": {
+      "goal": 0,
+      "save": 82,
+      "interception": 2,
+      "playerImpact": 6,
+      "wideOrRebound": 0
+    },
+    "arcadeSuper": {
+      "goal": 0,
+      "save": 72,
+      "interception": 8,
+      "playerImpact": 0,
+      "wideOrRebound": 10
+    }
+  },
+  "fpsOutcomeCounts": {
+    "0": {
+      "0": {
+        "ordinary": {
+          "30": {
+            "goal": 0,
+            "save": 2,
+            "interception": 0,
+            "playerImpact": 1,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 2,
+            "interception": 1,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 2,
+            "interception": 0,
+            "playerImpact": 1,
+            "wideOrRebound": 0
+          }
+        },
+        "arcadeSuper": {
+          "30": {
+            "goal": 0,
+            "save": 1,
+            "interception": 2,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 1,
+            "interception": 2,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 2,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 1
+          }
+        }
+      },
+      "1": {
+        "ordinary": {
+          "30": {
+            "goal": 0,
+            "save": 2,
+            "interception": 0,
+            "playerImpact": 1,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 2,
+            "interception": 1,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 2,
+            "interception": 0,
+            "playerImpact": 1,
+            "wideOrRebound": 0
+          }
+        },
+        "arcadeSuper": {
+          "30": {
+            "goal": 0,
+            "save": 1,
+            "interception": 2,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 1,
+            "interception": 2,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 2,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 1
+          }
+        }
+      }
+    },
+    "1": {
+      "0": {
+        "ordinary": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 2,
+            "interception": 0,
+            "playerImpact": 1,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          }
+        },
+        "arcadeSuper": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 1,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 2
+          }
+        }
+      },
+      "1": {
+        "ordinary": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 2,
+            "interception": 0,
+            "playerImpact": 1,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          }
+        },
+        "arcadeSuper": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 1,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 2
+          }
+        }
+      }
+    },
+    "2": {
+      "0": {
+        "ordinary": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          }
+        },
+        "arcadeSuper": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          }
+        }
+      },
+      "1": {
+        "ordinary": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          }
+        },
+        "arcadeSuper": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          }
+        }
+      }
+    },
+    "3": {
+      "0": {
+        "ordinary": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          }
+        },
+        "arcadeSuper": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 2,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 1
+          },
+          "120": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          }
+        }
+      },
+      "1": {
+        "ordinary": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          }
+        },
+        "arcadeSuper": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 2,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 1
+          },
+          "120": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          }
+        }
+      }
+    },
+    "4": {
+      "0": {
+        "ordinary": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          }
+        },
+        "arcadeSuper": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 2,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 1
+          },
+          "120": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          }
+        }
+      },
+      "1": {
+        "ordinary": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "120": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          }
+        },
+        "arcadeSuper": {
+          "30": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          },
+          "60": {
+            "goal": 0,
+            "save": 2,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 1
+          },
+          "120": {
+            "goal": 0,
+            "save": 3,
+            "interception": 0,
+            "playerImpact": 0,
+            "wideOrRebound": 0
+          }
+        }
+      }
+    }
+  },
+  "notes": [
+    "Scripted, seeded scenarios; not human win-rate or whole-match statistics.",
+    "The ordinary-shot control is not required to be weaker or less accurate in every seed.",
+    "The Super Shot is the temporary Silver Carp Arcade Trial applied only to an in-memory match roster.",
+    "Mirrored outcomes match exactly for each paired seed, team direction, difficulty, shot arm and frame rate.",
+    "All 30/60/120 Hz cells run three paired seeds; frame-rate outcome counts are reported, not required to match, because active CPU reaction scheduling can change with integration steps.",
+    "CPU movement is recorded diagnostically; movement traces are not required to match frame-for-frame.",
+    "Test fixture fixes both CPU teams to the requested difficulty so side mirroring is comparable."
+  ],
+  "trials": [
+    {
+      "difficulty": 0,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7714134,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 558.846,
+      "keeperMovement": 154.958,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.027477,
+      "maxOpponentStunSeconds": 0.1853,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7714153,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 589.656,
+      "keeperMovement": 177.052,
+      "shooterFatigueSpent": 0.009681,
+      "opponentFatigueSpent": 0.028142,
+      "maxOpponentStunSeconds": 0.1853,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7714172,
+      "seedIndex": 2,
+      "outcome": "playerImpact",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 1,
+      "launches": 0,
+      "defenderMovement": 316.655,
+      "keeperMovement": 12.101,
+      "shooterFatigueSpent": 0.008276,
+      "opponentFatigueSpent": 0.008566,
+      "maxOpponentStunSeconds": 0.6453,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7714134,
+      "seedIndex": 0,
+      "outcome": "interception",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 518.876,
+      "keeperMovement": 176.953,
+      "shooterFatigueSpent": 0.053088,
+      "opponentFatigueSpent": 0.014478,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7714153,
+      "seedIndex": 1,
+      "outcome": "interception",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 545.633,
+      "keeperMovement": 224.736,
+      "shooterFatigueSpent": 0.053229,
+      "opponentFatigueSpent": 0.015144,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7714172,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 436.412,
+      "keeperMovement": 48.396,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.023978,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7714134,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 558.846,
+      "keeperMovement": 154.958,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.027477,
+      "maxOpponentStunSeconds": 0.1853,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7714153,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 589.656,
+      "keeperMovement": 177.052,
+      "shooterFatigueSpent": 0.009681,
+      "opponentFatigueSpent": 0.028142,
+      "maxOpponentStunSeconds": 0.1853,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7714172,
+      "seedIndex": 2,
+      "outcome": "playerImpact",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 1,
+      "launches": 0,
+      "defenderMovement": 316.655,
+      "keeperMovement": 12.101,
+      "shooterFatigueSpent": 0.008276,
+      "opponentFatigueSpent": 0.008566,
+      "maxOpponentStunSeconds": 0.6453,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7714134,
+      "seedIndex": 0,
+      "outcome": "interception",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 518.876,
+      "keeperMovement": 176.953,
+      "shooterFatigueSpent": 0.053088,
+      "opponentFatigueSpent": 0.014478,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7714153,
+      "seedIndex": 1,
+      "outcome": "interception",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 545.633,
+      "keeperMovement": 224.736,
+      "shooterFatigueSpent": 0.053229,
+      "opponentFatigueSpent": 0.015144,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7714172,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 436.412,
+      "keeperMovement": 48.396,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.023978,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7715244,
+      "seedIndex": 0,
+      "outcome": "interception",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 655.342,
+      "keeperMovement": 245.858,
+      "shooterFatigueSpent": 0.010313,
+      "opponentFatigueSpent": 0.016368,
+      "maxOpponentStunSeconds": 0.1697,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7715263,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 552.92,
+      "keeperMovement": 155.077,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.027815,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7715282,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 542.78,
+      "keeperMovement": 125.379,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.02764,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7715244,
+      "seedIndex": 0,
+      "outcome": "interception",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 538.21,
+      "keeperMovement": 250.312,
+      "shooterFatigueSpent": 0.053229,
+      "opponentFatigueSpent": 0.01501,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7715263,
+      "seedIndex": 1,
+      "outcome": "interception",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 527.83,
+      "keeperMovement": 176.667,
+      "shooterFatigueSpent": 0.053158,
+      "opponentFatigueSpent": 0.014762,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7715282,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 405.429,
+      "keeperMovement": 118.534,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024717,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7715244,
+      "seedIndex": 0,
+      "outcome": "interception",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 655.342,
+      "keeperMovement": 245.858,
+      "shooterFatigueSpent": 0.010313,
+      "opponentFatigueSpent": 0.016368,
+      "maxOpponentStunSeconds": 0.1697,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7715263,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 552.92,
+      "keeperMovement": 155.077,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.027815,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7715282,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 542.78,
+      "keeperMovement": 125.379,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.02764,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7715244,
+      "seedIndex": 0,
+      "outcome": "interception",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 538.21,
+      "keeperMovement": 250.312,
+      "shooterFatigueSpent": 0.053229,
+      "opponentFatigueSpent": 0.01501,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7715263,
+      "seedIndex": 1,
+      "outcome": "interception",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 527.83,
+      "keeperMovement": 176.667,
+      "shooterFatigueSpent": 0.053158,
+      "opponentFatigueSpent": 0.014762,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7715282,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 405.429,
+      "keeperMovement": 118.534,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024717,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7717464,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 541.816,
+      "keeperMovement": 123.453,
+      "shooterFatigueSpent": 0.009435,
+      "opponentFatigueSpent": 0.027726,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7717483,
+      "seedIndex": 1,
+      "outcome": "playerImpact",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 1,
+      "launches": 0,
+      "defenderMovement": 257.622,
+      "keeperMovement": 14.893,
+      "shooterFatigueSpent": 0.008101,
+      "opponentFatigueSpent": 0.007673,
+      "maxOpponentStunSeconds": 0.653,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7717502,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 563.504,
+      "keeperMovement": 179.12,
+      "shooterFatigueSpent": 0.009576,
+      "opponentFatigueSpent": 0.028327,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7717464,
+      "seedIndex": 0,
+      "outcome": "wideOrRebound",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 1837.019,
+      "keeperMovement": 59.043,
+      "shooterFatigueSpent": 0.060954,
+      "opponentFatigueSpent": 0.080269,
+      "maxOpponentStunSeconds": 0.0993,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7717483,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 386.037,
+      "keeperMovement": 71.223,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.023621,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7717502,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 418.868,
+      "keeperMovement": 168.945,
+      "shooterFatigueSpent": 0.052702,
+      "opponentFatigueSpent": 0.026209,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7717464,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 541.816,
+      "keeperMovement": 123.453,
+      "shooterFatigueSpent": 0.009435,
+      "opponentFatigueSpent": 0.027726,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7717483,
+      "seedIndex": 1,
+      "outcome": "playerImpact",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 1,
+      "launches": 0,
+      "defenderMovement": 257.622,
+      "keeperMovement": 14.893,
+      "shooterFatigueSpent": 0.008101,
+      "opponentFatigueSpent": 0.007673,
+      "maxOpponentStunSeconds": 0.653,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7717502,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 563.504,
+      "keeperMovement": 179.12,
+      "shooterFatigueSpent": 0.009576,
+      "opponentFatigueSpent": 0.028327,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7717464,
+      "seedIndex": 0,
+      "outcome": "wideOrRebound",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 1837.019,
+      "keeperMovement": 59.043,
+      "shooterFatigueSpent": 0.060954,
+      "opponentFatigueSpent": 0.080269,
+      "maxOpponentStunSeconds": 0.0993,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7717483,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 386.037,
+      "keeperMovement": 71.223,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.023621,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 0,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7717502,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 418.868,
+      "keeperMovement": 168.945,
+      "shooterFatigueSpent": 0.052702,
+      "opponentFatigueSpent": 0.026209,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 0,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7715143,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 656.563,
+      "keeperMovement": 165.787,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.029009,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7715162,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 638.932,
+      "keeperMovement": 140.415,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028149,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7715181,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 637.548,
+      "keeperMovement": 115.001,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.027688,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7715143,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 495.034,
+      "keeperMovement": 176.201,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.0258,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7715162,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 495.259,
+      "keeperMovement": 128.721,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7715181,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 496.39,
+      "keeperMovement": 109.81,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7715143,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 656.563,
+      "keeperMovement": 165.787,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.029009,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7715162,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 638.932,
+      "keeperMovement": 140.415,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028149,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7715181,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 637.548,
+      "keeperMovement": 115.001,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.027688,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7715143,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 495.034,
+      "keeperMovement": 176.201,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.0258,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7715162,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 495.259,
+      "keeperMovement": 128.721,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7715181,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 496.39,
+      "keeperMovement": 109.81,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7716253,
+      "seedIndex": 0,
+      "outcome": "playerImpact",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 1,
+      "launches": 0,
+      "defenderMovement": 314.936,
+      "keeperMovement": 60.96,
+      "shooterFatigueSpent": 0.008206,
+      "opponentFatigueSpent": 0.009524,
+      "maxOpponentStunSeconds": 0.6483,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7716272,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 626.054,
+      "keeperMovement": 198.294,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.030488,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7716291,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 598.005,
+      "keeperMovement": 102.535,
+      "shooterFatigueSpent": 0.00933,
+      "opponentFatigueSpent": 0.026988,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7716253,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 443.643,
+      "keeperMovement": 118.046,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024717,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7716272,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 482.279,
+      "keeperMovement": 179.916,
+      "shooterFatigueSpent": 0.052737,
+      "opponentFatigueSpent": 0.026618,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7716291,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 455.822,
+      "keeperMovement": 92.387,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.023621,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7716253,
+      "seedIndex": 0,
+      "outcome": "playerImpact",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 1,
+      "launches": 0,
+      "defenderMovement": 314.936,
+      "keeperMovement": 60.96,
+      "shooterFatigueSpent": 0.008206,
+      "opponentFatigueSpent": 0.009524,
+      "maxOpponentStunSeconds": 0.6483,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7716272,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 626.054,
+      "keeperMovement": 198.294,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.030488,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7716291,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 598.005,
+      "keeperMovement": 102.535,
+      "shooterFatigueSpent": 0.00933,
+      "opponentFatigueSpent": 0.026988,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7716253,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 443.643,
+      "keeperMovement": 118.046,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024717,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7716272,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 482.279,
+      "keeperMovement": 179.916,
+      "shooterFatigueSpent": 0.052737,
+      "opponentFatigueSpent": 0.026618,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7716291,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 455.822,
+      "keeperMovement": 92.387,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.023621,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7718473,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 618.595,
+      "keeperMovement": 187.672,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.029928,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7718492,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 622.299,
+      "keeperMovement": 140.775,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.028542,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7718511,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 606.527,
+      "keeperMovement": 129.261,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028121,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7718473,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 472.104,
+      "keeperMovement": 179.052,
+      "shooterFatigueSpent": 0.052702,
+      "opponentFatigueSpent": 0.026209,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7718492,
+      "seedIndex": 1,
+      "outcome": "wideOrRebound",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 2055.968,
+      "keeperMovement": 127.978,
+      "shooterFatigueSpent": 0.060954,
+      "opponentFatigueSpent": 0.084064,
+      "maxOpponentStunSeconds": 0.1673,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7718511,
+      "seedIndex": 2,
+      "outcome": "wideOrRebound",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 2046.167,
+      "keeperMovement": 70.74,
+      "shooterFatigueSpent": 0.060954,
+      "opponentFatigueSpent": 0.08106,
+      "maxOpponentStunSeconds": 0.1685,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7718473,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 618.595,
+      "keeperMovement": 187.672,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.029928,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7718492,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 622.299,
+      "keeperMovement": 140.775,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.028542,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7718511,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 606.527,
+      "keeperMovement": 129.261,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028121,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7718473,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 472.104,
+      "keeperMovement": 179.052,
+      "shooterFatigueSpent": 0.052702,
+      "opponentFatigueSpent": 0.026209,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7718492,
+      "seedIndex": 1,
+      "outcome": "wideOrRebound",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 2055.968,
+      "keeperMovement": 127.978,
+      "shooterFatigueSpent": 0.060954,
+      "opponentFatigueSpent": 0.084064,
+      "maxOpponentStunSeconds": 0.1673,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 1,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7718511,
+      "seedIndex": 2,
+      "outcome": "wideOrRebound",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 2046.167,
+      "keeperMovement": 70.74,
+      "shooterFatigueSpent": 0.060954,
+      "opponentFatigueSpent": 0.08106,
+      "maxOpponentStunSeconds": 0.1685,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 1,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7716152,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 703.127,
+      "keeperMovement": 137.87,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028149,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7716171,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 742.704,
+      "keeperMovement": 94.818,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.027693,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7716190,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 740.559,
+      "keeperMovement": 152.801,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.029009,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7716152,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 545.396,
+      "keeperMovement": 115.882,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7716171,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 545.985,
+      "keeperMovement": 102.015,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.024248,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7716190,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 543.983,
+      "keeperMovement": 152.78,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7716152,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 703.127,
+      "keeperMovement": 137.87,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028149,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7716171,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 742.704,
+      "keeperMovement": 94.818,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.027693,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7716190,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 740.559,
+      "keeperMovement": 152.801,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.029009,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7716152,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 545.396,
+      "keeperMovement": 115.882,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7716171,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 545.985,
+      "keeperMovement": 102.015,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.024248,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7716190,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 543.983,
+      "keeperMovement": 152.78,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7717262,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 736.378,
+      "keeperMovement": 195.51,
+      "shooterFatigueSpent": 0.009611,
+      "opponentFatigueSpent": 0.030531,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7717281,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 694.891,
+      "keeperMovement": 153.417,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.028579,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7717300,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 692.643,
+      "keeperMovement": 139.576,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.028579,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7717262,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 541.073,
+      "keeperMovement": 182.994,
+      "shooterFatigueSpent": 0.052737,
+      "opponentFatigueSpent": 0.026747,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7717281,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 519.028,
+      "keeperMovement": 145.371,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025074,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7717300,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 503.45,
+      "keeperMovement": 130.938,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024717,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7717262,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 736.378,
+      "keeperMovement": 195.51,
+      "shooterFatigueSpent": 0.009611,
+      "opponentFatigueSpent": 0.030531,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7717281,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 694.891,
+      "keeperMovement": 153.417,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.028579,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7717300,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 692.643,
+      "keeperMovement": 139.576,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.028579,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7717262,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 541.073,
+      "keeperMovement": 182.994,
+      "shooterFatigueSpent": 0.052737,
+      "opponentFatigueSpent": 0.026747,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7717281,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 519.028,
+      "keeperMovement": 145.371,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025074,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7717300,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 503.45,
+      "keeperMovement": 130.938,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024717,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7719482,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 629.709,
+      "keeperMovement": 136.819,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028084,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7719501,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 696.876,
+      "keeperMovement": 202.08,
+      "shooterFatigueSpent": 0.009611,
+      "opponentFatigueSpent": 0.030788,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7719520,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 661.919,
+      "keeperMovement": 78.637,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.026906,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7719482,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 461.294,
+      "keeperMovement": 128.978,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024616,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7719501,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 495.405,
+      "keeperMovement": 190.336,
+      "shooterFatigueSpent": 0.052702,
+      "opponentFatigueSpent": 0.026532,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7719520,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 488.657,
+      "keeperMovement": 78.733,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.023621,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7719482,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 629.709,
+      "keeperMovement": 136.819,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028084,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7719501,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 696.876,
+      "keeperMovement": 202.08,
+      "shooterFatigueSpent": 0.009611,
+      "opponentFatigueSpent": 0.030788,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7719520,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 661.919,
+      "keeperMovement": 78.637,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.026906,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7719482,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 461.294,
+      "keeperMovement": 128.978,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024616,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7719501,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 495.405,
+      "keeperMovement": 190.336,
+      "shooterFatigueSpent": 0.052702,
+      "opponentFatigueSpent": 0.026532,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 2,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7719520,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 488.657,
+      "keeperMovement": 78.733,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.023621,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 2,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7717161,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 820.218,
+      "keeperMovement": 152.195,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.029009,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7717180,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 775.212,
+      "keeperMovement": 147.128,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028149,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7717199,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 777.462,
+      "keeperMovement": 143.834,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028149,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7717161,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 606.893,
+      "keeperMovement": 151.465,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7717180,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 607.359,
+      "keeperMovement": 133.124,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7717199,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 600.219,
+      "keeperMovement": 120.721,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7717161,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 820.218,
+      "keeperMovement": 152.195,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.029009,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7717180,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 775.212,
+      "keeperMovement": 147.128,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028149,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7717199,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 777.462,
+      "keeperMovement": 143.834,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028149,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7717161,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 606.893,
+      "keeperMovement": 151.465,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7717180,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 607.359,
+      "keeperMovement": 133.124,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7717199,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 600.219,
+      "keeperMovement": 120.721,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7718271,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 770.444,
+      "keeperMovement": 145.712,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.028579,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7718290,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 740.984,
+      "keeperMovement": 139.792,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028149,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7718309,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 773.211,
+      "keeperMovement": 163.115,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.028579,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7718271,
+      "seedIndex": 0,
+      "outcome": "wideOrRebound",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 2222.266,
+      "keeperMovement": 89.174,
+      "shooterFatigueSpent": 0.060447,
+      "opponentFatigueSpent": 0.075205,
+      "maxOpponentStunSeconds": 0.2218,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7718290,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 556.178,
+      "keeperMovement": 127.382,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024717,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7718309,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 582.965,
+      "keeperMovement": 151.766,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025074,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7718271,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 770.444,
+      "keeperMovement": 145.712,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.028579,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7718290,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 740.984,
+      "keeperMovement": 139.792,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028149,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7718309,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 773.211,
+      "keeperMovement": 163.115,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.028579,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7718271,
+      "seedIndex": 0,
+      "outcome": "wideOrRebound",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 2258.569,
+      "keeperMovement": 89.174,
+      "shooterFatigueSpent": 0.060066,
+      "opponentFatigueSpent": 0.112294,
+      "maxOpponentStunSeconds": 0.2546,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7718290,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 556.178,
+      "keeperMovement": 127.382,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024717,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7718309,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 582.965,
+      "keeperMovement": 151.766,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025074,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7720491,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 770.912,
+      "keeperMovement": 156.736,
+      "shooterFatigueSpent": 0.009505,
+      "opponentFatigueSpent": 0.028721,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7720510,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 736.286,
+      "keeperMovement": 144.917,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028149,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7720529,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 729.074,
+      "keeperMovement": 138.238,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028149,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7720491,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 559.996,
+      "keeperMovement": 153.733,
+      "shooterFatigueSpent": 0.052632,
+      "opponentFatigueSpent": 0.024896,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7720510,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 547.045,
+      "keeperMovement": 138.983,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024681,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7720529,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 544.629,
+      "keeperMovement": 127.05,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024681,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7720491,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 770.912,
+      "keeperMovement": 156.736,
+      "shooterFatigueSpent": 0.009505,
+      "opponentFatigueSpent": 0.028721,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7720510,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 736.286,
+      "keeperMovement": 144.917,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028149,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7720529,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 729.074,
+      "keeperMovement": 138.238,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028149,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7720491,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 559.996,
+      "keeperMovement": 153.733,
+      "shooterFatigueSpent": 0.052632,
+      "opponentFatigueSpent": 0.024896,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7720510,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 547.045,
+      "keeperMovement": 138.983,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024681,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 3,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7720529,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 544.629,
+      "keeperMovement": 127.05,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024681,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 3,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7718170,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 886.587,
+      "keeperMovement": 133.052,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.028862,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7718189,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 884.722,
+      "keeperMovement": 143.732,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.028031,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7718208,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 885.363,
+      "keeperMovement": 148.375,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.029009,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7718170,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 653.615,
+      "keeperMovement": 127.375,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7718189,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 647.841,
+      "keeperMovement": 123.157,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 30,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7718208,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 656.882,
+      "keeperMovement": 144.846,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7718170,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 886.587,
+      "keeperMovement": 133.052,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.028862,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7718189,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 884.722,
+      "keeperMovement": 143.732,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.028031,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7718208,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 885.363,
+      "keeperMovement": 148.375,
+      "shooterFatigueSpent": 0.00954,
+      "opponentFatigueSpent": 0.029009,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7718170,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 653.615,
+      "keeperMovement": 127.375,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7718189,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 647.841,
+      "keeperMovement": 123.157,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 30,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7718208,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 656.882,
+      "keeperMovement": 144.846,
+      "shooterFatigueSpent": 0.052667,
+      "opponentFatigueSpent": 0.025147,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7719280,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 795.541,
+      "keeperMovement": 144.512,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.028376,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7719299,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 804.335,
+      "keeperMovement": 146.523,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028222,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7719318,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 831.128,
+      "keeperMovement": 77.843,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.02719,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7719280,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 567.047,
+      "keeperMovement": 136.518,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024588,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7719299,
+      "seedIndex": 1,
+      "outcome": "wideOrRebound",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 2295.262,
+      "keeperMovement": 134.316,
+      "shooterFatigueSpent": 0.060193,
+      "opponentFatigueSpent": 0.089613,
+      "maxOpponentStunSeconds": 0.2727,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7719318,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 604.614,
+      "keeperMovement": 80.399,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.023621,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7719280,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 795.541,
+      "keeperMovement": 144.512,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.028376,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7719299,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 804.335,
+      "keeperMovement": 146.523,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028222,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7719318,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 831.128,
+      "keeperMovement": 77.843,
+      "shooterFatigueSpent": 0.00947,
+      "opponentFatigueSpent": 0.02719,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7719280,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 567.047,
+      "keeperMovement": 136.518,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024588,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7719299,
+      "seedIndex": 1,
+      "outcome": "wideOrRebound",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 2282.329,
+      "keeperMovement": 132.521,
+      "shooterFatigueSpent": 0.060193,
+      "opponentFatigueSpent": 0.07866,
+      "maxOpponentStunSeconds": 0.2727,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 60,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7719318,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 604.614,
+      "keeperMovement": 80.399,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.023621,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7721500,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 806.101,
+      "keeperMovement": 99.59,
+      "shooterFatigueSpent": 0.009435,
+      "opponentFatigueSpent": 0.027011,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7721519,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 765.771,
+      "keeperMovement": 143.007,
+      "shooterFatigueSpent": 0.009435,
+      "opponentFatigueSpent": 0.028198,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "ordinary",
+      "seed": 7721538,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 796.785,
+      "keeperMovement": 144.297,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028185,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7721500,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 560.756,
+      "keeperMovement": 98.832,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.023621,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7721519,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 554.932,
+      "keeperMovement": 132.008,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024616,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 120,
+      "attackTeam": 0,
+      "arm": "arcadeSuper",
+      "seed": 7721538,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 586.084,
+      "keeperMovement": 127.255,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024681,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7721500,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 806.101,
+      "keeperMovement": 99.59,
+      "shooterFatigueSpent": 0.009435,
+      "opponentFatigueSpent": 0.027011,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7721519,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 765.771,
+      "keeperMovement": 143.007,
+      "shooterFatigueSpent": 0.009435,
+      "opponentFatigueSpent": 0.028198,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "ordinary",
+      "seed": 7721538,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 796.785,
+      "keeperMovement": 144.297,
+      "shooterFatigueSpent": 0.0094,
+      "opponentFatigueSpent": 0.028185,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7721500,
+      "seedIndex": 0,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 560.756,
+      "keeperMovement": 98.832,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.023621,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7721519,
+      "seedIndex": 1,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 554.932,
+      "keeperMovement": 132.008,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024616,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    },
+    {
+      "difficulty": 4,
+      "fps": 120,
+      "attackTeam": 1,
+      "arm": "arcadeSuper",
+      "seed": 7721538,
+      "seedIndex": 2,
+      "outcome": "save",
+      "score": [
+        0,
+        0
+      ],
+      "shotImpacts": 0,
+      "launches": 0,
+      "defenderMovement": 586.084,
+      "keeperMovement": 127.255,
+      "shooterFatigueSpent": 0.052597,
+      "opponentFatigueSpent": 0.024681,
+      "maxOpponentStunSeconds": 0,
+      "maxOpponentKnockdownSeconds": 0,
+      "cpuDifficultyConfirmed": 4,
+      "finite": true
+    }
+  ]
+}

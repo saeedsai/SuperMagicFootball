@@ -1,7 +1,13 @@
 // LAN-044: real GameEngine bridge for host-authoritative Quick Match.
 // The host alone runs physics; the guest renders validated poses and ball effects.
 // This module never modifies the offline match, team, or save formats.
+import {ECONOMY} from './economy.js';
 const LAN_LIVE_ACTIONS = Object.freeze(['pass','shoot','dribble','jump']);
+// A rejected one-step action can survive a brief transport backpressure event,
+// but it must not become a delayed command after the live host state is stale.
+const MAX_PENDING_GUEST_INPUT_ATTEMPTS=3;
+const MAX_PENDING_GUEST_INPUT_AGE_MS=250;
+const LAN_RESULT_ACK_TIMEOUT_MS=3000;
 const lanLiveClamp = (n,a,b) => Math.max(a,Math.min(b,n));
 function requireField(field) {
   if(!field || !['x','y','w','h'].every(k=>Number.isFinite(field[k])) ||
@@ -14,6 +20,41 @@ const visNum=(n,max)=>lanLiveClamp(Number.isFinite(n)?n:0,0,max);
 const visDirection=n=>lanLiveClamp(Number.isFinite(n)?n:0,-1,1);
 // Trap rendering needs sub-pixel precision, not noisy 16-digit physics floats.
 const trapWire=n=>Math.round(n*1000)/1000;
+const MATCH_ID=/^[a-f0-9]{32}$/;
+function secureMatchId(){
+  try{
+    const bytes=new Uint8Array(16);
+    globalThis.crypto.getRandomValues(bytes);
+    return [...bytes].map(value=>value.toString(16).padStart(2,'0')).join('');
+  }catch{return null;}
+}
+function validScore(score){return Array.isArray(score)&&score.length===2&&score.every(value=>Number.isSafeInteger(value)&&value>=0&&value<=999);}
+function validResult(result){
+  if(!result||typeof result!=='object'||!validScore(result.score))return false;
+  if(result.penalties===undefined)return Object.keys(result).length===1;
+  const penalties=result.penalties;
+  return Object.keys(result).length===2&&penalties&&typeof penalties==='object'&&
+    Object.keys(penalties).length===2&&validScore(penalties.score)&&
+    penalties.score[0]!==penalties.score[1]&&
+    penalties.winner===(penalties.score[0]>penalties.score[1]?0:1);
+}
+function localResultAward({peer,role,matchId,result,awardResult}){
+  const identity=peer?.snapshotIdentity;
+  const validIdentity=value=>typeof value==='string'&&/^[A-Za-z0-9_-]{6,32}$/.test(value);
+  if(!MATCH_ID.test(matchId||'')||!identity||!validIdentity(identity.roomId)||
+     !validIdentity(identity.hostId)||!validResult(result))return false;
+  const hostWin=result.penalties?result.penalties.winner===0:
+    result.score[0]>result.score[1];
+  const guestWin=result.penalties?result.penalties.winner===1:
+    result.score[1]>result.score[0];
+  const outcome=hostWin?(role==='host'?'win':'loss'):
+    guestWin?(role==='guest'?'win':'loss'):'draw';
+  const receiptId=`lan:${identity.roomId}:${identity.hostId}:${matchId}`;
+  try{
+    const receipt=awardResult({receiptId,mode:'online',status:'completed',result:outcome});
+    return receipt!==false&&(receipt?.ok!==false||receipt?.duplicate===true)?receiptId:false;
+  }catch{return false;}
+}
 function captureLanGameState(game,field,tick){
   requireField(field);
   if(!Number.isSafeInteger(tick)||tick<0)throw new TypeError('Invalid LAN match tick');
@@ -61,13 +102,16 @@ function applyLanGameState(game,field,state){
       const v=item.visual;
       p.face=v.face;p.z=v.z*400;p.action=v.action;p.actionTimer=v.timer;
       p.anim=v.anim;p.stun=v.stun;p.slideTimer=v.slide;p.diveElapsed=v.dive;
+      // The guest draws the same confused reaction cue from the authoritative
+      // stun timer; no new wire field or protocol revision is needed.
+      p.shotImpactConfusedTimer=v.stun;
       // Keeper pose and directional save streaks both read diveDy.
       // Older visual snapshots omit diveY and safely render neutral dives.
       p.diveDy=Number.isFinite(v.diveY)?v.diveY:0;
     }else{
       if(Math.abs(dx)>0.15)p.face=dx>0?1:-1;
       // Legacy position-only packets must clear special effects from earlier poses.
-      p.z=0;p.actionTimer=0;p.stun=0;p.slideTimer=0;p.diveElapsed=0;p.diveDy=0;
+      p.z=0;p.actionTimer=0;p.stun=0;p.shotImpactConfusedTimer=0;p.slideTimer=0;p.diveElapsed=0;p.diveDy=0;
       p.action=Math.hypot(dx,dy)>0.2?'run':'idle';
       p.anim=(p.anim||0)+1/60;
     }
@@ -128,13 +172,89 @@ function applyLanGameState(game,field,state){
   }else if(game.clock*1000>state.clockMs+1500 && game.half===1)game.half=2;
   game.clock=state.clockMs/1000;
 }
-function createLanLiveMatch({peer,role,game,input,field,now=Date.now}){
+function createLanLiveMatch({peer,role,game,input,field,now=Date.now,awardResult,
+  setTimer=globalThis.setTimeout,clearTimer=globalThis.clearTimeout}){
   if(!peer || !['host','guest'].includes(role) || !game || !input) {
     throw new TypeError('Invalid LAN live match participants');
   }
   requireField(field);
   if(typeof now!=='function')throw new TypeError('Invalid LAN match clock');
-  let disposed=false, tick=-1, latestTick=-1,lastSent=-1;
+  if(typeof setTimer!=='function')throw new TypeError('Invalid LAN result acknowledgement timer');
+  if(typeof clearTimer!=='function')throw new TypeError('Invalid LAN result acknowledgement timer cleanup');
+  let disposed=false, tick=-1, latestTick=-1,lastSent=-1,pendingGuestInput=null;
+  const matchId=role==='host'?secureMatchId():null;
+  const award=typeof awardResult==='function'?awardResult:payload=>{
+    if(!globalThis.localStorage)return false;
+    return ECONOMY.create(globalThis.localStorage).awardCompletedMatch(payload);
+  };
+  let terminalResult=null,hostAwarded=false,hostResultDelivered=false,guestMatchId=null;
+  let hostResultAckReceived=false,hostResultAwardAttempts=0;
+  let hostResultAckStatus='not-started',hostResultAckTimer=null,hostResultAckObserver=null;
+  const originalOnEvent=game.onEvent;
+  let wrappedOnEvent=null;
+  const awardHostResult=({manual=false}={})=>{
+    const eligibleStatus=manual?hostResultAckStatus==='failed':['pending','fallback'].includes(hostResultAckStatus);
+    if(role!=='host'||hostAwarded||!hostResultDelivered||!terminalResult||!eligibleStatus||
+       (!manual&&hostResultAwardAttempts>=2))return false;
+    hostResultAwardAttempts++;
+    if(!localResultAward({peer,role,matchId,result:terminalResult,awardResult:award}))return false;
+    hostAwarded=true;
+    hostResultAckStatus=hostResultAckReceived?'confirmed':'unconfirmed';
+    if(hostResultAckTimer!==null){clearTimer(hostResultAckTimer);hostResultAckTimer=null;}
+    return true;
+  };
+  const expectedReceiptId=()=>{
+    const identity=peer?.snapshotIdentity;
+    const validIdentity=value=>typeof value==='string'&&/^[A-Za-z0-9_-]{6,32}$/.test(value);
+    if(!MATCH_ID.test(matchId||'')||!identity||!validIdentity(identity.roomId)||!validIdentity(identity.hostId))return null;
+    return `lan:${identity.roomId}:${identity.hostId}:${matchId}`;
+  };
+  const onHostResultAck=packet=>{
+    if(role!=='host'||hostResultAckStatus!=='pending'||hostResultAckReceived||!terminalResult||
+       packet?.type!=='result-ack'||packet.receiptId!==expectedReceiptId())return;
+    hostResultAckReceived=true;
+    // ACK confirms that the guest saved its receipt. Keep our bounded fallback
+    // alive until our own wallet receipt is also durably recorded.
+    awardHostResult();
+  };
+  const startHostResultAckFallback=()=>{
+    if(role!=='host'||hostResultAckStatus!=='not-started')return;
+    hostResultAckStatus='pending';
+    // Older peers ignore this optional packet. Bound the wait, then pay once
+    // with an explicitly unconfirmed delivery status.
+    hostResultAckTimer=setTimer(()=>{
+      hostResultAckTimer=null;
+      if(hostResultAckStatus!=='pending')return;
+      // One retry is reserved for the existing timeout boundary. If a terminal
+      // snapshot has not yet been accepted, step() gets the single attempt later.
+      hostResultAckStatus='fallback';
+      if(!awardHostResult())hostResultAckStatus='failed';
+    },LAN_RESULT_ACK_TIMEOUT_MS);
+  };
+  if(role==='host'&&typeof peer.subscribeHostResultAck==='function'){
+    try{hostResultAckObserver=peer.subscribeHostResultAck(onHostResultAck);}catch{/* legacy peer uses timeout fallback */}
+  }
+  if(role==='host'&&typeof originalOnEvent==='function'){
+    wrappedOnEvent=function(event){
+      if(event?.type==='finished'&&matchId){
+        const result={score:Array.isArray(event.score)?event.score.slice():null};
+        if(event.penalties===true&&validScore(event.pkScore)&&
+           [0,1].includes(event.winner))result.penalties={score:event.pkScore.slice(),winner:event.winner};
+        if(validResult(result)&&validScore(game.score)&&
+           result.score[0]===game.score[0]&&result.score[1]===game.score[1])terminalResult=Object.freeze({score:Object.freeze(result.score),
+          ...(result.penalties?{penalties:Object.freeze({score:Object.freeze(result.penalties.score),winner:result.penalties.winner})}:{})});
+        if(terminalResult)startHostResultAckFallback();
+      }
+      return originalOnEvent.apply(this,arguments);
+    };
+    game.onEvent=wrappedOnEvent;
+  }
+  function retryResultAward(){
+    if(disposed||role!=='host'||hostResultAckStatus!=='failed'||!hostResultDelivered)return false;
+    // One explicit user activation performs one storage write. A failed retry
+    // stays visible as failed; there is no timer loop or auto-retry storm.
+    return awardHostResult({manual:true});
+  }
   let lastHostPhase=null;
   let lastFrozenSnapshotAt=-Infinity;
   const FROZEN_HEARTBEAT_MS=1500;
@@ -150,7 +270,12 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now}){
   const originalPoll=input.poll;
   let receiver=null;
   let statusUnsubscribe=null;
-  function resetGuestCursor(){latestTick=-1;lastSent=-1;lastSnapshotAt=-Infinity;}
+  function resetGuestCursor(){
+    latestTick=-1;lastSent=-1;lastSnapshotAt=-Infinity;pendingGuestInput=null;
+    // A host restart can begin a new match on the same guest page. Do not keep
+    // the previous match ID as a gate for the new terminal receipt/ACK.
+    guestMatchId=null;
+  }
   function resetHostSession(){
     // A new transport epoch must replay its current phase even if paused or
     // finished; never inherit the previous guest's held controls or packet gap.
@@ -188,6 +313,26 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now}){
       // Ignore delayed, duplicate or malformed snapshots even if transport rebinds.
       // An older host state must not rewind the match or guest input cursor.
       if(disposed || !peer.ready || !Number.isSafeInteger(state?.tick) || state.tick<=latestTick)return;
+      const snapshotMatchId=state.meta?.matchId;
+      if(snapshotMatchId&&MATCH_ID.test(snapshotMatchId)){
+        if(guestMatchId===null)guestMatchId=snapshotMatchId;
+        if(snapshotMatchId===guestMatchId&&state.meta?.phase==='finished'&&
+           state.meta.result&&validResult(state.meta.result)){
+          const result=state.meta.result;
+          if(!result.penalties&&
+             (result.score[0]!==state.scores?.home||result.score[1]!==state.scores?.away)){
+            // A normal-time terminal receipt must agree with the score carried
+            // by the same host snapshot. Penalty shoot-outs have separate totals.
+          }else{
+            const receiptId=localResultAward({peer,role,matchId:snapshotMatchId,result,awardResult:award});
+            if(receiptId&&typeof peer.sendGuestResultAck==='function'){
+              // ACK only after the local wallet durably recorded (or recognized)
+              // this exact room/host/match receipt. Repeated snapshots retry it.
+              try{peer.sendGuestResultAck(receiptId);}catch{/* retry on the next terminal snapshot */}
+            }
+          }
+        }
+      }
       applyLanGameState(game,field,state);
       latestTick=state.tick;
       lastSnapshotAt=now();
@@ -245,7 +390,12 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now}){
           remote=phase==='play'?((guestFrame?.received===false?null:frameInput)??(guestInputGap<=MAX_GUEST_INPUT_GAP?lastGuestInput:null)??{buttons:[],dx:0,dy:0}):{buttons:[],dx:0,dy:0};
           try{
             if(phase==='play')game.update(dt);
-            return captureLanGameState(game,field,tick);
+            const state=captureLanGameState(game,field,tick);
+            if(matchId){
+              state.meta.matchId=matchId;
+              if(game.matchState==='finished'&&terminalResult)state.meta.result=terminalResult;
+            }
+            return state;
           }finally{
             // LAN-075: the engine may pause/finish *inside* update(). The
             // already-published frozen snapshot makes the next step a no-op,
@@ -264,6 +414,21 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now}){
         if(snapshotDelivered){
           lastHostPhase=game.matchState;
           if(lastHostPhase!=='play')lastFrozenSnapshotAt=now();
+          if(lastHostPhase==='finished'){
+            hostResultDelivered=true;
+            if(hostResultAckStatus==='not-started')startHostResultAckFallback();
+            // A fast peer can ACK synchronously while snapshot delivery is
+            // still unwinding. Persist only after the host accepted delivery.
+            if(hostResultAckStatus==='pending'&&hostResultAckReceived&&hostResultAwardAttempts===0){
+              awardHostResult();
+            }
+            // A timeout may have elapsed before this terminal snapshot was
+            // accepted; spend the reserved attempt once it is actually sent.
+            if(hostResultAckStatus==='failed'&&hostResultAwardAttempts===0){
+              hostResultAckStatus='fallback';
+              if(!awardHostResult())hostResultAckStatus='failed';
+            }
+          }
         }
         return snapshotDelivered;
       }catch(error){
@@ -275,44 +440,79 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now}){
     originalPoll.call(input,false);
     // Only the host can resume or finish a LAN match. Never queue new guest
     // actions while the latest authoritative snapshot says play is frozen.
-    if(game.matchState!=='play')return false;
-    const snapshotAge=now()-lastSnapshotAt;
+    const currentTime=now();
+    if(game.matchState!=='play'){
+      pendingGuestInput=null;
+      return false;
+    }
+    const snapshotAge=currentTime-lastSnapshotAt;
     // A backwards wall-clock adjustment must not keep stale guest input live.
-    if(latestTick<0 || !Number.isFinite(snapshotAge) || snapshotAge<0 || snapshotAge>700)return false;
+    if(latestTick<0 || !Number.isFinite(currentTime) || !Number.isFinite(snapshotAge) || snapshotAge<0 || snapshotAge>700){
+      pendingGuestInput=null;
+      return false;
+    }
+    if(pendingGuestInput){
+      const pendingAge=currentTime-pendingGuestInput.createdAt;
+      if(!Number.isFinite(pendingAge) || pendingAge<0 || pendingAge>MAX_PENDING_GUEST_INPUT_AGE_MS ||
+         pendingGuestInput.attempts>=MAX_PENDING_GUEST_INPUT_ATTEMPTS){
+        pendingGuestInput=null;
+      }
+    }
     // A few lead frames absorb LAN transport latency without accepting
     // unbounded future commands or replaying a previously sent frame.
     const frame=Math.max(lastSent+1,latestTick+4);
-    if(frame>latestTick+8)return false;
+    if(frame>latestTick+8){pendingGuestInput=null;return false;}
     const held=LAN_LIVE_ACTIONS.filter(action=>input.held(0,action)||input.just(0,action));
+    const pressedEdges=LAN_LIVE_ACTIONS.filter(action=>input.just(0,action));
     const rawX=input.state[0]?.x,rawY=input.state[0]?.y;
     // Preserve proportional gamepad tilt; keyboard directions remain full strength.
     // Reject non-finite device values before they reach the validated LAN codec.
     const x=Number.isFinite(rawX)?lanLiveClamp(rawX,-1,1):0;
     const y=Number.isFinite(rawY)?lanLiveClamp(rawY,-1,1):0;
+    // Keep at most one short-lived one-shot edge across a refused/ambiguous
+    // send. Rebase it to this fresh host lead frame; continuous button state
+    // and analog axes always come from the latest local poll. New action edges
+    // merge into the bounded edge set while a retry is pending.
+    const pending=pendingGuestInput;
+    const retryEdges=new Set(pending?.edges||[]);
+    for(const action of pressedEdges)retryEdges.add(action);
+    const buttons=[...new Set([...held,...retryEdges])];
+    const rememberRefusedSend=()=>{
+      if(pending){
+        pending.edges=[...retryEdges];
+        pending.attempts++;
+      }else if(pressedEdges.length){
+        pendingGuestInput={edges:[...retryEdges],createdAt:currentTime,attempts:1};
+      }
+      return false;
+    };
     // The RTC channel can close after ready was checked but before send.
-    // Do not advance the guest frame cursor on a failed transmission: retry
-    // the same frame if the connection becomes usable again.
-    // LAN-078: only the validated input packet for this exact frame proves
-    // that the guest sender advanced. An ambiguous transport return must
-    // leave lastSent unchanged so the next step retries the same controls.
+    // Only the validated input packet for this current lead frame advances
+    // the guest cursor. Refusal leaves it unchanged; the edge is bounded.
     try {
-      const receipt=peer.sendGuestInput(frame,held,x,y);
-      if(receipt?.type!=='input' || receipt.frame!==frame)return false;
+      const receipt=peer.sendGuestInput(frame,buttons,x,y);
+      if(receipt?.type!=='input' || receipt.frame!==frame)return rememberRefusedSend();
     }
-    catch { return false; }
+    catch { return rememberRefusedSend(); }
     lastSent=frame;
+    pendingGuestInput=null;
     return true;
   }
   function dispose(){
     if(disposed)return;
     disposed=true;
+    if(role==='host'&&hostResultAckTimer!==null){clearTimer(hostResultAckTimer);hostResultAckTimer=null;}
     receiver?.dispose();
     if(typeof statusUnsubscribe==='function')statusUnsubscribe();
     else statusUnsubscribe?.dispose?.();
     if(role==='host')input.poll=originalPoll;
+    if(role==='host'&&wrappedOnEvent&&game.onEvent===wrappedOnEvent)game.onEvent=originalOnEvent;
+    if(typeof hostResultAckObserver==='function')hostResultAckObserver();
   }
-  return Object.freeze({step,dispose,
+  return Object.freeze({step,dispose,retryResultAward,
     get role(){return role;},
+    get resultDelivered(){return role!=='host'||hostResultDelivered;},
+    get resultAckStatus(){return role==='host'?hostResultAckStatus:'not-applicable';},
     get latestTick(){return role==='host'?tick:latestTick;},
     get disposed(){return disposed;}
   });

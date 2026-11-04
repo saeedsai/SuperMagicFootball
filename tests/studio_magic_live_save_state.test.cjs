@@ -16,11 +16,11 @@ test('STUDIO-MAGIC-LIVE-STATE-01: unchanged choices report no save needed',()=>{
   assert.match(result.message,/No Magic Trick change to save/);
  }
 });
-test('STUDIO-MAGIC-LIVE-STATE-01: locked previews explain the 91+ requirement',()=>{
+test('STUDIO-MAGIC-LIVE-STATE-01: locked previews explain source-verified tier requirement',()=>{
  const result=state('teleport','banana',false);
  assert.equal(result.disabled,true);
  assert.equal(result.locked,true);
- assert.match(result.message,/locked.*91\+/i);
+ assert.match(result.message,/locked.*verified/i);
 });
 test('STUDIO-MAGIC-LIVE-STATE-01: valid changes remain actionable',()=>{
  for(const [choice,equipped,eligible] of [['banana',null,true],['none','banana',false],['ice','banana',true]]){

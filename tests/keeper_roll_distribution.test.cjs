@@ -37,6 +37,7 @@ test('home keeper DRIBBLE rolls low aimed pass to nearest safe outlet',()=>{
  assert.equal(g.free[0].opts.z,10);assert.equal(g.free[0].opts.vz,0);
  assert(g.free[0].speed>300&&g.free[0].speed<460);
  assert.equal(keeper.action,'keeperThrow');assert.equal(keeper.keeperHold,0);
+ assert.equal(keeper.actionTimer,.42);assert.equal(keeper.keeperReleasePoseDuration,.42);
  assert.equal(g.events[0].type,'keeperDistribution');assert.equal(g.events[0].mode,'roll');
  assert.equal(g.events[1].type,'passIntent');assert.equal(g.events[1].loft,'ground');
  assert.equal(g.manualSwitchGrace[0],1.25);

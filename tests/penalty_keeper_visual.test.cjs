@@ -17,10 +17,10 @@ test('recovery settles and malformed state never triggers fake dive',()=>{
  }
 });
 test('real penalty renderer animates the defending side without mutating shootout state',()=>{
- const render=fs.readFileSync('src/modules/render.js','utf8');
- const found=render.match(/ drawPenaltyPlayers\(ctx,g\)\{[\s\S]*?\n \}\n drawBall\(/);
- assert.ok(found,'real renderer method present');
- const method=found[0].slice(1,found[0].lastIndexOf('\n drawBall('));
+ const render=fs.readFileSync('src/modules/render.js','utf8').replace(/\r\n/g,'\n');
+ const start=render.indexOf(' drawPenaltyPlayers(ctx,g){'),end=render.indexOf('\n drawHideBallCue(',start);
+ assert.ok(start>=0&&end>start,'real renderer method present');
+ const method=render.slice(start+1,end);
  const renderer=vm.runInNewContext('({'+method+'})',{WORLD:{goalTop:530,goalBottom:910},F:{x:100,w:2200},ARTPOSE,PI:Math.PI,ellipse(){}});
  const draws=[];renderer.drawPlayer=(_ctx,p)=>draws.push(p);renderer.drawSoccerBall=()=>{};renderer.time=1;
  for(const turn of [0,1]){

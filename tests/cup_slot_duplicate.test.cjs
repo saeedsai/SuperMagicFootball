@@ -44,14 +44,34 @@ test('copy label respects 60-character stored name limit',async()=>{
  const db=memory(),v=(await api()).create(db);v.save(1,campaign(2),'X'.repeat(60));
  v.duplicate(1);assert.equal(v.list()[1].name.length,60);
 });
+test('repeated copies receive distinct normalized labels and preserve the source campaign',async()=>{
+ const db=memory(),v=(await api()).create(db);v.save(1,campaign(2),'Continental');v.save(3,campaign(9),'Continental (copy 2)');
+ const before=v.load(1);const active=v.active;
+ assert.equal(v.duplicate(1),2);
+ assert.equal(v.duplicate(1),4);
+ assert.equal(v.list()[1].name,'Continental (copy)');
+ assert.equal(v.list()[3].name,'Continental (copy 3)');
+ assert.equal(v.active,active);
+ assert.deepEqual(v.load(1),before);
+ const labels=v.list().filter(s=>s.occupied).map(s=>s.name.normalize('NFKC').toLowerCase());
+ assert.equal(new Set(labels).size,labels.length);
+});
+test('copy suffix stays visible with a full-length Cup name',async()=>{
+ const db=memory(),v=(await api()).create(db);v.save(1,campaign(2),'X'.repeat(60));
+ v.duplicate(1);v.duplicate(1);
+ assert.equal(v.list()[1].name.length,60);
+ assert.match(v.list()[1].name,/\(copy\)$/);
+ assert.equal(v.list()[2].name.length,60);
+ assert.match(v.list()[2].name,/\(copy 2\)$/);
+});
 test('Cup menu shows COPY only with spare slot and UI dispatch duplicates without overwrite',async()=>{
- const src=fs.readFileSync('src/modules/ui.js','utf8');
+ const src=fs.readFileSync('src/modules/ui.js','utf8').replace(/\r\n/g,'\n');
  const menu=src.match(/function showCupSlots\(\)\{[\s\S]*?\n\}(?=\nfunction showSaveMenu)/);
  assert.ok(menu);
  let html='';
  const state={slots:[{number:1,occupied:true,name:'Cup',compId:'UEFA',club:0,phase:'league',roundIdx:0,savedAt:new Date().toISOString()},{number:2,occupied:false}],copied:0};
  const ctx={cupSlots:{list:()=>state.slots,error:null,duplicate(n){assert.equal(n,1);state.copied++}},continentalRun:null,TEAMS:[{name:'Home'}],escapeHTML:String,
-  button:(name,a)=>'<button data-action="'+a+'">'+name+'</button>',page:(a,b,h)=>{html=h},alert(){throw Error('Unexpected alert')},showCupSlots(){}};
+  button:(name,a)=>'<button data-action="'+a+'">'+name+'</button>',slotActionButton:(name,a,kind,n)=>'<button data-action="'+a+'" aria-label="'+name+' '+kind+' slot '+n+'">'+name+'</button>',page:(a,b,h)=>{html=h},alert(){throw Error('Unexpected alert')},showCupSlots(){}};
  vm.runInNewContext(menu[0]+'\nshowCupSlots()',ctx);assert.match(html,/cupSlotCopy_1/);
  state.slots[1].occupied=true;vm.runInNewContext(menu[0]+'\nshowCupSlots()',ctx);assert.doesNotMatch(html,/cupSlotCopy_1/);
  const handler=src.split(/\r?\n/).find(l=>/^\s*else if\(a\.startsWith\('cupSlotCopy_'\)\)/.test(l));

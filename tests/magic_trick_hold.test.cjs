@@ -13,11 +13,13 @@ test('Trick remains separate from normal dribble and aerial actions',()=>{
  assert.match(engine,/this\.tryBicycleShot\(p\)/);
  assert.match(engine,/const id=p\?\.src\?\.magicTrick/);
 });
-test('Magic Trick has eight named abilities and bounded cooldown, stamina and counterplay',()=>{
- for(const id of ['banana','ice','bat','fireball','freeze','scream','hideBall','teleport'])assert.ok(engine.includes("'"+id+"'"));
+test('Magic Tricks have named abilities with explicit tier gates and bounded costs/counterplay',()=>{
+ for(const id of ['banana','ice','bat','fireball','freeze','scream','hideBall','teleport','shoulderRide','spinBump','sandTrap','lightning','wind','mud'])assert.ok(engine.includes("'"+id+"'"));
+ assert.match(engine,/const tierGated=\['spinBump','sandTrap','lightning','wind','mud'\]\.includes\(id\)/);
+ assert.match(engine,/verifiedRatingTierForPlayer\(p\?\.src\)/);
  assert.match(engine,/p\.magicReadyAt=this\.clock\+6/);
  assert.match(engine,/const countered=/);
- assert.match(engine,/p\.fatigue=Math\.min\(1,p\.fatigue\+\.035\)/);
+ assert.ok(engine.includes("p.fatigue=Math.min(1,p.fatigue+((id==='spinBump'||id==='sandTrap'||id==='lightning'||id==='wind'||id==='mud')?.045:.035));"));
  assert.match(engine,/this\.emit\('magicTrick'/);
 });
 test('Controls and Player Studio document holding Dribble for one second',()=>{

@@ -15,6 +15,7 @@ test('VIZ-01 match controls retain exactly Pass Shoot Dribble Jump',()=>{
  assert.deepEqual(acts,['dribble','jump','pass','shoot']);
  assert.match(html,/id="joyZone"/);
  assert.match(moduleInput,/bindTouch\(\)/);
+ assert.match(html,/<button id="pauseBtn"[^>]*type="button"[^>]*aria-label="Pause game"/);
 });
 test('VIZ-01 four-button arcade colors, accessible focus and active states',()=>{
  assert.ok(section,'VIZ-01 CSS exists');
@@ -35,4 +36,6 @@ test('VIZ-01 preserves safe-area, compact touch viewports and reduced motion',()
  assert.match(css,/#touchButtons \.pass\{grid-column:1;grid-row:2\}/);
  assert.match(css,/#touchButtons \.shoot\{grid-column:3;grid-row:2\}/);
  assert.match(css,/#touchButtons \.dribble\{grid-column:2;grid-row:3/);
+ const reducedMotionRule=css.slice(0,css.indexOf('/* UX-102: apply the operating-system reduced-motion preference'));
+ assert.match(reducedMotionRule,/#touchButtons \.round:active,#touchButtons \.round\.active\{transform:none!important\}/);
 });

@@ -1,0 +1,23 @@
+{
+  "format": "FootballSpriteAssetBundle",
+  "version": 1,
+  "source": "phase1_threeQuarterBackLeft.png",
+  "items": [
+    {
+      "file": "phase1_threeQuarterBackLeft_01.png",
+      "view": "threeQuarterBackLeft",
+      "animation": "run",
+      "frame": "run_1",
+      "category": "body",
+      "mirror": false,
+      "cropSource": {
+        "x": 0,
+        "y": 0,
+        "w": 768,
+        "h": 1024
+      },
+      "width": 768,
+      "height": 1024
+    }
+  ]
+}

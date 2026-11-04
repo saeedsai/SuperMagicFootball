@@ -1,0 +1,74 @@
+{
+  "format": "FootballSpriteStudio",
+  "schemaVersion": 4,
+  "projectName": "Stand Master AI Assembly",
+  "mode": "custom",
+  "assetStorage": "bundled",
+  "partDefinitions": null,
+  "canvas": {
+    "width": 768,
+    "height": 768
+  },
+  "viewOrder": [
+    "front",
+    "threeQuarterFrontLeft",
+    "left",
+    "threeQuarterBackLeft",
+    "back",
+    "threeQuarterBackRight",
+    "right",
+    "threeQuarterFrontRight"
+  ],
+  "animations": [
+    {
+      "id": "stand",
+      "name": "Stand",
+      "fps": 6,
+      "frames": [
+        {
+          "id": "stand_1",
+          "name": "Stand 1"
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "name": "Run",
+      "fps": 8,
+      "frames": [
+        {
+          "id": "run_1",
+          "name": "Run 1"
+        },
+        {
+          "id": "run_2",
+          "name": "Run 2"
+        }
+      ]
+    }
+  ],
+  "assets": {},
+  "scenes": {
+    "front": {},
+    "threeQuarterFrontLeft": {},
+    "left": {},
+    "threeQuarterBackLeft": {},
+    "back": {},
+    "threeQuarterBackRight": {},
+    "right": {},
+    "threeQuarterFrontRight": {}
+  },
+  "defaults": {},
+  "editor": {
+    "grid": false,
+    "rulers": false,
+    "gridSize": 32,
+    "snap": false,
+    "reference": null,
+    "cliCursor": {
+      "view": "front",
+      "animation": "stand",
+      "frame": "stand_1"
+    }
+  }
+}

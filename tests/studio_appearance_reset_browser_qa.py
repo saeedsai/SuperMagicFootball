@@ -10,7 +10,7 @@ with sync_playwright() as pw:
   context=browser.new_context(viewport=viewport,is_mobile=touch,has_touch=touch)
   page=context.new_page();errors=[]
   page.on('pageerror',lambda error:errors.append(str(error)))
-  page.evaluate("""() => {const memory=new Map();Object.defineProperty(window,'localStorage',{configurable:true,value:{
+  page.evaluate("""() => {const memory=new Map();memory.set('legend_tokenWallet',JSON.stringify({schema:1,tokens:0,unlocks:[...['appearance','accessory'].flatMap(category=>['skin','hair','style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo'].flatMap(key=>Array.from({length:64},(_,i)=>`${category}:${key}:${i}`)) )],receipts:[]}));Object.defineProperty(window,'localStorage',{configurable:true,value:{
    getItem:k=>memory.has(k)?memory.get(k):null,setItem:(k,v)=>memory.set(k,String(v)),
    removeItem:k=>memory.delete(k),clear:()=>memory.clear()}});}""")
   page.set_content(html,wait_until='load')

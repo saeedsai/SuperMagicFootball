@@ -12,14 +12,19 @@ test('arena overhaul retains exactly Pass Shoot Dribble Jump and the same input 
  assert.match(read('src/modules/input.js'),/REMAPPABLE_ACTIONS=\['pass','shoot','dribble','jump'\]/);
 });
 test('new home hub offers valid existing routes and retains About-only release',()=>{
- for(const route of ['navQuick','navOnline','navCareer','navCups','navSettings','navCustomization','navCareerSlots','navAbout'])assert.ok(home.includes(route),'missing route '+route);
- for(const token of ['arcadeHeroStrip','arcadeLaunch','arenaShortcutRow','posterCanvas'])assert.ok(home.includes(token),token);
+ for(const route of ['navQuick','navOnline','navCareer','navCups','training','navStore','navSettings','navCustomization','squad','playerStudio'])assert.ok(home.includes(route),'missing route '+route);
+ assert.match(ui.slice(ui.indexOf('function showSettingsMenu()'),ui.indexOf('function showCustomizationMenu()')),/navItem\('About & Credits','navAbout'/,'About is grouped under Settings');
+ assert.match(ui,/function showAbout\(\)[\s\S]*button\('← SETTINGS','navSettings','gold'\)[\s\S]*'navSettings'\);/,'About returns to Settings');
+ for(const token of ['posterCanvas','arcadeWallet','arcadeProfile'])assert.ok(home.includes(token),token);
+ assert.match(home,/data-action="quick"/,'large Kick Off CTA routes to existing quick setup');
+ assert.match(home,/homeEventCopy[\s\S]*<strong>MAGIC CUP<\/strong>/,'footer mirrors the reference Magic Cup panel');
+ assert.match(home,/navItem\('Leagues & Cups','navCups'/,'playable cups remain on the main route list');
  assert.match(ui,/function menuChoices\(/);
- assert.match(ui,/arenaDirectoryLabel/);
+ assert.match(home,/homeReferenceShell/);
  assert.doesNotMatch(home,/DEV VERSION|LATEST DEV VERSION|\+dev\./);
 });
 test('original arcade presentation covers menu, HUD, responsive touch and reduced motion',()=>{
- for(const token of ['ARENA-OVERHAUL-01','arcadeHeroStrip','navMainList','navScreen .navList','scoregroup','hudright','joyStick','touchButtons','studioEightViewGallery'])assert.ok(css.includes(token),'missing '+token);
+ for(const token of ['ARENA-OVERHAUL-01','navMainList','navScreen .navList','scoregroup','hudright','joyStick','touchButtons','studioEightViewGallery'])assert.ok(css.includes(token),'missing '+token);
  for(const token of ['safe-area-inset-top','safe-area-inset-right','safe-area-inset-bottom','prefers-reduced-motion:reduce',':focus-visible'])assert.ok(css.includes(token),'missing '+token);
 });
 test('renderer draws cached stadium and pitch graphics with visual-only player cue',()=>{
@@ -41,9 +46,14 @@ test('About version README offline cache and package agree for the new candidate
  assert.ok(policy.includes('About-only '+pkg.version));
 });
 
-test('arena Play Now and Quick Match are unique, with home focus on the primary card',()=>{
+test('Kick Off and Quick Match are unique, with Home focus restored to a reachable action',()=>{
  assert.equal((home.match(/navItem\('Quick Match','navQuick'/g)||[]).length,1);
- assert.equal((home.match(/data-action="quick"/g)||[]).length,1);
- assert.match(home,/class="btn gold arcadeLaunch" data-action="quick"/);
- assert.ok(home.includes('menu.querySelector(`.navChoice[data-action='));
+ assert.equal((home.match(/class="btn homeKickoff" data-action="quick"/g)||[]).length,1);
+ assert.match(home,/drawPoster\(\);restoreHomeMenuFocus\(\);/,'Home restores the originating action');
+});
+test('primary Home menu categories have distinct scan accents with an accessible focus state',()=>{
+ for(const action of ['navQuick','navOnline','navCareer','navCups','training'])assert.match(css,new RegExp('\\.navChoice\\[data-action="'+action+'"\\]::after|\\.navChoice\\.btn::after'));
+ assert.match(css,/\.navChoice\.btn:hover::after,\.navChoice\.btn:focus-visible::after/);
+ assert.match(css,/\.menu \.navChoice::after\{background:Highlight!important/);
+ assert.equal((home.match(/navItem\('(Quick Match|Online|Career|Leagues & Cups|Training)'/g)||[]).length,5);
 });

@@ -34,6 +34,15 @@ test('LAN host accepts ordered four-button controls without trusting client tick
  assert.equal(acceptLanPacket(first.state,input(0)).reason,'stale-sequence');
  assert.equal(acceptLanPacket(first.state,input(1)).accepted,true);
 });
+test('LAN host rejects sequence jumps without poisoning the next honest input',async()=>{
+ const {createLanHostState,acceptLanPacket}=await load();
+ const joined=acceptLanPacket(createLanHostState('room001','host001'),hello).state;
+ const forged=acceptLanPacket(joined,input(Number.MAX_SAFE_INTEGER));
+ assert.equal(forged.accepted,false);assert.equal(forged.reason,'sequence-gap');
+ assert.equal(forged.state,joined);
+ const honest=acceptLanPacket(forged.state,input(0));
+ assert.equal(honest.accepted,true);assert.equal(honest.input.sequence,0);
+});
 test('LAN input validation rejects malformed axes and extra action buttons',async()=>{
  const {createLanHostState,acceptLanPacket}=await load();
  const state=acceptLanPacket(createLanHostState('room001','host001'),hello).state;

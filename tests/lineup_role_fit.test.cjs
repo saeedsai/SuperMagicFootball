@@ -17,3 +17,16 @@ test('position guidance is accessible, refreshes with formation and lineup, and 
  assert.match(ui,/if\(\/\^pos\[0-5\]\$\/\.test\(e\.target\.id\)\)/);
  assert.match(ui,/button\('✓ SAVE TACTICS','saveSquad','gold'\)/);
 });
+test('formation preview keeps canonical slot coordinates and exposes role-specific visual and accessible cues',()=>{
+ assert.match(ui,/const positions=FORMATIONS\[key\]\|\|FORMATIONS\['2-1-2'\]/);
+ assert.match(ui,/class="formationSlot role\$\{labels\[i\]\}" data-role="\$\{labels\[i\]\}"/);
+ assert.match(ui,/const player=players\[slots\[i\]\],playerName=player\?\.name\|\|'Player'/);
+ assert.match(ui,/aria-label="\$\{escapeHTML\(playerName\)\} face, \$\{labels\[i\]\}, Energy \$\{energy\} percent"/);
+ assert.match(ui,/class="formationEnergy" aria-label="\$\{escapeHTML\(playerName\)\} Energy \$\{energy\} percent"/);
+ assert.match(ui,/function squadEnergyPercent\(player\)/);
+ assert.match(ui,/labelFontSize=Math\.max\(6,Math\.min\(baseFontSize,labelMaxWidth\/\(surname\.length\*\.58\)\)\)/);
+ const css=fs.readFileSync(path.join(__dirname,'../style.css'),'utf8');
+ for(const role of ['roleGK','roleDF','roleMF','roleFW'])assert.match(css,new RegExp('\\.formationSlot\\.'+role+' canvas'));
+ assert.match(css,/\.formationPitch:before\{[^}]*repeating-linear-gradient/);
+ assert.match(css,/\.menu \.roster\{max-height:min\(54vh,560px\)[^}]*overscroll-behavior:contain/);
+});

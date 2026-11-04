@@ -232,11 +232,11 @@
       ],
       "events": {
         "goal": 0,
-        "save": 0,
-        "keeperDive": 0,
-        "keeperCatch": 0,
-        "keeperDistribution": 0,
-        "keeperRecovery": 0
+        "save": 2,
+        "keeperDive": 1,
+        "keeperCatch": 1,
+        "keeperDistribution": 1,
+        "keeperRecovery": 1
       }
     },
     {
@@ -251,15 +251,15 @@
       "events": {
         "goal": 0,
         "save": 1,
-        "keeperDive": 1,
-        "keeperCatch": 0,
-        "keeperDistribution": 0,
-        "keeperRecovery": 1
+        "keeperDive": 0,
+        "keeperCatch": 1,
+        "keeperDistribution": 1,
+        "keeperRecovery": 0
       }
     },
     {
       "match": 3,
-      "frames": 2100,
+      "frames": 2103,
       "half": 2,
       "state": "penalty",
       "score": [
@@ -268,16 +268,16 @@
       ],
       "events": {
         "goal": 0,
-        "save": 1,
-        "keeperDive": 1,
-        "keeperCatch": 0,
-        "keeperDistribution": 0,
+        "save": 3,
+        "keeperDive": 2,
+        "keeperCatch": 2,
+        "keeperDistribution": 1,
         "keeperRecovery": 1
       }
     },
     {
       "match": 4,
-      "frames": 2100,
+      "frames": 2163,
       "half": 2,
       "state": "penalty",
       "score": [
@@ -286,11 +286,11 @@
       ],
       "events": {
         "goal": 0,
-        "save": 2,
-        "keeperDive": 2,
+        "save": 0,
+        "keeperDive": 0,
         "keeperCatch": 0,
         "keeperDistribution": 0,
-        "keeperRecovery": 2
+        "keeperRecovery": 0
       }
     }
   ]

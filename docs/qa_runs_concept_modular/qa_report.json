@@ -1,0 +1,40 @@
+{
+  "desktop": {
+    "status": "PASS",
+    "front_changed_pixels": 6278,
+    "back_changed_pixels": 4307,
+    "side_legacy_identical": true,
+    "back_run_phases_distinct": true,
+    "page_errors": [],
+    "front_face_loaded": true,
+    "transparent_face_alpha": true,
+    "front_arm_loaded": true,
+    "arm_transparent": true,
+    "front_arm_frames_distinct": true,
+    "front_run_changed_pixels": 4081,
+    "far_arm_loaded": true,
+    "far_arm_transparent": true,
+    "reciprocal_arm_animation": true,
+    "front_torso_loaded": true,
+    "painted_torso_isolated": true
+  },
+  "touch": {
+    "status": "PASS",
+    "front_changed_pixels": 6278,
+    "back_changed_pixels": 4307,
+    "side_legacy_identical": true,
+    "back_run_phases_distinct": true,
+    "page_errors": [],
+    "front_face_loaded": true,
+    "transparent_face_alpha": true,
+    "front_arm_loaded": true,
+    "arm_transparent": true,
+    "front_arm_frames_distinct": true,
+    "front_run_changed_pixels": 4081,
+    "far_arm_loaded": true,
+    "far_arm_transparent": true,
+    "reciprocal_arm_animation": true,
+    "front_torso_loaded": true,
+    "painted_torso_isolated": true
+  }
+}

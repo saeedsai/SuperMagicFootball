@@ -10,19 +10,23 @@ const start=ui.indexOf('function saveStudioTrick(){');
 const end=ui.indexOf('function saveStudioDefence(){',start);
 assert.ok(start>=0&&end>start,'real Player Studio dribble save handler exists');
 const handler=ui.slice(start,end);
+const stateMatch=ui.match(/function studioDribbleSaveState\(choice,player,styles\)\{[\s\S]*?\n\}/);
+assert.ok(stateMatch,'real Dribble Style save-state helper exists');
 const mechanics=JSON.parse(fs.readFileSync(path.join(root,'data/mechanics/gameplay.json'),'utf8'));
 const moduleSource=fs.readFileSync(path.join(root,'src/modules/dribbles.js'),'utf8')
  .replace(/^import .*;\s*$/gm,'').replace(/export \{DRIBBLES\};?/,'');
 const DRIBBLES=vm.runInNewContext(moduleSource+';DRIBBLES',{GAME_ASSETS:{mechanics}});
 const first=DRIBBLES.DRIBBLE_STYLES[0].id,second=DRIBBLES.DRIBBLE_STYLES[1].id;
 function run({choice=first,equipped,careerMode=false}={}){
- const player={id:'stable-id',name:'Studio Player',role:'MF',rating:92};
+ const player={id:'stable-id',name:'Studio Player',role:'MF',rating:92,verifiedTier:'Gold'};
  if(equipped!==undefined)player.dribbleType=equipped;
  const stats={writes:0,careerWrites:0,refreshes:0};
+ const studioDribbleSaveState=vm.runInNewContext(stateMatch[0]+';studioDribbleSaveState',{studioVerifiedDribbleEligible:p=>['Gold','Star','Superstar'].includes(p?.verifiedTier)});
  const context={
   studioCareerContext:careerMode,career:careerMode?{club:0,roster:[player]}:null,
   home:0,avatarIndex:0,edits:{},TEAMS:[{id:'team'}],roster:()=>[player],
-  $:id=>id==='studioDribble'?{value:choice}:null,DRIBBLES,
+  $:id=>id==='studioDribble'?{value:choice}:null,DRIBBLES,studioDribbleSaveState,
+  studioVerifiedDribbleEligible:p=>['Gold','Star','Superstar'].includes(p?.verifiedTier),
   storeCharacterChanges:()=>{stats.writes++;return true;},
   saveCareer:()=>{stats.careerWrites++;},showPlayerStudio:()=>{stats.refreshes++;},
   alert:message=>{throw Error(message);}
@@ -54,6 +58,6 @@ test('first-time explicit selection persists even when deterministic default mat
 });
 test('invalid style is rejected before any no-op shortcut or persistence',()=>{
  const {save,stats}=run({choice:'not-a-style',equipped:'not-a-style'});
- assert.throws(save,/Unknown dribble style/);
+ assert.throws(save,/valid Dribble Style/);
  assert.equal(stats.writes,0);assert.equal(stats.refreshes,0);
 });

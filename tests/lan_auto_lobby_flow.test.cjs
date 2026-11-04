@@ -781,6 +781,7 @@ test('both LAN and Online P2P identify players through discovery, join request a
   try{
    const {mountAutoLanLobby}=await load();
    const stop=mountAutoLanLobby(host.root,{internet,build:'0.11.4.0',signalFactory:host.signalFactory});
+   assert.match(host.root.innerHTML,/id="autoStatus" role="status" aria-live="polite" aria-atomic="true"/,'host lobby provides a complete polite live announcement region');
    host.connect();host.root.querySelector('#autoPlayerName').value=' Alice ';
    host.elements.get('#autoHost').click();
    const registration=host.packets.find(packet=>packet.type==='host');
@@ -788,6 +789,7 @@ test('both LAN and Online P2P identify players through discovery, join request a
    assert.match(host.elements.get('#autoHostInfo').textContent,/Hosting as Alice/);
    host.emit({type:'join-request',roomId:registration.roomId,requestId:'request_12345678',guestName:'Bob'});
    assert.match(host.elements.get('#autoApproval').children[0].textContent,/Bob wants to join/);
+   assert.equal(host.elements.get('#autoStatus').textContent,'Bob wants to join your match. Use Accept Guest or Reject to respond.','new guest request is announced without moving focus');
    host.elements.get('#autoApproval').children[1].click();
    assert.deepEqual(host.packets.at(-1),{type:'decision',roomId:registration.roomId,requestId:'request_12345678',accept:true});
    stop();
@@ -1093,16 +1095,17 @@ test('LAN-088 host departure retires pending room and cannot interrupt a started
 });
 
 
-test('LAN-089 late guest-left and host registration ack cannot reset a started host match',async()=>{
+test('LAN-089 active guest departure safely returns host to consent and rotates peer session',async()=>{
  for(const internet of [false,true]){
-  const f=setup();let onStatus=null,readyCount=0,disposed=0;
+  const f=setup();let onStatus=null,readyCount=0,disposed=0,guestLeft=0;const sessions=[];
   try{
    const {mountAutoLanLobby}=await load();
    const dispose=mountAutoLanLobby(f.root,{build:'0.11.4.40',internet,signalFactory:f.signalFactory,
     onReady:()=>{readyCount++},
-    peerFactory:()=>({createOffer:async()=>'host-offer',acceptAnswer:async()=>{},
+    onGuestLeft:()=>{guestLeft++},
+    peerFactory:hello=>{sessions.push(hello.session);return {createOffer:async()=>'host-offer',acceptAnswer:async()=>{},
      subscribeStatus:fn=>{onStatus=fn;return ()=>{}},
-     awaitReady:()=>new Promise(()=>{}),dispose(){disposed++}})});
+     awaitReady:()=>new Promise(()=>{}),dispose(){disposed++}}}});
    f.connect();f.elements.get('#autoHost').click();
    const roomId=f.packets.at(-1).roomId;
    f.emit({type:'host-registered',roomId});
@@ -1111,15 +1114,18 @@ test('LAN-089 late guest-left and host registration ack cannot reset a started h
    await f.emit({type:'answer',roomId,sdp:'guest-answer'});
    assert.equal(typeof onStatus,'function');
    onStatus({ready:true});assert.equal(readyCount,1);
-   const matchStatus=f.elements.get('#autoStatus').textContent;
    const offerCount=f.packets.filter(p=>p.type==='offer').length;
    f.emit({type:'guest-left',roomId});
+   assert.equal(guestLeft,1,'UI returns to its still-registered host lobby');
+   assert.match(f.elements.get('#autoStatus').textContent,/Hosting remains available/);
+   assert.equal(f.packets.filter(p=>p.type==='leave').length,0,'host keeps the registered room');
    f.emit({type:'host-registered',roomId});
    await f.emit({type:'guest-approved',roomId});
-   assert.equal(readyCount,1,'late signaling cannot restart the established match');
-   assert.equal(disposed,0,'late broker notices cannot dispose the active transport');
-   assert.equal(f.packets.filter(p=>p.type==='offer').length,offerCount,'no new SDP offer after kickoff');
-   assert.equal(f.elements.get('#autoStatus').textContent,matchStatus,'active host match status must not be overwritten');
+   assert.equal(readyCount,1,'a new admission negotiates a peer before starting the next match');
+   assert.equal(disposed,0,'the lobby does not reuse or dispose the already-detached old transport');
+   assert.equal(f.packets.filter(p=>p.type==='offer').length,offerCount+1,'newly approved guest gets a fresh host offer');
+   assert.equal(sessions.length,2);
+   assert.notEqual(sessions[0],sessions[1],'new peer handshake receives a new session ID');
    dispose();
   }finally{f.cleanup()}
  }

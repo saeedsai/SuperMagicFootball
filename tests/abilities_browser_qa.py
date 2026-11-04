@@ -3,10 +3,11 @@ from menu_test_routes import open_quick,open_settings
 Supersedes the old 'L/Special button' browser expectations, removed in v0.8.18.1.
 """
 from pathlib import Path
+import shutil
 from playwright.sync_api import sync_playwright
 root=Path(__file__).resolve().parents[1]
 with sync_playwright() as pw:
- b=pw.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox','--disable-dev-shm-usage'])
+ b=pw.chromium.launch(headless=True,executable_path=shutil.which('chromium') or None,args=['--no-sandbox','--disable-dev-shm-usage'])
  for kind,mobile in [('desktop',False),('simulated-mobile',True)]:
   c=b.new_context(viewport={'width':1280 if not mobile else 844,'height':720 if not mobile else 390},is_mobile=mobile,has_touch=mobile)
   p=c.new_page();errors=[];p.on('pageerror',lambda error:errors.append(str(error)))

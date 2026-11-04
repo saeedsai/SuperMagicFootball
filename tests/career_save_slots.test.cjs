@@ -37,6 +37,49 @@ test('corruption and storage failure cannot destroy previous slots',async()=>{
  const blocked=api.create(db);assert.ok(blocked.error);assert.throws(()=>blocked.save(1,fakeCareer()),/cannot be modified/);
  assert.equal(db.getItem('legend_careerSlots'),'{bad json');
 });
+test('Career slots reject missing, duplicate, empty, or invalid member identities before writing',async()=>{
+ const api=await slots(),db=memory(),vault=api.create(db);
+ for(const members of [[],[4],[3,3],[-1,3],[3,'4']]){
+  const invalid={...fakeCareer(3),members};
+  assert.equal(api.validCareer(invalid),false,`membership ${JSON.stringify(members)} must be invalid`);
+  assert.throws(()=>vault.save(1,invalid,'invalid membership'),/invalid Career/);
+  assert.equal(db.getItem('legend_careerSlots'),null,'invalid Career must not create or alter a vault');
+ }
+ const valid=fakeCareer(3);assert.equal(api.validCareer(valid),true);
+ assert.equal(vault.save(1,valid,'valid').career.club,3);
+});
+test('Career slots reject negative week cursors while preserving incomplete legacy schedules',async()=>{
+ const api=await slots(),db=memory(),vault=api.create(db);
+ const complete={...fakeCareer(3),fixtures:Array.from({length:14},()=>[]),week:14,leagueFinished:true};
+ assert.equal(api.validCareer(complete),true,'a finished season may point just past its last fixture');
+ for(const week of [-1,Number.MAX_SAFE_INTEGER+1]){
+  const invalid={...complete,week};
+  assert.equal(api.validCareer(invalid),false,`week ${week} is not a supported cursor`);
+  assert.throws(()=>vault.save(1,invalid,'invalid week'),/invalid Career/);
+  assert.equal(db.getItem('legend_careerSlots'),null,'invalid numeric cursors must not be persisted');
+ }
+ assert.equal(vault.save(1,complete,'finished').career.week,14);
+ const legacy={...fakeCareer(3),fixtures:[],week:6};
+ assert.equal(api.validCareer(legacy),true,'legacy slots with incomplete fixture history remain restorable');
+ assert.equal(vault.save(2,legacy,'legacy schedule').career.week,6);
+});
+test('Career slots reject missing, empty, malformed or duplicate player identities before writing',async()=>{
+ const api=await slots(),db=memory(),vault=api.create(db),base=fakeCareer(3);
+ const cases=[];
+ cases.push(base.roster.map((p,i)=>i===0?null:p));
+ cases.push(base.roster.map((p,i)=>i===0?{}:p));
+ cases.push(base.roster.map((p,i)=>i===0?{...p,id:''}:p));
+ cases.push(base.roster.map((p,i)=>i===0?{...p,id:'p1'}:p));
+ cases.push(base.roster.map((p,i)=>i===0?{...p,id:[]}:p));
+ for(const roster of cases){
+  const invalid={...base,roster};
+  assert.equal(api.validCareer(invalid),false,'malformed or duplicate player identity must be invalid');
+  assert.throws(()=>vault.save(1,invalid,'invalid roster'),/invalid Career/);
+  assert.equal(db.getItem('legend_careerSlots'),null,'invalid player identities must not be persisted');
+ }
+ assert.equal(api.validCareer(base),true);
+ assert.equal(vault.save(1,base,'valid roster').career.roster.length,12);
+});
 test('Career slot controls, legacy mirror and backup wiring exist',()=>{
  for(const token of ['navCareerSlots','careerSlotSave_','careerSlotLoad_','careerSlotDelete_','CAREER_SLOTS.create(careerStorage)','careerSlots.save(','careerSlots.load(','careerSlots.remove(','careerSlots','managerCareer'])assert.ok(ui.includes(token),token);
 });

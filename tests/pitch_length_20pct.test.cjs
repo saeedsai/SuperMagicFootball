@@ -27,9 +27,11 @@ test('live field artwork, goalposts, minimap and camera share geometry',()=>{
  const src=read('src/modules/render.js');
  assert.match(src,/const F=WORLD\.field/);
  assert.match(src,/cache\.width=Math\.ceil\(F\.w\)/);
- assert.match(src,/F\.x\+F\.w-this\.screenW/);
+ assert.match(src,/F\.x\+F\.w-viewW/);
  assert.match(src,/let x=side\?F\.x\+F\.w:F\.x/);
- assert.match(src,/WORLD\.w-this\.screenW/);
+ assert.match(src,/WORLD\.w-viewW/);
+ assert.match(src,/const cameraZoom=zoomWide\s*\?\s*\.86\s*:\s*1/);
+ assert.match(src,/const viewW=this\.screenW\/cameraZoom,viewH=this\.screenH\/cameraZoom/);
  assert.match(src,/center=\(left\+right\)\/2/);
 });
 test('gameplay options, rosters and player index schema stay untouched by this geometry release',()=>{

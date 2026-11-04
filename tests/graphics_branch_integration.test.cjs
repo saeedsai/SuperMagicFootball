@@ -35,7 +35,8 @@ test('fixed Player Studio selectors are in menu module and no duplicate declarat
 test('merged build keeps bundle identity, clean menus, and About release notes',()=>{
  assert.match(src,/version:RELEASE\.version,game/); assert.match(src,/const RELEASE=Object\.freeze/);
  assert.doesNotMatch(src,/DEV → ABOUT|DEV VERSION IN ABOUT/);
- assert.match(src,/CREDITS \/ ABOUT/);
+ assert.match(src,/navItem\('About & Credits','navAbout'/,'About is grouped under Settings');
+ assert.doesNotMatch(src.slice(src.indexOf('function showHome(){'),src.indexOf('function drawPoster(){')),/CREDITS \/ ABOUT|navAbout/,'Home keeps the reference layout uncluttered');
  assert.doesNotMatch(src,/aboutDevRevision/);
  assert.match(src,/aboutBundleVersion/); assert.match(src,/aboutReleaseNotes/);
  assert.ok(!src.includes('GRAPHICS 0.8.25.19'));

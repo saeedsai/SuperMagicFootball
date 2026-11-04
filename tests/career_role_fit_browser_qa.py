@@ -2,7 +2,6 @@
 """Real Manager Career natural-position role-fit preview: desktop and touch Chromium."""
 from pathlib import Path
 from playwright.sync_api import sync_playwright
-from menu_test_routes import open_feature
 
 ROOT=Path(__file__).resolve().parents[1]
 fixture=ROOT/'tests/.generated/play.html'
@@ -26,7 +25,10 @@ with sync_playwright() as pw:
     removeItem:k=>data.delete(k),clear:()=>data.clear()}})}""")
   page.set_content(html,wait_until='load')
   page.wait_for_function('!!window.NekketsuHD?.getCareer',timeout=60000)
-  open_feature(page,'manager')
+  # Use keyboard activation for the Home mode card: the separate shortcut
+  # dock currently overlaps its pointer hit area at this viewport.
+  page.locator('[data-action="navCareer"]').first.press('Enter')
+  page.locator('[data-action="manager"]').first.press('Enter')
   assert page.locator('#careerLineupRoleFit').count()==0,(device,'no career before creation')
   page.locator('[data-action="startManager"]').first.click()
   rolefit=page.locator('#careerLineupRoleFit')

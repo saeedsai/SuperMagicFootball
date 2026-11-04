@@ -18,10 +18,11 @@ const mgrSrc=ui.slice(mgrStart,mgrEnd);
 // Run the REAL showManager source (career branch) and capture the HTML handed to page().
 function render(career){
  const out={html:null};
- const ctx={TEAMS,escapeHTML:esc,career,creatingCareer:false,out,
+ const ctx={TEAMS,escapeHTML:esc,career,creatingCareer:false,out,completedSeasonArchive:c=>Array.isArray(c?.seasonArchive)?c.seasonArchive:[],
   CONTINENTS:[],CONTINENTAL_TEAMS:{},
   currentCareerFixture:()=>null,
   standings:c=>c.members.map(id=>({id,...c.table[id]})).sort((a,b)=>b.pts-a.pts),
+  paintManagerAvatar:()=>{},
   page:(t,s,body)=>{out.html=body;},button:(l,a)=>`<button data-action="${a}">${l}</button>`,
   eur:n=>'EUR'+n,teamIdentity:()=>'',careerOpponentScoutPanel:()=>''};
  vm.runInNewContext(formSrc+'\n'+mgrSrc+'\nshowManager();',ctx);
@@ -72,7 +73,7 @@ test('legacy v0.5 custom-club migration (module load) skips malformed history en
  const a=ui.indexOf("if(career&&!career.saveSchema&&clubs.length){"),b=ui.indexOf('\nif(!careerSlots.error',a);
  assert(a>0&&b>a,'migration block present');
  const mk=h=>({club:83,members:[83,1],fixtures:[[[83,1]]],table:{83:{pts:1},1:{pts:0}},history:h,lastResult:null});
- const run=career=>{const puts=[];const ctx={career,clubs:[{id:'c1'}],TEAMS:[{id:'x'},{id:'y'},{id:'c1'}],store:{put:(k,v)=>puts.push(k)}};
+ const run=career=>{const puts=[];const ctx={career,clubs:[{id:'c1'}],TEAMS:[{id:'x'},{id:'y'},{id:'c1'}],careerBackupTeamReferencesValid:()=>true,store:{put:(k,v)=>puts.push(k)}};
   vm.runInNewContext(ui.slice(a,b)+'\nthis.out=career;',ctx);return {out:ctx.out,puts};};
  const valid=run(mk([{kind:'league',against:83,a:1,b:0},{kind:'cup',against:1,a:0,b:0}]));
  assert.equal(valid.out.history[0].against,2);assert.equal(valid.out.history[1].against,1);assert.equal(valid.out.saveSchema,2);

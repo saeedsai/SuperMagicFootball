@@ -1,0 +1,197 @@
+{
+  "commands": [
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_front_run_1.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "front",
+      "frame": "run_1"
+    },
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_front_run_2.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "front",
+      "frame": "run_2"
+    },
+    {
+      "animation": "run",
+      "view": "front",
+      "scale": 0.6,
+      "op": "renderGIF",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\gifs\\run_front.gif"
+    },
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_threeQuarterFrontLeft_run_1.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "threeQuarterFrontLeft",
+      "frame": "run_1"
+    },
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_threeQuarterFrontLeft_run_2.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "threeQuarterFrontLeft",
+      "frame": "run_2"
+    },
+    {
+      "animation": "run",
+      "view": "threeQuarterFrontLeft",
+      "scale": 0.6,
+      "op": "renderGIF",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\gifs\\run_threeQuarterFrontLeft.gif"
+    },
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_left_run_1.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "left",
+      "frame": "run_1"
+    },
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_left_run_2.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "left",
+      "frame": "run_2"
+    },
+    {
+      "animation": "run",
+      "view": "left",
+      "scale": 0.6,
+      "op": "renderGIF",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\gifs\\run_left.gif"
+    },
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_threeQuarterBackLeft_run_1.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "threeQuarterBackLeft",
+      "frame": "run_1"
+    },
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_threeQuarterBackLeft_run_2.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "threeQuarterBackLeft",
+      "frame": "run_2"
+    },
+    {
+      "animation": "run",
+      "view": "threeQuarterBackLeft",
+      "scale": 0.6,
+      "op": "renderGIF",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\gifs\\run_threeQuarterBackLeft.gif"
+    },
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_back_run_1.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "back",
+      "frame": "run_1"
+    },
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_back_run_2.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "back",
+      "frame": "run_2"
+    },
+    {
+      "animation": "run",
+      "view": "back",
+      "scale": 0.6,
+      "op": "renderGIF",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\gifs\\run_back.gif"
+    },
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_threeQuarterBackRight_run_1.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "threeQuarterBackRight",
+      "frame": "run_1"
+    },
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_threeQuarterBackRight_run_2.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "threeQuarterBackRight",
+      "frame": "run_2"
+    },
+    {
+      "animation": "run",
+      "view": "threeQuarterBackRight",
+      "scale": 0.6,
+      "op": "renderGIF",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\gifs\\run_threeQuarterBackRight.gif"
+    },
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_right_run_1.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "right",
+      "frame": "run_1"
+    },
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_right_run_2.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "right",
+      "frame": "run_2"
+    },
+    {
+      "animation": "run",
+      "view": "right",
+      "scale": 0.6,
+      "op": "renderGIF",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\gifs\\run_right.gif"
+    },
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_threeQuarterFrontRight_run_1.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "threeQuarterFrontRight",
+      "frame": "run_1"
+    },
+    {
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\renders\\run_threeQuarterFrontRight_run_2.png",
+      "scale": 1,
+      "animation": "run",
+      "op": "renderPNG",
+      "view": "threeQuarterFrontRight",
+      "frame": "run_2"
+    },
+    {
+      "animation": "run",
+      "view": "threeQuarterFrontRight",
+      "scale": 0.6,
+      "op": "renderGIF",
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\gifs\\run_threeQuarterFrontRight.gif"
+    },
+    {
+      "animation": "run",
+      "scale": 0.6,
+      "path": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\references\\analysis\\stand_master_ai_v1\\running_turntable_360_first_pose.gif",
+      "op": "renderTurntable"
+    },
+    {
+      "op": "review"
+    }
+  ]
+}

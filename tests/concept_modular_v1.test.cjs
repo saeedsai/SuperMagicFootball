@@ -1,5 +1,7 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const read=p=>fs.readFileSync(path.join(__dirname,'..',p),'utf8');
+const modularManifest=()=>JSON.parse(read('assets/characters/concept_modular_v1/manifests/rig.json'));
+const modularGlobals=()=>({CONCEPT_MODULAR_MANIFEST_INLINE:modularManifest(),CONCEPT_MODULAR_INLINE_ASSETS:{}});
 test('C01 front face and both existing hair layers remain genuinely editable',()=>{
  const m=JSON.parse(read('assets/characters/concept_modular_v1/manifests/rig.json'));
  assert.equal(m.schema,'smf-concept-modular/1');
@@ -76,18 +78,23 @@ test('opt-in single prototype maintains default demo model and saved player data
 });
 test('new face paints below hair only after safe image loading, six-view fallback preserved',()=>{
  const mod=read('src/modules/conceptmodular.js');
- assert.match(mod,/front:\{width:112/);
- assert.match(mod,/back:\{width:115/);
- assert.match(mod,/CONCEPT_MODULAR_FACE_INLINE/);
- assert.match(mod,/CONCEPT_MODULAR_ARM_INLINE/);
- assert.match(mod,/CONCEPT_MODULAR_FAR_ARM_INLINE/);
- assert.match(mod,/CONCEPT_MODULAR_COLLAR_INLINE/);
- assert.match(mod,/CONCEPT_MODULAR_TORSO_INLINE/);
- assert.match(mod,/CONCEPT_MODULAR_BACK_TORSO_INLINE/);
+ assert.match(mod,/slotIds=\{front:'hair_front_001',back:'hair_back_001'/);
+ assert.match(mod,/viewWidth=view==='front'\?112:115/);
+ assert.match(mod,/CONCEPT_MODULAR_MANIFEST_INLINE/);
+ assert.match(mod,/CONCEPT_MODULAR_INLINE_ASSETS/);
+ assert.match(mod,/new URL\(art\.path,manifestUrl\)/);
  assert.match(mod,/states\.backTorso\.image/);
  assert.match(mod,/backTorsoLoaded:ready\('backTorso'\)/);
  assert.match(read('sw.js'),/torso_back\.svg/);
- assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_BACK_TORSO_INLINE/);
+ assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_MANIFEST_INLINE/);
+ assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_INLINE_ASSETS/);
+ const sw=read('sw.js');
+ assert.match(sw,/characters\/concept_modular_v1\/manifests\/rig\.json/);
+ const layers=[modularManifest().runtimeLayer,...modularManifest().additionalLayers];
+ for(const layer of layers){
+  const cached='./assets/characters/concept_modular_v1/source/'+layer.asset.split('/').pop();
+  assert.ok(sw.includes("'"+cached+"'"),'offline cache must contain manifest asset '+cached);
+ }
  assert.match(mod,/if\(!art\)return false/);
  assert.match(mod,/kind==='front'&&\(!states\.frontFace\?\.ready\|\|!states\.frontArm\?\.ready\|\|!states\.frontFarArm\?\.ready\|\|!states\.frontCollar\?\.ready\|\|!states\.frontTorso\?\.ready\)/);
  assert.match(mod,/if\(!CONCEPT_HERO\.draw\(ctx,p,view,\{run\}\)\)return false/);
@@ -107,16 +114,11 @@ test('new face paints below hair only after safe image loading, six-view fallbac
  assert.match(read('sw.js'),/arm_far_front\.svg/);
  assert.match(read('sw.js'),/torso_collar_front\.svg/);
  assert.match(read('sw.js'),/torso_front\.svg/);
- assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_FACE_INLINE/);
- assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_ARM_INLINE/);
- assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_FAR_ARM_INLINE/);
- assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_COLLAR_INLINE/);
- assert.match(read('scripts/build.py'),/CONCEPT_MODULAR_TORSO_INLINE/);
 });
 
 test('C01 near-arm gait is a small visual-only transformation, not new gameplay motion',()=>{
  const art=read('src/modules/conceptmodular.js');
- assert.match(art,/const ax=\(90-56\)\*ratio,ay=-LOGICAL_HEIGHT\+6\+126\*ratio/);
+ assert.match(art,/const nearPivot=armArt\.layer\.pivot,ax=\(nearPivot\[0\]-56\)\*ratio,ay=-logicalHeight\+6\+nearPivot\[1\]\*ratio/);
  assert.match(art,/const armStride=-armPhase\*\.035/);
  assert.match(art,/ctx\.translate\(ax,ay\);ctx\.rotate\(armStride\);ctx\.translate\(-ax,-ay\)/);
  assert.ok(!/engine\.|p\.x\s*=|p\.y\s*=|p\.dx\s*=/.test(art),'Graphics must not mutate gameplay motion');
@@ -154,7 +156,7 @@ test('C01 front arm strokes ease through idle without a phase threshold snap or 
    if(this.onload)this.onload();
   }
  }
- const sandbox={Image:LoadedImage,URL,CONCEPT_HERO:{draw:()=>true}};
+ const sandbox={Image:LoadedImage,URL,...modularGlobals(),CONCEPT_HERO:{draw:()=>true}};
  vm.runInNewContext(testSource,sandbox,{timeout:1500});
  const model=sandbox.__model;
  assert.equal(model.status().loaded,true,'all eight authored prototype layers loaded');
@@ -200,7 +202,7 @@ test('C01 optional demo collar requires a valid image and does not change legacy
    if(this.onload)this.onload();
   }
  }
- const scope={Image:ImageMissingCollar,URL,CONCEPT_HERO:{draw:()=>true}};
+ const scope={Image:ImageMissingCollar,URL,...modularGlobals(),CONCEPT_HERO:{draw:()=>true}};
  vm.runInNewContext(moduleText,scope,{timeout:1500});
  assert.equal(scope.__mod.status().collarLoaded,false);
  assert.equal(scope.__mod.draw({save(){},restore(){}},{src:{renderModel:'concept_modular_v1'}},{kind:'front'}),false);
@@ -220,11 +222,151 @@ test('C01 painted jersey falls back without partial graphics if its source dimen
    if(this.onload)this.onload();
   }
  }
- const sandbox={Image:CorruptTorso,URL,CONCEPT_HERO:{draw:()=>{legacyCalls++;return true;}}};
+ const sandbox={Image:CorruptTorso,URL,...modularGlobals(),CONCEPT_HERO:{draw:()=>{legacyCalls++;return true;}}};
  vm.runInNewContext(src,sandbox,{timeout:1500});
  assert.equal(sandbox.__art.status().torsoLoaded,false);
  assert.equal(sandbox.__art.status().loaded,false);
  assert.equal(sandbox.__art.draw({},{src:{renderModel:'concept_modular_v1'}},{kind:'front'}),false);
  assert.equal(legacyCalls,0,'must not paint a partial front head/body');
  assert.equal(sandbox.__art.draw({},{src:{renderModel:'concept_modular_v1'}},{kind:'right'}),false);
+});
+
+test('G5 modular art recovers failed layers after connectivity returns while fallback stays safe',()=>{
+ const vm=require('node:vm'),src=read('src/modules/conceptmodular.js')
+  .replace(/^import[^\n]*\n/m,'')
+  .replaceAll('import.meta.url',"'https://example.test/src/modules/conceptmodular.js'")
+  .replace(/^export .*$/m,'')+'\nglobalThis.__mod=CONCEPT_MODULAR;';
+ let onlineHandler=null,frontHairAttempts=0;
+ class RecoveringImage{
+  set src(uri){
+   this.path=uri;this.naturalWidth=(uri.includes('hair_back_back.svg')||uri.includes('torso_back.svg'))?115:112;this.naturalHeight=265;
+   if(uri.includes('hair_front_front.svg')&&frontHairAttempts++===0){this.onerror?.();return;}
+   this.onload?.();
+  }
+ }
+ const scope={Image:RecoveringImage,URL,...modularGlobals(),window:{addEventListener(type,handler){if(type==='online')onlineHandler=handler;}},CONCEPT_HERO:{draw:()=>true}};
+ vm.runInNewContext(src,scope,{timeout:1500});
+ const mod=scope.__mod;
+ assert.equal(frontHairAttempts,1,'first network failure leaves modular hair on fallback');
+ assert.equal(mod.status().error,true);
+ const ctx={save(){},restore(){},translate(){},rotate(){},drawImage(){}};
+ assert.equal(mod.draw(ctx,{src:{renderModel:'concept_modular_v1'}},{kind:'front'}),false,'failed module is not partially painted');
+ assert.equal(frontHairAttempts,1,'ordinary frames do not retry a failed request every tick');
+ assert.equal(typeof onlineHandler,'function','loader listens for browser connectivity recovery');
+ onlineHandler();
+ assert.equal(frontHairAttempts,2,'connectivity recovery retries only the failed module');
+ assert.equal(mod.status().loaded,true);
+ assert.equal(mod.status().error,false);
+ assert.equal(mod.draw(ctx,{src:{renderModel:'concept_modular_v1'}},{kind:'front'}),true,'complete modular model replaces the fallback after recovery');
+});
+
+test('G5 runtime resolves layer URLs and dimensions from the fetched Studio manifest',async()=>{
+ const vm=require('node:vm'),src=read('src/modules/conceptmodular.js')
+  .replace(/^import[^\n]*\n/m,'')
+  .replaceAll('import.meta.url',"'https://example.test/game/src/modules/conceptmodular.js'")
+  .replace(/^export .*$/m,'')+'\nglobalThis.__mod=CONCEPT_MODULAR;';
+ const manifest=modularManifest();manifest.runtimeLayer.asset='../source/manifest_selected_front.svg';
+ const requested=[],loaded=[];
+ class ManifestImage{
+  set src(uri){this.path=uri;loaded.push(uri);this.naturalWidth=uri.includes('hair_back_back.svg')||uri.includes('torso_back.svg')?115:112;this.naturalHeight=265;this.onload?.();}
+ }
+ const scope={Image:ManifestImage,URL,fetch:async url=>{requested.push(String(url));return {ok:true,json:async()=>manifest};},CONCEPT_HERO:{draw:()=>true}};
+ vm.runInNewContext(src,scope,{timeout:1500});
+ await new Promise(resolve=>setImmediate(resolve));
+ const mod=scope.__mod;
+ assert.equal(requested.length,1);
+ assert.match(requested[0],/assets\/characters\/concept_modular_v1\/manifests\/rig\.json$/);
+ assert.equal(mod.status().manifestLoaded,true);
+ assert.equal(mod.status().loaded,true);
+ assert.ok(loaded.some(url=>url.endsWith('/assets/characters/concept_modular_v1/source/manifest_selected_front.svg')),'asset URL comes from manifest-relative path');
+ const ctx={save(){},restore(){},translate(){},rotate(){},drawImage(){}};
+ assert.equal(mod.draw(ctx,{src:{renderModel:'concept_modular_v1'}},{kind:'front'}),true);
+});
+
+test('G5 rejects unsafe manifest asset paths and keeps the legacy renderer available',()=>{
+ const vm=require('node:vm'),src=read('src/modules/conceptmodular.js')
+  .replace(/^import[^\n]*\n/m,'')
+  .replaceAll('import.meta.url',"'https://example.test/game/src/modules/conceptmodular.js'")
+  .replace(/^export .*$/m,'')+'\nglobalThis.__mod=CONCEPT_MODULAR;';
+ const manifest=modularManifest();manifest.runtimeLayer.asset='../../outside.svg';
+ let imageRequests=0;
+ class NeverRequestedImage{set src(_uri){imageRequests++;}}
+ const scope={Image:NeverRequestedImage,URL,CONCEPT_MODULAR_MANIFEST_INLINE:manifest,CONCEPT_MODULAR_INLINE_ASSETS:{},CONCEPT_HERO:{draw:()=>true}};
+ vm.runInNewContext(src,scope,{timeout:1500});
+ assert.equal(scope.__mod.status().manifestLoaded,false);
+ assert.equal(scope.__mod.status().error,true);
+ assert.equal(scope.__mod.status().loaded,false);
+ assert.equal(imageRequests,0,'reject path traversal before loading any module');
+ assert.equal(scope.__mod.draw({},{src:{renderModel:'concept_modular_v1'}},{kind:'front'}),false);
+});
+
+test('G5 rejects mismatched views, canvas widths and invalid pivots before loading any art',()=>{
+ const vm=require('node:vm'),src=read('src/modules/conceptmodular.js')
+  .replace(/^import[^\n]*\n/m,'')
+  .replaceAll('import.meta.url',"'https://example.test/game/src/modules/conceptmodular.js'")
+  .replace(/^export .*$/m,'')+'\nglobalThis.__mod=CONCEPT_MODULAR;';
+ const corruptions=[
+  ['view',m=>{m.additionalLayers.find(layer=>layer.id==='hair_back_001').view='front';}],
+  ['view canvas width',m=>{m.additionalLayers.find(layer=>layer.id==='face_front_001').sourceCanvas[0]=113;}],
+  ['non-finite pivot',m=>{m.additionalLayers.find(layer=>layer.id==='arm_near_front_001').pivot[0]=NaN;}],
+  ['out-of-canvas pivot',m=>{m.additionalLayers.find(layer=>layer.id==='torso_back_001').pivot[0]=116;}]
+ ];
+ for(const [label,corrupt] of corruptions){
+  const manifest=modularManifest();corrupt(manifest);let imageRequests=0;
+  class NeverRequestedImage{set src(_uri){imageRequests++;}}
+  const scope={Image:NeverRequestedImage,URL,CONCEPT_MODULAR_MANIFEST_INLINE:manifest,CONCEPT_MODULAR_INLINE_ASSETS:{},CONCEPT_HERO:{draw:()=>true}};
+  vm.runInNewContext(src,scope,{timeout:1500});
+  assert.equal(scope.__mod.status().manifestLoaded,false,label+' must reject manifest');
+  assert.equal(scope.__mod.status().error,true,label+' should report invalid manifest');
+  assert.equal(imageRequests,0,label+' must fail before requesting any artwork');
+ }
+});
+
+test('G5 manifest fetch failure keeps legacy fallback and retries when connectivity returns',async()=>{
+ const vm=require('node:vm'),src=read('src/modules/conceptmodular.js')
+  .replace(/^import[^\n]*\n/m,'')
+  .replaceAll('import.meta.url',"'https://example.test/game/src/modules/conceptmodular.js'")
+  .replace(/^export .*$/m,'')+'\nglobalThis.__mod=CONCEPT_MODULAR;';
+ let onlineHandler=null,fetchCalls=0,imageRequests=0;
+ class LoadedImage{
+  set src(uri){imageRequests++;this.naturalWidth=uri.includes('hair_back_back.svg')||uri.includes('torso_back.svg')?115:112;this.naturalHeight=265;this.onload?.();}
+ }
+ const manifest=modularManifest();
+ const scope={Image:LoadedImage,URL,window:{addEventListener(type,handler){if(type==='online')onlineHandler=handler;}},fetch:async()=>{
+  fetchCalls++;if(fetchCalls===1)throw Error('temporarily offline');return {ok:true,json:async()=>manifest};
+ },CONCEPT_HERO:{draw:()=>true}};
+ vm.runInNewContext(src,scope,{timeout:1500});
+ await new Promise(resolve=>setImmediate(resolve));
+ const mod=scope.__mod;
+ assert.equal(mod.status().manifestLoaded,false);
+ assert.equal(mod.status().error,true);
+ assert.equal(imageRequests,0,'do not request layer art before a valid manifest is available');
+ assert.equal(mod.draw({},{src:{renderModel:'concept_modular_v1'}},{kind:'front'}),false);
+ assert.equal(typeof onlineHandler,'function');onlineHandler();
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(fetchCalls,2);
+ assert.equal(mod.status().loaded,true);
+ assert.equal(mod.status().error,false);
+ assert.equal(imageRequests,8);
+});
+
+test('G5 embedded manifest and SVG payloads work when inline module base is about:blank',()=>{
+ const vm=require('node:vm'),src=read('src/modules/conceptmodular.js')
+  .replace(/^import[^\n]*\n/m,'')
+  .replaceAll('import.meta.url',"'about:blank'")
+  .replace(/^export .*$/m,'')+'\nglobalThis.__mod=CONCEPT_MODULAR;';
+ const manifest=modularManifest(),layers=[manifest.runtimeLayer,...manifest.additionalLayers];
+ const inlineAssets=Object.fromEntries(layers.map(layer=>[layer.asset,Buffer.from('<svg/>').toString('base64')]));
+ const requests=[],widths=[112,115,112,112,112,112,112,115];
+ class InlineImage{
+  set src(uri){requests.push(uri);this.naturalWidth=widths[requests.length-1];this.naturalHeight=265;this.onload?.();}
+ }
+ const scope={Image:InlineImage,URL,CONCEPT_MODULAR_MANIFEST_INLINE:manifest,CONCEPT_MODULAR_INLINE_ASSETS:inlineAssets,CONCEPT_HERO:{draw:()=>true}};
+ vm.runInNewContext(src,scope,{timeout:1500});
+ const mod=scope.__mod;
+ assert.equal(mod.status().loaded,true);
+ assert.equal(requests.length,8);
+ assert.ok(requests.every(uri=>uri.startsWith('data:image/svg+xml;base64,')),'embedded art must not need a network URL');
+ const ctx={save(){},restore(){},translate(){},rotate(){},drawImage(){}};
+ assert.equal(mod.draw(ctx,{src:{renderModel:'concept_modular_v1'}},{kind:'front'}),true);
 });

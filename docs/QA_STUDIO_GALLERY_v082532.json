@@ -1,7 +1,7 @@
 {
   "version": "0.8.25.32",
   "summary": {
-    "PASS": 18,
+    "PASS": 19,
     "FAIL": 0
   },
   "checks": [
@@ -23,7 +23,7 @@
     {
       "name": "desktop all gallery views render nonblank directional artwork",
       "status": "PASS",
-      "detail": "{'ok': True, 'signature': [1280999917, 3019010746, 3028942309, 1463530585, 3063088566, 1681911667, 3662178307, 954794492], 'empty': 0, 'clipped': 0}"
+      "detail": "{'ok': True, 'signature': [270950174, 4281291808, 2775799305, 32406210, 3437951547, 3526428343, 3958654926, 1850014454], 'empty': 0, 'clipped': 0}"
     },
     {
       "name": "desktop all eight directions update when selected hairstyle changes",
@@ -42,6 +42,11 @@
     },
     {
       "name": "desktop no uncaught JavaScript exceptions",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "desktop eight-view gallery screenshot available",
       "status": "PASS",
       "detail": "True"
     },
@@ -68,7 +73,7 @@
     {
       "name": "simulated-touch all gallery views render nonblank directional artwork",
       "status": "PASS",
-      "detail": "{'ok': True, 'signature': [1280999917, 3019010746, 3028942309, 1463530585, 3063088566, 1681911667, 3662178307, 954794492], 'empty': 0, 'clipped': 0}"
+      "detail": "{'ok': True, 'signature': [270950174, 4281291808, 2775799305, 32406210, 3437951547, 3526428343, 3958654926, 1850014454], 'empty': 0, 'clipped': 0}"
     },
     {
       "name": "simulated-touch all eight directions update when selected hairstyle changes",

@@ -4,7 +4,11 @@ const AI=(()=>{// Five behaviour profiles. These affect COMPUTER opponents only;
 // teammate assistants keep the baseline Normal profile. Tunable without changing match code.
 const AI_LEVELS=GAME_ASSETS.mechanics.aiLevels;
 function aiTuning(value) {
-  const index = Number(value);
+  // Only numeric values and non-empty numeric strings are valid settings.
+  // Number(null), Number(false), and Number('') all become zero, which would
+  // silently turn missing/corrupt settings into the easiest CPU profile.
+  const index = typeof value === 'number' ? value :
+    typeof value === 'string' && value.trim() !== '' ? Number(value) : NaN;
   return AI_LEVELS[Number.isFinite(index) ? Math.max(0,Math.min(4,Math.trunc(index))) : 2];
 }
 

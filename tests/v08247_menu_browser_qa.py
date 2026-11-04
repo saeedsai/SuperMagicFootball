@@ -2,7 +2,7 @@ from pathlib import Path
 import shutil
 from playwright.sync_api import sync_playwright
 root=Path(__file__).resolve().parents[1]
-html=(root/'play.html').read_text()
+html=(root/'tests/.generated/play.html').read_text()
 with sync_playwright() as pw:
  browser=pw.chromium.launch(executable_path=shutil.which('chromium') or None,headless=True,args=['--no-sandbox'])
  for label,ctx_args in [('desktop',{'viewport':{'width':1440,'height':900}}),('portrait',{'viewport':{'width':390,'height':844},'has_touch':True,'is_mobile':True}),('landscape',{'viewport':{'width':844,'height':390},'has_touch':True,'is_mobile':True})]:
@@ -11,7 +11,14 @@ with sync_playwright() as pw:
   page.set_content(html,wait_until='load')
   page.wait_for_function("!!window.SupermagicFootball?.game",timeout=15000)
   assert page.locator('.navMainList > .navChoice').count()==5,label
-  assert page.locator('.navMainList > .navChoice .navCopy strong').all_text_contents()==['Quick Match','Online','Career','Leagues & Cups','Settings']
+  assert page.locator('.navMainList > .navChoice .navCopy strong').all_text_contents()==['Quick Match','Online','Career','Leagues & Cups','Training']
+  assert page.locator('.homeActionTiles [data-action="navStore"]').count()==1,(label,'Store is a separate Home tile')
+  assert page.locator('.arcadeWallet[data-action="navStore"]').count()==1,(label,'live token wallet remains a persistent Store route')
+  page.locator('[data-action=navStore]').first.click()
+  assert page.locator('.heading').inner_text()=='STORE & TOKENS',(label,'Store route')
+  page.locator('[data-action=home]').first.click()
+  online=page.locator('[data-action=navOnline]')
+  assert 'planned for later' not in online.inner_text().lower(),(label,'Online is a playable home route')
   assert page.locator('.menubox').evaluate('(x)=>x.scrollWidth<=x.clientWidth+3'), (label,'overflow main')
   page.locator('[data-action=navQuick]').first.click()
   assert page.locator('[data-action=navOnDevice]').count()==1
@@ -35,9 +42,11 @@ with sync_playwright() as pw:
   for _ in range(3):page.keyboard.press('Escape')
   assert page.locator('.navMainList').count()==1,(label,'back to home from match setup')
   page.locator('[data-action=navOnline]').first.click()
-  for a in ['laterOnlineMatch','laterUltimate','laterOnlineCareer','laterOnlineCup']:
+  assert page.locator('[data-action=navOnlineP2P]').count()==1
+  assert page.locator('[data-action=navLan]').count()==1
+  for a in ['laterUltimate','laterOnlineCareer','laterOnlineCup']:
    assert page.locator(f'[data-action={a}]').count()==1
-  page.locator('[data-action=laterOnlineMatch]').click()
+  page.locator('[data-action=laterUltimate]').click()
   assert 'COMING LATER' in page.locator('.navInfo').inner_text()
   page.locator('[data-action=navOnline]').first.click()
   page.keyboard.press('Escape')

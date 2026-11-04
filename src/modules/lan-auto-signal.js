@@ -70,7 +70,11 @@ export function connectLanSignal({internet=false,WebSocketImpl=globalThis.WebSoc
     const bytes=signalEncoder.encode(payload).byteLength;
     if(bytes>MAX_SIGNAL_FRAME_BYTES)return false;
     const queued=socket.bufferedAmount;
-    if(Number.isFinite(queued)&&queued>=0&&queued+bytes>MAX_SIGNAL_QUEUE_BYTES){
+    if(queued!==undefined&&(!Number.isSafeInteger(queued)||queued<0)){
+     recycleSocket(1009,'Invalid signaling queue counter');
+     return false;
+    }
+    if(queued!==undefined&&queued+bytes>MAX_SIGNAL_QUEUE_BYTES){
      recycleSocket(1009,'Signaling queue full');
      return false;
     }

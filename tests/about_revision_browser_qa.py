@@ -28,6 +28,7 @@ with sync_playwright() as pw:
   assert page.evaluate('SupermagicFootball.version')==RELEASE_VERSION
   assert page.locator('.homeMasthead').count()==1
   assert RELEASE_VERSION not in page.locator('.menubox').inner_text(),(label,'version leaked onto Home')
+  page.locator('[data-action="navSettings"]').first.click()
   for visit in range(2):
    page.locator('[data-action="navAbout"]').first.click()
    assert page.locator('.heading').inner_text()=='ABOUT SUPERMAGIC FOOTBALL'
@@ -41,7 +42,8 @@ with sync_playwright() as pw:
    assert page.locator('#aboutRecentChanges').count()==0
    assert '0.8.25.32' not in page.locator('.menubox').inner_text()
    assert '+dev.' not in page.locator('.menubox').inner_text()
-   page.locator('[data-action="home"]').first.click()
+   page.locator('[data-action="navSettings"]').first.click()
+  page.locator('[data-action="home"]').first.click()
   assert len(outbound)==0,(label,'About must not query remote dev branch',outbound)
   page.locator('[data-action="navQuick"]').first.click()
   assert page.locator('[data-action="navOnDevice"]').count()==1,(label,'game menu regression')

@@ -33,7 +33,7 @@ test('LAN-046 Quick Match routes ready LAN sessions to live gameplay',()=>{
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   const fixture=fs.readFileSync(path.join(root,'scripts/build.py'),'utf8');
   assert.match(ui,/navItem\('Local Network · LAN Quick Match','navLan'/);
-  assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{onReady:startLanQuickMatch\}\)/);
+  assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{onReady:startLanQuickMatch,onGuestLeft:returnLanHostToLobby\}\)/);
   assert.match(ui,/createLanLiveMatch\(\{peer,role,game,input,field:ENGINE\.WORLD\.field\}\)/);
   assert.match(ui,/\(screen==='LOCAL NETWORK'\|\|screen==='ONLINE P2P'\)\&\&e\.code==='Escape'/);
   assert.match(ui,/lanLobbyDispose\(\)/);
@@ -103,13 +103,13 @@ test('LAN-024 guest accepts a trusted host offer and reset closes the peer',asyn
 });
 
 
-test('Online P2P Quick Match reuses LAN authoritative engine without changing top-level Online',()=>{
+test('Online P2P reuses LAN authority and returns to the menu that opened it',()=>{
  const ui=fs.readFileSync(path.join(path.resolve(__dirname,'..'),'src/modules/ui.js'),'utf8');
  const peer=fs.readFileSync(path.join(path.resolve(__dirname,'..'),'src/modules/lan_peer_connection.js'),'utf8');
  const lobby=fs.readFileSync(path.join(path.resolve(__dirname,'..'),'src/modules/lan-lobby.js'),'utf8');
  assert.match(ui,/navItem\('Online P2P · Private Quick Match','navOnlineP2P'/);
- assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{internet:true,onReady:startLanQuickMatch\}\)/);
- assert.match(ui,/else if\(a==='navOnlineP2P'\)showOnlineP2PLobby\(\)/);
+  assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{internet:true,onReady:startLanQuickMatch,onGuestLeft:returnLanHostToLobby\}\)/);
+ assert.match(ui,/else if\(a==='navOnlineP2P'\)showOnlineP2PLobby\(screen==='nav-online'\?'navOnline':'navQuick'\)/);
  assert.match(ui,/function showOnlineMenu\(\)\{menuChoices\('nav-online'/);
  assert.match(peer,/options\.internet===true\?\[\{urls:'stun:/);
  assert.match(lobby,/createLanPeerConnection\(hello,\{internet\}\)/);
@@ -307,8 +307,8 @@ test('LAN automatic, LAN manual, and internet P2P remain wired to one live match
  const ui=fs.readFileSync(path.join(root,'src/modules/ui.js'),'utf8');
  const lobby=fs.readFileSync(path.join(root,'src/modules/lan-lobby.js'),'utf8');
  const peer=fs.readFileSync(path.join(root,'src/modules/lan_peer_connection.js'),'utf8');
- assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{onReady:startLanQuickMatch\}\)/);
- assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{internet:true,onReady:startLanQuickMatch\}\)/);
+ assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{onReady:startLanQuickMatch,onGuestLeft:returnLanHostToLobby\}\)/);
+ assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{internet:true,onReady:startLanQuickMatch,onGuestLeft:returnLanHostToLobby\}\)/);
  assert.equal((ui.match(/createLanLiveMatch\(\{peer,role,game,input,field:ENGINE\.WORLD\.field\}\)/g)||[]).length,1,
   'all modes must share exactly one authoritative gameplay bridge');
  assert.match(lobby,/stop=mountLanLobby\(root,\{\.\.\.options,auto:false\}\)/,
@@ -325,7 +325,7 @@ test('Online P2P defaults to automatic discovery, with manual fallback, both usi
  const lobby=fs.readFileSync(path.join(root,'src/modules/lan-lobby.js'),'utf8');
  const auto=fs.readFileSync(path.join(root,'src/modules/lan-auto-lobby.js'),'utf8');
  const signal=fs.readFileSync(path.join(root,'src/modules/lan-auto-signal.js'),'utf8');
- assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{internet:true,onReady:startLanQuickMatch\}\)/);
+ assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{internet:true,onReady:startLanQuickMatch,onGuestLeft:returnLanHostToLobby\}\)/);
  assert.match(lobby,/manual\.textContent=options\.internet===true\?'MANUAL P2P CONNECTION'/);
  assert.match(auto,/roomScope=internet\?'internet-p2p':'lan'/);
  assert.match(auto,/createLanPeerConnection\(hello,\{internet\}\)/);

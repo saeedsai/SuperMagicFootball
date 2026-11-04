@@ -29,12 +29,15 @@ test('SAVE-102 detects silent mutation and restores original bytes',async()=>{
  assert.equal(db.getItem('legend_cupSlots'),previous);
  assert.equal(v.active,1);assert.equal(v.list()[1].occupied,false);
 });
-test('SAVE-102 reports rollback failure rather than claiming successful persistence',async()=>{
+test('SAVE-102 readback accepts an adapter exception when previous bytes never changed',async()=>{
  const db=memory(),v=(await api()).create(db);v.save(1,campaign());
- db.fail('always-throw');assert.throws(()=>v.save(2,campaign(9)),/save failed and rollback failed: persistent-failure/);
+ const previous=db.getItem('legend_cupSlots');db.fail('always-throw');
+ assert.throws(()=>v.save(2,campaign(9)),/persistent-failure/);
+ assert.equal(db.getItem('legend_cupSlots'),previous);
  assert.equal(v.active,1);assert.equal(v.list()[1].occupied,false);
- assert.match(v.error,/rollback failed/);
- assert.throws(()=>v.save(3,campaign(10)),/cannot be modified/);
+ assert.equal(v.error,null);
+ assert.equal(v.hasRecoverySnapshot,false);
+ db.fail('ok');v.save(3,campaign(10));assert.equal(v.list()[2].occupied,true);
 });
 test('SAVE-102 rejects silent rollback corruption and blocks future writes',async()=>{
  const db=memory(),v=(await api()).create(db);v.save(1,campaign());

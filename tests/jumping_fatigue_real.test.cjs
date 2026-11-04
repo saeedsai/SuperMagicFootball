@@ -4,7 +4,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const {pathToFileURL}=require('node:url');
 const root=path.join(__dirname,'..');
-const engine=fs.readFileSync(path.join(root,'src/modules/engine.js'),'utf8');
+const engine=fs.readFileSync(path.join(root,'src/modules/engine.js'),'utf8').replace(/\r\n/g,'\n');
 const spendBody=engine.match(/ spendStamina\(p,kind\)\{([\s\S]*?)\}\n halftimeRecovery\(/);
 assert.ok(spendBody,'engine spendStamina method is present');
 const spend=new Function('p','kind','stat','actionFatigue','levelModifiers','abilityLevel','superShotFatigueMultiplier','PHYSICS_TUNING','jumpMetrics','breathPenalty','breathCapacity','spendBreath',spendBody[1]);

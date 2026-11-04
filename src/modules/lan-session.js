@@ -29,6 +29,10 @@ function acceptLanPacket(state,packet){
  if(state.peerId!==packet.peerId)return reject(state,'not-joined');
  if(!Number.isSafeInteger(packet.sequence)||packet.sequence<0)return reject(state,'invalid-sequence');
  if(packet.sequence<=state.lastSequence)return reject(state,'stale-sequence');
+ // Inputs travel on a reliable, ordered RTCDataChannel and guests emit a
+ // contiguous counter. Reject jumps so one forged large sequence cannot
+ // permanently make every later honest input stale.
+ if(packet.sequence!==state.lastSequence+1)return reject(state,'sequence-gap');
  if(!buttons(packet.buttons)||!axis(packet.axis))return reject(state,'invalid-controls');
  const magnitude=Math.hypot(packet.axis.x,packet.axis.y);
  const movement=magnitude>1?{x:packet.axis.x/magnitude,y:packet.axis.y/magnitude}:{...packet.axis};

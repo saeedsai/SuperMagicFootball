@@ -100,7 +100,7 @@ test('real playable engine/UI forward resolved PK goal flag to modular audio', (
   const ui = readFileSync(path.join(root, 'src/modules/ui.js'), 'utf8');
   const audio = readFileSync(path.join(root, 'src/modules/audio.js'), 'utf8');
   assert.match(engine, /this\.emit\('penaltyKick',\{team:at,goal:success\}\)/);
-  assert.match(engine, /this\.emit\('penaltyStart'\)/);
+  assert.match(engine, /this\.emit\('penaltyStart',validInMatch\?\{inMatch:true,team:inMatchTeam\}:\{\}\)/);
   assert.match(ui, /game\.onEvent=e=>\{[\s\S]{0,700}audio\.cue\(e\)/);
   assert.match(audio, /event\.goal\?'penaltyGoal':'penaltySave'/);
 });

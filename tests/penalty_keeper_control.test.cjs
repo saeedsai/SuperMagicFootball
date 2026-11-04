@@ -6,9 +6,9 @@ const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
 
-const source=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8');
+const source=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8').replace(/\r\n/g,'\n');
 const a=source.indexOf(' startPK(afterDraw=false){');
-const b=source.indexOf('\n}\n\nreturn {GameEngine,WORLD}',a);
+const b=source.indexOf('\n reactToMagicWall(',a);
 assert(a>0&&b>a,'extract real startPK and updatePK from modular runtime');
 const methods=vm.runInNewContext('({'+source.slice(a,b).replace('\n updatePK(dt){',',\n updatePK(dt){')+'})',{
  WORLD:{goalTop:530,goalBottom:910},
@@ -28,7 +28,7 @@ function setup(humans=2){
   input:{state:states,poll(){},just(t,action){return !!presses[t+':'+action]}},
   inControl(t){return t===0||t===1&&this.humans>=2},
   player(t){return {t,src:this.rosters[t][0]}},
-  _closeShotAudits(){},emit(type,data={}){events.push({type,...data})},burst(){},
+  _closeShotAudits(){},cancelPendingAbilityActions(){},emit(type,data={}){events.push({type,...data})},burst(){},
   startPK:methods.startPK,updatePK:methods.updatePK};
  g.startPK(true);g.pk.ready=0;
  return {g,states,presses,events};

@@ -1,0 +1,211 @@
+/**
+ * Replays only mismatched Super Shot direction pairs and finds the first
+ * normalized simulation-tick or event-trace divergence. Diagnostic only.
+ */
+import assert from 'node:assert/strict';
+import {readFileSync, writeFileSync} from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const INPUT = path.join(HERE, '..', 'docs', 'SUPER_SHOT_WHOLE_MATCH_BALANCE_20261103.json');
+const OUTPUT = path.join(HERE, '..', 'docs', 'SUPER_SHOT_MIRROR_DIVERGENCE_TRACE_20261103.json');
+const prior = JSON.parse(readFileSync(INPUT, 'utf8'));
+assert.equal(prior.candidate, '0.12.81.0 local source tree');
+const mismatches = prior.mirrorChecks.filter(row => !row.matches);
+assert.equal(mismatches.length, 13, 'trace inputs match the recorded .81 mismatch set');
+
+const GENERATED_GAME = path.join(HERE, '.generated', 'game.js');
+const previousWindow = globalThis.window;
+const previousDocument = globalThis.document;
+globalThis.window = {addEventListener() {}};
+globalThis.document = {addEventListener() {}, querySelector() { return null; }, querySelectorAll() { return []; }};
+let runtimePromise;
+async function runtime() {
+  if (!runtimePromise) {
+    let bundle = readFileSync(GENERATED_GAME, 'utf8');
+    const ui = bundle.indexOf('// Supermagic Football v0.8.25.30 | UI |');
+    if (ui >= 0) bundle = bundle.slice(0, ui);
+    bundle += '\nexport {ENGINE,DATA};';
+    runtimePromise = import('data:text/javascript;base64,' + Buffer.from(bundle).toString('base64'));
+  }
+  return runtimePromise;
+}
+const {ENGINE, DATA} = await runtime();
+const roster = DATA.rosterFor(0);
+const rosterJSON = JSON.stringify(roster);
+const oldRandom = Math.random;
+const oldStorage = globalThis.localStorage;
+let writes = 0;
+globalThis.localStorage = {getItem() { return null; }, setItem() { writes++; }, removeItem() { writes++; }, clear() { writes++; }};
+const QUIET_INPUT = {state: [{}, {}], poll() {}, just() { return false; }, released() { return false; }, tapDuration() { return 0; }, canceled() { return false; }};
+const HALF_SECONDS = prior.matrix.halfSeconds;
+const FPS = prior.matrix.frameRates[0];
+const FIELD = ENGINE.WORLD.field;
+
+function seeded(seed) {
+  let state = seed >>> 0;
+  return () => ((state = (Math.imul(state, 1664525) + 1013904223) >>> 0) / 4294967296);
+}
+function round(n) { return Number((Number(n) || 0).toFixed(3)); }
+function normalizeEvent(event, attackTeam) {
+  const mirrorX = x => attackTeam === 0 ? round(x) : round(FIELD.x + FIELD.w - (x - FIELD.x));
+  const team = Number.isInteger(event.team) ? (event.team === attackTeam ? 0 : 1) : null;
+  const p = event.player;
+  return {type: event.type, team, kind: event.kind || null, playerId: p?.src?.id || null,
+    playerName: p?.src?.name || null, shotId: event.shotId || null,
+    saveType: event.saveType || null, deflected: !!event.deflected,
+    origin: event.origin ? {x: mirrorX(event.origin.x), y: round(event.origin.y), z: round(event.origin.z)} : null,
+    targetY: Number.isFinite(event.targetY) ? round(event.targetY) : null};
+}
+function snapshot(game, attackTeam, tick, eventCount) {
+  const mirrorX = x => attackTeam === 0 ? round(x) : round(FIELD.x + FIELD.w - (x - FIELD.x));
+  const players = game.players.map(p => ({side: p.t === attackTeam ? 0 : 1, id: p.src.id,
+    x: mirrorX(p.x), y: round(p.y), homeX: mirrorX(p.homeX), homeY: round(p.homeY),
+    dx: round(attackTeam === 0 ? p.dx : -p.dx), dy: round(p.dy),
+    face: attackTeam === 0 ? p.face : -p.face, action: p.action || '', actionTimer: round(p.actionTimer),
+    cd: round(p.cd), specialCd: round(p.specialCd), stun: round(p.stun), down: round(p.downTimer),
+    fatigue: round(p.fatigue)})).sort((a,b) => a.side-b.side || String(a.id).localeCompare(String(b.id)));
+  const owner = game.ball.owner;
+  return JSON.stringify({tick, half: game.half, clock: round(game.clock), state: game.matchState,
+    score: attackTeam === 0 ? game.score.slice() : [game.score[1], game.score[0]],
+    ball: {x: mirrorX(game.ball.x), y: round(game.ball.y), z: round(game.ball.z),
+      vx: round(attackTeam === 0 ? game.ball.vx : -game.ball.vx), vy: round(game.ball.vy), vz: round(game.ball.vz),
+      owner: owner ? {side: owner.t === attackTeam ? 0 : 1, id: owner.src.id} : null,
+      shotId: game.ball.shot?.id || null, age: round(game.ball.age)},
+    players, eventCount});
+}
+function runMatch({row, attackTeam}) {
+  const shotIndex = prior.matrix.shotIds.indexOf(row.shotId);
+  const seed = 0x80b100 + shotIndex * 10007 + row.difficulty * 1009 + FPS * 37 + row.seedIndex * 19;
+  Math.random = seeded(seed);
+  const options = {...DATA.DEFAULT_OPTIONS, halfSeconds: HALF_SECONDS, difficulty: row.difficulty,
+    weather: 'Clear', terrain: 'Grass', condition: 'Good', weatherSeed: seed};
+  const rosters = [0, 1].map(() => roster.map(player => ({...player})));
+  const game = new ENGINE.GameEngine(options, QUIET_INPUT);
+  game.init({home: 0, away: 0, mode: 'quick', humans: 0, rosters, options});
+  game.cpuLevel = () => row.difficulty;
+  const trial = game.players.find(p => p.t === attackTeam && !p.keeper && ['MF', 'FW'].includes(p.src.role));
+  assert.ok(trial);
+  const rowPlayer = game.rosters[trial.t].find(p => p.id === trial.src.id);
+  if (row.arm === 'arcadeSuper') {
+    rowPlayer.shot = row.shotId;
+    rowPlayer.shotName = DATA.SHOTS[row.shotId]?.name || row.shotId;
+    rowPlayer.superShotLevel = 1;
+    rowPlayer.superAbility = {type: 'shoot', name: rowPlayer.shotName, level: 1};
+  } else if (rowPlayer.superAbility?.type === 'shoot') {
+    delete rowPlayer.superAbility; delete rowPlayer.shot; delete rowPlayer.shotName; delete rowPlayer.superShotLevel;
+  }
+  trial.src = rowPlayer;
+  const initialRoster = JSON.stringify(game.rosters);
+  const events = [], frames = [];
+  let tick = 0;
+  game.onEvent = event => events.push({tick, event: normalizeEvent(event, attackTeam)});
+  const direction = attackTeam === 0 ? 1 : -1;
+  const goalX = direction > 0 ? FIELD.x + FIELD.w : FIELD.x;
+  trial.x = goalX - direction * 620;
+  trial.y = (ENGINE.WORLD.goalTop + ENGINE.WORLD.goalBottom) / 2;
+  trial.face = direction; trial.dx = trial.dy = 0; trial.cd = trial.specialCd = 0;
+  game.take(trial);
+  assert.equal(game.ball.owner, trial);
+  assert.equal(game.shoot(trial, row.arm === 'arcadeSuper'), true);
+  assert.equal(game.ball.shot?.id || null, row.arm === 'arcadeSuper' ? row.shotId : null);
+  const stepSeconds = Math.min(.034, 1 / FPS);
+  const maxFrames = Math.ceil((HALF_SECONDS * 2 + 24) / stepSeconds);
+  let penaltyFrames = 0;
+  while (tick < maxFrames && game.matchState !== 'finished') {
+    if (game.matchState === 'paused' && game.half === 2) game.matchState = 'play';
+    if (game.matchState === 'penalty') {
+      if (game.pk?.afterDraw) break;
+      assert.ok(penaltyFrames++ < Math.ceil(20 / stepSeconds));
+      game.updatePK(stepSeconds);
+      frames.push(snapshot(game, attackTeam, tick, events.length));
+      continue;
+    }
+    if (game.matchState !== 'play') {
+      if (game.pk) break;
+      throw new Error(`unexpected match state ${game.matchState}`);
+    }
+    game.update(1 / FPS);
+    tick++;
+    frames.push(snapshot(game, attackTeam, tick, events.length));
+  }
+  assert.ok((game.half === 2 && game.matchState === 'penalty' && !!game.pk?.afterDraw) || game.matchState === 'finished');
+  assert.equal(JSON.stringify(game.rosters), initialRoster);
+  return {score: attackTeam === 0 ? game.score.slice() : [game.score[1], game.score[0]], frames, events,
+    regulationCompleted: true, ticks: tick};
+}
+function firstDifference(a, b) {
+  const limit = Math.min(a.frames.length, b.frames.length);
+  let stateDifference = null;
+  for (let i=0; i<limit; i++) {
+    if (a.frames[i] !== b.frames[i]) {
+      const left = JSON.parse(a.frames[i]), right = JSON.parse(b.frames[i]);
+      const fields = ['half','clock','state','score','ball','players','eventCount'];
+      const rightPlayers = new Map(right.players.map(p => [`${p.side}:${p.id}`,p]));
+      const playerDeltas = left.players.flatMap(p => {
+        const q = rightPlayers.get(`${p.side}:${p.id}`);
+        if (!q) return [{side:p.side,id:p.id,missing:true}];
+        const changed = Object.keys(p).filter(k => JSON.stringify(p[k]) !== JSON.stringify(q[k]));
+        return changed.length ? [{side:p.side,id:p.id,fields:Object.fromEntries(changed.map(k=>[k,[p[k],q[k]]]))}] : [];
+      });
+      stateDifference = {tick: Math.min(left.tick, right.tick), differingFields: fields.filter(k => JSON.stringify(left[k]) !== JSON.stringify(right[k])),
+        playerDeltas, attackDirection0: left, attackDirection1: right};
+      break;
+    }
+  }
+  if (!stateDifference && a.frames.length !== b.frames.length)
+    stateDifference = {tick: limit, differingFields: ['traceLength'], lengths: [a.frames.length,b.frames.length]};
+  const eventLimit = Math.min(a.events.length,b.events.length);
+  for (let i=0; i<eventLimit; i++) if (JSON.stringify(a.events[i]) !== JSON.stringify(b.events[i]))
+    { const eventDifference = {tick: Math.min(a.events[i].tick,b.events[i].tick), differingFields:['eventSequence'], eventIndex:i,
+      attackDirection0:a.events.slice(Math.max(0,i-2),i+3), attackDirection1:b.events.slice(Math.max(0,i-2),i+3)};
+      if (!stateDifference || eventDifference.tick <= stateDifference.tick) return eventDifference;
+      break;
+    }
+  if (a.events.length !== b.events.length) {
+    const eventDifference = {tick: null, differingFields:['eventLength'], lengths:[a.events.length,b.events.length]};
+    if (!stateDifference) return eventDifference;
+  }
+  return stateDifference;
+}
+
+const traces = [];
+try {
+  for (const row of mismatches) {
+    console.log(`Trace ${row.shotId}/${row.difficulty}/${row.arm}/${row.seedIndex}`);
+    const a = runMatch({row, attackTeam: 0});
+    const b = runMatch({row, attackTeam: 1});
+    assert.ok(a.score[0] !== b.score[0] || a.score[1] !== b.score[1],
+      `recorded score mismatch remains for ${row.shotId}/${row.difficulty}/${row.arm}`);
+    const divergence = firstDifference(a,b);
+    traces.push({shotId:row.shotId, difficulty:row.difficulty, arm:row.arm, seed:row.seed, seedIndex:row.seedIndex,
+      normalizedScores:[a.score,b.score], regulationTicks:[a.ticks,b.ticks], eventCounts:[a.events.length,b.events.length],
+      firstDivergence:divergence && {tick:divergence.tick, fields:divergence.differingFields,
+        eventIndex:divergence.eventIndex ?? null,
+        eventContext:divergence.differingFields.includes('eventSequence') ? {
+          attackDirection0:divergence.attackDirection0, attackDirection1:divergence.attackDirection1
+        } : undefined,
+        state:divergence.differingFields.some(f => ['ball','players','score','state','half','clock'].includes(f)) ? {
+          playerDeltas:divergence.playerDeltas,
+          attackDirection0:divergence.attackDirection0, attackDirection1:divergence.attackDirection1
+        } : undefined}
+    });
+  }
+} finally {
+  Math.random = oldRandom;
+  if (oldStorage === undefined) delete globalThis.localStorage; else globalThis.localStorage = oldStorage;
+  if (previousWindow === undefined) delete globalThis.window; else globalThis.window = previousWindow;
+  if (previousDocument === undefined) delete globalThis.document; else globalThis.document = previousDocument;
+}
+assert.equal(writes, 0, 'diagnostic performs no persistent writes');
+assert.equal(JSON.stringify(roster), rosterJSON, 'canonical roster is unchanged');
+const report = {date:'2026-11-03', candidate:prior.candidate, sourceReport:path.basename(INPUT),
+  scope:'Replays the 13 recorded full-match mismatches with the same seeds and compares normalized tick state/event order for attack direction 0 versus 1.',
+  tracedMismatchPairs:traces.length, persistentWrites:writes, traces,
+  limitations:['Only the original single seed and original 60-second-half/60Hz matrix conditions are replayed; no extra seeds are included.',
+    'Snapshots are compared after each simulation/penalty update, with numeric values rounded to 0.001; earliest detected tick is an upper bound on within-tick causality.',
+    'This diagnostic identifies deterministic divergence, not whether the divergence is a defect or intended gameplay asymmetry.',
+    'No production code, player data, saves, or balance values are changed.']};
+writeFileSync(OUTPUT, JSON.stringify(report,null,2)+'\n');
+console.log(`Mirror divergence trace PASS: ${traces.length} mismatch pairs, ${traces.filter(t=>t.firstDivergence).length} first divergences, ${writes} writes`);

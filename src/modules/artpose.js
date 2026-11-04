@@ -13,11 +13,14 @@ const ARTPOSE=(()=>{
  // Visual geometry only; no change to actual position, reach, speed or catch timing.
  function keeperPose(action,diveElapsed=0,actionTimer=0,diveDy=0,face=1){
   const sign=diveDy<0?-1:1,heading=face<0?-1:1;
+  const diveLean=.82;
   const endpoint=Math.sin(Math.PI*.72);
-  const terminal={x:heading*28,y:sign*(8+30*endpoint)+4,angle:sign*(.22+.52*endpoint)+heading*.16*endpoint};
+  const terminal={x:heading*28,y:sign*(8+30*endpoint)+4,angle:sign*(.22+diveLean*endpoint)+heading*.16*endpoint};
   if(action==='keeperDive'||action==='keeperDiveCatch'){
    const phase=clamp((Number(diveElapsed)||0)/.60,0,1),sweep=Math.sin(phase*Math.PI*.72);
-   return {x:heading*(7+21*phase),y:sign*(8+30*sweep)+4,angle:sign*(.22+.52*sweep)+heading*.16*sweep};
+   // Lean the whole keeper silhouette farther into the save so the torso and
+   // trailing legs read as a dive, not only extended gloves and streaks.
+   return {x:heading*(7+21*phase),y:sign*(8+30*sweep)+4,angle:sign*(.22+diveLean*sweep)+heading*.16*sweep};
   }
   if(action==='keeperRecover'){
    const fraction=clamp((Number(actionTimer)||0)/.34,0,1),blend=fraction*fraction*(3-2*fraction);
@@ -34,6 +37,37 @@ const ARTPOSE=(()=>{
   const crouch=recovering?Math.min(1,Math.max(0,recovering))*9:0;
   return {stride,lift,kneeBend:2.3+lift*.37+crouch,stance:phase<=0&&!active&&!sliding&&!jumping};
  }
+ // Keep the legacy arm/body oscillator and the articulated foot phases on the
+ // same player-specific cadence. This is deterministic and render-only.
+ function runPhase(anim,runRate=1,playerIndex=0){
+  const a=Number(anim),r=Number(runRate),i=Number(playerIndex);
+  return (Number.isFinite(a)?a:0)*17*(Number.isFinite(r)&&r!==0?r:1)+(Number.isFinite(i)?i:0)*.35;
+ }
+ // Per-leg, render-only foot path. `phase` is the unwrapped-or-wrapped gait
+ // angle in radians; the caller offsets the opposite leg by PI. During stance
+ // the boot travels backward under the body, returning continuously to the
+ // swing path at toe-off/touchdown. Speed ratio scales visual stride and flex;
+ // this helper never reads or writes simulation state or time.
+ function runFootPose(phase,speedRatio=1,out){
+  const TWO_PI=Math.PI*2,raw=Number(phase),angle=((Number.isFinite(raw)?raw:0)%TWO_PI+TWO_PI)%TWO_PI;
+  const speed=clamp(Number.isFinite(Number(speedRatio))?Number(speedRatio):0,0,1);
+  const stance=angle>=Math.PI;
+  const amplitude=9*speed;
+  let contactOffset;
+  if(stance){
+   const progress=(angle-Math.PI)/Math.PI;
+   contactOffset=amplitude*(1-2*progress);
+  }else{
+   const progress=angle/Math.PI,eased=(1-Math.cos(Math.PI*progress))*.5;
+   contactOffset=amplitude*(-1+2*eased);
+  }
+  if(speed===0)contactOffset=0;
+  const wave=Math.sin(angle),kneeFlex=Math.max(0,(stance?-wave*.16:wave*.65)*speed);
+  const toeFlex=Math.max(0,(stance?-wave*.08:wave*.42)*speed);
+  const pose=out||{};
+  pose.stance=stance;pose.contactOffset=contactOffset;pose.kneeFlex=kneeFlex;pose.toeFlex=toeFlex;
+  return pose;
+ }
  // Smooth foot phases on abrupt stop/start; stationary targets settle to a grounded stance.
  // This is a rendering-only filter, not a player velocity or fatigue model.
  function settleStride(previous,oscillator,moving,dt){
@@ -46,6 +80,34 @@ const ARTPOSE=(()=>{
   const wave=Math.sin(Math.PI*remaining);
   return {crouch:(2.2+4.8*danger)*wave,lean:(.035+.085*danger)*wave,brace:danger*wave};
  }
+ // Confused-eye curl follows the existing shot-stun timer. Reduced-flash
+ // holds a clear still spiral instead of animating it; this is render-only.
+ function confusionPose(timer,time,reducedFlash=false){
+  const remaining=clamp(Number(timer)||0,0,2),intensity=clamp(remaining/.16,0,1);
+  const phase=reducedFlash?0:(Number.isFinite(Number(time))?Number(time):0)*3.2;
+  return {intensity,eyeSpin:phase,headBob:reducedFlash?0:Math.sin(phase)*1.4*intensity};
+ }
+ // Render-only stumble arc for a Super Shot launch. The pulse follows the
+ // existing 1.1s launched action timer and settles back to neutral at either
+ // end, leaving knockdown/landing timing and all gameplay state untouched.
+ function shotImpactLaunchPose(action,actionTimer=0,face=1){
+  if(action!=='launched')return {angle:0,armSpread:0};
+  const raw=Number(actionTimer),remaining=clamp(Number.isFinite(raw)?raw:0,0,1.1);
+  const progress=1-remaining/1.1,pulse=Math.sin(Math.PI*progress),heading=Number(face)<0?-1:1;
+  const settled=pulse<1e-9?0:pulse;
+  return {angle:settled===0?0:heading*.78*settled,armSpread:settled};
+ }
+ // Separate the grounded hold from a short, explicit recovery push-up. This
+ // uses the engine's existing shotGetUp action timer and never changes timing.
+ function shotImpactRecoveryPose(action,actionTimer=.24,face=1){
+  if(action!=='shotGetUp')return {progress:0,support:0,angle:0,lift:0};
+  const duration=.24,raw=Number(actionTimer),remaining=clamp(Number.isFinite(raw)?raw:0,0,duration);
+  const linear=1-remaining/duration,progress=linear*linear*(3-2*linear),rawSupport=Math.sin(Math.PI*progress);
+  const support=rawSupport<1e-9?0:rawSupport;
+  const heading=Number(face)<0?-1:1;
+  const rawAngle=1.32*(1-progress)-.16*support,angle=Math.abs(rawAngle)<1e-9?0:heading*rawAngle;
+  return {progress,support,angle,lift:10*progress};
+ }
  // Visual follow-through on ordinary passes. Zero at release and at completion;
  // only the kicking boot lifts, and the supporting boot stays planted.
  function passFollowThrough(action,actionTimer){
@@ -54,11 +116,19 @@ const ARTPOSE=(()=>{
   const swing=Math.sin(Math.PI*(1-remaining));
   return {stride:13*swing,lift:9*swing,lean:.095*swing};
  }
- function keeperRelease(action,actionTimer){
+ function keeperRelease(action,actionTimer,poseDuration=0){
   if(action!=='keeperThrow'&&action!=='keeperPunt')return {throwing:false,punting:false,windup:0,follow:0};
-  const duration=action==='keeperPunt'?.64:.48;
-  const progress=1-clamp((Number(actionTimer)||0)/duration,0,1);
-  return {throwing:action==='keeperThrow',punting:action==='keeperPunt',windup:Math.sin(Math.PI*progress),follow:progress};
+  const fallbackDuration=action==='keeperPunt'?.64:.48,requested=Number(poseDuration);
+  const duration=Number.isFinite(requested)&&requested>0?clamp(requested,.12,1.2):fallbackDuration;
+  const progress=1-clamp((Number(actionTimer)||0)/duration,0,1),follow=progress*progress*(3-2*progress),rawWindup=Math.sin(Math.PI*progress);
+  const windup=rawWindup<1e-9?0:rawWindup;
+  return {throwing:action==='keeperThrow',punting:action==='keeperPunt',windup,follow};
+ }
+ // A held keeper ball is painted at the gloves/chest; the simulation ball
+ // remains at its ordinary physics coordinates. This is presentation only.
+ function keeperGrip(action,face=1){
+  if(action!=='keeperCatch'&&action!=='keeperHold')return null;
+  return {x:Number(face)<0?-5:5,y:-59};
  }
  // Visual-only penalty JUMP animation; no game-state or save mutations.
  function penaltyKeeperVisual(pk,cy){
@@ -70,7 +140,7 @@ const ARTPOSE=(()=>{
   if(cooldown>.08&&cooldown<=.420001)return {action:'keeperRecover',diveElapsed:.6,actionTimer:Math.min(.34,cooldown-.08),diveDy};
   return {action:'idle',diveElapsed:0,actionTimer:0,diveDy:0};
  }
- return Object.freeze({easeHeading,gait,keeperPose,settleStride,receivePose,passFollowThrough,keeperRelease,penaltyKeeperVisual});
+ return Object.freeze({easeHeading,gait,runPhase,runFootPose,keeperPose,settleStride,receivePose,confusionPose,shotImpactLaunchPose,shotImpactRecoveryPose,passFollowThrough,keeperRelease,keeperGrip,penaltyKeeperVisual});
 })();
 
 export {ARTPOSE};

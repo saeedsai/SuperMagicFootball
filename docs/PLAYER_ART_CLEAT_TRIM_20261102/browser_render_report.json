@@ -1,0 +1,21 @@
+{
+  "palettes": [
+    {
+      "label": "GREEN TRIM",
+      "trim": "#30b56a"
+    },
+    {
+      "label": "RED TRIM",
+      "trim": "#e25a53"
+    },
+    {
+      "label": "SILVER TRIM",
+      "trim": "#d8dbe2"
+    }
+  ],
+  "sprites": 3,
+  "nontransparent": 22818,
+  "edgePixels": 0,
+  "pageErrors": [],
+  "ok": true
+}

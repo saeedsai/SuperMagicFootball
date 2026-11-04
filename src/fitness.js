@@ -5,13 +5,13 @@ const clamp=(x,lo,hi)=>Math.min(hi,Math.max(lo,x));
 export const initialFatigue=p=>clamp((100-(Number(p?.condition) || 100))*.006,0,.65);
 export function fatigueTick(fatigue,stamina,seconds,intensity=0){
  const rated=clamp(Number(stamina)||60,1,100),load=clamp(intensity,0,1.8);
- const rate=(.0011+.015*load)*(120-rated)/65;
+ const rate=(.00099+.0135*load)*(120-rated)/65;
  const recovery=load<.08?.00165:.00018;
  return clamp(fatigue+seconds*(rate-recovery),0,1);
 }
 export function actionFatigue(fatigue,stamina,kind,modifier=1){
  const costs={jump:.008,tackle:.019,slide:.029,pass:.004,shoot:.012,super:.085,defenceSuper:.065,keeperSuper:.080,hyperdash:.060,header:.013,keeperDive:.022,comboJump:.035,assistBoost:.023,flipKick:.022,comboSuper:.105,bicycle:.035,superBicycle:.070,flyingKick:.029,dribbleTrick:.020};
- return clamp(fatigue+(costs[kind]||0)*Math.max(.5,Math.min(1.5,Number(modifier)||1))*(120-clamp(Number(stamina)||60,1,100))/65,0,1);
+ return clamp(fatigue+(costs[kind]||0)*.90*Math.max(.5,Math.min(1.5,Number(modifier)||1))*(120-clamp(Number(stamina)||60,1,100))/65,0,1);
 }
 export const staminaPercent=fatigue=>Math.round((1-clamp(fatigue||0,0,1))*100);
 export const matchCondition=(condition,fatigue,seconds)=>clamp(Math.round((Number(condition)??100)-fatigue*10-Math.min(5,seconds/65)),25,100);

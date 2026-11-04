@@ -38,7 +38,7 @@ test('About alone shows the installed four-field 0.9.7.0 release and date offlin
  assert.match(html,/Developer: Saeed/);
  assert.match(html,/href="mailto:saeedmsalehi1990@gmail\.com"/);
  assert.match(html,/Four action buttons · 223 teams/);
- assert.match(html,/data-action="home"/);
+ assert.match(html,/data-action="navSettings"/,'About now returns to its Settings parent');
  assert.doesNotMatch(html,/Latest GitHub development commit|CURRENT DEVELOPMENT VERSION|\+dev\.|aboutDevRevision|RECENT CHANGES/);
 });
 test('About escape-encodes release notes and version, never inserts user-shaped HTML',()=>{

@@ -1,0 +1,120 @@
+'use strict';
+const {test,before}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const {fileURLToPath}=require('node:url');
+
+let RENDER;
+before(async()=>{
+ globalThis.fetch=async url=>({ok:true,json:async()=>JSON.parse(fs.readFileSync(fileURLToPath(url),'utf8'))});
+ await (await import('../src/assets.js')).loadAssets();
+ ({RENDER}=await import('../src/modules/render.js'));
+});
+
+function context(withGradient=true){
+ const fills=[],arcs=[],strokes=[],rotations=[],polygonFills=[];
+ const ctx={
+  fills,arcs,strokes,rotations,polygonFills,fillStyle:null,strokeStyle:null,lineWidth:1,pathVertices:0,
+  save(){},restore(){},translate(){},rotate(v){rotations.push(v)},
+  beginPath(){this.pathVertices=0},arc(x,y,r){arcs.push({x,y,r})},ellipse(){},quadraticCurveTo(){},clip(){},
+  moveTo(){this.pathVertices=1},lineTo(){this.pathVertices++},closePath(){},fill(){fills.push(this.fillStyle);polygonFills.push({color:this.fillStyle,vertices:this.pathVertices})},
+  stroke(){strokes.push({color:this.strokeStyle,width:this.lineWidth,vertices:this.pathVertices})},
+ };
+ if(withGradient)ctx.createRadialGradient=(...args)=>{
+  const gradient={args,stops:[],addColorStop(offset,color){this.stops.push([offset,color])}};
+  ctx.fills.push(gradient);return gradient;
+ };
+ return ctx;
+}
+
+test('game ball gets layered sphere lighting while preserving its exact radius and rotation API',()=>{
+ const renderer=Object.create(RENDER.Renderer.prototype),ctx=context();
+ renderer.drawSoccerBall(ctx,40,50,18,'classic',.75);
+ const gradient=ctx.fills.find(item=>item&&item.stops);
+ assert.ok(gradient,'sphere lighting uses a radial highlight and shaded rim');
+ const firstClassicPanel=ctx.fills.findIndex(item=>item==='#1b2a35');
+ const sphereRamp=ctx.fills.findIndex(item=>item&&item.stops);
+ assert.ok(firstClassicPanel>=0&&sphereRamp>firstClassicPanel,'sphere shading is applied over completed panel artwork');
+ assert.deepEqual(gradient.stops.map(stop=>stop[0]),[0,.26,.68,1]);
+ assert.equal(ctx.arcs[0].r,18,'clip radius stays equal to the gameplay ball radius');
+ assert.equal(ctx.rotations[0],.75,'painted panels keep the existing rotation argument');
+ assert.ok(ctx.strokes.some(stroke=>stroke.color==='#52616b'),'classic panels expose fine seams');
+ assert.ok(ctx.fills.some(fill=>fill==='rgba(255,255,255,.74)'),'surface keeps a crisp specular highlight');
+});
+
+test('all ball designs keep a shaded surface and circular outline without mutating geometry',()=>{
+ const renderer=Object.create(RENDER.Renderer.prototype);
+ for(const model of ['classic','meteor','ice','gold','retro','hinomaru','tricolore','auriverde']){
+  const ctx=context();renderer.drawSoccerBall(ctx,0,0,15,model,0);
+  assert.equal(ctx.arcs[0].r,15,model+' clip radius');
+  assert.ok(ctx.fills.some(item=>item&&item.stops),model+' sphere lighting');
+  assert.ok(ctx.strokes.length>=1,model+' circular outline');
+ }
+});
+
+test('normal in-match ball uses penalty-scale rendering without changing simulated ball state',()=>{
+ const renderer=Object.create(RENDER.Renderer.prototype),painted=[];
+ renderer.drawBallShadow=()=>{};
+ renderer.drawSoccerBall=(_ctx,_x,_y,r)=>painted.push(r);
+ const ctx={globalAlpha:1,save(){},restore(){},translate(){}};
+ const ball={x:100,y:200,z:0,vx:0,vy:0,vz:0,owner:null,shot:null,trail:[],rollAngle:.4};
+ const before=JSON.stringify(ball);
+ renderer.drawBall(ctx,{ball,options:{ballModel:'classic',reducedFlash:false}});
+ assert.deepEqual(painted,[17],'normal match uses the same drawn scale as the penalty ball');
+ assert.equal(JSON.stringify(ball),before,'the visual scale does not alter simulated ball motion or ownership');
+});
+
+test('classic ball uses a connected center and five surrounding pentagon panels',()=>{
+ const renderer=Object.create(RENDER.Renderer.prototype),ctx=context();
+ renderer.drawSoccerBall(ctx,0,0,30,'classic',0);
+ const pentagons=ctx.polygonFills.filter(shape=>shape.color==='#1b2a35'&&shape.vertices===5);
+ assert.equal(pentagons.length,6,'center and five inward-facing surround panels use five sides');
+ assert.ok(ctx.strokes.filter(stroke=>stroke.color==='#52616b'&&stroke.vertices===5&&stroke.width<=1.1).length>=6,
+  'center panel receives a fine seam outline that remains legible at match scale');
+});
+
+test('older Canvas contexts retain the non-gradient ball fallback',()=>{
+ const renderer=Object.create(RENDER.Renderer.prototype),ctx=context(false);
+ renderer.drawSoccerBall(ctx,0,0,12,'classic',0);
+ assert.ok(ctx.fills.includes('#f4f1dd'),'fallback still paints the existing classic base');
+ assert.equal(ctx.arcs[0].r,12);
+ assert.ok(ctx.strokes.length>=1,'fallback still draws the outer seam');
+});
+
+test('airborne ball shadow gets tighter and softer while ground contact remains unchanged',()=>{
+ const renderer=Object.create(RENDER.Renderer.prototype),samples=[];
+ const ctx={globalAlpha:1,stack:[],save(){this.stack.push(this.globalAlpha)},restore(){this.globalAlpha=this.stack.pop()},
+  beginPath(){},ellipse(x,y,rx,ry,_rotation,_start,_end){samples.push({x,y,rx,ry,opacity:this.globalAlpha})},fill(){}};
+ for(const z of [0,60,120,240])renderer.drawBallShadow(ctx,100,200,z,1);
+ assert.deepEqual(samples[0],{x:100,y:204,rx:15,ry:7,opacity:1},'ground contact keeps the existing footprint');
+ for(let i=1;i<samples.length;i++){
+  assert.ok(samples[i].rx<samples[i-1].rx,'shadow narrows with ball height');
+  assert.ok(samples[i].ry<samples[i-1].ry,'shadow flattens with ball height');
+  assert.ok(samples[i].opacity<samples[i-1].opacity,'shadow fades as the ball rises');
+ }
+ assert.ok(Math.abs(samples.at(-1).rx-5.5)<1e-9);assert.ok(Math.abs(samples.at(-1).ry-2.4)<1e-9);
+ assert.equal(ctx.globalAlpha,1,'shadow helper restores canvas alpha');
+});
+
+test('ordinary fast-pass streak is visible normally and softened in reduced-flash mode',()=>{
+ const renderer=Object.create(RENDER.Renderer.prototype),capture=reducedFlash=>{
+  const strokes=[],stack=[],ctx={globalAlpha:1,strokeStyle:null,lineWidth:1,lineCap:'butt',path:[],
+   save(){stack.push([this.globalAlpha,this.strokeStyle,this.lineWidth,this.lineCap]);},
+   restore(){[this.globalAlpha,this.strokeStyle,this.lineWidth,this.lineCap]=stack.pop();},
+   beginPath(){this.path=[];},moveTo(x,y){this.path.push([x,y]);},lineTo(x,y){this.path.push([x,y]);},
+   stroke(){strokes.push({alpha:this.globalAlpha,color:this.strokeStyle,width:this.lineWidth,path:this.path.slice()});},
+   translate(){}};
+  renderer.drawBallShadow=()=>{};renderer.drawSoccerBall=()=>{};
+  const ball={x:300,y:180,z:0,vx:400,vy:0,owner:null,shot:null,trail:[]};
+  const game={ball,options:{reducedFlash}};
+  renderer.drawBall(ctx,game);
+  return {stroke:strokes[0],state:JSON.stringify(ball)};
+ };
+ const normal=capture(false),reduced=capture(true);
+ assert.ok(normal.stroke.alpha>.2&&normal.stroke.width===5,'standard mode keeps a clear speed cue');
+ assert.ok(reduced.stroke.alpha<normal.stroke.alpha&&reduced.stroke.width<normal.stroke.width,'reduced-flash softens the cue');
+ const length=sample=>Math.hypot(sample.stroke.path[0][0]-sample.stroke.path[1][0],sample.stroke.path[0][1]-sample.stroke.path[1][1]);
+ assert.ok(length(reduced)<length(normal),'reduced-flash shortens the visual streak');
+ assert.equal(normal.state,reduced.state,'visual accessibility setting does not change the ball state');
+});

@@ -8,9 +8,9 @@ const begin=ui.indexOf('const STUDIO_MAGIC_TRICK_GUIDES=');
 const end=ui.indexOf('function saveStudioMagic(){',begin);
 assert.ok(begin>0&&end>begin,'guide helpers must be present before save action');
 const guideSource=ui.slice(begin,end);
-const {guide,eligibility}=new Function('studioMagicEligible',guideSource+';return {guide:studioMagicGuide,eligibility:studioMagicEligibilityGuide};')(p=>p?.role!=='GK'&&Number(p?.rating)>=91);
+const {guide,eligibility}=new Function('studioMagicEligible',guideSource+';return {guide:studioMagicGuide,eligibility:studioMagicEligibilityGuide};')(p=>p?.role!=='GK'&&['Star','Superstar'].includes(p?.verifiedTier));
 
-test('all eight equipable Tricks have distinct, truthful live descriptions',()=>{
+test('all nine equipable Tricks have distinct, truthful live descriptions',()=>{
  const ids=['banana','ice','bat','fireball','freeze','scream','hideBall','teleport'];
  const catalogue=ui.slice(ui.indexOf('const STUDIO_MAGIC_TRICKS='),begin);
  const descriptions=ids.map(id=>{
@@ -34,12 +34,13 @@ test('KEEP CURRENT, REMOVE and unknown saved equipment are safe previews',()=>{
  assert.match(guide('invalid',null),/Unknown saved Trick/);
 });
 test('non-elite Magic Trick selection explains locks without changing legacy equipment',()=>{
- assert.match(eligibility({rating:65,role:'MF'}),/locked.*Star or Superstar/i);
- assert.match(eligibility({rating:90,role:'MF'}),/locked.*91\+/i);
- assert.match(eligibility({rating:91,role:'MF'}),/Eligible/);
- assert.match(eligibility({rating:65,role:'MF'}),/Dribble Styles/);
- assert.match(eligibility({rating:65,magicTrick:'banana'}),/preserved/);
- assert.match(eligibility({rating:95}),/Eligible/);
+ assert.match(eligibility({verifiedTier:null,role:'MF'}),/locked.*source-verified canonical Star or Superstar/i);
+ assert.match(eligibility({rating:99,role:'MF'}),/locked.*source-verified canonical Star or Superstar/i,
+  'legacy rating alone no longer grants a Trick');
+ assert.match(eligibility({verifiedTier:'Star',role:'MF'}),/Eligible/);
+ assert.match(eligibility({verifiedTier:null,role:'MF'}),/DRIBBLE controls/);
+ assert.match(eligibility({verifiedTier:null,magicTrick:'banana'}),/preserved/);
+ assert.match(eligibility({verifiedTier:'Superstar'}),/Eligible/);
  assert.match(ui,/id="studioMagicEligibility"/);
  assert.match(ui,/escapeHTML\(studioMagicEligibilityGuide\(player\)\)/);
 });
@@ -49,7 +50,7 @@ test('Studio uses an accessible, read-only live guide that follows icon changes'
  assert.match(ui,/select\.addEventListener\('change',update\)/);
  assert.match(ui,/guide\.textContent=studioMagicGuide\(select\.value,current,!state\.locked\)/);
  assert.match(ui,/save\.disabled=state\.disabled/);
- assert.match(guide('banana',null,false),/Locked preview:.*Star or Superstar \(91\+\)/);
+ assert.match(guide('banana',null,false),/Locked preview:.*source-verified canonical Star or Superstar tier/);
  assert.match(ui,/if\(id==='keep'\|\|\(id==='none'&&!player\.magicTrick\)\|\|id===player\.magicTrick\)\{showPlayerStudio\(avatarIndex\);return;\}/);
 });
 test('trap preview matches existing arming durations and SHOOT-slide disarm',()=>{

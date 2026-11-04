@@ -22,13 +22,18 @@ def check(name,fn):
 def skip(name,why):
  records.append({'name':name,'status':'NOT EXECUTED','detail':why});print('NOT EXECUTED',name,why,flush=True)
 
-MEMORY='''() => {const values=new Map();Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>values.has(k)?values.get(k):null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k),clear:()=>values.clear()}});}'''
+# Seed only the cosmetic entitlements used below. This models a player who has
+# earned/unlocked these items; the token-store suites cover purchase and gating.
+TEST_WALLET={'schema':1,'tokens':0,'unlocks':[
+ 'appearance:beard:0','appearance:face:2','appearance:style:10',
+ 'appearance:hair:2','appearance:tattoo:4'], 'receipts':[]}
+MEMORY='''seed => {const values=new Map([['legend_tokenWallet',JSON.stringify(seed)]]);Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>values.has(k)?values.get(k):null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k),clear:()=>values.clear()}});}'''
 DIRECTIONS=[[0,1],[.707,.707],[1,0],[.707,-.707],[0,-1],[-.707,-.707],[-1,0],[-.707,.707]]
 with sync_playwright() as pw:
  browser=pw.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox','--disable-dev-shm-usage'])
  for mode,options in [('desktop',{'viewport':{'width':1280,'height':840}}),('simulated-touch',{'viewport':{'width':844,'height':390},'is_mobile':True,'has_touch':True})]:
   ctx=browser.new_context(**options);p=ctx.new_page();p.set_default_timeout(20000);errs=[];p.on('pageerror',lambda ex:errs.append(str(ex)))
-  p.set_content(html);p.evaluate(MEMORY);p.add_script_tag(content=js,type='module');p.wait_for_function('!!window.SupermagicFootball')
+  p.set_content(html);p.evaluate(MEMORY,TEST_WALLET);p.add_script_tag(content=js,type='module');p.wait_for_function('!!window.SupermagicFootball')
   check(mode+' generated QA fixture boots with modular JSON records',lambda:p.evaluate("version => SupermagicFootball.version===version",RELEASE_VERSION))
   check(mode+' all seven BPW squads preserved',lambda:p.evaluate('''() => {const e=SupermagicFootball,b=e.teams.filter(t=>t.group==='bpw_worldcup'||t.group==='bpw_alltime');return {ok:b.length===7&&b.every(t=>e.rosterFor(t.index).length===12),count:b.length}}'''))
   def matrix():
@@ -68,7 +73,7 @@ with sync_playwright() as pw:
    check(mode+' eight-view contact-sheet generation for visual audit',sheet)
    # Changed document for sheet, reset to original UI in a new page in the same context.
    p.close();p=ctx.new_page();p.set_default_timeout(20000);p.on('pageerror',lambda ex:errs.append(str(ex)))
-   p.set_content(html);p.evaluate(MEMORY);p.add_script_tag(content=js,type='module');p.wait_for_function('!!window.SupermagicFootball')
+   p.set_content(html);p.evaluate(MEMORY,TEST_WALLET);p.add_script_tag(content=js,type='module');p.wait_for_function('!!window.SupermagicFootball')
   def studio():
    for a in ['navSettings','navCustomization','playerStudio']:p.locator('[data-action="'+a+'"]').first.click()
    return p.locator('#customPortrait').count()==1

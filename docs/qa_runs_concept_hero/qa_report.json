@@ -1,0 +1,46 @@
+{
+  "desktop": {
+    "status": "PASS",
+    "roster": {
+      "teams": 225,
+      "roster": 12,
+      "allConcept": true,
+      "originalTeams": 224
+    },
+    "ink": [
+      10181,
+      9706,
+      7464,
+      9492,
+      10200,
+      9492,
+      7464,
+      9706
+    ],
+    "distinct_views": 8,
+    "active_demo_model": true,
+    "errors": []
+  },
+  "touch": {
+    "status": "PASS",
+    "roster": {
+      "teams": 225,
+      "roster": 12,
+      "allConcept": true,
+      "originalTeams": 224
+    },
+    "ink": [
+      10181,
+      9706,
+      7464,
+      9492,
+      10200,
+      9492,
+      7464,
+      9706
+    ],
+    "distinct_views": 8,
+    "active_demo_model": true,
+    "errors": []
+  }
+}

@@ -26,7 +26,7 @@ try:
    page.locator('#formation').select_option('3-1-1')
    assert page.locator('.lineupRow > strong').all_text_contents()==['GK','DF','DF','DF','MF','FW']
    assert page.locator('.formationOvr').count()==6
-   assert page.locator('[data-lineup-ovr="4"]').get_attribute('title')=='Calculated for MF position'
+   assert page.locator('[data-lineup-ovr="4"]').get_attribute('title')=='Position OVR and Energy percentage'
    assert page.locator('.formationOvr').nth(4).inner_text().startswith('MF ')
    # Player switch changes position-specific value, including when player is an alternate natural role.
    sel=page.locator('#pos4');old=page.locator('[data-lineup-ovr="4"]').inner_text()
@@ -35,8 +35,15 @@ try:
     sel.select_option(options[-1] if options[-1]!=sel.input_value() else options[0])
     assert page.locator('[data-lineup-ovr="4"]').inner_text().startswith('OVR ')
     assert page.locator('.formationOvr').nth(4).inner_text().startswith('MF ')
-   page.locator('[data-action="returnSetup"]').first.click()
-   home(page)
+   # Commit the deliberate roster/tactics edits before leaving the editor so
+   # the route's unsaved-change confirmation does not intercept test navigation.
+   page.locator('[data-action="saveSquad"]').click()
+   # Return through the visible route controls; this check is about lineup OVRs,
+   # not repeated Escape handling around the native select widgets above.
+   for _ in range(4):
+    if page.locator('.navMainList').count():break
+    page.locator('#menu .row.space [data-action]').first.click()
+   assert page.locator('.navMainList').count(), 'Setup navigation returns to the main menu'
    open_feature(page,'manager')
    # Starting career from configured continent/country also reaches derived OVR roster.
    assert page.locator('#managerClub').count()==1

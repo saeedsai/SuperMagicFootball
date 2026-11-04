@@ -57,7 +57,7 @@ test('Player Studio separates elite magical Tricks from normal dribble styles',(
  assert.match(ui,/function saveStudioMagic\(\)/);
  assert.match(ui,/magicTrick=id/);
  assert.match(ui,/!studioMagicEligible\(player\)/);
- assert.match(ui,/DRIBBLES\.withStudioDribble\(source\[avatarIndex\],\$\('studioDribble'\)\?\.value\)/);
+ assert.match(ui,/DRIBBLES\.withStudioDribble\(prior,id\)/);
  assert.doesNotMatch(ui,/id="studioTrickTier"/);
 });
 
@@ -67,8 +67,7 @@ test('Player Studio Super Shot selection validates levels and persists Career an
  assert.match(ui,/id="studioShotAbility"/);
  assert.match(ui,/function saveStudioShot\(\)/);
  assert.match(ui,/Object\.entries\(SHOTS\)/);
- assert.match(ui,/superShotLevel:tier/);
- assert.match(ui,/updated\.superAbility=\{type:'shoot',id,name:updated\.shotName,level:tier\}/);
+ assert.match(ui,/ABILITIES\.withStudioShot\(player,id,nextTier,SHOTS,studioEliteEligible\(player\)\)/);
  assert.match(ui,/a==='saveStudioShot'\)saveStudioShot\(\)/);
 });
 
@@ -84,13 +83,13 @@ test('dribble styles have no levels or level-based duel bonus',()=>{
 
 test('Rare super abilities require elite eligibility without revoking legacy equipped players',()=>{
  const ui=fs.readFileSync('src/modules/ui.js','utf8');
- assert.match(ui,/Super Shots are reserved for elite players/);
- assert.match(ui,/Super Defence is reserved for elite players/);
- assert.match(ui,/Tricks are reserved for Star and Superstar players \(91\+\)/);
+ assert.match(ui,/verified tier and an allowed level/);
+ assert.match(ui,/verified canonical-position Gold tier or higher/);
+ assert.match(ui,/Magic Tricks are locked for this player\. Preview any Trick and its counter without equipping; older Tricks require source-verified canonical Star or Superstar/);
  assert.match(ui,/player\.superAbility\?\.type==='shoot'/);
  assert.match(ui,/player\.superAbility\?\.type==='defence'/);
   assert.match(ui,/const studioEliteEligible=p=>/);
  assert.match(ui,/const studioMagicEligible=p=>/);
-  assert.match(ui,/Number\(p\.rating\)>=90\)\|\|playerOVR\(p\)>=90/);
- assert.match(ui,/!studioEliteEligible\(source\[avatarIndex\]\)/);
+ assert.match(ui,/\['Gold','Star','Superstar'\]\.includes\(verifiedRatingTierForPlayer\(p\)\)/);
+ assert.match(ui,/ABILITIES\.canEquipVerifiedFieldSpecial\(player,\{kind:'shot',level:tier\}\)/);
 });

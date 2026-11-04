@@ -22,11 +22,11 @@ test('pre-match primary screen has kickoff and three advanced submenus, no spraw
  for(const opt of ["field('WEATHER'","field('PITCH CONDITION'","field('HOME TEAM TALK'"])assert.ok(!primary.includes(opt));
  assert.match(css,/\.setupSubnav/);
 });
-test('all six formations, four gameplay controls and five main menu categories remain',()=>{
+test('all six formations, four gameplay controls and six main menu categories remain',()=>{
  assert.equal((html.match(/<button data-act=/g)||[]).length,4);
  for(const act of ['pass','shoot','dribble','jump'])assert.ok(html.includes(`data-act="${act}"`));
  const formations=require('./../data/mechanics/gameplay.json').formations;for(const f of ['2-1-2','1-2-2','2-2-1','1-3-1','1-1-3','3-1-1'])assert.equal(formations[f].length,6);
- for(const route of ['navQuick','navOnline','navCareer','navCups','navSettings'])assert.ok(js.includes(route));
+ for(const route of ['navQuick','navOnline','navCareer','navCups','navStore','navSettings'])assert.ok(js.includes(route));
 });
 
 test('offline shell cache revision matches current build without altering saved progress',()=>{

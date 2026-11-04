@@ -12,6 +12,7 @@ const keys = (value, expected) => plain(value) &&
   expected.every(key => Object.hasOwn(value, key));
 const safe = n => Number.isSafeInteger(n) && n >= 0;
 const position = n => Number.isFinite(n) && n >= -1 && n <= 1;
+const matchId = value => typeof value==='string'&&/^[a-f0-9]{32}$/.test(value);
 // LAN-059: bounded optional visual payload; old position-only packets still work.
 const finite=(n,max)=>Number.isFinite(n)&&n>=0&&n<=max;
 // LAN-061: diveY is optional for compatibility with 0.10.7.2/.3 peers.
@@ -71,18 +72,30 @@ function validateLanSnapshot(packet) {
   let meta;
   if(enhanced){
     const value=packet.meta;
-    if(!keys(value,['half','phase','controlled','ballOwnerSlot']) ||
+    const baseMeta=['half','phase','controlled','ballOwnerSlot'];
+    const withMatch=keys(value,[...baseMeta,'matchId'])||keys(value,[...baseMeta,'matchId','result']);
+    const withResult=keys(value,[...baseMeta,'result']);
+    const base=keys(value,baseMeta);
+    if(!(base||withMatch||withResult) ||
        ![1,2].includes(value.half) ||
        !['play','paused','finished'].includes(value.phase) ||
        !keys(value.controlled,['home','away']) ||
        ![value.controlled.home,value.controlled.away].every(n=>safe(n)&&n<6) ||
        !Number.isSafeInteger(value.ballOwnerSlot) ||
-       value.ballOwnerSlot< -1 || value.ballOwnerSlot>=22){
+       value.ballOwnerSlot< -1 || value.ballOwnerSlot>=22 ||
+       ((withMatch||withResult)&&!matchId(value.matchId)) ||
+       (Object.hasOwn(value,'result')&&(!validMatchResult(value.result)||value.phase!=='finished'||
+         (!value.result.penalties&&(value.result.score[0]!==packet.scores.home||value.result.score[1]!==packet.scores.away))))){
       throw new TypeError('Invalid LAN match snapshot metadata');
     }
     meta=Object.freeze({half:value.half,phase:value.phase,
       controlled:Object.freeze({home:value.controlled.home,away:value.controlled.away}),
-      ballOwnerSlot:value.ballOwnerSlot});
+      ballOwnerSlot:value.ballOwnerSlot,
+      ...(withMatch||withResult?{matchId:value.matchId}:{}),
+      ...(Object.hasOwn(value,'result')?{result:Object.freeze({...value.result,
+        score:Object.freeze([...value.result.score]),
+        ...(value.result.penalties?{penalties:Object.freeze({...value.result.penalties,
+          score:Object.freeze([...value.result.penalties.score])})}:{})})}:{})});
   }
   return Object.freeze({type:'snapshot',version:LAN_PROTOCOL_VERSION,
     roomId:packet.roomId,hostId:packet.hostId,tick:packet.tick,clockMs:packet.clockMs,
@@ -91,6 +104,16 @@ function validateLanSnapshot(packet) {
     players:Object.freeze(players),
     ...(hasHazards?{hazards:Object.freeze(packet.hazards.map(h=>Object.freeze({...h})))}:{}),
     ...(enhanced?{meta}:{})});
+}
+
+function validScorePair(value){return Array.isArray(value)&&value.length===2&&value.every(n=>safe(n)&&n<=999);}
+function validMatchResult(value){
+  if(!plain(value)||!(keys(value,['score'])||keys(value,['score','penalties']))||!validScorePair(value.score))return false;
+  if(!Object.hasOwn(value,'penalties'))return true;
+  const penalties=value.penalties;
+  return keys(penalties,['score','winner'])&&validScorePair(penalties.score)&&
+    [0,1].includes(penalties.winner)&&penalties.score[0]!==penalties.score[1]&&
+    penalties.winner===(penalties.score[0]>penalties.score[1]?0:1);
 }
 
 function encodeLanSnapshot(packet) {
@@ -102,7 +125,11 @@ function encodeLanSnapshot(packet) {
 }
 
 function decodeLanSnapshot(wire) {
-  if (typeof wire !== 'string' || encoder.encode(wire).byteLength > MAX_SNAPSHOT_BYTES) {
+  // UTF-8 byte length is never smaller than a JavaScript string's UTF-16
+  // code-unit length. Reject obviously oversized frames before allocating an
+  // encoded copy; retain the exact byte check for shorter non-ASCII strings.
+  if (typeof wire !== 'string' || wire.length > MAX_SNAPSHOT_BYTES ||
+      encoder.encode(wire).byteLength > MAX_SNAPSHOT_BYTES) {
     throw new TypeError('Invalid LAN snapshot wire size or type');
   }
   let parsed;

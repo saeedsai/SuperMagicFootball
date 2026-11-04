@@ -1,0 +1,76 @@
+{
+  "version": "0.8.25.28",
+  "summary": {
+    "PASS": 11,
+    "FAIL": 0,
+    "TIMEOUT": 0
+  },
+  "results": [
+    {
+      "mode": "desktop",
+      "name": "current release loads",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "mode": "desktop",
+      "name": "full 5 face \u00d7 5 beard \u00d7 8 direction pixel-matrix and framing",
+      "status": "PASS",
+      "detail": "{'ok': True, 'rendered': 200, 'clip': 0, 'empty': 0, 'differenceFailures': 0, 'failures': []}"
+    },
+    {
+      "mode": "desktop",
+      "name": "named players respect Clean Shave without special-case forced beards",
+      "status": "PASS",
+      "detail": "{'ok': True, 'checked': 27, 'mismatches': []}"
+    },
+    {
+      "mode": "desktop",
+      "name": "stubble and beard colour respond to natural hair palettes",
+      "status": "PASS",
+      "detail": "{'ok': True, 'samples': 12, 'distinctViews': 3}"
+    },
+    {
+      "mode": "desktop",
+      "name": "browser runtime has no uncaught exceptions",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "mode": "desktop",
+      "name": "representative five-view \u00d7 all-face/all-beard human-review matrix",
+      "status": "PASS",
+      "detail": "Beard_Face_Matrix_QA_v082530.png"
+    },
+    {
+      "mode": "simulated-touch",
+      "name": "current release loads",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "mode": "simulated-touch",
+      "name": "full 5 face \u00d7 5 beard \u00d7 8 direction pixel-matrix and framing",
+      "status": "PASS",
+      "detail": "{'ok': True, 'rendered': 200, 'clip': 0, 'empty': 0, 'differenceFailures': 0, 'failures': []}"
+    },
+    {
+      "mode": "simulated-touch",
+      "name": "named players respect Clean Shave without special-case forced beards",
+      "status": "PASS",
+      "detail": "{'ok': True, 'checked': 27, 'mismatches': []}"
+    },
+    {
+      "mode": "simulated-touch",
+      "name": "stubble and beard colour respond to natural hair palettes",
+      "status": "PASS",
+      "detail": "{'ok': True, 'samples': 12, 'distinctViews': 3}"
+    },
+    {
+      "mode": "simulated-touch",
+      "name": "browser runtime has no uncaught exceptions",
+      "status": "PASS",
+      "detail": "True"
+    }
+  ]
+}

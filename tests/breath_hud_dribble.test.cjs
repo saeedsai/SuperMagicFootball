@@ -25,6 +25,18 @@ test('running and sprinting do not regenerate Breath',()=>{
   assert.ok(F.breathTick(2,stat,1,1.7)<F.breathTick(2,stat,1,1));
  }
 });
+test('Breath and Energy exhaustion penalties are gentler while sprint still costs more than jogging',()=>{
+ for(const stat of [1,50,100]){
+  const cap=F.breathCapacity(stat);
+  assert.equal(F.breathPenalty(0,stat),1.6,'empty Breath adds a bounded 60% action Energy penalty');
+  assert.equal(F.breathPenalty(cap,stat),1,'full Breath adds no penalty');
+  assert.ok(F.spendBreath(cap,stat,'super')<F.spendBreath(cap,stat,'pass'),'special actions still cost more Breath');
+  assert.ok(F.breathTick(cap,stat,1,1.5)<F.breathTick(cap,stat,1,.6),'sprinting remains more expensive than jogging');
+ }
+ const source=text('src/modules/fitness.js');
+ assert.match(source,/\)\*\.70\*/,'ongoing Energy action drain should use the eased multiplier');
+ assert.match(source,/breathActionSeconds\[kind\]\|\|\.45\)\*\.90/,'discrete Breath actions should cost about 10% less');
+});
 test('higher Stamina improves capacity and refill without making spam free',()=>{
  assert.ok(F.breathCapacity(100)>F.breathCapacity(1));
  assert.ok(F.breathTick(0,100,1,.45)>F.breathTick(0,1,1,.45));
@@ -177,6 +189,11 @@ test('analog walking restores Breath while full-speed running and sprint spend p
  assert.match(engine,/breathMovementIntensity\(Math\.hypot\(dx,dy\),running,p\.dashTimer>0\)/);
  assert.match(engine,/staminaTick\(p,dt,intensity=0,breathIntensity=intensity\)/);
  assert.match(engine,/fatigueTick\(p\.fatigue,stat\(p,'stamina'\),dt,intensity\)/,'Energy intensity unchanged');
+});
+test('low-Breath warning is steady in reduced-flash mode',()=>{
+ const render=text('src/modules/render.js');
+ assert.match(render,/game\.options\?\.reducedFlash\?\.42:\.35\+\.45\*\(\.5\+\.5\*Math\.sin\(this\.time\*10\)\)/,
+  'reduced-flash uses a steady readable warning while standard mode retains its pulse');
 });
 test('controlled-player outline and Breath ring share current human selection',()=>{
  const render=text('src/modules/render.js');

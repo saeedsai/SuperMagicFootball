@@ -197,7 +197,7 @@ export class GameEngine{
  }
  teamMorale(team){const values=Object.values(this.moraleLedger[team]);return values.reduce((a,b)=>a+b,0)/Math.max(1,values.length)}
  onGoalMorale(scored){
-  this.celebrationStyle=(this.matchSerial*3+this.score[0]*5+this.score[1]*7+scored)%5;
+  this.celebrationStyle=(this.matchSerial*3+this.score[0]*5+this.score[1]*7+scored)%25;
   for(const p of this.players){const value=goalMorale(this.moraleLedger[p.t][p.src.id]??55,p.t===scored);p.morale=value;this.moraleLedger[p.t][p.src.id]=value;p.cryTimer=p.t===scored?0:3.3;p.action=p.t===scored?'celebrate':'cry';p.actionTimer=3.3;}
   for(let t=0;t<2;t++)for(const src of this.rosters[t]){
    if(this.players.some(p=>p.t===t&&p.src.id===src.id))continue;
@@ -974,7 +974,7 @@ export class GameEngine{
   if(s.pass&&!aerialCross&&!this.input.released?.(p.t,'pass')){p.passHold=(p.passHold||0)+dt;
    if(this.ball.owner!==p&&!(this.ball.owner?.t===p.t&&this.ball.owner.keeper)&&p.passHold>.24){p.chase=Math.max(p.chase||0,0.36);p.passUsed=true;}}
   else if((p.passHold||0)>0||this.input.released?.(p.t,'pass')){
-   if(!p.passUsed){if(this.ball.owner===p){if(p.keeper)this.distributeKeeper(p,Math.max(p.passHold,this.input.tapDuration?.(p.t,'pass')||0)>.24?'long':'short');else this.pass(p,Math.max(p.passHold,this.input.tapDuration?.(p.t,'pass')||0)>.24,false);}else if(this.ball.owner?.t===p.t&&this.ball.owner.keeper)this.distributeKeeper(this.ball.owner);else this.tackle(p,false);}
+   if(!p.passUsed){const held=Math.max(Number(p.passHold)||0,this.input.tapDuration?.(p.t,'pass')||0);if(this.ball.owner===p){if(p.keeper)this.distributeKeeper(p,held>.24?'long':'short');else this.pass(p,held>.24,false);}else if(this.ball.owner?.t===p.t&&this.ball.owner.keeper)this.distributeKeeper(this.ball.owner,held>.24?'long':'auto');else this.tackle(p,false);}
    p.passHold=0;p.passUsed=false;
   }
   const dribbleDown=this.input.just(p.t,'dribble');

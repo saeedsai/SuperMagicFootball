@@ -1,0 +1,23 @@
+{
+  "format": "FootballSpriteAssetBundle",
+  "version": 1,
+  "source": "headless_body_sheet_raw.png",
+  "items": [
+    {
+      "file": "headless_body_sheet_raw_transparent.png",
+      "view": "front",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "bodyPart",
+      "mirror": false,
+      "cropSource": {
+        "x": 0,
+        "y": 0,
+        "w": 1536,
+        "h": 1024
+      },
+      "width": 1536,
+      "height": 1024
+    }
+  ]
+}

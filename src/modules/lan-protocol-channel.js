@@ -1,8 +1,10 @@
 // LAN-013: bind the existing host-authoritative protocol to an RTCDataChannel.
 // The caller owns peer connection, SDP/ICE exchange and match-loop integration.
 import {
-  normalizeLanPacket, createLanHostSession, acceptLanHostMessage, advanceLanHostFrame,
-  createLanGuestSession, acceptLanGuestHello, sendLanGuestFrame, sendLanChannelPacket
+  normalizeLanPacket, LAN_GUEST_INPUT_MAX_BUFFERED_BYTES,
+  createLanHostSession, acceptLanHostMessage, advanceLanHostFrame,
+  createLanGuestSession, acceptLanGuestHello, sendLanGuestFrame, sendLanChannelPacket,
+  buildLanResultAck
 } from './lan_protocol.js';
 
 const bindings = new WeakMap();
@@ -47,6 +49,28 @@ function bindLanProtocolChannel(localHello, channel) {
   // LAN-026: deterministic, read-only notification for each successfully
   // consumed authoritative host frame. No observer may advance the queue.
   const frameObservers = new Set();
+  // Acknowledgement observers are separate from the input/frame queues; an
+  // ACK can never consume or advance a gameplay control sequence.
+  const resultAckObservers = new Set();
+  function subscribeResultAck(listener, signal = null) {
+    if (local.role !== 'host') throw new Error('LAN result acknowledgement subscription requires host');
+    if (typeof listener !== 'function') throw new TypeError('LAN result acknowledgement listener required');
+    if (signal != null && (typeof signal.addEventListener !== 'function' ||
+        typeof signal.removeEventListener !== 'function' || typeof signal.aborted !== 'boolean')) {
+      throw new TypeError('LAN result acknowledgement subscription requires an AbortSignal');
+    }
+    const entry = {listener, signal, unsubscribe:null};
+    const unsubscribe = () => {
+      resultAckObservers.delete(entry);
+      signal?.removeEventListener('abort', unsubscribe);
+    };
+    entry.unsubscribe = unsubscribe;
+    if (!disposed && !signal?.aborted) {
+      resultAckObservers.add(entry);
+      signal?.addEventListener('abort', unsubscribe, {once:true});
+    }
+    return unsubscribe;
+  }
   function subscribeFrame(listener, signal = null) {
     if (local.role !== 'host') throw new Error('LAN host frame subscription requires host');
     if (typeof listener !== 'function') throw new TypeError('LAN frame listener required');
@@ -83,8 +107,16 @@ function bindLanProtocolChannel(localHello, channel) {
         if (local.role === 'host') {
           const nextFrame = Math.max(0, (state.lastSimulatedFrame ?? -1) + 1);
           const received = acceptLanHostMessage(state, event.data, nextFrame);
-          if (received.kind === 'accepted') {
+          if(received.kind==='result-ack'){
+            for(const observer of [...resultAckObservers]){
+              try{observer.listener(received.packet);}catch{/* isolate ack observers */}
+            }
+            return;
+          }
+          if (received.kind === 'accepted' || received.kind === 'late-frame') {
             state = received.state;
+          }
+          if (received.kind === 'accepted') {
             // The queue contains only validated, in-window inputs. The latest
             // accepted packet is immutable and remains queued for advance().
             const packet = state.queue.pending.at(-1);
@@ -119,6 +151,15 @@ function bindLanProtocolChannel(localHello, channel) {
     return sent.packet;
   }
 
+  function sendResultAck(receiptId) {
+    if (disposed || local.role !== 'guest' || !helloSent) {
+      throw new Error('LAN guest channel is not ready');
+    }
+    const packet=buildLanResultAck(local.session,receiptId);
+    sendLanChannelPacket(channel,packet,{maxBufferedAmount:LAN_GUEST_INPUT_MAX_BUFFERED_BYTES});
+    return packet;
+  }
+
   function advance(frame) {
     if (disposed || local.role !== 'host' || !state.peer.ready) {
       throw new Error('LAN host channel is not ready');
@@ -140,6 +181,7 @@ function bindLanProtocolChannel(localHello, channel) {
     channel.removeEventListener('close', dispose);
     for (const observer of [...inputObservers]) observer.unsubscribe();
     for (const observer of [...frameObservers]) observer.unsubscribe();
+    for (const observer of [...resultAckObservers]) observer.unsubscribe();
     bindings.delete(channel);
   }
 
@@ -147,7 +189,7 @@ function bindLanProtocolChannel(localHello, channel) {
   channel.addEventListener('message', onMessage);
   channel.addEventListener('close', dispose);
   const binding = Object.freeze({
-    hello, sendInput, advance, subscribeInput, subscribeFrame, dispose,
+    hello, sendInput, sendResultAck, advance, subscribeInput, subscribeFrame, subscribeResultAck, dispose,
     get ready() { return !disposed && helloSent && state.peer.ready; },
     get state() { return state; },
     get disposed() { return disposed; }

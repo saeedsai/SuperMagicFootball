@@ -65,3 +65,16 @@ test('LAN wire enforces UTF-8 byte cap and avoids mutation of caller controls', 
   assert.throws(() => decodeLanWirePacket('é'.repeat(LAN_MAX_WIRE_BYTES)),TypeError);
   assert.throws(() => decodeLanWirePacket(new Uint8Array([123,125])),TypeError);
 });
+
+test('LAN wire rejects oversized string frames before UTF-8 allocation', async () => {
+  const {decodeLanWirePacket,LAN_MAX_WIRE_BYTES}=await load('lan-wire.js');
+  const original=TextEncoder.prototype.encode;
+  let encoded=false;
+  TextEncoder.prototype.encode=function(value){encoded=true;return original.call(this,value);};
+  try {
+    assert.throws(()=>decodeLanWirePacket(' '.repeat(LAN_MAX_WIRE_BYTES+1)),/Invalid LAN wire data size/);
+    assert.equal(encoded,false,'oversized input is rejected before allocating its encoded copy');
+  } finally {
+    TextEncoder.prototype.encode=original;
+  }
+});

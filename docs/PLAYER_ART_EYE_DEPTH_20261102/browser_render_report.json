@@ -1,0 +1,13 @@
+{
+  "sprites": 4,
+  "blank": 0,
+  "clipped": 0,
+  "cases": [
+    "FRONT LEFT",
+    "FRONT RIGHT",
+    "QUARTER FRONT LEFT",
+    "QUARTER FRONT RIGHT"
+  ],
+  "pageErrors": [],
+  "ok": true
+}

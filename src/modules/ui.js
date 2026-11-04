@@ -6,6 +6,7 @@ import {ABILITIES} from "./abilities.js";
 import {DRIBBLES} from "./dribbles.js";
 import {ABILITY_ICONS} from "./ability-icons.js";
 import {STATS} from "./stats.js";
+import {FITNESS} from "./fitness.js";
 import {JUMPMETRICS} from "./jumpmetrics.js";
 import {MORALE} from "./morale.js";
 import {DATA} from "./data.js";
@@ -21,6 +22,7 @@ import {TOURNAMENTS} from "./tournaments.js";
 import {CAREER} from "./career.js";
 import {CAREER_SLOTS} from "./career_slots.js";
 import {CUP_SLOTS} from "./cup_slots.js";
+import {ECONOMY} from "./economy.js";
 import {RELEASE} from "./release.js";
 import {mountLanLobby} from "./lan-lobby.js";
 import {createLanLiveMatch} from "./lan-live-match.js";
@@ -31,7 +33,7 @@ import {BPWPERSONALITY} from "./bpwpersonality.js";
 import {RENDER} from "./render.js";
 import {CONCEPT_MODULAR} from "./conceptmodular.js";
 import {GAME_ASSETS} from "../assets.js";
-(()=>{const {ArcadeAudio,AUDIO_DEFAULTS}=AUDIO;const {JAPAN_ROSTER,TEAMS,rosterFor,SHOTS,DEFAULT_OPTIONS,DEFAULT_LINEUP,WEATHER,TERRAIN,CONDITIONS,FORMATIONS}=DATA;const {Input}=INPUT;const {TEAM_TALKS,moodLabel}=MORALE;const {AI_LEVELS,aiTuning}=AI;const {withStats,NUMERIC_STATS,overallForPosition}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel}=SPECIALS;const {kitFor,KIT_CHOICES}=KITS;const {teamIdentity,countryFlag,countryCode,isClub}=IDENTITY;const {careerClubIds,clubRegion,clubCountry,countryName,availableRegions,availableCountries,clubsInCountry}=CLUBFILTERS;const {defaultPlan,safePlan,validatePlan,ATTACK_STYLES,DEFENCE_STYLES}=TACTICS;const {GameEngine}=ENGINE;const {Renderer}=RENDER;const {installExpansion,avatarFor,NATURAL_SKIN_TONES,NATURAL_HAIR_COLORS,STUDIO_ASSET_LABELS}=EXPANDED;const {installBPWWorldCups,BPW_YEARS}=BPW;const {installBPWAllTime}=BPWALLTIME;const {CONTINENTS,SIX_TOP_BY_CONTINENT,installContinentalClubs}=CONTINENTAL;const {createTournament,tournamentCurrent,tournamentAdvance,tournamentStandings,tournamentProgress,validateTournament}=TOURNAMENTS;const {createCareer,currentCareerFixture,advanceCareer,standings,nextSeason,purchase,upgradeFacility,trainPlayer,scoutAcademy,signAcademy,renewContract,recoverPlayer,careerCoverage,recordMatchFitness}=CAREER;
+(()=>{const {ArcadeAudio,AUDIO_DEFAULTS}=AUDIO;const {JAPAN_ROSTER,TEAMS,rosterFor,SHOTS,DEFAULT_OPTIONS,DEFAULT_LINEUP,WEATHER,TERRAIN,CONDITIONS,FORMATIONS,STADIUMS}=DATA;const {Input}=INPUT;const {TEAM_TALKS,moodLabel}=MORALE;const {AI_LEVELS,aiTuning}=AI;const {withStats,NUMERIC_STATS,overallForPosition,verifiedRatingTierForPlayer}=STATS;const {initialFatigue}=FITNESS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel}=SPECIALS;const {kitFor,KIT_CHOICES,matchContrast,bestContrastSelections}=KITS;const {teamIdentity,countryFlag,countryCode,isClub}=IDENTITY;const {careerClubIds,clubRegion,clubCountry,countryName,availableRegions,availableCountries,clubsInCountry}=CLUBFILTERS;const {defaultPlan,safePlan,validatePlan,ATTACK_STYLES,DEFENCE_STYLES}=TACTICS;const {GameEngine}=ENGINE;const {Renderer}=RENDER;const {installExpansion,avatarFor,NATURAL_SKIN_TONES,NATURAL_HAIR_COLORS,STUDIO_ASSET_LABELS}=EXPANDED;const {installBPWWorldCups,BPW_YEARS}=BPW;const {installBPWAllTime}=BPWALLTIME;const {CONTINENTS,SIX_TOP_BY_CONTINENT,installContinentalClubs}=CONTINENTAL;const {createTournament,tournamentCurrent,tournamentAdvance,tournamentStandings,tournamentProgress,validateTournament}=TOURNAMENTS;const {createCareer,currentCareerFixture,advanceCareer,standings,careerSeasonReview,completedSeasonArchive,nextSeason,purchase,upgradeFacility,trainPlayer,scoutAcademy,signAcademy,renewContract,recoverPlayer,careerCoverage,recordMatchFitness,verifiedPlayerAgeOnDate}=CAREER;
 
 
 
@@ -124,67 +126,134 @@ TEAMS.push({id:CROWN_ROYALS_ID,index:TEAMS.length,name:'Crown Royals (Art WIP)',
 
 const careerStorage=(()=>{try{return window.localStorage}catch{return {getItem(){return null},setItem(){throw Error('Persistent storage unavailable')},removeItem(){throw Error('Persistent storage unavailable')}}}})();
 const careerSlots=CAREER_SLOTS.create(careerStorage);
+const tokenWallet=ECONOMY.create(careerStorage);
 let career=store.get('managerCareer',null),creatingCareer=false;
+// Never let a structurally damaged legacy mirror reach Career screens or migrate into a vault.
+if(career&&!CAREER_SLOTS.validCareer(career))career=null;
 // Migrate pre-0.6 custom-club index saves: v0.5 appended user clubs at index 83.
 if(career&&!career.saveSchema&&clubs.length){const oldToNew=id=>Number.isInteger(id)&&id>=83&&id<83+clubs.length?(TEAMS.findIndex(t=>t.id===clubs[id-83].id)):id;
  if(career.club>=83&&career.club<83+clubs.length){career.club=oldToNew(career.club);career.members=career.members.map(oldToNew);career.fixtures=career.fixtures.map(r=>r.map(pair=>pair.map(oldToNew)));career.table=Object.fromEntries(Object.entries(career.table).map(([id,v])=>[oldToNew(+id),v]));(Array.isArray(career.history)?career.history:[]).forEach(r=>{if(r&&typeof r==='object')r.against=oldToNew(r.against)});if(career.lastResult&&typeof career.lastResult==='object')career.lastResult.against=oldToNew(career.lastResult.against);career.saveSchema=2;store.put('managerCareer',career)}
 }
-if(!careerSlots.error){try{careerSlots.importLegacy(career);if(careerSlots.hasVault)career=careerSlots.activeCareer();}catch(error){console.warn('Career slot migration could not be saved:',error);}}
+if(career&&!careerBackupTeamReferencesValid(career))career=null;
+if(!careerSlots.error){try{careerSlots.importLegacy(career);if(careerSlots.hasVault){const saved=careerSlots.activeCareer();career=saved&&careerBackupTeamReferencesValid(saved)?saved:null;}}catch(error){console.warn('Career slot migration could not be saved:',error);}}
 let continentalRun=store.get('continentalRun',null);if(!validateTournament(continentalRun,TEAMS))continentalRun=null;
 // SAVE-102: migrate existing Cup campaign without deleting the legacy save.
 const cupSlots=CUP_SLOTS.create(careerStorage);
 if(!cupSlots.error){try{
  cupSlots.importLegacy(continentalRun);
- if(cupSlots.hasVault){const saved=cupSlots.activeTournament();if(saved&&validateTournament(saved,TEAMS))continentalRun=saved;}
+ if(cupSlots.hasVault){const saved=cupSlots.activeTournament();continentalRun=saved&&validateTournament(saved,TEAMS)?saved:null;}
 }catch(error){console.warn('Cup slot migration could not be saved:',error);}}
 
 let continentSelection='UEFA';
 let managerRegion='',managerCountry='';
-const opt={...DEFAULT_OPTIONS,...store.get('options',{})};opt.ballModel=VISUALFEEL.validBallModel(opt.ballModel);
+const storedOptions=store.get('options',{}),opt={...DEFAULT_OPTIONS,...storedOptions};
+if(!STADIUMS.some(v=>v.id===opt.stadium))opt.stadium=DEFAULT_OPTIONS.stadium;
+// Respect the device's reduced-motion preference for high-energy flashes unless
+// the player has already saved an explicit in-game preference.
+if(typeof storedOptions?.reducedFlash!=='boolean'&&typeof matchMedia==='function')
+ opt.reducedFlash=!!matchMedia('(prefers-reduced-motion: reduce)').matches;
+opt.ballModel=VISUALFEEL.validBallModel(opt.ballModel);
+opt.renderQuality=opt.renderQuality==='performance'?'performance':'high';renderer.setRenderQuality(opt.renderQuality);
 input.setBindings(store.get('controllerBindings',input.getBindings()));
 const kitSelections=(()=>{const k=store.get('kitSelections',null);return Array.isArray(k)?[k[0]==='away'?'away':'home',k[1]==='home'?'home':'away']:['home','away'];})();
 let preTalkChoices=['none','none'];let home=0,away=9,homeCategory='all',awayCategory='all',mode='quick',humans=1,formation=opt.formation||'2-1-2',lineup=store.get('lineup',DEFAULT_LINEUP.slice()), edits=store.get('edits',{}),screen='home';
+let arcadeShotId='',arcadeShotPlayerId='';
+let activeMatchReceiptId=null,matchReceiptSequence=0;
+let storeCategory='superShot',storeSearch='',storePage=0,storeNotice='',storeCatalogCache=null;
+function newMatchReceiptId(){
+ matchReceiptSequence++;
+ const uuid=globalThis.crypto?.randomUUID?.();
+ if(uuid)return `local-match-${uuid}`;
+ const random=Math.random().toString(36).slice(2,14);
+ return `local-match-${Date.now().toString(36)}-${matchReceiptSequence.toString(36)}-${random}`;
+}
 let teamPlans=store.get('teamPlans',{}),squadContext='home',squadSide=0,squadReturnAtHalf=false;
 let league=store.get('league',{played:0,wins:0,draws:0,losses:0,points:0,playoff:0,stage:'qualifier',games:[]});
 const audio=new ArcadeAudio({...AUDIO_DEFAULTS,...store.get('audioOptions',{}),...(opt.sfx===false?{mute:true}:{})});
 const game=new GameEngine(opt,input),menu=$('menu'),hud=$('hud'),touch=$('mobile'),perfHud=$('perfHud');
 const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const button=(name,act,cls='')=>`<button class="btn ${cls}" data-action="${act}">${name}</button>`;
-const choice=(id,values,selected)=>`<select id="${id}" class="choice">${values.map(([key,name])=>`<option value="${escapeHTML(key)}" ${String(key)===String(selected)?'selected':''}>${escapeHTML(name)}</option>`).join('')}</select>`;
+const button=(name,act,cls='',ariaLabel='')=>`<button class="btn ${cls}" data-action="${act}"${ariaLabel?` aria-label="${escapeHTML(ariaLabel)}"`:''}>${name}</button>`;
+const slotActionButton=(label,action,kind,number)=>{
+ const verb=label==='SAVE HERE'?'Save to':label.charAt(0)+label.slice(1).toLowerCase();
+ return button(label,action,'',`${verb} ${kind} slot ${number}`);
+};
+const choice=(id,values,selected,ariaLabel='')=>`<select id="${id}" class="choice" ${ariaLabel?`aria-label="${escapeHTML(ariaLabel)}"`:''}>${values.map(([key,name])=>`<option value="${escapeHTML(key)}" ${String(key)===String(selected)?'selected':''}>${escapeHTML(name)}</option>`).join('')}</select>`;
 const aiChoices=()=>AI_LEVELS.map(l=>[l.id,l.name]);
 const difficultyHint=()=>`<p class="muted" id="difficultyHint">${escapeHTML(aiTuning(opt.difficulty).name)} CPU: reaction, shot accuracy, passing, pressure and keeper response all scale by difficulty. Human players are unaffected.</p>`;
 const field=(name,id,values,selected)=>`<label class="fieldLabel" for="${id}">${name}</label>${choice(id,values,selected)}`;
 
 // Native select remains keyboard-accessible; the adjacent icon browser displays
 // actual team flags and original crests while searching and selecting a team.
-const teamField=(name,id,values,selected)=>`${field(name,id,values,selected)}<div class="teamPickTools"><span class="teamPickCurrent" id="${id}Identity">${TEAMS[selected]?teamIdentity(TEAMS[selected]):''}</span><button type="button" class="btn minor teamBrowseToggle" data-team-browse="${id}" aria-expanded="false" aria-controls="${id}Browse">⚑ BROWSE FLAGS / CRESTS</button></div><div class="teamBrowsePanel hidden" id="${id}Browse"><label class="fieldLabel" for="${id}Search">SEARCH TEAM</label><input class="teamBrowseSearch" id="${id}Search" type="search" data-team-search="${id}" placeholder="Search by team or country" autocomplete="off"/><div class="teamBrowseResults" id="${id}Results" role="listbox" aria-label="Teams with flags and crests"></div></div>`;
+const teamField=(name,id,values,selected)=>`${field(name,id,values,selected)}<div class="teamPickTools"><span class="teamPickCurrent" id="${id}Identity">${TEAMS[selected]?teamIdentity(TEAMS[selected]):''}</span><button type="button" class="btn minor teamBrowseToggle" data-team-browse="${id}" aria-expanded="false" aria-controls="${id}Browse">⚑ BROWSE FLAGS / CRESTS</button></div><div class="teamBrowsePanel hidden" id="${id}Browse"><label class="fieldLabel" for="${id}Search">SEARCH TEAM</label><input class="teamBrowseSearch" id="${id}Search" type="search" data-team-search="${id}" aria-controls="${id}Results" aria-describedby="${id}ResultsStatus" placeholder="Search by team or country" autocomplete="off"/><p class="teamBrowseStatus" id="${id}ResultsStatus" role="status" aria-live="polite" aria-atomic="true"></p><div class="teamBrowseResults" id="${id}Results" role="listbox" aria-label="Teams with flags and crests"></div></div>`;
 function updateTeamPickerIcon(id){const target=$(id+'Identity'),team=TEAMS[Number($(id)?.value)];if(target)target.innerHTML=team?teamIdentity(team):'';}
-function fillTeamBrowser(id){const select=$(id),panel=$(id+'Browse'),out=$(id+'Results');if(!select||!panel||!out)return;const query=($(id+'Search')?.value||'').trim().toLocaleLowerCase();const available=[...select.options].filter(o=>o.value!==''&&TEAMS[Number(o.value)]).map(o=>Number(o.value));const matching=available.filter(i=>!query||`${TEAMS[i].name} ${countryName(clubCountry(TEAMS[i]),TEAMS)} ${clubCountry(TEAMS[i])}`.toLocaleLowerCase().includes(query));const first=matching.slice(0,60);out.innerHTML=first.map(i=>`<button type="button" class="teamPickItem ${String(i)===select.value?'selected':''}" role="option" aria-selected="${String(i)===select.value}" data-pick-team="${id}" data-team-id="${i}">${teamIdentity(TEAMS[i])}<span>${escapeHTML(TEAMS[i].name)}<small>${escapeHTML(countryName(clubCountry(TEAMS[i]),TEAMS))}</small></span></button>`).join('')||'<p class="muted">No matching teams</p>';if(matching.length>60)out.innerHTML+=`<p class="muted">Showing 60 of ${matching.length}. Type to narrow your search.</p>`;}
+function fillTeamBrowser(id){const select=$(id),panel=$(id+'Browse'),out=$(id+'Results'),status=$(id+'ResultsStatus');if(!select||!panel||!out)return;const query=($(id+'Search')?.value||'').trim().toLocaleLowerCase();const available=[...select.options].filter(o=>o.value!==''&&TEAMS[Number(o.value)]).map(o=>Number(o.value));const matching=available.filter(i=>!query||`${TEAMS[i].name} ${countryName(clubCountry(TEAMS[i]),TEAMS)} ${clubCountry(TEAMS[i])}`.toLocaleLowerCase().includes(query));const first=matching.slice(0,60),active=matching.includes(Number(select.value))?Number(select.value):first[0];out.innerHTML=first.map(i=>`<button type="button" class="teamPickItem ${String(i)===select.value?'selected':''}" role="option" aria-selected="${String(i)===select.value}" tabindex="${i===active?'0':'-1'}" data-pick-team="${id}" data-team-id="${i}">${teamIdentity(TEAMS[i])}<span>${escapeHTML(TEAMS[i].name)}<small>${escapeHTML(countryName(clubCountry(TEAMS[i]),TEAMS))}</small></span></button>`).join('')||'<p class="muted">No matching teams</p>';if(matching.length>60)out.innerHTML+=`<p class="muted">Showing 60 of ${matching.length}. Type to narrow your search.</p>`;if(status)status.textContent=matching.length===0?'No teams found.':matching.length>60?`${matching.length} teams found. Showing the first 60; refine your search to narrow the list.`:`${matching.length} ${matching.length===1?'team':'teams'} found.`;}
 function showTeamBrowser(id){const target=$(id+'Browse'),toggle=menu.querySelector(`[data-team-browse="${id}"]`);if(!target)return;const open=target.classList.contains('hidden');menu.querySelectorAll('.teamBrowsePanel').forEach(x=>x.classList.add('hidden'));menu.querySelectorAll('[data-team-browse]').forEach(x=>x.setAttribute('aria-expanded','false'));if(open){target.classList.remove('hidden');if(toggle)toggle.setAttribute('aria-expanded','true');fillTeamBrowser(id);$(id+'Search')?.focus();}}
+function teamBrowserKeydown(event){
+ const panel=event.target.closest?.('.teamBrowsePanel');if(!panel||panel.classList.contains('hidden'))return false;
+ const id=panel.id.replace(/Browse$/,''),options=[...panel.querySelectorAll('[role="option"]')];
+ if(event.key==='Escape'){event.preventDefault();event.stopPropagation();if(closeNestedMenuLayer())menu.querySelector(`[data-team-browse="${id}"]`)?.focus({preventScroll:true});return true;}
+ if(!options.length)return false;
+ const current=options.indexOf(document.activeElement),fromSearch=event.target.matches?.('.teamBrowseSearch');let next=-1;
+ if(fromSearch&&event.key==='ArrowDown')next=0;
+ else if(current>=0){
+  if(event.key==='ArrowDown'||event.key==='ArrowRight')next=Math.min(options.length-1,current+1);
+  else if(event.key==='ArrowUp'||event.key==='ArrowLeft')next=Math.max(0,current-1);
+  else if(event.key==='Home')next=0;
+  else if(event.key==='End')next=options.length-1;
+ }
+ if(next<0||next===current)return false;
+ event.preventDefault();options.forEach((option,index)=>option.tabIndex=index===next?0:-1);
+ options[next].focus({preventScroll:true});options[next].scrollIntoView({block:'nearest'});return true;
+}
 
 const nations=()=>TEAMS.map((t,i)=>[i,`[${t.group==='bpw_worldcup'?'WC':t.group==='bpw_alltime'?'AT':countryCode(t)||'FC'}] ${t.group==='national26'?'NAT ':t.group==='club26'?'CLB ':t.group==='continental'?'CUP ':t.group==='bpw_worldcup'?'BPW WC ':t.group==='bpw_alltime'?'BPW LEG ':t.group==='legends'?'LEG ':'ARC '}${t.name} (${t.rank})`]);
 const categoryOptions=[['all',`ALL ${TEAMS.length} TEAMS`],['arcade','1993 ARCADE TEAMS'],['national26','2026 NATIONAL TEAMS'],['club26','2026 FEATURED GLOBAL CLUBS'],['UEFA','EUROPE CHAMPIONS'],['AFC','ASIA CHAMPIONS'],['CAF','AFRICA CHAMPIONS'],['CONCACAF','NORTH AMERICA CHAMPIONS'],['CONMEBOL','SOUTH AMERICA CHAMPIONS'],['OFC','OCEANIA CHAMPIONS'],['legends','LEGENDARY TEAMS'],['bpw_worldcup','BPW WORLD CUP ALL-STARS (1998–2018)'],['bpw_alltime','BPW ALL-TIME LEGENDARY 12 ★']];
 const filteredNations=cat=>nations().filter(([i])=>cat==='all'||cat==='arcade'&&TEAMS[i].group===undefined||cat==='club26'&&TEAMS[i].group==='club26'||cat==='national26'&&TEAMS[i].group==='national26'||cat==='legends'&&TEAMS[i].group==='legends'||cat==='bpw_worldcup'&&TEAMS[i].group==='bpw_worldcup'||cat==='bpw_alltime'&&TEAMS[i].group==='bpw_alltime'||['UEFA','AFC','CAF','CONCACAF','CONMEBOL','OFC'].includes(cat)&&TEAMS[i].continent===cat);
 const roster=i=>(edits[TEAMS[i].id]||rosterFor(i)).map(withStats);
 const playerOVR=(p,position=p?.role)=>overallForPosition(p,position);
-const playerAbilityIcons=p=>ABILITY_ICONS.summary(p,SHOTS,ABILITIES.DEFENCE_MOVES,DRIBBLES.DRIBBLE_STYLES,STUDIO_MAGIC_TRICKS);
-// Elite Studio access accepts either a high legacy rating OR a high editable position OVR.
-// A lower legacy rating must not mask a qualifying set of current match attributes.
-const studioEliteEligible=p=>(Number.isFinite(Number(p?.rating))&&Number(p.rating)>=90)||playerOVR(p)>=90;
-// Magic Tricks are Star/Superstar-only (91+). Other elite equipment keeps
-// its established threshold; previously saved Tricks may be kept or removed.
-const studioMagicEligible=p=>!!p&&p.role!=='GK'&&((Number.isFinite(Number(p.rating))&&Number(p.rating)>=91)||playerOVR(p)>=91);
+const playerAbilityIcons=p=>ABILITY_ICONS.summary(p,SHOTS,ABILITIES.DEFENCE_MOVES,DRIBBLES.DRIBBLE_STYLES,STUDIO_MAGIC_TRICK_FULL_CATALOGUE);
+// New specialist equipment is unlocked only by source-verified canonical tiers.
+// Existing records remain visible and can still be kept or removed.
+const studioEliteEligible=p=>['Gold','Star','Superstar'].includes(verifiedRatingTierForPlayer(p));
+const studioMagicEligible=p=>!!p&&p.role!=='GK'&&['Star','Superstar'].includes(verifiedRatingTierForPlayer(p));
+const studioVerifiedDribbleEligible=p=>['Gold','Star','Superstar'].includes(verifiedRatingTierForPlayer(p));
+const studioSpinBumpEligible=p=>!!p&&p.role!=='GK'&&p.src?.role!=='GK'&&['Gold','Star','Superstar'].includes(verifiedRatingTierForPlayer(p));
+const studioSandTrapEligible=p=>!!p&&p.role!=='GK'&&p.src?.role!=='GK'&&['Gold','Star','Superstar'].includes(verifiedRatingTierForPlayer(p));
+const studioLightningEligible=p=>!!p&&p.role!=='GK'&&p.src?.role!=='GK'&&['Gold','Star','Superstar'].includes(verifiedRatingTierForPlayer(p));
+const studioWindEligible=p=>!!p&&p.role!=='GK'&&p.src?.role!=='GK'&&['Gold','Star','Superstar'].includes(verifiedRatingTierForPlayer(p));
+const studioMudEligible=p=>!!p&&p.role!=='GK'&&p.src?.role!=='GK'&&['Gold','Star','Superstar'].includes(verifiedRatingTierForPlayer(p));
 const planFor=i=>safePlan(teamPlans[TEAMS[i].id],roster(i),i);
+// Career tactics belong to the selected Career slot. The global teamPlans map
+// remains the source for non-Career modes and is consulted only to migrate
+// older Career saves that predate their embedded teamPlan field.
+function careerPlanFor(c){if(!c||!Array.isArray(c.roster))return null;return safePlan(c.teamPlan??teamPlans[TEAMS[c.club]?.id],c.roster,c.club);}
+function ensureCareerTeamPlan(c){if(!c||!Array.isArray(c.roster)||Object.hasOwn(c,'teamPlan'))return c;const migrated={...c,teamPlan:careerPlanFor(c)};try{careerSlots.save(careerSlots.active,migrated);store.put('managerCareer',migrated);}catch(error){console.warn('Career tactics migration could not be saved:',error.message);}return migrated;}
+if(career)career=ensureCareerTeamPlan(career);
 const identity=i=>teamIdentity(TEAMS[i]);
 const menuVisible=()=>!menu.classList.contains('hidden');
 const closeMenu=()=>{input.cancelAll();audio.sceneChange('match');menu.classList.add('hidden');hud.classList.remove('hidden');touch.classList.toggle('hidden',!matchMedia('(pointer:coarse)').matches)};
-let lanLobbyDispose=null,lanRuntime=null,lanPeer=null,lanRole=null,lanFailureSince=0,lanFinish=null,lanPlayerNames=null;
+let lanLobbyDispose=null,lanRuntime=null,lanPeer=null,lanRole=null,lanFailureSince=0,lanFinish=null,lanPlayerNames=null,lanResultCleanupPending=false;
 function stopLanMatch(){
   lanRuntime?.dispose();lanRuntime=null;
-  lanPeer?.dispose();lanPeer=null;lanRole=null;lanPlayerNames=null;lanFailureSince=0;lanFinish=null;
+  lanPeer?.dispose();lanPeer=null;lanRole=null;lanPlayerNames=null;lanFailureSince=0;lanFinish=null;lanResultCleanupPending=false;
 }
-const show=(html,id='home')=>{if(lanLobbyDispose){lanLobbyDispose();lanLobbyDispose=null;}if(lanRuntime)stopLanMatch();audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');menu.innerHTML=`<div class="menubox"><div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>${html}<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div></div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
-function page(title,subtitle,body,returnAction='home'){if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;menuBackAction=returnAction;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER</div><h1 class="heading">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title)}
+const show=(html,id='home')=>{if(screen==='CONTROLS'&&id!=='CONTROLS')cancelControlsChargePractice();if(lanLobbyDispose){lanLobbyDispose();lanLobbyDispose=null;}if(lanRuntime){const resultPage=['FULL TIME','CAREER MATCH RESULT','CONTINENTAL RESULT'].includes(id);if(lanRole==='host'&&resultPage&&['pending','failed'].includes(lanRuntime.resultAckStatus))lanResultCleanupPending=true;else stopLanMatch();}audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');const nameDialog=id==='SAVE SLOT NAME';menu.innerHTML=`<div class="menubox">${nameDialog?'':`<div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>`}${html}${nameDialog?'':`<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div>`}</div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
+function page(title,subtitle,body,returnAction='home'){if(screen==='CONTROLS'&&title!=='CONTROLS')cancelControlsChargePractice();if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;const routeChanged=screen!==title;menuBackAction=returnAction;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER</div><h1 class="heading" tabindex="-1">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title);if(routeChanged)menu.querySelector('.heading')?.focus({preventScroll:true})}
+const unsavedFormScreens=new Set(['PLAYER CUSTOMIZATION','MANAGER APPEARANCE','PLAYER DATA EDITOR','CUSTOM CLUB BUILDER','TEAM COMMAND CENTER','HALF TIME']);
+function menuHasUnsavedFormChanges(){
+ if(!unsavedFormScreens.has(screen))return false;
+ return [...menu.querySelectorAll('input,select,textarea')].some(field=>{
+  if(field.disabled||field.id==='customPose'||field.id==='studioGalleryPhase')return false;
+  if(field.type==='file')return !!field.files?.length;
+  if(field.tagName==='SELECT')return [...field.options].some(option=>option.selected!==option.defaultSelected);
+  if(field.type==='checkbox'||field.type==='radio')return field.checked!==field.defaultChecked;
+  return field.value!==field.defaultValue;
+ });
+}
+function confirmDiscardBeforeBack(actionId){
+ if(actionId!==menuBackAction||!menuHasUnsavedFormChanges())return true;
+ return confirm('Discard unsaved changes and leave this screen? Choose Cancel to stay and keep editing.');
+}
 // v0.8.24.7 — Menu handoff: five primary categories, no new gameplay modes.
 // Existing action handlers, saves, teams and engine remain the authority.
 const menuParents={
@@ -192,13 +261,74 @@ const menuParents={
  'nav-cups':'home','nav-international':'navCups','nav-clubs':'navCups',
  'nav-settings':'home','nav-settings-game':'navSettings','nav-settings-graphics':'navSettings',
  'nav-settings-sound':'navSettings','nav-customize':'navSettings','nav-input':'navSettings',
- 'nav-saves':'navSettings','nav-about':'home','nav-later':'navCups'
+ 'nav-saves':'navSettings','nav-about':'navSettings','nav-later':'navCups'
 };
-const navFocusMap={};let menuBackAction='home',menuEntryReturn='home';
+const navFocusMap={};let menuBackAction='home',menuEntryReturn='home',customizationReturn='home';
+function restoreHomeMenuFocus(){const target=menu.querySelector(`[data-action="${navFocusMap.home||'navQuick'}"]`)||menu.querySelector('.navChoice');target?.focus({preventScroll:true});}
 const navItem=(label,act,description='',availability='active',icon='⚽')=>({label,act,description,availability,icon});
+// Child-route cards use the same crisp vector language as Home. These emblems
+// are decorative; the existing button label remains the only spoken name.
+const NAV_ROUTE_ICON_PATHS={
+  navOnDevice:`<rect x="7" y="13" width="34" height="22" rx="6"/><path d="M15 19v10M10 24h10M32 20h.1M37 28h.1"/><circle cx="32" cy="20" r="2.2" class="iconFill"/><circle cx="37" cy="28" r="2.2" class="iconFill"/>`,
+  navLan:`<circle cx="24" cy="34" r="3" class="iconFill"/><path d="M16 26a11 11 0 0 1 16 0M10 20a20 20 0 0 1 28 0M5 14a27 27 0 0 1 38 0M24 37v5M18 42h12"/>`,
+  navOnlineP2P:`<circle cx="10" cy="24" r="5"/><circle cx="38" cy="12" r="5"/><circle cx="38" cy="36" r="5"/><path d="m15 22 18-8M15 26l18 8M24 20v8"/>`,
+  quick:`<circle cx="24" cy="24" r="17"/><path d="m24 13 7 5-3 8h-8l-3-8 7-5ZM17 18l-7 2M17 26l-5 7M28 26l5 7M31 18l7 2"/>`,
+  versus:`<circle cx="17" cy="15" r="6"/><circle cx="32" cy="17" r="5"/><path d="M6 39v-3c0-8 4-12 11-12s11 4 11 12v3M26 27c7-3 14 1 15 8v4H29"/>`,
+  pk:`<path d="M7 8v32M41 8v32M7 24h34M15 16h18M15 32h18"/><circle cx="24" cy="24" r="5" class="iconFill"/>`,
+  training:`<path d="M8 39h32M12 35l5-13 5 13M27 35l5-22 5 22"/><path d="m23 10 1.5 3.5L28 15l-3.5 1.5L23 20l-1.5-3.5L18 15l3.5-1.5L23 10Z" class="iconFill"/>`,
+  laterUltimate:`<circle cx="24" cy="24" r="16"/><path d="m24 12 3.6 7.4 8.2 1.2-5.9 5.8 1.4 8.2-7.3-3.9-7.3 3.9 1.4-8.2-5.9-5.8 8.2-1.2L24 12Z" class="iconFill"/>`,
+  laterOnlineCareer:`<path d="M9 38V15h30v23H9ZM16 15V9h16v6M15 24h18M15 30h11"/><circle cx="32" cy="31" r="5" class="iconFill"/>`,
+  laterOnlineCup:`<path d="M15 8h18v10c0 8-4 13-9 13s-9-5-9-13V8ZM15 12H8v5c0 5 3 8 8 8M33 12h7v5c0 5-3 8-8 8M24 31v7M17 40h14"/><path d="m24 12 1.4 2.8 3.1.5-2.2 2.2.5 3.1-2.8-1.5-2.8 1.5.5-3.1-2.2-2.2 3.1-.5L24 12Z" class="iconFill"/>`,
+  navNewCareer:`<path d="M8 39h32M11 34V24h7v10M21 34V18h7v16M31 34V10h7v24M9 13h11M14.5 7.5v11"/>`,
+  manager:`<rect x="9" y="7" width="30" height="34" rx="4"/><circle cx="24" cy="19" r="6"/><path d="M15 35c1-6 4-9 9-9s8 3 9 9M15 12h4M29 12h4"/>`,
+  navCareerSlots:`<path d="M8 10h32v30H8zM8 18h32M8 27h32M14 14h5M14 23h5M14 33h8"/><circle cx="34" cy="14" r="2" class="iconFill"/>`,
+  navInternational:`<circle cx="24" cy="24" r="17"/><path d="M7 24h34M24 7c5 5 7 10 7 17s-2 12-7 17M24 7c-5 5-7 10-7 17s2 12 7 17M10 15h28M10 33h28"/>`,
+  navClubs:`<path d="M24 6 40 12v11c0 10-7 16-16 20C15 39 8 33 8 23V12L24 6Z"/><path d="M15 24h18M24 15v18M17 17l14 14M31 17 17 31"/>`,
+  league:`<path d="M8 39h32M12 34V25h7v9M22 34V16h7v18M32 34V9h7v25"/><path d="m11 18 8-6 7 2 12-8M34 6h4v4"/>`,
+  navCupSlots:`<path d="M8 9h32v31H8zM8 17h32M8 25h32M8 33h32"/><path d="M18 14h12M19 22h10M20 30h8M24 33v5"/>`,
+  laterCustomCup:`<path d="M15 8h18v10c0 8-4 13-9 13s-9-5-9-13V8ZM15 12H8v5c0 5 3 8 8 8M33 12h7v5c0 5-3 8-8 8M24 31v7M17 40h14M35 7v8M31 11h8"/>`,
+  laterCustomLeague:`<path d="M8 39h32M11 34V25h7v9M22 34V17h7v17M33 34V9h6v25M31 7h10"/><path d="m16 18 8-7 8 2"/>`,
+  laterWorldCup:`<circle cx="24" cy="15" r="8"/><path d="M20 23 16 31h16l-4-8M18 31l-3 9h18l-3-9M8 22h8M32 22h8M24 7V4"/>`,
+  laterAsian:`<path d="M24 7 28 18l12 1-9 7 3 12-10-7-10 7 3-12-9-7 12-1 4-11Z"/><path d="M24 7v24M12 19h24"/>`,
+  laterEuro:`<circle cx="24" cy="24" r="17"/><path d="m24 10 3 9h9l-7 5 3 9-8-5-8 5 3-9-7-5h9l3-9Z" class="iconFill"/>`,
+  laterCopa:`<path d="M14 9h20v12c0 7-4 11-10 11s-10-4-10-11V9ZM14 14H7v5c0 5 3 8 8 8M34 14h7v5c0 5-3 8-8 8M24 32v6M17 41h14"/><path d="M19 5h10v4H19z"/>`,
+  laterAfrica:`<path d="m24 5 12 7-2 11-8 17-10-6-4-12 3-12 9-5Z"/><circle cx="25" cy="19" r="3" class="iconFill"/>`,
+  laterConcacaf:`<path d="M13 8h22l6 16-6 16H13L7 24l6-16Z"/><path d="m17 16 14 16M31 16 17 32M24 11v26"/>`,
+  continents:`<circle cx="24" cy="24" r="17"/><path d="M7 24h34M24 7c5 5 7 10 7 17s-2 12-7 17M24 7c-5 5-7 10-7 17s2 12 7 17"/><path d="m18 12 3 3-2 4M30 27l4 2-1 5"/>`,
+  laterChampions:`<path d="M24 6 40 12v11c0 10-7 16-16 20C15 39 8 33 8 23V12L24 6Z"/><path d="m24 13 2.4 5 5.6.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.6-.8 2.4-5Z" class="iconFill"/>`,
+  laterEuropa:`<path d="M10 12h28M13 12v24h22V12M19 18h10M19 24h10M19 30h6"/><circle cx="33" cy="32" r="5" class="iconFill"/>`,
+  laterPremier:`<path d="M9 38h30L34 18l-7 8-4-17-6 16-7-5-1 18Z"/><circle cx="12" cy="14" r="3" class="iconFill"/>`,
+  laterSerie:`<path d="M10 39h28M13 34V19h8v15M27 34V10h8v24"/><path d="M11 14h10M27 6h8"/>`,
+  laterBundes:`<circle cx="24" cy="24" r="17"/><path d="M24 9v30M9 24h30M14 14l20 20M34 14 14 34"/><circle cx="24" cy="24" r="4" class="iconFill"/>`,
+  laterLaLiga:`<circle cx="24" cy="24" r="17"/><path d="m24 8 4 10 11 2-8 7 2 11-9-6-9 6 2-11-8-7 11-2 4-10Z"/>`,
+  laterLigue1:`<circle cx="24" cy="24" r="17"/><path d="M15 32c8 0 8-16 18-16M14 24h8M27 24h8M17 12l-4 4M35 32l-4 4"/>`,
+  navGameSettings:`<path d="M8 13h32M8 24h32M8 35h32"/><circle cx="19" cy="13" r="4" class="iconFill"/><circle cx="31" cy="24" r="4" class="iconFill"/><circle cx="16" cy="35" r="4" class="iconFill"/>`,
+  navGraphics:`<rect x="6" y="8" width="36" height="25" rx="3"/><path d="M18 40h12M24 33v7M10 28h28"/><circle cx="24" cy="19" r="5" class="iconFill"/>`,
+  navSound:`<path d="M7 20h8l10-8v24l-10-8H7zM30 18a9 9 0 0 1 0 12M34 13a16 16 0 0 1 0 22"/>`,
+  navCustomization:`<path d="M8 27c0-11 8-19 19-19 8 0 13 5 13 12 0 4-3 7-7 7h-4c-2 0-3 2-2 4 1 3-1 7-6 7-8 0-13-5-13-11Z"/><circle cx="17" cy="19" r="2" class="iconFill"/><circle cx="25" cy="14" r="2" class="iconFill"/><circle cx="32" cy="19" r="2" class="iconFill"/>`,
+  navInput:`<rect x="7" y="13" width="34" height="22" rx="6"/><path d="M15 19v10M10 24h10M33 20h.1M37 28h.1M19 9l5 4 5-4"/>`,
+  help:`<path d="M12 8h21a4 4 0 0 1 4 4v27H16a4 4 0 0 1-4-4V8ZM12 12H8v23a4 4 0 0 0 4 4"/><path d="M19 17c1-5 10-5 10 1 0 4-5 4-5 8M24 32h.1"/>`,
+  playerStudio:`<circle cx="24" cy="16" r="8"/><path d="M9 41c1-10 6-15 15-15s14 5 15 15M16 16h.1M32 16h.1M21 21h6"/>`,
+  editor:`<rect x="7" y="7" width="34" height="34" rx="3"/><path d="M18 7v34M29 7v34M7 18h34M7 29h34"/><circle cx="13" cy="13" r="2" class="iconFill"/>`,
+  squad:`<path d="M24 8v8M13 21h22M13 21v14M24 21v14M35 21v14"/><circle cx="24" cy="9" r="4"/><circle cx="13" cy="37" r="4"/><circle cx="24" cy="37" r="4"/><circle cx="35" cy="37" r="4"/>`,
+  gallery:`<path d="M8 10h32v28H8zM13 32l8-9 5 5 4-5 6 9"/><circle cx="17" cy="17" r="3" class="iconFill"/><path d="m30 8 2-4 2 4"/>`,
+  controls:`<rect x="6" y="13" width="36" height="22" rx="6"/><path d="M15 19v10M10 24h10M32 20h.1M37 28h.1"/>`,
+  navSaveManagement:`<path d="M9 7h25l5 5v29H9zM15 7v11h17V7M15 41V26h18v15"/><path d="M19 11h7"/>`,
+  navAbout:`<circle cx="24" cy="24" r="17"/><path d="M24 21v12M24 15h.1"/>`,
+  exportSave:`<path d="M24 7v23M16 22l8 8 8-8M9 34v7h30v-7"/><path d="M15 11h18"/>`,
+  importSave:`<path d="M24 31V8M16 16l8-8 8 8M9 34v7h30v-7"/><path d="M15 11h18"/>`,
+  careerBackupExport:`<path d="M9 7h25l5 5v29H9zM15 7v11h17V7M15 41V26h18v15"/><path d="M24 29v9M20 34l4 4 4-4"/>`,
+  careerBackupImport:`<path d="M9 7h25l5 5v29H9zM15 7v11h17V7M15 41V26h18v15"/><path d="M24 38v-9M20 33l4-4 4 4"/>`
+ };
+const NAV_ROUTE_ICON_FALLBACKS={ '🎮':'navInput','📡':'navLan','🌐':'navInternational','⚽':'quick','🥅':'pk','💥':'training','⭐':'laterUltimate','💼':'manager','🏆':'navCupSlots','💾':'navCareerSlots','🌍':'navInternational','🌏':'laterAsian','🌎':'laterConcacaf','➕':'laterCustomCup','🖥':'navGraphics','🔊':'navSound','🎨':'navCustomization','📖':'help','👆':'controls','⬇':'exportSave','⬆':'importSave' };
+function navRouteIconMarkup(action,fallback='⚽'){
+ const paths=NAV_ROUTE_ICON_PATHS;
+ const path=paths[action]||paths[NAV_ROUTE_ICON_FALLBACKS[fallback]||'quick'];
+ return `<svg focusable="false" aria-hidden="true" class="modeIconSvg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
+}
 function menuChoices(id,title,subtitle,entries,back='home',extra=''){
  menuBackAction=back;
- const cards=entries.map((e,i)=>`<button type="button" class="btn navChoice ${e.availability==='later'?'navLater':''}" data-action="${escapeHTML(e.act)}" ${i===0?'data-default-focus="true"':''} aria-label="${escapeHTML(e.label+(e.availability==='later'?' coming later':''))}"><span class="navIcon" aria-hidden="true">${e.icon}</span><span class="navCopy"><strong>${escapeHTML(e.label)}</strong><small>${escapeHTML(e.description)}</small></span><span class="navStatus">${e.availability==='later'?'COMING LATER':'›'}</span></button>`).join('');
+ const cards=entries.map((e,i)=>{const descriptionId=`${id}-choice-description-${i}`;return `<button type="button" class="btn navChoice ${e.availability==='later'?'navLater':''}" data-action="${escapeHTML(e.act)}" ${i===0?'data-default-focus="true"':''} aria-label="${escapeHTML(e.label+(e.availability==='later'?' coming later':''))}" aria-describedby="${escapeHTML(descriptionId)}"><span class="navIcon modeGraphic navRouteGraphic" aria-hidden="true">${navRouteIconMarkup(e.act,e.icon)}</span><span class="navCopy"><strong>${escapeHTML(e.label)}</strong><small id="${escapeHTML(descriptionId)}">${escapeHTML(e.description)}</small></span><span class="navStatus">${e.availability==='later'?'COMING LATER':'›'}</span></button>`;}).join('');
  show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL</div><h1 class="heading">${escapeHTML(title)}</h1><p class="subtitle">${escapeHTML(subtitle)}</p></div>${button('← BACK',back,'minor navBack')}</div><div class="arenaDirectoryLabel"><span>CHOOSE YOUR PATH</span><small>ALL MODES, ONE ARENA</small></div><div class="navList">${cards}</div>${extra}</div>`,id);
  // Restore the selected item in its parent after returning; do not steal focus from clicks.
  if(navFocusMap[id]){const match=menu.querySelector(`[data-action="${navFocusMap[id]}"]`);if(match){match.focus({preventScroll:true});return;}}
@@ -209,6 +339,7 @@ const comingLater=(title,description,back='navCups')=>{
  page(title,'Planned feature — not available in this version.',`<div class="panel navInfo"><h2>COMING LATER</h2><p>${escapeHTML(description)}</p><p>No substitute gameplay is launched. Existing saves are unchanged.</p>${button('← BACK',back,'gold')}</div>`,back);
 };
 function startLanQuickMatch(peer,role,opponentName,ownName){
+  activeMatchReceiptId=null;
   if(lanRuntime)stopLanMatch();
   home=0;away=9;mode='versus';humans=2;
   game.init({home,away,mode,humans,rosters:[roster(home),roster(away)],
@@ -221,15 +352,22 @@ function startLanQuickMatch(peer,role,opponentName,ownName){
   catch(error){stopLanMatch();game.matchState='none';throw error;}
   closeMenu();drawHUD();toast((peer.relay?'RELAY BACKUP · ':'')+(role==='host'?'LAN HOST · HOME TEAM':'LAN GUEST · AWAY TEAM')+(opponentName?' · vs '+String(opponentName).slice(0,32):''),3000);
 }
-function showLanLobby(){
- page('LOCAL NETWORK','Two-player LAN Quick Match · host controls home, guest controls away.',
-  '<div id="lanLobby"></div>','navQuick');
- lanLobbyDispose=mountLanLobby($('lanLobby'),{onReady:startLanQuickMatch});
+function returnLanHostToLobby(){
+ stopLanMatch();input.cancelAll();game.matchState='none';
+ // The lobby DOM and broker registration are still live; expose it again so
+ // the host can explicitly approve the next guest without reusing old state.
+ menu.classList.remove('hidden','blank');hud.classList.add('hidden');touch.classList.add('hidden');
+ audio.sceneChange('menu');
 }
-function showOnlineP2PLobby(){
+function showLanLobby(back='navQuick'){
+ page('LOCAL NETWORK','Two-player LAN Quick Match · host controls home, guest controls away.',
+  '<div id="lanLobby"></div>',back);
+ lanLobbyDispose=mountLanLobby($('lanLobby'),{onReady:startLanQuickMatch,onGuestLeft:returnLanHostToLobby});
+}
+function showOnlineP2PLobby(back='navQuick'){
  page('ONLINE P2P','Automatic internet room discovery or private manual WebRTC · host controls home, guest controls away.',
-  '<div id="lanLobby"></div>','navQuick');
- lanLobbyDispose=mountLanLobby($('lanLobby'),{internet:true,onReady:startLanQuickMatch});
+  '<div id="lanLobby"></div>',back);
+ lanLobbyDispose=mountLanLobby($('lanLobby'),{internet:true,onReady:startLanQuickMatch,onGuestLeft:returnLanHostToLobby});
 }
 function showQuickMenu(){menuChoices('nav-quick','QUICK MATCH','Play on one device, LAN or internet peer-to-peer.',[
  navItem('On Device','navOnDevice','Single-player, two-player, penalties and training.','active','🎮'),
@@ -240,8 +378,9 @@ function showOnDevice(){menuChoices('nav-device','ON DEVICE','Use the existing p
  navItem('Two Players · Same Device','versus','Play a local head-to-head match.','active','🎮'),
  navItem('Penalty Shootout','pk','Standalone penalty challenge.','active','🥅'),
  navItem('Training Arena','training','Practice the four action buttons and combinations.','active','💥')],'navQuick');}
-function showOnlineMenu(){menuChoices('nav-online','ONLINE','Future network modes — not playable in this build.',[
- navItem('Online Match','laterOnlineMatch','Compete over the internet.','later','🌐'),
+function showOnlineMenu(){menuChoices('nav-online','ONLINE MATCHES','Choose a private internet match or a local-network quick match.',[
+ navItem('Online P2P · Private Quick Match','navOnlineP2P','Play online with a friend using room discovery or a private invite code.','active','🌐'),
+ navItem('Local Network · LAN Quick Match','navLan','Host a game or find a friend on the same local network.','active','📡'),
  navItem('Ultimate Team','laterUltimate','Collect and develop your own squad.','later','⭐'),
  navItem('Online Career','laterOnlineCareer','Shared career experience.','later','💼'),
  navItem('Online Cup / League','laterOnlineCup','Multiplayer competitive tournaments.','later','🏆')],'home');}
@@ -274,65 +413,256 @@ function showClubCompetitionsMenu(){menuChoices('nav-clubs','CLUB COMPETITIONS',
  navItem('La Liga','laterLaLiga','Future Spanish league.','later','🇪🇸'),
  navItem('Ligue 1 · France','laterLigue1','Future French league.','later','🇫🇷')],'navCups');}
 function showSettingsMenu(){menuChoices('nav-settings','SETTINGS','Adjust the game and manage your saved creations.',[
- navItem('Game Settings','navGameSettings','Difficulty, pace, duration, weather and pitch.','active','⚽'),
+ navItem('Game Settings','navGameSettings','Difficulty, pace, duration, stadium and match conditions.','active','⚽'),
  navItem('Graphics','navGraphics','Camera, player names and fullscreen.','active','🖥'),
  navItem('Sound','navSound','Music, sound effects, crowd and mute.','active','🔊'),
  navItem('Player & Team Customization','navCustomization','Player studio, create club, squad tactics and roster editor.','active','🎨'),
  navItem('Input Settings','navInput','Keyboard and gamepad mappings, touch controls reference.','active','🎮'),
  navItem('Save Management','navSaveManagement','Export or import compatible saves.','active','💾'),
- navItem('How to Play','help','Four-button controls and combo guide.','active','📖')],'home');}
+ navItem('How to Play','help','Four-button controls and combo guide.','active','📖'),
+ navItem('About & Credits','navAbout','Game version, development notes and credits.','active','ⓘ')],'home');}
 function showCustomizationMenu(){menuChoices('nav-customize','PLAYER & TEAM CUSTOMIZATION','Every existing team-management tool is still available.',[
  navItem('Player Studio','playerStudio','Edit player cartoon appearance.','active','🎨'),
  navItem('Create a Club','clubs','Design clubs and kits for matches.','active','🏟'),
  navItem('Roster Editor','editor','Edit 12-player team attributes.','active','🧩'),
  navItem('Squad & Tactics','squad','Lineups, formations and player instructions.','active','👥'),
- navItem('Super Shot Encyclopedia','gallery','Explore available Super Shots.','active','✨')],'navSettings');}
+ navItem('Super Shot Encyclopedia','gallery','Explore available Super Shots.','active','✨')],customizationReturn);}
 function showInputMenu(){menuChoices('nav-input','INPUT SETTINGS','The game always uses four actions: Pass, Shoot, Dribble and Jump.',[
  navItem('Keyboard & Gamepad Mappings','controls','Remap both local players.','active','🎮'),
  navItem('Touch Controls & Combos','help','View the existing touch layout and combo reference.','active','👆')],'navSettings');}
+function careerBackupTeamReferencesValid(saved){
+ const validTeam=id=>Number.isInteger(id)&&id>=0&&id<TEAMS.length&&!!TEAMS[id]?.id;
+ if(!saved||!validTeam(saved.club)||!Array.isArray(saved.members)||!saved.members.includes(saved.club)||!saved.members.every(validTeam))return false;
+ const members=new Set(saved.members);
+ if(!Array.isArray(saved.fixtures)||saved.fixtures.some(round=>!Array.isArray(round)||round.some(match=>!Array.isArray(match)||match.length!==2||!match.every(id=>validTeam(id)&&members.has(id)))))return false;
+ if(!saved.table||typeof saved.table!=='object'||saved.members.some(id=>!Object.hasOwn(saved.table,id)))return false;
+ if(Object.keys(saved.table).some(key=>!validTeam(Number(key))||!members.has(Number(key))))return false;
+ const results=[...(Array.isArray(saved.history)?saved.history:[]),...(saved.lastResult?[saved.lastResult]:[])];
+ if(results.some(result=>result?.against!==undefined&&(!validTeam(result.against)||!members.has(result.against))))return false;
+ return true;
+}
+function renderCareerBackupPreview(preview,status=''){
+ const target=$('careerBackupPreview');if(!target)return;
+ const bySlot=new Map(preview.slots.map(slot=>[slot.number,slot]));
+ const rows=Array.from({length:10},(_,i)=>{const slot=bySlot.get(i+1);return `<tr><td>${i+1}${preview.active===i+1?' · ACTIVE':''}</td><td>${slot?escapeHTML(slot.name):'Empty'}</td><td>${slot?escapeHTML(TEAMS[slot.club]?.name||'Unknown team'):'—'}</td><td>${slot?`Season ${escapeHTML(slot.season??'—')} · Week ${escapeHTML(slot.week??'—')}`:'—'}</td></tr>`}).join('');
+ target.innerHTML=`<h2 class="titleSmall">CAREER BACKUP PREVIEW</h2><p>${preview.occupied} occupied slots · active slot ${preview.active}</p><div class="scroll"><table class="miniTable"><thead><tr><th>SLOT</th><th>NAME</th><th>CLUB</th><th>PROGRESS</th></tr></thead><tbody>${rows}</tbody></table></div>${status?`<p role="status" aria-live="polite">${escapeHTML(status)}</p>`:''}`;
+ target.classList.remove('hidden');
+}
+function exportCareerBackup(){try{
+ const recovery=careerSlots.hasRecoverySnapshot;
+ const blob=new Blob([careerSlots.exportBackup()],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');
+ link.href=url;link.download='Supermagic_Career_'+(recovery?'Recovery_':'')+'Backup_'+new Date().toISOString().slice(0,10)+'.json';link.click();
+ setTimeout(()=>URL.revokeObjectURL(url),3000);
+ }catch(error){alert('Career backup export failed: '+error.message)}}
+async function importCareerBackup(file){try{
+ if(!file||file.size>2000000)throw Error('Career backup must be under 2 MB');
+ const bytes=await file.text(),validator=careerBackupTeamReferencesValid;
+ const preview=careerSlots.inspectBackup(bytes,validator);
+ renderCareerBackupPreview(preview);await new Promise(resolve=>requestAnimationFrame(resolve));
+ const hasData=careerSlots.list().some(slot=>slot.occupied);
+ const occupied=careerSlots.list().filter(slot=>slot.occupied).length;
+ const warning=hasData?`This will REPLACE all ${occupied} local Career saves.`:'No local Career saves will be overwritten.';
+ if(!confirm(`Import ${preview.occupied} Career saves? Active slot: ${preview.active}. Review the slot preview, then confirm. ${warning} Export a backup first.`)){
+  renderCareerBackupPreview(preview,'Import cancelled. Local Career saves were not changed.');return;
+ }
+ careerSlots.importBackup(bytes,{overwrite:hasData,validator});
+ const restored=careerSlots.activeCareer();
+ if(restored){career=ensureCareerTeamPlan(restored);store.put('managerCareer',career);}else career=null;
+ renderCareerBackupPreview(preview,`Imported ${preview.occupied} Career saves. Active slot: ${preview.active}.`);
+ }catch(error){alert('Career backup import failed: '+error.message)}finally{const input=$('careerBackupImportFile');if(input)input.value='';}}
 function showCareerSlots(){
  const hasFree=careerSlots.firstEmpty()!==null;
- const rows=careerSlots.list().map(s=>`<div class="panel"><h3 class="titleSmall">SLOT ${s.number}${s.active?' · ACTIVE':''}</h3><p>${s.occupied?`${escapeHTML(s.name)} · ${escapeHTML(TEAMS[s.club]?.name||'Unknown club')} · Season ${s.season} · Week ${s.week}${s.leaguePosition!==null&&s.leaguePosition!==undefined?` · League #${s.leaguePosition}/${s.leagueSize} · ${s.leaguePoints} pts`:''} · ${escapeHTML(new Date(s.savedAt).toLocaleString())}`:'Empty slot'}</p><div class="row">${career?button(s.occupied?'OVERWRITE':'SAVE HERE','careerSlotSave_'+s.number):''}${s.occupied?button('LOAD','careerSlotLoad_'+s.number)+(hasFree?button('COPY','careerSlotCopy_'+s.number):'')+button('RENAME','careerSlotRename_'+s.number)+button('DELETE','careerSlotDelete_'+s.number):''}</div></div>`).join('');
- page('CAREER SAVE SLOTS','10 independent local slots. Rename a saved career without changing its progress or active slot, or copy it to the first empty slot; overwrite and delete require confirmation.',`${careerSlots.error?`<p role="alert">Save storage is damaged: ${escapeHTML(careerSlots.error)}. Export a backup before recovery.</p>`:''}<div class="scroll">${rows}</div><p class="muted">Legacy single-save careers are copied into slot 1 without removing the old data. Use Settings → Save Management to export all slots.</p>`,'navCareer');
+  const rows=careerSlots.list().map(s=>`<div class="panel"><h3 class="titleSmall">SLOT ${s.number}${s.active?' · ACTIVE':''}</h3><p>${s.occupied?`${escapeHTML(s.name)} · ${escapeHTML(TEAMS[s.club]?.name||'Unknown club')} · Season ${s.season} · Week ${s.week}${s.leaguePosition!==null&&s.leaguePosition!==undefined?` · League #${s.leaguePosition}/${s.leagueSize} · ${s.leaguePoints} pts`:''} · ${escapeHTML(new Date(s.savedAt).toLocaleString())}`:'Empty slot'}</p><div class="row">${career?slotActionButton(s.occupied?'OVERWRITE':'SAVE HERE','careerSlotSave_'+s.number,'Career',s.number):''}${s.occupied?slotActionButton('LOAD','careerSlotLoad_'+s.number,'Career',s.number)+(hasFree?slotActionButton('COPY','careerSlotCopy_'+s.number,'Career',s.number):'')+slotActionButton('RENAME','careerSlotRename_'+s.number,'Career',s.number)+slotActionButton('DELETE','careerSlotDelete_'+s.number,'Career',s.number):''}</div></div>`).join('');
+ page('CAREER SAVE SLOTS','10 independent local slots. Rename a saved career without changing its progress or active slot, or copy it to the first empty slot; overwrite and delete require confirmation.',`${careerSlots.error?`<p role="alert">Save storage is damaged: ${escapeHTML(careerSlots.error)}.${careerSlots.hasRecoverySnapshot?' The export action will download the last verified save snapshot.':' No verified in-memory recovery snapshot is available.'}</p>`:''}<div class="scroll">${rows}</div><p class="muted">Legacy single-save careers are copied into slot 1 without removing the old data. Use Settings → Save Management to export all slots.</p>`,'navCareer');
 }
 function showCupSlots(){
  const hasFree=cupSlots.list().some(slot=>!slot.occupied);
- const rows=cupSlots.list().map(s=>`<div class="panel"><h3 class="titleSmall">SLOT ${s.number}${s.active?' · ACTIVE':''}</h3><p>${s.occupied?`${escapeHTML(s.name)} · ${escapeHTML(s.compId||'Unknown competition')} · ${escapeHTML(TEAMS[s.club]?.name||'Unknown club')} · ${escapeHTML(s.phase)} · ${s.phase==='finished'?'Complete':'Round '+(s.roundIdx+1)} · Saved ${escapeHTML(new Date(s.savedAt).toLocaleString())}`:'Empty slot'}</p><div class="row">${continentalRun?button(s.occupied?'OVERWRITE':'SAVE HERE','cupSlotSave_'+s.number):''}${s.occupied?button('LOAD','cupSlotLoad_'+s.number)+(hasFree?button('COPY','cupSlotCopy_'+s.number):'')+button('DELETE','cupSlotDelete_'+s.number):''}</div></div>`).join('');
- page('CUP SAVE SLOTS','Ten independent continental championship slots. The active slot saves after every match or bye.',`${cupSlots.error?`<p role="alert">Cup save storage is damaged: ${escapeHTML(cupSlots.error)}. Export a backup before recovery.</p>`:''}<div class="scroll">${rows}</div><p class="muted">Existing single-save championships are copied into slot 1 without deleting their original data. Back up your slots before importing another Cup vault.</p><div class="row">${button('EXPORT CUP BACKUP','cupBackupExport')}${button('IMPORT CUP BACKUP','cupBackupImport')}</div>`,'navCups');
+  const rows=cupSlots.list().map(s=>`<div class="panel"><h3 class="titleSmall">SLOT ${s.number}${s.active?' · ACTIVE':''}</h3><p>${s.occupied?`${escapeHTML(s.name)} · ${escapeHTML(s.compId||'Unknown competition')} · ${escapeHTML(TEAMS[s.club]?.name||'Unknown club')} · ${escapeHTML(s.phase)} · ${s.phase==='finished'?'Complete':'Round '+(s.roundIdx+1)} · Saved ${escapeHTML(new Date(s.savedAt).toLocaleString())}`:'Empty slot'}</p><div class="row">${continentalRun?slotActionButton(s.occupied?'OVERWRITE':'SAVE HERE','cupSlotSave_'+s.number,'Cup',s.number):''}${s.occupied?slotActionButton('LOAD','cupSlotLoad_'+s.number,'Cup',s.number)+(hasFree?slotActionButton('COPY','cupSlotCopy_'+s.number,'Cup',s.number):'')+slotActionButton('DELETE','cupSlotDelete_'+s.number,'Cup',s.number):''}</div></div>`).join('');
+ page('CUP SAVE SLOTS','Ten independent continental championship slots. The active slot saves after every match or bye.',`${cupSlots.error?`<p role="alert">Cup save storage is damaged: ${escapeHTML(cupSlots.error)}.${cupSlots.hasRecoverySnapshot?' The export action will download the last verified save snapshot.':' No verified in-memory recovery snapshot is available.'}</p>`:''}<div class="scroll">${rows}</div><p class="muted">Existing single-save championships are copied into slot 1 without deleting their original data. Back up your slots before importing another Cup vault.</p><div class="row">${button('EXPORT CUP BACKUP','cupBackupExport')}${button('IMPORT CUP BACKUP','cupBackupImport')}</div>`,'navCups');
+}
+function showSlotNameDialog(kind,operation,number){
+ const isCareer=kind==='career',isRename=operation==='rename';
+ const slots=isCareer?careerSlots:cupSlots,slot=slots.list()[number-1];
+ if(!Number.isInteger(number)||number<1||number>10||isRename&&!slot?.occupied){
+  alert(`${isCareer?'Career':'Cup'} slot ${number} is unavailable.`);
+  return isCareer?showCareerSlots():showCupSlots();
+ }
+ const title=isRename?'Rename Career Save':`Save ${isCareer?'Career':'Cup'} to Slot ${number}`;
+ const defaultName=slot?.name||(isCareer?TEAMS[career?.club]?.name:confed(continentalRun?.compId)?.name||`Cup ${number}`)||`${isCareer?'Career':'Cup'} ${number}`;
+ const replacing=operation==='save'&&slot?.occupied;
+ const confirmAction=`slotNameConfirm_${kind}_${operation}_${number}`;
+ const cancelAction=`slotNameCancel_${kind}_${operation}_${number}`;
+ const prompt=replacing?`Saving will replace the existing ${isCareer?'Career':'Cup'} in slot ${number}. Cancel to keep its saved data.`:
+  isRename?'Only the slot label will change; Career progress and its save time stay untouched.':
+  `Choose a clear name for this ${isCareer?'Career':'Cup'} save.`;
+ show(`<section id="slotNameDialog" class="panel saveSlotNameDialog" role="dialog" aria-modal="true" aria-labelledby="slotNameTitle" aria-describedby="slotNameDescription">
+  <div class="row space"><h1 class="heading" id="slotNameTitle">${escapeHTML(title)}</h1>${button('CANCEL',cancelAction,'minor')}</div>
+  <p id="slotNameDescription" class="subtitle">${escapeHTML(prompt)}</p>
+  <form id="slotNameForm" data-slot-action="${escapeHTML(confirmAction)}" novalidate>
+   <label class="fieldLabel" for="slotNameInput">${isRename?'CAREER SAVE NAME':'SAVE NAME'}</label>
+   <input class="choice" id="slotNameInput" name="saveName" type="text" maxlength="60" required autocomplete="off" value="${escapeHTML(defaultName)}" aria-describedby="slotNameHint slotNameError"/>
+   <p class="muted" id="slotNameHint">Enter 1–60 characters. Progress is saved only when you choose ${replacing?'Replace and Save':'Save'}.</p>
+   <p class="muted" id="slotNameError" role="alert" aria-live="assertive" aria-atomic="true"></p>
+   <div class="row slotNameActions"><button class="btn gold" type="submit">${replacing?'REPLACE AND SAVE':isRename?'SAVE NAME':'SAVE SLOT'}</button><button class="btn minor" type="button" data-action="${escapeHTML(cancelAction)}">CANCEL WITHOUT SAVING</button></div>
+  </form>
+ </section>`,'SAVE SLOT NAME');
+ menuBackAction=cancelAction;
+ const field=menu.querySelector('#slotNameInput');field?.focus({preventScroll:true});field?.select();
+}
+function returnFromSlotName(kind,number,focusAction){
+ if(kind==='career')showCareerSlots();else showCupSlots();
+ menu.querySelector(`[data-action="${focusAction}"]`)?.focus({preventScroll:true});
+}
+function reportSlotNameError(message){
+ const field=menu.querySelector('#slotNameInput'),error=menu.querySelector('#slotNameError');
+ if(error)error.textContent=message;
+ if(field){field.setAttribute('aria-invalid','true');field.focus({preventScroll:true});field.select();}
 }
 function showSaveMenu(parent='navSettings'){menuChoices('nav-saves','SAVE MANAGEMENT','Safely back up or restore local progress.',[
  navItem('Export All Saves','exportSave','Download a JSON backup without changing progress.','active','⬇'),
- navItem('Import Save','importSave','Requires explicit confirmation before replacing progress.','active','⬆')],parent,`<input id="saveImportFile" type="file" accept=".json,application/json" class="hidden" aria-label="Import saved game"/>`);}
+ navItem('Import Save','importSave','Requires explicit confirmation before replacing progress.','active','⬆'),
+ navItem('Export Career Slots','careerBackupExport','Back up all ten Career slots and the active slot.','active','💼'),
+ navItem('Import Career Slots','careerBackupImport','Preview all slots and team references before replacing Career saves.','active','📥')],parent,`<input id="saveImportFile" type="file" accept=".json,application/json" class="hidden" aria-label="Import saved game"/><input id="careerBackupImportFile" type="file" accept=".json,application/json" class="hidden" aria-label="Import Career backup"/><section id="careerBackupPreview" class="panel hidden" aria-label="Career backup preview" aria-live="polite"></section>`);}
+const STORE_CATEGORIES=Object.freeze([
+ ['superShot','Super Shots'],['magicTrick','Magic Tricks'],['team','Teams'],
+ ['player','Players'],['appearance','Appearance'],['accessory','Accessories']
+]);
+const STORE_PAGE_SIZE=12;
+function tokenStoreCatalog(){
+ if(storeCatalogCache)return storeCatalogCache;
+ const appearances=[];
+ const accessories=[];
+ for(const family of ['style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','freckles','scar','tattoo'])
+  for(const [index,name] of (STUDIO_ASSET_LABELS[family]||[]).entries())appearances.push({category:'appearance',id:`${family}:${index}`,name:`${family.replace(/[A-Z]/g,m=>' '+m).toUpperCase()} · ${name}`,existing:true,availableForPurchase:true});
+ for(const [index,name] of (STUDIO_ASSET_LABELS.accessory||[]).entries())accessories.push({category:'accessory',id:`accessory:${index}`,name:`ACCESSORY · ${name}`,existing:true,availableForPurchase:true});
+ for(const [index,[,name]] of NATURAL_SKIN_TONES.entries())appearances.push({category:'appearance',id:`skin:${index}`,name:`SKIN TONE · ${name}`,existing:true,availableForPurchase:true});
+ for(const [index,[,name]] of NATURAL_HAIR_COLORS.entries())appearances.push({category:'appearance',id:`hair:${index}`,name:`HAIR COLOR · ${name}`,existing:true,availableForPurchase:true});
+ storeCatalogCache={
+  superShot:Object.entries(SHOTS).map(([id,shot])=>({category:'superShot',id,name:shot.name||id,detail:`${String(shot.behavior||'special').toUpperCase()} · impact ${Math.round((Number(shot.impact)||1)*100)}%`,existing:true,availableForPurchase:true})),
+  magicTrick:STUDIO_MAGIC_TRICK_FULL_CATALOGUE.map(trick=>({category:'magicTrick',id:trick.id,name:trick.name,existing:true,availableForPurchase:true})),
+  team:[],player:[],appearance:appearances,accessory:accessories
+ };
+ return storeCatalogCache;
+}
+function storeCard(item){
+ const owned=tokenWallet.owns(item.category,item.id),cost=ECONOMY.PRICES[item.category];
+ const detail=item.detail||({superShot:'Unlocks the Studio option for an eligible player; existing role and verified-tier rules still apply.',magicTrick:'Unlocks the Studio option for an eligible outfield player; existing tier rules still apply.',team:'Coming soon: team unlocks do not yet have a safe selectable-content path.',player:'Coming soon: player unlocks do not yet have a safe selectable-content path.',appearance:'Unlocks this existing palette or character detail in Player Studio. Current saved looks remain available.',accessory:'Unlocks this existing accessory in Player Studio. Current saved looks remain available.'}[item.category]);
+ const action=`storeBuy_${item.category}_${encodeURIComponent(item.id)}`;
+ return `<article class="tokenStoreCard"><div class="tokenStoreCardTop"><span class="tokenStoreCategory">${escapeHTML(item.category==='superShot'?'SUPER SHOT':item.category==='magicTrick'?'MAGIC TRICK':item.category.toUpperCase())}</span><span class="tokenStorePrice">${owned?'OWNED':`${cost} TOKENS`}</span></div><h3>${escapeHTML(item.name)}</h3>${item.detail?`<p class="tokenStoreDetail">${escapeHTML(item.detail)}</p>`:''}<p class="muted">${escapeHTML(detail)}</p><button type="button" class="btn ${owned?'minor':'gold'} tokenStoreBuy" data-action="${escapeHTML(action)}" ${owned?'disabled aria-disabled="true"':''} aria-label="${owned?'Owned':'Buy '+escapeHTML(item.name)+' for '+cost+' tokens'}">${owned?'OWNED':`BUY · ${cost} TOKENS`}</button></article>`;
+}
+function drawTokenStoreCards(){
+ const host=$('tokenStoreCards'),status=$('tokenStoreRange'),previous=$('storePagePrev'),next=$('storePageNext');if(!host)return;
+ if(!['superShot','magicTrick','appearance','accessory'].includes(storeCategory)){
+  const label=STORE_CATEGORIES.find(([id])=>id===storeCategory)?.[1]||'This category';
+  host.innerHTML=`<section class="panel tokenStoreComingSoon"><span class="badge">${escapeHTML(label.toUpperCase())}</span><h2>COMING SOON</h2><p class="muted">These items need a safe, selectable unlock path. They remain available exactly as before, and no tokens will be charged for a dormant collection entry.</p></section>`;
+  if(status)status.textContent='No offers available';if(previous)previous.hidden=true;if(next)next.hidden=true;
+  const feedback=$('tokenStoreNotice');if(feedback)feedback.textContent=tokenWallet.error?`Wallet unavailable: ${tokenWallet.error}`:'';
+  return;
+ }
+ if(previous)previous.hidden=false;if(next)next.hidden=false;
+ const query=storeSearch.trim().toLocaleLowerCase(),items=(tokenStoreCatalog()[storeCategory]||[]).filter(item=>!query||`${item.name} ${item.detail||''} ${item.id}`.toLocaleLowerCase().includes(query));
+ const pages=Math.max(1,Math.ceil(items.length/STORE_PAGE_SIZE));storePage=Math.max(0,Math.min(storePage,pages-1));
+ host.innerHTML=items.slice(storePage*STORE_PAGE_SIZE,(storePage+1)*STORE_PAGE_SIZE).map(storeCard).join('')||'<div class="panel tokenStoreEmpty">No matching items. Try a shorter search.</div>';
+ if(status)status.textContent=items.length?`Showing ${storePage*STORE_PAGE_SIZE+1}–${Math.min(items.length,(storePage+1)*STORE_PAGE_SIZE)} of ${items.length}`:'0 items';
+ if(previous)previous.disabled=storePage===0;if(next)next.disabled=storePage+1>=pages;
+ const feedback=$('tokenStoreNotice');if(feedback)feedback.textContent=storeNotice||tokenWallet.error&&`Wallet unavailable: ${tokenWallet.error}`||'';
+ const balance=$('tokenStoreBalance');if(balance)balance.textContent=`${tokenWallet.wallet().tokens.toLocaleString()} TOKENS`;
+}
+function showTokenStore(){
+ const categoryLabel=STORE_CATEGORIES.find(([id])=>id===storeCategory)?.[1]||'Super Shots';
+ page('STORE & TOKENS','Earn tokens in Career, Cups, tournaments and online peer matches. Spend them on existing game-content unlocks; current team and player choices remain intact.',`<section class="tokenStoreWallet panel" aria-label="Token wallet"><div><span class="badge">YOUR WALLET</span><strong id="tokenStoreBalance">${tokenWallet.wallet().tokens.toLocaleString()} TOKENS</strong></div><p class="muted">No real-money purchases or token packs are available. Unlocks are saved locally and included in Export All Saves.</p></section><p class="muted tokenStoreRules">Match rewards: ${ECONOMY.REWARDS.completion} tokens for completion, +${ECONOMY.REWARDS.winBonus} for a win, +${ECONOMY.REWARDS.drawBonus} for a draw. Losses still receive the completion reward. Online peer-match receipts are host-authoritative and pay each device's local soft-token wallet; they are not server-verified.</p><div class="panel tokenStoreControls"><label class="fieldLabel" for="storeCategory">SHOP CATEGORY</label><select class="choice" id="storeCategory" aria-label="Shop category">${STORE_CATEGORIES.map(([id,label])=>`<option value="${id}" ${id===storeCategory?'selected':''}>${label}</option>`).join('')}</select><label class="fieldLabel" for="storeSearch">SEARCH ${escapeHTML(categoryLabel.toUpperCase())}</label><input class="choice" type="search" id="storeSearch" value="${escapeHTML(storeSearch)}" placeholder="Search existing items" autocomplete="off" aria-controls="tokenStoreCards"/><p id="tokenStoreRange" class="muted" role="status" aria-live="polite"></p><div class="row tokenStorePager"><button type="button" class="btn minor" id="storePagePrev" data-action="storePagePrev">← PREVIOUS</button><button type="button" class="btn minor" id="storePageNext" data-action="storePageNext">NEXT →</button></div></div><p id="tokenStoreNotice" class="tokenStoreNotice" role="status" aria-live="polite" aria-atomic="true"></p><div id="tokenStoreCards" class="tokenStoreCards" aria-label="Available store items"></div>`,`home`);
+ menu.querySelector('#storeCategory')?.addEventListener('change',event=>{storeCategory=event.target.value;storePage=0;storeSearch='';storeNotice='';menu.querySelector('#storeSearch').value='';const label=STORE_CATEGORIES.find(([id])=>id===storeCategory)?.[1]||'Existing items';const searchLabel=menu.querySelector('label[for="storeSearch"]');if(searchLabel)searchLabel.textContent=`SEARCH ${label.toUpperCase()}`;drawTokenStoreCards();});
+ menu.querySelector('#storeSearch')?.addEventListener('input',event=>{storeSearch=event.target.value;storePage=0;drawTokenStoreCards();});
+ drawTokenStoreCards();
+}
+function buyTokenStoreItem(category,id){
+ const item=(tokenStoreCatalog()[category]||[]).find(entry=>entry.id===id);
+ if(!item){storeNotice='That item is not in the existing content catalog.';showTokenStore();return;}
+ try{
+  const result=tokenWallet.purchase({category,id},tokenStoreCatalog()[category]);
+  storeNotice=result.ok?`${item.name} unlocked for ${result.cost} tokens.`:result.reason==='insufficient-tokens'?`Not enough tokens. ${result.cost} needed; ${result.wallet.tokens} available.`:result.reason==='already-owned'?`${item.name} is already owned.`:`This item is not available to buy (${result.reason}).`;
+ }catch(error){storeNotice=`Purchase was not saved: ${error.message}`;}
+ showTokenStore();
+ const cards=[...menu.querySelectorAll('.tokenStoreCard')],boughtIndex=cards.findIndex(card=>card.querySelector(`[data-action="storeBuy_${category}_${encodeURIComponent(id)}"]`));
+ const nextPurchase=cards.slice(Math.max(0,boughtIndex+1)).map(card=>card.querySelector('button:not([disabled])')).find(Boolean);
+ (nextPurchase||menu.querySelector('#tokenStoreCards button:not([disabled])')||menu.querySelector('#storePageNext:not([disabled])')||$('storeSearch'))?.focus({preventScroll:true});
+}
+function awardLocalMatchTokens(event,score){
+ const modeKey=mode==='career'?'career':mode==='continental'?'continental':mode==='league'?'tournament':null;
+ if(!modeKey||!activeMatchReceiptId||lanRuntime||lanRole||!Array.isArray(score)||score.length!==2||!score.every(Number.isFinite))return '';
+ if(modeKey==='continental'&&!lastCupResultCommitted)return '<p class="muted">No tournament tokens awarded because this result could not be committed to a Cup save slot.</p>';
+ if(modeKey==='tournament'&&!leagueResultCommitted)return '<p class="muted">No tournament tokens awarded because this result could not be committed to the local league save.</p>';
+ const result=event?.penalties&&(event.winner===0||event.winner===1)?event.winner===0?'win':'loss':score[0]>score[1]?'win':score[0]<score[1]?'loss':'draw';
+ try{
+  const receipt=tokenWallet.awardCompletedMatch({receiptId:activeMatchReceiptId,mode:modeKey,status:'completed',result});
+  if(receipt.ok)return `<p class="tokenRewardNotice" role="status">+${receipt.reward} TOKENS · MATCH COMPLETE</p>`;
+  if(receipt.duplicate)return '<p class="tokenRewardNotice" role="status">MATCH TOKENS ALREADY AWARDED</p>';
+  return receipt.reason==='receipt-capacity'?'<p class="muted">Token rewards are paused because the saved match receipt list is full.</p>':'';
+ }catch(error){
+  console.warn('Completed match token reward could not be saved:',error.message);
+  return '<p class="muted" role="status">Match complete, but token reward could not be saved.</p>';
+ }
+}
+// A backup with an empty active slot must not destroy the previous legacy mirror.
+// The slot vault remains authoritative after restore; the mirror is retained only
+// as a recovery copy, matching Career backup behavior.
+function applyImportedCupBackupState(){const restored=cupSlots.activeTournament();continentalRun=restored;if(restored)store.put('continentalRun',restored);showCupSlots();}
 // The installed bundle supplies the version and release notes, including offline.
 // Never substitute a remote dev commit for proof of the player's deployed game.
 function showAbout(){
  const bundle=escapeHTML(RELEASE.version),date=escapeHTML(RELEASE.date);
  const notes=RELEASE.notes.map(note=>`<li>${escapeHTML(note)}</li>`).join('');
- page('ABOUT SUPERMAGIC FOOTBALL','Original offline cartoon arcade football.',
-  `<div class="panel"><h2>GAME VERSION</h2><p id="aboutBundleVersion"><strong>${bundle}</strong></p><p class="muted">Release date · ${date}. This version is embedded in the game you opened and remains available offline.</p><h3>WHAT'S NEW</h3><ul id="aboutReleaseNotes">${notes}</ul><p><strong>Developer: Saeed</strong> · <a href="mailto:saeedmsalehi1990@gmail.com">saeedmsalehi1990@gmail.com</a></p><p class="muted">Four action buttons · ${TEAMS.length} teams · progress saved locally on your device.</p>${button('← MAIN MENU','home','gold')}</div>`,'home');
+  page('ABOUT SUPERMAGIC FOOTBALL','Original offline cartoon arcade football.',
+   `<div class="panel"><h2>GAME VERSION</h2><p id="aboutBundleVersion"><strong>${bundle}</strong></p><p class="muted">Release date · ${date}. This version is embedded in the game you opened and remains available offline.</p><h3>WHAT'S NEW</h3><ul id="aboutReleaseNotes">${notes}</ul><p><strong>Developer: Saeed</strong> · <a href="mailto:saeedmsalehi1990@gmail.com">saeedmsalehi1990@gmail.com</a></p><p class="muted">Four action buttons · ${TEAMS.length} teams · progress saved locally on your device.</p>${button('← SETTINGS','navSettings','gold')}</div>`,'navSettings');
+}
+// Decorative, original vector emblems for the five Home destinations. These
+// are static inline shapes so they remain crisp at touch sizes and never add
+// motion or spoken noise to the accessible button labels.
+function homeModeIconMarkup(action){
+ const common='focusable="false" aria-hidden="true"';
+ const paths={
+  navQuick:`<circle cx="24" cy="24" r="18"/><path d="m24 13 7 5-3 8h-8l-3-8 7-5ZM17 18l-7 2M17 26l-5 7M28 26l5 7M31 18l7 2"/><path d="m10 20-3-1M12 33l-2 3M36 33l2 3M38 20l3-1"/>`,
+  navOnline:`<circle cx="24" cy="24" r="18"/><path d="M6 24h36M24 6c5 5 7 11 7 18s-2 13-7 18M24 6c-5 5-7 11-7 18s2 13 7 18M9 15h30M9 33h30"/>`,
+  navCareer:`<rect x="7" y="15" width="34" height="25" rx="3"/><path d="M17 15v-5h14v5M7 24h34M20 23v4h8v-4"/><path d="M11 33h7M30 33h7"/>`,
+  navCups:`<path d="M15 8h18v10c0 8-4 13-9 13s-9-5-9-13V8Z"/><path d="M15 12H8v5c0 5 3 8 8 8M33 12h7v5c0 5-3 8-8 8M24 31v7M17 40h14"/><path d="M20 14h8"/>`,
+  training:`<path d="m24 7-12 32h24L24 7Z"/><path d="M18 24h12M15 32h18M9 40h30"/>`,
+  navSettings:`<path d="M9 13h30M9 24h30M9 35h30"/><circle cx="19" cy="13" r="4" class="iconFill"/><circle cx="31" cy="24" r="4" class="iconFill"/><circle cx="16" cy="35" r="4" class="iconFill"/>`,
+  navStore:`<path d="M8 18h32v22H8z"/><path d="M12 18c0-7 5-12 12-12s12 5 12 12"/><path d="m24 23 2.2 4.5 5 .7-3.6 3.5.8 5-4.4-2.4-4.4 2.4.8-5-3.6-3.5 5-.7L24 23Z" class="iconFill"/>`
+ };
+ return `<svg ${common} class="modeIconSvg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${paths[action]||paths.navQuick}</svg>`;
 }
 function showHome(){
- menuBackAction='home';menuEntryReturn='home';
- show(`<header class="homeMasthead arcadeHomeHeader"><div class="arcadeIdentity"><div class="topline arcadeEyebrow">★ ORIGINAL ARCADE FOOTBALL · THE MAGIC LEAGUE</div><h1 class="heading logoHeading">SUPERMAGIC <em>FOOTBALL</em></h1><p class="subtitle">Big goals. Wild tricks. Your football universe.</p></div><div class="arcadeHomeTrophy" aria-hidden="true"><span>★</span><strong>THE ARENA</strong><small>PLAY • CREATE • WIN</small></div></header>
-<section class="arcadeHeroStrip" aria-label="Featured match"><div><span class="arenaKicker">READY FOR KICKOFF?</span><h2>THE PITCH IS YOURS.</h2><p>Fast arcade matches, outrageous magic and your own dream squad.</p></div><button type="button" class="btn gold arcadeLaunch" data-action="quick" aria-label="Play quick match">PLAY NOW <span aria-hidden="true">▶</span></button></section>
- <div class="menuGrid homeDashboard simplifiedHome"><main class="homeDirectory" aria-label="Five game categories">
- <div class="arenaDirectoryLabel"><span>CHOOSE YOUR GAME</span><small>ONE TAP TO FOOTBALL</small></div><div class="navList navMainList">
- ${[
+ menuBackAction='home';menuEntryReturn='home';customizationReturn='home';
+ const tokens=tokenWallet.wallet().tokens.toLocaleString(),fixture=career?currentCareerFixture(career):null;
+ const tile=(label,action,icon,extra='')=>`<button type="button" class="btn homeActionTile ${extra}" data-action="${action}"><span class="homeTileIcon" aria-hidden="true">${icon}</span><span>${label}</span></button>`;
+ const tileIcons={squad:`<circle cx="18" cy="17" r="6"/><circle cx="36" cy="18" r="5"/><path d="M5 43v-4c0-9 5-14 13-14s13 5 13 14v4H5ZM30 28c8-3 14 2 14 10v5H34"/>`,
+  customize:`<path d="m16 8-10 6 5 8 6-3v20h14V19l6 3 5-8-10-6c-1 4-4 6-8 6s-7-2-8-6Z"/>`,
+  shop:`<path d="M5 8h6l4 21h22l5-15H13"/><circle cx="19" cy="37" r="3"/><circle cx="34" cy="37" r="3"/>`,
+  studio:`<path d="M24 6C13 6 6 14 6 24s5 17 13 17h3c2 0 3-2 2-4l-1-2c-1-2 1-4 3-4h4c7 0 11-5 11-11S34 6 24 6Z"/><circle cx="16" cy="19" r="2"/><circle cx="24" cy="14" r="2"/><circle cx="32" cy="19" r="2"/>`,
+  settings:`<circle cx="24" cy="24" r="7"/><path d="m20 4 8 0 1 5 4 2 5-2 4 7-4 3v5l4 4-4 7-5-2-4 2-1 5h-8l-1-5-4-2-5 2-4-7 4-4v-5l-4-3 4-7 5 2 4-2 1-5Z"/>`};
+ const actionIcon=(name)=>`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">${tileIcons[name]}</svg>`;
+ show(`<div class="homeReferenceShell">
+ <header class="homeMasthead arcadeHomeHeader"><div class="arcadeIdentity"><div class="homeBrandLockup"><span class="homeBrandBall" aria-hidden="true"><svg viewBox="0 0 80 86" fill="none" focusable="false"><path d="M40 3 74 16v25c0 21-14 34-34 42C20 75 6 62 6 41V16L40 3Z" fill="#08224C" stroke="#FFE082" stroke-width="4"/><path d="M40 12 66 22v19c0 17-10 27-26 34-16-7-26-17-26-34V22l26-10Z" fill="#155292" stroke="#E9F6FF" stroke-width="2"/><circle cx="40" cy="42" r="17" fill="#F5FAFF" stroke="#12223E" stroke-width="3"/><path d="m40 32 7 5-3 8h-8l-3-8 7-5ZM26 40l-7-2M29 51l-4 7M49 51l4 7M54 40l7-2" stroke="#172642" stroke-width="3" stroke-linejoin="round"/><path d="m40 10 2 5 5 .4-4 3 1.5 5-4.5-2.8-4.5 2.8 1.5-5-4-3 5-.4 2-5Z" fill="#FFD15C"/></svg></span><div><h1 class="heading logoHeading">SUPER<br><em>MAGIC FOOTBALL</em></h1><p class="subtitle homeBrandTagline">BIG GOALS · WILD TRICKS · YOUR FOOTBALL UNIVERSE</p></div></div></div>
+ <div class="arcadeHomeTools"><div class="arcadeProfile"><span class="arcadeProfileIcon" aria-hidden="true">01</span><span><strong>PLAYER 01</strong><small>LOCAL PROFILE</small></span></div><button type="button" class="btn arcadeWallet" data-action="navStore" aria-label="Open Shop. Token balance: ${tokens}"><span class="arcadeCoin" aria-hidden="true">$</span><span class="arcadeWalletCopy"><small> TOKENS</small><strong>${tokens}</strong></span><span class="arcadeWalletPlus" aria-hidden="true">＋</span></button><button type="button" class="btn homeGearButton" data-action="navSettings" aria-label="Settings">⚙</button></div></header>
+ <div class="homeReferenceGrid"><main class="homeReferenceNav" aria-label="Main menu"><button type="button" class="btn homeKickoff" data-action="quick"><span class="homeKickoffCopy"><strong>KICK OFF</strong><small>Jump straight into the action!</small></span><span class="homeKickoffArrow" aria-hidden="true">›</span><span class="homeKickoffPlayer" aria-hidden="true"><img src="./assets/ui/home-hero-player.webp" alt=""/></span></button>
+ <div class="navList navMainList" aria-label="Game modes">${[
  navItem('Quick Match','navQuick','Play locally or enter training.','active','⚽'),
- navItem('Online','navOnline','Online modes planned for later.','later','🌐'),
- navItem('Career','navCareer','Manage a team and its season.','active','★'),
- navItem('Leagues & Cups','navCups','World League, continental cups and upcoming competitions.','active','🏆'),
- navItem('Settings','navSettings','Game, graphics, sound, controls and customization.','active','⚙')
- ].map(e=>`<button type="button" class="btn navChoice" data-action="${e.act}"><span class="navIcon" aria-hidden="true">${e.icon}</span><span class="navCopy"><strong>${e.label}</strong><small>${e.description}</small></span><span class="navStatus">${e.availability==='later'?'LATER':'›'}</span></button>`).join('')}
- </div><div class="arenaShortcutRow" aria-label="Customization shortcuts"><button type="button" class="btn arenaShortcut" data-action="navCustomization"><span aria-hidden="true">🎨</span><span>PLAYER STUDIO <small>Build your football star</small></span><b aria-hidden="true">›</b></button><button type="button" class="btn arenaShortcut" data-action="navCareerSlots"><span aria-hidden="true">💾</span><span>CAREER SAVES <small>Pick up where you left off</small></span><b aria-hidden="true">›</b></button></div><div class="row navFooter">${career?button('▶ CONTINUE CAREER','manager','minor'):''}${button('⛶ FULLSCREEN','fullscreen','minor')}${button('CREDITS / ABOUT','navAbout','minor')}</div>
- <p class="muted homeFootnote">${TEAMS.length} teams · 12 players per team · six formations · four action buttons · playable offline.</p></main>
- <aside class="panel posterPanel" aria-label="Supermagic Football preview"><div class="poster newPoster"><div class="posterSun"></div><div class="posterLines"></div><canvas id="posterCanvas" width="480" height="360" aria-label="Animated football preview"></canvas><div class="posterBall">✦</div><div class="posterTitle">BIG PERSONALITY.<br><span>BIGGER PLAY.</span></div></div><span class="arenaPosterStamp">ORIGINAL MAGIC FOOTBALL</span><div class="posterStats"><span>01 <b>PLAY OFFLINE</b></span><span>02 <b>${TEAMS.length} TEAMS</b></span><span>03 <b>FOUR ACTION BUTTONS</b></span></div></aside></div>`,'home');
- drawPoster();const focus=menu.querySelector(`.navChoice[data-action="${navFocusMap.home||'navQuick'}"]`)||menu.querySelector('.navChoice');focus?.focus({preventScroll:true});
+ navItem('Online','navOnline','Play online matches and events.','active','🌐'),
+ navItem('Career','navCareer','Build your team and make history.','active','★'),
+ navItem('Leagues & Cups','navCups','Compete in major leagues and cups.','active','🏆'),
+ navItem('Training','training','Master skills, moves and magic trick plays.','active','✦')
+ ].map(e=>`<button type="button" class="btn navChoice" data-action="${e.act}"><span class="navIcon modeGraphic modeGraphic-${e.act}" aria-hidden="true">${homeModeIconMarkup(e.act)}</span><span class="navCopy"><strong>${e.label}</strong><small>${e.description}</small></span><span class="navStatus" aria-hidden="true">›</span></button>`).join('')}</div>
+ <nav class="homeActionTiles" aria-label="Team and player"><span class="srOnly">Team and player</span>${tile('SQUAD','squad',actionIcon('squad'))}${tile('CUSTOMIZE','navCustomization',actionIcon('customize'))}${tile('SHOP','navStore',actionIcon('shop'),'homeShopTile')}${tile('PLAYER<br>STUDIO','playerStudio',actionIcon('studio'))}${tile('SETTINGS','navSettings',actionIcon('settings'))}</nav>
+ </main>
+ <section class="homeReferenceFeature" aria-label="Featured football action"><div class="homeStadiumScene"><div class="homeSceneLights" aria-hidden="true"></div><div class="homeCrowdBand" aria-hidden="true"></div><div class="homePitchMarks" aria-hidden="true"></div><canvas id="posterCanvas" width="900" height="650" aria-label="Animated football"></canvas></div><img class="homeHeroPlayer" src="./assets/ui/home-hero-player.webp" alt="" aria-hidden="true" decoding="async" fetchpriority="high">
+ <div class="homeEventBar"><div class="homeEventTrophy" aria-hidden="true">🏆</div><div class="homeEventCopy"><small>FEATURED EVENT</small><strong>MAGIC CUP</strong><span>KNOCKOUT TOURNAMENT</span></div><div class="homeEventDivider" aria-hidden="true"></div><div class="homeNextMatch"><small>NEXT MATCH</small><div class="homeFixturePair" aria-hidden="true">${career&&fixture?identity(career.club):'<span class="homeFallbackCrest">⚽</span>'}<i>VS</i>${career&&fixture?identity(fixture.opponent):'<span class="homeFallbackCrest">★</span>'}</div><strong>${career&&fixture?`${escapeHTML(TEAMS[career.club]?.name||'Career club')} vs ${escapeHTML(TEAMS[fixture.opponent]?.name||'Opponent')}`:'READY TO PLAY'}</strong><span>${career&&fixture?`${escapeHTML(fixture.round||'Next fixture')} · Season ${career.season}`:'Select a cup or league.'}</span></div></div>
+</section></div></div>`,'home');
+ drawPoster();restoreHomeMenuFocus();
 }
-function drawPoster(){let canvas=$('posterCanvas');if(!canvas)return;let cx=canvas.getContext('2d');let t=performance.now()/1000;cx.clearRect(0,0,canvas.width,canvas.height);
- const p=game.player(0,3);if(!p)return;
- cx.save();cx.translate(207,325);cx.scale(3.15,3.15);renderer.drawPlayer(cx,{...p,x:0,y:0,face:1,anim:t,dx:1,dy:0,z:Math.sin(t*2)*5,action:'kick',controlled:false},game);cx.restore();
- cx.save();cx.translate(355+Math.cos(t*2)*8,130+Math.sin(t*3)*11);cx.rotate(t);cx.scale(2.3,2.3);renderer.drawSoccerBall(cx,0,0,15);cx.restore();
+function drawPoster(){let canvas=$('posterCanvas');if(!canvas)return;let cx=canvas.getContext('2d');let t=performance.now()/1000;const w=canvas.width,h=canvas.height;cx.clearRect(0,0,w,h);
+ const reduced=!!game.options?.reducedFlash,bx=w*.84+Math.cos(t*1.5)*w*.006,by=h*.72+Math.sin(t*2)*h*.012;
+ if(!reduced){cx.save();cx.globalAlpha=.6;cx.shadowBlur=28;cx.lineWidth=5;for(const [color,offset] of [['#51dcff',0],['#fff0a0',Math.PI]]){cx.strokeStyle=color;cx.shadowColor=color;cx.beginPath();cx.ellipse(bx-w*.015,by+5,Math.min(w,h)*(.12+Math.sin(t*1.6+offset)*.012),Math.min(w,h)*(.052+Math.sin(t*1.6+offset)*.006),-.22+Math.sin(t)*.04,offset+t*.35,offset+t*.35+Math.PI*1.35);cx.stroke()}cx.restore()}
+ cx.save();cx.translate(bx,by);cx.rotate(t*.22);cx.scale(h/112,h/112);renderer.drawSoccerBall(cx,0,0,15);cx.restore();
 }
 function showClubs(){
  const custom=TEAMS.map((t,i)=>({t,i})).filter(v=>v.t.id.startsWith('club_'));
@@ -390,6 +720,12 @@ function showContinentSetup(id=continentSelection){const comp=confed(id);if(!com
 // persistent storage entirely. Allow a match to continue in memory, but never
 // swallow quota/corruption errors or pretend that an unsaved slot was retained.
 let cupSaveVolatile=false;
+let lastCupResultCommitted=false;
+let leagueResultCommitted=false;
+function persistLeagueResult(value){
+ try{const raw=JSON.stringify(value);careerStorage.setItem('legend_league',raw);return careerStorage.getItem('legend_league')===raw;}
+ catch(error){console.warn('League progress could not be committed:',error.message);return false;}
+}
 function writeCupSlot(slot,tournament,name){
  try{const result=cupSlots.save(slot,tournament,name);cupSaveVolatile=false;return result;}
  catch(error){
@@ -401,6 +737,15 @@ function writeCupSlot(slot,tournament,name){
 }
 function startContinent(){const value=+$('continentClub').value;try{const fresh=createTournament(continentSelection,value,TEAMS,CONTINENTAL_TEAMS);const slot=cupSlots.firstEmpty()??cupSlots.active;if(cupSlots.list()[slot-1].occupied&&!confirm('All ten Cup slots are full. Overwrite active Cup slot '+slot+'?'))return;writeCupSlot(slot,fresh,confed(fresh.compId)?.name||'Cup '+slot);continentalRun=fresh;store.put('continentalRun',continentalRun);showTournament()}catch(e){alert('Could not start Cup: '+e.message)}}
 function saveCup(){if(!continentalRun)return;writeCupSlot(cupSlots.active,continentalRun);store.put('continentalRun',continentalRun)}
+// Apply a result to a detached campaign and commit it only after the active slot accepts the update.
+function applyCupMatchResult(score,penaltyWinner=null){
+ const next=JSON.parse(JSON.stringify(continentalRun));
+ const result=tournamentAdvance(next,TEAMS,score,penaltyWinner);
+ const committed=writeCupSlot(cupSlots.active,next);lastCupResultCommitted=!!committed;
+ continentalRun=next;store.put('continentalRun',continentalRun);
+ return result;
+}
+function formatCupHistoryScore(value){return Number.isSafeInteger(value)&&value>=0&&value<=999?String(value):'—'}
 function showTournament(){if(!continentalRun)return showContinents();const t=continentalRun,c=confed(t.compId),fx=tournamentCurrent(t),my=TEAMS[t.club],rank=tournamentStandings(t),position=rank.findIndex(x=>x.id===t.club)+1;
  const standingsHTML=rank.slice(0,Math.min(36,rank.length)).map((p,i)=>`<tr class="${p.id===t.club?'myTeam':''}"><td>${i+1}</td><td>${teamIdentity(TEAMS[p.id])} ${escapeHTML(TEAMS[p.id].name)}</td><td>${p.p}</td><td>${p.w}</td><td>${p.d}</td><td>${p.l}</td><td>${p.gf-p.ga}</td><td>${p.pts}</td></tr>`).join('');
  page('CONTINENTAL CAMPAIGN',`${c.name} · ${c.season} · ${my.name}`,
@@ -408,7 +753,7 @@ function showTournament(){if(!continentalRun)return showContinents();const t=con
  <div class="twoCol"><div class="panel">${cupSaveVolatile?'<p role="status" class="muted">Temporary Cup session: browser storage is unavailable. Progress will be lost when this page closes.</p>':''}<div class="badge">${escapeHTML(tournamentProgress(t))}</div>
  <div class="fixture"><span>${t.phase==='finished'?'🏁 CAMPAIGN COMPLETE':fx?.bye?'🟢 BYE — AUTO ADVANCE':'⚽ NEXT MATCH'}</span><strong>${t.phase==='finished'?(t.winner===t.club?'🏆 CONTINENTAL CHAMPIONS!':'ELIMINATED — TRY AGAIN'):fx?.bye?'Automatic qualification':`${escapeHTML(my.name)} VS ${escapeHTML(TEAMS[fx?.opponent]?.name||'TBD')}`}</strong></div>
  <div class="row">${t.phase==='finished'?button('↻ NEW CAMPAIGN','continentPick_'+t.compId,'gold'):fx?.bye?button('➜ ADVANCE THROUGH BYE','continentBye','gold'):button('▶ PLAY CHAMPIONSHIP MATCH','continentKickoff','gold')}${button('ALL CONTINENTS','continents','minor')}${button('SAVE SLOTS','navCupSlots','minor')}</div>
- <div class="stat"><strong>CONTINENT'S TOP SIX</strong><span>${c.featured.split('|').map(escapeHTML).join(', ')}</span></div><div class="scroll" style="max-height:190px;margin-top:12px">${t.history.slice(0,18).map(h=>`<div class="stat"><strong>${escapeHTML(h.stage||'MATCHDAY '+h.round||'MATCH')}</strong><span>${h.kind==='bye'?'BYE':(TEAMS[h.a]?.name||'')+' '+(h.scoreA??'')+'–'+(h.scoreB??'')+' '+(TEAMS[h.b]?.name||'')}</span></div>`).join('')||'<div class="muted">No completed fixtures yet.</div>'}</div>
+ <div class="stat"><strong>CONTINENT'S TOP SIX</strong><span>${c.featured.split('|').map(escapeHTML).join(', ')}</span></div><div class="scroll" style="max-height:190px;margin-top:12px">${t.history.slice(0,18).map(h=>`<div class="stat"><strong>${escapeHTML(h.stage||'MATCHDAY '+h.round||'MATCH')}</strong><span>${h.kind==='bye'?'BYE':(TEAMS[h.a]?.name||'')+' '+formatCupHistoryScore(h.scoreA)+'–'+formatCupHistoryScore(h.scoreB)+' '+(TEAMS[h.b]?.name||'')}</span></div>`).join('')||'<div class="muted">No completed fixtures yet.</div>'}</div>
  </div><div class="panel"><h3 class="titleSmall">CONTINENTAL STANDINGS</h3><div class="scroll continentTable"><table class="miniTable"><thead><tr><th>#</th><th>CLUB</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>PTS</th></tr></thead><tbody>${standingsHTML}</tbody></table></div><p class="muted">${t.phase==='league'?'Standings update after every complete arcade matchday.':'Knockout results determine elimination and trophy winners.'}</p></div></div>`, 'continents');
 }
 function continentKickoff(){const fx=tournamentCurrent(continentalRun);if(!fx||fx.bye)return showTournament();mode='continental';home=continentalRun.club;away=fx.opponent;start()}
@@ -424,6 +769,7 @@ function drawGallery(){document.querySelectorAll('.shotArt').forEach(c=>{let x=c
 // all existing rules, kits, talks and tactics live one level below.
 function showSetup(newMode='quick'){
  mode=newMode;if(mode==='league')home=0;
+ const trialLineup=planFor(home).lineup,trialPlayers=roster(home).filter((p,index)=>trialLineup.includes(index)&&['MF','FW'].includes(p.role)&&(!p.superAbility||p.superAbility.type==='shoot'));if(!trialPlayers.some(p=>p.id===arcadeShotPlayerId))arcadeShotPlayerId=trialPlayers[0]?.id||'';
  if(home===away)away=(away+1)%TEAMS.length;
  if(!filteredNations(homeCategory).some(([i])=>i===home))homeCategory='all';
  if(!filteredNations(awayCategory).some(([i])=>i===away))awayCategory='all';
@@ -435,7 +781,7 @@ function showSetup(newMode='quick'){
  <div class="selectors"><div>${field('HOME CATEGORY','homeGroup',categoryOptions,homeCategory)}${teamField('HOME TEAM','homeTeam',filteredNations(homeCategory),home)}</div><div>${field('AWAY CATEGORY','awayGroup',categoryOptions,awayCategory)}${teamField('AWAY TEAM','awayTeam',filteredNations(awayCategory),away)}</div></div>
  <div class="setupDigest"><span>⏱ ${opt.halfSeconds}s / half</span><span>☀ ${escapeHTML(opt.weather)}</span><span>🎯 ${escapeHTML(aiTuning(opt.difficulty).name)}</span><span>⚙ ${escapeHTML(opt.terrain)} pitch</span></div>
  </div>
- <div class="setupSubnav"><button class="btn setupSubButton" data-action="setupRules">⚙ Match rules <small>Weather, time, CPU</small></button><button class="btn setupSubButton" data-action="setupAppearance">🎨 Kits &amp; talks <small>Look and morale</small></button><button class="btn setupSubButton" data-action="setupTactics">♟ Team tactics <small>Formation &amp; lineup</small></button></div>
+ <div class="setupSubnav"><button class="btn setupSubButton" data-action="setupRules">⚙ Match rules <small>Weather, time, stadium, CPU</small></button><button class="btn setupSubButton" data-action="setupAppearance">🎨 Kits &amp; talks <small>Look and morale</small></button><button class="btn setupSubButton" data-action="setupTactics">♟ Team tactics <small>Formation &amp; lineup</small></button>${['quick','versus','training'].includes(mode)?'<button class="btn setupSubButton" data-action="setupArcadeShots">✨ Arcade Shot Trial <small>Try any catalog shot this match</small></button>':''}</div>
  <p class="setupControlsTip muted">P1: WASD move · K pass · J shoot · I dribble · Space jump${mode==='versus'?' · P2: arrows + mapped actions':''}</p>`, 'navOnDevice');
  paintTeamPreviews();
 }
@@ -446,22 +792,35 @@ function paintBallPreview(){
  const model=VISUALFEEL.validBallModel(opt.ballModel);
  renderer.drawSoccerBall(ctx,canvas.width/2,canvas.height/2,28,model,Math.PI*.17);
 }
+function refreshKitContrastUI(){
+ const currentKitContrast=matchContrast(TEAMS[home],TEAMS[away],kitSelections);
+ const status=$('kitContrastStatus');if(status)status.textContent=`Primary-kit contrast: ${currentKitContrast.toFixed(2)}:1${currentKitContrast>=2?' — good separation':' — similar colors may be hard to tell apart'}.`;
+ const recommendation=$('kitContrastAction');if(recommendation)recommendation.innerHTML=currentKitContrast<2?button('↔ IMPROVE KIT CONTRAST','autoContrastKits','gold')+'<p class=\"muted\">This changes kit selections only when you choose it.</p>':'';
+ for(const side of [0,1]){const dot=$(side?'awayKitDot':'homeKitDot');if(dot){const team=kitFor(TEAMS[side?away:home],kitSelections[side]);dot.style.background=team.primary;dot.style.borderColor=team.secondary;}}
+}
 function showSetupExtras(section){
  const talks=Object.entries(TEAM_TALKS).map(([k,v])=>[k,v.name]);
- if(section==='rules'){
+ if(section==='arcadeShots'){
+  const players=roster(home).filter((p,index)=>planFor(home).lineup.includes(index)&&['MF','FW'].includes(p.role)&&(!p.superAbility||p.superAbility.type==='shoot')).map(p=>[p.id,'#'+p.num+' '+p.name]);
+  const shots=[['','No trial (default)'],...Object.entries(SHOTS).map(([id,shot])=>[id,shot.name||id])];
+  page('ARCADE SHOT TRIAL','Try one catalog Super Shot with a home-team midfielder or forward in this local match.',
+   `<div class="panel setupExtras">${field('SUPER SHOT','arcadeShotPick',shots,arcadeShotId)}<canvas id="arcadeShotPreview" class="ballPreview" width="160" height="120" role="img" aria-label="Preview of selected Super Shot"></canvas>${field('HOME PLAYER','arcadeShotPlayerPick',players,arcadeShotPlayerId)}<p class="muted" role="status" aria-live="polite">This temporary loadout uses the existing Jump/Shoot combo and expires when the match ends. It does not edit roster, Career, online, or saved equipment. Other players and opponent equipment stay unchanged.</p><div class="row">${button('✓ DONE — BACK TO MATCH','returnSetup','gold')}</div></div>`, 'returnSetup');
+ }else if(section==='rules'){
   page('MATCH RULES','Optional match conditions. Changes apply to your next kickoff.',
-  `<div class="panel setupExtras">${field('WEATHER','weather',WEATHER.map(v=>[v,v]),opt.weather)}${field('PLAYING SURFACE','terrain',TERRAIN.map(v=>[v,v==='Classic'?'Classic · Weathered Famicom-style pitch':v]),opt.terrain)}${field('PITCH CONDITION','condition',CONDITIONS.map(v=>[v,v]),opt.condition)}${field('MATCH BALL','ballModel',VISUALFEEL.BALL_MODELS.map(v=>[v.id,v.name]),opt.ballModel)}<canvas id="ballPreview" class="ballPreview" width="100" height="76" aria-label="Preview of selected match ball"></canvas>${field('SECONDS PER HALF','halfSeconds',[60,120,180,300].map(v=>[v,v+' sec']),opt.halfSeconds)}${field('CPU DIFFICULTY','matchDifficulty',aiChoices(),opt.difficulty)}${field('CPU STRATEGY','aiStyle',['Balanced','Aggressive','Defensive'].map(v=>[v,v]),opt.aiStyle||'Balanced')}${difficultyHint()}<div class="row">${button('✓ DONE — BACK TO MATCH','returnSetup','gold')}</div></div>`, 'returnSetup');
+  `<div class="panel setupExtras">${field('WEATHER','weather',WEATHER.map(v=>[v,v]),opt.weather)}${field('PLAYING SURFACE','terrain',TERRAIN.map(v=>[v,v==='Classic'?'Classic · Weathered Famicom-style pitch':v]),opt.terrain)}${field('PITCH CONDITION','condition',CONDITIONS.map(v=>[v,v]),opt.condition)}${field('STADIUM','settingsStadium',STADIUMS.map(v=>[v.id,v.name+' · '+v.city]),opt.stadium)}${field('MATCH BALL · OPTIONAL COSMETIC','ballModel',VISUALFEEL.BALL_MODELS.map(v=>[v.id,v.name]),opt.ballModel)}<canvas id="ballPreview" class="ballPreview" width="100" height="76" aria-label="Preview of selected match ball"></canvas><p class="muted">The ball design applies to the whole match and is never assigned from player nationality.</p>${field('SECONDS PER HALF','halfSeconds',[60,120,180,300].map(v=>[v,v+' sec']),opt.halfSeconds)}${field('CPU DIFFICULTY','matchDifficulty',aiChoices(),opt.difficulty)}${field('CPU STRATEGY','aiStyle',['Balanced','Aggressive','Defensive'].map(v=>[v,v]),opt.aiStyle||'Balanced')}${difficultyHint()}<div class="row">${button('✓ DONE — BACK TO MATCH','returnSetup','gold')}</div></div>`, 'returnSetup');
  }else if(section==='appearance'){
+  const kitContrastHint=`<p class=\"muted\" id=\"kitContrastStatus\" role=\"status\" aria-live=\"polite\"></p><div id=\"kitContrastAction\"></div>`;
   page('KITS & TEAM TALKS','Optional team colors and pre-match morale.',
-  `<div class="panel setupExtras"><div class="kitChooser"><div class="kitSelector"><span class="kitDot" id="homeKitDot"></span>${field('HOME TEAM KIT','homeKit',[['home','HOME KIT'],['away','AWAY KIT']],kitSelections[0])}</div><div class="kitSelector"><span class="kitDot" id="awayKitDot"></span>${field('AWAY TEAM KIT','awayKit',[['home','HOME KIT'],['away','AWAY KIT']],kitSelections[1])}</div></div>${field('MATCH BALL DESIGN','ballModel',VISUALFEEL.BALL_MODELS.map(v=>[v.id,v.name]),opt.ballModel)}<canvas id="ballPreview" class="ballPreview" width="100" height="76" aria-label="Preview of selected match ball"></canvas><h3 class="titleSmall">Pre-match talks</h3><p class="muted">One talk per team. Player personalities respond differently.</p><div class="tacticsGrid">${field('HOME TEAM TALK','preTalkHome',talks,preTalkChoices[0])}${field('AWAY TEAM TALK','preTalkAway',talks,preTalkChoices[1])}</div><div class="row">${button('✓ DONE — BACK TO MATCH','returnSetup','gold')}</div></div>`, 'returnSetup');
-  // A kit-only submenu does not render portraits; update swatches directly.
-  for(const side of [0,1]){const dot=$(side?'awayKitDot':'homeKitDot');if(dot){const team=kitFor(TEAMS[side?away:home],kitSelections[side]);dot.style.background=team.primary;dot.style.borderColor=team.secondary;}}
+  `<div class="panel setupExtras"><div class="kitChooser"><div class="kitSelector"><span class="kitDot" id="homeKitDot"></span>${field('HOME TEAM KIT','homeKit',[['home','HOME KIT'],['away','AWAY KIT']],kitSelections[0])}</div><div class="kitSelector"><span class="kitDot" id="awayKitDot"></span>${field('AWAY TEAM KIT','awayKit',[['home','HOME KIT'],['away','AWAY KIT']],kitSelections[1])}</div></div>${kitContrastHint}${field('MATCH BALL DESIGN · OPTIONAL COSMETIC','ballModel',VISUALFEEL.BALL_MODELS.map(v=>[v.id,v.name]),opt.ballModel)}<canvas id="ballPreview" class="ballPreview" width="100" height="76" aria-label="Preview of selected match ball"></canvas><p class="muted">The ball design applies to the whole match and is never assigned from player nationality.</p><h3 class="titleSmall">Pre-match talks</h3><p class="muted">One talk per team. Player personalities respond differently.</p><div class="tacticsGrid">${field('HOME TEAM TALK','preTalkHome',talks,preTalkChoices[0])}${field('AWAY TEAM TALK','preTalkAway',talks,preTalkChoices[1])}</div><div class="row">${button('✓ DONE — BACK TO MATCH','returnSetup','gold')}</div></div>`, 'returnSetup');
+  // Update only the live contrast note and swatches; keep the user's select focused.
+  refreshKitContrastUI();
  }else{
   page('TEAM TACTICS','Formation, lineup, captain, substitutions and tactical style are preserved.',
   `<div class="panel setupExtras"><p class="muted">Configure either team, then return to this match setup. Six approved formations remain available.</p><div class="row">${button('⚙ HOME TACTICS','prepHome')}${button('⚙ AWAY TACTICS','prepAway')}${button('← BACK TO MATCH','returnSetup','gold')}</div></div>`, 'returnSetup');
  }
- paintBallPreview();
+ paintBallPreview();if(section==='arcadeShots')paintArcadeShotPreview();
 }
+function paintArcadeShotPreview(){const canvas=$('arcadeShotPreview');if(!canvas)return;const ctx=canvas.getContext('2d');if(!ctx)return;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#092b3a';ctx.fillRect(0,0,canvas.width,canvas.height);const shot=SHOTS[arcadeShotId];if(!shot){ctx.fillStyle='#c5eaff';ctx.font='14px Arial';ctx.textAlign='center';ctx.fillText('Choose a shot',canvas.width/2,canvas.height/2);canvas.setAttribute('aria-label','Choose a Super Shot to preview');return;}ctx.save();ctx.translate(canvas.width/2,canvas.height/2);ctx.scale(1.4,1.4);renderer.drawTransformation(ctx,{...shot,id:arcadeShotId},performance.now()/1000);ctx.restore();canvas.setAttribute('aria-label','Preview of '+(shot.name||arcadeShotId));}
 function paintTeamPreviews(){for(const side of ['home','away']){
  const id=side==='home'?home:away,c=$(side+'Portrait');if(!c)continue;
  const ctx=c.getContext('2d'),team=kitFor(TEAMS[id],kitSelections[side==='home'?0:1]),r=roster(id),star=r[id===0?0:8]||r[0];
@@ -474,7 +833,7 @@ function paintTeamPreviews(){for(const side of ['home','away']){
  ctx.restore();
  ctx.save();ctx.translate(153,36);ctx.scale(.47,.47);renderer.drawTransformation(ctx,{...SHOTS[team.shot],id:team.shot},1.5);ctx.restore();
  }}
-function start(){if(mode==='versus')humans=2;else humans=1;game.init({home,away,mode,humans,rosters:[mode==='career'&&career?career.roster.map(p=>({...p})):roster(home),roster(away)],lineups:[planFor(home).lineup.slice(),planFor(away).lineup.slice()],formations:[planFor(home).formation,planFor(away).formation],plans:[planFor(home),planFor(away)],options:{...opt,kitChoices:kitSelections.slice()}});if(preTalkChoices[0]!=='none')game.applyTeamTalk(0,preTalkChoices[0],'pregame');if(preTalkChoices[1]!=='none')game.applyTeamTalk(1,preTalkChoices[1],'pregame');if(mode==='pk')game.startPK(false);closeMenu();drawHUD()}
+function start(){activeMatchReceiptId=newMatchReceiptId();lastCupResultCommitted=false;leagueResultCommitted=false;if(mode==='versus')humans=2;else humans=1;const homePlan=mode==='career'&&career?.club===home?careerPlanFor(career):planFor(home),awayPlan=planFor(away);game.init({home,away,mode,humans,rosters:[mode==='career'&&career?career.roster.map(p=>({...p})):roster(home),roster(away)],lineups:[homePlan.lineup.slice(),awayPlan.lineup.slice()],formations:[homePlan.formation,awayPlan.formation],plans:[homePlan,awayPlan],options:{...opt,kitChoices:kitSelections.slice(),arcadeShotId,arcadeShotPlayerId}});trainingCrossCoachState.reset(mode==='training');if(preTalkChoices[0]!=='none')game.applyTeamTalk(0,preTalkChoices[0],'pregame');if(preTalkChoices[1]!=='none')game.applyTeamTalk(1,preTalkChoices[1],'pregame');if(mode==='pk')game.startPK(false);closeMenu();drawHUD();updateTrainingCrossCoach()}
 function drawHUD(){let p=game.controlledPlayer(lanRole==='guest'?1:0),s=game.score;$('homeflag').innerHTML=identity(home);$('awayflag').innerHTML=identity(away);$('homename').textContent=(lanPlayerNames?.home?lanPlayerNames.home+' · ':'')+TEAMS[home].name.toUpperCase();$('awayname').textContent=(lanPlayerNames?.away?lanPlayerNames.away+' · ':'')+TEAMS[away].name.toUpperCase();$('scoring').innerHTML=`${s[0]} <span>:</span> ${s[1]}`;$('weatherHud').textContent=game.weather.toUpperCase();let secs=Math.max(0,Math.ceil(game.matchSeconds-game.clock));$('timeHud').textContent=`${game.half===1?'1ST':'2ND'} • ${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}`;if(p){const inPossession=game.ball.owner?.t===0;const ownBall=game.ball.owner===p;const goalkeeperHasBall=game.ball.owner?.t===0&&game.ball.owner?.keeper;// v0.8.25: keep the exact four approved action labels on screen; defensive / keeper functions remain contextual.
   for(const [key,text] of Object.entries({pass:'PASS',shoot:'SHOOT',dribble:'DRIBBLE',jump:'JUMP'})){const b=document.querySelector('[data-act="'+key+'"]');if(b){if(b.textContent!==text)b.textContent=text;b.title=key==='pass'?(goalkeeperHasBall?'Pass / goalkeeper clear':inPossession?'Tap nearest · direction aim · hold long · Jump then Pass cross':'Pass / tackle'):key==='shoot'?(inPossession?'Shoot':'Shoot / slide tackle'):key==='dribble'?(inPossession?'Dribble':'Dribble / switch player'):'Jump';}}const dribbleButton=document.querySelector('[data-act="dribble"]');if(dribbleButton){
    const cd=Math.max(0,p.dribbleCooldown||0),cooling=cd>.02&&game.ball.owner===p;
@@ -482,7 +841,7 @@ function drawHUD(){let p=game.controlledPlayer(lanRole==='guest'?1:0),s=game.sco
    dribbleButton.dataset.cooldown=cooling?cd.toFixed(1)+'s':'';
    if(cooling)dribbleButton.title='Dribble ready in '+cd.toFixed(1)+' seconds';
   }
-  $('playerTag').textContent=`#${p.src.num} ${p.src.name.toUpperCase()}  ·  ${(p.src.superAbility?.type==='defence'&&!game.ball.owner?p.src.superAbility.name:p.src.shotName).toUpperCase()}  · LV${abilityLevel(p,(p.src.superAbility?.type==='defence'&&!game.ball.owner)?'defence':'shot')}  ·  ${(p.src.superAbility?.type==='defence'&&!game.ball.owner?(p.abilityCd||0):p.specialCd)>0?'SUPER RECHARGING':'SUPER READY'}  ·  ${moodLabel(p.morale)} ${Math.round(p.morale)}%`;const staminaBar=$('staminaFill');if(staminaBar)staminaBar.style.width=Math.round(100*(1-(p.fatigue||0)))+'%';const staminaText=$('staminaText');if(staminaText)staminaText.textContent=`ENERGY ${Math.round(100*(1-(p.fatigue||0)))}%`;const meter=$('powerFill');if(meter)meter.style.width=Math.max(0,Math.min(100,100*Math.max(p.charge||0,game.input.held(p.t,'pass')?(p.passHold||0):0)/1.2))+'%';const superLabel=$('specialMeter');if(superLabel){let defensive=p.src.superAbility?.type==='defence'&&!game.ball.owner;let abilityCooldown=defensive?(p.abilityCd||0):p.specialCd;superLabel.textContent=(game.input.held(p.t,'pass')&&game.ball.owner?.t===p.t)?'PASS • HOLD TO EXTEND':defensive?(abilityCooldown>0?'DEF CD '+abilityCooldown.toFixed(1)+'s':'★ DEF READY'):(abilityCooldown>0?'RECHARGE '+abilityCooldown.toFixed(1)+'s':'★ READY');superLabel.classList.toggle('charging',abilityCooldown>0)}}}
+  const playerTag=$('playerTag');playerTag.textContent=`#${p.src.num} ${p.src.name.toUpperCase()}  ·  ${(p.src.superAbility?.type==='defence'&&!game.ball.owner?p.src.superAbility.name:p.src.shotName).toUpperCase()}  · LV${abilityLevel(p,(p.src.superAbility?.type==='defence'&&!game.ball.owner)?'defence':'shot')}  ·  ${(p.src.superAbility?.type==='defence'&&!game.ball.owner?(p.abilityCd||0):p.specialCd)>0?'SUPER RECHARGING':'SUPER READY'}  ·  ${moodLabel(p.morale)} ${Math.round(p.morale)}%`;playerTag.title=playerTag.textContent;const staminaBar=$('staminaFill');if(staminaBar)staminaBar.style.width=Math.round(100*(1-(p.fatigue||0)))+'%';const staminaText=$('staminaText');if(staminaText)staminaText.textContent=`ENERGY ${Math.round(100*(1-(p.fatigue||0)))}%`;const meter=$('powerFill');if(meter)meter.style.width=Math.max(0,Math.min(100,100*Math.max(p.charge||0,game.input.held(p.t,'pass')?(p.passHold||0):0)/1.2))+'%';const superLabel=$('specialMeter');if(superLabel){let defensive=p.src.superAbility?.type==='defence'&&!game.ball.owner;let abilityCooldown=defensive?(p.abilityCd||0):p.specialCd;superLabel.textContent=(game.input.held(p.t,'pass')&&game.ball.owner?.t===p.t)?'PASS • HOLD TO EXTEND':defensive?(abilityCooldown>0?'DEF CD '+abilityCooldown.toFixed(1)+'s':'★ DEF READY'):(abilityCooldown>0?'RECHARGE '+abilityCooldown.toFixed(1)+'s':'★ READY');superLabel.classList.toggle('charging',abilityCooldown>0)}}}
 function showLeague(){home=0;mode='league';let list=[10,9,11,12];away=league.stage==='finals'?list[Math.min(league.playoff||0,3)]:(league.played%12)+1;
  page('WORLD LEAGUE','Win at least 16 games and accumulate 70 points to qualify for four championship finals.',`<div class="twoCol"><div class="panel"><div class="titleSmall">JAPAN • ${league.stage.toUpperCase()}</div><div class="tripleCol">${[['WINS',league.wins],['POINTS',league.points],['GAMES',league.played]].map(([a,b])=>`<div class="panel" style="text-align:center"><div class="badge">${a}</div><div style="font-size:34px;color:#ffdd76;font-weight:900">${b}</div></div>`).join('')}</div><p class="muted">Qualification: 16 wins / 70 points. Finals: ${league.playoff||0} / 4 victories.</p><div class="stat"><span>NEXT OPPONENT</span><strong>${TEAMS[away].name}</strong></div><div class="row" style="margin-top:15px">${league.stage==='champion'?'<strong>🏆 CUP WON — CHAMPIONS!</strong>':button('▶ NEXT MATCH','leagueKickoff','gold')}${button('RESET SEASON','clearLeague')}</div></div><div class="panel"><div class="titleSmall">MATCH HISTORY</div><div class="scroll"><table class="miniTable"><thead><tr><th>Opponent</th><th>Result</th></tr></thead><tbody>${(league.games||[]).slice(0,20).map(g=>`<tr><td>${escapeHTML(g.team)}</td><td>${g.a} - ${g.b}</td></tr>`).join('')||'<tr><td colspan="2">No results yet.</td></tr>'}</tbody></table></div></div></div>`)}
 // Read-only substitution hint: only GameEngine.applyPlan validates and commits swaps.
@@ -528,28 +887,34 @@ function lineupRoleFitGuidance(players,slots,positions){
   (mismatches.length?'Review '+mismatches.join('; ')+'.':'All starters fit their assigned roles.')+
   ' Advice only; no changes are applied until SAVE TACTICS.';
 }
+function squadEnergyPercent(player){
+ if(!player)return 0;
+ const ledger=game.fatigueLedger?.[squadSide]||{};
+ const fatigue=squadContext==='pause'&&Number.isFinite(ledger[player.id])?ledger[player.id]:initialFatigue(player);
+ return Math.round(100*(1-Math.max(0,Math.min(1,Number(fatigue)||0))));
+}
 function showSquad(side=0,origin='home'){
  squadReturnAtHalf=origin==='pause'&&screen==='HALF TIME';
  squadSide=side;squadContext=origin;
   // Both visible and keyboard/gamepad Back return to the actual entry menu.
-  const squadBackAction=origin==='setup'?'returnSetup':origin==='pause'?'returnPause':menuEntryReturn;
- const index=origin==='pause'?game.teamIds[side]:side===0?home:away;
- const team=TEAMS[index],players=origin==='pause'?game.rosters[side]:roster(index);
- const plan=origin==='pause'?safePlan(game.teamPlans[side],players,index):planFor(index);
+ const squadBackAction=origin==='setup'?'returnSetup':origin==='pause'?'returnPause':origin==='career'?'careerSquad':origin==='customization'?'navCustomization':'home';
+ const index=origin==='pause'?game.teamIds[side]:origin==='career'?career?.club:side===0?home:away;
+ const team=TEAMS[index],players=origin==='pause'?game.rosters[side]:origin==='career'?career?.roster||[]:roster(index);
+ const plan=origin==='pause'?safePlan(game.teamPlans[side],players,index):origin==='career'?careerPlanFor(career):planFor(index);
  const order=['GK','DF','DF','MF','FW','FW'];
- const memberOptions=players.map((p,i)=>[i,`#${p.num} ${p.name} · ${p.role} · OVR ${playerOVR(p)}${p.legendaryRating?` · LEG ${p.legendaryRating}`:''}`]);
+ const memberOptions=players.map((p,i)=>[i,`#${p.num} ${p.name} · ${p.role} · OVR ${playerOVR(p)} · ENERGY ${squadEnergyPercent(p)}%${p.legendaryRating?` · LEG ${p.legendaryRating}`:''}`]);
  const fieldPlayerOptions=plan.lineup.map(i=>memberOptions[i]);
  const roleOptions=players.map((p,i)=>[i,`${plan.lineup.includes(i)?'●':'○'} #${p.num} ${p.name}`]);
  page('TEAM COMMAND CENTER',`${team.name} — edit formation, starting six, captain, set pieces and tactics ${origin==='pause'?'while the game is paused':'before kickoff'}.`,
  `<div class="squadHeader">${identity(index)}<strong>${escapeHTML(team.name)}</strong><span>${origin==='pause'?'LIVE TACTICS':'PREGAME PLAN'} · 6 ON FIELD / 6 BENCH</span></div><div class="twoCol"><div class="panel"><h3 class="titleSmall">FORMATION & LINEUP</h3>${field('FORMATION','formation',Object.keys(FORMATIONS).map(v=>[v,v]),plan.formation)}<div class="formationPitch" id="formationPitch" aria-label="Six-player formation with cartoon player faces"></div><p class="muted">OVR is the rounded mean of six position-relevant stats (1–100). Formation OVR is for the assigned position, not necessarily the player’s natural role. Five outfield players + goalkeeper.</p>
- ${plan.lineup.map((id,i)=>`<div class="lineupRow"><strong>${order[i]}</strong>${choice('pos'+i,(i===0?memberOptions.filter(([j])=>players[j].role==='GK'):memberOptions.filter(([j])=>players[j].role!=='GK')),id)}<span class="positionOvr" data-lineup-ovr="${i}" aria-label="Position overall rating">OVR ${playerOVR(players[id],order[i])}</span></div>`).join('')}
+ ${plan.lineup.map((id,i)=>`<div class="lineupRow"><strong>${order[i]}</strong>${choice('pos'+i,(i===0?memberOptions.filter(([j])=>players[j].role==='GK'):memberOptions.filter(([j])=>players[j].role!=='GK')),id,'Starter '+(i+1)+', '+({GK:'goalkeeper',DF:'defender',MF:'midfielder',FW:'forward'}[order[i]]))}<span class="positionOvr lineupRatings" data-lineup-ovr="${i}" aria-label="Position overall ${playerOVR(players[id],order[i])}, Energy ${squadEnergyPercent(players[id])} percent"><span aria-hidden="true">OVR ${playerOVR(players[id],order[i])}</span><span class="lineupEnergy" data-lineup-energy="${i}" aria-hidden="true">ENERGY ${squadEnergyPercent(players[id])}%</span></span></div>`).join('')}
   <p id="lineupRoleFit" class="muted" role="status" aria-live="polite" aria-label="Lineup position fit guidance"></p>
- <p class="muted">${origin==='pause'?`SUBSTITUTIONS: <b>${game.substitutionsUsed[side]} / ${game.maxSubstitutions}</b> used. Only ${game.maxSubstitutions} changes allowed; substituted-off players cannot return.`:'Before kickoff, choose any six starters. During play, use Pause to substitute up to three players.'} Substitutes enter with their own fitness; exhausted players lose speed, precision and tackling strength.</p>
+ <p class="muted">${origin==='pause'?`SUBSTITUTIONS: <b>${game.substitutionsUsed[side]} / ${game.maxSubstitutions}</b> used. Only ${game.maxSubstitutions} changes allowed; substituted-off players cannot return.`:origin==='career'?'Select six distinct players from your current Career roster. Changes are saved only when you choose SAVE TACTICS; the saved Career roster remains unchanged.':'Before kickoff, choose any six starters. During play, use Pause to substitute up to three players.'} Substitutes enter with their own fitness; exhausted players lose speed, precision and tackling strength.</p>
  ${origin==='pause'?substitutionAdviceForPause(game,side,plan,players):''}
  <h3 class="titleSmall">LEADERSHIP & SET PIECES</h3><div class="tacticsGrid">${[['captain','CAPTAIN'],['penalty','PENALTY KICKS'],['freeKick','FREE KICKS'],['corner','CORNERS']].map(([key,label])=>`<div>${field(label,'role_'+key,key==='captain'?fieldPlayerOptions:roleOptions,plan[key])}</div>`).join('')}</div>
  <h3 class="titleSmall">TEAM INSTRUCTIONS</h3><div class="tacticsGrid"><div>${field('ATTACKING STYLE','attackStyle',ATTACK_STYLES.map(v=>[v,v]),plan.attack)}</div><div>${field('DEFENSIVE STYLE','defenceStyle',DEFENCE_STYLES.map(v=>[v,v]),plan.defence)}</div></div>
- <p class="muted">Possession prioritizes passes; Direct pushes forward and shoots earlier. High Press closes down faster; Deep Block holds positions. Captain boosts team passing slightly. Penalty taker accuracy affects shootouts. Free-kick/corner roles are saved, but those restart mechanics are not yet playable.</p>
- <div class="row">${button('✓ SAVE TACTICS','saveSquad','gold')}${button('RESTORE DEFAULT','resetSquad')}${button('← BACK',squadBackAction)}</div></div><div class="panel"><h3 class="titleSmall">12-PLAYER ROSTER · POSITION OVR</h3><div class="roster">${players.map((p,i)=>`<div class="rosterCard ${plan.lineup.includes(i)?'startingPlayer':''}"><canvas class="portrait playerFaceCanvas" width="80" height="88" data-squad-avatar="${i}" role="img" aria-label="Cartoon face of ${escapeHTML(p.name)}"></canvas><div><div class="rosterName">${plan.lineup.includes(i)?'● STARTING ':'○ BENCH '}#${p.num} ${escapeHTML(p.name)}</div><div class="rosterMeta"><span class="ovrBadge" title="Calculated from six ${p.role} attributes">${p.role} OVR ${playerOVR(p)}</span>${p.legendaryRating?` · <span class="ovrBadge" title="User-selected all-time legendary card rating (not the calculated position OVR)">LEG ${p.legendaryRating}</span>`:''}${BPWPERSONALITY.profileFor(p)?` · <span class="personalityBadge" title="Individual arcade animation style (editorial, not historical motion capture)">✦ ${escapeHTML(BPWPERSONALITY.profileFor(p).label)}</span>`:''} · ${origin==='pause'?`FIT ${Math.round(100*(1-(game.fatigueLedger[side][p.id]??0)))}% · `:`CON ${p.condition??100}% · `}STA ${p.stamina} · DEF ${p.defence} · SPD ${p.speedRating} · AGI ${p.agility} · DRB ${p.dribbling}</div>${playerAbilityIcons(p)}<div class="rosterMeta">SHOT ${p.shootPower}/${p.shootAccuracy} · HEAD ${p.heading} · PASS ${p.passing} · CROSS ${p.crossing} · STYLE ${escapeHTML(p.dribbleType||'sideStep')}</div><div class="rosterMeta">${p.role==='GK'?`GK DIVING ${p.gkDiving} · GK SKILL ${p.gkSkill} · `:''}ABILITY ${escapeHTML(p.superAbility?.name||'NONE')} · SUPER SHOT LV${abilityLevel(p,'shot')} · DEF LV${p.superAbility?.type==='defence'?abilityLevel(p,'defence'):'—'} · GK LV${p.gkSuperAbility?abilityLevel(p,'keeper'):'—'}</div></div></div>`).join('')}</div></div></div>`,squadBackAction);
+ <p class="muted">Possession prioritizes passes; Direct pushes forward and shoots earlier. High Press closes down faster; Deep Block holds positions. Captain boosts team passing slightly. Penalty taker accuracy affects shootouts. Corner kicks now restart from the correct corner; the saved taker takes it when on the field. A successful grounded slide from behind on a moving carrier awards a direct free kick, or a penalty when the foul is inside the defending penalty area. Other foul and card handling is not implemented.</p>
+ <div class="row">${button('✓ SAVE TACTICS','saveSquad','gold')}${button('RESTORE DEFAULT','resetSquad')}${button('← BACK',squadBackAction)}</div></div><div class="panel"><h3 class="titleSmall">12-PLAYER ROSTER · POSITION OVR</h3><div class="roster">${players.map((p,i)=>`<div class="rosterCard ${plan.lineup.includes(i)?'startingPlayer':''}"><canvas class="portrait playerFaceCanvas" width="80" height="88" data-squad-avatar="${i}" role="img" aria-label="Cartoon face of ${escapeHTML(p.name)}"></canvas><div><div class="rosterName">${plan.lineup.includes(i)?'● STARTING ':'○ BENCH '}#${p.num} ${escapeHTML(p.name)}</div><div class="rosterMeta"><span class="ovrBadge" title="Calculated from six ${p.role} attributes">${p.role} OVR ${playerOVR(p)}</span>${p.legendaryRating?` · <span class="ovrBadge" title="User-selected all-time legendary card rating (not the calculated position OVR)">LEG ${p.legendaryRating}</span>`:''}${BPWPERSONALITY.profileFor(p)?` · <span class="personalityBadge" title="Individual arcade animation style (editorial, not historical motion capture)">✦ ${escapeHTML(BPWPERSONALITY.profileFor(p).label)}</span>`:''} · ${origin==='pause'?'':'CON '+(p.condition??100)+'% · '}ENERGY ${squadEnergyPercent(p)}% · STA ${p.stamina} · DEF ${p.defence} · SPD ${p.speedRating} · AGI ${p.agility} · DRB ${p.dribbling}</div>${playerAbilityIcons(p)}<div class="rosterMeta">SHOT ${p.shootPower}/${p.shootAccuracy} · HEAD ${p.heading} · PASS ${p.passing} · CROSS ${p.crossing} · STYLE ${escapeHTML(p.dribbleType||'sideStep')}</div><div class="rosterMeta">${p.role==='GK'?`GK DIVING ${p.gkDiving} · GK SKILL ${p.gkSkill} · `:''}ABILITY ${escapeHTML(p.superAbility?.name||'NONE')} · SUPER SHOT LV${abilityLevel(p,'shot')} · DEF LV${p.superAbility?.type==='defence'?abilityLevel(p,'defence'):'—'} · GK LV${p.gkSuperAbility?abilityLevel(p,'keeper'):'—'}</div></div></div>`).join('')}</div></div></div>`,squadBackAction);
  refreshFormationPreview();
 }
 // v0.8.25.22: canvas previews share a conservative character framing model.
@@ -598,9 +963,9 @@ function drawFittedKeeperStudioPose(ctx,width,height,player,team){
  return {scale,painted,bounds:[minX,minY,maxX,maxY]};
 }
 function drawTeamFace(canvas,player,teamIndex){if(!canvas||!player)return;const ctx=canvas.getContext('2d');if(!ctx)return;ctx.clearRect(0,0,canvas.width,canvas.height);const gradient=ctx.createLinearGradient(0,0,0,canvas.height);gradient.addColorStop(0,'#347885');gradient.addColorStop(1,'#102d44');ctx.fillStyle=gradient;ctx.fillRect(0,0,canvas.width,canvas.height);ctx.save();const fit=portraitFit(canvas.width,canvas.height,player.appearance||{});ctx.translate(fit.x,fit.y);ctx.scale(fit.scale,fit.scale);renderer.drawPlayer(ctx,{...game.player(0,3),src:player,team:0,i:0,x:0,y:0,z:0,t:0,face:1,dx:0,dy:0,anim:0,action:'idle',controlled:false,preview:true},{getTeam:()=>TEAMS[teamIndex],options:{showNames:false}});ctx.restore();}
-function refreshFormationPreview(){const board=$('formationPitch');if(!board)return;const teamIndex=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;const players=squadContext==='pause'?game.rosters[squadSide]:roster(teamIndex);const key=$('formation')?.value||'2-1-2';const labels={'2-1-2':['GK','DF','DF','MF','FW','FW'],'1-2-2':['GK','DF','MF','MF','FW','FW'],'2-2-1':['GK','DF','DF','MF','MF','FW'],'1-3-1':['GK','DF','MF','MF','MF','FW'],'1-1-3':['GK','DF','MF','FW','FW','FW'],'3-1-1':['GK','DF','DF','DF','MF','FW']}[key]||['GK','DF','DF','MF','FW','FW'];menu.querySelectorAll('.lineupRow>strong').forEach((node,i)=>node.textContent=labels[i]||'MF');const positions=FORMATIONS[key]||FORMATIONS['2-1-2'];const slots=Array.from({length:6},(_,i)=>Number($('pos'+i)?.value));menu.querySelectorAll('[data-lineup-ovr]').forEach((badge,i)=>{badge.textContent='OVR '+playerOVR(players[slots[i]],labels[i]);badge.title='Calculated for '+labels[i]+' position';});const guidance=$('lineupRoleFit');if(guidance)guidance.textContent=lineupRoleFitGuidance(players,slots,labels);board.innerHTML=positions.map((pos,i)=>`<div class="formationSlot" style="left:${Math.round(pos.x*100)}%;top:${Math.round(pos.y*100)}%" title="${escapeHTML(players[slots[i]]?.name||'Player')}"><canvas width="86" height="90" data-formation-avatar="${slots[i]}" aria-label="${escapeHTML(players[slots[i]]?.name||'Player')} face" role="img"></canvas><small>${escapeHTML((players[slots[i]]?.name||'Player').split(' ').slice(-1)[0])}</small><span class="formationOvr" aria-label="${labels[i]} overall rating ${playerOVR(players[slots[i]],labels[i])}">${labels[i]} ${playerOVR(players[slots[i]],labels[i])}</span></div>`).join('');menu.querySelectorAll('[data-squad-avatar],[data-formation-avatar]').forEach(canvas=>{const j=Number(canvas.dataset.squadAvatar??canvas.dataset.formationAvatar);drawTeamFace(canvas,players[j],teamIndex)});}
+function refreshFormationPreview(){const board=$('formationPitch');if(!board)return;const teamIndex=squadContext==='pause'?game.teamIds[squadSide]:squadContext==='career'?career?.club:squadSide===0?home:away;const players=squadContext==='pause'?game.rosters[squadSide]:squadContext==='career'?career?.roster||[]:roster(teamIndex);const key=$('formation')?.value||'2-1-2';const labels={'2-1-2':['GK','DF','DF','MF','FW','FW'],'1-2-2':['GK','DF','MF','MF','FW','FW'],'2-2-1':['GK','DF','DF','MF','MF','FW'],'1-3-1':['GK','DF','MF','MF','MF','FW'],'1-1-3':['GK','DF','MF','FW','FW','FW'],'3-1-1':['GK','DF','DF','DF','MF','FW']}[key]||['GK','DF','DF','MF','FW','FW'];menu.querySelectorAll('.lineupRow>strong').forEach((node,i)=>node.textContent=labels[i]||'MF');const positions=FORMATIONS[key]||FORMATIONS['2-1-2'];const slots=Array.from({length:6},(_,i)=>Number($('pos'+i)?.value));menu.querySelectorAll('[data-lineup-ovr]').forEach((badge,i)=>{const player=players[slots[i]],ovr=playerOVR(player,labels[i]),energy=squadEnergyPercent(player);badge.setAttribute('aria-label',`Position overall ${ovr}, Energy ${energy} percent`);badge.querySelector('[aria-hidden="true"]:first-child').textContent='OVR '+ovr;const energyBadge=badge.querySelector('[data-lineup-energy]');if(energyBadge)energyBadge.textContent='ENERGY '+energy+'%';badge.title='Position OVR and Energy percentage';});const guidance=$('lineupRoleFit');if(guidance)guidance.textContent=lineupRoleFitGuidance(players,slots,labels);const mobileLabels=matchMedia('(max-width:650px)').matches;const labelMaxWidth=mobileLabels?55:88;const baseFontSize=mobileLabels?9:10;board.innerHTML=positions.map((pos,i)=>{const player=players[slots[i]],playerName=player?.name||'Player';const surname=playerName.split(' ').slice(-1)[0];const labelFontSize=Math.max(6,Math.min(baseFontSize,labelMaxWidth/(surname.length*.58))),energy=squadEnergyPercent(player),ovr=playerOVR(player,labels[i]);return `<div class="formationSlot role${labels[i]}" data-role="${labels[i]}" style="left:${Math.round(pos.x*100)}%;top:${Math.round(pos.y*100)}%" title="${escapeHTML(playerName)} · ${labels[i]} · Energy ${energy}%"><canvas width="86" height="90" data-formation-avatar="${slots[i]}" aria-label="${escapeHTML(playerName)} face, ${labels[i]}, Energy ${energy} percent" role="img"></canvas><small style="font-size:${labelFontSize.toFixed(2)}px">${escapeHTML(surname)}</small><span class="formationOvr" aria-label="${labels[i]} overall rating ${ovr}">${labels[i]} ${ovr}</span><span class="formationEnergy" aria-label="${escapeHTML(playerName)} Energy ${energy} percent">ENE ${energy}%</span></div>`;}).join('');menu.querySelectorAll('[data-squad-avatar],[data-formation-avatar]').forEach(canvas=>{const j=Number(canvas.dataset.squadAvatar??canvas.dataset.formationAvatar);drawTeamFace(canvas,players[j],teamIndex)});}
 
-const SAVE_KEYS=Object.freeze(['customClubs','managerCareer','careerSlots','cupSlots','continentalRun','options','league','lineup','edits','teamPlans','controllerBindings','kitSelections','audioOptions']);
+const SAVE_KEYS=Object.freeze(['customClubs','managerCareer','careerSlots','cupSlots','continentalRun','options','league','lineup','edits','teamPlans','controllerBindings','kitSelections','audioOptions','tokenWallet']);
 // Reject structurally corrupt imports before confirmation or any storage mutation.
 // Legacy and newer exports can omit keys. Null means 'preserve current value'.
 function validateSaveImport(payload){
@@ -617,6 +982,7 @@ function validateSaveImport(payload){
   if(key==='kitSelections'&&(value.length!==2||value.some(k=>k!=='home'&&k!=='away')))throw Error('Invalid kit selections');
   if(key==='careerSlots'&&!CAREER_SLOTS.validVault(value))throw Error('Invalid Career save slots');
   if(key==='cupSlots'&&!CUP_SLOTS.validVault(value))throw Error('Invalid Cup save slots');
+  if(key==='tokenWallet'&&!ECONOMY.validWallet(value))throw Error('Invalid token wallet');
    if(key==='managerCareer'&&(!Number.isInteger(value.club)||!Array.isArray(value.members)||!Array.isArray(value.fixtures)||!Array.isArray(value.history)||!Array.isArray(value.roster)||value.roster.length!==12||!value.table||typeof value.table!=='object'||!value.facilities||typeof value.facilities!=='object'||!value.cup||typeof value.cup!=='object'||!Number.isFinite(value.cash)||!Number.isInteger(value.week)))throw Error('Invalid manager career');
   if(key==='continentalRun'&&(!Array.isArray(value.participants)||!['league','knockout','finished'].includes(value.phase)))throw Error('Invalid continental cup');
   if(key==='league'&&(!Array.isArray(value.games)||!Number.isFinite(value.played)))throw Error('Invalid league history');
@@ -643,15 +1009,33 @@ function commitSaveImport(changes,storage){
  }catch(e){let rollbackFailed=false;
   // Include the *failing* write: a storage adapter may mutate and then throw.
   for(let i=attempted;i>=0;i--){const [key,prior]=previous[i],slot='legend_'+key;
-   try{if(prior===null)storage.removeItem(slot);else storage.setItem(slot,prior);
-    if(storage.getItem(slot)!==prior)rollbackFailed=true;
-   }catch{rollbackFailed=true}
+   try{if(prior===null)storage.removeItem(slot);else storage.setItem(slot,prior);}
+   catch{
+    // A storage adapter can throw after restoring the old bytes. Report the
+    // rollback as incomplete only when the original value is still missing.
+    try{if(storage.getItem(slot)!==prior)rollbackFailed=true;}catch{rollbackFailed=true}
+    continue;
+   }
+   try{if(storage.getItem(slot)!==prior)rollbackFailed=true;}catch{rollbackFailed=true}
   }
   throw Error('Save could not be stored'+(rollbackFailed?' and automatic rollback was incomplete':' (changes rolled back)'));
  }
  return changes.length;
 }
-function exportSave(){const keys=SAVE_KEYS;const data={product:'Supermagic Football',version:RELEASE.version,exportedAt:new Date().toISOString(),data:Object.fromEntries(keys.map(k=>[k,store.get(k,null)]))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='Supermagic_Football_Save_'+new Date().toISOString().slice(0,10)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),3000)}
+function collectSaveExportData(storage){
+ const data={};
+ for(const key of SAVE_KEYS){
+  let raw;
+  try{raw=storage.getItem('legend_'+key)}
+  catch(error){throw Error(`Save section "${key}" could not be read: ${error?.message||'storage unavailable'}`)}
+  if(raw===null){data[key]=null;continue}
+  try{data[key]=JSON.parse(raw)}
+  catch{throw Error(`Save section "${key}" contains invalid JSON. No backup was downloaded and the stored data was left untouched.`)}
+  if(key==='tokenWallet'&&!ECONOMY.validWallet(data[key]))throw Error('Save section "tokenWallet" has an invalid wallet structure. No backup was downloaded.');
+ }
+ return data;
+}
+function exportSave(){try{const data={product:'Supermagic Football',version:RELEASE.version,exportedAt:new Date().toISOString(),data:collectSaveExportData(localStorage)};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='Supermagic_Football_Save_'+new Date().toISOString().slice(0,10)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),3000);return true}catch(error){alert('Could not export save: '+error.message);return false}}
 async function importSave(file){try{
  if(!file||file.size>5_000_000)throw Error('Save file missing or larger than 5MB');
  const changes=validateSaveImport(JSON.parse(await file.text()));
@@ -670,27 +1054,58 @@ function showControls(){
 }
 function showSettingsSection(section){
  const opts={
- game:{id:'nav-settings-game',title:'GAME SETTINGS',subtitle:'CPU, match rules and environment.',fields:`${field('CPU DIFFICULTY','difficulty',aiChoices(),opt.difficulty)}${difficultyHint()}${field('MATCH PACE','gameSpeed',[[0.8,'Relaxed / 80%'],[1,'Normal / 100%'],[1.15,'Fast / 115%']],opt.gameSpeed||1)}${field('HALF LENGTH','settingsDuration',[60,120,180,300].map(v=>[v,v+' sec']),opt.halfSeconds)}${field('WEATHER','settingsWeather',WEATHER.map(v=>[v,v]),opt.weather)}${field('TERRAIN','settingsTerrain',TERRAIN.map(v=>[v,v]),opt.terrain)}${field('CONDITION','settingsCondition',CONDITIONS.map(v=>[v,v]),opt.condition)}`},
- graphics:{id:'nav-settings-graphics',title:'GRAPHICS',subtitle:'Camera and display settings.',fields:`${field('CAMERA','camera',[['Follow','Follow the ball'],['Wide','Wide center view']],opt.camera)}${field('BALL DESIGN','ballModel',VISUALFEEL.BALL_MODELS.map(v=>[v.id,v.name]),opt.ballModel)}<canvas id="ballPreview" class="ballPreview" width="100" height="76" aria-label="Preview of selected match ball"></canvas>${field('SHOW PLAYER NAMES','showNames',[['true','Yes'],['false','No']],String(opt.showNames))}${field('PERFORMANCE HUD','showPerformance',[['false','Off (default)'],['true','Show live FPS / frame time']],String(opt.showPerformance===true))}<div class="row">${button('⛶ TOGGLE FULLSCREEN','fullscreen','minor')}</div><p class="muted">Fullscreen and screen rotation support depends on your browser and device. Visual effects remain built into the game.</p>`},
- sound:{id:'nav-settings-sound',title:'SOUND',subtitle:'Original offline music, sound effects and crowd.',fields:`${field('MASTER MUTE','audioMute',[['false','Sound on'],['true','Mute all']],String(audio.settings.mute))}${['master','music','sfx','ui','ambience'].map(k=>`<label class="fieldLabel" for="audio_${k}">${k.toUpperCase()} VOLUME <output id="audio_${k}Value">${audio.settings[k]}%</output></label><input type="range" id="audio_${k}" min="0" max="100" step="5" value="${audio.settings[k]}" aria-label="${k} volume" style="width:100%"/>`).join('')}<p class="muted">Audio begins after interacting with the page. No internet or external samples needed.</p>`}
+ game:{id:'nav-settings-game',title:'GAME SETTINGS',subtitle:'CPU, match rules and environment.',fields:`${field('CPU DIFFICULTY','difficulty',aiChoices(),opt.difficulty)}${difficultyHint()}${field('MATCH PACE','gameSpeed',[[0.8,'Relaxed / 80%'],[1,'Normal / 100%'],[1.15,'Fast / 115%']],opt.gameSpeed||1)}${field('HALF LENGTH','settingsDuration',[60,120,180,300].map(v=>[v,v+' sec']),opt.halfSeconds)}${field('WEATHER','settingsWeather',WEATHER.map(v=>[v,v]),opt.weather)}${field('TERRAIN','settingsTerrain',TERRAIN.map(v=>[v,v]),opt.terrain)}${field('CONDITION','settingsCondition',CONDITIONS.map(v=>[v,v]),opt.condition)}${field('STADIUM','settingsStadium',STADIUMS.map(v=>[v.id,v.name+' · '+v.city]),opt.stadium)}`},
+ graphics:{id:'nav-settings-graphics',title:'GRAPHICS',subtitle:'Camera, display and rendering quality settings.',fields:`${field('CAMERA','camera',[['Follow','Follow the ball'],['Wide','Wider pitch view']],opt.camera)}<p class="muted">Wider pitch view shows more of the field around the ball. It does not change movement, scoring or hitboxes.</p>${field('RENDER QUALITY','renderQuality',[['high','High detail'],['performance','Performance']],opt.renderQuality)}<p class="muted">Performance mode renders the same game view at a lower canvas resolution to reduce pixel workload. It does not change gameplay or hitboxes.</p>${field('BALL DESIGN · OPTIONAL COSMETIC','ballModel',VISUALFEEL.BALL_MODELS.map(v=>[v.id,v.name]),opt.ballModel)}<canvas id="ballPreview" class="ballPreview" width="100" height="76" aria-label="Preview of selected match ball"></canvas><p class="muted">The ball design applies to the whole match and is never assigned from player nationality.</p>${field('SHOW PLAYER NAMES','showNames',[['true','Yes'],['false','No']],String(opt.showNames))}${field('PERFORMANCE HUD','showPerformance',[['false','Off (default)'],['true','Show live FPS / frame time']],String(opt.showPerformance===true))}<div class="row">${button('⛶ TOGGLE FULLSCREEN','fullscreen','minor')}</div><p class="muted">Fullscreen and screen rotation support depends on your browser and device.</p>`},
+ sound:{id:'nav-settings-sound',title:'SOUND',subtitle:'Original offline music, sound effects and crowd.',fields:`${field('MASTER MUTE','audioMute',[['false','Sound on'],['true','Mute all']],String(audio.settings.mute))}${['master','music','sfx','ui','ambience'].map(k=>`<label class="fieldLabel" for="audio_${k}">${k.toUpperCase()} VOLUME <output id="audio_${k}Value">${audio.settings[k]}%</output></label><input type="range" id="audio_${k}" min="0" max="100" step="5" value="${audio.settings[k]}" aria-label="${k} volume" aria-valuetext="${audio.settings[k]}%" style="width:100%"/>`).join('')}<p class="muted">Audio begins after interacting with the page. No internet or external samples needed.</p>`}
  };
  const cfg=opts[section];if(!cfg)return showSettingsMenu();const back=menuEntryReturn==='returnPause'?'returnPause':'navSettings';menuBackAction=back;
- show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL · SETTINGS</div><h1 class="heading">${cfg.title}</h1><p class="subtitle">${cfg.subtitle}</p></div>${button('← BACK',back,'minor')}</div><div class="panel navSettingsFields">${cfg.fields}<div class="row navSaveRow">${button('✓ SAVE CHANGES','saveSettings','gold')}</div></div></div>`,cfg.id);paintBallPreview();
+ show(`<div class="navScreen"><div class="row space navHeader"><div><div class="topline">SUPERMAGIC FOOTBALL · SETTINGS</div><h1 class="heading">${cfg.title}</h1><p class="subtitle">${cfg.subtitle}</p></div>${button('← BACK',back,'minor')}</div><div class="panel navSettingsFields">${cfg.fields}<div class="row navSaveRow">${button('✓ SAVE CHANGES','saveSettings','gold')}</div></div></div>`,cfg.id);const heading=menu.querySelector('.heading');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}paintBallPreview();
 }
-function showHelp(){page('CONTROLS','Exactly four football action buttons: Pass, Shoot, Dribble and Jump.',`<div class="twoCol"><div class="panel"><h3 class="titleSmall">PLAYER 1</h3>${[['Move','WASD / arrow keys in one-player mode / left stick'],['PASS','K / gamepad B'],['SHOOT','J / gamepad A'],['DRIBBLE','I / gamepad X'],['JUMP','Space / gamepad Y'],['Pause (menu only)','Esc / P / controller Start']].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}</div><div class="panel"><h3 class="titleSmall">PLAYER 2</h3>${[['Move','Arrow keys or keypad 8-4-5-6 / second left stick'],['PASS','Period / gamepad B'],['SHOOT','Comma / gamepad A'],['DRIBBLE','Keypad Decimal / gamepad X'],['JUMP','Right Ctrl / gamepad Y']].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}<p class="muted">There are NO separate Special, Switch, Sprint or goalkeeper-dive buttons. During normal matches goalkeepers defend automatically. In two-player penalty shootouts, the defending player steers the keeper and taps JUMP to dive. Remap the same four actions in Settings → Remap Controls.</p></div></div>
+function controlHelpBindingsFor(profile,slot){
+ const keyBindings=profile?.[slot===0?'keyboard':'keyboard2']||[],padBindings=profile?.[slot===0?'gamepad':'gamepad2']||[];
+ const actions=['PASS','SHOOT','DRIBBLE','JUMP'];
+ const keyName=code=>({Space:'Space',ControlRight:'Right Ctrl',NumpadDecimal:'Keypad Decimal',Comma:'Comma',Period:'Period',Slash:'Slash'}[code]||(/^Key[A-Z]$/.test(code||'')?code.slice(3):/^Digit[0-9]$/.test(code||'')?code.slice(5):code||'Unbound'));
+ const padName=button=>({0:'A',1:'B',2:'X',3:'Y'}[button]||`Button ${button}`);
+ return Object.fromEntries(actions.map((action,index)=>[action,`${keyName(keyBindings[index])} / gamepad ${padName(padBindings[index])}`]));
+}
+function updateTouchHelpPractice(button){const action=button?.dataset?.helpPractice;if(!action)return false;button.setAttribute('aria-pressed','true');const tested=menu.querySelectorAll('[data-help-practice][aria-pressed="true"]').length,status=menu.querySelector('#touchHelpPracticeStatus'),label=action[0].toUpperCase()+action.slice(1);if(status)status.textContent=tested===4?'All 4 touch actions responded; touch input is ready.':`${label} touch button responded. ${tested} of 4 checked.`;return true;}
+let guidedCrossStep=0;
+function createTrainingCrossCoachState(){let stage='inactive';return{reset(active=false){stage=active?'jump':'inactive';return stage},update(player,hasBall){if(stage==='jump'&&player?.z>0&&hasBall)stage='pass';else if(stage==='pass'&&(!player||player.z<=0||!hasBall))stage='jump';return stage},observePass(event){if(stage==='pass'&&event?.team===0&&event?.loft==='cross'){stage='done';return true;}return false},stage(){return stage}}}
+const trainingCrossCoachState=createTrainingCrossCoachState();
+function updateTrainingCrossCoach(){const node=$('trainingCrossCoach');if(!node)return;const active=game.mode==='training'&&game.matchState==='play'&&!menuVisible();node.classList.toggle('hidden',!active);if(!active)return;const player=game.controlledPlayer(0),stage=trainingCrossCoachState.update(player,!!player&&game.ball.owner===player),p1=controlHelpBindingsFor(input.getBindings(),0),message=stage==='done'?'Cross complete! Jump while carrying the ball, then press Pass in the air to practice again.':stage==='pass'?`STEP 2 · You are airborne. Press ${p1.PASS} or PASS now to send the Cross.`:`TRAINING · STEP 1 · Carry the ball, then press ${p1.JUMP} or JUMP to get airborne.`;if(node.textContent!==message)node.textContent=message}
+function updateGuidedHelpPractice(action){const status=menu.querySelector('#guidedCrossStatus');if(!status)return false;if(guidedCrossStep>=2)return true;if(guidedCrossStep===0){if(action==='jump'){guidedCrossStep=1;status.textContent=`JUMP registered. Step 2 of 2: PASS (${controlHelpBindingsFor(input.getBindings(),0).PASS}) while airborne.`;}else status.textContent='Step 1 of 2: start with JUMP, then use PASS while airborne.';return true;}if(action==='pass'){guidedCrossStep=2;status.textContent='Cross practice complete. In a match, press JUMP, then PASS while airborne.';}else if(action==='jump'){status.textContent=`JUMP is ready. Step 2 of 2: PASS (${controlHelpBindingsFor(input.getBindings(),0).PASS}) while airborne.`;}else status.textContent='That action did not complete the sequence. Use PASS next to practice the cross.';return true;}
+function createPassChargePracticeState(){let held=null;return Object.freeze({start(source,token,now){if(held||!['keyboard','pointer'].includes(source)||token==null||!Number.isFinite(now))return false;held={source,token,startedAt:now};return true;},elapsed(now){return held&&Number.isFinite(now)?Math.max(0,now-held.startedAt)/1000:null;},finish(source,token,now){if(!held||held.source!==source||held.token!==token||!Number.isFinite(now))return null;const seconds=Math.max(0,now-held.startedAt)/1000;held=null;return seconds;},cancel(source,token){if(!held||source&&held.source!==source||token!=null&&held.token!==token)return false;held=null;return true;},active(){return held!==null;}});}
+function createShootChargePracticeState(){let held=null;return Object.freeze({start(source,token,now){if(held||!['keyboard','pointer'].includes(source)||token==null||!Number.isFinite(now))return false;held={source,token,startedAt:now};return true;},elapsed(now){return held&&Number.isFinite(now)?Math.max(0,now-held.startedAt)/1000:null;},finish(source,token,now){if(!held||held.source!==source||held.token!==token||!Number.isFinite(now))return null;const seconds=Math.max(0,now-held.startedAt)/1000;held=null;return seconds;},cancel(source,token){if(!held||source&&held.source!==source||token!=null&&held.token!==token)return false;held=null;return true;},active(){return held!==null;}});}
+const passChargePracticeState=createPassChargePracticeState(),shootChargePracticeState=createShootChargePracticeState();let passChargePracticeTimer=0,shootChargePracticeTimer=0;
+function passChargePracticeNodes(){return {status:menu.querySelector('#passChargePracticeStatus'),elapsed:menu.querySelector('#passChargePracticeElapsed')};}
+function shootChargePracticeNodes(){return {status:menu.querySelector('#shootChargePracticeStatus'),elapsed:menu.querySelector('#shootChargePracticeElapsed')};}
+function startPassChargePractice(source,token){if(screen!=='CONTROLS'||shootChargePracticeState.active()||!passChargePracticeState.start(source,token,performance.now()))return false;const {status,elapsed}=passChargePracticeNodes();if(status)status.textContent='PASS practice started. Hold, then release to see your hold time. No pass will be sent.';if(elapsed)elapsed.textContent='0.00 s';clearInterval(passChargePracticeTimer);passChargePracticeTimer=setInterval(()=>{const value=passChargePracticeState.elapsed(performance.now()),output=passChargePracticeNodes().elapsed;if(value!==null&&output)output.textContent=`${value.toFixed(2)} s`;},100);return true;}
+function finishPassChargePractice(source,token){if(screen!=='CONTROLS')return cancelPassChargePractice(source,token);const seconds=passChargePracticeState.finish(source,token,performance.now());if(seconds===null)return false;clearInterval(passChargePracticeTimer);passChargePracticeTimer=0;const {status,elapsed}=passChargePracticeNodes();if(elapsed)elapsed.textContent=`${seconds.toFixed(2)} s`;if(status)status.textContent=`PASS practice complete: held for ${seconds.toFixed(2)} seconds. Longer holds send a longer, faster pass in a match. No pass was sent here.`;return true;}
+function cancelPassChargePractice(source,token){if(!passChargePracticeState.cancel(source,token))return false;clearInterval(passChargePracticeTimer);passChargePracticeTimer=0;const {status,elapsed}=passChargePracticeNodes();if(elapsed)elapsed.textContent='—';if(status)status.textContent='PASS practice cancelled; no pass was sent.';return true;}
+function startShootChargePractice(source,token){if(screen!=='CONTROLS'||passChargePracticeState.active()||!shootChargePracticeState.start(source,token,performance.now()))return false;const {status,elapsed}=shootChargePracticeNodes();if(status)status.textContent='SHOOT practice started. Hold, then release to see your hold time. No shot will be sent.';if(elapsed)elapsed.textContent='0.00 s';clearInterval(shootChargePracticeTimer);shootChargePracticeTimer=setInterval(()=>{const value=shootChargePracticeState.elapsed(performance.now()),output=shootChargePracticeNodes().elapsed;if(value!==null&&output)output.textContent=`${value.toFixed(2)} s`;},100);return true;}
+function finishShootChargePractice(source,token){if(screen!=='CONTROLS')return cancelShootChargePractice(source,token);const seconds=shootChargePracticeState.finish(source,token,performance.now());if(seconds===null)return false;clearInterval(shootChargePracticeTimer);shootChargePracticeTimer=0;const {status,elapsed}=shootChargePracticeNodes();if(elapsed)elapsed.textContent=`${seconds.toFixed(2)} s`;if(status)status.textContent=`SHOOT practice complete: held for ${seconds.toFixed(2)} seconds. Holding Shoot charges the shot up to 1.2 seconds in a match. No shot was sent here.`;return true;}
+function cancelShootChargePractice(source,token){if(!shootChargePracticeState.cancel(source,token))return false;clearInterval(shootChargePracticeTimer);shootChargePracticeTimer=0;const {status,elapsed}=shootChargePracticeNodes();if(elapsed)elapsed.textContent='—';if(status)status.textContent='SHOOT practice cancelled; no shot was sent.';return true;}
+function cancelControlsChargePractice(){cancelPassChargePractice();cancelShootChargePractice();}
+function resetPassChargePractice(){passChargePracticeState.cancel();shootChargePracticeState.cancel();clearInterval(passChargePracticeTimer);clearInterval(shootChargePracticeTimer);passChargePracticeTimer=0;shootChargePracticeTimer=0;}
+function showHelp(){const bindings=input.getBindings(),p1=controlHelpBindingsFor(bindings,0),p2=controlHelpBindingsFor(bindings,1);guidedCrossStep=0;resetPassChargePractice();page('CONTROLS','Exactly four football action buttons: Pass, Shoot, Dribble and Jump.',`<div class="twoCol"><div class="panel"><h3 class="titleSmall">PLAYER 1</h3>${[['Move','WASD / arrow keys in one-player mode / left stick'],['PASS',p1.PASS],['SHOOT',p1.SHOOT],['DRIBBLE',p1.DRIBBLE],['JUMP',p1.JUMP],['Pause (menu only)','Esc / P / controller Start']].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}</div><div class="panel"><h3 class="titleSmall">PLAYER 2</h3>${[['Move','Arrow keys or keypad 8-4-5-6 / second left stick'],['PASS',p2.PASS],['SHOOT',p2.SHOOT],['DRIBBLE',p2.DRIBBLE],['JUMP',p2.JUMP]].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}<p class="muted">There are NO separate Special, Switch, Sprint or goalkeeper-dive buttons. During normal matches goalkeepers defend automatically. In two-player penalty shootouts, the defending player steers the keeper and taps JUMP to dive. Remap the same four actions in Settings → Remap Controls.</p></div></div>
+<section class="panel helpTouchPractice" aria-labelledby="touchHelpPracticeTitle"><h2 class="titleSmall" id="touchHelpPracticeTitle">TOUCH CONTROL CHECK</h2><p class="muted">Tap each action to confirm its on-screen button responds. This check does not start a match or send game actions.</p><div class="helpTouchPracticeGrid">${['pass','shoot','dribble','jump'].map(action=>`<button type="button" class="helpTouchPracticeButton" data-help-practice="${action}" aria-label="Test ${action.toUpperCase()} touch control" aria-pressed="false">${action.toUpperCase()}</button>`).join('')}</div><p class="muted" id="touchHelpPracticeStatus" role="status" aria-live="polite" aria-atomic="true">0 of 4 touch controls checked.</p></section>
+<section class="panel guidedCrossPractice" aria-labelledby="guidedCrossTitle"><h2 class="titleSmall" id="guidedCrossTitle">GUIDED PRACTICE · MAKE A CROSS</h2><p class="muted">A Cross uses JUMP first, then PASS while airborne. Press your mapped keys (${p1.JUMP} then ${p1.PASS}) or activate the action buttons above. This practice will not start a match.</p><p class="muted" id="guidedCrossStatus" role="status" aria-live="polite" aria-atomic="true">Step 1 of 2: press JUMP, then PASS while airborne.</p></section>
+<section class="panel passChargePractice" aria-labelledby="passChargePracticeTitle"><h2 class="titleSmall" id="passChargePracticeTitle">GUIDED PRACTICE · PASS CHARGE</h2><p class="muted">Hold the practice button with touch, or hold your mapped PASS key (${p1.PASS}), then release. Longer holds add power to a pass in a match. This lesson does not send a pass or start a match.</p><button type="button" class="btn minor" data-pass-charge-practice aria-label="Hold to practice a Pass charge" style="touch-action:none;user-select:none">HOLD PASS</button><output id="passChargePracticeElapsed" aria-live="off">0.00 s</output><p id="passChargePracticeStatus" class="muted" role="status" aria-live="polite" aria-atomic="true">Hold and release to measure your PASS hold. No pass will be sent.</p></section>
+<section class="panel shootChargePractice" aria-labelledby="shootChargePracticeTitle"><h2 class="titleSmall" id="shootChargePracticeTitle">GUIDED PRACTICE · SHOOT CHARGE</h2><p class="muted">Hold the practice button with touch, or hold your mapped SHOOT key (${p1.SHOOT}), then release. Holding Shoot charges a match shot for up to 1.2 seconds. This lesson does not send a shot or start a match.</p><button type="button" class="btn minor" data-shoot-charge-practice aria-label="Hold to practice a Shoot charge" style="touch-action:none;user-select:none">HOLD SHOOT</button><output id="shootChargePracticeElapsed" aria-live="off">0.00 s</output><p id="shootChargePracticeStatus" class="muted" role="status" aria-live="polite" aria-atomic="true">Hold and release to measure your SHOOT hold. No shot will be sent.</p></section>
 <div class="twoCol" style="margin-top:18px"><div class="panel"><h3 class="titleSmall">WHEN YOU HAVE THE BALL</h3>${[['Tap PASS (no direction)','Pass to closest teammate'],['PASS + direction','Kick in that exact direction'],['Hold PASS, then release','Longer, faster pass (hold duration sets power)'],['First JUMP; while airborne press PASS','Cross (sequence matters)'],['PASS first, then JUMP','NOT a cross. PASS release determines the pass; JUMP remains a jump'],['Tap SHOOT','Normal shot'],['Hold SHOOT, then release','Charged shot'],['JUMP then SHOOT while carrying','Elevated normal shot'],['Double JUMP then SHOOT while carrying','Super Shot (or stronger normal shot without ability)'],['Tap DRIBBLE','Dribble dash'],['Hold DRIBBLE for 1 second while carrying ball','Equipped Magic Trick (cooldown; can be countered)'],['Dribble near an opponent','Automatic personal trick; both moves have 2s cooldown'],['JUMP then DRIBBLE near a loose aerial ball','Normal bicycle kick'],['JUMP then two DRIBBLE taps near an aerial ball','Super Bicycle (same special power and ball visuals as Super Shot)'],['JUMP then SHOOT near a loose aerial ball','Normal header'],['JUMP then two SHOOT taps near an aerial ball','Super Header (same power and ball visuals as Super Shot)'],['Hold DRIBBLE 0.26s, then press JUMP','Lift ball above player without jumping'],['Release DRIBBLE; JUMP, then tap DRIBBLE twice','Super Bicycle from lifted ball; non-specialists use boosted ordinary shot'],['Tap JUMP','Jump / jump again while airborne'],['Hold JUMP + direction','Run with ball (no jump on a long hold)']].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}</div><div class="panel"><h3 class="titleSmall">WHEN YOU DO NOT HAVE THE BALL</h3>${[['Tap PASS','Standing tackle'],['Hold PASS','Chase opponent'],['Tap SHOOT','Short bounded slide tackle (max 148 field units); sliding across enemy Banana Peels or Ice Patches clears them before they trigger'],['Tap DRIBBLE','Change controlled player'],['Tap JUMP','Jump'],['Hold JUMP + direction','Sprint while defending'],['JUMP + SHOOT','Defensive flying kick'],['Second JUMP, then SHOOT','Defensive bicycle kick'],['Goalkeeper','Autonomously positions, dives and saves'],['Goalkeeper holding ball; safe teammates','Short accurate distribution'],['Goalkeeper under pressure / blocked pass','Automatic long clearance']].map(([a,b])=>`<div class="stat"><strong>${a}</strong><span>${b}</span></div>`).join('')}</div></div>
 <p class="muted">Removed from normal-match human controls: teammate launch → flip kick, reverse-order PASS+JUMP cross, separate goalkeeper-dive, Special, Switch and Sprint buttons. In two-player penalties the existing JUMP controls the keeper dive. Now playable: Hold Dribble then Jump for a stationary loft; release Dribble, Jump, then tap Dribble twice near the airborne ball to execute Super Bicycle. Super Shot, Super Header and Super Bicycle share power and transformation effects for eligible players.</p>`)}
 
-function showEditor(back=editorReturnAction){editorReturnAction=back;page('PLAYER DATA EDITOR','Edit your own 12-player team roster in JSON. Every player can change shot and stats.',`<div class="twoCol"><div class="panel">${teamField('SELECT TEAM','editTeam',nations(),home)}<label class="fieldLabel">TEAM PLAYER DEFINITIONS</label><textarea id="jsonRoster" style="width:100%;height:280px;padding:12px;background:#061625;color:#c5eaff;border:1px solid #90bbcb;border-radius:9px;touch-action:pan-y" spellcheck="false">${escapeHTML(JSON.stringify(roster(home),null,2))}</textarea><div class="row" style="margin-top:12px">${button('✓ APPLY','importRoster','gold')}${button('⬇ EXPORT','exportRoster')}</div></div><div class="panel"><h3 class="titleSmall">EDITABLE ENGINE</h3><p class="muted">Individual player data includes the fourteen 1–100 ratings: stamina, strength, aggression, defence, speedRating, agility, dribbling, shootPower, shootAccuracy, heading, passing, crossing, gkDiving, gkSkill. dribbleType selects one of ten gameplay-distinct tricks. superAbility and gkSuperAbility hold optional unique move definitions. superShotLevel, superDefenceLevel and gkSuperLevel can explicitly override arcade strength tiers (1–5); top tiers are reserved for a small editorial star shortlist. Existing legacy power, shoot, defense, speed are retained for compatibility. The same engine is intended to support new clubs, abilities and growth later.</p><p class="muted">Available super shots: ${Object.keys(SHOTS).join(', ')}.</p><p class="muted">The source code is included in the ZIP for extensions. Online play, the career economy and custom competition designer are future work—not currently playable.</p></div></div>`,back)}
+function showEditor(back=editorReturnAction){editorReturnAction=back;page('PLAYER DATA EDITOR','Edit your own 12-player team roster in JSON. Every player can change shot and stats.',`<div class="twoCol"><div class="panel">${teamField('SELECT TEAM','editTeam',nations(),home)}<label class="fieldLabel">TEAM PLAYER DEFINITIONS</label><textarea id="jsonRoster" style="width:100%;height:280px;padding:12px;background:#061625;color:#c5eaff;border:1px solid #90bbcb;border-radius:9px;touch-action:pan-y" spellcheck="false">${escapeHTML(JSON.stringify(roster(home),null,2))}</textarea><div class="row" style="margin-top:12px">${button('✓ APPLY','importRoster','gold')}${button('⬇ EXPORT','exportRoster')}</div></div><div class="panel"><h3 class="titleSmall">EDITABLE ENGINE</h3><p class="muted">Individual player data includes the fourteen 1–100 ratings: stamina, strength, aggression, defence, speedRating, agility, dribbling, shootPower, shootAccuracy, heading, passing, crossing, gkDiving, gkSkill. dribbleType selects one of ten gameplay-distinct tricks. superAbility and gkSuperAbility hold optional unique move definitions. superShotLevel, superDefenceLevel and gkSuperLevel can explicitly override arcade strength tiers (1–5); top tiers are reserved for a small editorial star shortlist. Existing legacy power, shoot, defense, speed are retained for compatibility. The same engine is intended to support new clubs, abilities and growth later.</p><p class="muted">Available super shots: ${Object.keys(SHOTS).join(', ')}.</p><p class="muted">The source code is included in the ZIP for extensions. Playable features include offline matches, Career, LAN and Online P2P Quick Match. A custom competition designer, shared Online Career and Online Cup/League are not playable yet.</p></div></div>`,back)}
 
 const eur=n=>'€'+(n/1000000).toFixed(1)+'m';
-const saveCareer=()=>{if(!career)return;try{careerSlots.save(careerSlots.active,career);store.put('managerCareer',career);}catch(error){alert('Career autosave failed: '+error.message);}};
+const saveCareer=()=>{if(!career)return false;try{careerSlots.save(careerSlots.active,career);store.put('managerCareer',career);return true;}catch(error){alert('Career autosave failed: '+error.message);return false;}};
+function saveCareerPlan(plan){if(!career)return false;const next={...career,teamPlan:plan};try{careerSlots.save(careerSlots.active,next);career=next;store.put('managerCareer',career);return true;}catch(error){alert('Career tactics save failed: '+error.message);return false;}}
 // Pre-match natural-role suitability: advisory only; no plan/roster/save writes.
 // Fixed starting-six slots reflect the game's existing six-player role assignment.
 // Keep this independent from the existing injury/fitness replacement report.
 function careerLineupRoleFitPanel(c){
  if(!Number.isInteger(c?.club)||!Array.isArray(c?.roster))return '';
- const lineup=planFor(c.club)?.lineup,slots=['GK','DF','DF','MF','FW','FW'];
+ const lineup=careerPlanFor(c)?.lineup,slots=['GK','DF','DF','MF','FW','FW'];
  if(!Array.isArray(lineup)||lineup.length!==6||new Set(lineup).size!==6||
   lineup.some(i=>!Number.isInteger(i)||i<0||!c.roster[i]))return '';
  const squad=c.roster,selected=new Set(lineup),reserved=new Set();
@@ -816,7 +1231,7 @@ function careerOpponentScoutPanel(c,fx){
 // Never update lineup, the career object, the plan, or a storage entry.
 function careerBenchReadinessPanel(c){
  if(!Number.isInteger(c?.club)||!Array.isArray(c?.roster))return '';
- const lineup=planFor(c.club)?.lineup;
+ const lineup=careerPlanFor(c)?.lineup;
  if(!Array.isArray(lineup)||lineup.length!==6)return '';
  const squad=c.roster,selected=new Set(lineup),reserved=new Set();
  const fitness=p=>{const v=p?.condition==null?100:Number(p.condition);return Number.isFinite(v)?Math.max(0,Math.min(100,v)):0;};
@@ -836,35 +1251,146 @@ function careerBenchReadinessPanel(c){
  }).join('');
  return `<div id="careerBenchReadiness" aria-label="Pre-match bench recommendations"><h3 class="titleSmall">🩺 BENCH READINESS</h3>${rows}${needs.length>3?`<p class="muted">+${needs.length-3} additional starters need review.</p>`:''}<p class="muted">Suggestions only: review your squad and tactics manually; your starting six is unchanged.</p></div>`;
 }
+function managerAvatarAppearance(c=career){return {...avatarFor({id:'supermagic-manager',name:'Supermagic Football Manager'}),...(c?.managerAppearance&&typeof c.managerAppearance==='object'&&!Array.isArray(c.managerAppearance)?c.managerAppearance:{})};}
+function managerAvatarPlayer(c=career){const base=c?.roster?.[0]||roster(Number.isInteger(c?.club)?c.club:home)[0];return {...base,name:'Manager',appearance:managerAvatarAppearance(c)};}
+function paintManagerAvatar(){const canvas=$('managerAvatarPreview'),p=managerAvatarPlayer();if(!canvas||!p)return;const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#1b5460';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.save();const fit=portraitFit(canvas.width,canvas.height,p.appearance||{});ctx.translate(fit.x,fit.y);ctx.scale(fit.scale,fit.scale);renderer.drawPlayer(ctx,{...game.player(0,3),src:p,t:0,i:0,face:1,x:0,y:0,z:0,anim:0,dx:0,dy:0,action:'idle',controlled:false,preview:true},{getTeam:()=>TEAMS[career.club],options:{showNames:false}});ctx.restore();}
+function careerSeasonArchivePanel(archive){
+ if(!Array.isArray(archive)||!archive.length)return '<section id="careerSeasonArchive" role="status"><p class="muted">No completed seasons have been archived yet. Complete a season and choose Begin Next Season to add it here.</p></section>';
+ const teamName=id=>Number.isSafeInteger(id)&&id>=0&&typeof TEAMS[id]?.name==='string'?TEAMS[id].name:Number.isSafeInteger(id)?`Unknown team (${id})`:'Unknown team';
+ const count=value=>Number.isSafeInteger(value)&&value>=0?String(value):'—';
+ const cupLabels={champion:'Won the Career Cup',eliminated:'Eliminated from the Career Cup',pending:'Career Cup fixture pending',in_progress:'Career Cup in progress',unknown:'Career Cup result unavailable'};
+ const rows=archive.slice().reverse().map(row=>{
+  const record=row?.clubRecord&&typeof row.clubRecord==='object'&&!Array.isArray(row.clubRecord)?row.clubRecord:{};
+  const cup=row?.cup&&typeof row.cup==='object'&&!Array.isArray(row.cup)?row.cup:{};
+  const season=count(row?.season),position=count(row?.clubPosition),teamCount=count(row?.teamCount);
+  const recordText=`${count(record.wins)}-${count(record.draws)}-${count(record.losses)} · ${count(record.played)} played · GD ${count(record.goalDifference)} · ${count(record.points)} pts`;
+  const cupLabel=cupLabels[cup.status]||cupLabels.unknown;
+  const cupWins=Number.isSafeInteger(cup.wins)&&cup.wins>=0?` · ${cup.wins} win${cup.wins===1?'':'s'}`:'';
+  return `<article class="panel" data-career-season-archive="${escapeHTML(season)}"><h2 class="titleSmall">SEASON ${escapeHTML(season)}</h2><div class="stat"><strong>LEAGUE CHAMPION</strong><span>${escapeHTML(teamName(row?.championId))}</span></div><div class="stat"><strong>YOUR CLUB</strong><span>${escapeHTML(teamName(row?.clubId))}</span></div><div class="stat"><strong>FINAL POSITION</strong><span>#${escapeHTML(position)} / ${escapeHTML(teamCount)}</span></div><div class="stat"><strong>FINAL RECORD</strong><span>${escapeHTML(recordText)}</span></div><div class="stat"><strong>CAREER CUP</strong><span>${escapeHTML(cupLabel+cupWins)}</span></div></article>`;
+ }).join('');
+ return `<section id="careerSeasonArchive" aria-label="Past Career seasons"><div class="stack">${rows}</div></section>`;
+}
+function showCareerSeasonArchive(){
+ if(!career)return showManager();
+ const archive=completedSeasonArchive(career);
+ page('PAST SEASONS',`${archive.length} archived Career season${archive.length===1?'':'s'} · read only`,`${careerSeasonArchivePanel(archive)}<div class="row">${button('← BACK TO MANAGER','manager','minor')}</div>`,'manager');
+}
+function careerSeasonReviewPanel(review){
+ if(!review?.available)return '<section id="careerSeasonReview" role="status" aria-label="Season review unavailable"><h2 class="titleSmall">SEASON REVIEW UNAVAILABLE</h2><p>This save does not contain a complete, readable season table. No progress was changed. Return to Manager to continue.</p></section>';
+ const league=review.league,cup=review.cup||{},cupLabels={champion:'Won the Career Cup',eliminated:'Eliminated from the Career Cup',pending:'Career Cup fixture pending',in_progress:'Career Cup in progress',unknown:'Career Cup result unavailable'};
+ const number=value=>Number.isFinite(value)?String(value):'—';
+ const cupStatus=cupLabels[cup.status]||cupLabels.unknown;
+ const cupRecord=Number.isFinite(cup.wins)?` · ${cup.wins} win${cup.wins===1?'':'s'}`:'';
+ const rows=league.standings.map(row=>`<tr class="${row.id===review.clubId?'myTeam':''}"><td>${row.position}</td><td>${escapeHTML(row.name||`Team ${row.id}`)}</td><td>${number(row.played)}</td><td>${number(row.wins)}</td><td>${number(row.draws)}</td><td>${number(row.losses)}</td><td>${number(row.goalDifference)}</td><td><b>${number(row.points)}</b></td></tr>`).join('');
+ return `<section id="careerSeasonReview" aria-label="Career season review"><div class="careerTop"><div class="metric"><small>SEASON</small><strong>${number(review.season)}</strong></div><div class="metric"><small>FINAL POSITION</small><strong>#${number(league.clubPosition)} / ${number(league.teamCount)}</strong></div><div class="metric"><small>LEAGUE CHAMPION</small><strong>${escapeHTML(league.championName||`Team ${league.championId}`)}</strong></div><div class="metric"><small>CAREER CUP</small><strong>${escapeHTML(cupStatus)}${escapeHTML(cupRecord)}</strong></div></div><div class="panel"><h3 class="titleSmall">FINAL LEAGUE TABLE</h3><div class="scroll"><table class="miniTable"><thead><tr><th>#</th><th>TEAM</th><th>PL</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>PTS</th></tr></thead><tbody>${rows}</tbody></table></div><p class="muted">This review uses the current season save only. Starting the next season resets its league table and Career Cup progress.</p></div></section>`;
+}
+function showCareerSeasonReview(){
+ const review=careerSeasonReview(career,TEAMS);
+ page(review.available?'CAREER SEASON REVIEW':'SEASON REVIEW UNAVAILABLE',review.available?`Season ${review.season??'—'} · ${escapeHTML(review.clubName||'Manager Career')}`:'This season cannot be safely reviewed.',`${careerSeasonReviewPanel(review)}<div class="row">${button('← BACK TO MANAGER','manager','minor')}${review.available?button('BEGIN NEXT SEASON','careerSeasonConfirm','gold'):''}</div>`,'manager');
+}
+function beginCareerNextSeason(){
+ if(!career)return showManager();
+ const review=careerSeasonReview(career,TEAMS);
+ if(!review.available)return showCareerSeasonReview();
+ const next=JSON.parse(JSON.stringify(career));
+ try{
+  nextSeason(next);
+  careerSlots.save(careerSlots.active,next);
+  career=next;store.put('managerCareer',career);showManager();
+ }catch(error){alert('Career season rollover failed: '+error.message);showCareerSeasonReview();}
+}
 function showManager(){if(!career||creatingCareer){const regions=availableRegions(TEAMS);if(!regions.includes(managerRegion))managerRegion=regions[0]||'UEFA';const countries=availableCountries(TEAMS,managerRegion);if(!countries.includes(managerCountry))managerCountry=countries[0]||'';const choices=clubsInCountry(TEAMS,managerRegion,managerCountry);page('MANAGER CAREER','Choose continent → country → club, then build your twelve-player squad.',`<div class="panel"><div class="managerRegionSelector">${field('1. CONTINENT','managerContinent',regions.map(k=>[k,CONTINENTS.find(x=>x.id===k)?.region||k]),managerRegion)}${field('2. COUNTRY','managerCountry',countries.map(k=>[k,countryName(k,TEAMS)]),managerCountry)}</div>${teamField('3. CLUB','managerClub',choices.map(i=>[i,TEAMS[i].name]),choices[0])}<p class="muted">Select a continent and country to narrow the list. Browse Flags / Crests to see team graphics while choosing.</p><div class="row" style="margin-top:15px">${button('START MANAGER CAREER','startManager','gold')}${button('CONTINENTAL CUPS','continents')}</div></div>`);return;}
  const c=career,fx=currentCareerFixture(c),sorted=standings(c),place=sorted.findIndex(v=>v.id===c.club)+1;
- page('MANAGER CAREER',`Season ${c.season} · ${TEAMS[c.club].name} · 12 active players · League & knockout cup`,`<div class="row" style="margin:10px 0">${CONTINENTS.filter(co=>CONTINENTAL_TEAMS[co.id].includes(c.club)).map(co=>button('🏆 '+co.id+' CHAMPIONSHIP','continentPick_'+co.id,'gold')).join('')}</div><div class="careerTop"><div class="metric"><small>TRANSFER FUNDS</small><strong>${eur(c.cash)}</strong></div><div class="metric"><small>LEAGUE POSITION</small><strong>#${place} / 8</strong></div><div class="metric"><small>LEAGUE ROUND</small><strong>${c.week} / 14</strong></div><div class="metric"><small>CUP</small><strong>${c.cup.eliminated?'OUT':c.cup.stage===3?'🏆 WON':['QF','SF','FINAL'][c.cup.stage]}</strong></div></div>
+ page('MANAGER CAREER',`Season ${c.season} · ${TEAMS[c.club].name} · 12 active players · League & knockout cup`,`<div class="row" style="margin:10px 0">${CONTINENTS.filter(co=>CONTINENTAL_TEAMS[co.id].includes(c.club)).map(co=>button('🏆 '+co.id+' CHAMPIONSHIP','continentPick_'+co.id,'gold')).join('')}</div><div class="careerAvatar panel" style="display:flex;align-items:center;gap:14px"><canvas id="managerAvatarPreview" width="100" height="108" aria-label="Manager portrait"></canvas><div><h3 class="titleSmall">MANAGER LOOK</h3><p class="muted">Your portrait is saved separately from the twelve-player squad.</p>${button('🎨 EDIT MANAGER LOOK','editManagerAppearance')}</div></div><div class="careerTop"><div class="metric"><small>TRANSFER FUNDS</small><strong>${eur(c.cash)}</strong></div><div class="metric"><small>LEAGUE POSITION</small><strong>#${place} / 8</strong></div><div class="metric"><small>LEAGUE ROUND</small><strong>${c.week} / 14</strong></div><div class="metric"><small>CUP</small><strong>${c.cup.eliminated?'OUT':c.cup.stage===3?'🏆 WON':['QF','SF','FINAL'][c.cup.stage]}</strong></div></div>
  <div class="twoCol"><div class="panel"><h3 class="titleSmall">NEXT FIXTURE</h3><div class="fixture">${fx?`${fx.kind==='cup'?'🏆 '+fx.round:'🏟 LEAGUE WEEK '+fx.round}<br><strong>${TEAMS[c.club].name} <em>VS</em> ${TEAMS[fx.opponent].name}</strong>`:c.leagueFinished?'🏆 SEASON COMPLETE!':'No fixtures yet'}</div>
  ${careerOpponentScoutPanel(c,fx)}
- <div class="row">${fx?button('▶ PLAY NEXT MATCH','careerPlay','gold'):button('↻ BEGIN NEW SEASON','careerSeason','gold')}${button('12-PLAYER SQUAD','careerSquad')}${button('TRANSFER MARKET','careerMarket')}${button('🔍 YOUTH ACADEMY','careerScout')}</div><hr><h3 class="titleSmall">CLUB FACILITIES</h3>
+ <div class="row">${fx?button('▶ PLAY NEXT MATCH','careerPlay','gold'):button('↻ REVIEW SEASON','careerSeason','gold')}${button('12-PLAYER SQUAD','careerSquad')}${button('PAST SEASONS ('+completedSeasonArchive(c).length+')','careerPastSeasons')}${button('TRANSFER MARKET','careerMarket')}${button('🔍 YOUTH ACADEMY','careerScout')}</div><hr><h3 class="titleSmall">CLUB FACILITIES</h3>
  ${Object.entries(c.facilities).map(([key,v])=>`<div class="facility"><span>🏟 ${key.toUpperCase()} LVL ${v}</span>${button('UPGRADE '+eur(v*12500000),'facility_'+key)}</div>`).join('')}
  <p class="muted">Academy scouts create fictional recruitable prospects with defined potential, and players have contract years and fitness. Wins generate income. Training improves player experience; upgraded training increases XP per match. Facilities and transfers persist in this browser.</p></div>
- <div class="panel"><h3 class="titleSmall">LEAGUE TABLE</h3><div class="scroll"><table class="miniTable"><thead><tr><th>TEAM</th><th>PL</th><th>W</th><th>D</th><th>GD</th><th>PTS</th></tr></thead><tbody>${sorted.map((r,i)=>`<tr class="${r.id===c.club?'myTeam':''}"><td>${i+1}. ${teamIdentity(TEAMS[r.id])} ${escapeHTML(TEAMS[r.id].name)}</td><td>${r.p}</td><td>${r.w}</td><td>${r.d}</td><td>${r.gf-r.ga}</td><td><b>${r.pts}</b></td></tr>`).join('')}</tbody></table></div>${careerFormPanel(c,sorted)}<h3 class="titleSmall">LATEST RESULTS</h3><div class="scroll">${careerLatestResultsHTML(c)}</div></div></div>`);
+ <div class="panel"><h3 class="titleSmall">LEAGUE TABLE</h3><div class="scroll"><table class="miniTable"><thead><tr><th>TEAM</th><th>PL</th><th>W</th><th>D</th><th>GD</th><th>PTS</th></tr></thead><tbody>${sorted.map((r,i)=>`<tr class="${r.id===c.club?'myTeam':''}"><td>${i+1}. ${teamIdentity(TEAMS[r.id])} ${escapeHTML(TEAMS[r.id].name)}</td><td>${r.p}</td><td>${r.w}</td><td>${r.d}</td><td>${r.gf-r.ga}</td><td><b>${r.pts}</b></td></tr>`).join('')}</tbody></table></div>${careerFormPanel(c,sorted)}<h3 class="titleSmall">LATEST RESULTS</h3><div class="scroll">${careerLatestResultsHTML(c)}</div></div></div>`);paintManagerAvatar();
 }
 function careerPlay(){if(!career)return showManager();const fx=currentCareerFixture(career);if(!fx)return showManager();home=career.club;away=fx.opponent;mode='career';start()}
-function showCareerSquad(){if(!career)return showManager();home=career.club;const rows=career.roster.map((p,i)=>`<div class="squadEntry"><canvas class="miniAvatar" width="100" height="108" data-avatar="${i}" data-avatarcareer="1"></canvas><div><strong>#${p.num} ${escapeHTML(p.name)}</strong><small>${p.role} · LV ${p.level} · ${p.xp} XP · OVR ${playerOVR(p)}</small><small>STR ${withStats(p).strength} · STA ${withStats(p).stamina} · SHOOT ${withStats(p).shootPower}/${withStats(p).shootAccuracy} · GK ${withStats(p).gkSkill}</small>${playerAbilityIcons(p)}<small>FIT ${p.condition??100}% · CONTRACT ${p.contractYears??2}Y ${p.injuryWeeks?' · OUT '+p.injuryWeeks+'w':''}</small>${p.fictional?'<small class="placeholder">Academy stand-in</small>':''}</div><div class="squadBtns">${button('🎨','editPlayer'+i)}<button class="btn" data-train="${i}">TRAIN €1.5m</button><button class="btn" data-careerrecover="${i}">RECOVER €0.5m</button><button class="btn" data-careerrenew="${i}">RENEW</button></div></div>`).join('');page('MANAGER SQUAD',`Twelve players · ${TEAMS[career.club].name}. Improve their stats, appearance and experience.`,`<div class="squadGrid">${rows}</div><div class="row" style="margin-top:12px">${button('← MANAGER HUB','manager','gold')}${button('TRANSFER MARKET','careerMarket')}${button('YOUTH SCOUTING','careerScout')}</div>`,'manager');paintAvatars();}
+function careerAgeLabel(p,date){const dobAge=verifiedPlayerAgeOnDate(p,date),verified=dobAge!==null,age=verified?dobAge:p?.age!==undefined&&p.age!==null&&p.age!==''&&Number.isFinite(Number(p.age))?Math.round(Number(p.age)):'—';return `AGE ${age} · ${verified?'DOB VERIFIED':'PROVISIONAL'}`;}
+function showCareerSquad(){if(!career)return showManager();home=career.club;const rows=career.roster.map((p,i)=>`<div class="squadEntry"><canvas class="miniAvatar" width="100" height="108" data-avatar="${i}" data-avatarcareer="1"></canvas><div><strong>#${p.num} ${escapeHTML(p.name)}</strong><small>${p.role} · ${careerAgeLabel(p,career.seasonDate)} · LV ${p.level} · ${p.xp} XP · OVR ${playerOVR(p)}</small><small>STR ${withStats(p).strength} · STA ${withStats(p).stamina} · SHOOT ${withStats(p).shootPower}/${withStats(p).shootAccuracy} · GK ${withStats(p).gkSkill}</small>${playerAbilityIcons(p)}<small>FIT ${p.condition??100}% · CONTRACT ${p.contractYears??2}Y ${p.injuryWeeks?' · OUT '+p.injuryWeeks+'w':''}</small>${p.fictional?'<small class="placeholder">Academy stand-in</small>':''}</div><div class="squadBtns">${button('🎨','editPlayer'+i)}<button class="btn" data-train="${i}">TRAIN €1.5m</button><button class="btn" data-careerrecover="${i}">RECOVER €0.5m</button><button class="btn" data-careerrenew="${i}">RENEW</button></div></div>`).join('');page('MANAGER SQUAD',`Twelve players · ${TEAMS[career.club].name}. Improve their stats, appearance and experience.`,`<div class="squadGrid">${rows}</div><div class="row" style="margin-top:12px">${button('STARTING SIX & TACTICS','careerTactics','gold')}${button('← MANAGER HUB','manager','gold')}${button('TRANSFER MARKET','careerMarket')}${button('YOUTH SCOUTING','careerScout')}</div>`,'manager');paintAvatars();}
 function careerTrain(){const ix=Number(menu.dataset.trainPlayer);try{trainPlayer(career,ix);saveCareer();showCareerSquad()}catch(e){alert(e.message)}}
 
 function showCareerScout(){if(!career)return showManager();const players=career.scouted||[];page('YOUTH ACADEMY & SCOUTING',`Your youth academy is level ${career.facilities.academy}. Discover and sign original rising talents. Scouted names are fictional, never presented as real 2026 players.`,
  `<div class="twoCol"><div class="panel"><h3 class="titleSmall">SCOUT NETWORK</h3><div class="fixture">SCOUTING COST <strong>€2.5 MILLION</strong><p>Talents scale with academy level; each prospect has a future potential ceiling.</p></div>${button('🔎 SCOUT NEW PROSPECT','careerScoutNew','gold')}<div class="stat"><strong>FUNDS</strong><span>${eur(career.cash)}</span></div><div class="stat"><strong>ACADEMY LEVEL</strong><span>${career.facilities.academy}</span></div>${button('BACK TO MANAGER','manager')}</div>
  <div class="panel"><h3 class="titleSmall">DISCOVERED TALENTS (${players.length})</h3><div class="scroll">${players.map((p,i)=>`<div class="scoutRow"><div><strong>${escapeHTML(p.name)}</strong><small>${p.role} · AGE ${p.age} · OVR ${playerOVR(p)} · POT ${p.potential}</small><small>Signing fee ${eur(Math.ceil(p.value*.55))}</small></div>${button('SIGN','careerSign'+i,'gold')}</div>`).join('')||'<p class="muted">No prospects discovered. Scout a new player to begin.</p>'}</div><p class="muted">Signing replaces a squad member, preserving the twelve-player roster limit.</p></div></div>`, 'manager')}
 function tryCareerScout(){try{scoutAcademy(career);saveCareer();showCareerScout()}catch(e){alert(e.message)}}
-function tryCareerSign(i){const p=career.scouted[i];if(!p)return showCareerScout();const replacement=prompt(`Sign ${p.name}? Type 1–12 to replace one player on your roster:`, '12');if(replacement===null)return;try{signAcademy(career,i,+replacement-1);saveCareer();showCareerSquad()}catch(e){alert(e.message)}}
+function tryCareerSign(i){
+ const prospect=career?.scouted?.[i];if(!prospect)return showCareerScout();
+ selectedAcademyProspect=i;
+ const outgoing=[['','Choose a player to replace'],...career.roster.map((p,index)=>[index,`#${p.num} ${p.name} · ${p.role}`])];
+ page('SIGN ACADEMY PROSPECT',`Review the signing fee and choose a named squad member to replace. Your twelve-player limit stays unchanged.`,
+  `<div class="twoCol"><section class="panel" aria-label="Academy prospect details"><h2 class="titleSmall">${escapeHTML(prospect.name)}</h2><p>${escapeHTML(prospect.role||'Player')} · Age ${escapeHTML(prospect.age??'—')} · OVR ${playerOVR(prospect)} · Potential ${escapeHTML(prospect.potential??'—')}</p><p class="fixture">SIGNING FEE <strong>${eur(Math.ceil(prospect.value*.55))}</strong></p><p class="muted">The prospect takes the outgoing player's squad number. The outgoing player leaves this Career squad.</p></section><section class="panel" aria-label="Choose outgoing squad player">${field('PLAYER TO REPLACE','academyOutgoing',outgoing,'')}<p id="academySigningSummary" class="fixture" role="status" aria-live="polite" aria-atomic="true">Choose a named squad member to preview the signing. Nothing is saved until you confirm.</p></section></div><div class="row">${button('CONFIRM SIGNING','careerSignConfirm','gold')}${button('CANCEL','careerSignCancel','minor')}</div>`, 'careerScout');
+ refreshAcademySigningSummary();
+}
+function refreshAcademySigningSummary(){
+ const summary=$('academySigningSummary'),selector=$('academyOutgoing'),prospect=career?.scouted?.[selectedAcademyProspect];
+ if(!summary)return;
+ if(!prospect){summary.textContent='This prospect is no longer available. Return to scouting and select another prospect.';return;}
+ const raw=selector?.value,releaseIndex=raw==null||raw===''?NaN:Number(raw),outgoing=career?.roster?.[releaseIndex];
+ if(!Number.isSafeInteger(releaseIndex)||releaseIndex<0||releaseIndex>=12||!outgoing){summary.textContent=`Signing ${prospect.name} costs ${eur(Math.ceil(prospect.value*.55))}. Choose one of your twelve squad members to replace. Nothing has been saved.`;return;}
+ summary.textContent=`Signing ${prospect.name} costs ${eur(Math.ceil(prospect.value*.55))}. ${outgoing.name} will leave the squad, and ${prospect.name} will take shirt number ${outgoing.num}. Confirm to save this change.`;
+}
+function cancelCareerSign(){selectedAcademyProspect=-1;showCareerScout()}
+function confirmCareerSign(){
+ const index=selectedAcademyProspect,raw=$('academyOutgoing')?.value,releaseIndex=raw==null||raw===''?NaN:Number(raw);
+ if(!career||!career.scouted?.[index]){selectedAcademyProspect=-1;showCareerScout();return;}
+ if(!Number.isSafeInteger(releaseIndex)||releaseIndex<0||releaseIndex>=12||!career.roster?.[releaseIndex]){refreshAcademySigningSummary();$('academyOutgoing')?.focus({preventScroll:true});return;}
+ try{
+  // Validate the replacement on a copy, then commit the Career slot before
+  // changing the live Career object or its legacy mirror.
+  const next=JSON.parse(JSON.stringify(career));
+  signAcademy(next,index,releaseIndex);
+  careerSlots.save(careerSlots.active,next);
+  career=next;store.put('managerCareer',career);selectedAcademyProspect=-1;showCareerSquad();
+ }catch(error){const summary=$('academySigningSummary');if(summary)summary.textContent=`Signing was not saved. ${error.message}`;$('academyOutgoing')?.focus({preventScroll:true});}
+}
 function tryCareerContract(index){try{const fee=renewContract(career,index);saveCareer();showCareerSquad();toast(`RENEWED — ${eur(fee)}`)}catch(e){alert(e.message)}}
 function tryCareerRecover(index){try{recoverPlayer(career,index);saveCareer();showCareerSquad()}catch(e){alert(e.message)}}
 
-let selectedMarketTeam=-1;
-function showCareerMarket(requested){if(!career)return showManager();const indices=TEAMS.map((t,i)=>i).filter(i=>['club26','continental'].includes(TEAMS[i].group)&&i!==career.club);selectedMarketTeam=indices.includes(requested)?requested:(indices.includes(selectedMarketTeam)?selectedMarketTeam:indices[0]);const team=TEAMS[selectedMarketTeam];
- page('TRANSFER MARKET',`Transfer budget ${eur(career.cash)}. Buy a player by swapping one of your current twelve squad members.`,`<div class="twoCol"><div class="panel"><h3 class="titleSmall">SCOUT OTHER CLUBS</h3>${teamField('SELLING CLUB','marketTeam',indices.map(i=>[i,TEAMS[i].name]),selectedMarketTeam)}<div class="scroll">${team.customRoster.map((p,i)=>`<div class="marketRow"><span>${escapeHTML(p.name)}<br><small>${p.role} · OVR ${playerOVR(p)}${p.fictional?' · ACADEMY STAND-IN':''}</small></span><span>${eur(p.value||5000000)}</span><input type="radio" name="target" value="${i}" ${i===0?'checked':''} aria-label="Buy ${escapeHTML(p.name)}"/></div>`).join('')}</div></div><div class="panel"><h3 class="titleSmall">YOUR OUTGOING PLAYER</h3>${field('REPLACE','releasePlayer',career.roster.map((p,i)=>[i,`${p.name} · ${p.role}`]),11)}<p class="muted">Transferring replaces one squad member, keeping exactly twelve players. 35% of the outgoing player's estimated value is recovered.</p><div class="row">${button('BUY & SWAP PLAYER','careerBuy','gold')}${button('← MANAGER','manager')}</div><p class="muted">The club database mixes documented 2026 World Cup-affiliated names with clearly flagged academy stand-ins where a complete 2026/27 roster could not be verified.</p></div></div>`,'manager');}
-function careerBuy(){try{const i=Number(menu.querySelector('input[name=target]:checked')?.value),release=Number($('releasePlayer').value);const p=purchase(career,TEAMS,selectedMarketTeam,i,release);saveCareer();alert(p.name+' joined your club!');showCareerSquad()}catch(e){alert(e.message)}}
+let selectedMarketTeam=-1,selectedMarketTarget=-1,selectedMarketOutgoing=11,selectedAcademyProspect=-1;
+let careerMarketSearch='',careerMarketRole='ALL',careerMarketSort='ovr-desc';
+function careerMarketView(players,search='',role='ALL',sort='ovr-desc'){
+ const normalize=value=>String(value??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+ const query=normalize(search),source=Array.isArray(players)?players:[];
+ const rows=source.map((player,index)=>({player,index})).filter(({player})=>player&&typeof player==='object'&&
+  (role==='ALL'||String(player.role??'')===role)&&(!query||normalize(`${player.name||''} ${player.role||''}`).includes(query)));
+ rows.sort((a,b)=>{
+  if(sort==='price-asc')return careerMarketPrice(a.player)-careerMarketPrice(b.player)||a.index-b.index;
+  if(sort==='price-desc')return careerMarketPrice(b.player)-careerMarketPrice(a.player)||a.index-b.index;
+  return playerOVR(b.player)-playerOVR(a.player)||a.index-b.index;
+ });
+ return rows;
+}
+function careerMarketPrice(player){const value=Number(player?.value);return Number.isFinite(value)&&value>0?value:5000000;}
+function careerMarketListingMarkup(rows){return rows.map(({player:p,index:i})=>`<div class="marketRow" data-market-ovr="${playerOVR(p)}" data-market-price="${careerMarketPrice(p)}"><span>${escapeHTML(p.name)}<br><small>${escapeHTML(p.role||'Player')} · OVR ${playerOVR(p)}${p.fictional?' · ACADEMY STAND-IN':''}</small></span><span>${eur(careerMarketPrice(p))}</span><input type="radio" name="target" value="${i}" ${i===selectedMarketTarget?'checked':''} aria-label="Buy ${escapeHTML(p.name)}"/></div>`).join('');}
+function refreshCareerMarketListing(){const team=TEAMS[selectedMarketTeam];if(!team)return;const rows=careerMarketView(team.customRoster,careerMarketSearch,careerMarketRole,careerMarketSort),list=$('careerMarketListing'),count=$('careerMarketResultCount');if(selectedMarketTarget>=0&&!rows.some(row=>row.index===selectedMarketTarget))selectedMarketTarget=-1;if(list)list.innerHTML=careerMarketListingMarkup(rows);if(count)count.textContent=rows.length===team.customRoster.length?`${rows.length} ${rows.length===1?'player':'players'} found.`:`${rows.length} of ${team.customRoster.length} players found.`;}
+function showCareerMarket(requested){if(!career)return showManager();const previousTeam=selectedMarketTeam,indices=TEAMS.map((t,i)=>i).filter(i=>['club26','continental'].includes(TEAMS[i].group)&&i!==career.club);selectedMarketTeam=indices.includes(requested)?requested:(indices.includes(selectedMarketTeam)?selectedMarketTeam:indices[0]);const team=TEAMS[selectedMarketTeam];if(previousTeam!==selectedMarketTeam){selectedMarketTarget=team?.customRoster?.length?0:-1;careerMarketSearch='';careerMarketRole='ALL';careerMarketSort='ovr-desc';}if(!Number.isInteger(selectedMarketTarget)||!team?.customRoster?.[selectedMarketTarget])selectedMarketTarget=team?.customRoster?.length?0:-1;const roles=[...new Set(team.customRoster.map(p=>String(p.role||'Player')))].sort((a,b)=>a.localeCompare(b));if(careerMarketRole!=='ALL'&&!roles.includes(careerMarketRole))careerMarketRole='ALL';
+ page('TRANSFER MARKET',`Transfer budget ${eur(career.cash)}. Buy a player by swapping one of your current twelve squad members.`,`<div class="twoCol"><div class="panel"><h3 class="titleSmall">SCOUT OTHER CLUBS</h3>${teamField('SELLING CLUB','marketTeam',indices.map(i=>[i,TEAMS[i].name]),selectedMarketTeam)}<label class="fieldLabel" for="careerMarketSearch">SEARCH PLAYERS</label><input id="careerMarketSearch" type="search" aria-label="Search market players" aria-controls="careerMarketListing" value="${escapeHTML(careerMarketSearch)}" placeholder="Search by player or role"/><label class="fieldLabel" for="careerMarketRole">FILTER BY ROLE</label><select id="careerMarketRole" aria-label="Filter market players by role"><option value="ALL" ${careerMarketRole==='ALL'?'selected':''}>All roles</option>${roles.map(role=>`<option value="${escapeHTML(role)}" ${careerMarketRole===role?'selected':''}>${escapeHTML(role)}</option>`).join('')}</select><label class="fieldLabel" for="careerMarketSort">SORT PLAYERS</label><select id="careerMarketSort" aria-label="Sort market players"><option value="ovr-desc" ${careerMarketSort==='ovr-desc'?'selected':''}>Overall · highest first</option><option value="price-asc" ${careerMarketSort==='price-asc'?'selected':''}>Price · lowest first</option><option value="price-desc" ${careerMarketSort==='price-desc'?'selected':''}>Price · highest first</option></select><p id="careerMarketResultCount" class="muted" role="status" aria-live="polite" aria-atomic="true">Players found.</p><div id="careerMarketListing" class="scroll">${careerMarketListingMarkup(careerMarketView(team.customRoster,careerMarketSearch,careerMarketRole,careerMarketSort))}</div></div><div class="panel"><h3 class="titleSmall">YOUR OUTGOING PLAYER</h3>${field('REPLACE','releasePlayer',career.roster.map((p,i)=>[i,`${p.name} · ${p.role}`]),selectedMarketOutgoing)}<p class="muted">Transferring replaces one squad member, keeping exactly twelve players. 35% of the outgoing player's estimated value is recovered.</p><p class="fixture" id="careerTransferQuote" role="status" aria-live="polite">Transfer quote loading…</p><div class="row">${button('BUY & SWAP PLAYER','careerBuy','gold')}${button('← MANAGER','manager')}</div><p class="muted">The club database mixes documented 2026 World Cup-affiliated names with clearly flagged academy stand-ins where a complete 2026/27 roster could not be verified.</p></div></div>`,'manager');refreshCareerMarketListing();refreshCareerTransferQuote();}
+function refreshCareerTransferQuote(){const status=$('careerTransferQuote');if(!status||!career)return;const target=menu.querySelector('input[name="target"]:checked'),release=$('releasePlayer');selectedMarketTarget=target?Number(target.value):-1;selectedMarketOutgoing=release?Number(release.value):11;const quote=CAREER.careerTransferQuote(career,TEAMS,selectedMarketTeam,selectedMarketTarget,selectedMarketOutgoing);if(!quote.valid){status.textContent='Select a market player and outgoing squad member to preview the swap.';return;}const details=`Player fee ${eur(quote.price)} · outgoing credit ${eur(quote.credit)} · projected budget after swap ${eur(quote.projectedCash)}.`;status.textContent=quote.affordable?`${details} The full player fee is affordable before outgoing credit is applied.`:`${details} Not affordable yet: add ${eur(quote.shortfall)} to cover the full player fee before sale credit.`;}
+function careerBuy(){const target=menu.querySelector('input[name="target"]:checked');selectedMarketTarget=target?Number(target.value):-1;selectedMarketOutgoing=Number($('releasePlayer')?.value);const quote=CAREER.careerTransferQuote(career,TEAMS,selectedMarketTeam,selectedMarketTarget,selectedMarketOutgoing);if(!quote.valid||!quote.affordable){refreshCareerTransferQuote();$('careerTransferQuote')?.focus?.({preventScroll:true});return;}showCareerPurchaseReview();}
+function showCareerPurchaseReview(){const quote=CAREER.careerTransferQuote(career,TEAMS,selectedMarketTeam,selectedMarketTarget,selectedMarketOutgoing),club=TEAMS[selectedMarketTeam],incoming=club?.customRoster?.[selectedMarketTarget],outgoing=career?.roster?.[selectedMarketOutgoing];if(!quote.valid||!quote.affordable||!incoming||!outgoing)return showCareerMarket(selectedMarketTeam);page('CONFIRM TRANSFER','Review both named players and the full fee before saving this squad change.',`<div class="twoCol"><section class="panel" aria-label="Incoming player"><h2 class="titleSmall">INCOMING</h2><strong>${escapeHTML(incoming.name)}</strong><p>${escapeHTML(incoming.role||'Player')} · OVR ${playerOVR(incoming)}</p><p class="fixture">PLAYER FEE <strong>${eur(quote.price)}</strong></p></section><section class="panel" aria-label="Outgoing player"><h2 class="titleSmall">OUTGOING</h2><strong>#${escapeHTML(outgoing.num??'—')} ${escapeHTML(outgoing.name)}</strong><p>${escapeHTML(outgoing.role||'Player')} · OVR ${playerOVR(outgoing)}</p><p class="fixture">SALE CREDIT <strong>${eur(quote.credit)}</strong></p></section></div><p class="fixture" id="careerTransferConfirmStatus" role="status" aria-live="polite" aria-atomic="true">Projected budget after swap: ${eur(quote.projectedCash)}. Confirm to save the transfer, or cancel to keep your current squad and budget.</p><div class="row">${button('CONFIRM BUY & SWAP','careerBuyConfirm','gold')}${button('CANCEL','careerBuyCancel','minor')}</div>`,'careerMarket');}
+function cancelCareerBuy(){showCareerMarket(selectedMarketTeam)}
+function confirmCareerBuy(){
+ const status=$('careerTransferConfirmStatus'),quote=CAREER.careerTransferQuote(career,TEAMS,selectedMarketTeam,selectedMarketTarget,selectedMarketOutgoing);
+ if(!quote.valid||!quote.affordable){if(status)status.textContent='This transfer is no longer available at the quoted price. No changes were saved.';return;}
+ let next;
+ try{next=JSON.parse(JSON.stringify(career));purchase(next,TEAMS,selectedMarketTeam,selectedMarketTarget,selectedMarketOutgoing);careerSlots.save(careerSlots.active,next);}
+ catch(error){if(status)status.textContent=`Transfer not saved. ${error.message}`;return;}
+ career=next;
+ try{store.put('managerCareer',career)}
+ catch(error){if(status)status.textContent=`Transfer saved to the active Career slot, but the legacy compatibility mirror could not be refreshed. ${error.message}`;return;}
+ showCareerSquad();
+}
 let avatarIndex=0;
 // Explicit launch context prevents active Career from hijacking Settings Studio.
 let studioCareerContext=false;
+// Manager appearance is a separate Career field, never a roster-player selection.
+let studioManagerContext=false;
+function studioSubject(){if(studioManagerContext)return career?managerAvatarPlayer():null;const squad=(typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home);return squad?.[avatarIndex]||null;}
 // Track the actual editor origin independently of a loaded Career or Cup.
 let studioReturnAction='navCustomization',editorReturnAction='navCustomization';
 const STUDIO_DIRS=Object.freeze([
@@ -880,21 +1406,63 @@ const STUDIO_DIRS=Object.freeze([
 const STUDIO_ACTIONS=Object.freeze(['idle','run','kick','slide','header','keeperDive','keeperDiveCatch','keeperRecover','celebrate']);
 // v0.8.25.20: Studio helper functions live in the menu module, not EXPANDED's private scope.
 function studioOptionTags(items,selected){return items.map(([val,label])=>`<option value="${escapeHTML(val)}" ${String(selected)===String(val)?'selected':''}>${escapeHTML(label)}</option>`).join('')}
-function studioNumberOptions(key,selected){return studioOptionTags((STUDIO_ASSET_LABELS[key]||[]).map((label,i)=>[String(i),label]),selected)}
-function studioColorOptions(list,selected){
- const values=list.map(([value,label])=>[value,`${label} · ${value}`]);
- // Preserve a pre-existing player's actual natural shade, even when that exact hex
- // is not one of the ten broadly useful presets.
- if(typeof selected==='string'&&/^#[0-9a-f]{6}$/i.test(selected)&&!values.some(([value])=>value.toLowerCase()===selected.toLowerCase()))
-   values.unshift([selected,`Current player shade · ${selected}`]);
+function studioNumberOptions(key,selected){const category=key==='accessory'?'accessory':'appearance';return studioOptionTags((STUDIO_ASSET_LABELS[key]||[]).map((label,i)=>[String(i),label]).filter(([value])=>String(selected)===value||tokenWallet.owns(category,`${key}:${value}`)),selected)}
+function studioAppearanceKey(key,value){
+ if(key==='skin'||key==='hair'){
+  const palette=key==='skin'?NATURAL_SKIN_TONES:NATURAL_HAIR_COLORS,index=palette.findIndex(([hex])=>String(hex).toLowerCase()===String(value).toLowerCase());
+  return index<0?null:`${key}:${index}`;
+ }
+ const options=STUDIO_ASSET_LABELS[key],index=Number(value);
+ return !Array.isArray(options)||!Number.isInteger(index)||index<0||index>=options.length?null:`${key}:${index}`;
+}
+function studioAppearanceUnlockIssues(previous,appearance){
+ const issues=[];
+ for(const key of Object.keys(appearance||{})){
+  const value=appearance[key];if(Object.is(previous?.[key],value))continue;
+  const unlock=studioAppearanceKey(key,value);if(!unlock) {issues.push(key);continue;}
+  const category=key==='accessory'?'accessory':'appearance';if(!tokenWallet.owns(category,unlock))issues.push(key);
+ }
+ return issues;
+}
+const STUDIO_SKIN_SWATCH_NAMES=Object.freeze(['Soft Peach','Golden Sand','Warm Apricot','Honey Tan','Toasted Honey','Copper Bronze','Cinnamon','Chestnut','Deep Umber','Roasted Umber']);
+function studioSafeColor(value){
+ if(typeof value!=='string'||!value.trim()||value.length>64)return '';
+ if(typeof CSS!=='undefined'&&typeof CSS.supports==='function')return CSS.supports('color',value)?value:'';
+ return /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(value)?value:'';
+}
+function studioColorOptions(list,selected,kind='color',family=null){
+ const values=list.map(([value,label],index)=>[value,`${kind==='skin'?STUDIO_SKIN_SWATCH_NAMES[index]||label:label} · ${value}`])
+  .filter(([value],index)=>!family||String(value)===String(selected)||tokenWallet.owns('appearance',`${family}:${index}`));
+ // Preserve every non-empty legacy value exactly, even when it is not a hex color
+ // or one of the current presets. It stays selected until the user chooses another.
+ if(typeof selected==='string'&&selected.length&&!values.some(([value])=>value===selected))
+   values.unshift([selected,`Saved custom color · ${selected}`]);
  return studioOptionTags(values,selected);
+}
+function studioColorPreviewState(id){
+ const select=$(id==='face_skin'?'face_skin':'face_hair'),value=select?.value||'',option=select?.selectedOptions?.[0]||Array.from(select?.options||[]).find(item=>item.value===value);
+ const safe=studioSafeColor(value),label=String(option?.textContent||value||'No color selected').replace(/\s*·\s*#[0-9a-f]+$/i,'');
+ return {safe,label,text:safe?`${label} — ${value}`:`${label} — saved value kept; preview unavailable`};
+}
+function studioUpdateColorPreview(id){
+ const state=studioColorPreviewState(id),prefix=id==='face_skin'?'studioSkin':'studioHair',swatch=$(prefix+'Swatch'),text=$(prefix+'PreviewText');
+ if(swatch){swatch.style.background=state.safe||'repeating-linear-gradient(135deg,#334 0 5px,#8aa 5px 10px)';swatch.classList.toggle('previewUnavailable',!state.safe);swatch.setAttribute('aria-label',state.safe?`${state.label} color preview`:`${state.label}; color preview unavailable`);}
+ if(text)text.textContent=state.text;
+ return state;
+}
+function studioColorField(id,title,list,selected,kind){
+ const prefix=id==='face_skin'?'studioSkin':'studioHair',state={safe:studioSafeColor(selected),label:(list.find(([value])=>value===selected)?.[1])||'Saved custom color'};
+ const label=kind==='skin'&&list.findIndex(([value])=>value===selected)>=0?STUDIO_SKIN_SWATCH_NAMES[list.findIndex(([value])=>value===selected)]:state.label;
+ const valueText=state.safe?`${label} — ${selected}`:`Saved value kept — preview unavailable`;
+ const family=id==='face_skin'?'skin':'hair';
+ return `<label class="studioColorField">${title}<select class="choice" id="${id}" aria-label="${title} color" aria-describedby="${prefix}PreviewText ${prefix}ColorHelp">${studioColorOptions(list,selected,kind,family)}</select><span class="studioColorPreview${state.safe?'':' previewUnavailable'}" id="${prefix}Swatch" role="img" aria-label="${escapeHTML(state.safe?`${label} color preview`:'Saved color preview unavailable')}" style="display:inline-block;width:2.5rem;height:1.5rem;border:2px solid #d8f0f8;border-radius:6px;vertical-align:middle;background:${escapeHTML(state.safe||'repeating-linear-gradient(135deg,#334 0 5px,#8aa 5px 10px)')}"></span><span class="muted" id="${prefix}PreviewText" role="status" aria-live="polite">${escapeHTML(valueText)}</span><small id="${prefix}ColorHelp">Inclusive color choices. Buy palette unlocks in Store &amp; Tokens. Existing custom saved colors remain selected until you choose a replacement.</small></label>`;
 }
 
 let studioDirection=0,studioAction='idle',studioSpin=false,studioDragX=null,studioGalleryOpen=false,studioGallerySignature='',studioGalleryFrame=1;
 setInterval(studioAnimationFrame,1150);
-setInterval(()=>{if(screen==='PLAYER CUSTOMIZATION' && $('customPortrait') && studioAction!=='idle')drawCustomizer()},90);
+setInterval(()=>{if(['PLAYER CUSTOMIZATION','MANAGER APPEARANCE'].includes(screen) && $('customPortrait') && studioAction!=='idle')drawCustomizer()},90);
 function studioRotate(step){studioDirection=((studioDirection+step)%8+8)%8;const label=$('customAngleLabel');if(label)label.textContent=STUDIO_DIRS[studioDirection].label;drawCustomizer()}
-function studioAnimationFrame(){if(!studioSpin||!$('customPortrait')||screen!=='PLAYER CUSTOMIZATION')return;studioDirection=(studioDirection+1)%8;drawCustomizer();}
+function studioAnimationFrame(){if(!studioSpin||!$('customPortrait')||!['PLAYER CUSTOMIZATION','MANAGER APPEARANCE'].includes(screen))return;studioDirection=(studioDirection+1)%8;drawCustomizer();}
 // STUDIO-GALLERY-PICK-01: selecting an eight-view tile previews that heading
 // without saving appearance changes or changing the gameplay input scheme.
 function studioPickView(index){
@@ -939,7 +1507,7 @@ function studioStepGalleryFrame(step){
 }
 // STUDIO-GALLERY-PICK-01 END
 function studioEightViewMarkup(){
- return `<section id="studioEightViewGallery" class="studioEightViewGallery" aria-label="Eight-direction player action gallery"><p id="studioEightViewPoseLabel" class="muted" role="status" aria-live="polite">Comparing ${escapeHTML(studioAction.toUpperCase())} frame ${studioGalleryFrame+1} of 4 in eight directions</p><div class="row studioGalleryTimeline"><label for="studioGalleryPhase">ACTION FRAME</label><input id="studioGalleryPhase" class="choice" type="range" min="0" max="3" step="1" value="${studioGalleryFrame}" aria-label="Scrub motion phase across all eight player views"><output id="studioGalleryPhaseLabel" for="studioGalleryPhase">FRAME ${studioGalleryFrame+1} / 4</output><button type="button" class="btn" data-action="studioGalleryPrev" aria-label="Previous animation frame">◀ FRAME</button><button type="button" class="btn" data-action="studioGalleryNext" aria-label="Next animation frame">FRAME ▶</button></div>${STUDIO_DIRS.map((dir,i)=>`<figure class="studioEightViewItem"><button type="button" class="studioViewPick" data-studio-pick="${i}" aria-pressed="${i===studioDirection}" aria-label="Show ${escapeHTML(dir.label)} in main player preview" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Home End"><canvas data-studio-view="${i}" width="144" height="152" role="img" aria-label="${escapeHTML(dir.label)} ${escapeHTML(studioAction)} pose"></canvas></button><figcaption>${escapeHTML(dir.label)}</figcaption></figure>`).join('')}</section>`;
+ return `<section id="studioEightViewGallery" class="studioEightViewGallery" aria-label="Eight-direction player action gallery"><p id="studioEightViewPoseLabel" class="muted" role="status" aria-live="polite">Comparing ${escapeHTML(studioAction.toUpperCase())} frame ${studioGalleryFrame+1} of 4 in eight directions</p><div class="row studioGalleryTimeline"><label for="studioGalleryPhase">ACTION FRAME</label><input id="studioGalleryPhase" class="choice" type="range" min="0" max="3" step="1" value="${studioGalleryFrame}" aria-label="Scrub motion phase across all eight player views" aria-valuetext="Frame ${studioGalleryFrame+1} of 4"><output id="studioGalleryPhaseLabel" for="studioGalleryPhase">FRAME ${studioGalleryFrame+1} / 4</output><button type="button" class="btn" data-action="studioGalleryPrev" aria-label="Previous animation frame">◀ FRAME</button><button type="button" class="btn" data-action="studioGalleryNext" aria-label="Next animation frame">FRAME ▶</button></div>${STUDIO_DIRS.map((dir,i)=>`<figure class="studioEightViewItem"><button type="button" class="studioViewPick" data-studio-pick="${i}" aria-pressed="${i===studioDirection}" aria-label="Show ${escapeHTML(dir.label)} in main player preview" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Home End"><canvas data-studio-view="${i}" width="144" height="152" role="img" aria-label="${escapeHTML(dir.label)} ${escapeHTML(studioAction)} pose"></canvas></button><figcaption>${escapeHTML(dir.label)}</figcaption></figure>`).join('')}</section>`;
 }
 // 0.8.25.32: Optional, cached eight-view comparison gallery for the selected
 // Studio appearance. Idle frames are deterministic even while rotating/animating
@@ -955,6 +1523,7 @@ function drawStudioEightViewGallery(player,appearance){
  const poseLabel=$('studioEightViewPoseLabel');
  if(poseLabel)poseLabel.textContent='Comparing '+pose.toUpperCase()+' frame '+(studioGalleryFrame+1)+' of 4 in eight directions';
  const frameLabel=$('studioGalleryPhaseLabel');if(frameLabel)frameLabel.textContent='FRAME '+(studioGalleryFrame+1)+' / 4';
+ const slider=$('studioGalleryPhase');if(slider)slider.setAttribute('aria-valuetext','Frame '+(studioGalleryFrame+1)+' of 4');
  const phase=Math.max(0,Math.min(3,studioGalleryFrame|0));
  const actionTime=[.4,.28,.16,.04][phase],diveTime=[.06,.16,.28,.42][phase];
  const gameView={getTeam:()=>TEAMS[home],options:{showNames:false},celebrationStyle:0};
@@ -1019,20 +1588,25 @@ function studioShotPreviewGuide(choice,equipped,tier){
 // STUDIO-SHOT-STATE-01: preview saveStudioShot's validated projection without writing saves.
 function studioShotSaveState(choice,tier,player){
  const level=Number(tier);
- const validRole=!!player&&['MF','FW'].includes(player.role);
+ const currentLevel=Number(SPECIALS.abilityLevel(player,'shot'))||1;
+ const hasExisting=player?.superAbility?.type==='shoot';
+ const validRole=!!player&&(['MF','FW'].includes(player.role)||hasExisting);
  const validTier=Number.isInteger(level)&&level>=1&&level<=5;
  const validChoice=choice==='keep'||choice==='none'||Object.hasOwn(SHOTS,choice);
- const allowed=choice==='keep'||choice==='none'||(validRole&&(studioEliteEligible(player)||player.superAbility?.type==='shoot'));
+ const changesSpecialization=choice!=='none'&&(choice!=='keep'||hasExisting&&level!==currentLevel);
+ const allowed=!changesSpecialization||ABILITIES.canEquipVerifiedFieldSpecial(player,{kind:'shot',level});
  if(!validRole||!validTier||!validChoice||!allowed)return {
-  disabled:true,unchanged:false,invalid:true,message:'Choose an eligible Super Shot and level 1–5 before saving.'
+  disabled:true,unchanged:false,invalid:true,message:'New Super Shots and level changes require a verified tier and an allowed level (Gold 1–2, Star 1–3, Superstar 1–5). Existing equipment can still be kept or removed.'
  };
- const updated={...player,superShotLevel:level};
+ const updated={...player};
  if(choice==='none'){
   if(updated.superAbility?.type==='shoot')delete updated.superAbility;
-  updated.shot=null;updated.shotName='';
+  if(Object.hasOwn(updated,'shot'))updated.shot=null;
+  if(Object.hasOwn(updated,'shotName'))updated.shotName='';
  }else if(choice==='keep'){
-  if(updated.superAbility?.type==='shoot')updated.superAbility={...updated.superAbility,level};
+  if(updated.superAbility?.type==='shoot'&&level!==currentLevel){updated.superShotLevel=level;updated.superAbility={...updated.superAbility,level};}
  }else{
+  updated.superShotLevel=level;
   updated.shot=choice;updated.shotName=SHOTS[choice].name||choice;
   updated.superAbility={type:'shoot',id:choice,name:updated.shotName,level};
  }
@@ -1041,25 +1615,30 @@ function studioShotSaveState(choice,tier,player){
   Object.keys(player.superAbility).length===Object.keys(updated.superAbility).length&&
   Object.keys(player.superAbility).every(key=>Object.is(player.superAbility[key],updated.superAbility[key]))
  );
- const unchanged=player.superShotLevel===updated.superShotLevel&&
+ const unchanged=Object.keys(player).every(key=>Object.is(player[key],updated[key]))&&Object.keys(updated).every(key=>Object.is(player[key],updated[key]))&&
   Object.is(player.shot,updated.shot)&&Object.is(player.shotName,updated.shotName)&&sameAbility;
  return {disabled:unchanged,unchanged,invalid:false,message:unchanged?
-  'Super Shot already saved. No changes to apply.':'Super Shot changes are ready to save.'};
+  'Super Shot already saved. No changes to apply.':changesSpecialization?'Verified specialization level accepted. Super Shot changes are ready to save.':'Super Shot changes are ready to save.'};
 }
 // STUDIO-DRIBBLE-STATE-01: a deterministic default is not yet an explicit saved choice.
 function studioDribbleSaveState(choice,player,styles){
- const valid=Array.isArray(styles)&&styles.some(style=>style.id===choice);
- const unchanged=valid&&player?.dribbleType===choice;
- return {disabled:!valid||unchanged,unchanged,invalid:!valid,message:!valid?
-  'Select a valid Dribble Style before saving.':
+ const valid=choice==='keep'||choice==='none'||Array.isArray(styles)&&styles.some(style=>style.id===choice);
+ const locked=valid&&choice!=='keep'&&choice!=='none'&&choice!=='sideStep'&&choice!==player?.dribbleType&&!studioVerifiedDribbleEligible(player);
+ const unchanged=choice==='keep'||(choice==='none'&&!player?.dribbleType)||(valid&&player?.dribbleType===choice);
+ return {disabled:!valid||locked||unchanged,unchanged,invalid:!valid||locked,locked,message:!valid?
+  'Select a valid Dribble Style before saving.':locked?
+  'Unique Dribble Styles require verified canonical Gold tier or higher. KEEP CURRENT and remove remain available.':
   unchanged?'Dribble Style already saved. No changes to apply.':
   'Dribble Style changes are ready to save.'};
 }
 // Dribble Style preview uses the shipped ten-style roster catalogue, not Magic Tricks.
 // Previewing a style never writes the roster or Career save.
-function studioDribblePreviewGuide(styleId,styles){
+function studioDribblePreviewGuide(styleId,styles,player){
+ if(styleId==='keep')return 'KEEP CURRENT preserves the saved style exactly. No Dribble Style change is saved unless you choose one and press SAVE DRIBBLE STYLE.';
+ if(styleId==='none')return 'REMOVE selected. The saved Dribble Style will be cleared only after SAVE DRIBBLE STYLE; normal DRIBBLE controls stay available.';
  const style=Array.isArray(styles)?styles.find(entry=>entry.id===styleId):null;
  if(!style)return 'Unknown dribble style. The existing player remains unchanged until SAVE DRIBBLE STYLE.';
+ if(style.id!=='sideStep'&&!studioVerifiedDribbleEligible(player))return 'Locked preview: '+(style.name||style.id)+' requires source-verified canonical Gold tier or higher. KEEP CURRENT and remove remain available.';
  const name=style.name||style.id;
  const effect=style.nutmeg?'Nutmeg works best against an approaching defender at medium range.':
   style.id==='rainbow'?'Rainbow Flick lifts the ball; an alert approaching defender can read its path.':
@@ -1069,48 +1648,111 @@ function studioDribblePreviewGuide(styleId,styles){
 // STUDIO-DEFENCE-STATE-01: project the canonical update without writing to saves.
 function studioDefenceSaveState(choice,tier,player){
  const level=Number(tier);
- const validRole=player?.role==='DF',validTier=Number.isInteger(level)&&level>=1&&level<=5;
+ const currentLevel=Number(SPECIALS.abilityLevel(player,'defence'))||1;
+ const hasExisting=player?.superAbility?.type==='defence';
+ const validRole=player?.role==='DF'||hasExisting,validTier=Number.isInteger(level)&&level>=1&&level<=5;
  const validChoice=typeof choice==='string'&&!!choice;
  const newMove=choice!=='keep'&&choice!=='none';
- const allowed=!newMove||studioEliteEligible(player)||player?.superAbility?.type==='defence';
+ const changesSpecialization=newMove||choice==='keep'&&hasExisting&&level!==currentLevel;
+ const allowed=!changesSpecialization||ABILITIES.canEquipVerifiedFieldSpecial(player,{kind:'defence',level});
  const available=!newMove||ABILITIES.studioDefenceChoices(player,level).some(move=>move.id===choice);
  if(!validRole||!validTier||!validChoice||!allowed||!available)return {
-  disabled:true,unchanged:false,invalid:true,message:'Choose an eligible Super Defence ability and tier 1–5 before saving.'
+  disabled:true,unchanged:false,invalid:true,message:'New Super Defence abilities and level changes require a verified tier and an allowed level (Gold 1–2, Star 1–3, Superstar 1–5). Existing equipment can still be kept or removed.'
  };
  let equipped;
- try{equipped=ABILITIES.withStudioDefence(player,choice,level);}
+ try{
+  if(choice==='keep'&&(!hasExisting||level===currentLevel))equipped={...player};
+  else if(choice==='none'&&!hasExisting&&!Object.hasOwn(player,'superDefenceLevel'))equipped={...player};
+  else if(choice==='none'){
+   equipped=ABILITIES.withStudioDefence(player,choice,currentLevel);
+   if(!Object.hasOwn(player,'superDefenceLevel'))delete equipped.superDefenceLevel;
+  }else equipped=ABILITIES.withStudioDefence(player,choice,level);
+ }
  catch(error){return {disabled:true,unchanged:false,invalid:true,message:'Choose a valid Super Defence ability and tier before saving.'};}
  const sameAbility=player.superAbility===equipped.superAbility||(
   !!player.superAbility&&!!equipped.superAbility&&
   Object.keys(player.superAbility).length===Object.keys(equipped.superAbility).length&&
   Object.keys(player.superAbility).every(key=>Object.is(player.superAbility[key],equipped.superAbility[key]))
  );
- const unchanged=player.superDefenceLevel===equipped.superDefenceLevel&&sameAbility;
+ const unchanged=Object.keys(player).every(key=>Object.is(player[key],equipped[key]))&&Object.keys(equipped).every(key=>Object.is(player[key],equipped[key]))&&sameAbility;
  return {disabled:unchanged,unchanged,invalid:false,message:unchanged?
-  'Super Defence already saved. No changes to apply.':'Super Defence changes are ready to save.'};
+  'Super Defence already saved. No changes to apply.':changesSpecialization?'Verified specialization level accepted. Super Defence changes are ready to save.':'Super Defence changes are ready to save.'};
 }
 // Read-only Super Defence tier preview: higher tiers unlock Spin Bumper.
 // No roster mutation occurs until SAVE DEFENCE ABILITY is pressed.
-function studioDefenceTierGuide(tier,choices){
+function studioDefenceTierGuide(tier,choices,player){
  const level=Number(tier);
- if(!Array.isArray(choices)||choices.length===0)return 'Tier '+level+': No Super Defence moves available for this player.';
+ const cap=ABILITIES.verifiedSpecializationMaxLevel(player);
+ const gate=' Verified tier cap: Gold 2, Star 3, Superstar 5; source tier is '+(cap||'unverified/locked')+'.';
+ if(!Array.isArray(choices)||choices.length===0)return 'Tier '+level+': No new Super Defence moves available at this level. Existing equipment can still be kept or removed.'+gate;
  const spin=choices.some(a=>a.id==='spinBumper');
- return 'Tier '+level+': '+choices.length+' available '+(choices.length===1?'move':'moves')+'. '+(spin?'Spin Bumper unlocked.':'Spin Bumper unlocks at tier 3.')+' Preview only; press SAVE DEFENCE ABILITY to apply.';
+  return 'Tier '+level+': '+choices.length+' available '+(choices.length===1?'move':'moves')+'. '+(spin?'Spin Bumper unlocked. Its lavender ground ring warns for 0.42 seconds; jump or dash out before it resolves. Teammates are safe.':'Spin Bumper unlocks at tier 3.')+' Wall family unlocks: Magic at tier 1, Fire at tier 2, Ice at tier 3 and Demon at tier 4. All walls share one short-lived barrier and grounded SHOOT-slide counter; their Canvas art and particles differ.'+gate+' Preview only; press SAVE DEFENCE ABILITY to apply.';
 }
-function showPlayerStudio(index=0){avatarIndex=Math.max(0,Math.min(11,Number(index)||0));const squad=(typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home);const player=squad[avatarIndex];if(!player){showHome();return;}const av={...avatarFor(player),...(player.appearance||{})};
- const colorControls=`<label>SKIN COLOR<select class="choice" id="face_skin">${studioColorOptions(NATURAL_SKIN_TONES,av.skin)}</select></label><label>HAIR COLOR<select class="choice" id="face_hair">${studioColorOptions(NATURAL_HAIR_COLORS,av.hair)}</select></label>`;
- const assetControls=[
-  ['style','HAIRSTYLE'],['face','FACE SHAPE'],['eyes','EYE SHAPE'],['brows','EYEBROWS'],['eyeColor','EYE COLOR'],['nose','NOSE'],['lips','LIPS'],
-  ['body','BUILD'],['stature','HEIGHT STYLE'],['exaggeration','FUNNY SCALE'],['beard','FACIAL HAIR'],['accessory','ACCESSORY'],['freckles','FRECKLES'],['scar','SCARS'],['tattoo','TATTOOS']
- ].map(([id,name])=>`<label>${name}<select class="choice" id="face_${id}">${studioNumberOptions(id,av[id]??0)}</select></label>`).join('');
+// GK equipment occupies its own legacy field but shares the same exclusive,
+// verified specialization slot as field Super Shot/Super Defence.
+function studioKeeperDefenceSaveState(choice,tier,player){
+ const level=Number(tier),currentLevel=Number(SPECIALS.abilityLevel(player,'keeper'))||1;
+ const hasExisting=player?.gkSuperAbility?.type==='defence';
+ const validRole=player?.role==='GK'||hasExisting,validTier=Number.isInteger(level)&&level>=1&&level<=5;
+ const validChoice=typeof choice==='string'&&!!choice,newMove=choice!=='keep'&&choice!=='none';
+ const changesSpecialization=newMove||choice==='keep'&&hasExisting&&level!==currentLevel;
+ const allowed=!changesSpecialization||ABILITIES.canEquipVerifiedKeeperSpecial(player,{level});
+ const available=!newMove||ABILITIES.studioKeeperChoices(player,level).some(move=>move.id===choice);
+ if(!validRole||!validTier||!validChoice||!allowed||!available)return {
+  disabled:true,unchanged:false,invalid:true,
+  message:'New goalkeeper Super Defence and level changes require source-verified Gold 1–2, Star 1–3, or Superstar 1–5 eligibility, an available move, and no field Super Shot or Super Defence.'
+ };
+ let equipped;
+ try{
+  if(choice==='keep'&&(!hasExisting||level===currentLevel))equipped={...player};
+  else if(choice==='none'&&!hasExisting&&!Object.hasOwn(player,'gkSuperLevel'))equipped={...player};
+  else if(choice==='none'){
+   equipped=ABILITIES.withStudioKeeper(player,choice,currentLevel);
+   if(!Object.hasOwn(player,'gkSuperLevel'))delete equipped.gkSuperLevel;
+  }else equipped=ABILITIES.withStudioKeeper(player,choice,level);
+ }catch(error){return {disabled:true,unchanged:false,invalid:true,message:'Choose a valid goalkeeper Super Defence move and level before saving.'};}
+ const sameAbility=player.gkSuperAbility===equipped.gkSuperAbility||(
+  !!player.gkSuperAbility&&!!equipped.gkSuperAbility&&
+  Object.keys(player.gkSuperAbility).length===Object.keys(equipped.gkSuperAbility).length&&
+  Object.keys(player.gkSuperAbility).every(key=>Object.is(player.gkSuperAbility[key],equipped.gkSuperAbility[key]))
+ );
+ const unchanged=Object.keys(player).every(key=>Object.is(player[key],equipped[key]))&&Object.keys(equipped).every(key=>Object.is(player[key],equipped[key]))&&sameAbility;
+ const cap=ABILITIES.verifiedSpecializationMaxLevel(player);
+ return {disabled:unchanged,unchanged,invalid:false,message:unchanged?
+  'Goalkeeper Super Defence already saved. No changes to apply.':changesSpecialization?'Verified goalkeeper specialization level accepted. Changes are ready to save.':
+  cap?'Verified goalkeeper level cap: '+cap+'. Changes are ready to save.':'New goalkeeper moves are locked until source-verified Gold tier; existing equipment can still be kept or removed.'};
+}
+function studioKeeperDefenceTierGuide(tier,choices,player){
+ const cap=ABILITIES.verifiedSpecializationMaxLevel(player),gate=' Verified cap: Gold 2, Star 3, Superstar 5; source tier is '+(cap||'unverified/locked')+'.';
+ if(player?.superAbility!=null)return 'A field Super Shot or Super Defence already occupies this player’s one-specialization slot. Remove it before equipping goalkeeper Super Defence.'+gate;
+ if(!Array.isArray(choices)||choices.length===0)return 'No new goalkeeper moves are available at this level. Existing equipment can still be kept or removed.'+gate;
+ return 'Tier '+Number(tier)+': '+choices.length+' goalkeeper moves available. New moves require source-verified Gold or higher and respect the verified tier cap.'+gate+' Preview only; press SAVE GOALKEEPER DEFENCE to apply.';
+}
+function showPlayerStudio(index=0){avatarIndex=studioManagerContext?0:Math.max(0,Math.min(11,Number(index)||0));const squad=studioManagerContext?(career?[managerAvatarPlayer()]:[]):((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home));const player=squad[avatarIndex];if(!player){showHome();return;}const av={...avatarFor(player),...(player.appearance||{})};
+ const colorControls=`<fieldset class="studioControlGroup"><legend>SKIN & HAIR COLOR</legend><div class="studioOptionGrid">${studioColorField('face_skin','SKIN TONE',NATURAL_SKIN_TONES,av.skin,'skin')+studioColorField('face_hair','HAIR COLOR',NATURAL_HAIR_COLORS,av.hair,'hair')}</div></fieldset>`;
+ const assetControlGroups=[
+  ['FACE & HAIR',[['style','HAIRSTYLE'],['face','FACE SHAPE'],['eyes','EYE SHAPE'],['brows','EYEBROWS'],['eyeColor','EYE COLOR'],['nose','NOSE'],['lips','LIPS'],['beard','FACIAL HAIR']]],
+  ['BODY',[['body','BUILD'],['stature','HEIGHT STYLE'],['exaggeration','FUNNY SCALE']]],
+  ['PERSONAL DETAILS',[['accessory','ACCESSORY'],['freckles','FRECKLES'],['scar','SCARS'],['tattoo','TATTOOS']]]
+ ];
+ const assetControls=assetControlGroups.map(([title,controls])=>`<fieldset class="studioControlGroup"><legend>${title}</legend><div class="studioOptionGrid">${controls.map(([id,name])=>`<label>${name}<select class="choice" id="face_${id}">${studioNumberOptions(id,av[id]??0)}</select></label>`).join('')}</div></fieldset>`).join('');
  const defenceTier=Math.max(1,Math.min(5,Number(SPECIALS.abilityLevel(player,'defence'))||1));
- const defenceChoices=studioEliteEligible(player)||player.superAbility?.type==='defence'?ABILITIES.studioDefenceChoices(player,defenceTier):[];
- const defenceSelector=player.role==='DF'? `<div class="panel"><h3>SUPER DEFENCE</h3><div id="studioDefIcon">${ABILITY_ICONS.icon('defence',player.superAbility?.type==='defence'?player.superAbility.id:null)}</div><p class="muted">Only eligible defenders can equip available defence abilities. No extra action button is added.</p><label>DEFENCE TIER<select class="choice" id="studioDefTier">${[1,2,3,4,5].map(n=>`<option value="${n}" ${n===defenceTier?'selected':''}>${n}</option>`).join('')}</select></label><label>ABILITY<select class="choice" id="studioDefAbility"><option value="keep">KEEP CURRENT</option><option value="none">REMOVE DEFENCE</option>${defenceChoices.map(a=>`<option value="${escapeHTML(a.id)}">${escapeHTML(a.name)}</option>`).join('')}</select></label><p class="muted" id="studioDefTierGuide" role="status" aria-live="polite">${escapeHTML(studioDefenceTierGuide(defenceTier,defenceChoices))}</p><div class="row">${button('SAVE DEFENCE ABILITY','saveStudioDefence')}</div><p class="muted" id="studioDefSaveState" role="status" aria-live="polite">Super Defence changes are ready to save.</p></div>`:'';
- const shotSelector=['MF','FW'].includes(player.role)?`<div class="panel"><h3>SUPER SHOT</h3><div id="studioShotIcon">${ABILITY_ICONS.icon('shot',player.superAbility?.type==='shoot'?player.shot:null)}</div><label>SHOT LEVEL<select class="choice" id="studioShotTier">${[1,2,3,4,5].map(n=>`<option value="${n}" ${n===SPECIALS.abilityLevel(player,'shot')?'selected':''}>${n}</option>`).join('')}</select></label><label>SHOT TYPE<select class="choice" id="studioShotAbility"><option value="keep">KEEP CURRENT</option><option value="none">REMOVE SUPER SHOT</option>${(studioEliteEligible(player)||player.superAbility?.type==='shoot'?Object.entries(SHOTS):[]).map(([id,shot])=>`<option value="${escapeHTML(id)}" ${id===player.shot?'selected':''}>${escapeHTML(shot.name||id)}</option>`).join('')}</select></label><p class="muted" id="studioShotGuide" role="status" aria-live="polite">${escapeHTML(studioShotPreviewGuide('keep',player.superAbility?.type==='shoot'?player.shot:null,SPECIALS.abilityLevel(player,'shot')))}</p><div class="row">${button('SAVE SUPER SHOT','saveStudioShot')}</div><p class="muted" id="studioShotSaveState" role="status" aria-live="polite">Super Shot changes are ready to save.</p></div>`:'';
- const dribbleSelector=player.role!=='GK'?`<div class="panel"><h3>DRIBBLE STYLE</h3><div id="studioDribbleIcon">${ABILITY_ICONS.icon('dribble',DRIBBLES.assignedDribbleType(player))}</div><p class="muted">Normal ball-control style; no levels and not a magic Trick.</p><label>STYLE<select class="choice" id="studioDribble">${DRIBBLES.DRIBBLE_STYLES.map(a=>`<option value="${escapeHTML(a.id)}" ${a.id===DRIBBLES.assignedDribbleType(player)?'selected':''}>${escapeHTML(a.name||a.id)}</option>`).join('')}</select></label><p class="muted" id="studioDribbleGuide" role="status" aria-live="polite">${escapeHTML(studioDribblePreviewGuide(DRIBBLES.assignedDribbleType(player),DRIBBLES.DRIBBLE_STYLES))}</p><div class="row">${button('SAVE DRIBBLE STYLE','saveStudioTrick')}</div><p class="muted" id="studioDribbleSaveState" role="status" aria-live="polite">Dribble Style changes are ready to save.</p></div>`:'';
- const magicSelector=player.role!=='GK'?`<div class="panel"><h3>TRICK — RARE MAGIC</h3><div id="studioMagicIcon">${ABILITY_ICONS.icon('trick',player.magicTrick)}</div><p class="muted">Tricks are distinct from dribble styles. With the ball, hold DRIBBLE for 1 second to activate an equipped Magic Trick. Defenders can counter; Tricks have cooldown and Energy cost. KEEP CURRENT is the default; removal requires an explicit choice.</p><label>TRICK<select class="choice" id="studioMagic"><option value="keep" selected>KEEP CURRENT</option><option value="none">REMOVE MAGIC TRICK</option>${STUDIO_MAGIC_TRICKS.map(a=>`<option value="${a.id}">${a.name}</option>`).join('')}</select></label><p class="muted" id="studioMagicEligibility">${escapeHTML(studioMagicEligibilityGuide(player))}</p><p class="muted" id="studioMagicUnlockProgress">${escapeHTML(studioMagicUnlockProgress(player))}</p><p class="muted" id="studioMagicGuide" role="status" aria-live="polite">${escapeHTML(studioMagicGuide('keep',player.magicTrick))}</p>${studioMagicCounterPlaybook()}<div class="row" id="studioMagicSaveRow">${button('SAVE TRICK SELECTION','saveStudioMagic')}</div><p class="muted" id="studioMagicSaveState" role="status" aria-live="polite">No Magic Trick change to save.</p></div>`:`<div class="panel"><h3>TRICK — READ-ONLY PREVIEW</h3><p class="muted">${escapeHTML(studioMagicEligibilityGuide(player))}</p><label>TRICK (PREVIEW ONLY)<select class="choice" id="studioGKMagicPreview"><option value="" selected>CHOOSE A TRICK TO PREVIEW</option>${STUDIO_MAGIC_TRICKS.map(a=>`<option value="${escapeHTML(a.id)}">${escapeHTML(a.name)}</option>`).join('')}</select></label><div id="studioGKMagicIcon">${ABILITY_ICONS.icon('trick',null)}</div><p class="muted" id="studioGKMagicGuide" role="status" aria-live="polite">${escapeHTML(studioGoalkeeperMagicGuide(''))}</p>${studioMagicCounterPlaybook()}</div>`;
+ const existingDefence=player.superAbility?.type==='defence';
+ const verifiedSpecializationCap=ABILITIES.verifiedSpecializationMaxLevel(player);
+ const defenceChoices=(player.role==='DF'||existingDefence)?ABILITIES.studioDefenceChoices(player,defenceTier).filter(move=>ABILITIES.canEquipVerifiedFieldSpecial(player,{kind:'defence',level:defenceTier})):[];
+ const defenceSelector=!studioManagerContext&&(player.role==='DF'||existingDefence)? `<div class="panel"><h3>SUPER DEFENCE</h3><div id="studioDefIcon">${ABILITY_ICONS.icon('defence',existingDefence?player.superAbility.id:null)}</div><p class="muted">New Super Defence choices require source-verified Gold or higher and obey Gold 1–2, Star 1–3, Superstar 1–5. Existing equipment can be kept or removed. Wall families share one short-lived barrier and the grounded SHOOT-slide counter.</p><label>DEFENCE TIER<select class="choice" id="studioDefTier">${[1,2,3,4,5].map(n=>`<option value="${n}" ${n===defenceTier?'selected':''} ${n>verifiedSpecializationCap&&n!==defenceTier?'disabled':''}>${n}${n>verifiedSpecializationCap?' · verified tier required':''}</option>`).join('')}</select></label><label>ABILITY<select class="choice" id="studioDefAbility"><option value="keep">KEEP CURRENT${existingDefence?' · '+escapeHTML(player.superAbility.name||player.superAbility.id||'saved ability'):''}</option><option value="none">REMOVE DEFENCE</option>${defenceChoices.map(a=>`<option value="${escapeHTML(a.id)}">${escapeHTML(a.name)}</option>`).join('')}</select></label><p class="muted" id="studioDefTierGuide" role="status" aria-live="polite">${escapeHTML(studioDefenceTierGuide(defenceTier,defenceChoices,player))}</p><div class="row">${button('SAVE DEFENCE ABILITY','saveStudioDefence')}</div><p class="muted" id="studioDefSaveState" role="status" aria-live="polite">Super Defence changes are ready to save.</p></div>`:'';
+ const keeperDefenceTier=Math.max(1,Math.min(5,Number(SPECIALS.abilityLevel(player,'keeper'))||1));
+ const existingKeeperDefence=player.gkSuperAbility?.type==='defence';
+ const keeperDefenceChoices=(player.role==='GK'||existingKeeperDefence)?ABILITIES.studioKeeperChoices(player,keeperDefenceTier).filter(move=>ABILITIES.canEquipVerifiedKeeperSpecial(player,{level:keeperDefenceTier})):[];
+ const keeperDefenceSelector=!studioManagerContext&&(player.role==='GK'||existingKeeperDefence)?`<div class="panel"><h3>GOALKEEPER SUPER DEFENCE</h3><div id="studioKeeperDefIcon">${ABILITY_ICONS.icon('defence',existingKeeperDefence?player.gkSuperAbility.id:null)}</div><p class="muted">New goalkeeper moves require source-verified Gold or higher and obey Gold 1–2, Star 1–3, Superstar 1–5. Goalkeeper and field Super Shot/Super Defence share one exclusive specialization slot. Existing keeper equipment can be kept or removed; automatic basic saves remain available.</p><label for="studioKeeperDefTier">GOALKEEPER DEFENCE LEVEL<select class="choice" id="studioKeeperDefTier">${[1,2,3,4,5].map(n=>`<option value="${n}" ${n===keeperDefenceTier?'selected':''} ${n>verifiedSpecializationCap&&n!==keeperDefenceTier?'disabled':''}>${n}${n>verifiedSpecializationCap?' · verified tier required':''}</option>`).join('')}</select></label><label for="studioKeeperDefAbility">GOALKEEPER MOVE<select class="choice" id="studioKeeperDefAbility"><option value="keep">KEEP CURRENT${existingKeeperDefence?' · '+escapeHTML(player.gkSuperAbility.name||player.gkSuperAbility.id||'saved ability'):''}</option><option value="none">REMOVE GOALKEEPER DEFENCE</option>${keeperDefenceChoices.map(move=>`<option value="${escapeHTML(move.id)}">${escapeHTML(move.name)}</option>`).join('')}</select></label><p class="muted" id="studioKeeperDefTierGuide" role="status" aria-live="polite">${escapeHTML(studioKeeperDefenceTierGuide(keeperDefenceTier,keeperDefenceChoices,player))}</p><div class="row">${button('SAVE GOALKEEPER DEFENCE','saveStudioKeeperDefence')}</div><p class="muted" id="studioKeeperDefSaveState" role="status" aria-live="polite">Goalkeeper Super Defence changes are ready to save.</p></div>`:'';
+ const currentShotLevel=SPECIALS.abilityLevel(player,'shot');
+ const shotSelector=!studioManagerContext&&ABILITIES.studioShotEligibility(player,studioEliteEligible(player)).canManage?`<div class="panel"><h3>SUPER SHOT</h3><div id="studioShotIcon">${ABILITY_ICONS.icon('shot',player.superAbility?.type==='shoot'?player.shot:null)}</div><label>SHOT LEVEL<select class="choice" id="studioShotTier">${[1,2,3,4,5].map(n=>`<option value="${n}" ${n===currentShotLevel?'selected':''} ${n>verifiedSpecializationCap&&n!==currentShotLevel?'disabled':''}>${n}${n>verifiedSpecializationCap?' · verified tier required':''}</option>`).join('')}</select></label><label>SHOT TYPE<select class="choice" id="studioShotAbility"><option value="keep" selected>KEEP CURRENT${player.superAbility?.type==='shoot'?' · '+escapeHTML(player.superAbility.name||player.superAbility.id||player.shot||'saved shot'):''}</option><option value="none">REMOVE SUPER SHOT</option>${(ABILITIES.canEquipVerifiedFieldSpecial(player,{kind:'shot',level:1})?Object.entries(SHOTS).filter(([id])=>tokenWallet.owns('superShot',id)||player.shot===id):[]).map(([id,shot])=>`<option value="${escapeHTML(id)}">${escapeHTML(shot.name||id)}</option>`).join('')}</select></label><p class="muted">Buy shot unlocks in Store &amp; Tokens. Verified role/tier eligibility is still required.</p><p class="muted" id="studioShotGuide" role="status" aria-live="polite">${escapeHTML(studioShotPreviewGuide('keep',player.superAbility?.type==='shoot'?player.shot:null,currentShotLevel))}</p><div class="row">${button('SAVE SUPER SHOT','saveStudioShot')}</div><p class="muted" id="studioShotSaveState" role="status" aria-live="polite">Super Shot changes are ready to save.</p></div>`:'';
+ const currentDribble=typeof player.dribbleType==='string'?player.dribbleType:DRIBBLES.assignedDribbleType(player);
+ const currentDribbleName=DRIBBLES.DRIBBLE_STYLES.find(style=>style.id===currentDribble)?.name||currentDribble;
+ const dribbleSelector=!studioManagerContext&&player.role!=='GK'?`<div class="panel"><h3>DRIBBLE STYLE</h3><div id="studioDribbleIcon">${ABILITY_ICONS.icon('dribble',currentDribble)}</div><p class="muted">Basic DRIBBLE remains available to every player. Unique Dribble Styles require source-verified canonical Gold or higher; existing and unknown saved styles can be kept or removed.</p><label>STYLE<select class="choice" id="studioDribble"><option value="keep" selected>KEEP CURRENT · ${escapeHTML(currentDribbleName)}</option><option value="none">REMOVE SAVED STYLE</option>${DRIBBLES.DRIBBLE_STYLES.map(a=>`<option value="${escapeHTML(a.id)}" ${a.id!=='sideStep'&&!studioVerifiedDribbleEligible(player)&&a.id!==player.dribbleType?'disabled':''}>${escapeHTML(a.name||a.id)}${a.id!=='sideStep'&&!studioVerifiedDribbleEligible(player)?' · verified Gold+ required':''}</option>`).join('')}</select></label><p class="muted" id="studioDribbleGuide" role="status" aria-live="polite">${escapeHTML(studioDribblePreviewGuide('keep',DRIBBLES.DRIBBLE_STYLES,player))}</p><div class="row">${button('SAVE DRIBBLE STYLE','saveStudioTrick')}</div><p class="muted" id="studioDribbleSaveState" role="status" aria-live="polite">Dribble Style changes are ready to save.</p></div>`:'';
+ const magicSelector=studioManagerContext?'':player.role!=='GK'?`<div class="panel"><h3>TRICK — RARE MAGIC</h3><div id="studioMagicIcon">${ABILITY_ICONS.icon('trick',player.magicTrick)}</div><p class="muted">Tricks are distinct from dribble styles. With the ball, hold DRIBBLE for 1 second to activate an equipped Magic Trick. Defenders can counter; Tricks have cooldown and Energy cost. KEEP CURRENT is the default; removal requires an explicit choice. Buy new Trick options in Store &amp; Tokens; current tier and role rules remain active.</p><label>TRICK<select class="choice" id="studioMagic"><option value="keep" selected>KEEP CURRENT</option><option value="none">REMOVE MAGIC TRICK</option>${STUDIO_MAGIC_TRICKS.filter(a=>studioMagicEligible(player)&&tokenWallet.owns('magicTrick',a.id)||player.magicTrick===a.id).map(a=>`<option value="${a.id}">${a.name}</option>`).join('')}${studioSpinBumpEligible(player)&&(tokenWallet.owns('magicTrick','spinBump')||player.magicTrick==='spinBump')?'<option value="spinBump">Spin Bump</option>':''}${studioSandTrapEligible(player)&&(tokenWallet.owns('magicTrick','sandTrap')||player.magicTrick==='sandTrap')?'<option value="sandTrap">Sand Trap</option>':''}${studioLightningEligible(player)&&(tokenWallet.owns('magicTrick','lightning')||player.magicTrick==='lightning')?'<option value="lightning">Lightning</option>':''}${studioWindEligible(player)&&(tokenWallet.owns('magicTrick','wind')||player.magicTrick==='wind')?'<option value="wind">Wind</option>':''}${studioMudEligible(player)&&(tokenWallet.owns('magicTrick','mud')||player.magicTrick==='mud')?'<option value="mud">Mud</option>':''}</select></label><p class="muted" id="studioMagicEligibility">${escapeHTML(studioMagicEligibilityGuide(player))}</p><p class="muted" id="studioMagicUnlockProgress">${escapeHTML(studioMagicUnlockProgress(player))}</p><p class="muted" id="studioMagicGuide" role="status" aria-live="polite">${escapeHTML(studioMagicGuide('keep',player.magicTrick))}</p>${studioMagicCounterPlaybook()}<div class="row" id="studioMagicSaveRow">${button('SAVE TRICK SELECTION','saveStudioMagic')}</div><p class="muted" id="studioMagicSaveState" role="status" aria-live="polite">No Magic Trick change to save.</p></div>`:`<div class="panel"><h3>TRICK — READ-ONLY PREVIEW</h3><p class="muted">${escapeHTML(studioMagicEligibilityGuide(player))}</p><label>TRICK (PREVIEW ONLY)<select class="choice" id="studioGKMagicPreview"><option value="" selected>CHOOSE A TRICK TO PREVIEW</option>${STUDIO_MAGIC_TRICK_FULL_CATALOGUE.map(a=>`<option value="${escapeHTML(a.id)}">${escapeHTML(a.name)}</option>`).join('')}</select></label><div id="studioGKMagicIcon">${ABILITY_ICONS.icon('trick',null)}</div><p class="muted" id="studioGKMagicGuide" role="status" aria-live="polite">${escapeHTML(studioGoalkeeperMagicGuide(''))}</p>${studioMagicCounterPlaybook()}</div>`;
  studioGallerySignature='';
- page('PLAYER CUSTOMIZATION','Every player has a persistent, editable HD caricature. Modify facial structure, funny exaggeration, hair, expressions and personal details.',`<div class="twoCol"><div class="panel">${studioCareerContext?'':teamField('SELECT CLUB / TEAM TO EDIT','customTeam',nations(),home)}${field('PLAYER','customPlayer',squad.map((p,i)=>[i,`#${p.num} ${p.name}`]),avatarIndex)}<div class="characterStage"><canvas id="customPortrait" width="300" height="260" role="img" aria-label="Rotatable player preview"></canvas><div class="row studioRotateControls"><button type="button" class="btn" data-action="studioLeft" aria-label="Rotate character left 45 degrees">◀ ROTATE</button><strong id="customAngleLabel">${STUDIO_DIRS[studioDirection].label}</strong><button type="button" class="btn" data-action="studioRight" aria-label="Rotate character right 45 degrees">ROTATE ▶</button></div><p class="muted" style="margin:0">Drag the player horizontally to turn • eight views</p><div class="row studioMotionControls"><label class="fieldLabel" for="customPose">PREVIEW MOTION</label><select id="customPose" class="choice">${STUDIO_ACTIONS.map(a=>`<option value="${a}" ${a===studioAction?'selected':''}>${a.toUpperCase()}</option>`).join('')}</select><button type="button" class="btn" data-action="studioSpin">${studioSpin?'■ STOP TURN':'↻ AUTO ROTATE'}</button></div><div>${escapeHTML(player.name)} · ${player.role}<p>${escapeHTML(player.shotName||'Super shot')}</p></div></div><div class="row">${button(studioGalleryOpen?'HIDE 8-VIEW GALLERY':'COMPARE ALL 8 VIEWS','studioGalleryToggle')}</div>${studioGalleryOpen?studioEightViewMarkup():''}<div class="row">${button('✓ SAVE CHARACTER','saveAppearance','gold')}${button('RANDOMIZE FULL LOOK','randomizeFace')}${button('RANDOMIZE HAIR','randomizeHair')}${button('RANDOMIZE FACE DETAILS','randomizeFaceDetails')}${button('RANDOMIZE BODY','randomizeBody')}${button('RANDOMIZE ACCESSORIES','randomizeAccessories')}${button('↶ RESET UNSAVED','studioResetAppearance')}</div><p class="muted" id="studioAppearanceSaveState" role="status" aria-live="polite">Appearance changes are ready to save.</p></div><div class="panel"><div class="avatarControls">${colorControls}${assetControls}</div><p class="muted">Customization now uses curated natural skin and hair palettes, exposes every hairstyle and face asset used by the renderer, and adds tattoo choices so the editor matches the drawable character system.</p>${studioStatControls(player)}${shotSelector}${defenceSelector}${magicSelector}${dribbleSelector}</div></div>`,studioCareerContext?'careerSquad':studioReturnAction);
+ page(studioManagerContext?'MANAGER APPEARANCE':'PLAYER CUSTOMIZATION',studioManagerContext?'Create a persistent manager portrait. It is stored separately from every player record.':'Every player has a persistent, editable HD caricature. Modify facial structure, funny exaggeration, hair, expressions and personal details.',`<p class="muted studioGamepadHint">Gamepad: D-pad or left stick moves focus. Left/right changes a focused selection or slider. A activates; B goes back.</p><div class="twoCol"><div class="panel">${studioManagerContext?'<p class="muted">MANAGER · career portrait</p>':studioCareerContext?'':teamField('SELECT CLUB / TEAM TO EDIT','customTeam',nations(),home)}${studioManagerContext?'':field('PLAYER','customPlayer',squad.map((p,i)=>[i,`#${p.num} ${p.name}`]),avatarIndex)}<div class="characterStage"><canvas id="customPortrait" width="300" height="260" role="img" aria-label="${studioManagerContext?'Rotatable manager preview':'Rotatable player preview'}"></canvas><div class="row studioRotateControls"><button type="button" class="btn" data-action="studioLeft" aria-label="Rotate character left 45 degrees">◀ ROTATE</button><strong id="customAngleLabel">${STUDIO_DIRS[studioDirection].label}</strong><button type="button" class="btn" data-action="studioRight" aria-label="Rotate character right 45 degrees">ROTATE ▶</button></div><p class="muted" style="margin:0">Drag the player horizontally to turn • eight views</p><div class="row studioMotionControls"><label class="fieldLabel" for="customPose">PREVIEW MOTION</label><select id="customPose" class="choice">${STUDIO_ACTIONS.map(a=>`<option value="${a}" ${a===studioAction?'selected':''}>${a.toUpperCase()}</option>`).join('')}</select><button type="button" class="btn" data-action="studioSpin">${studioSpin?'■ STOP TURN':'↻ AUTO ROTATE'}</button></div><div>${escapeHTML(studioManagerContext?'Manager':player.name)} · ${studioManagerContext?'CLUB REPRESENTATIVE':player.role}<p>${studioManagerContext?'Career portrait':escapeHTML(player.shotName||'Super shot')}</p></div></div><div class="row">${studioManagerContext?'':button(studioGalleryOpen?'HIDE 8-VIEW GALLERY':'COMPARE ALL 8 VIEWS','studioGalleryToggle')}</div>${!studioManagerContext&&studioGalleryOpen?studioEightViewMarkup():''}<div class="row">${button(studioManagerContext?'✓ SAVE MANAGER LOOK':'✓ SAVE CHARACTER','saveAppearance','gold')}${button('RANDOMIZE FULL LOOK','randomizeFace')}${button('RANDOMIZE HAIR','randomizeHair')}${button('RANDOMIZE FACE DETAILS','randomizeFaceDetails')}${button('RANDOMIZE BODY','randomizeBody')}${button('RANDOMIZE ACCESSORIES','randomizeAccessories')}${button('↶ RESET UNSAVED','studioResetAppearance')}${studioManagerContext?button('← MANAGER HUB','manager'):''}</div><p class="muted" id="studioAppearanceSaveState" role="status" aria-live="polite">Appearance changes are ready to save.</p></div><div class="panel"><div class="avatarControls">${colorControls}${assetControls}</div><p class="muted">Customization now uses curated natural skin and hair palettes, exposes every hairstyle and face asset used by the renderer, and adds tattoo choices so the editor matches the drawable character system.</p>${studioManagerContext?'':studioStatControls(player)}${shotSelector}${defenceSelector}${keeperDefenceSelector}${magicSelector}${dribbleSelector}</div></div>`,studioCareerContext?'careerSquad':studioReturnAction);
  const keeperTrickPreview=$('studioGKMagicPreview');
  if(keeperTrickPreview){
   const updateKeeperTrickPreview=()=>{
@@ -1128,36 +1770,61 @@ function showPlayerStudio(index=0){avatarIndex=Math.max(0,Math.min(11,Number(ind
   ['studioShotAbility','studioShotIcon','shot',player.superAbility?.type==='shoot'?player.shot:null],
   ['studioDefAbility','studioDefIcon','defence',player.superAbility?.type==='defence'?player.superAbility.id:null],
   ['studioMagic','studioMagicIcon','trick',player.magicTrick],
-  ['studioDribble','studioDribbleIcon','dribble',DRIBBLES.assignedDribbleType(player)]
+  ['studioDribble','studioDribbleIcon','dribble',currentDribble]
  ]){
   const select=$(selectId),target=$(previewId);if(!select||!target)continue;
-  const update=()=>{const chosen=select.value==='keep'?current:select.value==='none'?null:select.value;target.innerHTML=ABILITY_ICONS.icon(category,chosen);if(category==='defence'){const state=studioDefenceSaveState(select.value,$('studioDefTier')?.value,player);const save=menu.querySelector('[data-action="saveStudioDefence"]');if(save){save.disabled=state.disabled;save.setAttribute('aria-disabled',String(state.disabled));save.title=state.invalid?'Choose an eligible Super Defence ability and tier.':state.unchanged?'No Super Defence change to save.':'Save the selected Super Defence.';}const hint=$('studioDefSaveState');if(hint)hint.textContent=state.message;}if(category==='shot'){const guide=$('studioShotGuide');if(guide)guide.textContent=studioShotPreviewGuide(select.value,player.superAbility?.type==='shoot'?player.shot:null,$('studioShotTier')?.value);const state=studioShotSaveState(select.value,$('studioShotTier')?.value,player);const save=menu.querySelector('[data-action="saveStudioShot"]');if(save){save.disabled=state.disabled;save.setAttribute('aria-disabled',String(state.disabled));save.title=state.invalid?'Choose an eligible Super Shot and level.':state.unchanged?'No Super Shot change to save.':'Save the selected Super Shot.';}const hint=$('studioShotSaveState');if(hint)hint.textContent=state.message;}if(category==='trick'){const state=studioMagicSaveState(select.value,current,studioMagicEligible(player));const guide=$('studioMagicGuide');if(guide)guide.textContent=studioMagicGuide(select.value,current,!state.locked);const save=$('studioMagicSaveRow')?.querySelector('button');if(save){save.disabled=state.disabled;save.setAttribute('aria-disabled',String(state.disabled));save.title=state.locked?'Reach Star or Superstar (91+) to equip this Trick.':state.unchanged?'No Magic Trick change to save.':'Save the selected Magic Trick.';}const hint=$('studioMagicSaveState');if(hint)hint.textContent=state.message;}if(category==='dribble'){const guide=$('studioDribbleGuide');if(guide)guide.textContent=studioDribblePreviewGuide(select.value,DRIBBLES.DRIBBLE_STYLES);const state=studioDribbleSaveState(select.value,player,DRIBBLES.DRIBBLE_STYLES);const save=menu.querySelector('[data-action="saveStudioTrick"]');if(save){save.disabled=state.disabled;save.setAttribute('aria-disabled',String(state.disabled));save.title=state.invalid?'Choose a valid Dribble Style.':state.unchanged?'No Dribble Style change to save.':'Save the selected Dribble Style.';}const hint=$('studioDribbleSaveState');if(hint)hint.textContent=state.message;}};
+  const update=()=>{const chosen=select.value==='keep'?current:select.value==='none'?null:select.value;target.innerHTML=ABILITY_ICONS.icon(category,chosen);if(category==='defence'){const state=studioDefenceSaveState(select.value,$('studioDefTier')?.value,player);const save=menu.querySelector('[data-action="saveStudioDefence"]');if(save){save.disabled=state.disabled;save.setAttribute('aria-disabled',String(state.disabled));save.title=state.invalid?'Verified tier and level cap are required for a new Super Defence ability or tier change.':state.unchanged?'No Super Defence change to save.':'Save the selected Super Defence ability.';}const hint=$('studioDefSaveState');if(hint)hint.textContent=state.message;}if(category==='shot'){const guide=$('studioShotGuide');if(guide)guide.textContent=studioShotPreviewGuide(select.value,player.superAbility?.type==='shoot'?player.shot:null,$('studioShotTier')?.value);const state=studioShotSaveState(select.value,$('studioShotTier')?.value,player);const save=menu.querySelector('[data-action="saveStudioShot"]');if(save){save.disabled=state.disabled;save.setAttribute('aria-disabled',String(state.disabled));save.title=state.invalid?'Verified tier and level cap are required for a new Super Shot or tier change.':state.unchanged?'No Super Shot change to save.':'Save the selected Super Shot.';}const hint=$('studioShotSaveState');if(hint)hint.textContent=state.message;}if(category==='trick'){const state=studioMagicSaveState(select.value,current,studioMagicEligible(player));if(select.value==='spinBump')Object.assign(state,studioMagicSaveState(select.value,current,studioSpinBumpEligible(player)));if(select.value==='sandTrap')Object.assign(state,studioMagicSaveState(select.value,current,studioSandTrapEligible(player)));if(select.value==='lightning')Object.assign(state,studioMagicSaveState(select.value,current,studioLightningEligible(player)));if(select.value==='wind')Object.assign(state,studioMagicSaveState(select.value,current,studioWindEligible(player)));if(select.value==='mud')Object.assign(state,studioMagicSaveState(select.value,current,studioMudEligible(player)));const guide=$('studioMagicGuide');if(guide)guide.textContent=studioMagicGuide(select.value,current,!state.locked);const save=$('studioMagicSaveRow')?.querySelector('button');if(save){save.disabled=state.disabled;save.setAttribute('aria-disabled',String(state.disabled));save.title=state.locked?(select.value==='spinBump'||select.value==='sandTrap'||select.value==='lightning'||select.value==='wind'||select.value==='mud'?'Verified canonical Gold tier or higher is required.':'A source-verified canonical Star or Superstar tier is required to equip this Trick.'):state.unchanged?'No Magic Trick change to save.':'Save the selected Magic Trick.';}const hint=$('studioMagicSaveState');if(hint)hint.textContent=state.message;}if(category==='dribble'){const guide=$('studioDribbleGuide');if(guide)guide.textContent=studioDribblePreviewGuide(select.value,DRIBBLES.DRIBBLE_STYLES,player);const state=studioDribbleSaveState(select.value,player,DRIBBLES.DRIBBLE_STYLES);const save=menu.querySelector('[data-action="saveStudioTrick"]');if(save){save.disabled=state.disabled;save.setAttribute('aria-disabled',String(state.disabled));save.title=state.locked?'Verified Gold tier or higher is required for a new unique Dribble Style.':state.invalid?'Choose a valid Dribble Style.':state.unchanged?'No Dribble Style change to save.':'Save the selected Dribble Style.';}const hint=$('studioDribbleSaveState');if(hint)hint.textContent=state.message;}};
   previewUpdates[selectId]=update;
   select.addEventListener('change',update);update();
  }
+ const keeperDefenceTierSelect=$('studioKeeperDefTier'),keeperDefenceAbilitySelect=$('studioKeeperDefAbility');
+ const keeperDefencePreview=()=>{
+  if(!keeperDefenceAbilitySelect)return;
+  const choice=keeperDefenceAbilitySelect.value,current=player.gkSuperAbility?.type==='defence'?player.gkSuperAbility.id:null;
+  const icon=$('studioKeeperDefIcon');if(icon)icon.innerHTML=ABILITY_ICONS.icon('defence',choice==='keep'?current:choice==='none'?null:choice);
+  const state=studioKeeperDefenceSaveState(choice,keeperDefenceTierSelect?.value,player);
+  const save=menu.querySelector('[data-action="saveStudioKeeperDefence"]');
+  if(save){save.disabled=state.disabled;save.setAttribute('aria-disabled',String(state.disabled));save.title=state.invalid?'Verified goalkeeper tier, role and exclusive specialization eligibility are required.':state.unchanged?'No goalkeeper Super Defence change to save.':'Save the selected goalkeeper Super Defence move.';}
+  const hint=$('studioKeeperDefSaveState');if(hint)hint.textContent=state.message;
+  const guide=$('studioKeeperDefTierGuide');if(guide)guide.textContent=studioKeeperDefenceTierGuide(keeperDefenceTierSelect?.value,ABILITIES.studioKeeperChoices(player,Number(keeperDefenceTierSelect?.value)).filter(move=>ABILITIES.canEquipVerifiedKeeperSpecial(player,{level:Number(keeperDefenceTierSelect?.value)})),player);
+ };
+ let keeperDefenceOptionsInitialized=false;
+ if(keeperDefenceAbilitySelect)keeperDefenceAbilitySelect.addEventListener('change',keeperDefencePreview);
+ if(keeperDefenceTierSelect&&keeperDefenceAbilitySelect)keeperDefenceTierSelect.onchange=()=>{
+  const previous=keeperDefenceAbilitySelect.value,level=Number(keeperDefenceTierSelect.value);
+  const available=(player.role==='GK'||player.gkSuperAbility?.type==='defence')?ABILITIES.studioKeeperChoices(player,level).filter(move=>ABILITIES.canEquipVerifiedKeeperSpecial(player,{level})):[];
+  keeperDefenceAbilitySelect.innerHTML='<option value="keep">KEEP CURRENT</option><option value="none">REMOVE GOALKEEPER DEFENCE</option>'+available.map(move=>`<option value="${escapeHTML(move.id)}">${escapeHTML(move.name)}</option>`).join('');
+  if([...keeperDefenceAbilitySelect.options].some(option=>option.value===previous))keeperDefenceAbilitySelect.value=previous;
+  else keeperDefenceAbilitySelect.value='keep';
+  // Initial option rebuilding is part of rendering the saved state, not an edit.
+  // Establish that selection as the form baseline so a clean editor can leave
+  // without a false unsaved-changes prompt.
+  if(!keeperDefenceOptionsInitialized){for(const option of keeperDefenceAbilitySelect.options)option.defaultSelected=option.selected;keeperDefenceOptionsInitialized=true;}
+  keeperDefencePreview();
+ };
+ if(keeperDefenceTierSelect&&keeperDefenceAbilitySelect)keeperDefenceTierSelect.onchange();
  const shotTierSelect=$('studioShotTier');
  if(shotTierSelect)shotTierSelect.addEventListener('change',()=>previewUpdates.studioShotAbility?.());
  const tierSelect=$('studioDefTier'),abilitySelect=$('studioDefAbility');
  if(tierSelect&&abilitySelect)tierSelect.onchange=()=>{
   const previous=abilitySelect.value;
-  const available=studioEliteEligible(player)||player.superAbility?.type==='defence'?ABILITIES.studioDefenceChoices(player,Number(tierSelect.value)):[];
+  const available=(player.role==='DF'||player.superAbility?.type==='defence')?ABILITIES.studioDefenceChoices(player,Number(tierSelect.value)).filter(move=>ABILITIES.canEquipVerifiedFieldSpecial(player,{kind:'defence',level:Number(tierSelect.value)})):[];
   abilitySelect.innerHTML='<option value="keep">KEEP CURRENT</option><option value="none">REMOVE DEFENCE</option>'+available.map(a=>`<option value="${escapeHTML(a.id)}">${escapeHTML(a.name)}</option>`).join('');
   if([...abilitySelect.options].some(o=>o.value===previous))abilitySelect.value=previous;
   else abilitySelect.value='keep'; // A newly locked move must never remain selected.
   previewUpdates.studioDefAbility?.(); // Keep the icon synchronized after rebuilding options.
   const guide=$('studioDefTierGuide');
-  if(guide)guide.textContent=studioDefenceTierGuide(Number(tierSelect.value),available);
+  if(guide)guide.textContent=studioDefenceTierGuide(Number(tierSelect.value),available,player);
  };
  if(tierSelect&&abilitySelect)tierSelect.onchange(); // Initial options must match displayed tier.
- drawCustomizer();}
+ if(typeof studioUpdateColorPreview==='function'){studioUpdateColorPreview('face_skin');studioUpdateColorPreview('face_hair');}drawCustomizer();}
 function getAppearance(){const numeric=['style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo'];return Object.fromEntries(['skin','hair',...numeric].map(k=>[k,k==='skin'||k==='hair'?$('face_'+k).value:+$('face_'+k).value]))}
 // STUDIO-APPEARANCE-RESET-01: revert only the current unsaved visual fields.
 // Use the same merged defaults as the editor; never touch equipment, stats or saves.
 function studioSavedAppearance(player){return {...avatarFor(player),...(player?.appearance||{})};}
 function studioResetUnsavedAppearance(){
- if(screen!=='PLAYER CUSTOMIZATION')return false;
- const squad=(typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home);
- const player=squad?.[avatarIndex];if(!player)return false;
+ if(!['PLAYER CUSTOMIZATION','MANAGER APPEARANCE'].includes(screen))return false;
+ const squad=(typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home);const player=typeof studioManagerContext!=='undefined'&&studioManagerContext?studioSubject():squad?.[avatarIndex];if(!player)return false;
  const saved=studioSavedAppearance(player),current=getAppearance();
  let changed=false;
  for(const key of Object.keys(current)){
@@ -1168,7 +1835,7 @@ function studioResetUnsavedAppearance(){
   if(field.value!==target){field.value=target;changed=true;}
  }
  if(!changed)return false;
- studioGallerySignature='';drawCustomizer();
+ studioGallerySignature='';if(typeof studioUpdateColorPreview==='function'){studioUpdateColorPreview('face_skin');studioUpdateColorPreview('face_hair');}drawCustomizer();
  const hint=$('studioAppearanceSaveState');
  if(hint)hint.textContent='Unsaved appearance edits reverted; nothing was saved.';
  return true;
@@ -1176,9 +1843,8 @@ function studioResetUnsavedAppearance(){
 // STUDIO-RANDOM-OPTIONS-01: choose real enabled option values, not numeric indexes.
 // This is an unsaved preview only; SAVE CHARACTER remains the sole persistence action.
 function studioRandomizeUnsavedAppearance(random=Math.random,keys=null){
- if(screen!=='PLAYER CUSTOMIZATION')return false;
- const squad=(typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home);
- if(!squad?.[avatarIndex])return false;
+ if(!['PLAYER CUSTOMIZATION','MANAGER APPEARANCE'].includes(screen))return false;
+ const squad=(typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home);if(typeof studioManagerContext!=='undefined'&&studioManagerContext?!studioSubject():!squad?.[avatarIndex])return false;
  let changed=false;
  for(const key of keys||Object.keys(getAppearance())){
   const field=$('face_'+key);if(!field?.options)continue;
@@ -1192,7 +1858,7 @@ function studioRandomizeUnsavedAppearance(random=Math.random,keys=null){
   if(hint)hint.textContent='No alternate appearance options available for this selection. Nothing saved yet.';
   return false;
  }
- studioGallerySignature='';drawCustomizer();
+ studioGallerySignature='';if(typeof studioUpdateColorPreview==='function'){studioUpdateColorPreview('face_skin');studioUpdateColorPreview('face_hair');}drawCustomizer();
  const hint=$('studioAppearanceSaveState');
  if(hint)hint.textContent=(keys?'Selected appearance previewed':'Random look previewed')+'; press SAVE CHARACTER to keep it. Nothing saved yet.';
  return true;
@@ -1224,7 +1890,7 @@ function studioAppearanceSaveState(previous,appearance){
 }
 function drawCustomizer(){
  const canvas=$('customPortrait');if(!canvas)return;
- const ctx=canvas.getContext('2d'),p=((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home))[avatarIndex];if(!p)return;
+ const ctx=canvas.getContext('2d'),p=typeof studioManagerContext!=='undefined'&&studioManagerContext?studioSubject():((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home))[avatarIndex];if(!p)return;
  const pose=$('customPose')?.value||studioAction;
  const dir=STUDIO_DIRS[studioDirection],action=pose==='run'?'idle':pose;
  const tm=performance.now()/1000,run=pose==='run',canvW=canvas.width,canvH=canvas.height;
@@ -1232,12 +1898,12 @@ function drawCustomizer(){
  const gr=ctx.createLinearGradient(0,0,canvW,canvH);gr.addColorStop(0,'#27666e');gr.addColorStop(1,'#0b2741');ctx.fillStyle=gr;ctx.fillRect(0,0,canvW,canvH);
  ctx.save();ctx.strokeStyle='#c5efed38';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(150,236,78,12,0,0,Math.PI*2);ctx.stroke();ctx.restore();
  const appearance=getAppearance();
- const saveState=studioAppearanceSaveState(p.appearance,appearance);
+ const saveState=studioAppearanceSaveState(p.appearance,appearance),lockedAppearance=studioAppearanceUnlockIssues(studioSavedAppearance(p),appearance);
  const saveButton=menu.querySelector('[data-action="saveAppearance"]');
  if(saveButton){
-  saveButton.disabled=saveState.disabled;
-  saveButton.setAttribute('aria-disabled',String(saveState.disabled));
-  saveButton.title=saveState.disabled?'No appearance changes to save.':'Save appearance changes.';
+  saveButton.disabled=saveState.disabled||lockedAppearance.length>0;
+  saveButton.setAttribute('aria-disabled',String(saveButton.disabled));
+  saveButton.title=lockedAppearance.length?`Locked appearance items: ${lockedAppearance.join(', ')}. Unlock them in Store & Tokens.`:saveState.disabled?'No appearance changes to save.':'Save appearance changes.';
  }
  const resetButton=menu.querySelector('[data-action="studioResetAppearance"]');
  if(resetButton){
@@ -1248,7 +1914,7 @@ function drawCustomizer(){
   resetButton.title=dirty?'Revert unsaved visual edits.':'Appearance matches the current player.';
  }
  const saveHint=$('studioAppearanceSaveState');
- if(saveHint)saveHint.textContent=saveState.message;
+ if(saveHint)saveHint.textContent=lockedAppearance.length?`Unlock these selections in Store & Tokens before saving: ${lockedAppearance.join(', ')}.`:saveState.message;
  const fit=portraitFit(canvW,canvH,appearance,action);
  const moving=run;
  const source=game.player(0,3)||{i:3,team:0};
@@ -1300,20 +1966,17 @@ function saveStudioShot(){
   const isCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club);
   const source=isCareer?career.roster.map(p=>({...p})):roster(home);
   const player=source?.[avatarIndex],id=$('studioShotAbility')?.value,tier=Number($('studioShotTier')?.value);
-  if(!player||!['MF','FW'].includes(player.role))throw Error('Only midfielders and forwards can equip Super Shots');
-  if(id!=='keep'&&id!=='none'&&!studioEliteEligible(player)&&player.superAbility?.type!=='shoot')throw Error('Super Shots are reserved for elite players');
-  if(!Number.isInteger(tier)||tier<1||tier>5)throw Error('Super Shot level must be 1–5');
+  if(!player)throw Error('Super Shot player no longer exists');
   if(!id||!['keep','none'].includes(id)&&!Object.hasOwn(SHOTS,id))throw Error('Unknown Super Shot');
-  const updated={...player,superShotLevel:tier};
-  if(id==='none'){
-   if(updated.superAbility?.type==='shoot')delete updated.superAbility;
-   updated.shot=null;updated.shotName='';
-  }else if(id==='keep'){
-   if(updated.superAbility?.type==='shoot')updated.superAbility={...updated.superAbility,level:tier};
-  }else{
-   updated.shot=id;updated.shotName=SHOTS[id].name||id;
-   updated.superAbility={type:'shoot',id,name:updated.shotName,level:tier};
-  }
+  if(id!=='keep'&&id!=='none'&&id!==player.shot&&!tokenWallet.owns('superShot',id))throw Error('Unlock this Super Shot in Store & Tokens before equipping it');
+  const state=studioShotSaveState(id,tier,player);
+  if(state.invalid)throw Error(state.message);
+  if(state.unchanged){showPlayerStudio(avatarIndex);return;}
+  const currentLevel=Number(SPECIALS.abilityLevel(player,'shot'))||1,nextTier=id==='none'?currentLevel:tier;
+  if(id!=='none'&&(id!=='keep'||tier!==currentLevel)&&!ABILITIES.canEquipVerifiedFieldSpecial(player,{kind:'shot',level:tier}))
+   throw Error('New Super Shots and level changes require verified Gold 1–2, Star 1–3, or Superstar 1–5 eligibility');
+  const updated=ABILITIES.withStudioShot(player,id,nextTier,SHOTS,studioEliteEligible(player));
+  if(id==='none'&&!Object.hasOwn(player,'superShotLevel'))delete updated.superShotLevel;
   // Validate first: unchanged explicit Shot equipment must not rewrite Career/club saves.
   // Missing legacy level, shot ID or name still persists on the first explicit selection.
   const sameAbility=player.superAbility===updated.superAbility||(
@@ -1332,8 +1995,17 @@ function saveStudioShot(){
 const STUDIO_MAGIC_TRICKS=Object.freeze([
  {id:'banana',name:'Banana Peel'},{id:'ice',name:'Ice Patch'},{id:'bat',name:'Bat Strike'},
  {id:'fireball',name:'Fireball'},{id:'freeze',name:'Freeze'},{id:'scream',name:'Scream'},
- {id:'hideBall',name:'Hide Ball'},{id:'teleport',name:'Teleport'}
+ {id:'hideBall',name:'Hide Ball'},{id:'teleport',name:'Teleport'},{id:'shoulderRide',name:'Shoulder Ride'}
 ]);
+const STUDIO_SPIN_BUMP_TRICK=Object.freeze({id:'spinBump',name:'Spin Bump'});
+const STUDIO_SAND_TRAP_TRICK=Object.freeze({id:'sandTrap',name:'Sand Trap'});
+const STUDIO_MAGIC_TRICK_CATALOGUE=Object.freeze([...STUDIO_MAGIC_TRICKS,STUDIO_SPIN_BUMP_TRICK]);
+const STUDIO_MAGIC_TRICK_VISUAL_CATALOGUE=Object.freeze([...STUDIO_MAGIC_TRICK_CATALOGUE,STUDIO_SAND_TRAP_TRICK]);
+const STUDIO_LIGHTNING_TRICK=Object.freeze({id:'lightning',name:'Lightning'});
+const STUDIO_MAGIC_TRICK_SUMMARY_CATALOGUE=Object.freeze([...STUDIO_MAGIC_TRICK_VISUAL_CATALOGUE,STUDIO_LIGHTNING_TRICK]);
+const STUDIO_WIND_TRICK=Object.freeze({id:'wind',name:'Wind'});
+const STUDIO_MUD_TRICK=Object.freeze({id:'mud',name:'Mud'});
+const STUDIO_MAGIC_TRICK_FULL_CATALOGUE=Object.freeze([...STUDIO_MAGIC_TRICK_SUMMARY_CATALOGUE,STUDIO_WIND_TRICK,STUDIO_MUD_TRICK]);
 // Read-only, accessible Magic Trick preview. Descriptions mirror the current engine;
  // choosing KEEP CURRENT or REMOVE never mutates the roster until SAVE is pressed.
 const STUDIO_MAGIC_TRICK_GUIDES=Object.freeze({
@@ -1344,18 +2016,24 @@ const STUDIO_MAGIC_TRICK_GUIDES=Object.freeze({
  freeze:'Briefly freezes the nearest opponent in close range. JUMP above the freezing pulse to dodge it, or time a grounded defensive SHOOT-slide to cut through it; a strong defender approaching and facing the carrier can also counter.',
  scream:'Briefly staggers the nearest opponent in a wider radius. JUMP above the shockwave to dodge it, or time a grounded defensive SHOOT-slide to slide under it; a strong defender approaching and facing the carrier can also counter.',
  hideBall:'Briefly protects the carried ball. A nearby grounded defender facing the carrier can interrupt the cast with a timed PASS poke; a strong defender approaching and facing the carrier can also counter.',
- teleport:'Moves the carrier a short distance forward within the pitch. A timed grounded SHOOT-slide in the forward travel lane intercepts the teleport; a strong defender approaching and facing the carrier can also counter.'
+ teleport:'Moves the carrier a short distance forward within the pitch. A timed grounded SHOOT-slide in the forward travel lane intercepts the teleport; a strong defender approaching and facing the carrier can also counter.',
+ shoulderRide:'Carry a nearby non-goalkeeper teammate on your shoulder while moving the ball a short distance. Opponent contact, lost possession, or the touchline stops the move; normal player collisions remain active.',
+ spinBump:'Briefly bumps a close opponent away and stuns them. A grounded defensive SHOOT-slide or JUMP counters it; a stronger defender closing in can also stop it. The Trick has a 6-second cooldown.',
+ sandTrap:'Sinks a close opponent into a brief sand snare and stun. A grounded defensive SHOOT-slide or JUMP counters it; a stronger defender closing in can also stop the Trick. It shares the 6-second Magic Trick cooldown.',
+ lightning:'After a short windup, jolts the nearest rival within 95 units and briefly stuns them. JUMP, an active grounded SHOOT-slide, or a facing and closing defender with enough defence can counter it. Stun interrupts the caster; cooldown is 6 seconds.',
+ wind:'Pushes the nearest rival within 120 units 28 units away. A grounded defensive SHOOT-slide or JUMP counters it; a facing, closing defender with enough defence can also stop it. It shares the 6-second Magic Trick cooldown.',
+ mud:'Slows the nearest rival within 100 units for 0.52 seconds. It cannot reapply while that rival is already slowed. A grounded defensive SHOOT-slide or JUMP counters it; a facing, closing defender with enough defence can also stop it. It shares the 6-second Magic Trick cooldown.'
 });
 // STUDIO-COUNTER-PLAYBOOK-01: read-only reference for outfield and GK Studio.
-// Reuse the selected Trick guides so all eight counter descriptions stay aligned.
+// Reuse the selected Trick guides so every counter description stays aligned.
 function studioMagicCounterPlaybook(){
- return `<details id="studioMagicCounterPlaybook" class="studioCounterPlaybook"><summary>DEFENDER COUNTER PLAYBOOK · 8 TRICKS</summary><p class="muted">PASS, SHOOT and JUMP provide the listed defensive counters; DRIBBLE activates an equipped Trick. No extra gameplay button or saved setting.</p><ul>${STUDIO_MAGIC_TRICKS.map(trick=>`<li><strong>${escapeHTML(trick.name)}</strong> — ${escapeHTML(STUDIO_MAGIC_TRICK_GUIDES[trick.id])}</li>`).join('')}</ul></details>`;
+ return `<details id="studioMagicCounterPlaybook" class="studioCounterPlaybook"><summary>DEFENDER COUNTER PLAYBOOK · ${STUDIO_MAGIC_TRICK_FULL_CATALOGUE.length} TRICKS</summary><p class="muted">PASS, SHOOT, JUMP and physical contact provide the listed defensive counters; DRIBBLE activates an equipped Trick. No extra gameplay button or saved setting.</p><ul>${STUDIO_MAGIC_TRICK_FULL_CATALOGUE.map(trick=>`<li><strong>${escapeHTML(trick.name)}</strong> — ${escapeHTML(STUDIO_MAGIC_TRICK_GUIDES[trick.id])}</li>`).join('')}</ul></details>`;
 }
 // STUDIO-MAGIC-SAVE-STATE-01: no-op selections should never look actionable.
 function studioMagicSaveState(choice,equipped,eligible){
  const locked=!eligible&&choice!=='keep'&&choice!=='none';
  const unchanged=choice==='keep'||(choice==='none'&&!equipped)||choice===equipped;
- return {locked,unchanged,disabled:locked||unchanged,message:locked?'Magic Trick locked: reach Star or Superstar (91+) to equip this selection.':unchanged?'No Magic Trick change to save.':'Magic Trick change ready to save.'};
+ return {locked,unchanged,disabled:locked||unchanged,message:locked?'Magic Trick locked: source-verified canonical Star or Superstar tier is required for this selection.':unchanged?'No Magic Trick change to save.':'Magic Trick change ready to save.'};
 }
 function studioMagicGuide(choice,equipped,eligible=true){
  if(choice==='none')return equipped
@@ -1369,26 +2047,27 @@ function studioMagicGuide(choice,equipped,eligible=true){
  // alongside the selected Trick and its counter, without introducing a fifth control.
  const instructions=' In a match, carry the ball and hold DRIBBLE for 1 second to trigger the equipped Trick (cooldown applies).';
  if(choice==='keep')return 'Equipped Trick: '+guide+instructions+' KEEP CURRENT leaves the player unchanged.';
- if(!eligible)return 'Locked preview: '+guide+instructions+' Reach Star or Superstar (91+) to equip this Trick.';
+ if(id==='spinBump'&&!eligible)return 'Locked preview: '+guide+instructions+' Spin Bump requires source-verified canonical-position Gold tier or higher. An OVR number alone does not unlock this Trick.';
+ if(id==='sandTrap'&&!eligible)return 'Locked preview: '+guide+instructions+' Sand Trap requires source-verified canonical-position Gold tier or higher. An OVR number alone does not unlock this Trick.';
+ if(id==='lightning'&&!eligible)return 'Locked preview: '+guide+instructions+' Lightning requires source-verified canonical-position Gold tier or higher. An OVR number alone does not unlock this Trick.';
+ if(id==='wind'&&!eligible)return 'Locked preview: '+guide+instructions+' Wind requires source-verified canonical-position Gold tier or higher. An OVR number alone does not unlock this Trick.';
+ if(id==='mud'&&!eligible)return 'Locked preview: '+guide+instructions+' Mud requires source-verified canonical-position Gold tier or higher. An OVR number alone does not unlock this Trick.';
+ if(!eligible)return 'Locked preview: '+guide+instructions+' A source-verified canonical Star or Superstar tier is required to equip this Trick.';
  return 'Preview only: '+guide+instructions+' Press SAVE TRICK SELECTION to equip this Trick.';
 }
 function studioMagicEligibilityGuide(player){
  if(player?.role==='GK')return 'Goalkeepers cannot equip Magic Tricks. Trick previews are informational only; no Trick can be saved for this position.';
- if(studioMagicEligible(player))return 'Eligible for Magic Tricks: Star or Superstar (legacy rating or position OVR 91+). Preview a move, then save to equip it.';
- if(player?.magicTrick)return 'Existing equipped Trick is preserved for save compatibility. You may keep or remove it; replacing it requires Star or Superstar status (91+).';
- return 'Magic Tricks are locked for this player. Preview any Trick and its counter without equipping; only Star or Superstar outfield players (rating or positional overall 91+) can save one. Normal Dribble Styles remain available.';
+ if(typeof studioSpinBumpEligible==='function'&&studioSpinBumpEligible(player)||typeof studioSandTrapEligible==='function'&&studioSandTrapEligible(player)||typeof studioLightningEligible==='function'&&studioLightningEligible(player)||typeof studioWindEligible==='function'&&studioWindEligible(player)||typeof studioMudEligible==='function'&&studioMudEligible(player))return 'Spin Bump, Sand Trap, Lightning, Wind, and Mud require source-verified canonical Gold tier or higher; an OVR number alone never unlocks equipment. Other Magic Tricks require a source-verified Star or Superstar tier.';
+ if(studioMagicEligible(player))return 'Eligible for older Magic Tricks: source-verified canonical Star or Superstar. Spin Bump, Sand Trap, Lightning, Wind, and Mud require source-verified canonical Gold tier or higher.';
+ if(player?.magicTrick)return 'Existing equipped Trick is preserved for save compatibility. You may keep or remove it; new older Tricks require verified canonical Star or Superstar, while newer Tricks require verified canonical Gold or higher.';
+ return 'Magic Tricks are locked for this player. Preview any Trick and its counter without equipping; older Tricks require source-verified canonical Star or Superstar, while Spin Bump, Sand Trap, Lightning, Wind, and Mud require source-verified canonical Gold or higher. Normal DRIBBLE controls remain available.';
 }
 // STUDIO-TRICK-PROGRESS-01: show both eligibility paths without modifying player data.
 function studioMagicUnlockProgress(player){
  if(!player||player.role==='GK')return 'Magic Trick equipment is unavailable to goalkeepers.';
- const rating=player.rating==null||player.rating===''?NaN:Number(player.rating),ovr=Number(playerOVR(player));
- const legacy=Number.isFinite(rating)?rating:null;
- const positional=Number.isFinite(ovr)?ovr:null;
- const best=Math.max(legacy??0,positional??0);
- const detail='Rating '+(legacy??'unknown')+' · position OVR '+(positional??'unknown')+'. ';
- if(best>=91)return detail+'Magic Trick equipment unlocked (91+ rating or position OVR).';
- if(legacy===null&&positional===null)return detail+'Magic Trick eligibility cannot be determined.';
- return detail+'Magic Trick locked: '+Math.ceil(91-best)+' more overall point'+(Math.ceil(91-best)===1?'':'s')+' needed to reach 91 in rating or position OVR.';
+ const tier=verifiedRatingTierForPlayer(player);
+ if(tier==='Gold'||tier==='Star'||tier==='Superstar')return 'Source-verified canonical tier: '+tier+'. Gold+ Tricks are available; older Magic Tricks require Star or Superstar.';
+ return 'No verified canonical Gold tier is available. New Tricks are locked; any existing Trick can be kept or removed.';
 }
 function studioGoalkeeperMagicGuide(id){
  const description=Object.prototype.hasOwnProperty.call(STUDIO_MAGIC_TRICK_GUIDES,id)?STUDIO_MAGIC_TRICK_GUIDES[id]:null;
@@ -1401,8 +2080,11 @@ function saveStudioMagic(){
   const isCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club),source=isCareer?career.roster.map(p=>({...p})):roster(home);
   const player=source?.[avatarIndex],id=$('studioMagic')?.value;
   if(!player||player.role==='GK')throw Error('Only eligible outfield players can equip Tricks');
-  if(!id||id!=='keep'&&id!=='none'&&!STUDIO_MAGIC_TRICKS.some(t=>t.id===id))throw Error('Unknown Trick');
-  if(id!=='keep'&&id!=='none'&&!studioMagicEligible(player))throw Error('Tricks are reserved for Star and Superstar players (91+)');
+  if(!id||id!=='keep'&&id!=='none'&&!STUDIO_MAGIC_TRICKS.some(t=>t.id===id)&&id!=='spinBump'&&id!=='sandTrap'&&id!=='lightning'&&id!=='wind'&&id!=='mud')throw Error('Unknown Trick');
+  if(id!=='keep'&&id!=='none'&&id!==player.magicTrick&&!tokenWallet.owns('magicTrick',id))throw Error('Unlock this Trick in Store & Tokens before equipping it');
+  if(id==='spinBump'||id==='sandTrap'||id==='lightning'||id==='wind'||id==='mud'){
+   const eligible=id==='spinBump'?studioSpinBumpEligible(player):id==='sandTrap'?studioSandTrapEligible(player):id==='lightning'?studioLightningEligible(player):id==='wind'?studioWindEligible(player):studioMudEligible(player);if(!eligible)throw Error(({spinBump:'Spin Bump',sandTrap:'Sand Trap',lightning:'Lightning',wind:'Wind',mud:'Mud'})[id]+' requires source-verified canonical-position Gold tier or higher');
+  }else if(id!=='keep'&&id!=='none'&&!studioMagicEligible(player))throw Error('Tricks require a source-verified canonical Star or Superstar tier');
   if(id==='keep'||(id==='none'&&!player.magicTrick)||id===player.magicTrick){showPlayerStudio(avatarIndex);return;} // Unchanged selections must not rewrite Career or club saves.
   const updated={...player};if(id==='none')delete updated.magicTrick;else updated.magicTrick=id;
   source[avatarIndex]=updated;
@@ -1416,7 +2098,16 @@ function saveStudioTrick(){
   const isCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club);
   const source=isCareer?career.roster.map(p=>({...p})):roster(home);
   if(!source?.[avatarIndex])throw Error('No selected player');
-  const equipped=DRIBBLES.withStudioDribble(source[avatarIndex],$('studioDribble')?.value);
+  const prior=source[avatarIndex],id=$('studioDribble')?.value,state=studioDribbleSaveState(id,prior,DRIBBLES.DRIBBLE_STYLES);
+  if(state.invalid)throw Error(state.message);
+  if(state.unchanged){showPlayerStudio(avatarIndex);return;}
+  let equipped;
+  if(id==='keep'){showPlayerStudio(avatarIndex);return;}
+  if(id==='none'){equipped={...prior};delete equipped.dribbleType;}
+  else{
+   if(id!=='sideStep'&&!studioVerifiedDribbleEligible(prior))throw Error('Unique Dribble Styles require source-verified canonical Gold tier or higher');
+   equipped=DRIBBLES.withStudioDribble(prior,id);
+  }
   // Validate first, then avoid rewriting Career/club saves for unchanged explicit equipment.
   // A legacy player without an explicit style still persists their first choice.
   if(equipped.dribbleType===source[avatarIndex].dribbleType){showPlayerStudio(avatarIndex);return;}
@@ -1431,12 +2122,23 @@ function saveStudioDefence(){
   const isCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club);
   const source=isCareer?career.roster.map(p=>({...p})):roster(home);
   if(!source?.[avatarIndex])throw Error('No selected player');
-  const ability=$('studioDefAbility')?.value,tier=Number($('studioDefTier')?.value);
+  const prior=source[avatarIndex],ability=$('studioDefAbility')?.value,tier=Number($('studioDefTier')?.value);
   if(!ability)throw Error('Select a defender ability');
-  if(ability!=='keep'&&ability!=='none'&&!studioEliteEligible(source[avatarIndex])&&source[avatarIndex].superAbility?.type!=='defence')throw Error('Super Defence is reserved for elite players');
-  if(ability!=='keep'&&ability!=='none'&&!ABILITIES.studioDefenceChoices(source[avatarIndex],tier).some(a=>a.id===ability))
+  const state=studioDefenceSaveState(ability,tier,prior);
+  if(state.invalid)throw Error(state.message);
+  if(state.unchanged){showPlayerStudio(avatarIndex);return;}
+  const currentLevel=Number(SPECIALS.abilityLevel(prior,'defence'))||1,nextTier=ability==='none'?currentLevel:tier;
+  if(ability!=='none'&&(ability!=='keep'||prior.superAbility?.type==='defence'&&tier!==currentLevel)&&
+    !ABILITIES.canEquipVerifiedFieldSpecial(prior,{kind:'defence',level:tier}))
+   throw Error('New Super Defence abilities and level changes require verified Gold 1–2, Star 1–3, or Superstar 1–5 eligibility');
+  if(ability!=='keep'&&ability!=='none'&&!ABILITIES.studioDefenceChoices(prior,nextTier).some(a=>a.id===ability))
    throw Error('This defender is not eligible for that ability');
-  const prior=source[avatarIndex],equipped=ABILITIES.withStudioDefence(source[avatarIndex],ability,tier);
+  let equipped;
+  if(ability==='keep'&&prior.superAbility?.type!=='defence')equipped={...prior};
+  else if(ability==='none'){
+   equipped=ABILITIES.withStudioDefence(prior,ability,nextTier);
+   if(!Object.hasOwn(prior,'superDefenceLevel'))delete equipped.superDefenceLevel;
+  }else equipped=ABILITIES.withStudioDefence(prior,ability,nextTier);
   // Validate first, then avoid redundant Career/club writes for unchanged explicit equipment.
   // A first-time tier selection must still persist.
   const sameAbility=prior.superAbility===equipped.superAbility||(
@@ -1458,12 +2160,48 @@ function saveStudioDefence(){
   showPlayerStudio(avatarIndex);
  }catch(error){alert('Cannot save Super Defence: '+error.message)}
 }
+function saveStudioKeeperDefence(){
+ try{
+  const isCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club);
+  const source=isCareer?career.roster.map(player=>({...player})):roster(home);
+  if(!source?.[avatarIndex])throw Error('No selected player');
+  const prior=source[avatarIndex],ability=$('studioKeeperDefAbility')?.value,tier=Number($('studioKeeperDefTier')?.value);
+  if(!ability)throw Error('Select a goalkeeper Super Defence move');
+  const state=studioKeeperDefenceSaveState(ability,tier,prior);
+  if(state.invalid)throw Error(state.message);
+  if(state.unchanged){showPlayerStudio(avatarIndex);return;}
+  const currentLevel=Number(SPECIALS.abilityLevel(prior,'keeper'))||1,hasExisting=prior.gkSuperAbility?.type==='defence';
+  if(ability!=='none'&&(ability!=='keep'||hasExisting&&tier!==currentLevel)&&
+    !ABILITIES.canEquipVerifiedKeeperSpecial(prior,{level:tier}))
+   throw Error('New goalkeeper Super Defence and level changes require verified Gold 1–2, Star 1–3, or Superstar 1–5 eligibility without a field Super Shot or Super Defence');
+  if(ability!=='keep'&&ability!=='none'&&!ABILITIES.studioKeeperChoices(prior,tier).some(move=>move.id===ability))
+   throw Error('This goalkeeper is not eligible for that move');
+  let equipped;
+  if(ability==='keep'&&!hasExisting)equipped={...prior};
+  else if(ability==='none'){
+   equipped=ABILITIES.withStudioKeeper(prior,ability,currentLevel);
+   if(!Object.hasOwn(prior,'gkSuperLevel'))delete equipped.gkSuperLevel;
+  }else equipped=ABILITIES.withStudioKeeper(prior,ability,tier);
+  const sameAbility=prior.gkSuperAbility===equipped.gkSuperAbility||(
+   !!prior.gkSuperAbility&&!!equipped.gkSuperAbility&&
+   Object.keys(prior.gkSuperAbility).length===Object.keys(equipped.gkSuperAbility).length&&
+   Object.keys(prior.gkSuperAbility).every(key=>Object.is(prior.gkSuperAbility[key],equipped.gkSuperAbility[key]))
+  );
+  if(prior.gkSuperLevel===equipped.gkSuperLevel&&sameAbility){showPlayerStudio(avatarIndex);return;}
+  source[avatarIndex]=equipped;
+  if(isCareer){const updated={...career,roster:source};if(!storeCharacterChanges('managerCareer',updated))return;career=updated;saveCareer();}
+  else{const updated={...edits,[TEAMS[home].id]:source};if(!storeCharacterChanges('edits',updated))return;edits=updated;}
+  showPlayerStudio(avatarIndex);
+ }catch(error){alert('Cannot save goalkeeper Super Defence: '+error.message)}
+}
 function saveAppearance(){
+ if(typeof studioManagerContext!=='undefined'&&studioManagerContext){if(!career)return;const appearance=getAppearance(),previous={...avatarFor(managerAvatarPlayer()),...managerAvatarAppearance()},locked=studioAppearanceUnlockIssues(previous,appearance);if(locked.length){alert(`Unlock these appearance selections in Store & Tokens first: ${locked.join(', ')}.`);return;}if(Object.keys(previous).length===Object.keys(appearance).length&&Object.keys(appearance).every(key=>Object.hasOwn(previous,key)&&Object.is(previous[key],appearance[key]))){studioManagerContext=false;showManager();return;}const updated={...career,managerAppearance:appearance};if(!storeCharacterChanges('managerCareer',updated))return;career=updated;saveCareer();studioManagerContext=false;showManager();return;}
  const isCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club);
  const source=isCareer?career.roster.map(p=>({...p})):roster(home);
  const player=source?.[avatarIndex];
  if(!player)return;
- const appearance=getAppearance(),previous=player.appearance;
+ const appearance=getAppearance(),previous=player.appearance,locked=studioAppearanceUnlockIssues(studioSavedAppearance(player),appearance);
+ if(locked.length){const message=`Unlock these appearance selections in Store & Tokens first: ${locked.join(', ')}.`;const status=$('studioAppearanceSaveState');if(status)status.textContent=message;alert(message);return;}
  // Do not rewrite Career/club saves for a truly unchanged, fully explicit appearance.
  // Partial legacy appearances and obsolete extra fields still persist the normalized selection.
  const unchanged=previous&&typeof previous==='object'&&!Array.isArray(previous)&&
@@ -1583,7 +2321,7 @@ function penaltyRoundScorecard(game,{finished=false,winner=null}={}){
   rows+(status?'<p class="muted" role="status">'+status+'</p>':'')+'</section>';
 }
 function returnFromPauseTactics(){if(squadReturnAtHalf&&game.matchState==='paused')halftime();else pause();}
-function pause(){game.matchState='paused';page('PAUSED','Resume or change the computer opponent difficulty without restarting.',`<div class="panel">${field('CPU DIFFICULTY (LIVE)','liveDifficulty',aiChoices(),opt.difficulty)}${difficultyHint()}<p class="muted">Changes apply immediately on the next AI decision. In local 2-player Versus this does not affect either human.</p></div>${penaltyRoundScorecard(game)}${matchHighlightsPanel(game)}<div class="row">${quickTacticalPanel(0)}${humans>=2?quickTacticalPanel(1):''}</div><div class="row">${button('▶ RESUME','resume','gold')}${button('RESTART MATCH','confirmRestart')}${button('SETTINGS','navSound')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('RETURN TO MAIN MENU','confirmQuit')}</div>`)}
+function pause(){game.matchState='paused';page('PAUSED','Resume or change the computer opponent difficulty without restarting.',`<div class="panel">${field('CPU DIFFICULTY (LIVE)','liveDifficulty',aiChoices(),opt.difficulty)}${difficultyHint()}<p class="muted">Changes apply immediately on the next AI decision. In local 2-player Versus this does not affect either human.</p></div>${penaltyRoundScorecard(game)}${matchHighlightsPanel(game)}<div class="row">${quickTacticalPanel(0)}${humans>=2?quickTacticalPanel(1):''}</div><div class="row">${button('▶ RESUME','resume','gold')}${button('RESTART MATCH','confirmRestart')}${button('SETTINGS','navSound')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('RETURN TO MAIN MENU','confirmQuit')}</div>`,'resume')}
 // Read-only halftime guidance. Decisions remain with the user.
 function halftimeCoachAdvice(game,side){
  const scores=game.score||[0,0],delta=(scores[side]||0)-(scores[1-side]||0);
@@ -1635,37 +2373,50 @@ function halftimeFatigueSpotlight(game,side){
 function halftimeCoachPanel(game,side){
  return `<section class="panel" id="halftimeCoach${side===0?'Home':'Away'}" role="status" aria-live="polite" aria-label="${side===0?'Home':'Away'} halftime coaching advice"><h3 class="titleSmall">📋 ${side===0?'HOME':'AWAY'} COACHING NOTES</h3><p class="muted">${halftimeCoachAdvice(game,side)}</p>${halftimeFatigueSpotlight(game,side)}</section>`;
 }
-function halftime(){game.matchState='paused';page('HALF TIME',`${TEAMS[home].name} ${game.score[0]} : ${game.score[1]} ${TEAMS[away].name}`,`<div class="panel"><h3 class="titleSmall">SECOND HALF STRATEGY</h3>${halftimeCoachPanel(game,0)}${humans>=2?halftimeCoachPanel(game,1):''}${matchHighlightsPanel(game)}${quickTacticalPanel(0)}${humans>=2?quickTacticalPanel(1):''}<p class="muted">Players regain 40% of their accumulated fatigue for the second half, and resting off the ball slowly restores stamina during play. CPU teams may make an automatic substitution. Use the command center for up to three substitutions; bench fatigue is remembered.</p><h3 class="titleSmall">🗣 HALF-TIME MANAGER TALK</h3><p class="muted">Talks can boost or reduce individual morale. One talk per team per halftime.</p><div class="tacticsGrid">${field('HOME TALK','halfTalkHome',Object.entries(TEAM_TALKS).map(([k,v])=>[k,v.name]),'encourage')}${humans>=2?field('AWAY TALK','halfTalkAway',Object.entries(TEAM_TALKS).map(([k,v])=>[k,v.name]),'focus'):''}</div><p class="muted">HOME MOOD: ${Math.round(game.teamMorale(0))}% · AWAY MOOD: ${Math.round(game.teamMorale(1))}%</p><div class="row">${!game.talksUsed[0].halftime?button('SPEAK TO HOME TEAM','talkHalfHome','gold'):''}${humans>=2&&!game.talksUsed[1].halftime?button('SPEAK TO AWAY TEAM','talkHalfAway'):''}</div><div class="row">${button('▶ SECOND HALF','resume','gold')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('ADJUST CPU LEVEL','cpuPause')}</div></div>`)}
+function halftime(){game.matchState='paused';page('HALF TIME',`${TEAMS[home].name} ${game.score[0]} : ${game.score[1]} ${TEAMS[away].name}`,`<div class="panel"><h3 class="titleSmall">SECOND HALF STRATEGY</h3>${halftimeCoachPanel(game,0)}${humans>=2?halftimeCoachPanel(game,1):''}${matchHighlightsPanel(game)}${quickTacticalPanel(0)}${humans>=2?quickTacticalPanel(1):''}<p class="muted">Players regain 40% of their accumulated fatigue for the second half, and resting off the ball slowly restores stamina during play. CPU teams may make an automatic substitution. Use the command center for up to three substitutions; bench fatigue is remembered.</p><h3 class="titleSmall">🗣 HALF-TIME MANAGER TALK</h3><p class="muted">Talks can boost or reduce individual morale. One talk per team per halftime.</p><div class="tacticsGrid">${field('HOME TALK','halfTalkHome',Object.entries(TEAM_TALKS).map(([k,v])=>[k,v.name]),'encourage')}${humans>=2?field('AWAY TALK','halfTalkAway',Object.entries(TEAM_TALKS).map(([k,v])=>[k,v.name]),'focus'):''}</div><p class="muted">HOME MOOD: ${Math.round(game.teamMorale(0))}% · AWAY MOOD: ${Math.round(game.teamMorale(1))}%</p><div class="row">${!game.talksUsed[0].halftime?button('SPEAK TO HOME TEAM','talkHalfHome','gold'):''}${humans>=2&&!game.talksUsed[1].halftime?button('SPEAK TO AWAY TEAM','talkHalfAway'):''}</div><div class="row">${button('▶ SECOND HALF','resume','gold')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('ADJUST CPU LEVEL','cpuPause')}</div></div>`,'resume')}
 function fulltime(ev){game.matchState='finished';let [a,b]=ev.score,win=lanRole==='guest'?b>a:a>b;if(mode==='league'){
  league.played++;league.wins+=a>b?1:0;league.draws+=a===b?1:0;league.losses+=a<b?1:0;league.points+=a>b?5:a===b?2:0;league.games.unshift({team:TEAMS[away].name,a,b});league.games=league.games.slice(0,80);
- if(league.stage==='qualifier'&&league.wins>=16&&league.points>=70)league.stage='finals';else if(league.stage==='finals'&&win){league.playoff=(league.playoff||0)+1;if(league.playoff>=4)league.stage='champion'}store.put('league',league)}
- if(mode==='continental'&&continentalRun){try{const result=tournamentAdvance(continentalRun,TEAMS,ev.score,ev.penalties?ev.winner:null);store.put('continentalRun',continentalRun);if(career?.club===continentalRun.club){career.cash+=Math.max(0,continentalRun.earned-(continentalRun.lastCareerAward||0));continentalRun.lastCareerAward=continentalRun.earned;store.put('continentalRun',continentalRun);saveCareer()}saveCup();page('CONTINENTAL RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="badge">${escapeHTML(confed(continentalRun.compId).name)}</div><div class="megaScore">${a} : ${b}</div><p>${escapeHTML(tournamentProgress(continentalRun))} • ${continentalRun.earned/1000000}m prize earnings</p>${button('CONTINUE CHAMPIONSHIP','continentContinue','gold')}</div>`)}catch(e){alert('Competition update failed: '+e.message);showTournament()}return;}
- if(mode==='career'&&career){recordMatchFitness(career,game.getFitnessReport(0));const outcome=advanceCareer(career,TEAMS,ev.score,ev.penalties?ev.winner:null);saveCareer();page('CAREER MATCH RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="titleSmall">${outcome.kind.toUpperCase()} • ${outcome.win?'WIN!':a===b?'DRAW':'DEFEAT'}</div><div class="megaScore">${a} : ${b}</div><p>Club cash: €${(career.cash/1000000).toFixed(1)}m • Current week ${career.week+1}</p>${button('CONTINUE MANAGER CAREER','manager','gold')}</div>`);return;}
- page('FULL TIME',`${ev.penalties&&(ev.winner===0||ev.winner===1)?(ev.winner===0?'VICTORY!':'DEFEAT'):win?'VICTORY!':a===b?'DRAW MATCH':'DEFEAT'}${ev.penalties?' • ON PENALTIES':''}`,`<div class="panel" style="text-align:center"><div class="badge">MATCH RESULT</div><div style="font-size:70px;color:#ffe17a;font-weight:1000">${a} : ${b}</div><p>${TEAMS[home].name} vs ${TEAMS[away].name}</p>${ev.penalties?penaltyRoundScorecard(game,{finished:true,winner:ev.winner}):''}${matchHighlightsPanel(game)}<div class="row" style="justify-content:center">${button('↻ REMATCH','kickoff','gold')}${mode==='league'?button('🏆 LEAGUE','league'):button('MAIN MENU','home')}</div></div>`)}
+ if(league.stage==='qualifier'&&league.wins>=16&&league.points>=70)league.stage='finals';else if(league.stage==='finals'&&win){league.playoff=(league.playoff||0)+1;if(league.playoff>=4)league.stage='champion'}leagueResultCommitted=persistLeagueResult(league)}
+ if(mode==='continental'&&continentalRun){try{const result=applyCupMatchResult(ev.score,ev.penalties?ev.winner:null);if(career?.club===continentalRun.club){career.cash+=Math.max(0,continentalRun.earned-(continentalRun.lastCareerAward||0));continentalRun.lastCareerAward=continentalRun.earned;store.put('continentalRun',continentalRun);saveCareer()}saveCup();const tokenReward=awardLocalMatchTokens(ev,ev.score);page('CONTINENTAL RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="badge">${escapeHTML(confed(continentalRun.compId).name)}</div><div class="megaScore">${a} : ${b}</div><p>${escapeHTML(tournamentProgress(continentalRun))} • ${continentalRun.earned/1000000}m prize earnings</p>${tokenReward}${button('CONTINUE CHAMPIONSHIP','continentContinue','gold')}</div>`)}catch(e){alert('Competition update failed: '+e.message);showTournament()}return;}
+ if(mode==='career'&&career){recordMatchFitness(career,game.getFitnessReport(0));const outcome=advanceCareer(career,TEAMS,ev.score,ev.penalties?ev.winner:null),careerCommitted=saveCareer();const tokenReward=careerCommitted?awardLocalMatchTokens(ev,ev.score):'<p class="muted">No Career tokens awarded because this match could not be committed to the active Career slot.</p>';page('CAREER MATCH RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="titleSmall">${outcome.kind.toUpperCase()} • ${outcome.win?'WIN!':a===b?'DRAW':'DEFEAT'}</div><div class="megaScore">${a} : ${b}</div><p>Club cash: €${(career.cash/1000000).toFixed(1)}m • Current week ${career.week+1}</p>${tokenReward}${button('CONTINUE MANAGER CAREER','manager','gold')}</div>`);return;}
+ const tokenReward=mode==='league'?awardLocalMatchTokens(ev,ev.score):'';
+ const lanReceiptRecovery=lanRole==='host'&&typeof lanRuntime?.retryResultAward==='function'?`<section id="lanHostReceiptRecovery" class="panel" aria-label="Online match token reward recovery" ${lanRuntime.resultAckStatus==='failed'?'':'hidden'}><p id="lanHostReceiptRecoveryStatus" role="status" aria-live="polite">The online match token reward could not be saved on this device. Free storage, then retry here. Leaving or reloading this result loses the unsaved reward.</p><div class="row">${button('RETRY TOKEN REWARD','retryLanReceipt','gold')}</div></section>`:'';
+ page('FULL TIME',`${ev.penalties&&(ev.winner===0||ev.winner===1)?(ev.winner===0?'VICTORY!':'DEFEAT'):win?'VICTORY!':a===b?'DRAW MATCH':'DEFEAT'}${ev.penalties?' • ON PENALTIES':''}`,`<div class="panel" style="text-align:center"><div class="badge">MATCH RESULT</div><div style="font-size:70px;color:#ffe17a;font-weight:1000">${a} : ${b}</div><p>${TEAMS[home].name} vs ${TEAMS[away].name}</p>${tokenReward}${lanReceiptRecovery}${ev.penalties?penaltyRoundScorecard(game,{finished:true,winner:ev.winner}):''}${matchHighlightsPanel(game)}<div class="row" style="justify-content:center">${button('↻ REMATCH','kickoff','gold')}${mode==='league'?button('🏆 LEAGUE','league'):button('MAIN MENU','home')}</div></div>`)}
 function toast(message,duration=1600){let n=$('gameToast');n.textContent=message;n.classList.remove('hidden');toastTime=performance.now()+duration}
 let toastTime=0;
-game.onEvent=e=>{if(lanRuntime&&e.type==='halftime'){game.matchState='play';toast('SECOND HALF · LAN',1600);return;}
+game.onEvent=e=>{if(e.type==='passIntent'&&game.mode==='training'&&trainingCrossCoachState.observePass(e))updateTrainingCrossCoach();if(lanRuntime&&e.type==='halftime'){game.matchState='play';toast('SECOND HALF · LAN',1600);return;}
  if(lanRuntime&&e.type==='finished'){lanFinish=e;return;}
  if(lanRuntime&&e.type==='penaltyStart'){game.matchState='finished';lanFinish={type:'finished',score:game.score.slice()};return;}
  if(lanRuntime&&e.type==='pause'){game.matchState='play';return;}
- audio.cue(e);if(e.type==='toast')toast(e.message,1800);if(e.type==='goal'){$('gameToast').classList.add('hidden');toastTime=0}if(e.type==='penaltyStart')toast('PENALTY SHOOTOUT',1500);if(e.type==='penaltyKick')toast(e.goal?'GOAL!':'SAVE!',1300);if(e.type==='pause')pause();if(e.type==='halftime')halftime();if(e.type==='finished')fulltime(e)};
-function action(a){audio.cue('ui');
+audio.cue(e);if(e.type==='toast')toast(e.message,1800);if(e.type==='goal'){$('gameToast').classList.add('hidden');toastTime=0}if(e.type==='penaltyStart')toast(e.inMatch?'PENALTY KICK':'PENALTY SHOOTOUT',1500);if(e.type==='penaltyKick')toast(e.goal?'GOAL!':'SAVE!',1300);if(e.type==='pause')pause();if(e.type==='halftime')halftime();if(e.type==='finished')fulltime(e)};
+function action(a){if(a===menuBackAction&&!confirmDiscardBeforeBack(a))return;if(a==='kickoff'&&lanRuntime)stopLanMatch();audio.cue('ui');
  const navTarget=menu.querySelector('[data-action="'+a+'"]');if(navTarget&&a!=='home'&&a!=='quit')navFocusMap[screen]=a;
  if(['quick','versus','pk','training','manager','league','continents','clubs','playerStudio','editor','gallery','squad','help','controls'].includes(a)&&screen.startsWith('nav-'))menuEntryReturn=({
  'nav-device':'navOnDevice','nav-career':'navCareer','nav-cups':'navCups','nav-clubs':'navClubs','nav-settings':'navSettings','nav-customize':'navCustomization','nav-input':'navInput','nav-saves':'navSaveManagement'
  })[screen]||'home';
- if(a==='confirmQuit'){if(confirm('Leave this match and return to the main menu? Match progress will be lost.')){stopLanMatch();game.matchState='none';showHome();}}else if(a==='confirmRestart'){if(confirm('Restart the match from kickoff? Current match progress will be lost.'))start();}
- else if(a==='navQuick')showQuickMenu();else if(a==='navLan')showLanLobby();else if(a==='navOnlineP2P')showOnlineP2PLobby();else if(a==='navOnDevice')showOnDevice();else if(a==='navOnline')showOnlineMenu();else if(a==='navCareer'){creatingCareer=false;showCareerMenu();}else if(a==='navCups')showCupsMenu();else if(a==='navInternational')showInternationalMenu();else if(a==='navClubs')showClubCompetitionsMenu();else if(a==='navSettings'||a==='settings')showSettingsMenu();else if(a==='navCustomization')showCustomizationMenu();else if(a==='navInput')showInputMenu();else if(a==='navSaveManagement')showSaveMenu('navSettings');else if(a==='navCareerSlots')showCareerSlots();else if(a==='navCupSlots')showCupSlots();
+ if(a==='retryLanReceipt'){
+  const recovered=lanRole==='host'&&lanRuntime?.retryResultAward?.()===true;
+  const recovery=$('lanHostReceiptRecovery'),status=$('lanHostReceiptRecoveryStatus');
+  if(recovered){if(status)status.textContent='The online match token reward is saved. Your wallet now includes this receipt.';if(recovery)recovery.hidden=true;menu.querySelector('[data-action="home"]')?.focus({preventScroll:true});}
+  else if(status)status.textContent='The reward still could not be saved. Free device storage, then retry again here. Leaving or reloading this result loses the unsaved reward.';
+  return;
+ }
+ else if(a==='confirmQuit'){if(confirm('Leave this match and return to the main menu? Match progress will be lost.')){stopLanMatch();game.matchState='none';showHome();}}else if(a==='confirmRestart'){if(confirm('Restart the match from kickoff? Current match progress will be lost.'))start();}
+ else if(a==='navQuick')showQuickMenu();else if(a==='navLan')showLanLobby(screen==='nav-online'?'navOnline':'navQuick');else if(a==='navOnlineP2P')showOnlineP2PLobby(screen==='nav-online'?'navOnline':'navQuick');else if(a==='navOnDevice')showOnDevice();else if(a==='navOnline')showOnlineMenu();else if(a==='navCareer'){creatingCareer=false;showCareerMenu();}else if(a==='navCups')showCupsMenu();else if(a==='navStore')showTokenStore();else if(a==='navInternational')showInternationalMenu();else if(a==='navClubs')showClubCompetitionsMenu();else if(a==='navSettings'||a==='settings')showSettingsMenu();else if(a==='navCustomization'){if(screen==='nav-settings')customizationReturn='navSettings';else if(screen==='home')customizationReturn='home';showCustomizationMenu();}else if(a==='navInput')showInputMenu();else if(a==='navSaveManagement')showSaveMenu('navSettings');else if(a==='navCareerSlots')showCareerSlots();else if(a==='navCupSlots')showCupSlots();
+ else if(a==='storePagePrev'){storePage=Math.max(0,storePage-1);drawTokenStoreCards();const previous=$('storePagePrev'),next=$('storePageNext');(previous&&!previous.disabled?previous:next&&!next.disabled?next:menu.querySelector('#tokenStoreCards button:not([disabled])')||$('storeSearch'))?.focus({preventScroll:true});}
+ else if(a==='storePageNext'){storePage++;drawTokenStoreCards();const next=$('storePageNext'),previous=$('storePagePrev');(next&&!next.disabled?next:previous&&!previous.disabled?previous:menu.querySelector('#tokenStoreCards button:not([disabled])')||$('storeSearch'))?.focus({preventScroll:true});}
+ else if(a.startsWith('storeBuy_')){const match=a.match(/^storeBuy_(superShot|magicTrick|appearance|accessory)_(.*)$/);if(match)buyTokenStoreItem(match[1],decodeURIComponent(match[2]));}
  else if(a==='navGameSettings')showSettingsSection('game');else if(a==='navGraphics')showSettingsSection('graphics');else if(a==='navSound'){if(game.matchState==='paused'&&screen==='PAUSED')menuEntryReturn='returnPause';showSettingsSection('sound');}
  else if(a==='navAbout')showAbout();
  else if(a==='navNewCareer'){creatingCareer=true;showManager();}
  else if(a.startsWith('later')){const labels={laterLAN:'Local Network',laterOnlineMatch:'Online Match',laterUltimate:'Ultimate Team',laterOnlineCareer:'Online Career',laterOnlineCup:'Online Cup / League',laterWorldCup:'World Cup',laterAsian:'Asian Cup',laterEuro:'Euro',laterCopa:'Copa América',laterAfrica:'Africa Cup',laterConcacaf:'CONCACAF Cup',laterChampions:'Champions League',laterEuropa:'Europa League',laterPremier:'Premier League',laterSerie:'Serie A',laterBundes:'Bundesliga',laterLaLiga:'La Liga',laterLigue1:'Ligue 1',laterCustomCup:'Custom Cup',laterCustomLeague:'Custom League'};const parent=a==='laterLAN'?'navQuick':a.startsWith('laterOnline')||a==='laterUltimate'?'navOnline':['laterWorldCup','laterAsian','laterEuro','laterCopa','laterAfrica','laterConcacaf'].includes(a)?'navInternational':['laterCustomCup','laterCustomLeague'].includes(a)?'navCups':'navClubs';comingLater(labels[a]||'Coming Later','This feature is on the roadmap but is not yet playable.',parent);}
  else if(a==='home'||a==='quit'){game.matchState='none';showHome()}
  else if(a==='continents')showContinents();else if(a.startsWith('continentPick_'))showContinentSetup(a.slice(14));else if(a==='continentStart')startContinent();else if(a==='continentContinue')showTournament();else if(a==='continentKickoff')continentKickoff();else if(a==='continentBye')continentBye();
- else if(a==='manager'){creatingCareer=false;showManager();}else if(a==='startManager'){const v=+$('managerClub').value;const slot=careerSlots.firstEmpty()??careerSlots.active;if(careerSlots.list()[slot-1].occupied&&!confirm('All ten slots are full. Overwrite active Career slot '+slot+'?'))return;const fresh=createCareer(v,TEAMS);fresh.saveSchema=2;fresh.clubId=TEAMS[v].id;try{careerSlots.save(slot,fresh);career=fresh;creatingCareer=false;store.put('managerCareer',career);showManager();}catch(error){alert('Could not create Career save: '+error.message);}}
- else if(a==='careerPlay')careerPlay();else if(a==='careerSeason'){if(career){nextSeason(career);saveCareer();showManager()}}
- else if(a==='careerScout')showCareerScout();else if(a==='careerScoutNew')tryCareerScout();else if(a.startsWith('careerSign'))tryCareerSign(+a.slice(10));
- else if(a==='careerMarket')showCareerMarket();else if(a==='careerSquad')showCareerSquad();else if(a==='careerBuy')careerBuy();
+ else if(a==='manager'){creatingCareer=false;studioManagerContext=false;showManager();}else if(a==='startManager'){const v=+$('managerClub').value;const slot=careerSlots.firstEmpty()??careerSlots.active;if(careerSlots.list()[slot-1].occupied&&!confirm('All ten slots are full. Overwrite active Career slot '+slot+'?'))return;const fresh=createCareer(v,TEAMS);fresh.teamPlan=defaultPlan(v,fresh.roster);fresh.saveSchema=2;fresh.clubId=TEAMS[v].id;try{careerSlots.save(slot,fresh);career=fresh;creatingCareer=false;store.put('managerCareer',career);showManager();}catch(error){alert('Could not create Career save: '+error.message);}}
+ else if(a==='careerPlay')careerPlay();else if(a==='careerSeason'){if(career)showCareerSeasonReview()}else if(a==='careerSeasonConfirm')beginCareerNextSeason();else if(a==='careerPastSeasons')showCareerSeasonArchive();
+ else if(a==='careerTactics'){if(career){home=career.club;showSquad(0,'career')}}
+ else if(a==='careerScout')showCareerScout();else if(a==='careerScoutNew')tryCareerScout();else if(a==='careerSignConfirm')confirmCareerSign();else if(a==='careerSignCancel')cancelCareerSign();else if(a.startsWith('careerSign'))tryCareerSign(+a.slice(10));
+ else if(a==='careerMarket')showCareerMarket();else if(a==='careerSquad')showCareerSquad();else if(a==='careerBuy')careerBuy();else if(a==='careerBuyConfirm')confirmCareerBuy();else if(a==='careerBuyCancel')cancelCareerBuy();
  else if(a==='careerTrain')careerTrain();else if(a.startsWith('facility_')){try{upgradeFacility(career,a.slice(9));saveCareer();showManager()}catch(e){alert(e.message)}}
  else if(a==='studioGalleryToggle'){
   // Preserve *unsaved* Player Studio form controls when showing a comparison.
@@ -1678,16 +2429,16 @@ function action(a){audio.cue('ui');
  }
  else if(a==='studioGalleryPrev')studioStepGalleryFrame(-1);else if(a==='studioGalleryNext')studioStepGalleryFrame(1);
   else if(a==='studioLeft')studioRotate(-1);else if(a==='studioRight')studioRotate(1);else if(a==='studioSpin'){studioSpin=!studioSpin;const btn=menu.querySelector('[data-action=studioSpin]');if(btn)btn.textContent=studioSpin?'■ STOP TURN':'↻ AUTO ROTATE';drawCustomizer()}
- else if(a==='saveStudioStats')saveStudioStats();else if(a==='resetStudioStats'){const player=((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home))[avatarIndex];if(player){const normalized=withStats(player);for(const key of NUMERIC_STATS)if($('stat_'+key))$('stat_'+key).value=String(normalized[key]);studioStatPreview();}}else if(a==='playerStudio'){studioCareerContext=false;studioReturnAction='navCustomization';showPlayerStudio();}
- else if(a.startsWith('editClubPlayers')){const ix=Number(a.slice('editClubPlayers'.length));if(TEAMS[ix]?.id.startsWith('club_')){home=ix;studioCareerContext=false;studioReturnAction='clubs';showPlayerStudio(0);}}
+ else if(a==='editManagerAppearance'){if(!career)return showManager();home=career.club;studioManagerContext=true;studioCareerContext=false;studioReturnAction='manager';showPlayerStudio(0);}else if(a==='saveStudioStats')saveStudioStats();else if(a==='resetStudioStats'){const player=((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home))[avatarIndex];if(player){const normalized=withStats(player);for(const key of NUMERIC_STATS)if($('stat_'+key))$('stat_'+key).value=String(normalized[key]);studioStatPreview();}}else if(a==='playerStudio'){studioManagerContext=false;studioCareerContext=false;studioReturnAction='navCustomization';showPlayerStudio();}
+ else if(a.startsWith('editClubPlayers')){const ix=Number(a.slice('editClubPlayers'.length));if(TEAMS[ix]?.id.startsWith('club_')){home=ix;studioManagerContext=false;studioCareerContext=false;studioReturnAction='clubs';showPlayerStudio(0);}}
  else if(a.startsWith('editClubRoster')){const ix=Number(a.slice('editClubRoster'.length));if(TEAMS[ix]?.id.startsWith('club_')){home=ix;showEditor('clubs');}}
- else if(a.startsWith('editPlayer')){studioCareerContext=!!career&&screen==='MANAGER SQUAD';studioReturnAction=studioCareerContext?'careerSquad':'navCustomization';showPlayerStudio(+a.slice(10));}else if(a==='saveAppearance')saveAppearance();else if(a==='studioResetAppearance')studioResetUnsavedAppearance();else if(a==='saveStudioDefence')saveStudioDefence();else if(a==='saveStudioTrick')saveStudioTrick();else if(a==='saveStudioMagic')saveStudioMagic();else if(a==='saveStudioShot')saveStudioShot();else if(a==='randomizeFace')studioRandomizeUnsavedAppearance();else if(a==='randomizeHair')studioRandomizeHairUnsaved();else if(a==='randomizeFaceDetails')studioRandomizeFaceDetailsUnsaved();else if(a==='randomizeBody')studioRandomizeBodyUnsaved();else if(a==='randomizeAccessories')studioRandomizeAccessoriesUnsaved();
+ else if(a.startsWith('editPlayer')){studioManagerContext=false;studioCareerContext=!!career&&screen==='MANAGER SQUAD';studioReturnAction=studioCareerContext?'careerSquad':'navCustomization';showPlayerStudio(+a.slice(10));}else if(a==='saveAppearance')saveAppearance();else if(a==='studioResetAppearance')studioResetUnsavedAppearance();else if(a==='saveStudioDefence')saveStudioDefence();else if(a==='saveStudioKeeperDefence')saveStudioKeeperDefence();else if(a==='saveStudioTrick')saveStudioTrick();else if(a==='saveStudioMagic')saveStudioMagic();else if(a==='saveStudioShot')saveStudioShot();else if(a==='randomizeFace')studioRandomizeUnsavedAppearance();else if(a==='randomizeHair')studioRandomizeHairUnsaved();else if(a==='randomizeFaceDetails')studioRandomizeFaceDetailsUnsaved();else if(a==='randomizeBody')studioRandomizeBodyUnsaved();else if(a==='randomizeAccessories')studioRandomizeAccessoriesUnsaved();
  else if(a==='conceptDemo'){home=TEAMS.findIndex(t=>t.id===CONCEPT_DEMO_ID);away=0;homeCategory='all';showSetup('quick');}
  else if(a==='quick'||a==='versus'||a==='training')showSetup(a);
- else if(a==='setupRules')showSetupExtras('rules');else if(a==='setupAppearance')showSetupExtras('appearance');else if(a==='setupTactics')showSetupExtras('tactics');
+ else if(a==='setupRules')showSetupExtras('rules');else if(a==='setupAppearance')showSetupExtras('appearance');else if(a==='setupArcadeShots')showSetupExtras('arcadeShots');else if(a==='autoContrastKits'){const fit=bestContrastSelections(TEAMS[home],TEAMS[away],kitSelections);kitSelections[0]=fit.homeChoice;kitSelections[1]=fit.awayChoice;store.put('kitSelections',kitSelections);showSetupExtras('appearance');$('homeKit')?.focus();}else if(a==='setupTactics')showSetupExtras('tactics');
  else if(a==='league')showLeague();else if(a==='gallery')showGallery();else if(a==='clubs')showClubs();else if(a==='saveClub')saveNewClub();else if(a.startsWith('selectClub')){home=+a.slice(10);away=home===away?0:away;showSetup('quick')}else if(a.startsWith('deleteClub'))deleteClub(+a.slice(10));else if(a==='pk'){mode='pk';showSetup('pk')}
  else if(a==='leagueKickoff'){mode='league';start()}
- else if(a==='kickoff')start();else if(a==='squad')showSquad(0,game.matchState==='paused'?'pause':'home');else if(a==='prepHome')showSquad(0,'setup');else if(a==='prepAway')showSquad(1,'setup');else if(a==='tacticHome')showSquad(0,'pause');else if(a==='tacticAway'&&humans>=2)showSquad(1,'pause');else if(a==='returnSetup')showSetup(mode);else if(a==='returnPause'){menuEntryReturn='home';if(screen==='TEAM COMMAND CENTER'&&squadContext==='pause')returnFromPauseTactics();else pause();}else if(a==='controls')showControls();else if(a==='saveBindings'){const profile={keyboard:Array.from({length:4},(_,i)=>$('bindKey'+i).value),gamepad:Array.from({length:4},(_,i)=>+$('bindPad'+i).value),keyboard2:Array.from({length:4},(_,i)=>$('bindKey2'+i).value),gamepad2:Array.from({length:4},(_,i)=>+$('bindPad2'+i).value)};if(input.setBindings(profile)){store.put('controllerBindings',input.getBindings());showInputMenu();}else alert('Each player needs four unique keys and buttons. Keyboard keys cannot overlap across players.');}else if(a==='resetBindings'){input.setBindings({keyboard:['KeyK','KeyJ','KeyI','Space'],gamepad:[1,0,2,3],keyboard2:['Period','Comma','NumpadDecimal','ControlRight'],gamepad2:[1,0,2,3]});store.put('controllerBindings',input.getBindings());showControls();}else if(a==='help')showHelp();else if(a==='editor')showEditor('navCustomization');
+ else if(a==='kickoff')start();else if(a==='squad')showSquad(0,game.matchState==='paused'?'pause':screen==='nav-customize'?'customization':'home');else if(a==='prepHome')showSquad(0,'setup');else if(a==='prepAway')showSquad(1,'setup');else if(a==='tacticHome')showSquad(0,'pause');else if(a==='tacticAway'&&humans>=2)showSquad(1,'pause');else if(a==='returnSetup')showSetup(mode);else if(a==='returnPause'){menuEntryReturn='home';if(screen==='TEAM COMMAND CENTER'&&squadContext==='pause')returnFromPauseTactics();else pause();}else if(a==='controls')showControls();else if(a==='saveBindings'){const profile={keyboard:Array.from({length:4},(_,i)=>$('bindKey'+i).value),gamepad:Array.from({length:4},(_,i)=>+$('bindPad'+i).value),keyboard2:Array.from({length:4},(_,i)=>$('bindKey2'+i).value),gamepad2:Array.from({length:4},(_,i)=>+$('bindPad2'+i).value)};if(input.setBindings(profile)){store.put('controllerBindings',input.getBindings());showInputMenu();}else alert('Each player needs four unique keys and buttons. Keyboard keys cannot overlap across players.');}else if(a==='resetBindings'){input.setBindings({keyboard:['KeyK','KeyJ','KeyI','Space'],gamepad:[1,0,2,3],keyboard2:['Period','Comma','NumpadDecimal','ControlRight'],gamepad2:[1,0,2,3]});store.put('controllerBindings',input.getBindings());showControls();}else if(a==='help')showHelp();else if(a==='editor')showEditor('navCustomization');
  else if(/^quickTactic(Home|Away)(Attack|Control|Defend|Balanced)$/.test(a)){
   const match=a.match(/^quickTactic(Home|Away)(Attack|Control|Defend|Balanced)$/);
   quickTacticalCall(match[1]==='Home'?0:1,match[2].toLowerCase());
@@ -1695,22 +2446,24 @@ function action(a){audio.cue('ui');
  else if(a==='talkHalfHome'||a==='talkHalfAway'){const side=a==='talkHalfHome'?0:1;try{const response=game.applyTeamTalk(side,$(side?'halfTalkAway':'halfTalkHome')?.value||'encourage','halftime');halftime();toast(`${response.positive} INSPIRED · ${response.backfires} UPSET · TEAM MOOD ${response.morale}%`)}catch(err){alert(err.message)}}
  else if(a==='fullscreen')toggleFullscreen();else if(a==='cpuPause')pause();else if(a==='resume'){game.matchState=game.pk?'penalty':'play';closeMenu()}
  else if(a==='saveSquad'){
-  const ix=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;
-  const players=squadContext==='pause'?game.rosters[squadSide]:roster(ix);
+  const ix=squadContext==='pause'?game.teamIds[squadSide]:squadContext==='career'?career?.club:squadSide===0?home:away;
+  const players=squadContext==='pause'?game.rosters[squadSide]:squadContext==='career'?career?.roster||[]:roster(ix);
   const raw={formation:$('formation').value,lineup:Array.from({length:6},(_,i)=>+$('pos'+i).value),captain:+$('role_captain').value,penalty:+$('role_penalty').value,freeKick:+$('role_freeKick').value,corner:+$('role_corner').value,attack:$('attackStyle').value,defence:$('defenceStyle').value};
   try{const plan=validatePlan(raw,players,ix);
-   if(squadContext==='pause')game.applyPlan(squadSide,plan);
+   if(squadContext==='pause'){game.applyPlan(squadSide,plan);returnFromPauseTactics();return;}
+   if(squadContext==='career'){if(saveCareerPlan(plan))showCareerSquad();return;}
    teamPlans[TEAMS[ix].id]=plan;store.put('teamPlans',teamPlans);
-   if(squadContext==='pause')returnFromPauseTactics();else if(squadContext==='setup')showSetup(mode);else showHome();
+   if(squadContext==='setup')showSetup(mode);else showHome();
   }catch(e){alert(e.message)}
  }
  else if(a==='resetSquad'){
   const ix=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;
-  const replacement=defaultPlan(ix,roster(ix));try{if(squadContext==='pause')game.applyPlan(squadSide,replacement);teamPlans[TEAMS[ix].id]=replacement;store.put('teamPlans',teamPlans);if(squadContext==='pause')returnFromPauseTactics();else showSquad(squadSide,squadContext);}catch(e){alert(e.message)}
+  const players=squadContext==='career'?career?.roster||[]:roster(ix),replacement=defaultPlan(ix,players);try{if(squadContext==='pause'){game.applyPlan(squadSide,replacement);returnFromPauseTactics();return;}if(squadContext==='career'){if(saveCareerPlan(replacement))showCareerSquad();return;}teamPlans[TEAMS[ix].id]=replacement;store.put('teamPlans',teamPlans);showSquad(squadSide,squadContext);}catch(e){alert(e.message)}
  }
  else if(a==='cupBackupExport'){try{
+ const recovery=cupSlots.hasRecoverySnapshot;
  const blob=new Blob([cupSlots.exportBackup()],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');
- link.href=url;link.download='Supermagic_Cup_Backup_'+new Date().toISOString().slice(0,10)+'.json';link.click();
+ link.href=url;link.download='Supermagic_Cup_'+(recovery?'Recovery_':'')+'Backup_'+new Date().toISOString().slice(0,10)+'.json';link.click();
  setTimeout(()=>URL.revokeObjectURL(url),3000);
  }catch(error){alert('Cup backup export failed: '+error.message)}}
  else if(a==='cupBackupImport'){
@@ -1725,29 +2478,38 @@ function action(a){audio.cue('ui');
   const warning=hasData?'This will REPLACE all existing Cup slots. Export a backup first.':'No existing Cup slots will be overwritten.';
   if(!confirm('Import '+preview.occupied+' Cup slots? Active slot: '+preview.active+'\n'+names+'\n'+warning))return;
   cupSlots.importBackup(bytes,{overwrite:hasData,validator});
-  const restored=cupSlots.activeTournament();
-  continentalRun=restored;store.put('continentalRun',continentalRun);showCupSlots();
+  applyImportedCupBackupState();
  }catch(error){alert('Cup backup import failed: '+error.message)}};
  picker.click();
  }
- else if(a.startsWith('cupSlotSave_')){const n=Number(a.slice('cupSlotSave_'.length));if(!continentalRun)return showCupSlots();const prior=cupSlots.list()[n-1];if(prior?.occupied&&!confirm('Overwrite Cup slot '+n+'?'))return;try{const name=prompt('Cup save name:',prior?.name||confed(continentalRun.compId)?.name||'Cup '+n);if(name===null)return;cupSlots.save(n,continentalRun,name);store.put('continentalRun',continentalRun);showCupSlots()}catch(error){alert(error.message)}}
+ else if(a.startsWith('cupSlotSave_')){showSlotNameDialog('cup','save',Number(a.slice('cupSlotSave_'.length)))}
  else if(a.startsWith('cupSlotLoad_')){const n=Number(a.slice('cupSlotLoad_'.length));if(continentalRun&&!confirm('Load Cup slot '+n+'? The current Cup campaign will be replaced.'))return;try{const loaded=cupSlots.load(n,saved=>validateTournament(saved,TEAMS));continentalRun=loaded;store.put('continentalRun',continentalRun);showTournament()}catch(error){alert(error.message)}}
  else if(a.startsWith('cupSlotCopy_')){const n=Number(a.slice('cupSlotCopy_'.length));try{cupSlots.duplicate(n);showCupSlots()}catch(error){alert(error.message)}}
  else if(a.startsWith('cupSlotDelete_')){const n=Number(a.slice('cupSlotDelete_'.length));if(!confirm('Permanently delete Cup slot '+n+'? Export a backup first if needed.'))return;try{const wasActive=cupSlots.active===n;cupSlots.remove(n);if(wasActive){continentalRun=null;store.put('continentalRun',null)}showCupSlots()}catch(error){alert(error.message)}}
- else if(a.startsWith('careerSlotSave_')){const n=Number(a.slice(15));if(!career)return showCareerSlots();const prior=careerSlots.list()[n-1];if(prior?.occupied&&!confirm('Overwrite Career slot '+n+'?'))return;try{const name=prompt('Career save name:',prior?.name||TEAMS[career.club]?.name||'Career '+n);if(name===null)return;careerSlots.save(n,career,name);store.put('managerCareer',career);showCareerSlots();}catch(error){alert(error.message)}}
-  else if(a.startsWith('careerSlotLoad_')){const n=Number(a.slice(15));if(career&&!confirm('Load Career slot '+n+'? Unsaved progress in the current career will be lost.'))return;try{career=careerSlots.load(n);store.put('managerCareer',career);showManager();}catch(error){alert(error.message)}}
+ else if(a.startsWith('careerSlotSave_')){if(!career)return showCareerSlots();showSlotNameDialog('career','save',Number(a.slice('careerSlotSave_'.length)))}
+  else if(a.startsWith('careerSlotLoad_')){const n=Number(a.slice(15));if(career&&!confirm('Load Career slot '+n+'? Unsaved progress in the current career will be lost.'))return;try{career=ensureCareerTeamPlan(careerSlots.load(n,careerBackupTeamReferencesValid));store.put('managerCareer',career);showManager();}catch(error){alert(error.message)}}
   else if(a.startsWith('careerSlotCopy_')){const n=Number(a.slice('careerSlotCopy_'.length));try{careerSlots.duplicate(n);showCareerSlots();}catch(error){alert(error.message)}}
-  else if(a.startsWith('careerSlotRename_')){const n=Number(a.slice('careerSlotRename_'.length));try{
-   const slot=careerSlots.list()[n-1];if(!slot?.occupied)throw Error('Career slot '+n+' is empty');
-   const name=prompt('Rename Career slot '+n+':',slot.name);if(name===null)return;
-   careerSlots.rename(n,name);showCareerSlots();
-  }catch(error){alert(error.message)}}
+  else if(a.startsWith('careerSlotRename_')){showSlotNameDialog('career','rename',Number(a.slice('careerSlotRename_'.length)))}
+ else if(a.startsWith('slotNameCancel_')){const match=a.match(/^slotNameCancel_(career|cup)_(save|rename)_(\d+)$/);if(match){const [,kind,operation,rawNumber]=match,n=Number(rawNumber),focusAction=`${kind}Slot${operation==='rename'?'Rename':'Save'}_${n}`;returnFromSlotName(kind,n,focusAction)}}
+ else if(a.startsWith('slotNameConfirm_')){const match=a.match(/^slotNameConfirm_(career|cup)_(save|rename)_(\d+)$/);if(!match)return;const [,kind,operation,rawNumber]=match,n=Number(rawNumber),name=$('slotNameInput')?.value??'';if(!name.trim())return reportSlotNameError('Enter a name for this save before continuing.');try{
+   let focusAction;
+   if(kind==='career'){
+    if(operation==='save'){if(!career)throw Error('There is no active Career to save.');careerSlots.save(n,career,name);store.put('managerCareer',career);focusAction=`careerSlotSave_${n}`;}
+    else{careerSlots.rename(n,name);focusAction=`careerSlotRename_${n}`;}
+   }else{
+    if(operation!=='save'||!continentalRun)throw Error('There is no active Cup campaign to save.');
+    cupSlots.save(n,continentalRun,name);store.put('continentalRun',continentalRun);focusAction=`cupSlotSave_${n}`;
+   }
+   returnFromSlotName(kind,n,focusAction);
+  }catch(error){reportSlotNameError(error.message)}}
   else if(a.startsWith('careerSlotDelete_')){const n=Number(a.slice(17));if(!confirm('Permanently delete Career slot '+n+'? Export a backup first if needed.'))return;try{careerSlots.remove(n);if(careerSlots.active===n){career=null;store.put('managerCareer',null);}showCareerSlots();}catch(error){alert(error.message)}}
   else if(a==='exportSave')exportSave();else if(a==='importSave')$('saveImportFile')?.click();
+ else if(a==='careerBackupExport')exportCareerBackup();else if(a==='careerBackupImport')$('careerBackupImportFile')?.click();
  else if(a==='saveSettings'){
   const get=id=>$(id)?.value;
-  const changes={};for(const [id,key,cast] of [['difficulty','difficulty',Number],['settingsDuration','halfSeconds',Number],['gameSpeed','gameSpeed',Number],['settingsWeather','weather',String],['settingsTerrain','terrain',String],['settingsCondition','condition',String],['camera','camera',String],['ballModel','ballModel',VISUALFEEL.validBallModel],['showNames','showNames',v=>v==='true'],['showPerformance','showPerformance',v=>v==='true']]){if(get(id)!==undefined)changes[key]=cast(get(id));}
+  const changes={};for(const [id,key,cast] of [['difficulty','difficulty',Number],['settingsDuration','halfSeconds',Number],['gameSpeed','gameSpeed',Number],['settingsWeather','weather',String],['settingsTerrain','terrain',String],['settingsCondition','condition',String],['settingsStadium','stadium',v=>STADIUMS.some(s=>s.id===v)?v:DEFAULT_OPTIONS.stadium],['camera','camera',String],['renderQuality','renderQuality',v=>v==='performance'?'performance':'high'],['ballModel','ballModel',VISUALFEEL.validBallModel],['showNames','showNames',v=>v==='true'],['showPerformance','showPerformance',v=>v==='true']]){if(get(id)!==undefined)changes[key]=cast(get(id));}
   Object.assign(opt,changes);
+  renderer.setRenderQuality(opt.renderQuality);
   const values={};for(const k of ['master','music','sfx','ui','ambience'])if(get('audio_'+k)!==undefined)values[k]=+get('audio_'+k);
   if(get('audioMute')!==undefined)values.mute=get('audioMute')==='true';
   audio.configure(values);opt.sfx=!audio.settings.mute;
@@ -1770,9 +2532,20 @@ function fullscreenButtons(){
  document.body.classList.toggle('fullscreen-active',fullscreenActive()||standaloneActive());
  if(renderer?.resize)renderer.resize();
 }
+let fullscreenHelpReturnFocus=null;
+function fullscreenHelpFocusUsable(target){return !!target?.isConnected&&!target.matches?.(':disabled')&&!target.closest?.('.hidden,[hidden],[inert]')}
+function fullscreenHelpFocusFallback(){
+ if(menuVisible()){
+  const heading=menu.querySelector('.heading');if(fullscreenHelpFocusUsable(heading)){heading.setAttribute?.('tabindex','-1');return heading;}
+  return [...menu.querySelectorAll('button')].find(target=>fullscreenHelpFocusUsable(target))||null;
+ }
+ const control=$('pauseBtn');return fullscreenHelpFocusUsable(control)?control:null;
+}
+function restoreFullscreenHelpFocus(){const target=fullscreenHelpReturnFocus;fullscreenHelpReturnFocus=null;if(!target)return;(fullscreenHelpFocusUsable(target)?target:fullscreenHelpFocusFallback())?.focus?.({preventScroll:true});}
 function fullscreenHelp(message){
+ const dialog=$('fullscreenHelp');if(dialog.classList.contains('hidden')){const active=document.activeElement;fullscreenHelpReturnFocus=active?.matches?.('.fullscreenTool,#fullscreenMatch')?active:(menuVisible()?menu.querySelector('.fullscreenTool'):$('fullscreenMatch'));}
  $('fullscreenHelpText').textContent=message;
- $('fullscreenHelp').classList.remove('hidden');
+ dialog.classList.remove('hidden');$('fullscreenHelpClose').focus({preventScroll:true});
 }
 function toggleFullscreen(){
  // Invoked directly from button activation; do not await work before requestFullscreen.
@@ -1805,23 +2578,79 @@ for(const name of ['fullscreenchange','webkitfullscreenchange'])document.addEven
 if(window.visualViewport)visualViewport.addEventListener('resize',()=>renderer.resize());
 if(screen.orientation?.addEventListener)screen.orientation.addEventListener('change',()=>renderer.resize());
 $('fullscreenMatch').addEventListener('click',toggleFullscreen);
-$('fullscreenHelpClose').addEventListener('click',()=>$('fullscreenHelp').classList.add('hidden'));
+$('fullscreenHelp').addEventListener('keydown',event=>{
+ if(event.key==='Escape'){event.preventDefault();event.stopPropagation();$('fullscreenHelp').classList.add('hidden');restoreFullscreenHelpFocus();return;}
+ if(event.key==='Tab'){event.preventDefault();$('fullscreenHelpClose').focus({preventScroll:true});}
+});
+$('fullscreenHelpClose').addEventListener('click',()=>{$('fullscreenHelp').classList.add('hidden');restoreFullscreenHelpFocus();});
 
 // Menu-only focus navigation; input handling inside matches remains unchanged.
 const primaryNavScreens=new Set(['home','nav-quick','nav-device','nav-online','nav-career','nav-cups','nav-international','nav-clubs','nav-settings','nav-customize','nav-input','nav-saves','nav-settings-game','nav-settings-graphics','nav-settings-sound']);
-const menuButtons=()=>[...menu.querySelectorAll('.navChoice')].filter(el=>!el.disabled&&el.offsetParent!==null);
-function navigateMenu(direction){const items=menuButtons();if(!items.length)return;const index=items.indexOf(document.activeElement);const next=items[(index+direction+items.length)%items.length];next.focus({preventScroll:true});next.scrollIntoView({block:'nearest',behavior:'instant'});}
-function backFromMenu(){if(screen==='TEAM COMMAND CENTER'){action(squadContext==='pause'?'returnPause':squadContext==='setup'?'returnSetup':menuBackAction||'home');return;}if(['MATCH RULES','KITS & TEAM TALKS','TEAM TACTICS'].includes(screen)){action('returnSetup');return;}const back=screen==='nav-settings-sound'&&menuEntryReturn==='returnPause'?'returnPause':screen==='nav-saves'?menuBackAction:menuParents[screen]||menuBackAction||'home';if(screen==='home')return;action(back);}
+const studioGamepadScreens=new Set(['PLAYER CUSTOMIZATION','MANAGER APPEARANCE']);
+function menuButtons(){
+ const selector=studioGamepadScreens.has(screen)
+  ? 'button:not([disabled]),select:not([disabled]),input:not([disabled]),textarea:not([disabled]),summary'
+  : '.navChoice';
+ return [...menu.querySelectorAll(selector)].filter(el=>!el.disabled&&el.offsetParent!==null);
+}
+function navigateMenu(horizontal,direction){
+ const items=menuButtons();if(!items.length)return;
+ const current=items.includes(document.activeElement)?document.activeElement:items[0];
+ const from=current.getBoundingClientRect(),fromX=from.left+from.width/2,fromY=from.top+from.height/2;
+ let next=null,best=Infinity;
+ for(const item of items){
+  if(item===current)continue;
+  const rect=item.getBoundingClientRect(),x=rect.left+rect.width/2-fromX,y=rect.top+rect.height/2-fromY;
+  const primary=direction*(horizontal?x:y);
+  if(primary<=1)continue;
+  const score=primary+(horizontal?Math.abs(y):Math.abs(x))*1.5;
+  if(score<best){best=score;next=item;}
+ }
+ if(!next){const index=items.indexOf(current);next=items[(index+direction+items.length)%items.length];}
+ next.focus({preventScroll:true});next.scrollIntoView({block:'nearest',behavior:'instant'});
+}
+function stepFocusedStudioControl(direction){
+ const control=document.activeElement;
+ if(!studioGamepadScreens.has(screen))return false;
+ if(control?.tagName==='SELECT'){
+  const options=[...control.options].filter(option=>!option.disabled&&!option.parentElement?.disabled);
+  if(options.length<2)return false;
+  const current=options.findIndex(option=>option.value===control.value);
+  const next=options[current+direction];
+  if(current<0||!next)return false;
+  control.value=next.value;
+ }else if(control?.tagName==='INPUT'&&control.type==='range'){
+  const before=control.value;
+  if(direction>0)control.stepUp();else control.stepDown();
+  if(control.value===before)return false;
+ }else return false;
+ control.dispatchEvent(new Event('input',{bubbles:true}));
+ control.dispatchEvent(new Event('change',{bubbles:true}));
+ control.focus({preventScroll:true});
+ return true;
+}
+function closeNestedMenuLayer(){
+ const fullscreenHelp=$('fullscreenHelp');if(fullscreenHelp&&!fullscreenHelp.classList.contains('hidden')){fullscreenHelp.classList.add('hidden');restoreFullscreenHelpFocus();return true;}
+ if(screen==='PLAYER CUSTOMIZATION'&&studioGalleryOpen){action('studioGalleryToggle');menu.querySelector('[data-action="studioGalleryToggle"]')?.focus({preventScroll:true});return true;}
+ const openBrowser=menu.querySelector('.teamBrowsePanel:not(.hidden)');if(openBrowser){openBrowser.classList.add('hidden');const id=openBrowser.id.replace(/Browse$/,'');menu.querySelector(`[data-team-browse="${id}"]`)?.setAttribute('aria-expanded','false');return true;}
+ return false;
+}
+function backFromMenu(){if(typeof closeNestedMenuLayer==='function'&&closeNestedMenuLayer())return;if(['PAUSED','HALF TIME'].includes(screen)){action('resume');return;}if(screen==='TEAM COMMAND CENTER'){action(squadContext==='pause'?'returnPause':squadContext==='setup'?'returnSetup':menuBackAction||'home');return;}if(['MATCH RULES','KITS & TEAM TALKS','TEAM TACTICS'].includes(screen)){action('returnSetup');return;}const back=screen==='nav-settings-sound'&&menuEntryReturn==='returnPause'?'returnPause':screen==='nav-saves'?menuBackAction:menuParents[screen]||menuBackAction||'home';if(screen==='home')return;action(back);}
 document.addEventListener('keydown',e=>{
  if(!menuVisible())return;
  if((screen==='LOCAL NETWORK'||screen==='ONLINE P2P')&&e.code==='Escape'){e.preventDefault();backFromMenu();return;}
- if(e.target?.matches?.('input,select,textarea,[contenteditable="true"]'))return;
  if(e.code==='Escape'||e.code==='Backspace'){
-  if(['PAUSED','HALF TIME'].includes(screen)){e.preventDefault();if(screen==='PAUSED')action('resume');return;}
+  const escape=e.code==='Escape';
+  if(escape){e.preventDefault();backFromMenu();input.cancelAll();return;}
+  if(e.target?.matches?.('input,select,textarea,[contenteditable="true"]'))return;
+  if(['PAUSED','HALF TIME'].includes(screen)){e.preventDefault();backFromMenu();return;}
   e.preventDefault();backFromMenu();input.cancelAll();return;
  }
+ if(e.target?.matches?.('input,select,textarea,[contenteditable="true"]'))return;
  if(primaryNavScreens.has(screen)){
-  if(e.code==='ArrowDown'||e.code==='ArrowUp'){e.preventDefault();navigateMenu(e.code==='ArrowDown'?1:-1);}
+  if(e.code==='ArrowDown'||e.code==='ArrowUp'||e.code==='ArrowLeft'||e.code==='ArrowRight'){
+   e.preventDefault();navigateMenu(e.code==='ArrowLeft'||e.code==='ArrowRight',e.code==='ArrowRight'||e.code==='ArrowDown'?1:-1);
+  }
   else if((e.code==='Enter'||e.code==='Space')&&document.activeElement?.matches?.('.navChoice')){e.preventDefault();document.activeElement.click();}
  }
 });
@@ -1830,26 +2659,65 @@ function pollMenuPad(now){
  if(!menuVisible()){padWas={};return;}const pad=navigator.getGamepads?.()?.[0];if(!pad)return;
  const pressed=i=>Boolean(pad.buttons?.[i]?.pressed);
  const down=pressed(13)||(pad.axes?.[1]||0)>.55,up=pressed(12)||(pad.axes?.[1]||0)<-.55;
- if(primaryNavScreens.has(screen)&&now-lastPadNav>180&&down!==up&&(down||up)){navigateMenu(down?1:-1);lastPadNav=now;}
- if(pressed(0)&&!padWas.a){const selected=document.activeElement?.matches?.('.navChoice')?document.activeElement:menuButtons()[0];selected?.click();}
+ const right=pressed(15)||(pad.axes?.[0]||0)>.55,left=pressed(14)||(pad.axes?.[0]||0)<-.55;
+ if((primaryNavScreens.has(screen)||studioGamepadScreens.has(screen))&&now-lastPadNav>180){
+  if(down!==up&&(down||up)){navigateMenu(false,down?1:-1);lastPadNav=now;}
+  else if(left!==right&&(left||right)){const direction=right?1:-1;if(!stepFocusedStudioControl(direction))navigateMenu(true,direction);lastPadNav=now;}
+ }
+ if(pressed(0)&&!padWas.a){const targets=menuButtons();const selected=targets.includes(document.activeElement)?document.activeElement:targets[0];selected?.click();}
  if(pressed(1)&&!padWas.b)backFromMenu();
  padWas={a:pressed(0),b:pressed(1)};
 }
-menu.addEventListener('change',e=>{if(e.target.id==='saveImportFile'){importSave(e.target.files?.[0]);}});
+menu.addEventListener('change',e=>{if(e.target.id==='saveImportFile'){importSave(e.target.files?.[0]);}if(e.target.id==='careerBackupImportFile'){importCareerBackup(e.target.files?.[0]);}if(['face_skin','face_hair'].includes(e.target.id)){studioUpdateColorPreview(e.target.id);drawCustomizer();}});
 
 // Studio drag-to-rotate; pointer capture keeps rotation stable on touch screens.
 menu.addEventListener('pointerdown',e=>{if(e.target.id==='customPortrait'){studioDragX=e.clientX;e.target.setPointerCapture?.(e.pointerId)}});
 menu.addEventListener('pointermove',e=>{if(studioDragX===null||e.target.id!=='customPortrait')return;const delta=e.clientX-studioDragX;if(Math.abs(delta)>=22){studioRotate(delta>0?1:-1);studioDragX=e.clientX;}});
 for(const eventName of ['pointerup','pointercancel','lostpointercapture'])menu.addEventListener(eventName,()=>{studioDragX=null});
-menu.addEventListener('input',e=>{if(e.target.id==='studioGalleryPhase'){const frame=Number(e.target.value);if(Number.isInteger(frame)&&frame>=0&&frame<=3){studioGalleryFrame=frame;drawCustomizer()}return;}if(e.target.id?.startsWith('stat_')){studioStatPreview();return;}if(e.target.dataset.teamSearch){fillTeamBrowser(e.target.dataset.teamSearch);return;}if(e.target.id?.startsWith('face_')||e.target.id==='customPose'){if(e.target.id==='customPose')studioAction=e.target.value;drawCustomizer()}});
+menu.addEventListener('input',e=>{if(e.target.id==='studioGalleryPhase'){const frame=Number(e.target.value);if(Number.isInteger(frame)&&frame>=0&&frame<=3){studioGalleryFrame=frame;drawCustomizer()}return;}if(e.target.id?.startsWith('stat_')){studioStatPreview();return;}if(e.target.dataset.teamSearch){fillTeamBrowser(e.target.dataset.teamSearch);return;}if(['face_skin','face_hair'].includes(e.target.id)){studioUpdateColorPreview(e.target.id);drawCustomizer();return;}if(e.target.id?.startsWith('face_')||e.target.id==='customPose'){if(e.target.id==='customPose')studioAction=e.target.value;drawCustomizer()}});
 menu.addEventListener('change',e=>{if(/^pos[0-5]$/.test(e.target.id)){const choiceEl=$('role_captain');if(!choiceEl)return;const current=+choiceEl.value;const ix=squadContext==='pause'?game.teamIds[squadSide]:squadSide===0?home:away;const players=squadContext==='pause'?game.rosters[squadSide]:roster(ix);const slots=Array.from({length:6},(_,i)=>+$('pos'+i).value);choiceEl.innerHTML=slots.map(i=>`<option value="${i}" ${i===current?'selected':''}>#${players[i].num} ${escapeHTML(players[i].name)}</option>`).join('');if(!slots.includes(current))choiceEl.value=String(slots[1]||slots[0]);refreshFormationPreview();}});
 
+menu.addEventListener('input',e=>{if(e.target.id==='careerMarketSearch'){careerMarketSearch=e.target.value;refreshCareerMarketListing();refreshCareerTransferQuote();}});
+menu.addEventListener('change',e=>{if(e.target.id==='careerMarketRole'){careerMarketRole=e.target.value;refreshCareerMarketListing();refreshCareerTransferQuote();}if(e.target.id==='careerMarketSort'){careerMarketSort=e.target.value;refreshCareerMarketListing();refreshCareerTransferQuote();}if(e.target.id==='releasePlayer'||e.target.name==='target')refreshCareerTransferQuote();if(e.target.id==='academyOutgoing')refreshAcademySigningSummary()});
 menu.addEventListener('keydown',e=>{studioGalleryKeydown(e)});
+menu.addEventListener('keydown',teamBrowserKeydown);
+menu.addEventListener('click',e=>{const practice=e.target.closest?.('[data-help-practice]');if(practice){updateTouchHelpPractice(practice);updateGuidedHelpPractice(practice.dataset.helpPractice);}});
+menu.addEventListener('submit',event=>{const form=event.target;if(form?.id!=='slotNameForm')return;event.preventDefault();action(form.dataset.slotAction)});
+menu.addEventListener('input',event=>{if(event.target?.id==='slotNameInput'){event.target.removeAttribute('aria-invalid');const error=$('slotNameError');if(error)error.textContent='';}});
+menu.addEventListener('keydown',event=>{
+ if(screen!=='SAVE SLOT NAME'||event.key!=='Tab')return;
+ const dialog=menu.querySelector('#slotNameDialog');
+ const focusable=[...dialog.querySelectorAll('input:not([disabled]),button:not([disabled])')];
+ if(!focusable.length)return;
+ const first=focusable[0],last=focusable.at(-1),active=document.activeElement;
+ if(event.shiftKey&&(active===first||!dialog.contains(active))){event.preventDefault();last.focus({preventScroll:true});}
+ else if(!event.shiftKey&&(active===last||!dialog.contains(active))){event.preventDefault();first.focus({preventScroll:true});}
+});
+menu.addEventListener('pointerdown',event=>{const button=event.target.closest?.('[data-pass-charge-practice],[data-shoot-charge-practice]');if(!button||event.button!==0)return;event.preventDefault();const start=button.hasAttribute('data-shoot-charge-practice')?startShootChargePractice:startPassChargePractice;if(start('pointer',event.pointerId)){try{button.setPointerCapture?.(event.pointerId)}catch{}}});
+document.addEventListener('pointerup',event=>{finishPassChargePractice('pointer',event.pointerId);finishShootChargePractice('pointer',event.pointerId);});
+document.addEventListener('pointercancel',event=>{cancelPassChargePractice('pointer',event.pointerId);cancelShootChargePractice('pointer',event.pointerId);});
+document.addEventListener('lostpointercapture',event=>{cancelPassChargePractice('pointer',event.pointerId);cancelShootChargePractice('pointer',event.pointerId);});
+document.addEventListener('keyup',event=>{const keyboard=input.getBindings()?.keyboard||[],isPass=event.code===keyboard[0],isShoot=event.code===keyboard[1];if(!isPass&&!isShoot)return;if(screen!=='CONTROLS'){cancelPassChargePractice('keyboard',event.code);cancelShootChargePractice('keyboard',event.code);return;}if(isPass&&finishPassChargePractice('keyboard',event.code))updateGuidedHelpPractice('pass');if(isShoot)finishShootChargePractice('keyboard',event.code);});
+window.addEventListener('blur',cancelControlsChargePractice);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelControlsChargePractice()});
+document.addEventListener('keydown',event=>{
+ if(screen!=='CONTROLS'||event.repeat||event.altKey||event.ctrlKey||event.metaKey||event.target?.closest?.('[data-help-practice]'))return;
+ const bindings=input.getBindings(),actions=['pass','shoot','dribble','jump'];
+ for(const [profileIndex,profile] of [bindings.keyboard,bindings.keyboard2].entries()){const index=profile?.indexOf(event.code)??-1;if(index>=0&&index<actions.length){event.preventDefault();if(profileIndex===0&&index===0){startPassChargePractice('keyboard',event.code);return;}if(profileIndex===0&&index===1){startShootChargePractice('keyboard',event.code);return;}updateGuidedHelpPractice(actions[index]);return;}}
+});
 menu.addEventListener('click',e=>{const galleryPick=e.target.closest?.('[data-studio-pick]');if(galleryPick){studioPickView(Number(galleryPick.dataset.studioPick));return;}const browser=e.target.closest('[data-team-browse]');if(browser){showTeamBrowser(browser.dataset.teamBrowse);return;}const pick=e.target.closest('[data-pick-team]');if(pick){const select=$(pick.dataset.pickTeam);if(select){select.value=pick.dataset.teamId;select.dispatchEvent(new Event('change',{bubbles:true}));}return;}let train=e.target.closest('[data-train]');if(train){menu.dataset.trainPlayer=train.dataset.train;careerTrain();return}const renew=e.target.closest('[data-careerrenew]');if(renew){tryCareerContract(+renew.dataset.careerrenew);return}const recover=e.target.closest('[data-careerrecover]');if(recover){tryCareerRecover(+recover.dataset.careerrecover);return}let node=e.target.closest('[data-action]');if(node)action(node.dataset.action)});
-menu.addEventListener('change',e=>{const id=e.target.id;switch(id){case 'managerContinent':managerRegion=e.target.value;managerCountry='';showManager();break;case 'managerCountry':managerCountry=e.target.value;showManager();break;case 'continentClub':updateTeamPickerIcon(id);break;case 'managerClub':updateTeamPickerIcon(id);break;case 'formation':refreshFormationPreview();break;case 'homeGroup':homeCategory=e.target.value;home=filteredNations(homeCategory)[0]?.[0]??home;away=home===away?(away+1)%TEAMS.length:away;showSetup(mode);break;case 'awayGroup':awayCategory=e.target.value;away=filteredNations(awayCategory).find(([i])=>i!==home)?.[0]??away;showSetup(mode);break;case 'homeTeam':home=+e.target.value;if(home===away)away=(away+1)%TEAMS.length;showSetup(mode);break;case 'awayTeam':away=+e.target.value;if(away===home)home=(home+1)%TEAMS.length;showSetup(mode);break;case 'preTalkHome':preTalkChoices[0]=e.target.value;break;case 'preTalkAway':preTalkChoices[1]=e.target.value;break;case 'homeKit':case 'awayKit':{let side=id==='homeKit'?0:1;kitSelections[side]=e.target.value;store.put('kitSelections',kitSelections);if(screen==='KITS & TEAM TALKS')showSetupExtras('appearance');else paintTeamPreviews();break;}case 'weather':opt.weather=e.target.value;break;case 'terrain':opt.terrain=e.target.value;break;case 'condition':opt.condition=e.target.value;break;case 'halfSeconds':opt.halfSeconds=+e.target.value;break;case 'ballModel':opt.ballModel=VISUALFEEL.validBallModel(e.target.value);game.options.ballModel=opt.ballModel;store.put('options',opt);paintBallPreview();break;case 'aiStyle':opt.aiStyle=e.target.value;break;case 'matchDifficulty':case 'liveDifficulty':opt.difficulty=+e.target.value;game.options.difficulty=opt.difficulty;store.put('options',opt);{const hint=$('difficultyHint');if(hint)hint.textContent=aiTuning(opt.difficulty).name+' CPU: reaction, shot accuracy, passing, pressure and keeper response all scale by difficulty. Human players are unaffected.';}break;case 'marketTeam':showCareerMarket(+e.target.value);break;case 'customTeam':{const chosen=Number(e.target.value);if(!Number.isInteger(chosen)||!TEAMS[chosen])break;home=chosen;studioCareerContext=false;avatarIndex=0;showPlayerStudio(0);break;}case 'customPlayer':showPlayerStudio(+e.target.value);break;case 'editTeam':{const chosen=Number(e.target.value);if(!Number.isInteger(chosen)||!TEAMS[chosen])break;home=chosen;updateTeamPickerIcon(id);$('jsonRoster').value=JSON.stringify(roster(home),null,2);break;}}});
+menu.addEventListener('change',e=>{const id=e.target.id;switch(id){case 'managerContinent':managerRegion=e.target.value;managerCountry='';showManager();break;case 'managerCountry':managerCountry=e.target.value;showManager();break;case 'continentClub':updateTeamPickerIcon(id);break;case 'managerClub':updateTeamPickerIcon(id);break;case 'formation':refreshFormationPreview();break;case 'homeGroup':homeCategory=e.target.value;home=filteredNations(homeCategory)[0]?.[0]??home;away=home===away?(away+1)%TEAMS.length:away;showSetup(mode);break;case 'awayGroup':awayCategory=e.target.value;away=filteredNations(awayCategory).find(([i])=>i!==home)?.[0]??away;showSetup(mode);break;case 'homeTeam':home=+e.target.value;if(home===away)away=(away+1)%TEAMS.length;showSetup(mode);break;case 'awayTeam':away=+e.target.value;if(away===home)home=(home+1)%TEAMS.length;showSetup(mode);break;case 'arcadeShotPick':arcadeShotId=Object.hasOwn(SHOTS,e.target.value)?e.target.value:'';paintArcadeShotPreview();break;case 'arcadeShotPlayerPick':arcadeShotPlayerId=roster(home).some((p,index)=>p.id===e.target.value&&planFor(home).lineup.includes(index)&&['MF','FW'].includes(p.role)&&(!p.superAbility||p.superAbility.type==='shoot'))?e.target.value:'';break;case 'preTalkHome':preTalkChoices[0]=e.target.value;break;case 'preTalkAway':preTalkChoices[1]=e.target.value;break;case 'homeKit':case 'awayKit':{let side=id==='homeKit'?0:1;kitSelections[side]=e.target.value;store.put('kitSelections',kitSelections);if(screen==='KITS & TEAM TALKS')refreshKitContrastUI();else paintTeamPreviews();break;}case 'weather':opt.weather=e.target.value;break;case 'terrain':opt.terrain=e.target.value;break;case 'condition':opt.condition=e.target.value;break;case 'settingsStadium':opt.stadium=STADIUMS.some(v=>v.id===e.target.value)?e.target.value:DEFAULT_OPTIONS.stadium;store.put('options',opt);break;case 'halfSeconds':opt.halfSeconds=+e.target.value;break;case 'ballModel':opt.ballModel=VISUALFEEL.validBallModel(e.target.value);game.options.ballModel=opt.ballModel;store.put('options',opt);paintBallPreview();break;case 'aiStyle':opt.aiStyle=e.target.value;break;case 'matchDifficulty':case 'liveDifficulty':opt.difficulty=+e.target.value;game.options.difficulty=opt.difficulty;store.put('options',opt);{const hint=$('difficultyHint');if(hint)hint.textContent=aiTuning(opt.difficulty).name+' CPU: reaction, shot accuracy, passing, pressure and keeper response all scale by difficulty. Human players are unaffected.';}break;case 'marketTeam':showCareerMarket(+e.target.value);break;case 'customTeam':{const chosen=Number(e.target.value);if(!Number.isInteger(chosen)||!TEAMS[chosen])break;home=chosen;studioManagerContext=false;studioCareerContext=false;avatarIndex=0;showPlayerStudio(0);break;}case 'customPlayer':showPlayerStudio(+e.target.value);break;case 'editTeam':{const chosen=Number(e.target.value);if(!Number.isInteger(chosen)||!TEAMS[chosen])break;home=chosen;updateTeamPickerIcon(id);$('jsonRoster').value=JSON.stringify(roster(home),null,2);break;}}});
 menu.addEventListener('change',e=>{if(e.target.id==='difficulty'){const hint=$('difficultyHint');if(hint)hint.textContent=aiTuning(+e.target.value).name+' CPU: reaction, shot accuracy, passing, pressure and keeper response all scale by difficulty. Human players are unaffected.';}});
+menu.addEventListener('change',e=>{if(e.target.id==='releasePlayer'||e.target.name==='target')refreshCareerTransferQuote();if(e.target.id==='academyOutgoing')refreshAcademySigningSummary()});
 $('pauseBtn').addEventListener('click',()=>{if(lanRuntime){if(confirm('Leave the LAN match? The connection will close.')){stopLanMatch();game.matchState='none';showHome();}return;}if(['play','penalty'].includes(game.matchState))pause()});
-$('dismissRotate').addEventListener('click',()=>{$('rotate').classList.add('hidden');rotateDismissed=true});let rotateDismissed=false;function checkRotate(){let should=!rotateDismissed&&!menuVisible()&&matchMedia('(pointer:coarse)').matches&&innerHeight>innerWidth*1.12;$('rotate').classList.toggle('hidden',!should)}
+let rotateDismissed=false,rotatePromptReturnFocus=null;
+function rotatePromptFocusFallback(){return menuVisible()?(menu.querySelector('.heading')||menu.querySelector('button:not([disabled])')):$('pauseBtn')}
+function restoreRotatePromptFocus(forceFallback=false){const target=rotatePromptReturnFocus;rotatePromptReturnFocus=null;const style=target?.isConnected?getComputedStyle(target):null,visible=!!target?.isConnected&&!target.closest?.('.hidden,[hidden]')&&style?.display!=='none'&&style?.visibility!=='hidden'&&target.getClientRects().length>0&&!$('rotate').contains(target);(forceFallback||!visible?rotatePromptFocusFallback():target)?.focus?.({preventScroll:true})}
+function setRotatePromptVisible(visible,forceFallback=false){const dialog=$('rotate'),wasVisible=!dialog.classList.contains('hidden');if(wasVisible===visible)return;if(visible){const active=document.activeElement;rotatePromptReturnFocus=active?.isConnected&&!dialog.contains(active)?active:null;dialog.classList.remove('hidden');$('dismissRotate').focus({preventScroll:true});return}dialog.classList.add('hidden');restoreRotatePromptFocus(forceFallback)}
+function dismissRotatePrompt(){rotateDismissed=true;setRotatePromptVisible(false)}
+$('dismissRotate').addEventListener('click',dismissRotatePrompt);
+$('rotate').addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();dismissRotatePrompt();return}if(event.key==='Tab'){event.preventDefault();event.stopPropagation();$('dismissRotate').focus({preventScroll:true});return}event.stopPropagation();if(event.key!=='Enter'&&event.key!==' ')event.preventDefault()});
+function checkRotate(){let should=!rotateDismissed&&!menuVisible()&&matchMedia('(pointer:coarse)').matches&&innerHeight>innerWidth*1.12;setRotatePromptVisible(should,!should)}
 let last=performance.now(),uiT=0,perfSamples=0,perfElapsed=0;
 function updatePerformanceHUD(now,rawDelta){
  const active=opt.showPerformance===true&&['play','penalty'].includes(game.matchState)&&!menuVisible();
@@ -1864,10 +2732,12 @@ function updatePerformanceHUD(now,rawDelta){
 function frame(now){pollMenuPad(now);const rawDelta=now-last;let dt=Math.min(.05,Math.max(0,rawDelta/1000||.016));last=now;updatePerformanceHUD(now,rawDelta);if(lanRuntime){
   if(lanPeer?.ready){lanFailureSince=0;try{lanRuntime.step(dt);}catch(error){console.error('LAN match stopped:',error);stopLanMatch();game.matchState='none';page('LAN CONNECTION ERROR','Match stopped safely.',button('RETURN TO QUICK MATCH','navQuick','gold'),'navQuick');}}
   else if(!lanFailureSince)lanFailureSince=now;
-  else if(now-lanFailureSince>4500){stopLanMatch();game.matchState='none';page('LAN MATCH ENDED','The remote player disconnected or the host ended the match.',button('RETURN TO QUICK MATCH','navQuick','gold'),'navQuick');}
+  else if(now-lanFailureSince>4500&&!(lanRole==='host'&&screen==='FULL TIME'&&lanRuntime.resultAckStatus==='failed')){stopLanMatch();game.matchState='none';page('LAN MATCH ENDED','The remote player disconnected or the host ended the match.',button('RETURN TO QUICK MATCH','navQuick','gold'),'navQuick');}
+  const receiptRecovery=$('lanHostReceiptRecovery');if(receiptRecovery)receiptRecovery.hidden=!(lanRole==='host'&&lanRuntime?.resultAckStatus==='failed');
   if(lanRole==='guest'&&game.matchState==='finished'&&!lanFinish)lanFinish={type:'finished',score:game.score.slice()};
-  if(lanFinish){const result=lanFinish;lanFinish=null;fulltime(result);}
- }else if(game.matchState==='play')game.update(dt);else if(game.matchState==='penalty')game.updatePK(dt);// The network simulation has two humans on both peers; only the local user's
+ if(lanFinish&&(lanRole!=='host'||lanRuntime?.resultDelivered)){const result=lanFinish;lanFinish=null;fulltime(result);}
+ if(lanResultCleanupPending&&['confirmed','unconfirmed'].includes(lanRuntime?.resultAckStatus))stopLanMatch();
+ }else if(game.matchState==='play'){game.update(dt);updateTrainingCrossCoach();}else if(game.matchState==='penalty')game.updatePK(dt);// The network simulation has two humans on both peers; only the local user's
  // selected player may receive a Breath ring. Local couch Versus stays dual-human.
  game.localBreathSide=lanRole==='host'?0:lanRole==='guest'?1:null;
  renderer.frame(game,dt,menuVisible());if(screen==='home'&&menuVisible())drawPoster();uiT-=dt;if(uiT<=0){uiT=.1;if(!menuVisible())drawHUD()}if(toastTime&&now>toastTime){$('gameToast').classList.add('hidden');toastTime=0}checkRotate();requestAnimationFrame(frame)}
@@ -1884,9 +2754,9 @@ document.addEventListener('touchstart',()=>audio.unlock(),{passive:true});
 menu.addEventListener('pointerdown',e=>{if(e.target.id==='customPortrait'){studioDragX=e.clientX;e.target.setPointerCapture?.(e.pointerId)}});
 menu.addEventListener('pointermove',e=>{if(studioDragX===null||e.target.id!=='customPortrait')return;const delta=e.clientX-studioDragX;if(Math.abs(delta)>=22){studioRotate(delta>0?1:-1);studioDragX=e.clientX;}});
 for(const eventName of ['pointerup','pointercancel','lostpointercapture'])menu.addEventListener(eventName,()=>{studioDragX=null});
-menu.addEventListener('input',e=>{if(e.target?.matches?.('input[id^=audio_]')){const output=$(e.target.id+'Value');if(output)output.textContent=e.target.value+'%'}});
+menu.addEventListener('input',e=>{if(e.target?.matches?.('input[id^=audio_]')){const value=`${e.target.value}%`,output=$(e.target.id+'Value');if(output)output.textContent=value;e.target.setAttribute('aria-valuetext',value)}});
 document.addEventListener('visibilitychange',()=>document.hidden?audio.suspend():audio.resume());
-window.addEventListener('pagehide',()=>audio.suspend());
+window.addEventListener('pagehide',()=>{stopLanMatch();audio.suspend()});
 window.addEventListener('pageshow',()=>{if(!document.hidden)audio.resume()});
 
 })();

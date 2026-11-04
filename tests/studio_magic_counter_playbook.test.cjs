@@ -11,12 +11,13 @@ assert.ok(begin>=0&&end>begin,'use shipped Studio catalogue and descriptions');
 const {render,guides}=vm.runInNewContext('(()=>{'+ui.slice(begin,end)+';return {render:studioMagicCounterPlaybook,guides:STUDIO_MAGIC_TRICK_GUIDES};})()',{
  escapeHTML:value=>String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
 });
-test('all eight Tricks appear in a collapsible read-only defender counter reference',()=>{
+test('all fourteen Tricks appear in a collapsible read-only defender counter reference',()=>{
  const html=render();
  assert.match(html,/<details id="studioMagicCounterPlaybook"/);
- assert.equal((html.match(/<li>/g)||[]).length,8);
- for(const name of ['Banana Peel','Ice Patch','Bat Strike','Fireball','Freeze','Scream','Hide Ball','Teleport'])assert.ok(html.includes('<strong>'+name+'</strong>'),name);
- assert.match(html,/PASS, SHOOT and JUMP/);
+ assert.match(html,/DEFENDER COUNTER PLAYBOOK · 14 TRICKS/);
+ assert.equal((html.match(/<li>/g)||[]).length,14);
+ for(const name of ['Banana Peel','Ice Patch','Bat Strike','Fireball','Freeze','Scream','Hide Ball','Teleport','Shoulder Ride','Spin Bump','Sand Trap','Lightning','Wind','Mud'])assert.ok(html.includes('<strong>'+name+'</strong>'),name);
+ assert.match(html,/PASS, SHOOT, JUMP/);
  assert.match(html,/DRIBBLE activates an equipped Trick/);
  assert.doesNotMatch(html,/<button|data-action=|<input|<select/);
 });

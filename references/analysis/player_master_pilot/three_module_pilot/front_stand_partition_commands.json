@@ -1,0 +1,130 @@
+{
+  "commands": [
+    {
+      "op": "setProjectName",
+      "name": "Alex Front Stand Three Module Partition Pilot"
+    },
+    {
+      "op": "setCanvas",
+      "width": 1024,
+      "height": 1024
+    },
+    {
+      "op": "partitionImage",
+      "source": "./references/analysis/player_master_pilot/three_module_pilot/source/alex_front_stand_source.png",
+      "outputDir": "./references/analysis/player_master_pilot/three_module_pilot/modules",
+      "importToProject": true,
+      "view": "front",
+      "animation": "stand",
+      "frame": "stand_1",
+      "masks": [
+        {
+          "id": "head",
+          "selection": {
+            "type": "poly",
+            "points": [
+              { "x": 508, "y": 260 },
+              { "x": 550, "y": 260 },
+              { "x": 580, "y": 268 },
+              { "x": 603, "y": 285 },
+              { "x": 620, "y": 310 },
+              { "x": 634, "y": 335 },
+              { "x": 641, "y": 360 },
+              { "x": 642, "y": 385 },
+              { "x": 635, "y": 415 },
+              { "x": 621, "y": 442 },
+              { "x": 604, "y": 464 },
+              { "x": 586, "y": 482 },
+              { "x": 571, "y": 485 },
+              { "x": 562, "y": 482 },
+              { "x": 545, "y": 489 },
+              { "x": 530, "y": 500 },
+              { "x": 514, "y": 506 },
+              { "x": 498, "y": 500 },
+              { "x": 482, "y": 489 },
+              { "x": 466, "y": 482 },
+              { "x": 456, "y": 489 },
+              { "x": 438, "y": 448 },
+              { "x": 421, "y": 426 },
+              { "x": 410, "y": 404 },
+              { "x": 402, "y": 382 },
+              { "x": 406, "y": 358 },
+              { "x": 405, "y": 344 },
+              { "x": 414, "y": 320 },
+              { "x": 430, "y": 300 },
+              { "x": 476, "y": 281 }
+            ]
+          }
+        },
+        {
+          "id": "hair",
+          "selection": {
+            "type": "poly",
+            "points": [
+              { "x": 508, "y": 279 },
+              { "x": 536, "y": 283 },
+              { "x": 566, "y": 294 },
+              { "x": 591, "y": 310 },
+              { "x": 610, "y": 334 },
+              { "x": 621, "y": 359 },
+              { "x": 623, "y": 384 },
+              { "x": 615, "y": 399 },
+              { "x": 604, "y": 410 },
+              { "x": 598, "y": 424 },
+              { "x": 589, "y": 433 },
+              { "x": 584, "y": 422 },
+              { "x": 580, "y": 408 },
+              { "x": 570, "y": 399 },
+              { "x": 560, "y": 389 },
+              { "x": 550, "y": 381 },
+              { "x": 540, "y": 375 },
+              { "x": 533, "y": 368 },
+              { "x": 526, "y": 377 },
+              { "x": 519, "y": 375 },
+              { "x": 511, "y": 365 },
+              { "x": 504, "y": 360 },
+              { "x": 498, "y": 368 },
+              { "x": 493, "y": 382 },
+              { "x": 486, "y": 376 },
+              { "x": 479, "y": 361 },
+              { "x": 473, "y": 355 },
+              { "x": 468, "y": 367 },
+              { "x": 462, "y": 378 },
+              { "x": 456, "y": 372 },
+              { "x": 449, "y": 370 },
+              { "x": 442, "y": 379 },
+              { "x": 438, "y": 394 },
+              { "x": 431, "y": 401 },
+              { "x": 424, "y": 394 },
+              { "x": 420, "y": 380 },
+              { "x": 423, "y": 358 },
+              { "x": 432, "y": 337 },
+              { "x": 446, "y": 319 },
+              { "x": 461, "y": 302 },
+              { "x": 481, "y": 288 }
+            ]
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "body_without_head",
+          "category": "body",
+          "expression": { "complement": { "union": [{ "mask": "head" }, { "mask": "hair" }] } }
+        },
+        {
+          "name": "bald_head",
+          "category": "head",
+          "expression": { "subtract": [{ "union": [{ "mask": "head" }, { "mask": "hair" }] }, { "mask": "hair" }] }
+        },
+        {
+          "name": "hair",
+          "category": "hairFront",
+          "expression": { "mask": "hair" }
+        }
+      ]
+    },
+    { "op": "review" },
+    { "op": "renderPNG", "view": "front", "animation": "stand", "frame": "stand_1", "path": "./references/analysis/player_master_pilot/three_module_pilot/exports/front_stand_three_module.png" }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "format": "FootballSpriteStudio",
+  "schemaVersion": 4,
+  "projectName": "Home Menu Hero · Reference Rework",
+  "mode": "fullBody",
+  "assetStorage": "external",
+  "partDefinitions": null,
+  "canvas": {
+    "width": 1230,
+    "height": 1278
+  },
+  "viewOrder": [
+    "front",
+    "threeQuarterFrontLeft",
+    "left",
+    "threeQuarterBackLeft",
+    "back",
+    "threeQuarterBackRight",
+    "right",
+    "threeQuarterFrontRight"
+  ],
+  "animations": [
+    {
+      "id": "stand",
+      "name": "Stand",
+      "fps": 6,
+      "frames": [
+        {
+          "id": "stand_1",
+          "name": "Stand 1"
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "name": "Run",
+      "fps": 8,
+      "frames": [
+        {
+          "id": "run_1",
+          "name": "Run 1"
+        },
+        {
+          "id": "run_2",
+          "name": "Run 2"
+        }
+      ]
+    }
+  ],
+  "assets": {
+    "homeHero": {
+      "name": "Home menu hero source cutout",
+      "fileRef": "assets/homeHero.png",
+      "mime": "image/png",
+      "width": 1230,
+      "height": 1278
+    }
+  },
+  "scenes": {
+    "front": {
+      "stand": {
+        "stand_1": [
+          {
+            "id": "heroCutout",
+            "name": "Home Kick Pose",
+            "category": "fullBody",
+            "assetId": "homeHero",
+            "visible": true,
+            "locked": false,
+            "crop": {
+              "x": 0,
+              "y": 0,
+              "w": 1230,
+              "h": 1278
+            },
+            "transform": {
+              "x": 615,
+              "y": 640,
+              "scaleX": 1,
+              "scaleY": 1,
+              "rotationDeg": 0,
+              "opacity": 1,
+              "flipX": false,
+              "flipY": false,
+              "anchorX": 0.5,
+              "anchorY": 0.5
+            },
+            "color": {
+              "brightness": 100,
+              "contrast": 100,
+              "saturate": 100,
+              "hue": 0,
+              "sepia": 0,
+              "red": 100,
+              "green": 100,
+              "blue": 100,
+              "tintHex": "#ffffff",
+              "tintAmount": 0
+            }
+          }
+        ]
+      }
+    },
+    "threeQuarterFrontLeft": {},
+    "left": {},
+    "threeQuarterBackLeft": {},
+    "back": {},
+    "threeQuarterBackRight": {},
+    "right": {},
+    "threeQuarterFrontRight": {}
+  },
+  "defaults": {},
+  "editor": {
+    "grid": false,
+    "rulers": false,
+    "gridSize": 32,
+    "snap": false,
+    "reference": null,
+    "cliCursor": {
+      "view": "front",
+      "animation": "stand",
+      "frame": "stand_1"
+    }
+  }
+}

@@ -2,26 +2,43 @@ from menu_test_routes import open_quick,open_settings
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 p=Path(__file__).resolve().parents[1]
+fixture=p/'tests'/'.generated'/'play.html'
+assert fixture.exists(),'Build the current modular browser fixture with scripts/build.py'
 with sync_playwright() as pw:
  browser=pw.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox','--disable-dev-shm-usage'])
- for label,width,height,mobile in [('desktop',1280,720,False),('android',844,390,True)]:
+ for label,width,height,mobile in [('desktop',1280,720,False),('android',844,390,True),('phone390',390,844,True),('narrow_phone',320,568,True),('narrow_landscape',568,320,True)]:
   ctx=browser.new_context(viewport={'width':width,'height':height},is_mobile=mobile,has_touch=mobile)
   page=ctx.new_page();errors=[]
   page.on('pageerror',lambda e:errors.append(str(e)))
   page.evaluate("""()=>{const data={};Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>data[k]??null,setItem:(k,v)=>data[k]=String(v),removeItem:k=>delete data[k]}})}""")
-  page.set_content((p/'play.html').read_text(),wait_until='load')
+  page.set_content(fixture.read_text(encoding='utf-8'),wait_until='load')
   page.wait_for_function("!!window.SupermagicFootball?.game")
   open_quick(page)
   page.locator('[data-action="kickoff"]').first.click()
   assert page.evaluate('SupermagicFootball.game.matchState')=='play'
+  if page.locator('#dismissRotate').is_visible():page.locator('#dismissRotate').click()
   buttons=page.locator('#touchButtons button[data-act]')
   assert buttons.count()==4,(label,buttons.count())
   assert sorted(buttons.evaluate_all('(ns)=>ns.map(n=>n.dataset.act)'))==['dribble','jump','pass','shoot']
+  expected_labels={'pass':('PASS','Pass or tackle'),'shoot':('SHOOT','Shoot or slide tackle'),'dribble':('DRIBBLE','Dribble or switch player'),'jump':('JUMP','Jump or run')}
+  label_metrics=buttons.evaluate_all('''nodes=>nodes.map(node=>{const s=getComputedStyle(node),r=node.getBoundingClientRect();return {action:node.dataset.act,text:node.textContent.trim(),aria:node.getAttribute('aria-label'),fontSize:parseFloat(s.fontSize),width:r.width,height:r.height,scrollWidth:node.scrollWidth,clientWidth:node.clientWidth}})''')
+  for metric in label_metrics:
+   text,aria=expected_labels[metric['action']]
+   assert metric['text']==text and metric['aria']==aria,(label,'action label/accessibility name unchanged',metric)
+   assert metric['fontSize']>=10,(label,'touch action label font remains at least 10px',metric)
+   assert metric['scrollWidth']<=metric['clientWidth']+1,(label,'complete label fits in the button',metric)
+   if mobile:assert metric['width']>=44 and metric['height']>=44,(label,'touch target remains at least 44 CSS pixels',metric)
   positions={a:page.locator('[data-act="'+a+'"]').bounding_box() for a in ['jump','pass','shoot','dribble']}
   cx=lambda a:positions[a]['x']+positions[a]['width']/2
   cy=lambda a:positions[a]['y']+positions[a]['height']/2
   if mobile:
    assert cy('jump')<cy('pass')<cy('dribble') and cx('pass')<cx('jump')<cx('shoot'),positions
+  if label not in ('desktop','android'):
+   page.screenshot(path=str(p/'tests'/f'four_button_{label}.png'))
+   assert not errors,(label,errors)
+   print(label,'PASS four accessible labels fit in unchanged touch targets',flush=True)
+   ctx.close()
+   continue
   page.evaluate("""()=>{const g=SupermagicFootball.game;g.cooldown=0;g.input.keys.clear();g.input.touchButtons.clear();g.input.reset();const p=g.player(0,3);p.x=1500;p.y=680;p.fatigue=0;p.stun=0;p.cd=0;p.dashCooldown=0;p.specialCd=0;p.z=0;p.vz=0;for(const q of g.players){if(q.t===1){q.x=2700;q.y=1100}}g.take(p);g.controlled[0]=3;}""")
   if mobile:
    cdp=ctx.new_cdp_session(page)

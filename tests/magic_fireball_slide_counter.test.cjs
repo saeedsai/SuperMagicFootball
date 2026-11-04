@@ -2,7 +2,7 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const engine=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8');
-const start=engine.indexOf(' tryMagicTrick(p){'),end=engine.indexOf(' // Consume a Banana Peel',start);
+const start=engine.indexOf(' tryMagicTrick(p){'),end=engine.indexOf(' updateSpinBumpFx(p,dt){',start);
 assert.ok(start>0&&end>start,'real engine method found');
 const cast=vm.runInNewContext('({'+engine.slice(start,end)+'})',{
  distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),stat:(p,k)=>p.src?.[k]??50,

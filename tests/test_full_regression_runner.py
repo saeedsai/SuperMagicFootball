@@ -127,6 +127,33 @@ class RegressionRunnerSafetyTests(unittest.TestCase):
         self.assertEqual(report["selected_scripts"], ["a_browser_qa.py"])
         self.assertEqual(report["summary"]["PASS"], 1)
 
+    def test_portable_browser_uses_bootstrap_without_rewriting_test_source(self):
+        self.new_script(
+            "browser_runner_compat.py",
+            "import os,runpy,sys; print('BOOTSTRAP_VERSION',os.environ.get('SMF_BROWSER_GAME_VERSION')); "
+            "print('UTF8_MODE',sys.flags.utf8_mode); "
+            "target=sys.argv[1]; sys.argv=[target]; runpy.run_path(target,run_name='__main__')\n",
+        )
+        suite = self.new_script("a_browser_qa.py", "# 0.8.24.12-alpha\nprint('CASE_OK')\n")
+        code, output, err = self.run_runner("browser", "--portable-browser")
+        self.assertEqual(code, 0, err)
+        self.assertIn("LEGACY_TEST_READINESS_MIGRATED in-memory 1 a_browser_qa.py", output)
+        self.assertIn("0.8.24.12-alpha", suite.read_text(), "portable runs must preserve original test files")
+        report = json.loads((self.root / "artifacts" / "browser_shard_1_of_1.json").read_text(encoding="utf-8"))
+        self.assertEqual(report["summary"]["PASS"], 1)
+        self.assertIn("BOOTSTRAP_VERSION 0.9.0.0", report["tests"][0]["output_tail"])
+        self.assertIn("UTF8_MODE 1", report["tests"][0]["output_tail"])
+
+    def test_child_output_is_decoded_as_utf8_on_windows(self):
+        self.new_script(
+            "a_browser_qa.py",
+            "import sys; sys.stdout.buffer.write('Stun ✨ ✓'.encode('utf-8'))\n",
+        )
+        code, _, err = self.run_runner("browser")
+        self.assertEqual(code, 0, err)
+        report = json.loads((self.root / "artifacts" / "browser_shard_1_of_1.json").read_text(encoding="utf-8"))
+        self.assertIn("Stun ✨ ✓", report["tests"][0]["output_tail"])
+
 
 if __name__ == "__main__":
     unittest.main()

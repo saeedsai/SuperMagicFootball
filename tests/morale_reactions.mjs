@@ -47,7 +47,8 @@ assert.ok(game.teamMorale(1)<55,'Conceding damages morale');
 assert.equal(game.player(1,2).action,'cry');
 assert.ok(game.player(1,2).cryTimer>2);
 assert.equal(game.player(0,2).action,'celebrate');
-assert.ok(game.celebrationStyle>=0&&game.celebrationStyle<=4);
+assert.ok(Number.isInteger(game.celebrationStyle)&&game.celebrationStyle>=0&&game.celebrationStyle<=24,
+ 'goal reactions select one of the 25 authored celebration poses');
 const moodAfterGoal=game.player(1,2).morale;
 for(let i=0;i<130;i++)game.update(.03);
 assert.equal(game.celebration,0);

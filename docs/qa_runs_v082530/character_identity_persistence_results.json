@@ -1,0 +1,91 @@
+{
+  "version": "0.8.25.29",
+  "results": [
+    {
+      "name": "desktop generated QA fixture boots with modular JSON records",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "desktop all seven BPW squads preserved",
+      "status": "PASS",
+      "detail": "{'ok': True, 'count': 7}"
+    },
+    {
+      "name": "desktop 8-direction 10-player + 5-face + 13-hairstyle render matrix",
+      "status": "PASS",
+      "detail": "{'ok': True, 'rendered': 224, 'edge': 0, 'blank': 0, 'faceCounts': [5, 5, 5, 5, 5, 5, 5, 5], 'hairCounts': [13, 13, 13, 13, 13, 13, 13, 13]}"
+    },
+    {
+      "name": "desktop eight-view contact-sheet generation for visual audit",
+      "status": "PASS",
+      "detail": "Character_Eight_Directions_v082529.png"
+    },
+    {
+      "name": "desktop Settings > Player Customization navigation",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "desktop real Studio form saves named player complete appearance to storage API",
+      "status": "PASS",
+      "detail": "{'ok': True, 'av': {'skin': '#dca27f', 'hair': '#2c2421', 'style': 10, 'face': 2, 'eyes': 4, 'brows': 9, 'eyeColor': 4, 'nose': 1, 'lips': 4, 'body': 1, 'stature': 2, 'exaggeration': 1, 'beard': 0, 'accessory': 0, 'freckles': 0, 'scar': 0, 'tattoo': 4}}"
+    },
+    {
+      "name": "desktop no uncaught JS errors",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "simulated-touch generated QA fixture boots with modular JSON records",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "simulated-touch all seven BPW squads preserved",
+      "status": "PASS",
+      "detail": "{'ok': True, 'count': 7}"
+    },
+    {
+      "name": "simulated-touch 8-direction 10-player + 5-face + 13-hairstyle render matrix",
+      "status": "PASS",
+      "detail": "{'ok': True, 'rendered': 224, 'edge': 0, 'blank': 0, 'faceCounts': [5, 5, 5, 5, 5, 5, 5, 5], 'hairCounts': [13, 13, 13, 13, 13, 13, 13, 13]}"
+    },
+    {
+      "name": "simulated-touch Settings > Player Customization navigation",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "simulated-touch real Studio form saves named player complete appearance to storage API",
+      "status": "PASS",
+      "detail": "{'ok': True, 'av': {'skin': '#dca27f', 'hair': '#2c2421', 'style': 10, 'face': 2, 'eyes': 4, 'brows': 9, 'eyeColor': 4, 'nose': 1, 'lips': 4, 'body': 1, 'stature': 2, 'exaggeration': 1, 'beard': 0, 'accessory': 0, 'freckles': 0, 'scar': 0, 'tattoo': 4}}"
+    },
+    {
+      "name": "simulated-touch no uncaught JS errors",
+      "status": "PASS",
+      "detail": "True"
+    },
+    {
+      "name": "hosted-origin page reload verification",
+      "status": "NOT EXECUTED",
+      "detail": "Localhost navigation blocked by browser administrator; injected DOM cannot certify persistent origin storage"
+    },
+    {
+      "name": "real browser process restart persistence",
+      "status": "NOT EXECUTED",
+      "detail": "Requires accessible hosted origin and persistent browser profile"
+    },
+    {
+      "name": "on-device storage / touch and controller",
+      "status": "NOT EXECUTED",
+      "detail": "No physical iOS, Android or connected controller available"
+    }
+  ],
+  "summary": {
+    "PASS": 13,
+    "FAIL": 0,
+    "TIMEOUT": 0,
+    "NOT EXECUTED": 3
+  }
+}

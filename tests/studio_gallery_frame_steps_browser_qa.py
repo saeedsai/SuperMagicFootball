@@ -20,6 +20,7 @@ with sync_playwright() as pw:
   # matching the existing Player Studio browser suites.
   page.evaluate("""() => {
    const memory=new Map();
+   memory.set('legend_tokenWallet',JSON.stringify({schema:1,tokens:0,unlocks:[...['appearance','accessory'].flatMap(category=>['skin','hair','style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo'].flatMap(key=>Array.from({length:64},(_,i)=>`${category}:${key}:${i}`)) )],receipts:[]}));
    Object.defineProperty(window,'localStorage',{configurable:true,value:{
     getItem:k=>memory.has(k)?memory.get(k):null,
     setItem:(k,v)=>memory.set(k,String(v)),
@@ -42,13 +43,16 @@ with sync_playwright() as pw:
   assert page.locator('canvas[data-studio-view]').count()==8
   slider=page.locator('#studioGalleryPhase')
   assert slider.input_value()=='1',(label,'initial frame')
+  assert slider.get_attribute('aria-valuetext')=='Frame 2 of 4',(label,'initial accessible frame value')
   page.locator('[data-action="studioGalleryNext"]').click()
   assert slider.input_value()=='2'
+  assert slider.get_attribute('aria-valuetext')=='Frame 3 of 4',(label,'next accessible frame value')
   assert 'FRAME 3 / 4' in page.locator('#studioGalleryPhaseLabel').inner_text()
   assert all('frame 3 of 4' in name for name in page.locator('[data-studio-pick]').evaluate_all(
    '(buttons)=>buttons.map(button=>button.getAttribute("aria-label"))'))
   for _ in range(2):page.locator('[data-action="studioGalleryNext"]').click()
   assert slider.input_value()=='0',(label,'next frame must wrap')
+  assert slider.get_attribute('aria-valuetext')=='Frame 1 of 4',(label,'wrapped accessible frame value')
   page.locator('[data-action="studioGalleryPrev"]').click()
   assert slider.input_value()=='3',(label,'previous frame must wrap')
   assert face.input_value()==edited,(label,'unsaved face edit was discarded')

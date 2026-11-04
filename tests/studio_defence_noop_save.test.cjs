@@ -10,22 +10,27 @@ const start=ui.indexOf('function saveStudioDefence(){');
 const end=ui.indexOf('function saveAppearance(){',start);
 assert.ok(start>=0&&end>start,'real Super Defence Studio handler exists');
 const handler=ui.slice(start,end);
+const stateMatch=ui.match(/function studioDefenceSaveState\(choice,tier,player\)\{[\s\S]*?\n\}/);
+assert.ok(stateMatch,'real Super Defence save-state helper exists');
 const mechanics=JSON.parse(fs.readFileSync(path.join(root,'data/mechanics/gameplay.json'),'utf8'));
 const source=fs.readFileSync(path.join(root,'src/modules/abilities.js'),'utf8')
  .replace(/^import .*;\s*$/gm,'').replace(/export \{ABILITIES\};?/,'');
 const ABILITIES=vm.runInNewContext(source+';ABILITIES',{
- GAME_ASSETS:{mechanics},SPECIALS:{abilityLevel:()=>3,levelModifiers:()=>({fatigue:1})}
+ GAME_ASSETS:{mechanics},STATS:{verifiedRatingTierForPlayer:p=>p?.verifiedTier??null},
+ SPECIALS:{abilityLevel:()=>3,levelModifiers:()=>({fatigue:1})}
 });
 function run({choice='keep',tier=3,explicitTier=3,omitTier=false,ability,careerMode=false}={}){
- const player={id:'stable-df',role:'DF',rating:92,appearance:{style:2}};
+ const player={id:'stable-df',role:'DF',rating:92,statsVerified:true,verifiedTier:'Superstar',appearance:{style:2}};
  if(!omitTier)player.superDefenceLevel=explicitTier;
  if(ability)player.superAbility={...ability};
  const stats={writes:0,careerWrites:0,refreshes:0};
+ const SPECIALS={abilityLevel:()=>3};
+ const studioDefenceSaveState=vm.runInNewContext(stateMatch[0]+';studioDefenceSaveState',{SPECIALS,ABILITIES});
  const context={
   studioCareerContext:careerMode,career:careerMode?{club:0,roster:[player]}:null,
   home:0,avatarIndex:0,edits:{},TEAMS:[{id:'team'}],roster:()=>[player],
   $:id=>id==='studioDefAbility'?{value:choice}:id==='studioDefTier'?{value:String(tier)}:null,
-  ABILITIES,studioEliteEligible:()=>true,
+  ABILITIES,SPECIALS,studioDefenceSaveState,studioEliteEligible:()=>true,
   storeCharacterChanges:()=>{stats.writes++;return true;},
   saveCareer:()=>{stats.careerWrites++;},showPlayerStudio:()=>{stats.refreshes++;},
   alert:message=>{throw Error(message);}
@@ -49,10 +54,10 @@ test('STUDIO-DEFENCE-NOOP-01: removing absent defence is read-only with explicit
   assert.equal(stats.refreshes,1);assert.equal(player.superAbility.id,'fire');
  }
 });
-test('STUDIO-DEFENCE-NOOP-01: first explicit tier persists even for KEEP',()=>{
- const {save,stats,context}=run({choice:'keep',omitTier:true});
- save();assert.equal(stats.writes,1);assert.equal(stats.refreshes,1);
- assert.equal(context.edits.team[0].superDefenceLevel,3);
+test('STUDIO-DEFENCE-NOOP-01: inferred legacy level is not redundantly written on KEEP',()=>{
+ const {save,stats,context}=run({choice:'keep',omitTier:true,ability:drill});
+ save();assert.equal(stats.writes,0);assert.equal(stats.refreshes,1);
+ assert.equal(context.edits.team,undefined);
 });
 test('STUDIO-DEFENCE-NOOP-01: actual tier changes persist once in both contexts',()=>{
  for(const careerMode of [false,true]){
@@ -68,6 +73,6 @@ test('STUDIO-DEFENCE-NOOP-01: real ability change persists, invalid tier rejects
  changed.save();assert.equal(changed.stats.writes,1);
  assert.equal(changed.context.edits.team[0].superAbility.id,'burst');
  const invalid=run({choice:'drill',tier:0,ability:drill});
- assert.throws(invalid.save,/tier must be a whole number/);
+ assert.throws(invalid.save,/verified tier and an allowed level/);
  assert.equal(invalid.stats.writes,0);assert.equal(invalid.stats.refreshes,0);
 });

@@ -6,9 +6,13 @@ const assert=require('node:assert/strict');
 const {spawnSync}=require('node:child_process');
 const path=require('node:path');
 
+// Set SMF_PYTHON to an interpreter path when the machine's launcher is not discoverable.
+const python=process.env.SMF_PYTHON||(process.platform==='win32'?'py':'python3');
+const pythonArgs=process.platform==='win32'&&!process.env.SMF_PYTHON?['-3']:[];
+
 test('exclusive feature locks reject stale SHA, takeover, and invalid handover',()=>{
  const root=path.resolve(__dirname,'..');
- const out=spawnSync('python3',['-m','unittest','discover','-s','tests',
+ const out=spawnSync(python,[...pythonArgs,'-m','unittest','discover','-s','tests',
   '-p','test_feature_claim.py','-v'],{
    cwd:root,encoding:'utf8',timeout:25000,maxBuffer:1024*1024,
    env:{...process.env,PYTHONDONTWRITEBYTECODE:'1'}

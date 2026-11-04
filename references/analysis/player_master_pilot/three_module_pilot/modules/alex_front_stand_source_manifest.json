@@ -1,0 +1,58 @@
+{
+  "format": "FootballSpriteAssetBundle",
+  "version": 1,
+  "source": "alex_front_stand_source.png",
+  "items": [
+    {
+      "file": "alex_front_stand_source_01_body_without_head.png",
+      "view": "front",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "body",
+      "name": "body_without_head",
+      "mirror": false,
+      "cropSource": {
+        "x": 0,
+        "y": 0,
+        "w": 1024,
+        "h": 1024
+      },
+      "width": 1024,
+      "height": 1024
+    },
+    {
+      "file": "alex_front_stand_source_02_bald_head.png",
+      "view": "front",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "head",
+      "name": "bald_head",
+      "mirror": false,
+      "cropSource": {
+        "x": 0,
+        "y": 0,
+        "w": 1024,
+        "h": 1024
+      },
+      "width": 1024,
+      "height": 1024
+    },
+    {
+      "file": "alex_front_stand_source_03_hair.png",
+      "view": "front",
+      "animation": "stand",
+      "frame": "stand_1",
+      "category": "hairFront",
+      "name": "hair",
+      "mirror": false,
+      "cropSource": {
+        "x": 0,
+        "y": 0,
+        "w": 1024,
+        "h": 1024
+      },
+      "width": 1024,
+      "height": 1024
+    }
+  ]
+}

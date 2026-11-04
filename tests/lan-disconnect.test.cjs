@@ -10,7 +10,7 @@ const input=(seq,peerId='guest01')=>({...packet('input',peerId),sequence:seq,but
 test('host-observed disconnect releases the current guest and permits replacement',async()=>{
  const {createLanHostState,acceptLanPacket,disconnectLanPeer}=await load('lan-session.js');
  let state=acceptLanPacket(createLanHostState('room001','host001'),packet('hello')).state;
- state=acceptLanPacket(state,input(12)).state;
+ state=acceptLanPacket(state,input(0)).state;
  const out=disconnectLanPeer(state,'guest01');
  assert.equal(out.accepted,true);assert.equal(out.reason,'left');
  assert.equal(out.state.peerId,null);assert.equal(out.state.lastSequence,-1);

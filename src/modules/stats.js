@@ -12,6 +12,7 @@ const hash=s=>[...String(s||'')].reduce((h,c)=>Math.imul(h^c.charCodeAt(0),16777
 const NUMERIC_STATS=GAME_ASSETS.mechanics.numericStats;
 function withStats(player){
  const p={...player},r=p.role||'MF',seed=hash(p.id||p.name),off=(n)=>(seed>>>n)%11-5;
+ const verifiedTier=verifiedRatingTierForPlayer(player);
  const overall=Number.isFinite(+p.rating)?+p.rating:68;
  const origPower=Number.isFinite(+p.power)?+p.power:45;
  const origShoot=Number.isFinite(+p.shoot)?+p.shoot:22;
@@ -40,7 +41,9 @@ function withStats(player){
  if(!Number.isFinite(+p.gkDiving) && Number.isFinite(+p.gkJump))p.gkDiving=+p.gkJump;
  delete p.gkJump;
  for(const key of NUMERIC_STATS)p[key]=cap(Number.isFinite(+p[key])?+p[key]:defaults[key]);
- p.dribbleType=assignedDribbleType(p);
+ const hasSavedDribbleStyle=DRIBBLES.DRIBBLE_STYLES.some(style=>style.id===player?.dribbleType);
+ p.dribbleType=['Gold','Star','Superstar'].includes(verifiedTier)?assignedDribbleType(p):
+  verifiedTier?'sideStep':hasSavedDribbleStyle?assignedDribbleType(p):'sideStep';
  // Only listed, special characters retain defensive powers. No fictional unique
  // GK abilities are invented for ordinary keepers or academy players.
  const namedAbility=String(p.skill||'');
@@ -62,6 +65,39 @@ function overallForPosition(player,position=player?.role){
  const values=POSITION_OVR_STATS[role].map(key=>attributes[key]);
  return Math.round(values.reduce((sum,value)=>sum+value,0)/values.length);
 }
+// Rating tiers classify the rounded OVR for the player's canonical position.
+// This is deliberately separate from legacy `rating` and formation-slot OVRs.
+const RATING_TIER_BANDS=Object.freeze([
+ Object.freeze({tier:'Common',minOVR:1,maxOVR:69}),
+ Object.freeze({tier:'Silver',minOVR:70,maxOVR:79}),
+ Object.freeze({tier:'Gold',minOVR:80,maxOVR:90}),
+ Object.freeze({tier:'Star',minOVR:91,maxOVR:95}),
+ Object.freeze({tier:'Superstar',minOVR:96,maxOVR:100}),
+]);
+function ratingTierForOVR(ovr){
+ if(!Number.isInteger(ovr)||ovr<1||ovr>100)return null;
+ return RATING_TIER_BANDS.find(({minOVR,maxOVR})=>ovr>=minOVR&&ovr<=maxOVR)?.tier??null;
+}
+function ratingTierForPlayer(player){
+ if(!player||typeof player!=='object')return null;
+ return ratingTierForOVR(overallForPosition(player));
+}
+// Privilege checks must never consume inferred defaults. This separate gate
+// requires explicit, audited inputs for every stat in the canonical position.
+function verifiedRatingTierForPlayer(player){
+ if(!player||typeof player!=='object')return null;
+ const source=player.src||player;
+ if(player.statsVerified!==true&&source.statsVerified!==true)return null;
+ const role=source.role||player.role;
+ const keys=POSITION_OVR_STATS[role];
+ if(!keys||keys.some(key=>!Object.hasOwn(source,key)||!Number.isFinite(Number(source[key]))||Number(source[key])<1||Number(source[key])>100))return null;
+ return ratingTierForOVR(Math.round(keys.reduce((sum,key)=>sum+Math.round(Number(source[key])),0)/keys.length));
+}
+// Unique celebrations are reserved for players whose canonical-position tier
+// is backed by explicitly verified attributes. Inferred roster stats never qualify.
+function uniqueCelebrationEligible(player){
+ return ['Gold','Star','Superstar'].includes(verifiedRatingTierForPlayer(player));
+}
 const stat=(p,key)=>withStats(p.src||p)[key];
 const endurance=(p)=>Math.max(.52,1-.47*Math.max(0,Math.min(1,p.fatigue||0)));
 const contest=(attacker,defender,slide=false)=>{
@@ -71,6 +107,6 @@ const contest=(attacker,defender,slide=false)=>{
 };
 const shotError=(p,base=32)=>base*(1.55-stat(p,'shootAccuracy')*.012)* (1+.5*(p.fatigue||0));
 
-return {NUMERIC_STATS,withStats,stat,endurance,contest,shotError,POSITION_OVR_STATS,overallForPosition};})();
+return {NUMERIC_STATS,withStats,stat,endurance,contest,shotError,POSITION_OVR_STATS,overallForPosition,RATING_TIER_BANDS,ratingTierForOVR,ratingTierForPlayer,verifiedRatingTierForPlayer,uniqueCelebrationEligible};})();
 
 export {STATS};
