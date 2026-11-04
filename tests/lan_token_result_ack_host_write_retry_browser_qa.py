@@ -173,6 +173,15 @@ def main():
     try:
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(headless=True, args=["--no-sandbox"])
+            denied_context = browser.new_context(viewport={"width": 1280, "height": 800})
+            denied_context.add_init_script("Object.defineProperty(window,'sessionStorage',{configurable:true,get(){throw new DOMException('storage denied','SecurityError')}})")
+            denied_page = denied_context.new_page()
+            denied_errors = []
+            denied_page.on("pageerror", lambda error: denied_errors.append(str(error)))
+            denied_page.goto(origin + "/", wait_until="domcontentloaded", timeout=60000)
+            denied_page.locator(".navMainList").wait_for(timeout=15000)
+            assert not denied_errors, ("home must remain usable when same-tab recovery storage is denied", denied_errors)
+            denied_context.close()
             host_context = browser.new_context(viewport={"width": 1280, "height": 800})
             guest_context = browser.new_context(viewport={"width": 1280, "height": 800})
             init_context(host_context, "host", fail_wallet_writes=fail_host_wallet_writes)

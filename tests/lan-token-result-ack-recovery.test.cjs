@@ -82,3 +82,19 @@ test('LAN host same-tab receipt recovery survives reload and retries the same id
  assert.equal(retryLanHostResultRecovery({storage:recoveryStorage,awardResult}),false);
  assert.equal(walletWrites,4);assert.equal(tokens,30);
 });
+
+test('LAN recovery storage denial fails closed without breaking app startup or the wallet award',async()=>{
+ const {readLanHostResultRecovery,retryLanHostResultRecovery}=await import('../src/modules/lan-live-match.js');
+ const prior=Object.getOwnPropertyDescriptor(globalThis,'sessionStorage');
+ Object.defineProperty(globalThis,'sessionStorage',{configurable:true,get(){throw new DOMException('storage denied','SecurityError');}});
+ try{
+  assert.doesNotThrow(()=>readLanHostResultRecovery());
+  assert.equal(readLanHostResultRecovery(),null);
+  let writes=0;
+  assert.equal(retryLanHostResultRecovery({awardResult(){writes++;return {ok:true};}}),false);
+  assert.equal(writes,0);
+ }finally{
+  if(prior)Object.defineProperty(globalThis,'sessionStorage',prior);
+  else delete globalThis.sessionStorage;
+ }
+});

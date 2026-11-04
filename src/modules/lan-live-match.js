@@ -23,33 +23,34 @@ const trapWire=n=>Math.round(n*1000)/1000;
 const MATCH_ID=/^[a-f0-9]{32}$/;
 const HOST_RESULT_RECOVERY_KEY='smf_lanHostResultRecovery_v1';
 function recoveryOutcome(record){return record?.amount===30?'win':record?.amount===25?'draw':record?.amount===20?'loss':null;}
+function recoveryStorage(explicit){if(explicit!==undefined)return explicit;try{return globalThis.sessionStorage;}catch{return null;}}
 function validRecoveryRecord(record){
   if(!record||typeof record!=='object'||Array.isArray(record)||Object.keys(record).length!==3||record.role!=='host'||
      !Number.isSafeInteger(record.amount)||!recoveryOutcome(record))return false;
   const match=/^lan:([A-Za-z0-9_-]{6,32}):([A-Za-z0-9_-]{6,32}):([a-f0-9]{32})$/.exec(record.receiptId||'');
   return !!match;
 }
-function readLanHostResultRecovery(storage=globalThis.sessionStorage){
-  try{const raw=storage?.getItem(HOST_RESULT_RECOVERY_KEY);if(!raw)return null;const record=JSON.parse(raw);return validRecoveryRecord(record)?Object.freeze(record):null;}catch{return null;}
+function readLanHostResultRecovery(storage){
+  try{const raw=recoveryStorage(storage)?.getItem(HOST_RESULT_RECOVERY_KEY);if(!raw)return null;const record=JSON.parse(raw);return validRecoveryRecord(record)?Object.freeze(record):null;}catch{return null;}
 }
-function persistLanHostResultRecovery(record,storage=globalThis.sessionStorage){
+function persistLanHostResultRecovery(record,storage){
   if(!validRecoveryRecord(record))return false;
-  try{storage?.setItem(HOST_RESULT_RECOVERY_KEY,JSON.stringify(record));return readLanHostResultRecovery(storage)?.receiptId===record.receiptId;}catch{return false;}
+  try{const target=recoveryStorage(storage);if(!target)return false;target.setItem(HOST_RESULT_RECOVERY_KEY,JSON.stringify(record));return readLanHostResultRecovery(target)?.receiptId===record.receiptId;}catch{return false;}
 }
-function clearLanHostResultRecovery(storage=globalThis.sessionStorage,expectedReceiptId=null){
+function clearLanHostResultRecovery(storage,expectedReceiptId=null){
   try{
-    const existing=readLanHostResultRecovery(storage);
+    const target=recoveryStorage(storage),existing=readLanHostResultRecovery(target);
     if(!existing||expectedReceiptId&&existing.receiptId!==expectedReceiptId)return !existing;
-    storage?.removeItem(HOST_RESULT_RECOVERY_KEY);return storage?.getItem(HOST_RESULT_RECOVERY_KEY)===null;
+    target?.removeItem(HOST_RESULT_RECOVERY_KEY);return target?.getItem(HOST_RESULT_RECOVERY_KEY)===null;
   }catch{return false;}
 }
-function retryLanHostResultRecovery({storage=globalThis.sessionStorage,awardResult}={}){
-  const record=readLanHostResultRecovery(storage),outcome=recoveryOutcome(record);
+function retryLanHostResultRecovery({storage,awardResult}={}){
+  const target=recoveryStorage(storage),record=readLanHostResultRecovery(target),outcome=recoveryOutcome(record);
   if(!record||!outcome||typeof awardResult!=='function')return false;
   try{
     const result=awardResult({receiptId:record.receiptId,mode:'online',status:'completed',result:outcome});
     const durable=result!==false&&(result?.ok!==false||result?.duplicate===true);
-    return durable&&clearLanHostResultRecovery(storage,record.receiptId);
+    return durable&&clearLanHostResultRecovery(target,record.receiptId);
   }catch{return false;}
 }
 function secureMatchId(){
