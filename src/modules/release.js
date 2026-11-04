@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.26',
+ version:'0.12.81.27',
  date:'2026-11-04',
  notes:Object.freeze([
+  'LAN098 / TOKEN ECONOMY: If both automatic host wallet writes fail after a local peer match, the existing receipt can now be retried from the same tab after a reload. Session storage contains only a receipt retry hint; the local wallet receipt remains idempotent and no server settlement or real-money purchase is added. Focused reload, retry, duplicate, and keyboard-accessibility checks pass.',
   'ART-102 / SD09: Spin Bumper now carries a visual-only asymmetric arm impact and recovery through the defender’s existing 0.28-second effect timer, even after the pending telegraph resets the action to idle. The existing .42-second tell, hit timing, physics, stamina and cooldown are unchanged. Focused eight-heading renderer QA passes; procedural fallback art remains subject to visual/device acceptance.',
   'VIZ-01 / BALL: The normal in-match ball now renders at the same 17-unit drawn scale as the penalty ball so its panel seams remain easier to read during play. The simulation state, movement, collision and saved cosmetics are unchanged. Focused renderer and browser QA pass.',
   'GAMEPLAY / RESTARTS: Penalty stoppages now clear active magic walls and Supernova effects as well as ground hazards and pending abilities, preventing a frozen field effect from reappearing when normal play resumes. Focused penalty and restart regressions pass.',

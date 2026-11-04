@@ -51,3 +51,34 @@ test('LAN host can manually recover an exhausted result receipt save exactly onc
  assert.equal(writeAttempts,3);assert.equal(receipts.size,1);assert.equal(tokens,30);
  run.dispose();assert.equal(run.disposed,true);
 });
+
+test('LAN host same-tab receipt recovery survives reload and retries the same idempotent award',async()=>{
+ const {createLanLiveMatch,readLanHostResultRecovery,retryLanHostResultRecovery}=await import('../src/modules/lan-live-match.js');
+ const identity={roomId:'room002',hostId:'host002'},timers=fakeTimers(),session=new Map();
+ const recoveryStorage={getItem:key=>session.get(key)??null,setItem:(key,value)=>session.set(key,value),removeItem:key=>session.delete(key)};
+ let ackListener=null,matchId=null,automaticWriteFailures=2,walletWrites=0,tokens=0;
+ const receipts=new Set(),controls=input(),match=game(controls);match.onEvent=()=>{};
+ const peer={ready:true,snapshotIdentity:identity,subscribeHostResultAck(fn){ackListener=fn;return ()=>{};},
+  stepHostMatchFrame(frame,simulate){const state=simulate({buttons:[],dx:0,dy:0},{received:true});matchId=state.meta.matchId;return {snapshotSent:true};}};
+ const awardResult=receipt=>{
+  walletWrites++;
+  if(automaticWriteFailures-->0)return false;
+  if(receipts.has(receipt.receiptId))return {ok:false,duplicate:true};
+  receipts.add(receipt.receiptId);tokens+=receipt.result==='win'?30:receipt.result==='draw'?25:20;return {ok:true};
+ };
+ const run=createLanLiveMatch({peer,role:'host',game:match,input:controls,field,recoveryStorage,
+  setTimer:timers.setTimer,clearTimer:timers.clearTimer,awardResult});
+ match.update=function(){this.score=[1,0];this.matchState='finished';this.onEvent({type:'finished',score:[1,0]});};
+ run.step(.02);const receiptId=`lan:${identity.roomId}:${identity.hostId}:${matchId}`;
+ ackListener({type:'result-ack',receiptId});timers.run();
+ const pending=readLanHostResultRecovery(recoveryStorage);
+ assert.deepEqual(pending,{receiptId,amount:30,role:'host'});
+ run.dispose(); // page is reloaded; no live match/result object remains
+ assert.equal(retryLanHostResultRecovery({storage:recoveryStorage,awardResult:()=>{walletWrites++;return false;}}),false);
+ assert.deepEqual(readLanHostResultRecovery(recoveryStorage),pending,'failed storage retry must retain the recovery record');
+ assert.equal(retryLanHostResultRecovery({storage:recoveryStorage,awardResult}),true);
+ assert.equal(walletWrites,4);assert.equal(tokens,30);assert.equal(receipts.size,1);
+ assert.equal(readLanHostResultRecovery(recoveryStorage),null,'recovery metadata clears after the durable receipt write');
+ assert.equal(retryLanHostResultRecovery({storage:recoveryStorage,awardResult}),false);
+ assert.equal(walletWrites,4);assert.equal(tokens,30);
+});

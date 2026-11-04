@@ -62,20 +62,22 @@ def stop_server(proc):
 def init_context(context, role, drop_ack=False, refuse_ack_once=False, fail_wallet_writes=0):
     context.add_init_script(f"window.__smfAckTestRole={json.dumps(role)};window.__smfDropAck={json.dumps(drop_ack)};window.__smfRefuseAckOnce={json.dumps(refuse_ack_once)};window.__smfFailHostWalletWrites={json.dumps(fail_wallet_writes)};")
     context.add_init_script(f"""(()=>{{
-      const trace=window.__smfLanAckTrace={{role:window.__smfAckTestRole,sent:[],received:[],walletWrites:[],
-        walletWriteFailures:[],channelCloseCalls:[],terminalDuplicatesInjected:0,ackRefusalInjected:false,errors:[]}};
+      const priorWalletTrace=(()=>{{try{{return JSON.parse(sessionStorage.getItem('__smfLanWalletWriteTrace')||'{{}}')}}catch{{return {{}}}}}})();
+      const trace=window.__smfLanAckTrace={{role:window.__smfAckTestRole,sent:[],received:priorWalletTrace.received||[],walletWrites:priorWalletTrace.walletWrites||[],
+        walletWriteFailures:priorWalletTrace.walletWriteFailures||[],channelCloseCalls:[],terminalDuplicatesInjected:0,ackRefusalInjected:false,errors:[]}};
       const nativeSet=Storage.prototype.setItem;
       Storage.prototype.setItem=function(key,value){{
         if(window.__smfAckTestRole==='host'&&trace.walletWriteFailures.length<window.__smfFailHostWalletWrites&&key==={json.dumps(WALLET_KEY)}){{let parsed=null;try{{parsed=JSON.parse(value)}}catch{{}}
           if(parsed?.receipts?.some(id=>typeof id==='string'&&id.startsWith('lan:'))){{
             trace.walletWriteFailures.push({{at:performance.now(),key,receipt:parsed.receipts.find(id=>id.startsWith('lan:')),
               error:'injected one-shot host wallet persistence refusal'}});
+            sessionStorage.setItem('__smfLanWalletWriteTrace',JSON.stringify({{received:trace.received,walletWrites:trace.walletWrites,walletWriteFailures:trace.walletWriteFailures}}));
             throw new DOMException('injected one-shot host wallet persistence refusal','QuotaExceededError');
           }}
         }}
         const result=nativeSet.call(this,key,value);
         if(key==={json.dumps(WALLET_KEY)}){{let parsed=null;try{{parsed=JSON.parse(value)}}catch{{}}
-          trace.walletWrites.push({{at:performance.now(),wallet:parsed}});}}
+          trace.walletWrites.push({{at:performance.now(),wallet:parsed}});sessionStorage.setItem('__smfLanWalletWriteTrace',JSON.stringify({{received:trace.received,walletWrites:trace.walletWrites,walletWriteFailures:trace.walletWriteFailures}}));}}
         return result;
       }};
       const seed={{schema:1,tokens:0,unlocks:[],receipts:[]}};
@@ -87,7 +89,7 @@ def init_context(context, role, drop_ack=False, refuse_ack_once=False, fail_wall
         const nativeClose=channel.close.bind(channel);
         Object.defineProperty(channel,'close',{{configurable:true,value(...args){{trace.channelCloseCalls.push({{at:performance.now(),stack:(new Error()).stack}});return nativeClose(...args);}}}});
         channel.addEventListener('message',event=>{{try{{const packet=JSON.parse(event.data);
-          trace.received.push({{at:performance.now(),packet}});
+          trace.received.push({{at:performance.now(),packet}});sessionStorage.setItem('__smfLanWalletWriteTrace',JSON.stringify({{received:trace.received,walletWrites:trace.walletWrites,walletWriteFailures:trace.walletWriteFailures}}));
         }}catch{{}}}});
         const nativeSend=channel.send.bind(channel);
         Object.defineProperty(channel,'send',{{configurable:true,value(data){{
@@ -158,6 +160,7 @@ def wallet(page):
 def main():
     drop_ack = os.environ.get("SMF_ACK_BROWSER_DROP_ACK") == "1"
     refuse_ack_once = os.environ.get("SMF_ACK_BROWSER_REFUSE_ONCE") == "1"
+    reload_host_recovery = os.environ.get("SMF_ACK_BROWSER_RELOAD_HOST_RECOVERY") == "1"
     fail_host_wallet_writes = int(os.environ.get("SMF_ACK_BROWSER_FAIL_HOST_WALLET_WRITES",
                                                   "1" if os.environ.get("SMF_ACK_BROWSER_FAIL_HOST_WALLET_ONCE") == "1" else "0"))
     if not 0 <= fail_host_wallet_writes <= 2:
@@ -192,7 +195,7 @@ def main():
                 input_packets = host.evaluate("window.__smfLanAckTrace.received.filter(row=>row.packet?.type==='input')")
                 assert input_packets and any("right" in row["packet"].get("buttons", []) or row["packet"].get("dx", 0) > 0 for row in input_packets), input_packets[-8:]
                 DOCS.mkdir(exist_ok=True)
-                host.screenshot(path=str(DOCS / "LAN_TOKEN_RESULT_ACK_HOST_WRITE_RETRY_LIVE_20261103.png"), full_page=False)
+                host.screenshot(path=str(ROOT / "tests" / "lan_token_result_ack_host_write_retry_live_qa.png"), full_page=False)
 
                 # Reach the engine's ordinary end-of-match event quickly by
                 # reducing its active clock. No app-specific debug/test hook.
@@ -229,11 +232,19 @@ def main():
                         assert host.locator('#lanHostReceiptRecoveryStatus').get_attribute('aria-live')=='polite'
                         assert not wallet(host).get('receipts')
                         assert host.locator('#menu .heading').inner_text()=='FULL TIME', 'result page should remain available for host recovery'
+                        if reload_host_recovery:
+                            host.reload(wait_until="domcontentloaded")
+                            host.wait_for_function("Boolean(window.NekketsuHD?.game)",timeout=90000)
+                            host.wait_for_function("Boolean(document.querySelector('#lanHostReceiptRecovery'))",timeout=5000)
+                            assert host.locator('#lanHostReceiptRecovery').is_visible(), 'same-tab receipt recovery should survive a page reload'
+                            assert host.locator('#lanHostReceiptRecoveryStatus').get_attribute('aria-live')=='polite'
                         retry_button.focus()
                         assert retry_button.evaluate("el=>document.activeElement===el")
                         retry_button.press('Enter')
                         host.wait_for_function("id=>JSON.parse(localStorage.getItem('legend_tokenWallet'))?.receipts?.includes(id)",arg=receipt_id,timeout=5000)
-                        host.wait_for_function("window.__smfLanChannels?.length&&window.__smfLanChannels.every(channel=>channel.readyState==='closed')",timeout=5000)
+                        host.wait_for_function("!sessionStorage.getItem('smf_lanHostResultRecovery_v1')",timeout=3000)
+                        if not reload_host_recovery:
+                            host.wait_for_function("window.__smfLanChannels?.length&&window.__smfLanChannels.every(channel=>channel.readyState==='closed')",timeout=5000)
                     else:
                         host.wait_for_function("window.__smfLanChannels?.length&&window.__smfLanChannels.every(channel=>channel.readyState==='closed')",
                                                timeout=5000)

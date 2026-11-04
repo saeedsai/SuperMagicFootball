@@ -16,4 +16,4 @@ Spin Bumper's defender now completes a brief, asymmetric arm impact/recovery pos
 
 ## Release status
 
-This is a local development candidate. Exact-head GitHub regression, protected promotion, and hosted Pages verification have not run for .26. Candidate .25 remains deployed at [GitHub Pages](https://saeedsai.github.io/SuperMagicFootball/); its exact-head and hosted checks are recorded in [candidate .25 validation](CANDIDATE_012825_VALIDATION_20261104.md). Owner visual approval and physical-device acceptance remain separate gates.
+Candidate .26 passed exact-head dev regression and protected promotion in [run 41847351215](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41847351215). Hosted Pages verification passed in [run 41848789472](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41848789472), including exact deployed bundle checks. The procedural character pose remains pending owner visual approval; physical-device acceptance remains separate. Candidate .27 is now the local, unpromoted development candidate.

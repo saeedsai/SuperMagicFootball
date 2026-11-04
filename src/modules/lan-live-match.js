@@ -21,6 +21,37 @@ const visDirection=n=>lanLiveClamp(Number.isFinite(n)?n:0,-1,1);
 // Trap rendering needs sub-pixel precision, not noisy 16-digit physics floats.
 const trapWire=n=>Math.round(n*1000)/1000;
 const MATCH_ID=/^[a-f0-9]{32}$/;
+const HOST_RESULT_RECOVERY_KEY='smf_lanHostResultRecovery_v1';
+function recoveryOutcome(record){return record?.amount===30?'win':record?.amount===25?'draw':record?.amount===20?'loss':null;}
+function validRecoveryRecord(record){
+  if(!record||typeof record!=='object'||Array.isArray(record)||Object.keys(record).length!==3||record.role!=='host'||
+     !Number.isSafeInteger(record.amount)||!recoveryOutcome(record))return false;
+  const match=/^lan:([A-Za-z0-9_-]{6,32}):([A-Za-z0-9_-]{6,32}):([a-f0-9]{32})$/.exec(record.receiptId||'');
+  return !!match;
+}
+function readLanHostResultRecovery(storage=globalThis.sessionStorage){
+  try{const raw=storage?.getItem(HOST_RESULT_RECOVERY_KEY);if(!raw)return null;const record=JSON.parse(raw);return validRecoveryRecord(record)?Object.freeze(record):null;}catch{return null;}
+}
+function persistLanHostResultRecovery(record,storage=globalThis.sessionStorage){
+  if(!validRecoveryRecord(record))return false;
+  try{storage?.setItem(HOST_RESULT_RECOVERY_KEY,JSON.stringify(record));return readLanHostResultRecovery(storage)?.receiptId===record.receiptId;}catch{return false;}
+}
+function clearLanHostResultRecovery(storage=globalThis.sessionStorage,expectedReceiptId=null){
+  try{
+    const existing=readLanHostResultRecovery(storage);
+    if(!existing||expectedReceiptId&&existing.receiptId!==expectedReceiptId)return !existing;
+    storage?.removeItem(HOST_RESULT_RECOVERY_KEY);return storage?.getItem(HOST_RESULT_RECOVERY_KEY)===null;
+  }catch{return false;}
+}
+function retryLanHostResultRecovery({storage=globalThis.sessionStorage,awardResult}={}){
+  const record=readLanHostResultRecovery(storage),outcome=recoveryOutcome(record);
+  if(!record||!outcome||typeof awardResult!=='function')return false;
+  try{
+    const result=awardResult({receiptId:record.receiptId,mode:'online',status:'completed',result:outcome});
+    const durable=result!==false&&(result?.ok!==false||result?.duplicate===true);
+    return durable&&clearLanHostResultRecovery(storage,record.receiptId);
+  }catch{return false;}
+}
 function secureMatchId(){
   try{
     const bytes=new Uint8Array(16);
@@ -172,7 +203,7 @@ function applyLanGameState(game,field,state){
   }else if(game.clock*1000>state.clockMs+1500 && game.half===1)game.half=2;
   game.clock=state.clockMs/1000;
 }
-function createLanLiveMatch({peer,role,game,input,field,now=Date.now,awardResult,
+function createLanLiveMatch({peer,role,game,input,field,now=Date.now,awardResult,recoveryStorage=globalThis.sessionStorage,
   setTimer=globalThis.setTimeout,clearTimer=globalThis.clearTimeout}){
   if(!peer || !['host','guest'].includes(role) || !game || !input) {
     throw new TypeError('Invalid LAN live match participants');
@@ -196,9 +227,17 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now,awardResult
     const eligibleStatus=manual?hostResultAckStatus==='failed':['pending','fallback'].includes(hostResultAckStatus);
     if(role!=='host'||hostAwarded||!hostResultDelivered||!terminalResult||!eligibleStatus||
        (!manual&&hostResultAwardAttempts>=2))return false;
+    const identity=peer?.snapshotIdentity,hostWin=terminalResult.penalties?terminalResult.penalties.winner===0:terminalResult.score[0]>terminalResult.score[1],
+      guestWin=terminalResult.penalties?terminalResult.penalties.winner===1:terminalResult.score[1]>terminalResult.score[0],
+      outcome=hostWin?'win':guestWin?'loss':'draw',amount=ECONOMY.REWARDS.completion+(outcome==='win'?ECONOMY.REWARDS.winBonus:outcome==='draw'?ECONOMY.REWARDS.drawBonus:0),
+      recoveryRecord={receiptId:`lan:${identity?.roomId||''}:${identity?.hostId||''}:${matchId}`,amount,role:'host'};
+    // This same-tab record is only a retry hint; the existing local wallet
+    // receipt remains the idempotency guard and no server authority is implied.
+    if(!readLanHostResultRecovery(recoveryStorage))persistLanHostResultRecovery(recoveryRecord,recoveryStorage);
     hostResultAwardAttempts++;
     if(!localResultAward({peer,role,matchId,result:terminalResult,awardResult:award}))return false;
     hostAwarded=true;
+    clearLanHostResultRecovery(recoveryStorage,recoveryRecord.receiptId);
     hostResultAckStatus=hostResultAckReceived?'confirmed':'unconfirmed';
     if(hostResultAckTimer!==null){clearTimer(hostResultAckTimer);hostResultAckTimer=null;}
     return true;
@@ -517,4 +556,4 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now,awardResult
     get disposed(){return disposed;}
   });
 }
-export {captureLanGameState,applyLanGameState,createLanLiveMatch};
+export {captureLanGameState,applyLanGameState,createLanLiveMatch,readLanHostResultRecovery,retryLanHostResultRecovery};
