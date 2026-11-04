@@ -17,8 +17,9 @@
 - Chromium at 320×568 simulated touch — Player Studio retains 17 named selectors, 44px touch targets, fieldset bounds, and no page or menu horizontal overflow.
 - Corner-restart Chromium QA passes on desktop and simulated touch; free-kick restart Chromium QA passes on desktop and simulated touch. Both use the local `SMF_CHROMIUM_PATH` override.
 - The regression-runner contract verifies the two long diagnostics receive 600-second and 900-second caps; all other scripts keep the default timeout.
-- The `.24` exact-head CI attempt exposed the issues listed above. The `.25` four-shard Node/browser run has not completed yet; no promotion or deployment is claimed.
+- Exact-head CI for release commit [`d13de7faebe5bc6c00003c1abfb71b410ff5eb28`](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41838720583) passed preflight, all four Node shards, all four browser shards, and desktop/simulated-touch HTTP preview. The protected workflow fast-forwarded this exact SHA to `main`.
+- Main-branch verification run [`41840015534`](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41840015534) passed all regression shards and hosted Pages smoke. The smoke confirmed exact HTML, JavaScript, and CSS bytes from the released `main` at [GitHub Pages](https://saeedsai.github.io/SuperMagicFootball/).
 
 ## Remaining acceptance
 
-The `.25` exact-head GitHub Actions run must pass preflight, all Node and browser shards, HTTP preview, exact-SHA promotion, and hosted Pages byte verification. Owner visual acceptance and physical-device checks remain separate evidence gates.
+Deployment is verified by exact-SHA promotion and the hosted Pages byte comparison. Owner visual acceptance and physical-device checks remain separate evidence gates.
