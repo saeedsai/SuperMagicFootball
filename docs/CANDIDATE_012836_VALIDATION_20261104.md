@@ -19,7 +19,7 @@
 ## Regression follow-up
 
 - Exact-head GitHub run [41915157102](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41915157102) found two stale browser-test expectations: the token-shop keyboard test skipped the newly added owned-only checkbox, and an older menu test still expected Online Career and Ultimate Team to be placeholders.
-- Updated those tests to verify the filter is keyboard reachable and to exercise the now-playable Online Server Match, Online Career and Online Ultimate Team routes. Local checks pass: `python tests/token_store_keyboard_browser_qa.py` and `python tests/v08247_menu_browser_qa.py` (desktop, portrait, landscape). A follow-up exact-head CI run is required; the failed run is not treated as validation.
+- Updated those tests to verify the filter is keyboard reachable and to exercise the now-playable Online Server Match, Online Career and Online Ultimate Team routes. Local checks pass: `python tests/token_store_keyboard_browser_qa.py` and `python tests/v08247_menu_browser_qa.py` (desktop, portrait, landscape). Follow-up exact-head run [41917324857](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41917324857) passed all four Node and browser shards, preflight and desktop/touch preview; the failed initial run is not treated as validation.
 
 ## Release and hosting status
 
