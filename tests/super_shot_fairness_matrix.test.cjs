@@ -12,26 +12,27 @@ function runtime(){
   let bundle=fs.readFileSync(path.join(__dirname,'.generated/game.js'),'utf8');
   const ui=bundle.indexOf('// Supermagic Football v0.8.25.30 | UI |');
   if(ui>=0)bundle=bundle.slice(0,ui);
-  bundle+='\nexport {ENGINE,INPUT,DATA};';
+  bundle+='\nexport {ENGINE,INPUT,DATA,SPECIALS};';
   runtimePromise=import('data:text/javascript;base64,'+Buffer.from(bundle).toString('base64'));
  }
  return runtimePromise;
 }
-async function launch(id,attackingTeam,fps,{offset=0,keeper=false}={}){
- const {ENGINE,INPUT,DATA}=await runtime(),options={...DATA.DEFAULT_OPTIONS,weather:'Clear',terrain:'Grass',condition:'Good'};
+async function launch(id,attackingTeam,fps,{offset=0,keeper=false,level=2,distance=520}={}){
+ const {ENGINE,INPUT,DATA,SPECIALS}=await runtime(),options={...DATA.DEFAULT_OPTIONS,weather:'Clear',terrain:'Grass',condition:'Good'};
  const game=new ENGINE.GameEngine(options,new INPUT.Input());
  game.init({home:0,away:9,humans:2,options});
  const field=ENGINE.WORLD.field,center=(ENGINE.WORLD.goalTop+ENGINE.WORLD.goalBottom)/2;
  const direction=attackingTeam===0?1:-1,goalX=direction>0?field.x+field.w:field.x;
- const aimY=center+offset,startX=goalX-direction*520,spec=CATALOG[id];
+ const aimY=center+offset,startX=goalX-direction*distance,spec=CATALOG[id];
+ const relativeLevelSpeed=SPECIALS.shotVelocityModifier(id,level)/SPECIALS.shotVelocityModifier(id,2);
  game.events=[];game.score=[0,0];game.wind={x:0,y:0};
  if(keeper){
   const goalie=game.player(1-attackingTeam,0);
   goalie.x=goalX-direction*70;goalie.y=center;goalie.stun=0;goalie.diveCooldown=0;
   goalie.diveIntentCooldown=0;goalie.fatigue=0;game.players=[goalie];
  }else game.players=[];
- game.ball={...game.ball,x:startX,y:aimY,z:0,vx:direction*1250*spec.speed,vy:0,vz:0,owner:null,
-  shot:{...spec,id,level:2,direction,aimY,homingOffset:0,transformSeconds:1.65},
+ game.ball={...game.ball,x:startX,y:aimY,z:0,vx:direction*1250*spec.speed*relativeLevelSpeed,vy:0,vz:0,owner:null,
+  shot:{...spec,id,level,direction,aimY,homingOffset:0,transformSeconds:1.65},
   strike:keeper?{kind:'super',energy:200,hits:0,originX:startX-direction*100,originY:aimY}:null,
   attacker:attackingTeam,lastTouchTeam:attackingTeam,trail:[],age:0,power:keeper?200:0,
   canCollect:0,targetY:aimY,pass:false,ordinaryShot:false};
@@ -98,4 +99,19 @@ test('a fixed centered keeper resolves all transformed Super Shots symmetrically
   assert.equal(new Set(outcomes).size,1,`${id}, team ${team}: frame-rate result parity`);
  }
  assert.equal(saves,32*2*3);
+});
+
+test('all 32 Super Shots keep mirrored and frame-rate outcomes at level extremes and near/far launch points',async()=>{
+ let checked=0;
+ for(const id of Object.keys(CATALOG))for(const level of [1,5])for(const distance of [420,620])for(const team of [0,1]){
+  const outcomes=[];
+  for(const fps of [30,60,120]){
+   const result=await launch(id,team,fps,{level,distance});
+   outcomes.push(result.outcome);checked++;
+  }
+  assert.equal(new Set(outcomes).size,1,`${id}, level ${level}, launch ${distance}, team ${team}: frame-rate parity ${outcomes}`);
+  const mirror=await launch(id,1-team,60,{level,distance});checked++;
+  assert.equal(outcomes[1],mirror.outcome,`${id}, level ${level}, launch ${distance}: mirrored-team parity`);
+ }
+ assert.equal(checked,32*2*2*2*4);
 });
