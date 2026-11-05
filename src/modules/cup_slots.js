@@ -94,13 +94,22 @@ const validVault=v=>Boolean(v&&v.schema===1&&slotNumber(v.active)&&
  validTournament(s.tournament))));
 const empty=()=>({schema:1,active:1,slots:Array(COUNT).fill(null)});
 function create(storage){
- let state=empty(),blocked=null,exists=false,recoverySnapshot=null;
- try{const raw=storage.getItem(KEY);exists=raw!==null;
-  if(exists){state=JSON.parse(raw);if(!validVault(state))throw Error('Invalid Cup save-slot structure');}
- }catch(error){blocked=error;state=empty();}
+ let state=empty(),blocked=null,exists=false,recoverySnapshot=null,sessionOnly=false;
+ let raw;
+ try{raw=storage.getItem(KEY);}
+ catch{sessionOnly=true;}
+ // A denied read (for example, a privacy-restricted origin) is different from
+ // readable but corrupt save data. Keep the former playable in this page's
+ // memory; fail closed for the latter so it can be exported/repaired safely.
+ if(!sessionOnly){
+  exists=raw!==null;
+  if(exists){try{state=JSON.parse(raw);if(!validVault(state))throw Error('Invalid Cup save-slot structure');}
+   catch(error){blocked=error;state=empty();}}
+ }
  const check=()=>{if(blocked)throw Error('Cup slots cannot be modified: '+blocked.message+'. Export a backup before recovery.');};
  const get=n=>{if(!slotNumber(n))throw Error('Cup slot must be 1–10');return state.slots[n-1];};
  function persist(next){check();if(!validVault(next))throw Error('Invalid Cup save-slot update');
+  if(sessionOnly){state=next;exists=true;return;}
   const raw=JSON.stringify(next),previous=storage.getItem(KEY);
   try{
    storage.setItem(KEY,raw);
@@ -199,7 +208,7 @@ function create(storage){
  function importLegacy(tournament){check();if(exists||!validTournament(tournament))return false;
   save(1,tournament,'Imported legacy Cup');return true;
  }
- return {get active(){return state.active},get error(){return blocked?.message||null},
+ return {get active(){return state.active},get error(){return blocked?.message||null},get sessionOnly(){return sessionOnly},
   get hasVault(){return exists},
   get hasRecoverySnapshot(){return recoverySnapshot!==null},
   list:()=>state.slots.map((s,i)=>({number:i+1,active:state.active===i+1,

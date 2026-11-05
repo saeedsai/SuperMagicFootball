@@ -7,6 +7,8 @@ const api=async()=> (await import('../src/modules/cup_slots.js')).CUP_SLOTS;
 const storage=()=>{const m=new Map();let writes=0;return {getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>{writes++;m.set(k,String(v));},removeItem:k=>m.delete(k),get writes(){return writes;}}};
 const campaign=club=>({id:'cup_UEFA',compId:'UEFA',club,participants:[club,3,4,5],phase:'league',roundIdx:0,history:[],rounds:[],groups:[],table:{[club]:{},3:{},4:{},5:{}},earned:0,winner:null,knockout:null});
 const source=fs.readFileSync('src/modules/ui.js','utf8');
+assert.match(source,/Session-only Cup storage: progress works until this page closes and will then be lost\./,'Cup slot screen must disclose in-memory-only storage');
+assert.match(source,/cupSaveVolatile=!!cupSlots\.sessionOnly/,'Cup result UI must preserve the session-only warning after successful in-memory saves');
 const lines=source.split(/\r?\n/).filter(line=>/^\s*else if\(a\.startsWith\('cupSlotLoad_'\)\)/.test(line));
 assert.equal(lines.length,1,'one Cup slot load dispatcher must be present');
 const handler=lines[0].trim();

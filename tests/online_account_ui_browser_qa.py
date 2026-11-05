@@ -126,7 +126,7 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
         page.add_init_script('window.localStorage.setItem("legend_careerSlots", '+json.dumps(seed_storage['legend_careerSlots'])+'); window.localStorage.setItem("legend_managerCareer", '+json.dumps(seed_storage['legend_managerCareer'])+');')
         page.add_init_script('''window.__blockPendingResultStorage=false;const __smfOriginalSessionSet=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(window.__blockPendingResultStorage&&key==='smf.online.pending-match-result.v1')throw new DOMException('blocked','QuotaExceededError');return __smfOriginalSessionSet.call(this,key,value)};''')
         archived_career={'seasonId':'d'*32,'season':{'version':2,'status':'complete','fixtureCount':1,'playedCount':1,'teamId':'japan','fixtures':[{'fixtureNo':1,'status':'completed','teamIds':['japan','brazil'],'score':[2,0],'recordedAt':'2026-11-01T12:00:00.000Z'}],'standings':[{'teamId':'japan','played':1,'wins':1,'draws':0,'losses':0,'goalsFor':2,'goalsAgainst':0,'points':3,'goalDifference':2},{'teamId':'brazil','played':1,'wins':0,'draws':0,'losses':1,'goalsFor':0,'goalsAgainst':2,'points':0,'goalDifference':-2}]}}
-        api = {'career': None, 'squad': None, 'onlineCareerSeason':None, 'onlineCareerArchive':[archived_career], 'onlineCareerTicketRequests':0, 'conflict': False, 'puts': [], 'ticketRequests': 0, 'resumeTicketRequests':0, 'ticketBodies': [], 'rewardClaims': [], 'historyRequests':0, 'historyItems':[{'matchId':'a'*32,'recordedAt':'2026-11-04T12:00:00.000Z','teamId':'japan','opponentTeamId':'brazil','score':[2,1],'outcome':'win'}], 'creditedRewards':set(), 'loseNextRewardResponse':False, 'pvpMatchId':'1'*32, 'utBalance':800, 'utOwned':[{'category':'team','itemId':'japan','acquiredAt':None}]+[{'category':'player','itemId':f'japan/jp{i}','acquiredAt':None} for i in range(12)], 'utPurchases':[], 'utReceipts':{}, 'utCollectionFailures':0, 'utLosePurchaseResponse':True, 'utLineups':{'japan':{'teamId':'japan','playerIds':[f'japan/jp{i}' for i in range(12)],'version':0}}, 'utLineupReceipts':{}, 'utLineupRequests':[], 'utLineupLoseResponse':True}
+        api = {'career': None, 'squad': None, 'onlineCareerSeason':None, 'onlineCareerArchive':[archived_career], 'onlineCareerTicketRequests':0, 'conflict': False, 'puts': [], 'ticketRequests': 0, 'resumeTicketRequests':0, 'ticketBodies': [], 'rewardClaims': [], 'historyRequests':0, 'historyItems':[{'matchId':'a'*32,'recordedAt':'2026-11-04T12:00:00.000Z','teamId':'japan','opponentTeamId':'brazil','score':[2,1],'outcome':'win'}], 'creditedRewards':set(), 'loseNextRewardResponse':False, 'pvpMatchId':'1'*32, 'utBalance':800, 'utOwned':[{'category':'team','itemId':'japan','acquiredAt':None}]+[{'category':'player','itemId':f'japan/jp{i}','acquiredAt':None} for i in range(12)], 'utPurchases':[], 'utReceipts':{}, 'utCollectionFailures':0, 'utLosePurchaseResponse':True, 'utLineups':{'japan':{'teamId':'japan','playerIds':[f'japan/jp{i}' for i in range(12)],'version':0}}, 'utLineupReceipts':{}, 'utLineupRequests':[], 'utLineupLoseResponse':True, 'issuedTokens':[], 'ownersByToken':{}, 'switchProfiles':{}, 'switchPayloadsEnabled':False, 'deferOwner':None, 'deferPaths':set(), 'deferredRoutes':[]}
         online_inputs = []
         online_ws = {'socket':None}
 
@@ -139,7 +139,9 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
             if url.endswith('/.well-known/openid-configuration'):
                 route.fulfill(json={'issuer':'https://issuer.test/','authorization_endpoint':'https://issuer.test/authorize','token_endpoint':'https://issuer.test/token','code_challenge_methods_supported':['S256']})
             elif url.endswith('/token'):
-                route.fulfill(json={'access_token':'browser-test-access-token-0123456789','token_type':'Bearer','expires_in':3600})
+                owner=chr(ord('A')+len(api['issuedTokens']));token=f'browser-test-access-token-{owner}-0123456789'
+                api['issuedTokens'].append(token);api['ownersByToken'][token]=owner
+                route.fulfill(json={'access_token':token,'token_type':'Bearer','expires_in':3600})
             elif '/authorize?' in url:
                 query = parse_qs(urlsplit(url).query)
                 callback = query['redirect_uri'][0] + '?' + urlencode({'code':'browser-code','state':query['state'][0]})
@@ -150,11 +152,21 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
         def api_route(route):
             req = route.request
             path = urlsplit(req.url).path
-            assert req.headers.get('authorization') == 'Bearer browser-test-access-token-0123456789'
+            token=req.headers.get('authorization','').removeprefix('Bearer ')
+            assert token in api['ownersByToken'],req.headers.get('authorization')
+            owner=api['ownersByToken'][token]
+            profile=api['switchProfiles'].get(owner) if api['switchPayloadsEnabled'] else None
+            def defer_if_requested(payload):
+                if owner==api['deferOwner'] and path in api['deferPaths']:
+                    api['deferredRoutes'].append({'owner':owner,'path':path,'route':route,'payload':payload})
+                    return True
+                return False
             if path.endswith('/online-career/current') and req.method == 'GET':
-                route.fulfill(json={'season':api['onlineCareerSeason']})
+                payload={'season':profile.get('onlineCareerSeason',api['onlineCareerSeason']) if profile else api['onlineCareerSeason']}
+                if not defer_if_requested(payload):route.fulfill(json=payload)
             elif path.endswith('/online-career/seasons') and req.method == 'GET':
-                route.fulfill(json={'seasons':api['onlineCareerArchive']})
+                payload={'seasons':profile.get('onlineCareerArchive',api['onlineCareerArchive']) if profile else api['onlineCareerArchive']}
+                if not defer_if_requested(payload):route.fulfill(json=payload)
             elif path.endswith('/online-career/current') and req.method == 'POST':
                 data=req.post_data_json or {}
                 assert set(data) in (set(),{'teamId'}) and 'accountId' not in data
@@ -220,20 +232,23 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
                     api['squad'], api['squadVersion'] = data['snapshot'], data['expectedVersion'] + 1
                     route.fulfill(json={'status':'saved','version':api['squadVersion'],'record':{'kind':'ultimate-team','payload':api['squad'],'version':api['squadVersion'],'updatedAt':'2026-11-04T12:30:00.000Z'}})
             elif path.endswith('/ultimate-team/catalog') and req.method == 'GET':
-                route.fulfill(json={'catalog':[{'category':'team','id':'brazil','price':300},{'category':'player','id':'brazil/brazil_4','price':250}]})
+                payload={'catalog':profile.get('utCatalog',[{'category':'team','id':'brazil','price':300},{'category':'player','id':'brazil/brazil_4','price':250}]) if profile else [{'category':'team','id':'brazil','price':300},{'category':'player','id':'brazil/brazil_4','price':250}]}
+                if not defer_if_requested(payload):route.fulfill(json=payload)
             elif path.endswith('/ultimate-team/collection') and req.method == 'GET':
                 if api['utCollectionFailures']:
                     api['utCollectionFailures']-=1
                     route.fulfill(status=503,json={'error':'service-unavailable'})
                     return
-                route.fulfill(json={'items':api['utOwned'],'balance':api['utBalance']})
+                payload={'items':profile.get('utOwned',api['utOwned']) if profile else api['utOwned'],'balance':profile.get('utBalance',api['utBalance']) if profile else api['utBalance']}
+                if not defer_if_requested(payload):route.fulfill(json=payload)
             elif path.endswith('/ultimate-team/lineup') and req.method == 'GET':
                 team_id=parse_qs(urlsplit(req.url).query).get('teamId',['japan'])[0]
-                lineup=api['utLineups'].get(team_id)
+                lineup=(profile.get('utLineups',{}).get(team_id) if profile else api['utLineups'].get(team_id))
                 if lineup is None:
                     route.fulfill(status=404,json={'error':'team-not-owned'})
                 else:
-                    route.fulfill(json={'lineup':lineup})
+                    payload={'lineup':lineup}
+                    if not defer_if_requested(payload):route.fulfill(json=payload)
             elif path.endswith('/ultimate-team/lineup') and req.method == 'PUT':
                 data=req.post_data_json
                 api['utLineupRequests'].append(data)
@@ -277,6 +292,38 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
                         route.fulfill(status=201,json={'status':'purchased','balance':api['utBalance'],'receipt':receipt})
             else:
                 route.fulfill(status=404,json={'error':'not-found'})
+
+        def make_switch_season(team_id):
+            opponents=[team for team in ['brazil','france','germany','spain','italy','england','canada','mexico','argentina'] if team!=team_id][:8]
+            return {'version':1,'status':'active','fixtureCount':8,'playedCount':0,'teamId':team_id,
+                'fixtures':[{'fixtureNo':i+1,'status':'scheduled','teamIds':[team_id,opponents[i]],'score':None,'recordedAt':None} for i in range(8)],'standings':[]}
+
+        def make_switch_archive(team_id):
+            opponent='brazil' if team_id!='brazil' else 'japan'
+            season={'version':2,'status':'complete','fixtureCount':1,'playedCount':1,'teamId':team_id,
+                'fixtures':[{'fixtureNo':1,'status':'completed','teamIds':[team_id,opponent],'score':[2,0],'recordedAt':'2026-11-01T12:00:00.000Z'}],
+                'standings':[{'teamId':team_id,'played':1,'wins':1,'draws':0,'losses':0,'goalsFor':2,'goalsAgainst':0,'points':3,'goalDifference':2},
+                    {'teamId':opponent,'played':1,'wins':0,'draws':0,'losses':1,'goalsFor':0,'goalsAgainst':2,'points':0,'goalDifference':-2}]}
+            return [{'seasonId':(team_id.encode('utf-8').hex()+'a'*32)[:32],'season':season}]
+
+        def make_switch_profile(career_team,ut_balance,shop_team,lineup_version):
+            lineup={'teamId':'japan','playerIds':[f'japan/jp{i}' for i in range(12)],'version':lineup_version}
+            return {'onlineCareerSeason':make_switch_season(career_team),'onlineCareerArchive':make_switch_archive(career_team),
+                'utCatalog':[{'category':'team','id':shop_team,'price':345},{'category':'player','id':'brazil/brazil_4','price':250}],
+                'utOwned':[{'category':'team','itemId':'japan','acquiredAt':None}]+[{'category':'player','itemId':f'japan/jp{i}','acquiredAt':None} for i in range(12)],
+                'utBalance':ut_balance,'utLineups':{'japan':lineup}}
+
+        def wait_for_deferred(owner,count,timeout=15):
+            deadline=time.monotonic()+timeout
+            while sum(row['owner']==owner for row in api['deferredRoutes'])<count:
+                if time.monotonic()>=deadline:raise AssertionError(f'timed out waiting for {count} deferred {owner} requests: {[(row["owner"],row["path"]) for row in api["deferredRoutes"]]}')
+                page.wait_for_timeout(50)
+
+        def resolve_deferred(owner):
+            pending=[row for row in api['deferredRoutes'] if row['owner']==owner]
+            api['deferredRoutes']=[row for row in api['deferredRoutes'] if row['owner']!=owner]
+            for row in pending:row['route'].fulfill(json=row['payload'])
+            return pending
 
         page.route('**/online-config.js', configured_js)
         page.route('https://issuer.test/**', issuer_route)
@@ -556,6 +603,94 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
         assert page.locator('[data-action="onlineMatchStart"]').is_disabled()
         assert page.locator('#onlineMatchStorageCorruption').get_attribute('role')=='alert'
         page.locator('[data-action="navOnline"]').last.click()
+
+        # Old Career requests cannot publish a prior account's season after a switch.
+        stale_career_owner=api['ownersByToken'][api['issuedTokens'][-1]]
+        api['switchPayloadsEnabled']=True
+        career_owner=chr(ord('A')+len(api['issuedTokens']))
+        api['switchProfiles'][career_owner]=make_switch_profile('england',333,'italy',4)
+        api['deferOwner']=stale_career_owner
+        api['deferPaths']={'/api/v1/online-career/current','/api/v1/online-career/seasons','/api/v1/ultimate-team/collection'}
+        page.locator('[data-action="navOnlineCareer"]').click()
+        wait_for_deferred(stale_career_owner,3)
+        assert 'Loading your server Career' in page.locator('#onlineCareerSeasonStatus').inner_text()
+        page.locator('[data-action="onlineSignOut"]').first.click()
+        assert page.locator('[data-action="onlineSignIn_career"]').count()==1
+        api['deferOwner']=career_owner;api['deferPaths']={'/api/v1/online-career/current','/api/v1/online-career/seasons','/api/v1/ultimate-team/collection'}
+        page.locator('[data-action="onlineSignIn_career"]').click()
+        page.wait_for_function("document.querySelector('.heading')?.textContent==='ONLINE CAREER'",timeout=30000)
+        wait_for_deferred(career_owner,3)
+        assert len(resolve_deferred(stale_career_owner))==3
+        page.wait_for_timeout(150)
+        assert 'Loading your server Career' in page.locator('#onlineCareerSeasonStatus').inner_text()
+        assert 'ONLINE SEASON' not in page.locator('[aria-label="Online Career season"]').inner_text()
+        resolve_deferred(career_owner)
+        try:page.wait_for_function("document.querySelector('#onlineCareerSeasonStatus')?.textContent.includes('Season and team collection are current')",timeout=15000)
+        except Exception:
+            print('ONLINE_ACCOUNT_SWITCH_CAREER_DIAG',career_owner,api['issuedTokens'],[(row['owner'],row['path']) for row in api['deferredRoutes']],page.locator('#onlineCareerSeasonStatus').inner_text(),errors,flush=True);raise
+        assert 'ONLINE SEASON · ACTIVE · 0/8 FIXTURES · England' in page.locator('[aria-label="Online Career season"]').inner_text()
+        assert 'ONLINE SEASON · ACTIVE · 0/8 FIXTURES · Japan' not in page.locator('[aria-label="Online Career season"]').inner_text()
+        api['deferOwner']=None;api['deferPaths']=set()
+        page.locator('[data-action="onlineCareerSeasonReload"]').click()
+        page.wait_for_function("document.querySelector('#onlineCareerSeasonStatus')?.textContent.includes('Season and team collection are current')",timeout=15000)
+        assert 'England' in page.locator('[aria-label="Online Career season"]').inner_text()
+
+        # A's delayed marketplace response must not replace B's data or clear B's loader.
+        stale_market_owner=api['ownersByToken'][api['issuedTokens'][-1]]
+        api['deferOwner']=stale_market_owner
+        api['deferPaths']={'/api/v1/ultimate-team/catalog','/api/v1/ultimate-team/collection'}
+        page.locator('[data-action="navOnline"]').click()
+        page.locator('[data-action="navOnlineUltimate"]').click()
+        wait_for_deferred(stale_market_owner,2)
+        page.locator('[data-action="onlineSignOut"]').first.click()
+        market_owner=chr(ord('A')+len(api['issuedTokens']))
+        api['switchProfiles'][market_owner]=make_switch_profile('france',777,'france',7)
+        api['deferOwner']=market_owner;api['deferPaths']={'/api/v1/ultimate-team/catalog','/api/v1/ultimate-team/collection'}
+        page.locator('[data-action="onlineSignIn_ultimate"]').click()
+        page.wait_for_function("document.querySelector('.heading')?.textContent==='ONLINE ULTIMATE TEAM'",timeout=30000)
+        wait_for_deferred(market_owner,2)
+        assert 'Loading server catalog and collection' in page.locator('#onlineUtCatalogStatus').inner_text()
+        assert len(resolve_deferred(stale_market_owner))==2
+        page.wait_for_timeout(150)
+        assert 'Loading server catalog and collection' in page.locator('#onlineUtCatalogStatus').inner_text()
+        assert '333' not in page.locator('[aria-label="Online Ultimate Team collection"]').inner_text()
+        resolve_deferred(market_owner)
+        page.wait_for_function("document.querySelector('#onlineAccountStatus')?.textContent.includes('catalog and collection loaded')",timeout=15000)
+        assert '777' in page.locator('[aria-label="Online Ultimate Team collection"]').inner_text()
+        page.locator('#onlineUtCategory').select_option('team')
+        assert 'france' in page.locator('[data-online-ut-card]').inner_text()
+        assert 'italy' not in page.locator('[data-online-ut-card]').inner_text()
+        api['deferOwner']=None;api['deferPaths']=set()
+        page.locator('[data-action="onlineUtCatalogReload"]').click()
+        page.wait_for_function("document.querySelector('#onlineAccountStatus')?.textContent.includes('catalog and collection loaded')",timeout=15000)
+        assert '777' in page.locator('[aria-label="Online Ultimate Team collection"]').inner_text()
+
+        # A separately delayed old-account lineup read cannot overwrite or stop the new one.
+        stale_lineup_owner=api['ownersByToken'][api['issuedTokens'][-1]]
+        api['deferOwner']=stale_lineup_owner;api['deferPaths']={'/api/v1/ultimate-team/lineup'}
+        page.locator('[data-action="onlineUtLineupReload"]').click()
+        wait_for_deferred(stale_lineup_owner,1)
+        page.locator('[data-action="onlineSignOut"]').first.click()
+        lineup_owner=chr(ord('A')+len(api['issuedTokens']))
+        api['switchProfiles'][lineup_owner]=make_switch_profile('spain',888,'germany',8)
+        api['deferOwner']=lineup_owner;api['deferPaths']={'/api/v1/ultimate-team/lineup'}
+        page.locator('[data-action="onlineSignIn_ultimate"]').click()
+        page.wait_for_function("document.querySelector('.heading')?.textContent==='ONLINE ULTIMATE TEAM'",timeout=30000)
+        wait_for_deferred(lineup_owner,1)
+        page.locator('#onlineUtLineupTeam').dispatch_event('change')
+        wait_for_deferred(lineup_owner,2)
+        assert 'Loading saved lineup' in page.locator('#onlineUtLineupStatus').inner_text()
+        assert len(resolve_deferred(stale_lineup_owner))==1
+        page.wait_for_timeout(150)
+        assert 'Loading saved lineup' in page.locator('#onlineUtLineupStatus').inner_text()
+        assert len(resolve_deferred(lineup_owner))==2
+        page.wait_for_function("document.querySelector('#onlineUtLineupStatus')?.textContent.includes('Lineup version 8')",timeout=15000)
+        assert 'version 7' not in page.locator('#onlineUtLineupStatus').inner_text()
+        api['deferOwner']=None;api['deferPaths']=set()
+        page.locator('[data-action="onlineUtLineupReload"]').click()
+        page.wait_for_function("document.querySelector('#onlineUtLineupStatus')?.textContent.includes('Lineup version 8')",timeout=15000)
+        assert '888' in page.locator('[aria-label="Online Ultimate Team collection"]').inner_text()
+
         assert not errors, errors
         context_auth.close()
         browser.close()

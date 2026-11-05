@@ -135,6 +135,8 @@ const tokenWallet=ECONOMY.create(careerStorage);
 let onlineConfig=null,onlineAuthSession=null,onlineAccountClient=null,onlineIdentityError='',onlineCareerRecord=null,onlineCareerLoaded=false,onlineCareerStatus='',onlineCareerSourceSlotNumber=null,onlineCareerTargetSlotNumber=null,onlineCareerSeason=null,onlineCareerProgressLoaded=false,onlineCareerProgressLoading=false,onlineCareerProgressRequested=false,onlineCareerProgressStatus='',onlineCareerTeamId='japan',onlineCareerMatchTicketing=false,onlineUtRecord=null,onlineUtLoaded=false,onlineUtStatus='',onlineUtTeam=0,onlineUtCatalog=null,onlineUtCollection=[],onlineUtBalance=null,onlineUtCatalogLoading=false,onlineUtCatalogRequested=false,onlineUtPendingPurchase=null,onlineUtPurchaseInFlight=false,onlineUtCategory='player',onlineUtSearch='',onlineUtPage=0,onlineUtLineupTeamId='japan',onlineUtLineup=null,onlineUtLineupLoading=false,onlineUtLineupSaving=false,onlineUtLineupPendingSave=null,onlineCareerSeasons=[];
 let onlineMatchClient=null,onlineMatchStatus='',onlineMatchRecoveryStatus='',onlineMatchSequence=0,onlineMatchSendAccumulator=0,onlineMatchSnapshotTick=-1,onlineMatchReported=false,onlineMatchFinalSnapshot=null,onlineMatchFinalMatchId=null,onlineMatchManualStop=false,onlineMatchCareer=false,onlineMatchInitialTeamIds=[],onlineCareerActiveFixtureNo=null;
 let onlineMatchOwnedTeamIds=[],onlineMatchTeamsLoaded=false,onlineMatchTeamsLoading=false,onlineMatchTeamsRefreshNeeded=false,onlineMatchTeamsError='';
+let onlineAccountGeneration=0,onlineAccountSignOutGeneration=0,onlineAccountSignOutAtGeneration=-1;
+function onlineAccountGenerationIsCurrent(generation){return generation===onlineAccountGeneration&&onlineAuthSession?.isSignedIn()===true;}
 let onlineRewardMatchId=null,onlineRewardClaimStatus='';
 let onlineMatchHistoryItems=[],onlineMatchHistoryCursor=null,onlineMatchHistoryStatus='',onlineMatchTeamId='japan';
 let onlineHistoryController=null;
@@ -560,12 +562,15 @@ function initializeOnlineAccount(){
   onlineAccountClient=createOnlineAccountClient({getAccessToken:()=>onlineAuthSession?.getAccessToken()||null,baseUrl:onlineConfig.apiOrigin});
   onlineHistoryController=createOnlineHistoryController({loadPage:options=>onlineAccountClient.loadMatchHistory(options),isSignedIn:()=>onlineAuthSession?.isSignedIn()===true,describeError:onlineSafeStatus});
  }catch{onlineConfig=null;onlineIdentityError='Online sign-in configuration is invalid. Offline game modes remain available.';return false;}
- onlineAuthSession.completeRedirect().then(result=>{
+  const generation=onlineAccountGeneration;
+  const signOutGeneration=onlineAccountSignOutGeneration;
+  onlineAuthSession.completeRedirect().then(result=>{
+   if(generation!==onlineAccountGeneration){if(result.completed&&signOutGeneration!==onlineAccountSignOutGeneration&&onlineAccountGeneration===onlineAccountSignOutAtGeneration)onlineAuthSession?.signOut();return;}
   let returnRoute='';try{returnRoute=sessionStorage.getItem('smf.online.account.return.v1')||'';sessionStorage.removeItem('smf.online.account.return.v1')}catch{}
   const route=returnRoute==='online-ultimate'?'ultimate':returnRoute==='online-career'?'career':returnRoute==='online-match'?'match':'';
   if(result.completed){onlineIdentityError='';onlineCareerStatus='Signed in. Online features sync copies only; offline saves remain separate.';onlineUtStatus='Signed in. Online features sync copies only; offline saves remain separate.';if(route==='ultimate')showOnlineUltimateTeam();else if(route==='career')showOnlineCareer();else if(route==='match'){onlineMatchTeamsRefreshNeeded=true;showOnlineServerMatch();}else showOnlineMenu();}
   else if(result.error){onlineIdentityError='Sign-in was not completed. Check the identity configuration and try again.';if(route==='ultimate')showOnlineUltimateTeam();else if(route==='career')showOnlineCareer();else if(route==='match')showOnlineServerMatch();}
- }).catch(()=>{onlineIdentityError='Sign-in could not be completed. Check the identity configuration and try again.';});
+  }).catch(()=>{if(generation===onlineAccountGeneration)onlineIdentityError='Sign-in could not be completed. Check the identity configuration and try again.';});
  return true;
 }
 function onlineSafeStatus(error){
@@ -631,25 +636,27 @@ function onlineCareerArchiveMarkup(){
 }
 function loadOnlineCareerProgress(focusAction='onlineCareerSeasonReload'){
  if(onlineCareerProgressLoading||!onlineAuthSession?.isSignedIn()||!onlineAccountClient)return;
+ const generation=onlineAccountGeneration;
  onlineCareerProgressRequested=true;onlineCareerProgressLoading=true;onlineCareerProgressLoaded=false;
  onlineCareerProgressStatus='Loading the server season, archive and your owned teams…';showOnlineCareer();
  void (async()=>{try{
   const [season,collection,seasons]=await Promise.all([onlineAccountClient.loadOnlineCareerSeason(),onlineAccountClient.loadUltimateTeamCollection(),onlineAccountClient.loadOnlineCareerSeasons()]);
-  if(!onlineAuthSession?.isSignedIn())return;
+   if(!onlineAccountGenerationIsCurrent(generation))return;
   onlineCareerSeason=season;onlineCareerSeasons=seasons;onlineUtCollection=collection.items;onlineUtBalance=collection.balance;
   onlineMatchOwnedTeamIds=[...new Set(['japan',...collection.items.filter(item=>item.category==='team').map(item=>item.itemId)])].filter(id=>onlineSelectableTeams().some(team=>team.id===id));onlineMatchTeamsLoaded=true;onlineMatchTeamsError='';
   onlineCareerProgressLoaded=true;onlineCareerProgressStatus=season?'Season and team collection are current.':'No season yet. Japan is free; other teams must be owned.';
- }catch(error){onlineCareerProgressStatus=onlineSafeStatus(error);onlineCareerProgressLoaded=false;}
- finally{onlineCareerProgressLoading=false;if(onlineAuthSession?.isSignedIn())showOnlineCareer(focusAction);}
+  }catch(error){if(onlineAccountGenerationIsCurrent(generation)){onlineCareerProgressStatus=onlineSafeStatus(error);onlineCareerProgressLoaded=false;}}
+  finally{if(generation===onlineAccountGeneration){onlineCareerProgressLoading=false;if(onlineAuthSession?.isSignedIn())showOnlineCareer(focusAction);}}
  })();
 }
 async function createOnlineCareerSeason(){
  if(!onlineCareerProgressLoaded||onlineCareerMatchTicketing)return;
+ const generation=onlineAccountGeneration;
  const select=$('onlineCareerTeam');if(select)onlineCareerTeamId=select.value;
  onlineCareerMatchTicketing=true;onlineCareerProgressStatus='Creating your server-managed season…';showOnlineCareer();
- try{onlineCareerSeason=(await onlineAccountClient.createOnlineCareerSeason(onlineCareerTeamId)).season;onlineCareerSeasons=await onlineAccountClient.loadOnlineCareerSeasons();onlineCareerProgressLoaded=true;onlineCareerProgressStatus='Season created. Your first fixture is ready.';}
- catch(error){onlineCareerProgressStatus=onlineSafeStatus(error);}
- finally{onlineCareerMatchTicketing=false;showOnlineCareer('onlineCareerSeasonStart');}
+ try{const result=await onlineAccountClient.createOnlineCareerSeason(onlineCareerTeamId);if(!onlineAccountGenerationIsCurrent(generation))return;const seasons=await onlineAccountClient.loadOnlineCareerSeasons();if(!onlineAccountGenerationIsCurrent(generation))return;onlineCareerSeason=result.season;onlineCareerSeasons=seasons;onlineCareerProgressLoaded=true;onlineCareerProgressStatus='Season created. Your first fixture is ready.';}
+ catch(error){if(onlineAccountGenerationIsCurrent(generation))onlineCareerProgressStatus=onlineSafeStatus(error);}
+ finally{if(generation===onlineAccountGeneration){onlineCareerMatchTicketing=false;if(onlineAuthSession?.isSignedIn())showOnlineCareer('onlineCareerSeasonStart');}}
 }
 function showOnlineCareer(focusAction){
  const configured=!!onlineConfig&&!!onlineAccountClient,signed=onlineAuthSession?.isSignedIn()===true;
@@ -725,41 +732,47 @@ function refreshOnlineUtCatalog(){
 }
 async function loadOnlineUltimateTeamMarketplace(focusAction='onlineUtCatalogReload'){
  if(!onlineAuthSession?.isSignedIn()||!onlineAccountClient)return;
+ const generation=onlineAccountGeneration;
  onlineUtCatalogRequested=true;onlineUtCatalogLoading=true;refreshOnlineUtCatalog();
  try{
   const [catalog,collection]=await Promise.all([onlineAccountClient.loadUltimateTeamCatalog(),onlineAccountClient.loadUltimateTeamCollection()]);
+   if(!onlineAccountGenerationIsCurrent(generation))return;
   onlineUtCatalog=catalog;onlineUtCollection=collection.items;onlineUtBalance=collection.balance;
   if(!onlineUtOwnedTeamIds().includes(onlineUtLineupTeamId))onlineUtLineupTeamId='japan';
   onlineUtLineupLoading=true;
-  try{onlineUtLineup=await onlineAccountClient.loadUltimateTeamLineup(onlineUtLineupTeamId);onlineUtLineupPendingSave=null;}catch(error){onlineUtLineup=null;onlineUtStatus=onlineSafeStatus(error);}
-  finally{onlineUtLineupLoading=false;}
+   try{const lineup=await onlineAccountClient.loadUltimateTeamLineup(onlineUtLineupTeamId);if(!onlineAccountGenerationIsCurrent(generation))return;onlineUtLineup=lineup;onlineUtLineupPendingSave=null;}catch(error){if(onlineAccountGenerationIsCurrent(generation)){onlineUtLineup=null;onlineUtStatus=onlineSafeStatus(error);}}
+   finally{if(generation===onlineAccountGeneration)onlineUtLineupLoading=false;}
+   if(!onlineAccountGenerationIsCurrent(generation))return;
   onlineUtStatus='Online catalog and collection loaded. No offline squad or save was changed.';
- }catch(error){onlineUtStatus=onlineSafeStatus(error);}
- finally{onlineUtCatalogLoading=false;showOnlineUltimateTeam(focusAction);}
+  }catch(error){if(onlineAccountGenerationIsCurrent(generation))onlineUtStatus=onlineSafeStatus(error);}
+  finally{if(generation===onlineAccountGeneration){onlineUtCatalogLoading=false;if(onlineAuthSession?.isSignedIn())showOnlineUltimateTeam(focusAction);}}
 }
 async function loadOnlineUtLineup(focusAction='onlineUtLineupReload'){
  if(!onlineAuthSession?.isSignedIn()||!onlineAccountClient)return;
+ const generation=onlineAccountGeneration;
  if(!onlineUtOwnedTeamIds().includes(onlineUtLineupTeamId)){onlineUtStatus='Acquire the base team before editing its online lineup.';showOnlineUltimateTeam(focusAction);return;}
  onlineUtLineupLoading=true;onlineUtLineup=null;showOnlineUltimateTeam(focusAction);
- try{onlineUtLineup=await onlineAccountClient.loadUltimateTeamLineup(onlineUtLineupTeamId);onlineUtLineupPendingSave=null;onlineUtStatus='Online lineup loaded from the account service.';}
- catch(error){onlineUtStatus=onlineSafeStatus(error);}
- finally{onlineUtLineupLoading=false;showOnlineUltimateTeam(focusAction);}
+ try{const lineup=await onlineAccountClient.loadUltimateTeamLineup(onlineUtLineupTeamId);if(!onlineAccountGenerationIsCurrent(generation))return;onlineUtLineup=lineup;onlineUtLineupPendingSave=null;onlineUtStatus='Online lineup loaded from the account service.';}
+ catch(error){if(onlineAccountGenerationIsCurrent(generation))onlineUtStatus=onlineSafeStatus(error);}
+ finally{if(generation===onlineAccountGeneration){onlineUtLineupLoading=false;if(onlineAuthSession?.isSignedIn())showOnlineUltimateTeam(focusAction);}}
 }
 async function saveOnlineUtLineup(){
  if(!onlineAuthSession?.isSignedIn()||!onlineAccountClient||!onlineUtLineup||onlineUtLineupSaving)return;
+ const generation=onlineAccountGeneration;
  const base=GAME_ASSETS?.rosters?.[onlineUtLineupTeamId],playerIds=base?.map((_,slot)=>$(`onlineUtLineupSlot${slot}`)?.value);
  if(!Array.isArray(playerIds)||playerIds.length!==12||playerIds.some(id=>typeof id!=='string')){onlineUtStatus='Load the lineup and fill every roster slot before saving.';showOnlineUltimateTeam('onlineUtLineupSave');return;}
  const samePending=onlineUtLineupPendingSave&&onlineUtLineupPendingSave.teamId===onlineUtLineupTeamId&&onlineUtLineupPendingSave.expectedVersion===onlineUtLineup.version&&JSON.stringify(onlineUtLineupPendingSave.playerIds)===JSON.stringify(playerIds);
  if(!samePending)onlineUtLineupPendingSave={teamId:onlineUtLineupTeamId,playerIds:playerIds.slice(),expectedVersion:onlineUtLineup.version,idempotencyKey:makeOnlineIdempotencyKey('ut_lineup')};
  onlineUtLineupSaving=true;showOnlineUltimateTeam('onlineUtLineupSave');
  try{
-  const result=await onlineAccountClient.saveUltimateTeamLineup({...onlineUtLineupPendingSave});
+   const result=await onlineAccountClient.saveUltimateTeamLineup({...onlineUtLineupPendingSave});if(!onlineAccountGenerationIsCurrent(generation))return;
   onlineUtLineup=result.lineup;onlineUtLineupPendingSave=null;onlineUtStatus='Online lineup saved. It will be used for this team in server matches.';
- }catch(error){onlineUtStatus=onlineSafeStatus(error);}
- finally{onlineUtLineupSaving=false;showOnlineUltimateTeam('onlineUtLineupSave');}
+  }catch(error){if(onlineAccountGenerationIsCurrent(generation))onlineUtStatus=onlineSafeStatus(error);}
+  finally{if(generation===onlineAccountGeneration){onlineUtLineupSaving=false;if(onlineAuthSession?.isSignedIn())showOnlineUltimateTeam('onlineUtLineupSave');}}
 }
 async function purchaseOnlineUltimateTeamItem(category,itemId){
  if(!onlineAuthSession?.isSignedIn()||!onlineAccountClient)return;
+ const generation=onlineAccountGeneration;
  if(onlineUtPurchaseInFlight)return;
  if(onlineUtPendingPurchase&&(onlineUtPendingPurchase.category!==category||onlineUtPendingPurchase.itemId!==itemId)){
   onlineUtStatus='Retry or resolve the pending purchase before starting another item.';showOnlineUltimateTeam('onlineUtCatalogReload');return;
@@ -767,39 +780,41 @@ async function purchaseOnlineUltimateTeamItem(category,itemId){
  onlineUtPendingPurchase??={category,itemId,idempotencyKey:makeOnlineIdempotencyKey('ut_purchase')};
  onlineUtPurchaseInFlight=true;
  try{
-  const result=await onlineAccountClient.purchaseUltimateTeamItem({...onlineUtPendingPurchase});
+   const result=await onlineAccountClient.purchaseUltimateTeamItem({...onlineUtPendingPurchase});if(!onlineAccountGenerationIsCurrent(generation))return;
   onlineUtBalance=result.balance;
   if(!onlineUtCollection.some(row=>row.category===category&&row.itemId===itemId))onlineUtCollection=[...onlineUtCollection,{category,itemId,acquiredAt:result.receipt.recordedAt}];
   if(category==='team'){onlineMatchTeamsLoaded=false;onlineMatchTeamsRefreshNeeded=true;}
   onlineUtStatus=result.status==='duplicate'?`${onlineUtItemName({category,id:itemId})} purchase confirmed from its original receipt.`:`${onlineUtItemName({category,id:itemId})} added to your online collection for ${result.receipt.price} tokens.`;
   onlineUtPendingPurchase=null;
- }catch(error){
-  onlineUtStatus=onlineSafeStatus(error);
-  if(['already-owned','insufficient-balance','unknown-item','idempotency-conflict','invalid-request'].includes(error?.code))onlineUtPendingPurchase=null;
- }finally{onlineUtPurchaseInFlight=false;}
- showOnlineUltimateTeam('onlineUtCatalogReload');
+  }catch(error){
+   if(onlineAccountGenerationIsCurrent(generation)){onlineUtStatus=onlineSafeStatus(error);if(['already-owned','insufficient-balance','unknown-item','idempotency-conflict','invalid-request'].includes(error?.code))onlineUtPendingPurchase=null;}
+  }finally{if(generation===onlineAccountGeneration){onlineUtPurchaseInFlight=false;if(onlineAuthSession?.isSignedIn())showOnlineUltimateTeam('onlineUtCatalogReload');}}
 }
 async function beginOnlineSignIn(route){
  if(!onlineAuthSession){setOnlineRouteStatus(route,'Online account is not configured for this build.');return;}
- try{sessionStorage.setItem('smf.online.account.return.v1',route==='ultimate'?'online-ultimate':route==='match'?'online-match':'online-career');await onlineAuthSession.beginSignIn();}
- catch(error){try{sessionStorage.removeItem('smf.online.account.return.v1')}catch{};setOnlineRouteStatus(route,onlineSafeStatus(error),route==='career'?'onlineSignIn_career':route==='ultimate'?'onlineSignIn_ultimate':'onlineSignIn_match');}
+ const generation=++onlineAccountGeneration;
+ try{sessionStorage.setItem('smf.online.account.return.v1',route==='ultimate'?'online-ultimate':route==='match'?'online-match':'online-career');await onlineAuthSession.beginSignIn();if(generation!==onlineAccountGeneration)return;}
+ catch(error){if(generation!==onlineAccountGeneration)return;try{sessionStorage.removeItem('smf.online.account.return.v1')}catch{};setOnlineRouteStatus(route,onlineSafeStatus(error),route==='career'?'onlineSignIn_career':route==='ultimate'?'onlineSignIn_ultimate':'onlineSignIn_match');}
 }
-function signOutOnlineAccount(){onlineAuthSession?.signOut();onlineHistoryController?.reset();onlineCareerRecord=null;onlineCareerLoaded=false;onlineCareerStatus='Signed out. Local saves and squads are unchanged.';onlineCareerSeason=null;onlineCareerSeasons=[];onlineCareerProgressLoaded=false;onlineCareerProgressLoading=false;onlineCareerProgressRequested=false;onlineCareerProgressStatus='Signed out.';onlineUtRecord=null;onlineUtLoaded=false;onlineUtStatus='Signed out. Local saves and squads are unchanged.';onlineUtCatalog=null;onlineUtCollection=[];onlineUtBalance=null;onlineUtCatalogRequested=false;onlineUtPendingPurchase=null;onlineUtLineup=null;onlineUtLineupLoading=false;onlineUtLineupSaving=false;onlineUtLineupPendingSave=null;onlineMatchOwnedTeamIds=[];onlineMatchTeamsLoaded=false;onlineMatchTeamsLoading=false;onlineMatchTeamsRefreshNeeded=false;onlineMatchTeamsError='';onlineMatchHistoryItems=[];onlineMatchHistoryCursor=null;onlineMatchHistoryStatus='';if(screen==='ONLINE ULTIMATE TEAM')showOnlineUltimateTeam('onlineSignIn_ultimate');else if(screen==='ONLINE MATCH')showOnlineServerMatch('onlineSignIn_match');else showOnlineCareer('onlineSignIn_career');}
+function signOutOnlineAccount(){onlineAccountGeneration++;onlineAccountSignOutGeneration++;onlineAccountSignOutAtGeneration=onlineAccountGeneration;onlineAuthSession?.signOut();onlineHistoryController?.reset();onlineCareerRecord=null;onlineCareerLoaded=false;onlineCareerStatus='Signed out. Local saves and squads are unchanged.';onlineCareerSeason=null;onlineCareerSeasons=[];onlineCareerProgressLoaded=false;onlineCareerProgressLoading=false;onlineCareerProgressRequested=false;onlineCareerProgressStatus='Signed out.';onlineCareerMatchTicketing=false;onlineUtRecord=null;onlineUtLoaded=false;onlineUtStatus='Signed out. Local saves and squads are unchanged.';onlineUtCatalog=null;onlineUtCollection=[];onlineUtBalance=null;onlineUtCatalogLoading=false;onlineUtCatalogRequested=false;onlineUtPendingPurchase=null;onlineUtPurchaseInFlight=false;onlineUtLineup=null;onlineUtLineupLoading=false;onlineUtLineupSaving=false;onlineUtLineupPendingSave=null;onlineMatchOwnedTeamIds=[];onlineMatchTeamsLoaded=false;onlineMatchTeamsLoading=false;onlineMatchTeamsRefreshNeeded=false;onlineMatchTeamsError='';onlineMatchHistoryItems=[];onlineMatchHistoryCursor=null;onlineMatchHistoryStatus='';if(screen==='ONLINE ULTIMATE TEAM')showOnlineUltimateTeam('onlineSignIn_ultimate');else if(screen==='ONLINE MATCH')showOnlineServerMatch('onlineSignIn_match');else showOnlineCareer('onlineSignIn_career');}
 async function reloadOnlineCareer(){
- try{onlineCareerRecord=await onlineAccountClient.loadCareer();onlineCareerLoaded=true;onlineCareerStatus=onlineCareerRecord?'Remote Career loaded.':'No remote Career copy exists yet.';showOnlineCareer('onlineCareerReload');}
- catch(error){onlineCareerLoaded=false;onlineCareerStatus=onlineSafeStatus(error);showOnlineCareer('onlineCareerReload');}
+ if(!onlineAuthSession?.isSignedIn()||!onlineAccountClient)return;const generation=onlineAccountGeneration;
+ try{const record=await onlineAccountClient.loadCareer();if(!onlineAccountGenerationIsCurrent(generation))return;onlineCareerRecord=record;onlineCareerLoaded=true;onlineCareerStatus=onlineCareerRecord?'Remote Career loaded.':'No remote Career copy exists yet.';showOnlineCareer('onlineCareerReload');}
+ catch(error){if(!onlineAccountGenerationIsCurrent(generation))return;onlineCareerLoaded=false;onlineCareerStatus=onlineSafeStatus(error);showOnlineCareer('onlineCareerReload');}
 }
 function makeOnlineIdempotencyKey(prefix){const bytes=new Uint8Array(16);crypto.getRandomValues(bytes);return prefix+'_'+Array.from(bytes,value=>value.toString(16).padStart(2,'0')).join('');}
 async function uploadOnlineCareerCopy(){
+ const generation=onlineAccountGeneration;if(!onlineAuthSession?.isSignedIn()||!onlineAccountClient)return;
  if(!onlineCareerLoaded){onlineCareerStatus='Load the remote Career first. This prevents overwriting a newer copy.';return showOnlineCareer('onlineCareerUpload');}
  try{
   const slot=localCareerSlotFromBackup(Number($('onlineCareerSource')?.value));
   const snapshot=copyOfflineCareerSlotToRemotePayload(slot);
   if(onlineCareerRecord&&!confirm('Replace the remote Career snapshot with an explicit copy of local slot “'+slot.name+'”? The local save will not change.'))return;
   const result=await onlineAccountClient.saveCareer(snapshot,{expectedVersion:onlineCareerRecord?.version??0,idempotencyKey:makeOnlineIdempotencyKey('career_copy')});
+   if(!onlineAccountGenerationIsCurrent(generation))return;
   onlineCareerRecord=result.record;onlineCareerLoaded=true;onlineCareerStatus=result.status==='duplicate'?'This Career copy was already saved.':'Career copy uploaded. The local save and active slot were not changed.';
- }catch(error){onlineCareerStatus=onlineSafeStatus(error);if(error?.code==='version-conflict')onlineCareerLoaded=false;}
- showOnlineCareer('onlineCareerUpload');
+  }catch(error){if(!onlineAccountGenerationIsCurrent(generation))return;onlineCareerStatus=onlineSafeStatus(error);if(error?.code==='version-conflict')onlineCareerLoaded=false;}
+  if(onlineAccountGenerationIsCurrent(generation))showOnlineCareer('onlineCareerUpload');
 }
 function buildRemoteCareerVaultBackup(vault){
  const data=new Map([['legend_careerSlots',JSON.stringify(vault)]]),tempStorage={getItem:key=>data.get(key)??null,setItem:(key,value)=>data.set(key,String(value)),removeItem:key=>data.delete(key)};
@@ -823,17 +838,20 @@ function importOnlineCareerCopy(){
  showOnlineCareer('onlineCareerImport');
 }
 async function reloadOnlineUltimateTeam(){
- try{onlineUtRecord=await onlineAccountClient.loadUltimateTeam();onlineUtLoaded=true;onlineUtStatus=onlineUtRecord?'Remote squad loaded.':'No remote squad copy exists yet.';showOnlineUltimateTeam('onlineUtReload');}
- catch(error){onlineUtLoaded=false;onlineUtStatus=onlineSafeStatus(error);showOnlineUltimateTeam('onlineUtReload');}
+ if(!onlineAuthSession?.isSignedIn()||!onlineAccountClient)return;const generation=onlineAccountGeneration;
+ try{const record=await onlineAccountClient.loadUltimateTeam();if(!onlineAccountGenerationIsCurrent(generation))return;onlineUtRecord=record;onlineUtLoaded=true;onlineUtStatus=onlineUtRecord?'Remote squad loaded.':'No remote squad copy exists yet.';showOnlineUltimateTeam('onlineUtReload');}
+ catch(error){if(!onlineAccountGenerationIsCurrent(generation))return;onlineUtLoaded=false;onlineUtStatus=onlineSafeStatus(error);showOnlineUltimateTeam('onlineUtReload');}
 }
 async function saveOnlineUltimateTeam(){
+ if(!onlineAuthSession?.isSignedIn()||!onlineAccountClient)return;const generation=onlineAccountGeneration;
  if(!onlineUtLoaded){onlineUtStatus='Load the remote squad first. Reload after a conflict before saving.';return showOnlineUltimateTeam('onlineUtSave');}
  try{
   const snapshot=buildOnlineTeamSnapshot(onlineUtTeam);
   const result=await onlineAccountClient.saveUltimateTeam(snapshot,{expectedVersion:onlineUtRecord?.version??0,idempotencyKey:makeOnlineIdempotencyKey('squad_copy')});
+   if(!onlineAccountGenerationIsCurrent(generation))return;
   onlineUtRecord=result.record;onlineUtLoaded=true;onlineUtStatus=result.status==='duplicate'?'This squad copy was already saved.':'Existing squad copy saved. Local roster identities and player data were not modified.';
- }catch(error){onlineUtStatus=onlineSafeStatus(error);if(error?.code==='version-conflict')onlineUtLoaded=false;}
- showOnlineUltimateTeam('onlineUtSave');
+  }catch(error){if(!onlineAccountGenerationIsCurrent(generation))return;onlineUtStatus=onlineSafeStatus(error);if(error?.code==='version-conflict')onlineUtLoaded=false;}
+  if(onlineAccountGenerationIsCurrent(generation))showOnlineUltimateTeam('onlineUtSave');
 }
 function refreshOnlineTeamPreview(){const target=$('onlineUtPreview');if(!target)return;try{const snapshot=buildOnlineTeamSnapshot(onlineUtTeam);target.textContent=`Ready to copy ${snapshot.playerIds.length} existing player IDs with the current ${snapshot.formation} formation. No local player data will be changed.`;}catch(error){target.textContent=error.message;}}
 function showCareerMenu(){menuChoices('nav-career','CAREER','Continue your existing manager career or manage your club.',[
@@ -930,7 +948,7 @@ function showCareerSlots(){
 function showCupSlots(){
  const hasFree=cupSlots.list().some(slot=>!slot.occupied);
   const rows=cupSlots.list().map(s=>`<div class="panel"><h3 class="titleSmall">SLOT ${s.number}${s.active?' · ACTIVE':''}</h3><p>${s.occupied?`${escapeHTML(s.name)} · ${escapeHTML(s.compId||'Unknown competition')} · ${escapeHTML(TEAMS[s.club]?.name||'Unknown club')} · ${escapeHTML(s.phase)} · ${s.phase==='finished'?'Complete':'Round '+(s.roundIdx+1)} · Saved ${escapeHTML(new Date(s.savedAt).toLocaleString())}`:'Empty slot'}</p><div class="row">${continentalRun?slotActionButton(s.occupied?'OVERWRITE':'SAVE HERE','cupSlotSave_'+s.number,'Cup',s.number):''}${s.occupied?slotActionButton('LOAD','cupSlotLoad_'+s.number,'Cup',s.number)+(hasFree?slotActionButton('COPY','cupSlotCopy_'+s.number,'Cup',s.number):'')+slotActionButton('DELETE','cupSlotDelete_'+s.number,'Cup',s.number):''}</div></div>`).join('');
- page('CUP SAVE SLOTS','Ten independent continental championship slots. The active slot saves after every match or bye.',`${cupSlots.error?`<p role="alert">Cup save storage is damaged: ${escapeHTML(cupSlots.error)}.${cupSlots.hasRecoverySnapshot?' The export action will download the last verified save snapshot.':' No verified in-memory recovery snapshot is available.'}</p>`:''}<div class="scroll">${rows}</div><p class="muted">Existing single-save championships are copied into slot 1 without deleting their original data. Back up your slots before importing another Cup vault.</p><div class="row">${button('EXPORT CUP BACKUP','cupBackupExport')}${button('IMPORT CUP BACKUP','cupBackupImport')}</div>`,'navCups');
+ page('CUP SAVE SLOTS','Ten independent continental championship slots. The active slot saves after every match or bye.',`${cupSlots.sessionOnly?'<p role="status" aria-live="polite" class="muted">Session-only Cup storage: progress works until this page closes and will then be lost.</p>':''}${cupSlots.error?`<p role="alert">Cup save storage is damaged: ${escapeHTML(cupSlots.error)}.${cupSlots.hasRecoverySnapshot?' The export action will download the last verified save snapshot.':' No verified in-memory recovery snapshot is available.'}</p>`:''}<div class="scroll">${rows}</div><p class="muted">Existing single-save championships are copied into slot 1 without deleting their original data. Back up your slots before importing another Cup vault.</p><div class="row">${button('EXPORT CUP BACKUP','cupBackupExport')}${button('IMPORT CUP BACKUP','cupBackupImport')}</div>`,'navCups');
 }
 function showSlotNameDialog(kind,operation,number){
  const isCareer=kind==='career',isRename=operation==='rename';
@@ -1191,7 +1209,7 @@ function persistLeagueResult(value){
  catch(error){console.warn('League progress could not be committed:',error.message);return false;}
 }
 function writeCupSlot(slot,tournament,name){
- try{const result=cupSlots.save(slot,tournament,name);cupSaveVolatile=false;return result;}
+ try{const result=cupSlots.save(slot,tournament,name);cupSaveVolatile=!!cupSlots.sessionOnly;return result;}
  catch(error){
   if(!/Persistent storage unavailable/.test(String(error?.message)))throw error;
   if(!cupSaveVolatile)console.warn('Cup progress is session-only: persistent storage unavailable.');

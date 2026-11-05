@@ -26,6 +26,29 @@ test('SAVE-102 legacy import does not erase old Cup or overwrite existing slots'
  assert.equal(JSON.parse(db.getItem('legend_continentalRun')).club,8);
  assert.equal((await api()).create(db).importLegacy(campaign(9)),false);
 });
+test('SAVE-103 denied startup reads use a session-only Cup vault without storage writes',async()=>{
+ const mod=await api(),attempts={reads:0,writes:0,removes:0};
+ const denied={getItem(){attempts.reads++;throw Error('SecurityError: storage read denied');},
+  setItem(){attempts.writes++;throw Error('SecurityError: storage write denied');},
+  removeItem(){attempts.removes++;throw Error('SecurityError: storage remove denied');}};
+ const vault=mod.create(denied);
+ assert.equal(vault.sessionOnly,true,'startup read denial is explicitly exposed for UI messaging');
+ assert.equal(vault.error,null,'unavailable storage is not mislabeled as corrupt data');
+ assert.equal(vault.save(1,campaign(8),'Session cup').name,'Session cup');
+ vault.save(2,campaign(9),'Second session cup');
+ assert.equal(vault.active,2);
+ assert.equal(vault.load(1).club,8);
+ assert.equal(vault.active,1);
+ assert.equal(vault.duplicate(1),3);
+ vault.remove(2);
+ assert.equal(vault.list()[1].occupied,false);
+ const backup=vault.exportBackup();
+ assert.equal(vault.inspectBackup(backup).occupied,2,'session-only progress remains exportable');
+ assert.deepEqual(attempts,{reads:1,writes:0,removes:0},'all later mutations stay in page memory');
+ const restarted=mod.create(denied);
+ assert.equal(restarted.sessionOnly,true);
+ assert.equal(restarted.list().filter(slot=>slot.occupied).length,0,'session state is not claimed to survive restart');
+});
 test('SAVE-102 delete, validation, corruption and failed writes are safe',async()=>{
  const mod=await api(),db=memory(),vault=mod.create(db);
  vault.save(1,campaign(10));vault.save(2,campaign(11));
@@ -37,11 +60,14 @@ test('SAVE-102 delete, validation, corruption and failed writes are safe',async(
  assert.equal(mod.validTournament({...campaign(),phase:'nonsense'}),false);
  const original=db.getItem('legend_cupSlots');
  const failure={getItem:db.getItem,setItem(){throw Error('QuotaExceededError')}};
- assert.throws(()=>mod.create(failure).save(3,campaign(12)),/QuotaExceededError/);
+ const quota=mod.create(failure);
+ assert.equal(quota.sessionOnly,false,'quota/write failures are not classified as a startup read denial');
+ assert.throws(()=>quota.save(3,campaign(12)),/QuotaExceededError/);
  assert.equal(db.getItem('legend_cupSlots'),original);
  db.setItem('legend_cupSlots','{bad json');
  const blocked=mod.create(db);
  assert.ok(blocked.error);
+ assert.equal(blocked.sessionOnly,false,'readable but corrupt saves are not silently replaced by volatile state');
  assert.throws(()=>blocked.save(1,campaign()),/cannot be modified/);
  assert.equal(db.getItem('legend_cupSlots'),'{bad json');
 });

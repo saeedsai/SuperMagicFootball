@@ -4,6 +4,7 @@ Use [MASTER_BACKLOG.md](MASTER_BACKLOG.md) as the single current plan and status
 
 ## Read for current work
 
+- [Candidate 0.12.81.41 validation](CANDIDATE_012841_VALIDATION_20261105.md): account-generation isolation for Online Career/Ultimate Team and explicit session-only Cup progress disclosure.
 - [Candidate 0.12.81.40 validation](CANDIDATE_012840_VALIDATION_20261105.md): readable stun-bird animation and bounded online input buffering, with renderer and client-contract evidence.
 - [Stun-hit bird cue render](evidence/browser/shot_confused_birds_20261105.png): actual player-renderer contact sheet across nine reactions and eight views.
 - [Candidate 0.12.81.39 validation](CANDIDATE_012839_VALIDATION_20261105.md): themed-ball gameplay surfaces, bounded PVP result recovery, and accessible account-switch/storage-repair checks.
