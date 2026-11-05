@@ -1,6 +1,6 @@
 # Candidate 0.12.81.56 validation
 
-**Status: local candidate; full build/Node/data validation passed; exact-head CI, promotion and deployment have not run.** This increment makes authenticated Online PVP matches resumable after a graceful API service restart while retaining interruption for unclean crashes, invalid state, old schema/builds, or missing checkpoints.
+**Status: promoted to `main` and deployed to Pages for SHA `816fbef65f737c283ecf6dd6d98aef9ba84eaddf`; dev exact-head gates, hosted smoke, and main Census passed.** This increment makes authenticated Online PVP matches resumable after a graceful API service restart while retaining interruption for unclean crashes, invalid state, old schema/builds, or missing checkpoints.
 
 ## Changes
 
@@ -18,12 +18,12 @@
 - Store tests cover lifecycle binding, monotonic ticks, transaction rollback, checksum/byte corruption, expiration, bounded listing and cleanup.
 - Service and matchmaking tests cover assignment mismatch, authenticated same-match resume, stale/crash checkpoint rejection, result precedence, timer-stop graceful persistence, transaction ordering and startup fail-closed behavior.
 - `npm run test:node` passed: build (**5,223,137 JS / 5,346,332 HTML characters**), Node **2,309/2,309**, and Club26/FC27 parity check. The release/version contract passed **16/16** after the version and cache metadata update. `git diff --check` passed.
-- An isolated local PostgreSQL 16 container passed runtime migrations and idempotent re-run, active-lifecycle binding, checkpoint write/read/list, durable-result reconciliation and stale-checkpoint deletion. No hosted database/API, real SIGTERM/hard-kill drill, load test, real-network client pair or device acceptance has run.
+- An isolated local PostgreSQL 16 container passed runtime migrations and idempotent re-run, active-lifecycle binding, checkpoint write/read/list, durable-result reconciliation and stale-checkpoint deletion. An isolated local PostgreSQL 16 service close/restart harness with the real WebSocket transport and two loopback clients persisted and restored an active match at the exact tick, then reattached both seats using one-use resume tickets. Ticket issuance was called inside the service; OIDC, separate-network clients, hosted service and physical devices were not exercised. No hosted database/API, OS SIGTERM/hard-kill drill, load test, two-network client pair or device acceptance has run.
 
 ## Remaining acceptance
 
-- Run exact-head GitHub Census and Modular QA for the frozen candidate SHA.
-- If dev gates pass, run protected promotion, Pages hosted-byte smoke and main Census.
+- Dev Full Regression Census `42041381910` and Modular QA `42041381928` passed for the exact SHA; protected promotion placed that same SHA on `main`.
+- Pages deployment `42042745653`, hosted smoke and main Full Regression Census `42042746868` passed for that exact SHA.
 - Add the checkpoint schema through the existing database migration path on the owner-provided server. Test real SIGTERM handoff/restore against PostgreSQL, followed by a hard-kill test that must mark no-result matches interrupted.
 - Test two authenticated clients reconnecting to one restored match over separate networks. Verify backup/restore, database failure, bounded storage and graceful timeout behavior.
 - The authenticated API is still not deployed; this candidate does not make public Online PVP/Career/Ultimate Team available.
