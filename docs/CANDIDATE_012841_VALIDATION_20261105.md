@@ -13,6 +13,8 @@
 - `node --test tests/cup_save_slots.test.cjs tests/cup_slot_ui_dispatch.test.cjs tests/cup_storage_rollback.test.cjs`: **15/15 passed**, including denied startup reads, usable session-only Cup operations, accessible warning wiring, rollback behavior and quota failure handling.
 - `git diff --check`: passed.
 
-## Limits and remaining gates
+## Release gates and hosted status
 
-Online browser coverage uses mocked services and does not establish real account-provider, production database, hosted API, two-device or network behavior. Cup session-only data is intentionally temporary when browser storage denies persistence. Exact-head CI, protected promotion, deployment and hosted smoke are pending for .41. Human visual and physical-device acceptance remain open. Candidate .40 is the latest deployed build; its online configuration is blank, so authenticated online play is not live.
+- Exact-head `dev` Full Regression Census [41957676888](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41957676888) and Modular Game Dev QA [41957676919](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41957676919) passed for SHA `47b70f9bc8f3fbf2b9dad6b83429d162d12c2507`. The first main census attempt had one `lan_auto_two_browser_qa.py` timeout; the same exact-main census rerun passed all shards [41958609621](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41958609621).
+- GitHub Pages deployment [41958609511](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41958609511) and hosted smoke passed. Live root, service worker, release module and online config all returned HTTP 200; the service worker and release module report `.41`. `online-config.js` still has empty API/OIDC fields, so authenticated online play is not enabled.
+- Automated visual/device and physical-device acceptance remain open. The Cup warning has UI integration assertions but has not received owner visual review. Session-only Cup progress remains temporary by design.
