@@ -13,18 +13,21 @@ before(async()=>{
 });
 
 function context(withGradient=true){
- const fills=[],arcs=[],strokes=[],rotations=[],polygonFills=[];
+ const fills=[],arcs=[],strokes=[],rotations=[],polygonFills=[],lineDashes=[];
  const ctx={
-  fills,arcs,strokes,rotations,polygonFills,fillStyle:null,strokeStyle:null,lineWidth:1,pathVertices:0,
+  fills,arcs,strokes,rotations,polygonFills,lineDashes,fillStyle:null,strokeStyle:null,lineWidth:1,pathVertices:0,
   save(){},restore(){},translate(){},rotate(v){rotations.push(v)},
   beginPath(){this.pathVertices=0},arc(x,y,r){arcs.push({x,y,r})},ellipse(){},quadraticCurveTo(){},clip(){},
   moveTo(){this.pathVertices=1},lineTo(){this.pathVertices++},closePath(){},fill(){fills.push(this.fillStyle);polygonFills.push({color:this.fillStyle,vertices:this.pathVertices})},
-  stroke(){strokes.push({color:this.strokeStyle,width:this.lineWidth,vertices:this.pathVertices})},
+  stroke(){strokes.push({color:this.strokeStyle,width:this.lineWidth,vertices:this.pathVertices,dash:this.lineDash||[]})},
  };
- if(withGradient)ctx.createRadialGradient=(...args)=>{
+ if(withGradient){
+  ctx.setLineDash=segments=>{ctx.lineDash=segments.slice();lineDashes.push(segments.slice())};
+  ctx.createRadialGradient=(...args)=>{
   const gradient={args,stops:[],addColorStop(offset,color){this.stops.push([offset,color])}};
   ctx.fills.push(gradient);return gradient;
- };
+  };
+ }
  return ctx;
 }
 
@@ -40,6 +43,8 @@ test('game ball gets layered sphere lighting while preserving its exact radius a
  assert.equal(ctx.arcs[0].r,18,'clip radius stays equal to the gameplay ball radius');
  assert.equal(ctx.rotations[0],.75,'painted panels keep the existing rotation argument');
  assert.ok(ctx.strokes.some(stroke=>stroke.color==='#52616b'),'classic panels expose fine seams');
+ assert.equal(ctx.lineDashes.length,6,'thread accents trace the center and five surrounding panel seams');
+ assert.ok(ctx.strokes.some(stroke=>stroke.color==='rgba(247,242,224,.62)'&&stroke.dash.length===2),'thread detail uses fine broken stitches');
  assert.ok(ctx.fills.some(fill=>fill==='rgba(255,255,255,.74)'),'surface keeps a crisp specular highlight');
 });
 

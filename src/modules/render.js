@@ -1683,12 +1683,20 @@ class Renderer{
    }
    ctx.closePath();
   };
+  const strokeClassicThread=()=>{
+   // Fine off-white thread catches the light along the seams at menu scale,
+   // while staying a sub-pixel accent on the 17-unit in-match ball.
+   if(typeof ctx.setLineDash!=='function')return;
+   ctx.save();ctx.setLineDash([Math.max(.75,r*.055),Math.max(1,r*.075)]);
+   ctx.lineWidth=Math.max(.3,r*.014);ctx.lineCap='round';ctx.strokeStyle='rgba(247,242,224,.62)';ctx.stroke();ctx.restore();
+  };
   const center=[[0,-r*.46],[r*.44,-r*.14],[r*.28,r*.39],[-r*.28,r*.39],[-r*.44,-r*.14]];
   traceSphericalPanel(center);ctx.fillStyle=panel;ctx.fill();
   // Keep the hub panel's stitched edge visible at gameplay radius. A uniform
   // fine stroke matches the surrounding patches without changing the outline.
   traceSphericalPanel(center);
   ctx.lineWidth=Math.max(.55,r*.035);ctx.strokeStyle=seam;ctx.stroke();
+  traceSphericalPanel(center);strokeClassicThread();
   // Five connected five-sided outer panels form the traditional stitched
   // pentagon layout around the center. The inward point meets the center
   // panel so the ball reads as one panel network instead of floating spots.
@@ -1696,6 +1704,7 @@ class Renderer{
    const angle=a*PI*2/5-PI/2,cx=Math.cos(angle)*r*.64,cy=Math.sin(angle)*r*.64,pr=r*.18;
    const points=Array.from({length:5},(_,i)=>{const side=angle+PI+i*PI*2/5;return[cx+Math.cos(side)*pr,cy+Math.sin(side)*pr]});
    traceSphericalPanel(points);ctx.fillStyle=panel;ctx.fill();traceSphericalPanel(points);ctx.lineWidth=Math.max(.55,r*.035);ctx.strokeStyle=seam;ctx.stroke();
+   traceSphericalPanel(points);strokeClassicThread();
    const inner=[Math.cos(angle)*r*.48,Math.sin(angle)*r*.48],outer=[Math.cos(angle)*r*.55,Math.sin(angle)*r*.55];
    line(ctx,[inner,outer],seam,Math.max(.5,r*.027));
   }

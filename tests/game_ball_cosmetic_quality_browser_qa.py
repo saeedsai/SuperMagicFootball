@@ -2,10 +2,11 @@ from pathlib import Path
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from threading import Thread
+import os
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / 'docs/evidence/browser/ball_rolling_projection_012850.png'
+OUT = Path(os.environ.get('SMF_QA_ARTIFACT_DIR', ROOT / 'docs/evidence/browser')) / 'ball_rolling_projection_012850.png'
 OUT.parent.mkdir(parents=True, exist_ok=True)
 
 MODELS = ['classic', 'meteor', 'ice', 'gold', 'retro']
@@ -33,17 +34,20 @@ try:
     result = page.evaluate("""models => {
       const renderer=SupermagicFootball.renderer, rotations=[.45,1.15,2.25];
       const headings=[['RIGHT',1,0],['LEFT',-1,0],['UP',0,-1],['DOWN',0,1]];
-      const canvas=document.createElement('canvas');canvas.width=1280;canvas.height=640;
-      canvas.style.cssText='position:fixed;left:0;top:0;width:1280px;height:640px;z-index:99999';
+      const canvas=document.createElement('canvas');canvas.width=1280;canvas.height=720;
+      canvas.style.cssText='position:fixed;left:0;top:0;width:1280px;height:720px;z-index:99999';
       const ctx=canvas.getContext('2d');
-      const sky=ctx.createLinearGradient(0,0,0,640);sky.addColorStop(0,'#08152d');sky.addColorStop(.40,'#183c60');sky.addColorStop(.405,'#287d47');sky.addColorStop(1,'#0c472b');ctx.fillStyle=sky;ctx.fillRect(0,0,1280,640);
+      const sky=ctx.createLinearGradient(0,0,0,720);sky.addColorStop(0,'#08152d');sky.addColorStop(.35,'#183c60');sky.addColorStop(.355,'#287d47');sky.addColorStop(1,'#0c472b');ctx.fillStyle=sky;ctx.fillRect(0,0,1280,720);
       ctx.strokeStyle='rgba(230,248,216,.25)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,258);ctx.lineTo(1280,258);ctx.stroke();
-      ctx.fillStyle='#f5f8ff';ctx.textAlign='center';ctx.font='800 18px system-ui';ctx.fillText('MATCH BALL · 3D ROLL PROJECTION · 17 UNIT RADIUS',640,27);
+      ctx.fillStyle='#f5f8ff';ctx.textAlign='center';ctx.font='800 18px system-ui';ctx.fillText('MATCH BALL · MENU & IN-MATCH SCALE QUALITY',640,27);
       ctx.font='600 14px system-ui';
+      ctx.fillStyle='#d9eaff';ctx.fillText('FEATURED / MENU SCALE · RADIUS 54',640,54);
       for(let i=0;i<models.length;i++){
-        const x=i*256+128;ctx.fillStyle='#d9eaff';ctx.fillText(models[i].toUpperCase(),x,53);
+        const x=i*256+128;
+        renderer.drawSoccerBall(ctx,x,137,54,models[i],.28+i*.19);
+        ctx.fillStyle='#d6e7ff';ctx.fillText(models[i].toUpperCase(),x,207);
         for(let row=0;row<rotations.length;row++){
-          const y=112+row*172;
+          const y=350+row*140;
           if(i===0){ctx.textAlign='center';ctx.fillStyle='#d3e6f3';ctx.font='600 12px system-ui';ctx.fillText('ROLL ANGLE '+rotations[row].toFixed(2),640,y-34);ctx.font='500 11px system-ui';}
           for(let h=0;h<headings.length;h++){
             const [label,dx,dy]=headings[h],ballX=x+(h-1.5)*54;
@@ -87,7 +91,7 @@ try:
         stateChecks.push({model:models[i],heading,unchanged:JSON.stringify({ball,options})===before});
       }
       const maxRadius=Math.max(...bounds.map(sample=>sample.maxDistance)),minChanged=Math.min(...projectionChecks.map(sample=>sample.changedPixels)),minDistinctHeadings=Math.min(...directionalChecks.map(sample=>sample.distinctHeadings));
-      return {models,rotations,headings:headings.map(([name])=>name),gameplayRadius:17,samples:bounds.length,maxRadius,minChanged,minDistinctHeadings,stateUnchanged:stateChecks.every(sample=>sample.unchanged),callsUseInputs:calls.length===models.length*headings.length&&calls.every((call,i)=>call.r===17&&call.model===models[Math.floor(i/headings.length)]&&call.tumble?.dx===headings[i%headings.length][1]*31&&call.tumble?.dy===headings[i%headings.length][2]*17),canvas:{width:canvas.width,height:canvas.height}};
+      return {models,rotations,headings:headings.map(([name])=>name),menuRadius:54,gameplayRadius:17,samples:bounds.length,maxRadius,minChanged,minDistinctHeadings,stateUnchanged:stateChecks.every(sample=>sample.unchanged),callsUseInputs:calls.length===models.length*headings.length&&calls.every((call,i)=>call.r===17&&call.model===models[Math.floor(i/headings.length)]&&call.tumble?.dx===headings[i%headings.length][1]*31&&call.tumble?.dy===headings[i%headings.length][2]*17),canvas:{width:canvas.width,height:canvas.height}};
     }""", MODELS)
     page.screenshot(path=str(OUT), full_page=False)
     assert result['models'] == MODELS
