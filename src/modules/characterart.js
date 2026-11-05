@@ -337,7 +337,7 @@ const CHARACTER_ART=(()=>{
   // Head shading is composited behind the eyes. Beards must be behind lips.
   beard(c,k,av,f,hair);
   if(seen){
-   const shut=!!opt.hurt||!!opt.cry;
+   const shut=!!opt.hurt||!!opt.cry||!!opt.blink;
    if(front){
     brows(c,-13,-4,av.brows,hair);brows(c,13,-4,av.brows,hair);
     eye(c,-13,7,av.eyes,av.eyeColor,1,true,shut);eye(c,13,7,av.eyes,av.eyeColor,1,true,shut);
@@ -407,6 +407,13 @@ const CHARACTER_ART=(()=>{
   const linear=1-remaining/.24,progress=linear*linear*(3-2*linear);
   const brace=Math.sin(Math.PI*progress);
   return brace<1e-9?0:brace;
+ }
+ function idleBlink(time,index=0){
+  const t=Number(time),rawIndex=Number(index);
+  if(!Number.isFinite(t)||t<0)return false;
+  const player=Number.isFinite(rawIndex)?Math.abs(Math.trunc(rawIndex)):0;
+  const period=4.9+(player%7)*.38,offset=(player*1.71)%period,phase=(t+offset)%period;
+  return phase>=.08&&phase<.19;
  }
  function shorts(c,k,colors){
   const side=k==='side',w=side?16:k.startsWith('quarter')?19:22;
@@ -630,6 +637,7 @@ const CHARACTER_ART=(()=>{
   // the only clock; moving/action poses keep their existing animation paths.
   const idleBreath=p.action==='idle'&&!opt.locomotion&&!opt.kick&&!opt.sliding&&!opt.celebrate&&!opt.cry;
   const breathPhase=idleBreath?clamp((Math.sin((Number(opt.time)||0)*2.05+(Number(p.i)||0)*1.17)+1)*.5,0,1):0;
+  const blink=idleBreath&&!opt.hurt&&idleBlink(opt.time,p.i);
   c.save();
   if(breathPhase>0){c.translate(0,-breathPhase*2.2);c.translate(0,-22);c.scale(1,1+breathPhase*.022);c.translate(0,22)}
   stroke(c,[[0,-59],[0,-49]],blend(colors.skin,-.25),17,dark);
@@ -641,10 +649,10 @@ const CHARACTER_ART=(()=>{
   const seamWidth=k==='side'?11:k.startsWith('quarter')?16:19;
   c.moveTo(-seamWidth,-55);c.quadraticCurveTo(-seamWidth+2,-43,-seamWidth+5,-34);c.stroke();c.restore();
   arm(c,1,k,p,colors,{...opt,tattoo:av.tattoo},true);
-  face(c,k,av,colors.skin,colors.hair,opt);
+  face(c,k,av,colors.skin,colors.hair,{...opt,blink});
   c.restore();
   c.restore();
  }
- return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,version:3};
+ return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,idleBlink,version:3};
 })();
 export {CHARACTER_ART};

@@ -29,6 +29,7 @@ function service(overrides={}){
   let time=10_000;const engines=[];const engineOptions=[];const sent=[];const requeued=[];
   const api=createOnlineMatchmaking({createEngine:async options=>{engineOptions.push(options);const engine=makeEngine(overrides);if(options.teamIds)engine.state={...engine.state,teamIds:options.teamIds.slice()};engines.push(engine);return engine;},
     sendSnapshot:(userId,envelope,metadata)=>{sent.push({userId,envelope,metadata});return overrides.sendSnapshot?.(userId,envelope,metadata)??true;},
+    onMatchError:overrides.onMatchError,
     onRequeue:(userId,details)=>requeued.push({userId,details}),onMatchFinished:overrides.onMatchFinished||(async result=>({matchId:result.matchId})),now:()=>time,autoTick:false,
     ...(overrides.config||{})});
   return {api,engines,engineOptions,sent,requeued,setTime:value=>{time=value;}};
@@ -48,7 +49,7 @@ test('tickets bind canonical selected teams; queue-time tampering cannot change 
 });
 
 test('a thrown match-engine step closes only that match and releases its participants',async()=>{
- const ctx=service({onStep(){throw new Error('unexpected simulation fault');}});
+ const errors=[],ctx=service({onStep(){throw new Error('unexpected simulation fault');},onMatchError:(matchId,code)=>errors.push([matchId,code])});
  const first=ctx.api.issueTicket(a),second=ctx.api.issueTicket(b);
  await ctx.api.queueTicket({userId:a,ticket:first.ticket});
  const paired=await ctx.api.queueTicket({userId:b,ticket:second.ticket});
@@ -57,6 +58,7 @@ test('a thrown match-engine step closes only that match and releases its partici
  assert.equal(result.advanced,false);
  assert.equal(result.closed,true);
  assert.equal(result.reason,'engine-error');
+ assert.deepEqual(errors,[[paired.matchId,'engine-error']]);
  assert.deepEqual(ctx.api.getState().active,[]);
  assert.equal(ctx.api.issueTicket(a).ok,true,'a failed match cannot strand either account as active');
  ctx.api.close();

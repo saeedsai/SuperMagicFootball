@@ -126,11 +126,11 @@ function validatedSnapshot(envelope,matchId){
  * Create a short-lived single-use-ticket queue and server-owned match sessions.
  * `queueTicket({userId,ticket})` must receive the user ID from trusted auth middleware.
  */
-export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRequeue=()=>{},onMatchFinished=async result=>({matchId:result.matchId}),onMatchPersisted=()=>{},
+export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRequeue=()=>{},onMatchFinished=async result=>({matchId:result.matchId}),onMatchPersisted=()=>{},onMatchError=()=>{},
   now=Date.now,setIntervalFn=globalThis.setInterval,clearIntervalFn=globalThis.clearInterval,
   autoTick=true,ticketTtlMs=30_000,queueTtlMs=60_000,disconnectGraceMs=15_000,maxSnapshotBuffer=4,
   maxPendingTickets=512,maxQueuedUsers=256,maxActiveMatches=64,validTeamIds=null}={}){
-  if(typeof createEngine!=='function'||typeof sendSnapshot!=='function'||typeof onRequeue!=='function'||typeof onMatchFinished!=='function'||typeof onMatchPersisted!=='function'||
+  if(typeof createEngine!=='function'||typeof sendSnapshot!=='function'||typeof onRequeue!=='function'||typeof onMatchFinished!=='function'||typeof onMatchPersisted!=='function'||typeof onMatchError!=='function'||
      typeof now!=='function'||typeof setIntervalFn!=='function'||typeof clearIntervalFn!=='function'||
      typeof autoTick!=='boolean'||!Number.isSafeInteger(ticketTtlMs)||ticketTtlMs<1000||ticketTtlMs>60_000||
      !Number.isSafeInteger(queueTtlMs)||queueTtlMs<1000||queueTtlMs>60_000||!Number.isSafeInteger(disconnectGraceMs)||disconnectGraceMs<1000||disconnectGraceMs>60_000||
@@ -387,7 +387,11 @@ export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRe
     }
     if(!result.advanced&&['engine-rejected','engine-error'].includes(result.reason)){
       stopRecord(record,result.reason);matches.delete(matchId);
-      if(result.reason==='engine-error')return Object.freeze({...result,closed:true});
+      if(result.reason==='engine-error'){
+        // Emit only a fixed code; engine exception text can contain internal details.
+        try{onMatchError(matchId,'engine-error');}catch{}
+        return Object.freeze({...result,closed:true});
+      }
     }
     return result;
   }

@@ -14,7 +14,7 @@ test('online service configures Career AI as one human plus server CPU and advan
  const pool={async query(sql){events.push(['query',sql]);return {rows:[]};},async connect(){return {query:async()=>({rows:[]}),release(){}};},on(){},async end(){events.push(['pool-end']);}};
  let matcherOptions;
  const transport={
-  sendSnapshot(){return true;},onRequeue(){},onMatchFinished(matchId){events.push(['ack',matchId]);return true;},close(){events.push(['transport-close']);}
+  sendSnapshot(){return true;},onRequeue(){},onMatchError(matchId,code){events.push(['match-error',matchId,code]);return true;},onMatchFinished(matchId){events.push(['ack',matchId]);return true;},close(){events.push(['transport-close']);}
  };
  let advanceAttempts=0;
  const runtimeFactory=async({canonicalTeamIds})=>{
@@ -41,6 +41,8 @@ test('online service configures Career AI as one human plus server CPU and advan
   assert.deepEqual(events.filter(row=>['persist','advance'].includes(row[0])).map(row=>row[0]),['persist','advance','persist','advance']);
   assert.equal(matcherOptions.onMatchPersisted(result),true);
   assert.deepEqual(events.at(-1),['ack',result.matchId]);
+  assert.equal(matcherOptions.onMatchError(result.matchId,'engine-error'),true);
+  assert.deepEqual(events.at(-1),['match-error',result.matchId,'engine-error']);
  }finally{await service.close();}
  assert.ok(events.some(row=>row[0]==='pool-end'));
 });

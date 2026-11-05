@@ -399,7 +399,7 @@ function showOnlineMenu(){menuChoices('nav-online','ONLINE MATCHES','Choose a pr
  navItem('Ultimate Team · Collection','navOnlineUltimate','Acquire canonical teams and players with earned online tokens; local squads stay untouched.','active','⭐'),
  navItem('Online Career · Season','navOnlineCareer','Play a server-managed season, then review fixtures and standings.','active','💼'),
  navItem('Online Cup / League','laterOnlineCup','Multiplayer competitive tournaments.','later','🏆')],'home');}
-function onlineMatchStatusText(state){return state==='connecting'?'Connected. Finding an opponent…':state==='queued'?'Searching for an opponent. Keep this screen open.':state==='matched'?'Opponent found. Loading the server match…':state==='resumed'?'Reconnected to the same match.':state==='finished'?'Match complete.':state==='rejected'?'The server could not add you to matchmaking. Try again shortly.':state==='disconnected'?'Connection lost. The server has paused this match briefly; reconnect or leave.':state==='input-rejected'?'The server rejected an action sample.':'';}
+function onlineMatchStatusText(state){return state==='connecting'?'Connected. Finding an opponent…':state==='queued'?'Searching for an opponent. Keep this screen open.':state==='matched'?'Opponent found. Loading the server match…':state==='resumed'?'Reconnected to the same match.':state==='finished'?'Match complete.':state==='aborted'?'The server stopped this match. No result or reward was recorded.':state==='rejected'?'The server could not add you to matchmaking. Try again shortly.':state==='disconnected'?'Connection lost. The server has paused this match briefly; reconnect or leave.':state==='input-rejected'?'The server rejected an action sample.':'';}
 function onlineSelectableTeams(){const serverTeamIds=new Set(TEAMS.map(team=>team.id));return GAME_ASSETS.teams.filter(team=>typeof team?.id==='string'&&serverTeamIds.has(team.id)&&!team.id.startsWith('demo_')&&!['concept_demo','crown_royals_reference'].includes(team.group));}
 function onlineMatchTeamOptions(){
  if(!onlineMatchTeamsLoaded)return '<option value="">VERIFYING ONLINE COLLECTION…</option>';
@@ -448,6 +448,20 @@ function updateOnlineMatchStatus(update){
   const saved=onlineHistoryController?.rememberPendingMatch(update?.matchId)===true;
   if(!saved){const state=onlineHistoryController?.state;onlineMatchRecoveryStatus=state?.pendingMatchCapacityReached?'The pending-result limit was reached. This match ID could not be added safely; check the pending receipts before continuing.':state?.pendingStorageInvalid||state?.pendingStorageReadError?'Pending-result storage is unreadable. This match ID could not be added safely.':'Session storage is unavailable; this match ID is only held in memory and may not survive a reload.';}
   else onlineMatchRecoveryStatus='';
+ }
+ if(state==='aborted'){
+  const failedMatchId=typeof update?.matchId==='string'?update.matchId:null,wasCareer=onlineMatchCareer;
+  const pendingIds=onlineHistoryController?.state.pendingMatchIds||[];
+  const markerClear=!wasCareer&&!failedMatchId||!pendingIds.includes(failedMatchId)||onlineHistoryController?.clearPendingMatch(failedMatchId)===true;
+  stopOnlineServerMatch();game.matchState='none';onlineMatchCareer=false;onlineMatchInitialTeamIds=[];onlineCareerActiveFixtureNo=null;onlineMatchManualStop=false;
+  if(wasCareer){
+   onlineCareerProgressStatus='The fixture stopped after a server simulation error. No result or reward was recorded; the fixture remains available to retry.';
+   showOnlineCareer('onlineCareerPlayNext');
+  }else{
+   onlineMatchStatus=markerClear?'The server stopped this match after a simulation error. No result or reward was recorded; you can try again.':'The server stopped this match without a result or reward, but this browser could not clear its pending-result marker. Check the signed-in account history before retrying.';
+   showOnlineServerMatch('onlineMatchStart');
+  }
+  return;
  }
  onlineMatchStatus=onlineMatchStatusText(state);const status=$('onlineMatchStatus');if(status)status.textContent=onlineMatchStatus;
  if(state==='matched'&&onlineMatchRecoveryStatus)toast('RESULT RECOVERY WARNING · KEEP THIS TAB OPEN',4200);

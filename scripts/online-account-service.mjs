@@ -59,6 +59,7 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
       createEngine:({teamIds,rosterPlayerIds,mode}={})=>engineFactory({home:0,away:9,...(teamIds?{teamIds}:{}),...(rosterPlayerIds?{rosterPlayerIds}:{}),...(mode==='career-ai'?{mode:'career-ai',humans:1}:{}),halfSeconds:120,seed:randomInt(0,0x100000000)}),
       sendSnapshot:(userId,envelope,context)=>transport?.sendSnapshot(userId,envelope,context)??false,
       onRequeue:(userId,detail)=>transport?.onRequeue(userId,detail),
+      onMatchError:(matchId,code)=>transport?.onMatchError(matchId,code)??false,
       onMatchPersisted:result=>transport?.onMatchFinished(result.matchId)??false,
       onMatchFinished:async result=>{
         if(!recordFinalResult)throw new Error('Durable result store is not ready');

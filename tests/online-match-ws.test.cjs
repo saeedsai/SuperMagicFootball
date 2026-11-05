@@ -6,7 +6,7 @@ const {createOnlineMatchmaking}=require('../scripts/online-matchmaking.mjs');
 const {attachOnlineMatchWebSocket}=require('../scripts/online-match-ws.mjs');
 
 const ORIGIN='https://game.example.test';
-function fakeEngineFactory(){
+function fakeEngineFactory({engineFault=false}={}){
   const engines=[];
   const createEngine=async()=>{
     const players=Array.from({length:12},(_,n)=>({slot:n%6,team:Math.floor(n/6),index:n%6,assetId:`${n<6?'home':'away'}/player${n%6}`,
@@ -18,20 +18,21 @@ function fakeEngineFactory(){
         ball:{x:.5,y:.5,height:0,velocity:{x:0,y:0,height:0},owner:null,shot:null,roll:0},players,
         hazards:{magic:[],walls:[],nova:null,tornado:null,lightning:null,weather:'Clear'}},inputs:null,
       get snapshot(){return this.state},
-      step(dt,inputs){this.inputs=inputs;this.state={...this.state,tick:this.state.tick+1,clock:Math.max(0,this.state.clock-dt),clockRemaining:Math.max(0,this.state.clockRemaining-dt)};return {accepted:true,snapshot:this.snapshot}},
+      step(dt,inputs){if(engineFault)throw new Error('private simulation details');this.inputs=inputs;this.state={...this.state,tick:this.state.tick+1,clock:Math.max(0,this.state.clock-dt),clockRemaining:Math.max(0,this.state.clockRemaining-dt)};return {accepted:true,snapshot:this.snapshot}},
       resumeAfterHalftime(){this.state.matchState='play';return true;}};
     engines.push(engine);return engine;
   };
   return {engines,createEngine};
 }
-async function serverSetup(){
+async function serverSetup({engineFault=false}={}){
   const server=http.createServer((_request,response)=>{response.writeHead(404);response.end()});
   await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve)});
-  const {createEngine,engines}=fakeEngineFactory();let transport;
+  const {createEngine,engines}=fakeEngineFactory({engineFault});let transport;
   let matchmaking;
   matchmaking=createOnlineMatchmaking({createEngine,autoTick:false,
     sendSnapshot:(userId,envelope,context)=>transport?.sendSnapshot(userId,envelope,context)??false,
-    onRequeue:(userId,detail)=>transport?.onRequeue(userId,detail)});
+    onRequeue:(userId,detail)=>transport?.onRequeue(userId,detail),
+    onMatchError:(matchId,code)=>transport?.onMatchError(matchId,code)??false});
   transport=attachOnlineMatchWebSocket(server,{matchmaking,allowedOrigins:[ORIGIN]});
   return {server,matchmaking,transport,engines,url:`ws://127.0.0.1:${server.address().port}/api/v1/matches`,close:async()=>{
     transport.close();matchmaking.close();await new Promise(resolve=>server.close(()=>resolve()));}};
@@ -116,6 +117,43 @@ test('terminal snapshot does not claim persistence until the result store acknow
     assert.equal(ctx.transport.onMatchFinished(matchedA.matchId),true);
     assert.equal((await a.waitFor('match-finished')).matchId,matchedA.matchId);
     assert.equal((await b.waitFor('match-finished')).matchId,matchedA.matchId);
+  }finally{await ctx.close()}
+});
+
+test('engine fault notifies both ticketed seats as a non-result and never exposes exception text',async()=>{
+  const ctx=await serverSetup({engineFault:true});
+  try{
+    const a=await open(ctx,newTicket(ctx.matchmaking,'user_alpha'));
+    const b=await open(ctx,newTicket(ctx.matchmaking,'user_bravo'));
+    const matched=await a.waitFor('matched');await b.waitFor('matched');
+    const result=ctx.matchmaking.tick(matched.matchId);
+    assert.equal(result.reason,'engine-error');assert.equal(result.closed,true);
+    const errorA=await a.waitFor('match-error'),errorB=await b.waitFor('match-error');
+    assert.deepEqual(errorA,{type:'match-error',matchId:matched.matchId,code:'engine-error'});
+    assert.deepEqual(errorB,errorA);
+    assert.equal(a.messages.some(message=>message.type==='match-finished'),false);
+    assert.equal(b.messages.some(message=>message.type==='match-finished'),false);
+    assert.equal(JSON.stringify(errorA).includes('private simulation details'),false);
+    assert.equal(ctx.transport.sendSnapshot('user_alpha',{matchId:matched.matchId,tick:1,snapshot:ctx.engines[0].snapshot},{side:0}),false);
+    assert.equal(ctx.transport.onMatchError(matched.matchId,'database-error'),false);
+  }finally{await ctx.close()}
+});
+
+test('engine fault emits a typed non-result event to both seats and cannot be relabeled or revived',async()=>{
+  const ctx=await serverSetup({engineFault:true});
+  try{
+    const a=await open(ctx,newTicket(ctx.matchmaking,'user_alpha'));
+    const b=await open(ctx,newTicket(ctx.matchmaking,'user_bravo'));
+    const matched=await a.waitFor('matched');await b.waitFor('matched');
+    const result=ctx.matchmaking.tick(matched.matchId);
+    assert.equal(result.reason,'engine-error');assert.equal(result.closed,true);
+    const errorA=await a.waitFor('match-error'),errorB=await b.waitFor('match-error');
+    assert.deepEqual(errorA,{type:'match-error',matchId:matched.matchId,code:'engine-error'});
+    assert.deepEqual(errorB,errorA);
+    assert.equal(a.messages.some(row=>row.type==='match-finished'),false);
+    assert.equal(b.messages.some(row=>row.type==='match-finished'),false);
+    assert.equal(ctx.transport.sendSnapshot('user_alpha',{matchId:matched.matchId,tick:1,snapshot:ctx.engines[0].snapshot},{side:0}),false);
+    assert.equal(ctx.transport.onMatchError(matched.matchId,'database-error'),false);
   }finally{await ctx.close()}
 });
 

@@ -151,3 +151,14 @@ test('only the active match can deliver durable-finish status to a client',async
  message(socket,{type:'match-finished',matchId:id});
  assert.equal(events.status.at(-1).state,'finished');assert.equal(client.matchId,null);assert.equal(client.side,null);
 });
+
+test('typed engine error clears the client seat without treating the match as finished',async()=>{
+ const {client,events}=await setup();await client.connect();const socket=FakeSocket.instances[0];message(socket,{type:'matched',matchId:id,side:1});
+ message(socket,{type:'match-error',matchId:id,code:'engine-error',detail:'must not be present'});
+ assert.equal(events.errors.at(-1).code,'invalid-snapshot');assert.equal(client.matchId,id,'malformed terminal event cannot clear a valid seat');
+ message(socket,{type:'match-error',matchId:id,code:'engine-error'});
+ assert.equal(events.status.at(-1).state,'aborted');assert.equal(events.status.at(-1).reason,'engine-error');
+ assert.equal(events.status.at(-1).matchId,id);assert.equal(client.matchId,null);assert.equal(client.side,null);
+ assert.equal(events.status.some(row=>row.state==='finished'),false);
+ assert.throws(()=>client.sendInput(1,{x:0,y:0,buttons:{pass:false,shoot:false,dribble:false,jump:false}}),error=>error.code==='match-ended');
+});

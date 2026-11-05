@@ -513,6 +513,21 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
         assert 'Brazil 2' in result_text and '0 Japan' in result_text, repr(result_text)
         assert page.evaluate("sessionStorage.getItem('smf.online.pending-match-result.v1')") is None
 
+        # A server-reported engine fault is explicitly non-result: leave play,
+        # clear only that exact pending marker, and never show rewards/results.
+        api['pvpMatchId']='4'*32
+        page.locator('[data-action="navOnline"]').last.click()
+        page.locator('[data-action="navOnlineServerMatch"]').click()
+        page.wait_for_function("document.querySelector('[data-action=onlineMatchStart]')",timeout=15000)
+        page.locator('[data-action="onlineMatchStart"]').click()
+        page.wait_for_function("document.querySelector('#menu')?.classList.contains('hidden') && window.NekketsuHD?.game.matchState === 'play'",timeout=15000)
+        page.wait_for_function("JSON.parse(sessionStorage.getItem('smf.online.pending-match-result.v1')||'[]').includes('"+'4'*32+"')",timeout=10000)
+        online_ws['socket'].send(json.dumps({'type':'match-error','matchId':'4'*32,'code':'engine-error'}))
+        page.wait_for_function("document.querySelector('#menu')?.classList.contains('hidden') === false && window.NekketsuHD?.game.matchState === 'none' && document.querySelector('[data-action=onlineMatchStart]')",timeout=10000)
+        assert 'No result or reward was recorded' in page.locator('#onlineMatchStatus').inner_text()
+        assert page.locator('#onlineRewardStatus').count()==0
+        assert '4'*32 not in page.evaluate("JSON.parse(sessionStorage.getItem('smf.online.pending-match-result.v1')||'[]')")
+
         # Simulate the terminal WebSocket event being lost after the server has committed a result.
         # The opaque match ID survives only for this tab; after reload, the user signs in again and
         # resolves that exact ID against account-scoped match history before an idempotent reward retry.

@@ -3,6 +3,7 @@ const ONLINE_MATCH_ID=/^[a-f0-9]{32}$/;
 const TICKET=/^[a-f0-9]{64}$/;
 const MAX_BUFFERED_INPUT_BYTES=1024;
 const MAX_SEQUENCE_GAP=240;
+const MATCH_ERROR_CODES=new Set(['engine-error']);
 const BUTTONS=Object.freeze(['pass','shoot','dribble','jump']);
 const AXIS=value=>Number.isFinite(value)&&value>=-1&&value<=1;
 const onlineMatchPlain=value=>value!==null&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)===Object.prototype;
@@ -119,6 +120,13 @@ export function createOnlineMatchClient({requestTicket,requestResumeTicket=null,
   if(message.type==='match-finished'){
    if(!matchId||message.matchId!==matchId){safeError(new OnlineMatchClientError('invalid-snapshot'));return;}
    safeStatus({state:'finished',matchId,side});matchId=null;side=null;return;
+  }
+  if(message.type==='match-error'){
+   if(!exact(message,['type','matchId','code'])||!matchId||message.matchId!==matchId||!MATCH_ERROR_CODES.has(message.code)){
+    safeError(new OnlineMatchClientError('invalid-snapshot'));return;
+   }
+   const failedMatchId=matchId,failedSide=side;matchId=null;side=null;lastSequence=0;lastRequestedSequence=0;sequenceOffset=0;
+   safeStatus({state:'aborted',reason:message.code,matchId:failedMatchId,side:failedSide});return;
   }
   safeError(new OnlineMatchClientError('invalid-snapshot'));
  }

@@ -4,6 +4,7 @@ const WS_PATH='/api/v1/matches';
 const PROTOCOL='smf-online-v1';
 const TICKET=/^ticket\.([a-f0-9]{64})$/;
 const MATCH_ID=/^[a-f0-9]{32}$/;
+const MATCH_ERROR_CODES=new Set(['engine-error']);
 const CLIENT_MESSAGE_KEYS=new Set(['type','matchId','sequence','input']);
 
 function originAllowed(value,allowed){
@@ -64,7 +65,8 @@ export function attachOnlineMatchWebSocket(server,{matchmaking,allowedOrigins,ma
     if(context===null||typeof context!=='object'||Array.isArray(context))return false;
     const hasSide=Object.hasOwn(context,'side');
     if(hasSide&&context.side!==0&&context.side!==1)return false;
-    if(meta.matchId!==envelope.matchId){meta.matchId=envelope.matchId;meta.side=null;meta.notifiedMatchId=null;meta.notifiedSide=null;}
+    if(meta.terminalMatchId===envelope.matchId)return false;
+    if(meta.matchId!==envelope.matchId){meta.matchId=envelope.matchId;meta.side=null;meta.notifiedMatchId=null;meta.notifiedSide=null;meta.terminalMatchId=null;}
     if(hasSide){if(meta.side!==null&&meta.side!==context.side)return false;meta.side=context.side;}
     if(Object.hasOwn(context,'mode')){if(!['quick','career-ai'].includes(context.mode))return false;meta.mode=context.mode;}
     if(!announceMatch(socket,meta,envelope.matchId))return false;
@@ -78,6 +80,18 @@ export function attachOnlineMatchWebSocket(server,{matchmaking,allowedOrigins,ma
       if(!meta||meta.matchId!==matchId)continue;
       delivered=sendJson(socket,{type:'match-finished',matchId})||delivered;
       meta.matchId=null;meta.side=null;meta.notifiedMatchId=null;meta.notifiedSide=null;
+    }
+    return delivered;
+  }
+  function onMatchError(matchId,code){
+    if(!MATCH_ID.test(matchId||'')||!MATCH_ERROR_CODES.has(code))return false;
+    let delivered=false;
+    for(const socket of wss.clients){
+      const meta=metadata.get(socket);
+      if(!meta||meta.matchId!==matchId)continue;
+      delivered=sendJson(socket,{type:'match-error',matchId,code})||delivered;
+      meta.terminalMatchId=matchId;
+      meta.matchId=null;meta.side=null;meta.notifiedMatchId=null;meta.notifiedSide=null;meta.mode=null;meta.resumed=false;
     }
     return delivered;
   }
@@ -95,7 +109,7 @@ export function attachOnlineMatchWebSocket(server,{matchmaking,allowedOrigins,ma
   }
   server.on('upgrade',onUpgrade);
   wss.on('connection',(ws,_request,ticket)=>{
-    const meta={userId:null,matchId:null,side:null,notifiedMatchId:null,notifiedSide:null,windowStart:now(),messageCount:0,closed:false};
+    const meta={userId:null,matchId:null,side:null,notifiedMatchId:null,notifiedSide:null,terminalMatchId:null,windowStart:now(),messageCount:0,closed:false};
     metadata.set(ws,meta);
     ws.on('error',()=>{try{ws.terminate()}catch{}});
     ws.on('message',(bytes,isBinary)=>{
@@ -146,7 +160,7 @@ export function attachOnlineMatchWebSocket(server,{matchmaking,allowedOrigins,ma
         const seat=Array.isArray(result.seats)?result.seats.find(row=>row?.userId===meta.userId):null;
         if(seat?.side===0||seat?.side===1){
           if(meta.matchId&&meta.matchId!==result.matchId){meta.matchId=null;meta.side=null;meta.notifiedMatchId=null;}
-          meta.matchId=result.matchId;meta.side=seat.side;meta.mode=result.mode==='career-ai'?'career-ai':null;meta.resumed=result.resumed===true;
+          meta.matchId=result.matchId;meta.side=seat.side;meta.terminalMatchId=null;meta.mode=result.mode==='career-ai'?'career-ai':null;meta.resumed=result.resumed===true;
           if(result.resumeSnapshot&&result.resumeSnapshot.matchId===result.matchId){
             const envelope=result.resumeSnapshot;
             if(!Number.isSafeInteger(envelope.tick)||envelope.tick<0||!announceMatch(ws,meta,result.matchId)||
@@ -159,7 +173,7 @@ export function attachOnlineMatchWebSocket(server,{matchmaking,allowedOrigins,ma
   });
 
   let closed=false;
-  return Object.freeze({sendSnapshot,onRequeue:notifyRequeue,onMatchFinished,close(){
+  return Object.freeze({sendSnapshot,onRequeue:notifyRequeue,onMatchFinished,onMatchError,close(){
     if(closed)return;closed=true;server.removeListener('upgrade',onUpgrade);
     for(const socket of wss.clients)socket.close(1001,'Server stopping');
     try{wss.close()}catch{}

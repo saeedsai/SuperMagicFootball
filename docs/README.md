@@ -4,6 +4,7 @@ Use [MASTER_BACKLOG.md](MASTER_BACKLOG.md) as the single current plan and status
 
 ## Read for current work
 
+- [Candidate 0.12.81.45 validation](CANDIDATE_012845_VALIDATION_20261105.md): typed client notification for failed non-result matches and natural existing-player idle blinking.
 - [Candidate 0.12.81.44 validation](CANDIDATE_012844_VALIDATION_20261105.md): contain unexpected online match simulation and snapshot failures to the affected match.
 - [Candidate 0.12.81.43 validation](CANDIDATE_012843_VALIDATION_20261105.md): ordinary shot-wake presentation, accessible Online Career archive tables and consistent season snapshots.
 - [Candidate 0.12.81.42 validation](CANDIDATE_012842_VALIDATION_20261105.md): subtle existing-player idle breathing, cached stadium lighting and online-service startup cleanup.
