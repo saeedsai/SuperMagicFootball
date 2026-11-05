@@ -58,3 +58,25 @@ test('authoritative match session has no client-controlled result or settlement 
   assert.match(source,/FIXED_STEP_SECONDS = 1 \/ 30/);
   assert.doesNotMatch(source,/token|wallet|settle/i);
 });
+
+test('unexpected simulation exception closes only the match and returns a bounded failure result', async () => {
+  sessionModule ||= await import(pathToFileURL(require.resolve('../scripts/online-match-session.mjs')).href);
+  const engine={snapshot:{matchState:'play'},step(){throw new Error('unexpected simulation fault');}};
+  const session=sessionModule.createOnlineMatchSession({matchId:'match_0002',participants:[{userId:'user_0001'},{userId:'user_0002'}],engine});
+  const result=session.step();
+  assert.equal(result.advanced,false);
+  assert.equal(result.reason,'engine-error');
+  assert.deepEqual(result.snapshot,{matchState:'play'});
+  assert.equal(session.getState().closed,true);
+  assert.equal(session.step().reason,'match-closed');
+});
+
+test('snapshot failure after an accepted engine tick cannot escape the session timer', async () => {
+  sessionModule ||= await import(pathToFileURL(require.resolve('../scripts/online-match-session.mjs')).href);
+  const engine={reads:0,getSnapshot(){if(++this.reads>1)throw new Error('snapshot serialization fault');return {matchState:'play'};},step(){return {accepted:true};}};
+  const session=sessionModule.createOnlineMatchSession({matchId:'match_0003',participants:[{userId:'user_0001'},{userId:'user_0002'}],engine});
+  const result=session.step();
+  assert.equal(result.reason,'engine-error');
+  assert.equal(result.advanced,false);
+  assert.equal(session.getState().closed,true);
+});

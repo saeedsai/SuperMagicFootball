@@ -385,8 +385,9 @@ export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRe
       catch{return Object.freeze({...result,closed:false,reason:'result-persistence-pending'});}
       return persistFinal(record,result);
     }
-    if(!result.advanced&&result.reason==='engine-rejected'){
-      stopRecord(record,'engine-rejected');matches.delete(matchId);
+    if(!result.advanced&&['engine-rejected','engine-error'].includes(result.reason)){
+      stopRecord(record,result.reason);matches.delete(matchId);
+      if(result.reason==='engine-error')return Object.freeze({...result,closed:true});
     }
     return result;
   }

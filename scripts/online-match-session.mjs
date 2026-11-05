@@ -79,9 +79,20 @@ export function createOnlineMatchSession({matchId, participants, engine, now=()=
     if (closed) return Object.freeze({advanced:false, reason:'match-closed', snapshot:latest});
     const at = now();
     const input = seats.map(seat => at - seat.receivedAt > INPUT_STALE_MS ? neutralInput() : seat.input);
-    const result = engine.step(FIXED_STEP_SECONDS, input);
+    let result, snapshot;
+    try {
+      result = engine.step(FIXED_STEP_SECONDS, input);
+      if (result?.accepted === true) snapshot = typeof engine.getSnapshot === 'function' ? engine.getSnapshot() : engine.snapshot;
+    }
+    catch {
+      // An unexpected simulation fault must close only this match. In
+      // particular, the timer callback must not leak a synchronous exception
+      // to Node's event loop and terminate every player's online service.
+      closed = true;
+      return Object.freeze({advanced:false, reason:'engine-error', snapshot:latest});
+    }
     if (!result || result.accepted !== true) return Object.freeze({advanced:false, reason:result?.reason || 'engine-rejected', snapshot:latest});
-    latest = typeof engine.getSnapshot === 'function' ? engine.getSnapshot() : engine.snapshot;
+    latest = snapshot;
     ticks++;
     const envelope = Object.freeze({matchId, tick:ticks, snapshot:latest});
     try { onSnapshot(envelope); } catch { /* observers cannot break authoritative simulation */ }

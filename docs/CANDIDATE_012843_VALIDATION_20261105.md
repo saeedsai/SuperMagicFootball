@@ -18,4 +18,6 @@
 
 ## Limits
 
-Candidate .43 has not yet passed exact-head CI or deployment checks. UI and visual evidence is automated and does not establish owner approval, physical-device acceptance, or an assistive-technology review. The database work was validated with the service test harness, not a live PostgreSQL concurrency test. Authenticated public online service configuration remains unavailable, so server-backed online play is not live.
+Candidate .43 source `5162f995d32f8f85d15df3a794ff2772b4a0eff4` passed exact-head dev Census [41973054866](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41973054866) and Modular QA [41973054716](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41973054716), protected promotion, Pages deployment [41973977176](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41973977176), and main Census [41973977929](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41973977929). The unrelated Concept Hero and Concept Modular workflows failed, but those scopes are explicitly deferred and are not the release gates.
+
+UI and visual evidence is automated and does not establish owner approval, physical-device acceptance, or an assistive-technology review. The database work was validated with the service test harness, not a live PostgreSQL concurrency test. Authenticated public online service configuration remains unavailable, so server-backed online play is not live.

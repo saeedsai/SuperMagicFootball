@@ -47,6 +47,21 @@ test('tickets bind canonical selected teams; queue-time tampering cannot change 
  ctx.api.close();
 });
 
+test('a thrown match-engine step closes only that match and releases its participants',async()=>{
+ const ctx=service({onStep(){throw new Error('unexpected simulation fault');}});
+ const first=ctx.api.issueTicket(a),second=ctx.api.issueTicket(b);
+ await ctx.api.queueTicket({userId:a,ticket:first.ticket});
+ const paired=await ctx.api.queueTicket({userId:b,ticket:second.ticket});
+ assert.equal(paired.status,'matched');
+ const result=ctx.api.tick(paired.matchId);
+ assert.equal(result.advanced,false);
+ assert.equal(result.closed,true);
+ assert.equal(result.reason,'engine-error');
+ assert.deepEqual(ctx.api.getState().active,[]);
+ assert.equal(ctx.api.issueTicket(a).ok,true,'a failed match cannot strand either account as active');
+ ctx.api.close();
+});
+
 test('server-owned Ultimate Team lineups remain bound to one-use tickets and match sides',async()=>{
  const ctx=service({config:{validTeamIds:['japan','brazil','argentina']}}),firstIds=Array.from({length:12},(_,i)=>`japan/jp${i}`),secondIds=Array.from({length:12},(_,i)=>`brazil/br${i}`);
  const first=ctx.api.issueTicket(a,'japan',firstIds),second=ctx.api.issueTicket(b,'brazil',secondIds);
