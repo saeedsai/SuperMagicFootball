@@ -573,7 +573,7 @@ html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%;min-height:100%
 .arenaPosterStamp{background:linear-gradient(90deg,#ffe99b,#ffcb52);box-shadow:0 0 20px #ffd35e4a}
 .homeDashboard .posterStats{position:relative;z-index:1;color:#d7eaff}
 @media(max-width:700px),(max-height:510px){.arcadeHomeTools{gap:5px;padding:5px}.arcadeProfile{font-size:9px;padding:0 6px}.arcadeProfileIcon{width:20px;height:20px}.menu .arcadeWallet{min-height:35px;padding:3px 7px}.arcadeCoin{width:24px;height:24px}.arcadeWalletCopy small{font-size:6px}.arcadeWalletCopy strong{font-size:12px}.arcadeWalletPlus{width:16px;height:16px}}
-@media(max-width:440px) and (orientation:portrait){.arcadeHomeHeader{align-items:flex-start}.arcadeHomeTools{align-self:flex-start}.arcadeProfile{display:none}.arcadeHomeTools{margin-top:7px}.arcadeIdentity .logoHeading{font-size:clamp(21px,7.3vw,32px)}}
+@media(max-width:440px) and (orientation:portrait){.arcadeHomeHeader{align-items:flex-start;flex-wrap:wrap}.arcadeHomeTools{align-self:flex-start;max-width:100%;box-sizing:border-box;margin:7px 0 0 auto}.arcadeProfile{display:none}.arcadeIdentity .logoHeading{font-size:clamp(21px,7.3vw,32px)}}
 
 /* UX-102: apply the operating-system reduced-motion preference across the UI. */
 @media (prefers-reduced-motion: reduce) {

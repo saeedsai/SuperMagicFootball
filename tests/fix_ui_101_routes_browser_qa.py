@@ -1,9 +1,29 @@
 """FIX-UI-101 real UI route / unsaved-form acceptance in Chromium."""
+from atexit import register
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+import json
+import threading
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-HTML = (ROOT / 'tests/.generated/play.html').read_text(encoding='utf8')
+HTML = (ROOT / 'tests/.generated/play.html').read_bytes()
+FAMILIES=['skin','hair','style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo']
+WALLET={'schema':1,'tokens':0,'unlocks':[f'{category}:{family}:{index}' for category in ['appearance','accessory'] for family in FAMILIES for index in range(64)],'receipts':[]}
+
+class FixtureHandler(SimpleHTTPRequestHandler):
+    def do_GET(self):
+        if self.path in ('/', '/index.html'):
+            self.send_response(200); self.send_header('Content-Type','text/html; charset=utf-8')
+            self.send_header('Content-Length',str(len(HTML))); self.end_headers(); self.wfile.write(HTML); return
+        super().do_GET()
+    def log_message(self,*_args): pass
+
+server=ThreadingHTTPServer(('127.0.0.1',0),partial(FixtureHandler,directory=str(ROOT)))
+threading.Thread(target=server.serve_forever,daemon=True).start()
+register(server.server_close); register(server.shutdown)
+ORIGIN=f'http://127.0.0.1:{server.server_port}/'
 
 with sync_playwright() as pw:
     browser = pw.chromium.launch(headless=True, args=['--no-sandbox', '--disable-dev-shm-usage'])
@@ -12,6 +32,7 @@ with sync_playwright() as pw:
             viewport={'width': 1360, 'height': 800} if not mobile else {'width': 844, 'height': 390},
             is_mobile=mobile, has_touch=mobile,
         )
+        context.add_init_script('localStorage.setItem("legend_tokenWallet",'+json.dumps(json.dumps(WALLET))+');')
         context.add_init_script("""
           window.__qaPadB=false;
           Object.defineProperty(navigator,'getGamepads',{configurable:true,value:()=>[
@@ -30,8 +51,7 @@ with sync_playwright() as pw:
                 dialog.dismiss()
         page.on('dialog', handle_dialog)
         page.on('pageerror', lambda e: errors.append(str(e)))
-        page.evaluate("""() => {const memory=new Map();memory.set('legend_tokenWallet',JSON.stringify({schema:1,tokens:0,unlocks:[...['appearance','accessory'].flatMap(category=>['skin','hair','style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo'].flatMap(key=>Array.from({length:64},(_,i)=>`${category}:${key}:${i}`)) )],receipts:[]}));Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>memory.has(k)?memory.get(k):null,setItem:(k,v)=>memory.set(k,String(v)),removeItem:k=>memory.delete(k),clear:()=>memory.clear()}});}""")
-        page.set_content(HTML, wait_until='load')
+        page.goto(ORIGIN, wait_until='load')
         page.wait_for_function('!!window.SupermagicFootball?.game', timeout=30000)
 
         def click(action):

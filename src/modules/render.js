@@ -1535,7 +1535,7 @@ class Renderer{
  else if(concealed){ctx.globalAlpha=reducedFlash?.17:.10;this.drawSoccerBall(ctx,0,0,15,game.options?.ballModel||'classic',0);}
  // Match ball art uses the same 17-unit drawn size as penalties so its stitched
  // surface stays readable during normal play. Physics/collision radius is independent.
- else {ctx.globalAlpha=1;this.drawSoccerBall(ctx,0,0,17,game.options?.ballModel||'classic',b.rollAngle||0,{dx:b.vx,dy:b.vy});}
+ else {const carrier=b.owner&&!b.owner.keeper?b.owner:null,tumble=carrier?{dx:carrier.moveVX||0,dy:carrier.moveVY||0}:{dx:b.vx,dy:b.vy};ctx.globalAlpha=1;this.drawSoccerBall(ctx,0,0,17,game.options?.ballModel||'classic',b.rollAngle||0,tumble);}
  ctx.restore();}
  // These are visual-only cues: phase shots retain the same swept keeper and
  // player collision paths as every other shot. Reduced-flash uses steady,

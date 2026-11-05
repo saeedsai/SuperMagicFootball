@@ -4,7 +4,8 @@ Use [MASTER_BACKLOG.md](MASTER_BACKLOG.md) as the single current plan and status
 
 ## Read for current work
 
-- [Candidate 0.12.81.50 local validation](CANDIDATE_012850_VALIDATION_20261105.md): full Node **2,276/2,276**, wallet/save/online/renderer regression, and browser flows for IndexedDB token receipts, LAN ACK/retry/reload/manual recovery, Career stale-writer protection, rolling match-ball rendering, and authenticated server PVP lifecycle recovery. Hosting, external acceptance, and exact-head release gates remain open.
+- [Candidate 0.12.81.51 local validation](CANDIDATE_012851_VALIDATION_20261105.md): full Node **2,277/2,277**, carried-ball rotation across 40 five-skin/eight-heading game-scale browser samples, and narrow Home layout checks. Exact-head .51 census and hosted/device/owner acceptance remain open.
+- [Candidate 0.12.81.50 validation](CANDIDATE_012850_VALIDATION_20261105.md): full Node **2,276/2,276** and Modular QA passed; exact Full Regression Census failed on stale IndexedDB/Studio browser fixtures and a 3px narrow-menu overflow. Superseded by .51 fixture/layout updates; .50 is not certified.
 - [Candidate 0.12.81.49 validation](CANDIDATE_012849_VALIDATION_20261105.md): PostgreSQL single-instance online-service safety, Career restart reconciliation, UT lineup idempotency, and existing-player idle gaze; exact-head and Pages gates passed for .49 only.
 - [Candidate 0.12.81.47 validation](CANDIDATE_012847_VALIDATION_20261105.md): online match timer containment, transactional Career fixture leases, bounded operator fault signals, and production-rendered player turn articulation.
 - [Candidate 0.12.81.46 validation](CANDIDATE_012846_VALIDATION_20261105.md): Cup cross-tab save-conflict protection and wet-pitch slide spray.

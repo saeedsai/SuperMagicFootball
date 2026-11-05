@@ -1,33 +1,43 @@
 #!/usr/bin/env python3
 """Player Studio eight-view frame stepping, desktop and simulated touch."""
+from atexit import register
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+import json
 from pathlib import Path
+import threading
 from playwright.sync_api import sync_playwright
 
 root=Path(__file__).resolve().parents[1]
 fixture=root/'tests/.generated/play.html'
 assert fixture.exists(),'Build modular browser fixture before Studio QA'
 html=fixture.read_text(encoding='utf-8')
+families=['skin','hair','style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo']
+wallet={'schema':1,'tokens':0,'unlocks':[f'{category}:{family}:{index}' for category in ['appearance','accessory'] for family in families for index in range(64)],'receipts':[]}
+
+class FixtureHandler(SimpleHTTPRequestHandler):
+ def do_GET(self):
+  if self.path in ('/','/index.html'):
+   data=html.encode('utf-8');self.send_response(200);self.send_header('Content-Type','text/html; charset=utf-8')
+   self.send_header('Content-Length',str(len(data)));self.end_headers();self.wfile.write(data);return
+  super().do_GET()
+ def log_message(self,*_args):pass
+
+server=ThreadingHTTPServer(('127.0.0.1',0),partial(FixtureHandler,directory=str(root)))
+threading.Thread(target=server.serve_forever,daemon=True).start()
+register(server.server_close);register(server.shutdown)
+origin=f'http://127.0.0.1:{server.server_port}/'
 with sync_playwright() as pw:
  browser=pw.chromium.launch(headless=True,executable_path='/usr/bin/chromium',
                             args=['--no-sandbox','--disable-dev-shm-usage'])
  for label,viewport,touch in [('desktop',{'width':1280,'height':720},False),
                               ('simulated-touch',{'width':844,'height':390},True)]:
   context=browser.new_context(viewport=viewport,is_mobile=touch,has_touch=touch)
+  context.add_init_script('localStorage.setItem("legend_tokenWallet",'+json.dumps(json.dumps(wallet))+');')
   page=context.new_page()
   errors=[]
   page.on('pageerror',lambda error:errors.append(str(error)))
-  # The inline about:blank fixture has an opaque origin: mock durable storage,
-  # matching the existing Player Studio browser suites.
-  page.evaluate("""() => {
-   const memory=new Map();
-   memory.set('legend_tokenWallet',JSON.stringify({schema:1,tokens:0,unlocks:[...['appearance','accessory'].flatMap(category=>['skin','hair','style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo'].flatMap(key=>Array.from({length:64},(_,i)=>`${category}:${key}:${i}`)) )],receipts:[]}));
-   Object.defineProperty(window,'localStorage',{configurable:true,value:{
-    getItem:k=>memory.has(k)?memory.get(k):null,
-    setItem:(k,v)=>memory.set(k,String(v)),
-    removeItem:k=>memory.delete(k),clear:()=>memory.clear()
-   }});
-  }""")
-  page.set_content(html,wait_until='load')
+  page.goto(origin,wait_until='load')
   page.wait_for_function('!!window.SupermagicFootball?.game',timeout=60000)
   for action in ('navSettings','navCustomization','playerStudio'):
    page.locator('[data-action="'+action+'"]').first.click()

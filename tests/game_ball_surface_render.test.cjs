@@ -74,13 +74,31 @@ test('in-match ball sends its travel vector and roll angle to renderer-only surf
  const renderer=Object.create(RENDER.Renderer.prototype),painted=[];
  renderer.drawBallShadow=()=>{};
  renderer.drawSoccerBall=(_ctx,_x,_y,r,model,rotation,tumble)=>painted.push({r,model,rotation,tumble});
- const ctx={globalAlpha:1,save(){},restore(){},translate(){}};
+ const ctx={globalAlpha:1,save(){},restore(){},translate(){},beginPath(){},moveTo(){},lineTo(){},quadraticCurveTo(){},stroke(){}};
  const options={ballModel:'classic',reducedFlash:false};
  for(const [vx,vy] of [[400,0],[-400,0],[0,400],[0,-400]]){
-  const ball={x:100,y:200,z:0,vx,vy,vz:0,owner:{},shot:null,trail:[],rollAngle:.4};
+  const ball={x:100,y:200,z:0,vx,vy,vz:0,owner:null,shot:null,trail:[],rollAngle:.4};
   const game={ball,options},before=JSON.stringify({ball,options});renderer.drawBall(ctx,game);
   assert.deepEqual(painted.at(-1),{r:17,model:'classic',rotation:.4,tumble:{dx:vx,dy:vy}},'match surface receives exact travel direction and existing roll angle');
   assert.equal(JSON.stringify({ball,options}),before,'drawing keeps physics state and saved cosmetic selection unchanged');
+ }
+});
+
+test('possessed field-player balls tumble with carrier movement while stationary and keeper-held balls keep their fallback',()=>{
+ const renderer=Object.create(RENDER.Renderer.prototype),painted=[];
+ renderer.drawBallShadow=()=>{};renderer.drawSoccerBall=(_ctx,_x,_y,r,model,rotation,tumble)=>painted.push({r,model,rotation,tumble});
+ const ctx={globalAlpha:1,save(){},restore(){},translate(){},beginPath(){},moveTo(){},lineTo(){},quadraticCurveTo(){},stroke(){}};
+ const options={ballModel:'meteor',reducedFlash:false};
+ const vectors=[[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]];
+ for(const [moveVX,moveVY] of vectors){
+  const ball={x:100,y:200,z:0,vx:0,vy:0,vz:0,owner:{x:100,y:200,moveVX,moveVY,keeper:false},shot:null,trail:[],rollAngle:Math.PI/3};
+  const before=JSON.stringify({ball,options});renderer.drawBall(ctx,{ball,options});
+  assert.deepEqual(painted.at(-1),{r:17,model:'meteor',rotation:Math.PI/3,tumble:{dx:moveVX,dy:moveVY}},'carried-ball surface follows all eight carrier headings');
+  assert.equal(JSON.stringify({ball,options}),before,'rendering does not change the match or cosmetic selection');
+ }
+ for(const owner of [{x:100,y:200,moveVX:0,moveVY:0,keeper:false},{x:100,y:200,moveVX:1,moveVY:1,keeper:true,action:'keeperHold',face:1}]){
+  const ball={x:100,y:200,z:0,vx:0,vy:0,vz:0,owner,shot:null,trail:[],rollAngle:.2};renderer.drawBall(ctx,{ball,options});
+  assert.deepEqual(painted.at(-1).tumble,{dx:0,dy:0},owner.keeper?'keeper-held ball preserves stationary projection fallback':'stationary carrier preserves stationary projection fallback');
  }
 });
 

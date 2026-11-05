@@ -1,15 +1,29 @@
 #!/usr/bin/env python3
 """Chromium acceptance: eight-direction identities and save semantics.
-Origin-based page reload and process restart are reported NOT EXECUTED if sandbox-blocked.
+Hosted-origin page reload and process restart are reported NOT EXECUTED when the deployment/profile is unavailable.
 """
 from pathlib import Path
+from atexit import register
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
-import json
+import json, threading
 ROOT=Path(__file__).resolve().parents[1]
 RELEASE_VERSION=json.loads((ROOT/'package.json').read_text())['version']
 s=(ROOT/'tests/.generated/play.html').read_text()
 html=s.split('<script type="module">',1)[0]+'</body></html>'
 js=s.split('<script type="module">',1)[1].split('</script>',1)[0]
+class FixtureHandler(SimpleHTTPRequestHandler):
+ def do_GET(self):
+  if self.path in ('/','/index.html'):
+   data=html.encode('utf-8');self.send_response(200);self.send_header('Content-Type','text/html; charset=utf-8')
+   self.send_header('Content-Length',str(len(data)));self.end_headers();self.wfile.write(data);return
+  super().do_GET()
+ def log_message(self,*_args):pass
+server=ThreadingHTTPServer(('127.0.0.1',0),partial(FixtureHandler,directory=str(ROOT)))
+threading.Thread(target=server.serve_forever,daemon=True).start()
+register(server.server_close);register(server.shutdown)
+origin=f'http://127.0.0.1:{server.server_port}/'
 records=[]
 def check(name,fn):
  try:
@@ -27,13 +41,13 @@ def skip(name,why):
 TEST_WALLET={'schema':1,'tokens':0,'unlocks':[
  'appearance:beard:0','appearance:face:2','appearance:style:10',
  'appearance:hair:2','appearance:tattoo:4'], 'receipts':[]}
-MEMORY='''seed => {const values=new Map([['legend_tokenWallet',JSON.stringify(seed)]]);Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>values.has(k)?values.get(k):null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k),clear:()=>values.clear()}});}'''
 DIRECTIONS=[[0,1],[.707,.707],[1,0],[.707,-.707],[0,-1],[-.707,-.707],[-1,0],[-.707,.707]]
 with sync_playwright() as pw:
  browser=pw.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox','--disable-dev-shm-usage'])
  for mode,options in [('desktop',{'viewport':{'width':1280,'height':840}}),('simulated-touch',{'viewport':{'width':844,'height':390},'is_mobile':True,'has_touch':True})]:
-  ctx=browser.new_context(**options);p=ctx.new_page();p.set_default_timeout(20000);errs=[];p.on('pageerror',lambda ex:errs.append(str(ex)))
-  p.set_content(html);p.evaluate(MEMORY,TEST_WALLET);p.add_script_tag(content=js,type='module');p.wait_for_function('!!window.SupermagicFootball')
+  ctx=browser.new_context(**options);ctx.add_init_script('localStorage.setItem("legend_tokenWallet",'+json.dumps(json.dumps(TEST_WALLET))+');')
+  p=ctx.new_page();p.set_default_timeout(20000);errs=[];p.on('pageerror',lambda ex:errs.append(str(ex)))
+  p.goto(origin,wait_until='load');p.add_script_tag(content=js,type='module');p.wait_for_function('!!window.SupermagicFootball')
   check(mode+' generated QA fixture boots with modular JSON records',lambda:p.evaluate("version => SupermagicFootball.version===version",RELEASE_VERSION))
   check(mode+' all seven BPW squads preserved',lambda:p.evaluate('''() => {const e=SupermagicFootball,b=e.teams.filter(t=>t.group==='bpw_worldcup'||t.group==='bpw_alltime');return {ok:b.length===7&&b.every(t=>e.rosterFor(t.index).length===12),count:b.length}}'''))
   def matrix():
@@ -73,7 +87,7 @@ with sync_playwright() as pw:
    check(mode+' eight-view contact-sheet generation for visual audit',sheet)
    # Changed document for sheet, reset to original UI in a new page in the same context.
    p.close();p=ctx.new_page();p.set_default_timeout(20000);p.on('pageerror',lambda ex:errs.append(str(ex)))
-   p.set_content(html);p.evaluate(MEMORY,TEST_WALLET);p.add_script_tag(content=js,type='module');p.wait_for_function('!!window.SupermagicFootball')
+   p.goto(origin,wait_until='load');p.add_script_tag(content=js,type='module');p.wait_for_function('!!window.SupermagicFootball')
   def studio():
    for a in ['navSettings','navCustomization','playerStudio']:p.locator('[data-action="'+a+'"]').first.click()
    return p.locator('#customPortrait').count()==1
@@ -81,6 +95,7 @@ with sync_playwright() as pw:
   target=p.evaluate("() => SupermagicFootball.teams.find(t=>t.customRoster?.some(p=>p.name==='Lionel Messi'))?.index")
   def save_appearance():
    assert target is not None
+   p.wait_for_function("Array.from(document.querySelector('#face_beard').options).some(option=>option.value==='0'&&!option.disabled)",timeout=30000)
    p.locator('#customTeam').select_option(str(target))
    label=p.locator('#customPlayer option').filter(has_text='Lionel Messi').first.inner_text();p.locator('#customPlayer').select_option(label=label)
    p.locator('#face_beard').select_option('0');p.locator('#face_face').select_option('2')
@@ -94,7 +109,7 @@ with sync_playwright() as pw:
   ctx.close()
  browser.close()
 # Real origin navigation/restart is blocked by browser administrator, not a verified save failure.
-skip('hosted-origin page reload verification','Localhost navigation blocked by browser administrator; injected DOM cannot certify persistent origin storage')
+skip('hosted-origin page reload verification','A production hosted origin is not configured in this runner; the localhost fixture validates same-origin IndexedDB access but not deployed bytes.')
 skip('real browser process restart persistence','Requires accessible hosted origin and persistent browser profile')
 skip('on-device storage / touch and controller','No physical iOS, Android or connected controller available')
 summary={k:sum(v['status']==k for v in records) for k in ['PASS','FAIL','TIMEOUT','NOT EXECUTED']}

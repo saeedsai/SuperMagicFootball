@@ -3,6 +3,10 @@
 Run after scripts/build.py; uses actual current modular renderer embedded by the QA builder.
 """
 from pathlib import Path
+from atexit import register
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+import threading
 import json
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
@@ -15,6 +19,17 @@ js=source.split('<script type="module">',1)[1].split('</script>',1)[0]
 assets=json.loads((ROOT/'data/graphics/procedural_assets.json').read_text(encoding='utf-8'))
 style_count=len(assets['studioAssetLabels']['style'])
 test_wallet={'schema':1,'tokens':0,'unlocks':[f'appearance:style:{index}' for index in range(style_count)],'receipts':[]}
+class FixtureHandler(SimpleHTTPRequestHandler):
+ def do_GET(self):
+  if self.path in ('/','/index.html'):
+   data=html.encode('utf-8');self.send_response(200);self.send_header('Content-Type','text/html; charset=utf-8')
+   self.send_header('Content-Length',str(len(data)));self.end_headers();self.wfile.write(data);return
+  super().do_GET()
+ def log_message(self,*_args):pass
+server=ThreadingHTTPServer(('127.0.0.1',0),partial(FixtureHandler,directory=str(ROOT)))
+threading.Thread(target=server.serve_forever,daemon=True).start()
+register(server.server_close);register(server.shutdown)
+origin=f'http://127.0.0.1:{server.server_port}/'
 checks=[]
 def check(name,fn):
  try:
@@ -28,9 +43,10 @@ with sync_playwright() as pw:
  browser=pw.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox','--disable-dev-shm-usage'])
  for mode,context_options in [('desktop',{'viewport':{'width':1280,'height':900}}),('simulated-touch',{'viewport':{'width':844,'height':390},'is_mobile':True,'has_touch':True})]:
   ctx=browser.new_context(**context_options)
+  ctx.add_init_script('localStorage.setItem("legend_tokenWallet",'+json.dumps(json.dumps(test_wallet))+');')
   page=ctx.new_page();page.set_default_timeout(30000)
   errors=[];page.on('pageerror',lambda exc:errors.append(str(exc)))
-  page.set_content(html);page.evaluate('''seed => {const values=new Map([['legend_tokenWallet',JSON.stringify(seed)]]);Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>values.has(k)?values.get(k):null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k),clear:()=>values.clear()}})}''',test_wallet);page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball')
+  page.goto(origin,wait_until='load');page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball')
   check(mode+' current modular game boots',lambda:page.evaluate("version => SupermagicFootball.version===version",RELEASE_VERSION))
   def open_studio():
    for a in ['navSettings','navCustomization','playerStudio']:page.locator('[data-action="'+a+'"]').first.click()
