@@ -4,7 +4,10 @@ Use [MASTER_BACKLOG.md](MASTER_BACKLOG.md) as the single current plan and status
 
 ## Read for current work
 
+- [Candidate 0.12.81.59 validation](CANDIDATE_012859_VALIDATION_20261105.md): eased shot-impact fall animation with existing grounded hold/recovery timing; local rendering/test evidence, exact-head gates pending.
+- [Shot-impact fall settle render](evidence/browser/shot_impact_down_settle_012859.png): five production-renderer phases from impact through the lying pose.
 - [Candidate 0.12.81.58 validation](CANDIDATE_012858_VALIDATION_20261105.md): stitched highlights on the classic match ball, with menu/match scale renderer evidence; exact-head gates pending.
+- [Classic ball thread-detail render](evidence/browser/ball_classic_thread_detail_012858.png): all five existing skins at featured/menu size and rolling match scale.
 - [Candidate 0.12.81.57 validation](CANDIDATE_012857_VALIDATION_20261105.md): debounced player-selection and Energy live announcements; physical screen-reader/device acceptance remains open.
 - [Candidate 0.12.81.56 validation](CANDIDATE_012856_VALIDATION_20261105.md): authoritative online PVP graceful-restart checkpoints, bounded PostgreSQL storage, assignment-bound restore and fail-safe crash interruption; promoted/deployed with exact-head and hosted gates passing.
 - [Candidate 0.12.81.55 validation](CANDIDATE_012855_VALIDATION_20261105.md): live Energy meter accessibility, subtle player head-turn animation and wet-pitch puddle highlights; exact-head Census, Modular QA, graphics QA, Pages, hosted smoke and main Census passed.

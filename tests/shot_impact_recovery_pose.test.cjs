@@ -30,3 +30,16 @@ test('get-up is deterministic, clamped, and mirrors tilt without changing lift',
   assert.ok(left.progress>=0&&left.progress<=1&&left.support>=0&&left.support<=1&&left.lift>=0&&left.lift<=10);
  }
 });
+
+test('shot impact eases into the strength-timed grounded pose and mirrors its fall',()=>{
+ const start=ARTPOSE.shotImpactDownPose('shotDown',1.4,1.4,1);
+ const settle=ARTPOSE.shotImpactDownPose('shotDown',1.3,1.4,1);
+ const down=ARTPOSE.shotImpactDownPose('shotDown',1.2,1.4,1);
+ const left=ARTPOSE.shotImpactDownPose('shotDown',1.2,1.4,-1);
+ assert.deepEqual({...start},{progress:0,angle:0},'first grounded frame begins upright');
+ assert.ok(settle.progress>0&&settle.progress<1&&settle.angle>0,'fall eases during the first 0.2 seconds');
+ assert.deepEqual({...down},{progress:1,angle:1.32},'the stable side-lying pose reaches the existing hold angle');
+ assert.deepEqual({...left},{progress:1,angle:-1.32},'fall direction mirrors with the player facing');
+ assert.deepEqual({...ARTPOSE.shotImpactDownPose('idle',1,1,1)},{progress:0,angle:0});
+ assert.deepEqual({...ARTPOSE.shotImpactDownPose('shotDown',1,1,-1)},{progress:0,angle:0},'invalid/legacy timing remains finite');
+});

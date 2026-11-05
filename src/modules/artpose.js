@@ -108,6 +108,17 @@ const ARTPOSE=(()=>{
   const rawAngle=1.32*(1-progress)-.16*support,angle=Math.abs(rawAngle)<1e-9?0:heading*rawAngle;
   return {progress,support,angle,lift:10*progress};
  }
+  // Turn a shot launch into a readable grounded fall over a short settle phase.
+  // Hold timing stays owned by the engine's existing strength-based timer.
+  function shotImpactDownPose(action,actionTimer=0,knockdownTotal=0,face=1){
+    if(action!=='shotDown')return {progress:0,angle:0};
+    const rawTotal=Number(knockdownTotal),fallback=Number(actionTimer),total=Number.isFinite(rawTotal)&&rawTotal>0
+      ?clamp(rawTotal,.5,3):Number.isFinite(fallback)&&fallback>0?clamp(fallback,.5,3):1.5;
+    const rawRemaining=Number(actionTimer),remaining=clamp(Number.isFinite(rawRemaining)?rawRemaining:total,0,total);
+    const settle=clamp((total-remaining)/.20,0,1),progress=settle*settle*(3-2*settle),heading=Number(face)<0?-1:1;
+    const angle=heading*1.32*progress;
+    return {progress,angle:Math.abs(angle)<1e-12?0:angle};
+   }
  // Visual follow-through on ordinary passes. Zero at release and at completion;
  // only the kicking boot lifts, and the supporting boot stays planted.
  function passFollowThrough(action,actionTimer){
@@ -140,7 +151,7 @@ const ARTPOSE=(()=>{
   if(cooldown>.08&&cooldown<=.420001)return {action:'keeperRecover',diveElapsed:.6,actionTimer:Math.min(.34,cooldown-.08),diveDy};
   return {action:'idle',diveElapsed:0,actionTimer:0,diveDy:0};
  }
- return Object.freeze({easeHeading,gait,runPhase,runFootPose,keeperPose,settleStride,receivePose,confusionPose,shotImpactLaunchPose,shotImpactRecoveryPose,passFollowThrough,keeperRelease,keeperGrip,penaltyKeeperVisual});
+  return Object.freeze({easeHeading,gait,runPhase,runFootPose,keeperPose,settleStride,receivePose,confusionPose,shotImpactLaunchPose,shotImpactDownPose,shotImpactRecoveryPose,passFollowThrough,keeperRelease,keeperGrip,penaltyKeeperVisual});
 })();
 
 export {ARTPOSE};

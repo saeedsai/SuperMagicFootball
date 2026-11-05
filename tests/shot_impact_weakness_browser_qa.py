@@ -19,7 +19,7 @@ JS=r"""() => {
   ['LEFT','side',-1,-1,0],['FRONT-LEFT','quarterFront',-1,-.7,.7]
  ];
  const cellW=120,cellH=188,columns=8,canvas=document.createElement('canvas');
- canvas.width=cellW*columns;canvas.height=cellH*2;
+ canvas.width=cellW*columns;canvas.height=cellH*3;
  const ctx=canvas.getContext('2d');ctx.fillStyle='#10283c';ctx.fillRect(0,0,canvas.width,canvas.height);
  const liveBefore=JSON.stringify({players:game.players.map(p=>[p.x,p.y,p.z,p.stun,p.shotImpactWeakness,p.shotImpactWeaknessTimer,p.action,p.actionTimer]),ball:prior.ball});
  const originalOptions=game.options,originalTime=renderer.time,originalDraw=renderer.inMatchDraw,originalDelta=renderer.frameDelta;
@@ -34,16 +34,18 @@ JS=r"""() => {
    visualFacing:{kind,side},action:opt.action,actionTimer:opt.actionTimer||0,
    stun:opt.stun,down:opt.down,shotImpactKnockdownPending:opt.pending||0,
    shotImpactKnockdownTimer:opt.knockdown||0,shotImpactRiseTimer:opt.rise||0,
+   shotImpactKnockdownTotal:opt.total||0,
    shotImpactConfusedTimer:opt.confused||0,shotImpactWeakness:opt.weakness,
    shotImpactWeaknessTimer:opt.timer};
   ctx.save();ctx.translate(ox+cellW/2,oy+132);renderer.drawPlayer(ctx,p,game);ctx.restore();
   if(kind!==p.visualFacing.kind||side!==p.visualFacing.side)throw Error(label+' resolved an unexpected view');
   ctx.fillStyle='#f5edcf';ctx.font='bold 10px sans-serif';ctx.textAlign='center';
-  ctx.fillText((opt.reduced?'LOW FLASH ':'')+label,ox+cellW/2,oy+174);
+  if(weakness.line<2)ctx.fillText((opt.reduced?'LOW FLASH ':'')+label,ox+cellW/2,oy+174);
   return ctx.getImageData(ox,oy,cellW,cellH).data;
  }
  function diff(a,b){let count=0;for(let y=136;y<166;y++)for(let x=32;x<88;x++){const i=(y*cellW+x)*4;if(a[i]!==b[i]||a[i+1]!==b[i+1]||a[i+2]!==b[i+2])count++;}return count;}
- const result=[],hidden=[];let reducedPixels=0;
+ function frameDiff(a,b){let count=0;for(let i=0;i<a.length;i+=4)if(a[i]!==b[i]||a[i+1]!==b[i+1]||a[i+2]!==b[i+2]||a[i+3]!==b[i+3])count++;return count;}
+ const result=[],hidden=[];let reducedPixels=0,downChanges=[],downElapsed=[];
  try{
   for(let i=0;i<headings.length;i++){
    const view={...headings[i],i};
@@ -73,13 +75,22 @@ JS=r"""() => {
    const changed=diff(off,on);if(changed!==0)throw Error(label+' pose displayed the weakness marker ('+changed+' changed pixels), opts='+JSON.stringify(extra));
    hidden.push({state:label,changedPixels:changed});
   }
+  const downDuration=1.4;downElapsed=[0,.05,.10,.20,.40];const downFrames=[];
+  for(let i=0;i<downElapsed.length;i++){
+   const remaining=downDuration-downElapsed[i],pixels=draw(front,{row:i,line:2,weakness:0,timer:0,
+    action:'shotDown',actionTimer:remaining,knockdown:remaining,total:downDuration});
+   downFrames.push(pixels);ctx.fillStyle='#ffd76a';ctx.font='bold 9px sans-serif';ctx.textAlign='center';
+   ctx.fillText('FALL '+downElapsed[i].toFixed(2)+'s',i*cellW+cellW/2,2*cellH+174);
+  }
+  downChanges=downFrames.slice(1).map((frame,index)=>frameDiff(downFrames[index],frame));
+  if(downChanges.slice(0,3).some(count=>count<20))throw Error('grounded fall should ease through visible entry phases '+JSON.stringify(downChanges));
  }finally{
   game.options=originalOptions;renderer.time=originalTime;renderer.inMatchDraw=originalDraw;renderer.frameDelta=originalDelta;
  }
  const liveAfter=JSON.stringify({players:game.players.map(p=>[p.x,p.y,p.z,p.stun,p.shotImpactWeakness,p.shotImpactWeaknessTimer,p.action,p.actionTimer]),ball:prior.ball});
  if(liveBefore!==liveAfter)throw Error('renderer cue mutated live player or ball state');
- canvas.id='shot-impact-weakness-preview';canvas.style.cssText='position:fixed;left:8px;top:8px;width:960px;height:376px;z-index:99999';document.body.append(canvas);
- return {views:result,reducedFlashChangedPixels:reducedPixels,hidden,liveStateUnchanged:true};
+ canvas.id='shot-impact-weakness-preview';canvas.style.cssText='position:fixed;left:8px;top:8px;width:960px;height:564px;z-index:99999';document.body.append(canvas);
+ return {views:result,reducedFlashChangedPixels:reducedPixels,hidden,downSettle:{elapsed:downElapsed,changedPixels:downChanges},liveStateUnchanged:true};
 }"""
 
 def main():

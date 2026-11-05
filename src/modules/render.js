@@ -1341,6 +1341,7 @@ class Renderer{
    ?clamp(1-(Number(p.spinBumperImpactFx)||0)/.28,0,1):undefined;
   const knockdownTimer=Math.max(0,Number(p.shotImpactKnockdownTimer)||0);
   const knockdownPose=p.action==='shotDown'&&knockdownTimer>0?1:0;
+  const impactDown=ARTPOSE.shotImpactDownPose(p.action,p.actionTimer,p.shotImpactKnockdownTotal,p.face);
   const impactRecovery=ARTPOSE.shotImpactRecoveryPose(p.action,p.actionTimer,p.face);
   const gaitMoving=moving&&knockdownTimer<=0&&p.action!=='slide'&&p.action!=='receive'&&p.action!=='pass'&&p.action!=='hurt'&&p.action!=='cry'&&!(p.stun>.2)&&!((p.cryTimer||0)>.05)&&!['keeperDive','keeperDiveCatch','keeperRecover','keeperCatch','keeperThrow','keeperPunt','kick','super','header','superHead','flipKick','comboSuper','bicycle','superBicycle','flyingKick','defensiveBicycle'].includes(p.action);
   const run=this.inMatchDraw&&!p.preview?ARTPOSE.settleStride(this.poseCycles.get(p),oscillator,gaitMoving,this.frameDelta):gaitMoving?oscillator:0;
@@ -1442,7 +1443,7 @@ class Renderer{
   if(knockdownPose>0){ctx.translate(0,-.8*downedBreath);ctx.scale(1,1+.012*downedBreath);}
   // Keep the grounded pose stable for the full engine timer. The dedicated
   // get-up phase then plants the arms, unrolls the torso, and lifts to standing.
-  if(knockdownPose>0)ctx.rotate((p.face||1)*1.32*knockdownPose);
+  if(knockdownPose>0)ctx.rotate(impactDown.angle);
   else if(p.action==='shotGetUp'){
    ctx.translate(0,-impactRecovery.lift);
    ctx.rotate(impactRecovery.angle);

@@ -93,7 +93,8 @@ test('shot impact cues use renderer timers and expose downed and confused poses 
  assert.match(characterArt,/const launch=clamp\(Number\(opt\.shotLaunchPose\?\.armSpread\)\|\|0,0,1\)/);
  assert.match(render,/shotImpactKnockdownTimer/);
  assert.match(render,/knockdownPose=p\.action==='shotDown'&&knockdownTimer>0\?1:0/);
- assert.match(render,/ctx\.rotate\(\(p\.face\|\|1\)\*1\.32\*knockdownPose\)/);
+ assert.match(render,/ARTPOSE\.shotImpactDownPose\(p\.action,p\.actionTimer,p\.shotImpactKnockdownTotal,p\.face\)/);
+ assert.match(render,/if\(knockdownPose>0\)ctx\.rotate\(impactDown\.angle\)/);
  assert.match(render,/ARTPOSE\.shotImpactRecoveryPose\(p\.action,p\.actionTimer,p\.face\)/);
  assert.match(render,/else if\(p\.action==='shotGetUp'\)\{\s*ctx\.translate\(0,-impactRecovery\.lift\);\s*ctx\.rotate\(impactRecovery\.angle\);/);
  assert.match(render,/const shotRecovery=p\.action==='shotGetUp'\?impactRecovery\.support:0/);
