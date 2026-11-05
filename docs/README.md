@@ -4,8 +4,8 @@ Use [MASTER_BACKLOG.md](MASTER_BACKLOG.md) as the single current plan and status
 
 ## Read for current work
 
-- [Candidate 0.12.81.52 local validation](CANDIDATE_012852_VALIDATION_20261105.md): ten distinct existing Dribble Style cues, mirrored-label readability, two unit checks, and 20 production-player Chromium renders. Full .52 integration and exact-head release gates remain open.
-- [Candidate 0.12.81.51 validation](CANDIDATE_012851_VALIDATION_20261105.md): full Node **2,277/2,277**, carried-ball rotation across 40 five-skin/eight-heading game-scale browser samples, and narrow Home layout checks; exact-head CI, promotion, Pages and hosted smoke passed, with main Census still running.
+- [Candidate 0.12.81.53 local validation](CANDIDATE_012853_VALIDATION_20261105.md): Career/Cup exports are bounded by the same serialized-character and UTF-8 byte limits as import; near-limit round-trip and oversized-export preservation checks are included.
+- [Candidate 0.12.81.52 validation](CANDIDATE_012852_VALIDATION_20261105.md): ten distinct dribble cues and 20 production-player Chromium renders; exact-head Census, Modular QA, Current Player Graphics QA and Pages passed. Main Census is running.
 - [Candidate 0.12.81.50 validation](CANDIDATE_012850_VALIDATION_20261105.md): full Node **2,276/2,276** and Modular QA passed; exact Full Regression Census failed on stale IndexedDB/Studio browser fixtures and a 3px narrow-menu overflow. Superseded by .51 fixture/layout updates; .50 is not certified.
 - [Candidate 0.12.81.49 validation](CANDIDATE_012849_VALIDATION_20261105.md): PostgreSQL single-instance online-service safety, Career restart reconciliation, UT lineup idempotency, and existing-player idle gaze; exact-head and Pages gates passed for .49 only.
 - [Candidate 0.12.81.47 validation](CANDIDATE_012847_VALIDATION_20261105.md): online match timer containment, transactional Career fixture leases, bounded operator fault signals, and production-rendered player turn articulation.

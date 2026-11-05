@@ -4,7 +4,7 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync('src/modules/cup_slots.js','utf8').replace(/export\s*\{CUP_SLOTS\};?/,'');
 const uiSource=fs.readFileSync('src/modules/ui.js','utf8');
-const api=vm.runInNewContext(source+'\nCUP_SLOTS;', {Date,JSON,Set,Number,Error,Math,String,Array});
+const api=vm.runInNewContext(source+'\nCUP_SLOTS;', {Date,JSON,Set,Number,Error,Math,String,Array,TextEncoder});
 const valid=()=>({compId:'UEFA',id:'cup_UEFA',club:1,participants:[1,2,3,4],phase:'league',
  roundIdx:0,history:[],rounds:[],groups:[],table:{1:{},2:{},3:{},4:{}},
  earned:0,winner:null,knockout:null});
@@ -189,4 +189,44 @@ test('SAVE-103 refuses oversized nested backup payload and preserves existing Cu
  assert.throws(()=>cup.importBackup(JSON.stringify(huge),{overwrite:true}),/2 MB|Unsupported Cup backup format/);
  assert.equal(storage.getItem('legend_cupSlots'),before);
  assert.equal(cup.list()[0].name,'existing');
+});
+
+test('SAVE-103 Cup archive at the round-trip boundary inspects and imports losslessly',()=>{
+ const sourceDb=memory(),source=api.create(sourceDb),large=valid();
+ large.backupNote='x'.repeat(1998000);
+ source.save(2,large,'near boundary');
+ const raw=sourceDb.getItem('legend_cupSlots'),backup=source.exportBackup();
+ assert.ok(backup.length>1997000&&backup.length<=2000000,'the complete archive remains inside the import limit');
+ const target=api.create(memory());
+ assert.equal(target.inspectBackup(backup).occupied,1);
+ assert.equal(target.importBackup(backup),1);
+ assert.equal(JSON.parse(target.exportBackup()).payload.includes(large.backupNote),true);
+ assert.equal(target.exportBackup(),backup,'inspect/import/export preserves the complete serialized archive');
+ assert.equal(sourceDb.getItem('legend_cupSlots'),raw,'export does not rewrite the stored vault');
+});
+
+test('SAVE-103 oversized Cup export fails without mutating the vault or its recovery snapshot',()=>{
+ const db=memory(),stale=api.create(db),large=valid();
+ large.backupNote='x'.repeat(2000000);
+ stale.save(1,large,'large recovery');
+ const current=api.create(db);
+ current.save(2,valid(),'newer tab');
+ const newerRaw=db.getItem('legend_cupSlots');
+ assert.throws(()=>stale.save(3,valid(),'stale write'),/changed elsewhere/);
+ assert.equal(stale.hasRecoverySnapshot,true);
+ assert.throws(()=>stale.exportBackup(),/2 MB round-trip limit/);
+ assert.throws(()=>stale.exportBackup(),/2 MB round-trip limit/);
+ assert.equal(stale.hasRecoverySnapshot,true,'failed exports keep the recovery snapshot available');
+ assert.equal(stale.list()[0].occupied,true,'the stale tab still retains its local Cup state');
+ assert.equal(db.getItem('legend_cupSlots'),newerRaw,'failed exports leave the newer persisted vault untouched');
+});
+
+test("SAVE-103 Cup export enforces the importer's UTF-8 file-size limit",()=>{
+ const db=memory(),slots=api.create(db),save=valid();
+ save.backupNote='😀'.repeat(520000);
+ slots.save(4,save,'unicode boundary');
+ const before=db.getItem('legend_cupSlots');
+ assert.throws(()=>slots.exportBackup(),/2 MB round-trip limit/);
+ assert.equal(db.getItem('legend_cupSlots'),before);
+ assert.equal(slots.list()[3].occupied,true,'the oversized export refusal keeps the local Cup slot readable');
 });

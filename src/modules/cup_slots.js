@@ -173,9 +173,13 @@ function create(storage){
  // The backup payload is checked before any imported data is committed.
  function encodeBackup(vault){
   const payload=JSON.stringify(vault);
+  if(payload.length>2000000)throw Error('Cup backup exceeds the 2 MB round-trip limit; no save data was changed');
   let checksum=2166136261;
   for(let i=0;i<payload.length;i++){checksum^=payload.charCodeAt(i);checksum=Math.imul(checksum,16777619)>>>0;}
-  return JSON.stringify({format:'smf-cup-backup',version:1,payload,checksum:checksum.toString(16).padStart(8,'0')});
+  const backup=JSON.stringify({format:'smf-cup-backup',version:1,payload,checksum:checksum.toString(16).padStart(8,'0')});
+  if(backup.length>2000000||new TextEncoder().encode(backup).byteLength>2000000)
+   throw Error('Cup backup exceeds the 2 MB round-trip limit; no save data was changed');
+  return backup;
  }
  function exportBackup(){
   if(blocked&&!recoverySnapshot)check();

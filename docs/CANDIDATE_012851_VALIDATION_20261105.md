@@ -1,6 +1,6 @@
 # Candidate 0.12.81.51 validation
 
-**Status: promoted and deployed; main Census running.** Exact-head Full Regression Census and Modular Game Dev QA passed for SHA `93d5ba3745b887e9227872616a3e98e69fa234e5`; protected promotion to `main`, Pages deployment, and hosted-page byte/smoke checks passed. Main-branch Census run `42023528636` is still running. Owner visual/gameplay and physical-device acceptance remain open.
+**Status: promoted, deployed and main-verified.** Exact-head Full Regression Census and Modular Game Dev QA passed for SHA `93d5ba3745b887e9227872616a3e98e69fa234e5`; protected promotion to `main`, Pages deployment, hosted-page byte/smoke and main-branch Census run `42023528636` passed. Owner visual/gameplay and physical-device acceptance remain open.
 
 ## Changes
 
@@ -20,6 +20,6 @@
 
 ## Census follow-up and remaining acceptance
 
-- Exact-head .50 Modular Game Dev QA passed. Its Full Regression Census failed in browser shards 1 and 2: several older Studio/customization fixtures still seeded wallet unlocks only in fake localStorage after the app moved wallet storage to IndexedDB, and the Home tools row exceeded a 390px viewport by 3px. .51 updated those fixtures and layout; its full four-shard Census passed, followed by protected promotion, Pages deployment, and hosted byte/smoke success. Main Census is pending.
+- Exact-head .50 Modular Game Dev QA passed. Its Full Regression Census failed in browser shards 1 and 2: several older Studio/customization fixtures still seeded wallet unlocks only in fake localStorage after the app moved wallet storage to IndexedDB, and the Home tools row exceeded a 390px viewport by 3px. .51 updated those fixtures and layout; its full four-shard Census, protected promotion, Pages deployment, hosted byte/smoke and main Census passed.
 - Server-side live PVP match resume remains intentionally unimplemented. The authoritative engine has no validated simulation/PRNG/input-state export/import contract; restoring its filtered public snapshot would desynchronize play and could enable result manipulation. The safe recovery continues to mark active no-result matches interrupted. True live resume requires an engine checkpoint contract plus owner-hosted PostgreSQL failure drills.
 - Customer hosting/database/OIDC/secrets/backups, two-device network play/reconnect, physical Android/iOS and screen-reader checks, and owner visual/gameplay approval remain open.

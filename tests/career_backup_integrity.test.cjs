@@ -135,3 +135,43 @@ test('SAVE-103 Career backup rejects oversized payloads before storage changes',
  assert.equal(slots.exportBackup(),before);
 });
 
+test('SAVE-103 Career archive at the round-trip boundary inspects and imports losslessly',async()=>{
+ const sourceDb=memory(),source=(await api()).create(sourceDb),large=career(2);
+ large.backupNote='x'.repeat(1998000);
+ source.save(2,large,'near boundary');
+ const raw=sourceDb.getItem('legend_careerSlots'),backup=source.exportBackup();
+ assert.ok(backup.length>1997000&&backup.length<=2000000,'the complete archive remains inside the import limit');
+ const target=(await api()).create(memory());
+ assert.equal(target.inspectBackup(backup).occupied,1);
+ assert.equal(target.importBackup(backup),1);
+ assert.equal(target.getSlot(2).career.backupNote,large.backupNote);
+ assert.equal(target.exportBackup(),backup,'inspect/import/export preserves the complete serialized archive');
+ assert.equal(sourceDb.getItem('legend_careerSlots'),raw,'export does not rewrite the stored vault');
+});
+
+test('SAVE-103 oversized Career export fails without mutating the vault or its recovery snapshot',async()=>{
+ const db=memory(),stale=(await api()).create(db),large=career(1);
+ large.backupNote='x'.repeat(2000000);
+ stale.save(1,large,'large recovery');
+ const current=(await api()).create(db);
+ current.save(2,career(2),'newer tab');
+ const newerRaw=db.getItem('legend_careerSlots');
+ assert.throws(()=>stale.save(3,career(3),'stale write'),/changed elsewhere/);
+ assert.equal(stale.hasRecoverySnapshot,true);
+ assert.throws(()=>stale.exportBackup(),/2 MB round-trip limit/);
+ assert.throws(()=>stale.exportBackup(),/2 MB round-trip limit/);
+ assert.equal(stale.hasRecoverySnapshot,true,'failed exports keep the recovery snapshot available');
+ assert.equal(stale.list()[0].occupied,true,'the stale tab still retains its local Career state');
+ assert.equal(db.getItem('legend_careerSlots'),newerRaw,'failed exports leave the newer persisted vault untouched');
+});
+
+test("SAVE-103 Career export enforces the importer's UTF-8 file-size limit",async()=>{
+ const db=memory(),slots=(await api()).create(db),save=career(4);
+ save.backupNote='😀'.repeat(520000);
+ slots.save(4,save,'unicode boundary');
+ const before=db.getItem('legend_careerSlots');
+ assert.throws(()=>slots.exportBackup(),/2 MB round-trip limit/);
+ assert.equal(db.getItem('legend_careerSlots'),before);
+ assert.equal(slots.getSlot(4).career.backupNote,save.backupNote,'the oversized export refusal keeps the local save readable');
+});
+

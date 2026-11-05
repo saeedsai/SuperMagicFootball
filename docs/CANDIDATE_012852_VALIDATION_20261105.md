@@ -1,6 +1,6 @@
 # Candidate 0.12.81.52 validation
 
-**Status: local development candidate, not release-certified.** This adds a visual-only dribble presentation improvement to the carried-ball and narrow-Home changes in .51. Exact-head `.52` CI has not run; owner visual/gameplay and physical-device acceptance remain open.
+**Status: promoted to main and Pages deployment passed; main Census is running.** Exact-head Full Regression Census (`42024225463`), Modular Game Dev QA (`42024225447`), Current Player Graphics QA (`42024225584`), and Pages deployment (`42025475971`, main branch) succeeded for SHA `66ff218e428ce208a94686108a7b2d0cb20ab547`. Owner visual/gameplay and physical-device acceptance remain open.
 
 ## Changes
 
@@ -13,7 +13,7 @@
 - `python tests/dribble_style_vfx_browser_qa.py`: **20/20** actual-player renderer samples across all ten styles and both team-facing directions; unchanged game/ball/options/score snapshot, zero browser errors. Visual contact sheet: [dribble style VFX](evidence/browser/dribble_style_vfx_012852.png).
 - `npm run test:node`: build passed (**5,218,116 JS / 5,341,168 HTML characters**); Node **2,279/2,279** and Club26/FC27 passed.
 - `node --test tests/about_revision.test.cjs tests/versioning_policy_contract.test.cjs`: **20/20 passed**; `.52` package, README, About module, and rotated offline cache agree.
-- Exact `.51` CI and deployment passed: Full Regression Census, Modular Game Dev QA, protected promotion, Pages deploy and hosted byte/smoke. Its main Census is still running. Exact-head `.52` CI has not run.
+- Exact `.52` Full Regression Census, Modular Game Dev QA, Current Player Graphics QA, and Pages deployment passed. The protected promotion is evidenced by the Pages workflow executing on `main` for this exact SHA. Main Census `42025475835` is still running. Concept Hero/Concept Modular jobs are deferred owner scopes and are not release acceptance gates.
 
 ## Remaining acceptance
 
