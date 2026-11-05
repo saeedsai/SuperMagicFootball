@@ -1263,6 +1263,41 @@ class Renderer{
  drawGoal(ctx,side,foreground){let x=side?F.x+F.w:F.x,y=WORLD.goalTop,h=WORLD.goalBottom-y,d=WORLD.goalDepth*(side?1:-1);
  if(foreground){line(ctx,[[x,y],[x+d,y+5],[x+d,y+h+3],[x,y+h]],'#f5f8dd',4);line(ctx,[[x,y],[x,y+h]],'#ffffff',6);line(ctx,[[x,y],[x+d,y+5]],'#fafcff',5);line(ctx,[[x,y+h],[x+d,y+h+3]],'#fafcff',5)}else{poly(ctx,[[x,y],[x+d,y+5],[x+d,y+h+3],[x,y+h]],'#e8f2e516','#ededde88');ctx.save();ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+d,y+5);ctx.lineTo(x+d,y+h+3);ctx.lineTo(x,y+h);ctx.closePath();ctx.clip();for(let k=0;k<8;k++){let yy=y+k*h/7;line(ctx,[[x-80,yy],[x+d+80,yy]],'#c0f2f28a',1)}for(let k=0;k<12;k++){let xx=x+d*Math.sin(k/10);line(ctx,[[xx,y-20],[xx,y+h+20]],'#c0f2f270',1)}ctx.restore()}
  }
+ drawDribbleTrickEffect(ctx,p,viewSide=1){
+  const s=dribbleStyle(p.trickStyleId),face=(Number(p.face)||1)<0?-1:1,alpha=clamp((Number(p.trickFx)||0)*1.6,0,1);
+  ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=s.color;ctx.fillStyle=s.color;ctx.lineWidth=4;ctx.lineCap='round';ctx.lineJoin='round';
+  const path=points=>{ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);for(const [x,y] of points.slice(1))ctx.lineTo(x,y);ctx.stroke();};
+  switch(s.id){
+   case 'sideStep':
+    for(const side of [-1,1]){ctx.beginPath();ctx.arc(face*side*25,-23,17,side<0?Math.PI*.10:Math.PI*.90,side<0?Math.PI*.90:Math.PI*1.90);ctx.stroke();path([[face*side*30,-3],[face*side*43,4],[face*side*51,2]]);}break;
+   case 'roulette':
+    ctx.beginPath();ctx.ellipse(0,-28,43,30,-.18,0,Math.PI*2);ctx.stroke();
+    for(const a of [0,Math.PI*2/3,Math.PI*4/3]){ctx.beginPath();ctx.arc(face*Math.cos(a)*43,-28+Math.sin(a)*30,3.8,0,Math.PI*2);ctx.fill();}break;
+   case 'elastico':
+    for(const side of [-1,1]){ctx.beginPath();ctx.moveTo(face*side*8,-12);ctx.bezierCurveTo(face*side*46,-47,face*side*48,4,face*side*12,14);ctx.bezierCurveTo(face*side*-8,19,face*side*-15,2,face*side*-24,-3);ctx.stroke();}break;
+   case 'rainbow':
+    ctx.beginPath();ctx.moveTo(-43,-17);ctx.quadraticCurveTo(-18,-70,0,-64);ctx.quadraticCurveTo(25,-61,44,-17);ctx.stroke();
+    ctx.beginPath();ctx.arc(face*7,-66,5,0,Math.PI*2);ctx.fill();break;
+   case 'swerve':
+    for(const offset of [-12,0,12]){ctx.beginPath();ctx.moveTo(-face*46,-34+offset);ctx.quadraticCurveTo(face*15,-42+offset,-face*12,-12+offset);ctx.quadraticCurveTo(face*34,15,face*52,9+offset);ctx.stroke();}break;
+   case 'dragBack':
+    ctx.beginPath();ctx.arc(face*18,-23,31,Math.PI*.12,Math.PI*1.60);ctx.stroke();
+    path([[-face*18,-48],[-face*35,-38],[-face*16,-31]]);path([[-face*28,0],[-face*46,7],[-face*28,13]]);break;
+   case 'heelFlick':
+    for(let k=0;k<3;k++){const x=face*(15+k*10),y=11-k*18;path([[x,y],[x+face*9,y-12],[x+face*12,y-27]]);}break;
+   case 'stepovers':
+    for(const side of [-1,1]){ctx.beginPath();ctx.ellipse(face*side*15,5,13,27,side*.42,Math.PI*.12,Math.PI*1.88);ctx.stroke();}break;
+   case 'nutmeg':
+    path([[-face*33,7],[-face*11,13],[0,13],[face*11,13],[face*33,7]]);
+    path([[-face*8,22],[0,31],[face*8,22]]);ctx.beginPath();ctx.arc(0,13,4,0,Math.PI*2);ctx.fill();break;
+   case 'lightningCut':
+    path([[-face*45,-27],[-face*14,-27],[-face*27,0],[face*7,0],[face*21,22]]);
+    path([[face*35,-39],[face*23,-27],[face*34,-18]]);break;
+   default:
+    ctx.beginPath();ctx.arc(-face*25,-26,14,.1,Math.PI*1.35);ctx.stroke();
+  }
+  ctx.save();ctx.scale(Number(viewSide)<0?-1:1,1);ctx.fillStyle=s.color;ctx.textAlign='center';ctx.font='900 16px Arial';ctx.fillText(s.name.toUpperCase(),0,-158);ctx.restore();ctx.restore();
+ }
  drawPlayer(ctx,p,game){
   const team=game.getTeam(p.t);if(!team||!p.src)return;
   const moving=Math.hypot(p.action==='slide'?(p.slideDX||0):(p.dx||0),p.action==='slide'?(p.slideDY||0):(p.dy||0))>.2;
@@ -1438,7 +1473,7 @@ class Renderer{
  if(!p.preview&&p.comboActive&&p.comboWindow>0&&p.z>=145&&Math.abs(p.vz)<=260){ctx.save();ctx.textAlign='center';ctx.font='900 20px Arial';ctx.fillStyle='#e8ff83';ctx.strokeStyle='#163527';ctx.lineWidth=5;ctx.strokeText('✦ APEX — SUPER!',0,-170);ctx.fillText('✦ APEX — SUPER!',0,-170);ctx.restore();}
  if(!p.preview&&(p.action==='flipKick'||p.action==='comboSuper')){ctx.save();ctx.textAlign='center';ctx.font='900 25px Arial';ctx.fillStyle=p.action==='comboSuper'?'#fef47a':'#e3c8ff';ctx.fillText(p.action==='comboSuper'?'COMBO SUPER!':'FLIP KICK!',0,-145);ctx.restore();}
  if(!p.preview&&p.action==='rideBallCarrier'){ctx.save();ctx.textAlign='center';ctx.font='900 18px Arial';ctx.lineWidth=4;ctx.strokeStyle='#34210b';ctx.fillStyle='#ffe888';ctx.strokeText('SHOULDER RIDE!',0,-174);ctx.fillText('SHOULDER RIDE!',0,-174);ctx.restore();}
- if(!p.preview&&p.action==='dribbleTrick'&&p.trickFx>0){const s=dribbleStyle(p.trickStyleId);ctx.save();ctx.strokeStyle=s.color;ctx.globalAlpha=Math.min(1,p.trickFx*1.6);ctx.lineWidth=5;for(let k=0;k<3;k++){ctx.beginPath();ctx.arc(-p.face*(12+k*13),-26,14+k*8,0,Math.PI*1.35);ctx.stroke()}ctx.fillStyle=s.color;ctx.textAlign='center';ctx.font='900 16px Arial';ctx.fillText(s.name.toUpperCase(),0,-158);ctx.restore();}
+ if(!p.preview&&p.action==='dribbleTrick'&&p.trickFx>0)this.drawDribbleTrickEffect(ctx,p,view.side);
  if(!p.preview&&['bicycle','ballLift','superBicycle','superHead','flyingKick','defensiveBicycle','dribbleTrick'].includes(p.action)){ctx.save();ctx.font='900 20px Arial';ctx.textAlign='center';ctx.fillStyle=p.action==='bicycle'?'#e8b8ff':['flyingKick','defensiveBicycle'].includes(p.action)?'#ffe3a8':'#9ff4dc';ctx.fillText(p.action==='ballLift'?'BALL LIFT!':p.action==='superHead'?'SUPER HEADER!':p.action==='superBicycle'?'SUPER BICYCLE!':p.action==='bicycle'?'BICYCLE!':p.action==='flyingKick'?'FLYING KICK!':p.action==='defensiveBicycle'?'AIR SPIN!':'✦',0,-144);ctx.restore();}
  if(p.action==='comboLand'){ctx.save();ctx.strokeStyle='#f5ce5f';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,3,62,0,PI*2);ctx.stroke();ctx.restore();}
  if(['keeperDive','keeperDiveCatch'].includes(p.action)){
