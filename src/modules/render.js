@@ -1559,6 +1559,33 @@ class Renderer{
   for(const angle of [0,PI/2,PI,PI*1.5]){ctx.save();ctx.rotate(angle);poly(ctx,[[r*.73,-r*.08],[r*.85,-r*.06],[r*.92,0],[r*.85,r*.06],[r*.73,r*.08]],'#164e2a');ctx.restore();}
  }
  else {for(let i=-2;i<=2;i++){line(ctx,[[-r*1.1,i*r*.43],[r*1.1,i*r*.43]],'#784727',r*.12)}for(let i=-2;i<=2;i++){line(ctx,[[i*r*.5,-r],[i*r*.5,r]],'#e1b48a',r*.075)}}
+ // Keep the four themed non-classic balls reading as stitched footballs at
+ // match scale. Their original motifs stay visible underneath these fine,
+ // surface-projected seams; the classic topology and palette are untouched.
+ if(['meteor','ice','gold','retro'].includes(id)&&r>0){
+  const seam=id==='meteor'?'rgba(91,35,21,.34)':id==='ice'?'rgba(39,102,132,.34)':id==='gold'?'rgba(130,86,16,.28)':'rgba(88,53,35,.24)';
+  const sphereVertex=([px,py])=>{const sx=px/r,sy=py/r;return[sx,sy,Math.sqrt(Math.max(0,1-sx*sx-sy*sy))]};
+  const traceThemedPanel=points=>{
+   const verts=points.map(sphereVertex);ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);
+   for(let edge=0;edge<verts.length;edge++){
+    const a=verts[edge],b=verts[(edge+1)%verts.length],dot=clamp(a[0]*b[0]+a[1]*b[1]+a[2]*b[2],-1,1),omega=Math.acos(dot),sinOmega=Math.sin(omega);
+    for(let step=1;step<=6;step++){
+     const t=step/6,wa=sinOmega>1e-6?Math.sin((1-t)*omega)/sinOmega:1-t,wb=sinOmega>1e-6?Math.sin(t*omega)/sinOmega:t;
+     const length=Math.hypot(a[0]*wa+b[0]*wb,a[1]*wa+b[1]*wb,a[2]*wa+b[2]*wb)||1;
+     ctx.lineTo((a[0]*wa+b[0]*wb)*r/length,(a[1]*wa+b[1]*wb)*r/length);
+    }
+   }
+   ctx.closePath();
+  };
+  const center=[[0,-r*.46],[r*.44,-r*.14],[r*.28,r*.39],[-r*.28,r*.39],[-r*.44,-r*.14]];
+  ctx.strokeStyle=seam;ctx.lineWidth=Math.max(.45,r*.018);traceThemedPanel(center);ctx.stroke();
+  for(let a=0;a<5;a++){
+   const angle=a*PI*2/5-PI/2,cx=Math.cos(angle)*r*.64,cy=Math.sin(angle)*r*.64,pr=r*.18;
+   const points=Array.from({length:5},(_,i)=>{const side=angle+PI+i*PI*2/5;return[cx+Math.cos(side)*pr,cy+Math.sin(side)*pr]});
+   traceThemedPanel(points);ctx.stroke();
+   line(ctx,[[Math.cos(angle)*r*.48,Math.sin(angle)*r*.48],[Math.cos(angle)*r*.55,Math.sin(angle)*r*.55]],seam,Math.max(.45,r*.016));
+  }
+ }
  ctx.restore();
  // Shade the completed panel artwork, not just the white base. Applying a
  // soft sphere ramp over seams and colored panels makes the small in-match
@@ -1574,6 +1601,17 @@ class Renderer{
  }
  ellipse(ctx,-r*.30,-r*.40,r*.38,r*.20,'rgba(255,255,255,.52)');
  ellipse(ctx,-r*.39,-r*.46,r*.15,r*.075,'rgba(255,255,255,.74)');
+ // Each themed surface gets a restrained tint in its specular area so ice,
+ // meteor, gold and vintage leather retain distinct materials after shading.
+ const material=id==='meteor'?['rgba(255,211,157,.28)','rgba(255,144,80,.08)']
+  :id==='ice'?['rgba(220,252,255,.42)','rgba(113,211,255,.10)']
+  :id==='gold'?['rgba(255,251,211,.44)','rgba(255,206,67,.10)']
+  :id==='retro'?['rgba(255,227,194,.30)','rgba(180,115,68,.08)']:null;
+ if(material&&typeof ctx.createRadialGradient==='function'){
+  const glow=ctx.createRadialGradient(-r*.34,-r*.42,r*.01,-r*.34,-r*.42,r*.58);
+  glow.addColorStop(0,material[0]);glow.addColorStop(.38,material[1]);glow.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=glow;ctx.beginPath();ctx.arc(0,0,r,0,PI*2);ctx.fill();
+ }
  ctx.restore();ctx.save();ctx.translate(x,y);ctx.lineWidth=Math.max(1,r*.065);ctx.strokeStyle=id==='retro'?'#68432c':'#2a4354';ctx.beginPath();ctx.arc(0,0,r,0,PI*2);ctx.stroke();ctx.restore();
 }
  drawTransformation(ctx,s,t,reducedFlash=false,ballModel='classic'){let id=s.id;const transformSeconds=Number.isFinite(s.transformSeconds)&&s.transformSeconds>0?s.transformSeconds:1.65,returnBlend=clamp((t-(transformSeconds-.18))/.18,0,1),formAlpha=1-returnBlend;ctx.save();ctx.globalAlpha=formAlpha;ctx.rotate(reducedFlash?0:Math.sin(t*4.5)*.045);if(returnBlend>0)ctx.scale(1-returnBlend*.2,1-returnBlend*.2);drawSuperShotOrbitCue(ctx,t,s.trail||s.color||'#d7f6ff',reducedFlash);

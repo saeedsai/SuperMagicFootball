@@ -4,6 +4,8 @@ Use [MASTER_BACKLOG.md](MASTER_BACKLOG.md) as the single current plan and status
 
 ## Read for current work
 
+- [Candidate 0.12.81.39 validation](CANDIDATE_012839_VALIDATION_20261105.md): themed-ball gameplay surfaces, bounded PVP result recovery, and accessible account-switch/storage-repair checks.
+- [In-match ball cosmetic surface quality](BALL_COSMETIC_SURFACE_QUALITY_20261105.md): five existing ball models at game scale across 25 model/rotation combinations, preserving radius and physics.
 - [Candidate 0.12.81.38 validation](CANDIDATE_012838_VALIDATION_20261105.md): shot-recovery brace animation, pitch-line contrast and consistent online Career reads, with focused service and renderer evidence.
 - [Candidate 0.12.81.37 validation](CANDIDATE_012837_VALIDATION_20261105.md): foot-contact-timed ground scuffs and online transformed-shot visual cue preservation, with focused tests and production-renderer browser evidence.
 - [Candidate 0.12.81.36 validation](CANDIDATE_012836_VALIDATION_20261104.md): online match-history single-flight paging, duplicate-page filtering, sign-out response invalidation, and local validation.

@@ -53,16 +53,33 @@ test('all ball designs keep a shaded surface and circular outline without mutati
  }
 });
 
+test('non-classic skins gain match-scale spherical seams and distinct material glints while classic stays unchanged',()=>{
+ const renderer=Object.create(RENDER.Renderer.prototype),skins=['meteor','ice','gold','retro'];
+ const glint={meteor:'rgba(255,211,157,.28)',ice:'rgba(220,252,255,.42)',gold:'rgba(255,251,211,.44)',retro:'rgba(255,227,194,.30)'};
+ const classic=context();renderer.drawSoccerBall(classic,0,0,17,'classic',.4);
+ assert.equal(classic.strokes.filter(stroke=>stroke.color==='#52616b'&&stroke.vertices>=30).length,6,
+  'classic retains its original six panel outlines');
+ for(const model of skins){
+  const ctx=context();renderer.drawSoccerBall(ctx,2,-3,17,model,Math.PI/3);
+  const seams=ctx.strokes.filter(stroke=>stroke.vertices>=30&&stroke.width>=.45);
+  assert.equal(seams.length,6,model+' gets a curved center-and-five-panel seam layout');
+  assert.ok(seams.every(stroke=>stroke.color!=='#52616b'),model+' uses its own seam material');
+  assert.ok(ctx.fills.some(fill=>fill?.stops?.some(stop=>stop[1]===glint[model])),model+' gets its model-specific specular color');
+  assert.equal(ctx.arcs[0].r,17,model+' remains clipped to the match ball radius');
+  assert.equal(ctx.rotations[0],Math.PI/3,model+' preserves painted rotation');
+ }
+});
+
 test('normal in-match ball uses penalty-scale rendering without changing simulated ball state',()=>{
  const renderer=Object.create(RENDER.Renderer.prototype),painted=[];
  renderer.drawBallShadow=()=>{};
- renderer.drawSoccerBall=(_ctx,_x,_y,r)=>painted.push(r);
+ renderer.drawSoccerBall=(_ctx,_x,_y,r,model,rotation)=>painted.push({r,model,rotation});
  const ctx={globalAlpha:1,save(){},restore(){},translate(){}};
  const ball={x:100,y:200,z:0,vx:0,vy:0,vz:0,owner:null,shot:null,trail:[],rollAngle:.4};
- const before=JSON.stringify(ball);
- renderer.drawBall(ctx,{ball,options:{ballModel:'classic',reducedFlash:false}});
- assert.deepEqual(painted,[17],'normal match uses the same drawn scale as the penalty ball');
- assert.equal(JSON.stringify(ball),before,'the visual scale does not alter simulated ball motion or ownership');
+ const game={ball,options:{ballModel:'classic',reducedFlash:false}},before=JSON.stringify({ball,options:game.options});
+ renderer.drawBall(ctx,game);
+ assert.deepEqual(painted,[{r:17,model:'classic',rotation:.4}], 'normal match uses match scale, selected cosmetic and roll angle');
+ assert.equal(JSON.stringify({ball,options:game.options}),before,'drawing keeps physics state and saved cosmetic selection unchanged');
 });
 
 test('classic ball uses a connected center and five surrounding pentagon panels',()=>{
