@@ -36,7 +36,7 @@ export function postgresPoolConfig(env) {
 }
 
 /** Start the separately hosted authenticated account API. */
-export async function startOnlineAccountService({env=process.env,pool=null,PoolClass=null,fetchImpl=globalThis.fetch,matchmakingFactory=createOnlineMatchmaking,engineFactory=createOnlineGameEngine,transportFactory=attachOnlineMatchWebSocket,runtimeFactory=createOnlineAccountRuntime}={}) {
+export async function startOnlineAccountService({env=process.env,pool=null,PoolClass=null,fetchImpl=globalThis.fetch,matchmakingFactory=createOnlineMatchmaking,engineFactory=createOnlineGameEngine,transportFactory=attachOnlineMatchWebSocket,runtimeFactory=createOnlineAccountRuntime,operatorLogger=console}={}) {
   const port=portFrom(env);
   if (!pool) {
     const Pool=PoolClass||(await import('pg')).Pool;
@@ -60,6 +60,11 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
       sendSnapshot:(userId,envelope,context)=>transport?.sendSnapshot(userId,envelope,context)??false,
       onRequeue:(userId,detail)=>transport?.onRequeue(userId,detail),
       onMatchError:(matchId,code)=>transport?.onMatchError(matchId,code)??false,
+      onMatchFault:(matchId)=>{
+        // Match IDs are random opaque identifiers; log no user, engine, or request data.
+        if(typeof matchId!=='string'||!/^[a-f0-9]{32}$/.test(matchId))return;
+        try{operatorLogger?.error?.(JSON.stringify({event:'online-match-fault',matchId,code:'engine-error'}));}catch{}
+      },
       onMatchPersisted:result=>transport?.onMatchFinished(result.matchId)??false,
       onMatchFinished:async result=>{
         if(!recordFinalResult)throw new Error('Durable result store is not ready');

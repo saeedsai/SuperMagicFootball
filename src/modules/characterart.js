@@ -638,7 +638,11 @@ const CHARACTER_ART=(()=>{
   const idleBreath=p.action==='idle'&&!opt.locomotion&&!opt.kick&&!opt.sliding&&!opt.celebrate&&!opt.cry;
   const breathPhase=idleBreath?clamp((Math.sin((Number(opt.time)||0)*2.05+(Number(p.i)||0)*1.17)+1)*.5,0,1):0;
   const blink=idleBreath&&!opt.hurt&&idleBlink(opt.time,p.i);
+  const turnLean=turnCounterLean(opt.turnLag,view?.side);
   c.save();
+  // Counter-rotate the connected upper-body group around the waist pivot.
+  // Legs/shorts stay planted and the existing root-facing transition is untouched.
+  if(turnLean){c.translate(0,-24);c.rotate(turnLean);c.translate(0,24)}
   if(breathPhase>0){c.translate(0,-breathPhase*2.2);c.translate(0,-22);c.scale(1,1+breathPhase*.022);c.translate(0,22)}
   stroke(c,[[0,-59],[0,-49]],blend(colors.skin,-.25),17,dark);
   stroke(c,[[-3,-59],[-3,-53]],ink('#ffffff',.26),3.3);
@@ -653,6 +657,11 @@ const CHARACTER_ART=(()=>{
   c.restore();
   c.restore();
  }
- return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,idleBlink,version:3};
+ function turnCounterLean(turnLag,side=1){
+  const turn=Number(turnLag);if(!Number.isFinite(turn)||turn===0)return 0;
+  const mirror=Number(side)<0?-1:1;
+  return clamp(-turn*.28*mirror,-.14,.14);
+ }
+ return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,idleBlink,turnCounterLean,version:3};
 })();
 export {CHARACTER_ART};

@@ -126,11 +126,11 @@ function validatedSnapshot(envelope,matchId){
  * Create a short-lived single-use-ticket queue and server-owned match sessions.
  * `queueTicket({userId,ticket})` must receive the user ID from trusted auth middleware.
  */
-export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRequeue=()=>{},onMatchFinished=async result=>({matchId:result.matchId}),onMatchPersisted=()=>{},onMatchError=()=>{},
+export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRequeue=()=>{},onMatchFinished=async result=>({matchId:result.matchId}),onMatchPersisted=()=>{},onMatchError=()=>{},onMatchFault=()=>{},
   now=Date.now,setIntervalFn=globalThis.setInterval,clearIntervalFn=globalThis.clearInterval,
   autoTick=true,ticketTtlMs=30_000,queueTtlMs=60_000,disconnectGraceMs=15_000,maxSnapshotBuffer=4,
   maxPendingTickets=512,maxQueuedUsers=256,maxActiveMatches=64,validTeamIds=null}={}){
-  if(typeof createEngine!=='function'||typeof sendSnapshot!=='function'||typeof onRequeue!=='function'||typeof onMatchFinished!=='function'||typeof onMatchPersisted!=='function'||typeof onMatchError!=='function'||
+  if(typeof createEngine!=='function'||typeof sendSnapshot!=='function'||typeof onRequeue!=='function'||typeof onMatchFinished!=='function'||typeof onMatchPersisted!=='function'||typeof onMatchError!=='function'||typeof onMatchFault!=='function'||
      typeof now!=='function'||typeof setIntervalFn!=='function'||typeof clearIntervalFn!=='function'||
      typeof autoTick!=='boolean'||!Number.isSafeInteger(ticketTtlMs)||ticketTtlMs<1000||ticketTtlMs>60_000||
      !Number.isSafeInteger(queueTtlMs)||queueTtlMs<1000||queueTtlMs>60_000||!Number.isSafeInteger(disconnectGraceMs)||disconnectGraceMs<1000||disconnectGraceMs>60_000||
@@ -237,6 +237,22 @@ export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRe
       mode:fixture.mode,seats:[null,null],status:'reserved'};
     careerFixtures.set(record.matchId,record);careerFixtureByUser.set(record.userIds[0],record.matchId);
     return Object.freeze({ok:true,duplicate:false,matchId:record.matchId});
+  }
+  function releaseCareerFixture(matchId,userId){
+    if(disposed)return Object.freeze({ok:false,reason:'service-closed'});
+    if(!MATCH_ID.test(matchId||'')||!validUserId(userId))return Object.freeze({ok:false,reason:'career-fixture-unavailable'});
+    const fixture=careerFixtures.get(matchId);
+    if(!fixture||fixture.userIds[0]!==userId||careerFixtureByUser.get(userId)!==matchId)
+      return Object.freeze({ok:false,reason:'career-fixture-unavailable'});
+    const hasIssuedTicket=[...tickets.values()].some(ticket=>ticket.careerMatchId===matchId);
+    const hasQueuedSeat=fixture.userIds.some(id=>queuedByUser.get(id)?.careerMatchId===matchId);
+    if(fixture.status!=='reserved'||fixture.seats.some(Boolean)||matches.has(matchId)||activeByUser.get(userId)===matchId||
+      reservedUsers.has(userId)||hasIssuedTicket||hasQueuedSeat)
+      return Object.freeze({ok:false,reason:'career-fixture-active'});
+    careerFixtures.delete(matchId);
+    if(careerFixtureByUser.get(userId)===matchId)careerFixtureByUser.delete(userId);
+    if(requeuedFromMatch.get(userId)===matchId)requeuedFromMatch.delete(userId);
+    return Object.freeze({ok:true,released:true,matchId});
   }
   function issueCareerTicket(matchId,userId,rosterPlayerIds=null){
     if(disposed)return Object.freeze({ok:false,reason:'service-closed'});
@@ -390,10 +406,40 @@ export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRe
       if(result.reason==='engine-error'){
         // Emit only a fixed code; engine exception text can contain internal details.
         try{onMatchError(matchId,'engine-error');}catch{}
+        // This operator hook is intentionally separate from the typed client event.
+        // It runs after cleanup and may never interrupt the shared timer or slot release.
+        try{onMatchFault(matchId,'engine-error');}catch{}
         return Object.freeze({...result,closed:true});
       }
     }
     return result;
+  }
+  function failScheduledTick(matchId){
+    const record=matches.get(matchId);
+    if(!record)return;
+    // Cleanup stays local to this match even if the failure happened outside
+    // engine.step() (for example during a tick boundary or recovery callback).
+    try{stopRecord(record,'engine-error');}catch{}
+    if(record.timer!==null){try{clearIntervalFn(record.timer);}catch{}record.timer=null;}
+    record.status='closed';record.reason='engine-error';
+    try{record.session?.close();}catch{}
+    releaseActive(record);
+    for(const rows of record.buffers.values())rows.length=0;
+    matches.delete(matchId);
+    if(record.careerMatchId){
+      const fixture=careerFixtures.get(record.careerMatchId);
+      if(fixture){fixture.status='reserved';fixture.seats=[null,null];}
+    }else rememberClosed(matchId,'engine-error');
+    try{onMatchError(matchId,'engine-error');}catch{}
+    try{onMatchFault(matchId,'engine-error');}catch{}
+  }
+  function scheduledTick(matchId){
+    let result;
+    try{result=tick(matchId);}catch{failScheduledTick(matchId);return;}
+    // Active/reconnect/closed ticks return plain result objects. Persistence
+    // retries return Promises, so normalize both contracts and contain either
+    // kind of unexpected failure at the interval boundary.
+    try{if(result&&typeof result.then==='function')void Promise.resolve(result).catch(()=>failScheduledTick(matchId));}catch{failScheduledTick(matchId);}
   }
   async function pairQueue(){
     if(queue.length<2||disposed)return null;
@@ -420,7 +466,7 @@ export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRe
       for(const userId of userIds)activeByUser.set(userId,matchId);
       const initial=record.session.getState().snapshot;
       if(!bufferSnapshot(record,{matchId,tick:0,snapshot:initial}))throw new Error('Invalid initial authoritative snapshot');
-      if(autoTick)record.timer=setIntervalFn(()=>{void tick(matchId).catch(()=>{});},STEP_MS);
+      if(autoTick)record.timer=setIntervalFn(()=>scheduledTick(matchId),STEP_MS);
       const seats=Object.freeze(userIds.map((userId,side)=>Object.freeze({userId,side})));
       return Object.freeze({ok:true,status:'matched',matchId,participants:Object.freeze(userIds.slice()),seats});
     }catch(error){
@@ -455,7 +501,7 @@ export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRe
       fixture.seats=[null,null];
       const initial=record.session.getState().snapshot;
       if(!bufferSnapshot(record,{matchId,tick:0,snapshot:initial}))throw new Error('Invalid initial authoritative Career snapshot');
-      if(autoTick)record.timer=setIntervalFn(()=>{void tick(matchId).catch(()=>{});},STEP_MS);
+      if(autoTick)record.timer=setIntervalFn(()=>scheduledTick(matchId),STEP_MS);
       const seats=Object.freeze(userIds.map((userId,side)=>Object.freeze({userId,side})));
       return Object.freeze({ok:true,status:'matched',matchId,participants:Object.freeze(userIds.slice()),seats,career:true,mode:'career-ai'});
     }catch{
@@ -591,7 +637,7 @@ export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRe
     for(const record of matches.values())stopRecord(record,'service-shutdown');
     matches.clear();tickets.clear();ticketByUser.clear();queue.length=0;queuedByUser.clear();reservedUsers.clear();requeuedFromMatch.clear();careerFixtures.clear();careerFixtureByUser.clear();
   }
-  return Object.freeze({issueTicket,issueResumeTicket,issueCareerTicket,reserveCareerFixture,queueTicket,queuePresentedTicket,submitInput,disconnect,resumeMatch,cancelQueue,tick,getState,close,
+  return Object.freeze({issueTicket,issueResumeTicket,issueCareerTicket,reserveCareerFixture,releaseCareerFixture,queueTicket,queuePresentedTicket,submitInput,disconnect,resumeMatch,cancelQueue,tick,getState,close,
     isValidTeamId(teamId){return typeof teamId==='string'&&!!canonicalTeamIds?.has(teamId);},
     get constants(){return Object.freeze({ticketTtlMs,queueTtlMs,tickRate:30,stepMs:STEP_MS,maxSnapshotBuffer,maxPendingTickets,maxQueuedUsers,maxActiveMatches});}});
 }

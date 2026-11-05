@@ -65,7 +65,7 @@ function summarize(season,fixtures){
     .sort((a,b)=>b.points-a.points||b.goalDifference-a.goalDifference||b.goalsFor-a.goalsFor||a.teamId.localeCompare(b.teamId));
   return Object.freeze({seasonId:season.season_id.trim(),version:Number(season.version),status:season.status,teamId:season.team_id,
     fixtureCount:Number(season.fixture_count),playedCount:Number(season.played_count),
-    fixtures:Object.freeze(fixtures.map(row=>Object.freeze({fixtureNo:Number(row.fixture_no),fixtureId:row.fixture_id.trim(),status:row.status,
+    fixtures:Object.freeze(fixtures.map(row=>Object.freeze({fixtureNo:Number(row.fixture_no),fixtureId:row.fixture_id.trim(),status:row.status==='reserved'?'scheduled':row.status,
       teamIds:[row.team_0,row.team_1],score:row.status==='completed'?[Number(row.score_0),Number(row.score_1)]:null,
       recordedAt:row.recorded_at?dateIso(row.recorded_at):null}))),standings:Object.freeze(standings.map(row=>Object.freeze(row)))});
 }
@@ -125,6 +125,36 @@ export function createOnlineCareerService({db,resultStore,buildSchedule,now=()=>
     const response=await db.query("SELECT fixture_no FROM smf_online_career_fixtures WHERE account_id=$1 AND season_id=$2 AND status='scheduled' ORDER BY fixture_no LIMIT 1",[accountId,seasonId]);
     const row=response.rows?.[0];if(!row)return null;
     return getFixtureBinding(accountId,seasonId,Number(row.fixture_no));
+  }
+  async function claimNextFixtureBinding(accountId,seasonId){
+    safeAccount(accountId);safeSeason(seasonId);
+    const reservationId=randomBytes(16).toString('hex');
+    return transaction(async client=>{
+      const season=(await client.query('SELECT account_id,season_id,status FROM smf_online_career_seasons WHERE account_id=$1 AND season_id=$2 FOR UPDATE',[accountId,seasonId])).rows?.[0];
+      if(!season)return null;
+      if(season.status!=='active')return null;
+      const found=(await client.query("SELECT account_id,season_id,fixture_no,fixture_id,match_id,participant_0,participant_1,team_0,team_1,mode,status,reservation_id,reservation_expires_at FROM smf_online_career_fixtures WHERE account_id=$1 AND season_id=$2 AND status IN ('scheduled','reserved') ORDER BY fixture_no LIMIT 1 FOR UPDATE",[accountId,seasonId])).rows?.[0];
+      if(!found)return null;
+      if(found.status!=='scheduled'&&found.status!=='reserved')fail('corrupt-fixture','Stored Career fixture state is invalid');
+      const claimed=(await client.query("UPDATE smf_online_career_fixtures SET status='reserved',reservation_id=$4,reservation_expires_at=clock_timestamp()+interval '10 minutes' WHERE account_id=$1 AND season_id=$2 AND fixture_no=$3 AND (status='scheduled' OR (status='reserved' AND reservation_expires_at <= clock_timestamp())) RETURNING account_id,season_id,fixture_no,fixture_id,match_id,participant_0,participant_1,team_0,team_1,mode,status,reservation_id,reservation_expires_at",
+        [accountId,seasonId,Number(found.fixture_no),reservationId])).rows?.[0];
+      if(!claimed)return Object.freeze({ok:false,reason:'fixture-reserved'});
+      const binding=Object.freeze({fixtureNo:Number(claimed.fixture_no),fixtureId:claimed.fixture_id.trim(),matchId:claimed.match_id.trim(),participants:Object.freeze([
+        Object.freeze({userId:claimed.participant_0,side:0}),Object.freeze({userId:claimed.participant_1,side:1})]),teamIds:Object.freeze([claimed.team_0,claimed.team_1]),mode:claimed.mode});
+      if(!OPAQUE_ID.test(binding.fixtureId)||!OPAQUE_ID.test(binding.matchId)||binding.participants[0].userId!==accountId||binding.participants[1].userId!==AI_PARTICIPANT||
+        !binding.teamIds.every(value=>typeof value==='string'&&TEAM_ID.test(value))||binding.teamIds[0]===binding.teamIds[1]||binding.mode!=='career-ai')
+        fail('corrupt-fixture','Stored Career fixture binding is invalid');
+      return Object.freeze({ok:true,binding,reservationId,expiresAt:claimed.reservation_expires_at});
+    });
+  }
+  async function releaseFixtureReservation(accountId,seasonId,matchId,reservationId){
+    safeAccount(accountId);safeSeason(seasonId);
+    if(typeof matchId!=='string'||!OPAQUE_ID.test(matchId)||typeof reservationId!=='string'||!OPAQUE_ID.test(reservationId))fail('invalid-reservation','Invalid Career fixture reservation');
+    return transaction(async client=>{
+      await client.query('SELECT account_id,season_id,status FROM smf_online_career_seasons WHERE account_id=$1 AND season_id=$2 FOR UPDATE',[accountId,seasonId]);
+      const result=await client.query("UPDATE smf_online_career_fixtures SET status='scheduled',reservation_id=NULL,reservation_expires_at=NULL WHERE account_id=$1 AND season_id=$2 AND match_id=$3 AND participant_0=$1 AND status='reserved' AND reservation_id=$4",[accountId,seasonId,matchId,reservationId]);
+      return Number(result.rowCount||0)===1;
+    });
   }
   async function getCurrentSeason(accountId){
     safeAccount(accountId);
@@ -190,8 +220,8 @@ export function createOnlineCareerService({db,resultStore,buildSchedule,now=()=>
         if(current.result_hash!==projected.resultHash)fail('fixture-result-conflict','A different durable result was already applied to this fixture');
         duplicate=true;return;
       }
-      if(current.status!=='scheduled'||currentSeason.status!=='active')fail('season-not-active','Online Career season is not active');
-      await client.query("UPDATE smf_online_career_fixtures SET status='completed',score_0=$4,score_1=$5,recorded_at=$6,result_hash=$7 WHERE account_id=$1 AND season_id=$2 AND fixture_no=$3 AND status='scheduled'",
+      if(!['scheduled','reserved'].includes(current.status)||currentSeason.status!=='active')fail('season-not-active','Online Career season is not active');
+      await client.query("UPDATE smf_online_career_fixtures SET status='completed',reservation_id=NULL,reservation_expires_at=NULL,score_0=$4,score_1=$5,recorded_at=$6,result_hash=$7 WHERE account_id=$1 AND season_id=$2 AND fixture_no=$3 AND status IN ('scheduled','reserved')",
         [accountId,seasonId,fixtureNo,projected.score[0],projected.score[1],projected.recordedAt,projected.resultHash]);
       const played=Number(currentSeason.played_count)+1,total=Number(currentSeason.fixture_count),status=played===total?'complete':'active';
       await client.query('UPDATE smf_online_career_seasons SET played_count=$3,version=version+1,status=$4,updated_at=$5 WHERE account_id=$1 AND season_id=$2',
@@ -204,10 +234,10 @@ export function createOnlineCareerService({db,resultStore,buildSchedule,now=()=>
     if(typeof matchId!=='string'||!OPAQUE_ID.test(matchId))fail('invalid-match-id','Invalid authoritative match identifier');
     const response=await db.query('SELECT account_id,season_id,fixture_no,status FROM smf_online_career_fixtures WHERE match_id=$1',[matchId]);
     const fixture=response.rows?.[0];if(!fixture)return null;
-    if(!['scheduled','completed'].includes(fixture.status))fail('corrupt-fixture','Stored Career fixture status is invalid');
+    if(!['scheduled','reserved','completed'].includes(fixture.status))fail('corrupt-fixture','Stored Career fixture status is invalid');
     // advanceFixture reads and verifies the immutable result itself. For a completed row,
     // its result hash makes retries idempotent after a lost acknowledgement.
     return advanceFixture(fixture.account_id,fixture.season_id.trim(),Number(fixture.fixture_no));
   }
-  return Object.freeze({createSeason,getSeason,getCurrentSeason,listSeasons,getFixtureBinding,getNextFixtureBinding,advanceFixture,advanceMatchResult});
+  return Object.freeze({createSeason,getSeason,getCurrentSeason,listSeasons,getFixtureBinding,getNextFixtureBinding,claimNextFixtureBinding,releaseFixtureReservation,advanceFixture,advanceMatchResult});
 }

@@ -54,6 +54,9 @@ class FakePool{
     if(q.startsWith('select account_id,season_id,fixture_count,played_count,version,status from smf_online_career_seasons')){
       const row=this.seasons.get(`${p[0]}:${String(p[1]).trim()}`);return {rows:row?[structuredClone(row)]:[]};
     }
+    if(q.startsWith('select account_id,season_id,status from smf_online_career_seasons')){
+      const row=this.seasons.get(`${p[0]}:${String(p[1]).trim()}`);return {rows:row?[{account_id:row.account_id,season_id:row.season_id,status:row.status}]:[]};
+    }
     if(q.startsWith('select fixture_no,fixture_id,match_id,participant_0,participant_1,team_0,team_1,status,score_0,score_1,recorded_at,result_hash from smf_online_career_fixtures')){
       const rows=[...this.fixtures.values()].filter(row=>row.account_id===p[0]&&row.season_id===p[1]).sort((a,b)=>a.fixture_no-b.fixture_no);return {rows:structuredClone(rows)};
     }
@@ -63,6 +66,10 @@ class FakePool{
     }
     if(q.startsWith('select fixture_no from smf_online_career_fixtures')&&q.includes("status='scheduled'")){
       const row=[...this.fixtures.values()].filter(item=>item.account_id===p[0]&&item.season_id===p[1]&&item.status==='scheduled').sort((a,b)=>a.fixture_no-b.fixture_no)[0];return {rows:row?[{fixture_no:row.fixture_no}]:[]};
+    }
+    if(q.startsWith('select account_id,season_id,fixture_no,fixture_id,match_id,participant_0,participant_1,team_0,team_1,mode,status,reservation_id,reservation_expires_at from smf_online_career_fixtures')&&q.includes("status in ('scheduled','reserved')")){
+      const row=[...this.fixtures.values()].filter(item=>item.account_id===p[0]&&item.season_id===p[1]&&['scheduled','reserved'].includes(item.status)).sort((a,b)=>a.fixture_no-b.fixture_no)[0];
+      return {rows:row?[structuredClone(row)]:[]};
     }
     if(q.startsWith('select fixture_no from smf_online_career_fixtures')){
       const row=[...this.fixtures.values()].find(item=>item.account_id===p[0]&&item.season_id===p[1]&&item.fixture_id===p[2]);return {rows:row?[{fixture_no:row.fixture_no}]:[]};
@@ -75,8 +82,21 @@ class FakePool{
     }
     if(q.startsWith('update smf_online_career_fixtures')){
       if(this.failOn==='fixture-update'){this.failOn=null;throw Error('fixture write failed')}
+      if(q.includes("set status='reserved'")){
+        const [account_id,season_id,fixture_no,reservation_id]=p,row=this.fixtures.get(`${account_id}:${String(season_id).trim()}:${fixture_no}`);
+        const expired=row?.status==='reserved'&&row.reservation_expires_at&&new Date(row.reservation_expires_at)<=new Date();
+        if(row&&(row.status==='scheduled'||expired)){
+          Object.assign(row,{status:'reserved',reservation_id,reservation_expires_at:new Date(Date.now()+10*60*1000).toISOString()});return {rows:[structuredClone(row)]};
+        }
+        return {rows:[]};
+      }
+      if(q.includes("set status='scheduled'")){
+        const [account_id,season_id,match_id,reservation_id]=p,row=[...this.fixtures.values()].find(item=>item.account_id===account_id&&item.season_id===String(season_id).trim()&&item.match_id===match_id);
+        if(row?.status==='reserved'&&row.reservation_id===reservation_id&&row.participant_0===account_id){Object.assign(row,{status:'scheduled',reservation_id:null,reservation_expires_at:null});return {rows:[],rowCount:1};}
+        return {rows:[],rowCount:0};
+      }
       const [account_id,season_id,fixture_no,score_0,score_1,recorded_at,result_hash]=p,row=this.fixtures.get(`${account_id}:${String(season_id).trim()}:${fixture_no}`);
-      if(row&&row.status==='scheduled')Object.assign(row,{status:'completed',score_0,score_1,recorded_at,result_hash});return {rows:[]};
+      if(row&&['scheduled','reserved'].includes(row.status))Object.assign(row,{status:'completed',reservation_id:null,reservation_expires_at:null,score_0,score_1,recorded_at,result_hash});return {rows:[]};
     }
     if(q.startsWith('update smf_online_career_seasons')){
       if(this.failOn==='season-update'){this.failOn=null;throw Error('season write failed')}
@@ -149,6 +169,38 @@ test('current season and next fixture binding are account-scoped and ordered',as
   assert.equal(await service.getCurrentSeason('player_bravo'),null);
   assert.deepEqual(await service.getNextFixtureBinding(ACCOUNT,season.seasonId),await service.getFixtureBinding(ACCOUNT,season.seasonId,1));
   assert.equal(await service.getNextFixtureBinding('player_bravo',season.seasonId),null);
+});
+
+test('two independent Career services atomically contend for one short-lived fixture lease',async()=>{
+  const {service,db}=await setup();const season=await service.createSeason(ACCOUNT);
+  const {createOnlineCareerService}=await import('../scripts/online-career-service.mjs');
+  const second=createOnlineCareerService({db,resultStore:{getFinalResult:async()=>null},buildSchedule:async()=>schedule()});
+  const [left,right]=await Promise.all([service.claimNextFixtureBinding(ACCOUNT,season.seasonId),second.claimNextFixtureBinding(ACCOUNT,season.seasonId)]);
+  assert.equal([left,right].filter(row=>row?.ok===true).length,1);
+  assert.equal([left,right].filter(row=>row?.reason==='fixture-reserved').length,1);
+  const winner=left?.ok?left:right;
+  assert.equal(winner.binding.matchId,oneMatch);assert.match(winner.reservationId,/^[a-f0-9]{32}$/);
+  assert.equal(db.fixtures.get(`${ACCOUNT}:${season.seasonId}:1`).status,'reserved');
+  assert.equal(await service.releaseFixtureReservation(ACCOUNT,season.seasonId,oneMatch,'0'.repeat(32)),false,'a different claim cannot release the lease');
+  assert.equal(await service.releaseFixtureReservation(ACCOUNT,season.seasonId,oneMatch,winner.reservationId),true);
+  assert.equal(db.fixtures.get(`${ACCOUNT}:${season.seasonId}:1`).status,'scheduled');
+});
+
+test('expired Career fixture leases can be reclaimed without changing the bound match ID',async()=>{
+  const {service,db}=await setup();const season=await service.createSeason(ACCOUNT);
+  const first=await service.claimNextFixtureBinding(ACCOUNT,season.seasonId);assert.equal(first.ok,true);
+  db.fixtures.get(`${ACCOUNT}:${season.seasonId}:1`).reservation_expires_at=new Date(Date.now()-1000).toISOString();
+  const recovered=await service.claimNextFixtureBinding(ACCOUNT,season.seasonId);assert.equal(recovered.ok,true);
+  assert.notEqual(recovered.reservationId,first.reservationId);assert.equal(recovered.binding.matchId,first.binding.matchId);
+});
+
+test('durable result completes a claimed fixture and clears its lease',async()=>{
+  const {service,db,results}=await setup();const season=await service.createSeason(ACCOUNT);
+  const claim=await service.claimNextFixtureBinding(ACCOUNT,season.seasonId);results.set(oneMatch,finalResult());
+  const advanced=await service.advanceFixture(ACCOUNT,season.seasonId,1);
+  assert.equal(advanced.playedCount,1);assert.equal(db.fixtures.get(`${ACCOUNT}:${season.seasonId}:1`).status,'completed');
+  assert.equal(db.fixtures.get(`${ACCOUNT}:${season.seasonId}:1`).reservation_id,null);
+  assert.equal(await service.releaseFixtureReservation(ACCOUNT,season.seasonId,oneMatch,claim.reservationId),false);
 });
 
 test('season archive lists completed and active seasons newest-first without crossing accounts',async()=>{

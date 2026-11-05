@@ -405,20 +405,44 @@ export function createOnlineAccountApi({authenticate, store, resultStore, reward
         return json({season:publicOnlineCareerSeason(season)},200,cors);
       }
       if(route==='POST /api/v1/online-career/current/fixtures/next/ticket'){
-        if(!onlineCareerService||typeof onlineCareerService.getCurrentSeason!=='function'||typeof onlineCareerService.getNextFixtureBinding!=='function'||
+        if(!onlineCareerService||typeof onlineCareerService.getCurrentSeason!=='function'||typeof onlineCareerService.claimNextFixtureBinding!=='function'||typeof onlineCareerService.releaseFixtureReservation!=='function'||
           !matchmaking||typeof matchmaking.reserveCareerFixture!=='function'||typeof matchmaking.issueCareerTicket!=='function')return json({error:'online-career-unavailable'},503,cors);
         await requireEmptyCareerTicketBody(request);
         const season=await onlineCareerService.getCurrentSeason(userId);
         if(!season)return json({error:'online-career-season-not-found'},404,cors);
-        const binding=await onlineCareerService.getNextFixtureBinding(userId,season.seasonId);
-        if(!binding)return json({error:'online-career-season-complete'},409,cors);
-        const lineup=typeof ultimateTeamStore?.getLineup==='function'?await ultimateTeamStore.getLineup(userId,binding.teamIds[0]):null;
-        const playerIds=lineup?.playerIds;
-        const reserved=matchmaking.reserveCareerFixture(binding,playerIds);
-        if(!reserved?.ok)return json({error:reserved?.reason==='fixture-user-busy'?'already-active':'online-career-match-unavailable'},reserved?.reason==='fixture-user-busy'?409:503,cors);
-        const ticket=matchmaking.issueCareerTicket(binding.matchId,userId,playerIds);
-        if(!ticket?.ok)return json({error:ticket?.reason==='duplicate-active-user'?'already-active':'online-career-match-unavailable'},ticket?.reason==='duplicate-active-user'?409:503,cors);
-        return json({ticket:ticket.ticket,expiresAt:ticket.expiresAt,fixtureNo:binding.fixtureNo,teamIds:binding.teamIds},201,cors);
+        const claim=await onlineCareerService.claimNextFixtureBinding(userId,season.seasonId);
+        if(!claim)return json({error:'online-career-season-complete'},409,cors);
+        if(claim.ok!==true||!claim.binding||typeof claim.reservationId!=='string'||!/^[a-f0-9]{32}$/.test(claim.reservationId))return json({error:claim.reason==='fixture-reserved'?'already-active':'online-career-match-unavailable'},claim.reason==='fixture-reserved'?409:503,cors);
+        const {binding,reservationId}=claim;
+        let localReserved=false,durableReleaseAttempted=false;
+        const releaseClaim=async()=>{
+          let releaseError=null;
+          if(!durableReleaseAttempted){
+            durableReleaseAttempted=true;
+            try{await onlineCareerService.releaseFixtureReservation(userId,season.seasonId,binding.matchId,reservationId);}catch(error){releaseError=error;}
+          }
+          if(localReserved){
+            try{matchmaking.releaseCareerFixture?.(binding.matchId,userId);}catch(error){releaseError??=error;}
+            localReserved=false;
+          }
+          if(releaseError)throw releaseError;
+        };
+        try{
+          const lineup=typeof ultimateTeamStore?.getLineup==='function'?await ultimateTeamStore.getLineup(userId,binding.teamIds[0]):null;
+          const playerIds=lineup?.playerIds;
+          const reserved=matchmaking.reserveCareerFixture(binding,playerIds);
+          if(!reserved?.ok){await releaseClaim();return json({error:reserved?.reason==='fixture-user-busy'?'already-active':'online-career-match-unavailable'},reserved?.reason==='fixture-user-busy'?409:503,cors);}
+          localReserved=true;
+          const ticket=matchmaking.issueCareerTicket(binding.matchId,userId,playerIds);
+          if(!ticket?.ok){
+            await releaseClaim();
+            return json({error:ticket?.reason==='duplicate-active-user'?'already-active':'online-career-match-unavailable'},ticket?.reason==='duplicate-active-user'?409:503,cors);
+          }
+          return json({ticket:ticket.ticket,expiresAt:ticket.expiresAt,fixtureNo:binding.fixtureNo,teamIds:binding.teamIds},201,cors);
+        }catch(error){
+          try{await releaseClaim();}catch{}
+          throw error;
+        }
       }
       if(route==='POST /api/v1/matches/rewards/claim'){
         if(!rewardStore||typeof rewardStore.claimMatchReward!=='function')return json({error:'rewards-unavailable'},503,cors);

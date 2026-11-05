@@ -352,27 +352,64 @@ test('Online Career creation verifies owned team and accepts only the exact opti
   assert.equal(spoof.status,400);
 });
 
-test('Online Career next-ticket endpoint reserves the exact server-owned binding and accepts no client fixture data',async()=>{
+test('Online Career next-ticket endpoint claims the durable fixture before local matchmaking and accepts no client fixture data',async()=>{
   const calls=[];
   const binding={fixtureId:'d'.repeat(32),matchId:'e'.repeat(32),fixtureNo:1,
     participants:[{userId:'account_A',side:0},{userId:'smf_server_career_ai',side:1}],teamIds:['japan','brazil'],mode:'career-ai'};
   const onlineCareerService={
     async getCurrentSeason(accountId){calls.push(['current',accountId]);return ONLINE_SEASON;},
-    async getNextFixtureBinding(accountId,seasonId){calls.push(['next',accountId,seasonId]);return binding;}
+    async claimNextFixtureBinding(accountId,seasonId){calls.push(['claim',accountId,seasonId]);return {ok:true,binding,reservationId:'a'.repeat(32)};},
+    async releaseFixtureReservation(accountId,seasonId,matchId,reservationId){calls.push(['release-db',accountId,seasonId,matchId,reservationId]);return true;}
   };
   const matchmaking={
     reserveCareerFixture(value){calls.push(['reserve',value]);return {ok:true};},
-    issueCareerTicket(matchId,userId){calls.push(['ticket',matchId,userId]);return {ok:true,ticket:'f'.repeat(64),expiresAt:1800000001000};}
+    issueCareerTicket(matchId,userId){calls.push(['ticket',matchId,userId]);return {ok:true,ticket:'f'.repeat(64),expiresAt:1800000001000};},
+    releaseCareerFixture(matchId,userId){calls.push(['release-local',matchId,userId]);return true;}
   };
   const {handler,request}=fixture({onlineCareerService,matchmaking});
   const response=await handler(request('/api/v1/online-career/current/fixtures/next/ticket',{method:'POST'}));
   assert.equal(response.status,201);
   assert.deepEqual(await response.json(),{ticket:'f'.repeat(64),expiresAt:1800000001000,fixtureNo:1,teamIds:['japan','brazil']});
-  assert.deepEqual(calls.map(row=>row[0]),['current','next','reserve','ticket']);
+  assert.deepEqual(calls.map(row=>row[0]),['current','claim','reserve','ticket']);
   assert.equal(calls[2][1],binding);
   const spoof=await handler(request('/api/v1/online-career/current/fixtures/next/ticket',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({fixtureId:'0'.repeat(32),score:[999,0]})}));
   assert.equal(spoof.status,400);
   assert.equal(calls.length,4,'invalid client fixture data must never reach the reservation service');
+});
+
+test('Online Career releases durable and local fixture claims when ticket creation fails',async()=>{
+  const calls=[],binding={fixtureId:'d'.repeat(32),matchId:'e'.repeat(32),fixtureNo:1,participants:[{userId:'account_A',side:0},{userId:'smf_server_career_ai',side:1}],teamIds:['japan','brazil'],mode:'career-ai'};
+  const onlineCareerService={async getCurrentSeason(){return ONLINE_SEASON;},async claimNextFixtureBinding(){return {ok:true,binding,reservationId:'a'.repeat(32)};},
+    async releaseFixtureReservation(...args){calls.push(['release-db',...args]);return true;}};
+  const matchmaking={reserveCareerFixture(){return {ok:true};},issueCareerTicket(){return {ok:false,reason:'duplicate-active-user'};},
+    releaseCareerFixture(...args){calls.push(['release-local',...args]);return true;}};
+  const {handler,request}=fixture({onlineCareerService,matchmaking});
+  const response=await handler(request('/api/v1/online-career/current/fixtures/next/ticket',{method:'POST'}));
+  assert.equal(response.status,409);assert.deepEqual(await response.json(),{error:'already-active'});
+  assert.deepEqual(calls,[['release-db','account_A',ONLINE_SEASON.seasonId,binding.matchId,'a'.repeat(32)],['release-local',binding.matchId,'account_A']]);
+});
+
+test('Online Career attempts local rollback even when durable lease release fails',async()=>{
+  const binding={fixtureId:'d'.repeat(32),matchId:'e'.repeat(32),fixtureNo:1,participants:[{userId:'account_A',side:0},{userId:'smf_server_career_ai',side:1}],teamIds:['japan','brazil'],mode:'career-ai'};
+  let durableReleaseAttempts=0,localReleaseAttempts=0;
+  const onlineCareerService={async getCurrentSeason(){return ONLINE_SEASON;},async claimNextFixtureBinding(){return {ok:true,binding,reservationId:'a'.repeat(32)};},
+    async releaseFixtureReservation(){durableReleaseAttempts++;throw new Error('database cleanup unavailable');}};
+  const matchmaking={reserveCareerFixture(){return {ok:true};},issueCareerTicket(){return {ok:false,reason:'service-capacity'};},
+    releaseCareerFixture(){localReleaseAttempts++;return {ok:true,released:true};}};
+  const {handler,request}=fixture({onlineCareerService,matchmaking});
+  const response=await handler(request('/api/v1/online-career/current/fixtures/next/ticket',{method:'POST'}));
+  assert.equal(response.status,503);assert.deepEqual(await response.json(),{error:'service-unavailable'});
+  assert.equal(durableReleaseAttempts,1,'the durable lease receives one release attempt and then expires if storage is unavailable');
+  assert.equal(localReleaseAttempts,1,'local reservation cleanup is still attempted exactly once');
+});
+
+test('Online Career returns an active-fixture conflict when another server holds the durable lease',async()=>{
+  let reserveCalls=0;
+  const onlineCareerService={async getCurrentSeason(){return ONLINE_SEASON;},async claimNextFixtureBinding(){return {ok:false,reason:'fixture-reserved'};},async releaseFixtureReservation(){throw Error('no claim to release');}};
+  const matchmaking={reserveCareerFixture(){reserveCalls++;return {ok:true};},issueCareerTicket(){reserveCalls++;return {ok:true};}};
+  const {handler,request}=fixture({onlineCareerService,matchmaking});
+  const response=await handler(request('/api/v1/online-career/current/fixtures/next/ticket',{method:'POST'}));
+  assert.equal(response.status,409);assert.deepEqual(await response.json(),{error:'already-active'});assert.equal(reserveCalls,0);
 });
 
 test('stale revisions and idempotency key conflicts return conflict without leaking storage details', async () => {

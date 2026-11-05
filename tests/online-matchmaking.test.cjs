@@ -30,6 +30,7 @@ function service(overrides={}){
   const api=createOnlineMatchmaking({createEngine:async options=>{engineOptions.push(options);const engine=makeEngine(overrides);if(options.teamIds)engine.state={...engine.state,teamIds:options.teamIds.slice()};engines.push(engine);return engine;},
     sendSnapshot:(userId,envelope,metadata)=>{sent.push({userId,envelope,metadata});return overrides.sendSnapshot?.(userId,envelope,metadata)??true;},
     onMatchError:overrides.onMatchError,
+    onMatchFault:overrides.onMatchFault,
     onRequeue:(userId,details)=>requeued.push({userId,details}),onMatchFinished:overrides.onMatchFinished||(async result=>({matchId:result.matchId})),now:()=>time,autoTick:false,
     ...(overrides.config||{})});
   return {api,engines,engineOptions,sent,requeued,setTime:value=>{time=value;}};
@@ -49,7 +50,8 @@ test('tickets bind canonical selected teams; queue-time tampering cannot change 
 });
 
 test('a thrown match-engine step closes only that match and releases its participants',async()=>{
- const errors=[],ctx=service({onStep(){throw new Error('unexpected simulation fault');},onMatchError:(matchId,code)=>errors.push([matchId,code])});
+ const errors=[],faults=[],settlements=[],ctx=service({onStep(){throw new Error('sensitive simulation fault details');},onMatchError:(matchId,code)=>errors.push([matchId,code]),
+  onMatchFault:(matchId,code)=>{faults.push([matchId,code]);throw new Error('broken operator observer');},onMatchFinished:async result=>{settlements.push(result);return result;}});
  const first=ctx.api.issueTicket(a),second=ctx.api.issueTicket(b);
  await ctx.api.queueTicket({userId:a,ticket:first.ticket});
  const paired=await ctx.api.queueTicket({userId:b,ticket:second.ticket});
@@ -59,8 +61,49 @@ test('a thrown match-engine step closes only that match and releases its partici
  assert.equal(result.closed,true);
  assert.equal(result.reason,'engine-error');
  assert.deepEqual(errors,[[paired.matchId,'engine-error']]);
+ assert.deepEqual(faults,[[paired.matchId,'engine-error']],'one bounded operator signal is emitted for the failed match');
+ assert.deepEqual(settlements,[],'an engine failure never enters result settlement');
  assert.deepEqual(ctx.api.getState().active,[]);
  assert.equal(ctx.api.issueTicket(a).ok,true,'a failed match cannot strand either account as active');
+ assert.equal(ctx.api.tick(paired.matchId).reason,'engine-error','the disposed match is not stepped or reported a second time');
+ assert.deepEqual(faults,[[paired.matchId,'engine-error']]);
+ ctx.api.close();
+});
+
+test('quick-match interval safely accepts synchronous tick results and contains unexpected tick failures',async()=>{
+ const callbacks=[],cleared=[],faults=[],settlements=[];
+ const ctx=service({onResume(){throw new Error('unexpected halftime callback failure');},
+  onMatchFault:(matchId,code)=>faults.push([matchId,code]),onMatchFinished:async result=>{settlements.push(result);return result;},
+  config:{autoTick:true,setIntervalFn(callback){callbacks.push(callback);return callbacks.length;},clearIntervalFn(id){cleared.push(id);}}});
+ const {matched}=await pair(ctx);assert.equal(callbacks.length,1);
+ assert.doesNotThrow(()=>callbacks[0](),'ordinary synchronous tick results do not cause .catch TypeErrors');
+ assert.equal(ctx.engines[0].snapshot.tick,1);
+ ctx.engines[0].state={...ctx.engines[0].state,matchState:'paused',phase:'paused'};
+ assert.doesNotThrow(()=>callbacks[0](),'unexpected synchronous tick failures are contained');
+ assert.deepEqual(ctx.api.getState().active,[]);
+ assert.equal(ctx.api.issueTicket(a).ok,true,'failed timer cleanup releases both participant slots');
+ assert.deepEqual(settlements,[],'unexpected timer failures do not settle or reward a result');
+ assert.deepEqual(faults,[[matched.matchId,'engine-error']]);
+ assert.doesNotThrow(()=>callbacks[0](),'a disposed interval callback remains harmless');
+ assert.deepEqual(faults,[[matched.matchId,'engine-error']]);
+ ctx.api.close();assert.deepEqual(cleared,[1]);
+});
+
+test('Career match interval safely handles synchronous ticks and rejected persistence promises',async()=>{
+ const callbacks=[],cleared=[],settlementAttempts=[],faults=[];let rejectTickClock=false;
+ const matchId='d'.repeat(32),ctx=service({config:{autoTick:true,now:()=>{if(rejectTickClock){rejectTickClock=false;throw new Error('persistence retry clock failed');}return 10_000;},
+   setIntervalFn(callback){callbacks.push(callback);return callbacks.length;},clearIntervalFn(id){cleared.push(id);}},
+   onMatchFault:(id,code)=>faults.push([id,code]),onMatchFinished:async result=>{settlementAttempts.push(result);rejectTickClock=true;throw new Error('result store unavailable');},
+   onStep(engine){engine.state={...engine.state,phase:'finished',matchState:'finished',terminal:true,half:2};}});
+ ctx.api.reserveCareerFixture({fixtureNo:1,fixtureId:'c'.repeat(32),matchId,participants:[{userId:a,side:0},{userId:AI,side:1}],
+   teamIds:['japan','brazil'],mode:'career-ai'});
+ const ticket=ctx.api.issueCareerTicket(matchId,a);await ctx.api.queueTicket({userId:a,ticket:ticket.ticket});
+ assert.equal(callbacks.length,1);assert.doesNotThrow(()=>callbacks[0](),'Career timer also accepts synchronous results');
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(settlementAttempts.length,1);assert.deepEqual(ctx.api.getState().active,[]);
+ assert.deepEqual(faults,[[matchId,'engine-error']]);
+ assert.deepEqual(cleared,[1]);
+ assert.equal(ctx.api.issueCareerTicket(matchId,a).ok,true,'failed Career timer resets the reserved fixture for retry');
  ctx.api.close();
 });
 
@@ -102,6 +145,29 @@ test('trusted Career reservations bind exact match ID, participant sides, and se
  assert.deepEqual(ctx.engineOptions[0],{matchId,participants:[a,AI],teamIds:['japan','brazil'],mode:'career-ai'});
  assert.deepEqual(ctx.api.getState().queued,[c]);
  assert.equal((await ctx.api.queuePresentedTicket(first.ticket)).reason,'ticket-used-or-unknown');
+ ctx.api.close();
+});
+
+test('Career reservation rollback removes only the matching unconsumed fixture',async()=>{
+ const ctx=service({config:{validTeamIds:['japan','brazil']}}),matchId='b'.repeat(32);
+ const fixture={fixtureNo:1,fixtureId:'a'.repeat(32),matchId,participants:[{userId:a,side:0},{userId:AI,side:1}],teamIds:['japan','brazil'],mode:'career-ai'};
+ assert.equal(ctx.api.reserveCareerFixture(fixture).ok,true);
+ assert.deepEqual(ctx.api.releaseCareerFixture(matchId,b),{ok:false,reason:'career-fixture-unavailable'},'only the reserved account owner can release it');
+ assert.equal(ctx.api.issueTicket(a,'japan').reason,'duplicate-active-user','a mismatched release must preserve the reverse owner lock');
+ assert.deepEqual(ctx.api.releaseCareerFixture(matchId,a),{ok:true,released:true,matchId});
+ assert.deepEqual(ctx.api.releaseCareerFixture(matchId,a),{ok:false,reason:'career-fixture-unavailable'});
+ assert.equal(ctx.api.issueTicket(a,'japan').ok,true,'a successful rollback releases the matching account lock');
+ ctx.api.close();
+});
+
+test('Career reservation rollback refuses a consumed active match and preserves it',async()=>{
+ const ctx=service({config:{validTeamIds:['japan','brazil']}}),matchId='c'.repeat(32);
+ ctx.api.reserveCareerFixture({fixtureNo:1,fixtureId:'d'.repeat(32),matchId,participants:[{userId:a,side:0},{userId:AI,side:1}],teamIds:['japan','brazil'],mode:'career-ai'});
+ const ticket=ctx.api.issueCareerTicket(matchId,a);
+ const paired=await ctx.api.queueTicket({userId:a,ticket:ticket.ticket});assert.equal(paired.status,'matched');
+ assert.deepEqual(ctx.api.releaseCareerFixture(matchId,a),{ok:false,reason:'career-fixture-active'});
+ assert.equal(ctx.api.getState().active[0].matchId,matchId);
+ assert.equal(ctx.api.issueCareerTicket(matchId,a).reason,'career-fixture-unavailable','a failed rollback cannot revive or duplicate an active seat');
  ctx.api.close();
 });
 

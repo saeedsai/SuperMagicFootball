@@ -47,6 +47,25 @@ test('online service configures Career AI as one human plus server CPU and advan
  assert.ok(events.some(row=>row[0]==='pool-end'));
 });
 
+test('online engine faults write one bounded operator signal without exception or account data',async()=>{
+ const {startOnlineAccountService}=await import('../scripts/online-account-service.mjs');
+ const port=await freePort(),lines=[],pool={async query(){return {rows:[]};},async connect(){return {query:async()=>({rows:[]}),release(){}};},on(){},async end(){}};
+ let matcherOptions;
+ const service=await startOnlineAccountService({env:{PORT:String(port)},pool,operatorLogger:{error(line){lines.push(line);throw new Error('logging backend unavailable');}},
+  runtimeFactory:async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],resultStore:{recordFinalResult:async result=>result}}),
+  matchmakingFactory:options=>(matcherOptions=options,{close(){}}),transportFactory:()=>({close(){}})});
+ try{
+  assert.doesNotThrow(()=>matcherOptions.onMatchFault('a'.repeat(32),'private exception text'));
+  assert.deepEqual(lines,[JSON.stringify({event:'online-match-fault',matchId:'a'.repeat(32),code:'engine-error'})]);
+  assert.equal(lines.join('').includes('private exception text'),false);
+  assert.equal(lines.join('').includes('player_alpha'),false);
+  matcherOptions.onMatchFault('an untrusted identifier','engine-error');
+  assert.equal(lines.length,1,'non-opaque IDs are never emitted to operator logs');
+  const health=await fetch(`http://127.0.0.1:${port}/healthz`);
+  assert.equal(health.status,200,'a failing logger does not take the online service down');
+ }finally{await service.close();}
+});
+
 test('online service closes its HTTP listener and database pool when WebSocket startup fails',async()=>{
  const {startOnlineAccountService}=await import('../scripts/online-account-service.mjs');
  const port=await freePort();let poolClosed=false,matchmakingClosed=false;

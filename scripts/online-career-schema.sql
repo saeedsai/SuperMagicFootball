@@ -27,7 +27,9 @@ CREATE TABLE IF NOT EXISTS smf_online_career_fixtures (
   team_0 text NOT NULL CHECK (team_0 ~ '^[A-Za-z0-9_-]{1,64}$'),
   team_1 text NOT NULL CHECK (team_1 ~ '^[A-Za-z0-9_-]{1,64}$'),
   mode text NOT NULL CHECK (mode = 'career-ai'),
-  status text NOT NULL DEFAULT 'scheduled' CHECK (status IN ('scheduled','completed')),
+  status text NOT NULL DEFAULT 'scheduled',
+  reservation_id char(32),
+  reservation_expires_at timestamptz,
   score_0 smallint CHECK (score_0 BETWEEN 0 AND 999),
   score_1 smallint CHECK (score_1 BETWEEN 0 AND 999),
   recorded_at timestamptz,
@@ -37,10 +39,31 @@ CREATE TABLE IF NOT EXISTS smf_online_career_fixtures (
   UNIQUE (match_id),
   FOREIGN KEY (account_id, season_id) REFERENCES smf_online_career_seasons(account_id, season_id) ON DELETE CASCADE,
   CHECK (participant_0 <> participant_1),
-  CHECK (team_0 <> team_1),
-  CHECK ((status = 'scheduled' AND score_0 IS NULL AND score_1 IS NULL AND recorded_at IS NULL AND result_hash IS NULL) OR
-         (status = 'completed' AND score_0 IS NOT NULL AND score_1 IS NOT NULL AND recorded_at IS NOT NULL AND result_hash IS NOT NULL))
+  CHECK (team_0 <> team_1)
 );
+
+-- Additive migration for existing installations. Replace the old state checks so an
+-- expiring reservation is a valid state while completed results stay immutable.
+ALTER TABLE smf_online_career_fixtures ADD COLUMN IF NOT EXISTS reservation_id char(32);
+ALTER TABLE smf_online_career_fixtures ADD COLUMN IF NOT EXISTS reservation_expires_at timestamptz;
+DO $$
+DECLARE existing_check text;
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid='smf_online_career_fixtures'::regclass AND conname='smf_online_career_fixture_state_check') THEN
+    FOR existing_check IN
+      SELECT conname FROM pg_constraint
+      WHERE conrelid='smf_online_career_fixtures'::regclass AND contype='c'
+        AND pg_get_constraintdef(oid) LIKE '%status%'
+    LOOP
+      EXECUTE format('ALTER TABLE smf_online_career_fixtures DROP CONSTRAINT %I',existing_check);
+    END LOOP;
+    ALTER TABLE smf_online_career_fixtures ADD CONSTRAINT smf_online_career_fixture_state_check CHECK (
+      (status='scheduled' AND reservation_id IS NULL AND reservation_expires_at IS NULL AND score_0 IS NULL AND score_1 IS NULL AND recorded_at IS NULL AND result_hash IS NULL) OR
+      (status='reserved' AND reservation_id IS NOT NULL AND reservation_id ~ '^[a-f0-9]{32}$' AND reservation_expires_at IS NOT NULL AND score_0 IS NULL AND score_1 IS NULL AND recorded_at IS NULL AND result_hash IS NULL) OR
+      (status='completed' AND reservation_id IS NULL AND reservation_expires_at IS NULL AND score_0 IS NOT NULL AND score_1 IS NOT NULL AND recorded_at IS NOT NULL AND result_hash IS NOT NULL)
+    );
+  END IF;
+END $$;
 
 CREATE INDEX IF NOT EXISTS smf_online_career_fixtures_match_idx
   ON smf_online_career_fixtures (match_id);

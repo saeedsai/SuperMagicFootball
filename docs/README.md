@@ -4,6 +4,7 @@ Use [MASTER_BACKLOG.md](MASTER_BACKLOG.md) as the single current plan and status
 
 ## Read for current work
 
+- [Candidate 0.12.81.47 validation](CANDIDATE_012847_VALIDATION_20261105.md): online match timer containment, transactional Career fixture leases, bounded operator fault signals, and production-rendered player turn articulation.
 - [Candidate 0.12.81.46 validation](CANDIDATE_012846_VALIDATION_20261105.md): Cup cross-tab save-conflict protection and wet-pitch slide spray.
 - [Candidate 0.12.81.45 validation](CANDIDATE_012845_VALIDATION_20261105.md): typed client notification for failed non-result matches and natural existing-player idle blinking.
 - [Candidate 0.12.81.44 validation](CANDIDATE_012844_VALIDATION_20261105.md): contain unexpected online match simulation and snapshot failures to the affected match.

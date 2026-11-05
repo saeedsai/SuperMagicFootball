@@ -88,7 +88,7 @@ test('bird wing motion varies across flight phases and remains steady with reduc
 test('shot impact cues use renderer timers and expose downed and confused poses without gameplay writes',()=>{
  assert.match(render,/const shotLaunchPose=ARTPOSE\.shotImpactLaunchPose\(p\.action,p\.actionTimer,p\.face\)/);
  assert.match(render,/else if\(shotLaunchPose\.armSpread>0\)ctx\.rotate\(shotLaunchPose\.angle\)/);
- assert.match(render,/signatureMotion,shotLaunchPose,celebrate:p\.action==='celebrate'/);
+ assert.match(render,/CHARACTER_ART\.draw\(ctx,p,av,team,view,\{(?=[^}]*\bsignatureMotion\b)(?=[^}]*\bshotLaunchPose\b)(?=[^}]*\bturnLag\b)(?=[^}]*\bcelebrate:p\.action==='celebrate')[^}]*\}\)/);
  const characterArt=fs.readFileSync(path.join(root,'src/modules/characterart.js'),'utf8');
  assert.match(characterArt,/const launch=clamp\(Number\(opt\.shotLaunchPose\?\.armSpread\)\|\|0,0,1\)/);
  assert.match(render,/shotImpactKnockdownTimer/);
