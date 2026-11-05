@@ -123,6 +123,26 @@ test('Online UT catalog, collection, purchase, and preflight routes pass through
  assert.equal((await fetch(`${f.base}/api/v1/ultimate-team/purchases/other`,{method:'POST',headers:auth})).status,404);
 });
 
+test('Online UT lineup and Career seasons routes pass through the exact HTTP allowlist',async t=>{
+ const seen=[];const f=await fixture(async request=>{
+  const path=new URL(request.url).pathname,body=request.body?await request.text():null;seen.push([request.method,path,body]);
+  const result=path==='/api/v1/ultimate-team/lineup'?{lineup:{teamId:'japan',playerIds:Array(12).fill('japan/player'),version:1}}:{seasons:[]};
+  return new Response(JSON.stringify(result),{status:request.method==='PUT'?201:200,headers:{'content-type':'application/json','cache-control':'no-store'}});
+ });t.after(()=>f.close());
+ const auth={authorization:'Bearer sample-access-token-0123456789'};
+ const lineup='/api/v1/ultimate-team/lineup';
+ const loaded=await fetch(`${f.base}${lineup}?teamId=japan`,{headers:auth});
+ assert.equal(loaded.status,200);assert.equal((await loaded.json()).lineup.teamId,'japan');
+ const body='{"teamId":"japan","playerIds":[],"expectedVersion":0,"idempotencyKey":"lineup-save-0001"}';
+ const saved=await fetch(`${f.base}${lineup}`,{method:'PUT',headers:{...auth,'content-type':'application/json'},body});
+ assert.equal(saved.status,201);assert.deepEqual(await saved.json(),{lineup:{teamId:'japan',playerIds:Array(12).fill('japan/player'),version:1}});
+ const archive=await fetch(`${f.base}/api/v1/online-career/seasons`,{headers:auth});
+ assert.equal(archive.status,200);assert.deepEqual(await archive.json(),{seasons:[]});
+ assert.deepEqual(seen,[['GET',lineup,null],['PUT',lineup,body],['GET','/api/v1/online-career/seasons',null]]);
+ assert.equal((await fetch(`${f.base}${lineup}/unknown`,{headers:auth})).status,404);
+ assert.equal(seen.length,3,'unknown nested paths are rejected before reaching the handler');
+});
+
 test('reward claim traverses HTTP, authenticated API and account-scoped reward service',async t=>{
  const {createOnlineAccountApi}=await import('../scripts/online-account-api.mjs');const id='f'.repeat(32),claims=[];
  const handler=createOnlineAccountApi({authenticate:async request=>request.headers.get('authorization')==='Bearer sample-access-token-0123456789'?{userId:'account_http'}:null,

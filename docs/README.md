@@ -225,3 +225,4 @@ Use [MASTER_BACKLOG.md](MASTER_BACKLOG.md) as the single current plan and status
 - Keep detailed requirements that are still used by code, tests, or production workflows. Do not delete a file until its references and test/workflow dependencies are checked.
 - Do not load the old private agent-memory collection for routine work. `docs/memory/` contains legacy handovers and is not the current task status source.
 - Generated browser fixtures, caches, local reports and incoming reference media do not belong in tracked game source. The two supplied references are held in the parent workspace's `references/incoming/` folder.
+- [Candidate 0.12.81.48 validation](CANDIDATE_012848_VALIDATION_20261105.md): Online HTTP adapter allowlist for Ultimate Team lineups and Career archives.

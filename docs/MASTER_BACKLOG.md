@@ -1,6 +1,6 @@
 # SuperMagicFootball — master plan and backlog
 
-**Canonical plan and status ledger.** Updated 5 November 2026 for local candidate **0.12.81.47**. Candidate .46 passed exact-head Full Regression Census on same-SHA retry, Modular QA, protected promotion, Pages deployment, and main census. Candidate .47 adds safe synchronous/asynchronous online match timers, bounded server fault logs, expiring database leases against duplicate Career fixture launches across instances, and a render-only turn counter-lean for existing players. Local build and integrated tests pass; exact-head .47 gates have not run yet. Authenticated online hosting remains unconfigured; human visual and physical-device acceptance remain open. Earlier candidate evidence remains linked; this ledger avoids claiming unsupported completion. Keep this file canonical and record future status/evidence here.
+**Canonical plan and status ledger.** Updated 5 November 2026 for local candidate **0.12.81.48**. Candidate .47 commit `c14314ef9ce04709b4bbf7f3e6a77a8919e847ae` passed dev Full Regression Census, Modular QA, current-player graphics QA, protected promotion, and Pages deployment; main Census is still running. Candidate .48 fixes the exact-path HTTP adapter allowlist so authenticated Ultimate Team lineup and Online Career archive routes reach their API handlers. Local build, full Node suite, Club26/FC27 executable, HTTP route suite and release/version contracts pass; exact-head .48 gates have not run. Public online service configuration, live PostgreSQL validation, human visual approval and physical-device acceptance remain open. Earlier evidence remains linked; this ledger avoids unsupported completion claims.
 
 ## Owner priorities and invariants
 
@@ -11,7 +11,13 @@
 - SuperMagicAssetStudio is the source-art tool. The game consumes only approved exported assets/manifests; keep the procedural renderer as fallback. Structural checks do not imply owner visual approval.
 - Do not claim visual approval, physical-device acceptance, protected promotion, hosting or server readiness without evidence.
 
-## Current local candidate 0.12.81.47
+## Current local candidate 0.12.81.48
+
+The production online-account HTTP bridge now allowlists the exact authenticated `/api/v1/ultimate-team/lineup` and `/api/v1/online-career/seasons` paths. The adapter forwards lineup GET/PUT bodies and responses and the archive GET response while continuing to reject unknown nested routes. Existing authentication, bounded streaming, timeout and response-header rules remain in place. This fixes an integration 404 in the real Node service; it does not imply public hosting or a live PostgreSQL setup. Focused HTTP tests passed **14/14**.
+
+Candidate .48 build passed (**5,178,925 JS / 5,301,937 HTML characters**); full Node passed **2,245/2,245** plus Club26/FC27. The focused HTTP adapter suite passed **14/14** and release/version contracts **16/16**; `git diff --check` is clean. Exact-head .48 Census/Modular QA, protected promotion, Pages and main regression are pending.
+
+## Previous pushed candidate 0.12.81.47
 
 Online fixed-tick callbacks now accept ordinary synchronous tick results as well as asynchronous persistence results. An unexpected timer-boundary exception/rejection closes only the affected match, clears its buffers and timer, frees participant slots, resets Career for retry, and never settles a result or reward. Operator fault logging is separately bounded to an opaque match ID and fixed code; neither exception details nor account data are included. Failed Career ticket creation attempts both durable lease release and local reservation cleanup.
 
@@ -19,7 +25,7 @@ Online Career fixture tickets now acquire a short, transactionally exclusive dat
 
 Existing procedural players now counter-lean the connected upper-body group around the waist during sharp turn transitions. The renderer passes its already-eased turn lag; the cue is bounded and mirrored by view side. It does not change legs, movement, collision, facing selection, or pose timers. Actual-renderer Chromium QA and visual inspection are available in the candidate validation evidence, but owner visual/device approval remains open.
 
-Build passed (**5,178,419 JS / 5,301,431 HTML characters**); full Node passed **2,244/2,244** plus Club26/FC27. Focused online service/API/matchmaking/WebSocket/session suites passed **114/114**, release/version contracts **16/16**, and turn/shot renderer tests **8/8**. Production-renderer turn QA passed 40 frames across all eight headings with no page errors or gameplay state mutation; existing gait QA passed 288 frames. `git diff --check` passed. Exact-head .47 CI, Pages, and main regression remain separate. Real PostgreSQL lease migration/concurrency, public online configuration and physical two-device acceptance are still open. See [candidate .47 validation](CANDIDATE_012847_VALIDATION_20261105.md).
+Build passed (**5,178,419 JS / 5,301,431 HTML characters**); full Node passed **2,244/2,244** plus Club26/FC27. Focused online service/API/matchmaking/WebSocket/session suites passed **114/114**, release/version contracts **16/16**, and turn/shot renderer tests **8/8**. Production-renderer turn QA passed 40 frames across all eight headings with no page errors or gameplay state mutation; existing gait QA passed 288 frames. `git diff --check` passed. Candidate .47 SHA is `c14314ef9ce04709b4bbf7f3e6a77a8919e847ae`; exact-head dev Census, Modular QA, current-player graphics QA, protected promotion, and Pages deployment passed; main regression was still running. Real PostgreSQL lease migration/concurrency, public online configuration and physical two-device acceptance remain open. See [candidate .47 validation](CANDIDATE_012847_VALIDATION_20261105.md).
 
 ## Previous local candidate 0.12.81.46
 
