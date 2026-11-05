@@ -6,8 +6,8 @@ from playwright.sync_api import sync_playwright
 
 root=Path(__file__).resolve().parents[1]
 fixture=root/'tests/.generated/play.html'
-output=root/'docs/evidence/browser/player_jump_air_pose_64px_20261105_review.png'
-metrics_output=root/'docs/evidence/browser/player_jump_air_pose_64px_20261105_review_metrics.json'
+output=root/'tests/.generated/player_jump_air_pose_64px_qa.png'
+metrics_output=root/'tests/.generated/player_jump_air_pose_64px_qa_metrics.json'
 if output.exists():
     raise SystemExit(f'refusing to overwrite existing evidence: {output}')
 if metrics_output.exists():
