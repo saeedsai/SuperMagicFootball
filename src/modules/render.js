@@ -24,6 +24,23 @@ function runFootContactPulse(phase){
  const distance=Math.min(cycle,PI-cycle);
  return clamp(1-distance/.48,0,1);
 }
+// Water kicked up by a slide is a quiet, fixed contact accent: it is attached
+// to the committed tackle direction, not simulated as particles or fed back
+// into the wet-pitch physics. Reduced-flash mode keeps the cue dimmer.
+function drawWetSlideSpray(ctx,dx,dy,reducedFlash=false){
+ const x=Number(dx),y=Number(dy),speed=Math.hypot(x,y);
+ if(!Number.isFinite(speed)||speed<.2)return false;
+ const ux=x/speed,uy=y/speed;
+ ctx.save();ctx.globalAlpha=reducedFlash?.13:.24;ctx.fillStyle='#c3eff5';
+ for(let i=0;i<5;i++){
+  const distance=19+i*9,side=(i%3-1)*5;
+  ctx.beginPath();ctx.ellipse(-ux*distance-uy*side,4-uy*distance+ux*side,3.4+(i%2)*.7,1.6,Math.atan2(uy,ux),0,PI*2);ctx.fill();
+ }
+ ctx.globalAlpha=reducedFlash?.12:.20;ctx.strokeStyle='#e2f7fa';ctx.lineWidth=2.2;ctx.lineCap='round';
+ ctx.beginPath();ctx.moveTo(-ux*14-uy*6,4-uy*14+ux*6);
+ ctx.quadraticCurveTo(-ux*30+uy*8,3-uy*30-ux*8,-ux*49,3-uy*49);ctx.stroke();ctx.lineCap='butt';
+ ctx.restore();return true;
+}
 // Rendering is synchronous; reusable per-leg outputs avoid allocating in the
 // high-frequency match draw loop. Each result is consumed before its next use.
 const runFootPoseScratch=[{},{}];
@@ -1324,6 +1341,7 @@ class Renderer{
     const dx=p.slideDX||p.face||1,dy=p.slideDY||0;
     for(let k=0;k<4;k++){const spread=(k-1.5)*7;ctx.beginPath();ctx.ellipse(-dx*(17+k*11)-dy*spread,4-dy*(17+k*11)+dx*spread,5+k*1.4,2+k*.5,0,0,PI*2);ctx.fill();}
     ctx.restore();
+    if(game.condition==='Wet')drawWetSlideSpray(ctx,dx,dy,!!game.options?.reducedFlash);
    }
    // Directional speed lines, purely visual; no effect on collision, speed or stamina.
   if(moving&&['hyperdash','dribbleTrick'].includes(p.action)){ctx.save();ctx.globalAlpha=.32;ctx.strokeStyle=p.t===0?'#ffe79a':'#8df7ff';ctx.lineWidth=3;for(let k=-1;k<=1;k++){ctx.beginPath();ctx.moveTo(-p.face*35,p.z?(-p.z+k*11):k*11);ctx.lineTo(-p.face*(62+8*Math.sin(this.time*14+k)),k*11-3);ctx.stroke()}ctx.restore();}

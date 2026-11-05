@@ -1,6 +1,6 @@
 # SuperMagicFootball — master plan and backlog
 
-**Canonical plan and status ledger.** Updated 5 November 2026 for local candidate **0.12.81.45**. Candidates .42–.44 passed exact-head dev QA, protected promotion, main regression and Pages deployment. Candidate .45 gives both clients a typed non-result error when an online match engine fails and adds staggered idle blinking to existing characters; local full Node/release checks pass, exact-head .45 gates remain pending. The authenticated online API remains unconfigured, so server-backed matches/Career are not enabled. Human visual and physical-device acceptance remain open. Earlier candidate evidence remains linked; this ledger avoids claiming unsupported completion. Keep this file canonical and record future status/evidence here.
+**Canonical plan and status ledger.** Updated 5 November 2026 for local candidate **0.12.81.46**. Candidates .42–.44 passed exact-head dev QA, protected promotion, main regression and Pages deployment. Candidate .45 passed Modular QA and exact-head Census on same-run retry after one unrelated LAN browser displacement failure; protected promotion completed, with main Pages/regression in progress. Candidate .46 protects Cup saves against stale-tab overwrites and adds reduced-flash wet-pitch slide VFX; local full Node/release checks pass and exact-head .46 gates remain pending. The authenticated online API remains unconfigured, so server-backed matches/Career are not enabled. Human visual and physical-device acceptance remain open. Earlier candidate evidence remains linked; this ledger avoids claiming unsupported completion. Keep this file canonical and record future status/evidence here.
 
 ## Owner priorities and invariants
 
@@ -11,15 +11,23 @@
 - SuperMagicAssetStudio is the source-art tool. The game consumes only approved exported assets/manifests; keep the procedural renderer as fallback. Structural checks do not imply owner visual approval.
 - Do not claim visual approval, physical-device acceptance, protected promotion, hosting or server readiness without evidence.
 
-## Current local candidate 0.12.81.45
+## Current local candidate 0.12.81.46
+
+Cup save slots now retain the exact persisted bytes loaded by the current tab. Before writing, a vault compares storage with that baseline; a changed value blocks the stale write, preserves the newer data, and keeps the stale tab's local copy as an exportable recovery snapshot. No schema changes or silent last-writer replacement are introduced.
+
+Wet-pitch slides now add direction-aligned droplets and a steady water curl to the existing spray. Reduced-flash lowers opacity; the cue is attached only to live slide VFX, and gameplay state/physics are unchanged. Actual-renderer Chromium QA sampled dry, wet and reduced-flash cases with no page errors or state mutation.
+
+After advancing all release/version/cache metadata, the final .46 build passed (**5,176,981 JS / 5,299,993 HTML characters**); full Node passed **2,231/2,231**, release/version contracts passed **22/22**, the Club26/FC27 executable passed and `git diff --check` is clean. Cup stale-writer/save/backup/rollback tests passed **27/27**; desktop and simulated-touch partial-import preservation QA passed. The new two-tab stale-writer behavior is covered by a focused Node regression. Wet-spray contracts passed **3/3**, and actual-renderer Chromium QA passed dry/wet/reduced-flash samples with unchanged live state. Exact-head .46 CI is pending. See [candidate .46 validation](CANDIDATE_012846_VALIDATION_20261105.md).
+
+## Previous candidate 0.12.81.45 (exact-head retry pending)
 
 An authoritative engine or snapshot failure now emits a fixed `{type:'match-error', code:'engine-error'}` event to both connected players. The client validates the event, clears that match's identity, rejects late snapshots, exits gameplay without calling the finished-result or reward path, and clears only the matching PVP retry marker. Career reports that the reserved fixture can be retried. Exception text and arbitrary failure reasons never cross the wire. Focused WebSocket/client/matchmaking/service tests passed **59/59**; mock browser QA covers PVP marker cleanup, no rewards, and the safe return route. A live-host failure drill remains open.
 
 Existing in-game players also blink at deterministic, staggered idle intervals. Blink evaluation uses render time and player index only; hurt/action poses are preserved and player/ball simulation state remains unchanged. The new schedule tests passed **2/2**. Actual-renderer Chromium QA captured four frames, verified visible eyelid closure and reopening, and recorded no browser errors or state mutation. This is not owner visual/device acceptance.
 
-Final .45 build passed (**5,174,947 JS / 5,297,959 HTML characters**), full Node passed **2,227/2,227**, release/version contracts passed **22/22**, and the Club26/FC27 executable passed. The 59 focused online transport/client tests and two blink schedule tests pass. Actual-renderer blink QA passed with four samples, reopened eyes, no page errors and unchanged state. One integrated online-account browser QA pass covered the new fault route and Career/UT flows; two local reruns timed out later at separate Career/UT navigation waits, so exact-head browser Census is needed to confirm this broader suite is stable. See [candidate .45 validation](CANDIDATE_012845_VALIDATION_20261105.md).
+Final .45 build passed (**5,174,947 JS / 5,297,959 HTML characters**), full Node passed **2,227/2,227**, release/version contracts passed **22/22**, and the Club26/FC27 executable passed. The 59 focused online transport/client tests and two blink schedule tests pass. Actual-renderer blink QA passed with four samples, reopened eyes, no page errors and unchanged state. One integrated online-account browser QA pass covered the new fault route and Career/UT flows; two local reruns timed out later at separate Career/UT navigation waits. The first exact-head Census failed one unrelated `lan_auto_two_browser_qa.py` assertion on remote home-player displacement (local rerun passed); same-SHA retry is running. See [candidate .45 validation](CANDIDATE_012845_VALIDATION_20261105.md).
 
-## Previous promoted candidate 0.12.81.44
+## Previous deployed candidate 0.12.81.44
 
 Unexpected exceptions from the authoritative match engine's synchronous `step()` or post-step snapshot read are contained within the match session. Matchmaking closes/removes that match, clears its interval and pending input buffers, releases both account active slots, leaves no result to settle, and returns a bounded `engine-error` outcome instead of letting an exception escape the shared Node timer callback. Career fixtures return to the reserved state for retry. No client-specific crash message, live host failure drill, or result settlement is claimed.
 

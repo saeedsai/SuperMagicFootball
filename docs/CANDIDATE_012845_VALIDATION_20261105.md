@@ -16,3 +16,7 @@
 ## Limits
 
 No live-host engine-failure drill, client reconnect with a real server, physical device test or human visual/accessibility approval was performed. Online server credentials and authenticated public service configuration remain unavailable. Do not treat local mocks as proof that hosted matches are live. Exact-head .45 CI, promotion, Pages and main Census remain pending.
+
+## Exact-head status
+
+Modular QA [41980477044](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41980477044) passed. The first Full Regression Census attempt [41980476972](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41980476972) had one unrelated browser shard assertion in `lan_auto_two_browser_qa.py`: the home player's remote displacement exceeded the test's 70-pixel expected limit. The same script passed a local rerun. A failed-jobs-only retry of the same exact SHA passed the complete Census, and protected promotion completed. Pages deployment [41982492515](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41982492515) and main Census [41982493105](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41982493105) are in progress.

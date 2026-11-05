@@ -94,9 +94,9 @@ const validVault=v=>Boolean(v&&v.schema===1&&slotNumber(v.active)&&
  validTournament(s.tournament))));
 const empty=()=>({schema:1,active:1,slots:Array(COUNT).fill(null)});
 function create(storage){
- let state=empty(),blocked=null,exists=false,recoverySnapshot=null,sessionOnly=false;
+ let state=empty(),blocked=null,exists=false,recoverySnapshot=null,sessionOnly=false,baselineRaw=null;
  let raw;
- try{raw=storage.getItem(KEY);}
+ try{raw=storage.getItem(KEY);baselineRaw=raw;}
  catch{sessionOnly=true;}
  // A denied read (for example, a privacy-restricted origin) is different from
  // readable but corrupt save data. Keep the former playable in this page's
@@ -111,6 +111,14 @@ function create(storage){
  function persist(next){check();if(!validVault(next))throw Error('Invalid Cup save-slot update');
   if(sessionOnly){state=next;exists=true;return;}
   const raw=JSON.stringify(next),previous=storage.getItem(KEY);
+  // Local storage is shared between tabs while this vault's state is a
+  // per-tab snapshot. Never let an older tab silently replace a newer Cup
+  // save or backup import that it did not read.
+  if(previous!==baselineRaw){
+   recoverySnapshot=clone(state);
+   blocked=Error('Cup save changed in another tab; export this copy before recovery.');
+   throw Error('Cup slots changed elsewhere; reload before saving');
+  }
   try{
    storage.setItem(KEY,raw);
    if(storage.getItem(KEY)!==raw)throw Error('Cup slots were not retained by storage');
@@ -129,7 +137,7 @@ function create(storage){
    }
    throw error;
   }
-  state=next;exists=true;
+  state=next;exists=true;baselineRaw=raw;
  }
  function save(n,tournament,name){check();get(n);if(!validTournament(tournament))throw Error('Cannot save an invalid Cup campaign');
   const prior=get(n),label=limitLabel(String(name??prior?.name??('Cup '+n)).trim(),60)||('Cup '+n);
