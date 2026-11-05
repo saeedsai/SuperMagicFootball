@@ -1,6 +1,6 @@
 # Candidate 0.12.81.60 validation
 
-**Status: local candidate; not pushed.** This increment keeps effort on in-game graphics and gameplay. It adds a small ankle-pivot toe flex to existing player run art, static cut-grass detail to natural turf, fixes the off-ball Jump+Pass fast-chase chord, makes Custom Cup playable, and hardens local online-service request/stream/shutdown behavior. No new menu or concept character art was created.
+**Status: promoted to main and deployed to Pages; main regression is running.** This increment keeps effort on in-game graphics and gameplay. It adds a small ankle-pivot toe flex to existing player run art, static cut-grass detail to natural turf, fixes the off-ball Jump+Pass fast-chase chord, makes Custom Cup playable, and hardens local online-service request/stream/shutdown behavior. No new menu or concept character art was created.
 
 ## Acceptance criteria
 

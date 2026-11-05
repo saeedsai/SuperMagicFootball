@@ -4,7 +4,8 @@ Use [MASTER_BACKLOG.md](MASTER_BACKLOG.md) as the single current plan and status
 
 ## Read for current work
 
-- [Candidate 0.12.81.60 validation](CANDIDATE_012860_VALIDATION_20261105.md): subtle existing-player run-shoe articulation, cached natural-turf grass fibers, Jump+Pass fast-chase fix, playable saved Custom Cup, and online service hardening; local build/tests/browser evidence, exact-head gates pending.
+- [Candidate 0.12.81.61 validation](CANDIDATE_012861_VALIDATION_20261105.md): existing-player run arm/leg counter-swing; actual-renderer transition frames and no-state-mutation evidence.
+- [Promoted candidate 0.12.81.60 validation](CANDIDATE_012860_VALIDATION_20261105.md): player shoe and turf presentation, Jump+Pass chase correction, playable saved Custom Cup, and service hardening; exact-dev gates and Pages/hosted smoke passed; main regression is running.
 - [Promoted candidate 0.12.81.59 validation](CANDIDATE_012859_VALIDATION_20261105.md): eased shot-impact fall animation with unchanged hold/recovery timing; exact-head census retry, Modular QA, Pages, hosted smoke and main Census passed.
 - [Shot-impact fall settle render](evidence/browser/shot_impact_down_settle_012859.png): five production-renderer phases from impact through the lying pose.
 - [Candidate 0.12.81.58 validation](CANDIDATE_012858_VALIDATION_20261105.md): stitched highlights on the classic match ball, with menu/match scale renderer evidence; exact-head gates pending.

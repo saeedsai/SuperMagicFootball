@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.60
+# SuperMagicFootball release/version policy — About-only 0.12.81.61
 
-**Local candidate 0.12.81.60 (5 November 2026):** Existing-player run shoes flex around the ankle only while swinging; cached natural-grass fibers add restrained pitch detail; off-ball Jump+Pass preserves fast chase/tackle; Custom Cup supports saved seeded knockout play; and local online service lifecycle/route checks are stricter. Local focused and integrated checks pass; exact-head release gates remain pending. See [candidate .60 report](CANDIDATE_012860_VALIDATION_20261105.md).
+**Local candidate 0.12.81.61 (5 November 2026):** Existing procedural players now counter-swing each arm against its same-side leg during running. The mirrored phase is bounded and paint-only, retaining movement, hitboxes, controls and saves; 64 production-renderer run/cut/stop/relaunch frames pass without page errors or live match state mutation. Exact-head gates remain pending. See [candidate .61 report](CANDIDATE_012861_VALIDATION_20261105.md).
+
+**Promoted candidate 0.12.81.60 (5 November 2026):** Existing-player ankle flex, cached natural-grass detail, grounded Jump+Pass chase, playable/saved Custom Cup and local online-service hardening passed local and exact-dev gates. Protected promotion and Pages deployment `42072885804` plus hosted smoke passed. Main regression Census `42072887285` is in progress. See [candidate .60 report](CANDIDATE_012860_VALIDATION_20261105.md).
 
 **Promoted candidate 0.12.81.59 (5 November 2026):** Shot-hit players ease into their strength-timed grounded pose over a .20-second fall, then keep the same .5–3-second down hold and braced get-up. Exact-head dev Census `42064396155`, Modular QA `42064396148`, protected promotion, Pages deployment `42065958590`, hosted smoke, and main Census `42065957256` passed; the main census was green on the same-run rerun after one browser-shard timeout. See [candidate .59 report](CANDIDATE_012859_VALIDATION_20261105.md).
 

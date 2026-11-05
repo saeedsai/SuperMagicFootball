@@ -60,6 +60,17 @@ test('planted boots remain level; stationary, action, and invalid phases add no 
  }
 });
 
+test('running arms counter-swing against their same-side legs and mirror cleanly',async()=>{
+ const {CHARACTER_ART:art}=await artPromise;
+ for(const stride of [-1,-.5,0,.5,1]){
+  assert.equal(art.runArmSwing(stride,1),-stride*12,'near limb counter-swing');
+  assert.equal(art.runArmSwing(stride,-1),stride*12,'far limb counter-swing');
+  assert.equal(art.runArmSwing(stride,-1),-art.runArmSwing(stride,1),'limbs mirror across the stride');
+ }
+ for(const invalid of [NaN,Infinity,'not-a-phase',undefined])assert.equal(art.runArmSwing(invalid,1),0);
+ assert.equal(art.runArmSwing(9,1),-12,'counter-swing stays bounded at bad caller inputs');
+});
+
 test('gait paint leaves frozen player, appearance, team and input options untouched',async()=>{
  const {CHARACTER_ART:art}=await artPromise;
  const options=Object.freeze({run:1,runPhase:Math.PI/2,runSpeedRatio:.8,locomotion:true,reducedFlash:true});

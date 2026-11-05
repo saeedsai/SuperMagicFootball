@@ -390,6 +390,13 @@ const CHARACTER_ART=(()=>{
   const facingSign=Number(facing)<0?-1:1;
   return -facingSign*Math.sin(angle)*.14*speed;
  }
+ // Arms counter-swing against the matching leg, as in a natural running stride.
+ // Keep this bounded paint-only cue independent from match movement/state.
+ function runArmSwing(run,sign=1){
+  const stride=Number(run);
+  if(!Number.isFinite(stride))return 0;
+  return clamp(-stride*(Number(sign)<0?-1:1)*12,-12,12);
+ }
  function drawLeg(c,sign,k,p,colors,opt,near,facingSign=1){
   const side=k==='side',quarter=k.startsWith('quarter');
   const spread=side?5:quarter?9:13,run=Number(opt.run)||0;
@@ -466,7 +473,7 @@ const CHARACTER_ART=(()=>{
  }
  function arm(c,sign,k,p,col,opt,near){
   const side=k==='side',quarter=k.startsWith('quarter'),sh=sign*(side?14:quarter?18:23);
-  const run=Number(opt.run)||0,sw=run*sign*12+(opt.signatureMotion?.armSwing||0)*sign*.40;
+  const run=Number(opt.run)||0,sw=runArmSwing(run,sign)+(opt.signatureMotion?.armSwing||0)*sign*.40;
   const dive=p.keeper&&['keeperDive','keeperDiveCatch','keeperSuper'].includes(p.action),holding=p.keeper&&['keeperCatch','keeperHold'].includes(p.action);
   const diveReach=dive?keeperArmReach(p.action,p.diveElapsed):0;
   const launch=clamp(Number(opt.shotLaunchPose?.armSpread)||0,0,1);
@@ -709,6 +716,6 @@ const CHARACTER_ART=(()=>{
   const mirror=Number(side)<0?-1:1;
   return clamp(turn*.14*mirror,-.095,.095);
  }
- return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,idleBlink,idleGaze,runToePitch,turnCounterLean,headTurnCounterLean,version:3};
+ return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,idleBlink,idleGaze,runToePitch,runArmSwing,turnCounterLean,headTurnCounterLean,version:3};
 })();
 export {CHARACTER_ART};
