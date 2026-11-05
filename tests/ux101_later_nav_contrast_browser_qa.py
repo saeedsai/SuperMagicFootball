@@ -62,6 +62,13 @@ with sync_playwright() as pw:
                 click('navOnline')
             else:
                 open_route(route)
+            if route == 'cups':
+                # Custom League is now an active playable destination, so the
+                # Cups route no longer contains a planned/deferred card.
+                assert page.locator('[data-action="customLeagueSetup"]').count() == 1, (device, route, 'active Custom League entry')
+                assert page.locator('.navLater').count() == 0, (device, route, 'no deferred Cups card remains')
+                print('UX101_LATER_NAV_CONTRAST_PASS', device, route, 'active Custom League entry', flush=True)
+                continue
             later = page.locator('.navLater').first
             assert later.count() == 1, (device, route, 'planned entry exists')
             status = later.locator('.navStatus')
