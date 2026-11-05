@@ -20,6 +20,15 @@ function controls(){
     just(slot,action){return !!this.pressed[slot]?.[action]}
   };
 }
+const settle=()=>new Promise(resolve=>setImmediate(resolve));
+function exactTestWallet(){
+ const receipts=new Set();let tokens=0;
+ return {wallet:()=>({tokens}),async awardCompletedMatch(receipt){
+  await Promise.resolve();if(receipts.has(receipt.receiptId))return {ok:false,duplicate:true,reward:0};
+  receipts.add(receipt.receiptId);const reward=10+(receipt.result==='win'?20:receipt.result==='draw'?15:10);tokens+=reward;
+  return {ok:true,duplicate:false,reward,wallet:{tokens}};
+ }};
+}
 function scriptedControls(samples){
  const input=controls();let index=0;
  input.poll=function(){
@@ -449,10 +458,7 @@ test('LAN online match rewards use one host-bound receipt and orient penalty win
  const host=game(hostInput),guest=game(guestInput);
  host.onEvent=()=>{};
  const hostAwards=[],guestAwards=[];let hostAck=null;
- const {ECONOMY}=await import('../src/modules/economy.js');
- const memoryStorage=()=>{const values=new Map();return {getItem:key=>values.has(key)?values.get(key):null,
-  setItem:(key,value)=>values.set(key,String(value)),removeItem:key=>values.delete(key)};};
- const hostWallet=ECONOMY.create(memoryStorage()),guestWallet=ECONOMY.create(memoryStorage());
+ const hostWallet=exactTestWallet(),guestWallet=exactTestWallet();
  const guestPeer={ready:true,snapshotIdentity:identity,
   subscribeGuestMatchState(fn){guestReceive=fn;return {dispose(){}};},
   sendGuestResultAck(receiptId){hostAck?.({type:'result-ack',receiptId});return true;},
@@ -479,6 +485,7 @@ test('LAN online match rewards use one host-bound receipt and orient penalty win
  assert.equal(hostWallet.wallet().tokens,0);
  assert.equal(guest.matchState,'play','failed send cannot finish the guest match');
  assert.equal(hostRun.step(.02),true,'terminal snapshot retries after failed delivery');
+ await settle();
  assert.equal(hostRun.resultDelivered,true);
  assert.equal(guest.matchState,'finished');
  assert.equal(hostAwards.length,1);assert.equal(guestAwards.length,1);
@@ -486,6 +493,7 @@ test('LAN online match rewards use one host-bound receipt and orient penalty win
  assert.equal(hostWallet.wallet().tokens,20);assert.equal(guestWallet.wallet().tokens,30);
  assert.equal(hostAwards[0].receiptId,guestAwards[0].receiptId,'both local wallets bind the receipt to the same match');
  now=1600;assert.equal(hostRun.step(.02),true,'finished state is resent on frozen heartbeat');
+ await settle();
  assert.equal(guestAwards.length,2,'guest safely retries receipt on a repeated host snapshot');
  assert.equal(new Set(guestAwards.map(receipt=>receipt.receiptId)).size,1,'wallet dedupes repeated terminal snapshots');
  assert.equal(guestWallet.wallet().tokens,30,'repeated frozen snapshots cannot duplicate persisted soft tokens');
@@ -660,11 +668,8 @@ test('LAN-071 readiness transition between frames resets guest cursor',async()=>
 
 test('guest accepts and acknowledges a restarted host match result exactly once per receipt',async()=>{
  const {createLanLiveMatch,captureLanGameState}=await load();
- const {ECONOMY}=await import('../src/modules/economy.js');
- const storage=()=>{const values=new Map();return {getItem:key=>values.has(key)?values.get(key):null,
-  setItem:(key,value)=>values.set(key,String(value)),removeItem:key=>values.delete(key)};};
  const identity={roomId:'room001',hostId:'host001'},input=controls(),host=game(controls()),guest=game(input);
- const guestWallet=ECONOMY.create(storage()),awardAttempts=[],acks=[];
+ const guestWallet=exactTestWallet(),awardAttempts=[],acks=[];
  const peer={ready:true,snapshotIdentity:identity,
   subscribeGuestMatchState(fn){this.receive=fn;return {dispose(){}};},
   subscribeStatus(fn){this.notify=fn;return ()=>{};},
@@ -672,18 +677,18 @@ test('guest accepts and acknowledges a restarted host match result exactly once 
   sendGuestResultAck(receiptId){acks.push(receiptId);return true;}
  };
  const run=createLanLiveMatch({peer,role:'guest',game:guest,input,field,
-  awardResult:receipt=>{const result=guestWallet.awardCompletedMatch(receipt);awardAttempts.push({receipt,result});return result;}});
+  awardResult:async receipt=>{const result=await guestWallet.awardCompletedMatch(receipt);awardAttempts.push({receipt,result});return result;}});
 
  const priorMatch=captureLanGameState(host,field,73);
  priorMatch.meta.matchId='a'.repeat(32);
- peer.receive(priorMatch);
+ await peer.receive(priorMatch);
  peer.ready=false;peer.notify({ready:false});
  peer.ready=true;
  host.matchState='finished';host.score=[1,0];
  const restartedMatch=captureLanGameState(host,field,0);
  restartedMatch.meta.matchId='b'.repeat(32);
  restartedMatch.meta.result={score:[1,0]};
- peer.receive(restartedMatch);
+ await peer.receive(restartedMatch);
 
  const receiptId=`lan:${identity.roomId}:${identity.hostId}:${'b'.repeat(32)}`;
  assert.equal(awardAttempts.length,1,'new host terminal snapshot produces a local receipt attempt');
@@ -691,7 +696,7 @@ test('guest accepts and acknowledges a restarted host match result exactly once 
  assert.deepEqual(acks,[receiptId],'guest ACK is bound to the restarted match receipt');
  const tokensAfterFirst=guestWallet.wallet().tokens;
 
- peer.receive({...restartedMatch,tick:1});
+ await peer.receive({...restartedMatch,tick:1});
  assert.equal(awardAttempts.length,2,'repeated terminal snapshot may retry the same idempotent receipt');
  assert.equal(awardAttempts[1].receipt.receiptId,receiptId);
  assert.equal(awardAttempts[1].result.duplicate,true,'wallet recognizes the repeated receipt');

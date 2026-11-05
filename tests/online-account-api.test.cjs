@@ -9,7 +9,7 @@ test('online account API module imports', async () => {
   assert.equal(typeof createOnlineAccountApi, 'function');
 });
 
-function fixture({matchmaking, resultStore, rewardStore, ultimateTeamStore, onlineCareerService, limits, now, authenticate}={}) {
+function fixture({matchmaking, resultStore, matchLifecycleStore, rewardStore, ultimateTeamStore, onlineCareerService, limits, now, authenticate}={}) {
   const calls = [];
   const rows = new Map();
   const store = {
@@ -35,6 +35,7 @@ function fixture({matchmaking, resultStore, rewardStore, ultimateTeamStore, onli
     authenticate:authenticate || (async request => request.headers.get('authorization') === TOKEN ? {userId:'account_A'} : null),
     store,
     resultStore,
+    matchLifecycleStore,
     rewardStore,
     ultimateTeamStore,
     onlineCareerService,
@@ -46,6 +47,20 @@ function fixture({matchmaking, resultStore, rewardStore, ultimateTeamStore, onli
   const request = (path, {method='GET', body, headers={}}={}) => new Request(`https://api.example.test${path}`, {method, headers:{authorization:TOKEN, ...headers}, ...(body === undefined ? {} : {body})});
   return {handler, request, calls, rows};
 }
+
+test('PVP status endpoint is authenticated, exact-allowlisted, bounded, and account-bound',async()=>{
+ const calls=[],ids=['a'.repeat(32),'b'.repeat(32)],matchLifecycleStore={async listStatuses(accountId,matchIds){calls.push([accountId,matchIds.slice()]);return{items:matchIds.map((matchId,index)=>({matchId,status:index?'unknown':'interrupted'}))};}};
+ const {handler,request}=fixture({matchLifecycleStore});
+ const anon=await handler(new Request('https://api.example.test/api/v1/matches/status',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({matchIds:[ids[0]]})}));assert.equal(anon.status,401);assert.deepEqual(calls,[]);
+ const success=await handler(request('/api/v1/matches/status',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({matchIds:ids})}));
+ assert.equal(success.status,200);assert.deepEqual(await success.json(),{items:[{matchId:ids[0],status:'interrupted'},{matchId:ids[1],status:'unknown'}]});
+ assert.deepEqual(calls,[['account_A',ids]]);
+ for(const body of [{matchIds:ids,userId:'account_B'},{matchIds:[ids[0],ids[0]]},{matchIds:[ids[0],'bad']},{matchIds:Array(5).fill(ids[0])},{}])
+  assert.equal((await handler(request('/api/v1/matches/status',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}))).status,400);
+ assert.equal((await handler(request('/api/v1/matches/status?matchIds='+ids[0],{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({matchIds:[ids[0]]})}))).status,400);
+ assert.equal((await handler(request('/api/v1/matches/status/other',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({matchIds:[ids[0]]})}))).status,404);
+ assert.equal((await handler(request('/api/v1/matches/status',{method:'GET'}))).status,405);
+});
 
 test('API rejects missing bearer credentials before touching account storage', async () => {
   const {handler, calls} = fixture();

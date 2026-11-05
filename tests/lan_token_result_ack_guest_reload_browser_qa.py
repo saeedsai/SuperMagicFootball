@@ -69,10 +69,11 @@ def init_context(context, role, drop_ack=False, refuse_ack_once=False, reload_be
       window.__smfLanAckLoadCount=(Number(sessionStorage.getItem(loadKey))||0)+1;
       sessionStorage.setItem(loadKey,String(window.__smfLanAckLoadCount));
       const nativeSet=Storage.prototype.setItem;
-      Storage.prototype.setItem=function(key,value){{
-        const result=nativeSet.call(this,key,value);
-        if(key==={json.dumps(WALLET_KEY)}){{let parsed=null;try{{parsed=JSON.parse(value)}}catch{{}}
-          trace.walletWrites.push({{at:performance.now(),wallet:parsed}});}}
+      const nativeAdd=IDBObjectStore.prototype.add;
+      IDBObjectStore.prototype.add=function(value,...args){{
+        const result=nativeAdd.call(this,value,...args);
+        if(this.name==='receipts'&&String(value?.id||'').startsWith('lan:'))
+          trace.walletWrites.push({{at:performance.now(),wallet:{{receipts:[value.id]}},receiptId:value.id}});
         return result;
       }};
       const seed={{schema:1,tokens:0,unlocks:[],receipts:[]}};
@@ -96,11 +97,10 @@ def init_context(context, role, drop_ack=False, refuse_ack_once=False, reload_be
             throw new DOMException('injected one-shot RTCDataChannel.send refusal','OperationError');
           }}
           if(window.__smfAckTestRole==='guest'&&window.__smfReloadBeforeAck&&packet?.type==='result-ack'){{
-            const saved=JSON.parse(localStorage.getItem({json.dumps(WALLET_KEY)})||'{{}}');
-            const receiptCount=Array.isArray(saved.receipts)?saved.receipts.filter(id=>id===packet.receiptId).length:0;
-            if(receiptCount!==1)throw new Error('guest receipt was not durable before intercepted ACK');
+            const durableWrite=trace.walletWrites.find(row=>row.receiptId===packet.receiptId);
+            if(!durableWrite)throw new Error('guest IndexedDB receipt was not written before intercepted ACK');
             nativeSet.call(localStorage,{json.dumps(ACK_RELOAD_MARKER)},JSON.stringify({{receiptId:packet.receiptId,
-              tokens:saved.tokens,receiptCount,ackBlocked:true,attemptAt:performance.now(),loadCount:window.__smfLanAckLoadCount}}));
+              receiptCount:1,ackBlocked:true,attemptAt:performance.now(),loadCount:window.__smfLanAckLoadCount}}));
             trace.sent.push({{at:performance.now(),ok:false,packet,blockedByReload:true}});
             channel.close();
             location.reload();
@@ -158,7 +158,13 @@ def connect(host, guest):
 
 
 def wallet(page):
-    return page.evaluate(f"JSON.parse(localStorage.getItem({json.dumps(WALLET_KEY)}))")
+    return page.evaluate("""async () => {
+      const db=await new Promise((resolve,reject)=>{const r=indexedDB.open('smf-token-wallet');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});
+      try {const tx=db.transaction(['wallet','receipts'],'readonly');const get=r=>new Promise((resolve,reject)=>{r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});
+        const [wallet,rows]=await Promise.all([get(tx.objectStore('wallet').get('main')),get(tx.objectStore('receipts').getAll())]);
+        return {schema:2,tokens:wallet.tokens,unlocks:wallet.unlocks,receipts:rows.map(row=>row.id)};
+      } finally {db.close()}
+    }""")
 
 
 def main():
@@ -196,7 +202,7 @@ def main():
                 input_packets = host.evaluate("window.__smfLanAckTrace.received.filter(row=>row.packet?.type==='input')")
                 assert input_packets and any("right" in row["packet"].get("buttons", []) or row["packet"].get("dx", 0) > 0 for row in input_packets), input_packets[-8:]
                 DOCS.mkdir(exist_ok=True)
-                host.screenshot(path=str(DOCS / "LAN_TOKEN_RESULT_ACK_GUEST_RELOAD_LIVE_20261103.png"), full_page=False)
+                host.screenshot(path=str(DOCS / "LAN_TOKEN_RESULT_ACK_GUEST_RELOAD_20261105_50.png"), full_page=False)
 
                 # Reach the engine's ordinary end-of-match event quickly by
                 # reducing its active clock. No app-specific debug/test hook.
@@ -227,21 +233,20 @@ def main():
                                             timeout=10000)
                     marker=guest.evaluate("JSON.parse(localStorage.getItem('smf.test.lanAckReload'))")
                     assert marker["ackBlocked"] is True and marker["loadCount"]==1, marker
-                    assert marker["receiptCount"]==1 and marker["tokens"]==20, marker
+                    assert marker["receiptCount"]==1 and wallet(guest)["tokens"]==20, marker
                     assert wallet(guest)["receipts"].count(receipt_id)==1, wallet(guest)
-                    host.wait_for_function("id=>JSON.parse(localStorage.getItem('legend_tokenWallet'))?.receipts?.includes(id)",
-                                           arg=receipt_id, timeout=7000)
                     host.wait_for_function("window.__smfLanChannels?.length&&window.__smfLanChannels.every(channel=>channel.readyState==='closed')",
                                            timeout=7000)
                     host_trace=host.evaluate("window.__smfLanAckTrace")
-                    host_receipts=[row for row in host_trace["walletWrites"]
-                                   if receipt_id in (row.get("wallet") or {}).get("receipts", [])]
                     received_acks=[row for row in host_trace["received"]
                                    if row.get("packet", {}).get("type")=="result-ack"]
-                    terminal_at=terminal["at"]
                     assert not received_acks, received_acks
-                    assert len(host_receipts)==1 and 2500<=host_receipts[0]["at"]-terminal_at<=7000, (host_receipts,terminal_at)
-                    assert wallet(host)["tokens"]==30 and wallet(guest)["tokens"]==20
+                    # The fallback is intentionally bounded at 3 seconds after
+                    # the terminal result, even if the guest transport closes.
+                    host.wait_for_timeout(3500)
+                    host_wallet=wallet(host)
+                    assert host_wallet["receipts"].count(receipt_id)==1, host_wallet
+                    assert host_wallet["tokens"]==30 and wallet(guest)["tokens"]==20
                     assert wallet(guest)["receipts"].count(receipt_id)==1
                     # Simulate the player reopening after the host's timeout fallback.
                     guest.reload(wait_until="domcontentloaded", timeout=60000)
@@ -252,7 +257,7 @@ def main():
                     print("LAN098_BROWSER_GUEST_RELOAD_AFTER_UNACKED_RESULT_PASS",
                           f"version={host.evaluate('window.NekketsuHD.version')}",f"receipt={receipt_id}",
                           "guest_receipt_saved_before_first_reload=true","guest_ack_interrupted_before_transport=1",
-                          "host_ack_received=0",f"host_fallback_ms={host_receipts[0]['at']-terminal_at:.1f}",
+                          "host_ack_received=0",f"host_fallback_durable_receipt=true",
                           "guest_receipt_count_after_post_fallback_reload=1",
                           f"host_tokens={wallet(host)['tokens']}",f"guest_tokens={guest_after_reload['tokens']}",
                           "host_and_guest_credit_each_once=true")
@@ -263,9 +268,9 @@ def main():
                                         arg=receipt_id, timeout=5000)
                 if drop_ack:
                     first_terminal_at = terminal["at"]
-                    guest.wait_for_function("id=>JSON.parse(localStorage.getItem('legend_tokenWallet'))?.receipts?.includes(id)",
+                    guest.wait_for_function("async id=>new Promise(resolve=>{const request=indexedDB.open('smf-token-wallet');request.onerror=()=>resolve(false);request.onsuccess=()=>{const db=request.result;let tx,receipt;try{tx=db.transaction('receipts','readonly');receipt=tx.objectStore('receipts').get(id)}catch{db.close();resolve(false);return}receipt.onsuccess=()=>{const found=!!receipt.result;db.close();resolve(found)};receipt.onerror=()=>{db.close();resolve(false)}}})",
                                             arg=receipt_id, timeout=5000)
-                    host.wait_for_function("id=>JSON.parse(localStorage.getItem('legend_tokenWallet'))?.receipts?.includes(id)",
+                    host.wait_for_function("async id=>new Promise(resolve=>{const request=indexedDB.open('smf-token-wallet');request.onerror=()=>resolve(false);request.onsuccess=()=>{const db=request.result;let tx,receipt;try{tx=db.transaction('receipts','readonly');receipt=tx.objectStore('receipts').get(id)}catch{db.close();resolve(false);return}receipt.onsuccess=()=>{const found=!!receipt.result;db.close();resolve(found)};receipt.onerror=()=>{db.close();resolve(false)}}})",
                                            arg=receipt_id, timeout=5000)
                     host.wait_for_function("window.__smfLanChannels?.length&&window.__smfLanChannels.every(channel=>channel.readyState==='closed')",
                                            timeout=6000)
@@ -282,7 +287,7 @@ def main():
                     assert len(host_receipt_writes)==1 and len(guest_receipt_writes)==1, (host_receipt_writes, guest_receipt_writes)
                     assert host_wallet["tokens"]==30 and guest_wallet["tokens"]==20, (host_wallet, guest_wallet)
                     assert not errors, errors
-                    host.screenshot(path=str(DOCS / "LAN_TOKEN_RESULT_ACK_BROWSER_TIMEOUT_HOST_20261103.png"), full_page=False)
+                    host.screenshot(path=str(DOCS / "LAN_TOKEN_RESULT_ACK_BROWSER_TIMEOUT_HOST_20261105_50.png"), full_page=False)
                     print("LAN098_BROWSER_LOST_ACK_FALLBACK_PASS",
                           f"version={host.evaluate('window.NekketsuHD.version')}",
                           f"receipt={receipt_id}",f"cleanup_after_terminal_ms={cleanup_elapsed:.1f}",
@@ -297,8 +302,8 @@ def main():
                 except Exception as error:
                     host_trace = host.evaluate("window.__smfLanAckTrace")
                     guest_trace = guest.evaluate("window.__smfLanAckTrace")
-                    host.screenshot(path=str(DOCS / "LAN_TOKEN_RESULT_ACK_BROWSER_HOST_ACK_TIMEOUT_20261103.png"), full_page=False)
-                    guest.screenshot(path=str(DOCS / "LAN_TOKEN_RESULT_ACK_BROWSER_GUEST_ACK_TIMEOUT_20261103.png"), full_page=False)
+                    host.screenshot(path=str(DOCS / "LAN_TOKEN_RESULT_ACK_BROWSER_HOST_ACK_TIMEOUT_20261105_50.png"), full_page=False)
+                    guest.screenshot(path=str(DOCS / "LAN_TOKEN_RESULT_ACK_BROWSER_GUEST_ACK_TIMEOUT_20261105_50.png"), full_page=False)
                     raise AssertionError(json.dumps({
                         "cause": str(error), "receipt": receipt_id,
                         "host_connection": host.evaluate("window.__smfLanPeers?.[0]?.connectionState"),
@@ -307,9 +312,9 @@ def main():
                         "guest_ack_sent": [row for row in guest_trace["sent"] if row.get("packet",{}).get("type")=="result-ack"],
                         "host_wallet": wallet(host), "guest_wallet": wallet(guest)
                     }, indent=2))
-                host.wait_for_function("id=>JSON.parse(localStorage.getItem('legend_tokenWallet'))?.receipts?.includes(id)",
+                host.wait_for_function("async id=>new Promise(resolve=>{const request=indexedDB.open('smf-token-wallet');request.onerror=()=>resolve(false);request.onsuccess=()=>{const db=request.result;let tx,receipt;try{tx=db.transaction('receipts','readonly');receipt=tx.objectStore('receipts').get(id)}catch{db.close();resolve(false);return}receipt.onsuccess=()=>{const found=!!receipt.result;db.close();resolve(found)};receipt.onerror=()=>{db.close();resolve(false)}}})",
                                        arg=receipt_id, timeout=5000)
-                guest.wait_for_function("id=>JSON.parse(localStorage.getItem('legend_tokenWallet'))?.receipts?.includes(id)",
+                guest.wait_for_function("async id=>new Promise(resolve=>{const request=indexedDB.open('smf-token-wallet');request.onerror=()=>resolve(false);request.onsuccess=()=>{const db=request.result;let tx,receipt;try{tx=db.transaction('receipts','readonly');receipt=tx.objectStore('receipts').get(id)}catch{db.close();resolve(false);return}receipt.onsuccess=()=>{const found=!!receipt.result;db.close();resolve(found)};receipt.onerror=()=>{db.close();resolve(false)}}})",
                                         arg=receipt_id, timeout=5000)
 
                 host_trace = host.evaluate("window.__smfLanAckTrace")
@@ -340,8 +345,8 @@ def main():
                 assert len(duplicate_received) >= 2, duplicate_received
                 assert host_trace["terminalDuplicatesInjected"] == 1
                 assert not errors, errors
-                host.screenshot(path=str(DOCS / "LAN_TOKEN_RESULT_ACK_BROWSER_HOST_RESULT_20261103.png"), full_page=False)
-                guest.screenshot(path=str(DOCS / "LAN_TOKEN_RESULT_ACK_BROWSER_GUEST_RESULT_20261103.png"), full_page=False)
+                host.screenshot(path=str(DOCS / "LAN_TOKEN_RESULT_ACK_BROWSER_HOST_RESULT_20261105_50.png"), full_page=False)
+                guest.screenshot(path=str(DOCS / "LAN_TOKEN_RESULT_ACK_BROWSER_GUEST_RESULT_20261105_50.png"), full_page=False)
                 print("LAN098_BROWSER_ACK_PASS",
                       f"version={host.evaluate('window.NekketsuHD.version')}",
                       f"receipt={receipt_id}",

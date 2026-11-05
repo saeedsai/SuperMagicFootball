@@ -212,3 +212,25 @@ test('failed removal of damaged data leaves matchmaking fail-closed',async()=>{
  assert.equal(history.discardCorruptPendingMatches({confirmed:true}),false);
  assert.equal(history.state.pendingStorageInvalid,true);assert.equal(history.state.pendingMatchCapacityReached,true);
 });
+
+test('pending IDs clear only on exact server-confirmed interrupted status; other statuses stay pending',async()=>{
+ const {createOnlineHistoryController}=await import('../src/modules/online-history.js');
+ const ids=['1','2','3','4'].map(x=>x.repeat(32)),values=new Map(),storage={getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k)};
+ const history=createOnlineHistoryController({loadPage:async()=>({items:[],nextCursor:null}),loadStatuses:async matchIds=>({items:matchIds.map((matchId,index)=>({matchId,status:['interrupted','unknown','active','completed'][index]}))}),isSignedIn:()=>true,storage});
+ for(const id of ids)assert.equal(history.rememberPendingMatch(id),true);
+ const result=await history.reconcileInterruptedPending();
+ assert.equal(result.status,'interrupted-cleared');assert.deepEqual(result.cleared,[ids[0]]);assert.deepEqual(history.state.pendingMatchIds,ids.slice(1));
+ assert.match(result.message,/No score or reward was created/);
+});
+
+test('failed, malformed and stale status checks preserve pending IDs',async()=>{
+ const {createOnlineHistoryController}=await import('../src/modules/online-history.js');
+ const id='a'.repeat(32),values=new Map(),storage={getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k)};let signed=true;
+ const failing=createOnlineHistoryController({loadPage:async()=>({items:[],nextCursor:null}),loadStatuses:async()=>{throw Error('offline')},isSignedIn:()=>signed,storage});
+ failing.rememberPendingMatch(id);assert.equal((await failing.reconcileInterruptedPending()).status,'error');assert.deepEqual(failing.state.pendingMatchIds,[id]);
+ const malformed=createOnlineHistoryController({loadPage:async()=>({items:[],nextCursor:null}),loadStatuses:async()=>({items:[]}),isSignedIn:()=>signed,storage});
+ assert.equal((await malformed.reconcileInterruptedPending()).status,'error');assert.deepEqual(malformed.state.pendingMatchIds,[id]);
+ const pending=deferred(),stale=createOnlineHistoryController({loadPage:async()=>({items:[],nextCursor:null}),loadStatuses:()=>pending.promise,isSignedIn:()=>signed,storage});
+ const request=stale.reconcileInterruptedPending();signed=false;stale.reset();pending.resolve({items:[{matchId:id,status:'interrupted'}]});
+ assert.equal((await request).status,'stale');assert.deepEqual(stale.state.pendingMatchIds,[id]);
+});

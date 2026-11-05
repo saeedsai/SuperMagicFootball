@@ -126,11 +126,11 @@ function validatedSnapshot(envelope,matchId){
  * Create a short-lived single-use-ticket queue and server-owned match sessions.
  * `queueTicket({userId,ticket})` must receive the user ID from trusted auth middleware.
  */
-export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRequeue=()=>{},onMatchFinished=async result=>({matchId:result.matchId}),onMatchPersisted=()=>{},onMatchError=()=>{},onMatchFault=()=>{},
+export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRequeue=()=>{},onMatchAssigned=async()=>{},onMatchFinished=async result=>({matchId:result.matchId}),onMatchPersisted=()=>{},onMatchError=()=>{},onMatchFault=()=>{},
   now=Date.now,setIntervalFn=globalThis.setInterval,clearIntervalFn=globalThis.clearInterval,
   autoTick=true,ticketTtlMs=30_000,queueTtlMs=60_000,disconnectGraceMs=15_000,maxSnapshotBuffer=4,
   maxPendingTickets=512,maxQueuedUsers=256,maxActiveMatches=64,validTeamIds=null}={}){
-  if(typeof createEngine!=='function'||typeof sendSnapshot!=='function'||typeof onRequeue!=='function'||typeof onMatchFinished!=='function'||typeof onMatchPersisted!=='function'||typeof onMatchError!=='function'||typeof onMatchFault!=='function'||
+  if(typeof createEngine!=='function'||typeof sendSnapshot!=='function'||typeof onRequeue!=='function'||typeof onMatchAssigned!=='function'||typeof onMatchFinished!=='function'||typeof onMatchPersisted!=='function'||typeof onMatchError!=='function'||typeof onMatchFault!=='function'||
      typeof now!=='function'||typeof setIntervalFn!=='function'||typeof clearIntervalFn!=='function'||
      typeof autoTick!=='boolean'||!Number.isSafeInteger(ticketTtlMs)||ticketTtlMs<1000||ticketTtlMs>60_000||
      !Number.isSafeInteger(queueTtlMs)||queueTtlMs<1000||queueTtlMs>60_000||!Number.isSafeInteger(disconnectGraceMs)||disconnectGraceMs<1000||disconnectGraceMs>60_000||
@@ -466,6 +466,8 @@ export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRe
       for(const userId of userIds)activeByUser.set(userId,matchId);
       const initial=record.session.getState().snapshot;
       if(!bufferSnapshot(record,{matchId,tick:0,snapshot:initial}))throw new Error('Invalid initial authoritative snapshot');
+      await onMatchAssigned(Object.freeze({matchId,participants:Object.freeze(userIds.slice()),teamIds}));
+      if(disposed)throw new Error('Matchmaking service closed while assignment persistence completed');
       if(autoTick)record.timer=setIntervalFn(()=>scheduledTick(matchId),STEP_MS);
       const seats=Object.freeze(userIds.map((userId,side)=>Object.freeze({userId,side})));
       return Object.freeze({ok:true,status:'matched',matchId,participants:Object.freeze(userIds.slice()),seats});

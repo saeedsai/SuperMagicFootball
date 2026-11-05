@@ -34,7 +34,7 @@ test('LAN-046 Quick Match routes ready LAN sessions to live gameplay',()=>{
   const fixture=fs.readFileSync(path.join(root,'scripts/build.py'),'utf8');
   assert.match(ui,/navItem\('Local Network · LAN Quick Match','navLan'/);
   assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{onReady:startLanQuickMatch,onGuestLeft:returnLanHostToLobby\}\)/);
-  assert.match(ui,/createLanLiveMatch\(\{peer,role,game,input,field:ENGINE\.WORLD\.field\}\)/);
+  assert.match(ui,/createLanLiveMatch\(\{peer,role,game,input,field:ENGINE\.WORLD\.field,[\s\S]{0,240}awardResult:payload=>awardLanResultWithWalletRetry\(payload/);
   assert.match(ui,/\(screen==='LOCAL NETWORK'\|\|screen==='ONLINE P2P'\)\&\&e\.code==='Escape'/);
   assert.match(ui,/lanLobbyDispose\(\)/);
   assert.match(sw,/'lan_peer_connection','lan-relay-peer','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
@@ -309,8 +309,10 @@ test('LAN automatic, LAN manual, and internet P2P remain wired to one live match
  const peer=fs.readFileSync(path.join(root,'src/modules/lan_peer_connection.js'),'utf8');
  assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{onReady:startLanQuickMatch,onGuestLeft:returnLanHostToLobby\}\)/);
  assert.match(ui,/mountLanLobby\(\$\('lanLobby'\),\{internet:true,onReady:startLanQuickMatch,onGuestLeft:returnLanHostToLobby\}\)/);
- assert.equal((ui.match(/createLanLiveMatch\(\{peer,role,game,input,field:ENGINE\.WORLD\.field\}\)/g)||[]).length,1,
+ assert.equal((ui.match(/createLanLiveMatch\(\{/g)||[]).length,1,
   'all modes must share exactly one authoritative gameplay bridge');
+ assert.match(ui,/awardResult:payload=>awardLanResultWithWalletRetry\(payload,[\s\S]{0,180}retryWallet:\(\)=>tokenWallet\.retry\(\)/,
+  'LAN receipts must recover a transient wallet failure once before ACK');
  assert.match(lobby,/stop=mountLanLobby\(root,\{\.\.\.options,auto:false\}\)/,
   'LAN fallback must reuse manual connection implementation');
  assert.match(lobby,/createLanPeerConnection\(hello,\{internet\}\)/,
@@ -332,6 +334,7 @@ test('Online P2P defaults to automatic discovery, with manual fallback, both usi
  assert.match(auto,/const registerHost=\(\)=>send\(\{type:'host'/);
  assert.match(auto,/scope:roomScope/);
  assert.match(signal,/SMF_P2P_SIGNAL_URL/);
- assert.equal((ui.match(/createLanLiveMatch\(\{peer,role,game,input,field:ENGINE\.WORLD\.field\}\)/g)||[]).length,1);
+ assert.equal((ui.match(/createLanLiveMatch\(\{/g)||[]).length,1);
+ assert.match(ui,/awardResult:payload=>awardLanResultWithWalletRetry\(payload/);
  assert.match(ui,/function showOnlineMenu\(\)\{menuChoices\('nav-online'/,'top-level Online backend menu must be preserved');
 });

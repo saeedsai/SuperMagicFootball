@@ -42,6 +42,7 @@ test('online service configures Career AI as one human plus server CPU and advan
   assert.ok(canonicalTeamIds.includes('japan'));
   return {handle:async()=>new Response('{}',{headers:{'content-type':'application/json'}}),allowedOrigins:['https://game.example.test'],
    resultStore:{async recordFinalResult(result){events.push(['persist',result.matchId]);return {matchId:result.matchId};}},
+   matchLifecycleStore:{async recordAssigned(value){events.push(['assigned',value.matchId]);},async reconcileAfterRestart(){events.push(['pvp-reconcile',pool.lockState.held]);return {completed:0,interrupted:0};}},
    onlineCareerService:{async reconcileReservedFixtures(){events.push(['reconcile',pool.lockState.held]);return 0;},async advanceMatchResult(matchId){events.push(['advance',matchId]);advanceAttempts++;if(advanceAttempts===1)throw new Error('transient progression database failure');return {playedCount:1};}}
   };
  };
@@ -52,6 +53,8 @@ test('online service configures Career AI as one human plus server CPU and advan
  assert.equal(pool.lockState.held,true,'the process lock remains held for the full service lifetime');
  assert.deepEqual(events.slice(0,2).map(row=>row[0]),['lock-query','pool-query'],'the singleton lock is acquired before runtime setup');
  assert.deepEqual(events.find(row=>row[0]==='reconcile'),['reconcile',true],'Career recovery completes while the process lock is held');
+ assert.deepEqual(events.find(row=>row[0]==='pvp-reconcile'),['pvp-reconcile',true],'PVP recovery completes while the process lock is held');
+ await matcherOptions.onMatchAssigned({matchId:'b'.repeat(32),participants:['player_alpha','player_bravo'],teamIds:['japan','brazil']});
  try{
   const engine=await matcherOptions.createEngine({teamIds:['japan','brazil'],mode:'career-ai'});
   assert.deepEqual(engine,{});
@@ -77,7 +80,7 @@ test('Online Career recovery failure prevents listener startup and releases the 
  const {startOnlineAccountService}=await import('../scripts/online-account-service.mjs');
  const port=await freePort(),pool=mockPool();let transportStarted=false,matchmakingClosed=false;
  await assert.rejects(()=>startOnlineAccountService({env:{PORT:String(port)},pool,
-  runtimeFactory:async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],resultStore:{recordFinalResult:async result=>result},
+  runtimeFactory:async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],resultStore:{recordFinalResult:async result=>result},matchLifecycleStore:{recordAssigned:async()=>{},async reconcileAfterRestart(){return {completed:0,interrupted:0};}},
    onlineCareerService:{async reconcileReservedFixtures(){throw new Error('fixture recovery transaction failed');}}}),
   matchmakingFactory:()=>({close(){matchmakingClosed=true;}}),transportFactory:()=>{transportStarted=true;return {close(){}};}
  }),/fixture recovery transaction failed/);
@@ -88,11 +91,23 @@ test('Online Career recovery failure prevents listener startup and releases the 
  const probe=net.createServer();await new Promise((resolve,reject)=>{probe.once('error',reject);probe.listen(port,'127.0.0.1',resolve);});await new Promise(resolve=>probe.close(resolve));
 });
 
+test('PVP lifecycle recovery failure is fail-closed before listener or transport startup',async()=>{
+ const {startOnlineAccountService}=await import('../scripts/online-account-service.mjs');
+ const port=await freePort(),pool=mockPool();let transportStarted=false,matchmakingClosed=false;
+ await assert.rejects(()=>startOnlineAccountService({env:{PORT:String(port)},pool,
+  runtimeFactory:async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],resultStore:{recordFinalResult:async result=>result},
+   matchLifecycleStore:{recordAssigned:async()=>{},async reconcileAfterRestart(){throw Error('PVP recovery query failed');}}}),
+  matchmakingFactory:()=>({close(){matchmakingClosed=true;}}),transportFactory:()=>{transportStarted=true;return {close(){}};}
+ }),/PVP recovery query failed/);
+ assert.equal(transportStarted,false);assert.equal(matchmakingClosed,true);assert.equal(pool.lockState.held,false);
+ const probe=net.createServer();await new Promise((resolve,reject)=>{probe.once('error',reject);probe.listen(port,'127.0.0.1',resolve);});await new Promise(resolve=>probe.close(resolve));
+});
+
 test('a second Online API process is refused while the first process holds the session lock',async()=>{
  const {startOnlineAccountService}=await import('../scripts/online-account-service.mjs');
  const sharedLock={held:false,owner:null},firstPool=mockPool({lockState:sharedLock}),secondPool=mockPool({lockState:sharedLock});
  const firstPort=await freePort(),secondPort=await freePort();let firstMatcherClosed=false,secondMatcherCreated=false,secondPoolEnded=false;
- const runtimeFactory=async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],resultStore:{recordFinalResult:async result=>result}});
+ const runtimeFactory=async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],resultStore:{recordFinalResult:async result=>result},matchLifecycleStore:{recordAssigned:async()=>{},async reconcileAfterRestart(){return {completed:0,interrupted:0};}}});
  const first=await startOnlineAccountService({env:{PORT:String(firstPort)},pool:firstPool,runtimeFactory,
   matchmakingFactory:()=>({close(){firstMatcherClosed=true}}),transportFactory:()=>({close(){}})});
  try{
@@ -116,7 +131,7 @@ test('online engine faults write one bounded operator signal without exception o
  const port=await freePort(),lines=[],pool=mockPool();
  let matcherOptions;
  const service=await startOnlineAccountService({env:{PORT:String(port)},pool,operatorLogger:{error(line){lines.push(line);throw new Error('logging backend unavailable');}},
-  runtimeFactory:async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],resultStore:{recordFinalResult:async result=>result}}),
+  runtimeFactory:async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],resultStore:{recordFinalResult:async result=>result},matchLifecycleStore:{recordAssigned:async()=>{},async reconcileAfterRestart(){return {completed:0,interrupted:0};}}}),
   matchmakingFactory:options=>(matcherOptions=options,{close(){}}),transportFactory:()=>({close(){}})});
  try{
   assert.doesNotThrow(()=>matcherOptions.onMatchFault('a'.repeat(32),'private exception text'));
@@ -135,7 +150,7 @@ test('online service closes its HTTP listener and database pool when WebSocket s
  const port=await freePort();let poolClosed=false,matchmakingClosed=false;
  const pool=mockPool();pool.end=async()=>{poolClosed=true;};
  await assert.rejects(()=>startOnlineAccountService({env:{PORT:String(port)},pool,
-  runtimeFactory:async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],resultStore:{recordFinalResult:async result=>result}}),
+  runtimeFactory:async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],resultStore:{recordFinalResult:async result=>result},matchLifecycleStore:{recordAssigned:async()=>{},async reconcileAfterRestart(){return {completed:0,interrupted:0};}}}),
   matchmakingFactory:()=>({close(){matchmakingClosed=true;}}),
   transportFactory:()=>{throw new Error('transport startup failed');}
  }),/transport startup failed/);
@@ -153,7 +168,7 @@ test('loss of the dedicated advisory-lock connection closes API and matchmaking 
  const port=await freePort(),events=[],pool=mockPool({events});let matcherClosed=false,transportClosed=false;
  let resolvePoolEnd;const poolEnded=new Promise(resolve=>resolvePoolEnd=resolve);pool.end=async()=>{events.push(['pool-end']);resolvePoolEnd();};
  const service=await startOnlineAccountService({env:{PORT:String(port)},pool,
-  runtimeFactory:async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],resultStore:{recordFinalResult:async result=>result}}),
+  runtimeFactory:async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],resultStore:{recordFinalResult:async result=>result},matchLifecycleStore:{recordAssigned:async()=>{},async reconcileAfterRestart(){return {completed:0,interrupted:0};}}}),
   matchmakingFactory:()=>({close(){matcherClosed=true;}}),transportFactory:()=>({close(){transportClosed=true;}})});
  const listenerClosed=onceEvent(service.server,'close');
  pool.clients[0].emit('error',new Error('socket terminated'));

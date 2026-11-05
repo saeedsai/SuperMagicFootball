@@ -17,6 +17,7 @@ const API_PATHS = new Set([
   '/api/v1/matches/ticket',
   '/api/v1/matches/resume-ticket',
   '/api/v1/matches/history',
+  '/api/v1/matches/status',
   '/api/v1/matches/rewards/claim',
   '/api/v1/tokens/balance'
 ]);

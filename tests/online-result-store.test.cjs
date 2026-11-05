@@ -54,9 +54,9 @@ class FakePool{
   }
 }
 
-async function setup(){
+async function setup(lifecycleStore=null){
   const {createOnlineResultStore}=await loadStore();const db=new FakePool();
-  const store=createOnlineResultStore({db,now:()=>new Date('2026-11-04T14:00:00.000Z')});
+  const store=createOnlineResultStore({db,now:()=>new Date('2026-11-04T14:00:00.000Z'),lifecycleStore});
   return {store,db};
 }
 
@@ -67,6 +67,16 @@ test('records a strictly validated terminal final result durably and reads it ba
   assert.deepEqual(result.participants,[{userId:'player_alpha',side:0},{userId:'player_bravo',side:1}]);
   assert.equal((await store.getFinalResult(result.matchId)).duplicate,false);
   assert.equal(db.results.size,1);assert.equal(db.inserts,1);assert.equal(db.releases,1);
+});
+
+test('PVP lifecycle completion is written in the immutable result transaction and rolls back on failure',async()=>{
+ const calls=[];let shouldFail=false;
+ const lifecycleStore={async markCompletedInTransaction(client,result){calls.push([result.matchId,!!client]);if(shouldFail)throw Error('lifecycle commit unavailable');}};
+ const {store,db}=await setup(lifecycleStore);shouldFail=true;
+ await assert.rejects(store.recordFinalResult(initial()),/lifecycle commit unavailable/);
+ assert.equal(db.results.size,0,'a lifecycle failure rolls back the immutable result too');
+ shouldFail=false;await store.recordFinalResult(initial());assert.equal(db.results.size,1);
+ await store.recordFinalResult(initial());assert.equal(calls.length,3,'same-result retries recheck lifecycle completion in the same transaction');
 });
 
 test('same match ID and same result is idempotent; conflicting result cannot overwrite stored final score',async()=>{

@@ -136,6 +136,7 @@ try:
         notice = page.locator('#tokenStoreNotice')
         assert notice.get_attribute('role') == 'status'
         assert notice.get_attribute('aria-live') == 'polite'
+        page.wait_for_function("() => (document.querySelector('#tokenStoreNotice')?.textContent || '').toLowerCase().includes('unlocked for')", timeout=5000)
         assert 'unlocked for' in notice.inner_text().lower(), 'Purchase result should be announced in the live region'
         active_after_purchase = page.evaluate('''()=>({tag:document.activeElement?.tagName,
           id:document.activeElement?.id, disabled:document.activeElement?.disabled,

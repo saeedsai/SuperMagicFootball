@@ -24,6 +24,9 @@ class Handler(SimpleHTTPRequestHandler):
         super().do_GET()
     def log_message(self,*_args): pass
 
+def wait_for_unlock_notice(page):
+    page.wait_for_function("() => (document.querySelector('#tokenStoreNotice')?.textContent || '').toLowerCase().includes('unlocked')", timeout=5000)
+
 server=ThreadingHTTPServer(('127.0.0.1',0),partial(Handler,directory=str(ROOT)))
 threading.Thread(target=server.serve_forever,daemon=True).start()
 origin=f'http://127.0.0.1:{server.server_port}/'
@@ -55,7 +58,8 @@ try:
    team_card=page.locator('.tokenStoreCard').first
    assert '300 TOKENS' in team_card.inner_text() and 'playable for free' in page.locator('#menu').inner_text().lower()
    team_card.locator('button').click()
-   assert 'unlocked' in page.locator('#tokenStoreNotice').inner_text().lower()
+   wait_for_unlock_notice(page);
+   assert 'unlocked' in page.locator('#tokenStoreNotice').inner_text().lower(),(device,page.locator('#tokenStoreNotice').inner_text(),errors)
    assert page.locator('#tokenStoreBalance').inner_text()=='1,700 TOKENS'
    page.locator('#storeOwnedOnly').check()
    assert page.locator('.tokenStoreCard button').inner_text()=='OWNED'
@@ -64,6 +68,7 @@ try:
    player_card=page.locator('.tokenStoreCard').first
    assert '250 TOKENS' in player_card.inner_text()
    player_card.locator('button').click()
+   wait_for_unlock_notice(page);
    assert 'unlocked' in page.locator('#tokenStoreNotice').inner_text().lower()
    assert page.locator('#tokenStoreBalance').inner_text()=='1,450 TOKENS'
    page.goto(origin,wait_until='load');page.locator('[data-action="navQuick"]').click();page.locator('[data-action="navOnDevice"]').click();page.locator('[data-action="quick"]').click()
@@ -75,6 +80,7 @@ try:
    card=page.locator('.tokenStoreCard').first
    assert '120 TOKENS' in card.inner_text()
    card.locator('button').click()
+   wait_for_unlock_notice(page);
    assert 'unlocked' in page.locator('#tokenStoreNotice').inner_text().lower()
    assert page.locator('#tokenStoreBalance').inner_text()=='1,330 TOKENS'
    assert page.locator('.tokenStoreCard button').inner_text()=='OWNED',(page.locator('.tokenStoreCard button').inner_text(),page.locator('#tokenStoreNotice').inner_text(),page.locator('#tokenStoreBalance').inner_text(),errors)
@@ -85,6 +91,7 @@ try:
    trick_card=page.locator('.tokenStoreCard').first
    assert '160 TOKENS' in trick_card.inner_text()
    trick_card.locator('button').click()
+   wait_for_unlock_notice(page);
    assert 'unlocked' in page.locator('#tokenStoreNotice').inner_text().lower()
    assert page.locator('#tokenStoreBalance').inner_text()=='1,170 TOKENS'
    page.goto(origin,wait_until='load');page.locator('[data-action="navCustomization"]').click();page.locator('[data-action="playerStudio"]').click()
@@ -108,6 +115,7 @@ try:
     page.locator('#storePageNext').click()
    assert appearance_action,(device,'could not find a non-current purchasable hairstyle')
    appearance_key=int(unquote(appearance_action.rsplit('_',1)[-1]).split(':')[-1])
+   wait_for_unlock_notice(page);
    assert 'unlocked' in page.locator('#tokenStoreNotice').inner_text().lower(),(page.locator('#tokenStoreNotice').inner_text(),page.locator('#tokenStoreBalance').inner_text(),appearance_action,errors)
    page.goto(origin,wait_until='load')
    page.locator('[data-action="navCustomization"]').click()
@@ -129,6 +137,7 @@ try:
     page.locator('#storePageNext').click()
    assert accessory_action,(device,'could not find a non-current accessory')
    accessory_key=int(unquote(accessory_action.rsplit('_',1)[-1]).split(':')[-1])
+   wait_for_unlock_notice(page);
    assert 'unlocked' in page.locator('#tokenStoreNotice').inner_text().lower()
    page.goto(origin,wait_until='load');page.locator('[data-action="navCustomization"]').click();page.locator('[data-action="playerStudio"]').click()
    assert page.locator(f'#face_accessory option[value="{accessory_key}"]').count()==1

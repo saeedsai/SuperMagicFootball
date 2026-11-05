@@ -20,6 +20,15 @@ function fakeTimers(){
  return {timers,setTimer(fn,delay){const timer={fn,delay,cleared:false};timers.push(timer);return timer;},
   clearTimer(timer){if(timer)timer.cleared=true;},run(timer=timers[0]){assert.ok(timer);if(!timer.cleared){timer.cleared=true;timer.fn();}}};
 }
+const settle=()=>new Promise(resolve=>setImmediate(resolve));
+function wallet(){
+ const receipts=new Set();let tokens=0;
+ return {wallet:()=>({tokens}),async awardCompletedMatch(receipt){
+  await Promise.resolve();if(receipts.has(receipt.receiptId))return {ok:false,duplicate:true,reward:0};
+  receipts.add(receipt.receiptId);const reward=10+(receipt.result==='win'?20:receipt.result==='draw'?15:10);tokens+=reward;
+  return {ok:true,duplicate:false,reward,wallet:{tokens}};
+ }};
+}
 
 class FakeChannel{
  constructor(){this.readyState='connecting';this.listeners=new Map();this.peer=null;this.bufferedAmount=0;}
@@ -62,6 +71,13 @@ test('LAN-098 strict result ACK packet is separate, duplicate-safe, and cannot a
   {...packet,sequence:1},
   {...packet,session:'bad'}
  ])assert.throws(()=>normalizeLanPacket(bad));
+ const productionRoom='0123456789abcdef0123456789abcdef',productionHost='host_'+productionRoom.slice(4);
+ assert.equal(productionHost.length,33);
+ const productionReceipt=`lan:${productionRoom}:${productionHost}:0123456789abcdef0123456789abcdef`;
+ assert.equal(normalizeLanPacket(buildLanResultAck(hostHello.session,productionReceipt)).receiptId,productionReceipt,
+  'the canonical generated host ID fits the bounded ACK receipt grammar');
+ assert.throws(()=>normalizeLanPacket({...packet,receiptId:`lan:${productionRoom}:${productionHost}x:0123456789abcdef0123456789abcdef`}),
+  'host identities longer than the generated 33-character form remain rejected');
 
  const {host,guest}=channelPair();
  const H=bindLanProtocolChannel(hostHello,host),G=bindLanProtocolChannel(guestHello,guest);
@@ -77,6 +93,30 @@ test('LAN-098 strict result ACK packet is separate, duplicate-safe, and cannot a
  assert.deepEqual(H.advance(4).input.buttons,['jump']);
  assert.equal(H.state.peer.lastSequence,1,'normal controls remain contiguous after ACK traffic');
  H.dispose();G.dispose();
+});
+
+test('LAN-098 temporary wallet write failure clears storage block and retries the exact receipt once',async()=>{
+ const {awardLanResultWithWalletRetry}=await loadMatch();
+ const payload={receiptId:'lan:room001:host001:0123456789abcdef0123456789abcdef',mode:'online',status:'completed',result:'win'};
+ const calls=[],events=[];
+ const result=await awardLanResultWithWalletRetry(payload,{
+  async awardResult(value){calls.push(value);if(calls.length===1)throw Error('temporary quota refusal');return {ok:true,wallet:{tokens:30}};},
+  async retryWallet(){events.push('wallet-retry');return {ok:true,wallet:{tokens:0}};}
+ });
+ assert.deepEqual(events,['wallet-retry']);assert.equal(calls.length,2);
+ assert.equal(calls[0],payload);assert.equal(calls[1],payload,'the exact receipt ID and outcome are replayed');
+ assert.deepEqual(result,{ok:true,wallet:{tokens:30}});
+});
+
+test('LAN-098 persistent wallet failure gets one recovery check and no award loop',async()=>{
+ const {awardLanResultWithWalletRetry}=await loadMatch();
+ const payload={receiptId:'lan:room001:host001:0123456789abcdef0123456789abcdef',mode:'online',status:'completed',result:'loss'};
+ let awardCalls=0,retryCalls=0;
+ await assert.rejects(awardLanResultWithWalletRetry(payload,{
+  async awardResult(){awardCalls++;throw Error('wallet still blocked');},
+  async retryWallet(){retryCalls++;return {ok:false,error:'still unavailable'};}
+ }),/wallet still blocked/);
+ assert.equal(awardCalls,1);assert.equal(retryCalls,1);
 });
 
 test('LAN-098 peer connection API carries only validated ACKs over the established channel',async()=>{
@@ -105,11 +145,9 @@ test('LAN-098 peer connection API carries only validated ACKs over the establish
 
 test('LAN-098 exact durable guest receipt ACK confirms host payout once; duplicate terminal snapshots are idempotent',async()=>{
  const {createLanLiveMatch}=await loadMatch();
- const {ECONOMY}=await import('../src/modules/economy.js');
  const identity={roomId:'room001',hostId:'host001'},timers=fakeTimers();
  let hostAck=null,guestReceive=null,tick=1,clock=0;
- const memory=()=>{const values=new Map();return {getItem:k=>values.get(k)??null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k)};};
- const hostWallet=ECONOMY.create(memory()),guestWallet=ECONOMY.create(memory());
+ const hostWallet=wallet(),guestWallet=wallet();
  const hostAwards=[],guestAwards=[],hostInput=input(),guestInput=input();
  const host=game(hostInput),guest=game(guestInput);host.onEvent=()=>{};
  const guestPeer={ready:true,snapshotIdentity:identity,
@@ -128,6 +166,7 @@ test('LAN-098 exact durable guest receipt ACK confirms host payout once; duplica
   now:()=>tick,awardResult:r=>{guestAwards.push(r);return guestWallet.awardCompletedMatch(r);}});
  host.update=function(){this.score=[2,1];this.matchState='finished';this.onEvent({type:'finished',score:[2,1]});};
  assert.equal(hostRun.step(.02),true);
+ await settle();
  assert.equal(hostRun.resultAckStatus,'confirmed');
  assert.equal(hostAwards.length,1);assert.equal(guestAwards.length,1);
  assert.equal(hostWallet.wallet().tokens,30);assert.equal(guestWallet.wallet().tokens,20);
@@ -136,6 +175,7 @@ test('LAN-098 exact durable guest receipt ACK confirms host payout once; duplica
  hostAck({type:'result-ack',receiptId});hostAck({type:'result-ack',receiptId});
  assert.equal(hostAwards.length,1,'duplicate ACKs cannot trigger another wallet award');
  clock=1500;tick=1700;assert.equal(hostRun.step(.02),true,'frozen result refresh remains available');
+ await settle();
  assert.equal(guestAwards.length,2,'replayed terminal result recognizes the existing local receipt');
  assert.equal(guestWallet.wallet().tokens,20);
  assert.ok(timers.timers[0].cleared,'matching ACK cancels the timeout fallback');
@@ -144,17 +184,16 @@ test('LAN-098 exact durable guest receipt ACK confirms host payout once; duplica
 
 test('LAN-098 stale or cross-match ACK is ignored; bounded timeout pays once as unconfirmed',async()=>{
  const {createLanLiveMatch}=await loadMatch();
- const {ECONOMY}=await import('../src/modules/economy.js');
  const identity={roomId:'room001',hostId:'host001'},timers=fakeTimers();
  let hostAck=null;
  const values=new Map(),storage={getItem:k=>values.get(k)??null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k)};
- const wallet=ECONOMY.create(storage),awards=[],matchInput=input(),match=game(matchInput);match.onEvent=()=>{};
+ const matchWallet=wallet(),awards=[],matchInput=input(),match=game(matchInput);match.onEvent=()=>{};
  const peer={ready:true,snapshotIdentity:identity,
   subscribeHostResultAck(fn){hostAck=fn;return ()=>{hostAck=null;};},
   stepHostMatchFrame(frame,simulate){const state=simulate({buttons:[],dx:0,dy:0},{received:true});return {snapshotSent:true,state};}};
  const run=createLanLiveMatch({peer,role:'host',game:match,input:matchInput,field,
   setTimer:timers.setTimer,clearTimer:timers.clearTimer,
-  awardResult:r=>{awards.push(r);return wallet.awardCompletedMatch(r);}});
+  awardResult:r=>{awards.push(r);return matchWallet.awardCompletedMatch(r);}});
  match.update=function(){this.score=[0,0];this.matchState='finished';this.onEvent({type:'finished',score:[0,0]});};
  assert.equal(run.step(.02),true);assert.equal(run.resultAckStatus,'pending');assert.equal(awards.length,0);
  const expected=timers.timers[0];
@@ -164,46 +203,70 @@ test('LAN-098 stale or cross-match ACK is ignored; bounded timeout pays once as 
  assert.equal(run.resultAckStatus,'pending');assert.equal(awards.length,0);
  assert.equal(expected.delay,3000,'timeout is bounded to three seconds');
  timers.run(expected);
+ await settle();
  assert.equal(run.resultAckStatus,'unconfirmed');assert.equal(awards.length,1);
- assert.equal(wallet.wallet().tokens,25);
+ assert.equal(matchWallet.wallet().tokens,25);
  timers.run(expected);assert.equal(awards.length,1,'timeout and later duplicate execution cannot double-award');
  run.dispose();
 });
 
 test('LAN-098 older peers without ACK support use the same bounded unconfirmed fallback',async()=>{
  const {createLanLiveMatch}=await loadMatch();
- const {ECONOMY}=await import('../src/modules/economy.js');
  const identity={roomId:'room001',hostId:'host001'},timers=fakeTimers();
- const values=new Map(),wallet=ECONOMY.create({getItem:k=>values.get(k)??null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k)});
+ const matchWallet=wallet();
  const awards=[],matchInput=input(),match=game(matchInput);match.onEvent=()=>{};
  const peer={ready:true,snapshotIdentity:identity,
   stepHostMatchFrame(frame,simulate){simulate({buttons:[],dx:0,dy:0},{received:true});return {snapshotSent:true};}};
  const run=createLanLiveMatch({peer,role:'host',game:match,input:matchInput,field,
   setTimer:timers.setTimer,clearTimer:timers.clearTimer,
-  awardResult:r=>{awards.push(r);return wallet.awardCompletedMatch(r);}});
+  awardResult:r=>{awards.push(r);return matchWallet.awardCompletedMatch(r);}});
  match.update=function(){this.score=[1,0];this.matchState='finished';this.onEvent({type:'finished',score:[1,0]});};
  assert.equal(run.step(.02),true);assert.equal(run.resultAckStatus,'pending');assert.equal(awards.length,0);
  timers.run();
+ await settle();
  assert.equal(run.resultAckStatus,'unconfirmed');assert.equal(awards.length,1);
- assert.equal(wallet.wallet().tokens,30);
+ assert.equal(matchWallet.wallet().tokens,30);
  run.dispose();
 });
 
-test('LAN-098 immediate host disposal cancels the pending ACK fallback without a delayed award',async()=>{
+test('LAN-098 host disposal before terminal delivery cancels the pending ACK fallback',async()=>{
  const {createLanLiveMatch}=await loadMatch();
  const identity={roomId:'room001',hostId:'host001'},timers=fakeTimers();
  let hostAck=null;const awards=[],matchInput=input(),match=game(matchInput);match.onEvent=()=>{};
  const peer={ready:true,snapshotIdentity:identity,
   subscribeHostResultAck(fn){hostAck=fn;return ()=>{hostAck=null;};},
-  stepHostMatchFrame(frame,simulate){simulate({buttons:[],dx:0,dy:0},{received:true});return {snapshotSent:true};}};
+  stepHostMatchFrame(frame,simulate){simulate({buttons:[],dx:0,dy:0},{received:true});return {snapshotSent:false};}};
  const run=createLanLiveMatch({peer,role:'host',game:match,input:matchInput,field,
   setTimer:timers.setTimer,clearTimer:timers.clearTimer,
   awardResult:result=>{awards.push(result);return true;}});
  match.update=function(){this.score=[1,0];this.matchState='finished';this.onEvent({type:'finished',score:[1,0]});};
- assert.equal(run.step(.02),true);assert.equal(run.resultAckStatus,'pending');assert.equal(awards.length,0);
+ assert.equal(run.step(.02),false);assert.equal(run.resultAckStatus,'pending');assert.equal(awards.length,0);
  const fallback=timers.timers[0];assert.equal(fallback.delay,3000);
  run.dispose();assert.equal(run.disposed,true);assert.equal(fallback.cleared,true);
  timers.run(fallback);
  assert.equal(hostAck,null,'immediate leave removes the host ACK subscription');
- assert.equal(awards.length,0,'a delayed fallback cannot award after explicit disposal');
+ assert.equal(awards.length,0,'an undelivered match result cannot award after explicit disposal');
+});
+
+test('LAN-098 delivered terminal fallback survives guest transport teardown and awards the host once',async()=>{
+ const {createLanLiveMatch}=await loadMatch();
+ const identity={roomId:'room001',hostId:'host001'},timers=fakeTimers();
+ const matchWallet=wallet(),awards=[],matchInput=input(),match=game(matchInput);match.onEvent=()=>{};
+ const peer={ready:true,snapshotIdentity:identity,
+  subscribeHostResultAck(){return ()=>{};},
+  stepHostMatchFrame(frame,simulate){simulate({buttons:[],dx:0,dy:0},{received:true});return {snapshotSent:true};}};
+ const run=createLanLiveMatch({peer,role:'host',game:match,input:matchInput,field,
+  setTimer:timers.setTimer,clearTimer:timers.clearTimer,
+  awardResult:result=>{awards.push(result);return matchWallet.awardCompletedMatch(result);}});
+ match.update=function(){this.score=[1,0];this.matchState='finished';this.onEvent({type:'finished',score:[1,0]});};
+ assert.equal(run.step(.02),true);
+ assert.equal(run.resultDelivered,true);
+ const fallback=timers.timers[0];assert.equal(run.resultAckStatus,'pending');
+ run.dispose();
+ assert.equal(fallback.cleared,false,'a delivered result keeps its bounded local settlement after transport teardown');
+ timers.run(fallback);await settle();
+ assert.equal(run.resultAckStatus,'unconfirmed');
+ assert.equal(awards.length,1);assert.equal(matchWallet.wallet().tokens,30);
+ timers.run(fallback);await settle();
+ assert.equal(awards.length,1,'the durable receipt prevents a duplicate payout after repeated fallback execution');
 });

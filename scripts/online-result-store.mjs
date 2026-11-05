@@ -86,7 +86,7 @@ function parseHistoryCursor(cursor,accountId){
  * Callers must pass a final result assembled from the server-owned engine;
  * this repository has no client, reward, token, or settlement interface.
  */
-export function createOnlineResultStore({db,now=()=>new Date()}={}){
+export function createOnlineResultStore({db,now=()=>new Date(),lifecycleStore=null}={}){
   if(!db||typeof db.connect!=='function'||typeof db.query!=='function')
     throw new TypeError('Online result store requires a PostgreSQL Pool-like connect() and query() client');
   if(typeof now!=='function')throw new TypeError('now must be a function');
@@ -116,6 +116,7 @@ export function createOnlineResultStore({db,now=()=>new Date()}={}){
       if(row){
         if(row.payload_hash!==hash)fail('immutable-conflict','A different final result is already stored for this match ID');
         const stored=parseResult(row.final_result);
+        await lifecycleStore?.markCompletedInTransaction?.(client,stored);
         return publicResult(stored,row.recorded_at instanceof Date?row.recorded_at.toISOString():String(row.recorded_at),true);
       }
       const recordedAt=dateValue(now());
@@ -125,6 +126,7 @@ export function createOnlineResultStore({db,now=()=>new Date()}={}){
          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13::jsonb,$14)`,
         [value.matchId,value.schemaVersion,value.participants[0].userId,value.participants[1].userId,
           value.teamIds[0],value.teamIds[1],value.score[0],value.score[1],value.half,value.clock,value.tick,hash,JSON.stringify(value),recordedAt]);
+      await lifecycleStore?.markCompletedInTransaction?.(client,value);
       return publicResult(value,recordedAt,false);
     });
   }

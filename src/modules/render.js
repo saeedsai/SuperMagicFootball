@@ -245,6 +245,24 @@ function drawShotImpactCue(ctx,p,time,reducedFlash=false){
  }
  ctx.restore();
 }
+// A steady, renderer-only marker makes normal non-stunning shot weakness
+// readable without adding flashes or changing the weakness window/physics.
+function drawShotWeaknessCue(ctx,p,reducedFlash=false){
+ const weakness=Math.max(0,Number(p?.shotImpactWeakness)||0);
+ const remaining=Math.max(0,Number(p?.shotImpactWeaknessTimer)||0);
+ if(weakness<=0||remaining<=0||p?.preview||p?.stun>0||p?.down||p?.z>0||
+   p?.shotImpactKnockdownPending>0||p?.shotImpactKnockdownTimer>0||p?.shotImpactRiseTimer>0||
+   p?.action==='shotDown'||p?.action==='shotGetUp'||p?.action==='launched')return;
+ const strength=clamp(weakness/.4,0,1);
+ ctx.save();ctx.globalAlpha=(reducedFlash?.58:.76)*(.72+.28*strength);
+ ctx.strokeStyle='#ffd66b';ctx.lineWidth=reducedFlash?2.4:2.8;ctx.lineCap='round';ctx.lineJoin='round';
+ // An amber ground ring and two downward chevrons signal temporarily reduced
+ // speed/strength. The same static geometry is used in reduced-flash mode.
+ ctx.beginPath();ctx.ellipse(0,15,22,6,0,0,Math.PI*2);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(-4,4);ctx.lineTo(0,8);ctx.lineTo(4,4);
+ ctx.moveTo(-4,9);ctx.lineTo(0,13);ctx.lineTo(4,9);ctx.stroke();
+ ctx.restore();
+}
 function drawUndergroundShotTell(ctx,b,reducedFlash=false,time=0){
  const speed=Math.hypot(Number(b?.vx)||0,Number(b?.vy)||0)||1,ux=(Number(b?.vx)||0)/speed,uy=(Number(b?.vy)||0)/speed;
  const phase=reducedFlash?0:(Number(time)||0)*2.1;
@@ -1463,6 +1481,7 @@ class Renderer{
   if(!p.preview&&(p.windTrickFx||0)>0)this.drawFieldTrick(ctx,'wind',p.windTrickFx,!!game.options?.reducedFlash);
   if(!p.preview&&(p.mudTrickFx||0)>0)this.drawFieldTrick(ctx,'mud',p.mudTrickFx,!!game.options?.reducedFlash);
   if(!p.preview&&p.shotImpactConfusedTimer>0)drawShotImpactCue(ctx,p,this.time,!!game.options?.reducedFlash);
+  if(!p.preview&&!(p.shotImpactConfusedTimer>0))drawShotWeaknessCue(ctx,p,!!game.options?.reducedFlash);
   ctx.restore();
  }
  drawPenaltyPlayers(ctx,g){let pk=g.pk;if(!pk)return;
@@ -1516,7 +1535,7 @@ class Renderer{
  else if(concealed){ctx.globalAlpha=reducedFlash?.17:.10;this.drawSoccerBall(ctx,0,0,15,game.options?.ballModel||'classic',0);}
  // Match ball art uses the same 17-unit drawn size as penalties so its stitched
  // surface stays readable during normal play. Physics/collision radius is independent.
- else {ctx.globalAlpha=1;this.drawSoccerBall(ctx,0,0,17,game.options?.ballModel||'classic',b.rollAngle||0);}
+ else {ctx.globalAlpha=1;this.drawSoccerBall(ctx,0,0,17,game.options?.ballModel||'classic',b.rollAngle||0,{dx:b.vx,dy:b.vy});}
  ctx.restore();}
  // These are visual-only cues: phase shots retain the same swept keeper and
  // player collision paths as every other shot. Reduced-flash uses steady,
@@ -1542,8 +1561,46 @@ class Renderer{
   }
   ctx.restore();
  }
- drawSoccerBall(ctx,x,y,r,model='classic',rotation=0){
- const id=VISUALFEEL.validBallModel(model);ctx.save();ctx.translate(x,y);
+ drawRollingBallSurface(ctx,surface,r,rotation,dx,dy){
+ const speed=Math.hypot(Number(dx)||0,Number(dy)||0);if(speed<1e-3)return false;
+ const ax=-(Number(dy)||0)/speed,ay=(Number(dx)||0)/speed,cos=Math.cos(rotation),sin=Math.sin(rotation),steps=12;
+ const project=(nx,ny)=>{
+  const length=Math.hypot(nx,ny)||1,x=length>1?nx/length:nx,y=length>1?ny/length:ny;
+  const z=Math.sqrt(Math.max(0,1-x*x-y*y)),dot=ax*x+ay*y;
+  const crossX=ay*z,crossY=-ax*z,crossZ=ax*y-ay*x;
+  // Inverse tumble samples the visible hemisphere from the saved procedural
+  // surface. Mirroring the source across its equator supplies stable rear
+  // artwork without revealing a blank back as the ball passes 90 degrees.
+  const localX=x*cos-crossX*sin+ax*dot*(1-cos),localY=y*cos-crossY*sin+ay*dot*(1-cos),localZ=z*cos-crossZ*sin;
+  return {x:x*r,y:y*r,z:localZ,sx:(localX+1)*r,sy:(localY+1)*r};
+ };
+ const vertices=Array.from({length:steps+1},(_,row)=>Array.from({length:steps+1},(_,col)=>project(col/steps*2-1,row/steps*2-1)));
+ for(let row=0;row<steps;row++)for(let col=0;col<steps;col++){
+  const corners=[vertices[row][col],vertices[row][col+1],vertices[row+1][col+1],vertices[row+1][col]];
+  for(const triangle of [[corners[0],corners[1],corners[2]],[corners[0],corners[2],corners[3]]]){
+   if(triangle.some(point=>!point))continue;
+   const [a,b,c]=triangle,u1x=b.sx-a.sx,u1y=b.sy-a.sy,u2x=c.sx-a.sx,u2y=c.sy-a.sy,det=u1x*u2y-u2x*u1y;
+   if(Math.abs(det)<1e-5)continue;
+   const v1x=b.x-a.x,v1y=b.y-a.y,v2x=c.x-a.x,v2y=c.y-a.y;
+   const m11=(v1x*u2y-v2x*u1y)/det,m12=(-v1x*u2x+v2x*u1x)/det;
+   const m21=(v1y*u2y-v2y*u1y)/det,m22=(-v1y*u2x+v2y*u1x)/det;
+   const tx=a.x-m11*a.sx-m12*a.sy,ty=a.y-m21*a.sx-m22*a.sy;
+   ctx.save();ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.lineTo(c.x,c.y);ctx.closePath();ctx.clip();
+   ctx.transform(m11,m21,m12,m22,tx,ty);ctx.drawImage(surface,0,0);ctx.restore();
+  }
+ }
+ return true;
+ }
+ drawSoccerBall(ctx,x,y,r,model='classic',rotation=0,tumble=null,surfaceOnly=false){
+ const id=VISUALFEEL.validBallModel(model);
+ if(tumble&&!surfaceOnly&&r>0&&Number.isFinite(Number(rotation))&&Math.hypot(Number(tumble.dx)||0,Number(tumble.dy)||0)>.1&&typeof document!=='undefined'){
+  const cache=this.rollingBallSurfaceCache||(this.rollingBallSurfaceCache=new Map()),key=`${id}:${r}`;let surface=cache.get(key);
+  if(!surface){surface=document.createElement('canvas');surface.width=surface.height=Math.ceil(r*2);this.drawSoccerBall(surface.getContext('2d'),surface.width/2,surface.height/2,r,id,0,null,true);cache.set(key,surface);}
+  const base=id==='meteor'?'#fd9645':id==='ice'?'#e8fdff':id==='gold'?'#ffdb60':id==='retro'?'#bf8755':'#f4f1dd';
+  ctx.save();ctx.translate(x,y);ctx.beginPath();ctx.arc(0,0,r,0,PI*2);ctx.clip();ctx.fillStyle=base;ctx.beginPath();ctx.arc(0,0,r,0,PI*2);ctx.fill();
+  this.drawRollingBallSurface(ctx,surface,r,Number(rotation),tumble.dx,tumble.dy);this.drawBallSphereLighting(ctx,r,id);ctx.restore();this.drawBallOutline(ctx,x,y,r,id);return;
+ }
+ ctx.save();ctx.translate(x,y);
  ctx.beginPath();ctx.arc(0,0,r,0,PI*2);ctx.clip();
  const base=id==='meteor'?'#fd9645':id==='ice'?'#e8fdff':id==='gold'?'#ffdb60':id==='retro'?'#bf8755':'#f4f1dd';
  ellipse(ctx,0,0,r,r,base);
@@ -1643,6 +1700,11 @@ class Renderer{
   }
  }
  ctx.restore();
+ if(surfaceOnly){ctx.restore();return;}
+ this.drawBallSphereLighting(ctx,r,id);
+ ctx.restore();this.drawBallOutline(ctx,x,y,r,id);
+ }
+ drawBallSphereLighting(ctx,r,id){
  // Shade the completed panel artwork, not just the white base. Applying a
  // soft sphere ramp over seams and colored panels makes the small in-match
  // ball read as a rounded object instead of a flat sticker; clip/radius and
@@ -1668,7 +1730,8 @@ class Renderer{
   glow.addColorStop(0,material[0]);glow.addColorStop(.38,material[1]);glow.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=glow;ctx.beginPath();ctx.arc(0,0,r,0,PI*2);ctx.fill();
  }
- ctx.restore();ctx.save();ctx.translate(x,y);ctx.lineWidth=Math.max(1,r*.065);ctx.strokeStyle=id==='retro'?'#68432c':'#2a4354';ctx.beginPath();ctx.arc(0,0,r,0,PI*2);ctx.stroke();ctx.restore();
+ }
+ drawBallOutline(ctx,x,y,r,id){ctx.save();ctx.translate(x,y);ctx.lineWidth=Math.max(1,r*.065);ctx.strokeStyle=id==='retro'?'#68432c':'#2a4354';ctx.beginPath();ctx.arc(0,0,r,0,PI*2);ctx.stroke();ctx.restore();
 }
  drawTransformation(ctx,s,t,reducedFlash=false,ballModel='classic'){let id=s.id;const transformSeconds=Number.isFinite(s.transformSeconds)&&s.transformSeconds>0?s.transformSeconds:1.65,returnBlend=clamp((t-(transformSeconds-.18))/.18,0,1),formAlpha=1-returnBlend;ctx.save();ctx.globalAlpha=formAlpha;ctx.rotate(reducedFlash?0:Math.sin(t*4.5)*.045);if(returnBlend>0)ctx.scale(1-returnBlend*.2,1-returnBlend*.2);drawSuperShotOrbitCue(ctx,t,s.trail||s.color||'#d7f6ff',reducedFlash);
  const spin=reducedFlash?0:t*15;

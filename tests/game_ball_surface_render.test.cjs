@@ -70,16 +70,27 @@ test('non-classic skins gain match-scale spherical seams and distinct material g
  }
 });
 
-test('normal in-match ball uses penalty-scale rendering without changing simulated ball state',()=>{
+test('in-match ball sends its travel vector and roll angle to renderer-only surface projection',()=>{
  const renderer=Object.create(RENDER.Renderer.prototype),painted=[];
  renderer.drawBallShadow=()=>{};
- renderer.drawSoccerBall=(_ctx,_x,_y,r,model,rotation)=>painted.push({r,model,rotation});
+ renderer.drawSoccerBall=(_ctx,_x,_y,r,model,rotation,tumble)=>painted.push({r,model,rotation,tumble});
  const ctx={globalAlpha:1,save(){},restore(){},translate(){}};
- const ball={x:100,y:200,z:0,vx:0,vy:0,vz:0,owner:null,shot:null,trail:[],rollAngle:.4};
- const game={ball,options:{ballModel:'classic',reducedFlash:false}},before=JSON.stringify({ball,options:game.options});
- renderer.drawBall(ctx,game);
- assert.deepEqual(painted,[{r:17,model:'classic',rotation:.4}], 'normal match uses match scale, selected cosmetic and roll angle');
- assert.equal(JSON.stringify({ball,options:game.options}),before,'drawing keeps physics state and saved cosmetic selection unchanged');
+ const options={ballModel:'classic',reducedFlash:false};
+ for(const [vx,vy] of [[400,0],[-400,0],[0,400],[0,-400]]){
+  const ball={x:100,y:200,z:0,vx,vy,vz:0,owner:{},shot:null,trail:[],rollAngle:.4};
+  const game={ball,options},before=JSON.stringify({ball,options});renderer.drawBall(ctx,game);
+  assert.deepEqual(painted.at(-1),{r:17,model:'classic',rotation:.4,tumble:{dx:vx,dy:vy}},'match surface receives exact travel direction and existing roll angle');
+  assert.equal(JSON.stringify({ball,options}),before,'drawing keeps physics state and saved cosmetic selection unchanged');
+ }
+});
+
+test('rolling projection is renderer-only and maps a front-facing sphere mesh without changing outline radius',()=>{
+ const start=RENDER.Renderer.prototype.drawRollingBallSurface.toString();
+ assert.match(start,/Math\.hypot\(Number\(dx\)/,'travel direction is used only to select tumble axis');
+ assert.match(start,/Math\.cos\(rotation\)|Math\.sin\(rotation\)/,'existing roll angle rotates the surface');
+ assert.match(start,/ctx\.transform\(m11,m21,m12,m22,tx,ty\);ctx\.drawImage\(surface,0,0\)/,'panel artwork is projected through a tessellated 3D sphere mesh');
+ assert.doesNotMatch(start,/game\.|ball\.|physics|collision|\.[a-zA-Z]+\s*=/,'mesh does not write gameplay state');
+ const outline=RENDER.Renderer.prototype.drawBallOutline.toString();assert.match(outline,/ctx\.arc\(0,0,r/,'original circular outline keeps the requested radius');
 });
 
 test('classic ball uses a connected center and five surrounding pentagon panels',()=>{

@@ -5,6 +5,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
 import threading
+import tempfile
 import time
 from playwright.sync_api import sync_playwright
 from menu_test_routes import open_settings
@@ -49,6 +50,27 @@ def snapshot(page):
       Object.keys(localStorage).filter(key=>key.startsWith('legend_')).sort()
         .map(key=>[key,localStorage.getItem(key)])
     )""")
+
+def wallet_snapshot(page):
+    return page.evaluate("""async () => {
+      const db = await new Promise((resolve, reject) => {
+        const request = indexedDB.open('smf-token-wallet');
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      try {
+        const tx = db.transaction(['wallet', 'receipts'], 'readonly');
+        const get = request => new Promise((resolve, reject) => {
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        const [row, rows] = await Promise.all([
+          get(tx.objectStore('wallet').get('main')),
+          get(tx.objectStore('receipts').getAll()),
+        ]);
+        return {schema: 2, tokens: row.tokens, unlocks: row.unlocks, receipts: rows.map(x => x.id).sort()};
+      } finally { db.close(); }
+    }""")
 
 
 def wait_for_dialog_count(page, events, count, device, filename):
@@ -114,7 +136,10 @@ try:
             assert list(exported['data']) == SAVE_KEYS, (device, list(exported['data']))
             assert exported['data']['options']['ballModel'] == 'tricolore'
             assert exported['data']['edits']['japan'][0]['name'] == 'Saved Backup Athlete'
-            assert exported['data']['tokenWallet'] == SEED['tokenWallet']
+            assert exported['data']['tokenWallet'] == {
+                'schema': 2, 'tokens': 245, 'unlocks': ['superShot:banana'],
+                'receipts': ['career-receipt-0001'],
+            }
 
             # Keep a saved selected option and one edited roster record so import
             # proves that player-facing and edited team data survive a real reload.
@@ -149,13 +174,22 @@ try:
 
             for name, content in [
                 ('malformed.json', b'{"product":'),
-                ('oversized.json', b' ' * 5_000_001),
+                ('oversized.json', b' ' * (64 * 1024 * 1024 + 1)),
             ]:
                 dialog_events.clear()
                 accept_dialogs[0] = True
-                page.locator('#saveImportFile').set_input_files({
-                    'name': name, 'mimeType': 'application/json', 'buffer': content,
-                })
+                if name == 'oversized.json':
+                    with tempfile.NamedTemporaryFile(suffix='.json', delete=False) as oversized:
+                        oversized.write(content)
+                        oversized_path = Path(oversized.name)
+                    try:
+                        page.locator('#saveImportFile').set_input_files(str(oversized_path))
+                    finally:
+                        oversized_path.unlink(missing_ok=True)
+                else:
+                    page.locator('#saveImportFile').set_input_files({
+                        'name': name, 'mimeType': 'application/json', 'buffer': content,
+                    })
                 wait_for_dialog_count(page, dialog_events, 1, device, name)
                 assert any(kind == 'alert' and 'Could not import' in message
                            for kind, message in dialog_events), (device, name, dialog_events)
@@ -174,6 +208,7 @@ try:
             assert json.loads(restored[options_key]) == original_options
             assert json.loads(restored[edits_key]) == original_edits
             assert json.loads(restored[wallet_key]) == SEED['tokenWallet']
+            assert wallet_snapshot(page) == exported['data']['tokenWallet']
             assert page.evaluate("JSON.parse(localStorage.getItem('legend_options')).ballModel") == 'tricolore'
             assert page.evaluate("JSON.parse(localStorage.getItem('legend_edits')).japan[0].name") == 'Saved Backup Athlete'
             assert any(kind == 'confirm' for kind, _ in dialog_events), (device, dialog_events)

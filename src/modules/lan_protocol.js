@@ -6,7 +6,8 @@ const ACTIONS=Object.freeze(['pass','shoot','dribble','jump']);
 // small so a temporarily slow peer cannot accumulate seconds of old controls.
 const LAN_GUEST_INPUT_MAX_BUFFERED_BYTES=16*1024;
 const SESSION_RE=/^[a-zA-Z0-9_-]{12,64}$/;
-const RESULT_RECEIPT_RE=/^lan:[A-Za-z0-9_-]{6,32}:[A-Za-z0-9_-]{6,32}:[a-f0-9]{32}$/;
+// Production host IDs are `host_` plus the 28-character room suffix (33 chars).
+const RESULT_RECEIPT_RE=/^lan:[A-Za-z0-9_-]{6,32}:[A-Za-z0-9_-]{6,33}:[a-f0-9]{32}$/;
 const VERSION_RE=/^\d+\.\d+\.\d+\.\d+$/;
 const own=(object,key)=>Object.prototype.hasOwnProperty.call(object,key);
 function isRecord(value){return value!==null&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)===Object.prototype;}

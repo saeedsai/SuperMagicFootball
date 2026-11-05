@@ -27,7 +27,7 @@ function recoveryStorage(explicit){if(explicit!==undefined)return explicit;try{r
 function validRecoveryRecord(record){
   if(!record||typeof record!=='object'||Array.isArray(record)||Object.keys(record).length!==3||record.role!=='host'||
      !Number.isSafeInteger(record.amount)||!recoveryOutcome(record))return false;
-  const match=/^lan:([A-Za-z0-9_-]{6,32}):([A-Za-z0-9_-]{6,32}):([a-f0-9]{32})$/.exec(record.receiptId||'');
+  const match=/^lan:([A-Za-z0-9_-]{6,32}):([A-Za-z0-9_-]{6,33}):([a-f0-9]{32})$/.exec(record.receiptId||'');
   return !!match;
 }
 function readLanHostResultRecovery(storage){
@@ -44,11 +44,11 @@ function clearLanHostResultRecovery(storage,expectedReceiptId=null){
     target?.removeItem(HOST_RESULT_RECOVERY_KEY);return target?.getItem(HOST_RESULT_RECOVERY_KEY)===null;
   }catch{return false;}
 }
-function retryLanHostResultRecovery({storage,awardResult}={}){
+async function retryLanHostResultRecovery({storage,awardResult}={}){
   const target=recoveryStorage(storage),record=readLanHostResultRecovery(target),outcome=recoveryOutcome(record);
   if(!record||!outcome||typeof awardResult!=='function')return false;
   try{
-    const result=awardResult({receiptId:record.receiptId,mode:'online',status:'completed',result:outcome});
+    const result=await awardResult({receiptId:record.receiptId,mode:'online',status:'completed',result:outcome});
     const durable=result!==false&&(result?.ok!==false||result?.duplicate===true);
     return durable&&clearLanHostResultRecovery(target,record.receiptId);
   }catch{return false;}
@@ -70,11 +70,10 @@ function validResult(result){
     penalties.score[0]!==penalties.score[1]&&
     penalties.winner===(penalties.score[0]>penalties.score[1]?0:1);
 }
-function localResultAward({peer,role,matchId,result,awardResult}){
+async function localResultAward({peer,role,matchId,result,awardResult}){
   const identity=peer?.snapshotIdentity;
-  const validIdentity=value=>typeof value==='string'&&/^[A-Za-z0-9_-]{6,32}$/.test(value);
-  if(!MATCH_ID.test(matchId||'')||!identity||!validIdentity(identity.roomId)||
-     !validIdentity(identity.hostId)||!validResult(result))return false;
+  if(!MATCH_ID.test(matchId||'')||!identity||!/^([A-Za-z0-9_-]{6,32})$/.test(identity.roomId||'')||
+     !/^([A-Za-z0-9_-]{6,33})$/.test(identity.hostId||'')||!validResult(result))return false;
   const hostWin=result.penalties?result.penalties.winner===0:
     result.score[0]>result.score[1];
   const guestWin=result.penalties?result.penalties.winner===1:
@@ -83,9 +82,22 @@ function localResultAward({peer,role,matchId,result,awardResult}){
     guestWin?(role==='guest'?'win':'loss'):'draw';
   const receiptId=`lan:${identity.roomId}:${identity.hostId}:${matchId}`;
   try{
-    const receipt=awardResult({receiptId,mode:'online',status:'completed',result:outcome});
+    const receipt=await awardResult({receiptId,mode:'online',status:'completed',result:outcome});
     return receipt!==false&&(receipt?.ok!==false||receipt?.duplicate===true)?receiptId:false;
   }catch{return false;}
+}
+async function awardLanResultWithWalletRetry(payload,{awardResult,retryWallet}={}){
+  if(typeof awardResult!=='function')return false;
+  try{return await awardResult(payload);}
+  catch(error){
+    // A quota/temporary IDB write failure blocks this wallet instance until it
+    // verifies storage again. Retry that exact idempotent receipt once; never
+    // loop, change its amount, or convert a persistent failure into success.
+    if(typeof retryWallet!=='function')throw error;
+    const recovered=await retryWallet();
+    if(recovered?.ok!==true)throw error;
+    return await awardResult(payload);
+  }
 }
 function captureLanGameState(game,field,tick){
   requireField(field);
@@ -219,14 +231,14 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now,awardResult
     if(!globalThis.localStorage)return false;
     return ECONOMY.create(globalThis.localStorage).awardCompletedMatch(payload);
   };
-  let terminalResult=null,hostAwarded=false,hostResultDelivered=false,guestMatchId=null;
-  let hostResultAckReceived=false,hostResultAwardAttempts=0;
+  let terminalResult=null,hostAwarded=false,hostResultDelivered=false,guestMatchId=null,guestResultAckStatus='not-started';
+  let hostResultAckReceived=false,hostResultAwardAttempts=0,hostAwardInFlight=false;
   let hostResultAckStatus='not-started',hostResultAckTimer=null,hostResultAckObserver=null;
   const originalOnEvent=game.onEvent;
   let wrappedOnEvent=null;
-  const awardHostResult=({manual=false}={})=>{
+  const awardHostResult=async({manual=false}={})=>{
     const eligibleStatus=manual?hostResultAckStatus==='failed':['pending','fallback'].includes(hostResultAckStatus);
-    if(role!=='host'||hostAwarded||!hostResultDelivered||!terminalResult||!eligibleStatus||
+    if(role!=='host'||hostAwarded||hostAwardInFlight||!hostResultDelivered||!terminalResult||!eligibleStatus||
        (!manual&&hostResultAwardAttempts>=2))return false;
     const identity=peer?.snapshotIdentity,hostWin=terminalResult.penalties?terminalResult.penalties.winner===0:terminalResult.score[0]>terminalResult.score[1],
       guestWin=terminalResult.penalties?terminalResult.penalties.winner===1:terminalResult.score[1]>terminalResult.score[0],
@@ -236,17 +248,20 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now,awardResult
     // receipt remains the idempotency guard and no server authority is implied.
     if(!readLanHostResultRecovery(recoveryStorage))persistLanHostResultRecovery(recoveryRecord,recoveryStorage);
     hostResultAwardAttempts++;
-    if(!localResultAward({peer,role,matchId,result:terminalResult,awardResult:award}))return false;
-    hostAwarded=true;
-    clearLanHostResultRecovery(recoveryStorage,recoveryRecord.receiptId);
-    hostResultAckStatus=hostResultAckReceived?'confirmed':'unconfirmed';
-    if(hostResultAckTimer!==null){clearTimer(hostResultAckTimer);hostResultAckTimer=null;}
-    return true;
+    hostAwardInFlight=true;
+    try{
+      if(!await localResultAward({peer,role,matchId,result:terminalResult,awardResult:award}))return false;
+      hostAwarded=true;
+      clearLanHostResultRecovery(recoveryStorage,recoveryRecord.receiptId);
+      hostResultAckStatus=hostResultAckReceived?'confirmed':'unconfirmed';
+      if(hostResultAckTimer!==null){clearTimer(hostResultAckTimer);hostResultAckTimer=null;}
+      return true;
+    }finally{hostAwardInFlight=false;}
   };
   const expectedReceiptId=()=>{
     const identity=peer?.snapshotIdentity;
-    const validIdentity=value=>typeof value==='string'&&/^[A-Za-z0-9_-]{6,32}$/.test(value);
-    if(!MATCH_ID.test(matchId||'')||!identity||!validIdentity(identity.roomId)||!validIdentity(identity.hostId))return null;
+    if(!MATCH_ID.test(matchId||'')||!identity||!/^([A-Za-z0-9_-]{6,32})$/.test(identity.roomId||'')||
+       !/^([A-Za-z0-9_-]{6,33})$/.test(identity.hostId||''))return null;
     return `lan:${identity.roomId}:${identity.hostId}:${matchId}`;
   };
   const onHostResultAck=packet=>{
@@ -255,7 +270,7 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now,awardResult
     hostResultAckReceived=true;
     // ACK confirms that the guest saved its receipt. Keep our bounded fallback
     // alive until our own wallet receipt is also durably recorded.
-    awardHostResult();
+    void awardHostResult().then(saved=>{if(!saved&&hostResultAckReceived&&hostResultAwardAttempts>=2)hostResultAckStatus='failed'});
   };
   const startHostResultAckFallback=()=>{
     if(role!=='host'||hostResultAckStatus!=='not-started')return;
@@ -268,7 +283,7 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now,awardResult
       // One retry is reserved for the existing timeout boundary. If a terminal
       // snapshot has not yet been accepted, step() gets the single attempt later.
       hostResultAckStatus='fallback';
-      if(!awardHostResult())hostResultAckStatus='failed';
+      void awardHostResult().then(saved=>{if(!saved)hostResultAckStatus='failed'});
     },LAN_RESULT_ACK_TIMEOUT_MS);
   };
   if(role==='host'&&typeof peer.subscribeHostResultAck==='function'){
@@ -289,11 +304,11 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now,awardResult
     };
     game.onEvent=wrappedOnEvent;
   }
-  function retryResultAward(){
+  async function retryResultAward(){
     if(disposed||role!=='host'||hostResultAckStatus!=='failed'||!hostResultDelivered)return false;
     // One explicit user activation performs one storage write. A failed retry
     // stays visible as failed; there is no timer loop or auto-retry storm.
-    return awardHostResult({manual:true});
+    return await awardHostResult({manual:true});
   }
   let lastHostPhase=null;
   let lastFrozenSnapshotAt=-Infinity;
@@ -349,33 +364,40 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now,awardResult
       input.state[0].pause=0;input.pressed[0].pause=false;
     };
   }else{
-    receiver=peer.subscribeGuestMatchState(state=>{
+    receiver=peer.subscribeGuestMatchState(async state=>{
       // Ignore delayed, duplicate or malformed snapshots even if transport rebinds.
       // An older host state must not rewind the match or guest input cursor.
       if(disposed || !peer.ready || !Number.isSafeInteger(state?.tick) || state.tick<=latestTick)return;
       const snapshotMatchId=state.meta?.matchId;
+      // Advance the display cursor before awaiting wallet storage so an older
+      // terminal snapshot cannot rewind the match during the durable write.
+      applyLanGameState(game,field,state);
+      latestTick=state.tick;
+      lastSnapshotAt=now();
       if(snapshotMatchId&&MATCH_ID.test(snapshotMatchId)){
         if(guestMatchId===null)guestMatchId=snapshotMatchId;
         if(snapshotMatchId===guestMatchId&&state.meta?.phase==='finished'&&
            state.meta.result&&validResult(state.meta.result)){
+          guestResultAckStatus='pending';
           const result=state.meta.result;
           if(!result.penalties&&
              (result.score[0]!==state.scores?.home||result.score[1]!==state.scores?.away)){
             // A normal-time terminal receipt must agree with the score carried
             // by the same host snapshot. Penalty shoot-outs have separate totals.
           }else{
-            const receiptId=localResultAward({peer,role,matchId:snapshotMatchId,result,awardResult:award});
+            const receiptId=await localResultAward({peer,role,matchId:snapshotMatchId,result,awardResult:award});
             if(receiptId&&typeof peer.sendGuestResultAck==='function'){
               // ACK only after the local wallet durably recorded (or recognized)
               // this exact room/host/match receipt. Repeated snapshots retry it.
-              try{peer.sendGuestResultAck(receiptId);}catch{/* retry on the next terminal snapshot */}
-            }
+              try{peer.sendGuestResultAck(receiptId);guestResultAckStatus='confirmed';}catch(error){
+                // Keep retrying on repeated terminal snapshots while exposing
+                // the reason to the local QA/diagnostics surface.
+                try{globalThis.dispatchEvent?.(new CustomEvent('smf:lan-result-ack-error',{detail:{receiptId,message:String(error?.message||error)}}));}catch{}
+              }
+            }else if(!receiptId)guestResultAckStatus='failed';
           }
         }
       }
-      applyLanGameState(game,field,state);
-      latestTick=state.tick;
-      lastSnapshotAt=now();
     });
   }
   // Readiness can fall and recover entirely between animation frames.
@@ -460,13 +482,13 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now,awardResult
             // A fast peer can ACK synchronously while snapshot delivery is
             // still unwinding. Persist only after the host accepted delivery.
             if(hostResultAckStatus==='pending'&&hostResultAckReceived&&hostResultAwardAttempts===0){
-              awardHostResult();
+              void awardHostResult().then(saved=>{if(!saved)hostResultAckStatus='failed'});
             }
             // A timeout may have elapsed before this terminal snapshot was
             // accepted; spend the reserved attempt once it is actually sent.
             if(hostResultAckStatus==='failed'&&hostResultAwardAttempts===0){
               hostResultAckStatus='fallback';
-              if(!awardHostResult())hostResultAckStatus='failed';
+              void awardHostResult().then(saved=>{if(!saved)hostResultAckStatus='failed'});
             }
           }
         }
@@ -541,7 +563,11 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now,awardResult
   function dispose(){
     if(disposed)return;
     disposed=true;
-    if(role==='host'&&hostResultAckTimer!==null){clearTimer(hostResultAckTimer);hostResultAckTimer=null;}
+    // A delivered terminal result is already authoritative and must survive a
+    // peer/channel teardown while the guest's durable ACK is outstanding. The
+    // bounded fallback still credits this device's wallet once; its receipt ID
+    // remains the idempotency guard. Undelivered/in-progress sessions cancel.
+    if(role==='host'&&hostResultAckTimer!==null&&!hostResultDelivered){clearTimer(hostResultAckTimer);hostResultAckTimer=null;}
     receiver?.dispose();
     if(typeof statusUnsubscribe==='function')statusUnsubscribe();
     else statusUnsubscribe?.dispose?.();
@@ -553,8 +579,9 @@ function createLanLiveMatch({peer,role,game,input,field,now=Date.now,awardResult
     get role(){return role;},
     get resultDelivered(){return role!=='host'||hostResultDelivered;},
     get resultAckStatus(){return role==='host'?hostResultAckStatus:'not-applicable';},
+    get guestResultAckStatus(){return role==='guest'?guestResultAckStatus:'not-applicable';},
     get latestTick(){return role==='host'?tick:latestTick;},
     get disposed(){return disposed;}
   });
 }
-export {captureLanGameState,applyLanGameState,createLanLiveMatch,readLanHostResultRecovery,retryLanHostResultRecovery};
+export {captureLanGameState,applyLanGameState,createLanLiveMatch,readLanHostResultRecovery,retryLanHostResultRecovery,awardLanResultWithWalletRetry};

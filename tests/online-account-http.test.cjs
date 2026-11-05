@@ -102,6 +102,14 @@ test('authenticated match history is exposed through the exact HTTP account-rout
  assert.equal((await fetch(`${f.base}/api/v1/matches/history/other`)).status,404);
 });
 
+test('authenticated PVP status path is exact-allowlisted through HTTP',async t=>{
+ const seen=[];const f=await fixture(async request=>{seen.push([request.method,new URL(request.url).pathname,await request.text()]);return new Response('{"items":[]}',{status:200,headers:{'content-type':'application/json','cache-control':'no-store'}})});t.after(()=>f.close());
+ const body=JSON.stringify({matchIds:['a'.repeat(32)]});
+ const response=await fetch(`${f.base}/api/v1/matches/status`,{method:'POST',headers:{authorization:'Bearer sample-access-token-0123456789','content-type':'application/json'},body});
+ assert.equal(response.status,200);assert.deepEqual(seen,[['POST','/api/v1/matches/status',body]]);
+ assert.equal((await fetch(`${f.base}/api/v1/matches/status/other`,{method:'POST',headers:{authorization:'Bearer sample-access-token-0123456789','content-type':'application/json'},body})).status,404);
+});
+
 test('resume-ticket POST is exposed through the bounded HTTP route allowlist',async t=>{
  const seen=[];const f=await fixture(async request=>{seen.push([request.method,new URL(request.url).pathname,request.body?await request.text():null]);return new Response(JSON.stringify({ticket:'f'.repeat(64),expiresAt:1794000030000}),{status:201,headers:{'content-type':'application/json','cache-control':'no-store'}})});t.after(()=>f.close());
  const auth={authorization:'Bearer sample-access-token-0123456789'};

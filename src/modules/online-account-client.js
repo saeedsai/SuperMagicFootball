@@ -6,6 +6,7 @@ const ROUTES = Object.freeze({
   ticket: `${API_ROOT}/matches/ticket`,
   resumeTicket: `${API_ROOT}/matches/resume-ticket`,
   history: `${API_ROOT}/matches/history`,
+  matchStatus: `${API_ROOT}/matches/status`,
   claimReward: `${API_ROOT}/matches/rewards/claim`,
   tokenBalance: `${API_ROOT}/tokens/balance`,
   onlineCareer: `${API_ROOT}/online-career/current`,
@@ -399,6 +400,15 @@ export function createOnlineAccountClient({getAccessToken, fetchImpl = globalThi
         return {matchId:item.matchId,recordedAt:item.recordedAt,teamId:item.teamId,opponentTeamId:item.opponentTeamId,score:item.score.slice(),outcome};
       });
       return {items,nextCursor:result.nextCursor};
+    },
+    async loadMatchStatuses(matchIds,{signal}={}){
+      if(!Array.isArray(matchIds)||matchIds.length<1||matchIds.length>4||!matchIds.every(id=>typeof id==='string'&&/^[a-f0-9]{32}$/.test(id))||new Set(matchIds).size!==matchIds.length)
+        throw new OnlineAccountError('invalid-request');
+      const result=await request(ROUTES.matchStatus,{method:'POST',signal,body:{matchIds:matchIds.slice()}});
+      if(!exactKeys(result,['items'])||!Array.isArray(result.items)||result.items.length!==matchIds.length||result.items.some((item,index)=>
+        !exactKeys(item,['matchId','status'])||item.matchId!==matchIds[index]||!['active','completed','interrupted','unknown'].includes(item.status)))
+        throw new OnlineAccountError('invalid-response');
+      return {items:result.items.map(item=>({...item}))};
     },
     async getOnlineTokenBalance(options){
       const result=await request(ROUTES.tokenBalance,options);

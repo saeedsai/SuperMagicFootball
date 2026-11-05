@@ -34,13 +34,20 @@ function leagueSnapshot(c){
 }
 const empty=()=>({schema:1,active:1,slots:Array(count).fill(null)});
 function create(storage){
- let state=empty(),blocked=null,exists=false,recoverySnapshot=null;
- try{const raw=storage.getItem(KEY);exists=raw!==null;if(exists){state=JSON.parse(raw);if(!validVault(state))throw Error('Invalid Career save-slot structure');}}
+ let state=empty(),blocked=null,exists=false,recoverySnapshot=null,baselineRaw=null;
+ try{const raw=storage.getItem(KEY);baselineRaw=raw;exists=raw!==null;if(exists){state=JSON.parse(raw);if(!validVault(state))throw Error('Invalid Career save-slot structure');}}
  catch(error){blocked=error;state=empty();}
  const check=()=>{if(blocked)throw Error('Career slots cannot be modified: '+blocked.message+'. Export your saves before recovery.');};
  function persist(next){
   check();if(!validVault(next))throw Error('Invalid Career save-slot update');
   const raw=JSON.stringify(next),previous=storage.getItem(KEY);
+  // Local storage is shared between tabs while this vault's state is a
+  // per-tab snapshot. Never let an older Career tab replace newer progress.
+  if(previous!==baselineRaw){
+   recoverySnapshot=clone(state);
+   blocked=Error('Career save changed in another tab; export this copy before recovery.');
+   throw Error('Career slots changed elsewhere; reload before saving');
+  }
   try{
    storage.setItem(KEY,raw);
    if(storage.getItem(KEY)!==raw)throw Error('Career slots were not retained by storage');
@@ -59,7 +66,7 @@ function create(storage){
    }
    throw error;
   }
-  state=next;exists=true;
+  state=next;exists=true;baselineRaw=raw;
  }
  const get=n=>{if(!slotNumber(n))throw Error('Career slot must be 1–10');return state.slots[n-1];};
  function save(n,career,name){check();get(n);if(!validCareer(career))throw Error('Cannot save an invalid Career');const previous=get(n),label=limitLabel(String(name??previous?.name??('Career '+n)).trim(),60)||('Career '+n);const next=clone(state);next.active=n;next.slots[n-1]={name:label,savedAt:new Date().toISOString(),career:clone(career)};persist(next);return clone(next.slots[n-1]);}

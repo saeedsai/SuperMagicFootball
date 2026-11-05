@@ -30,7 +30,7 @@ import {CUP_SLOTS} from "./cup_slots.js";
 import {ECONOMY} from "./economy.js";
 import {RELEASE} from "./release.js";
 import {mountLanLobby} from "./lan-lobby.js";
-import {createLanLiveMatch,readLanHostResultRecovery,retryLanHostResultRecovery} from "./lan-live-match.js";
+import {createLanLiveMatch,readLanHostResultRecovery,retryLanHostResultRecovery,awardLanResultWithWalletRetry} from "./lan-live-match.js";
 import {INPUT} from "./input.js";
 import {VISUALFEEL} from "./visualfeel.js";
 import {ENGINE} from "./engine.js";
@@ -133,7 +133,7 @@ const careerStorage=(()=>{try{return window.localStorage}catch{return {getItem()
 const careerSlots=CAREER_SLOTS.create(careerStorage);
 const tokenWallet=ECONOMY.create(careerStorage);
 let onlineConfig=null,onlineAuthSession=null,onlineAccountClient=null,onlineIdentityError='',onlineCareerRecord=null,onlineCareerLoaded=false,onlineCareerStatus='',onlineCareerSourceSlotNumber=null,onlineCareerTargetSlotNumber=null,onlineCareerSeason=null,onlineCareerProgressLoaded=false,onlineCareerProgressLoading=false,onlineCareerProgressRequested=false,onlineCareerProgressStatus='',onlineCareerTeamId='japan',onlineCareerMatchTicketing=false,onlineUtRecord=null,onlineUtLoaded=false,onlineUtStatus='',onlineUtTeam=0,onlineUtCatalog=null,onlineUtCollection=[],onlineUtBalance=null,onlineUtCatalogLoading=false,onlineUtCatalogRequested=false,onlineUtPendingPurchase=null,onlineUtPurchaseInFlight=false,onlineUtCategory='player',onlineUtSearch='',onlineUtPage=0,onlineUtLineupTeamId='japan',onlineUtLineup=null,onlineUtLineupLoading=false,onlineUtLineupSaving=false,onlineUtLineupPendingSave=null,onlineCareerSeasons=[];
-let onlineMatchClient=null,onlineMatchStatus='',onlineMatchRecoveryStatus='',onlineMatchSequence=0,onlineMatchSendAccumulator=0,onlineMatchSnapshotTick=-1,onlineMatchReported=false,onlineMatchFinalSnapshot=null,onlineMatchFinalMatchId=null,onlineMatchManualStop=false,onlineMatchCareer=false,onlineMatchInitialTeamIds=[],onlineCareerActiveFixtureNo=null;
+let onlineMatchClient=null,onlineMatchStatus='',onlineMatchRecoveryStatus='',onlineMatchStatusCheckKey='',onlineMatchSequence=0,onlineMatchSendAccumulator=0,onlineMatchSnapshotTick=-1,onlineMatchReported=false,onlineMatchFinalSnapshot=null,onlineMatchFinalMatchId=null,onlineMatchManualStop=false,onlineMatchCareer=false,onlineMatchInitialTeamIds=[],onlineCareerActiveFixtureNo=null;
 let onlineMatchOwnedTeamIds=[],onlineMatchTeamsLoaded=false,onlineMatchTeamsLoading=false,onlineMatchTeamsRefreshNeeded=false,onlineMatchTeamsError='';
 let onlineAccountGeneration=0,onlineAccountSignOutGeneration=0,onlineAccountSignOutAtGeneration=-1;
 function onlineAccountGenerationIsCurrent(generation){return generation===onlineAccountGeneration&&onlineAuthSession?.isSignedIn()===true;}
@@ -251,7 +251,7 @@ function stopLanMatch(){
   lanPeer?.dispose();lanPeer=null;lanRole=null;lanPlayerNames=null;lanFailureSince=0;lanFinish=null;lanResultCleanupPending=false;
 }
 function stopOnlineServerMatch(){onlineMatchManualStop=true;try{onlineMatchClient?.disconnect();}finally{onlineMatchClient=null;onlineMatchSendAccumulator=0;onlineMatchSnapshotTick=-1;onlineMatchSequence=0;onlineMatchReported=false;onlineMatchFinalSnapshot=null;onlineMatchFinalMatchId=null;onlineMatchManualStop=false;lanRole=null;}}
-const show=(html,id='home')=>{if(screen==='CONTROLS'&&id!=='CONTROLS')cancelControlsChargePractice();if(onlineMatchClient&&id!=='ONLINE MATCH')stopOnlineServerMatch();if(lanLobbyDispose){lanLobbyDispose();lanLobbyDispose=null;}if(lanRuntime){const resultPage=['FULL TIME','CAREER MATCH RESULT','CONTINENTAL RESULT'].includes(id);if(lanRole==='host'&&resultPage&&['pending','failed'].includes(lanRuntime.resultAckStatus))lanResultCleanupPending=true;else stopLanMatch();}audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');const nameDialog=id==='SAVE SLOT NAME';menu.innerHTML=`<div class="menubox">${nameDialog?'':`<div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>`}${html}${nameDialog?'':`<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div>`}</div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
+const show=(html,id='home')=>{if(screen==='CONTROLS'&&id!=='CONTROLS')cancelControlsChargePractice();if(onlineMatchClient&&id!=='ONLINE MATCH')stopOnlineServerMatch();if(lanLobbyDispose){lanLobbyDispose();lanLobbyDispose=null;}if(lanRuntime){const resultPage=['FULL TIME','CAREER MATCH RESULT','CONTINENTAL RESULT'].includes(id),hostPending=lanRole==='host'&&resultPage&&['pending','failed'].includes(lanRuntime.resultAckStatus),guestAckPending=lanRole==='guest'&&resultPage&&lanRuntime.guestResultAckStatus==='pending';if(hostPending||guestAckPending)lanResultCleanupPending=true;else stopLanMatch();}audio.sceneChange(id==='HALF TIME'?'halftime':id==='PAUSED'?'silent':'menu');screen=id;menu.classList.remove('hidden','blank');const nameDialog=id==='SAVE SLOT NAME';menu.innerHTML=`<div class="menubox">${nameDialog?'':`<div class="screenTools">${button('⛶ FULLSCREEN','fullscreen','minor fullscreenTool')}</div>`}${html}${nameDialog?'':`<div class="copyright">INDEPENDENT HD SOCCER ENGINE • ORIGINAL CODE & GRAPHICS • NO EMULATOR • EARLY ACCESS BUILD</div>`}</div>`;hud.classList.add('hidden');touch.classList.add('hidden')};
 function page(title,subtitle,body,returnAction='home'){if(screen==='CONTROLS'&&title!=='CONTROLS')cancelControlsChargePractice();if(returnAction==='home'&&menuEntryReturn!=='home')returnAction=menuEntryReturn;const routeChanged=screen!==title;menuBackAction=returnAction;show(`<div class="row space"><div><div class="topline">HIGH-DEFINITION CARTOON SOCCER</div><h1 class="heading" tabindex="-1">${title}</h1><div class="subtitle">${subtitle}</div></div>${button('← BACK',returnAction,'minor')}</div>${body}`,title);if(routeChanged)menu.querySelector('.heading')?.focus({preventScroll:true})}
 const unsavedFormScreens=new Set(['PLAYER CUSTOMIZATION','MANAGER APPEARANCE','PLAYER DATA EDITOR','CUSTOM CLUB BUILDER','TEAM COMMAND CENTER','HALF TIME']);
 function menuHasUnsavedFormChanges(){
@@ -362,7 +362,11 @@ function startLanQuickMatch(peer,role,opponentName,ownName){
     plans:[planFor(home),planFor(away)],
     options:{...opt,weather:opt.weather==='Random'?'Clear':opt.weather,kitChoices:kitSelections.slice()}});
   lanPeer=peer;lanRole=role;lanPlayerNames={home:role==='host'?ownName:opponentName,away:role==='host'?opponentName:ownName};
-  try{lanRuntime=createLanLiveMatch({peer,role,game,input,field:ENGINE.WORLD.field});}
+  try{lanRuntime=createLanLiveMatch({peer,role,game,input,field:ENGINE.WORLD.field,
+    awardResult:payload=>awardLanResultWithWalletRetry(payload,{
+      awardResult:receipt=>tokenWallet.awardCompletedMatch(receipt),
+      retryWallet:()=>tokenWallet.retry()
+    })});}
   catch(error){stopLanMatch();game.matchState='none';throw error;}
   closeMenu();drawHUD();toast((peer.relay?'RELAY BACKUP · ':'')+(role==='host'?'LAN HOST · HOME TEAM':'LAN GUEST · AWAY TEAM')+(opponentName?' · vs '+String(opponentName).slice(0,32):''),3000);
 }
@@ -435,10 +439,19 @@ function showOnlineServerMatch(focusAction){
   const persistenceWarning=pendingRecovery&&!pendingState?.pendingMatchPersisted?'<p id="onlineMatchStorageWarning" role="status" aria-live="polite">This browser blocked session storage. Keep this tab open: pending match IDs may not survive a page reload.</p>':'';
   const corruptionWarning=pendingState?.pendingStorageInvalid||pendingState?.pendingStorageReadError?'<p id="onlineMatchStorageCorruption" role="alert" aria-live="assertive">Saved pending-match data is damaged or unreadable and has been preserved. Valid IDs that could be read can still be checked against this signed-in account’s server history. New PVP stays disabled until you explicitly discard the damaged data; discarding may strand an unclaimed result.</p>'+button('DISCARD DAMAGED DATA…','onlineMatchDiscardCorrupt','minor'):'';
   const capacityNotice=pendingState?.pendingMatchIds?.length>=pendingState?.pendingMatchCapacity?'<p id="onlineMatchCapacity" role="status" aria-live="polite" aria-atomic="true">Pending-result limit reached (4). Check and confirm a server receipt for a pending result before starting another match.</p>':'';
-  const recovery=signed&&pendingRecovery&&!active?`<section class="panel" aria-label="Recover server match results"><h2 class="titleSmall">UNRESOLVED MATCH RESULTS · ${pendingRecoveryIds.length}/${pendingState.pendingMatchCapacity}</h2><p>Each opaque ID is checked only against the currently signed-in account’s server history. A missing result remains unresolved; this screen does not identify which account created an ID.</p>${persistenceWarning}${corruptionWarning}${capacityNotice}<p id="onlineMatchRecoveryStatus" role="status" aria-live="polite" aria-atomic="true">${escapeHTML(onlineMatchStatus||'Select a pending match to check its server-recorded result.')}</p><div class="row">${pendingState?.pendingStorageReadError?'':pendingRecoveryIds.map(id=>button(`${onlineHistoryController?.state.recoveryLoading?'CHECKING':'CHECK RESULT'} · ${id.slice(0,8).toUpperCase()}`,'onlineMatchRecover_'+id,'minor')).join('')}</div></section>`:'';
+  const recovery=signed&&pendingRecovery&&!active?`<section class="panel" aria-label="Recover server match results"><h2 class="titleSmall">UNRESOLVED MATCH RESULTS · ${pendingRecoveryIds.length}/${pendingState.pendingMatchCapacity}</h2><p>Each opaque ID is checked only against the currently signed-in account. A missing or unknown status never clears a saved ID.</p>${persistenceWarning}${corruptionWarning}${capacityNotice}<p id="onlineMatchRecoveryStatus" role="status" aria-live="polite" aria-atomic="true">${escapeHTML(onlineMatchRecoveryStatus||onlineMatchStatus||'Checking whether the server confirmed an interrupted match…')}</p><div class="row">${button('VERIFY INTERRUPTED MATCHES','onlineMatchVerifyInterrupted','minor')}${pendingState?.pendingStorageReadError?'':pendingRecoveryIds.map(id=>button(`${onlineHistoryController?.state.recoveryLoading?'CHECKING':'CHECK RESULT'} · ${id.slice(0,8).toUpperCase()}`,'onlineMatchRecover_'+id,'minor')).join('')}</div></section>`:'';
   const controls=active?`<p id="onlineMatchStatus" role="status" aria-live="polite" aria-atomic="true">${escapeHTML(onlineMatchStatus||'Connecting…')}</p><p class="muted">Four actions: pass, shoot, dribble and jump. Move with your configured keyboard, touch or gamepad controls. The match is simulated by the server.</p>${onlineMatchRecoveryStatus?`<p id="onlineMatchStorageWarning" role="status" aria-live="polite">${escapeHTML(onlineMatchRecoveryStatus)}</p>`:''}<div class="row">${button(recoverable?'LEAVE MATCH':playing?'LEAVE ONLINE MATCH':'CANCEL SEARCH','onlineMatchLeave','minor')}${recoverable?button('RETRY CONNECTION','onlineMatchReconnect','gold'):playing?button('RESUME MATCH','onlineMatchResume','gold'):''}${recoverable&&pendingRecovery?button('CHECK LAST RESULT','onlineMatchRecover','minor'):''}</div>${recoverable&&pendingRecovery?`<p id="onlineMatchRecoveryStatus" role="status" aria-live="polite" aria-atomic="true">${escapeHTML(onlineMatchStatus)}</p>`:''}`:signed?`${recovery}${ownership}<p id="onlineMatchStatus" role="status" aria-live="polite" aria-atomic="true">${escapeHTML(onlineMatchStatus||'Ready when you are.')}</p><p class="muted">Quick matchmaking pairs signed-in players. The server owns the clock, score and match simulation. Completed results award server-side soft tokens. Online Career seasons are available from the Online Career menu.</p>${!pendingRecovery?corruptionWarning+capacityNotice:''}<div class="row"><button type="button" class="btn gold" data-action="onlineMatchStart" ${onlineMatchTeamsLoaded&&!pendingCapacityReached?'':'disabled'}>FIND OPPONENT</button></div>`:`${pendingRecovery?'<p id="onlineMatchRecoveryStatus" role="status" aria-live="polite">A previous server match may have a recoverable result. Sign in to check each ID against that account’s server history; no account ownership is inferred from an ID.</p>'+persistenceWarning:''}<p id="onlineMatchStatus" role="status" aria-live="polite" aria-atomic="true">Sign in to request a one-use matchmaking ticket.</p>${onlineAuthPanel('match')}`;
  page('ONLINE MATCH','Server-simulated quick match · sign-in is optional for every other game mode.',`${controls}<p class="muted">${escapeHTML(onlineIdentityError||'')}</p>`,'navOnline');restoreOnlineFocus(focusAction);
  if(signed&&onlineMatchTeamsRefreshNeeded&&!onlineMatchTeamsLoading)loadOnlineMatchTeamOwnership('onlineMatchTeam');
+ if(signed&&!active&&pendingRecovery){const key=`${onlineAccountGeneration}:${pendingRecoveryIds.join(',')}`;if(key!==onlineMatchStatusCheckKey){onlineMatchStatusCheckKey=key;void verifyInterruptedPvpPending();}}
+}
+async function verifyInterruptedPvpPending(){
+ if(!onlineHistoryController||!onlineAuthSession?.isSignedIn())return;
+ const originScreen=screen;
+ const checked=await onlineHistoryController.reconcileInterruptedPending();
+ if(!onlineAuthSession?.isSignedIn()||screen!==originScreen)return;
+ onlineMatchRecoveryStatus=checked.message||'';onlineMatchStatus=checked.message||onlineMatchStatus;
+ showOnlineServerMatch('onlineMatchVerifyInterrupted');
 }
 function updateOnlineMatchStatus(update){
  const state=typeof update==='string'?update:update?.state;
@@ -574,7 +587,7 @@ function initializeOnlineAccount(){
  try{
   onlineAuthSession=createOnlineOidcSession({issuer:onlineConfig.issuer,clientId:onlineConfig.clientId,redirectUri:onlineConfig.redirectUri,audience:onlineConfig.audience});
   onlineAccountClient=createOnlineAccountClient({getAccessToken:()=>onlineAuthSession?.getAccessToken()||null,baseUrl:onlineConfig.apiOrigin});
-  onlineHistoryController=createOnlineHistoryController({loadPage:options=>onlineAccountClient.loadMatchHistory(options),isSignedIn:()=>onlineAuthSession?.isSignedIn()===true,describeError:onlineSafeStatus});
+  onlineHistoryController=createOnlineHistoryController({loadPage:options=>onlineAccountClient.loadMatchHistory(options),loadStatuses:ids=>onlineAccountClient.loadMatchStatuses(ids),isSignedIn:()=>onlineAuthSession?.isSignedIn()===true,describeError:onlineSafeStatus});
  }catch{onlineConfig=null;onlineIdentityError='Online sign-in configuration is invalid. Offline game modes remain available.';return false;}
   const generation=onlineAccountGeneration;
   const signOutGeneration=onlineAccountSignOutGeneration;
@@ -1042,7 +1055,7 @@ function storeCard(item){
  const owned=tokenWallet.owns(item.category,item.id),cost=ECONOMY.PRICES[item.category];
  const detail=item.detail||({superShot:'Unlocks the Studio option for an eligible player; existing role and verified-tier rules still apply.',magicTrick:'Unlocks the Studio option for an eligible outfield player; existing tier rules still apply.',team:'Adds this existing team to your local token collection. All current team choices remain playable for free.',player:'Adds this existing player to your local token collection. Existing rosters and Career saves remain unchanged.',appearance:'Unlocks this existing palette or character detail in Player Studio. Current saved looks remain available.',accessory:'Unlocks this existing accessory in Player Studio. Current saved looks remain available.'}[item.category]);
  const action=`storeBuy_${item.category}_${encodeURIComponent(item.id)}`;
- return `<article class="tokenStoreCard"><div class="tokenStoreCardTop"><span class="tokenStoreCategory">${escapeHTML(item.category==='superShot'?'SUPER SHOT':item.category==='magicTrick'?'MAGIC TRICK':item.category.toUpperCase())}</span><span class="tokenStorePrice">${owned?'OWNED':`${cost} TOKENS`}</span></div><h3>${escapeHTML(item.name)}</h3>${item.detail?`<p class="tokenStoreDetail">${escapeHTML(item.detail)}</p>`:''}<p class="muted">${escapeHTML(detail)}</p><button type="button" class="btn ${owned?'minor':'gold'} tokenStoreBuy" data-action="${escapeHTML(action)}" ${owned?'disabled aria-disabled="true"':''} aria-label="${owned?'Owned':'Buy '+escapeHTML(item.name)+' for '+cost+' tokens'}">${owned?'OWNED':`BUY · ${cost} TOKENS`}</button></article>`;
+ return `<article class="tokenStoreCard"><div class="tokenStoreCardTop"><span class="tokenStoreCategory">${escapeHTML(item.category==='superShot'?'SUPER SHOT':item.category==='magicTrick'?'MAGIC TRICK':item.category.toUpperCase())}</span><span class="tokenStorePrice">${owned?'OWNED':`${cost} TOKENS`}</span></div><h3>${escapeHTML(item.name)}</h3>${item.detail?`<p class="tokenStoreDetail">${escapeHTML(item.detail)}</p>`:''}<p class="muted">${escapeHTML(detail)}</p><button type="button" class="btn ${owned?'minor':'gold'} tokenStoreBuy" data-action="${escapeHTML(action)}" ${owned||tokenWallet.readOnly?'disabled aria-disabled="true"':''} aria-label="${owned?'Owned':tokenWallet.readOnly?'Purchases unavailable':'Buy '+escapeHTML(item.name)+' for '+cost+' tokens'}">${owned?'OWNED':tokenWallet.readOnly?'UNAVAILABLE':`BUY · ${cost} TOKENS`}</button></article>`;
 }
 function drawTokenStoreCards(){
  const host=$('tokenStoreCards'),status=$('tokenStoreRange'),previous=$('storePagePrev'),next=$('storePageNext');if(!host)return;
@@ -1060,21 +1073,23 @@ function drawTokenStoreCards(){
  if(status)status.textContent=items.length?`Showing ${storePage*STORE_PAGE_SIZE+1}–${Math.min(items.length,(storePage+1)*STORE_PAGE_SIZE)} of ${items.length}`:'0 items';
  if(previous)previous.disabled=storePage===0;if(next)next.disabled=storePage+1>=pages;
  const feedback=$('tokenStoreNotice');if(feedback)feedback.textContent=storeNotice||tokenWallet.error&&`Wallet unavailable: ${tokenWallet.error}`||'';
- const balance=$('tokenStoreBalance');if(balance)balance.textContent=`${tokenWallet.wallet().tokens.toLocaleString()} TOKENS`;
+ const wallet=tokenWallet.wallet();
+ const balance=$('tokenStoreBalance');if(balance)balance.textContent=wallet?`${wallet.tokens.toLocaleString()} TOKENS`:'TOKENS UNAVAILABLE';
 }
 function showTokenStore(){
  const categoryLabel=STORE_CATEGORIES.find(([id])=>id===storeCategory)?.[1]||'Super Shots';
- page('STORE & TOKENS','Earn tokens in Career, Cups, tournaments and online matches. Unlock existing game items. Team/player purchases add to your collection; all current teams and players remain playable for free.',`<section class="tokenStoreWallet panel" aria-label="Token wallet"><div><span class="badge">YOUR WALLET</span><strong id="tokenStoreBalance">${tokenWallet.wallet().tokens.toLocaleString()} TOKENS</strong></div><p class="muted">No real-money purchases or token packs are available. Unlocks are saved locally and included in Export All Saves.</p></section><p class="muted tokenStoreRules">Match rewards: ${ECONOMY.REWARDS.completion} tokens for completion, +${ECONOMY.REWARDS.winBonus} for a win, +${ECONOMY.REWARDS.drawBonus} for a draw. Losses still receive the completion reward. Online peer-match receipts are host-authoritative and pay each device's local soft-token wallet; they are not server-verified.</p><div class="panel tokenStoreControls"><label class="fieldLabel" for="storeCategory">SHOP CATEGORY</label><select class="choice" id="storeCategory" aria-label="Shop category">${STORE_CATEGORIES.map(([id,label])=>`<option value="${id}" ${id===storeCategory?'selected':''}>${label}</option>`).join('')}</select><label class="fieldLabel" for="storeSearch">SEARCH ${escapeHTML(categoryLabel.toUpperCase())}</label><input class="choice" type="search" id="storeSearch" value="${escapeHTML(storeSearch)}" placeholder="Search existing items" autocomplete="off" aria-controls="tokenStoreCards"/><label class="tokenStoreOwnedFilter"><input id="storeOwnedOnly" type="checkbox" ${storeOwnedOnly?'checked':''}/> SHOW OWNED ONLY</label><p id="tokenStoreRange" class="muted" role="status" aria-live="polite"></p><div class="row tokenStorePager"><button type="button" class="btn minor" id="storePagePrev" data-action="storePagePrev">← PREVIOUS</button><button type="button" class="btn minor" id="storePageNext" data-action="storePageNext">NEXT →</button></div></div><p id="tokenStoreNotice" class="tokenStoreNotice" role="status" aria-live="polite" aria-atomic="true"></p><div id="tokenStoreCards" class="tokenStoreCards" aria-label="Available store items"></div>`,`home`);
+ const wallet=tokenWallet.wallet();
+ page('STORE & TOKENS','Earn tokens in Career, Cups, tournaments and online matches. Unlock existing game items. Team/player purchases add to your collection; all current teams and players remain playable for free.',`<section class="tokenStoreWallet panel" aria-label="Token wallet"><div><span class="badge">YOUR WALLET</span><strong id="tokenStoreBalance">${wallet?`${wallet.tokens.toLocaleString()} TOKENS`:'TOKENS UNAVAILABLE'}</strong></div><p class="muted">No real-money purchases or token packs are available. Unlocks are saved locally and included in Export All Saves.</p></section>${tokenWallet.error?`<section class="panel" role="status"><p class="muted">${escapeHTML(tokenWallet.error)} Token rewards and purchases are paused until storage recovers. Offline matches remain available.</p>${button('RETRY WALLET STORAGE','walletRetry','minor')}</section>`:''}<p class="muted tokenStoreRules">Match rewards: ${ECONOMY.REWARDS.completion} tokens for completion, +${ECONOMY.REWARDS.winBonus} for a win, +${ECONOMY.REWARDS.drawBonus} for a draw. Losses still receive the completion reward. Online peer-match receipts are host-authoritative and pay each device's local soft-token wallet; they are not server-verified.</p><div class="panel tokenStoreControls"><label class="fieldLabel" for="storeCategory">SHOP CATEGORY</label><select class="choice" id="storeCategory" aria-label="Shop category">${STORE_CATEGORIES.map(([id,label])=>`<option value="${id}" ${id===storeCategory?'selected':''}>${label}</option>`).join('')}</select><label class="fieldLabel" for="storeSearch">SEARCH ${escapeHTML(categoryLabel.toUpperCase())}</label><input class="choice" type="search" id="storeSearch" value="${escapeHTML(storeSearch)}" placeholder="Search existing items" autocomplete="off" aria-controls="tokenStoreCards"/><label class="tokenStoreOwnedFilter"><input id="storeOwnedOnly" type="checkbox" ${storeOwnedOnly?'checked':''}/> SHOW OWNED ONLY</label><p id="tokenStoreRange" class="muted" role="status" aria-live="polite"></p><div class="row tokenStorePager"><button type="button" class="btn minor" id="storePagePrev" data-action="storePagePrev">← PREVIOUS</button><button type="button" class="btn minor" id="storePageNext" data-action="storePageNext">NEXT →</button></div></div><p id="tokenStoreNotice" class="tokenStoreNotice" role="status" aria-live="polite" aria-atomic="true"></p><div id="tokenStoreCards" class="tokenStoreCards" aria-label="Available store items"></div>`,`home`);
  menu.querySelector('#storeCategory')?.addEventListener('change',event=>{storeCategory=event.target.value;storePage=0;storeSearch='';storeNotice='';menu.querySelector('#storeSearch').value='';const label=STORE_CATEGORIES.find(([id])=>id===storeCategory)?.[1]||'Existing items';const searchLabel=menu.querySelector('label[for="storeSearch"]');if(searchLabel)searchLabel.textContent=`SEARCH ${label.toUpperCase()}`;drawTokenStoreCards();});
  menu.querySelector('#storeSearch')?.addEventListener('input',event=>{storeSearch=event.target.value;storePage=0;drawTokenStoreCards();});
  menu.querySelector('#storeOwnedOnly')?.addEventListener('change',event=>{storeOwnedOnly=event.target.checked;storePage=0;drawTokenStoreCards();});
  drawTokenStoreCards();
 }
-function buyTokenStoreItem(category,id){
+async function buyTokenStoreItem(category,id){
  const item=(tokenStoreCatalog()[category]||[]).find(entry=>entry.id===id);
  if(!item){storeNotice='That item is not in the existing content catalog.';showTokenStore();return;}
  try{
-  const result=tokenWallet.purchase({category,id},tokenStoreCatalog()[category]);
+  const result=await tokenWallet.purchase({category,id},tokenStoreCatalog()[category]);
   storeNotice=result.ok?`${item.name} unlocked for ${result.cost} tokens.`:result.reason==='insufficient-tokens'?`Not enough tokens. ${result.cost} needed; ${result.wallet.tokens} available.`:result.reason==='already-owned'?`${item.name} is already owned.`:`This item is not available to buy (${result.reason}).`;
  }catch(error){storeNotice=`Purchase was not saved: ${error.message}`;}
  showTokenStore();
@@ -1082,20 +1097,36 @@ function buyTokenStoreItem(category,id){
  const nextPurchase=cards.slice(Math.max(0,boughtIndex+1)).map(card=>card.querySelector('button:not([disabled])')).find(Boolean);
  (nextPurchase||menu.querySelector('#tokenStoreCards button:not([disabled])')||menu.querySelector('#storePageNext:not([disabled])')||$('storeSearch'))?.focus({preventScroll:true});
 }
-function awardLocalMatchTokens(event,score){
+const LOCAL_TOKEN_RECOVERY_KEY='smf_pendingLocalTokenReward';
+let pendingLocalTokenReward=null;
+function readLocalTokenRecovery(){
+ try{const raw=globalThis.sessionStorage?.getItem(LOCAL_TOKEN_RECOVERY_KEY);if(raw===null||raw===undefined)return pendingLocalTokenReward;const value=JSON.parse(raw);if(value&&Object.keys(value).length===4&&typeof value.receiptId==='string'&&['career','cup','tournament','continental'].includes(value.mode)&&value.status==='completed'&&['win','draw','loss'].includes(value.result))return value;return null;}catch{return pendingLocalTokenReward;}
+}
+function saveLocalTokenRecovery(value){pendingLocalTokenReward=value;try{globalThis.sessionStorage?.setItem(LOCAL_TOKEN_RECOVERY_KEY,JSON.stringify(value));return readLocalTokenRecovery()?.receiptId===value.receiptId;}catch{return false;}}
+function clearLocalTokenRecovery(receiptId){const current=readLocalTokenRecovery();if(!current||current.receiptId!==receiptId)return !current;pendingLocalTokenReward=null;try{globalThis.sessionStorage?.removeItem(LOCAL_TOKEN_RECOVERY_KEY);return globalThis.sessionStorage?.getItem(LOCAL_TOKEN_RECOVERY_KEY)===null;}catch{return false;}}
+async function retryLocalTokenReward(){
+ const pending=readLocalTokenRecovery();if(!pending)return false;
+ try{const result=await tokenWallet.awardCompletedMatch(pending);if(result.reason==='receipt-capacity')return 'capacity';const saved=result.ok||result.duplicate;if(saved)clearLocalTokenRecovery(pending.receiptId);return saved;}
+ catch{return false;}
+}
+async function awardLocalMatchTokens(event,score){
  const modeKey=mode==='career'?'career':mode==='continental'?'continental':mode==='league'?'tournament':null;
  if(!modeKey||!activeMatchReceiptId||lanRuntime||lanRole||!Array.isArray(score)||score.length!==2||!score.every(Number.isFinite))return '';
  if(modeKey==='continental'&&!lastCupResultCommitted)return '<p class="muted">No tournament tokens awarded because this result could not be committed to a Cup save slot.</p>';
  if(modeKey==='tournament'&&!leagueResultCommitted)return '<p class="muted">No tournament tokens awarded because this result could not be committed to the local league save.</p>';
  const result=event?.penalties&&(event.winner===0||event.winner===1)?event.winner===0?'win':'loss':score[0]>score[1]?'win':score[0]<score[1]?'loss':'draw';
+ const payload={receiptId:activeMatchReceiptId,mode:modeKey,status:'completed',result};
+ saveLocalTokenRecovery(payload);
  try{
-  const receipt=tokenWallet.awardCompletedMatch({receiptId:activeMatchReceiptId,mode:modeKey,status:'completed',result});
+  const receipt=await tokenWallet.awardCompletedMatch(payload);
+  if(receipt.ok||receipt.duplicate)clearLocalTokenRecovery(payload.receiptId);
   if(receipt.ok)return `<p class="tokenRewardNotice" role="status">+${receipt.reward} TOKENS · MATCH COMPLETE</p>`;
   if(receipt.duplicate)return '<p class="tokenRewardNotice" role="status">MATCH TOKENS ALREADY AWARDED</p>';
-  return receipt.reason==='receipt-capacity'?'<p class="muted">Token rewards are paused because the saved match receipt list is full.</p>':'';
+  if(receipt.reason==='receipt-capacity'){return `<section class="panel" aria-label="Token reward storage limit"><p class="muted" role="status">The exact local receipt ledger reached its safe backup-size limit, so this match was not credited. Your match receipt is kept in this tab. Exporting preserves the full ledger but does not create more space; local rewards can resume after a future account-ledger migration.</p>${button('OPEN SAVE MANAGEMENT','navSaveManagement','minor')}</section>`;}
+  return '';
  }catch(error){
   console.warn('Completed match token reward could not be saved:',error.message);
-  return '<p class="muted" role="status">Match complete, but token reward could not be saved.</p>';
+  return `<section class="panel" id="localTokenRecovery" aria-label="Token reward recovery"><p class="muted" id="localTokenRecoveryStatus" role="status" aria-live="polite">${escapeHTML(tokenWallet.error||'Match complete, but token reward could not be saved.')}</p>${button('RETRY TOKEN REWARD','retryLocalTokenReward','minor')}</section>`;
  }
 }
 // A backup with an empty active slot must not destroy the previous legacy mirror.
@@ -1128,7 +1159,7 @@ function homeModeIconMarkup(action){
 }
 function showHome(){
  menuBackAction='home';menuEntryReturn='home';customizationReturn='home';
- const tokens=tokenWallet.wallet().tokens.toLocaleString(),fixture=career?currentCareerFixture(career):null;
+ const wallet=tokenWallet.wallet(),tokens=wallet?wallet.tokens.toLocaleString():'UNAVAILABLE',fixture=career?currentCareerFixture(career):null;
  const tile=(label,action,icon,extra='')=>`<button type="button" class="btn homeActionTile ${extra}" data-action="${action}"><span class="homeTileIcon" aria-hidden="true">${icon}</span><span>${label}</span></button>`;
  const tileIcons={squad:`<circle cx="18" cy="17" r="6"/><circle cx="36" cy="18" r="5"/><path d="M5 43v-4c0-9 5-14 13-14s13 5 13 14v4H5ZM30 28c8-3 14 2 14 10v5H34"/>`,
   customize:`<path d="m16 8-10 6 5 8 6-3v20h14V19l6 3 5-8-10-6c-1 4-4 6-8 6s-7-2-8-6Z"/>`,
@@ -1136,11 +1167,11 @@ function showHome(){
   studio:`<path d="M24 6C13 6 6 14 6 24s5 17 13 17h3c2 0 3-2 2-4l-1-2c-1-2 1-4 3-4h4c7 0 11-5 11-11S34 6 24 6Z"/><circle cx="16" cy="19" r="2"/><circle cx="24" cy="14" r="2"/><circle cx="32" cy="19" r="2"/>`,
   settings:`<circle cx="24" cy="24" r="7"/><path d="m20 4 8 0 1 5 4 2 5-2 4 7-4 3v5l4 4-4 7-5-2-4 2-1 5h-8l-1-5-4-2-5 2-4-7 4-4v-5l-4-3 4-7 5 2 4-2 1-5Z"/>`};
  const actionIcon=(name)=>`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">${tileIcons[name]}</svg>`;
- const pendingLanRecovery=readLanHostResultRecovery();
+ const pendingLanRecovery=readLanHostResultRecovery(),pendingLocalRecovery=readLocalTokenRecovery();
  show(`<div class="homeReferenceShell">
  <header class="homeMasthead arcadeHomeHeader"><div class="arcadeIdentity"><div class="homeBrandLockup"><span class="homeBrandBall" aria-hidden="true"><svg viewBox="0 0 80 86" fill="none" focusable="false"><path d="M40 3 74 16v25c0 21-14 34-34 42C20 75 6 62 6 41V16L40 3Z" fill="#08224C" stroke="#FFE082" stroke-width="4"/><path d="M40 12 66 22v19c0 17-10 27-26 34-16-7-26-17-26-34V22l26-10Z" fill="#155292" stroke="#E9F6FF" stroke-width="2"/><circle cx="40" cy="42" r="17" fill="#F5FAFF" stroke="#12223E" stroke-width="3"/><path d="m40 32 7 5-3 8h-8l-3-8 7-5ZM26 40l-7-2M29 51l-4 7M49 51l4 7M54 40l7-2" stroke="#172642" stroke-width="3" stroke-linejoin="round"/><path d="m40 10 2 5 5 .4-4 3 1.5 5-4.5-2.8-4.5 2.8 1.5-5-4-3 5-.4 2-5Z" fill="#FFD15C"/></svg></span><div><h1 class="heading logoHeading">SUPER<br><em>MAGIC FOOTBALL</em></h1><p class="subtitle homeBrandTagline">BIG GOALS · WILD TRICKS · YOUR FOOTBALL UNIVERSE</p></div></div></div>
  <div class="arcadeHomeTools"><div class="arcadeProfile"><span class="arcadeProfileIcon" aria-hidden="true">01</span><span><strong>PLAYER 01</strong><small>LOCAL PROFILE</small></span></div><button type="button" class="btn arcadeWallet" data-action="navStore" aria-label="Open Shop. Token balance: ${tokens}"><span class="arcadeCoin" aria-hidden="true">$</span><span class="arcadeWalletCopy"><small> TOKENS</small><strong>${tokens}</strong></span><span class="arcadeWalletPlus" aria-hidden="true">＋</span></button><button type="button" class="btn homeGearButton" data-action="navSettings" aria-label="Settings">⚙</button></div></header>
- <div class="homeReferenceGrid"><main class="homeReferenceNav" aria-label="Main menu">${pendingLanRecovery?`<section id="lanHostReceiptRecovery" class="panel" aria-label="Online match token reward recovery"><p id="lanHostReceiptRecoveryStatus" role="status" aria-live="polite">An online match reward still needs to be saved on this device. This same-tab recovery uses its existing receipt and is not server-verified.</p><button type="button" class="btn gold" data-action="retryLanReceipt">RETRY TOKEN REWARD</button></section>`:''}<button type="button" class="btn homeKickoff" data-action="quick"><span class="homeKickoffCopy"><strong>KICK OFF</strong><small>Jump straight into the action!</small></span><span class="homeKickoffArrow" aria-hidden="true">›</span><span class="homeKickoffPlayer" aria-hidden="true"><img src="./assets/ui/home-hero-player.webp" alt=""/></span></button>
+ <div class="homeReferenceGrid"><main class="homeReferenceNav" aria-label="Main menu">${pendingLocalRecovery?`<section id="localTokenRecovery" class="panel" aria-label="Local match token reward recovery"><p id="localTokenRecoveryStatus" role="status" aria-live="polite">A completed offline match reward is waiting for local wallet storage. Its exact receipt is saved for a safe retry.</p><button type="button" class="btn gold" data-action="retryLocalTokenReward">RETRY TOKEN REWARD</button></section>`:''}${pendingLanRecovery?`<section id="lanHostReceiptRecovery" class="panel" aria-label="Online match token reward recovery"><p id="lanHostReceiptRecoveryStatus" role="status" aria-live="polite">An online match reward still needs to be saved on this device. This same-tab recovery uses its existing receipt and is not server-verified.</p><button type="button" class="btn gold" data-action="retryLanReceipt">RETRY TOKEN REWARD</button></section>`:''}<button type="button" class="btn homeKickoff" data-action="quick"><span class="homeKickoffCopy"><strong>KICK OFF</strong><small>Jump straight into the action!</small></span><span class="homeKickoffArrow" aria-hidden="true">›</span><span class="homeKickoffPlayer" aria-hidden="true"><img src="./assets/ui/home-hero-player.webp" alt=""/></span></button>
  <div class="navList navMainList" aria-label="Game modes">${[
  navItem('Quick Match','navQuick','Play locally or enter training.','active','⚽'),
  navItem('Online','navOnline','Play online matches and events.','active','🌐'),
@@ -1490,17 +1521,33 @@ function validateSaveImport(payload){
 // localStorage has no transaction API. Stage/validate all entries first and
 // restore the original values if a synchronous write fails. Never claim success
 // if setItem throws (unlike the normal best-effort autosave store.put helper).
-function commitSaveImport(changes,storage){
+async function commitSaveImport(changes,storage){
  // Keep a raw pre-image before any write; never trust autosave's silent errors.
- const previous=changes.map(([key])=>[key,storage.getItem('legend_'+key)]);
+ const walletChange=changes.find(([key])=>key==='tokenWallet'),localChanges=changes.filter(([key])=>key!=='tokenWallet');
+ const previous=localChanges.map(([key])=>[key,storage.getItem('legend_'+key)]);
+ const previousWallet=walletChange?await tokenWallet.exportWallet():null;
  let attempted=-1;
  try{
-  for(let i=0;i<changes.length;i++){
+  for(let i=0;i<localChanges.length;i++){
    attempted=i;
-   const [key,json]=changes[i],slot='legend_'+key;
+   const [key,json]=localChanges[i],slot='legend_'+key;
    storage.setItem(slot,json);
    // Some storage shims silently discard writes. Readback avoids false success.
    if(storage.getItem(slot)!==json)throw Error('Save section not retained: '+key);
+  }
+  if(walletChange){
+   const imported=JSON.parse(walletChange[1]);
+   await tokenWallet.importWallet(imported);
+   // Keep old clients usable while the complete receipt history fits schema 1.
+   // Larger ledgers cannot be mirrored safely into the legacy wallet key.
+   if(imported.receipts.length<=ECONOMY.MAX_RECEIPTS){
+    const legacy={schema:1,tokens:imported.tokens,unlocks:imported.unlocks,receipts:imported.receipts};
+    const raw=JSON.stringify(legacy);storage.setItem(ECONOMY.KEY,raw);
+    if(storage.getItem(ECONOMY.KEY)!==raw)throw Error('Legacy wallet mirror could not be updated');
+   }else{
+    storage.removeItem(ECONOMY.KEY);
+    if(storage.getItem(ECONOMY.KEY)!==null)throw Error('Obsolete legacy wallet mirror could not be cleared');
+   }
   }
  }catch(e){let rollbackFailed=false;
   // Include the *failing* write: a storage adapter may mutate and then throw.
@@ -1514,29 +1561,36 @@ function commitSaveImport(changes,storage){
    }
    try{if(storage.getItem(slot)!==prior)rollbackFailed=true;}catch{rollbackFailed=true}
   }
+  if(walletChange&&previousWallet){try{await tokenWallet.importWallet(previousWallet);}catch{rollbackFailed=true;}}
   throw Error('Save could not be stored'+(rollbackFailed?' and automatic rollback was incomplete':' (changes rolled back)'));
  }
  return changes.length;
 }
-function collectSaveExportData(storage){
+async function collectSaveExportData(storage){
  const data={};
  for(const key of SAVE_KEYS){
+  if(key==='tokenWallet'){
+   try{data.tokenWallet=await tokenWallet.exportWallet();}
+   catch(error){throw Error(`Save section "tokenWallet" could not be read: ${error?.message||'wallet storage unavailable'}`)}
+   if(!ECONOMY.validWallet(data.tokenWallet))throw Error('Save section "tokenWallet" has an invalid wallet structure. No backup was downloaded.');
+   continue;
+  }
   let raw;
   try{raw=storage.getItem('legend_'+key)}
   catch(error){throw Error(`Save section "${key}" could not be read: ${error?.message||'storage unavailable'}`)}
   if(raw===null){data[key]=null;continue}
   try{data[key]=JSON.parse(raw)}
   catch{throw Error(`Save section "${key}" contains invalid JSON. No backup was downloaded and the stored data was left untouched.`)}
-  if(key==='tokenWallet'&&!ECONOMY.validWallet(data[key]))throw Error('Save section "tokenWallet" has an invalid wallet structure. No backup was downloaded.');
  }
  return data;
 }
-function exportSave(){try{const data={product:'Supermagic Football',version:RELEASE.version,exportedAt:new Date().toISOString(),data:collectSaveExportData(localStorage)};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='Supermagic_Football_Save_'+new Date().toISOString().slice(0,10)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),3000);return true}catch(error){alert('Could not export save: '+error.message);return false}}
+async function exportSave(){try{const data={product:'Supermagic Football',version:RELEASE.version,exportedAt:new Date().toISOString(),data:await collectSaveExportData(localStorage)},serialized=JSON.stringify(data,null,2),bytes=new TextEncoder().encode(serialized).byteLength;if(bytes>ECONOMY.MAX_SAVE_EXPORT_BYTES)throw Error('The complete save exceeds the 64 MiB backup limit. No sections were omitted or changed; reduce stored save data and retry.');const blob=new Blob([serialized],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='Supermagic_Football_Save_'+new Date().toISOString().slice(0,10)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),3000);return true}catch(error){alert('Could not export save: '+error.message);return false}}
 async function importSave(file){try{
- if(!file||file.size>5_000_000)throw Error('Save file missing or larger than 5MB');
- const changes=validateSaveImport(JSON.parse(await file.text()));
+ if(!file||file.size>ECONOMY.MAX_SAVE_EXPORT_BYTES)throw Error('Save file missing or larger than the 64 MiB save limit');
+ const text=await file.text();if(new TextEncoder().encode(text).byteLength>ECONOMY.MAX_SAVE_EXPORT_BYTES)throw Error('Save file exceeds the 64 MiB save limit');
+ const changes=validateSaveImport(JSON.parse(text));
  if(!confirm(`Import ${changes.length} save sections? This will REPLACE matching local progress. Export a backup first. Continue?`))return;
- commitSaveImport(changes,localStorage);
+ await commitSaveImport(changes,localStorage);
  alert('Save imported. Game will reload to apply the new progress.');location.reload();
  }catch(e){alert('Could not import save: '+e.message)} }
 
@@ -2870,12 +2924,12 @@ function halftimeCoachPanel(game,side){
  return `<section class="panel" id="halftimeCoach${side===0?'Home':'Away'}" role="status" aria-live="polite" aria-label="${side===0?'Home':'Away'} halftime coaching advice"><h3 class="titleSmall">📋 ${side===0?'HOME':'AWAY'} COACHING NOTES</h3><p class="muted">${halftimeCoachAdvice(game,side)}</p>${halftimeFatigueSpotlight(game,side)}</section>`;
 }
 function halftime(){game.matchState='paused';page('HALF TIME',`${TEAMS[home].name} ${game.score[0]} : ${game.score[1]} ${TEAMS[away].name}`,`<div class="panel"><h3 class="titleSmall">SECOND HALF STRATEGY</h3>${halftimeCoachPanel(game,0)}${humans>=2?halftimeCoachPanel(game,1):''}${matchHighlightsPanel(game)}${quickTacticalPanel(0)}${humans>=2?quickTacticalPanel(1):''}<p class="muted">Players regain 40% of their accumulated fatigue for the second half, and resting off the ball slowly restores stamina during play. CPU teams may make an automatic substitution. Use the command center for up to three substitutions; bench fatigue is remembered.</p><h3 class="titleSmall">🗣 HALF-TIME MANAGER TALK</h3><p class="muted">Talks can boost or reduce individual morale. One talk per team per halftime.</p><div class="tacticsGrid">${field('HOME TALK','halfTalkHome',Object.entries(TEAM_TALKS).map(([k,v])=>[k,v.name]),'encourage')}${humans>=2?field('AWAY TALK','halfTalkAway',Object.entries(TEAM_TALKS).map(([k,v])=>[k,v.name]),'focus'):''}</div><p class="muted">HOME MOOD: ${Math.round(game.teamMorale(0))}% · AWAY MOOD: ${Math.round(game.teamMorale(1))}%</p><div class="row">${!game.talksUsed[0].halftime?button('SPEAK TO HOME TEAM','talkHalfHome','gold'):''}${humans>=2&&!game.talksUsed[1].halftime?button('SPEAK TO AWAY TEAM','talkHalfAway'):''}</div><div class="row">${button('▶ SECOND HALF','resume','gold')}${button('HOME TACTICS','tacticHome')}${humans>=2?button('AWAY TACTICS','tacticAway'):''}${button('ADJUST CPU LEVEL','cpuPause')}</div></div>`,'resume')}
-function fulltime(ev){game.matchState='finished';let [a,b]=ev.score,win=lanRole==='guest'?b>a:a>b;if(mode==='league'){
+async function fulltime(ev){game.matchState='finished';let [a,b]=ev.score,win=lanRole==='guest'?b>a:a>b;if(mode==='league'){
  league.played++;league.wins+=a>b?1:0;league.draws+=a===b?1:0;league.losses+=a<b?1:0;league.points+=a>b?5:a===b?2:0;league.games.unshift({team:TEAMS[away].name,a,b});league.games=league.games.slice(0,80);
  if(league.stage==='qualifier'&&league.wins>=16&&league.points>=70)league.stage='finals';else if(league.stage==='finals'&&win){league.playoff=(league.playoff||0)+1;if(league.playoff>=4)league.stage='champion'}leagueResultCommitted=persistLeagueResult(league)}
- if(mode==='continental'&&continentalRun){try{const result=applyCupMatchResult(ev.score,ev.penalties?ev.winner:null);if(career?.club===continentalRun.club){career.cash+=Math.max(0,continentalRun.earned-(continentalRun.lastCareerAward||0));continentalRun.lastCareerAward=continentalRun.earned;store.put('continentalRun',continentalRun);saveCareer()}saveCup();const tokenReward=awardLocalMatchTokens(ev,ev.score);page('CONTINENTAL RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="badge">${escapeHTML(confed(continentalRun.compId).name)}</div><div class="megaScore">${a} : ${b}</div><p>${escapeHTML(tournamentProgress(continentalRun))} • ${continentalRun.earned/1000000}m prize earnings</p>${tokenReward}${button('CONTINUE CHAMPIONSHIP','continentContinue','gold')}</div>`)}catch(e){alert('Competition update failed: '+e.message);showTournament()}return;}
- if(mode==='career'&&career){recordMatchFitness(career,game.getFitnessReport(0));const outcome=advanceCareer(career,TEAMS,ev.score,ev.penalties?ev.winner:null),careerCommitted=saveCareer();const tokenReward=careerCommitted?awardLocalMatchTokens(ev,ev.score):'<p class="muted">No Career tokens awarded because this match could not be committed to the active Career slot.</p>';page('CAREER MATCH RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="titleSmall">${outcome.kind.toUpperCase()} • ${outcome.win?'WIN!':a===b?'DRAW':'DEFEAT'}</div><div class="megaScore">${a} : ${b}</div><p>Club cash: €${(career.cash/1000000).toFixed(1)}m • Current week ${career.week+1}</p>${tokenReward}${button('CONTINUE MANAGER CAREER','manager','gold')}</div>`);return;}
- const tokenReward=mode==='league'?awardLocalMatchTokens(ev,ev.score):'';
+ if(mode==='continental'&&continentalRun){try{applyCupMatchResult(ev.score,ev.penalties?ev.winner:null);if(career?.club===continentalRun.club){career.cash+=Math.max(0,continentalRun.earned-(continentalRun.lastCareerAward||0));continentalRun.lastCareerAward=continentalRun.earned;store.put('continentalRun',continentalRun);saveCareer()}saveCup();const tokenReward=await awardLocalMatchTokens(ev,ev.score);page('CONTINENTAL RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="badge">${escapeHTML(confed(continentalRun.compId).name)}</div><div class="megaScore">${a} : ${b}</div><p>${escapeHTML(tournamentProgress(continentalRun))} • ${continentalRun.earned/1000000}m prize earnings</p>${tokenReward}${button('CONTINUE CHAMPIONSHIP','continentContinue','gold')}</div>`)}catch(e){alert('Competition update failed: '+e.message);showTournament()}return;}
+ if(mode==='career'&&career){recordMatchFitness(career,game.getFitnessReport(0));const outcome=advanceCareer(career,TEAMS,ev.score,ev.penalties?ev.winner:null),careerCommitted=saveCareer();const tokenReward=careerCommitted?await awardLocalMatchTokens(ev,ev.score):'<p class="muted">No Career tokens awarded because this match could not be committed to the active Career slot.</p>';page('CAREER MATCH RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="titleSmall">${outcome.kind.toUpperCase()} • ${outcome.win?'WIN!':a===b?'DRAW':'DEFEAT'}</div><div class="megaScore">${a} : ${b}</div><p>Club cash: €${(career.cash/1000000).toFixed(1)}m • Current week ${career.week+1}</p>${tokenReward}${button('CONTINUE MANAGER CAREER','manager','gold')}</div>`);return;}
+ const tokenReward=mode==='league'?await awardLocalMatchTokens(ev,ev.score):'';
  const lanReceiptRecovery=lanRole==='host'&&typeof lanRuntime?.retryResultAward==='function'?`<section id="lanHostReceiptRecovery" class="panel" aria-label="Online match token reward recovery" ${lanRuntime.resultAckStatus==='failed'?'':'hidden'}><p id="lanHostReceiptRecoveryStatus" role="status" aria-live="polite">The online match token reward could not be saved on this device. Free storage, then retry here. The receipt can also be retried from the main menu in this tab.</p><div class="row">${button('RETRY TOKEN REWARD','retryLanReceipt','gold')}</div></section>`:'';
  page('FULL TIME',`${ev.penalties&&(ev.winner===0||ev.winner===1)?(ev.winner===0?'VICTORY!':'DEFEAT'):win?'VICTORY!':a===b?'DRAW MATCH':'DEFEAT'}${ev.penalties?' • ON PENALTIES':''}`,`<div class="panel" style="text-align:center"><div class="badge">MATCH RESULT</div><div style="font-size:70px;color:#ffe17a;font-weight:1000">${a} : ${b}</div><p>${TEAMS[home].name} vs ${TEAMS[away].name}</p>${tokenReward}${lanReceiptRecovery}${ev.penalties?penaltyRoundScorecard(game,{finished:true,winner:ev.winner}):''}${matchHighlightsPanel(game)}<div class="row" style="justify-content:center">${button('↻ REMATCH','kickoff','gold')}${mode==='league'?button('🏆 LEAGUE','league'):button('MAIN MENU','home')}</div></div>`)}
 function toast(message,duration=1600){let n=$('gameToast');n.textContent=message;n.classList.remove('hidden');toastTime=performance.now()+duration}
@@ -2884,7 +2938,7 @@ game.onEvent=e=>{if(e.type==='passIntent'&&game.mode==='training'&&trainingCross
  if(lanRuntime&&e.type==='finished'){lanFinish=e;return;}
  if(lanRuntime&&e.type==='penaltyStart'){game.matchState='finished';lanFinish={type:'finished',score:game.score.slice()};return;}
  if(lanRuntime&&e.type==='pause'){game.matchState='play';return;}
-audio.cue(e);if(e.type==='toast')toast(e.message,1800);if(e.type==='goal'){$('gameToast').classList.add('hidden');toastTime=0}if(e.type==='penaltyStart')toast(e.inMatch?'PENALTY KICK':'PENALTY SHOOTOUT',1500);if(e.type==='penaltyKick')toast(e.goal?'GOAL!':'SAVE!',1300);if(e.type==='pause')pause();if(e.type==='halftime')halftime();if(e.type==='finished')fulltime(e)};
+audio.cue(e);if(e.type==='toast')toast(e.message,1800);if(e.type==='goal'){$('gameToast').classList.add('hidden');toastTime=0}if(e.type==='penaltyStart')toast(e.inMatch?'PENALTY KICK':'PENALTY SHOOTOUT',1500);if(e.type==='penaltyKick')toast(e.goal?'GOAL!':'SAVE!',1300);if(e.type==='pause')pause();if(e.type==='halftime')halftime();if(e.type==='finished')void fulltime(e)};
 function action(a){if(a===menuBackAction&&!confirmDiscardBeforeBack(a))return;if(a==='kickoff'&&lanRuntime)stopLanMatch();audio.cue('ui');
  if(['navLan','navOnlineP2P'].includes(a)&&readLanHostResultRecovery()){
   const recoveryButton=menu.querySelector('#lanHostReceiptRecovery [data-action="retryLanReceipt"]'),status=$('lanHostReceiptRecoveryStatus');
@@ -2896,14 +2950,32 @@ function action(a){if(a===menuBackAction&&!confirmDiscardBeforeBack(a))return;if
  'nav-device':'navOnDevice','nav-career':'navCareer','nav-cups':'navCups','nav-clubs':'navClubs','nav-settings':'navSettings','nav-customize':'navCustomization','nav-input':'navInput','nav-saves':'navSaveManagement'
  })[screen]||'home';
  if(a==='retryLanReceipt'){
-  const recovered=lanRole==='host'&&lanRuntime?.retryResultAward?.()===true||retryLanHostResultRecovery({awardResult:payload=>tokenWallet.awardCompletedMatch(payload)});
-  const recovery=$('lanHostReceiptRecovery'),status=$('lanHostReceiptRecoveryStatus');
-  if(recovered){if(status)status.textContent='The online match token reward is saved. Your wallet now includes this receipt.';if(recovery)recovery.hidden=true;menu.querySelector('[data-action="home"]')?.focus({preventScroll:true});}
-  else if(status)status.textContent='The reward still could not be saved. Free device storage, then retry again here. The recovery remains available in this tab.';
+  void (async()=>{
+   const recovered=lanRole==='host'&&lanRuntime?.retryResultAward?await lanRuntime.retryResultAward():await retryLanHostResultRecovery({storage:globalThis.sessionStorage,awardResult:payload=>tokenWallet.awardCompletedMatch(payload)});
+   const recovery=$('lanHostReceiptRecovery'),status=$('lanHostReceiptRecoveryStatus');
+   if(recovered){if(status)status.textContent='The online match token reward is saved. Your wallet now includes this receipt.';if(recovery)recovery.hidden=true;menu.querySelector('[data-action="home"]')?.focus({preventScroll:true});}
+   else if(status)status.textContent='The reward still could not be saved. Free device storage, then retry again here. The recovery remains available in this tab.';
+  })();
+  return;
+ }
+ if(a==='retryLocalTokenReward'){
+  void (async()=>{
+   const status=$('localTokenRecoveryStatus'),section=$('localTokenRecovery');
+   if(status)status.textContent='Checking wallet storage and retrying the exact match receipt…';
+   const available=await tokenWallet.retry();
+   if(!available.ok){if(status)status.textContent=available.error;return;}
+   const saved=await retryLocalTokenReward();
+   if(saved){if(status)status.textContent='The exact match receipt is saved. This reward cannot be credited a second time.';section?.querySelector('[data-action="retryLocalTokenReward"]')?.setAttribute('hidden','');}
+   else if(status)status.textContent=saved==='capacity'?'The exact receipt ledger reached its supported capacity. This reward remains pending in this tab and no receipt was discarded. Offline play continues; another wallet-storage version is required before more rewards can be recorded.':tokenWallet.error||'The reward is still waiting for local storage. Free browser storage and retry again.';
+  })();
+  return;
+ }
+ if(a==='walletRetry'){
+  void tokenWallet.retry().then(result=>{storeNotice=result.ok?'Wallet storage is available again. You can retry this match reward or purchase.':result.error;showTokenStore();});
   return;
  }
  else if(a==='confirmQuit'){if(confirm('Leave this match and return to the main menu? Match progress will be lost.')){stopLanMatch();game.matchState='none';showHome();}}else if(a==='confirmRestart'){if(confirm('Restart the match from kickoff? Current match progress will be lost.'))start();}
- else if(a==='navQuick')showQuickMenu();else if(a==='navLan')showLanLobby(screen==='nav-online'?'navOnline':'navQuick');else if(a==='navOnlineP2P')showOnlineP2PLobby(screen==='nav-online'?'navOnline':'navQuick');else if(a==='navOnDevice')showOnDevice();else if(a==='navOnline')showOnlineMenu();else if(a==='navOnlineServerMatch'){onlineMatchCareer=false;onlineMatchStatus='';onlineIdentityError='';onlineMatchTeamsRefreshNeeded=true;showOnlineServerMatch();}else if(a==='onlineSignIn_match')beginOnlineSignIn('match');else if(a==='onlineMatchTeamsRetry')loadOnlineMatchTeamOwnership('onlineMatchTeamsRetry');else if(a==='onlineMatchStart')startOnlineServerMatch();else if(a==='onlineMatchReconnect')reconnectOnlineServerMatch();else if(a==='onlineMatchRecover')recoverOnlineServerMatchResult();else if(a.startsWith('onlineMatchRecover_')){const id=a.slice('onlineMatchRecover_'.length);if(/^[a-f0-9]{32}$/.test(id))recoverOnlineServerMatchResult(id);}else if(a==='onlineMatchDiscardCorrupt'){if(confirm('Discard damaged pending-match data for this browser tab? Any unclaimed result represented only by that data may be stranded. This does not delete server match history or reverse an issued receipt.')){const discarded=onlineHistoryController?.discardCorruptPendingMatches({confirmed:true})===true;onlineMatchStatus=discarded?'Damaged pending-match data was explicitly discarded. Any result known only through it may no longer be recoverable.':'Damaged data could not be removed from session storage. PVP remains disabled.';showOnlineServerMatch('onlineMatchDiscardCorrupt');}}else if(a==='onlineMatchLeave')leaveOnlineServerMatch();else if(a==='onlineMatchResume'){closeMenu();drawHUD();}else if(a==='onlineRewardRetry')claimOnlineMatchReward();else if(a==='navOnlineCareer'){onlineCareerStatus='';onlineIdentityError='';onlineCareerProgressLoaded=false;onlineCareerProgressRequested=false;showOnlineCareer();}else if(a==='navOnlineUltimate'){onlineUtStatus='';onlineIdentityError='';onlineUtCatalogRequested=true;showOnlineUltimateTeam();loadOnlineUltimateTeamMarketplace();}else if(a==='onlineSignIn_career')beginOnlineSignIn('career');else if(a==='onlineSignIn_ultimate')beginOnlineSignIn('ultimate');else if(a==='onlineSignOut')signOutOnlineAccount();else if(a==='onlineHistoryReload')loadOnlineMatchHistory(false);else if(a==='onlineHistoryMore')loadOnlineMatchHistory(true);else if(a==='onlineCareerSeasonReload'){onlineCareerProgressRequested=false;loadOnlineCareerProgress();}else if(a==='onlineCareerSeasonStart')createOnlineCareerSeason();else if(a==='onlineCareerPlayNext')playOnlineCareerNext();else if(a==='onlineCareerReload')reloadOnlineCareer();else if(a==='onlineCareerUpload')uploadOnlineCareerCopy();else if(a==='onlineCareerImport')importOnlineCareerCopy();else if(a==='onlineUtReload')reloadOnlineUltimateTeam();else if(a==='onlineUtCatalogReload')loadOnlineUltimateTeamMarketplace();else if(a==='onlineUtMore'){onlineUtPage++;refreshOnlineUtCatalog();}else if(a==='onlineUtSave')saveOnlineUltimateTeam();else if(a==='navCareer'){creatingCareer=false;showCareerMenu();}else if(a==='navCups')showCupsMenu();else if(a==='navStore')showTokenStore();else if(a==='navInternational')showInternationalMenu();else if(a==='navClubs')showClubCompetitionsMenu();else if(a==='navSettings'||a==='settings')showSettingsMenu();else if(a==='navCustomization'){if(screen==='nav-settings')customizationReturn='navSettings';else if(screen==='home')customizationReturn='home';showCustomizationMenu();}else if(a==='navInput')showInputMenu();else if(a==='navSaveManagement')showSaveMenu('navSettings');else if(a==='navCareerSlots')showCareerSlots();else if(a==='navCupSlots')showCupSlots();
+ else if(a==='navQuick')showQuickMenu();else if(a==='navLan')showLanLobby(screen==='nav-online'?'navOnline':'navQuick');else if(a==='navOnlineP2P')showOnlineP2PLobby(screen==='nav-online'?'navOnline':'navQuick');else if(a==='navOnDevice')showOnDevice();else if(a==='navOnline')showOnlineMenu();else if(a==='navOnlineServerMatch'){onlineMatchCareer=false;onlineMatchStatus='';onlineIdentityError='';onlineMatchTeamsRefreshNeeded=true;showOnlineServerMatch();}else if(a==='onlineSignIn_match')beginOnlineSignIn('match');else if(a==='onlineMatchTeamsRetry')loadOnlineMatchTeamOwnership('onlineMatchTeamsRetry');else if(a==='onlineMatchStart')startOnlineServerMatch();else if(a==='onlineMatchReconnect')reconnectOnlineServerMatch();else if(a==='onlineMatchRecover')recoverOnlineServerMatchResult();else if(a==='onlineMatchVerifyInterrupted'){onlineMatchStatusCheckKey='';verifyInterruptedPvpPending();}else if(a.startsWith('onlineMatchRecover_')){const id=a.slice('onlineMatchRecover_'.length);if(/^[a-f0-9]{32}$/.test(id))recoverOnlineServerMatchResult(id);}else if(a==='onlineMatchDiscardCorrupt'){if(confirm('Discard damaged pending-match data for this browser tab? Any unclaimed result represented only by that data may be stranded. This does not delete server match history or reverse an issued receipt.')){const discarded=onlineHistoryController?.discardCorruptPendingMatches({confirmed:true})===true;onlineMatchStatus=discarded?'Damaged pending-match data was explicitly discarded. Any result known only through it may no longer be recoverable.':'Damaged data could not be removed from session storage. PVP remains disabled.';showOnlineServerMatch('onlineMatchDiscardCorrupt');}}else if(a==='onlineMatchLeave')leaveOnlineServerMatch();else if(a==='onlineMatchResume'){closeMenu();drawHUD();}else if(a==='onlineRewardRetry')claimOnlineMatchReward();else if(a==='navOnlineCareer'){onlineCareerStatus='';onlineIdentityError='';onlineCareerProgressLoaded=false;onlineCareerProgressRequested=false;showOnlineCareer();}else if(a==='navOnlineUltimate'){onlineUtStatus='';onlineIdentityError='';onlineUtCatalogRequested=true;showOnlineUltimateTeam();loadOnlineUltimateTeamMarketplace();}else if(a==='onlineSignIn_career')beginOnlineSignIn('career');else if(a==='onlineSignIn_ultimate')beginOnlineSignIn('ultimate');else if(a==='onlineSignOut')signOutOnlineAccount();else if(a==='onlineHistoryReload')loadOnlineMatchHistory(false);else if(a==='onlineHistoryMore')loadOnlineMatchHistory(true);else if(a==='onlineCareerSeasonReload'){onlineCareerProgressRequested=false;loadOnlineCareerProgress();}else if(a==='onlineCareerSeasonStart')createOnlineCareerSeason();else if(a==='onlineCareerPlayNext')playOnlineCareerNext();else if(a==='onlineCareerReload')reloadOnlineCareer();else if(a==='onlineCareerUpload')uploadOnlineCareerCopy();else if(a==='onlineCareerImport')importOnlineCareerCopy();else if(a==='onlineUtReload')reloadOnlineUltimateTeam();else if(a==='onlineUtCatalogReload')loadOnlineUltimateTeamMarketplace();else if(a==='onlineUtMore'){onlineUtPage++;refreshOnlineUtCatalog();}else if(a==='onlineUtSave')saveOnlineUltimateTeam();else if(a==='navCareer'){creatingCareer=false;showCareerMenu();}else if(a==='navCups')showCupsMenu();else if(a==='navStore')showTokenStore();else if(a==='navInternational')showInternationalMenu();else if(a==='navClubs')showClubCompetitionsMenu();else if(a==='navSettings'||a==='settings')showSettingsMenu();else if(a==='navCustomization'){if(screen==='nav-settings')customizationReturn='navSettings';else if(screen==='home')customizationReturn='home';showCustomizationMenu();}else if(a==='navInput')showInputMenu();else if(a==='navSaveManagement')showSaveMenu('navSettings');else if(a==='navCareerSlots')showCareerSlots();else if(a==='navCupSlots')showCupSlots();
  else if(a==='storePagePrev'){storePage=Math.max(0,storePage-1);drawTokenStoreCards();const previous=$('storePagePrev'),next=$('storePageNext');(previous&&!previous.disabled?previous:next&&!next.disabled?next:menu.querySelector('#tokenStoreCards button:not([disabled])')||$('storeSearch'))?.focus({preventScroll:true});}
  else if(a==='storePageNext'){storePage++;drawTokenStoreCards();const next=$('storePageNext'),previous=$('storePagePrev');(next&&!next.disabled?next:previous&&!previous.disabled?previous:menu.querySelector('#tokenStoreCards button:not([disabled])')||$('storeSearch'))?.focus({preventScroll:true});}
  else if(a.startsWith('storeBuy_')){const match=a.match(/^storeBuy_(superShot|magicTrick|team|player|appearance|accessory)_(.*)$/);if(match)buyTokenStoreItem(match[1],decodeURIComponent(match[2]));}
@@ -3247,15 +3319,17 @@ function frame(now){pollMenuPad(now);const rawDelta=now-last;let dt=Math.min(.05
   else if(now-lanFailureSince>4500&&!(lanRole==='host'&&screen==='FULL TIME'&&lanRuntime.resultAckStatus==='failed')){stopLanMatch();game.matchState='none';page('LAN MATCH ENDED','The remote player disconnected or the host ended the match.',button('RETURN TO QUICK MATCH','navQuick','gold'),'navQuick');}
   const receiptRecovery=$('lanHostReceiptRecovery');if(receiptRecovery)receiptRecovery.hidden=!(lanRole==='host'&&lanRuntime?.resultAckStatus==='failed');
   if(lanRole==='guest'&&game.matchState==='finished'&&!lanFinish)lanFinish={type:'finished',score:game.score.slice()};
- if(lanFinish&&(lanRole!=='host'||lanRuntime?.resultDelivered)){const result=lanFinish;lanFinish=null;fulltime(result);}
- if(lanResultCleanupPending&&['confirmed','unconfirmed'].includes(lanRuntime?.resultAckStatus))stopLanMatch();
+ if(lanFinish&&(lanRole!=='host'||lanRuntime?.resultDelivered)){const result=lanFinish;lanFinish=null;void fulltime(result);}
+ const hostReceiptSettled=lanRole==='host'&&['confirmed','unconfirmed'].includes(lanRuntime?.resultAckStatus),guestReceiptSettled=lanRole==='guest'&&lanRuntime?.guestResultAckStatus==='confirmed';
+ if(lanResultCleanupPending&&(hostReceiptSettled||guestReceiptSettled))stopLanMatch();
  }else if(!onlineMatchClient&&game.matchState==='play'){game.update(dt);updateTrainingCrossCoach();}else if(game.matchState==='penalty')game.updatePK(dt);// The network simulation has two humans on both peers; only the local user's
  // selected player may receive a Breath ring. Local couch Versus stays dual-human.
  game.localBreathSide=lanRole==='host'?0:lanRole==='guest'?1:null;
  renderer.frame(game,dt,menuVisible());if(screen==='home'&&menuVisible())drawPoster();uiT-=dt;if(uiT<=0){uiT=.1;if(!menuVisible())drawHUD()}if(toastTime&&now>toastTime){$('gameToast').classList.add('hidden');toastTime=0}checkRotate();requestAnimationFrame(frame)}
 game.init({home,away,options:opt});game.matchState='none';window.NekketsuHD={audio,version:RELEASE.version,game,renderer,input,teams:TEAMS,shots:SHOTS,aiLevels:AI_LEVELS,rosterFor,getCareer:()=>career,getContinental:()=>continentalRun,confederations:CONTINENTS,continentalMapping:CONTINENTAL_TEAMS,kitsFor:team=>KIT_CHOICES.map(k=>kitFor(team,k)),getKitChoices:()=>kitSelections.slice(),getTeamPlan:i=>planFor(i),getMorale:team=>game.teamMorale(team)};window.NekketsuHD.ballModels=VISUALFEEL.BALL_MODELS;window.NekketsuHD.facingView=VISUALFEEL.facingView;window.NekketsuHD.impactStun=VISUALFEEL.impactStun;window.NekketsuHD.rollDelta=VISUALFEEL.rollDelta;window.NekketsuHD.personalityFor=p=>BPWPERSONALITY.profileFor(p);window.NekketsuHD.personalityMotion=(p,params)=>BPWPERSONALITY.sampleMotion(BPWPERSONALITY.profileFor(p),params);window.SupermagicFootball=window.NekketsuHD;window.SupermagicFootball.conceptModularStatus=CONCEPT_MODULAR.status;window.SupermagicFootball.portraitFit=portraitFit;window.SupermagicFootball.studio={directions:STUDIO_DIRS,getDirection:()=>studioDirection,rotate:studioRotate,getAction:()=>studioAction,fitKeeperPose:drawFittedKeeperStudioPose};
 initializeOnlineAccount();
-showHome();requestAnimationFrame(frame);
+menu.innerHTML='<div class="menubox"><p class="muted" role="status" aria-live="polite">Loading local progress…</p></div>';
+void tokenWallet.ready.then(()=>{showHome();requestAnimationFrame(frame)});
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
 // Browser audio can only be unlocked by a deliberate user gesture.

@@ -31,6 +31,7 @@ function service(overrides={}){
     sendSnapshot:(userId,envelope,metadata)=>{sent.push({userId,envelope,metadata});return overrides.sendSnapshot?.(userId,envelope,metadata)??true;},
     onMatchError:overrides.onMatchError,
     onMatchFault:overrides.onMatchFault,
+    onMatchAssigned:overrides.onMatchAssigned,
     onRequeue:(userId,details)=>requeued.push({userId,details}),onMatchFinished:overrides.onMatchFinished||(async result=>({matchId:result.matchId})),now:()=>time,autoTick:false,
     ...(overrides.config||{})});
   return {api,engines,engineOptions,sent,requeued,setTime:value=>{time=value;}};
@@ -46,6 +47,23 @@ test('tickets bind canonical selected teams; queue-time tampering cannot change 
  assert.equal(paired.status,'matched');
  assert.deepEqual(ctx.engineOptions[0].teamIds,['brazil','japan']);
  assert.deepEqual(ctx.engineOptions[0].participants,[a,b]);
+ ctx.api.close();
+});
+
+test('PVP assignment is durably acknowledged before a matched response and persistence failure releases both slots',async()=>{
+ const assigned=[],ctx=service({onMatchAssigned:async value=>{assigned.push(value);if(assigned.length===1)throw new Error('lifecycle database unavailable');},config:{validTeamIds:['team_home','team_away']}});
+ const first=ctx.api.issueTicket(a,'team_home'),second=ctx.api.issueTicket(b,'team_away');
+ await ctx.api.queueTicket({userId:a,ticket:first.ticket});
+ const rejected=await ctx.api.queueTicket({userId:b,ticket:second.ticket});
+ assert.equal(rejected.status,'queued','no assigned response is published when durable lifecycle persistence fails');
+ assert.deepEqual(ctx.api.getState().active,[],'the just-created match is closed and both active slots are released');
+ assert.equal(ctx.api.getState().queued.length,2,'both authenticated participants can safely retry');
+ ctx.api.cancelQueue(a);ctx.api.cancelQueue(b);
+ const third=ctx.api.issueTicket(a,'team_home'),fourth=ctx.api.issueTicket(b,'team_away');
+ await ctx.api.queueTicket({userId:a,ticket:third.ticket});
+ const matched=await ctx.api.queueTicket({userId:b,ticket:fourth.ticket});
+ assert.equal(matched.status,'matched');assert.equal(assigned.length,2);
+ assert.deepEqual(assigned[1],{matchId:matched.matchId,participants:[a,b],teamIds:['team_home','team_away']});
  ctx.api.close();
 });
 
@@ -129,7 +147,7 @@ test('random queue deterministically resolves duplicate selected teams to a dist
 });
 
 test('trusted Career reservations bind exact match ID, participant sides, and selected teams without joining random queue',async()=>{
- const ctx=service({config:{validTeamIds:['japan','brazil','argentina']}}),matchId='f'.repeat(32);
+ const assigned=[],ctx=service({onMatchAssigned:async value=>assigned.push(value.matchId),config:{validTeamIds:['japan','brazil','argentina']}}),matchId='f'.repeat(32);
  const fixture={fixtureNo:1,fixtureId:'c'.repeat(32),matchId,participants:[{userId:a,side:0},{userId:AI,side:1}],teamIds:['japan','brazil'],mode:'career-ai'};
  assert.deepEqual(ctx.api.reserveCareerFixture(fixture),{ok:true,duplicate:false,matchId});
  assert.deepEqual(ctx.api.reserveCareerFixture(fixture),{ok:true,duplicate:true,matchId});
@@ -144,6 +162,7 @@ test('trusted Career reservations bind exact match ID, participant sides, and se
  assert.deepEqual(paired.seats,[{userId:a,side:0},{userId:AI,side:1}]);
  assert.deepEqual(ctx.engineOptions[0],{matchId,participants:[a,AI],teamIds:['japan','brazil'],mode:'career-ai'});
  assert.deepEqual(ctx.api.getState().queued,[c]);
+ assert.deepEqual(assigned,[],'Career fixture assignments use their separate durable recovery lifecycle');
  assert.equal((await ctx.api.queuePresentedTicket(first.ticket)).reason,'ticket-used-or-unknown');
  ctx.api.close();
 });

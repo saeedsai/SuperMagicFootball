@@ -126,7 +126,7 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
         page.add_init_script('window.localStorage.setItem("legend_careerSlots", '+json.dumps(seed_storage['legend_careerSlots'])+'); window.localStorage.setItem("legend_managerCareer", '+json.dumps(seed_storage['legend_managerCareer'])+');')
         page.add_init_script('''window.__blockPendingResultStorage=false;const __smfOriginalSessionSet=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(window.__blockPendingResultStorage&&key==='smf.online.pending-match-result.v1')throw new DOMException('blocked','QuotaExceededError');return __smfOriginalSessionSet.call(this,key,value)};''')
         archived_career={'seasonId':'d'*32,'season':{'version':2,'status':'complete','fixtureCount':1,'playedCount':1,'teamId':'japan','fixtures':[{'fixtureNo':1,'status':'completed','teamIds':['japan','brazil'],'score':[2,0],'recordedAt':'2026-11-01T12:00:00.000Z'}],'standings':[{'teamId':'japan','played':1,'wins':1,'draws':0,'losses':0,'goalsFor':2,'goalsAgainst':0,'points':3,'goalDifference':2},{'teamId':'brazil','played':1,'wins':0,'draws':0,'losses':1,'goalsFor':0,'goalsAgainst':2,'points':0,'goalDifference':-2}]}}
-        api = {'career': None, 'squad': None, 'onlineCareerSeason':None, 'onlineCareerArchive':[archived_career], 'onlineCareerTicketRequests':0, 'conflict': False, 'puts': [], 'ticketRequests': 0, 'resumeTicketRequests':0, 'ticketBodies': [], 'rewardClaims': [], 'historyRequests':0, 'historyItems':[{'matchId':'a'*32,'recordedAt':'2026-11-04T12:00:00.000Z','teamId':'japan','opponentTeamId':'brazil','score':[2,1],'outcome':'win'}], 'creditedRewards':set(), 'loseNextRewardResponse':False, 'pvpMatchId':'1'*32, 'utBalance':800, 'utOwned':[{'category':'team','itemId':'japan','acquiredAt':None}]+[{'category':'player','itemId':f'japan/jp{i}','acquiredAt':None} for i in range(12)], 'utPurchases':[], 'utReceipts':{}, 'utCollectionFailures':0, 'utLosePurchaseResponse':True, 'utLineups':{'japan':{'teamId':'japan','playerIds':[f'japan/jp{i}' for i in range(12)],'version':0}}, 'utLineupReceipts':{}, 'utLineupRequests':[], 'utLineupLoseResponse':True, 'issuedTokens':[], 'ownersByToken':{}, 'switchProfiles':{}, 'switchPayloadsEnabled':False, 'deferOwner':None, 'deferPaths':set(), 'deferredRoutes':[]}
+        api = {'career': None, 'squad': None, 'onlineCareerSeason':None, 'onlineCareerArchive':[archived_career], 'onlineCareerTicketRequests':0, 'conflict': False, 'puts': [], 'ticketRequests': 0, 'resumeTicketRequests':0, 'ticketBodies': [], 'rewardClaims': [], 'historyRequests':0, 'matchStatusRequests':[], 'matchStatuses':{'3'*32:'unknown'}, 'historyItems':[{'matchId':'a'*32,'recordedAt':'2026-11-04T12:00:00.000Z','teamId':'japan','opponentTeamId':'brazil','score':[2,1],'outcome':'win'}], 'creditedRewards':set(), 'loseNextRewardResponse':False, 'pvpMatchId':'1'*32, 'utBalance':800, 'utOwned':[{'category':'team','itemId':'japan','acquiredAt':None}]+[{'category':'player','itemId':f'japan/jp{i}','acquiredAt':None} for i in range(12)], 'utPurchases':[], 'utReceipts':{}, 'utCollectionFailures':0, 'utLosePurchaseResponse':True, 'utLineups':{'japan':{'teamId':'japan','playerIds':[f'japan/jp{i}' for i in range(12)],'version':0}}, 'utLineupReceipts':{}, 'utLineupRequests':[], 'utLineupLoseResponse':True, 'issuedTokens':[], 'ownersByToken':{}, 'switchProfiles':{}, 'switchPayloadsEnabled':False, 'deferOwner':None, 'deferPaths':set(), 'deferredRoutes':[]}
         online_inputs = []
         online_ws = {'socket':None}
 
@@ -205,6 +205,12 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
             elif path.endswith('/matches/history') and req.method == 'GET':
                 api['historyRequests']+=1
                 route.fulfill(json={'items':api['historyItems'],'nextCursor':None})
+            elif path.endswith('/matches/status') and req.method == 'POST':
+                body=req.post_data_json or {}
+                assert set(body)=={'matchIds'} and isinstance(body['matchIds'],list)
+                ids=body['matchIds']
+                api['matchStatusRequests'].append({'owner':owner,'ids':ids})
+                route.fulfill(json={'items':[{'matchId':match_id,'status':api['matchStatuses'].get(match_id,'completed' if match_id=='3'*32 else 'unknown')} for match_id in ids]})
             elif path.endswith('/me'):
                 route.fulfill(json={'profile':None,'version':0,'updatedAt':None})
             elif path.endswith('/career/current') and req.method == 'GET':
@@ -541,11 +547,12 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
         online_ws['socket'].close(code=1011,reason='simulated lost terminal result event')
         page.wait_for_function("document.querySelector('#onlineMatchStatus')?.textContent.includes('Connection lost')",timeout=10000)
         page.locator('[data-action="onlineMatchLeave"]').click()
-        assert 'result is unresolved' in page.locator('#onlineMatchStatus').inner_text()
+        assert 'could not confirm' in page.locator('#onlineMatchRecoveryStatus').inner_text().lower()
         assert page.evaluate("JSON.parse(sessionStorage.getItem('smf.online.pending-match-result.v1')||'[]')")==['3'*32]
         assert page.locator('[data-action="onlineMatchStart"]').is_enabled(), 'an unresolved marker does not block a new match until the bounded tab recovery list reaches capacity'
         api['historyItems']=[{'matchId':'a'*32,'recordedAt':'2026-11-04T12:00:00.000Z','teamId':'japan','opponentTeamId':'brazil','score':[2,1],'outcome':'win'},
             {'matchId':'3'*32,'recordedAt':'2026-11-04T16:00:00.000Z','teamId':'brazil','opponentTeamId':'japan','score':[0,3],'outcome':'loss'}]
+        api['matchStatuses']['3'*32]='completed'
         api['loseNextRewardResponse']=True
         page.reload(wait_until='domcontentloaded',timeout=60000)
         page.wait_for_function('Boolean(window.NekketsuHD?.game)',timeout=30000)
@@ -599,17 +606,17 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
         page.wait_for_function("document.querySelector('.fixture')?.textContent.includes('1/8 FIXTURES')",timeout=15000)
         assert 'Japan' in page.locator('[aria-label="Online Career season"]').inner_text()
         assert page.locator('[aria-label="Online Career season"]').inner_text().count('PLAYED')==1
+        api['matchStatuses'].update({x*32:'interrupted' for x in '1234'})
         page.evaluate("sessionStorage.setItem('smf.online.pending-match-result.v1',JSON.stringify(['1','2','3','4'].map(x=>x.repeat(32))))")
         page.reload(wait_until='domcontentloaded',timeout=60000)
         page.wait_for_function('Boolean(window.NekketsuHD?.game)',timeout=30000)
         page.locator('[data-action="navOnline"]').click()
         page.locator('[data-action="navOnlineServerMatch"]').click()
         page.locator('[data-action="onlineSignIn_match"]').click()
-        page.wait_for_function("document.querySelector('[data-action=onlineMatchStart]') && document.querySelector('#onlineMatchCapacity')",timeout=30000)
-        assert page.locator('#onlineMatchCapacity').get_attribute('role')=='status'
-        assert page.locator('#onlineMatchCapacity').inner_text().startswith('Pending-result limit reached (4)')
-        assert page.locator('[data-action^="onlineMatchRecover_"]').count()==4
-        assert page.locator('[data-action="onlineMatchStart"]').is_disabled()
+        page.wait_for_function("document.querySelector('[data-action=onlineMatchStart]') && sessionStorage.getItem('smf.online.pending-match-result.v1')===null",timeout=30000)
+        assert len(api['matchStatusRequests'][-1]['ids'])==4
+        assert 'No score or reward was created' in page.locator('#onlineMatchStatus').inner_text()
+        assert page.locator('[data-action="onlineMatchStart"]').is_enabled(), 'server-confirmed interrupted stale IDs no longer block future matches'
         # Corrupt/unreadable pending storage fails closed and exposes an accessible reason
         # even when no recoverable opaque IDs could be parsed from storage.
         page.add_init_script('''const __smfOriginalGet=Storage.prototype.getItem,__smfOriginalRemove=Storage.prototype.removeItem;Storage.prototype.getItem=function(key){if(key==='smf.online.pending-match-result.v1')throw new DOMException('blocked','SecurityError');return __smfOriginalGet.call(this,key)};Storage.prototype.removeItem=function(key){if(key==='smf.online.pending-match-result.v1')throw new DOMException('blocked','SecurityError');return __smfOriginalRemove.call(this,key)};''')
@@ -722,4 +729,4 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
     httpd.shutdown()
     httpd.server_close()
 
-    print('ONLINE_ACCOUNT_UI_BROWSER_PASS: optional config, real PKCE callback, server Career season/fixture/standings and CPU match, UT acquisition retry and role-checked lineup save, PVP lineup ticket binding, four-action input, lost-terminal PVP result recovery after reload, idempotent reward retry, preserved offline saves and accessible status')
+    print('ONLINE_ACCOUNT_UI_BROWSER_PASS: optional config, real PKCE callback, server Career season/fixture/standings and CPU match, UT acquisition retry and role-checked lineup save, PVP lineup ticket binding, four-action input, four server-confirmed interrupted pending IDs cleared without score/reward, lost-terminal PVP result recovery after reload, idempotent reward retry, preserved offline saves and accessible status')

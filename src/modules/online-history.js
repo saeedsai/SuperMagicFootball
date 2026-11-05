@@ -13,11 +13,11 @@ function validHistoryItem(item){
   item.teamId!==item.opponentTeamId&&Array.isArray(item.score)&&item.score.length===2&&item.score.every(value=>Number.isSafeInteger(value)&&value>=0&&value<=999)&&
   ['win','draw','loss'].includes(item.outcome);
 }
-export function createOnlineHistoryController({loadPage,isSignedIn,describeError=error=>error?.message||'Could not load online match history.',storage}={}){
- if(typeof loadPage!=='function'||typeof isSignedIn!=='function'||typeof describeError!=='function')
+export function createOnlineHistoryController({loadPage,loadStatuses=null,isSignedIn,describeError=error=>error?.message||'Could not load online match history.',storage}={}){
+ if(typeof loadPage!=='function'||loadStatuses!==null&&typeof loadStatuses!=='function'||typeof isSignedIn!=='function'||typeof describeError!=='function')
   throw new TypeError('Online match history requires page, session, and error handlers');
  const pendingStorage=safePendingStorage(storage);
- let generation=0,loading=false,recoveryLoading=false,recoveryPromise=null,recoveryTarget=null,pendingMatchIds=[],pendingMatchPersisted=true,pendingStorageInvalid=false,pendingStorageReadError=false,pendingStorageLoaded=false;
+ let generation=0,loading=false,recoveryLoading=false,recoveryPromise=null,recoveryTarget=null,statusPromise=null,pendingMatchIds=[],pendingMatchPersisted=true,pendingStorageInvalid=false,pendingStorageReadError=false,pendingStorageLoaded=false;
  let items=[],cursor=null,status='';
  function readPendingMatches(){
   if(pendingStorageLoaded)return pendingMatchIds.slice();
@@ -115,6 +115,32 @@ export function createOnlineHistoryController({loadPage,isSignedIn,describeError
   recoveryPromise=operation;
   return operation;
  }
+ async function reconcileInterruptedPending(){
+  const ids=readPendingMatches();
+  if(statusPromise)return statusPromise;
+  if(!ids.length)return Object.freeze({status:'empty',cleared:Object.freeze([]),message:''});
+  if(!isSignedIn())return Object.freeze({status:'signed-out',cleared:Object.freeze([]),message:'Sign in to verify pending matches for this account.'});
+  if(typeof loadStatuses!=='function')return Object.freeze({status:'unavailable',cleared:Object.freeze([]),message:'The server cannot verify interrupted matches right now.'});
+  const requestId=generation;
+  const operation=Promise.resolve().then(async()=>{
+   try{
+    const response=await loadStatuses(ids.slice());
+    if(requestId!==generation||!isSignedIn()||ids.some(id=>!readPendingMatches().includes(id)))return Object.freeze({status:'stale',cleared:Object.freeze([]),message:'The account or pending matches changed during verification.'});
+    if(!response||!Array.isArray(response.items)||response.items.length!==ids.length||response.items.some((item,index)=>!item||item.matchId!==ids[index]||!['active','completed','interrupted','unknown'].includes(item.status)))throw new Error('The server match-status response was invalid.');
+    const interrupted=response.items.filter(item=>item.status==='interrupted').map(item=>item.matchId);
+    const cleared=[];
+    for(const matchId of interrupted){if(!clearPendingMatch(matchId))throw new Error('The confirmed interrupted match could not be removed from local storage.');cleared.push(matchId);}
+    const unknown=response.items.some(item=>item.status==='unknown');
+    const stillActive=response.items.some(item=>item.status==='active');
+    const completed=response.items.some(item=>item.status==='completed');
+    const message=cleared.length?`${cleared.length} server-confirmed interrupted match marker${cleared.length===1?' was':'s were'} cleared. No score or reward was created; you can play again.`:
+      unknown?'The server could not confirm one or more saved match IDs for this account. They remain saved.':stillActive?'A saved match is still active on the server. Its marker remains saved.':completed?'Completed matches remain available for normal result and reward recovery.':'No interrupted matches were confirmed; saved IDs remain unchanged.';
+    return Object.freeze({status:cleared.length?'interrupted-cleared':'checked',cleared:Object.freeze(cleared),message});
+   }catch(error){return Object.freeze({status:'error',cleared:Object.freeze([]),message:describeError(error)});}
+  }).finally(()=>{if(statusPromise===operation)statusPromise=null;});
+  statusPromise=operation;
+  return operation;
+ }
  function discardCorruptPendingMatches({confirmed=false}={}){
   if(!confirmed||(!pendingStorageInvalid&&!pendingStorageReadError)||!pendingStorage)return false;
   try{pendingStorage.removeItem(PENDING_MATCH_KEY);}catch{pendingMatchPersisted=false;return false;}
@@ -122,6 +148,6 @@ export function createOnlineHistoryController({loadPage,isSignedIn,describeError
   status='Unreadable pending-match data was explicitly discarded. Any unclaimed result represented only by that data may no longer be recoverable.';
   return true;
  }
- function reset(){generation++;loading=false;recoveryLoading=false;recoveryPromise=null;recoveryTarget=null;items=[];cursor=null;status='';}
- return Object.freeze({load,reset,rememberPendingMatch,clearPendingMatch,recoverPendingMatch,discardCorruptPendingMatches,get state(){return snapshot();}});
+ function reset(){generation++;loading=false;recoveryLoading=false;recoveryPromise=null;recoveryTarget=null;statusPromise=null;items=[];cursor=null;status='';}
+ return Object.freeze({load,reset,rememberPendingMatch,clearPendingMatch,recoverPendingMatch,reconcileInterruptedPending,discardCorruptPendingMatches,get state(){return snapshot();}});
 }

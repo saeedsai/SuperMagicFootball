@@ -47,7 +47,7 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
   }
   if (typeof pool.query!=='function'||typeof pool.connect!=='function') throw new TypeError('A PostgreSQL Pool-like instance is required');
   pool.on?.('error',()=>console.error('Online account database connection failed'));
-  let matchmaking=null,transport=null,recordFinalResult=null,onlineCareerService=null,server=null,serverStartPromise=null;
+  let matchmaking=null,transport=null,recordFinalResult=null,matchLifecycleStore=null,onlineCareerService=null,server=null,serverStartPromise=null;
   let lockClient=null,lockClientReleased=false,lockHealthy=false,lockAcquired=false,stopping=false;
   let lockErrorHandler=null;
   const removeLockErrorHandler=()=>{if(lockClient&&lockErrorHandler){lockClient.removeListener?.('error',lockErrorHandler);lockClient.off?.('error',lockErrorHandler)}lockErrorHandler=null;};
@@ -103,6 +103,10 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
       sendSnapshot:(userId,envelope,context)=>transport?.sendSnapshot(userId,envelope,context)??false,
       onRequeue:(userId,detail)=>transport?.onRequeue(userId,detail),
       onMatchError:(matchId,code)=>transport?.onMatchError(matchId,code)??false,
+      onMatchAssigned:async assignment=>{
+        if(!matchLifecycleStore)throw new Error('PVP lifecycle store is not ready');
+        await matchLifecycleStore.recordAssigned(assignment);
+      },
       onMatchFault:(matchId)=>{
         // Match IDs are random opaque identifiers; log no user, engine, or request data.
         if(typeof matchId!=='string'||!/^[a-f0-9]{32}$/.test(matchId))return;
@@ -122,7 +126,12 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
     const canonicalTeamIds=validTeamIds;
     const runtime=await runtimeFactory({env,pool,fetchImpl,matchmaking,canonicalTeamIds});
     onlineCareerService=runtime.onlineCareerService;
+    matchLifecycleStore=runtime.matchLifecycleStore;
     recordFinalResult=runtime.resultStore.recordFinalResult;
+    if(!matchLifecycleStore||typeof matchLifecycleStore.reconcileAfterRestart!=='function')throw new Error('PVP lifecycle startup recovery is unavailable');
+    // The singleton PostgreSQL session lock is already held. Mark unfinished PVP
+    // records interrupted before opening the listener; Career recovery stays separate.
+    await matchLifecycleStore.reconcileAfterRestart(runtime.resultStore);
     if(onlineCareerService){
       if(typeof onlineCareerService.reconcileReservedFixtures!=='function')throw new Error('Online Career startup recovery is unavailable');
       // The PostgreSQL singleton lock is held before runtime creation. Recover durable

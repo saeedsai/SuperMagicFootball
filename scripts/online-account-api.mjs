@@ -17,6 +17,7 @@ const ROUTES = new Map([
   ['/api/v1/matches/ticket', new Set(['POST'])],
   ['/api/v1/matches/resume-ticket', new Set(['POST'])],
   ['/api/v1/matches/history', new Set(['GET'])],
+  ['/api/v1/matches/status', new Set(['POST'])],
   ['/api/v1/matches/rewards/claim', new Set(['POST'])],
   ['/api/v1/tokens/balance', new Set(['GET'])]
 ]);
@@ -116,6 +117,19 @@ async function readRewardMatchId(request){
   let body;try{const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length}body=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes))}catch(error){if(error?.status)throw error;throw Object.assign(new Error('invalid-json'),{status:400})}
   if(!body||Array.isArray(body)||Object.getPrototypeOf(body)!==Object.prototype||Object.keys(body).length!==1||Object.keys(body)[0]!=='matchId'||typeof body.matchId!=='string'||!/^[a-f0-9]{32}$/.test(body.matchId))throw Object.assign(new Error('invalid-match'),{status:400});
   return body.matchId;
+}
+async function readMatchStatusIds(request){
+ const length=request.headers.get('content-length');
+ if(length!==null&&(!/^\d+$/.test(length)||Number(length)>1024))throw Object.assign(new Error('too-large'),{status:413});
+ if(!request.body)throw Object.assign(new Error('invalid-json'),{status:400});
+ if(request.headers.get('content-type')?.split(';',1)[0].trim().toLowerCase()!=='application/json')throw Object.assign(new Error('content-type'),{status:415});
+ const reader=request.body.getReader();let size=0;const chunks=[];
+ try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>1024){await reader.cancel().catch(()=>{});throw Object.assign(new Error('too-large'),{status:413});}chunks.push(value);}}finally{reader.releaseLock();}
+ let body;try{const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}body=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch(error){if(error?.status)throw error;throw Object.assign(new Error('invalid-json'),{status:400});}
+ if(!body||Array.isArray(body)||Object.getPrototypeOf(body)!==Object.prototype||Object.keys(body).length!==1||!Object.hasOwn(body,'matchIds')||
+  !Array.isArray(body.matchIds)||body.matchIds.length<1||body.matchIds.length>4||body.matchIds.some(id=>typeof id!=='string'||!/^[a-f0-9]{32}$/.test(id))||new Set(body.matchIds).size!==body.matchIds.length)
+  throw Object.assign(new Error('invalid-query'),{status:400});
+ return body.matchIds.slice();
 }
 
 async function readUltimateTeamPurchase(request){
@@ -222,7 +236,7 @@ function normalizeRateLimits(value = {}) {
  * The in-memory per-account rate limiter is process-local: multi-instance deploys
  * also need an edge or shared-store limit. Its identity map never evicts live rows.
  */
-export function createOnlineAccountApi({authenticate, store, resultStore, rewardStore, ultimateTeamStore, onlineCareerService, allowedOrigins = [], matchmaking, now = Date.now, limits} = {}) {
+export function createOnlineAccountApi({authenticate, store, resultStore, matchLifecycleStore, rewardStore, ultimateTeamStore, onlineCareerService, allowedOrigins = [], matchmaking, now = Date.now, limits} = {}) {
   if (typeof authenticate !== 'function' || !store || typeof store !== 'object') throw new TypeError('Online API requires auth and store adapters');
   if (typeof now !== 'function') throw new TypeError('Online API requires a clock');
   const rateLimits = normalizeRateLimits(limits);
@@ -323,6 +337,15 @@ export function createOnlineAccountApi({authenticate, store, resultStore, reward
             outcome:score[0]>score[1]?'win':score[0]<score[1]?'loss':'draw'};
         });
         return json({items,nextCursor:page.nextCursor},200,cors);
+      }
+      if(route==='POST /api/v1/matches/status'){
+        if(!matchLifecycleStore||typeof matchLifecycleStore.listStatuses!=='function')return json({error:'match-status-unavailable'},503,cors);
+        if(url.search)return json({error:'invalid-query'},400,cors);
+        const ids=await readMatchStatusIds(request);
+        const result=await matchLifecycleStore.listStatuses(userId,ids);
+        if(!result||!Array.isArray(result.items)||result.items.length!==ids.length||result.items.some((item,index)=>
+          !item||item.matchId!==ids[index]||!['active','completed','interrupted','unknown'].includes(item.status)))throw new Error('invalid-match-status');
+        return json(result,200,cors);
       }
       if(route==='GET /api/v1/tokens/balance'){
         if(!rewardStore||typeof rewardStore.getBalance!=='function')return json({error:'rewards-unavailable'},503,cors);

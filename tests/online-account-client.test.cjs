@@ -179,6 +179,17 @@ test('match history client validates account-relative results and bounded cursor
  await assert.rejects(bad.loadMatchHistory(),error=>error.code==='invalid-response');
 });
 
+test('PVP match status client sends at most four IDs and validates exact ordered statuses',async()=>{
+ const ids=['a','b'].map(x=>x.repeat(32)),calls=[];
+ const client=createOnlineAccountClient({baseUrl:'https://api.example.test',getAccessToken:()=>TOKEN,fetchImpl:async(url,init)=>{calls.push({url,init});return json({items:[{matchId:ids[0],status:'interrupted'},{matchId:ids[1],status:'unknown'}]});}});
+ assert.deepEqual(await client.loadMatchStatuses(ids),{items:[{matchId:ids[0],status:'interrupted'},{matchId:ids[1],status:'unknown'}]});
+ assert.equal(calls[0].url,'https://api.example.test/api/v1/matches/status');assert.equal(calls[0].init.method,'POST');
+ assert.deepEqual(JSON.parse(calls[0].init.body),{matchIds:ids});assert.equal(calls[0].init.cache,'no-store');
+ await assert.rejects(client.loadMatchStatuses(Array(5).fill(ids[0])),e=>e.code==='invalid-request');
+ const unknownStatus=createOnlineAccountClient({getAccessToken:()=>TOKEN,fetchImpl:async()=>json({items:[{matchId:ids[0],status:'interrupted'}]})});
+ await assert.rejects(unknownStatus.loadMatchStatuses(ids),e=>e.code==='invalid-response');
+});
+
 test('matchmaking ticket uses authenticated empty-body POST and returns only a valid ticket and parsed expiry', async () => {
   let call;
   const ticket = 'a'.repeat(64);
