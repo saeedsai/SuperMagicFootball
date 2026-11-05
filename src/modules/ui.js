@@ -19,6 +19,7 @@ import {BPW} from "./bpw.js";
 import {BPWALLTIME} from "./bpwalltime.js";
 import {CONTINENTAL} from "./continental.js";
 import {TOURNAMENTS} from "./tournaments.js";
+import {CUSTOM_LEAGUE} from "./custom_league.js";
 import {CAREER} from "./career.js";
 import {CAREER_SLOTS} from "./career_slots.js";
 import {createOnlineOidcSession} from "./online-auth.js";
@@ -38,7 +39,7 @@ import {BPWPERSONALITY} from "./bpwpersonality.js";
 import {RENDER} from "./render.js";
 import {CONCEPT_MODULAR} from "./conceptmodular.js";
 import {GAME_ASSETS} from "../assets.js";
-(()=>{const {ArcadeAudio,AUDIO_DEFAULTS}=AUDIO;const {JAPAN_ROSTER,TEAMS,rosterFor,SHOTS,DEFAULT_OPTIONS,DEFAULT_LINEUP,WEATHER,TERRAIN,CONDITIONS,FORMATIONS,STADIUMS}=DATA;const {Input}=INPUT;const {TEAM_TALKS,moodLabel}=MORALE;const {AI_LEVELS,aiTuning}=AI;const {withStats,NUMERIC_STATS,overallForPosition,verifiedRatingTierForPlayer}=STATS;const {initialFatigue}=FITNESS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel}=SPECIALS;const {kitFor,KIT_CHOICES,matchContrast,bestContrastSelections}=KITS;const {teamIdentity,countryFlag,countryCode,isClub}=IDENTITY;const {careerClubIds,clubRegion,clubCountry,countryName,availableRegions,availableCountries,clubsInCountry}=CLUBFILTERS;const {defaultPlan,safePlan,validatePlan,ATTACK_STYLES,DEFENCE_STYLES}=TACTICS;const {GameEngine}=ENGINE;const {Renderer}=RENDER;const {installExpansion,avatarFor,NATURAL_SKIN_TONES,NATURAL_HAIR_COLORS,STUDIO_ASSET_LABELS}=EXPANDED;const {installBPWWorldCups,BPW_YEARS}=BPW;const {installBPWAllTime}=BPWALLTIME;const {CONTINENTS,SIX_TOP_BY_CONTINENT,installContinentalClubs}=CONTINENTAL;const {createTournament,createCustomKnockoutTournament,tournamentCurrent,tournamentAdvance,tournamentStandings,tournamentProgress,validateTournament}=TOURNAMENTS;const {createCareer,currentCareerFixture,advanceCareer,standings,careerSeasonReview,completedSeasonArchive,nextSeason,purchase,upgradeFacility,trainPlayer,scoutAcademy,signAcademy,renewContract,recoverPlayer,careerCoverage,recordMatchFitness,verifiedPlayerAgeOnDate}=CAREER;
+(()=>{const {ArcadeAudio,AUDIO_DEFAULTS}=AUDIO;const {JAPAN_ROSTER,TEAMS,rosterFor,SHOTS,DEFAULT_OPTIONS,DEFAULT_LINEUP,WEATHER,TERRAIN,CONDITIONS,FORMATIONS,STADIUMS}=DATA;const {Input}=INPUT;const {TEAM_TALKS,moodLabel}=MORALE;const {AI_LEVELS,aiTuning}=AI;const {withStats,NUMERIC_STATS,overallForPosition,verifiedRatingTierForPlayer}=STATS;const {initialFatigue}=FITNESS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel}=SPECIALS;const {kitFor,KIT_CHOICES,matchContrast,bestContrastSelections}=KITS;const {teamIdentity,countryFlag,countryCode,isClub}=IDENTITY;const {careerClubIds,clubRegion,clubCountry,countryName,availableRegions,availableCountries,clubsInCountry}=CLUBFILTERS;const {defaultPlan,safePlan,validatePlan,ATTACK_STYLES,DEFENCE_STYLES}=TACTICS;const {GameEngine}=ENGINE;const {Renderer}=RENDER;const {installExpansion,avatarFor,NATURAL_SKIN_TONES,NATURAL_HAIR_COLORS,STUDIO_ASSET_LABELS}=EXPANDED;const {installBPWWorldCups,BPW_YEARS}=BPW;const {installBPWAllTime}=BPWALLTIME;const {CONTINENTS,SIX_TOP_BY_CONTINENT,installContinentalClubs}=CONTINENTAL;const {createTournament,createCustomKnockoutTournament,tournamentCurrent,tournamentAdvance,tournamentStandings,tournamentProgress,validateTournament}=TOURNAMENTS;const {create:createCustomLeague,current:customLeagueCurrent,standings:customLeagueStandings,advance:advanceCustomLeague,validate:validateCustomLeague}=CUSTOM_LEAGUE;const {createCareer,currentCareerFixture,advanceCareer,standings,careerSeasonReview,completedSeasonArchive,nextSeason,purchase,upgradeFacility,trainPlayer,scoutAcademy,signAcademy,renewContract,recoverPlayer,careerCoverage,recordMatchFitness,verifiedPlayerAgeOnDate}=CAREER;
 
 
 
@@ -160,6 +161,22 @@ if(!cupSlots.error){try{
 let continentSelection='UEFA';
 let customCupEntrants=[];
 let customCupClub=null;
+let customLeagueEntrants=[];
+let customLeagueClub=null;
+let customLeagueRun=null,customLeagueSaveVolatile=false,customLeagueSaveError='',customLeagueCorruptRaw=null,customLeagueResultCommitted=false,customLeagueStorageBaseline=null,customLeagueStorageBaselineKnown=false;
+function customLeagueTeamReferencesValid(c){return !!c&&Array.isArray(c.participants)&&c.teamKeys&&typeof c.teamKeys==='object'&&c.participants.every(id=>Number.isSafeInteger(id)&&TEAMS[id]?.id===c.teamKeys[String(id)]);}
+function loadCustomLeague(){
+ let raw;try{raw=careerStorage.getItem('legend_customLeague');customLeagueStorageBaseline=raw;customLeagueStorageBaselineKnown=true;}catch(error){customLeagueSaveVolatile=true;customLeagueSaveError='Browser storage is unavailable. This Custom League can be played for this session only.';return;}
+ if(raw===null||raw===undefined)return;
+ try{const saved=JSON.parse(raw);if(!validateCustomLeague(saved,TEAMS)||!customLeagueTeamReferencesValid(saved)){customLeagueCorruptRaw=raw;customLeagueSaveError='The saved Custom League is damaged or references teams that changed. The original data was kept; create a replacement only if you choose to overwrite it.';return;}customLeagueRun=saved;}
+ catch{customLeagueCorruptRaw=raw;customLeagueSaveError='The saved Custom League could not be read. The original data was kept; create a replacement only if you choose to overwrite it.';}
+}
+function saveCustomLeague(value){
+ customLeagueRun=value;
+ try{const raw=JSON.stringify(value);if(customLeagueStorageBaselineKnown&&careerStorage.getItem('legend_customLeague')!==customLeagueStorageBaseline)throw Error('This Custom League changed in another tab. Reload before saving so one session does not replace the other.');careerStorage.setItem('legend_customLeague',raw);if(careerStorage.getItem('legend_customLeague')!==raw)throw Error('Saved data could not be verified.');customLeagueStorageBaseline=raw;customLeagueStorageBaselineKnown=true;customLeagueSaveVolatile=false;customLeagueSaveError='';customLeagueCorruptRaw=null;return true;}
+ catch(error){customLeagueSaveVolatile=true;customLeagueSaveError=/changed in another tab/.test(error.message)?error.message:'Browser storage is unavailable or full. This Custom League is session-only and progress will be lost when this page closes.';console.warn('Custom League progress is session-only:',error.message);return false;}
+}
+loadCustomLeague();
 let managerRegion='',managerCountry='';
 const storedOptions=store.get('options',{}),opt={...DEFAULT_OPTIONS,...storedOptions};
 if(!STADIUMS.some(v=>v.id===opt.stadium))opt.stadium=DEFAULT_OPTIONS.stadium;
@@ -895,7 +912,8 @@ function showCupsMenu(){menuChoices('nav-cups','LEAGUES & CUPS','Choose an exist
  navItem('World League · Arcade','league','The original playable World League challenge.','active','⚽'),
  navItem('10 Cup Save Slots','navCupSlots','Save, load or delete ten independent continental campaigns.','active','💾'),
  navItem('Custom Cup','customCupSetup','Build a local knockout Cup from existing teams.','active','➕'),
- navItem('Custom League','laterCustomLeague','Design a custom league season.','later','➕')],'home');}
+ navItem('Custom League','customLeagueSetup','Play a local double round-robin season with 4–16 existing teams.','active','➕'),
+ ...(customLeagueRun?[navItem('CONTINUE CUSTOM LEAGUE','customLeagueContinue','Resume '+(TEAMS[customLeagueRun.club]?.name||'your club')+' · Matchday '+(customLeagueRun.roundIdx+1),'active','▶')]:[])],'home');}
 function showInternationalMenu(){menuChoices('nav-international','INTERNATIONAL','National tournaments planned for future versions.',[
  navItem('World Cup','laterWorldCup','A complete World Cup tournament is not yet implemented.','later','🌐'),
  navItem('Asian Cup','laterAsian','Asian national competition.','later','🌏'),
@@ -931,6 +949,51 @@ function startCustomCup(){
   if(cupSlots.list()[slot-1].occupied&&!confirm('All ten Cup slots are full. Overwrite active Cup slot '+slot+'?'))return;
   writeCupSlot(slot,fresh,'Custom Cup');continentalRun=fresh;store.put('continentalRun',continentalRun);showTournament();
  }catch(error){if(status)status.textContent=error.message;}
+}
+function showCustomLeagueSetup(){
+ const clubs=TEAMS.map((team,id)=>({team,id})).filter(x=>x.team&&typeof x.team.name==='string');
+ customLeagueEntrants=customLeagueEntrants.filter((id,index)=>Number.isSafeInteger(id)&&TEAMS[id]&&customLeagueEntrants.indexOf(id)===index).slice(0,16);
+ if(!customLeagueEntrants.includes(customLeagueClub))customLeagueClub=customLeagueEntrants[0]??null;
+ const options=clubs.filter(({id})=>!customLeagueEntrants.includes(id)).map(({team,id})=>`<option value="${id}">${escapeHTML(team.name)} · ${escapeHTML(countryCode(team)||'CLB')}</option>`).join('');
+ const entrants=customLeagueEntrants.map(id=>`<li class="customCupEntrant"><span>${escapeHTML(TEAMS[id].name)}${id===customLeagueClub?' · YOUR CLUB':''}</span><span class="row">${id!==customLeagueClub?button('PLAY AS THIS CLUB','customLeagueClub_'+id,'minor'):''}${button('REMOVE','customLeagueRemove_'+id,'minor')}</span></li>`).join('');
+ const error=customLeagueSaveError?`<p role="${customLeagueCorruptRaw?'alert':'status'}" aria-live="${customLeagueCorruptRaw?'assertive':'polite'}" class="muted">${escapeHTML(customLeagueSaveError)}</p>`:'';
+ const resume=customLeagueRun?button('CONTINUE SAVED LEAGUE','customLeagueContinue','gold'):'';
+ page('CUSTOM LEAGUE','Create a local double round-robin season with 4–16 existing teams. All fixtures and results save separately from Career and Cup.',
+  `<div class="twoCol"><section class="panel" aria-label="Custom League teams"><h2 class="titleSmall">ADD TEAMS · ${customLeagueEntrants.length}/16</h2><label class="fieldLabel" for="customLeagueTeam">EXISTING TEAM</label><select class="choice" id="customLeagueTeam" ${customLeagueEntrants.length>=16||!options?'disabled':''}>${options||'<option value="">All available teams added</option>'}</select><div class="row"><button type="button" class="btn gold" data-action="customLeagueAdd" ${customLeagueEntrants.length>=16||!options?'disabled':''}>ADD TEAM</button></div><p id="customLeagueStatus" role="status" aria-live="polite" aria-atomic="true">Add at least four different teams, then choose which club you will play as.</p><ul class="customCupEntrants" aria-label="Selected league entrants">${entrants||'<li class="muted">No teams added yet.</li>'}</ul><div class="row"><button type="button" class="btn gold" data-action="customLeagueStart" ${customLeagueEntrants.length<4||!customLeagueEntrants.includes(customLeagueClub)?'disabled':''}>START NEW CUSTOM LEAGUE</button>${resume}${button('CANCEL','navCups','minor')}</div>${error}</section><section class="panel"><h2 class="titleSmall">DOUBLE ROUND-ROBIN</h2><p>Every club plays every other club home and away. Odd-sized leagues include a bye on each matchday.</p><p>Only existing teams can enter. League results and progress use a separate local campaign key and never alter your Career or Cup saves.</p><p class="muted">After kickoff, use the existing Pass, Shoot, Dribble and Jump controls. CPU fixtures are simulated deterministically. Standings update when the whole matchday is recorded.</p>${customLeagueSaveVolatile?'<p class="muted" role="status" aria-live="polite">This browser cannot persist the league right now. A new campaign can still run for this session only.</p>':''}</section></div>`, 'navCups');
+}
+function startCustomLeague(){
+ const status=$('customLeagueStatus'),participants=customLeagueEntrants.slice(),club=customLeagueClub;
+ if(participants.length<4||participants.length>16||new Set(participants).size!==participants.length||!participants.includes(club)||participants.some(id=>!Number.isSafeInteger(id)||!TEAMS[id])){if(status)status.textContent='Choose 4–16 different existing teams, including your club.';return;}
+ if(customLeagueRun&&!confirm('Start a new Custom League and replace the saved Custom League campaign?'))return;
+ if(customLeagueCorruptRaw&&!confirm('The stored Custom League is damaged. Replace that saved Custom League only? Career and Cup data are not affected.'))return;
+ try{const fresh=createCustomLeague(club,participants,TEAMS);fresh.teamKeys=Object.fromEntries(participants.map(id=>[String(id),TEAMS[id].id]));saveCustomLeague(fresh);showCustomLeague();}
+ catch(error){if(status)status.textContent='Could not start league: '+error.message;}
+}
+function showCustomLeague(){
+ const c=customLeagueRun;
+ if(!c||!validateCustomLeague(c,TEAMS))return showCustomLeagueSetup();
+ if(!customLeagueTeamReferencesValid(c)){
+  page('CUSTOM LEAGUE SAVE UNAVAILABLE','The saved campaign references a team that was removed or reordered. Its stored data has been preserved.',`<div class="panel"><p role="alert" aria-live="assertive">${escapeHTML(customLeagueSaveError||'This campaign cannot safely continue with the current team list.')}</p><div class="row">${button('CREATE A NEW CUSTOM LEAGUE','customLeagueSetup','gold')}${button('BACK TO CUPS','navCups','minor')}</div></div>`,'navCups');return;
+ }
+ const current=customLeagueCurrent(c),table=customLeagueStandings(c),position=table.findIndex(row=>row.id===c.club)+1;
+ const standingsHTML=table.map(row=>`<tr class="${row.id===c.club?'myTeam':''}"><td>${row.position}</td><td>${teamIdentity(TEAMS[row.id])} ${escapeHTML(TEAMS[row.id].name)}</td><td>${row.p}</td><td>${row.w}</td><td>${row.d}</td><td>${row.l}</td><td>${row.gd}</td><td>${row.pts}</td></tr>`).join('');
+ const fixture=current?.bye?'BYE — REST MATCHDAY':current?`${TEAMS[c.club].name} VS ${TEAMS[current.opponent]?.name||'Unknown team'} · SCHEDULED ${current.home?'HOME':'AWAY'}`:'Season complete';
+ const action=current?.bye?button('ADVANCE THROUGH BYE','customLeagueBye','gold'):current?button('KICK OFF MATCHDAY '+current.round,'customLeagueKickoff','gold'):'';
+ const error=customLeagueSaveError?`<p role="${customLeagueCorruptRaw?'alert':'status'}" aria-live="${customLeagueCorruptRaw?'assertive':'polite'}" class="muted">${escapeHTML(customLeagueSaveError)}</p>`:'';
+ const volatile=customLeagueSaveVolatile?'<p class="muted" role="status" aria-live="polite">SESSION-ONLY: browser storage is unavailable or full. This league will be lost when this page closes; other saves are unaffected.</p>':'';
+ const history=c.history.slice().reverse().slice(0,30).map(row=>`<div class="stat"><strong>MATCHDAY ${row.round}</strong><span>${escapeHTML(TEAMS[row.home]?.name||'Unknown')} ${row.homeGoals}–${row.awayGoals} ${escapeHTML(TEAMS[row.away]?.name||'Unknown')}${row.userControlled?' · YOUR MATCH':' · CPU'}</span></div>`).join('')||'<p class="muted">No completed fixtures yet.</p>';
+ const finished=c.phase==='finished';
+ page('CUSTOM LEAGUE',`${escapeHTML(TEAMS[c.club]?.name||'Unknown club')} · ${finished?'SEASON COMPLETE':'MATCHDAY '+(c.roundIdx+1)+' / '+c.rounds.length}`,
+  `<div class="careerTop"><div class="metric"><small>YOUR CLUB</small><strong>${escapeHTML(TEAMS[c.club]?.name||'Unknown')}</strong></div><div class="metric"><small>FORMAT</small><strong>HOME &amp; AWAY</strong></div><div class="metric"><small>POSITION</small><strong>#${position||'—'}</strong></div><div class="metric"><small>CHAMPION</small><strong>${finished?escapeHTML(TEAMS[c.winner]?.name||'Unknown'):'—'}</strong></div></div><div class="twoCol"><section class="panel"><div class="badge">${finished?'🏁 SEASON COMPLETE':'⚽ CURRENT FIXTURE'}</div><div class="fixture"><span>${finished?'FINAL STANDING':current?.bye?'BYE':'MATCHDAY '+(current?.round||'—')}</span><strong>${finished?`🏆 ${escapeHTML(TEAMS[c.winner]?.name||'Unknown')} WIN THE LEAGUE`:escapeHTML(fixture)}</strong></div>${volatile}${error}<div class="row">${finished?button('START ANOTHER LEAGUE','customLeagueSetup','gold'):action}${button('CUPS MENU','navCups','minor')}</div><h3 class="titleSmall">RECENT RESULTS</h3><div class="scroll" style="max-height:260px">${history}</div></section><section class="panel"><h3 class="titleSmall">LEAGUE TABLE</h3><div class="scroll continentTable"><table class="miniTable"><caption class="srOnly">Custom League standings after ${c.roundIdx} matchdays</caption><thead><tr><th scope="col">#</th><th scope="col">CLUB</th><th scope="col">P</th><th scope="col">W</th><th scope="col">D</th><th scope="col">L</th><th scope="col">GD</th><th scope="col">PTS</th></tr></thead><tbody>${standingsHTML}</tbody></table></div><p class="muted">Tie-breakers: points, goal difference, goals scored, wins, then starting order. CPU match scores are deterministic.</p></section></div>`, 'navCups');
+}
+function customLeagueBye(){
+ try{const next=advanceCustomLeague(customLeagueRun,TEAMS,null);saveCustomLeague(next);showCustomLeague();}
+ catch(error){customLeagueSaveError='Could not advance the league: '+error.message;showCustomLeague();}
+}
+function customLeagueKickoff(){
+ const fixture=customLeagueCurrent(customLeagueRun);
+ if(!fixture||fixture.bye||!customLeagueTeamReferencesValid(customLeagueRun))return showCustomLeague();
+ mode='customLeague';home=customLeagueRun.club;away=fixture.opponent;start();
 }
 function showSettingsMenu(){menuChoices('nav-settings','SETTINGS','Adjust the game and manage your saved creations.',[
  navItem('Game Settings','navGameSettings','Difficulty, pace, duration, stadium and match conditions.','active','⚽'),
@@ -1133,10 +1196,10 @@ async function retryLocalTokenReward(){
  catch{return false;}
 }
 async function awardLocalMatchTokens(event,score){
- const modeKey=mode==='career'?'career':mode==='continental'?'continental':mode==='league'?'tournament':null;
+ const modeKey=mode==='career'?'career':mode==='continental'?'continental':['league','customLeague'].includes(mode)?'tournament':null;
  if(!modeKey||!activeMatchReceiptId||lanRuntime||lanRole||!Array.isArray(score)||score.length!==2||!score.every(Number.isFinite))return '';
  if(modeKey==='continental'&&!lastCupResultCommitted)return '<p class="muted">No tournament tokens awarded because this result could not be committed to a Cup save slot.</p>';
- if(modeKey==='tournament'&&!leagueResultCommitted)return '<p class="muted">No tournament tokens awarded because this result could not be committed to the local league save.</p>';
+ if(modeKey==='tournament'&&!(mode==='customLeague'?customLeagueResultCommitted:leagueResultCommitted))return '<p class="muted">No tournament tokens awarded because this result could not be committed to the local league save.</p>';
  const result=event?.penalties&&(event.winner===0||event.winner===1)?event.winner===0?'win':'loss':score[0]>score[1]?'win':score[0]<score[1]?'loss':'draw';
  const payload={receiptId:activeMatchReceiptId,mode:modeKey,status:'completed',result};
  saveLocalTokenRecovery(payload);
@@ -1395,7 +1458,7 @@ function updatePlayerSelectionAnnouncement(player,energyPercent){
  status.textContent=`Selected player: ${player.src.name}. Energy ${energyPercent} percent.`;
  announcedPlayerSelectionKey=key;
 }
-function start(){resetPlayerSelectionAnnouncement();activeMatchReceiptId=newMatchReceiptId();lastCupResultCommitted=false;leagueResultCommitted=false;if(mode==='versus')humans=2;else humans=1;const homePlan=mode==='career'&&career?.club===home?careerPlanFor(career):planFor(home),awayPlan=planFor(away);game.init({home,away,mode,humans,rosters:[mode==='career'&&career?career.roster.map(p=>({...p})):roster(home),roster(away)],lineups:[homePlan.lineup.slice(),awayPlan.lineup.slice()],formations:[homePlan.formation,awayPlan.formation],plans:[homePlan,awayPlan],options:{...opt,kitChoices:kitSelections.slice(),arcadeShotId,arcadeShotPlayerId}});trainingCrossCoachState.reset(mode==='training');if(preTalkChoices[0]!=='none')game.applyTeamTalk(0,preTalkChoices[0],'pregame');if(preTalkChoices[1]!=='none')game.applyTeamTalk(1,preTalkChoices[1],'pregame');if(mode==='pk')game.startPK(false);closeMenu();drawHUD();updateTrainingCrossCoach()}
+function start(){resetPlayerSelectionAnnouncement();activeMatchReceiptId=newMatchReceiptId();lastCupResultCommitted=false;leagueResultCommitted=false;customLeagueResultCommitted=false;if(mode==='versus')humans=2;else humans=1;const homePlan=mode==='career'&&career?.club===home?careerPlanFor(career):planFor(home),awayPlan=planFor(away);game.init({home,away,mode,humans,rosters:[mode==='career'&&career?career.roster.map(p=>({...p})):roster(home),roster(away)],lineups:[homePlan.lineup.slice(),awayPlan.lineup.slice()],formations:[homePlan.formation,awayPlan.formation],plans:[homePlan,awayPlan],options:{...opt,kitChoices:kitSelections.slice(),arcadeShotId,arcadeShotPlayerId}});trainingCrossCoachState.reset(mode==='training');if(preTalkChoices[0]!=='none')game.applyTeamTalk(0,preTalkChoices[0],'pregame');if(preTalkChoices[1]!=='none')game.applyTeamTalk(1,preTalkChoices[1],'pregame');if(mode==='pk')game.startPK(false);closeMenu();drawHUD();updateTrainingCrossCoach()}
 function drawHUD(){let p=game.controlledPlayer(lanRole==='guest'?1:0),s=game.score;$('homeflag').innerHTML=identity(home);$('awayflag').innerHTML=identity(away);$('homename').textContent=(lanPlayerNames?.home?lanPlayerNames.home+' · ':'')+TEAMS[home].name.toUpperCase();$('awayname').textContent=(lanPlayerNames?.away?lanPlayerNames.away+' · ':'')+TEAMS[away].name.toUpperCase();$('scoring').innerHTML=`${s[0]} <span>:</span> ${s[1]}`;$('weatherHud').textContent=game.weather.toUpperCase();let secs=Math.max(0,Math.ceil(game.matchSeconds-game.clock));$('timeHud').textContent=`${game.half===1?'1ST':'2ND'} • ${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}`;if(p){const inPossession=game.ball.owner?.t===0;const ownBall=game.ball.owner===p;const goalkeeperHasBall=game.ball.owner?.t===0&&game.ball.owner?.keeper;// v0.8.25: keep the exact four approved action labels on screen; defensive / keeper functions remain contextual.
   for(const [key,text] of Object.entries({pass:'PASS',shoot:'SHOOT',dribble:'DRIBBLE',jump:'JUMP'})){const b=document.querySelector('[data-act="'+key+'"]');if(b){if(b.textContent!==text)b.textContent=text;b.title=key==='pass'?(goalkeeperHasBall?'Pass / goalkeeper clear':inPossession?'Tap nearest · direction aim · hold long · Jump then Pass cross':'Pass / tackle'):key==='shoot'?(inPossession?'Shoot':'Shoot / slide tackle'):key==='dribble'?(inPossession?'Dribble':'Dribble / switch player'):'Jump';}}const dribbleButton=document.querySelector('[data-act="dribble"]');if(dribbleButton){
    const cd=Math.max(0,p.dribbleCooldown||0),cooling=cd>.02&&game.ball.owner===p;
@@ -2964,6 +3027,16 @@ async function fulltime(ev){game.matchState='finished';let [a,b]=ev.score,win=la
  if(league.stage==='qualifier'&&league.wins>=16&&league.points>=70)league.stage='finals';else if(league.stage==='finals'&&win){league.playoff=(league.playoff||0)+1;if(league.playoff>=4)league.stage='champion'}leagueResultCommitted=persistLeagueResult(league)}
  if(mode==='continental'&&continentalRun){try{applyCupMatchResult(ev.score,ev.penalties?ev.winner:null);if(continentalRun.compId!=='CUSTOM'&&career?.club===continentalRun.club){career.cash+=Math.max(0,continentalRun.earned-(continentalRun.lastCareerAward||0));continentalRun.lastCareerAward=continentalRun.earned;store.put('continentalRun',continentalRun);saveCareer()}saveCup();const tokenReward=await awardLocalMatchTokens(ev,ev.score);page('CONTINENTAL RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="badge">${escapeHTML(cupCompetitionName(continentalRun))}</div><div class="megaScore">${a} : ${b}</div><p>${escapeHTML(tournamentProgress(continentalRun))} • ${continentalRun.earned/1000000}m prize earnings</p>${tokenReward}${button('CONTINUE CHAMPIONSHIP','continentContinue','gold')}</div>`)}catch(e){alert('Competition update failed: '+e.message);showTournament()}return;}
  if(mode==='career'&&career){recordMatchFitness(career,game.getFitnessReport(0));const outcome=advanceCareer(career,TEAMS,ev.score,ev.penalties?ev.winner:null),careerCommitted=saveCareer();const tokenReward=careerCommitted?await awardLocalMatchTokens(ev,ev.score):'<p class="muted">No Career tokens awarded because this match could not be committed to the active Career slot.</p>';page('CAREER MATCH RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="titleSmall">${outcome.kind.toUpperCase()} • ${outcome.win?'WIN!':a===b?'DRAW':'DEFEAT'}</div><div class="megaScore">${a} : ${b}</div><p>Club cash: €${(career.cash/1000000).toFixed(1)}m • Current week ${career.week+1}</p>${tokenReward}${button('CONTINUE MANAGER CAREER','manager','gold')}</div>`);return;}
+ if(mode==='customLeague'){
+  try{
+   if(!customLeagueRun||!customLeagueTeamReferencesValid(customLeagueRun))throw Error('The saved league team list changed before this result could be recorded.');
+   const next=advanceCustomLeague(customLeagueRun,TEAMS,ev.score),lastRound=next.rounds[next.roundIdx-1],result=next.history.slice(-lastRound.matches.length).find(row=>row.userControlled),committed=saveCustomLeague(next);customLeagueResultCommitted=committed;
+   const tokenReward=await awardLocalMatchTokens(ev,ev.score),outcome=result.homeGoals>result.awayGoals?result.home===next.club?'Your club won.':'The opponent won.':result.homeGoals<result.awayGoals?result.away===next.club?'Your club won.':'The opponent won.':'The match was a draw.';
+   const notice=committed?'The full matchday result is saved locally.':`<span role="status" aria-live="polite">${escapeHTML(customLeagueSaveError||'This result is session-only; browser storage could not save it.')}</span>`;
+   page('CUSTOM LEAGUE RESULT',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="titleSmall">MATCHDAY ${result.round} · ${outcome}</div><div class="megaScore">${a} : ${b}</div><p>${notice}</p>${tokenReward}${next.phase==='finished'?`<p class="badge">🏆 ${escapeHTML(TEAMS[next.winner]?.name||'Unknown')} WIN THE CUSTOM LEAGUE</p>`:''}${button('CONTINUE CUSTOM LEAGUE','customLeagueContinue','gold')}</div>`);
+  }catch(error){customLeagueResultCommitted=false;customLeagueSaveError='The match finished but the campaign result was not applied: '+error.message;page('CUSTOM LEAGUE RESULT NOT APPLIED',`${TEAMS[home].name} ${a} : ${b} ${TEAMS[away].name}`,`<div class="panel careerResult"><div class="megaScore">${a} : ${b}</div><p role="alert" aria-live="assertive">${escapeHTML(customLeagueSaveError)}</p>${button('RETURN TO CUSTOM LEAGUE','customLeagueContinue','gold')}${button('CUPS MENU','navCups','minor')}</div>`);}
+  return;
+ }
  const tokenReward=mode==='league'?await awardLocalMatchTokens(ev,ev.score):'';
  const lanReceiptRecovery=lanRole==='host'&&typeof lanRuntime?.retryResultAward==='function'?`<section id="lanHostReceiptRecovery" class="panel" aria-label="Online match token reward recovery" ${lanRuntime.resultAckStatus==='failed'?'':'hidden'}><p id="lanHostReceiptRecoveryStatus" role="status" aria-live="polite">The online match token reward could not be saved on this device. Free storage, then retry here. The receipt can also be retried from the main menu in this tab.</p><div class="row">${button('RETRY TOKEN REWARD','retryLanReceipt','gold')}</div></section>`:'';
  page('FULL TIME',`${ev.penalties&&(ev.winner===0||ev.winner===1)?(ev.winner===0?'VICTORY!':'DEFEAT'):win?'VICTORY!':a===b?'DRAW MATCH':'DEFEAT'}${ev.penalties?' • ON PENALTIES':''}`,`<div class="panel" style="text-align:center"><div class="badge">MATCH RESULT</div><div style="font-size:70px;color:#ffe17a;font-weight:1000">${a} : ${b}</div><p>${TEAMS[home].name} vs ${TEAMS[away].name}</p>${tokenReward}${lanReceiptRecovery}${ev.penalties?penaltyRoundScorecard(game,{finished:true,winner:ev.winner}):''}${matchHighlightsPanel(game)}<div class="row" style="justify-content:center">${button('↻ REMATCH','kickoff','gold')}${mode==='league'?button('🏆 LEAGUE','league'):button('MAIN MENU','home')}</div></div>`)}
@@ -3025,6 +3098,14 @@ function action(a){if(a===menuBackAction&&!confirmDiscardBeforeBack(a))return;if
  else if(a.startsWith('customCupRemove_')){const id=Number(a.slice('customCupRemove_'.length));customCupEntrants=customCupEntrants.filter(entry=>entry!==id);if(customCupClub===id)customCupClub=customCupEntrants[0]??null;showCustomCupSetup();(menu.querySelector('[data-action^="customCupRemove_"]')||$('customCupTeam'))?.focus({preventScroll:true});}
  else if(a.startsWith('customCupClub_')){const id=Number(a.slice('customCupClub_'.length));if(customCupEntrants.includes(id))customCupClub=id;showCustomCupSetup();menu.querySelector('[data-action="customCupStart"]')?.focus({preventScroll:true});}
  else if(a==='customCupStart')startCustomCup();
+ else if(a==='customLeagueSetup'){customLeagueEntrants=[];customLeagueClub=null;showCustomLeagueSetup();}
+ else if(a==='customLeagueContinue')showCustomLeague();
+ else if(a==='customLeagueAdd'){const id=Number($('customLeagueTeam')?.value);if(Number.isSafeInteger(id)&&TEAMS[id]&&!customLeagueEntrants.includes(id)&&customLeagueEntrants.length<16){customLeagueEntrants.push(id);if(customLeagueClub===null)customLeagueClub=id;}showCustomLeagueSetup();menu.querySelector('[data-action="customLeagueAdd"]')?.focus({preventScroll:true});}
+ else if(a.startsWith('customLeagueRemove_')){const id=Number(a.slice('customLeagueRemove_'.length));customLeagueEntrants=customLeagueEntrants.filter(entry=>entry!==id);if(customLeagueClub===id)customLeagueClub=customLeagueEntrants[0]??null;showCustomLeagueSetup();(menu.querySelector('[data-action^="customLeagueRemove_"]')||$('customLeagueTeam'))?.focus({preventScroll:true});}
+ else if(a.startsWith('customLeagueClub_')){const id=Number(a.slice('customLeagueClub_'.length));if(customLeagueEntrants.includes(id))customLeagueClub=id;showCustomLeagueSetup();menu.querySelector('[data-action="customLeagueStart"]')?.focus({preventScroll:true});}
+ else if(a==='customLeagueStart')startCustomLeague();
+ else if(a==='customLeagueBye')customLeagueBye();
+ else if(a==='customLeagueKickoff')customLeagueKickoff();
  else if(a==='manager'){creatingCareer=false;studioManagerContext=false;showManager();}else if(a==='startManager'){const v=+$('managerClub').value;const slot=careerSlots.firstEmpty()??careerSlots.active;if(careerSlots.list()[slot-1].occupied&&!confirm('All ten slots are full. Overwrite active Career slot '+slot+'?'))return;const fresh=createCareer(v,TEAMS);fresh.teamPlan=defaultPlan(v,fresh.roster);fresh.saveSchema=2;fresh.clubId=TEAMS[v].id;try{careerSlots.save(slot,fresh);career=fresh;creatingCareer=false;store.put('managerCareer',career);showManager();}catch(error){alert('Could not create Career save: '+error.message);}}
  else if(a==='careerPlay')careerPlay();else if(a==='careerSeason'){if(career)showCareerSeasonReview()}else if(a==='careerSeasonConfirm')beginCareerNextSeason();else if(a==='careerPastSeasons')showCareerSeasonArchive();
  else if(a==='careerTactics'){if(career){home=career.club;showSquad(0,'career')}}

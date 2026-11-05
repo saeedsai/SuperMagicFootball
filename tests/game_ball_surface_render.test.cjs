@@ -75,6 +75,34 @@ test('non-classic skins gain match-scale spherical seams and distinct material g
  }
 });
 
+test('all match balls receive a deterministic, low-contrast leather-grain pass',()=>{
+ const renderer=Object.create(RENDER.Renderer.prototype);
+ for(const model of ['classic','meteor','ice','gold','retro']){
+  const draw=()=>{const ctx=context();renderer.drawBallLeatherGrain(ctx,17,model);return ctx.fills.filter(fill=>typeof fill==='string'&&fill.startsWith('rgba('));};
+  const first=draw(),second=draw();
+  assert.deepEqual(first,second,model+' grain pattern must be pixel-stable');
+  assert.ok(first.length>=18,model+' gets a visible but sparse material texture');
+  assert.ok(first.every(fill=>Number.parseFloat(fill.slice(fill.lastIndexOf(',')+1))<=.25),model+' grain remains lower-contrast than the main artwork');
+ }
+ const source=RENDER.Renderer.prototype.paintBallLeatherGrain.toString();
+ assert.ok(source.includes('Math.imul(seed^ch.charCodeAt(0),16777619)'),'grain seed depends only on the model');
+ assert.ok(!source.includes('Math.random'),'no random animation or flicker');
+});
+
+test('browser leather-grain canvases are cached and bounded for frame-time safety',()=>{
+ const renderer=Object.create(RENDER.Renderer.prototype),previous=globalThis.document,created=[];
+ const paint={save(){},restore(){},translate(){},beginPath(){},ellipse(){},fill(){}};
+ globalThis.document={createElement(name){assert.equal(name,'canvas');const canvas={getContext(){return paint}};created.push(canvas);return canvas;}};
+ try{
+  const draws=[],ctx={drawImage(...args){draws.push(args)}};
+  renderer.drawBallLeatherGrain(ctx,17,'classic');renderer.drawBallLeatherGrain(ctx,17,'classic');
+  assert.equal(created.length,1,'same model/radius rasterizes once');assert.equal(draws.length,2,'cached texture paints on each frame');
+  assert.equal(renderer.ballGrainCache.size,1);
+  for(let radius=1;radius<=30;radius++)renderer.drawBallLeatherGrain(ctx,radius,'classic');
+  assert.ok(renderer.ballGrainCache.size<=24,'unusual UI sizes cannot grow the cache without bound');
+ }finally{if(previous===undefined)delete globalThis.document;else globalThis.document=previous;}
+});
+
 test('in-match ball sends its travel vector and roll angle to renderer-only surface projection',()=>{
  const renderer=Object.create(RENDER.Renderer.prototype),painted=[];
  renderer.drawBallShadow=()=>{};

@@ -6,7 +6,7 @@ import os
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = Path(os.environ.get('SMF_QA_ARTIFACT_DIR', ROOT / 'docs/evidence/browser')) / 'ball_rolling_projection_012850.png'
+OUT = Path(os.environ.get('SMF_QA_ARTIFACT_DIR', ROOT / 'docs/evidence/browser')) / 'ball_leather_grain_012863.png'
 OUT.parent.mkdir(parents=True, exist_ok=True)
 
 MODELS = ['classic', 'meteor', 'ice', 'gold', 'retro']
@@ -80,6 +80,13 @@ try:
         directionalChecks.push({model:models[i],rotation,distinctHeadings:directionImages.filter((sample,index)=>index===0||pixelDifference(sample,directionImages[0])>16).length});
       }
 
+      const textureChecks=[],grain=renderer.drawBallLeatherGrain;
+      for(const model of models){
+        const sample=()=>{const c=document.createElement('canvas');c.width=c.height=64;const g=c.getContext('2d');renderer.drawSoccerBall(g,32,32,17,model,.6);return g.getImageData(0,0,64,64).data;};
+        const detailed=sample(),repeat=sample();renderer.drawBallLeatherGrain=()=>{};const smooth=sample();renderer.drawBallLeatherGrain=grain;
+        textureChecks.push({model,stable:pixelDifference(detailed,repeat)===0,changedPixels:pixelDifference(detailed,smooth)});
+      }
+
       const calls=[],original=renderer.drawSoccerBall;
       renderer.drawSoccerBall=function(g,x,y,r,model,rotation,tumble){calls.push({r,model,rotation,tumble});return original.call(this,g,x,y,r,model,rotation,tumble)};
       const stateChecks=[];
@@ -91,7 +98,7 @@ try:
         stateChecks.push({model:models[i],heading,unchanged:JSON.stringify({ball,options})===before});
       }
       const maxRadius=Math.max(...bounds.map(sample=>sample.maxDistance)),minChanged=Math.min(...projectionChecks.map(sample=>sample.changedPixels)),minDistinctHeadings=Math.min(...directionalChecks.map(sample=>sample.distinctHeadings));
-      return {models,rotations,headings:headings.map(([name])=>name),menuRadius:54,gameplayRadius:17,samples:bounds.length,maxRadius,minChanged,minDistinctHeadings,stateUnchanged:stateChecks.every(sample=>sample.unchanged),callsUseInputs:calls.length===models.length*headings.length&&calls.every((call,i)=>call.r===17&&call.model===models[Math.floor(i/headings.length)]&&call.tumble?.dx===headings[i%headings.length][1]*31&&call.tumble?.dy===headings[i%headings.length][2]*17),canvas:{width:canvas.width,height:canvas.height}};
+      return {models,rotations,headings:headings.map(([name])=>name),menuRadius:54,gameplayRadius:17,samples:bounds.length,maxRadius,minChanged,minDistinctHeadings,textureChecks,minTextureChanged:Math.min(...textureChecks.map(sample=>sample.changedPixels)),textureStable:textureChecks.every(sample=>sample.stable),stateUnchanged:stateChecks.every(sample=>sample.unchanged),callsUseInputs:calls.length===models.length*headings.length&&calls.every((call,i)=>call.r===17&&call.model===models[Math.floor(i/headings.length)]&&call.tumble?.dx===headings[i%headings.length][1]*31&&call.tumble?.dy===headings[i%headings.length][2]*17),canvas:{width:canvas.width,height:canvas.height}};
     }""", MODELS)
     page.screenshot(path=str(OUT), full_page=False)
     assert result['models'] == MODELS
@@ -101,6 +108,8 @@ try:
     assert result['maxRadius'] <= 18.25, result
     assert result['minChanged'] > 16, result
     assert result['minDistinctHeadings'] >= 3, result
+    assert result['textureStable'], result
+    assert result['minTextureChanged'] > 0, result
     assert not errors, errors
     assert not failed_requests, failed_requests
     assert not bad_responses, bad_responses

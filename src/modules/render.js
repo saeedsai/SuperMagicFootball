@@ -1760,6 +1760,7 @@ class Renderer{
   for(const angle of [0,PI/2,PI,PI*1.5]){ctx.save();ctx.rotate(angle);poly(ctx,[[r*.73,-r*.08],[r*.85,-r*.06],[r*.92,0],[r*.85,r*.06],[r*.73,r*.08]],'#164e2a');ctx.restore();}
  }
  else {for(let i=-2;i<=2;i++){line(ctx,[[-r*1.1,i*r*.43],[r*1.1,i*r*.43]],'#784727',r*.12)}for(let i=-2;i<=2;i++){line(ctx,[[i*r*.5,-r],[i*r*.5,r]],'#e1b48a',r*.075)}}
+ this.drawBallLeatherGrain(ctx,r,id);
  // Keep the four themed non-classic balls reading as stitched footballs at
  // match scale. Their original motifs stay visible underneath these fine,
  // surface-projected seams; the classic topology and palette are untouched.
@@ -1791,6 +1792,33 @@ class Renderer{
  if(surfaceOnly){ctx.restore();return;}
  this.drawBallSphereLighting(ctx,r,id);
  ctx.restore();this.drawBallOutline(ctx,x,y,r,id);
+ }
+ drawBallLeatherGrain(ctx,r,id){
+  // A fixed, low-contrast pore pattern gives the smooth vector panels a soft
+  // stitched-leather finish. Seed by model so repeated and reduced-flash
+  // renders are pixel-stable; these marks are paint only, not moving particles.
+  if(!(r>0))return;
+  const cacheable=typeof document!=='undefined'&&typeof ctx.drawImage==='function';
+  let target=ctx,canvas=null;
+  if(cacheable){
+   const cache=this.ballGrainCache||(this.ballGrainCache=new Map()),key=`${id}:${r}`;canvas=cache.get(key);
+   if(!canvas){canvas=document.createElement('canvas');canvas.width=canvas.height=Math.ceil(r*2);target=canvas.getContext('2d');if(!target)return;target.save();target.translate(canvas.width/2,canvas.height/2);this.paintBallLeatherGrain(target,r,id);target.restore();cache.set(key,canvas);if(cache.size>24)cache.delete(cache.keys().next().value);}
+   ctx.drawImage(canvas,-canvas.width/2,-canvas.height/2);return;
+  }
+  this.paintBallLeatherGrain(target,r,id);
+ }
+ paintBallLeatherGrain(ctx,r,id){
+  let seed=2166136261;
+  for(const ch of id)seed=Math.imul(seed^ch.charCodeAt(0),16777619);
+  const next=()=>{seed=(Math.imul(seed,1664525)+1013904223)|0;return (seed>>>0)/4294967296;};
+  const count=Math.max(18,Math.round(r*2.1)),dark=id==='gold'||id==='retro'?'rgba(54,35,21,.105)':'rgba(22,38,50,.10)',light=id==='meteor'?'rgba(255,238,196,.11)':id==='ice'?'rgba(255,255,255,.20)':id==='gold'?'rgba(255,250,213,.20)':id==='retro'?'rgba(255,236,208,.14)':'rgba(255,255,255,.25)';
+  ctx.save();
+  for(let i=0;i<count;i++){
+   const a=next()*PI*2,d=Math.sqrt(next())*r*.86,x=Math.cos(a)*d,y=Math.sin(a)*d,size=Math.max(.11,r*(.009+next()*.008));
+   ctx.beginPath();ctx.ellipse(x,y,size,size*(.56+next()*.38),next()*PI,0,PI*2);
+   ctx.fillStyle=next()<.57?dark:light;ctx.fill();
+  }
+  ctx.restore();
  }
  drawBallSphereLighting(ctx,r,id){
  // Shade the completed panel artwork, not just the white base. Applying a

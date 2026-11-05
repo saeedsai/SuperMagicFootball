@@ -75,11 +75,14 @@ test('Custom Cup runtime, modular, slot, and rechecksummed backup validators rej
  }
 });
 
-test('only Custom Cup is routed to the playable setup; Custom League remains a planned placeholder',()=>{
+test('Custom Cup and Custom League both route to playable local tournament setup',()=>{
  const ui=readFileSync('src/modules/ui.js','utf8');
  assert.match(ui,/navItem\('Custom Cup','customCupSetup'/);
- assert.match(ui,/navItem\('Custom League','laterCustomLeague'/);
+ assert.match(ui,/navItem\('Custom League','customLeagueSetup'/);
  assert.match(ui,/function startCustomCup\(\)/);
  assert.match(ui,/createCustomKnockoutTournament\(club,participants,TEAMS\)/);
  assert.match(ui,/if\(a==='customCupStart'\)startCustomCup\(\)/);
+ assert.match(ui,/function startCustomLeague\(\)/);
+ assert.match(ui,/createCustomLeague\(club,participants,TEAMS\)/);
+ assert.match(ui,/if\(a==='customLeagueStart'\)startCustomLeague\(\)/);
 });

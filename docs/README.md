@@ -4,6 +4,7 @@ Use [MASTER_BACKLOG.md](MASTER_BACKLOG.md) as the single current plan and status
 
 ## Read for current work
 
+- [Candidate 0.12.81.63 validation](CANDIDATE_012863_VALIDATION_20261105.md): playable local Custom League and cached match-ball leather grain; full local Node, desktop/simulated-touch browser flows, storage fallback and renderer checks passed.
 - [Candidate 0.12.81.62 validation](CANDIDATE_012862_VALIDATION_20261105.md): normal/double-jump pose; 54 production-renderer samples across mirrored front, quarter and profile views.
 - [Promoted candidate 0.12.81.61 validation](CANDIDATE_012861_VALIDATION_20261105.md): full Node, exact-head Census and Modular QA passed; protected promotion completed.
 - [Promoted candidate 0.12.81.60 validation](CANDIDATE_012860_VALIDATION_20261105.md): player shoe and turf presentation, Jump+Pass chase correction, playable saved Custom Cup, and service hardening; exact-dev gates, Pages, hosted smoke and main regression passed.
