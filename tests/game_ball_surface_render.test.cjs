@@ -102,6 +102,14 @@ test('possessed field-player balls tumble with carrier movement while stationary
  }
 });
 
+test('rolling projection overlaps antialiased triangle clips without changing their UV transforms',()=>{
+ const start=RENDER.Renderer.prototype.drawRollingBallSurface.toString();
+ assert.match(start,/clipBleed=Math\.min\(\.36,r\/steps\*\.13\)/,'mesh clip extends only a subpixel amount');
+ assert.match(start,/expandClip=\(point,cx,cy\)/,'clip-edge overlap is computed around each triangle center');
+ assert.match(start,/moveTo\(ca\.x,ca\.y\);ctx\.lineTo\(cb\.x,cb\.y\);ctx\.lineTo\(cc\.x,cc\.y\)/,'only the antialiased clip path is expanded');
+ assert.match(start,/const tx=a\.x-m11\*a\.sx-m12\*a\.sy,ty=a\.y-m21\*a\.sx-m22\*a\.sy/,'texture UV mapping remains based on the original sphere vertices');
+});
+
 test('rolling projection is renderer-only and maps a front-facing sphere mesh without changing outline radius',()=>{
  const start=RENDER.Renderer.prototype.drawRollingBallSurface.toString();
  assert.match(start,/Math\.hypot\(Number\(dx\)/,'travel direction is used only to select tumble axis');

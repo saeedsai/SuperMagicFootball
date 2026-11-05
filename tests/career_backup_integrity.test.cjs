@@ -9,6 +9,11 @@ const memory=()=>{
 const career=(club)=>({club,season:2,week:4,members:[club],fixtures:Array.from({length:14},()=>[]),history:[],
  roster:Array.from({length:12},(_,i)=>({id:`p${club}-${i}`})),
  table:{[club]:{pts:4,gf:1,ga:0}},facilities:{training:1},cup:{stage:0},cash:100});
+function withUnicodePayload(backup,change){
+ const envelope=JSON.parse(backup),payload=JSON.parse(envelope.payload);change(payload);envelope.payload=JSON.stringify(payload);
+ let checksum=2166136261;for(let i=0;i<envelope.payload.length;i++){checksum^=envelope.payload.charCodeAt(i);checksum=Math.imul(checksum,16777619)>>>0;}
+ envelope.checksum=checksum.toString(16).padStart(8,'0');return JSON.stringify(envelope);
+}
 const api=async()=> (await import('../src/modules/career_slots.js')).CAREER_SLOTS;
 
 test('SAVE-103 Career backup roundtrips all slots and active selection',async()=>{
@@ -173,5 +178,17 @@ test("SAVE-103 Career export enforces the importer's UTF-8 file-size limit",asyn
  assert.throws(()=>slots.exportBackup(),/2 MB round-trip limit/);
  assert.equal(db.getItem('legend_careerSlots'),before);
  assert.equal(slots.getSlot(4).career.backupNote,save.backupNote,'the oversized export refusal keeps the local save readable');
+});
+
+test('SAVE-103 Career import rejects UTF-8 oversized files before mutation',async()=>{
+ const source=(await api()).create(memory());source.save(1,career(1),'unicode');
+ const backup=withUnicodePayload(source.exportBackup(),vault=>{vault.slots[0].career.backupNote='😀'.repeat(510000);});
+ assert.ok(backup.length<2000000,'the file remains inside the character limit');
+ assert.ok(new TextEncoder().encode(backup).byteLength>2000000,'UTF-8 expansion exceeds the file-size limit');
+ const db=memory(),target=(await api()).create(db);target.save(2,career(2),'keep');const before=db.getItem('legend_careerSlots');
+ assert.throws(()=>target.inspectBackup(backup),/UTF-8 bytes/);
+ assert.throws(()=>target.importBackup(backup,{overwrite:true}),/UTF-8 bytes/);
+ assert.equal(db.getItem('legend_careerSlots'),before,'oversize rejection is read-only');
+ assert.equal(target.list()[1].name,'keep');
 });
 

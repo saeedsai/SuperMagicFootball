@@ -1,11 +1,11 @@
 # Candidate 0.12.81.53 validation
 
-**Status: local candidate; exact-head CI has not run.** Career and Cup archive export now enforces the exact serialized-size bounds required by its own inspector/importer. The save schemas and existing progress are unchanged.
+**Status: local candidate; exact-head Full Regression Census `42026546624` is in progress and Modular QA `42026546832` passed.** Career and Cup archive export now refuses serialized payloads and envelopes that exceed the inspector character cap or the explicit UTF-8 byte cap. Existing import-time UTF-8 byte enforcement is added in candidate .54. Save schemas and existing progress are unchanged.
 
 ## Changes
 
 - Career and Cup exports reject vault payloads over 2,000,000 serialized characters before constructing an archive. They also reject an envelope over 2,000,000 characters or UTF-8 bytes before returning it to the UI for download.
-- The error is explicit and non-destructive. Existing storage bytes, live slots, and stale-tab recovery snapshots remain intact when export is refused. This closes the gap where a save accepted locally could produce a backup that the same game rejected on inspection or import.
+- The error is explicit and non-destructive. Existing storage bytes, live slots, and stale-tab recovery snapshots remain intact when export is refused. This closes the export gap where a save accepted locally could produce a backup that the game rejected on inspection or import.
 - Near-limit archives remain valid and preserve their complete data through export, inspect, import, and re-export.
 
 ## Validation
@@ -17,6 +17,6 @@
 
 ## Remaining acceptance
 
-- Exact `.53` Full Regression Census and Modular QA, then confirm protected promotion, Pages deployment, hosted-byte smoke, and main Census for the exact SHA.
+- Exact `.53` Full Regression Census `42026546624` is in progress. Protected promotion, Pages deployment, hosted-byte smoke, and main Census remain to be confirmed for this SHA.
 - Owner gameplay/save review and physical-device checks remain external acceptance.
 - Public Online Career/Ultimate Team/PVP hosting still needs the owner-provided server, durable PostgreSQL, OIDC/secrets, and backup/restore configuration. Active PVP restart resume still needs a safe authoritative engine checkpoint contract.

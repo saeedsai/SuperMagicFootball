@@ -187,7 +187,7 @@ function create(storage){
  }
  function parseBackup(text,validator){
   check();
-  if(typeof text!=='string'||text.length>2000000)throw Error('Cup backup must be text under 2 MB');
+  if(typeof text!=='string'||text.length>2000000||new TextEncoder().encode(text).byteLength>2000000)throw Error('Cup backup must be text under 2 MB characters and UTF-8 bytes');
   let envelope;
   try{envelope=JSON.parse(text);}catch{throw Error('Invalid Cup backup JSON');}
   if(!envelope||envelope.format!=='smf-cup-backup'||envelope.version!==1||

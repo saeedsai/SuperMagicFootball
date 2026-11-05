@@ -230,3 +230,15 @@ test("SAVE-103 Cup export enforces the importer's UTF-8 file-size limit",()=>{
  assert.equal(db.getItem('legend_cupSlots'),before);
  assert.equal(slots.list()[3].occupied,true,'the oversized export refusal keeps the local Cup slot readable');
 });
+
+test('SAVE-103 Cup import rejects UTF-8 oversized files before mutation',()=>{
+ const source=api.create(memory());source.save(1,valid(),'unicode');
+ const backup=rewriteCupBackup(source.exportBackup(),payload=>{payload.slots[0].tournament.backupNote='😀'.repeat(510000);});
+ assert.ok(backup.length<2000000,'the file remains inside the character limit');
+ assert.ok(new TextEncoder().encode(backup).byteLength>2000000,'UTF-8 expansion exceeds the file-size limit');
+ const db=memory(),target=api.create(db);target.save(2,valid(),'keep');const before=db.getItem('legend_cupSlots');
+ assert.throws(()=>target.inspectBackup(backup),/UTF-8 bytes/);
+ assert.throws(()=>target.importBackup(backup,{overwrite:true}),/UTF-8 bytes/);
+ assert.equal(db.getItem('legend_cupSlots'),before,'oversize rejection is read-only');
+ assert.equal(target.list()[1].name,'keep');
+});

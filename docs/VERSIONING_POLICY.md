@@ -1,4 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.53
+# SuperMagicFootball release/version policy — About-only 0.12.81.54
+
+**Local candidate 0.12.81.54 (5 November 2026):** Rolling ball surface triangle clips overlap by a bounded subpixel amount, reducing hairline seams without changing the original UV mapping, gameplay radius, movement, collision or physics. Browser gallery covers five existing ball models × three roll angles × four directions at gameplay size; focused projection contracts and Career/Cup UTF-8 backup regressions pass locally. Exact-head release gates remain pending. See [candidate .54 report](CANDIDATE_012854_VALIDATION_20261105.md).
+
+**Local candidate 0.12.81.53 (5 November 2026):** Career and Cup export payloads and envelopes are capped to the same serialized-character/UTF-8 byte policy, preserving near-limit round-trips and refusing oversized backups without mutating saves. Focused Career/Cup and release contracts pass; exact-head Census is running. See [candidate .53 report](CANDIDATE_012853_VALIDATION_20261105.md).
 
 **Promoted candidate 0.12.81.52 (5 November 2026):** All ten existing Dribble Styles render a distinct direction-aware cue; counter-mirrored move labels remain readable and cues do not change controls, timing, player or ball state, or saves. Full local Node, Club26/FC27 and targeted unit/Chromium checks passed. Exact-head Full Regression Census, Modular Game Dev QA, Current Player Graphics QA and Pages deployment passed for the exact SHA; main Census `42025475835` is running. Owner visual review and physical-device acceptance remain open. See [candidate .52 report](CANDIDATE_012852_VALIDATION_20261105.md).
 

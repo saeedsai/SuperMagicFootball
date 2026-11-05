@@ -1610,6 +1610,14 @@ class Renderer{
   return {x:x*r,y:y*r,z:localZ,sx:(localX+1)*r,sy:(localY+1)*r};
  };
  const vertices=Array.from({length:steps+1},(_,row)=>Array.from({length:steps+1},(_,col)=>project(col/steps*2-1,row/steps*2-1)));
+ // Canvas antialiasing can leave hairline cracks where independently clipped
+ // mesh triangles meet. Expand only the clip edge by a fraction of a pixel;
+ // keep the original UV transform so the texture and sphere geometry do not
+ // change, and let adjacent triangles overlap instead of exposing the base fill.
+ const clipBleed=Math.min(.36,r/steps*.13),expandClip=(point,cx,cy)=>{
+  const dx=point.x-cx,dy=point.y-cy,length=Math.hypot(dx,dy)||1;
+  return {x:point.x+dx/length*clipBleed,y:point.y+dy/length*clipBleed};
+ };
  for(let row=0;row<steps;row++)for(let col=0;col<steps;col++){
   const corners=[vertices[row][col],vertices[row][col+1],vertices[row+1][col+1],vertices[row+1][col]];
   for(const triangle of [[corners[0],corners[1],corners[2]],[corners[0],corners[2],corners[3]]]){
@@ -1620,7 +1628,8 @@ class Renderer{
    const m11=(v1x*u2y-v2x*u1y)/det,m12=(-v1x*u2x+v2x*u1x)/det;
    const m21=(v1y*u2y-v2y*u1y)/det,m22=(-v1y*u2x+v2y*u1x)/det;
    const tx=a.x-m11*a.sx-m12*a.sy,ty=a.y-m21*a.sx-m22*a.sy;
-   ctx.save();ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.lineTo(c.x,c.y);ctx.closePath();ctx.clip();
+   const cx=(a.x+b.x+c.x)/3,cy=(a.y+b.y+c.y)/3,ca=expandClip(a,cx,cy),cb=expandClip(b,cx,cy),cc=expandClip(c,cx,cy);
+   ctx.save();ctx.beginPath();ctx.moveTo(ca.x,ca.y);ctx.lineTo(cb.x,cb.y);ctx.lineTo(cc.x,cc.y);ctx.closePath();ctx.clip();
    ctx.transform(m11,m21,m12,m22,tx,ty);ctx.drawImage(surface,0,0);ctx.restore();
   }
  }

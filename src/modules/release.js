@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.53',
+ version:'0.12.81.54',
  date:'2026-11-05',
  notes:Object.freeze([
+  'GAMEPLAY BALL SURFACE QUALITY: Rolling ball textures now overlap adjacent antialiased projection clips by a bounded subpixel amount, reducing hairline seams while retaining original texture mapping, ball radius, movement, collision and physics. Actual-renderer Chromium checks cover five ball designs, three roll angles and four directions at gameplay size with unchanged game state. Owner visual and physical-device acceptance remain separate. ',
   'CAREER / CUP BACKUP ROUND-TRIP SAFETY: Career and Cup exports now check the complete JSON envelope against the same 2 MB character and UTF-8 byte limits enforced by inspection/import. Oversized exports fail clearly before download without modifying saves or recovery snapshots; near-limit backups still inspect, import and re-export losslessly. Existing save formats and progress are unchanged. Focused regression checks pass; exact-head gates remain separate. ',
   'GAMEPLAY DRIBBLE PRESENTATION: All ten existing Dribble Styles now have distinct, direction-aware on-field cues rather than sharing the same ring. Mirrored team labels stay readable; cues are steady visual feedback and do not change input, move timing, stamina, cooldown, ball control, or save data. Local unit and production-player Chromium checks pass; owner visual and physical-device acceptance remain separate. ',
   'GAMEPLAY BALL ROLL / NARROW HOME LAYOUT: While a field player carries the ball, its projected panel surface now follows the carrier movement direction across all eight headings; stationary and keeper-held balls retain the existing fallback. The drawn radius, ball physics, carrier offsets and cosmetic selection remain unchanged. The Home currency/tools header now fits narrow portrait widths, including large wallet totals. Focused Node and Chromium checks pass; owner visual and physical-device review remain separate. ',
