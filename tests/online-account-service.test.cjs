@@ -85,6 +85,39 @@ test('online service configures Career AI as one human plus server CPU and advan
  assert.equal(pool.clients[0].released,true,'the dedicated lock connection returns to the pool after unlock');
 });
 
+test('concurrent graceful close calls wait for the same checkpoint drain and lock release',async()=>{
+ const {startOnlineAccountService}=await import('../scripts/online-account-service.mjs');
+ const port=await freePort(),events=[],pool=mockPool({events});
+ let beginDrain,finishDrain;const draining=new Promise(resolve=>beginDrain=resolve),drainGate=new Promise(resolve=>finishDrain=resolve);
+ const service=await startOnlineAccountService({env:{PORT:String(port)},pool,
+  runtimeFactory:async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],resultStore:{recordFinalResult:async result=>result},matchLifecycleStore:{recordAssigned:async()=>{},async reconcileAfterRestart(){return {completed:0,interrupted:0};}}}),
+  matchmakingFactory:()=>({async prepareShutdown(){beginDrain();await drainGate;events.push(['checkpoint-drained']);},close(){events.push(['matchmaking-close']);}}),
+  transportFactory:()=>({close(){events.push(['transport-close']);}})});
+ const first=service.close();await draining;
+ let secondSettled=false;const second=service.close().then(()=>{secondSettled=true;});
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(secondSettled,false,'a duplicate close must not resolve before checkpoint persistence is drained');
+ finishDrain();await Promise.all([first,second]);
+ assert.equal(secondSettled,true);
+ assert.deepEqual(events.filter(row=>['transport-close','checkpoint-drained','matchmaking-close','pool-end'].includes(row[0])).map(row=>row[0]),
+  ['transport-close','checkpoint-drained','matchmaking-close','pool-end']);
+ assert.equal(pool.lockState.held,false,'the shared close promise resolves only after releasing the singleton lock');
+});
+
+test('reentrant close from transport shutdown joins the stored close operation',async()=>{
+ const {startOnlineAccountService}=await import('../scripts/online-account-service.mjs');
+ const port=await freePort(),pool=mockPool();let service,closeCount=0,reentered=false;
+ service=await startOnlineAccountService({env:{PORT:String(port)},pool,
+  runtimeFactory:async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],resultStore:{recordFinalResult:async result=>result},matchLifecycleStore:{recordAssigned:async()=>{},async reconcileAfterRestart(){return {completed:0,interrupted:0};}}}),
+  matchmakingFactory:()=>({async prepareShutdown(){},close(){}}),
+  transportFactory:()=>({close(){closeCount++;if(!reentered){reentered=true;void service.close();}}})});
+ await service.close();
+ assert.equal(reentered,true);
+ assert.equal(closeCount,1,'a synchronous reentrant close must not start transport shutdown twice');
+ assert.equal(pool.lockState.held,false);
+ assert.equal(pool.clients[0].released,true);
+});
+
 test('Online Career recovery failure prevents listener startup and releases the singleton lock',async()=>{
  const {startOnlineAccountService}=await import('../scripts/online-account-service.mjs');
  const port=await freePort(),pool=mockPool();let transportStarted=false,matchmakingClosed=false;

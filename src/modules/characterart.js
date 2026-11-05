@@ -378,7 +378,19 @@ const CHARACTER_ART=(()=>{
   oval(c,toe+5,y+7,1.6,1,col); // Preserve the original toe stud as the visual anchor.
   oval(c,x-5,y+7,1.55,1.15,col,dark,.45);oval(c,x+2,y+7,1.55,1.15,col,dark,.45);
  }
- function drawLeg(c,sign,k,p,colors,opt,near){
+ // Foot articulation is driven by the same per-leg run phase as the live
+ // renderer. The swing toe flexes smoothly; the planted shoe remains level.
+ // The caller pivots the shoe at the ankle, so its joint/ground landmark does
+ // not drift. Facing is applied only to the signed pitch for mirrored views.
+ function runToePitch(phase,speedRatio=0,facing=1){
+  const raw=Number(phase),speed=clamp(Number.isFinite(Number(speedRatio))?Number(speedRatio):0,0,1);
+  if(!Number.isFinite(raw)||speed===0)return 0;
+  const angle=((raw%TAU)+TAU)%TAU;
+  if(angle>=Math.PI)return 0; // planted contact: keep the sole flat
+  const facingSign=Number(facing)<0?-1:1;
+  return -facingSign*Math.sin(angle)*.14*speed;
+ }
+ function drawLeg(c,sign,k,p,colors,opt,near,facingSign=1){
   const side=k==='side',quarter=k.startsWith('quarter');
   const spread=side?5:quarter?9:13,run=Number(opt.run)||0;
   const gait=run*(sign===1?1:-1),strike=opt.kick&&sign===1;
@@ -403,7 +415,13 @@ const CHARACTER_ART=(()=>{
   stroke(c,[[knee[0],knee[1]+5],[ankle[0],ankle[1]-5]],ink('#ffffff',.19),1.8);
   stroke(c,[[ankle[0]-5,ankle[1]-6],[ankle[0]+4,ankle[1]-6]],colors.gold,2.4);
   stroke(c,[[ankle[0]-5,ankle[1]-11],[ankle[0]+3,ankle[1]-11]],ink(colors.gold,.6),1.25);
-  boots(c,ankle[0],ankle[1],side?1:sign,colors.gold,near);
+  const shoeFacing=(side?1:sign)*(facingSign<0?-1:1);
+  const toePitch=opt.locomotion&&!opt.kick&&!opt.sliding
+   ?runToePitch(Number(opt.runPhase)+(sign===-1?Math.PI:0),opt.runSpeedRatio,shoeFacing):0;
+  if(toePitch){
+   c.save();c.translate(ankle[0],ankle[1]);c.rotate(toePitch);c.translate(-ankle[0],-ankle[1]);
+   boots(c,ankle[0],ankle[1],side?1:sign,colors.gold,near);c.restore();
+  }else boots(c,ankle[0],ankle[1],side?1:sign,colors.gold,near);
  }
  function shotRecoveryBrace(action,timer=.24){
   if(action!=='shotGetUp')return 0;
@@ -651,7 +669,8 @@ const CHARACTER_ART=(()=>{
    main:safe(team.primary||'#266ac7'),shorts:safe(team.secondary||'#f0f0e9'),gold:safe(team.trim||team.secondary||'#f5c45e')};
   // Render is deliberately stateless and stable across all eight directions.
   c.save();
-  drawLeg(c,-1,k,p,colors,opt,false);drawLeg(c,1,k,p,colors,opt,true);
+  const facingSign=view?.side<0?-1:1;
+  drawLeg(c,-1,k,p,colors,opt,false,facingSign);drawLeg(c,1,k,p,colors,opt,true,facingSign);
   shorts(c,k,colors);
   // A quiet, staggered breath gives stationary players a little life without
   // moving their planted legs or changing any simulation state. Match time is
@@ -690,6 +709,6 @@ const CHARACTER_ART=(()=>{
   const mirror=Number(side)<0?-1:1;
   return clamp(turn*.14*mirror,-.095,.095);
  }
- return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,idleBlink,idleGaze,turnCounterLean,headTurnCounterLean,version:3};
+ return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,idleBlink,idleGaze,runToePitch,turnCounterLean,headTurnCounterLean,version:3};
 })();
 export {CHARACTER_ART};

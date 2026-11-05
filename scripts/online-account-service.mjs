@@ -175,20 +175,23 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
     transport=transportFactory(server,{matchmaking,allowedOrigins:runtime.allowedOrigins,maxConnections:128});
     await serverStartPromise;
     if(!lockHealthy)throw new Error('Online API singleton lock connection was lost during startup');
-    let closed=false;
+    let closePromise=null;
     return Object.freeze({server,runtime,matchmaking,transport,async close(){
-      if(closed)return;closed=true;
-      stopping=true;lockHealthy=false;
-      let closeError=null;
-      try{transport.close()}catch(error){closeError=error;}
-      try{await matchmaking.prepareShutdown?.()}catch(error){closeError??=error;}
-      try{matchmaking.close()}catch(error){closeError??=error;}
-      await closeListener();
-      let unlockError=null;
-      try{await releaseServiceLock()}catch(error){unlockError=error;}
-      try{await pool.end?.()}catch(error){closeError??=error;}
-      if(closeError)throw closeError;
-      if(unlockError)throw unlockError;
+      if(closePromise)return closePromise;
+      closePromise=Promise.resolve().then(async()=>{
+        stopping=true;lockHealthy=false;
+        let closeError=null;
+        try{transport.close()}catch(error){closeError=error;}
+        try{await matchmaking.prepareShutdown?.()}catch(error){closeError??=error;}
+        try{matchmaking.close()}catch(error){closeError??=error;}
+        await closeListener();
+        let unlockError=null;
+        try{await releaseServiceLock()}catch(error){unlockError=error;}
+        try{await pool.end?.()}catch(error){closeError??=error;}
+        if(closeError)throw closeError;
+        if(unlockError)throw unlockError;
+      });
+      return closePromise;
     }});
   } catch(error) {
     try{transport?.close?.()}catch{}

@@ -404,6 +404,7 @@ export function createOnlineAccountApi({authenticate, store, resultStore, matchL
         return json({status:result.duplicate?'duplicate':'purchased',balance:result.balance,receipt},result.duplicate?200:201,cors);
       }
       if(route==='GET /api/v1/online-career/current'){
+        if(url.search)return json({error:'invalid-query'},400,cors);
         if(!onlineCareerService||typeof onlineCareerService.getCurrentSeason!=='function')return json({error:'online-career-unavailable'},503,cors);
         const season=await onlineCareerService.getCurrentSeason(userId);
         return json({season:publicOnlineCareerSeason(season)},200,cors);
@@ -420,6 +421,7 @@ export function createOnlineAccountApi({authenticate, store, resultStore, matchL
         })},200,cors);
       }
       if(route==='POST /api/v1/online-career/current'){
+        if(url.search)return json({error:'invalid-query'},400,cors);
         if(!onlineCareerService||typeof onlineCareerService.createSeason!=='function')return json({error:'online-career-unavailable'},503,cors);
         const selectedTeamId=await readOnlineCareerTeam(request,matchmaking)??'japan';
         if(!ultimateTeamStore||typeof ultimateTeamStore.isItemOwned!=='function')return json({error:'online-career-unavailable'},503,cors);

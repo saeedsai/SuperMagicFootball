@@ -1228,6 +1228,20 @@ class Renderer{
  ctx.restore();
  this.drawVenueSurface(ctx,game);
  for(let i=0;i<1650;i++){let sx=F.x+((i*7319)%Math.floor(F.w)),sy=F.y+((i*2969)%Math.floor(F.h));ctx.fillStyle=i%3===0?'#e0d49722':'#162d1c14';ctx.fillRect(sx,sy,2+i%3,2+i%5)}
+ if(terrain==='Grass'){
+   // Sparse cut-grass fibers give the otherwise flat natural turf a readable
+   // surface at match scale. Fixed placement keeps the cached field perfectly
+   // still, and the pitch clip prevents any mark from changing its bounds.
+   ctx.save();ctx.beginPath();ctx.rect(F.x,F.y,F.w,F.h);ctx.clip();ctx.lineCap='round';ctx.lineWidth=3.4;
+   for(let i=0;i<320;i++){
+     const x=F.x+((i*167+23)%997)/997*F.w,y=F.y+((i*347+47)%991)/991*F.h;
+     const lean=(((i*13)%17)-8)*.55,length=12+((i*23)%15);
+     ctx.strokeStyle=i%4===0?'rgba(192,224,157,.30)':'rgba(13,54,31,.26)';
+     ctx.beginPath();ctx.moveTo(x,y);ctx.quadraticCurveTo(x+lean*.45,y-length*.56,x+lean,y-length);ctx.stroke();
+     if(i%3===0){ctx.beginPath();ctx.moveTo(x+3,y-1);ctx.quadraticCurveTo(x+3+lean*.38,y-length*.36,x+2+lean*.7,y-length*.68);ctx.stroke();}
+   }
+   ctx.restore();
+ }
  if(terrain==='Classic'){
    // Tiled-looking irregular ochre field wear inspired by the Famicom ground palette;
    // all patches are generated and editable, not ROM imagery.

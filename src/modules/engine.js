@@ -2214,7 +2214,11 @@ class GameEngine{
   // Pass held before Jump never transforms into a cross or teammate launch.
   if(this.input.just(p.t,'jump')&&s.pass&&p.z<=10&&!bicycleFromJump&&!tapJumpResolved){
    p.jumpTapPending=false;
-   if(p.z<=0)this.jump(p);
+   // Off-ball Jump+Pass is the four-button fast-chase chord. Letting the
+   // grounded jump fire here made the next frame clear chase while airborne,
+   // so the advertised pursuit/auto-tackle never happened. Possession keeps
+   // its intentional grounded jump behavior; aerial crosses remain sequential.
+   if(p.z<=0&&this.ball.owner?.t===p.t)this.jump(p);
   }
   // No independent Special / Sprint / Switch gameplay buttons exist.
  }

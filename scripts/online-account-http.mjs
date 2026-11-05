@@ -154,14 +154,47 @@ export function createOnlineAccountHttpServer({handler, maxConnections = 128, ho
         outgoing.writeHead(response.status, headers);
         if (!response.body) { outgoing.end(); return; }
         const reader = response.body.getReader();
+        let responseComplete = false;
+        let resolveClientClosed;
+        const clientClosed = new Promise(resolve => { resolveClientClosed = resolve; });
+        const onClientClose = () => resolveClientClosed(true);
+        outgoing.once('close', onClientClose);
         try {
           while (true) {
-            const {done, value} = await reader.read();
-            if (done || outgoing.destroyed) break;
-            if (!outgoing.write(Buffer.from(value))) await new Promise(resolve => outgoing.once('drain', resolve));
+            if (outgoing.destroyed) break;
+            const next = await Promise.race([
+              reader.read().then(result => ({result})),
+              clientClosed.then(() => ({clientClosed:true}))
+            ]);
+            if (next.clientClosed) break;
+            const {done, value} = next.result;
+            if (done) { responseComplete = true; break; }
+            if (outgoing.destroyed) break;
+            if (!outgoing.write(Buffer.from(value))) {
+              const drained = await new Promise(resolve => {
+                let settled = false;
+                const finish = value => {
+                  if (settled) return;
+                  settled = true;
+                  outgoing.removeListener('drain', onDrain);
+                  outgoing.removeListener('close', onClosed);
+                  resolve(value);
+                };
+                const onDrain = () => finish(true);
+                const onClosed = () => finish(false);
+                outgoing.once('drain', onDrain);
+                outgoing.once('close', onClosed);
+                if (outgoing.destroyed) finish(false);
+              });
+              if (!drained) break;
+            }
           }
           if (!outgoing.destroyed) outgoing.end();
-        } finally { reader.releaseLock(); }
+        } finally {
+          outgoing.removeListener('close', onClientClose);
+          if (!responseComplete) await reader.cancel(new Error('downstream-disconnected')).catch(() => {});
+          reader.releaseLock();
+        }
       } catch (error) {
         if (outgoing.destroyed || incoming.aborted) return;
         if (timedOut) {

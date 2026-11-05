@@ -340,6 +340,22 @@ test('Online Career current-season API returns only a validated public projectio
   assert.equal(Object.hasOwn(body.season.fixtures[0],'matchId'),false);
 });
 
+test('Online Career current endpoint rejects ignored query parameters before touching account state',async()=>{
+  const calls=[];
+  const ultimateTeamStore={async isItemOwned(...args){calls.push(['owned',...args]);return true;}};
+  const onlineCareerService={
+    async getCurrentSeason(...args){calls.push(['current',...args]);return ONLINE_SEASON;},
+    async createSeason(...args){calls.push(['create',...args]);return ONLINE_SEASON;}
+  };
+  const matchmaking={isValidTeamId:id=>id==='japan'};
+  const {handler,request}=fixture({ultimateTeamStore,onlineCareerService,matchmaking});
+  const get=await handler(request('/api/v1/online-career/current?teamId=brazil'));
+  const post=await handler(request('/api/v1/online-career/current?teamId=brazil',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({teamId:'japan'})}));
+  assert.equal(get.status,400);assert.deepEqual(await get.json(),{error:'invalid-query'});
+  assert.equal(post.status,400);assert.deepEqual(await post.json(),{error:'invalid-query'});
+  assert.deepEqual(calls,[],'ambiguous current-season queries must not read or mutate account state');
+});
+
 test('Online Career archive is account-scoped, bounded by the service, and excludes the current season',async()=>{
  const calls=[],complete={...ONLINE_SEASON,seasonId:'f'.repeat(32),status:'complete',playedCount:2,fixtures:ONLINE_SEASON.fixtures.map(row=>({...row,status:'completed',score:[2,0],recordedAt:'2026-11-04T12:00:00.000Z'}))};
  const onlineCareerService={async listSeasons(accountId,limit){calls.push(['list',accountId,limit]);return [ONLINE_SEASON,complete];},async getCurrentSeason(accountId){calls.push(['current',accountId]);return ONLINE_SEASON;}};

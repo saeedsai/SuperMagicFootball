@@ -6,7 +6,7 @@ const slotNumber=n=>Number.isInteger(n)&&n>=1&&n<=COUNT;
 const labelKey=name=>name.trim().normalize('NFKC').toLowerCase();
 // Slot labels are capped in UTF-16 code units; never split an emoji/supplementary character.
 const limitLabel=(text,max)=>{let result='';for(const point of text){if(result.length+point.length>max)break;result+=point;}return result;};
-const COMPS=new Set(['UEFA','AFC','CAF','CONCACAF','CONMEBOL','OFC']);
+const COMPS=new Set(['UEFA','AFC','CAF','CONCACAF','CONMEBOL','OFC','CUSTOM']);
 const CUP_TABLE_FIELDS=['p','w','d','l','gf','ga','pts'];
 const validCupTableRow=row=>{
  if(!row||typeof row!=='object'||Array.isArray(row))return false;
@@ -76,6 +76,7 @@ const validCupLeagueCursor=t=>t.phase!=='league'||t.rounds.length===0||t.roundId
 const validTournament=t=>Boolean(t&&typeof t==='object'&&!Array.isArray(t)&&
  COMPS.has(t.compId)&&t.id==='cup_'+t.compId&&Number.isInteger(t.club)&&
  Array.isArray(t.participants)&&t.participants.length>=4&&t.participants.length<=64&&
+ (t.compId!=='CUSTOM'||t.format==='custom-knockout'&&t.participants.length<=16&&t.phase!=='league'&&Array.isArray(t.rounds)&&t.rounds.length===0&&Array.isArray(t.groups)&&t.groups.length===0&&t.knockout&&typeof t.knockout==='object'&&!Array.isArray(t.knockout))&&
  t.participants.every(n=>Number.isSafeInteger(n)&&n>=0)&&new Set(t.participants).size===t.participants.length&&
  t.participants.includes(t.club)&&['league','knockout','finished'].includes(t.phase)&&
  Number.isInteger(t.roundIdx)&&t.roundIdx>=0&&t.roundIdx<=100&&

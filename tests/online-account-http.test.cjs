@@ -194,6 +194,29 @@ test('handler timeout aborts in-flight request and returns a bounded 504 respons
   assert.equal(observedAbort, true);
 });
 
+test('downstream disconnect cancels the upstream response stream while waiting on backpressure', async t => {
+  let upstreamCancelled = false;
+  const body = new ReadableStream({
+    start(controller) { controller.enqueue(new Uint8Array(8 * 1024 * 1024)); },
+    cancel() { upstreamCancelled = true; }
+  });
+  const f = await fixture(async () => new Response(body, {headers:{'content-type':'application/octet-stream'}}));
+  t.after(() => f.close());
+  const response = await fetch(`${f.base}/api/v1/me`);
+  assert.equal(response.status, 200);
+  await response.body.cancel();
+  await new Promise((resolve, reject) => {
+    const deadline = Date.now() + 1500;
+    const check = () => {
+      if (upstreamCancelled) return resolve();
+      if (Date.now() >= deadline) return reject(new Error('upstream response stream was not cancelled after client disconnect'));
+      setTimeout(check, 10);
+    };
+    check();
+  });
+  assert.equal(upstreamCancelled, true);
+});
+
 test('optional health check reports healthy, unhealthy, rejected, and timed-out states without details', async t => {
   const healthy = await fixture(async () => new Response(), {healthCheck:async () => true, healthTimeoutMs:100});
   t.after(() => healthy.close());

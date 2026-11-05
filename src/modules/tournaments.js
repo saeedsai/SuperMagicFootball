@@ -23,6 +23,17 @@ function createTournament(compId,club,teams,continentalMapping){const comp=CONTI
  else{const gsize=4,numGroups=ids.length/gsize,tgroups=Array.from({length:numGroups},()=>[]);ids.forEach((id,i)=>tgroups[i%numGroups].push(id));t.groups=tgroups;const legs=comp.format==='short-groups'?1:2;const each=tgroups.map(g=>pairRounds(g,legs));t.rounds=Array.from({length:each[0].length},(_,i)=>each.flatMap(x=>x[i]))}
  return t;
 }
+function createCustomKnockoutTournament(club,participants,teams){
+ if(!Array.isArray(participants)||participants.length<4||participants.length>16||
+  !participants.every(id=>Number.isSafeInteger(id)&&id>=0&&teams?.[id])||
+  new Set(participants).size!==participants.length||!participants.includes(club))
+  throw Error('Choose 4–16 different existing teams, including your club.');
+ const ids=participants.slice(),seed=hash('custom',club,...ids);
+ const ordered=shuffleDeterministic(ids,seed),{matches,byes}=pairElimination(ordered,seed);
+ return {id:'cup_CUSTOM',compId:'CUSTOM',club,season:'Custom',seed,format:'custom-knockout',phase:'knockout',roundIdx:0,
+  rounds:[],groups:[],table:Object.fromEntries(ids.map(id=>[id,zero()])),history:[],earned:0,winner:null,participants:ids,
+  knockout:{matches,byes,stage:stageLabel(ids.length),remaining:ids.length}};
+}
 function tournamentStandings(t,groupIndex=null){const ids=groupIndex===null?t.participants:t.groups[groupIndex];return ids.map(id=>({id,...t.table[id]})).sort(compare)}
 function tournamentCurrent(t){if(!t||t.phase==='finished')return null;
  if(t.phase==='league'){const pair=t.rounds[t.roundIdx]?.find(p=>p.includes(t.club));if(!pair)return null;return {kind:'league',opponent:pair[0]===t.club?pair[1]:pair[0],home:pair[0]===t.club,round:t.roundIdx+1,legTotal:t.rounds.length,stage:t.format==='groups'||t.format==='short-groups'?'GROUP STAGE':'LEAGUE STAGE',bye:false}}
@@ -61,6 +72,10 @@ function validLeagueRoundCoverage(t){
  });
 }
 function validateTournament(t,teams){
+ if(t?.compId==='CUSTOM'&&(t.id!=='cup_CUSTOM'||t.format!=='custom-knockout'||!Array.isArray(t.participants)||
+  t.participants.length<4||t.participants.length>16||new Set(t.participants).size!==t.participants.length||
+  t.phase==='league'||!Array.isArray(t.rounds)||t.rounds.length!==0||!Array.isArray(t.groups)||t.groups.length!==0||
+  !t.knockout||typeof t.knockout!=='object'||Array.isArray(t.knockout)))return false;
  if(!t||!teams||!Array.isArray(t.participants)||!t.participants.length||!t.participants.every(id=>teams[id])||new Set(t.participants).size!==t.participants.length||!t.participants.includes(t.club)||!['league','knockout','finished'].includes(t.phase)||!(t.winner===null||(Number.isInteger(t.winner)&&t.participants.includes(t.winner)))||(t.phase!=='finished'&&t.winner!==null)||!Array.isArray(t.history)||t.history.length>90||!t.history.every(row=>row&&typeof row==='object'&&!Array.isArray(row)))return false;
  const participantSet=new Set(t.participants);
  if(!t.table||typeof t.table!=='object'||Array.isArray(t.table))return false;
@@ -79,6 +94,6 @@ function validateTournament(t,teams){
  return true;
 }
 
-return {createTournament,tournamentCurrent,tournamentAdvance,tournamentStandings,tournamentProgress,validateTournament};})();
+return {createTournament,createCustomKnockoutTournament,tournamentCurrent,tournamentAdvance,tournamentStandings,tournamentProgress,validateTournament};})();
 
 export {TOURNAMENTS};

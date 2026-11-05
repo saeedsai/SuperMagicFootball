@@ -1,6 +1,6 @@
 # Candidate 0.12.81.59 validation
 
-**Status: local candidate.** A player hit by a shot now eases from the airborne impact into the existing grounded pose over .20 seconds instead of rotating directly to the final lying angle. Once down, the existing strength-based **0.5–3 second** hold is unchanged, followed by the existing .24-second braced get-up. The effect is renderer-only and mirrors with facing.
+**Status: promoted and deployed to Pages.** A player hit by a shot now eases from the airborne impact into the existing grounded pose over .20 seconds instead of rotating directly to the final lying angle. Once down, the existing strength-based **0.5–3 second** hold is unchanged, followed by the existing .24-second braced get-up. The effect is renderer-only and mirrors with facing.
 
 ## Acceptance criteria
 
@@ -18,7 +18,7 @@
 - `node --test tests/versioning_policy_contract.test.cjs`: **16/16 passed**; `git diff --check` passed.
 - `python3 -X utf8 tests/shot_impact_weakness_browser_qa.py`: passed the production player renderer across eight views with **0 page errors** and no live simulation mutation. Five actual-renderer fall phases at 0/.05/.10/.20/.40 seconds changed **6,018 / 6,818 / 6,160 / 3,051** pixels between samples; the large changes show the body easing into the ground pose. Existing weakness cue is hidden during down/get-up phases and remains visible in reduced-flash mode.
 - Preview: [shot-hit fall settle at five phases](evidence/browser/shot_impact_down_settle_012859.png).
-- Full build/Node/data, release/version contracts, exact-head Census, Modular QA, protected promotion, Pages, hosted smoke and main regression are pending for the final candidate SHA.
+- Exact-head dev Census `42064396155` and Modular QA `42064396148` passed for SHA `ba0c19d456d4adc9399c0e60ab52bc852e40c24e`. Protected promotion to `main`, Pages deployment `42065958590`, hosted smoke, and main Census `42065957256` passed. The main Census was initially red on a transient two-browser LAN discovery timeout; rerunning the failed job on the same SHA passed.
 
 ## Limits
 
