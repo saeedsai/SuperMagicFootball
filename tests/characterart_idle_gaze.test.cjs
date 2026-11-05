@@ -26,6 +26,6 @@ test('idle gaze is deterministic, staggered, bounded and returns to center',()=>
 test('gaze moves only pupils and is gated off during reduced-flash, action, hurt and cry poses',()=>{
  assert.match(characterSource,/const gaze=idleBreath&&!opt\.hurt&&!opt\.cry&&!opt\.reducedFlash\?idleGaze\(opt\.time,p\.i\):\{x:0,y:0\}/);
  assert.match(characterSource,/Only the iris\/pupil move; the sclera, eyelids, brows and face remain fixed/);
- assert.match(characterSource,/face\(c,k,av,colors\.skin,colors\.hair,\{\.\.\.opt,blink,gazeX:gaze\.x,gazeY:gaze\.y\}\)/);
+ assert.match(characterSource,/face\(c,k,av,colors\.skin,colors\.hair,\{\.\.\.opt,headCounterLean:headLean,blink,gazeX:gaze\.x,gazeY:gaze\.y\}\)/);
  assert.match(renderSource,/reducedFlash:\!\!game\.options\?\.reducedFlash/);
 });

@@ -1,6 +1,6 @@
 # Candidate 0.12.81.53 validation
 
-**Status: local candidate; exact-head Full Regression Census `42026546624` is in progress and Modular QA `42026546832` passed.** Career and Cup archive export now refuses serialized payloads and envelopes that exceed the inspector character cap or the explicit UTF-8 byte cap. Existing import-time UTF-8 byte enforcement is added in candidate .54. Save schemas and existing progress are unchanged.
+**Status: exact-head Full Regression Census `42026546624` and Modular QA `42026546832` passed for SHA `a7e4c605c55b6cf0ec98295fe29b0a3f26ba3eee`; protected promotion and hosted deployment remain to verify.** Career and Cup archive export now refuses serialized payloads and envelopes that exceed the inspector character cap or the explicit UTF-8 byte cap. Existing import-time UTF-8 byte enforcement is added in candidate .54. Save schemas and existing progress are unchanged.
 
 ## Changes
 
@@ -17,6 +17,6 @@
 
 ## Remaining acceptance
 
-- Exact `.53` Full Regression Census `42026546624` is in progress. Protected promotion, Pages deployment, hosted-byte smoke, and main Census remain to be confirmed for this SHA.
+- Exact `.53` Full Regression Census `42026546624` and Modular QA `42026546832` passed. Protected promotion, Pages deployment, hosted-byte smoke, and main Census remain to be confirmed for this SHA.
 - Owner gameplay/save review and physical-device checks remain external acceptance.
 - Public Online Career/Ultimate Team/PVP hosting still needs the owner-provided server, durable PostgreSQL, OIDC/secrets, and backup/restore configuration. Active PVP restart resume still needs a safe authoritative engine checkpoint contract.

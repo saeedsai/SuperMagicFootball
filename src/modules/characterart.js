@@ -335,6 +335,7 @@ const CHARACTER_ART=(()=>{
   const f=faces[norm(av.face,5)],front=k==='front',quarter=k==='quarterFront',side=k==='side',seen=front||quarter||side;
   c.save();c.translate(0,-81);c.scale(opt.headScale||1,opt.headScale||1);
   if(opt.signatureMotion?.headTilt)c.rotate(opt.signatureMotion.headTilt);
+  if(opt.headCounterLean)c.rotate(opt.headCounterLean);
   hairbase(c,k,av.style,f,skin,hair);
   skinHead(c,k,f,skin);
   // Head shading is composited behind the eyes. Beards must be behind lips.
@@ -660,6 +661,7 @@ const CHARACTER_ART=(()=>{
   const blink=idleBreath&&!opt.hurt&&idleBlink(opt.time,p.i);
   const gaze=idleBreath&&!opt.hurt&&!opt.cry&&!opt.reducedFlash?idleGaze(opt.time,p.i):{x:0,y:0};
   const turnLean=turnCounterLean(opt.turnLag,view?.side);
+  const headLean=headTurnCounterLean(opt.turnLag,view?.side);
   c.save();
   // Counter-rotate the connected upper-body group around the waist pivot.
   // Legs/shorts stay planted and the existing root-facing transition is untouched.
@@ -674,7 +676,7 @@ const CHARACTER_ART=(()=>{
   const seamWidth=k==='side'?11:k.startsWith('quarter')?16:19;
   c.moveTo(-seamWidth,-55);c.quadraticCurveTo(-seamWidth+2,-43,-seamWidth+5,-34);c.stroke();c.restore();
   arm(c,1,k,p,colors,{...opt,tattoo:av.tattoo},true);
-  face(c,k,av,colors.skin,colors.hair,{...opt,blink,gazeX:gaze.x,gazeY:gaze.y});
+  face(c,k,av,colors.skin,colors.hair,{...opt,headCounterLean:headLean,blink,gazeX:gaze.x,gazeY:gaze.y});
   c.restore();
   c.restore();
  }
@@ -683,6 +685,11 @@ const CHARACTER_ART=(()=>{
   const mirror=Number(side)<0?-1:1;
   return clamp(-turn*.28*mirror,-.14,.14);
  }
- return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,idleBlink,idleGaze,turnCounterLean,version:3};
+ function headTurnCounterLean(turnLag,side=1){
+  const turn=Number(turnLag);if(!Number.isFinite(turn)||turn===0)return 0;
+  const mirror=Number(side)<0?-1:1;
+  return clamp(turn*.14*mirror,-.095,.095);
+ }
+ return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,idleBlink,idleGaze,turnCounterLean,headTurnCounterLean,version:3};
 })();
 export {CHARACTER_ART};

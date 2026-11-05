@@ -1,6 +1,6 @@
 # Candidate 0.12.81.54 validation
 
-**Status: local candidate; exact-head CI has not run.** This candidate improves rolling-ball texture continuity and closes the remaining UTF-8 backup-size asymmetry in Career/Cup. Exact-head Census and Modular QA, protected promotion, hosted deployment and physical-device/owner visual review remain separate gates.
+**Status: promoted and deployed; main Census passed.** Exact-head Full Regression Census (`42027710060`) and Modular QA (`42027710079`) passed for SHA `d3c5cdab25ba55958650c404b569211e6b8321cb`; protected promotion passed; Pages deploy (`42028977160`), hosted smoke, and main Census (`42028977389`) passed. Current Player Graphics QA (`42027710103`) remains in progress.
 
 ## Changes
 
@@ -17,6 +17,5 @@
 
 ## Remaining acceptance
 
-- Run final full local tests, then exact-head Full Regression Census and Modular QA; verify promotion, Pages deploy, hosted byte/smoke, and main Census for this exact SHA.
-- Owner visual/gameplay review and physical-device acceptance remain open.
+- Current Player Graphics QA `42027710103` remains in progress; owner visual/gameplay review and physical-device acceptance are also open.
 - Public Online Career/Ultimate Team/PVP hosting needs the owner-provided server, durable PostgreSQL, OIDC/secrets and backup/restore configuration. Active PVP restart resume still needs a safe authoritative engine checkpoint contract.

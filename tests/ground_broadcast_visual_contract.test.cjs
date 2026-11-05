@@ -21,3 +21,12 @@ test('ground broadcast polish stays cached, subtle, bounded to turf, and geometr
  assert.match(field,/ctx\.strokeRect\(left\+4,top\+4,F\.w-8,F\.h-8\)/);
  assert.match(field,/line\(ctx,\[\[center,top\],\[center,bot\]\],'#f7f6dcdc',4\)/);
 });
+
+test('wet pitch reflections are shallow, deterministic, and static for reduced-flash safety',()=>{
+ assert.match(field,/if\(damp&&condition==='Wet'\)\{/,'wet-only surface highlights never appear on dry turf');
+ assert.match(field,/ctx\.rotate\(random\(i\+52,-\.45,\.45\)\)/,'reflection arc angle is deterministic per puddle');
+ assert.match(field,/rgba\(218,242,247,\.20\)/,'grass sheen is restrained');
+ assert.match(field,/rgba\(255,229,189,\.22\)/,'dirt sheen reflects the ground tint');
+ assert.match(field,/bezierCurveTo\(-rx\*\.34,-ry\*\.48,rx\*\.08,-ry\*\.46,rx\*\.40,-ry\*\.29\)/,'broken arcs follow each seeded puddle shape');
+ assert.doesNotMatch(field,/Date\.now|Math\.random|reducedFlash|requestAnimationFrame/,'cached water highlights do not animate or depend on reduced-flash state');
+});

@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.54',
+ version:'0.12.81.55',
  date:'2026-11-05',
  notes:Object.freeze([
+  'IN-GAME ENERGY ACCESSIBILITY / PLAYER TURN ANIMATION / WET PITCH PRESENTATION: The live selected-player Energy bar now exposes a screen-reader meter name and percentage matching its visible value and follows player selection. Existing players add a small mirrored head counter-lean during turn transitions; their movement, input, hitboxes and simulation remain unchanged. Wet surfaces show deterministic static puddle-light arcs across Grass, Dirt, Sand and Classic terrain; dry turf and game state are unchanged. Desktop/mobile browser and reduced-flash checks pass; owner visual and physical-device acceptance remain separate. ',
   'GAMEPLAY BALL SURFACE QUALITY: Rolling ball textures now overlap adjacent antialiased projection clips by a bounded subpixel amount, reducing hairline seams while retaining original texture mapping, ball radius, movement, collision and physics. Actual-renderer Chromium checks cover five ball designs, three roll angles and four directions at gameplay size with unchanged game state. Owner visual and physical-device acceptance remain separate. ',
   'CAREER / CUP BACKUP ROUND-TRIP SAFETY: Career and Cup exports now check the complete JSON envelope against the same 2 MB character and UTF-8 byte limits enforced by inspection/import. Oversized exports fail clearly before download without modifying saves or recovery snapshots; near-limit backups still inspect, import and re-export losslessly. Existing save formats and progress are unchanged. Focused regression checks pass; exact-head gates remain separate. ',
   'GAMEPLAY DRIBBLE PRESENTATION: All ten existing Dribble Styles now have distinct, direction-aware on-field cues rather than sharing the same ring. Mirrored team labels stay readable; cues are steady visual feedback and do not change input, move timing, stamina, cooldown, ball control, or save data. Local unit and production-player Chromium checks pass; owner visual and physical-device acceptance remain separate. ',

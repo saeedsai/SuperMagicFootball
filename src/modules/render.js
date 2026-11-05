@@ -1250,7 +1250,21 @@ class Renderer{
      ctx.restore();
    }
  }
- if(condition!=='Good'||terrain==='Dirt'){for(let i=0;i<27;i++){let x=F.x+85+((i*349)%Math.floor(F.w-170)),y=F.y+40+((i*227)%Math.floor(F.h-80));const damp=condition==='Wet'||i%3===0;ctx.fillStyle=damp?(terrain==='Grass'?'#477e4bc7':'#776443b9'):terrain==='Grass'?'#b7924877':'#89593973';ellipse(ctx,x,y,random(i+42,18,70),random(i+48,9,32),ctx.fillStyle);if(damp&&condition==='Wet'){ellipse(ctx,x-7,y-5,24,5,'#a5d8ee38')}}}
+ if(condition!=='Good'||terrain==='Dirt'){for(let i=0;i<27;i++){
+   let x=F.x+85+((i*349)%Math.floor(F.w-170)),y=F.y+40+((i*227)%Math.floor(F.h-80));
+   const damp=condition==='Wet'||i%3===0,rx=random(i+42,18,70),ry=random(i+48,9,32);
+   ctx.fillStyle=damp?(terrain==='Grass'?'#477e4bc7':'#776443b9'):terrain==='Grass'?'#b7924877':'#89593973';ellipse(ctx,x,y,rx,ry,ctx.fillStyle);
+   if(damp&&condition==='Wet'){
+    ellipse(ctx,x-7,y-5,24,5,'#a5d8ee38');
+    // Two broken, static reflection arcs make each puddle read as a shallow
+    // water surface at match scale without a moving flash or extra particles.
+    ctx.save();ctx.translate(x-7,y-5);ctx.rotate(random(i+52,-.45,.45));
+    ctx.strokeStyle=terrain==='Dirt'?'rgba(255,229,189,.22)':terrain==='Sand'?'rgba(255,248,206,.22)':'rgba(218,242,247,.20)';
+    ctx.lineWidth=Math.max(1,Math.min(2.2,ry*.09));ctx.lineCap='round';ctx.beginPath();
+    ctx.moveTo(-rx*.62,-ry*.21);ctx.bezierCurveTo(-rx*.34,-ry*.48,rx*.08,-ry*.46,rx*.40,-ry*.29);
+    ctx.moveTo(-rx*.29,ry*.10);ctx.bezierCurveTo(-rx*.04,-ry*.03,rx*.25,-ry*.01,rx*.49,ry*.12);ctx.stroke();ctx.restore();
+   }
+  }}
   const top=F.y,left=F.x,right=F.x+F.w,bot=F.y+F.h,center=(left+right)/2,cy=(top+bot)/2;this.drawVenueMarkings(ctx,game);ctx.save();const venue=STADIUMS.find(v=>v.id===game.options?.stadium)||STADIUMS[0],markingTone=['#fff3df','#e4f5e8','#def4ff','#eee9ff','#e8f4cf'][(venue.profile??0)%5];
   // A small dark halo keeps chalk legible over every venue's grass, wear and
   // decorative turf pattern while leaving all official line paths unchanged.
