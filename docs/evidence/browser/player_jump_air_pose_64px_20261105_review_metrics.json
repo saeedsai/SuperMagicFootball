@@ -1,0 +1,899 @@
+{
+  "sheet": [
+    576,
+    1800
+  ],
+  "nominalPlayerHeightPx": 64,
+  "rows": [
+    "ground",
+    "normal takeoff",
+    "normal rise",
+    "normal apex",
+    "normal descent",
+    "double takeoff",
+    "double rise",
+    "double apex",
+    "double descent"
+  ],
+  "views": [
+    "front+",
+    "quarter+",
+    "profile+",
+    "front-",
+    "quarter-",
+    "profile-"
+  ],
+  "snapshots": [
+    {
+      "view": "front+",
+      "phase": "ground",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 0,
+      "vz": 0,
+      "jumpCount": 0,
+      "paintedPixels": 2180,
+      "renderedBoundsHeight": 64,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter+",
+      "phase": "ground",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 0,
+      "vz": 0,
+      "jumpCount": 0,
+      "paintedPixels": 2031,
+      "renderedBoundsHeight": 64,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile+",
+      "phase": "ground",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 0,
+      "vz": 0,
+      "jumpCount": 0,
+      "paintedPixels": 1947,
+      "renderedBoundsHeight": 64,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "front-",
+      "phase": "ground",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 0,
+      "vz": 0,
+      "jumpCount": 0,
+      "paintedPixels": 2182,
+      "renderedBoundsHeight": 64,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter-",
+      "phase": "ground",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 0,
+      "vz": 0,
+      "jumpCount": 0,
+      "paintedPixels": 2034,
+      "renderedBoundsHeight": 64,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile-",
+      "phase": "ground",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 0,
+      "vz": 0,
+      "jumpCount": 0,
+      "paintedPixels": 1949,
+      "renderedBoundsHeight": 64,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "front+",
+      "phase": "normal takeoff",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 2,
+      "vz": 420,
+      "jumpCount": 1,
+      "paintedPixels": 2213,
+      "renderedBoundsHeight": 66,
+      "unshiftedCharacterHeight": 65
+    },
+    {
+      "view": "quarter+",
+      "phase": "normal takeoff",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 2,
+      "vz": 420,
+      "jumpCount": 1,
+      "paintedPixels": 2053,
+      "renderedBoundsHeight": 66,
+      "unshiftedCharacterHeight": 65
+    },
+    {
+      "view": "profile+",
+      "phase": "normal takeoff",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 2,
+      "vz": 420,
+      "jumpCount": 1,
+      "paintedPixels": 2017,
+      "renderedBoundsHeight": 66,
+      "unshiftedCharacterHeight": 65
+    },
+    {
+      "view": "front-",
+      "phase": "normal takeoff",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 2,
+      "vz": 420,
+      "jumpCount": 1,
+      "paintedPixels": 2210,
+      "renderedBoundsHeight": 66,
+      "unshiftedCharacterHeight": 65
+    },
+    {
+      "view": "quarter-",
+      "phase": "normal takeoff",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 2,
+      "vz": 420,
+      "jumpCount": 1,
+      "paintedPixels": 2053,
+      "renderedBoundsHeight": 66,
+      "unshiftedCharacterHeight": 65
+    },
+    {
+      "view": "profile-",
+      "phase": "normal takeoff",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 2,
+      "vz": 420,
+      "jumpCount": 1,
+      "paintedPixels": 2016,
+      "renderedBoundsHeight": 66,
+      "unshiftedCharacterHeight": 65
+    },
+    {
+      "view": "front+",
+      "phase": "normal rise",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 38,
+      "vz": 220,
+      "jumpCount": 1,
+      "paintedPixels": 2338,
+      "renderedBoundsHeight": 84,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter+",
+      "phase": "normal rise",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 38,
+      "vz": 220,
+      "jumpCount": 1,
+      "paintedPixels": 2171,
+      "renderedBoundsHeight": 84,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile+",
+      "phase": "normal rise",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 38,
+      "vz": 220,
+      "jumpCount": 1,
+      "paintedPixels": 2095,
+      "renderedBoundsHeight": 84,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "front-",
+      "phase": "normal rise",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 38,
+      "vz": 220,
+      "jumpCount": 1,
+      "paintedPixels": 2338,
+      "renderedBoundsHeight": 84,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter-",
+      "phase": "normal rise",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 38,
+      "vz": 220,
+      "jumpCount": 1,
+      "paintedPixels": 2172,
+      "renderedBoundsHeight": 84,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile-",
+      "phase": "normal rise",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 38,
+      "vz": 220,
+      "jumpCount": 1,
+      "paintedPixels": 2098,
+      "renderedBoundsHeight": 84,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "front+",
+      "phase": "normal apex",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 82,
+      "vz": 0,
+      "jumpCount": 1,
+      "paintedPixels": 2378,
+      "renderedBoundsHeight": 107,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter+",
+      "phase": "normal apex",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 82,
+      "vz": 0,
+      "jumpCount": 1,
+      "paintedPixels": 2233,
+      "renderedBoundsHeight": 107,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile+",
+      "phase": "normal apex",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 82,
+      "vz": 0,
+      "jumpCount": 1,
+      "paintedPixels": 2125,
+      "renderedBoundsHeight": 107,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "front-",
+      "phase": "normal apex",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 82,
+      "vz": 0,
+      "jumpCount": 1,
+      "paintedPixels": 2379,
+      "renderedBoundsHeight": 107,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter-",
+      "phase": "normal apex",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 82,
+      "vz": 0,
+      "jumpCount": 1,
+      "paintedPixels": 2231,
+      "renderedBoundsHeight": 107,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile-",
+      "phase": "normal apex",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 82,
+      "vz": 0,
+      "jumpCount": 1,
+      "paintedPixels": 2124,
+      "renderedBoundsHeight": 107,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "front+",
+      "phase": "normal descent",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 36,
+      "vz": -300,
+      "jumpCount": 1,
+      "paintedPixels": 2353,
+      "renderedBoundsHeight": 83,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter+",
+      "phase": "normal descent",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 36,
+      "vz": -300,
+      "jumpCount": 1,
+      "paintedPixels": 2176,
+      "renderedBoundsHeight": 83,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile+",
+      "phase": "normal descent",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 36,
+      "vz": -300,
+      "jumpCount": 1,
+      "paintedPixels": 2110,
+      "renderedBoundsHeight": 83,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "front-",
+      "phase": "normal descent",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 36,
+      "vz": -300,
+      "jumpCount": 1,
+      "paintedPixels": 2354,
+      "renderedBoundsHeight": 83,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter-",
+      "phase": "normal descent",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 36,
+      "vz": -300,
+      "jumpCount": 1,
+      "paintedPixels": 2178,
+      "renderedBoundsHeight": 83,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile-",
+      "phase": "normal descent",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 36,
+      "vz": -300,
+      "jumpCount": 1,
+      "paintedPixels": 2110,
+      "renderedBoundsHeight": 83,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "front+",
+      "phase": "double takeoff",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 32,
+      "vz": 535,
+      "jumpCount": 2,
+      "paintedPixels": 2332,
+      "renderedBoundsHeight": 81,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter+",
+      "phase": "double takeoff",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 32,
+      "vz": 535,
+      "jumpCount": 2,
+      "paintedPixels": 2161,
+      "renderedBoundsHeight": 81,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile+",
+      "phase": "double takeoff",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 32,
+      "vz": 535,
+      "jumpCount": 2,
+      "paintedPixels": 2112,
+      "renderedBoundsHeight": 81,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "front-",
+      "phase": "double takeoff",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 32,
+      "vz": 535,
+      "jumpCount": 2,
+      "paintedPixels": 2331,
+      "renderedBoundsHeight": 81,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter-",
+      "phase": "double takeoff",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 32,
+      "vz": 535,
+      "jumpCount": 2,
+      "paintedPixels": 2159,
+      "renderedBoundsHeight": 81,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile-",
+      "phase": "double takeoff",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 32,
+      "vz": 535,
+      "jumpCount": 2,
+      "paintedPixels": 2107,
+      "renderedBoundsHeight": 81,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "front+",
+      "phase": "double rise",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 90,
+      "vz": 300,
+      "jumpCount": 2,
+      "paintedPixels": 2386,
+      "renderedBoundsHeight": 111,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter+",
+      "phase": "double rise",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 90,
+      "vz": 300,
+      "jumpCount": 2,
+      "paintedPixels": 2233,
+      "renderedBoundsHeight": 111,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile+",
+      "phase": "double rise",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 90,
+      "vz": 300,
+      "jumpCount": 2,
+      "paintedPixels": 2132,
+      "renderedBoundsHeight": 111,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "front-",
+      "phase": "double rise",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 90,
+      "vz": 300,
+      "jumpCount": 2,
+      "paintedPixels": 2385,
+      "renderedBoundsHeight": 111,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter-",
+      "phase": "double rise",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 90,
+      "vz": 300,
+      "jumpCount": 2,
+      "paintedPixels": 2232,
+      "renderedBoundsHeight": 111,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile-",
+      "phase": "double rise",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 90,
+      "vz": 300,
+      "jumpCount": 2,
+      "paintedPixels": 2129,
+      "renderedBoundsHeight": 111,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "front+",
+      "phase": "double apex",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 150,
+      "vz": 0,
+      "jumpCount": 2,
+      "paintedPixels": 2394,
+      "renderedBoundsHeight": 142,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter+",
+      "phase": "double apex",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 150,
+      "vz": 0,
+      "jumpCount": 2,
+      "paintedPixels": 2246,
+      "renderedBoundsHeight": 142,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile+",
+      "phase": "double apex",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 150,
+      "vz": 0,
+      "jumpCount": 2,
+      "paintedPixels": 2130,
+      "renderedBoundsHeight": 142,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "front-",
+      "phase": "double apex",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 150,
+      "vz": 0,
+      "jumpCount": 2,
+      "paintedPixels": 2397,
+      "renderedBoundsHeight": 142,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter-",
+      "phase": "double apex",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 150,
+      "vz": 0,
+      "jumpCount": 2,
+      "paintedPixels": 2248,
+      "renderedBoundsHeight": 142,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile-",
+      "phase": "double apex",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 150,
+      "vz": 0,
+      "jumpCount": 2,
+      "paintedPixels": 2132,
+      "renderedBoundsHeight": 142,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "front+",
+      "phase": "double descent",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 46,
+      "vz": -330,
+      "jumpCount": 2,
+      "paintedPixels": 2370,
+      "renderedBoundsHeight": 88,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter+",
+      "phase": "double descent",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 46,
+      "vz": -330,
+      "jumpCount": 2,
+      "paintedPixels": 2204,
+      "renderedBoundsHeight": 88,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile+",
+      "phase": "double descent",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 46,
+      "vz": -330,
+      "jumpCount": 2,
+      "paintedPixels": 2102,
+      "renderedBoundsHeight": 88,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "front-",
+      "phase": "double descent",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 46,
+      "vz": -330,
+      "jumpCount": 2,
+      "paintedPixels": 2370,
+      "renderedBoundsHeight": 88,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "quarter-",
+      "phase": "double descent",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 46,
+      "vz": -330,
+      "jumpCount": 2,
+      "paintedPixels": 2203,
+      "renderedBoundsHeight": 88,
+      "unshiftedCharacterHeight": 64
+    },
+    {
+      "view": "profile-",
+      "phase": "double descent",
+      "preview": false,
+      "unchanged": true,
+      "ballUnchanged": true,
+      "z": 46,
+      "vz": -330,
+      "jumpCount": 2,
+      "paintedPixels": 2104,
+      "renderedBoundsHeight": 88,
+      "unshiftedCharacterHeight": 64
+    }
+  ],
+  "deltaSummary": [
+    {
+      "view": "front+",
+      "comparison": "normal apex vs ground",
+      "changedPixels": 4174,
+      "apexPaintedPixels": 3226
+    },
+    {
+      "view": "front+",
+      "comparison": "double apex vs ground",
+      "changedPixels": 4867,
+      "apexPaintedPixels": 3292
+    },
+    {
+      "view": "quarter+",
+      "comparison": "normal apex vs ground",
+      "changedPixels": 3880,
+      "apexPaintedPixels": 3081
+    },
+    {
+      "view": "quarter+",
+      "comparison": "double apex vs ground",
+      "changedPixels": 4574,
+      "apexPaintedPixels": 3144
+    },
+    {
+      "view": "profile+",
+      "comparison": "normal apex vs ground",
+      "changedPixels": 3740,
+      "apexPaintedPixels": 2973
+    },
+    {
+      "view": "profile+",
+      "comparison": "double apex vs ground",
+      "changedPixels": 4378,
+      "apexPaintedPixels": 3028
+    },
+    {
+      "view": "front-",
+      "comparison": "normal apex vs ground",
+      "changedPixels": 4176,
+      "apexPaintedPixels": 3227
+    },
+    {
+      "view": "front-",
+      "comparison": "double apex vs ground",
+      "changedPixels": 4872,
+      "apexPaintedPixels": 3295
+    },
+    {
+      "view": "quarter-",
+      "comparison": "normal apex vs ground",
+      "changedPixels": 3881,
+      "apexPaintedPixels": 3079
+    },
+    {
+      "view": "quarter-",
+      "comparison": "double apex vs ground",
+      "changedPixels": 4579,
+      "apexPaintedPixels": 3146
+    },
+    {
+      "view": "profile-",
+      "comparison": "normal apex vs ground",
+      "changedPixels": 3741,
+      "apexPaintedPixels": 2972
+    },
+    {
+      "view": "profile-",
+      "comparison": "double apex vs ground",
+      "changedPixels": 4382,
+      "apexPaintedPixels": 3030
+    }
+  ],
+  "flashChecks": [
+    {
+      "view": "front+",
+      "phase": "ground",
+      "reducedFlashRepeatPixelDelta": 0
+    },
+    {
+      "view": "quarter+",
+      "phase": "ground",
+      "reducedFlashRepeatPixelDelta": 0
+    },
+    {
+      "view": "profile+",
+      "phase": "ground",
+      "reducedFlashRepeatPixelDelta": 0
+    },
+    {
+      "view": "front-",
+      "phase": "ground",
+      "reducedFlashRepeatPixelDelta": 0
+    },
+    {
+      "view": "quarter-",
+      "phase": "ground",
+      "reducedFlashRepeatPixelDelta": 0
+    },
+    {
+      "view": "profile-",
+      "phase": "ground",
+      "reducedFlashRepeatPixelDelta": 0
+    },
+    {
+      "view": "front+",
+      "phase": "normal apex",
+      "reducedFlashRepeatPixelDelta": 0
+    },
+    {
+      "view": "quarter+",
+      "phase": "normal apex",
+      "reducedFlashRepeatPixelDelta": 0
+    },
+    {
+      "view": "profile+",
+      "phase": "normal apex",
+      "reducedFlashRepeatPixelDelta": 3
+    },
+    {
+      "view": "front-",
+      "phase": "normal apex",
+      "reducedFlashRepeatPixelDelta": 0
+    },
+    {
+      "view": "quarter-",
+      "phase": "normal apex",
+      "reducedFlashRepeatPixelDelta": 0
+    },
+    {
+      "view": "profile-",
+      "phase": "normal apex",
+      "reducedFlashRepeatPixelDelta": 0
+    },
+    {
+      "view": "front+",
+      "phase": "double apex",
+      "reducedFlashRepeatPixelDelta": 0
+    },
+    {
+      "view": "quarter+",
+      "phase": "double apex",
+      "reducedFlashRepeatPixelDelta": 0
+    },
+    {
+      "view": "profile+",
+      "phase": "double apex",
+      "reducedFlashRepeatPixelDelta": 2
+    },
+    {
+      "view": "front-",
+      "phase": "double apex",
+      "reducedFlashRepeatPixelDelta": 0
+    },
+    {
+      "view": "quarter-",
+      "phase": "double apex",
+      "reducedFlashRepeatPixelDelta": 0
+    },
+    {
+      "view": "profile-",
+      "phase": "double apex",
+      "reducedFlashRepeatPixelDelta": 0
+    }
+  ],
+  "browserErrors": [],
+  "evidence": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\docs\\evidence\\browser\\player_jump_air_pose_64px_20261105_review.png",
+  "metricsEvidence": "D:\\My Projects\\Supermagic_Football\\SuperMagicFootball\\docs\\evidence\\browser\\player_jump_air_pose_64px_20261105_review_metrics.json"
+}
