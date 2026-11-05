@@ -1,6 +1,8 @@
 const WS_PROTOCOL='smf-online-v1';
 const ONLINE_MATCH_ID=/^[a-f0-9]{32}$/;
 const TICKET=/^[a-f0-9]{64}$/;
+const MAX_BUFFERED_INPUT_BYTES=1024;
+const MAX_SEQUENCE_GAP=240;
 const BUTTONS=Object.freeze(['pass','shoot','dribble','jump']);
 const AXIS=value=>Number.isFinite(value)&&value>=-1&&value<=1;
 const onlineMatchPlain=value=>value!==null&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)===Object.prototype;
@@ -90,21 +92,21 @@ function socketUrl(apiBase){
 /** Browser WebSocket client; identity is conveyed only through a one-use server ticket. */
 export function createOnlineMatchClient({requestTicket,requestResumeTicket=null,apiBase,WebSocketImpl=globalThis.WebSocket,onStatus=()=>{},onSnapshot=()=>{},onError=()=>{}}={}){
  if(typeof requestTicket!=='function'||typeof WebSocketImpl!=='function'||typeof onStatus!=='function'||typeof onSnapshot!=='function'||typeof onError!=='function')throw new TypeError('Invalid online match client configuration');
- const url=socketUrl(apiBase);let socket=null,matchId=null,side=null,lastSequence=0,disposed=false;
+ const url=socketUrl(apiBase);let socket=null,matchId=null,side=null,lastSequence=0,lastRequestedSequence=0,sequenceOffset=0,disposed=false;
  const safeStatus=value=>{try{onStatus(Object.freeze(value))}catch{}};
  const safeError=value=>{try{onError(value instanceof OnlineMatchClientError?value:new OnlineMatchClientError('connection-failed'))}catch{}};
  function handleMessage(raw){
   let message;try{message=JSON.parse(typeof raw==='string'?raw:String(raw))}catch{safeError(new OnlineMatchClientError('invalid-snapshot'));return}
   if(!onlineMatchPlain(message)||typeof message.type!=='string'||Object.hasOwn(message,'userId')){safeError(new OnlineMatchClientError('invalid-snapshot'));return;}
   if(message.type==='queued'){
-   if(message.reason==='opponent-disconnected'){matchId=null;side=null;lastSequence=0;}
+   if(message.reason==='opponent-disconnected'){matchId=null;side=null;lastSequence=0;lastRequestedSequence=0;sequenceOffset=0;}
    safeStatus({state:'queued',reason:typeof message.reason==='string'&&message.reason.length<=64?message.reason:null});return;
   }
   if(message.type==='matched'){
    if(!ONLINE_MATCH_ID.test(message.matchId||'')||![0,1].includes(message.side)||message.mode!==undefined&&!['quick','career-ai'].includes(message.mode)||message.resumed!==undefined&&message.resumed!==true){safeError(new OnlineMatchClientError('invalid-snapshot'));return;}
    const resumed=message.resumed===true;
    if(resumed&&(!matchId||message.matchId!==matchId||side!==message.side||message.mode==='career-ai')){safeError(new OnlineMatchClientError('invalid-snapshot'));return;}
-   matchId=message.matchId;side=message.side;lastSequence=0;safeStatus({state:resumed?'resumed':'matched',matchId,side,...(message.mode==='career-ai'?{mode:'career-ai'}:{})});return;
+   matchId=message.matchId;side=message.side;lastSequence=0;lastRequestedSequence=0;sequenceOffset=0;safeStatus({state:resumed?'resumed':'matched',matchId,side,...(message.mode==='career-ai'?{mode:'career-ai'}:{})});return;
   }
   if(message.type==='snapshot'){
    try{const result=validateSnapshot(message);if(!matchId||side===null||result.matchId!==matchId)throw new OnlineMatchClientError('invalid-snapshot');
@@ -145,11 +147,17 @@ export function createOnlineMatchClient({requestTicket,requestResumeTicket=null,
  }
  function sendInput(sequence,input){
   if(!socket||socket.readyState!==1||!matchId)throw new OnlineMatchClientError('match-ended');
-  if(!Number.isSafeInteger(sequence)||sequence<=lastSequence||sequence-lastSequence>240)throw new OnlineMatchClientError('invalid-input');
-  const clean=cleanInput(input);const wire=JSON.stringify({type:'input',matchId,sequence,input:clean});
+  if(!Number.isSafeInteger(sequence)||sequence<=lastRequestedSequence||sequence-lastRequestedSequence>MAX_SEQUENCE_GAP)throw new OnlineMatchClientError('invalid-input');
+  const clean=cleanInput(input);lastRequestedSequence=sequence;
+  // Browser WebSocket queues are otherwise unbounded. Skip obsolete samples while
+  // congested so the player controls the current game state after the link drains.
+  if(Number.isFinite(socket.bufferedAmount)&&socket.bufferedAmount>MAX_BUFFERED_INPUT_BYTES){sequenceOffset++;return false;}
+  const acceptedSequence=sequence-sequenceOffset;
+  if(!Number.isSafeInteger(acceptedSequence)||acceptedSequence<=lastSequence||acceptedSequence-lastSequence>MAX_SEQUENCE_GAP)throw new OnlineMatchClientError('invalid-input');
+  const wire=JSON.stringify({type:'input',matchId,sequence:acceptedSequence,input:clean});
   if(wire.length>4096)throw new OnlineMatchClientError('invalid-input');
   try{socket.send(wire)}catch{throw new OnlineMatchClientError('connection-failed')}
-  lastSequence=sequence;return true;
+  lastSequence=acceptedSequence;return true;
  }
  function disconnect(){disposed=true;matchId=null;side=null;try{socket?.close(1000,'Leave match')}catch{};socket=null;safeStatus({state:'disconnected'});}
  return Object.freeze({connect,resume,sendInput,disconnect,get matchId(){return matchId;},get side(){return side;},get connected(){return !!socket&&socket.readyState===1;}});

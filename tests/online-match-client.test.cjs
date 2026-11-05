@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 class FakeSocket{
  static OPEN=1;
  static instances=[];
- constructor(url,protocols){this.url=url;this.protocols=protocols;this.readyState=0;this.listeners=new Map();this.sent=[];FakeSocket.instances.push(this);queueMicrotask(()=>{this.readyState=1;this.emit('open',{})})}
+ constructor(url,protocols){this.url=url;this.protocols=protocols;this.readyState=0;this.bufferedAmount=0;this.listeners=new Map();this.sent=[];FakeSocket.instances.push(this);queueMicrotask(()=>{this.readyState=1;this.emit('open',{})})}
  addEventListener(type,handler){const rows=this.listeners.get(type)||[];rows.push(handler);this.listeners.set(type,rows)}
  emit(type,event){for(const handler of this.listeners.get(type)||[])handler(event)}
  send(value){if(this.readyState!==1)throw Error('closed');this.sent.push(value)}
@@ -50,6 +50,20 @@ test('online match input is strict, sequenced and contains no client identity or
  const frame=JSON.parse(socket.sent[0]);assert.deepEqual(Object.keys(frame).sort(),['input','matchId','sequence','type']);assert.equal(frame.matchId,id);assert.equal(frame.sequence,1);
  assert.throws(()=>client.sendInput(1,{x:0,y:0,buttons:{pass:false,shoot:false,dribble:false,jump:false}}),error=>error.code==='invalid-input');
  assert.throws(()=>client.sendInput(2,{x:5,y:0,buttons:{pass:false,shoot:false,dribble:false,jump:false}}),error=>error.code==='invalid-input');
+});
+
+test('online input drops obsolete buffered samples without closing or advancing the wire sequence, then sends the latest four actions after drain',async()=>{
+ const {client,events}=await setup();await client.connect();const socket=FakeSocket.instances[0];message(socket,{type:'matched',matchId:id,side:0});
+ const input=(buttons)=>({x:.25,y:-.5,buttons:{pass:!!buttons.pass,shoot:!!buttons.shoot,dribble:!!buttons.dribble,jump:!!buttons.jump}});
+ assert.equal(client.sendInput(1,input({pass:true})),true);
+ socket.bufferedAmount=1025;
+ assert.equal(client.sendInput(2,input({shoot:true})),false);
+ assert.equal(client.sendInput(3,input({dribble:true,jump:true})),false);
+ assert.equal(socket.sent.length,1);assert.equal(client.connected,true);assert.equal(client.matchId,id);assert.equal(events.errors.length,0);
+ socket.bufferedAmount=0;
+ assert.equal(client.sendInput(4,input({jump:true})),true);
+ const resumed=JSON.parse(socket.sent.at(-1));assert.equal(resumed.sequence,2);assert.deepEqual(resumed.input,{x:.25,y:-.5,buttons:{pass:false,shoot:false,dribble:false,jump:true}});
+ assert.equal(client.sendInput(5,input({})),true);assert.equal(JSON.parse(socket.sent.at(-1)).sequence,3);
 });
 
 test('online match client rejects malformed or cross-match state and never accepts user IDs',async()=>{

@@ -192,12 +192,18 @@ function drawShotImpactCue(ctx,p,time,reducedFlash=false){
  ctx.translate(0,-42);
  const turn=reducedFlash?0:(Number(time)||0)*1.35;
  for(let i=0;i<3;i++){
-  const a=turn+i*Math.PI*2/3,x=Math.cos(a)*17,y=Math.sin(a)*9;
-  ctx.save();ctx.translate(x,y);ctx.rotate(a+.5);
-  ellipse(ctx,0,0,5,3,'#fff1a3');
-  ctx.beginPath();ctx.moveTo(-3,0);ctx.lineTo(-8,-4);ctx.lineTo(-7,3);ctx.closePath();ctx.fillStyle='#e7bd58';ctx.fill();
-  ctx.beginPath();ctx.moveTo(-1,-2);ctx.lineTo(2,-8);ctx.lineTo(4,-2);ctx.closePath();ctx.fillStyle='#fff7cf';ctx.fill();
-  ellipse(ctx,2,-1,1,1,'#1f3542');ctx.restore();
+   const a=turn+i*Math.PI*2/3,x=Math.cos(a)*17,y=Math.sin(a)*9;
+   const flap=reducedFlash?0:Math.sin((Number(time)||0)*8+i*2.1)*1.8;
+   ctx.save();ctx.translate(x,y);ctx.rotate(a+.5);
+   // Read as tiny birds instead of vague orbiting leaves: body, head, beak,
+   // tail and a wing that gently flaps. Reduced-flash freezes each silhouette.
+   ctx.fillStyle='#fff1a3';ctx.strokeStyle='#765b22';ctx.lineWidth=.7;
+   ctx.beginPath();ctx.moveTo(-5,0);ctx.quadraticCurveTo(-2,-3,2,-1);ctx.quadraticCurveTo(4,0,2,2);ctx.quadraticCurveTo(-1,4,-5,0);ctx.closePath();ctx.fill();ctx.stroke();
+   ellipse(ctx,3,-2,2,2,'#fff7cf');
+   ctx.fillStyle='#e7bd58';ctx.beginPath();ctx.moveTo(4,-2);ctx.lineTo(8,-1);ctx.lineTo(4,0);ctx.closePath();ctx.fill();
+   ctx.fillStyle='#fff7cf';ctx.beginPath();ctx.moveTo(-3,0);ctx.quadraticCurveTo(-1,-3-flap,3,-4-flap);ctx.quadraticCurveTo(1,-1,0,1);ctx.closePath();ctx.fill();ctx.stroke();
+   ctx.fillStyle='#d4a641';ctx.beginPath();ctx.moveTo(-4,0);ctx.lineTo(-8,-2);ctx.lineTo(-6,2);ctx.closePath();ctx.fill();
+   ellipse(ctx,3,-2,0.45,0.45,'#1f3542');ctx.restore();
  }
  ctx.restore();
 }

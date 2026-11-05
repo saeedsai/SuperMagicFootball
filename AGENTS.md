@@ -12,7 +12,7 @@ This is authorized coordinated multi-agent work, as explicitly requested by the 
 
 **Latest owner steering (2 November 2026):** Prioritize a complete, fun, reliable game: gameplay, playable abilities/tricks, UI, and quality improvements to the player graphics/assets already in the game. Defer roster/team existence checks, player-name matching and stat tuning until core gameplay, visuals and UI are complete. Skip Concept Hero/Royal Concept team and all new concept-hero creation; the owner will handle that work manually. For graphics, work only on existing player assets and use the documented SuperMagicAssetStudio workflow. Preserve identities and saves; never claim visual approval without game-scale review and owner acceptance. If an item is blocked, continue an unblocked gameplay, existing-art or UI item.
 
-Read this file, `docs/README.md`, `docs/MASTER_BACKLOG.md`, the relevant source/tests, and the applicable specialist contract before editing. `docs/history/` and dated handovers are evidence, not current status. `docs/VERSIONING_POLICY.md`, `src/modules/release.js`, `package.json`, and the root README are the version sources; current candidate is **0.12.81.39**. Update this reference with each player-facing candidate. Older `0.9.0.0` planning is superseded.
+Read this file, `docs/README.md`, `docs/MASTER_BACKLOG.md`, the relevant source/tests, and the applicable specialist contract before editing. `docs/history/` and dated handovers are evidence, not current status. `docs/VERSIONING_POLICY.md`, `src/modules/release.js`, `package.json`, and the root README are the version sources; current candidate is **0.12.81.40**. Update this reference with each player-facing candidate. Older `0.9.0.0` planning is superseded.
 
 ## Product invariants
 

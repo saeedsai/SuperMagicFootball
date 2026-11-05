@@ -42,3 +42,18 @@ test('stun cue draws animated spiral pupils while retaining still reduced-flash 
  assert.deepEqual(spirals(steadyA),spirals(steadyB),'reduced-flash eyes stay still');
  assert.equal(normalA.ctx.globalAlpha,1,'the cue restores Canvas alpha');
 });
+
+test('dizzy orbiters read as animated birds and freeze with reduced flash',()=>{
+ const cueSource=render.match(/function drawShotImpactCue\(ctx,p,time,reducedFlash=false\)\{[\s\S]*?\n\}/)?.[0];
+ assert.ok(cueSource,'shot stun cue exists');
+ const drawCue=new Function('ARTPOSE','ellipse',`return (${cueSource});`)(
+  {confusionPose},ellipse);
+ const drawAt=(time,reducedFlash)=>{const state=makeContext();drawCue(state.ctx,{shotImpactConfusedTimer:.8},time,reducedFlash);return state;};
+ const movingA=drawAt(.2,false),movingB=drawAt(.6,false),steadyA=drawAt(.2,true),steadyB=drawAt(.6,true);
+ const wings=state=>state.calls.filter(([name])=>name==='quadraticCurveTo').map(call=>call.slice(1));
+ assert.equal(wings(movingA).length,15,'three orbiters each have a three-curve body and two-curve wing');
+ assert.notDeepEqual(wings(movingA),wings(movingB),'bird wings flap during confusion');
+ assert.deepEqual(wings(steadyA),wings(steadyB),'reduced-flash bird silhouettes stay still');
+ assert.deepEqual(steadyA.calls,steadyB.calls,'reduced-flash also freezes orbit position, pupil rotation, and all cue paths');
+ assert.equal(movingA.ctx.globalAlpha,1,'the cue restores Canvas alpha after drawing birds');
+});
