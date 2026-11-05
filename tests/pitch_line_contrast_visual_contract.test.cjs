@@ -20,3 +20,14 @@ test('pitch chalk uses a restrained contrast halo without moving official line g
  assert.match(field,/ctx\.strokeRect\(x\+\(side\?-310:4\),cy-230,306,460\)/,'penalty-box geometry remains fixed');
  assert.doesNotMatch(field,/F\.(?:x|y|w|h)\s*=/,'pitch extents remain read-only');
 });
+
+test('stadium floodlight sheen is fixed, clipped, low contrast and cached with pitch artwork',()=>{
+ assert.match(field,/Four fixed, low-opacity stadium-light pools/,'lighting is a static environmental finish');
+ assert.match(field,/ctx\.beginPath\(\);ctx\.rect\(F\.x,F\.y,F\.w,F\.h\);ctx\.clip\(\);\s*for\(const fx of \[\.12,\.88\]\)for\(const fy of \[\.08,\.92\]\)/,
+  'four broad light pools stay within the existing pitch bounds');
+ assert.match(field,/pool\.addColorStop\(0,'rgba\(255,239,197,0\.052\)'\);pool\.addColorStop\(\.42,'rgba\(255,239,197,0\.022\)'\);pool\.addColorStop\(1,'rgba\(255,239,197,0\)'\)/,
+  'warm sheen fades smoothly and remains low-opacity');
+ assert.ok(source.indexOf('this.drawFieldArtwork(c,game)')<source.indexOf('this.fieldCache=cache'),
+  'static lights render into the existing cached field image rather than every frame');
+ assert.doesNotMatch(field,/F\.(?:x|y|w|h)\s*=/,'visual treatment never changes pitch geometry');
+});

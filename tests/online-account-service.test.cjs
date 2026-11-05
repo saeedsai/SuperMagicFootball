@@ -44,3 +44,19 @@ test('online service configures Career AI as one human plus server CPU and advan
  }finally{await service.close();}
  assert.ok(events.some(row=>row[0]==='pool-end'));
 });
+
+test('online service closes its HTTP listener and database pool when WebSocket startup fails',async()=>{
+ const {startOnlineAccountService}=await import('../scripts/online-account-service.mjs');
+ const port=await freePort();let poolClosed=false,matchmakingClosed=false;
+ const pool={async query(){return {rows:[]};},async connect(){return {query:async()=>({rows:[]}),release(){}};},on(){},async end(){poolClosed=true;}};
+ await assert.rejects(()=>startOnlineAccountService({env:{PORT:String(port)},pool,
+  runtimeFactory:async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],resultStore:{recordFinalResult:async result=>result}}),
+  matchmakingFactory:()=>({close(){matchmakingClosed=true;}}),
+  transportFactory:()=>{throw new Error('transport startup failed');}
+ }),/transport startup failed/);
+ assert.equal(poolClosed,true,'startup failure must release the database pool');
+ assert.equal(matchmakingClosed,true,'startup failure must close the matchmaking runtime');
+ const probe=net.createServer();
+ await new Promise((resolve,reject)=>{probe.once('error',reject);probe.listen(port,'127.0.0.1',resolve);});
+ await new Promise(resolve=>probe.close(resolve));
+});

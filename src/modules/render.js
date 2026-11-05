@@ -1160,6 +1160,16 @@ class Renderer{
  const light=ctx.createLinearGradient(F.x,F.y,F.x+F.w,F.y+F.h);
  light.addColorStop(0,'rgba(255,246,207,0.075)');light.addColorStop(.46,'rgba(255,255,255,0.008)');light.addColorStop(1,'rgba(7,25,22,0.085)');
  ctx.fillStyle=light;ctx.fillRect(F.x,F.y,F.w,F.h);ctx.restore();
+ // Four fixed, low-opacity stadium-light pools add field depth without pulsing
+ // or obscuring players and markings. This is cached with the static surface.
+ ctx.save();ctx.beginPath();ctx.rect(F.x,F.y,F.w,F.h);ctx.clip();
+ for(const fx of [.12,.88])for(const fy of [.08,.92]){
+  const x=F.x+F.w*fx,y=F.y+F.h*fy,r=360;
+  const pool=ctx.createRadialGradient(x,y,12,x,y,r);
+  pool.addColorStop(0,'rgba(255,239,197,0.052)');pool.addColorStop(.42,'rgba(255,239,197,0.022)');pool.addColorStop(1,'rgba(255,239,197,0)');
+  ctx.fillStyle=pool;ctx.fillRect(F.x,F.y,F.w,F.h);
+ }
+ ctx.restore();
  this.drawVenueSurface(ctx,game);
  for(let i=0;i<1650;i++){let sx=F.x+((i*7319)%Math.floor(F.w)),sy=F.y+((i*2969)%Math.floor(F.h));ctx.fillStyle=i%3===0?'#e0d49722':'#162d1c14';ctx.fillRect(sx,sy,2+i%3,2+i%5)}
  if(terrain==='Classic'){

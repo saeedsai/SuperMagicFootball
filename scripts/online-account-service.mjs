@@ -45,7 +45,7 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
   }
   if (typeof pool.query!=='function'||typeof pool.connect!=='function') throw new TypeError('A PostgreSQL Pool-like instance is required');
   pool.on?.('error',()=>console.error('Online account database connection failed'));
-  let matchmaking=null,transport=null,recordFinalResult=null,onlineCareerService=null;
+  let matchmaking=null,transport=null,recordFinalResult=null,onlineCareerService=null,server=null,serverStartPromise=null;
   try {
     await pool.query('SELECT 1');
     // The game engine currently exposes the first thirteen canonical game teams
@@ -74,13 +74,17 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
     const runtime=await runtimeFactory({env,pool,fetchImpl,matchmaking,canonicalTeamIds});
     onlineCareerService=runtime.onlineCareerService;
     recordFinalResult=runtime.resultStore.recordFinalResult;
-    const server=createOnlineAccountHttpServer({handler:runtime.handle,healthCheck:async()=>{await pool.query('SELECT 1');return true;},host:'0.0.0.0',port,maxConnections:128});
-    transport=transportFactory(server,{matchmaking,allowedOrigins:runtime.allowedOrigins,maxConnections:128});
-    await new Promise((resolve,reject)=>{
+    server=createOnlineAccountHttpServer({handler:runtime.handle,healthCheck:async()=>{await pool.query('SELECT 1');return true;},host:'0.0.0.0',port,maxConnections:128});
+    serverStartPromise=new Promise((resolve,reject)=>{
       const onError=error=>{server.off('listening',onListen);reject(error)};
       const onListen=()=>{server.off('error',onError);resolve()};
       server.once('error',onError);server.once('listening',onListen);
     });
+    // A synchronous transport setup failure can happen before the listen event.
+    // Attach a rejection handler now; the original promise is still awaited below.
+    void serverStartPromise.catch(()=>{});
+    transport=transportFactory(server,{matchmaking,allowedOrigins:runtime.allowedOrigins,maxConnections:128});
+    await serverStartPromise;
     let closed=false;
     return Object.freeze({server,runtime,matchmaking,transport,async close(){
       if(closed)return;closed=true;
@@ -90,6 +94,8 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
     }});
   } catch(error) {
     transport?.close?.();matchmaking?.close?.();
+    await serverStartPromise?.catch(()=>{});
+    if(server?.listening)await new Promise(resolve=>server.close(()=>resolve()));
     await pool.end?.().catch?.(()=>{});
     throw error;
   }

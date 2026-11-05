@@ -625,6 +625,13 @@ const CHARACTER_ART=(()=>{
   c.save();
   drawLeg(c,-1,k,p,colors,opt,false);drawLeg(c,1,k,p,colors,opt,true);
   shorts(c,k,colors);
+  // A quiet, staggered breath gives stationary players a little life without
+  // moving their planted legs or changing any simulation state. Match time is
+  // the only clock; moving/action poses keep their existing animation paths.
+  const idleBreath=p.action==='idle'&&!opt.locomotion&&!opt.kick&&!opt.sliding&&!opt.celebrate&&!opt.cry;
+  const breathPhase=idleBreath?clamp((Math.sin((Number(opt.time)||0)*2.05+(Number(p.i)||0)*1.17)+1)*.5,0,1):0;
+  c.save();
+  if(breathPhase>0){c.translate(0,-breathPhase*2.2);c.translate(0,-22);c.scale(1,1+breathPhase*.022);c.translate(0,22)}
   stroke(c,[[0,-59],[0,-49]],blend(colors.skin,-.25),17,dark);
   stroke(c,[[-3,-59],[-3,-53]],ink('#ffffff',.26),3.3);
   arm(c,-1,k,p,colors,opt,false);
@@ -635,6 +642,7 @@ const CHARACTER_ART=(()=>{
   c.moveTo(-seamWidth,-55);c.quadraticCurveTo(-seamWidth+2,-43,-seamWidth+5,-34);c.stroke();c.restore();
   arm(c,1,k,p,colors,{...opt,tattoo:av.tattoo},true);
   face(c,k,av,colors.skin,colors.hair,opt);
+  c.restore();
   c.restore();
  }
  return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,version:3};
