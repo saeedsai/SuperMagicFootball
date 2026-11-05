@@ -76,7 +76,7 @@ test('SAVE-102 UI, autosave, import validation and offline fixture are wired',()
  const build=readFileSync('scripts/build.py','utf8');
  const sw=readFileSync('sw.js','utf8');
  for(const token of ['navCupSlots','cupSlotSave_','cupSlotLoad_','cupSlotDelete_','CUP_SLOTS.create(careerStorage)','cupSlots.importLegacy(','cupSlots.save(','cupSlots.load(','cupSlots.remove(','function saveCup()'])assert.ok(ui.includes(token),token);
- assert.match(ui,/saveCup\(\);const tokenReward=awardLocalMatchTokens\(ev,ev\.score\);page\('CONTINENTAL RESULT'/,'Cup result UI is shown after persistence and token award attempt');
+ assert.match(ui,/saveCup\(\);const tokenReward=await awardLocalMatchTokens\(ev,ev\.score\);page\('CONTINENTAL RESULT'/,'Cup result UI is shown after persistence and token award attempt');
  assert.match(ui,/const SAVE_KEYS=Object\.freeze\(\[[^\n]*'cupSlots'/);
  assert.match(ui,/if\(key==='cupSlots'&&!CUP_SLOTS\.validVault\(value\)\)/);
  assert.match(build,/['"]cup_slots['"]/);

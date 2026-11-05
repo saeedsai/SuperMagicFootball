@@ -27,14 +27,14 @@ test('manager slots copy/load and backup import/export retain the separate appea
  career.managerAppearance={skin:'#123456',face:4};vault.save(1,career,'Manager career');const copy=vault.duplicate(1);
  assert.deepEqual(vault.load(copy).managerAppearance,career.managerAppearance);
  assert.deepEqual(api.create(db).load(1).managerAppearance,career.managerAppearance);
- const start=ui.indexOf('function validateSaveImport('),end=ui.indexOf('function exportSave(',start);
+ const start=ui.indexOf('function validateSaveImport('),end=ui.indexOf('async function exportSave(',start);
  const context={SAVE_KEYS:['managerCareer'],CAREER_SLOTS:{validVault:()=>true},CUP_SLOTS:{validVault:()=>true}};
  vm.runInNewContext(ui.slice(start,end)+';this.validate=validateSaveImport;this.commit=commitSaveImport;',context);
  const changes=context.validate({product:'Supermagic Football',data:{managerCareer:career}}),backup=memory();
  context.commit(changes,backup);
  assert.deepEqual(JSON.parse(backup.getItem('legend_managerCareer')).managerAppearance,career.managerAppearance);
  assert.match(ui,/const SAVE_KEYS=Object\.freeze\(\[[^\]]*'managerCareer'/,'existing backup export includes managerCareer');
- assert.match(ui,/data:collectSaveExportData\(localStorage\)/,'backup export uses the validated raw-storage collector');
+ assert.match(ui,/data:await collectSaveExportData\(localStorage\)/,'backup export uses the validated raw-storage collector');
  const legacy=careerFixture();assert.doesNotThrow(()=>context.validate({product:'Supermagic Football',data:{managerCareer:legacy}}));
 });
 test('manager studio uses existing appearance editing without player or gameplay controls',()=>{
