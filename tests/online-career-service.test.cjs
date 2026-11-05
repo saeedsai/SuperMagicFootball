@@ -57,6 +57,10 @@ class FakePool{
     if(q.startsWith('select account_id,season_id,status from smf_online_career_seasons')){
       const row=this.seasons.get(`${p[0]}:${String(p[1]).trim()}`);return {rows:row?[{account_id:row.account_id,season_id:row.season_id,status:row.status}]:[]};
     }
+    if(q.startsWith("select account_id,season_id,fixture_no,match_id,reservation_id from smf_online_career_fixtures where status='reserved'")){
+      const rows=[...this.fixtures.values()].filter(row=>row.status==='reserved').sort((a,b)=>a.account_id.localeCompare(b.account_id)||a.season_id.localeCompare(b.season_id)||a.fixture_no-b.fixture_no).slice(0,p[0]).map(row=>({account_id:row.account_id,season_id:row.season_id,fixture_no:row.fixture_no,match_id:row.match_id,reservation_id:row.reservation_id}));
+      return {rows:structuredClone(rows)};
+    }
     if(q.startsWith('select fixture_no,fixture_id,match_id,participant_0,participant_1,team_0,team_1,status,score_0,score_1,recorded_at,result_hash from smf_online_career_fixtures')){
       const rows=[...this.fixtures.values()].filter(row=>row.account_id===p[0]&&row.season_id===p[1]).sort((a,b)=>a.fixture_no-b.fixture_no);return {rows:structuredClone(rows)};
     }
@@ -201,6 +205,34 @@ test('durable result completes a claimed fixture and clears its lease',async()=>
   assert.equal(advanced.playedCount,1);assert.equal(db.fixtures.get(`${ACCOUNT}:${season.seasonId}:1`).status,'completed');
   assert.equal(db.fixtures.get(`${ACCOUNT}:${season.seasonId}:1`).reservation_id,null);
   assert.equal(await service.releaseFixtureReservation(ACCOUNT,season.seasonId,oneMatch,claim.reservationId),false);
+});
+
+test('startup reconciliation completes only reserved fixtures with durable results and retries interrupted matches without rewards',async()=>{
+  const results=new Map();const {service,db}=await setup({results});const season=await service.createSeason(ACCOUNT);
+  const claim=await service.claimNextFixtureBinding(ACCOUNT,season.seasonId);assert.equal(claim.ok,true);
+  const fixture=db.fixtures.get(`${ACCOUNT}:${season.seasonId}:1`);
+  const reservationId=fixture.reservation_id;
+  const count=await service.reconcileReservedFixtures();
+  assert.equal(count,1);assert.equal(fixture.status,'scheduled');assert.equal(fixture.reservation_id,null);
+  assert.equal(fixture.score_0,null);assert.equal(fixture.score_1,null);assert.equal(db.seasons.get(`${ACCOUNT}:${season.seasonId}`).played_count,0);
+  assert.equal(await service.reconcileReservedFixtures(),0,'repeating recovery does not mutate already released fixtures');
+  assert.equal(await service.releaseFixtureReservation(ACCOUNT,season.seasonId,oneMatch,reservationId),false,'old reservation tokens cannot release a later claim');
+
+  const nextClaim=await service.claimNextFixtureBinding(ACCOUNT,season.seasonId);assert.equal(nextClaim.ok,true);
+  results.set(oneMatch,finalResult());
+  assert.equal(await service.reconcileReservedFixtures(),1);
+  assert.equal(fixture.status,'completed');assert.equal(fixture.score_0,2);assert.equal(fixture.score_1,1);
+  assert.equal(db.seasons.get(`${ACCOUNT}:${season.seasonId}`).played_count,1);
+  assert.equal(await service.reconcileReservedFixtures(),0,'durable result progression is idempotent after restart recovery');
+});
+
+test('startup reconciliation fails closed for invalid or unreleaseable stored reservations',async()=>{
+  const {service,db}=await setup();const season=await service.createSeason(ACCOUNT);await service.claimNextFixtureBinding(ACCOUNT,season.seasonId);
+  const fixture=db.fixtures.get(`${ACCOUNT}:${season.seasonId}:1`);fixture.reservation_id='invalid';
+  await assert.rejects(service.reconcileReservedFixtures(),error=>error.code==='fixture-reconcile-invalid');
+  fixture.reservation_id='d'.repeat(32);fixture.participant_0='different_account';
+  await assert.rejects(service.reconcileReservedFixtures(),error=>error.code==='fixture-reconcile-conflict');
+  assert.equal(fixture.status,'reserved','a failed recovery never fabricates fixture completion');
 });
 
 test('season archive lists completed and active seasons newest-first without crossing accounts',async()=>{

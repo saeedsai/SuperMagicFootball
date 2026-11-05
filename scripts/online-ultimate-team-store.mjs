@@ -144,7 +144,10 @@ export async function createOnlineUltimateTeamStore({db,now=()=>new Date()}={}){
     const validatedInput=Array.isArray(playerIds)?playerIds.slice():playerIds;
     const requestHash=createHash('sha256').update(JSON.stringify({teamId,playerIds:validatedInput,expectedVersion})).digest('hex');
     return transaction(async client=>{
-      await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`online-ut-lineup:${accountId}:${teamId}`]);
+      // The idempotency ledger key is unique per account, not per team. Serialize
+      // every lineup write for the account so identical keys cannot race across
+      // two different team lineups and surface as a raw database unique violation.
+      await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`online-ut-lineup:${accountId}`]);
       if(!await ownsTeam(client,accountId,teamId))fail('team-not-owned','Account does not own this Online UT team');
       const replay=(await client.query('SELECT request_hash,team_id,player_ids,version FROM smf_online_ut_lineup_ledger WHERE account_id=$1 AND idempotency_key=$2 FOR UPDATE',[accountId,idempotencyKey])).rows?.[0];
       if(replay){

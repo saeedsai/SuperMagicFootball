@@ -7,6 +7,8 @@ import {createOnlineGameEngine} from './online-game-engine.mjs';
 import {attachOnlineMatchWebSocket} from './online-match-ws.mjs';
 import {loadAssetsFromNode} from '../src/assets.js';
 
+const SERVICE_LOCK_KEY=Object.freeze([1397574995,1297043026]);
+
 function portFrom(env) {
   const raw=env.PORT;
   const port=typeof raw==='string'&&/^\d{1,5}$/.test(raw)?Number(raw):NaN;
@@ -46,7 +48,48 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
   if (typeof pool.query!=='function'||typeof pool.connect!=='function') throw new TypeError('A PostgreSQL Pool-like instance is required');
   pool.on?.('error',()=>console.error('Online account database connection failed'));
   let matchmaking=null,transport=null,recordFinalResult=null,onlineCareerService=null,server=null,serverStartPromise=null;
+  let lockClient=null,lockClientReleased=false,lockHealthy=false,lockAcquired=false,stopping=false;
+  let lockErrorHandler=null;
+  const removeLockErrorHandler=()=>{if(lockClient&&lockErrorHandler){lockClient.removeListener?.('error',lockErrorHandler);lockClient.off?.('error',lockErrorHandler)}lockErrorHandler=null;};
+  async function releaseServiceLock({unlock=true,error=null}={}){
+    const client=lockClient;
+    if(!client||lockClientReleased)return;
+    const shouldUnlock=unlock&&lockAcquired&&!error;
+    lockHealthy=false;removeLockErrorHandler();
+    let releaseCause=error;
+    try{
+      if(shouldUnlock){
+        const result=await client.query('SELECT pg_advisory_unlock($1,$2) AS unlocked',SERVICE_LOCK_KEY);
+        if(result.rows?.[0]?.unlocked!==true)throw new Error('Online API singleton lock was not held during release');
+      }
+    }catch(caught){releaseCause??=caught;}
+    lockClientReleased=true;lockClient=null;lockAcquired=false;
+    try{releaseCause?client.release?.(releaseCause):client.release?.();}catch{}
+    if(releaseCause&&!error)throw releaseCause;
+  }
+  const closeListener=()=>new Promise(resolve=>{
+    if(!server?.listening){resolve();return;}
+    try{server.close(()=>resolve())}catch{resolve()}
+  });
+  async function stopAfterLockLoss(error){
+    if(stopping)return;
+    stopping=true;lockHealthy=false;
+    try{transport?.close?.()}catch{}
+    try{matchmaking?.close?.()}catch{}
+    await closeListener();
+    await releaseServiceLock({unlock:false,error});
+    try{await pool.end?.()}catch{}
+  }
   try {
+    // A session lock keeps the process-local ticket queue, WebSocket ownership,
+    // and authoritative match engines single-instance for their whole lifetime.
+    lockClient=await pool.connect();
+    if(!lockClient||typeof lockClient.query!=='function'||typeof lockClient.release!=='function'||typeof lockClient.on!=='function')throw new TypeError('Online API requires a dedicated event-capable PostgreSQL lock connection');
+    const lockResult=await lockClient.query('SELECT pg_try_advisory_lock($1,$2) AS acquired',SERVICE_LOCK_KEY);
+    if(lockResult.rows?.[0]?.acquired!==true)throw new Error('Another Online API instance already owns the matchmaking service lock');
+    lockHealthy=true;lockAcquired=true;
+    lockErrorHandler=error=>{void stopAfterLockLoss(error instanceof Error?error:new Error('Online API singleton lock connection was lost'));};
+    lockClient.on?.('error',lockErrorHandler);
     await pool.query('SELECT 1');
     // The game engine currently exposes the first thirteen canonical game teams
     // as playable choices; use that exact catalog for ticket validation.
@@ -80,7 +123,14 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
     const runtime=await runtimeFactory({env,pool,fetchImpl,matchmaking,canonicalTeamIds});
     onlineCareerService=runtime.onlineCareerService;
     recordFinalResult=runtime.resultStore.recordFinalResult;
-    server=createOnlineAccountHttpServer({handler:runtime.handle,healthCheck:async()=>{await pool.query('SELECT 1');return true;},host:'0.0.0.0',port,maxConnections:128});
+    if(onlineCareerService){
+      if(typeof onlineCareerService.reconcileReservedFixtures!=='function')throw new Error('Online Career startup recovery is unavailable');
+      // The PostgreSQL singleton lock is held before runtime creation. Recover durable
+      // results or release interrupted reservations before accepting any new tickets.
+      await onlineCareerService.reconcileReservedFixtures();
+    }
+    server=createOnlineAccountHttpServer({handler:request=>lockHealthy?runtime.handle(request):new Response(JSON.stringify({error:'service-unavailable'}),{status:503,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}}),
+      healthCheck:async()=>{if(!lockHealthy)return false;await pool.query('SELECT 1');return lockHealthy;},host:'0.0.0.0',port,maxConnections:128});
     serverStartPromise=new Promise((resolve,reject)=>{
       const onError=error=>{server.off('listening',onListen);reject(error)};
       const onListen=()=>{server.off('error',onError);resolve()};
@@ -91,17 +141,27 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
     void serverStartPromise.catch(()=>{});
     transport=transportFactory(server,{matchmaking,allowedOrigins:runtime.allowedOrigins,maxConnections:128});
     await serverStartPromise;
+    if(!lockHealthy)throw new Error('Online API singleton lock connection was lost during startup');
     let closed=false;
     return Object.freeze({server,runtime,matchmaking,transport,async close(){
       if(closed)return;closed=true;
-      transport.close();matchmaking.close();
-      await new Promise(resolve=>server.close(()=>resolve()));
-      await pool.end?.();
+      stopping=true;lockHealthy=false;
+      let closeError=null;
+      try{transport.close()}catch(error){closeError=error;}
+      try{matchmaking.close()}catch(error){closeError??=error;}
+      await closeListener();
+      let unlockError=null;
+      try{await releaseServiceLock()}catch(error){unlockError=error;}
+      try{await pool.end?.()}catch(error){closeError??=error;}
+      if(closeError)throw closeError;
+      if(unlockError)throw unlockError;
     }});
   } catch(error) {
-    transport?.close?.();matchmaking?.close?.();
+    try{transport?.close?.()}catch{}
+    try{matchmaking?.close?.()}catch{}
     await serverStartPromise?.catch(()=>{});
-    if(server?.listening)await new Promise(resolve=>server.close(()=>resolve()));
+    await closeListener();
+    try{await releaseServiceLock()}catch{}
     await pool.end?.().catch?.(()=>{});
     throw error;
   }

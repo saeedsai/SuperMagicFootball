@@ -7,8 +7,8 @@ const ACCOUNT='lineup_account',KEY='lineup_save_0001';
 const BASE='japan',FOREIGN='brazil';
 
 function makeDb(){
- const state={owned:new Map(),lineups:new Map(),ledger:new Map()},locks={tail:Promise.resolve()};let failLedger=false;
- const lock=async()=>{let release;const previous=locks.tail;locks.tail=new Promise(resolve=>release=resolve);await previous;return release;};
+ const state={owned:new Map(),lineups:new Map(),ledger:new Map()},locks=new Map();let failLedger=false;
+ const lock=async(key)=>{let release;const previous=locks.get(key)||Promise.resolve();const tail=new Promise(resolve=>release=resolve);locks.set(key,tail);await previous;return ()=>{release();if(locks.get(key)===tail)locks.delete(key);};};
  const ownKey=(account,category,item)=>`${account}:${category}:${item}`;
  const lineupKey=(account,team)=>`${account}:${team}`;
  const ledgerKey=(account,key)=>`${account}:${key}`;
@@ -24,13 +24,13 @@ function makeDb(){
  return {state,get failLedger(){return failLedger;},set failLedger(value){failLedger=!!value;},
   async query(sql,params){return poolQuery(sql,params);},
   async connect(){
-   let release=null,working=null;
+   const releases=[];let working=null;
    const client={async query(sql,params){
     const q=sql.replace(/\s+/g,' ').trim().toLowerCase();
     if(q==='begin')return {rows:[]};
-    if(q==='commit'){if(working)Object.assign(state,working);working=null;release?.();release=null;return {rows:[]};}
-    if(q==='rollback'){working=null;release?.();release=null;return {rows:[]};}
-    if(q.startsWith('select pg_advisory_xact_lock')){release=await lock();working=structuredClone(state);return {rows:[{locked:true}]};}
+    if(q==='commit'){if(working)Object.assign(state,working);working=null;while(releases.length)releases.pop()();return {rows:[]};}
+    if(q==='rollback'){working=null;while(releases.length)releases.pop()();return {rows:[]};}
+    if(q.startsWith('select pg_advisory_xact_lock')){releases.push(await lock(`advisory:${params[0]}`));working=structuredClone(state);return {rows:[{locked:true}]};}
     if(!working)throw Error('Transaction must acquire lineup lock before data queries');
     if(q.startsWith('select request_hash,team_id,player_ids,version from smf_online_ut_lineup_ledger')){
      const row=working.ledger.get(ledgerKey(params[0],params[1]));return {rows:row?[structuredClone(row)]:[]};
@@ -52,11 +52,16 @@ function makeDb(){
     if(q.startsWith('insert into smf_online_ut_lineup_ledger')){
      if(failLedger)throw Error('injected lineup ledger failure');
      const [account,key,requestHash,team,playerIds,version,recordedAt]=params,lookup=ledgerKey(account,key);
+     // Model PostgreSQL's unique-index arbitration: a competing transaction
+     // inserting the same account/key waits for the first commit, then receives
+     // 23505 if it still tries to write rather than reading the committed receipt.
+     releases.push(await lock(`unique-ledger:${lookup}`));
+     if(state.ledger.has(lookup))throw Object.assign(Error('duplicate ledger'),{code:'23505'});
      if(working.ledger.has(lookup))throw Object.assign(Error('duplicate ledger'),{code:'23505'});
      working.ledger.set(lookup,{request_hash:requestHash,team_id:team,player_ids:JSON.parse(playerIds),version,recorded_at:recordedAt});return {rows:[]};
     }
     throw Error(`Unexpected client query: ${sql}`);
-   },release(){working=null;release?.();release=null;}};
+   },release(){working=null;while(releases.length)releases.pop()();}};
    return client;
   }
  };
@@ -142,6 +147,20 @@ test('concurrent lineup writes serialize and only one stale-base revision commit
  assert.equal(results.filter(result=>result.status==='fulfilled').length,1);
  assert.equal(results.filter(result=>result.status==='rejected'&&result.reason.code==='stale-lineup-version').length,1);
  assert.equal(db.state.lineups.get(`${ACCOUNT}:${BASE}`).version,1);assert.equal(db.state.ledger.size,1);
+});
+
+test('the same account idempotency key cannot race across different team lineups',async()=>{
+ acquire('team',FOREIGN);
+ const japan=baseline(),brazil=assets.rosters[FOREIGN].map(player=>`${FOREIGN}/${player.id}`);
+ const results=await Promise.allSettled([
+  store.saveLineup(ACCOUNT,{teamId:BASE,playerIds:japan,expectedVersion:0,idempotencyKey:'lineup_cross_0001'}),
+  store.saveLineup(ACCOUNT,{teamId:FOREIGN,playerIds:brazil,expectedVersion:0,idempotencyKey:'lineup_cross_0001'}),
+ ]);
+ assert.equal(results.filter(result=>result.status==='fulfilled').length,1);
+ const rejected=results.find(result=>result.status==='rejected');
+ assert.equal(rejected.reason.code,'idempotency-conflict');
+ assert.equal(db.state.ledger.size,1);
+ assert.equal(db.state.lineups.size,1);
 });
 
 test('client player data and unrecognized lineup fields are never accepted',async()=>{

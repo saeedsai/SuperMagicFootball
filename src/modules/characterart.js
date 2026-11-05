@@ -77,7 +77,7 @@ const CHARACTER_ART=(()=>{
   c.restore();
   if(k==='quarterBack')ear(c,24,8,blend(skin,-.08),.7);
  }
- function eye(c,x,y,eye,eyeColor,scale=1,near=true,closed=false){
+ function eye(c,x,y,eye,eyeColor,scale=1,near=true,closed=false,gazeX=0,gazeY=0){
   const s=norm(eye,20),irisBase=irisColors[norm(eyeColor,6)],iris=near?irisBase:blend(irisBase,-.14);
   const widen=[.95,1.10,.91,1.05,1.15][s%5],open=[1.05,.90,1.12,.80,1.02][Math.floor(s/4)%5];
   const w=6.7*widen*scale,h=6.1*open*scale;
@@ -87,10 +87,13 @@ const CHARACTER_ART=(()=>{
   oval(c,0,-1,w+1,h+1.3,ink(blend('#65473a',-.17),near?0.26:0.18));
   fill(c,p=>{p.moveTo(-w,0);p.bezierCurveTo(-w*.67,-h*1.8,w*.50,-h*1.75,w,.25);
    p.bezierCurveTo(w*.78,h*.95,-w*.45,h*1.2,-w,0)},grad(c,-w,-h,w,h,near?[[0,'#ffffff'],[.7,'#fdf9ee'],[1,'#e8ecf0']]:[[0,'#f4f2eb'],[.7,'#ece9e1'],[1,'#d9dce0']]),dark,1.35);
+  // Only the iris/pupil move; the sclera, eyelids, brows and face remain fixed.
+  c.save();c.translate(clamp(Number(gazeX)||0,-.9,.9),clamp(Number(gazeY)||0,-.55,.55));
   oval(c,.55,1.0,w*.47,h*.78,grad(c,-2,-h*.5,3,h*.7,[[0,blend(iris,.30)],[.45,iris],[1,blend(iris,-.46)]]),iris,.75);
   oval(c,.78,1.1,w*.26,h*.58,'#172332');
   oval(c,-1,-1.2,1.65*scale,2.1*scale,near?'#ffffff':ink('#ffffff',.72));
   oval(c,2.5,3,.65*scale,.8*scale,ink('#ffffff',near?0.76:0.45));
+  c.restore();
   fill(c,p=>{p.moveTo(-w-1,-.3);p.bezierCurveTo(-w*.70,-h*1.95,w*.58,-h*1.95,w+1,-.3);p.quadraticCurveTo(0,-h*1.32,-w-1,-.3)},dark);
   stroke(c,[[-w*.80,h*.67],[-w*.1,h*.97],[w*.75,h*.45]],ink('#865c4c',.42),.7);
   c.restore();
@@ -340,14 +343,14 @@ const CHARACTER_ART=(()=>{
    const shut=!!opt.hurt||!!opt.cry||!!opt.blink;
    if(front){
     brows(c,-13,-4,av.brows,hair);brows(c,13,-4,av.brows,hair);
-    eye(c,-13,7,av.eyes,av.eyeColor,1,true,shut);eye(c,13,7,av.eyes,av.eyeColor,1,true,shut);
+    eye(c,-13,7,av.eyes,av.eyeColor,1,true,shut,opt.gazeX,opt.gazeY);eye(c,13,7,av.eyes,av.eyeColor,1,true,shut,opt.gazeX,opt.gazeY);
     nose(c,0,14,av.nose,skin,'front');lips(c,0,25,av.lips??av.mouth,skin,'front',shut?opt.cry?'cry':'hurt':'idle');
    }else if(quarter){
     brows(c,-7,-3,av.brows,hair,.75);brows(c,14,-4,av.brows,hair,1.03);
-    eye(c,-7,7,av.eyes,av.eyeColor,.70,false,shut);eye(c,14,7,av.eyes,av.eyeColor,1.04,true,shut);
+    eye(c,-7,7,av.eyes,av.eyeColor,.70,false,shut,opt.gazeX,opt.gazeY);eye(c,14,7,av.eyes,av.eyeColor,1.04,true,shut,opt.gazeX,opt.gazeY);
     nose(c,14,15,av.nose,skin,'quarter');lips(c,12,25,av.lips??av.mouth,skin,'quarter',shut?opt.cry?'cry':'hurt':'idle');
    }else{
-    brows(c,13,-4,av.brows,hair,.97);eye(c,13,7,av.eyes,av.eyeColor,.88,true,shut);
+    brows(c,13,-4,av.brows,hair,.97);eye(c,13,7,av.eyes,av.eyeColor,.88,true,shut,opt.gazeX,opt.gazeY);
     nose(c,23,15,av.nose,skin,'side');lips(c,23,26,av.lips??av.mouth,skin,'side',shut?opt.cry?'cry':'hurt':'idle');
    }
   }
@@ -414,6 +417,23 @@ const CHARACTER_ART=(()=>{
   const player=Number.isFinite(rawIndex)?Math.abs(Math.trunc(rawIndex)):0;
   const period=4.9+(player%7)*.38,offset=(player*1.71)%period,phase=(t+offset)%period;
   return phase>=.08&&phase<.19;
+ }
+ // Small deterministic look-around accents during standing idle only.
+ // Broad rests between glances make each movement return to neutral naturally.
+ function idleGaze(time,index=0){
+  const t=Number(time),rawIndex=Number(index);
+  if(!Number.isFinite(t)||t<0)return {x:0,y:0};
+  const player=Number.isFinite(rawIndex)?Math.abs(Math.trunc(rawIndex)):0,period=7.2;
+  const offset=(player*1.13)%period,phase=((t+offset)%period+period)%period;
+  const ease=value=>{const u=clamp(value,0,1);return u*u*(3-2*u)};
+  let x=0;
+  if(phase>=2.2&&phase<2.6)x=.9*ease((phase-2.2)/.4);
+  else if(phase>=2.6&&phase<3.1)x=.9;
+  else if(phase>=3.1&&phase<3.5)x=.9*(1-ease((phase-3.1)/.4));
+  else if(phase>=4.0&&phase<4.4)x=-.9*ease((phase-4.0)/.4);
+  else if(phase>=4.4&&phase<4.9)x=-.9;
+  else if(phase>=4.9&&phase<5.3)x=-.9*(1-ease((phase-4.9)/.4));
+  return {x:clamp(x,-.9,.9),y:0};
  }
  function shorts(c,k,colors){
   const side=k==='side',w=side?16:k.startsWith('quarter')?19:22;
@@ -638,6 +658,7 @@ const CHARACTER_ART=(()=>{
   const idleBreath=p.action==='idle'&&!opt.locomotion&&!opt.kick&&!opt.sliding&&!opt.celebrate&&!opt.cry;
   const breathPhase=idleBreath?clamp((Math.sin((Number(opt.time)||0)*2.05+(Number(p.i)||0)*1.17)+1)*.5,0,1):0;
   const blink=idleBreath&&!opt.hurt&&idleBlink(opt.time,p.i);
+  const gaze=idleBreath&&!opt.hurt&&!opt.cry&&!opt.reducedFlash?idleGaze(opt.time,p.i):{x:0,y:0};
   const turnLean=turnCounterLean(opt.turnLag,view?.side);
   c.save();
   // Counter-rotate the connected upper-body group around the waist pivot.
@@ -653,7 +674,7 @@ const CHARACTER_ART=(()=>{
   const seamWidth=k==='side'?11:k.startsWith('quarter')?16:19;
   c.moveTo(-seamWidth,-55);c.quadraticCurveTo(-seamWidth+2,-43,-seamWidth+5,-34);c.stroke();c.restore();
   arm(c,1,k,p,colors,{...opt,tattoo:av.tattoo},true);
-  face(c,k,av,colors.skin,colors.hair,{...opt,blink});
+  face(c,k,av,colors.skin,colors.hair,{...opt,blink,gazeX:gaze.x,gazeY:gaze.y});
   c.restore();
   c.restore();
  }
@@ -662,6 +683,6 @@ const CHARACTER_ART=(()=>{
   const mirror=Number(side)<0?-1:1;
   return clamp(-turn*.28*mirror,-.14,.14);
  }
- return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,idleBlink,turnCounterLean,version:3};
+ return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,idleBlink,idleGaze,turnCounterLean,version:3};
 })();
 export {CHARACTER_ART};

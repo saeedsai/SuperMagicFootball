@@ -24,5 +24,7 @@ test('normal blinking is only enabled for stationary idle faces, never hurt pose
  const source=fs.readFileSync('src/modules/characterart.js','utf8');
  assert.match(source,/const blink=idleBreath&&!opt\.hurt&&idleBlink\(opt\.time,p\.i\)/);
  assert.match(source,/const shut=!!opt\.hurt\|\|!!opt\.cry\|\|!!opt\.blink/);
- assert.match(source,/face\(c,k,av,colors\.skin,colors\.hair,\{\.\.\.opt,blink\}\)/);
+ assert.match(source,/face\(c,k,av,colors\.skin,colors\.hair,\{[^}]*\bblink\b/);
+ assert.match(source,/face\(c,k,av,colors\.skin,colors\.hair,\{[^}]*\bgazeX:gaze\.x\b/);
+ assert.match(source,/face\(c,k,av,colors\.skin,colors\.hair,\{[^}]*\bgazeY:gaze\.y\b/);
 });

@@ -5,6 +5,7 @@ const PARTICIPANT_ID=/^[A-Za-z0-9_-]{8,64}$/;
 const TEAM_ID=/^[A-Za-z0-9_-]{1,64}$/;
 const OPAQUE_ID=/^[a-f0-9]{32}$/;
 const FIXTURE_LIMIT=64;
+const RECONCILE_BATCH_SIZE=64;
 const MAX_SEASON_ARCHIVE=20;
 const AI_PARTICIPANT='smf_server_career_ai';
 
@@ -156,6 +157,35 @@ export function createOnlineCareerService({db,resultStore,buildSchedule,now=()=>
       return Number(result.rowCount||0)===1;
     });
   }
+  /**
+   * Recover Career tickets after the process-wide matchmaking lock proves no prior
+   * service instance is still alive. Durable results are replayed through the normal
+   * validator/progression path; unfinished matches return to scheduled with no score.
+   */
+  async function reconcileReservedFixtures(){
+    let reconciled=0;
+    for(;;){
+      const response=await db.query("SELECT account_id,season_id,fixture_no,match_id,reservation_id FROM smf_online_career_fixtures WHERE status='reserved' ORDER BY account_id,season_id,fixture_no LIMIT $1",[RECONCILE_BATCH_SIZE]);
+      const rows=response.rows||[];
+      if(!rows.length)return reconciled;
+      for(const row of rows){
+        const accountId=typeof row.account_id==='string'?row.account_id.trim():'';
+        const seasonId=typeof row.season_id==='string'?row.season_id.trim():'';
+        const matchId=typeof row.match_id==='string'?row.match_id.trim():'';
+        const reservationId=typeof row.reservation_id==='string'?row.reservation_id.trim():'';
+        if(!Number.isSafeInteger(Number(row.fixture_no))||Number(row.fixture_no)<1||!OPAQUE_ID.test(matchId)||!OPAQUE_ID.test(reservationId))
+          fail('fixture-reconcile-invalid','Stored Career reservation cannot be safely recovered');
+        const durable=await resultStore.getFinalResult(matchId);
+        if(durable){
+          const advanced=await advanceMatchResult(matchId);
+          if(!advanced)fail('fixture-reconcile-conflict','Durable Career result no longer has a matching fixture');
+        }else if(!await releaseFixtureReservation(accountId,seasonId,matchId,reservationId)){
+          fail('fixture-reconcile-conflict','Career fixture reservation changed during startup recovery');
+        }
+        reconciled++;
+      }
+    }
+  }
   async function getCurrentSeason(accountId){
     safeAccount(accountId);
     const response=await db.query("SELECT season_id FROM smf_online_career_seasons WHERE account_id=$1 ORDER BY CASE WHEN status='active' THEN 0 ELSE 1 END,created_at DESC,season_id DESC LIMIT 1",[accountId]);
@@ -239,5 +269,5 @@ export function createOnlineCareerService({db,resultStore,buildSchedule,now=()=>
     // its result hash makes retries idempotent after a lost acknowledgement.
     return advanceFixture(fixture.account_id,fixture.season_id.trim(),Number(fixture.fixture_no));
   }
-  return Object.freeze({createSeason,getSeason,getCurrentSeason,listSeasons,getFixtureBinding,getNextFixtureBinding,claimNextFixtureBinding,releaseFixtureReservation,advanceFixture,advanceMatchResult});
+  return Object.freeze({createSeason,getSeason,getCurrentSeason,listSeasons,getFixtureBinding,getNextFixtureBinding,claimNextFixtureBinding,releaseFixtureReservation,reconcileReservedFixtures,advanceFixture,advanceMatchResult});
 }

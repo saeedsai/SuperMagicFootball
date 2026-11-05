@@ -1,4 +1,4 @@
-# Candidate 0.12.81.48 — local validation (5 November 2026)
+# Candidate 0.12.81.48 — validation (5 November 2026)
 
 ## Change
 
@@ -14,6 +14,6 @@ The production online-account HTTP bridge's exact-path allowlist now forwards th
 
 ## Exact-head and external gates
 
-Candidate .48 is local and has not yet been committed or pushed. Its exact-head Full Regression Census, Modular QA, protected promotion, Pages deployment, main regression, and hosted byte smoke remain pending. Public OIDC/API configuration and live PostgreSQL are not configured; this route fix does not enable public online play by itself.
+Candidate .48 is promoted to `main` at SHA `461b2a7b934862e753d854ea9f0bc4e293031ca1`. Exact-head Modular Game Dev QA [41988902764](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41988902764), Full Regression Census [41988902825](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41988902825), Pages deployment [41989930909](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41989930909), and main Full Regression Census [41989931054](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41989931054) passed. The Census hosted-pages smoke was skipped before Pages deployment because this SHA was not yet live. Public OIDC/API configuration and live user Postgres are not configured; this route fix does not enable public online play by itself.
 
-Previous candidate .47 was pushed as SHA `c14314ef9ce04709b4bbf7f3e6a77a8919e847ae`; dev Full Regression Census [41986894087](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41986894087), Modular QA [41986894241](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41986894241), current-player graphics QA [41986894077](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41986894077), protected promotion, and Pages deployment [41988039780](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41988039780) passed. Main Census [41988039900](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41988039900) is still running.
+Previous candidate .47 was pushed as SHA `c14314ef9ce04709b4bbf7f3e6a77a8919e847ae`; dev Full Regression Census [41986894087](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41986894087), Modular QA [41986894241](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41986894241), current-player graphics QA [41986894077](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41986894077), protected promotion, Pages deployment [41988039780](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41988039780), and main Census [41988039900](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41988039900) all passed.
