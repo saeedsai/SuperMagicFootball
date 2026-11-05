@@ -126,11 +126,11 @@ function validatedSnapshot(envelope,matchId){
  * Create a short-lived single-use-ticket queue and server-owned match sessions.
  * `queueTicket({userId,ticket})` must receive the user ID from trusted auth middleware.
  */
-export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRequeue=()=>{},onMatchAssigned=async()=>{},onMatchFinished=async result=>({matchId:result.matchId}),onMatchPersisted=()=>{},onMatchError=()=>{},onMatchFault=()=>{},
+export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRequeue=()=>{},onMatchAssigned=async()=>{},onMatchFinished=async result=>({matchId:result.matchId}),onMatchPersisted=()=>{},onMatchError=()=>{},onMatchFault=()=>{},onMatchCheckpoint=async()=>{},onMatchCheckpointDeleted=async()=>{},
   now=Date.now,setIntervalFn=globalThis.setInterval,clearIntervalFn=globalThis.clearInterval,
   autoTick=true,ticketTtlMs=30_000,queueTtlMs=60_000,disconnectGraceMs=15_000,maxSnapshotBuffer=4,
   maxPendingTickets=512,maxQueuedUsers=256,maxActiveMatches=64,validTeamIds=null}={}){
-  if(typeof createEngine!=='function'||typeof sendSnapshot!=='function'||typeof onRequeue!=='function'||typeof onMatchAssigned!=='function'||typeof onMatchFinished!=='function'||typeof onMatchPersisted!=='function'||typeof onMatchError!=='function'||typeof onMatchFault!=='function'||
+  if(typeof createEngine!=='function'||typeof sendSnapshot!=='function'||typeof onRequeue!=='function'||typeof onMatchAssigned!=='function'||typeof onMatchFinished!=='function'||typeof onMatchPersisted!=='function'||typeof onMatchError!=='function'||typeof onMatchFault!=='function'||typeof onMatchCheckpoint!=='function'||typeof onMatchCheckpointDeleted!=='function'||
      typeof now!=='function'||typeof setIntervalFn!=='function'||typeof clearIntervalFn!=='function'||
      typeof autoTick!=='boolean'||!Number.isSafeInteger(ticketTtlMs)||ticketTtlMs<1000||ticketTtlMs>60_000||
      !Number.isSafeInteger(queueTtlMs)||queueTtlMs<1000||queueTtlMs>60_000||!Number.isSafeInteger(disconnectGraceMs)||disconnectGraceMs<1000||disconnectGraceMs>60_000||
@@ -148,7 +148,7 @@ export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRe
   const tickets=new Map(),ticketByUser=new Map(),queue=[],queuedByUser=new Map(),reservedUsers=new Set();
   const careerFixtures=new Map(),careerFixtureByUser=new Map();
   const matches=new Map(),activeByUser=new Map(),requeuedFromMatch=new Map(),closedMatches=new Map();
-  let disposed=false;
+  let disposed=false,closed=false;
   const takeRandom=()=>{let id;do{id=randomBytes(32).toString('hex');}while(tickets.has(sha(id)));return id;};
   function rememberClosed(matchId,reason){
     closedMatches.set(matchId,reason);
@@ -315,11 +315,26 @@ export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRe
   function releaseActive(record){
     for(const userId of record.userIds)if(activeByUser.get(userId)===record.matchId)activeByUser.delete(userId);
   }
+  async function persistShutdownCheckpoint(record){
+    if(record.status!=='active'||record.careerMode==='career-ai'||typeof record.engine.exportCheckpoint!=='function')return false;
+    const tick=record.session.getState().ticks;let checkpoint;
+    try{checkpoint=record.engine.exportCheckpoint();}catch{return false;}
+    if(!Number.isSafeInteger(tick)||tick<1||checkpoint?.state?.tick!==tick)return false;
+    try{await onMatchCheckpoint(Object.freeze({matchId:record.matchId,participants:Object.freeze(record.userIds.slice()),
+      teamIds:Object.freeze(record.teamIds.slice()),checkpoint,recoveryEligible:true}));return true;}catch{return false;}
+  }
+  function deleteCheckpoint(record){
+    if(record.checkpointDeleted)return;record.checkpointDeleted=true;
+    try{void Promise.resolve(onMatchCheckpointDeleted(Object.freeze({matchId:record.matchId,participants:Object.freeze(record.userIds.slice()),teamIds:Object.freeze(record.teamIds.slice())}))).catch(()=>{});}catch{}
+  }
   function stopRecord(record,reason,{requeueUserId=null}={}){
     if(!['active','persisting'].includes(record.status))return false;
     record.status=reason==='finished'?'finished':'closed';record.reason=reason;
     if(record.timer!==null){clearIntervalFn(record.timer);record.timer=null;}
     record.session.close();releaseActive(record);
+    // A graceful process handoff keeps active PVP state. Completed, failed, or
+    // explicitly abandoned sessions must never be resurrected after restart.
+    if(reason!=='service-shutdown')deleteCheckpoint(record);
     for(const queueBuffer of record.buffers.values())queueBuffer.length=0;
     const careerFixture=record.careerMatchId?careerFixtures.get(record.careerMatchId):null;
     if(careerFixture){
@@ -618,6 +633,43 @@ export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRe
       seats:Object.freeze(record.userIds.map((id,index)=>Object.freeze({userId:id,side:index}))),side,resumed:true,
       resumeSnapshot:Object.freeze({matchId,tick:session.ticks,snapshot:session.snapshot})});
   }
+  async function restoreCheckpoint({matchId,participants,teamIds,checkpoint}={}){
+    if(disposed||!MATCH_ID.test(matchId||'')||!Array.isArray(participants)||participants.length!==2||
+      !participants.every(validUserId)||participants[0]===participants[1]||!Array.isArray(teamIds)||teamIds.length!==2||
+      !teamIds.every(id=>typeof id==='string'&&(!canonicalTeamIds||canonicalTeamIds.has(id)))||teamIds[0]===teamIds[1]||
+      !checkpoint||checkpoint.format!=='smf-online-game-engine-checkpoint'||checkpoint.schemaVersion!==1||
+      !checkpoint.config||!Array.isArray(checkpoint.config.teamIds)||checkpoint.config.teamIds.length!==2||
+      checkpoint.config.teamIds.some((id,side)=>id!==teamIds[side])||!Number.isSafeInteger(checkpoint.state?.tick)||checkpoint.state.tick<1)
+      return Object.freeze({ok:false,reason:'checkpoint-invalid'});
+    if(matches.has(matchId)||matches.size>=maxActiveMatches||participants.some(userId=>activeByUser.has(userId)))
+      return Object.freeze({ok:false,reason:'checkpoint-conflict'});
+    const at=now();if(!Number.isFinite(at))return Object.freeze({ok:false,reason:'checkpoint-clock-invalid'});
+    const config=checkpoint.config;
+    let record;
+    try{
+      const engineOptions={matchId,participants:Object.freeze(participants.slice()),home:config.home,away:config.away,
+        teamIds:Object.freeze(config.teamIds.slice()),rosterPlayerIds:config.rosterAssetIds,
+        halfSeconds:config.halfSeconds,seed:config.seed,mode:config.mode,humans:config.humans};
+      const engine=await createEngine(Object.freeze(engineOptions));
+      if(disposed)throw new Error('service-closed');
+      if(typeof engine?.restoreCheckpoint!=='function'||typeof engine?.exportCheckpoint!=='function')throw new Error('checkpoint-unsupported');
+      engine.restoreCheckpoint(checkpoint);
+      const snapshot=typeof engine.getSnapshot==='function'?engine.getSnapshot():engine.snapshot;
+      if(!snapshot||snapshot.matchState==='finished'||snapshot.phase==='finished')throw new Error('checkpoint-terminal');
+      const userIds=participants.slice(),tick=checkpoint.state.tick;
+      record={matchId,userIds,connectedUserIds:Object.freeze([]),teamIds:Object.freeze(teamIds.slice()),
+        rosterPlayerIds:config.rosterAssetIds,engine,session:null,buffers:new Map(userIds.map(id=>[id,[]])),
+        lastSnapshotTick:tick,status:'active',reason:null,timer:null,disconnectedUntil:new Map(userIds.map(id=>[id,at+disconnectGraceMs]))};
+      record.session=createOnlineMatchSession({matchId,participants:userIds.map(userId=>({userId})),engine,now,initialTick:tick,
+        onSnapshot:envelope=>bufferSnapshot(record,envelope)});
+      matches.set(matchId,record);for(const userId of userIds)activeByUser.set(userId,matchId);
+      if(autoTick)record.timer=setIntervalFn(()=>scheduledTick(matchId),STEP_MS);
+      return Object.freeze({ok:true,matchId,tick,status:'restored'});
+    }catch{
+      if(record){if(record.timer!==null)clearIntervalFn(record.timer);record.session?.close();matches.delete(matchId);releaseActive(record);}
+      return Object.freeze({ok:false,reason:'checkpoint-unavailable'});
+    }
+  }
   function cancelQueue(userId){
     if(!validUserId(userId))return Object.freeze({ok:false,reason:'invalid-user'});
     const wasQueued=queuedByUser.has(userId),ok=removeQueueUser(userId);
@@ -634,12 +686,22 @@ export function createOnlineMatchmaking({createEngine,sendSnapshot=()=>true,onRe
         buffered:Object.freeze(Object.fromEntries([...record.buffers].map(([userId,pending])=>[userId,pending.length])))
       })))});
   }
+  async function prepareShutdown(){
+    if(disposed)return;
+    disposed=true;
+    const writes=[];
+    for(const record of matches.values()){
+      if(record.timer!==null){clearIntervalFn(record.timer);record.timer=null;}
+      if(record.status==='active')writes.push(persistShutdownCheckpoint(record));
+    }
+    await Promise.all(writes);
+  }
   function close(){
-    if(disposed)return;disposed=true;
+    if(closed)return;closed=true;disposed=true;
     for(const record of matches.values())stopRecord(record,'service-shutdown');
     matches.clear();tickets.clear();ticketByUser.clear();queue.length=0;queuedByUser.clear();reservedUsers.clear();requeuedFromMatch.clear();careerFixtures.clear();careerFixtureByUser.clear();
   }
-  return Object.freeze({issueTicket,issueResumeTicket,issueCareerTicket,reserveCareerFixture,releaseCareerFixture,queueTicket,queuePresentedTicket,submitInput,disconnect,resumeMatch,cancelQueue,tick,getState,close,
+  return Object.freeze({issueTicket,issueResumeTicket,issueCareerTicket,reserveCareerFixture,releaseCareerFixture,queueTicket,queuePresentedTicket,submitInput,disconnect,resumeMatch,restoreCheckpoint,cancelQueue,tick,getState,prepareShutdown,close,
     isValidTeamId(teamId){return typeof teamId==='string'&&!!canonicalTeamIds?.has(teamId);},
     get constants(){return Object.freeze({ticketTtlMs,queueTtlMs,tickRate:30,stepMs:STEP_MS,maxSnapshotBuffer,maxPendingTickets,maxQueuedUsers,maxActiveMatches});}});
 }

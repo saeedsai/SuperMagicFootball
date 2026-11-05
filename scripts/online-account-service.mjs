@@ -47,7 +47,7 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
   }
   if (typeof pool.query!=='function'||typeof pool.connect!=='function') throw new TypeError('A PostgreSQL Pool-like instance is required');
   pool.on?.('error',()=>console.error('Online account database connection failed'));
-  let matchmaking=null,transport=null,recordFinalResult=null,matchLifecycleStore=null,onlineCareerService=null,server=null,serverStartPromise=null;
+  let matchmaking=null,transport=null,recordFinalResult=null,matchLifecycleStore=null,matchCheckpointStore=null,onlineCareerService=null,server=null,serverStartPromise=null;
   let lockClient=null,lockClientReleased=false,lockHealthy=false,lockAcquired=false,stopping=false;
   let lockErrorHandler=null;
   const removeLockErrorHandler=()=>{if(lockClient&&lockErrorHandler){lockClient.removeListener?.('error',lockErrorHandler);lockClient.off?.('error',lockErrorHandler)}lockErrorHandler=null;};
@@ -99,13 +99,21 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
     if(!validTeamIds.length||validTeamIds.some(id=>!assets.teams.some(team=>team.id===id)))throw new Error('Canonical online team catalog is unavailable');
     matchmaking=matchmakingFactory({
       validTeamIds,
-      createEngine:({teamIds,rosterPlayerIds,mode}={})=>engineFactory({home:0,away:9,...(teamIds?{teamIds}:{}),...(rosterPlayerIds?{rosterPlayerIds}:{}),...(mode==='career-ai'?{mode:'career-ai',humans:1}:{}),halfSeconds:120,seed:randomInt(0,0x100000000)}),
+      createEngine:({teamIds,rosterPlayerIds,mode='quick',home=0,away=9,halfSeconds=120,seed,humans=mode==='career-ai'?1:2}={})=>engineFactory({home,away,...(teamIds?{teamIds}:{}),...(rosterPlayerIds?{rosterPlayerIds}:{}),mode,humans,halfSeconds,seed:Number.isSafeInteger(seed)?seed:randomInt(0,0x100000000)}),
       sendSnapshot:(userId,envelope,context)=>transport?.sendSnapshot(userId,envelope,context)??false,
       onRequeue:(userId,detail)=>transport?.onRequeue(userId,detail),
       onMatchError:(matchId,code)=>transport?.onMatchError(matchId,code)??false,
       onMatchAssigned:async assignment=>{
         if(!matchLifecycleStore)throw new Error('PVP lifecycle store is not ready');
         await matchLifecycleStore.recordAssigned(assignment);
+      },
+      onMatchCheckpoint:async value=>{
+        if(!matchCheckpointStore)throw new Error('PVP checkpoint store is not ready');
+        await matchCheckpointStore.store({matchId:value.matchId,participants:value.participants,teamIds:value.teamIds,
+          schemaVersion:value.checkpoint.schemaVersion,payload:{recoveryEligible:value.recoveryEligible===true,state:value.checkpoint.state,checkpoint:value.checkpoint}});
+      },
+      onMatchCheckpointDeleted:async value=>{
+        if(matchCheckpointStore)await matchCheckpointStore.delete(value);
       },
       onMatchFault:(matchId)=>{
         // Match IDs are random opaque identifiers; log no user, engine, or request data.
@@ -127,17 +135,33 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
     const runtime=await runtimeFactory({env,pool,fetchImpl,matchmaking,canonicalTeamIds});
     onlineCareerService=runtime.onlineCareerService;
     matchLifecycleStore=runtime.matchLifecycleStore;
+    matchCheckpointStore=runtime.matchCheckpointStore||null;
     recordFinalResult=runtime.resultStore.recordFinalResult;
     if(!matchLifecycleStore||typeof matchLifecycleStore.reconcileAfterRestart!=='function')throw new Error('PVP lifecycle startup recovery is unavailable');
-    // The singleton PostgreSQL session lock is already held. Mark unfinished PVP
-    // records interrupted before opening the listener; Career recovery stays separate.
-    await matchLifecycleStore.reconcileAfterRestart(runtime.resultStore);
+    // Restore only checksum/schema/config-valid engine checkpoints before opening
+    // the listener. Only a checkpoint captured at graceful handoff is eligible;
+    // a crash-time snapshot could roll back competitive inputs/results.
+    const resumableMatchIds=[],restoredCheckpointRows=[];
+    if(matchCheckpointStore&&typeof matchCheckpointStore.listActive==='function'&&typeof matchmaking?.restoreCheckpoint==='function'){
+      const checkpoints=await matchCheckpointStore.listActive({limit:64});
+      for(const row of checkpoints){
+        if(row.payload?.recoveryEligible!==true||!row.payload.checkpoint)continue;
+        if(await runtime.resultStore.getFinalResult(row.matchId))continue;
+        const restored=await matchmaking.restoreCheckpoint({matchId:row.matchId,participants:row.participants,teamIds:row.teamIds,checkpoint:row.payload.checkpoint});
+        if(restored?.ok===true){resumableMatchIds.push(row.matchId);restoredCheckpointRows.push(row);}
+      }
+    }
+    await matchLifecycleStore.reconcileAfterRestart(runtime.resultStore,{resumableMatchIds});
     if(onlineCareerService){
       if(typeof onlineCareerService.reconcileReservedFixtures!=='function')throw new Error('Online Career startup recovery is unavailable');
       // The PostgreSQL singleton lock is held before runtime creation. Recover durable
       // results or release interrupted reservations before accepting any new tickets.
       await onlineCareerService.reconcileReservedFixtures();
     }
+    // Active restored sessions wait for authenticated participants before any
+    // simulation tick. Remove the one-use resume image once recovery is active;
+    // a later crash then interrupts safely instead of replaying old input state.
+    for(const row of restoredCheckpointRows)await matchCheckpointStore.delete(row);
     server=createOnlineAccountHttpServer({handler:request=>lockHealthy?runtime.handle(request):new Response(JSON.stringify({error:'service-unavailable'}),{status:503,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}}),
       healthCheck:async()=>{if(!lockHealthy)return false;await pool.query('SELECT 1');return lockHealthy;},host:'0.0.0.0',port,maxConnections:128});
     serverStartPromise=new Promise((resolve,reject)=>{
@@ -157,6 +181,7 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
       stopping=true;lockHealthy=false;
       let closeError=null;
       try{transport.close()}catch(error){closeError=error;}
+      try{await matchmaking.prepareShutdown?.()}catch(error){closeError??=error;}
       try{matchmaking.close()}catch(error){closeError??=error;}
       await closeListener();
       let unlockError=null;
@@ -167,6 +192,7 @@ export async function startOnlineAccountService({env=process.env,pool=null,PoolC
     }});
   } catch(error) {
     try{transport?.close?.()}catch{}
+    try{await matchmaking?.prepareShutdown?.()}catch{}
     try{matchmaking?.close?.()}catch{}
     await serverStartPromise?.catch(()=>{});
     await closeListener();

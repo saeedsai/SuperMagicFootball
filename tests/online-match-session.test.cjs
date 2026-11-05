@@ -80,3 +80,13 @@ test('snapshot failure after an accepted engine tick cannot escape the session t
   assert.equal(result.advanced,false);
   assert.equal(session.getState().closed,true);
 });
+
+test('restored authoritative session preserves its checkpoint tick and rejects invalid counters', async () => {
+  sessionModule ||= await import(pathToFileURL(require.resolve('../scripts/online-match-session.mjs')).href);
+  const engine={snapshot:{matchState:'play',tick:812},step(){return {accepted:true,snapshot:{matchState:'play',tick:813}};}};
+  const session=sessionModule.createOnlineMatchSession({matchId:'match_0004',participants:[{userId:'user_0001'},{userId:'user_0002'}],engine,initialTick:812});
+  assert.equal(session.getState().ticks,812);
+  assert.equal(session.step().tick,813);
+  assert.throws(()=>sessionModule.createOnlineMatchSession({matchId:'match_0004',participants:[{userId:'user_0001'},{userId:'user_0002'}],engine,initialTick:-1}),/Invalid authoritative/);
+  assert.throws(()=>sessionModule.createOnlineMatchSession({matchId:'match_0004',participants:[{userId:'user_0001'},{userId:'user_0002'}],engine,initialTick:1.5}),/Invalid authoritative/);
+});

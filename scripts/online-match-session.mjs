@@ -35,10 +35,10 @@ function validId(value) {
  * Creates one authoritative online match. This module has no socket or storage
  * dependency; an authenticated host connects participant IDs to submitInput.
  */
-export function createOnlineMatchSession({matchId, participants, engine, now=()=>performance.now(), onSnapshot=()=>{}}) {
+export function createOnlineMatchSession({matchId, participants, engine, now=()=>performance.now(), onSnapshot=()=>{}, initialTick=0}) {
   if (!validId(matchId) || !Array.isArray(participants) || participants.length !== 2 ||
       !engine || typeof engine.step !== 'function' || typeof engine.snapshot === 'undefined' && typeof engine.getSnapshot !== 'function' ||
-      typeof now !== 'function' || typeof onSnapshot !== 'function') {
+      typeof now !== 'function' || typeof onSnapshot !== 'function' || !Number.isSafeInteger(initialTick) || initialTick<0) {
     throw new TypeError('Invalid authoritative match session');
   }
   const ids = participants.map(row => row?.userId);
@@ -46,7 +46,9 @@ export function createOnlineMatchSession({matchId, participants, engine, now=()=
 
   const seats = ids.map(userId => ({userId, sequence:0, input:neutralInput(), receivedAt:-Infinity}));
   let closed = false;
-  let ticks = 0;
+  // Restored authoritative engines resume at their checkpoint tick. Keeping
+  // the session counter aligned prevents snapshots from moving backwards.
+  let ticks = initialTick;
   let latest = typeof engine.getSnapshot === 'function' ? engine.getSnapshot() : engine.snapshot;
 
   function submitInput(userId, sequence, input, receivedAt=now()) {

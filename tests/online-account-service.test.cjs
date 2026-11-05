@@ -42,12 +42,13 @@ test('online service configures Career AI as one human plus server CPU and advan
   assert.ok(canonicalTeamIds.includes('japan'));
   return {handle:async()=>new Response('{}',{headers:{'content-type':'application/json'}}),allowedOrigins:['https://game.example.test'],
    resultStore:{async recordFinalResult(result){events.push(['persist',result.matchId]);return {matchId:result.matchId};}},
+   matchCheckpointStore:{async store(value){events.push(['checkpoint-store',value.matchId,value.schemaVersion,value.payload.state.tick]);return {matchId:value.matchId};},async delete(value){events.push(['checkpoint-delete',value.matchId]);return {matchId:value.matchId,deleted:true};}},
    matchLifecycleStore:{async recordAssigned(value){events.push(['assigned',value.matchId]);},async reconcileAfterRestart(){events.push(['pvp-reconcile',pool.lockState.held]);return {completed:0,interrupted:0};}},
    onlineCareerService:{async reconcileReservedFixtures(){events.push(['reconcile',pool.lockState.held]);return 0;},async advanceMatchResult(matchId){events.push(['advance',matchId]);advanceAttempts++;if(advanceAttempts===1)throw new Error('transient progression database failure');return {playedCount:1};}}
   };
  };
  const service=await startOnlineAccountService({env:{PORT:String(port)},pool,runtimeFactory,
-  matchmakingFactory:options=>{matcherOptions=options;return {close(){events.push(['matchmaking-close']);}}},
+  matchmakingFactory:options=>{matcherOptions=options;return {async prepareShutdown(){events.push(['matchmaking-prepared']);},close(){events.push(['matchmaking-close']);}}},
   engineFactory:async options=>{engineCalls.push(options);return {};},
   transportFactory:()=>transport});
  assert.equal(pool.lockState.held,true,'the process lock remains held for the full service lifetime');
@@ -55,12 +56,19 @@ test('online service configures Career AI as one human plus server CPU and advan
  assert.deepEqual(events.find(row=>row[0]==='reconcile'),['reconcile',true],'Career recovery completes while the process lock is held');
  assert.deepEqual(events.find(row=>row[0]==='pvp-reconcile'),['pvp-reconcile',true],'PVP recovery completes while the process lock is held');
  await matcherOptions.onMatchAssigned({matchId:'b'.repeat(32),participants:['player_alpha','player_bravo'],teamIds:['japan','brazil']});
+  await matcherOptions.onMatchCheckpoint({matchId:'b'.repeat(32),participants:['player_alpha','player_bravo'],teamIds:['japan','brazil'],checkpoint:{schemaVersion:1,state:{tick:8}}});
+  await matcherOptions.onMatchCheckpointDeleted({matchId:'b'.repeat(32),participants:['player_alpha','player_bravo'],teamIds:['japan','brazil']});
+  assert.ok(events.some(row=>row[0]==='checkpoint-store'&&row[2]===1&&row[3]===8));
+  assert.ok(events.some(row=>row[0]==='checkpoint-delete'&&row[1]==='b'.repeat(32)));
  try{
   const engine=await matcherOptions.createEngine({teamIds:['japan','brazil'],mode:'career-ai'});
   assert.deepEqual(engine,{});
   assert.equal(engineCalls[0].mode,'career-ai');
   assert.equal(engineCalls[0].humans,1);
   assert.deepEqual(engineCalls[0].teamIds,['japan','brazil']);
+  await matcherOptions.createEngine({teamIds:['japan','brazil'],rosterPlayerIds:[null,null],mode:'quick',home:0,away:9,halfSeconds:120,seed:123,humans:2});
+  assert.equal(engineCalls[1].seed,123,'checkpoint restoration can recreate the exact authoritative RNG seed');
+  assert.equal(engineCalls[1].humans,2);
   const result={matchId:'a'.repeat(32),status:'finished'};
   await assert.rejects(()=>matcherOptions.onMatchFinished(result),/transient progression database failure/);
   assert.deepEqual(events.filter(row=>['persist','advance'].includes(row[0])).map(row=>row[0]),['persist','advance']);
@@ -72,6 +80,7 @@ test('online service configures Career AI as one human plus server CPU and advan
   assert.deepEqual(events.at(-1),['match-error',result.matchId,'engine-error']);
  }finally{await service.close();}
  assert.ok(events.some(row=>row[0]==='pool-end'));
+ assert.ok(events.findIndex(row=>row[0]==='matchmaking-prepared')<events.findIndex(row=>row[0]==='matchmaking-close'),'graceful service shutdown drains the authoritative checkpoint before stopping matchmaking');
  assert.equal(pool.lockState.held,false,'graceful shutdown releases the PostgreSQL session lock');
  assert.equal(pool.clients[0].released,true,'the dedicated lock connection returns to the pool after unlock');
 });
@@ -101,6 +110,33 @@ test('PVP lifecycle recovery failure is fail-closed before listener or transport
  }),/PVP recovery query failed/);
  assert.equal(transportStarted,false);assert.equal(matchmakingClosed,true);assert.equal(pool.lockState.held,false);
  const probe=net.createServer();await new Promise((resolve,reject)=>{probe.once('error',reject);probe.listen(port,'127.0.0.1',resolve);});await new Promise(resolve=>probe.close(resolve));
+});
+
+test('online service restores valid unfinished PVP checkpoints under the singleton lock before opening transport',async()=>{
+ const {startOnlineAccountService}=await import('../scripts/online-account-service.mjs');
+ const port=await freePort(),events=[],pool=mockPool({events}),restored=[],reconciled=[];
+ const matchId='a'.repeat(32),doneId='b'.repeat(32),checkpoint={format:'smf-online-game-engine-checkpoint',schemaVersion:1,config:{teamIds:['japan','brazil']},state:{tick:17}};
+ const rows=[
+  {matchId,participants:['player_alpha','player_bravo'],teamIds:['japan','brazil'],payload:{recoveryEligible:true,state:checkpoint.state,checkpoint},updatedAt:new Date().toISOString()},
+  {matchId:doneId,participants:['player_charlie','player_delta'],teamIds:['france','germany'],payload:{recoveryEligible:true,state:checkpoint.state,checkpoint:{...checkpoint,config:{teamIds:['france','germany']}}},updatedAt:new Date().toISOString()},
+  {matchId:'c'.repeat(32),participants:['player_echo','player_foxtrot'],teamIds:['italy','spain'],payload:{recoveryEligible:false,state:checkpoint.state,checkpoint:{...checkpoint,config:{teamIds:['italy','spain']}}},updatedAt:new Date().toISOString()}
+ ];
+ const runtimeFactory=async()=>({handle:async()=>new Response('{}'),allowedOrigins:['https://game.example.test'],
+  resultStore:{async getFinalResult(id){return id===doneId?{matchId:id}:null;},async recordFinalResult(result){return result;}},
+  matchCheckpointStore:{async listActive(options){events.push(['checkpoint-list',options.limit,pool.lockState.held]);return rows;},async store(){},async delete(value){events.push(['checkpoint-delete',value.matchId]);return {matchId:value.matchId,deleted:true};}},
+  matchLifecycleStore:{async recordAssigned(){},async reconcileAfterRestart(resultStore,options){reconciled.push(options);events.push(['pvp-reconcile',pool.lockState.held]);return {completed:1,interrupted:0,resumed:1};}}});
+ const service=await startOnlineAccountService({env:{PORT:String(port)},pool,runtimeFactory,
+  matchmakingFactory:()=>({async restoreCheckpoint(value){restored.push(value.matchId);return {ok:true};},close(){events.push(['matchmaking-close']);}}),
+  transportFactory:()=>{events.push(['transport-start']);return {close(){events.push(['transport-close']);}};}});
+ try{
+  assert.deepEqual(restored,[matchId],'terminal results and crash-time checkpoints are not restored');
+  assert.deepEqual(reconciled,[{resumableMatchIds:[matchId]}]);
+  assert.ok(events.findIndex(row=>row[0]==='checkpoint-delete')<events.findIndex(row=>row[0]==='transport-start'),'restored images are consumed before transport accepts resume tickets');
+  assert.deepEqual(events.filter(row=>['checkpoint-list','pvp-reconcile'].includes(row[0])),[
+   ['checkpoint-list',64,true],['pvp-reconcile',true]
+  ]);
+  assert.equal(service.server.listening,true);
+ }finally{await service.close();}
 });
 
 test('a second Online API process is refused while the first process holds the session lock',async()=>{

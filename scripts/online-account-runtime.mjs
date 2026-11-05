@@ -3,6 +3,7 @@ import {createOidcBearerVerifier} from './online-oidc-auth.mjs';
 import {createOnlineAccountStore} from './online-account-store.mjs';
 import {createOnlineResultStore} from './online-result-store.mjs';
 import {createOnlineMatchLifecycleStore} from './online-match-lifecycle-store.mjs';
+import {createOnlineMatchCheckpointStore} from './online-match-checkpoint-store.mjs';
 import {createOnlineRewardStore} from './online-reward-store.mjs';
 import {createOnlineUltimateTeamStore} from './online-ultimate-team-store.mjs';
 import {createOnlineCareerScheduleBuilder} from './online-career-schedule.mjs';
@@ -12,6 +13,7 @@ import {createOnlineAccountApi} from './online-account-api.mjs';
 const schemaUrl = new URL('./online-account-schema.sql', import.meta.url);
 const resultsSchemaUrl = new URL('./online-results-schema.sql', import.meta.url);
 const matchLifecycleSchemaUrl = new URL('./online-match-lifecycle-schema.sql', import.meta.url);
+const matchCheckpointSchemaUrl = new URL('./online-match-checkpoint-schema.sql', import.meta.url);
 const rewardsSchemaUrl = new URL('./online-rewards-schema.sql', import.meta.url);
 const ultimateTeamSchemaUrl = new URL('./online-ultimate-team-schema.sql', import.meta.url);
 const onlineCareerSchemaUrl = new URL('./online-career-schema.sql', import.meta.url);
@@ -32,21 +34,24 @@ export async function createOnlineAccountRuntime({env=process.env, pool, fetchIm
   if (!origins.length || origins.length > 8 || origins.some(origin=>!exactOrigin(origin))) throw new TypeError('SMF_ALLOWED_ORIGINS must be a comma-separated list of exact HTTPS origins');
   const authenticate = createOidcBearerVerifier({issuer,audience,jwksUrl,fetchImpl,now});
   // DDL is idempotent; deployment fails closed if schema setup cannot finish.
-  const [schema,resultsSchema,matchLifecycleSchema,rewardsSchema,ultimateTeamSchema,onlineCareerSchema] = await Promise.all([readFile(schemaUrl, 'utf8'),readFile(resultsSchemaUrl, 'utf8'),readFile(matchLifecycleSchemaUrl,'utf8'),readFile(rewardsSchemaUrl,'utf8'),readFile(ultimateTeamSchemaUrl,'utf8'),readFile(onlineCareerSchemaUrl,'utf8')]);
+  const [schema,resultsSchema,matchLifecycleSchema,matchCheckpointSchema,rewardsSchema,ultimateTeamSchema,onlineCareerSchema] = await Promise.all([readFile(schemaUrl, 'utf8'),readFile(resultsSchemaUrl, 'utf8'),readFile(matchLifecycleSchemaUrl,'utf8'),readFile(matchCheckpointSchemaUrl,'utf8'),readFile(rewardsSchemaUrl,'utf8'),readFile(ultimateTeamSchemaUrl,'utf8'),readFile(onlineCareerSchemaUrl,'utf8')]);
   if (!schema.trim() || schema.length > 65536) throw new Error('Online account schema is empty or too large');
   if (!resultsSchema.trim() || resultsSchema.length > 65536) throw new Error('Online result schema is empty or too large');
   if (!matchLifecycleSchema.trim() || matchLifecycleSchema.length > 65536) throw new Error('Online PVP lifecycle schema is empty or too large');
+  if (!matchCheckpointSchema.trim() || matchCheckpointSchema.length > 65536) throw new Error('Online PVP checkpoint schema is empty or too large');
   if (!rewardsSchema.trim() || rewardsSchema.length > 65536) throw new Error('Online reward schema is empty or too large');
   if (!ultimateTeamSchema.trim() || ultimateTeamSchema.length > 65536) throw new Error('Online Ultimate Team schema is empty or too large');
   if (!onlineCareerSchema.trim() || onlineCareerSchema.length > 65536) throw new Error('Online Career schema is empty or too large');
   await pool.query(schema);
   await pool.query(resultsSchema);
   await pool.query(matchLifecycleSchema);
+  await pool.query(matchCheckpointSchema);
   await pool.query(rewardsSchema);
   await pool.query(ultimateTeamSchema);
   await pool.query(onlineCareerSchema);
   const store = createOnlineAccountStore({db:pool,now:()=>new Date(now())});
   const matchLifecycleStore=createOnlineMatchLifecycleStore({db:pool,now:()=>new Date(now())});
+  const matchCheckpointStore=createOnlineMatchCheckpointStore({db:pool,now:()=>new Date(now())});
   const resultStore = createOnlineResultStore({db:pool,now:()=>new Date(now()),lifecycleStore:matchLifecycleStore});
   const rewardStore = createOnlineRewardStore({db:pool,resultStore,now:()=>new Date(now())});
   const ultimateTeamStore = await createOnlineUltimateTeamStore({db:pool,now:()=>new Date(now())});
@@ -56,5 +61,5 @@ export async function createOnlineAccountRuntime({env=process.env, pool, fetchIm
     onlineCareerService=createOnlineCareerService({db:pool,resultStore,buildSchedule:onlineCareerSchedule.buildSchedule,now:()=>new Date(now())});
   }
   const handle = createOnlineAccountApi({authenticate,store,resultStore,matchLifecycleStore,rewardStore,ultimateTeamStore,onlineCareerService,allowedOrigins:origins,matchmaking});
-  return Object.freeze({handle,store,resultStore,matchLifecycleStore,rewardStore,ultimateTeamStore,onlineCareerSchedule,onlineCareerService,authenticate,allowedOrigins:Object.freeze(origins.slice())});
+  return Object.freeze({handle,store,resultStore,matchLifecycleStore,matchCheckpointStore,rewardStore,ultimateTeamStore,onlineCareerSchedule,onlineCareerService,authenticate,allowedOrigins:Object.freeze(origins.slice())});
 }

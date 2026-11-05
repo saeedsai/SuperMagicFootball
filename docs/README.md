@@ -4,7 +4,8 @@ Use [MASTER_BACKLOG.md](MASTER_BACKLOG.md) as the single current plan and status
 
 ## Read for current work
 
-- [Candidate 0.12.81.55 local validation](CANDIDATE_012855_VALIDATION_20261105.md): live Energy meter accessibility, subtle player head-turn animation and wet-pitch puddle highlights with desktop/mobile and actual-renderer Chromium evidence.
+- [Candidate 0.12.81.56 local validation](CANDIDATE_012856_VALIDATION_20261105.md): authoritative online PVP graceful-restart checkpoints, bounded PostgreSQL storage, assignment-bound restore and fail-safe crash interruption.
+- [Candidate 0.12.81.55 validation](CANDIDATE_012855_VALIDATION_20261105.md): live Energy meter accessibility, subtle player head-turn animation and wet-pitch puddle highlights; exact-head Census, Modular QA, graphics QA, Pages, hosted smoke and main Census passed.
 - [Candidate 0.12.81.54 validation](CANDIDATE_012854_VALIDATION_20261105.md): rolling-ball projection and Career/Cup UTF-8 import/export limits; exact-head Census, Modular QA, protected promotion, Pages, hosted smoke, and main Census passed. Current Player Graphics QA remains in progress.
 - [Candidate 0.12.81.53 validation](CANDIDATE_012853_VALIDATION_20261105.md): Career/Cup export limits; near-limit round-trip, stale-recovery and Unicode file-size tests pass; exact-head Census and Modular QA passed, without promotion.
 - [Candidate 0.12.81.50 validation](CANDIDATE_012850_VALIDATION_20261105.md): full Node **2,276/2,276** and Modular QA passed; exact Full Regression Census failed on stale IndexedDB/Studio browser fixtures and a 3px narrow-menu overflow. Superseded by .51 fixture/layout updates; .50 is not certified.

@@ -31,13 +31,18 @@ export function createOnlineMatchLifecycleStore({db,now=()=>new Date()}={}){
   if(row.participant_0!==value.participants[0]||row.participant_1!==value.participants[1]||row.team_0!==value.teamIds[0]||row.team_1!==value.teamIds[1])invalid('lifecycle-result-mismatch');
   if(row.status==='active')await client.query("UPDATE smf_online_match_lifecycle SET status='completed',updated_at=$2 WHERE match_id=$1",[value.matchId,new Date(now()).toISOString()]);
   else if(row.status!=='completed')invalid('lifecycle-already-interrupted');
+  // The immutable result and lifecycle completion share this transaction, so
+  // a terminal match can never be restored from a stale simulation checkpoint.
+  await client.query('DELETE FROM smf_online_match_checkpoint WHERE match_id=$1',[value.matchId]);
   return true;
  }
- async function reconcileAfterRestart(resultStore){
+ async function reconcileAfterRestart(resultStore,{resumableMatchIds=[]}={}){
   if(!resultStore||typeof resultStore.getFinalResult!=='function')throw new TypeError('PVP startup reconciliation requires the immutable result store');
+  if(!Array.isArray(resumableMatchIds)||resumableMatchIds.length>MAX_ACTIVE||!resumableMatchIds.every(id=>typeof id==='string'&&MATCH_ID.test(id))||new Set(resumableMatchIds).size!==resumableMatchIds.length)invalid('invalid-resumable-match-ids');
+  const resumable=new Set(resumableMatchIds);
   const pending=await db.query("SELECT match_id FROM smf_online_match_lifecycle WHERE status='active' ORDER BY assigned_at LIMIT $1",[MAX_ACTIVE+1]);
   if((pending.rows||[]).length>MAX_ACTIVE)throw new Error('PVP lifecycle active-row bound was exceeded');
-  let completed=0,interrupted=0;
+  let completed=0,interrupted=0,resumed=0;
   for(const entry of pending.rows||[]){
    const result=await resultStore.getFinalResult(entry.match_id);
    await transaction(async client=>{
@@ -46,12 +51,16 @@ export function createOnlineMatchLifecycleStore({db,now=()=>new Date()}={}){
     if(result){
      const assignment=validateAssignment({matchId:result.matchId,participants:result.participants?.map(row=>row.userId),teamIds:result.teamIds});
      if(assignment.matchId!==entry.match_id||assignment.participants[0]!==lifecycle.participant_0||assignment.participants[1]!==lifecycle.participant_1||assignment.teamIds[0]!==lifecycle.team_0||assignment.teamIds[1]!==lifecycle.team_1)invalid('lifecycle-result-mismatch');
-     await client.query("UPDATE smf_online_match_lifecycle SET status='completed',updated_at=$2 WHERE match_id=$1",[entry.match_id,new Date(now()).toISOString()]);completed++;
+     await client.query("UPDATE smf_online_match_lifecycle SET status='completed',updated_at=$2 WHERE match_id=$1",[entry.match_id,new Date(now()).toISOString()]);
+     // Recovery may discover a durable result after a previous result/lifecycle split.
+     // Remove any stale simulation checkpoint in the same transaction as repair.
+     await client.query('DELETE FROM smf_online_match_checkpoint WHERE match_id=$1',[entry.match_id]);completed++;
     }
-    else {await client.query("UPDATE smf_online_match_lifecycle SET status='interrupted',updated_at=$2 WHERE match_id=$1",[entry.match_id,new Date(now()).toISOString()]);interrupted++;}
+    else if(resumable.has(entry.match_id))resumed++;
+    else {await client.query("UPDATE smf_online_match_lifecycle SET status='interrupted',updated_at=$2 WHERE match_id=$1",[entry.match_id,new Date(now()).toISOString()]);await client.query('DELETE FROM smf_online_match_checkpoint WHERE match_id=$1',[entry.match_id]);interrupted++;}
    });
   }
-  return Object.freeze({completed,interrupted});
+  return Object.freeze({completed,interrupted,resumed});
  }
  async function listStatuses(accountId,matchIds){
   if(typeof accountId!=='string'||!ACCOUNT_ID.test(accountId))invalid('invalid-account');

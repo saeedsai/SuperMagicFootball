@@ -14,15 +14,19 @@ test('online account runtime applies the SQL schema before exposing API adapters
   const pool=poolStub();
   const runtime=await createOnlineAccountRuntime({env:good,pool,fetchImpl:async()=>({ok:true,text:async()=>'{"keys":[]}'}),now:()=>1800000000000,
     matchmaking:{isValidTeamId:id=>careerTeams.includes(id)},canonicalTeamIds:careerTeams});
-  assert.equal(pool.calls.length,6);
+  assert.equal(pool.calls.length,7);
   assert.match(pool.calls[0],/CREATE TABLE IF NOT EXISTS smf_online_profiles/);
   assert.match(pool.calls[1],/CREATE TABLE IF NOT EXISTS smf_online_match_results/);
   assert.match(pool.calls[2],/CREATE TABLE IF NOT EXISTS smf_online_match_lifecycle/);
-  assert.match(pool.calls[3],/CREATE TABLE IF NOT EXISTS smf_online_token_balances/);
-  assert.match(pool.calls[4],/CREATE TABLE IF NOT EXISTS smf_online_ut_owned_items/);
-  assert.match(pool.calls[5],/CREATE TABLE IF NOT EXISTS smf_online_career_seasons/);
+  assert.match(pool.calls[3],/CREATE TABLE IF NOT EXISTS smf_online_match_checkpoint/);
+  assert.match(pool.calls[4],/CREATE TABLE IF NOT EXISTS smf_online_token_balances/);
+  assert.match(pool.calls[5],/CREATE TABLE IF NOT EXISTS smf_online_ut_owned_items/);
+  assert.match(pool.calls[6],/CREATE TABLE IF NOT EXISTS smf_online_career_seasons/);
   assert.equal(typeof runtime.matchLifecycleStore.recordAssigned,'function');
   assert.equal(typeof runtime.matchLifecycleStore.listStatuses,'function');
+  assert.equal(typeof runtime.matchCheckpointStore.store,'function');
+  assert.equal(typeof runtime.matchCheckpointStore.load,'function');
+  assert.equal(typeof runtime.matchCheckpointStore.listActive,'function');
   assert.deepEqual(runtime.allowedOrigins,['https://saeedsai.github.io','https://play.example.test']);
   assert.equal(typeof runtime.handle,'function');
   assert.equal(typeof runtime.store.putSnapshot,'function');
@@ -65,26 +69,34 @@ test('online account runtime fails closed when durable-result schema migration f
   assert.equal(calls,2,'runtime must not expose the account API without durable results schema');
 });
 
+test('online account runtime fails closed when authoritative checkpoint schema migration fails',async()=>{
+  const {createOnlineAccountRuntime}=await import('../scripts/online-account-runtime.mjs');
+  const pool=poolStub();let calls=0;
+  pool.query=async text=>{calls++;if(calls===4)throw new Error('checkpoint schema unavailable');pool.calls.push(text);return {rows:[]};};
+  await assert.rejects(()=>createOnlineAccountRuntime({env:good,pool}),/checkpoint schema unavailable/);
+  assert.equal(calls,4,'runtime must not expose PVP without the checkpoint schema');
+});
+
 test('online account runtime fails closed when reward-ledger schema migration fails',async()=>{
   const {createOnlineAccountRuntime}=await import('../scripts/online-account-runtime.mjs');
   const pool=poolStub();let calls=0;
-  pool.query=async text=>{calls++;if(calls===4)throw new Error('reward schema unavailable');pool.calls.push(text);return {rows:[]};};
+  pool.query=async text=>{calls++;if(calls===5)throw new Error('reward schema unavailable');pool.calls.push(text);return {rows:[]};};
   await assert.rejects(()=>createOnlineAccountRuntime({env:good,pool,fetchImpl:async()=>({ok:true,text:async()=>'{}'})}),/reward schema unavailable/);
-  assert.equal(calls,4,'runtime must not expose reward APIs without the idempotent ledger schema');
+  assert.equal(calls,5,'runtime must not expose reward APIs without the idempotent ledger schema');
 });
 
 test('online account runtime fails closed when Ultimate Team ownership migration fails',async()=>{
   const {createOnlineAccountRuntime}=await import('../scripts/online-account-runtime.mjs');
   const pool=poolStub();let calls=0;
-  pool.query=async text=>{calls++;if(calls===5)throw new Error('UT schema unavailable');pool.calls.push(text);return {rows:[]};};
+  pool.query=async text=>{calls++;if(calls===6)throw new Error('UT schema unavailable');pool.calls.push(text);return {rows:[]};};
   await assert.rejects(()=>createOnlineAccountRuntime({env:good,pool,fetchImpl:async()=>({ok:true,text:async()=>'{}'})}),/UT schema unavailable/);
-  assert.equal(calls,5,'runtime must not expose Online UT before its ownership and purchase ledger schema exists');
+  assert.equal(calls,6,'runtime must not expose Online UT before its ownership and purchase ledger schema exists');
 });
 
 test('online account runtime fails closed when Online Career schema migration fails',async()=>{
   const {createOnlineAccountRuntime}=await import('../scripts/online-account-runtime.mjs');
   const pool=poolStub();let calls=0;
-  pool.query=async text=>{calls++;if(calls===6)throw new Error('career schema unavailable');pool.calls.push(text);return {rows:[]};};
+  pool.query=async text=>{calls++;if(calls===7)throw new Error('career schema unavailable');pool.calls.push(text);return {rows:[]};};
   await assert.rejects(()=>createOnlineAccountRuntime({env:good,pool,fetchImpl:async()=>({ok:true,text:async()=>'{}'})}),/career schema unavailable/);
-  assert.equal(calls,6,'runtime must not expose API without durable Online Career progression schema');
+  assert.equal(calls,7,'runtime must not expose API without durable Online Career progression schema');
 });

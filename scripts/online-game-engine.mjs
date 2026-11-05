@@ -1,9 +1,31 @@
 // First server-authoritative simulation seam. This module is Node-only and is
 // intentionally not imported by the browser game or the signaling broker.
 import {loadAssetsFromNode} from '../src/assets.js';
+import {createHash} from 'node:crypto';
 
 const ACTIONS=Object.freeze(['pass','shoot','dribble','jump']);
 const SNAPSHOT_MAX_BYTES=8192;
+const CHECKPOINT_FORMAT='smf-online-game-engine-checkpoint';
+const CHECKPOINT_SCHEMA_VERSION=1;
+const CHECKPOINT_ENGINE_BUILD='0.12.81.56';
+const CHECKPOINT_MAX_BYTES=256*1024;
+const CHECKPOINT_GAME_KEYS=Object.freeze([
+  'aiComboNext','aiComboThink','autoSwitchAccum','ball','celebration','celebrationStyle','clock','condition','controlled','cooldown','flash',
+  'formation','goalHero','half','humans','lineups','magicHazards','magicWalls','manualSwitchGrace','matchSeconds','matchSerial','matchState','mode',
+  'maxSubstitutions','fatigueLedger','moraleLedger','particles','pendingKickoff','pk','playerSeconds','players','score','shake','stoppageAnnounced',
+  'stoppageWindow','stormTimer','subbedOut','substitutionsUsed','supernova','talksUsed','teamIds','teamPlans','terrain','tornado',
+  'weather','weatherLightning','weatherSeed','wind','_reboundAudit','_shotAudit','_shotAuditNext','rideBall'
+]);
+const CHECKPOINT_REF=Symbol('checkpoint-reference');
+const CHECKPOINT_STATIC_KEYS=new Set(['options','input','events','rosters','onEvent']);
+const CHECKPOINT_CONFIG_KEYS=Object.freeze(['home','away','teamIds','rosterAssetIds','halfSeconds','seed','mode','humans']);
+function canonicalJson(value){
+  if(Array.isArray(value))return `[${value.map(canonicalJson).join(',')}]`;
+  if(value&&typeof value==='object')return `{${Object.keys(value).sort().map(key=>`${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(',')}}`;
+  return JSON.stringify(value);
+}
+function sha256(value){return createHash('sha256').update(value).digest('hex');}
+function checkpointBytes(value){return Buffer.byteLength(canonicalJson(value),'utf8');}
 const clone=value=>JSON.parse(JSON.stringify(value));
 function plainRecord(value){return !!value&&typeof value==='object'&&!Array.isArray(value)&&
   (Object.getPrototypeOf(value)===Object.prototype||Object.getPrototypeOf(value)===null);}
@@ -16,7 +38,72 @@ function sanitizeInput(value){
 }
 function seededRandom(seed){
   let state=seed>>>0||0x6d2b79f5;
-  return ()=>{state^=state<<13;state^=state>>>17;state^=state<<5;return (state>>>0)/4294967296;};
+  const next=()=>{state^=state<<13;state^=state>>>17;state^=state<<5;return (state>>>0)/4294967296;};
+  next.getState=()=>state>>>0;
+  next.setState=value=>{if(!Number.isSafeInteger(value)||value<0||value>0xffffffff)throw new TypeError('Invalid checkpoint RNG state');state=value>>>0;};
+  return next;
+}
+function checkpointEncode(value,game,seen=new WeakSet(),allowReference=true){
+  if(value===undefined)return {$smfUndefined:true};
+  if(typeof value==='function')return {$smfUndefined:true};
+  if(value===null||typeof value==='string'||typeof value==='boolean')return value;
+  if(typeof value==='number'){if(!Number.isFinite(value))throw new TypeError('Checkpoint contains a non-finite number');return value;}
+  if(typeof value!=='object')throw new TypeError('Checkpoint contains a non-data value');
+  const playerIndex=game.players.indexOf(value);
+  if(allowReference&&playerIndex>=0)return {$smfRef:'player',index:playerIndex};
+  for(let team=0;team<2;team++){
+    const index=game.rosters[team]?.indexOf(value)??-1;
+    if(index>=0)return {$smfRef:'roster',team,index};
+  }
+  if(seen.has(value))throw new TypeError('Checkpoint contains an unsupported object cycle');
+  seen.add(value);
+  let output;
+  if(value instanceof Set)output={$smfSet:[...value].map(item=>checkpointEncode(item,game,seen))};
+  else if(Array.isArray(value))output=value.map(item=>checkpointEncode(item,game,seen));
+  else if(plainRecord(value)){
+    output={};
+    for(const [key,item] of Object.entries(value)){
+      if(key==='$smfRef'||key==='$smfSet')throw new TypeError('Checkpoint contains a reserved data key');
+      output[key]=checkpointEncode(item,game,seen);
+    }
+  } else throw new TypeError('Checkpoint contains an unsupported object type');
+  seen.delete(value);
+  return output;
+}
+function checkpointDecode(value){
+  if(value&&typeof value==='object'&&!Array.isArray(value)&&Object.hasOwn(value,'$smfUndefined')){
+    if(!exactKeys(value,['$smfUndefined'])||value.$smfUndefined!==true)throw new TypeError('Invalid checkpoint undefined value');
+    return undefined;
+  }
+  if(value===null||typeof value==='string'||typeof value==='boolean')return value;
+  if(typeof value==='number'){if(!Number.isFinite(value))throw new TypeError('Invalid checkpoint number');return value;}
+  if(Array.isArray(value))return value.map(checkpointDecode);
+  if(!plainRecord(value))throw new TypeError('Invalid checkpoint data');
+  if(Object.hasOwn(value,'$smfRef')){
+    if(value.$smfRef==='player'&&exactKeys(value,['$smfRef','index'])&&Number.isSafeInteger(value.index)&&value.index>=0&&value.index<12)return {[CHECKPOINT_REF]:['player',value.index]};
+    if(value.$smfRef==='roster'&&exactKeys(value,['$smfRef','team','index'])&&[0,1].includes(value.team)&&Number.isSafeInteger(value.index)&&value.index>=0&&value.index<12)return {[CHECKPOINT_REF]:['roster',value.team,value.index]};
+    throw new TypeError('Invalid checkpoint reference');
+  }
+  if(Object.hasOwn(value,'$smfSet')){
+    if(!exactKeys(value,['$smfSet'])||!Array.isArray(value.$smfSet))throw new TypeError('Invalid checkpoint Set');
+    return new Set(value.$smfSet.map(checkpointDecode));
+  }
+  const output={};
+  for(const [key,item] of Object.entries(value))output[key]=checkpointDecode(item);
+  return output;
+}
+function checkpointResolveRefs(value,players,rosters,seen=new WeakSet()){
+  if(value&&typeof value==='object'&&Object.hasOwn(value,CHECKPOINT_REF)){
+    const ref=value[CHECKPOINT_REF];
+    const target=ref[0]==='player'?players[ref[1]]:rosters[ref[1]]?.[ref[2]];
+    if(!target)throw new TypeError('Checkpoint reference is out of range');
+    return target;
+  }
+  if(!value||typeof value!=='object'||seen.has(value))return value;
+  seen.add(value);
+  if(value instanceof Set){const items=[...value].map(item=>checkpointResolveRefs(item,players,rosters,seen));value.clear();for(const item of items)value.add(item);return value;}
+  for(const [key,item] of Object.entries(value))value[key]=checkpointResolveRefs(item,players,rosters,seen);
+  return value;
 }
 function bounded(value,min,max,label){
   if(!Number.isFinite(value))throw new TypeError(`Invalid authoritative ${label}`);
@@ -160,7 +247,7 @@ export async function createOnlineGameEngine({home=0,away=9,teamIds,rosterPlayer
     released(side,action){return this.releases[side]?.[action]===true;},
     tapDuration(side,action){return this.tapDurations[side]?.[action]||0;},
     canceled(){return false;}};
-  let tick=0,random=seededRandom(seed),stepping=false,game;
+  let tick=0,random=seededRandom(seed),stepping=false,hasStepped=false,game;
   const nativeRandom=Math.random;Math.random=random;
   const lineups=[home===0?DATA.DEFAULT_LINEUP.slice():[0,1,2,3,5,9],away===0?DATA.DEFAULT_LINEUP.slice():[0,1,2,3,5,9]];
   try{game=new ENGINE.GameEngine(options,input);game.init({home,away,mode,humans,rosters,lineups,options});}
@@ -200,7 +287,7 @@ export async function createOnlineGameEngine({home=0,away=9,teamIds,rosterPlayer
         if(game.matchState==='play')game.update(dt);
         else if(game.matchState==='penalty')game.updatePK(dt);
       });
-      tick++;
+      tick++;hasStepped=true;
       return Object.freeze({accepted:true,reason:null,snapshot:snapshot(game,tick,field,VISUALFEEL,teamAssetIds,rosterAssetIds)});
     }finally{stepping=false;}
   }
@@ -209,5 +296,55 @@ export async function createOnlineGameEngine({home=0,away=9,teamIds,rosterPlayer
     game.matchState='play';return true;
   }
   const teamAssetIds=Object.freeze([homeId,awayId]);
-  return Object.freeze({step,resumeAfterHalftime,get snapshot(){return snapshot(game,tick,field,VISUALFEEL,teamAssetIds,rosterAssetIds);},get sourceRosters(){return Object.freeze([homeId,awayId]);},get rosterAssetIds(){return Object.freeze(rosterAssetIds.map(ids=>Object.freeze(ids.slice())));}});
+  const checkpointConfig=Object.freeze({home,away,teamIds:[...teamAssetIds],rosterAssetIds:rosterAssetIds.map(ids=>ids.slice()),halfSeconds,seed,mode,humans});
+  const configSha256=sha256(canonicalJson(checkpointConfig));
+  function exportCheckpoint(){
+    for(const key of Object.keys(game))if(!CHECKPOINT_STATIC_KEYS.has(key)&&!CHECKPOINT_GAME_KEYS.includes(key))throw new TypeError(`Checkpoint does not allow GameEngine state field: ${key}`);
+    const gameState={};
+    for(const key of CHECKPOINT_GAME_KEYS)if(Object.hasOwn(game,key))gameState[key]=key==='players'&&Array.isArray(game.players)?game.players.map(player=>checkpointEncode(player,game,new WeakSet(),false)):checkpointEncode(game[key],game);
+    const inputState=input.state.map(side=>Object.fromEntries(['x','y',...ACTIONS].map(key=>[key,side[key]??(key==='x'||key==='y'?0:false)])));
+    const state={tick,randomState:random.getState(),previousButtons:previous.map(side=>Object.fromEntries(ACTIONS.map(action=>[action,!!side[action]]))),inputState,game:gameState};
+    const checkpoint={format:CHECKPOINT_FORMAT,schemaVersion:CHECKPOINT_SCHEMA_VERSION,engineBuild:CHECKPOINT_ENGINE_BUILD,
+      config:checkpointConfig,configSha256,state};
+    checkpoint.checksumSha256=sha256(canonicalJson(checkpoint));
+    const size=checkpointBytes(checkpoint);
+    if(size>CHECKPOINT_MAX_BYTES)throw new RangeError(`Online engine checkpoint exceeds ${CHECKPOINT_MAX_BYTES} byte limit (${size})`);
+    return checkpoint;
+  }
+  function restoreCheckpoint(checkpoint){
+    if(stepping||hasStepped)throw new Error('Checkpoint restore is only allowed on a newly initialized engine');
+    if(!exactKeys(checkpoint,['format','schemaVersion','engineBuild','config','configSha256','state','checksumSha256'])||
+      checkpoint.format!==CHECKPOINT_FORMAT||checkpoint.schemaVersion!==CHECKPOINT_SCHEMA_VERSION||checkpoint.engineBuild!==CHECKPOINT_ENGINE_BUILD||
+      typeof checkpoint.checksumSha256!=='string'||!/^[a-f0-9]{64}$/.test(checkpoint.checksumSha256)||checkpointBytes(checkpoint)>CHECKPOINT_MAX_BYTES)throw new TypeError('Invalid online engine checkpoint schema');
+    const unsigned={...checkpoint};delete unsigned.checksumSha256;
+    if(sha256(canonicalJson(unsigned))!==checkpoint.checksumSha256)throw new TypeError('Online engine checkpoint checksum mismatch');
+    if(!exactKeys(checkpoint.config,CHECKPOINT_CONFIG_KEYS)||sha256(canonicalJson(checkpoint.config))!==checkpoint.configSha256||
+      canonicalJson(checkpoint.config)!==canonicalJson(checkpointConfig))throw new TypeError('Online engine checkpoint configuration mismatch');
+    if(!exactKeys(checkpoint.state,['tick','randomState','previousButtons','inputState','game'])||!Number.isSafeInteger(checkpoint.state.tick)||checkpoint.state.tick<0||
+      !Number.isSafeInteger(checkpoint.state.randomState)||checkpoint.state.randomState<1||checkpoint.state.randomState>0xffffffff||
+      !Array.isArray(checkpoint.state.previousButtons)||checkpoint.state.previousButtons.length!==2||
+      !Array.isArray(checkpoint.state.inputState)||checkpoint.state.inputState.length!==2||!plainRecord(checkpoint.state.game))throw new TypeError('Invalid online engine checkpoint state');
+    for(let side=0;side<2;side++){
+      if(!exactKeys(checkpoint.state.previousButtons[side],ACTIONS)||!ACTIONS.every(action=>typeof checkpoint.state.previousButtons[side][action]==='boolean'))throw new TypeError('Invalid checkpoint held-button state');
+      const held=checkpoint.state.inputState[side];
+      if(!exactKeys(held,['x','y',...ACTIONS])||!Number.isFinite(held.x)||!Number.isFinite(held.y)||held.x< -1||held.x>1||held.y< -1||held.y>1||!ACTIONS.every(action=>typeof held[action]==='boolean'))throw new TypeError('Invalid checkpoint input state');
+    }
+    for(const key of Object.keys(checkpoint.state.game))if(!CHECKPOINT_GAME_KEYS.includes(key))throw new TypeError(`Checkpoint does not allow GameEngine state field: ${key}`);
+    if(!Object.hasOwn(checkpoint.state.game,'players')||!Object.hasOwn(checkpoint.state.game,'ball'))throw new TypeError('Checkpoint is missing core GameEngine state');
+    // Decode and validate into detached values first. Nothing on this engine is
+    // changed until all recursive values, references and core state pass.
+    const decoded={};for(const [key,value] of Object.entries(checkpoint.state.game))decoded[key]=checkpointDecode(value);
+    if(!Array.isArray(decoded.players)||decoded.players.length!==12||!plainRecord(decoded.ball))throw new TypeError('Invalid checkpoint players or ball state');
+    checkpointResolveRefs(decoded,decoded.players,game.rosters);
+    if(decoded.subbedOut!==undefined&&(!Array.isArray(decoded.subbedOut)||decoded.subbedOut.length!==2||decoded.subbedOut.some(value=>!(value instanceof Set))))throw new TypeError('Invalid checkpoint substitution state');
+    const restoredInputs=checkpoint.state.inputState.map(side=>({...side}));
+    for(const key of Object.keys(game))if(!CHECKPOINT_STATIC_KEYS.has(key)&&!CHECKPOINT_GAME_KEYS.includes(key))throw new TypeError(`Current GameEngine state field is not checkpointable: ${key}`);
+    for(const key of CHECKPOINT_GAME_KEYS){if(Object.hasOwn(decoded,key))game[key]=decoded[key];else if(Object.hasOwn(game,key))delete game[key];}
+    game.input=input;game.options=options;game.events=[];game.onEvent=()=>{};
+    input.state=restoredInputs;input.pressed=[{},{}];input.releases=[{},{}];input.tapDurations=[{},{}];
+    for(let side=0;side<2;side++)previous[side]={...checkpoint.state.previousButtons[side]};
+    random.setState(checkpoint.state.randomState);tick=checkpoint.state.tick;hasStepped=false;
+    return true;
+  }
+  return Object.freeze({step,resumeAfterHalftime,exportCheckpoint,restoreCheckpoint,get snapshot(){return snapshot(game,tick,field,VISUALFEEL,teamAssetIds,rosterAssetIds);},get sourceRosters(){return Object.freeze([homeId,awayId]);},get rosterAssetIds(){return Object.freeze(rosterAssetIds.map(ids=>Object.freeze(ids.slice())));}});
 }
