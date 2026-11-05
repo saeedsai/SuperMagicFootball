@@ -356,6 +356,16 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
         page.wait_for_function("document.querySelector('#onlineCareerSeasonStatus')?.textContent.includes('No season yet')",timeout=15000)
         assert 'PAST ONLINE SEASONS' in page.locator('[aria-label="Online Career archives"]').inner_text()
         assert 'COMPLETE' in page.locator('[aria-label="Online Career archives"] summary').inner_text()
+        archive_details=page.locator('[aria-label="Online Career archives"] details').first
+        archive_summary=archive_details.locator('summary')
+        assert archive_details.get_by_role('table').count()==0, 'archived standings remain collapsed until requested'
+        archive_summary.focus()
+        page.keyboard.press('Enter')
+        assert archive_details.get_attribute('open') is not None, 'native archive disclosure must open from the keyboard'
+        archived_table=archive_details.get_by_role('table',name='Online Career season 1 final standings for Japan')
+        assert archived_table.count()==1, 'the archive standings table needs its own screen-reader caption'
+        assert archived_table.locator('thead th[scope="col"]').count()==7
+        assert archived_table.locator('tbody th[scope="row"]').all_inner_texts()==['Japan','Brazil']
         assert [option.get_attribute('value') for option in page.locator('#onlineCareerTeam option').all()]==['japan']
         page.locator('[data-action="onlineCareerSeasonStart"]').click()
         page.wait_for_function("document.querySelector('.fixture')?.textContent.includes('ONLINE SEASON')",timeout=15000)

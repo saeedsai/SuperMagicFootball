@@ -163,9 +163,12 @@ test('season archive lists completed and active seasons newest-first without cro
   await service.advanceFixture(ACCOUNT,completed.seasonId,1);
   const active=await service.createSeason(ACCOUNT);
   const other=await service.createSeason('player_bravo');
+  db.transactionCommands.length=0;
   const rows=await service.listSeasons(ACCOUNT);
   assert.deepEqual(rows.map(row=>row.seasonId),[active.seasonId,completed.seasonId]);
   assert.deepEqual(rows.map(row=>row.status),['active','complete']);
+  assert.deepEqual(db.transactionCommands,['begin isolation level repeatable read read only','commit'],
+    'the archive and every included season projection must use one consistent database snapshot');
   assert.equal((await service.listSeasons('player_bravo'))[0].seasonId,other.seasonId);
   assert.equal(Object.isFrozen(rows),true);
   assert.equal(db.archiveQueries.at(-2).accountId,ACCOUNT);

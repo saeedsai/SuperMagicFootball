@@ -1,6 +1,6 @@
 # SuperMagicFootball — master plan and backlog
 
-**Canonical plan and status ledger.** Updated 5 November 2026 for local candidate **0.12.81.42**. Candidate .41 is deployed and passed exact-head dev QA, main regression rerun, Pages deployment and hosted smoke. Candidate .42 adds a restrained procedural idle-breath motion, cached pitch light pools, and online-service listener cleanup on failed WebSocket startup. Focused tests and renderer QA pass locally; integrated .42 gates are pending. The authenticated online API remains unconfigured, so server-backed matches/Career are not enabled. Human visual and physical-device acceptance remain open. Earlier candidate evidence remains linked; this ledger avoids claiming unsupported completion. Keep this file canonical and record future status/evidence here.
+**Canonical plan and status ledger.** Updated 5 November 2026 for local candidate **0.12.81.43**. Candidate .42 passed exact-head dev Census and Modular QA and was promoted to `main`; main Census and Pages deployment are running. Candidate .43 improves ordinary-shot trail readability, accessible Online Career archive tables and consistent database snapshots. Local validation passes; exact-head .43 gates are pending. The authenticated online API remains unconfigured, so server-backed matches/Career are not enabled. Human visual and physical-device acceptance remain open. Earlier candidate evidence remains linked; this ledger avoids claiming unsupported completion. Keep this file canonical and record future status/evidence here.
 
 ## Owner priorities and invariants
 
@@ -11,7 +11,15 @@
 - SuperMagicAssetStudio is the source-art tool. The game consumes only approved exported assets/manifests; keep the procedural renderer as fallback. Structural checks do not imply owner visual approval.
 - Do not claim visual approval, physical-device acceptance, protected promotion, hosting or server readiness without evidence.
 
-## Current local candidate 0.12.81.42
+## Current local candidate 0.12.81.43
+
+Fast ordinary shots now leave a smooth, two-layer trail built from existing history. Reduced-flash mode shortens and fades the steady wake; tests confirm it is visual-only and changes no ball state. The actual-renderer browser QA sampled six shots across match-scale speeds, including the low-speed threshold, with unchanged state and no page errors.
+
+Archived Online Career standings now expose a season-named accessible table, scoped column headers and scoped team row headers. Browser QA opens the archive by keyboard and verifies its accessible table and data. The service now selects archived season IDs and projects standings/fixtures within one repeatable-read transaction, preventing a mixed snapshot during concurrent progression.
+
+Focused shot-renderer tests passed **10/10**, four-button ability/input tests passed **9/9** across keyboard, touch, and default/remapped gamepad paths, Online Career service tests passed **13/13**, and mocked archive UI browser QA passed. After advancing version metadata, final build passed (**5,171,581 JS / 5,294,593 HTML characters**), full Node passed **2,219/2,219**, release/version contracts passed **22/22**, and the Club26/FC27 executable passed. Exact-head CI is pending. No physical-device, human balance/visual or live online service acceptance is claimed. See [candidate .43 validation](CANDIDATE_012843_VALIDATION_20261105.md).
+
+## Previous promoted candidate 0.12.81.42
 
 The existing procedural player renderer adds a small upper-body breathing cycle only to stationary idle poses. It is time-based, staggered by player index, leaves planted legs outside the transform, and skips moving, kick, slide and celebration poses. Actual-renderer QA sampled eight idle times: all eight appeared distinct, with 4,945 minimum painted pixels and 3,540 maximum changed pixels relative to rest; live player/ball state and browser error counts remained unchanged. A generated contact sheet was inspected internally; this is not owner visual approval.
 
@@ -19,7 +27,7 @@ Cached pitch artwork now receives four fixed, low-opacity warm stadium-light poo
 
 Online service startup now handles a synchronous WebSocket setup failure while the HTTP server is still binding: it awaits the bind result, closes a successfully opened listener, closes matchmaking, and ends the pool. The new regression verifies that the same port can be rebound. Online account-service and HTTP tests passed **15/15**. No live hosting/deployment is implied.
 
-Candidate .42 final build passed at **5,169,222 JS / 5,292,234 HTML characters**; full `npm run test:node` passed **2,218/2,218**, plus the Club26/FC27 executable. Player idle browser QA passed across eight poses; stadium/browser QA passed across all 20 venues; focused pitch and backend suites passed **20/20** (including the service HTTP and startup failure tests); release/version contracts passed **22/22**, and `git diff --check` is clean. Exact-head CI is pending. Owner visual/device acceptance and public online service configuration remain open. See [candidate .42 validation](CANDIDATE_012842_VALIDATION_20261105.md).
+Candidate .42 final build passed at **5,169,222 JS / 5,292,234 HTML characters**; full `npm run test:node` passed **2,218/2,218**, plus the Club26/FC27 executable. Player idle browser QA passed across eight poses; stadium/browser QA passed across all 20 venues; focused pitch and backend suites passed **20/20** (including the service HTTP and startup failure tests); release/version contracts passed **22/22**, and `git diff --check` is clean. Exact-head dev Census [41971254906](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41971254906) and Modular QA [41971254963](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41971254963) passed; protected promotion completed. Main Census [41972221174](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41972221174) and Pages deployment [41972220405](https://github.com/saeedsai/SuperMagicFootball/actions/runs/41972220405) are in progress. Owner visual/device acceptance and public online service configuration remain open. See [candidate .42 validation](CANDIDATE_012842_VALIDATION_20261105.md).
 
 ## Previous deployed candidate 0.12.81.40
 

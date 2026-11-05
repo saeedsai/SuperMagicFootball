@@ -43,7 +43,9 @@ with sync_playwright() as pw:
     assert len(result['samples']) == 6 and all(row['stateUnchanged'] for row in result['samples']), result
     assert result['normalCue'] != result['reducedCue'], result
     assert result['normalTail'] != [53,125,76], result
-    assert result['reducedTail'] == [53,125,76] and result['belowThreshold'] == [53,125,76], result
+    normal_delta=sum(abs(a-b) for a,b in zip(result['normalTail'],[53,125,76]))
+    reduced_delta=sum(abs(a-b) for a,b in zip(result['reducedTail'],[53,125,76]))
+    assert 0 < reduced_delta < normal_delta and result['belowThreshold'] == [53,125,76], result
     assert not errors, errors
     print('FAST_PASS_REDUCED_FLASH_BROWSER_PASS', result, 'screenshot', OUT, flush=True)
     browser.close()

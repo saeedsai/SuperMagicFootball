@@ -135,16 +135,20 @@ export function createOnlineCareerService({db,resultStore,buildSchedule,now=()=>
     safeAccount(accountId);
     if(!Number.isSafeInteger(limit)||limit<1)fail('invalid-limit','Career archive limit must be a positive whole number');
     const boundedLimit=Math.min(limit,MAX_SEASON_ARCHIVE);
-    const response=await db.query('SELECT season_id FROM smf_online_career_seasons WHERE account_id=$1 ORDER BY created_at DESC,season_id DESC LIMIT $2',[accountId,boundedLimit]);
-    const seasons=[];
-    for(const row of response.rows||[]){
-      const seasonId=typeof row.season_id==='string'?row.season_id.trim():'';
-      if(!OPAQUE_ID.test(seasonId))fail('corrupt-archive','Stored Online Career archive contains an invalid season ID');
-      const season=await getSeason(accountId,seasonId);
-      if(!season)fail('corrupt-archive','Stored Online Career archive contains a missing season');
-      seasons.push(season);
-    }
-    return Object.freeze(seasons);
+    return consistentRead(async client=>{
+      const response=await client.query('SELECT season_id FROM smf_online_career_seasons WHERE account_id=$1 ORDER BY created_at DESC,season_id DESC LIMIT $2',[accountId,boundedLimit]);
+      const seasons=[];
+      for(const row of response.rows||[]){
+        const seasonId=typeof row.season_id==='string'?row.season_id.trim():'';
+        if(!OPAQUE_ID.test(seasonId))fail('corrupt-archive','Stored Online Career archive contains an invalid season ID');
+        const found=await client.query('SELECT account_id,season_id,team_id,fixture_count,played_count,version,status FROM smf_online_career_seasons WHERE account_id=$1 AND season_id=$2',[accountId,seasonId]);
+        const season=found.rows?.[0];if(!season)fail('corrupt-archive','Stored Online Career archive contains a missing season');
+        const fixtures=await client.query('SELECT fixture_no,fixture_id,match_id,participant_0,participant_1,team_0,team_1,status,score_0,score_1,recorded_at,result_hash FROM smf_online_career_fixtures WHERE account_id=$1 AND season_id=$2 ORDER BY fixture_no',[accountId,seasonId]);
+        if((fixtures.rows||[]).length!==Number(season.fixture_count))fail('corrupt-season','Stored Online Career fixture count is inconsistent');
+        seasons.push(summarize(season,fixtures.rows||[]));
+      }
+      return Object.freeze(seasons);
+    });
   }
   async function createSeason(accountId,teamId=null){
     safeAccount(accountId);

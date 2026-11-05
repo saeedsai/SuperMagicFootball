@@ -157,6 +157,27 @@ function drawSuperShotOrbitCue(ctx,time,color,reducedFlash=false){
  poly(ctx,[[x,y-r*1.8],[x+r*.55,y-r*.55],[x+r*1.8,y],[x+r*.55,y+r*.55],[x,y+r*1.8],[x-r*.55,y+r*.55],[x-r*1.8,y],[x-r*.55,y-r*.55]],'#fff7cf');
  ctx.restore();
 }
+
+// A compact, steady wake helps track a fast ordinary strike without adding
+// an animated flash. Prefer the renderer's existing motion samples so the
+// cue follows the ball's visible path; synthesize a short straight fallback
+// only for previews or freshly launched balls that have no history yet.
+function drawOrdinaryBallWake(ctx,b,reducedFlash=false){
+ const vx=Number(b?.vx)||0,vy=Number(b?.vy)||0,speed=Math.hypot(vx,vy);
+ if(!Number.isFinite(speed)||speed<=285)return false;
+ const ux=vx/speed,uy=vy/speed,current={x:Number(b.x)||0,y:(Number(b.y)||0)-(Number(b.z)||0)};
+ let points=(Array.isArray(b.trail)?b.trail.slice(-9):[]).filter(p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&Number.isFinite(p.z))
+  .map(p=>({x:p.x,y:p.y-p.z}));
+ if(points.length<2){const length=reducedFlash?22:34;points=[1,.76,.52,.28,0].map(t=>({x:current.x-ux*length*t,y:current.y-uy*length*t}));}
+ else {const last=points[points.length-1];if(Math.hypot(current.x-last.x,current.y-last.y)>1)points.push(current);}
+ if(points.length<2)return false;
+ const path=()=>{ctx.beginPath();ctx.moveTo(points[0].x,points[0].y);for(let i=1;i<points.length-1;i++){const midX=(points[i].x+points[i+1].x)/2,midY=(points[i].y+points[i+1].y)/2;ctx.quadraticCurveTo(points[i].x,points[i].y,midX,midY);}ctx.lineTo(points[points.length-1].x,points[points.length-1].y);};
+ ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
+ // The soft outer stroke separates the wake from grass and stadium shadow;
+ // the narrower pale center keeps direction readable at match scale.
+ ctx.globalAlpha=reducedFlash?.12:.22;ctx.strokeStyle='#47c9e8';ctx.lineWidth=reducedFlash?5:8;path();ctx.stroke();
+ ctx.globalAlpha=reducedFlash?.20:.42;ctx.strokeStyle=reducedFlash?'#e0ece8':'#fff8df';ctx.lineWidth=reducedFlash?1.5:2.5;path();ctx.stroke();ctx.restore();return true;
+}
 // Read-only shootout instructions: both local players use their existing four actions.
 function penaltyHudHints(pk,humans){
  const turn=Number.isFinite(pk?.turn)?Math.abs(Math.trunc(pk.turn))%2:0;
@@ -1465,8 +1486,9 @@ class Renderer{
   ellipse(ctx,x,y+4,Math.max(5.5,15-height*9.5),Math.max(2.4,7-height*4.6),'#14301e66');ctx.restore();
  }
  drawBall(ctx,game){let b=game.ball;if(!b)return;const shot=b.shot,underground=!!(shot?.underground&&['silverCarp','dolphin','wave'].includes(shot.id));const grip=b.owner?.keeper?ARTPOSE.keeperGrip(b.owner.action,b.owner.face):null,ballX=grip?b.owner.x+grip.x:b.x,ballY=grip?b.owner.y+grip.y-b.z:b.y-b.z;const concealed=!!(b.owner&&!b.shot&&(b.owner.hideBallTimer||0)>0),reducedFlash=!!game.options?.reducedFlash;ctx.save();if(!grip)this.drawBallShadow(ctx,b.x,b.y,b.z,underground?.2:concealed?(reducedFlash?.13:.09):1);ctx.globalAlpha=concealed?(reducedFlash?.17:.10):1;
- // Subtle streak for ordinary fast passes as well as special-shot trails.
- if(!shot&&!b.owner&&Math.hypot(b.vx||0,b.vy||0)>285){const v=Math.hypot(b.vx||0,b.vy||0),trailLength=reducedFlash?18:30;ctx.save();ctx.globalAlpha=reducedFlash?.12:.25;ctx.strokeStyle=reducedFlash?'#dce9e8':'#f4f7e2';ctx.lineWidth=reducedFlash?3:5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(b.x,b.y-b.z);ctx.lineTo(b.x-(b.vx||0)/v*trailLength,b.y-b.z-(b.vy||0)/v*trailLength);ctx.stroke();ctx.restore();}
+ // Ordinary high-speed strikes use a compact, tapered path wake. This is a
+ // renderer-only cue and never feeds back into ball motion or collisions.
+ if(!shot&&!b.owner)drawOrdinaryBallWake(ctx,b,reducedFlash);
  if(b.trail){for(let i=0;i<b.trail.length;i++){let p=b.trail[i],alpha=(i+1)/b.trail.length*.5;ctx.globalAlpha=underground?alpha*.25:alpha;if(shot){ellipse(ctx,p.x,p.y-p.z,underground?2+i*.12:4+i*.55,underground?1.5+i*.1:3+i*.43,underground?'#68dbe0':shot.trail)}else{ellipse(ctx,p.x,p.y-p.z,2+i*.25,2+i*.25,'#fdf5da')}}}ctx.globalAlpha=1;
  if(shot?.behavior==='spiral')drawSpiralRibbon(ctx,b.trail,shot.trail,!!game.options?.reducedFlash);
  if(shot&&['burrow','phase','warp'].includes(shot.behavior))this.drawShotTell(ctx,b,shot,reducedFlash);

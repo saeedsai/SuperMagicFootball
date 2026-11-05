@@ -129,6 +129,7 @@ test('ordinary fast-pass streak is visible normally and softened in reduced-flas
    save(){stack.push([this.globalAlpha,this.strokeStyle,this.lineWidth,this.lineCap]);},
    restore(){[this.globalAlpha,this.strokeStyle,this.lineWidth,this.lineCap]=stack.pop();},
    beginPath(){this.path=[];},moveTo(x,y){this.path.push([x,y]);},lineTo(x,y){this.path.push([x,y]);},
+   quadraticCurveTo(_cx,_cy,x,y){this.path.push([x,y]);},
    stroke(){strokes.push({alpha:this.globalAlpha,color:this.strokeStyle,width:this.lineWidth,path:this.path.slice()});},
    translate(){}};
   renderer.drawBallShadow=()=>{};renderer.drawSoccerBall=()=>{};
@@ -138,7 +139,7 @@ test('ordinary fast-pass streak is visible normally and softened in reduced-flas
   return {stroke:strokes[0],state:JSON.stringify(ball)};
  };
  const normal=capture(false),reduced=capture(true);
- assert.ok(normal.stroke.alpha>.2&&normal.stroke.width===5,'standard mode keeps a clear speed cue');
+ assert.ok(normal.stroke.alpha>.2&&normal.stroke.width===8,'standard mode keeps a clear outer speed cue');
  assert.ok(reduced.stroke.alpha<normal.stroke.alpha&&reduced.stroke.width<normal.stroke.width,'reduced-flash softens the cue');
  const length=sample=>Math.hypot(sample.stroke.path[0][0]-sample.stroke.path[1][0],sample.stroke.path[0][1]-sample.stroke.path[1][1]);
  assert.ok(length(reduced)<length(normal),'reduced-flash shortens the visual streak');
