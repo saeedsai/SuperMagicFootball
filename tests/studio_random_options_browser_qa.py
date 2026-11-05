@@ -1,93 +1,109 @@
 #!/usr/bin/env python3
-"""Player Studio full-look randomization, no-save desktop and touch regression."""
+"""Player Studio randomization on a real origin so IndexedDB is available."""
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+import json
 from pathlib import Path
+import threading
 from playwright.sync_api import sync_playwright
 
-html=(Path(__file__).resolve().parents[1]/'tests/.generated/play.html').read_text(encoding='utf-8')
-with sync_playwright() as pw:
- browser=pw.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox','--disable-dev-shm-usage'])
- for label,viewport,touch in [('desktop',{'width':1280,'height':720},False),('simulated-touch',{'width':844,'height':390},True)]:
-  context=browser.new_context(viewport=viewport,is_mobile=touch,has_touch=touch)
-  page=context.new_page();errors=[]
-  page.on('pageerror',lambda error:errors.append(str(error)))
-  page.evaluate("""() => {const memory=new Map();memory.set('legend_tokenWallet',JSON.stringify({schema:1,tokens:0,unlocks:[...['appearance','accessory'].flatMap(category=>['skin','hair','style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo'].flatMap(key=>Array.from({length:64},(_,i)=>`${category}:${key}:${i}`)) )],receipts:[]}));Object.defineProperty(window,'localStorage',{configurable:true,value:{
-   getItem:k=>memory.has(k)?memory.get(k):null,setItem:(k,v)=>memory.set(k,String(v)),
-   removeItem:k=>memory.delete(k),clear:()=>memory.clear()}});}""")
-  page.set_content(html,wait_until='load')
-  page.wait_for_function('!!window.SupermagicFootball?.game',timeout=60000)
-  for action in ('navSettings','navCustomization','playerStudio'):
-   page.locator('[data-action="'+action+'"]').first.click()
-  page.locator('[data-action="studioGalleryToggle"]').click()
-  assert page.locator('canvas[data-studio-view]').count()==8,(label,'eight-view gallery missing')
-  before=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
-  # Hair-only preview must not change skin, facial structure, or other fields.
-  page.locator('[data-action="randomizeHair"]').click()
-  hair_only=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
-  assert hair_only['face_style']!=before['face_style'] and hair_only['face_hair']!=before['face_hair'],(label,'hair preview did not change both hair options')
-  assert all(hair_only[k]==before[k] for k in before if k not in ('face_style','face_hair')),(label,'hair preview changed unrelated fields')
-  assert 'Selected appearance previewed' in page.locator('#studioAppearanceSaveState').inner_text()
-  assert page.locator('canvas[data-studio-view]').count()==8,(label,'gallery lost on hair preview')
-  assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'hair preview wrote saves')
-  page.locator('[data-action="studioResetAppearance"]').click()
-  restored_hair=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
-  assert restored_hair==before,(label,'hair preview could not be reset')
-  page.locator('[data-action="randomizeAccessories"]').click()
-  after_accessories=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
-  assert all(after_accessories[k]==before[k] for k in before if k not in ('face_accessory','face_tattoo')),(label,'accessory randomization modified unrelated fields')
-  assert any(after_accessories[k]!=before[k] for k in ('face_accessory','face_tattoo')),(label,'accessory preview did not change')
-  assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'accessory preview wrote saves')
-  page.locator('[data-action="studioResetAppearance"]').click()
-  assert page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")==before,(label,'accessory reset failed')
-  page.locator('[data-action="randomizeFaceDetails"]').click()
-  detail=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
-  allowed={'face_face','face_eyes','face_brows','face_eyeColor','face_nose','face_lips','face_beard','face_freckles','face_scar'}
-  assert all(detail[k]==before[k] for k in before if k not in allowed),(label,'facial details changed hair, body or other excluded controls')
-  assert any(detail[k]!=before[k] for k in allowed),(label,'facial details did not change')
-  assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'facial details wrote saves')
-  page.locator('[data-action="studioResetAppearance"]').click()
-  assert page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")==before,(label,'face detail reset failed')
-  assert page.locator('[data-action="randomizeFace"]').inner_text().strip()=='RANDOMIZE FULL LOOK',(label,'misleading full-look action label')
-  # Invalid palette entries must never be selected by full-look randomization.
-  page.evaluate("""() => {
-   const skin=document.querySelector('#face_skin');
-   skin.add(new Option('Select a color',''));
-   const group=document.createElement('optgroup');
-   group.label='Unavailable palette';group.disabled=true;
-   group.append(new Option('Forbidden','forbidden-skin'));
-   skin.append(group);
-  }""")
-  page.locator('[data-action="randomizeFace"]').click()
-  assert page.locator('#face_skin').input_value() not in ('','forbidden-skin'),(label,'invalid palette option selected')
-  after=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
-  assert set(before)==set(after) and len(after)>=15,(label,'appearance options missing')
-  for key,value in after.items():
-   assert value!=before[key],(label,'unchanged option',key)
-   assert page.locator('#'+key+' option:checked').count()==1,(label,'invalid option',key,value)
-   assert page.locator('#'+key+' option:checked').get_attribute('disabled') is None,(label,'disabled option',key)
-  assert page.locator('[data-action="saveAppearance"]').is_enabled(),(label,'preview not savable')
-  assert page.locator('[data-action="studioResetAppearance"]').is_enabled(),(label,'preview cannot be reset')
-  assert 'Nothing saved yet' in page.locator('#studioAppearanceSaveState').inner_text()
-  assert page.locator('canvas[data-studio-view]').count()==8,(label,'gallery lost after preview')
-  assert page.locator('#touchButtons [data-act]').count()==4,(label,'four-button contract changed')
-  assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'randomization wrote saved edits')
-  page.locator('[data-action="studioResetAppearance"]').click()
-  restored=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
-  assert restored==before,(label,'reset did not restore persisted appearance')
-  assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'reset wrote saved edits')
-  # A selective preview with no available alternatives reports a reason and does not save.
-  page.evaluate("""() => {
-   for(const id of ['face_body','face_stature','face_exaggeration']){
-    const select=document.getElementById(id);
-    for(const option of select.options)option.disabled=option.value!==select.value;
-   }
-  }""")
-  before_noop=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
-  page.locator('[data-action="randomizeBody"]').click()
-  assert 'No alternate appearance options available' in page.locator('#studioAppearanceSaveState').inner_text(),(label,'no-op status absent')
-  assert page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")==before_noop,(label,'no-op changed appearance')
-  assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'no-op wrote saves')
+ROOT=Path(__file__).resolve().parents[1]
+html=(ROOT/'tests/.generated/play.html').read_bytes()
+families=['skin','hair','style','face','eyes','brows','eyeColor','nose','lips','body','stature','exaggeration','beard','accessory','freckles','scar','tattoo']
+wallet={'schema':1,'tokens':0,'unlocks':[f'{category}:{family}:{index}' for category in ['appearance','accessory'] for family in families for index in range(64)],'receipts':[]}
 
-  assert not errors,(label,errors)
-  print('STUDIO_RANDOM_OPTIONS_BROWSER_PASS',label,flush=True)
-  context.close()
- browser.close()
+class Handler(SimpleHTTPRequestHandler):
+ def do_GET(self):
+  if self.path in ('/','/index.html'):
+   self.send_response(200);self.send_header('Content-Type','text/html; charset=utf-8')
+   self.send_header('Content-Length',str(len(html)));self.end_headers();self.wfile.write(html);return
+  super().do_GET()
+ def log_message(self,*_args): pass
+
+server=ThreadingHTTPServer(('127.0.0.1',0),partial(Handler,directory=str(ROOT)))
+threading.Thread(target=server.serve_forever,daemon=True).start()
+origin=f'http://127.0.0.1:{server.server_port}/'
+try:
+ with sync_playwright() as pw:
+  browser=pw.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox','--disable-dev-shm-usage'])
+  for label,viewport,touch in [('desktop',{'width':1280,'height':720},False),('simulated-touch',{'width':844,'height':390},True)]:
+   context=browser.new_context(viewport=viewport,is_mobile=touch,has_touch=touch)
+   context.add_init_script('localStorage.setItem("legend_tokenWallet",'+json.dumps(json.dumps(wallet))+');')
+   page=context.new_page();errors=[]
+   page.on('pageerror',lambda error:errors.append(str(error)))
+   page.goto(origin,wait_until='load')
+   page.wait_for_function('!!window.SupermagicFootball?.game',timeout=60000)
+   for action in ('navSettings','navCustomization','playerStudio'):
+    page.locator('[data-action="'+action+'"]').first.click()
+   page.locator('[data-action="studioGalleryToggle"]').click()
+   assert page.locator('canvas[data-studio-view]').count()==8,(label,'eight-view gallery missing')
+   before=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
+   page.locator('[data-action="randomizeHair"]').click()
+   hair_only=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
+   assert hair_only['face_style']!=before['face_style'] and hair_only['face_hair']!=before['face_hair'],(label,'hair preview did not change both hair options')
+   assert all(hair_only[k]==before[k] for k in before if k not in ('face_style','face_hair')),(label,'hair preview changed unrelated fields')
+   assert 'Selected appearance previewed' in page.locator('#studioAppearanceSaveState').inner_text()
+   assert page.locator('canvas[data-studio-view]').count()==8,(label,'gallery lost on hair preview')
+   assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'hair preview wrote saves')
+   page.locator('[data-action="studioResetAppearance"]').click()
+   restored_hair=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
+   assert restored_hair==before,(label,'hair preview could not be reset')
+   page.locator('[data-action="randomizeAccessories"]').click()
+   after_accessories=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
+   assert all(after_accessories[k]==before[k] for k in before if k not in ('face_accessory','face_tattoo')),(label,'accessory randomization modified unrelated fields')
+   assert any(after_accessories[k]!=before[k] for k in ('face_accessory','face_tattoo')),(label,'accessory preview did not change')
+   assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'accessory preview wrote saves')
+   page.locator('[data-action="studioResetAppearance"]').click()
+   assert page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")==before,(label,'accessory reset failed')
+   page.locator('[data-action="randomizeFaceDetails"]').click()
+   detail=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
+   allowed={'face_face','face_eyes','face_brows','face_eyeColor','face_nose','face_lips','face_beard','face_freckles','face_scar'}
+   assert all(detail[k]==before[k] for k in before if k not in allowed),(label,'facial details changed hair, body or other excluded controls')
+   assert any(detail[k]!=before[k] for k in allowed),(label,'facial details did not change')
+   assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'facial details wrote saves')
+   page.locator('[data-action="studioResetAppearance"]').click()
+   assert page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")==before,(label,'face detail reset failed')
+   assert page.locator('[data-action="randomizeFace"]').inner_text().strip()=='RANDOMIZE FULL LOOK',(label,'misleading full-look action label')
+   page.evaluate("""() => {
+    const skin=document.querySelector('#face_skin');
+    skin.add(new Option('Select a color',''));
+    const group=document.createElement('optgroup');
+    group.label='Unavailable palette';group.disabled=true;
+    group.append(new Option('Forbidden','forbidden-skin'));
+    skin.append(group);
+   }""")
+   page.locator('[data-action="randomizeFace"]').click()
+   assert page.locator('#face_skin').input_value() not in ('','forbidden-skin'),(label,'invalid palette option selected')
+   after=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
+   assert set(before)==set(after) and len(after)>=15,(label,'appearance options missing')
+   for key,value in after.items():
+    assert value!=before[key],(label,'unchanged option',key)
+    assert page.locator('#'+key+' option:checked').count()==1,(label,'invalid option',key,value)
+    assert page.locator('#'+key+' option:checked').get_attribute('disabled') is None,(label,'disabled option',key)
+   assert page.locator('[data-action="saveAppearance"]').is_enabled(),(label,'preview not savable')
+   assert page.locator('[data-action="studioResetAppearance"]').is_enabled(),(label,'preview cannot be reset')
+   assert 'Nothing saved yet' in page.locator('#studioAppearanceSaveState').inner_text()
+   assert page.locator('canvas[data-studio-view]').count()==8,(label,'gallery lost after preview')
+   assert page.locator('#touchButtons [data-act]').count()==4,(label,'four-button contract changed')
+   assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'randomization wrote saved edits')
+   page.locator('[data-action="studioResetAppearance"]').click()
+   restored=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
+   assert restored==before,(label,'reset did not restore persisted appearance')
+   assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'reset wrote saved edits')
+   page.evaluate("""() => {
+    for(const id of ['face_body','face_stature','face_exaggeration']){
+     const select=document.getElementById(id);
+     for(const option of select.options)option.disabled=option.value!==select.value;
+    }
+   }""")
+   before_noop=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
+   page.locator('[data-action="randomizeBody"]').click()
+   assert 'No alternate appearance options available' in page.locator('#studioAppearanceSaveState').inner_text(),(label,'no-op status absent')
+   assert page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")==before_noop,(label,'no-op changed appearance')
+   assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'no-op wrote saves')
+   assert not errors,(label,errors)
+   print('STUDIO_RANDOM_OPTIONS_BROWSER_PASS',label,flush=True)
+   context.close()
+  browser.close()
+finally:
+ server.shutdown();server.server_close()
