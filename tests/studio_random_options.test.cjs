@@ -229,3 +229,22 @@ test('undo rejects same slot with a different player ID or club',()=>{
  x.context.home=1;assert.equal(x.context.undo(),false);
  assert.equal(x.stats.writes,0);
 });
+
+// STUDIO-UNDO-PALETTE-GUARD-01: stale/locked palettes must not be reselected.
+test('undo skips an original palette choice disabled after randomization',()=>{
+ const f=fixture();assert.equal(f.context.randomize(()=>.99),true);
+ const original=f.fields.face_style.options.find(o=>o.value==='1');original.disabled=true;
+ const randomized=f.fields.face_style.value;
+ assert.equal(f.context.undo(),true);
+ assert.equal(f.fields.face_style.value,randomized,'disabled original must not be restored');
+ assert.equal(f.fields.face_face.value,'3','other safe originals still restore');
+ assert.equal(f.stats.writes,0);
+});
+test('undo skips an original palette choice removed after randomization',()=>{
+ const f=fixture();assert.equal(f.context.randomize(()=>.99),true);
+ const randomized=f.fields.face_style.value;
+ f.fields.face_style.options=f.fields.face_style.options.filter(o=>o.value!=='1');
+ assert.equal(f.context.undo(),true);
+ assert.equal(f.fields.face_style.value,randomized);
+ assert.equal(f.stats.writes,0);
+});
