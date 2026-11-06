@@ -1,36 +1,26 @@
 # SuperMagicFootball — sole hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-10-30
+**Agent ID:** `smf-hourly-dev-20261019` · **Updated:** 2026-11-06
 
 ## Mission
-Sole developer on existing dev; small tested increments, no new branch, force push or bypass of CI/security. Never certify physical LAN without two-phone acceptance.
+Existing `dev` only, bounded tested increments, no new branch/force push/CI bypass; never claim physical LAN acceptance without actual two phones.
 
 ## Current checkpoint
-- 0.12.17.21 STUDIO-RANDOM-CHOICE-GUARD-01: invalid palette choices filtered and no-alternative feedback added; focused JS smoke and 20 Studio tests passed in a JS compatibility harness (not native Node CI); Node/Chromium regression committed, full CI and Pages pending. Breath semantics unchanged.
-- BREATH-SELECTED-QA-ISOLATION-01: after 0.12.17.20 full QA found synthetic sprint sample could be interrupted by AI stun/slide, reset runner state per measurement. Exact-head rerun pending; runtime unchanged.
-- 0.12.17.20 STUDIO-FULL-LOOK-LABEL-01: corrected full-appearance randomizer label without changing existing action, added Node + desktop/touch Chromium tests. BREATH-LOCAL-OWNER-01 remains intact. Exact-head 4+4/Modular/Pages pending.
-- 0.12.17.19 BREATH-LOCAL-OWNER-01: confirmed remote opponent Breath ring in shared LAN/P2P simulation; render-only local-side filter + Node and desktop/touch Chromium tests committed. Normal/sprint contrast already in 0.12.17.10 and unchanged. Exact-head 4+4/Modular/Pages pending.
-- 0.12.17.18 VIZ-03-HEADING-STABILITY-01: stable live eight-direction atlas transitions with exact slide/Studio bypass. Focused JS checks passed; Node and desktop/touch Chromium regression committed, full exact-head QA/Pages pending.
-- 0.12.17.17 STUDIO-ACCESSORY-RANDOM-01: unsaved accessory/tattoo randomizer, focused Node and Chromium regression committed; 4+4, Modular and Pages pending.
-- 0.12.17.16 STUDIO-BODY-RANDOM-01: selective unsaved physique randomizer and Node tests committed. Full QA and main/Pages unverified.
-- 0.12.17.15 STUDIO-FACE-DETAILS-01: unsaved facial-details-only randomizer; Node and browser regression committed; exact-head 4+4, Modular and Pages not yet verified.
-- 0.12.17.14 STUDIO-HAIR-RANDOM-01: selective unsaved hair randomizer; Node and desktop/touch browser regression expanded. Full exact-head 4+4, Modular and Pages pending.
-- 0.12.17.13 STUDIO-RANDOM-OPTIONS-01: RANDOMIZE FACE now picks actual enabled select values and ensures a changed unsaved preview, including sparse numeric IDs and skin/hair palettes. Gallery refreshes; no persistence until SAVE CHARACTER. Node and Chromium regression added; six focused helper scenarios passed; exact-head CI/Pages pending.
-- 0.12.17.12 Player Studio RESET UNSAVED deployed: exact dev/main 41038a32 with green 4+4, Modular, main Pages and hosted smoke (verified in GitHub Actions).
-- 0.12.17.10 Breath tuning and selected-human-only ring already delivered; keep JUMP sprint expensive and ordinary dribbling cheap.
+- 0.12.81.64 STUDIO-RANDOM-UNDO-01: Undo last randomization while preserving manual edits and selected-player isolation; Node and desktop/touch Chromium regressions committed. Exact-head 4+4, Modular, protected promotion and hosted bytes pending.
+- 0.12.81.63 was deployed 2026-11-05 per canonical backlog with green exact-head gates and hosted smoke. New candidate is not certified.
+- Existing Breath cheap normal run/dribble, expensive sprint and selected-local-human-only indicator remain unchanged. LAN-094 automated coverage delivered; physical issue #48 open.
 
 ## Next smallest action
-1. Inspect exact-head 4 Node + 4 Chromium, Modular and preview CI for 0.12.17.13; repair actual failures.
-2. Promote only the exact green dev SHA through protected pipeline; verify main and hosted Pages bytes.
-3. Advance independently authored eight-direction player graphics, focusing on missing bespoke side/quarter assets.
-4. Improve counterable Magic Tricks, goalkeeper and Career Mode without a fifth button.
-5. Investigate Render auto-deploy drift #86 if relevant; keep physical two-phone LAN #48 open.
+1. Run native focused Studio Node and desktop/touch browser tests; fix all errors.
+2. Run exact-head four Node and four Chromium shards plus Modular QA.
+3. Promote only fully green head via approved pipeline; verify deployed Pages bytes.
+4. Continue counterable Magic Tricks and goalkeeper gameplay; existing eight-direction art review requires human visual acceptance.
+5. Investigate Render broker auto-deploy #86 and main branch protection #87 without bypassing gates.
 
 ## Ownership and exclusions
-Single developer, dev only. Preserve 223 teams/2676 players, six formations, four buttons, Career/Cup ten slots, SD09, offline saves. No routine LAN coding, no other agent memory reads. #87 unresolved.
+Do not edit other agents' memory; preserve 223 teams, 2676 players, six formations, four actions, Career/Cup 10 slots, SD09 and saves/offline.
 
 ## Evidence
-GitHub exact-head checks and commit history. Local Git clone unavailable (GitHub DNS failure); focused standalone helper preflight passed six scenarios. Do not claim local full checkout.
+Current code and tests committed to dev. Full CI/hosted verification not claimed. GitHub connector commit refs are authoritative; local GitHub DNS is unavailable.
 
 ## Cleanup
-Keep this file under 4 KiB; older history is in Git.
+Checkpoint <4 KiB. Keep historical evidence in Git history.
