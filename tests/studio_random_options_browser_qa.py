@@ -49,6 +49,7 @@ try:
    after_undo=page.evaluate("""() => Object.fromEntries(Array.from(document.querySelectorAll('select[id^="face_"]'),el=>[el.id,el.value]))""")
    assert after_undo==before,(label,'undo last randomization did not restore initial look')
    assert 'undone' in page.locator('#studioAppearanceSaveState').inner_text(),(label,'undo feedback missing')
+   assert not page.evaluate("() => studioUndoRandomPreview()"),(label,'undo history was not consumed')
    assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,'undo wrote saves')
    page.locator('[data-action="randomizeHair"]').click()
    page.locator('[data-action="studioResetAppearance"]').click()
