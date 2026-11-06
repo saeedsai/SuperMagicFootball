@@ -1,3 +1,7 @@
+## 2026-11-06 — STUDIO-UNDO-PALETTE-GUARD-01 (0.12.81.65)
+- STUDIO-UNDO-PALETTE-GUARD-01: Undo Randomize now skips a previous appearance choice if it has since been removed or disabled, while restoring other valid selections and preserving later manual edits.
+- Added two Node regression cases for disabled and removed original options. Full QA and deployment not yet certified.
+
 ## 2026-11-06 — STUDIO-RANDOM-UNDO-IDENTITY-01 (0.12.81.64 dev follow-up)
 - STUDIO-RANDOM-UNDO-IDENTITY-01: fixed undo incorrectly rejecting freshly rehydrated roster objects with the same player ID; scope now validates ID, club, selected index and manager/player mode instead of JavaScript object reference. Added Node coverage for roster cloning, cross-club isolation and browser repeat-undo. Focused extracted-source JS check passed; native Node, 4+4 Chromium/Node and Modular QA not executed, exact-head CI absent; main and Pages unchanged.
 
