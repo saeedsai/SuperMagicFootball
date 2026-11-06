@@ -211,3 +211,21 @@ test('undo refuses another player or screen and does not affect Career data',()=
  assert.match(ui,/button\('↶ UNDO RANDOMIZE','studioUndoRandomPreview'\)/);
  assert.match(ui,/a==='studioUndoRandomPreview'\)studioUndoRandomPreview\(\)/);
 });
+
+// STUDIO-RANDOM-UNDO-IDENTITY-01: roster(home) may rehydrate player objects.
+test('undo accepts freshly materialized roster object with same player identity',()=>{
+ const f=fixture();f.context.roster=()=>[{...f.player,appearance:{...f.player.appearance}}];
+ assert.equal(f.context.randomize(()=>.99),true);
+ assert.equal(f.context.undo(),true);
+ assert.equal(f.fields.face_style.value,'1');
+ assert.equal(f.stats.writes,0);
+});
+test('undo rejects same slot with a different player ID or club',()=>{
+ const f=fixture();assert.equal(f.context.randomize(()=>.99),true);
+ f.context.roster=()=>[{...f.player,id:'replacement'}];
+ assert.equal(f.context.undo(),false);
+ assert.equal(f.fields.face_style.value,'11');
+ const x=fixture();assert.equal(x.context.randomize(()=>.99),true);
+ x.context.home=1;assert.equal(x.context.undo(),false);
+ assert.equal(x.stats.writes,0);
+});
