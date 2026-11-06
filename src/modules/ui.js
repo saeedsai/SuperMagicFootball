@@ -2860,7 +2860,7 @@ function saveStudioKeeperDefence(){
   showPlayerStudio(avatarIndex);
  }catch(error){alert('Cannot save goalkeeper Super Defence: '+error.message)}
 }
-function saveAppearance(){
+function saveAppearance(){studioLastRandomPreview=null;
  if(typeof studioManagerContext!=='undefined'&&studioManagerContext){if(!career)return;const appearance=getAppearance(),previous={...avatarFor(managerAvatarPlayer()),...managerAvatarAppearance()},locked=studioAppearanceUnlockIssues(previous,appearance);if(locked.length){alert(`Unlock these appearance selections in Store & Tokens first: ${locked.join(', ')}.`);return;}if(Object.keys(previous).length===Object.keys(appearance).length&&Object.keys(appearance).every(key=>Object.hasOwn(previous,key)&&Object.is(previous[key],appearance[key]))){studioManagerContext=false;showManager();return;}const updated={...career,managerAppearance:appearance};if(!storeCharacterChanges('managerCareer',updated))return;career=updated;saveCareer();studioManagerContext=false;showManager();return;}
  const isCareer=!!((typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club);
  const source=isCareer?career.roster.map(p=>({...p})):roster(home);
