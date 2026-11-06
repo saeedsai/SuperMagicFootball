@@ -1,3 +1,6 @@
+## 2026-11-06 — STUDIO-RANDOM-UNDO-IDENTITY-01 (0.12.81.64 dev follow-up)
+- STUDIO-RANDOM-UNDO-IDENTITY-01: fixed undo incorrectly rejecting freshly rehydrated roster objects with the same player ID; scope now validates ID, club, selected index and manager/player mode instead of JavaScript object reference. Added Node coverage for roster cloning, cross-club isolation and browser repeat-undo. Focused extracted-source JS check passed; native Node, 4+4 Chromium/Node and Modular QA not executed, exact-head CI absent; main and Pages unchanged.
+
 ## 2026-11-06 — STUDIO-RANDOM-UNDO-01 (0.12.81.64 dev candidate)
 - Added one-step UNDO RANDOMIZE in Player Studio: reverses last unsaved randomized fields and preserves manual intervening edits; guards selected subject and screen. No storage writes or gameplay/roster changes.
 - Node and desktop/touch Chromium regression cases committed; no full exact-head 4+4 or Modular QA, protected promotion or hosted acceptance verified at authoring time.
