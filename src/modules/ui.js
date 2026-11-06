@@ -2540,7 +2540,13 @@ function studioUndoRandomPreview(){
  if(!subject||String(subject.id??'')!==studioLastRandomPreview.subjectId||home!==studioLastRandomPreview.home||avatarIndex!==studioLastRandomPreview.avatarIndex||!!(typeof studioManagerContext!=='undefined'&&studioManagerContext)!==studioLastRandomPreview.manager){studioLastRandomPreview=null;return false;}
  const last=studioLastRandomPreview;studioLastRandomPreview=null;
  let reverted=false;
- for(const {key,before,after} of last.changes){const field=$('face_'+key);if(field?.value===after){field.value=before;reverted=true;}}
+ for(const {key,before,after} of last.changes){
+  const field=$('face_'+key);
+  // A palette or unlock may have changed since randomization; never restore a
+  // removed, disabled or locked selection, and preserve later manual edits.
+  const original=Array.from(field?.options||[]).find(option=>option.value===before&&!option.disabled&&!option.parentElement?.disabled);
+  if(field?.value===after&&original){field.value=before;reverted=true;}
+ }
  if(!reverted)return false;
  studioGallerySignature='';if(typeof studioUpdateColorPreview==='function'){studioUpdateColorPreview('face_skin');studioUpdateColorPreview('face_hair');}drawCustomizer();
  const hint=$('studioAppearanceSaveState');if(hint)hint.textContent='Last randomized preview undone; no changes saved.';
