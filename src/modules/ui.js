@@ -2508,7 +2508,7 @@ function studioRandomizeUnsavedAppearance(random=Math.random,keys=null){
   if(hint)hint.textContent='No alternate appearance options available for this selection. Nothing saved yet.';
   return false;
  }
- studioLastRandomPreview={subject:typeof studioManagerContext!=='undefined'&&studioManagerContext?studioSubject():squad[avatarIndex],changes};
+ studioLastRandomPreview={subjectId:String((typeof studioManagerContext!=='undefined'&&studioManagerContext?studioSubject():squad[avatarIndex])?.id??''),home,avatarIndex,manager:!!(typeof studioManagerContext!=='undefined'&&studioManagerContext),changes};
  studioGallerySignature='';if(typeof studioUpdateColorPreview==='function'){studioUpdateColorPreview('face_skin');studioUpdateColorPreview('face_hair');}drawCustomizer();
  const hint=$('studioAppearanceSaveState');
  if(hint)hint.textContent=(keys?'Selected appearance previewed':'Random look previewed')+'; press SAVE CHARACTER to keep it. Nothing saved yet.';
@@ -2537,7 +2537,7 @@ function studioUndoRandomPreview(){
  if(!['PLAYER CUSTOMIZATION','MANAGER APPEARANCE'].includes(screen)||!studioLastRandomPreview)return false;
  const squad=(typeof studioCareerContext==='undefined'||studioCareerContext)&&career&&home===career.club?career.roster:roster(home);
  const subject=typeof studioManagerContext!=='undefined'&&studioManagerContext?studioSubject():squad?.[avatarIndex];
- if(!subject||subject!==studioLastRandomPreview.subject){studioLastRandomPreview=null;return false;}
+ if(!subject||String(subject.id??'')!==studioLastRandomPreview.subjectId||home!==studioLastRandomPreview.home||avatarIndex!==studioLastRandomPreview.avatarIndex||!!(typeof studioManagerContext!=='undefined'&&studioManagerContext)!==studioLastRandomPreview.manager){studioLastRandomPreview=null;return false;}
  const last=studioLastRandomPreview;studioLastRandomPreview=null;
  let reverted=false;
  for(const {key,before,after} of last.changes){const field=$('face_'+key);if(field?.value===after){field.value=before;reverted=true;}}
