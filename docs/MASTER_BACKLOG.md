@@ -1,3 +1,5 @@
+> **6 November 2026 — STUDIO-RANDOM-UNDO-IDENTITY-01:** STUDIO-RANDOM-UNDO-IDENTITY-01: fixed undo incorrectly rejecting freshly rehydrated roster objects with the same player ID; scope now validates ID, club, selected index and manager/player mode instead of JavaScript object reference. Added Node coverage for roster cloning, cross-club isolation and browser repeat-undo. Focused extracted-source JS check passed; native Node, 4+4 Chromium/Node and Modular QA not executed, exact-head CI absent; main and Pages unchanged.
+
 > **6 November 2026 — 0.12.81.64 dev candidate:** STUDIO-RANDOM-UNDO-01 adds one-step unsaved randomization undo, subject guarding, and Node/Chromium regression coverage. Full CI and release certification pending. Continue gameplay, abilities, graphics, keeper and Career priorities.
 
 # SuperMagicFootball — master plan and backlog
