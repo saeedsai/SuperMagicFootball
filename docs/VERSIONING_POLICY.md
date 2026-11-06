@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.64
+# SuperMagicFootball release/version policy — About-only 0.12.81.65
+
+**Dev candidate 0.12.81.65 (6 November 2026):** STUDIO-UNDO-PALETTE-GUARD-01: Undo Randomize now skips a previous appearance choice if it has since been removed or disabled, while restoring other valid selections and preserving later manual edits. Full exact-head QA and Pages verification pending.
 
 **Dev candidate 0.12.81.64 (6 November 2026):** STUDIO-RANDOM-UNDO-01: Player Studio offers UNDO RANDOMIZE to reverse the last unsaved random look without discarding unrelated manual edits. It respects selected-player changes, refreshes the eight-view preview, and never writes saves. Four controls, rosters and existing Breath behavior are unchanged. Exact-head QA and hosted verification pending.
 
