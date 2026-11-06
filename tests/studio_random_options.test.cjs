@@ -18,7 +18,7 @@ function fixture({screen='PLAYER CUSTOMIZATION',careerMode=false,missing=false}=
   $:k=>k==='studioAppearanceSaveState'?hint:fields[k],studioGallerySignature:'cached',
   drawCustomizer(){stats.redraw++;hint.textContent='Appearance changes are ready to save.'},
   localStorage:{setItem(){stats.writes++;}}};
- vm.runInNewContext(method+';this.randomize=studioRandomizeUnsavedAppearance;this.randomizeHair=studioRandomizeHairUnsaved;this.randomizeBody=studioRandomizeBodyUnsaved;this.randomizeAccessories=studioRandomizeAccessoriesUnsaved;this.randomizeDetails=studioRandomizeFaceDetailsUnsaved;',context);
+ vm.runInNewContext(method+';this.randomize=studioRandomizeUnsavedAppearance;this.undo=studioUndoRandomPreview;this.randomizeHair=studioRandomizeHairUnsaved;this.randomizeBody=studioRandomizeBodyUnsaved;this.randomizeAccessories=studioRandomizeAccessoriesUnsaved;this.randomizeDetails=studioRandomizeFaceDetailsUnsaved;',context);
  return {context,fields,stats,hint,player};
 }
 test('random look chooses actual enabled option values even with sparse numeric IDs',()=>{
@@ -182,4 +182,32 @@ test('studio randomizer explains when no alternatives exist without redraw or sa
  assert.match(f.hint.textContent,/No alternate appearance options available/);
  assert.match(f.hint.textContent,/Nothing saved yet/);
  assert.equal(f.player.appearance.face,3);
+});
+
+// STUDIO-RANDOM-UNDO-01: undo only the last randomized selections.
+test('undo last randomization restores earlier appearance without saving',()=>{
+ const f=fixture();const before=Object.fromEntries(Object.entries(f.fields).map(([k,v])=>[k,v.value]));
+ assert.equal(f.context.randomize(()=>.99),true);
+ assert.equal(f.context.undo(),true);
+ for(const [k,v] of Object.entries(before))assert.equal(f.fields[k].value,v,k);
+ assert.equal(f.stats.writes,0);assert.equal(f.stats.redraw,2);
+ assert.match(f.hint.textContent,/undone; no changes saved/);
+ assert.equal(f.context.undo(),false);
+});
+test('undo does not override manually revised selections after randomizing',()=>{
+ const f=fixture();assert.equal(f.context.randomize(()=>.99),true);
+ f.fields.face_face.value='3';
+ assert.equal(f.context.undo(),true);
+ assert.equal(f.fields.face_face.value,'3');
+ assert.equal(f.fields.face_style.value,'1');
+ assert.equal(f.stats.writes,0);
+});
+test('undo refuses another player or screen and does not affect Career data',()=>{
+ const f=fixture({careerMode:true});assert.equal(f.context.randomizeHair(()=>.99),true);
+ f.context.avatarIndex=1;assert.equal(f.context.undo(),false);assert.equal(f.stats.writes,0);
+ const x=fixture();assert.equal(x.context.randomize(()=>.99),true);
+ x.context.screen='HOME';assert.equal(x.context.undo(),false);
+ assert.equal(x.player.appearance.face,3);
+ assert.match(ui,/button\('↶ UNDO RANDOMIZE','studioUndoRandomPreview'\)/);
+ assert.match(ui,/a==='studioUndoRandomPreview'\)studioUndoRandomPreview\(\)/);
 });
