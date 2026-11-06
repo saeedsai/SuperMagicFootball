@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.63
+# SuperMagicFootball release/version policy — About-only 0.12.81.64
+
+**Dev candidate 0.12.81.64 (6 November 2026):** STUDIO-RANDOM-UNDO-01: Player Studio offers UNDO RANDOMIZE to reverse the last unsaved random look without discarding unrelated manual edits. It respects selected-player changes, refreshes the eight-view preview, and never writes saves. Four controls, rosters and existing Breath behavior are unchanged. Exact-head QA and hosted verification pending.
 
 **Promoted and deployed candidate 0.12.81.63 (5 November 2026):** Cups now include a saved local double round-robin season with 4–16 existing teams, standings, deterministic CPU fixtures, explicit byes and a final result. A match ball renderer pass adds deterministic low-contrast grain with a bounded canvas cache. Full local Node passed **2,337/2,337** plus Club26/FC27 parity; desktop/simulated-touch Custom League browser QA, storage denial/stale-tab checks, and 24 focused league/Cup/renderer tests passed. Exact-head Census `42094663215`, Modular QA `42094663075`, protected promotion, Pages deployment `42096036857`, hosted smoke and main Census `42096037883` passed for SHA `1cafb06502b061adf16967dd6502d751b3506a67`. Away fixtures still use the player's existing home-side match view. See [candidate .63 report](CANDIDATE_012863_VALIDATION_20261105.md).
 
