@@ -2489,7 +2489,6 @@ function studioResetUnsavedAppearance(){
  if(hint)hint.textContent='Unsaved appearance edits reverted; nothing was saved.';
  return true;
 }
-let studioLastRandomPreview=null;
 // STUDIO-RANDOM-OPTIONS-01: choose real enabled option values, not numeric indexes.
 // This is an unsaved preview only; SAVE CHARACTER remains the sole persistence action.
 function studioRandomizeUnsavedAppearance(random=Math.random,keys=null){
@@ -2515,6 +2514,7 @@ function studioRandomizeUnsavedAppearance(random=Math.random,keys=null){
  if(hint)hint.textContent=(keys?'Selected appearance previewed':'Random look previewed')+'; press SAVE CHARACTER to keep it. Nothing saved yet.';
  return true;
 }
+let studioLastRandomPreview=null;
 // STUDIO-HAIR-RANDOM-01: change hairstyle and hair color only; preserve face, skin,
 // body, tattoos and all other appearance fields until an explicit save.
 function studioRandomizeHairUnsaved(random=Math.random){
