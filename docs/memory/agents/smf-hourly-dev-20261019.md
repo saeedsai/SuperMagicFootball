@@ -5,6 +5,7 @@
 Existing `dev` only, bounded tested increments, no new branch/force push/CI bypass; never claim physical LAN acceptance without actual two phones.
 
 ## Current checkpoint
+- STUDIO-RANDOM-UNDO-IDENTITY-01: fixed undo incorrectly rejecting freshly rehydrated roster objects with the same player ID; scope now validates ID, club, selected index and manager/player mode instead of JavaScript object reference. Added Node coverage for roster cloning, cross-club isolation and browser repeat-undo. Focused extracted-source JS check passed; native Node, 4+4 Chromium/Node and Modular QA not executed, exact-head CI absent; main and Pages unchanged.
 - 0.12.81.64 STUDIO-RANDOM-UNDO-01: Undo last randomization while preserving manual edits and selected-player isolation; Node and desktop/touch Chromium regressions committed. Exact-head 4+4, Modular, protected promotion and hosted bytes pending.
 - 0.12.81.63 was deployed 2026-11-05 per canonical backlog with green exact-head gates and hosted smoke. New candidate is not certified.
 - Existing Breath cheap normal run/dribble, expensive sprint and selected-local-human-only indicator remain unchanged. LAN-094 automated coverage delivered; physical issue #48 open.
