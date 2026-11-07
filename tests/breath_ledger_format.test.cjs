@@ -9,6 +9,6 @@ test('Breath development ledger uses real Markdown paragraphs, not literal escap
     const position = ledger.indexOf(id);
     assert.ok(position >= 0, `missing ledger entry ${id}`);
     const entry = ledger.slice(position, ledger.indexOf('\n\n', position));
-    assert.doesNotMatch(entry, /\\\\n\\\\n/, `${id} must not embed escaped paragraph separators`);
+    assert.equal(entry.includes(String.raw`\n\n`), false, `${id} must not embed escaped paragraph separators`);
   }
 });
