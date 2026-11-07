@@ -6,12 +6,12 @@ Incremental tested work on existing dev; preserve 223 teams, 2676 players, six f
 
 ## Current checkpoint
 - Candidate 0.12.81.65; dev/main were identical at 6e08082b before this increment. Exact-head Modular QA 42322208109 and Full Census 42322208111 succeeded; Pages 42323417038 and main Census 42323417195 succeeded for that SHA.
-- Added Breath Node regression for 30 vs 120 frame rate and rapid local human player switching in bfa2378a4810676ff0ca7d061bf1e58ae47314b7. No gameplay code or version changed. New exact-head CI still requires confirmation.
+- Added Breath Node regression for 30 vs 120 frame rate and rapid local human player switching in bfa2378a4810676ff0ca7d061bf1e58ae47314b7. No gameplay code or version changed. New exact-head CI still requires confirmation. Added independent analog-boundary and host/guest role-switch regression in cca2463d4a5952ac8bf5a1a89dc582108bb61d72; native execution and exact-head CI remain unverified.
 - Existing Breath source/test coverage already distinguishes ordinary .6 from sprint 1.5 and verifies selected-human ring in Node and Chromium; physical devices remain unverified.
 - LAN-094 automated coverage only; physical #48 open. Render trigger #86 and branch security #87 open.
 
 ## Next smallest action
-1. Inspect exact-head CI for the new regression and fix failures.
+1. Inspect exact-head CI for cca2463d and fix any test failures.
 2. Execute focused Node and Chromium Breath tests when runner is available.
 3. Continue new counterable Magic Trick and Player Studio increments.
 4. Improve existing eight-view player animations and goalkeeper/Career quality.
@@ -24,7 +24,7 @@ Only this checkpoint may be edited; do not read others' private notes. No routin
 New test commit: https://github.com/saeedsai/SuperMagicFootball/commit/bfa2378a4810676ff0ca7d061bf1e58ae47314b7
 Prior green Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/42322208109
 Prior green Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/42322208111
-Git checkout remains unavailable due to github.com DNS in container; no local tests claimed.
+Git checkout previously failed due to github.com DNS in container; no local tests claimed for this run.
 
 ## Cleanup
 Checkpoint below 4 KiB; no new branches or unverified release claims.
