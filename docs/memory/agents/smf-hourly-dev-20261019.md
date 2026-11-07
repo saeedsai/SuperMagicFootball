@@ -2,31 +2,27 @@
 **Agent ID:** smf-hourly-dev-20261019 · **Updated:** 2026-11-07
 
 ## Mission
-Incremental tested work on existing dev; preserve 223 teams, 2676 players, six formations, four actions, saves/offline, Career/Cup ten slots and SD09. No force pushes, extra branches, or CI bypass.
+Develop tested increments on existing dev; preserve 223 teams, 2676 players, six formations, Pass/Shoot/Dribble/Jump, offline/saves, Career/Cup ten slots, SD09. No force-push, new branches or bypassed CI.
 
 ## Current checkpoint
-- 2026-11-07: hardened Breath ledger regression against missing paragraph terminators and duplicate IDs; prior slice(-1) could silently pass. Commit b362f061. Native execution and exact-head CI pending; no gameplay/version change.
-- 2026-11-07 ledger hygiene: fixed literal escaped paragraph separators in the two newest Breath backlog entries (c1d5445f) and added a focused Node documentation regression (c09e8279). GitHub CI and local Node/Chromium execution not yet verified; no gameplay/version change.
-- Candidate 0.12.81.65; dev/main were identical at 6e08082b before this increment. Exact-head Modular QA 42322208109 and Full Census 42322208111 succeeded; Pages 42323417038 and main Census 42323417195 succeeded for that SHA.
-- Added Breath Node regression for 30 vs 120 frame rate and rapid local human player switching in bfa2378a4810676ff0ca7d061bf1e58ae47314b7. No gameplay code or version changed. New exact-head CI still requires confirmation. Added independent analog-boundary and host/guest role-switch regression in cca2463d4a5952ac8bf5a1a89dc582108bb61d72; native execution and exact-head CI remain unverified.
-- Existing Breath source/test coverage already distinguishes ordinary .6 from sprint 1.5 and verifies selected-human ring in Node and Chromium; physical devices remain unverified.
-- LAN-094 automated coverage only; physical #48 open. Render trigger #86 and branch security #87 open.
+- BREATH-SUSTAINED-RECOVERY-01: added focused real-FITNESS Node regression for two seconds of ordinary ball dribble versus sprint, plus walking/idle refill after sprint at 30/60/120 Hz and four Stamina values (854dd0d9). Production code/version unchanged. Test is committed, not yet executed or CI-certified.
+- Earlier Breath frame/analog/local-owner and ledger-format regressions are on dev. Historical local/CI claims do not certify this new exact head.
+- Before this increment main 6e08082b4d254fdf447576751c32efea57915b08; dev 58c4a5d7e3ba32d59e1dacc869696baf2df48429 (13 ahead). No current-head CI statuses or PR runs were returned.
+- Native git checkout DNS failed (github.com unresolved). Physical two-phone #48, Render trigger #86 and branch protection #87 remain open.
 
 ## Next smallest action
-1. Inspect exact-head CI for cca2463d and fix any test failures.
-2. Execute focused Node and Chromium Breath tests when runner is available.
-3. Continue new counterable Magic Trick and Player Studio increments.
-4. Improve existing eight-view player animations and goalkeeper/Career quality.
-5. Promote only green exact dev head via release workflow, verify Pages hosted bytes.
+1. Run new focused Node regression against full checkout and fix any failure.
+2. Run existing Breath Chromium switching/host-guest cases and four Node/four Chromium plus Modular QA.
+3. Implement counterable four-button Magic Trick increment with focused tests.
+4. Improve Player Studio and existing eight-view animations; then goalkeeper/Career.
+5. Promote only exact green dev head through protected pipeline and verify Pages hosted bytes.
 
 ## Ownership and exclusions
-Only this checkpoint may be edited; do not read others' private notes. No routine LAN/P2P implementation, physical certification or direct main writes.
+Only this checkpoint is writable. Do not read other agents' private checkpoints; no routine LAN work or physical certification claims.
 
 ## Evidence
-New test commit: https://github.com/saeedsai/SuperMagicFootball/commit/bfa2378a4810676ff0ca7d061bf1e58ae47314b7
-Prior green Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/42322208109
-Prior green Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/42322208111
-Git checkout previously failed due to github.com DNS in container; no local tests claimed for this run.
+Test commit: https://github.com/saeedsai/SuperMagicFootball/commit/854dd0d96a72e184949d3033922e1389f4e31b82
+Prior certified dev SHA 6e08082b: Modular QA 42322208109, Census 42322208111 (historical only).
 
 ## Cleanup
-Checkpoint below 4 KiB; no new branches or unverified release claims.
+Below 4 KiB; no release/version change, no new branches, no unverified test-pass claim.
