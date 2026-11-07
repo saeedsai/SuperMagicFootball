@@ -5,6 +5,7 @@
 Incremental tested work on existing dev; preserve 223 teams, 2676 players, six formations, four actions, saves/offline, Career/Cup ten slots and SD09. No force pushes, extra branches, or CI bypass.
 
 ## Current checkpoint
+- 2026-11-07: hardened Breath ledger regression against missing paragraph terminators and duplicate IDs; prior slice(-1) could silently pass. Commit b362f061. Native execution and exact-head CI pending; no gameplay/version change.
 - 2026-11-07 ledger hygiene: fixed literal escaped paragraph separators in the two newest Breath backlog entries (c1d5445f) and added a focused Node documentation regression (c09e8279). GitHub CI and local Node/Chromium execution not yet verified; no gameplay/version change.
 - Candidate 0.12.81.65; dev/main were identical at 6e08082b before this increment. Exact-head Modular QA 42322208109 and Full Census 42322208111 succeeded; Pages 42323417038 and main Census 42323417195 succeeded for that SHA.
 - Added Breath Node regression for 30 vs 120 frame rate and rapid local human player switching in bfa2378a4810676ff0ca7d061bf1e58ae47314b7. No gameplay code or version changed. New exact-head CI still requires confirmation. Added independent analog-boundary and host/guest role-switch regression in cca2463d4a5952ac8bf5a1a89dc582108bb61d72; native execution and exact-head CI remain unverified.
