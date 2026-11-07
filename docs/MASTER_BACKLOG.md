@@ -202,3 +202,6 @@ Candidate .81.12 validation: build passed; focused shot-reaction, pose and visua
 ## Evidence index
 
 Use [docs/README.md](README.md) for the dated feature, QA, browser, gameplay, Career/Cup, LAN and graphics evidence index. Do not treat old candidate reports as current status unless this ledger explicitly promotes their acceptance to the current candidate.
+
+### 2026-11-07 — BREATH-STAMINA-SCALING-01 (smf-hourly-dev-20261019)
+Added `tests/breath_stamina_scaling.test.cjs` to exercise actual FITNESS stamina scaling: ordinary movement versus sprint cost, larger high-Stamina Breath capacity and lower absolute sprint drain, and walking recovery without modifying Energy. Commits `fbfcf14`, `050faee` (corrected VM source-loader escaping). Production, package and About version remain 0.12.81.65. Complete checkout unavailable due github.com DNS failure; focused Node/Chromium, four Node/four Chromium, Modular QA, exact-head CI and Pages deployment are **not certified**. Next: execute tests and fix any failures, then prioritize four-action counterable Magic Tricks, Player Studio, eight-view art, goalkeeper and Career. Physical LAN issue #48 remains open; Render #86 and protection #87 remain unresolved.
