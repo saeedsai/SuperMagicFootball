@@ -203,3 +203,35 @@ test('controlled-player outline and Breath ring share current human selection',(
  assert.ok(outline>=0&&gauge>outline,'selected outline must precede selected gauge');
  assert.doesNotMatch(render.slice(outline,gauge),/if\(p\.controlled\)/,'no stale selection in foot-gauge region');
 });
+
+
+test('Breath movement remains frame-rate independent and never leaks a ring across rapid local switches',()=>{
+ for(const stamina of [1,50,100]){
+  const cap=F.breathCapacity(stamina);
+  for(const [magnitude,sprint] of [[0,false],[.25,false],[1,false],[1,true]]){
+   const intensity=F.breathMovementIntensity(magnitude,sprint);
+   const advance=frames=>{
+    let breath=cap*.5;
+    for(let i=0;i<frames;i++)breath=F.breathTick(breath,stamina,1/frames,intensity);
+    return breath;
+   };
+   assert.ok(Math.abs(advance(30)-advance(120))<1e-9,
+    'movement drain/recovery must not depend on frame count');
+  }
+ }
+ const render=text('src/modules/render.js');
+ const match=render.match(/function shouldShowBreathRing\(p,game,inMatchDraw\)\{[\s\S]*?\n\}/);
+ assert.ok(match,'real ring predicate must exist');
+ const visible=vm.runInNewContext('('+match[0]+')');
+ const team=[{t:0,i:2},{t:0,i:3},{t:0,i:4}];
+ const remote={t:1,i:2};
+ let selected=team[0];
+ const game={humans:2,localBreathSide:0,inControl:t=>t===0||t===1,
+  controlledPlayer:t=>t===0?selected:remote};
+ for(let cycle=0;cycle<12;cycle++){
+  selected=team[cycle%team.length];
+  assert.equal(team.filter(p=>visible(p,game,true)).length,1,
+   'exactly one locally selected player must display the ring');
+  assert.equal(visible(remote,game,true),false,'remote human must never display a local ring');
+ }
+});
