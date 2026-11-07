@@ -21,11 +21,13 @@ function advance(start,stat,seconds,magnitude,sprint=false,hold=false,fps=60){
 test('sustained ordinary ball dribble stays inexpensive while sprint is costly',()=>{
  for(const stat of [1,35,60,100]){
   const cap=F.breathCapacity(stat);
-  const dribble=advance(cap,stat,2,1,false,true);
-  const sprint=advance(cap,stat,2,1,true,false);
-  assert.ok(cap-dribble<.85,`ordinary held dribble drained too much at stamina ${stat}`);
-  assert.ok(sprint<dribble-2,`sprint must drain far more than ordinary dribble at stamina ${stat}`);
-  assert.ok(dribble>0&&sprint>=0&&sprint<=cap);
+  for(const fps of [30,60,120]){
+   const dribble=advance(cap,stat,2,1,false,true,fps);
+   const sprint=advance(cap,stat,2,1,true,false,fps);
+   assert.ok(cap-dribble<.85,`ordinary held dribble drained too much at ${fps} Hz, stamina ${stat}`);
+   assert.ok(sprint<dribble-2,`sprint must drain far more than ordinary dribble at ${fps} Hz, stamina ${stat}`);
+   assert.ok(dribble>0&&sprint>=0&&sprint<=cap);
+  }
  }
 });
 test('release of sprint restores Breath while walking, across frame rates',()=>{
@@ -38,6 +40,19 @@ test('release of sprint restores Breath while walking, across frame rates',()=>{
    assert.ok(recovered<=cap);
    const idle=advance(exhausted,stat,1,0,false,false,fps);
    assert.ok(idle>=recovered,`idle should recover at least as fast as walking`);
+  }
+ }
+});
+
+test('dribble and sprint costs remain stable across simulation frame rates',()=>{
+ for(const stat of [1,35,60,100]){
+  const cap=F.breathCapacity(stat);
+  for(const [sprint,hold] of [[false,true],[true,false]]){
+   const baseline=advance(cap,stat,2,1,sprint,hold,60);
+   for(const fps of [30,120]){
+    const actual=advance(cap,stat,2,1,sprint,hold,fps);
+    assert.ok(Math.abs(actual-baseline)<.02,`frame-rate drift at ${fps} Hz, stamina ${stat}, sprint=${sprint}`);
+   }
   }
  }
 });
