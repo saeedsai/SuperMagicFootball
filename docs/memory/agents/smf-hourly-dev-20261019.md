@@ -1,17 +1,23 @@
 # SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** smf-hourly-dev-20261019 · **Updated:** 2026-11-07
+**Agent ID:** `smf-hourly-dev-20261019`
+**Updated:** 2026-11-07
 
-## Current increment
-- BREATH-STAMINA-SCALING-01: new focused Node regression for ordinary versus sprint cost, stamina-dependent capacity/drain and walking recovery. Test commits fbfcf14, 050faee (corrected VM export stripping). No production change or version bump; execution against full checkout pending.
-- Previously added sustained Breath tests at 30/60/120 Hz and selected-only multiplayer ownership tests remain; avoid duplicating coverage.
-- Last confirmed main SHA 6e08082b4d254fdf447576751c32efea57915b08; dev was 19 ahead before this increment. Git checkout DNS github.com unavailable in container.
+## Mission
+Continue tested, bounded development on existing dev; preserve four controls, 223 teams/2676 players, six formations, saves/offline, ten Career/Cup slots and SD09.
 
-## Next five
-1. Execute focused Breath tests on complete checkout and fix failures.
-2. Run Chromium selected-only switching and multiplayer local ownership acceptance.
-3. Run four Node + four Chromium + Modular QA and certify exact dev SHA.
-4. Implement counterable four-action Magic Trick or Player Studio improvement with tests.
-5. Advance eight-view existing art, goalkeeper and Career; promote only exact green dev and verify Pages bytes.
+## Current checkpoint
+- BREATH-STAMINA-SCALING-01 and sustained/ownership tests committed earlier; production Breath balance unchanged. Version 0.12.81.65.
+- CI failure diagnosed from exact-head Census 42370737949 and Modular QA 42370737960 logs: 2352/2353 Node tests passed; sole failure `tests/project_memory_contract.test.cjs` wrong identity for this agent. This checkpoint now restores required exact identity and six headings.
+- Previous main 6e08082b4d254fdf447576751c32efea57915b08; dev 23 ahead before this fix.
 
-## Guardrails
-Preserve 223 teams, 2676 players, six formations, four actions, saves/offline, Career/Cup ten slots, SD09. No new branch/force push/CI bypass. LAN physical two-phone issue #48 remains open. Render #86 and protection #87 remain unresolved. Only own checkpoint writable; no unverified test pass, release or deployment claim.
+## Next smallest action
+Verify new exact dev SHA and CI, run focused Breath/ownership Node and Chromium plus four Node/four Chromium/Modular QA; fix any failing gate. Then advance Player Studio or counterable four-action Magic Trick.
+
+## Ownership and exclusions
+Only this checkpoint may be edited; no other agent memory. Never create branches, force-push, bypass protected CI, or claim physical LAN acceptance (#48). Render drift #86 and branch protection #87 remain open.
+
+## Evidence
+2026-11-07 CI job logs show one memory-contract identity failure, not a Breath assertion. Focused/full local checkout tests unavailable where github.com DNS fails; no local green claim. Do not promote until exact-head CI green and Pages hosted bytes verified.
+
+## Cleanup
+Keep checkpoint below 4 KiB; do not bump player-facing version for checkpoint-only fix. Continue gameplay roadmap after CI recovery.
