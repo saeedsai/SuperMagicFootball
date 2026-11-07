@@ -6,7 +6,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const source = fs.readFileSync(path.join(__dirname, '../src/modules/fitness.js'), 'utf8');
 const context = {};
-vm.runInNewContext(source.replace(/export \\{FITNESS\\};?/, '') + '\\nthis.F = FITNESS;', context);
+vm.runInNewContext(source.replace(/export \{FITNESS\};?/, '') + '\nthis.F = FITNESS;', context);
 const F = context.F;
 function simulate(stamina, magnitude, sprint, seconds = 1, fps = 60) {
   const cap = F.breathCapacity(stamina);
