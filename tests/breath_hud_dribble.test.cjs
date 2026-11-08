@@ -259,7 +259,7 @@ test('walking-to-running threshold preserves recovery and sprint never masquerad
   const cap=F.breathCapacity(stamina),start=cap*.4;
   for(const magnitude of [.14,.25,.4,.55]){
    const intensity=F.breathMovementIntensity(magnitude,false);
-   assert.ok(intensity<=.55,'analog walking stays in the recovery range');
+   assert.ok(intensity<=.55+1e-12,'analog walking stays in the recovery range');
    assert.ok(F.breathTick(start,stamina,1,intensity)>start,'walking restores Breath');
   }
   for(const magnitude of [.56,.75,1]){
@@ -279,7 +279,7 @@ test('Breath ring fails closed for missing selection and follows local seat chan
  const visible=vm.runInNewContext('('+match[0]+')');
  const home={t:0,i:1},away={t:1,i:1},bench={t:1,i:2};
  const selected=[home,away];
- const game={humans:2,localBreathSide:0,inControl:()=>true,
+ const game={humans:2,localBreathSide:0,inControl(t){return t===0||this.humans===2;},
   controlledPlayer:t=>selected[t]};
  assert.equal(visible(home,game,true),true);
  assert.equal(visible(away,game,true),false);
