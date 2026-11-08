@@ -53,6 +53,15 @@ with sync_playwright() as pw:
               if (rings().length !== 1 || rings()[0] !== next)
                 throw Error('selection handoff retained stale ring');
               checks.push('switch' + seat);
+              const clone = {...next};
+              if (visible(clone,g,true)) throw Error('cloned identity inherited ring');
+              const previous = g.controlled[seat];
+              g.controlled[seat] = -999999;
+              if (rings().length !== 0) throw Error('missing selection retained ring');
+              g.controlled[seat] = previous;
+              if (rings().length !== 1 || rings()[0] !== next)
+                throw Error('ring did not recover after missing selection');
+              checks.push('identity-and-missing' + seat);
               g.controlled[seat] = p.i;
             }
             g.localBreathSide = 1; g.humans = 1;
@@ -67,7 +76,7 @@ with sync_playwright() as pw:
           }
           return {checks, buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
         }""", predicate)
-        assert len(results['checks']) == 9 and results['buttons'] == 4, (label, results)
+        assert len(results['checks']) == 13 and results['buttons'] == 4, (label, results)
         assert not errors, (label, errors)
         print('BREATH_CHROMIUM_PASS', label, results, flush=True)
         context.close()
