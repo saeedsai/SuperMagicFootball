@@ -274,7 +274,7 @@ test('walking-to-running threshold preserves recovery and sprint never masquerad
 
 test('Breath ring fails closed for missing selection and follows local seat changes',()=>{
  const render=text('src/modules/render.js');
- const match=render.match(/function shouldShowBreathRing\\(p,game,inMatchDraw\\)\\{[\\s\\S]*?\\n\\}/);
+ const match=render.match(/function shouldShowBreathRing\(p,game,inMatchDraw\)\{[\s\S]*?\n\}/);
  assert.ok(match,'production visibility predicate exists');
  const visible=vm.runInNewContext('('+match[0]+')');
  const home={t:0,i:1},away={t:1,i:1},bench={t:1,i:2};
