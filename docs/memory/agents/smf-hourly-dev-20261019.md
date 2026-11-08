@@ -3,21 +3,21 @@
 **Updated:** 2026-11-08
 
 ## Mission
-Deliver bounded tested improvements on existing dev; preserve four actions, 223 teams/2676 players, six formations, offline/saves, Career/Cup ten slots and SD09.
+Deliver bounded improvements on existing dev. Preserve 223 teams/2676 players, six formations, four actions, saves/offline, Career/Cup ten slots and SD09.
 
 ## Current checkpoint
-- Run start main b96da7a136be56a2823aee4e58dd8d677fbc54c5, dev two commits ahead (Breath regression and prior checkpoint); version 0.12.81.65.
-- Added `tests/breath_capacity_boundaries.test.cjs` covering exhaustion/full-capacity bounds and sprint-vs-ordinary monotonicity across Stamina 1/35/70/100 and 30/60/120 FPS; commit 5e3f05c3fa3d939914d3351796357c219637879e.
-- Git native checkout still fails DNS (`Could not resolve host: github.com`). New test NOT executed against production. No player-facing code change/version bump.
+- Start: main b96da7a136be56a2823aee4e58dd8d677fbc54c5; dev four commits ahead; version 0.12.81.65.
+- Added `tests/breath_analog_sprint_contrast.test.cjs` for analog sprint monotonicity and partial-stick sprint-vs-ordinary Breath drain across four Stamina levels and 30/60/120 FPS. Commit 3abfd5bcc6a0c24e5f67329f2a3e334353db1979.
+- No production code or player-facing change. Native Git checkout fails DNS; new test not executed against production. PR-only workflow lookup empty; push CI unknown.
 
 ## Next smallest action
-Execute new boundary and prior Breath tests against real FITNESS; verify selected-human-only visibility in Chromium including switching and multiplayer local side. Run four Node/four Chromium shards and Modular QA, inspect exact-head CI, promote only green exact SHA and verify hosted Pages bytes. Then implement Player Studio or counterable four-button Magic Trick increment.
+Restore checkout and run focused real-FITNESS tests, add/execute Chromium selected-local-human-only Breath ring tests for player switches and LAN guest/host. Run four Node/four Chromium shards and Modular QA; inspect exact-head CI and promote only green head, then verify hosted Pages bytes. Continue Player Studio, counterable four-button Magic Tricks and existing eight-view art.
 
 ## Ownership and exclusions
-Edit only this checkpoint. Never create branches, force-push, bypass CI, claim physical LAN #48 certified, or close Render #86 / protection #87 without evidence.
+Edit only this checkpoint. Never create branches, force-push, bypass CI or claim physical LAN #48 certified. Render #86 and protection #87 remain open.
 
 ## Evidence
-GitHub Contents API accepted new regression commit 5e3f05c. No executable checkout; focused/full tests, CI certification, promotion, deployment and hosted-byte checks not verified this run.
+GitHub Contents API accepted analog regression commit; no executable checkout, local focused/full QA, protected promotion or Pages hosted-byte verification in this run.
 
 ## Cleanup
-Keep under 4 KiB. Continue useful increments while DNS is transient.
+Keep checkpoint under 4 KiB. Continue development after transient connectivity failure.
