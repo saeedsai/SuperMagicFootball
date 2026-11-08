@@ -6,18 +6,18 @@
 Preserve 223 teams, 2676 players, six formations, four actions, offline saves, Career/Cup ten slots and SD09. Work only on dev.
 
 ## Current checkpoint
-- Candidate 0.12.81.66 implements low held-Dribble Breath drain, walking recovery and selected-local-human-only ring.
-- Added `tests/breath_local_seat_handoff.test.cjs` at 60f8c39c: execute real renderer predicate through four alternating local-seat changes, immediate selection switches, missing-selection fail-closed, CPU exclusion and out-of-match hiding.
-- Test-only change: no player-facing version bump. Test execution and exact-head CI not yet verified; no release or Pages claim.
+- Candidate 0.12.81.66 includes low held-Dribble Breath drain, walking recovery and selected-local-human ring.
+- New test `tests/breath_rapid_selection_handoff.test.cjs` committed at 17b5f807: 24 alternating local seats and selections, missing-selection fail-closed, CPU and preview exclusion.
+- Test-only change, no player-facing version bump. No test pass, exact-head CI, promotion or Pages verification claimed.
 
 ## Next smallest action
-Run focused Node and actual Chromium ring QA, then four Node/four Chromium and Modular QA. Resolve failures and promote only green exact head through protected main pipeline, verifying hosted bytes. Continue Player Studio, four-button tricks, directional graphics, keeper and Career.
+Execute focused Node and actual Chromium ring QA, then four Node/four Chromium and Modular QA. Fix any failures; promote only an exact green dev SHA via protected main pipeline and verify hosted bytes. Continue Player Studio, four-button Magic Tricks, eight-view art, keeper and Career.
 
 ## Ownership and exclusions
-Only this checkpoint. Do not read other agents' private memory, create branches, force-push or bypass CI. Physical LAN #48, Render #86 and main protection #87 remain open.
+Only this checkpoint. Do not read other agents' private memory, create branches, force-push or bypass CI. Physical LAN #48, Render #86 and branch protection #87 remain open.
 
 ## Evidence
-GitHub accepted test commit 60f8c39c. Local clone unavailable (github.com DNS resolution failure). No executable test pass or physical-device certification claimed.
+GitHub connector accepted test commit. Local checkout remains blocked by github.com DNS resolution. Test execution is unverified; no physical certification.
 
 ## Cleanup
 Under 4 KiB.
