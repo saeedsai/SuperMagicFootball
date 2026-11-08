@@ -271,3 +271,26 @@ test('walking-to-running threshold preserves recovery and sprint never masquerad
   }
  }
 });
+
+test('Breath ring fails closed for missing selection and follows local seat changes',()=>{
+ const render=text('src/modules/render.js');
+ const match=render.match(/function shouldShowBreathRing\\(p,game,inMatchDraw\\)\\{[\\s\\S]*?\\n\\}/);
+ assert.ok(match,'production visibility predicate exists');
+ const visible=vm.runInNewContext('('+match[0]+')');
+ const home={t:0,i:1},away={t:1,i:1},bench={t:1,i:2};
+ const selected=[home,away];
+ const game={humans:2,localBreathSide:0,inControl:()=>true,
+  controlledPlayer:t=>selected[t]};
+ assert.equal(visible(home,game,true),true);
+ assert.equal(visible(away,game,true),false);
+ selected[0]=null;
+ assert.equal(visible(home,game,true),false,'missing selection must not leave a stale ring');
+ game.localBreathSide=1;
+ assert.equal(visible(away,game,true),true,'new local seat owns the ring');
+ assert.equal(visible(home,game,true),false,'previous local seat loses its ring');
+ selected[1]=bench;
+ assert.equal(visible(away,game,true),false,'old selected player loses ring');
+ assert.equal(visible(bench,game,true),true,'new selected player gains ring');
+ game.humans=1;
+ assert.equal(visible(bench,game,true),false,'CPU-controlled away team never shows ring');
+});
