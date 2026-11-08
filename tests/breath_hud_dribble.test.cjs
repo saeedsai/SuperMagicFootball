@@ -235,3 +235,21 @@ test('Breath movement remains frame-rate independent and never leaks a ring acro
   assert.equal(visible(remote,game,true),false,'remote human must never display a local ring');
  }
 });
+
+
+test('minimum-Stamina two-second carry budget stays cheap after a spent action',()=>{
+ const stamina=1,cap=F.breathCapacity(stamina),hold=F.dribbleHoldBreathRate(stamina);
+ const step=(breath,seconds,intensity,holding)=>Math.max(0,F.breathTick(breath,stamina,seconds,intensity)-(holding?hold*seconds:0));
+ let ordinary=F.spendBreath(cap,stamina,'dribble');
+ let sprint=ordinary;
+ for(let i=0;i<120;i++){
+  ordinary=step(ordinary,1/60,F.breathMovementIntensity(1,false),true);
+  sprint=step(sprint,1/60,F.breathMovementIntensity(1,true),false);
+ }
+ assert.ok(cap-F.spendBreath(cap,stamina,'dribble')<.4,'initiating dribble is a bounded one-off cost');
+ assert.ok(F.spendBreath(cap,stamina,'dribble')-ordinary<.45,'two seconds of ordinary ball carrying remain inexpensive');
+ assert.ok(ordinary-sprint>1.4,'two-second sprint costs substantially more than carrying');
+ const recovered=step(ordinary,1,F.breathMovementIntensity(.25),false);
+ assert.ok(recovered>ordinary,'walking recovers Breath after held dribble');
+ assert.ok(recovered<=cap,'recovery stays capped');
+});
