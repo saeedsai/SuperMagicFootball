@@ -3,22 +3,21 @@
 **Updated:** 2026-11-08
 
 ## Mission
-Preserve 223 teams, 2676 players, six formations, four actions, offline saves, Career/Cup ten slots and SD09. Commit only on dev.
+Keep 223 teams, 2676 players, six formations, Pass/Shoot/Dribble/Jump, offline saves, Career/Cup ten slots and SD09. Commit only to dev.
 
 ## Current checkpoint
-- Candidate 0.12.81.67: production analog walking threshold fix; inexpensive ordinary carrying and costly sprint; selected local human Breath ring.
-- Added `tests/breath_analog_boundary_fps.test.cjs`: real FITNESS walking boundary across five Stamina levels, ordinary/sprint contrast, 30/120 Hz stability. Corrected VM export-strip regex.
-- Prior Census 42497538136 failed 3/2368 preflight; prior fixture, threshold and checkpoint corrections are on dev. New exact-head CI still unverified.
-- Git checkout cannot resolve github.com locally. No native Node/Chromium pass, Modular QA, promotion or Pages certification claimed.
+- Candidate 0.12.81.67 remains unpromoted. Ordinary carry has low Breath drain, sprint high drain; walking threshold recovery fixed in production; ring restricted to locally selected human.
+- Added `tests/breath_transition_monotonic.test.cjs` covering 5 Stamina levels, walk-to-run threshold, sprint-vs-ordinary intensity and 30/60/120 Hz ordinary carry. Corrected export stripping in a follow-up commit.
+- New test not executed; exact-head CI lookup returned no PR-associated workflows/statuses. Do not claim green QA or deployment.
 
 ## Next smallest action
-Inspect exact-head Census/Modular QA and run actual Chromium selection-switch coverage. Resolve failing checks before protected promotion; then Player Studio, Magic Tricks, eight-view art, goalkeeper and Career.
+Run new Node regression, actual Chromium local-selection/seat handoff, four Node and four Chromium shards and Modular QA. Fix failures. Only promote exact green dev head through protected pipeline and verify Pages bytes. Continue Player Studio, four-button Magic Tricks, eight-view graphics, goalkeeper and Career.
 
 ## Ownership and exclusions
-Only this checkpoint; no other agents' memory. No branches/force-push/bypass. Physical LAN #48, Render #86 and main protection #87 remain open.
+Only own checkpoint. No other agent memory, no branches, force pushes or CI bypass. Physical LAN #48, Render auto-deploy #86, main protection #87 open.
 
 ## Evidence
-GitHub connector accepted test and checkpoint commits. No full QA execution evidence for this exact head.
+New commits f6b92410 and c08d7553 on dev. Native checkout/test execution unavailable here; GitHub Actions result not established.
 
 ## Cleanup
 Under 4 KiB.
