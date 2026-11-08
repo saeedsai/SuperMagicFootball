@@ -69,3 +69,31 @@ test('held dribble remains inexpensive beside sprint across stamina and frame ra
     }
   }
 });
+
+test('simultaneous ordinary ball carry plus held dribble stays cheap relative to sprint', async () => {
+  const F = await fitness;
+  for (const stamina of [1, 35, 70, 100]) {
+    const costs = [];
+    for (const fps of [30, 60, 120]) {
+      const initial = F.breathCapacity(stamina) * .75;
+      let ordinaryCarry = initial;
+      let sprint = initial;
+      const dt = 1 / fps;
+      for (let frame = 0; frame < 2 * fps; frame++) {
+        ordinaryCarry = Math.max(0,
+          F.breathTick(ordinaryCarry, stamina, dt, F.breathMovementIntensity(1, false))
+          - F.dribbleHoldBreathRate(stamina) * dt);
+        sprint = F.breathTick(sprint, stamina, dt, F.breathMovementIntensity(1, true));
+      }
+      const carryCost = initial - ordinaryCarry;
+      const sprintCost = initial - sprint;
+      assert.ok(carryCost > 0 && carryCost < initial * .20,
+        `ordinary carry/hold cost ${carryCost}, stamina ${stamina}, fps ${fps}`);
+      assert.ok(sprintCost > carryCost * 4,
+        `sprint ${sprintCost} must dominate ordinary carry ${carryCost}`);
+      costs.push(carryCost);
+    }
+    assert.ok(Math.max(...costs) - Math.min(...costs) < 1e-8,
+      `ordinary carry+hold cost must be frame-rate independent at stamina ${stamina}`);
+  }
+});
