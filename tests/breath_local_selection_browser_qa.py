@@ -62,6 +62,14 @@ with sync_playwright() as pw:
               if (rings().length !== 1 || rings()[0] !== next)
                 throw Error('ring did not recover after missing selection');
               checks.push('identity-and-missing' + seat);
+              const teammate = g.players.find(q => q.t === seat && q !== next && q !== p);
+              const opponent = g.players.find(q => q.t !== seat);
+              if (!teammate || !opponent) throw Error('missing non-selected test players');
+              if (visible(teammate,g,true) || visible(opponent,g,true))
+                throw Error('teammate or opponent inherited local ring');
+              const preview = {...next, preview:true};
+              if (visible(preview,g,true)) throw Error('Studio preview inherited ring');
+              checks.push('teammate-opponent-preview' + seat);
               g.controlled[seat] = p.i;
             }
             g.localBreathSide = 1; g.humans = 1;
@@ -76,7 +84,7 @@ with sync_playwright() as pw:
           }
           return {checks, buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
         }""", predicate)
-        assert len(results['checks']) == 13 and results['buttons'] == 4, (label, results)
+        assert len(results['checks']) == 17 and results['buttons'] == 4, (label, results)
         assert not errors, (label, errors)
         print('BREATH_CHROMIUM_PASS', label, results, flush=True)
         context.close()
