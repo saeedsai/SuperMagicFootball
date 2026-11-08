@@ -3,23 +3,22 @@
 **Updated:** 2026-11-08
 
 ## Mission
-Small regression-backed dev increments. Preserve 223 teams, 2676 players, six formations, four controls, offline saves, Career/Cup ten slots and SD09.
+Preserve 223 teams, 2676 players, six formations, four actions, offline saves, ten Career/Cup slots and SD09. Work only on dev.
 
 ## Current checkpoint
-- Candidate 0.12.81.66 already contains the low held-Dribble Breath drain (.04–.07/s), walking recovery and selected-local-human-only ring.
-- Previous run committed minimum-Stamina two-second carry test a7be2245 and checkpoint abca7279; execution unverified.
-- This run committed a99becbe: Node boundary regression across four Stamina levels covering walking recovery through analog magnitude .55, and sprint-vs-ordinary contrast at .56/.75/1.
-- No player-facing code changed; version stays 0.12.81.66.
-- GitHub repo main was 828a4549 and dev was two commits ahead before a99becbe. Container cannot resolve github.com for checkout, so Node, Chromium and Modular QA were not executed locally.
+- Candidate 0.12.81.66 already implements low held-Dribble Breath rate (.04–.07/s), walking recovery and selected-local-human-only ring.
+- Previous run added stamina-boundary regression a99becbe and checkpoint 9c1e88b5, unexecuted.
+- This run added a selected-player missing-selection/local-seat handoff Node regression, finalized at c0b09a6b. Earlier attempt 00ed29a1 had an overescaped regex; corrected in c0b09a6b. No runtime change/version bump.
+- Exact-head CI remains unverified; GitHub combined statuses and PR-filtered workflow lookup returned empty for previous 9c1e88b5. Do not interpret absence as passing.
 
 ## Next smallest action
-Verify exact dev SHA and CI for a99becbe; run focused Node, four Node and four Chromium shards and Modular QA. Correct failures before release; verify protected promotion and hosted Pages bytes. Then advance Player Studio, four-button Magic Tricks, eight-view art, keeper and Career.
+Execute focused Node regression and Chromium selection smoke, then four Node/four Chromium and Modular QA. Inspect exact-head CI and fix failures. Promote only via protected release pipeline, verify Pages bytes. Continue Player Studio, four-button tricks, directional graphics, keeper and Career.
 
 ## Ownership and exclusions
-Only this checkpoint; no other agent memories. No new branches, force-push or CI bypass. Physical two-phone LAN #48 remains unverified; Render #86 and protection #87 remain open.
+Only this checkpoint; never read other agents' private memory. No new branches, force-push or CI bypass. Physical LAN #48, Render #86, branch protection #87 remain open.
 
 ## Evidence
-GitHub contents API accepted a99becbe. Test is committed, NOT yet executed. No new deployment or physical acceptance claim.
+GitHub accepted test commits; no executable test pass, release promotion, hosted verification or physical-device certification claimed.
 
 ## Cleanup
 Under 4 KiB.
