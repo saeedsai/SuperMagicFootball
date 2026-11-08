@@ -12,7 +12,7 @@ Bite-sized tested improvements on dev. Preserve 223 teams, 2676 players, six for
 
 - CI follow-up: initial 0.12.81.66 exact-head Census 42473072679 / Modular QA 42473072658 found one stale hard-coded .12–.20/s hold-rate assertion in tests/breath_hud_dribble.test.cjs. Updated it for the new positive .04–.07/s range; tests must run again.
 
-## Next smallest action
+- 8 November follow-up: committed a bounded real-FITNESS Node regression for minimum-Stamina two-second held-dribble budget, sprint contrast, one-off action and analog-walk recovery (a7be2245). Execution and exact-head CI not yet verified; no new gameplay/version change.\n\n## Next smallest action
 Verify new exact-head GitHub Actions, fix failures, test locally selected human-only ring in Chromium, and release only after protected promotion and hosted Pages byte verification. Then advance Player Studio, counterable four-button Magic Tricks, eight-view art, keeper and Career.
 
 ## Ownership and exclusions
