@@ -253,3 +253,21 @@ test('minimum-Stamina two-second carry budget stays cheap after a spent action',
  assert.ok(recovered>ordinary,'walking recovers Breath after held dribble');
  assert.ok(recovered<=cap,'recovery stays capped');
 });
+
+test('walking-to-running threshold preserves recovery and sprint never masquerades as a walk',()=>{
+ for(const stamina of [1,25,60,100]){
+  const cap=F.breathCapacity(stamina),start=cap*.4;
+  for(const magnitude of [.14,.25,.4,.55]){
+   const intensity=F.breathMovementIntensity(magnitude,false);
+   assert.ok(intensity<=.55,'analog walking stays in the recovery range');
+   assert.ok(F.breathTick(start,stamina,1,intensity)>start,'walking restores Breath');
+  }
+  for(const magnitude of [.56,.75,1]){
+   const ordinary=F.breathMovementIntensity(magnitude,false);
+   const sprint=F.breathMovementIntensity(magnitude,true);
+   assert.ok(sprint>ordinary,'sprint intensity exceeds normal movement');
+   assert.ok(F.breathTick(start,stamina,1,sprint)<F.breathTick(start,stamina,1,ordinary),
+    'sprint must always cost more Breath');
+  }
+ }
+});
