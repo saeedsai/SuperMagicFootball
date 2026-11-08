@@ -97,3 +97,24 @@ test('simultaneous ordinary ball carry plus held dribble stays cheap relative to
       `ordinary carry+hold cost must be frame-rate independent at stamina ${stamina}`);
   }
 });
+
+test('BREATH-DRIBBLE-LOW-DRAIN-01: low-Stamina walking recovery supports affordable held-ball carry', async () => {
+  const F = await fitness;
+  const lowestStaminaHold = F.dribbleHoldBreathRate(1);
+  assert.ok(lowestStaminaHold > 0 && lowestStaminaHold < .08);
+  for (const stamina of [1, 35, 70, 100]) {
+    const cap = F.breathCapacity(stamina);
+    assert.ok(F.dribbleHoldBreathRate(stamina) <= lowestStaminaHold);
+    for (const fps of [30, 60, 120]) {
+      const dt = 1 / fps;
+      let breath = 0;
+      for (let i = 0; i < fps; i++)
+        breath = F.breathTick(breath, stamina, dt, F.breathMovementIntensity(.3));
+      const recovered = breath;
+      for (let i = 0; i < fps; i++)
+        breath = Math.max(0, F.breathTick(breath, stamina, dt, F.breathMovementIntensity(1)) - F.dribbleHoldBreathRate(stamina) * dt);
+      assert.ok(breath > 0 && breath < recovered, `ball carry cost must be positive: stamina=${stamina} fps=${fps}`);
+      assert.ok(recovered - breath < cap * .1, `ordinary carry must use <10% cap: stamina=${stamina} fps=${fps}`);
+    }
+  }
+});

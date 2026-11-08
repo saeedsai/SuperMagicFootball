@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.65',
- date:'2026-11-06',
+ version:'0.12.81.66',
+ date:'2026-11-08',
  notes:Object.freeze([
+  'BREATH-DRIBBLE-LOW-DRAIN-01: Ordinary running with Dribble held now uses very little Breath, especially for low-Stamina players; sprint remains substantially costlier. Walking/idle recovery, Energy, one-off actions, the four action buttons, multiplayer selection, saves and offline play are unchanged. Focused and full QA, protected promotion and hosted-byte verification remain pending.',
   'STUDIO-UNDO-PALETTE-GUARD-01: Undo Randomize now skips a previous appearance choice if it has since been removed or disabled, while restoring other valid selections and preserving later manual edits.',
   'STUDIO-RANDOM-UNDO-01: Player Studio offers UNDO RANDOMIZE to reverse the last unsaved random look without discarding unrelated manual edits. It respects selected-player changes, refreshes the eight-view preview, and never writes saves. Four controls, rosters and existing Breath behavior are unchanged.',
   'CUSTOM LEAGUE AND MATCH BALL QUALITY: Cups now include a playable local double round-robin league for 4–16 existing teams, with seeded fixtures, byes, standings, season results, and its own save that does not alter Career or Cup records. Match balls also receive a subtle deterministic leather-grain finish; cached paint remains bounded and does not affect physics. Desktop/simulated-touch browser flows, save-conflict/storage fallback checks, and renderer QA pass. Away fixtures still use the existing player-home match-side presentation. Exact-head CI and hosted deployment verification are pending.',

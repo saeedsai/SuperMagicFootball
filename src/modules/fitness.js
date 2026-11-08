@@ -37,7 +37,10 @@ function spendBreath(breath,stamina,kind){
 }
 // Sustained ordinary DRIBBLE hold is inexpensive; JUMP sprint remains the high-drain option.
 // This is separate from the one-off action cost of initiating a dribble or Magic Trick.
-const dribbleHoldBreathRate=stamina=>.12+.08*(100-clamp(Number(stamina)||1,1,100))/99;
+// Ordinary movement and sustained Dribble hold are charged together each frame.
+// Keep the continuous hold cost low at minimum Stamina; sprint is the Breath limiter.
+// One-off action costs, walking/idle recovery and long-term Energy are unchanged.
+const dribbleHoldBreathRate=stamina=>.04+.03*(100-clamp(Number(stamina)||1,1,100))/99;
 // Analog walking restores BREATH while full-speed running and JUMP sprint remain costly.
 // This is BREATH-only: long-term Energy continues to use its original intensity.
 function breathMovementIntensity(magnitude,sprinting=false,hyperdash=false){

@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.65
+# SuperMagicFootball release/version policy — About-only 0.12.81.66
+
+**Dev candidate 0.12.81.66 (8 November 2026):** BREATH-DRIBBLE-LOW-DRAIN-01 reduces the continuous held-Dribble cost of normal ball carrying at low Stamina. Two baseline CI tests failed on excessive combined Breath use; sprint, recovery, Energy and four controls remain intact. Full exact-head QA, protected promotion and hosted verification remain pending.
 
 **Dev candidate 0.12.81.65 (6 November 2026):** STUDIO-UNDO-PALETTE-GUARD-01: Undo Randomize now skips a previous appearance choice if it has since been removed or disabled, while restoring other valid selections and preserving later manual edits. Full exact-head QA and Pages verification pending.
 
