@@ -29,7 +29,7 @@ with sync_playwright() as pw:
         page.wait_for_function('!!window.SupermagicFootball?.game', timeout=60000)
         open_quick(page)
         page.locator('[data-action="kickoff"]').first.click()
-        assert page.locator('#touchButtons button[data-act]').count() == 4
+        assert sorted(page.locator('#touchButtons button[data-act]').evaluate_all('(nodes) => nodes.map(n => n.dataset.act.toLowerCase())')) == ['dribble', 'jump', 'pass', 'shoot'], 'four unique match actions required'
         results = page.evaluate("""(predicate) => {
           const g = SupermagicFootball.game;
           const visible = new Function(predicate + ';return shouldShowBreathRing')();
@@ -77,6 +77,10 @@ with sync_playwright() as pw:
             if (g.players.some(p => visible(p,g,false)))
               throw Error('outside-match ring visible');
             checks.push('cpu-and-menu-hidden');
+            g.localBreathSide = 0;
+            if (rings().length !== 1 || rings()[0] !== selected(0))
+              throw Error('single-player home human lost selected Breath ring');
+            checks.push('single-player-home-visible');
           } finally {
             g.localBreathSide = originalSide;
             g.humans = originalHumans;
@@ -84,7 +88,7 @@ with sync_playwright() as pw:
           }
           return {checks, buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
         }""", predicate)
-        assert len(results['checks']) == 17 and results['buttons'] == 4, (label, results)
+        assert len(results['checks']) == 18 and results['buttons'] == 4, (label, results)
         assert not errors, (label, errors)
         print('BREATH_CHROMIUM_PASS', label, results, flush=True)
         context.close()
