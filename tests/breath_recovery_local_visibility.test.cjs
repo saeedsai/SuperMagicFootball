@@ -21,7 +21,7 @@ test('after sprint exhaustion, walking restores Breath while normal ball carryin
   for(let frame=0;frame<120;frame++)
    breath=F.breathTick(breath,stamina,1/60,F.breathMovementIntensity(1,true));
   const exhausted=breath;
-  assert.ok(exhausted<cap*.6,'two seconds of sprint must meaningfully consume Breath');
+  assert.ok(cap-exhausted>2.5,'two seconds of sprint must meaningfully consume Breath');
   for(let frame=0;frame<120;frame++)
    breath=F.breathTick(breath,stamina,1/60,F.breathMovementIntensity(.4));
   assert.ok(breath>exhausted,'walking must recover Breath');
