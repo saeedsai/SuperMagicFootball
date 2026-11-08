@@ -7,7 +7,7 @@ const path = require('node:path');
 // Exercise the production FITNESS implementation rather than duplicating its formula.
 const source = fs.readFileSync(path.join(__dirname, '../src/modules/fitness.js'), 'utf8');
 const context = {};
-vm.runInNewContext(source.replace(/export \\{FITNESS\\};?/g, '') + '\nthis.F = FITNESS;', context);
+vm.runInNewContext(source.replace(/export \{FITNESS\};?/g, '') + '\nthis.F = FITNESS;', context);
 const F = context.F;
 
 test('analog walking boundary recovers Breath at all Stamina levels', () => {
