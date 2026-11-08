@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.66
+# SuperMagicFootball release/version policy — About-only 0.12.81.67
+
+**Dev candidate 0.12.81.67 (8 November 2026):** BREATH-WALK-THRESHOLD-01: Analog walking at the exact run threshold now reliably restores Breath despite floating-point rounding; ordinary ball carrying remains inexpensive and sprint costly. No Energy, controls, roster or save changes. Exact-head QA and deployment pending.
 
 **Dev candidate 0.12.81.66 (8 November 2026):** BREATH-DRIBBLE-LOW-DRAIN-01 reduces the continuous held-Dribble cost of normal ball carrying at low Stamina. Two baseline CI tests failed on excessive combined Breath use; sprint, recovery, Energy and four controls remain intact. Full exact-head QA, protected promotion and hosted verification remain pending.
 
