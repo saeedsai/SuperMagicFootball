@@ -77,7 +77,7 @@ test('ordinary held dribble is low-drain and JUMP sprint remains substantially m
  assert.match(engine,/dt\*dribbleHoldBreathRate\(stat\(p,'stamina'\)\)/,'live engine must use shared hold rate');
  for(const stamina of [1,50,100]){
   const cap=F.breathCapacity(stamina),rate=F.dribbleHoldBreathRate(stamina);
-  assert.ok(rate>=.12&&rate<=.201,'holding dribble must be cheap but nonzero');
+  assert.ok(rate>=.04&&rate<.08,'holding dribble must be very cheap but nonzero');
   const held=F.breathTick(cap,stamina,1,.6)-rate;
   const sprint=F.breathTick(cap,stamina,1,1.5);
   assert.ok(cap-held<.45,'normal moving dribble should spend less than half a second of Breath');
