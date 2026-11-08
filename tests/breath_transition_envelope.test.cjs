@@ -44,3 +44,28 @@ test('walking and idle recover Breath while full-stick running never regenerates
     assert.ok(ordinary < initial && sprint < ordinary, `running drain at stamina ${stamina}`);
   }
 });
+
+test('held dribble remains inexpensive beside sprint across stamina and frame rates', async () => {
+  const F = await fitness;
+  for (const stamina of [1, 35, 70, 100]) {
+    const cap = F.breathCapacity(stamina);
+    const holdRate = F.dribbleHoldBreathRate(stamina);
+    assert.ok(holdRate > 0, 'held dribble must have a positive cost');
+    for (const fps of [30, 60, 120]) {
+      const seconds = 2;
+      const initial = cap * .75;
+      let dribble = initial;
+      let sprint = initial;
+      for (let frame = 0; frame < seconds * fps; frame++) {
+        const dt = 1 / fps;
+        dribble = Math.max(0, dribble - holdRate * dt);
+        sprint = F.breathTick(sprint, stamina, dt, F.breathMovementIntensity(1, true));
+      }
+      const dribbleCost = initial - dribble;
+      const sprintCost = initial - sprint;
+      assert.ok(dribbleCost < cap * .15, `held dribble cost ${dribbleCost}, stamina ${stamina}, fps ${fps}`);
+      assert.ok(sprintCost > dribbleCost * 4, `sprint ${sprintCost} vs hold ${dribbleCost}, stamina ${stamina}, fps ${fps}`);
+      assert.ok(Math.abs(dribbleCost - holdRate * seconds) < 1e-8, 'hold cost must be frame-rate independent');
+    }
+  }
+});
