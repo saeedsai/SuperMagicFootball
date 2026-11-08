@@ -3,21 +3,22 @@
 **Updated:** 2026-11-08
 
 ## Mission
-Preserve 223 teams, 2676 players, six formations, four actions, offline saves, Career/Cup ten slots and SD09. Only existing dev branch.
+Only dev; preserve 223 teams, 2676 players, six formations, four actions, offline saves, Career/Cup ten slots, SD09.
 
-## Current checkpoint
-- Candidate 0.12.81.67 remains unpromoted; walking threshold recovery and low-drain ordinary ball carry are in production, sprint remains expensive; local selected human only Breath ring.
-- New `tests/breath_recovery_local_visibility.test.cjs` covers two seconds of sprint exhaustion, two seconds of walking recovery, two seconds of cheap ball carrying across five Stamina values, plus host/guest selection switches and CPU exclusion.
-- Commits 9181c613 and c85cb2b6 accepted by GitHub. New test NOT executed; no exact-head green CI, Chromium, Modular QA or deployment established.
+## Latest increment
+- Added `tests/breath_local_selection_browser_qa.py` at 9e2f19ae58a09b358babdfd45e6adf938d7d8a93. It runs actual game startup in desktop and touch Chromium, evaluates the production renderer ownership predicate against live selected players, alternates local host/guest seats, switches selection immediately, excludes CPU/out-of-match rings and checks four action buttons.
+- This Chromium regression is committed but NOT executed; no pass claimed. Production gameplay unchanged; candidate remains 0.12.81.67.
+- Main last observed 828a4549327d14ffa592ad05ca94732391a9d988. No exact-head full CI, Modular QA, protected promotion or Pages byte verification.
 
-## Next smallest action
-Execute focused test and existing Breath suites in GitHub Actions; add real Chromium UI ring/selection test, run four Node and four Chromium shards plus Modular QA. Fix exact-head failures. Promote only with enforced main protection and green exact-head release gates; verify hosted bytes. Then Player Studio, Magic Tricks, eight-view graphics, goalkeeper and Career.
+## Next five
+1. Inspect latest exact-head Census preflight and execute focused Breath Node tests.
+2. Run the new desktop/touch Chromium regression; repair any fixture mismatch.
+3. Complete four Node + four Chromium shards and Modular QA; address failures.
+4. Enforce main protection (#87), promote only certified exact head, verify hosted bytes.
+5. Move to Player Studio, counterable four-button Magic Tricks, eight-view art, goalkeeper and Career.
 
-## Ownership and exclusions
-Only this checkpoint. Do not touch other agent memory. No new branch, force push, CI bypass or physical LAN certification. Issues #48, #86, #87 remain open.
+## Blockers
+Container cannot resolve github.com for checkout; GitHub CI is required for executable verification. Physical two-phone acceptance #48 remains open; Render commit-trigger investigation #86 remains open. Never claim physical certification or change LAN routinely.
 
-## Evidence
-GitHub compare before increment: main 828a4549; dev 31 ahead, zero behind. Native git checkout blocked by github.com DNS; no executable local test evidence.
-
-## Cleanup
-Under 4 KiB.
+## Memory
+This is the only private agent checkpoint read/edited; keep under 4 KiB.
