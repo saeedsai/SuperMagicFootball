@@ -1,23 +1,23 @@
 # SuperMagicFootball — hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-11-07
+**Updated:** 2026-11-08
 
 ## Mission
-Continue tested, bounded development on existing dev; preserve four controls, 223 teams/2676 players, six formations, saves/offline, ten Career/Cup slots and SD09.
+Continue tested increments on existing dev. Preserve four controls, 223 teams/2676 players, six formations, saves/offline, ten Career/Cup slots and SD09.
 
 ## Current checkpoint
-- BREATH-STAMINA-SCALING-01 and sustained/ownership tests committed earlier; production Breath balance unchanged. Version 0.12.81.65.
-- CI failure diagnosed from exact-head Census 42370737949 and Modular QA 42370737960 logs: 2352/2353 Node tests passed; sole failure `tests/project_memory_contract.test.cjs` wrong identity for this agent. This checkpoint now restores required exact identity and six headings.
-- Previous main 6e08082b4d254fdf447576751c32efea57915b08; dev 23 ahead before this fix.
+- Dev/main synchronized at c700851 before this run; earlier Census rerun and Modular QA passed. Version 0.12.81.65.
+- Added `tests/breath_transition_envelope.test.cjs` at b80febd06c5b125b15998f1920671f30d72264c9. Tests cover 2-second full-stick ordinary versus sprint Breath drain at 30/60/120 Hz across Stamina 1/35/70/100, plus idle/walking recovery and running no-recharge.
+- Local focused 2/2 passed against a manually mirrored FITNESS excerpt; exact repository checkout unavailable (github.com DNS), so this is NOT full-source certification.
 
 ## Next smallest action
-Verify new exact dev SHA and CI, run focused Breath/ownership Node and Chromium plus four Node/four Chromium/Modular QA; fix any failing gate. Then advance Player Studio or counterable four-action Magic Trick.
+Inspect exact-head GitHub CI for b80febd, run real-source focused Node and Chromium ownership/selection tests, four Node/four Chromium shards and Modular QA; fix failures. Advance Player Studio and counterable four-button Magic Tricks, then protected promotion and hosted-byte checks.
 
 ## Ownership and exclusions
-Only this checkpoint may be edited; no other agent memory. Never create branches, force-push, bypass protected CI, or claim physical LAN acceptance (#48). Render drift #86 and branch protection #87 remain open.
+Only edit this checkpoint, not other agents' memory. No branch creation, force-push, security bypass or unverified physical LAN certification (#48). Render drift #86 and branch protection #87 remain open.
 
 ## Evidence
-2026-11-07 CI job logs show one memory-contract identity failure, not a Breath assertion. Focused/full local checkout tests unavailable where github.com DNS fails; no local green claim. Do not promote until exact-head CI green and Pages hosted bytes verified.
+2026-11-08: GitHub compare main/dev identical at c700851 before test commit. GitHub connector committed test b80febd. Local mirrored-source test 2/2 passed; full checkout and Chromium not run. No production changes, version bump, release or Pages verification.
 
 ## Cleanup
-Keep checkpoint below 4 KiB; do not bump player-facing version for checkpoint-only fix. Continue gameplay roadmap after CI recovery.
+Keep under 4 KiB. Continue useful gameplay increments despite release/infra blockers.
