@@ -51,3 +51,28 @@ test('nonfinite movement intensity never causes instantaneous Breath drain',()=>
   assert.ok(sprint<run-1.3,'valid sprint still costs substantially more than carrying');
  }
 });
+
+test('nonfinite analog magnitude cannot become a full-speed sprint',()=>{
+ for(const magnitude of [NaN,Infinity,-Infinity,undefined]){
+  for(const sprinting of [false,true]){
+   for(const hyperdash of [false,true]){
+    assert.equal(F.breathMovementIntensity(magnitude,sprinting,hyperdash),0,
+     'invalid analog input must be treated as idle');
+   }
+  }
+ }
+ for(const magnitude of [0,.14,.25,.55,1]){
+  const ordinary=F.breathMovementIntensity(magnitude);
+  const sprint=F.breathMovementIntensity(magnitude,true);
+  assert.ok(Number.isFinite(ordinary)&&Number.isFinite(sprint));
+  if(magnitude>.14)assert.ok(sprint>ordinary,'valid sprint retains greater intensity');
+ }
+ for(const stamina of [1,50,100]){
+  const cap=F.breathCapacity(stamina),start=cap*.4;
+  const invalid=F.breathTick(start,stamina,1,F.breathMovementIntensity(Infinity,true));
+  assert.ok(invalid>=start,'invalid input cannot drain Breath');
+  const sprint=F.breathTick(cap,stamina,1,F.breathMovementIntensity(1,true));
+  const run=F.breathTick(cap,stamina,1,F.breathMovementIntensity(1));
+  assert.ok(sprint<run-1.3,'valid sprint drain contrast remains intact');
+ }
+});
