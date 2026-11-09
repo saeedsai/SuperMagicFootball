@@ -1,3 +1,7 @@
+## 2026-11-09 — SCREAM-CPU-FINITE-TARGET-01
+
+Acceptance: CPU Scream JUMP reaction must ignore nonfinite carrier/defender positions, avoid selecting invalid nearest defenders, and preserve valid reactions for both sides. Source commit `167620b` adds finite coordinate guards in the existing wired `reactToScreamTrick` path; focused Node regression `e61ed5d` covers NaN, +/-Infinity, undefined x/y and valid reactions. Internal reliability only: version remains `0.12.81.67`; no gameplay feature, roster, save or control change. Local tests not executed in this runtime; full exact-head Census and Modular QA must pass before any promotion. Physical two-phone acceptance #48, Render drift #86, main protection #87 still open.
+
 ## 2026-11-06 — STUDIO-UNDO-PALETTE-GUARD-01 (0.12.81.65)
 - STUDIO-UNDO-PALETTE-GUARD-01: Undo Randomize now skips a previous appearance choice if it has since been removed or disabled, while restoring other valid selections and preserving later manual edits.
 - Added two Node regression cases for disabled and removed original options. Full QA and deployment not yet certified.
