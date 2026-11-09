@@ -26,7 +26,7 @@ test('Breath gauge and low-Breath warning stay inside selected-player draw guard
   const anchor = render.indexOf('// Circular Breath gauge at the feet.');
   assert.ok(anchor >= 0, 'production gauge anchor exists');
   const tail = render.slice(anchor);
-  assert.match(tail, /^\/\/ Circular Breath gauge[^\n]*\n\s*if\(shouldShowBreathRing\(p,game,this\.inMatchDraw\)\)\{\s*const stamina=STATS\.stat\(p,'stamina'\)/);
+  assert.match(tail, /^\s*\/\/ Circular Breath gauge[^\n]*\n\s*if\(shouldShowBreathRing\(p,game,this\.inMatchDraw\)\)\{\s*const stamina=STATS\.stat\(p,'stamina'\)/);
   const guardEnd = tail.indexOf('\n  }\n', tail.indexOf('if(shouldShowBreathRing'));
   assert.ok(guardEnd > 0, 'guard closes explicitly');
   const guarded = tail.slice(0, guardEnd);
