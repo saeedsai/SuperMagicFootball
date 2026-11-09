@@ -39,3 +39,14 @@ test('Scream helper and equipped Magic Trick keep four-button controls and save 
  assert.match(engine,/const id=p\?\.src\?\.magicTrick/);
  assert.doesNotMatch(ui,/id="studioMagicTier"/);
 });
+
+test('Scream refuses nonfinite carrier positions without targeting or spending resources',async()=>{
+ const {evaluateScream}=await load();
+ for(const bad of [NaN,Infinity,-Infinity,undefined]){
+  for(const axis of ['x','y']){
+   const out=evaluateScream({carrier:{...carrier,[axis]:bad},opponents:[rival],roll:0});
+   assert.deepEqual(out,{activated:false,reason:'unavailable'});
+  }
+ }
+ assert.equal(evaluateScream({carrier,opponents:[rival],roll:0}).activated,true);
+});
