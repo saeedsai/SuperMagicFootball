@@ -6,6 +6,7 @@
 Develop on existing dev only. Preserve 223 teams, 2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, offline saves, Career/Cup ten slots and SD09. No routine LAN/P2P.
 
 ## Current checkpoint
+- 9 Nov: Fixed three double-escaped regex literals in `tests/breath_render_guard_contract.test.cjs` (commit `2ab885b6`): occurrence checks now match actual production `shouldShowBreathRing` and ellipse calls rather than literal backslashes. Production source inspected: 3 predicate occurrences, 2 gauge arcs, 1 warning pulse. Native Node and browser gates still pending.
 - Added duplicate-render-site regression to `tests/breath_render_guard_contract.test.cjs` (commit `736d2ce3`): enforce one predicate definition and two guarded uses, exactly two gauge arcs and one warning pulse. Fetched production renderer matches expected counts (3/2/1).
 - Inspected failed preflight from previous exact-head Census 42559570894: release contract failures trace to README still calling .67 a `dev candidate`, stale .66 heading, and sw cache missing `smf-` prefix/current .67 suffix. Repaired README (4665f6ad) and offline cache (5282e2ad). Candidate stays 0.12.81.67; these are alignment fixes, not new gameplay. Local Git checkout still blocked by github.com DNS. Exact-head new CI pending.
 - Main branch protection is reported disabled; #87 remains open. #48 physical two-phone and #86 Render commit-trigger drift remain open.
