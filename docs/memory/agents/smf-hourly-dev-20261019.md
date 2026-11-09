@@ -3,26 +3,25 @@
 **Updated:** 2026-11-09
 
 ## Mission
-Existing dev only. Preserve 223 teams/2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, offline saves, ten Career/Cup slots, SD09. No routine LAN/P2P.
+Develop on existing dev only. Preserve 223 teams, 2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, offline saves, Career/Cup ten slots and SD09. No routine LAN/P2P.
 
 ## Current checkpoint
-- Fixed malformed double-escaped halo regex in `tests/breath_render_guard_contract.test.cjs` (`35882cd1`); JavaScript regex compilation and matching against fetched production renderer verified in connector runtime. Full Node execution NOT verified.
-- Read AGENTS, version policy, shared/memory protocol, own checkpoint, roadmap, renderer and browser regression. Candidate stays 0.12.81.67 because this is test-only.
-- Local Git checkout confirmed blocked by github.com DNS. Four Node/four Chromium shards, Modular QA, protected promotion and hosted Pages verification unverified.
-- Open #48 physical two-phone acceptance, #86 Render commit-trigger drift, #87 missing GitHub-enforced main protection.
+- Added duplicate-render-site regression to `tests/breath_render_guard_contract.test.cjs` (commit `736d2ce3`): enforce one predicate definition and two guarded uses, exactly two gauge arcs and one warning pulse. Fetched production renderer matches expected counts (3/2/1).
+- This is test-only; candidate remains 0.12.81.67. Local Git checkout still blocked by github.com DNS. Full executable Node/Chromium tests and exact-head CI unverified.
+- Main branch protection is reported disabled; #87 remains open. #48 physical two-phone and #86 Render commit-trigger drift remain open.
 
 ## Next smallest action
-1. Run focused Node Breath tests including new halo assertion.
-2. Run desktop/touch Chromium local-selection regression on playable match.
+1. Run focused Breath Node tests including duplicate-site guard.
+2. Run desktop/touch Chromium selected-player visibility and switching.
 3. Run four Node/four Chromium shards and Modular QA on exact dev head.
-4. Fix failures and enforce main protection before release; verify hosted bytes.
-5. Advance Player Studio, counterable four-button Tricks, existing eight-view art, goalkeeper and Career.
+4. Resolve failures, enforce protected main promotion, verify hosted Pages bytes.
+5. Advance Player Studio, counterable Magic Tricks, eight-view art, goalkeeper and Career.
 
 ## Ownership and exclusions
 Own checkpoint only; no new branches, main writes, force-push, other agents' memory or unverified release claims.
 
 ## Evidence
-GitHub accepted regex repair commit; isolated JavaScript regex match against actual render.js passed. No Node/Chromium suite pass, promotion or deployment claimed.
+GitHub accepted test commit; fetched renderer passed isolated source-count checks in connector runtime, not native Node execution. No promotion or deployment claimed.
 
 ## Cleanup
-Keep physical device certification open until real two-phone evidence.
+Physical two-phone certification remains open pending real-device evidence.
