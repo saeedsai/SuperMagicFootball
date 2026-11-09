@@ -6,9 +6,9 @@
 Existing dev only. Preserve 223 teams/2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, offline saves, ten Career/Cup slots, SD09. No routine LAN/P2P.
 
 ## Current checkpoint
-- Added selected-player halo guard assertion to `tests/breath_render_guard_contract.test.cjs` in commit `4e0af377`; it complements gauge, fill and low-Breath pulse ownership coverage. Test execution NOT verified.
+- Fixed malformed double-escaped halo regex in `tests/breath_render_guard_contract.test.cjs` (`35882cd1`); JavaScript regex compilation and matching against fetched production renderer verified in connector runtime. Full Node execution NOT verified.
 - Read AGENTS, version policy, shared/memory protocol, own checkpoint, roadmap, renderer and browser regression. Candidate stays 0.12.81.67 because this is test-only.
-- Local checkout fails DNS resolution for github.com. Full exact-head 4 Node/4 Chromium and Modular QA, protected promotion and hosted Pages checks remain unverified.
+- Local Git checkout confirmed blocked by github.com DNS. Four Node/four Chromium shards, Modular QA, protected promotion and hosted Pages verification unverified.
 - Open #48 physical two-phone acceptance, #86 Render commit-trigger drift, #87 missing GitHub-enforced main protection.
 
 ## Next smallest action
@@ -22,7 +22,7 @@ Existing dev only. Preserve 223 teams/2676 players, six formations, exactly Pass
 Own checkpoint only; no new branches, main writes, force-push, other agents' memory or unverified release claims.
 
 ## Evidence
-GitHub accepted regression commit. No executable test pass, promotion or deployment claimed.
+GitHub accepted regex repair commit; isolated JavaScript regex match against actual render.js passed. No Node/Chromium suite pass, promotion or deployment claimed.
 
 ## Cleanup
 Keep physical device certification open until real two-phone evidence.
