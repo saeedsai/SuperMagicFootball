@@ -20,9 +20,11 @@ test('analog walking boundary recovers Breath at all Stamina levels', () => {
       assert.ok(end > start, `walk must recover: stamina=${stamina}, input=${magnitude}, intensity=${intensity}`);
       assert.ok(end <= cap);
     }
-    const ordinary = F.breathTick(start, stamina, 1, F.breathMovementIntensity(1));
-    const sprint = F.breathTick(start, stamina, 1, F.breathMovementIntensity(1, true));
-    assert.ok(ordinary < start, 'full-speed ordinary running costs a little Breath');
+    // Compare costs with enough starting Breath to avoid saturating at zero:
+    // cap/3 is less than one second of sprint drain at minimum Stamina.
+    const ordinary = F.breathTick(cap, stamina, 1, F.breathMovementIntensity(1));
+    const sprint = F.breathTick(cap, stamina, 1, F.breathMovementIntensity(1, true));
+    assert.ok(ordinary < cap, 'full-speed ordinary running costs a little Breath');
     assert.ok(sprint < ordinary - 1, 'sprint costs substantially more than ordinary running');
   }
 });
