@@ -1174,8 +1174,8 @@ class GameEngine{
   const threat=target===p?carrier:null;
   if(!threat){p.aiScreamThreat=null;p.aiScreamReaction=0;return false;}
   if(p.z>=20||(p.action==='jump'&&(p.actionTimer||0)>0)||(p.action==='slide'&&(p.actionTimer||0)>0))return false;
-  if(p.aiScreamThreat!==threat){p.aiScreamThreat=threat;p.aiScreamReaction=Math.max(0,Number(reactionSeconds)||0);}
-  p.aiScreamReaction=Math.max(0,(p.aiScreamReaction||0)-Math.max(0,dt||0));
+  if(p.aiScreamThreat!==threat){p.aiScreamThreat=threat;p.aiScreamReaction=Number.isFinite(reactionSeconds)&&reactionSeconds>=0?reactionSeconds:.78;}
+  p.aiScreamReaction=Math.max(0,(p.aiScreamReaction||0)-(Number.isFinite(dt)?Math.max(0,dt):0));
   if(p.aiScreamReaction<=1e-9){p.aiScreamReaction=Infinity;return this.jump(p);}
   return false;
  }

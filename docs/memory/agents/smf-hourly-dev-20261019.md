@@ -3,23 +3,21 @@
 **Updated:** 2026-11-09
 
 ## Mission
-Small tested dev increments. Preserve 223 teams, 2676 players, six formations, Pass/Shoot/Dribble/Jump only, saves/offline, Career/Cup ten slots and SD09. No branch creation, force push or bypass.
+Tested dev increments; preserve 223 teams, 2676 players, six formations, four buttons, saves/offline, ten Career/Cup slots and SD09.
 
 ## Current checkpoint
-- Existing Breath candidate 0.12.81.67 already released; no player-facing change in this increment.
-- Added Scream CPU nearest-defender fallback regression: invalid alternate defender x/y (NaN, ±Infinity, undefined) must not displace valid closest defender; invalid nearest defender must allow next valid defender to jump. Commit 9f9486d.
-- Earlier exact-head c8b2c87 Census 42651114469 and Modular QA 42651114480 passed and was promoted to main.
-- New test-only dev candidate: exact-head focused/full CI pending; no release claimed. Physical LAN #48, Render #86, main protection #87 remain open.
+- Previous exact dev SHA 539ae706 passed Census 42661341342 and Modular QA 42661341004, and reached main.
+- This increment: Scream CPU counter rejects nonfinite/invalid frame time and applies conservative 0.78s reaction when difficulty timing is invalid; focused Node regression added. No player-facing version bump (0.12.81.67).
+- New exact-head CI not yet verified; do not claim promotion.
 
 ## Next smallest action
-Verify test's exact-head CI. Repair if it fails. Advance playable Magic Tricks or Player Studio with real game-side coverage. Promote only exact-green dev via existing release pipeline; verify Pages hosted bytes.
+Verify focused Node plus four Node/four Chromium and Modular QA for exact dev head; fix failures. Then Player Studio and playable Magic Trick improvements.
 
 ## Ownership and exclusions
-Only this checkpoint. No other agents' private memory. No routine LAN work, roster audits, new concept heroes, or unapproved art.
+Only this checkpoint. No other private memories, routine LAN, roster audits, concept heroes or unapproved art.
 
 ## Evidence
-https://github.com/saeedsai/SuperMagicFootball/commit/9f9486d4149bf5802c71676e8963f958201a82ca
-https://github.com/saeedsai/SuperMagicFootball/actions/runs/42651114469
+https://github.com/saeedsai/SuperMagicFootball/actions/runs/42661341342
 
 ## Cleanup
-Under 4 KiB; local Node/Chromium not run; exact-head CI pending.
+Checkpoint <4KiB; local Git checkout DNS blocked; physical two-phone #48, Render #86, main protection #87 remain open.

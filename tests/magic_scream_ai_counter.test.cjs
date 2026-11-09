@@ -98,3 +98,20 @@ test('Scream CPU counter selects the nearest eligible finite defender and ignore
   assert.equal(fallback.target.z,0);
  }
 });
+
+
+test('Scream CPU reaction fails safely on invalid reaction and frame timing',()=>{
+ for(const side of [0,1])for(const bad of [NaN,Infinity,-Infinity,undefined]){
+  const f=fixture(side,.7);
+  assert.equal(react.call(f.g,f.target,.1,bad),false,'invalid difficulty reaction must not grant an instant JUMP');
+  assert.equal(f.g.jumps,0);
+  assert.ok(f.target.aiScreamReaction>.6,'invalid reaction uses conservative warning delay');
+  for(const badDt of [NaN,Infinity,-Infinity,undefined]){
+   const remaining=f.target.aiScreamReaction;
+   assert.equal(react.call(f.g,f.target,badDt,bad),false);
+   assert.equal(f.target.aiScreamReaction,remaining,'invalid frame duration cannot advance reaction');
+  }
+  assert.equal(react.call(f.g,f.target,.7,bad),true,'valid elapsed time still permits existing JUMP counter');
+  assert.equal(f.g.jumps,1);
+ }
+});
