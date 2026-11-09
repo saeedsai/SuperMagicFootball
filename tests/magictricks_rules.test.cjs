@@ -66,3 +66,17 @@ test('Scream stays deterministic with nonfinite defender attributes',async()=>{
  const expected=evaluateScream({carrier,opponents:[{...rival,defence:0,agility:80}],roll:0});
  assert.equal(mixed.chance,expected.chance);
 });
+
+test('Scream helper never returns NaN chance for corrupt carrier fatigue',async()=>{
+ const {evaluateScream}=await load();
+ const base=evaluateScream({carrier:{...carrier,fatigue:0},opponents:[rival],roll:0});
+ for(const bad of [NaN,Infinity,-Infinity,undefined]){
+  const result=evaluateScream({carrier:{...carrier,fatigue:bad},opponents:[rival],roll:0});
+  assert.equal(result.activated,true);
+  assert.equal(result.chance,base.chance);
+  assert.equal(result.success,true);
+  assert.ok(Number.isFinite(result.chance));
+ }
+ const exhausted=evaluateScream({carrier:{...carrier,fatigue:.9},opponents:[rival],roll:0});
+ assert.equal(exhausted.activated,false);
+});
