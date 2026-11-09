@@ -115,3 +115,23 @@ test('Scream CPU reaction fails safely on invalid reaction and frame timing',()=
   assert.equal(f.g.jumps,1);
  }
 });
+
+test('Scream CPU countdown recovers corrupt saved reaction state without an instant counter',()=>{
+ for(const side of [0,1])for(const bad of [NaN,-Infinity,undefined,-2]){
+  const f=fixture(side,.7);
+  f.target.aiScreamThreat=f.carrier;
+  f.target.aiScreamReaction=bad;
+  assert.equal(react.call(f.g,f.target,.1,.12),false);
+  assert.equal(f.g.jumps,0,'corrupt countdown cannot grant a free immediate jump');
+  assert.ok(f.target.aiScreamReaction>=.6&&Number.isFinite(f.target.aiScreamReaction));
+  assert.equal(react.call(f.g,f.target,.7,.12),true);
+  assert.equal(f.g.jumps,1);
+ }
+ for(const side of [0,1]){
+  const f=fixture(side,.7);
+  f.target.aiScreamThreat=f.carrier;
+  f.target.aiScreamReaction=Infinity;
+  assert.equal(react.call(f.g,f.target,.1,.12),false,'completed counter sentinel stays spent');
+  assert.equal(f.g.jumps,0);
+ }
+});
