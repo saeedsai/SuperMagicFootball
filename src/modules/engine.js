@@ -1168,8 +1168,9 @@ class GameEngine{
   // The existing one-second hold is the only warning; start reacting early enough to rise into its JUMP counter.
   const carrier=this.ball?.owner;
   const target=carrier&&carrier.t!==p.t&&!carrier.keeper&&carrier.src?.magicTrick==='scream'&&
-   Number(carrier.dribbleHold)>=.35&&Number(carrier.dribbleHold)<1&&distance(carrier,p)<=135
-   ?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0).sort((a,b)=>distance(carrier,a)-distance(carrier,b))[0]:null;
+   Number(carrier.dribbleHold)>=.35&&Number(carrier.dribbleHold)<1&&
+   Number.isFinite(carrier.x)&&Number.isFinite(carrier.y)&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&distance(carrier,p)<=135
+   ?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0&&Number.isFinite(q.x)&&Number.isFinite(q.y)).sort((a,b)=>distance(carrier,a)-distance(carrier,b))[0]:null;
   const threat=target===p?carrier:null;
   if(!threat){p.aiScreamThreat=null;p.aiScreamReaction=0;return false;}
   if(p.z>=20||(p.action==='jump'&&(p.actionTimer||0)>0)||(p.action==='slide'&&(p.actionTimer||0)>0))return false;
