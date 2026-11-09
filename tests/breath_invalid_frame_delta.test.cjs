@@ -36,3 +36,18 @@ test('valid frame durations preserve cheap carrying, expensive sprint, and walki
   assert.equal(F.breathTick(cap,stamina,1,0),cap,'recovery must respect cap');
  }
 });
+
+test('nonfinite movement intensity never causes instantaneous Breath drain',()=>{
+ for(const stamina of [1,50,100]){
+  const cap=F.breathCapacity(stamina),start=cap*.4;
+  for(const intensity of [NaN,Infinity,-Infinity,undefined]){
+   const next=F.breathTick(start,stamina,1,intensity);
+   assert.ok(Number.isFinite(next),'Breath remains finite');
+   assert.ok(next>=start,'invalid intensity cannot drain Breath');
+   assert.ok(next<=cap,'recovery remains capped');
+  }
+  const run=F.breathTick(cap,stamina,1,F.breathMovementIntensity(1));
+  const sprint=F.breathTick(cap,stamina,1,F.breathMovementIntensity(1,true));
+  assert.ok(sprint<run-1.3,'valid sprint still costs substantially more than carrying');
+ }
+});
