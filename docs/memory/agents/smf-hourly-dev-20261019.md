@@ -3,21 +3,21 @@
 **Updated:** 2026-11-09
 
 ## Mission
-Tested dev increments; preserve 223 teams, 2676 players, six formations, four buttons, saves/offline, ten Career/Cup slots and SD09.
+Tested increments on existing dev; preserve 223 teams, 2676 players, six formations, four controls, saves/offline, ten Career/Cup slots and SD09.
 
 ## Current checkpoint
-- Previous exact dev SHA 539ae706 passed Census 42661341342 and Modular QA 42661341004, and reached main.
-- This increment: Scream CPU counter rejects nonfinite/invalid frame time and applies conservative 0.78s reaction when difficulty timing is invalid; focused Node regression added. No player-facing version bump (0.12.81.67).
-- New exact-head CI not yet verified; do not claim promotion.
+- Prior candidate 0.12.81.67 Breath improvements deployed; last verified main SHA 539ae706.
+- Current Scream CPU JUMP counter repairs missing/negative/NaN/-Infinity countdown conservatively; preserves +Infinity spent sentinel. Focused Node regression added for both teams.
+- No new player-facing feature or version bump. Exact-head Census/Modular QA and deployment not yet verified.
 
 ## Next smallest action
-Verify focused Node plus four Node/four Chromium and Modular QA for exact dev head; fix failures. Then Player Studio and playable Magic Trick improvements.
+Verify full four Node/four Chromium Census, Modular QA and exact head; fix any failures, then prioritize playable Magic Tricks and Player Studio UX.
 
 ## Ownership and exclusions
-Only this checkpoint. No other private memories, routine LAN, roster audits, concept heroes or unapproved art.
+Only this checkpoint. No other private memory, routine LAN, roster audits, concept heroes or unapproved art.
 
 ## Evidence
-https://github.com/saeedsai/SuperMagicFootball/actions/runs/42661341342
+https://github.com/saeedsai/SuperMagicFootball/commit/181cab9cf5b1bcd2c57037f385444d089052e5ba
 
 ## Cleanup
-Checkpoint <4KiB; local Git checkout DNS blocked; physical two-phone #48, Render #86, main protection #87 remain open.
+Physical two-phone #48, Render #86, main protection #87 open. Local checkout/Node/Chromium not executed.
