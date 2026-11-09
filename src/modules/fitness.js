@@ -44,7 +44,9 @@ const dribbleHoldBreathRate=stamina=>.04+.03*(100-clamp(Number(stamina)||1,1,100
 // Analog walking restores BREATH while full-speed running and JUMP sprint remain costly.
 // This is BREATH-only: long-term Energy continues to use its original intensity.
 function breathMovementIntensity(magnitude,sprinting=false,hyperdash=false){
- const input=clamp(Number(magnitude)||0,0,1);
+ const numericMagnitude=Number(magnitude);
+ // Corrupt analog input must not become a full-speed sprint (Infinity clamps to 1).
+ const input=Number.isFinite(numericMagnitude)?clamp(numericMagnitude,0,1):0;
  if(input<=.14)return 0;
  if(hyperdash)return 1.7;
  if(sprinting)return .55+.95*(input-.14)/.86;
