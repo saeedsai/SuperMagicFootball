@@ -52,3 +52,25 @@ test('Scream CPU response is wired into AI and preserves existing counter and co
  assert.match(trick,/screamDodged=id==='scream'/);assert.match(trick,/screamParried=id==='scream'/);
  assert.match(engine,/Hold DRIBBLE for >=1s/);
 });
+
+test('Scream CPU counter ignores nonfinite carrier and defender coordinates without jumping or stealing nearest selection',()=>{
+ for(const side of [0,1]){
+  for(const field of ['x','y'])for(const bad of [NaN,Infinity,-Infinity,undefined]){
+   const invalidCarrier=fixture(side,.7);
+   invalidCarrier.carrier[field]=bad;
+   react.call(invalidCarrier.g,invalidCarrier.target,.1,.02);
+   assert.equal(invalidCarrier.g.jumps,0,'invalid carrier must not trigger a jump');
+   assert.equal(invalidCarrier.target.aiScreamThreat,null);
+
+   const invalidTarget=fixture(side,.7);
+   invalidTarget.target[field]=bad;
+   react.call(invalidTarget.g,invalidTarget.target,.1,.02);
+   assert.equal(invalidTarget.g.jumps,0,'invalid defender must not trigger a jump');
+   assert.equal(invalidTarget.target.aiScreamThreat,null);
+  }
+  const valid=fixture(side,.7);
+  react.call(valid.g,valid.target,.1,.02);
+  assert.equal(valid.g.jumps,1,'valid nearest defender still counters');
+  assert.equal(valid.target.z,22);
+ }
+});
