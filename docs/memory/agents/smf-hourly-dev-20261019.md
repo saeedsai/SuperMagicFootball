@@ -3,26 +3,26 @@
 **Updated:** 2026-11-09
 
 ## Mission
-Existing dev only; preserve 223 teams, 2676 players, six formations, Pass/Shoot/Dribble/Jump, saves/offline, Career/Cup ten slots and SD09. No routine LAN/P2P work.
+Existing dev only. Preserve 223 teams/2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, offline saves, ten Career/Cup slots, SD09. No routine LAN/P2P.
 
 ## Current checkpoint
-- Added `tests/breath_render_guard_contract.test.cjs` (879bb268): checks that the production canvas Breath gauge, fill and low-Breath pulse all remain inside `shouldShowBreathRing` selected-player guard, covering a gap left by predicate-only unit/browser tests.
-- Fetched production `src/modules/render.js` and manually evaluated guard regex against current source: match true. The committed Node test itself was NOT executed. Local Git checkout still fails DNS resolution of github.com.
-- Candidate remains 0.12.81.67 (test-only). Prior dev was 45 ahead/0 behind main 828a4549327d14ffa592ad05ca94732391a9d988; verify new exact head before release.
-- Four Node/four Chromium shards, Modular QA, protected main promotion and Pages hosted-byte checks remain unverified. Open #48 physical two-phone, #86 Render trigger drift, #87 branch protection.
+- Added selected-player halo guard assertion to `tests/breath_render_guard_contract.test.cjs` in commit `4e0af377`; it complements gauge, fill and low-Breath pulse ownership coverage. Test execution NOT verified.
+- Read AGENTS, version policy, shared/memory protocol, own checkpoint, roadmap, renderer and browser regression. Candidate stays 0.12.81.67 because this is test-only.
+- Local checkout fails DNS resolution for github.com. Full exact-head 4 Node/4 Chromium and Modular QA, protected promotion and hosted Pages checks remain unverified.
+- Open #48 physical two-phone acceptance, #86 Render commit-trigger drift, #87 missing GitHub-enforced main protection.
 
 ## Next smallest action
-1. Run the new draw-guard test and focused real-FITNESS Breath Node suite.
-2. Run desktop/touch Chromium ownership regression against playable match.
-3. Complete four Node/four Chromium and Modular QA on exact dev SHA.
-4. Resolve CI/security gates before protected promotion and hosted byte verification.
-5. Then advance Player Studio, four-button counterable Tricks, existing eight-view graphics, goalkeeper and Career; investigate Render #86 independently.
+1. Run focused Node Breath tests including new halo assertion.
+2. Run desktop/touch Chromium local-selection regression on playable match.
+3. Run four Node/four Chromium shards and Modular QA on exact dev head.
+4. Fix failures and enforce main protection before release; verify hosted bytes.
+5. Advance Player Studio, counterable four-button Tricks, existing eight-view art, goalkeeper and Career.
 
 ## Ownership and exclusions
-Only own checkpoint; never new branches, main writes, force-push, or another agent's memory.
+Own checkpoint only; no new branches, main writes, force-push, other agents' memory or unverified release claims.
 
 ## Evidence
-GitHub accepted test commit; guard regex checked against fetched source; no executable Node/Chromium pass claimed.
+GitHub accepted regression commit. No executable test pass, promotion or deployment claimed.
 
 ## Cleanup
-Do not mark physical acceptance or deployment complete without evidence.
+Keep physical device certification open until real two-phone evidence.
