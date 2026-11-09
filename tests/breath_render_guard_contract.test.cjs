@@ -13,6 +13,8 @@ test('Breath gauge and low-Breath warning stay inside selected-player draw guard
   // even when the Breath fill and warning remain correctly guarded.
   const halo = render.match(/if\(shouldShowBreathRing\(p,game,this\.inMatchDraw\)\)\{ctx\.strokeStyle=p\.t===0\?'#ffe675':'#74f2ff';[\s\S]*?ctx\.ellipse\(0,5,28,12/);
   assert.ok(halo, 'selected-player halo is gated by Breath ownership');
+  assert.equal((render.match(/ctx\.ellipse\(0,5,28,12/g) || []).length, 1,
+    'selected-player halo is drawn exactly once, not duplicated by another path');
   // Keep ownership checks centralized: one predicate definition, one halo, one gauge.
   // A second draw site can leak a ring even if the original guarded site stays correct.
   const uses = [...render.matchAll(/shouldShowBreathRing\s*\(/g)];
