@@ -6,6 +6,7 @@ function evaluateScream({carrier,opponents=[],roll=.5}={}){
  if(!carrier||!Number.isFinite(carrier.x)||!Number.isFinite(carrier.y)||
     carrier.magicTrick!=='scream'||carrier.role==='GK'||carrier.stunned||
     (carrier.cooldown||0)>0||(carrier.fatigue||0)>.85)return {activated:false,reason:'unavailable'};
+ const fatigue=Number.isFinite(carrier.fatigue)?clamp(carrier.fatigue,0,1):0;
  const valid=opponents.filter(o=>o&&o.team!==carrier.team&&o.role!=='GK'&&!o.stunned&&
     Number.isFinite(o.x)&&Number.isFinite(o.y)&&Math.hypot(carrier.x-o.x,carrier.y-o.y)<SCREAM_RULES.range)
   .sort((a,b)=>Math.hypot(carrier.x-a.x,carrier.y-a.y)-Math.hypot(carrier.x-b.x,carrier.y-b.y));
@@ -15,7 +16,7 @@ function evaluateScream({carrier,opponents=[],roll=.5}={}){
  const aware=Number.isFinite(rival.face)&&rival.face*dx>0&&closing>.12*dist;
  const defence=clamp(((Number.isFinite(rival.defence)?rival.defence:0)*.6+
   (Number.isFinite(rival.agility)?rival.agility:0)*.4)/100,0,1);
- const chance=clamp(.88-dist/550-defence*.2-(aware?.18:0)-clamp(carrier.fatigue||0,0,1)*.12,.2,.82);
+ const chance=clamp(.88-dist/550-defence*.2-(aware?.18:0)-fatigue*.12,.2,.82);
  const success=clamp(Number.isFinite(roll)?roll:.5,0,1)<chance;
  return {activated:true,success,targetId:rival.id,chance,countered:!success,
   cooldown:SCREAM_RULES.cooldown,staminaCost:SCREAM_RULES.staminaCost,
