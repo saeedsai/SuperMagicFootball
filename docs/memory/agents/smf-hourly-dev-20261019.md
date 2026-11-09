@@ -6,6 +6,7 @@
 Develop on existing dev only. Preserve 223 teams, 2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, offline saves, Career/Cup ten slots and SD09. No routine LAN/P2P.
 
 ## Current checkpoint
+- 9 Nov: Fixed the Breath draw-guard test's line-start anchor to allow production renderer indentation (`3fb714e3`); confirmed source occurrence counts 3 predicate/1 halo/2 gauge/1 warning. No native Node or Chromium execution; local GitHub DNS blocked. Exact-head CI and release remain pending.
 - 9 Nov: Added selected-halo single-render-site assertion to Breath draw-guard contract (`099016fc`), preventing a second halo draw from bypassing local ownership. Fetched production source has one halo ellipse, two gauge arcs, one warning pulse. Connector-level source checks passed; native Node/Chromium not run (GitHub DNS unavailable locally). No gameplay/version change.
 - 9 Nov: Fixed three double-escaped regex literals in `tests/breath_render_guard_contract.test.cjs` (commit `2ab885b6`): occurrence checks now match actual production `shouldShowBreathRing` and ellipse calls rather than literal backslashes. Production source inspected: 3 predicate occurrences, 2 gauge arcs, 1 warning pulse. Native Node and browser gates still pending.
 - Added duplicate-render-site regression to `tests/breath_render_guard_contract.test.cjs` (commit `736d2ce3`): enforce one predicate definition and two guarded uses, exactly two gauge arcs and one warning pulse. Fetched production renderer matches expected counts (3/2/1).
