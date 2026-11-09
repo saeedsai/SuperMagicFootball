@@ -74,3 +74,27 @@ test('Scream CPU counter ignores nonfinite carrier and defender coordinates with
   assert.equal(valid.target.z,22);
  }
 });
+
+
+test('Scream CPU counter selects the nearest eligible finite defender and ignores an invalid rival',()=>{
+ for(const side of [0,1])for(const field of ['x','y'])for(const bad of [NaN,Infinity,-Infinity,undefined]){
+  const {g,carrier,target,other}=fixture(side,.7);
+  // The alternate defender is initially farther away; an invalid coordinate
+  // must not displace the valid closest defender or poison its distance sort.
+  other[field]=bad;
+  assert.equal(react.call(g,target,.1,.02),true);
+  assert.equal(g.jumps,1);
+  assert.equal(target.z,22);
+  assert.equal(other.z,0);
+
+  const fallback=fixture(side,.7);
+  fallback.target[field]=bad;
+  fallback.other.x=350;
+  fallback.other.y=240;
+  assert.equal(react.call(fallback.g,fallback.other,.1,.02),true,
+   'the next valid defender should be allowed to counter');
+  assert.equal(fallback.g.jumps,1);
+  assert.equal(fallback.other.z,22);
+  assert.equal(fallback.target.z,0);
+ }
+});
