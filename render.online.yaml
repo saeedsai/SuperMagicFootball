@@ -1,13 +1,14 @@
 # Standalone Blueprint for the authenticated online game API.
 # Select this file as the Blueprint path when creating a separate Render service.
 # It intentionally does not include or change the existing LAN signal service.
+# Production deployments follow main only after the dev QA promotion gate.
 services:
   - type: web
     name: supermagicfootball-online-api
     runtime: node
     plan: free
     region: frankfurt
-    branch: dev
+    branch: main
     buildCommand: npm ci --omit=dev
     startCommand: npm run serve:online
     healthCheckPath: /healthz

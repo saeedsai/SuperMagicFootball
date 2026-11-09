@@ -1,7 +1,8 @@
 name: Verify Live Modular Concept Hair Preview
+# Live hosted checks track the deployed main release, never unpromoted dev.
 on:
   push:
-    branches: [dev]
+    branches: [main]
     paths:
       - '.github/workflows/concept-modular-live-smoke.yml'
       - 'tests/concept_modular_live_qa.py'

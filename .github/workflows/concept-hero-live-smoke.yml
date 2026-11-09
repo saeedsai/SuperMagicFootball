@@ -1,7 +1,8 @@
 name: Verify Live Concept Royals Sprite and Running
+# Live hosted checks track the deployed main release, never unpromoted dev.
 on:
   push:
-    branches: [dev]
+    branches: [main]
     paths:
       - '.github/workflows/concept-hero-live-smoke.yml'
       - 'assets/concept_hero/**'

@@ -1,8 +1,9 @@
 name: Verify Deployed PC and Touch Game
 # Confirm deployed 165 fully named club squads and match boot on desktop and simulated touch.
+# Live hosted checks track the deployed main release, never unpromoted dev.
 on:
   push:
-    branches: [dev]
+    branches: [main]
     paths: ['.github/workflows/verify-pages-playable.yml', 'data/mechanics/gameplay.json', 'src/modules/physicsbalance.js', 'src/modules/engine.js']
   workflow_dispatch:
 permissions:

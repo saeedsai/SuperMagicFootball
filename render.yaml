@@ -1,9 +1,13 @@
 # Deploy the existing Node WebSocket signaling broker as a public HTTPS/WSS service.
 # Create this Blueprint in Render; Render provisions TLS and sets PORT automatically.
-# IMPORTANT: deployment needs the repository owner's Render authorization.
+# IMPORTANT: production deployments must use main, never dev. The existing Render
+# service's dashboard branch must also be changed to main; this Blueprint file
+# alone does not change an already-provisioned service.
+# Deployment needs the repository owner's Render authorization.
 services:
   - type: web
     name: supermagicfootball-lan-signal
+    branch: main
     runtime: node
     plan: starter
     buildCommand: npm ci --omit=dev || npm install --omit=dev
