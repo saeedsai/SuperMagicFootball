@@ -53,7 +53,8 @@ function breathMovementIntensity(magnitude,sprinting=false,hyperdash=false){
 }
 function breathTick(breath,stamina,seconds,intensity=0){
  const cap=breathCapacity(stamina),rated=clamp(Number(stamina)||1,1,100);
- const active=clamp(Number(intensity)||0,0,1.8);
+ const numericIntensity=Number(intensity);
+ const active=Number.isFinite(numericIntensity)?clamp(numericIntensity,0,1.8):0;
  // Walking or resting restores breath; sprinting consumes it quickly.
  // Rest: refill ~3-5 seconds; walking: refill ~5-8 seconds.
  // Ordinary running (intensity .6) has a tiny drain; sprinting (1.5+) drains quickly.
