@@ -60,7 +60,10 @@ function breathTick(breath,stamina,seconds,intensity=0){
  // Hard movement must NOT recharge Breath while it is being consumed.
  const regen=active<=.08?(1.4+1.1*(rated-1)/99):active<=.55+1e-12?(1.0+.9*(rated-1)/99):0;
  const drain=active>.55+1e-12?(.02+(active-.55)*2.0)*(1.2-.4*(rated-1)/99):0;
- return clamp((Number.isFinite(+breath)?+breath:cap)+Math.max(0,seconds)*(regen-drain),0,cap);
+ const elapsed=Number(seconds);
+ // Invalid frame deltas must not poison Breath or silently grant a full refill.
+ if(!Number.isFinite(elapsed)||elapsed<=0)return clamp(Number.isFinite(+breath)?+breath:cap,0,cap);
+ return clamp((Number.isFinite(+breath)?+breath:cap)+elapsed*(regen-drain),0,cap);
 }
 // Explicit cumulative recovery after N rest days: +30%, +50%, then +10% per day.
 // These are percentage points of MAX Energy, not percentages of the missing balance.
