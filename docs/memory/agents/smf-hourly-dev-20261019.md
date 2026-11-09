@@ -3,25 +3,22 @@
 **Updated:** 2026-11-09
 
 ## Mission
-Develop bounded tested changes on dev; promote only verified exact-green head to main. Preserve 223 teams, 2676 players, six formations, Pass/Shoot/Dribble/Jump, offline saves, Career/Cup ten slots and SD09.
+Develop bounded tested changes on existing dev; preserve 223 teams, 2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, offline saves, Career/Cup ten slots and SD09. Promote only exact-green dev through existing pipeline.
 
 ## Current checkpoint
-- BREATH-WALK-THRESHOLD-01 and BREATH-DRIBBLE-LOW-DRAIN-01 are in candidate 0.12.81.67. Ordinary held-Dribble/ball carrying uses low Breath; sprint drains more; walking/idle recovery retained. Local selected-player-only Breath renderer and multiplayer selection regressions are present in the promoted tree.
-- Exact dev head `dbaef1f30982134cf587e2ca09c22e1c909d6c92` passed Full Regression Census 42592377853 (4 Node, 4 Chromium, preflight, preview, promotion) and Modular QA 42592377871. Main was fast-forwarded to identical SHA. Pages deployment 42593593037 succeeded. Main Census 42593592712 hosted-pages-smoke passed exact HTML/JS/CSS bytes; remaining main regression jobs were still running at last check.
-- Production Blueprints and Pages smoke triggers use main. Existing provisioned Render LAN signal service `srv-dbf8m6gm7kps7385tjo0` still reports branch=dev, autoDeploy=yes; dashboard branch correction and a real subsequent commit-trigger deploy remain unverified.
-- GitHub main is currently unprotected. Issues #86 (Render drift), #87 (main protection), and physical two-phone #48 remain open. No physical LAN certification claimed.
+- Candidate 0.12.81.67 Breath walk/ordinary dribble/sprint and selected-player-only ring shipped to main at dbaef1f30982134cf587e2ca09c22e1c909d6c92; dev/main later converged at documentation commit 523a69a7559023051897ee46e21fd65de052382d.
+- This run added a defensive finite-coordinate guard in unwired pure Scream rules (`src/modules/magictricks.js`) and a focused Node regression (`tests/magictricks_rules.test.cjs`). Commits 72aad7b and b503441 on dev. The helper is not wired to match engine; no player-facing feature or version bump claimed. Exact-head CI status must be checked before promotion.
+- Render live signaling service still reports branch=dev; production Blueprint says main. Main protection issue #87 and physical two-phone acceptance #48 remain open; no physical certification claimed.
 
 ## Next smallest action
-Confirm completion of main Census 42593592712, and fix any failed shard. Inspect current dev/main before editing. Then select one small Player Studio / counterable Magic Trick / existing eight-view graphics / goalkeeper / Career increment, write focused Node and Chromium regressions, run 4+4 Census and Modular QA, and promote only via existing exact-green pipeline. Never reimplement routine LAN work without a verified regression.
+Inspect exact dev/main SHA, focused and full CI results, and resolve failures. Then implement a small playable Player Studio / counterable Magic Trick / existing eight-view graphics / goalkeeper / Career increment with Node+Chromium evidence and full release gates. Never claim graphics owner approval or physical acceptance without evidence.
 
 ## Ownership and exclusions
-Only this agent checkpoint. No new branches, force push, direct main development, CI bypass, roster/name/stat audit, or unapproved concept-hero art.
+Only this agent checkpoint. No new branches, direct main edits, force-push, bypassed CI, routine LAN work, roster audit or new concept-hero assets.
 
 ## Evidence
-https://github.com/saeedsai/SuperMagicFootball/actions/runs/42592377853
-https://github.com/saeedsai/SuperMagicFootball/actions/runs/42592377871
-https://github.com/saeedsai/SuperMagicFootball/actions/runs/42593593037
-https://github.com/saeedsai/SuperMagicFootball/actions/runs/42593592712
+https://github.com/saeedsai/SuperMagicFootball/commit/72aad7b60e825945d237233b929dcdeb5c76671b
+https://github.com/saeedsai/SuperMagicFootball/commit/b5034415fac4199f0a5c4e5886baba3f5a48ad0e
 
 ## Cleanup
-Checkpoint <4 KiB; no player-facing version bump for documentation-only correction.
+Checkpoint under 4 KiB. No version change for internal, currently unwired helper hardening.
