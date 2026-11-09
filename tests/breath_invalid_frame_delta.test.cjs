@@ -27,10 +27,11 @@ test('valid frame durations preserve cheap carrying, expensive sprint, and walki
   const cap=F.breathCapacity(stamina),start=cap*.5;
   assert.equal(F.breathTick(start,stamina,0,1.5),start);
   const walk=F.breathTick(start,stamina,1,F.breathMovementIntensity(.25));
-  const run=F.breathTick(start,stamina,1,F.breathMovementIntensity(1));
-  const sprint=F.breathTick(start,stamina,1,F.breathMovementIntensity(1,true));
+  // Compare drain from full capacity: low-Stamina half-cap clips sprint at zero.
+  const run=F.breathTick(cap,stamina,1,F.breathMovementIntensity(1));
+  const sprint=F.breathTick(cap,stamina,1,F.breathMovementIntensity(1,true));
   assert.ok(walk>start,'walking must recover Breath');
-  assert.ok(run<start&&start-run<.2,'normal carrying must cost very little');
+  assert.ok(run<cap&&cap-run<.2,'normal carrying must cost very little');
   assert.ok(sprint<run-1.3,'sprint must cost substantially more');
   assert.equal(F.breathTick(cap,stamina,1,0),cap,'recovery must respect cap');
  }
