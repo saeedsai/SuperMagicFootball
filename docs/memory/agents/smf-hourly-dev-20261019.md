@@ -3,24 +3,23 @@
 **Updated:** 2026-11-09
 
 ## Mission
-Small tested increments directly on dev; preserve 223 teams, 2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, offline saves, Career/Cup ten slots and SD09. Never bypass exact-green release gates.
+Incremental tested dev commits, preserve 223 teams, 2676 players, six formations, Pass/Shoot/Dribble/Jump only, saves/offline, Career/Cup ten slots, SD09; never bypass CI.
 
 ## Current checkpoint
-- Shipped Breath candidate 0.12.81.67 already on main: inexpensive ordinary ball carrying/dribbling, costly sprint, walking recovery, human-selected-only ring. Physical two-phone LAN #48 remains open.
-- This run: hardened the *wired* CPU Scream JUMP reaction against nonfinite carrier and defender coordinates, excluding invalid players from nearest-target sorting. Source commit 167620b; Node regression commit e61ed5d. This is internal reliability, no player-facing version bump. Focused/local and exact-head CI must be verified before promotion.
-- Earlier unwired pure Scream helper hardening is separate; do not claim it is playable.
-- Previous dev Census 42623042332 and Modular QA 42623042333 passed; bfc0401 was promoted to main before this increment.
-- Render provisioned signaling branch drift #86, main protection #87 and physical two-phone acceptance #48 remain open.
+- Breath candidate 0.12.81.67 (low normal carry/dribble drain, costly sprint, walking recovery, human-selected-only ring) is deployed to main. Physical two-phone LAN acceptance #48 remains open.
+- Latest dev increment: unwired pure Scream helper now treats nonfinite carrier fatigue as zero when calculating bounded success chance, without changing valid fatigue or exhausted-player rejection. Source 0f0e159, focused Node regression 2eef874. No player-facing change or version bump.
+- Previous exact-head 024a45b dev Census 42631941301 and Modular QA 42631941308 passed; main Pages 42633540983 and Census 42633542119 passed.
+- Pending exact-head CI on current new commits. Render branch drift #86 and main protection #87 remain open.
 
 ## Next smallest action
-Check exact dev head, focused test and four Node/four Chromium Census plus Modular QA. Repair any failure, promote only through green protected pipeline, then verify Pages hosted bytes. Next gameplay priority: counterable tricks and Player Studio usability.
+Verify new dev Census four Node/four Chromium and Modular QA, repair any failures; promote only exact green dev through release pipeline and verify Pages bytes. Next: Player Studio and playable Magic Trick counters.
 
 ## Ownership and exclusions
-Only this checkpoint. No other agents' memory, new branches, direct main edits, force-push, CI bypass, routine LAN work, roster audit or concept-hero creation.
+Only this checkpoint. Do not edit other agents' memories, create branches, force-push, bypass CI, work on routine LAN, roster audits or concept heroes.
 
 ## Evidence
-https://github.com/saeedsai/SuperMagicFootball/commit/167620b6b6f7aa3f708436abda272360130c4cc0
-https://github.com/saeedsai/SuperMagicFootball/commit/e61ed5d6258cf1d63bbee0c1a8f0e0b8b67fff86
+https://github.com/saeedsai/SuperMagicFootball/commit/0f0e1595c7a449a2dcb64e8c4dca70f8fa27a3ac
+https://github.com/saeedsai/SuperMagicFootball/commit/2eef8743ed51e22738fadc83333f6588a103dcfb
 
 ## Cleanup
-Under 4 KiB. No native local tests claimed; rely on exact SHA CI.
+Under 4 KiB. Focused/local tests not yet run; GitHub exact-head CI pending.
