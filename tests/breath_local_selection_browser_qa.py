@@ -30,6 +30,8 @@ with sync_playwright() as pw:
         open_quick(page)
         page.locator('[data-action="kickoff"]').first.click()
         assert sorted(page.locator('#touchButtons button[data-act]').evaluate_all('(nodes) => nodes.map(n => n.dataset.act.toLowerCase())')) == ['dribble', 'jump', 'pass', 'shoot'], 'four unique match actions required'
+        assert page.evaluate("SupermagicFootball.game.matchState") == 'play', 'Breath ownership must be tested during a live match'
+        assert page.locator('#field').count() == 1, 'live match canvas missing'
         results = page.evaluate("""(predicate) => {
           const g = SupermagicFootball.game;
           const visible = new Function(predicate + ';return shouldShowBreathRing')();
