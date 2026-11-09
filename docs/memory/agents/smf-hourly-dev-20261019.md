@@ -3,25 +3,26 @@
 **Updated:** 2026-11-09
 
 ## Mission
-Existing dev only. Preserve 223 teams, 2676 players, six formations, four actions, saves/offline, Career/Cup ten slots, SD09. No routine LAN/P2P work.
+Existing dev only; preserve 223 teams, 2676 players, six formations, Pass/Shoot/Dribble/Jump, saves/offline, Career/Cup ten slots and SD09. No routine LAN/P2P work.
 
 ## Current checkpoint
-- Chromium Breath ownership regression now asserts actual live `matchState === 'play'` and one field canvas before testing four unique buttons, host/guest seat switching, selected-player identity, teammates/opponents, CPU and Studio exclusion. Test change commit dbc1e1c7be9691b61f8edcbb28dd5c76a6a719fa.
-- Test-only; candidate version remains 0.12.81.67. GitHub connector accepted commit. Executable test NOT run; local git clone DNS fails. Exact-head Census/Modular QA, main promotion and Pages hosted bytes unverified.
-- Before change: dev 43 ahead / 0 behind main 828a4549327d14ffa592ad05ca94732391a9d988. Open #48 two-phone, #86 Render auto-deploy, #87 branch protection.
+- Added `tests/breath_render_guard_contract.test.cjs` (879bb268): checks that the production canvas Breath gauge, fill and low-Breath pulse all remain inside `shouldShowBreathRing` selected-player guard, covering a gap left by predicate-only unit/browser tests.
+- Fetched production `src/modules/render.js` and manually evaluated guard regex against current source: match true. The committed Node test itself was NOT executed. Local Git checkout still fails DNS resolution of github.com.
+- Candidate remains 0.12.81.67 (test-only). Prior dev was 45 ahead/0 behind main 828a4549327d14ffa592ad05ca94732391a9d988; verify new exact head before release.
+- Four Node/four Chromium shards, Modular QA, protected main promotion and Pages hosted-byte checks remain unverified. Open #48 physical two-phone, #86 Render trigger drift, #87 branch protection.
 
 ## Next smallest action
-1. Execute focused Breath Node and desktop/touch Chromium QA; repair any failure.
-2. Execute four Node/four Chromium shards and Modular QA on exact dev head.
-3. Require enforced branch protection and exact green head before promotion and hosted byte checks.
-4. Advance Player Studio, counterable four-action Magic Tricks, eight-view existing-player art, goalkeeper and Career.
-5. Investigate #86 Render trigger drift independently; leave #48 open pending physical acceptance.
+1. Run the new draw-guard test and focused real-FITNESS Breath Node suite.
+2. Run desktop/touch Chromium ownership regression against playable match.
+3. Complete four Node/four Chromium and Modular QA on exact dev SHA.
+4. Resolve CI/security gates before protected promotion and hosted byte verification.
+5. Then advance Player Studio, four-button counterable Tricks, existing eight-view graphics, goalkeeper and Career; investigate Render #86 independently.
 
 ## Ownership and exclusions
-Own checkpoint only; no new branches, main writes, force-push or other agents' memory.
+Only own checkpoint; never new branches, main writes, force-push, or another agent's memory.
 
 ## Evidence
-GitHub accepted browser test commit; no executable pass claimed.
+GitHub accepted test commit; guard regex checked against fetched source; no executable Node/Chromium pass claimed.
 
 ## Cleanup
-Do not report unrun tests or hosted checks as passing.
+Do not mark physical acceptance or deployment complete without evidence.
