@@ -3,24 +3,24 @@
 **Updated:** 2026-11-09
 
 ## Mission
-Small tested increments on existing dev; preserve 223 teams, 2676 players, six formations, Pass/Shoot/Dribble/Jump, offline saves, Career/Cup ten slots and SD09. Only exact-green CI promotion to main.
+Small tested increments directly on dev; preserve 223 teams, 2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, offline saves, Career/Cup ten slots and SD09. Never bypass exact-green release gates.
 
 ## Current checkpoint
-- Candidate 0.12.81.67 Breath run/dribble/sprint and selected-human-only ring previously shipped. Physical two-phone LAN #48 remains open; no certification.
-- Scream is an *unwired* pure rule helper. Previous finite-coordinate guard committed as 72aad7b and b503441.
-- This run hardened Scream defender resistance against nonfinite defence/agility attributes in 8fabe6b and added focused Node regression in 60e5077. Not player-facing; no version bump. CI must verify exact new head before promotion.
-- Earlier dev Census 42605930477 failed browser shard 3 on lan_auto_two_browser_qa.py Page.wait_for_function timeout, while other three browser shards, four Node shards, preview and Modular QA passed. No bypass; investigate flake/regression and rerun.
-- Render provisioned signaling service still reports branch=dev while Blueprint says main; issues #86, #87 open.
+- Shipped Breath candidate 0.12.81.67 already on main: inexpensive ordinary ball carrying/dribbling, costly sprint, walking recovery, human-selected-only ring. Physical two-phone LAN #48 remains open.
+- This run: hardened the *wired* CPU Scream JUMP reaction against nonfinite carrier and defender coordinates, excluding invalid players from nearest-target sorting. Source commit 167620b; Node regression commit e61ed5d. This is internal reliability, no player-facing version bump. Focused/local and exact-head CI must be verified before promotion.
+- Earlier unwired pure Scream helper hardening is separate; do not claim it is playable.
+- Previous dev Census 42623042332 and Modular QA 42623042333 passed; bfc0401 was promoted to main before this increment.
+- Render provisioned signaling branch drift #86, main protection #87 and physical two-phone acceptance #48 remain open.
 
 ## Next smallest action
-Inspect latest exact-head Census and Modular QA. Resolve any failure, then progress playable counterable Magic Trick or Player Studio UX with Node and Chromium coverage; full release gates before main promotion.
+Check exact dev head, focused test and four Node/four Chromium Census plus Modular QA. Repair any failure, promote only through green protected pipeline, then verify Pages hosted bytes. Next gameplay priority: counterable tricks and Player Studio usability.
 
 ## Ownership and exclusions
-Only this agent checkpoint. No other agents' memory, new branches, direct main edits, force-push, bypassed CI, routine LAN development, roster audit or concept-hero assets.
+Only this checkpoint. No other agents' memory, new branches, direct main edits, force-push, CI bypass, routine LAN work, roster audit or concept-hero creation.
 
 ## Evidence
-https://github.com/saeedsai/SuperMagicFootball/commit/8fabe6bf9a8b1c4d12fd1194f5bb249fd0a3b9d9
-https://github.com/saeedsai/SuperMagicFootball/commit/60e50773e2d00ed1828e9bc5b3fd77ad18b51ee0
+https://github.com/saeedsai/SuperMagicFootball/commit/167620b6b6f7aa3f708436abda272360130c4cc0
+https://github.com/saeedsai/SuperMagicFootball/commit/e61ed5d6258cf1d63bbee0c1a8f0e0b8b67fff86
 
 ## Cleanup
-Under 4 KiB. Native local checkout/tests unavailable in this execution environment; rely on actual GitHub CI evidence, not assumptions.
+Under 4 KiB. No native local tests claimed; rely on exact SHA CI.
