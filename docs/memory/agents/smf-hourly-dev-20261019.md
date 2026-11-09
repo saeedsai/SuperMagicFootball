@@ -7,7 +7,7 @@ Develop on existing dev only. Preserve 223 teams, 2676 players, six formations, 
 
 ## Current checkpoint
 - Added duplicate-render-site regression to `tests/breath_render_guard_contract.test.cjs` (commit `736d2ce3`): enforce one predicate definition and two guarded uses, exactly two gauge arcs and one warning pulse. Fetched production renderer matches expected counts (3/2/1).
-- This is test-only; candidate remains 0.12.81.67. Local Git checkout still blocked by github.com DNS. Full executable Node/Chromium tests and exact-head CI unverified.
+- Inspected failed preflight from previous exact-head Census 42559570894: release contract failures trace to README still calling .67 a `dev candidate`, stale .66 heading, and sw cache missing `smf-` prefix/current .67 suffix. Repaired README (4665f6ad) and offline cache (5282e2ad). Candidate stays 0.12.81.67; these are alignment fixes, not new gameplay. Local Git checkout still blocked by github.com DNS. Exact-head new CI pending.
 - Main branch protection is reported disabled; #87 remains open. #48 physical two-phone and #86 Render commit-trigger drift remain open.
 
 ## Next smallest action
@@ -21,7 +21,7 @@ Develop on existing dev only. Preserve 223 teams, 2676 players, six formations, 
 Own checkpoint only; no new branches, main writes, force-push, other agents' memory or unverified release claims.
 
 ## Evidence
-GitHub accepted test commit; fetched renderer passed isolated source-count checks in connector runtime, not native Node execution. No promotion or deployment claimed.
+GitHub accepted regression and release-alignment commits. Renderer source-count checks 3/2/1 passed in connector runtime, not native Node. Previous CI preflight failed release contracts; new exact-head QA pending. No promotion or deployment claimed.
 
 ## Cleanup
 Physical two-phone certification remains open pending real-device evidence.
