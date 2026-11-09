@@ -3,24 +3,24 @@
 **Updated:** 2026-11-09
 
 ## Mission
-Small tested increments on existing dev; preserve 223 teams, 2676 players, six formations, four actions, offline saves, ten Career/Cup slots and SD09.
+Incremental tested development on existing dev. Preserve 223 teams, 2676 players, six formations, four actions, offline saves, ten Career/Cup slots, SD09.
 
 ## Current checkpoint
-- GitHub compare(main...dev) on 2026-11-09 returned **identical**, both at `46b246a3205227b212bd2f75ab8240dfb566507a`. Prior checkpoint's main SHA was stale.
-- Candidate 0.12.81.67 contains prior Breath tuning/selection coverage. Do not reimplement without a confirmed regression.
-- Latest Scream CPU counter countdown hardening is in both branches. Its focused Node test is committed, but local execution and exact-head four-Node/four-Chromium/Modular QA were **not verified** this run.
-- GitHub commit-status endpoint returned no statuses and commit workflow-run lookup returned no PR-associated runs; these are **not evidence of passing CI**.
-- Local git checkout failed because github.com DNS resolution failed. No source/test change or release was made this run.
+- At start main and dev identical: `603274a5ed213e4791992e15c3bd729e05017c99`.
+- BREATH-INVALID-DELTA-01: `src/modules/fitness.js` now rejects nonfinite or nonpositive frame deltas before updating Breath, preventing NaN propagation or infinite refill/drain. Regression `tests/breath_invalid_frame_delta.test.cjs` covers 3 Stamina levels, recovery/carry/sprint, nonfinite and negative dt.
+- Source commit `5854a1c`, test commit `753cb79`. Not player-facing; About version remains 0.12.81.67.
+- GitHub connector accepted writes; no executable local Node/Chromium checkout and no verified exact-head four Node/four Chromium/Modular QA. Do not claim tests passed or promotion.
+- Prior selected-only ring and cheap run/expensive sprint work exists; do not duplicate absent regression.
 
 ## Next smallest action
-Restore executable checkout or retrieve test/source through supported GitHub access, run focused Scream regression; verify exact-head Census and Modular QA before another gameplay commit. Then prioritize Player Studio usability or playable counterable Magic Tricks with regression tests.
+Execute focused Node and browser QA, verify exact-head Census and Modular QA; fix failures. Only then protected main promotion and hosted Pages byte check. Next feature: playable four-button counterable Magic Trick or Player Studio usability.
 
 ## Ownership and exclusions
-Only this checkpoint; do not touch other agents' memory. No routine LAN/P2P, roster audits, concept heroes or unapproved art.
+Only own checkpoint. No other agents' memory, concept heroes, roster audit, routine LAN work, or unapproved art.
 
 ## Evidence
-- https://github.com/saeedsai/SuperMagicFootball/commit/46b246a3205227b212bd2f75ab8240dfb566507a
-- GitHub compare main...dev: identical at this SHA.
+- https://github.com/saeedsai/SuperMagicFootball/commit/5854a1ca2d0827a4e1996f50fd82fa7cfee28fde
+- https://github.com/saeedsai/SuperMagicFootball/commit/753cb79b758bb9e0223b9da110dd0e7e730429bd
 
 ## Cleanup
-Physical two-phone #48, Render #86, main protection #87 remain open. No physical certification, promotion or Pages hosted-byte verification this run.
+Physical two-phone #48, Render drift #86, main protection #87 unresolved. No physical certification or deployment claim.
