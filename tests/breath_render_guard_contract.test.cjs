@@ -8,6 +8,11 @@ const path = require('node:path');
 // shouldShowBreathRing itself continues passing its isolated unit tests.
 test('Breath gauge and low-Breath warning stay inside selected-player draw guard', () => {
   const render = fs.readFileSync(path.join(__dirname, '../src/modules/render.js'), 'utf8');
+  // The separate selection halo must obey the same ownership predicate.
+  // Otherwise CPU/remote players could still get a selected-looking marker
+  // even when the Breath fill and warning remain correctly guarded.
+  const halo = render.match(/if\\(shouldShowBreathRing\\(p,game,this\\.inMatchDraw\\)\\)\\{ctx\\.strokeStyle=p\\.t===0\\?'#ffe675':'#74f2ff';[\\s\\S]*?ctx\\.ellipse\\(0,5,28,12/);
+  assert.ok(halo, 'selected-player halo is gated by Breath ownership');
   const anchor = render.indexOf('// Circular Breath gauge at the feet.');
   assert.ok(anchor >= 0, 'production gauge anchor exists');
   const tail = render.slice(anchor);
