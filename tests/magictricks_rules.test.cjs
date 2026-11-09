@@ -50,3 +50,19 @@ test('Scream refuses nonfinite carrier positions without targeting or spending r
  }
  assert.equal(evaluateScream({carrier,opponents:[rival],roll:0}).activated,true);
 });
+
+test('Scream stays deterministic with nonfinite defender attributes',async()=>{
+ const {evaluateScream}=await load();
+ const baseline=evaluateScream({carrier,opponents:[{...rival,defence:0,agility:0}],roll:0});
+ for(const bad of [NaN,Infinity,-Infinity]){
+  const out=evaluateScream({carrier,opponents:[{...rival,defence:bad,agility:bad}],roll:0});
+  assert.equal(out.activated,true);
+  assert.equal(out.success,true);
+  assert.equal(out.chance,baseline.chance);
+  assert.equal(out.targetId,rival.id);
+  assert.ok(Number.isFinite(out.chance));
+ }
+ const mixed=evaluateScream({carrier,opponents:[{...rival,defence:Infinity,agility:80}],roll:0});
+ const expected=evaluateScream({carrier,opponents:[{...rival,defence:0,agility:80}],roll:0});
+ assert.equal(mixed.chance,expected.chance);
+});
