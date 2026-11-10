@@ -79,7 +79,13 @@ with sync_playwright() as pw:
             if (g.players.some(p => visible(p,g,false)))
               throw Error('outside-match ring visible');
             checks.push('cpu-and-menu-hidden');
-            g.localBreathSide = 0;
+            g.humans = 0; g.localBreathSide = 0;
+            if (rings().length !== 0) throw Error('spectator/no-human match exposed Breath ring');
+            checks.push('no-human-hidden');
+            g.humans = 2; g.localBreathSide = -1;
+            if (rings().length !== 0) throw Error('invalid negative local seat exposed Breath ring');
+            checks.push('invalid-seat-hidden');
+            g.humans = 1; g.localBreathSide = 0;
             if (rings().length !== 1 || rings()[0] !== selected(0))
               throw Error('single-player home human lost selected Breath ring');
             checks.push('single-player-home-visible');
@@ -90,7 +96,7 @@ with sync_playwright() as pw:
           }
           return {checks, buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
         }""", predicate)
-        assert len(results['checks']) == 18 and results['buttons'] == 4, (label, results)
+        assert len(results['checks']) == 20 and results['buttons'] == 4, (label, results)
         assert not errors, (label, errors)
         print('BREATH_CHROMIUM_PASS', label, results, flush=True)
         context.close()
