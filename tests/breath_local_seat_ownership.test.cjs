@@ -43,3 +43,21 @@ test('invalid seats, spectators, previews and outside-match never show ring',()=
  assert.equal(visible(f.a,f.game,false),false);
  assert.equal(visible({...f.a},f.game,true),false);
 });
+
+test('spectator and malformed local seats cannot expose either selected human',()=>{
+ const f=fixture(2,0);
+ for(const humans of [0,1,2]) {
+  f.game.humans=humans;
+  for(const seat of [-1,2,'0','1',false,true,NaN,Infinity,-Infinity,{},[]]) {
+   f.game.localBreathSide=seat;
+   assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[],
+    'invalid local seat '+String(seat)+' with '+humans+' humans');
+  }
+ }
+ f.game.humans=0;
+ for(const seat of [null,undefined,0,1]) {
+  f.game.localBreathSide=seat;
+  assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[],
+   'spectator must not have a ring');
+ }
+});
