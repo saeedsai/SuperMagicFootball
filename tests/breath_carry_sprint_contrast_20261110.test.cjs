@@ -56,3 +56,26 @@ test('sustained carrying with held Dribble remains inexpensive across frame size
   }
  }
 });
+
+test('sprint depletion resumes recovery when slowing to a walk, at 30/60/120fps',async()=>{
+ const f=await fitnessPromise;
+ for(const stamina of [1,35,60,100]){
+  const cap=f.breathCapacity(stamina),samples=[];
+  for(const fps of [30,60,120]){
+   const dt=1/fps;
+   let breath=cap;
+   for(let frame=0;frame<3*fps;frame++)
+    breath=f.breathTick(breath,stamina,dt,f.breathMovementIntensity(1,true));
+   const depleted=breath;
+   for(let frame=0;frame<2*fps;frame++)
+    breath=f.breathTick(breath,stamina,dt,f.breathMovementIntensity(.3));
+   assert.ok(breath>depleted,`walking must restore Breath after sprint at stamina ${stamina}, ${fps}fps`);
+   assert.ok(breath<=cap,`walking recovery must respect cap at stamina ${stamina}, ${fps}fps`);
+   samples.push({depleted,recovered:breath});
+  }
+  for(const key of ['depleted','recovered']){
+   const values=samples.map(s=>s[key]);
+   assert.ok(Math.max(...values)-Math.min(...values)<1e-8,`${key} varies with FPS at stamina ${stamina}: ${values}`);
+  }
+ }
+});
