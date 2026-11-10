@@ -6,6 +6,8 @@
 Dev-only increments; prioritize cheap ordinary Breath carrying vs costly sprint, selected-human-only Breath ring, then Player Studio, four-button Magic Tricks, existing eight-view graphics, goalkeeper and Career.
 
 ## Current checkpoint
+- 2026-11-10 13:02 CET: GitHub compare `main...dev` reports **identical**, both at `62ca4995824aa17916c75a87b3a44841a655133f` (0 ahead/behind). This supersedes the previous 38-commit lag report; do not infer release gates or hosted bytes from branch equality. Historical Census 42795425071 browser shard 1 failed; Modular QA 42795425056 source-and-data passed. Local git DNS still blocks executable checkout. No new gameplay or tests were committed in this inspection; do not claim exact-head certification.
+
 - 2026-11-10: Full Census run 42795425071: all four Node shards, browser shards 0/2/3 and preview green; browser shard 1 failed `breath_selected_browser_qa.py` because obsolete `localAway` expectation required a ring with unassigned multiplayer seat. Fixed desktop/touch fixture to assert no rings on either side until explicit local seat, commit 9150873. Re-run exact-head CI pending; no promotion.
 
 - CI run 42787565100 reported 10 Node failures (2394/2404 passing), including README/cache drift, stale two-ring test expectations, stale fixture human closure, and checkpoint identity formatting. This run corrects these source/test contracts; exact-head CI pending.
