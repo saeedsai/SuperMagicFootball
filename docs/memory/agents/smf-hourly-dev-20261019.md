@@ -1,11 +1,12 @@
 # SuperMagicFootball — hourly developer checkpoint
-**Agent ID:** smf-hourly-dev-20261019
+**Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-11-10
 
 ## Mission
 Dev-only increments; prioritize cheap ordinary Breath carrying vs costly sprint, selected-human-only Breath ring, then Player Studio, four-button Magic Tricks, existing eight-view graphics, goalkeeper and Career.
 
 ## Current checkpoint
+- CI run 42787565100 reported 10 Node failures (2394/2404 passing), including README/cache drift, stale two-ring test expectations, stale fixture human closure, and checkpoint identity formatting. This run corrects these source/test contracts; exact-head CI pending.
 - Added executable Node regression `tests/breath_carry_sprint_contrast_20261110.test.cjs` (commit 2bc5d3f): full-intensity ordinary carrying + held Dribble versus sprint at Stamina 1/35/60/100, idle/walking recovery and Energy independence. No production change, candidate remains 0.12.81.68.
 - GitHub contents connector write accepted; local git clone still fails github.com DNS. Focused Node/Chromium and four Node/four Chromium plus Modular QA NOT EXECUTED/VERIFIED.
 - No protected promotion or Pages certification. Physical two-phone #48, Render trigger #86, protection #87 unresolved.
