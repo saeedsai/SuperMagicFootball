@@ -1,3 +1,5 @@
+> **0.12.81.68 release candidate (10 November 2026):** BREATH-LOCAL-SEAT-OWNERSHIP-01: Breath ring now resolves exactly one local human seat; an unspecified multiplayer seat hides all rings, while legacy solo play defaults to home. Selection switching and CPU exclusion are preserved. Exact-head QA and deployment pending.
+
 > **0.12.81.67 release candidate (8 November 2026):** BREATH-WALK-THRESHOLD-01: Analog walking at the exact run threshold now reliably restores Breath despite floating-point rounding; ordinary ball carrying remains inexpensive and sprint costly. No Energy, controls, roster or save changes. Exact-head QA and deployment pending.
 
 > **0.12.81.66 release candidate (8 November 2026):** BREATH-DRIBBLE-LOW-DRAIN-01 reduces sustained Breath drain while running normally with Dribble held. Sprint remains far costlier; recovery, Energy, four buttons, rosters, saves and offline compatibility remain unchanged. Exact-head CI, protected promotion and hosted Pages verification are pending.
