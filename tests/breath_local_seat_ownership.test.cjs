@@ -98,3 +98,20 @@ test('explicit local seat never falls back to the other human when selection dis
  f.game.humans=1;
  assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[f.a],'legacy solo still selects home');
 });
+
+test('local multiplayer seat changes never retain a stale ring',()=>{
+ const f=fixture(2,0);
+ const expected=[[0,f.a],[1,f.c],[0,f.b],[1,f.d],[null,null],[1,f.d],[undefined,null],[0,f.b]];
+ for(const [seat,player] of expected){
+  f.game.localBreathSide=seat;
+  const actual=f.players.filter(p=>visible(p,f.game,true));
+  assert.deepEqual(actual,player?[player]:[],
+   'only the currently assigned local seat may display its selection');
+  if(seat===0)f.controlled[0]=f.b;
+  if(seat===1)f.controlled[1]=f.d;
+ }
+ f.game.localBreathSide=0;
+ f.a.preview=true;
+ assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[f.b],
+  'a stale preview must not reveal a second ring');
+});
