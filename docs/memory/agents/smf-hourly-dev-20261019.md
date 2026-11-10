@@ -3,23 +3,21 @@
 **Updated:** 2026-11-10
 
 ## Mission
-Small tested increments on existing dev. Preserve 223 teams, 2676 players, six formations, four actions, offline saves, Career/Cup ten slots and SD09.
+Existing dev only; preserve roster, formations, four buttons, offline saves, Career/Cup ten slots and SD09.
 
 ## Current checkpoint
-- At start, dev/main identical at `fad87832fee95e4252179a2f364959f8675362e9`.
-- Added Chromium regression cases for spectator/no-human and invalid negative local seat in `tests/breath_local_selection_browser_qa.py` (commit `72f7313`). The existing desktop/touch selected-player switching and four-button assertions remain.
-- Browser regression NOT EXECUTED; local git checkout blocked by DNS. Four Node/four Chromium Census, Modular QA and hosted Pages bytes NOT VERIFIED. No promotion claim.
-- Production renderer currently allows `localBreathSide == null` to match multiple human seats; inspect and fix with a separate player-facing candidate and full release gates. Do not claim the ring fully certified.
-- About stays `0.12.81.67` (test-only increment).
+- BREATH-LOCAL-SEAT-OWNERSHIP-01: production renderer resolves null seat only for solo home; null multiplayer hides rings. Commits `4d4322d`, Chromium `6857542`, Node `2c55a2b`.
+- Candidate About 0.12.81.68; package, release, README, version policy and service-worker cache updated.
+- Local Git clone blocked by DNS. Focused Node/Chromium and four Node/four Chromium Census plus Modular QA NOT EXECUTED/VERIFIED. No promotion or Pages claim.
 
 ## Next smallest action
-Execute browser QA and fix failures; inspect null local seat ownership and cover with browser regression. Then full exact-head CI and protected promotion only when green.
+Execute focused Node and Chromium; verify CI exact SHA, fix failures; protected promotion and hosted-byte check only when green. Then Player Studio/Magic Trick/graphics/Career.
 
 ## Ownership and exclusions
-Own checkpoint only; no other agents' memory, concept heroes, roster audit, routine LAN or unapproved art.
+Own checkpoint only; no other agent memory, concept heroes, roster audit, routine LAN or unapproved art.
 
 ## Evidence
-- https://github.com/saeedsai/SuperMagicFootball/commit/72f7313ee869e9385fce7c08e59d332dc04555b8
+https://github.com/saeedsai/SuperMagicFootball/commit/4d4322de317792cb3ebcb9623f964e8b00c0556a
 
 ## Cleanup
-Physical two-phone #48, Render drift #86 and main protection #87 remain open. No security bypass.
+Physical two-phone #48, Render drift #86 and main protection #87 remain unverified. No bypass.
