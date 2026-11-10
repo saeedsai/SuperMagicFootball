@@ -3,33 +3,25 @@
 **Updated:** 2026-11-10
 
 ## Mission
-Dev-only increments; prioritize cheap ordinary Breath carrying vs costly sprint, selected-human-only Breath ring, then Player Studio, four-button Magic Tricks, existing eight-view graphics, goalkeeper and Career.
+Direct tested increments on existing dev only. Highest priority Breath cheap ordinary carrying/held Dribble, expensive sprint, walking recovery, selected local human only ring. Next: Player Studio, counterable four-button tricks, existing eight-view art, keeper, Career.
 
 ## Current checkpoint
-- 2026-11-10 17:03 CET: Added sprint-to-walk Breath recovery regression at 30/60/120fps, Stamina 1/35/60/100 (8f11bfa). NOT EXECUTED: local github.com DNS checkout failed. Exact-head QA, promotion and Pages verification pending; candidate .68 unchanged.
-- 2026-11-10 16:02 CET: GitHub compare confirms dev/main identical at cd030112a; convergence alone is not a release gate. Render LAN signal service still points at dev despite production-main-only policy, autoDeploy=yes/commit, with last live deployment 2026-10-29 02:02 UTC at LAN-094 3da2f0c, trigger=api. Render configuration remains owner/admin action; do not trigger manual deploy or claim drift root cause. Local git checkout DNS blocked, no executable tests or verified exact-head CI; no gameplay change or promotion in this inspection.
-- 2026-11-10 15:04 CET: evaluated real FITNESS source for 30/60/120fps, Stamina 1/35/60/100. Found new 3-second regression incorrectly required >6x when Stamina 1 sprint saturates at zero (3s cap vs .642s carry loss). Repaired test with cap-aware bound and FPS invariance (f4dedec). Direct FITNESS evaluation passed all 12 combinations; native Node/Chromium/full QA not run (git DNS). No production change, version .68, no promotion.
-- 2026-11-10 13:57 CET: added 30/60/120fps three-second sustained held-Dribble vs sprint Node regression across Stamina 1/35/60/100, commit 66a2adc. Production unchanged, candidate .68. GitHub connector accepted test; local checkout DNS blocked, test NOT EXECUTED. Dev/main were identical at de2e989 before this commit; no green exact-head QA or hosted-byte verification.
-
-- 2026-11-10: Full Census run 42795425071: all four Node shards, browser shards 0/2/3 and preview green; browser shard 1 failed `breath_selected_browser_qa.py` because obsolete `localAway` expectation required a ring with unassigned multiplayer seat. Fixed desktop/touch fixture to assert no rings on either side until explicit local seat, commit 9150873. Re-run exact-head CI pending; no promotion.
-
-- CI run 42787565100 reported 10 Node failures (2394/2404 passing), including README/cache drift, stale two-ring test expectations, stale fixture human closure, and checkpoint identity formatting. This run corrects these source/test contracts; exact-head CI pending.
-- Added executable Node regression `tests/breath_carry_sprint_contrast_20261110.test.cjs` (commit 2bc5d3f): full-intensity ordinary carrying + held Dribble versus sprint at Stamina 1/35/60/100, idle/walking recovery and Energy independence. No production change, candidate remains 0.12.81.68.
-- GitHub contents connector write accepted; local git clone still fails github.com DNS. Focused Node/Chromium and four Node/four Chromium plus Modular QA NOT EXECUTED/VERIFIED.
-- No protected promotion or Pages certification. Physical two-phone #48, Render trigger #86, protection #87 unresolved.
+- 2026-11-10 17:58 CET: dev/main were identical at 4b6fa0be6ec1d083e9b437465cc43149561f1da2 before test commit. Added focused sprint-to-carry-to-walk transition regression across Stamina 1/35/60/100 and 30/60/120 FPS, commit 2b4af9c7a109153fd2fb1daa0cfb2a491dc0e383. GitHub contents write accepted; **native Node/Chromium NOT RUN** because no executable GitHub checkout (DNS). No gameplay change/version bump; candidate 0.12.81.68. No green exact-head CI, promotion or Pages-byte verification.
+- Previous 2026-11-10 17:03 CET: added sprint-to-walk recovery regression (8f11bfa), also not executed. Prior Chromium shard failure due unassigned local seat fixture corrected (9150873), not certified on exact current head.
+- Render live signaling service reportedly still tracks dev, despite main-only policy; do not claim root cause or deploy without authorized configuration. Physical two-phone #48, Render #86, protection #87 open.
 
 ## Next smallest action
-1. Obtain executable checkout; run focused Breath tests including new contrast suite and desktop/touch selected-human ring.
-2. Exact-head four Node/four Chromium Census and Modular QA; repair failures.
-3. Promote only exact green dev through protected pipeline and verify Pages hosted bytes.
-4. Player Studio usability with browser regression.
-5. Counterable Pass/Shoot/Dribble/Jump tricks; existing-player eight-view art, keeper and Career.
+1. Restore executable checkout and run focused Breath drain/recovery and selected-human ring Node/desktop/touch Chromium.
+2. Run exact-head four Node/four Chromium Census and Modular QA; repair failures.
+3. Promote only exact green dev through protected main pipeline; verify hosted Pages bytes.
+4. Deliver tested Player Studio usability increment.
+5. Advance counterable four-button tricks, existing-player eight-view graphics, goalkeeper and Career.
 
 ## Ownership and exclusions
-Existing dev only; no new branches/force-push/security bypass. Preserve 223 teams, 2676 players, six formations, four actions, offline/saves, ten Career/Cup slots, SD09. No routine LAN/P2P or unapproved art.
+Existing dev only; no new branch, force-push, CI/security bypass or routine LAN/P2P. Preserve 223 teams, 2676 players, six formations, four actions, offline/saves, ten Career/Cup slots and SD09.
 
 ## Evidence
-GitHub accepted test commit 2bc5d3f. No executable QA evidence this run.
+GitHub connector accepted regression commit 2b4af9c7; tests NOT EXECUTED. Main promotion/deployment NOT attempted.
 
 ## Cleanup
 Own checkpoint only; under 4 KiB.
