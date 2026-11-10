@@ -3,25 +3,25 @@
 **Updated:** 2026-11-10
 
 ## Mission
-Develop tested dev-only increments. Prioritize Breath ownership and contrast, then Player Studio, counterable four-button tricks, eight-view existing-player graphics, goalkeeper and Career.
+Incremental dev-only work. Prioritize Breath ownership/drain contrast, then Player Studio, counterable four-button Magic Tricks, existing-player eight-view art, goalkeeper and Career.
 
 ## Current checkpoint
-- Added Node regression for strict selected-player object identity, no selected player, cross-team selection mismatch, explicit local-seat no-fallback, and solo legacy recovery (838df9be). Production unchanged; candidate 0.12.81.68 unchanged.
-- GitHub connector write accepted. Executable focused Node/Chromium, four Node/four Chromium Census, and Modular QA NOT RUN/VERIFIED. No promotion or hosted Pages claim.
-- Physical two-phone acceptance #48, Render auto-deploy #86, and main protection #87 remain open.
+- Added focused Node regression for local multiplayer seat handoffs (0→1→0, missing seat, restoration), selected-player switching, and stale preview exclusion. Commit 79096327. Production unchanged; candidate 0.12.81.68 unchanged.
+- GitHub connector accepted commit. Executable checkout blocked by github.com DNS; focused Node/Chromium, four Node/four Chromium Census, Modular QA NOT EXECUTED/VERIFIED.
+- No main promotion or hosted Pages certification. #48 physical two-phone, #86 Render commit trigger, #87 main protection remain open.
 
 ## Next smallest action
-1. Execute focused Breath Node and desktop/touch Chromium tests.
-2. Verify exact-head four Node/four Chromium Census and Modular QA; repair failures.
-3. Promote only green exact dev head via protected pipeline; verify Pages hosted bytes.
-4. Implement and browser-test Player Studio usability/customization.
-5. Implement counterable four-button Magic Tricks, then eight-view existing-player art, goalkeeper and Career.
+1. Restore executable checkout; run focused Breath Node and desktop/touch Chromium tests.
+2. Verify exact-head four Node/four Chromium Census and Modular QA; fix failures.
+3. Promote only exact green dev head via protected release mechanism; verify Pages hosted bytes.
+4. Deliver tested Player Studio usability improvement.
+5. Advance counterable Pass/Shoot/Dribble/Jump tricks, existing-player eight-view quality, goalkeeper and Career.
 
 ## Ownership and exclusions
-Use existing dev only. Preserve 223 teams, 2676 players, six formations, Pass/Shoot/Dribble/Jump, offline/saves, ten Career/Cup slots and SD09. No routine LAN/P2P implementation or unapproved art.
+Only existing dev; no branches/force pushes/security bypass. Preserve 223 teams, 2676 players, six formations, four actions, offline/saves, ten Career/Cup slots and SD09. No routine LAN/P2P work or unapproved art.
 
 ## Evidence
-GitHub connector accepted regression commit 838df9be. Test execution not available in connector-only environment.
+GitHub commit 79096327 accepted; no executable QA or deployment evidence this run.
 
 ## Cleanup
-Read/edit only own checkpoint; keep under 4 KiB.
+Read/edit only own checkpoint; under 4 KiB.
