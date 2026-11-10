@@ -5,7 +5,7 @@ const path=require('node:path');
 const vm=require('node:vm');
 const source=fs.readFileSync(path.join(__dirname,'../src/modules/fitness.js'),'utf8');
 const context={};
-vm.runInNewContext(source.replace(/export \\{FITNESS\\};?/g,'')+'\\nthis.F=FITNESS',context);
+vm.runInNewContext(source.replace(/export \{FITNESS\};?/g,'')+'\nthis.F=FITNESS',context);
 const F=context.F;
 
 test('nonfinite Stamina never grants maximum Breath capacity or cheaper sprint',()=>{
