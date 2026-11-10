@@ -79,3 +79,25 @@ test('sprint depletion resumes recovery when slowing to a walk, at 30/60/120fps'
   }
  }
 });
+
+test('sprint-to-ball-carry transition slows drain without granting running recovery',async()=>{
+ const f=await fitnessPromise;
+ for(const stamina of [1,35,60,100]){
+  const cap=f.breathCapacity(stamina);
+  for(const fps of [30,60,120]){
+   const dt=1/fps;
+   let breath=cap;
+   for(let frame=0;frame<fps/2;frame++)
+    breath=f.breathTick(breath,stamina,dt,f.breathMovementIntensity(1,true));
+   const afterSprint=breath;
+   for(let frame=0;frame<fps;frame++)
+    breath=Math.max(0,f.breathTick(breath,stamina,dt,f.breathMovementIntensity(1,false))-f.dribbleHoldBreathRate(stamina)*dt);
+   const afterCarry=breath;
+   assert.ok(afterCarry<afterSprint,`held Dribble must not regenerate Breath during running: stamina ${stamina}, fps ${fps}`);
+   assert.ok(afterSprint-afterCarry<.25,`ordinary carrying after sprint must stay cheap: stamina ${stamina}, fps ${fps}`);
+   const afterWalk=f.breathTick(afterCarry,stamina,dt,f.breathMovementIntensity(.3));
+   assert.ok(afterWalk>afterCarry,`walking must restore Breath after carrying: stamina ${stamina}, fps ${fps}`);
+   assert.ok(afterWalk<=cap);
+  }
+ }
+});
