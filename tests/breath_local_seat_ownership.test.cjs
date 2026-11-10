@@ -61,3 +61,18 @@ test('spectator and malformed local seats cannot expose either selected human',(
    'spectator must not have a ring');
  }
 });
+
+test('undefined multiplayer seat stays hidden through selection switches',()=>{
+ const f=fixture(2,undefined);
+ for(const seat of [0,1,0,1]){
+  f.controlled[seat]=seat===0?f.b:f.d;
+  assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[],
+   'unassigned local seat must not inherit selection '+seat);
+ }
+ f.game.humans=1;
+ assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[f.b],
+  'legacy solo should recover the current home selection');
+ f.game.humans=2;
+ assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[],
+  'returning to multiplayer must revoke implicit home ownership');
+});
