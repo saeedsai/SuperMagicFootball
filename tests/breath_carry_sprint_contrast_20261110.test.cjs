@@ -35,6 +35,7 @@ test('sustained carrying with held Dribble remains inexpensive across frame size
  const f=await fitnessPromise;
  for(const stamina of [1,35,60,100]){
   const cap=f.breathCapacity(stamina);
+  const samples=[];
   for(const fps of [30,60,120]){
    const dt=1/fps;
    let carry=cap,sprint=cap;
@@ -44,7 +45,14 @@ test('sustained carrying with held Dribble remains inexpensive across frame size
    }
    const carryLoss=cap-carry,sprintLoss=cap-sprint;
    assert.ok(carryLoss>0&&carryLoss<.75,`3s ordinary held Dribble should remain cheap at stamina ${stamina}, ${fps}fps: ${carryLoss}`);
-   assert.ok(sprintLoss>carryLoss*6,`3s sprint should cost >6x ordinary held Dribble at stamina ${stamina}, ${fps}fps: ${sprintLoss} vs ${carryLoss}`);
+   // At minimum Stamina the 3-second sprint empties the 3-second cap;
+   // comparing unclipped losses would demand more Breath than exists.
+   assert.ok(sprintLoss>=Math.min(cap,carryLoss*6)-1e-8,`sprint should cost >=6x carry unless capped at zero at stamina ${stamina}, ${fps}fps: ${sprintLoss} vs ${carryLoss}`);
+   samples.push({carryLoss,sprintLoss});
+  }
+  for(const key of ['carryLoss','sprintLoss']){
+   const values=samples.map(sample=>sample[key]);
+   assert.ok(Math.max(...values)-Math.min(...values)<1e-8,`${key} should be frame-rate independent at stamina ${stamina}: ${values}`);
   }
  }
 });
