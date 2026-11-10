@@ -46,9 +46,10 @@ function drawWetSlideSpray(ctx,dx,dy,reducedFlash=false){
 const runFootPoseScratch=[{},{}];
 // Use the current selection, not p.controlled (which is a physics-frame snapshot).
 // A switch can occur after that snapshot but before the next painted frame.
-// In a network match both teams are human in the shared simulation, but only
-// the local side owns this HUD. Null means ordinary couch Versus: show one
-// selected ring per local human; never draw remote or CPU selection rings.
+// In a network match both teams can be human in the shared simulation, but
+// only the explicitly identified local seat owns this HUD. A missing seat is
+// allowed to default to home only in legacy single-player play; in multiplayer
+// it hides every ring rather than revealing the remote player's selection.
 function shouldShowBreathRing(p,game,inMatchDraw){
  // An unspecified local seat must never expose both human seats in multiplayer.
  // Single-player defaults to the home seat for older offline match state.
