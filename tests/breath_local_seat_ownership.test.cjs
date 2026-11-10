@@ -9,7 +9,7 @@ const visible=new Function(match[0]+';return shouldShowBreathRing')();
 function fixture(humans,localBreathSide){
  const a={t:0,i:1},b={t:0,i:2},c={t:1,i:3},d={t:1,i:4};
  const players=[a,b,c,d],controlled=[a,c];
- const game={humans,localBreathSide,inControl:t=>t<humans,controlledPlayer:t=>controlled[t]};
+ const game={humans,localBreathSide,inControl(t){return t<this.humans;},controlledPlayer:t=>controlled[t]};
  return {game,players,controlled,a,b,c,d};
 }
 test('multiplayer with unspecified seat shows no rings',()=>{
