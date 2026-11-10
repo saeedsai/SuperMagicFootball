@@ -76,3 +76,25 @@ test('undefined multiplayer seat stays hidden through selection switches',()=>{
  assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[],
   'returning to multiplayer must revoke implicit home ownership');
 });
+
+test('ring requires selected player object identity, not matching jersey or team',()=>{
+ const f=fixture(2,0);
+ const lookalike={...f.a};
+ assert.equal(visible(lookalike,f.game,true),false,'cloned selected player must not own ring');
+ assert.equal(visible(f.a,f.game,true),true);
+ f.controlled[0]=null;
+ assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[],'no selected player means no ring');
+ f.controlled[0]=f.c;
+ assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[],'opposing selection cannot leak ring');
+ f.controlled[0]=f.b;
+ assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[f.b],'valid home switch restores exactly one ring');
+});
+test('explicit local seat never falls back to the other human when selection disappears',()=>{
+ const f=fixture(2,1);
+ f.controlled[1]=undefined;
+ assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[]);
+ f.game.localBreathSide=null;
+ assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[],'unassigned multiplayer seat stays hidden');
+ f.game.humans=1;
+ assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[f.a],'legacy solo still selects home');
+});
