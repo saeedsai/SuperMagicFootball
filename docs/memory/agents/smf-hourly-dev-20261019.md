@@ -3,25 +3,25 @@
 **Updated:** 2026-11-10
 
 ## Mission
-Incremental dev-only work. Prioritize Breath ownership/drain contrast, then Player Studio, counterable four-button Magic Tricks, existing-player eight-view art, goalkeeper and Career.
+Dev-only increments; prioritize cheap ordinary Breath carrying vs costly sprint, selected-human-only Breath ring, then Player Studio, four-button Magic Tricks, existing eight-view graphics, goalkeeper and Career.
 
 ## Current checkpoint
-- Added focused Node regression for local multiplayer seat handoffs (0→1→0, missing seat, restoration), selected-player switching, and stale preview exclusion. Commit 79096327. Production unchanged; candidate 0.12.81.68 unchanged.
-- GitHub connector accepted commit. Executable checkout blocked by github.com DNS; focused Node/Chromium, four Node/four Chromium Census, Modular QA NOT EXECUTED/VERIFIED.
-- No main promotion or hosted Pages certification. #48 physical two-phone, #86 Render commit trigger, #87 main protection remain open.
+- Added executable Node regression `tests/breath_carry_sprint_contrast_20261110.test.cjs` (commit 2bc5d3f): full-intensity ordinary carrying + held Dribble versus sprint at Stamina 1/35/60/100, idle/walking recovery and Energy independence. No production change, candidate remains 0.12.81.68.
+- GitHub contents connector write accepted; local git clone still fails github.com DNS. Focused Node/Chromium and four Node/four Chromium plus Modular QA NOT EXECUTED/VERIFIED.
+- No protected promotion or Pages certification. Physical two-phone #48, Render trigger #86, protection #87 unresolved.
 
 ## Next smallest action
-1. Restore executable checkout; run focused Breath Node and desktop/touch Chromium tests.
-2. Verify exact-head four Node/four Chromium Census and Modular QA; fix failures.
-3. Promote only exact green dev head via protected release mechanism; verify Pages hosted bytes.
-4. Deliver tested Player Studio usability improvement.
-5. Advance counterable Pass/Shoot/Dribble/Jump tricks, existing-player eight-view quality, goalkeeper and Career.
+1. Obtain executable checkout; run focused Breath tests including new contrast suite and desktop/touch selected-human ring.
+2. Exact-head four Node/four Chromium Census and Modular QA; repair failures.
+3. Promote only exact green dev through protected pipeline and verify Pages hosted bytes.
+4. Player Studio usability with browser regression.
+5. Counterable Pass/Shoot/Dribble/Jump tricks; existing-player eight-view art, keeper and Career.
 
 ## Ownership and exclusions
-Only existing dev; no branches/force pushes/security bypass. Preserve 223 teams, 2676 players, six formations, four actions, offline/saves, ten Career/Cup slots and SD09. No routine LAN/P2P work or unapproved art.
+Existing dev only; no new branches/force-push/security bypass. Preserve 223 teams, 2676 players, six formations, four actions, offline/saves, ten Career/Cup slots, SD09. No routine LAN/P2P or unapproved art.
 
 ## Evidence
-GitHub commit 79096327 accepted; no executable QA or deployment evidence this run.
+GitHub accepted test commit 2bc5d3f. No executable QA evidence this run.
 
 ## Cleanup
-Read/edit only own checkpoint; under 4 KiB.
+Own checkpoint only; under 4 KiB.
