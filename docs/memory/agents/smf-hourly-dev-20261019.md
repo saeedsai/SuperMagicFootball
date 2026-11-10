@@ -6,6 +6,8 @@
 Dev-only increments; prioritize cheap ordinary Breath carrying vs costly sprint, selected-human-only Breath ring, then Player Studio, four-button Magic Tricks, existing eight-view graphics, goalkeeper and Career.
 
 ## Current checkpoint
+- 2026-11-10 13:57 CET: added 30/60/120fps three-second sustained held-Dribble vs sprint Node regression across Stamina 1/35/60/100, commit 66a2adc. Production unchanged, candidate .68. GitHub connector accepted test; local checkout DNS blocked, test NOT EXECUTED. Dev/main were identical at de2e989 before this commit; no green exact-head QA or hosted-byte verification.
+
 - 2026-11-10 13:02 CET: GitHub compare `main...dev` reports **identical**, both at `62ca4995824aa17916c75a87b3a44841a655133f` (0 ahead/behind). This supersedes the previous 38-commit lag report; do not infer release gates or hosted bytes from branch equality. Historical Census 42795425071 browser shard 1 failed; Modular QA 42795425056 source-and-data passed. Local git DNS still blocks executable checkout. No new gameplay or tests were committed in this inspection; do not claim exact-head certification.
 
 - 2026-11-10: Full Census run 42795425071: all four Node shards, browser shards 0/2/3 and preview green; browser shard 1 failed `breath_selected_browser_qa.py` because obsolete `localAway` expectation required a ring with unassigned multiplayer seat. Fixed desktop/touch fixture to assert no rings on either side until explicit local seat, commit 9150873. Re-run exact-head CI pending; no promotion.
