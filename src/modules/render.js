@@ -50,8 +50,11 @@ const runFootPoseScratch=[{},{}];
 // the local side owns this HUD. Null means ordinary couch Versus: show one
 // selected ring per local human; never draw remote or CPU selection rings.
 function shouldShowBreathRing(p,game,inMatchDraw){
+ // An unspecified local seat must never expose both human seats in multiplayer.
+ // Single-player defaults to the home seat for older offline match state.
+ const localSeat=game.localBreathSide==null?(game.humans===1?0:null):game.localBreathSide;
  return !!(inMatchDraw&&!p.preview&&
-  (game.localBreathSide==null||game.localBreathSide===p.t)&&
+  (localSeat===0||localSeat===1)&&localSeat===p.t&&
   game.inControl(p.t)&&game.controlledPlayer(p.t)===p);
 }
 const rgb=(hex,a)=>hex+a;
