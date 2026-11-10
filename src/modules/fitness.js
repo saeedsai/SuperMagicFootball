@@ -18,7 +18,8 @@ function actionFatigue(fatigue,stamina,kind,modifier=1){
 }
 // ENERGY is long-term (legacy 'fatigue' 0..1 stays for save/API compatibility).
 // BREATH is a separate, short-term action budget measured in seconds.
-const breathCapacity=stamina=>3+7*(clamp(Number(stamina)||1,1,100)-1)/99;
+const ratedBreathStamina=stamina=>{const n=Number(stamina);return Number.isFinite(n)?clamp(n||1,1,100):1;};
+const breathCapacity=stamina=>3+7*(ratedBreathStamina(stamina)-1)/99;
 const breathPenalty=(breath,stamina)=>{
  const cap=breathCapacity(stamina);
  return 1+.60*(1-clamp(Number(breath)||0,0,cap)/cap);
@@ -31,7 +32,7 @@ const breathActionSeconds=Object.freeze({
  flyingKick:1.6,flipKick:1.5,assistBoost:.7
 });
 function spendBreath(breath,stamina,kind){
- const cap=breathCapacity(stamina),rated=clamp(Number(stamina)||1,1,100);
+ const cap=breathCapacity(stamina),rated=ratedBreathStamina(stamina);
  const cost=(breathActionSeconds[kind]||.45)*.90*(1.2-.4*(rated-1)/99);
  return clamp((Number.isFinite(+breath)?+breath:cap)-cost,0,cap);
 }
@@ -40,7 +41,7 @@ function spendBreath(breath,stamina,kind){
 // Ordinary movement and sustained Dribble hold are charged together each frame.
 // Keep the continuous hold cost low at minimum Stamina; sprint is the Breath limiter.
 // One-off action costs, walking/idle recovery and long-term Energy are unchanged.
-const dribbleHoldBreathRate=stamina=>.04+.03*(100-clamp(Number(stamina)||1,1,100))/99;
+const dribbleHoldBreathRate=stamina=>.04+.03*(100-ratedBreathStamina(stamina))/99;
 // Analog walking restores BREATH while full-speed running and JUMP sprint remain costly.
 // This is BREATH-only: long-term Energy continues to use its original intensity.
 function breathMovementIntensity(magnitude,sprinting=false,hyperdash=false){
@@ -54,7 +55,7 @@ function breathMovementIntensity(magnitude,sprinting=false,hyperdash=false){
  return .55+.05*(input-.55)/.45;
 }
 function breathTick(breath,stamina,seconds,intensity=0){
- const cap=breathCapacity(stamina),rated=clamp(Number(stamina)||1,1,100);
+ const cap=breathCapacity(stamina),rated=ratedBreathStamina(stamina);
  const numericIntensity=Number(intensity);
  const active=Number.isFinite(numericIntensity)?clamp(numericIntensity,0,1.8):0;
  // Walking or resting restores breath; sprinting consumes it quickly.
@@ -74,7 +75,7 @@ function recoverEnergy(energy,days,stamina=60){
  const available=clamp(Number(energy)||0,0,100),n=Math.max(0,Math.floor(Number(days)||0));
  const recovery=n===0?0:n===1?30:80+10*(n-2);
  // High stamina restores energy somewhat faster; low stamina somewhat slower.
- const statFactor=.85+.3*(clamp(Number(stamina)||1,1,100)-1)/99;
+ const statFactor=.85+.3*(ratedBreathStamina(stamina)-1)/99;
  return clamp(available+recovery*statFactor,0,100);
 }
 const staminaPercent=fatigue=>Math.round((1-clamp(fatigue||0,0,1))*100);
