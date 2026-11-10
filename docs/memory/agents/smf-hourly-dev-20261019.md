@@ -2,19 +2,28 @@
 **Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-11-10
 
-## Latest increment
-- Added Chromium spectator regression: with `humans=0` and stale `localBreathSide=0`, neither team may draw Breath ring/outline. Existing desktop/touch local-seat, player-switch, CPU and drain assertions retained.
-- Test commit `f5adbf16b1fb91d05fc30695f851e61fabd94001` directly on existing dev. No player-facing changes; version candidate `0.12.81.68` unchanged.
-- Before edit, dev/main identical at `5085fa7016a246821c83ded60d62abf0daca0f40`.
-- Git checkout failed (github.com DNS). Focused test, four Node/four Chromium Census, Modular QA **NOT RUN**. GitHub commit statuses empty and PR-only workflow lookup empty for prior head; no green exact-head certification.
-- No main promotion, Pages hosted-byte verification or physical two-phone certification. Issues #48, #86, #87 remain open.
+## Mission
+Deliver tested incremental gameplay, Player Studio, four-button Magic Tricks, existing-player graphics, goalkeeper and Career improvements on existing `dev`; protect release gates and product invariants.
 
-## Next five actions
-1. Restore executable checkout; run the focused Chromium spectator/selected-only test on desktop and touch, repair any failures.
-2. Run real FITNESS Node Breath drain/recovery contrasts at 30/60/120 FPS.
-3. Obtain exact-head green four-Node/four-Chromium Census and Modular QA.
-4. Promote only through protected release mechanism, verify Pages hosted bytes; separately audit Render commit triggers.
-5. Deliver tested Player Studio usability increment, then four-button Magic Tricks, eight-view graphics, goalkeeper and Career Mode.
+## Current checkpoint
+- Current pre-fix dev `5fcbf4515ee70d917a9ff9093545ae9f0da25f04`; main `5085fa7016a246821c83ded60d62abf0daca0f40`, two ahead, zero behind.
+- Spectator-only Breath Chromium regression committed at `f5adbf16b1fb91d05fc30695f851e61fabd94001`, still unexecuted in Chromium.
+- **New verified CI failure:** push Modular Game Dev QA run 42882023187 on dev `5fcbf45` failed Node suite 2406/2407: `tests/project_memory_contract.test.cjs` requires `## Mission` in this checkpoint. This update restores all six required headings.
+- Local Git clone still blocked by DNS resolution of github.com. No local focused, four Node/four Chromium Census or hosted-byte verification performed.
+- Candidate version `0.12.81.68` unchanged: checkpoint-only correction, no player-facing changes.
 
-## Invariants
-Existing dev only; no new branch/force push/CI bypass. Preserve 223 teams, 2676 players, six formations, Pass/Shoot/Dribble/Jump, offline/saves, Career/Cup ten slots, SD09. No routine LAN/P2P work; #48 stays open until physical acceptance.
+## Next smallest action
+1. Confirm GitHub CI executes and passes the corrected checkpoint contract on exact new dev SHA.
+2. Run focused Breath Node drain/recovery tests and selected-human-only desktop/touch Chromium test.
+3. Obtain green exact-head four-Node/four-Chromium Census and Modular QA.
+4. Promote only via protected main pipeline after gates, verify Pages hosted bytes, audit Render commit trigger.
+5. Implement a tested Player Studio improvement; then counterable Magic Tricks, eight-view existing art, goalkeeper and Career.
+
+## Ownership and exclusions
+Only own checkpoint; no other agent memories. No new branches, force pushes, bypass, routine LAN/P2P, or unapproved art. Preserve 223 teams, 2676 players, six formations, exactly Pass/Shoot/Dribble/Jump, saves/offline, Career/Cup ten slots and SD09. Physical two-phone #48 stays open; infra #86 and #87 remain open.
+
+## Evidence
+Modular QA failure: https://github.com/saeedsai/SuperMagicFootball/actions/runs/42882023187 (source-and-data, Node memory contract). Previous Chromium test commit: https://github.com/saeedsai/SuperMagicFootball/commit/f5adbf16b1fb91d05fc30695f851e61fabd94001.
+
+## Cleanup
+No branch or release mutation; retain exact-head QA and physical acceptance blockers until independently verified.
