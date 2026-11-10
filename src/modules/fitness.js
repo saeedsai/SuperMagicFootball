@@ -22,7 +22,9 @@ const ratedBreathStamina=stamina=>{const n=Number(stamina);return Number.isFinit
 const breathCapacity=stamina=>3+7*(ratedBreathStamina(stamina)-1)/99;
 const breathPenalty=(breath,stamina)=>{
  const cap=breathCapacity(stamina);
- return 1+.60*(1-clamp(Number(breath)||0,0,cap)/cap);
+ const amount=Number(breath);
+ // Invalid Breath must not grant a free full-capacity action (Infinity previously did).
+ return 1+.60*(1-clamp(Number.isFinite(amount)?amount:0,0,cap)/cap);
 };
 const breathActionSeconds=Object.freeze({
  pass:.25,shoot:1.1,super:2.6,comboSuper:3.0,defenceSuper:2.4,
