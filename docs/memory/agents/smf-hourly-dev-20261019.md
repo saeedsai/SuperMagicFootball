@@ -6,20 +6,20 @@
 Small tested increments on existing dev. Preserve 223 teams, 2676 players, six formations, four actions, offline saves, Career/Cup ten slots and SD09.
 
 ## Current checkpoint
-- Initial dev/main identical at `1957cb2b70799bd51e7fc54e36716475e5bef6b1`.
-- BREATH-NONFINITE-PENALTY-01: FITNESS `breathPenalty` now maps NaN/±Infinity/undefined Breath to empty, not full, preventing invalid Infinity from bypassing the low-Breath penalty. Finite values unchanged.
-- Source commit `c565060c`; Node regression `3a54438c`. Tests NOT EXECUTED; local Git checkout DNS unavailable. Full exact-head CI NOT VERIFIED. No main promotion/Pages claim.
-- About remains `0.12.81.67` (defensive invalid-input handling); selected-local-human-only ring unchanged.
+- At start, dev/main identical at `fad87832fee95e4252179a2f364959f8675362e9`.
+- Added Chromium regression cases for spectator/no-human and invalid negative local seat in `tests/breath_local_selection_browser_qa.py` (commit `72f7313`). The existing desktop/touch selected-player switching and four-button assertions remain.
+- Browser regression NOT EXECUTED; local git checkout blocked by DNS. Four Node/four Chromium Census, Modular QA and hosted Pages bytes NOT VERIFIED. No promotion claim.
+- Production renderer currently allows `localBreathSide == null` to match multiple human seats; inspect and fix with a separate player-facing candidate and full release gates. Do not claim the ring fully certified.
+- About stays `0.12.81.67` (test-only increment).
 
 ## Next smallest action
-Run `node --test tests/breath_nonfinite_penalty.test.cjs tests/breath_nonfinite_stamina.test.cjs`, Chromium selected-human-only ring tests, four Node/four Chromium Census and Modular QA; repair failures before protected main promotion and hosted-byte verification.
+Execute browser QA and fix failures; inspect null local seat ownership and cover with browser regression. Then full exact-head CI and protected promotion only when green.
 
 ## Ownership and exclusions
 Own checkpoint only; no other agents' memory, concept heroes, roster audit, routine LAN or unapproved art.
 
 ## Evidence
-- https://github.com/saeedsai/SuperMagicFootball/commit/c565060cae2e09e0883c6c725499fd3f2f0ce7bf
-- https://github.com/saeedsai/SuperMagicFootball/commit/3a54438c042052a79fee7c72b2fdb047ee849c5e
+- https://github.com/saeedsai/SuperMagicFootball/commit/72f7313ee869e9385fce7c08e59d332dc04555b8
 
 ## Cleanup
 Physical two-phone #48, Render drift #86 and main protection #87 remain open. No security bypass.
