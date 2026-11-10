@@ -52,7 +52,7 @@ with sync_playwright() as pw:
    const switched=draw(next),former=draw(first);
    // Local Versus has one selected human on each side.
    g.humans=2;away.controlled=false;
-   const localAway=draw(away);
+   const unassignedHome=draw(next),localAway=draw(away);
    // A network peer runs both teams as humans; its HUD belongs only to its own side.
    g.localBreathSide=0;const hostHome=draw(next),hostAway=draw(away);
    g.localBreathSide=1;const guestHome=draw(next),guestAway=draw(away);
@@ -111,14 +111,14 @@ with sync_playwright() as pw:
    g.input.state[0]={x:0,y:0,dribble:false,pass:false,shoot:false,jump:false};
    g.updatePlayers(.02);const stationaryRest=first.breath;
    g.input.state[0]=oldInput;g.autoSwitch=oldAutoSwitch;g.cooldown=oldCooldown;
-   return {initial,unselected,cpu,switched,former,localAway,hostHome,hostAway,guestHome,guestAway,guestFormer,guestSwitched,soloAway,preview,menu,staminaSamples,holdLoss,runLoss,sprintLoss,analogWalk,stationaryHold,stationaryRest,
+   return {initial,unselected,cpu,switched,former,unassignedHome,localAway,hostHome,hostAway,guestHome,guestAway,guestFormer,guestSwitched,soloAway,preview,menu,staminaSamples,holdLoss,runLoss,sprintLoss,analogWalk,stationaryHold,stationaryRest,
            actions:document.querySelectorAll('#touchButtons button[data-act]').length,
            players:g.players.length};
   }""")
   assert outcome['initial']=={'breath':2,'outline':1},(name,'initial selected ring and outline',outcome)
   assert outcome['unselected']=={'breath':0,'outline':0} and outcome['cpu']=={'breath':0,'outline':0},(name,'unselected/CPU ring',outcome)
   assert outcome['switched']=={'breath':2,'outline':1} and outcome['former']=={'breath':0,'outline':0},(name,'same-frame switch',outcome)
-  assert outcome['localAway']=={'breath':2,'outline':1} and outcome['soloAway']=={'breath':0,'outline':0},(name,'two-human/solo',outcome)
+  assert outcome['unassignedHome']=={'breath':0,'outline':0} and outcome['localAway']=={'breath':0,'outline':0} and outcome['soloAway']=={'breath':0,'outline':0},(name,'unassigned multiplayer/solo',outcome)
   assert outcome['hostHome']=={'breath':2,'outline':1} and outcome['hostAway']=={'breath':0,'outline':0},(name,'network host ring scope',outcome)
   assert outcome['guestHome']=={'breath':0,'outline':0} and outcome['guestAway']=={'breath':2,'outline':1},(name,'network guest ring scope',outcome)
   assert outcome['guestFormer']=={'breath':0,'outline':0} and outcome['guestSwitched']=={'breath':2,'outline':1},(name,'network guest same-frame switch',outcome)
