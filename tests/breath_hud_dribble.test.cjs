@@ -98,8 +98,8 @@ test('LAN/P2P Breath ring is scoped to local human, with immediate switching and
  const home={t:0,i:2},nextHome={t:0,i:3},away={t:1,i:2},nextAway={t:1,i:3};
  const chosen=[home,away];
  const game={humans:2,localBreathSide:null,inControl(t){return t===0||this.humans===2;},controlledPlayer(t){return chosen[t];}};
- assert.equal(visible(home,game,true),true,'local Versus home');
- assert.equal(visible(away,game,true),true,'local Versus away');
+ assert.equal(visible(home,game,true),false,'unassigned Versus home hidden');
+ assert.equal(visible(away,game,true),false,'unassigned Versus away hidden');
  game.localBreathSide=0;
  assert.equal(visible(home,game,true),true,'host local home');
  assert.equal(visible(away,game,true),false,'host must not see remote away ring');
@@ -114,8 +114,8 @@ test('LAN/P2P Breath ring is scoped to local human, with immediate switching and
  game.humans=1;
  assert.equal(visible(nextAway,game,true),false,'CPU never shows ring');
  game.humans=2;game.localBreathSide=null;
- assert.equal(visible(nextHome,game,true),true,'couch Versus home restored');
- assert.equal(visible(nextAway,game,true),true,'couch Versus away restored');
+ assert.equal(visible(nextHome,game,true),false,'unassigned multiplayer home hidden');
+ assert.equal(visible(nextAway,game,true),false,'unassigned multiplayer away hidden');
  assert.equal(visible(nextAway,game,false),false,'menu/preview never draws live ring');
  assert.match(text('src/modules/ui.js'),/game\.localBreathSide=lanRole==='host'\?0:lanRole==='guest'\?1:null/,'UI must supply actual local network role');
 });
@@ -146,8 +146,8 @@ test('current selection wins immediately over stale controlled flags in both loc
  assert.equal(predicate(home,game,true),false);
  assert.equal(predicate(next,game,true),true);
  assert.equal(predicate(away,game,true),false,'solo CPU');
- game.humans=2;
- assert.equal(predicate(away,game,true),true,'local second human');
+ game.humans=2;game.localBreathSide=1;
+ assert.equal(predicate(away,game,true),true,'selected local second human');
  assert.equal(predicate(cpu,game,true),false,'unselected second-team player');
  assert.equal(predicate(next,game,false),false,'outside live match');
  next.preview=true;assert.equal(predicate(next,game,true),false,'editor preview');
