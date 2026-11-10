@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.67',
- date:'2026-11-08',
+ version:'0.12.81.68',
+ date:'2026-11-10',
  notes:Object.freeze([
+  'BREATH-LOCAL-SEAT-OWNERSHIP-01: Breath ring now resolves exactly one local human seat; an unspecified multiplayer seat hides all rings, while legacy solo play defaults to home. Selection switching and CPU exclusion are preserved. Exact-head QA and deployment pending.',
   'BREATH-WALK-THRESHOLD-01: Analog walking at the exact run threshold now reliably restores Breath despite floating-point rounding; ordinary ball carrying remains inexpensive and sprint costly. No Energy, controls, roster or save changes. Exact-head QA and deployment pending.',
   'BREATH-DRIBBLE-LOW-DRAIN-01: Ordinary running with Dribble held now uses very little Breath, especially for low-Stamina players; sprint remains substantially costlier. Walking/idle recovery, Energy, one-off actions, the four action buttons, multiplayer selection, saves and offline play are unchanged. Focused and full QA, protected promotion and hosted-byte verification remain pending.',
   'STUDIO-UNDO-PALETTE-GUARD-01: Undo Randomize now skips a previous appearance choice if it has since been removed or disabled, while restoring other valid selections and preserving later manual edits.',
