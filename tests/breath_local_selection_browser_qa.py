@@ -92,6 +92,12 @@ with sync_playwright() as pw:
             g.humans = 2; g.localBreathSide = -1;
             if (rings().length !== 0) throw Error('invalid negative local seat exposed Breath ring');
             checks.push('invalid-seat-hidden');
+            // Malformed seats must never coerce into either local human identity.
+            for (const seat of [2, '0', '1', NaN, Infinity, -Infinity]) {
+              g.localBreathSide = seat;
+              if (rings().length !== 0) throw Error('malformed local seat exposed Breath ring: ' + seat);
+            }
+            checks.push('malformed-seats-hidden');
             g.humans = 1; g.localBreathSide = 0;
             if (rings().length !== 1 || rings()[0] !== selected(0))
               throw Error('single-player home human lost selected Breath ring');
@@ -103,7 +109,7 @@ with sync_playwright() as pw:
           }
           return {checks, buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
         }""", predicate)
-        assert len(results['checks']) == 22 and results['buttons'] == 4, (label, results)
+        assert len(results['checks']) == 23 and results['buttons'] == 4, (label, results)
         assert not errors, (label, errors)
         print('BREATH_CHROMIUM_PASS', label, results, flush=True)
         context.close()
