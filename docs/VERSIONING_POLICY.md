@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.67
+# SuperMagicFootball release/version policy — About-only 0.12.81.68
+
+**Dev candidate 0.12.81.68 (10 November 2026):** BREATH-LOCAL-SEAT-OWNERSHIP-01: Breath ring now resolves exactly one local human seat; an unspecified multiplayer seat hides all rings, while legacy solo play defaults to home. Selection switching and CPU exclusion are preserved. Exact-head QA and deployment pending.
 
 **Dev candidate 0.12.81.67 (8 November 2026):** BREATH-WALK-THRESHOLD-01: Analog walking at the exact run threshold now reliably restores Breath despite floating-point rounding; ordinary ball carrying remains inexpensive and sprint costly. No Energy, controls, roster or save changes. Exact-head QA and deployment pending.
 
