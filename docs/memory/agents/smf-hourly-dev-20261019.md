@@ -3,25 +3,27 @@
 **Updated:** 2026-11-10
 
 ## Mission
-Direct tested increments on existing dev only. Highest priority Breath cheap ordinary carrying/held Dribble, expensive sprint, walking recovery, selected local human only ring. Next: Player Studio, counterable four-button tricks, existing eight-view art, keeper, Career.
+Direct tested increments on existing dev only. Breath: cheap ordinary carry/held Dribble, costly sprint, walking recovery, ring for selected local human only. Next Player Studio, counterable four-button tricks, existing eight-view art, keeper and Career.
 
 ## Current checkpoint
-- 2026-11-10 17:58 CET: dev/main were identical at 4b6fa0be6ec1d083e9b437465cc43149561f1da2 before test commit. Added focused sprint-to-carry-to-walk transition regression across Stamina 1/35/60/100 and 30/60/120 FPS, commit 2b4af9c7a109153fd2fb1daa0cfb2a491dc0e383. GitHub contents write accepted; **native Node/Chromium NOT RUN** because no executable GitHub checkout (DNS). No gameplay change/version bump; candidate 0.12.81.68. No green exact-head CI, promotion or Pages-byte verification.
-- Previous 2026-11-10 17:03 CET: added sprint-to-walk recovery regression (8f11bfa), also not executed. Prior Chromium shard failure due unassigned local seat fixture corrected (9150873), not certified on exact current head.
-- Render live signaling service reportedly still tracks dev, despite main-only policy; do not claim root cause or deploy without authorized configuration. Physical two-phone #48, Render #86, protection #87 open.
+- 2026-11-10 19:01 CET: GitHub compare reports dev/main **identical** at `6df0c5738d72fce66eee9e30af40210eae65bc79` (0 ahead/0 behind). Latest backlog test commit `2b4af9c` covers sprint→ordinary carry→walk at four Stamina levels and 30/60/120 FPS; execution **not verified**.
+- Read AGENTS, version policy, memory protocol/shared, own checkpoint, backlog, selected browser test and package. Version candidate `0.12.81.68`; no player-facing change in this run.
+- Git checkout command `git ls-remote` failed: cannot resolve github.com. No executable checkout; focused Node, desktop/touch Chromium, four Node/four Chromium Census, Modular QA **NOT RUN**. GitHub commit status returned no statuses and PR-triggered workflow lookup returned no runs (not proof of CI failure or success).
+- Issues #48, #86, #87 remain open. #86 documents Render broker auto-deploy tracking dev and API-triggered last observed deployment; Render workspace not selected in connector, so live settings could not be independently inspected. #87 reports no enforced main protection.
+- No gameplay source/test commit, protected promotion or hosted-byte verification in this run. Do not claim Breath fully certified or physical two-phone acceptance.
 
 ## Next smallest action
-1. Restore executable checkout and run focused Breath drain/recovery and selected-human ring Node/desktop/touch Chromium.
-2. Run exact-head four Node/four Chromium Census and Modular QA; repair failures.
-3. Promote only exact green dev through protected main pipeline; verify hosted Pages bytes.
-4. Deliver tested Player Studio usability increment.
-5. Advance counterable four-button tricks, existing-player eight-view graphics, goalkeeper and Career.
+1. Restore executable checkout or approved CI execution and run focused Breath/selected-human ring regressions.
+2. Verify full exact-head four Node/four Chromium Census and Modular QA; fix failures.
+3. Promote only through protected main path and verify Pages hosted bytes.
+4. Implement and test Player Studio usability increment; preserve saves.
+5. Advance four-button counterable tricks, existing eight-view art, keeper and Career; investigate Render only with verified access.
 
 ## Ownership and exclusions
-Existing dev only; no new branch, force-push, CI/security bypass or routine LAN/P2P. Preserve 223 teams, 2676 players, six formations, four actions, offline/saves, ten Career/Cup slots and SD09.
+Existing dev only. No new branch, force push, bypass, routine LAN/P2P. Preserve 223 teams, 2676 players, six formations, four actions, offline/saves, ten Career/Cup slots, SD09.
 
 ## Evidence
-GitHub connector accepted regression commit 2b4af9c7; tests NOT EXECUTED. Main promotion/deployment NOT attempted.
+GitHub compare at 19:01 CET; local git DNS error; GitHub issue reads #48/#86/#87; no passing test claim.
 
 ## Cleanup
-Own checkpoint only; under 4 KiB.
+Own checkpoint only, under 4 KiB.
