@@ -6,6 +6,7 @@
 Dev-only increments; prioritize cheap ordinary Breath carrying vs costly sprint, selected-human-only Breath ring, then Player Studio, four-button Magic Tricks, existing eight-view graphics, goalkeeper and Career.
 
 ## Current checkpoint
+- 2026-11-10 15:04 CET: evaluated real FITNESS source for 30/60/120fps, Stamina 1/35/60/100. Found new 3-second regression incorrectly required >6x when Stamina 1 sprint saturates at zero (3s cap vs .642s carry loss). Repaired test with cap-aware bound and FPS invariance (f4dedec). Direct FITNESS evaluation passed all 12 combinations; native Node/Chromium/full QA not run (git DNS). No production change, version .68, no promotion.
 - 2026-11-10 13:57 CET: added 30/60/120fps three-second sustained held-Dribble vs sprint Node regression across Stamina 1/35/60/100, commit 66a2adc. Production unchanged, candidate .68. GitHub connector accepted test; local checkout DNS blocked, test NOT EXECUTED. Dev/main were identical at de2e989 before this commit; no green exact-head QA or hosted-byte verification.
 
 - 2026-11-10 13:02 CET: GitHub compare `main...dev` reports **identical**, both at `62ca4995824aa17916c75a87b3a44841a655133f` (0 ahead/behind). This supersedes the previous 38-commit lag report; do not infer release gates or hosted bytes from branch equality. Historical Census 42795425071 browser shard 1 failed; Modular QA 42795425056 source-and-data passed. Local git DNS still blocks executable checkout. No new gameplay or tests were committed in this inspection; do not claim exact-head certification.
