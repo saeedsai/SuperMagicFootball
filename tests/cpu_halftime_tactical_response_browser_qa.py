@@ -49,6 +49,7 @@ with sync_playwright() as pw:
     const g=SupermagicFootball.game;
     g.score=score.slice();
     g.half=1;
+    g.kickoffCountdown=0; // Advance past the separately verified opening countdown before forcing halftime.
     g.matchSeconds=.25;
     g.clock=.26;
     g.ball.owner=null;g.ball.shot=null;

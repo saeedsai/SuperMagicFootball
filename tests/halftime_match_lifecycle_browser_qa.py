@@ -47,6 +47,7 @@ with sync_playwright() as pw:
       score:JSON.stringify(g.score),stored:localStorage.getItem('legend_teamPlans'),
       home:h.id,away:a.id,bench:bench.id,
       buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
+    g.kickoffCountdown=0; // This fixture jumps past the separately verified three-second start sequence.
     g.clock=g.matchSeconds-.005;
     g.cooldown=0;g.stoppageAnnounced=false;
     g.ball.owner=null;g.ball.pass=null;g.ball.passTeam=null;
@@ -81,7 +82,7 @@ with sync_playwright() as pw:
   full=page.evaluate("""() => {
     const g=SupermagicFootball.game;
     g.matchState='paused';g.celebration=0;g.pendingKickoff=null;
-    g.half=2;g.score=[1,0];g.clock=g.matchSeconds-.005;
+    g.half=2;g.score=[1,0];g.kickoffCountdown=0;g.clock=g.matchSeconds-.005;
     g.ball.owner=null;g.ball.pass=null;g.ball.passTeam=null;
     g.ball.x=1400;g.ball.y=700;g.ball.vx=g.ball.vy=0;
     g.stoppageAnnounced=false;g.matchState='play';g.update(.02);
