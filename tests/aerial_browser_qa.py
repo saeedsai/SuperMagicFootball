@@ -14,6 +14,8 @@ with sync_playwright() as pw:
         open_quick(page)
         page.locator('[data-action="kickoff"]').first.click()
         assert page.evaluate('SupermagicFootball.game.matchState')=='play',errors
+        # The countdown is covered separately; start live physics before the dash/touch gestures.
+        page.evaluate('SupermagicFootball.game.kickoffCountdown=0')
         # Test hyperdash via the FOUR-button hold-Jump + movement gesture.
         page.evaluate("""()=>{const sf=SupermagicFootball,g=sf.game,p=g.player(0,3),q=g.player(1,4);g.take(q);q.x=2650;q.y=250;g.controlled[0]=3;g.cooldown=0;p.dashCooldown=0;p.fatigue=0;p.stun=0;p.x=1270;p.y=700;g.input.reset();}""")
         if mobile:
