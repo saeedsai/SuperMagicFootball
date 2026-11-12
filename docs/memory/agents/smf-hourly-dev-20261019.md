@@ -1,6 +1,6 @@
 # SuperMagicFootball - hourly developer checkpoint
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-11-12
+**Updated:** 2026-11-13
 
 ## Mission
 Deliver tested increments on existing dev: arcade continuous play and kickoff countdown, then Player Studio, four-button Magic Tricks, existing-player eight-view graphics, goalkeeper and Career.
@@ -10,6 +10,11 @@ Deliver tested increments on existing dev: arcade continuous play and kickoff co
 - 0.12.81.69 candidate: endline rebound except valid goals; behind slides remain tackles, no foul; legacy tactics set-piece fields preserved as save data but hidden; kickoff countdown freezes simulation.
 - Earlier 0.12.81.68 passed historical exact-head Census/Modular QA; that evidence does not certify the new candidate.
 - No physical two-phone LAN certification (#48). Render auto-deploy investigation #86, GitHub main protection #87 remain open.
+
+## 13 November 2026 test-fixture repair
+- On existing dev, corrected four-button combo browser fixture (`83808c2`) and aerial/keeper browser fixture (`5166045`) to finish the new 3s kickoff countdown before exercising live input/physics. Countdown itself remains covered by its dedicated Node/Chromium tests.
+- Local Git checkout still fails DNS resolution of github.com; no executable Chromium/Node QA, exact-head Census, Modular QA, protected promotion, or Pages-byte certification was performed. CI must validate these changes; do not claim green.
+- No production behavior or player-facing version changed (candidate .69).
 
 ## Next smallest action
 1. Run focused arcade-rules and countdown Node/desktop/touch Chromium regressions and repair failures.
