@@ -17,6 +17,7 @@ test('kickoff countdown freezes simulation for three actual seconds of update ti
   for(let i=0;i<3*fps+2;i++)tick.call(g,1/fps);
   assert.equal(g.kickoffCountdown,0,'countdown reaches zero at '+fps+' FPS');
   assert.equal(g.clock,0,'countdown must not advance clock');
+  assert.equal(g.matchState,'play','countdown must not end the active half');
  }
 });
 test('initialization and second-half transition enable countdown only for UI-started games',()=>{

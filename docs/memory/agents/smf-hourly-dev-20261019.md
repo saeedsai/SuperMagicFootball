@@ -16,10 +16,9 @@ Deliver tested increments on existing dev: arcade continuous play and kickoff co
 - Local Git checkout still fails DNS resolution of github.com; no executable Chromium/Node QA, exact-head Census, Modular QA, protected promotion, or Pages-byte certification was performed. CI must validate these changes; do not claim green.
 - No production behavior or player-facing version changed (candidate .69).
 
-## 13 November 2026 browser-shard-1 failure repair
-- Exact prior head `4f32ff85da3bfd49a95509e844262bfbf43af122`: Full Regression Census 43325390353 passed four Node shards, preview and browser shards 0/2/3; browser shard 1 failed three stale fixtures: dribble styles, four-button input, and halftime morale, each entering gameplay before the new opening countdown finished. Modular QA 43325390396 passed.
-- Fixture changes: require initial countdown, explicitly finish it before live input QA, and skip it only for forced-half transition. Dedicated arcade countdown Node/Chromium QA remains the countdown source of truth. Player-facing code/version unchanged.
-- Follow-up: exact-head Census and Modular QA must be inspected; no release or physical LAN certification claimed.
+## 13 November 2026 CI and countdown freeze coverage
+- Commit 43f4a580: exact-dev Census 43328639799 passed 4 Node/4 Chromium, preflight and preview; Modular QA 43328639790 passed. Protected-workflow promotion to main succeeded; Pages 43329854857 passed. Main Census 43329855133 failed one LAN auto-two Chromium timeout; other main shards passed. No physical LAN certification.
+- Added real Jump-key freeze checks for first and second halves in desktop/simulated-touch countdown browser QA; Node checks that match remains in play at 30/60/120 FPS. Test-only, version .69 unchanged. Exact-new-head CI pending.
 
 ## Next smallest action
 1. Run focused arcade-rules and countdown Node/desktop/touch Chromium regressions and repair failures.
