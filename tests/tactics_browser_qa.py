@@ -18,8 +18,8 @@ with sync_playwright() as p:
    page.locator('[data-action="prepHome"]').click()
    assert page.locator('#role_captain').count()==1
    assert page.locator('#role_penalty').count()==1
-   assert page.locator('#role_freeKick').count()==1
-   assert page.locator('#role_corner').count()==1
+   assert page.locator('#role_freeKick').count()==0
+   assert page.locator('#role_corner').count()==0
    assert page.locator('#attackStyle').count()==1
    assert page.locator('#defenceStyle').count()==1
    page.locator('#formation').select_option('1-3-1')
