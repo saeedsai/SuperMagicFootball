@@ -49,8 +49,7 @@ test('free kick uses configured active outfielder, clamps position and preserves
  assert.equal(g.ball.owner,taker);assert.equal(g.controlled[1],taker.i);assert.equal(taker.face,-1);
  assert.equal(taker.x,100+2000-34);assert.equal(taker.y,200+28);
  assert.equal(g.ball.lastTouchTeam,1);assert.equal(g.ball.shot,null);assert.equal(g.ball.strike,null);
- assert.equal(g.cooldown,.45);assert.deepEqual(g.events,[{type:'freeKickRestart',team:1,player:taker.src.name,x:taker.x,y:taker.y},
-  {type:'toast',message:'FREE KICK'}]);
+ assert.equal(g.cooldown,.45);assert.deepEqual(g.events,[{type:'freeKickRestart',team:1,player:taker.src.name,x:taker.x,y:taker.y}]);
  assert.equal(g.magicHazards.length,0);assert.equal(g.magicWalls.length,0);assert.equal(g.supernova,null);
 });
 
@@ -60,16 +59,13 @@ test('invalid restart arguments fail without changing possession',()=>{
  assert.equal(g.ball.owner,owner);assert.deepEqual(g.events,[]);
 });
 
-test('successful slide from behind on a moving ball carrier awards a direct free kick',()=>{
+test('a slide from behind stays in live play, with no foul or free kick',()=>{
  const g=fixture(),tackler=g.players.find(p=>p.t===0&&p.i===2),carrier=g.players.find(p=>p.t===1&&p.i===3);
  tackler.x=300;tackler.y=350;carrier.x=340;carrier.y=350;carrier.moveVX=100;carrier.moveVY=0;
  g.ball.owner=carrier;
  assert.equal(g.slideContact(tackler),true);
- assert.equal(g.ball.owner,g.players.find(p=>p.t===1&&p.src.id==='1-4'));
- assert.equal(tackler.slideTimer,0);assert.equal(tackler.slideRemaining,0);
- assert.deepEqual(g.events.map(e=>e.type),['foul','freeKickRestart','toast']);
- assert.equal(g.events[0].kind,'slideFromBehind');assert.equal(g.events[1].team,1);
- assert.equal(g.events[1].x,carrier.x);assert.equal(g.events[1].y,carrier.y);
+ assert.equal(g.ball.owner,null);assert.equal(tackler.slideTimer,0);assert.equal(tackler.slideRemaining,0);
+ assert.deepEqual(g.events.map(e=>e.type),['tackleHit']);
 });
 
 test('front or lateral slide contact retains the existing tackle outcome',()=>{
@@ -81,9 +77,9 @@ test('front or lateral slide contact retains the existing tackle outcome',()=>{
  assert.equal(g.events[0].type,'tackleHit');assert.equal(g.ball.owner,null);
 });
 
-test('real slide-contact path is connected to the free-kick award',()=>{
- const tackle=source.slice(source.indexOf(' slideContact(p){'),source.indexOf('\n tackle(p,slide=false){',source.indexOf(' slideContact(p){')));
- assert.match(tackle,/this\.ball\.owner===q&&q\.z<=8/);
- assert.match(tackle,/trailing< -12/);
- assert.match(tackle,/this\.startFreeKick\(q\.t,q\.x,q\.y\)/);
+test('live slide-contact path never emits a foul or launches a free kick',()=>{
+ const method=source.slice(source.indexOf(' slideContact(p){'),source.indexOf('\n tackle(p,slide=false){',source.indexOf(' slideContact(p){')));
+ assert.doesNotMatch(method,/this\.emit\('foul'/);
+ assert.doesNotMatch(method,/startFreeKick|startPK/);
+ assert.match(method,/tackleHit/);
 });

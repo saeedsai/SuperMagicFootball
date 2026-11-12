@@ -31,7 +31,7 @@ function foulFixture(victimTeam=0,x,y){
   slideTimer:.3,slideRemaining:40,stun:0,invuln:0,trickGuard:0};
  const g={players:[tackler,carrier],ball:{owner:carrier},events:[],emit(type,data={}){this.events.push({type,...data})},
   isInPenaltyArea,startPK(_afterDraw,team){this.penaltyTeam=team;this.matchState='penalty';return true},
-  startFreeKick(team,x,y){this.freeKick={team,x,y};return true}};
+  startFreeKick(team,x,y){this.freeKick={team,x,y};return true},burst(){}};
  Object.assign(g,{slideContact});return{g,tackler,carrier};
 }
 
@@ -47,20 +47,23 @@ test('penalty-box classification mirrors both goals using standard field proport
  assert.equal(isInPenaltyArea(0,NaN,center),false);
 });
 
-test('grounded slide-from-behind foul in either penalty area enters the matching single-kick mode',()=>{
+test('slides from behind in either penalty area do not create fouls or penalty kicks',()=>{
  for(const team of [0,1]){
   const {g,tackler,carrier}=foulFixture(team);
   assert.equal(g.slideContact(tackler),true);
-  assert.equal(g.penaltyTeam,team);assert.equal(g.matchState,'penalty');
+  assert.equal(g.penaltyTeam,undefined);assert.equal(g.matchState,undefined);
+  assert.equal(g.freeKick,undefined);assert.equal(g.ball.owner,null);
   assert.equal(tackler.slideTimer,0);assert.equal(tackler.slideRemaining,0);
-  assert.equal(g.events[0].kind,'slideFromBehind');
+  assert.deepEqual(g.events.map(e=>e.type),['tackleHit']);
  }
 });
 
-test('same foul outside the penalty box remains a direct free kick',()=>{
+test('slides outside the penalty area also stay in continuous arcade play',()=>{
  const center=(WORLD.goalTop+WORLD.goalBottom)/2,depth=F.w*16.5/105;
  const {g,tackler}=foulFixture(0,F.x+F.w-depth-1,center);
- g.slideContact(tackler);assert.equal(g.matchState,undefined);assert.equal(g.freeKick.team,0);
+ assert.equal(g.slideContact(tackler),true);
+ assert.equal(g.matchState,undefined);assert.equal(g.freeKick,undefined);
+ assert.deepEqual(g.events.map(e=>e.type),['tackleHit']);
 });
 
 function penaltyGame(team){

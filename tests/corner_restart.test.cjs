@@ -46,8 +46,7 @@ test('corner restart uses the configured active taker and correct attacking corn
  assert.equal(g.ball.owner,taker);assert.equal(g.controlled[0],taker.i);
  assert.equal(taker.x,100+2000-35);assert.equal(taker.y,200+15);assert.equal(taker.face,-1);
  assert.equal(g.ball.lastTouchTeam,0);assert.equal(g.ball.shot,null);assert.equal(g.ball.strike,null);
- assert.deepEqual(g.events,[{type:'cornerRestart',team:0,player:taker.src.name,side:'top'},
-  {type:'toast',message:'CORNER KICK'}]);
+ assert.deepEqual(g.events,[{type:'cornerRestart',team:0,player:taker.src.name,side:'top'}]);
  assert.equal(g.magicHazards.length,0);assert.equal(g.magicWalls.length,0);assert.equal(g.supernova,null);
 });
 
@@ -73,14 +72,14 @@ test('attacking last touch awards the defending goalkeeper a goal kick',()=>{
  const keeper=g.player(1,0);
  assert.equal(g.handleEndlineRestart(),true);assert.equal(g.ball.owner,keeper);
  assert.equal(keeper.x,100+2000-55);assert.equal(keeper.keeperHold,0);
- assert.deepEqual(g.events,[{type:'goalKickRestart',team:1,player:keeper.src.name},
-  {type:'toast',message:'GOAL KICK'}]);
+ assert.deepEqual(g.events,[{type:'goalKickRestart',team:1,player:keeper.src.name}]);
 });
 
-test('endline integration preserves goals and deliberate ricochet banks before restarts',()=>{
+test('live endline integration preserves goals and banks without restart calls',()=>{
  const out=source.slice(source.indexOf(' // Scoring: ball must cross'),source.indexOf(' if(b.canCollect>0)return;',source.indexOf(' // Scoring: ball must cross')));
  assert.match(out,/if\(b\.y>WORLD\.goalTop&&b\.y<WORLD\.goalBottom&&b\.z<125\)\{scoring\(/);
- assert(out.indexOf('const bankPending=')<out.indexOf('this.handleEndlineRestart()'));
- assert.match(out,/if\(!bankPending&&this\.handleEndlineRestart\(\)\)return/);
+ assert.match(out,/const bankPending=/);
+ assert.doesNotMatch(out,/this\.handleEndlineRestart\(\)/);
+ assert.match(out,/b\.vx\*=-\.72/);
  assert.match(source,/b\.lastTouchTeam=p\.t/);
 });

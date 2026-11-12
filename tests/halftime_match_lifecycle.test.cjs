@@ -54,7 +54,7 @@ test('recovery does not change score, talks, substitution quota or persistent ID
 test('halftime recovery is invoked on first-half expiry before the UI is paused',()=>{
  const update=source.slice(source.indexOf(' update(dt){'),source.indexOf(' // v0.8.5 grounded player collision:'));
  assert.match(update,/if\(this\.half===1\)\{this\.half=2;this\.clock=0;/);
- assert.match(update,/this\.halftimeRecovery\(\);this\.resetKickoff\(1\);this\.matchState='paused';/);
+ assert.match(update,/this\.halftimeRecovery\(\);this\.resetKickoff\(1\);this\.kickoffCountdown=this\.options\?\.showKickoffCountdown===true\?3:0;this\.matchState='paused';/);
  assert.match(update,/this\.emit\('halftime'\)/);
  assert.match(update,/else if\(this\.score\[0\]===this\.score\[1\]&&this\.mode!=='training'\)\{this\.startPK\(true\)\}else\{this\.matchState='finished'/);
 });
