@@ -11,6 +11,12 @@ with sync_playwright() as pw:
   page.set_content((root/'play.html').read_text(),wait_until='load')
   page.wait_for_function('!!window.SupermagicFootball?.game',timeout=60000)
   open_quick(page);page.locator('[data-action="kickoff"]').first.click()
+  # Live-action test: finish the kickoff freeze before sending gameplay input.
+  # Dedicated arcade countdown QA separately verifies the full three seconds.
+  page.evaluate("""() => {const game=SupermagicFootball.game;
+    if(game.matchState!=='play'||game.kickoffCountdown<=0)throw Error('Missing initial kickoff countdown');
+    game.kickoffCountdown=0;
+  }""")
   assert page.locator('#touchButtons button[data-act]').count()==4
   page.evaluate('''()=>{let g=SupermagicFootball.game,p=g.player(0,3);g.cooldown=0;g.clock=5;g.events=[];g.input.keys.clear();g.input.touchButtons.clear();g.input.reset();p.x=1500;p.y=680;p.face=1;p.dx=1;p.dy=0;p.cd=0;p.trickCd=0;p.fatigue=0;p.stun=0;p.z=0;p.vz=0;p.src.dribbleType='rainbow';p.src.dribbling=96;for(let q of g.players)if(q!==p){q.x=2600+q.i*55;q.y=1050;}let rival=g.player(1,2);rival.x=p.x+85;rival.y=p.y;rival.stun=0;rival.cd=9;g.take(p);g.controlled[0]=p.i;}''')
   if mobile:

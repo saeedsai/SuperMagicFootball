@@ -16,6 +16,11 @@ Deliver tested increments on existing dev: arcade continuous play and kickoff co
 - Local Git checkout still fails DNS resolution of github.com; no executable Chromium/Node QA, exact-head Census, Modular QA, protected promotion, or Pages-byte certification was performed. CI must validate these changes; do not claim green.
 - No production behavior or player-facing version changed (candidate .69).
 
+## 13 November 2026 browser-shard-1 failure repair
+- Exact prior head `4f32ff85da3bfd49a95509e844262bfbf43af122`: Full Regression Census 43325390353 passed four Node shards, preview and browser shards 0/2/3; browser shard 1 failed three stale fixtures: dribble styles, four-button input, and halftime morale, each entering gameplay before the new opening countdown finished. Modular QA 43325390396 passed.
+- Fixture changes: require initial countdown, explicitly finish it before live input QA, and skip it only for forced-half transition. Dedicated arcade countdown Node/Chromium QA remains the countdown source of truth. Player-facing code/version unchanged.
+- Follow-up: exact-head Census and Modular QA must be inspected; no release or physical LAN certification claimed.
+
 ## Next smallest action
 1. Run focused arcade-rules and countdown Node/desktop/touch Chromium regressions and repair failures.
 2. Obtain exact-dev four Node plus four Chromium Census and Modular QA on the final SHA.
@@ -27,7 +32,7 @@ Deliver tested increments on existing dev: arcade continuous play and kickoff co
 Only this checkpoint may be edited. No new branch, force push, unverified deployment, or routine LAN work. Preserve 223 teams, 2676 players, six formations, four buttons, saves/offline, Career/Cup ten slots and SD09.
 
 ## Evidence
-Before edits dev/main matched at `8b9040af0384d22960b62e82c5ce432c22a7ed8c`. Local Git DNS blocked; source review via connected GitHub. Do not label tests passed until execution.
+This repair is test-only and should be judged by GitHub CI results for its exact commit, not historical .68 results. Before edits dev/main matched at `8b9040af0384d22960b62e82c5ce432c22a7ed8c`. Local Git DNS blocked; source review via connected GitHub. Do not label tests passed until execution.
 
 ## Cleanup
 Keep checkpoint <4KiB and the hourly development task enabled.

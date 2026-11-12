@@ -16,6 +16,12 @@ with sync_playwright() as pw:
   open_quick(page)
   page.locator('[data-action="kickoff"]').first.click()
   assert page.evaluate('SupermagicFootball.game.matchState')=='play'
+  # Live-action test: finish the kickoff freeze before sending gameplay input.
+  # Dedicated arcade countdown QA separately verifies the full three seconds.
+  page.evaluate("""() => {const game=SupermagicFootball.game;
+    if(game.matchState!=='play'||game.kickoffCountdown<=0)throw Error('Missing initial kickoff countdown');
+    game.kickoffCountdown=0;
+  }""")
   if page.locator('#dismissRotate').is_visible():page.locator('#dismissRotate').click()
   buttons=page.locator('#touchButtons button[data-act]')
   assert buttons.count()==4,(label,buttons.count())

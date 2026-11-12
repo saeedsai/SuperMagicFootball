@@ -24,7 +24,8 @@ with sync_playwright() as pw:
   assert page.evaluate('SupermagicFootball.game.talksUsed[1].pregame')
   assert page.evaluate('SupermagicFootball.game.teamMorale(0)')!=55
   assert page.locator('#playerTag').inner_text().find('%')!=-1
-  page.evaluate("""()=>{let g=SupermagicFootball.game;g.clock=g.matchSeconds+0.1;g.matchState='play';g.update(.016)}""")
+  # Force the halftime fixture after the separately tested opening countdown.
+  page.evaluate("""()=>{let g=SupermagicFootball.game;g.kickoffCountdown=0;g.clock=g.matchSeconds+0.1;g.matchState='play';g.update(.016)}""")
   assert page.locator('#halfTalkHome option').count()==5,errors
   assert page.locator('[data-action="talkHalfHome"]').count()==1
   page.screenshot(path=str(root/'tests'/f'morale_halftime_{device}.png'))
