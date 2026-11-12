@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.68
+# SuperMagicFootball release/version policy — About-only 0.12.81.69
+
+**Dev candidate 0.12.81.69 (12 November 2026):** ARCADE-CONTINUOUS-PLAY-01 removes live goal-kick/corner/foul/free-kick mechanics and announcements, keeps rebounds and valid goals, and adds a visible 3-second countdown before each half without ticking the match clock. Saved legacy tactics roles are preserved but hidden. Exact-head QA, protected promotion and hosted-byte certification pending.
 
 **Dev candidate 0.12.81.68 (10 November 2026):** BREATH-LOCAL-SEAT-OWNERSHIP-01: Breath ring now resolves exactly one local human seat; an unspecified multiplayer seat hides all rings, while legacy solo play defaults to home. Selection switching and CPU exclusion are preserved. Exact-head QA and deployment pending.
 

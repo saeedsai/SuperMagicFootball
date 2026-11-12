@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.68',
- date:'2026-11-10',
+ version:'0.12.81.69',
+ date:'2026-11-12',
  notes:Object.freeze([
+  'ARCADE-CONTINUOUS-PLAY-01: Matches no longer call corner/goal-kick restarts or award fouls/free kicks; shots outside the posts rebound off the endline, while valid goals still score. Removed the unsupported restart announcements and tactics controls. Local first- and second-half kickoffs show a three-second countdown with the clock and movement frozen. Four action buttons, penalty shootouts, rosters, saves, offline play, and existing Energy/Breath remain unchanged. Exact-head QA and release certification pending.',
   'BREATH-LOCAL-SEAT-OWNERSHIP-01: Breath ring now resolves exactly one local human seat; an unspecified multiplayer seat hides all rings, while legacy solo play defaults to home. Selection switching and CPU exclusion are preserved. Exact-head QA and deployment pending.',
   'BREATH-WALK-THRESHOLD-01: Analog walking at the exact run threshold now reliably restores Breath despite floating-point rounding; ordinary ball carrying remains inexpensive and sprint costly. No Energy, controls, roster or save changes. Exact-head QA and deployment pending.',
   'BREATH-DRIBBLE-LOW-DRAIN-01: Ordinary running with Dribble held now uses very little Breath, especially for low-Stamina players; sprint remains substantially costlier. Walking/idle recovery, Energy, one-off actions, the four action buttons, multiplayer selection, saves and offline play are unchanged. Focused and full QA, protected promotion and hosted-byte verification remain pending.',

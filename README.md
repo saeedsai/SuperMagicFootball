@@ -1,3 +1,5 @@
+> **0.12.81.69 release candidate (12 November 2026):** ARCADE-CONTINUOUS-PLAY-01 removes corner/goal-kick and foul/free-kick restarts and their announcements from live play. Out-of-goal endline balls rebound; valid goals still score. A 3-second on-pitch countdown freezes play and the clock before the first and second halves. Penalty shootouts, four actions, teams, saves, Energy/Breath and offline play remain. Full exact-head QA, protected promotion and hosted verification pending.
+
 > **0.12.81.68 release candidate (10 November 2026):** BREATH-LOCAL-SEAT-OWNERSHIP-01: Breath ring now resolves exactly one local human seat; an unspecified multiplayer seat hides all rings, while legacy solo play defaults to home. Selection switching and CPU exclusion are preserved. Exact-head QA and deployment pending.
 
 > **0.12.81.67 release candidate (8 November 2026):** BREATH-WALK-THRESHOLD-01: Analog walking at the exact run threshold now reliably restores Breath despite floating-point rounding; ordinary ball carrying remains inexpensive and sprint costly. No Energy, controls, roster or save changes. Exact-head QA and deployment pending.

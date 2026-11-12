@@ -3,27 +3,26 @@
 **Updated:** 2026-11-12
 
 ## Mission
-Deliver tested increments on existing `dev`: Breath selection/drain, Player Studio, counterable four-button Magic Tricks, eight-view existing-player graphics, goalkeeper and Career. Respect protected release gates.
+Deliver tested increments on existing dev: arcade continuous play and kickoff countdown, then Player Studio, four-button Magic Tricks, existing-player eight-view graphics, goalkeeper and Career.
 
 ## Current checkpoint
-- GitHub comparison on 2026-11-12: `dev` and `main` identical at `bd86cabf28874fa6769eb3c8901f3b5c16365b94`, ahead/behind 0/0. Package version `0.12.81.68`.
-- Version policy documents Breath ordinary-carry low drain, sprint contrast, walk-threshold recovery and local-human-seat-only ring. These are existing changes, not new work in this run.
-- Commit-workflow lookup returns PR-triggered runs only; empty results do not establish pass/fail. Previously reported green Census/Modular QA/Pages runs are historical, not newly executed.
-- 2026-11-12: `git ls-remote` failed `Could not resolve host: github.com`; no local checkout. Focused Node/Chromium, full four-Node/four-Chromium Census, Modular QA and hosted-byte comparison NOT RUN in this execution.
-- No gameplay change, new release, promotion or deployment in this execution.
+- Owner removed corner/goal kick, throw-in, foul and free-kick rules and announcements; requested a 3-second countdown before both halves.
+- 0.12.81.69 candidate: endline rebound except valid goals; behind slides remain tackles, no foul; legacy tactics set-piece fields preserved as save data but hidden; kickoff countdown freezes simulation.
+- Earlier 0.12.81.68 passed historical exact-head Census/Modular QA; that evidence does not certify the new candidate.
+- No physical two-phone LAN certification (#48). Render auto-deploy investigation #86, GitHub main protection #87 remain open.
 
 ## Next smallest action
-1. Restore executable checkout or equivalent validated test environment; run focused Breath sprint/carry, walking recovery, selected human, switch, multiplayer seat and spectator tests.
-2. Run full four Node plus four Chromium shards and Modular QA against exact `dev` head; resolve failures without bypass.
-3. Implement bounded tested Player Studio usability increment; synchronize version/release/README/service-worker cache for player-facing changes.
-4. Advance counterable Pass/Shoot/Dribble/Jump Magic Tricks and independently authored eight-view existing-player animation.
-5. Promote only exact green head through protected main and verify Pages bytes; then goalkeeper and Career. Investigate Render commit-trigger drift when relevant.
+1. Run focused arcade-rules and countdown Node/desktop/touch Chromium regressions and repair failures.
+2. Obtain exact-dev four Node plus four Chromium Census and Modular QA on the final SHA.
+3. Promote only via guarded existing main pipeline, then verify Pages hosted bytes.
+4. Implement tested Player Studio usability improvement and counterable four-action Magic Tricks.
+5. Advance existing-player eight-view art, goalkeeper and Career; keep issue #48 physical acceptance open.
 
 ## Ownership and exclusions
-Only this agent checkpoint; do not read or edit other agents' memory. No new branches, force-push, untested gameplay claims, routine LAN/P2P, or unapproved art. Preserve 223 teams, 2676 players, six formations, four buttons, saves/offline, Career/Cup ten slots and SD09. Physical two-phone issue #48 remains uncertified; Render #86 and protection #87 remain unresolved unless independently verified.
+Only this checkpoint may be edited. No new branch, force push, unverified deployment, or routine LAN work. Preserve 223 teams, 2676 players, six formations, four buttons, saves/offline, Career/Cup ten slots and SD09.
 
 ## Evidence
-GitHub compare `main...dev`: identical at `bd86cabf28874fa6769eb3c8901f3b5c16365b94`. Local Git DNS failure reproduced 2026-11-12. No new executable QA evidence.
+Before edits dev/main matched at `8b9040af0384d22960b62e82c5ce432c22a7ed8c`. Local Git DNS blocked; source review via connected GitHub. Do not label tests passed until execution.
 
 ## Cleanup
-No gameplay or release mutation; keep recurring development active for transient DNS outage.
+Keep checkpoint <4KiB and the hourly development task enabled.

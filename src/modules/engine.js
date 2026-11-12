@@ -248,7 +248,7 @@ function keeperDiveRecoverySeconds(keeper){
  return keeperDiveCooldown(skill,diving,fatigue,PHYSICS_TUNING);
 }
 class GameEngine{
- constructor(options={},input){this.options=options;this.input=input;this.events=[];this.mode='quick';this.matchState='none';this.teamIds=[0,9];this.rosters=[[],[]];this.lineups=[DEFAULT_LINEUP.slice(),[0,1,2,3,5,9]];this.formation=['2-1-2','2-1-2'];this.teamPlans=[];this.controlled=[3,3,0,0];this.humans=1;this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=120;this.players=[];this.ball={};this.particles=[];this.magicHazards=[];this.shake=0;this.flash=0;this.weather='Clear';this.terrain='Grass';this.condition='Good';this.wind={x:0,y:0};this.stormTimer=0;this.tornado=null;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.pk=null;this.matchSerial=0;this.fatigueLedger=[{},{}];this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.maxSubstitutions=MAX_SUBSTITUTIONS;this.moraleLedger=[{},{}];this.talksUsed=[{},{ }];this.celebrationStyle=0;this.onEvent=()=>{};this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.stoppageWindow=0;this.stoppageAnnounced=false;this._shotAudit=null;this._reboundAudit=null;this._shotAuditNext=0;}
+ constructor(options={},input){this.options=options;this.input=input;this.events=[];this.mode='quick';this.matchState='none';this.teamIds=[0,9];this.rosters=[[],[]];this.lineups=[DEFAULT_LINEUP.slice(),[0,1,2,3,5,9]];this.formation=['2-1-2','2-1-2'];this.teamPlans=[];this.controlled=[3,3,0,0];this.humans=1;this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=120;this.players=[];this.ball={};this.particles=[];this.magicHazards=[];this.shake=0;this.flash=0;this.weather='Clear';this.terrain='Grass';this.condition='Good';this.wind={x:0,y:0};this.stormTimer=0;this.tornado=null;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.kickoffCountdown=0;this.pk=null;this.matchSerial=0;this.fatigueLedger=[{},{}];this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.maxSubstitutions=MAX_SUBSTITUTIONS;this.moraleLedger=[{},{}];this.talksUsed=[{},{ }];this.celebrationStyle=0;this.onEvent=()=>{};this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.stoppageWindow=0;this.stoppageAnnounced=false;this._shotAudit=null;this._reboundAudit=null;this._shotAuditNext=0;}
  // Additive telemetry. Never queries RNG or changes ball/actors/keeper logic.
  _auditOutcome(outcome,extra={}){
   if(!this._shotAudit)return;
@@ -290,7 +290,7 @@ class GameEngine{
  }
  init({home=0,away=9,mode='quick',humans=1,rosters,formations,lineups,plans,options=this.options}={}){
  this._closeShotAudits('newMatch');
- this.options=options;this.mode=mode;this.humans=humans;this.teamIds=[home,away];this.rosters=(rosters||[rosterFor(home),rosterFor(away)]).map(team=>team.map(withStats));this.lineups=lineups||[home===0?DEFAULT_LINEUP.slice():[0,1,2,3,5,9],away===0?DEFAULT_LINEUP.slice():[0,1,2,3,5,9]];this.formation=formations||[options.formation||'2-1-2','2-1-2'];this.teamPlans=[0,1].map(t=>safePlan(plans?.[t]||{formation:this.formation[t],lineup:this.lineups[t]},this.rosters[t],t===0?home:away));this.formation=this.teamPlans.map(p=>p.formation);this.lineups=this.teamPlans.map(p=>p.lineup.slice());this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=options.halfSeconds||120;this.weather=options.weather==='Random'?['Clear','Rain','Wind','Storm','Tornado'][Math.floor(Math.random()*5)]:options.weather||'Clear';this.terrain=options.terrain||'Grass';this.condition=options.condition||'Good';this.wind={x:0,y:0};this.ball={x:MID,y:F.y+F.h*.5,z:0,vx:0,vy:0,vz:0,owner:null,shot:null,trail:[],age:0,power:0,canCollect:0,targetY:0,attacker:-1,lastTouchTeam:-1};this.players=[];this.particles=[];this.magicHazards=[];this.magicWalls=[];this.supernova=null;this.events=[];this.controlled=[3,3,0,0];this.shake=0;this.flash=0;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.stormTimer=2;this.tornado=null;this.weatherLightning=null;this.pk=null;this.matchSerial++;const weatherSeed=Number.isInteger(options.weatherSeed)?options.weatherSeed:(0x6d2b79f5^Math.imul(this.matchSerial,0x85ebca6b)^Math.imul(home+1,0xc2b2ae35)^Math.imul(away+1,0x27d4eb2f));this.weatherSeed=(weatherSeed>>>0)||1;this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.stoppageWindow=0;this.stoppageAnnounced=false;this._shotAudit=null;this._reboundAudit=null;this._shotAuditNext=0;this.fatigueLedger=this.rosters.map(roster=>Object.fromEntries(roster.map(p=>[p.id,initialFatigue(p)])));this.moraleLedger=this.rosters.map(roster=>Object.fromEntries(roster.map(p=>[p.id,clampMorale(p.morale??55)])));this.talksUsed=[{},{}];this.celebrationStyle=0;this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.spawnPlayers();this.resetKickoff(0);this.matchState='play';this.emit('start',{mode});}
+ this.options=options;this.mode=mode;this.humans=humans;this.teamIds=[home,away];this.rosters=(rosters||[rosterFor(home),rosterFor(away)]).map(team=>team.map(withStats));this.lineups=lineups||[home===0?DEFAULT_LINEUP.slice():[0,1,2,3,5,9],away===0?DEFAULT_LINEUP.slice():[0,1,2,3,5,9]];this.formation=formations||[options.formation||'2-1-2','2-1-2'];this.teamPlans=[0,1].map(t=>safePlan(plans?.[t]||{formation:this.formation[t],lineup:this.lineups[t]},this.rosters[t],t===0?home:away));this.formation=this.teamPlans.map(p=>p.formation);this.lineups=this.teamPlans.map(p=>p.lineup.slice());this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=options.halfSeconds||120;this.weather=options.weather==='Random'?['Clear','Rain','Wind','Storm','Tornado'][Math.floor(Math.random()*5)]:options.weather||'Clear';this.terrain=options.terrain||'Grass';this.condition=options.condition||'Good';this.wind={x:0,y:0};this.ball={x:MID,y:F.y+F.h*.5,z:0,vx:0,vy:0,vz:0,owner:null,shot:null,trail:[],age:0,power:0,canCollect:0,targetY:0,attacker:-1,lastTouchTeam:-1};this.players=[];this.particles=[];this.magicHazards=[];this.magicWalls=[];this.supernova=null;this.events=[];this.controlled=[3,3,0,0];this.shake=0;this.flash=0;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.kickoffCountdown=options.showKickoffCountdown===true?3:0;this.stormTimer=2;this.tornado=null;this.weatherLightning=null;this.pk=null;this.matchSerial++;const weatherSeed=Number.isInteger(options.weatherSeed)?options.weatherSeed:(0x6d2b79f5^Math.imul(this.matchSerial,0x85ebca6b)^Math.imul(home+1,0xc2b2ae35)^Math.imul(away+1,0x27d4eb2f));this.weatherSeed=(weatherSeed>>>0)||1;this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.stoppageWindow=0;this.stoppageAnnounced=false;this._shotAudit=null;this._reboundAudit=null;this._shotAuditNext=0;this.fatigueLedger=this.rosters.map(roster=>Object.fromEntries(roster.map(p=>[p.id,initialFatigue(p)])));this.moraleLedger=this.rosters.map(roster=>Object.fromEntries(roster.map(p=>[p.id,clampMorale(p.morale??55)])));this.talksUsed=[{},{}];this.celebrationStyle=0;this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.spawnPlayers();this.resetKickoff(0);this.matchState='play';this.emit('start',{mode});}
  spawnPlayers(){if(this.rideBall)this.cancelRideBall('reset');const trialShotId=this.options?.arcadeShotId,trialShot=Object.hasOwn(SHOTS,trialShotId)?SHOTS[trialShotId]:null,trialPlayerId=this.options?.arcadeShotPlayerId;if(['quick','versus','training'].includes(this.mode)&&trialShot){const trialIndex=this.rosters[0]?.findIndex(p=>p.id===trialPlayerId)??-1,trialPlayer=this.rosters[0]?.[trialIndex];if(trialPlayer&&this.lineups[0]?.includes(trialIndex)&&['MF','FW'].includes(trialPlayer.role)&&(!trialPlayer.superAbility||trialPlayer.superAbility.type==='shoot')){trialPlayer.shot=trialShotId;trialPlayer.shotName=trialShot.name||trialShotId;trialPlayer.superShotLevel=1;trialPlayer.superAbility={type:'shoot',name:trialPlayer.shotName,level:1};}}if(this.rideBall)this.cancelRideBall('reset');const old=new Map(this.players.map(p=>[`${p.t}:${p.src.id}`,{fatigue:p.fatigue,stun:p.stun,morale:p.morale,cryTimer:p.cryTimer,abilityCd:p.abilityCd,dashCooldown:p.dashCooldown,diveCooldown:p.diveCooldown,comboCooldown:p.comboCooldown,contactCooldown:p.contactCooldown, trickCd:p.trickCd,breath:p.breath,dribbleCooldown:p.dribbleCooldown, trickGuard:p.trickGuard}]));this.players=[];for(let t=0;t<2;t++)for(let i=0;i<6;i++){
  const src=this.rosters[t][this.lineups[t][i]],home=FORMATIONS[this.formation[t]][i];let x=F.x+(t===0?home.x:1-home.x)*F.w,y=F.y+home.y*F.h;
  this.players.push({t,i,src,x,y,homeX:x,homeY:y,face:t===0?1:-1,dx:0,dy:0,z:0,vz:0,jumpCount:0,jumpHold:0,jumpTapPending:false,dribbleHold:0,ballLiftWindow:0,ballLiftLock:false,aerialComboAction:null,aerialComboTimer:0,aerialComboTaps:0,stun:0,shotImpactWeakness:0,shotImpactWeaknessTimer:0,shotImpactConfusedTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactKnockdownTotal:0,shotImpactRiseTimer:0,anim:0,action:'idle',actionTimer:0,invuln:0,breath:old.get(`${t}:${src.id}`)?.breath??breathCapacity(stat(src,'stamina')),fatigue:old.get(`${t}:${src.id}`)?.fatigue??this.fatigueLedger[t][src.id]??initialFatigue(src),moveVX:0,moveVY:0,morale:old.get(`${t}:${src.id}`)?.morale??this.moraleLedger[t][src.id]??55,cryTimer:old.get(`${t}:${src.id}`)?.cryTimer??0,abilityCd:old.get(`${t}:${src.id}`)?.abilityCd??0,abilityFx:0,dashTimer:0,sprintCharge:0,dashCooldown:old.get(`${t}:${src.id}`)?.dashCooldown??0,keeperHold:0,diveDy:0,diveDx:0,diveElapsed:0,diveIntentCooldown:0,diveIntentPending:false,diveAdvanceTravel:0,diveCooldown:old.get(`${t}:${src.id}`)?.diveCooldown??0,comboCooldown:old.get(`${t}:${src.id}`)?.comboCooldown??0,contactCooldown:old.get(`${t}:${src.id}`)?.contactCooldown??0,trickCd:old.get(`${t}:${src.id}`)?.trickCd??0,dribbleCooldown:old.get(`${t}:${src.id}`)?.dribbleCooldown??0,trickGuard:old.get(`${t}:${src.id}`)?.trickGuard??0,hideBallTimer:0,hideBallReveal:0,fireballBurnFx:0,sandTrapFx:0,mudSlowTimer:0,mudTrickFx:0,windTrickFx:0,lightningMark:0,lightningFx:0,lightningPending:null,teleportTrail:null,trickFx:0,trickStyleId:null,firstTouchFx:0,firstTouchControlTimer:0,comboWindow:0,comboActive:false,assistBy:null,assistFx:0,cd:0,specialCd:0,controlled:false,keeper:i===0,down:false,charge:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,aiComboGoal:null});}
@@ -440,7 +440,6 @@ class GameEngine{
   this.ball.shot=null;this.ball.strike=null;this.ball.ordinaryShot=false;this.ball.trail=[];
   this.magicHazards=[];this.magicWalls=[];this.supernova=null;
   this.emit('cornerRestart',{team,player:taker.src?.name||null,side:top?'top':'bottom'});
-  this.emit('toast',{message:'CORNER KICK'});
   return true;
  }
  startGoalKick(team,y){
@@ -454,7 +453,6 @@ class GameEngine{
   this.ball.shot=null;this.ball.strike=null;this.ball.ordinaryShot=false;this.ball.trail=[];
   this.magicHazards=[];this.magicWalls=[];this.supernova=null;
   this.emit('goalKickRestart',{team,player:keeper.src?.name||null});
-  this.emit('toast',{message:'GOAL KICK'});
   return true;
  }
  startFreeKick(team,x,y){
@@ -472,7 +470,6 @@ class GameEngine{
   this.ball.shot=null;this.ball.strike=null;this.ball.ordinaryShot=false;this.ball.trail=[];
   this.magicHazards=[];this.magicWalls=[];this.supernova=null;this.cooldown=Math.max(this.cooldown||0,.45);
   this.emit('freeKickRestart',{team,player:taker.src?.name||null,x:taker.x,y:taker.y});
-  this.emit('toast',{message:'FREE KICK'});
   return true;
  }
  isInPenaltyArea(team,x,y){
@@ -875,15 +872,6 @@ class GameEngine{
   const q=targets[0];if(!q)return false;
   const c=contest(p,q,true),odds=Math.min(.96,c.knockChance*moraleFactor(p.morale)/moraleFactor(q.morale)*(1-Math.min(.57,(q.trickGuard||0)*(1+stat(q,'dribbling')/200))));
   if(Math.random()>=odds)return false;
-  if(this.ball.owner===q&&q.z<=8&&Math.hypot(q.moveVX||0,q.moveVY||0)>=50){
-   const speed=Math.hypot(q.moveVX,q.moveVY),trailing=((p.x-q.x)*q.moveVX+(p.y-q.y)*q.moveVY)/speed;
-   if(trailing< -12){
-    this.emit('foul',{team:q.t,player:q.src.name,offenderTeam:p.t,offender:p.src.name,kind:'slideFromBehind'});
-    if(this.isInPenaltyArea(q.t,q.x,q.y))this.startPK(false,q.t);
-    else this.startFreeKick(q.t,q.x,q.y);
-    p.slideTimer=0;p.slideRemaining=0;return true;
-   }
-  }
   const dir=norm(q.x-p.x,q.y-p.y);
   q.stun=Math.max(q.stun,tackleStunDuration(stat(q,'strength'),true,c.duration));q.action='hurt';q.actionTimer=Math.max(q.actionTimer||0,q.stun);q.invuln=1.1;
   q.x+=dir.x*36;q.y+=dir.y*21;this.burst(q.x,q.y,'#ffdf81',11);this.shake=.12;
@@ -1844,7 +1832,7 @@ class GameEngine{
   const next=arr.find(p=>p.i!==this.controlled[t]);
   if(next){this.controlled[t]=next.i;this.manualSwitchGrace[t]=.85;this.autoSwitchAccum[t]=0;this.emit('switch',{team:t,player:next.src.name});return true}return false;
  }
- update(dt){if(this.matchState!=='play')return;dt=Math.min(.034,Math.max(0,dt));this.input.poll(this.humans>=2);if(this.celebration>0){this.celebration=Math.max(0,this.celebration-dt);this.updateEffects(dt);
+ update(dt){if(this.matchState!=='play')return;dt=Math.min(.034,Math.max(0,dt));if(this.kickoffCountdown>0){this.kickoffCountdown=Math.max(0,this.kickoffCountdown-dt);return;}this.input.poll(this.humans>=2);if(this.celebration>0){this.celebration=Math.max(0,this.celebration-dt);this.updateEffects(dt);
    for(const p of this.players){p.anim+=dt;if(p.t===this.pendingKickoff?.scorer){p.action='celebrate';p.actionTimer=.25}else{p.action='cry';p.actionTimer=.25;p.cryTimer=this.celebration;}}
    if(this.celebration===0&&this.pendingKickoff){const k=this.pendingKickoff;this.pendingKickoff=null;this.resetKickoff(1-k.scorer);}return}
  this.clock+=dt;this.cooldown=Math.max(0,this.cooldown-dt);this.shake=Math.max(0,this.shake-dt*2.5);this.flash=Math.max(0,this.flash-dt*2);this.stormTimer-=dt;this.updateWeather(dt);if(this.input.just(0,'pause')||this.input.just(1,'pause')){this.matchState='paused';this.emit('pause');return}
@@ -1855,7 +1843,7 @@ class GameEngine{
   if(this.clock<this.matchSeconds+this.stoppageWindow && attackingStoppage(this.ball)){
    // The attacking chance is still alive, but must finish at the hard cap.
   }else{this.stoppageWindow=0;
-  if(this.half===1){this.half=2;this.clock=0;this.stoppageAnnounced=false;this.stoppageWindow=0;this.halftimeRecovery();this.resetKickoff(1);this.matchState='paused';this.autoSubstituteCpu();this.autoAdaptCpuHalftime();this.emit('halftime')}else if(this.score[0]===this.score[1]&&this.mode!=='training'){this.startPK(true)}else{this.matchState='finished';this.emit('finished',{score:this.score.slice()})}return}}
+  if(this.half===1){this.half=2;this.clock=0;this.stoppageAnnounced=false;this.stoppageWindow=0;this.halftimeRecovery();this.resetKickoff(1);this.kickoffCountdown=this.options?.showKickoffCountdown===true?3:0;this.matchState='paused';this.autoSubstituteCpu();this.autoAdaptCpuHalftime();this.emit('halftime')}else if(this.score[0]===this.score[1]&&this.mode!=='training'){this.startPK(true)}else{this.matchState='finished';this.emit('finished',{score:this.score.slice()})}return}}
   this.coordinateAiCombos(dt);this.manualSwitchGrace=this.manualSwitchGrace.map(v=>Math.max(0,v-dt));this.updatePlayers(dt);this.advanceRideBall(dt);this.resolvePlayerContacts(dt);this.resolveMagicWalls();this.updateMagicWalls(dt);this.updateSupernova(dt);this.updateMagicHazards(dt);this.updateBall(dt);this.updateEffects(dt);
  }
  // v0.8.5 grounded player collision: unlike tackle/special attacks this is an
@@ -2492,7 +2480,8 @@ class GameEngine{
   let scoring=t=>{this.score[t]++;this.shake=.45;this.flash=.2;this.burst(b.x,b.y,'#ffdf79',60);const scorers=this.players.filter(p=>p.t===t).sort((p,q)=>distance(p,b)-distance(q,b));this.goalHero=b.attacker===t&&b.shooter?b.shooter:scorers[0]?.src?.name||this.getTeam(t).name;this.pendingKickoff={scorer:t,hero:this.goalHero};this.celebration=3.3;this.onGoalMorale(t);this.ball.owner=null;this.ball.strike=null;this.ball.vx=this.ball.vy=this.ball.vz=0;this.emit('goal',{team:t,hero:this.goalHero,score:this.score.slice()});this.cooldown=3.3};
   if(b.y>WORLD.goalTop&&b.y<WORLD.goalBottom&&b.z<125){scoring(b.x>F.x+F.w-5?0:1);return}
   const bankPending=b.shot?.behavior==='ricochet';
-  if(!bankPending&&this.handleEndlineRestart())return;
+  // Arcade continuous play: outside the goal mouth the endline is a rebound wall,
+  // never a corner or goalkeeper restart.
   b.x=clamp(b.x,F.x+6,F.x+F.w-6);
   if(bankPending){const bank=SHOTPATHS.ricochetBounce(b.shot.ricochetBounces,b.vx,.72,b.x>F.x+F.w/2?1:-1);b.vx=bank.velocity;b.shot.ricochetBounces=bank.bounces;if(!bank.active)b.shot.behavior='normal'}else b.vx*=-.72;
   b.vy*=.95;
