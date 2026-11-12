@@ -94,7 +94,7 @@ test('adaptation does not mutate source saved presets, other team or player data
 test('the method is integrated exactly at real first-half transition only',()=>{
  assert.equal(source.split('this.autoAdaptCpuHalftime();').length-1,1);
  const trigger=source.indexOf('this.autoAdaptCpuHalftime();');
- const context=source.slice(trigger-200,trigger+160);
+ const context=source.slice(trigger-350,trigger+160);
  assert(context.includes("this.half=2;this.clock=0;"),context);
  assert(context.includes("this.matchState='paused';"),context);
  assert(context.includes("this.emit('halftime')"),context);

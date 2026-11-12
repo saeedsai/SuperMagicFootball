@@ -17,7 +17,10 @@ const CHECKPOINT_GAME_KEYS=Object.freeze([
   'weather','weatherLightning','weatherSeed','wind','_reboundAudit','_shotAudit','_shotAuditNext','rideBall'
 ]);
 const CHECKPOINT_REF=Symbol('checkpoint-reference');
-const CHECKPOINT_STATIC_KEYS=new Set(['options','input','events','rosters','onEvent']);
+// The three-second arcade kickoff countdown is a local UI/match-start option.
+// Authoritative online matches never enable it, so omit it from deterministic
+// saved simulation state to keep previously issued checkpoints compatible.
+const CHECKPOINT_STATIC_KEYS=new Set(['options','input','events','rosters','onEvent','kickoffCountdown']);
 const CHECKPOINT_CONFIG_KEYS=Object.freeze(['home','away','teamIds','rosterAssetIds','halfSeconds','seed','mode','humans']);
 function canonicalJson(value){
   if(Array.isArray(value))return `[${value.map(canonicalJson).join(',')}]`;
