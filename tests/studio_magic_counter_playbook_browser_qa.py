@@ -80,6 +80,10 @@ with sync_playwright() as pw:
    assert playbook.evaluate('(el)=>el.open'),(label,index,'keyboard Space failed to reopen')
    assert player.input_value()==str(index),(label,index,'keyboard Space changed player')
    assert not page.evaluate("window.__studioGuideStorageWrites"),(label,index,'keyboard Space wrote storage')
+   # Native summary must retain keyboard focus through both activation keys;
+   # losing focus would make the read-only guide unusable without a pointer.
+   assert summary.evaluate('(el) => document.activeElement === el'),(label,index,'keyboard activation lost summary focus')
+   assert summary.get_attribute('tabindex') is None,(label,index,'native summary tab order was overridden')
    if touch:summary.tap()
    else:summary.click()
    assert not playbook.evaluate('(el)=>el.open'),(label,index,'playbook failed to collapse')
