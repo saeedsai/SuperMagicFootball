@@ -87,6 +87,14 @@ with sync_playwright() as pw:
    if touch:summary.tap()
    else:summary.click()
    assert not playbook.evaluate('(el)=>el.open'),(label,index,'playbook failed to collapse')
+  # Re-entering an earlier outfield player after a goalkeeper must not duplicate
+  # the read-only playbook or leave goalkeeper-only preview controls behind.
+  player.select_option('3')
+  assert page.locator('#studioMagicCounterPlaybook').count()==1,(label,'duplicate guide after return')
+  assert page.locator('#studioMagicCounterPlaybook li').count()==14,(label,'guide lost entries after return')
+  assert page.locator('#studioGKMagicPreview').count()==0,(label,'stale goalkeeper preview after return')
+  assert player.input_value()=='3',(label,'return selection changed')
+  assert not page.evaluate("window.__studioGuideStorageWrites"),(label,'return selection wrote storage')
   assert not errors,(label,errors)
   print('STUDIO_MAGIC_COUNTER_PLAYBOOK_BROWSER_PASS',label,flush=True)
   context.close()
