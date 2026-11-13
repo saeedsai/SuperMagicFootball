@@ -6,9 +6,9 @@
 Incrementally improve playable four-button Magic Tricks, Player Studio, existing eight-view graphics, goalkeeper and Career without changing roster, saves, SD09 or LAN acceptance.
 
 ## Current checkpoint
-- Retrieved exact browser shard-0 logs for Full Census 43438940478 at prior `3388304a`: four Node and three Chromium shards passed, browser 0 failed at native summary Space collapse for desktop outfield (line 83); Modular QA 43438940411 passed.
-- Commit `0c2b7fdb` refocuses summary and asserts focus before independent Space activation. Earlier storage-write hypothesis was not the observed failure. Test-only; version 0.12.81.70 unchanged.
-- No local Node/Chromium execution or exact-head 4+4 Census/Modular QA verified for new commit. Main last confirmed `6ea7eb98`; #87 protection, #86 Render, #48 physical two-phone remain open.
+- Added Chromium Space keydown diagnostic at native playbook SUMMARY (commit 3afdb14d), reporting target and defaultPrevented on failure; prior focus repair remains unverified.
+- Current dev is ahead of main; exact-head 4 Node + 4 Chromium Census and Modular QA not verified. Version 0.12.81.70 unchanged, no production change or promotion.
+- Main protection #87, Render #86, physical LAN #48 remain open; no physical certification.
 
 ## Next smallest action
 1. Inspect new exact-head CI; repair any failing Space assertion from actual logs.
