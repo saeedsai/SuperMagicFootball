@@ -54,6 +54,11 @@ with sync_playwright() as pw:
    else:summary.click()
    assert playbook.evaluate('(el)=>el.open'),(label,index,'playbook failed to expand')
    assert playbook.locator('li').count()==14,(label,index,'missing trick counters')
+   # Every equipped Trick needs its own distinct counter entry, not duplicated help.
+   entries=playbook.locator('li').all_inner_texts()
+   normalized=[' '.join(entry.split()).casefold() for entry in entries]
+   assert all(normalized),(label,index,'empty counter entry')
+   assert len(set(normalized))==14,(label,index,'duplicated counter descriptions')
    body=playbook.inner_text()
    for instruction in ('hold DRIBBLE for 1 second','PASS for a timed close-range poke',
                        'SHOOT for a grounded slide','JUMP to avoid airborne-clearable attacks',
