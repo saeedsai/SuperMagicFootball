@@ -17,6 +17,11 @@ Ship tested increments on existing dev; preserve 223 teams, 2676 players, six fo
 
 - Additional CI failure: service worker cache identifier began with .70 but ended with .69, violating the exact-version suffix contract. Correct suffix to -0128170; preserve existing cache lineage and runtime.
 
+## 13 November 2026 live Studio playbook browser QA
+- Added desktop and simulated-touch Chromium regression for the shipped .70 read-only defender playbook, testing outfield and goalkeeper Studio, all 14 Trick entries, four existing action buttons, keyboard/mouse and touch summary toggles, and no save mutation. Existing Node guide contract remains.
+- Prior .70 exact head `15fd6938d6b4a231e88b162ad583bc59c5109a2c` passed Full Regression Census 43375713957 and Modular QA 43375713997; this new test requires its own exact-head CI. Main matched prior head; branch protection #87 remains absent.
+- No game source/version change. Do not claim browser execution, protected promotion or hosted bytes without verified evidence.
+
 ## Next smallest action
 1. Inspect exact new-head CI, run/repair focused counter-playbook Node and Studio Chromium.
 2. Obtain four Node + four Chromium Census and Modular QA; fix failures.
