@@ -1,37 +1,26 @@
-# SuperMagicFootball - hourly developer checkpoint
-**Agent ID:** `smf-hourly-dev-20261019`
+# SuperMagicFootball — smf-hourly-dev-20261019
 **Updated:** 2026-11-13
 
 ## Mission
-Deliver tested increments on existing dev: arcade continuous play and kickoff countdown, then Player Studio, four-button Magic Tricks, existing-player eight-view graphics, goalkeeper and Career.
+Develop tested incremental changes on existing `dev`; preserve four actions, 223 teams, 2676 players, six formations, offline saves, Career/Cup ten slots, SD09 and physical LAN issue #48.
 
 ## Current checkpoint
-- Owner removed corner/goal kick, throw-in, foul and free-kick rules and announcements; requested a 3-second countdown before both halves.
-- 0.12.81.69 candidate: endline rebound except valid goals; behind slides remain tackles, no foul; legacy tactics set-piece fields preserved as save data but hidden; kickoff countdown freezes simulation.
-- Earlier 0.12.81.68 passed historical exact-head Census/Modular QA; that evidence does not certify the new candidate.
-- No physical two-phone LAN certification (#48). Render auto-deploy investigation #86, GitHub main protection #87 remain open.
-
-## 13 November 2026 test-fixture repair
-- On existing dev, corrected four-button combo browser fixture (`83808c2`) and aerial/keeper browser fixture (`5166045`) to finish the new 3s kickoff countdown before exercising live input/physics. Countdown itself remains covered by its dedicated Node/Chromium tests.
-- Local Git checkout still fails DNS resolution of github.com; no executable Chromium/Node QA, exact-head Census, Modular QA, protected promotion, or Pages-byte certification was performed. CI must validate these changes; do not claim green.
-- No production behavior or player-facing version changed (candidate .69).
-
-## 13 November 2026 CI and countdown freeze coverage
-- Commit 43f4a580: exact-dev Census 43328639799 passed 4 Node/4 Chromium, preflight and preview; Modular QA 43328639790 passed. Protected-workflow promotion to main succeeded; Pages 43329854857 passed. Main Census 43329855133 failed one LAN auto-two Chromium timeout; other main shards passed. No physical LAN certification.
-- Added real Jump-key freeze checks for first and second halves in desktop/simulated-touch countdown browser QA; Node checks that match remains in play at 30/60/120 FPS. Test-only, version .69 unchanged. Exact-new-head CI pending.
+- Candidate 0.12.81.69: continuous arcade play and 3-second kickoff/halftime countdown; Breath low-cost normal carry, expensive sprint, walking recovery and one selected local-human ring delivered in earlier candidates.
+- Verified `dev` and `main` both at `91c24a710e543eaac0436024b375623fdd6f2f50` before this increment. Exact-dev Full Regression Census 43333429037 and Modular QA 43333429076 succeeded. No main branch protection (#87); Render auto-deploy investigation #86 and physical two-phone #48 remain open.
+- This run adds a focused desktop/simulated-touch Chromium regression for rapid selected-player switch-back while deliberately stale `.controlled` flags persist. It asserts only the current human selection receives Breath ring and outline; no runtime behavior or version change.
 
 ## Next smallest action
-1. Run focused arcade-rules and countdown Node/desktop/touch Chromium regressions and repair failures.
-2. Obtain exact-dev four Node plus four Chromium Census and Modular QA on the final SHA.
-3. Promote only via guarded existing main pipeline, then verify Pages hosted bytes.
-4. Implement tested Player Studio usability improvement and counterable four-action Magic Tricks.
-5. Advance existing-player eight-view art, goalkeeper and Career; keep issue #48 physical acceptance open.
+1. Inspect exact new-head four Node and four Chromium Census and Modular QA; fix any confirmed regression.
+2. Do not bypass main protection or claim hosted Pages bytes without verified gates.
+3. Implement Player Studio usability and counterable four-button Magic Tricks as bounded source+test increments.
+4. Advance independently authored eight-view existing-player graphics with Studio and human visual review.
+5. Improve goalkeeper and Career Mode; keep #48 physical acceptance and #86 Render drift separate.
 
 ## Ownership and exclusions
-Only this checkpoint may be edited. No new branch, force push, unverified deployment, or routine LAN work. Preserve 223 teams, 2676 players, six formations, four buttons, saves/offline, Career/Cup ten slots and SD09.
+Only this agent checkpoint; no new branch, force push, unverified main promotion, or routine LAN work. Do not read another agent's private checkpoint.
 
 ## Evidence
-This repair is test-only and should be judged by GitHub CI results for its exact commit, not historical .68 results. Before edits dev/main matched at `8b9040af0384d22960b62e82c5ce432c22a7ed8c`. Local Git DNS blocked; source review via connected GitHub. Do not label tests passed until execution.
+Previous exact-head CI green: [Census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/43333429037), [Modular QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/43333429076). New test must pass exact-head CI before it can be called certified. Local executable Node/Chromium QA not run in this connector-only session.
 
 ## Cleanup
-Keep checkpoint <4KiB and the hourly development task enabled.
+Checkpoint below 4KiB. Recurring development remains enabled.

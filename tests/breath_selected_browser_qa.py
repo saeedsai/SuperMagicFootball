@@ -50,6 +50,10 @@ with sync_playwright() as pw:
    // Switch without a physics tick: the old .controlled flag is deliberately stale.
    g.controlled[0]=next.i;first.controlled=true;next.controlled=false;
    const switched=draw(next),former=draw(first);
+   // A rapid switch back in the same frame must immediately restore exactly one ring.
+   g.controlled[0]=first.i;first.controlled=false;next.controlled=true;
+   const switchedBack=draw(first),previousSelection=draw(next);
+   g.controlled[0]=next.i;
    // Local Versus has one selected human on each side.
    g.humans=2;away.controlled=false;
    const unassignedHome=draw(next),localAway=draw(away);
@@ -114,13 +118,14 @@ with sync_playwright() as pw:
    g.input.state[0]={x:0,y:0,dribble:false,pass:false,shoot:false,jump:false};
    g.updatePlayers(.02);const stationaryRest=first.breath;
    g.input.state[0]=oldInput;g.autoSwitch=oldAutoSwitch;g.cooldown=oldCooldown;
-   return {initial,unselected,cpu,switched,former,unassignedHome,localAway,hostHome,hostAway,guestHome,guestAway,guestFormer,guestSwitched,spectatorHome,spectatorAway,soloAway,preview,menu,staminaSamples,holdLoss,runLoss,sprintLoss,analogWalk,stationaryHold,stationaryRest,
+   return {initial,unselected,cpu,switched,former,switchedBack,previousSelection,unassignedHome,localAway,hostHome,hostAway,guestHome,guestAway,guestFormer,guestSwitched,spectatorHome,spectatorAway,soloAway,preview,menu,staminaSamples,holdLoss,runLoss,sprintLoss,analogWalk,stationaryHold,stationaryRest,
            actions:document.querySelectorAll('#touchButtons button[data-act]').length,
            players:g.players.length};
   }""")
   assert outcome['initial']=={'breath':2,'outline':1},(name,'initial selected ring and outline',outcome)
   assert outcome['unselected']=={'breath':0,'outline':0} and outcome['cpu']=={'breath':0,'outline':0},(name,'unselected/CPU ring',outcome)
   assert outcome['switched']=={'breath':2,'outline':1} and outcome['former']=={'breath':0,'outline':0},(name,'same-frame switch',outcome)
+  assert outcome['switchedBack']=={'breath':2,'outline':1} and outcome['previousSelection']=={'breath':0,'outline':0},(name,'rapid switch-back with stale flags',outcome)
   assert outcome['unassignedHome']=={'breath':0,'outline':0} and outcome['localAway']=={'breath':0,'outline':0} and outcome['soloAway']=={'breath':0,'outline':0},(name,'unassigned multiplayer/solo',outcome)
   assert outcome['hostHome']=={'breath':2,'outline':1} and outcome['hostAway']=={'breath':0,'outline':0},(name,'network host ring scope',outcome)
   assert outcome['guestHome']=={'breath':0,'outline':0} and outcome['guestAway']=={'breath':2,'outline':1},(name,'network guest ring scope',outcome)
