@@ -91,20 +91,25 @@ with sync_playwright() as pw:
    # it to focus or to the guide's persistence behavior.
    page.evaluate("""() => {
      window.__studioSpaceEvents = [];
-     document.addEventListener('keydown', event => {
-       if (event.code === 'Space') queueMicrotask(() => {
-         window.__studioSpaceEvents.push({
+     if (window.__studioSpaceDiagnosticInstalled) return;
+     window.__studioSpaceDiagnosticInstalled = true;
+     for (const phase of ['keydown', 'keyup']) {
+       document.addEventListener(phase, event => {
+         if (event.code !== 'Space') return;
+         queueMicrotask(() => window.__studioSpaceEvents.push({
+           phase,
            target: event.target?.tagName,
            prevented: event.defaultPrevented,
            active: document.activeElement?.tagName
-         });
-       });
-     }, {capture: true});
+         }));
+       }, {capture: true});
+     }
    }""")
    summary.press('Space')
    space_events=page.evaluate('window.__studioSpaceEvents')
-   assert space_events and space_events[-1]['target']=='SUMMARY',(label,index,'Space did not reach summary',space_events)
-   assert not space_events[-1]['prevented'],(label,index,'Space default prevented by another handler',space_events)
+   assert [e['phase'] for e in space_events]==['keydown','keyup'],(label,index,'Space key phases missing or duplicated',space_events)
+   assert all(e['target']=='SUMMARY' for e in space_events),(label,index,'Space did not reach summary',space_events)
+   assert not any(e['prevented'] for e in space_events),(label,index,'Space default prevented by another handler',space_events)
    assert not playbook.evaluate('(el)=>el.open'),(label,index,'keyboard Space failed to collapse',space_events)
    page.keyboard.press('Space')
    assert playbook.evaluate('(el)=>el.open'),(label,index,'keyboard Space failed to reopen')
