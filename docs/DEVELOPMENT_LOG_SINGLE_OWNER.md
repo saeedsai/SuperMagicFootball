@@ -1,3 +1,7 @@
+## 2026-11-13 — Player Studio playbook storage-scope regression
+- Exact dev `3388304aa278e95317733bfa0db7bc74c6f1d8db` Full Census 43438940478: four Node and three Chromium shards, preflight and preview passed; browser shard 0 failed. Modular QA 43438940411 passed. Browser job log unavailable through connector, so exact failing assertion is not confirmed.
+- Commit `91421f0be1a34e9f51e65d5cff94f3fcde552353` makes read-only guide storage-write checks exclude legitimate player-selection writes; desktop and touch paths retain guide-only assertions. Test-only; .70 unchanged. Exact-head CI required, no release claimed. Main protection #87, Render #86, physical #48 remain open.
+
 ## 2026-11-09 — SCREAM-CPU-FINITE-TARGET-01
 
 Acceptance: CPU Scream JUMP reaction must ignore nonfinite carrier/defender positions, avoid selecting invalid nearest defenders, and preserve valid reactions for both sides. Source commit `167620b` adds finite coordinate guards in the existing wired `reactToScreamTrick` path; focused Node regression `e61ed5d` covers NaN, +/-Infinity, undefined x/y and valid reactions. Internal reliability only: version remains `0.12.81.67`; no gameplay feature, roster, save or control change. Local tests not executed in this runtime; full exact-head Census and Modular QA must pass before any promotion. Physical two-phone acceptance #48, Render drift #86, main protection #87 still open.
