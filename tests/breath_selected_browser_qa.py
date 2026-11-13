@@ -62,6 +62,11 @@ with sync_playwright() as pw:
    g.localBreathSide=1;const guestHome=draw(next),guestAway=draw(away);
    g.controlled[1]=g.players.find(p=>p.t===1&&p!==away&&!p.keeper).i;
    const guestFormer=draw(away),guestSwitched=draw(g.controlledPlayer(1));
+   // Reverse the guest selection immediately, with both .controlled flags stale.
+   // The local seat must still own exactly one ring and one outline.
+   const guestNext=g.controlledPlayer(1);
+   g.controlled[1]=away.i;away.controlled=false;guestNext.controlled=true;
+   const guestSwitchedBack=draw(away),guestPrevious=draw(guestNext),guestHostLeak=draw(next);
    // No-human spectator mode must never leak a Breath HUD, even with a stale local seat.
    g.humans=0;g.localBreathSide=0;
    const spectatorHome=draw(next),spectatorAway=draw(away);
@@ -118,7 +123,7 @@ with sync_playwright() as pw:
    g.input.state[0]={x:0,y:0,dribble:false,pass:false,shoot:false,jump:false};
    g.updatePlayers(.02);const stationaryRest=first.breath;
    g.input.state[0]=oldInput;g.autoSwitch=oldAutoSwitch;g.cooldown=oldCooldown;
-   return {initial,unselected,cpu,switched,former,switchedBack,previousSelection,unassignedHome,localAway,hostHome,hostAway,guestHome,guestAway,guestFormer,guestSwitched,spectatorHome,spectatorAway,soloAway,preview,menu,staminaSamples,holdLoss,runLoss,sprintLoss,analogWalk,stationaryHold,stationaryRest,
+   return {initial,unselected,cpu,switched,former,switchedBack,previousSelection,unassignedHome,localAway,hostHome,hostAway,guestHome,guestAway,guestFormer,guestSwitched,guestSwitchedBack,guestPrevious,guestHostLeak,spectatorHome,spectatorAway,soloAway,preview,menu,staminaSamples,holdLoss,runLoss,sprintLoss,analogWalk,stationaryHold,stationaryRest,
            actions:document.querySelectorAll('#touchButtons button[data-act]').length,
            players:g.players.length};
   }""")
@@ -130,6 +135,7 @@ with sync_playwright() as pw:
   assert outcome['hostHome']=={'breath':2,'outline':1} and outcome['hostAway']=={'breath':0,'outline':0},(name,'network host ring scope',outcome)
   assert outcome['guestHome']=={'breath':0,'outline':0} and outcome['guestAway']=={'breath':2,'outline':1},(name,'network guest ring scope',outcome)
   assert outcome['guestFormer']=={'breath':0,'outline':0} and outcome['guestSwitched']=={'breath':2,'outline':1},(name,'network guest same-frame switch',outcome)
+  assert outcome['guestSwitchedBack']=={'breath':2,'outline':1} and outcome['guestPrevious']=={'breath':0,'outline':0} and outcome['guestHostLeak']=={'breath':0,'outline':0},(name,'network guest rapid switch-back with stale flags',outcome)
   assert outcome['spectatorHome']=={'breath':0,'outline':0} and outcome['spectatorAway']=={'breath':0,'outline':0},(name,'spectator must have no local-human Breath HUD',outcome)
   assert outcome['preview']=={'breath':0,'outline':0} and outcome['menu']=={'breath':0,'outline':0},(name,'preview/menu',outcome)
   assert 0<outcome['holdLoss']<.01,(name,'actual held-dribble frame should have tiny positive Breath drain',outcome)

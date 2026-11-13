@@ -11,6 +11,10 @@ Develop tested incremental changes on existing `dev`; preserve four actions, 223
 - Verified `dev` and `main` both at `91c24a710e543eaac0436024b375623fdd6f2f50` before this increment. Exact-dev Full Regression Census 43333429037 and Modular QA 43333429076 succeeded. No main branch protection (#87); Render auto-deploy investigation #86 and physical two-phone #48 remain open.
 - This run adds a focused desktop/simulated-touch Chromium regression for rapid selected-player switch-back while deliberately stale `.controlled` flags persist. It asserts only the current human selection receives Breath ring and outline; no runtime behavior or version change.
 
+## 13 November 2026 increment — guest rapid switch-back QA
+- Added desktop and simulated-touch Chromium checks for immediate guest-seat player switch-back with stale `.controlled` flags. Only the selected guest player may show the Breath ring/outline; the previous guest player and home team must not leak indicators. This is regression-only, no gameplay/version change.
+- Prior exact head `285113d99623b0410adf8e05bc12942b941a7e93` passed dev Census 43348911133 and Modular QA 43348911152; main Census 43350042059 passed. New exact-head CI still required; local Git DNS blocks executable checkout.
+
 ## Next smallest action
 1. Inspect exact new-head four Node and four Chromium Census and Modular QA; fix any confirmed regression.
 2. Do not bypass main protection or claim hosted Pages bytes without verified gates.
