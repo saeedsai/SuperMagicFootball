@@ -3,27 +3,26 @@
 **Updated:** 2026-11-13
 
 ## Mission
-Ship bounded tested dev increments for Player Studio, four-button Magic Tricks, existing-player graphics, gameplay, goalkeeper and Career; preserve rosters, six formations, four actions, offline saves, ten slots and SD09.
+Ship tested dev increments for Player Studio, four-button Magic Tricks, existing-player graphics, goalkeeper and Career; preserve roster, formations, four actions, offline saves, ten slots and SD09.
 
 ## Current checkpoint
-- 13 Nov: Chromium desktop/touch Studio playbook asserts native summary retains focus and no tabindex override after Enter/Space, for outfield/GK. Test `8ff91459`; local checkout blocked by github.com DNS; new-head QA unverified. Candidate .70 unchanged.
-- 13 Nov: added Space keyboard toggle parity to desktop/touch Player Studio browser QA for outfield/GK, preserving selected player and no-save behavior; source commit `3b54a8be677f6f0992bf1eb26d4bbafbc64e588c`. New exact-head QA unverified; version .70 unchanged.
-- At start dev/main both `6ea7eb989548626768758759fbd2b3fce1ffe8e6`. Full Census 43398328372 and Modular QA 43398328586 succeeded; main remains unprotected (#87).
-- Added keyboard Enter collapse/reopen coverage to live desktop/touch Player Studio defender playbook browser regression, preserving selected player and asserting no storage writes. No production/version change; candidate 0.12.81.70.
-- Physical two-phone LAN #48 and Render auto-deploy #86 remain open; no physical certification.
+- Added desktop/touch Chromium return-selection regression: GK Genei → outfield Horibata must retain one 14-entry defender guide, remove GK-only preview, preserve selected player and avoid save writes. Test commit `1657ac143da1619ed7678c70a6d11c38f1c0c38a`.
+- Backlog updated at `79af782cbc527d3c78a3ed2c9d0159b841e4e505`. Test-only; version 0.12.81.70 unchanged.
+- Local Git checkout unavailable: github.com DNS resolution failed. Focused browser and exact-head four Node/four Chromium Census and Modular QA not verified.
+- Last confirmed main head `6ea7eb989548626768758759fbd2b3fce1ffe8e6`. Main protection #87, Render auto-deploy #86, physical two-phone LAN #48 remain open.
 
 ## Next smallest action
-1. Verify exact new-head four Node/four Chromium and Modular QA; fix confirmed failures.
-2. Keep main unchanged until protected green pipeline; verify Pages hosted bytes.
-3. Implement bounded counterable Magic Tricks gameplay using existing Pass/Shoot/Dribble/Jump.
-4. Improve Player Studio and existing-player eight-view animation via Studio workflow.
-5. Advance goalkeeper/Career and investigate Render drift without routine LAN work.
+1. Inspect exact dev-head CI; fix confirmed failures.
+2. Keep main unchanged until protected green promotion; verify Pages hosted bytes.
+3. Implement a bounded playable four-button Magic Tricks counter improvement.
+4. Improve Player Studio and existing-player eight-view animation through Studio workflow.
+5. Advance goalkeeper/Career; observe Render drift without routine LAN work.
 
 ## Ownership and exclusions
-Only this checkpoint; no new branches, force-push, other agent memory or unverified release claims.
+Only this checkpoint; no branches, force-push, other agents' memory or unverified release claims.
 
 ## Evidence
-Previous exact-head Census and Modular QA green via GitHub Actions. New test not executed locally; CI required.
+GitHub accepted test and backlog commits; no native tests executed this run.
 
 ## Cleanup
 Checkpoint under 4 KiB; recurring development remains enabled.
