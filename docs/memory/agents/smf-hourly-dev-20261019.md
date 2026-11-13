@@ -6,10 +6,9 @@
 Ship tested dev increments for Player Studio, four-button Magic Tricks, existing-player graphics, goalkeeper and Career; preserve roster, formations, four actions, offline saves, ten slots and SD09.
 
 ## Current checkpoint
-- Added desktop/touch Chromium return-selection regression: GK Genei → outfield Horibata must retain one 14-entry defender guide, remove GK-only preview, preserve selected player and avoid save writes. Test commit `1657ac143da1619ed7678c70a6d11c38f1c0c38a`.
-- Backlog updated at `79af782cbc527d3c78a3ed2c9d0159b841e4e505`. Test-only; version 0.12.81.70 unchanged.
-- Local Git checkout unavailable: github.com DNS resolution failed. Focused browser and exact-head four Node/four Chromium Census and Modular QA not verified.
-- Last confirmed main head `6ea7eb989548626768758759fbd2b3fce1ffe8e6`. Main protection #87, Render auto-deploy #86, physical two-phone LAN #48 remain open.
+- Added distinct/nonempty 14-Trick counter entry regression for outfield/GK desktop and simulated-touch Chromium, commit `bb8fe651b9c9b01f7a10ecd5dbdad0a686c88be6`.
+- Test-only, candidate 0.12.81.70 unchanged. Local Git checkout blocked by DNS; exact-head four Node/four Chromium Census and Modular QA unverified.
+- Before increment main `6ea7eb989548626768758759fbd2b3fce1ffe8e6`; dev ahead 10 commits. Protection #87, Render #86, physical LAN #48 remain open.
 
 ## Next smallest action
 1. Inspect exact dev-head CI; fix confirmed failures.
@@ -22,7 +21,7 @@ Ship tested dev increments for Player Studio, four-button Magic Tricks, existing
 Only this checkpoint; no branches, force-push, other agents' memory or unverified release claims.
 
 ## Evidence
-GitHub accepted test and backlog commits; no native tests executed this run.
+GitHub accepted test commit; no executable browser/Node tests run. No protected promotion or Pages-byte verification.
 
 ## Cleanup
 Checkpoint under 4 KiB; recurring development remains enabled.
