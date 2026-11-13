@@ -1,4 +1,4 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.70
+# SuperMagicFootball release/version policy — About-only 0.12.81.71
 
 **Dev candidate 0.12.81.70 (13 November 2026):** STUDIO-FOUR-BUTTON-COUNTER-HELP-01 clarifies the existing Magic Trick playbook with the precise DRIBBLE hold, PASS poke, SHOOT slide and JUMP evade controls, without implying that every move counters every Trick. Player Studio presentation only; existing game mechanics, 223 teams, 2676 players, six formations, four actions, offline/saves and SD09 are unchanged. Exact-head QA, protected promotion and hosted-byte verification pending.
 
