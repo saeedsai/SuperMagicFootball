@@ -1,3 +1,7 @@
+## 2026-11-13 — Studio Space keyboard interception diagnostic
+- Chromium playbook test now captures focused SUMMARY Space keydown target/defaultPrevented and reports event evidence on failure (`3afdb14d`). Prior test failed Space collapse despite an explicit focus; this does not yet establish whether another game handler prevents default or the browser's native activation differs.
+- No gameplay or version changes; local Chromium unavailable, exact-head 4+4 Census and Modular QA not verified. No protected promotion/Pages claim; #48/#86/#87 remain open.
+
 ## 2026-11-13 — Studio native Space regression isolation
 - Retrieved Chromium job 131931548558 logs for Census 43438940478: exact failure at browser test line 83, desktop/DF Horibata, `keyboard Space failed to collapse`. This supersedes earlier unconfirmed storage-write hypothesis.
 - Test commit `0c2b7fdb` explicitly refocuses native summary before the independent Space activation, asserting focus first. No gameplay change; .70 unchanged. Local executable tests not run; exact-head CI pending. #87 prevents protected release, #48 physical and #86 Render remain open.
