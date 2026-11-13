@@ -1,10 +1,12 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
+**Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-11-13
 
 ## Mission
 Develop tested incremental changes on existing `dev`; preserve four actions, 223 teams, 2676 players, six formations, offline saves, Career/Cup ten slots, SD09 and physical LAN issue #48.
 
 ## Current checkpoint
+- 13 Nov CI failure on exact `245836d9`: both Modular QA 43342285564 and Census 43342285638 stopped in Node memory contract with `wrong identity for smf-hourly-dev-20261019`. Restored the mandatory Agent ID header in this checkpoint, preserving all other checkpoint sections; no game code changed. New exact-head gates pending.
 - Candidate 0.12.81.69: continuous arcade play and 3-second kickoff/halftime countdown; Breath low-cost normal carry, expensive sprint, walking recovery and one selected local-human ring delivered in earlier candidates.
 - Verified `dev` and `main` both at `91c24a710e543eaac0436024b375623fdd6f2f50` before this increment. Exact-dev Full Regression Census 43333429037 and Modular QA 43333429076 succeeded. No main branch protection (#87); Render auto-deploy investigation #86 and physical two-phone #48 remain open.
 - This run adds a focused desktop/simulated-touch Chromium regression for rapid selected-player switch-back while deliberately stale `.controlled` flags persist. It asserts only the current human selection receives Breath ring and outline; no runtime behavior or version change.
