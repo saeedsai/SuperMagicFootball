@@ -20,6 +20,18 @@ with sync_playwright() as pw:
                               ('simulated-touch',{'width':844,'height':390},True)]:
   context=browser.new_context(viewport=viewport,is_mobile=touch,has_touch=touch)
   page=context.new_page()
+  # set_content uses an opaque document origin in CI: native localStorage throws
+  # SecurityError. Install a per-page in-memory storage spy before game bootstrap,
+  # then assert the guide never writes to it. This also isolates device cases.
+  page.evaluate("""() => {
+    const data = {}, writes = [];
+    Object.defineProperty(window, 'localStorage', {configurable: true, value: {
+      getItem: key => Object.prototype.hasOwnProperty.call(data,key) ? data[key] : null,
+      setItem: (key,value) => { writes.push(String(key)); data[key] = String(value); },
+      removeItem: key => { writes.push(String(key)); delete data[key]; }
+    }});
+    window.__studioGuideStorageWrites = writes;
+  }""")
   errors=[]
   page.on('pageerror',lambda error:errors.append(str(error)))
   page.set_content(html,wait_until='load')
@@ -48,6 +60,7 @@ with sync_playwright() as pw:
    assert page.locator('#studioGKMagicPreview').count()==int(goalkeeper),(label,index,'wrong goalkeeper preview')
    assert page.locator('#touchButtons button[data-act]').count()==4,(label,index,'four actions changed')
    assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,index,'opening guide saved edits')
+   assert not page.evaluate("window.__studioGuideStorageWrites"),(label,index,'opening guide wrote local storage')
    if touch:summary.tap()
    else:summary.click()
    assert not playbook.evaluate('(el)=>el.open'),(label,index,'playbook failed to collapse')
