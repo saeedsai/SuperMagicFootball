@@ -1,5 +1,7 @@
 # SuperMagicFootball release/version policy — About-only 0.12.81.71
 
+**Dev candidate 0.12.81.71 (14 November 2026):** STUDIO-NATIVE-SPACE-KEY-01: Focused Player Studio SUMMARY and button controls retain native Space activation; the match input handler still maps Space to Jump when focus is outside interactive controls. Node regression added and existing desktop/touch Chromium playbook regression exercises Space collapse/reopen. Exact-head QA, protected promotion and hosted-byte verification pending.
+
 **Dev candidate 0.12.81.70 (13 November 2026):** STUDIO-FOUR-BUTTON-COUNTER-HELP-01 clarifies the existing Magic Trick playbook with the precise DRIBBLE hold, PASS poke, SHOOT slide and JUMP evade controls, without implying that every move counters every Trick. Player Studio presentation only; existing game mechanics, 223 teams, 2676 players, six formations, four actions, offline/saves and SD09 are unchanged. Exact-head QA, protected promotion and hosted-byte verification pending.
 
 **Dev candidate 0.12.81.69 (12 November 2026):** ARCADE-CONTINUOUS-PLAY-01 removes live goal-kick/corner/foul/free-kick mechanics and announcements, keeps rebounds and valid goals, and adds a visible 3-second countdown before each half without ticking the match clock. Saved legacy tactics roles are preserved but hidden. Exact-head QA, protected promotion and hosted-byte certification pending.
