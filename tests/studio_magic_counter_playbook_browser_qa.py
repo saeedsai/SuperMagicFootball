@@ -73,6 +73,13 @@ with sync_playwright() as pw:
    assert playbook.evaluate('(el)=>el.open'),(label,index,'keyboard Enter failed to reopen')
    assert player.input_value()==str(index),(label,index,'keyboard toggle changed player')
    assert not page.evaluate("window.__studioGuideStorageWrites"),(label,index,'keyboard toggle wrote storage')
+   # Space is the other native summary activation key; keep touch and keyboard parity.
+   page.keyboard.press('Space')
+   assert not playbook.evaluate('(el)=>el.open'),(label,index,'keyboard Space failed to collapse')
+   page.keyboard.press('Space')
+   assert playbook.evaluate('(el)=>el.open'),(label,index,'keyboard Space failed to reopen')
+   assert player.input_value()==str(index),(label,index,'keyboard Space changed player')
+   assert not page.evaluate("window.__studioGuideStorageWrites"),(label,index,'keyboard Space wrote storage')
    if touch:summary.tap()
    else:summary.click()
    assert not playbook.evaluate('(el)=>el.open'),(label,index,'playbook failed to collapse')
