@@ -39,8 +39,11 @@ with sync_playwright() as pw:
   open_feature(page,'playerStudio')
   player=page.locator('#customPlayer')
   assert player.count()==1,(label,'Player Studio selection missing')
-  # Exercise the outfield editable selector and goalkeeper read-only preview.
-  for index,goalkeeper in [(3,False),(0,True)]:
+  # Japan's canonical roster has DF Horibata at slot 3 and GK Genei at 5;
+  # slot 0 is MF Kunio, not a keeper. Exercise both Studio branches.
+  assert 'Horibata' in player.locator('option[value="3"]').inner_text(),(label,'outfield fixture drift')
+  assert 'Genei' in player.locator('option[value="5"]').inner_text(),(label,'goalkeeper fixture drift')
+  for index,goalkeeper in [(3,False),(5,True)]:
    player.select_option(str(index))
    playbook=page.locator('#studioMagicCounterPlaybook')
    assert playbook.count()==1,(label,index,'playbook missing or duplicated')
