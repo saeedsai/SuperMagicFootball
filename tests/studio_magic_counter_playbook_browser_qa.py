@@ -81,7 +81,11 @@ with sync_playwright() as pw:
    assert playbook.evaluate('(el)=>el.open'),(label,index,'keyboard Enter failed to reopen')
    assert player.input_value()==str(index),(label,index,'keyboard toggle changed player')
    assert not page.evaluate("window.__studioGuideStorageWrites"),(label,index,'keyboard toggle wrote storage')
-   # Space is the other native summary activation key; keep touch and keyboard parity.
+   # Test Space from an explicitly focused summary, independent of where the
+   # browser leaves focus after the preceding Enter activation sequence.
+   # Native summary Space activation is dispatched on key release.
+   summary.focus()
+   assert summary.evaluate('(el) => document.activeElement === el'),(label,index,'summary not focused before Space')
    page.keyboard.press('Space')
    assert not playbook.evaluate('(el)=>el.open'),(label,index,'keyboard Space failed to collapse')
    page.keyboard.press('Space')
