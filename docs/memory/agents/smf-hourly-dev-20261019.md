@@ -6,6 +6,7 @@
 Ship bounded tested dev increments for Player Studio, four-button Magic Tricks, existing-player graphics, gameplay, goalkeeper and Career; preserve rosters, six formations, four actions, offline saves, ten slots and SD09.
 
 ## Current checkpoint
+- 13 Nov: Chromium desktop/touch Studio playbook asserts native summary retains focus and no tabindex override after Enter/Space, for outfield/GK. Test `8ff91459`; local checkout blocked by github.com DNS; new-head QA unverified. Candidate .70 unchanged.
 - 13 Nov: added Space keyboard toggle parity to desktop/touch Player Studio browser QA for outfield/GK, preserving selected player and no-save behavior; source commit `3b54a8be677f6f0992bf1eb26d4bbafbc64e588c`. New exact-head QA unverified; version .70 unchanged.
 - At start dev/main both `6ea7eb989548626768758759fbd2b3fce1ffe8e6`. Full Census 43398328372 and Modular QA 43398328586 succeeded; main remains unprotected (#87).
 - Added keyboard Enter collapse/reopen coverage to live desktop/touch Player Studio defender playbook browser regression, preserving selected player and asserting no storage writes. No production/version change; candidate 0.12.81.70.
