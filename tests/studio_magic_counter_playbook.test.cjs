@@ -22,7 +22,7 @@ test('all fourteen Tricks appear in a collapsible read-only defender counter ref
  assert.match(html,/JUMP to avoid airborne-clearable attacks/);
  assert.match(html,/hold DRIBBLE for 1 second while carrying the ball/);
  assert.match(html,/not every counter works against every Trick/);
- assert.match(html,/DRIBBLE activates an equipped Trick/);
+ assert.match(html,/hold DRIBBLE for 1 second while carrying the ball to activate your equipped Trick/);
  assert.doesNotMatch(html,/<button|data-action=|<input|<select/);
 });
 test('Hide Ball guide matches the actual grounded timed PASS-poke counter',()=>{

@@ -11,6 +11,10 @@ Ship tested increments on existing dev; preserve 223 teams, 2676 players, six fo
 - Previous Breath .66–.68 normal-carry/sprint contrast and local-human-selected-only ring remain unchanged; prior Node/Chromium coverage exists.
 - Physical LAN #48 and Render auto-deploy #86 remain open. No physical certification.
 
+## 13 November 2026 CI repair
+- Exact `f21805d1` preflight and Modular QA failed due to stale README title (.69 despite .70 package) and obsolete playbook test expecting `DRIBBLE activates an equipped Trick`, while actual help correctly says hold DRIBBLE for 1 second. Fix README heading and assert the complete actionable wording. No player-facing source/version changes; existing dedicated contract test is the regression.
+- New exact-head four Node/four Chromium and Modular QA still required before any protected release. No local executable checkout or Pages-byte verification performed.
+
 ## Next smallest action
 1. Inspect exact new-head CI, run/repair focused counter-playbook Node and Studio Chromium.
 2. Obtain four Node + four Chromium Census and Modular QA; fix failures.
