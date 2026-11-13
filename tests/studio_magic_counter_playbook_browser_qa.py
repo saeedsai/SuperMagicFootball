@@ -64,6 +64,15 @@ with sync_playwright() as pw:
    assert page.locator('#touchButtons button[data-act]').count()==4,(label,index,'four actions changed')
    assert page.evaluate("localStorage.getItem('legend_edits')") is None,(label,index,'opening guide saved edits')
    assert not page.evaluate("window.__studioGuideStorageWrites"),(label,index,'opening guide wrote local storage')
+   # Native details/summary must remain keyboard-operable even on touch layouts.
+   # Verify Enter toggles without writing saves or changing the selected player.
+   summary.focus()
+   page.keyboard.press('Enter')
+   assert not playbook.evaluate('(el)=>el.open'),(label,index,'keyboard Enter failed to collapse')
+   page.keyboard.press('Enter')
+   assert playbook.evaluate('(el)=>el.open'),(label,index,'keyboard Enter failed to reopen')
+   assert player.input_value()==str(index),(label,index,'keyboard toggle changed player')
+   assert not page.evaluate("window.__studioGuideStorageWrites"),(label,index,'keyboard toggle wrote storage')
    if touch:summary.tap()
    else:summary.click()
    assert not playbook.evaluate('(el)=>el.open'),(label,index,'playbook failed to collapse')
