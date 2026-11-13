@@ -1,3 +1,7 @@
+## 2026-11-13 — Studio Space keyup diagnostic and listener isolation
+- Commit d6a778ce captures both keydown and keyup at the native SUMMARY and prevents duplicate document listeners across player switches. The browser regression now requires exactly one of each phase, the correct target, and no default prevention. This is test-only diagnostic improvement, not a confirmed gameplay fix.
+- GitHub accepted commit; local git DNS resolution failed. Exact-head focused Chromium, 4 Node + 4 Chromium Census, Modular QA, protected promotion and Pages bytes remain unverified. Version .70 unchanged; #48/#86/#87 open.
+
 ## 2026-11-13 — Studio Space keyboard interception diagnostic
 - Chromium playbook test now captures focused SUMMARY Space keydown target/defaultPrevented and reports event evidence on failure (`3afdb14d`). Prior test failed Space collapse despite an explicit focus; this does not yet establish whether another game handler prevents default or the browser's native activation differs.
 - No gameplay or version changes; local Chromium unavailable, exact-head 4+4 Census and Modular QA not verified. No protected promotion/Pages claim; #48/#86/#87 remain open.
