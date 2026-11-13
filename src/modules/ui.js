@@ -2699,7 +2699,7 @@ const STUDIO_MAGIC_TRICK_GUIDES=Object.freeze({
 // STUDIO-COUNTER-PLAYBOOK-01: read-only reference for outfield and GK Studio.
 // Reuse the selected Trick guides so every counter description stays aligned.
 function studioMagicCounterPlaybook(){
- return `<details id="studioMagicCounterPlaybook" class="studioCounterPlaybook"><summary>DEFENDER COUNTER PLAYBOOK · ${STUDIO_MAGIC_TRICK_FULL_CATALOGUE.length} TRICKS</summary><p class="muted">PASS, SHOOT, JUMP and physical contact provide the listed defensive counters; DRIBBLE activates an equipped Trick. No extra gameplay button or saved setting.</p><ul>${STUDIO_MAGIC_TRICK_FULL_CATALOGUE.map(trick=>`<li><strong>${escapeHTML(trick.name)}</strong> — ${escapeHTML(STUDIO_MAGIC_TRICK_GUIDES[trick.id])}</li>`).join('')}</ul></details>`;
+ return `<details id="studioMagicCounterPlaybook" class="studioCounterPlaybook"><summary>DEFENDER COUNTER PLAYBOOK · ${STUDIO_MAGIC_TRICK_FULL_CATALOGUE.length} TRICKS</summary><p class="muted">Four-button counter guide: hold DRIBBLE for 1 second while carrying the ball to activate your equipped Trick. As a defender, use PASS for a timed close-range poke, SHOOT for a grounded slide, or JUMP to avoid airborne-clearable attacks. Position and timing matter; not every counter works against every Trick. Read the individual entries below. No extra gameplay button or saved setting.</p><ul>${STUDIO_MAGIC_TRICK_FULL_CATALOGUE.map(trick=>`<li><strong>${escapeHTML(trick.name)}</strong> — ${escapeHTML(STUDIO_MAGIC_TRICK_GUIDES[trick.id])}</li>`).join('')}</ul></details>`;
 }
 // STUDIO-MAGIC-SAVE-STATE-01: no-op selections should never look actionable.
 function studioMagicSaveState(choice,equipped,eligible){

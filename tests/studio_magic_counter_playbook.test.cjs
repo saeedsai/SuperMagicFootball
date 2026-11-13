@@ -17,7 +17,11 @@ test('all fourteen Tricks appear in a collapsible read-only defender counter ref
  assert.match(html,/DEFENDER COUNTER PLAYBOOK · 14 TRICKS/);
  assert.equal((html.match(/<li>/g)||[]).length,14);
  for(const name of ['Banana Peel','Ice Patch','Bat Strike','Fireball','Freeze','Scream','Hide Ball','Teleport','Shoulder Ride','Spin Bump','Sand Trap','Lightning','Wind','Mud'])assert.ok(html.includes('<strong>'+name+'</strong>'),name);
- assert.match(html,/PASS, SHOOT, JUMP/);
+ assert.match(html,/PASS for a timed close-range poke/);
+ assert.match(html,/SHOOT for a grounded slide/);
+ assert.match(html,/JUMP to avoid airborne-clearable attacks/);
+ assert.match(html,/hold DRIBBLE for 1 second while carrying the ball/);
+ assert.match(html,/not every counter works against every Trick/);
  assert.match(html,/DRIBBLE activates an equipped Trick/);
  assert.doesNotMatch(html,/<button|data-action=|<input|<select/);
 });
@@ -37,4 +41,13 @@ test('outfield and goalkeeper Studio share the same playbook without a new actio
  assert.match(selector,/id="studioGKMagicPreview"/);
  assert.match(selector,/id="studioMagicGuide"/);
  assert.match(ui,/Tricks have cooldown and Energy cost/);
+});
+
+test('counter guide remains safe read-only HTML and matches existing four-button control vocabulary',()=>{
+ const html=render();
+ assert.equal((html.match(/<details /g)||[]).length,1);
+ assert.equal((html.match(/<summary>/g)||[]).length,1);
+ assert.match(html,/Read the individual entries below/);
+ assert.doesNotMatch(html,/<button|<input|<select|data-action=|onclick=/i);
+ assert.doesNotMatch(html,/fifth button|new action/i);
 });

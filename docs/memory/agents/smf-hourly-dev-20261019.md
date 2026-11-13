@@ -3,26 +3,26 @@
 **Updated:** 2026-11-13
 
 ## Mission
-Deliver small tested increments on existing dev. Preserve 223 teams/2676 players, six formations, four actions, offline saves, Career/Cup ten slots, SD09 and LAN-094.
+Ship tested increments on existing dev; preserve 223 teams, 2676 players, six formations, four actions, saves/offline, Career/Cup ten slots and SD09.
 
 ## Current checkpoint
-- Candidate 0.12.81.69 is the installed About-only version. Earlier .66–.68 tuned cheap normal ball carry, expensive sprint, idle/walk recovery, and selected-local-human-only Breath ring.
-- At run start dev/main both `0dc02bde302f3a5b7b15d345c854671c61edc3ad`. Exact-dev Census 43355852147 and Modular QA 43355852157 passed; main Census 43356864998 and Pages 43356864592 passed. This does not certify later changes.
-- Physical two-phone LAN issue #48 is open. Render auto-deploy #86 remains under investigation. Main branch protection #87 absent; do not bypass it.
-- This increment extends desktop and simulated-touch production-renderer Breath regression to revoke the local guest seat mid-frame and restore it. Both teams must hide all rings on revocation; only the selected guest regains a ring on reassignment. Stale controlled flags are intentionally preserved. No runtime/version change.
+- Previous `dev` and `main`: `561fb5669f6eb55b043ea4950a0a2adbc77520f9`. Exact-head Full Regression Census 43363378595 and Modular QA 43363378579 passed. Main remains unprotected (#87).
+- New 0.12.81.70 candidate: Player Studio Magic Trick counter playbook explains existing four-button DRIBBLE hold, PASS poke, SHOOT slide and JUMP evasion. Explicitly says counters vary by Trick. Source change in ui.js, contract regression, package/README/release/version policy/service-worker cache synchronized.
+- Previous Breath .66–.68 normal-carry/sprint contrast and local-human-selected-only ring remain unchanged; prior Node/Chromium coverage exists.
+- Physical LAN #48 and Render auto-deploy #86 remain open. No physical certification.
 
 ## Next smallest action
-1. Verify new exact-head focused Chromium, four Node/four Chromium Census and Modular QA; fix failures.
-2. Protect main and promote only through approved pipeline; verify Pages hosted bytes.
-3. Implement Player Studio usability with tests, then counterable four-action Magic Tricks.
-4. Continue existing-player eight-view art with Studio source and visual acceptance.
-5. Improve goalkeeper and Career; investigate Render #86 without routine LAN implementation.
+1. Inspect exact new-head CI, run/repair focused counter-playbook Node and Studio Chromium.
+2. Obtain four Node + four Chromium Census and Modular QA; fix failures.
+3. Only promote through guarded protected-main pipeline and verify hosted Pages bytes.
+4. Continue counterable Magic Tricks gameplay and Player Studio usability.
+5. Existing-player eight-view graphics via Studio, goalkeeper and Career improvements; monitor Render #86.
 
 ## Ownership and exclusions
-Only this checkpoint. Never create branches, force push, alter others' memory, or claim physical LAN acceptance without device evidence.
+Edit only this checkpoint. No branch creation, force push, unverified main promotion or routine LAN work.
 
 ## Evidence
-At start: exact-head dev [Census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/43355852147), [Modular QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/43355852157), and main [Census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/43356864998) passed. New regression not locally executed: GitHub connector provides source writes but no executable checkout. Await exact-head CI.
+GitHub connector source access supports commit/CI inspection, not local executable checkout. Focused and full tests on this new candidate are not yet run/verified; no deployment claim. Prior green CI is not evidence for new SHA.
 
 ## Cleanup
-Keep checkpoint below 4 KiB and recurring development active.
+Keep under 4 KiB; continue recurring development.
