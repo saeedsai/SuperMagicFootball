@@ -3,30 +3,26 @@
 **Updated:** 2026-11-13
 
 ## Mission
-Develop tested incremental changes on existing `dev`; preserve four actions, 223 teams, 2676 players, six formations, offline saves, Career/Cup ten slots, SD09 and physical LAN issue #48.
+Deliver small tested increments on existing dev. Preserve 223 teams/2676 players, six formations, four actions, offline saves, Career/Cup ten slots, SD09 and LAN-094.
 
 ## Current checkpoint
-- 13 Nov CI failure on exact `245836d9`: both Modular QA 43342285564 and Census 43342285638 stopped in Node memory contract with `wrong identity for smf-hourly-dev-20261019`. Restored the mandatory Agent ID header in this checkpoint, preserving all other checkpoint sections; no game code changed. New exact-head gates pending.
-- Candidate 0.12.81.69: continuous arcade play and 3-second kickoff/halftime countdown; Breath low-cost normal carry, expensive sprint, walking recovery and one selected local-human ring delivered in earlier candidates.
-- Verified `dev` and `main` both at `91c24a710e543eaac0436024b375623fdd6f2f50` before this increment. Exact-dev Full Regression Census 43333429037 and Modular QA 43333429076 succeeded. No main branch protection (#87); Render auto-deploy investigation #86 and physical two-phone #48 remain open.
-- This run adds a focused desktop/simulated-touch Chromium regression for rapid selected-player switch-back while deliberately stale `.controlled` flags persist. It asserts only the current human selection receives Breath ring and outline; no runtime behavior or version change.
-
-## 13 November 2026 increment — guest rapid switch-back QA
-- Added desktop and simulated-touch Chromium checks for immediate guest-seat player switch-back with stale `.controlled` flags. Only the selected guest player may show the Breath ring/outline; the previous guest player and home team must not leak indicators. This is regression-only, no gameplay/version change.
-- Prior exact head `285113d99623b0410adf8e05bc12942b941a7e93` passed dev Census 43348911133 and Modular QA 43348911152; main Census 43350042059 passed. New exact-head CI still required; local Git DNS blocks executable checkout.
+- Candidate 0.12.81.69 is the installed About-only version. Earlier .66–.68 tuned cheap normal ball carry, expensive sprint, idle/walk recovery, and selected-local-human-only Breath ring.
+- At run start dev/main both `0dc02bde302f3a5b7b15d345c854671c61edc3ad`. Exact-dev Census 43355852147 and Modular QA 43355852157 passed; main Census 43356864998 and Pages 43356864592 passed. This does not certify later changes.
+- Physical two-phone LAN issue #48 is open. Render auto-deploy #86 remains under investigation. Main branch protection #87 absent; do not bypass it.
+- This increment extends desktop and simulated-touch production-renderer Breath regression to revoke the local guest seat mid-frame and restore it. Both teams must hide all rings on revocation; only the selected guest regains a ring on reassignment. Stale controlled flags are intentionally preserved. No runtime/version change.
 
 ## Next smallest action
-1. Inspect exact new-head four Node and four Chromium Census and Modular QA; fix any confirmed regression.
-2. Do not bypass main protection or claim hosted Pages bytes without verified gates.
-3. Implement Player Studio usability and counterable four-button Magic Tricks as bounded source+test increments.
-4. Advance independently authored eight-view existing-player graphics with Studio and human visual review.
-5. Improve goalkeeper and Career Mode; keep #48 physical acceptance and #86 Render drift separate.
+1. Verify new exact-head focused Chromium, four Node/four Chromium Census and Modular QA; fix failures.
+2. Protect main and promote only through approved pipeline; verify Pages hosted bytes.
+3. Implement Player Studio usability with tests, then counterable four-action Magic Tricks.
+4. Continue existing-player eight-view art with Studio source and visual acceptance.
+5. Improve goalkeeper and Career; investigate Render #86 without routine LAN implementation.
 
 ## Ownership and exclusions
-Only this agent checkpoint; no new branch, force push, unverified main promotion, or routine LAN work. Do not read another agent's private checkpoint.
+Only this checkpoint. Never create branches, force push, alter others' memory, or claim physical LAN acceptance without device evidence.
 
 ## Evidence
-Previous exact-head CI green: [Census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/43333429037), [Modular QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/43333429076). New test must pass exact-head CI before it can be called certified. Local executable Node/Chromium QA not run in this connector-only session.
+At start: exact-head dev [Census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/43355852147), [Modular QA](https://github.com/saeedsai/SuperMagicFootball/actions/runs/43355852157), and main [Census](https://github.com/saeedsai/SuperMagicFootball/actions/runs/43356864998) passed. New regression not locally executed: GitHub connector provides source writes but no executable checkout. Await exact-head CI.
 
 ## Cleanup
-Checkpoint below 4KiB. Recurring development remains enabled.
+Keep checkpoint below 4 KiB and recurring development active.
