@@ -6,6 +6,7 @@
 Ship tested dev increments for Player Studio, four-button Magic Tricks, existing-player graphics, goalkeeper and Career; preserve roster, formations, four actions, offline saves, ten slots and SD09.
 
 ## Current checkpoint
+- 2026-11-13: Full Census 43438940478 at `3388304a` passed 4 Node, 3 Chromium, preflight and preview; Chromium 0 failed. Modular QA 43438940411 passed. Commit `91421f0b` isolates playbook storage assertions from Studio player selection (CI hypothesis; exact failing assertion not available).
 - Added distinct/nonempty 14-Trick counter entry regression for outfield/GK desktop and simulated-touch Chromium, commit `bb8fe651b9c9b01f7a10ecd5dbdad0a686c88be6`.
 - Test-only, candidate 0.12.81.70 unchanged. Local Git checkout blocked by DNS; exact-head four Node/four Chromium Census and Modular QA unverified.
 - Before increment main `6ea7eb989548626768758759fbd2b3fce1ffe8e6`; dev ahead 10 commits. Protection #87, Render #86, physical LAN #48 remain open.
