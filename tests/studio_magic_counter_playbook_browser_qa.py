@@ -45,6 +45,9 @@ with sync_playwright() as pw:
   assert 'Genei' in player.locator('option[value="5"]').inner_text(),(label,'goalkeeper fixture drift')
   for index,goalkeeper in [(3,False),(5,True)]:
    player.select_option(str(index))
+   # Player selection may legitimately persist UI preferences. Only measure
+   # writes caused by the read-only guide, not by changing the Studio player.
+   page.evaluate('window.__studioGuideStorageWrites.length = 0')
    playbook=page.locator('#studioMagicCounterPlaybook')
    assert playbook.count()==1,(label,index,'playbook missing or duplicated')
    assert playbook.locator('summary').inner_text().strip()=='DEFENDER COUNTER PLAYBOOK · 14 TRICKS'
@@ -95,6 +98,7 @@ with sync_playwright() as pw:
   # Re-entering an earlier outfield player after a goalkeeper must not duplicate
   # the read-only playbook or leave goalkeeper-only preview controls behind.
   player.select_option('3')
+  page.evaluate('window.__studioGuideStorageWrites.length = 0')
   assert page.locator('#studioMagicCounterPlaybook').count()==1,(label,'duplicate guide after return')
   assert page.locator('#studioMagicCounterPlaybook li').count()==14,(label,'guide lost entries after return')
   assert page.locator('#studioGKMagicPreview').count()==0,(label,'stale goalkeeper preview after return')
