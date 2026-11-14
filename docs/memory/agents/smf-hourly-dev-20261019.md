@@ -1,5 +1,5 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
-**Agent ID:** smf-hourly-dev-20261019
+**Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-11-14
 
 ## Mission
