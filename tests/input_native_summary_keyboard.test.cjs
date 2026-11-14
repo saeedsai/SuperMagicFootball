@@ -40,3 +40,12 @@ test('native buttons and editable fields do not consume Space as gameplay',()=>{
  assert.equal(send('keydown','Space',field),false);
  assert.equal(input.keys.has('Space'),false);
 });
+
+test('data-act control without closest selector match never triggers global Jump',()=>{
+ const {input,send}=inputHarness();
+ const action={dataset:{act:'shoot'},closest:()=>null};
+ assert.equal(send('keydown','Space',action),false);
+ assert.equal(send('keyup','Space',action),false);
+ assert.equal(input.keys.has('Space'),false);
+ assert.equal(input.keyPulsePending.has('Space'),false);
+});
