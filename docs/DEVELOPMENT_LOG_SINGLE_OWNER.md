@@ -1,3 +1,7 @@
+## 2026-11-14 — Native Space and candidate .71 CI repair
+
+Exact-head Modular QA 43524377990 on b99c60c7: 2408/2414 Node passed; six failed (five README/cache release contracts, one data-act focused button leaking global Jump). Read actual job 132226367514 logs. Committed native target fallback in input.js (c1b2d059, cf80ca3a), README heading .71 (da8bab97), SW cache suffix .71 (0229d9e5), focused data-act regression (8f9aa92e). GitHub accepted commits; new exact-head Node/Chromium/Modular QA, promotion and Pages verification pending. #48/#86/#87 open. No Breath gameplay changes in this increment.
+
 ## 2026-11-14 — Studio native Space keyboard root-cause fix (candidate .71)
 - Inspected actual INPUT global keydown handler: it called preventDefault for Space on focused SUMMARY, blocking the native playbook toggle. Commit `7b6bb247` exempts SUMMARY/buttons from gameplay Space interception while retaining match Jump for non-interactive targets. Focused Node regression `e5c0230a` simulates keyboard routing; existing desktop/touch Chromium playbook regression checks native Enter/Space toggling.
 - Candidate 0.12.81.71 synchronized across package, About-only release, README, version policy and offline cache. GitHub commits accepted. A standalone local Chromium SUMMARY test toggled on Space, but integrated game Node/Chromium tests were not executed: local Git checkout failed DNS. Exact-head four Node/four Chromium Census, Modular QA, protected main promotion, Pages bytes and physical two-phone LAN acceptance remain unverified; #48/#86/#87 open.
