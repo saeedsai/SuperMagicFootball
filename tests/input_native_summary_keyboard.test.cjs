@@ -49,3 +49,22 @@ test('data-act control without closest selector match never triggers global Jump
  assert.equal(input.keys.has('Space'),false);
  assert.equal(input.keyPulsePending.has('Space'),false);
 });
+
+test('nested action labels and accessible role buttons preserve Space without ghost Jump',()=>{
+ const {input,send}=inputHarness();
+ const action={tagName:'BUTTON',dataset:{act:'pass'}};
+ const nested={tagName:'SPAN',closest:selector=>selector.includes('[data-act]')?action:null};
+ const role={tagName:'DIV',closest:selector=>selector.includes('[role="button"]')?role:null};
+ for(const target of [nested,role]){
+  assert.equal(send('keydown','Space',target),false);
+  assert.equal(send('keyup','Space',target),false);
+  assert.equal(input.keys.has('Space'),false);
+  assert.equal(input.keyPending.has('Space'),false);
+  assert.equal(input.keyPulsePending.has('Space'),false);
+ }
+ const canvas={tagName:'CANVAS',closest:()=>null};
+ assert.equal(send('keydown','Space',canvas),true,'canvas retains the gameplay binding');
+ assert.equal(input.keys.has('Space'),true);
+ assert.equal(send('keyup','Space',canvas),false);
+ assert.equal(input.keyPulsePending.has('Space'),true,'subsequent gameplay tap still reaches Jump');
+});
