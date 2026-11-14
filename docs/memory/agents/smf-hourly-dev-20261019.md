@@ -1,11 +1,12 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-11-14
+**Updated:** 2026-11-14 10:00 CET
 
 ## Mission
 Continue tested gameplay, Player Studio, four-button Magic Tricks, existing-player graphics, keeper, Career, Breath. Preserve roster, formations, four actions, offline/saves and SD09.
 
 ## Current checkpoint
+- 2026-11-14 10:00 CET: GitHub compare confirms dev/main identical at ea137c06fd3f65fe4260030d20849b71f2c84cab (0 ahead/behind). Read required instructions, memory protocol, backlog and docs index. Local Git checkout still blocked by github.com DNS; no fresh test or hosted-byte certification. Next source change must target Breath or gameplay, not further keyboard-only test churn.
 - 2026-11-14: Added focused Space routing regression for TEXTAREA, SELECT, contenteditable and nested SUMMARY descendants (c5dfa7b4); GitHub accepted commit, executable CI still pending. Prior exact dev/main promotion 74f90574; no new player-facing version.
 - Added nested action-label and accessible role-button Space routing regression `d4ee38d2`, preserving canvas Jump; backlog `78178df9`. Not executed locally due GitHub DNS; CI unverified.
 - CI exact dev b99c60c7: Modular QA 43524377990 failed 6/2414 Node tests (2408 passed). Five release-contract failures: README heading still .70 and SW cache suffix still .70 despite package .71. One focused-action Space failure in viz01_action_pad_keyboard_activation: global Jump incorrectly fired on a mocked data-act button.
