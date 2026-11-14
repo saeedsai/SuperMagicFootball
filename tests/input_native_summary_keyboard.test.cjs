@@ -68,3 +68,20 @@ test('nested action labels and accessible role buttons preserve Space without gh
  assert.equal(send('keyup','Space',canvas),false);
  assert.equal(input.keyPulsePending.has('Space'),true,'subsequent gameplay tap still reaches Jump');
 });
+
+test('editable descendants and native form controls never steal gameplay Space',()=>{
+ const {input,send}=inputHarness();
+ const targets=[
+  {tagName:'TEXTAREA',closest:()=>null},
+  {tagName:'SELECT',closest:()=>null},
+  {tagName:'DIV',isContentEditable:true,closest:()=>null},
+  {tagName:'SPAN',closest:selector=>selector.includes('summary')?{tagName:'SUMMARY'}:null}
+ ];
+ for(const target of targets){
+  assert.equal(send('keydown','Space',target),false);
+  assert.equal(send('keyup','Space',target),false);
+  assert.equal(input.keys.has('Space'),false);
+  assert.equal(input.keyPending.has('Space'),false);
+  assert.equal(input.keyPulsePending.has('Space'),false);
+ }
+});
