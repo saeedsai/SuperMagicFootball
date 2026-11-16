@@ -61,3 +61,28 @@ test('analog walk-to-carry threshold never grants free Breath while held Dribble
     }
   }
 });
+
+test('exhausted sprint recovers by walking but never exceeds the Stamina-dependent cap', async () => {
+  const F = await fitness;
+  for (const stamina of [1, 35, 70, 100]) {
+    for (const fps of [30, 60, 120]) {
+      const dt = 1 / fps;
+      const cap = F.breathCapacity(stamina);
+      let breath = cap;
+      for (let frame = 0; frame < 2 * fps; frame++)
+        breath = F.breathTick(breath, stamina, dt, F.breathMovementIntensity(1, true));
+      assert.ok(breath < cap * .65, `sprinting must exhaust a meaningful portion: stamina=${stamina} fps=${fps}`);
+      const exhausted = breath;
+      for (let frame = 0; frame < fps; frame++)
+        breath = F.breathTick(breath, stamina, dt, F.breathMovementIntensity(.55, false));
+      assert.ok(breath > exhausted, `walking must restore sprint-depleted Breath: stamina=${stamina} fps=${fps}`);
+      const afterWalk = breath;
+      for (let frame = 0; frame < fps; frame++)
+        breath = F.breathTick(breath, stamina, dt, F.breathMovementIntensity(.56, false));
+      assert.ok(breath < afterWalk, `ordinary ball carrying must not refill Breath: stamina=${stamina} fps=${fps}`);
+      for (let frame = 0; frame < 30 * fps; frame++)
+        breath = F.breathTick(breath, stamina, dt, 0);
+      assert.ok(Math.abs(breath - cap) < 1e-8, `idle recovery must stop at cap: stamina=${stamina} fps=${fps}`);
+    }
+  }
+});
