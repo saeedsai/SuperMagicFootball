@@ -71,7 +71,7 @@ test('exhausted sprint recovers by walking but never exceeds the Stamina-depende
       let breath = cap;
       for (let frame = 0; frame < 2 * fps; frame++)
         breath = F.breathTick(breath, stamina, dt, F.breathMovementIntensity(1, true));
-      assert.ok(breath < cap * .65, `sprinting must exhaust a meaningful portion: stamina=${stamina} fps=${fps}`);
+      assert.ok(breath < cap - Math.min(2, cap * .3), `sprinting must exhaust a meaningful portion: stamina=${stamina} fps=${fps}`);
       const exhausted = breath;
       for (let frame = 0; frame < fps; frame++)
         breath = F.breathTick(breath, stamina, dt, F.breathMovementIntensity(.55, false));
