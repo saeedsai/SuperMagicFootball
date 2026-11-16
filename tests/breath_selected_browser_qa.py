@@ -76,6 +76,15 @@ with sync_playwright() as pw:
    // No-human spectator mode must never leak a Breath HUD, even with a stale local seat.
    g.humans=0;g.localBreathSide=0;
    const spectatorHome=draw(next),spectatorAway=draw(away);
+   // A stale/disconnected selected-player index must not grant a ring to
+   // a teammate merely because its old .controlled flag remains true.
+   g.humans=2;g.localBreathSide=0;
+   const savedHomeSelection=g.controlled[0];
+   g.controlled[0]=-1;
+   const invalidHomeSelection=draw(next),invalidAwaySelection=draw(away);
+   g.controlled[0]=savedHomeSelection;
+   const restoredHomeSelection=draw(next);
+   g.humans=0;g.localBreathSide=0;
    g.localBreathSide=null;
    g.humans=1;
    const soloAway=draw(away);
@@ -143,7 +152,7 @@ with sync_playwright() as pw:
    g.updatePlayers(.02);const analogSprintAfter=first.breath;
    first.jumpHold=0;
    g.input.state[0]=oldInput;g.autoSwitch=oldAutoSwitch;g.cooldown=oldCooldown;
-   return {initial,unselected,cpu,switched,former,switchedBack,previousSelection,unassignedHome,localAway,hostHome,hostAway,guestHome,guestAway,guestFormer,guestSwitched,guestSwitchedBack,guestPrevious,guestHostLeak,revokedGuest,revokedHome,reassignedGuest,reassignedHome,spectatorHome,spectatorAway,soloAway,preview,menu,staminaSamples,holdLoss,runLoss,sprintLoss,analogWalk,stationaryHold,stationaryRest,
+   return {initial,unselected,cpu,switched,former,switchedBack,previousSelection,unassignedHome,localAway,hostHome,hostAway,guestHome,guestAway,guestFormer,guestSwitched,guestSwitchedBack,guestPrevious,guestHostLeak,revokedGuest,revokedHome,reassignedGuest,reassignedHome,spectatorHome,spectatorAway,invalidHomeSelection,invalidAwaySelection,restoredHomeSelection,soloAway,preview,menu,staminaSamples,holdLoss,runLoss,sprintLoss,analogWalk,stationaryHold,stationaryRest,
            analogBoundary,analogSprintAfter,
            actions:document.querySelectorAll('#touchButtons button[data-act]').length,
            players:g.players.length};
@@ -160,6 +169,8 @@ with sync_playwright() as pw:
   assert outcome['revokedGuest']=={'breath':0,'outline':0} and outcome['revokedHome']=={'breath':0,'outline':0},(name,'revoked multiplayer seat must hide all Breath rings',outcome)
   assert outcome['reassignedGuest']=={'breath':2,'outline':1} and outcome['reassignedHome']=={'breath':0,'outline':0},(name,'reassigned seat restores only its selected ring',outcome)
   assert outcome['spectatorHome']=={'breath':0,'outline':0} and outcome['spectatorAway']=={'breath':0,'outline':0},(name,'spectator must have no local-human Breath HUD',outcome)
+  assert outcome['invalidHomeSelection']=={'breath':0,'outline':0} and outcome['invalidAwaySelection']=={'breath':0,'outline':0},(name,'invalid local selection must not leak Breath ring',outcome)
+  assert outcome['restoredHomeSelection']=={'breath':2,'outline':1},(name,'valid local selection must restore exactly one Breath ring',outcome)
   assert outcome['preview']=={'breath':0,'outline':0} and outcome['menu']=={'breath':0,'outline':0},(name,'preview/menu',outcome)
   assert 0<outcome['holdLoss']<.01,(name,'actual held-dribble frame should have tiny positive Breath drain',outcome)
   assert 0<outcome['runLoss']<.01,(name,'actual ordinary run with ball must have tiny Breath drain',outcome)
