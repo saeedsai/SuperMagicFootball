@@ -128,8 +128,23 @@ with sync_playwright() as pw:
    g.ball.owner=first;ready();first.breath=4;
    g.input.state[0]={x:0,y:0,dribble:false,pass:false,shoot:false,jump:false};
    g.updatePlayers(.02);const stationaryRest=first.breath;
+   // Analog threshold boundary in the actual updatePlayers path, with possession.
+   // Both samples use the same selected player and equivalent active frame state.
+   const analogBoundary=[];
+   for(const magnitude of [.55,.56]){
+    g.ball.owner=first;ready();first.breath=4;first.jumpHold=0;
+    g.input.state[0]={x:magnitude,y:0,dribble:false,pass:false,shoot:false,jump:false};
+    g.updatePlayers(.02);
+    analogBoundary.push({magnitude,after:first.breath});
+   }
+   // A partial-stick sprint must still cost far more than normal carrying at .56.
+   g.ball.owner=first;ready();first.breath=4;first.jumpHold=.22;
+   g.input.state[0]={x:.56,y:0,dribble:false,pass:false,shoot:false,jump:true};
+   g.updatePlayers(.02);const analogSprintAfter=first.breath;
+   first.jumpHold=0;
    g.input.state[0]=oldInput;g.autoSwitch=oldAutoSwitch;g.cooldown=oldCooldown;
    return {initial,unselected,cpu,switched,former,switchedBack,previousSelection,unassignedHome,localAway,hostHome,hostAway,guestHome,guestAway,guestFormer,guestSwitched,guestSwitchedBack,guestPrevious,guestHostLeak,revokedGuest,revokedHome,reassignedGuest,reassignedHome,spectatorHome,spectatorAway,soloAway,preview,menu,staminaSamples,holdLoss,runLoss,sprintLoss,analogWalk,stationaryHold,stationaryRest,
+           analogBoundary,analogSprintAfter,
            actions:document.querySelectorAll('#touchButtons button[data-act]').length,
            players:g.players.length};
   }""")
@@ -152,6 +167,9 @@ with sync_playwright() as pw:
   assert 4<outcome['analogWalk']<4.06,(name,'analog walking restores Breath',outcome)
   assert outcome['stationaryHold']>4,(name,'stationary held dribble must recharge',outcome)
   assert abs(outcome['stationaryHold']-outcome['stationaryRest'])<1e-6,(name,'stationary DRIBBLE must not drain extra Breath',outcome)
+  assert outcome['analogBoundary'][0]['after']>4,(name,'0.55 analog walk must recover in real engine',outcome)
+  assert 0<4-outcome['analogBoundary'][1]['after']<.01,(name,'0.56 ordinary carry must drain minimally in real engine',outcome)
+  assert 4-outcome['analogSprintAfter']>5*(4-outcome['analogBoundary'][1]['after']),(name,'0.56 partial-stick sprint must cost far more',outcome)
   assert outcome['actions']==4 and outcome['players']==12,(name,'control/roster invariants',outcome)
   for sample in outcome['staminaSamples']:
    assert sample['normal']>sample['start']-.2,(name,'normal run drains too much',sample)
