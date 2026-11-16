@@ -86,3 +86,37 @@ test('exhausted sprint recovers by walking but never exceeds the Stamina-depende
     }
   }
 });
+
+test('rapid walk/carry/sprint transitions preserve Breath accounting without frame-rate exploits', async () => {
+  const F = await fitness;
+  for (const stamina of [1, 35, 70, 100]) {
+    const cap = F.breathCapacity(stamina);
+    for (const fps of [30, 60, 120]) {
+      const dt = 1 / fps;
+      const start = cap * 0.65;
+      let breath = start;
+      const stages = [
+        {magnitude: 0.55, sprint: false, seconds: 1},
+        {magnitude: 0.56, sprint: false, seconds: 1, hold: true},
+        {magnitude: 0.56, sprint: true, seconds: 1},
+        {magnitude: 0, sprint: false, seconds: 1},
+      ];
+      const snapshots = [];
+      for (const stage of stages) {
+        for (let frame = 0; frame < stage.seconds * fps; frame++) {
+          breath = F.breathTick(breath, stamina, dt,
+            F.breathMovementIntensity(stage.magnitude, stage.sprint));
+          if (stage.hold)
+            breath = Math.max(0, breath - F.dribbleHoldBreathRate(stamina) * dt);
+          assert.ok(Number.isFinite(breath) && breath >= 0 && breath <= cap,
+            `invalid Breath at stamina=${stamina} fps=${fps}`);
+        }
+        snapshots.push(breath);
+      }
+      assert.ok(snapshots[0] > start, 'walking must refill before running');
+      assert.ok(snapshots[1] < snapshots[0], 'ordinary carry must not refill');
+      assert.ok(snapshots[2] < snapshots[1] - 0.3, 'sprint must deplete meaningfully');
+      assert.ok(snapshots[3] > snapshots[2], 'idle must recover after sprint');
+    }
+  }
+});
