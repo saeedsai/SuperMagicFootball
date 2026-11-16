@@ -38,3 +38,26 @@ test('partial-stick sprint drains more Breath than ordinary ball movement across
     }
   }
 });
+
+test('analog walk-to-carry threshold never grants free Breath while held Dribble, but sprint is costly', async () => {
+  const F = await fitness;
+  for (const stamina of [1, 35, 70, 100]) {
+    for (const fps of [30, 60, 120]) {
+      const dt = 1 / fps;
+      const cap = F.breathCapacity(stamina);
+      const start = cap * 0.6;
+      const holdRate = F.dribbleHoldBreathRate(stamina);
+      let walk = start, carry = start, sprint = start;
+      for (let frame = 0; frame < fps; frame++) {
+        walk = F.breathTick(walk, stamina, dt, F.breathMovementIntensity(0.55, false));
+        carry = Math.max(0, F.breathTick(carry, stamina, dt, F.breathMovementIntensity(0.56, false)) - holdRate * dt);
+        sprint = F.breathTick(sprint, stamina, dt, F.breathMovementIntensity(0.56, true));
+      }
+      assert.ok(walk > start, `walking should recover: stamina=${stamina} fps=${fps}`);
+      assert.ok(carry < start && start - carry < 0.25,
+        `held ball carry must cost little, never recharge: stamina=${stamina} fps=${fps}`);
+      assert.ok(sprint < carry && start - sprint > (start - carry) * 6,
+        `partial-stick sprint must be substantially costlier: stamina=${stamina} fps=${fps}`);
+    }
+  }
+});
