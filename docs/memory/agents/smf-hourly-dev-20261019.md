@@ -1,31 +1,28 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-11-14 10:00 CET
+**Updated:** 2026-11-16 20:03 CET
 
 ## Mission
-Continue tested gameplay, Player Studio, four-button Magic Tricks, existing-player graphics, keeper, Career, Breath. Preserve roster, formations, four actions, offline/saves and SD09.
+Advance gameplay, Player Studio, four-button Magic Tricks, existing-player art, keeper, Career and Breath; preserve 223 teams, 2676 players, six formations, four actions, offline/saves and SD09.
 
 ## Current checkpoint
-- 2026-11-14 10:00 CET: GitHub compare confirms dev/main identical at ea137c06fd3f65fe4260030d20849b71f2c84cab (0 ahead/behind). Read required instructions, memory protocol, backlog and docs index. Local Git checkout still blocked by github.com DNS; no fresh test or hosted-byte certification. Next source change must target Breath or gameplay, not further keyboard-only test churn.
-- 2026-11-14: Added focused Space routing regression for TEXTAREA, SELECT, contenteditable and nested SUMMARY descendants (c5dfa7b4); GitHub accepted commit, executable CI still pending. Prior exact dev/main promotion 74f90574; no new player-facing version.
-- Added nested action-label and accessible role-button Space routing regression `d4ee38d2`, preserving canvas Jump; backlog `78178df9`. Not executed locally due GitHub DNS; CI unverified.
-- CI exact dev b99c60c7: Modular QA 43524377990 failed 6/2414 Node tests (2408 passed). Five release-contract failures: README heading still .70 and SW cache suffix still .70 despite package .71. One focused-action Space failure in viz01_action_pad_keyboard_activation: global Jump incorrectly fired on a mocked data-act button.
-- Fixed input Space exclusion by native SUMMARY/BUTTON tag and data-act target fallback, retaining canvas Space Jump; commits c1b2d059 and cf80ca3a.
-- README heading .71 (da8bab97), SW suffix .71 (0229d9e5), Node regression for data-act target (8f9aa92e). These are committed, NOT yet CI-certified.
-- Candidate remains 0.12.81.71. No main promotion or Pages verification. #48 physical LAN, #86 Render, #87 main protection open.
+- Initial dev/main both d76f00af5e0cb11650e5a1107080cb84453b347f; exact-head dev 4 Node/4 Chromium Census and Modular QA, main Census, Pages deployment/hosted smoke green (14 Nov).
+- Owner's Breath low-cost carrying, high-cost sprint, walking recovery and local-selected-human-only ring are already implemented (.66–.68). Focused production-renderer Chromium test covers selection changes, host/guest seats and spectators.
+- Added Node analog threshold/held-Dribble partial-sprint regression in commit ba719bf7e3cba0e2714628566611ccaab295b16e. No gameplay/version changes; new exact-head CI pending.
+- main is unprotected (#87); physical two-phone acceptance #48 and Render auto-deploy investigation #86 remain open. Authenticated online API not live.
 
 ## Next smallest action
-1. Inspect exact-head Census (4 Node/4 Chromium) and Modular QA; fix failures.
-2. Run focused keyboard and Player Studio browser regressions, especially Space keyup/activation.
-3. Verify existing .66–.68 Breath drain/recovery and selected local-human-only ring tests; correct any confirmed defect.
-4. Implement bounded counterable Magic Tricks and existing-player graphics/keeper/Career improvements.
-5. Only promote green exact head via protected pipeline, then verify hosted Pages bytes.
+1. Inspect exact new-head four Node/four Chromium Census and Modular QA; fix failures before promotion.
+2. Advance one bounded existing-player animation or Magic Trick counterplay improvement with focused Node/Chromium tests.
+3. Improve goalkeeper/Player Studio/Career usability without changing four controls.
+4. Verify hosted Pages bytes after exact-head green promotion; never manually bypass main gate.
+5. Continue #86 read-only investigation when relevant; #48 remains physical-only.
 
 ## Ownership and exclusions
-Own checkpoint only. No branch creation, force push, CI bypass, other agents' notes, or unverified physical certification.
+Own checkpoint only; no other agents' private memory, branch creation, force push, CI bypass, concept heroes or roster/stat churn.
 
 ## Evidence
-GitHub Actions job 132226367514 log explicitly shows 6 failures; fix commits accepted by GitHub. Executable local Git remains unavailable in this runtime.
+GitHub write ba719bf7 accepted; previous d76f00a CI green. New tests and hosted deployment NOT YET VERIFIED.
 
 ## Cleanup
-Checkpoint below 4 KiB. Continue development despite transient execution blockers.
+Under 4 KiB; no temporary branches.
