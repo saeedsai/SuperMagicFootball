@@ -1,28 +1,28 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-11-16 23:06 CET
+**Updated:** 2026-11-16 23:59 CET
 
 ## Mission
-Advance gameplay, Player Studio, four-button Magic Tricks, existing-player art, goalkeeper and Career. Preserve 223 teams, 2676 players, six formations, four actions, offline/saves, ten Career/Cup slots and SD09.
+Advance gameplay, Player Studio, four-button Magic Tricks, existing-player graphics, goalkeeper and Career. Preserve 223 teams, 2676 players, six formations, four actions, offline/saves, ten Career/Cup slots and SD09.
 
 ## Current checkpoint
-- At run start dev/main both `3704ef4d528c00e85905c461ac4fef5d2e81cbcb`; dev Modular QA, four Node/four Chromium Census, main Census, Pages and hosted smoke all green.
-- Existing .66–.68 mechanics: very low ordinary carrying drain, costly sprint, walking/idle recovery and ring only for local human selected player. Prior Node lifecycle regressions now deployed.
-- Extended actual-game desktop/simulated-touch `tests/breath_selected_browser_qa.py` to check analog .55 walk recovery, .56 normal possession minimal drain and .56 partial-stick sprint >5x drain. Browser test commit `dcde497`, backlog `67122b0`. No player-facing change; version stays 0.12.81.71.
-- New exact-head CI pending; local browser execution not claimed. Do not claim promotion/deployment for new commits until verified.
+- Run start dev/main both `26e5760122516ba8c05f1e13b6af74fbc7b5643f`; exact SHA Full Census, Modular QA, main Census and Pages green.
+- Breath .66–.68 already provides low normal carrying drain, expensive sprint, idle/walk recovery and selected local-human-only ring. Prior analog desktop/touch Chromium regression is promoted.
+- New bounded Chromium regression `4ba5ddf` tests invalid/disconnected local controlled-player index with stale flags, both teams ring-free, then immediate restoration of exactly one ring on valid re-selection. Master backlog `6a5f10e`. No player-facing code changed, version stays 0.12.81.71.
+- New exact-head CI pending; no local focused/browser execution claimed. Do not claim promotion or Pages until verified.
 
 ## Next smallest action
-1. Inspect exact-head four Node/four Chromium Census and Modular QA; fix any failures.
-2. Implement a bounded new Player Studio, four-button counterplay or existing-player animation feature with focused tests.
-3. Continue goalkeeper/Career polish and desktop/touch acceptance.
+1. Inspect four Node/four Chromium exact-head Census and Modular QA; fix any failing test or genuine HUD defect.
+2. Deliver a bounded Player Studio, four-button counterplay, existing-player animation, goalkeeper or Career source improvement with regression tests.
+3. Continue original eight-direction art pipeline and human visual review when assets available.
 4. Verify exact green promotion, main Census, Pages and hosted bytes separately.
-5. Read-only investigate Render #86 when relevant; never close physical LAN #48 without real-device evidence.
+5. Investigate Render #86 read-only when relevant; physical two-phone #48 and GitHub protection #87 remain open.
 
 ## Ownership and exclusions
 Own checkpoint only. No other agents' private memory, new branches, force-push, CI bypass, concept heroes or roster churn.
 
 ## Evidence
-Prior `3704ef4` exact-head gates and Pages green. New Chromium regression commit accepted by GitHub, not yet verified passing.
+Prior `26e5760` exact-head CI/Pages green; new `4ba5ddf` test committed but unverified.
 
 ## Cleanup
 Under 4 KiB; no temporary branches.
