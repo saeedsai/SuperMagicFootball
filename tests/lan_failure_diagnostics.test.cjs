@@ -30,6 +30,6 @@ test('two-browser LAN timeout diagnostics identify the acceptance phase', () => 
   ]) {
     assert.ok(source.includes("phase = '" + phase + "'"), 'missing phase: ' + phase);
   }
-  assert.match(source, /except Exception:\s*print\('LAN_FAILURE_PHASE', phase, flush=True\)/);
+  assert.match(source, /except Exception:\s*# Preserve the original failure[^\n]*\n\s*print\('LAN_FAILURE_PHASE', phase, flush=True\)/, 'phase logging must follow the preservation comment without swallowing the original error');
   assert.match(source, /\n\s+raise\n\s+finally:/);
 });
