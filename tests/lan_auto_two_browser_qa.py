@@ -317,6 +317,28 @@ def main():
                       f"retry_frame={retry['frame']}", "host_received_same_sequence_once=true")
                 print("LAN_SYNTHETIC_ICE_RECOVERY_PASS: browser-observed transient disconnect/recovery and fresh guest input")
                 print("LAN REAL BROWSER PASS: auto discovery, approval, guest input ownership, replicated player state, authoritative match and visible graphics")
+            except Exception:
+                # Preserve the original failure while exposing the exact live
+                # transport/game state behind intermittent wait_for_function
+                # timeouts. Never convert a failed LAN acceptance into PASS.
+                for label, peer_page in (("host", host), ("guest", guest)):
+                    try:
+                        state = peer_page.evaluate("""() => ({
+                          menuHidden: document.querySelector('#menu')?.classList.contains('hidden'),
+                          matchState: window.NekketsuHD?.game?.matchState,
+                          clock: window.NekketsuHD?.game?.clock,
+                          selected: window.NekketsuHD?.game?.controlled,
+                          connection: window.__smfLanPeers?.[0]?.connectionState,
+                          ice: window.__smfLanPeers?.[0]?.iceConnectionState,
+                          channels: (window.__smfLanChannels || []).map(c => c.readyState),
+                          packets: window.__smfLanInputPackets?.length,
+                          status: document.querySelector('#autoStatus')?.textContent?.slice(0, 160)
+                        })""")
+                        print("LAN_FAILURE_DIAGNOSTIC", label, state, flush=True)
+                    except Exception as diagnostic_error:
+                        print("LAN_FAILURE_DIAGNOSTIC_UNAVAILABLE", label,
+                              type(diagnostic_error).__name__, flush=True)
+                raise
             finally:
                 host_ctx.close()
                 guest_ctx.close()
