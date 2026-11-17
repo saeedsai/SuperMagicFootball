@@ -19,7 +19,9 @@ function harness() {
     listeners.get(type).push(fn);
   }, querySelector() { return null; },
     querySelectorAll() { return []; } };
-  const sandbox = { window, document, console, Date, Number, Set, Map, Array, Object, Math };
+  const pads = [];
+  const navigator = { getGamepads: () => pads };
+  const sandbox = { window, document, navigator, console, Date, Number, Set, Map, Array, Object, Math };
   vm.runInNewContext(source, sandbox, { filename: 'input.js' });
   const input = new sandbox.__INPUT.Input();
   function dispatch(type, code, timeStamp = 0) {
@@ -36,7 +38,7 @@ function harness() {
     document.hidden = hidden;
     for (const fn of listeners.get('visibilitychange') || []) fn({});
   }
-  return { input, dispatch, blur, visibility };
+  return { input, dispatch, blur, visibility, pads };
 }
 
 test('keyboard auto-repeat does not multiply four-button action pulses', () => {
@@ -81,4 +83,29 @@ test('hidden tab cancels queued Dribble but visible transition does not erase fr
   visibility(false);
   assert.equal(input.keys.has('KeyI'), true, 'returning to visible must not cancel a fresh press');
   assert.equal(input.keyDownTimes.get('KeyI'), 2000);
+});
+
+
+test('backgrounded held gamepad Dribble requires a neutral poll before a fresh press', () => {
+  const { input, pads, visibility } = harness();
+  const buttons = Array.from({ length: 16 }, () => ({ pressed: false }));
+  pads[0] = { buttons, axes: [0, 0] };
+  buttons[2].pressed = true;
+  input.poll();
+  assert.equal(input.held(0, 'dribble'), true);
+  assert.equal(input.just(0, 'dribble'), true);
+  visibility(true);
+  visibility(false);
+  input.poll();
+  assert.equal(input.held(0, 'dribble'), false, 'still-held gamepad cannot reactivate after background');
+  assert.equal(input.just(0, 'dribble'), false);
+  buttons[2].pressed = false;
+  input.poll();
+  assert.equal(input.held(0, 'dribble'), false);
+  buttons[2].pressed = true;
+  input.poll();
+  assert.equal(input.held(0, 'dribble'), true);
+  assert.equal(input.just(0, 'dribble'), true, 'new physical press must work after neutral');
+  input.poll();
+  assert.equal(input.just(0, 'dribble'), false, 'continued hold cannot create another edge');
 });
