@@ -199,3 +199,37 @@ test('disconnecting a held gamepad Dribble requires neutral rearm without cancel
   assert.equal(input.just(0, 'dribble'), true);
   assert.equal(input.held(0, 'jump'), true);
 });
+
+test('second-seat gamepad reconnect cannot create a ghost Magic Trick or cancel home controls', () => {
+  const { input, pads, dispatch, disconnect } = harness();
+  const home = Array.from({ length: 16 }, () => ({ pressed: false }));
+  const away = Array.from({ length: 16 }, () => ({ pressed: false }));
+  pads[0] = { buttons: home, axes: [0, 0] };
+  pads[1] = { buttons: away, axes: [0, 0] };
+  dispatch('keydown', 'KeyI', 100);
+  away[2].pressed = true;
+  input.poll(true);
+  assert.equal(input.held(0, 'dribble'), true);
+  assert.equal(input.just(1, 'dribble'), true);
+  disconnect(1);
+  input.poll(true);
+  assert.equal(input.held(0, 'dribble'), true, 'home keyboard hold must survive away disconnect');
+  assert.equal(input.held(1, 'dribble'), false, 'away held button must be suppressed');
+  assert.equal(input.just(1, 'dribble'), false);
+  // Reconnected controller must be fully neutral, including its stick.
+  away[2].pressed = false;
+  pads[1].axes[0] = 0.7;
+  input.poll(true);
+  away[2].pressed = true;
+  input.poll(true);
+  assert.equal(input.held(1, 'dribble'), false, 'non-neutral stick cannot rearm');
+  away[2].pressed = false;
+  pads[1].axes[0] = 0;
+  input.poll(true);
+  away[2].pressed = true;
+  input.poll(true);
+  assert.equal(input.just(1, 'dribble'), true, 'fresh away press works after full neutral');
+  assert.equal(input.held(0, 'dribble'), true);
+  input.poll(true);
+  assert.equal(input.just(1, 'dribble'), false, 'continued away hold cannot retrigger');
+});
