@@ -135,3 +135,29 @@ test('CPU takeover revokes the local Breath ring immediately and restores only o
  assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[f.a],
   'changing local ownership must immediately revoke the away ring');
 });
+
+test('home-seat CPU takeover and rapid seat handoff never leave a stale ring',()=>{
+ const f=fixture(2,0);
+ let homeHuman=true;
+ const original=f.game.inControl;
+ f.game.inControl=seat=>seat===0?homeHuman:original(seat);
+ const check=(expected,label)=>assert.deepEqual(
+  f.players.filter(p=>visible(p,f.game,true)),expected? [expected]:[],label);
+ check(f.a,'initial home selection');
+ homeHuman=false;
+ check(null,'home CPU takeover hides the ring');
+ f.controlled[0]=f.b;
+ check(null,'CPU selection switch remains hidden');
+ f.game.localBreathSide=1;
+ check(f.c,'away local human is the only visible selection');
+ f.controlled[1]=f.d;
+ check(f.d,'away human selection changes immediately');
+ f.game.localBreathSide=0;
+ check(null,'switching back to CPU-controlled home cannot inherit away ring');
+ homeHuman=true;
+ check(f.b,'restoring home human shows only the current selection');
+ f.game.localBreathSide=null;
+ check(null,'unassigned multiplayer ownership revokes all rings');
+ f.game.localBreathSide=1;
+ check(f.d,'reassigning away ownership restores only away selection');
+});
