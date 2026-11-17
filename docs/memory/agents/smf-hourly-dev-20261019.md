@@ -1,28 +1,28 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-11-17 04:00 CET
+**Updated:** 2026-11-17 05:00 CET
 
 ## Mission
-Prioritize Player Studio, counterable four-button Magic Tricks, existing-player directional graphics, goalkeeper and Career. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump, saves/offline, ten Career/Cup slots, SD09.
+Player Studio, counterable four-button Magic Tricks, existing-player eight-view graphics, goalkeeper and Career. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump, offline/saves, ten Career/Cup slots, SD09.
 
 ## Current checkpoint
-- Started dev `4b8cbe087694701f9147b568b185790760051f8e`, main `d48a59e087d2dd1531a94ec63bf43853c3b741f6`.
-- Dev Census 44000574067 FAILED: browser shard 0 `lan_auto_two_browser_qa.py` timed out on 10s Playwright wait. Four Node, three other Chromium, preview green; Modular QA 44000574025 green; promotion skipped.
-- Confirmed regression-gate failure justifies narrowly scoped diagnostics. Added fail-closed phase marker around acceptance stages `4ed62e6`, Node contract `da4152a`, backlog `d25b861`. No LAN mechanics or player-facing change. Candidate 0.12.81.71 unchanged.
-- GitHub DNS blocks local clone; do not claim local focused execution. Await exact-head CI. No physical two-phone acceptance (#48).
+- Started dev `41cf55fe2051092584b044c0cf2b9bd0e997c486`, main `d48a59e087d2dd1531a94ec63bf43853c3b741f6`.
+- Exact-head Modular QA 44006966721 and Census 44006966696 failed at Node/preflight because `tests/lan_failure_diagnostics.test.cjs` requires the original-failure-preservation comment immediately after `except Exception:`; previous diagnostic patch inserted a phase print before that comment. Browser shards did not run.
+- Fixed comment ordering without weakening the test, changing LAN mechanics or swallowing exceptions in `1296130`. Await exact-head QA; no version bump (0.12.81.71) because test-only.
+- Existing Breath low-drain carry/high-drain sprint, walking recovery and local-human-only ring already implemented with Node/Chromium tests. Physical phones #48 not certified.
 
 ## Next smallest action
-1. Check exact-head Modular QA, all four Node/four Chromium Census, especially phase and peer diagnostics for LAN timeout; fix real regression, never mask failure.
-2. Resume bounded Player Studio usability and four-button Magic Trick counterplay with real gameplay acceptance.
-3. Advance existing-player eight-view graphics via Studio source workflow, not concept heroes.
-4. Improve goalkeeper/Career save-safe gameplay with focused regressions.
-5. Verify protected main promotion, Pages bytes; track #48 physical phones, #86 Render drift, #87 branch protection.
+1. Verify focused diagnostic contract and exact-head Modular QA, four Node/four Chromium Census; fix failures without masking them.
+2. Implement bounded Player Studio or Magic Trick gameplay improvement.
+3. Advance existing-player directional graphics using Studio source workflow, not concept heroes.
+4. Improve goalkeeper/Career with save-safe regressions.
+5. Verify protected main promotion and hosted Pages bytes; track #48, Render #86, protection #87.
 
 ## Ownership and exclusions
-Only own checkpoint; never read another agent's private note. No branches, force-push, bypass, roster churn, unapproved art.
+Own checkpoint only; no branches, force-push, bypass, roster churn, unapproved art or other agents' notes.
 
 ## Evidence
-Current changes committed via GitHub connector; CI outcome for new exact head pending. Existing Breath inexpensive carry/expensive sprint, walk recovery and selected-human-only ring already implemented and covered.
+Commit `1296130` is a source-level CI contract repair. Local focused execution not available; CI results pending. No release/deployment claim.
 
 ## Cleanup
-Checkpoint under 4KiB; no temporary branches.
+Under 4KiB; no temporary branches.
