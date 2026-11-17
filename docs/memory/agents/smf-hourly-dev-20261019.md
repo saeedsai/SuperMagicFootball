@@ -1,10 +1,12 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
-**Updated:** 2026-11-17 14:02 CET
+**Agent ID:** `smf-hourly-dev-20261019`
+**Updated:** 2026-11-17 15:02 CET
 
 ## Mission
 Player Studio, counterable four-button Magic Tricks, existing-player eight-view graphics, goalkeeper and Career. Preserve 223 teams/2676 players, six formations, offline/saves, ten Career/Cup slots and SD09.
 
 ## Current checkpoint
+- Exact-head Modular QA 44088960475 failed 1/2430 Node tests: memory contract requires literal indexed Agent ID header. Restored header in this checkpoint; pre-existing focused contract tests the fix. New CI pending.
 - Read AGENTS, version policy, memory README/shared, own checkpoint, backlog, input source, open issues and dev/main comparison.
 - Started dev 12 commits ahead of main 7247d6245b06b5ef77d8241840cb15cad5692e97.
 - Added real Input-module Node regression for away-seat gamepad reconnect while home holds keyboard Dribble; away stick must neutral-rearm before fresh Dribble edge (5bc51d1); backlog updated (61c8096).
