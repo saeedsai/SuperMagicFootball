@@ -14,7 +14,7 @@ function harness() {
     if (!listeners.has(type)) listeners.set(type, []);
     listeners.get(type).push(fn);
   } };
-  const document = { addEventListener() {}, querySelector() { return null; },
+  const document = { hidden: false, addEventListener(type, fn) {\n    if (!listeners.has(type)) listeners.set(type, []);\n    listeners.get(type).push(fn);\n  }, querySelector() { return null; },
     querySelectorAll() { return []; } };
   const sandbox = { window, document, console, Date, Number, Set, Map, Array, Object, Math };
   vm.runInNewContext(source, sandbox, { filename: 'input.js' });
@@ -29,7 +29,7 @@ function harness() {
   function blur() {
     for (const fn of listeners.get('blur') || []) fn({});
   }
-  return { input, dispatch, blur };
+  function visibility(hidden) {\n    document.hidden = hidden;\n    for (const fn of listeners.get('visibilitychange') || []) fn({});\n  }\n  return { input, dispatch, blur, visibility };
 }
 
 test('keyboard auto-repeat does not multiply four-button action pulses', () => {
@@ -56,4 +56,22 @@ test('background blur discards held and queued Dribble, preventing a ghost Magic
   assert.equal(input.keyPulsePending.size, 0);
   assert.equal(input.keyDownTimes.size, 0);
   assert.equal(input.globalCancelPending, true);
+});
+
+test('hidden tab cancels queued Dribble but visible transition does not erase fresh input', () => {
+  const { input, dispatch, visibility } = harness();
+  dispatch('keydown', 'KeyI', 100);
+  dispatch('keyup', 'KeyI', 1250);
+  dispatch('keydown', 'KeyI', 1300);
+  assert.equal(input.keyPulsePending.get('KeyI')?.length, 1);
+  visibility(true);
+  assert.equal(input.keys.size, 0);
+  assert.equal(input.keyPending.size, 0);
+  assert.equal(input.keyPulsePending.size, 0);
+  assert.equal(input.keyDownTimes.size, 0);
+  assert.equal(input.globalCancelPending, true);
+  dispatch('keydown', 'KeyI', 2000);
+  visibility(false);
+  assert.equal(input.keys.has('KeyI'), true, 'returning to visible must not cancel a fresh press');
+  assert.equal(input.keyDownTimes.get('KeyI'), 2000);
 });
