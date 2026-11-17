@@ -67,6 +67,19 @@ test('real keyboard DRIBBLE hold reaches equipped Magic Trick after one second',
   game.update(1/30);
   assert.equal(input.held(0,'dribble'),false,'keyboard release reaches the real Input state');
   assert.equal(player.magicHoldLatched,false,'release rearms the next deliberate hold');
+  // A fresh hold after the normal cooldown must be accepted exactly once.
+  // This protects intentional re-use without permitting continuous-hold spam.
+  game.clock=player.magicReadyAt+.1;
+  surface.key('keydown','KeyI',1200);
+  for(let frame=0;frame<28;frame++)game.update(1/30);
+  assert.equal(countMagic(),1,'a new hold still requires a full second');
+  for(let frame=0;frame<5;frame++)game.update(1/30);
+  assert.equal(countMagic(),2,'release and cooldown permit exactly one second deliberate Trick');
+  for(let frame=0;frame<30;frame++)game.update(1/30);
+  assert.equal(countMagic(),2,'second continuous hold does not spam a third Trick');
+  surface.key('keyup','KeyI',2600);
+  game.update(1/30);
+  assert.equal(player.magicHoldLatched,false,'second release also clears the latch');
  }finally{globalThis.fetch=oldFetch;surface.restore();}
 });
 
