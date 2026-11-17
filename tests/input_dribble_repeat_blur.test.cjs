@@ -38,7 +38,7 @@ function harness() {
     document.hidden = hidden;
     for (const fn of listeners.get('visibilitychange') || []) fn({});
   }
-  return { input, dispatch, blur, visibility, pads };
+  return { input, dispatch, blur, visibility, pads, disconnect: (index) => { for (const fn of listeners.get('gamepaddisconnected') || []) fn({ gamepad: { index } }); } };
 }
 
 test('keyboard auto-repeat does not multiply four-button action pulses', () => {
@@ -175,4 +175,27 @@ test('two local gamepads independently rearm after background without cross-seat
   input.poll(true);
   assert.equal(input.just(0, 'dribble'), false);
   assert.equal(input.just(1, 'dribble'), false);
+});
+
+test('disconnecting a held gamepad Dribble requires neutral rearm without cancelling keyboard Jump', () => {
+  const { input, pads, dispatch, disconnect } = harness();
+  const buttons = Array.from({ length: 16 }, () => ({ pressed: false }));
+  pads[0] = { buttons, axes: [0, 0] };
+  buttons[2].pressed = true;
+  input.poll();
+  assert.equal(input.just(0, 'dribble'), true);
+  dispatch('keydown', 'Space', 100);
+  // A reconnect can expose the same held button as a new device.
+  // Only the gamepad is suppressed; the independent keyboard action survives.
+  disconnect(0);
+  input.poll();
+  assert.equal(input.held(0, 'dribble'), false);
+  assert.equal(input.just(0, 'dribble'), false);
+  assert.equal(input.held(0, 'jump'), true);
+  buttons[2].pressed = false;
+  input.poll();
+  buttons[2].pressed = true;
+  input.poll();
+  assert.equal(input.just(0, 'dribble'), true);
+  assert.equal(input.held(0, 'jump'), true);
 });
