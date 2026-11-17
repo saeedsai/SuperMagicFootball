@@ -327,8 +327,8 @@ def main():
                 print("LAN_SYNTHETIC_ICE_RECOVERY_PASS: browser-observed transient disconnect/recovery and fresh guest input")
                 print("LAN REAL BROWSER PASS: auto discovery, approval, guest input ownership, replicated player state, authoritative match and visible graphics")
             except Exception:
-                print('LAN_FAILURE_PHASE', phase, flush=True)
                 # Preserve the original failure while exposing the exact live
+                print('LAN_FAILURE_PHASE', phase, flush=True)
                 # transport/game state behind intermittent wait_for_function
                 # timeouts. Never convert a failed LAN acceptance into PASS.
                 for label, peer_page in (("host", host), ("guest", guest)):
