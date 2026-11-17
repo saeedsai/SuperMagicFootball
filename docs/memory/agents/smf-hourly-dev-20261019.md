@@ -1,27 +1,27 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-11-17 08:00 CET
+**Updated:** 2026-11-17 09:00 CET
 
 ## Mission
 Prioritize Player Studio, counterable four-button Magic Tricks, eight-view existing-player graphics, goalkeeper and Career. Preserve 223 teams, 2676 players, six formations, offline/saves, Career/Cup ten slots and SD09.
 
 ## Current checkpoint
-- At start dev/main identical `ed6bf6e3f6570d512af524c8b989b308043a9555`; previous input repeat/blur regression had been promoted. Read AGENTS, version policy, shared memory, own checkpoint and open issues.
-- Added real Input-module Node regression for mobile hidden-tab `visibilitychange` cancellation and visible-transition preservation (`390b289`); updated backlog (`6587a52`). No production or player-facing change; version 0.12.81.71 unchanged.
-- Existing minimal ball-carry/high sprint Breath and local-human-only ring previously implemented; physical two-phone #48 unverified.
+- Initial dev `ff09d2b9d6b01fcb0ee9a297f2abcd89c0dbd37e`, main `ed6bf6e3f6570d512af524c8b989b308043a9555` (three commits ahead). Read AGENTS, version policy, shared memory, own checkpoint, open issues and backlog.
+- Found seven literal backslash-n tokens in the newly added `tests/input_dribble_repeat_blur.test.cjs` fixture, invalid JavaScript outside strings. Replaced them with real newlines (`19dfc45`), preserving repeat/blur/visibility assertions; backlog updated. No player-facing code; .71 unchanged.
+- Existing Breath carry/sprint tuning and selected-human-only ring remain untouched; physical two-phone #48 unverified.
 
 ## Next smallest action
-1. Inspect exact new-head full four Node/four Chromium Census and Modular QA, fix failures.
-2. Implement bounded player-facing Player Studio/Magic Trick counterplay with focused browser+Node tests and release metadata.
-3. Improve eight-view existing-player art via Studio workflow with visual evidence.
+1. Verify exact-head focused Node, four Node/four Chromium Census and Modular QA; fix failures.
+2. Implement a bounded player-facing Player Studio or four-button Magic Trick counterplay improvement.
+3. Improve eight-view existing-player graphics using Studio and real visual review.
 4. Advance goalkeeper/Career with save-safe tests.
-5. Verify green exact dev promotion, Pages hosted bytes, Render #86 and protection #87.
+5. Verify protected main promotion, Pages hosted bytes, Render #86 and protection #87.
 
 ## Ownership and exclusions
 Only own checkpoint; no new branches, force push, bypass, roster churn, concept heroes or unapproved art.
 
 ## Evidence
-Connector writes confirmed. Local checkout/tests blocked by GitHub DNS; new exact-head CI and deployment not yet verified. No new release claim.
+GitHub connector commit confirmed; local git DNS resolution failed, so local tests and exact-head CI not verified. No promotion/deployment claim.
 
 ## Cleanup
 Under 4KiB; no temporary branches.
