@@ -120,7 +120,7 @@ test('CPU takeover revokes the local Breath ring immediately and restores only o
  const f=fixture(2,1);
  let awayHuman=true;
  const original=f.game.inControl;
- f.game.inControl=seat=>seat===1?awayHuman:original(seat);
+ f.game.inControl=seat=>seat===1?awayHuman:original.call(f.game,seat);
  assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[f.c]);
  awayHuman=false;
  assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[],
@@ -140,7 +140,7 @@ test('home-seat CPU takeover and rapid seat handoff never leave a stale ring',()
  const f=fixture(2,0);
  let homeHuman=true;
  const original=f.game.inControl;
- f.game.inControl=seat=>seat===0?homeHuman:original(seat);
+ f.game.inControl=seat=>seat===0?homeHuman:original.call(f.game,seat);
  const check=(expected,label)=>assert.deepEqual(
   f.players.filter(p=>visible(p,f.game,true)),expected? [expected]:[],label);
  check(f.a,'initial home selection');
