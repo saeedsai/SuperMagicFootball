@@ -1,27 +1,27 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-11-17 09:00 CET
+**Updated:** 2026-11-17 10:06 CET
 
 ## Mission
-Prioritize Player Studio, counterable four-button Magic Tricks, eight-view existing-player graphics, goalkeeper and Career. Preserve 223 teams, 2676 players, six formations, offline/saves, Career/Cup ten slots and SD09.
+Prioritize Player Studio, counterable four-button Magic Tricks, existing-player eight-view graphics, goalkeeper and Career. Preserve 223 teams, 2676 players, six formations, offline/saves, Career/Cup ten slots and SD09.
 
 ## Current checkpoint
-- Initial dev `ff09d2b9d6b01fcb0ee9a297f2abcd89c0dbd37e`, main `ed6bf6e3f6570d512af524c8b989b308043a9555` (three commits ahead). Read AGENTS, version policy, shared memory, own checkpoint, open issues and backlog.
-- Found seven literal backslash-n tokens in the newly added `tests/input_dribble_repeat_blur.test.cjs` fixture, invalid JavaScript outside strings. Replaced them with real newlines (`19dfc45`), preserving repeat/blur/visibility assertions; backlog updated. No player-facing code; .71 unchanged.
-- Existing Breath carry/sprint tuning and selected-human-only ring remain untouched; physical two-phone #48 unverified.
+- Started with dev/main identical at `7247d6245b06b5ef77d8241840cb15cad5692e97`. Read AGENTS, version policy, shared memory, own checkpoint, open issues and backlog.
+- Added real Input-module Node regression for backgrounded gamepad Dribble: require neutral poll before accepting a held pad again, then exactly one fresh press edge; `e9df74b`. Backlog updated `2106f86`. Test-only, version .71 unchanged.
+- Existing Breath normal-carry/sprint tuning and selected-human-only ring untouched. Physical two-phone #48 remains unverified.
 
 ## Next smallest action
 1. Verify exact-head focused Node, four Node/four Chromium Census and Modular QA; fix failures.
-2. Implement a bounded player-facing Player Studio or four-button Magic Trick counterplay improvement.
-3. Improve eight-view existing-player graphics using Studio and real visual review.
-4. Advance goalkeeper/Career with save-safe tests.
+2. Implement bounded player-facing Player Studio or four-button Magic Trick counterplay.
+3. Advance existing-player eight-view art via Studio and real visual review.
+4. Improve goalkeeper/Career with save-safe regressions.
 5. Verify protected main promotion, Pages hosted bytes, Render #86 and protection #87.
 
 ## Ownership and exclusions
 Only own checkpoint; no new branches, force push, bypass, roster churn, concept heroes or unapproved art.
 
 ## Evidence
-GitHub connector commit confirmed; local git DNS resolution failed, so local tests and exact-head CI not verified. No promotion/deployment claim.
+GitHub connector confirmed commits. Local git DNS resolution failed; focused and full tests not run locally; exact-head CI and promotion/deployment unverified.
 
 ## Cleanup
 Under 4KiB; no temporary branches.
