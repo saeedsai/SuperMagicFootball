@@ -90,9 +90,17 @@ test('real touch and gamepad DRIBBLE holds reach the same equipped Magic Trick p
    game.take(player);game.controlled[0]=player.i;
    if(source==='touch')surface.byAction.get('dribble').emit('pointerdown',{pointerId:21,timeStamp:100});
    else {const buttons=Array.from({length:16},(_,i)=>({pressed:i===2}));surface.setPads([{buttons,axes:[0,0]}]);}
-   for(let frame=0;frame<35;frame++)game.update(1/30);
-   const events=game.events.filter(event=>event.type==='magicTrick'&&event.trick==='spinBump');
-   assert.equal(events.length,1,`${source}: one-second held DRIBBLE activates exactly once`);
+   // Verify real held-action input at different simulation rates, not just 30 FPS.
+   // A 0.95s hold must not trigger, and a continuous hold past 1s fires once.
+   const fps=source==='touch'?60:120;
+   for(let frame=0;frame<Math.floor(.95*fps);frame++)game.update(1/fps);
+   const trickEvents=()=>game.events.filter(event=>event.type==='magicTrick'&&event.trick==='spinBump');
+   assert.equal(trickEvents().length,0,`${source}: no early Magic Trick at ${fps} FPS`);
+   for(let frame=0;frame<Math.ceil(.25*fps);frame++)game.update(1/fps);
+   const events=trickEvents();
+   assert.equal(events.length,1,`${source}: one-second held DRIBBLE activates exactly once at ${fps} FPS`);
+   for(let frame=0;frame<fps;frame++)game.update(1/fps);
+   assert.equal(trickEvents().length,1,`${source}: sustained hold cannot spam a second Trick at ${fps} FPS`);
    assert.equal(player.magicHoldLatched,true,`${source}: continuous hold stays latched`);
    assert.equal(game.ball.owner,player,`${source}: trick preserves ball possession`);
    if(source==='touch')surface.byAction.get('dribble').emit('pointerup',{pointerId:21,timeStamp:1300});
