@@ -165,19 +165,23 @@ def main():
             page_errors = []
             host.on("pageerror", lambda error: page_errors.append(f"host: {error}"))
             guest.on("pageerror", lambda error: page_errors.append(f"guest: {error}"))
+            phase = 'open host and guest LAN menus'
             try:
                 open_lan_menu(host, origin)
                 open_lan_menu(guest, origin)
+                phase = 'register host room'
                 host.locator("#autoHost").click()
                 host.wait_for_function("document.querySelector('#autoStatus')?.textContent.includes('Room registered')", timeout=20000)
                 # The companion server must supply a shareable private address, never localhost.
                 host.wait_for_function("document.querySelector('#autoHostInfo')?.textContent.includes('http://')", timeout=20000)
+                phase = 'discover and approve guest'
                 guest.locator("#autoFind").click()
                 join = guest.locator("#autoRooms button")
                 join.first.wait_for(timeout=20000)
                 assert "JOIN " in join.first.inner_text()
                 join.first.click()
                 host.locator("#autoApproval button").filter(has_text="ACCEPT GUEST").click(timeout=20000)
+                phase = 'wait for two-client match start'
                 has_gameplay(host)
                 has_gameplay(guest)
                 host.wait_for_function("window.NekketsuHD.game.clock > 0.2", timeout=30000)
@@ -189,6 +193,7 @@ def main():
                 host_home_slot = host_before["home"]["i"]
                 # Refuse one real RTCDataChannel input send, then tap JUMP so
                 # LAN-092 retries the retained one-shot edge on this real peer.
+                phase = 'retry one refused guest jump input'
                 channel_info = refuse_next_guest_input_send(guest)
                 assert channel_info["state"] == "open", channel_info
                 guest.keyboard.down("Space")
@@ -208,6 +213,7 @@ def main():
                 accepted_jumps = host.evaluate("window.__smfLanInputPackets.filter(packet=>packet.buttons?.includes('jump'))")
                 assert len([packet for packet in accepted_jumps if packet["sequence"] == retry["sequence"]]) == 1, accepted_jumps
                 guest.keyboard.up("Space")
+                phase = 'verify first guest movement and replication'
                 away_before = team_slot_position(host, 1, guest_away_slot)
                 home_before = team_slot_position(host, 0, host_home_slot)
                 guest.keyboard.down("ArrowRight")
@@ -250,6 +256,7 @@ def main():
                 # RTCPeerConnection events. The native DataChannel remains up;
                 # this is not packet-loss or physical-network certification.
                 time.sleep(.35)
+                phase = 'simulate transient ICE disconnect and recovery'
                 loss_host = set_synthetic_ice_state(host, "disconnected")
                 loss_guest = set_synthetic_ice_state(guest, "disconnected")
                 assert loss_host["ice"] == loss_guest["ice"] == "disconnected"
@@ -265,6 +272,7 @@ def main():
                 assert guest.evaluate("window.__smfLanIceEvents.some(event=>event.ice==='disconnected')")
                 host.wait_for_function("window.NekketsuHD.game.clock > 0.2", timeout=10000)
                 guest.wait_for_function("window.NekketsuHD.game.clock > 0.2", timeout=10000)
+                phase = 'verify guest movement after ICE recovery'
                 resumed_before = team_slot_position(host, 1, guest_away_slot)
                 guest.keyboard.down("ArrowRight")
                 time.sleep(.7)
@@ -282,6 +290,7 @@ def main():
                 # Once direct WebRTC is established, discovery/signaling is
                 # no longer in the match data path. Stop the local broker and
                 # prove the connected peers still exchange live input/state.
+                phase = 'verify brokerless direct WebRTC continuity'
                 stop_server(proc)
                 for peer_page in (host, guest):
                     transport = peer_page.evaluate("""()=>({
@@ -318,6 +327,7 @@ def main():
                 print("LAN_SYNTHETIC_ICE_RECOVERY_PASS: browser-observed transient disconnect/recovery and fresh guest input")
                 print("LAN REAL BROWSER PASS: auto discovery, approval, guest input ownership, replicated player state, authoritative match and visible graphics")
             except Exception:
+                print('LAN_FAILURE_PHASE', phase, flush=True)
                 # Preserve the original failure while exposing the exact live
                 # transport/game state behind intermittent wait_for_function
                 # timeouts. Never convert a failed LAN acceptance into PASS.
