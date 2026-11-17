@@ -1,28 +1,28 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-11-17 03:06 CET
+**Updated:** 2026-11-17 04:00 CET
 
 ## Mission
-Prioritize Player Studio, counterable four-button Magic Tricks, existing-player directional art, goalkeeper and Career. Preserve 223 teams, 2676 players, six formations, four actions, saves/offline, ten Career/Cup slots and SD09.
+Prioritize Player Studio, counterable four-button Magic Tricks, existing-player directional graphics, goalkeeper and Career. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump, saves/offline, ten Career/Cup slots, SD09.
 
 ## Current checkpoint
-- Start: dev/main `d48a59e087d2dd1531a94ec63bf43853c3b741f6`, with green dev Census 43992017568, Modular QA 43992017567, main Census 43993276638, Pages 43993276211. No physical two-phone acceptance.
-- Added real keyboard Input/GameEngine Magic Trick regression: after DRIBBLE release, advance past normal cooldown, demand another full one-second hold, exactly one additional activation, no hold spam, and reset latch on second release. Test commit `7a6ffbb`; backlog commit `61084b0`.
-- No player-facing code change; candidate 0.12.81.71 unchanged. GitHub DNS prevented local checkout; do not claim focused test success until CI logs confirm. New exact-head Census, Modular QA, main promotion and hosted bytes pending.
-- Existing Breath cheap carry, expensive sprint, walk/idle recovery, selected-human-only ring already implemented and tested; avoid repetitive work.
+- Started dev `4b8cbe087694701f9147b568b185790760051f8e`, main `d48a59e087d2dd1531a94ec63bf43853c3b741f6`.
+- Dev Census 44000574067 FAILED: browser shard 0 `lan_auto_two_browser_qa.py` timed out on 10s Playwright wait. Four Node, three other Chromium, preview green; Modular QA 44000574025 green; promotion skipped.
+- Confirmed regression-gate failure justifies narrowly scoped diagnostics. Added fail-closed phase marker around acceptance stages `4ed62e6`, Node contract `da4152a`, backlog `d25b861`. No LAN mechanics or player-facing change. Candidate 0.12.81.71 unchanged.
+- GitHub DNS blocks local clone; do not claim local focused execution. Await exact-head CI. No physical two-phone acceptance (#48).
 
 ## Next smallest action
-1. Inspect exact-head four Node/four Chromium Census and Modular QA; fix test or production issues without weakening safety.
-2. Implement bounded Player Studio usability or Magic Trick counterplay with real gameplay/UI acceptance.
-3. Improve existing-player art/goalkeeper animation via approved Studio workflow; no concept heroes.
-4. Advance Career save-safe competition UX with focused tests.
-5. Verify protected exact-head promotion, main Census, Pages bytes; track #48 physical phones, #86 Render, #87 branch protection.
+1. Check exact-head Modular QA, all four Node/four Chromium Census, especially phase and peer diagnostics for LAN timeout; fix real regression, never mask failure.
+2. Resume bounded Player Studio usability and four-button Magic Trick counterplay with real gameplay acceptance.
+3. Advance existing-player eight-view graphics via Studio source workflow, not concept heroes.
+4. Improve goalkeeper/Career save-safe gameplay with focused regressions.
+5. Verify protected main promotion, Pages bytes; track #48 physical phones, #86 Render drift, #87 branch protection.
 
 ## Ownership and exclusions
-Own checkpoint only; never read other agents' private memory. No new branches, force-push, bypass, roster churn or unapproved art.
+Only own checkpoint; never read another agent's private note. No branches, force-push, bypass, roster churn, unapproved art.
 
 ## Evidence
-Previous `d48a59e` CI and Pages green. New regression not locally executed; await exact-head CI.
+Current changes committed via GitHub connector; CI outcome for new exact head pending. Existing Breath inexpensive carry/expensive sprint, walk recovery and selected-human-only ring already implemented and covered.
 
 ## Cleanup
-Checkpoint <4KiB; no temporary branches.
+Checkpoint under 4KiB; no temporary branches.
