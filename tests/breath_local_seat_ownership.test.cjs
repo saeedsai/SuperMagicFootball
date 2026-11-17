@@ -161,3 +161,16 @@ test('home-seat CPU takeover and rapid seat handoff never leave a stale ring',()
  f.game.localBreathSide=1;
  check(f.d,'reassigning away ownership restores only away selection');
 });
+
+// Keep both player-foot decorations behind the same ownership gate. A future
+// renderer refactor must not accidentally expose the highlight to CPU players
+// while correctly hiding the numeric Breath gauge (or vice versa).
+test('renderer gates both Breath foot decorations with local selection predicate',()=>{
+ const renderPlayer=source.slice(source.indexOf('if((p.firstTouchFx||0)>0)'));
+ const ring=renderPlayer.indexOf('if(shouldShowBreathRing(p,game,this.inMatchDraw))');
+ assert.ok(ring>=0,'selected-player highlight must use the ownership predicate');
+ const gauge=renderPlayer.indexOf('if(shouldShowBreathRing(p,game,this.inMatchDraw))',ring+1);
+ assert.ok(gauge>ring,'circular Breath gauge must independently use the same predicate');
+ const gaugeEnd=renderPlayer.indexOf('// Circular Breath gauge',ring);
+ assert.ok(gaugeEnd>ring&&gaugeEnd<gauge,'highlight and gauge are distinct guarded drawings');
+});
