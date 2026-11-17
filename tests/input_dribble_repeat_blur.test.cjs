@@ -14,7 +14,10 @@ function harness() {
     if (!listeners.has(type)) listeners.set(type, []);
     listeners.get(type).push(fn);
   } };
-  const document = { hidden: false, addEventListener(type, fn) {\n    if (!listeners.has(type)) listeners.set(type, []);\n    listeners.get(type).push(fn);\n  }, querySelector() { return null; },
+  const document = { hidden: false, addEventListener(type, fn) {
+    if (!listeners.has(type)) listeners.set(type, []);
+    listeners.get(type).push(fn);
+  }, querySelector() { return null; },
     querySelectorAll() { return []; } };
   const sandbox = { window, document, console, Date, Number, Set, Map, Array, Object, Math };
   vm.runInNewContext(source, sandbox, { filename: 'input.js' });
@@ -29,7 +32,11 @@ function harness() {
   function blur() {
     for (const fn of listeners.get('blur') || []) fn({});
   }
-  function visibility(hidden) {\n    document.hidden = hidden;\n    for (const fn of listeners.get('visibilitychange') || []) fn({});\n  }\n  return { input, dispatch, blur, visibility };
+  function visibility(hidden) {
+    document.hidden = hidden;
+    for (const fn of listeners.get('visibilitychange') || []) fn({});
+  }
+  return { input, dispatch, blur, visibility };
 }
 
 test('keyboard auto-repeat does not multiply four-button action pulses', () => {
