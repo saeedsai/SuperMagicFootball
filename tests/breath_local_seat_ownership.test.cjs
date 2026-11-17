@@ -174,3 +174,28 @@ test('renderer gates both Breath foot decorations with local selection predicate
  const gaugeEnd=renderPlayer.indexOf('// Circular Breath gauge',ring);
  assert.ok(gaugeEnd>ring&&gaugeEnd<gauge,'highlight and gauge are distinct guarded drawings');
 });
+
+test('Breath visibility follows local human selection across repeated match-mode transitions',()=>{
+ const f=fixture(1,null);
+ const visiblePlayers=()=>f.players.filter(p=>visible(p,f.game,true));
+ assert.deepEqual(visiblePlayers(),[f.a],'solo initially owns home');
+ f.controlled[0]=f.b;
+ assert.deepEqual(visiblePlayers(),[f.b],'solo player switch follows identity');
+ f.game.humans=2;
+ assert.deepEqual(visiblePlayers(),[],'couch mode requires an explicit local seat');
+ f.game.localBreathSide=1;
+ assert.deepEqual(visiblePlayers(),[f.c],'away human seat receives the sole ring');
+ f.game.inControl=seat=>seat===0;
+ assert.deepEqual(visiblePlayers(),[],'away CPU takeover revokes its ring');
+ f.game.localBreathSide=0;
+ assert.deepEqual(visiblePlayers(),[f.b],'home human seat recovers its selected ring');
+ f.game.humans=0;
+ f.game.inControl=()=>false;
+ assert.deepEqual(visiblePlayers(),[],'CPU-only simulation hides every ring');
+ f.game.humans=1;
+ f.game.inControl=seat=>seat===0;
+ f.game.localBreathSide=null;
+ assert.deepEqual(visiblePlayers(),[f.b],'returning to solo restores only current home selection');
+ assert.deepEqual(f.players.filter(p=>visible(p,f.game,false)),[],
+  'non-match rendering never retains a ring across mode changes');
+});
