@@ -109,3 +109,30 @@ test('backgrounded held gamepad Dribble requires a neutral poll before a fresh p
   input.poll();
   assert.equal(input.just(0, 'dribble'), false, 'continued hold cannot create another edge');
 });
+
+
+test('backgrounded second local gamepad seat cannot leak Dribble into either human seat', () => {
+  const { input, pads, visibility } = harness();
+  const buttons0 = Array.from({ length: 16 }, () => ({ pressed: false }));
+  const buttons1 = Array.from({ length: 16 }, () => ({ pressed: false }));
+  pads[0] = { buttons: buttons0, axes: [0, 0] };
+  pads[1] = { buttons: buttons1, axes: [0, 0] };
+  buttons1[2].pressed = true;
+  input.poll(true);
+  assert.equal(input.just(0, 'dribble'), false, 'second controller must not control home seat');
+  assert.equal(input.just(1, 'dribble'), true, 'second seat receives its own press');
+  visibility(true);
+  visibility(false);
+  input.poll(true);
+  assert.equal(input.held(0, 'dribble'), false);
+  assert.equal(input.held(1, 'dribble'), false, 'held away controller remains suppressed');
+  assert.equal(input.just(1, 'dribble'), false);
+  buttons1[2].pressed = false;
+  input.poll(true);
+  buttons1[2].pressed = true;
+  input.poll(true);
+  assert.equal(input.just(0, 'dribble'), false);
+  assert.equal(input.just(1, 'dribble'), true, 'neutral re-arms only the second seat');
+  input.poll(true);
+  assert.equal(input.just(1, 'dribble'), false, 'continuous hold cannot repeat');
+});
