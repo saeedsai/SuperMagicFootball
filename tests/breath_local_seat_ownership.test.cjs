@@ -115,3 +115,23 @@ test('local multiplayer seat changes never retain a stale ring',()=>{
  assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[f.b],
   'a stale preview must not reveal a second ring');
 });
+
+test('CPU takeover revokes the local Breath ring immediately and restores only on human reselection',()=>{
+ const f=fixture(2,1);
+ let awayHuman=true;
+ const original=f.game.inControl;
+ f.game.inControl=seat=>seat===1?awayHuman:original(seat);
+ assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[f.c]);
+ awayHuman=false;
+ assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[],
+  'CPU takeover must not retain the previous human ring');
+ f.controlled[1]=f.d;
+ assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[],
+  'switching the CPU player must not expose a ring');
+ awayHuman=true;
+ assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[f.d],
+  'human control resumes on the newly selected away player only');
+ f.game.localBreathSide=0;
+ assert.deepEqual(f.players.filter(p=>visible(p,f.game,true)),[f.a],
+  'changing local ownership must immediately revoke the away ring');
+});
