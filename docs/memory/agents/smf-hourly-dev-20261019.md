@@ -1,29 +1,28 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-11-17 01:00 CET
+**Updated:** 2026-11-17 02:00 CET
 
 ## Mission
-Advance Player Studio, four-button Magic Tricks, existing-player graphics, goalkeeper and Career while preserving 223 teams, 2676 players, six formations, four actions, saves/offline, ten Career/Cup slots and SD09.
+Prioritize Player Studio, counterable four-button Magic Tricks, existing-player directional art, goalkeeper and Career. Preserve 223 teams, 2676 players, six formations, four match actions, saves/offline, ten Career/Cup slots and SD09.
 
 ## Current checkpoint
-- Run start dev `e030394b4bf4c0bce218de67e2f7fff58388e879`, main `26e5760122516ba8c05f1e13b6af74fbc7b5643f`. Main not GitHub-protected (#87).
-- Full Census 43975397414 failed browser shard 0: `lan_auto_two_browser_qa.py` 10s Playwright wait timeout; seven other shards and preview passed; Modular QA 43975397409 passed. No promotion.
-- Confirmed regression-gate blocker only: `e0b425d` adds host/guest game, ICE, channel, input diagnostic on failure, with unconditional rethrow; `88e1434` adds focused Node contract regression. Master backlog updated `0f23b85`. No player-facing change; 0.12.81.71 remains.
-- No local test run (GitHub DNS inaccessible); exact new-head CI, promotion and Pages not yet verified.
-- Breath .66–.68 behavior already implemented, prior Node/Chromium checks cover drain contrast and selected-human-only HUD. Avoid redundant tests.
+- At run start, dev/main both `6ac1d57503ef0156073416a3097d9e6d4ad114e7`; exact-head four Node/four Chromium Census 43985434285, Modular QA 43984203937, Pages 43985433426 succeeded. Previous intermittent LAN browser timeout was not reproduced; diagnostics remain fail-closed.
+- Added actual GameEngine+Input held-DRIBBLE Magic Trick regression at 60 FPS touch and 120 FPS gamepad: no activation before 0.95s, exactly one after one second, no hold-spam after another second. Commit `449e99f`. Backlog `2fbcb99`.
+- Test-only change; candidate 0.12.81.71 unchanged. New exact-head focused/full CI and release gates must be checked; no local test run claimed.
+- Breath low-cost ordinary carry, costly sprint, idle/walk recharge, and selected-human-only ring already implemented and covered. Do not repeat tests without a gap.
 
 ## Next smallest action
-1. Inspect new exact-head Modular QA and four Node/four Chromium Census; fix a confirmed failure, not by relaxing acceptance.
-2. Use failure diagnostics to identify LAN transport or fixture root cause if recurrence; otherwise return to player-facing roadmap.
-3. Implement a bounded Player Studio usability or four-button Magic Trick counterplay improvement with focused Node/Chromium tests and synchronized release metadata.
-4. Advance existing-player directional animation, goalkeeper and Career improvements; preserve art approval gates.
-5. Verify green dev/main promotion, Pages hosted bytes; #48 physical two-phone and #86 Render drift remain open.
+1. Verify exact new-head Modular QA and four Node/four Chromium Census; fix any failure without weakening assertions.
+2. Make a bounded player-facing Player Studio or Magic Trick counterplay improvement, with focused Node/Chromium coverage and synchronized About/package/README/cache/release.
+3. Improve existing-player art and goalkeeper movement without concept heroes or unapproved production art.
+4. Advance Career competition quality and save-safe usability.
+5. Confirm green exact-head main promotion, Pages hosted bytes; #48 physical two-phone, #86 Render drift, #87 main protection remain open.
 
 ## Ownership and exclusions
 Own checkpoint only; no other agents' private memory, branches, force-push, CI bypass, concept heroes or roster churn.
 
 ## Evidence
-GitHub Actions full Census 43975397414 failed browser 0; Modular QA 43975397409 passed. New diagnostics committed, not yet validated.
+Previous `6ac1d575` exact-head green CI, promotion and Pages. New `449e99f` test not yet independently verified at checkpoint write.
 
 ## Cleanup
 Checkpoint <4KiB. No temporary branches.
