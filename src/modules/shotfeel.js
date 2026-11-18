@@ -55,7 +55,11 @@ const SHOTFEEL=(()=>{
    // A defender recovering before a ground pass arrives can still intercept.
    // Longer stuns remain harmless; compare against the same bounded flight window.
    const passLookahead=Math.min(.35,Math.max(.12,Math.sqrt(segment)/1400));
-   if(Number.isFinite(rival.stun)&&rival.stun>passLookahead)continue;
+   // A stunned defender matters only if awake when the ball reaches
+   // that defender's position along the lane, not merely before the pass ends.
+   const along=((rival.x-from.x)*dx+(rival.y-from.y)*dy)/segment;
+   const arrival=clamp(along,0,1)*passLookahead;
+   if(Number.isFinite(rival.stun)&&rival.stun>arrival)continue;
    // A defender already moving into the passing lane is more dangerous than
    // one moving away. Limit the lookahead to keep sudden AI changes readable.
    const vx=Number.isFinite(rival.vx)?rival.vx:0;
