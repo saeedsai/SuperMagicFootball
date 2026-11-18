@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.74
+# SuperMagicFootball release/version policy — About-only 0.12.81.75
+
+**Dev candidate 0.12.81.75 (18 November 2026):** NEAR-END-PASS-INTERCEPT-01: Directed passing now treats defenders just beyond the passer and near the receiver as interception threats, reducing unsafe short passes while preserving four controls, pass physics and saves. Exact-head QA and deployment pending.
 
 **Dev candidate 0.12.81.74 (18 November 2026):** MULTI-BLOCKER-PASS-01: Directed passes now account for a second defender closing the same lane, with bounded added interception risk; the four controls, pass physics, rosters and saves remain unchanged. Exact-head QA and deployment pending.
 
