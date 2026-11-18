@@ -165,3 +165,15 @@ test('recovering defender can intercept before a pass arrives, longer stun remai
  assert.equal(lanes.passingLanePressure(from,target,[{...blocker,stun:.4}]),0,'stun longer than lookahead is safe');
  assert.equal(lanes.passingLanePressure(from,target,[{...blocker,stun:.05,x:NaN}]),0,'invalid position ignored');
 });
+
+
+test('stun recovery is compared to ball arrival at defender, not full pass duration',()=>{
+ const instrumented=source.slice(start,end).replace('teammateInDirection};','teammateInDirection,passingLanePressure};');
+ const lanes=vm.runInNewContext(instrumented+';SHOTFEEL');
+ const target={x:1000,y:0};
+ const early={x:100,y:0,stun:.15};
+ const late={x:850,y:0,stun:.15};
+ assert.equal(lanes.passingLanePressure(from,target,[early]),0,'early lane point is already passed when defender wakes');
+ assert.ok(lanes.passingLanePressure(from,target,[late])>.1,'defender waking before late lane arrival remains a threat');
+ assert.ok(lanes.passingLanePressure(from,target,[{...early,stun:.01}])>.1,'early waking defender still blocks');
+});
