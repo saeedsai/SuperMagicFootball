@@ -1,3 +1,5 @@
+> **18 November 2026 — RECEIVER-LATERAL-PASS-01 (0.12.81.81):** RECEIVER-LATERAL-PASS-01: Directed PASS avoids fast sideways-moving receivers likely to leave the ground-pass lane; forward-running and stationary targets retain their normal priority. Four controls and saves unchanged. Exact-head QA pending. Focused regression added; exact-head QA pending.
+
 > **18 November 2026 — RECEIVER-MOMENTUM-PASS-01 (0.12.81.80):** RECEIVER-MOMENTUM-PASS-01: Directed PASS modestly favors forward-running teammates when passing choices are otherwise close; marked lanes, four controls, ball physics and saves remain unchanged. Exact-head QA pending. Focused regression added; exact-head QA pending.
 
 > **18 November 2026 — PASS-CROSS-TIMING-01 (0.12.81.79):** PASS-CROSS-TIMING-01: Passing-lane decisions no longer treat a defender crossing behind an already-travelled ground pass as an automatic interception; timely crossing remains dangerous. Four controls, physics, rosters and saves unchanged. Exact-head QA pending. Focused Node regression added; full exact-head QA and release unverified.
