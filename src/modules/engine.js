@@ -579,7 +579,7 @@ class GameEngine{
   if(directed){
    const heading=norm(opts.direction.x,opts.direction.y);
    // Direction is independent of team attacking side: left is always left.
-   target=SHOTFEEL.teammateInDirection(p,mates,heading,long?1650:1150);
+   target=SHOTFEEL.teammateInDirection(p,mates,heading,long?1650:1150,this.players.filter(q=>q.t!==p.t));
    if(target){aimX=target.x-p.x+(target.dx||0)*(long?125:55)+ex;aimY=target.y-p.y+(target.dy||0)*(long?125:55)+ey;kind=cross?'crossTarget':'directionTarget';}
    else {aimX=heading.x*800+ex;aimY=heading.y*800+ey;kind=cross?'crossDirection':'direction';}
   }else{
@@ -616,7 +616,7 @@ class GameEngine{
   if(carrier.keeper){
    if(!direction||Math.hypot(direction.x||0,direction.y||0)<=.16){const kicked=this.distributeKeeper(carrier,long?'long':'short');if(kicked&&this.inControl(carrier.t))this.manualSwitchGrace[carrier.t]=Math.max(this.manualSwitchGrace[carrier.t]||0,1.25);return kicked;}
    const heading=norm(direction.x,direction.y),quality=stat(carrier,'passing');
-   const teammate=SHOTFEEL.teammateInDirection(carrier,this.players.filter(q=>q.t===carrier.t&&q!==carrier&&q.stun<=0),heading,long?1650:1150);
+   const teammate=SHOTFEEL.teammateInDirection(carrier,this.players.filter(q=>q.t===carrier.t&&q!==carrier&&q.stun<=0),heading,long?1650:1150,this.players.filter(q=>q.t!==carrier.t));
    const toward=teammate?{x:teammate.x-carrier.x+(teammate.dx||0)*60,y:teammate.y-carrier.y+(teammate.dy||0)*60}:heading;
    const speed=Math.min(1150,(395+quality*1.5)*(long?1.45+Math.max(0,hold-.24)*.22:1));
    this.freeBall(carrier,toward.x,toward.y,speed,{power:long?15:6,z:35,vz:cross?245:long?220:45,pass:true});this.ball.passTarget=teammate?.src.id||null;

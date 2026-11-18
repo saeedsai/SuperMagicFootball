@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.71
+# SuperMagicFootball release/version policy — About-only 0.12.81.72
+
+**Dev candidate 0.12.81.72 (18 November 2026):** DIRECTED-PASS-LANE-01: Human-directed outfield and goalkeeper passes now prefer an open, reachable receiver over a tightly marked teammate when both are inside the existing directional cone. Stunned opponents do not block lanes; single receivers and passes into empty space remain available. Four buttons, Energy/Breath, saves, rosters and physics remain unchanged. Exact-head QA and hosted verification pending.
 
 **Dev candidate 0.12.81.71 (14 November 2026):** STUDIO-NATIVE-SPACE-KEY-01: Focused Player Studio SUMMARY and button controls retain native Space activation; the match input handler still maps Space to Jump when focus is outside interactive controls. Node regression added and existing desktop/touch Chromium playbook regression exercises Space collapse/reopen. Exact-head QA, protected promotion and hosted-byte verification pending.
 

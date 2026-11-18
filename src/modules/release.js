@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.71',
- date:'2026-11-14',
+ version:'0.12.81.72',
+ date:'2026-11-18',
  notes:Object.freeze([
+  'DIRECTED-PASS-LANE-01: Human-directed outfield and goalkeeper passes now prefer an open, reachable receiver over a tightly marked teammate when both are inside the existing directional cone. Stunned opponents do not block lanes; single receivers and passes into empty space remain available. Four buttons, Energy/Breath, saves, rosters and physics remain unchanged. Exact-head QA and hosted verification pending.',
   'STUDIO-NATIVE-SPACE-KEY-01: Focused native Player Studio playbook summaries and buttons retain Space keyboard activation without firing the match Jump control. Gameplay Space still triggers Jump when focus is outside interactive controls. Focused Node and Chromium regression gates pending; no roster, save, Breath or four-button changes.',
   'STUDIO-FOUR-BUTTON-COUNTER-HELP-01: Player Studio defender playbook now explains the exact existing four-action inputs: hold DRIBBLE for one second to activate, PASS for a timed poke, SHOOT for a grounded slide and JUMP to evade applicable attacks. Each Trick retains its individual counter conditions; no new buttons, gameplay timing, player data or saves change. Exact-head QA and hosted certification pending.',
   'ARCADE-CONTINUOUS-PLAY-01: Matches no longer call corner/goal-kick restarts or award fouls/free kicks; shots outside the posts rebound off the endline, while valid goals still score. Removed the unsupported restart announcements and tactics controls. Local first- and second-half kickoffs show a three-second countdown with the clock and movement frozen. Four action buttons, penalty shootouts, rosters, saves, offline play, and existing Energy/Breath remain unchanged. Exact-head QA and release certification pending.',

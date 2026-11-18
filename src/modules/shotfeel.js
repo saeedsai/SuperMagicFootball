@@ -42,7 +42,28 @@ const SHOTFEEL=(()=>{
   const congestion=pressure<85?.62:pressure<145?.82:1;
   return clamp((.12+near*.51+quality*.18)*congestion*(.72+clamp(Number(baseRate)||0,0,1)),.04,.90);
  }
- function teammateInDirection(from,mates,vector,maxDistance=1300){
+ // Directed passes favor receivers with an open lane over tightly marked ones.
+ // A single strongest blocker/marker applies a bounded penalty. Missing opponent
+ // context preserves the previous selection behavior and four-button controls.
+ function passingLanePressure(from,receiver,opponents){
+  if(!Array.isArray(opponents)||!opponents.length)return 0;
+  const dx=receiver.x-from.x,dy=receiver.y-from.y,segment=dx*dx+dy*dy;
+  if(!Number.isFinite(segment)||segment<=0)return 0;
+  let strongest=0;
+  for(const rival of opponents){
+   if(!rival||rival.stun>0||!Number.isFinite(rival.x)||!Number.isFinite(rival.y))continue;
+   const marker=Math.max(0,1-Math.hypot(rival.x-receiver.x,rival.y-receiver.y)/90)*.12;
+   const t=((rival.x-from.x)*dx+(rival.y-from.y)*dy)/segment;
+   let blocker=0;
+   if(t>.12&&t<.94){
+    const lateral=Math.hypot(rival.x-from.x-t*dx,rival.y-from.y-t*dy);
+    blocker=Math.max(0,1-lateral/75)*.19;
+   }
+   strongest=Math.max(strongest,marker+blocker);
+  }
+  return Math.min(.27,strongest);
+ }
+ function teammateInDirection(from,mates,vector,maxDistance=1300,opponents=null){
   if(!Number.isFinite(from?.x)||!Number.isFinite(from?.y)||!Array.isArray(mates)||
      !Number.isFinite(vector?.x)||!Number.isFinite(vector?.y)||
      !Number.isFinite(maxDistance)||maxDistance<=28)return null;
@@ -56,7 +77,7 @@ const SHOTFEEL=(()=>{
    if(d<=28||d>maxDistance)return null;
    const alignment=(dx*hx+dy*hy)/d;
    if(alignment<.77)return null;
-   return {q,d,score:alignment-.18*(d/maxDistance)};
+   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,q,opponents)};
   }).filter(Boolean).sort((a,b)=>b.score-a.score||a.d-b.d)[0]?.q||null;
  }
  return {launchPower,flightDrag,impactFactor,contactEnergy,lanePreference,aiFinishingPriority,teammateInDirection};

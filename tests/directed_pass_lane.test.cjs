@@ -1,0 +1,31 @@
+'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const source=fs.readFileSync('src/modules/shotfeel.js','utf8');
+const engine=fs.readFileSync('src/modules/engine.js','utf8');
+const start=source.indexOf('const SHOTFEEL=(()=>{'),end=source.indexOf('export {SHOTFEEL};');
+assert.ok(start>=0&&end>start,'read actual production targeting logic');
+const feel=vm.runInNewContext(source.slice(start,end)+';SHOTFEEL');
+const from={x:0,y:0},near={x:300,y:0},open={x:380,y:70},marked={x:275,y:0};
+const choose=(mates=[near,open],rivals=null)=>feel.teammateInDirection(from,mates,{x:1,y:0},1300,rivals);
+test('directed passing prefers open receiver to tightly marked teammate',()=>{
+ assert.equal(choose(),near,'legacy target unchanged without opponent context');
+ assert.equal(choose(undefined,[marked]),open,'open angled lane beats marked straight lane');
+ assert.equal(choose(undefined,[{x:180,y:-160}]),near,'remote defender must not change pass');
+ assert.equal(choose(undefined,[{...marked,stun:1}]),near,'stunned defender cannot intercept');
+ assert.equal(choose(undefined,[{x:Infinity,y:0}]),near,'invalid rival is ignored');
+ assert.equal(choose([near],[marked]),near,'single available receiver remains selectable');
+});
+test('direction and distance constraints remain authoritative',()=>{
+ assert.equal(choose([{x:100,y:350},near]),near);
+ assert.equal(choose([{x:-200,y:0}]),null);
+ assert.equal(feel.teammateInDirection(from,[near],{x:0,y:0},1300,[marked]),null);
+ assert.equal(feel.teammateInDirection(from,[near],{x:1,y:0},28,[marked]),null);
+});
+test('both human outfield and directed goalkeeper passes provide rival positions',()=>{
+ assert.match(engine,/teammateInDirection\(p,mates,heading,long\?1650:1150,this\.players\.filter\(q=>q\.t!==p\.t\)\)/);
+ assert.match(engine,/teammateInDirection\(carrier,this\.players\.filter\(q=>q\.t===carrier\.t&&q!==carrier&&q\.stun<=0\),heading,long\?1650:1150,this\.players\.filter\(q=>q\.t!==carrier\.t\)\)/);
+ assert.match(engine,/this\.ball\.passTarget=target\?\.src\.id\|\|null/);
+});
