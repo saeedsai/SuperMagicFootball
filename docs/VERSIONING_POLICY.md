@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.82
+# SuperMagicFootball release/version policy — About-only 0.12.81.83
+
+**Dev candidate 0.12.81.83 (18 November 2026):** AIRBORNE-RECEIVER-PASS-01: Directed ground passes modestly favor an available grounded teammate over a high-jumping receiver, while a lone airborne teammate remains selectable. Four controls, physics, rosters and saves unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.82 (18 November 2026):** CARRIER-REACH-TACKLE-01: PASS poke and SHOOT slide prioritize a forward ball carrier only within a useful action-specific reach, rather than ignoring a closer defender to chase a distant carrier. Four controls, tackle physics, rosters and saves unchanged. Exact-head QA pending.
 
