@@ -122,7 +122,12 @@ const SHOTFEEL=(()=>{
    // Fast lateral runners may leave the intended ground-pass lane before arrival.
    // Bound this penalty so alignment, distance and forward momentum still matter.
    const lateralSpeed=Math.abs(vx*hy-vy*hx);
-   const lateralPenalty=clamp((lateralSpeed-85)/350,0,1)*.045;
+   // Sideways motion toward the aimed line helps a teammate settle under a pass;
+   // motion away from that line is more likely to miss the reception.
+   const sideOffset=dx*hy-dy*hx;
+   const lateralVelocity=vx*hy-vy*hx;
+   const correcting=sideOffset*lateralVelocity<0;
+   const lateralPenalty=clamp((lateralSpeed-85)/350,0,1)*.045*(correcting?.35:1);
    // Ground passes are harder to collect during a high jump. Prefer an equally
    // open grounded receiver, but never make the airborne player unselectable.
    const airbornePenalty=Number.isFinite(q.z)?clamp((q.z-12)/65,0,1)*.065:0;
