@@ -111,7 +111,11 @@ const SHOTFEEL=(()=>{
    // Bounded lead preference for receivers already moving forward; invalid velocities are neutral.
    const vx=Number.isFinite(q.vx)?q.vx:0,vy=Number.isFinite(q.vy)?q.vy:0;
    const momentumBonus=Math.max(0,clamp((vx*hx+vy*hy)/320,-1,1))*.028;
-   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,q,opponents)+momentumBonus};
+   // Fast lateral runners may leave the intended ground-pass lane before arrival.
+   // Bound this penalty so alignment, distance and forward momentum still matter.
+   const lateralSpeed=Math.abs(vx*hy-vy*hx);
+   const lateralPenalty=clamp((lateralSpeed-85)/350,0,1)*.045;
+   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,q,opponents)+momentumBonus-lateralPenalty};
   }).filter(Boolean).sort((a,b)=>b.score-a.score||a.d-b.d)[0]?.q||null;
  }
  return {launchPower,flightDrag,impactFactor,contactEnergy,lanePreference,aiFinishingPriority,teammateInDirection};
