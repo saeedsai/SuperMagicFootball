@@ -52,11 +52,17 @@ const SHOTFEEL=(()=>{
   let strongest=0;
   for(const rival of opponents){
    if(!rival||rival.stun>0||!Number.isFinite(rival.x)||!Number.isFinite(rival.y))continue;
-   const marker=Math.max(0,1-Math.hypot(rival.x-receiver.x,rival.y-receiver.y)/90)*.12;
-   const t=((rival.x-from.x)*dx+(rival.y-from.y)*dy)/segment;
+   // A defender already moving into the passing lane is more dangerous than
+   // one moving away. Limit the lookahead to keep sudden AI changes readable.
+   const vx=Number.isFinite(rival.vx)?rival.vx:0;
+   const vy=Number.isFinite(rival.vy)?rival.vy:0;
+   const futureX=rival.x+Math.max(-35,Math.min(35,vx*.22));
+   const futureY=rival.y+Math.max(-35,Math.min(35,vy*.22));
+   const marker=Math.max(0,1-Math.hypot(futureX-receiver.x,futureY-receiver.y)/90)*.12;
+   const t=((futureX-from.x)*dx+(futureY-from.y)*dy)/segment;
    let blocker=0;
    if(t>.12&&t<.94){
-    const lateral=Math.hypot(rival.x-from.x-t*dx,rival.y-from.y-t*dy);
+    const lateral=Math.hypot(futureX-from.x-t*dx,futureY-from.y-t*dy);
     blocker=Math.max(0,1-lateral/75)*.19;
    }
    strongest=Math.max(strongest,marker+blocker);
