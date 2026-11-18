@@ -50,3 +50,14 @@ test('two independent lane blockers add bounded interception risk',()=>{
  assert.equal(lanes.passingLanePressure(from,target,[one,{...two,stun:1}]),first,'stunned defender adds no risk');
  assert.equal(lanes.passingLanePressure(from,target,[one,{x:NaN,y:0}]),first,'invalid defender adds no risk');
 });
+
+
+test('defenders near either end of a short pass are real interception threats',()=>{
+ const instrumented=source.slice(start,end).replace('teammateInDirection};','teammateInDirection,passingLanePressure};');
+ const lanes=vm.runInNewContext(instrumented+';SHOTFEEL');
+ const target={x:400,y:0};
+ assert.ok(lanes.passingLanePressure(from,target,[{x:30,y:0}])>.1,'defender 7.5% along lane can intercept');
+ assert.ok(lanes.passingLanePressure(from,target,[{x:385,y:0}])>.1,'defender near receiver can intercept');
+ assert.equal(lanes.passingLanePressure(from,target,[{x:8,y:0}]),0,'defender at passer feet is not a forward lane blocker');
+ assert.equal(lanes.passingLanePressure(from,target,[{x:30,y:100}]),0,'wide defender is not a blocker');
+});
