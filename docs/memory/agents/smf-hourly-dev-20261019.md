@@ -1,24 +1,28 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
-**Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-11-18
 
 ## Mission
-Implement tested gameplay, counterable four-action Magic Tricks, Player Studio usability, existing-player eight-view graphics, keeper/Career. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09, saves and offline.
+Ship player-facing gameplay, counterable four-action Magic Tricks, original eight-view graphics, goalkeeper, Player Studio and Career improvements while preserving roster, saves, offline and four-button invariants.
 
 ## Current checkpoint
-- Candidate .88: late-closing defender lane timing guard and focused regression committed; exact-head QA pending.
-- Candidate .87 receiver correction improves aimed-pass selection when teammate runs laterally into rather than away from lane; focused regression. Corrected .86 stale README heading and release notes escaped newline. Exact-head QA pending.
-- Candidate .86: faster closing-defender pass lane lookahead; corrected tackle test fixture facing; exact-head QA pending.
-- Candidate .85: actual lane-position stun recovery timing in pass targeting; focused regression. Fixed literal escaped newline in release.js. Exact-head QA pending.
-- New .73 moving-defender directed-pass source and focused regression committed on dev; exact-head QA pending.
-- Base `main`/`dev` 830f071a passed 18 Nov Census/Modular QA/Pages.
-- New player-facing gameplay candidate 0.12.81.72 in `f44c4f37`: directed field and goalkeeper PASS now prefers an aligned open teammate to a tightly marked one. Focused `tests/directed_pass_lane.test.cjs` added; no controls, ball physics, saves, roster or Breath changes.
-- New Full Census 44255879322 failed preflight on five release contract checks: README heading and offline sw cache suffix remained 0.12.81.71. This follow-up corrects heading, cache suffix, AGENTS current-version pointer, and records the failure in backlog. Pending exact-head CI.
-- Breath .66–.68 cheap carry/expensive sprint/walking recovery and selected local-human ring already implemented/tested. No physical two-phone certification; #48/#86/#87 remain open.
+- Candidate 0.12.81.88: LATE-LANE-INTERCEPT-01 guards against defenders closing an early ground-pass lane point only after ball arrival; focused regression committed on dev.
+- Candidate .87: lateral receiver correction and release metadata aligned.
+- Prior .87 exact-head Census and Modular QA failed on missing checkpoint heading "Ownership and exclusions"; corrected here. Do not claim full QA or release.
+- Breath .66–.68 already delivered; do not revisit without a reproducible failure.
+- Main protection #87, Render drift #86 and physical LAN acceptance #48 remain unresolved.
 
 ## Next smallest action
-1. Verify four Node/four Chromium Census and Modular QA at the newest dev SHA; fix all failures.
-2. Confirm CI-gated main promotion, main regression, Pages deployment and hosted bytes independently.
-3. Next gameplay increment: four-button Trick counters or goalkeeper quality with focused regression.
-4. Advance original existing-player eight-view frames using Asset Studio and game-scale screenshots; then Career UI.
-5. Investigate Render trigger drift without routine LAN change
+1. Observe exact-head Full Regression Census and Modular QA; repair confirmed failures.
+2. Add responsive Magic Trick counterplay using only Pass/Shoot/Dribble/Jump.
+3. Improve goalkeeper dive/catch timing with focused regression.
+4. Advance original eight-view assets through Studio and actual game-scale visual QA.
+5. Improve Player Studio previews and Career presentation.
+
+## Ownership and exclusions
+Own only this checkpoint; do not edit other agents' checkpoints. Work on existing dev; never bypass CI/security or push main manually. Preserve 223 teams, 2676 players, six formations, ten Career/Cup slots and SD09.
+
+## Evidence
+Gameplay source and focused regression committed in .88; basic source syntax and directed selection smoke checked. Four Node/four Chromium Census and Modular QA not yet observed passing for .88. No main promotion or hosted verification.
+
+## Cleanup
+Keep this checkpoint under 4 KiB; no extra branches or temporary assets.
