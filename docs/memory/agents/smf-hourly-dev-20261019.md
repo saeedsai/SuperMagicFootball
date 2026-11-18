@@ -6,6 +6,7 @@
 Implement tested gameplay, counterable four-action Magic Tricks, Player Studio usability, existing-player eight-view graphics, keeper/Career. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09, saves and offline.
 
 ## Current checkpoint
+- New .73 moving-defender directed-pass source and focused regression committed on dev; exact-head QA pending.
 - Base `main`/`dev` 830f071a passed 18 Nov Census/Modular QA/Pages.
 - New player-facing gameplay candidate 0.12.81.72 in `f44c4f37`: directed field and goalkeeper PASS now prefers an aligned open teammate to a tightly marked one. Focused `tests/directed_pass_lane.test.cjs` added; no controls, ball physics, saves, roster or Breath changes.
 - New Full Census 44255879322 failed preflight on five release contract checks: README heading and offline sw cache suffix remained 0.12.81.71. This follow-up corrects heading, cache suffix, AGENTS current-version pointer, and records the failure in backlog. Pending exact-head CI.
