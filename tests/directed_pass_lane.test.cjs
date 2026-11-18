@@ -37,3 +37,16 @@ test('moving defenders influence directed pass interception without changing sta
  assert.equal(choose(undefined,[departing]),near,'departing defender should not block straight pass');
  assert.equal(choose(undefined,[{...incoming,vx:Infinity,vy:NaN}]),near,'nonfinite motion must be ignored');
 });
+
+
+test('two independent lane blockers add bounded interception risk',()=>{
+ const instrumented=source.slice(start,end).replace('teammateInDirection};','teammateInDirection,passingLanePressure};');
+ const lanes=vm.runInNewContext(instrumented+';SHOTFEEL');
+ const target={x:400,y:0},one={x:180,y:0},two={x:270,y:0};
+ const first=lanes.passingLanePressure(from,target,[one]);
+ const doubled=lanes.passingLanePressure(from,target,[one,two]);
+ assert.ok(doubled>first,'a second distinct blocker raises risk');
+ assert.ok(doubled<=.32,'combined pressure remains bounded');
+ assert.equal(lanes.passingLanePressure(from,target,[one,{...two,stun:1}]),first,'stunned defender adds no risk');
+ assert.equal(lanes.passingLanePressure(from,target,[one,{x:NaN,y:0}]),first,'invalid defender adds no risk');
+});
