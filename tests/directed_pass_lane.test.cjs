@@ -143,3 +143,13 @@ test('tackle carrier priority respects action reach and nearby forward defenders
  assert.equal(select(p,[close,far],far,true),close,'slide must not lock to an unreachable carrier');
  assert.equal(select(p,[close,nearCarrier],nearCarrier),nearCarrier,'reachable forward carrier remains priority');
 });
+
+
+test('directed ground passes favor a grounded receiver over an airborne teammate',()=>{
+ const jumping={x:300,y:0,z:90},grounded={x:310,y:8,z:0};
+ assert.equal(choose([jumping,grounded]),grounded,'high jumper loses close choice to available grounded receiver');
+ assert.equal(choose([{...jumping,z:0},grounded]).x,300,'grounded straight receiver remains preferred');
+ assert.equal(choose([{...jumping,z:Infinity},grounded]).x,300,'invalid jump height must not create phantom penalty');
+ assert.equal(choose([jumping]).x,300,'airborne teammate remains selectable if alone');
+ assert.equal(choose([{...jumping,z:10},grounded]).x,300,'small hop remains viable');
+});
