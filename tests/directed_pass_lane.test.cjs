@@ -61,3 +61,14 @@ test('defenders near either end of a short pass are real interception threats',(
  assert.equal(lanes.passingLanePressure(from,target,[{x:8,y:0}]),0,'defender at passer feet is not a forward lane blocker');
  assert.equal(lanes.passingLanePressure(from,target,[{x:30,y:100}]),0,'wide defender is not a blocker');
 });
+
+test('longer passes allow more defender closing time while short passes stay responsive',()=>{
+ const instrumented=source.slice(start,end).replace('teammateInDirection};','teammateInDirection,passingLanePressure};');
+ const lanes=vm.runInNewContext(instrumented+';SHOTFEEL');
+ const approaching={x:160,y:65,vx:0,vy:-130};
+ const shortRisk=lanes.passingLanePressure(from,{x:320,y:0},[approaching]);
+ const longRisk=lanes.passingLanePressure(from,{x:1100,y:0},[approaching]);
+ assert.ok(longRisk>shortRisk,'longer flight lets a moving defender close the passing lane');
+ assert.equal(lanes.passingLanePressure(from,{x:1100,y:0},[{...approaching,stun:1}]),0);
+ assert.ok(Number.isFinite(lanes.passingLanePressure(from,{x:1100,y:0},[{...approaching,vy:Infinity}])));
+});
