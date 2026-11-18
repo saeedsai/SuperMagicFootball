@@ -3,7 +3,9 @@
 const RELEASE=Object.freeze({
  version:'0.12.81.87',
  date:'2026-11-18',
- notes:Object.freeze([\n  "RECEIVER-CORRECTION-PASS-01: Directed passing distinguishes a receiver moving sideways toward the intended pass line from one running away; approaching movement incurs less lateral penalty, improving responsive passes without new controls or save changes. Exact-head QA pending.",\n  "PASS-CLOSING-DEFENDER-01: Directed passing now predicts up to 65 units of defender movement during flight instead of truncating closing runs at 35, making fast lane closures count without changing pass physics or four controls. Exact-head QA pending.",
+ notes:Object.freeze([
+  "RECEIVER-CORRECTION-PASS-01: Directed passing distinguishes a receiver moving sideways toward the intended pass line from one running away; approaching movement incurs less lateral penalty, improving responsive passes without new controls or save changes. Exact-head QA pending.",
+  "PASS-CLOSING-DEFENDER-01: Directed passing now predicts up to 65 units of defender movement during flight instead of truncating closing runs at 35, making fast lane closures count without changing pass physics or four controls. Exact-head QA pending.",
   "LANE-ARRIVAL-STUN-01: Directed passes now judge defender stun recovery at the ball's actual lane position, not only at the receiver's final arrival; a defender waking after the ball passes no longer causes a false interception penalty. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "RECOVERING-DEFENDER-PASS-01: Ground-pass targeting now anticipates defenders recovering from a brief stun before the ball arrives, while longer-stunned defenders remain safely ignored. Four controls, physics, rosters and saves unchanged. Exact-head QA pending.",
   'AIRBORNE-RECEIVER-PASS-01: Directed ground passes modestly favor an available grounded teammate over a high-jumping receiver, while a lone airborne teammate remains selectable. Four controls, physics, rosters and saves unchanged. Exact-head QA pending.',
