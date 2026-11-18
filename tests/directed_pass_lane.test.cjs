@@ -84,3 +84,16 @@ test('fast defender crossing the whole pass lane remains an interception risk',(
  assert.equal(lanes.passingLanePressure(from,target,[{...crossing,x:600}]),0,'crossing beyond receiver cannot intercept');
  assert.ok(lanes.passingLanePressure(from,target,[{...crossing,vy:Infinity}])<risk,'invalid velocity cannot create phantom crossing');
 });
+
+test('tackles and slides choose forward targets without snapping backwards',()=>{
+ const segment=engine.match(/const mx=Number\.isFinite\(p\.dx\)[\s\S]*?const target=inArc\(owner\)\?owner:near\.filter\(inArc\)\.sort\(\(a,b\)=>distance\(p,a\)-distance\(p,b\)\)\[0\];/);
+ assert.ok(segment,'production tackle targeting is present');
+ const select=vm.runInNewContext('(p,near,owner)=>{const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);'+segment[0]+'return target;}');
+ const p={x:0,y:0,face:1,dx:0,dy:0},back={x:-20,y:0},front={x:90,y:0},side={x:80,y:25};
+ assert.equal(select(p,[back,front],null),front,'nearer opponent behind is not selected');
+ assert.equal(select(p,[back],null),undefined,'no backward auto-lock');
+ assert.equal(select(p,[back,side],front),front,'forward carrier is preferred');
+ assert.equal(select({...p,face:-1},[back,front],null),back,'left facing selects left');
+ assert.equal(select({...p,dx:-1},[back,front],null),back,'movement heading overrides idle facing');
+ assert.equal(select(p,[{x:Infinity,y:0},front],null),front,'invalid positions cannot become targets');
+});
