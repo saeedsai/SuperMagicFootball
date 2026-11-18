@@ -115,7 +115,10 @@ const SHOTFEEL=(()=>{
    // Bound this penalty so alignment, distance and forward momentum still matter.
    const lateralSpeed=Math.abs(vx*hy-vy*hx);
    const lateralPenalty=clamp((lateralSpeed-85)/350,0,1)*.045;
-   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,q,opponents)+momentumBonus-lateralPenalty};
+   // Ground passes are harder to collect during a high jump. Prefer an equally
+   // open grounded receiver, but never make the airborne player unselectable.
+   const airbornePenalty=Number.isFinite(q.z)?clamp((q.z-12)/65,0,1)*.065:0;
+   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,q,opponents)+momentumBonus-lateralPenalty-airbornePenalty};
   }).filter(Boolean).sort((a,b)=>b.score-a.score||a.d-b.d)[0]?.q||null;
  }
  return {launchPower,flightDrag,impactFactor,contactEnergy,lanePreference,aiFinishingPriority,teammateInDirection};
