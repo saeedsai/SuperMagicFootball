@@ -3,7 +3,8 @@
 const RELEASE=Object.freeze({
  version:'0.12.81.75',
  date:'2026-11-18',
- notes:Object.freeze([\n  'NEAR-END-PASS-INTERCEPT-01: Directed passing now treats defenders just beyond the passer and near the receiver as interception threats, reducing unsafe short passes while preserving four controls, pass physics and saves. Exact-head QA and deployment pending.',
+ notes:Object.freeze([
+  'NEAR-END-PASS-INTERCEPT-01: Directed passing now treats defenders just beyond the passer and near the receiver as interception threats, reducing unsafe short passes while preserving four controls, pass physics and saves. Exact-head QA and deployment pending.',
   'MULTI-BLOCKER-PASS-01: Directed passes now account for a second defender closing the same lane, with bounded added interception risk; the four controls, pass physics, rosters and saves remain unchanged. Exact-head QA and deployment pending.',
   'MOVING-PASS-LANE-01: Directed passes anticipate nearby defenders moving into or away from receiving lanes, improving receiver choice without changing the four controls, save data, rosters or pass physics. Exact-head QA and deployment pending.',
   'DIRECTED-PASS-LANE-01: Human-directed outfield and goalkeeper passes now prefer an open, reachable receiver over a tightly marked teammate when both are inside the existing directional cone. Stunned opponents do not block lanes; single receivers and passes into empty space remain available. Four buttons, Energy/Breath, saves, rosters and physics remain unchanged. Exact-head QA and hosted verification pending.',
