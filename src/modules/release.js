@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.80',
+ version:'0.12.81.81',
  date:'2026-11-18',
  notes:Object.freeze([
+  'RECEIVER-LATERAL-PASS-01: Directed PASS avoids fast sideways-moving receivers likely to leave the ground-pass lane; forward-running and stationary targets retain their normal priority. Four controls and saves unchanged. Exact-head QA pending.',
   'RECEIVER-MOMENTUM-PASS-01: Directed PASS modestly favors forward-running teammates when passing choices are otherwise close; marked lanes, four controls, ball physics and saves remain unchanged. Exact-head QA pending.',
   'PASS-CROSS-TIMING-01: Passing-lane decisions no longer treat a defender crossing behind an already-travelled ground pass as an automatic interception; timely crossing remains dangerous. Four controls, physics, rosters and saves unchanged. Exact-head QA pending.',
   'FORWARD-TACKLE-TARGET-01: PASS poke and SHOOT slide now prioritize opponents in the player's facing/movement direction, avoiding backward auto-lock tackles while keeping the forward ball carrier first. Four buttons, tackle reach, rosters and saves unchanged. Exact-head QA pending.',
