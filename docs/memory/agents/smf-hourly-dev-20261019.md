@@ -1,29 +1,28 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-11-18 08:02 CET
+**Updated:** 2026-11-18
 
 ## Mission
-Prioritize low-drain ordinary ball carry vs expensive sprint and selected-local-human-only Breath; then Player Studio, four-button counterable Tricks, existing-player eight-view graphics, goalkeeper and Career. Preserve 223 teams/2676 players, six formations, four actions, saves/offline, ten slots and SD09.
+Implement tested gameplay, counterable four-action Magic Tricks, Player Studio usability, existing-player eight-view graphics, keeper/Career. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09, saves and offline.
 
 ## Current checkpoint
-- Prepared DIRECTED-PASS-LANE-01: outfield/GK directed passes prefer unmarked receivers; source and focused Node regression in dev candidate 0.12.81.72. Full exact-head CI and hosted gates pending.
-- Read AGENTS.md, docs/VERSIONING_POLICY.md, docs/memory/README.md, docs/memory/SHARED.md, own checkpoint, docs/README.md and master backlog. GitHub compare on 18 Nov: dev/main identical at `fb593b7ac65714cb2fd6d86e96708a98e3689990` (0 ahead, 0 behind).
-- Previous `658c467` repaired CPU-takeover test receiver binding. Existing .66–.68 production Breath changes and focused Node/Chromium regressions cover ordinary carry, sprint, walking, selected human, seat switching and CPU takeover.
-- Prior reported 18 Nov main Census `44220912586` and Pages deploy `44220912814` passed; those results were not independently rerun in this checkpoint update. Repo's older pending-release ledger needs reconciliation with those completed gates.
-- Local git still fails DNS resolution of github.com; GitHub connector reads work. No new gameplay commit, focused local test, full QA or deployment in this run. Candidate remains 0.12.81.71. Physical #48 remains unverified; Render #86 and protection #87 open.
+- Base `main`/`dev` 830f071a passed 18 Nov Census/Modular QA/Pages.
+- New player-facing gameplay candidate 0.12.81.72 in `f44c4f37`: directed field and goalkeeper PASS now prefers an aligned open teammate to a tightly marked one. Focused `tests/directed_pass_lane.test.cjs` added; no controls, ball physics, saves, roster or Breath changes.
+- New Full Census 44255879322 failed preflight on five release contract checks: README heading and offline sw cache suffix remained 0.12.81.71. This follow-up corrects heading, cache suffix, AGENTS current-version pointer, and records the failure in backlog. Pending exact-head CI.
+- Breath .66–.68 cheap carry/expensive sprint/walking recovery and selected local-human ring already implemented/tested. No physical two-phone certification; #48/#86/#87 remain open.
 
 ## Next smallest action
-1. Restore executable checkout or usable CI execution; validate exact-head focused Breath Node/Chromium and current workflow status.
-2. Deliver a small tested player-facing Player Studio usability or counterable Magic Trick improvement with About-only four-part version, release, README, package, cache and log aligned.
-3. Complete four Node/four Chromium Census and Modular QA for exact new dev SHA.
-4. Advance independently authored existing-player eight-view art with Studio and game-scale acceptance, then goalkeeper/Career improvements.
-5. Promote only green exact dev SHA through protected main and verify Pages bytes; track #48/#86/#87 separately.
+1. Verify four Node/four Chromium Census and Modular QA at the newest dev SHA; fix all failures.
+2. Confirm CI-gated main promotion, main regression, Pages deployment and hosted bytes independently.
+3. Next gameplay increment: four-button Trick counters or goalkeeper quality with focused regression.
+4. Advance original existing-player eight-view frames using Asset Studio and game-scale screenshots; then Career UI.
+5. Investigate Render trigger drift without routine LAN changes and escalate main ruleset #87.
 
 ## Ownership and exclusions
-Own checkpoint only. No new branches, force-push, bypass, roster changes, unapproved art, or physical certification.
+Only own checkpoint. Do not create branches, force-push, bypass CI, change roster, certify hardware, or create concept heroes.
 
 ## Evidence
-GitHub compare and source reads this run; no locally executed tests. Previous reported CI URLs: https://github.com/saeedsai/SuperMagicFootball/actions/runs/44220912586 and https://github.com/saeedsai/SuperMagicFootball/actions/runs/44220912814
+GitHub Full Census 44255879322 logs; preflight failure verified. New exact-head QA pending; no local checkout/Node or physical test claimed.
 
 ## Cleanup
-Checkpoint under 4 KiB; no temporary branches.
+No scratch branches, under 4KiB.
