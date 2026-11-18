@@ -120,3 +120,13 @@ test('directed pass gives bounded preference to a forward-running receiver',()=>
  assert.equal(feel.teammateInDirection(from,[still,{...run,vx:Infinity}],{x:1,y:0},1300),still);
  assert.equal(feel.teammateInDirection(from,[still,{...run,x:700}],{x:1,y:0},1300),still);
 });
+
+
+test('directed pass avoids receiver sprinting sideways out of the lane',()=>{
+ const straight={x:300,y:0,vx:0,vy:320};
+ const settled={x:300,y:10,vx:0,vy:0};
+ assert.equal(choose([straight,settled]),settled,'sideways sprint should lose to nearby stable receiving lane');
+ assert.equal(choose([{...straight,vy:0},settled]).y,0,'stationary direct option remains valid');
+ assert.equal(choose([{...straight,vy:Infinity},settled]).y,0,'invalid velocity is neutral');
+ assert.equal(choose([{...straight,vx:220,vy:0},settled]).y,0,'forward receiver retains momentum advantage');
+});
