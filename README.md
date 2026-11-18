@@ -1,6 +1,6 @@
 > **0.12.81.79 release candidate (18 November 2026):** PASS-CROSS-TIMING-01: Passing-lane decisions no longer treat a defender crossing behind an already-travelled ground pass as an automatic interception; timely crossing remains dangerous. Four controls, physics, rosters and saves unchanged. Exact-head QA pending.
 
-> **0.12.81.79 release candidate (18 November 2026):** FORWARD-TACKLE-TARGET-01: PASS poke and SHOOT slide now prioritize opponents in the player's facing/movement direction, avoiding backward auto-lock tackles while keeping the forward ball carrier first. Four buttons, tackle reach, rosters and saves unchanged. Exact-head QA pending.
+> **0.12.81.78 release candidate (18 November 2026):** FORWARD-TACKLE-TARGET-01: PASS poke and SHOOT slide now prioritize opponents in the player's facing/movement direction, avoiding backward auto-lock tackles while keeping the forward ball carrier first. Four buttons, tackle reach, rosters and saves unchanged. Exact-head QA pending.
 
 > **0.12.81.77 release candidate (18 November 2026):** CROSSING-PASS-LANE-01: Directed passing now detects defenders sprinting completely across a pass lane during the bounded flight lookahead, avoiding interception routes that endpoint-only prediction missed. Four controls, pass physics, rosters and saves unchanged. Exact-head QA pending.
 
