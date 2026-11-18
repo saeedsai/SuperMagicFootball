@@ -6,6 +6,7 @@
 Implement tested gameplay, counterable four-action Magic Tricks, Player Studio usability, existing-player eight-view graphics, keeper/Career. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09, saves and offline.
 
 ## Current checkpoint
+- Candidate .82 bounds forward ball-carrier auto-targeting by poke/slide reach; focused regression committed, exact-head CI pending.
 - Candidate .81 receiver lateral-run pass safety implemented with focused regression; exact-head QA pending.
 - Candidate .80 directed passing forward-moving receiver bonus implemented; focused regression added, CI pending.
 - Candidate .79 pass-crossing timing guard committed for real directed passing; exact-head QA pending.
