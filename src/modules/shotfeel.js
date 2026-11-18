@@ -61,10 +61,12 @@ const SHOTFEEL=(()=>{
    const marker=Math.max(0,1-Math.hypot(futureX-receiver.x,futureY-receiver.y)/90)*.12;
    const t=((futureX-from.x)*dx+(futureY-from.y)*dy)/segment;
    let blocker=0;
-   if(t>.12&&t<.94){
+   if(t>.045&&t<.97){
     const lateral=Math.hypot(futureX-from.x-t*dx,futureY-from.y-t*dy);
     blocker=Math.max(0,1-lateral/75)*.19;
    }
+   // Near-foot interceptions count too: defenders just beyond the passer
+   // or just before the receiver can still cut out a short ground pass.
    const pressure=marker+blocker;
    if(pressure>strongest){second=strongest;strongest=pressure;}
    else if(pressure>second)second=pressure;
