@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.73
+# SuperMagicFootball release/version policy — About-only 0.12.81.74
+
+**Dev candidate 0.12.81.74 (18 November 2026):** MULTI-BLOCKER-PASS-01: Directed passes now account for a second defender closing the same lane, with bounded added interception risk; the four controls, pass physics, rosters and saves remain unchanged. Exact-head QA and deployment pending.
 
 **Dev candidate 0.12.81.73 (18 November 2026):** MOVING-PASS-LANE-01: Directed passes anticipate nearby defenders moving into or away from receiving lanes, improving receiver choice without changing the four controls, save data, rosters or pass physics. Exact-head QA and deployment pending.
 
