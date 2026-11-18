@@ -103,12 +103,11 @@ test('late lane crossing behind a travelling pass is not a phantom interception'
  const instrumented=source.slice(start,end).replace('teammateInDirection};','teammateInDirection,passingLanePressure};');
  const lanes=vm.runInNewContext(instrumented+';SHOTFEEL');
  const target={x:400,y:0};
- const early={x:80,y:-30,vx:0,vy:110};
- const late={x:80,y:-30,vx:0,vy:110};
+ const late={x:80,y:-150,vx:0,vy:600};
  // Same physical sweep crosses near the passer; ball passes that location
  // before the defender arrives. An on-time sweep remains dangerous.
  const lateRisk=lanes.passingLanePressure(from,target,[late]);
- const onTimeRisk=lanes.passingLanePressure(from,target,[{x:80,y:-8,vx:0,vy:110}]);
+ const onTimeRisk=lanes.passingLanePressure(from,target,[{x:80,y:-8,vx:0,vy:600}]);
  assert.ok(onTimeRisk>lateRisk,'late crossing should not incur full swept interception risk');
  assert.ok(Number.isFinite(lateRisk));
 });
