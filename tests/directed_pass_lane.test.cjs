@@ -187,3 +187,14 @@ test('fast closing defenders can reach a pass lane during the bounded flight win
  assert.ok(lanes.passingLanePressure(from,straight,[fast])>.14,'closing runner threatens the lane');
  assert.equal(lanes.passingLanePressure(from,straight,[{...fast,vy:300}]),0,'runner moving away remains safe');
 });
+
+
+test('receiver moving laterally toward the intended pass line is easier to target',()=>{
+ const correcting={x:320,y:40,vx:0,vy:-300};
+ const escaping={x:320,y:40,vx:0,vy:300};
+ const stable={x:340,y:5,vx:0,vy:0};
+ const toward=feel.teammateInDirection(from,[correcting,stable],{x:1,y:0},1300);
+ const away=feel.teammateInDirection(from,[escaping,stable],{x:1,y:0},1300);
+ assert.equal(toward,correcting,'lateral correction should remain a viable directed target');
+ assert.equal(away,stable,'lateral escape should favor the stable receiver');
+});
