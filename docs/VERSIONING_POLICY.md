@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.85
+# SuperMagicFootball release/version policy — About-only 0.12.81.86
+
+**Dev candidate 0.12.81.86 (18 November 2026):** PASS-CLOSING-DEFENDER-01: Directed passing now predicts up to 65 units of defender movement during flight instead of truncating closing runs at 35, making fast lane closures count without changing pass physics or four controls. Exact-head QA pending.
 
 **Dev candidate 0.12.81.85 (18 November 2026):** LANE-ARRIVAL-STUN-01: Directed passes now judge defender stun recovery at the ball's actual lane position, not only at the receiver's final arrival; a defender waking after the ball passes no longer causes a false interception penalty. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 

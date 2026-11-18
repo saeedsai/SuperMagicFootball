@@ -67,8 +67,8 @@ const SHOTFEEL=(()=>{
    // Longer passes give moving defenders more time to close the lane; short
    // passes retain the snappy near-instant read. Bound prediction for fairness.
    const lookahead=passLookahead;
-   const futureX=rival.x+Math.max(-35,Math.min(35,vx*lookahead));
-   const futureY=rival.y+Math.max(-35,Math.min(35,vy*lookahead));
+   const futureX=rival.x+Math.max(-65,Math.min(65,vx*lookahead));
+   const futureY=rival.y+Math.max(-65,Math.min(65,vy*lookahead));
    const marker=Math.max(0,1-Math.hypot(futureX-receiver.x,futureY-receiver.y)/90)*.12;
    const t=((futureX-from.x)*dx+(futureY-from.y)*dy)/segment;
    let blocker=0;

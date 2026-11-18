@@ -104,7 +104,7 @@ test('shot weakness changes real tackle stun while active and returns to baselin
   const tackler=game.players.find(p=>p.t===0&&p.i===2);
   victim.x=WORLD.field.x+WORLD.field.w*.52;victim.y=WORLD.field.y+WORLD.field.h*.5;
   victim.z=0;victim.stun=0;victim.invuln=0;victim.fatigue=0;victim.morale=55;
-  tackler.x=victim.x-48;tackler.y=victim.y;tackler.z=0;tackler.stun=0;tackler.cd=0;tackler.fatigue=0;tackler.morale=55;
+  tackler.x=victim.x-48;tackler.y=victim.y;tackler.face=1;tackler.dx=1;tackler.dy=0;tackler.z=0;tackler.stun=0;tackler.cd=0;tackler.fatigue=0;tackler.morale=55;
   game.ball.owner=victim;
   const originalRandom=Math.random;
   try{

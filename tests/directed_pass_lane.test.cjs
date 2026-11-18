@@ -177,3 +177,13 @@ test('stun recovery is compared to ball arrival at defender, not full pass durat
  assert.ok(lanes.passingLanePressure(from,target,[late])>.1,'defender waking before late lane arrival remains a threat');
  assert.ok(lanes.passingLanePressure(from,target,[{...early,stun:.01}])>.1,'early waking defender still blocks');
 });
+
+// A fast defender closing a straight lane must not be truncated before reaching it.
+test('fast closing defenders can reach a pass lane during the bounded flight window',()=>{
+ const instrumented=source.slice(start,end).replace('teammateInDirection};','teammateInDirection,passingLanePressure};');
+ const lanes=vm.runInNewContext(instrumented+';SHOTFEEL');
+ const straight={x:400,y:0};
+ const fast={x:190,y:60,vx:0,vy:-300};
+ assert.ok(lanes.passingLanePressure(from,straight,[fast])>.14,'closing runner threatens the lane');
+ assert.equal(lanes.passingLanePressure(from,straight,[{...fast,vy:300}]),0,'runner moving away remains safe');
+});
