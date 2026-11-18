@@ -1,3 +1,5 @@
+> **18 November 2026 — NEAR-END-PASS-INTERCEPT-01:** Candidate 0.12.81.75 extends actual pass-lane interception to defenders near the passer and receiver, with focused Node regression. Four actions and saves unchanged. Exact-head QA and release pending.
+
 > **18 November 2026 — MULTI-BLOCKER-PASS-01:** Candidate 0.12.81.74 adds secondary-defender lane risk to real directed passing, capped at .32, with focused Node regression. Four controls and saves unchanged. Exact-head QA and release gates pending.
 
 > **18 November 2026 — MOVING-PASS-LANE-01:** New directed-pass gameplay candidate 0.12.81.73 anticipates defenders' near-future lane positions (bounded 0.22-second motion lookahead); stationary behavior and existing four-button controls are preserved. Focused moving-defender regression added. Full exact-head Node/Chromium Census, Modular QA, main promotion and hosted smoke remain unverified.
