@@ -1,3 +1,5 @@
+> **0.12.81.76 release candidate (18 November 2026):** PASS-FLIGHT-LANE-01: Directed passing now anticipates defender movement over a bounded distance-aware window, so long passes better avoid closing defenders while short passes remain responsive. Four controls, physics, saves and rosters unchanged. Exact-head QA pending.
+
 > **0.12.81.75 release candidate (18 November 2026):** NEAR-END-PASS-INTERCEPT-01: Directed passing now treats defenders just beyond the passer and near the receiver as interception threats, reducing unsafe short passes while preserving four controls, pass physics and saves. Exact-head QA and deployment pending.
 
 > **0.12.81.74 release candidate (18 November 2026):** MULTI-BLOCKER-PASS-01: Directed passes now account for a second defender closing the same lane, with bounded added interception risk; the four controls, pass physics, rosters and saves remain unchanged. Exact-head QA and deployment pending.
