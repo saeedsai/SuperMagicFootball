@@ -51,14 +51,18 @@ const SHOTFEEL=(()=>{
   if(!Number.isFinite(segment)||segment<=0)return 0;
   let strongest=0,second=0;
   for(const rival of opponents){
-   if(!rival||rival.stun>0||!Number.isFinite(rival.x)||!Number.isFinite(rival.y))continue;
+   if(!rival||!Number.isFinite(rival.x)||!Number.isFinite(rival.y))continue;
+   // A defender recovering before a ground pass arrives can still intercept.
+   // Longer stuns remain harmless; compare against the same bounded flight window.
+   const passLookahead=Math.min(.35,Math.max(.12,Math.sqrt(segment)/1400));
+   if(Number.isFinite(rival.stun)&&rival.stun>passLookahead)continue;
    // A defender already moving into the passing lane is more dangerous than
    // one moving away. Limit the lookahead to keep sudden AI changes readable.
    const vx=Number.isFinite(rival.vx)?rival.vx:0;
    const vy=Number.isFinite(rival.vy)?rival.vy:0;
    // Longer passes give moving defenders more time to close the lane; short
    // passes retain the snappy near-instant read. Bound prediction for fairness.
-   const lookahead=Math.min(.35,Math.max(.12,Math.sqrt(segment)/1400));
+   const lookahead=passLookahead;
    const futureX=rival.x+Math.max(-35,Math.min(35,vx*lookahead));
    const futureY=rival.y+Math.max(-35,Math.min(35,vy*lookahead));
    const marker=Math.max(0,1-Math.hypot(futureX-receiver.x,futureY-receiver.y)/90)*.12;
