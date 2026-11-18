@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.72
+# SuperMagicFootball release/version policy — About-only 0.12.81.73
+
+**Dev candidate 0.12.81.73 (18 November 2026):** MOVING-PASS-LANE-01: Directed passes anticipate nearby defenders moving into or away from receiving lanes, improving receiver choice without changing the four controls, save data, rosters or pass physics. Exact-head QA and deployment pending.
 
 **Dev candidate 0.12.81.72 (18 November 2026):** DIRECTED-PASS-LANE-01: Human-directed outfield and goalkeeper passes now prefer an open, reachable receiver over a tightly marked teammate when both are inside the existing directional cone. Stunned opponents do not block lanes; single receivers and passes into empty space remain available. Four buttons, Energy/Breath, saves, rosters and physics remain unchanged. Exact-head QA and hosted verification pending.
 
