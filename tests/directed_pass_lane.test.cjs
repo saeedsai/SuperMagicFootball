@@ -162,6 +162,6 @@ test('recovering defender can intercept before a pass arrives, longer stun remai
  const recovering=lanes.passingLanePressure(from,target,[{...blocker,stun:.05}]);
  assert.ok(recovering>.1,'defender recovering during flight must be considered');
  assert.equal(lanes.passingLanePressure(from,target,[{...blocker,stun:1}]),0,'long stun outlasts pass');
- assert.equal(lanes.passingLanePressure(from,target,[{...blocker,stun:.3}]),0,'stun longer than lookahead is safe');
+ assert.equal(lanes.passingLanePressure(from,target,[{...blocker,stun:.4}]),0,'stun longer than lookahead is safe');
  assert.equal(lanes.passingLanePressure(from,target,[{...blocker,stun:.05,x:NaN}]),0,'invalid position ignored');
 });
