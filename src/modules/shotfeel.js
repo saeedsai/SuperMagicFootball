@@ -56,8 +56,11 @@ const SHOTFEEL=(()=>{
    // one moving away. Limit the lookahead to keep sudden AI changes readable.
    const vx=Number.isFinite(rival.vx)?rival.vx:0;
    const vy=Number.isFinite(rival.vy)?rival.vy:0;
-   const futureX=rival.x+Math.max(-35,Math.min(35,vx*.22));
-   const futureY=rival.y+Math.max(-35,Math.min(35,vy*.22));
+   // Longer passes give moving defenders more time to close the lane; short
+   // passes retain the snappy near-instant read. Bound prediction for fairness.
+   const lookahead=Math.min(.35,Math.max(.12,Math.sqrt(segment)/1400));
+   const futureX=rival.x+Math.max(-35,Math.min(35,vx*lookahead));
+   const futureY=rival.y+Math.max(-35,Math.min(35,vy*lookahead));
    const marker=Math.max(0,1-Math.hypot(futureX-receiver.x,futureY-receiver.y)/90)*.12;
    const t=((futureX-from.x)*dx+(futureY-from.y)*dy)/segment;
    let blocker=0;
