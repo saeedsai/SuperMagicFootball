@@ -1,9 +1,9 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.75',
+ version:'0.12.81.76',
  date:'2026-11-18',
- notes:Object.freeze([
+ notes:Object.freeze([\n  'PASS-FLIGHT-LANE-01: Directed passing now anticipates defender movement over a bounded distance-aware window, so long passes better avoid closing defenders while short passes remain responsive. Four controls, physics, saves and rosters unchanged. Exact-head QA pending.',
   'NEAR-END-PASS-INTERCEPT-01: Directed passing now treats defenders just beyond the passer and near the receiver as interception threats, reducing unsafe short passes while preserving four controls, pass physics and saves. Exact-head QA and deployment pending.',
   'MULTI-BLOCKER-PASS-01: Directed passes now account for a second defender closing the same lane, with bounded added interception risk; the four controls, pass physics, rosters and saves remain unchanged. Exact-head QA and deployment pending.',
   'MOVING-PASS-LANE-01: Directed passes anticipate nearby defenders moving into or away from receiving lanes, improving receiver choice without changing the four controls, save data, rosters or pass physics. Exact-head QA and deployment pending.',
