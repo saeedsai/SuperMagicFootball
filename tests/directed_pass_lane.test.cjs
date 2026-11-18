@@ -153,3 +153,15 @@ test('directed ground passes favor a grounded receiver over an airborne teammate
  assert.equal(choose([jumping]).x,300,'airborne teammate remains selectable if alone');
  assert.equal(choose([{...jumping,z:10},grounded]).x,300,'small hop remains viable');
 });
+
+
+test('recovering defender can intercept before a pass arrives, longer stun remains safe',()=>{
+ const instrumented=source.slice(start,end).replace('teammateInDirection};','teammateInDirection,passingLanePressure};');
+ const lanes=vm.runInNewContext(instrumented+';SHOTFEEL');
+ const target={x:700,y:0},blocker={x:300,y:0};
+ const recovering=lanes.passingLanePressure(from,target,[{...blocker,stun:.05}]);
+ assert.ok(recovering>.1,'defender recovering during flight must be considered');
+ assert.equal(lanes.passingLanePressure(from,target,[{...blocker,stun:1}]),0,'long stun outlasts pass');
+ assert.equal(lanes.passingLanePressure(from,target,[{...blocker,stun:.3}]),0,'stun longer than lookahead is safe');
+ assert.equal(lanes.passingLanePressure(from,target,[{...blocker,stun:.05,x:NaN}]),0,'invalid position ignored');
+});
