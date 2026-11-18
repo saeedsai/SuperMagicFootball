@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.86
+# SuperMagicFootball release/version policy — About-only 0.12.81.87
+
+**Dev candidate 0.12.81.87 (18 November 2026):** RECEIVER-CORRECTION-PASS-01: Directed passing distinguishes a receiver moving sideways toward the intended pass line from one running away; approaching movement incurs less lateral penalty, improving responsive passes without new controls or save changes. Exact-head QA pending.
 
 **Dev candidate 0.12.81.86 (18 November 2026):** PASS-CLOSING-DEFENDER-01: Directed passing now predicts up to 65 units of defender movement during flight instead of truncating closing runs at 35, making fast lane closures count without changing pass physics or four controls. Exact-head QA pending.
 
