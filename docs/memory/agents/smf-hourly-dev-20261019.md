@@ -5,7 +5,8 @@
 ## Mission
 Implement tested gameplay, counterable four-action Magic Tricks, Player Studio usability, existing-player eight-view graphics, keeper/Career. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09, saves and offline.
 
-## Current checkpoint\n- Candidate .76 scales bounded defender movement prediction to pass length; game source and focused regression committed. QA/release pending.
+## Current checkpoint
+- Candidate .76 scales bounded defender movement prediction to pass length; game source and focused regression committed. QA/release pending.
 - Candidate .75 counts defenders near the ends of a directed pass lane; focused Node regression added. CI and release gates unverified.
 - Candidate .74 adds bounded secondary-defender directed passing pressure and focused regression; exact-head QA unverified.
 - New .73 moving-defender directed-pass source and focused regression committed on dev; exact-head QA pending.
