@@ -1,4 +1,4 @@
-> **18 November 2026 — NEAR-END-PASS-INTERCEPT-01:** Candidate 0.12.81.75 extends actual pass-lane interception to defenders near the passer and receiver, with focused Node regression. Four actions and saves unchanged. Exact-head QA and release pending.
+> **18 Nov 2026 — PASS-FLIGHT-LANE-01 (.76):** PASS-FLIGHT-LANE-01: Directed passing now anticipates defender movement over a bounded distance-aware window, so long passes better avoid closing defenders while short passes remain responsive. Four controls, physics, saves and rosters unchanged. Exact-head QA pending. Focused Node regression added; exact-head CI and release not verified.\n\n> **18 November 2026 — NEAR-END-PASS-INTERCEPT-01:** Candidate 0.12.81.75 extends actual pass-lane interception to defenders near the passer and receiver, with focused Node regression. Four actions and saves unchanged. Exact-head QA and release pending.
 
 > **18 November 2026 — MULTI-BLOCKER-PASS-01:** Candidate 0.12.81.74 adds secondary-defender lane risk to real directed passing, capped at .32, with focused Node regression. Four controls and saves unchanged. Exact-head QA and release gates pending.
 
