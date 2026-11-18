@@ -94,6 +94,16 @@ const SHOTFEEL=(()=>{
     const defenderArrival=fraction*lookahead;
     if(crossT>.045&&crossT<.97&&defenderArrival<=ballArrival+.055)blocker=Math.max(blocker,.19);
    }
+   // A defender arriving only after the ball has passed cannot intercept.
+   // Keep already-close markers dangerous, including slow and stationary ones.
+   const speed=Math.hypot(vx,vy);
+   if(blocker>0&&speed>1){
+    const startT=clamp(((rival.x-from.x)*dx+(rival.y-from.y)*dy)/segment,0,1);
+    const startGap=Math.hypot(rival.x-from.x-startT*dx,rival.y-from.y-startT*dy);
+    const projectedT=clamp(t,0,1);
+    const travelTime=Math.max(0,startGap-40)/speed;
+    if(startGap>75&&travelTime>projectedT*lookahead+.055)blocker=0;
+   }
    const pressure=marker+blocker;
    if(pressure>strongest){second=strongest;strongest=pressure;}
    else if(pressure>second)second=pressure;

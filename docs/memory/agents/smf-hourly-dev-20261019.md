@@ -6,20 +6,10 @@
 Implement tested gameplay, counterable four-action Magic Tricks, Player Studio usability, existing-player eight-view graphics, keeper/Career. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09, saves and offline.
 
 ## Current checkpoint
+- Candidate .88: late-closing defender lane timing guard and focused regression committed; exact-head QA pending.
 - Candidate .87 receiver correction improves aimed-pass selection when teammate runs laterally into rather than away from lane; focused regression. Corrected .86 stale README heading and release notes escaped newline. Exact-head QA pending.
 - Candidate .86: faster closing-defender pass lane lookahead; corrected tackle test fixture facing; exact-head QA pending.
 - Candidate .85: actual lane-position stun recovery timing in pass targeting; focused regression. Fixed literal escaped newline in release.js. Exact-head QA pending.
-- Candidate .84: recovering defenders within bounded pass-flight lookahead now count as lane blockers; focused test added. Also repaired release.js unescaped apostrophe that failed .83 CI preflight. Exact-head QA pending.
-- Candidate .83 favors grounded receivers for ground PASS with bounded airborne penalty; focused regression added. Corrected literal escaped newline in release.js confirmed by .82 CI logs. New exact-head QA pending.
-- Candidate .82 bounds forward ball-carrier auto-targeting by poke/slide reach; focused regression committed, exact-head CI pending.
-- Candidate .81 receiver lateral-run pass safety implemented with focused regression; exact-head QA pending.
-- Candidate .80 directed passing forward-moving receiver bonus implemented; focused regression added, CI pending.
-- Candidate .79 pass-crossing timing guard committed for real directed passing; exact-head QA pending.
-- Candidate .78 forward-facing tackle and slide target selection in production engine; focused regression committed; exact-head CI and release pending.
-- Candidate .77 counts a fast defender sweeping completely across the pass lane; focused test added. Fixed .76 stale offline cache suffix (3 confirmed CI failures). Exact-head QA pending.
-- Candidate .76 scales bounded defender movement prediction to pass length; game source and focused regression committed. QA/release pending.
-- Candidate .75 counts defenders near the ends of a directed pass lane; focused Node regression added. CI and release gates unverified.
-- Candidate .74 adds bounded secondary-defender directed passing pressure and focused regression; exact-head QA unverified.
 - New .73 moving-defender directed-pass source and focused regression committed on dev; exact-head QA pending.
 - Base `main`/`dev` 830f071a passed 18 Nov Census/Modular QA/Pages.
 - New player-facing gameplay candidate 0.12.81.72 in `f44c4f37`: directed field and goalkeeper PASS now prefers an aligned open teammate to a tightly marked one. Focused `tests/directed_pass_lane.test.cjs` added; no controls, ball physics, saves, roster or Breath changes.

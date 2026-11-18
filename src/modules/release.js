@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.87',
+ version:'0.12.81.88',
  date:'2026-11-18',
  notes:Object.freeze([
+  'LATE-LANE-INTERCEPT-01: Ground PASS no longer treats a distant defender closing an early lane point after the ball has passed as a valid interception; timely closing and stationary lane blockers remain dangerous. Four controls, ball physics, rosters and saves unchanged. Exact-head QA pending.',
   "RECEIVER-CORRECTION-PASS-01: Directed passing distinguishes a receiver moving sideways toward the intended pass line from one running away; approaching movement incurs less lateral penalty, improving responsive passes without new controls or save changes. Exact-head QA pending.",
   "PASS-CLOSING-DEFENDER-01: Directed passing now predicts up to 65 units of defender movement during flight instead of truncating closing runs at 35, making fast lane closures count without changing pass physics or four controls. Exact-head QA pending.",
   "LANE-ARRIVAL-STUN-01: Directed passes now judge defender stun recovery at the ball's actual lane position, not only at the receiver's final arrival; a defender waking after the ball passes no longer causes a false interception penalty. Four controls, saves and ball physics unchanged. Exact-head QA pending.",

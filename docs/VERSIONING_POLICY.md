@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.87
+# SuperMagicFootball release/version policy — About-only 0.12.81.88
+
+**Dev candidate 0.12.81.88 (18 November 2026):** LATE-LANE-INTERCEPT-01: Ground PASS no longer treats a distant defender closing an early lane point after the ball has passed as a valid interception; timely closing and stationary lane blockers remain dangerous. Four controls, ball physics, rosters and saves unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.87 (18 November 2026):** RECEIVER-CORRECTION-PASS-01: Directed passing distinguishes a receiver moving sideways toward the intended pass line from one running away; approaching movement incurs less lateral penalty, improving responsive passes without new controls or save changes. Exact-head QA pending.
 

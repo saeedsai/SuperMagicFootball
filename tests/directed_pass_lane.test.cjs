@@ -198,3 +198,15 @@ test('receiver moving laterally toward the intended pass line is easier to targe
  assert.equal(toward,correcting,'lateral correction should remain a viable directed target');
  assert.equal(away,stable,'lateral escape should favor the stable receiver');
 });
+
+
+test('late-closing defender cannot intercept a pass already past their lane point',()=>{
+ const instrumented=source.slice(start,end).replace('teammateInDirection};','teammateInDirection,passingLanePressure};');
+ const lanes=vm.runInNewContext(instrumented+';SHOTFEEL');
+ const target={x:1000,y:0};
+ const late={x:100,y:100,vx:0,vy:-250};
+ const timely={x:800,y:100,vx:0,vy:-250};
+ assert.equal(lanes.passingLanePressure(from,target,[late]),0,'early lane point is passed before defender closes');
+ assert.ok(lanes.passingLanePressure(from,target,[timely])>.1,'later lane point remains interceptable');
+ assert.ok(lanes.passingLanePressure(from,target,[{x:100,y:0,vx:0,vy:0}])>.1,'already-in-lane defender still blocks');
+});
