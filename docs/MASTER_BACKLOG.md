@@ -1,3 +1,5 @@
+> **18 November 2026 — 0.12.81.82 CARRIER-REACH-TACKLE-01: PASS poke and SHOOT slide prioritize a forward ball carrier only within a useful action-specific reach, rather than ignoring a closer defender to chase a distant carrier. Four controls, tackle physics, rosters and saves unchanged. Exact-head QA pending.** Focused Node regression added; full exact-head QA and deployment pending.
+
 > **18 November 2026 — RECEIVER-LATERAL-PASS-01 (0.12.81.81):** RECEIVER-LATERAL-PASS-01: Directed PASS avoids fast sideways-moving receivers likely to leave the ground-pass lane; forward-running and stationary targets retain their normal priority. Four controls and saves unchanged. Exact-head QA pending. Focused regression added; exact-head QA pending.
 
 > **18 November 2026 — RECEIVER-MOMENTUM-PASS-01 (0.12.81.80):** RECEIVER-MOMENTUM-PASS-01: Directed PASS modestly favors forward-running teammates when passing choices are otherwise close; marked lanes, four controls, ball physics and saves remain unchanged. Exact-head QA pending. Focused regression added; exact-head QA pending.
