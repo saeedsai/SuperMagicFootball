@@ -70,6 +70,17 @@ const SHOTFEEL=(()=>{
    }
    // Near-foot interceptions count too: defenders just beyond the passer
    // or just before the receiver can still cut out a short ground pass.
+   // A fast defender may cross the entire lane between now and the predicted
+   // endpoint. Check the swept crossing, not only the two endpoints.
+   const startSide=(rival.x-from.x)*dy-(rival.y-from.y)*dx;
+   const endSide=(futureX-from.x)*dy-(futureY-from.y)*dx;
+   if(startSide*endSide<0){
+    const fraction=startSide/(startSide-endSide);
+    const crossX=rival.x+(futureX-rival.x)*fraction;
+    const crossY=rival.y+(futureY-rival.y)*fraction;
+    const crossT=((crossX-from.x)*dx+(crossY-from.y)*dy)/segment;
+    if(crossT>.045&&crossT<.97)blocker=Math.max(blocker,.19);
+   }
    const pressure=marker+blocker;
    if(pressure>strongest){second=strongest;strongest=pressure;}
    else if(pressure>second)second=pressure;
