@@ -889,7 +889,10 @@ class GameEngine{
   const moving=Math.hypot(mx,my)>.15,headingX=moving?mx/Math.hypot(mx,my):(p.face===-1?-1:1),headingY=moving?my/Math.hypot(mx,my):0;
   const inArc=q=>q&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&distance(p,q)>0&&distance(p,q)<280&&
    ((q.x-p.x)*headingX+(q.y-p.y)*headingY)/distance(p,q)>=.25;
-  const target=inArc(owner)?owner:near.filter(inArc).sort((a,b)=>distance(p,a)-distance(p,b))[0];
+  // Avoid locking a poke onto a far carrier while an opponent is right in front.
+  // Slides can chase farther than short pokes, but both retain their physical travel budget.
+  const carrierReach=slide?220:130;
+  const target=inArc(owner)&&distance(p,owner)<=carrierReach?owner:near.filter(inArc).sort((a,b)=>distance(p,a)-distance(p,b))[0];
   const dir=target?norm(target.x-p.x,target.y-p.y):norm(p.dx||p.face,p.dy||0);
   if(slide){
    // A slide is a timed physical dash rather than a 26-unit teleport. Run-up speed matters.
