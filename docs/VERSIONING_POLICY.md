@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.84
+# SuperMagicFootball release/version policy — About-only 0.12.81.85
+
+**Dev candidate 0.12.81.85 (18 November 2026):** LANE-ARRIVAL-STUN-01: Directed passes now judge defender stun recovery at the ball's actual lane position, not only at the receiver's final arrival; a defender waking after the ball passes no longer causes a false interception penalty. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.84 (18 November 2026):** RECOVERING-DEFENDER-PASS-01: Ground-pass targeting now anticipates defenders recovering from a brief stun before the ball arrives, while longer-stunned defenders remain safely ignored. Four controls, physics, rosters and saves unchanged. Exact-head QA pending.
 
