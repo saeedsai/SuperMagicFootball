@@ -49,7 +49,7 @@ const SHOTFEEL=(()=>{
   if(!Array.isArray(opponents)||!opponents.length)return 0;
   const dx=receiver.x-from.x,dy=receiver.y-from.y,segment=dx*dx+dy*dy;
   if(!Number.isFinite(segment)||segment<=0)return 0;
-  let strongest=0;
+  let strongest=0,second=0;
   for(const rival of opponents){
    if(!rival||rival.stun>0||!Number.isFinite(rival.x)||!Number.isFinite(rival.y))continue;
    // A defender already moving into the passing lane is more dangerous than
@@ -65,9 +65,13 @@ const SHOTFEEL=(()=>{
     const lateral=Math.hypot(futureX-from.x-t*dx,futureY-from.y-t*dy);
     blocker=Math.max(0,1-lateral/75)*.19;
    }
-   strongest=Math.max(strongest,marker+blocker);
+   const pressure=marker+blocker;
+   if(pressure>strongest){second=strongest;strongest=pressure;}
+   else if(pressure>second)second=pressure;
   }
-  return Math.min(.27,strongest);
+  // Two independent defenders closing the same lane are harder to bypass;
+  // cap the extra risk so alignment and distance still govern pass choice.
+  return Math.min(.32,strongest+second*.35);
  }
  function teammateInDirection(from,mates,vector,maxDistance=1300,opponents=null){
   if(!Number.isFinite(from?.x)||!Number.isFinite(from?.y)||!Array.isArray(mates)||
