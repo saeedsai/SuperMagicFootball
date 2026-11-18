@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.80
+# SuperMagicFootball release/version policy — About-only 0.12.81.81
+
+**Dev candidate 0.12.81.81 (18 November 2026):** RECEIVER-LATERAL-PASS-01: Directed PASS avoids fast sideways-moving receivers likely to leave the ground-pass lane; forward-running and stationary targets retain their normal priority. Four controls and saves unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.80 (18 November 2026):** RECEIVER-MOMENTUM-PASS-01: Directed PASS modestly favors forward-running teammates when passing choices are otherwise close; marked lanes, four controls, ball physics and saves remain unchanged. Exact-head QA pending.
 
