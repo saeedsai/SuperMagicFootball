@@ -1,15 +1,15 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.83',
+ version:'0.12.81.84',
  date:'2026-11-18',
- notes:Object.freeze([
+ notes:Object.freeze([\n  "RECOVERING-DEFENDER-PASS-01: Ground-pass targeting now anticipates defenders recovering from a brief stun before the ball arrives, while longer-stunned defenders remain safely ignored. Four controls, physics, rosters and saves unchanged. Exact-head QA pending.",
   'AIRBORNE-RECEIVER-PASS-01: Directed ground passes modestly favor an available grounded teammate over a high-jumping receiver, while a lone airborne teammate remains selectable. Four controls, physics, rosters and saves unchanged. Exact-head QA pending.',
   'CARRIER-REACH-TACKLE-01: PASS poke and SHOOT slide prioritize a forward ball carrier only within a useful action-specific reach, rather than ignoring a closer defender to chase a distant carrier. Four controls, tackle physics, rosters and saves unchanged. Exact-head QA pending.',
   'RECEIVER-LATERAL-PASS-01: Directed PASS avoids fast sideways-moving receivers likely to leave the ground-pass lane; forward-running and stationary targets retain their normal priority. Four controls and saves unchanged. Exact-head QA pending.',
   'RECEIVER-MOMENTUM-PASS-01: Directed PASS modestly favors forward-running teammates when passing choices are otherwise close; marked lanes, four controls, ball physics and saves remain unchanged. Exact-head QA pending.',
   'PASS-CROSS-TIMING-01: Passing-lane decisions no longer treat a defender crossing behind an already-travelled ground pass as an automatic interception; timely crossing remains dangerous. Four controls, physics, rosters and saves unchanged. Exact-head QA pending.',
-  'FORWARD-TACKLE-TARGET-01: PASS poke and SHOOT slide now prioritize opponents in the player's facing/movement direction, avoiding backward auto-lock tackles while keeping the forward ball carrier first. Four buttons, tackle reach, rosters and saves unchanged. Exact-head QA pending.',
+  'FORWARD-TACKLE-TARGET-01: PASS poke and SHOOT slide now prioritize opponents in the player facing/movement direction, avoiding backward auto-lock tackles while keeping the forward ball carrier first. Four buttons, tackle reach, rosters and saves unchanged. Exact-head QA pending.',
   'CROSSING-PASS-LANE-01: Directed passing now detects defenders sprinting completely across a pass lane during the bounded flight lookahead, avoiding interception routes that endpoint-only prediction missed. Four controls, pass physics, rosters and saves unchanged. Exact-head QA pending.',
   'PASS-FLIGHT-LANE-01: Directed passing now anticipates defender movement over a bounded distance-aware window, so long passes better avoid closing defenders while short passes remain responsive. Four controls, physics, saves and rosters unchanged. Exact-head QA pending.',
   'NEAR-END-PASS-INTERCEPT-01: Directed passing now treats defenders just beyond the passer and near the receiver as interception threats, reducing unsafe short passes while preserving four controls, pass physics and saves. Exact-head QA and deployment pending.',
