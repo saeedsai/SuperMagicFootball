@@ -79,7 +79,12 @@ const SHOTFEEL=(()=>{
     const crossX=rival.x+(futureX-rival.x)*fraction;
     const crossY=rival.y+(futureY-rival.y)*fraction;
     const crossT=((crossX-from.x)*dx+(crossY-from.y)*dy)/segment;
-    if(crossT>.045&&crossT<.97)blocker=Math.max(blocker,.19);
+    // A crossing only intercepts if the defender reaches that point near
+    // the ball's progress. A late sweep behind an already-passed ball
+    // must not turn an otherwise open receiver into a blocked lane.
+    const ballArrival=crossT*lookahead;
+    const defenderArrival=fraction*lookahead;
+    if(crossT>.045&&crossT<.97&&defenderArrival<=ballArrival+.055)blocker=Math.max(blocker,.19);
    }
    const pressure=marker+blocker;
    if(pressure>strongest){second=strongest;strongest=pressure;}
