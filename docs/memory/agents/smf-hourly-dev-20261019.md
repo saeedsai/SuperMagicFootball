@@ -6,6 +6,7 @@
 Implement tested gameplay, counterable four-action Magic Tricks, Player Studio usability, existing-player eight-view graphics, keeper/Career. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09, saves and offline.
 
 ## Current checkpoint
+- Candidate .79 pass-crossing timing guard committed for real directed passing; exact-head QA pending.
 - Candidate .78 forward-facing tackle and slide target selection in production engine; focused regression committed; exact-head CI and release pending.
 - Candidate .77 counts a fast defender sweeping completely across the pass lane; focused test added. Fixed .76 stale offline cache suffix (3 confirmed CI failures). Exact-head QA pending.
 - Candidate .76 scales bounded defender movement prediction to pass length; game source and focused regression committed. QA/release pending.
