@@ -31,8 +31,8 @@ test('both human outfield and directed goalkeeper passes provide rival positions
 });
 
 test('moving defenders influence directed pass interception without changing stationary lanes',()=>{
- const incoming={x:180,y:95,vx:0,vy:-350};
- const departing={x:180,y:95,vx:0,vy:350};
+ const incoming={x:275,y:60,vx:0,vy:-300};
+ const departing={x:275,y:60,vx:0,vy:300};
  assert.equal(choose(undefined,[incoming]),open,'closing defender makes straight lane less safe');
  assert.equal(choose(undefined,[departing]),near,'departing defender should not block straight pass');
  assert.equal(choose(undefined,[{...incoming,vx:Infinity,vy:NaN}]),near,'nonfinite motion must be ignored');
