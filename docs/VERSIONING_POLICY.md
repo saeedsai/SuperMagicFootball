@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.83
+# SuperMagicFootball release/version policy — About-only 0.12.81.84
+
+**Dev candidate 0.12.81.84 (18 November 2026):** RECOVERING-DEFENDER-PASS-01: Ground-pass targeting now anticipates defenders recovering from a brief stun before the ball arrives, while longer-stunned defenders remain safely ignored. Four controls, physics, rosters and saves unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.83 (18 November 2026):** AIRBORNE-RECEIVER-PASS-01: Directed ground passes modestly favor an available grounded teammate over a high-jumping receiver, while a lone airborne teammate remains selectable. Four controls, physics, rosters and saves unchanged. Exact-head QA pending.
 
