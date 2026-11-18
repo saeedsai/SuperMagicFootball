@@ -6,6 +6,7 @@
 Implement tested gameplay, counterable four-action Magic Tricks, Player Studio usability, existing-player eight-view graphics, keeper/Career. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09, saves and offline.
 
 ## Current checkpoint
+- Candidate .85: actual lane-position stun recovery timing in pass targeting; focused regression. Fixed literal escaped newline in release.js. Exact-head QA pending.
 - Candidate .84: recovering defenders within bounded pass-flight lookahead now count as lane blockers; focused test added. Also repaired release.js unescaped apostrophe that failed .83 CI preflight. Exact-head QA pending.
 - Candidate .83 favors grounded receivers for ground PASS with bounded airborne penalty; focused regression added. Corrected literal escaped newline in release.js confirmed by .82 CI logs. New exact-head QA pending.
 - Candidate .82 bounds forward ball-carrier auto-targeting by poke/slide reach; focused regression committed, exact-head CI pending.
