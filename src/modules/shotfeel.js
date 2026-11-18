@@ -108,7 +108,10 @@ const SHOTFEEL=(()=>{
    if(d<=28||d>maxDistance)return null;
    const alignment=(dx*hx+dy*hy)/d;
    if(alignment<.77)return null;
-   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,q,opponents)};
+   // Bounded lead preference for receivers already moving forward; invalid velocities are neutral.
+   const vx=Number.isFinite(q.vx)?q.vx:0,vy=Number.isFinite(q.vy)?q.vy:0;
+   const momentumBonus=Math.max(0,clamp((vx*hx+vy*hy)/320,-1,1))*.028;
+   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,q,opponents)+momentumBonus};
   }).filter(Boolean).sort((a,b)=>b.score-a.score||a.d-b.d)[0]?.q||null;
  }
  return {launchPower,flightDrag,impactFactor,contactEnergy,lanePreference,aiFinishingPriority,teammateInDirection};

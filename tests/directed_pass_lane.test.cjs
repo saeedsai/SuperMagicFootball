@@ -111,3 +111,12 @@ test('late lane crossing behind a travelling pass is not a phantom interception'
  assert.ok(onTimeRisk>lateRisk,'late crossing should not incur full swept interception risk');
  assert.ok(Number.isFinite(lateRisk));
 });
+
+
+test('directed pass gives bounded preference to a forward-running receiver',()=>{
+ const still={x:350,y:0,vx:0,vy:0},run={x:360,y:0,vx:300,vy:0};
+ assert.equal(feel.teammateInDirection(from,[still,run],{x:1,y:0},1300),run);
+ assert.equal(feel.teammateInDirection(from,[still,{...run,vx:-300}],{x:1,y:0},1300),still);
+ assert.equal(feel.teammateInDirection(from,[still,{...run,vx:Infinity}],{x:1,y:0},1300),still);
+ assert.equal(feel.teammateInDirection(from,[still,{...run,x:700}],{x:1,y:0},1300),still);
+});

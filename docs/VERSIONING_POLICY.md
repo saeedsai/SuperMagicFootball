@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.79
+# SuperMagicFootball release/version policy — About-only 0.12.81.80
+
+**Dev candidate 0.12.81.80 (18 November 2026):** RECEIVER-MOMENTUM-PASS-01: Directed PASS modestly favors forward-running teammates when passing choices are otherwise close; marked lanes, four controls, ball physics and saves remain unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.79 (18 November 2026):** PASS-CROSS-TIMING-01: Passing-lane decisions no longer treat a defender crossing behind an already-travelled ground pass as an automatic interception; timely crossing remains dangerous. Four controls, physics, rosters and saves unchanged. Exact-head QA pending.
 
