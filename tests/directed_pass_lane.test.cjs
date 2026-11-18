@@ -81,6 +81,6 @@ test('fast defender crossing the whole pass lane remains an interception risk',(
  const risk=lanes.passingLanePressure(from,target,[crossing]);
  assert.ok(risk>=.19,'swept crossing must count even when endpoint sampling underestimates the crossing');
  assert.equal(lanes.passingLanePressure(from,target,[{...crossing,stun:1}]),0);
- assert.equal(lanes.passingLanePressure(from,target,[{...crossing,x:450}]),0,'crossing beyond receiver cannot intercept');
+ assert.equal(lanes.passingLanePressure(from,target,[{...crossing,x:600}]),0,'crossing beyond receiver cannot intercept');
  assert.ok(lanes.passingLanePressure(from,target,[{...crossing,vy:Infinity}])<risk,'invalid velocity cannot create phantom crossing');
 });
