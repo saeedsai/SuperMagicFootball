@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.82',
+ version:'0.12.81.83',
  date:'2026-11-18',
  notes:Object.freeze([
+  'AIRBORNE-RECEIVER-PASS-01: Directed ground passes modestly favor an available grounded teammate over a high-jumping receiver, while a lone airborne teammate remains selectable. Four controls, physics, rosters and saves unchanged. Exact-head QA pending.',
   'CARRIER-REACH-TACKLE-01: PASS poke and SHOOT slide prioritize a forward ball carrier only within a useful action-specific reach, rather than ignoring a closer defender to chase a distant carrier. Four controls, tackle physics, rosters and saves unchanged. Exact-head QA pending.',
   'RECEIVER-LATERAL-PASS-01: Directed PASS avoids fast sideways-moving receivers likely to leave the ground-pass lane; forward-running and stationary targets retain their normal priority. Four controls and saves unchanged. Exact-head QA pending.',
   'RECEIVER-MOMENTUM-PASS-01: Directed PASS modestly favors forward-running teammates when passing choices are otherwise close; marked lanes, four controls, ball physics and saves remain unchanged. Exact-head QA pending.',
