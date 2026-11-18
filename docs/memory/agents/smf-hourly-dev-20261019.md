@@ -6,6 +6,7 @@
 Implement tested gameplay, counterable four-action Magic Tricks, Player Studio usability, existing-player eight-view graphics, keeper/Career. Preserve 223 teams/2676 players, six formations, Pass/Shoot/Dribble/Jump, ten Career/Cup slots, SD09, saves and offline.
 
 ## Current checkpoint
+- Candidate .87 receiver correction improves aimed-pass selection when teammate runs laterally into rather than away from lane; focused regression. Corrected .86 stale README heading and release notes escaped newline. Exact-head QA pending.
 - Candidate .86: faster closing-defender pass lane lookahead; corrected tackle test fixture facing; exact-head QA pending.
 - Candidate .85: actual lane-position stun recovery timing in pass targeting; focused regression. Fixed literal escaped newline in release.js. Exact-head QA pending.
 - Candidate .84: recovering defenders within bounded pass-flight lookahead now count as lane blockers; focused test added. Also repaired release.js unescaped apostrophe that failed .83 CI preflight. Exact-head QA pending.
@@ -30,13 +31,4 @@ Implement tested gameplay, counterable four-action Magic Tricks, Player Studio u
 2. Confirm CI-gated main promotion, main regression, Pages deployment and hosted bytes independently.
 3. Next gameplay increment: four-button Trick counters or goalkeeper quality with focused regression.
 4. Advance original existing-player eight-view frames using Asset Studio and game-scale screenshots; then Career UI.
-5. Investigate Render trigger drift without routine LAN changes and escalate main ruleset #87.
-
-## Ownership and exclusions
-Only own checkpoint. Do not create branches, force-push, bypass CI, change roster, certify hardware, or create concept heroes.
-
-## Evidence
-GitHub Full Census 44255879322 logs; preflight failure verified. New exact-head QA pending; no local checkout/Node or physical test claimed.
-
-## Cleanup
-No scratch branches, under 4KiB.
+5. Investigate Render trigger drift without routine LAN change
