@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.96
+# SuperMagicFootball release/version policy — About-only 0.12.81.97
+
+**Dev candidate 0.12.81.97 (19 November 2026):** RECEIVER-ARRIVAL-CROWD-01: Directed PASS penalizes moving teammates whose predicted reception point is occupied by a defender, while preserving lone-receiver and invalid-motion fallback. Four controls, saves, rosters and ball physics unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.96 (19 November 2026):** TELEPORT-JUMP-TIMER-01: Teleport landing counters require an active defensive JUMP timer alongside airborne height and landing-corridor positioning; expired jumps no longer counter. Four controls, saves, rosters and ball physics unchanged. Exact-head QA pending.
 
