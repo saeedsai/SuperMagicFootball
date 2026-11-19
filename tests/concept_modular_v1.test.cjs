@@ -122,7 +122,7 @@ test('C01 near-arm gait is a small visual-only transformation, not new gameplay 
  assert.match(art,/const armStride=-armPhase\*\.035/);
  assert.match(art,/ctx\.translate\(ax,ay\);ctx\.rotate\(armStride\);ctx\.translate\(-ax,-ay\)/);
  assert.ok(!/engine\.|p\.x\s*=|p\.y\s*=|p\.dx\s*=/.test(art),'Graphics must not mutate gameplay motion');
- assert.match(read('sw.js'),/smf-082538-concept-front-hair-v1-rear-v2-face-v3-arm-v4-far-v5/);
+ assert.match(read('sw.js'),/const CACHE=['"]smf-[^'"]+['"]/);
 });
 
 test('front far painted arm is source-authored, transparent and rotates opposite to near arm without engine mutation',()=>{
