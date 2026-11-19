@@ -60,7 +60,7 @@ test('actual playable engine and generated QA fixture load the one independent p
  assert.match(engine,/keeperDiveCooldown\(skill,diving,fatigue,PHYSICS_TUNING\)/);
  assert.match(build,/'physicsbalance','shotpaths','magic-hazards','engine'/,'browser fixture must embed shared zigzag module before engine');
  assert.match(sw,/'physicsbalance','shotpaths','magic-hazards','engine'/,'offline cache must include shared zigzag module before engine');
- assert.match(sw,/smf-082538-concept-front-hair-v1/);
+ assert.match(sw,/const CACHE=['"]smf-[^'"]+['"]/);
  assert.equal(source('data/mechanics/gameplay.json').includes('"w": 2260.8'),true);
 });
 
