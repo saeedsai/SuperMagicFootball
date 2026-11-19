@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.106
+# SuperMagicFootball release/version policy — About-only 0.12.81.107
+
+**Dev candidate 0.12.81.107 (19 November 2026):** SLIDE-AIRBORNE-GUARD-01: Grounded slide tackles now pass beneath high-jumping opponents and ignore players already knocked down or getting up; standing and low-jumping opponents remain tackleable. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.106 (19 November 2026):** HURT-RECEIVER-READY-01: Directed PASS favors a settled teammate over an otherwise similar receiver still recoiling from contact; a lone hurt teammate remains selectable and normal priority returns after recoil. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
