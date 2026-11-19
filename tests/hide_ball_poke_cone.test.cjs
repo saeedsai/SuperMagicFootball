@@ -18,6 +18,9 @@ test('PASS poke counters Hide Ball only inside a facing cone',()=>{
  assert.equal(counter(defender(55,100,1,0)),true,'forward poke');
  assert.equal(counter(defender(65,65,1,1)),true,'diagonal forward poke');
  assert.equal(counter(defender(65,65,1,-1)),false,'diagonal poke moving away');
+ assert.equal(counter(defender(80,100,.55,.835)),true,'close-quarter diagonal poke has a forgiving cone');
+ assert.equal(counter(defender(55,100,.55,.835)),false,'same diagonal at distance remains outside standard cone');
+ assert.equal(counter(defender(80,100,0,1)),false,'close-quarter sideways poke still misses');
  assert.equal(counter(defender(55,100,0,1)),false,'sideways poke');
  assert.equal(counter(defender(55,100,-1,0)),false,'backwards poke');
  assert.equal(counter(defender(55,100,0,0)),true,'stationary defender uses face');
