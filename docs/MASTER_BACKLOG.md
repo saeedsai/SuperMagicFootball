@@ -1,3 +1,5 @@
+**2026-11-19 candidate 0.12.81.102:** KNOCKDOWN-RECEIVER-READY-01: Directed PASS prefers an upright teammate over a similarly placed receiver still knocked down or getting up; lone downed teammates remain selectable and normal selection resumes on recovery. Four controls, saves and ball physics unchanged. Exact-head QA pending. Focused regression added.
+
 **2026-11-19 candidate 0.12.81.101:** RETREAT-RECEIVER-READY-01: Directed PASS slightly favors a settled teammate over a similarly placed receiver sprinting backward toward the passer; lone retreating receivers remain selectable and invalid motion remains neutral. Four controls, saves and ball physics unchanged. Exact-head QA pending. Focused regression added.
 
 **2026-11-19 candidate 0.12.81.100:** SLIDE-RECEIVER-READY-01: Directed PASS favors an upright teammate over a similarly placed receiver still committed to a slide, while keeping a lone sliding teammate selectable and clearing the penalty after the slide ends. Four controls, saves and ball physics unchanged. Exact-head QA pending. Focused regression added.
