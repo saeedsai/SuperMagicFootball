@@ -910,8 +910,8 @@ class GameEngine{
   // Lead a moving ball carrier by a short, bounded fraction of the slide run-up.
   // Avoid steering at stale feet when the carrier is sprinting across the lane;
   // stationary targets and free slides keep their original direction.
-  const leadX=target?clamp((Number.isFinite(target.moveVX)?target.moveVX:0)*.085,-22,22):0;
-  const leadY=target?clamp((Number.isFinite(target.moveVY)?target.moveVY:0)*.085,-22,22):0;
+  const leadX=slide&&target?clamp((Number.isFinite(target.moveVX)?target.moveVX:0)*.085,-22,22):0;
+  const leadY=slide&&target?clamp((Number.isFinite(target.moveVY)?target.moveVY:0)*.085,-22,22):0;
   const dir=target?norm(target.x+leadX-p.x,target.y+leadY-p.y):norm(p.dx||p.face,p.dy||0);
   if(slide){
    // A slide is a timed physical dash rather than a 26-unit teleport. Run-up speed matters.
