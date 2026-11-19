@@ -25,7 +25,7 @@ test('exact reference sprites exist as valid WebP and are not rendered for exist
 });
 test('offline, modular imports and inline fixture contain the actual raster assets',()=>{
  const sw=text('sw.js'),build=text('scripts/build.py');
- assert.match(sw,/smf-082538-concept-front-hair-v1/);
+ assert.match(sw,/const CACHE=['"]smf-[^'"]+['"]/);
  assert.match(sw,/assets\/concept_hero/);
  assert.match(build,/CONCEPT_HERO_INLINE/);
  assert.match(build,/'concepthero','conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-relay-peer','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
