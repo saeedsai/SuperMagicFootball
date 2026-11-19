@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.98
+# SuperMagicFootball release/version policy — About-only 0.12.81.99
+
+**Dev candidate 0.12.81.99 (19 November 2026):** HIDE-BALL-CLOSE-POKE-01: At 30 units or closer, a grounded active defensive PASS poke gets a slightly wider forward aim cone against Hide Ball; distant, side-on, backwards, expired and airborne pokes retain their existing restrictions. Four controls, ball physics and saves unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.98 (19 November 2026):** HIDE-BALL-POKE-CONE-01: Defensive PASS pokes counter Hide Ball only when actively aimed into the carrier's approach cone, including diagonal play; sideways, backwards, expired and airborne pokes fail. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
