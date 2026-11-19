@@ -55,7 +55,8 @@ const SHOTFEEL=(()=>{
    // DOWNED-LANE-READ-01: a defender lying on the pitch or getting up
    // cannot actively mark a receiver or cut out a ground pass. Do not let
    // stale proximity pressure steer PASS away from a genuinely open lane.
-   if(rival.action==='shotDown'||rival.action==='shotGetUp')continue;
+   if(rival.action==='shotDown'||rival.action==='shotGetUp'||
+      (rival.action==='jump'&&Number.isFinite(rival.z)&&rival.z>25))continue;
    // A defender recovering before a ground pass arrives can still intercept.
    // Longer stuns remain harmless; compare against the same bounded flight window.
    const passLookahead=Math.min(.35,Math.max(.12,Math.sqrt(segment)/1400));
@@ -164,7 +165,8 @@ const SHOTFEEL=(()=>{
    const receptionCrowding=moving&&Array.isArray(opponents)?opponents.reduce((risk,rival)=>{
     // DOWNED-ARRIVAL-CROWD-01: a knocked-down defender cannot crowd a runner's collection point.
     if(!rival||!Number.isFinite(rival.x)||!Number.isFinite(rival.y)||rival.stun>arrivalSeconds||
-       rival.action==='shotDown'||rival.action==='shotGetUp')return risk;
+       rival.action==='shotDown'||rival.action==='shotGetUp'||
+       (rival.action==='jump'&&Number.isFinite(rival.z)&&rival.z>25))return risk;
     const rx=rival.x+clamp((Number.isFinite(rival.vx)?rival.vx:0)*arrivalSeconds,-65,65);
     const ry=rival.y+clamp((Number.isFinite(rival.vy)?rival.vy:0)*arrivalSeconds,-65,65);
     return Math.max(risk,clamp(1-Math.hypot(rx-from.x-leadX,ry-from.y-leadY)/80,0,1)*.085);
