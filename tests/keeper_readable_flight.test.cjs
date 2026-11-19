@@ -25,3 +25,15 @@ test('erratic and retreating shots do not gain readable-flight preparation',()=>
  assert.ok(Number.isFinite(retreat.y));
  assert.ok(retreat.y<=116,'retreating ball cannot grant preparation');
 });
+
+test('early readable keeper dive intent preserves late read for erratic shots',()=>{
+ const engine=fs.readFileSync('src/modules/engine.js','utf8');
+ const start=engine.indexOf('tryKeeperDiveIntent(p){');
+ const end=engine.indexOf('\n // Physical but tightly bounded late lunge',start);
+ assert.ok(start>=0&&end>start);
+ const intent=engine.slice(start,end);
+ assert.match(intent,/readable\?390:320/,'readable shots gain a longer intent window');
+ assert.match(intent,/zigzag.*swim.*warp.*lightning/,'erratic shots remain unpredictable');
+ assert.match(intent,/predicted\.time<\.065\|\|predicted\.time>\.46/,'time gate stays bounded');
+ assert.match(engine,/remaining<=30\|\|remaining>390/,'early intent can advance through the longer window');
+});
