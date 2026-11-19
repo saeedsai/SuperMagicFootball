@@ -907,7 +907,12 @@ class GameEngine{
   // Slides can chase farther than short pokes, but both retain their physical travel budget.
   const carrierReach=slide?220:130;
   const target=inArc(owner)&&distance(p,owner)<=carrierReach?owner:near.filter(inArc).sort((a,b)=>distance(p,a)-distance(p,b))[0];
-  const dir=target?norm(target.x-p.x,target.y-p.y):norm(p.dx||p.face,p.dy||0);
+  // Lead a moving ball carrier by a short, bounded fraction of the slide run-up.
+  // Avoid steering at stale feet when the carrier is sprinting across the lane;
+  // stationary targets and free slides keep their original direction.
+  const leadX=target?clamp((Number.isFinite(target.moveVX)?target.moveVX:0)*.085,-22,22):0;
+  const leadY=target?clamp((Number.isFinite(target.moveVY)?target.moveVY:0)*.085,-22,22):0;
+  const dir=target?norm(target.x+leadX-p.x,target.y+leadY-p.y):norm(p.dx||p.face,p.dy||0);
   if(slide){
    // A slide is a timed physical dash rather than a 26-unit teleport. Run-up speed matters.
    const running=Math.hypot(p.moveVX||0,p.moveVY||0)>this.playerSpeed(p)*.65 || p.dashTimer>0 || p.sprintCharge>.1;
