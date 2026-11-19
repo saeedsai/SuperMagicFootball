@@ -1,0 +1,37 @@
+'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const source=fs.readFileSync('src/modules/engine.js','utf8');
+const start=source.indexOf("const hideBallPoked=");
+const end=source.indexOf(";\n  const bumpOrSand=",start);
+assert.ok(start>=0&&end>start,'extract live Hide Ball counter expression');
+const expression=source.slice(start,end).replace(/^const hideBallPoked=/,'');
+const norm=(x,y)=>{const length=Math.hypot(x,y)||1;return {x:x/length,y:y/length}};
+const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const evaluate=vm.runInNewContext('(id,inRange,p,rival,distance,norm)=>('+expression+')');
+const attacker={x:100,y:100};
+const defender=(x,y,dx,dy,extra={})=>({x,y,dx,dy,face:1,z:0,action:'punch',actionTimer:.15,...extra});
+const counter=(rival,id='hideBall',inRange=true)=>evaluate(id,inRange,attacker,rival,distance,norm);
+test('PASS poke counters Hide Ball only inside a facing cone',()=>{
+ assert.equal(counter(defender(55,100,1,0)),true,'forward poke');
+ assert.equal(counter(defender(65,65,1,1)),true,'diagonal forward poke');
+ assert.equal(counter(defender(65,65,1,-1)),false,'diagonal poke moving away');
+ assert.equal(counter(defender(55,100,0,1)),false,'sideways poke');
+ assert.equal(counter(defender(55,100,-1,0)),false,'backwards poke');
+ assert.equal(counter(defender(55,100,0,0)),true,'stationary defender uses face');
+ assert.equal(counter(defender(100,100,1,0)),false,'overlapping players lack a meaningful facing direction');
+});
+test('PASS poke timing and physical range remain required',()=>{
+ assert.equal(counter(defender(25,100,1,0)),false,'too far');
+ assert.equal(counter(defender(55,100,1,0,{actionTimer:0})),false,'expired poke');
+ assert.equal(counter(defender(55,100,1,0,{actionTimer:NaN})),false,'invalid timer');
+ assert.equal(counter(defender(55,100,1,0,{action:'slide'})),false,'SHOOT slide is not PASS poke');
+ assert.equal(counter(defender(55,100,1,0,{z:30})),false,'airborne poke');
+ assert.equal(counter(defender(55,100,1,0),'teleport'),false,'other trick unchanged');
+ assert.equal(counter(defender(55,100,1,0),'hideBall',false),false,'out of range');
+});
+test('live Magic Trick resolution still consumes Hide Ball poke result',()=>{
+ assert.match(source,/teleportJumpBlocked\|\|hideBallPoked\|\|spinBumpSlid/);
+});
