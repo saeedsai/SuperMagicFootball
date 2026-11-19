@@ -1,3 +1,5 @@
+> **0.12.81.110 release candidate (20 November 2026):** SLIDE-INVULNERABLE-TARGET-01: Slide tackles avoid auto-locking onto temporarily invulnerable opponents, preferring a contactable grounded defender or ball carrier; ordinary tackles and physical slide reach remain unchanged. Exact-head QA pending.
+
 > **0.12.81.109 release candidate (19 November 2026):** SLIDE-VALID-TARGET-01: Slide tackles now aim only at opponents they can actually contact: high jumpers and knocked-down players no longer steal auto-targeting from grounded runners. Ordinary standing tackles and slide reach remain unchanged. Exact-head QA pending.
 
 > **0.12.81.108 release candidate (19 November 2026):** SLIDE-MOVING-CARRIER-LEAD-01: Slide tackles aim slightly ahead of a moving opponent using capped lateral/forward motion, reducing misses against sprinting carriers; ordinary tackles, slide reach, four controls and saves unchanged. Exact-head QA pending.
