@@ -32,8 +32,19 @@ test('early readable keeper dive intent preserves late read for erratic shots',(
  const end=engine.indexOf('\n // Physical but tightly bounded late lunge',start);
  assert.ok(start>=0&&end>start);
  const intent=engine.slice(start,end);
- assert.match(intent,/readable\?390:320/,'readable shots gain a longer intent window');
+ assert.match(intent,/320\+70\*clamp/,'readable shots gain a skill-scaled longer intent window');
+ assert.match(intent,/readable\?320\+70/,'erratic shots retain the original 320-unit window');
+ assert.match(intent,/stat\(p,'gkSkill'\)/,'anticipation is tied to keeper skill');
  assert.match(intent,/zigzag.*swim.*warp.*lightning/,'erratic shots remain unpredictable');
  assert.match(intent,/predicted\.time<\.065\|\|predicted\.time>\.46/,'time gate stays bounded');
  assert.match(engine,/remaining<=30\|\|remaining>390/,'early intent can advance through the longer window');
+});
+
+test('skill-scaled keeper read window is bounded and distinguishes Magic shots',()=>{
+ const window=(skill,readable)=>readable?320+70*Math.min(1,Math.max(0,(skill-35)/65)):320;
+ assert.equal(window(35,true),320);
+ assert.equal(window(67.5,true),355);
+ assert.equal(window(100,true),390);
+ assert.equal(window(150,true),390);
+ assert.equal(window(100,false),320);
 });

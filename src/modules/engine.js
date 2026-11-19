@@ -718,8 +718,11 @@ class GameEngine{
   if(!p?.keeper||p.stun>0||p.diveCooldown>0||(p.diveIntentCooldown||0)>0||b.owner||
      b.attacker!==1-p.t||!(b.ordinaryShot||b.shot||b.strike)||this.superBreakerApproaching(p,b))return false;
   const toward=p.t===0?-1:1,remaining=(p.x-b.x)*toward;
-  const readable=!['zigzag','swim','warp','lightning','spiral','ricochet','clone','curve','homing','dolphin'].includes(b.shot?.behavior
-  if(b.vx*toward<=160||remaining<70||remaining>(readable?390:320))return false;
+  const readable=!['zigzag','swim','warp','lightning','spiral','ricochet','clone','curve','homing','dolphin'].includes(b.shot?.behavior);
+  // Stronger keepers read predictable flight earlier; low skill cannot get the full bonus.
+  // Magic shots never receive the anticipation advantage.
+  const readWindow=readable?320+70*clamp((stat(p,'gkSkill')-35)/65,0,1):320;
+  if(b.vx*toward<=160||remaining<70||remaining>readWindow)return false;
   const predicted=predictKeeperShot(p,b),reach=keeperReactionReach(p,b);
   if(!predicted||predicted.time<.065||predicted.time>.46||predicted.z>reach.z+15||
      predicted.y<WORLD.goalTop-25||predicted.y>WORLD.goalBottom+25)return false;

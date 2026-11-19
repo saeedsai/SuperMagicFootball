@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.92
+# SuperMagicFootball release/version policy — About-only 0.12.81.93
+
+**Dev candidate 0.12.81.93 (19 November 2026):** KEEPER-SKILL-READ-01: Predictable shots now grant earlier visible dive anticipation progressively with GK Skill; less experienced keepers retain a shorter read window, while erratic Magic shots keep their existing late-read window. Catch reach, shot physics, controls and saves remain unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.92 (19 November 2026):** KEEPER-EARLY-READ-01: Goalkeepers start a visible dive earlier against predictable incoming shots, while erratic Magic shots keep the existing late-read window. Catch reach, shot physics, four controls and saves remain unchanged. Exact-head QA pending.
 
