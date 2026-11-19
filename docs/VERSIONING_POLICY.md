@@ -1,4 +1,4 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.99
+# SuperMagicFootball release/version policy — About-only 0.12.81.100
 
 **Dev candidate 0.12.81.100 (19 November 2026):** SLIDE-RECEIVER-READY-01: Directed PASS favors an upright teammate over a similarly placed receiver still committed to a slide, while keeping a lone sliding teammate selectable and clearing the penalty after the slide ends. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
