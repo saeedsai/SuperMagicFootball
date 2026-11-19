@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.89
+# SuperMagicFootball release/version policy — About-only 0.12.81.90
+
+**Dev candidate 0.12.81.90 (19 November 2026):** RECEIVER-LEAD-LANE-01: Directed PASS checks defenders against a moving teammate's bounded predicted reception position, reducing passes into newly occupied lanes while preserving stationary and single-receiver choices. Four actions, ball physics, rosters and saves unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.89 (19 November 2026):** RECEIVER-ARRIVAL-ALIGN-01: Directed PASS now evaluates a moving teammate's predicted receiving angle during a bounded ground-pass flight, reducing passes to runners leaving the aimed cone while preserving stationary and lone receiver choices. Four actions, physics, saves and rosters unchanged. Exact-head QA pending.
 

@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.89',
+ version:'0.12.81.90',
  date:'2026-11-19',
  notes:Object.freeze([
+  "RECEIVER-LEAD-LANE-01: Directed PASS checks defenders against a moving teammate's bounded predicted reception position, reducing passes into newly occupied lanes while preserving stationary and single-receiver choices. Four actions, ball physics, rosters and saves unchanged. Exact-head QA pending.",
   "RECEIVER-ARRIVAL-ALIGN-01: Directed PASS now evaluates a moving teammate's predicted receiving angle during a bounded ground-pass flight, reducing passes to runners leaving the aimed cone while preserving stationary and lone receiver choices. Four actions, physics, saves and rosters unchanged. Exact-head QA pending.",
   'LATE-LANE-INTERCEPT-01: Ground PASS no longer treats a distant defender closing an early lane point after the ball has passed as a valid interception; timely closing and stationary lane blockers remain dangerous. Four controls, ball physics, rosters and saves unchanged. Exact-head QA pending.',
   "RECEIVER-CORRECTION-PASS-01: Directed passing distinguishes a receiver moving sideways toward the intended pass line from one running away; approaching movement incurs less lateral penalty, improving responsive passes without new controls or save changes. Exact-head QA pending.",

@@ -221,3 +221,13 @@ test('moving receiver arrival angle influences close directed pass choices',()=>
  assert.equal(choose([escaping]),escaping,'only receiver is still targetable');
  assert.equal(choose([{...escaping,vy:Infinity},stable]),escaping,'invalid velocity does not create phantom arrival penalty');
 });
+
+
+test('directed passes evaluate lane pressure at a moving receiver arrival point',()=>{
+ const runner={x:390,y:0,vx:0,vy:180};
+ const still={x:410,y:8,vx:0,vy:0};
+ const marker={x:390,y:48,vx:0,vy:0};
+ assert.equal(feel.teammateInDirection(from,[runner,still],{x:1,y:0},1300,[marker]),still,'avoid receiver running toward marked reception point');
+ assert.equal(feel.teammateInDirection(from,[runner],{x:1,y:0},1300,[marker]),runner,'single receiver remains selectable');
+ assert.equal(feel.teammateInDirection(from,[{...runner,vy:Infinity},still],{x:1,y:0},1300,[marker]).x,390,'invalid velocity remains neutral');
+});

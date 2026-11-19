@@ -1,10 +1,12 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
+**Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-11-19
 
 ## Mission
 Ship player-facing gameplay, counterable four-action Magic Tricks, original eight-view graphics, goalkeeper, Player Studio and Career improvements while preserving roster, saves, offline and four-button invariants.
 
 ## Current checkpoint
+- Candidate 0.12.81.90: bounded moving-receiver lane pressure; focused regression committed, exact-head QA pending.
 - Candidate 0.12.81.89: receiver arrival-angle pass scoring, focused regression committed; exact-head QA not yet verified.
 - Candidate 0.12.81.88: LATE-LANE-INTERCEPT-01 guards against defenders closing an early ground-pass lane point only after ball arrival; focused regression committed on dev.
 - Candidate .87: lateral receiver correction and release metadata aligned.
