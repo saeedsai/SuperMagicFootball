@@ -1,3 +1,5 @@
+> **0.12.81.92 release candidate (19 November 2026):** KEEPER-EARLY-READ-01: Goalkeepers start a visible dive earlier against predictable incoming shots, while erratic Magic shots keep the existing late-read window. Catch reach, shot physics, four controls and saves remain unchanged. Exact-head QA pending.
+
 > **0.12.81.91 release candidate (19 November 2026):** KEEPER-READABLE-FLIGHT-01: Goalkeepers gain a small bounded lateral catch-reach benefit when an ordinary incoming shot gives ample reaction time; point-blank and erratic Magic shots do not. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
 > **0.12.81.90 release candidate (19 November 2026):** RECEIVER-LEAD-LANE-01: Directed PASS checks defenders against a moving teammate's bounded predicted reception position, reducing passes into newly occupied lanes while preserving stationary and single-receiver choices. Four actions, ball physics, rosters and saves unchanged. Exact-head QA pending.
