@@ -1457,6 +1457,17 @@ class GameEngine{
   // HIDE-BALL-PASS-01: a timely defensive PASS poke (ordinary grounded tackle)
   // reads the fake ball only when the defender faces the carrier at close range.
   // A stale, airborne or backwards poke cannot cancel the trick.
+  // TELEPORT-JUMP-LANDING-01: a defender who times JUMP into the teleport
+  // landing corridor blocks the arrival, even without a SHOOT slide.
+  // A jump behind or far across the carrier's travel lane cannot counter.
+  const teleportJumpBlocked=id==='teleport'&&inRange&&
+   rival.action==='jump'&&Number.isFinite(rival.z)&&rival.z>=20&&(()=>{
+    const forward=norm(p.dx||p.face,p.dy||0);
+    const offsetX=rival.x-p.x,offsetY=rival.y-p.y;
+    const ahead=offsetX*forward.x+offsetY*forward.y;
+    const across=Math.abs(offsetX*forward.y-offsetY*forward.x);
+    return ahead>=35&&ahead<=105&&across<=38;
+   })();
   const hideBallPoked=id==='hideBall'&&inRange&&distance(p,rival)<=70&&
    rival.action==='punch'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&
    Number.isFinite(rival.z)&&rival.z<20&&
@@ -1467,7 +1478,7 @@ class GameEngine{
   const fieldTrick=id==='wind'||id==='mud';
   const fieldTrickSlid=fieldTrick&&inRange&&rival.action==='slide'&&rival.actionTimer>0&&rival.z<20;
   const fieldTrickJumped=fieldTrick&&inRange&&rival.action==='jump'&&rival.z>=20;
-  const countered=id==='lightning'?false:!!(jumpDodged||fireballParried||screamDodged||screamParried||freezeDodged||freezeParried||batDodged||batParried||teleportParried||hideBallPoked||spinBumpSlid||spinBumpJumped||fieldTrickSlid||fieldTrickJumped||(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling')));
+  const countered=id==='lightning'?false:!!(jumpDodged||fireballParried||screamDodged||screamParried||freezeDodged||freezeParried||batDodged||batParried||teleportParried||teleportJumpBlocked||hideBallPoked||spinBumpSlid||spinBumpJumped||fieldTrickSlid||fieldTrickJumped||(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling')));
    // A new Trick supersedes any short-lived Teleport afterimage.
    p.teleportTrail=null;
   p.magicReadyAt=this.clock+6;
