@@ -52,6 +52,10 @@ const SHOTFEEL=(()=>{
   let strongest=0,second=0;
   for(const rival of opponents){
    if(!rival||!Number.isFinite(rival.x)||!Number.isFinite(rival.y))continue;
+   // DOWNED-LANE-READ-01: a defender lying on the pitch or getting up
+   // cannot actively mark a receiver or cut out a ground pass. Do not let
+   // stale proximity pressure steer PASS away from a genuinely open lane.
+   if(rival.action==='shotDown'||rival.action==='shotGetUp')continue;
    // A defender recovering before a ground pass arrives can still intercept.
    // Longer stuns remain harmless; compare against the same bounded flight window.
    const passLookahead=Math.min(.35,Math.max(.12,Math.sqrt(segment)/1400));
