@@ -8,7 +8,7 @@ const begin=source.indexOf('  const canSlideTarget=q=>');
 const end=source.indexOf('  // Prefer a ball carrier',begin);
 assert.ok(begin>0&&end>begin,'production tackle selection found');
 const select=(slide,players,ballOwner)=>vm.runInNewContext(
- '(function(slide,players,ball){const p={t:0};const near=players.filter(q=>q.t!==p.t&&!q.keeper&&!q.stun&&(!slide||canSlideTarget(q)));'+source.slice(begin,end).replace('const near=this.players.filter','const near=players.filter')+'return {near,owner};})',
+ '(function(slide,players,ball){const p={t:0};'+source.slice(begin,end).replace('const near=this.players.filter','const near=players.filter')+'return {near,owner};})',
  {})(slide,players,{owner:ballOwner});
 test('slide ignores high airborne and downed opponents while retaining grounded targets',()=>{
  const high={t:1,z:42,action:'jump'},down={t:1,z:0,action:'shotDown'};
