@@ -247,5 +247,5 @@ test('ground PASS prefers an upright receiver over a teammate committed to a sli
  const upright={x:345,y:12,action:'idle',actionTimer:0};
  assert.equal(choose([sliding,upright]),upright,'a sliding teammate should not beat a nearby ready receiver');
  assert.equal(choose([sliding]),sliding,'a sole sliding teammate remains passable');
- assert.equal(choose([{...sliding,actionTimer:0},upright).x,320,'expired slide does not carry a stale penalty');
+ assert.equal(choose([{...sliding,actionTimer:0},upright]).x,320,'expired slide does not carry a stale penalty');
 });
