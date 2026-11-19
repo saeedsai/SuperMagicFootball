@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.105',
+ version:'0.12.81.106',
  date:'2026-11-19',
  notes:Object.freeze([
+  "HURT-RECEIVER-READY-01: Directed PASS favors a settled teammate over an otherwise similar receiver still recoiling from contact; a lone hurt teammate remains selectable and normal priority returns after recoil. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "AIRBORNE-LANE-READ-01: Directed ground PASS ignores defenders airborne above interception height when evaluating lane and moving-receiver arrival pressure; grounded defenders still block. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "DOWNED-ARRIVAL-CROWD-01: Directed PASS ignores knocked-down/getting-up defenders when estimating a moving receiver's collection-space crowding; upright defenders still pressure the target. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "DOWNED-LANE-READ-01: Directed PASS no longer treats knocked-down or getting-up defenders as active lane blockers; upright defenders still pressure passes. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
