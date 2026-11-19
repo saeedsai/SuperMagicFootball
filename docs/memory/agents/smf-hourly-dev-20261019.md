@@ -5,7 +5,7 @@
 ## Mission
 Ship player-facing gameplay, counterable four-action Magic Tricks, original eight-view graphics, goalkeeper, Player Studio and Career improvements while preserving roster, saves, offline and four-button invariants.
 
-## Current checkpoint
+## Current checkpoint\n- 0.12.81.107: slide contact excludes high jumpers and already-downed opponents; focused Node regression added; exact-head QA pending.\n
 - Candidate 0.12.81.106: HURT-RECEIVER-READY-01: active contact recoil modestly lowers receiver priority, lone target remains valid; focused regression added, QA pending.
 - Candidate 0.12.81.105: AIRBORNE-LANE-READ-01 ground passes ignore high airborne defenders in lane and reception crowding; focused regression added; exact-head QA pending.
 - Candidate 0.12.81.104: DOWNED-ARRIVAL-CROWD-01 excludes downed/getting-up defenders from moving receiver crowding; regression committed, QA pending.
