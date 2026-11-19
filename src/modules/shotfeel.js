@@ -162,7 +162,10 @@ const SHOTFEEL=(()=>{
    // Ground passes are harder to collect during a high jump. Prefer an equally
    // open grounded receiver, but never make the airborne player unselectable.
    const airbornePenalty=Number.isFinite(q.z)?clamp((q.z-12)/65,0,1)*.065:0;
-   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,{x:from.x+leadX,y:from.y+leadY},opponents)+momentumBonus-lateralPenalty-arrivalPenalty-receptionCrowding-airbornePenalty};
+   // A teammate committed to a slide cannot immediately settle a ground pass.
+   // Prefer an equally open upright receiver, but keep a lone sliding target valid.
+   const slidePenalty=q.action==='slide'&&(!Number.isFinite(q.actionTimer)||q.actionTimer>0)? .07:0;
+   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,{x:from.x+leadX,y:from.y+leadY},opponents)+momentumBonus-lateralPenalty-arrivalPenalty-receptionCrowding-airbornePenalty-slidePenalty};
   }).filter(Boolean).sort((a,b)=>b.score-a.score||a.d-b.d)[0]?.q||null;
  }
  return {launchPower,flightDrag,impactFactor,contactEnergy,lanePreference,aiFinishingPriority,teammateInDirection};
