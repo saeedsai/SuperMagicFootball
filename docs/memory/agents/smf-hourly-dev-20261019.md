@@ -2,21 +2,21 @@
 **Updated:** 2026-11-20
 
 ## Mission
-Ship player-facing gameplay and quality improvements, preserving four controls, rosters, saves and offline play.
+Ship player-facing gameplay and visual improvements with four controls, original assets, saves and offline support.
 
 ## Current checkpoint
-- 0.12.81.110 SLIDE-INVULNERABLE-TARGET-01: Slide tackles avoid auto-locking onto temporarily invulnerable opponents, preferring a contactable grounded defender or ball carrier; ordinary tackles and physical slide reach remain unchanged. Exact-head QA pending.
-- .109 eligible slide targeting; .108 moving carrier lead; .107 airborne contact. Breath .66–.68 complete.
-- Main protection #87, Render drift #86 and physical two-phone #48 remain unresolved.
+- 0.12.81.111 SLIDE-CLOSING-CONTACT-01: Sliding defenders can connect with fast opponents moving into the contact corridor using a bounded 45 ms prediction; retreating and lateral opponents retain ordinary contact reach. Exact-head QA pending.
+- .110 immunity targeting; .109 eligible targets; .108 moving lead; .107 airborne guard; Breath .66–.68 complete.
+- Main protection #87, Render drift #86 and physical two-phone #48 remain open.
 
 ## Next smallest action
-Verify exact-head Census and Modular QA, then improve low-FPS slide contact; proceed to keeper and Studio art QA.
+Verify exact-head Census and Modular QA; then improve goalkeeper dive recovery and original eight-view animation.
 
 ## Ownership and exclusions
-Only this checkpoint; do not touch other agents' memory. No concept heroes or unapproved art.
+Only own checkpoint. No concept heroes, copied art or routine LAN work.
 
 ## Evidence
-Focused regression added; full CI and hosted verification pending.
+Production slide-contact change and focused regression added. Full CI and hosted checks pending.
 
 ## Cleanup
-Keep checkpoint under 4 KiB and preserve protected main promotion.
+Keep under 4 KiB. Promote only via existing QA-gated main pipeline.
