@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.110 
+# SuperMagicFootball release/version policy — About-only 0.12.81.111 
+
+**Dev candidate 0.12.81.111 (20 November 2026):** SLIDE-CLOSING-CONTACT-01: Sliding defenders can connect with fast opponents moving into the contact corridor using a bounded 45 ms prediction; retreating and lateral opponents retain ordinary contact reach. Exact-head QA pending.
 
 **Dev candidate 0.12.81.110 (20 November 2026):** SLIDE-INVULNERABLE-TARGET-01: Slide tackles avoid auto-locking onto temporarily invulnerable opponents, preferring a contactable grounded defender or ball carrier; ordinary tackles and physical slide reach remain unchanged. Exact-head QA pending.
 
