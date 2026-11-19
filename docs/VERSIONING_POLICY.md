@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.94
+# SuperMagicFootball release/version policy — About-only 0.12.81.95
+
+**Dev candidate 0.12.81.95 (19 November 2026):** TELEPORT-JUMP-LANDING-01: A defender can counter a Teleport Magic Trick by timing JUMP into its forward landing corridor; jumps behind or wide of the arrival lane do not block it. Four actions, saves, rosters and ball physics unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.94 (19 November 2026):** KEEPER-MAGIC-READ-GUARD-01: Goalkeepers reserve their extended skill-based early dive window for ordinary predictable shots; even straight-flight Magic shots keep the shorter reaction window. Four actions, catch reach, ball physics, saves and rosters unchanged. Exact-head QA pending.
 
