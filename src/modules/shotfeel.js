@@ -162,7 +162,9 @@ const SHOTFEEL=(()=>{
    // available lone teammate is still passable and bad velocity data is neutral.
    const moving=Math.hypot(vx,vy)>85;
    const receptionCrowding=moving&&Array.isArray(opponents)?opponents.reduce((risk,rival)=>{
-    if(!rival||!Number.isFinite(rival.x)||!Number.isFinite(rival.y)||rival.stun>arrivalSeconds)return risk;
+    // DOWNED-ARRIVAL-CROWD-01: a knocked-down defender cannot crowd a runner's collection point.
+    if(!rival||!Number.isFinite(rival.x)||!Number.isFinite(rival.y)||rival.stun>arrivalSeconds||
+       rival.action==='shotDown'||rival.action==='shotGetUp')return risk;
     const rx=rival.x+clamp((Number.isFinite(rival.vx)?rival.vx:0)*arrivalSeconds,-65,65);
     const ry=rival.y+clamp((Number.isFinite(rival.vy)?rival.vy:0)*arrivalSeconds,-65,65);
     return Math.max(risk,clamp(1-Math.hypot(rx-from.x-leadX,ry-from.y-leadY)/80,0,1)*.085);
