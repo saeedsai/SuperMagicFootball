@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.102
+# SuperMagicFootball release/version policy — About-only 0.12.81.103
+
+**Dev candidate 0.12.81.103 (19 November 2026):** DOWNED-LANE-READ-01: Directed PASS no longer treats knocked-down or getting-up defenders as active lane blockers; upright defenders still pressure passes. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.102 (19 November 2026):** KNOCKDOWN-RECEIVER-READY-01: Directed PASS prefers an upright teammate over a similarly placed receiver still knocked down or getting up; lone downed teammates remain selectable and normal selection resumes on recovery. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
