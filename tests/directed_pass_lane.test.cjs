@@ -217,7 +217,7 @@ test('moving receiver arrival angle influences close directed pass choices',()=>
  const correcting={x:390,y:40,vx:0,vy:-280};
  const stable={x:400,y:10,vx:0,vy:0};
  assert.equal(choose([escaping,stable]),stable,'fast runner leaving the aimed cone loses to stable teammate');
- assert.equal(choose([correcting,stable]),correcting,'runner settling toward the line remains eligible');
+ assert.equal(choose([correcting,escaping]),correcting,'runner settling toward the line beats one escaping the cone');
  assert.equal(choose([escaping]),escaping,'only receiver is still targetable');
  assert.equal(choose([{...escaping,vy:Infinity},stable]),escaping,'invalid velocity does not create phantom arrival penalty');
 });
