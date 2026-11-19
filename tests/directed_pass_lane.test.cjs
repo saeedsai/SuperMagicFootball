@@ -306,3 +306,11 @@ test('AIRBORNE-LANE-READ-01: jumping defenders cannot block ground passing lanes
  assert.equal(choose([runner,other],[crowd]),runner,'high jumper cannot crowd reception point');
  assert.equal(choose([runner,other],[{...crowd,z:0}]),other,'grounded defender still crowds arrival');
 });
+
+test('HURT-RECEIVER-READY-01: active contact recoil favors settled receiver without rejecting lone target',()=>{
+ const hurt={x:310,y:0,action:'hurt',actionTimer:.2};
+ const ready={x:315,y:20,action:'idle'};
+ assert.equal(choose([hurt,ready]),ready,'prefer ready receiver over slightly better aligned recoiling teammate');
+ assert.equal(choose([hurt]),hurt,'lone hurt receiver remains available');
+ assert.equal(choose([{...hurt,actionTimer:0},ready]).x,310,'expired recoil no longer penalized');
+});
