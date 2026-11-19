@@ -18,6 +18,8 @@ Ship player-facing gameplay, counterable four-action Magic Tricks, original eigh
 - Breath .66–.68 already delivered; do not revisit without a reproducible failure.
 - Main protection #87, Render drift #86 and physical LAN acceptance #48 remain unresolved.
 
+- 0.12.81.95 TELEPORT-JUMP-LANDING-01: Timed JUMP in Teleport landing lane now counters arrival; focused regression committed, exact-head QA pending.
+
 ## Next smallest action
 1. Observe exact-head Full Regression Census and Modular QA; repair confirmed failures.
 2. Add responsive Magic Trick counterplay using only Pass/Shoot/Dribble/Jump.
