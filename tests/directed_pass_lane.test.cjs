@@ -258,3 +258,14 @@ test('directed PASS prefers a settled receiver over one sprinting back toward th
  assert.equal(choose([retreating]),retreating,'a lone retreating teammate remains selectable');
  assert.equal(choose([{...retreating,vx:Infinity},ready]).x,320,'invalid velocity must remain neutral');
 });
+
+test('directed PASS favors standing receivers over knocked-down teammates',()=>{
+ const down={x:300,y:0,action:'shotDown'};
+ const upright={x:315,y:24,action:'idle'};
+ assert.equal(feel.teammateInDirection(from,[down,upright],{x:1,y:0},1300),upright,'standing teammate wins over recovering teammate');
+ assert.equal(feel.teammateInDirection(from,[down],{x:1,y:0},1300),down,'lone knocked-down teammate remains selectable');
+ const gettingUp={...down,action:'shotGetUp'};
+ assert.equal(feel.teammateInDirection(from,[gettingUp,upright],{x:1,y:0},1300),upright,'getting-up animation is not immediately pass ready');
+ const recovered={...down,action:'idle'};
+ assert.equal(feel.teammateInDirection(from,[recovered,upright],{x:1,y:0},1300),recovered,'normal target preference returns after recovery');
+});
