@@ -138,10 +138,19 @@ const SHOTFEEL=(()=>{
    const lateralVelocity=vx*hy-vy*hx;
    const correcting=sideOffset*lateralVelocity<0;
    const lateralPenalty=clamp((lateralSpeed-85)/350,0,1)*.045*(correcting?.35:1);
+   // The target may drift away from the aimed cone before the ground pass
+   // arrives. Predict only a short, bounded reception interval; never reject
+   // the sole receiver or let extreme/invalid velocities dominate alignment.
+   const arrivalSeconds=clamp(d/1400,.12,.35);
+   const leadX=dx+clamp(vx*arrivalSeconds,-70,70);
+   const leadY=dy+clamp(vy*arrivalSeconds,-70,70);
+   const leadDistance=Math.hypot(leadX,leadY);
+   const arrivalAlignment=leadDistance>28?(leadX*hx+leadY*hy)/leadDistance:alignment;
+   const arrivalPenalty=clamp((alignment-arrivalAlignment)*.38,0,.085);
    // Ground passes are harder to collect during a high jump. Prefer an equally
    // open grounded receiver, but never make the airborne player unselectable.
    const airbornePenalty=Number.isFinite(q.z)?clamp((q.z-12)/65,0,1)*.065:0;
-   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,q,opponents)+momentumBonus-lateralPenalty-airbornePenalty};
+   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,q,opponents)+momentumBonus-lateralPenalty-arrivalPenalty-airbornePenalty};
   }).filter(Boolean).sort((a,b)=>b.score-a.score||a.d-b.d)[0]?.q||null;
  }
  return {launchPower,flightDrag,impactFactor,contactEnergy,lanePreference,aiFinishingPriority,teammateInDirection};
