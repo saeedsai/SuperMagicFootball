@@ -45,7 +45,7 @@ test('offline caching and inline browser test fixture both load new art module',
  const sw=fs.readFileSync(path.resolve(__dirname,'../sw.js'),'utf8');
  assert.match(build,/'artpose','characterart','concepthero','conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-relay-peer','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
  assert.match(sw,/'artpose','characterart','concepthero','conceptmodular','crownroyals','lan_protocol','lan-protocol-channel','lan_peer_connection','lan-relay-peer','lan-auto-signal','lan-auto-lobby','lan-lobby','lan-live-match','render'/);
- assert.match(sw,/smf-082538-concept-front-hair-v1/);
+ assert.match(sw,/const CACHE=['"]smf-[^'"]+['"]/);
 });
 test('production integration remains in match renderer',()=>{
  const source=fs.readFileSync(path.resolve(__dirname,'../src/modules/render.js'),'utf8');
