@@ -878,10 +878,23 @@ class GameEngine{
 
  // Resolve impact only at the actual player's location, including while a slide travels.
  slideContact(p){
+  // Predict only closing motion over at most 45 ms and 12 units.
+  // This compensates for frame update order without expanding lateral reach.
+  const slideClosingContact=(p,q)=>{
+   const gap=distance(p,q);
+   if(gap<64)return true;
+   if(gap>=76||!Number.isFinite(q.moveVX)||!Number.isFinite(q.moveVY))return false;
+   const vx=q.moveVX,vy=q.moveVY;
+   if((p.x-q.x)*vx+(p.y-q.y)*vy<=0)return false;
+   const speed=Math.hypot(vx,vy);
+   if(speed<=0)return false;
+   const lead=Math.min(12,speed*.045);
+   return Math.hypot(q.x+vx/speed*lead-p.x,q.y+vy/speed*lead-p.y)<64;
+  };
   const targets=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&q.invuln<=0&&
    // SLIDE-AIRBORNE-GUARD-01: a grounded slide cannot strike a high jumper
    // or waste its impact on an opponent already down on the pitch.
-   (!Number.isFinite(q.z)||q.z<20)&&q.action!=='shotDown'&&q.action!=='shotGetUp'&&distance(p,q)<64)
+   (!Number.isFinite(q.z)||q.z<20)&&q.action!=='shotDown'&&q.action!=='shotGetUp'&&slideClosingContact(p,q))
    .sort((a,b)=>(this.ball.owner===b?1:0)-(this.ball.owner===a?1:0)||distance(p,a)-distance(p,b));
   const q=targets[0];if(!q)return false;
   const c=contest(p,q,true),odds=Math.min(.96,c.knockChance*moraleFactor(p.morale)/moraleFactor(q.morale)*(1-Math.min(.57,(q.trickGuard||0)*(1+stat(q,'dribbling')/200))));
