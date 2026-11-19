@@ -1,3 +1,5 @@
+**2026-11-19 0.12.81.105 — AIRBORNE-LANE-READ-01:** AIRBORNE-LANE-READ-01: Directed ground PASS ignores defenders airborne above interception height when evaluating lane and moving-receiver arrival pressure; grounded defenders still block. Four controls, saves and ball physics unchanged. Exact-head QA pending. Focused Node regression added; exact-head Census and Modular QA pending.
+
 ## 2026-11-19 — 0.12.81.98 HIDE-BALL-POKE-CONE-01
 
 HIDE-BALL-POKE-CONE-01: Defensive PASS pokes counter Hide Ball only when actively aimed into the carrier's approach cone, including diagonal play; sideways, backwards, expired and airborne pokes fail. Four controls, saves and ball physics unchanged. Exact-head QA pending. Changed `src/modules/engine.js` and added `tests/hide_ball_poke_cone.test.cjs`. Existing dev only; full CI and hosted deployment require exact-head confirmation.
