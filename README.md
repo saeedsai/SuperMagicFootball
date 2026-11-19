@@ -1,3 +1,5 @@
+> **0.12.81.95 release candidate (19 November 2026):** TELEPORT-JUMP-LANDING-01: A defender can counter a Teleport Magic Trick by timing JUMP into its forward landing corridor; jumps behind or wide of the arrival lane do not block it. Four actions, saves, rosters and ball physics unchanged. Exact-head QA pending.
+
 > **0.12.81.94 release candidate (19 November 2026):** KEEPER-MAGIC-READ-GUARD-01: Goalkeepers reserve their extended skill-based early dive window for ordinary predictable shots; even straight-flight Magic shots keep the shorter reaction window. Four actions, catch reach, ball physics, saves and rosters unchanged. Exact-head QA pending.
 
 > **0.12.81.93 release candidate (19 November 2026):** KEEPER-SKILL-READ-01: Predictable shots now grant earlier visible dive anticipation progressively with GK Skill; less experienced keepers retain a shorter read window, while erratic Magic shots keep their existing late-read window. Catch reach, shot physics, controls and saves remain unchanged. Exact-head QA pending.
