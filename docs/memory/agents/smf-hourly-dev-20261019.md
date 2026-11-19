@@ -6,6 +6,7 @@
 Ship player-facing gameplay, counterable four-action Magic Tricks, original eight-view graphics, goalkeeper, Player Studio and Career improvements while preserving roster, saves, offline and four-button invariants.
 
 ## Current checkpoint
+- Candidate 0.12.81.100: Directed PASS favors upright receivers over active sliding teammates; focused regression committed; QA pending.
 - Candidate 0.12.81.99: Close-range defensive PASS pokes gain a slightly wider Hide Ball aim cone; focused regression committed; exact-head QA pending.
 - Candidate 0.12.81.98: directional PASS-poke cone against Hide Ball; focused regression committed, exact-head CI pending.
 - Candidate 0.12.81.97: occupied moving-receiver arrival space now receives bounded crowding penalty; focused regression added; CI pending.
