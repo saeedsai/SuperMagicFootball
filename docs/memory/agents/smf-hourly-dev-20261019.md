@@ -6,6 +6,7 @@
 Ship player-facing gameplay, counterable four-action Magic Tricks, original eight-view graphics, goalkeeper, Player Studio and Career improvements while preserving roster, saves, offline and four-button invariants.
 
 ## Current checkpoint
+- Candidate 0.12.81.94: ordinary-only early keeper read; straight Magic shots retain shorter window. Focused regression added; QA pending.
 - Candidate 0.12.81.93: skill-scaled predictable-shot dive anticipation and syntax repair. CI pending; do not claim release.
 - Candidate 0.12.81.92: KEEPER-EARLY-READ-01: Goalkeepers start a visible dive earlier against predictable incoming shots, while erratic Magic shots keep the existing late-read window. Catch reach, shot physics, four controls and saves remain unchanged. Exact-head QA pending.
 - Candidate 0.12.81.91: KEEPER-READABLE-FLIGHT-01: Goalkeepers gain a small bounded lateral catch-reach benefit when an ordinary incoming shot gives ample reaction time; point-blank and erratic Magic shots do not. Four controls, saves and ball physics unchanged. Exact-head QA pending.
