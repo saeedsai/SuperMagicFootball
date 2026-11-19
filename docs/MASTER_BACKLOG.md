@@ -1,3 +1,5 @@
+> **20 November 2026 — 0.12.81.111 SLIDE-CLOSING-CONTACT-01: Sliding defenders can connect with fast opponents moving into the contact corridor using a bounded 45 ms prediction; retreating and lateral opponents retain ordinary contact reach. Exact-head QA pending.**
+
 > **20 November 2026 — 0.12.81.110 SLIDE-INVULNERABLE-TARGET-01: Slide tackles avoid auto-locking onto temporarily invulnerable opponents, preferring a contactable grounded defender or ball carrier; ordinary tackles and physical slide reach remain unchanged. Exact-head QA pending.**
 
 > **19 November 2026 — 0.12.81.109 SLIDE-VALID-TARGET-01:** Slide tackles now aim only at opponents they can actually contact: high jumpers and knocked-down players no longer steal auto-targeting from grounded runners. Ordinary standing tackles and slide reach remain unchanged. Focused regression added; exact-head QA pending.
