@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.97',
+ version:'0.12.81.98',
  date:'2026-11-19',
  notes:Object.freeze([
+  "HIDE-BALL-POKE-CONE-01: Defensive PASS pokes counter Hide Ball only when actively aimed into the carrier's approach cone, including diagonal play; sideways, backwards, expired and airborne pokes fail. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "RECEIVER-ARRIVAL-CROWD-01: Directed PASS penalizes moving teammates whose predicted reception point is occupied by a defender, while preserving lone-receiver and invalid-motion fallback. Four controls, saves, rosters and ball physics unchanged. Exact-head QA pending.",
   "TELEPORT-JUMP-TIMER-01: Teleport landing counters require an active defensive JUMP timer alongside airborne height and landing-corridor positioning; expired jumps no longer counter. Four controls, saves, rosters and ball physics unchanged. Exact-head QA pending.",
   "TELEPORT-JUMP-LANDING-01: A defender can counter a Teleport Magic Trick by timing JUMP into its forward landing corridor; jumps behind or wide of the arrival lane do not block it. Four actions, saves, rosters and ball physics unchanged. Exact-head QA pending.",
