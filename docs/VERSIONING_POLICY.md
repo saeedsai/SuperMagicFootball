@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.88
+# SuperMagicFootball release/version policy — About-only 0.12.81.89
+
+**Dev candidate 0.12.81.89 (19 November 2026):** RECEIVER-ARRIVAL-ALIGN-01: Directed PASS now evaluates a moving teammate's predicted receiving angle during a bounded ground-pass flight, reducing passes to runners leaving the aimed cone while preserving stationary and lone receiver choices. Four actions, physics, saves and rosters unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.88 (18 November 2026):** LATE-LANE-INTERCEPT-01: Ground PASS no longer treats a distant defender closing an early lane point after the ball has passed as a valid interception; timely closing and stationary lane blockers remain dangerous. Four controls, ball physics, rosters and saves unchanged. Exact-head QA pending.
 
