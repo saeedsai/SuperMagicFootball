@@ -220,8 +220,12 @@ function keeperReactionReach(keeper, ball){
  const approaching=(ball?.vx||0)*toward>80;
  const timeToContact=approaching?Math.abs((keeper.x-(ball?.x||keeper.x))/(ball.vx||1)):1;
  const closeReaction=clamp((.24-timeToContact)/.24,0,1);
- const lateralCap=(116-22*fatigue)*(1-.19*closeReaction);
- const reactiveReach=(36+diving*.92+skill*.16)*response*(1-.19*closeReaction);
+ // Readable incoming shots allow a small lateral shuffle before contact.
+ // Close-range and erratic Magic shots cannot gain this preparation bonus.
+ const readableFlight=approaching&&!nonlinearPenalty?clamp((timeToContact-.3)/.7,0,1):0;
+ const readableBoost=readableFlight*(1-fatigue);
+ const lateralCap=(116-22*fatigue)*(1-.19*closeReaction)+6*readableBoost;
+ const reactiveReach=(36+diving*.92+skill*.16)*response*(1-.19*closeReaction)*(1+.06*readableBoost);
  return {x:(105+diving*1.35)*(.85+response*.15),y:Math.min(lateralCap,reactiveReach),z:(45+diving*1.7),response,timeToContact};
 }
 // Keepers cannot instantly dive again after a save. Better GK Skill and GK
