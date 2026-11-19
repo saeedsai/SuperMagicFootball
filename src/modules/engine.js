@@ -1461,7 +1461,8 @@ class GameEngine{
   // landing corridor blocks the arrival, even without a SHOOT slide.
   // A jump behind or far across the carrier's travel lane cannot counter.
   const teleportJumpBlocked=id==='teleport'&&inRange&&
-   rival.action==='jump'&&Number.isFinite(rival.z)&&rival.z>=20&&(()=>{
+   rival.action==='jump'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&
+   Number.isFinite(rival.z)&&rival.z>=20&&(()=>{
     const forward=norm(p.dx||p.face,p.dy||0);
     const offsetX=rival.x-p.x,offsetY=rival.y-p.y;
     const ahead=offsetX*forward.x+offsetY*forward.y;
