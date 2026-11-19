@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.93',
+ version:'0.12.81.94',
  date:'2026-11-19',
  notes:Object.freeze([
+  "KEEPER-MAGIC-READ-GUARD-01: Goalkeepers reserve their extended skill-based early dive window for ordinary predictable shots; even straight-flight Magic shots keep the shorter reaction window. Four actions, catch reach, ball physics, saves and rosters unchanged. Exact-head QA pending.",
   "KEEPER-SKILL-READ-01: Predictable shots now grant earlier visible dive anticipation progressively with GK Skill; less experienced keepers retain a shorter read window, while erratic Magic shots keep their existing late-read window. Catch reach, shot physics, controls and saves remain unchanged. Exact-head QA pending.",
   "KEEPER-EARLY-READ-01: Goalkeepers start a visible dive earlier against predictable incoming shots, while erratic Magic shots keep the existing late-read window. Catch reach, shot physics, four controls and saves remain unchanged. Exact-head QA pending.",
   "KEEPER-READABLE-FLIGHT-01: Goalkeepers gain a small bounded lateral catch-reach benefit when an ordinary incoming shot gives ample reaction time; point-blank and erratic Magic shots do not. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
