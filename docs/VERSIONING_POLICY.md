@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.101
+# SuperMagicFootball release/version policy — About-only 0.12.81.102
+
+**Dev candidate 0.12.81.102 (19 November 2026):** KNOCKDOWN-RECEIVER-READY-01: Directed PASS prefers an upright teammate over a similarly placed receiver still knocked down or getting up; lone downed teammates remain selectable and normal selection resumes on recovery. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.101 (19 November 2026):** RETREAT-RECEIVER-READY-01: Directed PASS slightly favors a settled teammate over a similarly placed receiver sprinting backward toward the passer; lone retreating receivers remain selectable and invalid motion remains neutral. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
