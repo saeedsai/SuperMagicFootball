@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.95
+# SuperMagicFootball release/version policy — About-only 0.12.81.96
+
+**Dev candidate 0.12.81.96 (19 November 2026):** TELEPORT-JUMP-TIMER-01: Teleport landing counters require an active defensive JUMP timer alongside airborne height and landing-corridor positioning; expired jumps no longer counter. Four controls, saves, rosters and ball physics unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.95 (19 November 2026):** TELEPORT-JUMP-LANDING-01: A defender can counter a Teleport Magic Trick by timing JUMP into its forward landing corridor; jumps behind or wide of the arrival lane do not block it. Four actions, saves, rosters and ball physics unchanged. Exact-head QA pending.
 
