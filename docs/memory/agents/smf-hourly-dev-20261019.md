@@ -6,6 +6,7 @@
 Ship player-facing gameplay, counterable four-action Magic Tricks, original eight-view graphics, goalkeeper, Player Studio and Career improvements while preserving roster, saves, offline and four-button invariants.
 
 ## Current checkpoint
+- Candidate 0.12.81.105: AIRBORNE-LANE-READ-01 ground passes ignore high airborne defenders in lane and reception crowding; focused regression added; exact-head QA pending.
 - Candidate 0.12.81.104: DOWNED-ARRIVAL-CROWD-01 excludes downed/getting-up defenders from moving receiver crowding; regression committed, QA pending.
 - Candidate 0.12.81.103: DOWNED-LANE-READ-01: PASS ignores knocked-down defenders as blockers; focused regression added; exact-head QA pending.
 - Candidate 0.12.81.102: KNOCKDOWN-RECEIVER-READY-01: PASS favors upright over knocked-down/getting-up receivers; lone target remains available; focused regression committed, exact-head QA pending.
