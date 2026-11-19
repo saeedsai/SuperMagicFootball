@@ -5,7 +5,7 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync('src/modules/engine.js','utf8');
 const start=source.indexOf("const teleportJumpBlocked=");
-const end=source.indexOf(";\n",start);
+const end=source.indexOf("})();",start)+4;
 assert.ok(start>=0&&end>start,'extract production teleport jump counter');
 const expression=source.slice(start,end).replace(/^const teleportJumpBlocked=/,'');
 const evaluate=vm.runInNewContext('(id,inRange,rival,p,norm)=>('+expression+')');
