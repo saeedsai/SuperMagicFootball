@@ -276,3 +276,16 @@ test('directed PASS favors standing receivers over knocked-down teammates',()=>{
  const recovered={...down,action:'idle'};
  assert.equal(feel.teammateInDirection(from,[recovered,upright],{x:1,y:0},1300),recovered,'normal target preference returns after recovery');
 });
+
+test('DOWNED-ARRIVAL-CROWD-01: downed defenders do not crowd a moving receiver at collection',()=>{
+ const runner={x:300,y:0,vx:180,vy:0};
+ const alternative={x:390,y:80};
+ const defender={x:340,y:0};
+ const aim={x:1,y:0};
+ const target=rivals=>feel.teammateInDirection(from,[runner,alternative],aim,1300,rivals);
+ assert.equal(target([{...defender,action:'shotDown'}]),runner,'knocked-down defender cannot occupy collection space');
+ assert.equal(target([{...defender,action:'shotGetUp'}]),runner,'getting-up defender cannot occupy collection space');
+ assert.equal(target([{...defender,action:'idle'}]),alternative,'upright defender still pressures the moving receiver');
+ assert.equal(target([{...defender,action:'idle'}])===runner,false);
+ assert.equal(feel.teammateInDirection(from,[runner],aim,1300,[defender]),runner,'single receiver remains available');
+});
