@@ -1,3 +1,7 @@
+## 2026-11-19 — 0.12.81.98 HIDE-BALL-POKE-CONE-01
+
+HIDE-BALL-POKE-CONE-01: Defensive PASS pokes counter Hide Ball only when actively aimed into the carrier's approach cone, including diagonal play; sideways, backwards, expired and airborne pokes fail. Four controls, saves and ball physics unchanged. Exact-head QA pending. Changed `src/modules/engine.js` and added `tests/hide_ball_poke_cone.test.cjs`. Existing dev only; full CI and hosted deployment require exact-head confirmation.
+
 ## 2026-11-14 — Native Space and candidate .71 CI repair
 
 Exact-head Modular QA 43524377990 on b99c60c7: 2408/2414 Node passed; six failed (five README/cache release contracts, one data-act focused button leaking global Jump). Read actual job 132226367514 logs. Committed native target fallback in input.js (c1b2d059, cf80ca3a), README heading .71 (da8bab97), SW cache suffix .71 (0229d9e5), focused data-act regression (8f9aa92e). GitHub accepted commits; new exact-head Node/Chromium/Modular QA, promotion and Pages verification pending. #48/#86/#87 open. No Breath gameplay changes in this increment.
