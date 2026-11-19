@@ -15,12 +15,6 @@ Ship player-facing gameplay, counterable four-action Magic Tricks, original eigh
 - Candidate 0.12.81.94: ordinary-only early keeper read; straight Magic shots retain shorter window. Focused regression added; QA pending.
 - Candidate 0.12.81.93: skill-scaled predictable-shot dive anticipation and syntax repair. CI pending; do not claim release.
 - Candidate 0.12.81.92: KEEPER-EARLY-READ-01: Goalkeepers start a visible dive earlier against predictable incoming shots, while erratic Magic shots keep the existing late-read window. Catch reach, shot physics, four controls and saves remain unchanged. Exact-head QA pending.
-- Candidate 0.12.81.91: KEEPER-READABLE-FLIGHT-01: Goalkeepers gain a small bounded lateral catch-reach benefit when an ordinary incoming shot gives ample reaction time; point-blank and erratic Magic shots do not. Four controls, saves and ball physics unchanged. Exact-head QA pending.
-- Candidate 0.12.81.90: bounded moving-receiver lane pressure; focused regression committed, exact-head QA pending.
-- Candidate 0.12.81.89: receiver arrival-angle pass scoring, focused regression committed; exact-head QA not yet verified.
-- Candidate 0.12.81.88: LATE-LANE-INTERCEPT-01 guards against defenders closing an early ground-pass lane point only after ball arrival; focused regression committed on dev.
-- Candidate .87: lateral receiver correction and release metadata aligned.
-- Prior .87 exact-head Census and Modular QA failed on missing checkpoint heading "Ownership and exclusions"; corrected here. Do not claim full QA or release.
 - Breath .66–.68 already delivered; do not revisit without a reproducible failure.
 - Main protection #87, Render drift #86 and physical LAN acceptance #48 remain unresolved.
 
@@ -38,7 +32,6 @@ Own only this checkpoint; do not edit other agents' checkpoints. Work on existin
 
 ## Evidence
 - 0.12.81.91 keeper source and focused Node regression authored; exact-head CI not yet observed.
-Gameplay source and focused regression committed in .88; basic source syntax and directed selection smoke checked. Four Node/four Chromium Census and Modular QA not yet observed passing for .88. No main promotion or hosted verification.
 
 ## Cleanup
 Keep this checkpoint under 4 KiB; no extra branches or temporary assets.
