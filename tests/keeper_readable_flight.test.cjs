@@ -49,5 +49,16 @@ test('skill-scaled keeper read window is bounded and distinguishes Magic shots',
  assert.equal(window(100,false),320);
 });
 
-test('straight-flight Magic shots cannot receive ordinary-shot early dive reads',()=>{\n const engine=fs.readFileSync('src/modules/engine.js','utf8');\n const start=engine.indexOf('tryKeeperDiveIntent(p){');\n const end=engine.indexOf('
- // Physical but tightly bounded late lunge',start);\n const intent=engine.slice(start,end);\n const expression=intent.match(/const readable=([^;]+);/)?.[1];\n assert.ok(expression,'production readable-flight predicate is present');\n const readable=vm.runInNewContext('(b)=>('+expression+')');\n assert.equal(readable({shot:null}),true,'ordinary shots retain skill-based early anticipation');\n assert.equal(readable({shot:{level:1,behavior:'straight'}}),false,'straight Magic shot cannot get the bonus');\n assert.equal(readable({shot:{level:1}}),false,'unspecified Magic trajectory cannot get the bonus');\n assert.equal(readable({shot:{level:1,behavior:'zigzag'}}),false,'erratic Magic shot remains late-read');\n});\n
+test('straight-flight Magic shots cannot receive ordinary-shot early dive reads',()=>{
+ const engine=fs.readFileSync('src/modules/engine.js','utf8');
+ const start=engine.indexOf('tryKeeperDiveIntent(p){');
+ const end=engine.indexOf('\n // Physical but tightly bounded late lunge',start);
+ const intent=engine.slice(start,end);
+ const expression=intent.match(/const readable=([^;]+);/)?.[1];
+ assert.ok(expression,'production readable-flight predicate is present');
+ const readable=vm.runInNewContext('(b)=>('+expression+')');
+ assert.equal(readable({shot:null}),true,'ordinary shots retain skill-based early anticipation');
+ assert.equal(readable({shot:{level:1,behavior:'straight'}}),false,'straight Magic shot cannot get the bonus');
+ assert.equal(readable({shot:{level:1}}),false,'unspecified Magic trajectory cannot get the bonus');
+ assert.equal(readable({shot:{level:1,behavior:'zigzag'}}),false,'erratic Magic shot remains late-read');
+});
