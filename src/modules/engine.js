@@ -878,7 +878,10 @@ class GameEngine{
 
  // Resolve impact only at the actual player's location, including while a slide travels.
  slideContact(p){
-  const targets=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&q.invuln<=0&&distance(p,q)<64)
+  const targets=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&q.invuln<=0&&
+   // SLIDE-AIRBORNE-GUARD-01: a grounded slide cannot strike a high jumper
+   // or waste its impact on an opponent already down on the pitch.
+   (!Number.isFinite(q.z)||q.z<20)&&q.action!=='shotDown'&&q.action!=='shotGetUp'&&distance(p,q)<64)
    .sort((a,b)=>(this.ball.owner===b?1:0)-(this.ball.owner===a?1:0)||distance(p,a)-distance(p,b));
   const q=targets[0];if(!q)return false;
   const c=contest(p,q,true),odds=Math.min(.96,c.knockChance*moraleFactor(p.morale)/moraleFactor(q.morale)*(1-Math.min(.57,(q.trickGuard||0)*(1+stat(q,'dribbling')/200))));
