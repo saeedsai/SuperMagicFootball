@@ -6,6 +6,7 @@
 Ship player-facing gameplay, counterable four-action Magic Tricks, original eight-view graphics, goalkeeper, Player Studio and Career improvements while preserving roster, saves, offline and four-button invariants.
 
 ## Current checkpoint
+- Candidate 0.12.81.91: KEEPER-READABLE-FLIGHT-01: Goalkeepers gain a small bounded lateral catch-reach benefit when an ordinary incoming shot gives ample reaction time; point-blank and erratic Magic shots do not. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 - Candidate 0.12.81.90: bounded moving-receiver lane pressure; focused regression committed, exact-head QA pending.
 - Candidate 0.12.81.89: receiver arrival-angle pass scoring, focused regression committed; exact-head QA not yet verified.
 - Candidate 0.12.81.88: LATE-LANE-INTERCEPT-01 guards against defenders closing an early ground-pass lane point only after ball arrival; focused regression committed on dev.
@@ -25,6 +26,7 @@ Ship player-facing gameplay, counterable four-action Magic Tricks, original eigh
 Own only this checkpoint; do not edit other agents' checkpoints. Work on existing dev; never bypass CI/security or push main manually. Preserve 223 teams, 2676 players, six formations, ten Career/Cup slots and SD09.
 
 ## Evidence
+- 0.12.81.91 keeper source and focused Node regression authored; exact-head CI not yet observed.
 Gameplay source and focused regression committed in .88; basic source syntax and directed selection smoke checked. Four Node/four Chromium Census and Modular QA not yet observed passing for .88. No main promotion or hosted verification.
 
 ## Cleanup
