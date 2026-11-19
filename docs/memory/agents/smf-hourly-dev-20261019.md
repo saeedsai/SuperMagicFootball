@@ -6,6 +6,7 @@
 Ship player-facing gameplay, counterable four-action Magic Tricks, original eight-view graphics, goalkeeper, Player Studio and Career improvements while preserving roster, saves, offline and four-button invariants.
 
 ## Current checkpoint
+- Candidate 0.12.81.98: directional PASS-poke cone against Hide Ball; focused regression committed, exact-head CI pending.
 - Candidate 0.12.81.97: occupied moving-receiver arrival space now receives bounded crowding penalty; focused regression added; CI pending.
 - Candidate 0.12.81.96: active JUMP timer required for Teleport landing counter; focused regression updated; exact-head QA pending.
 - Candidate 0.12.81.94: ordinary-only early keeper read; straight Magic shots retain shorter window. Focused regression added; QA pending.
