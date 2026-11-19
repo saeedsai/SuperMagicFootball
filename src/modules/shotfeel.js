@@ -149,10 +149,20 @@ const SHOTFEEL=(()=>{
    const arrivalPenalty=clamp((alignment-arrivalAlignment)*.38,0,.085);
    // Evaluate markers at the predicted reception point, not the receiver's stale feet.
    // The same capped lead used for alignment prevents unrealistic long-range extrapolation.
+   // A moving receiver running into a defender at the predicted collection point
+   // is riskier than a settled receiver. Keep this modest and bounded so an
+   // available lone teammate is still passable and bad velocity data is neutral.
+   const moving=Math.hypot(vx,vy)>85;
+   const receptionCrowding=moving&&Array.isArray(opponents)?opponents.reduce((risk,rival)=>{
+    if(!rival||!Number.isFinite(rival.x)||!Number.isFinite(rival.y)||rival.stun>arrivalSeconds)return risk;
+    const rx=rival.x+clamp((Number.isFinite(rival.vx)?rival.vx:0)*arrivalSeconds,-65,65);
+    const ry=rival.y+clamp((Number.isFinite(rival.vy)?rival.vy:0)*arrivalSeconds,-65,65);
+    return Math.max(risk,clamp(1-Math.hypot(rx-from.x-leadX,ry-from.y-leadY)/80,0,1)*.085);
+   },0):0;
    // Ground passes are harder to collect during a high jump. Prefer an equally
    // open grounded receiver, but never make the airborne player unselectable.
    const airbornePenalty=Number.isFinite(q.z)?clamp((q.z-12)/65,0,1)*.065:0;
-   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,{x:from.x+leadX,y:from.y+leadY},opponents)+momentumBonus-lateralPenalty-arrivalPenalty-airbornePenalty};
+   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,{x:from.x+leadX,y:from.y+leadY},opponents)+momentumBonus-lateralPenalty-arrivalPenalty-receptionCrowding-airbornePenalty};
   }).filter(Boolean).sort((a,b)=>b.score-a.score||a.d-b.d)[0]?.q||null;
  }
  return {launchPower,flightDrag,impactFactor,contactEnergy,lanePreference,aiFinishingPriority,teammateInDirection};
