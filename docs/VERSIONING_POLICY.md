@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.91
+# SuperMagicFootball release/version policy — About-only 0.12.81.92
+
+**Dev candidate 0.12.81.92 (19 November 2026):** KEEPER-EARLY-READ-01: Goalkeepers start a visible dive earlier against predictable incoming shots, while erratic Magic shots keep the existing late-read window. Catch reach, shot physics, four controls and saves remain unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.91 (19 November 2026):** KEEPER-READABLE-FLIGHT-01: Goalkeepers gain a small bounded lateral catch-reach benefit when an ordinary incoming shot gives ample reaction time; point-blank and erratic Magic shots do not. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
