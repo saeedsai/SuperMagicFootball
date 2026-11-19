@@ -249,3 +249,12 @@ test('ground PASS prefers an upright receiver over a teammate committed to a sli
  assert.equal(choose([sliding]),sliding,'a sole sliding teammate remains passable');
  assert.equal(choose([{...sliding,actionTimer:0},upright]).x,320,'expired slide does not carry a stale penalty');
 });
+
+
+test('directed PASS prefers a settled receiver over one sprinting back toward the passer',()=>{
+ const retreating={x:320,y:0,vx:-310,vy:0};
+ const ready={x:345,y:10,vx:0,vy:0};
+ assert.equal(choose([retreating,ready]),ready,'avoid a receiver sprinting against the intended pass');
+ assert.equal(choose([retreating]),retreating,'a lone retreating teammate remains selectable');
+ assert.equal(choose([{...retreating,vx:Infinity},ready]).x,320,'invalid velocity must remain neutral');
+});
