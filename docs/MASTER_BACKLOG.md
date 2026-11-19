@@ -1,3 +1,5 @@
+**2026-11-19 candidate 0.12.81.105:** AIRBORNE-LANE-READ-01: Directed ground PASS ignores defenders airborne above interception height when evaluating lane and moving-receiver arrival pressure; grounded defenders still block. Four controls, saves and ball physics unchanged. Exact-head QA pending. Focused regression added.
+
 **2026-11-19 candidate 0.12.81.104:** DOWNED-ARRIVAL-CROWD-01: Directed PASS ignores knocked-down/getting-up defenders when estimating a moving receiver's collection-space crowding; upright defenders still pressure the target. Four controls, saves and ball physics unchanged. Exact-head QA pending. Focused regression added.
 
 **2026-11-19 candidate 0.12.81.103:** DOWNED-LANE-READ-01: Directed PASS no longer treats knocked-down or getting-up defenders as active lane blockers; upright defenders still pressure passes. Four controls, saves and ball physics unchanged. Exact-head QA pending. Focused regression added.
