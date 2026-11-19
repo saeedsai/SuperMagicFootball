@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.90
+# SuperMagicFootball release/version policy — About-only 0.12.81.91
+
+**Dev candidate 0.12.81.91 (19 November 2026):** KEEPER-READABLE-FLIGHT-01: Goalkeepers gain a small bounded lateral catch-reach benefit when an ordinary incoming shot gives ample reaction time; point-blank and erratic Magic shots do not. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.90 (19 November 2026):** RECEIVER-LEAD-LANE-01: Directed PASS checks defenders against a moving teammate's bounded predicted reception position, reducing passes into newly occupied lanes while preserving stationary and single-receiver choices. Four actions, ball physics, rosters and saves unchanged. Exact-head QA pending.
 
