@@ -3,7 +3,8 @@
 const RELEASE=Object.freeze({
  version:'0.12.81.105',
  date:'2026-11-19',
- notes:Object.freeze([\n  "AIRBORNE-LANE-READ-01: Directed ground PASS ignores defenders airborne above interception height when evaluating lane and moving-receiver arrival pressure; grounded defenders still block. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
+ notes:Object.freeze([
+  "AIRBORNE-LANE-READ-01: Directed ground PASS ignores defenders airborne above interception height when evaluating lane and moving-receiver arrival pressure; grounded defenders still block. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "DOWNED-ARRIVAL-CROWD-01: Directed PASS ignores knocked-down/getting-up defenders when estimating a moving receiver's collection-space crowding; upright defenders still pressure the target. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "DOWNED-LANE-READ-01: Directed PASS no longer treats knocked-down or getting-up defenders as active lane blockers; upright defenders still pressure passes. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "KNOCKDOWN-RECEIVER-READY-01: Directed PASS prefers an upright teammate over a similarly placed receiver still knocked down or getting up; lone downed teammates remain selectable and normal selection resumes on recovery. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
