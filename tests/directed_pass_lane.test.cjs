@@ -18,6 +18,13 @@ test('directed passing prefers open receiver to tightly marked teammate',()=>{
  assert.equal(choose(undefined,[{x:Infinity,y:0}]),near,'invalid rival is ignored');
  assert.equal(choose([near],[marked]),near,'single available receiver remains selectable');
 });
+
+test('DOWNED-LANE-READ-01: grounded PASS ignores defenders still knocked down or getting up',()=>{
+ assert.equal(choose(undefined,[{...marked,action:'shotDown'}]),near,'downed defender cannot block straight lane');
+ assert.equal(choose(undefined,[{...marked,action:'shotGetUp'}]),near,'recovering defender cannot block straight lane');
+ assert.equal(choose(undefined,[{...marked,action:'idle'}]),open,'upright defender still blocks the lane');
+ assert.equal(choose([near],[{...marked,action:'idle'}]),near,'single receiver remains available');
+});
 test('direction and distance constraints remain authoritative',()=>{
  assert.equal(choose([{x:100,y:350},near]),near);
  assert.equal(choose([{x:-200,y:0}]),null);
