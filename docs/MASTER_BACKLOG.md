@@ -1,3 +1,5 @@
+**2026-11-19 candidate 0.12.81.98:** HIDE-BALL-POKE-CONE-01: Defensive PASS pokes counter Hide Ball only when actively aimed into the carrier's approach cone, including diagonal play; sideways, backwards, expired and airborne pokes fail. Four controls, saves and ball physics unchanged. Exact-head QA pending. Focused regression added; exact-head CI pending.
+
 **2026-11-19 candidate 0.12.81.97:** RECEIVER-ARRIVAL-CROWD-01: Directed PASS penalizes moving teammates whose predicted reception point is occupied by a defender, while preserving lone-receiver and invalid-motion fallback. Four controls, saves, rosters and ball physics unchanged. Exact-head QA pending. Focused regression added; CI pending.
 
 **2026-11-19 candidate 0.12.81.96:** TELEPORT-JUMP-TIMER-01: Teleport landing counters require an active defensive JUMP timer alongside airborne height and landing-corridor positioning; expired jumps no longer counter. Four controls, saves, rosters and ball physics unchanged. Exact-head QA pending.
