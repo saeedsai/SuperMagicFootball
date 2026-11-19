@@ -219,7 +219,7 @@ test('moving receiver arrival angle influences close directed pass choices',()=>
  assert.equal(choose([escaping,stable]),stable,'fast runner leaving the aimed cone loses to stable teammate');
  assert.equal(choose([correcting,escaping]),correcting,'runner settling toward the line beats one escaping the cone');
  assert.equal(choose([escaping]),escaping,'only receiver is still targetable');
- assert.equal(choose([{...escaping,vy:Infinity},stable]),escaping,'invalid velocity does not create phantom arrival penalty');
+ assert.equal(choose([{...escaping,vy:Infinity},stable]).x,escaping.x,'invalid velocity does not create phantom arrival penalty');
 });
 
 
@@ -230,4 +230,14 @@ test('directed passes evaluate lane pressure at a moving receiver arrival point'
  assert.equal(feel.teammateInDirection(from,[runner,still],{x:1,y:0},1300,[marker]),still,'avoid receiver running toward marked reception point');
  assert.equal(feel.teammateInDirection(from,[runner],{x:1,y:0},1300,[marker]),runner,'single receiver remains selectable');
  assert.equal(feel.teammateInDirection(from,[{...runner,vy:Infinity},still],{x:1,y:0},1300,[marker]).x,390,'invalid velocity remains neutral');
+});
+
+
+test('moving receiver entering a defended reception pocket is less attractive than a settled option',()=>{
+ const moving={x:390,y:0,vx:0,vy:180};
+ const settled={x:410,y:8,vx:0,vy:0};
+ const defender={x:390,y:48,vx:0,vy:0};
+ assert.equal(choose([moving,settled],[defender]),settled,'predict moving receiver collision at arrival');
+ assert.equal(choose([moving],[defender]),moving,'a lone moving receiver remains selectable');
+ assert.equal(choose([{...moving,vy:Infinity},settled],[defender]).x,390,'nonfinite receiver motion stays neutral');
 });
