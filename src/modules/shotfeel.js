@@ -181,7 +181,11 @@ const SHOTFEEL=(()=>{
    // ground pass. Prefer an otherwise equivalent standing receiver; still
    // allow a pass to the downed player when they are the only viable option.
    const recoveryPenalty=(q.action==='shotDown'||q.action==='shotGetUp')?.085:0;
-   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,{x:from.x+leadX,y:from.y+leadY},opponents)+momentumBonus-retreatPenalty-lateralPenalty-arrivalPenalty-receptionCrowding-airbornePenalty-slidePenalty-recoveryPenalty};
+   // HURT-RECEIVER-READY-01: a teammate still recoiling from contact is less
+   // ready to collect a pass than an equally open, settled teammate.
+   // Preserve the only available receiver as a valid choice.
+   const hurtPenalty=q.action==='hurt'&&(!Number.isFinite(q.actionTimer)||q.actionTimer>0)?.075:0;
+   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,{x:from.x+leadX,y:from.y+leadY},opponents)+momentumBonus-retreatPenalty-lateralPenalty-arrivalPenalty-receptionCrowding-airbornePenalty-slidePenalty-recoveryPenalty-hurtPenalty};
   }).filter(Boolean).sort((a,b)=>b.score-a.score||a.d-b.d)[0]?.q||null;
  }
  return {launchPower,flightDrag,impactFactor,contactEnergy,lanePreference,aiFinishingPriority,teammateInDirection};
