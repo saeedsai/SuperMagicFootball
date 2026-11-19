@@ -128,7 +128,11 @@ const SHOTFEEL=(()=>{
    if(alignment<.77)return null;
    // Bounded lead preference for receivers already moving forward; invalid velocities are neutral.
    const vx=Number.isFinite(q.vx)?q.vx:0,vy=Number.isFinite(q.vy)?q.vy:0;
-   const momentumBonus=Math.max(0,clamp((vx*hx+vy*hy)/320,-1,1))*.028;
+   const forwardSpeed=vx*hx+vy*hy;
+   const momentumBonus=Math.max(0,clamp(forwardSpeed/320,-1,1))*.028;
+   // A receiver sprinting back toward the passer is less ready for a forward
+   // ground pass than a nearby settled teammate. Never reject the only target.
+   const retreatPenalty=clamp((-forwardSpeed-85)/280,0,1)*.045;
    // Fast lateral runners may leave the intended ground-pass lane before arrival.
    // Bound this penalty so alignment, distance and forward momentum still matter.
    const lateralSpeed=Math.abs(vx*hy-vy*hx);
@@ -165,7 +169,7 @@ const SHOTFEEL=(()=>{
    // A teammate committed to a slide cannot immediately settle a ground pass.
    // Prefer an equally open upright receiver, but keep a lone sliding target valid.
    const slidePenalty=q.action==='slide'&&(!Number.isFinite(q.actionTimer)||q.actionTimer>0)? .07:0;
-   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,{x:from.x+leadX,y:from.y+leadY},opponents)+momentumBonus-lateralPenalty-arrivalPenalty-receptionCrowding-airbornePenalty-slidePenalty};
+   return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,{x:from.x+leadX,y:from.y+leadY},opponents)+momentumBonus-retreatPenalty-lateralPenalty-arrivalPenalty-receptionCrowding-airbornePenalty-slidePenalty};
   }).filter(Boolean).sort((a,b)=>b.score-a.score||a.d-b.d)[0]?.q||null;
  }
  return {launchPower,flightDrag,impactFactor,contactEnergy,lanePreference,aiFinishingPriority,teammateInDirection};
