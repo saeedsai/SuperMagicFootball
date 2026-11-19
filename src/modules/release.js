@@ -3,7 +3,8 @@
 const RELEASE=Object.freeze({
  version:'0.12.81.108',
  date:'2026-11-19',
- notes:Object.freeze([\n  "SLIDE-MOVING-CARRIER-LEAD-01: Slide tackles aim slightly ahead of a moving opponent using capped lateral/forward motion, reducing misses against sprinting carriers; ordinary tackles, slide reach, four controls and saves unchanged. Exact-head QA pending.",
+ notes:Object.freeze([
+  "SLIDE-MOVING-CARRIER-LEAD-01: Slide tackles aim slightly ahead of a moving opponent using capped lateral/forward motion, reducing misses against sprinting carriers; ordinary tackles, slide reach, four controls and saves unchanged. Exact-head QA pending.",
   "SLIDE-AIRBORNE-GUARD-01: Grounded slide tackles now pass beneath high-jumping opponents and ignore players already knocked down or getting up; standing and low-jumping opponents remain tackleable. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "HURT-RECEIVER-READY-01: Directed PASS favors a settled teammate over an otherwise similar receiver still recoiling from contact; a lone hurt teammate remains selectable and normal priority returns after recoil. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "AIRBORNE-LANE-READ-01: Directed ground PASS ignores defenders airborne above interception height when evaluating lane and moving-receiver arrival pressure; grounded defenders still block. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
