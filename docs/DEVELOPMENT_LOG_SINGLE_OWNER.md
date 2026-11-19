@@ -1,3 +1,5 @@
+**2026-11-19 — candidate 0.12.81.106:** HURT-RECEIVER-READY-01: directed PASS favors an available settled teammate over a similarly aligned teammate actively recoiling (`hurt`); lone receiver remains selectable and expired recoil restores normal priority. Production `shotfeel.js` plus focused `directed_pass_lane.test.cjs` regression committed. Fixed prior `.105` release.js escaped-newline syntax blocker. Focused local Node/Chromium not run (GitHub DNS failure); exact-head Census/Modular QA queued, main promotion and Pages smoke pending.
+
 **2026-11-19 0.12.81.105 — AIRBORNE-LANE-READ-01:** AIRBORNE-LANE-READ-01: Directed ground PASS ignores defenders airborne above interception height when evaluating lane and moving-receiver arrival pressure; grounded defenders still block. Four controls, saves and ball physics unchanged. Exact-head QA pending. Focused Node regression added; exact-head Census and Modular QA pending.
 
 ## 2026-11-19 — 0.12.81.98 HIDE-BALL-POKE-CONE-01
