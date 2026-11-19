@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.97
+# SuperMagicFootball release/version policy — About-only 0.12.81.98
+
+**Dev candidate 0.12.81.98 (19 November 2026):** HIDE-BALL-POKE-CONE-01: Defensive PASS pokes counter Hide Ball only when actively aimed into the carrier's approach cone, including diagonal play; sideways, backwards, expired and airborne pokes fail. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.97 (19 November 2026):** RECEIVER-ARRIVAL-CROWD-01: Directed PASS penalizes moving teammates whose predicted reception point is occupied by a defender, while preserving lone-receiver and invalid-motion fallback. Four controls, saves, rosters and ball physics unchanged. Exact-head QA pending.
 
