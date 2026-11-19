@@ -1,3 +1,5 @@
+**2026-11-19 candidate 0.12.81.100:** SLIDE-RECEIVER-READY-01: Directed PASS favors an upright teammate over a similarly placed receiver still committed to a slide, while keeping a lone sliding teammate selectable and clearing the penalty after the slide ends. Four controls, saves and ball physics unchanged. Exact-head QA pending. Focused regression added.
+
 **2026-11-19 candidate 0.12.81.99:** HIDE-BALL-CLOSE-POKE-01: At 30 units or closer, a grounded active defensive PASS poke gets a slightly wider forward aim cone against Hide Ball; distant, side-on, backwards, expired and airborne pokes retain their existing restrictions. Four controls, ball physics and saves unchanged. Exact-head QA pending. Focused regression added.
 
 **2026-11-19 candidate 0.12.81.98:** HIDE-BALL-POKE-CONE-01: Defensive PASS pokes counter Hide Ball only when actively aimed into the carrier's approach cone, including diagonal play; sideways, backwards, expired and airborne pokes fail. Four controls, saves and ball physics unchanged. Exact-head QA pending. Focused regression added; exact-head CI pending.
