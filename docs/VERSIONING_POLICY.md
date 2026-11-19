@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.100
+# SuperMagicFootball release/version policy — About-only 0.12.81.101
+
+**Dev candidate 0.12.81.101 (19 November 2026):** RETREAT-RECEIVER-READY-01: Directed PASS slightly favors a settled teammate over a similarly placed receiver sprinting backward toward the passer; lone retreating receivers remain selectable and invalid motion remains neutral. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.100 (19 November 2026):** SLIDE-RECEIVER-READY-01: Directed PASS favors an upright teammate over a similarly placed receiver still committed to a slide, while keeping a lone sliding teammate selectable and clearing the penalty after the slide ends. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
