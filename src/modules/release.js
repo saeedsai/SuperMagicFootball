@@ -3,7 +3,8 @@
 const RELEASE=Object.freeze({
  version:'0.12.81.103',
  date:'2026-11-19',
- notes:Object.freeze([\n  "DOWNED-LANE-READ-01: Directed PASS no longer treats knocked-down or getting-up defenders as active lane blockers; upright defenders still pressure passes. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
+ notes:Object.freeze([
+  "DOWNED-LANE-READ-01: Directed PASS no longer treats knocked-down or getting-up defenders as active lane blockers; upright defenders still pressure passes. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "KNOCKDOWN-RECEIVER-READY-01: Directed PASS prefers an upright teammate over a similarly placed receiver still knocked down or getting up; lone downed teammates remain selectable and normal selection resumes on recovery. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "RETREAT-RECEIVER-READY-01: Directed PASS slightly favors a settled teammate over a similarly placed receiver sprinting backward toward the passer; lone retreating receivers remain selectable and invalid motion remains neutral. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "SLIDE-RECEIVER-READY-01: Directed PASS favors an upright teammate over a similarly placed receiver still committed to a slide, while keeping a lone sliding teammate selectable and clearing the penalty after the slide ends. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
