@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.105
+# SuperMagicFootball release/version policy — About-only 0.12.81.106
+
+**Dev candidate 0.12.81.106 (19 November 2026):** HURT-RECEIVER-READY-01: Directed PASS favors a settled teammate over an otherwise similar receiver still recoiling from contact; a lone hurt teammate remains selectable and normal priority returns after recoil. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.105 (19 November 2026):** AIRBORNE-LANE-READ-01: Directed ground PASS ignores defenders airborne above interception height when evaluating lane and moving-receiver arrival pressure; grounded defenders still block. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
