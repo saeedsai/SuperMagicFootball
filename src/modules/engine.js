@@ -896,7 +896,7 @@ class GameEngine{
  tackle(p,slide=false){
   if(p.cd>0||p.stun>0)return false;
   this.spendStamina(p,slide?'slide':'tackle');p.cd=slide?.68:.57;p.action=slide?'slide':'punch';p.actionTimer=slide?.48:.4;
-  const canSlideTarget=q=>q&&(!Number.isFinite(q.z)||q.z<20)&&q.action!=='shotDown'&&q.action!=='shotGetUp';
+  const canSlideTarget=q=>q&&(!Number.isFinite(q.z)||q.z<20)&&q.action!=='shotDown'&&q.action!=='shotGetUp'&&!(q.invuln>0);
   const near=this.players.filter(q=>q.t!==p.t&&!q.keeper&&!q.stun&&(!slide||canSlideTarget(q)));
   const opponentOwner=this.ball.owner?.t!==p.t?this.ball.owner:null;
   const owner=slide&&!canSlideTarget(opponentOwner)?null:opponentOwner;
