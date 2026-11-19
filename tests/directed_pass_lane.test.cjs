@@ -241,3 +241,11 @@ test('moving receiver entering a defended reception pocket is less attractive th
  assert.equal(choose([moving],[defender]),moving,'a lone moving receiver remains selectable');
  assert.equal(choose([{...moving,vy:Infinity},settled],[defender]).x,390,'nonfinite receiver motion stays neutral');
 });
+
+test('ground PASS prefers an upright receiver over a teammate committed to a slide',()=>{
+ const sliding={x:320,y:0,action:'slide',actionTimer:.25};
+ const upright={x:345,y:12,action:'idle',actionTimer:0};
+ assert.equal(choose([sliding,upright]),upright,'a sliding teammate should not beat a nearby ready receiver');
+ assert.equal(choose([sliding]),sliding,'a sole sliding teammate remains passable');
+ assert.equal(choose([{...sliding,actionTimer:0},upright).x,320,'expired slide does not carry a stale penalty');
+});
