@@ -289,3 +289,20 @@ test('DOWNED-ARRIVAL-CROWD-01: downed defenders do not crowd a moving receiver a
  assert.equal(target([{...defender,action:'idle'}])===runner,false);
  assert.equal(feel.teammateInDirection(from,[runner],aim,1300,[defender]),runner,'single receiver remains available');
 });
+
+
+test('AIRBORNE-LANE-READ-01: jumping defenders cannot block ground passing lanes or crowd receiver arrival',()=>{
+ const target={x:300,y:0};
+ const grounded={x:180,y:0,action:'idle',z:0};
+ const airborne={...grounded,action:'jump',z:40};
+ assert.ok(feel.passingLanePressure===undefined,'lane pressure stays private to targeting');
+ const alt={x:330,y:55};
+ assert.equal(choose([target,alt],[grounded]),alt,'grounded marker pressures the straight lane');
+ assert.equal(choose([target,alt],[airborne]),target,'airborne marker cannot intercept ground pass');
+ assert.equal(choose([target,alt],[{...airborne,z:12}]),alt,'low jump remains an interception threat');
+ const runner={x:300,y:0,vx:180,vy:0};
+ const other={x:390,y:80};
+ const crowd={x:340,y:0,action:'jump',z:40};
+ assert.equal(choose([runner,other],[crowd]),runner,'high jumper cannot crowd reception point');
+ assert.equal(choose([runner,other],[{...crowd,z:0}]),other,'grounded defender still crowds arrival');
+});
