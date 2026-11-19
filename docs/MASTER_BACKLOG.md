@@ -1,3 +1,5 @@
+**2026-11-19 candidate 0.12.81.103:** DOWNED-LANE-READ-01: Directed PASS no longer treats knocked-down or getting-up defenders as active lane blockers; upright defenders still pressure passes. Four controls, saves and ball physics unchanged. Exact-head QA pending. Focused regression added.
+
 **2026-11-19 candidate 0.12.81.102:** KNOCKDOWN-RECEIVER-READY-01: Directed PASS prefers an upright teammate over a similarly placed receiver still knocked down or getting up; lone downed teammates remain selectable and normal selection resumes on recovery. Four controls, saves and ball physics unchanged. Exact-head QA pending. Focused regression added.
 
 **2026-11-19 candidate 0.12.81.101:** RETREAT-RECEIVER-READY-01: Directed PASS slightly favors a settled teammate over a similarly placed receiver sprinting backward toward the passer; lone retreating receivers remain selectable and invalid motion remains neutral. Four controls, saves and ball physics unchanged. Exact-head QA pending. Focused regression added.
