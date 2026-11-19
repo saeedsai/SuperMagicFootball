@@ -1470,7 +1470,8 @@ class GameEngine{
     return ahead>=35&&ahead<=105&&across<=38;
    })();
   // HIDE-BALL-POKE-CONE-01: PASS poke must face the actual carrier, including
-  // diagonal approaches. Side-on and backwards pokes cannot read the fake ball.
+  // diagonal approaches. Close-range pokes get a slightly wider aim cone;
+  // sideways and backwards pokes still cannot read the fake ball.
   const hideBallPoked=id==='hideBall'&&inRange&&distance(p,rival)<=70&&
    rival.action==='punch'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&
    Number.isFinite(rival.z)&&rival.z<20&&(()=>{
@@ -1478,7 +1479,7 @@ class GameEngine{
     const vx=Number.isFinite(rival.dx)?rival.dx:0,vy=Number.isFinite(rival.dy)?rival.dy:0;
     const facing=Math.hypot(vx,vy)>.1?norm(vx,vy):norm(rival.face||1,0);
     const range=Math.hypot(towardX,towardY);
-    return range>1&&((towardX*facing.x+towardY*facing.y)/range)>=.65;
+    return range>1&&((towardX*facing.x+towardY*facing.y)/range)>=(range<=30?.5:.65);
    })();
   const bumpOrSand=id==='spinBump'||id==='sandTrap';
   const spinBumpSlid=bumpOrSand&&inRange&&rival.action==='slide'&&rival.actionTimer>0&&rival.z<20;
