@@ -1,9 +1,9 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.103',
+ version:'0.12.81.104',
  date:'2026-11-19',
- notes:Object.freeze([
+ notes:Object.freeze([\n  "DOWNED-ARRIVAL-CROWD-01: Directed PASS ignores knocked-down/getting-up defenders when estimating a moving receiver's collection-space crowding; upright defenders still pressure the target. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "DOWNED-LANE-READ-01: Directed PASS no longer treats knocked-down or getting-up defenders as active lane blockers; upright defenders still pressure passes. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "KNOCKDOWN-RECEIVER-READY-01: Directed PASS prefers an upright teammate over a similarly placed receiver still knocked down or getting up; lone downed teammates remain selectable and normal selection resumes on recovery. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
   "RETREAT-RECEIVER-READY-01: Directed PASS slightly favors a settled teammate over a similarly placed receiver sprinting backward toward the passer; lone retreating receivers remain selectable and invalid motion remains neutral. Four controls, saves and ball physics unchanged. Exact-head QA pending.",
