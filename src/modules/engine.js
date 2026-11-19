@@ -718,7 +718,7 @@ class GameEngine{
   if(!p?.keeper||p.stun>0||p.diveCooldown>0||(p.diveIntentCooldown||0)>0||b.owner||
      b.attacker!==1-p.t||!(b.ordinaryShot||b.shot||b.strike)||this.superBreakerApproaching(p,b))return false;
   const toward=p.t===0?-1:1,remaining=(p.x-b.x)*toward;
-  const readable=!['zigzag','swim','warp','lightning','spiral','ricochet','clone','curve','homing','dolphin'].includes(b.shot?.behavior);
+  const readable=!b.shot&&!['zigzag','swim','warp','lightning','spiral','ricochet','clone','curve','homing','dolphin'].includes(b.shot?.behavior);
   // Stronger keepers read predictable flight earlier; low skill cannot get the full bonus.
   // Magic shots never receive the anticipation advantage.
   const readWindow=readable?320+70*clamp((stat(p,'gkSkill')-35)/65,0,1):320;
