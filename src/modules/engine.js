@@ -708,14 +708,18 @@ class GameEngine{
  }
  // Ordinary goalkeeper dives, separate from rare supernatural goalkeeper saves.
  // Direction and reach depend on GK Diving and GK Skill attributes.
- // A predictable incoming shot can be read earlier, giving the dive animation\n // time to communicate the keeper's intention without increasing catch reach.\n // Erratic Magic shots retain the shorter reaction window.\n // A predicted incoming shot creates a visible diving attempt before contact.
+ // A predictable incoming shot can be read earlier, giving the dive animation
+ // time to communicate the keeper's intention without increasing catch reach.
+ // Erratic Magic shots retain the shorter reaction window.
+ // A predicted incoming shot creates a visible diving attempt before contact.
  // This does not move the goalkeeper, alter the ball, or extend the save zone.
  tryKeeperDiveIntent(p){
   const b=this.ball;
   if(!p?.keeper||p.stun>0||p.diveCooldown>0||(p.diveIntentCooldown||0)>0||b.owner||
      b.attacker!==1-p.t||!(b.ordinaryShot||b.shot||b.strike)||this.superBreakerApproaching(p,b))return false;
   const toward=p.t===0?-1:1,remaining=(p.x-b.x)*toward;
-  const readable=!['zigzag','swim','warp','lightning','spiral','ricochet','clone','curve','homing','dolphin'].includes(b.shot?.behavior);\n  if(b.vx*toward<=160||remaining<70||remaining>(readable?390:320))return false;
+  const readable=!['zigzag','swim','warp','lightning','spiral','ricochet','clone','curve','homing','dolphin'].includes(b.shot?.behavior
+  if(b.vx*toward<=160||remaining<70||remaining>(readable?390:320))return false;
   const predicted=predictKeeperShot(p,b),reach=keeperReactionReach(p,b);
   if(!predicted||predicted.time<.065||predicted.time>.46||predicted.z>reach.z+15||
      predicted.y<WORLD.goalTop-25||predicted.y>WORLD.goalBottom+25)return false;
