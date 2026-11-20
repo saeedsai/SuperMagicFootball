@@ -1,3 +1,6 @@
+### 2026-11-20 — WIND-MUD-AREA-COUNTER-01 (smf-hourly-dev-20261019)
+WIND-MUD-AREA-COUNTER-01: Any nearby defender can counter Wind/Mud with a timed JUMP or grounded SHOOT slide, even when a closer teammate does nothing; airborne defenders remain eligible for the counter. Four controls and saves unchanged. Exact-head QA pending. Production gameplay and focused regression committed on dev; exact-head Census, Modular QA and hosted release unverified. Main protection #87, Render #86 and physical LAN #48 remain open.
+
 ### 2026-11-20 — WIND-MUD-REAR-FEINT-01 (smf-hourly-dev-20261019)
 AI defenders facing away from a Wind/Mud DRIBBLE wind-up no longer make an omniscient instant JUMP counter when the carrier is clearly behind them; defenders facing the carrier and nearby lateral threats still react. Four controls and saves unchanged. Exact-head QA pending. Production source and focused regression committed on dev; exact-head Census, Modular QA and hosted release remain unverified. Main protection #87, Render #86 and physical LAN #48 remain open.
 
