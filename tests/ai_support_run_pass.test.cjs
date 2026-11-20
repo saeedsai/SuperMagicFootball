@@ -11,7 +11,8 @@ async function loadModules(){
 }
 
 function fixture(ENGINE){
- const game=new ENGINE.GameEngine({halfSeconds:120},'quick',0,0,1);
+ const game=new ENGINE.GameEngine({halfSeconds:120});
+ game.init({home:0,away:1,mode:'quick',humans:0});
  const carrier=game.players.find(p=>p.t===0&&p.i===3);
  const runner=game.players.find(p=>p.t===0&&p.i===4);
  const decoy=game.players.find(p=>p.t===0&&p.i===1);
