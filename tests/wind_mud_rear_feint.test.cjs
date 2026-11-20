@@ -1,0 +1,17 @@
+'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const source=fs.readFileSync('src/modules/engine.js','utf8');
+const start=source.indexOf(' reactToWindMudTrick(p,dt,reactionSeconds){');
+const end=source.indexOf('\n resolveMaceSweep(',start);
+assert.ok(start>=0&&end>start);
+const method=source.slice(start,end);
+const match=method.match(/const canReadWindup=(.*?);/);
+assert.ok(match,'directional Wind/Mud perception exists');
+const read=new Function('carrier','p','return '+match[1]+';');
+test('facing defender reads incoming wind-up',()=>assert.equal(read({x:60},{x:0,face:1}),true));
+test('rear feint defeats automatic read',()=>assert.equal(read({x:-55},{x:0,face:1}),false));
+test('near lateral feint remains readable',()=>assert.equal(read({x:-20},{x:0,face:1}),true));
+test('mirrored defender can read leftward',()=>assert.equal(read({x:-60},{x:0,face:-1}),true));
+test('mirrored rear feint cannot be read',()=>assert.equal(read({x:60},{x:0,face:-1}),false));
