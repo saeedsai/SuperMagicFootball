@@ -1,3 +1,5 @@
+**2026-11-20 0.12.81.129 candidate — PASS-POKE-VALID-TARGET-01:** Normal PASS pokes skip invulnerable, downed and getting-up opponents rather than auto-lunging at a target that cannot be contacted; the next reachable active defender remains selectable. SHOOT-slide targeting, four controls and saves unchanged. Focused regression added; exact-head QA pending.
+
 **2026-11-20 0.12.81.128 candidate — TELEPORT-SECOND-DEFENDER-SLIDE-01:** A second defender's active grounded SHOOT slide can intercept Teleport in its forward lane even when the nearest defender is idle; expired, airborne, rearward and wide slides do not counter. Four controls and saves unchanged. Exact-head QA pending. Production game code and focused regression authored; exact-head QA and hosted release unverified.
 
 **2026-11-20 0.12.81.127 candidate — WIND-DISTANCE-FALLOFF-01:** Wind pushes nearby defenders more strongly than those at the outer edge of its area, with bounded 35–100% distance falloff; high airborne defenders still take half push. Mud and existing counters remain unchanged; four controls and saves unchanged. Exact-head QA pending.

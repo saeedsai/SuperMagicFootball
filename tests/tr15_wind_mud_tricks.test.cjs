@@ -28,7 +28,9 @@ test('Wind pushes one nearby grounded opponent without stun; teammates, keepers 
  for(const side of [0,1]){
   const {g,p,q,ball}=setup('wind',side),start={x:q.x,y:q.y};g.players=[p,q];assert.equal(trick.call(g,p),true);
   assert.equal(ball.owner,p);assert.equal(p.magicReadyAt,g.clock+6);assert.ok(Math.abs(p.fatigue-.245)<1e-9);
-  assert.equal(q.stun,0);assert.equal(q.windTrickFx,.35);assert.ok(Math.abs(Math.hypot(q.x-start.x,q.y-start.y)-28)<1e-8);
+  assert.equal(q.stun,0);assert.equal(q.windTrickFx,.35);
+  const expectedPush=28*Math.max(.35,1-.65*Math.hypot(start.x-p.x,start.y-p.y)/120);
+  assert.ok(Math.abs(Math.hypot(q.x-start.x,q.y-start.y)-expectedPush)<1e-8);
  }
  const side=setup('wind');const mate={...side.q,t:side.p.t,x:side.p.x+15};const keeper={...side.q,keeper:true,x:side.p.x+5};
  const airborne={...side.q,x:side.p.x+30,z:35};const grounded={...side.q,x:side.p.x+75,z:0};side.g.players=[side.p,mate,keeper,airborne,grounded];trick.call(side.g,side.p);

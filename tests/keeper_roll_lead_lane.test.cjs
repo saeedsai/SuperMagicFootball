@@ -11,7 +11,9 @@ const roll=source.slice(start,end);
 const mapStart=roll.indexOf('.map(q=>{');
 const mapEnd=roll.indexOf('   // Rollouts are deliberate',mapStart);
 assert.ok(mapStart>=0&&mapEnd>mapStart,'rollout selection must predict landing');
-const mapper=vm.runInNewContext('(function(p,keeperPassingLane,q){const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));return [q]'+roll.slice(mapStart,mapEnd).trim()+'[0];})');
+const mapperSource='(function(p,keeperPassingLane,q){const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));return [q]'+roll.slice(mapStart,mapEnd).trim()+'[0];})';
+const mapperFn=vm.runInNewContext(mapperSource);
+const mapper=(p,keeperPassingLane,q)=>mapperFn.call({keeperPassingLane},p,keeperPassingLane,q);
 test('moving outlet safety is evaluated at led landing point',()=>{
  const seen=[];
  const p={x:0,y:0};

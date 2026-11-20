@@ -9,8 +9,8 @@ const react=vmMethod('reactToWindMudTrick');
 function vmMethod(name){return require('node:vm').runInNewContext('({'+methodSource(name)+'})',{distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y)})[name];}
 function fixture(side,trick,hold=.35){
  const carrier={t:1-side,keeper:false,src:{magicTrick:trick},x:300,y:240,dribbleHold:hold};
- const target={t:side,keeper:false,src:{},x:side===0?350:250,y:240,z:0,stun:0,action:'idle',actionTimer:0};
- const backup={t:side,keeper:false,src:{},x:side===0?360:240,y:240,z:0,stun:0,action:'idle',actionTimer:0};
+ const target={t:side,keeper:false,src:{},x:side===0?350:250,y:240,z:0,face:side===0?-1:1,stun:0,action:'idle',actionTimer:0};
+ const backup={t:side,keeper:false,src:{},x:side===0?360:240,y:240,z:0,face:side===0?-1:1,stun:0,action:'idle',actionTimer:0};
  const g={ball:{owner:carrier},players:[carrier,target,backup],jumps:0,jump(p){this.jumps++;p.z=22;p.action='jump';p.actionTimer=.28;return true}};
  return{g,carrier,target,backup};
 }
@@ -34,5 +34,5 @@ test('Rookie, out-of-range, wrong-trick, already-slowed Mud target, and active h
 });
 test('Wind/Mud AI counter runs before ordinary tactics and matches the shared four-button counter rules',()=>{
  assert.match(engine,/this\.reactToWindMudTrick\(p,dt,ai\.reaction\)\|\|p\.aiWindMudThreat/);
- const trick=methodSource('tryMagicTrick');assert.match(trick,/fieldTrickSlid=fieldTrick&&inRange&&rival\.action==='slide'/);assert.match(trick,/fieldTrickJumped=fieldTrick&&inRange&&rival\.action==='jump'/);
+ const trick=methodSource('tryMagicTrick');assert.match(trick,/fieldTrickSlid=fieldTrick&&rivals\.some\(q=>distance\(p,q\)<radius&&q\.action==='slide'/);assert.match(trick,/fieldTrickJumped=fieldTrick&&rivals\.some\(q=>distance\(p,q\)<radius&&q\.action==='jump'/);
 });

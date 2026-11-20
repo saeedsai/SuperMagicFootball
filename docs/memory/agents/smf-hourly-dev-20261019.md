@@ -1,32 +1,24 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
+**Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-11-20
 
 ## Mission
-Player-facing game features, four controls, original assets, save/offline compatibility.
+Deliver player-facing gameplay, existing-player presentation and quality improvements while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- .128: Teleport grounded slide counter now considers all eligible defenders in lane, not only nearest; focused regression added, exact-head QA pending.
-- .127: Wind distance falloff adds stronger close-range push and weaker edge push; regression updated, exact-head QA pending.
-- .126: High airborne defenders resist half Wind push; focused regression added, QA pending.
-- .125: Mud ground slow skips defenders jumping at least 20 units; low/grounded defenders still slowed. Focused regression added; QA pending.
-- .124: Wind/Mud uncountered area effects apply to all eligible nearby defenders; focused regression added, QA pending.
-- .123: Wind/Mud area counters now accept active JUMP/SHOOT slide by any in-range defender, including airborne players; focused regression added, exact-head QA pending.
-- .122: Wind/Mud AI cannot instantly counter a clearly rearward feint; directional regression added, exact-head QA pending.
-- .121: Wind/Mud AI allows second nearest defender to independently react with JUMP; focused regression added, full QA pending.
-- .120: Teleport landing can be blocked by a second jumping defender in the arrival lane; focused test added, exact-head QA pending.
-- 0.12.81.119: Keeper DRIBBLE waits for recovering hurt receivers; .118: Keeper DRIBBLE roll avoids actively sliding teammates; focused test added, exact-head QA not observed.
-- .117: Ground distribution ignores downed/recovering/high-airborne defenders.
-- .116: Rollout predicted receiver lane; .115: moving receiver lead; .114: safe receiver; .113: outlet pressure.
-- Breath .66–.68 completed. Main protection #87, Render drift #86, physical LAN #48 unresolved.
+- .129 PASS-POKE-VALID-TARGET-01: normal PASS poke excludes invulnerable, downed and getting-up targets and selects the next reachable active opponent. Focused regression added; exact-head QA pending.
+- .128 Teleport second-defender grounded SHOOT-slide interception; .127 Wind distance falloff; .126 airborne Wind resistance; .125 Mud jump evasion; all exact-head QA pending.
+- Latest observed exact-head .128 Census and Modular QA failed in Node preflight/source-and-data. Confirmed failures included stale README heading, old Wind distance assumptions, test harnesses missing extracted helpers/context, stale Magic Trick assertions, and this checkpoint's missing identity marker. Fix those gates before promotion.
+- Main protection #87, Render drift #86 and physical two-phone acceptance #48 remain open. Breath .66–.68 is complete.
 
 ## Next smallest action
-Run focused Node/Chromium and exact-head Census/Modular QA; fix confirmed failures. Then improve Magic Trick counterplay and original eight-view player animations.
+Run exact-head Census and Modular QA; fix any remaining confirmed failures. Then continue intelligent passing/tackling, goalkeeper behavior and original existing-player animation.
 
 ## Ownership and exclusions
-Only this checkpoint. No concept heroes, copied art or routine LAN changes.
+Only this checkpoint. No concept heroes, copied art, routine LAN work or other agents' private checkpoints.
 
 ## Evidence
-Production source change and focused regression committed. Full QA and hosted verification not observed.
+Candidate .129 production code, regression and release metadata committed on dev. Exact-head tests and hosted release are not yet observed.
 
 ## Cleanup
-Keep under 4 KiB; promote only through existing QA-gated main pipeline.
+Keep this checkpoint below 4 KiB; promote only through the existing QA-gated main pipeline.

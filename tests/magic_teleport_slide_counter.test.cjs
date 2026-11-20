@@ -52,7 +52,8 @@ test('Bat slide parry and Freeze jump remain unaffected',()=>{
 });
 test('Studio guide matches lane counter without a fifth action',()=>{
  const ui=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
- assert.match(engine,/teleportParried=id==='teleport'&&inRange&&rival.action==='slide'/);
+ assert.match(engine,/teleportParried=id==='teleport'&&rivals\.some\(defender=>/);
+ assert.match(engine,/defender\.action==='slide'&&Number\.isFinite\(defender\.actionTimer\)/);
  assert.match(ui,/teleport:'[^']*SHOOT-slide in the forward travel lane intercepts the teleport/);
  assert.match(engine,/p\.magicReadyAt=this\.clock\+6/);
  assert.doesNotMatch(engine,/fifthAction/);

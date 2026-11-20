@@ -15,7 +15,7 @@ test('skilled fresh keeper settles earlier than tired inexperienced keeper',()=>
  assert.ok(duration(elite)>=.54&&duration(novice)<=.78);
 });
 test('visual settle duration is bounded and does not replace dive cooldown',()=>{
- assert.equal(duration({gkSkill:100,gkDiving:100,fatigue:-10}),.56);
+ assert.ok(Math.abs(duration({gkSkill:100,gkDiving:100,fatigue:-10})-.56)<1e-9);
  assert.ok(duration({gkSkill:0,gkDiving:0,fatigue:99})<=.78);
  assert.match(source,/p\.diveCooldown=keeperDiveRecoverySeconds\(p\)/);
  assert.match(source,/p\.actionTimer=keeperDiveAnimationSeconds\(p\)/);

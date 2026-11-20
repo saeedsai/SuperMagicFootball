@@ -2693,8 +2693,8 @@ const STUDIO_MAGIC_TRICK_GUIDES=Object.freeze({
  spinBump:'Briefly bumps a close opponent away and stuns them. A grounded defensive SHOOT-slide or JUMP counters it; a stronger defender closing in can also stop it. The Trick has a 6-second cooldown.',
  sandTrap:'Sinks a close opponent into a brief sand snare and stun. A grounded defensive SHOOT-slide or JUMP counters it; a stronger defender closing in can also stop the Trick. It shares the 6-second Magic Trick cooldown.',
  lightning:'After a short windup, jolts the nearest rival within 95 units and briefly stuns them. JUMP, an active grounded SHOOT-slide, or a facing and closing defender with enough defence can counter it. Stun interrupts the caster; cooldown is 6 seconds.',
- wind:'Pushes the nearest rival within 120 units 28 units away. A grounded defensive SHOOT-slide or JUMP counters it; a facing, closing defender with enough defence can also stop it. It shares the 6-second Magic Trick cooldown.',
- mud:'Slows the nearest rival within 100 units for 0.52 seconds. It cannot reapply while that rival is already slowed. A grounded defensive SHOOT-slide or JUMP counters it; a facing, closing defender with enough defence can also stop it. It shares the 6-second Magic Trick cooldown.'
+ wind:'Pushes all eligible rivals within 120 units away, with stronger force near the caster; airborne defenders resist half the push. Any nearby defender can counter with a timed JUMP or grounded SHOOT-slide; a strong defender facing and closing on the carrier can also stop it. It shares the 6-second Magic Trick cooldown.',
+ mud:'Slows all grounded rivals within 100 units for 0.52 seconds; jumping defenders avoid the ground effect, and already-slowed rivals are not extended. Any nearby defender can counter with a timed JUMP or grounded SHOOT-slide; a strong defender facing and closing on the carrier can also stop it. It shares the 6-second Magic Trick cooldown.'
 });
 // STUDIO-COUNTER-PLAYBOOK-01: read-only reference for outfield and GK Studio.
 // Reuse the selected Trick guides so every counter description stays aligned.

@@ -929,9 +929,12 @@ class GameEngine{
   if(p.cd>0||p.stun>0)return false;
   this.spendStamina(p,slide?'slide':'tackle');p.cd=slide?.68:.57;p.action=slide?'slide':'punch';p.actionTimer=slide?.48:.4;
   const canSlideTarget=q=>q&&(!Number.isFinite(q.z)||q.z<20)&&q.action!=='shotDown'&&q.action!=='shotGetUp'&&!(q.invuln>0);
-  const near=this.players.filter(q=>q.t!==p.t&&!q.keeper&&!q.stun&&(!slide||canSlideTarget(q)));
+  // A short PASS poke must not lock onto a protected or fallen carrier; choose
+  // the next reachable active opponent instead. Keep slide's stricter height gate.
+  const canPokeTarget=q=>q&&!(q.invuln>0)&&!q.down&&q.action!=='shotDown'&&q.action!=='shotGetUp';
+  const near=this.players.filter(q=>q.t!==p.t&&!q.keeper&&!q.stun&&(slide?canSlideTarget(q):canPokeTarget(q)));
   const opponentOwner=this.ball.owner?.t!==p.t?this.ball.owner:null;
-  const owner=slide&&!canSlideTarget(opponentOwner)?null:opponentOwner;
+  const owner=opponentOwner&&(slide?canSlideTarget(opponentOwner):canPokeTarget(opponentOwner))?opponentOwner:null;
   // Prefer a ball carrier in the tackle's forward arc; never auto-lunge backwards.
   const mx=Number.isFinite(p.dx)?p.dx:0,my=Number.isFinite(p.dy)?p.dy:0;
   const moving=Math.hypot(mx,my)>.15,headingX=moving?mx/Math.hypot(mx,my):(p.face===-1?-1:1),headingY=moving?my/Math.hypot(mx,my):0;

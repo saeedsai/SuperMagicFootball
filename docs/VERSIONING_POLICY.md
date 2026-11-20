@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.128 
+# SuperMagicFootball release/version policy — About-only 0.12.81.129 
+
+**Dev candidate 0.12.81.129 (20 November 2026):** PASS-POKE-VALID-TARGET-01: Normal PASS poke ignores invulnerable, downed and getting-up opponents when selecting an automatic tackle target, then chooses the next reachable active defender. SHOOT-slide targeting, four controls and saves unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.128 (20 November 2026):** TELEPORT-SECOND-DEFENDER-SLIDE-01: A second defender's active grounded SHOOT slide can intercept Teleport in its forward lane even when the nearest defender is idle; expired, airborne, rearward and wide slides do not counter. Four controls and saves unchanged. Exact-head QA pending.
 

@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.128',
+ version:'0.12.81.129',
  date:'2026-11-20',
  notes:Object.freeze([
+  "PASS-POKE-VALID-TARGET-01: A normal PASS poke no longer auto-targets an invulnerable, downed or getting-up opponent; it chooses the next reachable active defender instead. SHOOT-slide targeting, four controls and saves unchanged. Exact-head QA pending.",
   "TELEPORT-SECOND-DEFENDER-SLIDE-01: A second defender's active grounded SHOOT slide can intercept Teleport in its forward lane even when the nearest defender is idle; expired, airborne, rearward and wide slides do not counter. Four controls and saves unchanged. Exact-head QA pending.",
   "WIND-DISTANCE-FALLOFF-01: Wind pushes nearby defenders more strongly than those at the outer edge of its area, with bounded 35–100% distance falloff; high airborne defenders still take half push. Mud and existing counters remain unchanged; four controls and saves unchanged. Exact-head QA pending.",
   "WIND-AIRBORNE-RESISTANCE-01: Airborne defenders at least 20 units high now take half Wind push, while grounded and low-jumping defenders retain full push. Mud evasion and JUMP/SHOOT counters unchanged; four controls and saves unchanged. Exact-head QA pending.",

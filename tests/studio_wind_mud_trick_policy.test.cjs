@@ -51,15 +51,15 @@ test('Wind and Mud runtime IDs, Studio names, summaries, guides and icons are wi
  assert.match(engine,/const allowed=\[[^\]]*'wind','mud'\]/);
  assert.match(engine,/const tierGated=\['spinBump','sandTrap','lightning','wind','mud'\]/);
  assert.match(engine,/id==='wind'\?120:id==='mud'\?100/);
- assert.match(engine,/rival\.windTrickFx=\.35/);
- assert.match(engine,/rival\.mudSlowTimer=\.52;rival\.mudTrickFx=\.52/);
+ assert.match(engine,/target\.windTrickFx=Math\.max\(target\.windTrickFx\|\|0,\.35\)/);
+ assert.match(engine,/target\.mudSlowTimer=Math\.max\(target\.mudSlowTimer\|\|0,\.52\);target\.mudTrickFx=Math\.max\(target\.mudTrickFx\|\|0,\.52\)/);
  assert.match(ui,/const STUDIO_WIND_TRICK=Object\.freeze\(\{id:'wind',name:'Wind'\}\)/);
  assert.match(ui,/const STUDIO_MUD_TRICK=Object\.freeze\(\{id:'mud',name:'Mud'\}\)/);
  assert.match(ui,/STUDIO_MAGIC_TRICK_FULL_CATALOGUE=Object\.freeze\(\[\.\.\.STUDIO_MAGIC_TRICK_SUMMARY_CATALOGUE,STUDIO_WIND_TRICK,STUDIO_MUD_TRICK\]\)/);
  assert.ok(ui.includes("studioWindEligible(player)&&(tokenWallet.owns('magicTrick','wind')||player.magicTrick==='wind')?'<option value=\"wind\">Wind</option>'"));
  assert.ok(ui.includes("studioMudEligible(player)&&(tokenWallet.owns('magicTrick','mud')||player.magicTrick==='mud')?'<option value=\"mud\">Mud</option>'"));
- assert.match(ui,/wind:'Pushes the nearest rival within 120 units 28 units away/);
- assert.match(ui,/mud:'Slows the nearest rival within 100 units for 0\.52 seconds/);
+ assert.match(ui,/wind:'Pushes all eligible rivals within 120 units away, with stronger force near the caster/);
+ assert.match(ui,/mud:'Slows all grounded rivals within 100 units for 0\.52 seconds/);
  assert.match(ui,/playerAbilityIcons=p=>ABILITY_ICONS\.summary\([^\n]*STUDIO_MAGIC_TRICK_FULL_CATALOGUE/);
  for(const [id,name,glyph] of [['wind','Wind','🌬️'],['mud','Mud','🟫']]){
   const badge=icons.icon('trick',id,name);

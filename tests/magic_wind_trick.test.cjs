@@ -51,7 +51,8 @@ test('Wind pushes a nearby opponent away in either attack direction, preserves p
   assert.equal(p.magicReadyAt,g.clock+6);assert.ok(Math.abs(p.fatigue-.245)<1e-9);
   assert.equal(q.stun,0);assert.equal(q.windTrickFx,.35);
   const displacement=Math.hypot(q.x-before.x,q.y-before.y);
-  assert.ok(Math.abs(displacement-28)<1e-9,`push=${displacement}`);
+  const expectedPush=28*Math.max(.35,1-.65*Math.hypot(before.x-p.x,before.y-p.y)/120);
+  assert.ok(Math.abs(displacement-expectedPush)<1e-9,`push=${displacement}, expected=${expectedPush}`);
   assert.ok((q.x-before.x)*(q.x-p.x)+(q.y-before.y)*(q.y-p.y)>0,'push points away from caster');
   assert.equal(events.at(-1).type,'magicTrick');assert.equal(events.at(-1).trick,'wind');
   assert.equal(events.at(-1).countered,false);
@@ -59,16 +60,16 @@ test('Wind pushes a nearby opponent away in either attack direction, preserves p
 });
 
 test('grounded slide, jump, and a facing+closing defensive read counter Wind without moving the target',()=>{
- const counters=[{action:'slide',actionTimer:.2,z:0},{action:'jump',z:20}];
+ const counters=[{action:'slide',actionTimer:.2,z:0},{action:'jump',actionTimer:.2,z:20}];
  for(const side of [0,1])for(const counter of [...counters,
   {action:'idle',face:side===0?-1:1,dx:side===0?-1:1,z:0,src:{name:'reader',defence:90}}]){
   const {g,p,q,ball,events}=setup(side);Object.assign(q,counter);
   const before={x:q.x,y:q.y};assert.equal(trick.call(g,p),true);
   assert.equal(ball.owner,p);assert.equal(q.windTrickFx,undefined);
   assert.deepEqual([q.x,q.y],[before.x,before.y]);
-  // Wind excludes airborne rivals before choosing its single target, so a
-  // jump dodges with no target selected rather than a direct counter event.
-  assert.equal(events.at(-1).countered,counter.action!=='jump');
+  // A timed airborne JUMP or grounded SHOOT-slide by any nearby defender
+  // counters the area effect without moving that defender.
+  assert.equal(events.at(-1).countered,true);
  }
 });
 

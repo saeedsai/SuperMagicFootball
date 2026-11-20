@@ -5,7 +5,11 @@ const source=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'ut
 const start=source.indexOf('\n rollKeeper(p){'),end=source.indexOf('\n command(p,a){',start);
 assert(start>0&&end>start,'real keeper roll method absent from engine');
 const d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
-const roll=vm.runInNewContext('({'+source.slice(start,end)+'})',{distance:d,stat:()=>74}).rollKeeper;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const scoreStart=source.indexOf('function keeperOutletScore('),scoreEnd=source.indexOf('\n}',scoreStart)+2;
+assert.ok(scoreStart>=0&&scoreEnd>scoreStart,'extract real keeper outlet safety score');
+const keeperOutletScore=vm.runInNewContext('('+source.slice(scoreStart,scoreEnd)+')',{distance:d});
+const roll=vm.runInNewContext('({'+source.slice(start,end)+'})',{distance:d,stat:()=>74,clamp,keeperOutletScore}).rollKeeper;
 const commandStart=source.indexOf('\n command(p,a){'),commandEnd=source.indexOf('\n autoSwitch(t,',commandStart);
 const command=vm.runInNewContext('({'+source.slice(commandStart,commandEnd)+'})').command;
 function setup(team=0) {
