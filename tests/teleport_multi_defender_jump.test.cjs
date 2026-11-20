@@ -1,0 +1,21 @@
+'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const source=fs.readFileSync('src/modules/engine.js','utf8');
+const start=source.indexOf("  const teleportJumpBlocked=id==='teleport'");
+const end=source.indexOf("\n  // HIDE-BALL-POKE-CONE",start);
+assert.ok(start>=0&&end>start,'Teleport jump counter exists');
+const expression=source.slice(start,end).split(';')[0].replace(/^\s*const teleportJumpBlocked=/,'').trim();
+const counter=new Function('id','p','rivals','radius',`
+ const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+ const norm=(x,y)=>{const d=Math.hypot(x,y)||1;return {x:x/d,y:y/d};};
+ return (${expression});
+`);
+const caster={x:0,y:0,dx:1,dy:0,face:1};
+const idle={x:20,y:0,action:'idle',z:0};
+const jumper=(x,y,timer=.25,z=25)=>({x,y,action:'jump',actionTimer:timer,z});
+test('second defender jumping in arrival lane counters teleport',()=>assert.equal(counter('teleport',caster,[idle,jumper(75,0)],95),true));
+test('expired and grounded jumps do not counter',()=>{assert.equal(counter('teleport',caster,[idle,jumper(75,0,0)],95),false);assert.equal(counter('teleport',caster,[idle,jumper(75,0,.2,10)],95),false);});
+test('wide and behind jumps do not counter',()=>{assert.equal(counter('teleport',caster,[idle,jumper(75,45)],95),false);assert.equal(counter('teleport',caster,[idle,jumper(-45,0)],95),false);});
+test('other tricks do not use teleport landing counter',()=>assert.equal(counter('bat',caster,[idle,jumper(75,0)],95),false));
