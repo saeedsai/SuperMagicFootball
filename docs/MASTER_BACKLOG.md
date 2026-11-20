@@ -1,3 +1,6 @@
+### 2026-11-20 — WIND-MUD-REAR-FEINT-01 (smf-hourly-dev-20261019)
+AI defenders facing away from a Wind/Mud DRIBBLE wind-up no longer make an omniscient instant JUMP counter when the carrier is clearly behind them; defenders facing the carrier and nearby lateral threats still react. Four controls and saves unchanged. Exact-head QA pending. Production source and focused regression committed on dev; exact-head Census, Modular QA and hosted release remain unverified. Main protection #87, Render #86 and physical LAN #48 remain open.
+
 > **20 November 2026 — 0.12.81.121:** WIND-MUD-SECOND-DEFENDER-READ-01: Two nearby defenders can independently respond with JUMP to a Wind/Mud DRIBBLE wind-up; the closest defender no longer suppresses the second. Existing timing, range and stun restrictions remain. Four controls and saves unchanged. Exact-head QA pending.
 
 > **20 November 2026 — 0.12.81.120:** TELEPORT-MULTI-DEFENDER-JUMP-01: A second defender timing JUMP into the Teleport arrival corridor now counters the trick even when a different opponent stands closer. Expired, grounded and out-of-lane jumps do not block; four controls and saves unchanged. Exact-head QA pending.
