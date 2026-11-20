@@ -1098,7 +1098,9 @@ class GameEngine{
    ?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0&&q.z<20&&
     (trick!=='mud'||(q.mudSlowTimer||0)<=0)).sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
   // The second closest defender may also time a JUMP against Wind/Mud.
-  const threat=rivals.slice(0,2).includes(p)&&distance(carrier,p)<radius?carrier:null;
+  // A defender looking away cannot read a wind-up directly behind them; allow lateral peripheral reads.
+  const canReadWindup=carrier&&((carrier.x-p.x)*(p.face||1)>=-24);
+  const threat=rivals.slice(0,2).includes(p)&&distance(carrier,p)<radius&&canReadWindup?carrier:null;
   if(!threat){p.aiWindMudThreat=null;p.aiWindMudReaction=0;return false;}
   // Wind and Mud are resolved immediately at the end of the existing one
   // second DRIBBLE hold. Jump or grounded slide already counters either one.
