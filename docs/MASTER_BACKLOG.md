@@ -1,3 +1,5 @@
+**2026-11-20 0.12.81.127 candidate — WIND-DISTANCE-FALLOFF-01:** Wind pushes nearby defenders more strongly than those at the outer edge of its area, with bounded 35–100% distance falloff; high airborne defenders still take half push. Mud and existing counters remain unchanged; four controls and saves unchanged. Exact-head QA pending.
+
 **2026-11-20 0.12.81.126 candidate — WIND-AIRBORNE-RESISTANCE-01:** Airborne defenders at least 20 units high now take half Wind push, while grounded and low-jumping defenders retain full push. Mud evasion and JUMP/SHOOT counters unchanged; four controls and saves unchanged. Exact-head QA pending.
 
 ### 2026-11-20 — MUD-AIRBORNE-EVASION-01 (smf-hourly-dev-20261019)
