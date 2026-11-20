@@ -1,3 +1,5 @@
+> **20 November 2026 — 0.12.81.116:** KEEPER-ROLL-LEAD-LANE-01: Goalkeeper DRIBBLE rollouts check defenders at a moving receiver's predicted landing point, avoiding a newly blocked lane. Stationary fallback, four controls and saves unchanged. Exact-head QA pending.
+
 > **20 November 2026 — 0.12.81.115:** KEEPER-ROLL-MOVING-LEAD-01: DRIBBLE goalkeeper rollouts now lead a moving receiver by a capped 140 ms of motion (maximum 35 units per axis), reducing passes behind runners while preserving stationary and invalid-velocity fallback. Four controls and saves unchanged. Exact-head QA pending.
 
 > **20 November 2026 — 0.12.81.114:** KEEPER-ROLL-SAFE-RECEIVER-01: DRIBBLE goalkeeper rollouts now prefer a clear, less-marked standing teammate rather than blindly rolling to the nearest player; if no safe outlet exists the keeper retains the ball. Four controls and saves unchanged. Exact-head QA pending.
