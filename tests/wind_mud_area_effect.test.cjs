@@ -20,7 +20,9 @@ function executeEffect(id,p,rivals,radius){
 test('Wind pushes both in-range defenders and not the distant one',()=>{
  const players=[{x:20,y:0},{x:40,y:0},{x:160,y:0}];
  executeEffect('wind',{x:0,y:0,t:0},players,120);
- assert.deepEqual(players.map(q=>q.x),[48,68,160]);
+ assert.ok(Math.abs(players[0].x-(20+28*(1-.65*20/120)))<1e-8);
+ assert.ok(Math.abs(players[1].x-(40+28*(1-.65*40/120)))<1e-8);
+ assert.equal(players[2].x,160);
  assert.deepEqual(players.map(q=>q.windTrickFx||0),[.35,.35,0]);
 });
 test('Mud slows all nearby defenders without shortening existing slow',()=>{
@@ -40,6 +42,19 @@ test('Jumping above ground level evades Mud but low jump remains vulnerable',()=
 test('Wind halves push on high airborne defenders without affecting low jumpers',()=>{
  const players=[{x:30,y:0,z:25},{x:50,y:0,z:10},{x:70,y:0,z:20},{x:90,y:0,z:NaN}];
  executeEffect('wind',{x:0,y:0,t:0},players,120);
- assert.deepEqual(players.map(q=>q.x),[44,78,84,118]);
+ for(let i=0;i<players.length;i++){
+  const initial=[30,50,70,90][i];
+  const expected=initial+28*(1-.65*initial/120)*([.5,1,.5,1][i]);
+  assert.ok(Math.abs(players[i].x-expected)<1e-8,`wind falloff receiver ${i}`);
+ }
  assert.deepEqual(players.map(q=>q.windTrickFx),[.35,.35,.35,.35]);
+});
+
+test('Wind knockback fades toward radius boundary',()=>{
+ const players=[{x:1,y:0},{x:60,y:0},{x:119.99,y:0},{x:120,y:0}];
+ executeEffect('wind',{x:0,y:0,t:0},players,120);
+ const pushes=players.map((p,i)=>p.x-[1,60,119.99,120][i]);
+ assert.ok(pushes[0]>pushes[1]&&pushes[1]>pushes[2]);
+ assert.ok(pushes[2]>9.8&&pushes[2]<10);
+ assert.equal(pushes[3],0);
 });
