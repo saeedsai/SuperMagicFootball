@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.117 
+# SuperMagicFootball release/version policy — About-only 0.12.81.118 
+
+**Dev candidate 0.12.81.118 (20 November 2026):** KEEPER-ROLL-SLIDE-RECEIVER-01: Goalkeeper DRIBBLE rollouts avoid teammates actively sliding and unable to receive; standing receivers remain eligible and sliding teammates become eligible after their slide ends. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.117 (20 November 2026):** KEEPER-ROLL-ACTIVE-LANE-01: Goalkeeper ground distribution ignores defenders who are knocked down, recovering or jumping above ground interception height; active grounded defenders still block. Four controls, saves and physics unchanged. Exact-head QA pending.
 
