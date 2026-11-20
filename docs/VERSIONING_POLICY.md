@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.123 
+# SuperMagicFootball release/version policy — About-only 0.12.81.124 
+
+**Dev candidate 0.12.81.124 (20 November 2026):** WIND-MUD-AREA-EFFECT-01: Uncountered Wind now pushes every eligible nearby defender and Mud slows every eligible nearby defender, not only the closest; timed JUMP/SHOOT counters still stop the effect. Four controls and saves unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.123 (20 November 2026):** WIND-MUD-AREA-COUNTER-01: Any nearby defender can counter Wind/Mud with a timed JUMP or grounded SHOOT slide, even when a closer teammate does nothing; airborne defenders remain eligible for the counter. Four controls and saves unchanged. Exact-head QA pending.
 
