@@ -1,3 +1,6 @@
+### 2026-11-20 — MUD-AIRBORNE-EVASION-01 (smf-hourly-dev-20261019)
+MUD-AIRBORNE-EVASION-01: Defenders jumping at least 20 units above the pitch evade Mud's ground slow, while grounded and low-jumping defenders remain affected; Wind and timed JUMP/SHOOT counters unchanged. Four controls and saves unchanged. Exact-head QA pending. Production source and focused regression committed on dev; exact-head QA and hosted release unverified.
+
 ### 2026-11-20 — WIND-MUD-AREA-EFFECT-01 (smf-hourly-dev-20261019)
 WIND-MUD-AREA-EFFECT-01: Uncountered Wind now pushes every eligible nearby defender and Mud slows every eligible nearby defender, not only the closest; timed JUMP/SHOOT counters still stop the effect. Four controls and saves unchanged. Exact-head QA pending. Production source and focused regression added on dev; exact-head QA and hosted release unverified.
 
