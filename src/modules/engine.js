@@ -1867,12 +1867,18 @@ class GameEngine{
   const candidates=this.players.filter(q=>q.t===p.t&&!q.keeper&&q.stun<=0&&q.z<=20&&
    q!==p&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&
    (q.x-p.x)*forward>70&&distance(p,q)>=120&&distance(p,q)<920)
-   .map(q=>({q,safe:this.keeperPassingLane(p,q)}))
+   .map(q=>{
+    // Check the actual led landing point, not just the runner's old position.
+    const leadX=Number.isFinite(q.moveVX)?clamp(q.moveVX*.14,-35,35):0;
+    const leadY=Number.isFinite(q.moveVY)?clamp(q.moveVY*.14,-35,35):0;
+    const landing={x:q.x+leadX,y:q.y+leadY};
+    return {q,landing,safe:this.keeperPassingLane(p,landing)};
+   })
    // Rollouts are deliberate safe ground passes: do not roll to a teammate
    // who cannot stand to receive, or blindly into an occupied receiving lane.
    .filter(v=>v.safe.clear&&!v.q.down&&(v.q.shotImpactKnockdownTimer||0)<=0)
-   .sort((a,b)=>keeperOutletScore(p,a.q,rolloutOpponents)-
-                keeperOutletScore(p,b.q,rolloutOpponents));
+   .sort((a,b)=>keeperOutletScore(p,a.landing,rolloutOpponents)-
+                keeperOutletScore(p,b.landing,rolloutOpponents));
   const receiver=candidates[0]?.q;
   // Deliberately keep the catch if every lane is covered: do not fall back
   // to a blind rollout, and do not consume an outfield dribble input.
