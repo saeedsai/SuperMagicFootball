@@ -261,6 +261,32 @@ function keeperDiveRecoverySeconds(keeper){
 }
 // Lower is safer. Nearby active defenders can intercept the first touch;
  // knocked-down, stunned and high-airborne defenders cannot contest it.
+// A strong dive that cannot hold the ball should parry toward the clearer side.
+// Score the two short rebound corridors against nearby active attackers; ignore
+// players who cannot contest the rebound. Ambiguous/no pressure keeps shot angle.
+function keeperParrySide(keeper,players,shotOffset){
+ const preferred=Math.sign(shotOffset||1);
+ if(!keeper||!Number.isFinite(keeper.x)||!Number.isFinite(keeper.y))return preferred;
+ const forward=keeper.t===0?1:-1;
+ const start={x:keeper.x+forward*24,y:keeper.y};
+ const laneClearance=side=>{
+  const end={x:keeper.x+forward*230,y:clamp(keeper.y+side*125,F.y+24,F.y+F.h-24)};
+  const dx=end.x-start.x,dy=end.y-start.y,len2=dx*dx+dy*dy||1;
+  let clearance=Infinity;
+  for(const q of players||[]){
+   if(!q||q.t===keeper.t||q.keeper||q.stun>0||q.down||
+      (q.shotImpactKnockdownTimer||0)>0||
+      (q.action==='hurt'&&(q.actionTimer||0)>0)||
+      (q.z||0)>28||!Number.isFinite(q.x)||!Number.isFinite(q.y)||
+      distance(keeper,q)>360)continue;
+   const u=clamp(((q.x-start.x)*dx+(q.y-start.y)*dy)/len2,0,1);
+   clearance=Math.min(clearance,Math.hypot(q.x-(start.x+dx*u),q.y-(start.y+dy*u)));
+  }
+  return clearance;
+ };
+ const current=laneClearance(preferred),alternate=laneClearance(-preferred);
+ return alternate>current+24?-preferred:preferred;
+}
 function keeperOutletScore(keeper,receiver,opponents){
  const travel=distance(keeper,receiver);
  const pressure=opponents.reduce((sum,q)=>{
@@ -807,7 +833,7 @@ class GameEngine{
   const force=Math.hypot(b.vx,b.vy)/50+(b.power||0),saveQuality=24+skill*.55+diving*.28;
   // Even a strong shot can be deflected; high-quality keepers catch slower shots.
   if(force<saveQuality*.62){this.keeperCollect(p,'dive');this.emit('save',{player:p,saveType:'dive'});}
-  else {b.owner=null;b.shot=null;b.strike=null;b.ordinaryShot=false;b.vx=sign*(290+skill*4.1);b.vy=dy*4+Math.sign(dy||1)*115;b.vz=150+diving*.6;b.power=0;b.attacker=p.t;b.lastTouchTeam=p.t;b.age=0;b.trail=[];b.canCollect=.32;this.emit('save',{player:p,saveType:'dive',deflected:true});}
+  else {b.owner=null;b.shot=null;b.strike=null;b.ordinaryShot=false;b.vx=sign*(290+skill*4.1);b.vy=dy*4+keeperParrySide(p,this.players,dy)*115;b.vz=150+diving*.6;b.power=0;b.attacker=p.t;b.lastTouchTeam=p.t;b.age=0;b.trail=[];b.canCollect=.32;this.emit('save',{player:p,saveType:'dive',deflected:true});}
   this.spendStamina(p,'keeperDive');this.burst(p.x,p.y,'#ccf9ff',16);
   this.emit('keeperDive',{team:p.t,player:p.src.name,manual});return true;
  }

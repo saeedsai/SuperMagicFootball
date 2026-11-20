@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.130 
+# SuperMagicFootball release/version policy — About-only 0.12.81.131 
+
+**Dev candidate 0.12.81.131 (20 November 2026):** KEEPER-SAFE-PARRY-LANE-01: When a dive deflects rather than catches, the rebound now favors the clearer lateral corridor away from nearby active attackers; no/ambiguous pressure preserves the shot-angle fallback. Catch threshold, outward speed, four actions and saves unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.130 (20 November 2026):** PASS-POKE-MOVING-LEAD-01: Normal PASS pokes lead moving targets by a shorter, bounded 55 ms prediction (12 units per axis); stationary and invalid motion remain neutral, while SHOOT slides retain their separate longer lead. Four actions and saves unchanged. Exact-head QA pending. The .129 Full Regression Census exposed three stale Chromium assertions: two expected fixed 28-unit Wind displacement despite the live distance falloff, and one expected every keeper dive to recover within 0.66 seconds despite skill/fatigue-aware animation timing. Those browser contracts are corrected here.
 

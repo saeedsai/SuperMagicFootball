@@ -6,18 +6,18 @@
 Deliver player-facing gameplay, existing-player presentation and quality improvements while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- .130 PASS-POKE-MOVING-LEAD-01: ordinary PASS poke now leads a moving target by 55 ms, capped at 12 units per axis; SHOOT slide retains 85 ms / 22-unit lead. Stationary and invalid motion remain neutral. Focused tackle-lead regression updated.
-- .129 exact-head Census: preflight passed (2,543/2,543 contracts), all four Node shards passed, preview smoke passed, but three historical Chromium scripts failed: `magic_wind_trick_browser_qa.py` and `tr15_wind_mud_browser_qa.py` still expected fixed 28-unit Wind push despite distance falloff; `v08197_keeper_browser_qa.py` expected recovery by .66s although novice dive animation lasts .7256s. Updated those contracts in .130. Modular QA passed.
+- .131 KEEPER-SAFE-PARRY-LANE-01: a deflected keeper save now chooses the clearer short rebound corridor away from nearby active attackers; no/ambiguous pressure keeps the shot-angle fallback. Catch threshold and outward speed unchanged. Focused production-helper regression added.
+- .130 exact-head Census: preflight, preview smoke, all four Node shards and three of four Chromium shards passed. One browser failure was a bad assertion capture in `magic_wind_trick_browser_qa.py`: it read `windTrickFx` after setting it to zero. Corrected capture order in .131. Modular QA and Keeper Save Event Integrity passed; auxiliary Concept Hero QA failed on missing `ws` dependency and is outside owner scope.
 - Main protection #87, Render drift #86 and physical two-phone acceptance #48 remain open. Breath .66–.68 is complete.
 
 ## Next smallest action
-Run exact-head .130 Full Regression Census and Modular QA; fix any remaining confirmed failures. Then continue responsive ball/tackle behavior, goalkeeper catch/recovery and original existing-player animation.
+Run exact-head .131 Full Regression Census and Modular QA; fix any remaining confirmed failures. Then continue goalkeeper save/rebound behavior and responsive gameplay.
 
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN work or other agents' private checkpoints.
 
 ## Evidence
-Production gameplay and focused regression changes are committed on the existing dev branch. .129 exact-head Node and Modular QA passed; three stale Chromium contracts were identified from job logs and updated. .130 exact-head CI and hosted release remain pending.
+.131 production keeper parry behavior, focused regression and .130 Wind browser-contract repair committed on the existing dev branch. Direct extracted-helper smoke passed six scenarios. Exact-head Node/Chromium Census and hosted release remain pending.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; promote only through the existing QA-gated main pipeline.

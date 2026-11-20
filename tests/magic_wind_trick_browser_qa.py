@@ -34,9 +34,9 @@ with sync_playwright() as pw:
     const px=ctx.getImageData(0,0,canvas.width,canvas.height).data;let cyan=0;
     for(let i=0;i<px.length;i+=4)if(px[i+1]>150&&px[i+2]>150&&px[i+3]>0)cyan++;
     return cyan;};
-   const withWind=draw();target.windTrickFx=0;const withoutWind=draw();
+   const withWind=draw(),windFx=target.windTrickFx;target.windTrickFx=0;const withoutWind=draw();
    return {activated,displacement:Math.hypot(target.x-before.x,target.y-before.y),
-    windFx:target.windTrickFx,withWind,withoutWind,
+    windFx,withWind,withoutWind,
     actionButtons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }''')
   assert result['activated'] is True,(label,'Wind did not activate',result)
