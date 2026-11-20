@@ -259,6 +259,17 @@ function keeperDiveRecoverySeconds(keeper){
  const fatigue=clamp(keeper?.fatigue||0,0,1);
  return keeperDiveCooldown(skill,diving,fatigue,PHYSICS_TUNING);
 }
+// Lower is safer. Nearby active defenders can intercept the first touch;
+ // knocked-down, stunned and high-airborne defenders cannot contest it.
+function keeperOutletScore(keeper,receiver,opponents){
+ const travel=distance(keeper,receiver);
+ const pressure=opponents.reduce((sum,q)=>{
+  if(q.stun>0||q.down||(q.shotImpactKnockdownTimer||0)>0||(q.z||0)>28)return sum;
+  const d=distance(receiver,q);
+  return sum+(d<175?(175-d)*2.4:0);
+ },0);
+ return travel+pressure;
+}
 class GameEngine{
  constructor(options={},input){this.options=options;this.input=input;this.events=[];this.mode='quick';this.matchState='none';this.teamIds=[0,9];this.rosters=[[],[]];this.lineups=[DEFAULT_LINEUP.slice(),[0,1,2,3,5,9]];this.formation=['2-1-2','2-1-2'];this.teamPlans=[];this.controlled=[3,3,0,0];this.humans=1;this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=120;this.players=[];this.ball={};this.particles=[];this.magicHazards=[];this.shake=0;this.flash=0;this.weather='Clear';this.terrain='Grass';this.condition='Good';this.wind={x:0,y:0};this.stormTimer=0;this.tornado=null;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.kickoffCountdown=0;this.pk=null;this.matchSerial=0;this.fatigueLedger=[{},{}];this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.maxSubstitutions=MAX_SUBSTITUTIONS;this.moraleLedger=[{},{}];this.talksUsed=[{},{ }];this.celebrationStyle=0;this.onEvent=()=>{};this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.stoppageWindow=0;this.stoppageAnnounced=false;this._shotAudit=null;this._reboundAudit=null;this._shotAuditNext=0;}
  // Additive telemetry. Never queries RNG or changes ball/actors/keeper logic.
@@ -1820,8 +1831,12 @@ class GameEngine{
   const opponents=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0);
   const pressured=opponents.some(q=>distance(p,q)<330);
   const scored=mates.map(q=>({q,safe:this.keeperPassingLane(p,q)}));
-  const shortOptions=scored.filter(v=>v.safe.clear&&distance(p,v.q)<900)
-    .sort((a,b)=>distance(p,a.q)-distance(p,b.q));
+  // A clear flight lane is not enough if a defender is waiting at reception.
+  // Penalize active defenders close to the outlet, without making a lone
+  // viable teammate impossible to select or changing the long clearance.
+  const shortOptions=scored.filter(v=>v.safe.clear&&distance(p,v.q)<900&&
+    !v.q.down&&(v.q.shotImpactKnockdownTimer||0)<=0)
+    .sort((a,b)=>keeperOutletScore(p,a.q,opponents)-keeperOutletScore(p,b.q,opponents));
   const shortAllowed=mode!=='long'&&!pressured&&shortOptions.length>0;
   const long=!shortAllowed;
   const option=long?this.keeperClearanceTarget(p,scored,opponents):{
