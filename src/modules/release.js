@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.116',
+ version:'0.12.81.117',
  date:'2026-11-20',
  notes:Object.freeze([
+  "KEEPER-ROLL-ACTIVE-LANE-01: Goalkeeper ground distribution ignores defenders who are knocked down, recovering or jumping above ground interception height; active grounded defenders still block. Four controls, saves and physics unchanged. Exact-head QA pending.",
   "KEEPER-ROLL-LEAD-LANE-01: Goalkeeper DRIBBLE rollouts check defenders at a moving receiver's predicted landing point, avoiding a newly blocked lane. Stationary fallback, four controls and saves unchanged. Exact-head QA pending.",
   "KEEPER-ROLL-MOVING-LEAD-01: DRIBBLE goalkeeper rollouts now lead a moving receiver by a capped 140 ms of motion (maximum 35 units per axis), reducing passes behind runners while preserving stationary and invalid-velocity fallback. Four controls and saves unchanged. Exact-head QA pending.",
   "KEEPER-ROLL-SAFE-RECEIVER-01: DRIBBLE goalkeeper rollouts now prefer a clear, less-marked standing teammate rather than blindly rolling to the nearest player; if no safe outlet exists the keeper retains the ball. Four controls and saves unchanged. Exact-head QA pending.",
