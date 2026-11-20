@@ -5,6 +5,7 @@
 Player-facing game features, four controls, original assets, save/offline compatibility.
 
 ## Current checkpoint
+- .122: Wind/Mud AI cannot instantly counter a clearly rearward feint; directional regression added, exact-head QA pending.
 - .121: Wind/Mud AI allows second nearest defender to independently react with JUMP; focused regression added, full QA pending.
 - .120: Teleport landing can be blocked by a second jumping defender in the arrival lane; focused test added, exact-head QA pending.
 - 0.12.81.119: Keeper DRIBBLE waits for recovering hurt receivers; .118: Keeper DRIBBLE roll avoids actively sliding teammates; focused test added, exact-head QA not observed.
