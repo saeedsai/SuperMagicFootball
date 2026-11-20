@@ -5,6 +5,7 @@
 Player-facing game features, four controls, original assets, save/offline compatibility.
 
 ## Current checkpoint
+- .123: Wind/Mud area counters now accept active JUMP/SHOOT slide by any in-range defender, including airborne players; focused regression added, exact-head QA pending.
 - .122: Wind/Mud AI cannot instantly counter a clearly rearward feint; directional regression added, exact-head QA pending.
 - .121: Wind/Mud AI allows second nearest defender to independently react with JUMP; focused regression added, full QA pending.
 - .120: Teleport landing can be blocked by a second jumping defender in the arrival lane; focused test added, exact-head QA pending.
