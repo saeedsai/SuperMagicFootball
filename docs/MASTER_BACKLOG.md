@@ -1,3 +1,5 @@
+> **20 November 2026 — 0.12.81.112: KEEPER-DIVE-SETTLE-01: Goalkeeper dive animation settles sooner for skilled, fresh keepers and lasts slightly longer for tired or inexperienced keepers; existing save reach and dive cooldown remain unchanged. Exact-head QA pending.**
+
 > **20 November 2026 — 0.12.81.111 SLIDE-CLOSING-CONTACT-01: Sliding defenders can connect with fast opponents moving into the contact corridor using a bounded 45 ms prediction; retreating and lateral opponents retain ordinary contact reach. Exact-head QA pending.**
 
 > **20 November 2026 — 0.12.81.110 SLIDE-INVULNERABLE-TARGET-01: Slide tackles avoid auto-locking onto temporarily invulnerable opponents, preferring a contactable grounded defender or ball carrier; ordinary tackles and physical slide reach remain unchanged. Exact-head QA pending.**
