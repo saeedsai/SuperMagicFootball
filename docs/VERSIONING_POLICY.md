@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.126 
+# SuperMagicFootball release/version policy — About-only 0.12.81.127 
+
+**Dev candidate 0.12.81.127 (20 November 2026):** WIND-DISTANCE-FALLOFF-01: Wind pushes nearby defenders more strongly than those at the outer edge of its area, with bounded 35–100% distance falloff; high airborne defenders still take half push. Mud and existing counters remain unchanged; four controls and saves unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.126 (20 November 2026):** WIND-AIRBORNE-RESISTANCE-01: Airborne defenders at least 20 units high now take half Wind push, while grounded and low-jumping defenders retain full push. Mud evasion and JUMP/SHOOT counters unchanged; four controls and saves unchanged. Exact-head QA pending.
 
