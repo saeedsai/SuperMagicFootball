@@ -1,3 +1,5 @@
+**2026-11-20 0.12.81.126 candidate — WIND-AIRBORNE-RESISTANCE-01:** Airborne defenders at least 20 units high now take half Wind push, while grounded and low-jumping defenders retain full push. Mud evasion and JUMP/SHOOT counters unchanged; four controls and saves unchanged. Exact-head QA pending.
+
 ### 2026-11-20 — MUD-AIRBORNE-EVASION-01 (smf-hourly-dev-20261019)
 MUD-AIRBORNE-EVASION-01: Defenders jumping at least 20 units above the pitch evade Mud's ground slow, while grounded and low-jumping defenders remain affected; Wind and timed JUMP/SHOOT counters unchanged. Four controls and saves unchanged. Exact-head QA pending. Production source and focused regression committed on dev; exact-head QA and hosted release unverified.
 
