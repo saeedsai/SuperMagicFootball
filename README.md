@@ -1,3 +1,5 @@
+> **0.12.81.128 release candidate (20 November 2026):** TELEPORT-SECOND-DEFENDER-SLIDE-01: A second defender's active grounded SHOOT slide can intercept Teleport in its forward lane even when the nearest defender is idle; expired, airborne, rearward and wide slides do not counter. Four controls and saves unchanged. Exact-head QA pending.
+
 > **0.12.81.127 release candidate (20 November 2026):** WIND-DISTANCE-FALLOFF-01: Wind pushes nearby defenders more strongly than those at the outer edge of its area, with bounded 35–100% distance falloff; high airborne defenders still take half push. Mud and existing counters remain unchanged; four controls and saves unchanged. Exact-head QA pending.
 
 > **0.12.81.126 release candidate (20 November 2026):** WIND-AIRBORNE-RESISTANCE-01: Airborne defenders at least 20 units high now take half Wind push, while grounded and low-jumping defenders retain full push. Mud evasion and JUMP/SHOOT counters unchanged; four controls and saves unchanged. Exact-head QA pending.
