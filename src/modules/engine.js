@@ -1867,8 +1867,11 @@ class GameEngine{
    q!==p&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&
    (q.x-p.x)*forward>70&&distance(p,q)>=120&&distance(p,q)<920)
    .map(q=>({q,safe:this.keeperPassingLane(p,q)}))
-   .filter(v=>v.safe.clear)
-   .sort((a,b)=>distance(p,a.q)-distance(p,b.q));
+   // Rollouts are deliberate safe ground passes: do not roll to a teammate
+   // who cannot stand to receive, or blindly into an occupied receiving lane.
+   .filter(v=>v.safe.clear&&!v.q.down&&(v.q.shotImpactKnockdownTimer||0)<=0)
+   .sort((a,b)=>keeperOutletScore(p,a.q,this.players.filter(o=>o.t!==p.t&&!o.keeper&&o.stun<=0))-
+                keeperOutletScore(p,b.q,this.players.filter(o=>o.t!==p.t&&!o.keeper&&o.stun<=0)));
   const receiver=candidates[0]?.q;
   // Deliberately keep the catch if every lane is covered: do not fall back
   // to a blind rollout, and do not consume an outfield dribble input.
