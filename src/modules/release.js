@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.111',
+ version:'0.12.81.112',
  date:'2026-11-20',
  notes:Object.freeze([
+  "KEEPER-DIVE-SETTLE-01: Goalkeeper dive animation settles sooner for skilled, fresh keepers and lasts slightly longer for tired or inexperienced keepers; existing save reach and dive cooldown remain unchanged. Exact-head QA pending.",
   "SLIDE-CLOSING-CONTACT-01: Sliding defenders can connect with fast opponents moving into the contact corridor using a bounded 45 ms prediction; retreating and lateral opponents retain ordinary contact reach. Exact-head QA pending.",
   "SLIDE-INVULNERABLE-TARGET-01: Slide tackles avoid auto-locking onto temporarily invulnerable opponents, preferring a contactable grounded defender or ball carrier; ordinary tackles and physical slide reach remain unchanged. Exact-head QA pending.",
   "SLIDE-VALID-TARGET-01: Slide tackles now aim only at opponents they can actually contact: high jumpers and knocked-down players no longer steal auto-targeting from grounded runners. Ordinary standing tackles and slide reach remain unchanged. Exact-head QA pending.",
