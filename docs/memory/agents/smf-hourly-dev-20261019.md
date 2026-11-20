@@ -5,6 +5,7 @@
 Player-facing game features, four controls, original assets, save/offline compatibility.
 
 ## Current checkpoint
+- .127: Wind distance falloff adds stronger close-range push and weaker edge push; regression updated, exact-head QA pending.
 - .126: High airborne defenders resist half Wind push; focused regression added, QA pending.
 - .125: Mud ground slow skips defenders jumping at least 20 units; low/grounded defenders still slowed. Focused regression added; QA pending.
 - .124: Wind/Mud uncountered area effects apply to all eligible nearby defenders; focused regression added, QA pending.
