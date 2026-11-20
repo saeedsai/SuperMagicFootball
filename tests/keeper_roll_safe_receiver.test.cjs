@@ -18,7 +18,7 @@ test('keeper roll retains closest outlet when no defender is present',()=>{
 test('rollout filters downed and knocked-down receivers while keeping clear-lane fallback',()=>{
  const section=source.slice(source.indexOf(' rollKeeper(p){'),source.indexOf('\n command(p,a)',source.indexOf(' rollKeeper(p){')));
  assert.match(section,/\.filter\(v=>v\.safe\.clear&&!v\.q\.down&&\(v\.q\.shotImpactKnockdownTimer\|\|0\)<=0\)/);
- assert.match(section,/keeperOutletScore\(p,a\.q,rolloutOpponents\)/);
+ assert.match(section,/keeperOutletScore\(p,a\.landing,rolloutOpponents\)/);
  assert.match(section,/if\(!receiver\)return false/);
  assert.match(section,/this\.ball\.passTarget=receiver\.src\.id/);
 });
