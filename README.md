@@ -1,3 +1,5 @@
+> **0.12.81.115 release candidate (20 November 2026):** KEEPER-ROLL-MOVING-LEAD-01: DRIBBLE goalkeeper rollouts now lead a moving receiver by a capped 140 ms of motion (maximum 35 units per axis), reducing passes behind runners while preserving stationary and invalid-velocity fallback. Four controls and saves unchanged. Exact-head QA pending.
+
 > **0.12.81.114 release candidate (20 November 2026):** KEEPER-ROLL-SAFE-RECEIVER-01: DRIBBLE goalkeeper rollouts now prefer a clear, less-marked standing teammate rather than blindly rolling to the nearest player; if no safe outlet exists the keeper retains the ball. Four controls and saves unchanged. Exact-head QA pending.
 
 > **0.12.81.113 release candidate (20 November 2026):** KEEPER-OUTLET-PRESSURE-01: Goalkeepers prefer a clear short outlet with fewer nearby active defenders instead of blindly choosing the nearest receiver; if no safe short option exists they retain the existing long-clearance fallback. Four controls and saves unchanged. Exact-head QA pending.
