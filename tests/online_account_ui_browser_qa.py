@@ -461,6 +461,7 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
         page.locator('[data-action="onlineUtReload"]').click()
         page.wait_for_function("document.querySelector('[aria-label=\"Online Ultimate Team snapshot\"]')?.textContent.includes('NO REMOTE SNAPSHOT')")
         page.locator('[data-action="onlineUtSave"]').click()
+        page.wait_for_function("document.querySelector('#onlineAccountStatus')?.textContent.includes('Existing squad copy saved')",timeout=15000)
         assert len(api['puts']) == 2
         squad_commit = api['puts'][1]
         assert squad_commit['expectedVersion'] == 0

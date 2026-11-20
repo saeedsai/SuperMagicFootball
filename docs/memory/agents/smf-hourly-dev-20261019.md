@@ -6,18 +6,18 @@
 Deliver player-facing gameplay, existing-player presentation and quality improvements while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- .133 AI-AVAILABLE-PRESSER-01: defensive AI no longer assigns primary press or cover to a teammate already stunned, knocked down/getting up, or committed to an active slide; the next available defender takes the pursuit.
-- .132 KEEPER-SAFE-PARRY-LANE-01 passed exact-head dev Census, Modular QA, QA-gated promotion, main Census, Pages deployment and hosted-pages smoke. Both dev and main now point to the promoted .132 head.
-- Main protection #87, Render drift #86 and physical two-phone acceptance #48 remain open. Breath .66–.68 is complete.
+- .134 AI-SUPPORT-RUN-LANE-01: one eligible AI teammate makes a bounded forward diagonal run into the less-defended lateral lane when a teammate carries; other support players keep their width positions. Four actions, saves and roster data unchanged.
+- .133 AI-AVAILABLE-PRESSER-01 passed exact-head dev Census and Modular QA, was promoted through the QA-gated pipeline, and Pages deployment passed. The separate main Census exposed one async browser assertion race in online Ultimate Team save; .134 waits for explicit save completion before checking request count.
+- Pre-commit dev/main heads both .133: `7ccfc1c5e778c67c81e72bcba08107f13c9ebac0`. Main protection #87, Render drift #86 and physical two-phone acceptance #48 remain open.
 
 ## Next smallest action
-Run exact-head .133 Full Regression Census and Modular QA; inspect all four Node and four Chromium shards, fix confirmed failures, then continue the next bounded gameplay improvement.
+Run exact-head .134 Census (four Node and four Chromium shards) and Modular QA; fix confirmed failures, then allow the existing QA-gated promotion and independently verify main Census, Pages and hosted bytes.
 
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN work or other agents' private checkpoints.
 
 ## Evidence
-.133 production AI availability filter and three focused Node regressions are committed on dev. .132 dev/main Census, QA-gated promotion, Pages and hosted smoke passed. .133 exact-head QA and hosted release remain pending.
+Production AI support-run helper is wired into `driveAI`; four focused Node regressions cover mirroring, pressure-aware lane choice, unavailable-player exclusion, teammate crowding and field bounds. Exact-head .134 workflows have not yet run.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; promote only through the existing QA-gated main pipeline.

@@ -1,10 +1,11 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.133',
+ version:'0.12.81.134',
  date:'2026-11-20',
  notes:Object.freeze([
-  "AI-AVAILABLE-PRESSER-01: Team defense skips teammates who are stunned, knocked down/getting up, or committed to an active slide when assigning the primary press and cover; the next available defender takes the pursuit instead of leaving a dead assignment. Four controls, saves and roster data unchanged. Exact-head QA pending.",
+  "AI-SUPPORT-RUN-LANE-01: When a teammate carries the ball, one available AI teammate makes a bounded forward diagonal run into the less-defended lateral lane, avoiding active defenders and occupied teammate space; the carrier, local human, goalkeeper and unavailable/recovering players are excluded. Other teammates retain their existing width support. Four controls, saves and roster data unchanged. Exact-head QA pending.",
+  "AI-AVAILABLE-PRESSER-01: Team defense skips teammates who are stunned, knocked down/getting up, or committed to an active slide when assigning primary press and cover; the next available defender takes the pursuit. Four controls, saves and roster data unchanged.",
   "KEEPER-SAFE-PARRY-LANE-01: A dive that deflects rather than catches now steers the rebound into the clearer lateral corridor away from nearby active attackers, even when the shot's original vertical angle points toward pressure; no/ambiguous pressure preserves the original rebound direction and magnitude. Catch threshold and outward speed unchanged. Exact-head dev and main Census, Modular QA, QA-gated promotion, Pages deployment and hosted-pages smoke passed.",
   "KEEPER-SAFE-PARRY-LANE-01: When a dive deflects rather than catches, the rebound now favors the clearer lateral corridor away from nearby active attackers; no/ambiguous pressure preserves the shot-angle fallback. Catch threshold, outward speed, four actions and saves unchanged. Exact-head QA pending.",
   "PASS-POKE-MOVING-LEAD-01: Normal PASS pokes now lead a moving target by a shorter, bounded 55 ms prediction (12 units per axis); stationary and invalid motion remain neutral, while SHOOT slide keeps its separate 85 ms / 22-unit lead. Four actions and saves unchanged. Exact-head QA pending.",
