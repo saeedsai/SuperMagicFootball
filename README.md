@@ -1,3 +1,5 @@
+> **0.12.81.125 release candidate (20 November 2026):** MUD-AIRBORNE-EVASION-01: Defenders jumping at least 20 units above the pitch evade Mud's ground slow, while grounded and low-jumping defenders remain affected; Wind and timed JUMP/SHOOT counters unchanged. Four controls and saves unchanged. Exact-head QA pending.
+
 > **0.12.81.124 release candidate (20 November 2026):** WIND-MUD-AREA-EFFECT-01: Uncountered Wind now pushes every eligible nearby defender and Mud slows every eligible nearby defender, not only the closest; timed JUMP/SHOOT counters still stop the effect. Four controls and saves unchanged. Exact-head QA pending.
 
 > **0.12.81.123 release candidate (20 November 2026):** WIND-MUD-AREA-COUNTER-01: Any nearby defender can counter Wind/Mud with a timed JUMP or grounded SHOOT slide, even when a closer teammate does nothing; airborne defenders remain eligible for the counter. Four controls and saves unchanged. Exact-head QA pending.
