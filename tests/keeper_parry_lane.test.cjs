@@ -37,8 +37,6 @@ test('nearly equal rebound lanes retain the shot-angle fallback',()=>{
  assert.equal(helper(keeper(0),[rival(210,340)],-1),-1);
 });
 test('actual dive deflection uses the selected side without changing outward speed or catch threshold',()=>{
- assert.match(source,/b\\.vy=dy\\*4\\+keeperParrySide\\(p,this\\.players,dy\\)\\*115/);
- assert.match(source,/b\\.vx=sign\\*\\(290\\+skill\\*4\\.1\\)/);
  assert.ok(source.includes('b.vy=dy*4+keeperParrySide(p,this.players,dy)*115'));
  assert.ok(source.includes('b.vx=sign*(290+skill*4.1)'));
  assert.ok(source.includes('if(force<saveQuality*.62)'));
