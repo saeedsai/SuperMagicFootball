@@ -1097,7 +1097,8 @@ class GameEngine{
    Number(carrier.dribbleHold)>=.35&&Number(carrier.dribbleHold)<1
    ?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0&&q.z<20&&
     (trick!=='mud'||(q.mudSlowTimer||0)<=0)).sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
-  const threat=rivals[0]===p&&distance(carrier,p)<radius?carrier:null;
+  // The second closest defender may also time a JUMP against Wind/Mud.
+  const threat=rivals.slice(0,2).includes(p)&&distance(carrier,p)<radius?carrier:null;
   if(!threat){p.aiWindMudThreat=null;p.aiWindMudReaction=0;return false;}
   // Wind and Mud are resolved immediately at the end of the existing one
   // second DRIBBLE hold. Jump or grounded slide already counters either one.
