@@ -1490,15 +1490,18 @@ class GameEngine{
   const batParried=id==='bat'&&inRange&&rival.action==='slide'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&Number.isFinite(rival.z)&&rival.z<20;
   // TELEPORT-SLIDE-01: a grounded SHOOT-slide intercepts only the carrier's
   // forward travel lane; a slide behind or wide of that lane misses.
-  const teleportParried=id==='teleport'&&inRange&&rival.action==='slide'&&
-   Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&
-   Number.isFinite(rival.z)&&rival.z<20&&(()=>{
+  // TELEPORT-SECOND-DEFENDER-SLIDE-01: evaluate every eligible active
+  // grounded SHOOT slide in the forward travel lane, not just the nearest rival.
+  const teleportParried=id==='teleport'&&rivals.some(defender=>
+   distance(p,defender)<radius&&defender.action==='slide'&&
+   Number.isFinite(defender.actionTimer)&&defender.actionTimer>0&&
+   Number.isFinite(defender.z)&&defender.z<20&&(()=>{
     const forward=norm(p.dx||p.face,p.dy||0);
-    const offsetX=rival.x-p.x,offsetY=rival.y-p.y;
+    const offsetX=defender.x-p.x,offsetY=defender.y-p.y;
     const ahead=offsetX*forward.x+offsetY*forward.y;
     const across=Math.abs(offsetX*forward.y-offsetY*forward.x);
     return ahead>0&&ahead<=85&&across<=35;
-   })();
+   })());
   // HIDE-BALL-PASS-01: a timely defensive PASS poke (ordinary grounded tackle)
   // reads the fake ball only when the defender faces the carrier at close range.
   // A stale, airborne or backwards poke cannot cancel the trick.
