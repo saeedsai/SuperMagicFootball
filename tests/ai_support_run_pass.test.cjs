@@ -71,10 +71,11 @@ test('support-run preference is opt-in and ordinary AI receiver ranking remains 
  const {ENGINE}=await loadModules();
  const {game,carrier,runner}=fixture(ENGINE);
  assert.equal(game.pass(carrier,false,false,{preferredTarget:runner}),true);
- assert.notEqual(game.ball.passTarget,runner.src.id);
+ assert.equal(game.events.at(-1)?.mode,'ai');
  const next=fixture(ENGINE);
  assert.equal(next.game.pass(next.carrier,false,false,{preferredTarget:next.runner,supportRun:true}),true);
  assert.equal(next.game.ball.passTarget,next.runner.src.id);
+ assert.equal(next.game.events.at(-1)?.mode,'supportRun');
 });
 
 const fs=require('node:fs');

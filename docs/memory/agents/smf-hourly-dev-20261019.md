@@ -17,7 +17,7 @@ Run exact-head .135 Census and Modular QA; fix confirmed failures, then allow on
 Only this checkpoint. No concept heroes, copied art, routine LAN changes or other agents' private checkpoints.
 
 ## Evidence
-Five focused Node cases cover clear support selection, corridor/arrival blockers, downed/high/stunned defender exclusion, not-yet-arrived fallback, opt-in preferred-target selection and driveAI wiring. First Modular QA run exposed an uninitialized GameEngine fixture; explicit init added in follow-up test commit. Exact-head rerun pending.
+Five focused Node cases cover clear support selection, corridor/arrival blockers, downed/high/stunned defender exclusion, not-yet-arrived fallback, opt-in preferred-target selection and driveAI wiring. First Modular QA run exposed an uninitialized GameEngine fixture; explicit init added. Second run showed the normal AI ranker can legitimately choose the same teammate, so the test now verifies passIntent mode ('ai' vs 'supportRun') rather than requiring a different ID. Exact-head rerun pending.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; promote only through the existing QA-gated main pipeline.
