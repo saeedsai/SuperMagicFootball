@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.115 
+# SuperMagicFootball release/version policy — About-only 0.12.81.116 
+
+**Dev candidate 0.12.81.116 (20 November 2026):** KEEPER-ROLL-LEAD-LANE-01: Goalkeeper DRIBBLE rollouts check defenders at a moving receiver's predicted landing point, avoiding a newly blocked lane. Stationary fallback, four controls and saves unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.115 (20 November 2026):** KEEPER-ROLL-MOVING-LEAD-01: DRIBBLE goalkeeper rollouts now lead a moving receiver by a capped 140 ms of motion (maximum 35 units per axis), reducing passes behind runners while preserving stationary and invalid-velocity fallback. Four controls and saves unchanged. Exact-head QA pending.
 
