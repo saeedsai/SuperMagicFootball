@@ -13,7 +13,7 @@ const F={x:-100,y:-100,w:400,h:400};
 function executeEffect(id,p,rivals,radius){
  const branch=method.match(new RegExp("}else if\\(id==='"+id+"'\\)\\{([\\s\\S]*?)(?=\\n   }else if|\\n  }\\n  if\\(id!=='shoulderRide')"));
  assert.ok(branch,id+' effect branch exists');
- assert.match(branch[1],/for\(const target of rivals\.filter\(q=>distance\(p,q\)<radius\)\)/);
+ assert.match(branch[1],/for\(const target of rivals\.filter\(/);
  // Run the actual production effect branch, not a duplicate of its logic.
  new Function('p','rivals','radius','distance','norm','clamp','F',branch[1])(p,rivals,radius,distance,norm,clamp,F);
 }
@@ -28,4 +28,11 @@ test('Mud slows all nearby defenders without shortening existing slow',()=>{
  executeEffect('mud',{x:0,y:0},players,100);
  assert.deepEqual(players.map(q=>q.mudSlowTimer||0),[.52,.8,0]);
  assert.deepEqual(players.map(q=>q.mudTrickFx||0),[.52,.52,0]);
+});
+
+test('Jumping above ground level evades Mud but low jump remains vulnerable',()=>{
+ const players=[{x:20,y:0,z:35},{x:40,y:0,z:10},{x:60,y:0,z:20},{x:80,y:0}];
+ executeEffect('mud',{x:0,y:0},players,100);
+ assert.deepEqual(players.map(q=>q.mudSlowTimer||0),[0,.52,0,.52]);
+ assert.deepEqual(players.map(q=>q.mudTrickFx||0),[0,.52,0,.52]);
 });
