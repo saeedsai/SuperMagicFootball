@@ -5,7 +5,7 @@
 Player-facing game features, four controls, original assets, save/offline compatibility.
 
 ## Current checkpoint
-- 0.12.81.118: Keeper DRIBBLE roll avoids actively sliding teammates; focused test added, exact-head QA not observed.
+- 0.12.81.119: Keeper DRIBBLE waits for recovering hurt receivers; .118: Keeper DRIBBLE roll avoids actively sliding teammates; focused test added, exact-head QA not observed.
 - .117: Ground distribution ignores downed/recovering/high-airborne defenders.
 - .116: Rollout predicted receiver lane; .115: moving receiver lead; .114: safe receiver; .113: outlet pressure.
 - Breath .66–.68 completed. Main protection #87, Render drift #86, physical LAN #48 unresolved.
