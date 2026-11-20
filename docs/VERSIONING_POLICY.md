@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.111 
+# SuperMagicFootball release/version policy — About-only 0.12.81.112 
+
+**Dev candidate 0.12.81.112 (20 November 2026):** KEEPER-DIVE-SETTLE-01: Goalkeeper dive animation settles sooner for skilled, fresh keepers and lasts slightly longer for tired or inexperienced keepers; existing save reach and dive cooldown remain unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.111 (20 November 2026):** SLIDE-CLOSING-CONTACT-01: Sliding defenders can connect with fast opponents moving into the contact corridor using a bounded 45 ms prediction; retreating and lateral opponents retain ordinary contact reach. Exact-head QA pending.
 
