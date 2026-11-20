@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.122',
+ version:'0.12.81.123',
  date:'2026-11-20',
  notes:Object.freeze([
+  "WIND-MUD-AREA-COUNTER-01: Any nearby defender can counter Wind/Mud with a timed JUMP or grounded SHOOT slide, even when a closer teammate does nothing; airborne defenders remain eligible for the counter. Four controls and saves unchanged. Exact-head QA pending.",
   "WIND-MUD-REAR-FEINT-01: AI defenders facing away from a Wind/Mud DRIBBLE wind-up no longer make an omniscient instant JUMP counter when the carrier is clearly behind them; defenders facing the carrier and nearby lateral threats still react. Four controls and saves unchanged. Exact-head QA pending.",
   "WIND-MUD-SECOND-DEFENDER-READ-01: Two nearby defenders can independently respond with JUMP to a Wind/Mud DRIBBLE wind-up; the closest defender no longer suppresses the second. Existing timing, range and stun restrictions remain. Four controls and saves unchanged. Exact-head QA pending.",
   "TELEPORT-MULTI-DEFENDER-JUMP-01: A second defender timing JUMP into the Teleport arrival corridor now counters the trick even when a different opponent stands closer. Expired, grounded and out-of-lane jumps do not block; four controls and saves unchanged. Exact-head QA pending.",
