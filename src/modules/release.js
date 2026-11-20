@@ -3,7 +3,8 @@
 const RELEASE=Object.freeze({
  version:'0.12.81.122',
  date:'2026-11-20',
- notes:Object.freeze([\n  "WIND-MUD-REAR-FEINT-01: AI defenders facing away from a Wind/Mud DRIBBLE wind-up no longer make an omniscient instant JUMP counter when the carrier is clearly behind them; defenders facing the carrier and nearby lateral threats still react. Four controls and saves unchanged. Exact-head QA pending.",
+ notes:Object.freeze([
+  "WIND-MUD-REAR-FEINT-01: AI defenders facing away from a Wind/Mud DRIBBLE wind-up no longer make an omniscient instant JUMP counter when the carrier is clearly behind them; defenders facing the carrier and nearby lateral threats still react. Four controls and saves unchanged. Exact-head QA pending.",
   "WIND-MUD-SECOND-DEFENDER-READ-01: Two nearby defenders can independently respond with JUMP to a Wind/Mud DRIBBLE wind-up; the closest defender no longer suppresses the second. Existing timing, range and stun restrictions remain. Four controls and saves unchanged. Exact-head QA pending.",
   "TELEPORT-MULTI-DEFENDER-JUMP-01: A second defender timing JUMP into the Teleport arrival corridor now counters the trick even when a different opponent stands closer. Expired, grounded and out-of-lane jumps do not block; four controls and saves unchanged. Exact-head QA pending.",
   "KEEPER-ROLL-RECOIL-RECEIVER-01: Goalkeeper DRIBBLE rollouts wait until a teammate has recovered from an active hurt/recoil animation, avoiding an immediate pass to a receiver unable to control it. Standing and recovered teammates remain eligible; four controls and saves unchanged. Exact-head QA pending.",
