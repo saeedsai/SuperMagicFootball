@@ -1462,7 +1462,7 @@ class GameEngine{
   const rideMate=id==='shoulderRide'?this.players.filter(q=>q!==p&&q.t===p.t&&!q.keeper&&q.stun<=0&&
    (q.z||0)<=20&&!q.rideBallState).sort((a,b)=>distance(p,a)-distance(p,b))[0]:null;
   if(id==='shoulderRide'&&(!rideMate||distance(p,rideMate)>84))return false;
-  const rivals=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&((id!=='wind'&&id!=='mud')||q.z<20)&&(id!=='mud'||(q.mudSlowTimer||0)<=0))
+  const rivals=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&(id!=='mud'||(q.mudSlowTimer||0)<=0))
    .sort((a,b)=>distance(p,a)-distance(p,b));
   const rival=rivals[0],radius=(id==='spinBump'||id==='sandTrap')?82:id==='wind'?120:id==='mud'?100:id==='lightning'?95:id==='scream'?135:id==='fireball'?120:id==='shoulderRide'?130:95;
   const inRange=!!rival&&distance(p,rival)<radius;
@@ -1533,8 +1533,11 @@ class GameEngine{
   const spinBumpSlid=bumpOrSand&&inRange&&rival.action==='slide'&&rival.actionTimer>0&&rival.z<20;
   const spinBumpJumped=bumpOrSand&&inRange&&rival.action==='jump'&&rival.z>=20;
   const fieldTrick=id==='wind'||id==='mud';
-  const fieldTrickSlid=fieldTrick&&inRange&&rival.action==='slide'&&rival.actionTimer>0&&rival.z<20;
-  const fieldTrickJumped=fieldTrick&&inRange&&rival.action==='jump'&&rival.z>=20;
+  // Wind/Mud is an area effect: any defender in range can counter with an active
+  // JUMP or grounded SHOOT slide, not just the nearest (possibly idle) defender.
+  // Keep airborne defenders in the candidate pool so their JUMP is actually seen.
+  const fieldTrickSlid=fieldTrick&&rivals.some(q=>distance(p,q)<radius&&q.action==='slide'&&Number.isFinite(q.actionTimer)&&q.actionTimer>0&&Number.isFinite(q.z)&&q.z<20);
+  const fieldTrickJumped=fieldTrick&&rivals.some(q=>distance(p,q)<radius&&q.action==='jump'&&Number.isFinite(q.actionTimer)&&q.actionTimer>0&&Number.isFinite(q.z)&&q.z>=20);
   const countered=id==='lightning'?false:!!(jumpDodged||fireballParried||screamDodged||screamParried||freezeDodged||freezeParried||batDodged||batParried||teleportParried||teleportJumpBlocked||hideBallPoked||spinBumpSlid||spinBumpJumped||fieldTrickSlid||fieldTrickJumped||(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling')));
    // A new Trick supersedes any short-lived Teleport afterimage.
    p.teleportTrail=null;
