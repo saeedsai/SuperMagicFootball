@@ -1,9 +1,9 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.113',
+ version:'0.12.81.114',
  date:'2026-11-20',
- notes:Object.freeze([
+ notes:Object.freeze([\n  "KEEPER-ROLL-SAFE-RECEIVER-01: DRIBBLE goalkeeper rollouts now prefer a clear, less-marked standing teammate rather than blindly rolling to the nearest player; if no safe outlet exists the keeper retains the ball. Four controls and saves unchanged. Exact-head QA pending.",
   "KEEPER-OUTLET-PRESSURE-01: Goalkeepers prefer a clear short outlet with fewer nearby active defenders instead of blindly choosing the nearest receiver; if no safe short option exists they retain the existing long-clearance fallback. Four controls and saves unchanged. Exact-head QA pending.",
   "KEEPER-DIVE-SETTLE-01: Goalkeeper dive animation settles sooner for skilled, fresh keepers and lasts slightly longer for tired or inexperienced keepers; existing save reach and dive cooldown remain unchanged. Exact-head QA pending.",
   "SLIDE-CLOSING-CONTACT-01: Sliding defenders can connect with fast opponents moving into the contact corridor using a bounded 45 ms prediction; retreating and lateral opponents retain ordinary contact reach. Exact-head QA pending.",
