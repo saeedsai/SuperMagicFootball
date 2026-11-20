@@ -15,11 +15,13 @@ test('slide ignores temporarily invulnerable opponent and favors available groun
  assert.equal(r.near.length,1);assert.equal(r.near[0],available);assert.equal(r.owner,null);
  assert.equal(select(true,[available],available).owner,available);
 });
-test('ordinary tackle selection remains unchanged and immunity expiry restores slide eligibility',()=>{
+test('ordinary PASS poke also skips a protected carrier; immunity expiry restores contact eligibility',()=>{
  const immune={t:1,z:0,action:'run',invuln:.7};
+ assert.equal(select(false,[immune],immune).owner,null);
+ assert.equal(select(false,[immune],immune).near.length,0);
+ immune.invuln=0;
  assert.equal(select(false,[immune],immune).owner,immune);
  assert.equal(select(false,[immune],immune).near.length,1);
- immune.invuln=0;
  assert.equal(select(true,[immune],immune).owner,immune);
  assert.equal(select(true,[immune],immune).near.length,1);
 });

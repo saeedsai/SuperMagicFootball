@@ -18,9 +18,9 @@ test('slide ignores high airborne and downed opponents while retaining grounded 
  assert.equal(r.owner,null);
  assert.equal(select(true,[ground],ground).owner,ground);
 });
-test('ordinary standing tackle keeps existing selection and null owner',()=>{
+test('ordinary standing PASS poke retains high-jumper selection but skips downed opponents',()=>{
  const high={t:1,z:42,action:'jump'},down={t:1,z:0,action:'shotDown'};
  const r=select(false,[high,down],high);
- assert.equal(r.near.length,2);assert.equal(r.owner,high);
+ assert.equal(r.near.length,1);assert.equal(r.near[0],high);assert.equal(r.owner,high);
  assert.equal(select(true,[],null).owner,null);
 });

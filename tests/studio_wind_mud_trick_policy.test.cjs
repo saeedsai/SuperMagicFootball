@@ -52,7 +52,7 @@ test('Wind and Mud runtime IDs, Studio names, summaries, guides and icons are wi
  assert.match(engine,/const tierGated=\['spinBump','sandTrap','lightning','wind','mud'\]/);
  assert.match(engine,/id==='wind'\?120:id==='mud'\?100/);
  assert.match(engine,/target\.windTrickFx=Math\.max\(target\.windTrickFx\|\|0,\.35\)/);
- assert.match(engine,/target\.mudSlowTimer=Math\.max\(target\.mudSlowTimer\|\|0,\.52\);target\.mudTrickFx=Math\.max\(target\.mudTrickFx\|\|0,\.52\)/);
+ assert.match(engine,/target\.mudSlowTimer=Math\.max\(target\.mudSlowTimer\|\|0,\.52\);\s*target\.mudTrickFx=Math\.max\(target\.mudTrickFx\|\|0,\.52\)/);
  assert.match(ui,/const STUDIO_WIND_TRICK=Object\.freeze\(\{id:'wind',name:'Wind'\}\)/);
  assert.match(ui,/const STUDIO_MUD_TRICK=Object\.freeze\(\{id:'mud',name:'Mud'\}\)/);
  assert.match(ui,/STUDIO_MAGIC_TRICK_FULL_CATALOGUE=Object\.freeze\(\[\.\.\.STUDIO_MAGIC_TRICK_SUMMARY_CATALOGUE,STUDIO_WIND_TRICK,STUDIO_MUD_TRICK\]\)/);

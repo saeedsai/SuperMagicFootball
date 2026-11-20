@@ -24,7 +24,7 @@ test('Wind and Mud fail closed unless the carrier has a verified Gold+ tier',()=
  }
 });
 
-test('Wind pushes one nearby grounded opponent without stun; teammates, keepers and airborne players are ineligible',()=>{
+test('Wind applies distance-scaled push; teammates and keepers are excluded while airborne defenders resist half',()=>{
  for(const side of [0,1]){
   const {g,p,q,ball}=setup('wind',side),start={x:q.x,y:q.y};g.players=[p,q];assert.equal(trick.call(g,p),true);
   assert.equal(ball.owner,p);assert.equal(p.magicReadyAt,g.clock+6);assert.ok(Math.abs(p.fatigue-.245)<1e-9);
@@ -33,8 +33,10 @@ test('Wind pushes one nearby grounded opponent without stun; teammates, keepers 
   assert.ok(Math.abs(Math.hypot(q.x-start.x,q.y-start.y)-expectedPush)<1e-8);
  }
  const side=setup('wind');const mate={...side.q,t:side.p.t,x:side.p.x+15};const keeper={...side.q,keeper:true,x:side.p.x+5};
- const airborne={...side.q,x:side.p.x+30,z:35};const grounded={...side.q,x:side.p.x+75,z:0};side.g.players=[side.p,mate,keeper,airborne,grounded];trick.call(side.g,side.p);
- assert.equal(mate.windTrickFx,undefined);assert.equal(keeper.windTrickFx,undefined);assert.equal(airborne.windTrickFx,undefined);assert.equal(grounded.windTrickFx,.35);
+ const airborne={...side.q,x:side.p.x+30,z:35};const airborneBefore={x:airborne.x,y:airborne.y};const grounded={...side.q,x:side.p.x+75,z:0};side.g.players=[side.p,mate,keeper,airborne,grounded];trick.call(side.g,side.p);
+ assert.equal(mate.windTrickFx,undefined);assert.equal(keeper.windTrickFx,undefined);assert.equal(airborne.windTrickFx,.35);assert.equal(grounded.windTrickFx,.35);
+ const airbornePush=14*Math.max(.35,1-.65*Math.hypot(airborneBefore.x-side.p.x,airborneBefore.y-side.p.y)/120);
+ assert.ok(Math.abs(Math.hypot(airborne.x-airborneBefore.x,airborne.y-airborneBefore.y)-airbornePush)<1e-8);
 });
 
 test('Mud slows only one eligible grounded opponent for .52s, never stacks, and recovers to normal speed',()=>{

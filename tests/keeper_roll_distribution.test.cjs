@@ -21,7 +21,7 @@ function setup(team=0) {
  const events=[],free=[];
  const g={players:[keeper,near,far,enemy],ball,events,free,matchState:'play',
    manualSwitchGrace:[0,0],inControl(t){return t===team;},hostOfBall(){return this.ball.owner;},
-   keeperPassingLane(p,q){return {clear:q!==this.blocked,endpoint:320,interception:220};},
+   keeperPassingLane(p,target){const blocked=this.blocked;return {clear:!blocked||Math.hypot(target.x-blocked.x,target.y-blocked.y)>.01,endpoint:320,interception:220};},
    freeBall(p,dx,dy,speed,opts){
      free.push({p,dx,dy,speed,opts});this.ball.owner=null;this.ball.pass=!!opts.pass;
      this.ball.passFrom=p.src.id;this.ball.passTeam=p.t;
