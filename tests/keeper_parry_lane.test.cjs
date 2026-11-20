@@ -19,7 +19,7 @@ test('parry redirects above an attacker occupying the lower rebound lane',()=>{
  assert.equal(helper(keeper(0),[rival(210,380)],1),-1);
 });
 test('away-side keeper mirrors the forward rebound corridor',()=>{
- assert.equal(helper(keeper(1),[rival(1390,300)],-1),1);
+ assert.equal(helper(keeper(1),[rival(1390,300,{t:0})],-1),1);
 });
 test('no nearby pressure preserves the original shot-angle direction',()=>{
  assert.equal(helper(keeper(0),[],-1),-1);
@@ -39,5 +39,7 @@ test('nearly equal rebound lanes retain the shot-angle fallback',()=>{
 test('actual dive deflection uses the selected side without changing outward speed or catch threshold',()=>{
  assert.match(source,/b\\.vy=dy\\*4\\+keeperParrySide\\(p,this\\.players,dy\\)\\*115/);
  assert.match(source,/b\\.vx=sign\\*\\(290\\+skill\\*4\\.1\\)/);
- assert.match(source,/if\\(force<saveQuality\\*\\.62\\)/);
+ assert.ok(source.includes('b.vy=dy*4+keeperParrySide(p,this.players,dy)*115'));
+ assert.ok(source.includes('b.vx=sign*(290+skill*4.1)'));
+ assert.ok(source.includes('if(force<saveQuality*.62)'));
 });
