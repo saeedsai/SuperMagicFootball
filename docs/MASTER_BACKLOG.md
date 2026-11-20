@@ -1,3 +1,5 @@
+> **20 November 2026 — 0.12.81.118:** KEEPER-ROLL-SLIDE-RECEIVER-01: Goalkeeper DRIBBLE rollouts avoid teammates actively sliding and unable to receive; standing receivers remain eligible and sliding teammates become eligible after their slide ends. Four controls, saves and ball physics unchanged. Exact-head QA pending.
+
 > **20 November 2026 — 0.12.81.117:** KEEPER-ROLL-ACTIVE-LANE-01: Goalkeeper ground distribution ignores defenders who are knocked down, recovering or jumping above ground interception height; active grounded defenders still block. Four controls, saves and physics unchanged. Exact-head QA pending.
 
 > **20 November 2026 — 0.12.81.116:** KEEPER-ROLL-LEAD-LANE-01: Goalkeeper DRIBBLE rollouts check defenders at a moving receiver's predicted landing point, avoiding a newly blocked lane. Stationary fallback, four controls and saves unchanged. Exact-head QA pending.
