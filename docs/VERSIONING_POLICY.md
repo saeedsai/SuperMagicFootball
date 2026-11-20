@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.121 
+# SuperMagicFootball release/version policy — About-only 0.12.81.122 
+
+**Dev candidate 0.12.81.122 (20 November 2026):** WIND-MUD-REAR-FEINT-01: AI defenders facing away from a Wind/Mud DRIBBLE wind-up no longer make an omniscient instant JUMP counter when the carrier is clearly behind them; defenders facing the carrier and nearby lateral threats still react. Four controls and saves unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.121 (20 November 2026):** WIND-MUD-SECOND-DEFENDER-READ-01: Two nearby defenders can independently respond with JUMP to a Wind/Mud DRIBBLE wind-up; the closest defender no longer suppresses the second. Existing timing, range and stun restrictions remain. Four controls and saves unchanged. Exact-head QA pending.
 
