@@ -1502,15 +1502,18 @@ class GameEngine{
   // TELEPORT-JUMP-LANDING-01: a defender who times JUMP into the teleport
   // landing corridor blocks the arrival, even without a SHOOT slide.
   // A jump behind or far across the carrier's travel lane cannot counter.
-  const teleportJumpBlocked=id==='teleport'&&inRange&&
-   rival.action==='jump'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&
-   Number.isFinite(rival.z)&&rival.z>=20&&(()=>{
+  // TELEPORT-MULTI-DEFENDER-JUMP-01: a second defender already jumping
+  // in the arrival corridor can stop Teleport even if another rival is closer.
+  const teleportJumpBlocked=id==='teleport'&&rivals.some(defender=>
+   distance(p,defender)<radius&&defender.action==='jump'&&
+   Number.isFinite(defender.actionTimer)&&defender.actionTimer>0&&
+   Number.isFinite(defender.z)&&defender.z>=20&&(()=>{
     const forward=norm(p.dx||p.face,p.dy||0);
-    const offsetX=rival.x-p.x,offsetY=rival.y-p.y;
+    const offsetX=defender.x-p.x,offsetY=defender.y-p.y;
     const ahead=offsetX*forward.x+offsetY*forward.y;
     const across=Math.abs(offsetX*forward.y-offsetY*forward.x);
     return ahead>=35&&ahead<=105&&across<=38;
-   })();
+   })());
   // HIDE-BALL-POKE-CONE-01: PASS poke must face the actual carrier, including
   // diagonal approaches. Close-range pokes get a slightly wider aim cone;
   // sideways and backwards pokes still cannot read the fake ball.
