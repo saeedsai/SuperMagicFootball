@@ -6,7 +6,7 @@ const source=fs.readFileSync('src/modules/engine.js','utf8');
 const start=source.indexOf("  const teleportJumpBlocked=id==='teleport'");
 const end=source.indexOf("\n  // HIDE-BALL-POKE-CONE",start);
 assert.ok(start>=0&&end>start,'Teleport jump counter exists');
-const expression=source.slice(start,end).split(';')[0].replace(/^\s*const teleportJumpBlocked=/,'').trim();
+const expression=source.slice(start,end).split('\n  //')[0].replace(/^\s*const teleportJumpBlocked=/,'').trim().replace(/;\s*$/,'');
 const counter=new Function('id','p','rivals','radius',`
  const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
  const norm=(x,y)=>{const d=Math.hypot(x,y)||1;return {x:x/d,y:y/d};};
