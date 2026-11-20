@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.119 
+# SuperMagicFootball release/version policy — About-only 0.12.81.120 
+
+**Dev candidate 0.12.81.120 (20 November 2026):** TELEPORT-MULTI-DEFENDER-JUMP-01: A second defender timing JUMP into the Teleport arrival corridor now counters the trick even when a different opponent stands closer. Expired, grounded and out-of-lane jumps do not block; four controls and saves unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.118 (20 November 2026):** KEEPER-ROLL-SLIDE-RECEIVER-01: Goalkeeper DRIBBLE rollouts avoid teammates actively sliding and unable to receive; standing receivers remain eligible and sliding teammates become eligible after their slide ends. Four controls, saves and ball physics unchanged. Exact-head QA pending.
 
