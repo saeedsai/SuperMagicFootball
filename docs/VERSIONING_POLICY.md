@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.131 
+# SuperMagicFootball release/version policy — About-only 0.12.81.132 
+
+**Dev candidate 0.12.81.132 (20 November 2026):** KEEPER-SAFE-PARRY-LANE-01: A dive that deflects rather than catches now steers the rebound into the clearer lateral corridor away from nearby active attackers, even when the shot's original vertical angle points toward pressure; no/ambiguous pressure preserves the original rebound direction and magnitude. Catch threshold and outward speed unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.131 (20 November 2026):** KEEPER-SAFE-PARRY-LANE-01: When a dive deflects rather than catches, the rebound now favors the clearer lateral corridor away from nearby active attackers; no/ambiguous pressure preserves the shot-angle fallback. Catch threshold, outward speed, four actions and saves unchanged. Exact-head QA pending.
 

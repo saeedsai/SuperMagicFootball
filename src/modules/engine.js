@@ -833,7 +833,7 @@ class GameEngine{
   const force=Math.hypot(b.vx,b.vy)/50+(b.power||0),saveQuality=24+skill*.55+diving*.28;
   // Even a strong shot can be deflected; high-quality keepers catch slower shots.
   if(force<saveQuality*.62){this.keeperCollect(p,'dive');this.emit('save',{player:p,saveType:'dive'});}
-  else {b.owner=null;b.shot=null;b.strike=null;b.ordinaryShot=false;b.vx=sign*(290+skill*4.1);b.vy=dy*4+keeperParrySide(p,this.players,dy)*115;b.vz=150+diving*.6;b.power=0;b.attacker=p.t;b.lastTouchTeam=p.t;b.age=0;b.trail=[];b.canCollect=.32;this.emit('save',{player:p,saveType:'dive',deflected:true});}
+  else {b.owner=null;b.shot=null;b.strike=null;b.ordinaryShot=false;b.vx=sign*(290+skill*4.1);b.vy=keeperParrySide(p,this.players,dy)*(115+Math.abs(dy)*4);b.vz=150+diving*.6;b.power=0;b.attacker=p.t;b.lastTouchTeam=p.t;b.age=0;b.trail=[];b.canCollect=.32;this.emit('save',{player:p,saveType:'dive',deflected:true});}
   this.spendStamina(p,'keeperDive');this.burst(p.x,p.y,'#ccf9ff',16);
   this.emit('keeperDive',{team:p.t,player:p.src.name,manual});return true;
  }

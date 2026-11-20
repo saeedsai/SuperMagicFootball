@@ -36,8 +36,21 @@ test('stunned, downed, knocked-down, hurt and high-airborne opponents do not bia
 test('nearly equal rebound lanes retain the shot-angle fallback',()=>{
  assert.equal(helper(keeper(0),[rival(210,340)],-1),-1);
 });
+test('selected clear side controls the actual rebound direction even with a large shot-angle offset',()=>{
+ const side=helper(keeper(0),[rival(210,300)],-50);
+ const reboundVy=side*(115+Math.abs(-50)*4);
+ assert.equal(side,1);
+ assert.ok(reboundVy>0,'the selected clear lane must control the rebound sign');
+ assert.equal(Math.abs(reboundVy),315,'parry magnitude remains the previous shot-angle magnitude');
+});
+test('no-pressure rebound preserves the original shot-angle direction and magnitude',()=>{
+ for(const dy of [-50,0,50]){
+  const reboundVy=helper(keeper(0),[],dy)*(115+Math.abs(dy)*4);
+  assert.equal(reboundVy,Math.sign(dy||1)*(115+Math.abs(dy)*4));
+ }
+});
 test('actual dive deflection uses the selected side without changing outward speed or catch threshold',()=>{
- assert.ok(source.includes('b.vy=dy*4+keeperParrySide(p,this.players,dy)*115'));
+ assert.ok(source.includes('b.vy=keeperParrySide(p,this.players,dy)*(115+Math.abs(dy)*4)'));
  assert.ok(source.includes('b.vx=sign*(290+skill*4.1)'));
  assert.ok(source.includes('if(force<saveQuality*.62)'));
 });
