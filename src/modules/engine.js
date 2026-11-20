@@ -1567,9 +1567,18 @@ class GameEngine{
    }else if(id==='sandTrap'){
     if(inRange){rival.stun=Math.max(rival.stun,.38);rival.action='hurt';rival.actionTimer=.38;rival.sandTrapFx=.38;}
    }else if(id==='wind'){
-    if(inRange){const away=norm(rival.x-p.x||(p.t===0?1:-1),rival.y-p.y);const push=28;rival.x=clamp(rival.x+away.x*push,F.x+22,F.x+F.w-22);rival.y=clamp(rival.y+away.y*push,F.y+23,F.y+F.h-23);rival.windTrickFx=.35;}
+    // A field trick affects all eligible defenders in range, not only the nearest.
+    for(const target of rivals.filter(q=>distance(p,q)<radius)){
+     const away=norm(target.x-p.x||(p.t===0?1:-1),target.y-p.y);
+     target.x=clamp(target.x+away.x*28,F.x+22,F.x+F.w-22);
+     target.y=clamp(target.y+away.y*28,F.y+23,F.y+F.h-23);
+     target.windTrickFx=Math.max(target.windTrickFx||0,.35);
+    }
    }else if(id==='mud'){
-    if(inRange&&(rival.mudSlowTimer||0)<=0){rival.mudSlowTimer=.52;rival.mudTrickFx=.52;}
+    for(const target of rivals.filter(q=>distance(p,q)<radius)){
+     target.mudSlowTimer=Math.max(target.mudSlowTimer||0,.52);
+     target.mudTrickFx=Math.max(target.mudTrickFx||0,.52);
+    }
    }else if(id==='fireball'){
     if(inRange){rival.fireballBurnFx=Math.max(rival.fireballBurnFx||0,.48);rival.stun=Math.max(rival.stun,.32);rival.action='hurt';rival.actionTimer=.3;}
    }else if(id==='shoulderRide'){
