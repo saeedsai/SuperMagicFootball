@@ -13,8 +13,10 @@ function aiTuning(value) {
 }
 
 
-// Assign the closest available AI player as primary presser. Select a second
-// defender for cover, not another chase run down the same side of the carrier.
+// Assign the closest available AI player as primary presser. A player already
+// committed to a slide, knockdown or recovery cannot press this frame; skip them
+// before choosing both the primary and cover defender.
+ // Select a second defender for cover, not another chase run down the same side.
 // The support search is strictly local (<= 110 field units beyond the nearest
 // eligible support) so it never pulls a distant defender out of formation.
 // Stable input order breaks ties; no randomness, time state or save mutation.
@@ -22,7 +24,11 @@ function defensivePressers(players,team,target,humanControlled=null){
  if(!target||!Number.isFinite(target.x)||!Number.isFinite(target.y)||!Array.isArray(players))
   return {primary:null,support:null};
  const candidates=players.filter(p=>p&&p.t===team&&!p.keeper&&p!==humanControlled&&
-   p.stun<=0&&Number.isFinite(p.x)&&Number.isFinite(p.y))
+   p.stun<=0&&!p.down&&!(Number(p.slideTimer)>0)&&
+   !(Number(p.shotImpactKnockdownPending)>0)&&
+   !(Number(p.shotImpactKnockdownTimer)>0)&&
+   !(Number(p.shotImpactRiseTimer)>0)&&
+   Number.isFinite(p.x)&&Number.isFinite(p.y))
   .map((p,index)=>({p,index,d:Math.hypot(p.x-target.x,p.y-target.y)}))
   .sort((a,b)=>a.d-b.d||a.index-b.index);
  const primary=candidates[0]?.p||null;

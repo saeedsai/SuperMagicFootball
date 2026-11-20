@@ -6,18 +6,18 @@
 Deliver player-facing gameplay, existing-player presentation and quality improvements while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- .132 KEEPER-SAFE-PARRY-LANE-01: deflected saves now choose the clearer lateral rebound lane away from nearby active attackers; the selected side controls the rebound direction while preserving the previous magnitude, catch threshold and outward speed. No/ambiguous pressure retains the old shot-angle result.
-- .131 exact-head QA found only new regression-harness defects: the away-side fixture used the keeper's own team, and stale regex assertions remained alongside the corrected string assertions. Corrected both in .132; exact-head Census and Modular QA pending.
+- .133 AI-AVAILABLE-PRESSER-01: defensive AI no longer assigns primary press or cover to a teammate already stunned, knocked down/getting up, or committed to an active slide; the next available defender takes the pursuit.
+- .132 KEEPER-SAFE-PARRY-LANE-01 passed exact-head dev Census, Modular QA, QA-gated promotion, main Census, Pages deployment and hosted-pages smoke. Both dev and main now point to the promoted .132 head.
 - Main protection #87, Render drift #86 and physical two-phone acceptance #48 remain open. Breath .66–.68 is complete.
 
 ## Next smallest action
-Run exact-head .132 Full Regression Census and Modular QA; fix confirmed failures, then continue keeper recovery and responsive ball/tackle behavior.
+Run exact-head .133 Full Regression Census and Modular QA; inspect all four Node and four Chromium shards, fix confirmed failures, then continue the next bounded gameplay improvement.
 
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN work or other agents' private checkpoints.
 
 ## Evidence
-.132 production keeper parry direction, focused production-helper regression, and .130 Wind browser-test capture repair are committed on dev. Direct extracted-helper smoke passed lane selection and fallback/magnitude scenarios. Exact-head Node/Chromium Census and hosted release remain pending.
+.133 production AI availability filter and three focused Node regressions are committed on dev. .132 dev/main Census, QA-gated promotion, Pages and hosted smoke passed. .133 exact-head QA and hosted release remain pending.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; promote only through the existing QA-gated main pipeline.

@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.132 
+# SuperMagicFootball release/version policy — About-only 0.12.81.133 
 
-**Dev candidate 0.12.81.132 (20 November 2026):** KEEPER-SAFE-PARRY-LANE-01: A dive that deflects rather than catches now steers the rebound into the clearer lateral corridor away from nearby active attackers, even when the shot's original vertical angle points toward pressure; no/ambiguous pressure preserves the original rebound direction and magnitude. Catch threshold and outward speed unchanged. Exact-head QA pending.
+**Dev candidate 0.12.81.133 (20 November 2026):** AI-AVAILABLE-PRESSER-01: Defensive AI now excludes teammates committed to a slide, knockdown or recovery before assigning the primary press and cover, allowing the next active defender to pursue the ball. Four controls, saves and roster data unchanged. Exact-head QA pending.
+
+**Dev candidate 0.12.81.132 (20 November 2026):** KEEPER-SAFE-PARRY-LANE-01: A dive that deflects rather than catches now steers the rebound into the clearer lateral corridor away from nearby active attackers, even when the shot's original vertical angle points toward pressure; no/ambiguous pressure preserves the original rebound direction and magnitude. Catch threshold and outward speed unchanged. Exact-head dev and main Census, Modular QA, QA-gated promotion, Pages deployment and hosted-pages smoke passed.
 
 **Dev candidate 0.12.81.131 (20 November 2026):** KEEPER-SAFE-PARRY-LANE-01: When a dive deflects rather than catches, the rebound now favors the clearer lateral corridor away from nearby active attackers; no/ambiguous pressure preserves the shot-angle fallback. Catch threshold, outward speed, four actions and saves unchanged. Exact-head QA pending.
 
