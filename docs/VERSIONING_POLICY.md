@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.116 
+# SuperMagicFootball release/version policy — About-only 0.12.81.117 
+
+**Dev candidate 0.12.81.117 (20 November 2026):** KEEPER-ROLL-ACTIVE-LANE-01: Goalkeeper ground distribution ignores defenders who are knocked down, recovering or jumping above ground interception height; active grounded defenders still block. Four controls, saves and physics unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.116 (20 November 2026):** KEEPER-ROLL-LEAD-LANE-01: Goalkeeper DRIBBLE rollouts check defenders at a moving receiver's predicted landing point, avoiding a newly blocked lane. Stationary fallback, four controls and saves unchanged. Exact-head QA pending.
 
