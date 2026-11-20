@@ -36,3 +36,10 @@ test('Jumping above ground level evades Mud but low jump remains vulnerable',()=
  assert.deepEqual(players.map(q=>q.mudSlowTimer||0),[0,.52,0,.52]);
  assert.deepEqual(players.map(q=>q.mudTrickFx||0),[0,.52,0,.52]);
 });
+
+test('Wind halves push on high airborne defenders without affecting low jumpers',()=>{
+ const players=[{x:30,y:0,z:25},{x:50,y:0,z:10},{x:70,y:0,z:20},{x:90,y:0,z:NaN}];
+ executeEffect('wind',{x:0,y:0,t:0},players,120);
+ assert.deepEqual(players.map(q=>q.x),[44,78,84,118]);
+ assert.deepEqual(players.map(q=>q.windTrickFx),[.35,.35,.35,.35]);
+});
