@@ -17,7 +17,7 @@ import {SHOTPATHS} from "./shotpaths.js";
 import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
 import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards} from "./magic-hazards.js";
-const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,defensivePressers,attackingSupportRun}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
+const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,defensivePressers,attackingSupportRun,attackingSupportPass}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
 // Shot impacts briefly weaken strength-based contests without ever rewriting source stats.
 const stat=(p,key)=>{const value=baseStat(p,key);return key==='strength'&&p?.src&&(p.shotImpactWeaknessTimer||0)>0?value*(1-clamp(p.shotImpactWeakness||0,0,.4)*.45):value;};
 
@@ -614,6 +614,14 @@ class GameEngine{
   if(this.ball.owner!==p)return false;
   const mates=this.players.filter(q=>q.t===p.t&&q!==p&&!q.stun&&(!q.keeper||p.keeper));
   const directed=opts.direction&&Math.hypot(opts.direction.x||0,opts.direction.y||0)>.16;
+  const preferred=opts.supportRun===true?opts.preferredTarget:null;
+  const preferredValid=preferred&&mates.includes(preferred)&&preferred.t===p.t&&!preferred.keeper&&
+   Number.isFinite(preferred.x)&&Number.isFinite(preferred.y)&&!preferred.down&&
+   !(Number(preferred.slideTimer)>0)&&!(Number(preferred.shotImpactKnockdownPending)>0)&&
+   !(Number(preferred.shotImpactKnockdownTimer)>0)&&!(Number(preferred.shotImpactRiseTimer)>0)&&
+   !(Number(preferred.z)>18)&&preferred.action!=='shotDown'&&preferred.action!=='shotGetUp'&&
+   !(preferred.action==='slide'&&(Number(preferred.actionTimer)||0)>0)&&
+   !(preferred.action==='hurt'&&(Number(preferred.actionTimer)||0)>0);
   if(!mates.length&&!directed)return false;
   const dir=p.t===0?1:-1;
   const wide=Math.abs(p.y-(F.y+F.h/2))>F.h*.31;
@@ -631,6 +639,9 @@ class GameEngine{
    target=SHOTFEEL.teammateInDirection(p,mates,heading,long?1650:1150,this.players.filter(q=>q.t!==p.t));
    if(target){aimX=target.x-p.x+(target.dx||0)*(long?125:55)+ex;aimY=target.y-p.y+(target.dy||0)*(long?125:55)+ey;kind=cross?'crossTarget':'directionTarget';}
    else {aimX=heading.x*800+ex;aimY=heading.y*800+ey;kind=cross?'crossDirection':'direction';}
+  }else if(preferredValid){
+   target=preferred;kind='supportRun';
+   aimX=target.x-p.x+(target.dx||0)*90+ex;aimY=target.y-p.y+(target.dy||0)*90+ey;
   }else{
    if(opts.human&&!long&&!cross){
     target=mates.slice().sort((a,b)=>distance(p,a)-distance(p,b))[0];kind='nearest';
@@ -2427,6 +2438,7 @@ class GameEngine{
   const supportRun=owner&&owner.t===t?attackingSupportRun(this.players,t,owner,
    this.inControl(t)?this.controlledPlayer(t):null,
    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24}):null;
+  const supportPassTarget=owner&&owner.t===t?attackingSupportPass(this.players,t,owner,supportRun):null;
   p.aiTimer=(p.aiTimer??0)-dt;
   const decide=p.aiTimer<=0||!p.aiTarget;
   if(decide){
@@ -2455,10 +2467,11 @@ class GameEngine{
     const goalDistance=Math.abs((t===0?F.x+F.w:F.x)-p.x);
     const nearestDefender=defenders.length?Math.min(...defenders.map(q=>distance(p,q))):999;
     const finishChance=SHOTFEEL.aiFinishingPriority(goalDistance,nearestDefender,stat(p,'shootAccuracy'),ai.shootRate)*tactical.shoot;
+    const passOptions=supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true}:{};
     if(p.cd<=0&&nearGoal&&Math.random()<finishChance){this.shoot(p,Math.random()<ai.superRate)}
     else if(p.cd<=0&&pressured&&p.trickCd<=0&&Math.random()<(.04+ai.anticipation*.62)&&this.tryDribbleTrick(p,true)){}
-    else if(p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass){this.pass(p)}
-    else if(p.cd<=0&&Math.random()<ai.passRate*.10){this.pass(p)}
+    else if(p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass){this.pass(p,false,false,passOptions)}
+    else if(p.cd<=0&&Math.random()<ai.passRate*.10){this.pass(p,false,false,passOptions)}
    }else{
     const pursuers=this.players.filter(q=>q.t===t&&!q.keeper&&!q.stun).sort((a,c)=>distance(a,target)-distance(c,target));
     if(owner&&owner.t===t){

@@ -102,6 +102,52 @@ function attackingSupportRun(players,team,carrier,humanControlled=null,bounds=nu
  return best?{runner:best.runner,target:best.target}:null;
 }
 
-return {AI_LEVELS,aiTuning,defensivePressers,attackingSupportRun};})();
+
+ 
+// Prefer a completed, genuinely open support run when the carrier chooses an AI
+// pass. The runner must already have entered its lane; a blocked corridor or a
+// defender waiting at the receiving point keeps the existing pass selection.
+function attackingSupportPass(players,team,carrier,supportRun){
+ if(!Array.isArray(players)||!carrier||(team!==0&&team!==1)||carrier.t!==team||
+  !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y))return null;
+ const runner=supportRun?.runner,point=supportRun?.target;
+ if(!runner||!point||!players.includes(runner)||runner===carrier||runner.t!==team||runner.keeper||
+  !Number.isFinite(runner.x)||!Number.isFinite(runner.y)||
+  !Number.isFinite(point.x)||!Number.isFinite(point.y))return null;
+ const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+ const grounded=p=>p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18);
+ const ready=p=>p&&!p.down&&timerClear(p.stun)&&timerClear(p.slideTimer)&&
+  timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
+  timerClear(p.shotImpactRiseTimer)&&grounded(p)&&
+  !(p.action==='slide'&&(Number(p.actionTimer)||0)>0)&&
+  !(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)&&
+  p.action!=='shotDown'&&p.action!=='shotGetUp';
+ if(!ready(carrier)||!ready(runner)||runner.aiAssistTarget)return null;
+ const dir=team===0?1:-1,dx=runner.x-carrier.x,dy=runner.y-carrier.y;
+ const forward=dx*dir,range=Math.hypot(dx,dy);
+ if(forward<80||forward>760||range<120||range>900||
+  Math.hypot(point.x-runner.x,point.y-runner.y)>145)return null;
+ const segment=dx*dx+dy*dy;
+ if(!Number.isFinite(segment)||segment<=0)return null;
+ const arrivalSeconds=Math.min(.35,Math.max(.12,range/1400));
+ for(const defender of players){
+  if(!defender||defender.t===team||!Number.isFinite(defender.x)||!Number.isFinite(defender.y))continue;
+  if(defender.down||defender.action==='shotDown'||defender.action==='shotGetUp'||
+   !timerClear(defender.shotImpactKnockdownPending)||
+   !timerClear(defender.shotImpactKnockdownTimer)||
+   !timerClear(defender.shotImpactRiseTimer)||!grounded(defender))continue;
+  const stun=defender.stun==null?0:Number(defender.stun);
+  if(!Number.isFinite(stun)||stun>arrivalSeconds)continue;
+  const along=((defender.x-carrier.x)*dx+(defender.y-carrier.y)*dy)/segment;
+  if(along>.08&&along<.94){
+   const gap=Math.hypot(defender.x-(carrier.x+dx*along),defender.y-(carrier.y+dy*along));
+   if(gap<56)return null;
+  }
+  if(Math.hypot(defender.x-runner.x,defender.y-runner.y)<84)return null;
+ }
+ return runner;
+}
+
+return {AI_LEVELS,aiTuning,defensivePressers,attackingSupportRun,attackingSupportPass};})();
 
 export {AI};

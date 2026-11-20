@@ -1,23 +1,23 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-11-20
+**Updated:** 2026-11-21
 
 ## Mission
 Deliver player-facing gameplay, existing-player presentation and quality improvements while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- .134 AI-SUPPORT-RUN-LANE-01: one eligible AI teammate makes a bounded forward diagonal run into the less-defended lateral lane when a teammate carries; other support players keep their width positions. Four actions, saves and roster data unchanged.
-- .133 AI-AVAILABLE-PRESSER-01 passed exact-head dev Census and Modular QA, was promoted through the QA-gated pipeline, and Pages deployment passed. The separate main Census exposed one async browser assertion race in online Ultimate Team save; .134 waits for explicit save completion before checking request count.
-- Pre-commit dev/main heads both .133: `7ccfc1c5e778c67c81e72bcba08107f13c9ebac0`. Main protection #87, Render drift #86 and physical two-phone acceptance #48 remain open.
+- .135 AI-SUPPORT-RUN-PASS-01: AI carriers prefer an already-entered forward support-run receiver only when the ground-pass corridor and arrival point are clear; otherwise existing AI receiver ranking remains. Pass physics, four actions and saves unchanged.
+- .134 AI-SUPPORT-RUN-LANE-01 passed exact-head dev Census (4 Node + 4 Chromium shards) and Modular QA; QA-gated promotion, Pages deployment and hosted smoke passed. Same-SHA main workflow-dispatch Census retry had one LAN auto browser movement-threshold failure; the push Census passed all shards.
+- Current pre-edit dev/main heads both .134: `e336a11428e46fec79e910b7d085cec382fdc716`. Main protection #87, Render drift #86 and physical two-phone acceptance #48 remain open.
 
 ## Next smallest action
-Run exact-head .134 Census (four Node and four Chromium shards) and Modular QA; fix confirmed failures, then allow the existing QA-gated promotion and independently verify main Census, Pages and hosted bytes.
+Run exact-head .135 Census and Modular QA; fix confirmed failures, then allow only the existing QA-gated promotion and independently verify main Census, Pages and hosted bytes.
 
 ## Ownership and exclusions
-Only this checkpoint. No concept heroes, copied art, routine LAN work or other agents' private checkpoints.
+Only this checkpoint. No concept heroes, copied art, routine LAN changes or other agents' private checkpoints.
 
 ## Evidence
-Production AI support-run helper is wired into `driveAI`; four focused Node regressions cover mirroring, pressure-aware lane choice, unavailable-player exclusion, teammate crowding and field bounds. Exact-head .134 workflows have not yet run.
+Five focused Node cases cover clear support selection, corridor/arrival blockers, downed/high/stunned defender exclusion, not-yet-arrived fallback, opt-in preferred-target selection and driveAI wiring. Exact-head .135 workflows pending.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; promote only through the existing QA-gated main pipeline.
