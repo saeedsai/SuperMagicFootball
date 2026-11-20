@@ -3,7 +3,8 @@
 const RELEASE=Object.freeze({
  version:'0.12.81.113',
  date:'2026-11-20',
- notes:Object.freeze([\n  "KEEPER-OUTLET-PRESSURE-01: Goalkeepers prefer a clear short outlet with fewer nearby active defenders instead of blindly choosing the nearest receiver; if no safe short option exists they retain the existing long-clearance fallback. Four controls and saves unchanged. Exact-head QA pending.",
+ notes:Object.freeze([
+  "KEEPER-OUTLET-PRESSURE-01: Goalkeepers prefer a clear short outlet with fewer nearby active defenders instead of blindly choosing the nearest receiver; if no safe short option exists they retain the existing long-clearance fallback. Four controls and saves unchanged. Exact-head QA pending.",
   "KEEPER-DIVE-SETTLE-01: Goalkeeper dive animation settles sooner for skilled, fresh keepers and lasts slightly longer for tired or inexperienced keepers; existing save reach and dive cooldown remain unchanged. Exact-head QA pending.",
   "SLIDE-CLOSING-CONTACT-01: Sliding defenders can connect with fast opponents moving into the contact corridor using a bounded 45 ms prediction; retreating and lateral opponents retain ordinary contact reach. Exact-head QA pending.",
   "SLIDE-INVULNERABLE-TARGET-01: Slide tackles avoid auto-locking onto temporarily invulnerable opponents, preferring a contactable grounded defender or ball carrier; ordinary tackles and physical slide reach remain unchanged. Exact-head QA pending.",
