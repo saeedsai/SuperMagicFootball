@@ -1879,7 +1879,9 @@ class GameEngine{
   if(!receiver)return false;
   const quality=stat(p,'passing');
   const speed=300+quality*1.4;
-  this.freeBall(p,receiver.x-p.x,receiver.y-p.y,speed,{power:4,z:10,vz:0,pass:true});
+  const leadX=Number.isFinite(receiver.moveVX)?Math.max(-35,Math.min(35,receiver.moveVX*.14)):0;
+  const leadY=Number.isFinite(receiver.moveVY)?Math.max(-35,Math.min(35,receiver.moveVY*.14)):0;
+  this.freeBall(p,receiver.x-p.x+leadX,receiver.y-p.y+leadY,speed,{power:4,z:10,vz:0,pass:true});
   this.ball.passTarget=receiver.src.id;
   this.manualSwitchGrace[p.t]=Math.max(this.manualSwitchGrace[p.t]||0,1.25);
   p.keeperHold=0;p.action='keeperThrow';p.actionTimer=.42;p.keeperReleasePoseDuration=p.actionTimer;
