@@ -1,3 +1,6 @@
+### 2026-11-20 — WIND-MUD-AREA-EFFECT-01 (smf-hourly-dev-20261019)
+WIND-MUD-AREA-EFFECT-01: Uncountered Wind now pushes every eligible nearby defender and Mud slows every eligible nearby defender, not only the closest; timed JUMP/SHOOT counters still stop the effect. Four controls and saves unchanged. Exact-head QA pending. Production source and focused regression added on dev; exact-head QA and hosted release unverified.
+
 ### 2026-11-20 — WIND-MUD-AREA-COUNTER-01 (smf-hourly-dev-20261019)
 WIND-MUD-AREA-COUNTER-01: Any nearby defender can counter Wind/Mud with a timed JUMP or grounded SHOOT slide, even when a closer teammate does nothing; airborne defenders remain eligible for the counter. Four controls and saves unchanged. Exact-head QA pending. Production gameplay and focused regression committed on dev; exact-head Census, Modular QA and hosted release unverified. Main protection #87, Render #86 and physical LAN #48 remain open.
 
