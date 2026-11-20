@@ -29,9 +29,9 @@ with sync_playwright() as pw:
      b.x=k.x-dir*35;b.y=k.y+29;b.z=12;
      b.vx=dir*850;b.vy=0;b.vz=0;b.power=110;b.shot=null;b.canCollect=.6;
      const success=g.tryKeeperDive(k);
-     const initial=k.action,recovery=k.diveCooldown;
-     if(success)g.updatePlayers(.66);
-     return {success,initial,recovery,pose:k.action,remaining:k.actionTimer,events:g.events.filter(e=>e.type==='keeperRecovery').length};
+     const initial=k.action,animationDuration=k.actionTimer,recovery=k.diveCooldown;
+     if(success)g.updatePlayers(.8);
+     return {success,initial,animationDuration,recovery,pose:k.action,remaining:k.actionTimer,events:g.events.filter(e=>e.type==='keeperRecovery').length};
     }
     const elite=trial(95,92,0),rookie=trial(25,28,.8);
     saves.push({team,elite,rookie});
@@ -43,7 +43,8 @@ with sync_playwright() as pw:
     r=team[name]
     assert r['success'] and r['initial']=='keeperDive',(label,team,name)
     assert r['pose']=='keeperRecover' and r['events']>=1,(label,r)
-   assert team['elite']['recovery']<team['rookie']['recovery'],(label,team)
+  assert team['elite']['animationDuration']<team['rookie']['animationDuration'],(label,team)
+  assert team['elite']['recovery']<team['rookie']['recovery'],(label,team)
   assert set(result['buttons'])=={'pass','shoot','dribble','jump'},(label,result)
   assert not errors,(label,errors)
   print(label,'PASS: mirrored GK dives, stat/fatigue-dependent recovery and landing animation; four action buttons',flush=True)

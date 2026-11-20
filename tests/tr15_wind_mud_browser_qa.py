@@ -22,7 +22,8 @@ SCRIPT=r"""() => {
   if(g.ball.owner!==p||p.magicReadyAt!==g.clock+6||Math.abs(p.fatigue-.245)>1e-9)throw Error(trick+' possession/cooldown/cost changed');
   const expectedDuration=trick==='wind'?.35:.52,property=trick==='wind'?'windTrickFx':'mudTrickFx';
   if(trick==='wind'){
-   if(Math.abs(q.windTrickFx-.35)>1e-9||q.stun!==0||Math.abs(Math.hypot(q.x-(p.x+sign*60),q.y-p.y)-28)>1e-8)throw Error('Wind bounds/push changed');
+   const expectedPush=28*Math.max(.35,1-.65*60/120);
+   if(Math.abs(q.windTrickFx-.35)>1e-9||q.stun!==0||Math.abs(Math.hypot(q.x-(p.x+sign*60),q.y-p.y)-expectedPush)>1e-8)throw Error('Wind bounds/push changed');
   }else if(Math.abs(q.mudSlowTimer-.52)>1e-9||Math.abs(g.playerSpeed(q)-baseSpeed*.62)>1e-8||q.stun!==0)throw Error('Mud slow effect or eligibility changed');
   const effectIndex=trick==='wind'?0:2,modeRows=side*1280+effectIndex*320;
   panel(index*320,modeRows,`SIDE ${side+1} · ${fps} HZ · ${trick.toUpperCase()}`);ctx.save();ctx.translate(index*320+160,modeRows+164);if(!r.drawFieldTrick(ctx,trick,q[property],false))throw Error(trick+' cue not drawn');ctx.restore();if(pixels(ctx)<70)throw Error(trick+' cue is not visible');

@@ -36,11 +36,13 @@ with sync_playwright() as pw:
     return cyan;};
    const withWind=draw();target.windTrickFx=0;const withoutWind=draw();
    return {activated,displacement:Math.hypot(target.x-before.x,target.y-before.y),
-    windFx:.35,withWind,withoutWind,
+    windFx:target.windTrickFx,withWind,withoutWind,
     actionButtons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }''')
   assert result['activated'] is True,(label,'Wind did not activate',result)
-  assert abs(result['displacement']-28)<1e-6,(label,'Wind did not push exactly 28 units',result)
+  expected_push=28*max(.35,1-.65*40/120)
+  assert abs(result['displacement']-expected_push)<1e-6,(label,'Wind distance falloff changed',result)
+  assert abs(result['windFx']-.35)<1e-9,(label,'Wind cue duration changed',result)
   assert result['withWind']>result['withoutWind'],(label,'Wind cue was not rendered',result)
   assert result['actionButtons']==4,(label,'four-button action grammar changed',result)
   assert not errors,(label,errors)

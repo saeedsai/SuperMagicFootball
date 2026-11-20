@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.129 
+# SuperMagicFootball release/version policy — About-only 0.12.81.130 
+
+**Dev candidate 0.12.81.130 (20 November 2026):** PASS-POKE-MOVING-LEAD-01: Normal PASS pokes lead moving targets by a shorter, bounded 55 ms prediction (12 units per axis); stationary and invalid motion remain neutral, while SHOOT slides retain their separate longer lead. Four actions and saves unchanged. Exact-head QA pending. The .129 Full Regression Census exposed three stale Chromium assertions: two expected fixed 28-unit Wind displacement despite the live distance falloff, and one expected every keeper dive to recover within 0.66 seconds despite skill/fatigue-aware animation timing. Those browser contracts are corrected here.
 
 **Dev candidate 0.12.81.129 (20 November 2026):** PASS-POKE-VALID-TARGET-01: Normal PASS poke ignores invulnerable, downed and getting-up opponents when selecting an automatic tackle target, then chooses the next reachable active defender. SHOOT-slide targeting, four controls and saves unchanged. Exact-head QA pending.
 
