@@ -246,6 +246,14 @@ function keeperAutoSuperEligible(keeper,ball){
  const modifiers=levelModifiers(abilityLevel(keeper,'keeper'));
  return keeperInReach(keeper,ball,{...move,reachX:move.reachX*modifiers.reach,reachY:move.reachY*modifiers.reach});
 }
+// Visual dive duration only: experienced, rested keepers get back to their feet
+// sooner. The independent diveCooldown still governs when another save is legal.
+function keeperDiveAnimationSeconds(keeper){
+ const skill=clamp(stat(keeper,'gkSkill'),0,100);
+ const diving=clamp(stat(keeper,'gkDiving'),0,100);
+ const fatigue=clamp(Number.isFinite(keeper?.fatigue)?keeper.fatigue:0,0,1);
+ return clamp(.72-(skill+diving)*.0008+fatigue*.06,.54,.78);
+}
 function keeperDiveRecoverySeconds(keeper){
  const skill=stat(keeper,'gkSkill'),diving=stat(keeper,'gkDiving');
  const fatigue=clamp(keeper?.fatigue||0,0,1);
@@ -778,7 +786,7 @@ class GameEngine{
   this.emit('keeperContact',{keeperId:p.src.id,team:p.t,age:b.age,
    depth:Math.abs(dx),lateral:Math.abs(dy),contactDepth,
    lateralReach:reach.y,ballHeight:b.z,shotKind:b.strike?.kind||'loose'});
-  p.diveIntentPending=false;p.diveCooldown=keeperDiveRecoverySeconds(p);p.action='keeperDive';p.actionTimer=.64;p.z=Math.max(12,p.z);
+  p.diveIntentPending=false;p.diveCooldown=keeperDiveRecoverySeconds(p);p.action='keeperDive';p.actionTimer=keeperDiveAnimationSeconds(p);p.z=Math.max(12,p.z);
   // The actual contact direction and animation motion come from the shot lane.
   p.diveDy=clamp(dy/Math.max(1,reach.y),-1,1);p.diveDx=clamp(dx/Math.max(1,reach.x),-1,1);
   p.diveElapsed=0;
