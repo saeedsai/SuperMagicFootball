@@ -1866,7 +1866,8 @@ class GameEngine{
   const forward=p.t===0?1:-1;
   const rolloutOpponents=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0);
   const candidates=this.players.filter(q=>q.t===p.t&&!q.keeper&&q.stun<=0&&q.z<=20&&
-   q!==p&&!(q.action==='slide'&&(q.actionTimer||0)>0)&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&
+   q!==p&&!(q.action==='slide'&&(q.actionTimer||0)>0)&&
+   !(q.action==='hurt'&&(q.actionTimer||0)>0)&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&
    (q.x-p.x)*forward>70&&distance(p,q)>=120&&distance(p,q)<920)
    .map(q=>{
     // Check the actual led landing point, not just the runner's old position.
