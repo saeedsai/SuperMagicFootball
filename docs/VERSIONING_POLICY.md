@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.127 
+# SuperMagicFootball release/version policy — About-only 0.12.81.128 
+
+**Dev candidate 0.12.81.128 (20 November 2026):** TELEPORT-SECOND-DEFENDER-SLIDE-01: A second defender's active grounded SHOOT slide can intercept Teleport in its forward lane even when the nearest defender is idle; expired, airborne, rearward and wide slides do not counter. Four controls and saves unchanged. Exact-head QA pending.
 
 **Dev candidate 0.12.81.127 (20 November 2026):** WIND-DISTANCE-FALLOFF-01: Wind pushes nearby defenders more strongly than those at the outer edge of its area, with bounded 35–100% distance falloff; high airborne defenders still take half push. Mud and existing counters remain unchanged; four controls and saves unchanged. Exact-head QA pending.
 
