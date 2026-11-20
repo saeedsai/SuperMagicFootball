@@ -1775,7 +1775,8 @@ class GameEngine{
  // Safety is evaluated at release time; a marked teammate or a defender on
  // the passing line must never be treated as a safe short-throw receiver.
  keeperPassingLane(p,q){
-  const opponents=this.players.filter(o=>o.t!==p.t&&!o.keeper&&o.stun<=0);
+  const opponents=this.players.filter(o=>o.t!==p.t&&!o.keeper&&o.stun<=0&&
+   !o.down&&(o.shotImpactKnockdownTimer||0)<=0&&Number.isFinite(o.z)&&o.z<=20);
   const dx=q.x-p.x,dy=q.y-p.y,length=Math.hypot(dx,dy)||1;
   const endpoint=Math.min(...opponents.map(o=>distance(q,o)),9999);
   const interception=Math.min(...opponents.map(o=>{
