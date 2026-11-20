@@ -2,24 +2,22 @@
 **Updated:** 2026-11-20
 
 ## Mission
-Ship player-facing gameplay and visual improvements with four controls, original assets, saves and offline support.
+Player-facing game features, four controls, original assets, save/offline compatibility.
 
 ## Current checkpoint
-- 0.12.81.117: Keeper rollout lanes ignore downed, recovering and high-airborne defenders; focused test added; full CI unverified.
-- 0.12.81.116: rollout lane checks moving receiver landing point; focused regression added, CI pending.
-- 0.12.81.115 KEEPER-ROLL-MOVING-LEAD-01: bounded moving-receiver rollout lead. Focused test added; CI unverified.\n- 0.12.81.114 KEEPER-ROLL-SAFE-RECEIVER-01: grounded DRIBBLE rollout prefers safer standing outlet. Exact-head QA pending.
-- 0.12.81.113 KEEPER-OUTLET-PRESSURE-01: Prefer clear short distribution receivers with less immediate defender pressure. Exact-head QA pending.\n- 0.12.81.112 KEEPER-DIVE-SETTLE-01: Goalkeeper dive animation settles sooner for skilled, fresh keepers and lasts slightly longer for tired or inexperienced keepers; existing save reach and dive cooldown remain unchanged. Exact-head QA pending.
-- .110 immunity targeting; .109 eligible targets; .108 moving lead; .107 airborne guard; Breath .66–.68 complete.
-- Main protection #87, Render drift #86 and physical two-phone #48 remain open.
+- 0.12.81.118: Keeper DRIBBLE roll avoids actively sliding teammates; focused test added, exact-head QA not observed.
+- .117: Ground distribution ignores downed/recovering/high-airborne defenders.
+- .116: Rollout predicted receiver lane; .115: moving receiver lead; .114: safe receiver; .113: outlet pressure.
+- Breath .66–.68 completed. Main protection #87, Render drift #86, physical LAN #48 unresolved.
 
 ## Next smallest action
-Verify exact-head Census and Modular QA; then improve goalkeeper catch-to-release transition and original eight-view animation.
+Run focused Node/Chromium and exact-head Census/Modular QA; fix confirmed failures. Then improve Magic Trick counterplay and original eight-view player animations.
 
 ## Ownership and exclusions
-Only own checkpoint. No concept heroes, copied art or routine LAN work.
+Only this checkpoint. No concept heroes, copied art or routine LAN changes.
 
 ## Evidence
-Production goalkeeper animation change and focused regression added; no full QA observed. Full CI and hosted checks pending.
+Production source change and focused regression committed. Full QA and hosted verification not observed.
 
 ## Cleanup
-Keep under 4 KiB. Promote only via existing QA-gated main pipeline.
+Keep under 4 KiB; promote only through existing QA-gated main pipeline.
