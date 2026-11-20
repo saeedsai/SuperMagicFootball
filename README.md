@@ -1,3 +1,5 @@
+> **0.12.81.124 release candidate (20 November 2026):** WIND-MUD-AREA-EFFECT-01: Uncountered Wind now pushes every eligible nearby defender and Mud slows every eligible nearby defender, not only the closest; timed JUMP/SHOOT counters still stop the effect. Four controls and saves unchanged. Exact-head QA pending.
+
 > **0.12.81.123 release candidate (20 November 2026):** WIND-MUD-AREA-COUNTER-01: Any nearby defender can counter Wind/Mud with a timed JUMP or grounded SHOOT slide, even when a closer teammate does nothing; airborne defenders remain eligible for the counter. Four controls and saves unchanged. Exact-head QA pending.
 
 > **0.12.81.122 release candidate (20 November 2026):** WIND-MUD-REAR-FEINT-01: AI defenders facing away from a Wind/Mud DRIBBLE wind-up no longer make an omniscient instant JUMP counter when the carrier is clearly behind them; defenders facing the carrier and nearby lateral threats still react. Four controls and saves unchanged. Exact-head QA pending.
