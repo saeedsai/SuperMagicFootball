@@ -5,6 +5,7 @@
 Player-facing game features, four controls, original assets, save/offline compatibility.
 
 ## Current checkpoint
+- .125: Mud ground slow skips defenders jumping at least 20 units; low/grounded defenders still slowed. Focused regression added; QA pending.
 - .124: Wind/Mud uncountered area effects apply to all eligible nearby defenders; focused regression added, QA pending.
 - .123: Wind/Mud area counters now accept active JUMP/SHOOT slide by any in-range defender, including airborne players; focused regression added, exact-head QA pending.
 - .122: Wind/Mud AI cannot instantly counter a clearly rearward feint; directional regression added, exact-head QA pending.
