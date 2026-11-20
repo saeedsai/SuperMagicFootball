@@ -1,0 +1,17 @@
+'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const source=fs.readFileSync('src/modules/engine.js','utf8');
+const start=source.indexOf(' reactToWindMudTrick(p,dt,reactionSeconds){');
+const end=source.indexOf('\n resolveMaceSweep(',start);
+assert.ok(start>=0&&end>start,'Wind/Mud reaction exists');
+const method=source.slice(start,end);
+const match=method.match(/const threat=(rivals\.slice\(0,2\)\.includes\(p\).*?);/);
+assert.ok(match,'second-defender selection exists');
+const select=new Function('carrier','p','rivals','radius','const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);return '+match[1]+';');
+const carrier={x:0,y:0},near={x:12,y:0},second={x:24,y:0},third={x:35,y:0};
+test('second defender can read wind-up',()=>assert.equal(select(carrier,second,[near,second,third],100),carrier));
+test('third defender cannot spam counter',()=>assert.equal(select(carrier,third,[near,second,third],100),null));
+test('out of range defender cannot counter',()=>assert.equal(select(carrier,second,[near,second],20),null));
+test('closest defender retains counter',()=>assert.equal(select(carrier,near,[near,second],100),carrier));
