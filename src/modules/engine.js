@@ -1575,7 +1575,7 @@ class GameEngine{
      target.windTrickFx=Math.max(target.windTrickFx||0,.35);
     }
    }else if(id==='mud'){
-    for(const target of rivals.filter(q=>distance(p,q)<radius)){
+    for(const target of rivals.filter(q=>distance(p,q)<radius&&(q.z||0)<20)){
      target.mudSlowTimer=Math.max(target.mudSlowTimer||0,.52);
      target.mudTrickFx=Math.max(target.mudTrickFx||0,.52);
     }
