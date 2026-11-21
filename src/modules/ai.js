@@ -231,6 +231,75 @@ function attackingSupportPass(players,team,carrier,supportRun){
   return {runner,target};
  }
 
-return {AI_LEVELS,aiTuning,defensivePressers,attackingSupportRun,attackingSupportPass,attackingThroughBall};})();
+
+ // Prefer a low, driven cutback when an AI carrier reaches a wide channel near
+ // the byline. The receiver must be central and slightly behind the carrier;
+ // grounded defenders projected into the pass corridor or collection pocket
+ // cancel the preference so ordinary receiver ranking remains the fallback.
+ function attackingCutbackPass(players,team,carrier,humanControlled=null,bounds=null){
+  if(!Array.isArray(players)||!carrier||!players.includes(carrier)||
+   (team!==0&&team!==1)||carrier.t!==team||!bounds||typeof bounds!=='object'||
+   !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y))return null;
+  const xMin=Number(bounds.xMin),xMax=Number(bounds.xMax),yMin=Number(bounds.yMin),yMax=Number(bounds.yMax);
+  if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+  const height=yMax-yMin,centerY=(yMin+yMax)/2,dir=team===0?1:-1;
+  const goalGap=dir===1?xMax-carrier.x:carrier.x-xMin;
+  if(goalGap<30||goalGap>300||Math.abs(carrier.y-centerY)<height*.24)return null;
+  const clampValue=(value,min,max)=>Math.max(min,Math.min(max,value));
+  const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  const grounded=p=>p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18);
+  const ready=p=>p&&!p.down&&timerClear(p.stun)&&timerClear(p.slideTimer)&&
+   timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
+   timerClear(p.shotImpactRiseTimer)&&grounded(p)&&
+   !(p.action==='slide'&&(Number(p.actionTimer)||0)>0)&&
+   !(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)&&
+   p.action!=='shotDown'&&p.action!=='shotGetUp';
+  if(!ready(carrier))return null;
+  const movementVelocity=(player,axis)=>{
+   const actual=axis==='x'?player?.moveVX:player?.moveVY;
+   if(Number.isFinite(actual))return actual;
+   const legacy=axis==='x'?player?.vx:player?.vy;
+   return Number.isFinite(legacy)?legacy:0;
+  };
+  const activeDefender=p=>{
+   if(!p||p.t===team||p.keeper||p.down||!Number.isFinite(p.x)||!Number.isFinite(p.y)||
+    !timerClear(p.slideTimer)||!timerClear(p.shotImpactKnockdownPending)||
+    !timerClear(p.shotImpactKnockdownTimer)||!timerClear(p.shotImpactRiseTimer)||
+    !grounded(p)||p.action==='shotDown'||p.action==='shotGetUp'||
+    (p.action==='slide'&&(Number(p.actionTimer)||0)>0)||
+    (p.action==='hurt'&&(Number(p.actionTimer)||0)>0))return false;
+   const stun=p.stun==null?0:Number(p.stun);
+   return Number.isFinite(stun)&&stun<=.24;
+  };
+  const defenders=players.filter(activeDefender);
+  let best=null;
+  for(const runner of players){
+   if(!runner||runner.t!==team||runner===carrier||runner===humanControlled||runner.keeper||
+    runner.aiAssistTarget||!ready(runner))continue;
+   const vx=movementVelocity(runner,'x'),vy=movementVelocity(runner,'y');
+   if(vx*dir< -120)continue;
+   const target={x:runner.x+clampValue(vx*.10,-24,24),
+    y:runner.y+clampValue(vy*.10,-24,24)};
+   if(target.x<xMin+18||target.x>xMax-18||target.y<yMin+18||target.y>yMax-18)continue;
+   const behind=(carrier.x-target.x)*dir,centerOffset=Math.abs(target.y-centerY);
+   const range=Math.hypot(target.x-carrier.x,target.y-carrier.y);
+   if(behind<25||behind>270||centerOffset>height*.22||range<90||range>360)continue;
+   const arrivalSeconds=clampValue(range/1500,.10,.24);
+   const available=defenders.filter(p=>p.stun==null||Number(p.stun)<=arrivalSeconds);
+   if(SHOTFEEL.passingLanePressure(carrier,target,available)>=.12)continue;
+   let pocketBlocked=false;
+   for(const defender of available){
+    const futureX=defender.x+clampValue(movementVelocity(defender,'x')*arrivalSeconds,-55,55);
+    const futureY=defender.y+clampValue(movementVelocity(defender,'y')*arrivalSeconds,-55,55);
+    if(Math.hypot(futureX-target.x,futureY-target.y)<74){pocketBlocked=true;break;}
+   }
+   if(pocketBlocked)continue;
+   const score=range+centerOffset*.35+Math.max(0,65-vx*dir)*.08;
+   if(!best||score<best.score-1e-9)best={runner,target,score};
+  }
+  return best?{runner:best.runner,target:best.target}:null;
+ }
+
+return {AI_LEVELS,aiTuning,defensivePressers,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass};})();
 
 export {AI};
