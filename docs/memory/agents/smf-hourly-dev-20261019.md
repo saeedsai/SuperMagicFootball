@@ -10,7 +10,7 @@ Deliver player-facing gameplay and existing-player presentation while preserving
 - .157 AI-GOALMOUTH-SQUARE-PASS-01 is main-promoted and Pages-verified: exact-head Modular QA #44912835807, all four Node/four Chromium dev Census shards #44912835793, Pages deployment #44913633076 and independent main Census/hosted-pages smoke #44913633360 passed.
 
 ## Next smallest action
-Run focused give-and-go regressions, exact-head Modular QA and four-Node/four-Chromium Full Regression Census for .158. Fix only observed failures; promote only through the existing QA-gated pipeline.
+Initial .158 push exposed an unterminated .157 release-note string in release.js; corrected in the follow-up repair commit. Rerun focused give-and-go regressions, exact-head Modular QA and four-Node/four-Chromium Full Regression Census; promote only through the existing QA-gated pipeline.
 
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private checkpoints. Preserve four actions, 223 teams, 2,676 players, six formations, saves and offline/PWA behavior.
