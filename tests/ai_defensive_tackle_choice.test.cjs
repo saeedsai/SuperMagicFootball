@@ -71,10 +71,11 @@ function liveFixture(team,carrierVX){
  defender.dx=dir;defender.dy=0;defender.face=dir;defender.cd=0;
  defender.aiTimer=0;defender.aiTarget=null;defender.dashTimer=0;defender.sprintCharge=0;
  carrier.x=1200+dir*60;carrier.y=700;carrier.moveVX=carrierVX*dir;carrier.moveVY=0;
- carrier.cd=0;carrier.stun=0;carrier.invuln=0;carrier.down=false;carrier.z=0;
+ carrier.cd=0;carrier.stun=0;carrier.invuln=0;carrier.down=false;carrier.z=0;carrier.dribbleHold=0;carrier.hideBallTimer=0;carrier.src.magicTrick=null;
  game.ball.owner=carrier;game.ball.x=carrier.x;game.ball.y=carrier.y;game.ball.z=0;
  game.ball.vx=carrier.moveVX;game.ball.vy=0;
- return {game,defender};
+ game.supernova=null;game.matchState='play';
+ return {game,defender,carrier};
 }
 function withZeroRandom(fn){
  const original=Math.random;
@@ -83,17 +84,19 @@ function withZeroRandom(fn){
 
 test('driveAI uses the run-up slide against an escaping carrier on both sides',()=>{
  for(const team of [0,1]){
-  const {game,defender}=liveFixture(team,300);
+  const {game,defender,carrier}=liveFixture(team,300);
+  assert.equal(AI.defensiveTackleSlide(defender,carrier,game.playerSpeed(defender)),true);
   withZeroRandom(()=>game.driveAI(defender,1/60));
-  assert.ok(game.events.some(event=>event.type==='slideStart'),
+  assert.ok(game.events.some(event=>event.type==='slideStart'&&event.player===defender.src.name),
    'an eligible running defender should use the existing SHOOT slide');
  }
 });
 
 test('driveAI uses the short tackle when the carrier is closing into the defender',()=>{
- const {game,defender}=liveFixture(0,0);
+ const {game,defender,carrier}=liveFixture(0,0);
+ assert.equal(AI.defensiveTackleSlide(defender,carrier,game.playerSpeed(defender)),false);
  withZeroRandom(()=>game.driveAI(defender,1/60));
  assert.ok(defender.cd>0,'the CPU still attempts the tackle');
- assert.equal(game.events.some(event=>event.type==='slideStart'),false,
+ assert.equal(game.events.some(event=>event.type==='slideStart'&&event.player===defender.src.name),false,
   'the close, approaching carrier should be met with the short PASS poke');
 });
