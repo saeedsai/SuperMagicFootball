@@ -41,7 +41,7 @@ with sync_playwright() as pw:
                 game.clock=5;game.driveAI(third,.016);
                 rows.push({team,dir,carrier:{x,y},primary:{x:primary.x,y:primary.y},target:third.aiTarget});
             }
-            return {rows,buttons:document.querySelectorAll('#touchButtons [data-act]').length};
+            return {rows,buttons:document.querySelectorAll('[data-act="pass"],[data-act="shoot"],[data-act="dribble"],[data-act="jump"]').length};
         }""")
         assert result['buttons']==4,(kind,result)
         for row in result['rows']:
