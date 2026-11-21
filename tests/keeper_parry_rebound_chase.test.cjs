@@ -60,6 +60,8 @@ test('keeper rebound chase rejects owned, incoming, rising, expired and recovery
  f.ball.vz=200;assert.equal(check(),null);f.ball.vz=-110;
  f.rebound.expires=.5;assert.equal(check(),null);f.rebound.expires=2;
  f.keeper.action='keeperRecover';assert.equal(check(),null);
+ f.keeper.action='keeperDive';f.keeper.diveElapsed=.10;assert.equal(check(),null);
+ f.keeper.diveElapsed=.24;assert.ok(check(),'late dive follow-through may start the bounded chase');
 });
 function engineFixture(ENGINE,team){
  const game=new ENGINE.GameEngine({halfSeconds:120});
@@ -80,7 +82,7 @@ function engineFixture(ENGINE,team){
   strike:null,age:.2,canCollect:0,trail:[],pass:false});
  assert.equal(game.tryKeeperDive(keeper,false),true,'strong shot should be parried');
  assert.equal(game.ball.attacker,team);
- keeper.action='idle';keeper.actionTimer=0;keeper.z=0;keeper.stun=0;keeper.down=false;
+ keeper.action='keeperDive';keeper.actionTimer=.4;keeper.diveElapsed=.24;keeper.diveIntentPending=false;keeper.z=12;keeper.stun=0;keeper.down=false;
  Object.assign(game.ball,{x:keeper.x+dir*80,y:keeper.y+38,z:60,vx:dir*260,vy:30,
   vz:-110,shot:null,strike:null,ordinaryShot:false,pass:false,owner:null,age:.6});
  game.clock=.2;
