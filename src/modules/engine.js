@@ -17,7 +17,7 @@ import {SHOTPATHS} from "./shotpaths.js";
 import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
 import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards} from "./magic-hazards.js";
-const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,keeperShotReadY,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
+const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,keeperShotReadY,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
 // Shot impacts briefly weaken strength-based contests without ever rewriting source stats.
 const stat=(p,key)=>{const value=baseStat(p,key);return key==='strength'&&p?.src&&(p.shotImpactWeaknessTimer||0)>0?value*(1-clamp(p.shotImpactWeakness||0,0,.4)*.45):value;};
 
@@ -734,6 +734,14 @@ class GameEngine{
   const speed=passLaunchSpeed(quality,longScale,PHYSICS_TUNING);
   this.freeBall(p,aimX,aimY,speed,{power:5,z:p.z+8,vz:cross?245:long?160:opts.cutback===true?32:!opts.human&&wide?105:65,pass:true});
   this.ball.passTarget=target?.src.id||null;
+  const returnPoint=opts.giveAndGoRun?.target;
+  if(opts.human!==true&&opts.goalmouth===true&&preferredValid&&target===preferred&&target.src?.id&&
+   returnPoint&&Number.isFinite(returnPoint.x)&&Number.isFinite(returnPoint.y)){
+   this.clock=Number.isFinite(this.clock)?this.clock:0;
+   p.aiGiveAndGoRun={receiverId:target.src.id,
+    target:{x:clamp(returnPoint.x,F.x+24,F.x+F.w-24),y:clamp(returnPoint.y,F.y+24,F.y+F.h-24)},
+    expires:this.clock+1.75};
+  }else if(p.aiGiveAndGoRun)p.aiGiveAndGoRun=null;
   this.emit('passIntent',{team:p.t,player:p.src.id,mode:kind,holdSeconds:hold,
    direction:directed?{x:opts.direction.x,y:opts.direction.y}:null,
    target:target?.src.id||null,speed,loft:cross?'cross':long?'long':opts.cutback===true?'cutback':opts.goalmouth===true?'goalmouth':preferredPoint?'through':'short'});
@@ -2546,6 +2554,16 @@ class GameEngine{
   // live simulation and human controls retain the real owner and ball state.
   const b=concealed?{...liveBall,owner:null,x:known?.x??liveOwner.x,y:known?.y??liveOwner.y,z:0,vx:0,vy:0,vz:0}:liveBall;
   const owner=b.owner;
+  const giveAndGo=p.aiGiveAndGoRun;
+  if(giveAndGo){
+   const receiver=this.players.find(q=>q&&q.t===t&&q.src?.id===giveAndGo.receiverId);
+   const receiverHasBall=!!receiver&&owner===receiver;
+   const passInFlight=!liveBall.owner&&liveBall.attacker===t&&liveBall.passTarget===giveAndGo.receiverId;
+   const passerReady=!p.keeper&&!p.down&&!(Number(p.stun)>0)&&!(Number(p.z)>18)&&
+    p.action!=='shotDown'&&p.action!=='shotGetUp'&&
+    !(p.action==='slide'&&(Number(p.actionTimer)||0)>0);
+   if(!receiver||!passerReady||this.clock>giveAndGo.expires||(!receiverHasBall&&!passInFlight))p.aiGiveAndGoRun=null;
+  }
   // Only the bounded physical lunge may move a keeper during dive intent.
   // Continuing ordinary AI tracking here bypasses the per-attempt 28-unit cap.
   // Once diveIntentPending is cleared, this normal AI path is available again.
@@ -2600,6 +2618,8 @@ class GameEngine{
   const supportThroughBall=owner===p?attackingThroughBall(this.players,t,owner,supportRun):null;
   const supportGoalmouth=owner===p&&!supportCutback&&!supportThroughBall?attackingGoalmouthPass(this.players,t,owner,
    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24}):null;
+  const giveAndGoRun=owner===p&&supportGoalmouth?attackingGiveAndGoRun(this.players,t,p,supportGoalmouth.runner,
+   {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24}):null;
   const supportPassTarget=owner===p?(supportThroughBall?.runner||supportGoalmouth?.runner||attackingSupportPass(this.players,t,owner,supportRun)):null;
   p.aiTimer=(p.aiTimer??0)-dt;
   const decide=p.aiTimer<=0||!p.aiTarget;
@@ -2630,7 +2650,7 @@ class GameEngine{
     const goalDistance=Math.abs((t===0?F.x+F.w:F.x)-p.x);
     const nearestDefender=defenders.length?Math.min(...defenders.map(q=>distance(p,q))):999;
     const finishChance=SHOTFEEL.aiFinishingPriority(goalDistance,nearestDefender,stat(p,'shootAccuracy'),ai.shootRate)*tactical.shoot;
-    const passOptions=supportCutback?{preferredTarget:supportCutback.runner,supportRun:true,cutback:true,preferredPoint:supportCutback.target}:supportThroughBall?{preferredTarget:supportThroughBall.runner,supportRun:true,throughBall:true,preferredPoint:supportThroughBall.target}:supportGoalmouth?{preferredTarget:supportGoalmouth.runner,supportRun:true,goalmouth:true,preferredPoint:supportGoalmouth.target}:supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true}:{};
+    const passOptions=supportCutback?{preferredTarget:supportCutback.runner,supportRun:true,cutback:true,preferredPoint:supportCutback.target}:supportThroughBall?{preferredTarget:supportThroughBall.runner,supportRun:true,throughBall:true,preferredPoint:supportThroughBall.target}:supportGoalmouth?{preferredTarget:supportGoalmouth.runner,supportRun:true,goalmouth:true,preferredPoint:supportGoalmouth.target,...(giveAndGoRun?{giveAndGoRun}:{})}:supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true}:{};
     if(p.cd<=0&&nearGoal&&Math.random()<finishChance){this.shoot(p,Math.random()<ai.superRate)}
     else if(p.cd<=0&&supportGoalmouth&&Math.random()<ai.passRate*tactical.pass*.42){this.pass(p,false,false,passOptions)}
     else if(p.cd<=0&&pressured&&p.trickCd<=0&&Math.random()<(.04+ai.anticipation*.62)&&this.tryDribbleTrick(p,true)){}
@@ -2682,6 +2702,10 @@ class GameEngine{
    p.aiTarget=defensiveCutbackCover?{x:defensiveCutbackCover.x,y:defensiveCutbackCover.y}:{
     x:clamp(target.x-(t===0?1:-1)*110,F.x+22,F.x+F.w-22),
     y:clamp(target.y+spread,F.y+23,F.y+F.h-23)};
+  }
+  const activeGiveAndGo=p.aiGiveAndGoRun;
+  if(activeGiveAndGo&&owner&&owner.t===t&&owner.src?.id===activeGiveAndGo.receiverId){
+   p.aiTarget={x:activeGiveAndGo.target.x,y:activeGiveAndGo.target.y};
   }
   let {x:tx,y:ty}=p.aiTarget;
   // Detect stalled movement after collision resolution, then choose a temporary

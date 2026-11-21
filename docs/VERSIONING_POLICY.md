@@ -1,6 +1,7 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.157
+# SuperMagicFootball release/version policy — About-only 0.12.81.158
 
-**Dev candidate 0.12.81.157 (21 November 2026):** AI-GOALMOUTH-SQUARE-PASS-01: CPU carriers in the final third can play a low square pass to a central teammate at least 65 units closer to goal when the receiver's bounded movement projection, active defender pressure and ground-pass corridor indicate a safer scoring outlet. Shot-first finishing, cutbacks and through balls retain priority; existing pass physics, four controls and saves are unchanged. Focused mirrored selection, marking, blocked-lane, readiness and engine-intent regressions added; exact-head QA pending.
+**Dev candidate 0.12.81.158 (21 November 2026):** AI-GOALMOUTH-GIVE-AND-GO-01: after a CPU goalmouth square pass, the passer makes a bounded forward-diagonal run beyond the receiver into the safer of two return lanes. The run begins only after the selected receiver controls the pass, uses projected defender pressure and teammate crowding, and clears on interception, lost possession, player unavailability or 1.75-second expiry. Runtime-only intent; existing pass physics, four controls, saves and rosters unchanged. Five focused regressions added; exact-head QA pending.
+**Main-promoted release 0.12.81.157 (21 November 2026):** AI-GOALMOUTH-SQUARE-PASS-01 passed exact-head Modular QA #44912835807, all four Node/four Chromium dev Census shards #44912835793, QA-gated promotion, Pages deployment #44913633076 and independent main Census/hosted-pages smoke #44913633360.
 
 **Main-promoted release 0.12.81.156 (21 November 2026):** AI-KEEPER-SHOT-LEAD-01 passed exact-head Modular QA #44910040703, all four Node/four Chromium dev Census shards #44910040664, Pages deployment #44910745704 and independent main Census/hosted-pages smoke #44910746145.
 
