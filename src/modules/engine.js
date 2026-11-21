@@ -1234,9 +1234,12 @@ class GameEngine{
   const carrier=this.ball?.owner;
   const trick=carrier?.src?.magicTrick;
   const radius=trick==='fireball'?120:95;
+  // Fallen or recovering nearest defenders cannot read the wind-up; let the next active teammate cover.
   const rivals=carrier&&carrier.t!==p.t&&!carrier.keeper&&(trick==='fireball'||trick==='freeze'||trick==='bat')&&
    Number(carrier.dribbleHold)>=.35&&Number(carrier.dribbleHold)<1
-   ?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0).sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
+   ?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0&&!q.down&&
+    q.action!=='shotDown'&&q.action!=='shotGetUp'&&!(q.action==='hurt'&&(q.actionTimer||0)>0))
+    .sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
   const threat=rivals[0]===p&&distance(carrier,p)<radius?carrier:null;
   if(!threat){p.aiFireballThreat=null;p.aiFireballReaction=0;return false;}
   if(p.z>=20||(p.action==='jump'&&(p.actionTimer||0)>0))return false;

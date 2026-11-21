@@ -76,6 +76,34 @@ test('Rookie cannot time the close slide; unavailable slide cooldown falls back 
   assert.equal(cooling.g.slides,0);assert.equal(cooling.g.jumps,1,'a cooldown-blocked slide uses the existing airborne counter');
  }
 });
+test('downed or recovering nearest defenders yield Fireball, Freeze and Bat to the next active teammate',()=>{
+ const unavailable=[
+  ['down flag',p=>{p.down=true;}],
+  ['shot down',p=>{p.action='shotDown';p.actionTimer=.3;}],
+  ['getting up',p=>{p.action='shotGetUp';p.actionTimer=.3;}],
+  ['hurt recovery',p=>{p.action='hurt';p.actionTimer=.3;}]
+ ];
+ for(const side of [0,1])for(const trick of ['fireball','freeze','bat'])for(const [state,mark] of unavailable){
+  const {g,carrier,target,other}=fixture(side,.7,{distance:55,trick});
+  other.x=carrier.x+72;other.y=carrier.y;
+  mark(target);
+  for(let i=0;i<30&&!g.jumps&&!g.slides;i++)react.call(g,other,1/60,.09);
+  assert.equal(g.jumps,1,state+' '+trick+' side '+side+' should hand the read to the active second defender');
+  assert.equal(g.slides,0,'the second defender at 72 units uses the existing JUMP counter');
+ }
+});
+
+test('nearest defender already jumping or sliding keeps the Fireball response without a second commitment',()=>{
+ for(const side of [0,1])for(const state of ['jump','slide']){
+  const {g,carrier,target,other}=fixture(side,.7,{distance:55,trick:'freeze'});
+  other.x=carrier.x+72;other.y=carrier.y;
+  target.action=state;target.actionTimer=.3;target.z=state==='jump'?22:0;
+  react.call(g,other,.2,.09);
+  assert.equal(g.jumps,0,state+' response must not trigger a duplicate JUMP');
+  assert.equal(g.slides,0,state+' response must not trigger a duplicate slide');
+ }
+});
+
 test('close-range slide timing does not expand to defenders outside the short counter window',()=>{
  const state=fixture(0,.35,{distance:65});
  react.call(state.g,state.target,.12,.09);
