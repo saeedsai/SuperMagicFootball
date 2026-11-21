@@ -196,6 +196,12 @@ function attackingSupportPass(players,team,carrier,supportRun){
   const range=Math.hypot(runner.x-carrier.x,runner.y-carrier.y);
   const dx=point.x-runner.x,dy=point.y-runner.y,gap=Math.hypot(dx,dy);
   if(forward<90||forward>760||range<90||range>880||gap<118||gap>280)return null;
+  const movementVelocity=(player,axis)=>{
+   const actual=axis==='x'?player?.moveVX:player?.moveVY;
+   if(Number.isFinite(actual))return actual;
+   const legacy=axis==='x'?player?.vx:player?.vy;
+   return Number.isFinite(legacy)?legacy:0;
+  };
   const vx=movementVelocity(runner,'x'),vy=movementVelocity(runner,'y');
   const runSpeed=(vx*dx+vy*dy)/gap;
   if(!Number.isFinite(runSpeed)||runSpeed<110||vx*dir<65)return null;
