@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.135',
+ version:'0.12.81.136',
  date:'2026-11-21',
  notes:Object.freeze([
+  "AI-SUPPORT-RUN-INTERCEPT-01: AI support-run pass preference now accounts for bounded defender movement during pass flight and swept lane closure, yielding to defenders projected to intercept while preserving passes when opponents move away or velocity is invalid; unsafe preferences fall back to ordinary receiver ranking. Pass physics and four controls unchanged. Three focused Node regressions added; exact-head QA pending.",
   "AI-SUPPORT-RUN-PASS-01: When an AI carrier chooses PASS, it now prefers a teammate who has entered the existing forward support-run lane only when the receiving point and pass corridor are clear; blocked, recovering, airborne or not-yet-arrived runners fall back to normal receiver ranking. Pass physics and four controls unchanged. Focused Node regressions added; exact-head QA pending.",
   "AI-SUPPORT-RUN-LANE-01: One eligible AI teammate makes a bounded forward diagonal run into the less-defended lateral lane when a teammate carries; other support players retain width positions. Exact-head dev Census (four Node and four Chromium shards) and Modular QA passed, QA-gated promotion and Pages deployment passed, and hosted-pages smoke passed. A separate main workflow-dispatch Census rerun failed one LAN browser movement-threshold assertion; the same-SHA push Census passed all shards, so main retry remains pending.",
   "AI-AVAILABLE-PRESSER-01: Team defense skips teammates who are stunned, knocked down/getting up, or committed to an active slide when assigning primary press and cover; the next available defender takes the pursuit. Four controls, saves and roster data unchanged.",
