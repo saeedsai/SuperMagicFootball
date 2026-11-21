@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.147',
+ version:'0.12.81.148',
  date:'2026-11-21',
  notes:Object.freeze([
+  "AI-GOALKEEPER-CUTBACK-SHADING-01: When an opponent carries near a wide byline and an active central runner is positioned behind the ball, the CPU goalkeeper shades up to 58 units toward that cutback threat while retaining the ordinary shot lane. Central or distant carriers and downed, recovering, airborne or off-lane runners do not trigger the read. No dive, save, pass physics, roster or action changes; exact-head QA pending.",
   "AI-CUTBACK-GOALKEEPER-READ-01: Active opposing goalkeepers now participate in CPU cutback flight-lane and predicted receiving-pocket safety, so a driven central pass is not preferred when a keeper can claim or intercept it. Downed, recovering, high-airborne and late-recovering keepers remain non-blocking; outfield defender reads, four actions, pass physics and saves are unchanged. Exact-head QA pending.",
   "AI-CUTBACK-UNPRESSURED-RELEASE-01: A CPU carrier can release a safe byline cutback before a defender closes within the immediate 230-unit pressure radius. Shot selection remains first; the early pass chance is scaled by CPU pass tendency and team passing tactic. The match-scale fixture uses real field bounds and deterministic shot-first draws. Modular QA passed 2,593/2,593; Full Census passed preflight, preview, all four Node shards and three of four Chromium shards, with only historical lan_auto_two_browser_qa.py timing out in browser shard 0. Failed-job-only retry attempt 2 was requested; .146 not promoted.",
   "AI-CUTBACK-UNPRESSURED-RELEASE-01 initial candidate: a safe byline cutback can be released without an immediate defender within 230 units; shot selection stays first and chance is scaled by CPU pass tendency and team pass tactic. First exact-head preflight exposed a test fixture using menu-scale coordinates instead of match coordinates; the same run also caught four README heading/version contract failures. Fixed in .146; .145 not promoted.",
