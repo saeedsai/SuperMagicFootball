@@ -54,7 +54,7 @@ function prepareGame(ENGINE,team,firstTouch=true,runUp=true){
  const x=field.x+field.w*.52,y=field.y+field.h*.5;
  for(const q of game.players)if(q!==carrier&&q!==primary&&!q.keeper){q.down=true;q.stun=0;q.z=0;}
  Object.assign(carrier,{x,y,face:attackDir,down:false,stun:0,invuln:0,z:0,action:'receive',actionTimer:.2,
-  moveVX:attackDir*160,moveVY:0,firstTouchControlTimer:firstTouch?.20:0,firstTouchPressure:firstTouch?.9:0});
+  moveVX:attackDir*160,moveVY:0,firstTouchControlTimer:firstTouch ? .20 : 0,firstTouchPressure:firstTouch ? .9 : 0});
  Object.assign(primary,{x:x-attackDir*86,y,down:false,stun:0,invuln:0,z:0,cd:0,
   action:'run',actionTimer:0,moveVX:runUp?attackDir*300:0,moveVY:0,dx:attackDir,dy:0,face:attackDir,
   aiTimer:0,aiTarget:null,aiAssistTarget:null});
