@@ -171,6 +171,59 @@ function attackingSupportPass(players,team,carrier,supportRun){
  return runner;
 }
 
-return {AI_LEVELS,aiTuning,defensivePressers,attackingSupportRun,attackingSupportPass};})();
+ // Lead an actively advancing support runner into the space ahead of their lane.
+ // This is intentionally earlier than attackingSupportPass's arrived-runner rule:
+ // the receiver must be moving toward the point, and both the flight corridor and
+ // the predicted collection pocket must remain clear.
+ function attackingThroughBall(players,team,carrier,supportRun){
+  if(!Array.isArray(players)||!carrier||(team!==0&&team!==1)||carrier.t!==team||
+   !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y))return null;
+  const runner=supportRun?.runner,point=supportRun?.target;
+  if(!runner||!point||!players.includes(runner)||runner===carrier||runner.t!==team||runner.keeper||
+   !Number.isFinite(runner.x)||!Number.isFinite(runner.y)||
+   !Number.isFinite(point.x)||!Number.isFinite(point.y))return null;
+  const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  const grounded=p=>p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18);
+  const ready=p=>p&&!p.down&&timerClear(p.stun)&&timerClear(p.slideTimer)&&
+   timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
+   timerClear(p.shotImpactRiseTimer)&&grounded(p)&&
+   !(p.action==='slide'&&(Number(p.actionTimer)||0)>0)&&
+   !(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)&&
+   p.action!=='shotDown'&&p.action!=='shotGetUp';
+  if(!ready(carrier)||!ready(runner)||runner.aiAssistTarget)return null;
+  const dir=team===0?1:-1;
+  const forward=(runner.x-carrier.x)*dir;
+  const range=Math.hypot(runner.x-carrier.x,runner.y-carrier.y);
+  const dx=point.x-runner.x,dy=point.y-runner.y,gap=Math.hypot(dx,dy);
+  if(forward<90||forward>760||range<90||range>880||gap<118||gap>280)return null;
+  const vx=movementVelocity(runner,'x'),vy=movementVelocity(runner,'y');
+  const runSpeed=(vx*dx+vy*dy)/gap;
+  if(!Number.isFinite(runSpeed)||runSpeed<110||vx*dir<65)return null;
+  const leadDistance=clamp(Math.min(gap-16,runSpeed*.28),48,100);
+  const target={x:runner.x+dx/gap*leadDistance,y:runner.y+dy/gap*leadDistance};
+  const passDistance=Math.hypot(target.x-carrier.x,target.y-carrier.y);
+  if(passDistance<110||passDistance>920)return null;
+  const arrivalSeconds=clamp(passDistance/1400,.12,.35);
+  const defenders=[];
+  for(const defender of players){
+   if(!defender||defender.t===team||!Number.isFinite(defender.x)||!Number.isFinite(defender.y))continue;
+   if(defender.down||defender.action==='shotDown'||defender.action==='shotGetUp'||
+    !timerClear(defender.shotImpactKnockdownPending)||
+    !timerClear(defender.shotImpactKnockdownTimer)||
+    !timerClear(defender.shotImpactRiseTimer)||!grounded(defender))continue;
+   const stun=defender.stun==null?0:Number(defender.stun);
+   if(!Number.isFinite(stun)||stun>arrivalSeconds)continue;
+   defenders.push(defender);
+  }
+  if(SHOTFEEL.passingLanePressure(carrier,target,defenders)>=.10)return null;
+  for(const defender of defenders){
+   const futureX=defender.x+clamp(movementVelocity(defender,'x')*arrivalSeconds,-65,65);
+   const futureY=defender.y+clamp(movementVelocity(defender,'y')*arrivalSeconds,-65,65);
+   if(Math.hypot(futureX-target.x,futureY-target.y)<84)return null;
+  }
+  return {runner,target};
+ }
+
+return {AI_LEVELS,aiTuning,defensivePressers,attackingSupportRun,attackingSupportPass,attackingThroughBall};})();
 
 export {AI};

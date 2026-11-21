@@ -17,7 +17,7 @@ import {SHOTPATHS} from "./shotpaths.js";
 import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
 import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards} from "./magic-hazards.js";
-const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,defensivePressers,attackingSupportRun,attackingSupportPass}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
+const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,defensivePressers,attackingSupportRun,attackingSupportPass,attackingThroughBall}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
 // Shot impacts briefly weaken strength-based contests without ever rewriting source stats.
 const stat=(p,key)=>{const value=baseStat(p,key);return key==='strength'&&p?.src&&(p.shotImpactWeaknessTimer||0)>0?value*(1-clamp(p.shotImpactWeakness||0,0,.4)*.45):value;};
 
@@ -615,6 +615,8 @@ class GameEngine{
   const mates=this.players.filter(q=>q.t===p.t&&q!==p&&!q.stun&&(!q.keeper||p.keeper));
   const directed=opts.direction&&Math.hypot(opts.direction.x||0,opts.direction.y||0)>.16;
   const preferred=opts.supportRun===true?opts.preferredTarget:null;
+  const preferredPoint=opts.throughBall===true&&opts.preferredPoint&&
+   Number.isFinite(opts.preferredPoint.x)&&Number.isFinite(opts.preferredPoint.y)?opts.preferredPoint:null;
   const preferredValid=preferred&&mates.includes(preferred)&&preferred.t===p.t&&!preferred.keeper&&
    Number.isFinite(preferred.x)&&Number.isFinite(preferred.y)&&!preferred.down&&
    !(Number(preferred.slideTimer)>0)&&!(Number(preferred.shotImpactKnockdownPending)>0)&&
@@ -640,11 +642,18 @@ class GameEngine{
    if(target){aimX=target.x-p.x+(target.dx||0)*(long?125:55)+ex;aimY=target.y-p.y+(target.dy||0)*(long?125:55)+ey;kind=cross?'crossTarget':'directionTarget';}
    else {aimX=heading.x*800+ex;aimY=heading.y*800+ey;kind=cross?'crossDirection':'direction';}
   }else if(preferredValid){
-   target=preferred;kind='supportRun';
-   const leadSeconds=clamp(distance(p,target)/1400,.12,.35);
-   const leadX=Number.isFinite(target.moveVX)?clamp(target.moveVX*leadSeconds,-65,65):(target.dx||0)*90;
-   const leadY=Number.isFinite(target.moveVY)?clamp(target.moveVY*leadSeconds,-65,65):(target.dy||0)*90;
-   aimX=target.x-p.x+leadX+ex;aimY=target.y-p.y+leadY+ey;
+   target=preferred;
+   if(preferredPoint){
+    // A through ball leads a committed support runner into the open lane ahead,
+    // rather than aiming at the runner's current feet.
+    aimX=preferredPoint.x-p.x+ex;aimY=preferredPoint.y-p.y+ey;kind='throughBall';
+   }else{
+    kind='supportRun';
+    const leadSeconds=clamp(distance(p,target)/1400,.12,.35);
+    const leadX=Number.isFinite(target.moveVX)?clamp(target.moveVX*leadSeconds,-65,65):(target.dx||0)*90;
+    const leadY=Number.isFinite(target.moveVY)?clamp(target.moveVY*leadSeconds,-65,65):(target.dy||0)*90;
+    aimX=target.x-p.x+leadX+ex;aimY=target.y-p.y+leadY+ey;
+   }
   }else{
    if(opts.human&&!long&&!cross){
     target=mates.slice().sort((a,b)=>distance(p,a)-distance(p,b))[0];kind='nearest';
@@ -664,7 +673,7 @@ class GameEngine{
   this.ball.passTarget=target?.src.id||null;
   this.emit('passIntent',{team:p.t,player:p.src.id,mode:kind,holdSeconds:hold,
    direction:directed?{x:opts.direction.x,y:opts.direction.y}:null,
-   target:target?.src.id||null,speed,loft:cross?'cross':long?'long':'short'});
+   target:target?.src.id||null,speed,loft:cross?'cross':long?'long':preferredPoint?'through':'short'});
   // Do not steal control before a receiver actually controls the ball.
   // Pause defensive auto-switch briefly while the pass is in flight.
   if(opts.human&&this.inControl(p.t))this.manualSwitchGrace[p.t]=Math.max(this.manualSwitchGrace[p.t]||0,1.25);
@@ -2488,7 +2497,9 @@ class GameEngine{
   const supportRun=owner&&owner.t===t?attackingSupportRun(this.players,t,owner,
    this.inControl(t)?this.controlledPlayer(t):null,
    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24}):null;
-  const supportPassTarget=owner&&owner.t===t?attackingSupportPass(this.players,t,owner,supportRun):null;
+  const supportThroughBall=owner&&owner.t===t?attackingThroughBall(this.players,t,owner,supportRun):null;
+  const supportPassTarget=supportThroughBall?.runner||
+   (owner&&owner.t===t?attackingSupportPass(this.players,t,owner,supportRun):null);
   p.aiTimer=(p.aiTimer??0)-dt;
   const decide=p.aiTimer<=0||!p.aiTarget;
   if(decide){
@@ -2517,7 +2528,7 @@ class GameEngine{
     const goalDistance=Math.abs((t===0?F.x+F.w:F.x)-p.x);
     const nearestDefender=defenders.length?Math.min(...defenders.map(q=>distance(p,q))):999;
     const finishChance=SHOTFEEL.aiFinishingPriority(goalDistance,nearestDefender,stat(p,'shootAccuracy'),ai.shootRate)*tactical.shoot;
-    const passOptions=supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true}:{};
+    const passOptions=supportThroughBall?{preferredTarget:supportThroughBall.runner,supportRun:true,throughBall:true,preferredPoint:supportThroughBall.target}:supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true}:{};
     if(p.cd<=0&&nearGoal&&Math.random()<finishChance){this.shoot(p,Math.random()<ai.superRate)}
     else if(p.cd<=0&&pressured&&p.trickCd<=0&&Math.random()<(.04+ai.anticipation*.62)&&this.tryDribbleTrick(p,true)){}
     else if(p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass){this.pass(p,false,false,passOptions)}

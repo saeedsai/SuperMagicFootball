@@ -126,3 +126,84 @@ test('driveAI wires the pressure-checked support runner into the existing PASS a
  assert.match(source,/attackingSupportPass\(this\.players,t,owner,supportRun\)/);
  assert.match(source,/preferredTarget:supportPassTarget,supportRun:true/);
 });
+
+
+test('AI through ball leads a committed support runner into open space before arrival',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const {game,carrier,runner}=fixture(ENGINE);
+ runner.x=340;runner.y=350;runner.moveVX=180;runner.moveVY=-260;
+ const supportRun={runner,target:{x:410,y:188}};
+ const option=AI.attackingThroughBall(game.players,0,carrier,supportRun);
+ assert.equal(option?.runner,runner);
+ assert.ok(option.target.x>runner.x,'lead point must be ahead of the runner');
+ assert.ok(option.target.y<runner.y,'lead point must follow the runner diagonal');
+ assert.ok(option.target.x<supportRun.target.x&&option.target.y>supportRun.target.y,
+  'lead point must remain between the runner and the bounded support lane');
+ const originalRandom=Math.random;
+ try{
+  Math.random=()=>.5;
+  assert.equal(game.pass(carrier,false,false,{preferredTarget:option.runner,supportRun:true,
+   throughBall:true,preferredPoint:option.target}),true);
+ }finally{Math.random=originalRandom;}
+ assert.equal(game.ball.passTarget,runner.src.id);
+ assert.equal(game.events.at(-1)?.mode,'throughBall');
+ assert.equal(game.events.at(-1)?.loft,'through');
+ const slope=game.ball.vy/game.ball.vx;
+ assert.ok(Math.abs(slope-(option.target.y-carrier.y)/(option.target.x-carrier.x))<1e-9,
+  'ball trajectory should aim into the space ahead, not at current feet');
+});
+
+test('through ball requires genuine forward run momentum and preserves arrived-runner fallback',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const {game,carrier,runner}=fixture(ENGINE);
+ const supportRun={runner,target:{x:410,y:188}};
+ runner.x=340;runner.y=350;
+ for(const motion of [
+  {moveVX:0,moveVY:0},
+  {moveVX:-220,moveVY:-260},
+  {moveVX:180,moveVY:260},
+  {moveVX:Infinity,moveVY:NaN}
+ ]){
+  Object.assign(runner,motion);
+  assert.equal(AI.attackingThroughBall(game.players,0,carrier,supportRun),null,
+   'stationary, retreating, away-running or invalid motion must not trigger a through ball');
+ }
+ runner.x=410;runner.y=188;runner.moveVX=180;runner.moveVY=0;
+ assert.equal(AI.attackingThroughBall(game.players,0,carrier,{runner,target:{x:410,y:188}}),null,
+  'an arrived runner remains on the existing support-pass path');
+});
+
+test('through ball yields to a closing lane defender and a crowded receiving pocket',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const {game,carrier,runner,defender}=fixture(ENGINE);
+ runner.x=340;runner.y=350;runner.moveVX=180;runner.moveVY=-260;
+ const supportRun={runner,target:{x:410,y:188}};
+ const option=AI.attackingThroughBall(game.players,0,carrier,supportRun);
+ assert.ok(option);
+ defender.x=(carrier.x+option.target.x)/2;
+ defender.y=(carrier.y+option.target.y)/2;
+ defender.moveVX=0;defender.moveVY=0;defender.action='idle';defender.z=0;defender.stun=0;
+ assert.equal(AI.attackingThroughBall(game.players,0,carrier,supportRun),null,
+  'a defender in the projected flight corridor blocks the early pass');
+ defender.x=option.target.x+18;defender.y=option.target.y+12;
+ assert.equal(AI.attackingThroughBall(game.players,0,carrier,supportRun),null,
+  'a defender occupying the predicted collection pocket blocks the through ball');
+ defender.down=true;
+ assert.ok(AI.attackingThroughBall(game.players,0,carrier,supportRun),
+  'a knocked-down defender cannot occupy the lane or collection pocket');
+});
+
+test('through-ball target and momentum are mirrored for the opposite attacking direction',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const game=new ENGINE.GameEngine({halfSeconds:120});
+ game.init({home:0,away:1,mode:'quick',humans:0});
+ const carrier=game.players.find(p=>p.t===1&&p.i===3);
+ const runner=game.players.find(p=>p.t===1&&p.i===4);
+ carrier.x=750;carrier.y=300;runner.x=660;runner.y=350;runner.moveVX=-180;runner.moveVY=-260;
+ for(const p of game.players)if(p.t===0){p.x=150;p.y=550;p.stun=0;p.down=false;p.z=0;p.action='idle';}
+ game.ball.owner=carrier;
+ const option=AI.attackingThroughBall(game.players,1,carrier,{runner,target:{x:590,y:188}});
+ assert.equal(option?.runner,runner);
+ assert.ok(option.target.x<runner.x,'away-side lead point must advance toward the left goal');
+ assert.ok(option.target.y<runner.y,'away-side lead point follows the mirrored diagonal');
+});
