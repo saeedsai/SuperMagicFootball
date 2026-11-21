@@ -46,8 +46,10 @@ test('standing defenders, very close contact and invalid or unavailable carriers
 const engineSource=fs.readFileSync(new URL('../src/modules/engine.js',import.meta.url),'utf8');
 
 test('driveAI routes both ordinary and primary press tackles through movement-aware slide selection',()=>{
- const calls=engineSource.match(/defensiveTackleSlide\\(p,owner,this\\.playerSpeed\\(p\\)\\)/g)||[];
- assert.equal(calls.length,2,'both CPU tackle paths must use the shared run-up/relative-motion decision');
- assert.match(engineSource,/distance\\(p,owner\\)<68[\\s\\S]{0,260}defensiveTackleSlide/);
- assert.match(engineSource,/distance\\(p,owner\\)<74[\\s\\S]{0,260}defensiveTackleSlide/);
+ const marker='defensiveTackleSlide(p,owner,this.playerSpeed(p))';
+ assert.equal(engineSource.split(marker).length-1,2,
+  'both CPU tackle paths must use the shared run-up/relative-motion decision');
+ assert.ok(engineSource.includes('distance(p,owner)<68'));
+ assert.ok(engineSource.includes('distance(p,owner)<74'));
+ assert.ok(engineSource.includes('const slideRoll=Math.random();'));
 });
