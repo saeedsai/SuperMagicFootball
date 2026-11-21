@@ -288,14 +288,20 @@ function attackingSupportPass(players,team,carrier,supportRun){
    const arrivalSeconds=clampValue(range/1500,.10,.24);
    const available=defenders.filter(p=>p.stun==null||Number(p.stun)<=arrivalSeconds);
    if(SHOTFEEL.passingLanePressure(carrier,target,available)>=.12)continue;
-   let pocketBlocked=false;
+   let pocketBlocked=false,nearestMarkGap=Infinity;
    for(const defender of available){
     const futureX=defender.x+clampValue(movementVelocity(defender,'x')*arrivalSeconds,-55,55);
     const futureY=defender.y+clampValue(movementVelocity(defender,'y')*arrivalSeconds,-55,55);
-    if(Math.hypot(futureX-target.x,futureY-target.y)<74){pocketBlocked=true;break;}
+    const gap=Math.hypot(futureX-target.x,futureY-target.y);
+    nearestMarkGap=Math.min(nearestMarkGap,gap);
+    if(gap<74){pocketBlocked=true;break;}
    }
    if(pocketBlocked)continue;
-   const score=range+centerOffset*.35+Math.max(0,65-vx*dir)*.08;
+   // Among safe cutback options, prefer the runner with more separation at
+   // collection time. Keep this a bounded tiebreaker: distance and centrality
+   // still matter, and an unmarked defence adds no penalty.
+   const markingPenalty=Math.min(42,Math.max(0,190-nearestMarkGap)*.36);
+   const score=range+centerOffset*.35+Math.max(0,65-vx*dir)*.08+markingPenalty;
    if(!best||score<best.score-1e-9)best={runner,target,score};
   }
   return best?{runner:best.runner,target:best.target}:null;

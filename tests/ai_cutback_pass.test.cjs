@@ -190,3 +190,30 @@ test('driveAI offers cutbacks before through-ball/support fallbacks and after sh
  const pressure=source.indexOf('else if(p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass)');
  assert.ok(shot>=0&&early>shot&&pressure>early,'shooting remains first; safe unpressured cutbacks precede pressure-only passes');
 });
+
+test('AI prefers the least-marked central cutback runner on both attacking sides',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team);
+  const mirrorX=x=>team===0?x:1000-x;
+  const mirrorY=y=>team===0?y:680-y;
+  const secondRunner=f.game.players.find(p=>p.t===team&&p!==f.carrier&&p!==f.runner&&!p.keeper);
+  assert.ok(secondRunner,'fixture needs a second outfield receiver');
+  Object.assign(f.carrier,{x:mirrorX(760),y:mirrorY(110),down:false,stun:0,z:0,action:'idle',actionTimer:0});
+  Object.assign(f.runner,{x:mirrorX(700),y:mirrorY(300),moveVX:0,moveVY:0,down:false,stun:0,z:0,action:'idle',actionTimer:0,aiAssistTarget:null});
+  Object.assign(secondRunner,{x:mirrorX(620),y:mirrorY(260),moveVX:0,moveVY:0,down:false,stun:0,z:0,action:'idle',actionTimer:0,aiAssistTarget:null});
+  for(const p of f.game.players){
+   if(p.t===team&&!p.keeper&&p!==f.carrier&&p!==f.runner&&p!==secondRunner)p.down=true;
+   if(p.t!==team)p.down=true;
+  }
+  f.defender.down=true;
+  const unmarked=AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS);
+  assert.equal(unmarked?.runner,f.runner,
+   'without active pressure, the closer and more central runner should remain preferred');
+  Object.assign(f.defender,{x:mirrorX(700),y:mirrorY(380),down:false,stun:0,z:0,
+   action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+  const marked=AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS);
+  assert.equal(marked?.runner,secondRunner,
+   'a slightly farther but substantially less-marked runner should win the cutback');
+ }
+});

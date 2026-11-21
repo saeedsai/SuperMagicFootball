@@ -1,9 +1,11 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.149
+# SuperMagicFootball release/version policy — About-only 0.12.81.150
 
-**Dev candidate 0.12.81.149 (21 November 2026):** KEEPER-CUTBACK-LATERAL-LEAD-01: CPU goalkeepers now lead an active central cutback runner's lateral lane 120 ms ahead, capped at 18 world units, before applying the existing skill-scaled 58-unit shade. Stationary runners preserve the .148 behavior; ordinary shot-lane tracking, dive/save logic, four actions and saves are unchanged. Focused mirrored Node regression added; exact-head QA pending.
+**Dev candidate 0.12.81.150 (21 November 2026):** AI-CUTBACK-MARKING-READ-01: CPU carriers now prefer the least-marked eligible central runner for a byline cutback, adding a bounded penalty for projected defender separation under 190 units at collection time. Fully blocked pockets still reject; no-pressure distance/centrality ranking is unchanged. Mirrored focused Node regression added; exact-head QA pending.
 
-**Previous candidate 0.12.81.148 (21 November 2026):** AI-GOALKEEPER-CUTBACK-SHADING-01 adds bounded goalkeeper shading toward an active central runner behind a wide byline carrier. Full Regression Census #44881197126 failed only browser shard 0 because `tests/lan_auto_two_browser_qa.py` referenced undefined `home_before` in its final diagnostic print after gameplay assertions had passed. Fixed the test diagnostic in commit e7e7cf3; exact-head Census #44882179927 and Modular QA #44882179916 are in progress.
+**Previous candidate 0.12.81.148 (21 November 2026):** AI-GOALKEEPER-CUTBACK-SHADING-01 adds bounded goalkeeper shading toward an active central runner behind a wide byline carrier. Its test-only LAN diagnostic NameError was corrected in e7e7cf3; repaired exact-head Census #44882179927 and Modular QA #44882179916 both passed before .149 superseded it.
 
+
+**Main-promoted release 0.12.81.149 (21 November 2026):** KEEPER-CUTBACK-LATERAL-LEAD-01 passed exact-head Modular QA and all four Node/four Chromium Census shards. The existing QA-gated promotion moved main to .149; Pages deployment #44883191447, main Census #44883191761 and hosted-pages smoke passed.
 
 **Previous candidate 0.12.81.147 (21 November 2026):** AI-CUTBACK-GOALKEEPER-READ-01: CPU cutback safety now includes active opposing goalkeepers in projected flight and receiving-pocket checks, preventing a driven central pass into a keeper already positioned to claim it. Downed, recovering, high-airborne or too-late keepers remain non-blocking. Existing outfield defender checks, four actions, pass physics and saves are unchanged; exact-head QA pending. Focused Node regressions cover both attack directions, active keepers in the flight corridor and collection pocket, and downed/recovering/high-airborne/out-of-time keepers. Exact-head QA pending.
 
