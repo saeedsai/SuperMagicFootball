@@ -21,7 +21,7 @@ test('run-up slide reads an escaping carrier in either attacking direction',()=>
  }
 });
 
-test('a carrier moving into the tackler is met with a short poke, not a slide',()=>{
+test('a carrier not escaping while the defender closes is met with a short poke',()=>{
  const defender=player(0,1000,700,{moveVX:220,moveVY:0});
  const carrier=player(1,1060,700,{moveVX:0,moveVY:0});
  assert.equal(AI.defensiveTackleSlide(defender,carrier,250),false);
@@ -74,7 +74,7 @@ function liveFixture(team,carrierVX){
  carrier.cd=0;carrier.stun=0;carrier.invuln=0;carrier.down=false;carrier.z=0;carrier.dribbleHold=0;carrier.hideBallTimer=0;carrier.src.magicTrick=null;
  game.ball.owner=carrier;game.ball.x=carrier.x;game.ball.y=carrier.y;game.ball.z=0;
  game.ball.vx=carrier.moveVX;game.ball.vy=0;
- game.supernova=null;game.matchState='play';
+ game.supernova=null;game.magicWalls=[];game.events=[];game.matchState='play';
  return {game,defender,carrier};
 }
 function withZeroRandom(fn){
