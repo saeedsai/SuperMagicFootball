@@ -45,9 +45,9 @@ test('cover ignores mismatched receivers, unavailable runners and invalid return
  const run=()=>AI.defensiveGiveAndGoCoverTarget(0,f.carrier,f.players,bounds,1);
  f.runner.aiGiveAndGoRun.receiverId='another-receiver';assert.equal(run(),null);
  f.runner.aiGiveAndGoRun.receiverId=f.carrier.src.id;f.runner.down=true;assert.equal(run(),null);
- f.runner.down=false;f.runner.aiGiveAndGoRun.target={x:f.carrier.x-120,y:f.carrier.y};
+ f.runner.down=false;f.runner.aiGiveAndGoRun.target={x:f.carrier.x+120,y:f.carrier.y};
  assert.equal(run(),null,'a target behind the attacking direction is not a return pass');
- f.runner.aiGiveAndGoRun.target={x:f.carrier.x+500,y:f.carrier.y};
+ f.carrier.x=500;f.runner.aiGiveAndGoRun.target={x:120,y:f.carrier.y};
  assert.equal(run(),null,'an implausibly long return lane is ignored');
 });
 test('engine assigns the second defender to the return screen while the primary still presses',async()=>{
