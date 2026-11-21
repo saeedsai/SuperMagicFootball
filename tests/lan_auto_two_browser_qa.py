@@ -323,7 +323,7 @@ def main():
                 print("LAN_INPUT_OWNERSHIP_PASS",
                       f"away_dx={away_after['x']-away_before['x']:.1f}",
                       f"guest_replica_error={abs(away_after['x']-guest_away_after['x']):.1f}",
-                      f"home_dx={home_after['x']-home_before['x']:.1f}")
+                      f"home_dx={home_after['x']-host_before['home']['x']:.1f}")
                 print("LAN_INPUT_REFUSAL_RETRY_PASS",
                       f"sequence={retry['sequence']}", f"refused_frame={refused['frame']}",
                       f"retry_frame={retry['frame']}", "host_received_same_sequence_once=true")
