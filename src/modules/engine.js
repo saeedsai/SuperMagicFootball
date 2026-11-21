@@ -197,6 +197,48 @@ function predictedKeeperLane(keeper,ball,read=0){
  const reliability=clamp(.30+skill*.004+diving*.0015-level*.032-(erratic?.14:0)-(keeper.fatigue||0)*.10,.17,.79);
  return clamp(observed*(1-reliability)+clamp(projected.y,low,high)*reliability,low,high);
 }
+// When an opponent carries into a wide byline channel, shade a little toward an
+// active central runner positioned behind the carrier. This is only a bounded
+// positioning read: it does not trigger a dive, move the keeper off the goal line,
+// or replace the keeper's ordinary shot-lane prediction.
+function keeperCutbackReadLane(keeper,players,ball,baselineY){
+ if(!keeper?.keeper||!Array.isArray(players)||!ball?.owner||ball.owner.t===keeper.t)return baselineY;
+ const carrier=ball.owner;
+ if(carrier.keeper||carrier.down||Number(carrier.stun)>0||
+  !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y))return baselineY;
+ const ownGoalX=keeper.t===0?F.x:F.x+F.w;
+ const goalGap=Math.abs(carrier.x-ownGoalX);
+ if(goalGap<45||goalGap>360)return baselineY;
+ const centerY=F.y+F.h/2;
+ if(Math.abs(carrier.y-centerY)<F.h*.22)return baselineY;
+ const attackDir=keeper.t===0?-1:1;
+ const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+ const active=p=>p&&!p.down&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&
+  timerClear(p.stun)&&timerClear(p.slideTimer)&&timerClear(p.shotImpactKnockdownPending)&&
+  timerClear(p.shotImpactKnockdownTimer)&&timerClear(p.shotImpactRiseTimer)&&
+  (p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18))&&
+  !(p.action==='slide'&&(Number(p.actionTimer)||0)>0)&&
+  !(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)&&
+  p.action!=='shotDown'&&p.action!=='shotGetUp';
+ let best=null;
+ for(const runner of players){
+  if(!active(runner)||runner.t!==carrier.t||runner===carrier||runner.keeper)continue;
+  const behind=(runner.x-carrier.x)*attackDir;
+  const depth=Math.abs(runner.x-ownGoalX);
+  if(behind>-45||behind< -300||depth<80||depth>430||
+   Math.abs(runner.y-centerY)>F.h*.24)continue;
+  const vx=Number.isFinite(runner.moveVX)?runner.moveVX:
+   Number.isFinite(runner.vx)?runner.vx:0;
+  if(vx*attackDir< -100)continue;
+  const score=Math.abs(runner.y-centerY)*.7+Math.abs(behind+150)*.22+
+   Math.abs(depth-260)*.08;
+  if(!best||score<best.score)best={runner,score};
+ }
+ if(!best)return baselineY;
+ const skill=clamp(stat(keeper,'gkSkill'),0,100);
+ const shift=clamp((best.runner.y-baselineY)*(.12+skill*.0016),-58,58);
+ return clamp(baselineY+shift,WORLD.goalTop+15,WORLD.goalBottom-15);
+}
 // A keeper has less time to reach wide angles against very fast/super shots.
 // GK Skill and GK Diving extend reach; fatigue and shot velocity reduce it.
 // The calculation is deterministic so save-rate tests can compare equivalent shots.
@@ -2517,6 +2559,7 @@ class GameEngine{
     const side=t===0?F.x+34:F.x+F.w-34;
     tx=side;
     ty=predictedKeeperLane(p,b,ai.keeperRead);
+    ty=keeperCutbackReadLane(p,this.players,b,ty);
     if(!owner&&Math.abs(b.x-side)<175)tx=clamp(bx,side-35,side+35);
     if(owner===p&&p.cd<=0&&p.keeperHold>.95)this.distributeKeeper(p);
    }else if(owner===p){

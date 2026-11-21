@@ -79,6 +79,28 @@ def team_slot_position(page, team, slot):
     }""", {"team": team, "slot": slot})
 
 
+FIELD_MIDPOINT_X = 1280.4
+
+
+def move_toward_field_center(page, team, slot, seconds):
+    before = team_slot_position(page, team, slot)
+    if not before:
+        raise AssertionError(f"controlled player missing for team {team}, slot {slot}")
+    direction = -1 if before["x"] > FIELD_MIDPOINT_X else 1
+    key = "ArrowLeft" if direction < 0 else "ArrowRight"
+    page.keyboard.down(key)
+    time.sleep(seconds)
+    page.keyboard.up(key)
+    return {"slot": slot, "x": before["x"], "direction": direction}
+
+
+def wait_for_team_slot_movement(page, team, before, timeout=10000):
+    page.wait_for_function("""({team,slot,x,direction})=>{
+      const player=window.NekketsuHD.game.players.find(p=>p.t===team&&p.i===slot);
+      return !!player&&direction*(player.x-x)>5;
+    }""", arg={"team": team, **before}, timeout=timeout)
+
+
 def set_synthetic_ice_state(page, state):
     """Emit a short browser-observed ICE state transition without dropping packets."""
     return page.evaluate("""state=>{
@@ -214,15 +236,8 @@ def main():
                 assert len([packet for packet in accepted_jumps if packet["sequence"] == retry["sequence"]]) == 1, accepted_jumps
                 guest.keyboard.up("Space")
                 phase = 'verify first guest movement and replication'
-                away_before = team_slot_position(host, 1, guest_away_slot)
-                guest.keyboard.down("ArrowRight")
-                time.sleep(.7)
-                guest.keyboard.up("ArrowRight")
-                host.wait_for_function("""(before)=>{
-                  const game=window.NekketsuHD.game;
-                  const player=game.players.find(p=>p.t===1&&p.i===before.slot);
-                  return !!player&&player.x>before.away.x+5;
-                }""", arg={"slot": guest_away_slot, "away": away_before}, timeout=10000)
+                away_before = move_toward_field_center(guest, 1, guest_away_slot, .7)
+                wait_for_team_slot_movement(host, 1, away_before)
                 host_sync_target = player_positions(host)
                 host_sync_target["away"]["i"] = guest_away_slot
                 host_sync_target["away"].update(team_slot_position(host, 1, guest_away_slot))
@@ -237,7 +252,7 @@ def main():
                 away_after = team_slot_position(host, 1, guest_away_slot)
                 guest_away_after = team_slot_position(guest, 1, guest_away_slot)
                 home_after = team_slot_position(host, 0, host_home_slot)
-                assert away_after["x"] > away_before["x"] + 5, (away_before, away_after)
+                assert away_before["direction"] * (away_after["x"] - away_before["x"]) > 5, (away_before, away_after)
                 # The host-side CPU may reposition while guest input moves the away side.
                 # Cross-peer home-state equality below verifies authoritative replication;
                 # an arbitrary movement cap incorrectly treats normal AI movement as guest control.
@@ -273,14 +288,8 @@ def main():
                 host.wait_for_function("window.NekketsuHD.game.clock > 0.2", timeout=10000)
                 guest.wait_for_function("window.NekketsuHD.game.clock > 0.2", timeout=10000)
                 phase = 'verify guest movement after ICE recovery'
-                resumed_before = team_slot_position(host, 1, guest_away_slot)
-                guest.keyboard.down("ArrowRight")
-                time.sleep(.7)
-                guest.keyboard.up("ArrowRight")
-                host.wait_for_function("""(before)=>{
-                  const player=window.NekketsuHD.game.players.find(p=>p.t===1&&p.i===before.slot);
-                  return !!player&&player.x>before.x+5;
-                }""", arg={"slot": guest_away_slot, "x": resumed_before["x"]}, timeout=10000)
+                resumed_before = move_toward_field_center(guest, 1, guest_away_slot, .7)
+                wait_for_team_slot_movement(host, 1, resumed_before)
                 resumed_host = team_slot_position(host, 1, guest_away_slot)
                 guest.wait_for_function("""(target)=>{
                   const player=window.NekketsuHD.game.players.find(p=>p.t===1&&p.i===target.slot);
@@ -300,14 +309,8 @@ def main():
                     assert transport["connection"] == "connected", transport
                     assert transport["ice"] in ("connected", "completed"), transport
                     assert peer_page.evaluate("window.NekketsuHD.game.matchState") == "play"
-                brokerless_before = team_slot_position(host, 1, guest_away_slot)
-                guest.keyboard.down("ArrowRight")
-                time.sleep(.45)
-                guest.keyboard.up("ArrowRight")
-                host.wait_for_function("""(before)=>{
-                  const player=window.NekketsuHD.game.players.find(p=>p.t===1&&p.i===before.slot);
-                  return !!player&&player.x>before.x+5;
-                }""", arg={"slot": guest_away_slot, "x": brokerless_before["x"]}, timeout=10000)
+                brokerless_before = move_toward_field_center(guest, 1, guest_away_slot, .45)
+                wait_for_team_slot_movement(host, 1, brokerless_before)
                 brokerless_host = team_slot_position(host, 1, guest_away_slot)
                 guest.wait_for_function("""(target)=>{
                   const player=window.NekketsuHD.game.players.find(p=>p.t===1&&p.i===target.slot);
