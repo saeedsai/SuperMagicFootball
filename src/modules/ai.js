@@ -182,6 +182,7 @@ function attackingSupportPass(players,team,carrier,supportRun){
   if(!runner||!point||!players.includes(runner)||runner===carrier||runner.t!==team||runner.keeper||
    !Number.isFinite(runner.x)||!Number.isFinite(runner.y)||
    !Number.isFinite(point.x)||!Number.isFinite(point.y))return null;
+  const clampValue=(value,min,max)=>Math.max(min,Math.min(max,value));
   const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
   const grounded=p=>p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18);
   const ready=p=>p&&!p.down&&timerClear(p.stun)&&timerClear(p.slideTimer)&&
@@ -205,11 +206,11 @@ function attackingSupportPass(players,team,carrier,supportRun){
   const vx=movementVelocity(runner,'x'),vy=movementVelocity(runner,'y');
   const runSpeed=(vx*dx+vy*dy)/gap;
   if(!Number.isFinite(runSpeed)||runSpeed<110||vx*dir<65)return null;
-  const leadDistance=clamp(Math.min(gap-16,runSpeed*.28),48,100);
+  const leadDistance=clampValue(Math.min(gap-16,runSpeed*.28),48,100);
   const target={x:runner.x+dx/gap*leadDistance,y:runner.y+dy/gap*leadDistance};
   const passDistance=Math.hypot(target.x-carrier.x,target.y-carrier.y);
   if(passDistance<110||passDistance>920)return null;
-  const arrivalSeconds=clamp(passDistance/1400,.12,.35);
+  const arrivalSeconds=clampValue(passDistance/1400,.12,.35);
   const defenders=[];
   for(const defender of players){
    if(!defender||defender.t===team||!Number.isFinite(defender.x)||!Number.isFinite(defender.y))continue;
@@ -223,8 +224,8 @@ function attackingSupportPass(players,team,carrier,supportRun){
   }
   if(SHOTFEEL.passingLanePressure(carrier,target,defenders)>=.10)return null;
   for(const defender of defenders){
-   const futureX=defender.x+clamp(movementVelocity(defender,'x')*arrivalSeconds,-65,65);
-   const futureY=defender.y+clamp(movementVelocity(defender,'y')*arrivalSeconds,-65,65);
+   const futureX=defender.x+clampValue(movementVelocity(defender,'x')*arrivalSeconds,-65,65);
+   const futureY=defender.y+clampValue(movementVelocity(defender,'y')*arrivalSeconds,-65,65);
    if(Math.hypot(futureX-target.x,futureY-target.y)<84)return null;
   }
   return {runner,target};

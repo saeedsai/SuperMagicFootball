@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.142
+# SuperMagicFootball release/version policy — About-only 0.12.81.143
 
-**Dev candidate 0.12.81.142 (21 November 2026):** AI-SUPPORT-THROUGH-BALL-01 repair: the early through-ball decision now owns its bounded moveVX/moveVY compatibility reader locally, preventing a missing-helper runtime error in every AI drive loop. The four new focused cases now exercise actual world velocity, mirrored direction, lane interception and reception-pocket rejection. Gameplay intent and bounds unchanged; exact-head QA pending.
+**Dev candidate 0.12.81.143 (21 November 2026):** AI-SUPPORT-THROUGH-BALL-01 scope repair: the early through-ball helper now owns both its bounded movement-velocity reader and numeric clamp locally; this removes two helper-scope dependencies that were absent from ai.js module scope. The lead remains 48–100 units, follows actual moveVX/moveVY, mirrors by attack direction, and yields to projected lane or reception-pocket pressure. .141's first Census preflight exposed seven movementVelocity ReferenceErrors; .142 added that reader, and source review caught the remaining clamp dependency before its exact-head result. .143 is the corrected candidate; exact-head QA pending.
+
+**Previous candidate 0.12.81.142 (21 November 2026):** AI-SUPPORT-THROUGH-BALL-01 repair candidate: added a local moveVX/moveVY compatibility reader after .141's first Census preflight exposed seven movementVelocity ReferenceErrors. Source review then found clamp was also not in ai.js module scope; that dependency is fixed in .143. .142 not promoted.
 
 **Previous candidate 0.12.81.141 (21 November 2026):** AI-SUPPORT-THROUGH-BALL-01 initial candidate: CPU carriers lead an accelerating support runner into space ahead of the diagonal lane with a bounded 48–100-unit lead. Its first exact-head Census preflight exposed a missing local movementVelocity helper: four new through-ball tests plus three existing AI runtime tests failed with ReferenceError. Fixed in .142; .141 was not promoted.
 
