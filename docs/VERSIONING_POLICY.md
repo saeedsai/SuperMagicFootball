@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.153
+# SuperMagicFootball release/version policy — About-only 0.12.81.154
 
-**Dev candidate 0.12.81.153 (21 November 2026):** AI-TACKLE-RUNUP-READ-01: CPU defenders reserve the existing SHOOT slide for a running approach against a carrier escaping ahead or cutting laterally across the lane; a carrier moving into the defender is met with the shorter PASS poke. Difficulty-scaled tackle-attempt and slide-roll probabilities, physical reach, four actions and saves are unchanged. Mirrored helper and live driveAI regressions added; exact-head QA pending.
+**Dev candidate 0.12.81.154 (21 November 2026):** MAGIC-HAZARD-CPU-SHOOT-SWEEP-01: A grounded CPU defender uses the existing SHOOT slide to clear an armed enemy Banana Peel or Ice Patch only when the trap lies directly ahead, no opponent would be auto-targeted, no teammate is already sweeping it, and the defender is not carrying the ball. Otherwise reaction-aware avoidance remains. Normal slide cost, hazard rules, four controls and saves unchanged; focused Node regressions added, exact-head QA pending.
+
+**Main-promoted release 0.12.81.153 (21 November 2026):** AI-TACKLE-RUNUP-READ-01 passed exact-head Modular QA #44898271503, all four Node/four Chromium dev Census shards #44898271479, QA-gated promotion, Pages deployment #44899003224 and independent main Census/hosted-pages smoke #44899003446.
 
 **Main-promoted release 0.12.81.152 (21 November 2026):** AI-DEFENSIVE-CUTBACK-RUNNER-SCREEN-01 passed exact-head Modular QA, all four Node/four Chromium dev Census shards, QA-gated promotion, Pages deployment #44895492408 and independent main Census/hosted-pages smoke #44895492736.
 

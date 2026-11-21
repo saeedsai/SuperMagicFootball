@@ -1471,6 +1471,38 @@ class GameEngine{
    if(p.aiHazardReaction>1e-9)return false;
    p.aiHazardEvading=true;
   }
+  // Clear a trap in the running lane with the existing grounded SHOOT slide.
+  // Avoid committing while carrying, when an opponent would be auto-targeted,
+  // or when a teammate is already sweeping the same trap.
+  const moveX=Number.isFinite(p.dx)?p.dx:0,moveY=Number.isFinite(p.dy)?p.dy:0;
+  const moveLength=Math.hypot(moveX,moveY);
+  const heading=moveLength>.15?{x:moveX/moveLength,y:moveY/moveLength}:
+   {x:p.face===-1?-1:1,y:0};
+  const hazardDX=hazard.h.x-p.x,hazardDY=hazard.h.y-p.y;
+  const ahead=hazardDX*heading.x+hazardDY*heading.y;
+  const across=Math.abs(hazardDX*heading.y-hazardDY*heading.x);
+  const opponentsInSlideArc=(this.players||[]).some(q=>{
+   if(!q||q===p||q.t===p.t||q.keeper||q.stun>0||q.invuln>0||
+    q.action==='shotDown'||q.action==='shotGetUp'||
+    (Number.isFinite(q.z)&&q.z>=20)||!Number.isFinite(q.x)||!Number.isFinite(q.y))return false;
+   const ox=q.x-p.x,oy=q.y-p.y,range=Math.hypot(ox,oy);
+   return range>0&&range<280&&(ox*heading.x+oy*heading.y)/range>=.25;
+  });
+  const teammateSweeping=(this.players||[]).some(q=>q&&q!==p&&q.t===p.t&&!q.keeper&&
+   q.stun<=0&&q.action==='slide'&&Number(q.actionTimer)>0&&
+   !(Number.isFinite(q.z)&&q.z>=20)&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&
+   Math.hypot(q.x-hazard.h.x,q.y-hazard.h.y)<=hazard.radius+48);
+  const canSweep=hazard.d<=hazard.radius+48&&ahead>0&&across<=hazard.radius+8&&
+   this.ball?.owner!==p&&Number(p.cd||0)<=0&&Number(p.stun||0)<=0&&
+   (Number(p.fatigue)||0)<.94&&p.action!=='jump'&&p.action!=='hurt'&&
+   p.action!=='shotDown'&&p.action!=='shotGetUp'&&
+   !opponentsInSlideArc&&!teammateSweeping;
+  if(canSweep){
+   // Preserve near-vertical slide direction despite tackle()'s facing fallback.
+   p.dx=heading.x||((p.face===-1)?-.001:.001);p.dy=heading.y;
+   if(Math.abs(heading.x)>.05)p.face=heading.x>0?1:-1;
+   if(this.tackle(p,true)){p.aiHazardEvading=false;p.aiHazardReaction=Infinity;return true;}
+  }
   const away=norm(p.x-hazard.h.x||(p.t===0?-1:1),p.y-hazard.h.y);
   const speed=this.playerSpeed(p)*aiTuning(this.cpuLevel(p)).speed*(p.jumpHold>.12?1.37:1);
   this.moveAgile(p,away.x,away.y,speed,Math.max(0,dt||0));

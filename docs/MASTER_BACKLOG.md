@@ -1,4 +1,6 @@
-**2026-11-21 0.12.81.153 candidate — AI-TACKLE-RUNUP-READ-01:** CPU defenders reserve the existing SHOOT slide for a running approach against a carrier escaping ahead or cutting laterally across the lane; a carrier moving into the defender is met with the shorter PASS poke. Difficulty-scaled tackle-attempt and slide-roll probabilities, physical reach, four actions and saves remain unchanged. Mirrored helper and live driveAI regressions added; exact-head QA pending.
+**2026-11-21 0.12.81.154 candidate — MAGIC-HAZARD-CPU-SHOOT-SWEEP-01:** A grounded CPU defender can clear an armed enemy Banana Peel or Ice Patch with the existing SHOOT slide when the trap is directly ahead, the defender is not carrying the ball, no opponent would be auto-targeted and no teammate is already sweeping. Otherwise reaction-aware avoidance remains. Normal slide cost, hazard arming/lifetime, four actions and saves unchanged. Three focused Node regressions added; exact-head QA pending.
+
+**2026-11-21 0.12.81.153 main-promoted release — AI-TACKLE-RUNUP-READ-01:** Exact-head Modular QA #44898271503, all four Node/four Chromium dev Census shards #44898271479, QA-gated promotion, Pages deployment #44899003224 and independent main Census/hosted-pages smoke #44899003446 passed.
 
 **2026-11-21 0.12.81.152 main-promoted release — AI-DEFENSIVE-CUTBACK-RUNNER-SCREEN-01:** Exact-head Modular QA, all four Node/four Chromium dev Census shards, QA-gated promotion, Pages deployment #44895492408 and independent main Census/hosted-pages smoke #44895492736 passed.
 

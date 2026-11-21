@@ -6,17 +6,17 @@
 Deliver player-facing gameplay and existing-player presentation while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- .153 AI-TACKLE-RUNUP-READ-01: CPU defenders reserve the existing SHOOT slide for a running approach against an escaping or laterally crossing carrier; otherwise they use the shorter PASS poke.
-- Focused tests cover mirrored pursuit, lateral crossing, standing/close/ineligible fallbacks and source wiring for both driveAI tackle paths. The source contract now reads the engine via a CommonJS-compatible root-relative path.
+- .154 MAGIC-HAZARD-CPU-SHOOT-SWEEP-01: a grounded CPU defender can use the existing SHOOT slide to clear an armed enemy Banana Peel or Ice Patch directly in its path when not carrying, no opponent would be auto-targeted, and no teammate is already sweeping. Otherwise the existing reaction-aware avoidance remains.
+- Focused tests cover both trap types and teams, reaction timing, actual hazard disarming, ball-carrying, opponent-in-arc and teammate-sweep fallbacks.
 
 ## Next smallest action
-Run .153 focused Node regression, Modular QA and exact-head Full Regression Census (four Node + four Chromium shards). Fix confirmed failures, then continue with a distinct unblocked product increment.
+Run the focused magic_hazard_ai_avoidance Node regressions, Modular QA and exact-head Full Regression Census (four Node + four Chromium shards). Fix confirmed failures, then continue with a distinct unblocked gameplay or existing-player graphics increment.
 
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private checkpoints. Preserve four actions, 223 teams, 2,676 players, six formations, saves and offline/PWA behavior.
 
 ## Evidence
-Parent dev/main before .153: e58a8d999e1ffbdc082f10bfc29bd3701b4822fa. .152 Modular QA #44894786558, dev Census #44894786561 (all eight shards; promotion succeeded), Pages deployment #44895492408 and main Census/hosted smoke #44895492736 passed. .153 preflight #44897612432, #44897810682, #44897949299 and #44898168467; Modular QA #44897612479, #44897810756, #44897949365 and #44898066093 each failed only in the evolving focused test fixture. The direct movement-helper cases passed. Main protection #87 remains unresolved; #48 and Render drift #86 remain open.
+Parent dev/main .153: 550168c8ba2f56dff9c51b45e18029c0bdd6ffdd. .153 Modular QA #44898271503, dev Census #44898271479 (all four Node and four Chromium shards; promotion succeeded), Pages deployment #44899003224 and main Census/hosted-pages smoke #44899003446 passed. .154 focused and exact-head gates pending. Main protection #87 remains unresolved; #48 and Render drift #86 remain open.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; promote only through the existing QA-gated main pipeline.
