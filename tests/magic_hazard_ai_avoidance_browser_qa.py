@@ -25,18 +25,26 @@ with sync_playwright() as pw:
     const cpu=roster.find(p=>p.t===side&&!p.keeper),radius=kind==='ice'?35:27;
     Object.assign(cpu,{t:side,x:500+radius+5,y:500,z:0,stun:0,action:'run',actionTimer:0,jumpHold:0,
      aiHazardKey:null,aiHazardReaction:0,aiHazardEvading:false});
-    g.magicHazards=[{kind,team:1-side,x:500,y:500,life:2.5,arm:0}];let frames=0;
-    while(Math.hypot(cpu.x-500,cpu.y-500)<radius+12&&g.magicHazards[0].life>0&&frames<hz*2.5){
-     g.magicHazards[0].life-=1/hz;g.reactToMagicHazard(cpu,1/hz,.18);frames++;
+    const hazard={kind,team:1-side,x:500,y:500,life:2.5,arm:0};
+    g.magicHazards=[hazard];g.events=[];let frames=0;
+    while(g.magicHazards.includes(hazard)&&Math.hypot(cpu.x-500,cpu.y-500)<radius+12&&
+          hazard.life>0&&frames<hz*2.5){
+     g.reactToMagicHazard(cpu,1/hz,.18);
+     // Exercise the real post-movement production phase that disarms a SHOOT slide.
+     g.updateMagicHazards(1/hz);
+     frames++;
     }
-    cases.push({kind,side,hz,frames,distance:Math.hypot(cpu.x-500,cpu.y-500),life:g.magicHazards[0].life});
+    const distance=Math.hypot(cpu.x-500,cpu.y-500);
+    const disarmed=g.events.some(e=>e.type==='magicHazardDisarmed'&&e.trick===kind&&e.team===side);
+    cases.push({kind,side,hz,frames,distance,life:hazard.life,disarmed,escaped:distance>=radius+12,active:g.magicHazards.includes(hazard)});
    }
    return {cases,actionButtons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }''')
   assert len(result['cases'])==12,(label,result)
   for case in result['cases']:
    radius=35 if case['kind']=='ice' else 27
-   assert case['distance']>=radius+12 and case['life']>0,(label,'CPU failed to clear an active trap',case)
+   assert (case['escaped'] or case['disarmed']) and case['life']>0,(label,'CPU neither escaped nor disarmed the active trap',case)
+   assert case['active'] != case['disarmed'],(label,'hazard removal must match the disarm event',case)
   assert result['actionButtons']==4,(label,'four-button grammar changed',result)
   assert not errors,(label,errors)
   print('MAGIC_HAZARD_AI_AVOIDANCE_BROWSER_PASS',label,result,flush=True)

@@ -15,8 +15,9 @@ with sync_playwright() as pw:
   p.wait_for_function("!!window.SupermagicFootball?.game")
   open_quick(p);p.locator('[data-action="kickoff"]').first.click()
   p.evaluate('''()=>{const sf=SupermagicFootball,g=sf.game,p=g.player(0,2),q=g.player(1,2);
-   g.matchState='paused';g.cooldown=0;g.controlled[0]=2;g.driveAI=()=>{};
+   g.matchState='paused';g.cooldown=0;g.controlled[0]=2;g.driveAI=()=>{};g.magicHazards=[];
    g.ball.owner=q;q.x=1450;q.y=710;p.x=1380;p.y=710;p.cd=0;p.stun=0;p.fatigue=0;p.z=0;p.vz=0;p.abilityCd=0;
+   p.action='idle';p.actionTimer=0;p.slideTimer=0;p.slideRemaining=0;
    g.input.reset();}''')
   if mobile:
    cdp=c.new_cdp_session(p)

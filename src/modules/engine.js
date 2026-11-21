@@ -306,6 +306,17 @@ function keeperDiveRecoverySeconds(keeper){
  const fatigue=clamp(keeper?.fatigue||0,0,1);
  return keeperDiveCooldown(skill,diving,fatigue,PHYSICS_TUNING);
 }
+// A parried shot leaves the keeper exposed to a follow-up. Better GK Skill and
+// Diving shorten the scramble, while fatigue reduces the benefit. Never allow a
+// second dive before the existing dive plus the 340 ms get-up pose has completed.
+function keeperParryRecoverySeconds(keeper){
+ const skill=clamp(stat(keeper,'gkSkill'),0,100);
+ const diving=clamp(stat(keeper,'gkDiving'),0,100);
+ const fatigue=clamp(Number.isFinite(keeper?.fatigue)?keeper.fatigue:0,0,1);
+ const reduction=clamp(.12+skill*.0009+diving*.0009-fatigue*.08,.12,.30);
+ return Math.max(keeperDiveAnimationSeconds(keeper)+.34+.06,
+  keeperDiveRecoverySeconds(keeper)-reduction);
+}
 // Lower is safer. Nearby active defenders can intercept the first touch;
  // knocked-down, stunned and high-airborne defenders cannot contest it.
 // A strong dive that cannot hold the ball should parry toward the clearer side.
@@ -903,7 +914,7 @@ class GameEngine{
   const force=Math.hypot(b.vx,b.vy)/50+(b.power||0),saveQuality=24+skill*.55+diving*.28;
   // Even a strong shot can be deflected; high-quality keepers catch slower shots.
   if(force<saveQuality*.62){this.keeperCollect(p,'dive');this.emit('save',{player:p,saveType:'dive'});}
-  else {b.owner=null;b.shot=null;b.strike=null;b.ordinaryShot=false;b.vx=sign*(290+skill*4.1);b.vy=keeperParrySide(p,this.players,dy)*(115+Math.abs(dy)*4);b.vz=150+diving*.6;b.power=0;b.attacker=p.t;b.lastTouchTeam=p.t;b.age=0;b.trail=[];b.canCollect=.32;this.emit('save',{player:p,saveType:'dive',deflected:true});}
+  else {p.diveCooldown=keeperParryRecoverySeconds(p);b.owner=null;b.shot=null;b.strike=null;b.ordinaryShot=false;b.vx=sign*(290+skill*4.1);b.vy=keeperParrySide(p,this.players,dy)*(115+Math.abs(dy)*4);b.vz=150+diving*.6;b.power=0;b.attacker=p.t;b.lastTouchTeam=p.t;b.age=0;b.trail=[];b.canCollect=.32;this.emit('save',{player:p,saveType:'dive',deflected:true});}
   this.spendStamina(p,'keeperDive');this.burst(p.x,p.y,'#ccf9ff',16);
   this.emit('keeperDive',{team:p.t,player:p.src.name,manual});return true;
  }

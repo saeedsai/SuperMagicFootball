@@ -1,6 +1,7 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.154
+# SuperMagicFootball release/version policy — About-only 0.12.81.155
 
-**Dev candidate 0.12.81.154 (21 November 2026):** MAGIC-HAZARD-CPU-SHOOT-SWEEP-01: A grounded CPU defender uses the existing SHOOT slide to clear an armed enemy Banana Peel or Ice Patch only when the trap lies directly ahead, no opponent would be auto-targeted, no teammate is already sweeping it, and the defender is not carrying the ball. Otherwise reaction-aware avoidance remains. Normal slide cost, hazard rules, four controls and saves unchanged; focused Node regressions added, exact-head QA pending.
+**Dev candidate 0.12.81.155 (21 November 2026):** KEEPER-PARRY-SCRAMBLE-01: A successful goalkeeper parry shortens the next-dive cooldown by a bounded 0.12–0.30 seconds scaled by GK Skill, GK Diving and fatigue, never below the existing dive plus get-up animation. Clean catches retain full recovery; contact reach, ball physics, four controls and saves unchanged. Focused mirrored Node regression added; exact-head QA pending.
+**Previous candidate 0.12.81.154 (21 November 2026):** MAGIC-HAZARD-CPU-SHOOT-SWEEP-01: Full Regression Census #44902687541 passed preflight, all four Node shards and preview, but browser shards 0 and 1 failed two fixture assumptions. The ability test now isolates hazards/transient action state; the hazard browser test now exercises the production post-movement disarm resolver. .154 was not promoted; fixes are in .155.
 
 **Main-promoted release 0.12.81.153 (21 November 2026):** AI-TACKLE-RUNUP-READ-01 passed exact-head Modular QA #44898271503, all four Node/four Chromium dev Census shards #44898271479, QA-gated promotion, Pages deployment #44899003224 and independent main Census/hosted-pages smoke #44899003446.
 
