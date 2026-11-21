@@ -3,21 +3,24 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 
 async function loadEngine(){
- const {loadAssetsFromNode}=await import('../src/assets.js');
+ const {loadAssetsFromNode,GAME_ASSETS}=await import('../src/assets.js');
  await loadAssetsFromNode();
  const {ENGINE}=await import('../src/modules/engine.js');
- return ENGINE;
+ return {ENGINE,field:GAME_ASSETS.mechanics.world.field};
 }
 
-function fixture(ENGINE,keeperTeam=0){
+function fixture(ENGINE,field,keeperTeam=0){
  const game=new ENGINE.GameEngine({halfSeconds:120});
  game.init({home:0,away:1,mode:'quick',humans:0});
  const keeper=game.players.find(p=>p.t===keeperTeam&&p.keeper);
  const attackingTeam=1-keeperTeam,attackDir=keeperTeam===0?-1:1;
+ const ownGoalX=keeperTeam===0?field.x:field.x+field.w;
+ const centerY=field.y+field.h/2;
  const carrier=game.players.find(p=>p.t===attackingTeam&&p.i===3);
  const runner=game.players.find(p=>p.t===attackingTeam&&p.i===4);
- const centerY=game.ball.y;
- carrier.x=keeper.x-attackDir*180;carrier.y=centerY-300;
+ keeper.x=ownGoalX+(keeperTeam===0?34:-34);keeper.y=centerY;
+ keeper.homeX=keeper.x;keeper.homeY=keeper.y;
+ carrier.x=ownGoalX-attackDir*220;carrier.y=centerY-300;
  carrier.stun=0;carrier.down=false;carrier.z=0;carrier.action='idle';carrier.actionTimer=0;
  runner.x=carrier.x-attackDir*150;runner.y=centerY+40;
  runner.moveVX=attackDir*70;runner.moveVY=0;
@@ -41,11 +44,11 @@ function targetY(f){
 }
 
 test('goalkeeper shades toward an active central cutback runner on both attacking sides',async()=>{
- const ENGINE=await loadEngine();
+ const {ENGINE,field}=await loadEngine();
  for(const keeperTeam of [0,1]){
-  const base=fixture(ENGINE,keeperTeam);base.runner.down=true;
+  const base=fixture(ENGINE,field,keeperTeam);base.runner.down=true;
   const baseline=targetY(base);
-  const threat=fixture(ENGINE,keeperTeam);
+  const threat=fixture(ENGINE,field,keeperTeam);
   const adjusted=targetY(threat),delta=adjusted-baseline;
   assert.ok(delta*(threat.runner.y-baseline)>0,
    'keeper should shade toward the central runner instead of tracking only the wide carrier');
@@ -55,7 +58,7 @@ test('goalkeeper shades toward an active central cutback runner on both attackin
 });
 
 test('keeper retains its ordinary lane for central or distant carriers and unavailable or off-lane runners',async()=>{
- const ENGINE=await loadEngine();
+ const {ENGINE,field}=await loadEngine();
  const cases=[
   f=>{f.carrier.y=f.centerY-40;},
   f=>{f.carrier.x=f.keeper.x-f.attackDir*520;},
@@ -65,9 +68,9 @@ test('keeper retains its ordinary lane for central or distant carriers and unava
  ];
  for(const keeperTeam of [0,1]){
   for(const configure of cases){
-   const baselineFixture=fixture(ENGINE,keeperTeam);configure(baselineFixture);baselineFixture.runner.down=true;
+   const baselineFixture=fixture(ENGINE,field,keeperTeam);configure(baselineFixture);baselineFixture.runner.down=true;
    const baseline=targetY(baselineFixture);
-   const candidate=fixture(ENGINE,keeperTeam);configure(candidate);
+   const candidate=fixture(ENGINE,field,keeperTeam);configure(candidate);
    assert.equal(targetY(candidate),baseline,
     'without a central active runner behind a wide byline carrier, keeper must keep its normal lane');
   }
