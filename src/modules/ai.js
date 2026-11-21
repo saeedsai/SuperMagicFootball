@@ -796,7 +796,8 @@ function attackingFirstTouchEscape(players,team,carrier,bounds,horizonSeconds=.1
  // outfield players or an opponent who can reach the landing pocket first.
  function keeperParryReboundTarget(keeper,ball,players,bounds,now=0,rebound=null){
   if(!keeper?.keeper||keeper.down||Number(keeper.stun)>0||Number(keeper.z)>18||
-   ['keeperDive','keeperDiveCatch','keeperRecover','keeperHold','shotDown','shotGetUp','hurt'].includes(keeper.action)||
+   (keeper.action==='keeperDive'&&(keeper.diveIntentPending||!Number.isFinite(keeper.diveElapsed)||keeper.diveElapsed<.22))||
+   ['keeperDiveCatch','keeperRecover','keeperHold','shotDown','shotGetUp','hurt'].includes(keeper.action)||
    !ball||ball.owner||ball.attacker!==keeper.t||ball.lastTouchTeam!==keeper.t||
    ball.shot||ball.strike||ball.ordinaryShot||ball.pass||
    !Array.isArray(players)||!players.includes(keeper)||
