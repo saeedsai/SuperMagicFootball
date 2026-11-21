@@ -707,9 +707,9 @@ class GameEngine{
   }else if(preferredValid){
    target=preferred;
    if(preferredPoint){
-    // A through ball leads a committed support runner into the open lane ahead,
-    // rather than aiming at the runner's current feet.
-    aimX=preferredPoint.x-p.x+ex;aimY=preferredPoint.y-p.y+ey;kind=opts.goalmouth===true?'goalmouth':opts.cutback===true?'cutback':'throughBall';
+    // Through balls and goalmouth square passes aim at an explicit bounded
+    // receiving point instead of relying on the ordinary support-run lead.
+    aimX=preferredPoint.x-p.x+ex;aimY=preferredPoint.y-p.y+ey;kind=opts.cutback===true?'cutback':'throughBall';if(opts.goalmouth===true)kind='goalmouth';
    }else{
     kind='supportRun';
     const leadSeconds=clamp(distance(p,target)/1400,.12,.35);
