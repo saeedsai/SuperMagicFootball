@@ -6,8 +6,9 @@
 Deliver player-facing gameplay, existing-player presentation and quality improvements while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- .136 AI-SUPPORT-RUN-INTERCEPT-01: support-run PASS preference now reuses the existing bounded, time-aware directed-pass lane predictor, yielding when a grounded active defender is projected to close the corridor; defenders moving away or with invalid velocity remain neutral. Unsafe preference falls back to normal AI receiver ranking. Pass physics/four actions/saves unchanged.
-- .135 AI-SUPPORT-RUN-PASS-01: exact-head Full Regression Census passed preflight, preview smoke, all four Node and all four Chromium shards; Modular QA passed; promote-dev-to-main job passed. `main` and `dev` both equal `dc2c4a517cf1cb11eb823ea050b3358e0591b9af`. Pages deployment and hosted-byte smoke not independently verified; .134 remains latest Pages-verified release.
+- .136 AI-SUPPORT-RUN-INTERCEPT-01: support-run PASS preference reuses the existing bounded, time-aware directed-pass lane predictor, yielding when an active grounded defender is projected to close the corridor; defenders moving away or with invalid velocity remain neutral. Unsafe preference falls back to normal AI receiver ranking. Pass physics/four actions/saves unchanged.
+- Current dev head: `c8927985ce83fe0a43cdcc3e00a0724337defefb`; main head: `dc2c4a517cf1cb11eb823ea050b3358e0591b9af` (dev 12 commits ahead, 0 behind).
+- .135 passed exact-head Full Regression Census (all four Node and four Chromium shards), Modular QA and the QA-gated promotion job; main advanced to .135. Pages deployment/hosted-byte smoke for .135 not independently verified; .134 remains latest Pages-verified release.
 - Main protection #87, Render drift #86 and physical two-phone acceptance #48 remain open.
 
 ## Next smallest action
