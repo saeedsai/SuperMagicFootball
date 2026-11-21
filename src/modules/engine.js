@@ -2607,7 +2607,7 @@ class GameEngine{
    if(this.reactToWeatherLightning(p,dt,ai.reaction))return;
    if(this.reactToTornado(p,dt,ai.reaction))return;
    if(this.reactToMagicHazard(p,dt,ai.reaction))return;
-// Only the goalkeeper that made the parry may sweep a short distance for
+   // Only the goalkeeper that made the parry may sweep a short distance for
    // its descending rebound. WeakMap metadata never enters saves or snapshots.
    const parryTarget=p.keeper&&!concealed&&!liveOwner?
     keeperParryReboundTarget(p,liveBall,this.players,
