@@ -2526,7 +2526,7 @@ class GameEngine{
   const pressing=(!owner||owner.t!==t)?defensivePressers(this.players,t,owner||b,
    this.inControl(t)?this.controlledPlayer(t):null):null;
   const defensiveCutbackCover=owner&&owner.t!==t?defensiveCutbackCoverTarget(t,owner,
-   {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24}):null;
+   {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},this.players):null;
   const styleSpeed=t===1?(aiStyle==='Aggressive'?1.09:aiStyle==='Defensive'?.96:1):1;
   if(p.keeper&&owner===p){
    p.keeperHold=(p.keeperHold||0)+dt;

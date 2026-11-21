@@ -53,7 +53,7 @@ function defensivePressers(players,team,target,humanControlled=null){
 // defender for the central cutback lane instead of mirroring the primary press.
 // The point stays behind the carrier in the opponent's attack direction and
 // moves a bounded portion of the way toward the pitch centre.
-function defensiveCutbackCoverTarget(team,carrier,bounds){
+function defensiveCutbackCoverTarget(team,carrier,bounds,players=null){
  if((team!==0&&team!==1)||!carrier||carrier.t!==1-team||carrier.keeper||
   !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y)||!bounds||typeof bounds!=='object')return null;
  const xMin=Number(bounds.xMin),xMax=Number(bounds.xMax),yMin=Number(bounds.yMin),yMax=Number(bounds.yMax);
@@ -66,6 +66,49 @@ function defensiveCutbackCoverTarget(team,carrier,bounds){
   (Number.isFinite(carrier.z)&&carrier.z>18)||
   carrier.action==='shotDown'||carrier.action==='shotGetUp')return null;
  const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+ const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+ let receiver=null,receiverScore=Infinity;
+ if(Array.isArray(players)){
+  for(const runner of players){
+   if(!runner||runner===carrier||runner.t!==carrier.t||runner.keeper||
+    !Number.isFinite(runner.x)||!Number.isFinite(runner.y)||runner.down||
+    !timerClear(runner.stun)||!timerClear(runner.slideTimer)||
+    !timerClear(runner.shotImpactKnockdownPending)||
+    !timerClear(runner.shotImpactKnockdownTimer)||!timerClear(runner.shotImpactRiseTimer)||
+    runner.action==='shotDown'||runner.action==='shotGetUp'||
+    ((runner.action==='slide'||runner.action==='hurt')&&(Number(runner.actionTimer)||0)>0))continue;
+   const z=runner.z==null?0:Number(runner.z);
+   if(!Number.isFinite(z)||z>18)continue;
+   const behind=(runner.x-carrier.x)*attackDir;
+   const depth=attackDir===1?xMax-runner.x:runner.x-xMin;
+   if(behind>-45||behind< -320||depth<80||depth>430||
+    Math.abs(runner.y-centerY)>height*.24)continue;
+   const vx=Number.isFinite(runner.moveVX)?runner.moveVX:
+    Number.isFinite(runner.vx)?runner.vx:0;
+   const vy=Number.isFinite(runner.moveVY)?runner.moveVY:
+    Number.isFinite(runner.vy)?runner.vy:0;
+   const projectedX=runner.x+clampTo(vx*.12,-18,18);
+   const projectedY=runner.y+clampTo(vy*.12,-18,18);
+   const projectedBehind=(projectedX-carrier.x)*attackDir;
+   const projectedDepth=attackDir===1?xMax-projectedX:projectedX-xMin;
+   if(projectedBehind>-20||projectedDepth<80||projectedDepth>430)continue;
+   const score=Math.abs(projectedY-centerY)*.7+
+    Math.abs(projectedBehind+150)*.22+Math.abs(projectedDepth-260)*.08;
+   if(score<receiverScore-1e-9){
+    receiverScore=score;receiver={behind:projectedBehind,y:projectedY};
+   }
+  }
+ }
+ if(receiver){
+  // Screen the actual receiver's predicted lane, not an abstract centre point.
+  // The retreat remains between 48 and 110 units behind the carrier.
+  const retreat=clampTo(-receiver.behind*.62,48,110);
+  return {
+   x:clampTo(carrier.x-attackDir*retreat,xMin+22,xMax-22),
+   y:clampTo(carrier.y+(receiver.y-carrier.y)*.62,yMin+23,yMax-23)
+  };
+ }
+ // Preserve the original central fallback when no eligible cutback runner exists.
  return {
   x:clampTo(carrier.x-attackDir*110,xMin+22,xMax-22),
   y:clampTo(carrier.y+(centerY-carrier.y)*.62,yMin+23,yMax-23)

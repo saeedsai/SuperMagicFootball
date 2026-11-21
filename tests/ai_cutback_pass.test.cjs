@@ -250,7 +250,40 @@ test('central, distant, keeper, unavailable and invalid carriers retain ordinary
  assert.equal(AI.defensiveCutbackCoverTarget(0,carrier,{xMin:1,xMax:1,yMin:0,yMax:1}),null);
 });
 
-test('driveAI sends the second defender into central cutback cover while the primary still presses',async()=>{
+test('defensive cover follows the projected central receiver lane on both attacking sides',async()=>{
+ const {AI}=await loadModules();
+ const center=(MATCH_BOUNDS.yMin+MATCH_BOUNDS.yMax)/2;
+ for(const attackingTeam of [0,1]){
+  const defendingTeam=1-attackingTeam,attackDir=attackingTeam===0?1:-1;
+  const carrier={t:attackingTeam,keeper:false,
+   x:attackingTeam===0?MATCH_BOUNDS.xMax-186:MATCH_BOUNDS.xMin+186,
+   y:attackingTeam===0?MATCH_BOUNDS.yMin+140:MATCH_BOUNDS.yMax-140,
+   down:false,stun:0,z:0,action:'idle'};
+  const runner={t:attackingTeam,keeper:false,
+   x:carrier.x-attackDir*150,
+   y:attackingTeam===0?center-180:center+180,
+   moveVX:attackDir*100,moveVY:attackingTeam===0?80:-80,
+   down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0};
+  const cover=AI.defensiveCutbackCoverTarget(defendingTeam,carrier,MATCH_BOUNDS,[carrier,runner]);
+  const projectedX=runner.x+runner.moveVX*.12;
+  const projectedY=runner.y+runner.moveVY*.12;
+  const behind=(projectedX-carrier.x)*attackDir;
+  const expectedX=carrier.x-attackDir*Math.max(48,Math.min(110,-behind*.62));
+  const expectedY=carrier.y+(projectedY-carrier.y)*.62;
+  assert.ok(cover,'eligible central runner should produce a runner-specific screen');
+  assert.ok(Math.abs(cover.x-expectedX)<1e-9,'cover should screen the predicted longitudinal lane');
+  assert.ok(Math.abs(cover.y-expectedY)<1e-9,'cover should follow the receiver’s predicted lateral movement');
+  assert.ok(Math.abs(cover.x-carrier.x)<=110.001,'screen retreat must remain bounded');
+  const fallback=AI.defensiveCutbackCoverTarget(defendingTeam,carrier,MATCH_BOUNDS,
+   [carrier,{...runner,down:true}]);
+  assert.ok(fallback,'no eligible receiver should preserve the generic central cover');
+  assert.ok(Math.abs(fallback.x-(carrier.x-attackDir*110))<1e-9);
+  assert.ok(Math.abs(fallback.y-(carrier.y+(center-carrier.y)*.62))<1e-9);
+ }
+});
+
+test('driveAI sends the second defender into the projected receiver screen while the primary still presses',async()=>{
  const {AI,ENGINE}=await loadModules();
  const game=new ENGINE.GameEngine({halfSeconds:120});
  game.init({home:0,away:1,mode:'quick',humans:0});
@@ -258,18 +291,24 @@ test('driveAI sends the second defender into central cutback cover while the pri
  const defenders=game.players.filter(p=>p.t===0&&!p.keeper);
  assert.ok(carrier&&defenders.length>=2);
  const [primary,support]=defenders;
+ const runner=game.players.find(p=>p.t===1&&!p.keeper&&p!==carrier);
+ assert.ok(runner,'fixture needs an active cutback receiver');
  for(const p of defenders)Object.assign(p,{down:true,stun:0,z:0,slideTimer:0,
   shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
   action:'idle',actionTimer:0,moveVX:0,moveVY:0});
- Object.assign(carrier,{x:360,y:MATCH_BOUNDS.yMin+140,down:false,stun:0,z:0,slideTimer:0,
+ for(const p of game.players)if(p.t===1&&!p.keeper&&p!==carrier&&p!==runner)p.down=true;
+ Object.assign(carrier,{x:360,y:MATCH_BOUNDS.yMax-140,down:false,stun:0,z:0,slideTimer:0,
   shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
   action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+ Object.assign(runner,{x:500,y:(MATCH_BOUNDS.yMin+MATCH_BOUNDS.yMax)/2+180,moveVX:-100,moveVY:-80,
+  down:false,stun:0,z:0,slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,
+  shotImpactRiseTimer:0,action:'idle',actionTimer:0});
  Object.assign(primary,{x:440,y:carrier.y,down:false,stun:0,z:0,slideTimer:0,
   action:'idle',actionTimer:0,moveVX:0,moveVY:0});
  Object.assign(support,{x:560,y:carrier.y+100,down:false,stun:0,z:0,slideTimer:0,
   action:'idle',actionTimer:0,moveVX:0,moveVY:0});
  game.ball.owner=carrier;
- const expected=AI.defensiveCutbackCoverTarget(0,carrier,MATCH_BOUNDS);
+ const expected=AI.defensiveCutbackCoverTarget(0,carrier,MATCH_BOUNDS,game.players);
  assert.ok(expected);
  game.driveAI(support,1/60);
  assert.ok(support.aiTarget,'support defender must receive a positioning target');

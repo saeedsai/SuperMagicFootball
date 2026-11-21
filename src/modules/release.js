@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.151',
+ version:'0.12.81.152',
  date:'2026-11-21',
  notes:Object.freeze([
+  "AI-DEFENSIVE-CUTBACK-RUNNER-SCREEN-01: The second CPU defender now screens the projected position of an eligible central cutback receiver instead of guarding only a generic centre lane. Receiver movement is led by 120 ms capped at 18 units per axis; the screen stays 48–110 units behind the carrier and falls back to the existing central cover when no eligible runner exists. Mirrored movement and live driveAI integration regressions added; exact-head QA pending.",
   "AI-DEFENSIVE-CUTBACK-COVER-01: When an opponent carries wide within 320 units of the byline, the second CPU defender shades into the central cutback lane while the primary presser keeps closing the carrier. The cover point is bounded to 110 units behind the carrier and 62% toward pitch centre; central, distant, keeper and unavailable carriers retain ordinary cover positioning. Mirrored Node and engine-integration regressions added; exact-head QA pending.",
   "AI-CUTBACK-MARKING-READ-01: CPU carriers prefer the least-marked eligible central cutback runner using bounded projected defender separation. Modular QA and the full dev Census (four Node and four Chromium shards) passed; QA-gated promotion moved main to .150 and Pages deployment #44889268418 succeeded. A separate main-dispatch Census passed preflight, preview, hosted smoke and all Node shards but browser shard 0 timed out in lan_auto_two_browser_qa.py; failed-job-only retry attempt 2 is running.",
   "KEEPER-CUTBACK-LATERAL-LEAD-01: Goalkeepers shade toward the projected lateral lane of an active central cutback runner, using a 120 ms movement lead capped at 18 units before the existing skill-scaled 58-unit shade. Exact-head Modular QA and all four Node/four Chromium Census shards passed; QA-gated promotion, Pages deployment, main Census and hosted-pages smoke passed.",
