@@ -6,18 +6,18 @@
 Deliver player-facing gameplay and existing-player presentation while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- .162 KEEPER-PARRY-REBOUND-CHASE-01: a CPU goalkeeper that parries a shot may step up to a bounded landing pocket for its own descending rebound. It yields to a closer active teammate or an opponent who can reach the pocket first; the runtime-only chase clears on possession, a new kick or expiry. Dive/get-up timing, catch/save radius, ball physics, human input, saves and rosters unchanged.
-- Five focused helper/engine Node regressions and mirrored desktop/touch Chromium acceptance added. Exact-head CI and release gates pending; no local Node/Chromium run.
-- .161 AI-CARRY-ESCAPE-01 is main-promoted: Modular QA #44929100642, all four Node/four Chromium dev Census shards #44929100633, QA-gated promotion, Pages #44929914880 and independent main Census/hosted smoke #44929914783 passed.
+- .163 AI-GOALMOUTH-GIVE-AND-GO-DEFENSIVE-SCREEN-01: when an opponent controls a goalmouth square pass and the original passer runs into the reserved return lane, the second CPU defender screens the return corridor while the primary presser keeps closing. Runtime-only, mirrored, short carrier lead; four focused Node regressions added.
+- .162 KEEPER-PARRY-REBOUND-CHASE-01: dev Modular QA #44935200826 and dev Full Regression Census #44935200823 passed; Pages #44936865795 succeeded. Main-dispatch Census #44936866079 failed only historical lan_auto_two_browser_qa.py (62 pass, one 10-second wait timeout); failed-job-only retry requested. No physical acceptance claimed.
+- .161 AI-CARRY-ESCAPE-01 is main-promoted; exact-head QA, all eight Census shards, Pages and independent main smoke passed.
 
 ## Next smallest action
-Inspect .162 exact-head Modular QA and Census; fix only confirmed failures, then continue the next meaningful gameplay or existing-player visual improvement. Do not repeat Breath or already-covered counter work.
+Inspect .163 exact-head Modular QA and four Node/four Chromium Census; repair only confirmed failures. Then move to the next unfinished gameplay or existing-player visual improvement, not Breath or routine LAN.
 
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private checkpoints. Preserve four actions, 223 teams, 2,676 players, six formations, saves and offline/PWA behavior.
 
 ## Evidence
-Base main/dev SHA: `25553f70d931bcfbdd171ff5fe581f5868b94506`. Feature test commit: `bd0575eadfbe274055583a28fccfe436410d8a62`. Main protection #87, physical two-phone acceptance #48 and Render drift #86 remain open. No visual art approval or physical-device acceptance claimed.
+Base dev/main SHA: `68f4df1bbc71be0e2d9f9817fe13c6df94861eeb`. Main branch API reports `protected: false`; protection endpoint is not readable by this integration. Physical two-phone acceptance #48 and Render drift #86 remain open. No visual art approval or physical-device acceptance claimed.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; never bypass required CI or security.
