@@ -35,7 +35,7 @@ with sync_playwright() as pw:
                 const carrier=game.player(carrierTeam,3),primary=game.player(team,3);
                 const x=field.x+field.w*.52,y=field.y+field.h*.5;
                 for(const player of game.players)
-                    if(player!==carrier&&player!==primary&&!player.keeper){player.down=true;player.stun=0;player.z=0;}
+                    if(player!==carrier&&player!==primary&&!player.keeper){player.down=true;player.stun=1;player.invuln=1.1;player.z=0;}
                 Object.assign(carrier,{x,y,face:attackDir,down:false,stun:0,invuln:0,z:0,
                     action:'receive',actionTimer:.2,moveVX:attackDir*160,moveVY:0,
                     firstTouchControlTimer:.20,firstTouchPressure:.9});
