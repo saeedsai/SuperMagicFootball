@@ -98,13 +98,15 @@ test('driveAI preserves the ordinary fallback when no eligible third runner exis
  }
  Object.assign(carrier,{x,y,down:false,stun:0,z:0,cd:1,action:'idle',actionTimer:0,
   aiTimer:1,aiTarget:{x,y}});
- Object.assign(primary,{x:x+40,y:y-110,homeY:y-112,down:false,stun:0,z:0,action:'run',actionTimer:0});
+ Object.assign(primary,{x:x+10,y:y-110,homeY:y-112,down:false,stun:0,z:0,action:'run',actionTimer:0});
  Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false});
  game.clock=5;
  const fieldBounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
  const support=AI.attackingSupportRun(game.players,0,carrier,null,fieldBounds);
  assert.equal(support?.runner,primary);
  assert.equal(AI.attackingThirdManRun(game.players,0,carrier,support,null,fieldBounds),null);
+ assert.equal(AI.attackingSupportPass(game.players,0,carrier,support),null,'primary runner has not reached the pass pocket');
+ assert.equal(AI.attackingThroughBall(game.players,0,carrier,support),null,'stationary runner is not a through-ball target');
  assert.doesNotThrow(()=>game.driveAI(carrier,.016));
 });
 
