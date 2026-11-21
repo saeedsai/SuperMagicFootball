@@ -49,6 +49,29 @@ function defensivePressers(players,team,target,humanControlled=null){
  return {primary,support:chosen.p};
 }
 
+// When the opponent attacks from a wide final-third byline, reserve the second
+// defender for the central cutback lane instead of mirroring the primary press.
+// The point stays behind the carrier in the opponent's attack direction and
+// moves a bounded portion of the way toward the pitch centre.
+function defensiveCutbackCoverTarget(team,carrier,bounds){
+ if((team!==0&&team!==1)||!carrier||carrier.t!==1-team||carrier.keeper||
+  !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y)||!bounds||typeof bounds!=='object')return null;
+ const xMin=Number(bounds.xMin),xMax=Number(bounds.xMax),yMin=Number(bounds.yMin),yMax=Number(bounds.yMax);
+ if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+ const height=yMax-yMin,centerY=(yMin+yMax)/2;
+ const attackDir=carrier.t===0?1:-1;
+ const goalGap=attackDir===1?xMax-carrier.x:carrier.x-xMin;
+ if(goalGap<30||goalGap>320||Math.abs(carrier.y-centerY)<height*.24||
+  carrier.down||Number(carrier.stun)>0||
+  (Number.isFinite(carrier.z)&&carrier.z>18)||
+  carrier.action==='shotDown'||carrier.action==='shotGetUp')return null;
+ const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+ return {
+  x:clampTo(carrier.x-attackDir*110,xMin+22,xMax-22),
+  y:clampTo(carrier.y+(centerY-carrier.y)*.62,yMin+23,yMax-23)
+ };
+}
+
 
  // Choose one active AI teammate to make a forward diagonal support run when
  // this team has the ball. Score both lateral lanes by travel distance, live
@@ -307,6 +330,6 @@ function attackingSupportPass(players,team,carrier,supportRun){
   return best?{runner:best.runner,target:best.target}:null;
  }
 
-return {AI_LEVELS,aiTuning,defensivePressers,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass};})();
+return {AI_LEVELS,aiTuning,defensivePressers,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass};})();
 
 export {AI};

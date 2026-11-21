@@ -217,3 +217,62 @@ test('AI prefers the least-marked central cutback runner on both attacking sides
    'a slightly farther but substantially less-marked runner should win the cutback');
  }
 });
+
+test('defensive support shades into the central cutback lane for wide byline carriers on both sides',async()=>{
+ const {AI}=await loadModules();
+ const center=(MATCH_BOUNDS.yMin+MATCH_BOUNDS.yMax)/2;
+ for(const attackingTeam of [0,1]){
+  const defendingTeam=1-attackingTeam;
+  const carrier={t:attackingTeam,keeper:false,
+   x:attackingTeam===0?MATCH_BOUNDS.xMax-186:MATCH_BOUNDS.xMin+186,
+   y:attackingTeam===0?MATCH_BOUNDS.yMin+140:MATCH_BOUNDS.yMax-140,
+   down:false,stun:0,z:0,action:'idle'};
+  const cover=AI.defensiveCutbackCoverTarget(defendingTeam,carrier,MATCH_BOUNDS);
+  assert.ok(cover,'wide final-third carrier should trigger central cutback cover');
+  const attackDir=attackingTeam===0?1:-1;
+  assert.ok((cover.x-carrier.x)*attackDir<0,'cover must sit behind the carrier toward midfield');
+  assert.ok(Math.abs(cover.y-center)<Math.abs(carrier.y-center),'cover must shade toward the central receiving lane');
+  assert.ok(Math.abs(cover.x-carrier.x)<=110.001,'longitudinal retreat must remain bounded');
+ }
+});
+
+test('central, distant, keeper, unavailable and invalid carriers retain ordinary support positioning',async()=>{
+ const {AI}=await loadModules();
+ const carrier={t:1,keeper:false,x:MATCH_BOUNDS.xMin+186,y:MATCH_BOUNDS.yMin+140,
+  down:false,stun:0,z:0,action:'idle'};
+ const center=(MATCH_BOUNDS.yMin+MATCH_BOUNDS.yMax)/2;
+ assert.equal(AI.defensiveCutbackCoverTarget(0,{...carrier,y:center},MATCH_BOUNDS),null);
+ assert.equal(AI.defensiveCutbackCoverTarget(0,{...carrier,x:MATCH_BOUNDS.xMin+326},MATCH_BOUNDS),null);
+ assert.equal(AI.defensiveCutbackCoverTarget(0,{...carrier,keeper:true},MATCH_BOUNDS),null);
+ assert.equal(AI.defensiveCutbackCoverTarget(0,{...carrier,down:true},MATCH_BOUNDS),null);
+ assert.equal(AI.defensiveCutbackCoverTarget(0,{...carrier,z:40},MATCH_BOUNDS),null);
+ assert.equal(AI.defensiveCutbackCoverTarget(0,{...carrier,t:0},MATCH_BOUNDS),null);
+ assert.equal(AI.defensiveCutbackCoverTarget(0,carrier,{xMin:1,xMax:1,yMin:0,yMax:1}),null);
+});
+
+test('driveAI sends the second defender into central cutback cover while the primary still presses',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const game=new ENGINE.GameEngine({halfSeconds:120});
+ game.init({home:0,away:1,mode:'quick',humans:0});
+ const carrier=game.players.find(p=>p.t===1&&!p.keeper);
+ const defenders=game.players.filter(p=>p.t===0&&!p.keeper);
+ assert.ok(carrier&&defenders.length>=2);
+ const [primary,support]=defenders;
+ for(const p of defenders)Object.assign(p,{down:true,stun:0,z:0,slideTimer:0,
+  shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+  action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+ Object.assign(carrier,{x:360,y:MATCH_BOUNDS.yMin+140,down:false,stun:0,z:0,slideTimer:0,
+  shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+  action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+ Object.assign(primary,{x:440,y:carrier.y,down:false,stun:0,z:0,slideTimer:0,
+  action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+ Object.assign(support,{x:560,y:carrier.y+100,down:false,stun:0,z:0,slideTimer:0,
+  action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+ game.ball.owner=carrier;
+ const expected=AI.defensiveCutbackCoverTarget(0,carrier,MATCH_BOUNDS);
+ assert.ok(expected);
+ game.driveAI(support,1/60);
+ assert.ok(support.aiTarget,'support defender must receive a positioning target');
+ assert.ok(Math.abs(support.aiTarget.x-expected.x)<1e-9);
+ assert.ok(Math.abs(support.aiTarget.y-expected.y)<1e-9);
+});
