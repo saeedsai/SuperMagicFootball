@@ -795,6 +795,7 @@ function attackingFirstTouchEscape(players,team,carrier,bounds,horizonSeconds=.1
  // rebound. It stays inside a short goal-side corridor and yields to closer
  // outfield players or an opponent who can reach the landing pocket first.
  function keeperParryReboundTarget(keeper,ball,players,bounds,now=0,rebound=null){
+  const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
   if(!keeper?.keeper||keeper.down||Number(keeper.stun)>0||Number(keeper.z)>18||
    (keeper.action==='keeperDive'&&(keeper.diveIntentPending||!Number.isFinite(keeper.diveElapsed)||keeper.diveElapsed<.22))||
    ['keeperDiveCatch','keeperRecover','keeperHold','shotDown','shotGetUp','hurt'].includes(keeper.action)||
