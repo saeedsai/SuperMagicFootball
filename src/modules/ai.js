@@ -59,6 +59,12 @@ function attackingSupportRun(players,team,carrier,humanControlled=null,bounds=nu
  const xMin=Number(bounds.xMin),xMax=Number(bounds.xMax),yMin=Number(bounds.yMin),yMax=Number(bounds.yMax);
  if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
  const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+ const movementVelocity=(player,axis)=>{
+  const actual=axis==='x'?player?.moveVX:player?.moveVY;
+  if(Number.isFinite(actual))return actual;
+  const legacy=axis==='x'?player?.vx:player?.vy;
+  return Number.isFinite(legacy)?legacy:0;
+ };
  const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
  const grounded=p=>p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18);
  const active=p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&!p.down&&
@@ -83,11 +89,19 @@ function attackingSupportRun(players,team,carrier,humanControlled=null,bounds=nu
    if(Math.abs(targetY-carrier.y)<60)continue;
    const target={x:targetX,y:targetY};
    const pathLength=Math.hypot(target.x-p.x,target.y-p.y);
+   const defenderLookahead=clampTo(pathLength/360,.12,.45);
    let corridorPressure=0,arrivalPressure=0,teammateCrowding=0;
    for(const defender of defenders){
-    const corridor=pointSegmentDistance(defender,p,target);
+    // Score where a moving defender is likely to be when the runner reaches this lane.
+    const vx=movementVelocity(defender,'x'),vy=movementVelocity(defender,'y');
+    const moving=Math.hypot(vx,vy)>35;
+    const threat=moving?{
+     x:defender.x+clampTo(vx*defenderLookahead,-100,100),
+     y:defender.y+clampTo(vy*defenderLookahead,-100,100)
+    }:defender;
+    const corridor=pointSegmentDistance(threat,p,target);
     if(corridor<92)corridorPressure+=(92-corridor)/92;
-    const arrival=Math.hypot(defender.x-target.x,defender.y-target.y);
+    const arrival=Math.hypot(threat.x-target.x,threat.y-target.y);
     if(arrival<145)arrivalPressure+=(145-arrival)/145;
    }
    for(const teammate of allies){

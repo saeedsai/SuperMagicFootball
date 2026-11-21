@@ -38,13 +38,20 @@ test('both human outfield and directed goalkeeper passes provide rival positions
 });
 
 test('moving defenders influence directed pass interception without changing stationary lanes',()=>{
- const incoming={x:275,y:60,vx:0,vy:-300};
- const departing={x:275,y:60,vx:0,vy:300};
+ const incoming={x:275,y:60,moveVX:0,moveVY:-300};
+ const departing={x:275,y:60,moveVX:0,moveVY:300};
  assert.equal(choose(undefined,[incoming]),open,'closing defender makes straight lane less safe');
  assert.equal(choose(undefined,[departing]),near,'departing defender should not block straight pass');
- assert.equal(choose(undefined,[{...incoming,vx:Infinity,vy:NaN}]),near,'nonfinite motion must be ignored');
+ assert.equal(choose(undefined,[{...incoming,moveVX:Infinity,moveVY:NaN}]),near,'nonfinite motion must be ignored');
 });
 
+
+test('actual player movement guides receiver lead and lateral lane safety',()=>{
+ const forward={...near,moveVX:300,moveVY:0};
+ const lateral={...near,moveVX:0,moveVY:300};
+ assert.equal(choose([forward,open]),forward,'forward-running receiver is led into the pass');
+ assert.equal(choose([lateral,open]),open,'sideways drift away from the lane favors the settled option');
+});
 
 test('two independent lane blockers add bounded interception risk',()=>{
  const instrumented=source.slice(start,end).replace('teammateInDirection};','teammateInDirection,passingLanePressure};');
@@ -295,7 +302,9 @@ test('AIRBORNE-LANE-READ-01: jumping defenders cannot block ground passing lanes
  const target={x:300,y:0};
  const grounded={x:180,y:0,action:'idle',z:0};
  const airborne={...grounded,action:'jump',z:40};
- assert.ok(feel.passingLanePressure===undefined,'lane pressure stays private to targeting');
+ assert.equal(typeof feel.passingLanePressure,'function','shared lane pressure predictor is available to AI support-run targeting');
+  assert.equal(feel.passingLanePressure(from,target,[airborne]),0,'high jumper cannot create ground-lane pressure');
+  assert.ok(feel.passingLanePressure(from,target,[grounded])>0,'grounded defender creates ground-lane pressure');
  const alt={x:330,y:55};
  assert.equal(choose([target,alt],[grounded]),alt,'grounded marker pressures the straight lane');
  assert.equal(choose([target,alt],[airborne]),target,'airborne marker cannot intercept ground pass');

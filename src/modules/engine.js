@@ -641,7 +641,10 @@ class GameEngine{
    else {aimX=heading.x*800+ex;aimY=heading.y*800+ey;kind=cross?'crossDirection':'direction';}
   }else if(preferredValid){
    target=preferred;kind='supportRun';
-   aimX=target.x-p.x+(target.dx||0)*90+ex;aimY=target.y-p.y+(target.dy||0)*90+ey;
+   const leadSeconds=clamp(distance(p,target)/1400,.12,.35);
+   const leadX=Number.isFinite(target.moveVX)?clamp(target.moveVX*leadSeconds,-65,65):(target.dx||0)*90;
+   const leadY=Number.isFinite(target.moveVY)?clamp(target.moveVY*leadSeconds,-65,65):(target.dy||0)*90;
+   aimX=target.x-p.x+leadX+ex;aimY=target.y-p.y+leadY+ey;
   }else{
    if(opts.human&&!long&&!cross){
     target=mates.slice().sort((a,b)=>distance(p,a)-distance(p,b))[0];kind='nearest';

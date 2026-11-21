@@ -50,3 +50,15 @@ test('support target stays inside pitch bounds and malformed/no-space inputs fal
  assert.equal(AI.attackingSupportRun([carrier],0,carrier,null,bounds),null);
  assert.equal(AI.attackingSupportRun([carrier,runner],1,carrier,null,bounds),null);
 });
+
+
+test('support lane selection anticipates defenders closing into or leaving a diagonal route',async()=>{
+ const AI=await loadAI();
+ const carrier=player('carrier',0,400,300),runner=player('runner',0,450,300);
+ const closing=player('closing',1,500,340,{moveVX:0,moveVY:-300});
+ const saferLower=AI.attackingSupportRun([carrier,runner,closing],0,carrier,null,bounds);
+ assert.equal(saferLower?.target.y,412,'runner avoids the upper lane a defender is sprinting into');
+ const leaving=player('leaving',1,500,340,{moveVX:0,moveVY:300});
+ const saferUpper=AI.attackingSupportRun([carrier,runner,leaving],0,carrier,null,bounds);
+ assert.equal(saferUpper?.target.y,188,'runner can use the upper lane the defender is moving away from');
+});

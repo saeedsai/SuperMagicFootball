@@ -9,6 +9,13 @@ const SHOTFEEL=(()=>{
   const n=finiteNumber(value);
   return Number.isFinite(n)?Math.max(0,n):0;
  };
+ // Players store world velocity as moveVX/moveVY; vx/vy is a compatibility fallback.
+ const movementVelocity=(player,axis)=>{
+  const actual=axis==='x'?player?.moveVX:player?.moveVY;
+  if(Number.isFinite(actual))return actual;
+  const legacy=axis==='x'?player?.vx:player?.vy;
+  return Number.isFinite(legacy)?legacy:0;
+ };
  function launchPower(power,fatigue=0,superShot=false){
   const rating=clamp(Number(power)||50,1,100),tired=clamp(Number(fatigue)||0,0,1);
   return (superShot?1.15:1.19)*(.72+rating*.005)*(.99-.32*tired);
@@ -67,8 +74,8 @@ const SHOTFEEL=(()=>{
    if(Number.isFinite(rival.stun)&&rival.stun>arrival)continue;
    // A defender already moving into the passing lane is more dangerous than
    // one moving away. Limit the lookahead to keep sudden AI changes readable.
-   const vx=Number.isFinite(rival.vx)?rival.vx:0;
-   const vy=Number.isFinite(rival.vy)?rival.vy:0;
+   const vx=movementVelocity(rival,'x');
+   const vy=movementVelocity(rival,'y');
    // Longer passes give moving defenders more time to close the lane; short
    // passes retain the snappy near-instant read. Bound prediction for fairness.
    const lookahead=passLookahead;
@@ -132,7 +139,7 @@ const SHOTFEEL=(()=>{
    const alignment=(dx*hx+dy*hy)/d;
    if(alignment<.77)return null;
    // Bounded lead preference for receivers already moving forward; invalid velocities are neutral.
-   const vx=Number.isFinite(q.vx)?q.vx:0,vy=Number.isFinite(q.vy)?q.vy:0;
+   const vx=movementVelocity(q,'x'),vy=movementVelocity(q,'y');
    const forwardSpeed=vx*hx+vy*hy;
    const momentumBonus=Math.max(0,clamp(forwardSpeed/320,-1,1))*.028;
    // A receiver sprinting back toward the passer is less ready for a forward

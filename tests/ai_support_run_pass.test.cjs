@@ -37,6 +37,23 @@ test('AI support pass selects the runner only after reaching a clear forward lan
  assert.equal(game.ball.passTarget,runner.src.id);
 });
 
+test('support-run PASS leads a moving receiver using bounded world velocity',async()=>{
+ const {ENGINE}=await loadModules();
+ const stationary=fixture(ENGINE),moving=fixture(ENGINE),fast=fixture(ENGINE);
+ for(const f of [stationary,moving,fast]){f.runner.dx=0;f.runner.dy=0;f.runner.moveVX=0;f.runner.moveVY=0;}
+ moving.runner.moveVX=1000;fast.runner.moveVX=5000;
+ const originalRandom=Math.random;
+ try{
+  Math.random=()=>.5;
+  assert.equal(stationary.game.pass(stationary.carrier,false,false,{preferredTarget:stationary.runner,supportRun:true}),true);
+  assert.equal(moving.game.pass(moving.carrier,false,false,{preferredTarget:moving.runner,supportRun:true}),true);
+  assert.equal(fast.game.pass(fast.carrier,false,false,{preferredTarget:fast.runner,supportRun:true}),true);
+ }finally{Math.random=originalRandom;}
+ const slope=game=>game.ball.vy/game.ball.vx;
+ assert.ok(slope(moving.game)>slope(stationary.game),'forward receiver motion moves the pass aim ahead');
+ assert.ok(Math.abs(slope(fast.game)-slope(moving.game))<1e-9,'extreme receiver speed cannot exceed the lead cap');
+});
+
 test('active grounded defenders block a support-run pass corridor or arrival point',async()=>{
  const {AI,ENGINE}=await loadModules();
  const {game,carrier,runner,defender}=fixture(ENGINE);
@@ -82,7 +99,7 @@ test('a grounded defender projected into the support-run lane cancels the prefer
  const {AI,ENGINE}=await loadModules();
  const {game,carrier,runner,defender}=fixture(ENGINE);
  const supportRun={runner,target:{x:runner.x,y:runner.y}};
- defender.x=335;defender.y=320;defender.vx=0;defender.vy=-450;
+ defender.x=335;defender.y=320;defender.moveVX=0;defender.moveVY=-450;
  assert.equal(AI.attackingSupportPass(game.players,0,carrier,supportRun),null);
 });
 
@@ -90,7 +107,7 @@ test('a defender moving away from the support-run lane does not block the clear 
  const {AI,ENGINE}=await loadModules();
  const {game,carrier,runner,defender}=fixture(ENGINE);
  const supportRun={runner,target:{x:runner.x,y:runner.y}};
- defender.x=335;defender.y=320;defender.vx=0;defender.vy=300;
+ defender.x=335;defender.y=320;defender.moveVX=0;defender.moveVY=300;
  assert.equal(AI.attackingSupportPass(game.players,0,carrier,supportRun),runner);
 });
 
@@ -98,7 +115,7 @@ test('invalid defender velocity remains neutral for support-run lane prediction'
  const {AI,ENGINE}=await loadModules();
  const {game,carrier,runner,defender}=fixture(ENGINE);
  const supportRun={runner,target:{x:runner.x,y:runner.y}};
- defender.x=335;defender.y=320;defender.vx=NaN;defender.vy=NaN;
+ defender.x=335;defender.y=320;defender.moveVX=NaN;defender.moveVY=NaN;
  assert.equal(AI.attackingSupportPass(game.players,0,carrier,supportRun),runner);
 });
 
