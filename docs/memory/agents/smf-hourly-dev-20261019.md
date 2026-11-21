@@ -6,19 +6,19 @@
 Deliver player-facing gameplay, existing-player presentation and quality improvements while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- .148 AI-GOALKEEPER-CUTBACK-SHADING-01: CPU goalkeepers shade up to 58 units toward an active central attacker positioned behind a wide byline carrier. Ordinary shot-lane tracking remains the baseline; central/distant carriers and unavailable/off-lane runners do not trigger the read. No save or pass physics changed.
-- The LAN browser fixture now steers the controlled away player toward midfield during each repeated movement phase, avoiding a false boundary timeout after brokerless signaling shutdown; no LAN runtime source changed.
-- First .148 preflight exposed two keeper-test fixture errors (GAME_ASSETS was captured before the Node loader returned) and two version-contract errors (service-worker header still .147). Both are fixed: the test consumes returned validated assets and sw.js header/cache now both say .148. Exact-head QA pending.
+- .149 KEEPER-CUTBACK-LATERAL-LEAD-01: CPU goalkeepers project an active central cutback runner's lateral lane 120 ms ahead, capped at 18 units, then apply the existing skill-scaled 58-unit shade. Ordinary shot-lane tracking, dive/save behavior and four actions remain unchanged.
+- .148 Census failure was isolated to a test-only NameError in the LAN browser script's final diagnostic (`home_before` undefined); fixed with the existing host-side baseline in commit e7e7cf3. No LAN runtime code changed.
+- .148 exact-head rerun #44882179927 and Modular QA #44882179916 were in progress at integration; .149 exact-head gates not yet observed.
 - .143 remains the latest Pages-verified main release.
 
 ## Next smallest action
-Verify the .148 focused keeper tests, Modular QA and exact-head Full Regression Census (four Node + four Chromium shards). Fix confirmed failures, then promote only through the existing exact-head QA-gated main pipeline and independently verify main Census, Pages deployment and hosted bytes.
+Verify .149 focused keeper regressions, Modular QA and exact-head Full Regression Census (four Node + four Chromium shards). Fix confirmed failures, then continue with a distinct gameplay or existing-player presentation increment. Promote only through the existing QA-gated main pipeline and independently verify main Census, Pages deployment and hosted bytes.
 
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private checkpoints.
 
 ## Evidence
-Current parent dev: e60a03d2497668a2b936104e3ea024d7039591d9. Main: 714ba545669ae8d86ba6eacd6ec43bf9044fb2bc. First .148 Modular QA/Census preflight failed only the four fixture/version-contract assertions above; repair is in the current commit. Issues #87, #86 and #48 remain open.
+Parent dev: e7e7cf3bfa99484bbaee5bee06115cddfd485542. Main: 714ba545669ae8d86ba6eacd6ec43bf9044fb2bc. .148 failed browser shard 0 due diagnostic NameError; test-only repair committed and exact-head CI rerun pending. Issues #87, #86 and #48 remain open.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; promote only through the existing QA-gated main pipeline.

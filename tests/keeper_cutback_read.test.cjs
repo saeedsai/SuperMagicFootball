@@ -57,6 +57,22 @@ test('goalkeeper shades toward an active central cutback runner on both attackin
  }
 });
 
+test('keeper shades toward the projected lateral path of a moving cutback runner',async()=>{
+ const {ENGINE,field}=await loadEngine();
+ for(const keeperTeam of [0,1]){
+  const still=fixture(ENGINE,field,keeperTeam);still.runner.moveVY=0;
+  const stillY=targetY(still);
+  const positive=fixture(ENGINE,field,keeperTeam);positive.runner.moveVY=220;
+  const positiveY=targetY(positive);
+  const negative=fixture(ENGINE,field,keeperTeam);negative.runner.moveVY=-220;
+  const negativeY=targetY(negative);
+  assert.ok(positiveY>stillY+1,'keeper should lead a runner moving toward the positive lateral lane');
+  assert.ok(negativeY<stillY-1,'keeper should lead a runner moving toward the negative lateral lane');
+  assert.ok(positiveY-stillY<=5.2,'positive lateral lead must remain bounded');
+  assert.ok(stillY-negativeY<=5.2,'negative lateral lead must remain bounded');
+ }
+});
+
 test('keeper retains its ordinary lane for central or distant carriers and unavailable or off-lane runners',async()=>{
  const {ENGINE,field}=await loadEngine();
  const cases=[

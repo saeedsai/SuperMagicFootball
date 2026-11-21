@@ -236,7 +236,12 @@ function keeperCutbackReadLane(keeper,players,ball,baselineY){
  }
  if(!best)return baselineY;
  const skill=clamp(stat(keeper,'gkSkill'),0,100);
- const shift=clamp((best.runner.y-baselineY)*(.12+skill*.0016),-58,58);
+ // Lead the cutback shade slightly into the runner's lateral path. A short
+ // 120 ms projection capped at 18 units avoids reacting to stale current feet.
+ const runnerVy=Number.isFinite(best.runner.moveVY)?best.runner.moveVY:
+  Number.isFinite(best.runner.vy)?best.runner.vy:0;
+ const projectedRunnerY=best.runner.y+clamp(runnerVy*.12,-18,18);
+ const shift=clamp((projectedRunnerY-baselineY)*(.12+skill*.0016),-58,58);
  return clamp(baselineY+shift,WORLD.goalTop+15,WORLD.goalBottom-15);
 }
 // A keeper has less time to reach wide angles against very fast/super shots.
