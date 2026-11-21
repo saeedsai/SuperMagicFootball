@@ -2,10 +2,10 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 async function loadRuntime(){
- const {loadAssetsFromNode,GAME_ASSETS}=await import('../src/assets.js');
- await loadAssetsFromNode();
+ const assets=await import('../src/assets.js');
+ await assets.loadAssetsFromNode();
  const [{AI},{ENGINE}]=await Promise.all([import('../src/modules/ai.js'),import('../src/modules/engine.js')]);
- return {AI,ENGINE,world:GAME_ASSETS.mechanics.world};
+ return {AI,ENGINE,world:assets.GAME_ASSETS.mechanics.world};
 }
 function cpuShotAim(ENGINE,world,team,keeperVelocity,controlled){
  const game=new ENGINE.GameEngine({halfSeconds:120});
