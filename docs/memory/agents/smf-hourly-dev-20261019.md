@@ -7,6 +7,7 @@ Deliver player-facing gameplay and existing-player presentation while preserving
 
 ## Current checkpoint
 - .160 AI-FIRST-TOUCH-ESCAPE-01: CPU-controlled outfield receivers of pressured friendly ground passes choose a bounded forward-side first-touch pocket using predicted defender path clearance and teammate crowding. The target lasts only through the existing 0.24-second first-touch window, is runtime-only, and clears on expiry or possession loss. Human-selected receivers and open-space/inactive-pressure receptions retain existing behavior. Four actions, ball physics, saves and rosters unchanged.
+- First .160 CI preflight exposed four ReferenceErrors in the existing `first_touch_mirror_fps.test.cjs` VM extraction because it did not provide the new AI helper. This is a test-isolation gap: the suite covers only speed cushioning; the focused new suite covers AI escape. Repair supplies a no-op helper in that VM context; exact-head rerun required.
 - .159 AI-GOALMOUTH-RETURN-PASS-01 is now main-promoted and Pages/main-Census verified. It completes the .158 give-and-go with a safe low return pass after the original passer reaches the reserved diagonal lane.
 
 ## Next smallest action
