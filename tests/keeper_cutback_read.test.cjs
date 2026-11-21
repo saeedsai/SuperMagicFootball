@@ -4,9 +4,9 @@ const assert=require('node:assert/strict');
 
 async function loadEngine(){
  const {loadAssetsFromNode,GAME_ASSETS}=await import('../src/assets.js');
- await loadAssetsFromNode();
+ const assets=await loadAssetsFromNode();
  const {ENGINE}=await import('../src/modules/engine.js');
- return {ENGINE,field:GAME_ASSETS.mechanics.world.field};
+ return {ENGINE,field:assets.mechanics.world.field};
 }
 
 function fixture(ENGINE,field,keeperTeam=0){
