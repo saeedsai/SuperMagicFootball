@@ -18,7 +18,7 @@ import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
 import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards} from "./magic-hazards.js";
 const keeperParryRebounds=new WeakMap();
-const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,keeperShotReadY,keeperParryReboundTarget,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,defensiveGiveAndGoCoverTarget,defensivePassReceiverCoverTarget,defensiveFirstTouchContestTarget,attackingFirstTouchEscape,attackingCarryEscapeTarget}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
+const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,keeperShotReadY,keeperParryReboundTarget,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,defensiveGiveAndGoCoverTarget,defensivePassReceiverCoverTarget,defensiveFirstTouchContestTarget,attackingFirstTouchEscape,attackingCarryEscapeTarget}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
 // Shot impacts briefly weaken strength-based contests without ever rewriting source stats.
 const stat=(p,key)=>{const value=baseStat(p,key);return key==='strength'&&p?.src&&(p.shotImpactWeaknessTimer||0)>0?value*(1-clamp(p.shotImpactWeakness||0,0,.4)*.45):value;};
 
@@ -2653,6 +2653,9 @@ class GameEngine{
   const supportRun=owner&&owner.t===t?attackingSupportRun(this.players,t,owner,
    this.inControl(t)?this.controlledPlayer(t):null,
    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24}):null;
+  const thirdManRun=owner&&owner.t===t?attackingThirdManRun(this.players,t,owner,supportRun,
+   this.inControl(t)?this.controlledPlayer(t):null,
+   {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24}):null;
   const supportCutback=owner===p?attackingCutbackPass(this.players,t,owner,
    this.inControl(t)?this.controlledPlayer(t):null,
    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24}):null;
@@ -2662,7 +2665,11 @@ class GameEngine{
    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24}):null;
   const giveAndGoRun=owner===p&&supportGoalmouth?attackingGiveAndGoRun(this.players,t,p,supportGoalmouth.runner,
    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24}):null;
-  const supportPassTarget=owner===p?(supportThroughBall?.runner||supportGoalmouth?.runner||attackingSupportPass(this.players,t,owner,supportRun)):null;
+  const supportRunPass=owner===p?attackingSupportPass(this.players,t,owner,supportRun):null;
+  const thirdManThroughBall=owner===p?attackingThroughBall(this.players,t,owner,thirdManRun):null;
+  const thirdManPass=owner===p?attackingSupportPass(this.players,t,owner,thirdManRun):null;
+  const supportPassTarget=owner===p?(supportThroughBall?.runner||supportGoalmouth?.runner||supportRunPass||
+   thirdManThroughBall?.runner||thirdManPass):null;
   p.aiTimer=(p.aiTimer??0)-dt;
   const decide=p.aiTimer<=0||!p.aiTarget;
   if(decide){
@@ -2692,7 +2699,7 @@ class GameEngine{
     const goalDistance=Math.abs((t===0?F.x+F.w:F.x)-p.x);
     const nearestDefender=defenders.length?Math.min(...defenders.map(q=>distance(p,q))):999;
     const finishChance=SHOTFEEL.aiFinishingPriority(goalDistance,nearestDefender,stat(p,'shootAccuracy'),ai.shootRate)*tactical.shoot;
-    const passOptions=supportCutback?{preferredTarget:supportCutback.runner,supportRun:true,cutback:true,preferredPoint:supportCutback.target}:supportThroughBall?{preferredTarget:supportThroughBall.runner,supportRun:true,throughBall:true,preferredPoint:supportThroughBall.target}:supportGoalmouth?{preferredTarget:supportGoalmouth.runner,supportRun:true,goalmouth:true,preferredPoint:supportGoalmouth.target,...(giveAndGoRun?{giveAndGoRun}:{})}:supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true}:{};
+    const passOptions=supportCutback?{preferredTarget:supportCutback.runner,supportRun:true,cutback:true,preferredPoint:supportCutback.target}:supportThroughBall?{preferredTarget:supportThroughBall.runner,supportRun:true,throughBall:true,preferredPoint:supportThroughBall.target}:supportGoalmouth?{preferredTarget:supportGoalmouth.runner,supportRun:true,goalmouth:true,preferredPoint:supportGoalmouth.target,...(giveAndGoRun?{giveAndGoRun}:{})}:thirdManThroughBall?.runner===supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true,throughBall:true,preferredPoint:thirdManThroughBall.target}:thirdManPass===supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true,preferredPoint:thirdManRun.target}:supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true}:{};
     if(p.cd<=0&&nearGoal&&Math.random()<finishChance){this.shoot(p,Math.random()<ai.superRate)}
     else if(p.cd<=0&&giveAndGoReturn&&Math.random()<ai.passRate*tactical.pass*.78){
      this.pass(p,false,false,{preferredTarget:giveAndGoReturn.runner,supportRun:true,
@@ -2728,7 +2735,9 @@ class GameEngine{
    p.aiTarget={x:tx,y:ty};
   }
   // Keep the selected support runner's lane current even between AI think ticks.
-  if(owner&&owner.t===t&&supportRun?.runner===p){
+  if(owner&&owner.t===t&&thirdManRun?.runner===p){
+   p.aiTarget={x:thirdManRun.target.x,y:thirdManRun.target.y};
+  }else if(owner&&owner.t===t&&supportRun?.runner===p){
    p.aiTarget={x:supportRun.target.x,y:supportRun.target.y};
   }
   if(pressing&&p===pressing.primary){

@@ -258,6 +258,87 @@ function attackingSupportRun(players,team,carrier,humanControlled=null,bounds=nu
 
 
  
+// Give a third CPU teammate a complementary lane when the primary support runner
+// already occupies the first forward outlet. The second lane stays opposite the
+// primary run, is projected against moving defenders, and never commandeers a
+// human-controlled player or an existing assist/give-and-go assignment.
+function attackingThirdManRun(players,team,carrier,primaryRun,humanControlled=null,bounds=null){
+ const primary=primaryRun?.runner,primaryPoint=primaryRun?.target;
+ if(!Array.isArray(players)||!carrier||(team!==0&&team!==1)||carrier.t!==team||
+  !players.includes(carrier)||!primary||primary===carrier||primary.t!==team||!players.includes(primary)||
+  !primaryPoint||!Number.isFinite(primaryPoint.x)||!Number.isFinite(primaryPoint.y)||
+  !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y)||!bounds||typeof bounds!=='object')return null;
+ const xMin=Number(bounds.xMin),xMax=Number(bounds.xMax),yMin=Number(bounds.yMin),yMax=Number(bounds.yMax);
+ if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax||
+  primaryPoint.x<xMin||primaryPoint.x>xMax||primaryPoint.y<yMin||primaryPoint.y>yMax)return null;
+ const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+ const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+ const grounded=p=>p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18);
+ const active=p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&!p.down&&
+  timerClear(p.stun)&&timerClear(p.slideTimer)&&timerClear(p.shotImpactKnockdownPending)&&
+  timerClear(p.shotImpactKnockdownTimer)&&timerClear(p.shotImpactRiseTimer)&&grounded(p)&&
+  !(p.action==='slide'&&(Number(p.actionTimer)||0)>0)&&
+  !(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)&&
+  p.action!=='shotDown'&&p.action!=='shotGetUp';
+ if(!active(carrier)||!active(primary))return null;
+ const allies=players.filter(p=>active(p)&&p.t===team&&!p.keeper);
+ const candidates=allies.filter(p=>p!==carrier&&p!==primary&&p!==humanControlled&&
+  !p.aiAssistTarget&&!p.aiGiveAndGoRun);
+ if(!candidates.length)return null;
+ const defenders=players.filter(p=>active(p)&&p.t!==team);
+ const dir=team===0?1:-1,primarySide=Math.sign(primaryPoint.y-carrier.y);
+ if(!primarySide)return null;
+ const target={
+  x:clampTo(carrier.x+dir*245,xMin+24,xMax-24),
+  y:clampTo(carrier.y-primarySide*176,yMin+32,yMax-32)
+ };
+ if(dir*(target.x-carrier.x)<140||Math.hypot(target.x-primaryPoint.x,target.y-primaryPoint.y)<130)return null;
+ const movementVelocity=(player,axis)=>{
+  const actual=axis==='x'?player?.moveVX:player?.moveVY;
+  if(Number.isFinite(actual))return actual;
+  const legacy=axis==='x'?player?.vx:player?.vy;
+  return Number.isFinite(legacy)?legacy:0;
+ };
+ const pointSegmentDistance=(point,start,end)=>{
+  const dx=end.x-start.x,dy=end.y-start.y,length=dx*dx+dy*dy;
+  const along=length>1e-9?clampTo(((point.x-start.x)*dx+(point.y-start.y)*dy)/length,0,1):0;
+  return Math.hypot(point.x-(start.x+dx*along),point.y-(start.y+dy*along));
+ };
+ let best=null;
+ for(const runner of candidates){
+  const vx=movementVelocity(runner,'x'),vy=movementVelocity(runner,'y');
+  if(vx*dir< -100)continue;
+  const pathLength=Math.hypot(target.x-runner.x,target.y-runner.y);
+  if(pathLength<90||pathLength>600||dir*(target.x-runner.x)<35)continue;
+  const arrival=clampTo(pathLength/420,.14,.48);
+  let pressure=0,blocked=false;
+  for(const defender of defenders){
+   const future={
+    x:defender.x+clampTo(movementVelocity(defender,'x')*arrival,-95,95),
+    y:defender.y+clampTo(movementVelocity(defender,'y')*arrival,-95,95)
+   };
+   const gap=Math.hypot(future.x-target.x,future.y-target.y);
+   const corridor=pointSegmentDistance(future,{x:runner.x,y:runner.y},target);
+   if(gap<72||corridor<42){blocked=true;break;}
+   if(gap<175)pressure+=(175-gap)/175;
+   if(corridor<112)pressure+=(112-corridor)/112*.55;
+  }
+  if(blocked)continue;
+  let teammateCrowding=0;
+  for(const teammate of allies){
+   if(teammate===runner||teammate===carrier||teammate===primary)continue;
+   const gap=Math.hypot(teammate.x-target.x,teammate.y-target.y);
+   if(gap<70){blocked=true;break;}
+   if(gap<150)teammateCrowding+=(150-gap)/150;
+  }
+  if(blocked)continue;
+  const homeLanePenalty=Number.isFinite(runner.homeY)?Math.abs(target.y-runner.homeY)*.05:0;
+  const score=pathLength+pressure*120+teammateCrowding*85+homeLanePenalty;
+  if(!best||score<best.score-1e-9)best={runner,target,score};
+ }
+ return best?{runner:best.runner,target:best.target}:null;
+}
+
 // Prefer a completed, genuinely open support run when the carrier chooses an AI
 // pass. The runner must already have entered its lane; a blocked corridor or a
 // defender waiting at the receiving point keeps the existing pass selection.
@@ -1050,6 +1131,6 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   return target;
  }
 
-return {AI_LEVELS,keeperShotReadY,keeperParryReboundTarget,aiTuning,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveFirstTouchContestTarget};})();
+return {AI_LEVELS,keeperShotReadY,keeperParryReboundTarget,aiTuning,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveFirstTouchContestTarget};})();
 
 export {AI};

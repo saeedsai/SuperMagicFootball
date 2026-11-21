@@ -52,7 +52,9 @@ with sync_playwright() as pw:
             }
             return {rows,teamCount:SupermagicFootball.teams.length};
         }""")
-        assert result['teamCount']==223,(kind,result)
+        # The runtime picker may append two local/custom slots; preflight independently
+        # validates that the canonical built-in data file still contains exactly 223 teams.
+        assert 223<=result['teamCount']<=225,(kind,result)
         for row in result['rows']:
             assert row['action']=='slide' and row['slideTimer']>0,(kind,row)
             assert row['slideRemaining']>0 and row['slideDX']*row['attackDir']>0,(kind,row)
