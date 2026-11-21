@@ -49,6 +49,39 @@ function defensivePressers(players,team,target,humanControlled=null){
  return {primary,support:chosen.p};
 }
 
+// Use the existing SHOOT slide only when its run-up can intercept an escaping
+// or laterally crossing carrier. A close carrier moving into the defender is
+// better met with the cheaper, shorter PASS poke. This is a style decision only:
+// the caller still owns the difficulty-scaled tackle-attempt probability.
+function defensiveTackleSlide(defender,carrier,baseSpeed=0){
+ if(!defender||!carrier||defender===carrier||defender.t===carrier.t||
+  defender.keeper||carrier.keeper||carrier.down||
+  !Number.isFinite(defender.x)||!Number.isFinite(defender.y)||
+  !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y)||
+  Number(carrier.stun)>0||Number(carrier.invuln)>0||
+  carrier.action==='shotDown'||carrier.action==='shotGetUp'||
+  (carrier.z!=null&&(!Number.isFinite(Number(carrier.z))||Number(carrier.z)>=20)))return false;
+ const dx=carrier.x-defender.x,dy=carrier.y-defender.y,range=Math.hypot(dx,dy);
+ if(range<48||range>74)return false;
+ const velocity=(player,axis)=>{
+  const actual=axis==='x'?player.moveVX:player.moveVY;
+  if(Number.isFinite(actual))return actual;
+  const legacy=axis==='x'?player.vx:player.vy;
+  return Number.isFinite(legacy)?legacy:0;
+ };
+ const defenderVX=velocity(defender,'x'),defenderVY=velocity(defender,'y');
+ const carrierVX=velocity(carrier,'x'),carrierVY=velocity(carrier,'y');
+ const speedFloor=Number.isFinite(baseSpeed)&&baseSpeed>0?baseSpeed*.65:120;
+ const runUp=Math.hypot(defenderVX,defenderVY)>speedFloor||
+  Number(defender.dashTimer)>0||Number(defender.sprintCharge)>.1;
+ if(!runUp)return false;
+ const ux=dx/range,uy=dy/range;
+ const relativeX=carrierVX-defenderVX,relativeY=carrierVY-defenderVY;
+ const escaping=relativeX*ux+relativeY*uy;
+ const crossing=Math.abs(relativeX*(-uy)+relativeY*ux);
+ return escaping>45||(crossing>105&&escaping>-100);
+}
+
 // When the opponent attacks from a wide final-third byline, reserve the second
 // defender for the central cutback lane instead of mirroring the primary press.
 // The point stays behind the carrier in the opponent's attack direction and
@@ -373,6 +406,6 @@ function attackingSupportPass(players,team,carrier,supportRun){
   return best?{runner:best.runner,target:best.target}:null;
  }
 
-return {AI_LEVELS,aiTuning,defensivePressers,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass};})();
+return {AI_LEVELS,aiTuning,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass};})();
 
 export {AI};

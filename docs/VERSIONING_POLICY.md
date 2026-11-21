@@ -1,10 +1,12 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.152
+# SuperMagicFootball release/version policy — About-only 0.12.81.153
 
-**Dev candidate 0.12.81.152 (21 November 2026):** AI-DEFENSIVE-CUTBACK-RUNNER-SCREEN-01: the second CPU defender screens the projected lane of an eligible central cutback receiver, using a 120 ms movement lead capped at 18 units per axis and a bounded 48–110-unit retreat behind the carrier. The previous generic central cover remains when no eligible receiver exists. Mirrored movement and live driveAI integration regressions added; exact-head QA pending.
+**Dev candidate 0.12.81.153 (21 November 2026):** AI-TACKLE-RUNUP-READ-01: CPU defenders reserve the existing SHOOT slide for a running approach against a carrier escaping ahead or cutting laterally across the lane; a carrier moving into the defender is met with the shorter PASS poke. Difficulty-scaled tackle-attempt and slide-roll probabilities, physical reach, four actions and saves are unchanged. Mirrored helper and live driveAI regressions added; exact-head QA pending.
+
+**Main-promoted release 0.12.81.152 (21 November 2026):** AI-DEFENSIVE-CUTBACK-RUNNER-SCREEN-01 passed exact-head Modular QA, all four Node/four Chromium dev Census shards, QA-gated promotion, Pages deployment #44895492408 and independent main Census/hosted-pages smoke #44895492736.
 
 **Previous candidate 0.12.81.151 (21 November 2026):** AI-DEFENSIVE-CUTBACK-COVER-01: the second CPU defender shades into the central cutback lane against a wide byline carrier while the primary presser keeps closing. Modular QA and Keeper Save Event Integrity passed; exact-head Full Regression Census #44894093866 was still running when .152 superseded it; .151 was not promoted.
 
-**Main-promoted release 0.12.81.150 (21 November 2026):** AI-CUTBACK-MARKING-READ-01 passed Modular QA and full dev Census (four Node and four Chromium shards); QA-gated promotion moved main to .150 and Pages deployment #44889268418 succeeded. Independent main-dispatch Census #44889268930 passed preflight, preview, hosted-pages smoke and all Node shards plus Chromium shards 1–3, but browser shard 0 timed out in `lan_auto_two_browser_qa.py`; failed-job-only retry attempt 2 is running. Mirrored focused Node regression added; exact-head QA pending.
+**Main-promoted release 0.12.81.150 (21 November 2026):** AI-CUTBACK-MARKING-READ-01 passed Modular QA and full dev Census (four Node and four Chromium shards); QA-gated promotion moved main to .150 and Pages deployment #44889268418 succeeded. Independent main-dispatch Census #44889268930 initially timed out in browser shard 0; failed-job-only retry attempt 2 passed all four Node and four Chromium shards and hosted-pages smoke. Mirrored focused Node regression added; exact-head QA pending.
 
 **Previous candidate 0.12.81.148 (21 November 2026):** AI-GOALKEEPER-CUTBACK-SHADING-01 adds bounded goalkeeper shading toward an active central runner behind a wide byline carrier. Its test-only LAN diagnostic NameError was corrected in e7e7cf3; repaired exact-head Census #44882179927 and Modular QA #44882179916 both passed before .149 superseded it.
 
