@@ -139,6 +139,46 @@ test('unpressured AI does not early-release a cutback into a blocked receiving p
  assert.equal(f.game.events.some(event=>event.mode==='cutback'),false);
 });
 
+test('active opposing goalkeepers block cutbacks through the flight lane or receiving pocket on both sides',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team);
+  const option=AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS);
+  assert.ok(option,'fixture must start with an open cutback');
+  const keeper=f.game.players.find(p=>p.t!==team&&p.keeper);
+  assert.ok(keeper,'opposing goalkeeper must exist');
+  const place=(x,y)=>Object.assign(keeper,{x,y,z:0,down:false,stun:0,slideTimer:0,
+   shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+   action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+  place((f.carrier.x+option.target.x)/2,(f.carrier.y+option.target.y)/2);
+  assert.equal(AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS),null,
+   'an active keeper crossing the driven flight corridor must block the preference');
+  place(option.target.x+10,option.target.y+10);
+  assert.equal(AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS),null,
+   'an active keeper occupying the predicted collection pocket must block the preference');
+ }
+});
+
+test('downed, recovering, high-airborne or late-recovering goalkeepers do not falsely block a cutback',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const f=fixture(ENGINE);
+ const option=AI.attackingCutbackPass(f.game.players,0,f.carrier,null,BOUNDS);
+ assert.ok(option);
+ const keeper=f.game.players.find(p=>p.t===1&&p.keeper);
+ assert.ok(keeper);
+ const place=()=>Object.assign(keeper,{x:option.target.x+10,y:option.target.y+10,z:0,
+  down:false,stun:0,slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,
+  shotImpactRiseTimer:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+ place();keeper.down=true;
+ assert.ok(AI.attackingCutbackPass(f.game.players,0,f.carrier,null,BOUNDS),'downed keeper cannot contest');
+ place();keeper.stun=.3;
+ assert.ok(AI.attackingCutbackPass(f.game.players,0,f.carrier,null,BOUNDS),'keeper recovering beyond pass arrival cannot contest');
+ place();keeper.z=40;
+ assert.ok(AI.attackingCutbackPass(f.game.players,0,f.carrier,null,BOUNDS),'high airborne keeper cannot intercept a ground cutback');
+ place();keeper.action='shotGetUp';
+ assert.ok(AI.attackingCutbackPass(f.game.players,0,f.carrier,null,BOUNDS),'keeper getting up cannot contest');
+});
+
 test('driveAI offers cutbacks before through-ball/support fallbacks and after shot selection',()=>{
  const fs=require('node:fs'),path=require('node:path');
  const source=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8');

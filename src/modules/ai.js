@@ -262,7 +262,8 @@ function attackingSupportPass(players,team,carrier,supportRun){
    return Number.isFinite(legacy)?legacy:0;
   };
   const activeDefender=p=>{
-   if(!p||p.t===team||p.keeper||p.down||!Number.isFinite(p.x)||!Number.isFinite(p.y)||
+   // A goalkeeper can step into the driven cutback lane or claim its collection pocket.
+   if(!p||p.t===team||p.down||!Number.isFinite(p.x)||!Number.isFinite(p.y)||
     !timerClear(p.slideTimer)||!timerClear(p.shotImpactKnockdownPending)||
     !timerClear(p.shotImpactKnockdownTimer)||!timerClear(p.shotImpactRiseTimer)||
     !grounded(p)||p.action==='shotDown'||p.action==='shotGetUp'||
