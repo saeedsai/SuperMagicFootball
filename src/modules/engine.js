@@ -1242,9 +1242,19 @@ class GameEngine{
   if(p.z>=20||(p.action==='jump'&&(p.actionTimer||0)>0))return false;
   if(p.action==='slide'&&(p.actionTimer||0)>0){p.aiFireballThreat=threat;return false;}
   if(p.aiFireballThreat!==threat){p.aiFireballThreat=threat;p.aiFireballReaction=Math.max(0,Number(reactionSeconds)||0);}
-  p.aiFireballReaction=Math.max(0,(p.aiFireballReaction||0)-Math.max(0,dt||0));
-  if(p.aiFireballReaction<=1e-9){p.aiFireballReaction=Infinity;return this.jump(p);}
-  return false;
+  if(p.aiFireballReaction!==Infinity){
+   p.aiFireballReaction=Math.max(0,(p.aiFireballReaction||0)-Math.max(0,dt||0));
+   if(p.aiFireballReaction>1e-9)return false;
+   p.aiFireballReaction=Infinity;
+  }
+  // At close range, save the 480 ms SHOOT-slide for the end of the visible
+  // wind-up so it is still active when Fireball/Freeze/Bat resolves. The
+  // difficulty reaction delay is still required; farther defenders keep JUMP.
+  if(distance(carrier,p)<=64){
+   if(Number(carrier.dribbleHold)<.84)return false;
+   if(p.cd<=0&&this.tackle(p,true))return true;
+  }
+  return this.jump(p);
  }
  reactToSpinSandTrick(p,dt,reactionSeconds){
   const carrier=this.ball?.owner,trick=carrier?.src?.magicTrick;
