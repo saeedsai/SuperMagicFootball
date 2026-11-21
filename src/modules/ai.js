@@ -82,6 +82,46 @@ function defensiveTackleSlide(defender,carrier,baseSpeed=0){
  return escaping>45||(crossing>105&&escaping>-100);
 }
 
+ 
+// Read a pressured first touch early only when the primary presser has a genuine
+// run-up. The extended window is reserved for a grounded, vulnerable receiver;
+// a stationary defender or a carrier moving away must keep the ordinary press.
+function defensiveFirstTouchSlide(defender,carrier,baseSpeed=0){
+ if(!defender||!carrier||defender===carrier||defender.t===carrier.t||
+  defender.keeper||carrier.keeper||defender.down||carrier.down||
+  !Number.isFinite(defender.x)||!Number.isFinite(defender.y)||
+  !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y)||
+  Number(defender.stun)>0||Number(defender.invuln)>0||Number(defender.cd)>0||
+  Number(carrier.stun)>0||Number(carrier.invuln)>0||
+  carrier.action==='shotDown'||carrier.action==='shotGetUp'||
+  ((carrier.action==='slide'||carrier.action==='hurt')&&(Number(carrier.actionTimer)||0)>0)||
+  (defender.action==='slide'&&(Number(defender.actionTimer)||0)>0)||
+  (defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0))return false;
+ const touchTimer=Number(carrier.firstTouchControlTimer),pressure=Number(carrier.firstTouchPressure);
+ if(!Number.isFinite(touchTimer)||touchTimer<.08||touchTimer>.24||
+  !Number.isFinite(pressure)||pressure<.45||pressure>1.05)return false;
+ const carrierZ=carrier.z==null?0:Number(carrier.z),defenderZ=defender.z==null?0:Number(defender.z);
+ if(!Number.isFinite(carrierZ)||carrierZ>18||!Number.isFinite(defenderZ)||defenderZ>18)return false;
+ const dx=carrier.x-defender.x,dy=carrier.y-defender.y,range=Math.hypot(dx,dy);
+ if(!Number.isFinite(range)||range<=74||range>98)return false;
+ const velocity=(player,axis)=>{
+  const actual=axis==='x'?player.moveVX:player.moveVY;
+  if(Number.isFinite(actual))return actual;
+  const legacy=axis==='x'?player.vx:player.vy;
+  return Number.isFinite(legacy)?legacy:0;
+ };
+ const defenderVX=velocity(defender,'x'),defenderVY=velocity(defender,'y');
+ const carrierVX=velocity(carrier,'x'),carrierVY=velocity(carrier,'y');
+ const defenderSpeed=Math.hypot(defenderVX,defenderVY);
+ const speedFloor=Number.isFinite(baseSpeed)&&baseSpeed>0?baseSpeed*.68:150;
+ if(defenderSpeed<speedFloor)return false;
+ const ux=dx/range,uy=dy/range;
+ const heading=(defenderVX*ux+defenderVY*uy)/defenderSpeed;
+ if(heading<.72)return false;
+ const relativeClosing=(defenderVX-carrierVX)*ux+(defenderVY-carrierVY)*uy;
+ return Number.isFinite(relativeClosing)&&relativeClosing>=85;
+}
+
 // When the opponent attacks from a wide final-third byline, reserve the second
 // defender for the central cutback lane instead of mirroring the primary press.
 // The point stays behind the carrier in the opponent's attack direction and
@@ -1010,6 +1050,6 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   return target;
  }
 
-return {AI_LEVELS,keeperShotReadY,keeperParryReboundTarget,aiTuning,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveFirstTouchContestTarget};})();
+return {AI_LEVELS,keeperShotReadY,keeperParryReboundTarget,aiTuning,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveFirstTouchContestTarget};})();
 
 export {AI};
