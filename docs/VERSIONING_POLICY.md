@@ -1,6 +1,8 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.135
+# SuperMagicFootball release/version policy — About-only 0.12.81.136
 
-**Dev candidate 0.12.81.135 (21 November 2026):** AI-SUPPORT-RUN-PASS-01: When an AI carrier chooses PASS, it now prefers a teammate who has entered the existing forward support-run lane only when the receiving point and pass corridor are clear; blocked, recovering, airborne or not-yet-arrived runners fall back to normal receiver ranking. Pass physics and four controls unchanged. Focused Node regressions added; exact-head QA pending.
+**Dev candidate 0.12.81.136 (21 November 2026):** AI-SUPPORT-RUN-INTERCEPT-01: AI support-run pass preference now accounts for bounded defender movement during pass flight and swept lane closure, yielding to defenders projected to intercept while preserving passes when opponents move away or velocity is invalid; unsafe preferences fall back to ordinary receiver ranking. Pass physics and four controls unchanged. Three focused Node regressions added; exact-head QA pending.
+
+**Main-promoted candidate 0.12.81.135 (21 November 2026):** AI-SUPPORT-RUN-PASS-01: AI carriers prefer an available teammate who has entered the forward support-run lane when the receiving point and pass corridor are clear. Exact-head dev Census (four Node + four Chromium shards) and Modular QA passed; the QA-gated promotion job passed and main now matches this commit. Pages deployment and hosted-byte smoke were not independently verified.
 
 **Release 0.12.81.134 (20 November 2026):** AI-SUPPORT-RUN-LANE-01: One eligible AI teammate makes a bounded forward diagonal run into the less-defended lateral lane when a teammate carries; other support players retain width positions. Exact-head dev Census (four Node and four Chromium shards) and Modular QA passed, QA-gated promotion and Pages deployment passed, and hosted-pages smoke passed. A separate main workflow-dispatch Census rerun failed one LAN browser movement-threshold assertion; the same-SHA push Census passed all shards, so main retry remains pending.
 
