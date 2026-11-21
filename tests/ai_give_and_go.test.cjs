@@ -161,5 +161,5 @@ test('engine stores the runtime return intent and moves the passer only after th
   finally{Math.random=originalRandom;}
   assert.equal(game.ball.passTarget,passer.src.id,'the receiver must release the return pass to the original passer');
   assert.equal(game.ball.owner,null,'the return pass must enter the existing live ball-flight system');
-  assert.equal(receiver.aiGiveAndGoRun,null,'the receiver must not create a nested runtime intent');
+  assert.equal(receiver.aiGiveAndGoRun,undefined,'the receiver must not create a nested runtime intent');
  });

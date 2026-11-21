@@ -184,7 +184,7 @@ test('driveAI offers cutbacks before through-ball/support fallbacks and after sh
  const source=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8');
  assert.ok(source.includes('const supportCutback=owner===p?attackingCutbackPass('));
  assert.ok(source.includes('supportCutback?{preferredTarget:supportCutback.runner,supportRun:true,cutback:true,preferredPoint:supportCutback.target}'));
- assert.ok(source.includes("kind=opts.cutback===true?'cutback':'throughBall'"));
+ assert.ok(source.includes("opts.giveAndGoReturn===true?'giveAndGoReturn':opts.cutback===true?'cutback':'throughBall'"));
  const shot=source.indexOf('if(p.cd<=0&&nearGoal&&Math.random()<finishChance)');
  const early=source.indexOf('else if(p.cd<=0&&supportCutback&&!pressured');
  const pressure=source.indexOf('else if(p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass)');
