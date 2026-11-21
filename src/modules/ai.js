@@ -1,5 +1,6 @@
 // Supermagic Football v0.8.25.30 | AI | independently editable module
 import {GAME_ASSETS} from "../assets.js";
+import {SHOTFEEL} from "./shotfeel.js";
 const AI=(()=>{// Five behaviour profiles. These affect COMPUTER opponents only; human controls and
 // teammate assistants keep the baseline Normal profile. Tunable without changing match code.
 const AI_LEVELS=GAME_ASSETS.mechanics.aiLevels;
@@ -130,6 +131,7 @@ function attackingSupportPass(players,team,carrier,supportRun){
  const segment=dx*dx+dy*dy;
  if(!Number.isFinite(segment)||segment<=0)return null;
  const arrivalSeconds=Math.min(.35,Math.max(.12,range/1400));
+ const eligibleDefenders=[];
  for(const defender of players){
   if(!defender||defender.t===team||!Number.isFinite(defender.x)||!Number.isFinite(defender.y))continue;
   if(defender.down||defender.action==='shotDown'||defender.action==='shotGetUp'||
@@ -138,6 +140,13 @@ function attackingSupportPass(players,team,carrier,supportRun){
    !timerClear(defender.shotImpactRiseTimer)||!grounded(defender))continue;
   const stun=defender.stun==null?0:Number(defender.stun);
   if(!Number.isFinite(stun)||stun>arrivalSeconds)continue;
+  eligibleDefenders.push(defender);
+ }
+ // A defender moving into the lane can intercept after the current snapshot.
+ // Reuse directed PASS's bounded, time-aware prediction and swept-crossing read;
+ // only strong projected pressure cancels the support-run preference.
+ if(SHOTFEEL.passingLanePressure(carrier,runner,eligibleDefenders)>=.10)return null;
+ for(const defender of eligibleDefenders){
   const along=((defender.x-carrier.x)*dx+(defender.y-carrier.y)*dy)/segment;
   if(along>.08&&along<.94){
    const gap=Math.hypot(defender.x-(carrier.x+dx*along),defender.y-(carrier.y+dy*along));
