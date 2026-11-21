@@ -790,6 +790,59 @@ function attackingFirstTouchEscape(players,team,carrier,bounds,horizonSeconds=.1
  const max=Number.isFinite(world.goalBottom)?world.goalBottom-8:Infinity;
  return Math.max(min,Math.min(max,keeper.y+lead));
 }
-return {AI_LEVELS,keeperShotReadY,aiTuning,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget};})();
+
+ // After a parry, a CPU keeper may step off the line for its own descending
+ // rebound. It stays inside a short goal-side corridor and yields to closer
+ // outfield players or an opponent who can reach the landing pocket first.
+ function keeperParryReboundTarget(keeper,ball,players,bounds,now=0,rebound=null){
+  if(!keeper?.keeper||keeper.down||Number(keeper.stun)>0||Number(keeper.z)>18||
+   ['keeperDive','keeperDiveCatch','keeperRecover','keeperHold','shotDown','shotGetUp','hurt'].includes(keeper.action)||
+   !ball||ball.owner||ball.attacker!==keeper.t||ball.lastTouchTeam!==keeper.t||
+   ball.shot||ball.strike||ball.ordinaryShot||ball.pass||
+   !Array.isArray(players)||!players.includes(keeper)||
+   !rebound||rebound.team!==keeper.t||!Number.isFinite(rebound.expires)||
+   !Number.isFinite(now)||now>rebound.expires||
+   ![ball.x,ball.y,ball.z,ball.vx,ball.vy,ball.vz].every(Number.isFinite))return null;
+  const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax);
+  const yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
+  if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+  const dir=keeper.t===0?1:-1,ownGoalX=dir===1?xMin:xMax;
+  const depth=(ball.x-ownGoalX)*dir;
+  if(depth<18||depth>390||ball.vx*dir<70||ball.z>145||ball.vz>85)return null;
+  const landingSeconds=(ball.vz+Math.sqrt(ball.vz*ball.vz+1000*Math.max(0,ball.z)))/500;
+  if(!Number.isFinite(landingSeconds)||landingSeconds>.72)return null;
+  const horizon=Math.max(.12,Math.min(.60,landingSeconds));
+  const xLead=clampTo(ball.vx*horizon*.58,-110,110);
+  const yLead=clampTo(ball.vy*horizon*.58,-100,100);
+  const target={
+   x:clampTo(ball.x+xLead,dir===1?xMin+30:xMax-210,dir===1?xMin+210:xMax-30),
+   y:clampTo(ball.y+yLead,yMin+24,yMax-24)
+  };
+  const targetDepth=(target.x-ownGoalX)*dir,keeperGap=Math.hypot(target.x-keeper.x,target.y-keeper.y);
+  if(targetDepth<26||targetDepth>210||keeperGap<22||keeperGap>235)return null;
+  const activeOutfielder=q=>q&&q!==keeper&&!q.keeper&&!q.down&&
+   (q.stun==null||Number(q.stun)<=0)&&(q.z==null||Number(q.z)<=18)&&
+   Number.isFinite(q.x)&&Number.isFinite(q.y)&&
+   !['shotDown','shotGetUp'].includes(q.action)&&
+   !(q.action==='hurt'&&(Number(q.actionTimer)||0)>0)&&
+   !(q.action==='slide'&&(Number(q.actionTimer)||0)>0);
+  const projected=q=>({
+   x:q.x+clampTo((Number.isFinite(q.moveVX)?q.moveVX:0)*.10,-18,18),
+   y:q.y+clampTo((Number.isFinite(q.moveVY)?q.moveVY:0)*.10,-18,18)
+  });
+  for(const opponent of players){
+   if(opponent?.t===keeper.t||!activeOutfielder(opponent))continue;
+   const future=projected(opponent),gap=Math.hypot(future.x-target.x,future.y-target.y);
+   if(gap<Math.min(118,keeperGap-18))return null;
+  }
+  for(const teammate of players){
+   if(teammate?.t!==keeper.t||!activeOutfielder(teammate))continue;
+   const future=projected(teammate),gap=Math.hypot(future.x-target.x,future.y-target.y);
+   if(gap<185&&gap+32<keeperGap)return null;
+  }
+  return target;
+ }
+
+return {AI_LEVELS,keeperShotReadY,keeperParryReboundTarget,aiTuning,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget};})();
 
 export {AI};
