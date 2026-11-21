@@ -43,7 +43,7 @@ test('standing defenders, very close contact and invalid or unavailable carriers
  assert.equal(AI.defensiveTackleSlide(running,{...escaping,x:Infinity},250),false);
 });
 
-const engineSource=fs.readFileSync(new URL('../src/modules/engine.js',import.meta.url),'utf8');
+const engineSource=fs.readFileSync('src/modules/engine.js','utf8');
 
 test('driveAI routes both ordinary and primary press tackles through movement-aware slide selection',()=>{
  const marker='defensiveTackleSlide(p,owner,this.playerSpeed(p))';
