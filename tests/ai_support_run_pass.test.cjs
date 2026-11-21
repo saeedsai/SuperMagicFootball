@@ -78,6 +78,30 @@ test('support-run preference is opt-in and ordinary AI receiver ranking remains 
  assert.equal(next.game.events.at(-1)?.mode,'supportRun');
 });
 
+test('a grounded defender projected into the support-run lane cancels the preferred receiver',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const {game,carrier,runner,defender}=fixture(ENGINE);
+ const supportRun={runner,target:{x:runner.x,y:runner.y}};
+ defender.x=335;defender.y=320;defender.vx=0;defender.vy=-450;
+ assert.equal(AI.attackingSupportPass(game.players,0,carrier,supportRun),null);
+});
+
+test('a defender moving away from the support-run lane does not block the clear pass',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const {game,carrier,runner,defender}=fixture(ENGINE);
+ const supportRun={runner,target:{x:runner.x,y:runner.y}};
+ defender.x=335;defender.y=320;defender.vx=0;defender.vy=300;
+ assert.equal(AI.attackingSupportPass(game.players,0,carrier,supportRun),runner);
+});
+
+test('invalid defender velocity remains neutral for support-run lane prediction',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const {game,carrier,runner,defender}=fixture(ENGINE);
+ const supportRun={runner,target:{x:runner.x,y:runner.y}};
+ defender.x=335;defender.y=320;defender.vx=NaN;defender.vy=NaN;
+ assert.equal(AI.attackingSupportPass(game.players,0,carrier,supportRun),runner);
+});
+
 const fs=require('node:fs');
 const path=require('node:path');
 test('driveAI wires the pressure-checked support runner into the existing PASS action',()=>{
