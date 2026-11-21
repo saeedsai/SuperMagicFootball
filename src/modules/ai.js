@@ -406,6 +406,21 @@ function attackingSupportPass(players,team,carrier,supportRun){
   return best?{runner:best.runner,target:best.target}:null;
  }
 
-return {AI_LEVELS,aiTuning,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass};})();
+function keeperShotReadY(keeper,flightSeconds=.22){
+ if(!keeper||!Number.isFinite(keeper.y))return null;
+ const inactive=keeper.down||Number(keeper.stun)>0||Number(keeper.z)>18||
+  keeper.diveIntentPending||['keeperDive','keeperDiveCatch','keeperRecover','keeperHold',
+   'shotDown','shotGetUp','hurt'].includes(keeper.action);
+ if(inactive)return keeper.y;
+ const velocity=Number.isFinite(keeper.moveVY)?keeper.moveVY:
+  Number.isFinite(keeper.vy)?keeper.vy:0;
+ const horizon=Math.max(0,Math.min(.34,Number.isFinite(flightSeconds)?flightSeconds:.22));
+ const lead=Math.max(-65,Math.min(65,velocity*horizon));
+ const world=GAME_ASSETS.mechanics.world;
+ const min=Number.isFinite(world.goalTop)?world.goalTop+8:-Infinity;
+ const max=Number.isFinite(world.goalBottom)?world.goalBottom-8:Infinity;
+ return Math.max(min,Math.min(max,keeper.y+lead));
+}
+return {AI_LEVELS,keeperShotReadY,aiTuning,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass};})();
 
 export {AI};

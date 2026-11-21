@@ -23,7 +23,15 @@ with sync_playwright() as pw:
    const roster=g.players.slice(),cases=[];g.playerSpeed=()=>300;g.cpuLevel=()=>2;
    for(const kind of ['banana','ice'])for(const side of [0,1])for(const hz of [30,60,120]){
     const cpu=roster.find(p=>p.t===side&&!p.keeper),radius=kind==='ice'?35:27;
-    Object.assign(cpu,{t:side,x:500+radius+5,y:500,z:0,stun:0,action:'run',actionTimer:0,jumpHold:0,
+    const attackDirection=side===0?1:-1;
+    // Isolate the actual sweep lane: approach from behind the trap and keep
+    // unrelated players outside the 280-unit automatic slide arc.
+    for(const player of roster)if(player!==cpu)Object.assign(player,{
+     x:1300,y:950,z:0,stun:0,down:false,action:'idle',actionTimer:0,slideTimer:0
+    });
+    Object.assign(cpu,{t:side,x:500-attackDirection*(radius+5),y:500,z:0,stun:0,
+     down:false,face:attackDirection,cd:0,fatigue:0,invuln:0,moveVX:0,moveVY:0,dx:0,dy:0,
+     action:'run',actionTimer:0,jumpHold:0,slideTimer:0,
      aiHazardKey:null,aiHazardReaction:0,aiHazardEvading:false});
     const hazard={kind,team:1-side,x:500,y:500,life:2.5,arm:0};
     g.magicHazards=[hazard];g.events=[];let frames=0;

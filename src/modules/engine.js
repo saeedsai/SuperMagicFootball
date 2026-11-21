@@ -17,7 +17,7 @@ import {SHOTPATHS} from "./shotpaths.js";
 import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
 import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards} from "./magic-hazards.js";
-const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
+const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,keeperShotReadY,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
 // Shot impacts briefly weaken strength-based contests without ever rewriting source stats.
 const stat=(p,key)=>{const value=baseStat(p,key);return key==='strength'&&p?.src&&(p.shotImpactWeaknessTimer||0)>0?value*(1-clamp(p.shotImpactWeakness||0,0,.4)*.45):value;};
 
@@ -636,15 +636,20 @@ class GameEngine{
  shoot(p,special=false,alternate=false,charged=0){if(this.ball.owner!==p)return false;const equipped=!!(p.src.superAbility?.type==='shoot'&&p.src.shot);const enhanced=!!special&&!equipped;special=!!special&&equipped&&p.specialCd<=0;const t=p.t,dir=t===0?1:-1,goalY=(WORLD.goalTop+WORLD.goalBottom)/2;const spread=shotError(p,!this.inControl(p.t)?aiTuning(this.cpuLevel(p)).aimError:18)/moraleFactor(p.morale);
  const accuracy=stat(p,'shootAccuracy'),skill=clamp((accuracy-1)/99,0,1);
  const keeper=this.players.find(q=>q.t!==t&&q.keeper);
+ const goalX=t===0?F.x+F.w:F.x;
+ const cpuShooter=!this.inControl(p.t);
+ const shotSpeedEstimate=special?850*(SHOTS[p.src.shot]||SHOTS.nuts).speed:
+  450+stat(p,'shootPower')*4;
+ const keeperFlightSeconds=clamp(Math.abs(goalX-p.x)/Math.max(450,shotSpeedEstimate),.10,.34);
+ const laneKeeper=cpuShooter&&keeper?{...keeper,y:keeperShotReadY(keeper,keeperFlightSeconds)}:keeper;
  // Compare goalmouth lanes, including their likely crossing points past a blocker.
  // An elite finisher strongly prefers a free lane; an inaccurate one may guess.
  const margin=12,goalSpan=WORLD.goalBottom-WORLD.goalTop; // aim nearer genuinely uncovered post lanes
  const candidates=Array.from({length:7},(_,i)=>WORLD.goalTop+margin+i*(goalSpan-2*margin)/6);
- const goalX=t===0?F.x+F.w:F.x;
  const blockers=this.players.filter(q=>q.t!==t&&!q.keeper&&q.stun<=0);
  const laneScore=y=>{
   const keeperGap=keeper?Math.abs(y-keeper.y):goalSpan*.5;
-  let score=SHOTFEEL.lanePreference(p.x,p.y,goalX,y,keeper,accuracy)-(Math.abs(y-goalY)*.06);
+  let score=SHOTFEEL.lanePreference(p.x,p.y,goalX,y,laneKeeper,accuracy)-(Math.abs(y-goalY)*.06);
   for(const q of blockers){const progress=(q.x-p.x)/(goalX-p.x||1);
    if(progress<=.04||progress>=.99)continue;
    const projectedY=p.y+(y-p.y)*progress;
