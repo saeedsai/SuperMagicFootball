@@ -87,10 +87,62 @@ test('AI cutback uses the existing PASS action, targets the predicted receiver p
  const slope=f.game.ball.vy/f.game.ball.vx;
  assert.ok(Math.abs(slope-(option.target.y-f.carrier.y)/(option.target.x-f.carrier.x))<1e-9);
 });
-test('driveAI offers the cutback before through-ball and ordinary support-pass fallbacks',()=>{
+function unpressuredCutbackFixture(ENGINE){
+ const f=fixture(ENGINE);
+ f.carrier.x=650;f.carrier.y=110;f.carrier.cd=0;f.carrier.aiTimer=0;f.carrier.aiTarget=null;
+ f.carrier.comboActive=false;f.carrier.down=false;f.carrier.stun=0;f.carrier.z=0;
+ f.runner.x=540;f.runner.y=340;f.runner.moveVX=160;f.runner.moveVY=0;
+ for(const p of f.game.players)if(p.t!==0&&!p.keeper){
+  p.x=300;p.y=60;p.stun=0;p.down=false;p.z=0;p.action='idle';p.actionTimer=0;
+  p.moveVX=0;p.moveVY=0;
+ }
+ f.game.ball.owner=f.carrier;
+ return f;
+}
+
+test('unpressured CPU carrier can release a clear byline cutback before a defender closes',async()=>{
+ const {ENGINE}=await loadModules();
+ const f=unpressuredCutbackFixture(ENGINE);
+ assert.ok(f.game.players.every(p=>p.t!==1||p.keeper||Math.hypot(p.x-f.carrier.x,p.y-f.carrier.y)>=230),
+  'fixture must have no immediate defensive pressure');
+ const originalRandom=Math.random;
+ try{
+  // Normal pass tendency is 0.30: 0.05 misses the old generic 0.03 fallback
+  // but qualifies for the new 0.066 safe-cutback opportunity.
+  Math.random=()=>.05;
+  f.game.driveAI(f.carrier,1/60);
+ }finally{Math.random=originalRandom;}
+ assert.equal(f.game.ball.passTarget,f.runner.src.id);
+ assert.equal(f.game.events.at(-1)?.mode,'cutback');
+ assert.equal(f.game.events.at(-1)?.loft,'cutback');
+});
+
+test('unpressured AI does not early-release a cutback into a blocked receiving pocket',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const f=unpressuredCutbackFixture(ENGINE);
+ const option=AI.attackingCutbackPass(f.game.players,0,f.carrier,null,BOUNDS);
+ assert.ok(option);
+ f.defender.x=option.target.x+10;f.defender.y=option.target.y+10;
+ assert.ok(Math.hypot(f.defender.x-f.carrier.x,f.defender.y-f.carrier.y)>230,
+  'pocket blocker must remain outside immediate carrier pressure');
+ assert.equal(AI.attackingCutbackPass(f.game.players,0,f.carrier,null,BOUNDS),null);
+ const originalRandom=Math.random;
+ try{
+  Math.random=()=>.05;
+  f.game.driveAI(f.carrier,1/60);
+ }finally{Math.random=originalRandom;}
+ assert.equal(f.game.ball.owner,f.carrier);
+ assert.equal(f.game.events.some(event=>event.mode==='cutback'),false);
+});
+
+test('driveAI offers cutbacks before through-ball/support fallbacks and after shot selection',()=>{
  const fs=require('node:fs'),path=require('node:path');
  const source=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8');
  assert.ok(source.includes('const supportCutback=owner===p?attackingCutbackPass('));
  assert.ok(source.includes('supportCutback?{preferredTarget:supportCutback.runner,supportRun:true,cutback:true,preferredPoint:supportCutback.target}'));
  assert.ok(source.includes("kind=opts.cutback===true?'cutback':'throughBall'"));
+ const shot=source.indexOf('if(p.cd<=0&&nearGoal&&Math.random()<finishChance)');
+ const early=source.indexOf('else if(p.cd<=0&&supportCutback&&!pressured');
+ const pressure=source.indexOf('else if(p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass)');
+ assert.ok(shot>=0&&early>shot&&pressure>early,'shooting remains first; safe unpressured cutbacks precede pressure-only passes');
 });

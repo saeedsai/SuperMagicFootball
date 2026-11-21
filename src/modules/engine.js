@@ -2533,6 +2533,10 @@ class GameEngine{
     const passOptions=supportCutback?{preferredTarget:supportCutback.runner,supportRun:true,cutback:true,preferredPoint:supportCutback.target}:supportThroughBall?{preferredTarget:supportThroughBall.runner,supportRun:true,throughBall:true,preferredPoint:supportThroughBall.target}:supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true}:{};
     if(p.cd<=0&&nearGoal&&Math.random()<finishChance){this.shoot(p,Math.random()<ai.superRate)}
     else if(p.cd<=0&&pressured&&p.trickCd<=0&&Math.random()<(.04+ai.anticipation*.62)&&this.tryDribbleTrick(p,true)){}
+    // A clear byline cutback is a deliberate chance-creation option, not only an
+    // emergency pass after a defender reaches the carrier. Keep finishing first
+    // and scale this early release with the CPU pass tendency and team tactic.
+    else if(p.cd<=0&&supportCutback&&!pressured&&Math.random()<ai.passRate*tactical.pass*.22){this.pass(p,false,false,passOptions)}
     else if(p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass){this.pass(p,false,false,passOptions)}
     else if(p.cd<=0&&Math.random()<ai.passRate*.10){this.pass(p,false,false,passOptions)}
    }else{
