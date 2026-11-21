@@ -17,7 +17,8 @@ import {SHOTPATHS} from "./shotpaths.js";
 import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
 import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards} from "./magic-hazards.js";
-const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,keeperShotReadY,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
+const keeperParryRebounds=new WeakMap();
+const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,keeperShotReadY,keeperParryReboundTarget,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
 // Shot impacts briefly weaken strength-based contests without ever rewriting source stats.
 const stat=(p,key)=>{const value=baseStat(p,key);return key==='strength'&&p?.src&&(p.shotImpactWeaknessTimer||0)>0?value*(1-clamp(p.shotImpactWeakness||0,0,.4)*.45):value;};
 
@@ -592,7 +593,13 @@ class GameEngine{
    return this.startCornerRestart(attackingTeam,b.y<F.y+F.h/2);
   return this.startGoalKick(defendingTeam,b.y);
  }
- take(p){if(this.rideBall&&this.rideBall.carrier!==p)this.cancelRideBall('possession');this.ball.strike=null;p.firstTouchControlTimer=0;p.firstTouchPressure=0;p.aiFirstTouchTarget=null;const incoming=this.ball.pass===true&&this.ball.owner===null?{
+ take(p){
+ const rebound=keeperParryRebounds.get(this.ball);
+ if(rebound){
+  const keeper=this.players.find(q=>q?.keeper&&q.t===rebound.team);
+  if(keeper){keeper.aiParryReboundTarget=false;keeper.aiTarget=null;keeper.aiTimer=0;}
+  keeperParryRebounds.delete(this.ball);
+ }if(this.rideBall&&this.rideBall.carrier!==p)this.cancelRideBall('possession');this.ball.strike=null;p.firstTouchControlTimer=0;p.firstTouchPressure=0;p.aiFirstTouchTarget=null;const incoming=this.ball.pass===true&&this.ball.owner===null?{
   from:this.ball.passFrom,team:this.ball.passTeam,target:this.ball.passTarget,
   x:this.ball.x,y:this.ball.y,height:this.ball.z,speed:Math.hypot(this.ball.vx||0,this.ball.vy||0)}:null;
   this._auditTake(p);for(const q of this.players){q.aerialComboAction=null;q.aerialComboTimer=0;q.aerialComboTaps=0;}if(this.ball.liftOwner){this.ball.liftOwner.ballLiftWindow=0;this.ball.liftOwner.ballLiftLock=false;this.ball.liftOwner=null;}if(this.inControl(p.t)&&!p.keeper)this.controlled[p.t]=p.i;if(p.keeper)p.keeperHold=0;let b=this.ball;b.owner=p;b.lastTouchTeam=p.t;b.x=p.x+p.face*17;b.y=p.y+10;b.z=0;b.vx=b.vy=b.vz=0;b.shot=null;b.strike=null;b.ordinaryShot=false;b.age=0;b.canCollect=0;b.pass=false;b.passFrom=null;b.passTeam=null;b.passTarget=null;
@@ -630,7 +637,7 @@ class GameEngine{
   return true;
  }
  freeBall(p,dx,dy,speed=500,opts={}){
- const b=this.ball,v=norm(dx,dy);speed*=this.options.gameSpeed||1;b.owner=null;b.x=p.x+p.face*21;b.y=p.y-5;b.vx=v.x*speed;b.vy=v.y*speed;// Airborne transformed shots must descend into the goal mouth rather than
+ const b=this.ball;keeperParryRebounds.delete(b);const v=norm(dx,dy);speed*=this.options.gameSpeed||1;b.owner=null;b.x=p.x+p.face*21;b.y=p.y-5;b.vx=v.x*speed;b.vy=v.y*speed;// Airborne transformed shots must descend into the goal mouth rather than
  // retaining the jump's original height. Ordinary aerial kicks remain lofted.
  const superFromJump=!!opts.shot&&p.z>60;
  b.z=superFromJump?Math.min(62,opts.z||34):Math.max(p.z,opts.z||13);
@@ -935,7 +942,7 @@ class GameEngine{
   const force=Math.hypot(b.vx,b.vy)/50+(b.power||0),saveQuality=24+skill*.55+diving*.28;
   // Even a strong shot can be deflected; high-quality keepers catch slower shots.
   if(force<saveQuality*.62){this.keeperCollect(p,'dive');this.emit('save',{player:p,saveType:'dive'});}
-  else {p.diveCooldown=keeperParryRecoverySeconds(p);b.owner=null;b.shot=null;b.strike=null;b.ordinaryShot=false;b.vx=sign*(290+skill*4.1);b.vy=keeperParrySide(p,this.players,dy)*(115+Math.abs(dy)*4);b.vz=150+diving*.6;b.power=0;b.attacker=p.t;b.lastTouchTeam=p.t;b.age=0;b.trail=[];b.canCollect=.32;this.emit('save',{player:p,saveType:'dive',deflected:true});}
+  else {p.diveCooldown=keeperParryRecoverySeconds(p);keeperParryRebounds.set(b,{team:p.t,expires:(Number.isFinite(this.clock)?this.clock:0)+1.65});b.owner=null;b.shot=null;b.strike=null;b.ordinaryShot=false;b.vx=sign*(290+skill*4.1);b.vy=keeperParrySide(p,this.players,dy)*(115+Math.abs(dy)*4);b.vz=150+diving*.6;b.power=0;b.attacker=p.t;b.lastTouchTeam=p.t;b.age=0;b.trail=[];b.canCollect=.32;this.emit('save',{player:p,saveType:'dive',deflected:true});}
   this.spendStamina(p,'keeperDive');this.burst(p.x,p.y,'#ccf9ff',16);
   this.emit('keeperDive',{team:p.t,player:p.src.name,manual});return true;
  }
@@ -2600,6 +2607,18 @@ class GameEngine{
    if(this.reactToWeatherLightning(p,dt,ai.reaction))return;
    if(this.reactToTornado(p,dt,ai.reaction))return;
    if(this.reactToMagicHazard(p,dt,ai.reaction))return;
+// Only the goalkeeper that made the parry may sweep a short distance for
+   // its descending rebound. WeakMap metadata never enters saves or snapshots.
+   const parryTarget=p.keeper&&!concealed&&!liveOwner?
+    keeperParryReboundTarget(p,liveBall,this.players,
+     {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},
+     this.clock,keeperParryRebounds.get(liveBall)):null;
+   if(parryTarget){
+    p.aiParryReboundTarget=true;p.aiTarget={x:parryTarget.x,y:parryTarget.y};
+    p.aiTimer=Math.max(ai.reaction,dt*2);
+   }else if(p.keeper&&p.aiParryReboundTarget){
+    p.aiParryReboundTarget=false;p.aiTarget=null;p.aiTimer=0;
+   }
   // Always reserve a real AI defender; the human-controlled player must not
   // swallow the team pursuit assignment. The next closest AI supplies cover.
   const pressing=(!owner||owner.t!==t)?defensivePressers(this.players,t,owner||b,
