@@ -188,7 +188,7 @@ const SHOTFEEL=(()=>{
    return {q,d,score:alignment-.18*(d/maxDistance)-passingLanePressure(from,{x:from.x+leadX,y:from.y+leadY},opponents)+momentumBonus-retreatPenalty-lateralPenalty-arrivalPenalty-receptionCrowding-airbornePenalty-slidePenalty-recoveryPenalty-hurtPenalty};
   }).filter(Boolean).sort((a,b)=>b.score-a.score||a.d-b.d)[0]?.q||null;
  }
- return {launchPower,flightDrag,impactFactor,contactEnergy,lanePreference,aiFinishingPriority,teammateInDirection};
+ return {launchPower,flightDrag,impactFactor,contactEnergy,lanePreference,aiFinishingPriority,passingLanePressure,teammateInDirection};
 })();
 
 export {SHOTFEEL};
