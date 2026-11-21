@@ -50,6 +50,7 @@ test('driveAI routes both ordinary and primary press tackles through movement-aw
  assert.equal(engineSource.split(marker).length-1,2,
   'both CPU tackle paths must use the shared run-up/relative-motion decision');
  assert.ok(engineSource.includes('distance(p,owner)<68'));
- assert.ok(engineSource.includes('distance(p,owner)<74'));
+ assert.ok(engineSource.includes('carrierDistance<74'));
+ assert.ok(engineSource.includes('carrierDistance<=98&&defensiveFirstTouchSlide(p,owner,this.playerSpeed(p))'));
  assert.ok(engineSource.includes('const slideRoll=Math.random();'));
 });

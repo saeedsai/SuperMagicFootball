@@ -42,7 +42,7 @@ test('first-touch run-up slide requires a fast closing defender in the 74–98 u
  const {carrier,defender}=setup(0);
  assert.equal(AI.defensiveFirstTouchSlide(defender,carrier,280),true);
  assert.equal(AI.defensiveFirstTouchSlide({...defender,moveVX:0,moveVY:0},carrier,280),false);
- assert.equal(AI.defensiveFirstTouchSlide({...defender,moveVX:-300},carrier,280),false);
+ assert.equal(AI.defensiveFirstTouchSlide({...defender,moveVX:300},carrier,280),false);
  assert.equal(AI.defensiveFirstTouchSlide({...defender,x:carrier.x-70},carrier,280),false);
  assert.equal(AI.defensiveFirstTouchSlide({...defender,x:carrier.x-102},carrier,280),false);
  assert.equal(AI.defensiveFirstTouchSlide({...defender,moveVX:300,moveVY:220},carrier,280),false);
