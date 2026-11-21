@@ -1275,6 +1275,39 @@ class GameEngine{
   if(p.aiScreamReaction<=1e-9){p.aiScreamReaction=Infinity;return this.jump(p);}
   return false;
  }
+ reactToHideBallTrick(p,dt,reactionSeconds){
+  const carrier=this.ball?.owner,hold=Number(carrier?.dribbleHold);
+  const visibleWindup=carrier&&carrier.t!==p.t&&!carrier.keeper&&carrier.src?.magicTrick==='hideBall'&&
+   Number.isFinite(hold)&&hold>=.35&&hold<1;
+  const rivals=visibleWindup?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0)
+   .sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
+  const threat=rivals[0]===p&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&distance(carrier,p)<=70?carrier:null;
+  const clear=()=>{p.aiHideBallThreat=null;p.aiHideBallReaction=0;return false;};
+  if(!threat)return clear();
+  if(p.z>=20||p.down||p.stun>0||p.action==='shotDown'||p.action==='shotGetUp'||
+    p.action==='hurt'&&(p.actionTimer||0)>0||
+    p.action==='jump'&&(p.actionTimer||0)>0||
+    p.action==='slide'&&(p.actionTimer||0)>0)return clear();
+  const dx=Number.isFinite(p.dx)?p.dx:0,dy=Number.isFinite(p.dy)?p.dy:0;
+  const movement=Math.hypot(dx,dy),heading=movement>.1?norm(dx,dy):norm(p.face===-1?-1:1,0);
+  const towardX=carrier.x-p.x,towardY=carrier.y-p.y,range=Math.hypot(towardX,towardY);
+  if(!Number.isFinite(range)||range<=1)return clear();
+  const alignment=(towardX*heading.x+towardY*heading.y)/range;
+  if(alignment<(range<=30?.5:.65))return clear();
+  if(p.aiHideBallThreat!==threat){
+   p.aiHideBallThreat=threat;
+   p.aiHideBallReaction=Number.isFinite(reactionSeconds)&&reactionSeconds>=0?reactionSeconds:.78;
+  }
+  if(p.action==='punch'&&Number.isFinite(p.actionTimer)&&p.actionTimer>0)return true;
+  const remaining=Number.isFinite(p.aiHideBallReaction)&&p.aiHideBallReaction>=0?p.aiHideBallReaction:.78;
+  const step=Number.isFinite(dt)?Math.max(0,dt):0;
+  p.aiHideBallReaction=Math.max(0,remaining-step);
+  if(p.aiHideBallReaction<=1e-9&&hold>=.84&&p.cd<=0){
+   p.aiHideBallReaction=Infinity;
+   return this.tackle(p,false);
+  }
+  return false;
+ }
  reactToTeleportTrick(p,dt,reactionSeconds){
   const carrier=this.ball?.owner;
   const rivals=carrier&&carrier.t!==p.t&&!carrier.keeper&&carrier.src?.magicTrick==='teleport'&&
@@ -2413,6 +2446,7 @@ class GameEngine{
    if(this.reactToWindMudTrick(p,dt,ai.reaction)||p.aiWindMudThreat)return;
    if(this.reactToFireballTrick(p,dt,ai.reaction)||p.aiFireballThreat)return;
    if(this.reactToScreamTrick(p,dt,ai.reaction)||p.aiScreamThreat)return;
+   if(this.reactToHideBallTrick(p,dt,ai.reaction)||p.aiHideBallThreat)return;
    if(this.reactToTeleportTrick(p,dt,ai.reaction)||p.aiTeleportThreat)return;
    this.reactToSupernova(p,dt,ai.reaction);
    if(this.reactToWeatherLightning(p,dt,ai.reaction))return;

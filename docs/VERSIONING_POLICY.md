@@ -1,4 +1,6 @@
-# SuperMagicFootball release/version policy — About-only 0.12.81.137
+# SuperMagicFootball release/version policy — About-only 0.12.81.138
+
+**Dev candidate 0.12.81.138 (21 November 2026):** HIDE-BALL-CPU-PASS-POKE-01: The nearest eligible AI defender can time the existing grounded PASS poke against a visible Hide Ball DRIBBLE wind-up. The AI requires the same close-range facing cone as the live resolver, waits for its difficulty reaction delay, and does not react after the trick is already cast. Rookie remains too slow to counter; no hidden-position knowledge, fifth action or save field is added. The .137 Census also exposed a too-short 24-second pause allowance in the historical whole-match Super Shot diagnostic; its simulated-time buffer is increased to 60 seconds. Exact-head QA pending.
 
 **Dev candidate 0.12.81.137 (21 November 2026):** PLAYER-MOTION-PASS-PREDICTION-01: Directed PASS receiver scoring and moving-defender interception now use live moveVX/moveVY; AI support-run passes lead the runner with bounded world velocity. AI support-run lane scoring projects active defenders through a bounded arrival window and selects the safer diagonal. The .136 stale helper-privacy test contract is corrected. Four controls, pass speed, saves and rosters unchanged; exact-head QA pending.
 

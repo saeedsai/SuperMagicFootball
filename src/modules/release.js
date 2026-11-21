@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.137',
+ version:'0.12.81.138',
  date:'2026-11-21',
  notes:Object.freeze([
+  "HIDE-BALL-CPU-PASS-POKE-01: The nearest eligible AI defender can time a grounded PASS poke against the visible one-second DRIBBLE wind-up for Hide Ball. The counter respects the existing close-range facing cone and difficulty reaction delay; Rookie remains too slow to counter. The caster retains the normal six-second cooldown and fatigue cost; no hidden-position knowledge or new action is introduced. Focused Node regression added; exact-head QA pending.",
   "PLAYER-MOTION-PASS-PREDICTION-01: Directed PASS receiver scoring and moving-defender interception now use live moveVX/moveVY; AI support-run passes lead the runner with bounded world velocity. AI support-run lane scoring projects active defenders through a bounded arrival window and selects the safer diagonal. The .136 stale helper-privacy test contract is corrected. Four controls, pass speed, saves and rosters unchanged; exact-head QA pending.",
   "AI-SUPPORT-RUN-INTERCEPT-01: AI support-run pass preference now accounts for bounded defender movement during pass flight and swept lane closure, yielding to defenders projected to intercept while preserving passes when opponents move away or velocity is invalid; unsafe preferences fall back to ordinary receiver ranking. Pass physics and four controls unchanged. Three focused Node regressions added; exact-head QA pending.",
   "AI-SUPPORT-RUN-PASS-01: When an AI carrier chooses PASS, it now prefers a teammate who has entered the existing forward support-run lane only when the receiving point and pass corridor are clear; blocked, recovering, airborne or not-yet-arrived runners fall back to normal receiver ranking. Exact-head Full Regression Census (four Node + four Chromium shards) and Modular QA passed; the QA-gated promotion job passed and main now matches this commit. Pages deployment and hosted-byte smoke were not independently verified.",

@@ -18,7 +18,8 @@ const SIDES = [0, 1];
 const ARMS = ['baseline', 'arcadeSuper'];
 const SEEDS = [0, 1, 2, 3, 4, 5, 6, 7];
 const HALF_SECONDS = 60;
-const MAX_MATCH_SECONDS = HALF_SECONDS * 2 + 24;
+// Allow up to 60 simulated seconds for accumulated kickoff, goal and penalty stoppages.
+const MAX_MATCH_SECONDS = HALF_SECONDS * 2 + 60;
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const GENERATED_GAME = path.join(HERE, '.generated', 'game.js');
 const previousWindow = globalThis.window;
