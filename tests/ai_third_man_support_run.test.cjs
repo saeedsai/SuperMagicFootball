@@ -88,6 +88,26 @@ test('driveAI moves the second CPU runner into the selected complementary lane',
  game.driveAI(third,.016);
  assert.deepEqual(third.aiTarget,{x:thirdRun.target.x,y:thirdRun.target.y});
 });
+test('driveAI preserves the ordinary fallback when no eligible third runner exists',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const game=new ENGINE.GameEngine({halfSeconds:120});game.init({home:0,away:1,mode:'quick',humans:0});
+ const field=ENGINE.WORLD.field,x=field.x+field.w*.5,y=field.y+field.h*.5;
+ const carrier=game.player(0,3),primary=game.player(0,4);
+ for(const p of game.players)if(p!==carrier&&p!==primary&&!p.keeper){
+  p.down=true;p.stun=1;p.z=0;p.action='idle';p.actionTimer=0;
+ }
+ Object.assign(carrier,{x,y,down:false,stun:0,z:0,cd:1,action:'idle',actionTimer:0,
+  aiTimer:1,aiTarget:{x,y}});
+ Object.assign(primary,{x:x+40,y:y-110,homeY:y-112,down:false,stun:0,z:0,action:'run',actionTimer:0});
+ Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false});
+ game.clock=5;
+ const fieldBounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+ const support=AI.attackingSupportRun(game.players,0,carrier,null,fieldBounds);
+ assert.equal(support?.runner,primary);
+ assert.equal(AI.attackingThirdManRun(game.players,0,carrier,support,null,fieldBounds),null);
+ assert.doesNotThrow(()=>game.driveAI(carrier,.016));
+});
+
 test('driveAI offers the third-man run as a fallback support-pass/through-ball outlet',()=>{
  const source=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8');
  assert.match(source,/attackingThirdManRun\(this\.players,t,owner,supportRun/);
