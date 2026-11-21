@@ -6,18 +6,18 @@
 Deliver player-facing gameplay and existing-player presentation while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- .160 AI-FIRST-TOUCH-ESCAPE-01: CPU-controlled outfield receivers of pressured friendly ground passes choose a bounded forward-side first-touch pocket using predicted defender path clearance and teammate crowding. The target lasts only through the existing 0.24-second first-touch window, is runtime-only, and clears on expiry or possession loss. Human-selected receivers and open-space/inactive-pressure receptions retain existing behavior. Four actions, ball physics, saves and rosters unchanged.
-- First .160 CI preflight exposed four ReferenceErrors in the existing `first_touch_mirror_fps.test.cjs` VM extraction because it did not provide the new AI helper. This is a test-isolation gap: the suite covers only speed cushioning; the focused new suite covers AI escape. Repair supplies a no-op helper and minimal field bounds in that VM context; the first repair exposed the missing field constant, now supplied as well. Exact-head rerun required.
-- .159 AI-GOALMOUTH-RETURN-PASS-01 is now main-promoted and Pages/main-Census verified. It completes the .158 give-and-go with a safe low return pass after the original passer reaches the reserved diagonal lane.
+- .161 AI-CARRY-ESCAPE-01: CPU-controlled outfield carriers beyond 320 units from goal take a short forward-diagonal movement line only when an active grounded opponent presses from ahead and one diagonal is materially safer than the direct lane. It projects defender movement, checks corridor/receiving-pocket clearance and teammate crowding. Open space, rear pressure, blocked diagonals, first-touch receptions and the final scoring zone retain normal movement. Uses existing movement and four actions; no ball physics, saves or roster changes.
+- Five focused helper/engine regressions added in `tests/ai_carry_escape.test.cjs`. Exact-head Node, Chromium, Modular QA and four-Node/four-Chromium Full Regression Census pending; local Node/Chromium unavailable because github.com DNS does not resolve. Use connected GitHub CI evidence.
+- .160 AI-FIRST-TOUCH-ESCAPE-01 is main-promoted: dev Census #44922978508, Modular QA #44922978496, Pages #44923750870 and independent main Census/hosted smoke #44923750923 all passed.
 
 ## Next smallest action
-Run the focused AI first-touch escape regressions, exact-head Modular QA and four-Node/four-Chromium Full Regression Census at .160. Fix confirmed failures only; promote only through the existing QA-gated pipeline after a green exact-head Census, then independently verify Pages deployment and main hosted smoke.
+Inspect .161 exact-head Modular QA and Census, fix only confirmed failures, then continue with the next meaningful gameplay or existing-player visual improvement. Do not repeat Breath or already-covered counter work.
 
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private checkpoints. Preserve four actions, 223 teams, 2,676 players, six formations, saves and offline/PWA behavior.
 
 ## Evidence
-Parent dev/main .159 SHA: 5dacd3179cff267ad7bfca2371a6676b38438e7d. .159 exact-head Modular QA #44920638860, dev Census #44920638853, Pages deployment #44921439131 and independent main Census/hosted smoke #44921439017 passed. Main protection #87, physical two-phone acceptance #48 and Render drift #86 remain open.
+Parent dev/main SHA: `24ab9dc43c10c33b30a6f017205fdd53d5f00e43`. Main protection #87, physical two-phone acceptance #48 and Render drift #86 remain open. No visual art approval or physical-device acceptance claimed.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; never bypass required CI or security.

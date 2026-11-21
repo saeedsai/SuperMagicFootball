@@ -706,7 +706,76 @@ function attackingFirstTouchEscape(players,team,carrier,bounds,horizonSeconds=.1
  return {x:best.target.x,y:best.target.y};
 }
 
-function keeperShotReadY(keeper,flightSeconds=.22){
+
+ // A CPU carrier under a genuine front/side press can keep possession by taking
+ // one short forward-diagonal touch into the safer lane. This is a movement
+ // preference only: it never changes ball physics, action selection or human input.
+ function attackingCarryEscapeTarget(players,team,carrier,bounds,horizonSeconds=.14){
+  if(!Array.isArray(players)||!carrier||(team!==0&&team!==1)||carrier.t!==team||
+   carrier.keeper||carrier.down||Number(carrier.stun)>0||Number(carrier.z)>18||
+   Number(carrier.firstTouchControlTimer)>0||
+   !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y)||
+   !bounds||typeof bounds!=='object')return null;
+  const xMin=Number(bounds.xMin),xMax=Number(bounds.xMax),yMin=Number(bounds.yMin),yMax=Number(bounds.yMax);
+  if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+  const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+  const dir=team===0?1:-1;
+  const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  const grounded=p=>p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18);
+  const active=p=>p&&p.t!==team&&!p.keeper&&!p.down&&timerClear(p.stun)&&
+   timerClear(p.slideTimer)&&timerClear(p.shotImpactKnockdownPending)&&
+   timerClear(p.shotImpactKnockdownTimer)&&timerClear(p.shotImpactRiseTimer)&&grounded(p)&&
+   p.action!=='shotDown'&&p.action!=='shotGetUp'&&
+   !(p.action==='slide'&&(Number(p.actionTimer)||0)>0)&&
+   !(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)&&
+   Number.isFinite(p.x)&&Number.isFinite(p.y);
+  const horizon=clampTo(Number.isFinite(horizonSeconds)?horizonSeconds:.14,.08,.18);
+  const nearby=players.filter(active).map(q=>({
+   q,x:q.x+clampTo((Number.isFinite(q.moveVX)?q.moveVX:0)*horizon,-28,28),
+   y:q.y+clampTo((Number.isFinite(q.moveVY)?q.moveVY:0)*horizon,-28,28)
+  })).filter(q=>Math.hypot(q.x-carrier.x,q.y-carrier.y)<=230);
+  const pressure=nearby.some(q=>dir*(q.x-carrier.x)>=-24&&
+   dir*(q.x-carrier.x)<=170&&Math.abs(q.y-carrier.y)<=150);
+  if(!pressure)return null;
+  const allies=players.filter(q=>q&&q.t===team&&q!==carrier&&!q.keeper&&!q.down&&
+   timerClear(q.stun)&&grounded(q)&&Number.isFinite(q.x)&&Number.isFinite(q.y));
+  const candidates=[
+   {side:0,x:carrier.x+dir*104,y:carrier.y},
+   {side:-1,x:carrier.x+dir*78,y:carrier.y-86},
+   {side:1,x:carrier.x+dir*78,y:carrier.y+86}
+  ];
+  const segmentGap=(point,start,end)=>{
+   const dx=end.x-start.x,dy=end.y-start.y,length=dx*dx+dy*dy;
+   const along=length>1e-9?clampTo(((point.x-start.x)*dx+(point.y-start.y)*dy)/length,0,1):0;
+   return Math.hypot(point.x-(start.x+dx*along),point.y-(start.y+dy*along));
+  };
+  const scored=candidates.map(candidate=>{
+   const target={x:clampTo(candidate.x,xMin+24,xMax-24),y:clampTo(candidate.y,yMin+24,yMax-24)};
+   const forward=dir*(target.x-carrier.x),lateral=Math.abs(target.y-carrier.y);
+   if(forward<44||lateral<34)return {side:candidate.side,target,score:-Infinity};
+   let nearest=Infinity,corridor=Infinity,pressurePenalty=0;
+   for(const defender of nearby){
+    const endGap=Math.hypot(defender.x-target.x,defender.y-target.y);
+    const pathGap=segmentGap(defender,{x:carrier.x,y:carrier.y},target);
+    nearest=Math.min(nearest,endGap);corridor=Math.min(corridor,pathGap);
+    pressurePenalty+=Math.max(0,78-endGap)*.42+Math.max(0,38-pathGap)*1.1;
+   }
+   let teammateCrowding=0;
+   for(const teammate of allies){
+    const gap=Math.hypot(teammate.x-target.x,teammate.y-target.y);
+    if(gap<95)teammateCrowding+=(95-gap)*.58;
+   }
+   const score=nearest+corridor*.65+forward*.14-lateral*.09-pressurePenalty-teammateCrowding;
+   return {side:candidate.side,target,score};
+  });
+  const direct=scored.find(option=>option.side===0);
+  const best=scored.filter(option=>option.side!==0).sort((a,b)=>b.score-a.score)[0];
+  if(!direct||!best||!Number.isFinite(best.score)||best.score<38||
+   best.score<direct.score+18)return null;
+  return {x:best.target.x,y:best.target.y};
+ }
+
+ function keeperShotReadY(keeper,flightSeconds=.22){
  if(!keeper||!Number.isFinite(keeper.y))return null;
  const inactive=keeper.down||Number(keeper.stun)>0||Number(keeper.z)>18||
   keeper.diveIntentPending||['keeperDive','keeperDiveCatch','keeperRecover','keeperHold',
@@ -721,6 +790,6 @@ function keeperShotReadY(keeper,flightSeconds=.22){
  const max=Number.isFinite(world.goalBottom)?world.goalBottom-8:Infinity;
  return Math.max(min,Math.min(max,keeper.y+lead));
 }
-return {AI_LEVELS,keeperShotReadY,aiTuning,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape};})();
+return {AI_LEVELS,keeperShotReadY,aiTuning,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget};})();
 
 export {AI};
