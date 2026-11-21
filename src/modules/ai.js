@@ -566,6 +566,84 @@ function attackingGiveAndGoRun(players,team,passer,receiver,bounds){
  return best?{target:best.target}:null;
 }
 
+ 
+ // Offer the return pass only after the original passer reaches the lane reserved
+ // for this receiver. Keep the return corridor and receiving pocket defender-safe.
+ function attackingGiveAndGoReturnPass(players,team,carrier,bounds,now=0){
+  if(!Array.isArray(players)||!carrier||!players.includes(carrier)||
+   (team!==0&&team!==1)||carrier.t!==team||!carrier.src?.id||carrier.aiAssistTarget||
+   !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y)||!bounds||typeof bounds!=='object')return null;
+  const xMin=Number(bounds.xMin),xMax=Number(bounds.xMax),yMin=Number(bounds.yMin),yMax=Number(bounds.yMax);
+  if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+  const nowValue=Number.isFinite(now)?now:0,dir=team===0?1:-1;
+  const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+  const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  const grounded=p=>p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18);
+  const ready=p=>p&&!p.down&&timerClear(p.stun)&&timerClear(p.slideTimer)&&
+   timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
+   timerClear(p.shotImpactRiseTimer)&&grounded(p)&&
+   !(p.action==='slide'&&(Number(p.actionTimer)||0)>0)&&
+   !(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)&&
+   p.action!=='shotDown'&&p.action!=='shotGetUp';
+  if(!ready(carrier))return null;
+  const velocity=(p,axis)=>{
+   const actual=axis==='x'?p?.moveVX:p?.moveVY;
+   if(Number.isFinite(actual))return actual;
+   const legacy=axis==='x'?p?.vx:p?.vy;
+   return Number.isFinite(legacy)?legacy:0;
+  };
+  const defenders=players.filter(p=>p&&p.t!==team&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&
+   !p.down&&timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
+   timerClear(p.shotImpactRiseTimer)&&grounded(p)&&p.action!=='shotDown'&&p.action!=='shotGetUp');
+  const allies=players.filter(p=>p&&p.t===team&&p!==carrier&&!p.keeper&&ready(p));
+  let best=null;
+  for(const runner of players){
+   const intent=runner?.aiGiveAndGoRun;
+   if(!runner||runner===carrier||runner.t!==team||runner.keeper||runner.aiAssistTarget||
+    !runner.src?.id||!ready(runner)||!intent||intent.receiverId!==carrier.src.id||
+    !intent.target||!Number.isFinite(intent.target.x)||!Number.isFinite(intent.target.y)||
+    !Number.isFinite(intent.expires)||nowValue>intent.expires)continue;
+   const laneGap=Math.hypot(runner.x-intent.target.x,runner.y-intent.target.y);
+   if(laneGap>112)continue;
+   const target={
+    x:clampTo(runner.x+clampTo(velocity(runner,'x')*.08,-18,18),xMin+20,xMax-20),
+    y:clampTo(runner.y+clampTo(velocity(runner,'y')*.08,-18,18),yMin+20,yMax-20)
+   };
+   const forward=(target.x-carrier.x)*dir,range=Math.hypot(target.x-carrier.x,target.y-carrier.y);
+   if(forward<48||forward>360||range<76||range>350)continue;
+   const arrival=clampTo(range/1450,.08,.26);
+   const activeDefenders=defenders.filter(defender=>{
+    const stun=defender.stun==null?0:Number(defender.stun);
+    return Number.isFinite(stun)&&stun<=arrival;
+   });
+   if(SHOTFEEL.passingLanePressure(carrier,target,activeDefenders)>=.10)continue;
+   const dx=target.x-carrier.x,dy=target.y-carrier.y,segment=dx*dx+dy*dy;
+   let blocked=false,nearestMarkGap=Infinity,teammateCrowding=0;
+   for(const defender of activeDefenders){
+    const futureX=defender.x+clampTo(velocity(defender,'x')*arrival,-75,75);
+    const futureY=defender.y+clampTo(velocity(defender,'y')*arrival,-75,75);
+    const gap=Math.hypot(futureX-target.x,futureY-target.y);
+    nearestMarkGap=Math.min(nearestMarkGap,gap);
+    if(gap<66){blocked=true;break;}
+    const along=((futureX-carrier.x)*dx+(futureY-carrier.y)*dy)/segment;
+    if(along>.05&&along<.95){
+     const lateral=Math.hypot(futureX-(carrier.x+dx*along),futureY-(carrier.y+dy*along));
+     if(lateral<42){blocked=true;break;}
+    }
+   }
+   if(blocked)continue;
+   for(const teammate of allies){
+    if(teammate===runner)continue;
+    const gap=Math.hypot(teammate.x-target.x,teammate.y-target.y);
+    if(gap<56){blocked=true;break;}
+    if(gap<110)teammateCrowding+=(110-gap)/110;
+   }
+   if(blocked)continue;
+   const score=range+laneGap*.7+Math.max(0,150-nearestMarkGap)*.18+teammateCrowding*55;
+   if(!best||score<best.score-1e-9)best={runner,target,score};
+  }
+  return best?{runner:best.runner,target:best.target}:null;
+ }
 function keeperShotReadY(keeper,flightSeconds=.22){
  if(!keeper||!Number.isFinite(keeper.y))return null;
  const inactive=keeper.down||Number(keeper.stun)>0||Number(keeper.z)>18||
@@ -581,6 +659,6 @@ function keeperShotReadY(keeper,flightSeconds=.22){
  const max=Number.isFinite(world.goalBottom)?world.goalBottom-8:Infinity;
  return Math.max(min,Math.min(max,keeper.y+lead));
 }
-return {AI_LEVELS,keeperShotReadY,aiTuning,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun};})();
+return {AI_LEVELS,keeperShotReadY,aiTuning,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass};})();
 
 export {AI};

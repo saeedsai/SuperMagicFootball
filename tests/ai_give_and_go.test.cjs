@@ -99,3 +99,67 @@ test('engine stores the runtime return intent and moves the passer only after th
  game.driveAI(passer,.016);
  assert.equal(passer.aiGiveAndGoRun,null,'interception clears the return run');
 });
+
+ 
+ test('AI offers the safe forward-diagonal return pass after the reserved runner reaches its lane in both directions',async()=>{
+  const {AI}=await loadModules();
+  for(const team of [0,1]){
+   const dir=team===0?1:-1;
+   const carrier=player('receiver',team,team===0?760:240,300);
+   carrier.src={id:'receiver-'+team};
+   const target={x:carrier.x+dir*132,y:carrier.y+104};
+   const runner=player('passer',team,target.x,target.y);
+   runner.src={id:'passer-'+team};
+   runner.aiGiveAndGoRun={receiverId:carrier.src.id,target,expires:2};
+   const result=AI.attackingGiveAndGoReturnPass([carrier,runner],team,carrier,bounds,1);
+   assert.ok(result,'team '+team+' should recognize its arrived return runner');
+   assert.equal(result.runner,runner);
+   assert.ok(dir*(result.target.x-carrier.x)>100);
+   assert.ok(Math.abs(result.target.y-runner.y)<=18);
+  }
+ });
+ 
+ test('AI waits for the runner and rejects expired or defender-blocked return lanes',async()=>{
+  const {AI}=await loadModules();
+  const carrier=player('receiver',0,760,300);carrier.src={id:'receiver'};
+  const target={x:892,y:404};
+  const runner=player('passer',0,target.x-150,target.y);runner.src={id:'passer'};
+  runner.aiGiveAndGoRun={receiverId:carrier.src.id,target,expires:2};
+  assert.equal(AI.attackingGiveAndGoReturnPass([carrier,runner],0,carrier,bounds,1),null,
+   'the passer must reach the reserved lane before the return option appears');
+  runner.x=target.x;runner.y=target.y;
+  assert.equal(AI.attackingGiveAndGoReturnPass([carrier,runner],0,carrier,bounds,3),null,
+   'an expired runtime intent cannot trigger a return pass');
+  runner.aiGiveAndGoRun.expires=4;
+  const blocker=player('blocker',1,target.x,target.y);
+  assert.equal(AI.attackingGiveAndGoReturnPass([carrier,runner,blocker],0,carrier,bounds,1),null,
+   'a defender occupying the return reception point blocks the pass');
+ });
+ 
+ test('engine returns the ball to the arrived give-and-go passer with the existing low pass',async()=>{
+  const {ENGINE}=await loadModules();
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});
+  const passer=game.players.find(p=>p.t===0&&p.i===3);
+  const receiver=game.players.find(p=>p.t===0&&p.i===4);
+  const field=ENGINE.WORLD.field;
+  const goalX=field.x+field.w,goalY=(ENGINE.WORLD.goalTop+ENGINE.WORLD.goalBottom)/2;
+  for(const q of game.players){
+   if(q===passer||q===receiver)continue;
+   q.down=true;q.stun=0;q.x=field.x+100;q.y=goalY+((q.i%5)-2)*90;
+  }
+  receiver.down=false;receiver.stun=0;receiver.z=0;receiver.action='idle';
+  receiver.aiAssistTarget=null;receiver.x=goalX-850;receiver.y=goalY;receiver.cd=0;receiver.aiTimer=0;receiver.aiTarget=null;
+  passer.down=false;passer.stun=0;passer.z=0;passer.action='idle';passer.aiAssistTarget=null;
+  const target={x:receiver.x+132,y:receiver.y+104};
+  passer.x=target.x;passer.y=target.y;passer.moveVX=0;passer.moveVY=0;
+  game.clock=1;
+  passer.aiGiveAndGoRun={receiverId:receiver.src.id,target,expires:game.clock+1.75};
+  game.ball.owner=receiver;game.ball.attacker=0;game.ball.passTarget=null;
+  const originalRandom=Math.random;
+  try{Math.random=()=>.01;game.driveAI(receiver,.016);}
+  finally{Math.random=originalRandom;}
+  assert.equal(game.ball.passTarget,passer.src.id,'the receiver must release the return pass to the original passer');
+  assert.equal(game.ball.owner,null,'the return pass must enter the existing live ball-flight system');
+  assert.equal(receiver.aiGiveAndGoRun,null,'the receiver must not create a nested runtime intent');
+ });
