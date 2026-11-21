@@ -406,6 +406,82 @@ function attackingSupportPass(players,team,carrier,supportRun){
   return best?{runner:best.runner,target:best.target}:null;
  }
 
+ 
+// In the final third, offer a low square pass when a central teammate is
+// materially closer to goal and the projected ground-pass lane is safe.
+function attackingGoalmouthPass(players,team,carrier,bounds){
+ if(!Array.isArray(players)||!carrier||!players.includes(carrier)||
+  (team!==0&&team!==1)||carrier.t!==team||!Number.isFinite(carrier.x)||
+  !Number.isFinite(carrier.y)||!bounds||typeof bounds!=='object')return null;
+ const xMin=Number(bounds.xMin),xMax=Number(bounds.xMax),yMin=Number(bounds.yMin),yMax=Number(bounds.yMax);
+ if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+ const dir=team===0?1:-1,goalX=team===0?xMax:xMin,goalY=(yMin+yMax)/2;
+ const carrierGoalGap=(goalX-carrier.x)*dir;
+ if(carrierGoalGap<80||carrierGoalGap>620)return null;
+ const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+ const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+ const grounded=p=>p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18);
+ const ready=p=>p&&!p.down&&timerClear(p.stun)&&timerClear(p.slideTimer)&&
+  timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
+  timerClear(p.shotImpactRiseTimer)&&grounded(p)&&
+  !(p.action==='slide'&&(Number(p.actionTimer)||0)>0)&&
+  !(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)&&
+  p.action!=='shotDown'&&p.action!=='shotGetUp';
+ if(!ready(carrier))return null;
+ const movementVelocity=(player,axis)=>{
+  const actual=axis==='x'?player?.moveVX:player?.moveVY;
+  if(Number.isFinite(actual))return actual;
+  const legacy=axis==='x'?player?.vx:player?.vy;
+  return Number.isFinite(legacy)?legacy:0;
+ };
+ const defenders=players.filter(p=>p&&p.t!==team&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&
+  !p.down&&timerClear(p.shotImpactKnockdownPending)&&
+  timerClear(p.shotImpactKnockdownTimer)&&timerClear(p.shotImpactRiseTimer)&&
+  grounded(p)&&p.action!=='shotDown'&&p.action!=='shotGetUp');
+ let best=null;
+ for(const runner of players){
+  if(!runner||runner===carrier||runner.t!==team||runner.keeper||runner.aiAssistTarget||
+   !Number.isFinite(runner.x)||!Number.isFinite(runner.y)||!ready(runner))continue;
+  // Lead only a short step toward the receiver's actual movement, never an
+  // unbounded prediction that could turn a square pass into a blind through ball.
+  const target={
+   x:clampTo(runner.x+clampTo(movementVelocity(runner,'x')*.12,-24,24),xMin+22,xMax-22),
+   y:clampTo(runner.y+clampTo(movementVelocity(runner,'y')*.12,-24,24),yMin+23,yMax-23)
+  };
+  const forward=(target.x-carrier.x)*dir,goalGap=(goalX-target.x)*dir;
+  const centerOffset=Math.abs(target.y-goalY),range=Math.hypot(target.x-carrier.x,target.y-carrier.y);
+  if(forward<65||forward>460||goalGap<45||goalGap>carrierGoalGap-65||
+   range<100||range>540||centerOffset>(yMax-yMin)*.29)continue;
+  const arrival=clampTo(range/1450,.10,.32);
+  const activeDefenders=defenders.filter(defender=>{
+   const stun=defender.stun==null?0:Number(defender.stun);
+   return Number.isFinite(stun)&&stun<=arrival;
+  });
+  if(SHOTFEEL.passingLanePressure(carrier,target,activeDefenders)>=.10)continue;
+  let nearestMarkGap=Infinity,blocked=false;
+  const dx=target.x-carrier.x,dy=target.y-carrier.y,segment=dx*dx+dy*dy;
+  for(const defender of activeDefenders){
+   const futureX=defender.x+clampTo(movementVelocity(defender,'x')*arrival,-65,65);
+   const futureY=defender.y+clampTo(movementVelocity(defender,'y')*arrival,-65,65);
+   const gap=Math.hypot(futureX-target.x,futureY-target.y);
+   nearestMarkGap=Math.min(nearestMarkGap,gap);
+   if(gap<68){blocked=true;break;}
+   const along=((futureX-carrier.x)*dx+(futureY-carrier.y)*dy)/segment;
+   if(along>.05&&along<.95){
+    const lateral=Math.hypot(futureX-(carrier.x+dx*along),futureY-(carrier.y+dy*along));
+    if(lateral<48){blocked=true;break;}
+   }
+  }
+  if(blocked)continue;
+  // Goal proximity leads the choice; range, centrality and marking keep it
+  // from forcing a risky or needlessly long pass into a crowded pocket.
+  const markingPenalty=Math.min(52,Math.max(0,170-nearestMarkGap)*.46);
+  const score=goalGap*.58+range*.26+centerOffset*.16+markingPenalty;
+  if(!best||score<best.score-1e-9)best={runner,target,score};
+ }
+ return best?{runner:best.runner,target:best.target}:null;
+}
+
 function keeperShotReadY(keeper,flightSeconds=.22){
  if(!keeper||!Number.isFinite(keeper.y))return null;
  const inactive=keeper.down||Number(keeper.stun)>0||Number(keeper.z)>18||
@@ -421,6 +497,6 @@ function keeperShotReadY(keeper,flightSeconds=.22){
  const max=Number.isFinite(world.goalBottom)?world.goalBottom-8:Infinity;
  return Math.max(min,Math.min(max,keeper.y+lead));
 }
-return {AI_LEVELS,keeperShotReadY,aiTuning,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass};})();
+return {AI_LEVELS,keeperShotReadY,aiTuning,defensivePressers,defensiveTackleSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass};})();
 
 export {AI};
