@@ -24,11 +24,16 @@ function aiTuning(value) {
 function defensivePressers(players,team,target,humanControlled=null){
  if(!target||!Number.isFinite(target.x)||!Number.isFinite(target.y)||!Array.isArray(players))
   return {primary:null,support:null};
+ // Airborne and impact-recovering players cannot press or provide cover yet.
+ // Treat a missing legacy z as grounded, but reject malformed or high airborne state.
  const candidates=players.filter(p=>p&&p.t===team&&!p.keeper&&p!==humanControlled&&
    p.stun<=0&&!p.down&&!(Number(p.slideTimer)>0)&&
    !(Number(p.shotImpactKnockdownPending)>0)&&
    !(Number(p.shotImpactKnockdownTimer)>0)&&
    !(Number(p.shotImpactRiseTimer)>0)&&
+   (p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)>=0&&Number(p.z)<=18))&&
+   p.action!=='shotDown'&&p.action!=='shotGetUp'&&
+   !((p.action==='slide'||p.action==='hurt')&&(Number(p.actionTimer)||0)>0)&&
    Number.isFinite(p.x)&&Number.isFinite(p.y))
   .map((p,index)=>({p,index,d:Math.hypot(p.x-target.x,p.y-target.y)}))
   .sort((a,b)=>a.d-b.d||a.index-b.index);
