@@ -87,7 +87,7 @@ test('the read cue decays in simulation time and is rendered as steady reduced-f
  assert.equal(updateCounterpress.call({},reader,.16),true);assert.ok(Math.abs(reader.magicReadCounterpressTimer-.26)<1e-9);
  assert.equal(updateCounterpress.call({},reader,.3),false);assert.equal(reader.magicReadCounterpressTimer,0);
  assert.match(render,/function drawMagicReadCue\(ctx,p,reducedFlash=false,logicalScale=1,viewSide=1\)/);
- const cueCall=render.match(/drawMagicReadCue\(([^;]+)\);/);
+ const cueCall=render.match(/drawMagicReadCue\(ctx,p,([^;]+)\);/);
  assert.ok(cueCall,'production renderer calls the READ! cue');
  assert.match(cueCall[1],/Math\.max\(\.12,Math\.min\(3,/);
  assert.match(cueCall[1],/Number\(this\.scale\)\|\|1/);
