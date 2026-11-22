@@ -18,7 +18,7 @@ import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
 import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards} from "./magic-hazards.js";
 const keeperParryRebounds=new WeakMap();
-const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,keeperShotReadY,keeperParryReboundTarget,keeperOutletLane,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,defensiveGiveAndGoCoverTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,attackingFirstTouchEscape,attackingCarryEscapeTarget}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
+const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,keeperShotReadY,keeperParryReboundTarget,keeperOutletLane,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,defensiveGiveAndGoCoverTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,keeperHighCrossClaimTarget,defensiveFirstTouchContestTarget,attackingFirstTouchEscape,attackingCarryEscapeTarget}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
 // Shot impacts briefly weaken strength-based contests without ever rewriting source stats.
 const stat=(p,key)=>{const value=baseStat(p,key);return key==='strength'&&p?.src&&(p.shotImpactWeaknessTimer||0)>0?value*(1-clamp(p.shotImpactWeakness||0,0,.4)*.45):value;};
 
@@ -2698,11 +2698,16 @@ class GameEngine{
    const bx=clamp(target.x+(b.vx||0)*lead,F.x+22,F.x+F.w-22);
    const by=clamp(target.y+(b.vy||0)*lead,F.y+23,F.y+F.h-23);
    if(p.keeper){
-    const side=t===0?F.x+34:F.x+F.w-34;
-    tx=side;
-    ty=predictedKeeperLane(p,b,ai.keeperRead);
-    ty=keeperCutbackReadLane(p,this.players,b,ty);
-    if(!owner&&Math.abs(b.x-side)<175)tx=clamp(bx,side-35,side+35);
+    const claimTarget=!concealed?keeperHighCrossClaimTarget(p,liveBall,this.players,
+     {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24}):null;
+    if(claimTarget){tx=claimTarget.x;ty=claimTarget.y;}
+    else{
+     const side=t===0?F.x+34:F.x+F.w-34;
+     tx=side;
+     ty=predictedKeeperLane(p,b,ai.keeperRead);
+     ty=keeperCutbackReadLane(p,this.players,b,ty);
+     if(!owner&&Math.abs(b.x-side)<175)tx=clamp(bx,side-35,side+35);
+    }
     if(owner===p&&p.cd<=0&&p.keeperHold>.95)this.distributeKeeper(p);
    }else if(owner===p){
     tx=clamp(p.x+dir*(180+ai.anticipation*210)*tactical.advance,F.x+100,F.x+F.w-100);
