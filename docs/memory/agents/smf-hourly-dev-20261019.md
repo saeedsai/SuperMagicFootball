@@ -6,16 +6,16 @@
 Deliver player-facing gameplay, presentation and Career/Cup improvements while preserving four actions, canonical rosters, saves and offline play.
 
 ## Current checkpoint
-- 0.12.81.195 AI-FIRST-TOUCH-OUTLET-DEFENSIVE-SCREEN-01: after a CPU interception's 0.24-second settling touch, the second defender shades a bounded visible forward outlet lane for the remainder of a short generic read window. It uses only player positions/movement and never reads private attacker AI target/receiver state. Primary keeps pressing; existing give-and-go, cutback and active first-touch contest assignments take priority.
-- Implemented on the existing dev branch with mirrored helper/real-engine Node and desktop/simulated-touch Chromium regressions. Exact-head Modular QA and four-Node/four-Chromium Census are pending.
-- .194 KEEPER-DISTRIBUTION-READY-RECEIVER-01 is main-promoted at `ea5db65dd2f3a924080bf17a47ed0ad99f6e6ded`: Modular QA #45034788787 and dev Census #45034788759 passed; QA-gated promotion succeeded; Pages #45035740826 succeeded; main Census #45035747476 passed hosted smoke and all eight shards.
+- 0.12.81.196 AI-FIRST-TOUCH-RETAIN-POSSESSION-01: after a CPU completes a pressured targeted low through-ball interception's 0.24-second escape touch, it retains possession during the short read window when no safe forward, support or cutback option exists. High-quality shots, safe support options and counterable dribble tricks remain eligible; the existing live carry-escape scorer continues to steer toward a safer diagonal when available. Ordinary decisions resume after expiry.
+- Implemented on the existing dev branch with a focused real-engine Node regression and desktop/simulated-touch Chromium acceptance. Exact-head Modular QA and four-Node/four-Chromium Census pending.
+- .195 passed Modular QA #45037753437 and dev Full Regression Census #45037753474; QA-gated promotion advanced main/dev to `a297e8452ab4735c98cd63fd9ee11d3192f6dd33`; Pages deployment #45038707636 succeeded. Main Census #45038715273 passed hosted smoke, all four Node shards and browser shards 0/2/3; historical `lan_auto_two_browser_qa.py` timed out in browser shard 1, and failed-job-only retry attempt 2 is running.
 
 ## Next smallest action
-Verify the exact .195 Modular QA and four-Node/four-Chromium Census; fix only confirmed failures, then allow the existing QA-gated pipeline to promote and independently verify Pages plus main hosted-byte smoke.
+Verify the exact .196 Modular QA and four-Node/four-Chromium Census; fix only confirmed failures, then let the existing QA-gated pipeline promote and independently verify Pages plus main hosted-byte smoke. Finish the .195 main Census retry independently.
 
 ## Next five product improvements
 1. Improve goalkeeper return-to-line recovery after catches, punches and rebound chases.
-2. Improve CPU counterpress and interception decisions after the first-touch outlet is closed.
+2. Improve CPU counterpress decisions after the first-touch outlet is screened.
 3. Continue source-faithful existing-player eight-view Studio work with game-scale screenshots and owner review.
 4. Improve Player Studio live preview and directional customization usability.
 5. Deepen Career/Cup season progression and match presentation.
@@ -24,10 +24,10 @@ Verify the exact .195 Modular QA and four-Node/four-Chromium Census; fix only co
 Only this checkpoint. No concept heroes or copied art. Preserve 223 teams, 2,676 players, exact ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No physical-device or visual approval claims; no routine LAN/P2P work. #48 stays open; #87 protection and #86 Render drift remain unresolved.
 
 ## Evidence
-- .194 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45034788787
-- .194 Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45034788759
-- .194 Pages: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45035740826
-- .194 main Census/hosted smoke: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45035747476
+- .195 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45037753437
+- .195 dev Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45037753474
+- .195 Pages: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45038707636
+- .195 main Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45038715273
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; never bypass required CI, branch protection or QA promotion.

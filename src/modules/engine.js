@@ -2789,6 +2789,11 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
   const firstTouchOutlet=firstTouchOutletWindow&&!firstTouchControl&&owner===p?
    attackingFirstTouchOutlet(this.players,t,p,
     {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24}):null;
+  // Do not gamble away a pressured interception when its forward lane and all
+  // existing safe support options are closed. The live carry-escape target below
+  // still moves the carrier toward a safer diagonal during this short read.
+  const retainFirstTouchPossession=firstTouchOutletWindow&&!firstTouchOutlet&&!giveAndGoReturn&&
+   !supportGoalmouth&&!supportPassTarget&&!supportCutback;
   p.aiTimer=(p.aiTimer??0)-dt;
   const decide=p.aiTimer<=0||!p.aiTarget;
   if(decide){
@@ -2837,9 +2842,9 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
     // A clear byline cutback is a deliberate chance-creation option, not only an
     // emergency pass after a defender reaches the carrier. Keep finishing first
     // and scale this early release with the CPU pass tendency and team tactic.
-    else if(!firstTouchControl&&p.cd<=0&&supportCutback&&!pressured&&Math.random()<ai.passRate*tactical.pass*.22){this.pass(p,false,false,passOptions)}
-    else if(!firstTouchControl&&p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass){this.pass(p,false,false,passOptions)}
-    else if(!firstTouchControl&&p.cd<=0&&Math.random()<ai.passRate*.10){this.pass(p,false,false,passOptions)}
+    else if(!firstTouchControl&&!retainFirstTouchPossession&&p.cd<=0&&supportCutback&&!pressured&&Math.random()<ai.passRate*tactical.pass*.22){this.pass(p,false,false,passOptions)}
+    else if(!firstTouchControl&&!retainFirstTouchPossession&&p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass){this.pass(p,false,false,passOptions)}
+    else if(!firstTouchControl&&!retainFirstTouchPossession&&p.cd<=0&&Math.random()<ai.passRate*.10){this.pass(p,false,false,passOptions)}
    }else{
     const pursuers=this.players.filter(q=>q.t===t&&!q.keeper&&!q.stun).sort((a,c)=>distance(a,target)-distance(c,target));
     if(owner&&owner.t===t){
