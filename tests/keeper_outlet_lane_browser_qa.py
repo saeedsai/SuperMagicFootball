@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Real-engine keeper distribution avoids a defender closing into a short outlet."""
+"""Real-engine keeper distribution and rollout avoid defenders closing into an outlet."""
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -25,7 +25,7 @@ with sync_playwright() as pw:
   result=page.evaluate("""() => {
    const g=SupermagicFootball.game,rows=[];
    for(const side of [0,1]){
-    g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
+    g.init({home:0,away:9,humans:2,mode:'quick',options:{...g.options,weather:'Clear'}});
     g.matchState='play';
     const keeper=g.player(side,0),blockedOutlet=g.player(side,1),clearOutlet=g.player(side,2);
     const dir=side===0?1:-1,keeperX=side===0?100:2300;
@@ -37,7 +37,7 @@ with sync_playwright() as pw:
       Object.assign(p,{x:side===0?1700:700,y:650});
      if(p.t!==side&&!p.keeper)Object.assign(p,{x:side===0?1800:600,y:650});
     }
-    Object.assign(keeper,{x:keeperX,y:340,face:dir,keeper:true,stun:0,down:false,z:0});
+    Object.assign(keeper,{x:keeperX,y:340,face:dir,keeper:true,stun:0,down:false,z:0,cd:0});
     Object.assign(blockedOutlet,{x:outletX,y:340,moveVX:0,moveVY:0});
     Object.assign(clearOutlet,{x:outletX,y:600,moveVX:0,moveVY:0});
     const marker=g.player(1-side,3);
@@ -45,13 +45,19 @@ with sync_playwright() as pw:
       stun:0,down:false,z:0,action:'idle',actionTimer:0});
     const blocked=g.keeperPassingLane(keeper,blockedOutlet,480);
     const clear=g.keeperPassingLane(keeper,clearOutlet,480);
-    const events=[];g.onEvent=event=>events.push(event);
+    const shortEvents=[];g.onEvent=event=>shortEvents.push(event);
     Object.assign(g.ball,{owner:keeper,x:keeper.x,y:keeper.y,z:0,vx:0,vy:0,vz:0});
     const distributed=g.distributeKeeper(keeper,'short');
-    const event=events.find(item=>item.type==='keeperDistribution');
+    const shortEvent=shortEvents.find(item=>item.type==='keeperDistribution');
+    keeper.action='idle';keeper.actionTimer=0;keeper.cd=0;keeper.keeperHold=0;
+    const rollEvents=[];g.onEvent=event=>rollEvents.push(event);
+    Object.assign(g.ball,{owner:keeper,x:keeper.x,y:keeper.y,z:0,vx:0,vy:0,vz:0});
+    const rolled=g.rollKeeper(keeper);
+    const rollEvent=rollEvents.find(item=>item.type==='keeperDistribution');
     rows.push({side,blocked:blocked.clear,clear:clear.clear,distributed,
-      target:event?.target,expected:clearOutlet.src.name,mode:event?.mode,
-      pressured:event?.pressured});
+      shortTarget:shortEvent?.target,expected:clearOutlet.src.name,shortMode:shortEvent?.mode,
+      pressured:shortEvent?.pressured,rolled,rollTarget:rollEvent?.target,
+      rollMode:rollEvent?.mode,passTarget:g.ball.passTarget});
    }
    return {rows,teamCount:SupermagicFootball.teams.length};
   }""")
@@ -62,8 +68,10 @@ with sync_playwright() as pw:
    assert row['blocked'] is False,(kind,row)
    assert row['clear'] is True,(kind,row)
    assert row['distributed'] is True,(kind,row)
-   assert row['target']==row['expected'],(kind,row)
-   assert row['mode']=='short' and row['pressured'] is False,(kind,row)
-  print('PASS',kind,'both mirrored keepers choose the receiver whose projected outlet lane stays clear',flush=True)
+   assert row['shortTarget']==row['expected'] and row['shortMode']=='short',(kind,row)
+   assert row['pressured'] is False,(kind,row)
+   assert row['rolled'] is True and row['rollTarget']==row['expected'],(kind,row)
+   assert row['rollMode']=='roll' and row['passTarget'] is not None,(kind,row)
+  print('PASS',kind,'both mirrored keepers choose the safe short outlet and roll receiver',flush=True)
   ctx.close()
  browser.close()
