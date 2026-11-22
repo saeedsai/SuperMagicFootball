@@ -1077,7 +1077,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
 
 // Score a goalkeeper outlet against where active opponents can reach during flight.
 // The receiver's existing short lead is retained; only lane/arrival safety is predicted.
-function keeperOutletLane(keeper,target,opponents,flightSpeed=480){
+function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSeconds=null){
  if(!keeper||!target||!Array.isArray(opponents)||
   ![keeper.x,keeper.y,target.x,target.y].every(Number.isFinite))
   return {endpoint:0,interception:0,pressure:Infinity,flightSeconds:0,clear:false};
@@ -1089,10 +1089,12 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480){
   return Number.isFinite(legacy)?legacy:0;
  };
  const speed=clampTo(Number.isFinite(flightSpeed)&&flightSpeed>0?flightSpeed:480,300,1100);
- const leadXSeconds=speed>=800?.34:.17;
+ const explicitLead=Number.isFinite(receiverLeadSeconds)?clampTo(receiverLeadSeconds,0,.5):null;
+ const leadXSeconds=explicitLead??(speed>=800?.34:.17);
+ const leadYSeconds=explicitLead??.17;
  const end={
   x:target.x+clampTo((Number.isFinite(target.moveVX)?target.moveVX:0)*leadXSeconds,-90,90),
-  y:target.y+clampTo((Number.isFinite(target.moveVY)?target.moveVY:0)*.17,-90,90)
+  y:target.y+clampTo((Number.isFinite(target.moveVY)?target.moveVY:0)*leadYSeconds,-90,90)
  };
  const dx=end.x-keeper.x,dy=end.y-keeper.y,lengthSquared=dx*dx+dy*dy;
  const flightSeconds=clampTo(Math.sqrt(lengthSquared)/speed,.12,.72);
