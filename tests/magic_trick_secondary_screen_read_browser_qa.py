@@ -58,9 +58,13 @@ with sync_playwright() as pw:
   assert abs(result['baseline']['fatigue']-result['screened']['fatigue'])<1e-9,(kind,result)
   shot_meta=page.evaluate("""() => {
    const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);
-   g.matchState='play';g.particles=[];g.shake=0;g.flash=0;g.options.showNames=false;
+   g.matchState='play';g.particles=[];g.shake=0;g.flash=0;g.options.showNames=false;g.options.camera='Normal';
    for(const p of g.players){p.moveVX=0;p.moveVY=0;p.dx=0;p.dy=0;p.action='idle';p.actionTimer=0;p.z=0;p.stun=0;p.down=false;}
-   function paint(timer){reader.magicReadCueTimer=timer;g.options.reducedFlash=false;r.time=0;r.cameraX=600;r.cameraY=400;r.frame(g,1/60,false);return {x:reader.x,y:reader.y,scale:r.scale,offsetX:r.offsetX,offsetY:r.offsetY,screenW:r.screenW,screenH:r.screenH,zoom:r.cameraZoom};}
+   // Keep the cue subject at the center of the logical camera on both wide
+   // desktop and portrait touch viewports; the old fixed camera clipped the
+   // player's ground ring at the lower edge on simulated-touch devices.
+   g.ball.owner=null;g.ball.x=reader.x;g.ball.y=reader.y;g.ball.vx=0;g.ball.vy=0;g.ball.z=0;
+   function paint(timer){reader.magicReadCueTimer=timer;g.options.reducedFlash=false;r.time=0;r.cameraX=reader.x-r.screenW/2;r.cameraY=reader.y-r.screenH/2;r.frame(g,1/60,false);return {x:reader.x,y:reader.y,scale:r.scale,offsetX:r.offsetX,offsetY:r.offsetY,screenW:r.screenW,screenH:r.screenH,zoom:r.cameraZoom};}
    return paint(.48);
   }""")
   base_path=ARTIFACTS/f'magic-trick-read-cue-{kind}-without.png'
