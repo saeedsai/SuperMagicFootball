@@ -24,6 +24,24 @@ function aiTuning(value) {
 function defensivePressers(players,team,target,humanControlled=null){
  if(!target||!Number.isFinite(target.x)||!Number.isFinite(target.y)||!Array.isArray(players))
   return {primary:null,support:null};
+ // Only a moving opponent carrier gets arrival-aware primary selection. Loose-ball
+ // pursuit and stationary-carrier ordering stay distance-first.
+ const velocity=(p,axis)=>{
+  const current=axis==='x'?p?.moveVX:p?.moveVY;
+  if(Number.isFinite(current))return current;
+  const legacy=axis==='x'?p?.vx:p?.vy;
+  return Number.isFinite(legacy)?legacy:0;
+ };
+ const carrierSpeed=Math.hypot(velocity(target,'x'),velocity(target,'y'));
+ const movingCarrier=Number.isInteger(target.t)&&target.t!==team&&!target.keeper&&
+  Number.isFinite(carrierSpeed)&&carrierSpeed>=75;
+ const project=p=>{
+  const vx=velocity(p,'x'),vy=velocity(p,'y'),speed=Math.hypot(vx,vy);
+  if(!Number.isFinite(speed))return {x:p.x,y:p.y};
+  const scale=speed>220?220/speed:1;
+  return {x:p.x+vx*scale*.12,y:p.y+vy*scale*.12};
+ };
+ const projectedCarrier=movingCarrier?project(target):null;
  // Airborne and impact-recovering players cannot press or provide cover yet.
  // Treat a missing legacy z as grounded, but reject malformed or high airborne state.
  const candidates=players.filter(p=>p&&p.t===team&&!p.keeper&&p!==humanControlled&&
@@ -35,14 +53,23 @@ function defensivePressers(players,team,target,humanControlled=null){
    p.action!=='shotDown'&&p.action!=='shotGetUp'&&
    !((p.action==='slide'||p.action==='hurt')&&(Number(p.actionTimer)||0)>0)&&
    Number.isFinite(p.x)&&Number.isFinite(p.y))
-  .map((p,index)=>({p,index,d:Math.hypot(p.x-target.x,p.y-target.y)}))
-  .sort((a,b)=>a.d-b.d||a.index-b.index);
+  .map((p,index)=>{
+   const d=Math.hypot(p.x-target.x,p.y-target.y);
+   if(!projectedCarrier)return {p,index,d,pressScore:d};
+   const future=project(p),arrival=Math.hypot(future.x-projectedCarrier.x,future.y-projectedCarrier.y);
+   // Limit the momentum adjustment to 13.2 distance units so a distant runner
+   // cannot steal the press assignment merely by reporting an extreme velocity.
+   const delta=Math.max(-24,Math.min(24,arrival-d));
+   return {p,index,d,pressScore:d+delta*.55};
+  })
+  .sort((a,b)=>a.pressScore-b.pressScore||a.d-b.d||a.index-b.index);
  const primary=candidates[0]?.p||null;
  if(candidates.length<2)return {primary,support:null};
- const nearest=candidates[1].d;
- let chosen=candidates[1],best=Infinity;
- for(const candidate of candidates.slice(1)){
-  if(candidate.d>nearest+110)break;
+ const remaining=candidates.slice(1);
+ const nearest=remaining.reduce((value,candidate)=>Math.min(value,candidate.d),Infinity);
+ let chosen=remaining[0],best=Infinity;
+ for(const candidate of remaining){
+  if(candidate.d>nearest+110)continue;
   const q=candidate.p;
   const primarySide=primary.y-target.y,coverSide=q.y-target.y;
   const sameSide=Math.abs(primarySide)>25&&Math.abs(coverSide)>25&&primarySide*coverSide>0;
