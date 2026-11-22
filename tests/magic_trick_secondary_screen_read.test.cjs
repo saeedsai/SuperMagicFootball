@@ -7,6 +7,7 @@ const engine=fs.readFileSync('src/modules/engine.js','utf8').replace(/\r\n/g,'\n
 const render=fs.readFileSync('src/modules/render.js','utf8');
 const mechanics=JSON.parse(fs.readFileSync('data/mechanics/gameplay.json','utf8'));
 async function loadAI(){const {loadAssetsFromNode}=await import('../src/assets.js');await loadAssetsFromNode();return (await import('../src/modules/ai.js')).AI;}
+async function loadEngine(){const {loadAssetsFromNode}=await import('../src/assets.js');await loadAssetsFromNode();return (await import('../src/modules/engine.js')).ENGINE;}
 function carrier(overrides={}){return {t:0,x:100,y:400,dx:1,dy:0,face:1,firstTouchOutletReadTimer:.8,firstTouchControlTimer:0,firstTouchPressure:.6,hideBallTimer:0,...overrides};}
 function defender(overrides={}){return {t:1,x:50,y:400,dx:0,dy:0,face:1,defence:80,stun:0,invuln:0,down:false,z:0,action:'idle',actionTimer:0,...overrides};}
 function extract(startText,endText,label){
@@ -25,6 +26,37 @@ test('the first-touch screen read mirrors when the carrier attacks left',async()
  const read=AI.defensiveMagicTrickReadTarget(p,[screen],true);
  assert.equal(read?.defender,screen);assert.equal(read?.screened,true);
 });
+
+test('a successful screen reader narrows the visible forward lane on both attack directions',async()=>{
+ const AI=await loadAI(),bounds={xMin:0,xMax:2000,yMin:0,yMax:1000};
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,defending=1-team;
+  const p=carrier({t:team,x:team===0?700:1300,dx:dir,dy:0,moveVX:dir*180,moveVY:0});
+  const primary=defender({t:defending,x:p.x-dir*55,y:p.y,face:dir});
+  const screen=defender({t:defending,x:p.x+dir*68,y:p.y+18,face:-dir,magicReadCounterpressTimer:.42});
+  const target=AI.defensiveMagicReadCounterpressTarget(defending,p,[p,primary,screen],bounds,screen,primary);
+  assert.ok(target,JSON.stringify({team,target}));
+  const forward=(target.x-p.x)*dir;
+  assert.ok(forward>=42&&forward<=72,'screen reader should close into the forward carry lane');
+  assert.ok(Math.hypot(target.x-p.x,target.y-p.y)>=45&&Math.hypot(target.x-p.x,target.y-p.y)<=82);
+  assert.ok(Math.hypot(target.x-primary.x,target.y-primary.y)>=38,'the primary remains spatially distinct');
+  assert.ok(target.x>=24&&target.x<=1976&&target.y>=24&&target.y<=976);
+ }
+});
+test('screen-read counterpress rejects expired, hidden, backward, unavailable and human-owned states',async()=>{
+ const AI=await loadAI(),bounds={xMin:0,xMax:2000,yMin:0,yMax:1000};
+ const p=carrier({t:0,x:700,dx:1,dy:0,moveVX:180,moveVY:0});
+ const primary=defender({t:1,x:645,y:400,face:1});
+ const screen=defender({t:1,x:768,y:418,face:-1,magicReadCounterpressTimer:.42});
+ const players=[p,primary,screen],args=[1,p,players,bounds,screen,primary];
+ assert.equal(AI.defensiveMagicReadCounterpressTarget(1,p,players,bounds,{...screen,magicReadCounterpressTimer:0},primary),null);
+ assert.equal(AI.defensiveMagicReadCounterpressTarget(...args,screen),null,'human-controlled reader cannot be moved by CPU');
+ assert.equal(AI.defensiveMagicReadCounterpressTarget(1,{...p,hideBallTimer:.2},players,bounds,screen,primary),null);
+ assert.equal(AI.defensiveMagicReadCounterpressTarget(1,{...p,moveVX:-180},players,bounds,screen,primary),null);
+ assert.equal(AI.defensiveMagicReadCounterpressTarget(1,p,players,bounds,{...screen,down:true},primary),null);
+ assert.equal(AI.defensiveMagicReadCounterpressTarget(1,p,players,bounds,screen,{...primary,x:950}),null);
+});
+
 test('ordinary Magic Trick reads still require a nearby active defender closing and facing the carrier',async()=>{
  const AI=await loadAI(),p=carrier({firstTouchOutletReadTimer:0,firstTouchPressure:0}),closing=defender({x:50,dx:1,face:1});
  const read=AI.defensiveMagicTrickReadTarget(p,[closing],true);
@@ -45,10 +77,15 @@ test('unavailable, airborne, recovering, hidden-ball and backwards first-touch s
 });
 test('the read cue decays in simulation time and is rendered as steady reduced-flash-safe feedback',()=>{
  const updateSource=extract(' updateMagicReadCue(p,dt){',' updateTeleportTrail(p,dt){','read cue timer');
+ const counterpressSource=extract(' updateMagicReadCounterpress(p,dt){',' updateTeleportTrail(p,dt){','counterpress timer');
+ const updateCounterpress=vm.runInNewContext('({'+counterpressSource+'})').updateMagicReadCounterpress;
  const update=vm.runInNewContext('({'+updateSource+'})').updateMagicReadCue;
  const defender={magicReadCueTimer:.48};
  assert.equal(update.call({},defender,.2),true);assert.ok(Math.abs(defender.magicReadCueTimer-.28)<1e-9);
  assert.equal(update.call({},defender,.5),false);assert.equal(defender.magicReadCueTimer,0);
+ const reader={magicReadCounterpressTimer:.42};
+ assert.equal(updateCounterpress.call({},reader,.16),true);assert.ok(Math.abs(reader.magicReadCounterpressTimer-.26)<1e-9);
+ assert.equal(updateCounterpress.call({},reader,.3),false);assert.equal(reader.magicReadCounterpressTimer,0);
  assert.match(render,/function drawMagicReadCue\(ctx,p,reducedFlash=false\)/);
  assert.match(render,/strokeText\('READ!',0,-130\)/);
 });
@@ -93,4 +130,36 @@ test('the real named Magic Trick resolver applies the screen read, while ordinar
  assert.equal(screened.game.ball.owner,screened.player,'the read does not award an automatic tackle or possession');
  assert.equal(screened.player.magicReadyAt,8,'the caster still pays the normal six-second cooldown');
  assert.equal(screened.player.fatigue,.035,'the caster still pays the normal fatigue cost');
+}); 
+test('real engine sends the successful screen reader into a short counterpress while the primary keeps pressing',async()=>{
+ const ENGINE=await loadEngine(),field=ENGINE.WORLD.field;
+ for(const team of [0,1]){
+  const game=new ENGINE.GameEngine({halfSeconds:120});game.init({home:0,away:1,humans:0,mode:'quick'});
+  const defending=1-team,dir=team===0?1:-1,x=field.x+field.w*.5,y=field.y+field.h*.5;
+  const carrier=game.player(team,3),primary=game.player(defending,3),screen=game.player(defending,4);
+  for(const q of game.players)if(q!==carrier&&q!==primary&&q!==screen&&!q.keeper){q.down=true;q.stun=1;}
+  Object.assign(carrier,{x,y,z:0,down:false,stun:0,keeper:false,action:'idle',actionTimer:0,
+   dx:dir,dy:0,moveVX:dir*180,moveVY:0,face:dir,firstTouchOutletReadTimer:.8,
+   firstTouchControlTimer:0,firstTouchPressure:.6,hideBallTimer:0,magicReadyAt:0,
+   magicReadCueTimer:0,magicReadCounterpressTimer:0,fatigue:0,aiTimer:0,aiTarget:null,cd:1});
+  Object.assign(carrier.src,{magicTrick:'hideBall',dribbling:90});
+  Object.assign(primary,{x:x-dir*45,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+   dx:0,dy:0,moveVX:0,moveVY:0,face:dir,aiTimer:0,aiTarget:null,cd:1});
+  Object.assign(screen,{x:x+dir*68,y:y+18,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+   dx:0,dy:0,moveVX:0,moveVY:0,face:-dir,aiTimer:0,aiTarget:null,cd:1});
+  game.ball.owner=carrier;game.ball.x=x;game.ball.y=y;game.ball.z=0;game.ball.lastTouchTeam=team;
+  game.clock=10;
+  const oldRandom=Math.random;Math.random=()=>.1;
+  try{assert.equal(game.tryMagicTrick(carrier),true);}finally{Math.random=oldRandom;}
+  assert.equal(game.events.at(-1)?.countered,true,'the visible screen should read the named trick');
+  assert.equal(screen.magicReadCounterpressTimer,.42);
+  game.driveAI(screen,.016);
+  assert.ok(screen.aiTarget,JSON.stringify({team,target:screen.aiTarget}));
+  const forward=(screen.aiTarget.x-carrier.x)*dir;
+  assert.ok(forward>=42&&forward<=72,'the second defender should close the forward lane');
+  assert.equal(screen.action,'idle','the movement-only counterpress must not auto-tackle');
+  game.driveAI(primary,.016);
+  assert.ok(Math.hypot(primary.aiTarget.x-carrier.x,primary.aiTarget.y-carrier.y)<50,
+   'the original primary presser must continue to close the carrier');
+ }
 });

@@ -35,7 +35,10 @@ with sync_playwright() as pw:
     Object.assign(g.ball,{owner:carrier,x:1217,y:777,z:12,pass:false,shot:null,strike:null,attacker:0,lastTouchTeam:0});
     const oldRandom=Math.random;Math.random=()=>.1;
     try{g.tryMagicTrick(carrier);}finally{Math.random=oldRandom;}
-    return {hidden:carrier.hideBallTimer>.4,owner:g.ball.owner===carrier,cooldown:carrier.magicReadyAt,fatigue:carrier.fatigue,readerCue:screen.magicReadCueTimer||0};
+    if(withScreen){g.driveAI(screen,1/60);g.driveAI(nearest,1/60);}
+    return {hidden:carrier.hideBallTimer>.4,owner:g.ball.owner===carrier,cooldown:carrier.magicReadyAt,fatigue:carrier.fatigue,
+     readerCue:screen.magicReadCueTimer||0,counterpressTimer:screen.magicReadCounterpressTimer||0,
+     readerTarget:screen.aiTarget,primaryTarget:nearest.aiTarget,readerAction:screen.action};
    }
    return {baseline:attempt(false),screened:attempt(true),buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
@@ -44,6 +47,11 @@ with sync_playwright() as pw:
   assert result['baseline']['hidden'] is True,(kind,result)
   assert result['screened']['hidden'] is False,(kind,result)
   assert result['baseline']['readerCue']==0 and result['screened']['readerCue']>0,(kind,result)
+  assert result['screened']['counterpressTimer']>0,(kind,result)
+  target=result['screened']['readerTarget'];primary_target=result['screened']['primaryTarget']
+  assert target is not None and 42<=(target['x']-1200)<=72,(kind,target)
+  assert primary_target is not None and ((primary_target['x']-1200)**2+(primary_target['y']-765)**2)**.5<50,(kind,primary_target)
+  assert result['screened']['readerAction']=='idle',(kind,result)
   assert result['baseline']['owner'] is True,(kind,result)
   assert result['screened']['owner'] is True,(kind,result)
   assert result['baseline']['cooldown']>0 and result['baseline']['cooldown']==result['screened']['cooldown'],(kind,result)
