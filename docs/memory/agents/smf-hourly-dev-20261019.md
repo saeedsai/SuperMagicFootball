@@ -19,5 +19,11 @@ Verify the new exact-head Census after the diagnostic repair. Fix only confirmed
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private checkpoints. Preserve 223 canonical teams, 2,676 players, six formations, four actions, saves, ten Career/Cup slots, SD09 and offline/PWA behavior. No visual approval or physical-device acceptance claimed.
 
+## Evidence
+- .177 feature commit: `764bd9c1a3f55eb68b9d1ad321583d655e4ab223`.
+- .177 test-contract repair commit: `ecabeea1e6fcdaa1a47733399acd43c6e2ff9de1`.
+- Modular QA #44993068687 passed 2,701/2,701; Census #44993068691 had one Super Shot travel diagnostic failure, then the diagnostic was adjusted.
+- Current exact-head QA #44993688149 / Census #44993688107 exposed this checkpoint heading omission; fixed in this commit.
+
 ## Cleanup
 Keep this checkpoint below 4 KiB; never bypass required CI, branch protection or QA promotion.
