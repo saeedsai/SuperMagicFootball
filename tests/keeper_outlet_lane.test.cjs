@@ -73,7 +73,7 @@ test('invalid keeper or target coordinates fail closed',()=>{
  assert.equal(helper(keeper(),{x:NaN,y:0},[],480).clear,false);
 });
 
-test('the real engine uses projected lane safety for short and long keeper distribution',()=>{
+test('the real engine uses projected lane safety for short, long and rollout distribution',()=>{
  assert.ok(engine.includes('return keeperOutletLane(p,q,opponents,flightSpeed)'));
  assert.ok(engine.includes("const flightSpeed=mode==='long'||pressured?950:480;"));
  assert.ok(engine.includes('this.keeperPassingLane(p,{x,y},950)'));
