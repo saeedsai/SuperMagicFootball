@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Real-engine desktop and simulated-touch acceptance for second-defender Magic Trick reads."""
 from pathlib import Path
+from PIL import Image, ImageChops
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
+ARTIFACTS=ROOT/'docs/qa_runs_full_regression'
+ARTIFACTS.mkdir(parents=True,exist_ok=True)
 fixture=(ROOT/'tests/.generated/play.html').read_text(encoding='utf-8')
 html=fixture.split('<script type="module">',1)[0]+'</body></html>'
 js=fixture.split('<script type="module">',1)[1].split('</script>',1)[0]
@@ -32,7 +35,7 @@ with sync_playwright() as pw:
     Object.assign(g.ball,{owner:carrier,x:1217,y:777,z:12,pass:false,shot:null,strike:null,attacker:0,lastTouchTeam:0});
     const oldRandom=Math.random;Math.random=()=>.1;
     try{g.tryMagicTrick(carrier);}finally{Math.random=oldRandom;}
-    return {hidden:carrier.hideBallTimer>.4,owner:g.ball.owner===carrier,cooldown:carrier.magicReadyAt,fatigue:carrier.fatigue};
+    return {hidden:carrier.hideBallTimer>.4,owner:g.ball.owner===carrier,cooldown:carrier.magicReadyAt,fatigue:carrier.fatigue,readerCue:screen.magicReadCueTimer||0};
    }
    return {baseline:attempt(false),screened:attempt(true),buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
@@ -40,12 +43,30 @@ with sync_playwright() as pw:
   assert result['teams']>=223,(kind,result)
   assert result['baseline']['hidden'] is True,(kind,result)
   assert result['screened']['hidden'] is False,(kind,result)
+  assert result['baseline']['readerCue']==0 and result['screened']['readerCue']>0,(kind,result)
   assert result['baseline']['owner'] is True,(kind,result)
   assert result['screened']['owner'] is True,(kind,result)
   assert result['baseline']['cooldown']>0 and result['baseline']['cooldown']==result['screened']['cooldown'],(kind,result)
   assert abs(result['baseline']['fatigue']-result['screened']['fatigue'])<1e-9,(kind,result)
-  
-  
+  shot_meta=page.evaluate("""() => {
+   const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);
+   g.matchState='play';g.particles=[];g.shake=0;g.flash=0;g.options.showNames=false;
+   function paint(timer){reader.magicReadCueTimer=timer;g.options.reducedFlash=false;r.time=0;r.cameraX=600;r.cameraY=400;r.frame(g,1/60,false);return {x:reader.x,y:reader.y,scale:r.scale,offsetX:r.offsetX,offsetY:r.offsetY,screenW:r.screenW,screenH:r.screenH,zoom:r.cameraZoom};}
+   return paint(.48);
+  }""")
+  base_path=ARTIFACTS/f'magic-trick-read-cue-{kind}-without.png'
+  cue_path=ARTIFACTS/f'magic-trick-read-cue-{kind}-with.png'
+  page.evaluate("""() => {const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);reader.magicReadCueTimer=0;g.options.reducedFlash=false;r.time=0;r.cameraX=600;r.cameraY=400;r.frame(g,1/60,false);}""")
+  page.locator('#field').screenshot(path=str(base_path))
+  page.evaluate("""() => {const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);reader.magicReadCueTimer=.48;g.options.reducedFlash=false;r.time=0;r.cameraX=600;r.cameraY=400;r.frame(g,1/60,false);}""")
+  page.locator('#field').screenshot(path=str(cue_path))
+  base_image=Image.open(base_path).convert('RGB');cue_image=Image.open(cue_path).convert('RGB')
+  assert base_image.size==cue_image.size,(kind,base_image.size,cue_image.size)
+  x=round(shot_meta['offsetX']+shot_meta['scale']*shot_meta['zoom']*(shot_meta['x']-600)+shot_meta['scale']*shot_meta['screenW']*(1-shot_meta['zoom'])/2)
+  y=round(shot_meta['offsetY']+shot_meta['scale']*shot_meta['zoom']*(shot_meta['y']-400-130)+shot_meta['scale']*shot_meta['screenH']*(1-shot_meta['zoom'])/2)
+  region=(max(0,x-42),max(0,y-15),min(cue_image.width,x+43),min(cue_image.height,y+16))
+  assert ImageChops.difference(base_image.crop(region),cue_image.crop(region)).getbbox(),(kind,'READ! cue not visible in game-scale screenshot',region)
+  print('SCREEN_READ_CUE_SCREENSHOT',kind,str(cue_path.relative_to(ROOT)),cue_image.size,region,flush=True)
   assert not errors,(kind,errors)
   print('PASS',kind,'secondary first-touch screen reads the named Magic Trick while a turned-away nearest marker alone does not',flush=True)
   ctx.close()

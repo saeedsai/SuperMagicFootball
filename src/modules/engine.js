@@ -1768,9 +1768,10 @@ class GameEngine{
   // A second defender visibly screening the forward carry lane can read a
   // counterable named Magic Trick during the pressured first-touch window.
   // This is one bounded skill-based chance; ordinary Dribble Styles are separate.
-  const counterRead=defensiveMagicTrickReadTarget(p,rivals,true);
+  const counterRead=typeof defensiveMagicTrickReadTarget==='function'?defensiveMagicTrickReadTarget(p,rivals,true):null;
   const screenReadChance=counterRead?.screened?Math.min(.24,.07+stat(counterRead.defender,'defence')*.0017):0;
   const screenRead=id!=='lightning'&&screenReadChance>0&&Math.random()<screenReadChance;
+  if(screenRead&&counterRead?.defender)counterRead.defender.magicReadCueTimer=Math.max(Number(counterRead.defender.magicReadCueTimer)||0,.48);
   // Airborne JUMP counters Fireball, Scream, Freeze and Bat; a grounded SHOOT-slide
   // parries Bat and Freeze, ducks Fireball and slides under Scream. All counters use the existing four buttons and still cost
   // the caster the original cooldown and fatigue.
@@ -2465,6 +2466,13 @@ class GameEngine{
   if(!startedReveal)p.hideBallReveal=Math.max(0,(Number(p.hideBallReveal)||0)-dt);
   return p.hideBallTimer>0;
  }
+  updateMagicReadCue(p,dt){
+   if(!p)return false;
+   const step=Math.min(.05,Math.max(0,Number.isFinite(dt)?dt:0));
+   p.magicReadCueTimer=Math.max(0,(Number(p.magicReadCueTimer)||0)-step);
+   if(p.magicReadCueTimer<=1e-9)p.magicReadCueTimer=0;
+   return p.magicReadCueTimer>0;
+  }
   updateTeleportTrail(p,dt){
    const trail=p?.teleportTrail;if(!trail)return false;
    const step=Math.min(.05,Math.max(0,Number.isFinite(dt)?dt:0));
@@ -2476,7 +2484,7 @@ class GameEngine{
  for(let t=0;t<Math.min(2,this.humans);t++)this.autoSwitch(t,dt);
  // Snapshot controllers: an in-frame swap must not make the next player consume the same tap.
  const selectedAtStart=this.controlled.slice();
-   for(let p of this.players){this.playerSeconds[p.t][p.src.id]=(this.playerSeconds[p.t][p.src.id]||0)+dt;p.anim+=dt;p.cd=Math.max(0,p.cd-dt);p.invuln=Math.max(0,p.invuln-dt);p.specialCd=Math.max(0,p.specialCd-dt);p.abilityCd=Math.max(0,(p.abilityCd||0)-dt);p.abilityFx=Math.max(0,(p.abilityFx||0)-dt);p.keeperPunchFx=Math.max(0,(p.keeperPunchFx||0)-dt);p.spinBumperImpactFx=Math.max(0,(p.spinBumperImpactFx||0)-dt);p.maceSweepImpactFx=Math.max(0,(p.maceSweepImpactFx||0)-dt);this.updateSpinBumper(p,dt,true);this.updateMaceSweep(p,dt,true);this.updateSpinBumpFx(p,dt);this.updateSandTrapFx(p,dt);this.updateLightningTrick(p,dt,true);this.updateFieldTrickFx(p,dt);this.updateFireballBurn(p,dt);this.updateTeleportTrail(p,dt);p.dashCooldown=Math.max(0,(p.dashCooldown||0)-dt);p.diveCooldown=Math.max(0,(p.diveCooldown||0)-dt);p.diveIntentCooldown=Math.max(0,(p.diveIntentCooldown||0)-dt);p.comboCooldown=Math.max(0,(p.comboCooldown||0)-dt);p.contactCooldown=Math.max(0,(p.contactCooldown||0)-dt);p.trickCd=Math.max(0,(p.trickCd||0)-dt);p.dribbleCooldown=Math.max(0,(p.dribbleCooldown||0)-dt);p.trickGuard=Math.max(0,(p.trickGuard||0)-dt);this.updateHideBall(p,dt);p.trickFx=Math.max(0,(p.trickFx||0)-dt);p.firstTouchFx=Math.max(0,(p.firstTouchFx||0)-dt);p.firstTouchControlTimer=Math.max(0,(p.firstTouchControlTimer||0)-dt);p.firstTouchOutletReadTimer=Math.max(0,(p.firstTouchOutletReadTimer||0)-dt);p.comboWindow=Math.max(0,(p.comboWindow||0)-dt);
+   for(let p of this.players){this.playerSeconds[p.t][p.src.id]=(this.playerSeconds[p.t][p.src.id]||0)+dt;p.anim+=dt;p.cd=Math.max(0,p.cd-dt);p.invuln=Math.max(0,p.invuln-dt);p.specialCd=Math.max(0,p.specialCd-dt);p.abilityCd=Math.max(0,(p.abilityCd||0)-dt);p.abilityFx=Math.max(0,(p.abilityFx||0)-dt);p.keeperPunchFx=Math.max(0,(p.keeperPunchFx||0)-dt);p.spinBumperImpactFx=Math.max(0,(p.spinBumperImpactFx||0)-dt);p.maceSweepImpactFx=Math.max(0,(p.maceSweepImpactFx||0)-dt);this.updateSpinBumper(p,dt,true);this.updateMaceSweep(p,dt,true);this.updateSpinBumpFx(p,dt);this.updateSandTrapFx(p,dt);this.updateLightningTrick(p,dt,true);this.updateFieldTrickFx(p,dt);this.updateFireballBurn(p,dt);this.updateTeleportTrail(p,dt);this.updateMagicReadCue(p,dt);p.dashCooldown=Math.max(0,(p.dashCooldown||0)-dt);p.diveCooldown=Math.max(0,(p.diveCooldown||0)-dt);p.diveIntentCooldown=Math.max(0,(p.diveIntentCooldown||0)-dt);p.comboCooldown=Math.max(0,(p.comboCooldown||0)-dt);p.contactCooldown=Math.max(0,(p.contactCooldown||0)-dt);p.trickCd=Math.max(0,(p.trickCd||0)-dt);p.dribbleCooldown=Math.max(0,(p.dribbleCooldown||0)-dt);p.trickGuard=Math.max(0,(p.trickGuard||0)-dt);this.updateHideBall(p,dt);p.trickFx=Math.max(0,(p.trickFx||0)-dt);p.firstTouchFx=Math.max(0,(p.firstTouchFx||0)-dt);p.firstTouchControlTimer=Math.max(0,(p.firstTouchControlTimer||0)-dt);p.firstTouchOutletReadTimer=Math.max(0,(p.firstTouchOutletReadTimer||0)-dt);p.comboWindow=Math.max(0,(p.comboWindow||0)-dt);
   p.shotImpactWeaknessTimer=Math.max(0,(p.shotImpactWeaknessTimer||0)-dt);
   if(p.shotImpactWeaknessTimer<=0)p.shotImpactWeakness=0;
   p.shotImpactConfusedTimer=Math.max(0,(p.shotImpactConfusedTimer||0)-dt);

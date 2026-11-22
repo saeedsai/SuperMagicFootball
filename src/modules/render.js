@@ -267,6 +267,18 @@ function drawShotWeaknessCue(ctx,p,reducedFlash=false){
  ctx.moveTo(-4,9);ctx.lineTo(0,13);ctx.lineTo(4,9);ctx.stroke();
  ctx.restore();
 }
+function drawMagicReadCue(ctx,p,reducedFlash=false){
+ const remaining=Math.max(0,Number(p?.magicReadCueTimer)||0);
+ if(remaining<=0||p?.preview||p?.stun>0||p?.down||p?.z>18)return;
+ const fade=Math.min(1,remaining/.12);
+ ctx.save();ctx.globalAlpha=(reducedFlash?.68:.86)*fade;
+ ctx.strokeStyle='#9cebd8';ctx.lineWidth=reducedFlash?2.2:2.7;
+ ctx.beginPath();ctx.ellipse(0,14,27,7,0,0,Math.PI*2);ctx.stroke();
+ ctx.textAlign='center';ctx.font='900 12px Arial';ctx.lineWidth=3;
+ ctx.strokeStyle='#173b42';ctx.fillStyle='#eafff8';
+ ctx.strokeText('READ!',0,-130);ctx.fillText('READ!',0,-130);
+ ctx.restore();
+}
 function drawUndergroundShotTell(ctx,b,reducedFlash=false,time=0){
  const speed=Math.hypot(Number(b?.vx)||0,Number(b?.vy)||0)||1,ux=(Number(b?.vx)||0)/speed,uy=(Number(b?.vy)||0)/speed;
  const phase=reducedFlash?0:(Number(time)||0)*2.1;
@@ -1563,6 +1575,7 @@ class Renderer{
   if(!p.preview&&(p.mudTrickFx||0)>0)this.drawFieldTrick(ctx,'mud',p.mudTrickFx,!!game.options?.reducedFlash);
   if(!p.preview&&p.shotImpactConfusedTimer>0)drawShotImpactCue(ctx,p,this.time,!!game.options?.reducedFlash);
   if(!p.preview&&!(p.shotImpactConfusedTimer>0))drawShotWeaknessCue(ctx,p,!!game.options?.reducedFlash);
+  if(!p.preview&&(p.magicReadCueTimer||0)>0)drawMagicReadCue(ctx,p,!!game.options?.reducedFlash);
   ctx.restore();
  }
  drawPenaltyPlayers(ctx,g){let pk=g.pk;if(!pk)return;

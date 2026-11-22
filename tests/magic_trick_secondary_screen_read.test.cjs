@@ -4,6 +4,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const engine=fs.readFileSync('src/modules/engine.js','utf8').replace(/\r\n/g,'\n');
+const render=fs.readFileSync('src/modules/render.js','utf8');
 const mechanics=JSON.parse(fs.readFileSync('data/mechanics/gameplay.json','utf8'));
 async function loadAI(){const {loadAssetsFromNode}=await import('../src/assets.js');await loadAssetsFromNode();return (await import('../src/modules/ai.js')).AI;}
 function carrier(overrides={}){return {t:0,x:100,y:400,dx:1,dy:0,face:1,firstTouchOutletReadTimer:.8,firstTouchControlTimer:0,firstTouchPressure:.6,hideBallTimer:0,...overrides};}
@@ -42,6 +43,15 @@ test('unavailable, airborne, recovering, hidden-ball and backwards first-touch s
  assert.equal(AI.defensiveMagicTrickReadTarget({...p,firstTouchOutletReadTimer:0},[screen],true),null);
  assert.equal(AI.defensiveMagicTrickReadTarget({...p,dx:-1},[screen],true),null);
 });
+test('the read cue decays in simulation time and is rendered as steady reduced-flash-safe feedback',()=>{
+ const updateSource=extract(' updateMagicReadCue(p,dt){',' updateTeleportTrail(p,dt){','read cue timer');
+ const update=vm.runInNewContext('({'+updateSource+'})').updateMagicReadCue;
+ const defender={magicReadCueTimer:.48};
+ assert.equal(update.call({},defender,.2),true);assert.ok(Math.abs(defender.magicReadCueTimer-.28)<1e-9);
+ assert.equal(update.call({},defender,.5),false);assert.equal(defender.magicReadCueTimer,0);
+ assert.match(render,/function drawMagicReadCue\(ctx,p,reducedFlash=false\)/);
+ assert.match(render,/strokeText\('READ!',0,-130\)/);
+});
 test('the real named Magic Trick resolver applies the screen read, while ordinary Dribble Styles keep their own odds',async()=>{
  const AI=await loadAI();
  const trickSource=extract(' tryMagicTrick(p){',' updateSpinBumpFx(p,dt){','live named Magic Trick resolver');
@@ -71,13 +81,15 @@ test('the real named Magic Trick resolver applies the screen read, while ordinar
    Math:deterministicMath
   }).tryMagicTrick;
   assert.equal(resolve.call(game,p),true);
-  return {player:p,game,event:game.events.at(-1)};
+  return {player:p,game,event:game.events.at(-1),reader:screen};
  }
  const open=attempt(false),screened=attempt(true);
  assert.equal(open.event.countered,false,'a turned-away nearest marker alone does not read Hide Ball');
  assert.equal(open.player.hideBallTimer,.65,'unread Magic Trick still activates');
+ assert.equal(open.reader.magicReadCueTimer||0,0,'a turned-away nearest marker alone gets no read cue');
  assert.equal(screened.event.countered,true,'the visible second-defender screen can read the named Magic Trick');
  assert.equal(screened.player.hideBallTimer||0,0,'a read cancels the trick effect');
+ assert.equal(screened.reader.magicReadCueTimer,.48,'the actual screen reader receives the brief visual cue');
  assert.equal(screened.game.ball.owner,screened.player,'the read does not award an automatic tackle or possession');
  assert.equal(screened.player.magicReadyAt,8,'the caster still pays the normal six-second cooldown');
  assert.equal(screened.player.fatigue,.035,'the caster still pays the normal fatigue cost');
