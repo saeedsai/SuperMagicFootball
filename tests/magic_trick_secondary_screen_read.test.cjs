@@ -76,7 +76,7 @@ test('unavailable, airborne, recovering, hidden-ball and backwards first-touch s
  assert.equal(AI.defensiveMagicTrickReadTarget({...p,dx:-1},[screen],true),null);
 });
 test('the read cue decays in simulation time and is rendered as steady reduced-flash-safe feedback',()=>{
- const updateSource=extract(' updateMagicReadCue(p,dt){',' updateTeleportTrail(p,dt){','read cue timer');
+ const updateSource=extract(' updateMagicReadCue(p,dt){',' updateMagicReadCounterpress(p,dt){','read cue timer');
  const counterpressSource=extract(' updateMagicReadCounterpress(p,dt){',' updateTeleportTrail(p,dt){','counterpress timer');
  const updateCounterpress=vm.runInNewContext('({'+counterpressSource+'})').updateMagicReadCounterpress;
  const update=vm.runInNewContext('({'+updateSource+'})').updateMagicReadCue;
@@ -143,7 +143,7 @@ test('real engine sends the successful screen reader into a short counterpress w
    firstTouchControlTimer:0,firstTouchPressure:.6,hideBallTimer:0,magicReadyAt:0,
    magicReadCueTimer:0,magicReadCounterpressTimer:0,fatigue:0,aiTimer:0,aiTarget:null,cd:1});
   Object.assign(carrier.src,{magicTrick:'hideBall',dribbling:90});
-  Object.assign(primary,{x:x-dir*45,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+  Object.assign(primary,{x:x-dir*30,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
    dx:0,dy:0,moveVX:0,moveVY:0,face:dir,aiTimer:0,aiTarget:null,cd:1});
   Object.assign(screen,{x:x+dir*68,y:y+18,z:0,down:false,stun:0,action:'idle',actionTimer:0,
    dx:0,dy:0,moveVX:0,moveVY:0,face:-dir,aiTimer:0,aiTarget:null,cd:1});

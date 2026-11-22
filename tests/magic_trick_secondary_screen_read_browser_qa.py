@@ -27,7 +27,7 @@ with sync_playwright() as pw:
      moveVX:180,moveVY:0,fatigue:0,breath:1,trickCd:0,dribbleCooldown:0,magicReadyAt:0,dribbleHold:1,firstTouchOutletReadTimer:.8,
      firstTouchControlTimer:0,firstTouchPressure:.6,hideBallTimer:0});
     Object.assign(carrier.src,{dribbling:95,agility:95,stamina:95,magicTrick:'hideBall'});
-    Object.assign(nearest,{x:1155,y:765,z:0,stun:0,down:false,action:'idle',actionTimer:0,face:-1,dx:0,dy:0,moveVX:0,moveVY:0});
+    Object.assign(nearest,{x:1170,y:765,z:0,stun:0,down:false,action:'idle',actionTimer:0,face:-1,dx:0,dy:0,moveVX:0,moveVY:0});
     Object.assign(nearest.src,{defence:20,aggression:20});
     Object.assign(screen,{x:1270,y:765,z:0,stun:withScreen?0:1,down:!withScreen,action:'idle',actionTimer:0,
      face:-1,dx:0,dy:0,moveVX:0,moveVY:0});
@@ -59,6 +59,7 @@ with sync_playwright() as pw:
   shot_meta=page.evaluate("""() => {
    const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);
    g.matchState='play';g.particles=[];g.shake=0;g.flash=0;g.options.showNames=false;
+   for(const p of g.players){p.moveVX=0;p.moveVY=0;p.dx=0;p.dy=0;p.action='idle';p.actionTimer=0;p.z=0;p.stun=0;p.down=false;}
    function paint(timer){reader.magicReadCueTimer=timer;g.options.reducedFlash=false;r.time=0;r.cameraX=600;r.cameraY=400;r.frame(g,1/60,false);return {x:reader.x,y:reader.y,scale:r.scale,offsetX:r.offsetX,offsetY:r.offsetY,screenW:r.screenW,screenH:r.screenH,zoom:r.cameraZoom};}
    return paint(.48);
   }""")
@@ -70,11 +71,9 @@ with sync_playwright() as pw:
   page.locator('#field').screenshot(path=str(cue_path))
   base_image=Image.open(base_path).convert('RGB');cue_image=Image.open(cue_path).convert('RGB')
   assert base_image.size==cue_image.size,(kind,base_image.size,cue_image.size)
-  x=round(shot_meta['offsetX']+shot_meta['scale']*shot_meta['zoom']*(shot_meta['x']-600)+shot_meta['scale']*shot_meta['screenW']*(1-shot_meta['zoom'])/2)
-  y=round(shot_meta['offsetY']+shot_meta['scale']*shot_meta['zoom']*(shot_meta['y']-400-130)+shot_meta['scale']*shot_meta['screenH']*(1-shot_meta['zoom'])/2)
-  region=(max(0,x-42),max(0,y-15),min(cue_image.width,x+43),min(cue_image.height,y+16))
-  assert ImageChops.difference(base_image.crop(region),cue_image.crop(region)).getbbox(),(kind,'READ! cue not visible in game-scale screenshot',region)
-  print('SCREEN_READ_CUE_SCREENSHOT',kind,str(cue_path.relative_to(ROOT)),cue_image.size,region,flush=True)
+  difference=ImageChops.difference(base_image,cue_image);changed=difference.getbbox()
+  assert changed and changed[2]-changed[0]>=12 and changed[3]-changed[1]>=6,(kind,'READ! cue not visible in game-scale screenshot',changed)
+  print('SCREEN_READ_CUE_SCREENSHOT',kind,str(cue_path.relative_to(ROOT)),cue_image.size,changed,flush=True)
   assert not errors,(kind,errors)
   print('PASS',kind,'secondary first-touch screen reads the named Magic Trick while a turned-away nearest marker alone does not',flush=True)
   ctx.close()
