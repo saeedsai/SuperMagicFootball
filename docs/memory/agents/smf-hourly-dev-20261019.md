@@ -13,10 +13,10 @@ Deliver player-facing gameplay and existing-player presentation while preserving
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private checkpoints. Preserve 223 canonical teams, 2,676 players, six formations, four actions, saves, ten Career/Cup slots, SD09 and offline/PWA behavior. No visual art approval or physical-device acceptance claimed.
 
-## Branch and outstanding gates
+## Evidence
 Base .168 SHA: `adb5c690d9d5ef44335eaa98226b12e011bf489f` (dev and main matched before .169). Main protection #87 remains unresolved and GitHub reports `protected: false`. Physical two-phone acceptance #48 and Render commit-trigger drift #86 remain open. Existing-player graphics lock #10 must be respected. Authenticated online hosting is not live without owner resources.
 
-## Next smallest actions
+## Next smallest action
 Run focused Node/Chromium and exact-head Modular QA plus four Node/four Chromium Census for .169. Fix any confirmed failures, then continue with goalkeeper catch-versus-parry intelligence or the next unblocked gameplay item. Do not repeat Breath or already-covered trick counters.
 
 ## Cleanup
