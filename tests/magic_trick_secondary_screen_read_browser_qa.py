@@ -69,9 +69,9 @@ with sync_playwright() as pw:
   }""")
   base_path=ARTIFACTS/f'magic-trick-read-cue-{kind}-without.png'
   cue_path=ARTIFACTS/f'magic-trick-read-cue-{kind}-with.png'
-  page.evaluate("""() => {const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);reader.magicReadCueTimer=0;g.options.reducedFlash=false;r.time=0;r.cameraX=600;r.cameraY=400;r.frame(g,1/60,false);}""")
+  page.evaluate("""() => {const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);reader.magicReadCueTimer=0;g.options.reducedFlash=false;r.time=0;r.cameraX=reader.x-r.screenW/2;r.cameraY=reader.y-r.screenH/2;r.frame(g,1/60,false);}""")
   page.locator('#field').screenshot(path=str(base_path))
-  page.evaluate("""() => {const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);reader.magicReadCueTimer=.48;g.options.reducedFlash=false;r.time=0;r.cameraX=600;r.cameraY=400;r.frame(g,1/60,false);}""")
+  page.evaluate("""() => {const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);reader.magicReadCueTimer=.48;g.options.reducedFlash=false;r.time=0;r.cameraX=reader.x-r.screenW/2;r.cameraY=reader.y-r.screenH/2;r.frame(g,1/60,false);}""")
   page.locator('#field').screenshot(path=str(cue_path))
   base_image=Image.open(base_path).convert('RGB');cue_image=Image.open(cue_path).convert('RGB')
   assert base_image.size==cue_image.size,(kind,base_image.size,cue_image.size)

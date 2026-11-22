@@ -45,6 +45,24 @@ with sync_playwright() as pw:
   assert abs(result['windFx']-.35)<1e-9,(label,'Wind cue duration changed',result)
   assert result['withWind']>result['withoutWind'],(label,'Wind cue was not rendered',result)
   assert result['actionButtons']==4,(label,'four-button action grammar changed',result)
+  perception=page.evaluate('''() => {
+   const g=SupermagicFootball.game;
+   function attempt(carrierX,carrierY,defenderX,defenderY,dx,dy,face=1){
+    g.init({home:0,away:9,humans:0,mode:'quick'});
+    const carrier=g.player(0,2),defender=g.player(1,2);
+    g.players=[carrier,defender];carrier.src={...carrier.src,magicTrick:'wind'};
+    Object.assign(carrier,{x:carrierX,y:carrierY,dribbleHold:.5});
+    Object.assign(defender,{x:defenderX,y:defenderY,z:0,stun:0,down:false,action:'idle',actionTimer:0,
+     dx,dy,moveVX:dx*100,moveVY:dy*100,face});
+    g.ball.owner=carrier;g.jump=p=>{p.action='jump';p.actionTimer=.28;p.z=22;return true;};
+    const reacted=g.reactToWindMudTrick(defender,0,0,0);
+    return reacted&&defender.action==='jump';
+   }
+   return {verticalFront:attempt(300,300,300,360,0,-1),
+    verticalRear:attempt(300,300,300,240,0,-1),
+    lateralPeripheral:attempt(360,300,300,300,0,-1)};
+  }''')
+  assert perception=={'verticalFront':True,'verticalRear':False,'lateralPeripheral':True},(label,'2D Wind/Mud perception mismatch',perception)
   assert not errors,(label,errors)
   print('MAGIC_WIND_TRICK_BROWSER_PASS',label,result,flush=True)
   context.close()

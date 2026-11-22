@@ -1315,8 +1315,14 @@ class GameEngine{
    ?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0&&q.z<20&&
     (trick!=='mud'||(q.mudSlowTimer||0)<=0)).sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
   // The second closest defender may also time a JUMP against Wind/Mud.
-  // A defender looking away cannot read a wind-up directly behind them; allow lateral peripheral reads.
-  const canReadWindup=carrier&&((carrier.x-p.x)*(p.face||1)>=-24);
+  // Read the current 2D travel heading so vertical/diagonal rear feints work too;
+  // lateral peripheral threats remain readable, with horizontal facing as a stationary fallback.
+  let headingX=Number.isFinite(p.dx)?p.dx:0,headingY=Number.isFinite(p.dy)?p.dy:0;
+  let headingLength=Math.hypot(headingX,headingY);
+  if(headingLength<=.1){headingX=Number.isFinite(p.moveVX)?p.moveVX:0;headingY=Number.isFinite(p.moveVY)?p.moveVY:0;headingLength=Math.hypot(headingX,headingY);}
+  if(headingLength>.1){headingX/=headingLength;headingY/=headingLength;}
+  else{headingX=p.face===-1?-1:1;headingY=0;}
+  const canReadWindup=carrier&&((carrier.x-p.x)*headingX+(carrier.y-p.y)*headingY>=-24);
   const threat=rivals.slice(0,2).includes(p)&&distance(carrier,p)<radius&&canReadWindup?carrier:null;
   if(!threat){p.aiWindMudThreat=null;p.aiWindMudReaction=0;return false;}
   // Wind and Mud are resolved immediately at the end of the existing one
