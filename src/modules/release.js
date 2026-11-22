@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.188',
+ version:'0.12.81.189',
  date:'2026-11-22',
  notes:Object.freeze([
+  "AI-KEEPER-PUNCH-REBOUND-CHASE-01: after a contested high-cross punch, the same goalkeeper can pursue a safe descending follow-up inside the existing short goal-side corridor. The chase uses the existing in-memory parry marker, yields to closer active opponents or teammates, waits for the ball to descend and clears on possession or expiry. Punch thresholds, catch/dive reach, ball physics, four actions, saves, rosters and persistence remain unchanged. Mirrored real-engine Node and desktop/simulated-touch Chromium regressions added.",
   "AI-PASS-INTERCEPT-REACH-TIMING-01 regression repair: the legacy real-engine assertion now evaluates the same support-specific reachable target used by live AI; the three new reach-aware Node regressions already passed. No gameplay source behavior changed in this repair.",
   "AI-PASS-INTERCEPT-REACH-TIMING-01: the second CPU defender now chooses the earliest grounded point along a targeted low pass that it can physically reach before the moving receiver, using its actual movement speed and a bounded reaction allowance. The primary continues pressing, the existing receiver-motion prediction and conservative fallback remain, and lofted passes keep their separate coverage. No speed boost, tackle-odds, ball-physics, four-action, roster, save or offline changes. Mirrored helper/real-engine Node and desktop/simulated-touch Chromium regressions added.",
   "CUSTOM-LEAGUE-AWAY-FIXTURE-01: Custom League matchdays now honor the scheduled home/away leg: when your club is the away side, the opponent starts on the home side and your club starts away. The final engine score is converted back to club-perspective goals before standings, match history and token win/loss are updated. The version-1 campaign schema, round-robin schedule, team IDs, saves and four actions remain unchanged. Mirrored Node and desktop/simulated-touch Chromium regressions cover away and home fixtures.",

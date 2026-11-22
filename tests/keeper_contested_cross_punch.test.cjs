@@ -93,3 +93,40 @@ test('real engine punches a contested cross away from either goal and shows the 
   assert.equal(game.events.some(event=>event.type==='keeperCatch'),false);
  }
 });
+
+test('a real contested-cross punch lets its keeper chase a safe descending rebound on both sides',async()=>{
+ const {ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+  const field=ENGINE.WORLD.field,dir=team===0?1:-1;
+  const keeper=game.player(team,0),receiver=game.player(1-team,3);
+  for(const q of game.players)if(q!==keeper&&q!==receiver)Object.assign(q,{down:true,stun:1});
+  Object.assign(keeper,{x:dir===1?field.x+66:field.x+field.w-66,y:field.y+field.h/2,
+   z:0,stun:0,down:false,action:'idle',actionTimer:0,diveCooldown:0,
+   diveIntentCooldown:0,diveIntentPending:false,keeperPunchFx:0,fatigue:.1,
+   aiTimer:0,aiTarget:null,aiParryReboundTarget:false});
+  const ballX=keeper.x-dir*8,ballY=keeper.y+5;
+  Object.assign(receiver,{x:ballX+dir*90,y:ballY,z:0,stun:0,down:false,
+   action:'idle',actionTimer:0,slideTimer:0,moveVX:-dir*300,moveVY:0});
+  Object.assign(game.ball,{owner:null,attacker:1-team,lastTouchTeam:1-team,passTeam:1-team,
+   pass:true,passTarget:receiver.src.id,x:ballX,y:ballY,z:70,vx:-dir*30,vy:0,
+   vz:-20,age:.25,canCollect:0,shot:null,strike:null,ordinaryShot:false,power:0,trail:[]});
+  game.updateBall(.016);
+  assert.equal(game.events.filter(event=>event.type==='keeperPunch').length,1);
+  assert.equal(game.ball.attacker,team);assert.equal(game.ball.lastTouchTeam,team);
+  Object.assign(receiver,{down:true,action:'shotDown',actionTimer:1,stun:0});
+  Object.assign(keeper,{z:12,action:'keeperDive',actionTimer:.1,diveElapsed:.24,
+   diveIntentPending:false,aiTimer:0,aiTarget:null,aiParryReboundTarget:false});
+  Object.assign(game.ball,{owner:null,attacker:team,lastTouchTeam:team,
+   x:keeper.x+dir*80,y:keeper.y+38,z:60,vx:dir*260,vy:30,vz:-110,
+   shot:null,strike:null,ordinaryShot:false,pass:false,age:.6,canCollect:0});
+  game.clock=.35;game.driveAI(keeper,.016);
+  assert.equal(keeper.aiParryReboundTarget,true);
+  assert.ok(keeper.aiTarget&&dir*(keeper.aiTarget.x-keeper.x)>0);
+  assert.ok(dir*(keeper.moveVX||0)>0);
+  game.take(game.player(team,3));
+  assert.equal(keeper.aiParryReboundTarget,false);
+  assert.equal(keeper.aiTarget,null);
+ }
+});

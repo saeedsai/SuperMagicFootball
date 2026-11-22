@@ -31,9 +31,20 @@ with sync_playwright() as pw:
      vz:-20,age:.25,canCollect:0,shot:null,strike:null,ordinaryShot:false,power:0,trail:[]});
     g.updateBall(.016);
     const punch=g.events.filter(event=>event.type==='keeperPunch');
-    rows.push({team,dir,punches:punch.length,owner:!!g.ball.owner,pass:g.ball.pass,
+    const punched={punches:punch.length,owner:!!g.ball.owner,pass:g.ball.pass,
      lastTouchTeam:g.ball.lastTouchTeam,attacker:g.ball.attacker,vx:g.ball.vx,vz:g.ball.vz,
-     action:liveKeeper.action,punchFx:liveKeeper.keeperPunchFx||0});
+     action:liveKeeper.action,punchFx:liveKeeper.keeperPunchFx||0};
+    Object.assign(liveReceiver,{down:true,action:'shotDown',actionTimer:1,stun:0});
+    Object.assign(liveKeeper,{z:12,action:'keeperDive',actionTimer:.1,diveElapsed:.24,
+     diveIntentPending:false,aiTimer:0,aiTarget:null,aiParryReboundTarget:false});
+    Object.assign(g.ball,{owner:null,attacker:team,lastTouchTeam:team,
+     x:liveKeeper.x+dir*80,y:liveKeeper.y+38,z:60,vx:dir*260,vy:30,vz:-110,
+     shot:null,strike:null,ordinaryShot:false,pass:false,age:.6,canCollect:0});
+    g.clock=.35;g.driveAI(liveKeeper,.016);
+    const chase=liveKeeper.aiParryReboundTarget===true;
+    const moving=dir*(liveKeeper.moveVX||0)>0;
+    const target=liveKeeper.aiTarget?{x:liveKeeper.aiTarget.x,y:liveKeeper.aiTarget.y}:null;
+    rows.push({team,dir,...punched,chase,moving,target});
    }
    return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
     teams:SupermagicFootball.teams.length};
@@ -45,7 +56,8 @@ with sync_playwright() as pw:
    assert not row['owner'] and row['pass'] is False,(kind,row)
    assert row['lastTouchTeam']==row['team'] and row['attacker']==row['team'] and row['dir']*row['vx']>0 and row['vz']>0,(kind,row)
    assert row['action']=='keeperDive' and row['punchFx']>0,(kind,row)
+   assert row['chase'] and row['moving'] and row['target'] is not None,(kind,row)
   assert not errors,(kind,errors)
-  print('PASS',kind,'mirrored contested-cross punch, readable keeper response and four actions',flush=True)
+  print('PASS',kind,'mirrored contested-cross punch, safe rebound chase, readable keeper response and four actions',flush=True)
   ctx.close()
  browser.close()

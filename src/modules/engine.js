@@ -670,6 +670,8 @@ class GameEngine{
    b.pass=false;b.passFrom=null;b.passTeam=null;b.passTarget=null;
    b.shot=null;b.strike=null;b.ordinaryShot=false;b.power=0;b.shooter=null;
    b.attacker=p.t;b.lastTouchTeam=p.t;b.age=0;b.canCollect=.22;b.trail=[];b.targetY=0;b.liftOwner=null;
+    // A contested-cross punch is a parry too: allow this keeper to follow a safe descending rebound.
+    keeperParryRebounds.set(b,{team:p.t,expires:(Number.isFinite(this.clock)?this.clock:0)+1.65});
    p.action='keeperDive';p.actionTimer=Math.max(.38,keeperDiveAnimationSeconds(p));
    p.diveCooldown=keeperParryRecoverySeconds(p);p.diveIntentPending=false;
    p.diveElapsed=0;p.diveAdvanceTravel=0;p.diveDx=0;p.diveDy=side;
