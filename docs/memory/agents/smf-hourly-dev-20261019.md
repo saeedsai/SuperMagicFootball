@@ -6,7 +6,7 @@
 Deliver player-facing gameplay and existing-player presentation while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- .171 KEEPER-OUTLET-MOVEMENT-READ-01: CPU keeper distribution now projects active defenders along a bounded .12–.72 s flight and the existing receiver lead. Short throws and long clearances use their respective speed estimates; a moving defender entering the flight corridor or predicted arrival pocket makes that outlet unsafe. Safer teammates/open turf remain eligible.
+- .171 KEEPER-OUTLET-MOVEMENT-READ-01: CPU keeper short throws, long clearances and low DRIBBLE rollouts now project active defenders along a bounded .12–.72 s flight and the existing receiver lead. A moving defender entering the corridor or predicted arrival pocket makes that outlet unsafe; safer teammates/open turf remain eligible.
 - Focused Node tests cover closing/retreating defenders, receiver lead, short-vs-long flight, mirrored direction, inactive defenders, legacy velocity and fail-closed inputs. New real-engine Chromium acceptance checks both goals and desktop/simulated touch.
 - .170 Modular QA #44970268998 passed; Full Regression Census #44970269093 passed preflight, preview, all four Node/four Chromium shards and QA-gated promotion. Main and dev converged at .170 before this candidate. Pages/main hosted-byte verification was not independently observed.
 - .171 source, tests and release metadata are committed on existing dev; exact-head CI pending.
