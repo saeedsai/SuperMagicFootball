@@ -1025,10 +1025,56 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
 }
 
 
+
+ // Select the earliest grounded point on a targeted pass that this support defender
+ // can physically reach before the receiver. The normal support assignment is still
+ // the fallback when the defender cannot arrive; this is not a speed or tackle bonus.
+ function defensivePassInterceptionReachTarget(team,ball,receiverX,receiverY,arrival,ballAt,bounds,defender,defenderSpeed,reactionSeconds){
+  if((team!==0&&team!==1)||!ball||!defender||defender.t!==team||defender.keeper||
+   defender.down||!Number.isFinite(defender.x)||!Number.isFinite(defender.y)||
+   !Number.isFinite(defenderSpeed)||defenderSpeed<120||!Number.isFinite(reactionSeconds)||
+   !Number.isFinite(receiverX)||!Number.isFinite(receiverY)||!Number.isFinite(arrival)||
+   !Number.isFinite(ballAt?.x)||!Number.isFinite(ballAt?.y))return null;
+  const clear=v=>v==null||(Number.isFinite(Number(v))&&Number(v)<=0);
+  if(!clear(defender.stun)||!clear(defender.slideTimer)||
+   !clear(defender.shotImpactKnockdownPending)||!clear(defender.shotImpactKnockdownTimer)||
+   !clear(defender.shotImpactRiseTimer)||
+   (defender.z!=null&&(!Number.isFinite(Number(defender.z))||Number(defender.z)>18))||
+   defender.action==='shotDown'||defender.action==='shotGetUp'||
+   ((defender.action==='slide'||defender.action==='hurt')&&(Number(defender.actionTimer)||0)>0))return null;
+  const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax),
+   yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
+  if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+  const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+  const attackDir=(1-team)===0?1:-1;
+  // This role is refreshed every frame, so only a bounded fraction of the normal
+  // think delay is charged before the support can move toward the interception.
+  const responseDelay=clampTo(reactionSeconds*.4,.04,.12);
+  const firstTime=responseDelay+.06,lastTime=Math.min(arrival*.88,.62);
+  if(!Number.isFinite(lastTime)||lastTime<firstTime)return null;
+  const speed=Math.min(440,defenderSpeed);
+  for(let step=0;step<=12;step++){
+   const time=firstTime+(lastTime-firstTime)*step/12;
+   const height=ball.z+ball.vz*time-250*time*time;
+   if(!Number.isFinite(height)||height< -4||height>54)continue;
+   const point={
+    x:clampTo(ball.x+ball.vx*time+attackDir*18,xMin+22,xMax-22),
+    y:clampTo(ball.y+ball.vy*time+clampTo((receiverY-ballAt.y)*.35,-18,18),yMin+23,yMax-23)
+   };
+   const fromBall=Math.hypot(point.x-ball.x,point.y-ball.y);
+   const toReceiver=Math.hypot(point.x-receiverX,point.y-receiverY);
+   if(fromBall<38||toReceiver<34||toReceiver>220)continue;
+   const travel=Math.hypot(point.x-defender.x,point.y-defender.y);
+   const reachable=(time-responseDelay)*speed*.82+12;
+   if(travel<=reachable)return point;
+  }
+  return null;
+ }
+
  // During a targeted low pass, reserve the second defender in the final lane to
  // the intended receiver. The primary presser still attacks the ball; this is a
  // short, bounded interception read, not a teleport or a guaranteed tackle.
- function defensivePassReceiverCoverTarget(team,ball,players,bounds){
+ function defensivePassReceiverCoverTarget(team,ball,players,bounds,defender=null,defenderSpeed=0,reactionSeconds=.2){
   if((team!==0&&team!==1)||!ball||ball.owner||ball.pass!==true||
    ball.attacker!==1-team||ball.passTeam!==1-team||
    typeof ball.passTarget!=='string'||!ball.passTarget||!Array.isArray(players)||
@@ -1071,7 +1117,9 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   const fromBall=Math.hypot(target.x-ball.x,target.y-ball.y);
   const toReceiver=Math.hypot(target.x-receiverX,target.y-receiverY);
   if(fromBall<38||toReceiver<34||toReceiver>220)return null;
-  return target;
+  const reachable=defensivePassInterceptionReachTarget(team,ball,receiverX,receiverY,arrival,ballAt,bounds,
+   defender,defenderSpeed,reactionSeconds);
+  return reachable||target;
  }
 
 

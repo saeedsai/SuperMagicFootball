@@ -6,12 +6,12 @@
 Deliver player-facing gameplay, presentation and Career/Cup improvements while preserving four actions, canonical rosters, saves and offline play.
 
 ## Current checkpoint
-- **.186 CUSTOM-LEAGUE-AWAY-FIXTURE-01:** Custom League scheduled-away fixtures now start with the opponent on engine home side and the selected club on away side. Match scores and token win/loss are normalized to club perspective before standings/history update. Version-1 campaign schema, team IDs, save slots and four actions remain unchanged.
-- .185 contested-cross punch attribution follow-up passed Modular QA #45012643434 and Full Regression Census #45012643513 (four Node + four Chromium shards); QA-gated promotion advanced main/dev to `a62b800892c7a49dc8a253f664e58e948bae56dc`. Pages deployment #45013420954 and main Census #45013426621 were running when .186 began.
-- #87 remains open; GitHub REST reports main and dev unprotected. #48 physical two-phone acceptance and #86 Render drift remain open. #10 existing-player graphics remains subject to the documented source/visual acceptance gate. No LAN/P2P or art changes in this increment.
+- .187 AI-PASS-INTERCEPT-REACH-TIMING-01: the second CPU defender chooses the earliest grounded point along a targeted low pass that it can physically reach before the moving receiver, using actual support movement speed and bounded reaction allowance. The primary keeps pressing; the prior conservative screen remains when no early interception is reachable. Lofted-pass coverage, pass physics, speed, tackle odds, four actions, saves, rosters and persistence are unchanged.
+- .186 was QA-gated promoted on SHA 2c9a5655bc72e88954876386a5449db9ac4f6ffa: Modular QA #45013905152 passed 2,731/2,731, dev Census #45013905142 passed four Node/four Chromium shards, and Pages deployment #45014796218 succeeded. Main Census #45014801521 passed hosted smoke and all Node shards plus three browser shards; historical lan_auto_two_browser_qa.py timed out once and its failed-job-only retry is running.
+- #87 remains open; current protection endpoint returned 403, so protection cannot be re-verified this run. #48 physical two-phone acceptance and #86 Render drift remain open. #10 graphics work still requires source-faithful Studio/game-scale review.
 
 ## Next smallest action
-Run exact-head focused Node and desktop/simulated-touch Chromium acceptance for .186, then Modular QA and all four Node/four Chromium Full Regression Census shards. Fix confirmed failures before QA-gated promotion; verify Pages and main hosted smoke separately.
+Run focused AI-PASS-INTERCEPT-REACH-TIMING-01 Node and desktop/simulated-touch Chromium regressions, then exact-head Modular QA and four-Node/four-Chromium Full Regression Census. Fix confirmed failures before QA-gated promotion; verify Pages and main hosted smoke independently.
 
 ## Next five product improvements
 1. Improve CPU through-ball interception timing against moving receivers without duplicating existing low/lofted pass cover.

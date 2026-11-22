@@ -2667,13 +2667,15 @@ class GameEngine{
   // swallow the team pursuit assignment. The next closest AI supplies cover.
   const pressing=(!owner||owner.t!==t)?defensivePressers(this.players,t,owner||b,
    this.inControl(t)?this.controlledPlayer(t):null):null;
+  const styleSpeed=t===1?(aiStyle==='Aggressive'?1.09:aiStyle==='Defensive'?.96:1):1;
+  const speed=this.playerSpeed(p)*ai.speed*styleSpeed*(this.terrain==='Sand'?.75:1);
   const defensiveCutbackCover=owner&&owner.t!==t?defensiveCutbackCoverTarget(t,owner,
    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},this.players):null;
   const defensiveGiveAndGoCover=owner&&owner.t!==t?defensiveGiveAndGoCoverTarget(t,owner,this.players,
    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},this.clock):null;
   const defensivePassCover=pressing?.support===p&&!owner&&!concealed?
    (defensivePassReceiverCoverTarget(t,liveBall,this.players,
-    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24})||
+    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},p,speed,ai.reaction)||
     defensiveLoftedPassCoverTarget(t,liveBall,this.players,
     {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24})):null;
   const defensiveLooseBallCover=pressing?.support===p&&!owner&&!concealed?
@@ -2689,13 +2691,11 @@ class GameEngine{
    defensiveThirdManRunnerTarget(t,owner,this.players,
     {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},
     pressing.primary,pressing.support,this.inControl(t)?this.controlledPlayer(t):null):null;
-  const styleSpeed=t===1?(aiStyle==='Aggressive'?1.09:aiStyle==='Defensive'?.96:1):1;
   if(p.keeper&&owner===p){
    p.keeperHold=(p.keeperHold||0)+dt;
    if(p.cd<=0&&(p.keeperHold>=1.35||(p.keeperHold>=.28&&this.players.some(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&distance(p,q)<210)))){this.distributeKeeper(p);return;}
   }else if(p.keeper){p.keeperHold=0;}
   if(!concealed&&this.driveAiCombo(p,dt,ai))return;
-  const speed=this.playerSpeed(p)*ai.speed*styleSpeed*(this.terrain==='Sand'?.75:1);
   if(p.aiAssistTarget){
    if(p.aiAssistTarget.expires<this.clock||this.ball.owner||p.stun>0||p.z>0){p.aiAssistTarget=null;}
    else{
