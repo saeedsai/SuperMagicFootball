@@ -45,8 +45,14 @@ with sync_playwright() as pw:
                 Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,
                     passTarget:null,attacker:team,lastTouchTeam:team,age:0,shot:null,strike:null,
                     ordinaryShot:false,hideBallTimer:0});
-                game.clock=1;
-                game.driveAI(carrier,.016);
+                // Acceleration deliberately preserves the existing lateral velocity for
+                // a short moment. Hold the blocked-lane geometry steady while the
+                // movement controller turns; assert the eventual chosen direction,
+                // not an impossible instantaneous 16 ms reversal.
+                for(let step=0;step<36;step++){
+                    carrier.x=x;carrier.y=y;game.clock=1+step*.016;
+                    game.driveAI(carrier,.016);
+                }
                 return {team,momentumY,markerOffset,dy:carrier.dy,moveVY:carrier.moveVY,
                     moveVX:carrier.moveVX};
             };
