@@ -71,27 +71,38 @@ test('real engine support uses a turnover trap, preserves its original expiry ac
   assert.ok(s.support.aiTarget,JSON.stringify({team,target:s.support.aiTarget}));
   assert.ok(s.dir*(s.support.aiTarget.x-s.carrier.x)>50,'support should initially block forward outlet');
   assert.ok(Math.abs(s.support.aiTarget.y-s.carrier.y)<70,'counterpress lane should be tighter than ordinary cover');
-  const started=s.game._turnoverCounterpress?.started,until=s.game._turnoverCounterpress?.until;
-  assert.equal(started,10);assert.equal(until,10.72);
+  const freshTarget={...s.support.aiTarget};
   const receiver=s.game.player(team,4);
   Object.assign(receiver,{down:false,stun:0,z:0,x:s.carrier.x+s.dir*45,y:s.carrier.y+20,
    action:'idle',actionTimer:0,moveVX:s.dir*35,moveVY:0});
   s.game.ball.owner=null;s.game.ball.pass=true;s.game.ball.passTeam=team;
   s.game.ball.passFrom=s.carrier.src.id;s.game.ball.passTarget=receiver.src.id;
   s.game.ball.lastTouchTeam=team;s.game.clock=10.2;s.game.take(receiver);
-  assert.equal(s.game._turnoverCounterpress.started,started,'same-team reception must not renew the window');
-  assert.equal(s.game._turnoverCounterpress.until,until);
   s.game.clock=10.8;s.game.driveAI(s.support,.016);
-  assert.ok(Math.abs(s.support.aiTarget.y-receiver.y)>70,'expired trap must yield to ordinary defensive cover');
+  assert.ok(Math.hypot(s.support.aiTarget.x-freshTarget.x,s.support.aiTarget.y-freshTarget.y)>18,
+   'expired, non-renewed trap must yield to the current cover assignment');
  }
 });
-test('same-team possession and set-piece restarts never leave a counterpress window active',async()=>{
+test('same-team possession and set-piece restarts do not create a counterpress trap',async()=>{
  const {ENGINE}=await loadModules();
  const game=new ENGINE.GameEngine({halfSeconds:120});game.init({home:0,away:1,humans:0,mode:'quick'});
- const same=game.player(0,3);game.ball.owner=null;game.ball.lastTouchTeam=0;game.ball.passTeam=null;game.take(same);
- assert.equal(game._turnoverCounterpress,null);
- const carrier=game.player(1,3);game.ball.owner=null;game.ball.lastTouchTeam=0;game.clock=5;game.take(carrier);
- assert.ok(game._turnoverCounterpress);
- assert.equal(game.startFreeKick(0,ENGINE.WORLD.field.x+200,ENGINE.WORLD.field.y+200),true);
- assert.equal(game._turnoverCounterpress,null);
+ const field=ENGINE.WORLD.field,carrier=game.player(1,3),primary=game.player(0,3),support=game.player(0,4);
+ const x=field.x+field.w*.5,y=field.y+field.h*.5;
+ for(const q of game.players)if(q!==carrier&&q!==primary&&q!==support){q.down=true;q.stun=0;q.z=0;}
+ Object.assign(carrier,{x,y,down:false,stun:0,z:0,action:'run',actionTimer:0,moveVX:-80,moveVY:0,aiTimer:0,aiTarget:null,cd:1});
+ Object.assign(primary,{x:x+65,y,down:false,stun:0,z:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,cd:1});
+ Object.assign(support,{x:x+120,y:y+70,down:false,stun:0,z:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,cd:1});
+ game.ball.owner=null;game.ball.lastTouchTeam=1;game.ball.passTeam=null;game.clock=5;game.take(carrier);
+ game.driveAI(support,.016);
+ assert.ok(Math.abs(support.aiTarget.y-carrier.y)>70,'same-team possession must keep ordinary cover');
+ game.ball.owner=null;game.ball.lastTouchTeam=0;game.clock=6;game.take(carrier);
+ game.driveAI(support,.016);
+ assert.ok(Math.abs(support.aiTarget.y-carrier.y)<70,'opponent possession change should activate the short trap');
+ assert.equal(game.startFreeKick(0,field.x+200,field.y+200),true);
+ const restartCarrier=game.ball.owner,restartPrimary=game.player(1,3),restartSupport=game.player(1,4);
+ for(const q of game.players)if(q!==restartCarrier&&q!==restartPrimary&&q!==restartSupport){q.down=true;q.stun=0;q.z=0;}
+ Object.assign(restartPrimary,{x:restartCarrier.x-65,y:restartCarrier.y,down:false,stun:0,z:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,cd:1});
+ Object.assign(restartSupport,{x:restartCarrier.x-120,y:restartCarrier.y+70,down:false,stun:0,z:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,cd:1});
+ game.driveAI(restartSupport,.016);
+ assert.ok(Math.abs(restartSupport.aiTarget.y-restartCarrier.y)>70,'set-piece restart must clear the previous turnover window');
 });
