@@ -56,25 +56,29 @@ with sync_playwright() as pw:
   assert result['screened']['owner'] is True,(kind,result)
   assert result['baseline']['cooldown']>0 and result['baseline']['cooldown']==result['screened']['cooldown'],(kind,result)
   assert abs(result['baseline']['fatigue']-result['screened']['fatigue'])<1e-9,(kind,result)
-  shot_meta=page.evaluate("""() => {
-   const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);
-   g.matchState='play';g.particles=[];g.shake=0;g.flash=0;g.options.showNames=false;g.options.camera='Normal';
-   for(const p of g.players){p.moveVX=0;p.moveVY=0;p.dx=0;p.dy=0;p.action='idle';p.actionTimer=0;p.z=0;p.stun=0;p.down=false;}
-   // Keep the cue subject at the center of the logical camera on both wide
-   // desktop and portrait touch viewports; the old fixed camera clipped the
-   // player's ground ring at the lower edge on simulated-touch devices.
-   // Isolate the real reader so teammates cannot overdraw its cue at the narrower touch scale.
-   g.players=g.players.filter(p=>p===reader);
-   g.ball.owner=null;g.ball.x=reader.x;g.ball.y=reader.y;g.ball.vx=0;g.ball.vy=0;g.ball.z=2000;
-   function paint(timer){reader.magicReadCueTimer=timer;g.options.reducedFlash=false;r.time=0;r.cameraX=reader.x-r.screenW/2;r.cameraY=reader.y-r.screenH/2;r.frame(g,0,false);return {x:reader.x,y:reader.y,scale:r.scale,offsetX:r.offsetX,offsetY:r.offsetY,screenW:r.screenW,screenH:r.screenH,zoom:r.cameraZoom};}
-   return paint(.48);
-  }""")
   base_path=ARTIFACTS/f'magic-trick-read-cue-{kind}-without.png'
   cue_path=ARTIFACTS/f'magic-trick-read-cue-{kind}-with.png'
-  page.evaluate("""() => {const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);reader.magicReadCueTimer=0;g.options.reducedFlash=false;r.time=0;r.cameraX=reader.x-r.screenW/2;r.cameraY=reader.y-r.screenH/2;r.frame(g,0,false);}""")
-  page.locator('#field').screenshot(path=str(base_path))
-  page.evaluate("""() => {const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);reader.magicReadCueTimer=.48;g.options.reducedFlash=false;r.time=0;r.cameraX=reader.x-r.screenW/2;r.cameraY=reader.y-r.screenH/2;r.frame(g,0,false);}""")
-  page.locator('#field').screenshot(path=str(cue_path))
+  page.evaluate("""() => {
+   const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);
+   if(!reader||!r?.drawPlayer||!r?.drawField)throw Error('production match renderer or READ subject unavailable');
+   g.matchState='play';g.particles=[];g.shake=0;g.flash=0;g.options.showNames=false;g.options.camera='Normal';g.options.reducedFlash=false;
+   const width=innerWidth,height=innerHeight,screenH=720,screenW=Math.max(1280,720*width/height),scale=Math.min(width/screenW,height/screenH);
+   r.screenW=screenW;r.screenH=screenH;r.scale=scale;r.dpr=1;r.cameraZoom=1;r.time=0;r.frameDelta=0;r.inMatchDraw=false;
+   for(const p of g.players){p.moveVX=0;p.moveVY=0;p.dx=0;p.dy=0;p.action='idle';p.actionTimer=0;p.z=0;p.stun=0;p.down=false;}
+   g.ball.owner=null;g.ball.x=reader.x;g.ball.y=reader.y;g.ball.vx=0;g.ball.vy=0;g.ball.z=2000;
+   function paint(timer,id){
+    const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;canvas.id=id;
+    const ctx=canvas.getContext('2d');ctx.fillStyle='#102b1e';ctx.fillRect(0,0,width,height);
+    ctx.setTransform(scale,0,0,scale,width/2-reader.x*scale,height*.72-reader.y*scale);
+    r.drawField(ctx,g);
+    const subject={...reader,preview:false,controlled:false,action:'idle',actionTimer:0,z:0,stun:0,down:false,moveVX:0,moveVY:0,dx:0,dy:0,face:1,visualFacing:{kind:'front',side:1},magicReadCueTimer:timer};
+    r.drawPlayer(ctx,subject,g);document.body.append(canvas);
+    return {scale,width,height,playerX:reader.x,playerY:reader.y};
+   }
+   return {base:paint(0,'read-cue-base'),cue:paint(.48,'read-cue-with')};
+  }""")
+  page.locator('#read-cue-base').screenshot(path=str(base_path))
+  page.locator('#read-cue-with').screenshot(path=str(cue_path))
   base_image=Image.open(base_path).convert('RGB');cue_image=Image.open(cue_path).convert('RGB')
   assert base_image.size==cue_image.size,(kind,base_image.size,cue_image.size)
   difference=ImageChops.difference(base_image,cue_image);changed=difference.getbbox()

@@ -86,7 +86,8 @@ test('the read cue decays in simulation time and is rendered as steady reduced-f
  const reader={magicReadCounterpressTimer:.42};
  assert.equal(updateCounterpress.call({},reader,.16),true);assert.ok(Math.abs(reader.magicReadCounterpressTimer-.26)<1e-9);
  assert.equal(updateCounterpress.call({},reader,.3),false);assert.equal(reader.magicReadCounterpressTimer,0);
- assert.match(render,/function drawMagicReadCue\(ctx,p,reducedFlash=false\)/);
+ assert.match(render,/function drawMagicReadCue\(ctx,p,reducedFlash=false,logicalScale=1,viewSide=1\)/);
+ assert.match(render,/drawMagicReadCue\(ctx,p,!!game\.options\?\.reducedFlash,[^,]+,view\.side\)/);
  assert.match(render,/strokeText\('READ!',0,-130\)/);
 });
 test('the real named Magic Trick resolver applies the screen read, while ordinary Dribble Styles keep their own odds',async()=>{

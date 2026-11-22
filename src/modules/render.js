@@ -267,17 +267,20 @@ function drawShotWeaknessCue(ctx,p,reducedFlash=false){
  ctx.moveTo(-4,9);ctx.lineTo(0,13);ctx.lineTo(4,9);ctx.stroke();
  ctx.restore();
 }
-function drawMagicReadCue(ctx,p,reducedFlash=false){
+function drawMagicReadCue(ctx,p,reducedFlash=false,logicalScale=1,viewSide=1){
  const remaining=Math.max(0,Number(p?.magicReadCueTimer)||0);
  if(remaining<=0||p?.preview||p?.stun>0||p?.down||p?.z>18)return;
- const fade=Math.min(1,remaining/.12);
+ const fade=Math.min(1,remaining/.12),scale=Math.max(.12,Math.min(3,Number(logicalScale)||1));
+ const side=Number(viewSide)<0?-1:1;
  ctx.save();ctx.globalAlpha=(reducedFlash?.68:.86)*fade;
- ctx.strokeStyle='#9cebd8';ctx.lineWidth=reducedFlash?2.2:2.7;
+ ctx.strokeStyle='#9cebd8';ctx.lineWidth=(reducedFlash?2.2:2.7)/scale;
  ctx.beginPath();ctx.ellipse(0,14,27,7,0,0,Math.PI*2);ctx.stroke();
+ // Keep the label readable at mobile game scale and cancel the character's horizontal mirror.
+ ctx.save();ctx.translate(0,-130*(1-1/scale));ctx.scale(side,1);ctx.scale(1/scale,1/scale);
  ctx.textAlign='center';ctx.font='900 12px Arial';ctx.lineWidth=3;
  ctx.strokeStyle='#173b42';ctx.fillStyle='#eafff8';
  ctx.strokeText('READ!',0,-130);ctx.fillText('READ!',0,-130);
- ctx.restore();
+ ctx.restore();ctx.restore();
 }
 function drawUndergroundShotTell(ctx,b,reducedFlash=false,time=0){
  const speed=Math.hypot(Number(b?.vx)||0,Number(b?.vy)||0)||1,ux=(Number(b?.vx)||0)/speed,uy=(Number(b?.vy)||0)/speed;
@@ -1516,7 +1519,8 @@ class Renderer{
   }if(p.action==='ballLift')ctx.translate(0,-8);if(p.action==='superHead')ctx.translate(0,-18);if(p.action==='superBicycle')ctx.rotate(-p.face*.90);if(p.action==='bicycle')ctx.rotate(-p.face*.64);if(p.action==='flyingKick')ctx.rotate(-p.face*.28);if(p.action==='defensiveBicycle')ctx.rotate(-p.face*.76);
   if(kick)ctx.rotate(-.045);
   // v0.8.25.15: articulated five-projection character rendering.
- if(!CROWN_ROYALS.draw(ctx,p,view,{run,action:p.action,phase:(kick||sliding)?Math.max(.3,Math.min(1,(p.actionTimer||0)/.3)):0})&&!CONCEPT_MODULAR.draw(ctx,p,view,{run,headScale})&&!CONCEPT_HERO.draw(ctx,p,view,{run,headScale}))CHARACTER_ART.draw(ctx,p,av,team,view,{run,runPhase,runSpeedRatio,footScaleX:characterScaleX,footScaleY:characterScaleY,locomotion,isHurt,isCrying,kick,sliding,skin,dark,hair,build,stature,headScale,lips,time:this.time,signatureMotion,shotLaunchPose,turnLag,reducedFlash:!!game.options?.reducedFlash,celebrate:p.action==='celebrate',celebrationStyle:(game.celebrationStyle+(Number.isInteger(p.i)?p.i:0))%25,defenceSweepPhase:maceSweepPhase,defenceSweepDirection:view.side<0?-1:1,spinBumperPhase,hurt:isHurt,cry:isCrying,jumpAirPose:jumpPose,spinBumperImpactPhase});
+ const receiveGaze=ARTPOSE.receiveGaze(p,game.ball,view);
+ if(!CROWN_ROYALS.draw(ctx,p,view,{run,action:p.action,phase:(kick||sliding)?Math.max(.3,Math.min(1,(p.actionTimer||0)/.3)):0})&&!CONCEPT_MODULAR.draw(ctx,p,view,{run,headScale})&&!CONCEPT_HERO.draw(ctx,p,view,{run,headScale}))CHARACTER_ART.draw(ctx,p,av,team,view,{run,runPhase,runSpeedRatio,footScaleX:characterScaleX,footScaleY:characterScaleY,locomotion,isHurt,isCrying,kick,sliding,skin,dark,hair,build,stature,headScale,lips,time:this.time,signatureMotion,shotLaunchPose,turnLag,receiveGaze,reducedFlash:!!game.options?.reducedFlash,celebrate:p.action==='celebrate',celebrationStyle:(game.celebrationStyle+(Number.isInteger(p.i)?p.i:0))%25,defenceSweepPhase:maceSweepPhase,defenceSweepDirection:view.side<0?-1:1,spinBumperPhase,hurt:isHurt,cry:isCrying,jumpAirPose:jumpPose,spinBumperImpactPhase});
  if(!p.preview&&(p.fireballBurnFx||0)>0){const alpha=clamp(p.fireballBurnFx/.48,0,1)*.72;ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle='#ff9b46';ctx.fillStyle='#ffd16a';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(0,-67,31,48,0,0,PI*2);ctx.stroke();for(const x of [-19,0,19]){ctx.beginPath();ctx.moveTo(x,-107);ctx.quadraticCurveTo(x-7,-121,x,-128);ctx.quadraticCurveTo(x+8,-119,x,-107);ctx.fill();}ctx.restore();}
  if(p.action==='hyperdash'){ctx.save();ctx.globalAlpha=.72;ctx.lineWidth=7;ctx.strokeStyle='#a0f0ff';for(let k=0;k<3;k++){ctx.beginPath();ctx.moveTo(-p.face*(38+k*22),-22-k*16);ctx.lineTo(-p.face*(72+k*21),-20-k*17);ctx.stroke()}ctx.restore()}
  if(p.action==='header'&&!p.preview){ctx.save();ctx.textAlign='center';ctx.fillStyle='#fff4a1';ctx.font='900 24px sans-serif';ctx.fillText('HEAD!',0,-139);ctx.restore()}
@@ -1575,7 +1579,7 @@ class Renderer{
   if(!p.preview&&(p.mudTrickFx||0)>0)this.drawFieldTrick(ctx,'mud',p.mudTrickFx,!!game.options?.reducedFlash);
   if(!p.preview&&p.shotImpactConfusedTimer>0)drawShotImpactCue(ctx,p,this.time,!!game.options?.reducedFlash);
   if(!p.preview&&!(p.shotImpactConfusedTimer>0))drawShotWeaknessCue(ctx,p,!!game.options?.reducedFlash);
-  if(!p.preview&&(p.magicReadCueTimer||0)>0)drawMagicReadCue(ctx,p,!!game.options?.reducedFlash);
+  if(!p.preview&&(p.magicReadCueTimer||0)>0)drawMagicReadCue(ctx,p,!!game.options?.reducedFlash,Math.max(.12,Math.min(3,(Number(this.scale)||1)/(Number(this.dpr)||1)*(Number(this.cameraZoom)||1))),view.side);
   ctx.restore();
  }
  drawPenaltyPlayers(ctx,g){let pk=g.pk;if(!pk)return;

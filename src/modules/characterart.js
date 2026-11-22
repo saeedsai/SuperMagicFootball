@@ -88,7 +88,7 @@ const CHARACTER_ART=(()=>{
   fill(c,p=>{p.moveTo(-w,0);p.bezierCurveTo(-w*.67,-h*1.8,w*.50,-h*1.75,w,.25);
    p.bezierCurveTo(w*.78,h*.95,-w*.45,h*1.2,-w,0)},grad(c,-w,-h,w,h,near?[[0,'#ffffff'],[.7,'#fdf9ee'],[1,'#e8ecf0']]:[[0,'#f4f2eb'],[.7,'#ece9e1'],[1,'#d9dce0']]),dark,1.35);
   // Only the iris/pupil move; the sclera, eyelids, brows and face remain fixed.
-  c.save();c.translate(clamp(Number(gazeX)||0,-.9,.9),clamp(Number(gazeY)||0,-.55,.55));
+  c.save();c.translate(clamp(Number(gazeX)||0,-2.1,2.1),clamp(Number(gazeY)||0,-1.35,1.35));
   oval(c,.55,1.0,w*.47,h*.78,grad(c,-2,-h*.5,3,h*.7,[[0,blend(iris,.30)],[.45,iris],[1,blend(iris,-.46)]]),iris,.75);
   oval(c,.78,1.1,w*.26,h*.58,'#172332');
   oval(c,-1,-1.2,1.65*scale,2.1*scale,near?'#ffffff':ink('#ffffff',.72));
@@ -706,7 +706,10 @@ const CHARACTER_ART=(()=>{
   const idleBreath=p.action==='idle'&&!airPose&&!opt.locomotion&&!opt.kick&&!opt.sliding&&!opt.celebrate&&!opt.cry;
   const breathPhase=idleBreath?clamp((Math.sin((Number(opt.time)||0)*2.05+(Number(p.i)||0)*1.17)+1)*.5,0,1):0;
   const blink=idleBreath&&!opt.hurt&&idleBlink(opt.time,p.i);
-  const gaze=idleBreath&&!opt.hurt&&!opt.cry&&!opt.reducedFlash?idleGaze(opt.time,p.i):{x:0,y:0};
+  const idleGazePose=idleBreath&&!opt.hurt&&!opt.cry&&!opt.reducedFlash?idleGaze(opt.time,p.i):{x:0,y:0};
+  const receiveGaze=opt.receiveGaze&&Number.isFinite(opt.receiveGaze.x)&&Number.isFinite(opt.receiveGaze.y)
+   ?{x:clamp(opt.receiveGaze.x,-2.1,2.1),y:clamp(opt.receiveGaze.y,-1.35,1.35)}:null;
+  const gaze=receiveGaze||idleGazePose;
   const turnLean=turnCounterLean(opt.turnLag,view?.side);
   const headLean=headTurnCounterLean(opt.turnLag,view?.side);
   c.save();
