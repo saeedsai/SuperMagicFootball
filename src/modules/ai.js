@@ -1296,6 +1296,15 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    {side:-1,x:carrier.x+dir*78,y:carrier.y-86},
    {side:1,x:carrier.x+dir*78,y:carrier.y+86}
   ];
+  // If multiple lanes are similarly safe, preserve the carrier's live heading.
+  // This is deliberately a small tie-breaker; defender/corridor safety remains dominant.
+  const carrierVX=Number.isFinite(carrier.moveVX)?carrier.moveVX:
+   Number.isFinite(carrier.vx)?carrier.vx:0;
+  const carrierVY=Number.isFinite(carrier.moveVY)?carrier.moveVY:
+   Number.isFinite(carrier.vy)?carrier.vy:0;
+  const carrierSpeed=Math.hypot(carrierVX,carrierVY);
+  const momentumWeight=carrierSpeed>=85&&carrierVX*dir>=-35?
+   clampTo((carrierSpeed-85)/260,0,1)*14:0;
   const segmentGap=(point,start,end)=>{
    const dx=end.x-start.x,dy=end.y-start.y,length=dx*dx+dy*dy;
    const along=length>1e-9?clampTo(((point.x-start.x)*dx+(point.y-start.y)*dy)/length,0,1):0;
@@ -1317,7 +1326,11 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
     const gap=Math.hypot(teammate.x-target.x,teammate.y-target.y);
     if(gap<95)teammateCrowding+=(95-gap)*.58;
    }
-   const score=nearest+corridor*.65+forward*.14-lateral*.09-pressurePenalty-teammateCrowding;
+   const routeLength=Math.hypot(target.x-carrier.x,target.y-carrier.y);
+   const headingAlignment=momentumWeight>0&&routeLength>0?
+    (carrierVX*(target.x-carrier.x)+carrierVY*(target.y-carrier.y))/(carrierSpeed*routeLength):0;
+   const momentumBonus=momentumWeight*clampTo(headingAlignment,-1,1);
+   const score=nearest+corridor*.65+forward*.14-lateral*.09-pressurePenalty-teammateCrowding+momentumBonus;
    return {side:candidate.side,target,score};
   });
   const direct=scored.find(option=>option.side===0);

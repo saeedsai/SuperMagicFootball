@@ -5,24 +5,28 @@
 ## Mission
 Deliver player-facing gameplay and existing-player presentation while preserving four actions, roster identities/order, saves and offline play.
 
-## Current checkpoint
-- .181 AI-THIRD-DEFENDER-CENTRAL-RUNNER-MARK-01: when an opponent carries within 500 field units of the defending goal, a third ready CPU outfielder can shade to a bounded goal-side point against an unmarked central runner 40–260 units ahead. The primary keeps pressing and the second defender retains existing cover; wide, retreating, already-covered and unreachable runners are rejected. Unavailable, human-controlled, assist, give-and-go and first-touch commitments are respected. No speed, tackle odds, ball physics, controls, save, roster or persistence changes.
-- Added mirrored helper and real-engine Node regressions plus desktop/simulated-touch Chromium acceptance. The first .181 Modular QA #45002475147 ran 2,719 Node tests: all four new gameplay regressions passed, 2,718 passed overall, and one project-memory identity contract failed. Full Census #45002475166 stopped at preflight. Restored the required code-formatted Agent ID; exact-head reruns pending.
-- .180 is fully main-promoted and deployed: Modular QA #44999339830 passed 2,715/2,715; Full Regression Census #44999339829 passed preflight, preview, all four Node and all four Chromium shards; QA-gated promotion succeeded. Main/dev converge on f08e2b0f8c75924d29b2ce84a6a9816eed50d796; Pages #45000116322 and independent main Census/hosted-pages smoke #45000121158 passed all eight shards.
-- #87 main protection remains open; the current REST protection read returned 403, so do not describe main as protected. #48 physical two-phone acceptance, #86 Render drift and #10 existing-art owner acceptance remain open. Away fixtures still use the existing player-home side presentation.
+## Current candidate
+- **.182 AI-CARRY-ESCAPE-MOMENTUM-CONTINUITY-01:** CPU carriers under front pressure now use current forward/lateral movement as a capped 14-point tie-breaker between safe diagonal escape lanes (active from 85 units/s; disabled for strongly retreating carriers). Defender projection, carry-corridor safety and teammate crowding remain dominant; a blocked momentum-favoured lane yields to the safer alternative. Direct-lane fallback, first-touch/final-third exclusions, speed, ball physics, controls, saves and rosters unchanged.
+- Added mirrored helper/real-engine Node regressions and desktop/simulated-touch Chromium acceptance, including safety override.
+- Exact-head Modular QA, four Node/four Chromium Census, promotion, Pages and hosted smoke are pending. Local git clone was blocked by github.com DNS; source and branch operations use connected GitHub REST. No local test result is claimed.
+- **.181 fully main-promoted and deployed:** Modular QA #45002647169 passed 2,719/2,719; Full Regression Census #45002647197 passed preflight, preview, all four Node and all four Chromium shards, and QA-gated promotion. Main/dev SHA: `c297903e19cf3bef48846abef250f9be97ff7b59`. Pages #45003457564 and main Census/hosted smoke #45003463439 passed all eight shards.
+- #87 main protection, #48 physical two-phone acceptance, #86 Render drift and #10 owner graphics acceptance remain open. #10's graphics-renderer lock remains active; no art or LAN/P2P runtime work was attempted.
 
-## Next smallest action
-Run exact-head .181 Modular QA and Full Regression Census (four Node plus four Chromium shards); repair confirmed failures, then continue an independent player-facing increment.
+## Next five product improvements
+1. CPU counterpress and turnover recovery coordination.
+2. Existing-player eight-view graphics after graphics lock release and real game-scale approval.
+3. Goalkeeper dive/catch decisions and rebound recovery.
+4. Player Studio live appearance preview and directional consistency.
+5. Career/Cup scheduled-away match presentation and season progression.
 
 ## Ownership and exclusions
-Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private memory. Preserve 223 canonical teams, 2,676 players, six formations, four actions, saves, ten Career/Cup slots, SD09 and offline/PWA behavior. No visual approval or physical-device acceptance claimed.
+Only this checkpoint. No concept heroes or copied art. Preserve 223 canonical teams, 2,676 players, exact ordering/ratios, six formations, four actions, saves, ten Career/Cup slots, SD09 and offline/PWA behavior. No physical-device or visual approval claims.
 
 ## Evidence
-- .180 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/44999339830
-- .180 Full Regression Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/44999339829
-- .180 Pages deployment: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45000116322
-- .180 main Census and hosted smoke: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45000121158
-- .180 source base: f08e2b0f8c75924d29b2ce84a6a9816eed50d796
+- .181 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45002647169
+- .181 Full Regression Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45002647197
+- .181 Pages deployment: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45003457564
+- .181 main Census/hosted smoke: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45003463439
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; never bypass required CI, branch protection or QA promotion.
