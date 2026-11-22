@@ -33,7 +33,7 @@ test('receiver movement is included in the predicted arrival pocket',()=>{
 });
 
 test('a faster long clearance can pass a corridor that is unsafe for a slower short throw',()=>{
- const defender=[rival(250,190,{moveVY:-70})];
+ const defender=[rival(480,190,{moveVY:-70})];
  const short=helper(keeper(),target,defender,480);
  const long=helper(keeper(),target,defender,950);
  assert.equal(short.clear,false);
