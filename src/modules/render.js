@@ -1539,6 +1539,13 @@ class Renderer{
   ctx.beginPath();ctx.ellipse(0,0,27+21*(1-remaining),9+9*(1-remaining),0,0,PI*2);ctx.stroke();
   ctx.restore();
  }
+ if(!p.preview&&p.keeper&&(p.keeperPunchFx||0)>0){
+  const punchAlpha=Math.min(1,(p.keeperPunchFx||0)/.18);
+  ctx.save();ctx.globalAlpha=punchAlpha;ctx.textAlign='center';ctx.font='900 19px Arial';
+  ctx.fillStyle='#ffe6a1';ctx.fillText('PUNCH!',0,-151);
+  ctx.strokeStyle='#ffe6a1';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,-55,40,0,PI*2);ctx.stroke();
+  ctx.restore();
+ }
  if(!p.preview&&['keeperCatch','keeperDiveCatch','keeperHold','keeperThrow','keeperPunt'].includes(p.action)){
   ctx.save();ctx.textAlign='center';ctx.font='900 19px Arial';ctx.fillStyle=['keeperCatch','keeperDiveCatch'].includes(p.action)?'#beffec':'#ffe6a1';
   ctx.fillText(['keeperCatch','keeperDiveCatch'].includes(p.action)?'CAUGHT!':p.action==='keeperHold'?'HOLDING':p.action==='keeperThrow'?'THROW!':'PUNT!',0,-151);

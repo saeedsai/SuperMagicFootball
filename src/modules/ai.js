@@ -1511,6 +1511,60 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   return target;
  }
 
+// A keeper punches a targeted high cross only when an active attacker is close
+// enough to make a clean claim risky. Skill reduces the punch window; fatigue and
+// a second arriving attacker increase it. This is a decision read, not ball physics.
+function keeperHighCrossPunchDecision(keeper,ball,players){
+ const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+ const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+ if(!keeper?.keeper||keeper.down||Number(keeper.stun)>0||Number(keeper.z)>18||
+  Number(keeper.diveCooldown)>0||Number(keeper.diveIntentCooldown)>0||keeper.diveIntentPending||
+  ['keeperDive','keeperDiveCatch','keeperRecover','keeperHold','keeperCatch','shotDown','shotGetUp','hurt'].includes(keeper.action)||
+  !Array.isArray(players)||!players.includes(keeper)||
+  !ball||ball.owner||ball.pass!==true||ball.passTeam!==1-keeper.t||
+  ball.attacker!==1-keeper.t||ball.lastTouchTeam!==1-keeper.t||
+  ball.shot||ball.strike||ball.ordinaryShot||ball.passTarget==null||
+  ![ball.x,ball.y,ball.z,ball.vx,ball.vy,ball.vz,ball.age].every(Number.isFinite)||
+  ball.age<0||ball.age>2.4||ball.z<38||ball.z>150||ball.vz>35||ball.vz< -340||
+  (ball.canCollect!=null&&(!Number.isFinite(Number(ball.canCollect))||Number(ball.canCollect)>.03)))return null;
+ const rawSkill=Number(keeper.src?.gkSkill),rawDiving=Number(keeper.src?.gkDiving);
+ const skill=clampTo(Number.isFinite(rawSkill)?rawSkill:50,0,100);
+ const diving=clampTo(Number.isFinite(rawDiving)?rawDiving:50,0,100);
+ const fatigue=clampTo(Number.isFinite(Number(keeper.fatigue))?Number(keeper.fatigue):0,0,1);
+ const contactRadius=(26+skill*.18)*(1-.18*fatigue);
+ const contactHeight=(63+diving*1.12)*(1-.15*fatigue);
+ if(Math.hypot(ball.x-keeper.x,ball.y-keeper.y)>contactRadius||ball.z>contactHeight)return null;
+ const activeOutfielder=q=>{
+  if(!q||q.keeper||q.t===keeper.t||q.down||!timerClear(q.stun)||!timerClear(q.slideTimer)||
+   !timerClear(q.shotImpactKnockdownPending)||!timerClear(q.shotImpactKnockdownTimer)||
+   !timerClear(q.shotImpactRiseTimer)||q.action==='shotDown'||q.action==='shotGetUp'||
+   ((q.action==='slide'||q.action==='hurt')&&(Number(q.actionTimer)||0)>0))return false;
+  const z=q.z==null?0:Number(q.z);
+  return Number.isFinite(z)&&z<=18&&Number.isFinite(q.x)&&Number.isFinite(q.y);
+ };
+ const arrivals=[];
+ for(const opponent of players){
+  if(!activeOutfielder(opponent))continue;
+  const vx=Number.isFinite(opponent.moveVX)?opponent.moveVX:
+   Number.isFinite(opponent.vx)?opponent.vx:0;
+  const vy=Number.isFinite(opponent.moveVY)?opponent.moveVY:
+   Number.isFinite(opponent.vy)?opponent.vy:0;
+  const x=opponent.x+clampTo(vx*.12,-36,36);
+  const y=opponent.y+clampTo(vy*.12,-36,36);
+  arrivals.push(Math.hypot(x-ball.x,y-ball.y));
+ }
+ arrivals.sort((a,b)=>a-b);
+ if(!arrivals.length)return null;
+ const nearestGap=arrivals[0],secondGap=arrivals[1]??Infinity;
+ const threshold=clampTo(78-skill*.18+fatigue*18,54,96);
+ const closePressure=nearestGap<=threshold;
+ const crowdedArrival=nearestGap<=threshold+18&&secondGap<=threshold+32;
+ if(!closePressure&&!crowdedArrival)return null;
+ const pressure=Math.max(0,threshold-nearestGap)+
+  (Number.isFinite(secondGap)?Math.max(0,threshold+32-secondGap)*.45:0);
+ return {nearestGap,secondGap,pressure,reason:closePressure?'close-pressure':'crowded-arrival'};
+}
+
 // A CPU goalkeeper can claim a reachable targeted lofted pass before an outfielder
 // arrives. This is a positioning read only: normal keeper contact/collection owns
 // the actual catch, and contested or unsafe crosses keep the existing goal-line read.
@@ -1568,6 +1622,6 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  return target;
 }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget};})();
 
 export {AI};

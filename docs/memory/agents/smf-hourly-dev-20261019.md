@@ -6,30 +6,29 @@
 Deliver player-facing gameplay and existing-player presentation while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- **.183 AI-TURNOVER-COUNTERPRESS-TRAP-01:** CPU carriers under front pressure now use current forward/lateral movement as a capped 14-point tie-breaker between safe diagonal escape lanes (active from 85 units/s; disabled for strongly retreating carriers). Defender projection, carry-corridor safety and teammate crowding remain dominant; a blocked momentum-favoured lane yields to the safer alternative. Direct-lane fallback, first-touch/final-third exclusions, speed, ball physics, controls, saves and rosters unchanged.
-- Added mirrored helper/real-engine Node regressions and desktop/simulated-touch Chromium acceptance, including safety override.
-- Exact-head Modular QA #45007482553 and Full Regression Census #45007482525 both failed only because this checkpoint lacked the required `## Current checkpoint` heading; each ran 2,720 Node tests with 2,719 passing and one memory-contract failure. The four .182 gameplay regressions passed. Repair the heading before rerunning gates. Local git clone was blocked by github.com DNS; source and branch operations use connected GitHub REST. No local test result is claimed.
-- **.181 fully main-promoted and deployed:** Modular QA #45002647169 passed 2,719/2,719; Full Regression Census #45002647197 passed preflight, preview, all four Node and all four Chromium shards, and QA-gated promotion. Main/dev SHA: `c297903e19cf3bef48846abef250f9be97ff7b59`. Pages #45003457564 and main Census/hosted smoke #45003463439 passed all eight shards.
-- #87 main protection, #48 physical two-phone acceptance, #86 Render drift and #10 owner graphics acceptance remain open. #10's graphics-renderer lock remains active; no art or LAN/P2P runtime work was attempted.
+- **.184 AI-KEEPER-CONTESTED-CROSS-PUNCH-01:** a CPU goalkeeper facing a targeted descending high cross now punches clear when one active attacker is close or two are converging. The choice is skill/fatigue-sensitive, requires the keeper's normal contact window, ignores unavailable/airborne challengers and sends the ball toward the less-crowded side. Existing dive pose plus a short PUNCH! cue makes the decision readable; clean crosses remain catchable. Shot saves, gravity, four actions, rosters and persistence unchanged.
+- Added mirrored helper/real-engine Node and desktop/simulated-touch Chromium regressions. Exact-head CI is pending; no test pass is claimed yet.
+- **.183 main-promoted:** Modular QA #45009416638 and dev Census #45009416688 passed; QA-gated promotion moved main/dev to `b4a82e7a9d1067261887bf802418301f3bc9fc46`. Pages #45010218133 succeeded. Main Census #45010223243 passed hosted smoke and seven of eight regression shards; browser shard 0 failed only historical `lan_auto_two_browser_qa.py` with one 10-second Playwright timeout (66 browser tests passed). Failed-job-only retry was requested.
+- #87 remains a real security issue; REST reports main and dev unprotected. #48 physical two-phone acceptance and #86 Render drift remain open. #10 graphics work remains blocked by its active renderer lock.
 
 ## Next smallest action
-- Repair the known .182 memory-contract gate, then deliver the next bounded player-facing CPU counterpress improvement on a fresh dev head.
+Verify .184 exact-head focused regressions, Modular QA and the full four-Node/four-Chromium Census; fix any confirmed failure, then continue an independent player-facing gameplay increment.
 
 ## Next five product improvements
-1. Finish .183 exact-head gates; then improve CPU counterpress recovery after repeated possession transitions.
-2. Existing-player eight-view graphics after graphics lock release and real game-scale approval.
-3. Goalkeeper dive/catch decisions and rebound recovery.
-4. Player Studio live appearance preview and directional consistency.
-5. Career/Cup scheduled-away match presentation and season progression.
+1. Improve contested keeper high-cross catch/punch counterplay and rebound recovery after .184 validation.
+2. Improve CPU interception and counterpress transitions without repeating existing assignment micro-features.
+3. Resume existing-player eight-view graphics after the graphics lock is released and game-scale approval is available.
+4. Improve Player Studio live appearance preview and directional consistency.
+5. Improve Career/Cup away-fixture presentation and season progression.
 
 ## Ownership and exclusions
-Only this checkpoint. No concept heroes or copied art. Preserve 223 canonical teams, 2,676 players, exact ordering/ratios, six formations, four actions, saves, ten Career/Cup slots, SD09 and offline/PWA behavior. No physical-device or visual approval claims.
+Only this checkpoint. No concept heroes or copied art. Preserve 223 canonical teams, 2,676 players, exact ordering/ratios, six formations, four actions, saves, ten Career/Cup slots, SD09 and offline/PWA behavior. No physical-device or visual approval claims; no routine LAN/P2P changes.
 
 ## Evidence
-- .181 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45002647169
-- .181 Full Regression Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45002647197
-- .181 Pages deployment: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45003457564
-- .181 main Census/hosted smoke: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45003463439
+- .183 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45009416638
+- .183 Full Regression Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45009416688
+- .183 Pages deployment: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45010218133
+- .183 main Census/hosted smoke: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45010223243
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; never bypass required CI, branch protection or QA promotion.
