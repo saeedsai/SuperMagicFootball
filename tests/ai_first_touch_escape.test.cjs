@@ -217,6 +217,6 @@ test('CPU interception uses the safe post-touch outlet while preserving the 0.24
    assert.equal(intent?.target,safe.src.id,JSON.stringify({team,intent,expected:safe.src.id}));
    assert.equal(game.ball.owner,null,'the chosen safe outlet receives a real pass');
    assert.equal(interceptor.aiFirstTouchOutletUntil,0,'the one-shot outlet preference clears after release');
-  }finally{Math.random=original;}
+  }finally{Math.random=originalRandom;}
  }
 });
