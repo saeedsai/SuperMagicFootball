@@ -18,7 +18,7 @@ import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
 import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards} from "./magic-hazards.js";
 const keeperParryRebounds=new WeakMap();
-const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,keeperShotReadY,keeperParryReboundTarget,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,defensiveGiveAndGoCoverTarget,defensivePassReceiverCoverTarget,defensiveFirstTouchContestTarget,attackingFirstTouchEscape,attackingCarryEscapeTarget}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
+const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,keeperShotReadY,keeperParryReboundTarget,keeperOutletLane,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,defensiveGiveAndGoCoverTarget,defensivePassReceiverCoverTarget,defensiveFirstTouchContestTarget,attackingFirstTouchEscape,attackingCarryEscapeTarget}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
 // Shot impacts briefly weaken strength-based contests without ever rewriting source stats.
 const stat=(p,key)=>{const value=baseStat(p,key);return key==='strength'&&p?.src&&(p.shotImpactWeaknessTimer||0)>0?value*(1-clamp(p.shotImpactWeakness||0,0,.4)*.45):value;};
 
@@ -363,14 +363,8 @@ function keeperParrySide(keeper,players,shotOffset){
  const current=laneClearance(preferred),alternate=laneClearance(-preferred);
  return alternate>current+24?-preferred:preferred;
 }
-function keeperOutletScore(keeper,receiver,opponents){
- const travel=distance(keeper,receiver);
- const pressure=opponents.reduce((sum,q)=>{
-  if(q.stun>0||q.down||(q.shotImpactKnockdownTimer||0)>0||(q.z||0)>28)return sum;
-  const d=distance(receiver,q);
-  return sum+(d<175?(175-d)*2.4:0);
- },0);
- return travel+pressure;
+function keeperOutletScore(keeper,receiver,lane){
+ return distance(keeper,receiver)+(Number.isFinite(lane?.pressure)?lane.pressure:0);
 }
 class GameEngine{
  constructor(options={},input){this.options=options;this.input=input;this.events=[];this.mode='quick';this.matchState='none';this.teamIds=[0,9];this.rosters=[[],[]];this.lineups=[DEFAULT_LINEUP.slice(),[0,1,2,3,5,9]];this.formation=['2-1-2','2-1-2'];this.teamPlans=[];this.controlled=[3,3,0,0];this.humans=1;this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=120;this.players=[];this.ball={};this.particles=[];this.magicHazards=[];this.shake=0;this.flash=0;this.weather='Clear';this.terrain='Grass';this.condition='Good';this.wind={x:0,y:0};this.stormTimer=0;this.tornado=null;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.kickoffCountdown=0;this.pk=null;this.matchSerial=0;this.fatigueLedger=[{},{}];this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.maxSubstitutions=MAX_SUBSTITUTIONS;this.moraleLedger=[{},{}];this.talksUsed=[{},{ }];this.celebrationStyle=0;this.onEvent=()=>{};this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.stoppageWindow=0;this.stoppageAnnounced=false;this._shotAudit=null;this._reboundAudit=null;this._shotAuditNext=0;}
@@ -2031,16 +2025,9 @@ class GameEngine{
  }
  // Safety is evaluated at release time; a marked teammate or a defender on
  // the passing line must never be treated as a safe short-throw receiver.
- keeperPassingLane(p,q){
-  const opponents=this.players.filter(o=>o.t!==p.t&&!o.keeper&&o.stun<=0&&
-   !o.down&&(o.shotImpactKnockdownTimer||0)<=0&&(!Number.isFinite(o.z)||o.z<=20));
-  const dx=q.x-p.x,dy=q.y-p.y,length=Math.hypot(dx,dy)||1;
-  const endpoint=Math.min(...opponents.map(o=>distance(q,o)),9999);
-  const interception=Math.min(...opponents.map(o=>{
-   const u=clamp(((o.x-p.x)*dx+(o.y-p.y)*dy)/(length*length),0,1);
-   return Math.hypot(o.x-(p.x+u*dx),o.y-(p.y+u*dy));
-  }),9999);
-  return {endpoint,interception,clear:endpoint>145&&interception>95};
+ keeperPassingLane(p,q,flightSpeed=480){
+  const opponents=this.players.filter(o=>o.t!==p.t&&!o.keeper);
+  return keeperOutletLane(p,q,opponents,flightSpeed);
  }
  // Find an open, advancing clearance corridor instead of punting directly
  // toward a marked teammate/opponent. Aimed empty turf is always an option.
@@ -2062,7 +2049,7 @@ class GameEngine{
    const x=p.t===0?F.x+F.w*factor:F.x+F.w*(1-factor);
    const y=F.y+F.h*lane;
    const safety=Math.min(...opponents.map(o=>Math.hypot(o.x-x,o.y-y)),9999);
-   const path=this.keeperPassingLane(p,{x,y});
+   const path=this.keeperPassingLane(p,{x,y},950);
    // A seemingly empty landing point is unsafe when its flight corridor is intercepted.
    if(!path.clear){
     // When absolutely every lane is blocked, minimize interception danger
@@ -2088,13 +2075,14 @@ class GameEngine{
   const mates=this.players.filter(q=>q.t===p.t&&!q.keeper&&q.stun<=0);
   const opponents=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0);
   const pressured=opponents.some(q=>distance(p,q)<330);
-  const scored=mates.map(q=>({q,safe:this.keeperPassingLane(p,q)}));
+  const flightSpeed=mode==='long'||pressured?950:480;
+  const scored=mates.map(q=>({q,safe:this.keeperPassingLane(p,q,flightSpeed)}));
   // A clear flight lane is not enough if a defender is waiting at reception.
   // Penalize active defenders close to the outlet, without making a lone
   // viable teammate impossible to select or changing the long clearance.
   const shortOptions=scored.filter(v=>v.safe.clear&&distance(p,v.q)<900&&
     !v.q.down&&(v.q.shotImpactKnockdownTimer||0)<=0)
-    .sort((a,b)=>keeperOutletScore(p,a.q,opponents)-keeperOutletScore(p,b.q,opponents));
+    .sort((a,b)=>keeperOutletScore(p,a.q,a.safe)-keeperOutletScore(p,b.q,b.safe));
   const shortAllowed=mode!=='long'&&!pressured&&shortOptions.length>0;
   const long=!shortAllowed;
   const option=long?this.keeperClearanceTarget(p,scored,opponents):{
