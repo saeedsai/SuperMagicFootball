@@ -1,0 +1,88 @@
+'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+async function loadModules(){
+ const {loadAssetsFromNode}=await import('../src/assets.js');await loadAssetsFromNode();
+ const [{AI},{ENGINE}]=await Promise.all([import('../src/modules/ai.js'),import('../src/modules/engine.js')]);
+ return {AI,ENGINE};
+}
+function player(name,t,x,y,extra={}){
+ return {t,keeper:false,x,y,z:0,stun:0,down:false,action:'idle',actionTimer:0,
+  slideTimer:0,moveVX:0,moveVY:0,src:{id:name},...extra};
+}
+function fixture(ENGINE,team){
+ const field=ENGINE.WORLD.field,bounds={xMin:field.x+24,xMax:field.x+field.w-24,
+  yMin:field.y+24,yMax:field.y+field.h-24};
+ const dir=team===0?1:-1,ownGoalX=dir===1?bounds.xMin:bounds.xMax;
+ const goalY=(ENGINE.WORLD.goalTop+ENGINE.WORLD.goalBottom)/2;
+ const target={x:ownGoalX+dir*190,y:goalY+78};
+ const keeper=player('cross-keeper-'+team,team,ownGoalX+dir*40,goalY,{keeper:true});
+ const receiver=player('cross-receiver-'+team,1-team,target.x+dir*155,target.y+10);
+ const ball={owner:null,attacker:1-team,lastTouchTeam:1-team,passTeam:1-team,pass:true,
+  passTarget:receiver.src.id,x:target.x+dir*118,y:target.y-30,z:90,
+  vx:-dir*190,vy:48,vz:10,age:.15,canCollect:0,shot:null,strike:null,ordinaryShot:false};
+ return {field,bounds,dir,ownGoalX,goalY,target,keeper,receiver,ball,players:[keeper,receiver]};
+}
+test('CPU keeper claims a reachable targeted high cross on either goal side',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team),point=AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds);
+  assert.ok(point,JSON.stringify({team,point,ball:f.ball}));
+  assert.ok(f.dir*(point.x-f.keeper.x)>0,'keeper must step off its line into the field');
+  assert.ok(Math.abs(point.x-f.target.x)<2&&Math.abs(point.y-f.target.y)<2,
+   'claim point must predict the descending cross landing');
+  assert.ok(point.x>=f.bounds.xMin+22&&point.x<=f.bounds.xMax-22);
+  assert.ok(point.y>=f.bounds.yMin+23&&point.y<=f.bounds.yMax-23);
+  assert.ok((point.x-f.ownGoalX)*f.dir>=24&&(point.x-f.ownGoalX)*f.dir<=360);
+ }
+});
+test('high-cross claim rejects stale, owned, low, rising, shot and delayed-collection balls',async()=>{
+ const {AI,ENGINE}=await loadModules(),f=fixture(ENGINE,0);
+ const invalid=[
+  {age:2.5},{owner:{t:0}},{pass:false},{passTeam:0},{attacker:0},{lastTouchTeam:0},
+  {passTarget:null},{z:18},{z:180},{vz:180},{vz:-340},{shot:{behavior:'normal'}},
+  {strike:{kind:'normal'}},{ordinaryShot:true},{canCollect:1},{canCollect:NaN}
+ ];
+ for(const patch of invalid)
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,{...f.ball,...patch},f.players,f.bounds),null,
+   'must reject '+Object.keys(patch).join(','));
+ assert.equal(AI.keeperHighCrossClaimTarget(0,f.ball,f.players,f.bounds),null);
+ assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,{xMin:1,xMax:1,yMin:0,yMax:1}),null);
+});
+test('keeper yields to a clearly closer active receiver or teammate but ignores unavailable runners',async()=>{
+ const {AI,ENGINE}=await loadModules(),f=fixture(ENGINE,0);
+ const closerOpponent=player('closer-opponent',1,f.target.x,f.target.y);
+ assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,[...f.players,closerOpponent],f.bounds),null);
+ const closerTeammate=player('closer-teammate',0,f.target.x,f.target.y);
+ assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,[...f.players,closerTeammate],f.bounds),null);
+ const unavailable=player('unavailable-opponent',1,f.target.x,f.target.y,{down:true,stun:1,action:'shotDown'});
+ assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,[...f.players,unavailable],f.bounds),
+  'a downed opponent must not block the keeper claim');
+ for(const patch of [{down:true},{stun:.2},{z:28},{action:'slide',actionTimer:.2},
+  {action:'hurt',actionTimer:.2},{slideTimer:.2}]){
+  const receiver={...f.receiver,...patch};
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,[f.keeper,receiver],f.bounds),null,
+   'must reject unavailable intended receiver '+Object.keys(patch).join(','));
+ }
+});
+test('driveAI sends the CPU goalkeeper toward the safe cross claim on both sides',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+  const f=fixture(ENGINE,team),keeper=game.player(team,0),receiver=game.player(1-team,3);
+  for(const q of game.players)if(q!==keeper&&q!==receiver&&!q.keeper){q.down=true;q.stun=1;}
+  Object.assign(keeper,{x:f.keeper.x,y:f.keeper.y,z:0,stun:0,down:false,action:'idle',
+   actionTimer:0,diveCooldown:0,aiTimer:0,aiTarget:null,moveVX:0,moveVY:0});
+  Object.assign(receiver,{x:f.receiver.x,y:f.receiver.y,z:0,stun:0,down:false,action:'idle',
+   actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
+  Object.assign(game.ball,{...f.ball});
+  game.clock=.2;
+  const expected=AI.keeperHighCrossClaimTarget(keeper,game.ball,game.players,f.bounds);
+  assert.ok(expected);
+  game.driveAI(keeper,.016);
+  assert.ok(keeper.aiTarget,'keeper must receive a live engine target');
+  assert.ok(Math.abs(keeper.aiTarget.x-expected.x)<1&&Math.abs(keeper.aiTarget.y-expected.y)<1);
+  assert.ok(f.dir*(keeper.moveVX||0)>0,'keeper must move toward the projected cross on both sides');
+ }
+});
