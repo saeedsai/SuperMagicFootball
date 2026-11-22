@@ -1,29 +1,28 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
-**Agent ID:** `smf-hourly-dev-20261019`
+**Agent ID:** smf-hourly-dev-20261019
 **Updated:** 2026-11-22
 
 ## Mission
 Deliver player-facing gameplay and existing-player presentation while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- .180 AI-DEFENSIVE-PRESS-ARRIVAL-01: primary CPU press assignment compares a bounded 0.12-second projected gap for active defenders and a moving opponent carrier. A defender already closing may take the press over a slightly nearer teammate moving away; score influence is capped at 13.2 field units. Stationary carriers and loose balls remain distance-first; support selection retains current-distance, lateral and goal-side scoring.
-- Added three focused helper regressions, mirrored real-engine driveAI integration, and desktop/simulated-touch Chromium acceptance. All four new Node regressions passed on the first .180 run.
-- Initial .180 Modular QA #44999198347 and Full Regression Census #44999198288 failed four release-contract assertions (2,711/2,715 Node tests passed) because the README project heading still named .179. Census stopped at preflight, so Chromium did not run. The README heading is corrected in the follow-up commit; exact-head reruns pending.
-- .179 is verified and main-promoted: Modular QA #44997291890 passed; Full Regression Census #44997291898 passed preflight, preview, all four Node and all four Chromium shards; QA-gated promotion moved main/dev to 9c8796904e846216b57adce9b5e9873200ed5f63. Pages deployment #44998135735 succeeded. Main-dispatch Census #44998142296 passed preflight, preview, hosted smoke and seven of eight shards; Node shard 1 was running at .180 start.
-- #87 main protection remains open; last successful REST evidence reports main.protected=false and the current read returned 403. #48 physical two-phone acceptance, #86 Render drift and #10 existing-art owner acceptance remain open.
+- .181 AI-THIRD-DEFENDER-CENTRAL-RUNNER-MARK-01: when an opponent carries within 500 field units of the defending goal, a third ready CPU outfielder can shade to a bounded goal-side point against an unmarked central runner 40–260 units ahead. The primary keeps pressing and the second defender retains existing cover; wide, retreating, already-covered and unreachable runners are rejected. Unavailable, human-controlled, assist, give-and-go and first-touch commitments are respected. No speed, tackle odds, ball physics, controls, save, roster or persistence changes.
+- Added mirrored helper and real-engine Node regressions plus desktop/simulated-touch Chromium acceptance. Exact-head tests pending on .181.
+- .180 is fully main-promoted and deployed: Modular QA #44999339830 passed 2,715/2,715; Full Regression Census #44999339829 passed preflight, preview, all four Node and all four Chromium shards; QA-gated promotion succeeded. Main/dev converge on f08e2b0f8c75924d29b2ce84a6a9816eed50d796; Pages #45000116322 and independent main Census/hosted-pages smoke #45000121158 passed all eight shards.
+- #87 main protection remains open; the current REST protection read returned 403, so do not describe main as protected. #48 physical two-phone acceptance, #86 Render drift and #10 existing-art owner acceptance remain open. Away fixtures still use the existing player-home side presentation.
 
 ## Next smallest action
-Verify exact-head .180 Modular QA and all four Node/four Chromium Census shards; repair only confirmed failures, then continue an independent gameplay improvement.
+Run exact-head .181 Modular QA and Full Regression Census (four Node plus four Chromium shards); repair confirmed failures, then continue an independent player-facing increment.
 
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private memory. Preserve 223 canonical teams, 2,676 players, six formations, four actions, saves, ten Career/Cup slots, SD09 and offline/PWA behavior. No visual approval or physical-device acceptance claimed.
 
 ## Evidence
-- .179 exact-head Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/44997291890
-- .179 Full Regression Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/44997291898
-- .179 Pages deployment: https://github.com/saeedsai/SuperMagicFootball/actions/runs/44998135735
-- .179 main Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/44998142296
-- .180 source base: 9c8796904e846216b57adce9b5e9873200ed5f63
+- .180 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/44999339830
+- .180 Full Regression Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/44999339829
+- .180 Pages deployment: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45000116322
+- .180 main Census and hosted smoke: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45000121158
+- .180 source base: f08e2b0f8c75924d29b2ce84a6a9816eed50d796
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; never bypass required CI, branch protection or QA promotion.
