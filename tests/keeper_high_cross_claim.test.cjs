@@ -76,7 +76,7 @@ test('driveAI sends the CPU goalkeeper toward the safe cross claim on both sides
    actionTimer:0,diveCooldown:0,aiTimer:0,aiTarget:null,moveVX:0,moveVY:0});
   Object.assign(receiver,{x:f.receiver.x,y:f.receiver.y,z:0,stun:0,down:false,action:'idle',
    actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
-  Object.assign(game.ball,{...f.ball});
+  Object.assign(game.ball,{...f.ball,passTarget:receiver.src.id});
   game.clock=.2;
   const expected=AI.keeperHighCrossClaimTarget(keeper,game.ball,game.players,f.bounds);
   assert.ok(expected);
