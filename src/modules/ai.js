@@ -1075,6 +1075,59 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   return {x:best.target.x,y:best.target.y};
  }
 
+// Score a goalkeeper outlet against where active opponents can reach during flight.
+// The receiver's existing short lead is retained; only lane/arrival safety is predicted.
+function keeperOutletLane(keeper,target,opponents,flightSpeed=480){
+ if(!keeper||!target||!Array.isArray(opponents)||
+  ![keeper.x,keeper.y,target.x,target.y].every(Number.isFinite))
+  return {endpoint:0,interception:0,pressure:Infinity,flightSeconds:0,clear:false};
+ const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+ const velocity=(player,axis)=>{
+  const actual=axis==='x'?player?.moveVX:player?.moveVY;
+  if(Number.isFinite(actual))return actual;
+  const legacy=axis==='x'?player?.vx:player?.vy;
+  return Number.isFinite(legacy)?legacy:0;
+ };
+ const speed=clampTo(Number.isFinite(flightSpeed)&&flightSpeed>0?flightSpeed:480,300,1100);
+ const leadXSeconds=speed>=800?.34:.17;
+ const end={
+  x:target.x+clampTo((Number.isFinite(target.moveVX)?target.moveVX:0)*leadXSeconds,-90,90),
+  y:target.y+clampTo((Number.isFinite(target.moveVY)?target.moveVY:0)*.17,-90,90)
+ };
+ const dx=end.x-keeper.x,dy=end.y-keeper.y,lengthSquared=dx*dx+dy*dy;
+ const flightSeconds=clampTo(Math.sqrt(lengthSquared)/speed,.12,.72);
+ let endpoint=Infinity,interception=Infinity,pressure=0;
+ for(const opponent of opponents){
+  if(!opponent||opponent.keeper||!Number.isFinite(opponent.x)||!Number.isFinite(opponent.y)||
+   Number(opponent.stun)>0||opponent.down||Number(opponent.shotImpactKnockdownTimer)>0||
+   (Number.isFinite(opponent.z)&&opponent.z>20))continue;
+  const vx=velocity(opponent,'x'),vy=velocity(opponent,'y');
+  const project=(seconds,cap=120)=>({
+   x:opponent.x+clampTo(vx*seconds,-cap,cap),
+   y:opponent.y+clampTo(vy*seconds,-cap,cap)
+  });
+  let along=lengthSquared>1e-9?
+   clampTo(((opponent.x-keeper.x)*dx+(opponent.y-keeper.y)*dy)/lengthSquared,0,1):0;
+  // Re-project at the defender's estimated time of reaching the lane. Two or
+  // three bounded iterations are enough for this short linear movement model.
+  for(let step=0;step<3;step++){
+   const future=project(flightSeconds*along);
+   const next=lengthSquared>1e-9?
+    clampTo(((future.x-keeper.x)*dx+(future.y-keeper.y)*dy)/lengthSquared,0,1):0;
+   if(Math.abs(next-along)<.002){along=next;break;}
+   along=next;
+  }
+  const future=project(flightSeconds*along);
+  const laneX=keeper.x+dx*along,laneY=keeper.y+dy*along;
+  interception=Math.min(interception,Math.hypot(future.x-laneX,future.y-laneY));
+  const arrival=project(flightSeconds,150);
+  const endpointGap=Math.hypot(arrival.x-end.x,arrival.y-end.y);
+  endpoint=Math.min(endpoint,endpointGap);
+  if(endpointGap<175)pressure+=(175-endpointGap)*2.4;
+ }
+ return {endpoint,interception,pressure,flightSeconds,clear:endpoint>145&&interception>95};
+}
+
  function keeperShotReadY(keeper,flightSeconds=.22){
  if(!keeper||!Number.isFinite(keeper.y))return null;
  const inactive=keeper.down||Number(keeper.stun)>0||Number(keeper.z)>18||
@@ -1145,6 +1198,6 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   return target;
  }
 
-return {AI_LEVELS,keeperShotReadY,keeperParryReboundTarget,aiTuning,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveFirstTouchContestTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,aiTuning,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveFirstTouchContestTarget};})();
 
 export {AI};
