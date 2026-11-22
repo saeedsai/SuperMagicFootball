@@ -891,6 +891,33 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
  }
 
 
+  // The primary presser attacks a high loose ball; the second defender protects
+  // its predicted landing pocket. This is limited to descending, unowned non-shot
+  // balls so ordinary passes, shots and grounded scrambles keep their assignments.
+  // The 500 gravity matches the live ball integrator.
+  function defensiveLooseBallCoverTarget(team,ball,bounds){
+   if((team!==0&&team!==1)||!ball||ball.owner||ball.pass||ball.shot||ball.strike||
+    ball.ordinaryShot||![ball.x,ball.y,ball.z,ball.vx,ball.vy,ball.vz].every(Number.isFinite)||
+    ball.z<32||ball.z>175||ball.vz>35||ball.vz< -320)return null;
+   const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax),
+    yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
+   if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+   const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+   const flightSeconds=(ball.vz+Math.sqrt(ball.vz*ball.vz+1000*ball.z))/500;
+   if(!Number.isFinite(flightSeconds)||flightSeconds<.12||flightSeconds>.62)return null;
+   if(Number.isFinite(ball.canCollect)&&ball.canCollect>flightSeconds+.12)return null;
+   const dir=team===0?1:-1;
+   const landingX=ball.x+clampTo(ball.vx*flightSeconds,-260,260);
+   const landingY=ball.y+clampTo(ball.vy*flightSeconds,-260,260);
+   const target={
+    x:clampTo(landingX-dir*26,xMin+22,xMax-22),
+    y:clampTo(landingY,yMin+23,yMax-23)
+   };
+   if(!Number.isFinite(target.x)||!Number.isFinite(target.y)||
+    Math.hypot(target.x-ball.x,target.y-ball.y)<32)return null;
+   return target;
+  }
+
  // During a pressured receiver's short first-touch window, the second CPU
  // defender shades into the next-touch path. The primary presser stays on the
  // carrier; this is a contesting position, not a guaranteed tackle.
@@ -1200,6 +1227,6 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   return target;
  }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,aiTuning,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveFirstTouchContestTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,aiTuning,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLooseBallCoverTarget,defensiveFirstTouchContestTarget};})();
 
 export {AI};
