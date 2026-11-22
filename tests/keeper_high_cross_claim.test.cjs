@@ -86,3 +86,35 @@ test('driveAI sends the CPU goalkeeper toward the safe cross claim on both sides
   assert.ok(f.dir*(keeper.moveVX||0)>0,'keeper must move toward the projected cross on both sides');
  }
 });
+
+test('a caught high-cross claim immediately releases the stale landing target and returns to the goal line on both sides',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+  const f=fixture(ENGINE,team),keeper=game.player(team,0),receiver=game.player(1-team,3);
+  for(const q of game.players)if(q!==keeper&&q!==receiver&&!q.keeper){q.down=true;q.stun=1;}
+  Object.assign(keeper,{x:f.keeper.x,y:f.keeper.y,z:0,stun:0,down:false,action:'idle',
+   actionTimer:0,diveCooldown:0,aiTimer:0,aiTarget:null,moveVX:0,moveVY:0,cd:10,keeperHold:0});
+  Object.assign(receiver,{x:f.receiver.x,y:f.receiver.y,z:0,stun:0,down:false,action:'idle',
+   actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
+  Object.assign(game.ball,{...f.ball,passTarget:receiver.src.id});
+  game.clock=.2;
+  const expected=AI.keeperHighCrossClaimTarget(keeper,game.ball,game.players,f.bounds);
+  assert.ok(expected);
+  game.driveAI(keeper,.016);
+  assert.equal(keeper.aiKeeperClaimTargetActive,true,'a live high-cross claim must be marked as a temporary excursion');
+  const claim={...keeper.aiTarget};
+  assert.ok(claim&&Math.abs(claim.x-expected.x)<1&&Math.abs(claim.y-expected.y)<1);
+  Object.assign(keeper,{x:claim.x,y:claim.y,moveVX:0,moveVY:0,aiTimer:.5,keeperHold:0,cd:10});
+  Object.assign(game.ball,{owner:keeper,pass:false,passTarget:null,attacker:team,lastTouchTeam:team,
+   z:82,vx:0,vy:0,vz:0,shot:null,strike:null,ordinaryShot:false});
+  game.driveAI(keeper,.016);
+  const homeX=team===0?f.field.x+34:f.field.x+f.field.w-34;
+  assert.equal(keeper.aiKeeperClaimTargetActive,false,'a caught ball must end the high-cross excursion');
+  assert.ok(Math.abs(keeper.aiTarget.x-homeX)<1,JSON.stringify({team,claim,returnTarget:keeper.aiTarget}));
+  assert.ok(team===0?keeper.moveVX<0:keeper.moveVX>0,
+   'the keeper must begin moving back toward its own goal line before the reaction timer expires');
+  assert.ok(Math.abs(keeper.aiTarget.x-claim.x)>80,'the stale landing target must be replaced');
+ }
+});

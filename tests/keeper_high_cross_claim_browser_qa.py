@@ -31,8 +31,19 @@ with sync_playwright() as pw:
      passTarget:receiver.src.id,x:target.x+dir*118,y:target.y-30,z:90,vx:-dir*190,vy:48,vz:10,
      age:.15,canCollect:0,shot:null,strike:null,ordinaryShot:false});
     g.clock=.2;g.driveAI(keeper,.016);
-    rows.push({team,dir,target,aiTarget:keeper.aiTarget?{x:keeper.aiTarget.x,y:keeper.aiTarget.y}:null,
-     moveVX:keeper.moveVX||0,buttons:document.querySelectorAll('#touchButtons button[data-act]').length});
+    const claim=keeper.aiTarget?{x:keeper.aiTarget.x,y:keeper.aiTarget.y}:null;
+    const claimActive=keeper.aiKeeperClaimTargetActive===true;
+    keeper.x=claim.x;keeper.y=claim.y;keeper.moveVX=0;keeper.moveVY=0;
+    keeper.aiTimer=.5;keeper.cd=10;keeper.keeperHold=0;
+    Object.assign(g.ball,{owner:keeper,pass:false,passTarget:null,attacker:team,lastTouchTeam:team,
+     z:82,vx:0,vy:0,vz:0,shot:null,strike:null,ordinaryShot:false});
+    g.driveAI(keeper,.016);
+    const homeX=team===0?field.x+34:field.x+field.w-34;
+    rows.push({team,dir,target,aiTarget:claim,moveVX:keeper.moveVX||0,
+     claimActive,returnActive:keeper.aiKeeperClaimTargetActive===true,
+     returnTarget:keeper.aiTarget?{x:keeper.aiTarget.x,y:keeper.aiTarget.y}:null,
+     returnMoveVX:keeper.moveVX||0,homeX,
+     buttons:document.querySelectorAll('#touchButtons button[data-act]').length});
    }
    return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
     teams:SupermagicFootball.teams.length};
@@ -44,7 +55,11 @@ with sync_playwright() as pw:
    assert target is not None,(kind,row)
    assert abs(target['x']-row['target']['x'])<2 and abs(target['y']-row['target']['y'])<2,(kind,row)
    assert row['dir']*row['moveVX']>0,(kind,row)
+   assert row['claimActive'] is True,(kind,row)
+   assert row['returnActive'] is False,(kind,row)
+   assert row['returnTarget'] and abs(row['returnTarget']['x']-row['homeX'])<2,(kind,row)
+   assert row['dir']*row['returnMoveVX']<0,(kind,row)
   assert not errors,(kind,errors)
-  print('PASS',kind,'mirrored goalkeeper high-cross claim, four actions and no JavaScript errors',flush=True)
+  print('PASS',kind,'mirrored goalkeeper high-cross claim and immediate post-catch return, four actions and no JavaScript errors',flush=True)
   ctx.close()
  browser.close()
