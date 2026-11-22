@@ -207,9 +207,35 @@ jobs:
           gh api --method PATCH "repos/$GH_REPO/git/refs/heads/main" \
             -f sha="$CERTIFIED_SHA" -F force=false >/dev/null
           echo "Promoted QA-certified $CERTIFIED_SHA to main."
+          # The ref write can become visible to the workflow-dispatch resolver a
+          # moment after the PATCH succeeds. Wait for REST to confirm the exact
+          # promoted SHA before dispatching main verification.
+          observed_main=""
+          for attempt in $(seq 1 15); do
+            observed_main="$(gh api "repos/$GH_REPO/git/ref/heads/main" --jq '.object.sha')"
+            if [[ "$observed_main" == "$CERTIFIED_SHA" ]]; then break; fi
+            sleep 2
+          done
+          if [[ "$observed_main" != "$CERTIFIED_SHA" ]]; then
+            echo "::error::main did not converge to the certified SHA; refusing stale main verification."
+            exit 1
+          fi
+          sleep 4
+          dispatch_started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           # GITHUB_TOKEN pushes do not trigger ordinary push workflows.
-          # Explicitly start the main verification run for hosted smoke evidence.
           gh workflow run full-regression-census.yml --repo "$GH_REPO" --ref main
+          main_run_id=""
+          for attempt in $(seq 1 20); do
+            main_run_id="$(gh api "repos/$GH_REPO/actions/workflows/full-regression-census.yml/runs?branch=main&event=workflow_dispatch&per_page=10" --jq ".workflow_runs[] | select(.head_sha == \"$CERTIFIED_SHA\" and .created_at >= \"$dispatch_started\") | .id" | head -n 1)"
+            if [[ -n "$main_run_id" ]]; then break; fi
+            sleep 2
+          done
+          if [[ -z "$main_run_id" ]]; then
+            latest_main_sha="$(gh api "repos/$GH_REPO/actions/workflows/full-regression-census.yml/runs?branch=main&event=workflow_dispatch&per_page=1" --jq '.workflow_runs[0].head_sha')"
+            echo "::error::Main Census did not bind to $CERTIFIED_SHA (latest run head: $latest_main_sha)."
+            exit 1
+          fi
+          echo "Main Census run $main_run_id verified for $CERTIFIED_SHA."
 
   # Check that GitHub Pages eventually serves the released game after main moves.
   # Pages branch deployments are asynchronous; retry rather than testing immediately.
