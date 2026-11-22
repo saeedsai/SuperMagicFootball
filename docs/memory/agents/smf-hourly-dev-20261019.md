@@ -8,7 +8,8 @@ Deliver player-facing gameplay and existing-player presentation while preserving
 ## Current checkpoint
 - .170 KEEPER-PARRY-MOVEMENT-READ-01: CPU goalkeeper parry-side selection scores current positions and bounded 0.24/0.48-second attacker projections (150-unit per-axis cap). A runner closing into the nominal shot-angle corridor can cause the keeper to redirect toward the materially clearer side. Catch threshold, rebound speed, ball physics, four controls and saves remain unchanged.
 - Focused Node regressions cover both goals, legacy velocity fallback and stationary fallback. New real-engine Chromium acceptance covers desktop/simulated touch, mirrored keeper sides and actual dive-parry direction with a moving attacker.
-- .169 Modular QA #44965531928 passed 2,672 Node tests. Full Census #44965531905 passed preflight, preview, all four Node shards and three Chromium shards; browser shard 1 failed only existing lan_auto_two_browser_qa.py 10-second Playwright wait. Failed-job-only retry attempt 2 is running.
+- .170 initial Modular QA #44970028252 and Census #44970028173 failed three new Node fixtures: the simulated runner began in the alternate corridor before crossing the preferred one. The fixtures now approach from goal-side; production helper is unchanged. Exact-head rerun pending.
+- .169 Modular QA #44965531928 passed 2,672 Node tests. Full Census #44965531905 passed preflight, preview, all four Node and all four Chromium shards on retry attempt 2. Promotion skipped because dev had advanced to .170; .169 was not promoted.
 
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private checkpoints. Preserve 223 canonical teams, 2,676 players, six formations, four actions, saves, ten Career/Cup slots, SD09 and offline/PWA behavior. No visual art approval or physical-device acceptance claimed.

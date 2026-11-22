@@ -39,8 +39,8 @@ with sync_playwright() as pw:
        stun:0,down:false,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
     }
     const marker=g.player(1-side,3);
-    Object.assign(marker,{x:k.x+dir*50,y:goalY-90,z:0,stun:0,down:false,
-      action:'idle',actionTimer:0,moveVX:0,moveVY:300,vx:0,vy:300});
+    Object.assign(marker,{x:k.x+dir*170,y:goalY+130,z:0,stun:0,down:false,
+      action:'idle',actionTimer:0,moveVX:0,moveVY:-300,vx:0,vy:-300});
     Object.assign(b,{owner:null,attacker:1-side,lastTouchTeam:1-side,
       x:k.x+dir*24,y:goalY,z:0,vx:-dir*2500,vy:0,vz:0,power:60,
       ordinaryShot:true,shot:null,strike:null,age:.2,canCollect:0,trail:[],pass:false});
