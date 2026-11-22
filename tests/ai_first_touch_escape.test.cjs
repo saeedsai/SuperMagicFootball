@@ -103,3 +103,64 @@ test('human-controlled receivers keep the existing directional first-touch behav
  assert.equal(receiver.aiFirstTouchTarget,null,'human input is never redirected by the AI escape');
  assert.equal(game.controlled[0],receiver.i,'normal human receiver selection remains intact');
 });
+
+
+function prepareInterceptGame(ENGINE,{team=0,humans=0,markerSide='front',height=8,speed=600,targeted=true}={}){
+ const game=new ENGINE.GameEngine({halfSeconds:120});
+ game.init({home:0,away:1,mode:'quick',humans});
+ const dir=team===0?1:-1;
+ const interceptor=game.player(team,3),passer=game.player(1-team,3),
+  intended=game.player(1-team,4),marker=game.player(1-team,5);
+ const field=ENGINE.WORLD.field,x=field.x+field.w*.5,y=field.y+field.h*.5;
+ const keep=new Set([interceptor,passer,intended,marker]);
+ for(const q of game.players)if(!keep.has(q)){q.down=true;q.stun=0;q.z=0;}
+ Object.assign(interceptor,{x,y,face:dir,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+  moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiFirstTouchTarget:null,
+  firstTouchControlTimer:0,firstTouchPressure:0});
+ Object.assign(passer,{x:x+dir*240,y,down:false,stun:0,z:0,action:'idle',actionTimer:0});
+ Object.assign(intended,{x:x-dir*210,y,down:false,stun:0,z:0,action:'idle',actionTimer:0});
+ const markerX=markerSide==='front'?x+dir*55:x-dir*55;
+ const markerY=markerSide==='front'?y-78:y;
+ Object.assign(marker,{x:markerX,y:markerY,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+  moveVX:markerSide==='front'?-dir*35:0,moveVY:0});
+ Object.assign(game.ball,{owner:null,pass:true,passFrom:passer.src.id,passTeam:1-team,
+  passTarget:targeted?intended.src.id:null,attacker:1-team,lastTouchTeam:1-team,
+  x,y,z:height,vx:-dir*speed,vy:0,vz:0,age:.18,shot:null,strike:null,
+  ordinaryShot:false,canCollect:0});
+ game.clock=10;
+ game.take(interceptor);
+ return {game,interceptor,passer,intended,marker,dir,x,y};
+}
+
+test('CPU interception of a pressured targeted low through-ball takes a safe first touch on both sides',async()=>{
+ const {ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const s=prepareInterceptGame(ENGINE,{team});
+  const target=s.interceptor.aiFirstTouchTarget;
+  assert.equal(s.interceptor.firstTouchControlTimer,.24);
+  assert.ok(s.interceptor.firstTouchPressure>0);
+  assert.ok(target,JSON.stringify({team,target,pressure:s.interceptor.firstTouchPressure}));
+  assert.ok(s.dir*(target.x-s.x)>=35,'first touch must move forward for the intercepting team');
+  assert.ok(target.y>s.y,'upper marked diagonal must be rejected');
+  assert.equal(s.interceptor.src.aiFirstTouchTarget,undefined,'intent must remain runtime-only');
+  s.game.driveAI(s.interceptor,.016);
+  assert.ok(Math.abs(s.interceptor.aiTarget.x-target.x)<1);
+  assert.ok(Math.abs(s.interceptor.aiTarget.y-target.y)<1);
+ }
+});
+
+test('interception first-touch escape stays CPU-only and rejects rear pressure, high, slow or untargeted passes',async()=>{
+ const {ENGINE}=await loadModules();
+ const human=prepareInterceptGame(ENGINE,{team:0,humans:1});
+ assert.equal(human.interceptor.firstTouchControlTimer,0);
+ assert.equal(human.interceptor.aiFirstTouchTarget,null);
+ const rear=prepareInterceptGame(ENGINE,{team:0,markerSide:'behind'});
+ assert.equal(rear.interceptor.firstTouchControlTimer,0);
+ assert.equal(rear.interceptor.aiFirstTouchTarget,null);
+ const high=prepareInterceptGame(ENGINE,{team:0,height:30});
+ assert.equal(high.interceptor.firstTouchControlTimer,0);
+ const slow=prepareInterceptGame(ENGINE,{team:0,speed:220});
+ assert.equal(slow.interceptor.firstTouchControlTimer,0);
+ const untargeted=prepareInterceptGame(ENGINE,{team:0,targeted:false});
+ assert.equal(untargeted.interceptor.firstTouchControlTimer,0);
+});

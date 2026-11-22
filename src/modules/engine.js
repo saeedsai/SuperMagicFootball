@@ -643,6 +643,17 @@ class GameEngine{
        {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24});
       if(escape){p.aiFirstTouchTarget={x:escape.x,y:escape.y,expires:(Number.isFinite(this.clock)?this.clock:0)+.24};p.aiTimer=0;}
      }
+    }else if(!friendly&&incoming.team===1-p.t&&incoming.from!==p.src.id&&
+     incoming.target&&incoming.target!==p.src.id&&incoming.height<=24&&incoming.speed>=280&&
+     p.firstTouchPressure>0&&!this.inControl(p.t)){
+     // A CPU interception of a targeted low through-ball should become a clean
+     // counter-control, not a dead stop into the original passer's pressure.
+     // Reuse the same bounded first-touch escape; do not redirect human input.
+     p.firstTouchControlTimer=.24;
+     const escape=attackingFirstTouchEscape(this.players,p.t,p,
+      {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24});
+     if(escape){p.aiFirstTouchTarget={x:escape.x,y:escape.y,expires:(Number.isFinite(this.clock)?this.clock:0)+.24};p.aiTimer=0;}
+     else p.firstTouchControlTimer=0;
     }
    }
    this.emit('passReceived',{team:p.t,player:p.src.id,from:incoming.from,
