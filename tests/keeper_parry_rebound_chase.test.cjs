@@ -37,6 +37,21 @@ test('keeper yields when an active opponent can reach the rebound pocket first',
  assert.equal(AI.keeperParryReboundTarget(f.keeper,f.ball,[...f.players,opponent],
   f.bounds,1,f.rebound),null);
 });
+test('keeper reads opponent arrival through the rebound descent on both sides',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=helperFixture(ENGINE,team),open=AI.keeperParryReboundTarget(
+   f.keeper,f.ball,f.players,f.bounds,1,f.rebound);
+  assert.ok(open,JSON.stringify({team,open}));
+  const opponent={t:1-team,keeper:false,x:open.x-f.dir*145,y:open.y,z:0,
+   stun:0,down:false,action:'idle',actionTimer:0,moveVX:f.dir*500,moveVY:0};
+  assert.equal(AI.keeperParryReboundTarget(f.keeper,f.ball,[...f.players,opponent],
+   f.bounds,1,f.rebound),null,'team '+team+': closing runner should win the landing race');
+  opponent.moveVX=-f.dir*500;
+  assert.ok(AI.keeperParryReboundTarget(f.keeper,f.ball,[...f.players,opponent],
+   f.bounds,1,f.rebound),'team '+team+': retreating runner must not suppress a safe chase');
+ }
+});
 test('keeper yields to a closer active teammate but ignores unavailable outfielders',async()=>{
  const {AI,ENGINE}=await loadModules(),f=helperFixture(ENGINE,0);
  const open=AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound);

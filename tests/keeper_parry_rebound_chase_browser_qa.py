@@ -50,10 +50,15 @@ with sync_playwright() as pw:
     const target=k.aiTarget?{x:k.aiTarget.x,y:k.aiTarget.y}:null;
     const chase=k.aiParryReboundTarget===true;
     const moving=dir*(k.moveVX||0)>0;
+    const rival=g.player(1-side,3);
+    Object.assign(rival,{x:target.x-dir*145,y:target.y,z:0,stun:0,down:false,
+      action:'idle',actionTimer:0,moveVX:dir*500,moveVY:0});
+    g.driveAI(k,.016);
+    const yieldedToClosingRunner=k.aiParryReboundTarget===false;
     const teammate=g.player(side,3);
     g.take(teammate);
     const cleared=k.aiParryReboundTarget===false&&k.aiTarget===null;
-    rows.push({side,parried,chase,moving,target,cleared});
+    rows.push({side,parried,chase,moving,target,yieldedToClosingRunner,cleared});
    }
    return {rows,teams:SupermagicFootball.teams.length};
   }""")
@@ -61,7 +66,7 @@ with sync_playwright() as pw:
   assert result['teams']>=223,(kind,result)
   assert len(result['rows'])==2,(kind,result)
   for row in result['rows']:
-   assert row['parried'] and row['chase'] and row['moving'] and row['cleared'],(kind,row)
+   assert row['parried'] and row['chase'] and row['moving'] and row['yieldedToClosingRunner'] and row['cleared'],(kind,row)
    assert row['target'] is not None,(kind,row)
   print('PASS',kind,'both mirrored real-engine parry follow-throughs, bounded keeper movement and possession cleanup',flush=True)
   ctx.close()

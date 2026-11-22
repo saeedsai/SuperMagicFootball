@@ -1839,10 +1839,17 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
    !['shotDown','shotGetUp'].includes(q.action)&&
    !(q.action==='hurt'&&(Number(q.actionTimer)||0)>0)&&
    !(q.action==='slide'&&(Number(q.actionTimer)||0)>0);
-  const projected=q=>({
-   x:q.x+clampTo((Number.isFinite(q.moveVX)?q.moveVX:0)*.10,-18,18),
-   y:q.y+clampTo((Number.isFinite(q.moveVY)?q.moveVY:0)*.10,-18,18)
-  });
+  // Read the outfield contest over the ball's remaining descent, rather than
+  // a fixed 100 ms snapshot. The lead is capped so sprinting players are not
+  // extrapolated indefinitely, while a genuine runner can still win the race.
+  const contestHorizon=Math.max(0,Math.min(.34,landingSeconds));
+  const projected=q=>{
+   let dx=(Number.isFinite(q.moveVX)?q.moveVX:Number.isFinite(q.vx)?q.vx:0)*contestHorizon;
+   let dy=(Number.isFinite(q.moveVY)?q.moveVY:Number.isFinite(q.vy)?q.vy:0)*contestHorizon;
+   const lead=Math.hypot(dx,dy);
+   if(lead>110){const scale=110/lead;dx*=scale;dy*=scale;}
+   return {x:q.x+dx,y:q.y+dy};
+  };
   for(const opponent of players){
    if(opponent?.t===keeper.t||!activeOutfielder(opponent))continue;
    const future=projected(opponent),gap=Math.hypot(future.x-target.x,future.y-target.y);
