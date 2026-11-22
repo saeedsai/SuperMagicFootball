@@ -23,7 +23,7 @@ with sync_playwright() as pw:
   page.add_script_tag(content=js,type='module')
   page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
-   const g=SupermagicFootball.game,rows=[];
+   const g=SupermagicFootball.game,rows=[],marginRows=[];
    for(const side of [0,1]){
     g.init({home:0,away:9,humans:2,mode:'quick',options:{...g.options,weather:'Clear'}});
     g.matchState='play';
