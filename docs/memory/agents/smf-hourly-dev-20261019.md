@@ -7,11 +7,11 @@ Deliver player-facing gameplay, presentation and Career/Cup improvements while p
 
 ## Current checkpoint
 - 0.12.81.196 AI-FIRST-TOUCH-RETAIN-POSSESSION-01: after a CPU completes a pressured targeted low through-ball interception's 0.24-second escape touch, it retains possession during the short read window when no safe forward, support or cutback option exists. High-quality shots, safe support options and counterable dribble tricks remain eligible; the existing live carry-escape scorer continues to steer toward a safer diagonal when available. Ordinary decisions resume after expiry.
-- Implemented on the existing dev branch with a focused real-engine Node regression and desktop/simulated-touch Chromium acceptance. Exact-head Modular QA and four-Node/four-Chromium Census pending.
-- .195 passed Modular QA #45037753437 and dev Full Regression Census #45037753474; QA-gated promotion advanced main/dev to `a297e8452ab4735c98cd63fd9ee11d3192f6dd33`; Pages deployment #45038707636 succeeded. Main Census #45038715273 passed hosted smoke, all four Node shards and browser shards 0/2/3; historical `lan_auto_two_browser_qa.py` timed out in browser shard 1, and failed-job-only retry attempt 2 is running.
+- Implemented on the existing dev branch with a focused real-engine Node regression and desktop/simulated-touch Chromium acceptance. First exact-head Modular QA/Census failed only `ai_cutback_pass.test.cjs`'s source-order contract after the hold guard changed the legacy branch expression; the new first-touch retention Node regression passed. Follow-up restores the exact legacy branch order; exact-head reruns pending.
+- .195 passed Modular QA #45037753437 and dev Full Regression Census #45037753474; QA-gated promotion advanced main/dev to `a297e8452ab4735c98cd63fd9ee11d3192f6dd33`; Pages deployment #45038707636 succeeded. Main Census #45038715273 attempt 2 passed hosted-pages smoke and all eight shards after the isolated historical `lan_auto_two_browser_qa.py` timeout.
 
 ## Next smallest action
-Verify the exact .196 Modular QA and four-Node/four-Chromium Census; fix only confirmed failures, then let the existing QA-gated pipeline promote and independently verify Pages plus main hosted-byte smoke. Finish the .195 main Census retry independently.
+Verify the exact .196 Modular QA and four-Node/four-Chromium Census; fix only confirmed failures, then let the existing QA-gated pipeline promote and independently verify Pages plus main hosted-byte smoke. The .195 main Census retry is green; finish .196 exact-head Modular QA and four-Node/four-Chromium Census.
 
 ## Next five product improvements
 1. Improve goalkeeper return-to-line recovery after catches, punches and rebound chases.

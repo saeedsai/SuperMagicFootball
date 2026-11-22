@@ -2842,9 +2842,13 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
     // A clear byline cutback is a deliberate chance-creation option, not only an
     // emergency pass after a defender reaches the carrier. Keep finishing first
     // and scale this early release with the CPU pass tendency and team tactic.
-    else if(!firstTouchControl&&!retainFirstTouchPossession&&p.cd<=0&&supportCutback&&!pressured&&Math.random()<ai.passRate*tactical.pass*.22){this.pass(p,false,false,passOptions)}
-    else if(!firstTouchControl&&!retainFirstTouchPossession&&p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass){this.pass(p,false,false,passOptions)}
-    else if(!firstTouchControl&&!retainFirstTouchPossession&&p.cd<=0&&Math.random()<ai.passRate*.10){this.pass(p,false,false,passOptions)}
+    else if(!firstTouchControl&&p.cd<=0&&retainFirstTouchPossession){
+     // No safe outlet is visible: keep the ball briefly and let the live carry
+     // escape above choose a safer diagonal instead of forcing a speculative pass.
+    }
+    else if(!firstTouchControl&&p.cd<=0&&supportCutback&&!pressured&&Math.random()<ai.passRate*tactical.pass*.22){this.pass(p,false,false,passOptions)}
+    else if(!firstTouchControl&&p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass){this.pass(p,false,false,passOptions)}
+    else if(!firstTouchControl&&p.cd<=0&&Math.random()<ai.passRate*.10){this.pass(p,false,false,passOptions)}
    }else{
     const pursuers=this.players.filter(q=>q.t===t&&!q.keeper&&!q.stun).sort((a,c)=>distance(a,target)-distance(c,target));
     if(owner&&owner.t===t){
