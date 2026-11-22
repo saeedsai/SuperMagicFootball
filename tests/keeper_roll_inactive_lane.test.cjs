@@ -13,7 +13,7 @@ const start=source.indexOf(' keeperPassingLane(p,q,flightSpeed=480,receiverLeadS
 const end=source.indexOf('\n keeperClearanceTarget(',start);
 assert.ok(start>=0&&end>start,'keeperPassingLane production method exists');
 const method=source.slice(start,end);
-const run=vm.runInNewContext('(function(players,p,q,flightSpeed=480,receiverLeadSeconds=null){const obj={'+method.trim()+'\n};return obj.keeperPassingLane(p,q,flightSpeed,receiverLeadSeconds);})',{keeperOutletLane});
+const run=vm.runInNewContext('(function(players,p,q,flightSpeed=480,receiverLeadSeconds=null){const obj={players,'+method.trim()+'\n};return obj.keeperPassingLane(p,q,flightSpeed,receiverLeadSeconds);})',{keeperOutletLane});
 const p={t:0,x:0,y:0},target={x:300,y:0};
 const defender=(overrides={})=>({t:1,keeper:false,stun:0,x:150,y:0,z:0,...overrides});
 test('grounded active defender blocks keeper roll lane',()=>assert.equal(run([defender()],p,target).clear,false));
