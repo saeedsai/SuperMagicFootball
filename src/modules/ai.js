@@ -1352,6 +1352,72 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    return {runner:best.runner,target};
   }
 
+ 
+ // When a pressured CPU first touch has no safe forward outlet, the second
+ // defender shades the carrier's visible carry lane. It reads only public
+ // movement/face direction; private AI targets and receiver intent stay hidden.
+ function defensiveFirstTouchCarryContainTarget(team,carrier,players,bounds,defender,primary,human=null,horizonSeconds=.14){
+  const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  const grounded=p=>p&&(p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)>=0&&Number(p.z)<=18));
+  const active=p=>p&&!p.keeper&&!p.down&&timerClear(p.stun)&&timerClear(p.slideTimer)&&
+   timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
+   timerClear(p.shotImpactRiseTimer)&&grounded(p)&&p.action!=='shotDown'&&p.action!=='shotGetUp'&&
+   !((p.action==='slide'||p.action==='hurt')&&(Number(p.actionTimer)||0)>0)&&
+   Number.isFinite(p.x)&&Number.isFinite(p.y);
+  if((team!==0&&team!==1)||!carrier||carrier.t!==1-team||carrier.keeper||
+   !Array.isArray(players)||!players.includes(carrier)||!players.includes(defender)||
+   !primary||!players.includes(primary)||primary.t!==team||primary===defender||
+   defender.t!==team||defender===human||!active(defender)||!active(primary)||!active(carrier)||
+   defender.aiAssistTarget||defender.aiGiveAndGoRun||defender.aiFirstTouchTarget||
+   !Number.isFinite(Number(carrier.firstTouchOutletReadTimer))||Number(carrier.firstTouchOutletReadTimer)<=0||
+   !Number.isFinite(Number(carrier.firstTouchControlTimer))||Number(carrier.firstTouchControlTimer)>0||
+   !Number.isFinite(Number(carrier.firstTouchPressure))||Number(carrier.firstTouchPressure)<=.12||
+   Number(carrier.hideBallTimer)>0)return null;
+  const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax),yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
+  if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+  const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+  const dir=carrier.t===0?1:-1;
+  const velocity=(axis)=>{
+   const current=axis==='x'?carrier.moveVX:carrier.moveVY;
+   if(Number.isFinite(current))return current;
+   const legacy=axis==='x'?carrier.vx:carrier.vy;
+   return Number.isFinite(legacy)?legacy:0;
+  };
+  const vx=velocity('x'),vy=velocity('y'),speed=Math.hypot(vx,vy);
+  let ux,uy;
+  if(speed>=38){ux=vx/speed;uy=vy/speed;}
+  else{
+   const face=Number(carrier.face);
+   ux=Number.isFinite(face)&&Math.abs(face)>.5?Math.sign(face):dir;
+   uy=0;
+  }
+  if(!Number.isFinite(ux)||!Number.isFinite(uy)||dir*ux<.28)return null;
+  const supportGap=Math.hypot(defender.x-carrier.x,defender.y-carrier.y);
+  const primaryGap=Math.hypot(primary.x-carrier.x,primary.y-carrier.y);
+  if(supportGap<52||supportGap>360||primaryGap>210)return null;
+  const horizon=clampTo(Number.isFinite(horizonSeconds)?horizonSeconds:.14,.08,.18);
+  const predictedX=clampTo(carrier.x+clampTo(vx*horizon,-28,28),xMin+24,xMax-24);
+  const predictedY=clampTo(carrier.y+clampTo(vy*horizon,-28,28),yMin+24,yMax-24);
+  // Stand on the visible carry line, offset to the side opposite the primary
+  // so the two defenders do not collapse onto the same point.
+  const primarySide=(primary.x-predictedX)*(-uy)+(primary.y-predictedY)*ux;
+  const side=primarySide>=0?-1:1;
+  const target={
+   x:clampTo(predictedX+ux*78-uy*side*22,xMin+22,xMax-22),
+   y:clampTo(predictedY+uy*78+ux*side*22,yMin+23,yMax-23)
+  };
+  const targetGap=Math.hypot(target.x-carrier.x,target.y-carrier.y);
+  const forwardGap=dir*(target.x-carrier.x);
+  if(!Number.isFinite(targetGap)||forwardGap<34||targetGap<56||targetGap>132||
+   Math.hypot(defender.x-target.x,defender.y-target.y)>420||
+   Math.hypot(primary.x-target.x,primary.y-target.y)<42)return null;
+  for(const teammate of players){
+   if(teammate===defender||teammate===primary||teammate.t!==team||!active(teammate))continue;
+   if(Math.hypot(teammate.x-target.x,teammate.y-target.y)<48)return null;
+  }
+  return target;
+ }
+
  function attackingFirstTouchEscape(players,team,carrier,bounds,horizonSeconds=.16){
  if(!Array.isArray(players)||!carrier||(team!==0&&team!==1)||carrier.t!==team||
   carrier.keeper||carrier.down||Number(carrier.stun)>0||Number(carrier.z)>18||
@@ -1814,6 +1880,6 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  return target;
 }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget};})();
 
 export {AI};

@@ -18,7 +18,7 @@ import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
 import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards} from "./magic-hazards.js";
 const keeperParryRebounds=new WeakMap();
-const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,keeperShotReadY,keeperParryReboundTarget,keeperOutletLane,defensivePressers,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,defensiveGiveAndGoCoverTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveThirdManRunnerTarget,defensiveCounterpressTrapTarget,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
+const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,keeperShotReadY,keeperParryReboundTarget,keeperOutletLane,defensivePressers,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,defensiveGiveAndGoCoverTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveThirdManRunnerTarget,defensiveCounterpressTrapTarget,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
 // Shot impacts briefly weaken strength-based contests without ever rewriting source stats.
 const stat=(p,key)=>{const value=baseStat(p,key);return key==='strength'&&p?.src&&(p.shotImpactWeaknessTimer||0)>0?value*(1-clamp(p.shotImpactWeakness||0,0,.4)*.45):value;};
 
@@ -2748,6 +2748,11 @@ class GameEngine{
     defensiveFirstTouchOutletCoverTarget(t,owner,this.players,
      {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},
      p,pressing.primary,this.inControl(t)?this.controlledPlayer(t):null):null;
+  const defensiveFirstTouchCarryContain=owner&&owner.t!==t&&pressing?.support===p&&!concealed&&
+   !defensiveGiveAndGoCover&&!defensiveCutbackCover&&!defensiveFirstTouchContest&&!defensiveFirstTouchOutletCover?
+   defensiveFirstTouchCarryContainTarget(t,owner,this.players,
+    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},
+    p,pressing.primary,this.inControl(t)?this.controlledPlayer(t):null):null;
 const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&pressing?.support?
    defensiveThirdManRunnerTarget(t,owner,this.players,
     {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},
@@ -2913,8 +2918,9 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
    const passCoverTarget=defensivePassCover&&distance(p,defensivePassCover)<460?defensivePassCover:null;
    const firstTouchContestTarget=defensiveFirstTouchContest&&distance(p,defensiveFirstTouchContest)<420?defensiveFirstTouchContest:null;
    const firstTouchOutletCoverTarget=defensiveFirstTouchOutletCover&&distance(p,defensiveFirstTouchOutletCover.target)<500?defensiveFirstTouchOutletCover.target:null;
+   const firstTouchCarryContainTarget=defensiveFirstTouchCarryContain&&distance(p,defensiveFirstTouchCarryContain)<460?defensiveFirstTouchCarryContain:null;
    const looseBallCoverTarget=defensiveLooseBallCover&&distance(p,defensiveLooseBallCover)<460?defensiveLooseBallCover:null;
-   const coverTarget=defensiveGiveAndGoCover||defensiveCutbackCover||firstTouchContestTarget||firstTouchOutletCoverTarget||passCoverTarget||looseBallCoverTarget;
+   const coverTarget=defensiveGiveAndGoCover||defensiveCutbackCover||firstTouchContestTarget||firstTouchOutletCoverTarget||firstTouchCarryContainTarget||passCoverTarget||looseBallCoverTarget;
    p.aiTarget=coverTarget?{x:coverTarget.x,y:coverTarget.y}:counterpressTrap?{x:counterpressTrap.x,y:counterpressTrap.y}:{
     x:clamp(target.x-(t===0?1:-1)*110,F.x+22,F.x+F.w-22),
     y:clamp(target.y+spread,F.y+23,F.y+F.h-23)};
