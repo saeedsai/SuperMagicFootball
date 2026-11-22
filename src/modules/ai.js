@@ -81,6 +81,52 @@ function defensivePressers(players,team,target,humanControlled=null){
  return {primary,support:chosen.p};
 }
 
+// For the first moments after a turnover, the second ready defender blocks a
+// short forward outlet lane while the primary closes the new carrier. This is
+// a temporary movement target only; established cover assignments take priority.
+function defensiveCounterpressTrapTarget(team,carrier,players,bounds,primary,support,turnoverAge=0,humanControlled=null){
+ const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+ if((team!==0&&team!==1)||!carrier||carrier.t!==1-team||carrier.keeper||
+  !Array.isArray(players)||!players.includes(carrier)||!primary||!support||
+  primary===support||!players.includes(primary)||!players.includes(support)||
+  primary.t!==team||support.t!==team||primary===humanControlled||support===humanControlled||
+  !Number.isFinite(turnoverAge)||turnoverAge<0||turnoverAge>.72||
+  ![carrier.x,carrier.y,primary.x,primary.y,support.x,support.y].every(Number.isFinite))return null;
+ const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax);
+ const yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
+ if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+ const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+ const active=p=>p&&!p.keeper&&!p.down&&timerClear(p.stun)&&timerClear(p.slideTimer)&&
+  timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
+  timerClear(p.shotImpactRiseTimer)&&
+  (p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)>=0&&Number(p.z)<=18))&&
+  !['shotDown','shotGetUp'].includes(p.action)&&
+  !((p.action==='slide'||p.action==='hurt')&&(Number(p.actionTimer)||0)>0);
+ if(!active(carrier)||!active(primary)||!active(support))return null;
+ const attackDir=carrier.t===0?1:-1;
+ const primaryGap=Math.hypot(primary.x-carrier.x,primary.y-carrier.y);
+ const supportGap=Math.hypot(support.x-carrier.x,support.y-carrier.y);
+ if(primaryGap>205||supportGap<52||supportGap>320)return null;
+ const vx=Number.isFinite(carrier.moveVX)?carrier.moveVX:
+  Number.isFinite(carrier.vx)?carrier.vx:0;
+ const vy=Number.isFinite(carrier.moveVY)?carrier.moveVY:
+  Number.isFinite(carrier.vy)?carrier.vy:0;
+ const projectedX=carrier.x+clampTo(vx*.12,-22,22);
+ const projectedY=carrier.y+clampTo(vy*.12,-22,22);
+ const sideDelta=support.y-projectedY;
+ const side=Math.abs(sideDelta)>16?Math.sign(sideDelta):(((support.i||0)+team)%2?1:-1);
+ const target={
+  x:clampTo(projectedX+attackDir*84,xMin+24,xMax-24),
+  y:clampTo(projectedY+side*34+clampTo(vy*.05,-10,10),yMin+24,yMax-24)
+ };
+ const forward=attackDir*(target.x-projectedX);
+ const targetGap=Math.hypot(target.x-projectedX,target.y-projectedY);
+ if(forward<52||forward>110||targetGap<58||targetGap>132||
+  Math.hypot(support.x-target.x,support.y-target.y)>300||
+  Math.hypot(primary.x-target.x,primary.y-target.y)<48)return null;
+ return target;
+}
+
 // Assign a third ready CPU defender to an unmarked central runner when an opponent
 // carries into the defending final third. Primary press and second-defender cover
 // retain ownership; this short goal-side mark uses ordinary movement only.
@@ -1522,6 +1568,6 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  return target;
 }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,aiTuning,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget};})();
 
 export {AI};
