@@ -260,6 +260,14 @@ function defensiveTackleSlide(defender,carrier,baseSpeed=0){
   Number(defender.dashTimer)>0||Number(defender.sprintCharge)>.1;
  if(!runUp)return false;
  const ux=dx/range,uy=dy/range;
+ // Match the exact forward arc used by GameEngine.tackle: a run-up from
+ // behind or side-on cannot select a SHOOT slide that cannot see its target.
+ const moveX=Number.isFinite(defender.dx)?defender.dx:0;
+ const moveY=Number.isFinite(defender.dy)?defender.dy:0;
+ const moveLength=Math.hypot(moveX,moveY);
+ const headingX=moveLength>.15?moveX/moveLength:(defender.face===-1?-1:1);
+ const headingY=moveLength>.15?moveY/moveLength:0;
+ if(headingX*ux+headingY*uy<.25)return false;
  const relativeX=carrierVX-defenderVX,relativeY=carrierVY-defenderVY;
  const escaping=relativeX*ux+relativeY*uy;
  const crossing=Math.abs(relativeX*(-uy)+relativeY*ux);

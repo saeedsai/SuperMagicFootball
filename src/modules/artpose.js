@@ -79,10 +79,20 @@ const ARTPOSE=(()=>{
   if(!player||player.preview||player.action!=='receive'||!ball||ball.owner||
    ![player.x,player.y,ball.x,ball.y].every(Number.isFinite))return null;
   const height=Number.isFinite(ball.z)?Math.max(0,ball.z):0;
-  const dx=ball.x-player.x,dy=ball.y-height-player.y,gap=Math.hypot(dx,dy);
+  const currentDx=ball.x-player.x,currentDy=ball.y-height-player.y;
+  const currentGap=Math.hypot(currentDx,currentDy);
+  if(!Number.isFinite(currentGap)||currentGap<6||currentGap>230)return null;
+  // Anticipate the short incoming path without turning gaze into a world-state
+  // prediction: at most 100 ms and 26 field units, including vertical travel.
+  const vx=Number.isFinite(ball.vx)?ball.vx:0,vy=Number.isFinite(ball.vy)?ball.vy:0;
+  const vz=Number.isFinite(ball.vz)?ball.vz:0,speed=Math.hypot(vx,vy);
+  const leadSeconds=speed>1?Math.min(.10,26/speed):0;
+  const dx=currentDx+vx*leadSeconds,dy=currentDy+(vy-vz)*leadSeconds,gap=Math.hypot(dx,dy);
   if(!Number.isFinite(gap)||gap<6||gap>230)return null;
   const focus=clamp((230-gap)/150,0,1),side=Number(view?.side)<0?-1:1;
-  return {x:clamp(dx/gap*2.1*focus,-2.1,2.1),y:clamp(dy/gap*1.35*focus,-1.35,1.35)};
+  // Character artwork mirrors in world space; keep the pupil offset local to
+  // the player's facing so a ball in front remains a positive local gaze.
+  return {x:clamp(dx*side/gap*2.1*focus,-2.1,2.1),y:clamp(dy/gap*1.35*focus,-1.35,1.35)};
  }
  function receivePose(actionTimer,pressure=0){
   const remaining=clamp((Number(actionTimer)||0)/.29,0,1),danger=clamp(Number(pressure)||0,0,1);

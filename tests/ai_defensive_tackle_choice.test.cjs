@@ -14,26 +14,39 @@ const player=(t,x,y,extra={})=>({t,x,y,keeper:false,stun:0,invuln:0,down:false,z
 
 test('run-up slide reads an escaping carrier in either attacking direction',()=>{
  for(const dir of [1,-1]){
-  const defender=player(0,1000,700,{moveVX:dir*220,moveVY:0});
+  const defender=player(0,1000,700,{moveVX:dir*220,moveVY:0,dx:dir,dy:0,face:dir});
   const carrier=player(1,1000+dir*60,700,{moveVX:dir*300,moveVY:0});
   assert.equal(AI.defensiveTackleSlide(defender,carrier,250),true);
  }
 });
 
 test('a carrier not escaping while the defender closes is met with a short poke',()=>{
- const defender=player(0,1000,700,{moveVX:220,moveVY:0});
+ const defender=player(0,1000,700,{moveVX:220,moveVY:0,dx:1,dy:0,face:1});
  const carrier=player(1,1060,700,{moveVX:0,moveVY:0});
  assert.equal(AI.defensiveTackleSlide(defender,carrier,250),false);
 });
 
 test('a running defender can slide across a lateral cut when relative closure is bounded',()=>{
- const defender=player(0,1000,700,{moveVX:110,moveVY:0});
+ const defender=player(0,1000,700,{moveVX:110,moveVY:0,dx:1,dy:0,face:1});
  const carrier=player(1,1060,700,{moveVX:40,moveVY:190});
  assert.equal(AI.defensiveTackleSlide(defender,carrier,160),true);
 });
 
+test('retreating and side-on run-ups keep the short poke; a diagonal forward run-up can still slide',()=>{
+ const carrier=player(1,1060,700,{moveVX:300,moveVY:0});
+ const retreating=player(0,1000,700,{moveVX:-220,moveVY:0,dx:-1,dy:0,face:-1});
+ const sideOn=player(0,1000,700,{moveVX:0,moveVY:220,dx:0,dy:1,face:1});
+ const diagonal=player(0,1000,700,{moveVX:160,moveVY:160,dx:1,dy:1,face:1});
+ const diagonalCarrier=player(1,1042,742,{moveVX:300,moveVY:300});
+ assert.equal(AI.defensiveTackleSlide(retreating,carrier,250),false);
+ assert.equal(AI.defensiveTackleSlide(sideOn,{...carrier,moveVX:300,moveVY:190},250),false);
+ assert.equal(AI.defensiveTackleSlide(diagonal,diagonalCarrier,250),true);
+ const facingFallback=player(0,1000,700,{moveVX:220,moveVY:0,dx:0,dy:0,face:1});
+ assert.equal(AI.defensiveTackleSlide(facingFallback,carrier,250),true);
+});
+
 test('standing defenders, very close contact and invalid or unavailable carriers keep the poke',()=>{
- const running=player(0,1000,700,{moveVX:240,moveVY:0});
+ const running=player(0,1000,700,{moveVX:240,moveVY:0,dx:1,dy:0,face:1});
  const escaping=player(1,1060,700,{moveVX:320,moveVY:0});
  assert.equal(AI.defensiveTackleSlide({...running,moveVX:0,moveVY:0},escaping,250),false);
  assert.equal(AI.defensiveTackleSlide(running,{...escaping,x:1040},250),false);

@@ -15,6 +15,17 @@ test('receiving eyes track the incoming ball in local facing coordinates on both
  assert.ok(leftFacing.x>2&&leftFacing.y===0,JSON.stringify(leftFacing));
  assert.ok(behind.x< -2,JSON.stringify(behind));
 });
+test('receive gaze anticipates a bounded incoming velocity in local facing coordinates',async()=>{
+ const {ARTPOSE}=await artposePromise;
+ const stationary=ARTPOSE.receiveGaze(player(),ball({x:300}),{side:1});
+ const approaching=ARTPOSE.receiveGaze(player(),ball({x:300,vx:-200}),{side:1});
+ const mirrored=ARTPOSE.receiveGaze(player(),ball({x:300,vx:-200}),{side:-1});
+ const fast=ARTPOSE.receiveGaze(player(),ball({x:300,vx:-1000}),{side:1});
+ assert.ok(approaching.x>stationary.x,JSON.stringify({stationary,approaching}));
+ assert.ok(approaching.x>.65&&approaching.x<.75,JSON.stringify(approaching));
+ assert.ok(mirrored.x<-.65&&mirrored.x>-.75,JSON.stringify(mirrored));
+ assert.ok(fast.x<=2.1&&fast.x>approaching.x,JSON.stringify(fast));
+});
 test('receive gaze follows projected ball height and remains bounded',async()=>{
  const {ARTPOSE}=await artposePromise;
  const high=ARTPOSE.receiveGaze(player(),ball({x:100,z:80}),{side:1});
