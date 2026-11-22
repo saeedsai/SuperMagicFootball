@@ -6,23 +6,23 @@
 Deliver player-facing gameplay and existing-player presentation while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- .176 AI-PRESSER-READINESS-01: CPU pressing/support assignment now skips high airborne players, shot-down/get-up states, and active slide/hurt or impact-recovery windows. Closest eligible grounded player presses; next eligible teammate covers. Legacy records without z remain eligible. No physics, speed, tackle strength, four actions, saves or rosters changed.
-- Focused Node and real-engine desktop/simulated-touch Chromium regressions added for both team directions; exact-head .176 CI has not run yet.
-- .175 was promoted to main: Modular QA #44984100120 passed 2,693/2,693 Node tests; Full Regression Census #44984100131 passed preflight, preview, all four Node and all four Chromium shards; QA-gated promotion succeeded.
-- .175 Pages deployment and independent main hosted-byte smoke are not verified in this run. Latest Pages-verified release remains .172 based on the recorded deployment and main smoke evidence.
-- #87 main protection remains unresolved; #48 physical two-phone acceptance, #86 Render drift and #10 graphics lock/owner acceptance remain open.
+- .177 AI-LOFTED-PASS-COVER-01: the second CPU defender now screens the predicted reception corridor of a targeted lofted/cross/long pass while the primary keeps pressing the live ball. It requires a fresh reachable trajectory and an available grounded receiver; low passes retain their existing helper. No pass physics, four actions, saves or rosters changed.
+- Added mirrored helper/engine Node regressions and actual-engine desktop/simulated-touch Chromium acceptance.
+- .176 exact-head Modular QA #44988857927 and Full Regression Census #44988857953 failed two release-contract tests (2,694/2,696 Node passed): stale policy title and missing stable service-worker cache marker. Corrected in .177.
+- .175 was promoted to main. Pages deployment #44984852753 and hosted-pages smoke passed; main Census #44984857578 failed only historical lan_auto_two_browser_qa.py (64 pass, one 10-second timeout); failed-job-only retry requested.
+- #87 remains unresolved; #48 physical two-phone acceptance, #86 Render drift and #10 graphics owner acceptance remain open.
 
 ## Next smallest action
-Verify .176 exact-head Modular QA and Full Regression Census; fix only confirmed failures. Then continue with a distinct attacking/defensive transition improvement rather than repeating loose-ball cover.
+Verify .177 exact-head Modular QA and all four Node/four Chromium Census shards. Fix only confirmed failures, then continue with a distinct gameplay improvement.
 
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private checkpoints. Preserve 223 canonical teams, 2,676 players, six formations, four actions, saves, ten Career/Cup slots, SD09 and offline/PWA behavior. No visual approval or physical-device acceptance claimed.
 
 ## Evidence
-- .175 exact head/main: `9da628fe6771800e27e616246062fef9c366da76`; main and dev were identical before .176 work.
-- .175 Modular QA #44984100120: 2,693 passed, 0 failed.
-- .175 Full Regression Census #44984100131: preflight, preview, four Node shards, four Chromium shards and QA-gated promotion passed; hosted-pages-smoke was skipped in the dev run.
-- Render broker source is unchanged by this increment.
+- .176 exact-head run #44988857927: 2,694/2,696 Node passed; two versioning assertions failed.
+- .176 Full Regression Census #44988857953: preflight Node failed on the same two release-contract assertions; browser shards were skipped.
+- .175 exact head/main: `9da628fe6771800e27e616246062fef9c366da76`; Pages deployment and hosted-pages smoke passed.
+- Render broker source is unchanged by .177.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; never bypass required CI, branch protection or QA promotion.

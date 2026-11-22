@@ -900,6 +900,61 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   // its predicted landing pocket. This is limited to descending, unowned non-shot
   // balls so ordinary passes, shots and grounded scrambles keep their assignments.
   // The 500 gravity matches the live ball integrator.
+  // A targeted lofted pass needs a different read from a low driven ball:
+  // the second defender protects the receiver's projected aerial collection lane
+  // while the primary keeps pressing the live ball. This never changes pass physics.
+  function defensiveLoftedPassCoverTarget(team,ball,players,bounds){
+   if((team!==0&&team!==1)||!ball||ball.owner||ball.pass!==true||
+    ball.attacker!==1-team||ball.passTeam!==1-team||
+    typeof ball.passTarget!=='string'||!ball.passTarget||!Array.isArray(players)||
+    ![ball.x,ball.y,ball.z,ball.vx,ball.vy,ball.vz,ball.age].every(Number.isFinite)||
+    ball.age<0||ball.age>2.4||ball.z<0||(ball.z<24&&ball.vz<112)||ball.z>190||
+    ball.vz>330||ball.vz< -420||ball.shot||ball.strike||ball.ordinaryShot||
+    (ball.canCollect!=null&&!Number.isFinite(ball.canCollect)))return null;
+   const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax),
+    yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
+   if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+   const clampTo=(v,min,max)=>Math.max(min,Math.min(max,v));
+   const clear=v=>v==null||(Number.isFinite(Number(v))&&Number(v)<=0);
+   const receiver=players.find(p=>p?.src?.id===ball.passTarget);
+   if(!receiver||receiver.t!==1-team||receiver.keeper||receiver.down||!clear(receiver.stun)||
+    !clear(receiver.slideTimer)||!clear(receiver.shotImpactKnockdownPending)||
+    !clear(receiver.shotImpactKnockdownTimer)||!clear(receiver.shotImpactRiseTimer)||
+    (receiver.z!=null&&(!Number.isFinite(Number(receiver.z))||Number(receiver.z)>18))||
+    receiver.action==='shotDown'||receiver.action==='shotGetUp'||
+    ((receiver.action==='slide'||receiver.action==='hurt')&&(Number(receiver.actionTimer)||0)>0)||
+    !Number.isFinite(receiver.x)||!Number.isFinite(receiver.y))return null;
+   const movement=(p,axis)=>{
+    const actual=axis==='x'?p?.moveVX:p?.moveVY;if(Number.isFinite(actual))return actual;
+    const legacy=axis==='x'?p?.vx:p?.vy;return Number.isFinite(legacy)?legacy:0;
+   };
+   const speedSquared=ball.vx*ball.vx+ball.vy*ball.vy;
+   if(!Number.isFinite(speedSquared)||speedSquared<240*240||speedSquared>1500*1500)return null;
+   const initialTime=((receiver.x-ball.x)*ball.vx+(receiver.y-ball.y)*ball.vy)/speedSquared;
+   if(!Number.isFinite(initialTime)||initialTime<.12||initialTime>1.12)return null;
+   const lead=clampTo(initialTime,.12,.78);
+   const receiverX=receiver.x+clampTo(movement(receiver,'x')*lead,-90,90);
+   const receiverY=receiver.y+clampTo(movement(receiver,'y')*lead,-90,90);
+   const arrival=((receiverX-ball.x)*ball.vx+(receiverY-ball.y)*ball.vy)/speedSquared;
+   if(!Number.isFinite(arrival)||arrival<.12||arrival>1.12)return null;
+   const ballAt={x:ball.x+ball.vx*arrival,y:ball.y+ball.vy*arrival};
+   if(Math.hypot(receiverX-ballAt.x,receiverY-ballAt.y)>150)return null;
+   const height=ball.z+ball.vz*arrival-250*arrival*arrival;
+   const verticalVelocity=ball.vz-500*arrival;
+   if(!Number.isFinite(height)||height< -4||height>150||
+    !Number.isFinite(verticalVelocity)||verticalVelocity>260||verticalVelocity< -520)return null;
+   if(Number.isFinite(ball.canCollect)&&ball.canCollect>arrival+.16)return null;
+   const attackDir=(1-team)===0?1:-1,interceptTime=arrival*.68;
+   const target={
+    x:clampTo(ball.x+ball.vx*interceptTime+attackDir*22,xMin+22,xMax-22),
+    y:clampTo(ball.y+ball.vy*interceptTime+clampTo((receiverY-ballAt.y)*.3,-24,24),yMin+23,yMax-23)
+   };
+   const fromBall=Math.hypot(target.x-ball.x,target.y-ball.y);
+   const toReceiver=Math.hypot(target.x-receiverX,target.y-receiverY);
+   if(fromBall<42||toReceiver<32||toReceiver>250)return null;
+   return target;
+  }
+
   function defensiveLooseBallCoverTarget(team,ball,bounds){
    if((team!==0&&team!==1)||!ball||ball.owner||ball.pass||ball.shot||ball.strike||
     ball.ordinaryShot||![ball.x,ball.y,ball.z,ball.vx,ball.vy,ball.vz].every(Number.isFinite)||
@@ -1264,6 +1319,6 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   return target;
  }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,aiTuning,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,aiTuning,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget};})();
 
 export {AI};
