@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.187',
+ version:'0.12.81.188',
  date:'2026-11-22',
  notes:Object.freeze([
+  "AI-PASS-INTERCEPT-REACH-TIMING-01 regression repair: the legacy real-engine assertion now evaluates the same support-specific reachable target used by live AI; the three new reach-aware Node regressions already passed. No gameplay source behavior changed in this repair.",
   "AI-PASS-INTERCEPT-REACH-TIMING-01: the second CPU defender now chooses the earliest grounded point along a targeted low pass that it can physically reach before the moving receiver, using its actual movement speed and a bounded reaction allowance. The primary continues pressing, the existing receiver-motion prediction and conservative fallback remain, and lofted passes keep their separate coverage. No speed boost, tackle-odds, ball-physics, four-action, roster, save or offline changes. Mirrored helper/real-engine Node and desktop/simulated-touch Chromium regressions added.",
   "CUSTOM-LEAGUE-AWAY-FIXTURE-01: Custom League matchdays now honor the scheduled home/away leg: when your club is the away side, the opponent starts on the home side and your club starts away. The final engine score is converted back to club-perspective goals before standings, match history and token win/loss are updated. The version-1 campaign schema, round-robin schedule, team IDs, saves and four actions remain unchanged. Mirrored Node and desktop/simulated-touch Chromium regressions cover away and home fixtures.",
   "AI-KEEPER-CONTESTED-CROSS-PUNCH-01 follow-up: a contested-cross punch now transfers the loose ball's attacking-team attribution to the goalkeeper's team, matching existing keeper parry/clearance semantics. The mirrored real-engine regression now checks that attribution and a closing attacker projected from 90 units into the contact window, not just a currently-close challenger. Punch thresholds, catch/dive reach, shot saves, gravity, four actions, rosters and persistence remain unchanged.",

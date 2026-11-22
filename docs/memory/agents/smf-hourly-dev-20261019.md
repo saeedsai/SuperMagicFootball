@@ -6,12 +6,12 @@
 Deliver player-facing gameplay, presentation and Career/Cup improvements while preserving four actions, canonical rosters, saves and offline play.
 
 ## Current checkpoint
-- .187 AI-PASS-INTERCEPT-REACH-TIMING-01: the second CPU defender chooses the earliest grounded point along a targeted low pass that it can physically reach before the moving receiver, using actual support movement speed and bounded reaction allowance. The primary keeps pressing; the prior conservative screen remains when no early interception is reachable. Lofted-pass coverage, pass physics, speed, tackle odds, four actions, saves, rosters and persistence are unchanged.
-- .186 was QA-gated promoted on SHA 2c9a5655bc72e88954876386a5449db9ac4f6ffa: Modular QA #45013905152 passed 2,731/2,731, dev Census #45013905142 passed four Node/four Chromium shards, and Pages deployment #45014796218 succeeded. Main Census #45014801521 passed hosted smoke and all Node shards plus three browser shards; historical lan_auto_two_browser_qa.py timed out once and its failed-job-only retry is running.
-- #87 remains open; current protection endpoint returned 403, so protection cannot be re-verified this run. #48 physical two-phone acceptance and #86 Render drift remain open. #10 graphics work still requires source-faithful Studio/game-scale review.
+- .188 AI-PASS-INTERCEPT-REACH-TIMING-01 regression repair: live gameplay uses the support defender's actual movement speed and bounded reaction allowance to choose an early grounded point along a targeted low pass; the primary keeps pressing and the prior screen remains when no early point is reachable. .187's three new reach-aware Node regressions passed; its only Node failure was the stale pre-feature engine assertion, now aligned with the support-specific live target in .188.
+- .186 was QA-gated promoted on SHA 2c9a5655bc72e88954876386a5449db9ac4f6ffa: Modular QA #45013905152 passed 2,731/2,731; dev Census #45013905142 passed all four Node/four Chromium shards; Pages #45014796218 succeeded; main Census #45014801521 passed hosted smoke and all eight shards after retry.
+- #87 remains open; protection endpoint returned 403. #48 physical two-phone acceptance and #86 Render drift remain open. #10 existing-player graphics still requires source-faithful Studio/game-scale review.
 
 ## Next smallest action
-Run focused AI-PASS-INTERCEPT-REACH-TIMING-01 Node and desktop/simulated-touch Chromium regressions, then exact-head Modular QA and four-Node/four-Chromium Full Regression Census. Fix confirmed failures before QA-gated promotion; verify Pages and main hosted smoke independently.
+Run focused .188 Node and desktop/simulated-touch Chromium acceptance, then exact-head Modular QA and four-Node/four-Chromium Full Regression Census. Fix confirmed failures; promote only through the QA-gated pipeline, then verify Pages and main hosted smoke.
 
 ## Next five product improvements
 1. Improve CPU through-ball interception timing against moving receivers without duplicating existing low/lofted pass cover.
