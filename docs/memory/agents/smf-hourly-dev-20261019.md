@@ -6,19 +6,20 @@
 Deliver player-facing gameplay and existing-player presentation while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- .170 KEEPER-PARRY-MOVEMENT-READ-01: CPU goalkeeper parry-side selection scores current positions and bounded 0.24/0.48-second attacker projections (150-unit per-axis cap). A runner closing into the nominal shot-angle corridor can cause the keeper to redirect toward the materially clearer side. Catch threshold, rebound speed, ball physics, four controls and saves remain unchanged.
-- Focused Node regressions cover both goals, legacy velocity fallback and stationary fallback. New real-engine Chromium acceptance covers desktop/simulated touch, mirrored keeper sides and actual dive-parry direction with a moving attacker.
-- .170 initial Modular QA #44970028252 and Census #44970028173 failed three new Node fixtures: the simulated runner began in the alternate corridor before crossing the preferred one. The fixtures now approach from goal-side; production helper is unchanged. Exact-head rerun pending.
-- .169 Modular QA #44965531928 passed 2,672 Node tests. Full Census #44965531905 passed preflight, preview, all four Node and all four Chromium shards on retry attempt 2. Promotion skipped because dev had advanced to .170; .169 was not promoted.
+- .171 KEEPER-OUTLET-MOVEMENT-READ-01: CPU keeper distribution now projects active defenders along a bounded .12–.72 s flight and the existing receiver lead. Short throws and long clearances use their respective speed estimates; a moving defender entering the flight corridor or predicted arrival pocket makes that outlet unsafe. Safer teammates/open turf remain eligible.
+- Focused Node tests cover closing/retreating defenders, receiver lead, short-vs-long flight, mirrored direction, inactive defenders, legacy velocity and fail-closed inputs. New real-engine Chromium acceptance checks both goals and desktop/simulated touch.
+- .170 Modular QA #44970268998 passed; Full Regression Census #44970269093 passed preflight, preview, all four Node/four Chromium shards and QA-gated promotion. Main and dev converged at .170 before this candidate. Pages/main hosted-byte verification was not independently observed.
+- .171 source, tests and release metadata are committed on existing dev; exact-head CI pending.
 
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private checkpoints. Preserve 223 canonical teams, 2,676 players, six formations, four actions, saves, ten Career/Cup slots, SD09 and offline/PWA behavior. No visual art approval or physical-device acceptance claimed.
 
 ## Evidence
-Base .169 dev SHA: `722d9bac1e6f41c1c078a1ce33d76d198e84ee82`; main SHA: `adb5c690d9d5ef44335eaa98226b12e011bf489f`. #87 remains unresolved; branch-protection endpoint access was denied this run. #48 and #86 remain open. Graphics issue #10 remains owner/graphics acceptance scope; no art changed. Authenticated online hosting is not live without owner resources.
+- .170 main SHA: `f9ad7a165ba76623c91bc3f3f1b5b7989b127c95`; #87 remains unresolved, #48 and #86 remain open. Graphics issue #10 remains owner/graphics acceptance scope.
+- Full unfiltered REST actions/runs listing is not exposed by the connected GitHub actions functions; known .170 run job lists were inspected directly. Do not represent PR-filtered lookup as the full list.
 
 ## Next smallest action
-Validate .170 on exact-head Modular QA and four Node/four Chromium Census; fix only confirmed failures, then continue an unblocked gameplay/goalkeeper improvement. Do not repeat Breath or already-covered trick counters.
+Run exact-head Modular QA and Full Regression Census for .171; fix only confirmed failures, then verify QA-gated promotion, Pages deployment, main Census and hosted-byte smoke separately. Continue an unblocked player-facing gameplay improvement.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; never bypass required CI, branch protection or QA promotion.
