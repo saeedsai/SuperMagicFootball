@@ -2109,7 +2109,6 @@ class GameEngine{
  rollKeeper(p){
   if(!p?.keeper||this.matchState!=='play'||this.ball.owner!==p||p.stun>0||!this.inControl(p.t))return false;
   const forward=p.t===0?1:-1;
-  const rolloutOpponents=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0);
   const candidates=this.players.filter(q=>q.t===p.t&&!q.keeper&&q.stun<=0&&q.z<=20&&
    q!==p&&!(q.action==='slide'&&(q.actionTimer||0)>0)&&
    !(q.action==='hurt'&&(q.actionTimer||0)>0)&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&
@@ -2124,8 +2123,8 @@ class GameEngine{
    // Rollouts are deliberate safe ground passes: do not roll to a teammate
    // who cannot stand to receive, or blindly into an occupied receiving lane.
    .filter(v=>v.safe.clear&&!v.q.down&&(v.q.shotImpactKnockdownTimer||0)<=0)
-   .sort((a,b)=>keeperOutletScore(p,a.landing,rolloutOpponents)-
-                keeperOutletScore(p,b.landing,rolloutOpponents));
+   .sort((a,b)=>keeperOutletScore(p,a.landing,a.safe)-
+                keeperOutletScore(p,b.landing,b.safe));
   const receiver=candidates[0]?.q;
   // Deliberately keep the catch if every lane is covered: do not fall back
   // to a blind rollout, and do not consume an outfield dribble input.
