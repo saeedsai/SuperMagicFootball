@@ -2456,7 +2456,7 @@ class GameEngine{
  }
  updateHideBall(p,dt){
   if(!p)return false;
-  dt=Math.min(.05,Math.max(0,Number.isFinite(dt)?dt:0));
+  dt=Math.max(0,Number.isFinite(dt)?dt:0);
   const hidden=Math.max(0,Number(p.hideBallTimer)||0);let startedReveal=false;
   if(hidden>0){
    const remaining=hidden-dt,lost=this.ball?.owner!==p,next=lost||remaining<=1e-9?0:Math.max(0,remaining);
