@@ -46,10 +46,21 @@ with sync_playwright() as pw:
                 Object.assign(game.ball,{owner:null,pass:false,shot:null,strike:null,ordinaryShot:false,
                     x,y,z:54,vx:dir*260,vy:-80,vz:-40,canCollect:0,attacker:1-team,lastTouchTeam:1-team});
                 game.clock=5;
-                const flight=(-40+Math.sqrt(40*40+1000*54))/500;
-                const expected={x:x+dir*260*flight-dir*26,y:y-80*flight};
-                game.driveAI(primary,.016);game.driveAI(support,.016);
-                rows.push({team,dir,expected,primary:primary.aiTarget,support:support.aiTarget});
+                const scenarios=[
+                    {name:'moving',z:54,vx:dir*260,vy:-80,vz:-40,canCollect:0},
+                    {name:'vertical',z:54,vx:0,vy:0,vz:0,canCollect:0}
+                ];
+                for(const scenario of scenarios){
+                    Object.assign(game.ball,{owner:null,pass:false,shot:null,strike:null,ordinaryShot:false,
+                        x,y,z:scenario.z,vx:scenario.vx,vy:scenario.vy,vz:scenario.vz,
+                        canCollect:scenario.canCollect,attacker:1-team,lastTouchTeam:1-team});
+                    primary.aiTarget=null;support.aiTarget=null;primary.aiTimer=0;support.aiTimer=0;
+                    const flight=(scenario.vz+Math.sqrt(scenario.vz*scenario.vz+1000*scenario.z))/500;
+                    const expected={x:x+Math.max(-260,Math.min(260,scenario.vx*flight))-dir*26,
+                        y:y+Math.max(-260,Math.min(260,scenario.vy*flight))};
+                    game.driveAI(primary,.016);game.driveAI(support,.016);
+                    rows.push({team,dir,name:scenario.name,expected,primary:primary.aiTarget,support:support.aiTarget});
+                }
             }
             return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};

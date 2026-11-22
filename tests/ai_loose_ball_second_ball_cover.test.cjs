@@ -45,6 +45,11 @@ test('second-ball cover caps flight projection and clamps to the playable field'
  assert.ok(target);
  assert.ok(target.x>=bounds.xMin+22&&target.x<=bounds.xMax-22);
  assert.ok(target.y>=bounds.yMin+23&&target.y<=bounds.yMax-23);
+ const vertical=AI.defensiveLooseBallCoverTarget(0,
+  {...looseBall(),vx:0,vy:0,vz:0},bounds);
+ assert.ok(vertical,'a vertical high ball still needs a goal-side second-ball cover');
+ assert.equal(vertical.x,looseBall().x-26);
+ assert.equal(vertical.y,looseBall().y);
 });
 
 test('driveAI sends the second CPU presser to the landing cover while the primary still attacks the ball',async()=>{

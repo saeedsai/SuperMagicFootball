@@ -913,8 +913,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
     x:clampTo(landingX-dir*26,xMin+22,xMax-22),
     y:clampTo(landingY,yMin+23,yMax-23)
    };
-   if(!Number.isFinite(target.x)||!Number.isFinite(target.y)||
-    Math.hypot(target.x-ball.x,target.y-ball.y)<32)return null;
+   if(!Number.isFinite(target.x)||!Number.isFinite(target.y))return null;
    return target;
   }
 
