@@ -72,15 +72,21 @@ test('real engine support uses a turnover trap, preserves its original expiry ac
   assert.ok(s.dir*(s.support.aiTarget.x-s.carrier.x)>50,'support should initially block forward outlet');
   assert.ok(Math.abs(s.support.aiTarget.y-s.carrier.y)<70,'counterpress lane should be tighter than ordinary cover');
   const freshTarget={...s.support.aiTarget};
+  const started=s.game._turnoverCounterpress?.started,until=s.game._turnoverCounterpress?.until;
+  assert.equal(started,10);assert.equal(until,10.72);
   const receiver=s.game.player(team,4);
   Object.assign(receiver,{down:false,stun:0,z:0,x:s.carrier.x+s.dir*45,y:s.carrier.y+20,
    action:'idle',actionTimer:0,moveVX:s.dir*35,moveVY:0});
   s.game.ball.owner=null;s.game.ball.pass=true;s.game.ball.passTeam=team;
   s.game.ball.passFrom=s.carrier.src.id;s.game.ball.passTarget=receiver.src.id;
   s.game.ball.lastTouchTeam=team;s.game.clock=10.2;s.game.take(receiver);
+  assert.equal(s.game._turnoverCounterpress.started,started,'same-team reception must not renew the window');
+  assert.equal(s.game._turnoverCounterpress.until,until);
+  receiver.firstTouchControlTimer=0;receiver.firstTouchPressure=0;receiver.aiFirstTouchTarget=null;
   s.game.clock=10.8;s.game.driveAI(s.support,.016);
+  assert.ok(s.game.clock>s.game._turnoverCounterpress.until);
   assert.ok(Math.hypot(s.support.aiTarget.x-freshTarget.x,s.support.aiTarget.y-freshTarget.y)>18,
-   'expired, non-renewed trap must yield to the current cover assignment');
+   'expired, non-renewed trap must yield to ordinary defensive cover');
  }
 });
 test('same-team possession and set-piece restarts do not create a counterpress trap',async()=>{
