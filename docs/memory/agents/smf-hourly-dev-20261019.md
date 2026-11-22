@@ -5,7 +5,7 @@
 ## Mission
 Deliver player-facing gameplay and existing-player presentation while preserving four actions, roster identities/order, saves and offline play.
 
-## Current increment
+## Current checkpoint
 - .169 AI-THIRD-MAN-LANE-ADAPTATION-01: the third CPU support runner now evaluates the nominal 176-unit opposite-side pocket plus 96- and 256-unit alternatives. It keeps the nominal lane when similarly safe, but can choose an adjacent pocket when the nominal one is marked. Defender projection, teammate occupancy, field bounds, primary-lane separation and shared-corridor rejection remain enforced.
 - Focused mirrored helper tests cover adjacent-lane selection, all-pocket/corridor denial and teammate crowding. A real-engine regression verifies driveAI follows the alternate lane; desktop and simulated-touch Chromium acceptance exercises both attack directions and confirms exactly four actions.
 - .168 null-runner repair is exact-head green: Modular QA #44960951949 passed 2,670 Node tests; Full Regression Census #44960951928 passed preflight, preview, all four Node and all four Chromium shards. Its QA-gated promotion moved main to the same SHA as dev. Independent .168 Pages/main Census verification remains pending because #44961835168 used the previous .165 SHA and failed browser shard 3.
