@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Desktop and simulated-touch acceptance for second-defender loose-ball cover."""
+"""Desktop and simulated-touch acceptance for high-ball and low-spill second-defender cover."""
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
@@ -28,36 +28,34 @@ with sync_playwright() as pw:
             const game=SupermagicFootball.game,rows=[];
             const field={x:150,y:155,w:2260.8,h:1220};
             for(const team of [0,1]){
-                game.init({home:0,away:1,mode:'quick',humans:0});
-                game.weather='Clear';
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
                 const dir=team===0?1:-1,primary=game.player(team,3),support=game.player(team,4);
                 const x=field.x+field.w*.5,y=field.y+field.h*.5;
                 for(const p of game.players){
                     p.aiTarget=null;p.aiTimer=0;p.aiAssistTarget=null;p.aiGiveAndGoRun=null;
                     p.action='idle';p.actionTimer=0;p.z=0;p.down=true;p.stun=1;
                 }
-                for(const p of [primary,support]){
-                    Object.assign(p,{down:false,stun:0,invuln:0,action:'idle',actionTimer:0,z:0,
-                        slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,
-                        shotImpactRiseTimer:0,aiTimer:1});
-                }
-                Object.assign(primary,{x:x-dir*18,y});
-                Object.assign(support,{x:x+dir*50,y:y+65});
-                Object.assign(game.ball,{owner:null,pass:false,shot:null,strike:null,ordinaryShot:false,
-                    x,y,z:54,vx:dir*260,vy:-80,vz:-40,canCollect:0,attacker:1-team,lastTouchTeam:1-team});
-                game.clock=5;
+                for(const p of [primary,support])Object.assign(p,{down:false,stun:0,invuln:0,
+                    action:'idle',actionTimer:0,z:0,slideTimer:0,shotImpactKnockdownPending:0,
+                    shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,aiTimer:1});
                 const scenarios=[
-                    {name:'moving',z:54,vx:dir*260,vy:-80,vz:-40,canCollect:0},
-                    {name:'vertical',z:54,vx:0,vy:0,vz:0,canCollect:0}
+                    {name:'moving',z:54,vx:dir*260,vy:-80,vz:-40,canCollect:0,age:0,lastTouchTeam:1-team,cap:260},
+                    {name:'vertical',z:54,vx:0,vy:0,vz:0,canCollect:0,age:0,lastTouchTeam:1-team,cap:260},
+                    {name:'tackle-spill',z:23,vx:dir*150,vy:50,vz:115,canCollect:.15,age:0,lastTouchTeam:1-team,cap:150},
+                    {name:'rolling-spill',z:0,vx:dir*180,vy:-60,vz:0,canCollect:0,age:.35,lastTouchTeam:1-team,cap:150,rolling:true}
                 ];
                 for(const scenario of scenarios){
+                    Object.assign(primary,{x:x-dir*18,y,aiTarget:null,aiTimer:0});
+                    Object.assign(support,{x:x+dir*50,y:y+65,aiTarget:null,aiTimer:0});
                     Object.assign(game.ball,{owner:null,pass:false,shot:null,strike:null,ordinaryShot:false,
                         x,y,z:scenario.z,vx:scenario.vx,vy:scenario.vy,vz:scenario.vz,
-                        canCollect:scenario.canCollect,attacker:1-team,lastTouchTeam:1-team});
-                    primary.aiTarget=null;support.aiTarget=null;primary.aiTimer=0;support.aiTimer=0;
-                    const flight=(scenario.vz+Math.sqrt(scenario.vz*scenario.vz+1000*scenario.z))/500;
-                    const expected={x:x+Math.max(-260,Math.min(260,scenario.vx*flight))-dir*26,
-                        y:y+Math.max(-260,Math.min(260,scenario.vy*flight))};
+                        canCollect:scenario.canCollect,age:scenario.age,lastTouchTeam:scenario.lastTouchTeam,
+                        attacker:1-team});
+                    game.clock=5;
+                    const horizon=scenario.rolling ? .18 :
+                        (scenario.vz+Math.sqrt(scenario.vz*scenario.vz+1000*scenario.z))/500;
+                    const clamp=value=>Math.max(-scenario.cap,Math.min(scenario.cap,value));
+                    const expected={x:x+clamp(scenario.vx*horizon)-dir*26,y:y+clamp(scenario.vy*horizon)};
                     game.driveAI(primary,.016);game.driveAI(support,.016);
                     rows.push({team,dir,name:scenario.name,expected,primary:primary.aiTarget,support:support.aiTarget});
                 }
@@ -73,11 +71,10 @@ with sync_playwright() as pw:
             assert row['primary'],(kind,row)
             gap=((row['primary']['x']-row['support']['x'])**2+
                 (row['primary']['y']-row['support']['y'])**2)**.5
-            if row['name']=='vertical':
-                assert abs(gap-26)<1e-6,(kind,row)
-            else:
-                assert gap>40,(kind,row)
+            if row['name']=='vertical': assert abs(gap-26)<1e-6,(kind,row)
+            elif row['name']=='moving': assert gap>40,(kind,row)
+            else: assert gap>.5,(kind,row)
         assert not errors,(kind,errors)
-        print('PASS',kind,'mirrored second-ball cover, four actions and no JavaScript errors',flush=True)
+        print('PASS',kind,'high-ball, tackle-spill and rolling second-ball cover, four actions and no JavaScript errors',flush=True)
         ctx.close()
     browser.close()
