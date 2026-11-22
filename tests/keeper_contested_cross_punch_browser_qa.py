@@ -24,15 +24,15 @@ with sync_playwright() as pw:
     Object.assign(liveKeeper,{x:keeperX,y:keeperY,z:0,stun:0,down:false,action:'idle',
      actionTimer:0,diveCooldown:0,diveIntentCooldown:0,diveIntentPending:false,keeperPunchFx:0,fatigue:.1});
     const ballX=liveKeeper.x-dir*8,ballY=liveKeeper.y+5;
-    Object.assign(liveReceiver,{x:ballX+dir*52,y:ballY,z:0,stun:0,down:false,
-     action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
+    Object.assign(liveReceiver,{x:ballX+dir*90,y:ballY,z:0,stun:0,down:false,
+     action:'idle',actionTimer:0,slideTimer:0,moveVX:-dir*300,moveVY:0});
     Object.assign(g.ball,{owner:null,attacker:1-team,lastTouchTeam:1-team,passTeam:1-team,
      pass:true,passTarget:liveReceiver.src.id,x:ballX,y:ballY,z:70,vx:-dir*30,vy:0,
      vz:-20,age:.25,canCollect:0,shot:null,strike:null,ordinaryShot:false,power:0,trail:[]});
     g.updateBall(.016);
     const punch=g.events.filter(event=>event.type==='keeperPunch');
     rows.push({team,dir,punches:punch.length,owner:!!g.ball.owner,pass:g.ball.pass,
-     lastTouchTeam:g.ball.lastTouchTeam,vx:g.ball.vx,vz:g.ball.vz,
+     lastTouchTeam:g.ball.lastTouchTeam,attacker:g.ball.attacker,vx:g.ball.vx,vz:g.ball.vz,
      action:liveKeeper.action,punchFx:liveKeeper.keeperPunchFx||0});
    }
    return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
@@ -43,7 +43,7 @@ with sync_playwright() as pw:
   for row in result['rows']:
    assert row['punches']==1,(kind,row)
    assert not row['owner'] and row['pass'] is False,(kind,row)
-   assert row['lastTouchTeam']==row['team'] and row['dir']*row['vx']>0 and row['vz']>0,(kind,row)
+   assert row['lastTouchTeam']==row['team'] and row['attacker']==row['team'] and row['dir']*row['vx']>0 and row['vz']>0,(kind,row)
    assert row['action']=='keeperDive' and row['punchFx']>0,(kind,row)
   assert not errors,(kind,errors)
   print('PASS',kind,'mirrored contested-cross punch, readable keeper response and four actions',flush=True)

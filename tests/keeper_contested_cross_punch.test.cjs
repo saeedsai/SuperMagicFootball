@@ -27,7 +27,8 @@ function fixture(ENGINE,team){
 test('contested descending high crosses trigger a mirrored punch decision at keeper contact',async()=>{
  const {AI,ENGINE}=await loadModules();
  for(const team of [0,1]){
-  const f=fixture(ENGINE,team),decision=AI.keeperHighCrossPunchDecision(f.keeper,f.ball,f.players);
+  const f=fixture(ENGINE,team);f.receiver.x=f.ball.x+f.dir*90;f.receiver.moveVX=-f.dir*300;
+  const decision=AI.keeperHighCrossPunchDecision(f.keeper,f.ball,f.players);
   assert.ok(decision,JSON.stringify({team,decision}));
   assert.ok(decision.nearestGap<60);
   assert.ok(decision.pressure>0);
@@ -77,8 +78,8 @@ test('real engine punches a contested cross away from either goal and shows the 
    actionTimer:0,diveCooldown:0,diveIntentCooldown:0,diveIntentPending:false,keeperPunchFx:0,fatigue:.1});
   keeper.src={...keeper.src,gkSkill:55,gkDiving:65};
   const ballX=keeper.x-dir*8,ballY=keeper.y+5;
-  Object.assign(receiver,{x:ballX+dir*52,y:ballY,z:0,stun:0,down:false,action:'idle',
-   actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
+  Object.assign(receiver,{x:ballX+dir*90,y:ballY,z:0,stun:0,down:false,action:'idle',
+   actionTimer:0,slideTimer:0,moveVX:-dir*300,moveVY:0});
   Object.assign(game.ball,{owner:null,attacker:1-team,lastTouchTeam:1-team,passTeam:1-team,
    pass:true,passTarget:receiver.src.id,x:ballX,y:ballY,z:70,vx:-dir*30,vy:0,vz:-20,
    age:.25,canCollect:0,shot:null,strike:null,ordinaryShot:false,power:0,trail:[]});
@@ -86,7 +87,8 @@ test('real engine punches a contested cross away from either goal and shows the 
   const punches=game.events.filter(event=>event.type==='keeperPunch');
   assert.equal(punches.length,1,JSON.stringify({team,punches,ball:game.ball}));
   assert.equal(game.ball.owner,null);assert.equal(game.ball.pass,false);
-  assert.equal(game.ball.lastTouchTeam,team);assert.ok(dir*game.ball.vx>0);assert.ok(game.ball.vz>0);
+  assert.equal(game.ball.lastTouchTeam,team);assert.equal(game.ball.attacker,team);
+  assert.ok(dir*game.ball.vx>0);assert.ok(game.ball.vz>0);
   assert.equal(keeper.action,'keeperDive');assert.ok(keeper.keeperPunchFx>0);assert.ok(keeper.diveCooldown>0);
   assert.equal(game.events.some(event=>event.type==='keeperCatch'),false);
  }

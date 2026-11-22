@@ -669,7 +669,7 @@ class GameEngine{
    b.vz=120+diving*.45;
    b.pass=false;b.passFrom=null;b.passTeam=null;b.passTarget=null;
    b.shot=null;b.strike=null;b.ordinaryShot=false;b.power=0;b.shooter=null;
-   b.lastTouchTeam=p.t;b.age=0;b.canCollect=.22;b.trail=[];b.targetY=0;b.liftOwner=null;
+   b.attacker=p.t;b.lastTouchTeam=p.t;b.age=0;b.canCollect=.22;b.trail=[];b.targetY=0;b.liftOwner=null;
    p.action='keeperDive';p.actionTimer=Math.max(.38,keeperDiveAnimationSeconds(p));
    p.diveCooldown=keeperParryRecoverySeconds(p);p.diveIntentPending=false;
    p.diveElapsed=0;p.diveAdvanceTravel=0;p.diveDx=0;p.diveDy=side;
