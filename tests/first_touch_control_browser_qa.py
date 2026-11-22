@@ -67,6 +67,7 @@ INTERCEPTION_JS=r"""() => {
   attacker:0,lastTouchTeam:0,x,y,z:8,vx:-dir*600,vy:0,vz:0,age:.18,shot:null,strike:null,ordinaryShot:false,canCollect:0});
  g.clock=12;g.take(interceptor);
  const intent=interceptor.aiFirstTouchTarget&&{x:interceptor.aiFirstTouchTarget.x,y:interceptor.aiFirstTouchTarget.y};
+ const initialTouchTimer=interceptor.firstTouchControlTimer;
  const originalRandom=Math.random;
  let prematureReleases=[],actual=null,outletIntent=null,firstTouchOwner=false;
  try{
@@ -81,7 +82,7 @@ INTERCEPTION_JS=r"""() => {
   g.driveAI(interceptor,1/60);
   outletIntent=g.events.slice(outletStart).find(e=>e.type==='passIntent')||null;
  }finally{Math.random=originalRandom;}
- return {x,y,dir,timer:.24,pressure:interceptor.firstTouchPressure,
+ return {x,y,dir,timer:initialTouchTimer,pressure:interceptor.firstTouchPressure,
   owner:firstTouchOwner,target:intent,actual,prematureReleases,
   outletTarget:outletIntent?.target||null,expectedOutlet:safeOutlet.src.id,
   outletOwner:g.ball.owner===interceptor,
