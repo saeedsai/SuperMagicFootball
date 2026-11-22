@@ -46,6 +46,23 @@ const F=WORLD.field, MID=F.x+F.w/2, CX=(t)=>t===0?F.x:F.x+F.w;
 const clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));const norm=(x,y)=>{let d=Math.hypot(x,y)||1;return {x:x/d,y:y/d}};
 function randomBetween(a,b){return a+Math.random()*(b-a)}
 function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+function defenderFacesCarrier2D(defender,carrier){
+ if(!defender||!carrier||!Number.isFinite(defender.x)||!Number.isFinite(defender.y)||
+  !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y))return false;
+ let headingX=Number.isFinite(defender.dx)?defender.dx:0;
+ let headingY=Number.isFinite(defender.dy)?defender.dy:0;
+ let headingLength=Math.hypot(headingX,headingY);
+ if(headingLength<=.1){
+  headingX=Number.isFinite(defender.moveVX)?defender.moveVX:0;
+  headingY=Number.isFinite(defender.moveVY)?defender.moveVY:0;
+  headingLength=Math.hypot(headingX,headingY);
+ }
+ if(headingLength<=.1){headingX=defender.face===-1?-1:1;headingY=0;headingLength=1;}
+ headingX/=headingLength;headingY/=headingLength;
+ const towardX=carrier.x-defender.x,towardY=carrier.y-defender.y;
+ if(Math.hypot(towardX,towardY)<=1)return false;
+ return headingX*towardX+headingY*towardY>0;
+}
 // A receiving outfielder briefly settles a pressured *friendly ground pass*.
 // Only maximum ground movement speed is affected; ball velocity, input, kick
 // timing, tackling and keeper contact are unchanged.
@@ -1769,7 +1786,7 @@ class GameEngine{
   const inRange=!!rival&&distance(p,rival)<radius;
   if(id==='lightning'&&!inRange)return false;
   // A defender who moves toward and faces the carrier can counter the spell.
-  const facing=inRange&&((rival.face||1)*(p.x-rival.x))>0;
+  const facing=inRange&&(typeof defenderFacesCarrier2D==='function'?defenderFacesCarrier2D(rival,p):((rival.face||1)*(p.x-rival.x))>0);
   const closing=inRange&&((rival.dx||0)*(p.x-rival.x)+(rival.dy||0)*(p.y-rival.y))>0;
   // A second defender visibly screening the forward carry lane can read a
   // counterable named Magic Trick during the pressured first-touch window.
@@ -1929,7 +1946,7 @@ class GameEngine{
   const q=pending.target;if(q)q.lightningMark=0;
   if(!q||!this.players.includes(q)||q.t===p.t||q.keeper||q.stun>0||distance(p,q)>=95){this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,hit:false,countered:false});return false;}
   const inJump=q.action==='jump'&&q.z>=20,inSlide=q.action==='slide'&&q.actionTimer>0&&q.z<20;
-  const facing=(q.face||1)*(p.x-q.x)>0,closing=((q.dx||0)*(p.x-q.x)+(q.dy||0)*(p.y-q.y))>0;
+  const facing=typeof defenderFacesCarrier2D==='function'?defenderFacesCarrier2D(q,p):(q.face||1)*(p.x-q.x)>0,closing=((q.dx||0)*(p.x-q.x)+(q.dy||0)*(p.y-q.y))>0;
   const read=facing&&closing&&stat(q,'defence')>=stat(p,'dribbling');
   if(inJump||inSlide||read){this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,target:q.src.name,hit:false,countered:true});return false;}
   q.stun=Math.max(q.stun,.32);q.action='hurt';q.actionTimer=Math.max(q.actionTimer||0,.32);q.lightningFx=.32;

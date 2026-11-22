@@ -63,15 +63,17 @@ with sync_playwright() as pw:
    // Keep the cue subject at the center of the logical camera on both wide
    // desktop and portrait touch viewports; the old fixed camera clipped the
    // player's ground ring at the lower edge on simulated-touch devices.
-   g.ball.owner=null;g.ball.x=reader.x;g.ball.y=reader.y;g.ball.vx=0;g.ball.vy=0;g.ball.z=0;
-   function paint(timer){reader.magicReadCueTimer=timer;g.options.reducedFlash=false;r.time=0;r.cameraX=reader.x-r.screenW/2;r.cameraY=reader.y-r.screenH/2;r.frame(g,1/60,false);return {x:reader.x,y:reader.y,scale:r.scale,offsetX:r.offsetX,offsetY:r.offsetY,screenW:r.screenW,screenH:r.screenH,zoom:r.cameraZoom};}
+   // Isolate the real reader so teammates cannot overdraw its cue at the narrower touch scale.
+   g.players=g.players.filter(p=>p===reader);
+   g.ball.owner=null;g.ball.x=reader.x;g.ball.y=reader.y;g.ball.vx=0;g.ball.vy=0;g.ball.z=2000;
+   function paint(timer){reader.magicReadCueTimer=timer;g.options.reducedFlash=false;r.time=0;r.cameraX=reader.x-r.screenW/2;r.cameraY=reader.y-r.screenH/2;r.frame(g,0,false);return {x:reader.x,y:reader.y,scale:r.scale,offsetX:r.offsetX,offsetY:r.offsetY,screenW:r.screenW,screenH:r.screenH,zoom:r.cameraZoom};}
    return paint(.48);
   }""")
   base_path=ARTIFACTS/f'magic-trick-read-cue-{kind}-without.png'
   cue_path=ARTIFACTS/f'magic-trick-read-cue-{kind}-with.png'
-  page.evaluate("""() => {const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);reader.magicReadCueTimer=0;g.options.reducedFlash=false;r.time=0;r.cameraX=reader.x-r.screenW/2;r.cameraY=reader.y-r.screenH/2;r.frame(g,1/60,false);}""")
+  page.evaluate("""() => {const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);reader.magicReadCueTimer=0;g.options.reducedFlash=false;r.time=0;r.cameraX=reader.x-r.screenW/2;r.cameraY=reader.y-r.screenH/2;r.frame(g,0,false);}""")
   page.locator('#field').screenshot(path=str(base_path))
-  page.evaluate("""() => {const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);reader.magicReadCueTimer=.48;g.options.reducedFlash=false;r.time=0;r.cameraX=reader.x-r.screenW/2;r.cameraY=reader.y-r.screenH/2;r.frame(g,1/60,false);}""")
+  page.evaluate("""() => {const g=SupermagicFootball.game,r=SupermagicFootball.renderer,reader=g.player(1,4);reader.magicReadCueTimer=.48;g.options.reducedFlash=false;r.time=0;r.cameraX=reader.x-r.screenW/2;r.cameraY=reader.y-r.screenH/2;r.frame(g,0,false);}""")
   page.locator('#field').screenshot(path=str(cue_path))
   base_image=Image.open(base_path).convert('RGB');cue_image=Image.open(cue_path).convert('RGB')
   assert base_image.size==cue_image.size,(kind,base_image.size,cue_image.size)

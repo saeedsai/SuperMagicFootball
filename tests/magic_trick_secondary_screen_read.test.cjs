@@ -163,3 +163,41 @@ test('real engine sends the successful screen reader into a short counterpress w
    'the original primary presser must continue to close the carrier');
  }
 });
+
+test('primary named Magic Trick and delayed Lightning counters read the defender\'s actual 2D heading on both teams',async()=>{
+ const ENGINE=await loadEngine();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1;
+  const cases=[
+   {name:'vertical front',carrier:{x:300,y:250},defender:{x:300,y:300,dx:0,dy:-1,face:1},countered:true},
+   {name:'vertical rear',carrier:{x:300,y:350},defender:{x:300,y:300,dx:0,dy:-1,face:1},countered:false},
+   {name:'diagonal front',carrier:{x:300+dir*50,y:350},defender:{x:300,y:300,dx:dir,dy:1,face:-dir},countered:true},
+   {name:'diagonal rear',carrier:{x:300-dir*50,y:250},defender:{x:300,y:300,dx:dir,dy:1,face:-dir},countered:false},
+   {name:'horizontal front',carrier:{x:300+dir*50,y:300},defender:{x:300,y:300,dx:dir,dy:0,face:dir},countered:true},
+   {name:'horizontal rear',carrier:{x:300-dir*50,y:300},defender:{x:300,y:300,dx:dir,dy:0,face:dir},countered:false}
+  ];
+  for(const sample of cases){
+   const game=new ENGINE.GameEngine({halfSeconds:120});game.init({home:0,away:1,humans:0,mode:'quick'});
+   const p=game.player(team,3),q=game.player(1-team,3);
+   for(const other of game.players)if(other!==p&&other!==q&&!other.keeper){other.down=true;other.stun=1;}
+   Object.assign(p,{x:sample.carrier.x,y:sample.carrier.y,z:0,down:false,stun:0,keeper:false,
+    action:'idle',actionTimer:0,firstTouchOutletReadTimer:0,firstTouchPressure:0,
+    firstTouchControlTimer:0,hideBallTimer:0,magicReadyAt:0,fatigue:0,lightningPending:null});
+   Object.assign(p.src,{magicTrick:'hideBall',dribbling:60});
+   Object.assign(q,{x:sample.defender.x,y:sample.defender.y,z:0,down:false,stun:0,invuln:0,keeper:false,
+    action:'idle',actionTimer:0,dx:sample.defender.dx,dy:sample.defender.dy,
+    moveVX:sample.defender.dx*180,moveVY:sample.defender.dy*180,face:sample.defender.face});
+   Object.assign(q.src,{defence:95});
+   game.ball.owner=p;game.ball.x=p.x;game.ball.y=p.y;game.ball.z=0;game.clock=10;
+   assert.equal(game.tryMagicTrick(p),true);
+   assert.equal(game.events.at(-1)?.countered,sample.countered,`Hide Ball ${sample.name}, team ${team}`);
+   assert.equal(p.hideBallTimer||0,sample.countered?0:.65);
+   q.action='idle';q.actionTimer=0;q.stun=0;q.z=0;q.lightningMark=.32;
+   p.lightningPending={remaining:.32,target:q};
+   const resolved=game.resolveLightningTrick(p);
+   assert.equal(game.events.at(-1)?.type,'lightningTrickResolved');
+   assert.equal(game.events.at(-1)?.countered,sample.countered,`Lightning ${sample.name}, team ${team}`);
+   assert.equal(resolved,!sample.countered,`Lightning hit result ${sample.name}, team ${team}`);
+  }
+ }
+});
