@@ -168,3 +168,55 @@ test('interception first-touch escape stays CPU-only and rejects rear pressure, 
  const untargeted=prepareInterceptGame(ENGINE,{team:0,targeted:false});
  assert.equal(untargeted.interceptor.firstTouchControlTimer,0);
 });
+
+
+test('CPU first-touch outlet prefers an open forward teammate over a blocked lane on both sides',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,carrier=player('outlet-carrier-'+team,team,team===0?500:1500,300,
+   {firstTouchControlTimer:0,firstTouchPressure:.42});
+  const marker=player('outlet-marker-'+team,1-team,carrier.x+dir*55,carrier.y-78,{moveVX:-dir*35});
+  const blocker=player('outlet-blocker-'+team,1-team,carrier.x+dir*145,carrier.y-84);
+  const safe=player('safe-outlet-'+team,team,carrier.x+dir*280,carrier.y+160,{moveVX:dir*20});
+  const blocked=player('blocked-outlet-'+team,team,carrier.x+dir*280,carrier.y-160,{moveVX:dir*20});
+  const outlet=AI.attackingFirstTouchOutlet([carrier,marker,blocker,safe,blocked],team,carrier,bounds);
+  assert.equal(outlet?.runner,safe,JSON.stringify({team,outlet:outlet?.runner?.name}));
+  assert.ok(dir*(outlet.target.x-carrier.x)>200);
+  assert.ok(outlet.target.y>carrier.y);
+  assert.equal(AI.attackingFirstTouchOutlet([carrier,marker,blocker,blocked],team,carrier,bounds),null,
+   'a blocked-only outlet must not be forced');
+  carrier.firstTouchPressure=0;
+  assert.equal(AI.attackingFirstTouchOutlet([carrier,marker,blocker,safe],team,carrier,bounds),null,
+   'ordinary unpressured possession keeps normal decision ordering');
+ }
+});
+
+test('CPU interception uses the safe post-touch outlet while preserving the 0.24-second control touch',async()=>{
+ const {ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const s=prepareInterceptGame(ENGINE,{team}),{game,interceptor,dir,x,y}=s;
+  const safe=game.player(team,4),blocked=game.player(team,5);
+  Object.assign(safe,{x:x+dir*280,y:y+160,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+   moveVX:dir*20,moveVY:0,aiAssistTarget:null});
+  Object.assign(blocked,{x:x+dir*280,y:y-160,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+   moveVX:dir*20,moveVY:0,aiAssistTarget:null});
+  Object.assign(s.intended,{x:x+dir*145,y:y-84,z:0,down:false,stun:0,action:'idle',actionTimer:0});
+  assert.ok(interceptor.aiFirstTouchOutletUntil>game.clock,'CPU interception should open a short outlet window');
+  const originalRandom=Math.random;
+  try{
+   Math.random=()=>0;
+   const firstStart=game.events.length;
+   game.driveAI(interceptor,.016);
+   assert.equal(game.ball.owner,interceptor,'the CPU must finish its settling touch before passing');
+   assert.deepEqual(game.events.slice(firstStart).filter(e=>e.type==='passIntent'),[],
+    'no pass is allowed inside the 0.24-second first-touch window');
+   game.clock=10.25;interceptor.firstTouchControlTimer=0;interceptor.aiTimer=0;
+   const outletStart=game.events.length;
+   game.driveAI(interceptor,.016);
+   const intent=game.events.slice(outletStart).find(e=>e.type==='passIntent');
+   assert.equal(intent?.target,safe.src.id,JSON.stringify({team,intent,expected:safe.src.id}));
+   assert.equal(game.ball.owner,null,'the chosen safe outlet receives a real pass');
+   assert.equal(interceptor.aiFirstTouchOutletUntil,0,'the one-shot outlet preference clears after release');
+  }finally{Math.random=original;}
+ }
+});

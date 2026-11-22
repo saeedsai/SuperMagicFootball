@@ -1353,6 +1353,89 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
 }
 
 
+
+ // After a CPU interception's settling touch, prefer a short forward outlet only
+ // when both its pass corridor and the receiver's projected pocket remain open.
+ // This is a temporary decision hint; it never changes the receiver's movement.
+ function attackingFirstTouchOutlet(players,team,carrier,bounds,horizonSeconds=.16){
+  if(!Array.isArray(players)||!carrier||(team!==0&&team!==1)||carrier.t!==team||
+   carrier.keeper||carrier.down||Number(carrier.stun)>0||Number(carrier.z)>18||
+   Number(carrier.firstTouchControlTimer)>0||!(Number(carrier.firstTouchPressure)>.12)||
+   !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y)||!bounds||typeof bounds!=='object')return null;
+  const xMin=Number(bounds.xMin),xMax=Number(bounds.xMax),yMin=Number(bounds.yMin),yMax=Number(bounds.yMax);
+  if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+  const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+  const dir=team===0?1:-1;
+  const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  const grounded=p=>p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18);
+  const ready=p=>p&&!p.down&&timerClear(p.stun)&&timerClear(p.slideTimer)&&
+   timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
+   timerClear(p.shotImpactRiseTimer)&&grounded(p)&&
+   !(p.action==='slide'&&(Number(p.actionTimer)||0)>0)&&
+   !(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)&&
+   p.action!=='shotDown'&&p.action!=='shotGetUp'&&
+   Number.isFinite(p.x)&&Number.isFinite(p.y);
+  if(!ready(carrier))return null;
+  const goalGap=(team===0?xMax-carrier.x:carrier.x-xMin);
+  if(goalGap<260)return null;
+  const velocity=(p,axis)=>{
+   const current=axis==='x'?p?.moveVX:p?.moveVY;
+   if(Number.isFinite(current))return current;
+   const legacy=axis==='x'?p?.vx:p?.vy;
+   return Number.isFinite(legacy)?legacy:0;
+  };
+  const horizon=clampTo(Number.isFinite(horizonSeconds)?horizonSeconds:.16,.08,.20);
+  const defenders=players.filter(q=>q&&q.t!==team&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&
+   !q.down&&timerClear(q.slideTimer)&&timerClear(q.shotImpactKnockdownPending)&&
+   timerClear(q.shotImpactKnockdownTimer)&&timerClear(q.shotImpactRiseTimer)&&grounded(q)&&
+   q.action!=='shotDown'&&q.action!=='shotGetUp'&&
+   !(q.action==='slide'&&(Number(q.actionTimer)||0)>0)&&
+   !(q.action==='hurt'&&(Number(q.actionTimer)||0)>0));
+  const nearby=defenders.filter(q=>{
+   const stun=q.stun==null?0:Number(q.stun);
+   return Number.isFinite(stun)&&stun<=.24&&Math.hypot(q.x-carrier.x,q.y-carrier.y)<=190;
+  });
+  if(!nearby.length||!nearby.some(q=>dir*(q.x-carrier.x)>=-28))return null;
+  const allies=players.filter(q=>q&&q.t===team&&q!==carrier&&!q.keeper&&!q.aiAssistTarget&&ready(q));
+  let best=null;
+  for(const runner of allies){
+   const vx=velocity(runner,'x'),vy=velocity(runner,'y');
+   const target={
+    x:clampTo(runner.x+clampTo(vx*horizon,-32,32),xMin+24,xMax-24),
+    y:clampTo(runner.y+clampTo(vy*horizon,-32,32),yMin+24,yMax-24)
+   };
+   const dx=target.x-carrier.x,dy=target.y-carrier.y,range=Math.hypot(dx,dy);
+   const forward=dir*dx;
+   if(range<125||range>760||forward< -80||forward>680)continue;
+   const arrival=clampTo(range/1400,.10,.42);
+   const laneDefenders=defenders.filter(q=>{
+    const stun=q.stun==null?0:Number(q.stun);
+    return Number.isFinite(stun)&&stun<=arrival;
+   });
+   const lanePressure=SHOTFEEL.passingLanePressure(carrier,target,laneDefenders);
+   if(!Number.isFinite(lanePressure)||lanePressure>=.10)continue;
+   const segment=dx*dx+dy*dy;
+   let nearest=Infinity,blocked=false;
+   for(const defender of laneDefenders){
+    const futureX=defender.x+clampTo(velocity(defender,'x')*arrival,-72,72);
+    const futureY=defender.y+clampTo(velocity(defender,'y')*arrival,-72,72);
+    const gap=Math.hypot(futureX-target.x,futureY-target.y);
+    nearest=Math.min(nearest,gap);
+    if(gap<82){blocked=true;break;}
+    const along=((futureX-carrier.x)*dx+(futureY-carrier.y)*dy)/segment;
+    if(along>.06&&along<.94){
+     const lateral=Math.hypot(futureX-(carrier.x+dx*along),futureY-(carrier.y+dy*along));
+     if(lateral<44){blocked=true;break;}
+    }
+   }
+   if(blocked)continue;
+   const forwardRun=clampTo(dir*vx,-100,160);
+   const score=forward*.32+Math.min(nearest,300)*.50+forwardRun*.08-range*.24;
+   if(!best||score>best.score+1e-9)best={runner,target,score};
+  }
+  return best?{runner:best.runner,target:best.target}:null;
+ }
+
  // A CPU carrier under a genuine front/side press can keep possession by taking
  // one short forward-diagonal touch into the safer lane. This is a movement
  // preference only: it never changes ball physics, action selection or human input.
@@ -1670,6 +1753,6 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  return target;
 }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget};})();
 
 export {AI};

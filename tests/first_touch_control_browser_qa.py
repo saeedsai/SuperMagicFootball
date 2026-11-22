@@ -46,30 +46,45 @@ JS=r"""() => {
 }"""
 INTERCEPTION_JS=r"""() => {
  const g=SupermagicFootball.game,team=1,dir=-1;
- const interceptor=g.player(team,3),passer=g.player(0,3),intended=g.player(0,4),marker=g.player(0,5);
- if(!interceptor||!passer||!intended||!marker)throw Error('missing interception fixture players');
+ const interceptor=g.player(team,3),passer=g.player(0,3),intended=g.player(0,4),marker=g.player(0,5),
+  safeOutlet=g.player(team,4),blockedOutlet=g.player(team,5);
+ if(!interceptor||!passer||!intended||!marker||!safeOutlet||!blockedOutlet)throw Error('missing interception fixture players');
  const field={x:150,y:155,w:2260.8,h:1220},x=field.x+field.w*.5,y=field.y+field.h*.5;
  g.weather='Clear';g.magicHazards=[];g.magicWalls=[];g.supernova=null;
  const before={score:JSON.stringify(g.score),teams:JSON.stringify(g.teamIds),
   formation:JSON.stringify(g.formation),buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
- const keep=new Set([interceptor,passer,intended,marker]);
+ const keep=new Set([interceptor,passer,intended,marker,safeOutlet,blockedOutlet]);
  for(const q of g.players)if(!keep.has(q)){q.down=true;q.stun=0;q.z=0;q.action='idle';q.actionTimer=0;}
  Object.assign(interceptor,{x,y,face:dir,z:0,down:false,stun:0,action:'idle',actionTimer:0,
   moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiFirstTouchTarget:null,aiAssistTarget:null,aiDetour:null,aiGiveAndGoRun:null,comboActive:false,
   firstTouchControlTimer:0,firstTouchPressure:0});
  Object.assign(passer,{x:x+dir*240,y,down:false,stun:0,z:0,action:'idle',actionTimer:0});
- Object.assign(intended,{x:x-dir*210,y,down:false,stun:0,z:0,action:'idle',actionTimer:0});
+ Object.assign(intended,{x:x+dir*145,y:y-84,down:false,stun:0,z:0,action:'idle',actionTimer:0});
  Object.assign(marker,{x:x+dir*55,y:y-78,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:-dir*35,moveVY:0});
+ Object.assign(safeOutlet,{x:x+dir*280,y:y+160,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:dir*20,moveVY:0,aiAssistTarget:null});
+ Object.assign(blockedOutlet,{x:x+dir*280,y:y-160,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:dir*20,moveVY:0,aiAssistTarget:null});
  Object.assign(g.ball,{owner:null,pass:true,passFrom:passer.src.id,passTeam:0,passTarget:intended.src.id,
   attacker:0,lastTouchTeam:0,x,y,z:8,vx:-dir*600,vy:0,vz:0,age:.18,shot:null,strike:null,ordinaryShot:false,canCollect:0});
  g.clock=12;g.take(interceptor);
  const intent=interceptor.aiFirstTouchTarget&&{x:interceptor.aiFirstTouchTarget.x,y:interceptor.aiFirstTouchTarget.y};
- const decisionStart=g.events.length;
- g.driveAI(interceptor,1/60);
- const prematureReleases=g.events.slice(decisionStart).filter(e=>['passIntent','shotRelease','dribbleTrick'].includes(e.type)).map(e=>e.type);
- return {x,y,dir,timer:interceptor.firstTouchControlTimer,pressure:interceptor.firstTouchPressure,
-  owner:g.ball.owner===interceptor,target:intent,actual:interceptor.aiTarget&&{x:interceptor.aiTarget.x,y:interceptor.aiTarget.y},
-  prematureReleases,
+ const originalRandom=Math.random;
+ let prematureReleases=[],actual=null,outletIntent=null,firstTouchOwner=false;
+ try{
+  Math.random=()=>0;
+  const decisionStart=g.events.length;
+  g.driveAI(interceptor,1/60);
+  prematureReleases=g.events.slice(decisionStart).filter(e=>['passIntent','shotRelease','dribbleTrick'].includes(e.type)).map(e=>e.type);
+  actual=interceptor.aiTarget&&{x:interceptor.aiTarget.x,y:interceptor.aiTarget.y};
+  firstTouchOwner=g.ball.owner===interceptor;
+  g.clock=12.25;interceptor.firstTouchControlTimer=0;interceptor.aiTimer=0;
+  const outletStart=g.events.length;
+  g.driveAI(interceptor,1/60);
+  outletIntent=g.events.slice(outletStart).find(e=>e.type==='passIntent')||null;
+ }finally{Math.random=originalRandom;}
+ return {x,y,dir,timer:.24,pressure:interceptor.firstTouchPressure,
+  owner:firstTouchOwner,target:intent,actual,prematureReleases,
+  outletTarget:outletIntent?.target||null,expectedOutlet:safeOutlet.src.id,
+  outletOwner:g.ball.owner===interceptor,
   buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
   scoreUnchanged:JSON.stringify(g.score)===before.score,
   identityUnchanged:JSON.stringify(g.teamIds)===before.teams&&JSON.stringify(g.formation)===before.formation};
@@ -98,6 +113,7 @@ with sync_playwright() as pw:
   assert intercepted['dir']*(intercepted['target']['x']-intercepted['x'])>=35,(device,intercepted)
   assert intercepted['target']['y']>intercepted['y'],(device,intercepted)
   assert intercepted['target']==intercepted['actual'],(device,intercepted)
+  assert intercepted['outletTarget']==intercepted['expectedOutlet'] and not intercepted['outletOwner'],(device,intercepted)
   assert intercepted['buttons']==4 and intercepted['scoreUnchanged'] and intercepted['identityUnchanged'],(device,intercepted)
   print('AI_INTERCEPT_FIRST_TOUCH_PASS',device,'CPU interception takes safe counter-control without changing controls',flush=True)
   print('FIRST_TOUCH_CONTROL_PASS',device,'real match teammate pass, pressure, immediate shot, untouched controls',flush=True)
