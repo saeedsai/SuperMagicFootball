@@ -107,7 +107,7 @@ test('human-controlled receivers keep the existing directional first-touch behav
 
 function prepareInterceptGame(ENGINE,{team=0,humans=0,markerSide='front',height=8,speed=600,targeted=true}={}){
  const game=new ENGINE.GameEngine({halfSeconds:120});
- game.init({home:0,away:1,mode:'quick',humans});
+ game.init({home:0,away:1,mode:'quick',humans});game.weather='Clear';game.magicHazards=[];game.magicWalls=[];game.supernova=null;
  const dir=team===0?1:-1;
  const interceptor=game.player(team,3),passer=game.player(1-team,3),
   intended=game.player(1-team,4),marker=game.player(1-team,5);
@@ -115,7 +115,7 @@ function prepareInterceptGame(ENGINE,{team=0,humans=0,markerSide='front',height=
  const keep=new Set([interceptor,passer,intended,marker]);
  for(const q of game.players)if(!keep.has(q)){q.down=true;q.stun=0;q.z=0;}
  Object.assign(interceptor,{x,y,face:dir,z:0,down:false,stun:0,action:'idle',actionTimer:0,
-  moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiFirstTouchTarget:null,
+  moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiFirstTouchTarget:null,aiAssistTarget:null,aiDetour:null,aiGiveAndGoRun:null,comboActive:false,
   firstTouchControlTimer:0,firstTouchPressure:0});
  Object.assign(passer,{x:x+dir*240,y,down:false,stun:0,z:0,action:'idle',actionTimer:0});
  Object.assign(intended,{x:x-dir*210,y,down:false,stun:0,z:0,action:'idle',actionTimer:0});
@@ -144,8 +144,8 @@ test('CPU interception of a pressured targeted low through-ball takes a safe fir
   assert.ok(target.y>s.y,'upper marked diagonal must be rejected');
   assert.equal(s.interceptor.src.aiFirstTouchTarget,undefined,'intent must remain runtime-only');
   s.game.driveAI(s.interceptor,.016);
-  assert.ok(Math.abs(s.interceptor.aiTarget.x-target.x)<1);
-  assert.ok(Math.abs(s.interceptor.aiTarget.y-target.y)<1);
+  assert.ok(Math.abs(s.interceptor.aiTarget.x-target.x)<1,JSON.stringify({team,target,actual:s.interceptor.aiTarget,owner:s.game.ball.owner===s.interceptor,clock:s.game.clock,expires:s.interceptor.aiFirstTouchTarget?.expires,timer:s.interceptor.firstTouchControlTimer,aiTimer:s.interceptor.aiTimer,assist:s.interceptor.aiAssistTarget}));
+  assert.ok(Math.abs(s.interceptor.aiTarget.y-target.y)<1,JSON.stringify({team,target,actual:s.interceptor.aiTarget,owner:s.game.ball.owner===s.interceptor,clock:s.game.clock,expires:s.interceptor.aiFirstTouchTarget?.expires,timer:s.interceptor.firstTouchControlTimer,aiTimer:s.interceptor.aiTimer,assist:s.interceptor.aiAssistTarget}));
  }
 });
 

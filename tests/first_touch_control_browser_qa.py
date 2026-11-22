@@ -49,12 +49,13 @@ INTERCEPTION_JS=r"""() => {
  const interceptor=g.player(team,3),passer=g.player(0,3),intended=g.player(0,4),marker=g.player(0,5);
  if(!interceptor||!passer||!intended||!marker)throw Error('missing interception fixture players');
  const field={x:150,y:155,w:2260.8,h:1220},x=field.x+field.w*.5,y=field.y+field.h*.5;
+ g.weather='Clear';g.magicHazards=[];g.magicWalls=[];g.supernova=null;
  const before={score:JSON.stringify(g.score),teams:JSON.stringify(g.teamIds),
   formation:JSON.stringify(g.formation),buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
  const keep=new Set([interceptor,passer,intended,marker]);
  for(const q of g.players)if(!keep.has(q)){q.down=true;q.stun=0;q.z=0;q.action='idle';q.actionTimer=0;}
  Object.assign(interceptor,{x,y,face:dir,z:0,down:false,stun:0,action:'idle',actionTimer:0,
-  moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiFirstTouchTarget:null,
+  moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiFirstTouchTarget:null,aiAssistTarget:null,aiDetour:null,aiGiveAndGoRun:null,comboActive:false,
   firstTouchControlTimer:0,firstTouchPressure:0});
  Object.assign(passer,{x:x+dir*240,y,down:false,stun:0,z:0,action:'idle',actionTimer:0});
  Object.assign(intended,{x:x-dir*210,y,down:false,stun:0,z:0,action:'idle',actionTimer:0});
