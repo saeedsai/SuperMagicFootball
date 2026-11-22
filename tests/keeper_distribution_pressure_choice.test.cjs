@@ -10,6 +10,9 @@ const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const helperStart=ai.indexOf('function keeperOutletLane('),helperEnd=ai.indexOf('function keeperShotReadY(',helperStart);
 assert.ok(helperStart>=0&&helperEnd>helperStart,'production keeper outlet lane exists');
 const keeperOutletLane=vm.runInNewContext('(function(){'+ai.slice(helperStart,helperEnd)+';return keeperOutletLane;})()', {});
+const readyStart=engine.indexOf('function keeperDistributionReceiverReady('),readyEnd=engine.indexOf('\nfunction keeperOutletScore(',readyStart);
+assert.ok(readyStart>=0&&readyEnd>readyStart,'production receiver readiness helper exists');
+const keeperDistributionReceiverReady=vm.runInNewContext('(function(){'+engine.slice(readyStart,readyEnd)+';return keeperDistributionReceiverReady;})()', {});
 const scoreStart=engine.indexOf('function keeperOutletScore('),scoreEnd=engine.indexOf('\n}',scoreStart)+2;
 assert.ok(scoreStart>=0&&scoreEnd>scoreStart,'production outlet score exists');
 const keeperOutletScore=vm.runInNewContext('('+engine.slice(scoreStart,scoreEnd)+')',{distance});
@@ -19,7 +22,7 @@ const keeperPassingLane=vm.runInNewContext('({'+engine.slice(passStart,passEnd)+
 const distStart=engine.indexOf('\n distributeKeeper(p,mode='),distEnd=engine.indexOf('\n\n // DRIBBLE while',distStart);
 assert.ok(distStart>=0&&distEnd>distStart,'production distribution method exists');
 const distributeKeeper=vm.runInNewContext('({'+engine.slice(distStart,distEnd)+'})',
- {distance,clamp,stat:()=>74,keeperOutletScore}).distributeKeeper;
+ {distance,clamp,stat:()=>74,keeperOutletScore,keeperDistributionReceiverReady}).distributeKeeper;
 function fixture(team,offset){
  const dir=team===0?1:-1;
  const keeper={t:team,keeper:true,x:team===0?216:2344.8,y:765,z:0,stun:0,down:false,
