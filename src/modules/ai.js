@@ -1291,6 +1291,67 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   return target;
  }
 
+  // After a CPU interception's settling touch, the second defender shades a
+  // plausible forward outlet using only visible positions and movement. It does
+  // not inspect the carrier's private AI outlet target or preferred receiver.
+  function defensiveFirstTouchOutletCoverTarget(team,carrier,players,bounds,defender,primary,human=null,horizonSeconds=.14){
+   const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+   const grounded=p=>p&&(p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18));
+   const active=p=>p&&!p.keeper&&!p.down&&timerClear(p.stun)&&timerClear(p.slideTimer)&&
+    timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
+    timerClear(p.shotImpactRiseTimer)&&grounded(p)&&p.action!=='shotDown'&&p.action!=='shotGetUp'&&
+    !((p.action==='slide'||p.action==='hurt')&&(Number(p.actionTimer)||0)>0)&&
+    Number.isFinite(p.x)&&Number.isFinite(p.y);
+   if((team!==0&&team!==1)||!carrier||carrier.t!==1-team||carrier.keeper||
+    !Array.isArray(players)||!players.includes(carrier)||!players.includes(defender)||
+    !primary||!players.includes(primary)||primary.t!==team||primary===defender||
+    defender.t!==team||!active(defender)||defender===human||
+    defender.aiAssistTarget||defender.aiGiveAndGoRun||defender.aiFirstTouchTarget||
+    !active(carrier)||!Number.isFinite(Number(carrier.firstTouchOutletReadTimer))||
+    Number(carrier.firstTouchOutletReadTimer)<=0||
+    !Number.isFinite(Number(carrier.firstTouchControlTimer))||Number(carrier.firstTouchControlTimer)>0||
+    !Number.isFinite(Number(carrier.firstTouchPressure))||Number(carrier.firstTouchPressure)<=.12||
+    Number(carrier.hideBallTimer)>0)return null;
+   const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax),yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
+   if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax||!active(primary))return null;
+   const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value)),dir=carrier.t===0?1:-1;
+   const horizon=clampTo(Number.isFinite(horizonSeconds)?horizonSeconds:.14,.08,.18);
+   const velocity=(p,axis)=>{
+    const current=axis==='x'?p?.moveVX:p?.moveVY;
+    if(Number.isFinite(current))return current;
+    const legacy=axis==='x'?p?.vx:p?.vy;
+    return Number.isFinite(legacy)?legacy:0;
+   };
+   const defenders=players.filter(q=>q&&q.t===team&&q!==defender&&active(q));
+   let best=null;
+   for(const runner of players){
+    if(!runner||runner.t!==carrier.t||runner===carrier||!active(runner))continue;
+    const vx=velocity(runner,'x'),vy=velocity(runner,'y');
+    const future={x:clampTo(runner.x+clampTo(vx*horizon,-28,28),xMin+24,xMax-24),
+     y:clampTo(runner.y+clampTo(vy*horizon,-28,28),yMin+24,yMax-24)};
+    const dx=future.x-carrier.x,dy=future.y-carrier.y,range=Math.hypot(dx,dy),
+     forward=dir*dx,lateral=Math.abs(dy);
+    if(range<135||range>740||forward<110||forward>650||lateral>285)continue;
+    let nearest=Infinity;
+    for(const marker of defenders){
+     const mx=marker.x+clampTo(velocity(marker,'x')*horizon,-30,30);
+     const my=marker.y+clampTo(velocity(marker,'y')*horizon,-30,30);
+     nearest=Math.min(nearest,Math.hypot(mx-future.x,my-future.y));
+    }
+    if(nearest<92)continue;
+    const forwardRun=clampTo(dir*vx,-80,140);
+    const score=forward*.34+Math.min(nearest,260)*.42-range*.22-lateral*.10+forwardRun*.08;
+    if(!best||score>best.score+1e-9)best={runner,future,score};
+   }
+   if(!best)return null;
+   const dx=best.future.x-carrier.x,dy=best.future.y-carrier.y;
+   const target={x:clampTo(carrier.x+dx*.56-dir*18,xMin+22,xMax-22),
+    y:clampTo(carrier.y+dy*.56,yMin+23,yMax-23)};
+   if(Math.hypot(target.x-carrier.x,target.y-carrier.y)<70||
+    Math.hypot(target.x-primary.x,target.y-primary.y)<44)return null;
+   return {runner:best.runner,target};
+  }
+
  function attackingFirstTouchEscape(players,team,carrier,bounds,horizonSeconds=.16){
  if(!Array.isArray(players)||!carrier||(team!==0&&team!==1)||carrier.t!==team||
   carrier.keeper||carrier.down||Number(carrier.stun)>0||Number(carrier.z)>18||
@@ -1753,6 +1814,6 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  return target;
 }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget};})();
 
 export {AI};
