@@ -13,7 +13,7 @@ const CHECKPOINT_GAME_KEYS=Object.freeze([
   'aiComboNext','aiComboThink','autoSwitchAccum','ball','celebration','celebrationStyle','clock','condition','controlled','cooldown','flash',
   'formation','goalHero','half','humans','lineups','magicHazards','magicWalls','manualSwitchGrace','matchSeconds','matchSerial','matchState','mode',
   'maxSubstitutions','fatigueLedger','moraleLedger','particles','pendingKickoff','pk','playerSeconds','players','score','shake','stoppageAnnounced',
-  'stoppageWindow','stormTimer','subbedOut','substitutionsUsed','supernova','talksUsed','teamIds','teamPlans','terrain','tornado',
+  'stoppageWindow','_turnoverCounterpress','stormTimer','subbedOut','substitutionsUsed','supernova','talksUsed','teamIds','teamPlans','terrain','tornado',
   'weather','weatherLightning','weatherSeed','wind','_reboundAudit','_shotAudit','_shotAuditNext','rideBall'
 ]);
 const CHECKPOINT_REF=Symbol('checkpoint-reference');
