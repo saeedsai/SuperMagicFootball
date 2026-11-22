@@ -7,7 +7,8 @@ Deliver player-facing gameplay and existing-player presentation while preserving
 
 ## Current checkpoint
 - .180 AI-DEFENSIVE-PRESS-ARRIVAL-01: primary CPU press assignment compares a bounded 0.12-second projected gap for active defenders and a moving opponent carrier. A defender already closing may take the press over a slightly nearer teammate moving away; score influence is capped at 13.2 field units. Stationary carriers and loose balls remain distance-first; support selection retains current-distance, lateral and goal-side scoring.
-- Added three focused helper regressions, mirrored real-engine driveAI integration, and desktop/simulated-touch Chromium acceptance. Exact-head .180 Modular QA and Full Regression Census are pending.
+- Added three focused helper regressions, mirrored real-engine driveAI integration, and desktop/simulated-touch Chromium acceptance. All four new Node regressions passed on the first .180 run.
+- Initial .180 Modular QA #44999198347 and Full Regression Census #44999198288 failed four release-contract assertions (2,711/2,715 Node tests passed) because the README project heading still named .179. Census stopped at preflight, so Chromium did not run. The README heading is corrected in the follow-up commit; exact-head reruns pending.
 - .179 is verified and main-promoted: Modular QA #44997291890 passed; Full Regression Census #44997291898 passed preflight, preview, all four Node and all four Chromium shards; QA-gated promotion moved main/dev to 9c8796904e846216b57adce9b5e9873200ed5f63. Pages deployment #44998135735 succeeded. Main-dispatch Census #44998142296 passed preflight, preview, hosted smoke and seven of eight shards; Node shard 1 was running at .180 start.
 - #87 main protection remains open; last successful REST evidence reports main.protected=false and the current read returned 403. #48 physical two-phone acceptance, #86 Render drift and #10 existing-art owner acceptance remain open.
 
