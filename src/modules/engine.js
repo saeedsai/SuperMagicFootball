@@ -332,14 +332,31 @@ function keeperParrySide(keeper,players,shotOffset){
   const end={x:keeper.x+forward*230,y:clamp(keeper.y+side*125,F.y+24,F.y+F.h-24)};
   const dx=end.x-start.x,dy=end.y-start.y,len2=dx*dx+dy*dy||1;
   let clearance=Infinity;
+  const consider=(x,y)=>{
+   const u=clamp(((x-start.x)*dx+(y-start.y)*dy)/len2,0,1);
+   clearance=Math.min(clearance,Math.hypot(x-(start.x+dx*u),y-(start.y+dy*u)));
+  };
   for(const q of players||[]){
    if(!q||q.t===keeper.t||q.keeper||q.stun>0||q.down||
       (q.shotImpactKnockdownTimer||0)>0||
       (q.action==='hurt'&&(q.actionTimer||0)>0)||
       (q.z||0)>28||!Number.isFinite(q.x)||!Number.isFinite(q.y)||
       distance(keeper,q)>360)continue;
-   const u=clamp(((q.x-start.x)*dx+(q.y-start.y)*dy)/len2,0,1);
-   clearance=Math.min(clearance,Math.hypot(q.x-(start.x+dx*u),q.y-(start.y+dy*u)));
+   consider(q.x,q.y);
+   // A parry travels into this corridor over the next few tenths of a second.
+   // Include bounded runner projections so a currently-open lane is not chosen
+   // when an active attacker is already closing into it.
+   const velocity=axis=>{
+    const actual=axis==='x'?q.moveVX:q.moveVY;
+    if(Number.isFinite(actual))return actual;
+    const legacy=axis==='x'?q.vx:q.vy;
+    return Number.isFinite(legacy)?legacy:0;
+   };
+   const vx=velocity('x'),vy=velocity('y');
+   for(const seconds of [.24,.48]){
+    consider(q.x+clamp(vx*seconds,-150,150),
+     q.y+clamp(vy*seconds,-150,150));
+   }
   }
   return clearance;
  };

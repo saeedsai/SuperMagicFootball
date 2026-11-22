@@ -33,6 +33,18 @@ test('stunned, downed, knocked-down, hurt and high-airborne opponents do not bia
  ];
  assert.equal(helper(keeper(0),inactive,-1),-1);
 });
+test('parry anticipates an attacker moving into the preferred rebound lane',()=>{
+ assert.equal(helper(keeper(0),[rival(130,250,{moveVX:0,moveVY:300})],1),-1);
+});
+test('parry movement projection mirrors for the away-side keeper',()=>{
+ assert.equal(helper(keeper(1),[rival(1470,250,{t:0,moveVX:0,moveVY:300})],1),-1);
+});
+test('parry movement projection falls back to legacy velocity fields',()=>{
+ assert.equal(helper(keeper(0),[rival(130,250,{vx:0,vy:300})],1),-1);
+});
+test('a stationary attacker retains the original shot-angle side when both lanes remain similar',()=>{
+ assert.equal(helper(keeper(0),[rival(130,250,{moveVX:0,moveVY:0})],1),1);
+});
 test('nearly equal rebound lanes retain the shot-angle fallback',()=>{
  assert.equal(helper(keeper(0),[rival(210,340)],-1),-1);
 });

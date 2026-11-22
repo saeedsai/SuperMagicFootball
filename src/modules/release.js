@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.169',
+ version:'0.12.81.170',
  date:'2026-11-22',
  notes:Object.freeze([
+  "KEEPER-PARRY-MOVEMENT-READ-01: CPU goalkeepers now compare current and bounded 0.24–0.48 s projections of nearby active attackers when choosing either short parry corridor. They prefer a materially clearer side when a runner is closing into the shot-angle lane; inactive, stunned, downed, hurt and high-airborne players remain excluded. Existing shot-angle fallback, parry speed, catch threshold, ball physics, four actions, saves and rosters remain unchanged. Mirrored helper and desktop/simulated-touch real-engine Chromium regressions added.",
   "AI-THIRD-MAN-LANE-ADAPTATION-01: when a defender occupies the nominal opposite-side third-man pocket, CPU support evaluates two bounded adjacent pockets and selects a clear alternative using projected defender pressure and teammate occupancy. The original 176-unit lane remains preferred when similarly safe; a blocked shared corridor or fully marked alternatives cancel the run. Existing pass physics, four actions, saves and rosters remain unchanged. Mirrored helper/engine regressions and desktop/simulated-touch Chromium acceptance added.",
   "AI-THIRD-MAN-SUPPORT-RUN-01 follow-up: guard the optional third-man support-pass branch when no eligible second runner exists, preserving the primary support and ordinary pass fallback. A focused real-engine regression covers the one-runner case; valid complementary runs and existing four-action input remain unchanged.",
   "AI-THIRD-MAN-SUPPORT-RUN-01: when a CPU teammate already occupies the primary forward support lane, a second CPU teammate attacks a bounded complementary lane on the opposite side. The target predicts defender movement, rejects blocked corridors and crowded pockets, and becomes a fallback support-pass or through-ball outlet when the primary option is unavailable. Existing pass physics, four actions, saves and rosters remain unchanged. Mirrored helper/engine regressions and desktop/simulated-touch Chromium acceptance added.",
