@@ -2646,6 +2646,16 @@ class GameEngine{
    !Number.isFinite(this.clock)||this.clock>firstTouchTarget.expires||!(Number(p.firstTouchControlTimer)>0))){
    p.aiFirstTouchTarget=null;p.aiTimer=0;
   }
+  // A pressured interception gets one bounded control touch before the CPU
+  // considers an immediate pass, shot or trick. This prevents the reaction
+  // roll from releasing the ball before the advertised escape can happen.
+  const firstTouchControl=!!(p.aiFirstTouchTarget&&owner===p&&this.ball.owner===p&&
+   Number.isFinite(p.aiFirstTouchTarget.expires)&&Number.isFinite(this.clock)&&
+   this.clock<=p.aiFirstTouchTarget.expires&&Number(p.firstTouchControlTimer)>0);
+  if(firstTouchControl){
+   p.aiAssistTarget=null;
+   p.aiGiveAndGoRun=null;
+  }
   const giveAndGo=p.aiGiveAndGoRun;
   if(giveAndGo){
    const receiver=this.players.find(q=>q&&q.t===t&&q.src?.id===giveAndGo.receiverId);
@@ -2723,7 +2733,7 @@ class GameEngine{
    p.keeperHold=(p.keeperHold||0)+dt;
    if(p.cd<=0&&(p.keeperHold>=1.35||(p.keeperHold>=.28&&this.players.some(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&distance(p,q)<210)))){this.distributeKeeper(p);return;}
   }else if(p.keeper){p.keeperHold=0;}
-  if(!concealed&&this.driveAiCombo(p,dt,ai))return;
+  if(!concealed&&!firstTouchControl&&this.driveAiCombo(p,dt,ai))return;
   if(p.aiAssistTarget){
    if(p.aiAssistTarget.expires<this.clock||this.ball.owner||p.stun>0||p.z>0){p.aiAssistTarget=null;}
    else{
@@ -2788,19 +2798,19 @@ class GameEngine{
     const nearestDefender=defenders.length?Math.min(...defenders.map(q=>distance(p,q))):999;
     const finishChance=SHOTFEEL.aiFinishingPriority(goalDistance,nearestDefender,stat(p,'shootAccuracy'),ai.shootRate)*tactical.shoot;
     const passOptions=supportCutback?{preferredTarget:supportCutback.runner,supportRun:true,cutback:true,preferredPoint:supportCutback.target}:supportThroughBall?{preferredTarget:supportThroughBall.runner,supportRun:true,throughBall:true,preferredPoint:supportThroughBall.target}:supportGoalmouth?{preferredTarget:supportGoalmouth.runner,supportRun:true,goalmouth:true,preferredPoint:supportGoalmouth.target,...(giveAndGoRun?{giveAndGoRun}:{})}:thirdManThroughBall?.runner===supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true,throughBall:true,preferredPoint:thirdManThroughBall.target}:thirdManPass&&thirdManPass===supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true,preferredPoint:thirdManRun.target}:supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true}:{};
-    if(p.cd<=0&&nearGoal&&Math.random()<finishChance){this.shoot(p,Math.random()<ai.superRate)}
-    else if(p.cd<=0&&giveAndGoReturn&&Math.random()<ai.passRate*tactical.pass*.78){
+    if(!firstTouchControl&&p.cd<=0&&nearGoal&&Math.random()<finishChance){this.shoot(p,Math.random()<ai.superRate)}
+    else if(!firstTouchControl&&p.cd<=0&&giveAndGoReturn&&Math.random()<ai.passRate*tactical.pass*.78){
      this.pass(p,false,false,{preferredTarget:giveAndGoReturn.runner,supportRun:true,
       giveAndGoReturn:true,preferredPoint:giveAndGoReturn.target});
     }
-    else if(p.cd<=0&&supportGoalmouth&&Math.random()<ai.passRate*tactical.pass*.42){this.pass(p,false,false,passOptions)}
-    else if(p.cd<=0&&pressured&&p.trickCd<=0&&Math.random()<(.04+ai.anticipation*.62)&&this.tryDribbleTrick(p,true)){}
+    else if(!firstTouchControl&&p.cd<=0&&supportGoalmouth&&Math.random()<ai.passRate*tactical.pass*.42){this.pass(p,false,false,passOptions)}
+    else if(!firstTouchControl&&p.cd<=0&&pressured&&p.trickCd<=0&&Math.random()<(.04+ai.anticipation*.62)&&this.tryDribbleTrick(p,true)){}
     // A clear byline cutback is a deliberate chance-creation option, not only an
     // emergency pass after a defender reaches the carrier. Keep finishing first
     // and scale this early release with the CPU pass tendency and team tactic.
-    else if(p.cd<=0&&supportCutback&&!pressured&&Math.random()<ai.passRate*tactical.pass*.22){this.pass(p,false,false,passOptions)}
-    else if(p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass){this.pass(p,false,false,passOptions)}
-    else if(p.cd<=0&&Math.random()<ai.passRate*.10){this.pass(p,false,false,passOptions)}
+    else if(!firstTouchControl&&p.cd<=0&&supportCutback&&!pressured&&Math.random()<ai.passRate*tactical.pass*.22){this.pass(p,false,false,passOptions)}
+    else if(!firstTouchControl&&p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass){this.pass(p,false,false,passOptions)}
+    else if(!firstTouchControl&&p.cd<=0&&Math.random()<ai.passRate*.10){this.pass(p,false,false,passOptions)}
    }else{
     const pursuers=this.players.filter(q=>q.t===t&&!q.keeper&&!q.stun).sort((a,c)=>distance(a,target)-distance(c,target));
     if(owner&&owner.t===t){

@@ -43,7 +43,10 @@ test('a marginally clear flight corridor is ranked below a wider safe corridor',
  assert.ok(score(keeper,receiver,marginal)>score(keeper,receiver,open));
 });
 test('long clearance fallback and safe lane requirement are retained',()=>{
- assert.match(engine,/shortOptions=scored\.filter\(v=>v\.safe\.clear/);
+ assert.match(engine,/const shortSpeed=390\+quality\*1\.2/);
+ assert.match(engine,/mates\.map\(q=>\(\{q,safe:this\.keeperPassingLane\(p,q,shortSpeed\)\}\)\)/);
+ assert.match(engine,/const shortOptions=shortScored\.filter\(v=>v\.safe\.clear/);
+ assert.match(engine,/const shortAllowed=mode!=='long'&&!immediatePressure&&shortOptions\.length>0/);
  assert.match(engine,/const long=!shortAllowed/);
  assert.match(engine,/keeperClearanceTarget\(p,scored,opponents\)/);
  assert.match(engine,/Math\.max\(0,170-interception\)\*\.65/);

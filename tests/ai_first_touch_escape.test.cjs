@@ -143,7 +143,11 @@ test('CPU interception of a pressured targeted low through-ball takes a safe fir
   assert.ok(s.dir*(target.x-s.x)>=35,'first touch must move forward for the intercepting team');
   assert.ok(target.y>s.y,'upper marked diagonal must be rejected');
   assert.equal(s.interceptor.src.aiFirstTouchTarget,undefined,'intent must remain runtime-only');
+  const eventStart=s.game.events.length;
   s.game.driveAI(s.interceptor,.016);
+  assert.equal(s.game.ball.owner,s.interceptor,'CPU must keep possession through its bounded first touch');
+  assert.deepEqual(s.game.events.slice(eventStart).filter(event=>['passIntent','shotRelease','dribbleTrick'].includes(event.type)),[],
+   'CPU must not release or spend a trick before completing the first touch');
   assert.ok(Math.abs(s.interceptor.aiTarget.x-target.x)<1,JSON.stringify({team,target,actual:s.interceptor.aiTarget,owner:s.game.ball.owner===s.interceptor,clock:s.game.clock,expires:s.interceptor.aiFirstTouchTarget?.expires,timer:s.interceptor.firstTouchControlTimer,aiTimer:s.interceptor.aiTimer,assist:s.interceptor.aiAssistTarget}));
   assert.ok(Math.abs(s.interceptor.aiTarget.y-target.y)<1,JSON.stringify({team,target,actual:s.interceptor.aiTarget,owner:s.game.ball.owner===s.interceptor,clock:s.game.clock,expires:s.interceptor.aiFirstTouchTarget?.expires,timer:s.interceptor.firstTouchControlTimer,aiTimer:s.interceptor.aiTimer,assist:s.interceptor.aiAssistTarget}));
  }

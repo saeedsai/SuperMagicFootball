@@ -64,9 +64,12 @@ INTERCEPTION_JS=r"""() => {
   attacker:0,lastTouchTeam:0,x,y,z:8,vx:-dir*600,vy:0,vz:0,age:.18,shot:null,strike:null,ordinaryShot:false,canCollect:0});
  g.clock=12;g.take(interceptor);
  const intent=interceptor.aiFirstTouchTarget&&{x:interceptor.aiFirstTouchTarget.x,y:interceptor.aiFirstTouchTarget.y};
+ const decisionStart=g.events.length;
  g.driveAI(interceptor,1/60);
+ const prematureReleases=g.events.slice(decisionStart).filter(e=>['passIntent','shotRelease','dribbleTrick'].includes(e.type)).map(e=>e.type);
  return {x,y,dir,timer:interceptor.firstTouchControlTimer,pressure:interceptor.firstTouchPressure,
   owner:g.ball.owner===interceptor,target:intent,actual:interceptor.aiTarget&&{x:interceptor.aiTarget.x,y:interceptor.aiTarget.y},
+  prematureReleases,
   buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
   scoreUnchanged:JSON.stringify(g.score)===before.score,
   identityUnchanged:JSON.stringify(g.teamIds)===before.teams&&JSON.stringify(g.formation)===before.formation};
@@ -90,6 +93,7 @@ with sync_playwright() as pw:
   assert not errors,(device,errors)
   intercepted=page.evaluate(INTERCEPTION_JS)
   assert intercepted['owner'] and intercepted['timer']==.24 and intercepted['pressure']>0,(device,intercepted)
+  assert intercepted['prematureReleases']==[],(device,intercepted)
   assert intercepted['target'] and intercepted['actual'],(device,intercepted)
   assert intercepted['dir']*(intercepted['target']['x']-intercepted['x'])>=35,(device,intercepted)
   assert intercepted['target']['y']>intercepted['y'],(device,intercepted)
