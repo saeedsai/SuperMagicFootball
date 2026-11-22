@@ -364,7 +364,12 @@ function keeperParrySide(keeper,players,shotOffset){
  return alternate>current+24?-preferred:preferred;
 }
 function keeperOutletScore(keeper,receiver,lane){
- return distance(keeper,receiver)+(Number.isFinite(lane?.pressure)?lane.pressure:0);
+ const pressure=Number.isFinite(lane?.pressure)?Math.max(0,lane.pressure):0;
+ const interception=Number(lane?.interception);
+ // Both routes may be technically clear; prefer a healthier margin above the
+ // 95-unit interception threshold instead of treating every clear lane equally.
+ const corridorRisk=Number.isFinite(interception)?Math.max(0,170-interception)*.65:0;
+ return distance(keeper,receiver)+pressure+corridorRisk;
 }
 class GameEngine{
  constructor(options={},input){this.options=options;this.input=input;this.events=[];this.mode='quick';this.matchState='none';this.teamIds=[0,9];this.rosters=[[],[]];this.lineups=[DEFAULT_LINEUP.slice(),[0,1,2,3,5,9]];this.formation=['2-1-2','2-1-2'];this.teamPlans=[];this.controlled=[3,3,0,0];this.humans=1;this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=120;this.players=[];this.ball={};this.particles=[];this.magicHazards=[];this.shake=0;this.flash=0;this.weather='Clear';this.terrain='Grass';this.condition='Good';this.wind={x:0,y:0};this.stormTimer=0;this.tornado=null;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.kickoffCountdown=0;this.pk=null;this.matchSerial=0;this.fatigueLedger=[{},{}];this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.maxSubstitutions=MAX_SUBSTITUTIONS;this.moraleLedger=[{},{}];this.talksUsed=[{},{ }];this.celebrationStyle=0;this.onEvent=()=>{};this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.stoppageWindow=0;this.stoppageAnnounced=false;this._shotAudit=null;this._reboundAudit=null;this._shotAuditNext=0;}
