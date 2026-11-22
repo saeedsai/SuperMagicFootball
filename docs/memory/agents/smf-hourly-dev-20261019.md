@@ -10,6 +10,7 @@ Deliver player-facing gameplay and existing-player presentation while preserving
 - Focused Node tests cover closing/retreating defenders, receiver lead, short-vs-long flight, mirrored direction, inactive defenders, legacy velocity and fail-closed inputs. New real-engine Chromium acceptance checks both goals and desktop/simulated touch.
 - .170 Modular QA #44970268998 passed; Full Regression Census #44970269093 passed preflight, preview, all four Node/four Chromium shards and QA-gated promotion. Main and dev converged at .170 before this candidate. Pages/main hosted-byte verification was not independently observed.
 - .171 source, tests and release metadata are committed on existing dev; exact-head CI pending.
+- **Release blocker:** a contents update omitted `branch: "dev"`, accidentally creating main-only test commit `3741d2ee3b5978435aee5abc41228e10d35dbc39`; it adds a .171 helper test that cannot pass against main's .170 source. This is not a promotion. Current dev `16ef6cb6b6c3a03e3a1d845aa6431cce47eafe83`, main `3741d2ee3b5978435aee5abc41228e10d35dbc39` (dev 26 ahead/1 behind). No more main writes or manual reconciliation; #87 must be resolved through an approved path.
 
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private checkpoints. Preserve 223 canonical teams, 2,676 players, six formations, four actions, saves, ten Career/Cup slots, SD09 and offline/PWA behavior. No visual art approval or physical-device acceptance claimed.
