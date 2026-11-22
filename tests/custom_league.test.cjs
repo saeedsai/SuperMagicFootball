@@ -112,7 +112,9 @@ test('Custom League is reachable in Cups and keeps its campaign outside Career a
  assert.match(ui,/careerStorage\.getItem\('legend_customLeague'\)!==customLeagueStorageBaseline/,'older tabs cannot overwrite a newer Custom League campaign');
  assert.match(ui,/function customLeagueKickoff\(/);
  assert.match(ui,/function customLeagueBye\(/);
- assert.match(ui,/advanceCustomLeague\(customLeagueRun,TEAMS,ev\.score\)/);
+ assert.match(ui,/home=fixture\.home\?customLeagueRun\.club:fixture\.opponent;away=fixture\.home\?fixture\.opponent:customLeagueRun\.club/);
+ assert.match(ui,/customLeagueScoreForClub\(scheduled,ev\.score\)/);
+ assert.match(ui,/awardLocalMatchTokens\(ev,clubScore\)/);
  assert.match(career,/function createCareer\(/);
  assert.match(cupSlots,/const KEY='legend_cupSlots'/);
  const data=createCustomLeague(0,[0,1,2,3],teams);

@@ -94,6 +94,13 @@ function customLeagueValid(c,teams){
  if(c.phase==='finished'&&customLeagueStandings({...c,table:expectedTable})[0]?.id!==c.winner)return false;
  return true;
 }
+function customLeagueScoreForClub(fixture,engineScore){
+ if(!fixture||fixture.kind!=='league'||fixture.bye||typeof fixture.home!=='boolean'||
+  !Array.isArray(engineScore)||engineScore.length!==2||
+  engineScore.some(value=>!Number.isSafeInteger(value)||value<0||value>30))
+  throw new Error('A valid Custom League match result is required.');
+ return fixture.home?engineScore.slice():[engineScore[1],engineScore[0]];
+}
 function advanceCustomLeague(c,teams,clubScore=null){
  if(!customLeagueValid(c,teams)||c.phase==='finished')throw new Error('Invalid or completed Custom League campaign.');
  const fixture=customLeagueCurrent(c);if(!fixture)throw new Error('No playable league round.');
@@ -115,5 +122,5 @@ function advanceCustomLeague(c,teams,clubScore=null){
  return next;
 }
 
-export const CUSTOM_LEAGUE=Object.freeze({create:createCustomLeague,current:customLeagueCurrent,standings:customLeagueStandings,advance:advanceCustomLeague,validate:customLeagueValid});
-export {createCustomLeague,customLeagueCurrent,customLeagueStandings,advanceCustomLeague,customLeagueValid};
+export const CUSTOM_LEAGUE=Object.freeze({create:createCustomLeague,current:customLeagueCurrent,standings:customLeagueStandings,advance:advanceCustomLeague,scoreForClub:customLeagueScoreForClub,validate:customLeagueValid});
+export {createCustomLeague,customLeagueCurrent,customLeagueStandings,advanceCustomLeague,customLeagueScoreForClub,customLeagueValid};
