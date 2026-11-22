@@ -41,6 +41,15 @@ test('a faster long clearance can pass a corridor that is unsafe for a slower sh
  assert.ok(long.flightSeconds<short.flightSeconds);
 });
 
+test('an already-led rollout target is not led a second time',()=>{
+ const alreadyLed={x:500,y:42,moveVY:300};
+ const defender=[rival(500,200)];
+ const exact=helper(keeper(),alreadyLed,defender,480,0);
+ const doubleLed=helper(keeper(),alreadyLed,defender,480);
+ assert.equal(exact.clear,true);
+ assert.equal(doubleLed.clear,false);
+});
+
 test('moving-defender safety mirrors for the opposite goal',()=>{
  const left=helper(keeper(0,0),target,[rival(250,115,{moveVY:-220})],480);
  const right=helper(keeper(2400,0),{x:1900,y:0},[
@@ -78,4 +87,8 @@ test('the real engine uses projected lane safety for short, long and rollout dis
  assert.ok(engine.includes("const flightSpeed=mode==='long'||pressured?950:480;"));
  assert.ok(engine.includes('this.keeperPassingLane(p,{x,y},950)'));
  assert.ok(engine.includes('keeperOutletScore(p,a.q,a.safe)-keeperOutletScore(p,b.q,b.safe)'));
+ assert.ok(engine.includes('keeperOutletScore(p,a.landing,a.safe)'));
+ assert.ok(engine.includes('keeperOutletScore(p,b.landing,b.safe)'));
+ assert.ok(engine.includes('this.keeperPassingLane(p,landing,480,0)'));
+ assert.ok(engine.includes('Number.isFinite(lane?.pressure)'));
 });
