@@ -26,7 +26,7 @@ test('scheduled away Custom League fixtures launch with the opponent home and no
 
 test('scheduled home Custom League fixtures preserve engine score order and reject invalid result input',async()=>{
  const {createCustomLeague,customLeagueCurrent,customLeagueScoreForClub}=await leagueImport;
- const fixture=customLeagueCurrent(createCustomLeague(0,[0,1,2,3,4],teams));
+ const fixture=customLeagueCurrent(createCustomLeague(1,[0,1,2,3,4],teams));
  assert.equal(fixture.home,true);
  assert.deepEqual(customLeagueScoreForClub(fixture,[3,1]),[3,1]);
  for(const bad of [null,[1],[1,2,3],[31,0],[-1,0],[1.5,0],['2',0]])
