@@ -35,7 +35,7 @@ function fixture(team,offset){
   freeBall(p,dx,dy,speed,opts){this.release={dx,dy,speed,opts};this.ball.owner=null;this.ball.pass=!!opts.pass;},
   emit(type,data){this.event={type,...data};}};
  game.distributeKeeper=distributeKeeper;
- return {game,keeper,receiver,opponent};
+ return {game,keeper,receiver,opponent,get release(){return game.release;},get event(){return game.event;}};
 }
 for(const team of [0,1]){
  test('team '+team+' keeps a safe short outlet under moderate off-lane pressure',()=>{
