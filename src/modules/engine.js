@@ -2128,20 +2128,35 @@ class GameEngine{
   const mates=this.players.filter(q=>q.t===p.t&&!q.keeper&&q.stun<=0);
   const opponents=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0);
   const pressured=opponents.some(q=>distance(p,q)<330);
+  const quality=stat(p,'passing');
   const flightSpeed=mode==='long'||pressured?950:480;
   const scored=mates.map(q=>({q,safe:this.keeperPassingLane(p,q,flightSpeed)}));
+  // A broad 330-unit press radius is not by itself a reason to abandon a
+  // genuinely safe short outlet. Re-score the slower throw at its real speed.
+  const shortSpeed=390+quality*1.2;
+  const shortScored=mode==='long'?[]:(pressured?
+   mates.map(q=>({q,safe:this.keeperPassingLane(p,q,shortSpeed)})):scored);
+  // Only an opponent who can reach the keeper during the short release window
+  // forces an immediate long clearance; a moderate, off-lane presser does not.
+  const immediatePressure=opponents.some(q=>{
+   const z=q.z==null?0:Number(q.z);
+   if(q.down||!Number.isFinite(z)||z>20||q.action==='shotDown'||q.action==='shotGetUp')return false;
+   const vx=Number.isFinite(q.moveVX)?q.moveVX:Number.isFinite(q.vx)?q.vx:0;
+   const vy=Number.isFinite(q.moveVY)?q.moveVY:Number.isFinite(q.vy)?q.vy:0;
+   const future={x:q.x+clamp(vx*.18,-32,32),y:q.y+clamp(vy*.18,-32,32)};
+   return Number.isFinite(future.x)&&Number.isFinite(future.y)&&distance(p,future)<155;
+  });
   // A clear flight lane is not enough if a defender is waiting at reception.
   // Penalize active defenders close to the outlet, without making a lone
   // viable teammate impossible to select or changing the long clearance.
-  const shortOptions=scored.filter(v=>v.safe.clear&&distance(p,v.q)<900&&
+  const shortOptions=shortScored.filter(v=>v.safe.clear&&distance(p,v.q)<900&&
     !v.q.down&&(v.q.shotImpactKnockdownTimer||0)<=0)
     .sort((a,b)=>keeperOutletScore(p,a.q,a.safe)-keeperOutletScore(p,b.q,b.safe));
-  const shortAllowed=mode!=='long'&&!pressured&&shortOptions.length>0;
+  const shortAllowed=mode!=='long'&&!immediatePressure&&shortOptions.length>0;
   const long=!shortAllowed;
   const option=long?this.keeperClearanceTarget(p,scored,opponents):{
    x:shortOptions[0].q.x,y:shortOptions[0].q.y,receiver:shortOptions[0].q};
   const target=option.receiver;
-  const quality=stat(p,'passing');
   const error=(100-quality)*(long?1.2:.55);
   const ex=(Math.random()-.5)*error,ey=(Math.random()-.5)*error;
   this.freeBall(p,option.x-p.x+ex+(target?.moveVX||0)*(long?.34:.17),
