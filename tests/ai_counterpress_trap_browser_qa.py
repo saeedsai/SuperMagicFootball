@@ -29,9 +29,9 @@ with sync_playwright() as pw:
             const game=SupermagicFootball.game,rows=[];
             for(const team of [0,1]){
                 game.init({home:0,away:1,mode:'quick',humans:0});
-                const defending=1-team,dir=team===0?1:-1,field=SupermagicFootball.engine.WORLD.field;
+                const defending=1-team,dir=team===0?1:-1;
                 const carrier=game.player(team,3),primary=game.player(defending,3),support=game.player(defending,4);
-                const x=field.x+field.w*.5,y=field.y+field.h*.5;
+                const x=game.ball.x,y=game.ball.y;
                 for(const q of game.players)if(q!==carrier&&q!==primary&&q!==support){q.down=true;q.stun=0;q.z=0;}
                 Object.assign(carrier,{x,y,down:false,stun:0,z:0,action:'run',actionTimer:0,
                     moveVX:dir*80,moveVY:0,aiTimer:0,aiTarget:null,aiFirstTouchTarget:null,
