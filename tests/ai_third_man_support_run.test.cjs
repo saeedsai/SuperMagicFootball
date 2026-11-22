@@ -53,18 +53,27 @@ test('human, keeper, recovering, downed, airborne, assisted and give-and-go play
  const withoutThird=AI.attackingThirdManRun([carrier,primary,human,keeper,...unavailable,available],0,carrier,primaryRun,human,bounds);
  assert.equal(withoutThird?.runner,available);
 });
-test('third-man run yields to a defender in its corridor or collection pocket',async()=>{
- const {AI}=await loadModules(),{carrier,primary,third,primaryRun}=fixture(0);
- const target={x:carrier.x+245,y:carrier.y+176};
- const blocker=player('blocker',1,target.x,target.y);
- assert.equal(AI.attackingThirdManRun([carrier,primary,third,blocker],0,carrier,primaryRun,null,bounds),null);
- blocker.x=(third.x+target.x)/2;blocker.y=(third.y+target.y)/2;
- assert.equal(AI.attackingThirdManRun([carrier,primary,third,blocker],0,carrier,primaryRun,null,bounds),null);
+test('third-man run yields when every bounded pocket or the shared corridor is defended',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const {carrier,primary,third,dir,primaryRun}=fixture(team),targetX=carrier.x+dir*245;
+  const pocketBlockers=[96,176,256].map(offset=>player('pocket-'+offset,1-team,targetX,
+   Math.min(bounds.yMax-32,carrier.y+offset)));
+  assert.equal(AI.attackingThirdManRun([carrier,primary,third,...pocketBlockers],team,carrier,primaryRun,null,bounds),null,
+   'all bounded opposite-side pockets are marked');
+  const corridorBlocker=player('corridor',1-team,(third.x+targetX)/2,carrier.y+88);
+  assert.equal(AI.attackingThirdManRun([carrier,primary,third,corridorBlocker],team,carrier,primaryRun,null,bounds),null,
+   'a defender across the shared run-up corridor closes every candidate lane');
+ }
 });
-test('third-man run avoids a teammate already occupying its arrival pocket',async()=>{
- const {AI}=await loadModules(),{carrier,primary,third,primaryRun}=fixture(0);
- const crowd=player('crowd',0,carrier.x+245,carrier.y+176,{aiAssistTarget:{expires:5}});
- assert.equal(AI.attackingThirdManRun([carrier,primary,third,crowd],0,carrier,primaryRun,null,bounds),null);
+test('third-man run avoids teammates occupying every alternative arrival pocket',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const {carrier,primary,third,dir,primaryRun}=fixture(team),targetX=carrier.x+dir*245;
+  const crowd=[96,176,256].map(offset=>player('crowd-'+offset,team,targetX,
+   Math.min(bounds.yMax-32,carrier.y+offset),{aiAssistTarget:{expires:5}}));
+  assert.equal(AI.attackingThirdManRun([carrier,primary,third,...crowd],team,carrier,primaryRun,null,bounds),null);
+ }
 });
 test('driveAI moves the second CPU runner into the selected complementary lane',async()=>{
  const {AI,ENGINE}=await loadModules();
@@ -116,4 +125,43 @@ test('driveAI offers the third-man run as a fallback support-pass/through-ball o
  assert.match(source,/attackingThroughBall\(this\.players,t,owner,thirdManRun\)/);
  assert.match(source,/attackingSupportPass\(this\.players,t,owner,thirdManRun\)/);
  assert.match(source,/thirdManRun\?\.runner===p/);
+});
+
+test('third-man run switches to a clear adjacent pocket when the nominal lane is marked',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const {carrier,primary,third,dir,primaryRun}=fixture(team);
+  const nominal={x:carrier.x+dir*245,y:carrier.y+176};
+  const blocker=player('nominal-marker',1-team,nominal.x,nominal.y);
+  const result=AI.attackingThirdManRun([carrier,primary,third,blocker],team,carrier,primaryRun,null,bounds);
+  assert.equal(result?.runner,third);
+  assert.equal(result.target.x,nominal.x);
+  assert.ok(Math.abs(result.target.y-nominal.y)>=72,'runner chooses a distinct, unmarked adjacent pocket');
+  assert.ok((result.target.y-carrier.y)>=60,'the alternate remains opposite the primary run');
+  assert.ok(Math.hypot(result.target.x-blocker.x,result.target.y-blocker.y)>=72);
+ }
+});
+test('driveAI follows an open adjacent third-man pocket when the nominal pocket is marked',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const game=new ENGINE.GameEngine({halfSeconds:120});game.init({home:0,away:1,mode:'quick',humans:0});
+ const field=ENGINE.WORLD.field,dir=1,x=field.x+field.w*.5,y=field.y+field.h*.5;
+ const carrier=game.player(0,3),primary=game.player(0,4),third=game.player(0,5),blocker=game.player(1,3);
+ for(const p of game.players)if(![carrier,primary,third,blocker].includes(p)){
+  p.down=true;p.stun=1;p.z=0;p.action='idle';p.actionTimer=0;
+ }
+ Object.assign(carrier,{x,y,down:false,stun:0,z:0,action:'idle',actionTimer:0});
+ Object.assign(primary,{x:x+dir*40,y:y-110,homeY:y-112,down:false,stun:0,z:0,action:'run',actionTimer:0});
+ Object.assign(third,{x:x+dir*20,y,homeY:y,down:false,stun:0,z:0,action:'run',actionTimer:0,
+  aiTimer:1,aiTarget:{x:x+dir*20,y}});
+ Object.assign(blocker,{x:x+dir*245,y:y+176,down:false,stun:0,z:0,action:'idle',actionTimer:0});
+ Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false});
+ game.clock=5;
+ const fieldBounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+ const support=AI.attackingSupportRun(game.players,0,carrier,null,fieldBounds);
+ assert.equal(support?.runner,primary);
+ const thirdRun=AI.attackingThirdManRun(game.players,0,carrier,support,null,fieldBounds);
+ assert.equal(thirdRun?.runner,third);
+ assert.ok(Math.abs(thirdRun.target.y-(y+176))>=72);
+ game.driveAI(third,.016);
+ assert.deepEqual(third.aiTarget,{x:thirdRun.target.x,y:thirdRun.target.y});
 });

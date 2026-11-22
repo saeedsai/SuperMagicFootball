@@ -259,9 +259,9 @@ function attackingSupportRun(players,team,carrier,humanControlled=null,bounds=nu
 
  
 // Give a third CPU teammate a complementary lane when the primary support runner
-// already occupies the first forward outlet. The second lane stays opposite the
-// primary run, is projected against moving defenders, and never commandeers a
-// human-controlled player or an existing assist/give-and-go assignment.
+// already occupies the first forward outlet. Candidate pockets stay opposite the
+// primary run; a marked nominal pocket can yield to a clear adjacent lane without
+// commandeering a human-controlled player or an existing assist/give-and-go assignment.
 function attackingThirdManRun(players,team,carrier,primaryRun,humanControlled=null,bounds=null){
  const primary=primaryRun?.runner,primaryPoint=primaryRun?.target;
  if(!Array.isArray(players)||!carrier||(team!==0&&team!==1)||carrier.t!==team||
@@ -288,11 +288,21 @@ function attackingThirdManRun(players,team,carrier,primaryRun,humanControlled=nu
  const defenders=players.filter(p=>active(p)&&p.t!==team);
  const dir=team===0?1:-1,primarySide=Math.sign(primaryPoint.y-carrier.y);
  if(!primarySide)return null;
- const target={
-  x:clampTo(carrier.x+dir*245,xMin+24,xMax-24),
-  y:clampTo(carrier.y-primarySide*176,yMin+32,yMax-32)
- };
- if(dir*(target.x-carrier.x)<140||Math.hypot(target.x-primaryPoint.x,target.y-primaryPoint.y)<130)return null;
+ const targetX=clampTo(carrier.x+dir*245,xMin+24,xMax-24);
+ if(dir*(targetX-carrier.x)<140)return null;
+ // Keep the nominal 176-unit lane, but consider one nearer and one wider
+ // pocket on the same side when a defender occupies the preferred target.
+ const laneTargets=[],seenTargets=new Set();
+ for(const offset of [176,96,256]){
+  const target={x:targetX,y:clampTo(carrier.y-primarySide*offset,yMin+32,yMax-32)};
+  const key=`${target.x}:${target.y}`;
+  if(seenTargets.has(key))continue;
+  seenTargets.add(key);
+  const lateral=(-primarySide)*(target.y-carrier.y);
+  if(lateral<60||Math.hypot(target.x-primaryPoint.x,target.y-primaryPoint.y)<130)continue;
+  laneTargets.push({target,offset:Math.abs(target.y-carrier.y)});
+ }
+ if(!laneTargets.length)return null;
  const movementVelocity=(player,axis)=>{
   const actual=axis==='x'?player?.moveVX:player?.moveVY;
   if(Number.isFinite(actual))return actual;
@@ -308,33 +318,37 @@ function attackingThirdManRun(players,team,carrier,primaryRun,humanControlled=nu
  for(const runner of candidates){
   const vx=movementVelocity(runner,'x'),vy=movementVelocity(runner,'y');
   if(vx*dir< -100)continue;
-  const pathLength=Math.hypot(target.x-runner.x,target.y-runner.y);
-  if(pathLength<90||pathLength>600||dir*(target.x-runner.x)<35)continue;
-  const arrival=clampTo(pathLength/420,.14,.48);
-  let pressure=0,blocked=false;
-  for(const defender of defenders){
-   const future={
-    x:defender.x+clampTo(movementVelocity(defender,'x')*arrival,-95,95),
-    y:defender.y+clampTo(movementVelocity(defender,'y')*arrival,-95,95)
-   };
-   const gap=Math.hypot(future.x-target.x,future.y-target.y);
-   const corridor=pointSegmentDistance(future,{x:runner.x,y:runner.y},target);
-   if(gap<72||corridor<42){blocked=true;break;}
-   if(gap<175)pressure+=(175-gap)/175;
-   if(corridor<112)pressure+=(112-corridor)/112*.55;
+  for(const lane of laneTargets){
+   const {target,offset}=lane;
+   const pathLength=Math.hypot(target.x-runner.x,target.y-runner.y);
+   if(pathLength<90||pathLength>600||dir*(target.x-runner.x)<35)continue;
+   const arrival=clampTo(pathLength/420,.14,.48);
+   let pressure=0,blocked=false;
+   for(const defender of defenders){
+    const future={
+     x:defender.x+clampTo(movementVelocity(defender,'x')*arrival,-95,95),
+     y:defender.y+clampTo(movementVelocity(defender,'y')*arrival,-95,95)
+    };
+    const gap=Math.hypot(future.x-target.x,future.y-target.y);
+    const corridor=pointSegmentDistance(future,{x:runner.x,y:runner.y},target);
+    if(gap<72||corridor<42){blocked=true;break;}
+    if(gap<175)pressure+=(175-gap)/175;
+    if(corridor<112)pressure+=(112-corridor)/112*.55;
+   }
+   if(blocked)continue;
+   let teammateCrowding=0;
+   for(const teammate of allies){
+    if(teammate===runner||teammate===carrier||teammate===primary)continue;
+    const gap=Math.hypot(teammate.x-target.x,teammate.y-target.y);
+    if(gap<70){blocked=true;break;}
+    if(gap<150)teammateCrowding+=(150-gap)/150;
+   }
+   if(blocked)continue;
+   const homeLanePenalty=Number.isFinite(runner.homeY)?Math.abs(target.y-runner.homeY)*.05:0;
+   const lanePreferencePenalty=Math.abs(offset-176)*.65;
+   const score=pathLength+pressure*120+teammateCrowding*85+homeLanePenalty+lanePreferencePenalty;
+   if(!best||score<best.score-1e-9)best={runner,target,score};
   }
-  if(blocked)continue;
-  let teammateCrowding=0;
-  for(const teammate of allies){
-   if(teammate===runner||teammate===carrier||teammate===primary)continue;
-   const gap=Math.hypot(teammate.x-target.x,teammate.y-target.y);
-   if(gap<70){blocked=true;break;}
-   if(gap<150)teammateCrowding+=(150-gap)/150;
-  }
-  if(blocked)continue;
-  const homeLanePenalty=Number.isFinite(runner.homeY)?Math.abs(target.y-runner.homeY)*.05:0;
-  const score=pathLength+pressure*120+teammateCrowding*85+homeLanePenalty;
-  if(!best||score<best.score-1e-9)best={runner,target,score};
  }
  return best?{runner:best.runner,target:best.target}:null;
 }

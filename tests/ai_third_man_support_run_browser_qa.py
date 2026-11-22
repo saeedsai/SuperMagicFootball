@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Desktop and simulated-touch acceptance for coordinated third-man support runs."""
+"""Desktop and simulated-touch acceptance for adaptive third-man support lanes."""
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
@@ -24,12 +24,13 @@ with sync_playwright() as pw:
         page.add_script_tag(content=js,type='module')
         page.wait_for_function('!!window.SupermagicFootball?.game')
         result=page.evaluate("""() => {
-            const game=SupermagicFootball.game,rows=[],field={x:150,y:155,w:2260.8,h:1220};
+            const game=SupermagicFootball.game,rows=[];
             for(const team of [0,1]){
                 game.init({home:0,away:1,mode:'quick',humans:0});
-                const dir=team===0?1:-1,carrier=game.player(team,3),primary=game.player(team,4),third=game.player(team,5);
-                const x=field.x+field.w*.5,y=field.y+field.h*.5;
-                for(const player of game.players)if(player!==carrier&&player!==primary&&player!==third&&!player.keeper){
+                const dir=team===0?1:-1,carrier=game.player(team,3),primary=game.player(team,4),
+                    third=game.player(team,5),blocker=game.player(1-team,3);
+                const field={x:150,y:155,w:2260.8,h:1220},x=field.x+field.w*.5,y=field.y+field.h*.5;
+                for(const player of game.players)if(![carrier,primary,third,blocker].includes(player)){
                     player.down=true;player.stun=1;player.invuln=1.1;player.z=0;player.action='idle';player.actionTimer=0;
                 }
                 Object.assign(carrier,{x,y,down:false,stun:0,invuln:0,z:0,action:'idle',actionTimer:0});
@@ -37,9 +38,13 @@ with sync_playwright() as pw:
                     action:'run',actionTimer:0,moveVX:0,moveVY:0});
                 Object.assign(third,{x:x+dir*20,y,homeY:y,down:false,stun:0,invuln:0,z:0,
                     action:'run',actionTimer:0,moveVX:0,moveVY:0,aiTimer:1,aiTarget:{x:x+dir*20,y}});
+                const nominal={x:x+dir*245,y:y+176};
+                Object.assign(blocker,{x:nominal.x,y:nominal.y,down:false,stun:0,invuln:0,z:0,
+                    action:'idle',actionTimer:0,moveVX:0,moveVY:0});
                 Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false});
                 game.clock=5;game.driveAI(third,.016);
-                rows.push({team,dir,carrier:{x,y},primary:{x:primary.x,y:primary.y},target:third.aiTarget});
+                rows.push({team,dir,carrier:{x,y},primary:{x:primary.x,y:primary.y},target:third.aiTarget,
+                    nominal,blocker:{x:blocker.x,y:blocker.y}});
             }
             return {rows,buttons:document.querySelectorAll('[data-act="pass"],[data-act="shoot"],[data-act="dribble"],[data-act="jump"]').length};
         }""")
@@ -47,11 +52,14 @@ with sync_playwright() as pw:
         for row in result['rows']:
             assert row['target'] and row['target']['x'] is not None,(kind,row)
             assert row['dir']*(row['target']['x']-row['carrier']['x'])>=180,(kind,row)
-            assert row['target']['y']>row['carrier']['y']+100,(kind,row)
+            assert row['target']['y']>row['carrier']['y']+60,(kind,row)
+            assert abs(row['target']['y']-row['nominal']['y'])>=72,(kind,row)
+            assert ((row['target']['y']-row['blocker']['y'])**2+
+                    (row['target']['x']-row['blocker']['x'])**2)**.5>=72,(kind,row)
             assert ((row['target']['y']-row['primary']['y'])**2+
                     (row['target']['x']-row['primary']['x'])**2)**.5>=130,(kind,row)
         assert not errors,(kind,errors)
         page.screenshot(path=str(ROOT/'tests'/f'ai_third_man_support_run_{kind}.png'))
-        print('PASS',kind,'mirrored third-man support lane, four actions and no JavaScript errors',flush=True)
+        print('PASS',kind,'adaptive mirrored third-man lane, four actions and no JavaScript errors',flush=True)
         ctx.close()
     browser.close()

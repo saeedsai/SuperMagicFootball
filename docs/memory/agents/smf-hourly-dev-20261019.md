@@ -1,23 +1,23 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-11-21
+**Updated:** 2026-11-22
 
 ## Mission
 Deliver player-facing gameplay and existing-player presentation while preserving four actions, roster identities/order, saves and offline play.
 
-## Current checkpoint
-- .168 AI-THIRD-MAN-SUPPORT-RUN-01 null-runner repair: the optional third-man pass fallback now requires a real selected runner before reading its target. A focused real-engine regression covers the case with one primary runner and no second runner. Exact-head QA pending.
-- .167 introduced the complementary second CPU support lane with defender/crowding checks and mirrored desktop/touch acceptance. Code review found the no-second-runner fallback needed the explicit guard now in .168; .167 was not promoted.
-- .166 first-touch slide passed Modular QA #44955699576 (2,662 Node tests), but its Full Regression Census failed one browser fixture assertion (225 runtime picker entries versus 223 canonical built-in data teams). The fixture now accepts the established runtime range; preflight still enforces exactly 223 canonical teams.
-
-## Next smallest action
-Verify exact-head .168 Modular QA and Full Regression Census; fix any confirmed failures, then continue with goalkeeper catch-versus-parry intelligence or source-locked existing-player graphics. Do not repeat Breath or already-covered trick counters.
+## Current increment
+- .169 AI-THIRD-MAN-LANE-ADAPTATION-01: the third CPU support runner now evaluates the nominal 176-unit opposite-side pocket plus 96- and 256-unit alternatives. It keeps the nominal lane when similarly safe, but can choose an adjacent pocket when the nominal one is marked. Defender projection, teammate occupancy, field bounds, primary-lane separation and shared-corridor rejection remain enforced.
+- Focused mirrored helper tests cover adjacent-lane selection, all-pocket/corridor denial and teammate crowding. A real-engine regression verifies driveAI follows the alternate lane; desktop and simulated-touch Chromium acceptance exercises both attack directions and confirms exactly four actions.
+- .168 null-runner repair is exact-head green: Modular QA #44960951949 passed 2,670 Node tests; Full Regression Census #44960951928 passed preflight, preview, all four Node and all four Chromium shards. Its QA-gated promotion moved main to the same SHA as dev. Independent .168 Pages/main Census verification remains pending because #44961835168 used the previous .165 SHA and failed browser shard 3.
 
 ## Ownership and exclusions
-Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private checkpoints. Preserve four actions, 223 teams, 2,676 players, six formations, saves and offline/PWA behavior.
+Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private checkpoints. Preserve 223 canonical teams, 2,676 players, six formations, four actions, saves, ten Career/Cup slots, SD09 and offline/PWA behavior. No visual art approval or physical-device acceptance claimed.
 
-## Evidence
-Base dev SHA: `f14dbfdf8d56a783700fc71af045935445e4d8b5`; main SHA: `7abd8ba0166fb9b7748ba5da0c3420b05a893622`. .165 remains the latest main-promoted release. Main protection #87 remains unresolved and the admin-only endpoint is not accessible to this integration. Physical two-phone acceptance #48 and Render drift #86 remain open. No visual art approval or physical-device acceptance claimed.
+## Branch and outstanding gates
+Base .168 SHA: `adb5c690d9d5ef44335eaa98226b12e011bf489f` (dev and main matched before .169). Main protection #87 remains unresolved and GitHub reports `protected: false`. Physical two-phone acceptance #48 and Render commit-trigger drift #86 remain open. Existing-player graphics lock #10 must be respected. Authenticated online hosting is not live without owner resources.
+
+## Next smallest actions
+Run focused Node/Chromium and exact-head Modular QA plus four Node/four Chromium Census for .169. Fix any confirmed failures, then continue with goalkeeper catch-versus-parry intelligence or the next unblocked gameplay item. Do not repeat Breath or already-covered trick counters.
 
 ## Cleanup
-Keep this checkpoint below 4 KiB; never bypass required CI or security.
+Keep this checkpoint below 4 KiB; never bypass required CI, branch protection or QA promotion.
