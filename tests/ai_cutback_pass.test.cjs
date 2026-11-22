@@ -185,9 +185,9 @@ test('driveAI offers cutbacks before through-ball/support fallbacks and after sh
  assert.ok(source.includes('const supportCutback=owner===p?attackingCutbackPass('));
  assert.ok(source.includes('supportCutback?{preferredTarget:supportCutback.runner,supportRun:true,cutback:true,preferredPoint:supportCutback.target}'));
  assert.ok(source.includes("opts.giveAndGoReturn===true?'giveAndGoReturn':opts.cutback===true?'cutback':'throughBall'"));
- const shot=source.indexOf('if(p.cd<=0&&nearGoal&&Math.random()<finishChance)');
- const early=source.indexOf('else if(p.cd<=0&&supportCutback&&!pressured');
- const pressure=source.indexOf('else if(p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass)');
+ const shot=source.indexOf('if(!firstTouchControl&&p.cd<=0&&nearGoal&&Math.random()<finishChance)');
+ const early=source.indexOf('else if(!firstTouchControl&&p.cd<=0&&supportCutback&&!pressured');
+ const pressure=source.indexOf('else if(!firstTouchControl&&p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass)');
  assert.ok(shot>=0&&early>shot&&pressure>early,'shooting remains first; safe unpressured cutbacks precede pressure-only passes');
 });
 

@@ -15,7 +15,7 @@ assert.ok(scoreStart>=0&&scoreEnd>scoreStart,'production outlet score exists');
 const keeperOutletScore=vm.runInNewContext('('+engine.slice(scoreStart,scoreEnd)+')',{distance});
 const passStart=engine.indexOf('\n keeperPassingLane(p,q,'),passEnd=engine.indexOf('\n keeperClearanceTarget(',passStart);
 assert.ok(passStart>=0&&passEnd>passStart,'production keeper lane method exists');
-const keeperPassingLane=vm.runInNewContext('({'+engine.slice(passStart,passEnd)+'})',{keeperOutletLane}).keeperPassingLane;
+const keeperPassingLane=vm.runInNewContext('({'+engine.slice(passStart,passEnd)+'\n})',{keeperOutletLane}).keeperPassingLane;
 const distStart=engine.indexOf('\n distributeKeeper(p,mode='),distEnd=engine.indexOf('\n\n // DRIBBLE while',distStart);
 assert.ok(distStart>=0&&distEnd>distStart,'production distribution method exists');
 const distributeKeeper=vm.runInNewContext('({'+engine.slice(distStart,distEnd)+'})',

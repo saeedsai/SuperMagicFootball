@@ -11,7 +11,7 @@ test('Hide Ball gives opposing CPU only the saved last-known position',()=>{
  assert.match(drive,/const concealed=!!\(liveOwner&&liveOwner\.t!==t&&\(liveOwner\.hideBallTimer\|\|0\)>0\)/);
  assert.match(drive,/const b=concealed\?\{\.\.\.liveBall,owner:null,x:known\?\.x\?\?liveOwner\.x,y:known\?\.y\?\?liveOwner\.y,z:0,vx:0,vy:0,vz:0\}:liveBall/);
  assert.match(drive,/defensivePressers\(this\.players,t,owner\|\|b/,'pressing decisions also use the masked observation');
- assert.match(drive,/if\(!concealed&&this\.driveAiCombo\(p,dt,ai\)\)return/,'CPU combos do not read the hidden carrier');
+ assert.match(drive,/if\(!concealed&&!firstTouchControl&&this\.driveAiCombo\(p,dt,ai\)\)return/,'CPU combos respect both concealment and the first-touch control window');
 });
 
 test('same-team AI still sees its carrier and expiry or possession loss clears the observation',()=>{
