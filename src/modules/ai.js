@@ -54,6 +54,45 @@ function defensivePressers(players,team,target,humanControlled=null){
  return {primary,support:chosen.p};
 }
 
+// Lead the primary presser a short distance along a moving carrier's live path.
+// This is a bounded interception read, not a speed boost or predictive tackle:
+// the ordinary movement, reach and difficulty-scaled tackle code still decides
+// whether the defender can make contact.
+function defensiveCarrierLeadTarget(defender,carrier,bounds,anticipation=.5){
+ const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+ const active=q=>{
+  if(!q||q.down||Number(q.stun)>0||!Number.isFinite(q.x)||!Number.isFinite(q.y))return false;
+  const z=q.z==null?0:Number(q.z);
+  if(!Number.isFinite(z)||z<0||z>18)return false;
+  if(q.action==='shotDown'||q.action==='shotGetUp')return false;
+  if((q.action==='slide'||q.action==='hurt')&&(Number(q.actionTimer)||0)>0)return false;
+  return true;
+ };
+ if(defender===carrier||defender?.t===carrier?.t||defender?.keeper||carrier?.keeper||
+  !active(defender)||!active(carrier))return null;
+ const range=Math.hypot(carrier.x-defender.x,carrier.y-defender.y);
+ if(!Number.isFinite(range)||range<58||range>460)return null;
+ const vx=Number.isFinite(carrier.moveVX)?carrier.moveVX:
+  Number.isFinite(carrier.vx)?carrier.vx:0;
+ const vy=Number.isFinite(carrier.moveVY)?carrier.moveVY:
+  Number.isFinite(carrier.vy)?carrier.vy:0;
+ const speed=Math.hypot(vx,vy);
+ if(!Number.isFinite(speed)||speed<90)return null;
+ const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax);
+ const yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
+ if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||
+  xMin+22>=xMax-22||yMin+23>=yMax-23)return null;
+ const read=Number.isFinite(anticipation)?clampTo(anticipation,0,1):.5;
+ const horizon=.08+read*.10;
+ let leadX=vx*horizon,leadY=vy*horizon;
+ const leadLength=Math.hypot(leadX,leadY);
+ if(leadLength>34){const scale=34/leadLength;leadX*=scale;leadY*=scale;}
+ return {
+  x:clampTo(carrier.x+leadX,xMin+22,xMax-22),
+  y:clampTo(carrier.y+leadY,yMin+23,yMax-23)
+ };
+}
+
 // Use the existing SHOOT slide only when its run-up can intercept an escaping
 // or laterally crossing carrier. A close carrier moving into the defender is
 // better met with the cheaper, shorter PASS poke. This is a style decision only:
@@ -1376,6 +1415,6 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  return target;
 }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,aiTuning,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,aiTuning,defensivePressers,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget};})();
 
 export {AI};

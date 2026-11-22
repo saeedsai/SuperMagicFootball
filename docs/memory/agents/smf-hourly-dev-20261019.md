@@ -6,25 +6,23 @@
 Deliver player-facing gameplay and existing-player presentation while preserving four actions, roster identities/order, saves and offline play.
 
 ## Current checkpoint
-- .178 AI-KEEPER-HIGH-CROSS-CLAIM-01: CPU keepers step off the goal line to claim a fresh, reachable targeted lofted pass entering their own goal corridor. The helper predicts the descending landing point, stays within bounded goal depth/lateral range and yields when an active outfielder is clearly closer. Existing shot/dive/catch thresholds and ball physics are unchanged.
-- Focused Node helper/engine regressions and desktop/simulated-touch Chromium acceptance are committed.
-- Initial .178 Modular QA #44995084686/#44995086845 and Census preflight #44995084693/#44995086838 failed one new engine fixture: it used a synthetic passTarget instead of the live roster receiver ID. Corrected in 7f3b1fe4; production AI code was unchanged.
-- Exact-head Modular QA #44995272173 and Full Regression Census #44995272175 were queued after the fixture repair; no passing result observed yet.
-- Before .178 work, main/dev converged at fe2b6d59. Current dev is 7f3b1fe4; main remains fe2b6d59. #87 main protection, #48 physical two-phone acceptance, #86 Render drift and #10 existing-art owner acceptance remain open.
+- .179 AI-DEFENSIVE-CARRIER-INTERCEPT-LEAD-01: the primary CPU presser targets a bounded 0.08–0.18s projection of a moving ball carrier, capped at 34 field units. Stationary, unavailable, near and distant carriers retain direct pursuit. Tackle probabilities, movement speed, ball physics and controls are unchanged.
+- Added mirrored helper/real-engine Node regressions plus desktop/simulated-touch Chromium acceptance.
+- .178 exact-head Modular QA #44995328410 passed 2,705/2,705. Full Regression Census #44995328408 passed preflight, preview, all four Node and four Chromium shards; QA-gated promotion moved main/dev to 565961e61157608ca6602010bcba4075d21b8f3d. Pages deployment #44996122408 succeeded. Main Census #44996127363 has now passed preflight, hosted-pages smoke, all four Node shards and all four Chromium shards.
+- #87 main protection remains false/open; #48 physical two-phone acceptance, #86 Render drift and #10 existing-art owner acceptance remain open.
 
 ## Next smallest action
-Inspect exact-head .178 QA and all four Node/four Chromium Census shards. Fix only confirmed failures, then continue with an independent gameplay improvement.
+Inspect exact-head .179 Modular QA and all four Node/four Chromium Census shards. Fix only confirmed failures, then continue with the next independent product backlog improvement.
 
 ## Ownership and exclusions
 Only this checkpoint. No concept heroes, copied art, routine LAN runtime changes or other agents' private checkpoints. Preserve 223 canonical teams, 2,676 players, six formations, four actions, saves, ten Career/Cup slots, SD09 and offline/PWA behavior. No visual approval or physical-device acceptance claimed.
 
 ## Evidence
-- Base dev/main SHA: `fe2b6d59b69e0ee0ebeaed5b16333f62d67d6aa5`.
-- AI helper commit: `e18be5fb7c96a022331ff2428a0ad446fc222d3b`.
-- Engine integration commit: `2a33b13fa0e9ddc2cdbdc1ae6046a3c366e8275b`.
-- Node regression commit: `6d566aac4cedb43dbaae5f315de8b27019ec5b67`; receiver-identity fixture repair: `7f3b1fe4c087f1a0139a79a565de5e763ba62ae5`.
-- Chromium acceptance commit: `abbf92aa67aeba9247a8d351f8ceb692ab2d0339`.
-- Release metadata/backlog/checkpoint updates follow the feature and test commits; current exact dev head is checked in the run report.
+- Base main/dev SHA: `565961e61157608ca6602010bcba4075d21b8f3d`.
+- .178 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/44995328410
+- .178 Full Regression Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/44995328408
+- .178 Pages deployment: https://github.com/saeedsai/SuperMagicFootball/actions/runs/44996122408
+- .178 main Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/44996127363
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; never bypass required CI, branch protection or QA promotion.
