@@ -33,13 +33,14 @@ with sync_playwright() as pw:
     g.clock=.2;g.driveAI(keeper,.016);
     const claim=keeper.aiTarget?{x:keeper.aiTarget.x,y:keeper.aiTarget.y}:null;
     const claimActive=keeper.aiKeeperClaimTargetActive===true;
+    const claimMoveVX=keeper.moveVX||0;
     keeper.x=claim.x;keeper.y=claim.y;keeper.moveVX=0;keeper.moveVY=0;
     keeper.aiTimer=.5;keeper.cd=10;keeper.keeperHold=0;
     Object.assign(g.ball,{owner:keeper,pass:false,passTarget:null,attacker:team,lastTouchTeam:team,
      z:82,vx:0,vy:0,vz:0,shot:null,strike:null,ordinaryShot:false});
     g.driveAI(keeper,.016);
     const homeX=team===0?field.x+34:field.x+field.w-34;
-    rows.push({team,dir,target,aiTarget:claim,moveVX:keeper.moveVX||0,
+    rows.push({team,dir,target,aiTarget:claim,claimMoveVX,
      claimActive,returnActive:keeper.aiKeeperClaimTargetActive===true,
      returnTarget:keeper.aiTarget?{x:keeper.aiTarget.x,y:keeper.aiTarget.y}:null,
      returnMoveVX:keeper.moveVX||0,homeX,
@@ -54,7 +55,7 @@ with sync_playwright() as pw:
    target=row['aiTarget']
    assert target is not None,(kind,row)
    assert abs(target['x']-row['target']['x'])<2 and abs(target['y']-row['target']['y'])<2,(kind,row)
-   assert row['dir']*row['moveVX']>0,(kind,row)
+   assert row['dir']*row['claimMoveVX']>0,(kind,row)
    assert row['claimActive'] is True,(kind,row)
    assert row['returnActive'] is False,(kind,row)
    assert row['returnTarget'] and abs(row['returnTarget']['x']-row['homeX'])<2,(kind,row)

@@ -1418,6 +1418,45 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   return target;
  }
 
+
+ // A visible second-defender screen can read a Magic Trick during the short
+ // pressured first-touch window, even when the nearest marker is turned away.
+ // Only public positions, movement and facing are used; attacker AI targets are
+ // deliberately not consulted.
+ function defensiveMagicTrickReadTarget(carrier,defenders,allowCarryScreen=false){
+  if(!carrier||!Array.isArray(defenders)||!Number.isFinite(carrier.x)||!Number.isFinite(carrier.y))return null;
+  const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  const firstTouchRead=allowCarryScreen&&Number(carrier.firstTouchOutletReadTimer)>0&&
+   (Number(carrier.firstTouchControlTimer)||0)<=0&&Number(carrier.firstTouchPressure)>.12&&!(Number(carrier.hideBallTimer)>0);
+  let moveX=Number.isFinite(carrier.dx)?carrier.dx:Number.isFinite(carrier.moveVX)?carrier.moveVX:0;
+  let moveY=Number.isFinite(carrier.dy)?carrier.dy:Number.isFinite(carrier.moveVY)?carrier.moveVY:0;
+  let moveLength=Math.hypot(moveX,moveY);
+  if(moveLength<.05){moveX=Number(carrier.face)||1;moveY=0;moveLength=1;}
+  const ux=moveX/moveLength,uy=moveY/moveLength,attackDir=carrier.t===0?1:carrier.t===1?-1:Math.sign(ux||1);
+  const carryForward=attackDir*ux>=.28;let best=null;
+  for(const q of defenders){
+   if(!q||q===carrier||q.keeper||q.down||!clear(q.stun)||!clear(q.invuln)||!clear(q.slideTimer)||
+    !clear(q.shotImpactKnockdownPending)||!clear(q.shotImpactKnockdownTimer)||!clear(q.shotImpactRiseTimer)||
+    (q.z!=null&&(!Number.isFinite(Number(q.z))||Number(q.z)<0||Number(q.z)>18))||
+    q.action==='shotDown'||q.action==='shotGetUp'||
+    ((q.action==='slide'||q.action==='hurt')&&(Number(q.actionTimer)||0)>0)||
+    !Number.isFinite(q.x)||!Number.isFinite(q.y))continue;
+   const dx=carrier.x-q.x,dy=carrier.y-q.y,gap=Math.hypot(dx,dy);
+   if(gap<1||(gap>105&&!(firstTouchRead&&carryForward&&gap<=132)))continue;
+   const towardX=dx/gap,face=Number(q.face);
+   const facing=(Number.isFinite(face)&&Math.abs(face)>.1?Math.sign(face):1)*towardX>=.15;
+   if(!facing)continue;
+   const qdx=Number.isFinite(q.dx)?q.dx:0,qdy=Number.isFinite(q.dy)?q.dy:0;
+   const closing=qdx*dx+qdy*dy>.22*gap,relX=q.x-carrier.x,relY=q.y-carrier.y;
+   const ahead=relX*ux+relY*uy,lateral=Math.abs(relX*uy-relY*ux);
+   const screened=firstTouchRead&&carryForward&&gap<=132&&ahead>=18&&ahead<=150&&lateral<=64;
+   if(!closing&&!screened)continue;
+   const candidate={defender:q,screened,gap,priority:(screened?1000:0)-gap};
+   if(!best||candidate.priority>best.priority)best=candidate;
+  }
+  return best?{defender:best.defender,screened:best.screened,gap:best.gap}:null;
+ }
+
  function attackingFirstTouchEscape(players,team,carrier,bounds,horizonSeconds=.16){
  if(!Array.isArray(players)||!carrier||(team!==0&&team!==1)||carrier.t!==team||
   carrier.keeper||carrier.down||Number(carrier.stun)>0||Number(carrier.z)>18||
@@ -1880,6 +1919,6 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  return target;
 }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget};})();
 
 export {AI};
