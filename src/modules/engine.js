@@ -363,6 +363,20 @@ function keeperParrySide(keeper,players,shotOffset){
  const current=laneClearance(preferred),alternate=laneClearance(-preferred);
  return alternate>current+24?-preferred:preferred;
 }
+function keeperDistributionReceiverReady(receiver){
+ if(!receiver||receiver.keeper||receiver.down)return false;
+ const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+ if(!timerClear(receiver.stun)||!timerClear(receiver.slideTimer)||
+  !timerClear(receiver.shotImpactKnockdownPending)||
+  !timerClear(receiver.shotImpactKnockdownTimer)||
+  !timerClear(receiver.shotImpactRiseTimer))return false;
+ const z=receiver.z==null?0:Number(receiver.z);
+ if(!Number.isFinite(z)||z>18)return false;
+ if(receiver.action==='shotDown'||receiver.action==='shotGetUp')return false;
+ if((receiver.action==='slide'||receiver.action==='hurt')&&!timerClear(receiver.actionTimer))return false;
+ return Number.isFinite(receiver.x)&&Number.isFinite(receiver.y);
+}
+
 function keeperOutletScore(keeper,receiver,lane){
  const pressure=Number.isFinite(lane?.pressure)?Math.max(0,lane.pressure):0;
  const interception=Number(lane?.interception);
@@ -2125,7 +2139,7 @@ class GameEngine{
  distributeKeeper(p,mode='auto'){
   if(!p?.keeper||this.ball.owner!==p||p.stun>0)return false;
   const dir=p.t===0?1:-1;
-  const mates=this.players.filter(q=>q.t===p.t&&!q.keeper&&q.stun<=0);
+  const mates=this.players.filter(q=>q.t===p.t&&keeperDistributionReceiverReady(q));
   const opponents=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0);
   const pressured=opponents.some(q=>distance(p,q)<330);
   const quality=stat(p,'passing');
