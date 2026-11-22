@@ -2456,7 +2456,7 @@ class GameEngine{
  }
  updateHideBall(p,dt){
   if(!p)return false;
-  dt=Math.max(0,Number.isFinite(dt)?dt:0);
+  dt=Math.min(.05,Math.max(0,Number.isFinite(dt)?dt:0));
   const hidden=Math.max(0,Number(p.hideBallTimer)||0);let startedReveal=false;
   if(hidden>0){
    const remaining=hidden-dt,lost=this.ball?.owner!==p,next=lost||remaining<=1e-9?0:Math.max(0,remaining);
@@ -2468,7 +2468,7 @@ class GameEngine{
  }
   updateMagicReadCue(p,dt){
    if(!p)return false;
-   const step=Math.min(.05,Math.max(0,Number.isFinite(dt)?dt:0));
+   const step=Math.max(0,Number.isFinite(dt)?dt:0);
    p.magicReadCueTimer=Math.max(0,(Number(p.magicReadCueTimer)||0)-step);
    if(p.magicReadCueTimer<=1e-9)p.magicReadCueTimer=0;
    return p.magicReadCueTimer>0;
