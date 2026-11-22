@@ -1765,6 +1765,12 @@ class GameEngine{
   // A defender who moves toward and faces the carrier can counter the spell.
   const facing=inRange&&((rival.face||1)*(p.x-rival.x))>0;
   const closing=inRange&&((rival.dx||0)*(p.x-rival.x)+(rival.dy||0)*(p.y-rival.y))>0;
+  // A second defender visibly screening the forward carry lane can read a
+  // counterable named Magic Trick during the pressured first-touch window.
+  // This is one bounded skill-based chance; ordinary Dribble Styles are separate.
+  const counterRead=defensiveMagicTrickReadTarget(p,rivals,true);
+  const screenReadChance=counterRead?.screened?Math.min(.24,.07+stat(counterRead.defender,'defence')*.0017):0;
+  const screenRead=id!=='lightning'&&screenReadChance>0&&Math.random()<screenReadChance;
   // Airborne JUMP counters Fireball, Scream, Freeze and Bat; a grounded SHOOT-slide
   // parries Bat and Freeze, ducks Fireball and slides under Scream. All counters use the existing four buttons and still cost
   // the caster the original cooldown and fatigue.
@@ -1836,7 +1842,7 @@ class GameEngine{
   // Keep airborne defenders in the candidate pool so their JUMP is actually seen.
   const fieldTrickSlid=fieldTrick&&rivals.some(q=>distance(p,q)<radius&&q.action==='slide'&&Number.isFinite(q.actionTimer)&&q.actionTimer>0&&Number.isFinite(q.z)&&q.z<20);
   const fieldTrickJumped=fieldTrick&&rivals.some(q=>distance(p,q)<radius&&q.action==='jump'&&Number.isFinite(q.actionTimer)&&q.actionTimer>0&&Number.isFinite(q.z)&&q.z>=20);
-  const countered=id==='lightning'?false:!!(jumpDodged||fireballParried||screamDodged||screamParried||freezeDodged||freezeParried||batDodged||batParried||teleportParried||teleportJumpBlocked||hideBallPoked||spinBumpSlid||spinBumpJumped||fieldTrickSlid||fieldTrickJumped||(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling')));
+  const countered=id==='lightning'?false:!!(screenRead||jumpDodged||fireballParried||screamDodged||screamParried||freezeDodged||freezeParried||batDodged||batParried||teleportParried||teleportJumpBlocked||hideBallPoked||spinBumpSlid||spinBumpJumped||fieldTrickSlid||fieldTrickJumped||(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling')));
    // A new Trick supersedes any short-lived Teleport afterimage.
    p.teleportTrail=null;
   p.magicReadyAt=this.clock+6;
@@ -2058,12 +2064,7 @@ class GameEngine{
   const threat=close?{defence:stat(rival,'defence'),aggression:stat(rival,'aggression'),fatigue:rival.fatigue,x:rival.x,y:rival.y,vx:rival.dx||0,vy:rival.dy||0}:null;
   // Forward live facing direction to the Rainbow Flick aerial counter.
   if(threat)threat.face=rival.face;
-  // Any nearby active defender may read the trick. During a pressured first-touch
-  // carry, a second defender visibly screening the forward lane can read it even
-  // while holding position; one bounded skill-based bonus is applied, never stacked.
-  const counterRead=defensiveMagicTrickReadTarget(p,opponents,true);
-  const readBonus=counterRead?Math.min(.24,.07+stat(counterRead.defender,'defence')*.0017):0;
-  const success=!threat||Math.random()<Math.max(.08,dribbleOdds(skill,threat,style)-readBonus);
+  const success=!threat||Math.random()<Math.max(.08,dribbleOdds(skill,threat,style));
   // Face/movement determines forward axis. Escape toward the side *away* from
   // the closest defender, so style-specific movement is purposeful, not random.
   const forward=norm(p.dx||p.face,p.dy||0),lateral={x:-forward.y,y:forward.x};

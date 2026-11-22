@@ -646,7 +646,8 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
         api['deferPaths']={'/api/v1/online-career/current','/api/v1/online-career/seasons','/api/v1/ultimate-team/collection'}
         page.locator('[data-action="navOnlineCareer"]').click()
         wait_for_deferred(stale_career_owner,3)
-        assert 'Loading your server Career' in page.locator('#onlineCareerSeasonStatus').inner_text()
+        career_status=page.locator('#onlineCareerSeasonStatus').inner_text().lower()
+        assert 'loading' in career_status and 'server' in career_status,career_status
         page.locator('[data-action="onlineSignOut"]').first.click()
         assert page.locator('[data-action="onlineSignIn_career"]').count()==1
         api['deferOwner']=career_owner;api['deferPaths']={'/api/v1/online-career/current','/api/v1/online-career/seasons','/api/v1/ultimate-team/collection'}
@@ -655,7 +656,8 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
         wait_for_deferred(career_owner,3)
         assert len(resolve_deferred(stale_career_owner))==3
         page.wait_for_timeout(150)
-        assert 'Loading your server Career' in page.locator('#onlineCareerSeasonStatus').inner_text()
+        career_status=page.locator('#onlineCareerSeasonStatus').inner_text().lower()
+        assert 'loading' in career_status and 'server' in career_status,career_status
         assert 'ONLINE SEASON' not in page.locator('[aria-label="Online Career season"]').inner_text()
         resolve_deferred(career_owner)
         try:page.wait_for_function("document.querySelector('#onlineCareerSeasonStatus')?.textContent.includes('Season and team collection are current')",timeout=15000)

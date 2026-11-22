@@ -17,33 +17,36 @@ with sync_playwright() as pw:
   result=page.evaluate("""() => {
    const g=SupermagicFootball.game;
    function attempt(withScreen){
-    g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
+    g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';g.clock=2;
     const carrier=g.player(0,3),nearest=g.player(1,3),screen=g.player(1,4);
     for(const q of g.players)if(q!==carrier&&q!==nearest&&q!==screen&&!q.keeper){q.down=true;q.stun=1;}
     Object.assign(carrier,{x:1200,y:765,z:0,stun:0,down:false,action:'idle',actionTimer:0,face:1,dx:1,dy:0,
-     moveVX:180,moveVY:0,fatigue:0,breath:1,trickCd:0,dribbleCooldown:0,firstTouchOutletReadTimer:.8,
+     moveVX:180,moveVY:0,fatigue:0,breath:1,trickCd:0,dribbleCooldown:0,magicReadyAt:0,dribbleHold:1,firstTouchOutletReadTimer:.8,
      firstTouchControlTimer:0,firstTouchPressure:.6,hideBallTimer:0});
-    Object.assign(carrier.src,{dribbling:95,agility:95,stamina:95,dribbleType:'sideStep'});
+    Object.assign(carrier.src,{dribbling:95,agility:95,stamina:95,magicTrick:'hideBall'});
     Object.assign(nearest,{x:1155,y:765,z:0,stun:0,down:false,action:'idle',actionTimer:0,face:-1,dx:0,dy:0,moveVX:0,moveVY:0});
     Object.assign(nearest.src,{defence:20,aggression:20});
     Object.assign(screen,{x:1270,y:765,z:0,stun:withScreen?0:1,down:!withScreen,action:'idle',actionTimer:0,
      face:-1,dx:0,dy:0,moveVX:0,moveVY:0});
     Object.assign(screen.src,{defence:95,aggression:95});
     Object.assign(g.ball,{owner:carrier,x:1217,y:777,z:12,pass:false,shot:null,strike:null,attacker:0,lastTouchTeam:0});
-    const before={x:carrier.x,y:carrier.y},oldRandom=Math.random;Math.random=()=>.8;
-    try{g.tryDribbleTrick(carrier,true);}finally{Math.random=oldRandom;}
-    return {success:carrier.trickFx>.4,owner:g.ball.owner===carrier,travel:Math.hypot(carrier.x-before.x,carrier.y-before.y)};
+    const oldRandom=Math.random;Math.random=()=>.1;
+    try{g.tryMagicTrick(carrier);}finally{Math.random=oldRandom;}
+    return {hidden:carrier.hideBallTimer>.4,owner:g.ball.owner===carrier,cooldown:carrier.magicReadyAt,fatigue:carrier.fatigue};
    }
    return {baseline:attempt(false),screened:attempt(true),buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
   assert result['teams']>=223,(kind,result)
-  assert result['baseline']['success'] is True,(kind,result)
-  assert result['screened']['success'] is False,(kind,result)
+  assert result['baseline']['hidden'] is True,(kind,result)
+  assert result['screened']['hidden'] is False,(kind,result)
   assert result['baseline']['owner'] is True,(kind,result)
-  assert result['screened']['owner'] is False,(kind,result)
-  assert result['baseline']['travel']>result['screened']['travel']*2,(kind,result)
+  assert result['screened']['owner'] is True,(kind,result)
+  assert result['baseline']['cooldown']>0 and result['baseline']['cooldown']==result['screened']['cooldown'],(kind,result)
+  assert abs(result['baseline']['fatigue']-result['screened']['fatigue'])<1e-9,(kind,result)
+  
+  
   assert not errors,(kind,errors)
-  print('PASS',kind,'secondary first-touch screen reads a Magic Trick while a turned-away nearest marker does not',flush=True)
+  print('PASS',kind,'secondary first-touch screen reads the named Magic Trick while a turned-away nearest marker alone does not',flush=True)
   ctx.close()
  browser.close()
