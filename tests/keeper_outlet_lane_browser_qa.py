@@ -58,8 +58,37 @@ with sync_playwright() as pw:
       shortTarget:shortEvent?.target,expected:clearOutlet.src.name,shortMode:shortEvent?.mode,
       pressured:shortEvent?.pressured,rolled,rollTarget:rollEvent?.target,
       rollMode:rollEvent?.mode,passTarget:g.ball.passTarget});
+
+    // Both routes are clear, but the nominally shorter outlet has only a
+    // 110-unit interception margin. Prefer the slightly farther, wider lane.
+    g.init({home:0,away:9,humans:2,mode:'quick',options:{...g.options,weather:'Clear'}});
+    g.matchState='play';
+    const marginKeeper=g.player(side,0),tight=g.player(side,1),open=g.player(side,2);
+    const marginMarker=g.player(1-side,3),marginKeeperX=side===0?100:2300;
+    for(const p of g.players){
+     Object.assign(p,{stun:0,down:false,z:0,action:'idle',actionTimer:0,
+      moveVX:0,moveVY:0,vx:0,vy:0,shotImpactKnockdownTimer:0});
+     if(p.t===side&&!p.keeper&&p!==tight&&p!==open)
+      Object.assign(p,{x:side===0?1700:700,y:650});
+     if(p.t!==side&&!p.keeper)
+      Object.assign(p,{x:side===0?1800:600,y:650});
+    }
+    Object.assign(marginKeeper,{x:marginKeeperX,y:600,face:dir,keeper:true,stun:0,down:false,z:0,cd:0});
+    Object.assign(tight,{x:marginKeeperX+dir*750,y:600});
+    Object.assign(open,{x:marginKeeperX+dir*750,y:400});
+    Object.assign(marginMarker,{x:marginKeeperX+dir*400,y:710,moveVX:0,moveVY:0,vx:0,vy:0,
+      stun:0,down:false,z:0,action:'idle',actionTimer:0});
+    const tightLane=g.keeperPassingLane(marginKeeper,tight,480);
+    const openLane=g.keeperPassingLane(marginKeeper,open,480);
+    const marginEvents=[];g.onEvent=event=>marginEvents.push(event);
+    Object.assign(g.ball,{owner:marginKeeper,x:marginKeeper.x,y:marginKeeper.y,z:0,vx:0,vy:0,vz:0});
+    const marginDistributed=g.distributeKeeper(marginKeeper,'short');
+    const marginEvent=marginEvents.find(item=>item.type==='keeperDistribution');
+    marginRows.push({side,tightClear:tightLane.clear,openClear:openLane.clear,
+      marginDistributed,selected:marginEvent?.target,expected:open.src.name,
+      mode:marginEvent?.mode,pressured:marginEvent?.pressured});
    }
-   return {rows,teamCount:SupermagicFootball.teams.length};
+   return {rows,marginRows,teamCount:SupermagicFootball.teams.length};
   }""")
   assert not errors,(kind,errors)
   assert result['teamCount']>=223,(kind,result)
@@ -72,6 +101,11 @@ with sync_playwright() as pw:
    assert row['pressured'] is False,(kind,row)
    assert row['rolled'] is True and row['rollTarget']==row['expected'],(kind,row)
    assert row['rollMode']=='roll' and row['passTarget'] is not None,(kind,row)
-  print('PASS',kind,'both mirrored keepers choose the safe short outlet and roll receiver',flush=True)
+  assert len(result['marginRows'])==2,(kind,result['marginRows'])
+  for row in result['marginRows']:
+   assert row['tightClear'] is True and row['openClear'] is True,(kind,row)
+   assert row['marginDistributed'] is True and row['mode']=='short',(kind,row)
+   assert row['pressured'] is False and row['selected']==row['expected'],(kind,row)
+  print('PASS',kind,'mirrored safe short/roll plus wider-lane ranking',flush=True)
   ctx.close()
  browser.close()
