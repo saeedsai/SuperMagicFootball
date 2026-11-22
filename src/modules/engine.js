@@ -2025,9 +2025,9 @@ class GameEngine{
  }
  // Safety is evaluated at release time; a marked teammate or a defender on
  // the passing line must never be treated as a safe short-throw receiver.
- keeperPassingLane(p,q,flightSpeed=480){
+ keeperPassingLane(p,q,flightSpeed=480,receiverLeadSeconds=null){
   const opponents=this.players.filter(o=>o.t!==p.t&&!o.keeper);
-  return keeperOutletLane(p,q,opponents,flightSpeed);
+  return keeperOutletLane(p,q,opponents,flightSpeed,receiverLeadSeconds);
  }
  // Find an open, advancing clearance corridor instead of punting directly
  // toward a marked teammate/opponent. Aimed empty turf is always an option.
@@ -2118,7 +2118,7 @@ class GameEngine{
     const leadX=Number.isFinite(q.moveVX)?clamp(q.moveVX*.14,-35,35):0;
     const leadY=Number.isFinite(q.moveVY)?clamp(q.moveVY*.14,-35,35):0;
     const landing={x:q.x+leadX,y:q.y+leadY};
-    return {q,landing,safe:this.keeperPassingLane(p,landing)};
+    return {q,landing,safe:this.keeperPassingLane(p,landing,480,0)};
    })
    // Rollouts are deliberate safe ground passes: do not roll to a teammate
    // who cannot stand to receive, or blindly into an occupied receiving lane.
