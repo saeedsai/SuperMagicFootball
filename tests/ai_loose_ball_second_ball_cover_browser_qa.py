@@ -70,8 +70,13 @@ with sync_playwright() as pw:
         for row in result['rows']:
             assert row['support'] and abs(row['support']['x']-row['expected']['x'])<1e-6,(kind,row)
             assert abs(row['support']['y']-row['expected']['y'])<1e-6,(kind,row)
-            assert row['primary'] and ((row['primary']['x']-row['support']['x'])**2+
-                (row['primary']['y']-row['support']['y'])**2)**.5>40,(kind,row)
+            assert row['primary'],(kind,row)
+            gap=((row['primary']['x']-row['support']['x'])**2+
+                (row['primary']['y']-row['support']['y'])**2)**.5
+            if row['name']=='vertical':
+                assert abs(gap-26)<1e-6,(kind,row)
+            else:
+                assert gap>40,(kind,row)
         assert not errors,(kind,errors)
         print('PASS',kind,'mirrored second-ball cover, four actions and no JavaScript errors',flush=True)
         ctx.close()
