@@ -1319,6 +1319,63 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   return target;
  }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,aiTuning,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget};})();
+// A CPU goalkeeper can claim a reachable targeted lofted pass before an outfielder
+// arrives. This is a positioning read only: normal keeper contact/collection owns
+// the actual catch, and contested or unsafe crosses keep the existing goal-line read.
+function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
+ const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+ if(!keeper?.keeper||keeper.down||Number(keeper.stun)>0||Number(keeper.z)>18||
+  Number(keeper.diveCooldown)>0||
+  ['keeperDive','keeperDiveCatch','keeperRecover','keeperHold','shotDown','shotGetUp','hurt'].includes(keeper.action)||
+  !ball||ball.owner||ball.pass!==true||ball.passTeam!==1-keeper.t||
+  ball.attacker!==1-keeper.t||ball.lastTouchTeam!==1-keeper.t||
+  ball.shot||ball.strike||ball.ordinaryShot||!Array.isArray(players)||!players.includes(keeper)||
+  ![ball.x,ball.y,ball.z,ball.vx,ball.vy,ball.vz,ball.age].every(Number.isFinite)||
+  ball.age<0||ball.age>2.4||ball.z<28||ball.z>170||
+  ball.vz< -300||ball.vz>100||ball.passTarget==null)return null;
+ const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax);
+ const yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
+ if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+ const world=GAME_ASSETS.mechanics.world;
+ const goalTop=Number(world?.goalTop),goalBottom=Number(world?.goalBottom);
+ if(!Number.isFinite(goalTop)||!Number.isFinite(goalBottom)||goalTop>=goalBottom)return null;
+ const receiver=players.find(q=>q?.t===1-keeper.t&&q.src?.id===ball.passTarget);
+ const activeOutfielder=q=>q&&!q.keeper&&!q.down&&Number(q.stun||0)<=0&&
+  (q.z==null||(Number.isFinite(Number(q.z))&&Number(q.z)<=18))&&
+  Number(q.slideTimer||0)<=0&&
+  !['shotDown','shotGetUp'].includes(q.action)&&
+  !((q.action==='slide'||q.action==='hurt')&&(Number(q.actionTimer)||0)>0)&&
+  Number.isFinite(q.x)&&Number.isFinite(q.y);
+ if(!activeOutfielder(receiver))return null;
+ const flight=(ball.vz+Math.sqrt(ball.vz*ball.vz+1000*ball.z))/500;
+ if(!Number.isFinite(flight)||flight<.12||flight>.86||
+  (ball.canCollect!=null&&(!Number.isFinite(Number(ball.canCollect))||Number(ball.canCollect)>flight+.08)))return null;
+ const dir=keeper.t===0?1:-1,ownGoalX=dir===1?xMin:xMax;
+ const xLead=clampTo(ball.vx*flight,-190,190);
+ const yLead=clampTo(ball.vy*flight,-160,160);
+ const target={
+  x:clampTo(ball.x+xLead,xMin+22,xMax-22),
+  y:clampTo(ball.y+yLead,yMin+23,yMax-23)
+ };
+ const depth=(target.x-ownGoalX)*dir;
+ const keeperGap=Math.hypot(target.x-keeper.x,target.y-keeper.y);
+ if(depth<24||depth>360||target.y<goalTop-230||target.y>goalBottom+230||
+  keeperGap<24||keeperGap>Math.min(235,260*flight+32))return null;
+ const receiverGap=Math.hypot(receiver.x-target.x,receiver.y-target.y);
+ if(receiverGap>260)return null;
+ const horizon=Math.min(.22,flight);
+ for(const q of players){
+  if(q===keeper||!activeOutfielder(q))continue;
+  const vx=Number.isFinite(q.moveVX)?q.moveVX:0,vy=Number.isFinite(q.moveVY)?q.moveVY:0;
+  const futureX=q.x+clampTo(vx*horizon,-52,52);
+  const futureY=q.y+clampTo(vy*horizon,-52,52);
+  const gap=Math.hypot(futureX-target.x,futureY-target.y);
+  if(q.t!==keeper.t&&gap+34<keeperGap)return null;
+  if(q.t===keeper.t&&gap+48<keeperGap)return null;
+ }
+ return target;
+}
+
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,aiTuning,defensivePressers,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget};})();
 
 export {AI};
