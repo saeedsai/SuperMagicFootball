@@ -7,6 +7,7 @@ Prioritize player-facing gameplay and existing-player animation/graphics. Never 
 
 ## Current checkpoint
 - 0.12.81.211 adds KEEPER-AERIAL-CROSS-CONTEST-01. A CPU goalkeeper now considers an already-airborne opponent only when a real jump pose is active and the opponent's projected vertical body envelope overlaps the descending high cross at the same 0.12-second horizon as the horizontal arrival estimate. Grounded challenger pressure and existing punch/catch physics are unchanged.
+- The first .211 Modular QA #45106244234 and Census #45106244378 stopped in Node preflight: four release-contract assertions found the README candidate heading still at .210. The heading is now aligned in a follow-up commit; no test was weakened.
 - .210 Modular QA #45098663459 passed 2,780/2,780. Full Census #45098663486 failed browser shard 0: READ! screenshot fixture removed the live UI DOM while requestAnimationFrame continued, causing a null classList error; .211 keeps the DOM mounted and hides non-canvas children. The same shard also had an independent LAN guest-movement timeout; no LAN source changed and a fresh exact-head run must determine whether it is transient.
 - Main remains .197 at `734090056af345d76e5d25079b2e2f8c1798ba65`. #87 protection, #86 Render drift, #48 physical-device acceptance, #10 existing-player graphics and #3 Android double tap remain open.
 
