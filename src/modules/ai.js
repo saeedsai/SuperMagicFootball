@@ -1470,7 +1470,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
  // pressured first-touch window, even when the nearest marker is turned away.
  // Only public positions, movement and facing are used; attacker AI targets are
  // deliberately not consulted.
- function defensiveMagicTrickReadTarget(carrier,defenders,allowCarryScreen=false){
+ function defensiveMagicTrickReadTarget(carrier,defenders,allowCarryScreen=false,ball=null){
   if(!carrier||!Array.isArray(defenders)||!Number.isFinite(carrier.x)||!Number.isFinite(carrier.y))return null;
   const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
   const firstTouchRead=allowCarryScreen&&Number(carrier.firstTouchOutletReadTimer)>0&&
@@ -1496,7 +1496,13 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    const qdx=Number.isFinite(q.dx)?q.dx:0,qdy=Number.isFinite(q.dy)?q.dy:0;
    const closing=qdx*dx+qdy*dy>.22*gap,relX=q.x-carrier.x,relY=q.y-carrier.y;
    const ahead=relX*ux+relY*uy,lateral=Math.abs(relX*uy-relY*ux);
-   const screened=firstTouchRead&&carryForward&&gap<=132&&ahead>=18&&ahead<=150&&lateral<=64;
+   const ballOffsetX=ball!==null&&Number.isFinite(ball?.x)?ball.x-carrier.x:NaN;
+   const ballOffsetY=ball!==null&&Number.isFinite(ball?.y)?ball.y-carrier.y:NaN;
+   const ballOffsetLength=Math.hypot(ballOffsetX,ballOffsetY);
+   const ballExposure=ballOffsetX*(-dx/gap)+ballOffsetY*(-dy/gap);
+   const ballOnDefenderSide=ball===null||(ball.owner===carrier&&Number.isFinite(ball.x)&&Number.isFinite(ball.y)&&
+    Number.isFinite(ballOffsetLength)&&ballOffsetLength<=36&&Number.isFinite(ballExposure)&&ballExposure>=-2);
+   const screened=firstTouchRead&&carryForward&&gap<=132&&ahead>=18&&ahead<=150&&lateral<=64&&ballOnDefenderSide;
    if(!closing&&!screened)continue;
    const candidate={defender:q,screened,gap,priority:(screened?1000:0)-gap};
    if(!best||candidate.priority>best.priority)best=candidate;

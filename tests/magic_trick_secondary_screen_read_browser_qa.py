@@ -19,7 +19,7 @@ with sync_playwright() as pw:
   page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
    const g=SupermagicFootball.game;
-   function attempt(withScreen){
+   function attempt(withScreen,ballSide='exposed'){
     g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';g.clock=2;
     const carrier=g.player(0,3),nearest=g.player(1,3),screen=g.player(1,4);
     for(const q of g.players)if(q!==carrier&&q!==nearest&&q!==screen&&!q.keeper){q.down=true;q.stun=1;}
@@ -32,7 +32,8 @@ with sync_playwright() as pw:
     Object.assign(screen,{x:1270,y:765,z:0,stun:withScreen?0:1,down:!withScreen,action:'idle',actionTimer:0,
      face:-1,dx:0,dy:0,moveVX:0,moveVY:0});
     Object.assign(screen.src,{defence:95,aggression:95});
-    Object.assign(g.ball,{owner:carrier,x:1217,y:777,z:12,pass:false,shot:null,strike:null,attacker:0,lastTouchTeam:0});
+    const ballOffset=ballSide==='shielded'?-17:17;
+    Object.assign(g.ball,{owner:carrier,x:1200+ballOffset,y:777,z:12,pass:false,shot:null,strike:null,attacker:0,lastTouchTeam:0});
     const oldRandom=Math.random;Math.random=()=>.1;
     try{g.tryMagicTrick(carrier);}finally{Math.random=oldRandom;}
     if(withScreen){g.driveAI(screen,1/60);g.driveAI(nearest,1/60);}
@@ -42,7 +43,7 @@ with sync_playwright() as pw:
      readerFace:screen.face,readerTimer:screen.magicReadCounterpressTimer,
      humans:g.humans,awayInControl:g.inControl(1),carrierHideBallTimer:carrier.hideBallTimer};
    }
-   return {baseline:attempt(false),screened:attempt(true),buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
+   return {baseline:attempt(false),screened:attempt(true),shielded:attempt(true,'shielded'),buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
   assert result['teams']>=223,(kind,result)
@@ -50,6 +51,8 @@ with sync_playwright() as pw:
   assert result['screened']['hidden'] is False,(kind,result)
   assert result['baseline']['readerCue']==0 and result['screened']['readerCue']>0,(kind,result)
   assert result['screened']['counterpressTimer']>0,(kind,result)
+  assert result['shielded']['hidden'] is True,(kind,result)
+  assert result['shielded']['readerCue']==0 and result['shielded']['counterpressTimer']==0,(kind,result)
   target=result['screened']['readerTarget'];primary_target=result['screened']['primaryTarget']
   assert target is not None and 42<=(target['x']-1200)<=72,(kind,target,result['screened'])
   assert primary_target is not None and ((primary_target['x']-1200)**2+(primary_target['y']-765)**2)**.5<50,(kind,primary_target)

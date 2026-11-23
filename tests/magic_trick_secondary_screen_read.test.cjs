@@ -27,6 +27,28 @@ test('the first-touch screen read mirrors when the carrier attacks left',async()
  assert.equal(read?.defender,screen);assert.equal(read?.screened,true);
 });
 
+test('second-defender Magic Trick screen reads require the live ball on the defender-facing side',async()=>{
+ const AI=await loadAI();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,p=carrier({t:team,x:team===0?100:200,dx:dir,face:dir});
+  const screen=defender({t:1-team,x:p.x+dir*68,y:p.y+18,face:-dir});
+  const exposed={owner:p,x:p.x+dir*17,y:p.y+12};
+  const shielded={owner:p,x:p.x-dir*17,y:p.y+12};
+  const read=AI.defensiveMagicTrickReadTarget(p,[screen],true,exposed);
+  assert.equal(read?.defender,screen,JSON.stringify({team,read}));
+  assert.equal(read?.screened,true,'the live ball is presented toward the screening defender');
+  assert.equal(AI.defensiveMagicTrickReadTarget(p,[screen],true,shielded),null,
+   'far-side shielding must not grant an omniscient second-defender read');
+  assert.equal(AI.defensiveMagicTrickReadTarget(p,[screen],true,{owner:{},x:p.x+17,y:p.y+12}),null,
+   'a ball owned by another player cannot grant the read');
+  assert.equal(AI.defensiveMagicTrickReadTarget(p,[screen],true,{owner:p,x:p.x+40,y:p.y+12}),null,
+   'a stale ball outside the carrier envelope cannot grant the read');
+  const closing=defender({t:1-team,x:p.x-dir*12,y:p.y,face:dir,dx:dir,dy:0});
+  const ordinary=AI.defensiveMagicTrickReadTarget(p,[closing],true,shielded);
+  assert.equal(ordinary?.defender,closing);
+  assert.equal(ordinary?.screened,false,'the ball-side gate only restricts the second-defender screen read');
+ }
+});
 test('a successful screen reader narrows the visible forward lane on both attack directions',async()=>{
  const AI=await loadAI(),bounds={xMin:0,xMax:2000,yMin:0,yMax:1000};
  for(const team of [0,1]){
@@ -111,7 +133,7 @@ test('the real named Magic Trick resolver applies the screen read, while ordinar
  const trickSource=extract(' tryMagicTrick(p){',' updateSpinBumpFx(p,dt){','live named Magic Trick resolver');
  const dribbleSource=extract(' tryDribbleTrick(p,byAI=false){',' // Safety is evaluated at release time;','ordinary Dribble Style resolver');
  assert.doesNotMatch(dribbleSource,/defensiveMagicTrickReadTarget|readBonus/);
- function attempt(screenAvailable){
+ function attempt(screenAvailable,ballSide='exposed'){
   const p=carrier();
   p.src={id:'carrier',name:'Carrier',magicTrick:'hideBall',dribbling:90};
   p.magicReadyAt=0;p.fatigue=0;p.keeper=false;p.stun=0;p.z=0;
@@ -120,7 +142,8 @@ test('the real named Magic Trick resolver applies the screen read, while ordinar
   const screen=defender({x:165,face:-1,dx:0,defence:92});
   screen.src={id:'screen',name:'Screen',defence:92};
   if(!screenAvailable){screen.down=true;screen.stun=1;}
-  const game={ball:{owner:p},players:[p,nearest,screen],clock:2,magicHazards:[],fatigueLedger:[{},{}],events:[],
+  const ballOffset=ballSide==='shielded'?-17:17;
+  const game={ball:{owner:p,x:p.x+ballOffset,y:p.y+12},players:[p,nearest,screen],clock:2,magicHazards:[],fatigueLedger:[{},{}],events:[],
    burst(){},emit(type,payload){this.events.push({type,...payload});}};
   const deterministicMath=Object.create(Math);deterministicMath.random=()=>.1;
   const resolve=vm.runInNewContext('({'+trickSource+'})',{
@@ -137,7 +160,7 @@ test('the real named Magic Trick resolver applies the screen read, while ordinar
   assert.equal(resolve.call(game,p),true);
   return {player:p,game,event:game.events.at(-1),reader:screen};
  }
- const open=attempt(false),screened=attempt(true);
+ const open=attempt(false),screened=attempt(true),shielded=attempt(true,'shielded');
  assert.equal(open.event.countered,false,'a turned-away nearest marker alone does not read Hide Ball');
  assert.equal(open.player.hideBallTimer,.65,'unread Magic Trick still activates');
  assert.equal(open.reader.magicReadCueTimer||0,0,'a turned-away nearest marker alone gets no read cue');
@@ -145,12 +168,15 @@ test('the real named Magic Trick resolver applies the screen read, while ordinar
  assert.equal(screened.player.hideBallTimer||0,0,'a read cancels the trick effect');
  assert.equal(screened.reader.magicReadCueTimer,.48,'the actual screen reader receives the brief visual cue');
  assert.equal(screened.game.ball.owner,screened.player,'the read does not award an automatic tackle or possession');
+ assert.equal(shielded.event.countered,false,'a far-side shield prevents the second-defender read');
+ assert.equal(shielded.player.hideBallTimer,.65,'shielded Hide Ball activates normally');
+ assert.equal(shielded.reader.magicReadCueTimer||0,0,'a shielded ball gives the screen no READ! cue');
  assert.equal(screened.player.magicReadyAt,8,'the caster still pays the normal six-second cooldown');
  assert.equal(screened.player.fatigue,.035,'the caster still pays the normal fatigue cost');
 }); 
-test('real engine sends the successful screen reader into a short counterpress while the primary keeps pressing',async()=>{
+test('real engine grants the screen counter only when the live ball is exposed, mirrored on both teams',async()=>{
  const ENGINE=await loadEngine(),field=ENGINE.WORLD.field;
- for(const team of [0,1]){
+ for(const team of [0,1])for(const ballSide of ['exposed','shielded']){
   const game=new ENGINE.GameEngine({halfSeconds:120});game.init({home:0,away:1,humans:0,mode:'quick'});
   const defending=1-team,dir=team===0?1:-1,x=field.x+field.w*.5,y=field.y+field.h*.5;
   const carrier=game.player(team,3),primary=game.player(defending,3),screen=game.player(defending,4);
@@ -164,25 +190,32 @@ test('real engine sends the successful screen reader into a short counterpress w
    dx:0,dy:0,moveVX:0,moveVY:0,face:dir,aiTimer:0,aiTarget:null,cd:1});
   Object.assign(screen,{x:x+dir*70,y:y+18,z:0,down:false,stun:0,action:'idle',actionTimer:0,
    dx:0,dy:0,moveVX:0,moveVY:0,face:-dir,aiTimer:0,aiTarget:null,cd:1});
-  game.ball.owner=carrier;game.ball.x=x;game.ball.y=y;game.ball.z=0;game.ball.lastTouchTeam=team;
+  game.ball.owner=carrier;game.ball.x=x+(ballSide==='exposed'?dir*17:-dir*17);game.ball.y=y+12;game.ball.z=0;game.ball.lastTouchTeam=team;
   game.clock=10;
   const oldRandom=Math.random;Math.random=()=>.1;
   try{assert.equal(game.tryMagicTrick(carrier),true);}finally{Math.random=oldRandom;}
-  assert.equal(game.events.at(-1)?.countered,true,'the visible screen should read the named trick');
-  assert.equal(screen.magicReadCounterpressTimer,.42);
-  game.driveAI(screen,.016);
-  assert.ok(screen.aiTarget,JSON.stringify({team,target:screen.aiTarget}));
-  const forward=(screen.aiTarget.x-carrier.x)*dir;
-  assert.ok(forward>=42&&forward<=72,'the second defender should close the forward lane');
-  assert.equal(screen.action,'idle','the movement-only counterpress must not auto-tackle');
-  assert.ok(Math.hypot(screen.aiTarget.x-carrier.x,screen.aiTarget.y-carrier.y)<=82,
-   'the earned screen reader must keep the bounded counterpress lane target');
-  game.driveAI(primary,.016);
-  assert.ok(Math.hypot(primary.aiTarget.x-carrier.x,primary.aiTarget.y-carrier.y)<50,
-   'the original primary presser must continue to close the carrier');
+  const readExpected=ballSide==='exposed';
+  assert.equal(game.events.at(-1)?.countered,readExpected,JSON.stringify({team,ballSide,event:game.events.at(-1)}));
+  if(readExpected){
+   assert.equal(screen.magicReadCounterpressTimer,.42);
+   assert.equal(screen.magicReadCueTimer,.48);
+   game.driveAI(screen,.016);
+   assert.ok(screen.aiTarget,JSON.stringify({team,target:screen.aiTarget}));
+   const forward=(screen.aiTarget.x-carrier.x)*dir;
+   assert.ok(forward>=42&&forward<=72,'the second defender should close the forward lane');
+   assert.equal(screen.action,'idle','the movement-only counterpress must not auto-tackle');
+   assert.ok(Math.hypot(screen.aiTarget.x-carrier.x,screen.aiTarget.y-carrier.y)<=82,
+    'the earned screen reader must keep the bounded counterpress lane target');
+   game.driveAI(primary,.016);
+   assert.ok(Math.hypot(primary.aiTarget.x-carrier.x,primary.aiTarget.y-carrier.y)<50,
+    'the original primary presser must continue to close the carrier');
+  }else{
+   assert.equal(carrier.hideBallTimer,.65,'far-side shielding lets the named trick proceed');
+   assert.equal(screen.magicReadCounterpressTimer||0,0);
+   assert.equal(screen.magicReadCueTimer||0,0);
+  }
  }
 });
-
 test('primary named Magic Trick and delayed Lightning counters read the defender\'s actual 2D heading on both teams',async()=>{
  const ENGINE=await loadEngine();
  for(const team of [0,1]){

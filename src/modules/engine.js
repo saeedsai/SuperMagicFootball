@@ -1862,7 +1862,7 @@ class GameEngine{
   // A second defender visibly screening the forward carry lane can read a
   // counterable named Magic Trick during the pressured first-touch window.
   // This is one bounded skill-based chance; ordinary Dribble Styles are separate.
-  const counterRead=typeof defensiveMagicTrickReadTarget==='function'?defensiveMagicTrickReadTarget(p,rivals,true):null;
+  const counterRead=typeof defensiveMagicTrickReadTarget==='function'?defensiveMagicTrickReadTarget(p,rivals,true,this.ball):null;
   const screenReadChance=counterRead?.screened?Math.min(.24,.07+stat(counterRead.defender,'defence')*.0017):0;
   const screenRead=id!=='lightning'&&screenReadChance>0&&Math.random()<screenReadChance;
   if(screenRead&&counterRead?.defender){
