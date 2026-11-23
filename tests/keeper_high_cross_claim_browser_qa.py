@@ -74,7 +74,37 @@ with sync_playwright() as pw:
      expected:{x:Math.max(bounds.xMin+22,Math.min(bounds.xMax-22,g.ball.x+g.ball.vx*flight)),
       y:Math.max(bounds.yMin+23,Math.min(bounds.yMax-23,g.ball.y+g.ball.vy*flight))}});
    }
-   return {rows,aerialRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+   const profileRows=[];
+   for(const team of [0,1]){
+    const dir=team===0?1:-1,ownGoalX=dir===1?bounds.xMin:bounds.xMax,goalY=765;
+    const target={x:ownGoalX+dir*265,y:goalY+78};
+    const profiles=[
+     {name:'skill-only',skill:100,diving:50,fatigue:0,expected:true},
+     {name:'diving-only',skill:50,diving:100,fatigue:0,expected:true},
+     {name:'average',skill:50,diving:50,fatigue:0,expected:false},
+     {name:'low',skill:1,diving:1,fatigue:0,expected:false},
+     {name:'tired-elite',skill:100,diving:100,fatigue:1,expected:false},
+     {name:'invalid',skill:'',diving:null,fatigue:0,expected:false}
+    ];
+    for(const profile of profiles){
+     g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
+     const keeper=g.player(team,0),receiver=g.player(1-team,3);
+     for(const q of g.players)if(q!==keeper&&q!==receiver&&!q.keeper){q.down=true;q.stun=1;}
+     Object.assign(keeper,{x:ownGoalX+dir*25,y:goalY,z:0,stun:0,down:false,action:'idle',
+      actionTimer:0,diveCooldown:0,aiTimer:0,aiTarget:null,moveVX:0,moveVY:0,fatigue:profile.fatigue});
+     keeper.src.gkSkill=profile.skill;keeper.src.gkDiving=profile.diving;
+     Object.assign(receiver,{x:target.x+dir*215,y:target.y+10,z:0,stun:0,down:false,
+      action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
+     Object.assign(g.ball,{owner:null,attacker:1-team,lastTouchTeam:1-team,passTeam:1-team,pass:true,
+      passTarget:receiver.src.id,x:target.x+dir*160,y:target.y-40,z:170,vx:-dir*190,vy:48,vz:10,
+      age:.15,canCollect:0,shot:null,strike:null,ordinaryShot:false});
+     g.clock=.2;g.driveAI(keeper,.016);
+     profileRows.push({team,name:profile.name,expected:profile.expected,
+      claimActive:keeper.aiKeeperClaimTargetActive===true,
+      target:keeper.aiTarget?{x:keeper.aiTarget.x,y:keeper.aiTarget.y}:null});
+    }
+   }
+   return {rows,aerialRows,profileRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
     teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
@@ -95,6 +125,12 @@ with sync_playwright() as pw:
    else:
     assert row['claimActive'] is True,(kind,row)
     assert row['claim'] is not None and abs(row['claim']['x']-row['expected']['x'])<2 and abs(row['claim']['y']-row['expected']['y'])<2,(kind,row)
+  assert len(result['profileRows'])==12,(kind,result['profileRows'])
+  for row in result['profileRows']:
+   assert row['claimActive'] is row['expected'],(kind,row)
+   if row['expected']:
+    expectedX=439 if row['team']==0 else 2121
+    assert row['target'] is not None and abs(row['target']['x']-expectedX)<2,(kind,row)
   assert not errors,(kind,errors)
   print('PASS',kind,'mirrored goalkeeper high-cross claim and immediate post-catch return, four actions and no JavaScript errors',flush=True)
   ctx.close()

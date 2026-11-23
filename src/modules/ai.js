@@ -2135,8 +2135,18 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  };
  const depth=(target.x-ownGoalX)*dir;
  const keeperGap=Math.hypot(target.x-keeper.x,target.y-keeper.y);
+ const rating=value=>{
+  const parsed=typeof value==='number'?value:
+   typeof value==='string'&&value.trim()!==''?Number(value):NaN;
+  return clampTo(Number.isFinite(parsed)?parsed:50,0,100);
+ };
+ const skill=rating(keeper.src?.gkSkill),diving=rating(keeper.src?.gkDiving);
+ const fatigue=Number.isFinite(keeper.fatigue)?clampTo(keeper.fatigue,0,1):0;
+ // Neutral ratings preserve the former 235-unit claim cap. Elite keepers can
+ // safely leave farther; fatigue and low keeper attributes shorten the read.
+ const claimReach=clampTo(235+(skill-50)*.30+(diving-50)*.20-fatigue*28,185,260);
  if(depth<24||depth>360||target.y<goalTop-230||target.y>goalBottom+230||
-  keeperGap<24||keeperGap>Math.min(235,260*flight+32))return null;
+  keeperGap<24||keeperGap>Math.min(claimReach,260*flight+32))return null;
  const receiverGap=Math.hypot(receiver.x-target.x,receiver.y-target.y);
  if(receiverGap>260)return null;
  for(const q of players){

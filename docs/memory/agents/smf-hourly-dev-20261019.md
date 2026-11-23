@@ -6,8 +6,9 @@
 Deliver real player-facing football gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Preserve four actions, canonical rosters, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.233 — AI-PASS-INTERCEPTION-DEFENCE-READ-01:** the second CPU defender's grounded targeted-pass interception response now scales by its actual Defence rating, shifting the difficulty-derived reaction delay by at most ±24 ms. Defence 50 and missing/invalid values preserve the prior behavior; the existing reach geometry and primary press remain unchanged.
-- Added mirrored Node regressions for both directions, average parity, high/low skill ordering, invalid fallback and clamping. Extended actual-engine desktop/simulated-touch Chromium acceptance for both teams, primary pursuit and four actions.
+- **0.12.81.234 — KEEPER-HIGH-CROSS-CLAIM-READ-SKILL-FATIGUE-01:** CPU goalkeeper high-cross claim reach now scales with GK Skill and GK Diving independently, with a combined 260-unit cap; average 50/50 keeps the previous 235-unit limit exactly. Low ratings reduce the claim pocket and fatigue subtracts up to 28 units. Flight-time and aerial-contest checks remain authoritative.
+- Focused mirrored Node and real-engine desktop/simulated-touch Chromium regressions cover skill-only, diving-only, neutral, low, tired, invalid and clamped profiles on both goals.
+- .233 exact-head Modular QA #45218022588 passed; Full Regression Census #45218025990 passed preflight/preview and Node shards 2/3, with Node shards 0/1 and all four Chromium shards still in progress at the .234 start. The .233 metadata-only failure was the missing code-formatted Agent ID; fixed in a1b5ba78f7a32ab1b1f8328748e24eb240a5b154.
 - .232 passed exact-head Modular QA #45201732994 and all four Node/four Chromium Census shards #45201732936, then promoted through the existing QA-gated pipeline. Pages #45203753806 and independent main Census/hosted smoke #45203767885 passed. Dev and main were both b3740b4bf79903d686ed61b5e6d927dce2f8d672 before this .233 commit.
 
 ## Next smallest action

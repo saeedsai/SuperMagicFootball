@@ -148,3 +148,32 @@ test('a caught high-cross claim immediately releases the stale landing target an
   assert.ok(Math.abs(keeper.aiTarget.x-claim.x)>80,'the stale landing target must be replaced');
  }
 });
+
+
+test('high-cross claim reach scales with GK Skill, GK Diving and fatigue while preserving the neutral baseline',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team),dir=f.dir;
+  f.target={x:f.ownGoalX+dir*265,y:f.goalY+78};
+  Object.assign(f.keeper,{x:f.ownGoalX+dir*25,fatigue:0});
+  Object.assign(f.receiver,{x:f.target.x+dir*215,y:f.target.y+10});
+  Object.assign(f.ball,{x:f.target.x+dir*160,y:f.target.y-40,z:170,vx:-dir*190,vy:48,vz:10});
+  const read=(skill,diving,fatigue=0)=>{
+   if(skill===undefined)delete f.keeper.src.gkSkill;else f.keeper.src.gkSkill=skill;
+   if(diving===undefined)delete f.keeper.src.gkDiving;else f.keeper.src.gkDiving=diving;
+   f.keeper.fatigue=fatigue;
+   return AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds);
+  };
+  assert.equal(read(50,50),null,'neutral keeper retains the old 235-unit cap');
+  const skillRead=read(100,50);
+  assert.ok(skillRead,'elite GK Skill extends the safe claim pocket');
+  assert.ok(Math.abs(skillRead.x-f.target.x)<2&&Math.abs(skillRead.y-f.target.y)<2);
+  assert.ok(read(50,100),'elite GK Diving independently extends the safe claim pocket');
+  assert.equal(read(1,1),null,'low-rated keeper remains conservative');
+  assert.equal(read(100,100,1),null,'full fatigue removes the elite extension');
+  assert.equal(read(undefined,undefined),null,'missing ratings preserve the neutral baseline');
+  assert.equal(read('',null),null,'invalid ratings fall back to the neutral baseline');
+  assert.ok(read(1000,1000),'ratings above 100 clamp to the elite profile');
+  assert.equal(read(-20,-20),null,'ratings below zero clamp to the low profile');
+ }
+});
