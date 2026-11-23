@@ -3,26 +3,26 @@
 **Updated:** 2026-11-23
 
 ## Mission
-Deliver real player-facing gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Never substitute audits or test-only iterations. Preserve four actions, canonical rosters, compatible saves and offline play.
+Deliver player-facing gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Do not substitute audits or test-only iterations. Preserve four actions, canonical rosters, compatible saves and offline play.
 
-## Current candidate — 0.12.81.231
-- AI-CUTBACK-SPECIALIST-RECEIVER-PRESERVATION-01: fixed a confirmed .230 gameplay regression. A safe cutback receiver that is also the ordinary support-run candidate is no longer excluded from the cutback PASS when the generic forward-support check rejects it.
-- AI-LOFTED-PASS-JUMP-INTERCEPT-01: the second CPU defender uses the existing JUMP action only when a targeted lofted pass crosses a reachable window after the difficulty reaction delay; low/untargeted/late/unreachable passes do not trigger. Primary presser continues chasing the ball.
-- Focused Node and real-engine desktop/simulated-touch Chromium regressions added. Exact-head CI pending; no local test claim because github.com DNS failed.
-
-## Previous gate diagnosis
-- .231 first QA run: cutback regression passed; the new lofted-pass engine test correctly entered action `jump`, but its `z>10` assertion was too strict because the existing jump metric's initial lift is 10. The test/browser acceptance now checks `jumpCount===1`. The memory contract also required this checkpoint's Agent ID line; restored.
-- .230 Modular QA #45193483047 and Census #45193483239 both failed ai_cutback_pass.test.cjs: the safe cutback runner was also excluded by unsafeSupportReceiver, causing fallback to jp3 instead of jp1. .230 is not certified/promoted.
-- .229 had a pre-certification scope bug; .228 had a stale Euclidean-vs-longitudinal test assertion; .227 browser fixture used invalid lineup slot 6. These candidates were superseded.
-- .225 remains the latest deployed main: SHA 91adea9bad06524c3022e7ee60a8ece58fb16142; Pages #45165193079 and main Census #45165206483 passed.
-
-## Exact branch baseline before .231
-- Dev: 93a89cda08c3c3f031149231e75d35e21223cf5c (.230)
-- Main: 91adea9bad06524c3022e7ee60a8ece58fb16142 (.225)
-- Main protection remains disabled; issue #87 open. Render #86 and physical two-phone #48 remain open. Do not claim hosted online service or device certification.
+## Current checkpoint
+- **0.12.81.231:** committed cutback receiver preservation and targeted lofted-pass JUMP interception. A safe cutback receiver can no longer be excluded by the rejected ordinary support-run fallback. The second CPU cover defender uses the existing JUMP only for a reachable targeted lofted pass after its difficulty reaction budget; the primary still presses the live ball.
+- Focused mirrored Node and real-engine desktop/simulated-touch Chromium regressions are included. No local test claim: container git clone failed because github.com DNS did not resolve.
+- .231 first Census #45197700354 ran 2,811 Node tests: 2,810 passed; only the memory contract failed because this checkpoint rewrite omitted required headings. The jump action assertion and cutback gameplay test passed. The test-only correction restores the complete checkpoint contract.
 
 ## Next smallest action
-Observe .231 Modular QA and all four Node/four Chromium Census shards at the exact dev SHA. Fix confirmed failures, then let only the green exact head use the QA-gated promotion pipeline. Verify Pages, independent main Census and hosted-byte smoke separately. Continue with counterable football AI, existing-player Studio art, goalkeeper and Career/Cup.
+Complete exact-head Modular QA #45197700213 and rerun Full Regression Census after the checkpoint correction. Inspect all four Node and four Chromium shards; fix confirmed failures, then allow only the green exact head through the QA-gated promotion pipeline. Verify Pages, independent main Census and hosted-byte smoke separately.
 
-## Invariants
-Preserve 223 teams, 2,676 players, ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No new concept heroes or copied art. Edit only this checkpoint; keep it below 4 KiB.
+## Ownership and exclusions
+Edit only this assigned checkpoint. Preserve 223 teams, 2,676 players, exact ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Physical two-phone #48 remains open; Render drift #86 remains open; main protection #87 is not enabled. Authenticated online hosting requires owner resources. Never expose Git SHA in player UI.
+
+## Evidence
+- .231 Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45197700354
+- .231 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45197700213
+- .230 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45197195752
+- .230 Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45197195929
+- Latest main Pages: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45165193079
+- Latest main Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45165206483
+
+## Cleanup
+Keep this file below 4 KiB and retain all required headings and Agent ID. Do not read or edit other agents' private checkpoints. Never bypass required CI, security or QA promotion.

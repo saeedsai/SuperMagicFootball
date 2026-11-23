@@ -729,3 +729,6 @@ Defined the receiver-lead clamp locally inside attackingSupportPass; the prior h
 
 **.231 first exact-head QA correction:** Modular QA #45197195752 and Census #45197195929 each ran 2,811 Node tests (2,809 passed, 2 failed). The cutback gameplay regression passed. The lofted-pass engine test observed action `jump` but over-constrained the existing jump's initial z to greater than 10 (the current jump metric initializes at exactly 10); Node and desktop/simulated-touch browser assertions now verify `jumpCount===1`. The project-memory contract also caught the assigned checkpoint's missing Agent ID line, now restored. No production gameplay failure was established by these two assertions.
 
+
+
+**.231 second exact-head diagnosis:** Census #45197700354 executed 2,811 Node tests (2,810 passed, 1 failed) because the assigned checkpoint rewrite shortened headings required by project_memory_contract.test.cjs. The cutback gameplay regression passed and the lofted-pass engine test observed the existing jump action; the checkpoint now restores Agent ID and all required sections. This is a memory-contract correction, not a production gameplay failure.
