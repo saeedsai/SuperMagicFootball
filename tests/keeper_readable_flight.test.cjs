@@ -40,7 +40,7 @@ test('early readable keeper dive intent preserves late read for erratic shots',(
  const intent=engine.slice(start,end);
  assert.match(intent,/keeperDiveReadWindow\(p,readable\)/,'production intent uses the fatigue-aware read window');
  assert.match(engine,/return 320\+70\*skill-45\*fatigue/,'fatigue shortens only the readable-shot window');
- assert.match(intent,/stat\(p,'gkSkill'\)/,'anticipation is tied to keeper skill');
+ assert.match(engine,/stat\(keeper,'gkSkill'\)/,'anticipation is tied to keeper skill');
  assert.match(intent,/zigzag.*swim.*warp.*lightning/,'erratic shots remain unpredictable');
  assert.match(intent,/predicted\.time<\.065\|\|predicted\.time>\.46/,'time gate stays bounded');
  assert.match(engine,/remaining<=30\|\|remaining>390/,'early intent can advance through the longer window');
