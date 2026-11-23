@@ -1127,7 +1127,12 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   const attackDir=(1-team)===0?1:-1;
   // This role is refreshed every frame, so only a bounded fraction of the normal
   // think delay is charged before the support can move toward the interception.
-  const responseDelay=clampTo(reactionSeconds*.4,.04,.12);
+  const baseResponseDelay=clampTo(reactionSeconds*.4,.04,.12);
+  const rawDefence=Number(defender.src?.defence);
+  const defence=clampTo(Number.isFinite(rawDefence)?rawDefence:50,1,100);
+  // Average Defence preserves the exact difficulty baseline; skill only shifts
+  // this refreshed support role's bounded reaction delay by at most 24 ms.
+  const responseDelay=clampTo(baseResponseDelay+(50-defence)/49*.024,.035,.145);
   const firstTime=responseDelay+.06,lastTime=Math.min(arrival*.88,.62);
   if(!Number.isFinite(lastTime)||lastTime<firstTime)return null;
   const speed=Math.min(440,defenderSpeed);

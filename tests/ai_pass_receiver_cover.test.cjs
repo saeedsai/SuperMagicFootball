@@ -102,3 +102,22 @@ test('engine assigns a reachable early pass interception to the second defender 
    'primary defender must continue pursuing the live ball');
  }
 });
+
+
+test('ground-pass interception reaction scales with defender Defence while average and invalid stats preserve the baseline',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(team);f.receiver.moveVX=f.dir*180;f.receiver.moveVY=120;
+  const support=player('defence-read-'+team,team,f.ball.x+f.dir*90,f.ball.y+12.6);
+  const targetFor=defence=>{if(defence===null)delete support.src.defence;else support.src.defence=defence;return AI.defensivePassReceiverCoverTarget(team,f.ball,f.players,bounds,support,320,.2);};
+  const legacy=targetFor(null),average=targetFor(50),elite=targetFor(100),low=targetFor(1);
+  assert.ok(legacy&&average&&elite&&low,JSON.stringify({team,legacy,average,elite,low}));
+  assert.deepEqual(average,legacy,'average Defence must preserve the previous target exactly');
+  const progress=point=>(point.x-f.ball.x)*f.dir;
+  assert.ok(progress(elite)<progress(average)-2,JSON.stringify({team,elite,average}));
+  assert.ok(progress(low)>progress(average)+2,JSON.stringify({team,low,average}));
+  assert.deepEqual(targetFor(NaN),average,'missing/non-finite Defence must use the neutral baseline');
+  assert.deepEqual(targetFor(200),elite,'high Defence is clamped to 100');
+  assert.deepEqual(targetFor(-20),low,'low Defence is clamped to 1');
+ }
+});
