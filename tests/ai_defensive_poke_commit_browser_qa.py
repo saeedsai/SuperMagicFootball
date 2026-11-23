@@ -78,7 +78,7 @@ with sync_playwright() as pw:
                 Object.assign(game.ball,{owner:carrier,x:carrier.x+(exposed?-dir*17:dir*17),y:y+12,z:12,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
                 game.clock=.5;game.activateDefence=()=>false;
-                const calls=[];game.tackle=(who,slide)=>{calls.push({same:who===defender,slide});return true;};
+                const calls=[];game.tackle=(who,slide)=>{calls.push({same:who===defender,slide});who.cd=.5;return true;};
                 const originalRandom=Math.random;Math.random=()=>0;
                 try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
                 return calls;
@@ -100,7 +100,7 @@ with sync_playwright() as pw:
                 Object.assign(game.ball,{owner:carrier,x:carrier.x+(exposed?-dir*17:dir*17),y:y+12,z:12,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
                 game.clock=.5;game.activateDefence=()=>false;
-                const calls=[];game.tackle=(who,slide)=>{calls.push({same:who===defender,slide});return true;};
+                const calls=[];game.tackle=(who,slide)=>{calls.push({same:who===defender,slide});who.cd=.5;return true;};
                 const originalRandom=Math.random;Math.random=()=>0;
                 try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
                 return calls;
