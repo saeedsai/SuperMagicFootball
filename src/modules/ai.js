@@ -548,7 +548,11 @@ function attackingThirdManRun(players,team,carrier,primaryRun,humanControlled=nu
    if(blocked)continue;
    const homeLanePenalty=Number.isFinite(runner.homeY)?Math.abs(target.y-runner.homeY)*.05:0;
    const lanePreferencePenalty=Math.abs(offset-176)*.65;
-   const score=pathLength+pressure*120+teammateCrowding*85+homeLanePenalty+lanePreferencePenalty;
+   // A runner already moving into this complementary pocket reaches it sooner.
+   // Keep the influence bounded so route quality and defensive pressure dominate.
+   const laneSpeed=(vx*(target.x-runner.x)+vy*(target.y-runner.y))/pathLength;
+   const momentumTieBreak=clampTo(laneSpeed,-180,180)*.05;
+   const score=pathLength+pressure*120+teammateCrowding*85+homeLanePenalty+lanePreferencePenalty-momentumTieBreak;
    if(!best||score<best.score-1e-9)best={runner,target,score};
   }
  }

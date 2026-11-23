@@ -165,3 +165,27 @@ test('driveAI follows an open adjacent third-man pocket when the nominal pocket 
  game.driveAI(third,.016);
  assert.deepEqual(third.aiTarget,{x:thirdRun.target.x,y:thirdRun.target.y});
 });
+
+
+test('third-man selection favors a runner already moving into the complementary lane in both directions',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const {carrier,primary,third,dir,primaryRun}=fixture(team);
+  const stationary=player('stationary',team,third.x,third.y,{homeY:third.homeY});
+  const moving=player('moving',team,third.x,third.y,{homeY:third.homeY,moveVX:dir*140,moveVY:140});
+  const result=AI.attackingThirdManRun([carrier,primary,stationary,moving],team,carrier,primaryRun,null,bounds);
+  assert.equal(result?.runner,moving,'momentum toward the open lane breaks an otherwise exact tie for team '+team);
+  assert.deepEqual(result.target,{x:carrier.x+dir*245,y:carrier.y+176});
+ }
+});
+
+test('third-man momentum remains a bounded tie-breaker behind a materially shorter route',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const {carrier,primary,third,dir,primaryRun}=fixture(team);
+  const moving=player('moving',team,third.x,third.y,{homeY:third.homeY,moveVX:dir*180,moveVY:180});
+  const closer=player('closer',team,third.x+dir*25,third.y,{homeY:third.homeY});
+  const result=AI.attackingThirdManRun([carrier,primary,moving,closer],team,carrier,primaryRun,null,bounds);
+  assert.equal(result?.runner,closer,'a materially shorter route still wins over maximum momentum for team '+team);
+ }
+});
