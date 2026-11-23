@@ -2023,7 +2023,6 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
   keeperGap<24||keeperGap>Math.min(235,260*flight+32))return null;
  const receiverGap=Math.hypot(receiver.x-target.x,receiver.y-target.y);
  if(receiverGap>260)return null;
- const horizon=Math.min(.22,flight);
  for(const q of players){
   if(q===keeper||!activeOutfielder(q))continue;
   const vx=Number.isFinite(q.moveVX)?q.moveVX:0,vy=Number.isFinite(q.moveVY)?q.moveVY:0;

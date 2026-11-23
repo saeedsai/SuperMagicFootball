@@ -1,7 +1,7 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.212',
+ version:'0.12.81.213',
  date:'2026-11-23',
  notes:Object.freeze([
   "KEEPER-AERIAL-CROSS-CLAIM-YIELD-01: CPU goalkeepers now decline an early high-cross claim when an active opposing jumper's projected body envelope intersects the ball's projected path within the next 0.22 seconds. The check requires a real jump state and matching horizontal/vertical arrival; airborne players above or below the cross, non-jumpers and unavailable players do not block the claim. Existing grounded arrival checks, punch/catch physics, keeper movement, four actions, saves, rosters, persistence and offline play remain unchanged. Mirrored real-engine Node and desktop/simulated-touch browser regressions cover both goals.",
