@@ -446,7 +446,12 @@ function attackingSupportRun(players,team,carrier,humanControlled=null,bounds=nu
     if(crowding<115)teammateCrowding+=(115-crowding)/115;
    }
    const homeLanePenalty=Number.isFinite(p.homeY)?Math.abs(targetY-p.homeY)*.08:0;
-   const score=pathLength+corridorPressure*105+arrivalPressure*65+teammateCrowding*52+homeLanePenalty;
+   // A receiver already facing goal can take the support pass forward sooner.
+   // Genuine forward momentum overrides a stale facing value; this remains a
+   // small tie-breaker and never rejects the only safe support runner.
+   const face=Number(p.face),forwardMomentum=dir*movementVelocity(p,'x');
+   const orientationPenalty=Number.isFinite(face)&&Math.abs(face)>.1&&Math.sign(face)!==dir&&forwardMomentum<110?22:0;
+   const score=pathLength+corridorPressure*105+arrivalPressure*65+teammateCrowding*52+homeLanePenalty+orientationPenalty;
    if(!best||score<best.score-1e-9)best={runner:p,target,score};
   }
  }

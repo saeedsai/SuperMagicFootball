@@ -62,3 +62,43 @@ test('support lane selection anticipates defenders closing into or leaving a dia
  const saferUpper=AI.attackingSupportRun([carrier,runner,leaving],0,carrier,null,bounds);
  assert.equal(saferUpper?.target.y,188,'runner can use the upper lane the defender is moving away from');
 });
+
+
+test('support-run selection prefers a goal-facing receiver in both attack directions',async()=>{
+ const AI=await loadAI();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,carrier=player('carrier',team,team===0?400:600,300);
+  const turned=player('turned',team,carrier.x+dir*50,300,{face:-dir});
+  const facing=player('facing',team,carrier.x+dir*50,300,{face:dir});
+  const result=AI.attackingSupportRun([carrier,turned,facing],team,carrier,null,bounds);
+  assert.equal(result?.runner,facing,'team '+team+' should prefer the receiver already facing its attacking goal');
+ }
+});
+
+test('forward momentum overrides stale facing at 110 units per second',async()=>{
+ const AI=await loadAI();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,carrier=player('carrier',team,team===0?400:600,300);
+  const moving=player('moving',team,carrier.x+dir*50,300,{face:-dir,moveVX:dir*110});
+  const facing=player('facing',team,carrier.x+dir*50,300,{face:dir});
+  const result=AI.attackingSupportRun([carrier,moving,facing],team,carrier,null,bounds);
+  assert.equal(result?.runner,moving,'a real forward run must override stale sprite facing for team '+team);
+ }
+});
+
+test('sub-threshold forward movement does not override a goal-facing receiver',async()=>{
+ const AI=await loadAI();
+ const carrier=player('carrier',0,400,300);
+ const moving=player('moving',0,450,300,{face:-1,moveVX:109});
+ const facing=player('facing',0,450,300,{face:1});
+ assert.equal(AI.attackingSupportRun([carrier,moving,facing],0,carrier,null,bounds)?.runner,facing);
+});
+
+test('orientation is only a tie-breaker and never rejects a sole safe runner',async()=>{
+ const AI=await loadAI();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,carrier=player('carrier',team,team===0?400:600,300);
+  const sole=player('sole',team,carrier.x+dir*50,300,{face:-dir});
+  assert.equal(AI.attackingSupportRun([carrier,sole],team,carrier,null,bounds)?.runner,sole);
+ }
+});
