@@ -416,6 +416,15 @@ function keeperOutletScore(keeper,receiver,lane){
  const corridorRisk=Number.isFinite(interception)?Math.max(0,170-interception)*.65:0;
  return distance(keeper,receiver)+pressure+corridorRisk;
 }
+function cpuTackleSlideChance(p,anticipation,baseChance=.24,anticipationSpan=.4){
+ // Keep average-player behavior identical to the existing difficulty/anticipation threshold.
+ const read=Number.isFinite(anticipation)?clamp(anticipation,0,1):.5;
+ const base=Number.isFinite(baseChance)?clamp(baseChance,0,1):.24;
+ const span=Number.isFinite(anticipationSpan)?clamp(anticipationSpan,0,.75):.4;
+ if(!p||typeof p!=='object')return clamp(base+read*span,.12,.76);
+ const skillBias=(stat(p,'defence')-50)*.0012+(stat(p,'aggression')-50)*.0006;
+ return clamp(base+read*span+skillBias,.12,.76);
+}
 class GameEngine{
  constructor(options={},input){this.options=options;this.input=input;this.events=[];this.mode='quick';this.matchState='none';this.teamIds=[0,9];this.rosters=[[],[]];this.lineups=[DEFAULT_LINEUP.slice(),[0,1,2,3,5,9]];this.formation=['2-1-2','2-1-2'];this.teamPlans=[];this.controlled=[3,3,0,0];this.humans=1;this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=120;this.players=[];this.ball={};this.particles=[];this.magicHazards=[];this.shake=0;this.flash=0;this.weather='Clear';this.terrain='Grass';this.condition='Good';this.wind={x:0,y:0};this.stormTimer=0;this.tornado=null;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.kickoffCountdown=0;this.pk=null;this.matchSerial=0;this.fatigueLedger=[{},{}];this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.maxSubstitutions=MAX_SUBSTITUTIONS;this.moraleLedger=[{},{}];this.talksUsed=[{},{ }];this.celebrationStyle=0;this.onEvent=()=>{};this._turnoverCounterpress=null;this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.stoppageWindow=0;this.stoppageAnnounced=false;this._shotAudit=null;this._reboundAudit=null;this._shotAuditNext=0;}
  // Additive telemetry. Never queries RNG or changes ball/actors/keeper logic.
@@ -1168,16 +1177,6 @@ class GameEngine{
   this.emit('tackleHit',{team:p.t,victim:q.src.name,stun:q.stun,slide:true});
   if(this.ball.owner===q){this.ball.owner=null;this.ball.x=q.x;this.ball.y=q.y;this.ball.z=23;this.ball.vx=dir.x*150;this.ball.vy=dir.y*150;this.ball.vz=115;this.ball.canCollect=.15;}
   p.slideTimer=0;p.slideRemaining=0;return true;
- }
- cpuTackleSlideChance(p,anticipation,baseChance=.24,anticipationSpan=.4){
-  // Preserve the team AI baseline for an average player, then let the actual
-  // defender profile choose between a risky SHOOT slide and the safer PASS poke.
-  const read=Number.isFinite(anticipation)?clamp(anticipation,0,1):.5;
-  const base=Number.isFinite(baseChance)?clamp(baseChance,0,1):.24;
-  const span=Number.isFinite(anticipationSpan)?clamp(anticipationSpan,0,.75):.4;
-  if(!p||typeof p!=='object')return clamp(base+read*span,.12,.76);
-  const skillBias=(stat(p,'defence')-50)*.0012+(stat(p,'aggression')-50)*.0006;
-  return clamp(base+read*span+skillBias,.12,.76);
  }
  tackle(p,slide=false){
   if(p.cd>0||p.stun>0)return false;
@@ -3339,6 +3338,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
   return false;
  }
 }
+GameEngine.prototype.cpuTackleSlideChance=cpuTackleSlideChance;
 return {GameEngine,WORLD};})();
 // v0.8.25: BPW character-specific animation profiles. Editorial arcade gestures, not historical motion capture.
 // Opt in ONLY for BPW historicalPersonKey entries. Cosmetic rendering only: no simulation, stats or save mutations.
