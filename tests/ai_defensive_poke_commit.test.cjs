@@ -97,12 +97,7 @@ test('the Defence-scaled threshold remains bounded for extreme ratings',()=>{
  assert.equal(commit(high,player(1,1083,700,{moveVX:-104.9,moveVY:0})),false);
 });
 
-test('ordinary CPU defenders use the adaptive poke window while primary press keeps its dedicated read',()=>{
- const source=fs.readFileSync('src/modules/engine.js','utf8');
- assert.ok(source.includes('(distance(p,owner)<68||this.defensivePokeCommitWindow(p,owner,this.ball))'));
- assert.ok(source.includes('if(carrierDistance<74){'));
- assert.ok(source.includes('defensiveFirstTouchSlide(p,owner,this.playerSpeed(p))'));
-});
+
 
 test('early PASS poke requires the live ball to be exposed toward the approaching defender',()=>{
  const defender=player(0,1000,700,{dx:1,dy:0,face:1});

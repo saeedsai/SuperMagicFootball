@@ -22,6 +22,31 @@ function aiTuning(value) {
 // The support search is strictly local (<= 110 field units beyond the nearest
 // eligible support) so it never pulls a distant defender out of formation.
 // Stable input order breaks ties; no randomness, time state or save mutation.
+function defensiveCarrierSupportCoverTarget(support,carrier,bounds,horizonSeconds=.12){
+ const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+ const active=p=>p&&!p.keeper&&!p.down&&Number(p.stun||0)<=0&&
+  (p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)>=0&&Number(p.z)<=18))&&
+  !['shotDown','shotGetUp'].includes(p.action)&&
+  !((p.action==='slide'||p.action==='hurt')&&(Number(p.actionTimer)||0)>0)&&
+  Number.isFinite(p.x)&&Number.isFinite(p.y);
+ if(!support||!carrier||support===carrier||support.t===carrier.t||
+  (support.t!==0&&support.t!==1)||!active(support)||!active(carrier))return null;
+ const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax);
+ const yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
+ if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+ const horizon=clampTo(Number.isFinite(horizonSeconds)?horizonSeconds:.12,.08,.18);
+ const vy=Number.isFinite(carrier.moveVY)?carrier.moveVY:
+  Number.isFinite(carrier.vy)?carrier.vy:0;
+ const lateralLead=clampTo(vy*horizon,-36,36);
+ const projectedY=clampTo(carrier.y+lateralLead,yMin+23,yMax-23);
+ const side=support.y>carrier.y?1:-1;
+ const goalDirection=support.t===0?1:-1;
+ return {
+  x:clampTo(carrier.x-goalDirection*110,xMin+22,xMax-22),
+  y:clampTo(projectedY+side*95,yMin+23,yMax-23)
+ };
+}
+
 function defensivePressers(players,team,target,humanControlled=null){
  if(!target||!Number.isFinite(target.x)||!Number.isFinite(target.y)||!Array.isArray(players))
   return {primary:null,support:null};
@@ -2185,6 +2210,6 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  return target;
 }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLoftedPassJumpWindow,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveCarrierSupportCoverTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLoftedPassJumpWindow,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget};})();
 
 export {AI};
