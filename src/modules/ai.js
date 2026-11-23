@@ -1259,6 +1259,53 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    return target;
   }
 
+
+  // Let the second defender use the existing JUMP action to contest a targeted
+  // lofted pass only when the ball will cross their reachable space after the
+  // difficulty-specific reaction delay. Ordinary/low passes never trigger it.
+  function defensiveLoftedPassJumpWindow(team,ball,defender,players,bounds,reactionSeconds=.32){
+   if((team!==0&&team!==1)||!Array.isArray(players)||!defender||
+    !players.includes(defender)||defender.t!==team||defender.keeper||defender.down||
+    defender.aiAssistTarget||!Number.isFinite(defender.x)||!Number.isFinite(defender.y))return false;
+   const defenderZ=defender.z==null?0:Number(defender.z);
+   if(!Number.isFinite(defenderZ)||defenderZ>10)return false;
+   const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+   if(!timerClear(defender.stun)||!timerClear(defender.slideTimer)||
+    !timerClear(defender.shotImpactKnockdownPending)||!timerClear(defender.shotImpactKnockdownTimer)||
+    !timerClear(defender.shotImpactRiseTimer)||defender.action==='shotDown'||defender.action==='shotGetUp'||
+    ((defender.action==='slide'||defender.action==='hurt')&&(Number(defender.actionTimer)||0)>0)||
+    (defender.action==='jump'&&(Number(defender.actionTimer)||0)>0))return false;
+   if(!defensiveLoftedPassCoverTarget(team,ball,players,bounds))return false;
+   const speedSquared=ball.vx*ball.vx+ball.vy*ball.vy;
+   if(!Number.isFinite(speedSquared)||speedSquared<240*240)return false;
+   const velocity=(player,axis)=>{
+    const actual=axis==='x'?player?.moveVX:player?.moveVY;
+    if(Number.isFinite(actual))return actual;
+    const legacy=axis==='x'?player?.vx:player?.vy;
+    return Number.isFinite(legacy)?legacy:0;
+   };
+   const vx=velocity(defender,'x'),vy=velocity(defender,'y');
+   let time=((defender.x-ball.x)*ball.vx+(defender.y-ball.y)*ball.vy)/speedSquared;
+   if(!Number.isFinite(time))return false;
+   for(let step=0;step<2;step++){
+    const futureX=defender.x+Math.max(-70,Math.min(70,vx*time));
+    const futureY=defender.y+Math.max(-70,Math.min(70,vy*time));
+    time=((futureX-ball.x)*ball.vx+(futureY-ball.y)*ball.vy)/speedSquared;
+    if(!Number.isFinite(time))return false;
+   }
+   const reaction=Math.max(0,Math.min(.85,Number.isFinite(reactionSeconds)?reactionSeconds:.32));
+   if(time<reaction+.06||time>.56)return false;
+   const futureX=defender.x+Math.max(-70,Math.min(70,vx*time));
+   const futureY=defender.y+Math.max(-70,Math.min(70,vy*time));
+   const ballX=ball.x+ball.vx*time,ballY=ball.y+ball.vy*time;
+   const height=ball.z+ball.vz*time-250*time*time;
+   const verticalVelocity=ball.vz-500*time;
+   if(Math.hypot(futureX-ballX,futureY-ballY)>58||height<24||height>132||
+    verticalVelocity>190||verticalVelocity< -420||
+    (Number.isFinite(ball.canCollect)&&ball.canCollect>time+.16))return false;
+   return true;
+  }
+
   function defensiveLooseBallCoverTarget(team,ball,bounds){
    if((team!==0&&team!==1)||!ball||ball.owner||ball.pass||ball.shot||ball.strike||
     ball.ordinaryShot||![ball.x,ball.y,ball.z,ball.vx,ball.vy,ball.vz].every(Number.isFinite)||
@@ -2092,6 +2139,6 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  return target;
 }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLoftedPassJumpWindow,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget};})();
 
 export {AI};

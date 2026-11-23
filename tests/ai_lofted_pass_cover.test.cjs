@@ -61,6 +61,28 @@ test('lofted cover ignores receivers who cannot contest the arrival',async()=>{
    'must reject unavailable receiver '+Object.keys(patch).join(','));
  }
 });
+test('second defender jumps only when a targeted lofted pass crosses a reachable window after reaction',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(team),defender=player('cover-'+team,team,0,0);
+  f.players.push(defender);
+  const point=AI.defensiveLoftedPassCoverTarget(team,f.ball,f.players,bounds);
+  assert.ok(point);
+  Object.assign(defender,{x:point.x,y:point.y});
+  assert.equal(AI.defensiveLoftedPassJumpWindow(team,f.ball,defender,f.players,bounds,.32),true);
+  assert.equal(AI.defensiveLoftedPassJumpWindow(team,f.ball,defender,f.players,bounds,.5),false,
+   'the defender must still have time to react and rise');
+  defender.down=true;
+  assert.equal(AI.defensiveLoftedPassJumpWindow(team,f.ball,defender,f.players,bounds,.32),false);
+  defender.down=false;defender.z=28;
+  assert.equal(AI.defensiveLoftedPassJumpWindow(team,f.ball,defender,f.players,bounds,.32),false);
+  defender.z=0;defender.y+=100;
+  assert.equal(AI.defensiveLoftedPassJumpWindow(team,f.ball,defender,f.players,bounds,.32),false);
+  const low={...f.ball,z:8,vz:40};
+  defender.y=point.y;
+  assert.equal(AI.defensiveLoftedPassJumpWindow(team,low,defender,f.players,bounds,.32),false);
+ }
+});
 test('engine assigns lofted-pass cover to the second defender while the primary keeps pressing',async()=>{
  const {AI,ENGINE}=await loadModules();
  for(const defendingTeam of [0,1]){
@@ -92,6 +114,8 @@ test('engine assigns lofted-pass cover to the second defender while the primary 
   game.driveAI(support,.016);
   assert.ok(Math.abs(support.aiTarget.x-expected.x)<1);
   assert.ok(Math.abs(support.aiTarget.y-expected.y)<1);
+  assert.equal(support.action,'jump','the second defender uses the existing JUMP action at a reachable lofted-pass crossing');
+  assert.ok(support.z>10);
   game.driveAI(primary,.016);
   assert.ok(Math.hypot(primary.aiTarget.x-game.ball.x,primary.aiTarget.y-game.ball.y)<80,
    'primary must continue pressing the live ball');

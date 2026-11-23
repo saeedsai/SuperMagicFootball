@@ -1,32 +1,26 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
-**Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-11-23
 
 ## Mission
-Deliver bounded player-facing gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Never substitute audits or test-only iterations. Preserve four actions, canonical rosters, compatible saves and offline play.
+Deliver real player-facing gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Never substitute audits or test-only iterations. Preserve four actions, canonical rosters, compatible saves and offline play.
 
-## Current checkpoint
-- **0.12.81.230 candidate:** AI-SUPPORT-PASS-ARRIVAL-READ-01 evaluates support-run passes at the same bounded receiver lead as the actual PASS, checks projected corridor/collection defenders, and excludes an unsafe primary runner from ordinary fallback. A local clampValue helper now makes the evaluator self-contained. Mirrored Node and actual-engine desktop/simulated-touch browser tests cover moving into/away from a marker and fallback exclusion.
-- **.229 pre-certification correction:** Code review found attackingSupportPass referenced clampValue without defining it locally; the similarly named helper in attackingThroughBall is function-scoped. .230 adds the local helper before exact-head QA. .229 is superseded and not certified/promoted.
-- **.228 failure:** Modular QA #45190963622 and Census #45190963681 each found one stale through-ball assertion comparing Euclidean distance with longitudinal lead (2,808 pass, 1 fail). .229 changes the assertion to longitudinal projection; separate tests cover lateral/cap/edge behavior. No production failure established.
-- **.227 failure:** Modular QA #45180992658 passed 2,807/2,807. Census #45180992547 failed only the new browser fixture's nonexistent lineup slot 6 (valid slots 0–5); other 68 scripts passed. .228 repaired it using slot 1.
-- **.226 retry:** Census #45172577337 attempt 2 passed all four Node and four Chromium shards; promotion skipped because dev had moved. .226 not deployed.
-- **.225 main:** Pages #45165193079 and independent main Census #45165206483 passed on 91adea9bad06524c3022e7ee60a8ece58fb16142.
+## Current candidate — 0.12.81.231
+- AI-CUTBACK-SPECIALIST-RECEIVER-PRESERVATION-01: fixed a confirmed .230 gameplay regression. A safe cutback receiver that is also the ordinary support-run candidate is no longer excluded from the cutback PASS when the generic forward-support check rejects it.
+- AI-LOFTED-PASS-JUMP-INTERCEPT-01: the second CPU defender uses the existing JUMP action only when a targeted lofted pass crosses a reachable window after the difficulty reaction delay; low/untargeted/late/unreachable passes do not trigger. Primary presser continues chasing the ball.
+- Focused Node and real-engine desktop/simulated-touch Chromium regressions added. Exact-head CI pending; no local test claim because github.com DNS failed.
+
+## Previous gate diagnosis
+- .230 Modular QA #45193483047 and Census #45193483239 both failed ai_cutback_pass.test.cjs: the safe cutback runner was also excluded by unsafeSupportReceiver, causing fallback to jp3 instead of jp1. .230 is not certified/promoted.
+- .229 had a pre-certification scope bug; .228 had a stale Euclidean-vs-longitudinal test assertion; .227 browser fixture used invalid lineup slot 6. These candidates were superseded.
+- .225 remains the latest deployed main: SHA 91adea9bad06524c3022e7ee60a8ece58fb16142; Pages #45165193079 and main Census #45165206483 passed.
+
+## Exact branch baseline before .231
+- Dev: 93a89cda08c3c3f031149231e75d35e21223cf5c (.230)
+- Main: 91adea9bad06524c3022e7ee60a8ece58fb16142 (.225)
+- Main protection remains disabled; issue #87 open. Render #86 and physical two-phone #48 remain open. Do not claim hosted online service or device certification.
 
 ## Next smallest action
-Verify focused Node and actual-engine Chromium acceptance, then run exact-head Modular QA and full four-Node/four-Chromium Census on .230. Fix confirmed failures; permit only the green exact head through the QA-gated promotion pipeline. Verify Pages, main Census and hosted-byte smoke separately.
+Observe .231 Modular QA and all four Node/four Chromium Census shards at the exact dev SHA. Fix confirmed failures, then let only the green exact head use the QA-gated promotion pipeline. Verify Pages, independent main Census and hosted-byte smoke separately. Continue with counterable football AI, existing-player Studio art, goalkeeper and Career/Cup.
 
-## Ownership and exclusions
-Only this checkpoint. Preserve 223 teams, 2,676 players, exact ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied art. Physical two-phone #48 stays open. Render #86 and main protection #87 stay open. Authenticated online hosting needs owner resources. Never expose Git SHA in player UI.
-
-## Evidence
-- .228 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45190963622
-- .228 Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45190963681
-- .227 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45180992658
-- .227 Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45180992547
-- .226 successful retry: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45172577337
-- .225 Pages: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45165193079
-- .225 main Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45165206483
-
-## Cleanup
-Keep this file below 4 KiB. Read and edit only this assigned checkpoint. Never bypass required CI, security or QA promotion.
+## Invariants
+Preserve 223 teams, 2,676 players, ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No new concept heroes or copied art. Edit only this checkpoint; keep it below 4 KiB.

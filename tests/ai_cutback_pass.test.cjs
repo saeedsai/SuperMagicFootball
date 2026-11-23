@@ -105,6 +105,12 @@ function unpressuredCutbackFixture(ENGINE){
 test('unpressured CPU carrier can release a clear byline cutback before a defender closes',async()=>{
  const {AI,ENGINE}=await loadModules();
  const f=unpressuredCutbackFixture(ENGINE);
+ const supportRun=AI.attackingSupportRun(f.game.players,0,f.carrier,null,MATCH_BOUNDS);
+ assert.equal(supportRun?.runner,f.runner,'the cutback receiver is also the ordinary support-run candidate');
+ assert.equal(AI.attackingSupportPass(f.game.players,0,f.carrier,supportRun),null,
+  'the ordinary forward support-pass check correctly rejects this behind-the-carrier runner');
+ assert.equal(AI.attackingCutbackPass(f.game.players,0,f.carrier,null,MATCH_BOUNDS)?.runner,f.runner,
+  'the independent cutback check still validates the same receiver');
  assert.ok(AI.attackingCutbackPass(f.game.players,0,f.carrier,null,MATCH_BOUNDS),
   'fixture must contain a clear central runner behind the carrier');
  assert.ok(f.game.players.every(p=>p.t!==1||p.keeper||Math.hypot(p.x-f.carrier.x,p.y-f.carrier.y)>=230),
