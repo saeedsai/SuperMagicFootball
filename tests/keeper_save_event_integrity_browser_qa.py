@@ -38,7 +38,25 @@ script=r"""() => {
  SupermagicFootball.renderer.drawBall(ctx,g);const held={gloves:ink(155,111),physics:ink(420,330)};
  k.action='keeperThrow';ctx.clearRect(0,0,c.width,c.height);SupermagicFootball.renderer.drawBall(ctx,g);
  const released={gloves:ink(155,111),physics:ink(420,330)};
- return {out,held,released};
+ const fatigueTrials=[];
+ for(const side of [0,1])for(const [fatigueLevel,speed] of [[0,1900],[.5,1900],[1,1900],[0,1950],[.5,1950]]){
+  g.init({home:0,away:1,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
+  g.matchState='paused';g.cooldown=0;
+  const k=g.player(side,0),b=g.ball,dir=side===0?1:-1;
+  Object.assign(k,{y:765,action:'idle',actionTimer:0,stun:0,down:false,z:0,
+   diveCooldown:0,diveIntentCooldown:0,diveIntentPending:false,fatigue:fatigueLevel});
+  k.src={...k.src,gkSkill:50,gkDiving:50};
+  for(const q of g.players)if(q!==k&&!q.keeper)
+   Object.assign(q,{x:k.x-dir*500,y:200,z:0,stun:0,down:false,action:'idle',actionTimer:0});
+  Object.assign(b,{owner:null,attacker:1-side,lastTouchTeam:1-side,
+   x:k.x+dir*30,y:k.y+12,z:20,vx:-dir*speed,vy:0,vz:0,power:0,
+   ordinaryShot:true,shot:null,strike:null,pass:false,age:.15,canCollect:0,trail:[]});
+  g.events=[];
+  const committed=g.tryKeeperDive(k,false),save=g.events.find(e=>e.type==='save');
+  fatigueTrials.push({side,fatigueLevel,speed,committed,ownerIsKeeper:b.owner===k,
+   deflected:save?.deflected===true,catchEvents:g.events.filter(e=>e.type==='keeperCatch').length});
+ }
+ return {out,held,released,fatigueTrials};
 }"""
 with sync_playwright() as pw:
  browser=pw.chromium.launch(executable_path='/usr/bin/chromium',headless=True,
@@ -66,6 +84,14 @@ with sync_playwright() as pw:
    assert r['totalSaves']==1 if r['kind']!='opponentLoose' else r['totalSaves']==0,(device,r)
   assert result['held']['gloves']>35 and result['held']['physics']==0,(device,'held ball must render at gloves without false ground shadow',result['held'])
   assert result['released']['gloves']==0 and result['released']['physics']>35,(device,'released ball must return to its physics point',result['released'])
-  print('PASS',device,'18 keeper collection fixtures plus rendered catch/hold/release ball anchors at 30/60/120Hz',flush=True)
+  trials=result['fatigueTrials']
+  assert len(trials)==10,(device,len(trials))
+  for r in trials:
+   should_deflect=(r['speed']==1900 and r['fatigueLevel']>=1) or (r['speed']==1950 and r['fatigueLevel']>=.5)
+   assert r['committed'],(device,r)
+   assert r['deflected']==should_deflect,(device,'fatigue-aware catch/parry decision',r)
+   assert r['ownerIsKeeper']==(not should_deflect),(device,'catch ownership',r)
+   assert r['catchEvents']==(0 if should_deflect else 1),(device,'catch event count',r)
+  print('PASS',device,'18 keeper collection fixtures, fatigue-scaled catch/parry decisions on both goals, and rendered catch/hold/release anchors at 30/60/120Hz',flush=True)
   ctx.close()
  browser.close()
