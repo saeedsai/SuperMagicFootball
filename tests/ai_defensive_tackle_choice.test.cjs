@@ -89,23 +89,25 @@ test('driveAI routes both ordinary and primary press tackles through movement-aw
   'ordinary and primary press slide decisions must both use the player-aware threshold');
 });
 
+const slideGame=Object.create(ENGINE.GameEngine.prototype);
+function slideChance(...args){return slideGame.cpuTackleSlideChance(...args);}
 function slideProfile(defence,aggression){return {src:{id:'slide-'+defence+'-'+aggression,role:'DF',defence,aggression}};}
 
 test('CPU slide choice scales with defender Defence and Aggression while preserving neutral AI baselines',()=>{
- const neutral=ENGINE.cpuTackleSlideChance(slideProfile(50,50),.5,.24,.4);
- const low=ENGINE.cpuTackleSlideChance(slideProfile(20,20),.5,.24,.4);
- const high=ENGINE.cpuTackleSlideChance(slideProfile(90,90),.5,.24,.4);
- const primaryNeutral=ENGINE.cpuTackleSlideChance(slideProfile(50,50),.5,.17,.35);
+ const neutral=slideChance(slideProfile(50,50),.5,.24,.4);
+ const low=slideChance(slideProfile(20,20),.5,.24,.4);
+ const high=slideChance(slideProfile(90,90),.5,.24,.4);
+ const primaryNeutral=slideChance(slideProfile(50,50),.5,.17,.35);
  assert.equal(neutral,.44,'average defenders retain the previous Normal baseline');
  assert.equal(primaryNeutral,.345,'primary pressers retain their previous baseline');
  assert.ok(low<neutral&&neutral<high,JSON.stringify({low,neutral,high}));
- assert.ok(ENGINE.cpuTackleSlideChance(slideProfile(50,50),NaN,.24,.4)===neutral,
+ assert.ok(slideChance(slideProfile(50,50),NaN,.24,.4)===neutral,
   'invalid anticipation uses the neutral fallback');
 });
 
 test('CPU slide preference remains bounded for extreme profiles and tuning inputs',()=>{
- const low=ENGINE.cpuTackleSlideChance(slideProfile(1,1),0,-5,-2);
- const high=ENGINE.cpuTackleSlideChance(slideProfile(100,100),1,2,2);
+ const low=slideChance(slideProfile(1,1),0,-5,-2);
+ const high=slideChance(slideProfile(100,100),1,2,2);
  assert.equal(low,.12);
  assert.equal(high,.76);
 });
