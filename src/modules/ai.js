@@ -654,7 +654,19 @@ function attackingSupportPass(players,team,carrier,supportRun){
    Math.max(48,-runnerProjection+Math.sqrt(110*110-perpendicularSquared));
   if(minimumLead>100)return null;
   const leadDistance=clampValue(Math.min(gap-16,runSpeed*estimatedFlightSeconds),minimumLead,100);
-  const target={x:runner.x+dx/gap*leadDistance,y:runner.y+dy/gap*leadDistance};
+  // Meet a receiver who is drifting across the planned lane, not only one
+  // advancing along it. Keep lateral projection separate and tightly bounded.
+  const lateralSpeed=vx*(-leadDirectionY)+vy*leadDirectionX;
+  const lateralLead=clampValue(lateralSpeed*estimatedFlightSeconds,-32,32);
+  const target={
+   x:runner.x+leadDirectionX*leadDistance-leadDirectionY*lateralLead,
+   y:runner.y+leadDirectionY*leadDistance+leadDirectionX*lateralLead
+  };
+  const field=GAME_ASSETS.mechanics.world?.field;
+  if(field&&[field.x,field.y,field.w,field.h].every(Number.isFinite)){
+   target.x=clampValue(target.x,field.x+24,field.x+field.w-24);
+   target.y=clampValue(target.y,field.y+24,field.y+field.h-24);
+  }
   const passDistance=Math.hypot(target.x-carrier.x,target.y-carrier.y);
   if(passDistance<110||passDistance>920)return null;
   const arrivalSeconds=clampValue(passDistance/1400,.12,.35);

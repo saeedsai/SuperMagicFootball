@@ -217,6 +217,51 @@ function throughBallKeeperFixture(team){
  return {team,dir,carrier,runner,supportRun};
 }
 
+test('through-ball target tracks bounded lateral receiver momentum in both directions',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=throughBallKeeperFixture(team),point={x:f.carrier.x+f.dir*160,y:488};
+  const dx=point.x-f.runner.x,dy=point.y-f.runner.y,gap=Math.hypot(dx,dy);
+  const laneX=dx/gap,laneY=dy/gap,alongSpeed=f.runner.moveVX*laneX+f.runner.moveVY*laneY;
+  const alignedRunner={...f.runner,moveVX:alongSpeed*laneX,moveVY:alongSpeed*laneY};
+  const aligned=AI.attackingThroughBall([f.carrier,alignedRunner],team,f.carrier,{runner:alignedRunner,target:point});
+  const moving=AI.attackingThroughBall([f.carrier,f.runner],team,f.carrier,{runner:f.runner,target:point});
+  assert.ok(aligned&&moving,'both aligned and laterally moving receivers remain eligible for team '+team);
+  const perpX=-laneY,perpY=laneX;
+  const lateralSpeed=f.runner.moveVX*perpX+f.runner.moveVY*perpY;
+  const flight=Math.max(.12,Math.min(.35,Math.hypot(point.x-f.carrier.x,point.y-f.carrier.y)/1400));
+  const expected=Math.max(-32,Math.min(32,lateralSpeed*flight));
+  const shiftX=moving.target.x-aligned.target.x,shiftY=moving.target.y-aligned.target.y;
+  assert.ok(Math.abs(shiftX*laneX+shiftY*laneY)<1e-9,'lateral motion must not alter the longitudinal lead');
+  assert.ok(Math.abs(shiftX*perpX+shiftY*perpY-expected)<1e-9,'receiver drift is projected over flight time and capped');
+  assert.ok(team===0?shiftX>0:shiftX<0,'the lateral lead mirrors with the attacking direction');
+  assert.ok(shiftY>0,'both mirrored fixtures meet the same upward receiver drift');
+ }
+});
+
+test('through-ball lateral projection is capped and clamped to playable pitch margins',async()=>{
+ const {AI,ENGINE}=await loadModules(),field=ENGINE.WORLD.field;
+ const carrier={t:0,x:field.x+950,y:field.y+50,down:false,stun:0,z:0,action:'idle'};
+ const runner={t:0,x:carrier.x+150,y:carrier.y,down:false,stun:0,z:0,action:'idle'};
+ const point={x:runner.x+130,y:field.y+24};
+ const dx=point.x-runner.x,dy=point.y-runner.y,gap=Math.hypot(dx,dy);
+ const laneX=dx/gap,laneY=dy/gap,perpX=-laneY,perpY=laneX;
+ const alongSpeed=240,lateralSpeed=-500;
+ runner.moveVX=alongSpeed*laneX+lateralSpeed*perpX;
+ runner.moveVY=alongSpeed*laneY+lateralSpeed*perpY;
+ const option=AI.attackingThroughBall([carrier,runner],0,carrier,{runner,target:point});
+ assert.ok(option,'a forward runner remains eligible while correcting sharply toward the upper touchline');
+ const flight=Math.max(.12,Math.min(.35,Math.hypot(point.x-carrier.x,point.y-carrier.y)/1400));
+ const projection=(runner.x-carrier.x)*laneX+(runner.y-carrier.y)*laneY;
+ const perpendicularSquared=Math.max(0,Math.hypot(runner.x-carrier.x,runner.y-carrier.y)**2-projection*projection);
+ const minimumLead=perpendicularSquared>=110*110?48:Math.max(48,-projection+Math.sqrt(110*110-perpendicularSquared));
+ const lead=Math.max(minimumLead,Math.min(100,Math.min(gap-16,alongSpeed*flight)));
+ const unclampedY=runner.y+laneY*lead+perpY*(-32);
+ assert.ok(unclampedY<field.y+24,'the capped lateral lead reaches beyond the playable margin in this edge fixture');
+ assert.equal(option.target.y,field.y+24,'the pass target is clamped back inside the playable pitch');
+ assert.ok(option.target.x>=field.x+24&&option.target.x<=field.x+field.w-24);
+});
+
 test('through-ball lead scales with estimated pass flight time on both attacking sides',async()=>{
  const {AI}=await loadModules();
  for(const team of [0,1]){

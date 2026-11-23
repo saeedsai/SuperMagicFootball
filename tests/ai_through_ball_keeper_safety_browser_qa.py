@@ -50,7 +50,10 @@ with sync_playwright() as pw:
     const perpendicularSquared=Math.max(0,120*120-projection*projection);
     const minimumLead=perpendicularSquared>=110*110?48:Math.max(48,-projection+Math.sqrt(110*110-perpendicularSquared));
     const lead=Math.max(minimumLead,Math.min(100,Math.min(gap-16,runSpeed*flightSeconds)));
-    const target={x:runner.x+dir*40/gap*lead,y:runner.y-112/gap*lead};
+    const lateralSpeed=runner.moveVX*(-leadDirY)+runner.moveVY*leadDirX;
+    const lateralLead=Math.max(-32,Math.min(32,lateralSpeed*flightSeconds));
+    const target={x:runner.x+leadDirX*lead-leadDirY*lateralLead,
+     y:runner.y+leadDirY*lead+leadDirX*lateralLead};
     Object.assign(keeper,{x:target.x+dir*94,y:target.y+34,z:0,down:false,stun:0,
      action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0,fatigue:0,aiTimer:0,aiTarget:null});
     keeper.src={...keeper.src,gkSkill:kind==='elite'?100:1,gkDiving:kind==='elite'?100:1};

@@ -65,7 +65,8 @@ with sync_playwright() as pw:
             for(const team of [0,1]){
                 game.init({home:0,away:1,mode:'quick',humans:0});
                 const dir=team===0?1:-1,carrier=game.player(team,3),primary=game.player(team,4),
-                    stationary=game.player(team,5),moving=game.player(team,6);
+                    stationary=game.player(team,5),moving=game.player(team,1); // active lineup slots are 0..5
+                if(!moving||moving.keeper)throw new Error('expected a spare on-field outfielder for the momentum comparison');
                 const field={x:150,y:155,w:2260.8,h:1220},x=field.x+field.w*.5,y=field.y+field.h*.5;
                 for(const player of game.players)if(![carrier,primary,stationary,moving].includes(player)){
                     Object.assign(player,{down:true,stun:1.1,invuln:1.1,z:0,action:'idle',actionTimer:0});
