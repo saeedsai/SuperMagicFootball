@@ -11,6 +11,9 @@ Deliver real player-facing football gameplay first, then existing-player graphic
 - **0.12.81.235 is main-promoted and Pages deployed:** Modular QA #45226481063 and Full Regression Census #45226481135 passed at SHA `6c59fc8d2dc546acdbc26c588042d9ce6e21c401`; Pages deployment #45228344359 succeeded. Independent main Census #45228358896 was still running at this checkpoint.
 - .234 exact-head Census #45220399525 failed only the pass-receiver browser fixture; .235 corrected the geometry and then passed the full exact-head dev Census.
 
+## Next smallest action
+Run Modular QA and the four-Node/four-Chromium Full Regression Census at the exact current .236 dev HEAD. Fix any confirmed gameplay or browser failure, then permit only a green exact HEAD through the existing QA-gated promotion pipeline and independently verify main SHA, Pages deployment, main Census and hosted-byte smoke.
+
 ## Ownership and exclusions
 Edit only this assigned checkpoint. Preserve 223 teams, 2,676 players, ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Physical two-phone #48 remains open; Render drift #86 remains open; main protection #87 is not enabled. Authenticated online hosting requires owner resources. Never expose Git SHA in player UI.
 
