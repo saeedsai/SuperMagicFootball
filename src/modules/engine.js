@@ -429,6 +429,37 @@ function cpuTackleSlideChance(p,anticipation,baseChance=.24,anticipationSpan=.4)
  const fatiguePenalty=fatigue*.075;
  return clamp(base+read*span+skillBias-fatiguePenalty,.12,.76);
 }
+function defensivePokeCommitWindow(defender,carrier){
+ // Predict the existing short PASS poke exactly: 55 ms of carrier lead,
+ // capped at 12 units per axis, followed by the 16-unit forward step.
+ // Only add an early commit when a grounded carrier is actually closing.
+ if(!defender||!carrier||defender===carrier||defender.t===carrier.t||
+  defender.keeper||carrier.keeper||defender.down||carrier.down||
+  !Number.isFinite(defender.x)||!Number.isFinite(defender.y)||
+  !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y)||
+  Number(defender.stun)>0||Number(carrier.stun)>0||Number(carrier.invuln)>0||
+  carrier.action==='shotDown'||carrier.action==='shotGetUp'||
+  (carrier.z!=null&&(!Number.isFinite(Number(carrier.z))||Number(carrier.z)>=20)))return false;
+ const dx=carrier.x-defender.x,dy=carrier.y-defender.y,range=Math.hypot(dx,dy);
+ if(!Number.isFinite(range)||range<=68||range>94)return false;
+ const inputX=Number.isFinite(defender.dx)?defender.dx:0;
+ const inputY=Number.isFinite(defender.dy)?defender.dy:0;
+ const inputLength=Math.hypot(inputX,inputY);
+ const headingX=inputLength>.15?inputX/inputLength:(defender.face===-1?-1:1);
+ const headingY=inputLength>.15?inputY/inputLength:0;
+ const ux=dx/range,uy=dy/range;
+ // Keep the same forward arc as GameEngine.tackle; no backward auto-pokes.
+ if(headingX*ux+headingY*uy<.25)return false;
+ const vx=Number.isFinite(carrier.moveVX)?carrier.moveVX:
+  Number.isFinite(carrier.vx)?carrier.vx:0;
+ const vy=Number.isFinite(carrier.moveVY)?carrier.moveVY:
+  Number.isFinite(carrier.vy)?carrier.vy:0;
+ const closing=-(vx*ux+vy*uy);
+ if(!Number.isFinite(closing)||closing<120)return false;
+ const leadX=clamp(vx*.055,-12,12),leadY=clamp(vy*.055,-12,12);
+ const predictedGap=Math.hypot(dx+leadX,dy+leadY)-16;
+ return Number.isFinite(predictedGap)&&predictedGap<62;
+}
 class GameEngine{
  constructor(options={},input){this.options=options;this.input=input;this.events=[];this.mode='quick';this.matchState='none';this.teamIds=[0,9];this.rosters=[[],[]];this.lineups=[DEFAULT_LINEUP.slice(),[0,1,2,3,5,9]];this.formation=['2-1-2','2-1-2'];this.teamPlans=[];this.controlled=[3,3,0,0];this.humans=1;this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=120;this.players=[];this.ball={};this.particles=[];this.magicHazards=[];this.shake=0;this.flash=0;this.weather='Clear';this.terrain='Grass';this.condition='Good';this.wind={x:0,y:0};this.stormTimer=0;this.tornado=null;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.kickoffCountdown=0;this.pk=null;this.matchSerial=0;this.fatigueLedger=[{},{}];this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.maxSubstitutions=MAX_SUBSTITUTIONS;this.moraleLedger=[{},{}];this.talksUsed=[{},{ }];this.celebrationStyle=0;this.onEvent=()=>{};this._turnoverCounterpress=null;this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.stoppageWindow=0;this.stoppageAnnounced=false;this._shotAudit=null;this._reboundAudit=null;this._shotAuditNext=0;}
  // Additive telemetry. Never queries RNG or changes ball/actors/keeper logic.
@@ -2949,7 +2980,9 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
     if(owner&&owner.t!==t&&p.cd<=0&&fieldAbility(p.src)&&Math.random()<ai.tackleRate*.17*tactical.press){
       this.activateDefence(p);
     }
-    if(owner&&owner.t!==t&&distance(p,owner)<68&&p.cd<=0&&Math.random()<ai.tackleRate*tactical.press){
+    if(owner&&owner.t!==t&&p.cd<=0&&
+     (distance(p,owner)<68||this.defensivePokeCommitWindow(p,owner))&&
+     Math.random()<ai.tackleRate*tactical.press){
       const slideRoll=Math.random();
       this.tackle(p,defensiveTackleSlide(p,owner,this.playerSpeed(p))&&slideRoll<this.cpuTackleSlideChance(p,ai.anticipation,.24,.4));
     }
@@ -3343,6 +3376,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
  }
 }
 GameEngine.prototype.cpuTackleSlideChance=cpuTackleSlideChance;
+GameEngine.prototype.defensivePokeCommitWindow=defensivePokeCommitWindow;
 return {GameEngine,WORLD};})();
 // v0.8.25: BPW character-specific animation profiles. Editorial arcade gestures, not historical motion capture.
 // Opt in ONLY for BPW historicalPersonKey entries. Cosmetic rendering only: no simulation, stats or save mutations.
