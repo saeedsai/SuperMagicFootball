@@ -52,7 +52,7 @@ with sync_playwright() as pw:
      // Defence should miss that early point and retain the later fallback.
      Object.assign(support,{x:ballX+dir*110,y:y+12.6,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,aiAssistTarget:null,aiTimer:0,aiTarget:null});
      support.src.speedRating=100;
-     support.src.defence=defence;g.clock=.2;g.driveAI(support,.016);
+     support.src.defence=defence;support.src.agility=100;g.clock=.2;g.driveAI(support,.016);
      points.push({defence,target:support.aiTarget?{x:support.aiTarget.x,y:support.aiTarget.y}:null});
     }
     skillRows.push({defendingTeam,dir,ballX:attackingTeam===0?1320:1280,points});
@@ -75,7 +75,7 @@ with sync_playwright() as pw:
       shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,aiAssistTarget:null,aiTimer:0,aiTarget:null});
      Object.assign(g.ball,{owner:null,pass:true,passTeam:attackingTeam,passTarget:receiver.src.id,attacker:attackingTeam,
       lastTouchTeam:attackingTeam,x:ballX,y,z:8,vx:dir*600,vy:0,vz:40,age:.15,shot:null,strike:null,ordinaryShot:false});
-     Object.assign(support,{x:ballX+dir*86,y:y+12.6,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,
+     Object.assign(support,{x:ballX+dir*111,y:y+12.6,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,
       moveVX:dir*profile.move,moveVY:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
       aiAssistTarget:null,aiTimer:0,aiTarget:null,fatigue:0,breath:10,morale:55});
      support.src.speedRating=100;support.src.defence=50;support.src.agility=profile.agility;
