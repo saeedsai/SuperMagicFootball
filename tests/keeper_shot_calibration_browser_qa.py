@@ -161,6 +161,37 @@ def live_ai_script():
     }"""
 
 
+def fatigue_read_script():
+    # Exercise the actual early-intent resolver at the same shot distance:
+    # a rested elite keeper reads earlier; fatigue delays the cue but retains
+    # the existing late read. Ball flight must remain untouched by the cue.
+    return r"""() => {
+      const g=SupermagicFootball.game;
+      const field=SupermagicFootball.world?.field||{x:150,w:2260.8};
+      const goalY=Number.isFinite(field.y)&&Number.isFinite(field.h)?field.y+field.h/2:765;
+      function read(side,fatigue,remaining){
+        g.init({home:0,away:1,humans:0,mode:'quick'});
+        g.matchState='paused';g.cooldown=0;
+        const k=g.player(side,0),toward=side===0?-1:1;
+        k.x=side===0?field.x+105:field.x+field.w-105;
+        k.y=goalY;k.z=0;k.vz=0;k.stun=0;k.down=false;k.action='run';
+        k.actionTimer=0;k.fatigue=fatigue;k.diveCooldown=0;k.diveIntentCooldown=0;
+        k.diveIntentPending=false;k.src={...k.src,gkSkill:100,gkDiving:70};
+        const b=g.ball;
+        Object.assign(b,{owner:null,attacker:1-side,lastTouchTeam:1-side,ordinaryShot:true,
+          shot:null,strike:null,pass:false,passTarget:null,x:k.x-toward*remaining,y:goalY+80,
+          z:8,vx:toward*900,vy:0,vz:0,age:0,canCollect:0});
+        const before=JSON.stringify([b.x,b.y,b.z,b.vx,b.vy,b.vz,b.owner,b.attacker,b.age]);
+        const attempted=g.tryKeeperDiveIntent(k);
+        const after=JSON.stringify([b.x,b.y,b.z,b.vx,b.vy,b.vz,b.owner,b.attacker,b.age]);
+        return {side,fatigue,remaining,attempted,pending:k.diveIntentPending,ballUnchanged:before===after};
+      }
+      const rows=[];
+      for(const side of [0,1])rows.push(read(side,0,360),read(side,1,360),read(side,1,330));
+      return rows;
+    }"""
+
+
 with sync_playwright() as pw:
     browser = pw.chromium.launch(executable_path='/usr/bin/chromium', headless=True,
                                  args=['--no-sandbox', '--disable-dev-shm-usage'])
@@ -250,6 +281,18 @@ with sync_playwright() as pw:
                  'mirroredOutcomeMismatches':mirrored}
         live_results.append(summary)
         print('KEEPER_LIVE_AI_COHORT_PASS',json.dumps(summary,sort_keys=True),flush=True)
+        fatigue_rows=page.evaluate(fatigue_read_script())
+        assert len(fatigue_rows)==6,(device,'fatigue dive fixtures',fatigue_rows)
+        for side in (0,1):
+            rested=next(r for r in fatigue_rows if r['side']==side and r['fatigue']==0)
+            tired_early=next(r for r in fatigue_rows if r['side']==side and r['fatigue']==1 and r['remaining']==360)
+            tired_late=next(r for r in fatigue_rows if r['side']==side and r['fatigue']==1 and r['remaining']==330)
+            assert rested['attempted'] and rested['pending'],(device,'rested keeper did not show early intent',rested)
+            assert not tired_early['attempted'] and not tired_early['pending'],(device,'fatigue did not delay early intent',tired_early)
+            assert tired_late['attempted'] and tired_late['pending'],(device,'fatigued keeper lost its late read',tired_late)
+        assert all(r['ballUnchanged'] for r in fatigue_rows),(device,'dive intent mutated ball flight',fatigue_rows)
+        print('KEEPER_FATIGUE_DIVE_READ_PASS',json.dumps({'device':device,'fixtures':len(fatigue_rows),
+              'mirroredSides':2,'restedEarly':2,'fatiguedLate':2,'ballMutations':0},sort_keys=True),flush=True)
         ctx.close()
     browser.close()
 # Stable compact console-only evidence; full scripts' stdout is saved by CI.

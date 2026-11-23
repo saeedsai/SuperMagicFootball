@@ -293,6 +293,14 @@ function keeperReactionReach(keeper, ball){
  const reactiveReach=(36+diving*.92+skill*.16)*response*(1-.19*closeReaction)*(1+.06*readableBoost);
  return {x:(105+diving*1.35)*(.85+response*.15),y:Math.min(lateralCap,reactiveReach),z:(45+diving*1.7),response,timeToContact};
 }
+// Fatigue delays only the early visual read of predictable ordinary shots.
+// The late contact window, physical save reach and Magic-shot timing stay separate.
+function keeperDiveReadWindow(keeper,readable){
+ if(!readable)return 320;
+ const skill=clamp((stat(keeper,'gkSkill')-35)/65,0,1);
+ const fatigue=clamp(Number.isFinite(keeper?.fatigue)?keeper.fatigue:0,0,1);
+ return 320+70*skill-45*fatigue;
+}
 // Keepers cannot instantly dive again after a save. Better GK Skill and GK
 // Diving shorten recovery, while accumulated fatigue lengthens it. This affects
 // actual match play and is separate from the shorter rendered landing motion.
@@ -970,7 +978,7 @@ class GameEngine{
   const readable=!b.shot&&!['zigzag','swim','warp','lightning','spiral','ricochet','clone','curve','homing','dolphin'].includes(b.shot?.behavior);
   // Stronger keepers read predictable flight earlier; low skill cannot get the full bonus.
   // Magic shots never receive the anticipation advantage.
-  const readWindow=readable?320+70*clamp((stat(p,'gkSkill')-35)/65,0,1):320;
+  const readWindow=keeperDiveReadWindow(p,readable);
   if(b.vx*toward<=160||remaining<70||remaining>readWindow)return false;
   const predicted=predictKeeperShot(p,b),reach=keeperReactionReach(p,b);
   if(!predicted||predicted.time<.065||predicted.time>.46||predicted.z>reach.z+15||
