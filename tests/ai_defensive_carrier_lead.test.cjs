@@ -149,7 +149,7 @@ test('primary presser shades toward an exposed live ground ball but respects far
   assert.ok(shielded&&near(shielded.x,base.x)&&near(shielded.y,base.y));
   Object.assign(game.ball,shieldedBall);game.driveAI(primary,.016);
   assert.ok(near(primary.aiTarget.x,base.x)&&near(primary.aiTarget.y,base.y));
-  for(const patch of [{owner:null},{x:x-dir*40},{z:24},{x:NaN},{y:NaN},{x:x-dir*3}]){
+  for(const patch of [{owner:null},{owner:{...carrier}},{x:x-dir*40},{z:24},{x:NaN},{y:NaN},{x:x-dir*3}]){
    const ignored=AI.defensiveCarrierLeadTarget(primary,carrier,fieldBounds,anticipation,{...game.ball,...patch});
    assert.ok(ignored&&near(ignored.x,base.x)&&near(ignored.y,base.y),JSON.stringify({patch,base,ignored}));
   }
