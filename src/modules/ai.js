@@ -732,7 +732,13 @@ function attackingSupportPass(players,team,carrier,supportRun){
    // collection time. Keep this a bounded tiebreaker: distance and centrality
    // still matter, and an unmarked defence adds no penalty.
    const markingPenalty=Math.min(42,Math.max(0,190-nearestMarkGap)*.36);
-   const score=range+centerOffset*.35+Math.max(0,65-vx*dir)*.08+markingPenalty;
+   // A cutback receiver who already faces goal can play the next touch sooner.
+   // Genuine forward momentum overrides a stale horizontal-facing value.
+   const facing=Number.isFinite(runner.face)&&Math.abs(runner.face)>.1?Math.sign(runner.face):
+    Number.isFinite(runner.dx)&&Math.abs(runner.dx)>.1?Math.sign(runner.dx):0;
+   const forwardMomentum=vx*dir;
+   const orientationPenalty=facing===-dir&&forwardMomentum<=110?22:0;
+   const score=range+centerOffset*.35+Math.max(0,65-vx*dir)*.08+markingPenalty+orientationPenalty;
    if(!best||score<best.score-1e-9)best={runner,target,score};
   }
   return best?{runner:best.runner,target:best.target}:null;

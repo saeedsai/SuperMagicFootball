@@ -72,17 +72,30 @@ with sync_playwright() as pw:
     ctx.setTransform(scale,0,0,scale,width/2-reader.x*scale,height*.72-reader.y*scale);
     r.drawField(ctx,g);
     const subject={...reader,preview:false,controlled:false,action:'idle',actionTimer:0,z:0,stun:0,down:false,moveVX:0,moveVY:0,dx:0,dy:0,face:1,visualFacing:{kind:'front',side:1},magicReadCueTimer:timer};
-    r.drawPlayer(ctx,subject,g);document.body.append(canvas);
+    r.drawPlayer(ctx,subject,g);
+    window.__smfReadCueCanvases=window.__smfReadCueCanvases||{};
+    window.__smfReadCueCanvases[id]=canvas;
     return {scale,width,height,playerX:reader.x,playerY:reader.y};
    }
    return {base:paint(0,'smf-read-cue-capture-base'),cue:paint(.48,'smf-read-cue-capture-with')};
   }""")
-  base_canvas=page.locator('#smf-read-cue-capture-base')
-  cue_canvas=page.locator('#smf-read-cue-capture-with')
-  assert base_canvas.count()==1 and cue_canvas.count()==1,(kind,'unique cue canvases must exist')
-  assert base_canvas.evaluate('(el)=>el.tagName')=='CANVAS',(kind,'base screenshot target must be the created canvas')
-  assert cue_canvas.evaluate('(el)=>el.tagName')=='CANVAS',(kind,'cue screenshot target must be the created canvas')
+  expected_width,expected_height=(1280,720) if kind=='desktop' else (844,390)
+  def expose_capture(capture_id):
+   page.evaluate("""id => {
+    const canvas=window.__smfReadCueCanvases?.[id];
+    if(!(canvas instanceof HTMLCanvasElement))throw new Error('isolated production-renderer canvas unavailable: '+id);
+    canvas.style.cssText='position:fixed;left:0;top:0;width:100vw;height:100vh;display:block;z-index:2147483647;margin:0;padding:0;border:0;opacity:1;transform:none;pointer-events:none;';
+    document.body.replaceChildren(canvas);
+   }""",capture_id)
+   target=page.locator('#'+capture_id)
+   assert target.count()==1,(kind,capture_id,'unique isolated canvas must exist')
+   assert target.evaluate('(el)=>el.tagName')=='CANVAS',(kind,capture_id,'screenshot target must be a canvas')
+   box=target.bounding_box()
+   assert box and abs(box['x'])<1 and abs(box['y'])<1 and abs(box['width']-expected_width)<2 and abs(box['height']-expected_height)<2,(kind,capture_id,'canvas must cover the viewport',box)
+   return target
+  base_canvas=expose_capture('smf-read-cue-capture-base')
   base_canvas.screenshot(path=str(base_path))
+  cue_canvas=expose_capture('smf-read-cue-capture-with')
   cue_canvas.screenshot(path=str(cue_path))
   base_image=Image.open(base_path).convert('RGB');cue_image=Image.open(cue_path).convert('RGB')
   assert base_image.size==cue_image.size,(kind,base_image.size,cue_image.size)

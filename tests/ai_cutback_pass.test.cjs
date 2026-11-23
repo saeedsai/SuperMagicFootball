@@ -218,6 +218,33 @@ test('AI prefers the least-marked central cutback runner on both attacking sides
  }
 });
 
+test('cutback selection prefers goal-facing receivers but respects forward momentum and sole-outlet fallback on both sides',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team),dir=team===0?1:-1;
+  const alternative=f.game.players.find(p=>p.t===team&&p!==f.carrier&&p!==f.runner&&!p.keeper);
+  assert.ok(alternative,'fixture needs a second cutback receiver');
+  for(const p of f.game.players){
+   if(p.t!==team){p.down=true;continue;}
+   if(p!==f.carrier&&p!==f.runner&&p!==alternative)p.down=true;
+  }
+  const x=f.carrier.x-dir*110;
+  Object.assign(f.runner,{x,y:340,face:-dir,moveVX:0,moveVY:0,down:false,stun:0,z:0,
+   action:'idle',actionTimer:0,aiAssistTarget:null});
+  Object.assign(alternative,{x,y:340,face:dir,moveVX:0,moveVY:0,down:false,stun:0,z:0,
+   action:'idle',actionTimer:0,aiAssistTarget:null});
+  const oriented=AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS);
+  assert.equal(oriented?.runner,alternative,'team '+team+' should prefer the receiver already facing goal');
+  alternative.down=true;
+  f.runner.moveVX=dir*180;
+  const forwardRun=AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS);
+  assert.equal(forwardRun?.runner,f.runner,'team '+team+' forward momentum should override stale facing');
+  f.runner.moveVX=0;
+  const sole=AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS);
+  assert.equal(sole?.runner,f.runner,'team '+team+' must retain its only safe cutback outlet');
+ }
+});
+
 test('defensive support shades into the central cutback lane for wide byline carriers on both sides',async()=>{
  const {AI}=await loadModules();
  const center=(MATCH_BOUNDS.yMin+MATCH_BOUNDS.yMax)/2;
