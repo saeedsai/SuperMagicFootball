@@ -49,6 +49,9 @@ with sync_playwright() as pw:
      Object.assign(primary,{x:ballX-dir*5,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,aiAssistTarget:null,aiTimer:0,aiTarget:null});
      Object.assign(g.ball,{owner:null,pass:true,passTeam:attackingTeam,passTarget:receiver.src.id,attacker:attackingTeam,lastTouchTeam:attackingTeam,x:ballX,y,z:8,vx:dir*600,vy:0,vz:40,age:.15,shot:null,strike:null,ordinaryShot:false});
      Object.assign(support,{x:ballX+dir*90,y:y+12.6,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,aiAssistTarget:null,aiTimer:0,aiTarget:null});
+     // Keep the test defender physically fast enough to reach the later low-Defence
+     // sample; otherwise both average/low profiles legitimately use the safe fallback.
+     support.src.speedRating=100;
      support.src.defence=defence;g.clock=.2;g.driveAI(support,.016);
      points.push({defence,target:support.aiTarget?{x:support.aiTarget.x,y:support.aiTarget.y}:null});
     }
