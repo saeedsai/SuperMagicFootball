@@ -89,8 +89,7 @@ test('driveAI routes both ordinary and primary press tackles through movement-aw
   'ordinary and primary press slide decisions must both use the player-aware threshold');
 });
 
-const slideGame=Object.create(ENGINE.GameEngine.prototype);
-function slideChance(...args){return slideGame.cpuTackleSlideChance(...args);}
+function slideChance(...args){return ENGINE.GameEngine.prototype.cpuTackleSlideChance.call({},...args);}
 function slideProfile(defence,aggression){return {src:{id:'slide-'+defence+'-'+aggression,role:'DF',defence,aggression}};}
 
 test('CPU slide choice scales with defender Defence and Aggression while preserving neutral AI baselines',()=>{
