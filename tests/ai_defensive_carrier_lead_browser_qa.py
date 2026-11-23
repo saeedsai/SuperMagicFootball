@@ -48,15 +48,33 @@ with sync_playwright() as pw:
                     aiGiveAndGoRun:null,aiFirstTouchTarget:null,aiDetour:null});
                 Object.assign(support,{x:x-dir*220,y:y+100,z:0,down:false,stun:0,action:'idle',actionTimer:0,
                     slideTimer:0,aiTarget:null,aiTimer:0,aiAssistTarget:null});
-                Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,passTarget:null,
+                Object.assign(game.ball,{owner:carrier,x:x-dir*24,y,z:0,vx:0,vy:0,vz:0,pass:false,passTarget:null,
                     attacker:attackingTeam,lastTouchTeam:attackingTeam,age:0,shot:null,strike:null,ordinaryShot:false});
                 game.clock=2;
+                const fieldBounds={xMin:field.x+24,xMax:field.x+field.w-24,
+                    yMin:field.y+24,yMax:field.y+field.h-24};
+                const anticipation=[0,.09,.18,.28,.4][game.cpuLevel(primary)];
+                if(!Number.isFinite(anticipation)) throw new Error('invalid CPU difficulty profile');
+                const base=game.defensiveCarrierLeadTarget(primary,carrier,fieldBounds,anticipation);
+                const expected=game.defensiveCarrierLeadTarget(primary,carrier,fieldBounds,anticipation,game.ball);
+                if(!base||!expected||!((expected.x-base.x)*(-dir)>0))
+                    throw new Error('exposed ball must bias the press target toward its side: '+JSON.stringify({base,expected,dir}));
                 game.driveAI(primary,.016);
                 const target=primary.aiTarget;
+                if(Math.abs(target.x-expected.x)>1e-6||Math.abs(target.y-expected.y)>1e-6)
+                    throw new Error('driveAI must use the live-ball press target: '+JSON.stringify({target,expected}));
+
                 const leadX=target.x-carrier.x,leadY=target.y-carrier.y;
                 const lead=Math.hypot(leadX,leadY);
                 if(!(lead>0&&lead<=34.1&&leadX*dir>0&&leadY>0))
                     throw new Error('carrier intercept lead failed: '+JSON.stringify({defendingTeam,target,carrier:{x,y,moveVX:carrier.moveVX,moveVY:carrier.moveVY}}));
+                Object.assign(game.ball,{x:x+dir*24});
+                const shielded=game.defensiveCarrierLeadTarget(primary,carrier,fieldBounds,anticipation,game.ball);
+                if(Math.abs(shielded.x-base.x)>1e-6||Math.abs(shielded.y-base.y)>1e-6)
+                    throw new Error('far-side ball shielding must not bias the press target: '+JSON.stringify({shielded,base}));
+                game.driveAI(primary,.016);
+                if(Math.abs(primary.aiTarget.x-base.x)>1e-6||Math.abs(primary.aiTarget.y-base.y)>1e-6)
+                    throw new Error('engine must retain the carrier path against far-side shielding');
                 Object.assign(carrier,{moveVX:0,moveVY:0,vx:0,vy:0});
                 game.driveAI(primary,.016);
                 if(Math.abs(primary.aiTarget.x-carrier.x)>1e-6||Math.abs(primary.aiTarget.y-carrier.y)>1e-6)
@@ -70,6 +88,6 @@ with sync_playwright() as pw:
         assert result['teams']>=223,(kind,result)
         assert len(result['rows'])==2,(kind,result)
         assert not errors,(kind,errors)
-        print('PASS',kind,'mirrored moving-carrier intercept, stationary fallback, four actions and no JS errors',flush=True)
+        print('PASS',kind,'mirrored ball-side carrier intercept, shielding fallback, four actions and no JS errors',flush=True)
         ctx.close()
     browser.close()

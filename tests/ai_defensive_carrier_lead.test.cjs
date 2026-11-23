@@ -113,6 +113,49 @@ test('legacy vx/vy carrier records retain a bounded lead when movement fields ar
  assert.ok(target.x>carrier.x&&target.y>carrier.y);
 });
 
+test('primary presser shades toward an exposed live ground ball but respects far-side shielding',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const defendingTeam of [0,1]){
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});
+  const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
+  const field=ENGINE.WORLD.field,x=field.x+field.w*.55,y=field.y+field.h*.5;
+  const carrier=game.player(attackingTeam,3),primary=game.player(defendingTeam,3),support=game.player(defendingTeam,4);
+  for(const q of game.players){if(q===carrier||q===primary||q===support||q.keeper)continue;q.down=true;q.stun=1;}
+  Object.assign(carrier,{x,y,z:0,down:false,stun:0,action:'run',actionTimer:0,
+   moveVX:0,moveVY:180,vx:0,vy:180,dribbleHold:0,firstTouchControlTimer:0});
+  Object.assign(primary,{x:x-dir*110,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+   slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+   aiTarget:null,aiTimer:0,aiAssistTarget:null,aiGiveAndGoRun:null,aiFirstTouchTarget:null,aiDetour:null});
+  Object.assign(support,{x:x-dir*220,y:y+100,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+   slideTimer:0,aiTarget:null,aiTimer:0,aiAssistTarget:null});
+  Object.assign(game.ball,{owner:carrier,x:x-dir*24,y,z:0,vx:0,vy:0,vz:0,pass:false,
+   passTarget:null,attacker:attackingTeam,lastTouchTeam:attackingTeam,age:0,shot:null,strike:null,ordinaryShot:false});
+  game.clock=2;
+  const fieldBounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+  const anticipation=AI.aiTuning(game.cpuLevel(primary)).anticipation;
+  const base=AI.defensiveCarrierLeadTarget(primary,carrier,fieldBounds,anticipation);
+  const exposed=AI.defensiveCarrierLeadTarget(primary,carrier,fieldBounds,anticipation,game.ball);
+  const expectedBias=Math.min(8,24*.25)*(.4+anticipation*.6);
+  assert.ok(base&&exposed);
+  assert.ok(near((exposed.x-base.x)*(-dir),expectedBias),JSON.stringify({defendingTeam,base,exposed,expectedBias}));
+  assert.ok(near(exposed.y,base.y));
+  assert.ok(Math.hypot(exposed.x-carrier.x,exposed.y-carrier.y)<=34.001);
+  game.driveAI(primary,.016);
+  assert.ok(near(primary.aiTarget.x,exposed.x),JSON.stringify({defendingTeam,expected:exposed,actual:primary.aiTarget}));
+  assert.ok(near(primary.aiTarget.y,exposed.y));
+  const shieldedBall={...game.ball,x:x+dir*24};
+  const shielded=AI.defensiveCarrierLeadTarget(primary,carrier,fieldBounds,anticipation,shieldedBall);
+  assert.ok(shielded&&near(shielded.x,base.x)&&near(shielded.y,base.y));
+  Object.assign(game.ball,shieldedBall);game.driveAI(primary,.016);
+  assert.ok(near(primary.aiTarget.x,base.x)&&near(primary.aiTarget.y,base.y));
+  for(const patch of [{owner:null},{x:x-dir*40},{z:24},{x:NaN},{y:NaN},{x:x-dir*3}]){
+   const ignored=AI.defensiveCarrierLeadTarget(primary,carrier,fieldBounds,anticipation,{...game.ball,...patch});
+   assert.ok(ignored&&near(ignored.x,base.x)&&near(ignored.y,base.y),JSON.stringify({patch,base,ignored}));
+  }
+ }
+});
+
 test('real driveAI leads the primary presser to a moving carrier and falls back for a stationary one',async()=>{
  const {AI,ENGINE}=await loadModules();
  for(const defendingTeam of [0,1]){

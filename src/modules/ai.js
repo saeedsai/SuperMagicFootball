@@ -224,7 +224,7 @@ function defensiveThirdManRunnerTarget(team,carrier,players,bounds,primary,suppo
 // is advancing toward goal, bias the same bounded point a few units farther down
 // the attack axis so the defender cuts off the next touch instead of trailing.
 // This changes only the target: movement, reach and tackle probability stay intact.
-function defensiveCarrierLeadTarget(defender,carrier,bounds,anticipation=.5){
+function defensiveCarrierLeadTarget(defender,carrier,bounds,anticipation=.5,ball=null){
  const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
  const active=q=>{
   if(!q||q.down||Number(q.stun)>0||!Number.isFinite(q.x)||!Number.isFinite(q.y))return false;
@@ -256,6 +256,21 @@ function defensiveCarrierLeadTarget(defender,carrier,bounds,anticipation=.5){
  const goalwardCutoff=attackDirection!==0&&goalwardSpeed>80?
   Math.min(8,(goalwardSpeed-80)*.05)*read:0;
  leadX+=attackDirection*goalwardCutoff;
+ // Shade toward a live ground ball only when it is exposed on this presser's side.
+ // Far-side shielding and stale, airborne or unowned positions keep the old lead.
+ if(ball?.owner===carrier&&Number.isFinite(ball.x)&&Number.isFinite(ball.y)&&
+  Number.isFinite(ball.z)&&ball.z>=0&&ball.z<=20){
+  const ballX=ball.x-carrier.x,ballY=ball.y-carrier.y;
+  const ballOffset=Math.hypot(ballX,ballY);
+  if(ballOffset>=4&&ballOffset<=36){
+   const exposure=(ballX*(defender.x-carrier.x)+ballY*(defender.y-carrier.y))/range;
+   if(Number.isFinite(exposure)&&exposure>=-2){
+    const ballSideBias=Math.min(8,ballOffset*.25)*(.4+read*.6);
+    leadX+=ballX/ballOffset*ballSideBias;
+    leadY+=ballY/ballOffset*ballSideBias;
+   }
+  }
+ }
  const leadLength=Math.hypot(leadX,leadY);
  if(leadLength>34){const scale=34/leadLength;leadX*=scale;leadY*=scale;}
  return {

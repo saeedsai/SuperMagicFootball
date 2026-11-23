@@ -3039,7 +3039,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
    // A moving carrier gets a small skill-scaled intercept lead; loose balls keep
    // their existing flight lead and stationary carriers keep the exact position.
    const carrierLead=owner?defensiveCarrierLeadTarget(p,owner,
-    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},ai.anticipation):null;
+    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},ai.anticipation,liveBall):null;
    const lead=owner?0:ai.anticipation*.36;
    p.aiTarget=carrierLead||{x:clamp((owner||b).x+(b.vx||0)*lead,F.x+22,F.x+F.w-22),
     y:clamp((owner||b).y+(b.vy||0)*lead,F.y+23,F.y+F.h-23)};
@@ -3432,6 +3432,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
  }
 }
 GameEngine.prototype.cpuTackleSlideChance=cpuTackleSlideChance;
+GameEngine.prototype.defensiveCarrierLeadTarget=defensiveCarrierLeadTarget;
 GameEngine.prototype.defensivePokeBallSideRead=defensivePokeBallSideRead;
 GameEngine.prototype.defensiveCarrierSupportCoverTarget=defensiveCarrierSupportCoverTarget;
 GameEngine.prototype.defensivePokeCommitWindow=defensivePokeCommitWindow;
