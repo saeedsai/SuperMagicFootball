@@ -164,7 +164,7 @@ test('ordinary and primary close-contact non-slide pokes respect ball shielding 
 
 test('a ball-side-qualified CPU slide aims through the exposed live ball, not the carrier body',()=>{
  const run=(makeBall)=>{
-  const defender=player(0,1000,700,{moveVX:220,moveVY:0,dx:1,dy:0,face:1});
+  const defender=player(0,1000,700,{moveVX:220,moveVY:0,dx:1,dy:0,face:1,src:{name:'defender',speedRating:50,defence:50}});
   const carrier=player(1,1055,700,{moveVX:300,moveVY:0});
   const ball=makeBall?makeBall(defender,carrier):null;
   const game={players:[defender,carrier],ball:{owner:carrier},spendStamina(){},
