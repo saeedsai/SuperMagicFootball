@@ -6,19 +6,20 @@
 Deliver real player-facing football gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Preserve four actions, canonical rosters, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.234 — KEEPER-HIGH-CROSS-CLAIM-READ-SKILL-FATIGUE-01:** CPU goalkeeper high-cross claim reach now scales with GK Skill and GK Diving independently, with a combined 260-unit cap; average 50/50 keeps the previous 235-unit limit exactly. Low ratings reduce the claim pocket and fatigue subtracts up to 28 units. Flight-time and aerial-contest checks remain authoritative.
-- Focused mirrored Node and real-engine desktop/simulated-touch Chromium regressions cover skill-only, diving-only, neutral, low, tired, invalid and clamped profiles on both goals.
-- .233 exact-head Modular QA #45218022588 passed; Full Regression Census #45218025990 passed preflight/preview and Node shards 2/3, with Node shards 0/1 and all four Chromium shards still in progress at the .234 start. The .233 metadata-only failure was the missing code-formatted Agent ID; fixed in a1b5ba78f7a32ab1b1f8328748e24eb240a5b154.
-- .232 passed exact-head Modular QA #45201732994 and all four Node/four Chromium Census shards #45201732936, then promoted through the existing QA-gated pipeline. Pages #45203753806 and independent main Census/hosted smoke #45203767885 passed. Dev and main were both b3740b4bf79903d686ed61b5e6d927dce2f8d672 before this .233 commit.
+- **0.12.81.235 — AI-KEEPER-CROSS-CLAIM-MOMENTUM-01:** a CPU goalkeeper already moving toward a safe targeted high-cross landing gains up to 12 units of bounded claim reach; retreating momentum removes up to 12 units. Fatigue halves the momentum adjustment. Stationary keepers retain the exact .234 skill/fatigue baseline. Catch/punch physics, opponent/teammate safety, four actions, saves, rosters, persistence and offline play are unchanged.
+- Mirrored Node and real-engine desktop/simulated-touch Chromium regressions cover approach, retreat and tired momentum on both goal sides. The .234 skill/receiver browser fixture is adjusted so average Defence can reach its early interception sample while low Defence retains its later fallback.
+- .234 Modular QA #45220399520 passed; exact-head Census #45220399525 failed only ai_pass_receiver_cover_browser_qa.py in browser shard 1 (69/70 scripts passed there; all Node shards and other browser shards passed). This was a test-geometry issue, not a production keeper or pass-interception failure.
+- .232 remains main-promoted and Pages-deployed; independent main Census/hosted smoke #45203767885 passed.
 
 ## Next smallest action
-Observe .233 exact-head Modular QA and Full Regression Census. Fix only confirmed failures; allow promotion only through the existing green exact-head QA pipeline, then independently verify Pages deployment, main Census and hosted-byte smoke.
+Run .235 Modular QA and Full Regression Census at the exact dev HEAD. Fix any confirmed source or fixture failure, then allow promotion only through the existing green exact-head QA pipeline and independently verify main HEAD, Pages deployment, main Census and hosted-byte smoke.
 
 ## Ownership and exclusions
 Edit only this assigned checkpoint. Preserve 223 teams, 2,676 players, ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Physical two-phone #48 remains open; Render drift #86 remains open; main protection #87 is not enabled. Authenticated online hosting requires owner resources. Never expose Git SHA in player UI.
 
 ## Evidence
-- .232 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45201732994
+- .234 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45220399520
+- .234 exact-head Census (browser fixture failure): https://github.com/saeedsai/SuperMagicFootball/actions/runs/45220399525
 - .232 exact-head Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45201732936
 - .232 Pages deployment: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45203753806
 - .232 independent main Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45203767885

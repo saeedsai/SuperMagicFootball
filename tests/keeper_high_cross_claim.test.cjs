@@ -177,3 +177,27 @@ test('high-cross claim reach scales with GK Skill, GK Diving and fatigue while p
   assert.equal(read(-20,-20),null,'ratings below zero clamp to the low profile');
  }
 });
+
+
+test('high-cross claim reach follows keeper approach momentum but not retreat, with fatigue damping the bonus',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team),dir=f.dir;
+  f.target={x:f.ownGoalX+dir*265,y:f.goalY+35};
+  Object.assign(f.keeper,{x:f.ownGoalX+dir*25,y:f.goalY,fatigue:0,moveVX:0,moveVY:0});
+  Object.assign(f.receiver,{x:f.target.x+dir*215,y:f.target.y+10});
+  Object.assign(f.ball,{x:f.target.x+dir*160,y:f.target.y-40,z:170,vx:-dir*190,vy:48,vz:10});
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
+   'a stationary neutral keeper retains the previous 235-unit baseline');
+  f.keeper.moveVX=dir*200;
+  const approaching=AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds);
+  assert.ok(approaching,'momentum toward the landing can complete a marginally longer claim');
+  assert.ok(Math.abs(approaching.x-f.target.x)<2&&Math.abs(approaching.y-f.target.y)<2);
+  f.keeper.moveVX=-dir*200;
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
+   'retreating momentum must not extend the claim');
+  f.keeper.moveVX=dir*200;f.keeper.fatigue=1;
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
+   'full fatigue halves the approach bonus and keeps this marginal claim out of reach');
+ }
+});

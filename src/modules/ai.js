@@ -2144,7 +2144,15 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  const fatigue=Number.isFinite(keeper.fatigue)?clampTo(keeper.fatigue,0,1):0;
  // Neutral ratings preserve the former 235-unit claim cap. Elite keepers can
  // safely leave farther; fatigue and low keeper attributes shorten the read.
- const claimReach=clampTo(235+(skill-50)*.30+(diving-50)*.20-fatigue*28,185,260);
+ // Existing movement momentum slightly changes the safe claim envelope: a
+ // keeper already moving toward the projected landing can continue the read,
+ // while retreating momentum makes the same excursion less safe. Fatigue
+ // halves this contribution; a stationary keeper keeps the exact old baseline.
+ const keeperVX=Number.isFinite(keeper.moveVX)?keeper.moveVX:Number.isFinite(keeper.vx)?keeper.vx:0;
+ const keeperVY=Number.isFinite(keeper.moveVY)?keeper.moveVY:Number.isFinite(keeper.vy)?keeper.vy:0;
+ const momentumToward=(keeperVX*(target.x-keeper.x)+keeperVY*(target.y-keeper.y))/Math.max(1,keeperGap);
+ const momentumBonus=clampTo(momentumToward*.05*(1-fatigue*.5),-12,12);
+ const claimReach=clampTo(235+(skill-50)*.30+(diving-50)*.20-fatigue*28+momentumBonus,185,260);
  if(depth<24||depth>360||target.y<goalTop-230||target.y>goalBottom+230||
   keeperGap<24||keeperGap>Math.min(claimReach,260*flight+32))return null;
  const receiverGap=Math.hypot(receiver.x-target.x,receiver.y-target.y);

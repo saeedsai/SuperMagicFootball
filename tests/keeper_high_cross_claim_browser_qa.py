@@ -84,14 +84,17 @@ with sync_playwright() as pw:
      {name:'average',skill:50,diving:50,fatigue:0,expected:false},
      {name:'low',skill:1,diving:1,fatigue:0,expected:false},
      {name:'tired-elite',skill:100,diving:100,fatigue:1,expected:false},
-     {name:'invalid',skill:'',diving:null,fatigue:0,expected:false}
+     {name:'invalid',skill:'',diving:null,fatigue:0,expected:false},
+     {name:'moving-toward',skill:50,diving:50,fatigue:0,moveVX:dir*200,expected:true},
+     {name:'moving-away',skill:50,diving:50,fatigue:0,moveVX:-dir*200,expected:false},
+     {name:'tired-moving-toward',skill:50,diving:50,fatigue:1,moveVX:dir*200,expected:false}
     ];
     for(const profile of profiles){
      g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
      const keeper=g.player(team,0),receiver=g.player(1-team,3);
      for(const q of g.players)if(q!==keeper&&q!==receiver&&!q.keeper){q.down=true;q.stun=1;}
      Object.assign(keeper,{x:ownGoalX+dir*25,y:goalY,z:0,stun:0,down:false,action:'idle',
-      actionTimer:0,diveCooldown:0,aiTimer:0,aiTarget:null,moveVX:0,moveVY:0,fatigue:profile.fatigue});
+      actionTimer:0,diveCooldown:0,aiTimer:0,aiTarget:null,moveVX:profile.moveVX||0,moveVY:0,fatigue:profile.fatigue});
      keeper.src.gkSkill=profile.skill;keeper.src.gkDiving=profile.diving;
      Object.assign(receiver,{x:target.x+dir*215,y:target.y+10,z:0,stun:0,down:false,
       action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
@@ -125,7 +128,7 @@ with sync_playwright() as pw:
    else:
     assert row['claimActive'] is True,(kind,row)
     assert row['claim'] is not None and abs(row['claim']['x']-row['expected']['x'])<2 and abs(row['claim']['y']-row['expected']['y'])<2,(kind,row)
-  assert len(result['profileRows'])==12,(kind,result['profileRows'])
+  assert len(result['profileRows'])==18,(kind,result['profileRows'])
   for row in result['profileRows']:
    assert row['claimActive'] is row['expected'],(kind,row)
    if row['expected']:
