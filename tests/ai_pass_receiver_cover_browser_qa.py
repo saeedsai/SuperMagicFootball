@@ -15,7 +15,7 @@ with sync_playwright() as pw:
   page.evaluate("""() => {const v=new Map();Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>v.get(k)||null,setItem:(k,x)=>v.set(k,String(x)),removeItem:k=>v.delete(k),clear:()=>v.clear()}})}""")
   page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
-   const g=SupermagicFootball.game,rows=[],skillRows=[];
+   const g=SupermagicFootball.game,rows=[],skillRows=[],reachRows=[];
    for(const defendingTeam of [0,1]){
     const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
     g.init({home:0,away:1,mode:'quick',humans:0});
@@ -57,7 +57,35 @@ with sync_playwright() as pw:
     }
     skillRows.push({defendingTeam,dir,ballX:attackingTeam===0?1320:1280,points});
    }
-   return {rows,skillRows,teams:SupermagicFootball.teams.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
+   for(const defendingTeam of [0,1]){
+    const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1,profiles=[
+     {name:'elite-stationary',agility:100,move:0,early:true},
+     {name:'average-approach',agility:50,move:200,early:true},
+     {name:'average-retreat',agility:50,move:-200,early:false},
+     {name:'low-stationary',agility:1,move:0,early:false}
+    ];
+    for(const profile of profiles){
+     g.init({home:0,away:1,mode:'quick',humans:0});
+     const receiver=g.player(attackingTeam,3),primary=g.player(defendingTeam,3),support=g.player(defendingTeam,4);
+     const receiverX=attackingTeam===0?1500:1100,y=765,ballX=receiverX-dir*180;
+     Object.assign(receiver,{x:receiverX,y,z:0,stun:0,down:false,action:'idle',actionTimer:0,slideTimer:0,
+      moveVX:dir*180,moveVY:120,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0});
+     for(const q of g.players){if(q===receiver||q===primary||q===support||q.keeper)continue;q.down=true;q.stun=1;}
+     Object.assign(primary,{x:ballX-dir*5,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,
+      shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,aiAssistTarget:null,aiTimer:0,aiTarget:null});
+     Object.assign(g.ball,{owner:null,pass:true,passTeam:attackingTeam,passTarget:receiver.src.id,attacker:attackingTeam,
+      lastTouchTeam:attackingTeam,x:ballX,y,z:8,vx:dir*600,vy:0,vz:40,age:.15,shot:null,strike:null,ordinaryShot:false});
+     Object.assign(support,{x:ballX+dir*86,y:y+12.6,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,
+      moveVX:dir*profile.move,moveVY:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+      aiAssistTarget:null,aiTimer:0,aiTarget:null,fatigue:0,breath:10,morale:55});
+     support.src.speedRating=100;support.src.defence=50;support.src.agility=profile.agility;
+     g.clock=.2;g.driveAI(support,.016);
+     const target=support.aiTarget?{x:support.aiTarget.x,y:support.aiTarget.y}:null;
+     reachRows.push({defendingTeam,name:profile.name,early:profile.early,
+      progress:target?(target.x-ballX)*dir:null,target});
+    }
+   }
+   return {rows,skillRows,reachRows,teams:SupermagicFootball.teams.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }""")
   assert result['teams']>=223,(kind,result)
   assert result['buttons']==4,(kind,result)
@@ -73,7 +101,14 @@ with sync_playwright() as pw:
    progress=[(item['target']['x']-row['ballX'])*row['dir'] for item in points]
    assert progress[0]<progress[1]-2,(kind,row,progress)
    assert progress[2]>progress[1]+2,(kind,row,progress)
+  assert len(result['reachRows'])==8,(kind,result['reachRows'])
+  for row in result['reachRows']:
+   assert row['target'] is not None,(kind,row)
+   if row['early']:
+    assert row['progress']<130,(kind,row)
+   else:
+    assert row['progress']>150,(kind,row)
   assert not errors,(kind,errors)
-  print('PASS',kind,'reach-aware pass interception, Defence-scaled reaction, primary pursuit, four actions and no JavaScript errors',flush=True)
+  print('PASS',kind,'agility- and momentum-aware pass interception, Defence-scaled reaction, primary pursuit, four actions and no JavaScript errors',flush=True)
   ctx.close()
  browser.close()

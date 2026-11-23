@@ -1136,6 +1136,18 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   const firstTime=responseDelay+.06,lastTime=Math.min(arrival*.88,.62);
   if(!Number.isFinite(lastTime)||lastTime<firstTime)return null;
   const speed=Math.min(440,defenderSpeed);
+  const rawAgility=defender.src?.agility;
+  const parsedAgility=typeof rawAgility==='number'?rawAgility:
+   typeof rawAgility==='string'&&rawAgility.trim()!==''?Number(rawAgility):NaN;
+  const agility=clampTo(Number.isFinite(parsedAgility)?parsedAgility:50,1,100);
+  // moveAgile turns toward its requested velocity at (3 + agility * .13) per
+  // second. Integrate that ramp instead of pretending the support instantly
+  // reaches full top speed; current momentum toward/away from the lane matters.
+  const turnRate=3+agility*.13;
+  const currentVX=Number.isFinite(defender.moveVX)?defender.moveVX:
+   Number.isFinite(defender.vx)?defender.vx:0;
+  const currentVY=Number.isFinite(defender.moveVY)?defender.moveVY:
+   Number.isFinite(defender.vy)?defender.vy:0;
   for(let step=0;step<=12;step++){
    const time=firstTime+(lastTime-firstTime)*step/12;
    const height=ball.z+ball.vz*time-250*time*time;
@@ -1147,8 +1159,12 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    const fromBall=Math.hypot(point.x-ball.x,point.y-ball.y);
    const toReceiver=Math.hypot(point.x-receiverX,point.y-receiverY);
    if(fromBall<38||toReceiver<34||toReceiver>220)continue;
-   const travel=Math.hypot(point.x-defender.x,point.y-defender.y);
-   const reachable=(time-responseDelay)*speed*.82+12;
+   const dx=point.x-defender.x,dy=point.y-defender.y;
+   const travel=Math.hypot(dx,dy),moveTime=Math.max(0,time-responseDelay);
+   const towardSpeed=travel>1e-6?clampTo((currentVX*dx+currentVY*dy)/travel,-speed,speed):0;
+   const rampArea=(1-Math.exp(-turnRate*moveTime))/turnRate;
+   const reachableDistance=speed*moveTime+(towardSpeed-speed)*rampArea;
+   const reachable=Math.max(0,reachableDistance)*.82+12;
    if(travel<=reachable)return point;
   }
   return null;

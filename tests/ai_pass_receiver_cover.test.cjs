@@ -121,3 +121,31 @@ test('ground-pass interception reaction scales with defender Defence while avera
   assert.deepEqual(targetFor(-20),low,'low Defence is clamped to 1');
  }
 });
+
+test('ground-pass interception reach respects agility acceleration and current momentum',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(team);
+  f.receiver.moveVX=f.dir*180;f.receiver.moveVY=120;
+  const support=player('agility-momentum-'+team,team,f.ball.x+f.dir*86,f.ball.y+12.6);
+  const fallback=AI.defensivePassReceiverCoverTarget(team,f.ball,f.players,bounds);
+  const read=(agility,along)=>{
+   support.src.agility=agility;
+   support.moveVX=f.dir*along;support.moveVY=0;
+   return AI.defensivePassReceiverCoverTarget(team,f.ball,f.players,bounds,support,320,.2);
+  };
+  const elite=read(100,0),low=read(1,0);
+  const averageApproach=read(50,200),averageRetreat=read(50,-200);
+  assert.ok(fallback&&elite&&averageApproach,JSON.stringify({team,fallback,elite,averageApproach}));
+  const progress=point=>(point.x-f.ball.x)*f.dir;
+  assert.ok(progress(elite)<progress(fallback)-50,JSON.stringify({team,elite,fallback}));
+  assert.ok(progress(averageApproach)<progress(fallback)-50,JSON.stringify({team,averageApproach,fallback}));
+  assert.deepEqual(low,fallback,'low Agility cannot reach the early pocket from a standstill');
+  assert.deepEqual(averageRetreat,fallback,'retreating momentum cannot be treated as instant forward acceleration');
+  delete support.src.agility;support.moveVX=0;
+  const missing=AI.defensivePassReceiverCoverTarget(team,f.ball,f.players,bounds,support,320,.2);
+  support.src.agility=50;
+  const average=AI.defensivePassReceiverCoverTarget(team,f.ball,f.players,bounds,support,320,.2);
+  assert.deepEqual(missing,average,'missing Agility uses the neutral 50-point acceleration profile');
+ }
+});
