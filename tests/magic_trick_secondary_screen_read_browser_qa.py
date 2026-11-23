@@ -75,10 +75,15 @@ with sync_playwright() as pw:
     r.drawPlayer(ctx,subject,g);document.body.append(canvas);
     return {scale,width,height,playerX:reader.x,playerY:reader.y};
    }
-   return {base:paint(0,'read-cue-base'),cue:paint(.48,'read-cue-with')};
+   return {base:paint(0,'smf-read-cue-capture-base'),cue:paint(.48,'smf-read-cue-capture-with')};
   }""")
-  page.locator('#read-cue-base').screenshot(path=str(base_path))
-  page.locator('#read-cue-with').screenshot(path=str(cue_path))
+  base_canvas=page.locator('#smf-read-cue-capture-base')
+  cue_canvas=page.locator('#smf-read-cue-capture-with')
+  assert base_canvas.count()==1 and cue_canvas.count()==1,(kind,'unique cue canvases must exist')
+  assert base_canvas.evaluate('(el)=>el.tagName')=='CANVAS',(kind,'base screenshot target must be the created canvas')
+  assert cue_canvas.evaluate('(el)=>el.tagName')=='CANVAS',(kind,'cue screenshot target must be the created canvas')
+  base_canvas.screenshot(path=str(base_path))
+  cue_canvas.screenshot(path=str(cue_path))
   base_image=Image.open(base_path).convert('RGB');cue_image=Image.open(cue_path).convert('RGB')
   assert base_image.size==cue_image.size,(kind,base_image.size,cue_image.size)
   difference=ImageChops.difference(base_image,cue_image);changed=difference.getbbox()

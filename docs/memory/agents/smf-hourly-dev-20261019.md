@@ -6,13 +6,12 @@
 Prioritize real player-facing gameplay and existing-player animation/graphics; never substitute repeated test-only or documentation-only iterations for product work. Preserve four actions, canonical rosters, saves and offline play.
 
 ## Current checkpoint
-- 0.12.81.208 fixes the READ! counter cue: the existing .48-second ring/label now renders after character-local transforms, anchored to the actual player position and compensated only for viewport scale. This addresses the confirmed simulated-touch screenshot failure without changing the timer or reduced-flash behavior.
-- 0.12.81.208 improves AI slide selection: the existing input/facing forward arc must agree with actual 2D movement momentum. Retreating momentum or side-on input cannot trigger a forward slide; diagonal forward run-ups remain eligible. The existing GameEngine tackle contact arc, odds, reach and speed are unchanged.
-- .207 Modular QA #45085155336 passed 2,776/2,776; .207 Census failed browser shard 0 on simulated-touch READ! screenshot. .208 initial preflight exposed a source-contract regex that omitted the production call semicolon; commit 9993a5c6f87e331024d9c5a66310d023fb0a25af repairs the assertion. Modular QA #45088262048 passed on that head; Full Census #45088262139 passed preflight, preview and Node shards 2/3; remaining Node and Chromium shards were still running at checkpoint update.
-- Main remains .197 at `734090056af345d76e5d25079b2e2f8c1798ba65`; #87 protection, #86 Render drift, #48 physical-device acceptance and #3 Android double tap remain open.
+- 0.12.81.209 adds AI-GOALMOUTH-RECEIVER-ORIENTATION-01: among otherwise safe central goalmouth outlets, CPU selection gives a bounded preference to a receiver already facing goal. A genuine forward run overrides stale facing, and the sole safe outlet is never rejected. Pass safety, shot priority, ball physics and four actions remain unchanged.
+- .208 exact-head Modular QA #45088943433 passed. Full Census #45088943437 passed preflight, preview, all four Node shards and Chromium shards 1–3; browser shard 0 failed only the READ! screenshot. The downloaded artifact proves both “with” and “without” images captured the existing Home menu, not the appended canvas, because the short locator IDs collided with existing DOM IDs. .209 changes to unique canvas IDs and asserts the screenshot targets are CANVAS elements; no production cue failure was established.
+- Main remains .197 at `734090056af345d76e5d25079b2e2f8c1798ba65`. #87 protection, #86 Render drift, #48 physical-device acceptance, #10 existing-player graphics and #3 Android double tap remain open.
 
 ## Next smallest action
-Finish exact-head Full Regression Census #45088262139. Repair any confirmed failure, then allow only the existing QA-gated pipeline to promote. Verify Pages deployment, main Census and hosted-byte smoke independently.
+Run exact-head Modular QA and Full Regression Census for .209. Fix any confirmed failure, then allow only the existing QA-gated promotion. Verify Pages deployment, main Census and hosted-byte smoke independently.
 
 ## Next five product improvements
 1. Improve responsive ball control, intelligent passing and fair tackle/interception decisions without adding controls.
@@ -25,10 +24,10 @@ Finish exact-head Full Regression Census #45088262139. Repair any confirmed fail
 Only this checkpoint. No concept heroes or copied art. Preserve 223 teams, 2,676 players, exact ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No physical-device or owner visual approval claims; no routine LAN/P2P work. #48 stays open; #87 remains unresolved.
 
 ## Evidence
-- .208 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45088262048
-- .208 Full Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45088262139
-- .207 Full Census diagnosis: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45085155258
+- .208 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45088943433
+- .208 Full Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45088943437
 - Main .197 Pages: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45045555988
+- Main .197 Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45045564160
 
 ## Cleanup
 Keep this checkpoint below 4 KiB; never bypass required CI, branch protection or QA promotion.

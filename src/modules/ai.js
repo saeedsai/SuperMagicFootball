@@ -808,7 +808,14 @@ function attackingGoalmouthPass(players,team,carrier,bounds){
   // Goal proximity leads the choice; range, centrality and marking keep it
   // from forcing a risky or needlessly long pass into a crowded pocket.
   const markingPenalty=Math.min(52,Math.max(0,170-nearestMarkGap)*.46);
-  const score=goalGap*.58+range*.26+centerOffset*.16+markingPenalty;
+  // A receiver already open toward goal can play the next touch sooner.
+  // Strong forward momentum overrides a stale sprite-facing value; this is
+  // only a bounded tie-breaker, never a reason to discard the sole safe outlet.
+  const facing=Number.isFinite(runner.face)&&Math.abs(runner.face)>.1?Math.sign(runner.face):
+   Number.isFinite(runner.dx)&&Math.abs(runner.dx)>.1?Math.sign(runner.dx):0;
+  const forwardMomentum=movementVelocity(runner,'x')*dir;
+  const orientationPenalty=facing===-dir&&forwardMomentum<=110?28:0;
+  const score=goalGap*.58+range*.26+centerOffset*.16+markingPenalty+orientationPenalty;
   if(!best||score<best.score-1e-9)best={runner,target,score};
  }
  return best?{runner:best.runner,target:best.target}:null;

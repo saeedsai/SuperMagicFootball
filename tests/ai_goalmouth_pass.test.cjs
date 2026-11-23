@@ -87,3 +87,29 @@ test('engine sends the selected goalmouth outlet as an ordinary low pass intent'
  assert.equal(game.events.at(-1)?.mode,'goalmouth');
  assert.equal(game.events.at(-1)?.loft,'goalmouth');
 });
+
+test('goal-mouth passing prefers the receiver already facing goal in both directions',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1;
+  const carrier=player('carrier',team,team===0?620:380,300);
+  const turned=player('turned',team,carrier.x+dir*160,300,{face:-dir});
+  const open=player('open',team,carrier.x+dir*160,300,{face:dir});
+  const result=AI.attackingGoalmouthPass([carrier,turned,open],team,carrier,bounds);
+  assert.equal(result?.runner,open,'team '+team+' should prefer the receiver facing its attacking goal');
+ }
+});
+
+test('forward momentum overrides stale receiver facing and a sole safe outlet is retained',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1;
+  const carrier=player('carrier',team,team===0?620:380,300);
+  const runner=player('runner',team,carrier.x+dir*160,300,{face:-dir,moveVX:dir*180});
+  assert.equal(AI.attackingGoalmouthPass([carrier,runner],team,carrier,bounds)?.runner,runner,
+   'a genuine forward run should override stale horizontal facing');
+  const sole=player('sole',team,carrier.x+dir*160,300,{face:-dir});
+  assert.equal(AI.attackingGoalmouthPass([carrier,sole],team,carrier,bounds)?.runner,sole,
+   'orientation is a tie-breaker, not a safety rejection');
+ }
+});
