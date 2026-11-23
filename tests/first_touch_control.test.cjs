@@ -15,7 +15,7 @@ const durationStart=src.indexOf('function firstTouchControlDuration('),durationE
 assert(durationStart>=0&&durationEnd>durationStart);
 const firstTouchControlDuration=vm.runInNewContext('('+src.slice(durationStart,durationEnd+2)+')',{clamp});
 const moveAgile=get(' moveAgile(p,dx,dy,maxSpeed,dt){',' staminaTick(p,dt', {Math,stat:(p,k)=>p.src[k],firstTouchControlScale});
-const take=get(' take(p){',' // Goalkeepers hold a clean catch', {Math,clamp,distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),firstTouchControlDuration,keeperParryRebounds:new WeakMap()});
+const take=get(' take(p){',' // Goalkeepers hold a clean catch', {Math,clamp,stat:(p,k)=>p.src[k],distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),firstTouchControlDuration,keeperParryRebounds:new WeakMap()});
 function fixture(){
  const p={t:0,i:2,keeper:false,stun:0,x:220,y:300,face:1,src:{id:'recv',dribbling:35,agility:65},moveVX:0,moveVY:0};
  const far={t:1,keeper:false,stun:0,x:700,y:700,src:{id:'far'}};

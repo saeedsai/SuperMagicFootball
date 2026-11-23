@@ -18,7 +18,7 @@ const durationFor=vm.runInNewContext('('+source.slice(durationStart,durationEnd+
 const move=extract(' moveAgile(p,dx,dy,maxSpeed,dt){',' staminaTick(p,dt',{Math,stat:(p,k)=>p.src[k],firstTouchControlScale:scale});
 const take=extract(' take(p){',' // Goalkeepers hold a clean catch',{Math,clamp,distance:(p,q)=>Math.hypot(p.x-q.x,p.y-q.y),
  // This suite isolates the existing speed-only first-touch contract; AI lane selection has its own integration suite.
- attackingFirstTouchEscape:()=>null,firstTouchControlDuration:durationFor,keeperParryRebounds:new WeakMap(),F:{x:0,y:0,w:1000,h:600}});
+ attackingFirstTouchEscape:()=>null,stat:(p,k)=>p.src[k],firstTouchControlDuration:durationFor,keeperParryRebounds:new WeakMap(),F:{x:0,y:0,w:1000,h:600}});
 function sample({team=0,fps=60,skill=55,pressure=true,mode='ground',speed=500}={}){
  const x=team===0?520:2200,face=team===0?1:-1;
  const player={t:team,i:3,keeper:mode==='keeper',stun:mode==='stunned'?1:0,
