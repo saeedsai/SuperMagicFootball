@@ -41,7 +41,7 @@ with sync_playwright() as pw:
                     q.down=true;q.stun=1;
                 }
                 Object.assign(carrier,{x,y,z:0,down:false,stun:0,action:'run',actionTimer:0,
-                    moveVX:dir*260,moveVY:90,vx:dir*260,vy:90,dribbleHold:0,firstTouchControlTimer:0});
+                    moveVX:dir*180,moveVY:60,vx:dir*180,vy:60,dribbleHold:0,firstTouchControlTimer:0});
                 Object.assign(primary,{x:x-dir*110,y:y-20,z:0,down:false,stun:0,action:'idle',actionTimer:0,
                     slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,
                     shotImpactRiseTimer:0,aiTarget:null,aiTimer:0,aiAssistTarget:null,

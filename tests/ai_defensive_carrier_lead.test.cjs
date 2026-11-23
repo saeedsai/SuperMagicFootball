@@ -33,6 +33,37 @@ test('primary carrier lead follows moving dribblers in both attacking directions
  }
 });
 
+test('primary presser adds a bounded goalward cut-off for forward carriers in both directions',async()=>{
+ const {AI}=await loadModules();
+ const anticipation=.65,horizon=.08+anticipation*.10;
+ const expectedCutoff=Math.min(8,(180-80)*.05)*anticipation;
+ for(const defendingTeam of [0,1]){
+  const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
+  const carrier=player(attackingTeam,620,300,{moveVX:dir*180,moveVY:60});
+  const defender=player(defendingTeam,620-dir*120,300);
+  const target=AI.defensiveCarrierLeadTarget(defender,carrier,bounds,anticipation);
+  assert.ok(target,JSON.stringify({defendingTeam,target}));
+  assert.ok(near((target.x-carrier.x)*dir,180*horizon+expectedCutoff),
+   JSON.stringify({defendingTeam,target,expectedCutoff}));
+  assert.ok(near(target.y,carrier.y+60*horizon));
+  assert.ok(Math.hypot(target.x-carrier.x,target.y-carrier.y)<=34.001);
+ }
+});
+
+test('retreating, lateral-only and zero-anticipation carriers receive no extra goalward bias',async()=>{
+ const {AI}=await loadModules();
+ const defender=player(0,500,300);
+ const retreat=AI.defensiveCarrierLeadTarget(defender,
+  player(1,620,300,{moveVX:180,moveVY:0}),bounds,.75);
+ assert.ok(retreat&&near(retreat.x,620+180*.155)&&near(retreat.y,300));
+ const lateral=AI.defensiveCarrierLeadTarget(defender,
+  player(1,620,300,{moveVX:0,moveVY:180}),bounds,.75);
+ assert.ok(lateral&&near(lateral.x,620)&&near(lateral.y,300+180*.155));
+ const noRead=AI.defensiveCarrierLeadTarget(defender,
+  player(1,620,300,{moveVX:-180,moveVY:0}),bounds,0);
+ assert.ok(noRead&&near(noRead.x,620-180*.08)&&near(noRead.y,300));
+});
+
 test('carrier anticipation scales the short lead and the 34-unit cap prevents overcommitment',async()=>{
  const {AI}=await loadModules();
  const defender=player(0,500,300);
@@ -95,7 +126,7 @@ test('real driveAI leads the primary presser to a moving carrier and falls back 
    q.down=true;q.stun=1;
   }
   Object.assign(carrier,{x,y,z:0,down:false,stun:0,action:'run',actionTimer:0,
-   moveVX:dir*260,moveVY:90,vx:dir*260,vy:90,dribbleHold:0,firstTouchControlTimer:0});
+   moveVX:dir*180,moveVY:60,vx:dir*180,vy:60,dribbleHold:0,firstTouchControlTimer:0});
   Object.assign(primary,{x:x-dir*110,y:y-20,z:0,down:false,stun:0,action:'idle',actionTimer:0,
    slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
    aiTarget:null,aiTimer:0,aiAssistTarget:null,aiGiveAndGoRun:null,aiFirstTouchTarget:null,aiDetour:null});
@@ -106,8 +137,13 @@ test('real driveAI leads the primary presser to a moving carrier and falls back 
   game.clock=2;
   const fieldBounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
   const anticipation=AI.aiTuning(game.cpuLevel(primary)).anticipation;
+  const horizon=.08+anticipation*.10;
+  const expectedCutoff=Math.min(8,Math.max(0,(180-80)*.05))*anticipation;
   const expected=AI.defensiveCarrierLeadTarget(primary,carrier,fieldBounds,anticipation);
   assert.ok(expected);
+  assert.ok(near((expected.x-x)*dir,180*horizon+expectedCutoff),
+   JSON.stringify({defendingTeam,expected,horizon,expectedCutoff}));
+  assert.ok(near(expected.y,y+60*horizon));
   game.driveAI(primary,.016);
   assert.ok(near(primary.aiTarget.x,expected.x),JSON.stringify({defendingTeam,expected,actual:primary.aiTarget}));
   assert.ok(near(primary.aiTarget.y,expected.y));

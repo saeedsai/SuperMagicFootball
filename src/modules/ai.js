@@ -220,10 +220,10 @@ function defensiveThirdManRunnerTarget(team,carrier,players,bounds,primary,suppo
  return best?{defender:best.defender,runner:best.runner,target:best.target}:null;
 }
 
-// Lead the primary presser a short distance along a moving carrier's live path.
-// This is a bounded interception read, not a speed boost or predictive tackle:
-// the ordinary movement, reach and difficulty-scaled tackle code still decides
-// whether the defender can make contact.
+// Lead the primary presser along a moving carrier's live path. When the carrier
+// is advancing toward goal, bias the same bounded point a few units farther down
+// the attack axis so the defender cuts off the next touch instead of trailing.
+// This changes only the target: movement, reach and tackle probability stay intact.
 function defensiveCarrierLeadTarget(defender,carrier,bounds,anticipation=.5){
  const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
  const active=q=>{
@@ -251,6 +251,11 @@ function defensiveCarrierLeadTarget(defender,carrier,bounds,anticipation=.5){
  const read=Number.isFinite(anticipation)?clampTo(anticipation,0,1):.5;
  const horizon=.08+read*.10;
  let leadX=vx*horizon,leadY=vy*horizon;
+ const attackDirection=carrier.t===0?1:carrier.t===1?-1:0;
+ const goalwardSpeed=vx*attackDirection;
+ const goalwardCutoff=attackDirection!==0&&goalwardSpeed>80?
+  Math.min(8,(goalwardSpeed-80)*.05)*read:0;
+ leadX+=attackDirection*goalwardCutoff;
  const leadLength=Math.hypot(leadX,leadY);
  if(leadLength>34){const scale=34/leadLength;leadX*=scale;leadY*=scale;}
  return {
