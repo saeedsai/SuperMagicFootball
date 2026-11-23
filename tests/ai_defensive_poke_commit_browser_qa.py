@@ -38,15 +38,20 @@ with sync_playwright() as pw:
             const low=game.defensivePokeCommitWindow(player(0,1000,700),player(1,1089,700,{moveVX:-240,moveVY:0}));
             const high=game.defensivePokeCommitWindow(player(0,1000,700),player(1,1090,700,{moveVX:-240,moveVY:0}));
             const sideOn=game.defensivePokeCommitWindow(player(0,1000,700,{dx:0,dy:1}),player(1,1088,700,{moveVX:-240,moveVY:0}));
+            const elite=game.defensivePokeCommitWindow(player(0,1000,700,{src:{defence:95}}),player(1,1083,700,{moveVX:-110,moveVY:0}));
+            const weak=game.defensivePokeCommitWindow(player(0,1000,700,{src:{defence:20}}),player(1,1083,700,{moveVX:-110,moveVY:0}));
+            const average=game.defensivePokeCommitWindow(player(0,1000,700,{src:{defence:50}}),player(1,1083,700,{moveVX:-120,moveVY:0}));
+            const mirroredElite=game.defensivePokeCommitWindow(player(1,1083,700,{dx:-1,face:-1,src:{defence:95}}),player(0,1000,700,{moveVX:110,moveVY:0}));
             const canonicalTeams=SupermagicFootball.teams.filter(team=>
                 !['concept_demo','crown_royals_reference'].includes(team.group)).length;
-            return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,
+            return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,elite,weak,average,mirroredElite,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:canonicalTeams};
         }""")
         assert result['right'] and result['left'],(kind,result)
         assert not result['retreat'] and not result['lateral'] and not result['sideOn'] and not result['staleVelocity'],(kind,result)
         assert result['low'] and not result['high'],(kind,result)
+        assert result['elite'] and not result['weak'] and result['average'] and result['mirroredElite'],(kind,result)
         assert result['buttons']==4 and result['teams']==223,(kind,result)
         assert not errors,(kind,errors)
         print('PASS',kind,'adaptive closing poke, mirrored direction, contact bound, 223 teams and four actions',flush=True)

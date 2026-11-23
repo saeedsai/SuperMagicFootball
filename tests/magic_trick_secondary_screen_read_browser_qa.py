@@ -38,7 +38,9 @@ with sync_playwright() as pw:
     if(withScreen){g.driveAI(screen,1/60);g.driveAI(nearest,1/60);}
     return {hidden:carrier.hideBallTimer>.4,owner:g.ball.owner===carrier,cooldown:carrier.magicReadyAt,fatigue:carrier.fatigue,
      readerCue:screen.magicReadCueTimer||0,counterpressTimer:screen.magicReadCounterpressTimer||0,
-     readerTarget:screen.aiTarget,primaryTarget:nearest.aiTarget,readerAction:screen.action};
+     readerTarget:screen.aiTarget,primaryTarget:nearest.aiTarget,readerAction:screen.action,
+     readerFace:screen.face,readerTimer:screen.magicReadCounterpressTimer,
+     humans:g.humans,awayInControl:g.inControl(1),carrierHideBallTimer:carrier.hideBallTimer};
    }
    return {baseline:attempt(false),screened:attempt(true),buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
@@ -49,7 +51,7 @@ with sync_playwright() as pw:
   assert result['baseline']['readerCue']==0 and result['screened']['readerCue']>0,(kind,result)
   assert result['screened']['counterpressTimer']>0,(kind,result)
   target=result['screened']['readerTarget'];primary_target=result['screened']['primaryTarget']
-  assert target is not None and 42<=(target['x']-1200)<=72,(kind,target)
+  assert target is not None and 42<=(target['x']-1200)<=72,(kind,target,result['screened'])
   assert primary_target is not None and ((primary_target['x']-1200)**2+(primary_target['y']-765)**2)**.5<50,(kind,primary_target)
   assert result['screened']['readerAction']=='idle',(kind,result)
   assert result['baseline']['owner'] is True,(kind,result)

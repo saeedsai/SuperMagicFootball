@@ -34,6 +34,21 @@ test('retreating, lateral and insufficiently closing carriers keep the existing 
   'legacy velocity must not override the zero-motion fallback used by the actual poke');
 });
 
+test('Defence skill scales the closing-speed read while the average baseline stays unchanged',()=>{
+ const average=player(0,1000,700,{src:{defence:50}});
+ const elite=player(0,1000,700,{src:{defence:95}});
+ const weak=player(0,1000,700,{src:{defence:20}});
+ assert.equal(commit(average,player(1,1083,700,{moveVX:-120,moveVY:0})),true,
+  'average Defence keeps the existing 120-unit/s threshold');
+ assert.equal(commit(average,player(1,1083,700,{moveVX:-119.9,moveVY:0})),false);
+ const slowerClosing=player(1,1083,700,{moveVX:-110,moveVY:0});
+ assert.equal(commit(elite,slowerClosing),true,'high Defence reads a slower closing carrier');
+ assert.equal(commit(weak,slowerClosing),false,'low Defence keeps the stricter approach threshold');
+ const mirroredElite=player(1,1083,700,{dx:-1,dy:0,face:-1,src:{defence:95}});
+ assert.equal(commit(mirroredElite,player(0,1000,700,{moveVX:110,moveVY:0})),true,
+  'the skill read mirrors when defending the opposite goal');
+});
+
 test('the early window follows the existing poke lead and 16-unit step contact budget',()=>{
  const defender=player(0,1000,700,{dx:1,dy:0,face:1});
  assert.equal(commit(defender,player(1,1089,700,{moveVX:-240,moveVY:0})),true);
@@ -51,6 +66,15 @@ test('the early poke respects forward arc, player eligibility and finite coordin
  ]) assert.equal(commit(player(1,1000,700,{dx:1,dy:0,face:1}),{...carrier,...invalid}),false,JSON.stringify(invalid));
  assert.equal(commit(player(0,1000,700),player(0,1088,700,{moveVX:-240,moveVY:0})),false);
  assert.equal(commit(player(0,1000,700),null),false);
+});
+
+test('the Defence-scaled threshold remains bounded for extreme ratings',()=>{
+ const low=player(0,1000,700,{src:{defence:1}});
+ const high=player(0,1000,700,{src:{defence:100}});
+ assert.equal(commit(low,player(1,1083,700,{moveVX:-134,moveVY:0})),false);
+ assert.equal(commit(low,player(1,1083,700,{moveVX:-135,moveVY:0})),true);
+ assert.equal(commit(high,player(1,1083,700,{moveVX:-105,moveVY:0})),true);
+ assert.equal(commit(high,player(1,1083,700,{moveVX:-104.9,moveVY:0})),false);
 });
 
 test('ordinary CPU defenders use the adaptive poke window while primary press keeps its dedicated read',()=>{

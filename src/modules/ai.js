@@ -1538,9 +1538,9 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   const relX=defender.x-carrier.x,relY=defender.y-carrier.y;
   const ahead=relX*ux+relY*uy,lateral=Math.abs(relX*uy-relY*ux);
   if(ahead<18||ahead>150||lateral>64)return null;
-  const face=Number(defender.face);
-  const facing=(Number.isFinite(face)&&Math.abs(face)>.1?Math.sign(face):-attackDir)*(-ux)>=.15;
-  if(!facing)return null;
+  // The .42s timer is granted only after the visible facing/screen read succeeds.
+  // A defender may turn toward the counterpress lane before the next AI tick;
+  // do not invalidate an already-earned read by checking facing a second time.
   const side=Math.abs(relY)>8?Math.sign(relY):(((Number(defender.i)||0)+team)%2?1:-1);
   const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
   const target={x:clampTo(carrier.x+ux*54+attackDir*6,xMin+24,xMax-24),

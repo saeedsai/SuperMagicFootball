@@ -453,7 +453,11 @@ function defensivePokeCommitWindow(defender,carrier){
  const vx=Number.isFinite(carrier.moveVX)?carrier.moveVX:0;
  const vy=Number.isFinite(carrier.moveVY)?carrier.moveVY:0;
  const closing=-(vx*ux+vy*uy);
- if(!Number.isFinite(closing)||closing<120)return false;
+ const rawDefence=stat(defender,'defence');
+ const defence=Number.isFinite(rawDefence)?clamp(rawDefence,1,100):50;
+ // Better defenders recognize a closing carrier earlier; average players keep 120.
+ const closingThreshold=clamp(120-(defence-50)*.3,105,135);
+ if(!Number.isFinite(closing)||closing<closingThreshold)return false;
  const leadX=clamp(vx*.055,-12,12),leadY=clamp(vy*.055,-12,12);
  const predictedGap=Math.hypot(dx+leadX,dy+leadY)-16;
  return Number.isFinite(predictedGap)&&predictedGap<62;
