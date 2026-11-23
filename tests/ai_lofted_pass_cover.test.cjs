@@ -115,7 +115,7 @@ test('engine assigns lofted-pass cover to the second defender while the primary 
   assert.ok(Math.abs(support.aiTarget.x-expected.x)<1);
   assert.ok(Math.abs(support.aiTarget.y-expected.y)<1);
   assert.equal(support.action,'jump','the second defender uses the existing JUMP action at a reachable lofted-pass crossing');
-  assert.ok(support.z>10);
+  assert.equal(support.jumpCount,1,'the existing jump action must be committed');
   game.driveAI(primary,.016);
   assert.ok(Math.hypot(primary.aiTarget.x-game.ball.x,primary.aiTarget.y-game.ball.y)<80,
    'primary must continue pressing the live ball');

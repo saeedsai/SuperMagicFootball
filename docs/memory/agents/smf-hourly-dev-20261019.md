@@ -1,4 +1,5 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
+**Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-11-23
 
 ## Mission
@@ -10,6 +11,7 @@ Deliver real player-facing gameplay first, then existing-player graphics/animati
 - Focused Node and real-engine desktop/simulated-touch Chromium regressions added. Exact-head CI pending; no local test claim because github.com DNS failed.
 
 ## Previous gate diagnosis
+- .231 first QA run: cutback regression passed; the new lofted-pass engine test correctly entered action `jump`, but its `z>10` assertion was too strict because the existing jump metric's initial lift is 10. The test/browser acceptance now checks `jumpCount===1`. The memory contract also required this checkpoint's Agent ID line; restored.
 - .230 Modular QA #45193483047 and Census #45193483239 both failed ai_cutback_pass.test.cjs: the safe cutback runner was also excluded by unsafeSupportReceiver, causing fallback to jp3 instead of jp1. .230 is not certified/promoted.
 - .229 had a pre-certification scope bug; .228 had a stale Euclidean-vs-longitudinal test assertion; .227 browser fixture used invalid lineup slot 6. These candidates were superseded.
 - .225 remains the latest deployed main: SHA 91adea9bad06524c3022e7ee60a8ece58fb16142; Pages #45165193079 and main Census #45165206483 passed.

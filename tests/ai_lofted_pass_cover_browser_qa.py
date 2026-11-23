@@ -32,9 +32,9 @@ with sync_playwright() as pw:
     const targetX=x-dir*93.2;
     Object.assign(support,{x:targetX,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,aiAssistTarget:null,aiTimer:0,aiTarget:null});
     g.driveAI(support,.016);const supportTarget=support.aiTarget?{x:support.aiTarget.x,y:support.aiTarget.y}:null;
-    const supportZ=support.z,supportAction=support.action;
+    const supportJumpCount=support.jumpCount,supportAction=support.action;
     g.driveAI(primary,.016);const primaryTarget=primary.aiTarget?{x:primary.aiTarget.x,y:primary.aiTarget.y}:null;
-    rows.push({attackingTeam,dir,x,y,targetX,supportTarget,supportZ,supportAction,primaryTarget,ball:{x:g.ball.x,y:g.ball.y}});
+    rows.push({attackingTeam,dir,x,y,targetX,supportTarget,supportJumpCount,supportAction,primaryTarget,ball:{x:g.ball.x,y:g.ball.y}});
    }
    return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
@@ -44,7 +44,7 @@ with sync_playwright() as pw:
    cover=row['supportTarget'];primary=row['primaryTarget'];ball=row['ball']
    assert cover is not None and primary is not None,(kind,row)
    assert abs(cover['x']-row['targetX'])<2 and abs(cover['y']-row['y'])<2,(kind,row)
-   assert row['supportAction']=='jump' and row['supportZ']>10,(kind,row)
+   assert row['supportAction']=='jump' and row['supportJumpCount']==1,(kind,row)
    assert abs(primary['x']-ball['x'])<80 and abs(primary['y']-ball['y'])<80,(kind,row)
   assert not errors,(kind,errors)
   print('PASS',kind,'mirrored lofted-pass cover, primary pursuit, four actions and no JavaScript errors',flush=True)
