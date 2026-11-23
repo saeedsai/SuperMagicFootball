@@ -10,7 +10,7 @@ const bounds={xMin:24,xMax:976,yMin:24,yMax:576};
 const player=(name,t,x,y,extra={})=>({name,t,keeper:false,x,y,z:0,stun:0,down:false,
  moveVX:0,moveVY:0,action:'idle',actionTimer:0,slideTimer:0,
  shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
- src:{id:name},...extra});
+ src:{id:name,jumping:100},...extra});
 function fixture(team){
  const attacking=1-team,dir=attacking===0?1:-1;
  const receiver=player('lofted-receiver-'+team,attacking,500,300);
@@ -60,6 +60,40 @@ test('lofted cover ignores receivers who cannot contest the arrival',async()=>{
   assert.equal(AI.defensiveLoftedPassCoverTarget(0,f.ball,[receiver],bounds),null,
    'must reject unavailable receiver '+Object.keys(patch).join(','));
  }
+});
+test('second-defender JUMP read respects the defender\'s actual Jumping rating and ballistic reach',async()=>{
+ const {AI}=await loadModules();
+ const f=fixture(0),defender=player('jump-rating-cover',0,0,0);
+ f.players.push(defender);
+ const point=AI.defensiveLoftedPassCoverTarget(0,f.ball,f.players,bounds);
+ assert.ok(point);
+ Object.assign(defender,{x:point.x,y:point.y});
+ assert.equal(AI.defensiveLoftedPassJumpWindow(0,f.ball,defender,f.players,bounds,.32),true,
+  'a high-Jumping defender can reach the projected ball height');
+ defender.src.jumping=1;
+ assert.equal(AI.defensiveLoftedPassJumpWindow(0,f.ball,defender,f.players,bounds,.32),false,
+  'a low-Jumping defender must not waste JUMP on an unreachable pass');
+ defender.src.jumping=100;
+ assert.equal(AI.defensiveLoftedPassJumpWindow(0,f.ball,defender,f.players,bounds,.32),true);
+});
+test('a live airborne JUMP can collect a high pass while a grounded player keeps the original reach',async()=>{
+ const {ENGINE}=await loadModules();
+ const game=new ENGINE.GameEngine({halfSeconds:120});
+ game.init({home:0,away:1,mode:'quick',humans:0});
+ const jumper=game.player(0,3);
+ for(const p of game.players)if(p!==jumper){p.stun=1;p.down=true;}
+ const setBall=()=>Object.assign(game.ball,{owner:null,x:500,y:300,z:100,vx:0,vy:0,vz:0,
+  canCollect:0,pass:true,passTeam:1,attacker:1,passTarget:jumper.src.id,age:.5,
+  shot:null,strike:null,ordinaryShot:false});
+ Object.assign(jumper,{x:500,y:300,z:70,vz:0,jumpCount:1,action:'jump',actionTimer:.3,
+  stun:0,down:false,slideTimer:0,shotImpactKnockdownPending:0,
+  shotImpactKnockdownTimer:0,shotImpactRiseTimer:0});
+ setBall();game.updateBall(.001);
+ assert.equal(game.ball.owner,jumper,'the jumping body envelope must collect the high pass');
+ game.ball.owner=null;
+ Object.assign(jumper,{z:0,vz:0,jumpCount:0,action:'idle',actionTimer:0});
+ setBall();game.updateBall(.001);
+ assert.equal(game.ball.owner,null,'a grounded player must not gain extra aerial reach');
 });
 test('second defender jumps only when a targeted lofted pass crosses a reachable window after reaction',async()=>{
  const {AI}=await loadModules();

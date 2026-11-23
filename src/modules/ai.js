@@ -1,6 +1,7 @@
 // Supermagic Football v0.8.25.30 | AI | independently editable module
 import {GAME_ASSETS} from "../assets.js";
 import {SHOTFEEL} from "./shotfeel.js";
+import {JUMPMETRICS} from "./jumpmetrics.js";
 const AI=(()=>{// Five behaviour profiles. These affect COMPUTER opponents only; human controls and
 // teammate assistants keep the baseline Normal profile. Tunable without changing match code.
 const AI_LEVELS=GAME_ASSETS.mechanics.aiLevels;
@@ -1300,7 +1301,13 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    const ballX=ball.x+ball.vx*time,ballY=ball.y+ball.vy*time;
    const height=ball.z+ball.vz*time-250*time*time;
    const verticalVelocity=ball.vz-500*time;
-   if(Math.hypot(futureX-ballX,futureY-ballY)>58||height<24||height>132||
+   // Match the actual first-jump ballistic envelope; weak Jumping ratings must
+   // not trigger a contest they cannot reach. The extra 45 units are the same
+   // body-height allowance used by updateBall's airborne collection resolver.
+   const jump=JUMPMETRICS.jumpMetrics(defender.src?.jumping);
+   const predictedJumpHeight=jump.initialLift+jump.firstImpulse*time-540*time*time;
+   const reachableHeight=Math.max(0,predictedJumpHeight)+45;
+   if(Math.hypot(futureX-ballX,futureY-ballY)>58||height<24||height>reachableHeight||
     verticalVelocity>190||verticalVelocity< -420||
     (Number.isFinite(ball.canCollect)&&ball.canCollect>time+.16))return false;
    return true;

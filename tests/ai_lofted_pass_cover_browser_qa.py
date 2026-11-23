@@ -15,7 +15,7 @@ with sync_playwright() as pw:
   page.evaluate("""() => {const v=new Map();Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>v.get(k)||null,setItem:(k,x)=>v.set(k,String(x)),removeItem:k=>v.delete(k),clear:()=>v.clear()}})}""")
   page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
-   const g=SupermagicFootball.game,rows=[];
+   const g=SupermagicFootball.game,rows=[],collectionRows=[];
    for(const defendingTeam of [0,1]){
     const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
     g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
@@ -36,10 +36,26 @@ with sync_playwright() as pw:
     g.driveAI(primary,.016);const primaryTarget=primary.aiTarget?{x:primary.aiTarget.x,y:primary.aiTarget.y}:null;
     rows.push({attackingTeam,dir,x,y,targetX,supportTarget,supportJumpCount,supportAction,primaryTarget,ball:{x:g.ball.x,y:g.ball.y}});
    }
-   return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
+   for(const defendingTeam of [0,1]){
+    g.init({home:0,away:1,mode:'quick',humans:0});
+    const jumper=g.player(defendingTeam,3);
+    for(const q of g.players)if(q!==jumper){q.down=true;q.stun=1;}
+    Object.assign(jumper,{x:500,y:300,z:70,vz:0,jumpCount:1,action:'jump',actionTimer:.3,
+     stun:0,down:false,slideTimer:0,shotImpactKnockdownPending:0,
+     shotImpactKnockdownTimer:0,shotImpactRiseTimer:0});
+    const setBall=()=>Object.assign(g.ball,{owner:null,x:500,y:300,z:100,vx:0,vy:0,vz:0,
+     canCollect:0,pass:true,passTeam:1-defendingTeam,attacker:1-defendingTeam,
+     passTarget:jumper.src.id,age:.5,shot:null,strike:null,ordinaryShot:false});
+    setBall();g.updateBall(.001);const airborneCollected=g.ball.owner===jumper;
+    g.ball.owner=null;Object.assign(jumper,{z:0,vz:0,jumpCount:0,action:'idle',actionTimer:0});
+    setBall();g.updateBall(.001);const groundedCollected=g.ball.owner===jumper;
+    collectionRows.push({defendingTeam,airborneCollected,groundedCollected});
+   }
+   return {rows,collectionRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
   assert result['teams']>=223,(kind,result)
+  assert len(result['collectionRows'])==2 and all(r['airborneCollected'] and not r['groundedCollected'] for r in result['collectionRows']),(kind,result['collectionRows'])
   for row in result['rows']:
    cover=row['supportTarget'];primary=row['primaryTarget'];ball=row['ball']
    assert cover is not None and primary is not None,(kind,row)

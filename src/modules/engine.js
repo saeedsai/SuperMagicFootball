@@ -3258,7 +3258,15 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
    }
   }
   return {p,d,height};
- }).sort((a,c)=>a.d-c.d);for(let {p,d,height} of byDistance){if(d> (p.keeper?(26+stat(p,'gkSkill')*.18)*(1-.18*p.fatigue):27)||height>(p.keeper?(63+stat(p,'gkDiving')*1.12)*(1-.15*p.fatigue):45))continue;if(b.strike){
+ }).sort((a,c)=>a.d-c.d);for(let {p,d,height} of byDistance){
+  const airborneJumper=!p.keeper&&p.jumpCount>0&&
+   (p.action==='jump'||p.action==='doubleJump')&&Number.isFinite(p.z)&&p.z>10;
+  const playerMaxHeight=p.keeper?(63+stat(p,'gkDiving')*1.12)*(1-.15*p.fatigue):
+   airborneJumper?Math.max(0,p.z)+45:45;
+  const playerMinHeight=airborneJumper?Math.max(0,p.z-18):0;
+  if(d>(p.keeper?(26+stat(p,'gkSkill')*.18)*(1-.18*p.fatigue):27)||
+   height>playerMaxHeight||height<playerMinHeight)continue;
+  if(b.strike){
   const special=b.strike.kind==='super';
   const flightDistance=Math.hypot(b.x-b.strike.originX,b.y-b.strike.originY);
   const force=SHOTFEEL.contactEnergy(b.strike.energy,Math.hypot(b.vx,b.vy),flightDistance,special);
