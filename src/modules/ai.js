@@ -649,15 +649,25 @@ function attackingSupportPass(players,team,carrier,supportRun){
     !timerClear(defender.shotImpactKnockdownPending)||
     !timerClear(defender.shotImpactKnockdownTimer)||
     !timerClear(defender.shotImpactRiseTimer)||!grounded(defender))continue;
+   if(defender.keeper&&['keeperDiveCatch','keeperRecover','keeperHold','keeperCatch'].includes(defender.action))continue;
    const stun=defender.stun==null?0:Number(defender.stun);
    if(!Number.isFinite(stun)||stun>arrivalSeconds)continue;
    defenders.push(defender);
   }
   if(SHOTFEEL.passingLanePressure(carrier,target,defenders)>=.10)return null;
+  const keeperCollectionReach=keeper=>{
+   const rawSkill=Number(keeper.src?.gkSkill),rawDiving=Number(keeper.src?.gkDiving);
+   const skill=clampValue(Number.isFinite(rawSkill)?rawSkill:50,0,100);
+   const diving=clampValue(Number.isFinite(rawDiving)?rawDiving:50,0,100);
+   const rawFatigue=Number(keeper.fatigue);
+   const fatigue=clampValue(Number.isFinite(rawFatigue)?rawFatigue:0,0,1);
+   return clampValue(92+(skill+diving)*.09-fatigue*12,90,110);
+  };
   for(const defender of defenders){
    const futureX=defender.x+clampValue(movementVelocity(defender,'x')*arrivalSeconds,-65,65);
    const futureY=defender.y+clampValue(movementVelocity(defender,'y')*arrivalSeconds,-65,65);
-   if(Math.hypot(futureX-target.x,futureY-target.y)<84)return null;
+   const reach=defender.keeper?keeperCollectionReach(defender):84;
+   if(Math.hypot(futureX-target.x,futureY-target.y)<reach)return null;
   }
   return {runner,target};
  }

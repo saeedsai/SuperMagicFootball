@@ -207,3 +207,60 @@ test('through-ball target and momentum are mirrored for the opposite attacking d
  assert.ok(option.target.x<runner.x,'away-side lead point must advance toward the left goal');
  assert.ok(option.target.y<runner.y,'away-side lead point follows the mirrored diagonal');
 });
+
+function throughBallKeeperFixture(team){
+ const dir=team===0?1:-1;
+ const carrier={t:team,x:1350,y:600,down:false,stun:0,z:0,action:'idle'};
+ const runner={t:team,x:carrier.x+dir*120,y:600,moveVX:dir*200,moveVY:-200,
+  down:false,stun:0,z:0,action:'idle'};
+ const supportRun={runner,target:{x:carrier.x+dir*160,y:488}};
+ return {team,dir,carrier,runner,supportRun};
+}
+
+test('through-ball selection respects goalkeeper collection reach, skill, fatigue and recovery on both sides',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=throughBallKeeperFixture(team);
+  const open=AI.attackingThroughBall([f.carrier,f.runner],team,f.carrier,f.supportRun);
+  assert.ok(open,'fixture must begin with an uncontested through-ball');
+  const keeper={t:1-team,keeper:true,x:open.target.x+f.dir*94,y:open.target.y+34,
+   z:0,stun:0,down:false,action:'idle',actionTimer:0,moveVX:0,moveVY:0,fatigue:0,
+   src:{gkSkill:1,gkDiving:1}};
+  const players=[f.carrier,f.runner,keeper];
+  assert.ok(AI.attackingThroughBall(players,team,f.carrier,f.supportRun),
+   'a low-reach goalkeeper must not erase a clear through-ball');
+  keeper.src.gkSkill=100;keeper.src.gkDiving=100;
+  assert.equal(AI.attackingThroughBall(players,team,f.carrier,f.supportRun),null,
+   'a rested elite keeper within its projected collection pocket must block the through-ball');
+  keeper.fatigue=1;
+  assert.ok(AI.attackingThroughBall(players,team,f.carrier,f.supportRun),
+   'fatigue must reduce the keeper collection envelope');
+  keeper.fatigue=0;keeper.keeper=false;
+  assert.ok(AI.attackingThroughBall(players,team,f.carrier,f.supportRun),
+   'outfield defenders retain the existing 84-unit pocket');
+  keeper.keeper=true;keeper.action='keeperRecover';
+  assert.ok(AI.attackingThroughBall(players,team,f.carrier,f.supportRun),
+   'a recovering keeper cannot falsely block a ground through-ball');
+  keeper.action='keeperDiveCatch';
+  assert.ok(AI.attackingThroughBall(players,team,f.carrier,f.supportRun),
+   'a committed catch pose cannot falsely block a separate through-ball');
+ }
+});
+
+test('through-ball keeper prediction rewards closing movement and respects a keeper moving away on both sides',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=throughBallKeeperFixture(team);
+  const open=AI.attackingThroughBall([f.carrier,f.runner],team,f.carrier,f.supportRun);
+  assert.ok(open);
+  const keeper={t:1-team,keeper:true,x:open.target.x+f.dir*130,y:open.target.y,
+   z:0,stun:0,down:false,action:'idle',actionTimer:0,moveVX:-f.dir*250,moveVY:0,
+   fatigue:0,src:{gkSkill:100,gkDiving:100}};
+  const players=[f.carrier,f.runner,keeper];
+  assert.equal(AI.attackingThroughBall(players,team,f.carrier,f.supportRun),null,
+   'a keeper projected into reach before arrival must stop the speculative lead');
+  keeper.moveVX=f.dir*250;
+  assert.ok(AI.attackingThroughBall(players,team,f.carrier,f.supportRun),
+   'a keeper moving away from the landing pocket must not over-defend it');
+ }
+});
