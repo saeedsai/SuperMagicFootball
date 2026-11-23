@@ -11,8 +11,8 @@ test.before(async()=>{
 });
 
 const player=(t,x,y,extra={})=>({t,x,y,keeper:false,down:false,stun:0,invuln:0,z:0,dx:1,dy:0,face:1,...extra});
-function commit(defender,carrier){
- return ENGINE.GameEngine.prototype.defensivePokeCommitWindow.call({},defender,carrier);
+function commit(defender,carrier,ball=null){
+ return ENGINE.GameEngine.prototype.defensivePokeCommitWindow.call({},defender,carrier,ball);
 }
 
 test('closing grounded carriers open the bounded early PASS-poke window in both directions',()=>{
@@ -79,7 +79,7 @@ test('the Defence-scaled threshold remains bounded for extreme ratings',()=>{
 
 test('ordinary CPU defenders use the adaptive poke window while primary press keeps its dedicated read',()=>{
  const source=fs.readFileSync('src/modules/engine.js','utf8');
- assert.ok(source.includes('(distance(p,owner)<68||this.defensivePokeCommitWindow(p,owner))'));
+ assert.ok(source.includes('(distance(p,owner)<68||this.defensivePokeCommitWindow(p,owner,this.ball))'));
  assert.ok(source.includes('if(carrierDistance<74){'));
  assert.ok(source.includes('defensiveFirstTouchSlide(p,owner,this.playerSpeed(p))'));
 });
@@ -102,6 +102,13 @@ test('early PASS poke requires the live ball to be exposed toward the approachin
   'stale ball positions outside the carried-ball envelope fail closed');
  assert.equal(commit(defender,shielded),true,
   'legacy helper callers without a live-ball argument retain their existing behavior');
+ const leftDefender=player(1,1088,700,{dx:-1,dy:0,face:-1});
+ const leftExposed=player(0,1000,700,{face:1,moveVX:240,moveVY:0});
+ const leftExposedBall={owner:leftExposed,x:leftExposed.x+17,y:leftExposed.y+12,z:12};
+ const leftShielded=player(0,1000,700,{face:-1,moveVX:240,moveVY:0});
+ const leftShieldedBall={owner:leftShielded,x:leftShielded.x-17,y:leftShielded.y+12,z:12};
+ assert.equal(commit(leftDefender,leftExposed,leftExposedBall),true,'left-side defender reads the exposed ball');
+ assert.equal(commit(leftDefender,leftShielded,leftShieldedBall),false,'left-side carrier can shield the far foot');
 });
 
 test('ordinary AI passes the live ball to the early poke read without changing close contact',()=>{

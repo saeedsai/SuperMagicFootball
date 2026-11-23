@@ -162,7 +162,7 @@ test('real engine sends the successful screen reader into a short counterpress w
   Object.assign(carrier.src,{magicTrick:'hideBall',dribbling:90});
   Object.assign(primary,{x:x-dir*30,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
    dx:0,dy:0,moveVX:0,moveVY:0,face:dir,aiTimer:0,aiTarget:null,cd:1});
-  Object.assign(screen,{x:x+dir*68,y:y+18,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+  Object.assign(screen,{x:x+dir*70,y:y+18,z:0,down:false,stun:0,action:'idle',actionTimer:0,
    dx:0,dy:0,moveVX:0,moveVY:0,face:-dir,aiTimer:0,aiTarget:null,cd:1});
   game.ball.owner=carrier;game.ball.x=x;game.ball.y=y;game.ball.z=0;game.ball.lastTouchTeam=team;
   game.clock=10;
@@ -175,6 +175,8 @@ test('real engine sends the successful screen reader into a short counterpress w
   const forward=(screen.aiTarget.x-carrier.x)*dir;
   assert.ok(forward>=42&&forward<=72,'the second defender should close the forward lane');
   assert.equal(screen.action,'idle','the movement-only counterpress must not auto-tackle');
+  assert.ok(Math.hypot(screen.aiTarget.x-carrier.x,screen.aiTarget.y-carrier.y)<=82,
+   'the earned screen reader must keep the bounded counterpress lane target');
   game.driveAI(primary,.016);
   assert.ok(Math.hypot(primary.aiTarget.x-carrier.x,primary.aiTarget.y-carrier.y)<50,
    'the original primary presser must continue to close the carrier');

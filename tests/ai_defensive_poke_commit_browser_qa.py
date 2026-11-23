@@ -48,10 +48,17 @@ with sync_playwright() as pw:
             const shieldedBall={owner:shieldedCarrier,x:shieldedCarrier.x+17,y:shieldedCarrier.y+12,z:12};
             const exposedBallRead=game.defensivePokeCommitWindow(player(0,1000,700),exposedCarrier,exposedBall);
             const shieldedBallRead=game.defensivePokeCommitWindow(player(0,1000,700),shieldedCarrier,shieldedBall);
+            const leftExposedCarrier=player(0,1000,700,{face:1,moveVX:240,moveVY:0});
+            const leftExposedBall={owner:leftExposedCarrier,x:leftExposedCarrier.x+17,y:leftExposedCarrier.y+12,z:12};
+            const leftShieldedCarrier=player(0,1000,700,{face:-1,moveVX:240,moveVY:0});
+            const leftShieldedBall={owner:leftShieldedCarrier,x:leftShieldedCarrier.x-17,y:leftShieldedCarrier.y+12,z:12};
+            const leftDefender=player(1,1088,700,{dx:-1,dy:0,face:-1});
+            const leftExposedBallRead=game.defensivePokeCommitWindow(leftDefender,leftExposedCarrier,leftExposedBall);
+            const leftShieldedBallRead=game.defensivePokeCommitWindow(leftDefender,leftShieldedCarrier,leftShieldedBall);
             const canonicalTeams=SupermagicFootball.teams.filter(team=>
                 !['concept_demo','crown_royals_reference'].includes(team.group)).length;
             return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,elite,weak,average,mirroredElite,
-                exposedBallRead,shieldedBallRead,
+                exposedBallRead,shieldedBallRead,leftExposedBallRead,leftShieldedBallRead,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:canonicalTeams};
         }""")
@@ -60,6 +67,7 @@ with sync_playwright() as pw:
         assert result['low'] and not result['high'],(kind,result)
         assert result['elite'] and not result['weak'] and result['average'] and result['mirroredElite'],(kind,result)
         assert result['exposedBallRead'] and not result['shieldedBallRead'],(kind,result)
+        assert result['leftExposedBallRead'] and not result['leftShieldedBallRead'],(kind,result)
         assert result['buttons']==4 and result['teams']==223,(kind,result)
         assert not errors,(kind,errors)
         print('PASS',kind,'adaptive poke, live ball exposure, shielding, mirrored direction, contact bound, 223 teams and four actions',flush=True)

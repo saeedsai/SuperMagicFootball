@@ -2993,7 +2993,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
     if(owner&&owner.t!==t&&p.cd<=0&&fieldAbility(p.src)&&Math.random()<ai.tackleRate*.17*tactical.press){
       this.activateDefence(p);
     }
-    if(owner&&owner.t!==t&&p.cd<=0&&
+    if(owner&&owner.t!==t&&p.cd<=0&&!(Number(p.magicReadCounterpressTimer)>0)&&
      (distance(p,owner)<68||this.defensivePokeCommitWindow(p,owner,this.ball))&&
      Math.random()<ai.tackleRate*tactical.press){
       const slideRoll=Math.random();
@@ -3018,7 +3018,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
    p.aiTarget=carrierLead||{x:clamp((owner||b).x+(b.vx||0)*lead,F.x+22,F.x+F.w-22),
     y:clamp((owner||b).y+(b.vy||0)*lead,F.y+23,F.y+F.h-23)};
    p.aiDetour=null;
-   if(owner&&owner.t!==t&&p.cd<=0&&p.stun<=0){
+   if(owner&&owner.t!==t&&p.cd<=0&&p.stun<=0&&!(Number(p.magicReadCounterpressTimer)>0)){
     const carrierDistance=distance(p,owner);
     if(carrierDistance<74){
      const slideRoll=Math.random();
@@ -3048,13 +3048,14 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
    const firstTouchCarryContainTarget=defensiveFirstTouchCarryContain&&distance(p,defensiveFirstTouchCarryContain)<460?defensiveFirstTouchCarryContain:null;
    const looseBallCoverTarget=defensiveLooseBallCover&&distance(p,defensiveLooseBallCover)<460?defensiveLooseBallCover:null;
    const establishedCoverTarget=defensiveGiveAndGoCover||defensiveCutbackCover||firstTouchContestTarget||passCoverTarget||looseBallCoverTarget;
-   const magicReadCounterpress=owner&&owner.t!==t&&!concealed&&pressing?.support===p&&!establishedCoverTarget?
+   const counterpressPrimary=pressing?.primary===p?pressing.support:pressing?.support===p?pressing.primary:null;
+   const magicReadCounterpress=owner&&owner.t!==t&&!concealed&&Number(p.magicReadCounterpressTimer)>0&&counterpressPrimary?
     defensiveMagicReadCounterpressTarget(t,owner,this.players,
      {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},
-     p,pressing.primary,this.inControl(t)?this.controlledPlayer(t):null):null;
+     p,counterpressPrimary,this.inControl(t)?this.controlledPlayer(t):null):null;
    const firstTouchCoverTarget=firstTouchOutletCoverTarget||firstTouchCarryContainTarget;
-   p.aiTarget=establishedCoverTarget?{x:establishedCoverTarget.x,y:establishedCoverTarget.y}:
-    magicReadCounterpress?{x:magicReadCounterpress.x,y:magicReadCounterpress.y}:
+   p.aiTarget=magicReadCounterpress?{x:magicReadCounterpress.x,y:magicReadCounterpress.y}:
+    establishedCoverTarget?{x:establishedCoverTarget.x,y:establishedCoverTarget.y}:
     firstTouchCoverTarget?{x:firstTouchCoverTarget.x,y:firstTouchCoverTarget.y}:
     counterpressTrap?{x:counterpressTrap.x,y:counterpressTrap.y}:{
     x:clamp(target.x-(t===0?1:-1)*110,F.x+22,F.x+F.w-22),
