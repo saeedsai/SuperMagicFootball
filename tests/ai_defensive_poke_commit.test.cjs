@@ -150,7 +150,7 @@ test('CPU SHOOT slide selection requires an exposed live ball in both directions
 test('ordinary and primary close-contact non-slide pokes respect ball shielding while physical slides remain available',()=>{
  const source=fs.readFileSync('src/modules/engine.js','utf8');
  assert.ok(source.includes('const closeContact=!!(owner&&owner.t!==t&&distance(p,owner)<68);'));
- assert.ok(source.includes('if(!closeContact||slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide);'));
+ assert.ok(source.includes('if(!closeContact||slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide,slide?liveBall:null);'));
  assert.ok(source.includes('if(slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide);'));
  assert.ok(source.includes('if(ball!==null&&!defensivePokeBallSideRead(defender,carrier,ball))return false;'));
  assert.ok(source.includes('GameEngine.prototype.defensivePokeBallSideRead=defensivePokeBallSideRead;'));
@@ -159,4 +159,25 @@ test('ordinary and primary close-contact non-slide pokes respect ball shielding 
  assert.ok(source.includes('GameEngine.prototype.defensiveTackleSlideBallSideRead=defensiveTackleSlideBallSideRead;'));
  assert.ok(source.includes('if(carrierDistance<74){'),
   'the primary presser retains its dedicated close-contact window');
+});
+
+
+test('a ball-side-qualified CPU slide aims through the exposed live ball, not the carrier body',()=>{
+ const run=(makeBall)=>{
+  const defender=player(0,1000,700,{moveVX:220,moveVY:0,dx:1,dy:0,face:1});
+  const carrier=player(1,1055,700,{moveVX:300,moveVY:0});
+  const ball=makeBall?makeBall(defender,carrier):null;
+  const game={players:[defender,carrier],ball:{owner:carrier},spendStamina(){},
+   playerSpeed(){return 320;},emit(){},slideContact(){return false;}};
+  assert.equal(ENGINE.GameEngine.prototype.tackle.call(game,defender,true,ball),true);
+  return {x:defender.slideDX,y:defender.slideDY};
+ };
+ const exposed=run((defender,carrier)=>({owner:carrier,x:carrier.x-17,y:carrier.y+20,z:12}));
+ const body=run(()=>null);
+ const shielded=run((defender,carrier)=>({owner:carrier,x:carrier.x+17,y:carrier.y+20,z:12}));
+ const mismatched=run((defender,carrier)=>({owner:defender,x:carrier.x-17,y:carrier.y+20,z:12}));
+ assert.ok(exposed.y>.2,JSON.stringify({exposed,body}));
+ assert.ok(body.y<.01,JSON.stringify(body));
+ assert.ok(shielded.y<.01,JSON.stringify(shielded));
+ assert.ok(mismatched.y<.01,JSON.stringify(mismatched));
 });

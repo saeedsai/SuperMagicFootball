@@ -1246,7 +1246,7 @@ class GameEngine{
   if(this.ball.owner===q){this.ball.owner=null;this.ball.x=q.x;this.ball.y=q.y;this.ball.z=23;this.ball.vx=dir.x*150;this.ball.vy=dir.y*150;this.ball.vz=115;this.ball.canCollect=.15;}
   p.slideTimer=0;p.slideRemaining=0;return true;
  }
- tackle(p,slide=false){
+ tackle(p,slide=false,slideBall=null){
   if(p.cd>0||p.stun>0)return false;
   this.spendStamina(p,slide?'slide':'tackle');p.cd=slide?.68:.57;p.action=slide?'slide':'punch';p.actionTimer=slide?.48:.4;
   const canSlideTarget=q=>q&&(!Number.isFinite(q.z)||q.z<20)&&q.action!=='shotDown'&&q.action!=='shotGetUp'&&!(q.invuln>0);
@@ -1271,7 +1271,10 @@ class GameEngine{
   const leadSeconds=slide ? .085 : .055,leadLimit=slide?22:12;
   const leadX=target?clamp((Number.isFinite(target.moveVX)?target.moveVX:0)*leadSeconds,-leadLimit,leadLimit):0;
   const leadY=target?clamp((Number.isFinite(target.moveVY)?target.moveVY:0)*leadSeconds,-leadLimit,leadLimit):0;
-  const dir=target?norm(target.x+leadX-p.x,target.y+leadY-p.y):norm(p.dx||p.face,p.dy||0);
+  // A ball-side-qualified CPU slide travels through the exposed ball, not just the carrier's body.
+  // Preserve the existing carrier-momentum lead and fall back to the body target otherwise.
+  const ballAim=slide&&target===this.ball.owner&&defensivePokeBallSideRead(p,target,slideBall)?slideBall:null;
+  const dir=target?norm((ballAim?.x??target.x)+leadX-p.x,(ballAim?.y??target.y)+leadY-p.y):norm(p.dx||p.face,p.dy||0);
   if(slide){
    // A slide is a timed physical dash rather than a 26-unit teleport. Run-up speed matters.
    const running=Math.hypot(p.moveVX||0,p.moveVY||0)>this.playerSpeed(p)*.65 || p.dashTimer>0 || p.sprintCharge>.1;
@@ -3030,7 +3033,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
      Math.random()<ai.tackleRate*tactical.press){
       const slideRoll=Math.random();
       const slide=defensiveTackleSlideBallSideRead(p,owner,liveBall,this.playerSpeed(p))&&slideRoll<this.cpuTackleSlideChance(p,ai.anticipation,.24,.4);
-      if(!closeContact||slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide);
+      if(!closeContact||slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide,slide?liveBall:null);
     }
    }
    p.aiTarget={x:tx,y:ty};
@@ -3056,13 +3059,13 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
     if(carrierDistance<74){
      const slideRoll=Math.random();
      const slide=defensiveTackleSlideBallSideRead(p,owner,liveBall,this.playerSpeed(p))&&slideRoll<this.cpuTackleSlideChance(p,ai.anticipation,.17,.35);
-     if(slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide);
+     if(slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide,slide?liveBall:null);
     }else if(carrierDistance<=98&&defensivePokeBallSideRead(p,owner,liveBall)&&defensiveFirstTouchSlide(p,owner,this.playerSpeed(p))){
      // Higher anticipation and tackle skill can read the short control window;
      // even Expert remains probabilistic and the existing slide still resolves contact.
      const pressScale=Number.isFinite(tactical.press)?Math.max(0,Math.min(1.25,tactical.press)):1;
      const readChance=Math.min(.20,ai.tackleRate*(.06+ai.anticipation*.20)*pressScale);
-     if(Math.random()<readChance)this.tackle(p,true);
+     if(Math.random()<readChance)this.tackle(p,true,liveBall);
     }
    }
   }else if(pressing&&p===pressing.support){
