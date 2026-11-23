@@ -99,7 +99,7 @@ test('the read cue decays in simulation time and is rendered as steady reduced-f
  assert.match(cueCall,/Number\(this\.scale\)\|\|1/);
  assert.match(cueCall,/Number\(this\.dpr\)\|\|1/);
  assert.match(cueCall,/Number\(this\.cameraZoom\)\|\|1/);
- assert.match(cueCall,/,\s*1\)$/,'world-space label must not inherit character mirroring');
+ assert.match(cueCall,/,\s*1\);$/,'world-space label must not inherit character mirroring');
  assert.doesNotMatch(cueCall,/view\.side/);
  assert.match(render,/strokeText\('READ!',0,-130\)/);
 });
