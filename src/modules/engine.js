@@ -856,7 +856,8 @@ class GameEngine{
  // AI retains the historic advancing-player selection (opts.human is false).
  pass(p,long=false,cross=false,opts={}){
   if(this.ball.owner!==p)return false;
-  const mates=this.players.filter(q=>q.t===p.t&&q!==p&&!q.stun&&(!q.keeper||p.keeper));
+  const excludedTargets=Array.isArray(opts.excludeTargets)?opts.excludeTargets:[];
+  const mates=this.players.filter(q=>q.t===p.t&&q!==p&&!q.stun&&!excludedTargets.includes(q)&&(!q.keeper||p.keeper));
   const directed=opts.direction&&Math.hypot(opts.direction.x||0,opts.direction.y||0)>.16;
   const preferred=opts.supportRun===true?opts.preferredTarget:null;
   const preferredPoint=(opts.throughBall===true||opts.cutback===true||opts.goalmouth===true||opts.giveAndGoReturn===true)&&opts.preferredPoint&&
@@ -2916,6 +2917,8 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
   const thirdManPass=owner===p?attackingSupportPass(this.players,t,owner,thirdManRun):null;
   const supportPassTarget=owner===p?(supportThroughBall?.runner||supportGoalmouth?.runner||supportRunPass||
    thirdManThroughBall?.runner||thirdManPass):null;
+  const unsafeSupportReceiver=owner===p&&supportRun?.runner&&!supportRunPass&&!supportThroughBall?
+   supportRun.runner:null;
   const firstTouchOutlet=firstTouchOutletWindow&&!firstTouchControl&&owner===p?
    attackingFirstTouchOutlet(this.players,t,p,
     {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24}):null;
@@ -2959,6 +2962,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
     const nearestDefender=defenders.length?Math.min(...defenders.map(q=>distance(p,q))):999;
     const finishChance=SHOTFEEL.aiFinishingPriority(goalDistance,nearestDefender,stat(p,'shootAccuracy'),ai.shootRate)*tactical.shoot;
     const passOptions=supportCutback?{preferredTarget:supportCutback.runner,supportRun:true,cutback:true,preferredPoint:supportCutback.target}:supportThroughBall?{preferredTarget:supportThroughBall.runner,supportRun:true,throughBall:true,preferredPoint:supportThroughBall.target}:supportGoalmouth?{preferredTarget:supportGoalmouth.runner,supportRun:true,goalmouth:true,preferredPoint:supportGoalmouth.target,...(giveAndGoRun?{giveAndGoRun}:{})}:thirdManThroughBall?.runner===supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true,throughBall:true,preferredPoint:thirdManThroughBall.target}:thirdManPass&&thirdManPass===supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true,preferredPoint:thirdManRun.target}:supportPassTarget?{preferredTarget:supportPassTarget,supportRun:true}:{};
+    if(unsafeSupportReceiver)passOptions.excludeTargets=[unsafeSupportReceiver];
     if(!firstTouchControl&&p.cd<=0&&nearGoal&&Math.random()<finishChance){this.shoot(p,Math.random()<ai.superRate)}
     else if(!firstTouchControl&&p.cd<=0&&giveAndGoReturn&&Math.random()<ai.passRate*tactical.pass*.78){
      this.pass(p,false,false,{preferredTarget:giveAndGoReturn.runner,supportRun:true,

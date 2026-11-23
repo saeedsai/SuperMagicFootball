@@ -582,9 +582,15 @@ function attackingSupportPass(players,team,carrier,supportRun){
  const forward=dx*dir,range=Math.hypot(dx,dy);
  if(forward<80||forward>760||range<120||range>900||
   Math.hypot(point.x-runner.x,point.y-runner.y)>145)return null;
- const segment=dx*dx+dy*dy;
- if(!Number.isFinite(segment)||segment<=0)return null;
  const arrivalSeconds=Math.min(.35,Math.max(.12,range/1400));
+ const receiverLeadX=Number.isFinite(runner.moveVX)?clampValue(runner.moveVX*arrivalSeconds,-65,65):
+  (Number.isFinite(runner.dx)?runner.dx:0)*90;
+ const receiverLeadY=Number.isFinite(runner.moveVY)?clampValue(runner.moveVY*arrivalSeconds,-65,65):
+  (Number.isFinite(runner.dy)?runner.dy:0)*90;
+ const receiverPoint={x:runner.x+receiverLeadX,y:runner.y+receiverLeadY};
+ const passDx=receiverPoint.x-carrier.x,passDy=receiverPoint.y-carrier.y;
+ const segment=passDx*passDx+passDy*passDy;
+ if(!Number.isFinite(segment)||segment<=0)return null;
  const eligibleDefenders=[];
  for(const defender of players){
   if(!defender||defender.t===team||!Number.isFinite(defender.x)||!Number.isFinite(defender.y))continue;
@@ -599,14 +605,16 @@ function attackingSupportPass(players,team,carrier,supportRun){
  // A defender moving into the lane can intercept after the current snapshot.
  // Reuse directed PASS's bounded, time-aware prediction and swept-crossing read;
  // only strong projected pressure cancels the support-run preference.
- if(SHOTFEEL.passingLanePressure(carrier,runner,eligibleDefenders)>=.10)return null;
+ // The PASS action leads this same receiver by receiverLeadX/Y. Judge the
+ // interception corridor and collection pocket at that projected arrival point.
+ if(SHOTFEEL.passingLanePressure(carrier,receiverPoint,eligibleDefenders)>=.10)return null;
  for(const defender of eligibleDefenders){
-  const along=((defender.x-carrier.x)*dx+(defender.y-carrier.y)*dy)/segment;
+  const along=((defender.x-carrier.x)*passDx+(defender.y-carrier.y)*passDy)/segment;
   if(along>.08&&along<.94){
-   const gap=Math.hypot(defender.x-(carrier.x+dx*along),defender.y-(carrier.y+dy*along));
+   const gap=Math.hypot(defender.x-(carrier.x+passDx*along),defender.y-(carrier.y+passDy*along));
    if(gap<56)return null;
   }
-  if(Math.hypot(defender.x-runner.x,defender.y-runner.y)<84)return null;
+  if(Math.hypot(defender.x-receiverPoint.x,defender.y-receiverPoint.y)<84)return null;
  }
  return runner;
 }

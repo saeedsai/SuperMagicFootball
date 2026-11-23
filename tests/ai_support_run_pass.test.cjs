@@ -54,6 +54,41 @@ test('support-run PASS leads a moving receiver using bounded world velocity',asy
  assert.ok(Math.abs(slope(fast.game)-slope(moving.game))<1e-9,'extreme receiver speed cannot exceed the lead cap');
 });
 
+function supportArrivalFixture(ENGINE,team,moveY){
+ const game=new ENGINE.GameEngine({halfSeconds:120});game.init({home:0,away:1,mode:'quick',humans:0});
+ const dir=team===0?1:-1,carrier=game.players.find(p=>p.t===team&&p.i===3),
+  runner=game.players.find(p=>p.t===team&&p.i===4),defender=game.players.find(p=>p.t===1-team&&!p.keeper);
+ const carrierX=team===0?600:1960;
+ Object.assign(carrier,{x:carrierX,y:300,down:false,stun:0,z:0,action:'idle',actionTimer:0,cd:0});
+ Object.assign(runner,{x:carrierX+dir*170,y:188,homeX:carrierX+dir*160,homeY:188,
+  down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,moveVX:300,moveVY:moveY,
+  aiAssistTarget:null,aiGiveAndGoRun:null});
+ for(const p of game.players)if(p!==carrier&&p!==runner&&p!==defender)
+  Object.assign(p,{down:true,stun:1,z:0,action:'idle',actionTimer:0});
+ Object.assign(defender,{x:runner.x+44,y:138,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+ game.ball.owner=carrier;
+ return {game,carrier,runner,defender,dir,supportRun:{runner,target:{x:carrierX+dir*160,y:188}}};
+}
+
+test('support-run PASS checks the receiver projected at collection in both attack directions',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const movingAway=supportArrivalFixture(ENGINE,team,300);
+  assert.equal(AI.attackingSupportPass(movingAway.game.players,team,movingAway.carrier,movingAway.supportRun),
+   movingAway.runner,'a marker left behind by the receiver must not block the pass for team '+team);
+  const movingInto=supportArrivalFixture(ENGINE,team,-300);
+  assert.equal(AI.attackingSupportPass(movingInto.game.players,team,movingInto.carrier,movingInto.supportRun),null,
+   'a defender at the projected collection point blocks the support pass for team '+team);
+  assert.equal(movingInto.game.pass(movingInto.carrier,false,false,{excludeTargets:[movingInto.runner]}),false,
+   'an unsafe support runner is not reused by ordinary AI fallback when no alternative is available');
+  const alternative=movingInto.game.players.find(p=>p.t===team&&p!==movingInto.carrier&&p!==movingInto.runner&&!p.keeper);
+  Object.assign(alternative,{down:false,stun:0,z:0,action:'idle',x:movingInto.carrier.x+movingInto.dir*100,y:400});
+  assert.equal(movingInto.game.pass(movingInto.carrier,false,false,{excludeTargets:[movingInto.runner]}),true);
+  assert.notEqual(movingInto.game.ball.passTarget,movingInto.runner.src.id,
+   'an available teammate remains eligible after excluding the unsafe runner');
+ }
+});
+
 test('active grounded defenders block a support-run pass corridor or arrival point',async()=>{
  const {AI,ENGINE}=await loadModules();
  const {game,carrier,runner,defender}=fixture(ENGINE);
@@ -285,15 +320,18 @@ test('through-ball lead scales with estimated pass flight time on both attacking
    const minimumLead=perpendicularSquared>=110*110?48:Math.max(48,-projection+Math.sqrt(110*110-perpendicularSquared));
    return Math.max(minimumLead,Math.min(100,Math.min(gap-16,runSpeed*flightSeconds)));
   };
-  const actualLead=option=>Math.hypot(option.target.x-f.runner.x,option.target.y-f.runner.y);
-  assert.ok(Math.abs(actualLead(short.option)-expectedLead(short))<1e-9,
-   'short-pass lead must match its estimated arrival window');
-  assert.ok(Math.abs(actualLead(long.option)-expectedLead(long))<1e-9,
-   'long-pass lead must match its estimated arrival window');
-  for(const option of [short.option,long.option])
+  const actualLead=({option,supportRun})=>{
+   const dx=supportRun.target.x-f.runner.x,dy=supportRun.target.y-f.runner.y,gap=Math.hypot(dx,dy);
+   return ((option.target.x-f.runner.x)*dx+(option.target.y-f.runner.y)*dy)/gap;
+  };
+  assert.ok(Math.abs(actualLead(short)-expectedLead(short))<1e-9,
+   'short-pass longitudinal lead must match its estimated arrival window');
+  assert.ok(Math.abs(actualLead(long)-expectedLead(long))<1e-9,
+   'long-pass longitudinal lead must match its estimated arrival window');
+  for(const {option} of [short,long])
    assert.ok(Math.hypot(option.target.x-f.carrier.x,option.target.y-f.carrier.y)>=110-1e-9,
     'arrival-aware lead must preserve the existing minimum pass distance');
-  assert.ok(actualLead(long.option)>actualLead(short.option)+5,
+  assert.ok(actualLead(long)>actualLead(short)+5,
    'a longer flight gives the committed runner more time to advance');
  }
 });
