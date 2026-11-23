@@ -234,13 +234,20 @@ test('through-ball lead scales with estimated pass flight time on both attacking
    const runSpeed=(f.runner.moveVX*dx+f.runner.moveVY*dy)/gap;
    const flightSeconds=Math.max(.12,Math.min(.35,
     Math.hypot(point.x-f.carrier.x,point.y-f.carrier.y)/1400));
-   return Math.max(48,Math.min(100,Math.min(gap-16,runSpeed*flightSeconds)));
+   const directionX=dx/gap,directionY=dy/gap;
+   const projection=(f.runner.x-f.carrier.x)*directionX+(f.runner.y-f.carrier.y)*directionY;
+   const perpendicularSquared=Math.max(0,Math.hypot(f.runner.x-f.carrier.x,f.runner.y-f.carrier.y)**2-projection*projection);
+   const minimumLead=perpendicularSquared>=110*110?48:Math.max(48,-projection+Math.sqrt(110*110-perpendicularSquared));
+   return Math.max(minimumLead,Math.min(100,Math.min(gap-16,runSpeed*flightSeconds)));
   };
   const actualLead=option=>Math.hypot(option.target.x-f.runner.x,option.target.y-f.runner.y);
   assert.ok(Math.abs(actualLead(short.option)-expectedLead(short))<1e-9,
    'short-pass lead must match its estimated arrival window');
   assert.ok(Math.abs(actualLead(long.option)-expectedLead(long))<1e-9,
    'long-pass lead must match its estimated arrival window');
+  for(const option of [short.option,long.option])
+   assert.ok(Math.hypot(option.target.x-f.carrier.x,option.target.y-f.carrier.y)>=110-1e-9,
+    'arrival-aware lead must preserve the existing minimum pass distance');
   assert.ok(actualLead(long.option)>actualLead(short.option)+5,
    'a longer flight gives the committed runner more time to advance');
  }

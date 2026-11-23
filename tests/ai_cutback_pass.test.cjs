@@ -159,6 +159,34 @@ test('active opposing goalkeepers block cutbacks through the flight lane or rece
  }
 });
 
+test('cutback collection pocket scales with opposing goalkeeper skill and fatigue on both sides',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team);
+  const option=AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS);
+  assert.ok(option,'fixture must begin with an uncontested cutback');
+  const keeper=f.game.players.find(p=>p.t!==team&&p.keeper);
+  assert.ok(keeper);
+  const place=()=>Object.assign(keeper,{x:option.target.x+(team===0?86:-86),y:option.target.y,
+   z:0,down:false,stun:0,slideTimer:0,shotImpactKnockdownPending:0,
+   shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,action:'idle',actionTimer:0,
+   moveVX:0,moveVY:0,fatigue:0});
+  keeper.src={...keeper.src,gkSkill:1,gkDiving:1};
+  place();
+  assert.ok(AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS),
+   'a weak keeper should not claim an 86-unit pocket');
+  keeper.src={...keeper.src,gkSkill:100,gkDiving:100};
+  assert.equal(AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS),null,
+   'a rested elite keeper should claim the same pocket');
+  keeper.fatigue=1;
+  assert.ok(AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS),
+   'fatigue should reduce the elite keeper below the same collection distance');
+  keeper.fatigue=0;keeper.keeper=false;
+  assert.ok(AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS),
+   'outfield defenders retain the existing 74-unit collection pocket');
+ }
+});
+
 test('downed, recovering, high-airborne or late-recovering goalkeepers do not falsely block a cutback',async()=>{
  const {AI,ENGINE}=await loadModules();
  const f=fixture(ENGINE);

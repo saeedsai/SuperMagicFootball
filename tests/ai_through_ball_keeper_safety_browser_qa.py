@@ -45,7 +45,11 @@ with sync_playwright() as pw:
     }
     const gap=Math.hypot(40,112),runSpeed=(200*40+200*112)/gap;
     const flightSeconds=Math.max(.12,Math.min(.35,Math.hypot(160,112)/1400));
-    const lead=Math.max(48,Math.min(100,Math.min(gap-16,runSpeed*flightSeconds)));
+    const leadDirX=dir*40/gap,leadDirY=-112/gap;
+    const projection=(runner.x-carrierX)*leadDirX+(runner.y-600)*leadDirY;
+    const perpendicularSquared=Math.max(0,120*120-projection*projection);
+    const minimumLead=perpendicularSquared>=110*110?48:Math.max(48,-projection+Math.sqrt(110*110-perpendicularSquared));
+    const lead=Math.max(minimumLead,Math.min(100,Math.min(gap-16,runSpeed*flightSeconds)));
     const target={x:runner.x+dir*40/gap*lead,y:runner.y-112/gap*lead};
     Object.assign(keeper,{x:target.x+dir*94,y:target.y+34,z:0,down:false,stun:0,
      action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0,fatigue:0,aiTimer:0,aiTarget:null});

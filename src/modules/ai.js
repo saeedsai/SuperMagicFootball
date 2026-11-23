@@ -638,7 +638,13 @@ function attackingSupportPass(players,team,carrier,supportRun){
   const runSpeed=(vx*dx+vy*dy)/gap;
   if(!Number.isFinite(runSpeed)||runSpeed<110||vx*dir<65)return null;
   const estimatedFlightSeconds=clampValue(Math.hypot(point.x-carrier.x,point.y-carrier.y)/1400,.12,.35);
-  const leadDistance=clampValue(Math.min(gap-16,runSpeed*estimatedFlightSeconds),48,100);
+  const leadDirectionX=dx/gap,leadDirectionY=dy/gap;
+  const runnerProjection=(runner.x-carrier.x)*leadDirectionX+(runner.y-carrier.y)*leadDirectionY;
+  const perpendicularSquared=Math.max(0,range*range-runnerProjection*runnerProjection);
+  const minimumLead=perpendicularSquared>=110*110?48:
+   Math.max(48,-runnerProjection+Math.sqrt(110*110-perpendicularSquared));
+  if(minimumLead>100)return null;
+  const leadDistance=clampValue(Math.min(gap-16,runSpeed*estimatedFlightSeconds),minimumLead,100);
   const target={x:runner.x+dx/gap*leadDistance,y:runner.y+dy/gap*leadDistance};
   const passDistance=Math.hypot(target.x-carrier.x,target.y-carrier.y);
   if(passDistance<110||passDistance>920)return null;
@@ -736,7 +742,11 @@ function attackingSupportPass(players,team,carrier,supportRun){
     const futureY=defender.y+clampValue(movementVelocity(defender,'y')*arrivalSeconds,-55,55);
     const gap=Math.hypot(futureX-target.x,futureY-target.y);
     nearestMarkGap=Math.min(nearestMarkGap,gap);
-    if(gap<74){pocketBlocked=true;break;}
+    const keeperReach=defender.keeper?clampValue(74+
+    (clampValue(Number.isFinite(Number(defender.src?.gkSkill))?Number(defender.src.gkSkill):50,0,100)+
+     clampValue(Number.isFinite(Number(defender.src?.gkDiving))?Number(defender.src.gkDiving):50,0,100))*.09-
+    clampValue(Number.isFinite(Number(defender.fatigue))?Number(defender.fatigue):0,0,1)*10,72,92):74;
+   if(gap<keeperReach){pocketBlocked=true;break;}
    }
    if(pocketBlocked)continue;
    // Among safe cutback options, prefer the runner with more separation at
