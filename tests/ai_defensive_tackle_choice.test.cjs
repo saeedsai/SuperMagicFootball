@@ -3,11 +3,12 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 
-let AI;
+let AI,ENGINE;
 test.before(async()=>{
  const {loadAssetsFromNode}=await import('../src/assets.js');
  await loadAssetsFromNode();
- ({AI}=await import('../src/modules/ai.js'));
+ const [{AI:ai},{ENGINE:engine}]=await Promise.all([import('../src/modules/ai.js'),import('../src/modules/engine.js')]);
+ AI=ai;ENGINE=engine;
 });
 
 const player=(t,x,y,extra={})=>({t,x,y,keeper:false,stun:0,invuln:0,down:false,z:0,...extra});
@@ -84,4 +85,28 @@ test('driveAI routes both ordinary and primary press tackles through movement-aw
  assert.ok(engineSource.includes('const slideRoll=Math.random();'));
  assert.ok(engineSource.includes('const mx=Number.isFinite(p.dx)?p.dx:0,my=Number.isFinite(p.dy)?p.dy:0;'),
   'the helper must preserve the engine contact arc and add momentum as a separate requirement');
+ assert.equal((engineSource.match(/this\.cpuTackleSlideChance\(p,ai\.anticipation/g)||[]).length,2,
+  'ordinary and primary press slide decisions must both use the player-aware threshold');
 });
+
+function slideProfile(defence,aggression){return {src:{id:'slide-'+defence+'-'+aggression,role:'DF',defence,aggression}};}
+
+test('CPU slide choice scales with defender Defence and Aggression while preserving neutral AI baselines',()=>{
+ const neutral=ENGINE.cpuTackleSlideChance(slideProfile(50,50),.5,.24,.4);
+ const low=ENGINE.cpuTackleSlideChance(slideProfile(20,20),.5,.24,.4);
+ const high=ENGINE.cpuTackleSlideChance(slideProfile(90,90),.5,.24,.4);
+ const primaryNeutral=ENGINE.cpuTackleSlideChance(slideProfile(50,50),.5,.17,.35);
+ assert.equal(neutral,.44,'average defenders retain the previous Normal baseline');
+ assert.equal(primaryNeutral,.345,'primary pressers retain their previous baseline');
+ assert.ok(low<neutral&&neutral<high,JSON.stringify({low,neutral,high}));
+ assert.ok(ENGINE.cpuTackleSlideChance(slideProfile(50,50),NaN,.24,.4)===neutral,
+  'invalid anticipation uses the neutral fallback');
+});
+
+test('CPU slide preference remains bounded for extreme profiles and tuning inputs',()=>{
+ const low=ENGINE.cpuTackleSlideChance(slideProfile(1,1),0,-5,-2);
+ const high=ENGINE.cpuTackleSlideChance(slideProfile(100,100),1,2,2);
+ assert.equal(low,.12);
+ assert.equal(high,.76);
+});
+

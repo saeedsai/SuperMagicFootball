@@ -1169,6 +1169,16 @@ class GameEngine{
   if(this.ball.owner===q){this.ball.owner=null;this.ball.x=q.x;this.ball.y=q.y;this.ball.z=23;this.ball.vx=dir.x*150;this.ball.vy=dir.y*150;this.ball.vz=115;this.ball.canCollect=.15;}
   p.slideTimer=0;p.slideRemaining=0;return true;
  }
+ cpuTackleSlideChance(p,anticipation,baseChance=.24,anticipationSpan=.4){
+  // Preserve the team AI baseline for an average player, then let the actual
+  // defender profile choose between a risky SHOOT slide and the safer PASS poke.
+  const read=Number.isFinite(anticipation)?clamp(anticipation,0,1):.5;
+  const base=Number.isFinite(baseChance)?clamp(baseChance,0,1):.24;
+  const span=Number.isFinite(anticipationSpan)?clamp(anticipationSpan,0,.75):.4;
+  if(!p||typeof p!=='object')return clamp(base+read*span,.12,.76);
+  const skillBias=(stat(p,'defence')-50)*.0012+(stat(p,'aggression')-50)*.0006;
+  return clamp(base+read*span+skillBias,.12,.76);
+ }
  tackle(p,slide=false){
   if(p.cd>0||p.stun>0)return false;
   this.spendStamina(p,slide?'slide':'tackle');p.cd=slide?.68:.57;p.action=slide?'slide':'punch';p.actionTimer=slide?.48:.4;
@@ -2938,7 +2948,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
     }
     if(owner&&owner.t!==t&&distance(p,owner)<68&&p.cd<=0&&Math.random()<ai.tackleRate*tactical.press){
       const slideRoll=Math.random();
-      this.tackle(p,defensiveTackleSlide(p,owner,this.playerSpeed(p))&&slideRoll<(.24+ai.anticipation*.4));
+      this.tackle(p,defensiveTackleSlide(p,owner,this.playerSpeed(p))&&slideRoll<this.cpuTackleSlideChance(p,ai.anticipation,.24,.4));
     }
    }
    p.aiTarget={x:tx,y:ty};
@@ -2963,7 +2973,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
     const carrierDistance=distance(p,owner);
     if(carrierDistance<74){
      const slideRoll=Math.random();
-     this.tackle(p,defensiveTackleSlide(p,owner,this.playerSpeed(p))&&slideRoll<(.17+ai.anticipation*.35));
+     this.tackle(p,defensiveTackleSlide(p,owner,this.playerSpeed(p))&&slideRoll<this.cpuTackleSlideChance(p,ai.anticipation,.17,.35));
     }else if(carrierDistance<=98&&defensiveFirstTouchSlide(p,owner,this.playerSpeed(p))){
      // Higher anticipation and tackle skill can read the short control window;
      // even Expert remains probabilistic and the existing slide still resolves contact.

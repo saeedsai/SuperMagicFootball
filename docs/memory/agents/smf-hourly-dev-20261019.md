@@ -6,26 +6,26 @@
 Deliver bounded player-facing gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Never substitute audits or test-only iterations. Preserve four actions, canonical rosters, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.218 candidate — FIRST-TOUCH-SKILL-PACE-01:** pressured low ground-pass receptions now use a short movement-only settling window scaled by incoming speed and receiver Dribbling (0.18–0.30 seconds). Better ball controllers settle sooner; fast passes and weaker touches take longer. Directional input and immediate actions remain available; CPU interception escape/outlet timing follows the same window. Ball flight, tackle odds, four actions, saves, rosters, persistence and offline play are unchanged.
-- Added focused actual-engine Node coverage and desktop/simulated-touch Chromium coverage for both sides, multiple receiver skills/pass speeds and 30/60/120 FPS.
-- **.218 first-head repair:** Modular QA #45129521327 exposed missing `stat(p,key)` stubs in two VM tests (six focused failures) plus a stale .217 service-worker comment (two version-contract failures). Production gameplay was not implicated; the stubs and comment were fixed.
-- **.218 second-head repair:** Modular QA #45129767638 found one remaining exact-.24-second assertion in `ai_first_touch_outlet_defence.test.cjs`; it now checks the runtime skill/pace-derived duration and bounded range. No gameplay threshold was weakened; exact-head reruns pending.
-- **.217 exact-head status:** Modular QA #45122614499 passed 2,787/2,787. Census #45122614475 passed preflight, preview, all four Node shards and browser shards 0/2/3; browser shard 1 failed only the historical `lan_auto_two_browser_qa.py` 10-second guest movement wait. Other two-client LAN browser coverage passed. Failed-job-only retry requested; no LAN source changed and no production LAN regression established. .217 is not certified/promoted.
-- **0.12.81.216 main-promoted:** SHA `e28c8eaa23096b7c206e737dc905e17e9efe9d97`; exact-head QA/Census, QA-gated promotion, Pages deployment #45119977629 and independent main Census/hosted smoke #45119984419 passed.
+- **0.12.81.219 candidate — AI-DEFENDER-SKILL-SCALED-SLIDE-CHOICE-01:** CPU slide-versus-poke choice now incorporates the defender's Defence and Aggression attributes as a bounded adjustment to the existing difficulty/anticipation threshold. Average profiles preserve the prior baseline; strong/assertive defenders commit more often only when existing geometry/run-up/facing/relative-motion checks qualify. Tackle attempt rate, success, slide reach/speed, stamina cost, cooldown, four actions, saves, rosters and offline play are unchanged.
+- Added focused actual-engine Node and desktop/simulated-touch Chromium regressions for both threshold baselines, profile ordering, bounds, 223 teams and exactly four actions.
+- **.218 promoted:** exact-head Modular QA #45130003654 and dev Census #45130003595 passed; QA-gated promotion moved main/dev to `3f605b38b4a43ac7ced0778aefbf5c68b2e27a37`. Pages #45131091490 passed.
+- **Main Census follow-up:** #45131103562 passed hosted smoke, preflight, preview, all four Node and three Chromium shards; browser shard 1 timed out only in `lan_auto_two_browser_qa.py`. Companion `lan_two_client_browser_qa.py` passed. No LAN source changed; retry failed job once. #48 remains open.
+- GitHub REST reports main/dev `protected=false`; #87 remains open.
 
 ## Next smallest action
-Verify .218 focused Node/Chromium and exact-head four-Node/four-Chromium Census. Fix only observed failures, then continue the next unblocked gameplay backlog item; do not resume routine LAN/P2P work.
+Run focused Node and desktop/simulated-touch Chromium for .219, then exact-head Modular QA and four-Node/four-Chromium Census. Repair only observed failures; continue the next independent gameplay increment on dev.
 
 ## Ownership and exclusions
 Only this checkpoint. Preserve 223 teams, 2,676 players, exact ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied art. Physical two-phone #48 stays open. Render #86 and main protection #87 stay open. Authenticated online hosting needs owner resources. Never expose Git SHA in player UI.
 
 ## Evidence
-- .217 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45122614499
-- .217 Full Regression Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45122614475
-- .218 initial Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45129521327
-- .218 second Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45129767638
-- .216 Pages deployment: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45119977629
-- .216 independent main Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45119984419
+- .218 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45130003654
+- .218 dev Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45130003595
+- .218 Pages: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45131091490
+- .218 independent main Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45131103562
+- #87: https://github.com/saeedsai/SuperMagicFootball/issues/87
+- #86: https://github.com/saeedsai/SuperMagicFootball/issues/86
+- #48: https://github.com/saeedsai/SuperMagicFootball/issues/48
 
 ## Cleanup
 Keep this file below 4 KiB. Read and edit only this assigned checkpoint. Never bypass required CI, security or QA promotion.
