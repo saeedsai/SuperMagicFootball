@@ -7,13 +7,12 @@ Prioritize real player-facing gameplay and existing-player animation/graphics; n
 
 ## Current checkpoint
 - 0.12.81.208 fixes the READ! counter cue: the existing .48-second ring/label now renders after character-local transforms, anchored to the actual player position and compensated only for viewport scale. This addresses the confirmed simulated-touch screenshot failure without changing the timer or reduced-flash behavior.
-- 0.12.81.208 adds AI-TACKLE-MOMENTUM-HEADING-01: CPU slide selection prefers actual 2D movement velocity over stale dx/dy input, then uses input/facing fallbacks when momentum is negligible. Retreating momentum cannot select a forward slide; genuine diagonal forward run-ups remain eligible.
-- .207 Modular QA #45085155336 passed 2,776/2,776. Census #45085155258 passed preflight, preview, four Node shards and Chromium shards 1–3; browser shard 0 failed the simulated-touch READ! screenshot with no changed pixels. .207 is not certified.
-- .208 adds focused mirrored AI helper regressions, a world-space renderer contract and retains the actual-renderer desktop/simulated-touch screenshot test. Exact-head gates pending.
+- 0.12.81.208 improves AI slide selection: the existing input/facing forward arc must agree with actual 2D movement momentum. Retreating momentum or side-on input cannot trigger a forward slide; diagonal forward run-ups remain eligible. The existing GameEngine tackle contact arc, odds, reach and speed are unchanged.
+- .207 Modular QA #45085155336 passed 2,776/2,776; .207 Census failed browser shard 0 on simulated-touch READ! screenshot. .208 initial preflight exposed a source-contract regex that omitted the production call semicolon; commit 9993a5c6f87e331024d9c5a66310d023fb0a25af repairs the assertion. Modular QA #45088262048 passed on that head; Full Census #45088262139 passed preflight, preview and Node shards 2/3; remaining Node and Chromium shards were still running at checkpoint update.
 - Main remains .197 at `734090056af345d76e5d25079b2e2f8c1798ba65`; #87 protection, #86 Render drift, #48 physical-device acceptance and #3 Android double tap remain open.
 
 ## Next smallest action
-Run exact-head Modular QA and the full four-Node/four-Chromium Census. Repair confirmed failures, then allow only the existing QA-gated pipeline to promote. Verify Pages deployment, main Census and hosted-byte smoke independently.
+Finish exact-head Full Regression Census #45088262139. Repair any confirmed failure, then allow only the existing QA-gated pipeline to promote. Verify Pages deployment, main Census and hosted-byte smoke independently.
 
 ## Next five product improvements
 1. Improve responsive ball control, intelligent passing and fair tackle/interception decisions without adding controls.
@@ -26,8 +25,9 @@ Run exact-head Modular QA and the full four-Node/four-Chromium Census. Repair co
 Only this checkpoint. No concept heroes or copied art. Preserve 223 teams, 2,676 players, exact ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No physical-device or owner visual approval claims; no routine LAN/P2P work. #48 stays open; #87 remains unresolved.
 
 ## Evidence
-- .207 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45085155336
-- .207 Full Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45085155258
+- .208 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45088262048
+- .208 Full Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45088262139
+- .207 Full Census diagnosis: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45085155258
 - Main .197 Pages: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45045555988
 
 ## Cleanup

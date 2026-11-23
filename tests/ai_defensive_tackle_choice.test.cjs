@@ -51,10 +51,14 @@ test('slide alignment follows actual momentum when direction input or facing is 
  assert.equal(AI.defensiveTackleSlide(retreatingMomentum,forwardCarrier,250),false,
   'forward input and facing cannot override actual retreating momentum');
 
- const diagonalMomentum=player(0,1000,700,{moveVX:160,moveVY:120,dx:0,dy:0,face:-1});
+ const diagonalMomentum=player(0,1000,700,{moveVX:160,moveVY:120,dx:0,dy:0,face:1});
  const diagonalCarrier=player(1,1048,736,{moveVX:300,moveVY:225});
  assert.equal(AI.defensiveTackleSlide(diagonalMomentum,diagonalCarrier,250),true,
-  'actual diagonal run-up is eligible even when input and facing are stale');
+  'diagonal momentum remains eligible when the existing facing fallback enters the tackle arc');
+
+ const sideInput=player(0,1000,700,{moveVX:220,moveVY:0,dx:0,dy:1,face:1});
+ assert.equal(AI.defensiveTackleSlide(sideInput,forwardCarrier,250),false,
+  'forward momentum cannot override a side-on input arc used by actual tackle contact');
 });
 
 test('standing defenders, very close contact and invalid or unavailable carriers keep the poke',()=>{
@@ -78,4 +82,6 @@ test('driveAI routes both ordinary and primary press tackles through movement-aw
  assert.ok(engineSource.includes('carrierDistance<74'));
  assert.ok(engineSource.includes('carrierDistance<=98&&defensiveFirstTouchSlide(p,owner,this.playerSpeed(p))'));
  assert.ok(engineSource.includes('const slideRoll=Math.random();'));
+ assert.ok(engineSource.includes('const mx=Number.isFinite(p.dx)?p.dx:0,my=Number.isFinite(p.dy)?p.dy:0;'),
+  'the helper must preserve the engine contact arc and add momentum as a separate requirement');
 });
