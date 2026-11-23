@@ -76,9 +76,12 @@ test('standing defenders, very close contact and invalid or unavailable carriers
 const engineSource=fs.readFileSync('src/modules/engine.js','utf8');
 
 test('driveAI routes both ordinary and primary press tackles through movement-aware slide selection',()=>{
- const marker='defensiveTackleSlide(p,owner,this.playerSpeed(p))';
+ const marker='defensiveTackleSlideBallSideRead(p,owner,liveBall,this.playerSpeed(p))';
  assert.equal(engineSource.split(marker).length-1,2,
-  'both CPU tackle paths must use the shared run-up/relative-motion decision');
+  'both CPU tackle paths must use the shared run-up/relative-motion and live-ball decision');
+ assert.ok(engineSource.includes('carrierDistance<=98&&defensivePokeBallSideRead(p,owner,liveBall)&&defensiveFirstTouchSlide(p,owner,this.playerSpeed(p))'),
+  'the pressured first-touch slide must also require an exposed live ball');
+ assert.ok(engineSource.includes('GameEngine.prototype.defensiveTackleSlideBallSideRead=defensiveTackleSlideBallSideRead;'));
  assert.ok(engineSource.includes('distance(p,owner)<68'));
  assert.ok(engineSource.includes('carrierDistance<74'));
  assert.ok(engineSource.includes('carrierDistance<=98&&defensiveFirstTouchSlide(p,owner,this.playerSpeed(p))'));
