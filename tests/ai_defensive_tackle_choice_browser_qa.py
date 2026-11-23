@@ -42,9 +42,11 @@ with sync_playwright() as pw:
             const invalidFatigue=game.cpuTackleSlideChance(profile(50,50,NaN),.5,.24,.4);
             const boundedLow=game.cpuTackleSlideChance(profile(1,1),0,-5,-2);
             const boundedHigh=game.cpuTackleSlideChance(profile(100,100),1,2,2);
+            const canonicalTeams=SupermagicFootball.teams.filter(team=>
+                !['concept_demo','crown_royals_reference'].includes(team.group)).length;
             return {neutral,low,high,primary,halfFatigue,fullFatigue,primaryFullFatigue,invalidFatigue,boundedLow,boundedHigh,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
-                teams:SupermagicFootball.teams.length};
+                teams:canonicalTeams};
         }""")
         assert abs(result['neutral']-.44)<1e-9,(kind,result)
         assert abs(result['primary']-.345)<1e-9,(kind,result)
