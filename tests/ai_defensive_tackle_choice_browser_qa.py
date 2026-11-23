@@ -29,22 +29,30 @@ with sync_playwright() as pw:
         page.wait_for_function('!!window.SupermagicFootball?.game?.cpuTackleSlideChance')
         result=page.evaluate("""() => {
             const game=SupermagicFootball.game;
-            const profile=(defence,aggression)=>({src:{
+            const profile=(defence,aggression,fatigue=0)=>({fatigue,src:{
                 id:'slide-profile-'+defence+'-'+aggression,role:'DF',defence,aggression
             }});
-            const neutral=game.cpuTackleSlideChance(profile(50,50),.5,.24,.4);
-            const low=game.cpuTackleSlideChance(profile(20,20),.5,.24,.4);
-            const high=game.cpuTackleSlideChance(profile(90,90),.5,.24,.4);
-            const primary=game.cpuTackleSlideChance(profile(50,50),.5,.17,.35);
+            const neutral=game.cpuTackleSlideChance(profile(50,50,0),.5,.24,.4);
+            const low=game.cpuTackleSlideChance(profile(20,20,0),.5,.24,.4);
+            const high=game.cpuTackleSlideChance(profile(90,90,0),.5,.24,.4);
+            const primary=game.cpuTackleSlideChance(profile(50,50,0),.5,.17,.35);
+            const halfFatigue=game.cpuTackleSlideChance(profile(50,50,.5),.5,.24,.4);
+            const fullFatigue=game.cpuTackleSlideChance(profile(50,50,1),.5,.24,.4);
+            const primaryFullFatigue=game.cpuTackleSlideChance(profile(50,50,1),.5,.17,.35);
+            const invalidFatigue=game.cpuTackleSlideChance(profile(50,50,NaN),.5,.24,.4);
             const boundedLow=game.cpuTackleSlideChance(profile(1,1),0,-5,-2);
             const boundedHigh=game.cpuTackleSlideChance(profile(100,100),1,2,2);
-            return {neutral,low,high,primary,boundedLow,boundedHigh,
+            return {neutral,low,high,primary,halfFatigue,fullFatigue,primaryFullFatigue,invalidFatigue,boundedLow,boundedHigh,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};
         }""")
         assert abs(result['neutral']-.44)<1e-9,(kind,result)
         assert abs(result['primary']-.345)<1e-9,(kind,result)
         assert result['low']<result['neutral']<result['high'],(kind,result)
+        assert result['halfFatigue']<result['neutral'] and result['fullFatigue']<result['halfFatigue'],(kind,result)
+        assert abs(result['halfFatigue']-.4025)<1e-9 and abs(result['fullFatigue']-.365)<1e-9,(kind,result)
+        assert abs(result['primaryFullFatigue']-.27)<1e-9,(kind,result)
+        assert abs(result['invalidFatigue']-result['neutral'])<1e-9,(kind,result)
         assert result['boundedLow']==.12 and result['boundedHigh']==.76,(kind,result)
         assert result['buttons']==4,(kind,result)
         assert result['teams']==223,(kind,result)

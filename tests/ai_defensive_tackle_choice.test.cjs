@@ -90,18 +90,25 @@ test('driveAI routes both ordinary and primary press tackles through movement-aw
 });
 
 function slideChance(...args){return ENGINE.GameEngine.prototype.cpuTackleSlideChance.call({},...args);}
-function slideProfile(defence,aggression){return {src:{id:'slide-'+defence+'-'+aggression,role:'DF',defence,aggression}};}
+function slideProfile(defence,aggression,fatigue=0){return {fatigue,src:{id:'slide-'+defence+'-'+aggression,role:'DF',defence,aggression}};}
 
-test('CPU slide choice scales with defender Defence and Aggression while preserving neutral AI baselines',()=>{
- const neutral=slideChance(slideProfile(50,50),.5,.24,.4);
- const low=slideChance(slideProfile(20,20),.5,.24,.4);
- const high=slideChance(slideProfile(90,90),.5,.24,.4);
- const primaryNeutral=slideChance(slideProfile(50,50),.5,.17,.35);
- assert.equal(neutral,.44,'average defenders retain the previous Normal baseline');
- assert.equal(primaryNeutral,.345,'primary pressers retain their previous baseline');
+test('CPU slide choice scales with defender Defence, Aggression and fatigue while preserving rested baselines',()=>{
+ const neutral=slideChance(slideProfile(50,50,0),.5,.24,.4);
+ const low=slideChance(slideProfile(20,20,0),.5,.24,.4);
+ const high=slideChance(slideProfile(90,90,0),.5,.24,.4);
+ const primaryNeutral=slideChance(slideProfile(50,50,0),.5,.17,.35);
+ const halfFatigue=slideChance(slideProfile(50,50,.5),.5,.24,.4);
+ const fullFatigue=slideChance(slideProfile(50,50,1),.5,.24,.4);
+ const primaryFullFatigue=slideChance(slideProfile(50,50,1),.5,.17,.35);
+ assert.equal(neutral,.44,'rested average defenders retain the previous Normal baseline');
+ assert.equal(primaryNeutral,.345,'rested primary pressers retain their previous baseline');
  assert.ok(low<neutral&&neutral<high,JSON.stringify({low,neutral,high}));
- assert.ok(slideChance(slideProfile(50,50),NaN,.24,.4)===neutral,
-  'invalid anticipation uses the neutral fallback');
+ assert.ok(halfFatigue<neutral&&fullFatigue<halfFatigue,JSON.stringify({neutral,halfFatigue,fullFatigue}));
+ assert.ok(Math.abs(halfFatigue-.4025)<1e-9&&Math.abs(fullFatigue-.365)<1e-9,JSON.stringify({halfFatigue,fullFatigue}));
+ assert.ok(Math.abs(primaryFullFatigue-.27)<1e-9,'fatigue also tempers the primary-presser slide baseline');
+ assert.equal(slideChance(slideProfile(50,50,NaN),.5,.24,.4),neutral,'invalid fatigue falls back to rested behavior');
+ assert.equal(slideChance(slideProfile(50,50,2),.5,.24,.4),fullFatigue,'fatigue above one is clamped');
+ assert.ok(slideChance(slideProfile(50,50,-1),.5,.24,.4)===neutral,'negative fatigue is clamped');
 });
 
 test('CPU slide preference remains bounded for extreme profiles and tuning inputs',()=>{

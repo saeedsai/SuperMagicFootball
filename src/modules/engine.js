@@ -423,7 +423,11 @@ function cpuTackleSlideChance(p,anticipation,baseChance=.24,anticipationSpan=.4)
  const span=Number.isFinite(anticipationSpan)?clamp(anticipationSpan,0,.75):.4;
  if(!p||typeof p!=='object')return clamp(base+read*span,.12,.76);
  const skillBias=(stat(p,'defence')-50)*.0012+(stat(p,'aggression')-50)*.0006;
- return clamp(base+read*span+skillBias,.12,.76);
+ // Exhausted defenders are less willing to commit to the costly SHOOT slide;
+ // rested players preserve the exact skill/difficulty baseline.
+ const fatigue=Number.isFinite(p.fatigue)?clamp(p.fatigue,0,1):0;
+ const fatiguePenalty=fatigue*.075;
+ return clamp(base+read*span+skillBias-fatiguePenalty,.12,.76);
 }
 class GameEngine{
  constructor(options={},input){this.options=options;this.input=input;this.events=[];this.mode='quick';this.matchState='none';this.teamIds=[0,9];this.rosters=[[],[]];this.lineups=[DEFAULT_LINEUP.slice(),[0,1,2,3,5,9]];this.formation=['2-1-2','2-1-2'];this.teamPlans=[];this.controlled=[3,3,0,0];this.humans=1;this.score=[0,0];this.half=1;this.clock=0;this.matchSeconds=120;this.players=[];this.ball={};this.particles=[];this.magicHazards=[];this.shake=0;this.flash=0;this.weather='Clear';this.terrain='Grass';this.condition='Good';this.wind={x:0,y:0};this.stormTimer=0;this.tornado=null;this.celebration=0;this.pendingKickoff=null;this.goalHero=null;this.cooldown=0;this.kickoffCountdown=0;this.pk=null;this.matchSerial=0;this.fatigueLedger=[{},{}];this.playerSeconds=[{},{}];this.substitutionsUsed=[0,0];this.subbedOut=[new Set(),new Set()];this.maxSubstitutions=MAX_SUBSTITUTIONS;this.moraleLedger=[{},{}];this.talksUsed=[{},{ }];this.celebrationStyle=0;this.onEvent=()=>{};this._turnoverCounterpress=null;this.aiComboNext=[0,0];this.aiComboThink=[0,0];this.autoSwitchAccum=[0,0];this.manualSwitchGrace=[0,0];this.stoppageWindow=0;this.stoppageAnnounced=false;this._shotAudit=null;this._reboundAudit=null;this._shotAuditNext=0;}
