@@ -151,7 +151,7 @@ test('ordinary and primary close-contact non-slide pokes respect ball shielding 
  const source=fs.readFileSync('src/modules/engine.js','utf8');
  assert.ok(source.includes('const closeContact=!!(owner&&owner.t!==t&&distance(p,owner)<68);'));
  assert.ok(source.includes('if(!closeContact||slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide,slide?liveBall:null);'));
- assert.ok(source.includes('if(slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide);'));
+ assert.ok(source.includes('if(slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide,slide?liveBall:null);'));
  assert.ok(source.includes('if(ball!==null&&!defensivePokeBallSideRead(defender,carrier,ball))return false;'));
  assert.ok(source.includes('GameEngine.prototype.defensivePokeBallSideRead=defensivePokeBallSideRead;'));
  assert.equal((source.match(/defensiveTackleSlideBallSideRead\(p,owner,liveBall,this\.playerSpeed\(p\)\)/g)||[]).length,2);

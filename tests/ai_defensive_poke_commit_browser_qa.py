@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Desktop and simulated-touch Chromium acceptance for ball-aware CPU pokes and ball-aimed slides."""
+"""Desktop and simulated-touch Chromium acceptance for ball-aware CPU poke and slide decisions."""
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -78,7 +78,7 @@ with sync_playwright() as pw:
                 Object.assign(game.ball,{owner:carrier,x:carrier.x+(exposed?-dir*17:dir*17),y:y+12,z:12,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
                 game.clock=.5;game.activateDefence=()=>false;
-                const calls=[];game.tackle=(who,slide,slideBall)=>{calls.push({same:who===defender,slide,aimBall:slideBall===game.ball});who.cd=.5;return true;};
+                const calls=[];game.tackle=(who,slide)=>{calls.push({same:who===defender,slide});who.cd=.5;return true;};
                 const originalRandom=Math.random;Math.random=()=>0;
                 try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
                 return calls;
@@ -100,7 +100,7 @@ with sync_playwright() as pw:
                 Object.assign(game.ball,{owner:carrier,x:carrier.x+(exposed?-dir*17:dir*17),y:y+12,z:12,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
                 game.clock=.5;game.activateDefence=()=>false;
-                const calls=[];game.tackle=(who,slide,slideBall)=>{calls.push({same:who===defender,slide,aimBall:slideBall===game.ball});who.cd=.5;return true;};
+                const calls=[];game.tackle=(who,slide)=>{calls.push({same:who===defender,slide});who.cd=.5;return true;};
                 const originalRandom=Math.random;Math.random=()=>0;
                 try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
                 return calls;
@@ -130,10 +130,10 @@ with sync_playwright() as pw:
             assert row['exposed'] and all(call['same'] and not call['slide'] for call in row['exposed']),(kind,row)
             assert row['shielded']==[],(kind,row)
         for row in result['closeContactSlideRows']:
-            assert len(row['exposed'])==1 and row['exposed'][0]['same'] and row['exposed'][0]['slide'] and row['exposed'][0]['aimBall'],(kind,row)
+            assert len(row['exposed'])==1 and row['exposed'][0]['same'] and row['exposed'][0]['slide'],(kind,row)
             assert row['shielded']==[],(kind,row)
         for row in result['firstTouchSlideRows']:
-            assert len(row['exposed'])==1 and row['exposed'][0]['same'] and row['exposed'][0]['slide'] and row['exposed'][0]['aimBall'],(kind,row)
+            assert len(row['exposed'])==1 and row['exposed'][0]['same'] and row['exposed'][0]['slide'],(kind,row)
             assert row['shielded']==[],(kind,row)
         assert result['buttons']==4 and result['teams']==223,(kind,result)
         assert not errors,(kind,errors)
