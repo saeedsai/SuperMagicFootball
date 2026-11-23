@@ -429,7 +429,7 @@ function cpuTackleSlideChance(p,anticipation,baseChance=.24,anticipationSpan=.4)
  const fatiguePenalty=fatigue*.075;
  return clamp(base+read*span+skillBias-fatiguePenalty,.12,.76);
 }
-function defensivePokeCommitWindow(defender,carrier){
+function defensivePokeCommitWindow(defender,carrier,ball=null){
  // Predict the existing short PASS poke exactly: 55 ms of carrier lead,
  // capped at 12 units per axis, followed by the 16-unit forward step.
  // Only add an early commit when a grounded carrier is actually closing.
@@ -442,6 +442,17 @@ function defensivePokeCommitWindow(defender,carrier){
   (carrier.z!=null&&(!Number.isFinite(Number(carrier.z))||Number(carrier.z)>=20)))return false;
  const dx=carrier.x-defender.x,dy=carrier.y-defender.y,range=Math.hypot(dx,dy);
  if(!Number.isFinite(range)||range<=68||range>94)return false;
+ // A defender may anticipate the short poke only when the live ball is not
+ // shielded behind the carrier relative to this approach. Close-contact pokes
+ // retain their separate existing path in driveAI.
+ if(ball!==null){
+  if(ball.owner!==carrier||!Number.isFinite(ball.x)||!Number.isFinite(ball.y))return false;
+  const offsetX=ball.x-carrier.x,offsetY=ball.y-carrier.y;
+  const offsetLength=Math.hypot(offsetX,offsetY);
+  if(!Number.isFinite(offsetLength)||offsetLength>36)return false;
+  const exposure=offsetX*(-dx/range)+offsetY*(-dy/range);
+  if(!Number.isFinite(exposure)||exposure< -2)return false;
+ }
  const inputX=Number.isFinite(defender.dx)?defender.dx:0;
  const inputY=Number.isFinite(defender.dy)?defender.dy:0;
  const inputLength=Math.hypot(inputX,inputY);
@@ -2983,7 +2994,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
       this.activateDefence(p);
     }
     if(owner&&owner.t!==t&&p.cd<=0&&
-     (distance(p,owner)<68||this.defensivePokeCommitWindow(p,owner))&&
+     (distance(p,owner)<68||this.defensivePokeCommitWindow(p,owner,this.ball))&&
      Math.random()<ai.tackleRate*tactical.press){
       const slideRoll=Math.random();
       this.tackle(p,defensiveTackleSlide(p,owner,this.playerSpeed(p))&&slideRoll<this.cpuTackleSlideChance(p,ai.anticipation,.24,.4));

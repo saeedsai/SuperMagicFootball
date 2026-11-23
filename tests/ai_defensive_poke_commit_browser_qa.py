@@ -42,9 +42,16 @@ with sync_playwright() as pw:
             const weak=game.defensivePokeCommitWindow(player(0,1000,700,{src:{defence:20}}),player(1,1083,700,{moveVX:-110,moveVY:0}));
             const average=game.defensivePokeCommitWindow(player(0,1000,700,{src:{defence:50}}),player(1,1083,700,{moveVX:-120,moveVY:0}));
             const mirroredElite=game.defensivePokeCommitWindow(player(1,1083,700,{dx:-1,face:-1,src:{defence:95}}),player(0,1000,700,{moveVX:110,moveVY:0}));
+            const exposedCarrier=player(1,1088,700,{face:-1,moveVX:-240,moveVY:0});
+            const exposedBall={owner:exposedCarrier,x:exposedCarrier.x-17,y:exposedCarrier.y+12,z:12};
+            const shieldedCarrier=player(1,1088,700,{face:1,moveVX:-240,moveVY:0});
+            const shieldedBall={owner:shieldedCarrier,x:shieldedCarrier.x+17,y:shieldedCarrier.y+12,z:12};
+            const exposedBallRead=game.defensivePokeCommitWindow(player(0,1000,700),exposedCarrier,exposedBall);
+            const shieldedBallRead=game.defensivePokeCommitWindow(player(0,1000,700),shieldedCarrier,shieldedBall);
             const canonicalTeams=SupermagicFootball.teams.filter(team=>
                 !['concept_demo','crown_royals_reference'].includes(team.group)).length;
             return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,elite,weak,average,mirroredElite,
+                exposedBallRead,shieldedBallRead,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:canonicalTeams};
         }""")
@@ -52,8 +59,9 @@ with sync_playwright() as pw:
         assert not result['retreat'] and not result['lateral'] and not result['sideOn'] and not result['staleVelocity'],(kind,result)
         assert result['low'] and not result['high'],(kind,result)
         assert result['elite'] and not result['weak'] and result['average'] and result['mirroredElite'],(kind,result)
+        assert result['exposedBallRead'] and not result['shieldedBallRead'],(kind,result)
         assert result['buttons']==4 and result['teams']==223,(kind,result)
         assert not errors,(kind,errors)
-        print('PASS',kind,'adaptive closing poke, mirrored direction, contact bound, 223 teams and four actions',flush=True)
+        print('PASS',kind,'adaptive poke, live ball exposure, shielding, mirrored direction, contact bound, 223 teams and four actions',flush=True)
         ctx.close()
     browser.close()

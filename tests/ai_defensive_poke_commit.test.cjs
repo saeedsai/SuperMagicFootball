@@ -83,3 +83,30 @@ test('ordinary CPU defenders use the adaptive poke window while primary press ke
  assert.ok(source.includes('if(carrierDistance<74){'));
  assert.ok(source.includes('defensiveFirstTouchSlide(p,owner,this.playerSpeed(p))'));
 });
+
+test('early PASS poke requires the live ball to be exposed toward the approaching defender',()=>{
+ const defender=player(0,1000,700,{dx:1,dy:0,face:1});
+ const exposed=player(1,1088,700,{face:-1,moveVX:-240,moveVY:0});
+ const exposedBall={owner:exposed,x:exposed.x-17,y:exposed.y+12,z:12};
+ assert.equal(commit(defender,exposed,exposedBall),true,
+  'a ball carried on the defender-facing foot remains readable');
+ const shielded=player(1,1088,700,{face:1,moveVX:-240,moveVY:0});
+ const shieldedBall={owner:shielded,x:shielded.x+17,y:shielded.y+12,z:12};
+ assert.equal(commit(defender,shielded,shieldedBall),false,
+  'a carrier shielding the ball on the far side is not early-poked');
+ assert.equal(commit(defender,shielded,{owner:defender,x:shielded.x+17,y:shielded.y+12}),false,
+  'a mismatched ball owner cannot create a read');
+ assert.equal(commit(defender,shielded,{owner:shielded,x:Infinity,y:shielded.y}),false,
+  'invalid ball coordinates fail closed');
+ assert.equal(commit(defender,shielded,{owner:shielded,x:shielded.x+40,y:shielded.y+12}),false,
+  'stale ball positions outside the carried-ball envelope fail closed');
+ assert.equal(commit(defender,shielded),true,
+  'legacy helper callers without a live-ball argument retain their existing behavior');
+});
+
+test('ordinary AI passes the live ball to the early poke read without changing close contact',()=>{
+ const source=fs.readFileSync('src/modules/engine.js','utf8');
+ assert.ok(source.includes('(distance(p,owner)<68||this.defensivePokeCommitWindow(p,owner,this.ball))'));
+ assert.ok(source.includes('if(carrierDistance<74){'),
+  'the primary presser keeps its separate close-contact tackle window');
+});
