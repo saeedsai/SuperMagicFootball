@@ -1,9 +1,10 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.210',
+ version:'0.12.81.211',
  date:'2026-11-23',
  notes:Object.freeze([
+  "KEEPER-AERIAL-CROSS-CONTEST-01: CPU goalkeeper contested-cross evaluation now includes an already-airborne opponent only when the player's projected vertical body envelope intersects the descending cross at the same 0.12-second horizon. A jumper already contesting the ball can therefore trigger the existing punch instead of being ignored; a player jumping above or below the cross does not force an unnecessary punch. Grounded challenger pressure, keeper contact/reach, punch physics, catch/save behavior, four actions, saves, rosters, persistence and offline play remain unchanged. Mirrored real-engine Node and desktop/simulated-touch browser regressions cover both goals.",
   "AI-CUTBACK-RECEIVER-ORIENTATION-01: CPU cutback selection now gives a bounded 22-point tie-breaker to a receiver already facing the attacking goal when safe cutback options are otherwise equivalent; actual forward momentum above 110 units overrides stale facing, and a sole safe outlet remains eligible. Existing flight-lane and collection-pocket checks, flat PASS trajectory, shot priority, four actions, saves, rosters, persistence and offline play remain unchanged. Mirrored real-engine Node regressions cover both attack directions and fallback.",
 
   "AI-GOALMOUTH-RECEIVER-ORIENTATION-01: when multiple safe central goalmouth outlets are available, CPU pass selection gives a bounded preference to a receiver already facing toward goal; a genuine forward run overrides stale facing, and a sole safe receiver remains eligible. This is a tie-breaker only: pass-lane safety, finishing priority, pass physics, four actions, saves, rosters, persistence and offline play remain unchanged. Mirrored real-engine Node regressions cover both attack directions and fallback.",

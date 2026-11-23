@@ -84,8 +84,9 @@ with sync_playwright() as pw:
    page.evaluate("""id => {
     const canvas=window.__smfReadCueCanvases?.[id];
     if(!(canvas instanceof HTMLCanvasElement))throw new Error('isolated production-renderer canvas unavailable: '+id);
-    canvas.style.cssText='position:fixed;left:0;top:0;width:100vw;height:100vh;display:block;z-index:2147483647;margin:0;padding:0;border:0;opacity:1;transform:none;pointer-events:none;';
-    document.body.replaceChildren(canvas);
+    canvas.style.cssText='position:fixed;left:0;top:0;width:100vw;height:100vh;display:block;z-index:2147483647;margin:0;padding:0;border:0;opacity:1;transform:none;pointer-events:none;visibility:visible;';
+    document.body.appendChild(canvas);
+    for(const child of document.body.children)if(child!==canvas)child.style.visibility='hidden';
    }""",capture_id)
    target=page.locator('#'+capture_id)
    assert target.count()==1,(kind,capture_id,'unique isolated canvas must exist')

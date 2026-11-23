@@ -65,6 +65,21 @@ test('high-cross punch decision rejects shots, low passes, stale, owned, rising 
   {diveIntentPending:true},{action:'keeperRecover'}])
   assert.equal(AI.keeperHighCrossPunchDecision({...f.keeper,...patch},f.ball,f.players),null);
 });
+test('an already-airborne opponent contests only when its projected body overlaps the descending cross',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team);
+  Object.assign(f.receiver,{x:f.ball.x+f.dir*90,moveVX:-f.dir*300,z:55,vz:0,jumpCount:1,action:'jump'});
+  const reachable=AI.keeperHighCrossPunchDecision(f.keeper,f.ball,f.players);
+  assert.ok(reachable,JSON.stringify({team,reachable,receiver:f.receiver,ball:f.ball}));
+  const above={...f.receiver,z:170,vz:-200};
+  assert.equal(AI.keeperHighCrossPunchDecision(f.keeper,f.ball,[f.keeper,above]),null,
+   'an airborne opponent above the cross must not force a punch');
+  const notJumping={...f.receiver,jumpCount:0};
+  assert.equal(AI.keeperHighCrossPunchDecision(f.keeper,f.ball,[f.keeper,notJumping]),null,
+   'a raised but non-jumping player must not be treated as an aerial challenger');
+ }
+});
 test('real engine punches a contested cross away from either goal and shows the punch response',async()=>{
  const {ENGINE}=await loadModules();
  for(const team of [0,1]){

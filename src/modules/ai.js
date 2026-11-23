@@ -1918,7 +1918,19 @@ function keeperHighCrossPunchDecision(keeper,ball,players){
    !timerClear(q.shotImpactRiseTimer)||q.action==='shotDown'||q.action==='shotGetUp'||
    ((q.action==='slide'||q.action==='hurt')&&(Number(q.actionTimer)||0)>0))return false;
   const z=q.z==null?0:Number(q.z);
-  return Number.isFinite(z)&&z<=18&&Number.isFinite(q.x)&&Number.isFinite(q.y);
+  if(!Number.isFinite(z)||z<0||!Number.isFinite(q.x)||!Number.isFinite(q.y))return false;
+  // Grounded players retain the existing potential-jump pressure. An already
+  // airborne player counts only when a real jump pose is active and its body
+  // will overlap the cross at the same short horizon used for XY arrival.
+  if(z>18){
+   const airborne=Number(q.jumpCount)>0&&['jump','doubleJump','idle'].includes(q.action);
+   if(!airborne)return false;
+   const playerVz=Number.isFinite(q.vz)?q.vz:0;
+   const playerHeight=Math.max(0,z+playerVz*.12-540*.12*.12);
+   const ballHeight=Math.max(0,ball.z+ball.vz*.12-250*.12*.12);
+   if(ballHeight<playerHeight-10||ballHeight>playerHeight+126)return false;
+  }
+  return true;
  };
  const arrivals=[];
  for(const opponent of players){

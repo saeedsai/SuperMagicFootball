@@ -16,7 +16,7 @@ with sync_playwright() as pw:
   page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
    const g=SupermagicFootball.game,field={x:150,y:155,w:2260.8,h:1220},rows=[];
-   for(const team of [0,1]){
+   for(const state of ['grounded','airborne'])for(const team of [0,1]){
     g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
     const dir=team===0?1:-1,liveKeeper=g.player(team,0),liveReceiver=g.player(1-team,3);
     for(const q of g.players)if(q!==liveKeeper&&q!==liveReceiver)Object.assign(q,{down:true,stun:1});
@@ -24,8 +24,10 @@ with sync_playwright() as pw:
     Object.assign(liveKeeper,{x:keeperX,y:keeperY,z:0,stun:0,down:false,action:'idle',
      actionTimer:0,diveCooldown:0,diveIntentCooldown:0,diveIntentPending:false,keeperPunchFx:0,fatigue:.1});
     const ballX=liveKeeper.x-dir*8,ballY=liveKeeper.y+5;
-    Object.assign(liveReceiver,{x:ballX+dir*90,y:ballY,z:0,stun:0,down:false,
-     action:'idle',actionTimer:0,slideTimer:0,moveVX:-dir*300,moveVY:0});
+    const airborne=state==='airborne';
+    Object.assign(liveReceiver,{x:ballX+dir*90,y:ballY,z:airborne?55:0,vz:0,
+     jumpCount:airborne?1:0,stun:0,down:false,action:airborne?'jump':'idle',
+     actionTimer:0,slideTimer:0,moveVX:-dir*300,moveVY:0});
     Object.assign(g.ball,{owner:null,attacker:1-team,lastTouchTeam:1-team,passTeam:1-team,
      pass:true,passTarget:liveReceiver.src.id,x:ballX,y:ballY,z:70,vx:-dir*30,vy:0,
      vz:-20,age:.25,canCollect:0,shot:null,strike:null,ordinaryShot:false,power:0,trail:[]});
@@ -44,7 +46,7 @@ with sync_playwright() as pw:
     const chase=liveKeeper.aiParryReboundTarget===true;
     const moving=dir*(liveKeeper.moveVX||0)>0;
     const target=liveKeeper.aiTarget?{x:liveKeeper.aiTarget.x,y:liveKeeper.aiTarget.y}:null;
-    rows.push({team,dir,...punched,chase,moving,target});
+    rows.push({team,state,dir,...punched,chase,moving,target});
    }
    return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
     teams:SupermagicFootball.teams.length};
