@@ -46,7 +46,35 @@ with sync_playwright() as pw:
      returnMoveVX:keeper.moveVX||0,homeX,
      buttons:document.querySelectorAll('#touchButtons button[data-act]').length});
    }
-   return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+   const aerialRows=[];
+   for(const state of ['overlap','above','below','not-jumping'])for(const team of [0,1]){
+    const dir=team===0?1:-1,ownGoalX=dir===1?bounds.xMin:bounds.xMax,goalY=765;
+    const target={x:ownGoalX+dir*190,y:goalY+78};
+    g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
+    const keeper=g.player(team,0),receiver=g.player(1-team,3),challenger=g.player(1-team,2);
+    for(const q of g.players)if(q!==keeper&&q!==receiver&&q!==challenger&&!q.keeper){q.down=true;q.stun=1;}
+    Object.assign(keeper,{x:ownGoalX+dir*40,y:goalY,z:0,stun:0,down:false,action:'idle',
+     actionTimer:0,diveCooldown:0,aiTimer:0,aiTarget:null,aiKeeperClaimTargetActive:false,
+     aiParryReboundTarget:false,moveVX:0,moveVY:0});
+    Object.assign(receiver,{x:target.x+dir*155,y:target.y+10,z:0,stun:0,down:false,
+     action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
+    const below=state==='below';
+    Object.assign(g.ball,{owner:null,attacker:1-team,lastTouchTeam:1-team,passTeam:1-team,pass:true,
+     passTarget:receiver.src.id,x:target.x+dir*118,y:target.y-30,z:below?165:90,
+     vx:-dir*190,vy:48,vz:below?-80:10,age:.15,canCollect:0,shot:null,strike:null,ordinaryShot:false});
+    const flight=(g.ball.vz+Math.sqrt(g.ball.vz*g.ball.vz+1000*g.ball.z))/500;
+    const horizon=Math.min(.22,flight);
+    Object.assign(challenger,{x:g.ball.x+g.ball.vx*horizon+38,y:g.ball.y+g.ball.vy*horizon,
+     z:state==='above'?250:state==='below'?20:55,vz:0,
+     jumpCount:state==='not-jumping'?0:1,stun:0,down:false,action:'jump',actionTimer:0,
+     slideTimer:0,moveVX:0,moveVY:0});
+    g.clock=.2;g.driveAI(keeper,.016);
+    const claim=keeper.aiTarget?{x:keeper.aiTarget.x,y:keeper.aiTarget.y}:null;
+    aerialRows.push({team,state,claimActive:keeper.aiKeeperClaimTargetActive===true,claim,
+     expected:{x:Math.max(bounds.xMin+22,Math.min(bounds.xMax-22,g.ball.x+g.ball.vx*flight)),
+      y:Math.max(bounds.yMin+23,Math.min(bounds.yMax-23,g.ball.y+g.ball.vy*flight))}});
+   }
+   return {rows,aerialRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
     teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
@@ -60,6 +88,13 @@ with sync_playwright() as pw:
    assert row['returnActive'] is False,(kind,row)
    assert row['returnTarget'] and abs(row['returnTarget']['x']-row['homeX'])<2,(kind,row)
    assert row['dir']*row['returnMoveVX']<0,(kind,row)
+  assert len(result['aerialRows'])==8,(kind,result['aerialRows'])
+  for row in result['aerialRows']:
+   if row['state']=='overlap':
+    assert row['claimActive'] is False,(kind,row)
+   else:
+    assert row['claimActive'] is True,(kind,row)
+    assert row['claim'] is not None and abs(row['claim']['x']-row['expected']['x'])<2 and abs(row['claim']['y']-row['expected']['y'])<2,(kind,row)
   assert not errors,(kind,errors)
   print('PASS',kind,'mirrored goalkeeper high-cross claim and immediate post-catch return, four actions and no JavaScript errors',flush=True)
   ctx.close()

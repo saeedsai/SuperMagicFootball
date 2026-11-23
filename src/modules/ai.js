@@ -1986,6 +1986,30 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  const flight=(ball.vz+Math.sqrt(ball.vz*ball.vz+1000*ball.z))/500;
  if(!Number.isFinite(flight)||flight<.12||flight>.86||
   (ball.canCollect!=null&&(!Number.isFinite(Number(ball.canCollect))||Number(ball.canCollect)>flight+.08)))return null;
+ // Do not send the keeper through an active opponent already contesting the
+ // same cross in the air. Project ball and jumper at one shared short horizon.
+ const horizon=Math.min(.22,flight);
+ const ballAtX=ball.x+ball.vx*horizon,ballAtY=ball.y+ball.vy*horizon;
+ const ballAtZ=Math.max(0,ball.z+ball.vz*horizon-250*horizon*horizon);
+ const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+ for(const q of players){
+  if(!q||q===keeper||q.keeper||q.t!==1-keeper.t||q.down||
+   !timerClear(q.stun)||!timerClear(q.slideTimer)||
+   !timerClear(q.shotImpactKnockdownPending)||!timerClear(q.shotImpactKnockdownTimer)||
+   !timerClear(q.shotImpactRiseTimer)||['shotDown','shotGetUp'].includes(q.action)||
+   ((q.action==='slide'||q.action==='hurt')&&(Number(q.actionTimer)||0)>0))continue;
+  const z=Number(q.z),jumpCount=Number(q.jumpCount);
+  if(!Number.isFinite(z)||z<=18||!Number.isFinite(jumpCount)||jumpCount<=0||
+   !['jump','doubleJump','idle'].includes(q.action)||!Number.isFinite(q.x)||!Number.isFinite(q.y))continue;
+  const playerVz=Number.isFinite(q.vz)?q.vz:0;
+  const playerHeight=Math.max(0,z+playerVz*horizon-540*horizon*horizon);
+  if(ballAtZ<playerHeight-10||ballAtZ>playerHeight+126)continue;
+  const vx=Number.isFinite(q.moveVX)?q.moveVX:Number.isFinite(q.vx)?q.vx:0;
+  const vy=Number.isFinite(q.moveVY)?q.moveVY:Number.isFinite(q.vy)?q.vy:0;
+  const futureX=q.x+clampTo(vx*horizon,-52,52);
+  const futureY=q.y+clampTo(vy*horizon,-52,52);
+  if(Math.hypot(futureX-ballAtX,futureY-ballAtY)<=72)return null;
+ }
  const dir=keeper.t===0?1:-1,ownGoalX=dir===1?xMin:xMax;
  const xLead=clampTo(ball.vx*flight,-190,190);
  const yLead=clampTo(ball.vy*flight,-160,160);

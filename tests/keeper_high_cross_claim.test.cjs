@@ -87,6 +87,36 @@ test('driveAI sends the CPU goalkeeper toward the safe cross claim on both sides
  }
 });
 
+test('keeper yields a high-cross claim only to an active opponent whose airborne body intersects the projected ball',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team);
+  const flight=(f.ball.vz+Math.sqrt(f.ball.vz*f.ball.vz+1000*f.ball.z))/500;
+  const horizon=Math.min(.22,flight);
+  const ballX=f.ball.x+f.ball.vx*horizon,ballY=f.ball.y+f.ball.vy*horizon;
+  const airborne=player('airborne-cross-contest-'+team,1-team,ballX+38,ballY,
+   {z:55,vz:0,jumpCount:1,action:'jump'});
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,[...f.players,airborne],f.bounds),null,
+   'an active airborne opponent in the cross path must keep the keeper on its goal-line read');
+  const above={...airborne,z:250};
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,[...f.players,above],f.bounds),
+   'a jumper above the cross must not block the claim');
+  const belowBall={...f.ball,z:165,vz:-80};
+  const below={...airborne,z:20};
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,belowBall,[f.keeper,f.receiver,below],f.bounds),
+   'a jumper below the descending ball must not block the claim');
+  const notJumping={...airborne,jumpCount:0};
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,[...f.players,notJumping],f.bounds),
+   'a raised player without a live jump must not block the claim');
+  const missingJump={...airborne,jumpCount:undefined};
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,[...f.players,missingJump],f.bounds),
+   'a missing jump counter must not be treated as a live jump');
+  const unavailable={...airborne,down:true};
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,[...f.players,unavailable],f.bounds),
+   'an unavailable airborne player must not block the claim');
+ }
+});
+
 test('a caught high-cross claim immediately releases the stale landing target and returns to the goal line on both sides',async()=>{
  const {AI,ENGINE}=await loadModules();
  for(const team of [0,1]){
